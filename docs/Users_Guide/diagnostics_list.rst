@@ -13,7 +13,7 @@ Diagnostics Database
 .. role:: raw-html(raw)
    :format: html	  
 
-.. list-table:: Statistics List
+.. list-table:: Diagnostics List
   :widths: auto
   :header-rows: 1
 		
@@ -476,7 +476,7 @@ Diagnostics Database
       object (variable units)
     - INTENSITY  :raw-html:`<br />`
       _SUM
-    - Diagnostics 
+    - Diagnostic
     - MODE
     - MODE obj
   * - Total interest for this :raw-html:`<br />`
@@ -668,12 +668,12 @@ Diagnostics Database
     - SPACE :raw-html:`<br />`
       _CENTROID :raw-html:`<br />`
       _DIST
-    - Diagnostics 
+    - Diagnostic
     - MTD
     - MTD 3D obs
   * - Difference in object speeds
     - SPEED_DELTA
-    - Diagnostics 
+    - Diagnostic
     - MTD
     - MTD 3D obs
   * - Difference in object :raw-html:`<br />`
@@ -688,7 +688,7 @@ Diagnostics Database
       (in grid squares)
     - SYMMETRIC :raw-html:`<br />`
       _DIFF
-    - Diagnostics
+    - Diagnostic
     - MODE
     - MODE obj
   * - Difference in t index of :raw-html:`<br />`
