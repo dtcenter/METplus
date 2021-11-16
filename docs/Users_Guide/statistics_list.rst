@@ -952,7 +952,7 @@ METplus Database of Statistics
     - FHO 
   * - Hausdorff Distance
     - HAUSDORFF
-    - Diagnostic Attr 
+    - Diagnostic 
     - Grid-Stat
     - DMAP 
   * - Hanssen and Kuipers :raw-html:`<br />`
@@ -1006,7 +1006,7 @@ METplus Database of Statistics
       _10, _25, :raw-html:`<br />`
       _50, _75, :raw-html:`<br />`
       _90, _NN
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE obj
   * - Sum of the intensities of :raw-html:`<br />`
@@ -1618,7 +1618,7 @@ METplus Database of Statistics
     - PJC 
   * - Reliability
     - RELIABILITY
-    - Probaility 
+    - Probability 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - PSTD output format
@@ -1767,7 +1767,7 @@ METplus Database of Statistics
     - SPACE :raw-html:`<br />`
       _CENTROID :raw-html:`<br />`
       _DIST
-    - Diagnostics Attr 
+    - Diagnostics 
     - MTD
     - MTD 3D obs
   * - Absolute value of SPEED_ERR
@@ -1779,7 +1779,7 @@ METplus Database of Statistics
     - VCNT 
   * - Difference in object speeds
     - SPEED_DELTA
-    - Diagnostics Attr 
+    - Diagnostics 
     - MTD
     - MTD 3D obs
   * - Difference between the :raw-html:`<br />`
@@ -1822,7 +1822,7 @@ METplus Database of Statistics
       starting time steps
     - START_TIME :raw-html:`<br />`
       _DELTA
-    - Diagnostic Attr 
+    - Diagnostic 
     - MTD
     - MTD 3D obj
   * - Symmetric difference of :raw-html:`<br />`
@@ -1830,7 +1830,7 @@ METplus Database of Statistics
       (in grid squares)
     - SYMMETRIC :raw-html:`<br />`
       _DIFF
-    - Diagnostics Attr 
+    - Diagnostics
     - MODE
     - MODE obj
   * - Difference in t index of :raw-html:`<br />`
@@ -1838,7 +1838,7 @@ METplus Database of Statistics
     - TIME :raw-html:`<br />`
       _CENTROID :raw-html:`<br />`
       _DELTA
-    - Diagnostic Attr  
+    - Diagnostic  
     - MTD
     - MTD 3D obj
   * - Track error of adeck :raw-html:`<br />`
@@ -1883,7 +1883,7 @@ METplus Database of Statistics
       two objects :raw-html:`<br />`
       (in grid squares)
     - UNION_AREA
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE obj
   * - Mean U-component :raw-html:`<br />`
