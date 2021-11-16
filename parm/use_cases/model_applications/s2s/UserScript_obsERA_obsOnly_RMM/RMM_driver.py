@@ -71,7 +71,18 @@ def run_rmm_steps(inlabel, spd, EOF1, EOF2, oplot_dir):
     if (u200_input_files[0] == 'file_list'):
             u200_input_files = u200_input_files[1:]
 
-    print(olr_input_files)
+    # Check the input data to make sure it's not all missing
+    olr_allmissing = all(elem == 'missing' for elem in olr_input_files)
+    if olr_allmissing:
+        raise IOError ('No input OLR files were found, check file paths')
+    u850_allmissing = all(elem == 'missing' for elem in u850_input_files)
+    if u850_allmissing:
+        raise IOError('No input U850 files were found, check file paths')
+    u200_allmissing = all(elem == 'missing' for elem in u200_input_files)
+    if u200_allmissing:
+        raise IOError('No input U200 files were found, check file paths')
+    
+
     # Read OLR, U850, U200 data from file
     netcdf_reader_olr = read_netcdf.ReadNetCDF()
     ds_olr = netcdf_reader_olr.read_into_xarray(olr_input_files)
