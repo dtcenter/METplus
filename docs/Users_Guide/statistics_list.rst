@@ -49,7 +49,7 @@ METplus Database of Statistics
   * - Difference between the axis :raw-html:`<br />`
       angles of two objects (in degrees) 
     - ANGLE_DIFF
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE 
     - MODE      
   * - Anomaly Correlation :raw-html:`<br />`
@@ -73,7 +73,7 @@ METplus Database of Statistics
     - CNT
   * - Object area (in grid squares)
     - AREA
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE :raw-html:`<br />`
       MTD
     - MODE obj
@@ -81,7 +81,7 @@ METplus Database of Statistics
       divided by the observation :raw-html:`<br />`
       object area (unitless)
     - AREA_RATIO
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE 
     - MODE obj
   * - Area of the object :raw-html:`<br />`
@@ -89,7 +89,7 @@ METplus Database of Statistics
       definition threshold :raw-html:`<br />`
       criteria (in grid squares)
     - AREA_THRESH
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE 
     - MODE obj 
   * - Absolute value of :raw-html:`<br />`
@@ -98,20 +98,20 @@ METplus Database of Statistics
       ratios of two objects :raw-html:`<br />`
       (unitless)
     - ASPECT_DIFF
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE 
     - MODE obj
   * - Object axis angle :raw-html:`<br />`
       (in degrees)
     - AXIS_ANG
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE  :raw-html:`<br />`
       MTD
     - MTD obj
   * - Difference in spatial :raw-html:`<br />`
       axis plane angles
     - AXIS_DIFF
-    - Diagnostic Attr 
+    - Diagnostic 
     - MTD
     - MTD obj
   * - Baddeley’s Delta Metric
@@ -198,7 +198,7 @@ METplus Database of Statistics
       of the 3D object
     - CDIST :raw-html:`<br />`
       _TRAVELLED
-    - Diagnostic Attr 
+    - Diagnostic 
     - MTD
     - MTD 3D obj
   * - Distance between two :raw-html:`<br />`
@@ -206,14 +206,14 @@ METplus Database of Statistics
       (in grid units)
     - CENTROID :raw-html:`<br />`
       _DIST
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE obj
   * - Latitude of centroid :raw-html:`<br />`
       Location of the centroid
     - CENTROID :raw-html:`<br />`
       _LAT
-    - Diagnostic Attr 
+    - Diagnostic 
     - MTD :raw-html:`<br />`
       MODE
     - MTD 2D & 3D obj :raw-html:`<br />`
@@ -222,20 +222,20 @@ METplus Database of Statistics
       Location of the centroid
     - CENTROID :raw-html:`<br />`
       _LON
-    - Diagnostic Attr 
+    - Diagnostic 
     - MTD :raw-html:`<br />`
       MODE
     - MTD 2D & 3D obj :raw-html:`<br />`
       MODE obj
   * - Time coordinate of centroid
     - CENTROID_T
-    - Diagnostic Attr 
+    - Diagnostic 
     - MTD
     - MTD 3D obj
   * - X coordinate of centroid :raw-html:`<br />`
       Location of the centroid
     - CENTROID_X
-    - Diagnostic Attr 
+    - Diagnostic 
     - MTD :raw-html:`<br />`
       MODE
     - MTD 2D & 3D obj :raw-html:`<br />`
@@ -243,7 +243,7 @@ METplus Database of Statistics
   * - Y coordinate of centroid :raw-html:`<br />`
       Location of the centroid
     - CENTROID_Y
-    - Diagnostic Attr 
+    - Diagnostic 
     - MTD :raw-html:`<br />`
       MODE
     - MTD 2D & 3D obj :raw-html:`<br />`
@@ -272,7 +272,7 @@ METplus Database of Statistics
       by the area of the :raw-html:`<br />`
       complex hull (unitless)
     - COMPLEXITY
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE obj
   * - Ratio of complexities of :raw-html:`<br />`
@@ -283,7 +283,7 @@ METplus Database of Statistics
       its reciprocal (unitless)
     - COMPLEXITY :raw-html:`<br />`
       _RATIO
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE obj
   * - Minimum distance between :raw-html:`<br />`
@@ -291,7 +291,7 @@ METplus Database of Statistics
       objects (in grid units)
     - CONVEX_HULL :raw-html:`<br />`
       _DIST
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE obj
   * - Continuous Ranked :raw-html:`<br />`
@@ -354,27 +354,27 @@ METplus Database of Statistics
       MBRCTCS
   * - Radius of curvature
     - CURVATURE
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE obj
   * - Ratio of the curvature
     - CURVATURE :raw-html:`<br />`
       _RATIO
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE obj
   * - Center of curvature :raw-html:`<br />`
       (in grid coordinates)
     - CURVATURE :raw-html:`<br />`
       _X
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE obj
   * - Center of curvature :raw-html:`<br />`
       (in grid coordinates)
     - CURVATURE :raw-html:`<br />`
       _Y
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE obj
   * - Absolute value of :raw-html:`<br />`
@@ -397,7 +397,7 @@ METplus Database of Statistics
       direction of movement
     - DIRECTION :raw-html:`<br />`
       _DIFF
-    - Diagnostic Attr 
+    - Diagnostic 
     - MTD
     - MTD 3D obj
   * - Difference in the :raw-html:`<br />`
@@ -405,7 +405,7 @@ METplus Database of Statistics
       two objects
     - DURATION :raw-html:`<br />`
       _DIFF
-    - Diagnostic Attr 
+    - Diagnostic 
     - MTD
     - MTD 3D obj
   * - Expected correct rate :raw-html:`<br />`
@@ -415,20 +415,14 @@ METplus Database of Statistics
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - MCTC 
-  * - Extreme Dependency Index :raw-html:`<br />`
-      including normal and :raw-html:`<br />`
-      bootstrap upper and :raw-html:`<br />`
-      lower confidence limits
+  * - Extreme Dependency Index
     - EDI
     - Categorical 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - CTS :raw-html:`<br />`
       NBRCTS 
-  * - Extreme Dependency Score :raw-html:`<br />`
-      including normal and :raw-html:`<br />`
-      bootstrap upper and :raw-html:`<br />`
-      lower confidence limits
+  * - Extreme Dependency Score
     - EDS
     - Categorical 
     - Point-Stat :raw-html:`<br />`
@@ -444,14 +438,14 @@ METplus Database of Statistics
     - GRAD 
   * - Object end time
     - END_TIME
-    - Diagnostic Attr 
+    - Diagnostic 
     - MTD
     - MTD 3D obj
   * - Difference in object :raw-html:`<br />`
       ending time steps
     - END_TIME :raw-html:`<br />`
       _DELTA
-    - Diagnostic Attr 
+    - Diagnostic 
     - MTD
     - MTD 3D pair
   * - The unperturbed :raw-html:`<br />`
