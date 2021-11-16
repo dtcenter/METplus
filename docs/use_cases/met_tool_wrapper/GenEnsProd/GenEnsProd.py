@@ -9,7 +9,21 @@ met_tool_wrapper/GenEnsProd/GenEnsProd.conf
 # Scientific Objective
 # --------------------
 #
-# Generate ensemble products.
+# Generate ensemble products. This use case demonstrates how to configure
+# the gen_ens_prod tool if you expect that there will occasionally be missing
+# ensembles. 7 ensemble paths are specified but only 6 of them exist in the
+# sample input data set. The wrapper will mark ensembles that are not found
+# with the MISSING keyword in the file-list file that is read by the tool.
+# Also, one of the ensembles is listed as the control member. The gen_ens_prod
+# application will error and exit if the control member is included in the
+# ensemble list, but the GenEnsProd wrapper will automatically remove the
+# control member from the ensemble list. This makes it easier to configure
+# the tool to change the control member without having to change the ensemble
+# list. The number of expected members (defined with GEN_ENS_PROD_N_MEMBERS)
+# is 6 (7 members - 1 control member). The actual number of ensemble members
+# that will be found in this example is 5 (arw-tom-gep4 is not included).
+# The ens.ens_thresh value (defined by GEN_ENS_PROD_ENS_THRESH) is set to 0.8.
+# There are ~0.833 (5/6) valid ensemble members so the application will run.
 
 ##############################################################################
 # Datasets
@@ -94,6 +108,21 @@ met_tool_wrapper/GenEnsProd/GenEnsProd.conf
 # and will contain the following file(s):
 #
 # * gen_ens_prod_20100101_120000V_ens.nc
+#
+# A file-list file will also be generated in stage/file_lists called:
+#
+# * 20091231120000_24_gen_ens_prod.txt
+#
+# It should contain a list of 6 files in {INPUT_BASE} with 1 file marked as
+# missing because it was not found::
+#
+#    file_list
+#    {INPUT_BASE}/met_test/data/sample_fcst/2009123112/arw-sch-gep2/d01_2009123112_02400.grib
+#    {INPUT_BASE}/met_test/data/sample_fcst/2009123112/arw-tom-gep3/d01_2009123112_02400.grib
+#    MISSING/{INPUT_BASE}/met_test/data/sample_fcst/2009123112/arw-tom-gep4/d01_2009123112_02400.grib
+#    {INPUT_BASE}/met_test/data/sample_fcst/2009123112/arw-fer-gep5/d01_2009123112_02400.grib
+#    {INPUT_BASE}/met_test/data/sample_fcst/2009123112/arw-sch-gep6/d01_2009123112_02400.grib
+#    {INPUT_BASE}/met_test/data/sample_fcst/2009123112/arw-tom-gep7/d01_2009123112_02400.grib
 #
 
 ##############################################################################
