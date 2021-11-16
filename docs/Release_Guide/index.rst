@@ -55,7 +55,7 @@ Instructions Summary
 
 Instructions are provided for three types of software releases:
 
-#. **Official Release** (e.g. vX.Y.Z) from the develop branch
+#. **Official Release** (e.g. vX.Y.Z) from the develop branch (becomes the new main_vX.Y branch)
 
 #. **Bugfix Release** (e.g. vX.Y.Z) from the corresponding main_vX.Y branch
 
