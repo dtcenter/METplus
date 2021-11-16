@@ -660,6 +660,8 @@ class CommandBuilder:
         # then add it back after the string sub call
         saved_level = time_info.pop('level', None)
 
+        input_must_exist = self.c_dict.get('INPUT_MUST_EXIST', True)
+
         for template in template_list:
             # perform string substitution
             filename = do_string_sub(template,
@@ -673,6 +675,7 @@ class CommandBuilder:
                 self.logger.debug(f"{full_path} is not a file path. "
                                   "Returning that string.")
                 check_file_list.append(full_path)
+                input_must_exist = False
                 continue
 
             self.logger.debug(f"Looking for {data_type}INPUT file {full_path}")
@@ -719,7 +722,7 @@ class CommandBuilder:
 
         for file_path in check_file_list:
             # if file doesn't need to exist, skip check
-            if not self.c_dict.get('INPUT_MUST_EXIST', True):
+            if not input_must_exist:
                 found_file_list.append(file_path)
                 continue
 
