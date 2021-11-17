@@ -1,6 +1,5 @@
-********************
 Diagnostics Database
-********************
+====================
 
 
 .. Number of characters per line:
