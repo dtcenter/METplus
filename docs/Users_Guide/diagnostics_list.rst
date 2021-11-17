@@ -13,7 +13,7 @@ Diagnostics Database
 .. role:: raw-html(raw)
    :format: html	  
 
-.. list-table:: TEST List
+.. list-table:: Diagnostics List
   :widths: auto
   :header-rows: 1
 		
