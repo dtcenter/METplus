@@ -1425,11 +1425,13 @@ Diagnostics Database
    Statistic Type - no more than 19 characters
    METplus Line Type - currently unlimited (approx 33 characters)
 
+Diagnostics List A-B
+____________________
 
 .. role:: raw-html(raw)
    :format: html	  
 
-.. list-table:: Diagnostics List
+.. list-table:: Diagnostics List A-B
   :widths: auto
   :header-rows: 1
 		
@@ -1496,6 +1498,24 @@ Diagnostics Database
     - Diagnostic
     - MODE
     - MODE obj
+
+Diagnostics List C-E
+____________________
+
+.. role:: raw-html(raw)
+   :format: html	  
+
+.. list-table:: Diagnostics List C-E
+  :widths: auto
+  :header-rows: 1
+		
+  * - Statistics  :raw-html:`<br />`
+      Long Name
+    - METplus Name
+    - Statistic Type
+    - Tools
+    - METplus :raw-html:`<br />`
+      Line Type    
   * - Total great circle distance :raw-html:`<br />`
       travelled by the 2D spatial :raw-html:`<br />`
       centroid over the lifetime :raw-html:`<br />`
@@ -1629,6 +1649,24 @@ Diagnostics Database
     - Diagnostic 
     - MTD
     - MTD 3D obj
+      
+Diagnostics List F
+__________________
+
+.. role:: raw-html(raw)
+   :format: html	  
+
+.. list-table:: Diagnostics List F
+  :widths: auto
+  :header-rows: 1
+		
+  * - Statistics  :raw-html:`<br />`
+      Long Name
+    - METplus Name
+    - Statistic Type
+    - Tools
+    - METplus :raw-html:`<br />`
+      Line Type
   * - Number of forecast :raw-html:`<br />`
       clusters
     - fcst_clus
@@ -1865,7 +1903,26 @@ Diagnostics Database
     - FOM_OF
     - Diagnostic 
     - Grid-Stat
-    - DMAP 
+    - DMAP
+
+
+Diagnostics List G-L
+____________________
+
+.. role:: raw-html(raw)
+   :format: html	  
+
+.. list-table:: Diagnostics List G-L
+  :widths: auto
+  :header-rows: 1
+		
+  * - Statistics  :raw-html:`<br />`
+      Long Name
+    - METplus Name
+    - Statistic Type
+    - Tools
+    - METplus :raw-html:`<br />`
+      Line Type      
   * - Distance between the :raw-html:`<br />`
       forecast and Best track :raw-html:`<br />`
       genesis events (km)
@@ -1974,6 +2031,25 @@ Diagnostics Database
     - Diagnostic 
     - MODE
     - MODE obj
+
+
+Diagnostics List M-O
+____________________
+
+.. role:: raw-html(raw)
+   :format: html	  
+
+.. list-table:: Diagnostics List M-O
+  :widths: auto
+  :header-rows: 1
+		
+  * - Statistics  :raw-html:`<br />`
+      Long Name
+    - METplus Name
+    - Statistic Type
+    - Tools
+    - METplus :raw-html:`<br />`
+      Line Type
   * - Mean of maximum of :raw-html:`<br />`
       absolute values of :raw-html:`<br />`
       forecast and observed :raw-html:`<br />`
@@ -2118,7 +2194,26 @@ Diagnostics Database
     - OGBAR
     -  
     - Grid-Stat
-    - GRAD       
+    - GRAD
+
+
+Diagnostics List P-Z
+____________________
+
+.. role:: raw-html(raw)
+   :format: html	  
+
+.. list-table:: Diagnostics List P-Z
+  :widths: auto
+  :header-rows: 1
+		
+  * - Statistics  :raw-html:`<br />`
+      Long Name
+    - METplus Name
+    - Statistic Type
+    - Tools
+    - METplus :raw-html:`<br />`
+      Line Type 
   * - Ratio of the nth percentile :raw-html:`<br />`
       (INTENSITY_NN column) of :raw-html:`<br />`
       intensity of the two :raw-html:`<br />`
