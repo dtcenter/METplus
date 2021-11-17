@@ -12,6 +12,7 @@ METplus Statistics & Diagnostics
 Statistics Database
 ===================
 
+
 Statistics List A-B
 ___________________
 
@@ -907,7 +908,8 @@ ___________________
 
 Statistics List P-R
 ___________________
-      
+
+
 .. role:: raw-html(raw)
    :format: html	  
 
@@ -1127,7 +1129,8 @@ ___________________
 
  Statistics List S-T
 ____________________
-      
+
+
 .. role:: raw-html(raw)
    :format: html	  
 
