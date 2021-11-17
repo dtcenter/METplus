@@ -12,6 +12,9 @@ METplus Statistics & Diagnostics
 Statistics Database
 ===================
 
+Statistics List A-B
+___________________
+
 .. role:: raw-html(raw)
    :format: html	  
 
@@ -130,13 +133,23 @@ Statistics Database
       Grid-Stat
     - PSTD
 
+Statistics List C-E
+___________________
+      
 .. role:: raw-html(raw)
    :format: html	  
 
-.. list-table:: Statistics List C-D
+.. list-table:: Statistics List C-E
   :widths: auto
   :header-rows: 1
-      
+		
+  * - Statistics  :raw-html:`<br />`
+      Long Name
+    - METplus Name
+    - Statistic Type
+    - Tools
+    - METplus :raw-html:`<br />`
+      Line Type      
   * - Calibration when forecast :raw-html:`<br />`
       is between the ith and :raw-html:`<br />`
       i+1th probability :raw-html:`<br />`
@@ -289,6 +302,21 @@ Statistics Database
       Ensemble-Stat
     - CNT :raw-html:`<br />`
       SSVAR
+
+Statistics List F
+_________________
+      
+.. list-table:: Statistics List F
+  :widths: auto
+  :header-rows: 1
+		
+  * - Statistics  :raw-html:`<br />`
+      Long Name
+    - METplus Name
+    - Statistic Type
+    - Tools
+    - METplus :raw-html:`<br />`
+      Line Type     
   * - Forecast rate/event :raw-html:`<br />`
       frequency
     - F_RATE
