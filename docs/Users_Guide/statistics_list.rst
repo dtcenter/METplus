@@ -290,7 +290,7 @@ METplus Database of Statistics
   * - Mean forecast wind speed
     - F_SPEED :raw-html:`<br />`
       _BAR
-    - Continous 
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VL1L2  
@@ -1260,7 +1260,7 @@ METplus Database of Statistics
     - VCNT 
   * - Mean(vf-vc)
     - VFABAR
-    - Continous 
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VAL1L2  
