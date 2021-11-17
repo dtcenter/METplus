@@ -15,7 +15,7 @@ Statistics Database
 .. role:: raw-html(raw)
    :format: html	  
 
-.. list-table:: Statistics List
+.. list-table:: Statistics List A-B
   :widths: auto
   :header-rows: 1
 		
@@ -129,6 +129,14 @@ Statistics Database
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - PSTD
+
+.. role:: raw-html(raw)
+   :format: html	  
+
+.. list-table:: Statistics List C-D
+  :widths: auto
+  :header-rows: 1
+      
   * - Calibration when forecast :raw-html:`<br />`
       is between the ith and :raw-html:`<br />`
       i+1th probability :raw-html:`<br />`
