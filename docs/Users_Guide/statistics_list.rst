@@ -1125,13 +1125,13 @@ ___________________
     - RPS
 
 
- Statistics List S-Z
+ Statistics List S-T
 ___________________
       
 .. role:: raw-html(raw)
    :format: html	  
 
-.. list-table:: Statistics List S-Z
+.. list-table:: Statistics List S-T
   :widths: auto
   :header-rows: 1
 		
@@ -1237,6 +1237,24 @@ ___________________
     - Continuous 
     - TC-Pairs
     - TCMPR
+
+Statistics List U-Z
+___________________
+      
+.. role:: raw-html(raw)
+   :format: html	  
+
+.. list-table:: Statistics List U-Z
+  :widths: auto
+  :header-rows: 1
+		
+  * - Statistics  :raw-html:`<br />`
+      Long Name
+    - METplus Name
+    - Statistic Type
+    - Tools
+    - METplus :raw-html:`<br />`
+      Line Type            
   * - Mean U-component :raw-html:`<br />`
       Forecast Anomaly
     - UFABAR
