@@ -1126,7 +1126,7 @@ ___________________
 
 
  Statistics List S-T
-___________________
+____________________
       
 .. role:: raw-html(raw)
    :format: html	  
@@ -1237,6 +1237,7 @@ ___________________
     - Continuous 
     - TC-Pairs
     - TCMPR
+
       
 
 Statistics List U-Z
