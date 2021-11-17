@@ -523,6 +523,25 @@ _________________
     - MODE :raw-html:`<br />`
       CTC :raw-html:`<br />`
       NBRCTC
+
+Statistics List G-M
+___________________
+      
+.. role:: raw-html(raw)
+   :format: html	  
+
+.. list-table:: Statistics List G-M
+  :widths: auto
+  :header-rows: 1
+		
+  * - Statistics  :raw-html:`<br />`
+      Long Name
+    - METplus Name
+    - Statistic Type
+    - Tools
+    - METplus :raw-html:`<br />`
+      Line Type      
+      
   * - Gerrity Score and :raw-html:`<br />`
       bootstrap confidence limits
     - GER
@@ -709,7 +728,25 @@ _________________
     - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
-    - VCNT 
+    - VCNT
+
+Statistics List N-O
+___________________
+      
+.. role:: raw-html(raw)
+   :format: html	  
+
+.. list-table:: Statistics List N-O
+  :widths: auto
+  :header-rows: 1
+		
+  * - Statistics  :raw-html:`<br />`
+      Long Name
+    - METplus Name
+    - Statistic Type
+    - Tools
+    - METplus :raw-html:`<br />`
+      Line Type      
   * - Dimension of the :raw-html:`<br />`
       contingency table & the :raw-html:`<br />`
       total number of :raw-html:`<br />`
@@ -866,6 +903,25 @@ _________________
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - PJC 
+
+
+Statistics List P-R
+___________________
+      
+.. role:: raw-html(raw)
+   :format: html	  
+
+.. list-table:: Statistics List P-R
+  :widths: auto
+  :header-rows: 1
+		
+  * - Statistics  :raw-html:`<br />`
+      Long Name
+    - METplus Name
+    - Statistic Type
+    - Tools
+    - METplus :raw-html:`<br />`
+      Line Type      
   * - Probability Integral :raw-html:`<br />`
       Transform
     - PIT
@@ -1067,6 +1123,25 @@ _________________
     - Ensemble 
     - Ensemble-Stat
     - RPS
+
+
+ Statistics List S-Z
+___________________
+      
+.. role:: raw-html(raw)
+   :format: html	  
+
+.. list-table:: Statistics List S-Z
+  :widths: auto
+  :header-rows: 1
+		
+  * - Statistics  :raw-html:`<br />`
+      Long Name
+    - METplus Name
+    - Statistic Type
+    - Tools
+    - METplus :raw-html:`<br />`
+      Line Type           
   * - S1 score
     - S1
     - Continuous 
