@@ -1276,18 +1276,6 @@ def round_0p5(val):
 
     return round(val * 2) / 2
 
-def round_to_int(val):
-    """! Round to integer value
-         Args:
-             @param val:  The value to round up
-         Returns:
-            rval:  The rounded up value.
-    """
-    val += 0.5
-    rval = int(val)
-    return rval
-
-
 def mkdir_p(path):
     """!
        From stackoverflow.com/questions/600268/mkdir-p-functionality-in-python
@@ -1300,138 +1288,6 @@ def mkdir_p(path):
                  does nothing otherwise.
     """
     Path(path).mkdir(parents=True, exist_ok=True)
-
-def _rmtree_onerr(function, path, exc_info, logger=None):
-    """!Internal function used to log errors.
-    This is an internal implementation function called by
-    shutil.rmtree when an underlying function call failed.  See
-    the Python documentation of shutil.rmtree for details.
-    @param function the funciton that failed
-    @param path the path to the function that caused problems
-    @param exc_info the exception information
-    @protected"""
-    if logger:
-        logger.warning('%s: %s failed: %s' % (
-            str(path), str(function), str(exc_info)))
-
-
-def rmtree(tree, logger=None):
-    """!Deletes the tree, if possible.
-       @protected
-       @param tree the directory tree to delete"
-       @param logger the logger, optional
-    """
-    try:
-        # If it is a file, special file or symlink we can just
-        # delete it via unlink:
-        os.unlink(tree)
-        return
-    except EnvironmentError:
-        pass
-    # We get here for directories.
-    if logger:
-        logger.info('%s: rmtree' % (tree,))
-    shutil.rmtree(tree, ignore_errors=False)
-
-def file_exists(filename):
-    """! Determines if a file exists
-        NOTE:  Simply using os.path.isfile() is not a Pythonic way
-               to check if a file exists.  You can
-               still encounter a TOCTTOU bug
-               "time of check to time of use"
-               Instead, use the raising of
-               exceptions, which is a Pythonic
-               approach:
-               try:
-                   with open(filename) as fileobj:
-                      pass # or do something fruitful
-               except IOError as e:
-                   logger.error("your helpful error message goes here")
-        Args:
-            @param filename:  the full filename (full path)
-        Returns:
-            boolean : True if file exists, False otherwise
-    """
-
-    try:
-        return os.path.isfile(filename)
-    except IOError:
-        pass
-
-
-def is_dir_empty(directory):
-    """! Determines if a directory exists and is not empty
-        Args:
-           @param directory:  The directory to check for existence
-                                       and for contents.
-        Returns:
-           True:  If the directory is empty
-           False:  If the directory exists and isn't empty
-    """
-    return not os.listdir(directory)
-
-def grep(pattern, infile):
-    """! Python version of grep, searches the file line-by-line
-        to find a match to the pattern. Returns upon finding the
-        first match.
-        Args:
-            @param pattern:  The pattern to be matched
-            @param infile:     The filename with full filepath in which to
-                             search for the pattern
-        Returns:
-            line (string):  The matching string
-    """
-
-    matching_lines = []
-    with open(infile, 'r') as file_handle:
-        for line in file_handle:
-            match = re.search(pattern, line)
-            if match:
-                matching_lines.append(line)
-                # if you got here, you didn't find anything
-    return matching_lines
-
-
-def get_filepaths_for_grbfiles(base_dir):
-    """! Generates the grb2 file names in a directory tree
-       by walking the tree either top-down or bottom-up.
-       For each directory in the tree rooted at
-       the directory top (including top itself), it
-       produces a tuple: (dirpath, dirnames, filenames).
-       This solution was found on Stack Overflow:
-       http://stackoverflow.com/questions/3207219/how-to-list-all-files-of-a-
-           directory-in-python#3207973
-       **scroll down to the section with "Getting Full File Paths From a
-       Directory and All Its Subdirectories"
-    Args:
-        @param base_dir: The base directory from which we
-                      begin the search for grib2 filenames.
-    Returns:
-        file_paths (list): A list of the full filepaths
-                           of the data to be processed.
-    """
-
-    # Create an empty list which will eventually store
-    # all the full filenames
-    file_paths = []
-
-    # pylint:disable=unused-variable
-    # os.walk returns tuple, we don't need to utilize all the returned
-    # values in the tuple.
-
-    # Walk the tree
-    for root, directories, files in os.walk(base_dir):
-        for filename in files:
-            # add it to the list only if it is a grib file
-            match = re.match(r'.*(grib|grb|grib2|grb2)$', filename)
-            if match:
-                # Join the two strings to form the full
-                # filepath.
-                filepath = os.path.join(root, filename)
-                file_paths.append(filepath)
-            else:
-                continue
-    return file_paths
 
 def get_storms(filter_filename, id_only=False, sort_column='STORM_ID'):
     """! Get each storm as identified by a column in the input file.
@@ -1780,29 +1636,6 @@ def get_process_list(config):
         out_process_list.append((wrapper_name, instance))
 
     return out_process_list
-
-# minutes
-def shift_time(time_str, shift):
-    """ Adjust time by shift hours. Format is %Y%m%d%H%M%S
-        Args:
-            @param time_str: Start time in %Y%m%d%H%M%S
-            @param shift: Amount to adjust time in hours
-        Returns:
-            New time in format %Y%m%d%H%M%S
-    """
-    return (datetime.datetime.strptime(time_str, "%Y%m%d%H%M%S") +
-            datetime.timedelta(hours=shift)).strftime("%Y%m%d%H%M%S")
-
-def shift_time_minutes(time_str, shift):
-    """ Adjust time by shift minutes. Format is %Y%m%d%H%M%S
-        Args:
-            @param time_str: Start time in %Y%m%d%H%M%S
-            @param shift: Amount to adjust time in minutes
-        Returns:
-            New time in format %Y%m%d%H%M%S
-    """
-    return (datetime.datetime.strptime(time_str, "%Y%m%d%H%M%S") +
-            datetime.timedelta(minutes=shift)).strftime("%Y%m%d%H%M%S")
 
 def shift_time_seconds(time_str, shift):
     """ Adjust time by shift seconds. Format is %Y%m%d%H%M%S

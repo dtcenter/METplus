@@ -827,11 +827,3 @@ def add_offset_matches_to_output_dict(match_dict, output_dict):
             offset = int(value)
 
     output_dict['offset_hours'] = offset
-
-def extract_lead(template, filename):
-    new_template = template
-    new_template = new_template.replace('/', '\/').replace('.', '\.')
-    match_tags = re.findall(r'{(.*?)}', new_template)
-    for match_tag in match_tags:
-        if match_tag.split('?') != 'lead':
-            new_template = new_template.replace('{' + match_tag + '}', '.*')
