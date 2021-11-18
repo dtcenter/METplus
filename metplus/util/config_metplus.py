@@ -13,17 +13,12 @@ import os
 import re
 import sys
 import logging
-import collections
 import datetime
 import shutil
-from os.path import dirname, realpath
-import inspect
 from configparser import ConfigParser, NoOptionError
 from pathlib import Path
-import copy
 
 from produtil.config import ProdConfig
-import produtil.fileop
 
 from . import met_util as util
 
