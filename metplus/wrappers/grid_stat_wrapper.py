@@ -237,7 +237,7 @@ class GridStatWrapper(CompareGriddedWrapper):
                             data_type='float',
                             metplus_configs=['GRID_STAT_HSS_EC_VALUE'])
 
-        self.handle_met_config_dict('distance_map', {
+        self.add_met_config_dict('distance_map', {
             'baddeley_p': 'int',
             'baddeley_max_dist': 'float',
             'fom_alpha': 'float',

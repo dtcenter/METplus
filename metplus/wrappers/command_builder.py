@@ -1910,7 +1910,7 @@ class CommandBuilder:
             # make sure _FILE_NAME is set from INPUT_TEMPLATE/DIR if used
             self.read_climo_file_name(climo_type)
 
-            self.handle_met_config_dict(dict_name, items)
+            self.add_met_config_dict(dict_name, items)
 
             # handle deprecated env vars CLIMO_MEAN_FILE and CLIMO_STDEV_FILE
             # that are used by pre v4.0.0 wrapped MET config files
@@ -2088,7 +2088,7 @@ class CommandBuilder:
          METPLUS_TIME_SUMMARY_DICT that is referenced in the wrapped MET
          config files.
         """
-        self.handle_met_config_dict('time_summary', {
+        self.add_met_config_dict('time_summary', {
             'flag': 'bool',
             'raw_data': 'bool',
             'beg': 'string',
@@ -2223,7 +2223,7 @@ class CommandBuilder:
             items['grid_flag'] = ('string', 'remove_quotes,uppercase')
             items['poly_flag'] = ('string', 'remove_quotes,uppercase')
 
-        self.handle_met_config_dict('mask', items)
+        self.add_met_config_dict('mask', items)
 
     def set_met_config_function(self, item_type):
         """! Return function to use based on item type
@@ -2249,7 +2249,7 @@ class CommandBuilder:
                            f"{item_type}")
             return None
 
-    def handle_met_config_item(self, item, output_dict=None, depth=0):
+    def add_met_config_item(self, item, output_dict=None, depth=0):
         """! Reads info from METConfig object, gets value from
         METplusConfig, and formats it based on the specifications. Sets
         value in output dictionary with key starting with METPLUS_.
@@ -2273,7 +2273,7 @@ class CommandBuilder:
         if 'dict' in item.data_type:
             tmp_dict = {}
             for child in item.children:
-                if not self.handle_met_config_item(child, tmp_dict,
+                if not self.add_met_config_item(child, tmp_dict,
                                                    depth=depth+1):
                     return False
 
@@ -2301,7 +2301,7 @@ class CommandBuilder:
                        **item.extra_args)
         return True
 
-    def handle_met_config_dict(self, dict_name, items):
+    def add_met_config_dict(self, dict_name, items):
         """! Read config variables for MET config dictionary and set
          env_var_dict with formatted values
 
@@ -2380,7 +2380,7 @@ class CommandBuilder:
             children=dict_items,
         )
 
-        return self.handle_met_config_item(final_met_config, self.env_var_dict)
+        return self.add_met_config_item(final_met_config, self.env_var_dict)
 
     @staticmethod
     def parse_item_info(item_info):
@@ -2417,13 +2417,13 @@ class CommandBuilder:
 
         return data_type, extra, kids, nicknames
 
-    def handle_met_config_window(self, dict_name):
+    def add_met_config_window(self, dict_name):
         """! Handle a MET config window dictionary. It is assumed that
         the dictionary only contains 'beg' and 'end' entries that are integers.
 
         @param dict_name name of MET dictionary
         """
-        self.handle_met_config_dict(dict_name, {
+        self.add_met_config_dict(dict_name, {
             'beg': 'int',
             'end': 'int',
         })
@@ -2448,7 +2448,7 @@ class CommandBuilder:
             ]
         item = METConfig(**kwargs)
         output_dict = kwargs.get('output_dict')
-        self.handle_met_config_item(item, output_dict)
+        self.add_met_config_item(item, output_dict)
 
     def get_met_config(self, **kwargs):
         """! Get METConfig object from arguments and return it

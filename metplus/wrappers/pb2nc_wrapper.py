@@ -143,7 +143,7 @@ class PB2NCWrapper(CommandBuilder):
                             extra_args={'remove_quotes': True})
 
         # get level_range beg and end
-        self.handle_met_config_window('level_range')
+        self.add_met_config_window('level_range')
 
         self.add_met_config(name='level_category',
                             data_type='list',

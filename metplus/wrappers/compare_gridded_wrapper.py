@@ -404,7 +404,7 @@ that reformat gridded data
         return cmd
 
     def handle_climo_cdf_dict(self):
-        self.handle_met_config_dict('climo_cdf', {
+        self.add_met_config_dict('climo_cdf', {
             'cdf_bins': ('float', None, None, ['CLIMO_CDF_BINS']),
             'center_bins': 'bool',
             'write_bins': 'bool',
@@ -429,4 +429,4 @@ that reformat gridded data
         if uses_field:
             items['field'] = ('string', 'remove_quotes')
 
-        self.handle_met_config_dict('interp', items)
+        self.add_met_config_dict('interp', items)

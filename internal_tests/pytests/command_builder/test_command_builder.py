@@ -796,7 +796,7 @@ def test_set_met_config_function(metplus_config, data_type, expected_function):
     function_name = function_found.__name__ if function_found else None
     assert(function_name == expected_function)
 
-def test_handle_met_config_dict(metplus_config):
+def test_add_met_config_dict(metplus_config):
     dict_name = 'fcst_hr_window'
     beg = -3
     end = 5
@@ -813,12 +813,12 @@ def test_handle_met_config_dict(metplus_config):
         'end': 'int',
     }
 
-    cbw.handle_met_config_dict(dict_name, items)
+    cbw.add_met_config_dict(dict_name, items)
     print(f"env_var_dict: {cbw.env_var_dict}")
     actual_value = cbw.env_var_dict.get('METPLUS_FCST_HR_WINDOW_DICT')
     assert actual_value == expected_value
 
-def test_handle_met_config_window(metplus_config):
+def test_add_met_config_window(metplus_config):
     dict_name = 'fcst_hr_window'
     beg = -3
     end = 5
@@ -830,7 +830,7 @@ def test_handle_met_config_window(metplus_config):
     cbw = CommandBuilder(config)
     cbw.app_name = 'tc_gen'
 
-    cbw.handle_met_config_window(dict_name)
+    cbw.add_met_config_window(dict_name)
     print(f"env_var_dict: {cbw.env_var_dict}")
     actual_value = cbw.env_var_dict.get('METPLUS_FCST_HR_WINDOW_DICT')
     assert actual_value == expected_value
@@ -848,7 +848,7 @@ def test_add_met_config(metplus_config):
     expected_value = f'valid_freq = {value};'
     assert cbw.env_var_dict['METPLUS_VALID_FREQ'] == expected_value
 
-def test_handle_met_config_dict_nested(metplus_config):
+def test_add_met_config_dict_nested(metplus_config):
     dict_name = 'outer'
     beg = -3
     end = 5
@@ -876,6 +876,6 @@ def test_handle_met_config_dict_nested(metplus_config):
                                  }),
     }
 
-    cbw.handle_met_config_dict(dict_name, items)
+    cbw.add_met_config_dict(dict_name, items)
     print(f"env_var_dict: {cbw.env_var_dict}")
     assert cbw.env_var_dict.get('METPLUS_OUTER_DICT') == expected_value

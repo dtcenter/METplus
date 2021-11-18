@@ -300,7 +300,7 @@ class MODEWrapper(CompareGriddedWrapper):
             }
         )
 
-        self.handle_met_config_dict('weight', self.WEIGHTS)
+        self.add_met_config_dict('weight', self.WEIGHTS)
         self.handle_flags('nc_pairs')
 
         self.add_met_config(name='total_interest_thresh',
