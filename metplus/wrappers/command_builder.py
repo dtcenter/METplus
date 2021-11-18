@@ -1877,6 +1877,7 @@ class CommandBuilder:
             'uppercase',
             'allow_empty',
             'to_grid',
+            'default',
         )
         for extra_option in VALID_EXTRAS:
             if extra_option in extra:
