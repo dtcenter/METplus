@@ -1674,7 +1674,7 @@ __________________
       Line Type
   * - Number of forecast :raw-html:`<br />`
       clusters
-    - fcst_clus
+    - FCST_CLUS
     - Diagnostic 
     - MODE
     - MODE obj
@@ -1682,63 +1682,63 @@ __________________
       define the hull of all :raw-html:`<br />`
       of the cluster forecast :raw-html:`<br />`
       objects
-    - fcst_clus :raw-html:`<br />`
-      _hull
+    - FCST_CLUS :raw-html:`<br />`
+      _HULL
     - Diagnostic 
     - MODE
     - MODE obj      
   * - Forecast Cluster Convex :raw-html:`<br />`
       Hull Point Latitude
-    - fcst_clus :raw-html:`<br />`
-      _hull_lat
+    - FCST_CLUS :raw-html:`<br />`
+      _HULL_LAT
     - Diagnostic 
     - MODE
     - MODE obj
   * - Forecast Cluster Convex :raw-html:`<br />`
       Hull Point Longitude
-    - fcst_clus :raw-html:`<br />`
-      _hull _lon
+    - FCST_CLUS :raw-html:`<br />`
+      _HULL _LON
     - Diagnostic 
     - MODE
     - MODE obj
   * - Number of Forecast :raw-html:`<br />`
       Cluster Convex Hull Points
-    - fcst_clus :raw-html:`<br />`
-      _hull_npts
+    - FCST_CLUS :raw-html:`<br />`
+      _HULL_NPTS
     - Diagnostic 
     - MODE
     - MODE obj
   * - Forecast Cluster Convex :raw-html:`<br />`
       Hull Starting Index
-    - fcst_clus :raw-html:`<br />`
-      _hull_start
+    - FCST_CLUS :raw-html:`<br />`
+      _HULL_START
     - Diagnostic 
     - MODE
     - MODE obj
   * - Forecast Cluster Convex :raw-html:`<br />`
       Hull Point X-Coordinate
-    - fcst_clus :raw-html:`<br />`
-      _hull_x
+    - FCST_CLUS :raw-html:`<br />`
+      _HULL_X
     - Diagnostic 
     - MODE
     - MODE obj
   * - Forecast Cluster Convex :raw-html:`<br />`
       Hull Point Y-Coordinate
-    - fcst_clus :raw-html:`<br />`
-      _hull_y
+    - FCST_CLUS :raw-html:`<br />`
+      _HULL_Y
     - Diagnostic 
     - MODE
     - MODE obj
   * - Forecast Object Raw :raw-html:`<br />`
       Values
-    - fcst_obj :raw-html:`<br />`
-      _raw
+    - FCST_OBJ :raw-html:`<br />`
+      _RAW
     - Diagnostic 
     - MODE
     - MODE obj
   * - Number of simple  :raw-html:`<br />`
       forecast objects
-    - fcst_simp
+    - FCST_SIMP
     - Diagnostic 
     - MODE
     - MODE obj
@@ -1746,50 +1746,50 @@ __________________
       to define the boundaries :raw-html:`<br />`
       of all of the simple :raw-html:`<br />`
       forecast objects
-    - fcst_simp :raw-html:`<br />`
-      _bdy
+    - FCST_SIMP :raw-html:`<br />`
+      _BDY
     - Diagnostic 
     - MODE
     - MODE obj
   * - Forecast Simple :raw-html:`<br />`
       Boundary Latitude
-    - fcst_simp :raw-html:`<br />`
-      _bdy_lat
+    - FCST_SIMP :raw-html:`<br />`
+      _BDY_LAT
     - Diagnostic 
     - MODE
     - MODE obj
   * - Forecast Simple :raw-html:`<br />`
       Boundary Longitude
-    - fcst_simp :raw-html:`<br />`
-      _bdy_lon
+    - FCST_SIMP :raw-html:`<br />`
+      _BDY_LON
     - Diagnostic 
     - MODE
     - MODE obj
   * - Number of Forecast :raw-html:`<br />`
       Simple Boundary Points
-    - fcst_simp :raw-html:`<br />`
-      _bdy_npts
+    - FCST_SIMP :raw-html:`<br />`
+      _BDY_NPTS
     - Diagnostic 
     - MODE
     - MODE obj
   * - Forecast Simple :raw-html:`<br />`
       Boundary Starting Index
-    - fcst_simp :raw-html:`<br />`
-      _bdy_start
+    - FCST_SIMP :raw-html:`<br />`
+      _BDY_START
     - Diagnostic 
     - MODE
     - MODE obj
   * - Forecast Simple :raw-html:`<br />`
       Boundary X-Coordinate
-    - fcst_simp :raw-html:`<br />`
-      _bdy_x
+    - FCST_SIMP :raw-html:`<br />`
+      _BDY_X
     - Diagnostic 
     - MODE
     - MODE obj
   * - Forecast Simple :raw-html:`<br />`
       Boundary Y-Coordinate
-    - fcst_simp :raw-html:`<br />`
-      _bdy_y
+    - FCST_SIMP :raw-html:`<br />`
+      _BDY_Y
     - Diagnostic 
     - MODE
     - MODE obj
@@ -1797,65 +1797,65 @@ __________________
       define the hull of all :raw-html:`<br />`
       of the simple forecast :raw-html:`<br />`
       objects
-    - fcst_simp :raw-html:`<br />`
-      _hull
+    - FCST_SIMP :raw-html:`<br />`
+      _HULL
     - Diagnostic 
     - MODE
     - MODE obj
   * - Forecast Simple Convex :raw-html:`<br />`
       Hull Point Latitude
-    - fcst_simp :raw-html:`<br />`
-      _hull_lat
+    - FCST_SIMP :raw-html:`<br />`
+      _HULL_LAT
     - Diagnostic 
     - MODE
     - MODE obj
   * - Forecast Simple Convex :raw-html:`<br />`
       Hull Point Longitude
-    - fcst_simp :raw-html:`<br />`
-      _hull_lon
+    - FCST_SIMP :raw-html:`<br />`
+      _HULL_LON
     - Diagnostic 
     - MODE
     - MODE obj
   * - Number of Forecast :raw-html:`<br />`
       Simple Convex Hull Points
-    - fcst_simp :raw-html:`<br />`
-      _hull_npts
+    - FCST_SIMP :raw-html:`<br />`
+      _HULL_NPTS
     - Diagnostic 
     - MODE
     - MODE obj
   * - Forecast Simple Convex :raw-html:`<br />`
       Hull Starting Index
-    - fcst_simp :raw-html:`<br />`
-      _hull_start
+    - FCST_SIMP :raw-html:`<br />`
+      _HULL_START
     - Diagnostic 
     - MODE
     - MODE obj
   * - Forecast Simple Convex :raw-html:`<br />`
       Hull Point X-Coordinate
-    - fcst_simp :raw-html:`<br />`
-      _hull_x
+    - FCST_SIMP :raw-html:`<br />`
+      _HULL_X
     - Diagnostic 
     - MODE
     - MODE obj
   * - Forecast Simple Convex :raw-html:`<br />`
       Hull Point Y-Coordinate
-    - fcst_simp :raw-html:`<br />`
-      _hull_y
+    - FCST_SIMP :raw-html:`<br />`
+      _HULL_Y
     - Diagnostic 
     - MODE
     - MODE obj
   * - Number of thresholds  :raw-html:`<br />`
       applied to the forecast
-    - fcst :raw-html:`<br />`
-      _thresh :raw-html:`<br />`
-      _length
+    - FCST :raw-html:`<br />`
+      _THRESH :raw-html:`<br />`
+      _LENGTH
     - Diagnostic 
     - MODE
     - MODE obj
   * - Number of thresholds :raw-html:`<br />`
       applied to the forecast
-    - fcst_thresh :raw-html:`<br />`
-      _length
+    - FCST_THRESH :raw-html:`<br />`
+      _LENGTH
     - Diagnostic 
     - MODE
     - MODE obj
@@ -2082,7 +2082,7 @@ ____________________
     - MODE obj
   * - Number of observed :raw-html:`<br />`
       clusters
-    - obs_clus
+    - OBS_CLUS
     - Diagnostic 
     - MODE
     - MODE obj
@@ -2090,56 +2090,56 @@ ____________________
       define the hull of all of :raw-html:`<br />`
       the cluster observation :raw-html:`<br />`
       objects
-    - obs_clus :raw-html:`<br />`
-      _hull
+    - OBS_CLUS :raw-html:`<br />`
+      _HULL
     - Diagnostic 
     - MODE
     - MODE obj
   * - Observation Cluster Convex :raw-html:`<br />`
       Hull Point Latitude
-    - obs_clus :raw-html:`<br />`
-      _hull_lat
+    - OBS_CLUS :raw-html:`<br />`
+      _HULL_LAT
     - Diagnostic 
     - MODE
     - MODE obj
   * - Observation Cluster Convex :raw-html:`<br />`
       Hull Point Longitude
-    - obs_clus :raw-html:`<br />`
-      _hull_lon
+    - OBS_CLUS :raw-html:`<br />`
+      _HULL_LON
     - Diagnostic 
     - MODE
     - MODE obj
   * - Number of Observation :raw-html:`<br />`
       Cluster Convex Hull Points
-    - obs_clus :raw-html:`<br />`
-      _hull_npts
+    - OBS_CLUS :raw-html:`<br />`
+      _HULL_NPTS
     - Diagnostic 
     - MODE
     - MODE obj
   * - Observation Cluster Convex :raw-html:`<br />`
       Hull Starting Index
-    - obs_clus :raw-html:`<br />`
-      _hull_start
+    - OBS_CLUS :raw-html:`<br />`
+      _HULL_START
     - Diagnostic 
     - MODE
     - MODE obj
   * - Observation Cluster Convex :raw-html:`<br />`
       Hull Point X-Coordinate
-    - obs_clus :raw-html:`<br />`
-      _hull_x
+    - OBS_CLUS :raw-html:`<br />`
+      _HULL_X
     - Diagnostic 
     - MODE
     - MODE obj
   * - Observation Cluster Convex :raw-html:`<br />`
       Hull Point Y-Coordinate
-    - obs_clus :raw-html:`<br />`
-      _hull_y
+    - OBS_CLUS :raw-html:`<br />`
+      _HULL_Y
     - Diagnostic 
     - MODE
     - MODE obj
   * - Number of simple :raw-html:`<br />`
       observation objects
-    - obs_simp
+    - OBS_SIMP
     - Diagnostic 
     - MODE
     - MODE obj
@@ -2147,44 +2147,44 @@ ____________________
       to define the boundaries :raw-html:`<br />`
       of the simple observation :raw-html:`<br />`
       objects
-    - obs_simp :raw-html:`<br />`
-      _bdy
+    - OBS_SIMP :raw-html:`<br />`
+      _BDY
     - Diagnostic 
     - MODE
     - MODE obj
   * - Observation Simple  :raw-html:`<br />`
       Boundary Point Latitude
-    - obs_simp :raw-html:`<br />`
-      _bdy_lat
+    - OBS_SIMP :raw-html:`<br />`
+      _BDY_LAT
     - Diagnostic 
     - MODE
     - MODE obj
   * - Observation Simple :raw-html:`<br />`
       Boundary Point Longitude
-    - obs_simp :raw-html:`<br />`
-      _bdy_lon
+    - OBS_SIMP :raw-html:`<br />`
+      _BDY_LON
     - Diagnostic 
     - MODE
     - MODE obj
   * - Number of Observation :raw-html:`<br />`
       Simple Boundary Points
-    - obs_simp :raw-html:`<br />`
-      _bdy_npts
+    - OBS_SIMP :raw-html:`<br />`
+      _BDY_NPTS
     - Diagnostic 
     - MODE
     - MODE obj
   * - Number of points used to :raw-html:`<br />`
       define the hull of the :raw-html:`<br />`
       simple observation objects
-    - obs_simp :raw-html:`<br />`
-      _hull
+    - OBS_SIMP :raw-html:`<br />`
+      _HULL
     - Diagnostic 
     - MODE
     - MODE obj
   * - Number of Observation :raw-html:`<br />`
       Simple Convex Hull Points
-    - obs_simp :raw-html:`<br />`
-      _hull_npts
+    - OBS_SIMP :raw-html:`<br />`
+      _HULL_NPTS
     - Diagnostic 
     - MODE
     - MODE obj
