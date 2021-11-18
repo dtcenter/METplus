@@ -1,5 +1,5 @@
 """
-Program Name: met_dictionary_info.py
+Program Name: met_config.py
 Contact(s): George McCabe
 Abstract:
 History Log:  Initial version
@@ -10,7 +10,7 @@ Output Files: N/A
 """
 
 
-class METConfigInfo:
+class METConfig:
     """! Stores information for a member of a MET config variables that
       can be used to set the value, the data type of the item,
       optional name of environment variable to set (without METPLUS_ prefix)

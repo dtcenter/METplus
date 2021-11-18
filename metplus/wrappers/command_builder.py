@@ -21,7 +21,7 @@ from .command_runner import CommandRunner
 from ..util import met_util as util
 from ..util import do_string_sub, ti_calculate, get_seconds_from_string
 from ..util import config_metplus
-from ..util import METConfigInfo as met_config
+from ..util import METConfig
 from ..util import MISSING_DATA_VALUE
 from ..util import get_custom_string_list
 
@@ -2249,11 +2249,11 @@ class CommandBuilder:
             return None
 
     def handle_met_config_item(self, item, output_dict=None, depth=0):
-        """! Reads info from METConfigInfo object, gets value from
+        """! Reads info from METConfig object, gets value from
         METplusConfig, and formats it based on the specifications. Sets
         value in output dictionary with key starting with METPLUS_.
 
-        @param item METConfigInfo object to read and determine what to get
+        @param item METConfig object to read and determine what to get
         @param output_dict (optional) dictionary to save formatted output
          If unset, use self.env_var_dict.
         @param depth counter to check if item being processed is nested within
@@ -2428,8 +2428,8 @@ class CommandBuilder:
         })
 
     def add_met_config(self, **kwargs):
-        """! Create METConfigInfo object from arguments and process
-             @param kwargs key arguments that should match METConfigInfo
+        """! Create METConfig object from arguments and process
+             @param kwargs key arguments that should match METConfig
               arguments, which includes the following:
              @param name MET config variable name to set
              @param data_type type of variable to set, i.e. string, list, bool
@@ -2445,17 +2445,17 @@ class CommandBuilder:
             kwargs['metplus_configs'] = [
                 f"{self.app_name}_{kwargs.get('name')}".upper()
             ]
-        item = met_config(**kwargs)
+        item = METConfig(**kwargs)
         output_dict = kwargs.get('output_dict')
         self.handle_met_config_item(item, output_dict)
 
     def get_met_config(self, **kwargs):
-        """! Get METConfigInfo object from arguments and return it
-             @param kwargs key arguments that should match METConfigInfo
+        """! Get METConfig object from arguments and return it
+             @param kwargs key arguments that should match METConfig
               arguments
-             @returns METConfigInfo object
+             @returns METConfig object
         """
-        return met_config(**kwargs)
+        return METConfig(**kwargs)
 
     def get_config_file(self, default_config_file=None):
         """! Get the MET config file path for the wrapper from the

@@ -2,7 +2,7 @@
 
 import pytest
 
-from metplus.util import METConfigInfo
+from metplus.util import METConfig
 
 @pytest.mark.parametrize(
     'name, data_type, mp_configs, extra_args', [
@@ -11,9 +11,8 @@ from metplus.util import METConfigInfo
     ]
 )
 def test_met_config_info(name, data_type, mp_configs, extra_args):
-    item = METConfigInfo(name=name,
-                         data_type=data_type,
-                         )
+    item = METConfig(name=name, data_type=data_type)
+
     item.metplus_configs = mp_configs
     item.extra_args = extra_args
 

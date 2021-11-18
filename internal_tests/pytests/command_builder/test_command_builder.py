@@ -10,7 +10,7 @@ import pytest
 import datetime
 from metplus.wrappers.command_builder import CommandBuilder
 from metplus.util import time_util
-from metplus.util import METConfigInfo as met_config
+from metplus.util import METConfig
 
 
 @pytest.mark.parametrize(
