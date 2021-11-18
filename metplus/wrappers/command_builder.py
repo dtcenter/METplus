@@ -23,6 +23,7 @@ from ..util import do_string_sub, ti_calculate, get_seconds_from_string
 from ..util import config_metplus
 from ..util import METConfigInfo as met_config
 from ..util import MISSING_DATA_VALUE
+from ..util import get_custom_string_list
 
 # pylint:disable=pointless-string-statement
 '''!@namespace CommandBuilder
@@ -176,8 +177,8 @@ class CommandBuilder:
         if hasattr(self, 'app_name'):
             app_name = self.app_name
 
-        c_dict['CUSTOM_LOOP_LIST'] = util.get_custom_string_list(self.config,
-                                                                 app_name)
+        c_dict['CUSTOM_LOOP_LIST'] = get_custom_string_list(self.config,
+                                                            app_name)
 
         c_dict['SKIP_TIMES'] = util.get_skip_times(self.config,
                                                    app_name)

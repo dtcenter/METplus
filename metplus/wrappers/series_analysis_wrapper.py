@@ -27,6 +27,7 @@ from ..util import do_string_sub, parse_template
 from ..util import get_lead_sequence, get_lead_sequence_groups, set_input_dict
 from ..util import ti_get_hours_from_lead, ti_get_seconds_from_lead
 from ..util import ti_get_lead_string
+from ..util import parse_var_list
 from .plot_data_plane_wrapper import PlotDataPlaneWrapper
 from . import RuntimeFreqWrapper
 
@@ -233,8 +234,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                 False)
         )
 
-        c_dict['VAR_LIST_TEMP'] = util.parse_var_list(self.config,
-                                                      met_tool=self.app_name)
+        c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
+                                                 met_tool=self.app_name)
         if not c_dict['VAR_LIST_TEMP']:
             self.log_error("No fields specified. Please set "
                            "[FCST/OBS]_VAR<n>_[NAME/LEVELS]")

@@ -14,6 +14,7 @@ import os
 
 from ..util import met_util as util
 from ..util import do_string_sub, ti_calculate
+from ..util import parse_var_list
 from . import CommandBuilder
 
 '''!@namespace CompareGriddedWrapper
@@ -93,8 +94,8 @@ that reformat gridded data
                                    'output_prefix',
                                    'METPLUS_OUTPUT_PREFIX')
 
-        c_dict['VAR_LIST_TEMP'] = util.parse_var_list(self.config,
-                                                      met_tool=self.app_name)
+        c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
+                                                 met_tool=self.app_name)
 
         return c_dict
 

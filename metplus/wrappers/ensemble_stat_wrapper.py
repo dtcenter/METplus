@@ -16,6 +16,7 @@ import glob
 from ..util import met_util as util
 from . import CompareGriddedWrapper
 from ..util import do_string_sub
+from ..util import parse_var_list
 
 """!@namespace EnsembleStatWrapper
 @brief Wraps the MET tool ensemble_stat to compare ensemble datasets
@@ -329,14 +330,14 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['VAR_LIST_OPTIONAL'] = True
 
         # parse var list for ENS fields
-        c_dict['ENS_VAR_LIST_TEMP'] = util.parse_var_list(
+        c_dict['ENS_VAR_LIST_TEMP'] = parse_var_list(
             self.config,
             data_type='ENS',
             met_tool=self.app_name
         )
 
         # parse optional var list for FCST and/or OBS fields
-        c_dict['VAR_LIST_TEMP'] = util.parse_var_list(
+        c_dict['VAR_LIST_TEMP'] = parse_var_list(
             self.config,
             met_tool=self.app_name
         )

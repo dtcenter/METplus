@@ -16,6 +16,7 @@ from ..util import met_util as util
 from ..util import time_util
 from . import CommandBuilder
 from ..util import do_string_sub
+from ..util import parse_var_list
 
 '''!@namespace TCRMWWrapper
 @brief Wraps the TC-RMW tool
@@ -164,9 +165,9 @@ class TCRMWWrapper(CommandBuilder):
                                  'valid_hour',
                                  'METPLUS_VALID_HOUR_LIST')
 
-        c_dict['VAR_LIST_TEMP'] = util.parse_var_list(self.config,
-                                                      data_type='FCST',
-                                                      met_tool=self.app_name)
+        c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
+                                                 data_type='FCST',
+                                                 met_tool=self.app_name)
 
         return c_dict
 

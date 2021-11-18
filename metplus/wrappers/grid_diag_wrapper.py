@@ -16,6 +16,7 @@ from ..util import met_util as util
 from ..util import time_util
 from . import RuntimeFreqWrapper
 from ..util import do_string_sub
+from ..util import parse_var_list
 
 '''!@namespace GridDiagWrapper
 @brief Wraps the Grid-Diag tool
@@ -78,9 +79,9 @@ class GridDiagWrapper(RuntimeFreqWrapper):
 
         self.handle_censor_val_and_thresh()
 
-        c_dict['VAR_LIST_TEMP'] = util.parse_var_list(self.config,
-                                                      data_type='FCST',
-                                                      met_tool=self.app_name)
+        c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
+                                                 data_type='FCST',
+                                                 met_tool=self.app_name)
 
         c_dict['MASK_POLY_TEMPLATE'] = self.read_mask_poly()
 

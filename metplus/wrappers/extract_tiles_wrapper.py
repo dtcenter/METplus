@@ -15,6 +15,7 @@ import re
 
 from ..util import met_util as util
 from ..util import do_string_sub, ti_calculate
+from ..util import parse_var_list
 from .regrid_data_plane_wrapper import RegridDataPlaneWrapper
 from . import CommandBuilder
 
@@ -152,8 +153,8 @@ class ExtractTilesWrapper(CommandBuilder):
         c_dict['LON_ADJ'] = self.config.getfloat('config',
                                                  'EXTRACT_TILES_LON_ADJ')
 
-        c_dict['VAR_LIST_TEMP'] = util.parse_var_list(self.config,
-                                                      met_tool=self.app_name)
+        c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
+                                                 met_tool=self.app_name)
         return c_dict
 
     def regrid_data_plane_init(self):

@@ -22,7 +22,7 @@ import glob
 
 from ..util import time_util
 from ..util import met_util as util
-from ..util import do_string_sub
+from ..util import do_string_sub, find_indices_in_config_section
 from ..util import get_tags
 from . import CommandBuilder
 
@@ -322,9 +322,9 @@ class TCPairsWrapper(CommandBuilder):
             'MIN_REQ'
         ]
         regex = r'^TC_PAIRS_CONSENSUS(\d+)_(\w+)$'
-        indices = util.find_indices_in_config_section(regex, self.config,
-                                                      index_index=1,
-                                                      id_index=2)
+        indices = find_indices_in_config_section(regex, self.config,
+                                                 index_index=1,
+                                                 id_index=2)
 
         consensus_dict = {}
         for index, items in indices.items():
