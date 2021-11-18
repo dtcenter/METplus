@@ -51,8 +51,13 @@ that reformat gridded data
             which config variables are used in the wrapper"""
         c_dict = super().create_c_dict()
 
-        self.set_met_config_string(self.env_var_dict, 'MODEL', 'model', 'METPLUS_MODEL')
-        self.set_met_config_string(self.env_var_dict, 'OBTYPE', 'obtype', 'METPLUS_OBTYPE')
+        self.add_met_config(name='model',
+                            data_type='string',
+                            metplus_configs=['MODEL'])
+
+        self.add_met_config(name='obtype',
+                            data_type='string',
+                            metplus_configs=['OBTYPE'])
 
         # set old MET config items for backwards compatibility
         c_dict['MODEL_OLD'] = self.config.getstr('config', 'MODEL', 'FCST')
@@ -89,10 +94,8 @@ that reformat gridded data
         # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
         self.handle_file_window_variables(c_dict)
 
-        self.set_met_config_string(self.env_var_dict,
-                                   f'{self.app_name.upper()}_OUTPUT_PREFIX',
-                                   'output_prefix',
-                                   'METPLUS_OUTPUT_PREFIX')
+        self.add_met_config(name='output_prefix',
+                            data_type='string')
 
         c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
                                                  met_tool=self.app_name)

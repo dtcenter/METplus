@@ -160,24 +160,29 @@ class GridStatWrapper(CompareGriddedWrapper):
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False
 
+        self.add_met_config(name='cov_thresh',
+                            data_type='list',
+                            env_var_name='METPLUS_NBRHD_COV_THRESH',
+                            metplus_configs=[
+                                'GRID_STAT_NEIGHBORHOOD_COV_THRESH'
+                            ],
+                            extra_args={'remove_quotes': True})
 
-        self.set_met_config_list(self.env_var_dict,
-                                 f'GRID_STAT_NEIGHBORHOOD_COV_THRESH',
-                                 'cov_thresh',
-                                 'METPLUS_NBRHD_COV_THRESH',
-                                 remove_quotes=True)
+        self.add_met_config(name='width',
+                            data_type='list',
+                            env_var_name='METPLUS_NBRHD_WIDTH',
+                            metplus_configs=[
+                                'GRID_STAT_NEIGHBORHOOD_WIDTH'
+                            ],
+                            extra_args={'remove_quotes': True})
 
-        self.set_met_config_list(self.env_var_dict,
-                                 f'GRID_STAT_NEIGHBORHOOD_WIDTH',
-                                 'width',
-                                 'METPLUS_NBRHD_WIDTH',
-                                 remove_quotes=True)
-
-        self.set_met_config_string(self.env_var_dict,
-                                   'GRID_STAT_NEIGHBORHOOD_SHAPE',
-                                   'shape',
-                                   'METPLUS_NBRHD_SHAPE',
-                                   remove_quotes=True)
+        self.add_met_config(name='shape',
+                            data_type='string',
+                            env_var_name='METPLUS_NBRHD_SHAPE',
+                            metplus_configs=[
+                                'GRID_STAT_NEIGHBORHOOD_SHAPE'
+                            ],
+                            extra_args={'remove_quotes': True})
 
         c_dict['NEIGHBORHOOD_WIDTH'] = (
             self.config.getstr('config',

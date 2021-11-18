@@ -91,25 +91,21 @@ class PB2NCWrapper(CommandBuilder):
         # get the MET config file path or use default
         c_dict['CONFIG_FILE'] = self.get_config_file('PB2NCConfig_wrapped')
 
-        self.set_met_config_list(self.env_var_dict,
-                                 'PB2NC_MESSAGE_TYPE',
-                                 'message_type',
-                                 'METPLUS_MESSAGE_TYPE',)
+        self.add_met_config(name='message_type',
+                            data_type='list')
 
-        self.set_met_config_list(self.env_var_dict,
-                                 'PB2NC_STATION_ID',
-                                 'station_id',
-                                 'METPLUS_STATION_ID',)
+        self.add_met_config(name='station_id',
+                            data_type='list')
 
         self.handle_obs_window_variables(c_dict)
 
         self.handle_mask(single_value=True)
 
-        self.set_met_config_list(self.env_var_dict,
-                                 'PB2NC_OBS_BUFR_VAR_LIST',
-                                 'obs_bufr_var',
-                                 'METPLUS_OBS_BUFR_VAR',
-                                 allow_empty=True)
+        self.add_met_config(name='obs_bufr_var',
+                            data_type='list',
+                            metplus_configs=['PB2NC_OBS_BUFR_VAR_LIST',
+                                             'PB2NC_OBS_BUFR_VAR'],
+                            extra_args={'allow_empty': True})
 
         self.handle_time_summary_legacy(c_dict)
 
@@ -147,22 +143,7 @@ class PB2NCWrapper(CommandBuilder):
                             extra_args={'remove_quotes': True})
 
         # get level_range beg and end
-        level_range_items = []
-        level_range_items.append(
-            self.get_met_config(name='beg',
-                                data_type='int',
-                                metplus_configs=['PB2NC_LEVEL_RANGE_BEG',
-                                                 'PB2NC_LEVEL_RANGE_BEGIN'])
-        )
-        level_range_items.append(
-            self.get_met_config(name='end',
-                                data_type='int',
-                                metplus_configs=['PB2NC_LEVEL_RANGE_END'])
-        )
-
-        self.add_met_config(name='level_range',
-                            data_type='dict',
-                            children=level_range_items)
+        self.handle_met_config_window('level_range')
 
         self.add_met_config(name='level_category',
                             data_type='list',
@@ -172,7 +153,6 @@ class PB2NCWrapper(CommandBuilder):
         self.add_met_config(name='quality_mark_thresh',
                             data_type='int',
                             metplus_configs=['PB2NC_QUALITY_MARK_THRESH'])
-
 
         return c_dict
 

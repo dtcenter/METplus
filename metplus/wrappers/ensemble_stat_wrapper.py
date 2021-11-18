@@ -221,43 +221,39 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['MET_OBS_ERR_TABLE'] = \
             self.config.getstr('config', 'ENSEMBLE_STAT_MET_OBS_ERR_TABLE', '')
 
-        self.set_met_config_float(self.env_var_dict,
-                                  'ENSEMBLE_STAT_ENS_VLD_THRESH',
-                                  'vld_thresh',
-                                  'METPLUS_ENS_VLD_THRESH')
+        self.add_met_config(name='vld_thresh',
+                            data_type='float',
+                            env_var_name='METPLUS_ENS_VLD_THRESH',
+                            metplus_configs=['ENSEMBLE_STAT_ENS_VLD_THRESH',
+                                             'ENSEMBLE_STAT_VLD_THRESH',
+                                             'ENSEMBLE_STAT_ENS_VALID_THRESH',
+                                             'ENSEMBLE_STAT_VALID_THRESH',
+                                             ])
 
-        self.set_met_config_list(self.env_var_dict,
-                                 'ENSEMBLE_STAT_ENS_OBS_THRESH',
-                                 'obs_thresh',
-                                 'METPLUS_ENS_OBS_THRESH',
-                                 remove_quotes=True)
+        self.add_met_config(name='obs_thresh',
+                            data_type='list',
+                            env_var_name='METPLUS_ENS_OBS_THRESH',
+                            metplus_configs=['ENSEMBLE_STAT_ENS_OBS_THRESH',
+                                             'ENSEMBLE_STAT_OBS_THRESH'],
+                            extra_args={'remove_quotes': True})
 
-        self.set_met_config_float(self.env_var_dict,
-                                  'ENSEMBLE_STAT_ENS_SSVAR_BIN_SIZE',
-                                  'ens_ssvar_bin_size',
-                                  'METPLUS_ENS_SSVAR_BIN_SIZE')
-        self.set_met_config_float(self.env_var_dict,
-                                  'ENSEMBLE_STAT_ENS_PHIST_BIN_SIZE',
-                                  'ens_phist_bin_size',
-                                  'METPLUS_ENS_PHIST_BIN_SIZE')
+        self.add_met_config(name='ens_ssvar_bin_size',
+                            data_type='float')
+
+        self.add_met_config(name='ens_phist_bin_size',
+                            data_type='float')
 
         self.handle_nbrhd_prob_dict()
 
-        self.set_met_config_float(self.env_var_dict,
-                                  'ENSEMBLE_STAT_ENS_THRESH',
-                                  'ens_thresh',
-                                  'METPLUS_ENS_THRESH')
+        self.add_met_config(name='ens_thresh',
+                            data_type='float')
 
-        self.set_met_config_string(self.env_var_dict,
-                                   'ENSEMBLE_STAT_DUPLICATE_FLAG',
-                                   'duplicate_flag',
-                                   'METPLUS_DUPLICATE_FLAG',
-                                   remove_quotes=True)
+        self.add_met_config(name='duplicate_flag',
+                            data_type='string',
+                            extra_args={'remove_quotes': True})
 
-        self.set_met_config_bool(self.env_var_dict,
-                                 'ENSEMBLE_STAT_SKIP_CONST',
-                                 'skip_const',
-                                 'METPLUS_SKIP_CONST')
+        self.add_met_config(name='skip_const',
+                            data_type='bool')
 
         # set climo_cdf dictionary variables
         self.handle_climo_cdf_dict()
@@ -271,37 +267,32 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.handle_flags('OUTPUT')
         self.handle_flags('ENSEMBLE')
 
-        self.set_met_config_bool(self.env_var_dict,
-                                 'ENSEMBLE_STAT_OBS_ERROR_FLAG',
-                                 'flag',
-                                 'METPLUS_OBS_ERROR_FLAG')
-        self.set_met_config_list(self.env_var_dict,
-                                 'ENSEMBLE_STAT_MASK_GRID',
-                                 'grid',
-                                 'METPLUS_MASK_GRID',
-                                 allow_empty=True)
-        self.set_met_config_list(self.env_var_dict,
-                                 'ENSEMBLE_STAT_CI_ALPHA',
-                                 'ci_alpha',
-                                 'METPLUS_CI_ALPHA',
-                                 remove_quotes=True)
+        self.add_met_config(name='flag',
+                            data_type='bool',
+                            env_var_name='METPLUS_OBS_ERROR_FLAG',
+                            metplus_configs=['ENSEMBLE_STAT_OBS_ERROR_FLAG'])
 
-        self.set_met_config_list(self.env_var_dict,
-                                 'ENSEMBLE_STAT_CENSOR_THRESH',
-                                 'censor_thresh',
-                                 'METPLUS_CENSOR_THRESH',
-                                 remove_quotes=True)
-        self.set_met_config_list(self.env_var_dict,
-                                 'ENSEMBLE_STAT_CENSOR_VAL',
-                                 'censor_val',
-                                 'METPLUS_CENSOR_VAL',
-                                 remove_quotes=True)
+        self.add_met_config(name='grid',
+                            data_type='list',
+                            env_var_name='METPLUS_MASK_GRID',
+                            metplus_configs=['ENSEMBLE_STAT_MASK_GRID'],
+                            extra_args={'allow_empty': True})
 
-        self.set_met_config_list(self.env_var_dict,
-                                 'ENSEMBLE_STAT_MESSAGE_TYPE',
-                                 'message_type',
-                                 'METPLUS_MESSAGE_TYPE',
-                                 allow_empty=True)
+        self.add_met_config(name='ci_alpha',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
+
+        self.add_met_config(name='censor_thresh',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
+
+        self.add_met_config(name='censor_val',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
+
+        self.add_met_config(name='message_type',
+                            data_type='list',
+                            extra_args={'allow_empty': True})
 
         self.handle_obs_window_variables(c_dict)
 

@@ -67,8 +67,8 @@ class MTDWrapper(CompareGriddedWrapper):
         c_dict['CONFIG_FILE'] = self.get_config_file('MTDConfig_wrapped')
 
         # new method of reading/setting MET config values
-        self.set_met_config_int(self.env_var_dict, 'MTD_MIN_VOLUME',
-                                'min_volume', 'METPLUS_MIN_VOLUME')
+        self.add_met_config(name='min_volume',
+                            data_type='int')
 
         # old approach to reading/setting MET config values
         c_dict['MIN_VOLUME'] = self.config.getstr('config',
@@ -138,17 +138,17 @@ class MTDWrapper(CompareGriddedWrapper):
             self.config.getstr('config', f'{read_type}_MTD_INPUT_DATATYPE', '')
         )
 
-        self.set_met_config_int(self.env_var_dict,
-                                [f'{read_type}_MTD_CONV_RADIUS',
-                                 'MTD_CONV_RADIUS'],
-                                'conv_radius',
-                                f'METPLUS_{write_type}_CONV_RADIUS')
+        self.add_met_config(name='conv_radius',
+                            data_type='int',
+                            env_var_name=f'METPLUS_{write_type}_CONV_RADIUS',
+                            metplus_configs=[f'{read_type}_MTD_CONV_RADIUS',
+                                             'MTD_CONV_RADIUS'])
 
-        self.set_met_config_thresh(self.env_var_dict,
-                                   [f'{read_type}_MTD_CONV_THRESH',
-                                    'MTD_CONV_THRESH'],
-                                   'conv_thresh',
-                                   f'METPLUS_{write_type}_CONV_THRESH')
+        self.add_met_config(name='conv_thresh',
+                            data_type='thresh',
+                            env_var_name=f'METPLUS_{write_type}_CONV_THRESH',
+                            metplus_configs=[f'{read_type}_MTD_CONV_THRESH',
+                                             'MTD_CONV_THRESH'])
 
         # support old method of setting env vars
         conf_value = (
