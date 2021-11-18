@@ -28,9 +28,9 @@ def test_get_default_config_list():
     expected_new = [os.path.join(new_parm_base, item) for item in new_list]
     expected_both = [os.path.join(both_parm_base, item) for item in both_list]
 
-    actual_old = config_metplus.get_default_config_list(old_parm_base)
-    actual_new = config_metplus.get_default_config_list(new_parm_base)
-    actual_both = config_metplus.get_default_config_list(both_parm_base)
+    actual_old = config_metplus._get_default_config_list(old_parm_base)
+    actual_new = config_metplus._get_default_config_list(new_parm_base)
+    actual_both = config_metplus._get_default_config_list(both_parm_base)
     assert actual_old == expected_old
     assert actual_new == expected_new
     assert actual_both == expected_both
