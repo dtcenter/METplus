@@ -634,7 +634,7 @@ def test_get_storm_ids(metplus_config, filename, expected_result):
                             'stat_data',
                             filename)
 
-    assert(util.get_storm_ids(filepath) == expected_result)
+    assert(util.get_storms(filepath, id_only=True) == expected_result)
 
 @pytest.mark.parametrize(
     'filename, expected_result', [

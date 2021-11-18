@@ -445,7 +445,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         # Now that we have the filter filename for the init time, let's
         # extract all the storm ids in this filter file.
-        storm_list = util.get_storm_ids(filter_file)
+        storm_list = util.get_storms(filter_file, id_only=True)
         if not storm_list:
             # No storms for this init time, check next init time in list
             self.logger.debug("No storms found for current runtime")

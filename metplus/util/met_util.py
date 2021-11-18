@@ -842,18 +842,6 @@ def get_storms(filter_filename, id_only=False, sort_column='STORM_ID'):
 
     return storm_dict
 
-def get_storm_ids(filter_filename):
-    """! Get each storm as identified by its STORM_ID in the filter file
-        save these in a set so we only save the unique ids and sort them.
-        Args:
-            @param filter_filename:  The name of the filter file to read
-                                       and extract the storm id
-            @param logger:  The name of the logger for logging useful info
-        Returns:
-            sorted_storms (List):  a list of unique, sorted storm ids
-    """
-    return get_storms(filter_filename, id_only=True)
-
 def get_files(filedir, filename_regex, logger=None):
     """! Get all the files (with a particular
         naming format) by walking
