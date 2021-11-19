@@ -2048,17 +2048,13 @@ class CommandBuilder:
          METPLUS_CENSOR_[VAL/THRESH] in self.env_var_dict so it can be
          referenced in a MET config file
         """
-        self.set_met_config_list(self.env_var_dict,
-                                 f'{self.app_name.upper()}_CENSOR_THRESH',
-                                 'censor_thresh',
-                                 c_dict_key='METPLUS_CENSOR_THRESH',
-                                 remove_quotes=True)
+        self.add_met_config(name='censor_thresh',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
 
-        self.set_met_config_list(self.env_var_dict,
-                                 f'{self.app_name.upper()}_CENSOR_VAL',
-                                 'censor_val',
-                                 c_dict_key='METPLUS_CENSOR_VAL',
-                                 remove_quotes=True)
+        self.add_met_config(name='censor_val',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
 
     def get_env_var_value(self, env_var_name, read_dict=None, item_type=None):
         """! Read env var value, get text after the equals sign and remove the
