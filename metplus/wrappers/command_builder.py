@@ -24,6 +24,7 @@ from ..util import config_metplus
 from ..util import METConfig
 from ..util import MISSING_DATA_VALUE
 from ..util import get_custom_string_list
+from ..util import get_wrapped_met_config_file
 
 # pylint:disable=pointless-string-statement
 '''!@namespace CommandBuilder
@@ -2466,20 +2467,9 @@ class CommandBuilder:
          file found in parm/met_config to use if config file is not set
         @returns path to wrapped config file or None if no default is provided
         """
-        config_name = f'{self.app_name.upper()}_CONFIG_FILE'
-        config_file = self.config.getraw('config', config_name, '')
-        if config_file:
-            return config_file
-
-        if not default_config_file:
-            return None
-
-        default_config_path = os.path.join(self.config.getdir('PARM_BASE'),
-                                           'met_config',
+        return get_wrapped_met_config_file(self.config,
+                                           self.app_name,
                                            default_config_file)
-        self.logger.debug(f"{config_name} is not set. "
-                          f"Using {default_config_path}")
-        return default_config_path
 
     def get_start_time_input_dict(self):
         """! Get the first run time specified in config. Used if only running

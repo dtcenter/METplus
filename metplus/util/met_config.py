@@ -9,6 +9,7 @@ Input Files: N/A
 Output Files: N/A
 """
 
+import os
 
 class METConfig:
     """! Stores information for a member of a MET config variables that
@@ -108,3 +109,26 @@ class METConfig:
                                 f"children. data_type is {self.data_type}")
 
         self._children = children
+
+def get_wrapped_met_config_file(config, app_name, default_config_file=None):
+    """! Get the MET config file path for the wrapper from the
+    METplusConfig object. If unset, use the default value if provided.
+
+    @param default_config_file (optional) filename of wrapped MET config
+     file found in parm/met_config to use if config file is not set
+    @returns path to wrapped config file or None if no default is provided
+    """
+    config_name = f'{app_name.upper()}_CONFIG_FILE'
+    config_file = config.getraw('config', config_name, '')
+    if config_file:
+        return config_file
+
+    if not default_config_file:
+        return None
+
+    default_config_path = os.path.join(config.getdir('PARM_BASE'),
+                                       'met_config',
+                                       default_config_file)
+    config.logger.debug(f"{config_name} is not set. "
+                        f"Using {default_config_path}")
+    return default_config_path
