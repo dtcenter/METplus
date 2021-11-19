@@ -184,6 +184,7 @@ class GridStatWrapper(CompareGriddedWrapper):
                             ],
                             extra_args={'remove_quotes': True})
 
+        # handle legacy environment variables used by old MET configs
         c_dict['NEIGHBORHOOD_WIDTH'] = (
             self.config.getstr('config',
                                'GRID_STAT_NEIGHBORHOOD_WIDTH', '1')
@@ -267,8 +268,9 @@ class GridStatWrapper(CompareGriddedWrapper):
         self.add_env_var('NEIGHBORHOOD_SHAPE',
                          self.c_dict['NEIGHBORHOOD_SHAPE'])
 
+        cov_thresh = self.get_env_var_value('METPLUS_NBRHD_COV_THRESH')
         self.add_env_var('NEIGHBORHOOD_COV_THRESH',
-                         self.c_dict.get('NBRHD_COV_THRESH', ''))
+                         cov_thresh)
 
         self.add_env_var('VERIF_MASK',
                          self.c_dict.get('VERIFICATION_MASK', ''))
