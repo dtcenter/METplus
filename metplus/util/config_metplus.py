@@ -909,6 +909,25 @@ class METplusConfig(ProdConfig):
             self.check_default(sec, name, default)
             return default
 
+    def get_mp_config_name(self, mp_config):
+        """! Get first name of METplus config variable that is set.
+
+        @param mp_config list of METplus config keys to check. Can also be a
+        single item
+        @returns Name of first METplus config name in list that is set in the
+        METplusConfig object. None if none keys in the list are set.
+        """
+        if not isinstance(mp_config, list):
+            mp_configs = [mp_config]
+        else:
+            mp_configs = mp_config
+
+        for mp_config_name in mp_configs:
+            if self.has_option('config', mp_config_name):
+                return mp_config_name
+
+        return None
+
 
 class METplusLogFormatter(logging.Formatter):
     def __init__(self, config):
