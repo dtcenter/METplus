@@ -107,7 +107,38 @@ class PB2NCWrapper(CommandBuilder):
                                              'PB2NC_OBS_BUFR_VAR'],
                             extra_args={'allow_empty': True})
 
-        self.handle_time_summary_legacy(c_dict)
+        #self.handle_time_summary_legacy(c_dict)
+        self.handle_time_summary_dict()
+
+        # handle legacy time summary variables
+        self.add_met_config(name='',
+                            data_type='bool',
+                            env_var_name='TIME_SUMMARY_FLAG',
+                            metplus_configs=['PB2NC_TIME_SUMMARY_FLAG'])
+
+        self.add_met_config(name='',
+                            data_type='string',
+                            env_var_name='TIME_SUMMARY_BEG',
+                            metplus_configs=['PB2NC_TIME_SUMMARY_BEG'])
+
+        self.add_met_config(name='',
+                            data_type='string',
+                            env_var_name='TIME_SUMMARY_END',
+                            metplus_configs=['PB2NC_TIME_SUMMARY_END'])
+
+        self.add_met_config(name='',
+                            data_type='list',
+                            env_var_name='TIME_SUMMARY_VAR_NAMES',
+                            metplus_configs=['PB2NC_TIME_SUMMARY_OBS_VAR',
+                                             'PB2NC_TIME_SUMMARY_VAR_NAMES'],
+                            extra_args={'allow_empty': True})
+
+        self.add_met_config(name='',
+                            data_type='list',
+                            env_var_name='TIME_SUMMARY_TYPES',
+                            metplus_configs=['PB2NC_TIME_SUMMARY_TYPE',
+                                             'PB2NC_TIME_SUMMARY_TYPES'],
+                            extra_args={'allow_empty': True})
 
         self.handle_file_window_variables(c_dict, dtypes=['OBS'])
 
@@ -176,16 +207,10 @@ class PB2NCWrapper(CommandBuilder):
         self.add_env_var("OBS_BUFR_VAR_LIST", self.c_dict.get('BUFR_VAR_LIST',
                                                               ''))
 
-        self.add_env_var('TIME_SUMMARY_FLAG',
-                         self.c_dict.get('TIME_SUMMARY_FLAG', ''))
-        self.add_env_var('TIME_SUMMARY_BEG',
-                         self.c_dict.get('TIME_SUMMARY_BEG', ''))
-        self.add_env_var('TIME_SUMMARY_END',
-                         self.c_dict.get('TIME_SUMMARY_END', ''))
-        self.add_env_var('TIME_SUMMARY_VAR_NAMES',
-                         self.c_dict.get('TIME_SUMMARY_VAR_NAMES', ''))
-        self.add_env_var('TIME_SUMMARY_TYPES',
-                         self.c_dict.get('TIME_SUMMARY_TYPES', ''))
+        for item in ['FLAG', 'BEG', 'END', 'VAR_NAMES', 'TYPES']:
+            ts_item = f'TIME_SUMMARY_{item}'
+            self.add_env_var(f'{ts_item}',
+                             self.env_var_dict.get(f'METPLUS_{ts_item}', ''))
 
         super().set_environment_variables(time_info)
 
