@@ -1466,6 +1466,14 @@ class CommandBuilder:
                 output_dict=c_dict,
             )
 
+            # set REGRID_TO_GRID to NONE if unset
+            regrid_value = c_dict.get('METPLUS_REGRID_TO_GRID', '')
+            if not regrid_value:
+                regrid_value = 'NONE'
+            c_dict['REGRID_TO_GRID'] = regrid_value
+            if 'METPLUS_REGRID_TO_GRID' in c_dict:
+                del c_dict['METPLUS_REGRID_TO_GRID']
+
         dict_items['method'] = ('string', 'uppercase,remove_quotes')
         dict_items['width'] = 'int'
         dict_items['vld_thresh'] = 'float'
