@@ -27,7 +27,6 @@ from ..util import do_string_sub, parse_template
 from ..util import get_lead_sequence, get_lead_sequence_groups, set_input_dict
 from ..util import ti_get_hours_from_lead, ti_get_seconds_from_lead
 from ..util import ti_get_lead_string
-from ..util import parse_var_list
 from .plot_data_plane_wrapper import PlotDataPlaneWrapper
 from . import RuntimeFreqWrapper
 
@@ -87,13 +86,14 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                c_dict['VERBOSITY'])
         )
 
-        self.add_met_config(name='model',
-                            data_type='string',
-                            metplus_configs=['MODEL'])
-
-        self.add_met_config(name='obtype',
-                            data_type='string',
-                            metplus_configs=['OBTYPE'])
+        self.set_met_config_string(self.env_var_dict,
+                                   'MODEL',
+                                   'model',
+                                   'METPLUS_MODEL')
+        self.set_met_config_string(self.env_var_dict,
+                                   'OBTYPE',
+                                   'obtype',
+                                   'METPLUS_OBTYPE')
 
         # handle old format of MODEL and OBTYPE
         c_dict['MODEL'] = self.config.getstr('config', 'MODEL', 'WRF')
@@ -103,18 +103,22 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         self.handle_regrid(c_dict)
 
-        self.add_met_config(name='cat_thresh',
-                            data_type='list',
-                            extra_args={'remove_quotes': True})
+        self.set_met_config_list(self.env_var_dict,
+                                 'SERIES_ANALYSIS_CAT_THRESH',
+                                 'cat_thresh',
+                                 'METPLUS_CAT_THRESH',
+                                 remove_quotes=True)
 
-        self.add_met_config(name='vld_thresh',
-                            data_type='float',
-                            metplus_configs=['SERIES_ANALYSIS_VLD_THRESH',
-                                             'SERIES_ANALYSIS_VALID_THRESH',])
+        self.set_met_config_float(self.env_var_dict,
+                                  'SERIES_ANALYSIS_VLD_THRESH',
+                                  'vld_thresh',
+                                  'METPLUS_VLD_THRESH')
 
-        self.add_met_config(name='block_size',
-                            data_type='string',
-                            extra_args={'remove_quotes': True})
+        self.set_met_config_string(self.env_var_dict,
+                                   'SERIES_ANALYSIS_BLOCK_SIZE',
+                                   'block_size',
+                                   'METPLUS_BLOCK_SIZE',
+                                   remove_quotes=True)
 
         # get stat list to loop over
         c_dict['STAT_LIST'] = util.getlist(
@@ -126,18 +130,16 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             self.log_error("Must set SERIES_ANALYSIS_STAT_LIST to run.")
 
         # set stat list to set output_stats.cnt in MET config file
-        self.add_met_config(name='cnt',
-                            data_type='list',
-                            env_var_name='METPLUS_STAT_LIST',
-                            metplus_configs=['SERIES_ANALYSIS_STAT_LIST',
-                                             'SERIES_ANALYSIS_CNT'])
+        self.set_met_config_list(self.env_var_dict,
+                                 'SERIES_ANALYSIS_STAT_LIST',
+                                 'cnt',
+                                 'METPLUS_STAT_LIST')
 
         # set cts list to set output_stats.cts in MET config file
-        self.add_met_config(name='cts',
-                            data_type='list',
-                            env_var_name='METPLUS_CTS_LIST',
-                            metplus_configs=['SERIES_ANALYSIS_CTS_LIST',
-                                             'SERIES_ANALYSIS_CTS'])
+        self.set_met_config_list(self.env_var_dict,
+                                 'SERIES_ANALYSIS_CTS_LIST',
+                                 'cts',
+                                 'METPLUS_CTS_LIST')
 
         c_dict['PAIRED'] = self.config.getbool('config',
                                                'SERIES_ANALYSIS_IS_PAIRED',
@@ -231,8 +233,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                 False)
         )
 
-        c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
-                                                 met_tool=self.app_name)
+        c_dict['VAR_LIST_TEMP'] = util.parse_var_list(self.config,
+                                                      met_tool=self.app_name)
         if not c_dict['VAR_LIST_TEMP']:
             self.log_error("No fields specified. Please set "
                            "[FCST/OBS]_VAR<n>_[NAME/LEVELS]")
@@ -442,7 +444,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         # Now that we have the filter filename for the init time, let's
         # extract all the storm ids in this filter file.
-        storm_list = util.get_storms(filter_file, id_only=True)
+        storm_list = util.get_storm_ids(filter_file)
         if not storm_list:
             # No storms for this init time, check next init time in list
             self.logger.debug("No storms found for current runtime")
