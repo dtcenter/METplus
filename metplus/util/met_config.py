@@ -1,12 +1,6 @@
 """
 Program Name: met_config.py
 Contact(s): George McCabe
-Abstract:
-History Log:  Initial version
-Usage:
-Parameters: None
-Input Files: N/A
-Output Files: N/A
 """
 
 import os
