@@ -13,6 +13,7 @@ import os
 
 from .met_util import getlist, get_threshold_via_regex, MISSING_DATA_VALUE
 from .met_util import remove_quotes as util_remove_quotes
+from .config_metplus import find_indices_in_config_section
 
 class METConfig:
     """! Stores information for a member of a MET config variables that
@@ -136,6 +137,89 @@ def get_wrapped_met_config_file(config, app_name, default_config_file=None):
                         f"Using {default_config_path}")
     return default_config_path
 
+def add_met_config_dict(config, app_name, output_dict, dict_name, items):
+    """! Read config variables for MET config dictionary and set
+     env_var_dict with formatted values
+
+    @params dict_name name of MET dictionary variable
+    @params items dictionary where the key is name of variable inside MET
+     dictionary and the value is info about the item (see parse_item_info
+     function for more information)
+    """
+    dict_items = []
+
+    # config prefix i.e GRID_STAT_CLIMO_MEAN_
+    metplus_prefix = f'{app_name}_{dict_name}_'.upper()
+    for name, item_info in items.items():
+        data_type, extra, kids, nicknames = _parse_item_info(item_info)
+
+        # config name i.e. GRID_STAT_CLIMO_MEAN_FILE_NAME
+        metplus_name = f'{metplus_prefix}{name.upper()}'
+
+        # change (n) to _N i.e. distance_map.beta_value(n)
+        metplus_name = metplus_name.replace('(N)', '_N')
+        metplus_configs = []
+
+        if 'dict' not in data_type:
+            children = None
+            # if variable ends with _BEG, read _BEGIN first
+            if metplus_name.endswith('BEG'):
+                metplus_configs.append(f'{metplus_name}IN')
+
+            metplus_configs.append(metplus_name)
+            if nicknames:
+                for nickname in nicknames:
+                    metplus_configs.append(
+                        f'{app_name}_{nickname}'.upper()
+                    )
+
+        # if dictionary, read get children from MET config
+        else:
+            children = []
+            for kid_name, kid_info in kids.items():
+                kid_upper = kid_name.upper()
+                kid_type, kid_extra, _, _ = _parse_item_info(kid_info)
+
+                metplus_configs.append(f'{metplus_name}_{kid_upper}')
+                metplus_configs.append(f'{metplus_prefix}{kid_upper}')
+
+                kid_args = _parse_extra_args(kid_extra)
+                child_item = METConfig(
+                    name=kid_name,
+                    data_type=kid_type,
+                    metplus_configs=metplus_configs.copy(),
+                    extra_args=kid_args,
+                )
+                children.append(child_item)
+
+                # reset metplus config list for next kid
+                metplus_configs.clear()
+
+            # set metplus_configs
+            metplus_configs = None
+
+        extra_args = _parse_extra_args(extra)
+        dict_item = (
+            METConfig(
+                name=name,
+                data_type=data_type,
+                metplus_configs=metplus_configs,
+                extra_args=extra_args,
+                children=children,
+            )
+        )
+        dict_items.append(dict_item)
+
+    final_met_config = METConfig(
+        name=dict_name,
+        data_type='dict',
+        children=dict_items,
+    )
+
+    return add_met_config_item(config,
+                               final_met_config,
+                               output_dict)
+
 def add_met_config_item(config, item, output_dict, depth=0):
     """! Reads info from METConfig object, gets value from
     METplusConfig, and formats it based on the specifications. Sets
@@ -183,6 +267,56 @@ def add_met_config_item(config, item, output_dict, depth=0):
                           item.name,
                           c_dict_key=env_var_name,
                           **item.extra_args)
+
+def add_met_config_dict_list(config, app_name, output_dict, dict_name,
+                             dict_items):
+    search_string = f'{app_name}_{dict_name}'.upper()
+    regex = r'^' + search_string + r'(\d+)_(\w+)$'
+    indices = find_indices_in_config_section(regex, config,
+                                             index_index=1,
+                                             id_index=2)
+
+    all_met_config_items = {}
+    is_ok = True
+    for index, items in indices.items():
+        # read all variables for each index
+        met_config_items = {}
+
+        # check if any variable found doesn't match valid variables
+        not_in_dict = [item for item in items
+                       if item.lower() not in dict_items]
+        if any(not_in_dict):
+            for item in not_in_dict:
+                config.logger.error("Invalid variable: "
+                                    f"{search_string}{index}_{item}")
+            is_ok = False
+            continue
+
+        for name, item_info in dict_items.items():
+            data_type, extra, kids, nicknames = _parse_item_info(item_info)
+            metplus_configs = [f'{search_string}{index}_{name.upper()}']
+            extra_args = _parse_extra_args(extra)
+            item = METConfig(name=name,
+                             data_type=data_type,
+                             metplus_configs=metplus_configs,
+                             extra_args=extra_args,
+                             )
+
+            if not add_met_config_item(config, item, met_config_items):
+                is_ok = False
+                continue
+
+        dict_string = format_met_config('dict',
+                                        met_config_items,
+                                        name='')
+        all_met_config_items[index] = dict_string
+
+    # format list of dictionaries
+    output_string = format_met_config('list',
+                                      all_met_config_items,
+                                      dict_name)
+    output_dict[f'METPLUS_{dict_name.upper()}_LIST'] = output_string
+    return is_ok
 
 def format_met_config(data_type, c_dict, name, keys=None):
     """! Return formatted variable named <name> with any <items> if they
@@ -512,3 +646,61 @@ def format_regrid_to_grid(to_grid):
         to_grid = f'"{to_grid}"'
 
     return to_grid
+
+def _parse_item_info(item_info):
+    """! Parses info about a MET config dictionary item. The input can
+    be a single string that is the data type of the item. It can also be
+    a tuple containing 2 to 4 values. The additional values must be
+    supplied in order:
+    * extra: string of extra information about item, i.e.
+      'remove_quotes', 'uppercase', or 'allow_empty'
+    * kids: dictionary describing child values (used only for dict items)
+      where the key is the name of the variable and the value is item info
+      for the child variable in the same format as item_info that is
+      parsed in this function
+    * nicknames: list of other METplus config variable name that can be
+       used to set a value. The app name i.e. GRID_STAT_ is prepended to
+       each nickname in the list. Used for backwards compatibility for
+       METplus config variables whose name does not match the MET config
+       variable name
+
+    @param item_info string or tuple containing information about a
+     dictionary item
+    @returns tuple of data type, extra info, children, and nicknames or
+     None for each tuple value that is not set
+    """
+    if isinstance(item_info, tuple):
+        data_type, *rest = item_info
+    else:
+        data_type = item_info
+        rest = []
+
+    extra = rest.pop(0) if rest else None
+    kids = rest.pop(0) if rest else None
+    nicknames = rest.pop(0) if rest else None
+
+    return data_type, extra, kids, nicknames
+
+def _parse_extra_args(extra):
+    """! Check string for extra option keywords and set them to True in
+     dictionary if they are found. Supports 'remove_quotes', 'uppercase'
+     and 'allow_empty'
+
+        @param extra string to parse for keywords
+        @returns dictionary with extra args set if found in string
+    """
+    extra_args = {}
+    if not extra:
+        return extra_args
+
+    VALID_EXTRAS = (
+        'remove_quotes',
+        'uppercase',
+        'allow_empty',
+        'to_grid',
+        'default',
+    )
+    for extra_option in VALID_EXTRAS:
+        if extra_option in extra:
+            extra_args[extra_option] = True
+    return extra_args
