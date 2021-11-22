@@ -61,12 +61,10 @@ def test_met_dictionary_in_var_options(metplus_config):
         ({'DESC': 'my_desc'},
          {'METPLUS_DESC': 'desc = "my_desc";'}),
 
-        ({'OBTYPE': 'my_obtype'},
-         {'METPLUS_OBTYPE': 'obtype = "my_obtype";'}),
-
         ({'POINT_STAT_REGRID_TO_GRID': 'FCST',
           },
-         {'METPLUS_REGRID_DICT': 'regrid = {to_grid = FCST;}'}),
+         {'METPLUS_REGRID_DICT': 'regrid = {to_grid = FCST;}',
+          'REGRID_TO_GRID': 'FCST'}),
 
         ({'POINT_STAT_REGRID_METHOD': 'NEAREST',
           },
@@ -92,7 +90,8 @@ def test_met_dictionary_in_var_options(metplus_config):
           },
          {'METPLUS_REGRID_DICT': ('regrid = {to_grid = FCST;method = NEAREST;'
                                   'width = 1;vld_thresh = 0.5;shape = SQUARE;}'
-                                  )}),
+                                  ),
+          'REGRID_TO_GRID': 'FCST'}),
 
         # mask grid and poly (old config var)
         ({'POINT_STAT_MASK_GRID': 'FULL',
@@ -138,15 +137,6 @@ def test_met_dictionary_in_var_options(metplus_config):
          {'METPLUS_MASK_SID':
               'sid = ["one", "two"];',
           }),
-
-        ({'POINT_STAT_NEIGHBORHOOD_COV_THRESH': '>=0.5'},
-         {'METPLUS_NBRHD_COV_THRESH': 'cov_thresh = [>=0.5];'}),
-
-        ({'POINT_STAT_NEIGHBORHOOD_WIDTH': '1,2'},
-         {'METPLUS_NBRHD_WIDTH': 'width = [1, 2];'}),
-
-        ({'POINT_STAT_NEIGHBORHOOD_SHAPE': 'CIRCLE'},
-         {'METPLUS_NBRHD_SHAPE': 'shape = CIRCLE;'}),
 
         ({'POINT_STAT_OUTPUT_PREFIX': 'my_output_prefix'},
          {'METPLUS_OUTPUT_PREFIX': 'output_prefix = "my_output_prefix";'}),
@@ -507,7 +497,11 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
         assert(cmd == expected_cmd)
 
         # check that environment variables were set properly
-        for env_var_key in wrapper.WRAPPER_ENV_VAR_KEYS:
+        # including deprecated env vars (not in wrapper env var keys)
+        env_var_keys = (wrapper.WRAPPER_ENV_VAR_KEYS +
+                        [name for name in env_var_values
+                         if name not in wrapper.WRAPPER_ENV_VAR_KEYS])
+        for env_var_key in env_var_keys:
             match = next((item for item in env_vars if
                           item.startswith(env_var_key)), None)
             assert(match is not None)

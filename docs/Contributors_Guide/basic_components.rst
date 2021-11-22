@@ -274,7 +274,7 @@ should be set.
 Add Support for MET Dictionary
 ------------------------------
 
-The handle_met_config_dict function can be used to easily set a MET config
+The add_met_config_dict function can be used to easily set a MET config
 dictionary variable. The function takes 2 arguments:
 
 * dict_name: Name of the MET dictionary variable, i.e. distance_map.
@@ -285,7 +285,7 @@ dictionary variable. The function takes 2 arguments:
 
 ::
 
-    self.handle_met_config_dict('fcst_genesis', {
+    self.add_met_config_dict('fcst_genesis', {
         'vmax_thresh': 'thresh',
         'mslp_thresh': 'thresh',
     })
@@ -319,7 +319,7 @@ a function is typically used to handle it. For example, this function is in
 CompareGriddedWrapper and is used by GridStat, PointStat, and EnsembleStat::
 
     def handle_climo_cdf_dict(self):
-        self.handle_met_config_dict('climo_cdf', {
+        self.add_met_config_dict('climo_cdf', {
             'cdf_bins': ('float', None, None, ['CLIMO_CDF_BINS']),
             'center_bins': 'bool',
             'write_bins': 'bool',
@@ -333,26 +333,26 @@ the nickname 'CLIMO_CDF_BINS' allows the user to set the variable
 GRID_STAT_CLIMO_CDF_BINS instead.
 
 There are many MET config dictionaries that only contain beg and end to define
-a window. A function in CommandBuilder called handle_met_config_window can be
+a window. A function in CommandBuilder called add_met_config_window can be
 used to easily set these variable by only supplying the name of the MET
 dictionary variable.
 
 ::
 
-    def handle_met_config_window(self, dict_name):
+    def add_met_config_window(self, dict_name):
         """! Handle a MET config window dictionary. It is assumed that
         the dictionary only contains 'beg' and 'end' entries that are integers.
 
         @param dict_name name of MET dictionary
         """
-        self.handle_met_config_dict(dict_name, {
+        self.add_met_config_dict(dict_name, {
             'beg': 'int',
             'end': 'int',
         })
 
 This can be called from any wrapper, i.e. TCGen::
 
-    self.handle_met_config_window('fcst_hr_window')
+    self.add_met_config_window('fcst_hr_window')
 
 This will check if TC_GEN_FCST_HR_WINDOW_BEGIN (or TC_GEN_FCST_HR_WINDOW_BEG)
 and TC_GEN_FCST_HR_WINDOW_END are set and override fcst_hr_window.beg and/or
@@ -383,5 +383,5 @@ handle_climo_dict, handle_mask, and handle_interp_dict.
         if uses_field:
             items['field'] = ('string', 'remove_quotes')
 
-        self.handle_met_config_dict('interp', items)
+        self.add_met_config_dict('interp', items)
 

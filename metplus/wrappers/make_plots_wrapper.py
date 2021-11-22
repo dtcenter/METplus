@@ -19,6 +19,7 @@ import datetime
 import itertools
 
 from ..util import met_util as util
+from ..util import parse_var_list
 from . import CommandBuilder
 
 # handle if module can't be loaded to run wrapper
@@ -120,7 +121,7 @@ class MakePlotsWrapper(CommandBuilder):
         c_dict['LOOP_LIST_ITEMS'] = util.getlist(
             self.config.getstr('config', 'LOOP_LIST_ITEMS')
         )
-        c_dict['VAR_LIST'] = util.parse_var_list(self.config)
+        c_dict['VAR_LIST'] = parse_var_list(self.config)
         c_dict['MODEL_LIST'] = util.getlist(
             self.config.getstr('config', 'MODEL_LIST', '')
         )
