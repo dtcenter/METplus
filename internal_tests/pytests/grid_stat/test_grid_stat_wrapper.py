@@ -129,8 +129,7 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
 
         ({'GRID_STAT_REGRID_TO_GRID': 'FCST',
           },
-         {'METPLUS_REGRID_DICT': 'regrid = {to_grid = FCST;}',
-          'REGRID_TO_GRID': 'FCST'}),
+         {'METPLUS_REGRID_DICT': 'regrid = {to_grid = FCST;}'}),
 
         ({'GRID_STAT_REGRID_METHOD': 'NEAREST',
           },
@@ -156,8 +155,7 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
           },
          {'METPLUS_REGRID_DICT': ('regrid = {to_grid = FCST;method = NEAREST;'
                                   'width = 1;vld_thresh = 0.5;shape = SQUARE;}'
-                                  ),
-          'REGRID_TO_GRID': 'FCST'}),
+                                  )}),
 
         ({'GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE':
               '/some/path/climo/filename.nc',
@@ -607,11 +605,7 @@ def test_grid_stat_single_field(metplus_config, config_overrides,
         assert(cmd == expected_cmd)
 
         # check that environment variables were set properly
-        # including deprecated env vars (not in wrapper env var keys)
-        env_var_keys = (wrapper.WRAPPER_ENV_VAR_KEYS +
-                        [name for name in env_var_values
-                         if name not in wrapper.WRAPPER_ENV_VAR_KEYS])
-        for env_var_key in env_var_keys:
+        for env_var_key in wrapper.WRAPPER_ENV_VAR_KEYS:
             match = next((item for item in env_vars if
                           item.startswith(env_var_key)), None)
             assert(match is not None)

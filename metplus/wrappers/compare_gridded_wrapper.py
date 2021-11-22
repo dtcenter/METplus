@@ -14,7 +14,6 @@ import os
 
 from ..util import met_util as util
 from ..util import do_string_sub, ti_calculate
-from ..util import parse_var_list
 from . import CommandBuilder
 
 '''!@namespace CompareGriddedWrapper
@@ -51,13 +50,8 @@ that reformat gridded data
             which config variables are used in the wrapper"""
         c_dict = super().create_c_dict()
 
-        self.add_met_config(name='model',
-                            data_type='string',
-                            metplus_configs=['MODEL'])
-
-        self.add_met_config(name='obtype',
-                            data_type='string',
-                            metplus_configs=['OBTYPE'])
+        self.set_met_config_string(self.env_var_dict, 'MODEL', 'model', 'METPLUS_MODEL')
+        self.set_met_config_string(self.env_var_dict, 'OBTYPE', 'obtype', 'METPLUS_OBTYPE')
 
         # set old MET config items for backwards compatibility
         c_dict['MODEL_OLD'] = self.config.getstr('config', 'MODEL', 'FCST')
@@ -94,11 +88,13 @@ that reformat gridded data
         # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
         self.handle_file_window_variables(c_dict)
 
-        self.add_met_config(name='output_prefix',
-                            data_type='string')
+        self.set_met_config_string(self.env_var_dict,
+                                   f'{self.app_name.upper()}_OUTPUT_PREFIX',
+                                   'output_prefix',
+                                   'METPLUS_OUTPUT_PREFIX')
 
-        c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
-                                                 met_tool=self.app_name)
+        c_dict['VAR_LIST_TEMP'] = util.parse_var_list(self.config,
+                                                      met_tool=self.app_name)
 
         return c_dict
 
@@ -115,7 +111,7 @@ that reformat gridded data
         self.add_env_var('MODEL', self.c_dict.get('MODEL_OLD', ''))
         self.add_env_var('OBTYPE', self.c_dict.get('OBTYPE_OLD', ''))
         self.add_env_var('REGRID_TO_GRID',
-                         self.c_dict.get('METPLUS_REGRID_TO_GRID',
+                         self.c_dict.get('REGRID_TO_GRID',
                                          'NONE'))
 
         super().set_environment_variables(time_info)
@@ -404,7 +400,7 @@ that reformat gridded data
         return cmd
 
     def handle_climo_cdf_dict(self):
-        self.add_met_config_dict('climo_cdf', {
+        self.handle_met_config_dict('climo_cdf', {
             'cdf_bins': ('float', None, None, ['CLIMO_CDF_BINS']),
             'center_bins': 'bool',
             'write_bins': 'bool',
@@ -429,4 +425,4 @@ that reformat gridded data
         if uses_field:
             items['field'] = ('string', 'remove_quotes')
 
-        self.add_met_config_dict('interp', items)
+        self.handle_met_config_dict('interp', items)

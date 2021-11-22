@@ -19,8 +19,7 @@ import datetime
 import itertools
 
 from ..util import met_util as util
-from ..util import do_string_sub, find_indices_in_config_section
-from ..util import parse_var_list
+from ..util import do_string_sub
 from . import CommandBuilder
 
 class StatAnalysisWrapper(CommandBuilder):
@@ -216,7 +215,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 if not self.MakePlotsWrapper.isOK:
                     self.log_error("MakePlotsWrapper was not initialized correctly.")
 
-        c_dict['VAR_LIST'] = parse_var_list(self.config)
+        c_dict['VAR_LIST'] = util.parse_var_list(self.config)
 
         c_dict['MODEL_INFO_LIST'] = self.parse_model_info()
         if not c_dict['MODEL_LIST'] and c_dict['MODEL_INFO_LIST']:
@@ -1230,9 +1229,9 @@ class StatAnalysisWrapper(CommandBuilder):
         """
         model_info_list = []
         model_indices = list(
-            find_indices_in_config_section(r'MODEL(\d+)$',
-                                           self.config,
-                                           index_index=1).keys()
+            util.find_indices_in_config_section(r'MODEL(\d+)$',
+                                                self.config,
+                                                index_index=1).keys()
         )
         for m in model_indices:
             model_name = self.config.getstr('config', f'MODEL{m}')
