@@ -360,12 +360,13 @@ class ExtractTilesWrapper(CommandBuilder):
         indices = set()
         for key in object_cats:
             match = re.match(r'CF(\d+)', key)
-            if match:
+            # only use non-zero (000) objects
+            if match and int(match.group(1)) != 0:
                 indices.add(match.group(1))
 
         indices = sorted(list(indices))
-        # if no indices were found or there is 1 and it is zero, return None
-        if not indices or (len(indices) == 1 and int(indices[0]) == 0):
+        # if no indices were found, return None
+        if not indices:
             return None
 
         return indices
