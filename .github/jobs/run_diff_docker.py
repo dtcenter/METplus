@@ -13,19 +13,17 @@ import shlex
 import shutil
 
 GITHUB_WORKSPACE = os.environ.get('GITHUB_WORKSPACE')
-# add ci/util to sys path to get diff utility
-diff_util_dir = os.path.join(GITHUB_WORKSPACE,
-                             'ci',
-                             'util')
-sys.path.insert(0, diff_util_dir)
-from diff_util import compare_dir
+# add util directory to sys path to get diff utility
+#diff_util_dir = os.path.join(GITHUB_WORKSPACE,
+#                             'metplus',
+#                             'util')
+#sys.path.insert(0, diff_util_dir)
+#from diff_util import compare_dir
+from metplus.util.diff_util import compare_dir
 
 TRUTH_DIR = '/data/truth'
 OUTPUT_DIR = '/data/output'
 DIFF_DIR = '/data/diff'
-# DIFF_DIR = os.path.join(GITHUB_WORKSPACE,
-#                         'artifact',
-#                         'diff')
 
 def copy_diff_output(diff_files):
     """!  Loop through difference output and copy files
