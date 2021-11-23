@@ -14,12 +14,11 @@ import shutil
 
 GITHUB_WORKSPACE = os.environ.get('GITHUB_WORKSPACE')
 # add util directory to sys path to get diff utility
-#diff_util_dir = os.path.join(GITHUB_WORKSPACE,
-#                             'metplus',
-#                             'util')
-#sys.path.insert(0, diff_util_dir)
-#from diff_util import compare_dir
-from metplus.util.diff_util import compare_dir
+diff_util_dir = os.path.join(GITHUB_WORKSPACE,
+                             'metplus',
+                             'util')
+sys.path.insert(0, diff_util_dir)
+from diff_util import compare_dir
 
 TRUTH_DIR = '/data/truth'
 OUTPUT_DIR = '/data/output'
