@@ -156,6 +156,16 @@ def add_met_config_dict(config, app_name, output_dict, dict_name, items):
 
         if 'dict' not in data_type:
             children = None
+            # handle legacy OBS_WINDOW variables that put OBS_ before app name
+            # i.e. OBS_GRID_STAT_WINDOW_[BEGIN/END]
+            if dict_name == 'obs_window':
+                obs_window_prefix = f"OBS_{app_name}_WINDOW_"
+                if name == 'beg':
+                    obs_window_name = f"{obs_window_prefix}BEGIN"
+                else:
+                    obs_window_name = f"{obs_window_prefix}{name}"
+                metplus_configs.append(obs_window_name.upper())
+
             # if variable ends with _BEG, read _BEGIN first
             if metplus_name.endswith('BEG'):
                 metplus_configs.append(f'{metplus_name}IN')
