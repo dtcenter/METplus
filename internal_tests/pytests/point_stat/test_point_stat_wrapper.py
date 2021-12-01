@@ -149,6 +149,8 @@ def test_met_dictionary_in_var_options(metplus_config):
           },
          {'METPLUS_OBS_WINDOW_DICT':
               'obs_window = {beg = -2700;end = 2700;}',
+          'OBS_WINDOW_BEGIN': '-2700',
+          'OBS_WINDOW_END': '2700'
           }),
 
         ({'POINT_STAT_CLIMO_CDF_CDF_BINS': '1', },

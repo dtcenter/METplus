@@ -294,7 +294,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                             data_type='list',
                             extra_args={'allow_empty': True})
 
-        self.handle_obs_window_variables(c_dict)
+        self.add_met_config_window('obs_window')
+        self.handle_obs_window_legacy(c_dict)
 
         c_dict['MASK_POLY_TEMPLATE'] = self.read_mask_poly()
 

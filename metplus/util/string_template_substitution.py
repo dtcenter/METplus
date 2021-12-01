@@ -12,11 +12,13 @@ Condition codes: Varies
 
 """
 
+import os
 import re
 import datetime
 from dateutil.relativedelta import relativedelta
 
 from . import time_util
+from .constants import *
 
 TEMPLATE_IDENTIFIER_BEGIN = "{"
 TEMPLATE_IDENTIFIER_END = "}"
@@ -827,3 +829,27 @@ def add_offset_matches_to_output_dict(match_dict, output_dict):
             offset = int(value)
 
     output_dict['offset_hours'] = offset
+
+def get_time_from_file(filepath, template, logger=None):
+    """! Extract time information from path using the filename template
+
+     @param filepath path to examine
+     @param template filename template to use to extract time information
+     @param logger optional logging object
+     @returns dictionary with time information if successful, None if not
+    """
+    if os.path.isdir(filepath):
+        return None
+
+    out = parse_template(template, filepath, logger)
+    if out is not None:
+        return out
+
+    # check to see if zip extension ends file path, try again without extension
+    for ext in COMPRESSION_EXTENSIONS:
+        if filepath.endswith(ext):
+            out = parse_template(template, filepath[:-len(ext)], logger)
+            if out is not None:
+                return out
+
+    return None

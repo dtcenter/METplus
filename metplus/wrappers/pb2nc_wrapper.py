@@ -97,7 +97,8 @@ class PB2NCWrapper(CommandBuilder):
         self.add_met_config(name='station_id',
                             data_type='list')
 
-        self.handle_obs_window_variables(c_dict)
+        self.add_met_config_window('obs_window')
+        self.handle_obs_window_legacy(c_dict)
 
         self.handle_mask(single_value=True)
 

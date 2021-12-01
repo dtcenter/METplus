@@ -1,10 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import pytest
 import logging
 import datetime
+import os
 
-from metplus.util import do_string_sub, parse_template
+from metplus.util import do_string_sub, parse_template, get_time_from_file
 from metplus.util import get_tags,format_one_time_item, format_hms
 from metplus.util import add_to_dict, populate_match_dict, get_fmt_info
 
@@ -595,3 +596,20 @@ def test_do_string_sub_no_recurse_no_missing(templ, expected_filename):
                              basin=basin_regex,
                              cyclone=cyclone_regex)
     assert(filename == expected_filename)
+
+@pytest.mark.parametrize(
+    'filepath, template, expected_result', [
+        (os.getcwd(), 'file.{valid?fmt=%Y%m%d%H}.ext', None),
+        ('file.2019020104.ext', 'file.{valid?fmt=%Y%m%d%H}.ext', datetime.datetime(2019, 2, 1, 4)),
+        ('filename.2019020104.ext', 'file.{valid?fmt=%Y%m%d%H}.ext', None),
+        ('file.2019020104.ext.gz', 'file.{valid?fmt=%Y%m%d%H}.ext', datetime.datetime(2019, 2, 1, 4)),
+        ('filename.2019020104.ext.gz', 'file.{valid?fmt=%Y%m%d%H}.ext', None),
+    ]
+)
+def test_get_time_from_file(filepath, template, expected_result):
+    result = get_time_from_file(filepath, template)
+
+    if result is None:
+        assert expected_result is None
+    else:
+        assert result['valid'] == expected_result

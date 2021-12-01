@@ -447,23 +447,6 @@ def test_camel_to_underscore(camel, underscore):
     assert(util.camel_to_underscore(camel) == underscore)
 
 @pytest.mark.parametrize(
-    'filepath, template, expected_result', [
-        (os.getcwd(), 'file.{valid?fmt=%Y%m%d%H}.ext', None),
-        ('file.2019020104.ext', 'file.{valid?fmt=%Y%m%d%H}.ext', datetime.datetime(2019, 2, 1, 4)),
-        ('filename.2019020104.ext', 'file.{valid?fmt=%Y%m%d%H}.ext', None),
-        ('file.2019020104.ext.gz', 'file.{valid?fmt=%Y%m%d%H}.ext', datetime.datetime(2019, 2, 1, 4)),
-        ('filename.2019020104.ext.gz', 'file.{valid?fmt=%Y%m%d%H}.ext', None),
-    ]
-)
-def test_get_time_from_file(filepath, template, expected_result):
-    result = util.get_time_from_file(filepath, template)
-
-    if result is None:
-        assert(expected_result is None)
-    else:
-        assert(result['valid'] == expected_result)
-
-@pytest.mark.parametrize(
     'value, expected_result', [
         (3.3, 3.5),
         (3.1, 3.0),

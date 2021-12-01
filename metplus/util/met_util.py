@@ -1,27 +1,16 @@
-import logging
 import os
 import shutil
 import sys
 import datetime
-import errno
-import time
-import calendar
 import re
 import gzip
 import bz2
 import zipfile
 import struct
-import getpass
-from os import stat
-from pwd import getpwuid
 from csv import reader
-from os.path import dirname, realpath
 from dateutil.relativedelta import relativedelta
 from pathlib import Path
 from importlib import import_module
-
-import produtil.setup
-import produtil.log
 
 from .string_template_substitution import do_string_sub
 from .string_template_substitution import parse_template
@@ -32,8 +21,7 @@ from .. import get_metplus_version
  @brief Provides  Utility functions for METplus.
 """
 
-# list of compression extensions that are handled by METplus
-VALID_EXTENSIONS = ['.gz', '.bz2', '.zip']
+from .constants import *
 
 PYTHON_EMBEDDING_TYPES = ['PYTHON_NUMPY', 'PYTHON_XARRAY', 'PYTHON_PANDAS']
 
@@ -155,7 +143,7 @@ def run_metplus(config, process_list):
         elif loop_order == "times":
             all_commands = loop_over_times_and_call(config, processes)
         else:
-            logger.error("Invalid LOOP_ORDER defined. " + \
+            logger.error("Invalid LOOP_ORDER defined. "
                          "Options are processes, times")
             return 1
 
@@ -1470,31 +1458,6 @@ def get_filetype(filepath, logger=None):
     #else:
     #    return None
 
-
-
-def get_time_from_file(filepath, template, logger=None):
-    """! Extract time information from path using the filename template
-         Args:
-             @param filepath path to examine
-             @param template filename template to use to extract time information
-             @returns time_info dictionary with time information if successful, None if not
-    """
-    if os.path.isdir(filepath):
-        return None
-
-    out = parse_template(template, filepath, logger)
-    if out is not None:
-        return out
-
-    # check to see if zip extension ends file path, try again without extension
-    for ext in VALID_EXTENSIONS:
-        if filepath.endswith(ext):
-            out = parse_template(template, filepath[:-len(ext)], logger)
-            if out is not None:
-                return out
-
-    return None
-
 def preprocess_file(filename, data_type, config, allow_dir=False):
     """ Decompress gzip, bzip, or zip files or convert Gempak files to NetCDF
         Args:
@@ -1525,7 +1488,7 @@ def preprocess_file(filename, data_type, config, allow_dir=False):
         # the function will handle files passed to it with an
         # extension the same way as files passed
         # without an extension but the compressed equivalent exists
-        for ext in VALID_EXTENSIONS:
+        for ext in COMPRESSION_EXTENSIONS:
             if filename.endswith(ext):
                 return preprocess_file(filename[:-len(ext)], data_type, config)
         # if extension is grd (Gempak), then look in staging dir for nc file
@@ -1569,8 +1532,8 @@ def preprocess_file(filename, data_type, config, allow_dir=False):
         return outpath
 
     # Create staging area directory only if file has compression extension
-    valid_extensions = ['gz', 'bz2', 'zip']
-    if any([os.path.isfile(f'{filename}.{ext}') for ext in valid_extensions]):
+    if any([os.path.isfile(f'{filename}{ext}')
+            for ext in COMPRESSION_EXTENSIONS]):
         outdir = os.path.dirname(outpath)
         if not os.path.exists(outdir):
             os.makedirs(outdir, mode=0o0775)

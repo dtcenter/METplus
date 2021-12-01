@@ -357,7 +357,6 @@ def format_met_config(data_type, c_dict, name, keys=None):
         output = f"[{output}];"
 
     # if name is not empty, add variable name and equals sign
-    print(f"NAME IS X{name}X and OUTPUT:{output}")
     if name:
         output = f'{name} = {output}'
     return output

@@ -20,12 +20,13 @@ import re
 from .command_runner import CommandRunner
 from ..util import met_util as util
 from ..util import do_string_sub, ti_calculate, get_seconds_from_string
+from ..util import get_time_from_file
 from ..util import config_metplus
 from ..util import METConfig
 from ..util import MISSING_DATA_VALUE
 from ..util import get_custom_string_list
 from ..util import get_wrapped_met_config_file, add_met_config_item, format_met_config
-from ..util.met_config import format_regrid_to_grid, add_met_config_dict
+from ..util.met_config import add_met_config_dict
 
 # pylint:disable=pointless-string-statement
 '''!@namespace CommandBuilder
@@ -164,7 +165,6 @@ class CommandBuilder:
                 self.logger.warning(f"Environment variable {env_var_string} "
                                     "is not utilized in MET config file: "
                                     f"{config_file}")
-
 
     def create_c_dict(self):
         c_dict = dict()
@@ -308,7 +308,7 @@ class CommandBuilder:
 
     def handle_window_once(self, input_list, default_val=0):
         """! Check and set window dictionary variables like
-              OBS_WINDOW_BEG or FCST_FILE_WINDW_END
+              OBS_WINDOW_BEG or FCST_FILE_WINDOW_END
 
              @param input_list list of config keys to check for value
              @param default_val value to use if none of the input keys found
@@ -319,7 +319,7 @@ class CommandBuilder:
 
         return default_val
 
-    def handle_obs_window_variables(self, c_dict):
+    def handle_obs_window_legacy(self, c_dict):
         """! Handle obs window config variables like
         OBS_<app_name>_WINDOW_[BEGIN/END]. Set c_dict values for begin and end
         to handle old method of setting env vars in MET config files, i.e.
@@ -332,8 +332,6 @@ class CommandBuilder:
                  ('END', 5400)]
         app = self.app_name.upper()
 
-        keys = []
-        tmp_dict = {}
         for edge, default_val in edges:
             input_list = [f'OBS_{app}_WINDOW_{edge}',
                           f'{app}_OBS_WINDOW_{edge}',
@@ -342,16 +340,6 @@ class CommandBuilder:
             output_key = f'OBS_WINDOW_{edge}'
             value = self.handle_window_once(input_list, default_val)
             c_dict[output_key] = value
-            if edge == 'BEGIN':
-                edge = 'BEG'
-            tmp_dict[output_key] = f'{edge.lower()} = {value};'
-            # if something other than the default is used, add output key
-            # to the list of items to add to the env_var_dict value
-            if value != default_val:
-                keys.append(output_key)
-
-        window_str = self.format_met_config_dict(tmp_dict, 'obs_window', keys)
-        self.env_var_dict['METPLUS_OBS_WINDOW_DICT'] = window_str
 
     def handle_file_window_variables(self, c_dict, dtypes=['FCST', 'OBS']):
         """! Handle all window config variables like
@@ -784,7 +772,7 @@ class CommandBuilder:
                 # remove input data directory to get relative path
                 rel_path = fullpath.replace(f'{data_dir}/', "")
                 # extract time information from relative path using template
-                file_time_info = util.get_time_from_file(rel_path, template, self.logger)
+                file_time_info = get_time_from_file(rel_path, template, self.logger)
                 if file_time_info is None:
                     continue
 

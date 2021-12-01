@@ -140,7 +140,8 @@ class PointStatWrapper(CompareGriddedWrapper):
         # get the MET config file path or use default
         c_dict['CONFIG_FILE'] = self.get_config_file('PointStatConfig_wrapped')
 
-        self.handle_obs_window_variables(c_dict)
+        self.add_met_config_window('obs_window')
+        self.handle_obs_window_legacy(c_dict)
 
         self.add_met_config(name='grid',
                             data_type='list',
