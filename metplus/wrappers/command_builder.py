@@ -18,6 +18,7 @@ from inspect import getframeinfo, stack
 import re
 
 from .command_runner import CommandRunner
+from ..util import getlist
 from ..util import met_util as util
 from ..util import do_string_sub, ti_calculate, get_seconds_from_string
 from ..util import get_time_from_file
@@ -623,7 +624,7 @@ class CommandBuilder:
 
         # check if there is a list of files provided in the template
         # process each template in the list (or single template)
-        template_list = util.getlist(input_template)
+        template_list = getlist(input_template)
 
         # return None if a list is provided for a wrapper that doesn't allow
         # multiple files to be processed
@@ -1600,7 +1601,7 @@ class CommandBuilder:
         # if dir is set and not python embedding,
         # prepend it to each template in list
         if input_dir and input_template not in util.PYTHON_EMBEDDING_TYPES:
-            template_list = util.getlist(input_template)
+            template_list = getlist(input_template)
             for index, template in enumerate(template_list):
                 template_list[index] = os.path.join(input_dir, template)
 

@@ -6,6 +6,7 @@ Contact(s): George McCabe
 import os
 import shutil
 
+from ..util import getlist
 from ..util import met_util as util
 from ..util import time_util
 from ..util import do_string_sub
@@ -151,9 +152,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
             elif 'bool' in data_type:
                 value = self.config.getbool('config', config_name, '')
             elif 'list' in data_type:
-                value = util.getlist(self.config.getraw('config',
-                                                        config_name,
-                                                        ''))
+                value = getlist(self.config.getraw('config', config_name))
             else:
                 self.log_error(f"Invalid type for {name}: {data_type}")
 
@@ -186,12 +185,8 @@ class TCMPRPlotterWrapper(CommandBuilder):
             elif name == 'dep':
                 config_name = f'{config_name}_VARS'
 
-            values = util.getlist(self.config.getraw('config',
-                                                     config_name,
-                                                     ''))
-            labels = util.getlist(self.config.getraw('config',
-                                                     label_config_name,
-                                                     ''))
+            values = getlist(self.config.getraw('config', config_name))
+            labels = getlist(self.config.getraw('config', label_config_name))
 
             # if labels are not set, use values as labels
             if not labels:

@@ -22,6 +22,7 @@ except Exception as err_msg:
     WRAPPER_CANNOT_RUN = True
     EXCEPTION_ERR = err_msg
 
+from ..util import getlist
 from ..util import met_util as util
 from ..util import do_string_sub, parse_template
 from ..util import get_lead_sequence, get_lead_sequence_groups, set_input_dict
@@ -117,7 +118,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                             extra_args={'remove_quotes': True})
 
         # get stat list to loop over
-        c_dict['STAT_LIST'] = util.getlist(
+        c_dict['STAT_LIST'] = getlist(
             self.config.getstr('config',
                                'SERIES_ANALYSIS_STAT_LIST',
                                '')
