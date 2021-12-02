@@ -12,6 +12,7 @@ from ..util import do_string_sub, getlist
 from ..util import get_seconds_from_string, ti_get_lead_string, ti_calculate
 from ..util import get_relativedelta, ti_get_seconds_from_relativedelta
 from ..util import time_string_to_met_time, seconds_to_met_time
+from ..util import parse_var_list
 from . import ReformatGriddedWrapper
 
 '''!@namespace PCPCombineWrapper
@@ -56,14 +57,14 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         if fcst_run:
             c_dict = self.set_fcst_or_obs_dict_items('FCST', c_dict)
-            c_dict['VAR_LIST_FCST'] = util.parse_var_list(
+            c_dict['VAR_LIST_FCST'] = parse_var_list(
                 self.config,
                 data_type='FCST',
                 met_tool=self.app_name
             )
         if obs_run:
             c_dict = self.set_fcst_or_obs_dict_items('OBS', c_dict)
-            c_dict['VAR_LIST_OBS'] = util.parse_var_list(
+            c_dict['VAR_LIST_OBS'] = parse_var_list(
                 self.config,
                 data_type='OBS',
                 met_tool=self.app_name
