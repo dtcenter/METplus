@@ -296,7 +296,7 @@ class ExtractTilesWrapper(CommandBuilder):
         """
         indices = self.get_object_indices(object_dict.keys())
         if not indices:
-            self.log_error(f"No non-zero OBJECT_CAT found")
+            self.logger.warning(f"No non-zero OBJECT_CAT found")
             return
 
         # loop over corresponding CF### and CO### lines
