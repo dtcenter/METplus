@@ -70,6 +70,7 @@ def time_generator(config):
     if not _validate_time_values(start_dt,
                                  end_dt,
                                  time_interval,
+                                 prefix,
                                  config.logger):
         yield None
         return
@@ -81,7 +82,7 @@ def time_generator(config):
 
         current_dt += time_interval
 
-def _validate_time_values(start_dt, end_dt, time_interval, logger):
+def _validate_time_values(start_dt, end_dt, time_interval, prefix, logger):
     if not start_dt:
         logger.error(f"Could not read {prefix}_BEG")
         return False
