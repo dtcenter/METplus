@@ -371,36 +371,6 @@ def is_loop_by_init(config):
 
     return None
 
-def get_time_obj(time_from_conf, fmt, clock_time, logger=None, warn=False):
-    """!Substitute today or now into [INIT/VALID]_[BEG/END] if used
-        Args:
-            @param time_from_conf value from [INIT/VALID]_[BEG/END] that
-                   may include now or today tags
-            @param fmt format of time_from_conf, i.e. %Y%m%d
-            @param clock_time datetime object for time when execution started
-            @param logger log object to write error messages - None if not provided
-            @returns datetime object if successful, None if not
-    """
-    time_str = do_string_sub(time_from_conf,
-                             now=clock_time,
-                             today=clock_time.strftime('%Y%m%d'))
-    try:
-        time_t = datetime.datetime.strptime(time_str, fmt)
-    except ValueError:
-        error_message = (f"[INIT/VALID]_TIME_FMT ({fmt}) does not match "
-                         f"[INIT/VALID]_[BEG/END] ({time_str})")
-        if logger:
-            if warn:
-                logger.warning(error_message)
-            else:
-                logger.error(error_message)
-        else:
-            print(f"ERROR: {error_message}")
-
-        return None
-
-    return time_t
-
 def loop_over_times_and_call(config, processes):
     """! Loop over all run times and call wrappers listed in config
 
