@@ -5,15 +5,16 @@ from .time_util import get_relativedelta
 from .string_template_substitution import do_string_sub
 
 def time_generator(config):
-    """! Read METplusConfig variables for time looping
+    """! Generator used to read METplusConfig variables for time looping
 
     @param METplusConfig object to read
     @returns None if not enough information is available on config.
-     Yields the next run time
+     Yields the next run time dictionary or None if something went wrong
     """
     # determine INIT or VALID prefix
     prefix = get_time_prefix(config)
     if not prefix:
+        yield None
         return
 
     # get clock time of when the run started
@@ -25,12 +26,15 @@ def time_generator(config):
     time_format = config.getraw('config', f'{prefix}_TIME_FMT', '')
     if not time_format:
         config.logger.error(f'Could not read {prefix}_TIME_FMT')
+        yield None
         return
 
     # check for [INIT/VALID]_LIST and use that list if set
     if config.has_option('config', f'{prefix}_LIST'):
         time_list = getlist(config.getraw('config', f'{prefix}_LIST'))
         if not time_list:
+            config.logger.error(f"Could not read {prefix}_LIST")
+            yield None
             return
 
         for time_string in time_list:
@@ -39,9 +43,9 @@ def time_generator(config):
                                          clock_dt,
                                          config.logger)
             if not current_dt:
-                return
+                yield None
 
-            time_info = _create_time_info_dict(prefix, current_dt, clock_dt)
+            time_info = _create_time_input_dict(prefix, current_dt, clock_dt)
             yield time_info
 
         return
@@ -67,11 +71,12 @@ def time_generator(config):
                                  end_dt,
                                  time_interval,
                                  config.logger):
+        yield None
         return
 
     current_dt = start_dt
     while current_dt <= end_dt:
-        time_info = _create_time_info_dict(prefix, current_dt, clock_dt)
+        time_info = _create_time_input_dict(prefix, current_dt, clock_dt)
         yield time_info
 
         current_dt += time_interval
@@ -98,8 +103,9 @@ def _validate_time_values(start_dt, end_dt, time_interval, logger):
 
     return True
 
-def _create_time_info_dict(prefix, current_dt, clock_dt):
+def _create_time_input_dict(prefix, current_dt, clock_dt):
     return {
+        'loop_by': prefix.lower(),
         prefix.lower(): current_dt,
         'now': clock_dt,
     }

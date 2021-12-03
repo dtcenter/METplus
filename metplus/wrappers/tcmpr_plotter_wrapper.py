@@ -10,6 +10,7 @@ from ..util import getlist
 from ..util import met_util as util
 from ..util import time_util
 from ..util import do_string_sub
+from ..util import time_generator
 from . import CommandBuilder
 
 class TCMPRPlotterWrapper(CommandBuilder):
@@ -108,7 +109,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
             self.log_error("TCMPR_PLOTTER_CONFIG_FILE must be set")
 
         # get time information
-        input_dict = self.set_time_dict_for_single_runtime()
+        input_dict = next(time_generator(self.config))
         if not input_dict:
             self.isOK = False
         c_dict['TIME_INFO'] = time_util.ti_calculate(input_dict)

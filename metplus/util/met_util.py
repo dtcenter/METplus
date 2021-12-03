@@ -15,6 +15,7 @@ from .string import getlist, getlistint
 from .string_template_substitution import do_string_sub
 from .string_template_substitution import parse_template
 from . import time_util as time_util
+from .time_looping import time_generator
 from .. import get_metplus_version
 
 """!@namespace met_util
@@ -400,72 +401,6 @@ def get_time_obj(time_from_conf, fmt, clock_time, logger=None, warn=False):
 
     return time_t
 
-def get_start_end_interval_times(config, warn=False):
-    """! Reads the METplusConfig object to determine the start, end, and
-      increment values based on the configuration. Based on the LOOP_BY value,
-      it will read the INIT_ or VALID_ variables TIME_FMT, BEG, END, and
-      INCREMENT and use the time format value to parse the other values.
-
-        @param config METplusConfig object to parse
-        @parm warn (optional) if True, output warnings instead of errors
-        @returns tuple of start time (datetime), end time (datetime) and
-        increment (dateutil.relativedelta) or all None values if time info
-        could not be parsed properly
-    """
-    # set function to send log messages (warning or error)
-    if warn:
-        log_function = config.logger.warning
-    else:
-        log_function = config.logger.error
-
-    clock_time_obj = datetime.datetime.strptime(config.getstr('config',
-                                                              'CLOCK_TIME'),
-                                                '%Y%m%d%H%M%S')
-    use_init = is_loop_by_init(config)
-    if use_init is None:
-        return None, None, None
-
-    if use_init:
-        time_format = config.getstr('config', 'INIT_TIME_FMT')
-        start_t = config.getraw('config', 'INIT_BEG')
-        end_t = config.getraw('config', 'INIT_END', start_t)
-        time_interval = time_util.get_relativedelta(
-            config.getstr('config', 'INIT_INCREMENT', '60')
-        )
-    else:
-        time_format = config.getstr('config', 'VALID_TIME_FMT')
-        start_t = config.getraw('config', 'VALID_BEG')
-        end_t = config.getraw('config', 'VALID_END', start_t)
-        time_interval = time_util.get_relativedelta(
-            config.getstr('config', 'VALID_INCREMENT', '60')
-        )
-
-    start_time = get_time_obj(start_t, time_format,
-                              clock_time_obj, config.logger,
-                              warn=warn)
-    if not start_time:
-        log_function("Could not format start time")
-        return None, None, None
-
-    end_time = get_time_obj(end_t, time_format,
-                            clock_time_obj, config.logger,
-                            warn=warn)
-    if not end_time:
-        log_function("Could not format end time")
-        return None, None, None
-
-    if (start_time + time_interval <
-            start_time + datetime.timedelta(seconds=60)):
-        log_function('[INIT/VALID]_INCREMENT must be greater than or '
-                     'equal to 60 seconds')
-        return None, None, None
-
-    if start_time > end_time:
-        log_function("Start time must come before end time")
-        return None, None, None
-
-    return start_time, end_time, time_interval
-
 def loop_over_times_and_call(config, processes):
     """! Loop over all run times and call wrappers listed in config
 
@@ -474,79 +409,55 @@ def loop_over_times_and_call(config, processes):
     @returns list of tuples with all commands run and the environment variables
     that were set for each
     """
-    use_init = is_loop_by_init(config)
-    if use_init is None:
-        return None
-
-    # get start time, end time, and time interval from config
-    loop_time, end_time, time_interval = get_start_end_interval_times(config)
-    if not loop_time:
-        config.logger.error("Could not get [INIT/VALID] time information from configuration file")
-        return None
-
     # keep track of commands that were run
     all_commands = []
-    while loop_time <= end_time:
-        log_runtime_banner(loop_time, config, use_init)
+    for time_input in time_generator(config):
         if not isinstance(processes, list):
             processes = [processes]
+
         for process in processes:
-            input_dict = set_input_dict(loop_time,
-                                        config,
-                                        use_init,
-                                        instance=process.instance)
+            # if time could not be read, increment errors for each process
+            if time_input is None:
+                process.errors += 1
+                continue
+
+            log_runtime_banner(config, time_input, process)
+            add_to_time_input(time_input,
+                              instance=process.instance)
 
             process.clear()
-            process.run_at_time(input_dict)
+            process.run_at_time(time_input)
             if process.all_commands:
                 all_commands.extend(process.all_commands)
             process.all_commands.clear()
 
-        loop_time += time_interval
-
     return all_commands
 
-def log_runtime_banner(loop_time, config, use_init):
-    run_time = loop_time.strftime("%Y-%m-%d %H:%M")
+def log_runtime_banner(config, time_input, process):
+    loop_by = time_input['loop_by']
+    run_time = time_input[loop_by].strftime("%Y-%m-%d %H:%M")
+
+    process_name = process.__class__.__name__
+    if process.instance:
+        process_name = f"{process_name}({process.instance})"
+
     config.logger.info("****************************************")
-    config.logger.info("* Running METplus")
-    if use_init:
-        config.logger.info("*  at init time: " + run_time)
-    else:
-        config.logger.info("*  at valid time: " + run_time)
+    config.logger.info(f"* Running METplus {process_name}")
+    config.logger.info(f"*  at {loop_by} time: {run_time}")
     config.logger.info("****************************************")
 
-def set_input_dict(loop_time, config, use_init, instance=None, custom=None):
-    """! Create input dictionary, set key 'now' to clock time in
-         YYYYMMDDHHMMSS, set key 'init' to loop_time value if use_init is True,
-         set key 'valid' to loop_time value if use_init is False, do not set
-         either if use_init is None
-
-         @param loop_time datetime object of current runtime
-         @param config METplusConfig object used to read CLOCK_TIME
-         @param use_init True if looping by init, False if looping by valid,
-          None otherwise
-    """
-    input_dict = {}
-    clock_time_obj = datetime.datetime.strptime(config.getstr('config',
-                                                              'CLOCK_TIME'),
-                                                '%Y%m%d%H%M%S')
-    input_dict['now'] = clock_time_obj
-
-    if use_init:
-        input_dict['init'] = loop_time
-    elif use_init is not None:
-        input_dict['valid'] = loop_time
+def add_to_time_input(time_input, clock_time=None, instance=None, custom=None):
+    if clock_time:
+        clock_dt = datetime.datetime.strptime(clock_time, '%Y%m%d%H%M%S')
+        time_input['now'] = clock_dt
 
     # if instance is set, use that value, otherwise use empty string
-    input_dict['instance'] = instance if instance else ''
+    time_input['instance'] = instance if instance else ''
 
-    # if custom is specified, set it, otherwise leave it unset so it can be
-    # set within the wrapper
+    # if custom is specified, set it
+    # otherwise leave it unset so it can be set within the wrapper
     if custom:
-        input_dict['custom'] = custom
-
-    return input_dict
+        time_input['custom'] = custom
 
 def get_lead_sequence(config, input_dict=None, wildcard_if_empty=False):
     """!Get forecast lead list from LEAD_SEQ or compute it from INIT_SEQ.

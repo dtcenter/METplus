@@ -1401,31 +1401,6 @@ class CommandBuilder:
         call METplus wrapper for each time"""
         return util.loop_over_times_and_call(self.config, self)
 
-    def set_time_dict_for_single_runtime(self):
-        # get clock time from start of execution for input time dictionary
-        clock_time_obj = datetime.strptime(self.config.getstr('config',
-                                                              'CLOCK_TIME'),
-                                           '%Y%m%d%H%M%S')
-
-        # get start run time and set INPUT_TIME_DICT
-        time_info = {'now': clock_time_obj}
-        start_time, _, _ = util.get_start_end_interval_times(self.config)
-        if start_time:
-            # set init or valid based on LOOP_BY
-            use_init = util.is_loop_by_init(self.config)
-            if use_init is None:
-                return None
-            elif use_init:
-                time_info['init'] = start_time
-            else:
-                time_info['valid'] = start_time
-        else:
-            self.config.logger.error("Could not get [INIT/VALID] time "
-                                     "information from configuration file")
-            return None
-
-        return time_info
-
     @staticmethod
     def format_met_config_dict(c_dict, name, keys=None):
         """! Return formatted dictionary named <name> with any <items> if they
@@ -1812,23 +1787,3 @@ class CommandBuilder:
         return get_wrapped_met_config_file(self.config,
                                            self.app_name,
                                            default_config_file)
-
-    def get_start_time_input_dict(self):
-        """! Get the first run time specified in config. Used if only running
-        the wrapper once (LOOP_ORDER = processes).
-
-        @returns dictionary containing time information for first run time
-        """
-        use_init = util.is_loop_by_init(self.config)
-        if use_init is None:
-            self.log_error('Could not read time info')
-            return None
-
-
-        start_time, _, _ = util.get_start_end_interval_times(self.config)
-        if start_time is None:
-            self.log_error("Could not get start time")
-            return None
-
-        input_dict = util.set_input_dict(start_time, self.config, use_init)
-        return input_dict

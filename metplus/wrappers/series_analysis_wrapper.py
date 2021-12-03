@@ -25,10 +25,11 @@ except Exception as err_msg:
 from ..util import getlist
 from ..util import met_util as util
 from ..util import do_string_sub, parse_template
-from ..util import get_lead_sequence, get_lead_sequence_groups, set_input_dict
+from ..util import get_lead_sequence, get_lead_sequence_groups
 from ..util import ti_get_hours_from_lead, ti_get_seconds_from_lead
 from ..util import ti_get_lead_string
 from ..util import parse_var_list
+from ..util import add_to_time_input
 from .plot_data_plane_wrapper import PlotDataPlaneWrapper
 from . import RuntimeFreqWrapper
 
@@ -350,11 +351,12 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             # create input dict and only set 'now' item
             # create a new dictionary each iteration in case the function
             # that it is passed into modifies it
-            input_dict = set_input_dict(loop_time=None,
-                                        config=self.config,
-                                        use_init=None,
-                                        instance=self.instance,
-                                        custom=custom)
+            input_dict = {}
+            add_to_time_input(input_dict,
+                              clock_time=self.config.getstr('config',
+                                                            'CLOCK_TIME'),
+                              instance=self.instance,
+                              custom=custom)
 
             input_dict['init'] = '*'
             input_dict['valid'] = '*'
