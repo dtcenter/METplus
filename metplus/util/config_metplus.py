@@ -23,7 +23,7 @@ from produtil.config import ProdConfig
 from . import met_util as util
 from .string_template_substitution import get_tags, do_string_sub
 from .met_util import is_python_script, format_var_items
-from .string import getlist
+from .string_manip import getlist
 from .doc_util import get_wrapper_name
 
 """!Creates the initial METplus directory structure,

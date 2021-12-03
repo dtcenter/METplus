@@ -4,8 +4,8 @@ import pytest
 
 from csv import reader
 
-from metplus.util.string import *
-from metplus.util.string import _fix_list
+from metplus.util.string_manip import *
+from metplus.util.string_manip import _fix_list
 
 def test_getlist():
     string_list = 'gt2.7, >3.6, eq42'

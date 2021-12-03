@@ -11,7 +11,7 @@ from dateutil.relativedelta import relativedelta
 from pathlib import Path
 from importlib import import_module
 
-from .string import getlist, getlistint
+from .string_manip import getlist, getlistint
 from .string_template_substitution import do_string_sub
 from .string_template_substitution import parse_template
 from . import time_util as time_util

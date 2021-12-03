@@ -1,5 +1,5 @@
 from .constants import *
-from .string import *
+from .string_manip import *
 from .metplus_check import *
 from .doc_util import *
 from .config_metplus import *

@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from .string import getlist
+from .string_manip import getlist
 from .time_util import get_relativedelta
 from .string_template_substitution import do_string_sub
 
