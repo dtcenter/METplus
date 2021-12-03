@@ -493,11 +493,13 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         """! Loop over list of input templates and find files for each
 
              @param time_info time dictionary to use for string substitution
+             @param data_type type of data to find, i.e. FCST or OBS
              @returns Input file list if all files were found, None if not.
         """
         input_files = self.find_data(time_info,
                                      return_list=True,
-                                     data_type=data_type)
+                                     data_type=data_type,
+                                     mandatory=False)
         return input_files
 
     def subset_input_files(self, time_info):
