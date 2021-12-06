@@ -1059,7 +1059,6 @@ no space between the process name and the parenthesis.
     [config]
     PROCESS_LIST = GridStat, GridStat(my_instance_name)
 
-    [dir]
     GRID_STAT_OUTPUT_DIR = /grid/stat/output/dir
 
     [my_instance_name]
@@ -1164,10 +1163,8 @@ CUSTOM_LOOP_LIST for that wrapper only.
 
   PCP_COMBINE_CUSTOM_LOOP_LIST = mem_001, mem_002
 
-  [dir]
   FCST_PCP_COMBINE_INPUT_DIR = /d1/ensemble
 
-  [filename_templates]
   FCST_PCP_COMBINE_INPUT_TEMPLATE = {custom?fmt=%s}/{valid?fmt=%Y%m%d}.nc
 
 This configuration will run the following:
@@ -1193,7 +1190,6 @@ This configuration will run the following:
 
   SERIES_ANALYSIS_CONFIG_FILE = {CONFIG_DIR}/SAConfig_{custom?fmt=%s}
 
-  [dir]
   SERIES_ANALYSIS_OUTPUT_DIR = {OUTPUT_BASE}/SA/{custom?fmt=%s}
 
 This configuration will run SeriesAnalysis:
@@ -1470,10 +1466,9 @@ Using Templates to find Observation Data
 
 The following configuration variables describe input observation data::
 
-  [dir]
+  [config]
   OBS_GRID_STAT_INPUT_DIR = /my/path/to/grid_stat/input/obs
 
-  [filename_templates]
   OBS_GRID_STAT_INPUT_TEMPLATE = {valid?fmt=%Y%m%d}/prefix.{valid?fmt=%Y%m%d%H}.ext
 
 The input directory is the top level directory containing all of the
@@ -1511,10 +1506,9 @@ Most forecast files contain the initialization time and the forecast lead
 in the filename. The keywords 'init' and 'lead' can be used to describe
 the template of these files::
 
-  [dir]
+  [config]
   FCST_GRID_STAT_INPUT_DIR = /my/path/to/grid_stat/input/fcst
 
-  [filename_templates]
   FCST_GRID_STAT_INPUT_TEMPLATE = prefix.{init?fmt=%Y%m%d%H}_f{lead?fmt=%3H}.ext
 
 For a valid time of 20190201_00Z and a forecast lead of 3, METplus Wrappers
@@ -1533,10 +1527,8 @@ the valid time of the data. Consider the following configuration::
   [config]
   PB2NC_OFFSETS = 6, 3
 
-  [dir]
   PB2NC_INPUT_DIR = /my/path/to/prepbufr
 
-  [filename_templates]
   PB2NC_INPUT_TEMPLATE = prefix.{da_init?fmt=%Y%m%d}_{cycle?fmt=%H}_off{offset?fmt=%2H}.ext
 
 The PB2NC_OFFSETS list tells METplus Wrappers the order in which to
@@ -1565,7 +1557,7 @@ the following day. In this example, for a run at 00Z you want to use the
 file from the previous day and for the 01Z to 23Z runs you want to use the
 file that corresponds to the current day. Here is an example::
 
-  [filename_templates]
+  [config]
   OBS_POINT_STAT_INPUT_TEMPLATE = {valid?fmt=%Y%m%d?shift=-3600}.ext
 
 Running the above configuration at a valid time of 20190201_12Z will shift
@@ -1593,10 +1585,8 @@ configuration::
   OBS_FILE_WINDOW_BEGIN = -7200
   OBS_FILE_WINDOW_END = 7200
 
-  [dir]
   OBS_GRID_STAT_INPUT_DIR = /my/grid_stat/input/obs
 
-  [filename_templates]
   OBS_GRID_STAT_INPUT_TEMPLATE = {valid?fmt=%Y%m%d}/pre.{valid?fmt=%Y%m%d}_{valid?fmt=%H}.ext
 
 For a run time of 20190201_00Z, and a set of files in the input directory
@@ -1710,10 +1700,8 @@ how these variables affect how the data is processed.
 
     PROCESS_LIST = SeriesAnalysis
 
-    [dir]
     FCST_SERIES_ANALYSIS_INPUT_DIR = /my/fcst/dir
 
-    [filename_templates]
     FCST_SERIES_ANALYSIS_INPUT_TEMPLATE = I{init?fmt=%Y%m%d%H}_F{lead?fmt=%3H}_V{valid?fmt=%H}
 
 In this example, the wrapper will go through all initialization and forecast
