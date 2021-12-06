@@ -1,5 +1,5 @@
 """
-Program Name: string.py
+Program Name: string_manip.py
 Contact(s): George McCabe
 Description: METplus utility to handle string manipulation
 """
