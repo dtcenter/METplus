@@ -100,10 +100,10 @@ model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.con
 #
 # This use case uses one Python script to read forecast and observation data
 #
-# parm/use_cases/model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsSMAP_climWOA_sss/read_rtofs_smos_woa.py
+# parm/use_cases/model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsSMAP_climWOA_sss/read_rtofs_smap_woa.py
 #
 # .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsSMAP_climWOA_sss/read_rtofs_smos_woa.py
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsSMAP_climWOA_sss/read_rtofs_smap_woa.py
 #
 
 ##############################################################################
