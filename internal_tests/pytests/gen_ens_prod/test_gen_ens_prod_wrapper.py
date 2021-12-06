@@ -53,35 +53,36 @@ def set_minimum_config_settings(config):
 
 @pytest.mark.parametrize(
     'config_overrides, env_var_values', [
+        # 0
         ({'MODEL': 'my_model'},
          {'METPLUS_MODEL': 'model = "my_model";'}),
-
+        # 1
         ({'GEN_ENS_PROD_DESC': 'my_desc'},
          {'METPLUS_DESC': 'desc = "my_desc";'}),
-
+        # 2
         ({'DESC': 'my_desc'},
          {'METPLUS_DESC': 'desc = "my_desc";'}),
-
+        # 3
         ({'GEN_ENS_PROD_REGRID_TO_GRID': 'FCST',
           },
          {'METPLUS_REGRID_DICT': 'regrid = {to_grid = FCST;}'}),
-
+        # 4
         ({'GEN_ENS_PROD_REGRID_METHOD': 'NEAREST',
           },
          {'METPLUS_REGRID_DICT': 'regrid = {method = NEAREST;}'}),
-
+        # 5
         ({'GEN_ENS_PROD_REGRID_WIDTH': '1',
           },
          {'METPLUS_REGRID_DICT': 'regrid = {width = 1;}'}),
-
+        # 6
         ({'GEN_ENS_PROD_REGRID_VLD_THRESH': '0.5',
           },
          {'METPLUS_REGRID_DICT': 'regrid = {vld_thresh = 0.5;}'}),
-
+        # 7
         ({'GEN_ENS_PROD_REGRID_SHAPE': 'SQUARE',
           },
          {'METPLUS_REGRID_DICT': 'regrid = {shape = SQUARE;}'}),
-
+        # 8
         ({'GEN_ENS_PROD_REGRID_TO_GRID': 'FCST',
           'GEN_ENS_PROD_REGRID_METHOD': 'NEAREST',
           'GEN_ENS_PROD_REGRID_WIDTH': '1',
@@ -91,110 +92,65 @@ def set_minimum_config_settings(config):
          {'METPLUS_REGRID_DICT': ('regrid = {to_grid = FCST;method = NEAREST;'
                                   'width = 1;vld_thresh = 0.5;shape = SQUARE;}'
                                   )}),
-
+        # 9
         ({'GEN_ENS_PROD_CLIMO_MEAN_INPUT_TEMPLATE':
               '/some/path/climo/filename.nc',
           },
          {'METPLUS_CLIMO_MEAN_DICT':
               'climo_mean = {file_name = ["/some/path/climo/filename.nc"];}',
-          'CLIMO_MEAN_FILE':
-              '"/some/path/climo/filename.nc"',
           }),
+        # 10
         ({'GEN_ENS_PROD_CLIMO_STDEV_INPUT_TEMPLATE':
               '/some/path/climo/stdfile.nc',
           },
          {'METPLUS_CLIMO_STDEV_DICT':
               'climo_stdev = {file_name = ["/some/path/climo/stdfile.nc"];}',
-          'CLIMO_STDEV_FILE':
-              '"/some/path/climo/stdfile.nc"',
          }),
-        # 12 mask grid and poly (old config var)
-        ({'GEN_ENS_PROD_MASK_GRID': 'FULL',
-          'GEN_ENS_PROD_VERIFICATION_MASK_TEMPLATE': 'one, two',
-          },
-         {'METPLUS_MASK_GRID':
-              'grid = ["FULL"];',
-          'METPLUS_MASK_POLY':
-              'poly = ["one","two"];',
-          }),
-        # 13 mask grid and poly (new config var)
-        ({'GEN_ENS_PROD_MASK_GRID': 'FULL',
-          'GEN_ENS_PROD_MASK_POLY': 'one, two',
-          },
-         {'METPLUS_MASK_GRID':
-              'grid = ["FULL"];',
-          'METPLUS_MASK_POLY':
-              'poly = ["one","two"];',
-          }),
-        # 14 mask grid value
-        ({'GEN_ENS_PROD_MASK_GRID': 'FULL',
-          },
-         {'METPLUS_MASK_GRID':
-              'grid = ["FULL"];',
-          }),
-        # 15 mask grid empty string (should create empty list)
-        ({'GEN_ENS_PROD_MASK_GRID': '',
-          },
-         {'METPLUS_MASK_GRID':
-              'grid = [];',
-          }),
-        # 16 mask poly (old config var)
-        ({'GEN_ENS_PROD_VERIFICATION_MASK_TEMPLATE': 'one, two',
-          },
-         {'METPLUS_MASK_POLY':
-              'poly = ["one","two"];',
-          }),
-        # 27 mask poly (new config var)
-        ({'GEN_ENS_PROD_MASK_POLY': 'one, two',
-          },
-         {'METPLUS_MASK_POLY':
-              'poly = ["one","two"];',
-          }),
-        # ensemble_flag
+        # 11 ensemble_flag
         ({'GEN_ENS_PROD_ENSEMBLE_FLAG_LATLON': 'FALSE', },
          {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {latlon = FALSE;}'}),
-
+        # 12
         ({'GEN_ENS_PROD_ENSEMBLE_FLAG_MEAN': 'FALSE', },
          {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {mean = FALSE;}'}),
-
+        # 13
         ({'GEN_ENS_PROD_ENSEMBLE_FLAG_STDEV': 'FALSE', },
          {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {stdev = FALSE;}'}),
-
+        # 14
         ({'GEN_ENS_PROD_ENSEMBLE_FLAG_MINUS': 'FALSE', },
          {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {minus = FALSE;}'}),
-
+        # 15
         ({'GEN_ENS_PROD_ENSEMBLE_FLAG_PLUS': 'FALSE', },
          {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {plus = FALSE;}'}),
-
+        # 16
         ({'GEN_ENS_PROD_ENSEMBLE_FLAG_MIN': 'FALSE', },
          {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {min = FALSE;}'}),
-
+        # 17
         ({'GEN_ENS_PROD_ENSEMBLE_FLAG_MAX': 'FALSE', },
          {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {max = FALSE;}'}),
-
+        # 18
         ({'GEN_ENS_PROD_ENSEMBLE_FLAG_RANGE': 'FALSE', },
          {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {range = FALSE;}'}),
-
+        # 19
         ({'GEN_ENS_PROD_ENSEMBLE_FLAG_VLD_COUNT': 'FALSE', },
          {
              'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {vld_count = FALSE;}'}),
-
+        # 20
         ({'GEN_ENS_PROD_ENSEMBLE_FLAG_FREQUENCY': 'FALSE', },
          {
              'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {frequency = FALSE;}'}),
-
+        # 21
         ({'GEN_ENS_PROD_ENSEMBLE_FLAG_NEP': 'FALSE', },
          {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {nep = FALSE;}'}),
-
+        # 22
         ({'GEN_ENS_PROD_ENSEMBLE_FLAG_NMEP': 'FALSE', },
          {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {nmep = FALSE;}'}),
-
+        # 23
         ({'GEN_ENS_PROD_ENSEMBLE_FLAG_RANK': 'FALSE', },
          {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {rank = FALSE;}'}),
-
+        # 24
         ({'GEN_ENS_PROD_ENSEMBLE_FLAG_WEIGHT': 'FALSE', },
          {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {weight = FALSE;}'}),
-
+        # 25
         ({
              'GEN_ENS_PROD_ENSEMBLE_FLAG_LATLON': 'FALSE',
              'GEN_ENS_PROD_ENSEMBLE_FLAG_MEAN': 'FALSE',
@@ -220,41 +176,40 @@ def set_minimum_config_settings(config):
                                             'frequency = FALSE;nep = FALSE;'
                                             'nmep = FALSE;rank = FALSE;'
                                             'weight = FALSE;}')}),
-
+        # 26
         ({'GEN_ENS_PROD_CLIMO_MEAN_FILE_NAME': '/some/climo_mean/file.txt', },
          {'METPLUS_CLIMO_MEAN_DICT': ('climo_mean = {file_name = '
-                                      '["/some/climo_mean/file.txt"];}'),
-          'CLIMO_MEAN_FILE': '"/some/climo_mean/file.txt"'}),
-
+                                      '["/some/climo_mean/file.txt"];}'),}),
+        # 27
         ({'GEN_ENS_PROD_CLIMO_MEAN_FIELD': '{name="CLM_NAME"; level="(0,0,*,*)";}', },
          {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {field = [{name="CLM_NAME"; level="(0,0,*,*)";}];}'}),
-
+        # 28
         ({'GEN_ENS_PROD_CLIMO_MEAN_REGRID_METHOD': 'NEAREST', },
          {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {method = NEAREST;}}'}),
-
+        # 29
         ({'GEN_ENS_PROD_CLIMO_MEAN_REGRID_WIDTH': '1', },
          {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {width = 1;}}'}),
-
+        # 30
         ({'GEN_ENS_PROD_CLIMO_MEAN_REGRID_VLD_THRESH': '0.5', },
          {
              'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {vld_thresh = 0.5;}}'}),
-
+        # 31
         ({'GEN_ENS_PROD_CLIMO_MEAN_REGRID_SHAPE': 'SQUARE', },
          {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {shape = SQUARE;}}'}),
-
+        # 32
         ({'GEN_ENS_PROD_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST', },
          {
              'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {time_interp_method = NEAREST;}'}),
-
+        # 33
         ({'GEN_ENS_PROD_CLIMO_MEAN_MATCH_MONTH': 'True', },
          {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {match_month = TRUE;}'}),
-
+        # 34
         ({'GEN_ENS_PROD_CLIMO_MEAN_DAY_INTERVAL': '30', },
          {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {day_interval = 30;}'}),
-
+        # 35
         ({'GEN_ENS_PROD_CLIMO_MEAN_HOUR_INTERVAL': '12', },
          {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {hour_interval = 12;}'}),
-
+        # 36
         ({
              'GEN_ENS_PROD_CLIMO_MEAN_FILE_NAME': '/some/climo_mean/file.txt',
              'GEN_ENS_PROD_CLIMO_MEAN_FIELD': '{name="CLM_NAME"; level="(0,0,*,*)";}',
@@ -274,46 +229,43 @@ def set_minimum_config_settings(config):
                                       'vld_thresh = 0.5;shape = SQUARE;}'
                                       'time_interp_method = NEAREST;'
                                       'match_month = TRUE;day_interval = 30;'
-                                      'hour_interval = 12;}'),
-          'CLIMO_MEAN_FILE': '"/some/climo_mean/file.txt"'}),
-
-        # climo stdev
+                                      'hour_interval = 12;}')}),
+        # 37 climo stdev
         ({'GEN_ENS_PROD_CLIMO_STDEV_FILE_NAME': '/some/climo_stdev/file.txt', },
          {'METPLUS_CLIMO_STDEV_DICT': ('climo_stdev = {file_name = '
-                                      '["/some/climo_stdev/file.txt"];}'),
-          'CLIMO_STDEV_FILE': '"/some/climo_stdev/file.txt"'}),
-
+                                      '["/some/climo_stdev/file.txt"];}')}),
+        # 38
         ({'GEN_ENS_PROD_CLIMO_STDEV_FIELD': '{name="CLM_NAME"; level="(0,0,*,*)";}', },
          {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {field = [{name="CLM_NAME"; level="(0,0,*,*)";}];}'}),
-
+        # 39
         ({'GEN_ENS_PROD_CLIMO_STDEV_REGRID_METHOD': 'NEAREST', },
          {
              'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {method = NEAREST;}}'}),
-
+        # 40
         ({'GEN_ENS_PROD_CLIMO_STDEV_REGRID_WIDTH': '1', },
          {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {width = 1;}}'}),
-
+        # 41
         ({'GEN_ENS_PROD_CLIMO_STDEV_REGRID_VLD_THRESH': '0.5', },
          {
              'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {vld_thresh = 0.5;}}'}),
-
+        # 42
         ({'GEN_ENS_PROD_CLIMO_STDEV_REGRID_SHAPE': 'SQUARE', },
          {
              'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {shape = SQUARE;}}'}),
-
+        # 43
         ({'GEN_ENS_PROD_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST', },
          {
              'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {time_interp_method = NEAREST;}'}),
-
+        # 44
         ({'GEN_ENS_PROD_CLIMO_STDEV_MATCH_MONTH': 'True', },
          {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {match_month = TRUE;}'}),
-
+        # 45
         ({'GEN_ENS_PROD_CLIMO_STDEV_DAY_INTERVAL': '30', },
          {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {day_interval = 30;}'}),
-
+        # 46
         ({'GEN_ENS_PROD_CLIMO_STDEV_HOUR_INTERVAL': '12', },
          {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {hour_interval = 12;}'}),
-
+        # 47
         ({
              'GEN_ENS_PROD_CLIMO_STDEV_FILE_NAME': '/some/climo_stdev/file.txt',
              'GEN_ENS_PROD_CLIMO_STDEV_FIELD': '{name="CLM_NAME"; level="(0,0,*,*)";}',
@@ -333,17 +285,17 @@ def set_minimum_config_settings(config):
                                       'vld_thresh = 0.5;shape = SQUARE;}'
                                       'time_interp_method = NEAREST;'
                                       'match_month = TRUE;day_interval = 30;'
-                                      'hour_interval = 12;}'),
-          'CLIMO_STDEV_FILE': '"/some/climo_stdev/file.txt"'}),
+                                      'hour_interval = 12;}')}),
+        # 48
         ({'GEN_ENS_PROD_NBRHD_PROB_WIDTH': '5', },
          {'METPLUS_NBRHD_PROB_DICT': 'nbrhd_prob = {width = [5];}'}),
-
+        # 49
         ({'GEN_ENS_PROD_NBRHD_PROB_SHAPE': 'circle', },
          {'METPLUS_NBRHD_PROB_DICT': 'nbrhd_prob = {shape = CIRCLE;}'}),
-
+        # 50
         ({'GEN_ENS_PROD_NBRHD_PROB_VLD_THRESH': '0.0', },
          {'METPLUS_NBRHD_PROB_DICT': 'nbrhd_prob = {vld_thresh = 0.0;}'}),
-
+        # 51
         ({
              'GEN_ENS_PROD_NBRHD_PROB_WIDTH': '5',
              'GEN_ENS_PROD_NBRHD_PROB_SHAPE': 'CIRCLE',
@@ -355,25 +307,26 @@ def set_minimum_config_settings(config):
                      'vld_thresh = 0.0;}'
              )
          }),
+        # 52
         ({'GEN_ENS_PROD_NMEP_SMOOTH_VLD_THRESH': '0.0', },
          {'METPLUS_NMEP_SMOOTH_DICT': 'nmep_smooth = {vld_thresh = 0.0;}'}),
-
+        # 53
         ({'GEN_ENS_PROD_NMEP_SMOOTH_SHAPE': 'circle', },
          {'METPLUS_NMEP_SMOOTH_DICT': 'nmep_smooth = {shape = CIRCLE;}'}),
-
+        # 54
         ({'GEN_ENS_PROD_NMEP_SMOOTH_GAUSSIAN_DX': '81.27', },
          {'METPLUS_NMEP_SMOOTH_DICT': 'nmep_smooth = {gaussian_dx = 81.27;}'}),
-
+        # 55
         ({'GEN_ENS_PROD_NMEP_SMOOTH_GAUSSIAN_RADIUS': '120', },
          {
              'METPLUS_NMEP_SMOOTH_DICT': 'nmep_smooth = {gaussian_radius = 120;}'}),
-
+        # 56
         ({'GEN_ENS_PROD_NMEP_SMOOTH_TYPE_METHOD': 'GAUSSIAN', },
          {'METPLUS_NMEP_SMOOTH_DICT': 'nmep_smooth = {type = [{method = GAUSSIAN;}];}'}),
-
+        # 57
         ({'GEN_ENS_PROD_NMEP_SMOOTH_TYPE_WIDTH': '1', },
          {'METPLUS_NMEP_SMOOTH_DICT': 'nmep_smooth = {type = [{width = 1;}];}'}),
-
+        # 58
         ({
              'GEN_ENS_PROD_NMEP_SMOOTH_VLD_THRESH': '0.0',
              'GEN_ENS_PROD_NMEP_SMOOTH_SHAPE': 'circle',
@@ -442,7 +395,11 @@ def test_gen_ens_prod_single_field(metplus_config, config_overrides,
         assert(cmd == expected_cmd)
 
         # check that environment variables were set properly
-        for env_var_key in wrapper.WRAPPER_ENV_VAR_KEYS:
+        # including deprecated env vars (not in wrapper env var keys)
+        env_var_keys = (wrapper.WRAPPER_ENV_VAR_KEYS +
+                        [name for name in env_var_values
+                         if name not in wrapper.WRAPPER_ENV_VAR_KEYS])
+        for env_var_key in env_var_keys:
             match = next((item for item in env_vars if
                           item.startswith(env_var_key)), None)
             assert(match is not None)

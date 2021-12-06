@@ -24,6 +24,7 @@ from ..util import time_util
 from ..util import met_util as util
 from ..util import do_string_sub
 from ..util import get_tags
+from ..util.met_config import add_met_config_dict_list
 from . import CommandBuilder
 
 '''!@namespace TCPairsWrapper
@@ -315,66 +316,21 @@ class TCPairsWrapper(CommandBuilder):
             c_dict['BASIN_LIST'] = basin_list
 
     def handle_consensus(self):
-        children = [
-            'NAME',
-            'MEMBERS',
-            'REQUIRED',
-            'MIN_REQ'
-        ]
-        regex = r'^TC_PAIRS_CONSENSUS(\d+)_(\w+)$'
-        indices = util.find_indices_in_config_section(regex, self.config,
-                                                      index_index=1,
-                                                      id_index=2)
+        dict_items = {
+            'name': 'string',
+            'members': 'list',
+            'required': ('list', 'remove_quotes'),
+            'min_req': 'int',
+        }
+        return_code = add_met_config_dict_list(config=self.config,
+                                               app_name=self.app_name,
+                                               output_dict=self.env_var_dict,
+                                               dict_name='consensus',
+                                               dict_items=dict_items)
+        if not return_code:
+            self.isOK = False
 
-        consensus_dict = {}
-        for index, items in indices.items():
-            # read all variables for each index
-            consensus_items = {}
-
-            # check if any variable found doesn't match valid variables
-            if any([item for item in items if item not in children]):
-                self.log_error("Invalid variable: "
-                               f"TC_PAIRS_CONSENSUS{index}_{item}")
-
-            self.add_met_config(
-                name='name',
-                data_type='string',
-                metplus_configs=[f'TC_PAIRS_CONSENSUS{index}_NAME'],
-                output_dict=consensus_items
-            )
-            self.add_met_config(
-                name='members',
-                data_type='list',
-                metplus_configs=[f'TC_PAIRS_CONSENSUS{index}_MEMBERS'],
-                output_dict=consensus_items
-            )
-            self.add_met_config(
-                name='required',
-                data_type='list',
-                metplus_configs=[f'TC_PAIRS_CONSENSUS{index}_REQUIRED'],
-                extra_args={'remove_quotes': True},
-                output_dict=consensus_items
-            )
-            self.add_met_config(
-                name='min_req',
-                data_type='int',
-                metplus_configs=[f'TC_PAIRS_CONSENSUS{index}_MIN_REQ'],
-                output_dict=consensus_items
-            )
-
-            self.logger.debug(f'Consensus Items: {consensus_items}')
-            # format dictionary, then add it to consensus_dict
-            dict_string = self.format_met_config('dict',
-                                                 consensus_items,
-                                                 name='')
-            consensus_dict[index] = dict_string
-
-        # format list of dictionaries
-        output_string = self.format_met_config('list',
-                                               consensus_dict,
-                                               'consensus')
-
-        self.env_var_dict['METPLUS_CONSENSUS_LIST'] = output_string
+        return return_code
 
     def run_all_times(self):
         """! Build up the command to invoke the MET tool tc_pairs.
