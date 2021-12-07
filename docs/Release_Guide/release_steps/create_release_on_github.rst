@@ -13,7 +13,7 @@ Create Release on GitHub
   https://|projectRepo|.readthedocs.io/en/vX.Y.Z-betaN/Users_Guide/release-notes.html
   (Note: the URL will not be active until the release is created)
 
-* Attach a PDF of the |projectRepo| User's Guide, if available.
+* Add a link to the PDF of the |projectRepo| User's Guide, if available.
   The PDF can be downloaded from ReadTheDocs if it is available, i.e.
   https://|projectRepo|.readthedocs.io/_/downloads/en/vX.Y.Z-betaN/pdf/
   (Note: the URL will not be active until the release is created)
