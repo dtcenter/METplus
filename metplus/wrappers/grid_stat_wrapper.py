@@ -49,6 +49,7 @@ class GridStatWrapper(CompareGriddedWrapper):
         'METPLUS_OBS_FILE_TYPE',
         'METPLUS_HSS_EC_VALUE',
         'METPLUS_DISTANCE_MAP_DICT',
+        'METPLUS_FOURIER_DICT',
     ]
 
     # handle deprecated env vars used pre v4.0.0
@@ -244,6 +245,11 @@ class GridStatWrapper(CompareGriddedWrapper):
             'fom_alpha': 'float',
             'zhu_weight': 'float',
             'beta_value(n)': ('string', 'remove_quotes'),
+        })
+
+        self.add_met_config_dict('fourier', {
+            'wave_1d_beg': ('list', 'remove_quotes'),
+            'wave_1d_end': ('list', 'remove_quotes'),
         })
 
         return c_dict

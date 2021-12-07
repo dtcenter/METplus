@@ -2800,6 +2800,8 @@ METplus Configuration
 | :term:`GRID_STAT_DISTANCE_MAP_FOM_ALPHA`
 | :term:`GRID_STAT_DISTANCE_MAP_ZHU_WEIGHT`
 | :term:`GRID_STAT_DISTANCE_MAP_BETA_VALUE_N`
+| :term:`GRID_STAT_FOURIER_WAVE_1D_BEG`
+| :term:`GRID_STAT_FOURIER_WAVE_1D_END`
 | :term:`GRID_STAT_MASK_GRID` (optional)
 | :term:`GRID_STAT_MASK_POLY` (optional)
 | :term:`GRID_STAT_MET_CONFIG_OVERRIDES`
@@ -3265,6 +3267,19 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - distance_map.zhu_weight
    * - :term:`GRID_STAT_DISTANCE_MAP_BETA_VALUE_N`
      - distance_map.beta_value(n)
+
+**${METPLUS_FOURIER_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_FOURIER_WAVE_1D_BEG`
+     - fourier.wave_1d_beg
+   * - :term:`GRID_STAT_FOURIER_WAVE_1D_END`
+     - fourier.wave_1d_end
 
 .. _ioda2nc_wrapper:
 

@@ -8529,3 +8529,13 @@ METplus Configuration Glossary
      Specify the value for 'obs_quality_exc' in the MET configuration file for EnsembleStat.
 
      | *Used by:* EnsembleStat
+
+   GRID_STAT_FOURIER_WAVE_1D_BEG
+     Specify the value for 'fourier.wave_1d_beg' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_FOURIER_WAVE_1D_END
+     Specify the value for 'fourier.wave_1d_end' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat

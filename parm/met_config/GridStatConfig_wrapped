@@ -134,10 +134,8 @@ nbrhd = {
 // Fourier decomposition
 // May be set separately in each "obs.field" entry
 //
-fourier = {
-   wave_1d_beg = [];
-   wave_1d_end = [];
-}
+//fourier = {
+${METPLUS_FOURIER_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
