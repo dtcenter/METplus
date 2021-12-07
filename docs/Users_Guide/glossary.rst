@@ -8539,3 +8539,13 @@ METplus Configuration Glossary
      Specify the value for 'fourier.wave_1d_end' in the MET configuration file for GridStat.
 
      | *Used by:* GridStat
+
+   PB2NC_OBS_BUFR_MAP
+     Specify the value for 'obs_bufr_map' in the MET configuration file for PB2NC.
+
+     | *Used by:* PB2NC
+
+   PB2NC_OBS_PREPBUFR_MAP
+     Specify the value for 'obs_prepbufr_map' in the MET configuration file for PB2NC.
+
+     | *Used by:* PB2NC
