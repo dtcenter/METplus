@@ -633,6 +633,8 @@ When looping over valid time (`LOOP_BY` = VALID or REALTIME), the following
 variables must be set:
 
 :term:`VALID_TIME_FMT`:
+"""""""""""""""""""""""
+
 This is the format of the valid times the user can configure in the METplus
 Wrappers. The value of `VALID_BEG` and `VALID_END` must correspond to this
 format.
@@ -699,7 +701,7 @@ as the previous example::
    VALID_TIME_FMT = %Y%m%d%H
    VALID_LIST = 2019020100, 2019020106, 2019020112, 2019020118, 2019020200
 
-See the glossary entry for :term:`VALID_LIST for more information.
+See the glossary entry for :term:`VALID_LIST` for more information.
 
 .. _Looping_by_Initialization_Time:
 
@@ -747,7 +749,7 @@ as the previous example::
    INIT_TIME_FMT = %Y%m%d%H
    INIT_LIST = 2019020100, 2019020106, 2019020112, 2019020118, 2019020200
 
-See the glossary entry for :term:`INIT_LIST for more information.
+See the glossary entry for :term:`INIT_LIST` for more information.
 
 
 .. _looping_over_forecast_leads:
