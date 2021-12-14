@@ -689,6 +689,18 @@ The following is a configuration that will process valid time 2019-02-01 at
 
 This will process data valid on 2019-02-01 at 00Z, 06Z, 12Z, and 18Z as well as 2019-02-02 at 00Z. For each of these valid times, the METplus wrappers can also loop over a set of forecast leads that are all valid at the current run time. See :ref:`looping_over_forecast_leads` for more information.
 
+:term:`VALID_LIST`:
+If the intervals between run times are irregular, then an explicit list of
+times can be defined. The following example will process the same times
+as the previous example::
+
+   [config]
+   LOOP_BY = VALID
+   VALID_TIME_FMT = %Y%m%d%H
+   VALID_LIST = 2019020100, 2019020106, 2019020112, 2019020118, 2019020200
+
+See the glossary entry for :term:`VALID_LIST for more information.
+
 .. _Looping_by_Initialization_Time:
 
 Looping by Initialization Time
@@ -724,6 +736,19 @@ The following is a configuration that will process initialization time 2019-02-0
     Substituting VALID_INCREMENT = 21600 will generate the same result.
 
 This will process data initialized on 2019-02-01 at 00Z, 06Z, 12Z, and 18Z as well as 2019-02-02 at 00Z. For each of these initialization times, METplus Wrappers can also loop over a set of forecast leads that are all initialized at the current run time. See :ref:`looping_over_forecast_leads` for more information.
+
+:term:`INIT_LIST`:
+If the intervals between run times are irregular, then an explicit list of
+times can be defined. The following example will process the same times
+as the previous example::
+
+   [config]
+   LOOP_BY = INIT
+   INIT_TIME_FMT = %Y%m%d%H
+   INIT_LIST = 2019020100, 2019020106, 2019020112, 2019020118, 2019020200
+
+See the glossary entry for :term:`INIT_LIST for more information.
+
 
 .. _looping_over_forecast_leads:
 

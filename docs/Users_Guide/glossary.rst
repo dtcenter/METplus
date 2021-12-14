@@ -8529,3 +8529,23 @@ METplus Configuration Glossary
      Specify the value for 'obs_quality_exc' in the MET configuration file for EnsembleStat.
 
      | *Used by:* EnsembleStat
+
+   INIT_LIST
+     List of initialization times to process.
+     This variable is used when intervals between run times are irregular.
+     It is only read if :ref:`LOOP_BY` = INIT. If it is set, then
+     :ref:`INIT_BEG`, :ref:`INIT_END`, and :ref:`INIT_INCREMENT`
+     are ignored. All values in the list must match the format of
+     :ref:`INIT_TIME_FMT` or they will be skipped.
+
+     | *Used by:* All
+
+   VALID_LIST
+     List of valid times to process.
+     This variable is used when intervals between run times are irregular.
+     It is only read if :ref:`LOOP_BY` = VALID. If it is set, then
+     :ref:`VALID_BEG`, :ref:`VALID_END`, and :ref:`VALID_INCREMENT`
+     are ignored. All values in the list must match the format of
+     :ref:`VALID_TIME_FMT` or they will be skipped.
+
+     | *Used by:* All
