@@ -87,7 +87,7 @@
   {
     "category": "medium_range",
     "index_list": "8",
-    "run": false
+    "run": true
   },
   {
     "category": "precipitation",
