@@ -8533,19 +8533,19 @@ METplus Configuration Glossary
    INIT_LIST
      List of initialization times to process.
      This variable is used when intervals between run times are irregular.
-     It is only read if :ref:`LOOP_BY` = INIT. If it is set, then
-     :ref:`INIT_BEG`, :ref:`INIT_END`, and :ref:`INIT_INCREMENT`
+     It is only read if :term:`LOOP_BY` = INIT. If it is set, then
+     :term:`INIT_BEG`, :term:`INIT_END`, and :term:`INIT_INCREMENT`
      are ignored. All values in the list must match the format of
-     :ref:`INIT_TIME_FMT` or they will be skipped.
+     :term:`INIT_TIME_FMT` or they will be skipped.
 
      | *Used by:* All
 
    VALID_LIST
      List of valid times to process.
      This variable is used when intervals between run times are irregular.
-     It is only read if :ref:`LOOP_BY` = VALID. If it is set, then
-     :ref:`VALID_BEG`, :ref:`VALID_END`, and :ref:`VALID_INCREMENT`
+     It is only read if :term:`LOOP_BY` = VALID. If it is set, then
+     :term:`VALID_BEG`, :term:`VALID_END`, and :term:`VALID_INCREMENT`
      are ignored. All values in the list must match the format of
-     :ref:`VALID_TIME_FMT` or they will be skipped.
+     :term:`VALID_TIME_FMT` or they will be skipped.
 
      | *Used by:* All
