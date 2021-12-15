@@ -5174,9 +5174,10 @@ Configuration
 | :term:`POINT_STAT_REGRID_WIDTH`
 | :term:`POINT_STAT_REGRID_VLD_THRESH`
 | :term:`POINT_STAT_REGRID_SHAPE`
-| :term:`POINT_STAT_GRID`
-| :term:`POINT_STAT_POLY`
-| :term:`POINT_STAT_STATION_ID`
+| :term:`POINT_STAT_MASK_GRID`
+| :term:`POINT_STAT_MASK_POLY`
+| :term:`POINT_STAT_MASK_SID`
+| :term:`POINT_STAT_MASK_LLPNT`
 | :term:`POINT_STAT_MESSAGE_TYPE`
 | :term:`POINT_STAT_CUSTOM_LOOP_LIST`
 | :term:`POINT_STAT_SKIP_IF_OUTPUT_EXISTS`
@@ -5490,6 +5491,18 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`POINT_STAT_MASK_SID`
      - mask.sid
+
+**${METPLUS_MASK_LLPNT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_MASK_LLPNT`
+     - mask.llpnt
+
 
 **${METPLUS_OUTPUT_PREFIX}**
 

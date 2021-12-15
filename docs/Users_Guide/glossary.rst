@@ -3431,9 +3431,7 @@ METplus Configuration Glossary
      | *Used by:*  PB2NC
 
    POINT_STAT_STATION_ID
-     Specify the ID of a specific station to use with the MET point_stat tool.
-
-     | *Used by:*  PointStat
+     .. warning:: **DEPRECATED:** Please use :term:`POINT_STAT_MASK_SID` instead.
 
    POINT_STAT_VERIFICATION_MASK_TEMPLATE
      Template used to specify the verification mask filename for the MET tool point_stat. Now supports a list of filenames.
@@ -6065,6 +6063,11 @@ METplus Configuration Glossary
      Set the mask.poly entry in the PointStat MET config file.
 
      | *Used by:*  PointStat
+
+   POINT_STAT_MASK_LLPNT
+     Specify the value for 'mask.llpnt' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
 
    MODE_GRID_RES
      Set the grid_res entry in the MODE MET config file.
