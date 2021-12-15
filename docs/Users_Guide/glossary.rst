@@ -8552,3 +8552,33 @@ METplus Configuration Glossary
      Specify the value for 'obs_prepbufr_map' in the MET configuration file for PB2NC.
 
      | *Used by:* PB2NC
+
+   POINT_STAT_HIRA_FLAG
+     Specify the value for 'hira.flag' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_HIRA_WIDTH
+     Specify the value for 'hira.width' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_HIRA_VLD_THRESH
+     Specify the value for 'hira.vld_thresh' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_HIRA_COV_THRESH
+     Specify the value for 'hira.cov_thresh' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_HIRA_SHAPE
+     Specify the value for 'hira.shape' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_HIRA_PROB_CAT_THRESH
+     Specify the value for 'hira.prob_cat_thresh' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat

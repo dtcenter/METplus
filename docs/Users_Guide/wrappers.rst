@@ -5233,6 +5233,12 @@ Configuration
 | :term:`POINT_STAT_CLIMO_STDEV_DAY_INTERVAL`
 | :term:`POINT_STAT_CLIMO_STDEV_HOUR_INTERVAL`
 | :term:`POINT_STAT_HSS_EC_VALUE`
+| :term:`POINT_STAT_HIRA_FLAG`
+| :term:`POINT_STAT_HIRA_WIDTH`
+| :term:`POINT_STAT_HIRA_VLD_THRESH`
+| :term:`POINT_STAT_HIRA_COV_THRESH`
+| :term:`POINT_STAT_HIRA_SHAPE`
+| :term:`POINT_STAT_HIRA_PROB_CAT_THRESH`
 | :term:`FCST_POINT_STAT_WINDOW_BEGIN` (optional)
 | :term:`FCST_POINT_STAT_WINDOW_END` (optional)
 | :term:`OBS_POINT_STAT_WINDOW_BEGIN` (optional)
@@ -5639,6 +5645,27 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`POINT_STAT_HSS_EC_VALUE`
      - hss_ec_value
+
+**${METPLUS_HIRA_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_HIRA_FLAG`
+     - hira.flag
+   * - :term:`POINT_STAT_HIRA_WIDTH`
+     - hira.width
+   * - :term:`POINT_STAT_HIRA_VLD_THRESH`
+     - hira.vld_thresh
+   * - :term:`POINT_STAT_HIRA_COV_THRESH`
+     - hira.cov_thresh
+   * - :term:`POINT_STAT_HIRA_SHAPE`
+     - hira.shape
+   * - :term:`POINT_STAT_HIRA_PROB_CAT_THRESH`
+     - hira.prob_cat_thresh
 
 
 .. _py_embed_ingest_wrapper:

@@ -153,13 +153,8 @@ ${METPLUS_INTERP_DICT}
 //
 // HiRA verification method
 //
-hira = {
-   flag       = FALSE;
-   width      = [ 2, 3, 4, 5 ];
-   vld_thresh = 1.0;
-   cov_thresh = [ ==0.25 ];
-   shape      = SQUARE;
-}
+//hira = {
+${METPLUS_HIRA_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 

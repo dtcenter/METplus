@@ -41,6 +41,7 @@ class PointStatWrapper(CompareGriddedWrapper):
         'METPLUS_CLIMO_MEAN_DICT',
         'METPLUS_CLIMO_STDEV_DICT',
         'METPLUS_HSS_EC_VALUE',
+        'METPLUS_HIRA_DICT',
     ]
 
     # handle deprecated env vars used pre v4.0.0
@@ -237,6 +238,15 @@ class PointStatWrapper(CompareGriddedWrapper):
         self.add_met_config(name='hss_ec_value',
                             data_type='float',
                             metplus_configs=['POINT_STAT_HSS_EC_VALUE'])
+
+        self.add_met_config_dict('hira', {
+            'flag': 'bool',
+            'width': ('list', 'remove_quotes'),
+            'vld_thresh': 'float',
+            'cov_thresh': ('list', 'remove_quotes'),
+            'shape': ('string', 'remove_quotes, uppercase'),
+            'prob_cat_thresh': ('list', 'remove_quotes'),
+        })
 
         if not c_dict['FCST_INPUT_TEMPLATE']:
             self.log_error('Must set FCST_POINT_STAT_INPUT_TEMPLATE '

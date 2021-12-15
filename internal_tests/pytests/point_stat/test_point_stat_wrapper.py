@@ -409,6 +409,39 @@ def test_met_dictionary_in_var_options(metplus_config):
                                     '{ name = "BOX"; lat_thresh = >=20&&<=40; lon_thresh = >=-110&&<=-90; }')},
          {'METPLUS_MASK_LLPNT': 'llpnt = [{ name = "LAT30TO40"; lat_thresh = >=30&&<=40; lon_thresh = NA; }, { name = "BOX"; lat_thresh = >=20&&<=40; lon_thresh = >=-110&&<=-90; }];'}),
 
+        ({'POINT_STAT_HIRA_FLAG': 'False', },
+         {'METPLUS_HIRA_DICT': 'hira = {flag = FALSE;}'}),
+
+        ({'POINT_STAT_HIRA_WIDTH': '2,3,4,5', },
+         {'METPLUS_HIRA_DICT': 'hira = {width = [2, 3, 4, 5];}'}),
+
+        ({'POINT_STAT_HIRA_VLD_THRESH': '1.0', },
+         {'METPLUS_HIRA_DICT': 'hira = {vld_thresh = 1.0;}'}),
+
+        ({'POINT_STAT_HIRA_COV_THRESH': '==0.25, ==0.5', },
+         {'METPLUS_HIRA_DICT': 'hira = {cov_thresh = [==0.25, ==0.5];}'}),
+
+        ({'POINT_STAT_HIRA_SHAPE': 'square', },
+         {'METPLUS_HIRA_DICT': 'hira = {shape = SQUARE;}'}),
+
+        ({'POINT_STAT_HIRA_PROB_CAT_THRESH': '>1,<=2', },
+         {'METPLUS_HIRA_DICT': 'hira = {prob_cat_thresh = [>1, <=2];}'}),
+
+        ({
+             'POINT_STAT_HIRA_FLAG': 'False',
+             'POINT_STAT_HIRA_WIDTH': '2,3,4,5',
+             'POINT_STAT_HIRA_VLD_THRESH': '1.0',
+             'POINT_STAT_HIRA_COV_THRESH': '==0.25, ==0.5',
+             'POINT_STAT_HIRA_SHAPE': 'square',
+             'POINT_STAT_HIRA_PROB_CAT_THRESH': '>1,<=2',
+         },
+         {
+             'METPLUS_HIRA_DICT': ('hira = {flag = FALSE;width = [2, 3, 4, 5];'
+                                   'vld_thresh = 1.0;'
+                                   'cov_thresh = [==0.25, ==0.5];'
+                                   'shape = SQUARE;'
+                                   'prob_cat_thresh = [>1, <=2];}')}),
+
     ]
 )
 def test_point_stat_all_fields(metplus_config, config_overrides,
