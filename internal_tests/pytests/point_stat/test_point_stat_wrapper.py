@@ -441,6 +441,8 @@ def test_met_dictionary_in_var_options(metplus_config):
                                    'cov_thresh = [==0.25, ==0.5];'
                                    'shape = SQUARE;'
                                    'prob_cat_thresh = [>1, <=2];}')}),
+        ({'POINT_STAT_MESSAGE_TYPE_GROUP_MAP': '{ key = "SURFACE"; val = "ADPSFC,SFCSHP,MSONET";},{ key = "ANYAIR";  val = "AIRCAR,AIRCFT";}', },
+         {'METPLUS_MESSAGE_TYPE_GROUP_MAP': 'message_type_group_map = [{ key = "SURFACE"; val = "ADPSFC, SFCSHP, MSONET";}, { key = "ANYAIR";  val = "AIRCAR, AIRCFT";}];'}),
 
     ]
 )

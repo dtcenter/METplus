@@ -42,6 +42,7 @@ class PointStatWrapper(CompareGriddedWrapper):
         'METPLUS_CLIMO_STDEV_DICT',
         'METPLUS_HSS_EC_VALUE',
         'METPLUS_HIRA_DICT',
+        'METPLUS_MESSAGE_TYPE_GROUP_MAP',
     ]
 
     # handle deprecated env vars used pre v4.0.0
@@ -247,6 +248,10 @@ class PointStatWrapper(CompareGriddedWrapper):
             'shape': ('string', 'remove_quotes, uppercase'),
             'prob_cat_thresh': ('list', 'remove_quotes'),
         })
+
+        self.add_met_config(name='message_type_group_map',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
 
         if not c_dict['FCST_INPUT_TEMPLATE']:
             self.log_error('Must set FCST_POINT_STAT_INPUT_TEMPLATE '

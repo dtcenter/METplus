@@ -8582,3 +8582,8 @@ METplus Configuration Glossary
      Specify the value for 'hira.prob_cat_thresh' in the MET configuration file for PointStat.
 
      | *Used by:* PointStat
+
+   POINT_STAT_MESSAGE_TYPE_GROUP_MAP
+     Specify the value for 'message_type_group_map' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat

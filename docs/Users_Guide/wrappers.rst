@@ -5239,6 +5239,7 @@ Configuration
 | :term:`POINT_STAT_HIRA_COV_THRESH`
 | :term:`POINT_STAT_HIRA_SHAPE`
 | :term:`POINT_STAT_HIRA_PROB_CAT_THRESH`
+| :term:`POINT_STAT_MESSAGE_TYPE_GROUP_MAP`
 | :term:`FCST_POINT_STAT_WINDOW_BEGIN` (optional)
 | :term:`FCST_POINT_STAT_WINDOW_END` (optional)
 | :term:`OBS_POINT_STAT_WINDOW_BEGIN` (optional)
@@ -5667,6 +5668,16 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`POINT_STAT_HIRA_PROB_CAT_THRESH`
      - hira.prob_cat_thresh
 
+**${METPLUS_MESSAGE_TYPE_GROUP_MAP}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_MESSAGE_TYPE_GROUP_MAP`
+     - message_type_group_map
 
 .. _py_embed_ingest_wrapper:
 
