@@ -121,7 +121,8 @@ mask = {
    ${METPLUS_MASK_GRID}
    ${METPLUS_MASK_POLY}
    ${METPLUS_MASK_SID}
-   llpnt = [];
+   //llpnt =
+   ${METPLUS_MASK_LLPNT}
 }
 
 ////////////////////////////////////////////////////////////////////////////////

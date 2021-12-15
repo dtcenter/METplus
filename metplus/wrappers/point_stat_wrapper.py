@@ -31,6 +31,7 @@ class PointStatWrapper(CompareGriddedWrapper):
         'METPLUS_MASK_GRID',
         'METPLUS_MASK_POLY',
         'METPLUS_MASK_SID',
+        'METPLUS_MASK_LLPNT',
         'METPLUS_OUTPUT_PREFIX',
         'METPLUS_CLIMO_CDF_DICT',
         'METPLUS_OBS_QUALITY_INC',
@@ -163,6 +164,13 @@ class PointStatWrapper(CompareGriddedWrapper):
                             metplus_configs=['POINT_STAT_MASK_SID',
                                              'POINT_STAT_STATION_ID'],
                             extra_args={'allow_empty': True})
+
+        self.add_met_config(name='llpnt',
+                            data_type='list',
+                            env_var_name='METPLUS_MASK_LLPNT',
+                            metplus_configs=['POINT_STAT_MASK_LLPNT'],
+                            extra_args={'allow_empty': True,
+                                        'remove_quotes': True})
 
         self.add_met_config(name='message_type',
                             data_type='list')
