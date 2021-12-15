@@ -114,14 +114,21 @@ def print_doc_text(tool_name, met_var, dict_items):
           'the value to be added to the wrapped MET config file.\n\n')
     if not dict_items:
         print(f"        self.add_met_config(name='{met_var}',\n"
-              "                            data_type='<DATA_TYPE>',\n"
-              f"                            metplus_configs=['{metplus_var}'])"
+              "                            data_type='<DATA_TYPE>')"
               "\n\n\n"
               "where <DATA_TYPE> can be string, list, int, float, bool, "
               "or thresh.\n\n")
     else:
-        print("Typically a function is written to handle MET config dictionary"
-              " items. Search for functions that start with handle_ in "
+        print(f"        self.add_met_config_dict('{met_var}', {{")
+        for item in dict_items:
+            print(f"            '{item}': '<DATA_TYPE>',")
+        print("        })\n\n\n"
+              "where <DATA_TYPE> can be string, list, int, float, bool, "
+              "or thresh. Refer to the METplus Contributor's Guide "
+              "Basic Components section to see how to add additional info.\n\n")
+        print("Sometimes a function is written to handle MET config dictionary"
+              " items that are complex and common to many wrappers."
+              " Search for functions that start with handle_ in "
               "CommandBuilder or other parent class wrappers to see if a "
               "function already exists for the item you are adding or to use "
               "as an example to write a new one.\n\n")
