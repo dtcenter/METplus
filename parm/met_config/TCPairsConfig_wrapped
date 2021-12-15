@@ -82,7 +82,9 @@ valid_mask = "";
 //
 // Specify if the code should check for duplicate ATCF lines
 //
-check_dup = FALSE;
+//check_dup =
+${METPLUS_CHECK_DUP}
+
 
 //
 // Specify special processing to be performed for interpolated models.

@@ -7418,6 +7418,7 @@ METplus Configuration
 | :term:`TC_PAIRS_CONSENSUS<n>_MIN_REQ`
 | :term:`TC_PAIRS_SKIP_LEAD_SEQ`
 | :term:`TC_PAIRS_RUN_ONCE`
+| :term:`TC_PAIRS_CHECK_DUP`
 |
 
 .. warning:: **DEPRECATED:**
@@ -7666,6 +7667,17 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - consensus.required
    * - :term:`TC_PAIRS_CONSENSUS<n>_MIN_REQ`
      - consensus.min_req
+
+**${METPLUS_CHECK_DUP}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_PAIRS_CHECK_DUP`
+     - check_dup
 
 .. _tcrmw_wrapper:
 

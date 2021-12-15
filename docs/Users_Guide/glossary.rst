@@ -8587,3 +8587,8 @@ METplus Configuration Glossary
      Specify the value for 'message_type_group_map' in the MET configuration file for PointStat.
 
      | *Used by:* PointStat
+
+   TC_PAIRS_CHECK_DUP
+     Specify the value for 'check_dup' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
