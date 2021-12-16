@@ -25,7 +25,7 @@ time_fmt = '%Y%m%d%H'
 run_times = ['2005080700',]
 stat_list = 'TOTAL,RMSE,FBAR,OBAR'
 stat_list_quotes = '", "'.join(stat_list.split(','))
-stat_list_fmt = f'cnt = ["{stat_list_quotes}"];'
+stat_list_fmt = f'output_stats = {{cnt = ["{stat_list_quotes}"];}}'
 
 def get_input_dirs(config):
     fake_data_dir = os.path.join(config.getdir('METPLUS_BASE'),
@@ -208,40 +208,40 @@ def set_minimum_config_settings(config):
          {'METPLUS_HSS_EC_VALUE': 'hss_ec_value = 0.5;'}),
         # output_stats
         ({'SERIES_ANALYSIS_OUTPUT_STATS_FHO': 'RMSE,FBAR,OBAR', },
-         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {fho = ["RMSE", "FBAR", "OBAR"];}'}),
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {fho = ["RMSE", "FBAR", "OBAR"];cnt = ["TOTAL", "RMSE", "FBAR", "OBAR"];}'}),
 
         ({'SERIES_ANALYSIS_OUTPUT_STATS_CTC': 'RMSE,FBAR,OBAR', },
-         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {ctc = ["RMSE", "FBAR", "OBAR"];}'}),
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {ctc = ["RMSE", "FBAR", "OBAR"];cnt = ["TOTAL", "RMSE", "FBAR", "OBAR"];}'}),
 
         ({'SERIES_ANALYSIS_OUTPUT_STATS_CTS': 'RMSE,FBAR,OBAR', },
-         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {cts = ["RMSE", "FBAR", "OBAR"];}'}),
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {cts = ["RMSE", "FBAR", "OBAR"];cnt = ["TOTAL", "RMSE", "FBAR", "OBAR"];}'}),
 
         ({'SERIES_ANALYSIS_OUTPUT_STATS_MCTC': 'RMSE,FBAR,OBAR', },
-         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {mctc = ["RMSE", "FBAR", "OBAR"];}'}),
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {mctc = ["RMSE", "FBAR", "OBAR"];cnt = ["TOTAL", "RMSE", "FBAR", "OBAR"];}'}),
 
         ({'SERIES_ANALYSIS_OUTPUT_STATS_MCTS': 'RMSE,FBAR,OBAR', },
-         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {mcts = ["RMSE", "FBAR", "OBAR"];}'}),
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {mcts = ["RMSE", "FBAR", "OBAR"];cnt = ["TOTAL", "RMSE", "FBAR", "OBAR"];}'}),
 
         ({'SERIES_ANALYSIS_OUTPUT_STATS_CNT': 'RMSE,FBAR,OBAR', },
          {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {cnt = ["RMSE", "FBAR", "OBAR"];}'}),
 
         ({'SERIES_ANALYSIS_OUTPUT_STATS_SL1L2': 'RMSE,FBAR,OBAR', },
-         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {sl1l2 = ["RMSE", "FBAR", "OBAR"];}'}),
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {cnt = ["TOTAL", "RMSE", "FBAR", "OBAR"];sl1l2 = ["RMSE", "FBAR", "OBAR"];}'}),
 
         ({'SERIES_ANALYSIS_OUTPUT_STATS_SAL1L2': 'RMSE,FBAR,OBAR', },
-         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {sal1l2 = ["RMSE", "FBAR", "OBAR"];}'}),
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {cnt = ["TOTAL", "RMSE", "FBAR", "OBAR"];sal1l2 = ["RMSE", "FBAR", "OBAR"];}'}),
 
         ({'SERIES_ANALYSIS_OUTPUT_STATS_PCT': 'RMSE,FBAR,OBAR', },
-         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {pct = ["RMSE", "FBAR", "OBAR"];}'}),
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {cnt = ["TOTAL", "RMSE", "FBAR", "OBAR"];pct = ["RMSE", "FBAR", "OBAR"];}'}),
 
         ({'SERIES_ANALYSIS_OUTPUT_STATS_PSTD': 'RMSE,FBAR,OBAR', },
-         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {pstd = ["RMSE", "FBAR", "OBAR"];}'}),
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {cnt = ["TOTAL", "RMSE", "FBAR", "OBAR"];pstd = ["RMSE", "FBAR", "OBAR"];}'}),
 
         ({'SERIES_ANALYSIS_OUTPUT_STATS_PJC': 'RMSE,FBAR,OBAR', },
-         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {pjc = ["RMSE", "FBAR", "OBAR"];}'}),
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {cnt = ["TOTAL", "RMSE", "FBAR", "OBAR"];pjc = ["RMSE", "FBAR", "OBAR"];}'}),
 
         ({'SERIES_ANALYSIS_OUTPUT_STATS_PRC': 'RMSE,FBAR,OBAR', },
-         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {prc = ["RMSE", "FBAR", "OBAR"];}'}),
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {cnt = ["TOTAL", "RMSE", "FBAR", "OBAR"];prc = ["RMSE", "FBAR", "OBAR"];}'}),
 
         ({
              'SERIES_ANALYSIS_OUTPUT_STATS_FHO': 'RMSE1,FBAR,OBAR',
@@ -313,11 +313,12 @@ def test_series_analysis_single_field(metplus_config, config_overrides,
                           item.startswith(env_var_key)), None)
             assert(match is not None)
             actual_value = match.split('=', 1)[1]
+            print(f"ENV VAR: {env_var_key}")
             if env_var_key == 'METPLUS_FCST_FIELD':
                 assert(actual_value == fcst_fmt)
             elif env_var_key == 'METPLUS_OBS_FIELD':
                 assert (actual_value == obs_fmt)
-            elif env_var_key == 'METPLUS_STAT_LIST':
+            elif env_var_key == 'METPLUS_OUTPUT_STATS_DICT' and 'METPLUS_OUTPUT_STATS_DICT' not in env_var_values:
                 assert (actual_value == stat_list_fmt)
             else:
                 assert(env_var_values.get(env_var_key, '') == actual_value)
