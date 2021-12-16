@@ -1737,12 +1737,13 @@ class CommandBuilder:
             @param get_flags if True, read grid_flag and poly_flag values
         """
         data_type = 'string' if single_value else 'list'
-
+        app_upper = self.app_name.upper()
         items = {
             'grid': (data_type, 'allow_empty', None,
                      ['GRID']),
             'poly': (data_type, 'allow_empty', None,
-                     ['VERIFICATION_MASK_TEMPLATE', 'POLY']),
+                     [f'{app_upper}_VERIFICATION_MASK_TEMPLATE',
+                      f'{app_upper}_POLY']),
         }
 
         if get_flags:
