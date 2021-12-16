@@ -1709,6 +1709,7 @@ class CommandBuilder:
          METPLUS_TIME_SUMMARY_DICT that is referenced in the wrapped MET
          config files.
         """
+        app_upper = self.app_name.upper()
         self.add_met_config_dict('time_summary', {
             'flag': 'bool',
             'raw_data': 'bool',
@@ -1717,12 +1718,15 @@ class CommandBuilder:
             'step': 'int',
             'width': ('string', 'remove_quotes'),
             'grib_code': ('list', 'remove_quotes,allow_empty', None,
-                          ['TIME_SUMMARY_GRIB_CODES']),
+                          [f'{app_upper}_TIME_SUMMARY_GRIB_CODES']),
             'obs_var': ('list', 'allow_empty', None,
-                        ['TIME_SUMMARY_VAR_NAMES']),
-            'type': ('list', 'allow_empty', None, ['TIME_SUMMARY_TYPES']),
-            'vld_freq': ('int', None, None, ['TIME_SUMMARY_VALID_FREQ']),
-            'vld_thresh': ('float', None, None, ['TIME_SUMMARY_VALID_THRESH']),
+                        [f'{app_upper}_TIME_SUMMARY_VAR_NAMES']),
+            'type': ('list', 'allow_empty', None,
+                     [f'{app_upper}_TIME_SUMMARY_TYPES']),
+            'vld_freq': ('int', None, None,
+                         [f'{app_upper}_TIME_SUMMARY_VALID_FREQ']),
+            'vld_thresh': ('float', None, None,
+                           [f'{app_upper}_TIME_SUMMARY_VALID_THRESH']),
         })
 
     def handle_mask(self, single_value=False, get_flags=False):
