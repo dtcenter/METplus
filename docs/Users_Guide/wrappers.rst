@@ -7419,6 +7419,7 @@ METplus Configuration
 | :term:`TC_PAIRS_SKIP_LEAD_SEQ`
 | :term:`TC_PAIRS_RUN_ONCE`
 | :term:`TC_PAIRS_CHECK_DUP`
+| :term:`TC_PAIRS_INTERP12`
 |
 
 .. warning:: **DEPRECATED:**
@@ -7678,6 +7679,17 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`TC_PAIRS_CHECK_DUP`
      - check_dup
+
+**${METPLUS_INTERP12}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_PAIRS_INTERP12`
+     - interp12
 
 .. _tcrmw_wrapper:
 

@@ -364,6 +364,9 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
         # 18: check_dup
         ({'TC_PAIRS_CHECK_DUP': 'False', },
          {'METPLUS_CHECK_DUP': 'check_dup = FALSE;'}),
+        # 19: interp12
+        ({'TC_PAIRS_INTERP12': 'replace', },
+         {'METPLUS_INTERP12': 'interp12 = REPLACE;'}),
 
     ]
 )

@@ -60,6 +60,7 @@ class TCPairsWrapper(CommandBuilder):
         'METPLUS_VALID_INC',
         'METPLUS_VALID_EXC',
         'METPLUS_CHECK_DUP',
+        'METPLUS_INTERP12',
     ]
 
     WILDCARDS = {
@@ -170,6 +171,11 @@ class TCPairsWrapper(CommandBuilder):
 
         self.add_met_config(name='check_dup',
                             data_type='bool')
+
+        self.add_met_config(name='interp12',
+                            data_type='string',
+                            extra_args={'remove_quotes': True,
+                                        'uppercase': True})
 
         # if looping by processes, get the init or valid beg time and run once
         c_dict['INPUT_DICT'] = self.get_start_time_input_dict()

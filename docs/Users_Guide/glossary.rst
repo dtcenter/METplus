@@ -8592,3 +8592,8 @@ METplus Configuration Glossary
      Specify the value for 'check_dup' in the MET configuration file for TCPairs.
 
      | *Used by:* TCPairs
+
+   TC_PAIRS_INTERP12
+     Specify the value for 'interp12' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs

@@ -180,7 +180,7 @@ def print_doc_text(tool_name, met_var, dict_items):
     print(f"\n\nIn docs/Users_Guide/wrappers.rst\n\n"
           f"Under {wrapper_camel} => "
           "MET Configuration section, add:\n"
-          "\n---------------------------------------------")
+          "\n---------------------------------------------\n")
     var_header = (f"**${{{env_var_name}}}**")
 
     list_table_text = (f"{var_header}\n\n"
@@ -201,7 +201,7 @@ def print_doc_text(tool_name, met_var, dict_items):
     print('\n==================================================\n')
     print(f"In docs/Users_Guide/glossary.rst"
           "\n\nAdd the following anywhere in the file:\n")
-    print("---------------------------------------------")
+    print("---------------------------------------------\n")
     for metplus_config_name, met_config_name in zip(metplus_config_names, met_config_values):
         glossary_entry = (f"   {metplus_config_name}\n"
                           f"     Specify the value for '{met_config_name}' "
