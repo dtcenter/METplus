@@ -35,8 +35,10 @@ ${METPLUS_REGRID_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
-censor_thresh    = [];
-censor_val       = [];
+//censor_thresh =
+${METPLUS_CENSOR_THRESH}
+//censor_val =
+${METPLUS_CENSOR_VAL}
 cat_thresh  	 = [];
 cnt_thresh  	 = [ NA ];
 cnt_logic   	 = UNION;

@@ -8663,3 +8663,13 @@ METplus Configuration Glossary
      Specify the value for 'ct_stats_flag' in the MET configuration file for MODE.
 
      | *Used by:* MODE
+
+   GRID_STAT_CENSOR_THRESH
+     Specify the value for 'censor_thresh' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CENSOR_VAL
+     Specify the value for 'censor_val' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat

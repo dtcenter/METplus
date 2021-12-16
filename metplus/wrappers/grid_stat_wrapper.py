@@ -50,6 +50,8 @@ class GridStatWrapper(CompareGriddedWrapper):
         'METPLUS_HSS_EC_VALUE',
         'METPLUS_DISTANCE_MAP_DICT',
         'METPLUS_FOURIER_DICT',
+        'METPLUS_CENSOR_THRESH',
+        'METPLUS_CENSOR_VAL',
     ]
 
     # handle deprecated env vars used pre v4.0.0
@@ -251,6 +253,14 @@ class GridStatWrapper(CompareGriddedWrapper):
             'wave_1d_beg': ('list', 'remove_quotes'),
             'wave_1d_end': ('list', 'remove_quotes'),
         })
+
+        self.add_met_config(name='censor_thresh',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
+
+        self.add_met_config(name='censor_val',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
 
         return c_dict
 
