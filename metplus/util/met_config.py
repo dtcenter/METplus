@@ -174,9 +174,12 @@ def add_met_config_dict(config, app_name, output_dict, dict_name, items):
             metplus_configs.append(metplus_name)
             if nicknames:
                 for nickname in nicknames:
-                    metplus_configs.append(
-                        f'{app_name}_{nickname}'.upper()
-                    )
+                    # prepend app name to nickname if not already there
+                    if nickname.lower().startswith(app_name):
+                        config_name = nickname.upper()
+                    else:
+                        config_name = f'{app_name}_{nickname}'.upper()
+                    metplus_configs.append(config_name)
 
         # if dictionary, read get children from MET config
         else:
