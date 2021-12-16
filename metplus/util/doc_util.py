@@ -91,7 +91,7 @@ def print_doc_text(tool_name, met_var, dict_items):
             metplus_config_names.append(metplus_config_name)
             met_config_values.append(f"{met_var}.{item_name}")
 
-    print('WARNING: Guidance output from this script may differ slightly '
+    print('\nWARNING: Guidance output from this script may differ slightly '
           'from the actual steps to take. It is intended to assist the process.'
           ' The text that is generated should be reviewed for accuracy before '
           'adding to codebase.')
@@ -103,29 +103,39 @@ def print_doc_text(tool_name, met_var, dict_items):
         for item in dict_items:
             print(f'  {item}')
 
+    print("\nNOTE: Text between lines that contain all dashes (-) should be "
+          "added or replaced in the files. Do not include the dash lines.")
     print('\n==================================================\n')
-    print(f'\n\nIn the {tool_name}_wrapper.py file, in the {wrapper_camel}Wrapper '
+    print(f'In metplus/wrappers/{tool_name}_wrapper.py\n\n'
+          f'In the {wrapper_camel}Wrapper '
           f'class, add the following to the WRAPPER_ENV_VAR_KEYS class '
-          f"variable list:\n\n\n        '{env_var_name}',\n\n")
+          f"variable list:\n"
+          "\n---------------------------------------------\n"
+          f"        '{env_var_name}',"
+          f"\n---------------------------------------------\n")
 
     print('\n==================================================\n')
+    print(f'In metplus/wrappers/{tool_name}_wrapper.py\n\n')
     print(f'In the create_c_dict function for {wrapper_camel}Wrapper, add a '
           'function call to read the new METplus config variables and save '
-          'the value to be added to the wrapped MET config file.\n\n')
+          'the value to be added to the wrapped MET config file.\n')
     if not dict_items:
-        print(f"        self.add_met_config(name='{met_var}',\n"
+        print("\n---------------------------------------------\n"
+              f"        self.add_met_config(name='{met_var}',\n"
               "                            data_type='<DATA_TYPE>')"
-              "\n\n\n"
+              "\n---------------------------------------------\n\n"
               "where <DATA_TYPE> can be string, list, int, float, bool, "
-              "or thresh.\n\n")
+              "or thresh.\n")
     else:
-        print(f"        self.add_met_config_dict('{met_var}', {{")
+        print("\n---------------------------------------------\n"
+              f"        self.add_met_config_dict('{met_var}', {{")
         for item in dict_items:
             print(f"            '{item}': '<DATA_TYPE>',")
-        print("        })\n\n\n"
-              "where <DATA_TYPE> can be string, list, int, float, bool, "
+        print("        })"
+              "\n---------------------------------------------\n"
+              "\nwhere <DATA_TYPE> can be string, list, int, float, bool, "
               "or thresh. Refer to the METplus Contributor's Guide "
-              "Basic Components section to see how to add additional info.\n\n")
+              "Basic Components section to see how to add additional info.\n")
         print("Sometimes a function is written to handle MET config dictionary"
               " items that are complex and common to many wrappers."
               " Search for functions that start with handle_ in "
@@ -136,30 +146,41 @@ def print_doc_text(tool_name, met_var, dict_items):
     print('\n==================================================\n')
     print('Add the new variables to the basic use case example for the tool,\n'
           f'i.e. parm/use_cases/met_tool_wrapper/{wrapper_camel}/'
-          f'{wrapper_camel}.conf:\n\n')
+          f'{wrapper_camel}.conf:\n'
+          "\n---------------------------------------------")
     for mp_config in metplus_config_names:
         print(f'#{mp_config} =')
 
+    print("---------------------------------------------\n")
     print('\n\n==================================================\n')
-    print(f"In the parm/met_config/{wrapper_camel}Config_wrapped file, "
-          f"compare the default values set for {met_var} to the version"
+    print(f"In parm/met_config/{wrapper_camel}Config_wrapped\n\n"
+          f"Compare the default values set for {met_var} to the version"
           f" in share/met/config/{wrapper_camel}Config_default. If "
           "they do differ, make sure to add variables to the use case "
           "config files so that they produce the same output.\n\n")
-    print(f"In the parm/met_config/{wrapper_camel}Config_wrapped file, "
-          "replace:\n\n")
-    print(f"{met_var} = ...\n\n with:\n\n//{met_var} ="
-          f"{' {' if dict_items else ''}\n${{{env_var_name}}}\n\n")
+    print("REPLACE:\n"
+          "\n---------------------------------------------")
+    print(f"{met_var} = ..."
+          "\n---------------------------------------------\n"
+          "\nwith:\n"
+          "\n---------------------------------------------\n"
+          f"//{met_var} ="
+          f"{' {' if dict_items else ''}\n${{{env_var_name}}}"
+          "\n---------------------------------------------\n")
 
     print('\n==================================================\n')
-    print(f"\n\nIn docs/Users_Guide/wrappers.rst under {wrapper_camel} => "
-         "METplus Configuration section, add:\n\n")
+    print(f"\nIn docs/Users_Guide/wrappers.rst\n\n"
+          f"Under {wrapper_camel} => "
+          "METplus Configuration section, add:\n"
+          "\n---------------------------------------------")
     for metplus_config_name in metplus_config_names:
         print(f'| :term:`{metplus_config_name}`')
-
+    print("---------------------------------------------\n")
     print('\n==================================================\n')
-    print(f"\n\nIn docs/Users_Guide/wrappers.rst under {wrapper_camel} => "
-          "MET Configuration section, add:\n\n")
+    print(f"\n\nIn docs/Users_Guide/wrappers.rst\n\n"
+          f"Under {wrapper_camel} => "
+          "MET Configuration section, add:\n"
+          "\n---------------------------------------------")
     var_header = (f"**${{{env_var_name}}}**")
 
     list_table_text = (f"{var_header}\n\n"
@@ -175,25 +196,30 @@ def print_doc_text(tool_name, met_var, dict_items):
                             f"     - {met_config_name}\n"
                             )
     print(list_table_text)
+    print("---------------------------------------------")
 
     print('\n==================================================\n')
-    print(f"In docs/Users_Guide/glossary.rst, add:\n\n")
+    print(f"In docs/Users_Guide/glossary.rst"
+          "\n\nAdd the following anywhere in the file:\n")
+    print("---------------------------------------------")
     for metplus_config_name, met_config_name in zip(metplus_config_names, met_config_values):
         glossary_entry = (f"   {metplus_config_name}\n"
                           f"     Specify the value for '{met_config_name}' "
                           f"in the MET configuration file for {wrapper_camel}.\n\n"
                           f"     | *Used by:* {wrapper_camel}")
         print(f'{glossary_entry}\n')
-
+    print("---------------------------------------------")
     print('\n==================================================\n')
     print(f"In internal_tests/pytests/{tool_name}/"
-          f"test_{tool_name}_wrapper.py, add the following items to "
+          f"test_{tool_name}_wrapper.py"
+          "\n\nAdd the following items to "
           "the tests to ensure the new items are set properly. Note: "
           "if the tool does not have unit tests to check the handling of "
           "MET config variables, you will need to add those tests. See "
           "grid_stat/test_grid_stat_wrapper.py for an example. Change "
           "VALUE to an appropriate value for the variable.\n\n")
 
+    print("---------------------------------------------")
     input_dict_items = []
     output_items = []
     for metplus_config_name, met_config_name in zip(metplus_config_names, met_config_values):
@@ -226,6 +252,20 @@ def print_doc_text(tool_name, met_var, dict_items):
         all_items_text += "}'}),"
         print(all_items_text)
 
+    print("---------------------------------------------")
+    # add note to test setting a valid value in the basic use case config file
+    # to ensure that it is formatted properly when read by the MET tool
+    print('\n==================================================\n')
+    print(f"In parm/use_cases/met_tool_wrapper/{wrapper_camel}"
+          "\n\nVerify that the new METplus configuration variable(s) "
+          "will be formatted properly when read by the MET tool by "
+          "setting the variable(s) in the basic use case config files "
+          "to a valid value "
+          "and run the use case to ensure that it still succeeds. "
+          "Be sure to remove the value and comment out the variable "
+          "after you have confirmed this step.")
+
+    print('\n==================================================\n')
 
 def doc_util_usage():
     """! Print usage statement for script """
