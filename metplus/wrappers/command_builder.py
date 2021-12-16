@@ -1716,7 +1716,7 @@ class CommandBuilder:
         app_upper = self.app_name.upper()
         items = {
             'grid': (data_type, 'allow_empty', None,
-                     ['GRID']),
+                     [f'{app_upper}_GRID']),
             'poly': (data_type, 'allow_empty', None,
                      [f'{app_upper}_VERIFICATION_MASK_TEMPLATE',
                       f'{app_upper}_POLY']),
