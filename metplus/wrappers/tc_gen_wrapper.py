@@ -16,8 +16,9 @@ import re
 
 from ..util import met_util as util
 from ..util import time_util
-from . import CommandBuilder
 from ..util import do_string_sub
+from ..util import time_generator
+from . import CommandBuilder
 
 '''!@namespace TCGenWrapper
 @brief Wraps the TC-Gen tool
@@ -262,9 +263,8 @@ class TCGenWrapper(CommandBuilder):
         )
         self.add_met_config_window('genesis_match_window')
 
-        # get INPUT_TIME_DICT values since wrapper only runs
-        # once (doesn't look over time)
-        c_dict['INPUT_TIME_DICT'] = self.set_time_dict_for_single_runtime()
+        # get INPUT_TIME_DICT values since wrapper doesn't loop over time
+        c_dict['INPUT_TIME_DICT'] = next(time_generator(self.config))
         if not c_dict['INPUT_TIME_DICT']:
             self.isOK = False
 

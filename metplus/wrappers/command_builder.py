@@ -18,6 +18,7 @@ from inspect import getframeinfo, stack
 import re
 
 from .command_runner import CommandRunner
+from ..util import getlist
 from ..util import met_util as util
 from ..util import do_string_sub, ti_calculate, get_seconds_from_string
 from ..util import get_time_from_file
@@ -623,7 +624,7 @@ class CommandBuilder:
 
         # check if there is a list of files provided in the template
         # process each template in the list (or single template)
-        template_list = util.getlist(input_template)
+        template_list = getlist(input_template)
 
         # return None if a list is provided for a wrapper that doesn't allow
         # multiple files to be processed
@@ -1400,31 +1401,6 @@ class CommandBuilder:
         call METplus wrapper for each time"""
         return util.loop_over_times_and_call(self.config, self)
 
-    def set_time_dict_for_single_runtime(self):
-        # get clock time from start of execution for input time dictionary
-        clock_time_obj = datetime.strptime(self.config.getstr('config',
-                                                              'CLOCK_TIME'),
-                                           '%Y%m%d%H%M%S')
-
-        # get start run time and set INPUT_TIME_DICT
-        time_info = {'now': clock_time_obj}
-        start_time, _, _ = util.get_start_end_interval_times(self.config)
-        if start_time:
-            # set init or valid based on LOOP_BY
-            use_init = util.is_loop_by_init(self.config)
-            if use_init is None:
-                return None
-            elif use_init:
-                time_info['init'] = start_time
-            else:
-                time_info['valid'] = start_time
-        else:
-            self.config.logger.error("Could not get [INIT/VALID] time "
-                                     "information from configuration file")
-            return None
-
-        return time_info
-
     @staticmethod
     def format_met_config_dict(c_dict, name, keys=None):
         """! Return formatted dictionary named <name> with any <items> if they
@@ -1600,7 +1576,7 @@ class CommandBuilder:
         # if dir is set and not python embedding,
         # prepend it to each template in list
         if input_dir and input_template not in util.PYTHON_EMBEDDING_TYPES:
-            template_list = util.getlist(input_template)
+            template_list = getlist(input_template)
             for index, template in enumerate(template_list):
                 template_list[index] = os.path.join(input_dir, template)
 
@@ -1811,23 +1787,3 @@ class CommandBuilder:
         return get_wrapped_met_config_file(self.config,
                                            self.app_name,
                                            default_config_file)
-
-    def get_start_time_input_dict(self):
-        """! Get the first run time specified in config. Used if only running
-        the wrapper once (LOOP_ORDER = processes).
-
-        @returns dictionary containing time information for first run time
-        """
-        use_init = util.is_loop_by_init(self.config)
-        if use_init is None:
-            self.log_error('Could not read time info')
-            return None
-
-
-        start_time, _, _ = util.get_start_end_interval_times(self.config)
-        if start_time is None:
-            self.log_error("Could not get start time")
-            return None
-
-        input_dict = util.set_input_dict(start_time, self.config, use_init)
-        return input_dict
