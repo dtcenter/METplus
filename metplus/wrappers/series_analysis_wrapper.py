@@ -49,8 +49,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         'METPLUS_CLIMO_STDEV_DICT',
         'METPLUS_BLOCK_SIZE',
         'METPLUS_VLD_THRESH',
-        'METPLUS_CTS_LIST',
-        'METPLUS_STAT_LIST',
+        'METPLUS_OUTPUT_STATS_DICT',
         'METPLUS_HSS_EC_VALUE',
     ]
 
@@ -58,6 +57,24 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
     DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
         'CLIMO_MEAN_FILE',
         'CLIMO_STDEV_FILE',
+        'METPLUS_CTS_LIST',
+        'METPLUS_STAT_LIST',
+    ]
+
+    # variable names of output_stats dictionary
+    OUTPUT_STATS = [
+        'fho',
+        'ctc',
+        'cts',
+        'mctc',
+        'mcts',
+        'cnt',
+        'sl1l2',
+        'sal1l2',
+        'pct',
+        'pstd',
+        'pjc',
+        'prc',
     ]
 
     def __init__(self, config, instance=None, config_overrides=None):
@@ -116,23 +133,42 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                             data_type='string',
                             extra_args={'remove_quotes': True})
 
-        # get stat list to loop over
-        c_dict['STAT_LIST'] = util.getlist(
-            self.config.getstr('config',
-                               'SERIES_ANALYSIS_STAT_LIST',
-                               '')
-        )
+        # handle all output_stats dictionary values
+        output_stats_dict = {}
+        for key in self.OUTPUT_STATS:
+            nicknames = [
+                f'SERIES_ANALYSIS_OUTPUT_STATS_{key.upper()}',
+                f'SERIES_ANALYSIS_{key.upper()}_LIST',
+                f'SERIES_ANALYSIS_{key.upper()}'
+            ]
+            # add legacy support for STAT_LIST for cnt
+            if key == 'cnt':
+                nicknames.append('SERIES_ANALYSIS_STAT_LIST')
+                # read cnt stat list to get stats to loop over for plotting
+                self.add_met_config(name='cnt',
+                                    data_type='list',
+                                    env_var_name='STAT_LIST',
+                                    metplus_configs=nicknames)
+                c_dict['STAT_LIST'] = util.getlist(
+                    self.get_env_var_value('METPLUS_STAT_LIST')
+                )
+
+            value = ('list', None, None, nicknames)
+            output_stats_dict[key] = value
+        self.add_met_config_dict('output_stats', output_stats_dict)
+
         if not c_dict['STAT_LIST']:
             self.log_error("Must set SERIES_ANALYSIS_STAT_LIST to run.")
 
-        # set stat list to set output_stats.cnt in MET config file
+
+        # set legacy stat list to set output_stats.cnt in MET config file
         self.add_met_config(name='cnt',
                             data_type='list',
                             env_var_name='METPLUS_STAT_LIST',
                             metplus_configs=['SERIES_ANALYSIS_STAT_LIST',
                                              'SERIES_ANALYSIS_CNT'])
 
-        # set cts list to set output_stats.cts in MET config file
+        # set legacy cts list to set output_stats.cts in MET config file
         self.add_met_config(name='cts',
                             data_type='list',
                             env_var_name='METPLUS_CTS_LIST',

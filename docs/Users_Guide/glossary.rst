@@ -3732,17 +3732,13 @@ METplus Configuration Glossary
       .. warning:: **DEPRECATED:** Please use :term:`MAKE_PLOTS_INPUT_DIR` instead.
 
    SERIES_ANALYSIS_STAT_LIST
-     Specify a list of statistics to be computed by the MET series_analysis tool. Sets the 'cnt' value in the output_stats dictionary in the MET SeriesAnalysis config file
-
-     | *Used by:* SeriesAnalysis
+     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_OUTPUT_STATS_CNT` instead.
 
    SERIES_ANALYSIS_CTS_LIST
-     Specify a list of contingency table statistics to be computed by the MET series_analysis tool. Sets the 'cts' value in the output_stats dictionary in the MET SeriesAnalysis config file
-
-     | *Used by:* SeriesAnalysis
+     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_OUTPUT_STATS_CTS` instead.
 
    STAT_LIST
-     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_STAT_LIST` instead.
+     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_OUTPUT_STATS_CNT` instead.
 
    STORM_ID
      .. warning:: **DEPRECATED:** Please use :term:`TC_PAIRS_STORM_ID` or :term:`TC_STAT_STORM_ID`.
@@ -8597,3 +8593,63 @@ METplus Configuration Glossary
      Specify the value for 'interp12' in the MET configuration file for TCPairs.
 
      | *Used by:* TCPairs
+
+   SERIES_ANALYSIS_OUTPUT_STATS_FHO
+     Specify the value for 'output_stats.fho' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OUTPUT_STATS_CTC
+     Specify the value for 'output_stats.ctc' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OUTPUT_STATS_CTS
+     Specify the value for 'output_stats.cts' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OUTPUT_STATS_MCTC
+     Specify the value for 'output_stats.mctc' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OUTPUT_STATS_MCTS
+     Specify the value for 'output_stats.mcts' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OUTPUT_STATS_CNT
+     Specify the value for 'output_stats.cnt' in the MET configuration file for SeriesAnalysis. Also used to generate plots for each value in the list.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OUTPUT_STATS_SL1L2
+     Specify the value for 'output_stats.sl1l2' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OUTPUT_STATS_SAL1L2
+     Specify the value for 'output_stats.sal1l2' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OUTPUT_STATS_PCT
+     Specify the value for 'output_stats.pct' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OUTPUT_STATS_PSTD
+     Specify the value for 'output_stats.pstd' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OUTPUT_STATS_PJC
+     Specify the value for 'output_stats.pjc' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OUTPUT_STATS_PRC
+     Specify the value for 'output_stats.prc' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis

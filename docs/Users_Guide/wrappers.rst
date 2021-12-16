@@ -5835,6 +5835,18 @@ METplus Configuration
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_DAY_INTERVAL`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_HOUR_INTERVAL`
 | :term:`SERIES_ANALYSIS_HSS_EC_VALUE`
+| :term:`SERIES_ANALYSIS_OUTPUT_STATS_FHO`
+| :term:`SERIES_ANALYSIS_OUTPUT_STATS_CTC`
+| :term:`SERIES_ANALYSIS_OUTPUT_STATS_CTS`
+| :term:`SERIES_ANALYSIS_OUTPUT_STATS_MCTC`
+| :term:`SERIES_ANALYSIS_OUTPUT_STATS_MCTS`
+| :term:`SERIES_ANALYSIS_OUTPUT_STATS_CNT`
+| :term:`SERIES_ANALYSIS_OUTPUT_STATS_SL1L2`
+| :term:`SERIES_ANALYSIS_OUTPUT_STATS_SAL1L2`
+| :term:`SERIES_ANALYSIS_OUTPUT_STATS_PCT`
+| :term:`SERIES_ANALYSIS_OUTPUT_STATS_PSTD`
+| :term:`SERIES_ANALYSIS_OUTPUT_STATS_PJC`
+| :term:`SERIES_ANALYSIS_OUTPUT_STATS_PRC`
 |
 
 .. warning:: **DEPRECATED:**
@@ -6070,28 +6082,6 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`SERIES_ANALYSIS_VLD_THRESH`
      - vld_thresh
 
-**${METPLUS_CTS_LIST}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`SERIES_ANALYSIS_CTS_LIST`
-     - output_stats.cts
-
-**${METPLUS_STAT_LIST}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`SERIES_ANALYSIS_STAT_LIST`
-     - output_stats.cnt
-
 **${METPLUS_MET_CONFIG_OVERRIDES}**
 
 .. list-table::
@@ -6113,6 +6103,39 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`SERIES_ANALYSIS_HSS_EC_VALUE`
      - hss_ec_value
+
+**${METPLUS_OUTPUT_STATS_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`SERIES_ANALYSIS_OUTPUT_STATS_FHO`
+     - output_stats.fho
+   * - :term:`SERIES_ANALYSIS_OUTPUT_STATS_CTC`
+     - output_stats.ctc
+   * - :term:`SERIES_ANALYSIS_OUTPUT_STATS_CTS`
+     - output_stats.cts
+   * - :term:`SERIES_ANALYSIS_OUTPUT_STATS_MCTC`
+     - output_stats.mctc
+   * - :term:`SERIES_ANALYSIS_OUTPUT_STATS_MCTS`
+     - output_stats.mcts
+   * - :term:`SERIES_ANALYSIS_OUTPUT_STATS_CNT`
+     - output_stats.cnt
+   * - :term:`SERIES_ANALYSIS_OUTPUT_STATS_SL1L2`
+     - output_stats.sl1l2
+   * - :term:`SERIES_ANALYSIS_OUTPUT_STATS_SAL1L2`
+     - output_stats.sal1l2
+   * - :term:`SERIES_ANALYSIS_OUTPUT_STATS_PCT`
+     - output_stats.pct
+   * - :term:`SERIES_ANALYSIS_OUTPUT_STATS_PSTD`
+     - output_stats.pstd
+   * - :term:`SERIES_ANALYSIS_OUTPUT_STATS_PJC`
+     - output_stats.pjc
+   * - :term:`SERIES_ANALYSIS_OUTPUT_STATS_PRC`
+     - output_stats.prc
 
 
 SeriesByInit

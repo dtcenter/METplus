@@ -206,6 +206,71 @@ def set_minimum_config_settings(config):
           'CLIMO_STDEV_FILE': '"/some/climo_stdev/file.txt"'}),
         ({'SERIES_ANALYSIS_HSS_EC_VALUE': '0.5', },
          {'METPLUS_HSS_EC_VALUE': 'hss_ec_value = 0.5;'}),
+        # output_stats
+        ({'SERIES_ANALYSIS_OUTPUT_STATS_FHO': 'RMSE,FBAR,OBAR', },
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {fho = ["RMSE", "FBAR", "OBAR"];}'}),
+
+        ({'SERIES_ANALYSIS_OUTPUT_STATS_CTC': 'RMSE,FBAR,OBAR', },
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {ctc = ["RMSE", "FBAR", "OBAR"];}'}),
+
+        ({'SERIES_ANALYSIS_OUTPUT_STATS_CTS': 'RMSE,FBAR,OBAR', },
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {cts = ["RMSE", "FBAR", "OBAR"];}'}),
+
+        ({'SERIES_ANALYSIS_OUTPUT_STATS_MCTC': 'RMSE,FBAR,OBAR', },
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {mctc = ["RMSE", "FBAR", "OBAR"];}'}),
+
+        ({'SERIES_ANALYSIS_OUTPUT_STATS_MCTS': 'RMSE,FBAR,OBAR', },
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {mcts = ["RMSE", "FBAR", "OBAR"];}'}),
+
+        ({'SERIES_ANALYSIS_OUTPUT_STATS_CNT': 'RMSE,FBAR,OBAR', },
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {cnt = ["RMSE", "FBAR", "OBAR"];}'}),
+
+        ({'SERIES_ANALYSIS_OUTPUT_STATS_SL1L2': 'RMSE,FBAR,OBAR', },
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {sl1l2 = ["RMSE", "FBAR", "OBAR"];}'}),
+
+        ({'SERIES_ANALYSIS_OUTPUT_STATS_SAL1L2': 'RMSE,FBAR,OBAR', },
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {sal1l2 = ["RMSE", "FBAR", "OBAR"];}'}),
+
+        ({'SERIES_ANALYSIS_OUTPUT_STATS_PCT': 'RMSE,FBAR,OBAR', },
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {pct = ["RMSE", "FBAR", "OBAR"];}'}),
+
+        ({'SERIES_ANALYSIS_OUTPUT_STATS_PSTD': 'RMSE,FBAR,OBAR', },
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {pstd = ["RMSE", "FBAR", "OBAR"];}'}),
+
+        ({'SERIES_ANALYSIS_OUTPUT_STATS_PJC': 'RMSE,FBAR,OBAR', },
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {pjc = ["RMSE", "FBAR", "OBAR"];}'}),
+
+        ({'SERIES_ANALYSIS_OUTPUT_STATS_PRC': 'RMSE,FBAR,OBAR', },
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {prc = ["RMSE", "FBAR", "OBAR"];}'}),
+
+        ({
+             'SERIES_ANALYSIS_OUTPUT_STATS_FHO': 'RMSE1,FBAR,OBAR',
+             'SERIES_ANALYSIS_OUTPUT_STATS_CTC': 'RMSE2,FBAR,OBAR',
+             'SERIES_ANALYSIS_OUTPUT_STATS_CTS': 'RMSE3,FBAR,OBAR',
+             'SERIES_ANALYSIS_OUTPUT_STATS_MCTC': 'RMSE4,FBAR,OBAR',
+             'SERIES_ANALYSIS_OUTPUT_STATS_MCTS': 'RMSE5,FBAR,OBAR',
+             'SERIES_ANALYSIS_OUTPUT_STATS_CNT': 'RMSE6,FBAR,OBAR',
+             'SERIES_ANALYSIS_OUTPUT_STATS_SL1L2': 'RMSE7,FBAR,OBAR',
+             'SERIES_ANALYSIS_OUTPUT_STATS_SAL1L2': 'RMSE8,FBAR,OBAR',
+             'SERIES_ANALYSIS_OUTPUT_STATS_PCT': 'RMSE9,FBAR,OBAR',
+             'SERIES_ANALYSIS_OUTPUT_STATS_PSTD': 'RMSE10,FBAR,OBAR',
+             'SERIES_ANALYSIS_OUTPUT_STATS_PJC': 'RMSE11,FBAR,OBAR',
+             'SERIES_ANALYSIS_OUTPUT_STATS_PRC': 'RMSE12,FBAR,OBAR',
+         },
+         {'METPLUS_OUTPUT_STATS_DICT': ('output_stats = {'
+                                        'fho = ["RMSE1", "FBAR", "OBAR"];'
+                                        'ctc = ["RMSE2", "FBAR", "OBAR"];'
+                                        'cts = ["RMSE3", "FBAR", "OBAR"];'
+                                        'mctc = ["RMSE4", "FBAR", "OBAR"];'
+                                        'mcts = ["RMSE5", "FBAR", "OBAR"];'
+                                        'cnt = ["RMSE6", "FBAR", "OBAR"];'
+                                        'sl1l2 = ["RMSE7", "FBAR", "OBAR"];'
+                                        'sal1l2 = ["RMSE8", "FBAR", "OBAR"];'
+                                        'pct = ["RMSE9", "FBAR", "OBAR"];'
+                                        'pstd = ["RMSE10", "FBAR", "OBAR"];'
+                                        'pjc = ["RMSE11", "FBAR", "OBAR"];'
+                                        'prc = ["RMSE12", "FBAR", "OBAR"];}')}),
+
     ]
 )
 def test_series_analysis_single_field(metplus_config, config_overrides,
