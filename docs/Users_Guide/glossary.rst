@@ -8673,3 +8673,23 @@ METplus Configuration Glossary
      Specify the value for 'censor_val' in the MET configuration file for GridStat.
 
      | *Used by:* GridStat
+
+   INIT_LIST
+     List of initialization times to process.
+     This variable is used when intervals between run times are irregular.
+     It is only read if :term:`LOOP_BY` = INIT. If it is set, then
+     :term:`INIT_BEG`, :term:`INIT_END`, and :term:`INIT_INCREMENT`
+     are ignored. All values in the list must match the format of
+     :term:`INIT_TIME_FMT` or they will be skipped.
+
+     | *Used by:* All
+
+   VALID_LIST
+     List of valid times to process.
+     This variable is used when intervals between run times are irregular.
+     It is only read if :term:`LOOP_BY` = VALID. If it is set, then
+     :term:`VALID_BEG`, :term:`VALID_END`, and :term:`VALID_INCREMENT`
+     are ignored. All values in the list must match the format of
+     :term:`VALID_TIME_FMT` or they will be skipped.
+
+     | *Used by:* All

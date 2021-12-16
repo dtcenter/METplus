@@ -12,6 +12,7 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
+from ..util import getlist
 from ..util import met_util as util
 from ..util import time_util
 from . import CommandBuilder
@@ -53,16 +54,18 @@ class GenVxMaskWrapper(CommandBuilder):
 
         c_dict['MASK_INPUT_DIR'] = self.config.getdir('GEN_VX_MASK_INPUT_MASK_DIR',
                                                       '')
-        c_dict['MASK_INPUT_TEMPLATES'] = util.getlist(self.config.getraw('filename_templates',
-                                                           'GEN_VX_MASK_INPUT_MASK_TEMPLATE'))
+        c_dict['MASK_INPUT_TEMPLATES'] = getlist(
+            self.config.getraw('config', 'GEN_VX_MASK_INPUT_MASK_TEMPLATE')
+        )
 
         if not c_dict['MASK_INPUT_TEMPLATES']:
             self.log_error("Must set GEN_VX_MASK_INPUT_MASK_TEMPLATE to run GenVxMask wrapper")
             self.isOK = False
 
         # optional arguments
-        c_dict['COMMAND_OPTIONS'] = util.getlist(self.config.getraw('config',
-                                                                    'GEN_VX_MASK_OPTIONS'))
+        c_dict['COMMAND_OPTIONS'] = getlist(
+            self.config.getraw('config', 'GEN_VX_MASK_OPTIONS')
+        )
 
         # if no options were specified, set to a list with an empty string
         if not c_dict['COMMAND_OPTIONS']:

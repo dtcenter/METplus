@@ -129,7 +129,8 @@ def main(categories, subset_list, work_dir=None,
 
             setup_env, py_embed_arg = handle_automation_env(host_name, reqs, work_dir)
 
-            use_case_cmds = []
+            # use status variable to track if any use cases failed
+            use_case_cmds = ['status=0']
             for use_case in use_case_by_requirement.use_cases:
                 # add parm/use_cases path to config args if they are conf files
                 config_args = []
@@ -147,7 +148,12 @@ def main(categories, subset_list, work_dir=None,
                                 f" {py_embed_arg}{test_settings_conf}"
                                 f" config.OUTPUT_BASE={output_base}")
                 use_case_cmds.append(use_case_cmd)
+                # check exit code from use case command and
+                # set status to non-zero value on error
+                use_case_cmds.append("if [ $? != 0 ]; then status=1; fi")
 
+            # if any use cases failed, force non-zero exit code with false
+            use_case_cmds.append("if [ $status != 0 ]; then false; fi")
             # add commands to set up environment before use case commands
             group_commands = f"{setup_env}{';'.join(use_case_cmds)}"
             all_commands.append((group_commands, reqs))

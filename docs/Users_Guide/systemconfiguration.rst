@@ -632,7 +632,9 @@ Looping by Valid Time
 When looping over valid time (`LOOP_BY` = VALID or REALTIME), the following
 variables must be set:
 
-:term:`VALID_TIME_FMT`:
+:term:`VALID_TIME_FMT`
+""""""""""""""""""""""
+
 This is the format of the valid times the user can configure in the METplus
 Wrappers. The value of `VALID_BEG` and `VALID_END` must correspond to this
 format.
@@ -644,13 +646,17 @@ Example::
 Using this format, the valid time range values specified must be defined
 as YYYYMMDDHH, i.e. 2019020112.
 
-:term:`VALID_BEG`:
+:term:`VALID_BEG`
+"""""""""""""""""
+
 This is the first valid time that will be processed. The format of this
 variable is controlled by :term:`VALID_TIME_FMT`. For example, if
 VALID_TIME_FMT=%Y%m%d, then VALID_BEG must be set to a valid time matching
 YYYYMMDD, such as 20190201.
 
-:term:`VALID_END`:
+:term:`VALID_END`
+"""""""""""""""""
+
 This is the last valid time that can be processed. The format of this
 variable is controlled by :term:`VALID_TIME_FMT`. For example, if
 VALID_TIME_FMT=%Y%m%d, then VALID_END must be set to a valid time matching
@@ -667,7 +673,9 @@ YYYYMMDD, such as 20190202.
     Wrappers will process valid times 20190201 and 20190202 before ending
     execution.
 
-:term:`VALID_INCREMENT`:
+:term:`VALID_INCREMENT`
+"""""""""""""""""""""""
+
 This is the time interval to add to each run time to determine the next run
 time to process. See :ref:`time-interval-units` for information on time
 interval formatting. Units of hours are assumed if no units are specified.
@@ -689,6 +697,20 @@ The following is a configuration that will process valid time 2019-02-01 at
 
 This will process data valid on 2019-02-01 at 00Z, 06Z, 12Z, and 18Z as well as 2019-02-02 at 00Z. For each of these valid times, the METplus wrappers can also loop over a set of forecast leads that are all valid at the current run time. See :ref:`looping_over_forecast_leads` for more information.
 
+:term:`VALID_LIST`
+""""""""""""""""""
+
+If the intervals between run times are irregular, then an explicit list of
+times can be defined. The following example will process the same times
+as the previous example::
+
+   [config]
+   LOOP_BY = VALID
+   VALID_TIME_FMT = %Y%m%d%H
+   VALID_LIST = 2019020100, 2019020106, 2019020112, 2019020118, 2019020200
+
+See the glossary entry for :term:`VALID_LIST` for more information.
+
 .. _Looping_by_Initialization_Time:
 
 Looping by Initialization Time
@@ -696,19 +718,27 @@ Looping by Initialization Time
 
 When looping over initialization time (:term:`LOOP_BY` = INIT or LOOP_BY = RETRO), the following variables must be set:
 
-:term:`INIT_TIME_FMT`:
+:term:`INIT_TIME_FMT`
+"""""""""""""""""""""
+
 This is the format of the initialization times the user can configure in METplus Wrappers. The value of :term:`INIT_BEG` and :term:`INIT_END` must correspond to this format. Example: INIT_TIME_FMT = %Y%m%d%H. Using this format, the initialization time range values specified must be defined as YYYYMMDDHH, i.e. 2019020112.
 
-:term:`INIT_BEG`:
+:term:`INIT_BEG`
+""""""""""""""""
+
 This is the first initialization time that will be processed. The format of this variable is controlled by :term:`INIT_TIME_FMT`. For example, if INIT_TIME_FMT = %Y%m%d, then INIT_BEG must be set to an initialization time matching YYYYMMDD, such as 20190201.
 
-:term:`INIT_END`:
+:term:`INIT_END`
+""""""""""""""""
+
 This is the last initialization time that can be processed. The format of this variable is controlled by INIT_TIME_FMT. For example, if INIT_TIME_FMT = %Y%m%d, then INIT_END must be set to an initialization time matching YYYYMMDD, such as 20190202.
 
 .. note::
     The time specified for this variable will not necessarily be processed. It is used to determine the cutoff of run times that can be processed. For example, if METplus Wrappers is configured to start at 2019-02-01 and end at 2019-02-02 processing data in 48 hour increments, it will process 2019-02-01 then increment the run time to 2019-02-03. This is later than the INIT_END valid, so execution will stop. However, if the increment is set to 24 hours (see INIT_INCREMENT), then METplus Wrappers will process initialization times 2019-02-01 and 2019-02-02 before ending executaion.
 
-:term:`INIT_INCREMENT`:
+:term:`INIT_INCREMENT`
+""""""""""""""""""""""
+
 This is the time interval to add to each run time to determine the next run time to process. See :ref:`time-interval-units` for information on time interval formatting. Units of hours are assumed if no units are specified. This value must be greater than or equal to 60 seconds because the METplus wrappers currently do not support processing intervals of less than one minute.
 
 The following is a configuration that will process initialization time 2019-02-01 at 00Z until 2019-02-02 at 00Z in 6 hour (21600 second) increments::
@@ -724,6 +754,21 @@ The following is a configuration that will process initialization time 2019-02-0
     Substituting VALID_INCREMENT = 21600 will generate the same result.
 
 This will process data initialized on 2019-02-01 at 00Z, 06Z, 12Z, and 18Z as well as 2019-02-02 at 00Z. For each of these initialization times, METplus Wrappers can also loop over a set of forecast leads that are all initialized at the current run time. See :ref:`looping_over_forecast_leads` for more information.
+
+:term:`INIT_LIST`
+"""""""""""""""""
+
+If the intervals between run times are irregular, then an explicit list of
+times can be defined. The following example will process the same times
+as the previous example::
+
+   [config]
+   LOOP_BY = INIT
+   INIT_TIME_FMT = %Y%m%d%H
+   INIT_LIST = 2019020100, 2019020106, 2019020112, 2019020118, 2019020200
+
+See the glossary entry for :term:`INIT_LIST` for more information.
+
 
 .. _looping_over_forecast_leads:
 

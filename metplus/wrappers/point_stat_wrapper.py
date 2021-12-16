@@ -12,6 +12,7 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
+from ..util import getlistint
 from ..util import met_util as util
 from ..util import time_util
 from ..util import do_string_sub
@@ -96,7 +97,7 @@ class PointStatWrapper(CompareGriddedWrapper):
                                 c_dict['VERBOSITY'])
         )
         c_dict['ALLOW_MULTIPLE_FILES'] = True
-        c_dict['OFFSETS'] = util.getlistint(
+        c_dict['OFFSETS'] = getlistint(
             self.config.getstr('config',
                                'POINT_STAT_OFFSETS',
                                '0')

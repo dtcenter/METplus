@@ -20,11 +20,13 @@ import csv
 import datetime
 import glob
 
+from ..util import getlist
 from ..util import time_util
 from ..util import met_util as util
 from ..util import do_string_sub
 from ..util import get_tags
 from ..util.met_config import add_met_config_dict_list
+from ..util import time_generator, log_runtime_banner, add_to_time_input
 from . import CommandBuilder
 
 '''!@namespace TCPairsWrapper
@@ -180,10 +182,10 @@ class TCPairsWrapper(CommandBuilder):
         # if looping by processes, get the init or valid beg time and run once
         c_dict['INPUT_DICT'] = self.get_start_time_input_dict()
 
-        c_dict['INIT_INCLUDE'] = util.getlist(
+        c_dict['INIT_INCLUDE'] = getlist(
             self.get_wrapper_or_generic_config('INIT_INCLUDE')
         )
-        c_dict['INIT_EXCLUDE'] = util.getlist(
+        c_dict['INIT_EXCLUDE'] = getlist(
             self.get_wrapper_or_generic_config('INIT_EXCLUDE')
         )
         c_dict['VALID_BEG'] = self.get_wrapper_or_generic_config('VALID_BEG')
@@ -205,7 +207,7 @@ class TCPairsWrapper(CommandBuilder):
         )
 
         # get list of models to process
-        c_dict['MODEL_LIST'] = util.getlist(
+        c_dict['MODEL_LIST'] = getlist(
             self.config.getraw('config', 'MODEL', '')
         )
         # if no models are requested, set list to contain a single string
@@ -215,7 +217,7 @@ class TCPairsWrapper(CommandBuilder):
 
         self._read_storm_info(c_dict)
 
-        c_dict['STORM_NAME_LIST'] = util.getlist(
+        c_dict['STORM_NAME_LIST'] = getlist(
             self.config.getraw('config', 'TC_PAIRS_STORM_NAME')
         )
         c_dict['DLAND_FILE'] = self.config.getraw('config',
@@ -297,13 +299,13 @@ class TCPairsWrapper(CommandBuilder):
         @param c_dict dictionary to populate with values from config
         @returns None
         """
-        storm_id_list = util.getlist(
+        storm_id_list = getlist(
             self.config.getraw('config', 'TC_PAIRS_STORM_ID', '')
         )
-        cyclone_list = util.getlist(
+        cyclone_list = getlist(
             self.config.getraw('config', 'TC_PAIRS_CYCLONE', '')
         )
-        basin_list = util.getlist(
+        basin_list = getlist(
             self.config.getraw('config', 'TC_PAIRS_BASIN', '')
         )
 
@@ -346,7 +348,13 @@ class TCPairsWrapper(CommandBuilder):
         """! Build up the command to invoke the MET tool tc_pairs.
         """
         # use first run time
-        input_dict = self.c_dict.get('INPUT_DICT')
+        input_dict = next(time_generator(self.config))
+        if not input_dict:
+            return self.all_commands
+
+        add_to_time_input(input_dict,
+                          instance=self.instance)
+        log_runtime_banner(self.config, input_dict, self)
 
         # if running in READ_ALL_FILES mode, call tc_pairs once and exit
         if self.c_dict['READ_ALL_FILES']:

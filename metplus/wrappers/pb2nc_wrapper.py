@@ -13,6 +13,7 @@ Condition codes: 0 for success, 1 for failure
 import os
 import re
 
+from ..util import getlistint
 from ..util import met_util as util
 from ..util import time_util
 from ..util import do_string_sub
@@ -62,9 +63,9 @@ class PB2NCWrapper(CommandBuilder):
                                                  'LOG_PB2NC_VERBOSITY',
                                                  c_dict['VERBOSITY'])
 
-        c_dict['OFFSETS'] = util.getlistint(self.config.getstr('config',
-                                                               'PB2NC_OFFSETS',
-                                                               '0'))
+        c_dict['OFFSETS'] = getlistint(self.config.getstr('config',
+                                                          'PB2NC_OFFSETS',
+                                                          '0'))
 
         # Directories
         # these are optional because users can specify full file path
