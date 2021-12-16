@@ -179,9 +179,6 @@ class TCPairsWrapper(CommandBuilder):
                             extra_args={'remove_quotes': True,
                                         'uppercase': True})
 
-        # if looping by processes, get the init or valid beg time and run once
-        c_dict['INPUT_DICT'] = self.get_start_time_input_dict()
-
         c_dict['INIT_INCLUDE'] = getlist(
             self.get_wrapper_or_generic_config('INIT_INCLUDE')
         )
