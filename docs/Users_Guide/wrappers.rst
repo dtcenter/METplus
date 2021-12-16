@@ -3941,6 +3941,8 @@ METplus Configuration
 | :term:`MODE_INTEREST_FUNCTION_CENTROID_DIST`
 | :term:`MODE_INTEREST_FUNCTION_BOUNDARY_DIST`
 | :term:`MODE_INTEREST_FUNCTION_CONVEX_HULL_DIST`
+| :term:`MODE_PS_PLOT_FLAG`
+| :term:`MODE_CT_STATS_FLAG`
 | :term:`FCST_MODE_VAR<n>_NAME` (optional)
 | :term:`FCST_MODE_VAR<n>_LEVELS` (optional)
 | :term:`FCST_MODE_VAR<n>_THRESH` (optional)
@@ -4455,7 +4457,27 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`MODE_TOTAL_INTEREST_THRESH`
      - total_interest_thresh
 
+**${METPLUS_PS_PLOT_FLAG}**
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_PS_PLOT_FLAG`
+     - ps_plot_flag
+
+**${METPLUS_CT_STATS_FLAG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_CT_STATS_FLAG`
+     - ct_stats_flag
 
 
 .. _mtd_wrapper:

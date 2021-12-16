@@ -56,6 +56,8 @@ class MODEWrapper(CompareGriddedWrapper):
         'METPLUS_INTEREST_FUNCTION_CENTROID_DIST',
         'METPLUS_INTEREST_FUNCTION_BOUNDARY_DIST',
         'METPLUS_INTEREST_FUNCTION_CONVEX_HULL_DIST',
+        'METPLUS_PS_PLOT_FLAG',
+        'METPLUS_CT_STATS_FLAG',
     ]
 
     WEIGHTS = {
@@ -346,6 +348,13 @@ class MODEWrapper(CompareGriddedWrapper):
                 'default': defaults.get('INTEREST_FUNCTION_CONVEX_HULL_DIST')
             }
         )
+
+        self.add_met_config(name='ps_plot_flag',
+                            data_type='bool')
+
+        self.add_met_config(name='ct_stats_flag',
+                            data_type='bool')
+
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False
 

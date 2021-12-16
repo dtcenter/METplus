@@ -8653,3 +8653,13 @@ METplus Configuration Glossary
      Specify the value for 'output_stats.prc' in the MET configuration file for SeriesAnalysis.
 
      | *Used by:* SeriesAnalysis
+
+   MODE_PS_PLOT_FLAG
+     Specify the value for 'ps_plot_flag' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_CT_STATS_FLAG
+     Specify the value for 'ct_stats_flag' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
