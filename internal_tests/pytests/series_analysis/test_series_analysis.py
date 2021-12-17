@@ -738,23 +738,23 @@ def test_create_ascii_storm_files_list(metplus_config, config_overrides,
         leads = lead_group[1]
     else:
         leads = None
-    fcst_list_file = wrapper.get_ascii_filename('FCST', storm_id, leads)
+    fcst_list_file = wrapper._get_ascii_filename('FCST', storm_id, leads)
     fcst_file_path = os.path.join(output_dir,
                                   output_prefix,
                                   fcst_list_file)
     if os.path.exists(fcst_file_path):
         os.remove(fcst_file_path)
 
-    obs_list_file = wrapper.get_ascii_filename('OBS', storm_id, leads)
+    obs_list_file = wrapper._get_ascii_filename('OBS', storm_id, leads)
     obs_file_path = os.path.join(output_dir,
                                   output_prefix,
                                   obs_list_file)
     if os.path.exists(obs_file_path):
         os.remove(obs_file_path)
 
-    fcst_path, obs_path = wrapper.create_ascii_storm_files_list(time_info,
-                                                                storm_id,
-                                                                lead_group)
+    fcst_path, obs_path = wrapper._create_ascii_storm_files_list(time_info,
+                                                                 storm_id,
+                                                                 lead_group)
     assert(fcst_path == fcst_file_path and obs_path == obs_file_path)
 
     with open(fcst_file_path, 'r') as file_handle:
@@ -807,7 +807,7 @@ def test_get_ascii_filename(metplus_config, storm_id, leads,
                             expected_result):
     wrapper = series_analysis_wrapper(metplus_config)
     for data_type in ['FCST', 'OBS']:
-        actual_result = wrapper.get_ascii_filename(data_type,
+        actual_result = wrapper._get_ascii_filename(data_type,
                                                    storm_id,
                                                    leads)
         assert(actual_result == f"{data_type}{expected_result}")
@@ -816,7 +816,7 @@ def test_get_ascii_filename(metplus_config, storm_id, leads,
             return
 
         lead_seconds = [ti_get_seconds_from_lead(item) for item in leads]
-        actual_result = wrapper.get_ascii_filename(data_type,
+        actual_result = wrapper._get_ascii_filename(data_type,
                                                    storm_id,
                                                    lead_seconds)
         assert(actual_result == f"{data_type}{expected_result}")
@@ -859,7 +859,7 @@ def test_get_netcdf_min_max(metplus_config):
                             'tc_data',
                             'basin_global_tenth_degree.nc')
     variable_name = 'basin'
-    min, max = wrapper.get_netcdf_min_max(filepath, variable_name)
+    min, max = wrapper._get_netcdf_min_max(filepath, variable_name)
     assert(min == expected_min)
     assert(max == expected_max)
 

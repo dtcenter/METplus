@@ -89,7 +89,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                          config_overrides=config_overrides)
 
         if self.c_dict['GENERATE_PLOTS']:
-            self.plot_data_plane = self.plot_data_plane_init()
+            self.plot_data_plane = self._plot_data_plane_init()
 
         if WRAPPER_CANNOT_RUN:
             self.log_error("There was a problem importing modules: "
@@ -209,7 +209,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                  f'SERIES_ANALYSIS_{data_type}_FILE_TYPE',
                                  f'{data_type}_FILE_TYPE',
                                  f'{data_type}_SERIES_ANALYSIS_INPUT_DATATYPE',
-                                 f'SERIES_ANALYSIS_FILE_TYPE'],
+                                 'SERIES_ANALYSIS_FILE_TYPE'],
                 extra_args={'remove_quotes': True,
                             'uppercase': True})
 
@@ -333,7 +333,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         return c_dict
 
-    def plot_data_plane_init(self):
+    def _plot_data_plane_init(self):
         """! Set values to allow successful initialization of
               PlotDataPlane wrapper
 
@@ -445,9 +445,9 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         for storm_id in storm_list:
             # Create FCST and OBS ASCII files
             fcst_path, obs_path = (
-                self.create_ascii_storm_files_list(time_info,
-                                                   storm_id,
-                                                   lead_group)
+                self._create_ascii_storm_files_list(time_info,
+                                                    storm_id,
+                                                    lead_group)
             )
             if not fcst_path or not obs_path:
                 self.log_error('No ASCII file lists were created. Skipping.')
@@ -460,9 +460,9 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                 continue
 
             if self.c_dict['GENERATE_PLOTS']:
-                self.generate_plots(fcst_path,
-                                    time_info,
-                                    storm_id)
+                self._generate_plots(fcst_path,
+                                     time_info,
+                                     storm_id)
             else:
                 self.logger.debug("Skip plotting output. Change "
                                   "SERIES_ANALYSIS_GENERATE_PLOTS to True to "
@@ -592,7 +592,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         return bool(filetime['storm_id'] == runtime['storm_id'])
 
-    def create_ascii_storm_files_list(self, time_info, storm_id, lead_group):
+    def _create_ascii_storm_files_list(self, time_info, storm_id, lead_group):
         """! Creates the list of ASCII files that contain the storm id and init
              times.  The list is used to create an ASCII file which will be
              used as the option to the -obs or -fcst flag to the MET
@@ -632,7 +632,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         output_dir = self.get_output_dir(time_info, storm_id, label)
 
-        if not self.check_python_embedding():
+        if not self._check_python_embedding():
             return None, None
 
         # create forecast (or both) file list
@@ -640,9 +640,9 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             data_type = 'BOTH'
         else:
             data_type = 'FCST'
-        fcst_ascii_filename = self.get_ascii_filename(data_type,
-                                                      storm_id,
-                                                      leads)
+        fcst_ascii_filename = self._get_ascii_filename(data_type,
+                                                       storm_id,
+                                                       leads)
         self.write_list_file(fcst_ascii_filename,
                              all_fcst_files,
                              output_dir=output_dir)
@@ -653,7 +653,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             return fcst_path, fcst_path
 
         # create analysis file list
-        obs_ascii_filename = self.get_ascii_filename('OBS',
+        obs_ascii_filename = self._get_ascii_filename('OBS',
                                                       storm_id,
                                                       leads)
         self.write_list_file(obs_ascii_filename,
@@ -664,7 +664,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         return fcst_path, obs_path
 
-    def check_python_embedding(self):
+    def _check_python_embedding(self):
         """! Check if any of the field names contain a Python embedding script.
               See CommandBuilder.check_for_python_embedding for more info.
 
@@ -683,7 +683,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         return True
 
     @staticmethod
-    def get_ascii_filename(data_type, storm_id, leads=None):
+    def _get_ascii_filename(data_type, storm_id, leads=None):
         """! Build filename for ASCII file list file
 
              @param data_type FCST, OBS, or BOTH
@@ -882,7 +882,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         cmd += ' -v ' + self.c_dict['VERBOSITY']
         return cmd
 
-    def generate_plots(self, fcst_path, time_info, storm_id):
+    def _generate_plots(self, fcst_path, time_info, storm_id):
         """! Generate the plots from the series_analysis output.
 
              @param fcst_path path to forecast file list file
@@ -918,8 +918,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                 self.logger.debug(f"Skipping plot for {storm_id}")
                 continue
 
-            _, nseries = self.get_netcdf_min_max(plot_input,
-                                                 'series_cnt_TOTAL')
+            _, nseries = self._get_netcdf_min_max(plot_input,
+                                                  'series_cnt_TOTAL')
             nseries_str = '' if nseries is None else f" (N = {nseries})"
             time_info['nseries'] = nseries_str
 
@@ -930,8 +930,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                     self.c_dict['PNG_FILES'][key] = []
 
                 min_value, max_value = (
-                    self.get_netcdf_min_max(plot_input,
-                                            f'series_cnt_{cur_stat}')
+                    self._get_netcdf_min_max(plot_input,
+                                             f'series_cnt_{cur_stat}')
                 )
                 range_min_max = f"{min_value} {max_value}"
 
@@ -1039,7 +1039,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         return num, beg, end
 
     @staticmethod
-    def get_netcdf_min_max(filepath, variable_name):
+    def _get_netcdf_min_max(filepath, variable_name):
         """! Determine the min and max for all lead times for each
            statistic and variable pairing.
 
