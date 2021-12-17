@@ -225,6 +225,16 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                 extra_args={'remove_quotes': True}
             )
 
+            c_dict[f'{data_type}_IS_PROB'] = (
+                self.config.getbool('config', f'{data_type}_IS_PROB', False)
+            )
+            if c_dict[f'{data_type}_IS_PROB']:
+                c_dict[f'{data_type}_PROB_IN_GRIB_PDS'] = (
+                    self.config.getbool('config',
+                                        f'{data_type}_PROB_IN_GRIB_PDS',
+                                        False)
+                )
+
         # if BOTH is set, neither FCST or OBS can be set
         c_dict['USING_BOTH'] = False
         if c_dict['BOTH_INPUT_TEMPLATE']:
