@@ -1087,7 +1087,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             file_list = file_handle.read().splitlines()[1:]
 
         for file_name in file_list:
-            file_time_info = parse_template(file_name, template)
+            file_time_info = parse_template(template, file_name)
             if not file_time_info:
                 continue
             yield file_time_info
