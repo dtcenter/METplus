@@ -985,14 +985,17 @@ class CommandBuilder:
         # substitute time info if provided
         if time_info:
             output_path = do_string_sub(output_path,
-                                        **time_info)
+                                        **time_dict)
+
+        # replace wildcard character * with all
+        output_path.replace('*', 'all')
 
         skip_if_output_exists = self.c_dict.get('SKIP_IF_OUTPUT_EXISTS', False)
 
         # get directory that the output file will exist
         if is_directory:
             parent_dir = output_path
-            if time_info:
+            if time_info and time_info['valid'] != '*':
                 valid_format = time_info['valid'].strftime('%Y%m%d_%H%M%S')
             else:
                 valid_format = ''
