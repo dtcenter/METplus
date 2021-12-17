@@ -567,6 +567,21 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
                                         'baddeley_max_dist = 2.3;'
                                         'fom_alpha = 4.5;zhu_weight = 0.5;'
                                         'beta_value(n) = n * n / 3.0;}')}),
+        ({'GRID_STAT_FOURIER_WAVE_1D_BEG': '0,4,10', },
+         {'METPLUS_FOURIER_DICT': 'fourier = {wave_1d_beg = [0, 4, 10];}'}),
+
+        ({'GRID_STAT_FOURIER_WAVE_1D_END': '3,9,20', },
+         {'METPLUS_FOURIER_DICT': 'fourier = {wave_1d_end = [3, 9, 20];}'}),
+
+        ({'GRID_STAT_FOURIER_WAVE_1D_BEG': '0,4,10',
+          'GRID_STAT_FOURIER_WAVE_1D_END': '3,9,20',},
+         {'METPLUS_FOURIER_DICT': ('fourier = {wave_1d_beg = [0, 4, 10];'
+                                   'wave_1d_end = [3, 9, 20];}')}),
+        ({'GRID_STAT_CENSOR_THRESH': '>12000,<5000', },
+         {'METPLUS_CENSOR_THRESH': 'censor_thresh = [>12000, <5000];'}),
+
+        ({'GRID_STAT_CENSOR_VAL': '12000, 5000', },
+         {'METPLUS_CENSOR_VAL': 'censor_val = [12000, 5000];'}),
 
     ]
 )
@@ -616,6 +631,7 @@ def test_grid_stat_single_field(metplus_config, config_overrides,
                           item.startswith(env_var_key)), None)
             assert(match is not None)
             actual_value = match.split('=', 1)[1]
+            print(f"ENV VAR: {env_var_key}")
             if env_var_key == 'METPLUS_FCST_FIELD':
                 assert(actual_value == fcst_fmt)
             elif env_var_key == 'METPLUS_OBS_FIELD':

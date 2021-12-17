@@ -302,7 +302,10 @@ def set_minimum_config_settings(config):
                                                       '(0.0, 2.0) '
                                                       '200.0/grid_res, 1.0)'
                                                       ');')}),
-
+        ({'MODE_PS_PLOT_FLAG': 'True', },
+         {'METPLUS_PS_PLOT_FLAG': 'ps_plot_flag = TRUE;'}),
+        ({'MODE_CT_STATS_FLAG': 'True', },
+         {'METPLUS_CT_STATS_FLAG': 'ct_stats_flag = TRUE;'}),
     ]
 )
 def test_mode_single_field(metplus_config, config_overrides,

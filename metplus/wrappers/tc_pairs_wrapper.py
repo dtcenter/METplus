@@ -61,6 +61,8 @@ class TCPairsWrapper(CommandBuilder):
         'METPLUS_WRITE_VALID',
         'METPLUS_VALID_INC',
         'METPLUS_VALID_EXC',
+        'METPLUS_CHECK_DUP',
+        'METPLUS_INTERP12',
     ]
 
     WILDCARDS = {
@@ -168,6 +170,14 @@ class TCPairsWrapper(CommandBuilder):
                             metplus_configs=['TC_PAIRS_STORM_NAME'])
 
         self.handle_consensus()
+
+        self.add_met_config(name='check_dup',
+                            data_type='bool')
+
+        self.add_met_config(name='interp12',
+                            data_type='string',
+                            extra_args={'remove_quotes': True,
+                                        'uppercase': True})
 
         c_dict['INIT_INCLUDE'] = getlist(
             self.get_wrapper_or_generic_config('INIT_INCLUDE')
