@@ -773,8 +773,8 @@ def add_date_matches_to_output_dict(match_dict, output_dict, time_type, valid_sh
     time_values = {
         'Y': -1,
         'y': -1,
-        'm': -1,
-        'd': -1,
+        'm': 1,
+        'd': 1,
         'j': -1,
         'H': 0,
         'M': 0,
