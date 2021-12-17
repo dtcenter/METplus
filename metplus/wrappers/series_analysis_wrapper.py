@@ -24,7 +24,7 @@ except Exception as err_msg:
 
 from ..util import getlist
 from ..util import met_util as util
-from ..util import do_string_sub, parse_template
+from ..util import do_string_sub, parse_template, get_tags
 from ..util import get_lead_sequence, get_lead_sequence_groups
 from ..util import ti_get_hours_from_lead, ti_get_seconds_from_lead
 from ..util import ti_get_lead_string
@@ -733,10 +733,13 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             else:
                 self.c_dict['FCST_LIST_PATH'] = fcst_path
                 self.c_dict['OBS_LIST_PATH'] = obs_path
+
             self.add_field_info_to_time_info(time_info, var_info)
 
             # get formatted field dictionary to pass into the MET config file
-            fcst_field, obs_field = self.get_formatted_fields(var_info)
+            fcst_field, obs_field = self.get_formatted_fields(var_info,
+                                                              fcst_path,
+                                                              obs_path)
 
             self.format_field('FCST', fcst_field)
             self.format_field('OBS', obs_field)
@@ -764,9 +767,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         """
         self.logger.info('Setting env variables from config file...')
 
-        # Set all the environment variables that are needed by the
-        # MET config file.
-        # Set up the environment variable to be used in the Series Analysis
+        # Set all the environment variables referenced in the MET config file
         self.add_env_var("FCST_FILE_TYPE", self.c_dict.get('FCST_FILE_TYPE',
                                                            ''))
         self.add_env_var("OBS_FILE_TYPE", self.c_dict.get('OBS_FILE_TYPE',
@@ -835,6 +836,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
     def generate_plots(self, fcst_path, time_info, storm_id):
         """! Generate the plots from the series_analysis output.
 
+             @param fcst_path path to forecast file list file
              @param time_info dictionary containing time information
              @param storm_id storm ID to process
         """
@@ -958,14 +960,9 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         files_of_interest = files_of_interest[1:]
         num = str(len(files_of_interest))
 
-        if self.c_dict['USING_BOTH']:
-            input_dir = self.c_dict['BOTH_INPUT_DIR']
-            input_template = self.c_dict['BOTH_INPUT_TEMPLATE']
-        else:
-            input_dir = self.c_dict['FCST_INPUT_DIR']
-            input_template = self.c_dict['FCST_INPUT_TEMPLATE']
-
-        full_template = os.path.join(input_dir, input_template)
+        data_type = 'BOTH' if self.c_dict['USING_BOTH'] else 'FCST'
+        template = os.path.join(self.c_dict[f'{data_type}_INPUT_DIR'],
+                                self.c_dict[f'{data_type}_INPUT_TEMPLATE'])
 
         smallest_fcst = 99999999
         largest_fcst = -99999999
@@ -973,7 +970,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         end = None
         for filepath in files_of_interest:
             filepath = filepath.strip()
-            file_time_info = parse_template(full_template,
+            file_time_info = parse_template(template,
                                             filepath,
                                             self.logger)
             if not file_time_info:
@@ -1010,7 +1007,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         except (FileNotFoundError, KeyError):
             return None, None
 
-    def get_formatted_fields(self, var_info):
+    def get_formatted_fields(self, var_info, fcst_path, obs_path):
         """! Get forecast and observation field information for var_info and
             format it so it can be passed into the MET config file
 
@@ -1018,23 +1015,62 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             @returns tuple containing strings of the formatted forecast and
             observation information or None, None if something went wrong
         """
-        # get field info field a single field to pass to the MET config file
-        fcst_field_list = self.get_field_info(v_level=var_info['fcst_level'],
-                                              v_thresh=var_info['fcst_thresh'],
-                                              v_name=var_info['fcst_name'],
-                                              v_extra=var_info['fcst_extra'],
-                                              d_type='FCST')
+        fcst_field_list = self._get_field_list('fcst', var_info, obs_path)
+        obs_field_list = self._get_field_list('obs', var_info, fcst_path)
 
-        obs_field_list = self.get_field_info(v_level=var_info['obs_level'],
-                                             v_thresh=var_info['obs_thresh'],
-                                             v_name=var_info['obs_name'],
-                                             v_extra=var_info['obs_extra'],
-                                             d_type='OBS')
-
-        if fcst_field_list is None or obs_field_list is None:
+        if not fcst_field_list or not obs_field_list:
             return None, None
 
         fcst_fields = ','.join(fcst_field_list)
         obs_fields = ','.join(obs_field_list)
 
         return fcst_fields, obs_fields
+
+    def _get_field_list(self, data_type, var_info, file_list_path):
+        other = 'OBS' if data_type == 'fcst' else 'FCST'
+        # check if time filename template tags are used in field level
+        if not self._has_time_tag(var_info[f'{data_type}_level']):
+            # get field info for a single field to pass to the MET config file
+            return self.get_field_info(
+                v_level=var_info[f'{data_type}_level'],
+                v_thresh=var_info[f'{data_type}_thresh'],
+                v_name=var_info[f'{data_type}_name'],
+                v_extra=var_info[f'{data_type}_extra'],
+                d_type=data_type.upper()
+            )
+
+        field_list = []
+        # loop through fcst and obs files to extract time info
+        template = os.path.join(self.c_dict[f'{other}_INPUT_DIR'],
+                                self.c_dict[f'{other}_INPUT_TEMPLATE'])
+        # for each file apply time info to field info and add to list
+        for file_time_info in self._get_times_from_file_list(file_list_path,
+                                                             template):
+            level = do_string_sub(var_info[f'{data_type}_level'],
+                                  **file_time_info)
+            field = self.get_field_info(
+                v_level=level,
+                v_thresh=var_info[f'{data_type}_thresh'],
+                v_name=var_info[f'{data_type}_name'],
+                v_extra=var_info[f'{data_type}_extra'],
+                d_type=data_type.upper()
+            )
+            if field:
+                field_list.extend(field)
+
+        return field_list
+
+    @staticmethod
+    def _has_time_tag(level):
+        return any([item in ['init', 'valid', 'lead']
+                    for item in get_tags(level)])
+
+    def _get_times_from_file_list(self, file_path, template):
+        with open(file_path, 'r') as file_handle:
+            file_list = file_handle.read().splitlines()[1:]
+
+        for file_name in file_list:
+            file_time_info = parse_template(file_name, template)
+            if not file_time_info:
+                continue
+            yield file_time_info
