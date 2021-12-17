@@ -1111,8 +1111,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
     @staticmethod
     def _has_time_tag(level):
-        return any([item in ['init', 'valid', 'lead']
-                    for item in get_tags(level)])
+        return any(item in ['init', 'valid', 'lead']
+                   for item in get_tags(level))
 
     def _get_times_from_file_list(self, file_path, template):
         with open(file_path, 'r') as file_handle:
