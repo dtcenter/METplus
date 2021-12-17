@@ -159,10 +159,6 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             output_stats_dict[key] = value
         self.add_met_config_dict('output_stats', output_stats_dict)
 
-        if not c_dict['STAT_LIST']:
-            self.log_error("Must set SERIES_ANALYSIS_STAT_LIST to run.")
-
-
         # set legacy stat list to set output_stats.cnt in MET config file
         self.add_met_config(name='cnt',
                             data_type='list',
