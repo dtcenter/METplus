@@ -8703,3 +8703,13 @@ METplus Configuration Glossary
      Specify the value for 'obs.cat_thresh' in the MET configuration file for SeriesAnalysis.
 
      | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_MEAN_FILE_TYPE
+     Specify the value for 'climo_mean.file_type' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_STDEV_FILE_TYPE
+     Specify the value for 'climo_stdev.file_type' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis

@@ -5871,6 +5871,7 @@ METplus Configuration
 | :term:`SERIES_ANALYSIS_CLIMO_MEAN_MATCH_MONTH`
 | :term:`SERIES_ANALYSIS_CLIMO_MEAN_DAY_INTERVAL`
 | :term:`SERIES_ANALYSIS_CLIMO_MEAN_HOUR_INTERVAL`
+| :term:`SERIES_ANALYSIS_CLIMO_MEAN_FILE_TYPE`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_FILE_NAME`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_FIELD`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_REGRID_METHOD`
@@ -5881,6 +5882,7 @@ METplus Configuration
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_MATCH_MONTH`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_DAY_INTERVAL`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_HOUR_INTERVAL`
+| :term:`SERIES_ANALYSIS_CLIMO_STDEV_FILE_TYPE`
 | :term:`SERIES_ANALYSIS_HSS_EC_VALUE`
 | :term:`SERIES_ANALYSIS_OUTPUT_STATS_FHO`
 | :term:`SERIES_ANALYSIS_OUTPUT_STATS_CTC`
@@ -6078,6 +6080,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - climo_mean.day_interval
    * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_HOUR_INTERVAL`
      - climo_mean.hour_interval
+   * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_FILE_TYPE`
+     - climo_mean.file_type
 
 **${METPLUS_CLIMO_STDEV_DICT}**
 
@@ -6107,6 +6111,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - climo_stdev.day_interval
    * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_HOUR_INTERVAL`
      - climo_stdev.hour_interval
+   * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_FILE_TYPE`
+     - climo_stdev.file_type
 
 
 **${METPLUS_BLOCK_SIZE}**

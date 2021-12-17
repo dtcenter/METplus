@@ -1517,6 +1517,7 @@ class CommandBuilder:
             'match_month': ('bool', 'uppercase'),
             'day_interval': 'int',
             'hour_interval': 'int',
+            'file_type': ('string', 'remove_quotes'),
         }
         for climo_type in self.climo_types:
             dict_name = f'climo_{climo_type.lower()}'
