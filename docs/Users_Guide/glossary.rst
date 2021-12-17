@@ -8693,3 +8693,13 @@ METplus Configuration Glossary
      :term:`VALID_TIME_FMT` or they will be skipped.
 
      | *Used by:* All
+
+   FCST_SERIES_ANALYSIS_CAT_THRESH
+     Specify the value for 'fcst.cat_thresh' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   OBS_SERIES_ANALYSIS_CAT_THRESH
+     Specify the value for 'obs.cat_thresh' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis

@@ -53,6 +53,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         'METPLUS_VLD_THRESH',
         'METPLUS_OUTPUT_STATS_DICT',
         'METPLUS_HSS_EC_VALUE',
+        'METPLUS_FCST_CAT_THRESH',
+        'METPLUS_OBS_CAT_THRESH',
     ]
 
     # handle deprecated env vars used pre v4.0.0
@@ -213,6 +215,15 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                 extra_args={'remove_quotes': True,
                             'uppercase': True})
 
+            self.add_met_config(
+                name='cat_thresh',
+                data_type='list',
+                env_var_name=f'METPLUS_{data_type}_CAT_THRESH',
+                metplus_configs=[f'{data_type}_SERIES_ANALYSIS_CAT_THRESH',
+                                 f'SERIES_ANALYSIS_{data_type}_CAT_THRESH',
+                                 f'{data_type}_CAT_THRESH'],
+                extra_args={'remove_quotes': True}
+            )
 
         # if BOTH is set, neither FCST or OBS can be set
         c_dict['USING_BOTH'] = False

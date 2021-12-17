@@ -270,6 +270,11 @@ def set_minimum_config_settings(config):
                                         'pstd = ["RMSE10", "FBAR", "OBAR"];'
                                         'pjc = ["RMSE11", "FBAR", "OBAR"];'
                                         'prc = ["RMSE12", "FBAR", "OBAR"];}')}),
+        ({'SERIES_ANALYSIS_FCST_CAT_THRESH': '>=0.0, >=0.3, >=1.0', },
+         {'METPLUS_FCST_CAT_THRESH': 'cat_thresh = [>=0.0, >=0.3, >=1.0];'}),
+
+        ({'SERIES_ANALYSIS_OBS_CAT_THRESH': '<=CDP33', },
+         {'METPLUS_OBS_CAT_THRESH': 'cat_thresh = [<=CDP33];'}),
 
     ]
 )
