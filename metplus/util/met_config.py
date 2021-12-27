@@ -173,11 +173,10 @@ def add_met_config_dict(config, app_name, output_dict, dict_name, items):
                 metplus_configs.append(f'{metplus_name}IN')
 
             metplus_configs.append(metplus_name)
+            # add other variable names to search if expected name is unset
             if nicknames:
                 for nickname in nicknames:
-                    metplus_configs.append(
-                        f'{app_name}_{nickname}'.upper()
-                    )
+                    metplus_configs.append(nickname)
 
         # if dictionary, read get children from MET config
         else:

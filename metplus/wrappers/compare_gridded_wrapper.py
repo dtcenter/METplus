@@ -404,7 +404,8 @@ that reformat gridded data
 
     def handle_climo_cdf_dict(self):
         self.add_met_config_dict('climo_cdf', {
-            'cdf_bins': ('float', None, None, ['CLIMO_CDF_BINS']),
+            'cdf_bins': ('float', None, None,
+                         [f'{self.app_name.upper()}_CLIMO_CDF_BINS']),
             'center_bins': 'bool',
             'write_bins': 'bool',
         })

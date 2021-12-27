@@ -94,26 +94,13 @@ ${METPLUS_OBS_BUFR_VAR}
 // Mapping of BUFR variable name to GRIB name. The default map is defined at
 // obs_prepbufr_map. This replaces/expends the default map.
 //
-obs_bufr_map = [];
+//obs_bufr_map =
+${METPLUS_OBS_BUFR_MAP}
 
 // This map is for PREPBUFR. It will be added into obs_bufr_map.
 // Please do not override this map.
-obs_prefbufr_map = [
-   { key = "POB";     val = "PRES";  },
-   { key = "QOB";     val = "SPFH";  },
-   { key = "TOB";     val = "TMP";   },
-   { key = "ZOB";     val = "HGT";   },
-   { key = "UOB";     val = "UGRD";  },
-   { key = "VOB";     val = "VGRD";  },
-   { key = "D_DPT";   val = "DPT";   },
-   { key = "D_WDIR";  val = "WDIR";  },
-   { key = "D_WIND";  val = "WIND";  },
-   { key = "D_RH";    val = "RH";    },
-   { key = "D_MIXR";  val = "MIXR";  },
-   { key = "D_PRMSL"; val = "PRMSL"; },
-   { key = "D_PBL";   val = "PBL";   },
-   { key = "D_CAPE";  val = "CAPE";  }
-];
+//obs_prepbufr_map =
+${METPLUS_OBS_PREPBUFR_MAP}
 
 
 ////////////////////////////////////////////////////////////////////////////////
