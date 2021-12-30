@@ -13,6 +13,7 @@ run_use_cases=true
 run_save_truth_data=false
 run_all_use_cases=false
 run_diff=false
+external_trigger=false
 
 # run all use cases and diff logic for pull request
 if [ "${GITHUB_EVENT_NAME}" == "pull_request" ]; then
@@ -25,6 +26,12 @@ if [ "${GITHUB_EVENT_NAME}" == "pull_request" ]; then
     run_all_use_cases=true
     run_diff=true
   fi
+# run all use cases and diff logic for external workflow trigger
+elif [ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]; then
+    run_use_cases=true
+    run_all_use_cases=true
+    run_diff=true
+    external_trigger=true
 # run all use cases and save truth data if -ref branch and not PR
 elif [ "${GITHUB_REF: -4}" == -ref ]; then
   run_use_cases=true
@@ -98,6 +105,7 @@ echo run_use_cases=${run_use_cases} >> job_control_status
 echo run_save_truth_data=${run_save_truth_data} >> job_control_status
 echo run_all_use_cases=${run_all_use_cases} >> job_control_status
 echo run_diff=${run_diff} >> job_control_status
+echo external_trigger=${external_trigger} >> job_control_status
 echo Job Control Settings:
 cat job_control_status
 
@@ -105,6 +113,7 @@ echo ::set-output name=run_get_image::$run_get_image
 echo ::set-output name=run_get_input_data::$run_get_input_data
 echo ::set-output name=run_diff::$run_diff
 echo ::set-output name=run_save_truth_data::$run_save_truth_data
+echo ::set-output name=external_trigger::$external_trigger
 
 # get use cases to run
 .github/jobs/get_use_cases_to_run.sh $run_use_cases $run_all_use_cases $run_unit_tests

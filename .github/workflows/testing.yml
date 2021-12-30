@@ -13,6 +13,13 @@ on:
     types: [opened, reopened, synchronize]
     paths-ignore:
       - docs/** 
+  workflow_dispatch:
+    inputs:
+      repo_name:
+        description: 'Repository that triggered workflow'
+        required: true
+      docker_tag:
+        description: 'DockerHub tag to use (for MET)'
 
 jobs:
   job_control:
@@ -25,6 +32,7 @@ jobs:
       run_get_input_data: ${{ steps.job_status.outputs.run_get_input_data }}
       run_diff: ${{ steps.job_status.outputs.run_diff }}
       run_save_truth_data: ${{ steps.job_status.outputs.run_save_truth_data }}
+      external_trigger: ${{ steps.job_status.outputs.external_trigger }}
     steps:
       - uses: actions/checkout@v2
       - name: Print GitHub values for reference
