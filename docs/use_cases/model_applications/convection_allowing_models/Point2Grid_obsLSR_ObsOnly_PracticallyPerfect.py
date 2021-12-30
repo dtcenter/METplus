@@ -145,7 +145,6 @@ Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
 #   * ASCII2NCToolUseCase
 #   * Point2GridUseCase
 #   * RegridDataPlaneToolUseCase 
-#   * PyEmbedIngestToolUseCase
 #   * RegriddingInToolUseCase 
 #   * NetCDFFileUseCase
 #   * PythonEmbeddingFileUseCase 
