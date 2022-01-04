@@ -149,6 +149,8 @@ Use Case Rules
 - The use case should be run by someone other than the author to ensure that it
   runs smoothly outside of the development environment set up by the author.
 
+.. _memory-intense-use-cases:
+
 Use Cases That Exceed Github Actions Memory Limit
 -------------------------------------------------
 
@@ -1043,7 +1045,7 @@ If the use case does not run successfully in Github Actions and standard error c
 is unsuccessful/your system runs the use case successfully, a recommended step for 
 use cases that utilize a Python embedding script is to employ a Python memory profiler 
 such as [memory-profiler] to check for the Python script’s memory usage. Github Actions 
-has a limited memory storage of [XX] and when exceeded by a use case, will cause the 
+has a `limited memory storage <https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources>`_ and when exceeded by a use case, will cause the 
 use case to fail. If your use case exceeds this limit, try to pare down the data held 
 in memory and use less memory intensive Python routines.
 
@@ -1072,8 +1074,19 @@ Use Cases That Exceed Memory Allocations of Github Actions
 ----------------------------------------------------------
 
 If a use case utilizing Python embedding does not run successfully in 
-Github Actions due to exceeding the [XX] memory limit and memory mitigation 
+Github Actions due to exceeding the memory limit and memory mitigation 
 steps were unsuccessful in lowering memory usage, please take the following steps.
+
+- Document the Github Actions failure in the Github use case issue. 
+  Utilize a Python memory profiler to identify as specifically as possible 
+  where the script exceeds the memory limit.
+- Add the use case to the :ref:`memory-intense-use-cases`.
+- In the internal_tests/use_cases/all_use_cases.txt file, ensure that the 
+  use case is listed as the lowest-listed use case in its respective category. 
+  Change the number in front of the new use case to a letter, preceeded 
+  by the ‘#’ character::
+
+	#X::GridStat_fcstRTOFS_obsGHRSST_climWOA_sst::model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf, model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst/ci_overrides.conf:: icecover_env, py_embed 
 
 Create a Pull Request
 =====================
