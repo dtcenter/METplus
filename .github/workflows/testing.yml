@@ -15,21 +15,20 @@ on:
       - docs/** 
   workflow_dispatch:
     inputs:
-      repo_name:
+      repository:
         description: 'Repository that triggered workflow'
         required: true
-      docker_tag:
-        description: 'DockerHub tag to use (for MET)'
-      actor:
-        description: 'User that triggered the event'
-        required: true
-      commit:
+      sha:
         description: 'Commit hash that triggered the event'
         required: true
+      ref:
+        description: 'Branch that triggered event'
+      actor:
+        description: 'User that triggered the event'
 
 jobs:
   event_info:
-    name: "Trigger: ${{ github.event_name != 'workflow_dispatch' && github.event_name || github.event.inputs.repo_name }} ${{ github.event_name != 'workflow_dispatch' && 'event' || github.event.inputs.commit }}"
+    name: "Trigger: ${{ github.event_name != 'workflow_dispatch' && github.event_name || github.event.inputs.repository }} ${{ github.event_name != 'workflow_dispatch' && 'event' || github.event.inputs.sha }}"
     runs-on: ubuntu-latest
     steps:
       - name: Print GitHub values for reference
