@@ -25,6 +25,15 @@ on:
         required: true
 
 jobs:
+  event_info:
+    name: "Trigger: ${{ github.event_name != 'workflow_dispatch' && github.event_name || github.event.inputs.repo_name }}"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print GitHub values for reference
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+
   job_control:
     name: Determine which jobs to run
     runs-on: ubuntu-latest
@@ -38,10 +47,6 @@ jobs:
       external_trigger: ${{ steps.job_status.outputs.external_trigger }}
     steps:
       - uses: actions/checkout@v2
-      - name: Print GitHub values for reference
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
       - name: Set job controls
         id: job_status
         run: .github/jobs/set_job_controls.sh
