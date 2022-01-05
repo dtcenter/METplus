@@ -23,6 +23,9 @@ on:
       actor:
         description: 'User that triggered the event'
         required: true
+      commit:
+        description: 'Commit hash that triggered the event'
+        required: true
 
 jobs:
   event_info:
