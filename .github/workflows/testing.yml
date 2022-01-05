@@ -20,6 +20,9 @@ on:
         required: true
       docker_tag:
         description: 'DockerHub tag to use (for MET)'
+      actor:
+        description: 'User that triggered the event'
+        required: true
 
 jobs:
   job_control:
