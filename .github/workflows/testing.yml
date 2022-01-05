@@ -26,7 +26,7 @@ on:
 
 jobs:
   event_info:
-    name: "Trigger: ${{ github.event_name != 'workflow_dispatch' && github.event_name || github.event.inputs.repo_name }}"
+    name: "Trigger: ${{ github.event_name != 'workflow_dispatch' && github.event_name || github.event.inputs.repo_name }} ${{ github.event_name != 'workflow_dispatch' && 'event' || github.event.inputs.actor }}"
     runs-on: ubuntu-latest
     steps:
       - name: Print GitHub values for reference
