@@ -88,6 +88,11 @@ def pre_run_setup(config_inputs):
     # handle dir to write temporary files
     handle_tmp_dir(config)
 
+    # handle OMP_NUM_THREADS environment variable
+    handle_env_var_config(config,
+                          env_var_name='OMP_NUM_THREADS',
+                          config_name='OMP_NUM_THREADS')
+
     config.env = os.environ.copy()
 
     return config
@@ -230,19 +235,7 @@ def handle_tmp_dir(config):
      get config temp dir using getdir_nocheck to bypass check for /path/to
      this is done so the user can set env MET_TMP_DIR instead of config TMP_DIR
      and config TMP_DIR will be set automatically"""
-    met_tmp_dir = os.environ.get('MET_TMP_DIR', '')
-    conf_tmp_dir = config.getdir_nocheck('TMP_DIR', '')
-
-    # if env MET_TMP_DIR is set
-    if met_tmp_dir:
-        # override config TMP_DIR to env MET_TMP_DIR value
-        config.set('config', 'TMP_DIR', met_tmp_dir)
-
-        # if config TMP_DIR differed from env MET_TMP_DIR, warn
-        if conf_tmp_dir != met_tmp_dir:
-            msg = 'TMP_DIR in config will be overridden by the ' +\
-                'environment variable MET_TMP_DIR ({})'.format(met_tmp_dir)
-            config.logger.warning(msg)
+    handle_env_var_config(config, 'MET_TMP_DIR', 'TMP_DIR')
 
     # create temp dir if it doesn't exist already
     # this will fail if TMP_DIR is not set correctly and
@@ -250,6 +243,30 @@ def handle_tmp_dir(config):
     tmp_dir = config.getdir('TMP_DIR')
     if not os.path.exists(tmp_dir):
         os.makedirs(tmp_dir)
+
+def handle_env_var_config(config, env_var_name, config_name):
+    """! If environment variable is set, use that value
+     for the config variable and warn if the previous config value differs
+
+     @param config METplusConfig object to read
+     @param env_var_name name of environment variable to read
+     @param config_name name of METplus config variable to check
+    """
+    env_var_value = os.environ.get(env_var_name, '')
+    config_value = config.getdir_nocheck(config_name, '')
+
+    # do nothing if environment variable is not set
+    if not env_var_value:
+        return
+
+    # override config config variable to environment variable value
+    config.set('config', config_name, env_var_value)
+
+    # if config config value differed from environment variable value, warn
+    if config_value != env_var_value:
+        config.logger.warning(f'Config variable {config_name} ({config_value}) '
+                              'will be overridden by the environment variable '
+                              f'{env_var_name} ({env_var_value})')
 
 def get_skip_times(config, wrapper_name=None):
     """! Read SKIP_TIMES config variable and populate dictionary of times that should be skipped.
