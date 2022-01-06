@@ -1086,7 +1086,20 @@ steps were unsuccessful in lowering memory usage, please take the following step
   Change the number in front of the new use case to a letter, preceeded 
   by the ‘#’ character::
 
-	#X::GridStat_fcstRTOFS_obsGHRSST_climWOA_sst::model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf, model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst/ci_overrides.conf:: icecover_env, py_embed 
+	#X::GridStat_fcstRTOFS_obsGHRSST_climWOA_sst::model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf, model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst/ci_overrides.conf:: icecover_env, py_embed
+
+- In the **.github/parm/use_case_groups.json** file, change the “run” variable 
+  for the entry that was added during the :ref:`add_new_category_to_test_runs` 
+  for the new use case to false. 
+- Push these two updated files to your branch in Github and confirm that it 
+  now compiles successfully.
+- During the :ref:`create-a-pull-request` creation, inform the reviewer of 
+  the Github Actions failure. The reviewer should confirm the use case is 
+  successful when run manually, that the memory profiler output confirms that 
+  the Python embedding script exceeds the Github Actions limit, and that 
+  there are no other Github Actions compiling errors.
+
+.. _create-a-pull-request:
 
 Create a Pull Request
 =====================
