@@ -205,6 +205,13 @@ By default this is a directory called **stage** inside the
 
 This value is rarely changed, but it can be if desired.
 
+OMP_NUM_THREADS
+^^^^^^^^^^^^^^^
+
+If the MET executables were installed with threading support, then the number
+of threads used by the tools can be configured with this variable. See
+the glossary entry for :term:`OMP_NUM_THREADS` for more information.
+
 CONVERT
 ^^^^^^^
 
