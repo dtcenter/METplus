@@ -1085,7 +1085,7 @@ steps were unsuccessful in lowering memory usage, please take the following step
 - Add the use case to the :ref:`memory-intense-use-cases` list.
 - In the internal_tests/use_cases/all_use_cases.txt file, ensure that the 
   use case is listed as the lowest-listed use case in its respective category. 
-  Change the number in front of the new use case to a letter, preceeded 
+  Change the number in front of the new use case to an 'X', preceeded 
   by the ‘#’ character::
 
 	#X::GridStat_fcstRTOFS_obsGHRSST_climWOA_sst::model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf, model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst/ci_overrides.conf:: icecover_env, py_embed
