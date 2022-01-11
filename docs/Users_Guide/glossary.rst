@@ -8693,3 +8693,13 @@ METplus Configuration Glossary
      :term:`VALID_TIME_FMT` or they will be skipped.
 
      | *Used by:* All
+
+   OMP_NUM_THREADS
+     Sets environment variable of the same name that determines the number
+     of threads to use in the MET executables. Defaults to 1 thread.
+     If the environment variable of the same name is already set in the
+     user's environment, then that value will be used instead of the value
+     set in the METplus configuration. A warning will be output if this is the
+     case and the values differ between them.
+
+     | *Used by:* All
