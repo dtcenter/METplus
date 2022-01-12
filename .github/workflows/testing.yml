@@ -13,8 +13,31 @@ on:
     types: [opened, reopened, synchronize]
     paths-ignore:
       - docs/** 
+  workflow_dispatch:
+    inputs:
+      repository:
+        description: 'Repository that triggered workflow'
+        required: true
+      sha:
+        description: 'Commit hash that triggered the event'
+        required: true
+      ref:
+        description: 'Branch that triggered event'
+      actor:
+        description: 'User that triggered the event'
+      pusher_email:
+        description: 'Email address of user who triggered push event'
 
 jobs:
+  event_info:
+    name: "Trigger: ${{ github.event_name != 'workflow_dispatch' && github.event_name || github.event.inputs.repository }} ${{ github.event_name != 'workflow_dispatch' && 'local' || github.event.inputs.pusher_email }} ${{ github.event_name != 'workflow_dispatch' && 'event' || github.event.inputs.sha }}"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print GitHub values for reference
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+
   job_control:
     name: Determine which jobs to run
     runs-on: ubuntu-latest
@@ -25,12 +48,9 @@ jobs:
       run_get_input_data: ${{ steps.job_status.outputs.run_get_input_data }}
       run_diff: ${{ steps.job_status.outputs.run_diff }}
       run_save_truth_data: ${{ steps.job_status.outputs.run_save_truth_data }}
+      external_trigger: ${{ steps.job_status.outputs.external_trigger }}
     steps:
       - uses: actions/checkout@v2
-      - name: Print GitHub values for reference
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
       - name: Set job controls
         id: job_status
         run: .github/jobs/set_job_controls.sh

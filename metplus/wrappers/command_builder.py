@@ -70,6 +70,7 @@ class CommandBuilder:
         # list of environment variables to set before running command
         self.env_var_keys = [
             'MET_TMP_DIR',
+            'OMP_NUM_THREADS',
         ]
         if hasattr(self, 'WRAPPER_ENV_VAR_KEYS'):
             self.env_var_keys.extend(self.WRAPPER_ENV_VAR_KEYS)
@@ -116,6 +117,11 @@ class CommandBuilder:
         # set MET_TMP_DIR environment variable that controls
         # where the MET tools write temporary files
         self.env_var_dict['MET_TMP_DIR'] = self.config.getdir('TMP_DIR')
+
+        # set OMP_NUM_THREADS environment variable
+        self.env_var_dict['OMP_NUM_THREADS'] = (
+            self.config.getstr('config', 'OMP_NUM_THREADS')
+        )
 
         self.check_for_externals()
 
