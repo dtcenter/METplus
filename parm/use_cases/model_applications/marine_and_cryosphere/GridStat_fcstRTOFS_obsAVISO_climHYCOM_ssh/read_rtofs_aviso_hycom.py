@@ -60,15 +60,18 @@ sla['lon']=sla.lon.astype('single')
 sla['lat']=sla.lat.astype('single')
 sla.attrs['units']='meters'
 
-adt=data.adt.astype('single')
+adt=ssh_data.adt.astype('single')
 adt.attrs['platform']='aviso'
-adt.attrs['filename']=filename
-adt.attrs['time']=pd.Timestamp(data.time.values[0])
+adt.attrs['filename']=sshfile
+adt.attrs['time']=pd.Timestamp(ssh_data.time.values[0])
 adt=adt.rename({'longitude':'lon','latitude':'lat'})
 # all coords need to be single precision
 adt['lon']=adt.lon.astype('single')
 adt['lat']=adt.lat.astype('single')
 adt.attrs['units']='meters'
+
+sla=sla.squeeze()
+adt=adt.squeeze()
 
 #####################################################################
 # READ RTOFS data (model output in Tri-polar coordinates) ###########
@@ -106,7 +109,7 @@ vDate=pd.Timestamp(vDate)
 
 climofile="hycom_GLBv0.08_53X_archMN.1994_{0:02n}_2015_{0:02n}_ssh.nc".format(vDate.month)
 climo_data=xr.open_dataset(climoDir+'/'+climofile,decode_times=False)
-climo_data=climo_data['s_an'].squeeze()[0,]
+#climo_data=climo_data['surf_el'].squeeze()[0,]
 
 if vDate.day==15:  # even for Feb, just because
     climofile="hycom_GLBv0.08_53X_archMN.1994_{0:02n}_2015_{0:02n}_ssh.nc".format(vDate.month)
@@ -133,7 +136,9 @@ else:
     print('climofile1 :', climofile1)
     print('climofile2 :', climofile2)
 
+climo_data.coords['time']=datetime(vDate.year,vDate.month,1)   # just a reference to the month
 # all coords need to be single precision
+
 climo_data['lon']=climo_data.lon.astype('single')
 climo_data['lat']=climo_data.lat.astype('single')
 climo_data.attrs['platform']='hycom'
@@ -153,6 +158,8 @@ ice_data=ice_data.rename({'sea_ice_fraction':'ice'})
 ice_data2=ice_data.ice.astype('single')
 ice_data2['lon']=ice_data2.lon.astype('single')
 ice_data2['lat']=ice_data2.lat.astype('single')
+
+
 
 
 def regrid(model,obs):
@@ -202,7 +209,7 @@ def expand_grid(data):
     data3=xr.concat((data,data2),dim='lon')
     return data3
 
-ssh_data2=ssh_data2.squeeze()
+#ssh_data2=ssh_data.squeeze()
 
 print('regridding climo to obs')
 climo_data=climo_data.squeeze()
@@ -215,7 +222,7 @@ print('regridding model to obs')
 model2=regrid(outdata,adt)
 
 # combine obs ice mask with ncep
-obs2=ssh_data2.to_masked_array()
+obs2=adt.to_masked_array()
 obs_anom=sla.copy()
 obs_anom2=obs_anom.to_masked_array()
 ice2=ice_data2.to_masked_array()
@@ -230,10 +237,10 @@ climo2.mask=obs2.mask
 model2.mask=obs2.mask
 obs_anom2.mask=obs2.mask
 
-obs2=xr.DataArray(obs2,coords=[ssh_data2.lat.values,ssh_data2.lon.values], dims=['lat','lon'])
-obs_anom2=xr.DataArray(obs_anom2,coords=[obs.lat.values,obs.lon.values], dims=['lat','lon'])
-model2=xr.DataArray(model2,coords=[ssh_data2.lat.values,ssh_data2.lon.values], dims=['lat','lon'])
-climo2=xr.DataArray(climo2,coords=[ssh_data2.lat.values,ssh_data2.lon.values], dims=['lat','lon'])
+obs2=xr.DataArray(obs2,coords=[adt.lat.values,adt.lon.values], dims=['lat','lon'])
+obs_anom2=xr.DataArray(obs_anom2,coords=[adt.lat.values,adt.lon.values], dims=['lat','lon'])
+model2=xr.DataArray(model2,coords=[adt.lat.values,adt.lon.values], dims=['lat','lon'])
+climo2=xr.DataArray(climo2,coords=[adt.lat.values,adt.lon.values], dims=['lat','lon'])
 
 model2=expand_grid(model2)
 climo2=expand_grid(climo2)
