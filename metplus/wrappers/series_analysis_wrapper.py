@@ -455,12 +455,6 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         if not storm_list:
             return False
 
-        # perform string substitution on var list
-        # self.c_dict['VAR_LIST'] = (
-        #     util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
-        #                       time_info)
-        # )
-
         # loop over storm list and process for each
         # this loop will execute once if not filtering by storm ID
         for storm_id in storm_list:
