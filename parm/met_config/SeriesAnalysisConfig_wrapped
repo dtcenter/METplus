@@ -9,16 +9,19 @@
 //
 // Output model name to be written
 //
+//model =
 ${METPLUS_MODEL}
 
 //
 // Output description to be written
 //
+//desc =
 ${METPLUS_DESC}
 
 //
 // Output observation type to be written
 //
+//obtype =
 ${METPLUS_OBTYPE}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -27,12 +30,14 @@ ${METPLUS_OBTYPE}
 // Verification grid
 // May be set separately in each "field" entry
 //
+//regrid = {
 ${METPLUS_REGRID_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 censor_thresh = [];
 censor_val    = [];
+//cat_thresh =
 ${METPLUS_CAT_THRESH}
 cnt_thresh    = [ NA ];
 cnt_logic     = UNION;
@@ -42,10 +47,12 @@ cnt_logic     = UNION;
 //
 fcst = {
    ${METPLUS_FCST_FILE_TYPE}
+   ${METPLUS_FCST_CAT_THRESH}
    ${METPLUS_FCST_FIELD}
 }
 obs = {
    ${METPLUS_OBS_FILE_TYPE}
+   ${METPLUS_OBS_CAT_THRESH}
    ${METPLUS_OBS_FIELD}
 }
 
@@ -90,11 +97,13 @@ mask = {
 // Number of grid points to be processed concurrently.  Set smaller to use
 // less memory but increase the number of passes through the data.
 //
+//block_size =
 ${METPLUS_BLOCK_SIZE}
 
 //
 // Ratio of valid matched pairs to compute statistics for a grid point
 //
+//vld_thresh =
 ${METPLUS_VLD_THRESH}
 
 ////////////////////////////////////////////////////////////////////////////////

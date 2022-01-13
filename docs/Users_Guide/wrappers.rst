@@ -5871,6 +5871,7 @@ METplus Configuration
 | :term:`SERIES_ANALYSIS_CLIMO_MEAN_MATCH_MONTH`
 | :term:`SERIES_ANALYSIS_CLIMO_MEAN_DAY_INTERVAL`
 | :term:`SERIES_ANALYSIS_CLIMO_MEAN_HOUR_INTERVAL`
+| :term:`SERIES_ANALYSIS_CLIMO_MEAN_FILE_TYPE`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_FILE_NAME`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_FIELD`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_REGRID_METHOD`
@@ -5881,6 +5882,7 @@ METplus Configuration
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_MATCH_MONTH`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_DAY_INTERVAL`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_HOUR_INTERVAL`
+| :term:`SERIES_ANALYSIS_CLIMO_STDEV_FILE_TYPE`
 | :term:`SERIES_ANALYSIS_HSS_EC_VALUE`
 | :term:`SERIES_ANALYSIS_OUTPUT_STATS_FHO`
 | :term:`SERIES_ANALYSIS_OUTPUT_STATS_CTC`
@@ -5894,6 +5896,8 @@ METplus Configuration
 | :term:`SERIES_ANALYSIS_OUTPUT_STATS_PSTD`
 | :term:`SERIES_ANALYSIS_OUTPUT_STATS_PJC`
 | :term:`SERIES_ANALYSIS_OUTPUT_STATS_PRC`
+| :term:`FCST_SERIES_ANALYSIS_CAT_THRESH`
+| :term:`OBS_SERIES_ANALYSIS_CAT_THRESH`
 |
 
 .. warning:: **DEPRECATED:**
@@ -6076,6 +6080,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - climo_mean.day_interval
    * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_HOUR_INTERVAL`
      - climo_mean.hour_interval
+   * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_FILE_TYPE`
+     - climo_mean.file_type
 
 **${METPLUS_CLIMO_STDEV_DICT}**
 
@@ -6105,6 +6111,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - climo_stdev.day_interval
    * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_HOUR_INTERVAL`
      - climo_stdev.hour_interval
+   * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_FILE_TYPE`
+     - climo_stdev.file_type
 
 
 **${METPLUS_BLOCK_SIZE}**
@@ -6183,6 +6191,28 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - output_stats.pjc
    * - :term:`SERIES_ANALYSIS_OUTPUT_STATS_PRC`
      - output_stats.prc
+
+**${METPLUS_FCST_CAT_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`FCST_SERIES_ANALYSIS_CAT_THRESH`
+     - fcst.cat_thresh
+
+**${METPLUS_OBS_CAT_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`OBS_SERIES_ANALYSIS_CAT_THRESH`
+     - obs.cat_thresh
 
 
 SeriesByInit
