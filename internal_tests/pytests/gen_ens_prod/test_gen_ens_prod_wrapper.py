@@ -343,6 +343,11 @@ def set_minimum_config_settings(config):
              )
          }),
 
+        ({'GEN_ENS_PROD_ENS_MEMBER_IDS': '1,2,3,4', },
+         {'METPLUS_ENS_MEMBER_IDS': 'ens_member_ids = ["1", "2", "3", "4"];'}),
+
+        ({'GEN_ENS_PROD_CONTROL_ID': '0', },
+         {'METPLUS_CONTROL_ID': 'control_id = "0";'}),
     ]
 )
 def test_gen_ens_prod_single_field(metplus_config, config_overrides,

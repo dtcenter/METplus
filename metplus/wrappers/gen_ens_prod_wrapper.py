@@ -30,6 +30,8 @@ class GenEnsProdWrapper(LoopTimesWrapper):
         'METPLUS_CLIMO_MEAN_DICT',
         'METPLUS_CLIMO_STDEV_DICT',
         'METPLUS_ENSEMBLE_FLAG_DICT',
+        'METPLUS_ENS_MEMBER_IDS',
+        'METPLUS_CONTROL_ID',
     ]
 
     ENSEMBLE_FLAGS = [
@@ -199,6 +201,12 @@ class GenEnsProdWrapper(LoopTimesWrapper):
 
         self.handle_flags('ENSEMBLE')
 
+        self.add_met_config(name='ens_member_ids',
+                            data_type='list')
+
+        self.add_met_config(name='control_id',
+                            data_type='string')
+
         c_dict['ALLOW_MULTIPLE_FILES'] = True
 
         return c_dict
@@ -257,5 +265,6 @@ class GenEnsProdWrapper(LoopTimesWrapper):
            @return command to run
         """
         return (f"{self.app_path} -v {self.c_dict['VERBOSITY']}"
-                f" -ens {self.infiles[0]} -out {self.get_output_path()}"
+                f" -ens {self.infiles[0]}"
+                f" -out {self.get_output_path()}"
                 f" {' '.join(self.args)}")
