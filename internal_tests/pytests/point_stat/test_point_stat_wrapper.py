@@ -61,12 +61,10 @@ def test_met_dictionary_in_var_options(metplus_config):
         ({'DESC': 'my_desc'},
          {'METPLUS_DESC': 'desc = "my_desc";'}),
 
-        ({'OBTYPE': 'my_obtype'},
-         {'METPLUS_OBTYPE': 'obtype = "my_obtype";'}),
-
         ({'POINT_STAT_REGRID_TO_GRID': 'FCST',
           },
-         {'METPLUS_REGRID_DICT': 'regrid = {to_grid = FCST;}'}),
+         {'METPLUS_REGRID_DICT': 'regrid = {to_grid = FCST;}',
+          'REGRID_TO_GRID': 'FCST'}),
 
         ({'POINT_STAT_REGRID_METHOD': 'NEAREST',
           },
@@ -92,7 +90,8 @@ def test_met_dictionary_in_var_options(metplus_config):
           },
          {'METPLUS_REGRID_DICT': ('regrid = {to_grid = FCST;method = NEAREST;'
                                   'width = 1;vld_thresh = 0.5;shape = SQUARE;}'
-                                  )}),
+                                  ),
+          'REGRID_TO_GRID': 'FCST'}),
 
         # mask grid and poly (old config var)
         ({'POINT_STAT_MASK_GRID': 'FULL',
@@ -139,15 +138,6 @@ def test_met_dictionary_in_var_options(metplus_config):
               'sid = ["one", "two"];',
           }),
 
-        ({'POINT_STAT_NEIGHBORHOOD_COV_THRESH': '>=0.5'},
-         {'METPLUS_NBRHD_COV_THRESH': 'cov_thresh = [>=0.5];'}),
-
-        ({'POINT_STAT_NEIGHBORHOOD_WIDTH': '1,2'},
-         {'METPLUS_NBRHD_WIDTH': 'width = [1, 2];'}),
-
-        ({'POINT_STAT_NEIGHBORHOOD_SHAPE': 'CIRCLE'},
-         {'METPLUS_NBRHD_SHAPE': 'shape = CIRCLE;'}),
-
         ({'POINT_STAT_OUTPUT_PREFIX': 'my_output_prefix'},
          {'METPLUS_OUTPUT_PREFIX': 'output_prefix = "my_output_prefix";'}),
 
@@ -159,6 +149,8 @@ def test_met_dictionary_in_var_options(metplus_config):
           },
          {'METPLUS_OBS_WINDOW_DICT':
               'obs_window = {beg = -2700;end = 2700;}',
+          'OBS_WINDOW_BEGIN': '-2700',
+          'OBS_WINDOW_END': '2700'
           }),
 
         ({'POINT_STAT_CLIMO_CDF_CDF_BINS': '1', },
@@ -413,6 +405,44 @@ def test_met_dictionary_in_var_options(metplus_config):
           'CLIMO_STDEV_FILE': '"/some/climo_stdev/file.txt"'}),
         ({'POINT_STAT_HSS_EC_VALUE': '0.5', },
          {'METPLUS_HSS_EC_VALUE': 'hss_ec_value = 0.5;'}),
+        ({'POINT_STAT_MASK_LLPNT': ('{ name = "LAT30TO40"; lat_thresh = >=30&&<=40; lon_thresh = NA; },'
+                                    '{ name = "BOX"; lat_thresh = >=20&&<=40; lon_thresh = >=-110&&<=-90; }')},
+         {'METPLUS_MASK_LLPNT': 'llpnt = [{ name = "LAT30TO40"; lat_thresh = >=30&&<=40; lon_thresh = NA; }, { name = "BOX"; lat_thresh = >=20&&<=40; lon_thresh = >=-110&&<=-90; }];'}),
+
+        ({'POINT_STAT_HIRA_FLAG': 'False', },
+         {'METPLUS_HIRA_DICT': 'hira = {flag = FALSE;}'}),
+
+        ({'POINT_STAT_HIRA_WIDTH': '2,3,4,5', },
+         {'METPLUS_HIRA_DICT': 'hira = {width = [2, 3, 4, 5];}'}),
+
+        ({'POINT_STAT_HIRA_VLD_THRESH': '1.0', },
+         {'METPLUS_HIRA_DICT': 'hira = {vld_thresh = 1.0;}'}),
+
+        ({'POINT_STAT_HIRA_COV_THRESH': '==0.25, ==0.5', },
+         {'METPLUS_HIRA_DICT': 'hira = {cov_thresh = [==0.25, ==0.5];}'}),
+
+        ({'POINT_STAT_HIRA_SHAPE': 'square', },
+         {'METPLUS_HIRA_DICT': 'hira = {shape = SQUARE;}'}),
+
+        ({'POINT_STAT_HIRA_PROB_CAT_THRESH': '>1,<=2', },
+         {'METPLUS_HIRA_DICT': 'hira = {prob_cat_thresh = [>1, <=2];}'}),
+
+        ({
+             'POINT_STAT_HIRA_FLAG': 'False',
+             'POINT_STAT_HIRA_WIDTH': '2,3,4,5',
+             'POINT_STAT_HIRA_VLD_THRESH': '1.0',
+             'POINT_STAT_HIRA_COV_THRESH': '==0.25, ==0.5',
+             'POINT_STAT_HIRA_SHAPE': 'square',
+             'POINT_STAT_HIRA_PROB_CAT_THRESH': '>1,<=2',
+         },
+         {
+             'METPLUS_HIRA_DICT': ('hira = {flag = FALSE;width = [2, 3, 4, 5];'
+                                   'vld_thresh = 1.0;'
+                                   'cov_thresh = [==0.25, ==0.5];'
+                                   'shape = SQUARE;'
+                                   'prob_cat_thresh = [>1, <=2];}')}),
+        ({'POINT_STAT_MESSAGE_TYPE_GROUP_MAP': '{ key = "SURFACE"; val = "ADPSFC,SFCSHP,MSONET";},{ key = "ANYAIR";  val = "AIRCAR,AIRCFT";}', },
+         {'METPLUS_MESSAGE_TYPE_GROUP_MAP': 'message_type_group_map = [{ key = "SURFACE"; val = "ADPSFC, SFCSHP, MSONET";}, { key = "ANYAIR";  val = "AIRCAR, AIRCFT";}];'}),
 
     ]
 )
@@ -507,7 +537,11 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
         assert(cmd == expected_cmd)
 
         # check that environment variables were set properly
-        for env_var_key in wrapper.WRAPPER_ENV_VAR_KEYS:
+        # including deprecated env vars (not in wrapper env var keys)
+        env_var_keys = (wrapper.WRAPPER_ENV_VAR_KEYS +
+                        [name for name in env_var_values
+                         if name not in wrapper.WRAPPER_ENV_VAR_KEYS])
+        for env_var_key in env_var_keys:
             match = next((item for item in env_vars if
                           item.startswith(env_var_key)), None)
             assert(match is not None)

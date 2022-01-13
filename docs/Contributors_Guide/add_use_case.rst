@@ -144,8 +144,20 @@ Use Case Rules
 - The use case should be run by someone other than the author to ensure that it
   runs smoothly outside of the development environment set up by the author.
 
-.. _use_case_documentation:
+.. _memory-intense-use-cases:
 
+Use Cases That Exceed Github Actions Memory Limit
+-------------------------------------------------
+
+Below is a list of use cases in the repository that cannot be run in Github Actions 
+due to their excessive memory usage. They have been tested and cleared by reviewers 
+of any other issues and can be used by METplus users in the same manner as all 
+other use cases.
+
+- model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst
+
+.. _use_case_documentation:
+  
 Document New Use Case
 ---------------------
 
@@ -1024,6 +1036,24 @@ with "Use Case Tests." Click on the job and search for the use case config
 filename in the log output by using the search box on the top right of the
 log output.
 
+If the use case fails in GitHub Actions but runs successfully in the user's environment, 
+potential reasons include: 
+
+- Errors providing input data (see :ref:`use_case_input_data`)
+- Using hard-coded paths from the user's machine
+- Referencing variables set in the user's configuration file or local environment
+- Memory usuage of the use case exceeds the available memory in hte Github Actions environment
+
+Github Actions has `limited memory <https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources>`_
+available and will cause the use case to fail when exceeded. A failure caused by exceeding 
+the memory allocation in a Python Embedding script may result in an unclear error message. 
+If you suspect that this is the case, consider utilizing a Python memory profiler to check the
+Python script's memory usage. If your use case exceeds the limit, try to pare 
+down the data held in memory and use less memory intensive Python routines.
+
+If memory mitigation cannot move the use case’s memory usage below the Github Actions limit, 
+see :ref:`exceeded-Github-Actions` for next steps.
+
 Verify that the use case ran in a reasonable amount of time
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -1038,6 +1068,40 @@ If the new use case runs in a reasonable amount of time but the total time to
 run the set of use cases is now above 20 minutes or so, consider creating a
 new job for the new use case. See the :ref:`subset_category` section and the
 multiple medium_range jobs for an example.
+
+
+.. _exceeded-Github-Actions:
+
+Use Cases That Exceed Memory Allocations of Github Actions
+----------------------------------------------------------
+
+If a use case utilizing Python embedding does not run successfully in 
+Github Actions due to exceeding the memory limit and memory mitigation 
+steps were unsuccessful in lowering memory usage, please take the following steps.
+
+- Document the Github Actions failure in the Github use case issue. 
+  Utilize a Python memory profiler to identify as specifically as possible 
+  where the script exceeds the memory limit.
+- Add the use case to the :ref:`memory-intense-use-cases` list.
+- In the internal_tests/use_cases/all_use_cases.txt file, ensure that the 
+  use case is listed as the lowest-listed use case in its respective category. 
+  Change the number in front of the new use case to an 'X', preceeded 
+  by the ‘#’ character::
+
+	#X::GridStat_fcstRTOFS_obsGHRSST_climWOA_sst::model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf, model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst/ci_overrides.conf:: icecover_env, py_embed
+
+- In the **.github/parm/use_case_groups.json** file, remove the entry that 
+  was added during the :ref:`add_new_category_to_test_runs` 
+  for the new use case. This will stop the use case from running on a pull request. 
+- Push these two updated files to your branch in Github and confirm that it 
+  now compiles successfully.
+- During the :ref:`create-a-pull-request` creation, inform the reviewer of 
+  the Github Actions failure. The reviewer should confirm the use case is 
+  successful when run manually, that the memory profiler output confirms that 
+  the Python embedding script exceeds the Github Actions limit, and that 
+  there are no other Github Actions compiling errors.
+
+.. _create-a-pull-request:
 
 Create a Pull Request
 =====================

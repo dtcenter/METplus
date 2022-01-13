@@ -16,8 +16,9 @@ import re
 
 from ..util import met_util as util
 from ..util import time_util
-from . import CommandBuilder
 from ..util import do_string_sub
+from ..util import time_generator
+from . import CommandBuilder
 
 '''!@namespace TCGenWrapper
 @brief Wraps the TC-Gen tool
@@ -148,16 +149,16 @@ class TCGenWrapper(CommandBuilder):
                             data_type='int',
                             metplus_configs=['TC_GEN_VALID_FREQUENCY',
                                              'TC_GEN_VALID_FREQ'])
-        self.handle_met_config_window('fcst_hr_window')
+        self.add_met_config_window('fcst_hr_window')
         self.add_met_config(name='min_duration',
                             data_type='int',
                             metplus_configs=['TC_GEN_MIN_DURATION'])
 
-        self.handle_met_config_dict('fcst_genesis', {
+        self.add_met_config_dict('fcst_genesis', {
             'vmax_thresh': 'thresh',
             'mslp_thresh': 'thresh',
         })
-        self.handle_met_config_dict('best_genesis', {
+        self.add_met_config_dict('best_genesis', {
             'technique': 'string',
             'category': 'list',
             'vmax_thresh': 'thresh',
@@ -220,8 +221,8 @@ class TCGenWrapper(CommandBuilder):
         self.add_met_config(name='dev_hit_radius',
                             data_type='int',
                             metplus_configs=['TC_GEN_DEV_HIT_RADIUS'])
-        self.handle_met_config_window('dev_hit_window')
-        self.handle_met_config_window('ops_hit_window')
+        self.add_met_config_window('dev_hit_window')
+        self.add_met_config_window('ops_hit_window')
         self.add_met_config(name='discard_init_post_genesis_flag',
                             data_type='bool',
                             metplus_configs=[
@@ -260,11 +261,10 @@ class TCGenWrapper(CommandBuilder):
             data_type='bool',
             metplus_configs=['TC_GEN_GENESIS_MATCH_POINT_TO_TRACK']
         )
-        self.handle_met_config_window('genesis_match_window')
+        self.add_met_config_window('genesis_match_window')
 
-        # get INPUT_TIME_DICT values since wrapper only runs
-        # once (doesn't look over time)
-        c_dict['INPUT_TIME_DICT'] = self.set_time_dict_for_single_runtime()
+        # get INPUT_TIME_DICT values since wrapper doesn't loop over time
+        c_dict['INPUT_TIME_DICT'] = next(time_generator(self.config))
         if not c_dict['INPUT_TIME_DICT']:
             self.isOK = False
 

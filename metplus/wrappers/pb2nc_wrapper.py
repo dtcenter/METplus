@@ -13,6 +13,7 @@ Condition codes: 0 for success, 1 for failure
 import os
 import re
 
+from ..util import getlistint
 from ..util import met_util as util
 from ..util import time_util
 from ..util import do_string_sub
@@ -34,6 +35,8 @@ class PB2NCWrapper(CommandBuilder):
         'METPLUS_LEVEL_RANGE_DICT',
         'METPLUS_LEVEL_CATEGORY',
         'METPLUS_QUALITY_MARK_THRESH',
+        'METPLUS_OBS_BUFR_MAP',
+        'METPLUS_OBS_PREPBUFR_MAP',
     ]
 
     def __init__(self, config, instance=None, config_overrides=None):
@@ -60,9 +63,9 @@ class PB2NCWrapper(CommandBuilder):
                                                  'LOG_PB2NC_VERBOSITY',
                                                  c_dict['VERBOSITY'])
 
-        c_dict['OFFSETS'] = util.getlistint(self.config.getstr('config',
-                                                               'PB2NC_OFFSETS',
-                                                               '0'))
+        c_dict['OFFSETS'] = getlistint(self.config.getstr('config',
+                                                          'PB2NC_OFFSETS',
+                                                          '0'))
 
         # Directories
         # these are optional because users can specify full file path
@@ -91,27 +94,55 @@ class PB2NCWrapper(CommandBuilder):
         # get the MET config file path or use default
         c_dict['CONFIG_FILE'] = self.get_config_file('PB2NCConfig_wrapped')
 
-        self.set_met_config_list(self.env_var_dict,
-                                 'PB2NC_MESSAGE_TYPE',
-                                 'message_type',
-                                 'METPLUS_MESSAGE_TYPE',)
+        self.add_met_config(name='message_type',
+                            data_type='list')
 
-        self.set_met_config_list(self.env_var_dict,
-                                 'PB2NC_STATION_ID',
-                                 'station_id',
-                                 'METPLUS_STATION_ID',)
+        self.add_met_config(name='station_id',
+                            data_type='list')
 
-        self.handle_obs_window_variables(c_dict)
+        self.add_met_config_window('obs_window')
+        self.handle_obs_window_legacy(c_dict)
 
         self.handle_mask(single_value=True)
 
-        self.set_met_config_list(self.env_var_dict,
-                                 'PB2NC_OBS_BUFR_VAR_LIST',
-                                 'obs_bufr_var',
-                                 'METPLUS_OBS_BUFR_VAR',
-                                 allow_empty=True)
+        self.add_met_config(name='obs_bufr_var',
+                            data_type='list',
+                            metplus_configs=['PB2NC_OBS_BUFR_VAR_LIST',
+                                             'PB2NC_OBS_BUFR_VAR'],
+                            extra_args={'allow_empty': True})
 
-        self.handle_time_summary_legacy(c_dict)
+        #self.handle_time_summary_legacy(c_dict)
+        self.handle_time_summary_dict()
+
+        # handle legacy time summary variables
+        self.add_met_config(name='',
+                            data_type='bool',
+                            env_var_name='TIME_SUMMARY_FLAG',
+                            metplus_configs=['PB2NC_TIME_SUMMARY_FLAG'])
+
+        self.add_met_config(name='',
+                            data_type='string',
+                            env_var_name='TIME_SUMMARY_BEG',
+                            metplus_configs=['PB2NC_TIME_SUMMARY_BEG'])
+
+        self.add_met_config(name='',
+                            data_type='string',
+                            env_var_name='TIME_SUMMARY_END',
+                            metplus_configs=['PB2NC_TIME_SUMMARY_END'])
+
+        self.add_met_config(name='',
+                            data_type='list',
+                            env_var_name='TIME_SUMMARY_VAR_NAMES',
+                            metplus_configs=['PB2NC_TIME_SUMMARY_OBS_VAR',
+                                             'PB2NC_TIME_SUMMARY_VAR_NAMES'],
+                            extra_args={'allow_empty': True})
+
+        self.add_met_config(name='',
+                            data_type='list',
+                            env_var_name='TIME_SUMMARY_TYPES',
+                            metplus_configs=['PB2NC_TIME_SUMMARY_TYPE',
+                                             'PB2NC_TIME_SUMMARY_TYPES'],
+                            extra_args={'allow_empty': True})
 
         self.handle_file_window_variables(c_dict, dtypes=['OBS'])
 
@@ -147,22 +178,7 @@ class PB2NCWrapper(CommandBuilder):
                             extra_args={'remove_quotes': True})
 
         # get level_range beg and end
-        level_range_items = []
-        level_range_items.append(
-            self.get_met_config(name='beg',
-                                data_type='int',
-                                metplus_configs=['PB2NC_LEVEL_RANGE_BEG',
-                                                 'PB2NC_LEVEL_RANGE_BEGIN'])
-        )
-        level_range_items.append(
-            self.get_met_config(name='end',
-                                data_type='int',
-                                metplus_configs=['PB2NC_LEVEL_RANGE_END'])
-        )
-
-        self.add_met_config(name='level_range',
-                            data_type='dict',
-                            children=level_range_items)
+        self.add_met_config_window('level_range')
 
         self.add_met_config(name='level_category',
                             data_type='list',
@@ -173,6 +189,13 @@ class PB2NCWrapper(CommandBuilder):
                             data_type='int',
                             metplus_configs=['PB2NC_QUALITY_MARK_THRESH'])
 
+        self.add_met_config(name='obs_bufr_map',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
+
+        self.add_met_config(name='obs_prepbufr_map',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
 
         return c_dict
 
@@ -196,16 +219,10 @@ class PB2NCWrapper(CommandBuilder):
         self.add_env_var("OBS_BUFR_VAR_LIST", self.c_dict.get('BUFR_VAR_LIST',
                                                               ''))
 
-        self.add_env_var('TIME_SUMMARY_FLAG',
-                         self.c_dict.get('TIME_SUMMARY_FLAG', ''))
-        self.add_env_var('TIME_SUMMARY_BEG',
-                         self.c_dict.get('TIME_SUMMARY_BEG', ''))
-        self.add_env_var('TIME_SUMMARY_END',
-                         self.c_dict.get('TIME_SUMMARY_END', ''))
-        self.add_env_var('TIME_SUMMARY_VAR_NAMES',
-                         self.c_dict.get('TIME_SUMMARY_VAR_NAMES', ''))
-        self.add_env_var('TIME_SUMMARY_TYPES',
-                         self.c_dict.get('TIME_SUMMARY_TYPES', ''))
+        for item in ['FLAG', 'BEG', 'END', 'VAR_NAMES', 'TYPES']:
+            ts_item = f'TIME_SUMMARY_{item}'
+            self.add_env_var(f'{ts_item}',
+                             self.env_var_dict.get(f'METPLUS_{ts_item}', ''))
 
         super().set_environment_variables(time_info)
 

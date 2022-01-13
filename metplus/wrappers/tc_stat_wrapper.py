@@ -129,15 +129,77 @@ class TCStatWrapper(CommandBuilder):
         # get the MET config file path or use default
         c_dict['CONFIG_FILE'] = self.get_config_file('TCStatConfig_wrapped')
 
+        self.set_met_config_for_environment_variables()
+
+        return c_dict
+
+    def set_met_config_for_environment_variables(self):
+        """! Set c_dict dictionary entries that will be set as environment
+        variables to be read by the MET config file.
+            @param c_dict dictionary to add key/value pairs
+        """
         self.handle_description()
 
-        self.set_met_config_for_environment_variables()
+        for config_list in ['amodel',
+                            'bmodel',
+                            'storm_id',
+                            'basin',
+                            'cyclone',
+                            'storm_name',
+                            'init_hour',
+                            'lead_req',
+                            'init_mask',
+                            'valid_mask',
+                            'valid_hour',
+                            'lead',
+                            'track_watch_warn',
+                            'column_thresh_name',
+                            'column_thresh_val',
+                            'column_str_name',
+                            'column_str_val',
+                            'init_thresh_name',
+                            'init_thresh_val',
+                            'init_str_name',
+                            'init_str_val',
+                            ]:
+            self.add_met_config(name=config_list,
+                                data_type='list')
+
+        for iv_list in ['INIT', 'VALID']:
+            self.add_met_config(name=f'{iv_list.lower()}_inc',
+                                data_type='list',
+                                metplus_configs=[f'TC_STAT_{iv_list}_INC',
+                                                 f'TC_STAT_{iv_list}_INCLUDE'])
+            self.add_met_config(name=f'{iv_list.lower()}_exc',
+                                data_type='list',
+                                metplus_configs=[f'TC_STAT_{iv_list}_EXC',
+                                                 f'TC_STAT_{iv_list}_EXCLUDE'])
+
+        for config_str in ['INIT_BEG',
+                           'INIT_END',
+                           'VALID_BEG',
+                           'VALID_END',
+                           'LANDFALL_BEG',
+                           'LANDFALL_END',
+                            ]:
+            self.add_met_config(name=config_str.lower(),
+                                data_type='string',
+                                metplus_configs=[f'TC_STAT_{config_str}',
+                                                 config_str])
+
+        for config_bool in ['water_only',
+                            'landfall',
+                            'match_points',
+                            ]:
+
+            self.add_met_config(name=config_bool,
+                                data_type='bool')
 
         self.add_met_config(name='column_str_exc_name',
                             data_type='list',
                             metplus_configs=['TC_STAT_COLUMN_STR_EXC_NAME',
                                              'TC_STAT_COLUMN_STR_EXCLUDE_NAME',
-                                            ])
+                                             ])
         self.add_met_config(name='column_str_exc_val',
                             data_type='list',
                             metplus_configs=['TC_STAT_COLUMN_STR_EXC_VAL',
@@ -153,77 +215,6 @@ class TCStatWrapper(CommandBuilder):
                             metplus_configs=['TC_STAT_INIT_STR_EXC_VAL',
                                              'TC_STAT_INIT_STR_EXCLUDE_VAL',
                                              ])
-
-        return c_dict
-
-    def set_met_config_for_environment_variables(self):
-        """! Set c_dict dictionary entries that will be set as environment
-        variables to be read by the MET config file.
-            @param c_dict dictionary to add key/value pairs
-        """
-        app_name_upper = self.app_name.upper()
-
-        for config_list in ['AMODEL',
-                            'BMODEL',
-                            'STORM_ID',
-                            'BASIN',
-                            'CYCLONE',
-                            'STORM_NAME',
-                            'INIT_HOUR',
-                            'LEAD_REQ',
-                            'INIT_MASK',
-                            'VALID_MASK',
-                            'VALID_HOUR',
-                            'LEAD',
-                            'TRACK_WATCH_WARN',
-                            'COLUMN_THRESH_NAME',
-                            'COLUMN_THRESH_VAL',
-                            'COLUMN_STR_NAME',
-                            'COLUMN_STR_VAL',
-                            'INIT_THRESH_NAME',
-                            'INIT_THRESH_VAL',
-                            'INIT_STR_NAME',
-                            'INIT_STR_VAL',
-                             ]:
-            self.set_met_config_list(self.env_var_dict,
-                                     f'{app_name_upper}_{config_list}',
-                                     config_list.lower(),
-                                     f'METPLUS_{config_list}')
-
-        for iv_list in ['INIT', 'VALID',]:
-            self.set_met_config_list(self.env_var_dict,
-                                     f'{app_name_upper}_{iv_list}_INCLUDE',
-                                     f'{iv_list.lower()}_inc',
-                                     f'METPLUS_{iv_list}_INC'
-                                     )
-            self.set_met_config_list(self.env_var_dict,
-                                     f'{app_name_upper}_{iv_list}_EXCLUDE',
-                                     f'{iv_list.lower()}_exc',
-                                     f'METPLUS_{iv_list}_EXC'
-                                     )
-
-        for config_str in ['INIT_BEG',
-                           'INIT_END',
-                           'VALID_BEG',
-                           'VALID_END',
-                           'LANDFALL_BEG',
-                           'LANDFALL_END',
-                            ]:
-            self.set_met_config_string(self.env_var_dict,
-                                       [f'{app_name_upper}_{config_str}',
-                                        f'{config_str}'],
-                                       config_str.lower(),
-                                       f'METPLUS_{config_str}')
-
-        for config_bool in ['WATER_ONLY',
-                            'LANDFALL',
-                            'MATCH_POINTS',
-                            ]:
-
-            self.set_met_config_bool(self.env_var_dict,
-                                     f'{app_name_upper}_{config_bool}',
-                                     config_bool.lower(),
-                                     f'METPLUS_{config_bool}')
 
     def run_at_time(self, input_dict=None):
         """! Builds the call to the MET tool TC-STAT for all requested

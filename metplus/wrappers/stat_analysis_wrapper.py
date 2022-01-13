@@ -18,8 +18,10 @@ import glob
 import datetime
 import itertools
 
+from ..util import getlist
 from ..util import met_util as util
-from ..util import do_string_sub
+from ..util import do_string_sub, find_indices_in_config_section
+from ..util import parse_var_list
 from . import CommandBuilder
 
 class StatAnalysisWrapper(CommandBuilder):
@@ -183,7 +185,7 @@ class StatAnalysisWrapper(CommandBuilder):
                            conf_list in all_lists_to_read
                            if conf_list not in self.field_lists]
         for conf_list in non_field_lists:
-            c_dict[conf_list] = util.getlist(
+            c_dict[conf_list] = getlist(
                 self.config.getstr('config', conf_list, '')
             )
 
@@ -215,7 +217,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 if not self.MakePlotsWrapper.isOK:
                     self.log_error("MakePlotsWrapper was not initialized correctly.")
 
-        c_dict['VAR_LIST'] = util.parse_var_list(self.config)
+        c_dict['VAR_LIST'] = parse_var_list(self.config)
 
         c_dict['MODEL_INFO_LIST'] = self.parse_model_info()
         if not c_dict['MODEL_LIST'] and c_dict['MODEL_INFO_LIST']:
@@ -304,7 +306,7 @@ class StatAnalysisWrapper(CommandBuilder):
                     self.get_level_list(field_list.split('_')[0])
                 )
             else:
-                field_dict[field_list] = util.getlist(
+                field_dict[field_list] = getlist(
                     self.config.getstr('config',
                                        field_list,
                                        '')
@@ -1229,9 +1231,9 @@ class StatAnalysisWrapper(CommandBuilder):
         """
         model_info_list = []
         model_indices = list(
-            util.find_indices_in_config_section(r'MODEL(\d+)$',
-                                                self.config,
-                                                index_index=1).keys()
+            find_indices_in_config_section(r'MODEL(\d+)$',
+                                           self.config,
+                                           index_index=1).keys()
         )
         for m in model_indices:
             model_name = self.config.getstr('config', f'MODEL{m}')
@@ -1317,7 +1319,7 @@ class StatAnalysisWrapper(CommandBuilder):
         """
         level_list = []
 
-        level_input = util.getlist(
+        level_input = getlist(
             self.config.getstr('config', f'{data_type}_LEVEL_LIST', '')
         )
 
@@ -1494,7 +1496,7 @@ class StatAnalysisWrapper(CommandBuilder):
                                     False)
             )
             if run_fourier:
-                fourier_wave_num_pairs = util.getlist(
+                fourier_wave_num_pairs = getlist(
                     self.config.getstr('config',
                                        'VAR' + var_info['index'] + '_WAVE_NUM_LIST',
                                        '')

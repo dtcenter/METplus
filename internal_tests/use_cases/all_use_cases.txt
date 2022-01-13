@@ -89,6 +89,7 @@ Category: marine_and_cryosphere
 0::GridStat_MODE_fcstIMS_obsNCEP_sea_ice::model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf
 1::PlotDataPlane_obsHYCOM_coordTripolar::model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar.conf:: xesmf_env, py_embed
 2::GridStat_fcstRTOFS_obsOSTIA_iceCover::model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsOSTIA_iceCover.conf:: icecover_env, py_embed
+3::GridStat_fcstRTOFS_obsSMOS_climWOA_sss::model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMOS_climWOA_sss.conf:: icecover_env, py_embed
 #X::GridStat_fcstRTOFS_obsGHRSST_climWOA_sst::model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf, model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst/ci_overrides.conf:: icecover_env, py_embed
 
 

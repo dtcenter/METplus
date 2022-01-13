@@ -118,7 +118,7 @@ class GenEnsProdWrapper(LoopTimesWrapper):
                             metplus_configs=['DESC', 'GEN_ENS_PROD_DESC'],
                             )
 
-        self.handle_met_config_dict('regrid', {
+        self.add_met_config_dict('regrid', {
             'to_grid': ('string', 'to_grid'),
             'method': ('string', 'uppercase,remove_quotes'),
             'width': 'int',
@@ -176,13 +176,13 @@ class GenEnsProdWrapper(LoopTimesWrapper):
                             extra_args={'remove_quotes': True,
                                         'uppercase': True})
 
-        self.handle_met_config_dict('nbrhd_prob', {
+        self.add_met_config_dict('nbrhd_prob', {
             'width': ('list', 'remove_quotes'),
             'shape': ('string', 'uppercase,remove_quotes'),
             'vld_thresh': 'float',
         })
 
-        self.handle_met_config_dict('nmep_smooth', {
+        self.add_met_config_dict('nmep_smooth', {
             'vld_thresh': 'float',
             'shape': ('string', 'uppercase,remove_quotes'),
             'gaussian_dx': 'float',

@@ -279,11 +279,15 @@ def test_find_input_files(metplus_config, offsets, offset_to_find):
                                            'type = ["min", "max", "range"];'
                                            'vld_freq = 1;'
                                            'vld_thresh = 0.1;}')}),
+        ({'PB2NC_OBS_BUFR_MAP': '{key="POB"; val="PRES"; },{key="QOB"; val="SPFH";}', },
+         {'METPLUS_OBS_BUFR_MAP': 'obs_bufr_map = [{key="POB"; val="PRES"; }, {key="QOB"; val="SPFH";}];'}),
+        ({'PB2NC_OBS_PREPBUFR_MAP': '{key="POB"; val="PRES"; },{key="QOB"; val="SPFH";}', },
+         {'METPLUS_OBS_PREPBUFR_MAP': 'obs_prepbufr_map = [{key="POB"; val="PRES"; }, {key="QOB"; val="SPFH";}];'}),
 
     ]
 )
 def test_pb2nc_all_fields(metplus_config, config_overrides,
-                               env_var_values):
+                          env_var_values):
     input_dir = '/some/input/dir'
     config = metplus_config()
 
@@ -341,7 +345,11 @@ def test_pb2nc_all_fields(metplus_config, config_overrides,
         assert(cmd == expected_cmd)
 
         # check that environment variables were set properly
-        for env_var_key in wrapper.WRAPPER_ENV_VAR_KEYS:
+        # including deprecated env vars (not in wrapper env var keys)
+        env_var_keys = (wrapper.WRAPPER_ENV_VAR_KEYS +
+                        [name for name in env_var_values
+                         if name not in wrapper.WRAPPER_ENV_VAR_KEYS])
+        for env_var_key in env_var_keys:
             match = next((item for item in env_vars if
                           item.startswith(env_var_key)), None)
             assert(match is not None)

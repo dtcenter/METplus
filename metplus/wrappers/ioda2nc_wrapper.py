@@ -86,10 +86,10 @@ class IODA2NCWrapper(LoopTimesWrapper):
         self.add_met_config(name='message_type_group_map', data_type='list',
                             extra_args={'remove_quotes': True})
         self.add_met_config(name='station_id', data_type='list')
-        self.handle_met_config_window('obs_window')
+        self.add_met_config_window('obs_window')
         self.handle_mask(single_value=True)
-        self.handle_met_config_window('elevation_range')
-        self.handle_met_config_window('level_range')
+        self.add_met_config_window('elevation_range')
+        self.add_met_config_window('level_range')
         self.add_met_config(name='obs_var', data_type='list')
         self.add_met_config(name='obs_name_map', data_type='list',
                             extra_args={'remove_quotes': True})

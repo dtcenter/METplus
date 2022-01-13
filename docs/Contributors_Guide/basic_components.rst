@@ -274,7 +274,7 @@ should be set.
 Add Support for MET Dictionary
 ------------------------------
 
-The handle_met_config_dict function can be used to easily set a MET config
+The add_met_config_dict function can be used to easily set a MET config
 dictionary variable. The function takes 2 arguments:
 
 * dict_name: Name of the MET dictionary variable, i.e. distance_map.
@@ -285,7 +285,7 @@ dictionary variable. The function takes 2 arguments:
 
 ::
 
-    self.handle_met_config_dict('fcst_genesis', {
+    self.add_met_config_dict('fcst_genesis', {
         'vmax_thresh': 'thresh',
         'mslp_thresh': 'thresh',
     })
@@ -302,12 +302,12 @@ data type, extra info, children, and nicknames.
 * extra: Additional info as a comma separated string (see extra_args above)
 * children: Dictionary defining a nested dictionary where the key is the name
   of the sub-directory and the value is the item info (see items above)
-* nicknames: List of METplus variable names (with app name excluded) to also
+* nicknames: List of METplus variable names to also
   search and use if it is set. For example, the GridStat variable mask.poly is
   set by the METplus config variable GRID_STAT_MASK_POLY. However, in older
   versions of the METplus wrappers, the variable used was
   GRID_STAT_VERIFICATION_MASK_TEMPLATE. To preserve support for this name, the
-  nickname can be set to ['VERIFICATION_MASK_TEMPLATE'] and the old variable
+  nickname can be set to [f'{self.app_name.upper()}_VERIFICATION_MASK_TEMPLATE'] and the old variable
   will be checked if GRID_STAT_MASK_POLY is not set.
 
 Values must be set to None to preserve the order.
@@ -319,8 +319,8 @@ a function is typically used to handle it. For example, this function is in
 CompareGriddedWrapper and is used by GridStat, PointStat, and EnsembleStat::
 
     def handle_climo_cdf_dict(self):
-        self.handle_met_config_dict('climo_cdf', {
-            'cdf_bins': ('float', None, None, ['CLIMO_CDF_BINS']),
+        self.add_met_config_dict('climo_cdf', {
+            'cdf_bins': ('float', None, None, [f'{self.app_name.upper()}_CLIMO_CDF_BINS']),
             'center_bins': 'bool',
             'write_bins': 'bool',
         })
@@ -329,30 +329,30 @@ This function handles setting the climo_cdf dictionary. The METplus config
 variable that fits the format {APP_NAME}_{DICTIONARY_NAME}_{VARIABLE_NAME},
 i.e. GRID_STAT_CLIMO_CDF_CDF_BINS for GridStat's climo_cdf.cdf_bins, is
 quieried first. However, this default name is a little redundant, so adding
-the nickname 'CLIMO_CDF_BINS' allows the user to set the variable
+the nickname 'GRID_STAT_CLIMO_CDF_BINS' allows the user to set the variable
 GRID_STAT_CLIMO_CDF_BINS instead.
 
 There are many MET config dictionaries that only contain beg and end to define
-a window. A function in CommandBuilder called handle_met_config_window can be
+a window. A function in CommandBuilder called add_met_config_window can be
 used to easily set these variable by only supplying the name of the MET
 dictionary variable.
 
 ::
 
-    def handle_met_config_window(self, dict_name):
+    def add_met_config_window(self, dict_name):
         """! Handle a MET config window dictionary. It is assumed that
         the dictionary only contains 'beg' and 'end' entries that are integers.
 
         @param dict_name name of MET dictionary
         """
-        self.handle_met_config_dict(dict_name, {
+        self.add_met_config_dict(dict_name, {
             'beg': 'int',
             'end': 'int',
         })
 
 This can be called from any wrapper, i.e. TCGen::
 
-    self.handle_met_config_window('fcst_hr_window')
+    self.add_met_config_window('fcst_hr_window')
 
 This will check if TC_GEN_FCST_HR_WINDOW_BEGIN (or TC_GEN_FCST_HR_WINDOW_BEG)
 and TC_GEN_FCST_HR_WINDOW_END are set and override fcst_hr_window.beg and/or
@@ -383,5 +383,5 @@ handle_climo_dict, handle_mask, and handle_interp_dict.
         if uses_field:
             items['field'] = ('string', 'remove_quotes')
 
-        self.handle_met_config_dict('interp', items)
+        self.add_met_config_dict('interp', items)
 

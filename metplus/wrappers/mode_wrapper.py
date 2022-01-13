@@ -56,6 +56,8 @@ class MODEWrapper(CompareGriddedWrapper):
         'METPLUS_INTEREST_FUNCTION_CENTROID_DIST',
         'METPLUS_INTEREST_FUNCTION_BOUNDARY_DIST',
         'METPLUS_INTEREST_FUNCTION_CONVEX_HULL_DIST',
+        'METPLUS_PS_PLOT_FLAG',
+        'METPLUS_CT_STATS_FLAG',
     ]
 
     WEIGHTS = {
@@ -150,15 +152,11 @@ class MODEWrapper(CompareGriddedWrapper):
         )
 
         c_dict['ONCE_PER_FIELD'] = True
-        self.set_met_config_bool(self.env_var_dict,
-                                 'MODE_QUILT',
-                                 'quilt',
-                                 'METPLUS_QUILT')
+        self.add_met_config(name='quilt',
+                            data_type='bool')
 
-        self.set_met_config_float(self.env_var_dict,
-                                  'MODE_GRID_RES',
-                                  'grid_res',
-                                  'METPLUS_GRID_RES')
+        self.add_met_config(name='grid_res',
+                            data_type='float')
 
         # if MODE_GRID_RES is not set, then unset the default values
         defaults = self.DEFAULT_VALUES.copy()
@@ -168,83 +166,124 @@ class MODEWrapper(CompareGriddedWrapper):
 
         # read forecast and observation field variables
         for data_type in ['FCST', 'OBS']:
-            self.set_met_config_list(
-                self.env_var_dict,
-                [f'{data_type}_MODE_CONV_RADIUS',
-                 f'MODE_{data_type}_CONV_RADIUS',
-                 'MODE_CONV_RADIUS'],
-                'conv_radius',
-                f'METPLUS_{data_type}_CONV_RADIUS',
-                remove_quotes=True,
-                default=defaults.get(f'{data_type}_CONV_RADIUS'),
+            self.add_met_config(
+                name='conv_radius',
+                data_type='list',
+                env_var_name=f'METPLUS_{data_type}_CONV_RADIUS',
+                metplus_configs=[f'{data_type}_MODE_CONV_RADIUS',
+                                 f'MODE_{data_type}_CONV_RADIUS',
+                                 'MODE_CONV_RADIUS'
+                                 ],
+                extra_args={
+                    'remove_quotes': True,
+                    'default': defaults.get(f'{data_type}_CONV_RADIUS')
+                }
             )
 
-            self.set_met_config_list(self.env_var_dict,
-                                     [f'{data_type}_MODE_CONV_THRESH',
-                                      f'MODE_{data_type}_CONV_THRESH',
-                                      'MODE_CONV_THRESH'],
-                                     'conv_thresh',
-                                     f'METPLUS_{data_type}_CONV_THRESH',
-                                     remove_quotes=True)
+            self.add_met_config(
+                name='conv_thresh',
+                data_type='list',
+                env_var_name=f'METPLUS_{data_type}_CONV_THRESH',
+                metplus_configs=[f'{data_type}_MODE_CONV_THRESH',
+                                 f'MODE_{data_type}_CONV_THRESH',
+                                 'MODE_CONV_THRESH'
+                                 ],
+                extra_args={
+                    'remove_quotes': True,
+                }
+            )
 
-            self.set_met_config_list(self.env_var_dict,
-                                     [f'{data_type}_MODE_MERGE_THRESH',
-                                      f'MODE_{data_type}_MERGE_THRESH',
-                                      'MODE_MERGE_THRESH'],
-                                     'merge_thresh',
-                                     f'METPLUS_{data_type}_MERGE_THRESH',
-                                     remove_quotes=True)
+            self.add_met_config(
+                name='merge_thresh',
+                data_type='list',
+                env_var_name=f'METPLUS_{data_type}_MERGE_THRESH',
+                metplus_configs=[f'{data_type}_MODE_MERGE_THRESH',
+                                 f'MODE_{data_type}_MERGE_THRESH',
+                                 'MODE_MERGE_THRESH'
+                                 ],
+                extra_args={
+                    'remove_quotes': True,
+                }
+            )
 
-            self.set_met_config_string(self.env_var_dict,
-                                       [f'{data_type}_MODE_MERGE_FLAG',
-                                        f'MODE_{data_type}_MERGE_FLAG',
-                                        'MODE_MERGE_FLAG'],
-                                       'merge_flag',
-                                       f'METPLUS_{data_type}_MERGE_FLAG',
-                                       remove_quotes=True,
-                                       uppercase=True)
+            self.add_met_config(
+                name='merge_flag',
+                data_type='string',
+                env_var_name=f'METPLUS_{data_type}_MERGE_FLAG',
+                metplus_configs=[f'{data_type}_MODE_MERGE_FLAG',
+                                 f'MODE_{data_type}_MERGE_FLAG',
+                                 'MODE_MERGE_FLAG'
+                                 ],
+                extra_args={
+                    'remove_quotes': True,
+                    'uppercase': True,
+                }
+            )
 
-            self.set_met_config_list(self.env_var_dict,
-                                     [f'{data_type}_MODE_FILTER_ATTR_NAME',
-                                      f'MODE_{data_type}_FILTER_ATTR_NAME',
-                                      'MODE_FILTER_ATTR_NAME'],
-                                     'filter_attr_name',
-                                     f'METPLUS_{data_type}_FILTER_ATTR_NAME')
+            self.add_met_config(
+                name='filter_attr_name',
+                data_type='list',
+                env_var_name=f'METPLUS_{data_type}_FILTER_ATTR_NAME',
+                metplus_configs=[f'{data_type}_MODE_FILTER_ATTR_NAME',
+                                 f'MODE_{data_type}_FILTER_ATTR_NAME',
+                                 'MODE_FILTER_ATTR_NAME'
+                                 ],
+            )
 
-            self.set_met_config_list(self.env_var_dict,
-                                     [f'{data_type}_MODE_FILTER_ATTR_THRESH',
-                                      f'MODE_{data_type}_FILTER_ATTR_THRESH',
-                                      'MODE_FILTER_ATTR_THRESH'],
-                                     'filter_attr_thresh',
-                                     f'METPLUS_{data_type}_FILTER_ATTR_THRESH',
-                                     remove_quotes=True)
+            self.add_met_config(
+                name='filter_attr_thresh',
+                data_type='list',
+                env_var_name=f'METPLUS_{data_type}_FILTER_ATTR_THRESH',
+                metplus_configs=[f'{data_type}_MODE_FILTER_ATTR_THRESH',
+                                 f'MODE_{data_type}_FILTER_ATTR_THRESH',
+                                 'MODE_FILTER_ATTR_THRESH'
+                                 ],
+                extra_args={
+                    'remove_quotes': True,
+                }
+            )
 
-            self.set_met_config_list(self.env_var_dict,
-                                     [f'{data_type}_MODE_CENSOR_THRESH',
-                                      f'MODE_{data_type}_CENSOR_THRESH',
-                                      'MODE_CENSOR_THRESH'],
-                                     'censor_thresh',
-                                     f'METPLUS_{data_type}_CENSOR_THRESH',
-                                     remove_quotes=True)
+            self.add_met_config(
+                name='censor_thresh',
+                data_type='list',
+                env_var_name=f'METPLUS_{data_type}_CENSOR_THRESH',
+                metplus_configs=[f'{data_type}_MODE_CENSOR_THRESH',
+                                 f'MODE_{data_type}_CENSOR_THRESH',
+                                 'MODE_CENSOR_THRESH'
+                                 ],
+                extra_args={
+                    'remove_quotes': True,
+                }
+            )
 
-            self.set_met_config_list(self.env_var_dict,
-                                     [f'{data_type}_MODE_CENSOR_VAL',
-                                      f'MODE_{data_type}_CENSOR_VAL',
-                                      f'{data_type}_MODE_CENSOR_VALUE',
-                                      f'MODE_{data_type}_CENSOR_VALUE',
-                                      'MODE_CENSOR_VAL',
-                                      'MODE_CENSOR_VALUE'],
-                                     'censor_val',
-                                     f'METPLUS_{data_type}_CENSOR_VAL',
-                                     remove_quotes=True)
+            self.add_met_config(
+                name='censor_val',
+                data_type='list',
+                env_var_name=f'METPLUS_{data_type}_CENSOR_VAL',
+                metplus_configs=[f'{data_type}_MODE_CENSOR_VAL',
+                                 f'MODE_{data_type}_CENSOR_VAL',
+                                 f'{data_type}_MODE_CENSOR_VALUE',
+                                 f'MODE_{data_type}_CENSOR_VALUE',
+                                 'MODE_CENSOR_VAL',
+                                 'MODE_CENSOR_VALUE',
+                                 ],
+                extra_args={
+                    'remove_quotes': True,
+                }
+            )
 
-            self.set_met_config_float(self.env_var_dict,
-                                      [f'{data_type}_MODE_VLD_THRESH',
-                                       f'{data_type}_MODE_VALID_THRESH',
-                                       f'MODE_{data_type}_VLD_THRESH',
-                                       f'MODE_{data_type}_VALID_THRESH'],
-                                      'vld_thresh',
-                                      f'METPLUS_{data_type}_VLD_THRESH')
+            self.add_met_config(
+                name='vld_thresh',
+                data_type='float',
+                env_var_name=f'METPLUS_{data_type}_VLD_THRESH',
+                metplus_configs=[f'{data_type}_MODE_VLD_THRESH',
+                                 f'MODE_{data_type}_VLD_THRESH',
+                                 f'{data_type}_MODE_VALID_THRESH',
+                                 f'MODE_{data_type}_VALID_THRESH',
+                                 'MODE_VLD_THRESH',
+                                 'MODE_VALID_THRESH'
+                                 ],
+            )
 
             # set c_dict values for old method of setting env vars
             for name in ['CONV_RADIUS',
@@ -254,14 +293,16 @@ class MODEWrapper(CompareGriddedWrapper):
                 value = self.get_env_var_value(f'METPLUS_{data_type}_{name}')
                 c_dict[f'{data_type}_{name}'] = value
 
-        self.set_met_config_string(self.env_var_dict,
-                                   ['MODE_MATCH_FLAG'],
-                                   'match_flag',
-                                   'METPLUS_MATCH_FLAG',
-                                   remove_quotes=True,
-                                   uppercase=True)
+        self.add_met_config(
+            name='match_flag',
+            data_type='string',
+            extra_args={
+                'remove_quotes': True,
+                'uppercase': True,
+            }
+        )
 
-        self.handle_met_config_dict('weight', self.WEIGHTS)
+        self.add_met_config_dict('weight', self.WEIGHTS)
         self.handle_flags('nc_pairs')
 
         self.add_met_config(name='total_interest_thresh',
@@ -307,6 +348,13 @@ class MODEWrapper(CompareGriddedWrapper):
                 'default': defaults.get('INTEREST_FUNCTION_CONVEX_HULL_DIST')
             }
         )
+
+        self.add_met_config(name='ps_plot_flag',
+                            data_type='bool')
+
+        self.add_met_config(name='ct_stats_flag',
+                            data_type='bool')
+
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False
 
