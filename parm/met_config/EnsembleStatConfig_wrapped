@@ -53,6 +53,12 @@ ens = {
    ${METPLUS_ENS_FIELD}
 }
 
+//ens_member_ids =
+${METPLUS_ENS_MEMBER_IDS}
+
+//control_id =
+${METPLUS_CONTROL_ID}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 //
