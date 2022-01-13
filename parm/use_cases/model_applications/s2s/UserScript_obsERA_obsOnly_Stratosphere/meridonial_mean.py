@@ -30,7 +30,7 @@ def main():
     """
 
     try:
-        input_config_file = os.getenv("MERIDIAL_CONFIG_NAME","meridonial_mean.yaml")
+        input_config_file = os.getenv("YAML_CONFIG_NAME","meridonial_mean.yaml")
         config = readconfig.parse_config(input_config_file)
         logging.info(config)
     except yaml.YAMLError as exc:
@@ -40,7 +40,7 @@ def main():
     Read METplus config file paramaters
     """
     #input_file_name = os.environ.get("INPUT_FILE_NAME","SSWC_v1.0_varFull_ERAi_d20130106_s20121107_e20130307_c20160701.nc")
-    input_file = [config["input_filename"]]
+    input_file = config["input_filename"]
 
     """
     Setup logging
