@@ -2,7 +2,7 @@
 GridStat: Python Embedding to read and process ice cover
 ========================================================
 
-model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.conf
+model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.conf
 
 """
 ##############################################################################
@@ -72,10 +72,10 @@ model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.con
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.conf
 
 ##############################################################################
 # MET Configuration
@@ -100,10 +100,10 @@ model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.con
 #
 # This use case uses one Python script to read forecast and observation data
 #
-# parm/use_cases/model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsSMAP_climWOA_sss/read_rtofs_smap_woa.py
+# parm/use_cases/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss/read_rtofs_smap_woa.py
 #
 # .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsSMAP_climWOA_sss/read_rtofs_smap_woa.py
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss/read_rtofs_smap_woa.py
 #
 
 ##############################################################################
@@ -114,11 +114,11 @@ model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.con
 #
 # 1) Passing in GridStat_fcstRTOFS_obsSMAP_climWOA_sss.conf then a user-specific system configuration file::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.conf -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.conf -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in GridStat_fcstRTOFS_obsSMAP_climWOA_sss.conf::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -160,11 +160,11 @@ model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.con
 #
 #   * GridStatToolUseCase
 #   * PythonEmbeddingFileUseCase
-#   * MarineAndCoastalAppUseCase
+#   * MarineAndCryosphereAppUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/marine_and_coastal-GridStat_fcstRTOFS_obsSMAP_climWOA_sss.png'
+# sphinx_gallery_thumbnail_path = '_static/marine_and_cryosphere-GridStat_fcstRTOFS_obsSMAP_climWOA_sss.png'
 
