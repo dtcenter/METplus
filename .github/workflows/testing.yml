@@ -102,11 +102,11 @@ jobs:
       fail-fast: false
       matrix: ${{fromJson(needs.job_control.outputs.matrix)}}
     steps:
+      - uses: actions/checkout@v2
       - name: Create directories for database
         run: .github/jobs/create_dirs_for_database.sh
       - name: Create directory for artifacts
         run: mkdir -p artifact
-      - uses: actions/checkout@v2
 
       - name: Get artifact name
         id: get-artifact-name
