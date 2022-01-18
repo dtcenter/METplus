@@ -9,7 +9,6 @@ import sys
 import logging
 import yaml
 import xarray as xr  # http://xarray.pydata.org/
-import metplotpy.plots
 import metcalcpy.util.read_env_vars_in_config as readconfig
 import metcalcpy.pre_processing.directional_means as directional_means
 import METreadnc.util.read_netcdf as read_netcdf
