@@ -15,9 +15,10 @@ from datetime import datetime
 
 from ..util import time_util
 from . import CommandBuilder
-from ..util import do_string_sub, get_start_end_interval_times, set_input_dict
+from ..util import do_string_sub
 from ..util import log_runtime_banner, get_lead_sequence, is_loop_by_init
 from ..util import skip_time, getlist
+from ..util import time_generator, add_to_time_input
 
 '''!@namespace RuntimeFreqWrapper
 @brief Parent class for wrappers that run over a grouping of times
@@ -56,13 +57,6 @@ class RuntimeFreqWrapper(CommandBuilder):
                                        f'{app_name_upper}_RUNTIME_FREQ',
                                        '').upper()
         )
-
-        # get runtime information to obtain all input files
-        start, end, interval = get_start_end_interval_times(self.config,
-                                                            warn=True)
-        c_dict['START_TIME'] = start
-        c_dict['END_TIME'] = end
-        c_dict['TIME_INTERVAL'] = interval
 
         return c_dict
 
@@ -108,15 +102,6 @@ class RuntimeFreqWrapper(CommandBuilder):
                            f" {', '.join(self.FREQ_OPTIONS)}")
             return None
 
-        # if looping over init/valid time,
-        # check that the time config variables can be read correctly
-        if self.c_dict['RUNTIME_FREQ'] == 'RUN_ONCE_PER_INIT_OR_VALID':
-
-            if not self.c_dict['START_TIME']:
-                self.log_error("Could not get [INIT/VALID] time information"
-                               "from configuration file")
-                return None
-
         # if not running once for each runtime and loop order is not set to
         # 'processes' report an error
         if self.c_dict['RUNTIME_FREQ'] != 'RUN_ONCE_FOR_EACH':
@@ -159,53 +144,44 @@ class RuntimeFreqWrapper(CommandBuilder):
 
     def run_once(self, custom):
         self.logger.debug("Running once for all files")
-        # create input dictionary and get 'now' item
-        input_dict = set_input_dict(loop_time=None,
-                                    config=self.config,
-                                    use_init=None,
-                                    instance=self.instance,
-                                    custom=custom)
+        # create input dictionary and set clock time, instance, and custom
+        time_input = {}
+        add_to_time_input(time_input,
+                          clock_time=self.config.getstr('config',
+                                                        'CLOCK_TIME'),
+                          instance=self.instance,
+                          custom=custom)
 
         # set other time items to wildcard to find all files
-        input_dict['init'] = '*'
-        input_dict['valid'] = '*'
-        input_dict['lead'] = '*'
+        time_input['init'] = '*'
+        time_input['valid'] = '*'
+        time_input['lead'] = '*'
 
-        return self.run_at_time_once(input_dict)
+        return self.run_at_time_once(time_input)
 
     def run_once_per_init_or_valid(self, custom):
-        use_init = is_loop_by_init(self.config)
-        if use_init is None:
-            return False
-
-        # log which time type to loop over
-        if use_init:
-            init_or_valid = 'init'
-        else:
-            init_or_valid = 'valid'
-        self.logger.debug(f"Running once for each {init_or_valid} time")
+        self.logger.debug(f"Running once for each init/valid time")
 
         success = True
-        loop_time = self.c_dict['START_TIME']
-        while loop_time <= self.c_dict['END_TIME']:
-            log_runtime_banner(loop_time, self.config, use_init)
-            input_dict = set_input_dict(loop_time,
-                                        self.config,
-                                        use_init,
-                                        instance=self.instance,
-                                        custom=custom)
-
-            if 'init' in input_dict:
-                input_dict['valid'] = '*'
-            elif 'valid' in input_dict:
-                input_dict['init'] = '*'
-
-            input_dict['lead'] = '*'
-
-            if not self.run_at_time_once(input_dict):
+        for time_input in time_generator(self.config):
+            if time_input is None:
                 success = False
+                continue
 
-            loop_time += self.c_dict['TIME_INTERVAL']
+            log_runtime_banner(self.config, time_input, self)
+            add_to_time_input(time_input,
+                              instance=self.instance,
+                              custom=custom)
+
+            if 'init' in time_input:
+                time_input['valid'] = '*'
+            elif 'valid' in time_input:
+                time_input['init'] = '*'
+
+            time_input['lead'] = '*'
+
+            if not self.run_at_time_once(time_input):
+                success = False
 
         return success
 
@@ -218,17 +194,19 @@ class RuntimeFreqWrapper(CommandBuilder):
             # create input dict and only set 'now' item
             # create a new dictionary each iteration in case the function
             # that it is passed into modifies it
-            input_dict = set_input_dict(loop_time=None,
-                                        config=self.config,
-                                        use_init=None,
-                                        instance=self.instance,
-                                        custom=custom)
-            # add forecast lead
-            input_dict['lead'] = lead
-            input_dict['init'] = '*'
-            input_dict['valid'] = '*'
+            time_input = {}
+            add_to_time_input(time_input,
+                              clock_time=self.config.getstr('config',
+                                                            'CLOCK_TIME'),
+                              instance=self.instance,
+                              custom=custom)
 
-            if not self.run_at_time_once(input_dict):
+            # add forecast lead
+            time_input['lead'] = lead
+            time_input['init'] = '*'
+            time_input['valid'] = '*'
+
+            if not self.run_at_time_once(time_input):
                 success = False
 
         return success
@@ -237,8 +215,8 @@ class RuntimeFreqWrapper(CommandBuilder):
         """! Runs the command for a given run time. This function loops
               over the list of forecast leads and list of custom loops
               and runs once for each combination
-              Args:
-                @param input_dict dictionary containing time information
+
+            @param input_dict dictionary containing time information
         """
         for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
             if custom_string:
@@ -283,37 +261,29 @@ class RuntimeFreqWrapper(CommandBuilder):
         i.e. fcst or obs, and the value is a list of files that fit in that
         category
         """
-        use_init = is_loop_by_init(self.config)
-        if use_init is None:
-            return False
-
         self.logger.debug("Finding all input files")
         all_files = []
 
-        # if start time is not set, don't loop
-        if not self.c_dict.get('START_TIME'):
-            return False
-
         # loop over all init/valid times
-        loop_time = self.c_dict['START_TIME']
-        while loop_time <= self.c_dict['END_TIME']:
-            input_dict = set_input_dict(loop_time,
-                                        self.config,
-                                        use_init,
-                                        instance=self.instance,
-                                        custom=custom)
+        for time_input in time_generator(self.config):
+            if time_input is None:
+                return False
+
+            add_to_time_input(time_input,
+                              instance=self.instance,
+                              custom=custom)
 
             # loop over all forecast leads
             wildcard_if_empty = self.c_dict.get('WILDCARD_LEAD_IF_EMPTY',
                                                 False)
             lead_seq = get_lead_sequence(self.config,
-                                         input_dict,
+                                         time_input,
                                          wildcard_if_empty=wildcard_if_empty)
             for lead in lead_seq:
-                input_dict['lead'] = lead
+                time_input['lead'] = lead
 
                 # set current lead time config and environment variables
-                time_info = time_util.ti_calculate(input_dict)
+                time_info = time_util.ti_calculate(time_input)
 
                 if skip_time(time_info, self.c_dict.get('SKIP_TIMES')):
                     continue
@@ -324,8 +294,6 @@ class RuntimeFreqWrapper(CommandBuilder):
                         all_files.extend(file_dict)
                     else:
                         all_files.append(file_dict)
-
-            loop_time += self.c_dict['TIME_INTERVAL']
 
         if not all_files:
             return False

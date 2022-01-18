@@ -16,6 +16,7 @@ from ..util import met_util as util
 from ..util import time_util
 from . import CommandBuilder
 from ..util import do_string_sub
+from ..util import parse_var_list
 
 '''!@namespace TCRMWWrapper
 @brief Wraps the TC-RMW tool
@@ -81,92 +82,85 @@ class TCRMWWrapper(CommandBuilder):
                                'TC_RMW_DECK_TEMPLATE')
         )
 
-        self.set_met_config_string(self.env_var_dict,
-                                   'TC_RMW_INPUT_DATATYPE',
-                                   'file_type',
-                                   'METPLUS_DATA_FILE_TYPE')
+        self.add_met_config(name='file_type',
+                            data_type='string',
+                            env_var_name='METPLUS_DATA_FILE_TYPE',
+                            metplus_configs=['TC_RMW_INPUT_DATATYPE',
+                                             'TC_RMW_FILE_TYPE'])
 
-        # values used in configuration file
-        self.set_met_config_string(self.env_var_dict,
-                                   'MODEL',
-                                   'model',
-                                   'METPLUS_MODEL')
+        self.add_met_config(name='model',
+                            data_type='string',
+                            metplus_configs=['MODEL'])
 
         self.handle_regrid(c_dict, set_to_grid=False)
 
-        self.set_met_config_int(self.env_var_dict,
-                                'TC_RMW_N_RANGE',
-                                'n_range',
-                                'METPLUS_N_RANGE')
+        self.add_met_config(name='n_range',
+                            data_type='int')
 
-        self.set_met_config_int(self.env_var_dict,
-                                'TC_RMW_N_AZIMUTH',
-                                'n_azimuth',
-                                'METPLUS_N_AZIMUTH')
+        self.add_met_config(name='n_azimuth',
+                            data_type='int')
 
-        self.set_met_config_float(self.env_var_dict,
-                                  'TC_RMW_MAX_RANGE_KM',
-                                  'max_range_km',
-                                  'METPLUS_MAX_RANGE_KM')
+        self.add_met_config(name='max_range_km',
+                            data_type='float')
 
-        self.set_met_config_float(self.env_var_dict,
-                                  'TC_RMW_DELTA_RANGE_KM',
-                                  'delta_range_km',
-                                  'METPLUS_DELTA_RANGE_KM')
+        self.add_met_config(name='delta_range_km',
+                            data_type='float')
 
-        self.set_met_config_float(self.env_var_dict,
-                                  'TC_RMW_SCALE',
-                                  'rmw_scale',
-                                  'METPLUS_RMW_SCALE')
+        self.add_met_config(name='rmw_scale',
+                            data_type='float')
 
-        self.set_met_config_string(self.env_var_dict,
-                                   'TC_RMW_STORM_ID',
-                                   'storm_id',
-                                   'METPLUS_STORM_ID')
+        self.add_met_config(name='storm_id',
+                            data_type='string')
 
-        self.set_met_config_string(self.env_var_dict,
-                                   'TC_RMW_BASIN',
-                                   'basin',
-                                   'METPLUS_BASIN')
+        self.add_met_config(name='basin',
+                            data_type='string')
 
-        self.set_met_config_string(self.env_var_dict,
-                                   'TC_RMW_CYCLONE',
-                                   'cyclone',
-                                   'METPLUS_CYCLONE')
+        self.add_met_config(name='cyclone',
+                            data_type='string')
 
-        self.set_met_config_string(self.env_var_dict,
-                                   'TC_RMW_INIT_INCLUDE',
-                                   'init_inc',
-                                   'METPLUS_INIT_INCLUDE')
+        self.add_met_config(name='init_inc',
+                            data_type='string',
+                            env_var_name='METPLUS_INIT_INCLUDE',
+                            metplus_configs=['TC_RMW_INIT_INC',
+                                             'TC_RMW_INIT_INCLUDE'])
 
-        self.set_met_config_string(self.env_var_dict,
-                                   'TC_RMW_VALID_BEG',
-                                   'valid_beg',
-                                   'METPLUS_VALID_BEG')
+        self.add_met_config(name='valid_beg',
+                            data_type='string',
+                            metplus_configs=['TC_RMW_VALID_BEG',
+                                             'TC_RMW_VALID_BEGIN'])
 
-        self.set_met_config_string(self.env_var_dict,
-                                   'TC_RMW_VALID_END',
-                                   'valid_end',
-                                   'METPLUS_VALID_END')
+        self.add_met_config(name='valid_end',
+                            data_type='string',
+                            metplus_configs=['TC_RMW_VALID_END'])
 
-        self.set_met_config_list(self.env_var_dict,
-                                 'TC_RMW_VALID_INCLUDE_LIST',
-                                 'valid_inc',
-                                 'METPLUS_VALID_INCLUDE_LIST')
+        self.add_met_config(name='valid_inc',
+                            data_type='list',
+                            env_var_name='METPLUS_VALID_INCLUDE_LIST',
+                            metplus_configs=['TC_RMW_VALID_INCLUDE_LIST',
+                                             'TC_RMW_VALID_INC_LIST',
+                                             'TC_RMW_VALID_INCLUDE',
+                                             'TC_RMW_VALID_INC',
+                                             ])
 
-        self.set_met_config_list(self.env_var_dict,
-                                 'TC_RMW_VALID_EXCLUDE_LIST',
-                                 'valid_exc',
-                                 'METPLUS_VALID_EXCLUDE_LIST')
+        self.add_met_config(name='valid_exc',
+                            data_type='list',
+                            env_var_name='METPLUS_VALID_EXCLUDE_LIST',
+                            metplus_configs=['TC_RMW_VALID_EXCLUDE_LIST',
+                                             'TC_RMW_VALID_EXC_LIST',
+                                             'TC_RMW_VALID_EXCLUDE',
+                                             'TC_RMW_VALID_EXC',
+                                             ])
 
-        self.set_met_config_list(self.env_var_dict,
-                                 'TC_RMW_VALID_HOUR_LIST',
-                                 'valid_hour',
-                                 'METPLUS_VALID_HOUR_LIST')
+        self.add_met_config(name='valid_hour',
+                            data_type='list',
+                            env_var_name='METPLUS_VALID_HOUR_LIST',
+                            metplus_configs=['TC_RMW_VALID_HOUR_LIST',
+                                             'TC_RMW_VALID_HOUR',
+                                             ])
 
-        c_dict['VAR_LIST_TEMP'] = util.parse_var_list(self.config,
-                                                      data_type='FCST',
-                                                      met_tool=self.app_name)
+        c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
+                                                 data_type='FCST',
+                                                 met_tool=self.app_name)
 
         return c_dict
 

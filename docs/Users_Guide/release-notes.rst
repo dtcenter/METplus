@@ -38,6 +38,30 @@ When applicable, release notes are followed by the GitHub issue number which
 describes the bugfix, enhancement, or new feature:
 https://github.com/dtcenter/METplus/issues
 
+
+METplus Version 4.1.0-beta5 Release Notes (2022-01-14)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Enhancements:
+
+  * **Add support for setting control members in EnsembleStat and GenEnsProd** (`#1236 <https://github.com/dtcenter/METplus/issues/1236>`_)
+  * **Enhance SeriesAnalysis wrapper to allow different field info values for each file in a list** (`#1166 <https://github.com/dtcenter/METplus/issues/1166>`_)
+  * Add support for setting INIT_LIST and VALID_LIST for irregular time intervals (`#1286 <https://github.com/dtcenter/METplus/issues/1286>`_)
+  * Support setting the OMP_NUM_THREADS environment variable (`#1320 <https://github.com/dtcenter/METplus/issues/1320>`_)
+  * Enhance ExtractTiles using MTD input to properly match times (`#1285 <https://github.com/dtcenter/METplus/issues/1285>`_)
+  * Add support for commonly changed MET config variables part 2 (`#896 <https://github.com/dtcenter/METplus/issues/896>`_)
+  * Prevent wildcard character from being used in output file path (`#1291 <https://github.com/dtcenter/METplus/issues/1291>`_)
+
+* New Use Cases:
+
+  * Satellite verification of sea surface salinity: SMOS vs RTOFS output (`#1116 <https://github.com/dtcenter/METplus/issues/1116>`_)
+
+* Internal:
+
+  * **Create guidance for memory-intensive use cases, introduce Python memory profiler** (`#1183 <https://github.com/dtcenter/METplus/issues/1183>`_)
+  * **Identify code throughout METplus components that are common utilities** (`#799 <https://github.com/dtcenter/METplus/issues/799>`_)
+  * **Add definitions to the Release Guide for the stages of the release cycle** (`#934 <https://github.com/dtcenter/METplus/issues/934>`_)
+
 METplus Version 4.1.0-beta4 Release Notes (2021-11-16)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

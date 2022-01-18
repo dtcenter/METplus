@@ -129,7 +129,8 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
 
         ({'GRID_STAT_REGRID_TO_GRID': 'FCST',
           },
-         {'METPLUS_REGRID_DICT': 'regrid = {to_grid = FCST;}'}),
+         {'METPLUS_REGRID_DICT': 'regrid = {to_grid = FCST;}',
+          'REGRID_TO_GRID': 'FCST'}),
 
         ({'GRID_STAT_REGRID_METHOD': 'NEAREST',
           },
@@ -155,7 +156,8 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
           },
          {'METPLUS_REGRID_DICT': ('regrid = {to_grid = FCST;method = NEAREST;'
                                   'width = 1;vld_thresh = 0.5;shape = SQUARE;}'
-                                  )}),
+                                  ),
+          'REGRID_TO_GRID': 'FCST'}),
 
         ({'GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE':
               '/some/path/climo/filename.nc',
@@ -565,6 +567,21 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
                                         'baddeley_max_dist = 2.3;'
                                         'fom_alpha = 4.5;zhu_weight = 0.5;'
                                         'beta_value(n) = n * n / 3.0;}')}),
+        ({'GRID_STAT_FOURIER_WAVE_1D_BEG': '0,4,10', },
+         {'METPLUS_FOURIER_DICT': 'fourier = {wave_1d_beg = [0, 4, 10];}'}),
+
+        ({'GRID_STAT_FOURIER_WAVE_1D_END': '3,9,20', },
+         {'METPLUS_FOURIER_DICT': 'fourier = {wave_1d_end = [3, 9, 20];}'}),
+
+        ({'GRID_STAT_FOURIER_WAVE_1D_BEG': '0,4,10',
+          'GRID_STAT_FOURIER_WAVE_1D_END': '3,9,20',},
+         {'METPLUS_FOURIER_DICT': ('fourier = {wave_1d_beg = [0, 4, 10];'
+                                   'wave_1d_end = [3, 9, 20];}')}),
+        ({'GRID_STAT_CENSOR_THRESH': '>12000,<5000', },
+         {'METPLUS_CENSOR_THRESH': 'censor_thresh = [>12000, <5000];'}),
+
+        ({'GRID_STAT_CENSOR_VAL': '12000, 5000', },
+         {'METPLUS_CENSOR_VAL': 'censor_val = [12000, 5000];'}),
 
     ]
 )
@@ -605,11 +622,16 @@ def test_grid_stat_single_field(metplus_config, config_overrides,
         assert(cmd == expected_cmd)
 
         # check that environment variables were set properly
-        for env_var_key in wrapper.WRAPPER_ENV_VAR_KEYS:
+        # including deprecated env vars (not in wrapper env var keys)
+        env_var_keys = (wrapper.WRAPPER_ENV_VAR_KEYS +
+                        [name for name in env_var_values
+                         if name not in wrapper.WRAPPER_ENV_VAR_KEYS])
+        for env_var_key in env_var_keys:
             match = next((item for item in env_vars if
                           item.startswith(env_var_key)), None)
             assert(match is not None)
             actual_value = match.split('=', 1)[1]
+            print(f"ENV VAR: {env_var_key}")
             if env_var_key == 'METPLUS_FCST_FIELD':
                 assert(actual_value == fcst_fmt)
             elif env_var_key == 'METPLUS_OBS_FIELD':

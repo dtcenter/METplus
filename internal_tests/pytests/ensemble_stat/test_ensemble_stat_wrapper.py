@@ -137,7 +137,8 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
 
         ({'ENSEMBLE_STAT_REGRID_TO_GRID': 'FCST',
           },
-         {'METPLUS_REGRID_DICT': 'regrid = {to_grid = FCST;}'}),
+         {'METPLUS_REGRID_DICT': 'regrid = {to_grid = FCST;}',
+          'REGRID_TO_GRID': 'FCST'}),
 
         ({'ENSEMBLE_STAT_REGRID_METHOD': 'NEAREST',
           },
@@ -163,7 +164,8 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
           },
          {'METPLUS_REGRID_DICT': ('regrid = {to_grid = FCST;method = NEAREST;'
                                   'width = 1;vld_thresh = 0.5;shape = SQUARE;}'
-                                  )}),
+                                  ),
+          'REGRID_TO_GRID': 'FCST'}),
 
         ({'ENSEMBLE_STAT_CLIMO_MEAN_INPUT_TEMPLATE':
               '/some/path/climo/filename.nc',
@@ -545,6 +547,12 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
         ({'ENSEMBLE_STAT_OBS_QUALITY_EXC': '5,6,7', },
          {'METPLUS_OBS_QUALITY_EXC': 'obs_quality_exc = ["5", "6", "7"];'}),
 
+        ({'ENSEMBLE_STAT_ENS_MEMBER_IDS': '1,2,3,4', },
+         {'METPLUS_ENS_MEMBER_IDS': 'ens_member_ids = ["1", "2", "3", "4"];'}),
+
+        ({'ENSEMBLE_STAT_CONTROL_ID': '0', },
+         {'METPLUS_CONTROL_ID': 'control_id = "0";'}),
+
     ]
 )
 def test_ensemble_stat_single_field(metplus_config, config_overrides,
@@ -575,7 +583,6 @@ def test_ensemble_stat_single_field(metplus_config, config_overrides,
                       f"{config_file} -outdir {out_dir}/2005080800"),
                      ]
 
-
     all_cmds = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_cmds}")
     assert len(all_cmds) == len(expected_cmds)
@@ -585,7 +592,11 @@ def test_ensemble_stat_single_field(metplus_config, config_overrides,
         assert(cmd == expected_cmd)
 
         # check that environment variables were set properly
-        for env_var_key in wrapper.WRAPPER_ENV_VAR_KEYS:
+        # including deprecated env vars (not in wrapper env var keys)
+        env_var_keys = (wrapper.WRAPPER_ENV_VAR_KEYS +
+                        [name for name in env_var_values
+                         if name not in wrapper.WRAPPER_ENV_VAR_KEYS])
+        for env_var_key in env_var_keys:
             match = next((item for item in env_vars if
                           item.startswith(env_var_key)), None)
             assert(match is not None)

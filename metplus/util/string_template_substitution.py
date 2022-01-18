@@ -12,11 +12,13 @@ Condition codes: Varies
 
 """
 
+import os
 import re
 import datetime
 from dateutil.relativedelta import relativedelta
 
 from . import time_util
+from .constants import *
 
 TEMPLATE_IDENTIFIER_BEGIN = "{"
 TEMPLATE_IDENTIFIER_END = "}"
@@ -771,8 +773,8 @@ def add_date_matches_to_output_dict(match_dict, output_dict, time_type, valid_sh
     time_values = {
         'Y': -1,
         'y': -1,
-        'm': -1,
-        'd': -1,
+        'm': 1,
+        'd': 1,
         'j': -1,
         'H': 0,
         'M': 0,
@@ -828,10 +830,26 @@ def add_offset_matches_to_output_dict(match_dict, output_dict):
 
     output_dict['offset_hours'] = offset
 
-def extract_lead(template, filename):
-    new_template = template
-    new_template = new_template.replace('/', '\/').replace('.', '\.')
-    match_tags = re.findall(r'{(.*?)}', new_template)
-    for match_tag in match_tags:
-        if match_tag.split('?') != 'lead':
-            new_template = new_template.replace('{' + match_tag + '}', '.*')
+def get_time_from_file(filepath, template, logger=None):
+    """! Extract time information from path using the filename template
+
+     @param filepath path to examine
+     @param template filename template to use to extract time information
+     @param logger optional logging object
+     @returns dictionary with time information if successful, None if not
+    """
+    if os.path.isdir(filepath):
+        return None
+
+    out = parse_template(template, filepath, logger)
+    if out is not None:
+        return out
+
+    # check to see if zip extension ends file path, try again without extension
+    for ext in COMPRESSION_EXTENSIONS:
+        if filepath.endswith(ext):
+            out = parse_template(template, filepath[:-len(ext)], logger)
+            if out is not None:
+                return out
+
+    return None

@@ -361,6 +361,13 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
         # 17: write_valid
         ({'TC_PAIRS_WRITE_VALID': '20141031_14'},
          {'METPLUS_WRITE_VALID': 'write_valid = ["20141031_14"];'}),
+        # 18: check_dup
+        ({'TC_PAIRS_CHECK_DUP': 'False', },
+         {'METPLUS_CHECK_DUP': 'check_dup = FALSE;'}),
+        # 19: interp12
+        ({'TC_PAIRS_INTERP12': 'replace', },
+         {'METPLUS_INTERP12': 'interp12 = REPLACE;'}),
+
     ]
 )
 def test_tc_pairs_loop_order_processes(metplus_config, config_overrides,

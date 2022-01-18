@@ -12,6 +12,7 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
+from ..util import getlistint
 from ..util import met_util as util
 from ..util import time_util
 from ..util import do_string_sub
@@ -31,6 +32,7 @@ class PointStatWrapper(CompareGriddedWrapper):
         'METPLUS_MASK_GRID',
         'METPLUS_MASK_POLY',
         'METPLUS_MASK_SID',
+        'METPLUS_MASK_LLPNT',
         'METPLUS_OUTPUT_PREFIX',
         'METPLUS_CLIMO_CDF_DICT',
         'METPLUS_OBS_QUALITY_INC',
@@ -40,6 +42,8 @@ class PointStatWrapper(CompareGriddedWrapper):
         'METPLUS_CLIMO_MEAN_DICT',
         'METPLUS_CLIMO_STDEV_DICT',
         'METPLUS_HSS_EC_VALUE',
+        'METPLUS_HIRA_DICT',
+        'METPLUS_MESSAGE_TYPE_GROUP_MAP',
     ]
 
     # handle deprecated env vars used pre v4.0.0
@@ -93,7 +97,7 @@ class PointStatWrapper(CompareGriddedWrapper):
                                 c_dict['VERBOSITY'])
         )
         c_dict['ALLOW_MULTIPLE_FILES'] = True
-        c_dict['OFFSETS'] = util.getlistint(
+        c_dict['OFFSETS'] = getlistint(
             self.config.getstr('config',
                                'POINT_STAT_OFFSETS',
                                '0')
@@ -140,34 +144,39 @@ class PointStatWrapper(CompareGriddedWrapper):
         # get the MET config file path or use default
         c_dict['CONFIG_FILE'] = self.get_config_file('PointStatConfig_wrapped')
 
-        self.handle_obs_window_variables(c_dict)
+        self.add_met_config_window('obs_window')
+        self.handle_obs_window_legacy(c_dict)
 
-        self.set_met_config_list(self.env_var_dict,
-                                 ['POINT_STAT_MASK_GRID',
-                                  'POINT_STAT_GRID'],
-                                 'grid',
-                                 'METPLUS_MASK_GRID',
-                                 allow_empty=True)
+        self.add_met_config(name='grid',
+                            data_type='list',
+                            env_var_name='METPLUS_MASK_GRID',
+                            metplus_configs=['POINT_STAT_MASK_GRID',
+                                             'POINT_STAT_GRID'],
+                            extra_args={'allow_empty': True})
 
-        self.set_met_config_list(self.env_var_dict,
-                                 ['POINT_STAT_MASK_POLY',
-                                  'POINT_STAT_POLY'],
-                                 'poly',
-                                 'METPLUS_MASK_POLY',
-                                 allow_empty=True)
+        self.add_met_config(name='poly',
+                            data_type='list',
+                            env_var_name='METPLUS_MASK_POLY',
+                            metplus_configs=['POINT_STAT_MASK_POLY',
+                                             'POINT_STAT_POLY'],
+                            extra_args={'allow_empty': True})
 
-        self.set_met_config_list(self.env_var_dict,
-                                 ['POINT_STAT_MASK_SID',
-                                  'POINT_STAT_STATION_ID'],
-                                 'sid',
-                                 'METPLUS_MASK_SID',
-                                 allow_empty=True)
+        self.add_met_config(name='sid',
+                            data_type='list',
+                            env_var_name='METPLUS_MASK_SID',
+                            metplus_configs=['POINT_STAT_MASK_SID',
+                                             'POINT_STAT_STATION_ID'],
+                            extra_args={'allow_empty': True})
 
+        self.add_met_config(name='llpnt',
+                            data_type='list',
+                            env_var_name='METPLUS_MASK_LLPNT',
+                            metplus_configs=['POINT_STAT_MASK_LLPNT'],
+                            extra_args={'allow_empty': True,
+                                        'remove_quotes': True})
 
-        self.set_met_config_list(self.env_var_dict,
-                                 'POINT_STAT_MESSAGE_TYPE',
-                                 'message_type',
-                                 'METPLUS_MESSAGE_TYPE',)
+        self.add_met_config(name='message_type',
+                            data_type='list')
 
         self.handle_climo_cdf_dict()
 
@@ -231,6 +240,19 @@ class PointStatWrapper(CompareGriddedWrapper):
         self.add_met_config(name='hss_ec_value',
                             data_type='float',
                             metplus_configs=['POINT_STAT_HSS_EC_VALUE'])
+
+        self.add_met_config_dict('hira', {
+            'flag': 'bool',
+            'width': ('list', 'remove_quotes'),
+            'vld_thresh': 'float',
+            'cov_thresh': ('list', 'remove_quotes'),
+            'shape': ('string', 'remove_quotes, uppercase'),
+            'prob_cat_thresh': ('list', 'remove_quotes'),
+        })
+
+        self.add_met_config(name='message_type_group_map',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
 
         if not c_dict['FCST_INPUT_TEMPLATE']:
             self.log_error('Must set FCST_POINT_STAT_INPUT_TEMPLATE '
