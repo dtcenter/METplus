@@ -83,16 +83,20 @@ jobs:
     if: ${{ needs.job_control.outputs.run_get_input_data == 'true' }}
     steps:
       - uses: actions/checkout@v2
+
       - uses: actions/setup-python@v2
         with:
           python-version: '3.6'
+
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests bs4
+
       - name: Update Data Volumes
         run: .github/jobs/docker_update_data_volumes.py
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
   use_case_tests:
     name: Use Case Tests
     runs-on: ubuntu-latest
@@ -102,9 +106,12 @@ jobs:
       fail-fast: false
       matrix: ${{fromJson(needs.job_control.outputs.matrix)}}
     steps:
+
       - uses: actions/checkout@v2
+
       - name: Create directories for database
         run: .github/jobs/create_dirs_for_database.sh
+
       - name: Create directory for artifacts
         run: mkdir -p artifact
 
