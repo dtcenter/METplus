@@ -138,13 +138,13 @@ jobs:
       - name: Run difference tests
         id: run-diff
         if: ${{ needs.job_control.outputs.run_diff == 'true' && steps.run_tests.conclusion == 'success'  && matrix.categories != 'pytests' }}
-        run: .github/jobs/run_difference_tests.sh
+        run: .github/jobs/run_difference_tests.sh ${{ matrix.categories }} ${{ steps.get-artifact-name.outputs.artifact_name }}
 
       # copy output data to save as artifact
       - name: Save output data
         id: save-output
         if: ${{ always() && steps.run_tests.conclusion != 'skipped'  && matrix.categories != 'pytests' }}
-        run: .github/jobs/copy_output_to_artifact.sh
+        run: .github/jobs/copy_output_to_artifact.sh ${{ steps.get-artifact-name.outputs.artifact_name }}
 
       - name: Upload output data artifact
         uses: actions/upload-artifact@v2

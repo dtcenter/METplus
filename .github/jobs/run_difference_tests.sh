@@ -8,8 +8,10 @@
 # non-zero status. If no differences were found, set GHA output var
 # upload_diff to false
 
-artifact_name=${{ steps.get-artifact-name.outputs.artifact_name }}
-.github/jobs/setup_and_run_diff.py ${{ matrix.categories }} $artifact_name
+matrix_categories=$1
+artifact_name=$2
+
+.github/jobs/setup_and_run_diff.py ${matrix_categories} $artifact_name
 
 if [ "$( ls -A ${RUNNER_WORKSPACE}/diff)" ]; then
   echo ::set-output name=upload_diff::true

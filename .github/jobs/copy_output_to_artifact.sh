@@ -4,6 +4,6 @@
 # Creates directory for output data artifact and
 # copies output data into directory
 
-artifact_name=${{ steps.get-artifact-name.outputs.artifact_name }}
+artifact_name=$1
 mkdir -p artifact/${artifact_name}
 cp -r ${RUNNER_WORKSPACE}/output/* artifact/${artifact_name}/
