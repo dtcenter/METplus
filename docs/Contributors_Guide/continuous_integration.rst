@@ -1,12 +1,11 @@
+**********************
 Continuous Integration
-======================
-
-More information on Continuous Integration (CI) coming soon!
+**********************
 
 METplus utilizes GitHub Actions to run processes automatically when changes
 are pushed to GitHub. These tasks include:
 
-* Building documentation
+* Building documentation to catch warnings/errors
 * Building a Docker image to run tests
 * Creating/Updating Docker data volumes with new input data used for tests
 * Running unit tests
@@ -14,33 +13,86 @@ are pushed to GitHub. These tasks include:
 * Comparing use case output to truth data
 * Creating/Updating Docker data volumes with truth data to use in comparisons
 
-Workflow Control
-----------------
+GitHub Actions Workflows
+========================
 
-GitHub Actions is controlled by a file in the .github/workflow directory called
-testing.yml. If this file exists and is valid (no errors), GitHub Actions will
-read this file and trigger a workflow run if the triggering criteria is met.
+GitHub Actions runs workflows defined by files in the **.github/workflows**
+directory of a GitHub repository.
+Files with the .yml suffix are parsed and GitHub Actions will
+trigger a workflow run if the triggering criteria is met.
 It can run multiple jobs in parallel or serially depending on dependency rules
 that can be set. Each job can run a series of commands or scripts called steps.
 Job steps can include "actions" with can be used to perform tasks. Many useful
 actions are provided by GitHub and external collaborators. Developers can also
 write their own custom actions to perform complex tasks to simplify a workflow.
 
+Testing (testing.yml)
+---------------------
+
+This workflow performs a variety of tasks to ensure that changes do not break
+any existing functionality.
+See the :ref:`cg-ci-testing-workflow` for more information.
+
+Documentation (documentation.yml)
+---------------------------------
+
+METplus documentation is written using Sphinx.
+The METplus components utilize ReadTheDocs to build and display documentation.
+However, ReadTheDocs will render the documentation when warnings occur.
+This GitHub Actions workflow is run to catch/report warnings and errors.
+
+This workflow is only triggered when changes are made to files under the
+**docs** directory of the METplus repository.
+It builds the documentation by running "make clean html" and
+makes the files available to download at the end of the workflow
+as a GitHub Actions artifact. This step is no longer mandatory because
+ReadTheDocs is configured to automatically generate the documentation for each
+branch/tag and publish it on `https://metplus.readthedocs.io`_.
+
+The Makefile that runs sphinx-build was modified to write warnings and errors
+to a file called warnings.log using the -w argument. This file will be empty
+if no errors or warnings have occurred in the building of the documentation.
+If it is not empty, the script called by this workflow will exit with a
+non-zero value so that the workflow reports a failure. A summary of the lines
+that contain WARNING or ERROR are output in the GitHub Actions log for easy
+access. The warnings.log file is also made available as a GitHub Actions
+artifact so it can be downloaded and reviewed.
+
+
+Release Published (release_published.yml)
+-----------------------------------------
+
+This workflow is triggered when a release is published on GitHub.
+It uses cURL to trigger a Slack message on the DTC-METplus announcements
+channel that lists information about the release. A Slack bot was created
+through the Slack API and the webhook that generated for the Slack channel
+was saved as a GitHub Secret.
+
+This workflow may no longer be required, as Slack now has GitHub integration
+to automatically create posts on certain events. The format of the automated
+release posts will be reviewed and this workflow will likely be removed
+if the information posted is sufficient.
+
+.. _cg-ci-testing-workflow:
+
+Testing Workflow
+================
+
 Name
-^^^^
+----
 
 The name of a workflow can be specified to describe an overview of what is run.
-Currently METplus only has 1 workflow, but others can be added. The following
-line in the testing.yml file::
+The following line in the testing.yml file::
 
-    name: METplus CI/CD Workflow
+    name: Testing
 
-defines the workflow that runs all of the jobs.
+defines the workflow identifier that can be seen from the Actions tab on the
+METplus GitHub page.
 
 .. figure:: figure/gha-workflow-name.png
 
 Event Control
-^^^^^^^^^^^^^
+-------------
 
 The "on" keyword is used to determine which events will trigger the workflow
 to run::
@@ -65,17 +117,17 @@ This configuration tells GitHub Actions to trigger the workflow when:
   pushed to the source branch of the pull request.
 
 Jobs
-^^^^
+----
 
 The "jobs" keyword is used to define the jobs that are run in the workflow.
 Each item under "jobs" is a string that defines the ID of the job. This value
 can be referenced within the workflow as needed.
 
 Job Control
------------
+===========
 
 Default Behavior
-^^^^^^^^^^^^^^^^
+----------------
 
 On Push
 """""""
@@ -111,7 +163,7 @@ In addition to the jobs run for a normal push, the scripts will:
   output
 
 Commit Message Keywords
-^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------
 
 The automation logic reads the commit message for the last commit before a
 push. Keywords in the commit message can override the default behavior.
@@ -127,7 +179,7 @@ Here is a list of the currently supported keywords and what they control:
 * **ci-only-docs**: Only run build documentation job - skip the rest
 
 Force MET Version Used for Tests
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------------
 
 The tests typically use the develop version tag of the MET Docker image for
 development testing. If testing is done on a stable release, then the
