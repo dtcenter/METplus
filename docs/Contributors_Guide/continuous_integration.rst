@@ -322,7 +322,7 @@ keyword::
 Setting 'needs: job_control' tells the 'get_image' job to wait until the
 'job_control' job has completed before running. Since this is the case, this
 job can reference output from that job in the 'if' value to determine if the
-job should be run or not. 
+job should be run or not.
 
 .. _cg-ci-default-behavior:
 
@@ -330,7 +330,7 @@ Default Behavior
 ----------------
 
 On Push
-"""""""
+^^^^^^^
 
 When a push event occurs the default behavior is to run the following:
 
@@ -340,7 +340,7 @@ When a push event occurs the default behavior is to run the following:
 * Run any **new** use cases
 
 On Pull Request
-"""""""""""""""
+^^^^^^^^^^^^^^^
 
 When a pull request is created into the develop branch or a main_v\* branch,
 additional jobs are run in automation. In addition to the jobs run for a push,
@@ -350,7 +350,7 @@ the scripts will:
 * Compare use case output to truth data
 
 On Push to Reference Branch
-"""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Branches with a name that ends with "-ref" contain the state of the repository
 that will generate output that is considered "truth" data. 
