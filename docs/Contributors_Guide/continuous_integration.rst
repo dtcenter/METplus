@@ -53,10 +53,17 @@ The Makefile that runs sphinx-build was modified to write warnings and errors
 to a file called warnings.log using the -w argument. This file will be empty
 if no errors or warnings have occurred in the building of the documentation.
 If it is not empty, the script called by this workflow will exit with a
-non-zero value so that the workflow reports a failure. A summary of the lines
-that contain WARNING or ERROR are output in the GitHub Actions log for easy
-access. The warnings.log file is also made available as a GitHub Actions
-artifact so it can be downloaded and reviewed.
+non-zero value so that the workflow reports a failure.
+
+.. figure:: figure/ci-doc-error.png
+
+A summary of the lines that contain WARNING or ERROR are output in the
+GitHub Actions log for easy access.
+The warnings.log file is also made available as a GitHub Actions
+artifact so it can be downloaded and reviewed. Artifacts can be found
+at the bottom of the workflow summary page when the workflow has completed.
+
+.. figure:: figure/ci-doc-artifacts.png
 
 
 Release Published (release_published.yml)
