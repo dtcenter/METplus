@@ -98,30 +98,107 @@ METplus GitHub page.
 
 .. figure:: figure/gha-workflow-name.png
 
-Event Control
--------------
+Trigger Control
+---------------
 
 The "on" keyword is used to determine which events will trigger the workflow
-to run::
+to run. There are currently 3 types of events that trigger this workflow:
+push, pull_request, and workflow_dispatch.
+The jobs that are run in this workflow depend on which event has triggered it.
+There are a lot of jobs that are common to multiple events.
+To avoid creating multiple workflow .yml files that contain redundant jobs,
+an additional layer of control is added within this workflow.
+See :ref:`cg-ci-job-control` for more information.
+
+Push
+^^^^
+
+::
 
     on:
+
       push:
         branches:
           - develop
           - develop-ref
-          - feature_*
-          - main_*
-          - bugfix_*
+          - 'feature_*'
+          - 'main_*'
+          - 'bugfix_*'
+        paths-ignore:
+          - 'docs/**'
+
+This configuration tells GitHub Actions to trigger the workflow when changes
+are pushed to the repository and the following criteria are met:
+
+* The branch is named **develop** or **develop-ref**
+* The branch starts with **feature\_**, **main\_**, or **bugfix\_**
+* Changes were made to at least one file that is not in the **docs** directory.
+
+Pull Request
+^^^^^^^^^^^^
+
+::
+
       pull_request:
-        types: [opened, reopened, synchronize]
+        types: [opened, reopened]
+        paths-ignore:
+          - 'docs/**'
 
-This configuration tells GitHub Actions to trigger the workflow when:
+This configuration tells GitHub Actions to trigger the workflow for
+pull requests in the repository and the following criteria are met:
 
-* A push event occurs on the develop or develop-ref branch
-* A push event occurs on a branch that starts with
-  feature\_, main\_, or bugfix\_
-* A pull request is opened, reopened, or synchronized (when new changes are
-  pushed to the source branch of the pull request.
+* The pull request was **opened or **reopened**.
+* Changes were made to at least one file that is not in the **docs** directory.
+
+Note: Previously the list of pull_request types included **synchronize**.
+This type triggers a workflow for every push to a branch that is included
+in an open pull request. If changes were requested in the pull request review,
+a new workflow will be triggered for each push. In this case, the pull request
+should be closed until the necessary changes are made. Reopening the pull
+request will trigger a workflow.
+
+Workflow Dispatch
+^^^^^^^^^^^^^^^^^
+
+::
+
+      workflow_dispatch:
+        inputs:
+          repository:
+            description: 'Repository that triggered workflow'
+            required: true
+          sha:
+            description: 'Commit hash that triggered the event'
+            required: true
+          ref:
+            description: 'Branch that triggered event'
+            required: true
+          actor:
+            description: 'User that triggered the event'
+
+
+This configuration enables manual triggering of this workflow.
+It allows other GitHub repositories such as MET, METplotpy, and METcalcpy
+to trigger this workflow.
+It lists the input values that are passed from the external repository.
+The inputs include:
+
+* The repository that triggered the workflow, such as dtcenter/MET
+* The commit hash in the external repository that triggered the event
+* The reference (or branch) that triggered the event, such as
+  refs/heads/develop
+* The GitHub username that triggered the event in the external repository
+  (optional)
+
+The MET, METcalcpy, and METplotpy repositories are configured to
+trigger this workflow since they are used in 1 or more METplus use cases.
+Currently all 3 repositories only trigger when changes are pushed to their
+develop branch.
+
+Future work is planned to support main_v* branches, which
+will involve using the 'ref' input to determine what to obtain in the workflow.
+For example, changes pushed to dtcenter/MET main_v10.1 should trigger a
+testing workflow that runs on the METplus main_v4.1 branch.
 
 Jobs
 ----
@@ -129,9 +206,125 @@ Jobs
 The "jobs" keyword is used to define the jobs that are run in the workflow.
 Each item under "jobs" is a string that defines the ID of the job. This value
 can be referenced within the workflow as needed.
+Each job in the testing workflow is described in its own section.
+
+* :ref:`cg-ci-event-info`
+* :ref:`cg-ci-job-control`
+* :ref:`cg-ci-get-image`
+* :ref:`cg-ci-update-data-volumes`
+* :ref:`cg-ci-use-case-tests`
+* :ref:`cg-ci-create-output-data-volumes`
+
+.. _cg-ci-event-info:
+
+Event Info
+==========
+
+This job contains information on what triggered the workflow.
+The name of the job contains complex logic to cleanly display information
+about an event triggered by an external repository when that occurs.
+Otherwise, it simply lists the type of local event (push or pull_request)
+that triggered the workflow.
+
+**Insert images of examples of the Trigger job name for local and external**
+
+It also logs all of the information contained in the 'github' object that
+includes all of the available information from the event that triggered
+the workflow. This is useful to see what information is available to use
+in the workflow based on the event.
+
+**Insert image of screenshot of the github.event info**
+
+.. _cg-ci-job-control:
 
 Job Control
 ===========
+
+::
+
+      job_control:
+        name: Determine which jobs to run
+        runs-on: ubuntu-latest
+
+        steps:
+          - uses: actions/checkout@v2
+          - name: Set job controls
+            id: job_status
+            run: .github/jobs/set_job_controls.sh
+            env:
+              commit_msg: ${{ github.event.head_commit.message }}
+          - uses: actions/upload-artifact@v2
+            with:
+              name: job_control_status
+              path: job_control_status
+
+        outputs:
+          matrix: ${{ steps.job_status.outputs.matrix }}
+          run_some_tests: ${{ steps.job_status.outputs.run_some_tests }}
+          run_get_image: ${{ steps.job_status.outputs.run_get_image }}
+          run_get_input_data: ${{ steps.job_status.outputs.run_get_input_data }}
+          run_diff: ${{ steps.job_status.outputs.run_diff }}
+          run_save_truth_data: ${{ steps.job_status.outputs.run_save_truth_data }}
+          external_trigger: ${{ steps.job_status.outputs.external_trigger }}
+
+This job runs a script called **set_job_controls.sh** (found in .github/jobs)
+that parses environment variables set by GitHub Actions to determine which
+jobs to run. There is :ref:`cg-ci-default-behavior` based on the event that
+triggered the workflow and the branch name.
+The last commit message before a push event is also parsed to look for
+:ref:`cg-ci-commit-message-keywords` that can override the default behavior.
+
+The script also calls another script called **get_use_cases_to_run.sh** that
+reads a JSON file that contains the use case test groups.
+The job control settings determine which of the use case groups to run.
+
+Output Variables
+----------------
+
+The step that calls the job control script is given an identifier using the
+'id' keyword::
+
+        id: job_status
+        run: .github/jobs/set_job_controls.sh
+
+Values from the script are set as output variables using the following syntax::
+
+    echo ::set-output name=run_get_image::$run_get_image
+
+In this example, an output variable named 'run_get_image'
+(set with **name=run_get_image**) is created with the value of a
+variable from the script with the same name (set after the :: characters).
+The variable can be referenced elsewhere within the job using the following
+syntax::
+
+    ${{ steps.job_status.outputs.run_get_image }}
+
+The ID of the step is needed to reference the outputs for that step.
+Note that this notation should be referenced directly in the workflow .yml
+file and not inside a script that is called by the workflow.
+
+To make the variable available to other jobs in the workflow, it will need
+to be set in the 'outputs' section of the job::
+
+        outputs:
+          run_get_image: ${{ steps.job_status.outputs.run_get_image }}
+
+The variable run_get_image can be referenced by other jobs that include
+'job_status' as a job that must complete before starting using the 'needs'
+keyword::
+
+      get_image:
+        name: Docker Setup - Get METplus Image
+        runs-on: ubuntu-latest
+        needs: job_control
+        if: ${{ needs.job_control.outputs.run_get_image == 'true' }}
+
+Setting 'needs: job_control' tells the 'get_image' job to wait until the
+'job_control' job has completed before running. Since this is the case, this
+job can reference output from that job in the 'if' value to determine if the
+job should be run or not.
+
+.. _cg-ci-default-behavior:
 
 Default Behavior
 ----------------
@@ -139,11 +332,9 @@ Default Behavior
 On Push
 """""""
 
-When a push to a feature\_\*, bugfix\_\*, main_v\*, or develop\* branch occurs
-the default behavior is to run the following:
+When a push event occurs the default behavior is to run the following:
 
-* Build documentation
-* Update Docker image
+* Create/Update the METplus Docker image
 * Look for new input data
 * Run unit tests
 * Run any **new** use cases
@@ -168,6 +359,8 @@ In addition to the jobs run for a normal push, the scripts will:
 * Run all use cases
 * Create/Update Docker data volumes that store truth data with the use case
   output
+
+.. _cg-ci-commit-message-keywords:
 
 Commit Message Keywords
 -----------------------
@@ -210,3 +403,32 @@ for the step named "Get METplus Image."
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           #MET_FORCE_TAG: 10.0.0
+
+
+.. _cg-ci-get-image:
+
+Create/Update Metplus Docker Image
+==================================
+
+TODO
+
+.. _cg-ci-update-data-volumes:
+
+Create/Update Docker Data Volumes
+=================================
+
+TODO
+
+.. _cg-ci-use-case-tests:
+
+Use Case Tests
+==============
+
+TODO
+
+.. _cg-ci-create-output-data-volumes:
+
+Create/Update Output Data Volumes
+=================================
+
+TODO
