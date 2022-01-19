@@ -1,2 +1,2 @@
 input_filename: 
-- !ENV '${INPUT_BASE}/model_applications/s2s/UserScript_obsERA_obsOnly_Stratosphere/SSWC_v1.0_varFull_ERAi_d20130106_s20121107_e20130307_c20160701.nc'
+- !ENV '${INPUT_FILE_NAME}/model_applications/s2s/UserScript_obsERA_obsOnly_Stratosphere/SSWC_v1.0_varFull_ERAi_d20130106_s20121107_e20130307_c20160701.nc'
