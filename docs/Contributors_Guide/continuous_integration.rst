@@ -47,7 +47,7 @@ It builds the documentation by running "make clean html" and
 makes the files available to download at the end of the workflow
 as a GitHub Actions artifact. This step is no longer mandatory because
 ReadTheDocs is configured to automatically generate the documentation for each
-branch/tag and publish it on `https://metplus.readthedocs.io`_.
+branch/tag and publish it `online <https://metplus.readthedocs.io>`_.
 
 The Makefile that runs sphinx-build was modified to write warnings and errors
 to a file called warnings.log using the -w argument. This file will be empty
