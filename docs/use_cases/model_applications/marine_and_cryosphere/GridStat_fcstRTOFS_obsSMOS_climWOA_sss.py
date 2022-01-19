@@ -1,6 +1,6 @@
 """
-GridStat: Python Embedding to read and process ice cover
-========================================================
+GridStat: Python Embedding for sea surface salinity using level 3, 1 day composite obs
+======================================================================================
 
 model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMOS_climWOA_sss.conf
 
