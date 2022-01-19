@@ -322,7 +322,7 @@ keyword::
 Setting 'needs: job_control' tells the 'get_image' job to wait until the
 'job_control' job has completed before running. Since this is the case, this
 job can reference output from that job in the 'if' value to determine if the
-job should be run or not.
+job should be run or not. 
 
 .. _cg-ci-default-behavior:
 
