@@ -1,18 +1,22 @@
 name: Testing
+
 on:
+
   push:
     branches:
       - develop
       - develop-ref
-      - feature_*
-      - main_*
-      - bugfix_*
+      - 'feature_*'
+      - 'main_*'
+      - 'bugfix_*'
     paths-ignore:
-      - docs/**
+      - 'docs/**'
+
   pull_request:
     types: [opened, reopened, synchronize]
     paths-ignore:
-      - docs/** 
+      - 'docs/**'
+
   workflow_dispatch:
     inputs:
       repository:
@@ -60,6 +64,7 @@ jobs:
         with:
           name: job_control_status
           path: job_control_status
+
   get_image:
     name: Docker Setup - Get METplus Image
     runs-on: ubuntu-latest
