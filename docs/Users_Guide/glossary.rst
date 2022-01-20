@@ -8723,3 +8723,39 @@ METplus Configuration Glossary
      case and the values differ between them.
 
      | *Used by:* All
+
+   GEN_ENS_PROD_ENS_MEMBER_IDS
+     Specify the value for 'ens_member_ids' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CONTROL_ID
+     Specify the value for 'control_id' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   ENSEMBLE_STAT_ENS_MEMBER_IDS
+     Specify the value for 'ens_member_ids' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CONTROL_ID
+     Specify the value for 'control_id' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CTRL_INPUT_DIR
+     Input directory for optional control file to use with EnsembleStat.
+     See also :term:`ENSEMBLE_STAT_CTRL_INPUT_TEMPLATE`.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_CTRL_INPUT_TEMPLATE
+     Template used to specify an optional control filename for EnsembleStat.
+     Note that if a control member file is found in the ensemble file list,
+     it will automatically be removed by the wrapper to prevent an error in the
+     MET tool. This may require adjusting the value for
+     :term:`ENSEMBLE_STAT_N_MEMBERS` and/or
+     :term:`ENSEMBLE_STAT_ENS_VLD_THRESH`.
+
+     | *Used by:*  EnsembleStat

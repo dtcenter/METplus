@@ -64,6 +64,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'METPLUS_OUTPUT_PREFIX',
         'METPLUS_OBS_QUALITY_INC',
         'METPLUS_OBS_QUALITY_EXC',
+        'METPLUS_ENS_MEMBER_IDS',
+        'METPLUS_CONTROL_ID',
     ]
 
     # handle deprecated env vars used pre v4.0.0
@@ -203,6 +205,16 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                '')
         )
 
+        # get ctrl (control) template/dir - optional
+        c_dict['CTRL_INPUT_TEMPLATE'] = self.config.getraw(
+            'config',
+            'ENSEMBLE_STAT_CTRL_INPUT_TEMPLATE'
+        )
+        c_dict['CTRL_INPUT_DIR'] = self.config.getdir(
+            'ENSEMBLE_STAT_CTRL_INPUT_DIR',
+            ''
+        )
+
         # get climatology config variables
         self.handle_climo_dict()
 
@@ -311,6 +323,12 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             metplus_configs=['ENSEMBLE_STAT_OBS_QUALITY_EXC',
                              'ENSEMBLE_STAT_OBS_QUALITY_EXCLUDE']
         )
+
+        self.add_met_config(name='ens_member_ids',
+                            data_type='list')
+
+        self.add_met_config(name='control_id',
+                            data_type='string')
 
         # old method of setting MET config values
         c_dict['ENS_THRESH'] = (

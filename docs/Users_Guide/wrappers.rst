@@ -183,6 +183,8 @@ METplus Configuration
 | :term:`OBS_ENSEMBLE_STAT_GRID_INPUT_TEMPLATE`
 | :term:`FCST_ENSEMBLE_STAT_INPUT_TEMPLATE`
 | :term:`ENSEMBLE_STAT_OUTPUT_TEMPLATE`
+| :term:`ENSEMBLE_STAT_CTRL_INPUT_DIR`
+| :term:`ENSEMBLE_STAT_CTRL_INPUT_TEMPLATE`
 | :term:`LOG_ENSEMBLE_STAT_VERBOSITY`
 | :term:`FCST_ENSEMBLE_STAT_INPUT_DATATYPE`
 | :term:`OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE`
@@ -277,6 +279,8 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_OBS_QUALITY_INC`
 | :term:`ENSEMBLE_STAT_OBS_QUALITY_EXC`
 | :term:`ENSEMBLE_STAT_MET_CONFIG_OVERRIDES`
+| :term:`ENSEMBLE_STAT_ENS_MEMBER_IDS`
+| :term:`ENSEMBLE_STAT_CONTROL_ID`
 | :term:`ENSEMBLE_STAT_VERIFICATION_MASK_TEMPLATE` (optional)
 | :term:`ENS_VAR<n>_NAME` (optional)
 | :term:`ENS_VAR<n>_LEVELS` (optional)
@@ -853,6 +857,28 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`ENSEMBLE_STAT_OBS_QUALITY_EXC`
      - obs_quality_exc
 
+**${METPLUS_ENS_MEMBER_IDS}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_ENS_MEMBER_IDS`
+     - ens_member_ids
+
+**${METPLUS_CONTROL_ID}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_CONTROL_ID`
+     - control_id
+
 **${METPLUS_MET_CONFIG_OVERRIDES}**
 
 .. list-table::
@@ -1049,6 +1075,8 @@ METplus Configuration
 | :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_NMEP`
 | :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO`
 | :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO_CDF`
+| :term:`GEN_ENS_PROD_ENS_MEMBER_IDS`
+| :term:`GEN_ENS_PROD_CONTROL_ID`
 | :term:`GEN_ENS_PROD_MET_CONFIG_OVERRIDES`
 
 .. _gen-ens-prod-met-conf:
@@ -1338,6 +1366,28 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - ensemble_flag.climo
    * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO_CDF`
      - ensemble_flag.climo_cdf
+
+**${METPLUS_ENS_MEMBER_IDS}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_ENS_MEMBER_IDS`
+     - ens_member_ids
+
+**${METPLUS_CONTROL_ID}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_CONTROL_ID`
+     - control_id
 
 **${METPLUS_MET_CONFIG_OVERRIDES}**
 
