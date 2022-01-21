@@ -134,4 +134,4 @@ UserScript_obsERA_obsOnly_Stratosphere.py
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/tbd.png'
+# sphinx_gallery_thumbnail_path = '_static/s2s-zonal_means.png'
