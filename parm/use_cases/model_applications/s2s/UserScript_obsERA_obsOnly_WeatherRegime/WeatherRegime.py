@@ -147,7 +147,7 @@ class WeatherRegimeCalculation():
 
         yf = np.reshape(y,[self.wrnum,arr_shape[arrdims-2],arr_shape[arrdims-1]]) # reshape cluster anomalies to latlon
 
-        #Get frequency of occurence for each cluster
+        #Get frequency of occurrence for each cluster
         perc=np.zeros(self.wrnum)
         for ii in np.arange(0,self.wrnum,1):
             perc[ii] = self.get_cluster_fraction(f,ii)
