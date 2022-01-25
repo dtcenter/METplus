@@ -1116,9 +1116,9 @@ no space between the process name and the parenthesis.
     [my_instance_name]
     GRID_STAT_OUTPUT_DIR = /my/instance/name/output/dir
 
-In this example, the first occurence of GridStat in the PROCESS_LIST does
+In this example, the first occurrence of GridStat in the PROCESS_LIST does
 not have an instance name associated with it, so it will use the value
-/grid/stat/output/dir as the output directory. The second occurence has
+/grid/stat/output/dir as the output directory. The second occurrence has
 an instance name 'my_instance_name' and there is a section header with
 the same name, so this instance will use /my/instance/name/output/dir as
 the output directory.

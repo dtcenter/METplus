@@ -61,7 +61,7 @@
   },
   {
     "category": "marine_and_cryosphere",
-    "index_list": "3",
+    "index_list": "3-4",
     "run": false
   },
   {
@@ -153,6 +153,11 @@
     "category": "s2s",
     "index_list": "11",
     "run": false
+  },
+  {
+    "category": "s2s",
+    "index_list": "12",
+    "run": false 
   },
   {
     "category": "space_weather",
