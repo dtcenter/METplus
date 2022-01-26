@@ -8759,3 +8759,8 @@ METplus Configuration Glossary
      :term:`ENSEMBLE_STAT_ENS_VLD_THRESH`.
 
      | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_GRID_WEIGHT_FLAG
+     Specify the value for 'grid_weight_flag' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
