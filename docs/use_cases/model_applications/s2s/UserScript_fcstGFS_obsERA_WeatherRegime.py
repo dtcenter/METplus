@@ -148,11 +148,11 @@ UserScript_fcstGFS_obsERA_WeatherRegime.py
 #
 # 1) Passing in UserScript_fcstGFS_obsERA_WeatherRegime.py then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.py -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.py -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_fcstGFS_obsERA_WeatherRegime.py::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.py
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.py
 #
 # The following variables must be set correctly:
 #
