@@ -337,12 +337,18 @@ When a push event occurs the default behavior is to run the following:
 * Create/Update the METplus Docker image
 * Look for new input data
 * Run unit tests
-* Run any **new** use cases
+* Run any use cases marked to run (see :ref:`cg-ci-use-case-tests`)
+
+If the push is on the **develop** or a **main_vX.Y** branch, then all
+of the use cases are run.
+
+Default behavior for push events can be overridden using
+:ref:`cg-ci-commit-message-keywords`.
 
 On Pull Request
 ^^^^^^^^^^^^^^^
 
-When a pull request is created into the develop branch or a main_v\* branch,
+When a pull request is created into the develop branch or a main_vX.Y branch,
 additional jobs are run in automation. In addition to the jobs run for a push,
 the scripts will:
 
@@ -410,14 +416,39 @@ for the step named "Get METplus Image."
 Create/Update Metplus Docker Image
 ==================================
 
-TODO
+This job calls the .github/jobs/docker_setup.sh script.
+This script builds a METplus Docker image and pushes it to DockerHub.
+The image is pulled instead of built in each test job to save execution time.
+The script attempts to pull the appropriate Docker image from DockerHub
+(dtcenter/metplus-dev:{BRANCH_NAME}) if it already exists so that unchanged
+components of the Docker image do not need to be rebuilt.
 
 .. _cg-ci-update-data-volumes:
 
 Create/Update Docker Data Volumes
 =================================
 
-TODO
+The METplus use case tests obtain input data from Docker data volumes.
+Each use case category that corresponds to a directory in
+parm/use_cases/model_applications has its own data volume that contains
+all of the data needed to run those use cases. The MET Tool Wrapper use cases
+found under parm/use_cases/met_tool_wrapper also have a data volume.
+These data are made available on the DTC web server.
+
+The logic in this
+job checks if the tarfile that contains the data for a use case category has
+changed since the corresponding Docker data volume has been last updated.
+If it has, then the Docker data volume is regenerated with the new data.
+
+When new data is needed for a new METplus use case, a directory that is named
+after a feature branch is populated with the existing data for the use case
+category and the new data is added there. This data is used for testing the
+new use case in the automated tests. When the pull request for the new use
+case is approved, the new data is moved into the develop branch version of the
+data so that it will be available for future tests. More details on this
+process can be found in the :ref:`use_case_input_data` section of the
+Add Use Cases chapter of the Contributor's Guide.
+
 
 .. _cg-ci-use-case-tests:
 
