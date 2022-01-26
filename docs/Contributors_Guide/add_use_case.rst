@@ -841,14 +841,6 @@ Please note that some commands in the scripts are specific to
 the Docker environment and may need to be rerun to successfully
 build the environment locally.
 
-**Documenting the Addition of a New Python Package Requirement**
-
-If adding a new required Python package for a use case, update the
-`METplus  Components Python Requirements <https://docs.google.com/spreadsheets/d/1Lf-yxZBXTTnBaqCOWUk-jdP9RpaLfil_s-KKH29CkKU/edit#gid=0>`_
-spreadsheet to include the name of the required package, the version, the
-METplus component (e.g. METplus wrappers, METcalcpy, METplotpy), the source,
-a brief description, and a link to the use case(s) utilizing this new package.
-
 **Installing METplus Components**
 
 These scripts
