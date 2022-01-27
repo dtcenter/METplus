@@ -27,10 +27,35 @@ def test_remove_quotes(before, after):
         # 1: one string has commas within quotes
         ('gt2.7, >3.6, eq42, "has,commas,in,it"',
          ['gt2.7', '>3.6', 'eq42', 'has,commas,in,it']),
-        # 2: empty string
+        # 2: one string has commas and spaces within quotes
+        ('gt2.7, >3.6, eq42, "has some,commas,in,it"',
+         ['gt2.7', '>3.6', 'eq42', 'has some,commas,in,it']),
+        # 3: empty string
         ('',
          []),
-        ]
+        # 4: string with commas between ()s
+        ('name="CLM_NAME"; level="(0,0,*,*)"',
+         ['name="CLM_NAME"; level="(0,0,*,*)"']),
+        # 5: string with commas between ()s and commas not between ()s
+        ('name="CLM_NAME"; level="(0,0,*,*)";, name="OTHER"; level="A06"',
+         ['name="CLM_NAME"; level="(0,0,*,*)";', 'name="OTHER"; level="A06"']),
+        # 6: string with commas between ()s within {}s
+        ('{name="CLM_NAME"; level="(0,0,*,*)";}',
+         ['{name="CLM_NAME"; level="(0,0,*,*)";}']),
+        # 7: multiple {}s with string with commas between ()s
+        ('{name="CLM_NAME"; level="(0,0,*,*)";},{name="CLM_NAME"; level="(0,0,*,*)";}',
+         ['{name="CLM_NAME"; level="(0,0,*,*)";}',
+          '{name="CLM_NAME"; level="(0,0,*,*)";}']),
+        # 8: read example with commas beween ()s
+        ('-input_field \'name="TEC"; level="({valid?fmt=%Y%m%d_%H%M%S},*,*)"; file_type=NETCDF_NCCF;\'',
+         ['-input_field \'name="TEC"; level="({valid?fmt=%Y%m%d_%H%M%S},*,*)"; file_type=NETCDF_NCCF;\'']),
+        # 9: read example commas separating quotes within []s
+        ('{name="UGRD"; level=["P850","P500","P250"];}',
+         ['{name="UGRD"; level=["P850","P500","P250"];}']),
+        # 10: multiples {}s with commas separating quotes within []s
+        ('{name="UGRD"; level=["P850","P500","P250"];}, {name="UGRD"; level=["P750","P600"];}',
+         ['{name="UGRD"; level=["P850","P500","P250"];}', '{name="UGRD"; level=["P750","P600"];}']),
+    ]
 )
 def test_getlist(string_list, output_list):
     test_list = getlist(string_list)
@@ -98,29 +123,3 @@ def test_getlist_int():
 )
 def test_getlist_begin_end_incr(list_string, output_list):
     assert getlist(list_string) == output_list
-
-@pytest.mark.parametrize(
-     'list_str, expected_fixed_list', [
-         ('some,items,here', ['some',
-                              'items',
-                              'here']),
-         ('(*,*)', ['(*,*)']),
-        ("-type solar_alt -thresh 'ge45' -name solar_altitude_ge_45_mask -input_field 'name=\"TEC\"; level=\"(0,*,*)\"; file_type=NETCDF_NCCF;' -mask_field 'name=\"TEC\"; level=\"(0,*,*)\"; file_type=NETCDF_NCCF;\'",
-        ["-type solar_alt -thresh 'ge45' -name solar_altitude_ge_45_mask -input_field 'name=\"TEC\"; level=\"(0,*,*)\"; file_type=NETCDF_NCCF;' -mask_field 'name=\"TEC\"; level=\"(0,*,*)\"; file_type=NETCDF_NCCF;\'"]),
-        ("(*,*),'level=\"(0,*,*)\"' -censor_thresh [lt12.3,gt8.8],other", ['(*,*)',
-                                                                           "'level=\"(0,*,*)\"' -censor_thresh [lt12.3,gt8.8]",
-                                                                           'other']),
-     ]
-)
-def test_fix_list(list_str, expected_fixed_list):
-    item_list = list(reader([list_str]))[0]
-    fixed_list = _fix_list(item_list)
-    print("FIXED LIST:")
-    for fixed in fixed_list:
-        print(f"ITEM: {fixed}")
-
-    print("EXPECTED LIST")
-    for expected in expected_fixed_list:
-        print(f"ITEM: {expected}")
-
-    assert(fixed_list == expected_fixed_list)
