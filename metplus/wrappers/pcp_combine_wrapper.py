@@ -189,6 +189,11 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                                f'{d_type}_PCP_COMBINE_EXTRA_OUTPUT_NAMES', '')
         )
 
+        c_dict[f'{d_type}_USE_ZERO_ACCUM'] = self.config.getbool(
+            'config',
+            f'{d_type}_PCP_COMBINE_USE_ZERO_ACCUM', False
+        )
+
         if run_method == 'DERIVE' and not c_dict[f'{d_type}_STAT_LIST']:
             self.log_error('Statistic list is empty. Must set '
                            f'{d_type}_PCP_COMBINE_STAT_LIST if running '
@@ -364,9 +369,11 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         # if data is GRIB and second lead is 0, then
         # run PCPCombine in -add mode with just the first file
-        if lead2 == 0 and self.c_dict[data_src+'_INPUT_DATATYPE'] == 'GRIB':
-            self.logger.debug("Subtracted accumulation is 0 for GRIB data,"
-                              " so running ADD mode on one file")
+        if lead2 == 0 and not self.c_dict[f'{data_src}_USE_ZERO_ACCUM']:
+            self.logger.info("Subtracted accumulation is 0,"
+                             " so running ADD mode on one file."
+                             "To use 0 accum data, set "
+                             f"{data_src}_PCP_COMBINE_USE_ZERO_ACCUM = True")
             self.args.clear()
             self.args.append('-add')
             field_info = self.get_field_string(
