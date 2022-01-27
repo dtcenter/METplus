@@ -423,6 +423,9 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
                                       '["/some/climo_mean/file.txt"];}'),
           'CLIMO_MEAN_FILE': '"/some/climo_mean/file.txt"'}),
 
+        ({'GRID_STAT_CLIMO_MEAN_FIELD': '{name="UGRD"; level=["P850","P500","P250"];}', },
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {field = [{name="UGRD"; level=["P850","P500","P250"];}];}'}),
+
         ({'GRID_STAT_CLIMO_MEAN_FIELD': '{name="CLM_NAME"; level="(0,0,*,*)";}', },
          {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {field = [{name="CLM_NAME"; level="(0,0,*,*)";}];}'}),
 
