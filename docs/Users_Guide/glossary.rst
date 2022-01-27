@@ -8759,3 +8759,19 @@ METplus Configuration Glossary
      :term:`ENSEMBLE_STAT_ENS_VLD_THRESH`.
 
      | *Used by:*  EnsembleStat
+
+   FCST_PCP_COMBINE_USE_ZERO_ACCUM
+     Only used if running PCPCombine wrapper with
+     :term:`FCST_PCP_COMBINE_METHOD` = SUBTRACT. If True, build a -subtract
+     command using the 0 accumulation as the 2nd input. If False (default),
+     instead build an -add command with a single input if the 2nd input is
+     a 0 accumulation.
+
+     | *Used by:*  PCPCombine
+
+   OBS_PCP_COMBINE_USE_ZERO_ACCUM
+     Only used if running PCPCombine wrapper with
+     :term:`OBS_PCP_COMBINE_METHOD` = SUBTRACT.
+     See :term:`FCST_PCP_COMBINE_USE_ZERO_ACCUM` for more information.
+
+     | *Used by:*  PCPCombine
