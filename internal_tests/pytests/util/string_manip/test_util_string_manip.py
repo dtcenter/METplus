@@ -7,25 +7,27 @@ from csv import reader
 from metplus.util.string_manip import *
 from metplus.util.string_manip import _fix_list
 
-def test_getlist():
-    string_list = 'gt2.7, >3.6, eq42'
+@pytest.mark.parametrize(
+    'string_list, output_list', [
+        # 0: list of strings
+        ('gt2.7, >3.6, eq42',
+         ['gt2.7', '>3.6', 'eq42']),
+        # 1: one string has commas within quotes
+        ('gt2.7, >3.6, eq42, "has,commas,in,it"',
+         ['gt2.7', '>3.6', 'eq42', 'has,commas,in,it']),
+        # 2: empty string
+        ('',
+         []),
+        ]
+)
+def test_getlist(string_list, output_list):
     test_list = getlist(string_list)
-    assert test_list == ['gt2.7', '>3.6', 'eq42']
+    assert test_list == output_list
 
 def test_getlist_int():
     string_list = '6, 7, 42'
     test_list = getlistint(string_list)
     assert test_list == [6, 7, 42]
-
-def test_getlist_has_commas():
-    string_list = 'gt2.7, >3.6, eq42, "has,commas,in,it"'
-    test_list = getlist(string_list)
-    assert test_list == ['gt2.7', '>3.6', 'eq42', 'has,commas,in,it']
-
-def test_getlist_empty():
-    string_list = ''
-    test_list = getlist(string_list)
-    assert test_list == []
 
 @pytest.mark.parametrize(
     'list_string, output_list', [
