@@ -40,7 +40,7 @@ def getlist(list_str, expand_begin_end_incr=True):
     # (which is the whole list)
     item_list = list(reader([list_str], escapechar='\\'))[0]
 
-    item_list = _fix_list(item_list)
+    #item_list = _fix_list(item_list)
 
     return item_list
 
@@ -139,6 +139,9 @@ def _fix_list_helper(item_list, type):
     elif type == '[':
         close_regex = r"[^\[]+\].*"
         open_regex = r".*\[[^\]]*$"
+    elif type == '{':
+        close_regex = r"[^\{]+\}.*"
+        open_regex = r".*\{[^\}]*$"
     else:
         return item_list
 
