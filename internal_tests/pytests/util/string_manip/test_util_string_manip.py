@@ -8,6 +8,18 @@ from metplus.util.string_manip import *
 from metplus.util.string_manip import _fix_list
 
 @pytest.mark.parametrize(
+    'before, after', [
+        ('string', 'string'),
+        ('"string"', 'string'),
+        ('', ''),
+        ('""', ''),
+        (None, ''),
+    ]
+)
+def test_remove_quotes(before, after):
+    assert(remove_quotes(before) == after)
+
+@pytest.mark.parametrize(
     'string_list, output_list', [
         # 0: list of strings
         ('gt2.7, >3.6, eq42',

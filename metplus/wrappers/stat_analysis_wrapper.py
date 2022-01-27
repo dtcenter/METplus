@@ -21,7 +21,7 @@ import itertools
 from ..util import getlist
 from ..util import met_util as util
 from ..util import do_string_sub, find_indices_in_config_section
-from ..util import parse_var_list
+from ..util import parse_var_list, remove_quotes
 from . import CommandBuilder
 
 class StatAnalysisWrapper(CommandBuilder):
@@ -1325,7 +1325,7 @@ class StatAnalysisWrapper(CommandBuilder):
 
         for level in level_input:
             level = level.strip('(').strip(')')
-            level = f'{util.remove_quotes(level)}'
+            level = f'{remove_quotes(level)}'
             level_list.append(level)
 
         return level_list
@@ -1778,7 +1778,7 @@ class StatAnalysisWrapper(CommandBuilder):
             for mp_item in mp_items:
                 if not runtime_settings_dict.get(mp_item, ''):
                     continue
-                value = util.remove_quotes(runtime_settings_dict.get(mp_item,
+                value = remove_quotes(runtime_settings_dict.get(mp_item,
                                                                      ''))
                 value = (f"{mp_item.lower()} = \"{value}\";")
                 self.env_var_dict[f'METPLUS_{mp_item}'] = value

@@ -7,6 +7,14 @@ Description: METplus utility to handle string manipulation
 import re
 from csv import reader
 
+def remove_quotes(input_string):
+    """!Remove quotes from string"""
+    if not input_string:
+        return ''
+
+    # strip off double and single quotes
+    return input_string.strip('"').strip("'")
+
 def getlist(list_str, expand_begin_end_incr=True):
     """! Returns a list of string elements from a comma
          separated string of values.

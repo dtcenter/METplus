@@ -11,6 +11,7 @@ from ..util import met_util as util
 from ..util import time_util
 from ..util import do_string_sub
 from ..util import time_generator
+from ..util import remove_quotes
 from . import CommandBuilder
 
 class TCMPRPlotterWrapper(CommandBuilder):
@@ -160,7 +161,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
             if value:
                 # add quotes around value if they are not already there
                 if 'quotes' in data_type:
-                    value = f'"{util.remove_quotes(value)}"'
+                    value = f'"{remove_quotes(value)}"'
 
                 # don't add value for boolean
                 if data_type == 'bool':

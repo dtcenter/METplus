@@ -27,6 +27,7 @@ from ..util import METConfig
 from ..util import MISSING_DATA_VALUE
 from ..util import get_custom_string_list
 from ..util import get_wrapped_met_config_file, add_met_config_item, format_met_config
+from ..util import remove_quotes
 from ..util.met_config import add_met_config_dict
 
 # pylint:disable=pointless-string-statement
@@ -1215,7 +1216,7 @@ class CommandBuilder:
                 field = f'name="{v_name}";'
 
                 if v_level:
-                    field += f' level="{util.remove_quotes(v_level)}";'
+                    field += f' level="{remove_quotes(v_level)}";'
 
                 if self.c_dict.get(d_type + '_IS_PROB', False):
                     field += " prob=TRUE;"
@@ -1474,7 +1475,7 @@ class CommandBuilder:
         # if the value is set, set the DESC c_dict
         if conf_value:
             self.env_var_dict['METPLUS_DESC'] = (
-                f'desc = "{util.remove_quotes(conf_value)}";'
+                f'desc = "{remove_quotes(conf_value)}";'
             )
 
     def get_output_prefix(self, time_info=None, set_env_vars=True):
