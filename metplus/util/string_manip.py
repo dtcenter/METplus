@@ -43,12 +43,13 @@ def getlist(list_str, expand_begin_end_incr=True):
     if expand_begin_end_incr:
         list_str = _handle_begin_end_incr(list_str)
 
-    # use csv reader to divide comma list while preserving strings with comma
-    # convert the csv reader to a list and get first item
-    # (which is the whole list)
-    item_list = list(reader([list_str], escapechar='\\'))[0]
+    # use regex split to split list string by commas that are not
+    # found within []s or ()s
+    item_list = re.split(r',\s*(?![^\[\]]*\]|[^()]*\))', list_str)
 
-    #item_list = _fix_list(item_list)
+    # regex split will still split by commas that are found between
+    # quotation marks, so call function to put them back together properly
+    item_list = _fix_list(item_list)
 
     return item_list
 
@@ -136,65 +137,41 @@ def _begin_end_incr_evaluate(item):
     return None
 
 def _fix_list(item_list):
-    item_list = _fix_list_helper(item_list, '(')
-    item_list = _fix_list_helper(item_list, '[')
-    return item_list
+    """! The logic that calls this function may have incorrectly split up
+    a string that contains commas within quotation marks. This function
+    looks through the list and finds items that appear to have been split up
+    incorrectly and puts them back together properly.
 
-def _fix_list_helper(item_list, type):
-    if type == '(':
-        close_regex = r"[^(]+\).*"
-        open_regex = r".*\([^)]*$"
-    elif type == '[':
-        close_regex = r"[^\[]+\].*"
-        open_regex = r".*\[[^\]]*$"
-    elif type == '{':
-        close_regex = r"[^\{]+\}.*"
-        open_regex = r".*\{[^\}]*$"
-    else:
-        return item_list
-
-    # combine items that had a comma between ()s or []s
+     @param item_list list of items to be corrected
+     @returns corrected list
+    """
     fixed_list = []
-    incomplete_item = None
-    found_close = False
-    for index, item in enumerate(item_list):
-        # if we have found an item that ends with ( but
-        if incomplete_item:
-            # check if item has ) before (
-            match = re.match(close_regex, item)
-            if match:
-                # add rest of text, add it to output list,
-                # then reset incomplete_item
-                incomplete_item += ',' + item
-                found_close = True
-            else:
-                # if not ) before (, add text and continue
-                incomplete_item += ',' + item
-
-        match = re.match(open_regex, item)
-        # if we find ( without ) after it
-        if match:
-            # if we are still putting together an item,
-            # append comma and new item
-            if incomplete_item:
-                if not found_close:
-                    incomplete_item += ',' + item
-            # if not, start new incomplete item to put together
-            else:
-                incomplete_item = item
-
-            found_close = False
-        # if we don't find ( without )
-        else:
-            # if we are putting together item, we can add to the
-            # output list and reset incomplete_item
-            if incomplete_item:
-                if found_close:
-                    fixed_list.append(incomplete_item)
-                    incomplete_item = None
-            # if we are not within brackets and we found no brackets,
-            # add item to output list
-            else:
+    list_buffer = []
+    for item in item_list:
+        quote_count = item.count('"')
+        if not list_buffer:
+            # if there are an even number of quotation marks, add to list
+            if quote_count % 2 == 0:
                 fixed_list.append(item)
+            # otherwise add it to the list buffer
+            else:
+                list_buffer.append(item)
+        else:
+            list_buffer.append(item)
+            if quote_count == 1:
+                fixed_list.append(','.join(list_buffer))
+                list_buffer.clear()
 
-    return fixed_list
+    # if there are still items in the buffer, add them to end of list
+    if list_buffer:
+        fixed_list.append(','.join(list_buffer))
+
+    # remove extra quotation marks around string
+    out_list = []
+    for item in fixed_list:
+        if item[0] == '"' and item[-1] == '"':
+            out_list.append(item.strip('"'))
+        else:
+            out_list.append(item)
+
+    return out_list
