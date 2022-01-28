@@ -34,10 +34,8 @@ class RuntimeFreqWrapper(CommandBuilder):
                     'RUN_ONCE_FOR_EACH'
                     ]
 
-    def __init__(self, config, instance=None, config_overrides=None):
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+    def __init__(self, config, instance=None):
+        super().__init__(config, instance=instance)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()

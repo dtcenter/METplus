@@ -70,12 +70,10 @@ class MakePlotsWrapper(CommandBuilder):
         'VERIF_GRID', 'EVENT_EQUALIZATION', 'LOG_METPLUS', 'LOG_LEVEL'
     ]
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         self.app_path = 'python'
         self.app_name = 'make_plots'
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
         if WRAPPER_CANNOT_RUN:
             self.log_error(f"There was a problem importing modules: {EXCEPTION_ERR}\n")

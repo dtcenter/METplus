@@ -50,7 +50,7 @@ class CommandBuilder:
     # name of variable to hold any MET config overrides
     MET_OVERRIDES_KEY = 'METPLUS_MET_CONFIG_OVERRIDES'
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         self.isOK = True
         self.errors = 0
         self.config = config
@@ -88,9 +88,6 @@ class CommandBuilder:
             )
 
         self.instance = instance
-
-        # override config if any were supplied
-        self.override_config(config_overrides)
 
         self.env = os.environ.copy()
         if hasattr(config, 'env'):
@@ -138,15 +135,6 @@ class CommandBuilder:
         self.log_name = self.app_name if hasattr(self, 'app_name') else ''
 
         self.clear()
-
-    def override_config(self, config_overrides):
-        if not config_overrides:
-            return
-
-        self.logger.debug("Overriding config with explicit values:")
-        for key, value in config_overrides.items():
-            self.logger.debug(f"Setting [config] {key} = {value}")
-            self.config.set('config', key, value)
 
     def check_for_unused_env_vars(self):
         config_file = self.c_dict.get('CONFIG_FILE')
