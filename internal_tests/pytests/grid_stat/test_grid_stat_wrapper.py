@@ -428,6 +428,28 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
 
         ({'GRID_STAT_CLIMO_MEAN_FIELD': '{name="CLM_NAME"; level="(0,0,*,*)";}', },
          {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {field = [{name="CLM_NAME"; level="(0,0,*,*)";}];}'}),
+        # ignore USE_FCST because FIELD is set
+        ({'GRID_STAT_CLIMO_MEAN_FIELD': '{name="CLM_NAME"; level="(0,0,*,*)";}',
+          'GRID_STAT_CLIMO_MEAN_USE_FCST': 'TRUE'},
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {field = [{name="CLM_NAME"; level="(0,0,*,*)";}];}'}),
+        # ignore USE_OBS because FIELD is set
+        ({'GRID_STAT_CLIMO_MEAN_FIELD': '{name="CLM_NAME"; level="(0,0,*,*)";}',
+          'GRID_STAT_CLIMO_MEAN_USE_OBS': 'TRUE'},
+        {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {field = [{name="CLM_NAME"; level="(0,0,*,*)";}];}'}),
+        # use fcst no other climo_mean
+        ({'GRID_STAT_CLIMO_MEAN_USE_FCST': 'TRUE'},
+        {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = fcst;'}),
+        # use obs no other climo_mean
+        ({'GRID_STAT_CLIMO_MEAN_USE_OBS': 'TRUE'},
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = obs;'}),
+        # use fcst with other climo_mean
+        ({'GRID_STAT_CLIMO_MEAN_REGRID_METHOD': 'NEAREST',
+          'GRID_STAT_CLIMO_MEAN_USE_FCST': 'TRUE'},
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {method = NEAREST;}}climo_mean = fcst;'}),
+        # use obs with other climo_mean
+        ({'GRID_STAT_CLIMO_MEAN_REGRID_METHOD': 'NEAREST',
+          'GRID_STAT_CLIMO_MEAN_USE_OBS': 'TRUE'},
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {method = NEAREST;}}climo_mean = obs;'}),
 
         ({'GRID_STAT_CLIMO_MEAN_REGRID_METHOD': 'NEAREST', },
          {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {method = NEAREST;}}'}),
@@ -535,6 +557,32 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
                                       'match_month = TRUE;day_interval = 30;'
                                       'hour_interval = 12;}'),
           'CLIMO_STDEV_FILE': '"/some/climo_stdev/file.txt"'}),
+        # ignore USE_FCST because FIELD is set
+        (
+        {'GRID_STAT_CLIMO_STDEV_FIELD': '{name="CLM_NAME"; level="(0,0,*,*)";}',
+         'GRID_STAT_CLIMO_STDEV_USE_FCST': 'TRUE'},
+        {
+            'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {field = [{name="CLM_NAME"; level="(0,0,*,*)";}];}'}),
+        # ignore USE_OBS because FIELD is set
+        (
+        {'GRID_STAT_CLIMO_STDEV_FIELD': '{name="CLM_NAME"; level="(0,0,*,*)";}',
+         'GRID_STAT_CLIMO_STDEV_USE_OBS': 'TRUE'},
+        {
+            'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {field = [{name="CLM_NAME"; level="(0,0,*,*)";}];}'}),
+        # use fcst no other climo_stdev
+        ({'GRID_STAT_CLIMO_STDEV_USE_FCST': 'TRUE'},
+         {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = fcst;'}),
+        # use obs no other climo_stdev
+        ({'GRID_STAT_CLIMO_STDEV_USE_OBS': 'TRUE'},
+         {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = obs;'}),
+        # use fcst with other climo_stdev
+        ({'GRID_STAT_CLIMO_STDEV_REGRID_METHOD': 'NEAREST',
+          'GRID_STAT_CLIMO_STDEV_USE_FCST': 'TRUE'},
+         {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {method = NEAREST;}}climo_stdev = fcst;'}),
+        # use obs with other climo_stdev
+        ({'GRID_STAT_CLIMO_STDEV_REGRID_METHOD': 'NEAREST',
+          'GRID_STAT_CLIMO_STDEV_USE_OBS': 'TRUE'},
+         {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {method = NEAREST;}}climo_stdev = obs;'}),
 
         ({'GRID_STAT_GRID_WEIGHT_FLAG': 'COS_LAT', },
          {'METPLUS_GRID_WEIGHT_FLAG': 'grid_weight_flag = COS_LAT;'}),

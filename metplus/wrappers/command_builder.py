@@ -1537,6 +1537,9 @@ class CommandBuilder:
 
             self.add_met_config_dict(dict_name, items)
 
+            # handle use_fcst or use_obs options for setting field list
+            self.climo_use_fcst_or_obs_fields(dict_name)
+
             # handle deprecated env vars CLIMO_MEAN_FILE and CLIMO_STDEV_FILE
             # that are used by pre v4.0.0 wrapped MET config files
             env_var_name = f'METPLUS_{dict_name.upper()}_DICT'
@@ -1595,6 +1598,38 @@ class CommandBuilder:
             template_list_string = ','.join(template_list)
 
         self.config.set('config', f'{prefix}FILE_NAME', template_list_string)
+
+    def climo_use_fcst_or_obs_fields(self, dict_name):
+        """! If climo field is not explicitly set, check if config is set
+         to use forecast or observation fields.
+
+         @param dict_name name of climo to check: climo_mean or climo_stdev
+        """
+        # if {APP}_CLIMO_[MEAN/STDEV]_FIELD is set, do nothing
+        field_conf = f'{self.app_name}_{dict_name}_FIELD'.upper()
+        if self.config.has_option('config', field_conf):
+            return
+
+        use_fcst_conf = f'{self.app_name}_{dict_name}_USE_FCST'.upper()
+        use_obs_conf = f'{self.app_name}_{dict_name}_USE_OBS'.upper()
+
+        use_fcst = self.config.getbool('config', use_fcst_conf, False)
+        use_obs = self.config.getbool('config', use_obs_conf, False)
+
+        # if both are set, report an error
+        if use_fcst and use_obs:
+            self.log_error(f'Cannot set both {use_fcst_conf} and '
+                           f'{use_obs_conf} in config.')
+            return
+
+        # if neither are set, do nothing
+        if not use_fcst and not use_obs:
+            return
+
+        env_var_name = f'METPLUS_{dict_name.upper()}_DICT'
+        rvalue = 'fcst' if use_fcst else 'obs'
+
+        self.env_var_dict[env_var_name] += f'{dict_name} = {rvalue};'
 
     def get_wrapper_or_generic_config(self, generic_config_name):
         """! Check for config variable with <APP_NAME>_ prepended first. If set
