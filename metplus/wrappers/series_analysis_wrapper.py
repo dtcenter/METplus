@@ -371,8 +371,14 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                 "map_data={ source=[];}"
             )
 
+        instance = 'plot_data_plane_sa'
+        if not self.config.has_section(instance):
+            self.config.add_section(instance)
+        for key, value in plot_overrides.items():
+            self.config.set(instance, key, value)
+
         pdp_wrapper = PlotDataPlaneWrapper(self.config,
-                                           config_overrides=plot_overrides)
+                                           instance=instance)
         return pdp_wrapper
 
     def clear(self):
