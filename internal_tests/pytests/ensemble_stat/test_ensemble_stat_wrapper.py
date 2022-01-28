@@ -553,6 +553,9 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
         ({'ENSEMBLE_STAT_CONTROL_ID': '0', },
          {'METPLUS_CONTROL_ID': 'control_id = "0";'}),
 
+        ({'ENSEMBLE_STAT_GRID_WEIGHT_FLAG': 'COS_LAT', },
+         {'METPLUS_GRID_WEIGHT_FLAG': 'grid_weight_flag = COS_LAT;'}),
+
     ]
 )
 def test_ensemble_stat_single_field(metplus_config, config_overrides,

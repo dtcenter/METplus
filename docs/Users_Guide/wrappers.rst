@@ -285,6 +285,7 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_MET_CONFIG_OVERRIDES`
 | :term:`ENSEMBLE_STAT_ENS_MEMBER_IDS`
 | :term:`ENSEMBLE_STAT_CONTROL_ID`
+| :term:`ENSEMBLE_STAT_GRID_WEIGHT_FLAG`
 | :term:`ENSEMBLE_STAT_VERIFICATION_MASK_TEMPLATE` (optional)
 | :term:`ENS_VAR<n>_NAME` (optional)
 | :term:`ENS_VAR<n>_LEVELS` (optional)
@@ -893,6 +894,18 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`ENSEMBLE_STAT_MET_CONFIG_OVERRIDES`
      - n/a
+
+**${METPLUS_GRID_WEIGHT_FLAG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_GRID_WEIGHT_FLAG`
+     - grid_weight_flag
+
 
 .. _example_wrapper:
 
