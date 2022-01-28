@@ -8760,6 +8760,11 @@ METplus Configuration Glossary
 
      | *Used by:*  EnsembleStat
 
+   ENSEMBLE_STAT_GRID_WEIGHT_FLAG
+     Specify the value for 'grid_weight_flag' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
    FCST_PCP_COMBINE_USE_ZERO_ACCUM
      Only used if running PCPCombine wrapper with
      :term:`FCST_PCP_COMBINE_METHOD` = SUBTRACT. If True, build a -subtract

@@ -66,6 +66,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'METPLUS_OBS_QUALITY_EXC',
         'METPLUS_ENS_MEMBER_IDS',
         'METPLUS_CONTROL_ID',
+        'METPLUS_GRID_WEIGHT_FLAG',
     ]
 
     # handle deprecated env vars used pre v4.0.0
@@ -329,6 +330,11 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         self.add_met_config(name='control_id',
                             data_type='string')
+
+        self.add_met_config(name='grid_weight_flag',
+                            data_type='string',
+                            extra_args={'remove_quotes': True,
+                                        'uppercase': True})
 
         # old method of setting MET config values
         c_dict['ENS_THRESH'] = (
