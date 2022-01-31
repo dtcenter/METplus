@@ -189,8 +189,13 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['FCST_INPUT_TEMPLATE'] = (
             self.config.getraw('config', 'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE')
         )
-        if not c_dict['FCST_INPUT_TEMPLATE']:
-            self.log_error("Must set FCST_ENSEMBLE_STAT_INPUT_TEMPLATE")
+        c_dict['FCST_INPUT_FILE_LIST'] = (
+            self.config.getraw('config', 'FCST_ENSEMBLE_STAT_INPUT_FILE_LIST')
+        )
+        if (not c_dict['FCST_INPUT_TEMPLATE'] and
+                not c_dict['FCST_INPUT_FILE_LIST']):
+            self.log_error("Must set FCST_ENSEMBLE_STAT_INPUT_TEMPLATE or "
+                           "FCST_ENSEMBLE_STAT_INPUT_FILE_LIST")
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('ENSEMBLE_STAT_OUTPUT_DIR',
                                                   '')
