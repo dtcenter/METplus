@@ -674,8 +674,16 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
             fcst_path = do_string_sub(self.c_dict['FCST_INPUT_FILE_LIST'],
                                       **time_info)
+            if not os.path.exists(fcst_path):
+                self.log_error(f'Could not find forecast file: {fcst_path}')
+                fcst_path = None
+
             obs_path = do_string_sub(self.c_dict['OBS_INPUT_FILE_LIST'],
                                      **time_info)
+            if not os.path.exists(obs_path):
+                self.log_error(f'Could not find observation file: {obs_path}')
+                obs_path = None
+
             return fcst_path, obs_path
 
         all_fcst_files = []
