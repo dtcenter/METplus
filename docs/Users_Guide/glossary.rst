@@ -3649,6 +3649,20 @@ METplus Configuration Glossary
 
      | *Used by:*  SeriesAnalysis
 
+   BOTH_SERIES_ANALYSIS_INPUT_DIR
+     Specify the directory to read forecast and observation input from the
+     same file in SeriesAnalysis.
+     See also :term:`BOTH_SERIES_ANALYSIS_INPUT_TEMPLATE`
+
+     | *Used by:*  SeriesAnalysis
+
+   BOTH_SERIES_ANALYSIS_INPUT_TEMPLATE
+     Template to find forecast and observation input from the
+     same file in SeriesAnalysis.
+     See also :term:`BOTH_SERIES_ANALYSIS_INPUT_DIR`
+
+     | *Used by:*  SeriesAnalysis
+
    SERIES_ANALYSIS_OUTPUT_DIR
      Specify the directory where files will be written from the MET series analysis tool.
 
