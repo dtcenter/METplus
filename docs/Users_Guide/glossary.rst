@@ -9029,3 +9029,19 @@ METplus Configuration Glossary
      are ignored.
 
      | *Used by:* TCRMW
+
+   FCST_ENSEMBLE_STAT_INPUT_FILE_LIST
+     Specifies an explicit path to a file list file to pass ensembles into
+     ensemble_stat. If set,
+     :term:`FCST_ENSEMBLE_STAT_INPUT_TEMPLATE` and
+     :term:`FCST_ENSEMBLE_STAT_INPUT_DIR` are ignored.
+
+     | *Used by:* EnsembleStat
+
+   GEN_ENS_PROD_INPUT_FILE_LIST
+     Specifies an explicit path to a file list file to pass ensembles into
+     gen_ens_prod. If set,
+     :term:`GEN_ENS_PROD_INPUT_TEMPLATE` and
+     :term:`GEN_ENS_PROD_INPUT_DIR` are ignored.
+
+     | *Used by:* GenEnsProd
