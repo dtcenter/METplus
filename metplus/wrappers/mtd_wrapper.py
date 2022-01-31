@@ -100,6 +100,17 @@ class MTDWrapper(CompareGriddedWrapper):
                                'OBS_MTD_INPUT_TEMPLATE')
         )
 
+        c_dict['FCST_FILE_LIST'] = (
+            self.config.getraw('config',
+                               'FCST_MTD_INPUT_FILE_LIST')
+        )
+        c_dict['OBS_FILE_LIST'] = (
+            self.config.getraw('config',
+                               'OBS_MTD_INPUT_FILE_LIST')
+        )
+        if c_dict['FCST_FILE_LIST'] or c_dict['OBS_FILE_LIST']:
+            c_dict['EXPLICIT_FILE_LIST'] = True
+
         c_dict['FCST_IS_PROB'] = (
             self.config.getbool('config',
                                 'FCST_IS_PROB',
@@ -197,10 +208,6 @@ class MTDWrapper(CompareGriddedWrapper):
               Args:
                 @param input_dict dictionary containing timing information
         """        
-#        max_lookback = self.c_dict['MAX_LOOKBACK']
-#        file_interval = self.c_dict['FILE_INTERVAL']
-        lead_seq = util.get_lead_sequence(self.config, input_dict)
-
         var_list = util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
                                      input_dict)
 
@@ -222,9 +229,34 @@ class MTDWrapper(CompareGriddedWrapper):
 
         for var_info in var_list:
 
+            if self.c_dict.get('EXPLICIT_FILE_LIST', False):
+                time_info = time_util.ti_calculate(input_dict)
+                model_list_path = do_string_sub(self.c_dict['FCST_FILE_LIST'],
+                                                **time_info)
+                if not os.path.exists(model_list_path):
+                    self.log_error('FCST file list file does not exist: '
+                                   f'{model_list_path}')
+                    return None
+
+                obs_list_path = do_string_sub(self.c_dict['OBS_FILE_LIST'],
+                                              **time_info)
+                if not os.path.exists(obs_list_path):
+                    self.log_error('OBS file list file does not exist: '
+                                   f'{obs_list_path}')
+                    return None
+
+                arg_dict = {'obs_path': obs_list_path,
+                            'model_path': model_list_path}
+
+                self.process_fields_one_thresh(time_info, var_info, **arg_dict)
+                continue
+
             model_list = []
             obs_list = []
+
             # find files for each forecast lead time
+            lead_seq = util.get_lead_sequence(self.config, input_dict)
+
             tasks = []
             for lead in lead_seq:
                 input_dict['lead'] = lead
@@ -288,36 +320,50 @@ class MTDWrapper(CompareGriddedWrapper):
         single_list = []
 
         data_src = self.c_dict.get('SINGLE_DATA_SRC')
-        if data_src == 'OBS':
-            find_method = self.find_obs
+
+        if self.c_dict.get('EXPLICIT_FILE_LIST', False):
+            time_info = time_util.ti_calculate(input_dict)
+            single_list_path = do_string_sub(
+                self.c_dict[f'{data_src}_FILE_LIST'],
+                **time_info
+            )
+            if not os.path.exists(single_list_path):
+                self.log_error(f'{data_src} file list file does not exist: '
+                               f'{single_list_path}')
+                return None
+
         else:
-            find_method = self.find_model
+            if data_src == 'OBS':
+                find_method = self.find_obs
+            else:
+                find_method = self.find_model
 
-        lead_seq = util.get_lead_sequence(self.config, input_dict)
-        for lead in lead_seq:
-            input_dict['lead'] = lead
-            current_task = time_util.ti_calculate(input_dict)
+            lead_seq = util.get_lead_sequence(self.config, input_dict)
+            for lead in lead_seq:
+                input_dict['lead'] = lead
+                current_task = time_util.ti_calculate(input_dict)
 
-            single_file = find_method(current_task, var_info)
-            if single_file is None:
-                continue
+                single_file = find_method(current_task, var_info)
+                if single_file is None:
+                    continue
 
-            single_list.append(single_file)
+                single_list.append(single_file)
 
-        if len(single_list) == 0:
-            return
+            if len(single_list) == 0:
+                return
 
-        # write ascii file with list of files to process
-        input_dict['lead'] = lead_seq[0]
-        time_info = time_util.ti_calculate(input_dict)
-        file_ext = self.check_for_python_embedding(data_src, var_info)
-        if not file_ext:
-            return
+            # write ascii file with list of files to process
+            input_dict['lead'] = lead_seq[0]
+            time_info = time_util.ti_calculate(input_dict)
+            file_ext = self.check_for_python_embedding(data_src, var_info)
+            if not file_ext:
+                return
 
-        single_outfile = (
-                f"{time_info['valid_fmt']}_mtd_single_{file_ext}.txt"
-        )
-        single_list_path = self.write_list_file(single_outfile, single_list)
+            single_outfile = (
+                    f"{time_info['valid_fmt']}_mtd_single_{file_ext}.txt"
+            )
+            single_list_path = self.write_list_file(single_outfile,
+                                                    single_list)
 
         arg_dict = {}
         if data_src == 'OBS':
