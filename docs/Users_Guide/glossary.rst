@@ -8960,3 +8960,33 @@ METplus Configuration Glossary
      See also :term:`SERIES_ANALYSIS_CLIMO_STDEV_USE_FCST`.
 
      | *Used by:* SeriesAnalysis
+
+   FCST_SERIES_ANALYSIS_INPUT_FILE_LIST
+     Specifies an explicit path to a file list file to pass into
+     series_analysis with the -fcst argument. If set,
+     :term:`OBS_SERIES_ANALYSIS_INPUT_FILE_LIST` must also be set and
+     :term:`FCST_SERIES_ANALYSIS_INPUT_TEMPLATE` and
+     :term:`FCST_SERIES_ANALYSIS_INPUT_DIR` are ignored.
+     See also :term:`BOTH_SERIES_ANALYSIS_INPUT_FILE_LIST`.
+
+     | *Used by:* SeriesAnalysis
+
+   OBS_SERIES_ANALYSIS_INPUT_FILE_LIST
+     Specifies an explicit path to a file list file to pass into
+     series_analysis with the -fcst argument. If set,
+     :term:`FCST_SERIES_ANALYSIS_INPUT_FILE_LIST` must also be set and
+     :term:`OBS_SERIES_ANALYSIS_INPUT_TEMPLATE` and
+     :term:`OBS_SERIES_ANALYSIS_INPUT_DIR` are ignored.
+     See also :term:`BOTH_SERIES_ANALYSIS_INPUT_FILE_LIST`.
+
+     | *Used by:* SeriesAnalysis
+
+   BOTH_SERIES_ANALYSIS_INPUT_FILE_LIST
+     Specifies an explicit path to a file list file to pass into
+     series_analysis with the -both argument. If set,
+     :term:`BOTH_SERIES_ANALYSIS_INPUT_TEMPLATE` and
+     :term:`BOTH_SERIES_ANALYSIS_INPUT_DIR` are ignored.
+     See also :term:`FCST_SERIES_ANALYSIS_INPUT_FILE_LIST` and
+     :term:`OBS_SERIES_ANALYSIS_INPUT_FILE_LIST`.
+
+     | *Used by:* SeriesAnalysis
