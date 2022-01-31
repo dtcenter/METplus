@@ -464,9 +464,9 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         for storm_id in storm_list:
             # Create FCST and OBS ASCII files
             fcst_path, obs_path = (
-                self._create_ascii_storm_files_list(time_info,
-                                                    storm_id,
-                                                    lead_group)
+                self._get_fcst_and_obs_path(time_info,
+                                            storm_id,
+                                            lead_group)
             )
             if not fcst_path or not obs_path:
                 self.log_error('No ASCII file lists were created. Skipping.')
@@ -611,7 +611,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         return bool(filetime['storm_id'] == runtime['storm_id'])
 
-    def _create_ascii_storm_files_list(self, time_info, storm_id, lead_group):
+    def _get_fcst_and_obs_path(self, time_info, storm_id, lead_group):
         """! Creates the list of ASCII files that contain the storm id and init
              times.  The list is used to create an ASCII file which will be
              used as the option to the -obs or -fcst flag to the MET
