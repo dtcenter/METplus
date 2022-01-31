@@ -233,6 +233,7 @@ class MTDWrapper(CompareGriddedWrapper):
                 time_info = time_util.ti_calculate(input_dict)
                 model_list_path = do_string_sub(self.c_dict['FCST_FILE_LIST'],
                                                 **time_info)
+                self.logger.debug(f"Explicit FCST file: {model_list_path}")
                 if not os.path.exists(model_list_path):
                     self.log_error('FCST file list file does not exist: '
                                    f'{model_list_path}')
@@ -240,6 +241,7 @@ class MTDWrapper(CompareGriddedWrapper):
 
                 obs_list_path = do_string_sub(self.c_dict['OBS_FILE_LIST'],
                                               **time_info)
+                self.logger.debug(f"Explicit OBS file: {obs_list_path}")
                 if not os.path.exists(obs_list_path):
                     self.log_error('OBS file list file does not exist: '
                                    f'{obs_list_path}')
@@ -327,6 +329,7 @@ class MTDWrapper(CompareGriddedWrapper):
                 self.c_dict[f'{data_src}_FILE_LIST'],
                 **time_info
             )
+            self.logger.debug(f"Explicit file list: {single_list_path}")
             if not os.path.exists(single_list_path):
                 self.log_error(f'{data_src} file list file does not exist: '
                                f'{single_list_path}')
