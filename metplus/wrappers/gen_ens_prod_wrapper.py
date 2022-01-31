@@ -77,8 +77,8 @@ class GenEnsProdWrapper(LoopTimesWrapper):
             self.config.getraw('config', 'GEN_ENS_PROD_INPUT_FILE_LIST')
         )
 
-        if (not c_dict['FCST_INPUT_TEMPLATE'] or
-                c_dict['FCST_INPUT_FILE_LIST']):
+        if (not c_dict['FCST_INPUT_TEMPLATE'] and
+                not c_dict['FCST_INPUT_FILE_LIST']):
             self.log_error('GEN_ENS_PROD_INPUT_TEMPLATE or '
                            'GEN_ENS_PROD_INPUT_FILE_LIST must be set')
 
