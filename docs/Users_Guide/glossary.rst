@@ -9004,3 +9004,21 @@ METplus Configuration Glossary
      :term:`OBS_SERIES_ANALYSIS_INPUT_FILE_LIST`.
 
      | *Used by:* SeriesAnalysis
+
+   FCST_MTD_INPUT_FILE_LIST
+     Specifies an explicit path to a file list file to pass into
+     mtd with the -fcst or -single argument. If set,
+     :term:`FCST_MTD_INPUT_TEMPLATE` and
+     :term:`FCST_MTD_INPUT_DIR` are ignored.
+     See also :term:`OBS_MTD_INPUT_FILE_LIST`.
+
+     | *Used by:* MTD
+
+   OBS_MTD_INPUT_FILE_LIST
+     Specifies an explicit path to a file list file to pass into
+     mtd with the -obs or -single argument. If set,
+     :term:`OBS_MTD_INPUT_TEMPLATE` and
+     :term:`OBS_MTD_INPUT_DIR` are ignored.
+     See also :term:`FCST_MTD_INPUT_FILE_LIST`.
+
+     | *Used by:* MTD

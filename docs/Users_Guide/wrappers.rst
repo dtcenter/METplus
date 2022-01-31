@@ -4598,6 +4598,8 @@ METplus Configuration
 | :term:`MTD_OUTPUT_DIR`
 | :term:`FCST_MTD_INPUT_TEMPLATE`
 | :term:`OBS_MTD_INPUT_TEMPLATE`
+| :term:`FCST_MTD_INPUT_FILE_LIST`
+| :term:`OBS_MTD_INPUT_FILE_LIST`
 | :term:`MTD_OUTPUT_TEMPLATE`
 | :term:`MTD_CONFIG_FILE`
 | :term:`MTD_MIN_VOLUME`
