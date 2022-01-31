@@ -172,14 +172,14 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
           self.config.getdir('OBS_ENSEMBLE_STAT_POINT_INPUT_DIR', '')
 
         c_dict['OBS_POINT_INPUT_TEMPLATE'] = \
-          self.config.getraw('filename_templates',
+          self.config.getraw('config',
                              'OBS_ENSEMBLE_STAT_POINT_INPUT_TEMPLATE')
 
         c_dict['OBS_GRID_INPUT_DIR'] = \
           self.config.getdir('OBS_ENSEMBLE_STAT_GRID_INPUT_DIR', '')
 
         c_dict['OBS_GRID_INPUT_TEMPLATE'] = \
-          self.config.getraw('filename_templates',
+          self.config.getraw('config',
                              'OBS_ENSEMBLE_STAT_GRID_INPUT_TEMPLATE')
 
         # The ensemble forecast files input directory and filename templates
@@ -527,7 +527,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             msg = 'Found more files than expected! ' +\
                   'Found {} expected {}. '.format(len(ens_members_path),
                                                   self.c_dict['N_MEMBERS']) +\
-                  'Adjust wildcard expression in [filename_templates] '+\
+                  'Adjust wildcard expression in [config] '+\
                   'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE or adjust [config] '+\
                   'ENSEMBLE_STAT_N_MEMBERS. Files found: {}'.format(ens_members_path)
             self.log_error(msg)
