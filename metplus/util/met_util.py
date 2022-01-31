@@ -1052,14 +1052,6 @@ def split_level(level):
 
     return '', ''
 
-def remove_quotes(input_string):
-    """!Remove quotes from string"""
-    if not input_string:
-        return ''
-
-    # strip off double and single quotes
-    return input_string.strip('"').strip("'")
-
 def get_filetype(filepath, logger=None):
     """!This function determines if the filepath is a NETCDF or GRIB file
        based on the first eight bytes of the file.

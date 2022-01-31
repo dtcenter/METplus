@@ -23,7 +23,7 @@ from produtil.config import ProdConfig
 from . import met_util as util
 from .string_template_substitution import get_tags, do_string_sub
 from .met_util import is_python_script, format_var_items
-from .string_manip import getlist
+from .string_manip import getlist, remove_quotes
 from .doc_util import get_wrapper_name
 
 """!Creates the initial METplus directory structure,
@@ -793,7 +793,7 @@ class METplusConfig(ProdConfig):
                 return False
 
             # check if value is y/Y/n/N and return True/False if so
-            value_string = util.remove_quotes(value_string)
+            value_string = remove_quotes(value_string)
             if value_string.lower() == 'y':
                 return True
             if value_string.lower() == 'n':

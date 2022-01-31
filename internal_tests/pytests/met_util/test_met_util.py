@@ -12,18 +12,6 @@ from metplus.util import time_util
 from metplus.util.config_metplus import parse_var_list
 
 @pytest.mark.parametrize(
-    'before, after', [
-        ('string', 'string'),
-        ('"string"', 'string'),
-        ('', ''),
-        ('""', ''),
-        (None, ''),
-    ]
-)
-def test_remove_quotes(before, after):
-    assert(util.remove_quotes(before) == after)
-
-@pytest.mark.parametrize(
     'key, value', [
         ({"gt2.3", "gt5.5"}, True),
         ({"ge2.3", "ge5.5"}, True),
