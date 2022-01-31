@@ -17,6 +17,7 @@ from ..util import time_util
 from ..util import do_string_sub
 from ..util import parse_var_list
 from ..util import get_process_list
+from ..util import remove_quotes
 from . import ReformatGriddedWrapper
 
 # pylint:disable=pointless-string-statement
@@ -381,7 +382,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
         field_name = field_info[f'{data_type.lower()}_name']
         # strip off quotes around input_level if found
-        input_level = util.remove_quotes(field_info[f'{data_type.lower()}_level'])
+        input_level = remove_quotes(field_info[f'{data_type.lower()}_level'])
 
         field_text = f"-field 'name=\"{field_name}\";"
 
