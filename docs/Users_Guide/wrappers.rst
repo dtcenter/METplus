@@ -7901,6 +7901,7 @@ METplus Configuration
 | :term:`TC_RMW_OUTPUT_DIR`
 | :term:`TC_RMW_DECK_TEMPLATE`
 | :term:`TC_RMW_INPUT_TEMPLATE`
+| :term:`TC_RMW_INPUT_FILE_LIST`
 | :term:`TC_RMW_OUTPUT_TEMPLATE`
 | :term:`LOG_TC_RMW_VERBOSITY`
 | :term:`TC_RMW_CONFIG_FILE`

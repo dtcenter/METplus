@@ -9022,3 +9022,10 @@ METplus Configuration Glossary
      See also :term:`FCST_MTD_INPUT_FILE_LIST`.
 
      | *Used by:* MTD
+
+   TC_RMW_INPUT_FILE_LIST
+     Specifies an explicit path to a file list file to pass into tc_rmw.
+     If set, :term:`TC_RMW_INPUT_TEMPLATE` and :term:`TC_RMW_INPUT_DIR`
+     are ignored.
+
+     | *Used by:* TCRMW
