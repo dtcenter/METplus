@@ -2695,7 +2695,7 @@ METplus Configuration Glossary
      | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PB2NC, PointStat
 
    OBS_FILE_WINDOW_END
-     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds.This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if :term:`OBS_GRID_STAT_WINDOW_END` is set, the GridStat wrapper will use that value. If :term:`PB2NC_WINDOW_END` is not set, then the PB2NC wrapper will use :term:`OBS_WINDOW_END`. A corresponding variable exists for forecast data called :term:`FCST_FILE_WINDOW_END`.
+     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds.This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if :term:`OBS_GRID_STAT_FILE_WINDOW_END` is set, the GridStat wrapper will use that value. If :term:`PB2NC_FILE_WINDOW_END` is not set, then the PB2NC wrapper will use :term:`OBS_FILE_WINDOW_END`. A corresponding variable exists for forecast data called :term:`FCST_FILE_WINDOW_END`.
 
      | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PB2NC, PointStat
 
@@ -3173,12 +3173,12 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`OBS_WINDOW_BEGIN`.
 
    OBS_WINDOW_BEGIN
-     Passed to the MET config file to determine the range of data within a file that should be used for processing.Units are seconds. This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if :term:`OBS_POINT_STAT_WINDOW_BEGIN` is set, the PointStat wrapper will use that value. If :term:`PB2NC_WINDOW_BEGIN` is not set, then the PB2NC wrapper will use :term:`OBS_WINDOW_BEGIN`. A corresponding variable exists for forecast data called :term:`FCST_WINDOW_BEGIN`.
+     Passed to the MET config file to determine the range of data within a file that should be used for processing.Units are seconds. This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if :term:`OBS_POINT_STAT_WINDOW_BEGIN` is set, the PointStat wrapper will use that value. If :term:`PB2NC_OBS_WINDOW_BEGIN` is not set, then the PB2NC wrapper will use :term:`OBS_WINDOW_BEGIN`. A corresponding variable exists for forecast data called :term:`FCST_WINDOW_BEGIN`.
 
      | *Used by:*  PB2NC, PointStat
 
    OBS_WINDOW_END
-     Passed to the MET config file to determine the range of data within a file that should be used for processing.Units are seconds. This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if :term:`OBS_POINT_STAT_WINDOW_END` is set, the PointStat wrapper will use that value. If :term:`PB2NC_WINDOW_END` is not set, then the PB2NC wrapper will use :term:`OBS_WINDOW_END`. A corresponding variable exists for forecast data called :term:`FCST_WINDOW_END`.
+     Passed to the MET config file to determine the range of data within a file that should be used for processing.Units are seconds. This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if :term:`OBS_POINT_STAT_WINDOW_END` is set, the PointStat wrapper will use that value. If :term:`PB2NC_OBS_WINDOW_END` is not set, then the PB2NC wrapper will use :term:`OBS_WINDOW_END`. A corresponding variable exists for forecast data called :term:`FCST_WINDOW_END`.
 
      | *Used by:*  PB2NC, PointStat
 
@@ -3317,12 +3317,12 @@ METplus Configuration Glossary
 
      | *Used by:*  PB2NC
 
-   PB2NC_WINDOW_BEGIN
+   PB2NC_OBS_WINDOW_BEGIN
      Passed to the pb2nc MET config file to determine the range of data within a file that should be used for processing.Units are seconds. If the variable is not set, pb2nc will use :term:`OBS_WINDOW_BEGIN`.
 
      | *Used by:*  PB2NC
 
-   PB2NC_WINDOW_END
+   PB2NC_OBS_WINDOW_END
      Passed to the pb2nc MET config file to determine the range of data within a file that should be used for processing. Units are seconds. If the variable is not set, pb2nc will use :term:`OBS_WINDOW_END`.
 
      | *Used by:*  PB2NC
