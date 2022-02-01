@@ -55,6 +55,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         'METPLUS_HSS_EC_VALUE',
         'METPLUS_FCST_CAT_THRESH',
         'METPLUS_OBS_CAT_THRESH',
+        'METPLUS_CLIMO_CDF_DICT',
     ]
 
     # handle deprecated env vars used pre v4.0.0
@@ -365,6 +366,9 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         # get climatology config variables
         self.handle_climo_dict()
+
+        # get climo_cdf dictionary
+        self.handle_climo_cdf_dict(write_bins=False)
 
         self.add_met_config(name='hss_ec_value',
                             data_type='float',

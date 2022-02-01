@@ -5445,6 +5445,11 @@ METplus Configuration Glossary
 
      | *Used by:*  EnsembleStat
 
+   ENSEMBLE_STAT_CLIMO_CDF_DIRECT_PROB
+     Specify the value for 'climo_cdf.direct_prob' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
    ENSEMBLE_STAT_DUPLICATE_FLAG
      Specify the value for 'duplicate_flag' in the MET configuration file for EnsembleStat.
 
@@ -6266,6 +6271,11 @@ METplus Configuration Glossary
 
      | *Used by:* GridStat
 
+   GRID_STAT_CLIMO_CDF_DIRECT_PROB
+     Specify the value for 'climo_cdf.direct_prob' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
    POINT_STAT_CLIMO_CDF_CDF_BINS
      See :term:`POINT_STAT_CLIMO_CDF_BINS`
 
@@ -6281,6 +6291,11 @@ METplus Configuration Glossary
 
    POINT_STAT_CLIMO_CDF_WRITE_BINS
      Specify the value for 'climo_cdf.write_bins' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_CDF_DIRECT_PROB
+     Specify the value for 'climo_cdf.direct_prob' in the MET configuration file for PointStat.
 
      | *Used by:* PointStat
 
@@ -9045,3 +9060,18 @@ METplus Configuration Glossary
      :term:`GEN_ENS_PROD_INPUT_DIR` are ignored.
 
      | *Used by:* GenEnsProd
+
+   SERIES_ANALYSIS_CLIMO_CDF_BINS
+     Specify the value for 'climo_cdf.cdf_bins' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_CDF_CENTER_BINS
+     Specify the value for 'climo_cdf.center_bins' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_CDF_DIRECT_PROB
+     Specify the value for 'climo_cdf.direct_prob' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
