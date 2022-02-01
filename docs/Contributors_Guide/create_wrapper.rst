@@ -96,13 +96,11 @@ If the application is a MET tool, then set self.app_path to the full path
 of the tool under **MET_BIN_DIR**.
 See the Basic Components :ref:`bc_init_function` section for more information::
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         self.app_name = 'new_tool'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
 Read Configuration Variables
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^

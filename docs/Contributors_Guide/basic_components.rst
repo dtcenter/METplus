@@ -33,13 +33,11 @@ executable, relative to MET_BIN_DIR.
 The init function also calls the parent's initialization function
 using super() function::
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         self.app_name = "ascii2nc"
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
 The above code block is an excerpt from the ASCII2NCWrapper,
 found in metplus/wrappers/ascii2nc_wrapper.py.
