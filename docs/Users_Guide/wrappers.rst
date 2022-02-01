@@ -2941,9 +2941,9 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`PB2NC_WINDOW_BEGIN`
+   * - :term:`PB2NC_OBS_WINDOW_BEGIN`
      - obs_window.beg
-   * - :term:`PB2NC_WINDOW_END`
+   * - :term:`PB2NC_OBS_WINDOW_END`
      - obs_window.end
 
 **${METPLUS_MASK_DICT}**
