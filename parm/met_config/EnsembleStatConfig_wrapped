@@ -53,6 +53,12 @@ ens = {
    ${METPLUS_ENS_FIELD}
 }
 
+//ens_member_ids =
+${METPLUS_ENS_MEMBER_IDS}
+
+//control_id =
+${METPLUS_CONTROL_ID}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 //
@@ -217,7 +223,9 @@ rng = {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-grid_weight_flag = NONE;
+//grid_weight_flag =
+${METPLUS_GRID_WEIGHT_FLAG}
+
 ${METPLUS_OUTPUT_PREFIX}
 //version          = "V9.0";
 

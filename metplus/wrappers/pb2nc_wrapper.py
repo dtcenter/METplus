@@ -13,6 +13,7 @@ Condition codes: 0 for success, 1 for failure
 import os
 import re
 
+from ..util import getlistint
 from ..util import met_util as util
 from ..util import time_util
 from ..util import do_string_sub
@@ -34,15 +35,15 @@ class PB2NCWrapper(CommandBuilder):
         'METPLUS_LEVEL_RANGE_DICT',
         'METPLUS_LEVEL_CATEGORY',
         'METPLUS_QUALITY_MARK_THRESH',
+        'METPLUS_OBS_BUFR_MAP',
+        'METPLUS_OBS_PREPBUFR_MAP',
     ]
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         self.app_name = 'pb2nc'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
     def create_c_dict(self):
         """! Create a data structure (dictionary) that contains all the
@@ -60,9 +61,9 @@ class PB2NCWrapper(CommandBuilder):
                                                  'LOG_PB2NC_VERBOSITY',
                                                  c_dict['VERBOSITY'])
 
-        c_dict['OFFSETS'] = util.getlistint(self.config.getstr('config',
-                                                               'PB2NC_OFFSETS',
-                                                               '0'))
+        c_dict['OFFSETS'] = getlistint(self.config.getstr('config',
+                                                          'PB2NC_OFFSETS',
+                                                          '0'))
 
         # Directories
         # these are optional because users can specify full file path
@@ -185,6 +186,14 @@ class PB2NCWrapper(CommandBuilder):
         self.add_met_config(name='quality_mark_thresh',
                             data_type='int',
                             metplus_configs=['PB2NC_QUALITY_MARK_THRESH'])
+
+        self.add_met_config(name='obs_bufr_map',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
+
+        self.add_met_config(name='obs_prepbufr_map',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
 
         return c_dict
 

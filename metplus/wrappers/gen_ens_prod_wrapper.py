@@ -30,6 +30,8 @@ class GenEnsProdWrapper(LoopTimesWrapper):
         'METPLUS_CLIMO_MEAN_DICT',
         'METPLUS_CLIMO_STDEV_DICT',
         'METPLUS_ENSEMBLE_FLAG_DICT',
+        'METPLUS_ENS_MEMBER_IDS',
+        'METPLUS_CONTROL_ID',
     ]
 
     ENSEMBLE_FLAGS = [
@@ -49,13 +51,11 @@ class GenEnsProdWrapper(LoopTimesWrapper):
         'weight',
     ]
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         self.app_name = 'gen_ens_prod'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR'),
                                      self.app_name)
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -199,6 +199,12 @@ class GenEnsProdWrapper(LoopTimesWrapper):
 
         self.handle_flags('ENSEMBLE')
 
+        self.add_met_config(name='ens_member_ids',
+                            data_type='list')
+
+        self.add_met_config(name='control_id',
+                            data_type='string')
+
         c_dict['ALLOW_MULTIPLE_FILES'] = True
 
         return c_dict
@@ -257,5 +263,6 @@ class GenEnsProdWrapper(LoopTimesWrapper):
            @return command to run
         """
         return (f"{self.app_path} -v {self.c_dict['VERBOSITY']}"
-                f" -ens {self.infiles[0]} -out {self.get_output_path()}"
+                f" -ens {self.infiles[0]}"
+                f" -out {self.get_output_path()}"
                 f" {' '.join(self.args)}")

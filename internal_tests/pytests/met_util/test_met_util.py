@@ -4,25 +4,12 @@ import sys
 import datetime
 import os
 from dateutil.relativedelta import relativedelta
-from csv import reader
 import pprint
 import pytest
 
 from metplus.util import met_util as util
 from metplus.util import time_util
 from metplus.util.config_metplus import parse_var_list
-
-@pytest.mark.parametrize(
-    'before, after', [
-        ('string', 'string'),
-        ('"string"', 'string'),
-        ('', ''),
-        ('""', ''),
-        (None, ''),
-    ]
-)
-def test_remove_quotes(before, after):
-    assert(util.remove_quotes(before) == after)
 
 @pytest.mark.parametrize(
     'key, value', [
@@ -153,31 +140,6 @@ def test_preprocess_file_options(metplus_config,
     result = util.preprocess_file(filename, data_type, config, allow_dir)
     assert(result == expected)
 
-def test_getlist():
-    l = 'gt2.7, >3.6, eq42'
-    test_list = util.getlist(l)
-    assert(test_list == ['gt2.7', '>3.6', 'eq42'])
-
-def test_getlist_int():
-    l = '6, 7, 42'
-    test_list = util.getlistint(l)
-    assert(test_list == [6, 7, 42])
-
-def test_getlist_float():
-    l = '6.2, 7.8, 42.0'
-    test_list = util.getlistfloat(l)
-    assert(test_list == [6.2, 7.8, 42.0])
-
-def test_getlist_has_commas():
-    l = 'gt2.7, >3.6, eq42, "has,commas,in,it"'
-    test_list = util.getlist(l)
-    assert(test_list == ['gt2.7', '>3.6', 'eq42', 'has,commas,in,it'])
-
-def test_getlist_empty():
-    l = ''
-    test_list = util.getlist(l)
-    assert(test_list == [])
-
 def test_get_lead_sequence_lead(metplus_config):
     input_dict = {'valid': datetime.datetime(2019, 2, 1, 13)}
     conf = metplus_config()
@@ -264,64 +226,6 @@ def test_get_lead_sequence_groups(metplus_config, config_dict, expected_list):
     assert(hour_seq == expected_list)
 
 @pytest.mark.parametrize(
-    'list_string, output_list', [
-        ('begin_end_incr(3,12,3)',
-         ['3', '6', '9', '12']),
-
-        ('1,2,3,4',
-         ['1', '2', '3', '4']),
-
-        (' 1,2,3,4',
-         ['1', '2', '3', '4']),
-
-        ('1,2,3,4 ',
-         ['1', '2', '3', '4']),
-
-        (' 1,2,3,4 ',
-         ['1', '2', '3', '4']),
-
-        ('1, 2,3,4',
-         ['1', '2', '3', '4']),
-
-        ('1,2, 3, 4',
-         ['1', '2', '3', '4']),
-
-        ('begin_end_incr( 3,12 , 3)',
-         ['3', '6', '9', '12']),
-
-        ('begin_end_incr(0,10,2)',
-         ['0', '2', '4', '6', '8', '10']),
-
-        ('begin_end_incr(10,0,-2)',
-         ['10', '8', '6', '4', '2', '0']),
-
-        ('begin_end_incr(2,2,20)',
-         ['2']),
-
-        ('begin_end_incr(0,2,1), begin_end_incr(3,9,3)',
-         ['0','1','2','3','6','9']),
-
-        ('mem_begin_end_incr(0,2,1), mem_begin_end_incr(3,9,3)',
-         ['mem_0','mem_1','mem_2','mem_3','mem_6','mem_9']),
-
-        ('mem_begin_end_incr(0,2,1,3), mem_begin_end_incr(3,12,3,3)',
-         ['mem_000', 'mem_001', 'mem_002', 'mem_003', 'mem_006', 'mem_009', 'mem_012']),
-
-        ('begin_end_incr(0,10,2)H, 12',  [ '0H', '2H', '4H', '6H', '8H', '10H', '12']),
-
-        ('begin_end_incr(0,10800,3600)S, 4H',  [ '0S', '3600S', '7200S', '10800S', '4H']),
-
-        ('data.{init?fmt=%Y%m%d%H?shift=begin_end_incr(0, 3, 3)H}.ext',
-         ['data.{init?fmt=%Y%m%d%H?shift=0H}.ext',
-          'data.{init?fmt=%Y%m%d%H?shift=3H}.ext',
-          ]),
-
-    ]
-)
-def test_getlist_begin_end_incr(list_string, output_list):
-    assert(util.getlist(list_string) == output_list)
-
-@pytest.mark.parametrize(
     'current_hour, lead_seq', [
         (0,  [0, 12, 24, 36]),
         (1,  [1, 13, 25]),
@@ -366,56 +270,6 @@ def test_get_lead_sequence_init_min_10(metplus_config):
     test_seq = util.get_lead_sequence(conf, input_dict)
     lead_seq = [12, 24]
     assert(test_seq == [relativedelta(hours=lead) for lead in lead_seq])
-
-@pytest.mark.parametrize(
-    'time_from_conf, fmt, is_datetime', [
-        ('', '%Y', False),
-        ('a', '%Y', False),
-        ('1987', '%Y', True),
-        ('1987', '%Y%m', False),
-        ('198702', '%Y%m', True),
-        ('198702', '%Y%m%d', False),
-        ('19870201', '%Y%m%d', True),
-        ('19870201', '%Y%m%d%H', False),
-        ('{now?fmt=%Y%m%d}', '%Y%m%d', True),
-        ('{now?fmt=%Y%m%d}', '%Y%m%d%H', True),
-        ('{now?fmt=%Y%m%d}00', '%Y%m%d%H', True),
-        ('{today}', '%Y%m%d', True),
-        ('{today}', '%Y%m%d%H', True),
-    ]
-)
-def test_get_time_obj(time_from_conf, fmt, is_datetime):
-    clock_time = datetime.datetime(2019, 12, 31, 15, 30)
-
-    time_obj = util.get_time_obj(time_from_conf, fmt, clock_time)
-
-    assert(isinstance(time_obj, datetime.datetime) == is_datetime)
-
-@pytest.mark.parametrize(
-     'list_str, expected_fixed_list', [
-         ('some,items,here', ['some',
-                              'items',
-                              'here']),
-         ('(*,*)', ['(*,*)']),
-        ("-type solar_alt -thresh 'ge45' -name solar_altitude_ge_45_mask -input_field 'name=\"TEC\"; level=\"(0,*,*)\"; file_type=NETCDF_NCCF;' -mask_field 'name=\"TEC\"; level=\"(0,*,*)\"; file_type=NETCDF_NCCF;\'",
-        ["-type solar_alt -thresh 'ge45' -name solar_altitude_ge_45_mask -input_field 'name=\"TEC\"; level=\"(0,*,*)\"; file_type=NETCDF_NCCF;' -mask_field 'name=\"TEC\"; level=\"(0,*,*)\"; file_type=NETCDF_NCCF;\'"]),
-        ("(*,*),'level=\"(0,*,*)\"' -censor_thresh [lt12.3,gt8.8],other", ['(*,*)',
-                                                                           "'level=\"(0,*,*)\"' -censor_thresh [lt12.3,gt8.8]",
-                                                                           'other']),
-     ]
-)
-def test_fix_list(list_str, expected_fixed_list):
-    item_list = list(reader([list_str]))[0]
-    fixed_list = util.fix_list(item_list)
-    print("FIXED LIST:")
-    for fixed in fixed_list:
-        print(f"ITEM: {fixed}")
-
-    print("EXPECTED LIST")
-    for expected in expected_fixed_list:
-        print(f"ITEM: {expected}")
-
-    assert(fixed_list == expected_fixed_list)
 
 @pytest.mark.parametrize(
     'camel, underscore', [

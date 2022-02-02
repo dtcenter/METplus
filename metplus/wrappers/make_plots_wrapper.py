@@ -18,6 +18,7 @@ import subprocess
 import datetime
 import itertools
 
+from ..util import getlist
 from ..util import met_util as util
 from ..util import parse_var_list
 from . import CommandBuilder
@@ -69,12 +70,10 @@ class MakePlotsWrapper(CommandBuilder):
         'VERIF_GRID', 'EVENT_EQUALIZATION', 'LOG_METPLUS', 'LOG_LEVEL'
     ]
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         self.app_path = 'python'
         self.app_name = 'make_plots'
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
         if WRAPPER_CANNOT_RUN:
             self.log_error(f"There was a problem importing modules: {EXCEPTION_ERR}\n")
@@ -115,56 +114,56 @@ class MakePlotsWrapper(CommandBuilder):
         c_dict['VALID_END'] = self.config.getstr('config', 'VALID_END', '')
         c_dict['INIT_BEG'] = self.config.getstr('config', 'INIT_BEG', '')
         c_dict['INIT_END'] = self.config.getstr('config', 'INIT_END', '')
-        c_dict['GROUP_LIST_ITEMS'] = util.getlist(
+        c_dict['GROUP_LIST_ITEMS'] = getlist(
             self.config.getstr('config', 'GROUP_LIST_ITEMS')
         )
-        c_dict['LOOP_LIST_ITEMS'] = util.getlist(
+        c_dict['LOOP_LIST_ITEMS'] = getlist(
             self.config.getstr('config', 'LOOP_LIST_ITEMS')
         )
         c_dict['VAR_LIST'] = parse_var_list(self.config)
-        c_dict['MODEL_LIST'] = util.getlist(
+        c_dict['MODEL_LIST'] = getlist(
             self.config.getstr('config', 'MODEL_LIST', '')
         )
-        c_dict['DESC_LIST'] = util.getlist(
+        c_dict['DESC_LIST'] = getlist(
             self.config.getstr('config', 'DESC_LIST', '')
         )
-        c_dict['FCST_LEAD_LIST'] = util.getlist(
+        c_dict['FCST_LEAD_LIST'] = getlist(
             self.config.getstr('config', 'FCST_LEAD_LIST', '')
         )
-        c_dict['OBS_LEAD_LIST'] = util.getlist(
+        c_dict['OBS_LEAD_LIST'] = getlist(
             self.config.getstr('config', 'OBS_LEAD_LIST', '')
         )
-        c_dict['FCST_VALID_HOUR_LIST'] = util.getlist(
+        c_dict['FCST_VALID_HOUR_LIST'] = getlist(
             self.config.getstr('config', 'FCST_VALID_HOUR_LIST', '')
         )
-        c_dict['FCST_INIT_HOUR_LIST'] = util.getlist(
+        c_dict['FCST_INIT_HOUR_LIST'] = getlist(
             self.config.getstr('config', 'FCST_INIT_HOUR_LIST', '')
         )
-        c_dict['OBS_VALID_HOUR_LIST'] = util.getlist(
+        c_dict['OBS_VALID_HOUR_LIST'] = getlist(
             self.config.getstr('config', 'OBS_VALID_HOUR_LIST', '')
         )
-        c_dict['OBS_INIT_HOUR_LIST'] = util.getlist(
+        c_dict['OBS_INIT_HOUR_LIST'] = getlist(
             self.config.getstr('config', 'OBS_INIT_HOUR_LIST', '')
         )
-        c_dict['VX_MASK_LIST'] = util.getlist(
+        c_dict['VX_MASK_LIST'] = getlist(
             self.config.getstr('config', 'VX_MASK_LIST', '')
         )
-        c_dict['INTERP_MTHD_LIST'] = util.getlist(
+        c_dict['INTERP_MTHD_LIST'] = getlist(
             self.config.getstr('config', 'INTERP_MTHD_LIST', '')
         )
-        c_dict['INTERP_PNTS_LIST'] = util.getlist(
+        c_dict['INTERP_PNTS_LIST'] = getlist(
             self.config.getstr('config', 'INTERP_PNTS_LIST', '')
         )
-        c_dict['COV_THRESH_LIST'] = util.getlist(
+        c_dict['COV_THRESH_LIST'] = getlist(
             self.config.getstr('config', 'COV_THRESH_LIST', '')
         )
-        c_dict['ALPHA_LIST'] = util.getlist(
+        c_dict['ALPHA_LIST'] = getlist(
             self.config.getstr('config', 'ALPHA_LIST', '')
         )
-        c_dict['LINE_TYPE_LIST'] = util.getlist(
+        c_dict['LINE_TYPE_LIST'] = getlist(
             self.config.getstr('config', 'LINE_TYPE_LIST', '')
         )
-        c_dict['USER_SCRIPT_LIST'] = util.getlist(
+        c_dict['USER_SCRIPT_LIST'] = getlist(
             self.config.getstr('config', 'MAKE_PLOTS_USER_SCRIPT_LIST', '')
         )
         c_dict['VERIF_CASE'] = self.config.getstr('config',
@@ -198,7 +197,7 @@ class MakePlotsWrapper(CommandBuilder):
                            "MAKE_PLOTS_VERIF_TYPE, or "
                            "MAKE_PLOTS_USER_SCRIPT_LIST")
 
-        c_dict['STATS_LIST'] = util.getlist(
+        c_dict['STATS_LIST'] = getlist(
             self.config.getstr('config', 'MAKE_PLOTS_STATS_LIST', '')
         )
         c_dict['AVERAGE_METHOD'] = self.config.getstr(

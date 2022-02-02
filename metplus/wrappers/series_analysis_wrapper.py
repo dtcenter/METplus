@@ -22,12 +22,14 @@ except Exception as err_msg:
     WRAPPER_CANNOT_RUN = True
     EXCEPTION_ERR = err_msg
 
+from ..util import getlist
 from ..util import met_util as util
-from ..util import do_string_sub, parse_template
-from ..util import get_lead_sequence, get_lead_sequence_groups, set_input_dict
+from ..util import do_string_sub, parse_template, get_tags
+from ..util import get_lead_sequence, get_lead_sequence_groups
 from ..util import ti_get_hours_from_lead, ti_get_seconds_from_lead
 from ..util import ti_get_lead_string
 from ..util import parse_var_list
+from ..util import add_to_time_input
 from .plot_data_plane_wrapper import PlotDataPlaneWrapper
 from . import RuntimeFreqWrapper
 
@@ -49,28 +51,45 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         'METPLUS_CLIMO_STDEV_DICT',
         'METPLUS_BLOCK_SIZE',
         'METPLUS_VLD_THRESH',
-        'METPLUS_CTS_LIST',
-        'METPLUS_STAT_LIST',
+        'METPLUS_OUTPUT_STATS_DICT',
         'METPLUS_HSS_EC_VALUE',
+        'METPLUS_FCST_CAT_THRESH',
+        'METPLUS_OBS_CAT_THRESH',
     ]
 
     # handle deprecated env vars used pre v4.0.0
     DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
         'CLIMO_MEAN_FILE',
         'CLIMO_STDEV_FILE',
+        'METPLUS_CTS_LIST',
+        'METPLUS_STAT_LIST',
     ]
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    # variable names of output_stats dictionary
+    OUTPUT_STATS = [
+        'fho',
+        'ctc',
+        'cts',
+        'mctc',
+        'mcts',
+        'cnt',
+        'sl1l2',
+        'sal1l2',
+        'pct',
+        'pstd',
+        'pjc',
+        'prc',
+    ]
+
+    def __init__(self, config, instance=None):
         self.app_name = 'series_analysis'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
 
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
         if self.c_dict['GENERATE_PLOTS']:
-            self.plot_data_plane = self.plot_data_plane_init()
+            self.plot_data_plane = self._plot_data_plane_init()
 
         if WRAPPER_CANNOT_RUN:
             self.log_error("There was a problem importing modules: "
@@ -116,23 +135,38 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                             data_type='string',
                             extra_args={'remove_quotes': True})
 
-        # get stat list to loop over
-        c_dict['STAT_LIST'] = util.getlist(
-            self.config.getstr('config',
-                               'SERIES_ANALYSIS_STAT_LIST',
-                               '')
-        )
-        if not c_dict['STAT_LIST']:
-            self.log_error("Must set SERIES_ANALYSIS_STAT_LIST to run.")
+        # handle all output_stats dictionary values
+        output_stats_dict = {}
+        for key in self.OUTPUT_STATS:
+            nicknames = [
+                f'SERIES_ANALYSIS_OUTPUT_STATS_{key.upper()}',
+                f'SERIES_ANALYSIS_{key.upper()}_LIST',
+                f'SERIES_ANALYSIS_{key.upper()}'
+            ]
+            # add legacy support for STAT_LIST for cnt
+            if key == 'cnt':
+                nicknames.append('SERIES_ANALYSIS_STAT_LIST')
+                # read cnt stat list to get stats to loop over for plotting
+                self.add_met_config(name='cnt',
+                                    data_type='list',
+                                    env_var_name='STAT_LIST',
+                                    metplus_configs=nicknames)
+                c_dict['STAT_LIST'] = getlist(
+                    self.get_env_var_value('METPLUS_STAT_LIST')
+                )
 
-        # set stat list to set output_stats.cnt in MET config file
+            value = ('list', None, None, nicknames)
+            output_stats_dict[key] = value
+        self.add_met_config_dict('output_stats', output_stats_dict)
+
+        # set legacy stat list to set output_stats.cnt in MET config file
         self.add_met_config(name='cnt',
                             data_type='list',
                             env_var_name='METPLUS_STAT_LIST',
                             metplus_configs=['SERIES_ANALYSIS_STAT_LIST',
                                              'SERIES_ANALYSIS_CNT'])
 
-        # set cts list to set output_stats.cts in MET config file
+        # set legacy cts list to set output_stats.cts in MET config file
         self.add_met_config(name='cts',
                             data_type='list',
                             env_var_name='METPLUS_CTS_LIST',
@@ -162,6 +196,42 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
             # initialize list path to None for each type
             c_dict[f'{data_type}_LIST_PATH'] = None
+
+            # read and set file type env var for FCST and OBS
+            if data_type == 'BOTH':
+                continue
+
+            self.add_met_config(
+                name='file_type',
+                data_type='string',
+                env_var_name=f'{data_type}_FILE_TYPE',
+                metplus_configs=[f'{data_type}_SERIES_ANALYSIS_FILE_TYPE',
+                                 f'SERIES_ANALYSIS_{data_type}_FILE_TYPE',
+                                 f'{data_type}_FILE_TYPE',
+                                 f'{data_type}_SERIES_ANALYSIS_INPUT_DATATYPE',
+                                 'SERIES_ANALYSIS_FILE_TYPE'],
+                extra_args={'remove_quotes': True,
+                            'uppercase': True})
+
+            self.add_met_config(
+                name='cat_thresh',
+                data_type='list',
+                env_var_name=f'METPLUS_{data_type}_CAT_THRESH',
+                metplus_configs=[f'{data_type}_SERIES_ANALYSIS_CAT_THRESH',
+                                 f'SERIES_ANALYSIS_{data_type}_CAT_THRESH',
+                                 f'{data_type}_CAT_THRESH'],
+                extra_args={'remove_quotes': True}
+            )
+
+            c_dict[f'{data_type}_IS_PROB'] = (
+                self.config.getbool('config', f'{data_type}_IS_PROB', False)
+            )
+            if c_dict[f'{data_type}_IS_PROB']:
+                c_dict[f'{data_type}_PROB_IN_GRIB_PDS'] = (
+                    self.config.getbool('config',
+                                        f'{data_type}_PROB_IN_GRIB_PDS',
+                                        False)
+                )
 
         # if BOTH is set, neither FCST or OBS can be set
         c_dict['USING_BOTH'] = False
@@ -231,9 +301,9 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                 False)
         )
 
-        c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
-                                                 met_tool=self.app_name)
-        if not c_dict['VAR_LIST_TEMP']:
+        c_dict['VAR_LIST'] = parse_var_list(self.config,
+                                            met_tool=self.app_name)
+        if not c_dict['VAR_LIST']:
             self.log_error("No fields specified. Please set "
                            "[FCST/OBS]_VAR<n>_[NAME/LEVELS]")
 
@@ -282,7 +352,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         return c_dict
 
-    def plot_data_plane_init(self):
+    def _plot_data_plane_init(self):
         """! Set values to allow successful initialization of
               PlotDataPlane wrapper
 
@@ -299,8 +369,14 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                 "map_data={ source=[];}"
             )
 
+        instance = 'plot_data_plane_sa'
+        if not self.config.has_section(instance):
+            self.config.add_section(instance)
+        for key, value in plot_overrides.items():
+            self.config.set(instance, key, value)
+
         pdp_wrapper = PlotDataPlaneWrapper(self.config,
-                                           config_overrides=plot_overrides)
+                                           instance=instance)
         return pdp_wrapper
 
     def clear(self):
@@ -349,11 +425,12 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             # create input dict and only set 'now' item
             # create a new dictionary each iteration in case the function
             # that it is passed into modifies it
-            input_dict = set_input_dict(loop_time=None,
-                                        config=self.config,
-                                        use_init=None,
-                                        instance=self.instance,
-                                        custom=custom)
+            input_dict = {}
+            add_to_time_input(input_dict,
+                              clock_time=self.config.getstr('config',
+                                                            'CLOCK_TIME'),
+                              instance=self.instance,
+                              custom=custom)
 
             input_dict['init'] = '*'
             input_dict['valid'] = '*'
@@ -382,20 +459,14 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         if not storm_list:
             return False
 
-        # perform string substitution on var list
-        self.c_dict['VAR_LIST'] = (
-            util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
-                              time_info)
-        )
-
         # loop over storm list and process for each
         # this loop will execute once if not filtering by storm ID
         for storm_id in storm_list:
             # Create FCST and OBS ASCII files
             fcst_path, obs_path = (
-                self.create_ascii_storm_files_list(time_info,
-                                                   storm_id,
-                                                   lead_group)
+                self._create_ascii_storm_files_list(time_info,
+                                                    storm_id,
+                                                    lead_group)
             )
             if not fcst_path or not obs_path:
                 self.log_error('No ASCII file lists were created. Skipping.')
@@ -408,9 +479,9 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                 continue
 
             if self.c_dict['GENERATE_PLOTS']:
-                self.generate_plots(fcst_path,
-                                    time_info,
-                                    storm_id)
+                self._generate_plots(fcst_path,
+                                     time_info,
+                                     storm_id)
             else:
                 self.logger.debug("Skip plotting output. Change "
                                   "SERIES_ANALYSIS_GENERATE_PLOTS to True to "
@@ -490,11 +561,13 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         """! Loop over list of input templates and find files for each
 
              @param time_info time dictionary to use for string substitution
+             @param data_type type of data to find, i.e. FCST or OBS
              @returns Input file list if all files were found, None if not.
         """
         input_files = self.find_data(time_info,
                                      return_list=True,
-                                     data_type=data_type)
+                                     data_type=data_type,
+                                     mandatory=False)
         return input_files
 
     def subset_input_files(self, time_info):
@@ -538,7 +611,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         return bool(filetime['storm_id'] == runtime['storm_id'])
 
-    def create_ascii_storm_files_list(self, time_info, storm_id, lead_group):
+    def _create_ascii_storm_files_list(self, time_info, storm_id, lead_group):
         """! Creates the list of ASCII files that contain the storm id and init
              times.  The list is used to create an ASCII file which will be
              used as the option to the -obs or -fcst flag to the MET
@@ -578,7 +651,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         output_dir = self.get_output_dir(time_info, storm_id, label)
 
-        if not self.check_python_embedding():
+        if not self._check_python_embedding():
             return None, None
 
         # create forecast (or both) file list
@@ -586,9 +659,9 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             data_type = 'BOTH'
         else:
             data_type = 'FCST'
-        fcst_ascii_filename = self.get_ascii_filename(data_type,
-                                                      storm_id,
-                                                      leads)
+        fcst_ascii_filename = self._get_ascii_filename(data_type,
+                                                       storm_id,
+                                                       leads)
         self.write_list_file(fcst_ascii_filename,
                              all_fcst_files,
                              output_dir=output_dir)
@@ -599,7 +672,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             return fcst_path, fcst_path
 
         # create analysis file list
-        obs_ascii_filename = self.get_ascii_filename('OBS',
+        obs_ascii_filename = self._get_ascii_filename('OBS',
                                                       storm_id,
                                                       leads)
         self.write_list_file(obs_ascii_filename,
@@ -610,7 +683,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         return fcst_path, obs_path
 
-    def check_python_embedding(self):
+    def _check_python_embedding(self):
         """! Check if any of the field names contain a Python embedding script.
               See CommandBuilder.check_for_python_embedding for more info.
 
@@ -629,7 +702,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         return True
 
     @staticmethod
-    def get_ascii_filename(data_type, storm_id, leads=None):
+    def _get_ascii_filename(data_type, storm_id, leads=None):
         """! Build filename for ASCII file list file
 
              @param data_type FCST, OBS, or BOTH
@@ -728,10 +801,13 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             else:
                 self.c_dict['FCST_LIST_PATH'] = fcst_path
                 self.c_dict['OBS_LIST_PATH'] = obs_path
+
             self.add_field_info_to_time_info(time_info, var_info)
 
             # get formatted field dictionary to pass into the MET config file
-            fcst_field, obs_field = self.get_formatted_fields(var_info)
+            fcst_field, obs_field = self.get_formatted_fields(var_info,
+                                                              fcst_path,
+                                                              obs_path)
 
             self.format_field('FCST', fcst_field)
             self.format_field('OBS', obs_field)
@@ -759,9 +835,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         """
         self.logger.info('Setting env variables from config file...')
 
-        # Set all the environment variables that are needed by the
-        # MET config file.
-        # Set up the environment variable to be used in the Series Analysis
+        # Set all the environment variables referenced in the MET config file
         self.add_env_var("FCST_FILE_TYPE", self.c_dict.get('FCST_FILE_TYPE',
                                                            ''))
         self.add_env_var("OBS_FILE_TYPE", self.c_dict.get('OBS_FILE_TYPE',
@@ -827,9 +901,10 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         cmd += ' -v ' + self.c_dict['VERBOSITY']
         return cmd
 
-    def generate_plots(self, fcst_path, time_info, storm_id):
+    def _generate_plots(self, fcst_path, time_info, storm_id):
         """! Generate the plots from the series_analysis output.
 
+             @param fcst_path path to forecast file list file
              @param time_info dictionary containing time information
              @param storm_id storm ID to process
         """
@@ -862,8 +937,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                 self.logger.debug(f"Skipping plot for {storm_id}")
                 continue
 
-            _, nseries = self.get_netcdf_min_max(plot_input,
-                                                 'series_cnt_TOTAL')
+            _, nseries = self._get_netcdf_min_max(plot_input,
+                                                  'series_cnt_TOTAL')
             nseries_str = '' if nseries is None else f" (N = {nseries})"
             time_info['nseries'] = nseries_str
 
@@ -874,8 +949,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                     self.c_dict['PNG_FILES'][key] = []
 
                 min_value, max_value = (
-                    self.get_netcdf_min_max(plot_input,
-                                            f'series_cnt_{cur_stat}')
+                    self._get_netcdf_min_max(plot_input,
+                                             f'series_cnt_{cur_stat}')
                 )
                 range_min_max = f"{min_value} {max_value}"
 
@@ -953,14 +1028,9 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         files_of_interest = files_of_interest[1:]
         num = str(len(files_of_interest))
 
-        if self.c_dict['USING_BOTH']:
-            input_dir = self.c_dict['BOTH_INPUT_DIR']
-            input_template = self.c_dict['BOTH_INPUT_TEMPLATE']
-        else:
-            input_dir = self.c_dict['FCST_INPUT_DIR']
-            input_template = self.c_dict['FCST_INPUT_TEMPLATE']
-
-        full_template = os.path.join(input_dir, input_template)
+        data_type = 'BOTH' if self.c_dict['USING_BOTH'] else 'FCST'
+        template = os.path.join(self.c_dict[f'{data_type}_INPUT_DIR'],
+                                self.c_dict[f'{data_type}_INPUT_TEMPLATE'])
 
         smallest_fcst = 99999999
         largest_fcst = -99999999
@@ -968,7 +1038,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         end = None
         for filepath in files_of_interest:
             filepath = filepath.strip()
-            file_time_info = parse_template(full_template,
+            file_time_info = parse_template(template,
                                             filepath,
                                             self.logger)
             if not file_time_info:
@@ -988,7 +1058,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         return num, beg, end
 
     @staticmethod
-    def get_netcdf_min_max(filepath, variable_name):
+    def _get_netcdf_min_max(filepath, variable_name):
         """! Determine the min and max for all lead times for each
            statistic and variable pairing.
 
@@ -1005,7 +1075,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         except (FileNotFoundError, KeyError):
             return None, None
 
-    def get_formatted_fields(self, var_info):
+    def get_formatted_fields(self, var_info, fcst_path, obs_path):
         """! Get forecast and observation field information for var_info and
             format it so it can be passed into the MET config file
 
@@ -1013,23 +1083,63 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             @returns tuple containing strings of the formatted forecast and
             observation information or None, None if something went wrong
         """
-        # get field info field a single field to pass to the MET config file
-        fcst_field_list = self.get_field_info(v_level=var_info['fcst_level'],
-                                              v_thresh=var_info['fcst_thresh'],
-                                              v_name=var_info['fcst_name'],
-                                              v_extra=var_info['fcst_extra'],
-                                              d_type='FCST')
+        fcst_field_list = self._get_field_list('fcst', var_info, obs_path)
+        obs_field_list = self._get_field_list('obs', var_info, fcst_path)
 
-        obs_field_list = self.get_field_info(v_level=var_info['obs_level'],
-                                             v_thresh=var_info['obs_thresh'],
-                                             v_name=var_info['obs_name'],
-                                             v_extra=var_info['obs_extra'],
-                                             d_type='OBS')
-
-        if fcst_field_list is None or obs_field_list is None:
+        if not fcst_field_list or not obs_field_list:
             return None, None
 
         fcst_fields = ','.join(fcst_field_list)
         obs_fields = ','.join(obs_field_list)
 
         return fcst_fields, obs_fields
+
+    def _get_field_list(self, data_type, var_info, file_list_path):
+        other = 'OBS' if data_type == 'fcst' else 'FCST'
+        # check if time filename template tags are used in field level
+        if not self._has_time_tag(var_info[f'{data_type}_level']):
+            # get field info for a single field to pass to the MET config file
+            return self.get_field_info(
+                v_level=var_info[f'{data_type}_level'],
+                v_thresh=var_info[f'{data_type}_thresh'],
+                v_name=var_info[f'{data_type}_name'],
+                v_extra=var_info[f'{data_type}_extra'],
+                d_type=data_type.upper()
+            )
+
+        field_list = []
+        # loop through fcst and obs files to extract time info
+        template = os.path.join(self.c_dict[f'{other}_INPUT_DIR'],
+                                self.c_dict[f'{other}_INPUT_TEMPLATE'])
+        # for each file apply time info to field info and add to list
+        for file_time_info in self._get_times_from_file_list(file_list_path,
+                                                             template):
+            level = do_string_sub(var_info[f'{data_type}_level'],
+                                  **file_time_info)
+            field = self.get_field_info(
+                v_level=level,
+                v_thresh=var_info[f'{data_type}_thresh'],
+                v_name=var_info[f'{data_type}_name'],
+                v_extra=var_info[f'{data_type}_extra'],
+                d_type=data_type.upper()
+            )
+            if field:
+                field_list.extend(field)
+
+        return field_list
+
+    @staticmethod
+    def _has_time_tag(level):
+        return any(item in ['init', 'valid', 'lead']
+                   for item in get_tags(level))
+
+    @staticmethod
+    def _get_times_from_file_list(file_path, template):
+        with open(file_path, 'r') as file_handle:
+            file_list = file_handle.read().splitlines()[1:]
+
+        for file_name in file_list:
+            file_time_info = parse_template(template, file_name)
+            if not file_time_info:
+                continue
+            yield file_time_info

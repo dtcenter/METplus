@@ -18,9 +18,10 @@ import glob
 import datetime
 import itertools
 
+from ..util import getlist
 from ..util import met_util as util
 from ..util import do_string_sub, find_indices_in_config_section
-from ..util import parse_var_list
+from ..util import parse_var_list, remove_quotes
 from . import CommandBuilder
 
 class StatAnalysisWrapper(CommandBuilder):
@@ -112,13 +113,11 @@ class StatAnalysisWrapper(CommandBuilder):
         'FCST_INIT_HOUR_LIST', 'OBS_INIT_HOUR_LIST'
     ]
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      'stat_analysis')
         self.app_name = os.path.basename(self.app_path)
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
     def get_command(self):
 
@@ -184,7 +183,7 @@ class StatAnalysisWrapper(CommandBuilder):
                            conf_list in all_lists_to_read
                            if conf_list not in self.field_lists]
         for conf_list in non_field_lists:
-            c_dict[conf_list] = util.getlist(
+            c_dict[conf_list] = getlist(
                 self.config.getstr('config', conf_list, '')
             )
 
@@ -305,7 +304,7 @@ class StatAnalysisWrapper(CommandBuilder):
                     self.get_level_list(field_list.split('_')[0])
                 )
             else:
-                field_dict[field_list] = util.getlist(
+                field_dict[field_list] = getlist(
                     self.config.getstr('config',
                                        field_list,
                                        '')
@@ -1318,13 +1317,13 @@ class StatAnalysisWrapper(CommandBuilder):
         """
         level_list = []
 
-        level_input = util.getlist(
+        level_input = getlist(
             self.config.getstr('config', f'{data_type}_LEVEL_LIST', '')
         )
 
         for level in level_input:
             level = level.strip('(').strip(')')
-            level = f'{util.remove_quotes(level)}'
+            level = f'{remove_quotes(level)}'
             level_list.append(level)
 
         return level_list
@@ -1495,7 +1494,7 @@ class StatAnalysisWrapper(CommandBuilder):
                                     False)
             )
             if run_fourier:
-                fourier_wave_num_pairs = util.getlist(
+                fourier_wave_num_pairs = getlist(
                     self.config.getstr('config',
                                        'VAR' + var_info['index'] + '_WAVE_NUM_LIST',
                                        '')
@@ -1777,7 +1776,7 @@ class StatAnalysisWrapper(CommandBuilder):
             for mp_item in mp_items:
                 if not runtime_settings_dict.get(mp_item, ''):
                     continue
-                value = util.remove_quotes(runtime_settings_dict.get(mp_item,
+                value = remove_quotes(runtime_settings_dict.get(mp_item,
                                                                      ''))
                 value = (f"{mp_item.lower()} = \"{value}\";")
                 self.env_var_dict[f'METPLUS_{mp_item}'] = value

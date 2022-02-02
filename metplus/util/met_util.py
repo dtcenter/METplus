@@ -7,14 +7,15 @@ import gzip
 import bz2
 import zipfile
 import struct
-from csv import reader
 from dateutil.relativedelta import relativedelta
 from pathlib import Path
 from importlib import import_module
 
+from .string_manip import getlist, getlistint
 from .string_template_substitution import do_string_sub
 from .string_template_substitution import parse_template
 from . import time_util as time_util
+from .time_looping import time_generator
 from .. import get_metplus_version
 
 """!@namespace met_util
@@ -86,6 +87,11 @@ def pre_run_setup(config_inputs):
 
     # handle dir to write temporary files
     handle_tmp_dir(config)
+
+    # handle OMP_NUM_THREADS environment variable
+    handle_env_var_config(config,
+                          env_var_name='OMP_NUM_THREADS',
+                          config_name='OMP_NUM_THREADS')
 
     config.env = os.environ.copy()
 
@@ -229,19 +235,7 @@ def handle_tmp_dir(config):
      get config temp dir using getdir_nocheck to bypass check for /path/to
      this is done so the user can set env MET_TMP_DIR instead of config TMP_DIR
      and config TMP_DIR will be set automatically"""
-    met_tmp_dir = os.environ.get('MET_TMP_DIR', '')
-    conf_tmp_dir = config.getdir_nocheck('TMP_DIR', '')
-
-    # if env MET_TMP_DIR is set
-    if met_tmp_dir:
-        # override config TMP_DIR to env MET_TMP_DIR value
-        config.set('config', 'TMP_DIR', met_tmp_dir)
-
-        # if config TMP_DIR differed from env MET_TMP_DIR, warn
-        if conf_tmp_dir != met_tmp_dir:
-            msg = 'TMP_DIR in config will be overridden by the ' +\
-                'environment variable MET_TMP_DIR ({})'.format(met_tmp_dir)
-            config.logger.warning(msg)
+    handle_env_var_config(config, 'MET_TMP_DIR', 'TMP_DIR')
 
     # create temp dir if it doesn't exist already
     # this will fail if TMP_DIR is not set correctly and
@@ -249,6 +243,30 @@ def handle_tmp_dir(config):
     tmp_dir = config.getdir('TMP_DIR')
     if not os.path.exists(tmp_dir):
         os.makedirs(tmp_dir)
+
+def handle_env_var_config(config, env_var_name, config_name):
+    """! If environment variable is set, use that value
+     for the config variable and warn if the previous config value differs
+
+     @param config METplusConfig object to read
+     @param env_var_name name of environment variable to read
+     @param config_name name of METplus config variable to check
+    """
+    env_var_value = os.environ.get(env_var_name, '')
+    config_value = config.getdir_nocheck(config_name, '')
+
+    # do nothing if environment variable is not set
+    if not env_var_value:
+        return
+
+    # override config config variable to environment variable value
+    config.set('config', config_name, env_var_value)
+
+    # if config config value differed from environment variable value, warn
+    if config_value != env_var_value:
+        config.logger.warning(f'Config variable {config_name} ({config_value}) '
+                              'will be overridden by the environment variable '
+                              f'{env_var_name} ({env_var_value})')
 
 def get_skip_times(config, wrapper_name=None):
     """! Read SKIP_TIMES config variable and populate dictionary of times that should be skipped.
@@ -370,102 +388,6 @@ def is_loop_by_init(config):
 
     return None
 
-def get_time_obj(time_from_conf, fmt, clock_time, logger=None, warn=False):
-    """!Substitute today or now into [INIT/VALID]_[BEG/END] if used
-        Args:
-            @param time_from_conf value from [INIT/VALID]_[BEG/END] that
-                   may include now or today tags
-            @param fmt format of time_from_conf, i.e. %Y%m%d
-            @param clock_time datetime object for time when execution started
-            @param logger log object to write error messages - None if not provided
-            @returns datetime object if successful, None if not
-    """
-    time_str = do_string_sub(time_from_conf,
-                             now=clock_time,
-                             today=clock_time.strftime('%Y%m%d'))
-    try:
-        time_t = datetime.datetime.strptime(time_str, fmt)
-    except ValueError:
-        error_message = (f"[INIT/VALID]_TIME_FMT ({fmt}) does not match "
-                         f"[INIT/VALID]_[BEG/END] ({time_str})")
-        if logger:
-            if warn:
-                logger.warning(error_message)
-            else:
-                logger.error(error_message)
-        else:
-            print(f"ERROR: {error_message}")
-
-        return None
-
-    return time_t
-
-def get_start_end_interval_times(config, warn=False):
-    """! Reads the METplusConfig object to determine the start, end, and
-      increment values based on the configuration. Based on the LOOP_BY value,
-      it will read the INIT_ or VALID_ variables TIME_FMT, BEG, END, and
-      INCREMENT and use the time format value to parse the other values.
-
-        @param config METplusConfig object to parse
-        @parm warn (optional) if True, output warnings instead of errors
-        @returns tuple of start time (datetime), end time (datetime) and
-        increment (dateutil.relativedelta) or all None values if time info
-        could not be parsed properly
-    """
-    # set function to send log messages (warning or error)
-    if warn:
-        log_function = config.logger.warning
-    else:
-        log_function = config.logger.error
-
-    clock_time_obj = datetime.datetime.strptime(config.getstr('config',
-                                                              'CLOCK_TIME'),
-                                                '%Y%m%d%H%M%S')
-    use_init = is_loop_by_init(config)
-    if use_init is None:
-        return None, None, None
-
-    if use_init:
-        time_format = config.getstr('config', 'INIT_TIME_FMT')
-        start_t = config.getraw('config', 'INIT_BEG')
-        end_t = config.getraw('config', 'INIT_END', start_t)
-        time_interval = time_util.get_relativedelta(
-            config.getstr('config', 'INIT_INCREMENT', '60')
-        )
-    else:
-        time_format = config.getstr('config', 'VALID_TIME_FMT')
-        start_t = config.getraw('config', 'VALID_BEG')
-        end_t = config.getraw('config', 'VALID_END', start_t)
-        time_interval = time_util.get_relativedelta(
-            config.getstr('config', 'VALID_INCREMENT', '60')
-        )
-
-    start_time = get_time_obj(start_t, time_format,
-                              clock_time_obj, config.logger,
-                              warn=warn)
-    if not start_time:
-        log_function("Could not format start time")
-        return None, None, None
-
-    end_time = get_time_obj(end_t, time_format,
-                            clock_time_obj, config.logger,
-                            warn=warn)
-    if not end_time:
-        log_function("Could not format end time")
-        return None, None, None
-
-    if (start_time + time_interval <
-            start_time + datetime.timedelta(seconds=60)):
-        log_function('[INIT/VALID]_INCREMENT must be greater than or '
-                     'equal to 60 seconds')
-        return None, None, None
-
-    if start_time > end_time:
-        log_function("Start time must come before end time")
-        return None, None, None
-
-    return start_time, end_time, time_interval
-
 def loop_over_times_and_call(config, processes):
     """! Loop over all run times and call wrappers listed in config
 
@@ -474,79 +396,55 @@ def loop_over_times_and_call(config, processes):
     @returns list of tuples with all commands run and the environment variables
     that were set for each
     """
-    use_init = is_loop_by_init(config)
-    if use_init is None:
-        return None
-
-    # get start time, end time, and time interval from config
-    loop_time, end_time, time_interval = get_start_end_interval_times(config)
-    if not loop_time:
-        config.logger.error("Could not get [INIT/VALID] time information from configuration file")
-        return None
-
     # keep track of commands that were run
     all_commands = []
-    while loop_time <= end_time:
-        log_runtime_banner(loop_time, config, use_init)
+    for time_input in time_generator(config):
         if not isinstance(processes, list):
             processes = [processes]
+
         for process in processes:
-            input_dict = set_input_dict(loop_time,
-                                        config,
-                                        use_init,
-                                        instance=process.instance)
+            # if time could not be read, increment errors for each process
+            if time_input is None:
+                process.errors += 1
+                continue
+
+            log_runtime_banner(config, time_input, process)
+            add_to_time_input(time_input,
+                              instance=process.instance)
 
             process.clear()
-            process.run_at_time(input_dict)
+            process.run_at_time(time_input)
             if process.all_commands:
                 all_commands.extend(process.all_commands)
             process.all_commands.clear()
 
-        loop_time += time_interval
-
     return all_commands
 
-def log_runtime_banner(loop_time, config, use_init):
-    run_time = loop_time.strftime("%Y-%m-%d %H:%M")
+def log_runtime_banner(config, time_input, process):
+    loop_by = time_input['loop_by']
+    run_time = time_input[loop_by].strftime("%Y-%m-%d %H:%M")
+
+    process_name = process.__class__.__name__
+    if process.instance:
+        process_name = f"{process_name}({process.instance})"
+
     config.logger.info("****************************************")
-    config.logger.info("* Running METplus")
-    if use_init:
-        config.logger.info("*  at init time: " + run_time)
-    else:
-        config.logger.info("*  at valid time: " + run_time)
+    config.logger.info(f"* Running METplus {process_name}")
+    config.logger.info(f"*  at {loop_by} time: {run_time}")
     config.logger.info("****************************************")
 
-def set_input_dict(loop_time, config, use_init, instance=None, custom=None):
-    """! Create input dictionary, set key 'now' to clock time in
-         YYYYMMDDHHMMSS, set key 'init' to loop_time value if use_init is True,
-         set key 'valid' to loop_time value if use_init is False, do not set
-         either if use_init is None
-
-         @param loop_time datetime object of current runtime
-         @param config METplusConfig object used to read CLOCK_TIME
-         @param use_init True if looping by init, False if looping by valid,
-          None otherwise
-    """
-    input_dict = {}
-    clock_time_obj = datetime.datetime.strptime(config.getstr('config',
-                                                              'CLOCK_TIME'),
-                                                '%Y%m%d%H%M%S')
-    input_dict['now'] = clock_time_obj
-
-    if use_init:
-        input_dict['init'] = loop_time
-    elif use_init is not None:
-        input_dict['valid'] = loop_time
+def add_to_time_input(time_input, clock_time=None, instance=None, custom=None):
+    if clock_time:
+        clock_dt = datetime.datetime.strptime(clock_time, '%Y%m%d%H%M%S')
+        time_input['now'] = clock_dt
 
     # if instance is set, use that value, otherwise use empty string
-    input_dict['instance'] = instance if instance else ''
+    time_input['instance'] = instance if instance else ''
 
-    # if custom is specified, set it, otherwise leave it unset so it can be
-    # set within the wrapper
+    # if custom is specified, set it
+    # otherwise leave it unset so it can be set within the wrapper
     if custom:
-        input_dict['custom'] = custom
-
-    return input_dict
+        time_input['custom'] = custom
 
 def get_lead_sequence(config, input_dict=None, wildcard_if_empty=False):
     """!Get forecast lead list from LEAD_SEQ or compute it from INIT_SEQ.
@@ -895,184 +793,6 @@ def prune_empty(output_dir, logger):
                              "...removing")
                 os.rmdir(full_dir)
 
-def handle_begin_end_incr(list_str):
-    """!Check for instances of begin_end_incr() in the input string and evaluate as needed
-        Args:
-            @param list_str string that contains a comma separated list
-            @returns string that has list expanded"""
-
-    matches = begin_end_incr_findall(list_str)
-
-    for match in matches:
-        item_list = begin_end_incr_evaluate(match)
-        if item_list:
-            list_str = list_str.replace(match, ','.join(item_list))
-
-    return list_str
-
-def begin_end_incr_findall(list_str):
-    """!Find all instances of begin_end_incr in list string
-        Args:
-            @param list_str string that contains a comma separated list
-            @returns list of strings that have begin_end_incr() characters"""
-    # remove space around commas (again to make sure)
-    # this makes the regex slightly easier because we don't have to include
-    # as many \s* instances in the regex string
-    list_str = re.sub(r'\s*,\s*', ',', list_str)
-
-    # find begin_end_incr and any text before and after that are not a comma
-    # [^,\s]* evaluates to any character that is not a comma or space
-    return re.findall(r"([^,]*begin_end_incr\(\s*-?\d*,-?\d*,-*\d*,?\d*\s*\)[^,]*)",
-                      list_str)
-
-def begin_end_incr_evaluate(item):
-    """!Expand begin_end_incr() items into a list of values
-        Args:
-            @param item string containing begin_end_incr() tag with
-            possible text before and after
-            @returns list of items expanded from begin_end_incr
-    """
-    match = re.match(r"^(.*)begin_end_incr\(\s*(-*\d*),(-*\d*),(-*\d*),?(\d*)\s*\)(.*)$",
-                     item)
-    if match:
-        before = match.group(1).strip()
-        after = match.group(6).strip()
-        start = int(match.group(2))
-        end = int(match.group(3))
-        step = int(match.group(4))
-        precision = match.group(5).strip()
-
-        if start <= end:
-            int_list = range(start, end+1, step)
-        else:
-            int_list = range(start, end-1, step)
-
-        out_list = []
-        for int_values in int_list:
-            out_str = str(int_values)
-
-            if precision:
-                out_str = out_str.zfill(int(precision))
-
-            out_list.append(f"{before}{out_str}{after}")
-
-        return out_list
-
-    return None
-
-def fix_list(item_list):
-    item_list = fix_list_helper(item_list, '(')
-    item_list = fix_list_helper(item_list, '[')
-    return item_list
-
-def fix_list_helper(item_list, type):
-    if type == '(':
-        close_regex = r"[^(]+\).*"
-        open_regex = r".*\([^)]*$"
-    elif type == '[':
-        close_regex = r"[^\[]+\].*"
-        open_regex = r".*\[[^\]]*$"
-    else:
-        return item_list
-
-    # combine items that had a comma between ()s or []s
-    fixed_list = []
-    incomplete_item = None
-    found_close = False
-    for index, item in enumerate(item_list):
-        # if we have found an item that ends with ( but
-        if incomplete_item:
-            # check if item has ) before (
-            match = re.match(close_regex, item)
-            if match:
-                # add rest of text, add it to output list, then reset incomplete_item
-                incomplete_item += ',' + item
-                found_close = True
-            else:
-                # if not ) before (, add text and continue
-                incomplete_item += ',' + item
-
-        match = re.match(open_regex, item)
-        # if we find ( without ) after it
-        if match:
-            # if we are still putting together an item, append comma and new item
-            if incomplete_item:
-                if not found_close:
-                    incomplete_item += ',' + item
-            # if not, start new incomplete item to put together
-            else:
-                incomplete_item = item
-
-            found_close = False
-        # if we don't find ( without )
-        else:
-            # if we are putting together item, we can add to the output list and reset incomplete_item
-            if incomplete_item:
-                if found_close:
-                    fixed_list.append(incomplete_item)
-                    incomplete_item = None
-            # if we are not within brackets and we found no brackets, add item to output list
-            else:
-                fixed_list.append(item)
-
-    return fixed_list
-
-def getlist(list_str, expand_begin_end_incr=True):
-    """! Returns a list of string elements from a comma
-         separated string of values.
-         This function MUST also return an empty list [] if s is '' empty.
-         This function is meant to handle these possible or similar inputs:
-         AND return a clean list with no surrounding spaces or trailing
-         commas in the elements.
-         '4,4,2,4,2,4,2, ' or '4,4,2,4,2,4,2 ' or
-         '4, 4, 4, 4, ' or '4, 4, 4, 4 '
-         Note: getstr on an empty variable (EMPTY_VAR = ) in
-         a conf file returns '' an empty string.
-
-        @param list_str the string being converted to a list.
-        @returns list of strings formatted properly and expanded as needed
-    """
-    if not list_str:
-        return []
-
-    # FIRST remove surrounding comma, and spaces, form the string.
-    list_str = list_str.strip(';[] ').strip().strip(',').strip()
-
-    # remove space around commas
-    list_str = re.sub(r'\s*,\s*', ',', list_str)
-
-    # option to not evaluate begin_end_incr
-    if expand_begin_end_incr:
-        list_str = handle_begin_end_incr(list_str)
-
-    # use csv reader to divide comma list while preserving strings with comma
-    # convert the csv reader to a list and get first item (which is the whole list)
-    item_list = list(reader([list_str], escapechar='\\'))[0]
-
-    item_list = fix_list(item_list)
-
-    return item_list
-
-def getlistfloat(list_str):
-    """!Get list and convert all values to float
-        Args:
-            @param list_str the string being converted to a list.
-            @returns list of floats
-    """
-    list_str = getlist(list_str)
-    list_str = [float(i) for i in list_str]
-    return list_str
-
-def getlistint(list_str):
-    """!Get list and convert all values to int
-            Args:
-            @param list_str the string being converted to a list.
-            @returns list of ints
-    """
-    list_str = getlist(list_str)
-    list_str = [int(i) for i in list_str]
-    return list_str
-
 def camel_to_underscore(camel):
     """! Change camel case notation to underscore notation, i.e. GridStatWrapper to grid_stat_wrapper
          Multiple capital letters are excluded, i.e. PCPCombineWrapper to pcp_combine_wrapper
@@ -1331,14 +1051,6 @@ def split_level(level):
         return '', level
 
     return '', ''
-
-def remove_quotes(input_string):
-    """!Remove quotes from string"""
-    if not input_string:
-        return ''
-
-    # strip off double and single quotes
-    return input_string.strip('"').strip("'")
 
 def get_filetype(filepath, logger=None):
     """!This function determines if the filepath is a NETCDF or GRIB file

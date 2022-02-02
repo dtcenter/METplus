@@ -25,7 +25,7 @@ time_fmt = '%Y%m%d%H'
 run_times = ['2005080700',]
 stat_list = 'TOTAL,RMSE,FBAR,OBAR'
 stat_list_quotes = '", "'.join(stat_list.split(','))
-stat_list_fmt = f'cnt = ["{stat_list_quotes}"];'
+stat_list_fmt = f'output_stats = {{cnt = ["{stat_list_quotes}"];}}'
 
 def get_input_dirs(config):
     fake_data_dir = os.path.join(config.getdir('METPLUS_BASE'),
@@ -206,6 +206,76 @@ def set_minimum_config_settings(config):
           'CLIMO_STDEV_FILE': '"/some/climo_stdev/file.txt"'}),
         ({'SERIES_ANALYSIS_HSS_EC_VALUE': '0.5', },
          {'METPLUS_HSS_EC_VALUE': 'hss_ec_value = 0.5;'}),
+        # output_stats
+        ({'SERIES_ANALYSIS_OUTPUT_STATS_FHO': 'RMSE,FBAR,OBAR', },
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {fho = ["RMSE", "FBAR", "OBAR"];cnt = ["TOTAL", "RMSE", "FBAR", "OBAR"];}'}),
+
+        ({'SERIES_ANALYSIS_OUTPUT_STATS_CTC': 'RMSE,FBAR,OBAR', },
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {ctc = ["RMSE", "FBAR", "OBAR"];cnt = ["TOTAL", "RMSE", "FBAR", "OBAR"];}'}),
+
+        ({'SERIES_ANALYSIS_OUTPUT_STATS_CTS': 'RMSE,FBAR,OBAR', },
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {cts = ["RMSE", "FBAR", "OBAR"];cnt = ["TOTAL", "RMSE", "FBAR", "OBAR"];}'}),
+
+        ({'SERIES_ANALYSIS_OUTPUT_STATS_MCTC': 'RMSE,FBAR,OBAR', },
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {mctc = ["RMSE", "FBAR", "OBAR"];cnt = ["TOTAL", "RMSE", "FBAR", "OBAR"];}'}),
+
+        ({'SERIES_ANALYSIS_OUTPUT_STATS_MCTS': 'RMSE,FBAR,OBAR', },
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {mcts = ["RMSE", "FBAR", "OBAR"];cnt = ["TOTAL", "RMSE", "FBAR", "OBAR"];}'}),
+
+        ({'SERIES_ANALYSIS_OUTPUT_STATS_CNT': 'RMSE,FBAR,OBAR', },
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {cnt = ["RMSE", "FBAR", "OBAR"];}'}),
+
+        ({'SERIES_ANALYSIS_OUTPUT_STATS_SL1L2': 'RMSE,FBAR,OBAR', },
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {cnt = ["TOTAL", "RMSE", "FBAR", "OBAR"];sl1l2 = ["RMSE", "FBAR", "OBAR"];}'}),
+
+        ({'SERIES_ANALYSIS_OUTPUT_STATS_SAL1L2': 'RMSE,FBAR,OBAR', },
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {cnt = ["TOTAL", "RMSE", "FBAR", "OBAR"];sal1l2 = ["RMSE", "FBAR", "OBAR"];}'}),
+
+        ({'SERIES_ANALYSIS_OUTPUT_STATS_PCT': 'RMSE,FBAR,OBAR', },
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {cnt = ["TOTAL", "RMSE", "FBAR", "OBAR"];pct = ["RMSE", "FBAR", "OBAR"];}'}),
+
+        ({'SERIES_ANALYSIS_OUTPUT_STATS_PSTD': 'RMSE,FBAR,OBAR', },
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {cnt = ["TOTAL", "RMSE", "FBAR", "OBAR"];pstd = ["RMSE", "FBAR", "OBAR"];}'}),
+
+        ({'SERIES_ANALYSIS_OUTPUT_STATS_PJC': 'RMSE,FBAR,OBAR', },
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {cnt = ["TOTAL", "RMSE", "FBAR", "OBAR"];pjc = ["RMSE", "FBAR", "OBAR"];}'}),
+
+        ({'SERIES_ANALYSIS_OUTPUT_STATS_PRC': 'RMSE,FBAR,OBAR', },
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {cnt = ["TOTAL", "RMSE", "FBAR", "OBAR"];prc = ["RMSE", "FBAR", "OBAR"];}'}),
+
+        ({
+             'SERIES_ANALYSIS_OUTPUT_STATS_FHO': 'RMSE1,FBAR,OBAR',
+             'SERIES_ANALYSIS_OUTPUT_STATS_CTC': 'RMSE2,FBAR,OBAR',
+             'SERIES_ANALYSIS_OUTPUT_STATS_CTS': 'RMSE3,FBAR,OBAR',
+             'SERIES_ANALYSIS_OUTPUT_STATS_MCTC': 'RMSE4,FBAR,OBAR',
+             'SERIES_ANALYSIS_OUTPUT_STATS_MCTS': 'RMSE5,FBAR,OBAR',
+             'SERIES_ANALYSIS_OUTPUT_STATS_CNT': 'RMSE6,FBAR,OBAR',
+             'SERIES_ANALYSIS_OUTPUT_STATS_SL1L2': 'RMSE7,FBAR,OBAR',
+             'SERIES_ANALYSIS_OUTPUT_STATS_SAL1L2': 'RMSE8,FBAR,OBAR',
+             'SERIES_ANALYSIS_OUTPUT_STATS_PCT': 'RMSE9,FBAR,OBAR',
+             'SERIES_ANALYSIS_OUTPUT_STATS_PSTD': 'RMSE10,FBAR,OBAR',
+             'SERIES_ANALYSIS_OUTPUT_STATS_PJC': 'RMSE11,FBAR,OBAR',
+             'SERIES_ANALYSIS_OUTPUT_STATS_PRC': 'RMSE12,FBAR,OBAR',
+         },
+         {'METPLUS_OUTPUT_STATS_DICT': ('output_stats = {'
+                                        'fho = ["RMSE1", "FBAR", "OBAR"];'
+                                        'ctc = ["RMSE2", "FBAR", "OBAR"];'
+                                        'cts = ["RMSE3", "FBAR", "OBAR"];'
+                                        'mctc = ["RMSE4", "FBAR", "OBAR"];'
+                                        'mcts = ["RMSE5", "FBAR", "OBAR"];'
+                                        'cnt = ["RMSE6", "FBAR", "OBAR"];'
+                                        'sl1l2 = ["RMSE7", "FBAR", "OBAR"];'
+                                        'sal1l2 = ["RMSE8", "FBAR", "OBAR"];'
+                                        'pct = ["RMSE9", "FBAR", "OBAR"];'
+                                        'pstd = ["RMSE10", "FBAR", "OBAR"];'
+                                        'pjc = ["RMSE11", "FBAR", "OBAR"];'
+                                        'prc = ["RMSE12", "FBAR", "OBAR"];}')}),
+        ({'SERIES_ANALYSIS_FCST_CAT_THRESH': '>=0.0, >=0.3, >=1.0', },
+         {'METPLUS_FCST_CAT_THRESH': 'cat_thresh = [>=0.0, >=0.3, >=1.0];'}),
+
+        ({'SERIES_ANALYSIS_OBS_CAT_THRESH': '<=CDP33', },
+         {'METPLUS_OBS_CAT_THRESH': 'cat_thresh = [<=CDP33];'}),
+
     ]
 )
 def test_series_analysis_single_field(metplus_config, config_overrides,
@@ -248,11 +318,12 @@ def test_series_analysis_single_field(metplus_config, config_overrides,
                           item.startswith(env_var_key)), None)
             assert(match is not None)
             actual_value = match.split('=', 1)[1]
+            print(f"ENV VAR: {env_var_key}")
             if env_var_key == 'METPLUS_FCST_FIELD':
                 assert(actual_value == fcst_fmt)
             elif env_var_key == 'METPLUS_OBS_FIELD':
                 assert (actual_value == obs_fmt)
-            elif env_var_key == 'METPLUS_STAT_LIST':
+            elif env_var_key == 'METPLUS_OUTPUT_STATS_DICT' and 'METPLUS_OUTPUT_STATS_DICT' not in env_var_values:
                 assert (actual_value == stat_list_fmt)
             else:
                 assert(env_var_values.get(env_var_key, '') == actual_value)
@@ -672,29 +743,23 @@ def test_create_ascii_storm_files_list(metplus_config, config_overrides,
         leads = lead_group[1]
     else:
         leads = None
-    fcst_list_file = wrapper.get_ascii_filename('FCST', storm_id, leads)
+    fcst_list_file = wrapper._get_ascii_filename('FCST', storm_id, leads)
     fcst_file_path = os.path.join(output_dir,
                                   output_prefix,
                                   fcst_list_file)
     if os.path.exists(fcst_file_path):
         os.remove(fcst_file_path)
 
-    obs_list_file = wrapper.get_ascii_filename('OBS', storm_id, leads)
+    obs_list_file = wrapper._get_ascii_filename('OBS', storm_id, leads)
     obs_file_path = os.path.join(output_dir,
                                   output_prefix,
                                   obs_list_file)
     if os.path.exists(obs_file_path):
         os.remove(obs_file_path)
 
-    # perform string substitution on var list
-    wrapper.c_dict['VAR_LIST'] = (
-        sub_var_list(wrapper.c_dict['VAR_LIST_TEMP'],
-                     time_info)
-    )
-
-    fcst_path, obs_path = wrapper.create_ascii_storm_files_list(time_info,
-                                                                storm_id,
-                                                                lead_group)
+    fcst_path, obs_path = wrapper._create_ascii_storm_files_list(time_info,
+                                                                 storm_id,
+                                                                 lead_group)
     assert(fcst_path == fcst_file_path and obs_path == obs_file_path)
 
     with open(fcst_file_path, 'r') as file_handle:
@@ -747,7 +812,7 @@ def test_get_ascii_filename(metplus_config, storm_id, leads,
                             expected_result):
     wrapper = series_analysis_wrapper(metplus_config)
     for data_type in ['FCST', 'OBS']:
-        actual_result = wrapper.get_ascii_filename(data_type,
+        actual_result = wrapper._get_ascii_filename(data_type,
                                                    storm_id,
                                                    leads)
         assert(actual_result == f"{data_type}{expected_result}")
@@ -756,7 +821,7 @@ def test_get_ascii_filename(metplus_config, storm_id, leads,
             return
 
         lead_seconds = [ti_get_seconds_from_lead(item) for item in leads]
-        actual_result = wrapper.get_ascii_filename(data_type,
+        actual_result = wrapper._get_ascii_filename(data_type,
                                                    storm_id,
                                                    lead_seconds)
         assert(actual_result == f"{data_type}{expected_result}")
@@ -799,7 +864,7 @@ def test_get_netcdf_min_max(metplus_config):
                             'tc_data',
                             'basin_global_tenth_degree.nc')
     variable_name = 'basin'
-    min, max = wrapper.get_netcdf_min_max(filepath, variable_name)
+    min, max = wrapper._get_netcdf_min_max(filepath, variable_name)
     assert(min == expected_min)
     assert(max == expected_max)
 

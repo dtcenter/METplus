@@ -5,8 +5,9 @@ Contact(s): George McCabe
 
 import os
 
-from .met_util import getlist, get_threshold_via_regex, MISSING_DATA_VALUE
-from .met_util import remove_quotes as util_remove_quotes
+from .string_manip import getlist
+from .met_util import get_threshold_via_regex, MISSING_DATA_VALUE
+from .string_manip import remove_quotes as util_remove_quotes
 from .config_metplus import find_indices_in_config_section
 
 class METConfig:
@@ -172,11 +173,10 @@ def add_met_config_dict(config, app_name, output_dict, dict_name, items):
                 metplus_configs.append(f'{metplus_name}IN')
 
             metplus_configs.append(metplus_name)
+            # add other variable names to search if expected name is unset
             if nicknames:
                 for nickname in nicknames:
-                    metplus_configs.append(
-                        f'{app_name}_{nickname}'.upper()
-                    )
+                    metplus_configs.append(nickname)
 
         # if dictionary, read get children from MET config
         else:

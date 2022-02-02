@@ -56,6 +56,8 @@ class MODEWrapper(CompareGriddedWrapper):
         'METPLUS_INTEREST_FUNCTION_CENTROID_DIST',
         'METPLUS_INTEREST_FUNCTION_BOUNDARY_DIST',
         'METPLUS_INTEREST_FUNCTION_CONVEX_HULL_DIST',
+        'METPLUS_PS_PLOT_FLAG',
+        'METPLUS_CT_STATS_FLAG',
     ]
 
     WEIGHTS = {
@@ -94,15 +96,13 @@ class MODEWrapper(CompareGriddedWrapper):
                                                '(400.0/grid_res,0.0))'),
     }
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         # only set app variables if not already set by MTD (subclass)
         if not hasattr(self, 'app_name'):
             self.app_name = 'mode'
             self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                          self.app_name)
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
     def add_merge_config_file(self, time_info):
         """!If merge config file is defined, add it to the command"""
@@ -346,6 +346,13 @@ class MODEWrapper(CompareGriddedWrapper):
                 'default': defaults.get('INTEREST_FUNCTION_CONVEX_HULL_DIST')
             }
         )
+
+        self.add_met_config(name='ps_plot_flag',
+                            data_type='bool')
+
+        self.add_met_config(name='ct_stats_flag',
+                            data_type='bool')
+
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False
 

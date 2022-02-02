@@ -718,7 +718,6 @@ def test_add_method_single_file(metplus_config):
         assert cmd == expected_cmd
 
 def test_subtract_method_zero_accum(metplus_config):
-    data_src = 'FCST'
     input_name = 'stratiform_rainfall_amount'
     input_level = '"(*,*)"'
     in_dir = '/some/input/dir'
@@ -749,6 +748,8 @@ def test_subtract_method_zero_accum(metplus_config):
     config.set('config', 'FCST_PCP_COMBINE_OUTPUT_ACCUM', '1H')
     config.set('config', 'FCST_PCP_COMBINE_OUTPUT_NAME', input_name)
 
+
+    # NETCDF example should use zero accum, GRIB example should not (use -add)
     expected_cmds_dict = {}
     expected_cmds_dict['NETCDF'] = [
         (f"-subtract "
@@ -774,6 +775,9 @@ def test_subtract_method_zero_accum(metplus_config):
         if data_type == 'NETCDF':
             config.set('config', 'FCST_PCP_COMBINE_INPUT_NAMES', input_name)
             config.set('config', 'FCST_PCP_COMBINE_INPUT_LEVELS', input_level)
+            config.set('config', 'FCST_PCP_COMBINE_USE_ZERO_ACCUM', 'True')
+        else:
+            config.set('config', 'FCST_PCP_COMBINE_USE_ZERO_ACCUM', 'False')
 
         wrapper = PCPCombineWrapper(config)
         assert wrapper.isOK

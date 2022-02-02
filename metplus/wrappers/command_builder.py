@@ -18,6 +18,7 @@ from inspect import getframeinfo, stack
 import re
 
 from .command_runner import CommandRunner
+from ..util import getlist
 from ..util import met_util as util
 from ..util import do_string_sub, ti_calculate, get_seconds_from_string
 from ..util import get_time_from_file
@@ -26,6 +27,7 @@ from ..util import METConfig
 from ..util import MISSING_DATA_VALUE
 from ..util import get_custom_string_list
 from ..util import get_wrapped_met_config_file, add_met_config_item, format_met_config
+from ..util import remove_quotes
 from ..util.met_config import add_met_config_dict
 
 # pylint:disable=pointless-string-statement
@@ -49,7 +51,7 @@ class CommandBuilder:
     # name of variable to hold any MET config overrides
     MET_OVERRIDES_KEY = 'METPLUS_MET_CONFIG_OVERRIDES'
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         self.isOK = True
         self.errors = 0
         self.config = config
@@ -69,6 +71,7 @@ class CommandBuilder:
         # list of environment variables to set before running command
         self.env_var_keys = [
             'MET_TMP_DIR',
+            'OMP_NUM_THREADS',
         ]
         if hasattr(self, 'WRAPPER_ENV_VAR_KEYS'):
             self.env_var_keys.extend(self.WRAPPER_ENV_VAR_KEYS)
@@ -86,9 +89,6 @@ class CommandBuilder:
             )
 
         self.instance = instance
-
-        # override config if any were supplied
-        self.override_config(config_overrides)
 
         self.env = os.environ.copy()
         if hasattr(config, 'env'):
@@ -116,6 +116,11 @@ class CommandBuilder:
         # where the MET tools write temporary files
         self.env_var_dict['MET_TMP_DIR'] = self.config.getdir('TMP_DIR')
 
+        # set OMP_NUM_THREADS environment variable
+        self.env_var_dict['OMP_NUM_THREADS'] = (
+            self.config.getstr('config', 'OMP_NUM_THREADS')
+        )
+
         self.check_for_externals()
 
         self.cmdrunner = CommandRunner(
@@ -131,15 +136,6 @@ class CommandBuilder:
         self.log_name = self.app_name if hasattr(self, 'app_name') else ''
 
         self.clear()
-
-    def override_config(self, config_overrides):
-        if not config_overrides:
-            return
-
-        self.logger.debug("Overriding config with explicit values:")
-        for key, value in config_overrides.items():
-            self.logger.debug(f"Setting [config] {key} = {value}")
-            self.config.set('config', key, value)
 
     def check_for_unused_env_vars(self):
         config_file = self.c_dict.get('CONFIG_FILE')
@@ -623,7 +619,7 @@ class CommandBuilder:
 
         # check if there is a list of files provided in the template
         # process each template in the list (or single template)
-        template_list = util.getlist(input_template)
+        template_list = getlist(input_template)
 
         # return None if a list is provided for a wrapper that doesn't allow
         # multiple files to be processed
@@ -986,12 +982,15 @@ class CommandBuilder:
             output_path = do_string_sub(output_path,
                                         **time_info)
 
+        # replace wildcard character * with all
+        output_path.replace('*', 'all')
+
         skip_if_output_exists = self.c_dict.get('SKIP_IF_OUTPUT_EXISTS', False)
 
         # get directory that the output file will exist
         if is_directory:
             parent_dir = output_path
-            if time_info:
+            if time_info and time_info['valid'] != '*':
                 valid_format = time_info['valid'].strftime('%Y%m%d_%H%M%S')
             else:
                 valid_format = ''
@@ -1205,7 +1204,7 @@ class CommandBuilder:
                 field = f'name="{v_name}";'
 
                 if v_level:
-                    field += f' level="{util.remove_quotes(v_level)}";'
+                    field += f' level="{remove_quotes(v_level)}";'
 
                 if self.c_dict.get(d_type + '_IS_PROB', False):
                     field += " prob=TRUE;"
@@ -1400,31 +1399,6 @@ class CommandBuilder:
         call METplus wrapper for each time"""
         return util.loop_over_times_and_call(self.config, self)
 
-    def set_time_dict_for_single_runtime(self):
-        # get clock time from start of execution for input time dictionary
-        clock_time_obj = datetime.strptime(self.config.getstr('config',
-                                                              'CLOCK_TIME'),
-                                           '%Y%m%d%H%M%S')
-
-        # get start run time and set INPUT_TIME_DICT
-        time_info = {'now': clock_time_obj}
-        start_time, _, _ = util.get_start_end_interval_times(self.config)
-        if start_time:
-            # set init or valid based on LOOP_BY
-            use_init = util.is_loop_by_init(self.config)
-            if use_init is None:
-                return None
-            elif use_init:
-                time_info['init'] = start_time
-            else:
-                time_info['valid'] = start_time
-        else:
-            self.config.logger.error("Could not get [INIT/VALID] time "
-                                     "information from configuration file")
-            return None
-
-        return time_info
-
     @staticmethod
     def format_met_config_dict(c_dict, name, keys=None):
         """! Return formatted dictionary named <name> with any <items> if they
@@ -1489,7 +1463,7 @@ class CommandBuilder:
         # if the value is set, set the DESC c_dict
         if conf_value:
             self.env_var_dict['METPLUS_DESC'] = (
-                f'desc = "{util.remove_quotes(conf_value)}";'
+                f'desc = "{remove_quotes(conf_value)}";'
             )
 
     def get_output_prefix(self, time_info=None, set_env_vars=True):
@@ -1541,6 +1515,7 @@ class CommandBuilder:
             'match_month': ('bool', 'uppercase'),
             'day_interval': 'int',
             'hour_interval': 'int',
+            'file_type': ('string', 'remove_quotes'),
         }
         for climo_type in self.climo_types:
             dict_name = f'climo_{climo_type.lower()}'
@@ -1549,6 +1524,9 @@ class CommandBuilder:
             self.read_climo_file_name(climo_type)
 
             self.add_met_config_dict(dict_name, items)
+
+            # handle use_fcst or use_obs options for setting field list
+            self.climo_use_fcst_or_obs_fields(dict_name)
 
             # handle deprecated env vars CLIMO_MEAN_FILE and CLIMO_STDEV_FILE
             # that are used by pre v4.0.0 wrapped MET config files
@@ -1600,7 +1578,7 @@ class CommandBuilder:
         # if dir is set and not python embedding,
         # prepend it to each template in list
         if input_dir and input_template not in util.PYTHON_EMBEDDING_TYPES:
-            template_list = util.getlist(input_template)
+            template_list = getlist(input_template)
             for index, template in enumerate(template_list):
                 template_list[index] = os.path.join(input_dir, template)
 
@@ -1608,6 +1586,38 @@ class CommandBuilder:
             template_list_string = ','.join(template_list)
 
         self.config.set('config', f'{prefix}FILE_NAME', template_list_string)
+
+    def climo_use_fcst_or_obs_fields(self, dict_name):
+        """! If climo field is not explicitly set, check if config is set
+         to use forecast or observation fields.
+
+         @param dict_name name of climo to check: climo_mean or climo_stdev
+        """
+        # if {APP}_CLIMO_[MEAN/STDEV]_FIELD is set, do nothing
+        field_conf = f'{self.app_name}_{dict_name}_FIELD'.upper()
+        if self.config.has_option('config', field_conf):
+            return
+
+        use_fcst_conf = f'{self.app_name}_{dict_name}_USE_FCST'.upper()
+        use_obs_conf = f'{self.app_name}_{dict_name}_USE_OBS'.upper()
+
+        use_fcst = self.config.getbool('config', use_fcst_conf, False)
+        use_obs = self.config.getbool('config', use_obs_conf, False)
+
+        # if both are set, report an error
+        if use_fcst and use_obs:
+            self.log_error(f'Cannot set both {use_fcst_conf} and '
+                           f'{use_obs_conf} in config.')
+            return
+
+        # if neither are set, do nothing
+        if not use_fcst and not use_obs:
+            return
+
+        env_var_name = f'METPLUS_{dict_name.upper()}_DICT'
+        rvalue = 'fcst' if use_fcst else 'obs'
+
+        self.env_var_dict[env_var_name] += f'{dict_name} = {rvalue};'
 
     def get_wrapper_or_generic_config(self, generic_config_name):
         """! Check for config variable with <APP_NAME>_ prepended first. If set
@@ -1709,6 +1719,7 @@ class CommandBuilder:
          METPLUS_TIME_SUMMARY_DICT that is referenced in the wrapped MET
          config files.
         """
+        app_upper = self.app_name.upper()
         self.add_met_config_dict('time_summary', {
             'flag': 'bool',
             'raw_data': 'bool',
@@ -1717,12 +1728,15 @@ class CommandBuilder:
             'step': 'int',
             'width': ('string', 'remove_quotes'),
             'grib_code': ('list', 'remove_quotes,allow_empty', None,
-                          ['TIME_SUMMARY_GRIB_CODES']),
+                          [f'{app_upper}_TIME_SUMMARY_GRIB_CODES']),
             'obs_var': ('list', 'allow_empty', None,
-                        ['TIME_SUMMARY_VAR_NAMES']),
-            'type': ('list', 'allow_empty', None, ['TIME_SUMMARY_TYPES']),
-            'vld_freq': ('int', None, None, ['TIME_SUMMARY_VALID_FREQ']),
-            'vld_thresh': ('float', None, None, ['TIME_SUMMARY_VALID_THRESH']),
+                        [f'{app_upper}_TIME_SUMMARY_VAR_NAMES']),
+            'type': ('list', 'allow_empty', None,
+                     [f'{app_upper}_TIME_SUMMARY_TYPES']),
+            'vld_freq': ('int', None, None,
+                         [f'{app_upper}_TIME_SUMMARY_VALID_FREQ']),
+            'vld_thresh': ('float', None, None,
+                           [f'{app_upper}_TIME_SUMMARY_VALID_THRESH']),
         })
 
     def handle_mask(self, single_value=False, get_flags=False):
@@ -1733,12 +1747,13 @@ class CommandBuilder:
             @param get_flags if True, read grid_flag and poly_flag values
         """
         data_type = 'string' if single_value else 'list'
-
+        app_upper = self.app_name.upper()
         items = {
             'grid': (data_type, 'allow_empty', None,
-                     ['GRID']),
+                     [f'{app_upper}_GRID']),
             'poly': (data_type, 'allow_empty', None,
-                     ['VERIFICATION_MASK_TEMPLATE', 'POLY']),
+                     [f'{app_upper}_VERIFICATION_MASK_TEMPLATE',
+                      f'{app_upper}_POLY']),
         }
 
         if get_flags:
@@ -1811,23 +1826,3 @@ class CommandBuilder:
         return get_wrapped_met_config_file(self.config,
                                            self.app_name,
                                            default_config_file)
-
-    def get_start_time_input_dict(self):
-        """! Get the first run time specified in config. Used if only running
-        the wrapper once (LOOP_ORDER = processes).
-
-        @returns dictionary containing time information for first run time
-        """
-        use_init = util.is_loop_by_init(self.config)
-        if use_init is None:
-            self.log_error('Could not read time info')
-            return None
-
-
-        start_time, _, _ = util.get_start_end_interval_times(self.config)
-        if start_time is None:
-            self.log_error("Could not get start time")
-            return None
-
-        input_dict = util.set_input_dict(start_time, self.config, use_init)
-        return input_dict

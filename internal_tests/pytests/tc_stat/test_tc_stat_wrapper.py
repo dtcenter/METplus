@@ -108,8 +108,13 @@ def tc_stat_wrapper(metplus_config):
     ]
     )
 def test_override_config_in_c_dict(metplus_config, overrides, c_dict):
-    wrapper = TCStatWrapper(get_config(metplus_config),
-                            config_overrides=overrides)
+    config = get_config(metplus_config)
+    instance = 'tc_stat_overrides'
+    if not config.has_section(instance):
+        config.add_section(instance)
+    for key, value in overrides.items():
+        config.set(instance, key, value)
+    wrapper = TCStatWrapper(config, instance=instance)
     for key, expected_value in c_dict.items():
         assert (wrapper.env_var_dict.get(f'METPLUS_{key}') == expected_value or
                 wrapper.c_dict.get(key) == expected_value)

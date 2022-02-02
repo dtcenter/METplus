@@ -210,12 +210,15 @@ plot_gcarc_flag = FALSE;
 //
 // NetCDF matched pairs, PostScript, and contingency table output files
 //
-ps_plot_flag    = TRUE;
+//ps_plot_flag =
+${METPLUS_PS_PLOT_FLAG}
 
 //nc_pairs_flag = {
 ${METPLUS_NC_PAIRS_FLAG_DICT}
 
-ct_stats_flag   = TRUE;
+//ct_stats_flag =
+${METPLUS_CT_STATS_FLAG}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 
