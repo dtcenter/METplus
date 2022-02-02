@@ -39,7 +39,7 @@ def set_minimum_config_settings(config):
          {'METPLUS_MESSAGE_TYPE_MAP': 'message_type_map = [{ key = “AIRCAR”; val = “AIRCAR_PROFILES”; }];'}, ''),
         # 2
         ({'IODA2NC_MESSAGE_TYPE_GROUP_MAP': '{ key = "SURFACE"; val = "ADPSFC,SFCSHP,MSONET";},{ key = "ANYAIR";  val = "AIRCAR,AIRCFT";}', },
-         {'METPLUS_MESSAGE_TYPE_GROUP_MAP': 'message_type_group_map = [{ key = "SURFACE"; val = "ADPSFC, SFCSHP, MSONET";}, { key = "ANYAIR";  val = "AIRCAR, AIRCFT";}];'}, ''),
+         {'METPLUS_MESSAGE_TYPE_GROUP_MAP': 'message_type_group_map = [{ key = "SURFACE"; val = "ADPSFC,SFCSHP,MSONET";}, { key = "ANYAIR";  val = "AIRCAR,AIRCFT";}];'}, ''),
         # 3
         ({'IODA2NC_STATION_ID': 'value1, value2', },
          {'METPLUS_STATION_ID': 'station_id = ["value1", "value2"];'}, ''),

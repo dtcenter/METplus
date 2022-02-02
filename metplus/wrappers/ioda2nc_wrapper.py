@@ -34,13 +34,11 @@ class IODA2NCWrapper(LoopTimesWrapper):
         'METPLUS_TIME_SUMMARY_DICT',
     ]
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         self.app_name = "ioda2nc"
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
     def create_c_dict(self):
         """! Read METplusConfig object and sets values in dictionary to be

@@ -49,6 +49,9 @@ class GridStatWrapper(CompareGriddedWrapper):
         'METPLUS_OBS_FILE_TYPE',
         'METPLUS_HSS_EC_VALUE',
         'METPLUS_DISTANCE_MAP_DICT',
+        'METPLUS_FOURIER_DICT',
+        'METPLUS_CENSOR_THRESH',
+        'METPLUS_CENSOR_VAL',
     ]
 
     # handle deprecated env vars used pre v4.0.0
@@ -93,13 +96,11 @@ class GridStatWrapper(CompareGriddedWrapper):
                       'apply_mask',
                     ]
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         self.app_name = 'grid_stat'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -245,6 +246,19 @@ class GridStatWrapper(CompareGriddedWrapper):
             'zhu_weight': 'float',
             'beta_value(n)': ('string', 'remove_quotes'),
         })
+
+        self.add_met_config_dict('fourier', {
+            'wave_1d_beg': ('list', 'remove_quotes'),
+            'wave_1d_end': ('list', 'remove_quotes'),
+        })
+
+        self.add_met_config(name='censor_thresh',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
+
+        self.add_met_config(name='censor_val',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
 
         return c_dict
 

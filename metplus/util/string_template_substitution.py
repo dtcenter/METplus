@@ -330,7 +330,7 @@ def do_string_sub(tmpl,
          defined in the call to this function.
         @param kwargs any additional arguments that are passed to the function.
          These will be used to replace values in the template. For example, if
-         my_arg=my_value is passed to the function, any occurence of {my_arg}
+         my_arg=my_value is passed to the function, any occurrence of {my_arg}
          in the template will be substituted with 'my_value'.
         @returns template with tags substituted with values
     """
@@ -773,8 +773,8 @@ def add_date_matches_to_output_dict(match_dict, output_dict, time_type, valid_sh
     time_values = {
         'Y': -1,
         'y': -1,
-        'm': -1,
-        'd': -1,
+        'm': 1,
+        'd': 1,
         'j': -1,
         'H': 0,
         'M': 0,

@@ -6,9 +6,12 @@ Contact(s): George McCabe
 import os
 import shutil
 
+from ..util import getlist
 from ..util import met_util as util
 from ..util import time_util
 from ..util import do_string_sub
+from ..util import time_generator
+from ..util import remove_quotes
 from . import CommandBuilder
 
 class TCMPRPlotterWrapper(CommandBuilder):
@@ -56,12 +59,10 @@ class TCMPRPlotterWrapper(CommandBuilder):
         'save': 'bool',
     }
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         self.app_name = 'tcmpr_plotter'
 
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -107,7 +108,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
             self.log_error("TCMPR_PLOTTER_CONFIG_FILE must be set")
 
         # get time information
-        input_dict = self.set_time_dict_for_single_runtime()
+        input_dict = next(time_generator(self.config))
         if not input_dict:
             self.isOK = False
         c_dict['TIME_INFO'] = time_util.ti_calculate(input_dict)
@@ -151,16 +152,14 @@ class TCMPRPlotterWrapper(CommandBuilder):
             elif 'bool' in data_type:
                 value = self.config.getbool('config', config_name, '')
             elif 'list' in data_type:
-                value = util.getlist(self.config.getraw('config',
-                                                        config_name,
-                                                        ''))
+                value = getlist(self.config.getraw('config', config_name))
             else:
                 self.log_error(f"Invalid type for {name}: {data_type}")
 
             if value:
                 # add quotes around value if they are not already there
                 if 'quotes' in data_type:
-                    value = f'"{util.remove_quotes(value)}"'
+                    value = f'"{remove_quotes(value)}"'
 
                 # don't add value for boolean
                 if data_type == 'bool':
@@ -186,12 +185,8 @@ class TCMPRPlotterWrapper(CommandBuilder):
             elif name == 'dep':
                 config_name = f'{config_name}_VARS'
 
-            values = util.getlist(self.config.getraw('config',
-                                                     config_name,
-                                                     ''))
-            labels = util.getlist(self.config.getraw('config',
-                                                     label_config_name,
-                                                     ''))
+            values = getlist(self.config.getraw('config', config_name))
+            labels = getlist(self.config.getraw('config', label_config_name))
 
             # if labels are not set, use values as labels
             if not labels:

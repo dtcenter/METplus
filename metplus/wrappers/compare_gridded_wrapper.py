@@ -31,14 +31,12 @@ class CompareGriddedWrapper(CommandBuilder):
 that reformat gridded data
     """
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         # set app_name if not set by child class to allow tests to run on this wrapper
         if not hasattr(self, 'app_name'):
             self.app_name = 'compare_gridded'
 
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
         # check to make sure all necessary probabilistic settings are set correctly
         # this relies on the subclass to finish creating the c_dict, so it has to
         # be checked after that happens
@@ -404,7 +402,8 @@ that reformat gridded data
 
     def handle_climo_cdf_dict(self):
         self.add_met_config_dict('climo_cdf', {
-            'cdf_bins': ('float', None, None, ['CLIMO_CDF_BINS']),
+            'cdf_bins': ('float', None, None,
+                         [f'{self.app_name.upper()}_CLIMO_CDF_BINS']),
             'center_bins': 'bool',
             'write_bins': 'bool',
         })

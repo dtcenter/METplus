@@ -547,6 +547,15 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
         ({'ENSEMBLE_STAT_OBS_QUALITY_EXC': '5,6,7', },
          {'METPLUS_OBS_QUALITY_EXC': 'obs_quality_exc = ["5", "6", "7"];'}),
 
+        ({'ENSEMBLE_STAT_ENS_MEMBER_IDS': '1,2,3,4', },
+         {'METPLUS_ENS_MEMBER_IDS': 'ens_member_ids = ["1", "2", "3", "4"];'}),
+
+        ({'ENSEMBLE_STAT_CONTROL_ID': '0', },
+         {'METPLUS_CONTROL_ID': 'control_id = "0";'}),
+
+        ({'ENSEMBLE_STAT_GRID_WEIGHT_FLAG': 'COS_LAT', },
+         {'METPLUS_GRID_WEIGHT_FLAG': 'grid_weight_flag = COS_LAT;'}),
+
     ]
 )
 def test_ensemble_stat_single_field(metplus_config, config_overrides,

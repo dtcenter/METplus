@@ -10,7 +10,6 @@
 #   matplotlib==3.3.0
 #   scipy==1.5.1
 #   plotly==4.9.0
-#   pingouin==0.3.8
 #   cartopy==0.18.0
 #   eofs==1.3.0
 #   cmocean==2.0
@@ -34,7 +33,6 @@ conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 conda install -y --name ${ENV_NAME} -c conda-forge matplotlib==3.3.0
 conda install -y --name ${ENV_NAME} -c conda-forge scipy==1.5.1
 conda install -y --name ${ENV_NAME} -c conda-forge plotly==4.9.0
-conda install -y --name ${ENV_NAME} -c conda-forge pingouin==0.3.8
 conda install -y --name ${ENV_NAME} -c conda-forge cartopy==0.18.0
 conda install -y --name ${ENV_NAME} -c conda-forge eofs==1.3.0
 conda install -y --name ${ENV_NAME} -c conda-forge cmocean==2.0

@@ -33,13 +33,11 @@ executable, relative to MET_BIN_DIR.
 The init function also calls the parent's initialization function
 using super() function::
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         self.app_name = "ascii2nc"
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
 The above code block is an excerpt from the ASCII2NCWrapper,
 found in metplus/wrappers/ascii2nc_wrapper.py.
@@ -302,12 +300,12 @@ data type, extra info, children, and nicknames.
 * extra: Additional info as a comma separated string (see extra_args above)
 * children: Dictionary defining a nested dictionary where the key is the name
   of the sub-directory and the value is the item info (see items above)
-* nicknames: List of METplus variable names (with app name excluded) to also
+* nicknames: List of METplus variable names to also
   search and use if it is set. For example, the GridStat variable mask.poly is
   set by the METplus config variable GRID_STAT_MASK_POLY. However, in older
   versions of the METplus wrappers, the variable used was
   GRID_STAT_VERIFICATION_MASK_TEMPLATE. To preserve support for this name, the
-  nickname can be set to ['VERIFICATION_MASK_TEMPLATE'] and the old variable
+  nickname can be set to [f'{self.app_name.upper()}_VERIFICATION_MASK_TEMPLATE'] and the old variable
   will be checked if GRID_STAT_MASK_POLY is not set.
 
 Values must be set to None to preserve the order.
@@ -320,7 +318,7 @@ CompareGriddedWrapper and is used by GridStat, PointStat, and EnsembleStat::
 
     def handle_climo_cdf_dict(self):
         self.add_met_config_dict('climo_cdf', {
-            'cdf_bins': ('float', None, None, ['CLIMO_CDF_BINS']),
+            'cdf_bins': ('float', None, None, [f'{self.app_name.upper()}_CLIMO_CDF_BINS']),
             'center_bins': 'bool',
             'write_bins': 'bool',
         })
@@ -329,7 +327,7 @@ This function handles setting the climo_cdf dictionary. The METplus config
 variable that fits the format {APP_NAME}_{DICTIONARY_NAME}_{VARIABLE_NAME},
 i.e. GRID_STAT_CLIMO_CDF_CDF_BINS for GridStat's climo_cdf.cdf_bins, is
 quieried first. However, this default name is a little redundant, so adding
-the nickname 'CLIMO_CDF_BINS' allows the user to set the variable
+the nickname 'GRID_STAT_CLIMO_CDF_BINS' allows the user to set the variable
 GRID_STAT_CLIMO_CDF_BINS instead.
 
 There are many MET config dictionaries that only contain beg and end to define

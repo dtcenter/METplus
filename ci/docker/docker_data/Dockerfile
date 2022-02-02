@@ -17,7 +17,8 @@ RUN if [ "x${MOUNTPT}" == "x" ]; then \
       exit 1; \
     fi
 
-ENV CASE_DIR=/data/input/METplus_Data
+ARG DATA_DIR=/data/input/METplus_Data
+ENV CASE_DIR=${DATA_DIR}
 RUN mkdir -p ${CASE_DIR}
 
 RUN for URL in `echo ${TARFILE_URL} | tr "," " "`; do \

@@ -20,7 +20,7 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 # clusters.  This helps determine the optimal cluster number by examining the largest 
 # difference between the curve and the straight line.  The EOFs step is optional.  It 
 # computes an empirical orthogonal function analysis.  The K means step uses clustering 
-# to compute the frequency of occurrernce and anomalies for each cluster to give the most 
+# to compute the frequency of occurrence and anomalies for each cluster to give the most 
 # common weather regimes.  Then, the time frequency computes the frequency of each weather
 # regime over a user specified time frame.  Finally, stat_analysis can be run to compute
 # an categorical analysis of the weather regime classification or an anomaly correlation of

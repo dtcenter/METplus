@@ -28,14 +28,14 @@ Update DTC Website
     * Add Link: Link text should be "User's Guide" and the URL should be the top
       level directory of the User's Guide hosted on the web. Beta releases can
       use "develop" in the URL, but for official releases, please ensure the
-      link uses the branch name (e.g. main_v4.0) as opposed to the tag name
-      (e.g. v4.0.0).  For example, use
-      "https://metplus.readthedocs.io/en/main_v4.0/Users_Guide/" and NOT
-      "https://metplus.readthedocs.io/en/v4.0.0/Users_Guide/"
+      link uses the branch name (e.g. main_vX.Y) as opposed to the tag name
+      (e.g. vX.Y.Z).  For example, use
+      "https://metplus.readthedocs.io/en/main_vX.Y/Users_Guide/" and NOT
+      "https://metplus.readthedocs.io/en/vX.Y.Z/Users_Guide/"
 
     * Add Link: Link text should be "Existing Builds and Docker" and the URL
       should be the latest Existing Builds page, i.e.
-      https://dtcenter.org/community-code/metplus/metplus-4-0-existing-builds
+      https://dtcenter.org/community-code/metplus/metplus-X-Y-existing-builds
       (If creating a new official release, be sure to add a new *Existing Builds
       and Docker* page, if one was not already created.)
   
@@ -43,8 +43,6 @@ Update DTC Website
     the *release-notes.html* file in the User's Guide.
 
   * Click on "Create Release".
-
-  * Click on "Save".
 
   * Update the existing releases, as needed.
     
@@ -58,3 +56,6 @@ Update DTC Website
       releases.
       
   * |otherWebsiteUpdates|
+
+  * Click on "Save".
+

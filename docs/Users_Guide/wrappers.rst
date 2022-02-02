@@ -183,6 +183,8 @@ METplus Configuration
 | :term:`OBS_ENSEMBLE_STAT_GRID_INPUT_TEMPLATE`
 | :term:`FCST_ENSEMBLE_STAT_INPUT_TEMPLATE`
 | :term:`ENSEMBLE_STAT_OUTPUT_TEMPLATE`
+| :term:`ENSEMBLE_STAT_CTRL_INPUT_DIR`
+| :term:`ENSEMBLE_STAT_CTRL_INPUT_TEMPLATE`
 | :term:`LOG_ENSEMBLE_STAT_VERBOSITY`
 | :term:`FCST_ENSEMBLE_STAT_INPUT_DATATYPE`
 | :term:`OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE`
@@ -236,6 +238,8 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_CLIMO_MEAN_MATCH_MONTH`
 | :term:`ENSEMBLE_STAT_CLIMO_MEAN_DAY_INTERVAL`
 | :term:`ENSEMBLE_STAT_CLIMO_MEAN_HOUR_INTERVAL`
+| :term:`ENSEMBLE_STAT_CLIMO_MEAN_USE_FCST`
+| :term:`ENSEMBLE_STAT_CLIMO_MEAN_USE_OBS`
 | :term:`ENSEMBLE_STAT_CLIMO_STDEV_FILE_NAME`
 | :term:`ENSEMBLE_STAT_CLIMO_STDEV_FIELD`
 | :term:`ENSEMBLE_STAT_CLIMO_STDEV_REGRID_METHOD`
@@ -246,6 +250,8 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_CLIMO_STDEV_MATCH_MONTH`
 | :term:`ENSEMBLE_STAT_CLIMO_STDEV_DAY_INTERVAL`
 | :term:`ENSEMBLE_STAT_CLIMO_STDEV_HOUR_INTERVAL`
+| :term:`ENSEMBLE_STAT_CLIMO_STDEV_USE_FCST`
+| :term:`ENSEMBLE_STAT_CLIMO_STDEV_USE_OBS`
 | :term:`ENSEMBLE_STAT_MASK_GRID`
 | :term:`ENSEMBLE_STAT_CI_ALPHA`
 | :term:`ENSEMBLE_STAT_INTERP_FIELD`
@@ -277,6 +283,9 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_OBS_QUALITY_INC`
 | :term:`ENSEMBLE_STAT_OBS_QUALITY_EXC`
 | :term:`ENSEMBLE_STAT_MET_CONFIG_OVERRIDES`
+| :term:`ENSEMBLE_STAT_ENS_MEMBER_IDS`
+| :term:`ENSEMBLE_STAT_CONTROL_ID`
+| :term:`ENSEMBLE_STAT_GRID_WEIGHT_FLAG`
 | :term:`ENSEMBLE_STAT_VERIFICATION_MASK_TEMPLATE` (optional)
 | :term:`ENS_VAR<n>_NAME` (optional)
 | :term:`ENS_VAR<n>_LEVELS` (optional)
@@ -853,6 +862,28 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`ENSEMBLE_STAT_OBS_QUALITY_EXC`
      - obs_quality_exc
 
+**${METPLUS_ENS_MEMBER_IDS}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_ENS_MEMBER_IDS`
+     - ens_member_ids
+
+**${METPLUS_CONTROL_ID}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_CONTROL_ID`
+     - control_id
+
 **${METPLUS_MET_CONFIG_OVERRIDES}**
 
 .. list-table::
@@ -863,6 +894,18 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`ENSEMBLE_STAT_MET_CONFIG_OVERRIDES`
      - n/a
+
+**${METPLUS_GRID_WEIGHT_FLAG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_GRID_WEIGHT_FLAG`
+     - grid_weight_flag
+
 
 .. _example_wrapper:
 
@@ -1025,6 +1068,8 @@ METplus Configuration
 | :term:`GEN_ENS_PROD_CLIMO_MEAN_MATCH_MONTH`
 | :term:`GEN_ENS_PROD_CLIMO_MEAN_DAY_INTERVAL`
 | :term:`GEN_ENS_PROD_CLIMO_MEAN_HOUR_INTERVAL`
+| :term:`GEN_ENS_PROD_CLIMO_MEAN_USE_FCST`
+| :term:`GEN_ENS_PROD_CLIMO_MEAN_USE_OBS`
 | :term:`GEN_ENS_PROD_CLIMO_STDEV_FILE_NAME`
 | :term:`GEN_ENS_PROD_CLIMO_STDEV_FIELD`
 | :term:`GEN_ENS_PROD_CLIMO_STDEV_REGRID_METHOD`
@@ -1035,6 +1080,8 @@ METplus Configuration
 | :term:`GEN_ENS_PROD_CLIMO_STDEV_MATCH_MONTH`
 | :term:`GEN_ENS_PROD_CLIMO_STDEV_DAY_INTERVAL`
 | :term:`GEN_ENS_PROD_CLIMO_STDEV_HOUR_INTERVAL`
+| :term:`GEN_ENS_PROD_CLIMO_STDEV_USE_FCST`
+| :term:`GEN_ENS_PROD_CLIMO_STDEV_USE_OBS`
 | :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_LATLON`
 | :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_MEAN`
 | :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_STDEV`
@@ -1049,6 +1096,8 @@ METplus Configuration
 | :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_NMEP`
 | :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO`
 | :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO_CDF`
+| :term:`GEN_ENS_PROD_ENS_MEMBER_IDS`
+| :term:`GEN_ENS_PROD_CONTROL_ID`
 | :term:`GEN_ENS_PROD_MET_CONFIG_OVERRIDES`
 
 .. _gen-ens-prod-met-conf:
@@ -1338,6 +1387,28 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - ensemble_flag.climo
    * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO_CDF`
      - ensemble_flag.climo_cdf
+
+**${METPLUS_ENS_MEMBER_IDS}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_ENS_MEMBER_IDS`
+     - ens_member_ids
+
+**${METPLUS_CONTROL_ID}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_CONTROL_ID`
+     - control_id
 
 **${METPLUS_MET_CONFIG_OVERRIDES}**
 
@@ -2784,6 +2855,8 @@ METplus Configuration
 | :term:`GRID_STAT_CLIMO_MEAN_MATCH_MONTH`
 | :term:`GRID_STAT_CLIMO_MEAN_DAY_INTERVAL`
 | :term:`GRID_STAT_CLIMO_MEAN_HOUR_INTERVAL`
+| :term:`GRID_STAT_CLIMO_MEAN_USE_FCST`
+| :term:`GRID_STAT_CLIMO_MEAN_USE_OBS`
 | :term:`GRID_STAT_CLIMO_STDEV_FILE_NAME`
 | :term:`GRID_STAT_CLIMO_STDEV_FIELD`
 | :term:`GRID_STAT_CLIMO_STDEV_REGRID_METHOD`
@@ -2794,12 +2867,18 @@ METplus Configuration
 | :term:`GRID_STAT_CLIMO_STDEV_MATCH_MONTH`
 | :term:`GRID_STAT_CLIMO_STDEV_DAY_INTERVAL`
 | :term:`GRID_STAT_CLIMO_STDEV_HOUR_INTERVAL`
+| :term:`GRID_STAT_CLIMO_STDEV_USE_FCST`
+| :term:`GRID_STAT_CLIMO_STDEV_USE_OBS`
 | :term:`GRID_STAT_HSS_EC_VALUE`
 | :term:`GRID_STAT_DISTANCE_MAP_BADDELEY_P`
 | :term:`GRID_STAT_DISTANCE_MAP_BADDELEY_MAX_DIST`
 | :term:`GRID_STAT_DISTANCE_MAP_FOM_ALPHA`
 | :term:`GRID_STAT_DISTANCE_MAP_ZHU_WEIGHT`
 | :term:`GRID_STAT_DISTANCE_MAP_BETA_VALUE_N`
+| :term:`GRID_STAT_FOURIER_WAVE_1D_BEG`
+| :term:`GRID_STAT_FOURIER_WAVE_1D_END`
+| :term:`GRID_STAT_CENSOR_THRESH`
+| :term:`GRID_STAT_CENSOR_VAL`
 | :term:`GRID_STAT_MASK_GRID` (optional)
 | :term:`GRID_STAT_MASK_POLY` (optional)
 | :term:`GRID_STAT_MET_CONFIG_OVERRIDES`
@@ -3265,6 +3344,42 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - distance_map.zhu_weight
    * - :term:`GRID_STAT_DISTANCE_MAP_BETA_VALUE_N`
      - distance_map.beta_value(n)
+
+**${METPLUS_FOURIER_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_FOURIER_WAVE_1D_BEG`
+     - fourier.wave_1d_beg
+   * - :term:`GRID_STAT_FOURIER_WAVE_1D_END`
+     - fourier.wave_1d_end
+
+**${METPLUS_CENSOR_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_CENSOR_THRESH`
+     - censor_thresh
+
+**${METPLUS_CENSOR_VAL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_CENSOR_VAL`
+     - censor_val
+
 
 .. _ioda2nc_wrapper:
 
@@ -3926,6 +4041,8 @@ METplus Configuration
 | :term:`MODE_INTEREST_FUNCTION_CENTROID_DIST`
 | :term:`MODE_INTEREST_FUNCTION_BOUNDARY_DIST`
 | :term:`MODE_INTEREST_FUNCTION_CONVEX_HULL_DIST`
+| :term:`MODE_PS_PLOT_FLAG`
+| :term:`MODE_CT_STATS_FLAG`
 | :term:`FCST_MODE_VAR<n>_NAME` (optional)
 | :term:`FCST_MODE_VAR<n>_LEVELS` (optional)
 | :term:`FCST_MODE_VAR<n>_THRESH` (optional)
@@ -4440,7 +4557,27 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`MODE_TOTAL_INTEREST_THRESH`
      - total_interest_thresh
 
+**${METPLUS_PS_PLOT_FLAG}**
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_PS_PLOT_FLAG`
+     - ps_plot_flag
+
+**${METPLUS_CT_STATS_FLAG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_CT_STATS_FLAG`
+     - ct_stats_flag
 
 
 .. _mtd_wrapper:
@@ -4750,6 +4887,8 @@ METplus Configuration
 | :term:`PB2NC_LEVEL_RANGE_END`
 | :term:`PB2NC_LEVEL_CATEGORY`
 | :term:`PB2NC_QUALITY_MARK_THRESH`
+| :term:`PB2NC_OBS_BUFR_MAP`
+| :term:`PB2NC_OBS_PREPBUFR_MAP`
 
 .. warning:: **DEPRECATED:**
 
@@ -4938,6 +5077,27 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`PB2NC_QUALITY_MARK_THRESH`
      - quality_mark_thresh
 
+**${METPLUS_OBS_BUFR_MAP}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PB2NC_OBS_BUFR_MAP`
+     - obs_bufr_map
+
+**${METPLUS_OBS_PREPBUFR_MAP}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PB2NC_OBS_PREPBUFR_MAP`
+     - obs_prepbufr_map
 
 .. _pcp_combine_wrapper:
 
@@ -4995,6 +5155,8 @@ METplus Configuration
 | :term:`PCP_COMBINE_CUSTOM_LOOP_LIST`
 | :term:`FCST_PCP_COMBINE_LOOKBACK`
 | :term:`OBS_PCP_COMBINE_LOOKBACK`
+| :term:`FCST_PCP_COMBINE_USE_ZERO_ACCUM`
+| :term:`OBS_PCP_COMBINE_USE_ZERO_ACCUM`
 | :term:`FCST_PCP_COMBINE_EXTRA_NAMES` (optional)
 | :term:`FCST_PCP_COMBINE_EXTRA_LEVELS` (optional)
 | :term:`FCST_PCP_COMBINE_EXTRA_OUTPUT_NAMES` (optional)
@@ -5136,9 +5298,10 @@ Configuration
 | :term:`POINT_STAT_REGRID_WIDTH`
 | :term:`POINT_STAT_REGRID_VLD_THRESH`
 | :term:`POINT_STAT_REGRID_SHAPE`
-| :term:`POINT_STAT_GRID`
-| :term:`POINT_STAT_POLY`
-| :term:`POINT_STAT_STATION_ID`
+| :term:`POINT_STAT_MASK_GRID`
+| :term:`POINT_STAT_MASK_POLY`
+| :term:`POINT_STAT_MASK_SID`
+| :term:`POINT_STAT_MASK_LLPNT`
 | :term:`POINT_STAT_MESSAGE_TYPE`
 | :term:`POINT_STAT_CUSTOM_LOOP_LIST`
 | :term:`POINT_STAT_SKIP_IF_OUTPUT_EXISTS`
@@ -5183,6 +5346,8 @@ Configuration
 | :term:`POINT_STAT_CLIMO_MEAN_MATCH_MONTH`
 | :term:`POINT_STAT_CLIMO_MEAN_DAY_INTERVAL`
 | :term:`POINT_STAT_CLIMO_MEAN_HOUR_INTERVAL`
+| :term:`POINT_STAT_CLIMO_MEAN_USE_FCST`
+| :term:`POINT_STAT_CLIMO_MEAN_USE_OBS`
 | :term:`POINT_STAT_CLIMO_STDEV_FILE_NAME`
 | :term:`POINT_STAT_CLIMO_STDEV_FIELD`
 | :term:`POINT_STAT_CLIMO_STDEV_REGRID_METHOD`
@@ -5193,7 +5358,16 @@ Configuration
 | :term:`POINT_STAT_CLIMO_STDEV_MATCH_MONTH`
 | :term:`POINT_STAT_CLIMO_STDEV_DAY_INTERVAL`
 | :term:`POINT_STAT_CLIMO_STDEV_HOUR_INTERVAL`
+| :term:`POINT_STAT_CLIMO_STDEV_USE_FCST`
+| :term:`POINT_STAT_CLIMO_STDEV_USE_OBS`
 | :term:`POINT_STAT_HSS_EC_VALUE`
+| :term:`POINT_STAT_HIRA_FLAG`
+| :term:`POINT_STAT_HIRA_WIDTH`
+| :term:`POINT_STAT_HIRA_VLD_THRESH`
+| :term:`POINT_STAT_HIRA_COV_THRESH`
+| :term:`POINT_STAT_HIRA_SHAPE`
+| :term:`POINT_STAT_HIRA_PROB_CAT_THRESH`
+| :term:`POINT_STAT_MESSAGE_TYPE_GROUP_MAP`
 | :term:`FCST_POINT_STAT_WINDOW_BEGIN` (optional)
 | :term:`FCST_POINT_STAT_WINDOW_END` (optional)
 | :term:`OBS_POINT_STAT_WINDOW_BEGIN` (optional)
@@ -5453,6 +5627,18 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`POINT_STAT_MASK_SID`
      - mask.sid
 
+**${METPLUS_MASK_LLPNT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_MASK_LLPNT`
+     - mask.llpnt
+
+
 **${METPLUS_OUTPUT_PREFIX}**
 
 .. list-table::
@@ -5589,6 +5775,37 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`POINT_STAT_HSS_EC_VALUE`
      - hss_ec_value
 
+**${METPLUS_HIRA_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_HIRA_FLAG`
+     - hira.flag
+   * - :term:`POINT_STAT_HIRA_WIDTH`
+     - hira.width
+   * - :term:`POINT_STAT_HIRA_VLD_THRESH`
+     - hira.vld_thresh
+   * - :term:`POINT_STAT_HIRA_COV_THRESH`
+     - hira.cov_thresh
+   * - :term:`POINT_STAT_HIRA_SHAPE`
+     - hira.shape
+   * - :term:`POINT_STAT_HIRA_PROB_CAT_THRESH`
+     - hira.prob_cat_thresh
+
+**${METPLUS_MESSAGE_TYPE_GROUP_MAP}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_MESSAGE_TYPE_GROUP_MAP`
+     - message_type_group_map
 
 .. _py_embed_ingest_wrapper:
 
@@ -5735,6 +5952,9 @@ METplus Configuration
 | :term:`SERIES_ANALYSIS_CLIMO_MEAN_MATCH_MONTH`
 | :term:`SERIES_ANALYSIS_CLIMO_MEAN_DAY_INTERVAL`
 | :term:`SERIES_ANALYSIS_CLIMO_MEAN_HOUR_INTERVAL`
+| :term:`SERIES_ANALYSIS_CLIMO_MEAN_FILE_TYPE`
+| :term:`SERIES_ANALYSIS_CLIMO_MEAN_USE_FCST`
+| :term:`SERIES_ANALYSIS_CLIMO_MEAN_USE_OBS`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_FILE_NAME`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_FIELD`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_REGRID_METHOD`
@@ -5745,7 +5965,24 @@ METplus Configuration
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_MATCH_MONTH`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_DAY_INTERVAL`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_HOUR_INTERVAL`
+| :term:`SERIES_ANALYSIS_CLIMO_STDEV_FILE_TYPE`
+| :term:`SERIES_ANALYSIS_CLIMO_STDEV_USE_FCST`
+| :term:`SERIES_ANALYSIS_CLIMO_STDEV_USE_OBS`
 | :term:`SERIES_ANALYSIS_HSS_EC_VALUE`
+| :term:`SERIES_ANALYSIS_OUTPUT_STATS_FHO`
+| :term:`SERIES_ANALYSIS_OUTPUT_STATS_CTC`
+| :term:`SERIES_ANALYSIS_OUTPUT_STATS_CTS`
+| :term:`SERIES_ANALYSIS_OUTPUT_STATS_MCTC`
+| :term:`SERIES_ANALYSIS_OUTPUT_STATS_MCTS`
+| :term:`SERIES_ANALYSIS_OUTPUT_STATS_CNT`
+| :term:`SERIES_ANALYSIS_OUTPUT_STATS_SL1L2`
+| :term:`SERIES_ANALYSIS_OUTPUT_STATS_SAL1L2`
+| :term:`SERIES_ANALYSIS_OUTPUT_STATS_PCT`
+| :term:`SERIES_ANALYSIS_OUTPUT_STATS_PSTD`
+| :term:`SERIES_ANALYSIS_OUTPUT_STATS_PJC`
+| :term:`SERIES_ANALYSIS_OUTPUT_STATS_PRC`
+| :term:`FCST_SERIES_ANALYSIS_CAT_THRESH`
+| :term:`OBS_SERIES_ANALYSIS_CAT_THRESH`
 |
 
 .. warning:: **DEPRECATED:**
@@ -5928,6 +6165,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - climo_mean.day_interval
    * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_HOUR_INTERVAL`
      - climo_mean.hour_interval
+   * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_FILE_TYPE`
+     - climo_mean.file_type
 
 **${METPLUS_CLIMO_STDEV_DICT}**
 
@@ -5957,6 +6196,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - climo_stdev.day_interval
    * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_HOUR_INTERVAL`
      - climo_stdev.hour_interval
+   * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_FILE_TYPE`
+     - climo_stdev.file_type
 
 
 **${METPLUS_BLOCK_SIZE}**
@@ -5981,28 +6222,6 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`SERIES_ANALYSIS_VLD_THRESH`
      - vld_thresh
 
-**${METPLUS_CTS_LIST}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`SERIES_ANALYSIS_CTS_LIST`
-     - output_stats.cts
-
-**${METPLUS_STAT_LIST}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`SERIES_ANALYSIS_STAT_LIST`
-     - output_stats.cnt
-
 **${METPLUS_MET_CONFIG_OVERRIDES}**
 
 .. list-table::
@@ -6024,6 +6243,61 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`SERIES_ANALYSIS_HSS_EC_VALUE`
      - hss_ec_value
+
+**${METPLUS_OUTPUT_STATS_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`SERIES_ANALYSIS_OUTPUT_STATS_FHO`
+     - output_stats.fho
+   * - :term:`SERIES_ANALYSIS_OUTPUT_STATS_CTC`
+     - output_stats.ctc
+   * - :term:`SERIES_ANALYSIS_OUTPUT_STATS_CTS`
+     - output_stats.cts
+   * - :term:`SERIES_ANALYSIS_OUTPUT_STATS_MCTC`
+     - output_stats.mctc
+   * - :term:`SERIES_ANALYSIS_OUTPUT_STATS_MCTS`
+     - output_stats.mcts
+   * - :term:`SERIES_ANALYSIS_OUTPUT_STATS_CNT`
+     - output_stats.cnt
+   * - :term:`SERIES_ANALYSIS_OUTPUT_STATS_SL1L2`
+     - output_stats.sl1l2
+   * - :term:`SERIES_ANALYSIS_OUTPUT_STATS_SAL1L2`
+     - output_stats.sal1l2
+   * - :term:`SERIES_ANALYSIS_OUTPUT_STATS_PCT`
+     - output_stats.pct
+   * - :term:`SERIES_ANALYSIS_OUTPUT_STATS_PSTD`
+     - output_stats.pstd
+   * - :term:`SERIES_ANALYSIS_OUTPUT_STATS_PJC`
+     - output_stats.pjc
+   * - :term:`SERIES_ANALYSIS_OUTPUT_STATS_PRC`
+     - output_stats.prc
+
+**${METPLUS_FCST_CAT_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`FCST_SERIES_ANALYSIS_CAT_THRESH`
+     - fcst.cat_thresh
+
+**${METPLUS_OBS_CAT_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`OBS_SERIES_ANALYSIS_CAT_THRESH`
+     - obs.cat_thresh
 
 
 SeriesByInit
@@ -7329,6 +7603,8 @@ METplus Configuration
 | :term:`TC_PAIRS_CONSENSUS<n>_MIN_REQ`
 | :term:`TC_PAIRS_SKIP_LEAD_SEQ`
 | :term:`TC_PAIRS_RUN_ONCE`
+| :term:`TC_PAIRS_CHECK_DUP`
+| :term:`TC_PAIRS_INTERP12`
 |
 
 .. warning:: **DEPRECATED:**
@@ -7577,6 +7853,28 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - consensus.required
    * - :term:`TC_PAIRS_CONSENSUS<n>_MIN_REQ`
      - consensus.min_req
+
+**${METPLUS_CHECK_DUP}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_PAIRS_CHECK_DUP`
+     - check_dup
+
+**${METPLUS_INTERP12}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_PAIRS_INTERP12`
+     - interp12
 
 .. _tcrmw_wrapper:
 

@@ -64,6 +64,9 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'METPLUS_OUTPUT_PREFIX',
         'METPLUS_OBS_QUALITY_INC',
         'METPLUS_OBS_QUALITY_EXC',
+        'METPLUS_ENS_MEMBER_IDS',
+        'METPLUS_CONTROL_ID',
+        'METPLUS_GRID_WEIGHT_FLAG',
     ]
 
     # handle deprecated env vars used pre v4.0.0
@@ -97,13 +100,11 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                       'weight',
                       ]
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         self.app_name = 'ensemble_stat'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
     def create_c_dict(self):
         """!Create a dictionary containing the values set in the config file
@@ -201,6 +202,16 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             self.config.getraw('config',
                                'ENSEMBLE_STAT_OUTPUT_TEMPLATE',
                                '')
+        )
+
+        # get ctrl (control) template/dir - optional
+        c_dict['CTRL_INPUT_TEMPLATE'] = self.config.getraw(
+            'config',
+            'ENSEMBLE_STAT_CTRL_INPUT_TEMPLATE'
+        )
+        c_dict['CTRL_INPUT_DIR'] = self.config.getdir(
+            'ENSEMBLE_STAT_CTRL_INPUT_DIR',
+            ''
         )
 
         # get climatology config variables
@@ -311,6 +322,17 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             metplus_configs=['ENSEMBLE_STAT_OBS_QUALITY_EXC',
                              'ENSEMBLE_STAT_OBS_QUALITY_EXCLUDE']
         )
+
+        self.add_met_config(name='ens_member_ids',
+                            data_type='list')
+
+        self.add_met_config(name='control_id',
+                            data_type='string')
+
+        self.add_met_config(name='grid_weight_flag',
+                            data_type='string',
+                            extra_args={'remove_quotes': True,
+                                        'uppercase': True})
 
         # old method of setting MET config values
         c_dict['ENS_THRESH'] = (
