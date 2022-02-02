@@ -66,19 +66,19 @@ at the bottom of the workflow summary page when the workflow has completed.
 .. figure:: figure/ci-doc-artifacts.png
 
 
-Release Published (release_published.yml)
------------------------------------------
+Release Published (release_published.yml) - DEPRECATED
+------------------------------------------------------
+
+**This workflow is no longer be required, as Slack now has GitHub integration
+to automatically create posts on certain events.** The workflow YAML file
+is still found in the repository for reference, but the workflow has been
+disabled via the Actions tab of the METplus GitHub webpage.
 
 This workflow is triggered when a release is published on GitHub.
 It uses cURL to trigger a Slack message on the DTC-METplus announcements
 channel that lists information about the release. A Slack bot was created
 through the Slack API and the webhook that generated for the Slack channel
 was saved as a GitHub Secret.
-
-This workflow may no longer be required, as Slack now has GitHub integration
-to automatically create posts on certain events. The format of the automated
-release posts will be reviewed and this workflow will likely be removed
-if the information posted is sufficient.
 
 .. _cg-ci-testing-workflow:
 
@@ -98,10 +98,10 @@ METplus GitHub page.
 
 .. figure:: figure/gha-workflow-name.png
 
-Trigger Control
----------------
+Event Control
+-------------
 
-The "on" keyword is used to determine which events will trigger the workflow
+The **on** keyword is used to determine which events will trigger the workflow
 to run. There are currently 3 types of events that trigger this workflow:
 push, pull_request, and workflow_dispatch.
 The jobs that are run in this workflow depend on which event has triggered it.
@@ -140,22 +140,24 @@ Pull Request
 ::
 
       pull_request:
-        types: [opened, reopened]
+        types: [opened, reopened, synchronize]
         paths-ignore:
           - 'docs/**'
 
 This configuration tells GitHub Actions to trigger the workflow for
 pull requests in the repository and the following criteria are met:
 
-* The pull request was **opened or **reopened**.
+* The pull request was opened, reopened, or synchronized.
 * Changes were made to at least one file that is not in the **docs** directory.
 
-Note: Previously the list of pull_request types included **synchronize**.
-This type triggers a workflow for every push to a branch that is included
-in an open pull request. If changes were requested in the pull request review,
-a new workflow will be triggered for each push. In this case, the pull request
-should be closed until the necessary changes are made. Reopening the pull
-request will trigger a workflow.
+The **synchronize** type triggers a workflow for every push to a branch
+that is included in an open pull request.
+If changes were requested in the pull request review,
+a new workflow will be triggered for each push.
+To prevent many workflows from being triggered, the pull request
+can be closed until the necessary changes are made or
+:ref:`cg-ci-commit-message-keywords` can be used.
+
 
 Workflow Dispatch
 ^^^^^^^^^^^^^^^^^
@@ -203,9 +205,9 @@ testing workflow that runs on the METplus main_v4.1 branch.
 Jobs
 ----
 
-The "jobs" keyword is used to define the jobs that are run in the workflow.
-Each item under "jobs" is a string that defines the ID of the job. This value
-can be referenced within the workflow as needed.
+The **jobs** keyword is used to define the jobs that are run in the workflow.
+Each item under **jobs** is a string that defines the ID of the job.
+This value can be referenced within the workflow as needed.
 Each job in the testing workflow is described in its own section.
 
 * :ref:`cg-ci-event-info`
@@ -218,7 +220,7 @@ Each job in the testing workflow is described in its own section.
 .. _cg-ci-event-info:
 
 Event Info
-==========
+----------
 
 This job contains information on what triggered the workflow.
 The name of the job contains complex logic to cleanly display information
@@ -238,7 +240,7 @@ in the workflow based on the event.
 .. _cg-ci-job-control:
 
 Job Control
-===========
+-----------
 
 ::
 
@@ -279,10 +281,10 @@ reads a JSON file that contains the use case test groups.
 The job control settings determine which of the use case groups to run.
 
 Output Variables
-----------------
+^^^^^^^^^^^^^^^^
 
 The step that calls the job control script is given an identifier using the
-'id' keyword::
+**id** keyword::
 
         id: job_status
         run: .github/jobs/set_job_controls.sh
@@ -300,17 +302,17 @@ syntax::
     ${{ steps.job_status.outputs.run_get_image }}
 
 The ID of the step is needed to reference the outputs for that step.
-Note that this notation should be referenced directly in the workflow .yml
-file and not inside a script that is called by the workflow.
+**Note that this notation should be referenced directly in the workflow .yml
+file and not inside a script that is called by the workflow.**
 
 To make the variable available to other jobs in the workflow, it will need
-to be set in the 'outputs' section of the job::
+to be set in the **outputs** section of the job::
 
         outputs:
           run_get_image: ${{ steps.job_status.outputs.run_get_image }}
 
-The variable run_get_image can be referenced by other jobs that include
-'job_status' as a job that must complete before starting using the 'needs'
+The variable **run_get_image** can be referenced by other jobs that include
+**job_status** as a job that must complete before starting using the **needs**
 keyword::
 
       get_image:
@@ -319,18 +321,18 @@ keyword::
         needs: job_control
         if: ${{ needs.job_control.outputs.run_get_image == 'true' }}
 
-Setting 'needs: job_control' tells the 'get_image' job to wait until the
-'job_control' job has completed before running. Since this is the case, this
-job can reference output from that job in the 'if' value to determine if the
+Setting **needs: job_control** tells the **get_image** job to wait until the
+**job_control** job has completed before running. Since this is the case, this
+job can reference output from that job in the **if** value to determine if the
 job should be run or not.
 
 .. _cg-ci-default-behavior:
 
 Default Behavior
-----------------
+^^^^^^^^^^^^^^^^
 
 On Push
-^^^^^^^
+"""""""
 
 When a push event occurs the default behavior is to run the following:
 
@@ -346,21 +348,21 @@ Default behavior for push events can be overridden using
 :ref:`cg-ci-commit-message-keywords`.
 
 On Pull Request
-^^^^^^^^^^^^^^^
+"""""""""""""""
 
-When a pull request is created into the develop branch or a main_vX.Y branch,
-additional jobs are run in automation. In addition to the jobs run for a push,
-the scripts will:
+When a pull request is created into the **develop** branch or
+a **main_vX.Y** branch, additional jobs are run in automation.
+In addition to the jobs run for a push, the scripts will:
 
 * Run all use cases
 * Compare use case output to truth data
 
 On Push to Reference Branch
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""""""""
 
-Branches with a name that ends with "-ref" contain the state of the repository
-that will generate output that is considered "truth" data. 
-In addition to the jobs run for a normal push, the scripts will:
+Branches with a name that ends with **-ref** contain the state of the
+repository that will generate output that is considered "truth" data.
+In addition to the jobs run for a push, the scripts will:
 
 * Run all use cases
 * Create/Update Docker data volumes that store truth data with the use case
@@ -369,7 +371,7 @@ In addition to the jobs run for a normal push, the scripts will:
 .. _cg-ci-commit-message-keywords:
 
 Commit Message Keywords
------------------------
+^^^^^^^^^^^^^^^^^^^^^^^
 
 The automation logic reads the commit message for the last commit before a
 push. Keywords in the commit message can override the default behavior.
@@ -377,15 +379,27 @@ Here is a list of the currently supported keywords and what they control:
 
 * **ci-skip-all**: Don't run anything - skip all automation jobs
 * **ci-skip-use-cases**: Don't run any use cases
+* **ci-skip-unit-tests**: Don't run the Pytest unit tests
 * **ci-run-all-cases**: Run all use cases
 * **ci-run-diff**: Obtain truth data and run diffing logic for
   use cases that are marked to run
 * **ci-run-all-diff**: Obtain truth data and run diffing logic for
   all use cases
-* **ci-only-docs**: Only run build documentation job - skip the rest
+
+.. _cg-ci-get-image:
+
+Create/Update Metplus Docker Image
+----------------------------------
+
+This job calls the **docker_setup.sh** script (found in .github/jobs).
+This script builds a METplus Docker image and pushes it to DockerHub.
+The image is pulled instead of built in each test job to save execution time.
+The script attempts to pull the appropriate Docker image from DockerHub
+(dtcenter/metplus-dev:**<BRANCH_NAME>**) if it already exists so that unchanged
+components of the Docker image do not need to be rebuilt.
 
 Force MET Version Used for Tests
---------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The tests typically use the develop version tag of the MET Docker image for
 development testing. If testing is done on a stable release, then the
@@ -411,22 +425,10 @@ for the step named "Get METplus Image."
           #MET_FORCE_TAG: 10.0.0
 
 
-.. _cg-ci-get-image:
-
-Create/Update Metplus Docker Image
-==================================
-
-This job calls the .github/jobs/docker_setup.sh script.
-This script builds a METplus Docker image and pushes it to DockerHub.
-The image is pulled instead of built in each test job to save execution time.
-The script attempts to pull the appropriate Docker image from DockerHub
-(dtcenter/metplus-dev:{BRANCH_NAME}) if it already exists so that unchanged
-components of the Docker image do not need to be rebuilt.
-
 .. _cg-ci-update-data-volumes:
 
 Create/Update Docker Data Volumes
-=================================
+---------------------------------
 
 The METplus use case tests obtain input data from Docker data volumes.
 Each use case category that corresponds to a directory in
@@ -444,8 +446,9 @@ When new data is needed for a new METplus use case, a directory that is named
 after a feature branch is populated with the existing data for the use case
 category and the new data is added there. This data is used for testing the
 new use case in the automated tests. When the pull request for the new use
-case is approved, the new data is moved into the develop branch version of the
-data so that it will be available for future tests. More details on this
+case is approved, the new data is moved into the version of the
+data that corresponds to the upcoming release (i.e. v4.1)
+so that it will be available for future tests. More details on this
 process can be found in the :ref:`use_case_input_data` section of the
 Add Use Cases chapter of the Contributor's Guide.
 
@@ -453,13 +456,38 @@ Add Use Cases chapter of the Contributor's Guide.
 .. _cg-ci-use-case-tests:
 
 Use Case Tests
-==============
+--------------
 
-TODO
+All Use Cases
+^^^^^^^^^^^^^
+
+All of the existing use cases are listed in **all_use_cases.txt** (found in internal_tests/use_cases):
+
+.. literalinclude:: ../../internal_tests/use_cases/all_use_cases.txt
+
+Use Case Groups
+^^^^^^^^^^^^^^^
+
+The use cases that are run in the automated test suite are divided into
+groups that can be run concurrently.
+
+.. literalinclude:: ../../.github/parm/use_case_groups.json
+
+Run Use Cases
+^^^^^^^^^^^^^
+
+Difference Tests
+^^^^^^^^^^^^^^^^
+
 
 .. _cg-ci-create-output-data-volumes:
 
 Create/Update Output Data Volumes
-=================================
+---------------------------------
+
+TODO
+
+Output (Artifacts)
+------------------
 
 TODO
