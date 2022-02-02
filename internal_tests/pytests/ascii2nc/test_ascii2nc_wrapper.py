@@ -28,8 +28,14 @@ def ascii2nc_wrapper(metplus_config, config_path=None, config_overrides=None):
         for key, value in config_overrides.items():
             overrides[key] = value
 
+    instance = 'overrides'
+    if not config.has_section(instance):
+        config.add_section(instance)
+    for key, value in overrides.items():
+        config.set(instance, key, value)
+
     return ASCII2NCWrapper(config,
-                           config_overrides=overrides)
+                           instance=instance)
 
 @pytest.mark.parametrize(
     'config_overrides, env_var_values', [

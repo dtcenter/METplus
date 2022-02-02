@@ -76,14 +76,11 @@ UserScript_obsERA_obsOnly_Stratosphere.py
 # 1) Passing in meridonial_means.conf, 
 # then a user-specific system configuration file::
 #
-#        run_metplus.py \
-#        -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_Stratosphere.conf \
-#        -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_Stratosphere.conf -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in meridonial.conf::
 #
-#        run_metplus.py \
-#        -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_Stratosphere.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_Stratosphere.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #

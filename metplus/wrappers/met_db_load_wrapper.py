@@ -44,16 +44,14 @@ class METDbLoadWrapper(RuntimeFreqWrapper):
                     'LOAD_MPR': 'bool',
                     }
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         met_data_db_dir = config.getdir('MET_DATA_DB_DIR')
         self.app_path = os.path.join(met_data_db_dir,
                                      'METdbLoad',
                                      'ush',
                                      'met_db_load')
         self.app_name = os.path.basename(self.app_path)
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()

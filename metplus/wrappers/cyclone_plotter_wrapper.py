@@ -1,5 +1,5 @@
 
-"""!@namespace ExtraTropicalCyclonePlotter
+"""!@namespace CyclonePlotter
 A Python class that generates plots of extra tropical cyclone forecast data,
  replicating the NCEP tropical and extra tropical cyclone tracks and
  verification plots http://www.emc.ncep.noaa.gov/mmb/gplou/emchurr/glblgen/
@@ -25,11 +25,13 @@ try:
     import cartopy
     from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 
-    ##If the script is run on a limited-internet access machine, the CARTOPY_DIR environment setting
-    ##will need to be set in the user-specific system configuration file. Review the Installation section
-    ##of the User's Guide for more details.
+    # If the script is run on a limited-internet access machine,
+    # the CARTOPY_DIR environment setting
+    # will need to be set in the user-specific system configuration file.
+    # Review the Installation section of the User's Guide for more details.
     if os.getenv('CARTOPY_DIR'):
-        cartopy.config['data_dir'] = os.getenv('CARTOPY_DIR', cartopy.config.get('data_dir'))
+        cartopy.config['data_dir'] = os.getenv('CARTOPY_DIR',
+                                               cartopy.config.get('data_dir'))
 
 except Exception as err_msg:
     WRAPPER_CANNOT_RUN = True
@@ -48,12 +50,10 @@ class CyclonePlotterWrapper(CommandBuilder):
         Reads input from ATCF files generated from MET TC-Pairs
     """
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         self.app_name = 'cyclone_plotter'
 
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
         if WRAPPER_CANNOT_RUN:
             self.log_error("There was a problem importing modules: "

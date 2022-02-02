@@ -7,7 +7,7 @@ import os
 
 from .string_manip import getlist
 from .met_util import get_threshold_via_regex, MISSING_DATA_VALUE
-from .met_util import remove_quotes as util_remove_quotes
+from .string_manip import remove_quotes as util_remove_quotes
 from .config_metplus import find_indices_in_config_section
 
 class METConfig:

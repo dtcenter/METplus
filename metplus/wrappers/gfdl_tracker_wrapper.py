@@ -117,11 +117,9 @@ class GFDLTrackerWrapper(CommandBuilder):
         "VERBOSE_VERB_G2": "int",
     }
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         self.app_name = 'gfdl_tracker'
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()

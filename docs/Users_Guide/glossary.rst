@@ -8759,3 +8759,204 @@ METplus Configuration Glossary
      :term:`ENSEMBLE_STAT_ENS_VLD_THRESH`.
 
      | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_GRID_WEIGHT_FLAG
+     Specify the value for 'grid_weight_flag' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   FCST_PCP_COMBINE_USE_ZERO_ACCUM
+     Only used if running PCPCombine wrapper with
+     :term:`FCST_PCP_COMBINE_METHOD` = SUBTRACT. If True, build a -subtract
+     command using the 0 accumulation as the 2nd input. If False (default),
+     instead build an -add command with a single input if the 2nd input is
+     a 0 accumulation.
+
+     | *Used by:*  PCPCombine
+
+   OBS_PCP_COMBINE_USE_ZERO_ACCUM
+     Only used if running PCPCombine wrapper with
+     :term:`OBS_PCP_COMBINE_METHOD` = SUBTRACT.
+     See :term:`FCST_PCP_COMBINE_USE_ZERO_ACCUM` for more information.
+
+     | *Used by:*  PCPCombine
+
+   ENSEMBLE_STAT_CLIMO_MEAN_USE_FCST
+     If set to True, use the field array from the fcst dictionary for the
+     climo_mean fields for EnsembleStat.
+     Sets "climo_mean = fcst;" in the wrapped MET config file.
+     Only used if :term:`ENSEMBLE_STAT_CLIMO_MEAN_FIELD` is unset.
+     See also :term:`ENSEMBLE_STAT_CLIMO_MEAN_USE_OBS`.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CLIMO_MEAN_USE_OBS
+     If set to True, use the field array from the obs dictionary for the
+     climo_mean fields for EnsembleStat.
+     Sets "climo_mean = obs;" in the wrapped MET config file.
+     Only used if :term:`ENSEMBLE_STAT_CLIMO_MEAN_FIELD` is unset.
+     See also :term:`ENSEMBLE_STAT_CLIMO_MEAN_USE_FCST`.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CLIMO_STDEV_USE_FCST
+     If set to True, use the field array from the fcst dictionary for the
+     climo_stdev fields for EnsembleStat.
+     Sets "climo_stdev = fcst;" in the wrapped MET config file.
+     Only used if :term:`ENSEMBLE_STAT_CLIMO_STDEV_FIELD` is unset.
+     See also :term:`ENSEMBLE_STAT_CLIMO_STDEV_USE_OBS`.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CLIMO_STDEV_USE_OBS
+     If set to True, use the field array from the obs dictionary for the
+     climo_stdev fields for EnsembleStat.
+     Sets "climo_stdev = obs;" in the wrapped MET config file.
+     Only used if :term:`ENSEMBLE_STAT_CLIMO_STDEV_FIELD` is unset.
+     See also :term:`ENSEMBLE_STAT_CLIMO_STDEV_USE_FCST`.
+
+     | *Used by:* EnsembleStat
+
+   GEN_ENS_PROD_CLIMO_MEAN_USE_FCST
+     If set to True, use the field array from the fcst dictionary for the
+     climo_mean fields for GenEnsProd.
+     Sets "climo_mean = fcst;" in the wrapped MET config file.
+     Only used if :term:`GEN_ENS_PROD_CLIMO_MEAN_FIELD` is unset.
+     See also :term:`GEN_ENS_PROD_CLIMO_MEAN_USE_OBS`.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_MEAN_USE_OBS
+     If set to True, use the field array from the obs dictionary for the
+     climo_mean fields for GenEnsProd.
+     Sets "climo_mean = obs;" in the wrapped MET config file.
+     Only used if :term:`GEN_ENS_PROD_CLIMO_MEAN_FIELD` is unset.
+     See also :term:`GEN_ENS_PROD_CLIMO_MEAN_USE_FCST`.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_STDEV_USE_FCST
+     If set to True, use the field array from the fcst dictionary for the
+     climo_stdev fields for GenEnsProd.
+     Sets "climo_stdev = fcst;" in the wrapped MET config file.
+     Only used if :term:`GEN_ENS_PROD_CLIMO_STDEV_FIELD` is unset.
+     See also :term:`GEN_ENS_PROD_CLIMO_STDEV_USE_OBS`.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_STDEV_USE_OBS
+     If set to True, use the field array from the obs dictionary for the
+     climo_stdev fields for GenEnsProd.
+     Sets "climo_stdev = obs;" in the wrapped MET config file.
+     Only used if :term:`GEN_ENS_PROD_CLIMO_STDEV_FIELD` is unset.
+     See also :term:`GEN_ENS_PROD_CLIMO_STDEV_USE_FCST`.
+
+     | *Used by:* GenEnsProd
+
+   GRID_STAT_CLIMO_MEAN_USE_FCST
+     If set to True, use the field array from the fcst dictionary for the
+     climo_mean fields for GridStat.
+     Sets "climo_mean = fcst;" in the wrapped MET config file.
+     Only used if :term:`GRID_STAT_CLIMO_MEAN_FIELD` is unset.
+     See also :term:`GRID_STAT_CLIMO_MEAN_USE_OBS`.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_MEAN_USE_OBS
+     If set to True, use the field array from the obs dictionary for the
+     climo_mean fields for GridStat.
+     Sets "climo_mean = obs;" in the wrapped MET config file.
+     Only used if :term:`GRID_STAT_CLIMO_MEAN_FIELD` is unset.
+     See also :term:`GRID_STAT_CLIMO_MEAN_USE_FCST`.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_STDEV_USE_FCST
+     If set to True, use the field array from the fcst dictionary for the
+     climo_stdev fields for GridStat.
+     Sets "climo_stdev = fcst;" in the wrapped MET config file.
+     Only used if :term:`GRID_STAT_CLIMO_STDEV_FIELD` is unset.
+     See also :term:`GRID_STAT_CLIMO_STDEV_USE_OBS`.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_STDEV_USE_OBS
+     If set to True, use the field array from the obs dictionary for the
+     climo_stdev fields for GridStat.
+     Sets "climo_stdev = obs;" in the wrapped MET config file.
+     Only used if :term:`GRID_STAT_CLIMO_STDEV_FIELD` is unset.
+     See also :term:`GRID_STAT_CLIMO_STDEV_USE_FCST`.
+
+     | *Used by:* GridStat
+
+   POINT_STAT_CLIMO_MEAN_USE_FCST
+     If set to True, use the field array from the fcst dictionary for the
+     climo_mean fields for PointStat.
+     Sets "climo_mean = fcst;" in the wrapped MET config file.
+     Only used if :term:`POINT_STAT_CLIMO_MEAN_FIELD` is unset.
+     See also :term:`POINT_STAT_CLIMO_MEAN_USE_OBS`.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_MEAN_USE_OBS
+     If set to True, use the field array from the obs dictionary for the
+     climo_mean fields for PointStat.
+     Sets "climo_mean = obs;" in the wrapped MET config file.
+     Only used if :term:`POINT_STAT_CLIMO_MEAN_FIELD` is unset.
+     See also :term:`POINT_STAT_CLIMO_MEAN_USE_FCST`.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_STDEV_USE_FCST
+     If set to True, use the field array from the fcst dictionary for the
+     climo_stdev fields for PointStat.
+     Sets "climo_stdev = fcst;" in the wrapped MET config file.
+     Only used if :term:`POINT_STAT_CLIMO_STDEV_FIELD` is unset.
+     See also :term:`POINT_STAT_CLIMO_STDEV_USE_OBS`.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_STDEV_USE_OBS
+     If set to True, use the field array from the obs dictionary for the
+     climo_stdev fields for PointStat.
+     Sets "climo_stdev = obs;" in the wrapped MET config file.
+     Only used if :term:`POINT_STAT_CLIMO_STDEV_FIELD` is unset.
+     See also :term:`POINT_STAT_CLIMO_STDEV_USE_FCST`.
+
+     | *Used by:* PointStat
+
+   SERIES_ANALYSIS_CLIMO_MEAN_USE_FCST
+     If set to True, use the field array from the fcst dictionary for the
+     climo_mean fields for SeriesAnalysis.
+     Sets "climo_mean = fcst;" in the wrapped MET config file.
+     Only used if :term:`SERIES_ANALYSIS_CLIMO_MEAN_FIELD` is unset.
+     See also :term:`SERIES_ANALYSIS_CLIMO_MEAN_USE_OBS`.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_MEAN_USE_OBS
+     If set to True, use the field array from the obs dictionary for the
+     climo_mean fields for SeriesAnalysis.
+     Sets "climo_mean = obs;" in the wrapped MET config file.
+     Only used if :term:`SERIES_ANALYSIS_CLIMO_MEAN_FIELD` is unset.
+     See also :term:`SERIES_ANALYSIS_CLIMO_MEAN_USE_FCST`.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_STDEV_USE_FCST
+     If set to True, use the field array from the fcst dictionary for the
+     climo_stdev fields for SeriesAnalysis.
+     Sets "climo_stdev = fcst;" in the wrapped MET config file.
+     Only used if :term:`SERIES_ANALYSIS_CLIMO_STDEV_FIELD` is unset.
+     See also :term:`SERIES_ANALYSIS_CLIMO_STDEV_USE_OBS`.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_STDEV_USE_OBS
+     If set to True, use the field array from the obs dictionary for the
+     climo_stdev fields for SeriesAnalysis.
+     Sets "climo_stdev = obs;" in the wrapped MET config file.
+     Only used if :term:`SERIES_ANALYSIS_CLIMO_STDEV_FIELD` is unset.
+     See also :term:`SERIES_ANALYSIS_CLIMO_STDEV_USE_FCST`.
+
+     | *Used by:* SeriesAnalysis
