@@ -21,6 +21,7 @@ from glob import glob
 import warnings
 import os, sys
 
+import netCDF4 as nc
 
 if len(sys.argv) < 6:
     print("Must specify the following elements: fcst_file obs_file ice_file, climo_file, valid_date, file_flag")
@@ -53,6 +54,7 @@ sla=ssh_data.sla.astype('single')
 sla.attrs['platform']=platform
 sla.attrs['time']=pd.Timestamp(ssh_data.time.values[0])
 sla=sla.rename({'longitude':'lon','latitude':'lat'})
+sla.attrs['filename']=sshfile.split('/')[-1]
 
 
 # all coords need to be single precision
@@ -143,6 +145,29 @@ climo_data['lon']=climo_data.lon.astype('single')
 climo_data['lat']=climo_data.lat.astype('single')
 climo_data.attrs['platform']='hycom'
 climo_data.attrs['filename']=climofile
+
+print("GET_CLIMO FUNCTION")
+fn = './biswas_climo_data.nc'
+ds = nc.Dataset(fn, 'w', format='NETCDF4')
+lat_dim = ds.createDimension('lat', 3251)
+lon_dim = ds.createDimension('lon', 4500)
+time_dim = ds.createDimension('time', None)
+for dim in ds.dimensions.items():
+    print(dim)
+lat = ds.createVariable('lat', np.float32, ('lat',))
+lat.units = 'degree_north'
+lat.long_name = 'latitude'
+lon = ds.createVariable('lon', np.float32, ('lon',))
+lon.units = 'degrees_east'
+lon.long_name = 'longitude'
+time = ds.createVariable('time', np.float64, ('time',))
+time.units = 'seconds since'
+time.long_name = 'time'
+
+newvar = ds.createVariable('el_surf','f4',('lat','lon'))
+newvar[:] = climo_data.copy()
+ds.close()
+
 
 #####################################################################
 # READ ICE data for masking #########################################
@@ -239,20 +264,164 @@ obs_anom2.mask=obs2.mask
 
 obs2=xr.DataArray(obs2,coords=[adt.lat.values,adt.lon.values], dims=['lat','lon'])
 obs_anom2=xr.DataArray(obs_anom2,coords=[adt.lat.values,adt.lon.values], dims=['lat','lon'])
+print("OBS_ANOM2 XR")
+print(obs_anom2)
 model2=xr.DataArray(model2,coords=[adt.lat.values,adt.lon.values], dims=['lat','lon'])
+print("MODEL2 XR")
+print(model2)
 climo2=xr.DataArray(climo2,coords=[adt.lat.values,adt.lon.values], dims=['lat','lon'])
+print("CLIMO2 XR")
+print(climo2)
 
 model2=expand_grid(model2)
+print("MODEL2 EX")
+print(model2)
 climo2=expand_grid(climo2)
+print("CLIMO2 EX")
+print(climo2)
 obs2=expand_grid(obs2)
+print("OBS2 EX")
+print(obs2)
 obs_anom2=expand_grid(obs_anom2)
+print("OBS_ANOM2 EX")
+print(obs_anom2)
+
+model3=model2.where((model2.lon>=0)&(model2.lon<=360)&
+        (model2.lat>=-80)&(model2.lat<=90),drop=True)
+print("MODEL3")
+print(model3)
+climo3=climo2.where((climo2.lon>=0)&(climo2.lon<=360)&
+        (climo2.lat>=-80)&(climo2.lat<=90),drop=True)
+print("CLIMO3")
+print(climo3)
+obs3=obs2.where((obs2.lon>=0)&(obs2.lon<=360)&
+        (obs2.lat>=-80)&(obs2.lat<=90),drop=True)
+print("OBS3")
+print(obs3)
+obs_anom3=obs_anom2.where((obs_anom2.lon>=0)&(obs_anom2.lon<=360)&
+        (obs_anom2.lat>=-80)&(obs_anom2.lat<=90),drop=True)
+print("OBS_anom3")
+print(obs_anom3)
+print(climo2)
+print(obs2)
+print(obs_anom2)
+
+fn = './biswas_obs_anom2.nc'
+ds = nc.Dataset(fn, 'w', format='NETCDF4')
+lat_dim = ds.createDimension('lat', 720)
+lon_dim = ds.createDimension('lon', 2880)
+#        time_dim = ds.createDimension('time', None)
+for dim in ds.dimensions.items():
+    print(dim)
+lat = ds.createVariable('lat', np.float32, ('lat',))
+lat.units = 'degree_north'
+lat.long_name = 'latitude'
+lon = ds.createVariable('lon', np.float32, ('lon',))
+lon.units = 'degrees_east'
+lon.long_name = 'longitude'
+#        time = ds.createVariable('time', np.float64, ('time',))
+#        time.units = 'seconds since'
+#        time.long_name = 'time'
+
+newvar = ds.createVariable('obs_anom2','f4',('lat','lon'))
+newvar[:] = obs_anom2.copy()
+ds.close()
+
+fn = './biswas_model2.nc'
+ds = nc.Dataset(fn, 'w', format='NETCDF4')
+lat_dim = ds.createDimension('lat', 720)
+lon_dim = ds.createDimension('lon', 2880)
+#        time_dim = ds.createDimension('time', None)
+for dim in ds.dimensions.items():
+    print(dim)
+lat = ds.createVariable('lat', np.float32, ('lat',))
+lat.units = 'degree_north'
+lat.long_name = 'latitude'
+lon = ds.createVariable('lon', np.float32, ('lon',))
+lon.units = 'degrees_east'
+lon.long_name = 'longitude'
+#        time = ds.createVariable('time', np.float64, ('time',))
+#        time.units = 'seconds since'
+#        time.long_name = 'time'
+
+newvar = ds.createVariable('model2','f4',('lat','lon'))
+newvar[:] = model2.copy()
+ds.close()
+
+#obs_anom3=obs2-climo2
+fn = './biswas_model3.nc'
+ds = nc.Dataset(fn, 'w', format='NETCDF4')
+lat_dim = ds.createDimension('lat', 680)
+lon_dim = ds.createDimension('lon', 1440)
+#        time_dim = ds.createDimension('time', None)
+for dim in ds.dimensions.items():
+    print(dim)
+lat = ds.createVariable('lat', np.float32, ('lat',))
+lat.units = 'degree_north'
+lat.long_name = 'latitude'
+lon = ds.createVariable('lon', np.float32, ('lon',))
+lon.units = 'degrees_east'
+lon.long_name = 'longitude'
+#        time = ds.createVariable('time', np.float64, ('time',))
+#        time.units = 'seconds since'
+#        time.long_name = 'time'
+
+newvar = ds.createVariable('model3','f4',('lat','lon'))
+newvar[:] = model3.copy()
+ds.close()
+
+fn = './biswas_climo3.nc'
+ds = nc.Dataset(fn, 'w', format='NETCDF4')
+lat_dim = ds.createDimension('lat', 680)
+lon_dim = ds.createDimension('lon', 1440)
+#        time_dim = ds.createDimension('time', None)
+for dim in ds.dimensions.items():
+    print(dim)
+lat = ds.createVariable('lat', np.float32, ('lat',))
+lat.units = 'degree_north'
+lat.long_name = 'latitude'
+lon = ds.createVariable('lon', np.float32, ('lon',))
+lon.units = 'degrees_east'
+lon.long_name = 'longitude'
+#        time = ds.createVariable('time', np.float64, ('time',))
+#        time.units = 'seconds since'
+#        time.long_name = 'time'
+
+newvar = ds.createVariable('climo3','f4',('lat','lon'))
+newvar[:] = climo3.copy()
+ds.close()
+
+
+fn = './biswas_obs_anom3.nc'
+ds = nc.Dataset(fn, 'w', format='NETCDF4')
+lat_dim = ds.createDimension('lat', 680)
+lon_dim = ds.createDimension('lon', 1440)
+#        time_dim = ds.createDimension('time', None)
+for dim in ds.dimensions.items():
+    print(dim)
+lat = ds.createVariable('lat', np.float32, ('lat',))
+lat.units = 'degree_north'
+lat.long_name = 'latitude'
+lon = ds.createVariable('lon', np.float32, ('lon',))
+lon.units = 'degrees_east'
+lon.long_name = 'longitude'
+#        time = ds.createVariable('time', np.float64, ('time',))
+#        time.units = 'seconds since'
+#        time.long_name = 'time'
+
+newvar = ds.createVariable('obs_anom3','f4',('lat','lon'))
+newvar[:] = obs_anom3.copy()
+ds.close()
+
+
+
 
 #Create the MET grids based on the file_flag
 if file_flag == 'fcst':
-    met_data = model2[:,:]
+    met_data = model3[:,:]
     #trim the lat/lon grids so they match the data fields
-    lat_met = model2.lat
-    lon_met = model2.lon
+    lat_met = model3.lat
+    lon_met = model3.lon
     print(" RTOFS Data shape: "+repr(met_data.shape))
     v_str = vDate.strftime("%Y%m%d")
     v_str = v_str + '_000000'
@@ -270,10 +439,10 @@ if file_flag == 'fcst':
             'lead': "00",
             'accum': "00",
             'name': 'ssh',
-            'standard_name': 'sea_surface_height',
-            'long_name': 'sea_surface_height',
+            'standard_name': 'sea_surface_elevation',
+            'long_name': 'sea_surface_elevation',
             'level': "SURFACE",
-            'units': "psu",
+            'units': "meters",
 
             'grid': {
                 'type': "LatLon",
@@ -289,10 +458,10 @@ if file_flag == 'fcst':
     attrs = met_data.attrs
 
 if file_flag == 'obs':
-    met_data = obs2[:,:]
+    met_data = obs3[:,:]
     #trim the lat/lon grids so they match the data fields
-    lat_met = obs2.lat
-    lon_met = obs2.lon
+    lat_met = obs3.lat
+    lon_met = obs3.lon
     v_str = vDate.strftime("%Y%m%d")
     v_str = v_str + '_000000'
     lat_ll = float(lat_met.min())
@@ -309,10 +478,10 @@ if file_flag == 'obs':
             'lead': "00",
             'accum': "00",
             'name': 'ssh',
-            'standard_name': 'analyzed sea surface height',
-            'long_name': 'sea_surface_height',
+            'standard_name': 'sea_surface_height_above_geoid',
+            'long_name': 'absolute_dynamic_topography',
             'level': "SURFACE",
-            'units': "psu",
+            'units': "meters",
 
             'grid': {
                 'type': "LatLon",
@@ -328,10 +497,10 @@ if file_flag == 'obs':
     attrs = met_data.attrs
 
 if file_flag == 'climo':
-    met_data = climo2[:,:]
+    met_data = climo3[:,:]
     #modify the lat and lon grids since they need to match the data dimensions, and code cuts the last row/column of data
-    lat_met = climo2.lat
-    lon_met = climo2.lon
+    lat_met = climo3.lat
+    lon_met = climo3.lon
     v_str = vDate.strftime("%Y%m%d")
     v_str = v_str + '_000000'
     lat_ll = float(lat_met.min())
@@ -351,7 +520,7 @@ if file_flag == 'climo':
             'standard_name': 'sea_surface_height',
             'long_name': 'sea_surface_height',
             'level': "SURFACE",
-            'units': "psu",
+            'units': "meters",
 
             'grid': {
                 'type': "LatLon",
