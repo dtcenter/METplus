@@ -29,9 +29,9 @@ duration=$(( SECONDS - start_seconds ))
 echo "TIMING: docker pull ${DOCKERHUB_TAG} took `printf '%02d' $(($duration / 60))`:`printf '%02d' $(($duration % 60))` (MM:SS)"
 
 # set DOCKERFILE_PATH that is used by docker hook script get_met_version
-export DOCKERFILE_PATH=${GITHUB_WORKSPACE}/ci/docker/Dockerfile
+export DOCKERFILE_PATH=${GITHUB_WORKSPACE}/scripts/docker/Dockerfile
 
-MET_TAG=`${GITHUB_WORKSPACE}/ci/docker/hooks/get_met_version`
+MET_TAG=`${GITHUB_WORKSPACE}/scripts/docker/hooks/get_met_version`
 
 # if MET_FORCE_TAG variable is set and not empty, use that version instead
 if [ ! -z "$MET_FORCE_TAG" ]; then

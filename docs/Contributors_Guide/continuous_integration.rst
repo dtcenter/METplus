@@ -544,7 +544,8 @@ images using Conda that can be used to run use cases. These images are stored
 on DockerHub in dtcenter/metplus-envs and are named with a tag that corresponds
 to the keyword without the "_env" suffix.
 The environments were created using Docker commands via scripts that are found
-in ci/docker/docker_env. Existing keywords that set up Conda environments used
+in scripts/docker/docker_env.
+Existing keywords that set up Conda environments used
 for use cases are:
 
 * metplotpy_env
@@ -622,11 +623,12 @@ packages take a very long time to install in Docker. The new approach involves
 creating Docker images that use Conda to create a Python environment that can
 run the use case. To see what is available in each of the existing Python
 environments, refer to the comments in the scripts found in
-**ci/docker/docker_env/scripts**. New environments must be added by a METplus
+**scripts/docker/docker_env/scripts**.
+ew environments must be added by a METplus
 developer, so please contact MET Help if none of these environments contain the
 package requirements needed to run a new use case.
 
-A README file can be found in the ci/docker/docker_env directory that
+A README file can be found in the scripts/docker/docker_env directory that
 provides commands that can be run to recreate a Docker image if the
 conda environment needs to be updated. Please note that Docker must
 be installed on the workstation used to create new Docker images and
