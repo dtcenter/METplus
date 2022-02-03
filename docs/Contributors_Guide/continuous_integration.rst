@@ -105,7 +105,7 @@ The **on** keyword defines which events trigger the workflow
 to run. There are currently 3 types of events that trigger this workflow:
 push, pull_request, and workflow_dispatch.
 The jobs that are run in this workflow depend on which event has triggered it.
-There are a lot of jobs that are common to multiple events.
+Many jobs are common to multiple events.
 To avoid creating multiple workflow .yml files that contain redundant jobs,
 an additional layer of control is added within this workflow.
 See :ref:`cg-ci-job-control` for more information.
