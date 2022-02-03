@@ -472,7 +472,8 @@ a line that following the format::
 
   Category: <category>
 
-where <category> is the name of the use case category. If you are adding a
+where <category> is the name of the use case category.
+See :ref:`use_case_categories` for more information. If you are adding a
 use case that will go into a new category, you will have to add a new category
 definition line to this file and add your new use case under it. Each use case
 in that category will be found on its own line after this line.
@@ -492,7 +493,7 @@ name
 """"
 
 This is the string identifier of the use case. The name typically matches
-the user case configuration filename without the **.conf** extension.
+the use case configuration filename without the **.conf** extension.
 
 Example::
 
