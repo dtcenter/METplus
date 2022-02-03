@@ -665,14 +665,10 @@ will be used in the final pull request.
 Add use case to the test suite
 ------------------------------
 
-In the METplus repository, there is a text file that contains the list of
-all use cases::
-
-  internal_tests/use_cases/all_use_cases.txt
-
+The **internal_tests/use_cases/all_use_cases.txt** file in the METplus
+repository contains the list of all use cases.
 Add the new use case to this file so it will be available in
 the tests. See the :ref:`cg-ci-all-use-cases` section for details.
-
 
 .. _add_new_category_to_test_runs:
 
