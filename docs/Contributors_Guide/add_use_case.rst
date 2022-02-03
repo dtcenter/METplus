@@ -671,7 +671,7 @@ all use cases::
   internal_tests/use_cases/all_use_cases.txt
 
 Add the new use case to this file so it will be available in
-the tests. See the :ref:`cf-ci-all-use-cases` section for details.
+the tests. See the :ref:`cg-ci-all-use-cases` section for details.
 
 
 .. _add_new_category_to_test_runs:
@@ -685,7 +685,7 @@ Add a new entry to the list that includes the category of the new use case,
 the list of indices that correspond to the index number described in the
 :ref:`add_use_case_to_test_suite` section.
 
-See the :ref:`cf-ci-use-case-groups` section for details.
+See the :ref:`cg-ci-use-case-groups` section for details.
 
 Set the "run" variable to true so that the new use case group will run in
 the automated test suite whenever a new change is pushed to GitHub. This
