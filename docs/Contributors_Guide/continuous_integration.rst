@@ -549,14 +549,16 @@ in scripts/docker/docker_env.
 Existing keywords that set up Conda environments used
 for use cases are:
 
+* cfgrib_env
+* h5py_env
+* icecover_env
+* metdatadb_env
 * metplotpy_env
-* spacetime_env
-* xesmf_env
 * netcdf4_env
 * pygrib_env
-* metdatadb_env
-* h5py_env
-* gempak_env
+* spacetime_env
+* weatherregime_env
+* xesmf_env
 
 Example::
 
@@ -567,13 +569,25 @@ in dtcenter/metplus-envs:**spacetime** to run a user script.
 Note that only one dependency that contains the "_env" suffix can be supplied
 to a given use case.
 
-The **gempak_env** is handled a little differently. It is used if
-GempakToCF.jar is needed for a use case to convert GEMPAK data to NetCDF
-format so it can be read by the MET tools. Instead of creating a Python
-environment to use for the use case, this Docker image installs Java and
-obtains the GempakToCF.jar file. When creating the Docker container to run
-the use cases, the necessary Java files are copied over into the container
+Other Environments
+""""""""""""""""""
+
+A few of the environments do not contain Conda environments and
+are handled a little differently.
+
+* gempak_env
+* gfdl-tracker_env
+
+**gempak_env** is used if GempakToCF.jar is needed for a use case to convert
+GEMPAK data to NetCDF format so it can be read by the MET tools.
+Instead of creating a Python environment to use for the use case,
+this Docker image installs Java and obtains the GempakToCF.jar file.
+When creating the Docker container to run the use cases,
+the necessary Java files are copied over into the container
 that runs the use cases so that the JAR file can be run by METplus wrappers.
+
+**gfdl-tracker_env** contains the GFDL Tracker application that is used by
+the GFDLTracker wrapper use cases.
 
 Other Keywords
 """"""""""""""
@@ -612,6 +626,17 @@ Embedding.
   environment is specified with a "_env" keyword. The version of Python that
   is used to run typical use cases has already installed the METplus Python
   package in its environment, so the package can be imported easily.
+* **cartopy** - Used if cartopy 0.18.0 is needed in the Conda environment.
+  Cartopy uses shapefiles that are downloaded as needed. The URL that is used
+  to download the files has changed since cartopy 0.18.0 and we have run into
+  issues where the files cannot be obtained. To remedy this issue, we modified
+  the scripts that generate the Docker images that contain the Conda
+  environments that use cartopy to download these shape files so they will
+  always be available. These files need to be copied from the Docker
+  environment image into the testing image. When this keyword is found in the
+  dependency list, a different Dockerfile (Dockerfile.run_cartopy found in
+  .github/actions/run_tests) is used to create the testing environment and
+  copy the required shapefiles into place.
 
 
 Creating New Python Environments
