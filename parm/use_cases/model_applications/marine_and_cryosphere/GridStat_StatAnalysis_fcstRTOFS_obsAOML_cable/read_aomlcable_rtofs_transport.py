@@ -1,36 +1,33 @@
 """
 Florida Cable Transport Class-4 Validation System
-Version 1.1  
-Todd Spindler
+Adapted from Todd Spindler's code
 """
 
 from netCDF4 import Dataset
 import numpy as np
-from scipy.integrate import trapz
-from sklearn.metrics import mean_squared_error
 from pyproj import Geod
 import math
 from datetime import datetime, timedelta
 import pandas as pd
 import sys, os
-import sqlite3
 
 # global subdirectories (will be env vars in next release)
 refDir='/d1/biswas/feature_cable'
 DCOMDir='/d1/biswas/feature_cable'
 archDir='/d1/biswas/feature_cable/rtofs-cable'
 
-if len(sys.argv) < 3:
-    print("Must specify the following elements: fcst_file obs_file fix_file, valid_date, file_flag")
+if len(sys.argv) < 6:
+    print("Must specify the following elements: rtofs_u, rtofs_v, cable_file, eightmile_file, valid_date, file_flag")
     sys.exit(1)
 
-rtofsfile = os.path.expandvars(sys.argv[1]) 
-cablefile = os.path.expandvars(sys.argv[2]) 
-fixfile = os.path.expandvars(sys.argv[3]) 
-vDate=datetime.strptime(sys.argv[4],'%Y%m%d')
-file_flag = sys.argv[5] 
+rtofsfile_u = os.path.expandvars(sys.argv[1]) 
+rtofsfile_v = os.path.expandvars(sys.argv[2]) 
+cablefile = os.path.expandvars(sys.argv[3]) 
+eightmilefile = os.path.expandvars(sys.argv[4]) 
+vDate=datetime.strptime(sys.argv[5],'%Y%m%d')
+file_flag = sys.argv[6] 
 
-print('Starting Cable AVISO V&V at',datetime.now(),'for',vDate, ' file_flag:',file_flag)
+print('Starting Cable V&V at',datetime.now(),'for',vDate, ' file_flag:',file_flag)
 
 
 
@@ -40,17 +37,21 @@ if not os.path.exists(cablefile):
 #-----------------------------------------------
 # read cable transport data from AOML            
 #-----------------------------------------------
-cable_transport_filename='FC_cable_transport_2021.dat'
+cablefile='FC_cable_transport_2021.dat'
+eightmilefile='eightmilecable.dat'
     
 # read the AOML dataset
 names=['year','month','day','transport']
-cable=pd.read_csv(cable_transport_filename,comment='%',names=names,delimiter=' ',
+cable=pd.read_csv(cablefile,comment='%',names=names,delimiter=' ',
     skipinitialspace=True,header=None,usecols=list(range(4)))
 cable['date']=pd.to_datetime(cable[['year','month','day']])
 cable.index=cable.date
 cable['error']=2.0
 del cable['year'], cable['month'], cable['day'], cable['date']
-return cable
+print(cable)
+
+fcst=rtofsfile_u.split("_")[3].split("f")[1].strip("0")
+fcst=int(fcst)
 
 #-----------------------------------------------
 # full cross-section transport calculation
@@ -61,11 +62,11 @@ def calc_transport(dates,fcst):
     This extracts the section and integrates the flow through it.
     """
     transport=[]
-    if fcst==0:
-        fcst_str='n024'
-    else:
-        fcst_str='f{:03d}'.format(fcst)
-    cable_loc=np.loadtxt(refDir+'/eightmilecable.dat',dtype='int',usecols=(0,1))
+#MKB    if fcst==0:
+#MKB        fcst_str='n024'
+#MKB    else:
+#MKB        fcst_str='f{:03d}'.format(fcst)
+    cable_loc=np.loadtxt(eightmilefile,dtype='int',usecols=(0,1))
     eightmile_lat = 26.5167
     eightmile_lon = -78.7833%360
     wpb_lat = 26.7153425
@@ -76,20 +77,23 @@ def calc_transport(dates,fcst):
     for date in dates:
         print('DATE :', date, ' DATES :',dates)
         print('processing',date.strftime('%Y%m%d'),'fcst',fcst)
+#MKB Does this means it needs files from -24 hr?
         rundate=date-timedelta(fcst/24.)  # calc rundate from fcst and date
-        ufile=archDir+'/'+rundate.strftime('%Y%m%d')+'/rtofs_glo_3dz_'+fcst_str+'_daily_3zuio.nc'
-        vfile=archDir+'/'+rundate.strftime('%Y%m%d')+'/rtofs_glo_3dz_'+fcst_str+'_daily_3zvio.nc'
+#MKB        ufile=archDir+'/'+rundate.strftime('%Y%m%d')+'/rtofs_glo_3dz_'+fcst_str+'_daily_3zuio.nc'
+#MKB        vfile=archDir+'/'+rundate.strftime('%Y%m%d')+'/rtofs_glo_3dz_'+fcst_str+'_daily_3zvio.nc'
+#MKB        ufile='rtofsfile_u'
+#MKB        vfile='rtofsfile_v'
 
-        print(ufile)
-        print(vfile)
+#MKB        print(ufile)
+#MKB        print(vfile)
 
-        try:
-            udata=Dataset(ufile)
-            vdata=Dataset(vfile)
-        except:
-            print(rundate,fcst,'not found -- continuing')
-            transport.append(np.nan)
-            continue
+#MKB        try:
+       udata=Dataset(rtofsfile_u)
+       vdata=Dataset(rtofsfile_v)
+#MKB        except:
+#MKB            print(rundate,fcst,'not found -- continuing')
+#MKB            transport.append(np.nan)
+#MKB            continue
 
         lon=udata['Longitude'][:]
         lat=udata['Latitude'][:]
@@ -158,6 +162,8 @@ want_date=datetime.strptime(sys.argv[1],'%Y%m%d')
 print('WANT DATE :', want_date)
 DateSet=True
 
+fcsts=list(range(fcst,fcst+1,24))
+
 start_date=want_date
 stop_date=want_date
 cable=cable[:stop_date]
@@ -166,20 +172,17 @@ for end_date in pd.date_range(start_date,stop_date):
     dates=pd.date_range(end=end_date,periods=3)
     model=get_model(dates,fcsts)
 
-
-transport={'dates':dates}
-
-#    cable_bias,cable_rmse,cable_corr,cable_scatter_index=cable_stats(model,cable,fcst)
-        for fcst in fcsts:
-            print('Code going through before call plot_transport') 
-            plot_transport(model,cable,fcsts,fcst)
+both=pd.merge(cable,model,left_index=True,right_index=True,how='inner')
+both=both[both.index.max()-timedelta(3):]
+fcst=both.dropna(inplace=True)
+     
 
 
 #Create the MET grids based on the file_flag
 if file_flag == 'fcst':
-    met_data = model3[:,:]
+    met_data = model[:,:]
     #trim the lat/lon grids so they match the data fields
-    lat_met = model3.lat
+    lat_met = model.lat
     lon_met = model3.lon
     print(" RTOFS Data shape: "+repr(met_data.shape))
     v_str = vDate.strftime("%Y%m%d")
@@ -198,7 +201,7 @@ if file_flag == 'fcst':
             'lead': "00",
             'accum': "00",
             'name': 'ssh',
-            'standard_name': 'sea_surface_elevation',
+            'standard_name': 'zonal current',
             'long_name': 'sea_surface_elevation',
             'level': "SURFACE",
             'units': "meters",
