@@ -279,6 +279,7 @@ The last commit message before a push event is also parsed to look for
 The script also calls another script called **get_use_cases_to_run.sh** that
 reads a JSON file that contains the use case test groups.
 The job control settings determine which of the use case groups to run.
+See :ref:`cg-ci-use-case-groups` for more information.
 
 Output Variables
 ^^^^^^^^^^^^^^^^
@@ -458,12 +459,227 @@ Add Use Cases chapter of the Contributor's Guide.
 Use Case Tests
 --------------
 
+.. _cg-ci-all-use-cases:
+
 All Use Cases
 ^^^^^^^^^^^^^
 
-All of the existing use cases are listed in **all_use_cases.txt** (found in internal_tests/use_cases):
+All of the existing use cases are listed in **all_use_cases.txt**,
+found in internal_tests/use_cases.
 
-.. literalinclude:: ../../internal_tests/use_cases/all_use_cases.txt
+The file is organized by use case category. Each category starts
+a line that following the format::
+
+  Category: <category>
+
+where <category> is the name of the use case category. If you are adding a
+use case that will go into a new category, you will have to add a new category
+definition line to this file and add your new use case under it. Each use case
+in that category will be found on its own line after this line.
+The use cases can be defined using the following formats::
+
+    <index>::<name>::<config_args>
+    <index>::<name>::<config_args>::<dependencies>
+
+index
+"""""
+
+The index is the number associated with the use case so it can be referenced
+easily. The first index number in a new category should be 0.
+Each use case added should have an index that is one greater than the previous.
+
+name
+""""
+
+This is the string identifier of the use case. The name typically matches
+the user case configuration filename without the **.conf** extension.
+
+Example::
+
+    PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr
+
+
+config_args
+"""""""""""
+
+This is the path of the conf file used for the use case relative to
+METplus/parm/use_cases.
+
+Example::
+
+    model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr.conf
+
+If the use case contains multiple configuration files,
+they can be listed separated by commas.
+
+Example::
+
+    met_tool_wrapper/GridStat/GridStat.conf,met_tool_wrapper/GridStat/GridStat_forecast.conf,met_tool_wrapper/GridStat/GridStat_observation.conf
+
+
+dependencies
+""""""""""""
+
+If there are additional dependencies required to run the use case,
+such as a different Python environment, a list of keywords separated by commas
+can be provided.
+The :ref:`cg-ci-use-case-dependencies` section contains information
+on the keywords that can be used.
+
+Example::
+
+    cycloneplotter_env
+
+
+.. _cg-ci-use-case-dependencies:
+
+Use Case Dependencies
+^^^^^^^^^^^^^^^^^^^^^
+
+Conda Environments
+""""""""""""""""""
+
+The keywords that end with "_env" are Python environments created in Docker
+images using Conda that can be used to run use cases. These images are stored
+on DockerHub in dtcenter/metplus-envs and are named with a tag that corresponds
+to the keyword without the "_env" suffix.
+The environments were created using Docker commands via scripts that are found
+in ci/docker/docker_env. Existing keywords that set up Conda environments used
+for use cases are:
+
+* metplotpy_env
+* spacetime_env
+* xesmf_env
+* netcdf4_env
+* pygrib_env
+* metdatadb_env
+* h5py_env
+* gempak_env
+
+Example::
+
+    spacetime_env
+
+The above example uses the Conda environment
+in dtcenter/metplus-envs:**spacetime** to run a user script.
+Note that only one dependency that contains the "_env" suffix can be supplied
+to a given use case.
+
+The **gempak_env** is handled a little differently. It is used if
+GempakToCF.jar is needed for a use case to convert GEMPAK data to NetCDF
+format so it can be read by the MET tools. Instead of creating a Python
+environment to use for the use case, this Docker image installs Java and
+obtains the GempakToCF.jar file. When creating the Docker container to run
+the use cases, the necessary Java files are copied over into the container
+that runs the use cases so that the JAR file can be run by METplus wrappers.
+
+Other Keywords
+""""""""""""""
+
+Besides specifying Python environments,
+there are additional keywords that can be used to set up the environment
+to run a use case:
+
+* **py_embed** - Used if a different Python environment is required to
+  run a Python Embedding script. If this keyword is included with a Python
+  environment, then the MET_PYTHON_EXE environment variable will be set to
+  specify the version of Python3 that is included in that environment
+
+Example::
+
+    pygrib_env,py_embed
+
+In this example, the dtcenter/metplus-envs:**pygrib** environment is used to
+run the use case. Since **py_embed** is also included, then the following will
+be added to the call to run_metplus.py so that the Python embedding script
+will use the **pygrib** environment to run::
+
+    user_env_vars.MET_PYTHON_EXE=/usr/local/envs/pygrib/bin/python3
+
+Please see the MET User's Guide for more information on how to use Python
+Embedding.
+
+* **metviewer** - Used if METviewer should be made available to the use case.
+  This is typically added for a METdbLoad use case that needs to populate a
+  database with MET output.
+
+* **metplus** - Used if a user script needs to call utility functions from the
+  metplus Python package. This keyword simply adds the METplus source code
+  directory to the PYTHONPATH so that the metplus.util functions can be
+  imported. Note that this keyword is not needed unless a different Python
+  environment is specified with a "_env" keyword. The version of Python that
+  is used to run typical use cases has already installed the METplus Python
+  package in its environment, so the package can be imported easily.
+
+
+Creating New Python Environments
+""""""""""""""""""""""""""""""""
+
+In METplus v4.0.0 and earlier, a list of Python packages were added to use
+cases that required additional packages. These packages were either installed
+with pip3 or using a script. This approach was very time consuming as some
+packages take a very long time to install in Docker. The new approach involves
+creating Docker images that use Conda to create a Python environment that can
+run the use case. To see what is available in each of the existing Python
+environments, refer to the comments in the scripts found in
+**ci/docker/docker_env/scripts**. New environments must be added by a METplus
+developer, so please contact MET Help if none of these environments contain the
+package requirements needed to run a new use case.
+
+A README file can be found in the ci/docker/docker_env directory that
+provides commands that can be run to recreate a Docker image if the
+conda environment needs to be updated. Please note that Docker must
+be installed on the workstation used to create new Docker images and
+a DockerHub account with access to the dtcenter repositories must
+be used to push Docker images to DockerHub.
+
+The README file also contains commands to create a conda environment
+that is used for the tests locally. Any base conda environments,
+such as metplus_base and py_embed_base, must be created locally first
+before creating an environment that builds upon these environments.
+Please note that some commands in the scripts are specific to
+the Docker environment and may need to be rerun to successfully
+build the environment locally.
+
+**Installing METplus Components**
+
+These scripts
+do not install any METplus components,
+such as metplotpy/metcalcpy/metplus, in the Python environment that
+may be needed for a use case. This is done because the automated tests
+will install and use the latest version (develop) of the packages to
+ensure that any changes to those components do not break any existing
+use cases. These packages will need to be installed by the user
+and need to be updated manually. To install these packages,
+activate the Conda environment, obtain the source code from GitHub,
+and run "pip3 install ." in the top level directory of the repository.
+
+Example::
+
+    conda activate weatherregime
+    git clone git@github.com:dtcenter/METplotpy
+    cd METplotpy
+    git checkout develop
+    git pull
+    pip3 install .
+
+**Cartopy Shapefiles**
+
+The cartopy python package automatically attempts to download
+shapefiles as needed.
+The URL that is used in cartopy version 0.18.0 and earlier no longer
+exists, so use cases that needs these files will fail if they are
+not found locally. If a conda environment uses cartopy, these
+shapefiles may need to be downloaded by the user running the use case
+even if the conda environment was created by another user.
+Cartopy provides a script that can be used to obtain these shapefiles
+from the updated URL::
+
+    wget https://raw.githubusercontent.com/SciTools/cartopy/master/tools/cartopy_feature_download.py
+    python3 cartopy_feature_download.py cultural physical cultural-extra
+
+
+.. _cg-ci-use-case-groups:
 
 Use Case Groups
 ^^^^^^^^^^^^^^^
@@ -471,10 +687,104 @@ Use Case Groups
 The use cases that are run in the automated test suite are divided into
 groups that can be run concurrently.
 
-.. literalinclude:: ../../.github/parm/use_case_groups.json
+The **use_case_groups.json** file (found in .github/parm)
+contains a list of the use case groups to run together.
+In METplus version 4.0.0 and earlier, this list was
+found in the .github/workflows/testing.yml file.
+
+Each use case group is defined with the following format::
+
+      {
+        "category": "<CATEGORY>",
+        "index_list": "<INDEX_LIST>",
+        "run": <RUN_STATUS>
+      }
+
+* **<CATEGORY>** is the category group that the use case is found under in the
+  all_use_cases.txt file (see :ref:`cg-ci-all-use-cases`).
+* **<INDEX_LIST>** is a list of indices of the use cases from all_use_cases.txt
+  to run in the group. This can be a single integer, a comma-separated list of
+  integers, and a range of values with a dash, i.e. 0-3.
+* **<RUN_STATUS>** is a boolean (true/false) value that determines if the use
+  case group should be run. If the workflow job controls are not set to run
+  all of the use cases, then only use case groups that are set to **true** are
+  run.
+
+Example::
+
+      {
+        "category": "climate",
+        "index_list": "2",
+        "run": true
+      }
+
+This example defines a use case group that contains the climate use case
+with index 2 and is marked to "run" for every push.
+
+
+.. _cg-ci-subset_category:
+
+Subset Category into Multiple Tests
+"""""""""""""""""""""""""""""""""""
+
+Use cases can be separated into multiple test jobs.
+In the "index_list" value, define the cases to run for the job.
+Use cases are numbered starting with 0 and are in order of how they are
+found in the all_use_cases.txt file.
+
+The argument supports a comma-separated list of numbers. Example::
+
+      {
+        "category": "data_assimilation",
+        "index_list": "0,2,4",
+        "run": false
+      },
+      {
+        "category": "data_assimilation",
+        "index_list": "1,3",
+        "run": false
+      },
+
+The above example will run a job with data_assimilation use cases 0, 2, and
+4, then another job with data_assimilation use cases 1 and 3.
+
+It also supports a range of numbers separated with a dash. Example::
+
+      {
+        "category": "data_assimilation",
+        "index_list": "0-3",
+        "run": false
+      },
+      {
+        "category": "data_assimilation",
+        "index_list": "4-5",
+        "run": false
+      },
+
+The above example will run a job with data_assimilation 0, 1, 2, and 3, then
+another job with data_assimilation 4 and 5.
+
+You can also use a combination of commas and dashes to define the list of cases
+to run. Example::
+
+      {
+        "category": "data_assimilation",
+        "index_list": "0-2,4",
+        "run": false
+      },
+      {
+        "category": "data_assimilation",
+        "index_list": "3",
+        "run": false
+      },
+
+The above example will run data_assimilation 0, 1, 2, and 4 in one
+job, then data_assimilation 3 in another job.
 
 Run Use Cases
 ^^^^^^^^^^^^^
+
+
 
 Difference Tests
 ^^^^^^^^^^^^^^^^
