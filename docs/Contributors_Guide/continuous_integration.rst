@@ -101,7 +101,7 @@ METplus GitHub page.
 Event Control
 -------------
 
-The **on** keyword is used to determine which events will trigger the workflow
+The **on** keyword defines which events trigger the workflow
 to run. There are currently 3 types of events that trigger this workflow:
 push, pull_request, and workflow_dispatch.
 The jobs that are run in this workflow depend on which event has triggered it.
