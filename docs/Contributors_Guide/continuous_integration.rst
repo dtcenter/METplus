@@ -255,10 +255,6 @@ Job Control
             run: .github/jobs/set_job_controls.sh
             env:
               commit_msg: ${{ github.event.head_commit.message }}
-          - uses: actions/upload-artifact@v2
-            with:
-              name: job_control_status
-              path: job_control_status
 
         outputs:
           matrix: ${{ steps.job_status.outputs.matrix }}
@@ -393,7 +389,7 @@ Here is a list of the currently supported keywords and what they control:
 
 .. _cg-ci-get-image:
 
-Create/Update Metplus Docker Image
+Create/Update METplus Docker Image
 ----------------------------------
 
 This job calls the **docker_setup.sh** script (found in .github/jobs).
@@ -402,6 +398,13 @@ The image is pulled instead of built in each test job to save execution time.
 The script attempts to pull the appropriate Docker image from DockerHub
 (dtcenter/metplus-dev:**<BRANCH_NAME>**) if it already exists so that unchanged
 components of the Docker image do not need to be rebuilt.
+
+DockerHub Credentials
+^^^^^^^^^^^^^^^^^^^^^
+
+The credentials needed to push images to DockerHub are stored in Secret
+Environment Variables for the repository. These variables are passed
+into the script that needs them using the **env** keyword.
 
 Force MET Version Used for Tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -492,6 +495,9 @@ index
 The index is the number associated with the use case so it can be referenced
 easily. The first index number in a new category should be 0.
 Each use case added should have an index that is one greater than the previous.
+If it has been determined that a use case cannot run in the automated tests,
+then the index number should be replaced with "#X" so that is it included
+in the list for reference but not run by the tests.
 
 name
 """"
@@ -507,7 +513,7 @@ Example::
 config_args
 """""""""""
 
-This is the path of the conf file used for the use case relative to
+This is the path of the config file used for the use case relative to
 METplus/parm/use_cases.
 
 Example::
@@ -550,8 +556,7 @@ on DockerHub in dtcenter/metplus-envs and are named with a tag that corresponds
 to the keyword without the "_env" suffix.
 The environments were created using Docker commands via scripts that are found
 in scripts/docker/docker_env.
-Existing keywords that set up Conda environments used
-for use cases are:
+Existing keywords that set up Conda environments used for use cases are:
 
 * cfgrib_env
 * h5py_env
@@ -616,8 +621,9 @@ will use the **pygrib** environment to run::
 
     user_env_vars.MET_PYTHON_EXE=/usr/local/envs/pygrib/bin/python3
 
-Please see the MET User's Guide for more information on how to use Python
-Embedding.
+Please see the
+`MET User's Guide <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html>`_
+for more information on how to use Python Embedding.
 
 * **metviewer** - Used if METviewer should be made available to the use case.
   This is typically added for a METdbLoad use case that needs to populate a
@@ -659,9 +665,11 @@ creating Docker images that use Conda to create a Python environment that can
 run the use case. To see what is available in each of the existing Python
 environments, refer to the comments in the scripts found in
 **scripts/docker/docker_env/scripts**.
-ew environments must be added by a METplus
-developer, so please contact MET Help if none of these environments contain the
-package requirements needed to run a new use case.
+New environments must be added by a METplus developer,
+so please create a discussion on the
+`METplus GitHub Discussions <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html>`_
+forum if none of these environments contain the package requirements
+needed to run a new use case.
 
 A README file can be found in the scripts/docker/docker_env directory that
 provides commands that can be run to recreate a Docker image if the
@@ -680,10 +688,11 @@ build the environment locally.
 
 **Installing METplus Components**
 
-These scripts
+The scripts used to create the Python environment Docker images
 do not install any METplus components,
-such as metplotpy/metcalcpy/metplus, in the Python environment that
-may be needed for a use case. This is done because the automated tests
+such as metplotpy, metcalcpy, metdatadb, and metplus,
+in the Python environment that may be needed for a use case.
+This is done because the automated tests
 will install and use the latest version (develop) of the packages to
 ensure that any changes to those components do not break any existing
 use cases. These packages will need to be installed by the user
@@ -832,7 +841,7 @@ strategy -> matrix syntax::
 run even when one of them fails. The **matrix** value is a list of use
 case categories and indices that is created in the :ref:`cg-ci-job-control`
 job. Each value in the list is referenced in the job steps with
-${{ matrix.categories }}::
+**${{ matrix.categories }}**::
 
     - name: Run Use Cases
       uses: ./.github/actions/run_tests
