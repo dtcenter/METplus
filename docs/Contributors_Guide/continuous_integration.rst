@@ -20,11 +20,23 @@ GitHub Actions runs workflows defined by files in the **.github/workflows**
 directory of a GitHub repository.
 Files with the .yml suffix are parsed and GitHub Actions will
 trigger a workflow run if the triggering criteria is met.
-It can run multiple jobs in parallel or serially depending on dependency rules
-that can be set. Each job can run a series of commands or scripts called steps.
-Job steps can include "actions" which can be used to perform tasks. Many useful
-actions are provided by GitHub and external collaborators. Developers can also
-write their own custom actions to perform complex tasks to simplify a workflow.
+Multiple workflows may be triggered by a single event.
+All workflow runs can be seen on the Actions tab of the repository.
+Each workflow run is identified by the branch for which it was invoked
+as well as the corresponding commit message on that branch.
+In general, a green check mark indicates that all checks for
+that workflow run passed.
+A red X indicates that at least one of the jobs failed.
+
+Workflows can run multiple jobs in parallel or serially depending on
+dependency rules that can be set.
+Each job can run a series of commands or scripts called steps.
+Steps can include actions which can be used to perform common tasks.
+Many useful actions are provided by GitHub and external collaborators.
+Developers can also write their own custom actions to perform complex tasks
+to simplify a workflow.
+
+**TODO Add screenshots**
 
 Testing (testing.yml)
 ---------------------
@@ -103,7 +115,7 @@ Event Control
 
 The **on** keyword is used to determine which events will trigger the workflow
 to run. There are currently 3 types of events that trigger this workflow:
-push, pull_request, and workflow_dispatch.
+**push**, **pull_request**, and **workflow_dispatch**.
 The jobs that are run in this workflow depend on which event has triggered it.
 There are a lot of jobs that are common to multiple events.
 To avoid creating multiple workflow .yml files that contain redundant jobs,
@@ -154,9 +166,11 @@ The **synchronize** type triggers a workflow for every push to a branch
 that is included in an open pull request.
 If changes were requested in the pull request review,
 a new workflow will be triggered for each push.
-To prevent many workflows from being triggered, the pull request
-can be closed until the necessary changes are made or
-:ref:`cg-ci-commit-message-keywords` can be used.
+To prevent many workflows from being triggered,
+developers are encouraged to limit the number of pushes for open pull requests.
+Note that pull requests can be closed until the necessary changes are
+completed, or :ref:`cg-ci-commit-message-keywords` can be used
+to suppress the testing workflow.
 
 
 Workflow Dispatch
@@ -265,7 +279,7 @@ Job Control
           run_save_truth_data: ${{ steps.job_status.outputs.run_save_truth_data }}
           external_trigger: ${{ steps.job_status.outputs.external_trigger }}
 
-This job runs a script called **set_job_controls.sh** (found in .github/jobs)
+This job runs a script called **set_job_controls.sh**
 that parses environment variables set by GitHub Actions to determine which
 jobs to run. There is :ref:`cg-ci-default-behavior` based on the event that
 triggered the workflow and the branch name.
@@ -290,7 +304,7 @@ Values from the script are set as output variables using the following syntax::
 
     echo ::set-output name=run_get_image::$run_get_image
 
-In this example, an output variable named 'run_get_image'
+In this example, an output variable named *run_get_image*
 (set with **name=run_get_image**) is created with the value of a
 variable from the script with the same name (set after the :: characters).
 The variable can be referenced elsewhere within the job using the following
@@ -299,7 +313,7 @@ syntax::
     ${{ steps.job_status.outputs.run_get_image }}
 
 The ID of the step is needed to reference the outputs for that step.
-**Note that this notation should be referenced directly in the workflow .yml
+**Note that this notation should be referenced directly in the workflow YAML
 file and not inside a script that is called by the workflow.**
 
 To make the variable available to other jobs in the workflow, it will need
@@ -392,12 +406,14 @@ Here is a list of the currently supported keywords and what they control:
 Create/Update METplus Docker Image
 ----------------------------------
 
-This job calls the **docker_setup.sh** script (found in .github/jobs).
+This job calls the **docker_setup.sh** script.
 This script builds a METplus Docker image and pushes it to DockerHub.
 The image is pulled instead of built in each test job to save execution time.
 The script attempts to pull the appropriate Docker image from DockerHub
-(dtcenter/metplus-dev:**<BRANCH_NAME>**) if it already exists so that unchanged
+(dtcenter/metplus-dev:*BRANCH_NAME*) if it already exists so that unchanged
 components of the Docker image do not need to be rebuilt.
+This reduces the time it takes to rebuild the image for a given branch on
+a subsequent workflow run.
 
 DockerHub Credentials
 ^^^^^^^^^^^^^^^^^^^^^
@@ -417,10 +433,10 @@ i.e. METplotpy or METviewer, until a corresponding change is made to that
 component. If this occurs then some of the METplus use cases may break. To
 allow the tests to run successfully in the meantime, an option was added to
 force the version of the MET tag that is used to build the METplus Docker image
-that is used for testing. In the testing.yml GitHub Actions workflow file
-(found in .github/workflows), there is a commented variable called
+that is used for testing. In the testing.yml workflow file,
+there is a commented variable called
 MET_FORCE_TAG that can be uncommented and set to force the version of MET to
-use. This variable is found in the "get_image" job under the "env" section
+use. This variable is found in the **get_image** job under the **env** section
 for the step named "Get METplus Image."
 
 ::
@@ -440,9 +456,9 @@ Create/Update Docker Data Volumes
 
 The METplus use case tests obtain input data from Docker data volumes.
 Each use case category that corresponds to a directory in
-parm/use_cases/model_applications has its own data volume that contains
+**parm/use_cases/model_applications** has its own data volume that contains
 all of the data needed to run those use cases. The MET Tool Wrapper use cases
-found under parm/use_cases/met_tool_wrapper also have a data volume.
+found under **parm/use_cases/met_tool_wrapper** also have a data volume.
 These data are made available on the DTC web server.
 
 The logic in this
@@ -479,7 +495,7 @@ a line that following the format::
 
   Category: <category>
 
-where <category> is the name of the use case category.
+where *<category>* is the name of the use case category.
 See :ref:`use_case_categories` for more information. If you are adding a
 use case that will go into a new category, you will have to add a new category
 definition line to this file and add your new use case under it. Each use case
@@ -514,7 +530,7 @@ config_args
 """""""""""
 
 This is the path of the config file used for the use case relative to
-METplus/parm/use_cases.
+**parm/use_cases**.
 
 Example::
 
@@ -550,12 +566,12 @@ Use Case Dependencies
 Conda Environments
 """"""""""""""""""
 
-The keywords that end with "_env" are Python environments created in Docker
+The keywords that end with **_env** are Python environments created in Docker
 images using Conda that can be used to run use cases. These images are stored
-on DockerHub in dtcenter/metplus-envs and are named with a tag that corresponds
-to the keyword without the "_env" suffix.
+on DockerHub in *dtcenter/metplus-envs* and are named with a tag that
+corresponds to the keyword without the **_env** suffix.
 The environments were created using Docker commands via scripts that are found
-in scripts/docker/docker_env.
+in **scripts/docker/docker_env**.
 Existing keywords that set up Conda environments used for use cases are:
 
 * cfgrib_env
@@ -575,7 +591,7 @@ Example::
 
 The above example uses the Conda environment
 in dtcenter/metplus-envs:**spacetime** to run a user script.
-Note that only one dependency that contains the "_env" suffix can be supplied
+Note that only one dependency that contains the **_env** suffix can be supplied
 to a given use case.
 
 Other Environments
@@ -584,19 +600,16 @@ Other Environments
 A few of the environments do not contain Conda environments and
 are handled a little differently.
 
-* gempak_env
-* gfdl-tracker_env
+* **gempak_env** - Used if GempakToCF.jar is needed for a use case to convert
+  GEMPAK data to NetCDF format so it can be read by the MET tools.
+  Instead of creating a Python environment to use for the use case,
+  this Docker image installs Java and obtains the GempakToCF.jar file.
+  When creating the Docker container to run the use cases,
+  the necessary Java files are copied over into the container
+  that runs the use cases so that the JAR file can be run by METplus wrappers.
+* **gfdl-tracker_env** - Contains the GFDL Tracker application that is used by
+  the GFDLTracker wrapper use cases.
 
-**gempak_env** is used if GempakToCF.jar is needed for a use case to convert
-GEMPAK data to NetCDF format so it can be read by the MET tools.
-Instead of creating a Python environment to use for the use case,
-this Docker image installs Java and obtains the GempakToCF.jar file.
-When creating the Docker container to run the use cases,
-the necessary Java files are copied over into the container
-that runs the use cases so that the JAR file can be run by METplus wrappers.
-
-**gfdl-tracker_env** contains the GFDL Tracker application that is used by
-the GFDLTracker wrapper use cases.
 
 Other Keywords
 """"""""""""""
@@ -671,14 +684,14 @@ so please create a discussion on the
 forum if none of these environments contain the package requirements
 needed to run a new use case.
 
-A README file can be found in the scripts/docker/docker_env directory that
+A **README.md** file can be found in **scripts/docker/docker_env** that
 provides commands that can be run to recreate a Docker image if the
 conda environment needs to be updated. Please note that Docker must
 be installed on the workstation used to create new Docker images and
 a DockerHub account with access to the dtcenter repositories must
 be used to push Docker images to DockerHub.
 
-The README file also contains commands to create a conda environment
+The **README.md** file also contains commands to create a conda environment
 that is used for the tests locally. Any base conda environments,
 such as metplus_base and py_embed_base, must be created locally first
 before creating an environment that builds upon these environments.
@@ -690,7 +703,7 @@ build the environment locally.
 
 The scripts used to create the Python environment Docker images
 do not install any METplus components,
-such as metplotpy, metcalcpy, metdatadb, and metplus,
+such as METplotpy, METcalcpy, METdatadb, and METplus,
 in the Python environment that may be needed for a use case.
 This is done because the automated tests
 will install and use the latest version (develop) of the packages to
@@ -733,7 +746,7 @@ Use Case Groups
 The use cases that are run in the automated test suite are divided into
 groups that can be run concurrently.
 
-The **use_case_groups.json** file (found in .github/parm)
+The **use_case_groups.json** file (found in **.github/parm**)
 contains a list of the use case groups to run together.
 In METplus version 4.0.0 and earlier, this list was
 found in the .github/workflows/testing.yml file.
@@ -747,13 +760,14 @@ Each use case group is defined with the following format::
       }
 
 * **<CATEGORY>** is the category group that the use case is found under in the
-  all_use_cases.txt file (see :ref:`cg-ci-all-use-cases`).
-* **<INDEX_LIST>** is a list of indices of the use cases from all_use_cases.txt
-  to run in the group. This can be a single integer, a comma-separated list of
+  **all_use_cases.txt** file (see :ref:`cg-ci-all-use-cases`).
+* **<INDEX_LIST>** is a list of indices of the use cases from
+  **all_use_cases.txt** to run in the group.
+  This can be a single integer, a comma-separated list of
   integers, and a range of values with a dash, i.e. 0-3.
 * **<RUN_STATUS>** is a boolean (true/false) value that determines if the use
   case group should be run. If the workflow job controls are not set to run
-  all of the use cases, then only use case groups that are set to **true** are
+  all of the use cases, then only use case groups that are set to true are
   run.
 
 Example::
@@ -765,7 +779,7 @@ Example::
       }
 
 This example defines a use case group that contains the climate use case
-with index 2 and is marked to "run" for every push.
+with index 2 and is marked to run for every push.
 
 
 .. _cg-ci-subset_category:
@@ -774,9 +788,9 @@ Subset Category into Multiple Tests
 """""""""""""""""""""""""""""""""""
 
 Use cases can be separated into multiple test jobs.
-In the "index_list" value, define the cases to run for the job.
-Use cases are numbered starting with 0 and are in order of how they are
-found in the all_use_cases.txt file.
+In the *index_list* value, define the cases to run for the job.
+Use cases are numbered starting with 0 and correspond to the number set in
+the **all_use_cases.txt** file.
 
 The argument supports a comma-separated list of numbers. Example::
 
@@ -858,7 +872,7 @@ Obtaining Input Data
 Each use case category has a corresponding Docker data volume that contains
 the input data needed to run all of the use cases. The data volume is obtained
 from DockerHub and mounted into the container that will run the use cases
-using the **--volumes-from** argument to the **docker run** command.
+using the **\-\-volumes-from** argument to the **docker run** command.
 
 Build Docker Test Environment
 """""""""""""""""""""""""""""
@@ -873,18 +887,20 @@ the use cases.
 Setup Use Case Commands
 """""""""""""""""""""""
 
-Before run_metplus.py is called to run the use case, some other commands are
-run in the Docker container.
+Before **run_metplus.py** is called to run the use case,
+some other commands are run in the Docker container.
 For example, if another METplus Python component such as
-METcalcpy or METplotpy are required for the use case, the **develop** branch
-of those repositories are obtained the Python code is installed in the
-Python (Conda) environment that will be used to run the use case.
+METcalcpy, METplotpy, or METdatadb are required for the use case,
+the **develop** branch of those repositories are obtained the Python code
+is installed in the Python (Conda) environment that will be used to
+run the use case.
 
 Run the Use Cases
 """""""""""""""""
 
-The run_metplus.py script is called to run each use case. The OUTPUT_BASE
-variable is overridden to include the use case name identifier defined in
+The **run_metplus.py** script is called to run each use case.
+The **OUTPUT_BASE** METplus configuration variable is overridden to
+include the use case name identifier defined in
 the :ref:`cg-ci-all-use-cases` file to isolate all of the output for each
 use case. If any of the use cases contain an error, then the job for the
 use case group will fail and display a red X next to the job on the
@@ -894,10 +910,10 @@ Difference Tests
 ^^^^^^^^^^^^^^^^
 
 After all of the use cases in a group have finished running, the output
-that was generated is compared to the "truth" data to determine if any of
+that was generated is compared to the truth data to determine if any of
 the output was changed. The truth data for each use case group is stored
 in a Docker data volume on DockerHub. The **diff_util.py** script
-(found in metplus/util) is run to compare all of the output files in
+(found in **metplus/util**) is run to compare all of the output files in
 different ways depending on the file type.
 
 The logic in this script could be improved to provide more robust testing.
