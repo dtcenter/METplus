@@ -22,7 +22,7 @@ Files with the .yml suffix are parsed and GitHub Actions will
 trigger a workflow run if the triggering criteria is met.
 It can run multiple jobs in parallel or serially depending on dependency rules
 that can be set. Each job can run a series of commands or scripts called steps.
-Job steps can include "actions" with can be used to perform tasks. Many useful
+Job steps can include "actions" which can be used to perform tasks. Many useful
 actions are provided by GitHub and external collaborators. Developers can also
 write their own custom actions to perform complex tasks to simplify a workflow.
 
