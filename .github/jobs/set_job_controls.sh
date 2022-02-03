@@ -80,18 +80,6 @@ else
 
 fi
 
-touch job_control_status
-echo run_get_image=${run_get_image} >> job_control_status
-echo run_get_input_data=${run_get_input_data} >> job_control_status
-echo run_unit_tests=${run_unit_tests} >> job_control_status
-echo run_use_cases=${run_use_cases} >> job_control_status
-echo run_save_truth_data=${run_save_truth_data} >> job_control_status
-echo run_all_use_cases=${run_all_use_cases} >> job_control_status
-echo run_diff=${run_diff} >> job_control_status
-echo external_trigger=${external_trigger} >> job_control_status
-echo Job Control Settings:
-cat job_control_status
-
 echo ::set-output name=run_get_image::$run_get_image
 echo ::set-output name=run_get_input_data::$run_get_input_data
 echo ::set-output name=run_diff::$run_diff

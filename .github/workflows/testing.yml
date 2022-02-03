@@ -55,10 +55,6 @@ jobs:
         run: .github/jobs/set_job_controls.sh
         env:
           commit_msg: ${{ github.event.head_commit.message }}
-      - uses: actions/upload-artifact@v2
-        with:
-          name: job_control_status
-          path: job_control_status
 
     outputs:
       matrix: ${{ steps.job_status.outputs.matrix }}
