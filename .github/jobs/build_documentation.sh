@@ -25,6 +25,7 @@ if [ -s $warning_file ]; then
   echo Summary:
   grep WARNING ${DOCS_DIR}/_build/warnings.log
   grep ERROR ${DOCS_DIR}/_build/warnings.log
+  grep CRITICAL ${DOCS_DIR}/_build/warnings.log
   echo Review this log file or download documentation_warnings.log artifact
   exit 1
 fi
