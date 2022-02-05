@@ -115,6 +115,7 @@ Category: precipitation
 4::GridStat_fcstHRRR-TLE_obsStgIV_GRIB:: model_applications/precipitation/GridStat_fcstHRRR-TLE_obsStgIV_GRIB.conf
 5::MTD_fcstHRRR-TLE_FcstOnly_RevisionSeries_GRIB:: model_applications/precipitation/MTD_fcstHRRR-TLE_FcstOnly_RevisionSeries_GRIB.conf
 6::MTD_fcstHRRR-TLE_obsMRMS:: model_applications/precipitation/MTD_fcstHRRR-TLE_obsMRMS.conf
+7::PointStat_fcstMULTI_obsMETAR_PtypeComparisons:: model_applications/precipitation/PointStat_fcstMULTI_obsMETAR_PtypeComparisons.conf
 
 
 Category: s2s
