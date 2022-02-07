@@ -81,14 +81,12 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         'prc',
     ]
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         self.app_name = 'series_analysis'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
 
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
         if self.c_dict['GENERATE_PLOTS']:
             self.plot_data_plane = self._plot_data_plane_init()
@@ -181,11 +179,20 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         # get input dir, template, and datatype for FCST, OBS, and BOTH
         for data_type in ('FCST', 'OBS', 'BOTH'):
+
+            # check if {data_type}_{app}_FILE_LIST is set
+            c_dict[f'{data_type}_INPUT_FILE_LIST'] = (
+                self.config.getraw(
+                    'config',
+                    f'{data_type}_SERIES_ANALYSIS_INPUT_FILE_LIST'
+                )
+            )
+
             c_dict[f'{data_type}_INPUT_DIR'] = (
               self.config.getdir(f'{data_type}_SERIES_ANALYSIS_INPUT_DIR', '')
             )
             c_dict[f'{data_type}_INPUT_TEMPLATE'] = (
-              self.config.getraw('filename_templates',
+              self.config.getraw('config',
                                  f'{data_type}_SERIES_ANALYSIS_INPUT_TEMPLATE',
                                  '')
             )
@@ -235,43 +242,61 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                         False)
                 )
 
-        # if BOTH is set, neither FCST or OBS can be set
-        c_dict['USING_BOTH'] = False
-        if c_dict['BOTH_INPUT_TEMPLATE']:
-            if c_dict['FCST_INPUT_TEMPLATE'] or c_dict['OBS_INPUT_TEMPLATE']:
-                self.log_error("Cannot set FCST_SERIES_ANALYSIS_INPUT_TEMPLATE"
-                               " or OBS_SERIES_ANALYSIS_INPUT_TEMPLATE if "
-                               "BOTH_SERIES_ANALYSIS_INPUT_TEMPLATE is set.")
+        c_dict['USING_BOTH'] = (c_dict['BOTH_INPUT_TEMPLATE'] or
+                                c_dict['BOTH_INPUT_FILE_LIST'])
 
-            c_dict['USING_BOTH'] = True
+        if c_dict['USING_BOTH']:
 
-            # set *_WINDOW_* variables for BOTH
-            # used in CommandBuilder.find_data function)
-            self.handle_file_window_variables(c_dict, dtypes=['BOTH'])
+            # check if using explicit file list for BOTH
+            if c_dict['BOTH_INPUT_FILE_LIST']:
+                c_dict['EXPLICIT_FILE_LIST'] = True
+            else:
+                # set *_WINDOW_* variables for BOTH
+                # used in CommandBuilder.find_data function)
+                self.handle_file_window_variables(c_dict, dtypes=['BOTH'])
 
-            prob_thresh = self.config.getstr('config','BOTH_SERIES_ANALYSIS_PROB_THRESH','')
+            prob_thresh = self.config.getraw(
+                'config',
+                'BOTH_SERIES_ANALYSIS_PROB_THRESH'
+            )
             c_dict['FCST_PROB_THRESH'] = prob_thresh
             c_dict['OBS_PROB_THRESH'] = prob_thresh
 
         # if BOTH is not set, both FCST or OBS must be set
         else:
-            if (not c_dict['FCST_INPUT_TEMPLATE'] or
-                    not c_dict['OBS_INPUT_TEMPLATE']):
-                self.log_error("Must either set "
-                               "BOTH_SERIES_ANALYSIS_INPUT_TEMPLATE or both "
-                               "FCST_SERIES_ANALYSIS_INPUT_TEMPLATE and "
-                               "OBS_SERIES_ANALYSIS_INPUT_TEMPLATE to run "
-                               "SeriesAnalysis wrapper.")
+            fcst_input_list = c_dict['FCST_INPUT_FILE_LIST']
+            obs_input_list = c_dict['OBS_INPUT_FILE_LIST']
+            if fcst_input_list and obs_input_list:
+                c_dict['EXPLICIT_FILE_LIST'] = True
+            elif not fcst_input_list and not obs_input_list:
+                if (not c_dict['FCST_INPUT_TEMPLATE'] or
+                        not c_dict['OBS_INPUT_TEMPLATE']):
+                    self.log_error(
+                        "Must either set "
+                        "BOTH_SERIES_ANALYSIS_INPUT_TEMPLATE or both "
+                        "FCST_SERIES_ANALYSIS_INPUT_TEMPLATE and "
+                        "OBS_SERIES_ANALYSIS_INPUT_TEMPLATE to run "
+                        "SeriesAnalysis wrapper."
+                    )
 
-            # set *_WINDOW_* variables for FCST and OBS
-            self.handle_file_window_variables(c_dict, dtypes=['FCST', 'OBS'])
+                # set *_WINDOW_* variables for FCST and OBS
+                self.handle_file_window_variables(c_dict,
+                                                  dtypes=['FCST', 'OBS'])
+            # if fcst input list or obs input list are not set
+            else:
+                self.log_error('Cannot set '
+                               'FCST_SERIES_ANALYSIS_INPUT_FILE_LIST '
+                               'without OBS_SERIES_ANALYSIS_INPUT_FILE_LIST '
+                               'and vice versa')
 
             c_dict['FCST_PROB_THRESH'] = (
-                    self.config.getstr('config','FCST_SERIES_ANALYSIS_PROB_THRESH','')
+                    self.config.getraw('config',
+                                       'FCST_SERIES_ANALYSIS_PROB_THRESH')
             )
 
             c_dict['OBS_PROB_THRESH'] = (
-                    self.config.getstr('config','OBS_SERIES_ANALYSIS_PROB_THRESH','')
+                    self.config.getraw('config',
+                                       'OBS_SERIES_ANALYSIS_PROB_THRESH')
             )
 
         c_dict['TC_STAT_INPUT_DIR'] = (
@@ -371,8 +396,14 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                 "map_data={ source=[];}"
             )
 
+        instance = 'plot_data_plane_sa'
+        if not self.config.has_section(instance):
+            self.config.add_section(instance)
+        for key, value in plot_overrides.items():
+            self.config.set(instance, key, value)
+
         pdp_wrapper = PlotDataPlaneWrapper(self.config,
-                                           config_overrides=plot_overrides)
+                                           instance=instance)
         return pdp_wrapper
 
     def clear(self):
@@ -460,9 +491,9 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         for storm_id in storm_list:
             # Create FCST and OBS ASCII files
             fcst_path, obs_path = (
-                self._create_ascii_storm_files_list(time_info,
-                                                    storm_id,
-                                                    lead_group)
+                self._get_fcst_and_obs_path(time_info,
+                                            storm_id,
+                                            lead_group)
             )
             if not fcst_path or not obs_path:
                 self.log_error('No ASCII file lists were created. Skipping.')
@@ -607,7 +638,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         return bool(filetime['storm_id'] == runtime['storm_id'])
 
-    def _create_ascii_storm_files_list(self, time_info, storm_id, lead_group):
+    def _get_fcst_and_obs_path(self, time_info, storm_id, lead_group):
         """! Creates the list of ASCII files that contain the storm id and init
              times.  The list is used to create an ASCII file which will be
              used as the option to the -obs or -fcst flag to the MET
@@ -620,26 +651,62 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
               key will match the format "NoLabel_<n>" and if no lead groups
               are defined, the dictionary should be replaced with None
         """
+        if not self._check_python_embedding():
+            return None, None
+
         time_info['storm_id'] = storm_id
-        all_fcst_files = []
-        all_obs_files = []
-        if not lead_group:
-            fcst_files, obs_files = self.subset_input_files(time_info)
-            if not fcst_files or not obs_files:
-                return None, None
-            all_fcst_files.extend(fcst_files)
-            all_obs_files.extend(obs_files)
-            label = ''
-            leads = None
-        else:
+
+        # get label and lead list if grouping by forecast leads
+        if lead_group:
             label = lead_group[0]
             leads = lead_group[1]
-            for lead in leads:
+        else:
+            label = ''
+            leads = None
+
+        # if file list are explicitly specified,
+        # return the file list file paths
+        if self.c_dict.get('EXPLICIT_FILE_LIST', False):
+            # set forecast lead to last lead in list to set in output filename
+            if leads:
+                time_info['lead'] = leads[-1]
+            if self.c_dict['USING_BOTH']:
+                both_path = do_string_sub(self.c_dict['BOTH_INPUT_FILE_LIST'],
+                                          **time_info)
+                self.logger.debug(f"Explicit BOTH file list file: {both_path}")
+                if not os.path.exists(both_path):
+                    self.log_error(f'Could not find file: {both_path}')
+                    return None, None
+
+                return both_path, both_path
+
+            fcst_path = do_string_sub(self.c_dict['FCST_INPUT_FILE_LIST'],
+                                      **time_info)
+            self.logger.debug(f"Explicit FCST file list file: {fcst_path}")
+            if not os.path.exists(fcst_path):
+                self.log_error(f'Could not find forecast file: {fcst_path}')
+                fcst_path = None
+
+            obs_path = do_string_sub(self.c_dict['OBS_INPUT_FILE_LIST'],
+                                     **time_info)
+            self.logger.debug(f"Explicit OBS file list file: {obs_path}")
+            if not os.path.exists(obs_path):
+                self.log_error(f'Could not find observation file: {obs_path}')
+                obs_path = None
+
+            return fcst_path, obs_path
+
+        all_fcst_files = []
+        all_obs_files = []
+        lead_loop = leads if leads else [None]
+        for lead in lead_loop:
+            if lead is not None:
                 time_info['lead'] = lead
-                fcst_files, obs_files = self.subset_input_files(time_info)
-                if fcst_files and obs_files:
-                    all_fcst_files.extend(fcst_files)
-                    all_obs_files.extend(obs_files)
+
+            fcst_files, obs_files = self.subset_input_files(time_info)
+            if fcst_files and obs_files:
+                all_fcst_files.extend(fcst_files)
+                all_obs_files.extend(obs_files)
 
         # skip if no files were found
         if not all_fcst_files or not all_obs_files:
@@ -647,22 +714,18 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         output_dir = self.get_output_dir(time_info, storm_id, label)
 
-        if not self._check_python_embedding():
-            return None, None
-
         # create forecast (or both) file list
         if self.c_dict['USING_BOTH']:
             data_type = 'BOTH'
         else:
             data_type = 'FCST'
+
         fcst_ascii_filename = self._get_ascii_filename(data_type,
                                                        storm_id,
                                                        leads)
-        self.write_list_file(fcst_ascii_filename,
-                             all_fcst_files,
-                             output_dir=output_dir)
-
-        fcst_path = os.path.join(output_dir, fcst_ascii_filename)
+        fcst_path = self.write_list_file(fcst_ascii_filename,
+                                         all_fcst_files,
+                                         output_dir=output_dir)
 
         if self.c_dict['USING_BOTH']:
             return fcst_path, fcst_path
@@ -671,11 +734,9 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         obs_ascii_filename = self._get_ascii_filename('OBS',
                                                       storm_id,
                                                       leads)
-        self.write_list_file(obs_ascii_filename,
-                             all_obs_files,
-                             output_dir=output_dir)
-
-        obs_path = os.path.join(output_dir, obs_ascii_filename)
+        obs_path = self.write_list_file(obs_ascii_filename,
+                                        all_obs_files,
+                                        output_dir=output_dir)
 
         return fcst_path, obs_path
 

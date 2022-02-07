@@ -31,14 +31,12 @@ class CompareGriddedWrapper(CommandBuilder):
 that reformat gridded data
     """
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         # set app_name if not set by child class to allow tests to run on this wrapper
         if not hasattr(self, 'app_name'):
             self.app_name = 'compare_gridded'
 
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
         # check to make sure all necessary probabilistic settings are set correctly
         # this relies on the subclass to finish creating the c_dict, so it has to
         # be checked after that happens
@@ -60,8 +58,8 @@ that reformat gridded data
                             metplus_configs=['OBTYPE'])
 
         # set old MET config items for backwards compatibility
-        c_dict['MODEL_OLD'] = self.config.getstr('config', 'MODEL', 'FCST')
-        c_dict['OBTYPE_OLD'] = self.config.getstr('config', 'OBTYPE', 'OBS')
+        c_dict['MODEL_OLD'] = self.config.getraw('config', 'MODEL', 'FCST')
+        c_dict['OBTYPE_OLD'] = self.config.getraw('config', 'OBTYPE', 'OBS')
 
         # INPUT_BASE is not required unless it is referenced in a config file
         # it is used in the use case config files. Don't error if it is not set

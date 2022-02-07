@@ -223,7 +223,9 @@ rng = {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-grid_weight_flag = NONE;
+//grid_weight_flag =
+${METPLUS_GRID_WEIGHT_FLAG}
+
 ${METPLUS_OUTPUT_PREFIX}
 //version          = "V9.0";
 

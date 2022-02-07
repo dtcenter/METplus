@@ -24,11 +24,9 @@ VALID_PYTHON_EMBED_TYPES = ['NUMPY', 'XARRAY', 'PANDAS']
 class PyEmbedIngestWrapper(CommandBuilder):
     """!Wrapper to utilize Python Embedding in the MET tools to read in
     data using a python script"""
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         self.app_name = 'py_embed_ingest'
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -100,12 +98,17 @@ class PyEmbedIngestWrapper(CommandBuilder):
 
             c_dict['INGESTERS'].append(ingester_dict)
 
-        skip = c_dict['SKIP_IF_OUTPUT_EXISTS']
-        config_overrides = {'REGRID_DATA_PLANE_SKIP_IF_OUTPUT_EXISTS': skip}
+        # set config values for RegridDataPlane instance
+        instance = 'py_embed_ingest_rdp'
+        if not self.config.has_section(instance):
+            self.config.add_section(instance)
+        self.config.set(instance,
+                        'REGRID_DATA_PLANE_SKIP_IF_OUTPUT_EXISTS',
+                        c_dict['SKIP_IF_OUTPUT_EXISTS'])
 
         c_dict['regrid_data_plane'] = (
             RegridDataPlaneWrapper(self.config,
-                                   config_overrides=config_overrides)
+                                   instance=instance)
         )
         return c_dict
 

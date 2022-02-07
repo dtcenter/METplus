@@ -51,13 +51,11 @@ class GenEnsProdWrapper(LoopTimesWrapper):
         'weight',
     ]
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         self.app_name = 'gen_ens_prod'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR'),
                                      self.app_name)
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -75,8 +73,14 @@ class GenEnsProdWrapper(LoopTimesWrapper):
         c_dict['FCST_INPUT_DIR'] = self.config.getdir('GEN_ENS_PROD_INPUT_DIR',
                                                       '')
 
-        if not c_dict['FCST_INPUT_TEMPLATE']:
-            self.log_error('GEN_ENS_PROD_INPUT_TEMPLATE must be set')
+        c_dict['FCST_INPUT_FILE_LIST'] = (
+            self.config.getraw('config', 'GEN_ENS_PROD_INPUT_FILE_LIST')
+        )
+
+        if (not c_dict['FCST_INPUT_TEMPLATE'] and
+                not c_dict['FCST_INPUT_FILE_LIST']):
+            self.log_error('GEN_ENS_PROD_INPUT_TEMPLATE or '
+                           'GEN_ENS_PROD_INPUT_FILE_LIST must be set')
 
         # not all input files are mandatory to be found
         c_dict['MANDATORY'] = False

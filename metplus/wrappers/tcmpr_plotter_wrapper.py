@@ -11,6 +11,7 @@ from ..util import met_util as util
 from ..util import time_util
 from ..util import do_string_sub
 from ..util import time_generator
+from ..util import remove_quotes
 from . import CommandBuilder
 
 class TCMPRPlotterWrapper(CommandBuilder):
@@ -58,12 +59,10 @@ class TCMPRPlotterWrapper(CommandBuilder):
         'save': 'bool',
     }
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         self.app_name = 'tcmpr_plotter'
 
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -160,7 +159,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
             if value:
                 # add quotes around value if they are not already there
                 if 'quotes' in data_type:
-                    value = f'"{util.remove_quotes(value)}"'
+                    value = f'"{remove_quotes(value)}"'
 
                 # don't add value for boolean
                 if data_type == 'bool':
