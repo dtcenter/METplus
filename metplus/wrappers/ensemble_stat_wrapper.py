@@ -172,14 +172,14 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
           self.config.getdir('OBS_ENSEMBLE_STAT_POINT_INPUT_DIR', '')
 
         c_dict['OBS_POINT_INPUT_TEMPLATE'] = \
-          self.config.getraw('filename_templates',
+          self.config.getraw('config',
                              'OBS_ENSEMBLE_STAT_POINT_INPUT_TEMPLATE')
 
         c_dict['OBS_GRID_INPUT_DIR'] = \
           self.config.getdir('OBS_ENSEMBLE_STAT_GRID_INPUT_DIR', '')
 
         c_dict['OBS_GRID_INPUT_TEMPLATE'] = \
-          self.config.getraw('filename_templates',
+          self.config.getraw('config',
                              'OBS_ENSEMBLE_STAT_GRID_INPUT_TEMPLATE')
 
         # The ensemble forecast files input directory and filename templates
@@ -189,8 +189,13 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['FCST_INPUT_TEMPLATE'] = (
             self.config.getraw('config', 'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE')
         )
-        if not c_dict['FCST_INPUT_TEMPLATE']:
-            self.log_error("Must set FCST_ENSEMBLE_STAT_INPUT_TEMPLATE")
+        c_dict['FCST_INPUT_FILE_LIST'] = (
+            self.config.getraw('config', 'FCST_ENSEMBLE_STAT_INPUT_FILE_LIST')
+        )
+        if (not c_dict['FCST_INPUT_TEMPLATE'] and
+                not c_dict['FCST_INPUT_FILE_LIST']):
+            self.log_error("Must set FCST_ENSEMBLE_STAT_INPUT_TEMPLATE or "
+                           "FCST_ENSEMBLE_STAT_INPUT_FILE_LIST")
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('ENSEMBLE_STAT_OUTPUT_DIR',
                                                   '')
@@ -474,84 +479,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             field_list.extend(next_field)
 
         return ','.join(field_list)
-
-
-    def find_model_members(self, time_info):
-        """! Finds the model member files to compare
-              Args:
-                @param time_info dictionary containing timing information
-                @rtype string
-                @return Returns a list of the paths to the ensemble model files
-        """
-        model_dir = self.c_dict['FCST_INPUT_DIR']
-        # used for filling in missing files to ensure ens_thresh check is accurate
-        fake_dir = '/ensemble/member/is/missing'
-
-        # model_template is a list of 1 or more.
-        ens_members_path = []
-
-        # get all files that exist
-        for ens_member_template in self.c_dict['FCST_INPUT_TEMPLATE']:
-            member_file = do_string_sub(ens_member_template,
-                                        **time_info)
-            expected_path = os.path.join(model_dir, member_file)
-
-            # if wildcard expression, get all files that match
-            if '?' in expected_path or '*' in expected_path:
-                wildcard_files = sorted(glob.glob(expected_path))
-                self.logger.debug('Ensemble members file pattern: {}'
-                                  .format(expected_path))
-                self.logger.debug('{} members match file pattern'
-                                  .format(str(len(wildcard_files))))
-
-                # add files to list of ensemble members
-                for wildcard_file in wildcard_files:
-                    ens_members_path.append(wildcard_file)
-            else:
-                # otherwise check if file exists
-                expected_path = util.preprocess_file(expected_path,
-                                                     self.c_dict['FCST_INPUT_DATATYPE'],
-                                                     self.config)
-
-                # if the file exists, add it to the list
-                if expected_path:
-                    ens_members_path.append(expected_path)
-                else:
-                    # add relative path to fake dir and add to list
-                    ens_members_path.append(os.path.join(fake_dir, member_file))
-                    self.logger.warning('Expected ensemble file {} not found'
-                                        .format(member_file))
-
-        # if more files found than expected, error and exit
-        if len(ens_members_path) > self.c_dict['N_MEMBERS']:
-            msg = 'Found more files than expected! ' +\
-                  'Found {} expected {}. '.format(len(ens_members_path),
-                                                  self.c_dict['N_MEMBERS']) +\
-                  'Adjust wildcard expression in [filename_templates] '+\
-                  'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE or adjust [config] '+\
-                  'ENSEMBLE_STAT_N_MEMBERS. Files found: {}'.format(ens_members_path)
-            self.log_error(msg)
-            self.logger.error("Could not file files in {} for init {} f{} "
-                              .format(model_dir, time_info['init_fmt'],
-                                      str(time_info['lead_hours'])))
-            return False
-        # if fewer files found than expected, warn and add fake files
-        elif len(ens_members_path) < self.c_dict['N_MEMBERS']:
-            msg = 'Found fewer files than expected. '+\
-              'Found {} expected {}.'.format(len(ens_members_path),
-                                             self.c_dict['N_MEMBERS'])
-            self.logger.warning(msg)
-            # add fake files to list to get correct number of files for ens_thresh
-            diff = self.c_dict['N_MEMBERS'] - len(ens_members_path)
-            self.logger.warning('Adding {} fake files to '.format(str(diff))+\
-                                'ensure ens_thresh check is accurate')
-            for _ in range(0, diff, 1):
-                ens_members_path.append(fake_dir)
-
-        # write file that contains list of ensemble files
-        list_filename = time_info['init_fmt'] + '_' + \
-          str(time_info['lead_hours']) + '_ensemble.txt'
-        return self.write_list_file(list_filename, ens_members_path)
 
     def set_environment_variables(self, time_info):
         self.add_env_var("MET_OBS_ERROR_TABLE",

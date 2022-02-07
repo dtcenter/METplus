@@ -2695,7 +2695,7 @@ METplus Configuration Glossary
      | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PB2NC, PointStat
 
    OBS_FILE_WINDOW_END
-     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds.This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if :term:`OBS_GRID_STAT_WINDOW_END` is set, the GridStat wrapper will use that value. If :term:`PB2NC_WINDOW_END` is not set, then the PB2NC wrapper will use :term:`OBS_WINDOW_END`. A corresponding variable exists for forecast data called :term:`FCST_FILE_WINDOW_END`.
+     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds.This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if :term:`OBS_GRID_STAT_FILE_WINDOW_END` is set, the GridStat wrapper will use that value. If :term:`PB2NC_FILE_WINDOW_END` is not set, then the PB2NC wrapper will use :term:`OBS_FILE_WINDOW_END`. A corresponding variable exists for forecast data called :term:`FCST_FILE_WINDOW_END`.
 
      | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PB2NC, PointStat
 
@@ -3173,12 +3173,12 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`OBS_WINDOW_BEGIN`.
 
    OBS_WINDOW_BEGIN
-     Passed to the MET config file to determine the range of data within a file that should be used for processing.Units are seconds. This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if :term:`OBS_POINT_STAT_WINDOW_BEGIN` is set, the PointStat wrapper will use that value. If :term:`PB2NC_WINDOW_BEGIN` is not set, then the PB2NC wrapper will use :term:`OBS_WINDOW_BEGIN`. A corresponding variable exists for forecast data called :term:`FCST_WINDOW_BEGIN`.
+     Passed to the MET config file to determine the range of data within a file that should be used for processing.Units are seconds. This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if :term:`OBS_POINT_STAT_WINDOW_BEGIN` is set, the PointStat wrapper will use that value. If :term:`PB2NC_OBS_WINDOW_BEGIN` is not set, then the PB2NC wrapper will use :term:`OBS_WINDOW_BEGIN`. A corresponding variable exists for forecast data called :term:`FCST_WINDOW_BEGIN`.
 
      | *Used by:*  PB2NC, PointStat
 
    OBS_WINDOW_END
-     Passed to the MET config file to determine the range of data within a file that should be used for processing.Units are seconds. This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if :term:`OBS_POINT_STAT_WINDOW_END` is set, the PointStat wrapper will use that value. If :term:`PB2NC_WINDOW_END` is not set, then the PB2NC wrapper will use :term:`OBS_WINDOW_END`. A corresponding variable exists for forecast data called :term:`FCST_WINDOW_END`.
+     Passed to the MET config file to determine the range of data within a file that should be used for processing.Units are seconds. This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if :term:`OBS_POINT_STAT_WINDOW_END` is set, the PointStat wrapper will use that value. If :term:`PB2NC_OBS_WINDOW_END` is not set, then the PB2NC wrapper will use :term:`OBS_WINDOW_END`. A corresponding variable exists for forecast data called :term:`FCST_WINDOW_END`.
 
      | *Used by:*  PB2NC, PointStat
 
@@ -3317,12 +3317,12 @@ METplus Configuration Glossary
 
      | *Used by:*  PB2NC
 
-   PB2NC_WINDOW_BEGIN
+   PB2NC_OBS_WINDOW_BEGIN
      Passed to the pb2nc MET config file to determine the range of data within a file that should be used for processing.Units are seconds. If the variable is not set, pb2nc will use :term:`OBS_WINDOW_BEGIN`.
 
      | *Used by:*  PB2NC
 
-   PB2NC_WINDOW_END
+   PB2NC_OBS_WINDOW_END
      Passed to the pb2nc MET config file to determine the range of data within a file that should be used for processing. Units are seconds. If the variable is not set, pb2nc will use :term:`OBS_WINDOW_END`.
 
      | *Used by:*  PB2NC
@@ -3646,6 +3646,20 @@ METplus Configuration Glossary
 
    OBS_SERIES_ANALYSIS_INPUT_TEMPLATE
      Template to find observation input in SeriesAnalysis. See also :term:`OBS_SERIES_ANALYSIS_INPUT_DIR`
+
+     | *Used by:*  SeriesAnalysis
+
+   BOTH_SERIES_ANALYSIS_INPUT_DIR
+     Specify the directory to read forecast and observation input from the
+     same file in SeriesAnalysis.
+     See also :term:`BOTH_SERIES_ANALYSIS_INPUT_TEMPLATE`
+
+     | *Used by:*  SeriesAnalysis
+
+   BOTH_SERIES_ANALYSIS_INPUT_TEMPLATE
+     Template to find forecast and observation input from the
+     same file in SeriesAnalysis.
+     See also :term:`BOTH_SERIES_ANALYSIS_INPUT_DIR`
 
      | *Used by:*  SeriesAnalysis
 
@@ -8960,3 +8974,74 @@ METplus Configuration Glossary
      See also :term:`SERIES_ANALYSIS_CLIMO_STDEV_USE_FCST`.
 
      | *Used by:* SeriesAnalysis
+
+   FCST_SERIES_ANALYSIS_INPUT_FILE_LIST
+     Specifies an explicit path to a file list file to pass into
+     series_analysis with the -fcst argument. If set,
+     :term:`OBS_SERIES_ANALYSIS_INPUT_FILE_LIST` must also be set and
+     :term:`FCST_SERIES_ANALYSIS_INPUT_TEMPLATE` and
+     :term:`FCST_SERIES_ANALYSIS_INPUT_DIR` are ignored.
+     See also :term:`BOTH_SERIES_ANALYSIS_INPUT_FILE_LIST`.
+
+     | *Used by:* SeriesAnalysis
+
+   OBS_SERIES_ANALYSIS_INPUT_FILE_LIST
+     Specifies an explicit path to a file list file to pass into
+     series_analysis with the -fcst argument. If set,
+     :term:`FCST_SERIES_ANALYSIS_INPUT_FILE_LIST` must also be set and
+     :term:`OBS_SERIES_ANALYSIS_INPUT_TEMPLATE` and
+     :term:`OBS_SERIES_ANALYSIS_INPUT_DIR` are ignored.
+     See also :term:`BOTH_SERIES_ANALYSIS_INPUT_FILE_LIST`.
+
+     | *Used by:* SeriesAnalysis
+
+   BOTH_SERIES_ANALYSIS_INPUT_FILE_LIST
+     Specifies an explicit path to a file list file to pass into
+     series_analysis with the -both argument. If set,
+     :term:`BOTH_SERIES_ANALYSIS_INPUT_TEMPLATE` and
+     :term:`BOTH_SERIES_ANALYSIS_INPUT_DIR` are ignored.
+     See also :term:`FCST_SERIES_ANALYSIS_INPUT_FILE_LIST` and
+     :term:`OBS_SERIES_ANALYSIS_INPUT_FILE_LIST`.
+
+     | *Used by:* SeriesAnalysis
+
+   FCST_MTD_INPUT_FILE_LIST
+     Specifies an explicit path to a file list file to pass into
+     mtd with the -fcst or -single argument. If set,
+     :term:`FCST_MTD_INPUT_TEMPLATE` and
+     :term:`FCST_MTD_INPUT_DIR` are ignored.
+     See also :term:`OBS_MTD_INPUT_FILE_LIST`.
+
+     | *Used by:* MTD
+
+   OBS_MTD_INPUT_FILE_LIST
+     Specifies an explicit path to a file list file to pass into
+     mtd with the -obs or -single argument. If set,
+     :term:`OBS_MTD_INPUT_TEMPLATE` and
+     :term:`OBS_MTD_INPUT_DIR` are ignored.
+     See also :term:`FCST_MTD_INPUT_FILE_LIST`.
+
+     | *Used by:* MTD
+
+   TC_RMW_INPUT_FILE_LIST
+     Specifies an explicit path to a file list file to pass into tc_rmw.
+     If set, :term:`TC_RMW_INPUT_TEMPLATE` and :term:`TC_RMW_INPUT_DIR`
+     are ignored.
+
+     | *Used by:* TCRMW
+
+   FCST_ENSEMBLE_STAT_INPUT_FILE_LIST
+     Specifies an explicit path to a file list file to pass ensembles into
+     ensemble_stat. If set,
+     :term:`FCST_ENSEMBLE_STAT_INPUT_TEMPLATE` and
+     :term:`FCST_ENSEMBLE_STAT_INPUT_DIR` are ignored.
+
+     | *Used by:* EnsembleStat
+
+   GEN_ENS_PROD_INPUT_FILE_LIST
+     Specifies an explicit path to a file list file to pass ensembles into
+     gen_ens_prod. If set,
+     :term:`GEN_ENS_PROD_INPUT_TEMPLATE` and
+     :term:`GEN_ENS_PROD_INPUT_DIR` are ignored.
+
+     | *Used by:* GenEnsProd
