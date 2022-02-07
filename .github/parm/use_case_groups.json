@@ -111,8 +111,13 @@
   },
   {
     "category": "precipitation",
-    "index_list": "3-8",
+    "index_list": "3-7",
     "run": false
+  },
+  {
+    "category": "precipitation",
+    "index_list": "8",
+    "run": true
   },
   {
     "category": "s2s",
