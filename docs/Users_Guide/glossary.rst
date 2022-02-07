@@ -8987,7 +8987,7 @@ METplus Configuration Glossary
 
    OBS_SERIES_ANALYSIS_INPUT_FILE_LIST
      Specifies an explicit path to a file list file to pass into
-     series_analysis with the -fcst argument. If set,
+     series_analysis with the -obs argument. If set,
      :term:`FCST_SERIES_ANALYSIS_INPUT_FILE_LIST` must also be set and
      :term:`OBS_SERIES_ANALYSIS_INPUT_TEMPLATE` and
      :term:`OBS_SERIES_ANALYSIS_INPUT_DIR` are ignored.
