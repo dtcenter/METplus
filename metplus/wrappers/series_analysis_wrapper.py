@@ -671,6 +671,10 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         # if file list are explicitly specified,
         # return the file list file paths
         if self.c_dict.get('EXPLICIT_FILE_LIST', False):
+            # set forecast lead to last lead in list to set in output filename
+            if leads:
+                time_info['lead'] = leads[-1]
+
             if self.c_dict['USING_BOTH']:
                 both_path = do_string_sub(self.c_dict['BOTH_INPUT_FILE_LIST'],
                                           **time_info)

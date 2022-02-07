@@ -58,8 +58,8 @@ that reformat gridded data
                             metplus_configs=['OBTYPE'])
 
         # set old MET config items for backwards compatibility
-        c_dict['MODEL_OLD'] = self.config.getstr('config', 'MODEL', 'FCST')
-        c_dict['OBTYPE_OLD'] = self.config.getstr('config', 'OBTYPE', 'OBS')
+        c_dict['MODEL_OLD'] = self.config.getraw('config', 'MODEL', 'FCST')
+        c_dict['OBTYPE_OLD'] = self.config.getraw('config', 'OBTYPE', 'OBS')
 
         # INPUT_BASE is not required unless it is referenced in a config file
         # it is used in the use case config files. Don't error if it is not set
