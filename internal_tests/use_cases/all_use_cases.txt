@@ -115,7 +115,7 @@ Category: precipitation
 4::GridStat_fcstHRRR-TLE_obsStgIV_GRIB:: model_applications/precipitation/GridStat_fcstHRRR-TLE_obsStgIV_GRIB.conf
 5::MTD_fcstHRRR-TLE_FcstOnly_RevisionSeries_GRIB:: model_applications/precipitation/MTD_fcstHRRR-TLE_FcstOnly_RevisionSeries_GRIB.conf
 6::MTD_fcstHRRR-TLE_obsMRMS:: model_applications/precipitation/MTD_fcstHRRR-TLE_obsMRMS.conf
-
+7::EnsembleStat_fcstWOFS_obsWOFS:: model_applications/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf::
 
 Category: s2s
 0::GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast:: model_applications/s2s/GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast.conf:: netcdf4_env
