@@ -65,19 +65,22 @@ class TCRMWWrapper(CommandBuilder):
         c_dict['CONFIG_FILE'] = self.get_config_file('TCRMWConfig_wrapped')
 
         c_dict['INPUT_DIR'] = self.config.getdir('TC_RMW_INPUT_DIR', '')
-        c_dict['INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
+        c_dict['INPUT_TEMPLATE'] = self.config.getraw('config',
                                                       'TC_RMW_INPUT_TEMPLATE')
+        c_dict['INPUT_FILE_LIST'] = self.config.getraw(
+            'config', 'TC_RMW_INPUT_FILE_LIST'
+        )
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('TC_RMW_OUTPUT_DIR', '')
         c_dict['OUTPUT_TEMPLATE'] = (
-            self.config.getraw('filename_templates',
+            self.config.getraw('config',
                                'TC_RMW_OUTPUT_TEMPLATE')
         )
 
         c_dict['DECK_INPUT_DIR'] = self.config.getdir('TC_RMW_DECK_INPUT_DIR',
                                                       '')
         c_dict['DECK_INPUT_TEMPLATE'] = (
-            self.config.getraw('filename_templates',
+            self.config.getraw('config',
                                'TC_RMW_DECK_TEMPLATE')
         )
 
@@ -291,13 +294,6 @@ class TCRMWWrapper(CommandBuilder):
                 @param time_info time dictionary to use for string substitution
                 @returns Input file list if all files were found, None if not.
         """
-
-        # tc_rmw currently doesn't support an ascii file that contains a list of input files
-        # setting this to False will list each file in the command, which can be difficult to read
-        # when the tool supports reading a file list file, we should use the logic when
-        # use_file_list = True
-        use_file_list = False
-
         # get deck file
         deck_file = self.find_data(time_info, data_type='DECK')
         if not deck_file:
@@ -305,32 +301,42 @@ class TCRMWWrapper(CommandBuilder):
 
         self.c_dict['DECK_FILE'] = deck_file
 
-        all_input_files = []
-
         lead_seq = util.get_lead_sequence(self.config, time_info)
-        for lead in lead_seq:
-            self.clear()
-            time_info['lead'] = lead
 
-            time_info = time_util.ti_calculate(time_info)
-
-            # get a list of the input data files, write to an ascii file if there are more than one
-            input_files = self.find_data(time_info, return_list=True)
-            if not input_files:
-                continue
-
-            all_input_files.extend(input_files)
-
-        if not all_input_files:
-            return None
-
-        if use_file_list:
-            # create an ascii file with a list of the input files
-            list_file = self.write_list_file(f"{os.path.basename(adeck_file)}_data_files.txt",
-                                             all_input_files)
-            self.infiles.append(list_file)
+        # get input files
+        if self.c_dict['INPUT_FILE_LIST']:
+            self.logger.debug("Explicit file list file: "
+                              f"{self.c_dict['INPUT_FILE_LIST']}")
+            list_file = do_string_sub(self.c_dict['INPUT_FILE_LIST'],
+                                      **time_info)
+            if not os.path.exists(list_file):
+                self.log_error(f'Could not find file list: {list_file}')
+                return None
         else:
-            self.infiles.extend(all_input_files)
+            all_input_files = []
+
+            for lead in lead_seq:
+                self.clear()
+                time_info['lead'] = lead
+
+                time_info = time_util.ti_calculate(time_info)
+
+                # get a list of the input data files,
+                # write to an ascii file if there are more than one
+                input_files = self.find_data(time_info, return_list=True)
+                if not input_files:
+                    continue
+
+                all_input_files.extend(input_files)
+
+            if not all_input_files:
+                return None
+
+            # create an ascii file with a list of the input files
+            list_file = f"{os.path.basename(deck_file)}_data_files.txt"
+            list_file = self.write_list_file(list_file, all_input_files)
+
+        self.infiles.append(list_file)
 
         # set LEAD_LIST to list of forecast leads used
         if lead_seq != [0]:

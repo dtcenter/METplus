@@ -831,11 +831,6 @@ class CommandBuilder:
             @param time_info dictionary containing timing information
             @returns True on success
         """
-        # get list of ensemble files to process
-        input_files = self.find_model(time_info, return_list=True)
-        if not input_files:
-            self.log_error("Could not find any input files")
-            return False
 
         # get control file if requested
         if self.c_dict.get('CTRL_INPUT_TEMPLATE'):
@@ -846,6 +841,28 @@ class CommandBuilder:
                 return False
 
             self.args.append(f'-ctrl {ctrl_file}')
+
+        # if explicit file list file is specified, use it and
+        # bypass logic to error check model files
+        if self.c_dict.get('FCST_INPUT_FILE_LIST'):
+            file_list_path = do_string_sub(self.c_dict['FCST_INPUT_FILE_LIST'],
+                                           **time_info)
+            self.logger.debug(f"Explicit file list file: {file_list_path}")
+            if not os.path.exists(file_list_path):
+                self.log_error("Could not find file list file")
+                return False
+
+            self.infiles.append(file_list_path)
+            return True
+
+        # get list of ensemble files to process
+        input_files = self.find_model(time_info, return_list=True)
+        if not input_files:
+            self.log_error("Could not find any input files")
+            return False
+
+        # if control file is requested, remove it from input list
+        if self.c_dict.get('CTRL_INPUT_TEMPLATE'):
 
             # check if control file is found in ensemble list
             if ctrl_file in input_files:

@@ -1,5 +1,5 @@
 Category: met_tool_wrapper
-0::CyclonePlotter::met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf,user_env_vars.MET_PYTHON_EXE=python3:: cycloneplotter_env,cartopy
+0::CyclonePlotter::met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf:: cycloneplotter_env,cartopy, py_embed
 1::PCPCombine_python_embedding:: met_tool_wrapper/PCPCombine/PCPCombine_python_embedding.conf:: h5py_env,py_embed
 2::ASCII2NC:: met_tool_wrapper/ASCII2NC/ASCII2NC.conf
 3::met_tool_wrapper/ASCII2NC/ASCII2NC_python_embedding.conf
@@ -115,8 +115,12 @@ Category: precipitation
 4::GridStat_fcstHRRR-TLE_obsStgIV_GRIB:: model_applications/precipitation/GridStat_fcstHRRR-TLE_obsStgIV_GRIB.conf
 5::MTD_fcstHRRR-TLE_FcstOnly_RevisionSeries_GRIB:: model_applications/precipitation/MTD_fcstHRRR-TLE_FcstOnly_RevisionSeries_GRIB.conf
 6::MTD_fcstHRRR-TLE_obsMRMS:: model_applications/precipitation/MTD_fcstHRRR-TLE_obsMRMS.conf
+<<<<<<< HEAD
 7::PointStat_fcstMULTI_obsMETAR_PtypeComparisons:: model_applications/precipitation/PointStat_fcstMULTI_obsMETAR_PtypeComparisons.conf
 
+=======
+7::EnsembleStat_fcstWOFS_obsWOFS:: model_applications/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf::
+>>>>>>> develop
 
 Category: s2s
 0::GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast:: model_applications/s2s/GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast.conf:: netcdf4_env
@@ -131,7 +135,7 @@ Category: s2s
 9:: UserScript_obsERA_obsOnly_OMI:: model_applications/s2s/UserScript_obsERA_obsOnly_OMI.conf:: spacetime_env, metdatadb
 10:: UserScript_obsERA_obsOnly_RMM:: model_applications/s2s/UserScript_obsERA_obsOnly_RMM.conf:: spacetime_env, metdatadb
 11:: UserScript_fcstGFS_obsERA_WeatherRegime:: model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.conf:: weatherregime_env,cartopy,metplus
-12:: UserScript_obsERA_obsOnly_Stratosphere:: model_applications/s2s/UserScript_obsERA_obsOnly_Stratosphere.conf:: metplotpy_env,metdatadb,metplus
+12:: UserScript_obsERA_obsOnly_Stratosphere:: model_applications/s2s/UserScript_obsERA_obsOnly_Stratosphere.conf:: metplotpy_env,metdatadb
 
 Category: space_weather
 0::GridStat_fcstGloTEC_obsGloTEC_vx7:: model_applications/space_weather/GridStat_fcstGloTEC_obsGloTEC_vx7.conf
