@@ -431,6 +431,10 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             self.log_error("Could not build field info for fcst, obs, or ens")
             return
 
+        # if ens is not set, use fcst
+        if not ens_field:
+            ens_field = fcst_field
+
         self.format_field('FCST', fcst_field)
         self.format_field('OBS', obs_field)
         self.format_field('ENS', ens_field)
