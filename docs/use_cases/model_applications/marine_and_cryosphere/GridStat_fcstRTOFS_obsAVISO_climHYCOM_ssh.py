@@ -9,7 +9,7 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsAVISO_climHYCOM_s
 # Scientific Objective
 # --------------------
 #
-# This use case utilizes Python embedding to extract several statistics from the sea surface salinity data over the globe, 
+# This use case utilizes Python embedding to extract several statistics from the sea surface height data over the globe, 
 # which was already being done in a closed system. By producing the same output via METplus, this use case
 # provides standardization and reproducible results.
 
@@ -63,7 +63,7 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsAVISO_climHYCOM_s
 # reside in the CNT line type, so that is the only output requested.
 # It processes the following run time:
 #
-# | **Valid:** 2021-05-02 0Z
+# | **Valid:** 2021-05-11 0Z
 # |
 
 ##############################################################################
@@ -149,6 +149,7 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsAVISO_climHYCOM_s
 # and will contain the following files:
 #
 # * grid_stat_SSH_000000L_20210811_000000V.stat 
+# * grid_stat_SSH_000000L_20210811_000000V_sal1l2.txt
 # * grid_stat_SSH_000000L_20210811_000000V_cnt.txt 
 # * grid_stat_SSH_000000L_20210811_000000V_pairs.nc 
 
