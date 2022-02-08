@@ -1576,12 +1576,12 @@ as shown below::
   [config]
   FCST_GRID_STAT_INPUT_DIR = /my/path/to/grid_stat/input/fcst
 
-  FCST_GRID_STAT_INPUT_TEMPLATE = prefix_f{lead?fmt=%8S}.ext
+  FCST_GRID_STAT_INPUT_TEMPLATE = f_{lead?fmt=%8S}.ext
 
 For a valid time of 20190201_00Z and a forecast lead of 3, METplus Wrappers
 will look for the following forecast file:
 
-|   /my/path/to/grid_stat/input/fcst/prefix_f00010800.ext
+|   /my/path/to/grid_stat/input/fcst/f_00010800.ext
 |
 
 Using Templates to find Data Assimilation Data
