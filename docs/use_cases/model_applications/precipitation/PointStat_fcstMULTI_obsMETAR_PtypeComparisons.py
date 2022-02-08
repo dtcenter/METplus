@@ -94,7 +94,7 @@ model_application/precipitation/PointStat_fcstMULTI_obsMETAR_PtypeComparisons.co
 #
 # This use case can be run two ways:
 #
-# 1) Passing in EnsembleStat_fcstWOFS_obsWOFS.py then a user-specific system configuration file::
+# 1) Passing in PointStat_fcstMULTI_obsMETAR_PtypeComparisons.conf then a user-specific system configuration file::
 #
 #        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/PointStat_fcstMULTI_obsMETAR_PtypeComparisons.conf -c /path/to/user_system.conf
 #
