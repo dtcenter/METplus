@@ -171,9 +171,6 @@ that reformat gridded data
         """
         self.clear()
 
-        # get verification mask if available
-        self.get_verification_mask(time_info)
-
         var_list = util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
                                      time_info)
 

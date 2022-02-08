@@ -262,7 +262,7 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
          {'METPLUS_MASK_GRID':
               'grid = ["FULL"];',
           'METPLUS_MASK_POLY':
-              'poly = ["one","two"];',
+              'poly = ["one", "two"];',
           }),
         # 13 mask grid and poly (new config var)
         ({'ENSEMBLE_STAT_MASK_GRID': 'FULL',
@@ -271,7 +271,7 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
          {'METPLUS_MASK_GRID':
               'grid = ["FULL"];',
           'METPLUS_MASK_POLY':
-              'poly = ["one","two"];',
+              'poly = ["one", "two"];',
           }),
         # 14 mask grid value
         ({'ENSEMBLE_STAT_MASK_GRID': 'FULL',
@@ -289,13 +289,13 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
         ({'ENSEMBLE_STAT_VERIFICATION_MASK_TEMPLATE': 'one, two',
           },
          {'METPLUS_MASK_POLY':
-              'poly = ["one","two"];',
+              'poly = ["one", "two"];',
           }),
         # 27 mask poly (new config var)
         ({'ENSEMBLE_STAT_MASK_POLY': 'one, two',
           },
          {'METPLUS_MASK_POLY':
-              'poly = ["one","two"];',
+              'poly = ["one", "two"];',
           }),
         # output_prefix
         ({'ENSEMBLE_STAT_OUTPUT_PREFIX': 'my_output_prefix'},

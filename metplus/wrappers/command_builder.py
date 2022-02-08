@@ -1051,19 +1051,6 @@ class CommandBuilder:
                           'to process')
         return False
 
-    def format_list_string(self, list_string):
-        """!Add quotation marks around each comma separated item in the string"""
-        strings = []
-        for string in list_string.split(','):
-            string = string.strip().replace('\'', '\"')
-            if not string:
-                continue
-            if string[0] != '"' and string[-1] != '"':
-                string = f'"{string}"'
-            strings.append(string)
-
-        return ','.join(strings)
-
     def check_for_externals(self):
         self.check_for_gempak()
 
@@ -1271,40 +1258,6 @@ class CommandBuilder:
 
         # add closing curly brace for prob=
         return f'{field} }}'
-
-    def read_mask_poly(self):
-        """! Read old or new config variables used to set mask.poly in MET
-             config files
-
-            @returns value from config or empty string if neither variable
-             is set
-        """
-        app = self.app_name.upper()
-        conf_value = self.config.getraw('config', f'{app}_MASK_POLY', '')
-        if not conf_value:
-            conf_value = (
-                self.config.getraw('config',
-                                   f'{app}_VERIFICATION_MASK_TEMPLATE',
-                                   '')
-        )
-        return conf_value
-
-    def get_verification_mask(self, time_info):
-        """!If verification mask template is set in the config file,
-            use it to find the verification mask filename"""
-        template = self.c_dict.get('MASK_POLY_TEMPLATE')
-        if not template:
-            return
-
-        filenames = do_string_sub(template,
-                                  **time_info)
-        mask_list_string = self.format_list_string(filenames)
-        self.c_dict['VERIFICATION_MASK'] = mask_list_string
-        if self.c_dict.get('MASK_POLY_IS_LIST', True):
-            mask_list_string = f'[{mask_list_string}]'
-        mask_fmt = f"poly = {mask_list_string};"
-        self.c_dict['MASK_POLY'] = mask_fmt
-        self.env_var_dict['METPLUS_MASK_POLY'] = mask_fmt
 
     def get_command(self):
         """! Builds the command to run the MET application

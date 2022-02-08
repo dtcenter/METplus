@@ -55,6 +55,12 @@ def test_remove_quotes(before, after):
         # 10: multiples {}s with commas separating quotes within []s
         ('{name="UGRD"; level=["P850","P500","P250"];}, {name="UGRD"; level=["P750","P600"];}',
          ['{name="UGRD"; level=["P850","P500","P250"];}', '{name="UGRD"; level=["P750","P600"];}']),
+        # 11: list with square braces and ending semi-colon (MET format)
+        ('["{ENV[MET_BUILD_BASE]}/share/met/poly/CAR.poly", "{ENV[MET_BUILD_BASE]}/share/met/poly/GLF.poly"];',
+         ["{ENV[MET_BUILD_BASE]}/share/met/poly/CAR.poly", "{ENV[MET_BUILD_BASE]}/share/met/poly/GLF.poly"]),
+        # 12: list with square braces and ending semi-colon (MET format) no quotes
+        ('[MET_BASE/poly/LMV.poly];',
+         ["MET_BASE/poly/LMV.poly"]),
     ]
 )
 def test_getlist(string_list, output_list):
