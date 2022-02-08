@@ -270,6 +270,8 @@ def test_tc_gen(metplus_config, config_overrides, env_var_values):
     # expected number of 2016 files (including file_list line)
     expected_genesis_count = 7
     expected_track_count = expected_genesis_count
+    expected_edeck_count = 6
+    expected_shape_count = 5
 
     config = metplus_config()
 
@@ -279,9 +281,13 @@ def test_tc_gen(metplus_config, config_overrides, env_var_values):
                                  'tc_gen')
     track_dir = os.path.join(test_data_dir, 'track')
     genesis_dir = os.path.join(test_data_dir, 'genesis')
+    edeck_dir = os.path.join(test_data_dir, 'edeck')
+    shape_dir = os.path.join(test_data_dir, 'shape')
 
     track_template = 'track_*{init?fmt=%Y}*'
     genesis_template = 'genesis_*{init?fmt=%Y}*'
+    edeck_template = 'edeck_*{init?fmt=%Y}*'
+    shape_template = 'shape_*{init?fmt=%Y}*'
 
     # set config variables to prevent command from running and bypass check
     # if input files actually exist
@@ -299,6 +305,10 @@ def test_tc_gen(metplus_config, config_overrides, env_var_values):
     config.set('config', 'TC_GEN_TRACK_INPUT_TEMPLATE', track_template)
     config.set('config', 'TC_GEN_GENESIS_INPUT_DIR', genesis_dir)
     config.set('config', 'TC_GEN_GENESIS_INPUT_TEMPLATE', genesis_template)
+    config.set('config', 'TC_GEN_EDECK_INPUT_DIR', edeck_dir)
+    config.set('config', 'TC_GEN_EDECK_INPUT_TEMPLATE', edeck_template)
+    config.set('config', 'TC_GEN_SHAPE_INPUT_DIR', shape_dir)
+    config.set('config', 'TC_GEN_SHAPE_INPUT_TEMPLATE', shape_template)
     config.set('config', 'TC_GEN_OUTPUT_DIR', '{OUTPUT_BASE}/TCGen/output')
     config.set('config', 'TC_GEN_OUTPUT_TEMPLATE', 'tc_gen_{init?fmt=%Y}')
 
@@ -319,20 +329,25 @@ def test_tc_gen(metplus_config, config_overrides, env_var_values):
                                  'file_lists')
     genesis_path = os.path.join(file_list_dir,
                                 '20160101000000_tc_gen_genesis.txt')
+    edeck_path = os.path.join(file_list_dir,
+                              '20160101000000_tc_gen_edeck.txt')
+    shape_path = os.path.join(file_list_dir,
+                              '20160101000000_tc_gen_shape.txt')
     track_path = os.path.join(file_list_dir,
                               '20160101000000_tc_gen_track.txt')
 
     # remove list files if they already exist
-    if os.path.exists(genesis_path):
-        os.remove(genesis_path)
-    if os.path.exists(track_path):
-        os.remove(track_path)
+    for the_path in (genesis_path, edeck_path, shape_path, track_path):
+        if os.path.exists(the_path):
+            os.remove(the_path)
 
     out_dir = wrapper.c_dict.get('OUTPUT_DIR')
 
     expected_cmds = [
         (f"{app_path} {verbosity} "
          f"-genesis {genesis_path} "
+         f"-edeck {edeck_path} "
+         f"-shape {shape_path} "
          f"-track {track_path} "
          f"-config {config_file} -out {out_dir}/tc_gen_2016"),
     ]
@@ -357,10 +372,18 @@ def test_tc_gen(metplus_config, config_overrides, env_var_values):
             value = match.split('=', 1)[1]
             assert(env_var_values.get(env_var_key, '') == value)
 
-    # verify file count of genesis and track file list files
+    # verify file count of genesis, edeck, shape, and track file list files
     with open(genesis_path, 'r') as file_handle:
         lines = file_handle.read().splitlines()
     assert(len(lines) == expected_genesis_count)
+
+    with open(edeck_path, 'r') as file_handle:
+        lines = file_handle.read().splitlines()
+    assert(len(lines) == expected_edeck_count)
+
+    with open(shape_path, 'r') as file_handle:
+        lines = file_handle.read().splitlines()
+    assert(len(lines) == expected_shape_count)
 
     with open(track_path, 'r') as file_handle:
         lines = file_handle.read().splitlines()
