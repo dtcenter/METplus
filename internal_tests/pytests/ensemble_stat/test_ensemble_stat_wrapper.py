@@ -31,7 +31,7 @@ ens_fmt = f'field = [{{ name="{ens_name}"; level="{ens_level}"; }}];'
 time_fmt = '%Y%m%d%H'
 run_times = ['2005080700', '2005080712']
 
-def set_minimum_config_settings(config):
+def set_minimum_config_settings(config, set_fields=True):
     # set config variables to prevent command from running and bypass check
     # if input files actually exist
     config.set('config', 'DO_NOT_RUN_EXE', True)
@@ -59,12 +59,84 @@ def set_minimum_config_settings(config):
                '{OUTPUT_BASE}/EnsembleStat/output')
     config.set('config', 'ENSEMBLE_STAT_OUTPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}')
 
-    config.set('config', 'FCST_VAR1_NAME', fcst_name)
-    config.set('config', 'FCST_VAR1_LEVELS', fcst_level)
-    config.set('config', 'OBS_VAR1_NAME', obs_name)
-    config.set('config', 'OBS_VAR1_LEVELS', obs_level)
-    config.set('config', 'ENS_VAR1_NAME', ens_name)
-    config.set('config', 'ENS_VAR1_LEVELS', ens_level)
+    if set_fields:
+        config.set('config', 'FCST_VAR1_NAME', fcst_name)
+        config.set('config', 'FCST_VAR1_LEVELS', fcst_level)
+        config.set('config', 'OBS_VAR1_NAME', obs_name)
+        config.set('config', 'OBS_VAR1_LEVELS', obs_level)
+        config.set('config', 'ENS_VAR1_NAME', ens_name)
+        config.set('config', 'ENS_VAR1_LEVELS', ens_level)
+
+@pytest.mark.parametrize(
+    'config_overrides, env_var_values', [
+        # 0 : 3 ens, 1 fcst, 1 obs
+        ({'ENS_VAR1_NAME': 'ens_name_1',
+          'ENS_VAR1_LEVELS': 'ENS_LEVEL_1',
+          'ENS_VAR2_NAME': 'ens_name_2',
+          'ENS_VAR2_LEVELS': 'ENS_LEVEL_2A, ENS_LEVEL_2B',
+          'FCST_VAR1_NAME': 'fcst_name_1',
+          'FCST_VAR1_LEVELS': 'FCST_LEVEL_1',
+          'OBS_VAR1_NAME': 'obs_name_1',
+          'OBS_VAR1_LEVELS': 'OBS_LEVEL_1',
+          },
+         {'METPLUS_ENS_FIELD': ('field = ['
+                                '{ name="ens_name_1"; level="ENS_LEVEL_1"; },'
+                                '{ name="ens_name_2"; level="ENS_LEVEL_2A"; },'
+                                '{ name="ens_name_2"; level="ENS_LEVEL_2B"; }'
+                                '];'),
+          'METPLUS_FCST_FIELD': ('field = ['
+                                 '{ name="fcst_name_1"; level="FCST_LEVEL_1"; }'
+                                 '];'),
+          'METPLUS_OBS_FIELD': ('field = ['
+                                '{ name="obs_name_1"; level="OBS_LEVEL_1"; }'
+                                '];'),
+          }),
+        # 1 : no ens, 1 fcst, 1 obs -- use fcst for ens
+        ({'FCST_VAR1_NAME': 'fcst_name_1',
+          'FCST_VAR1_LEVELS': 'FCST_LEVEL_1',
+          'OBS_VAR1_NAME': 'obs_name_1',
+          'OBS_VAR1_LEVELS': 'OBS_LEVEL_1',
+          },
+         {'METPLUS_ENS_FIELD': ('field = ['
+                                '{ name="fcst_name_1"; level="FCST_LEVEL_1"; }'
+                                '];'),
+          'METPLUS_FCST_FIELD': ('field = ['
+                                 '{ name="fcst_name_1"; level="FCST_LEVEL_1"; }'
+                                 '];'),
+          'METPLUS_OBS_FIELD': ('field = ['
+                                '{ name="obs_name_1"; level="OBS_LEVEL_1"; }'
+                                '];'),
+          }),
+    ]
+)
+def test_ensemble_stat_field_info(metplus_config, config_overrides,
+                                  env_var_values):
+
+    config = metplus_config()
+
+    set_minimum_config_settings(config, set_fields=False)
+
+    # set config variable overrides
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    wrapper = EnsembleStatWrapper(config)
+    assert wrapper.isOK
+
+    all_cmds = wrapper.run_all_times()
+
+    assert len(all_cmds) == 2
+
+    actual_env_vars = all_cmds[0][1]
+    for key, expected_value in env_var_values.items():
+        match = next((item for item in actual_env_vars if
+                      item.startswith(key)), None)
+        assert match is not None
+        actual_value = match.split('=', 1)[1]
+        assert actual_value == expected_value
+        print(f"ACTUAL  : {actual_value}")
+        print(f"EXPECTED: {expected_value}")
+
 
 @pytest.mark.parametrize(
     'config_overrides, env_var_values', [
