@@ -408,6 +408,8 @@ class TCGenWrapper(CommandBuilder):
 
         # get genesis, edeck, and/or shape file(s) or directory
         for file_type in ('genesis', 'edeck', 'shape'):
+            if not self.c_dict.get(f'{file_type.upper()}_INPUT_TEMPLATE'):
+                continue
             file_list = self.find_data(time_info,
                                        data_type=file_type.upper(),
                                        return_list=True,
