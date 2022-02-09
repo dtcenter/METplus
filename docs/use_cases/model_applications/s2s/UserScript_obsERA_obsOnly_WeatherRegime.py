@@ -126,17 +126,15 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 #
 # metcalcpy/contributed/blocking_weather_regime/WeatherRegime.py:
 # This script runs the requested steps, containing the code for computing the bend in the elbow, computing EOFs, and
-# computing weather regimes using k means clustering 
+# computing weather regimes using k means clustering.  See the METcalcpy `Weather Regime Calculation <https://github.com/dtcenter/METcalcpy/blob/develop/metcalcpy/contributed/blocking_weather_regime/WeatherRegime.py>`_ for more information
 #
 # metcalcpy/contributed/blocking_weather_regime//Blocking_WeatherRegime_util.py:
 # This script contains functions used by both the blocking anwd weather regime analysis, including the code for
 # determining which steps the user wants to run, and finding and reading the input files in the format from the output
-# pre-processing steps
+# pre-processing steps.  See the METcalcpy  `Utility script <https://github.com/dtcenter/METcalcpy/blob/develop/metcalcpy/contributed/blocking_weather_regime/Blocking_WeatherRegime_util.py>`_ for more information
 #
 # .. highlight:: python
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime/WeatherRegime_driver.py
-# `Weather Regime Calculation <https://github.com/dtcenter/METcalcpy/blob/develop/metcalcpy/contributed/blocking_weather_regime/WeatherRegime.py>`_
-# `Utility script <https://github.com/dtcenter/METcalcpy/blob/develop/metcalcpy/contributed/blocking_weather_regime/Blocking_WeatherRegime_util.py>`_
 #
 
 ##############################################################################
