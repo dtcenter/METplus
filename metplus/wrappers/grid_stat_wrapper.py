@@ -58,6 +58,7 @@ class GridStatWrapper(CompareGriddedWrapper):
     DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
         'CLIMO_MEAN_FILE',
         'CLIMO_STDEV_FILE',
+        'VERIF_MASK',
     ]
 
     OUTPUT_FLAGS = ['fho',
@@ -197,8 +198,18 @@ class GridStatWrapper(CompareGriddedWrapper):
 
         self.handle_mask(single_value=False)
 
-        # handle setting VERIFICATION_MASK for old wrapped MET config files
-        c_dict['MASK_POLY_TEMPLATE'] = self.read_mask_poly()
+        # handle setting VERIF_MASK for old wrapped MET config files
+        self.add_met_config(name='poly',
+                            data_type='list',
+                            env_var_name='METPLUS_MASK_POLY',
+                            metplus_configs=['GRID_STAT_MASK_POLY',
+                                             'GRID_STAT_POLY',
+                                             ('GRID_STAT_'
+                                              'VERIFICATION_MASK_TEMPLATE')],
+                            extra_args={'allow_empty': True})
+        self.env_var_dict['VERIF_MASK'] = (
+            self.get_env_var_value('METPLUS_MASK_POLY', item_type='list')
+        )
 
         self.handle_climo_cdf_dict()
 
@@ -285,8 +296,5 @@ class GridStatWrapper(CompareGriddedWrapper):
         cov_thresh = self.get_env_var_value('METPLUS_NBRHD_COV_THRESH')
         self.add_env_var('NEIGHBORHOOD_COV_THRESH',
                          cov_thresh)
-
-        self.add_env_var('VERIF_MASK',
-                         self.c_dict.get('VERIFICATION_MASK', ''))
 
         super().set_environment_variables(time_info)
