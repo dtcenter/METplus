@@ -1,6 +1,6 @@
 """
 WeatherRegime Calculation: GFS and ERA RegridDataPlane, PcpCombine, and WeatherRegime python code
-=====================================================================================
+==================================================================================================
 
 model_applications/
 s2s/
