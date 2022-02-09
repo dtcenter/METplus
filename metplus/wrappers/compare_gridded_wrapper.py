@@ -400,14 +400,6 @@ that reformat gridded data
         cmd += '-outdir {}'.format(self.outdir)
         return cmd
 
-    def handle_climo_cdf_dict(self):
-        self.add_met_config_dict('climo_cdf', {
-            'cdf_bins': ('float', None, None,
-                         [f'{self.app_name.upper()}_CLIMO_CDF_BINS']),
-            'center_bins': 'bool',
-            'write_bins': 'bool',
-        })
-
     def handle_interp_dict(self, uses_field=False):
         """! Reads config variables for interp dictionary, i.e.
              _INTERP_VLD_THRESH, _INTERP_SHAPE, _INTERP_METHOD, and
