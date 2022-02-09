@@ -1,5 +1,5 @@
 """
-Blocking Calculation: RegridDataPlane, PcpCombine, and Blocking python code
+Blocking Calculation: ERA RegridDataPlane, PcpCombine, and Blocking python code
 ===========================================================================
 
 model_applications/
@@ -116,7 +116,7 @@ UserScript_obsERA_obsOnly_Blocking.py
 #
 # metcalcpy/contributed/blocking_weather_regime/Blocking.py:
 # This script runs the requested steps, containing the code for computing CBLs, computing IBLs, computing GIBLs,
-# and computing blocks.  See the METcalcpy `Blocking Calculation Script <https://github.com/dtcenter/METcalcpy/blob/develop/metcalcpy/contributed/blocking_weather_regime/Blocking.py>`_
+# and computing blocks.  See the METcalcpy `Blocking Calculation Script <https://github.com/dtcenter/METcalcpy/blob/develop/metcalcpy/contributed/blocking_weather_regime/Blocking.py>`_ for more information.
 #
 # metcalcpy/contributed/blocking_weather_regime/Blocking_WeatherRegime_util.py:
 # This script contains functions used by both the blocking anwd weather regime analysis, including the code for 
