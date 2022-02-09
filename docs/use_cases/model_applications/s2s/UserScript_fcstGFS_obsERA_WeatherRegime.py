@@ -125,19 +125,19 @@ UserScript_fcstGFS_obsERA_WeatherRegime.py
 # This script calls the requested steps in the blocking analysis for a forecast, observation, or both.  The possible
 # steps are computing the elbow, computing EOFs, and computing weather regimes using k means clustering.
 #
-# parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime/WeatherRegime.py:
+# metcalcpy/contributed/blocking_weather_regime/WeatherRegime.py:
 # This script runs the requested steps, containing the code for computing the bend in the elbow, computing EOFs, and
 # computing weather regimes using k means clustering 
 #
-# parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime/Blocking_WeatherRegime_util.py:
+# metcalcpy/contributed/blocking_weather_regime/Blocking_WeatherRegime_util.py:
 # This script contains functions used by both the blocking anwd weather regime analysis, including the code for
 # determining which steps the user wants to run, and finding and reading the input files in the format from the output
 # pre-processing steps
 #
 # .. highlight:: python
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime/WeatherRegime_driver.py
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime/WeatherRegime.py
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime/Blocking_WeatherRegime_util.py
+# `Weather Regime Calculation Calculation <https://github.com/dtcenter/METcalcpy/blob/develop/metcalcpy/contributed/blocking_weather_regime/WeatherRegime.py>`_
+# `Utility script <https://github.com/dtcenter/METcalcpy/blob/develop/metcalcpy/contributed/blocking_weather_regime/Blocking_WeatherRegime_util.py>`_
 #
 
 ##############################################################################
