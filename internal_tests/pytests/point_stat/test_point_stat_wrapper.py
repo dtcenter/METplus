@@ -98,20 +98,32 @@ def test_met_dictionary_in_var_options(metplus_config):
           'POINT_STAT_VERIFICATION_MASK_TEMPLATE': 'one, two',
           },
          {'METPLUS_MASK_GRID': 'grid = ["FULL"];',
-          'METPLUS_MASK_POLY': 'poly = ["one","two"];',
+          'METPLUS_MASK_POLY': 'poly = ["one", "two"];',
           }),
         # mask grid and poly (new config var)
         ({'POINT_STAT_MASK_GRID': 'FULL',
           'POINT_STAT_MASK_POLY': 'one, two',
           },
          {'METPLUS_MASK_GRID': 'grid = ["FULL"];',
-          'METPLUS_MASK_POLY': 'poly = ["one","two"];',
+          'METPLUS_MASK_POLY': 'poly = ["one", "two"];',
           }),
         # mask grid value
         ({'POINT_STAT_MASK_GRID': 'FULL',
           },
          {'METPLUS_MASK_GRID':
               'grid = ["FULL"];',
+          }),
+        # mask.poly complex example
+        ({'POINT_STAT_MASK_POLY': ('["{ENV[MET_BUILD_BASE]}/share/met/poly/CAR.poly", '
+                                   '"{ENV[MET_BUILD_BASE]}/share/met/poly/GLF.poly", '
+                                   '"{ENV[MET_BUILD_BASE]}/share/met/poly/NAO.poly", '
+                                   '"{ENV[MET_BUILD_BASE]}/share/met/poly/SAO.poly" ];'),
+          },
+         {'METPLUS_MASK_POLY':
+              'poly = ["{ENV[MET_BUILD_BASE]}/share/met/poly/CAR.poly", '
+              '"{ENV[MET_BUILD_BASE]}/share/met/poly/GLF.poly", '
+              '"{ENV[MET_BUILD_BASE]}/share/met/poly/NAO.poly", '
+              '"{ENV[MET_BUILD_BASE]}/share/met/poly/SAO.poly"];',
           }),
         # mask grid empty string (should create empty list)
         ({'POINT_STAT_MASK_GRID': '',
@@ -123,13 +135,13 @@ def test_met_dictionary_in_var_options(metplus_config):
         ({'POINT_STAT_VERIFICATION_MASK_TEMPLATE': 'one, two',
           },
          {'METPLUS_MASK_POLY':
-              'poly = ["one","two"];',
+              'poly = ["one", "two"];',
           }),
         # mask poly (new config var)
         ({'POINT_STAT_MASK_POLY': 'one, two',
           },
          {'METPLUS_MASK_POLY':
-              'poly = ["one","two"];',
+              'poly = ["one", "two"];',
           }),
 
         ({'POINT_STAT_MASK_SID': 'one, two',
