@@ -4765,6 +4765,16 @@ METplus Configuration Glossary
 
      | *Used by:* TCGen
 
+   TC_GEN_EDECK_INPUT_DIR
+     Directory containing the edeck data used by TCGen. This variable is optional because you can specify the full path to edeck data using :term:`TC_GEN_EDECK_INPUT_TEMPLATE`.
+
+     | *Used by:* TCGen
+
+   TC_GEN_SHAPE_INPUT_DIR
+     Directory containing the shape data used by TCGen. This variable is optional because you can specify the full path to shape data using :term:`TC_GEN_SHAPE_INPUT_TEMPLATE`.
+
+     | *Used by:* TCGen
+
    TC_GEN_TRACK_INPUT_TEMPLATE
      Filename template of the track data used by TCGen. See also :term:`TC_GEN_TRACK_INPUT_DIR`.
 
@@ -4772,6 +4782,16 @@ METplus Configuration Glossary
 
    TC_GEN_GENESIS_INPUT_TEMPLATE
      Filename template of the genesis data used by TCGen. See also :term:`TC_GEN_GENESIS_INPUT_DIR`.
+
+     | *Used by:* TCGen
+
+   TC_GEN_EDECK_INPUT_TEMPLATE
+     Filename template of the edeck data used by TCGen. See also :term:`TC_GEN_EDECK_INPUT_DIR`.
+
+     | *Used by:* TCGen
+
+   TC_GEN_SHAPE_INPUT_TEMPLATE
+     Filename template of the shape data used by TCGen. See also :term:`TC_GEN_SHAPE_INPUT_DIR`.
 
      | *Used by:* TCGen
 
