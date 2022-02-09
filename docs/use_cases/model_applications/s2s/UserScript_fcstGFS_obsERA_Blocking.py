@@ -1,5 +1,5 @@
 """
-Blocking Calculation: RegridDataPlane, PcpCombine, and Blocking python code
+Blocking Calculation: GFS and ERA RegridDataPlane, PcpCombine, and Blocking python code
 ============================================================================
 
 model_applications/
