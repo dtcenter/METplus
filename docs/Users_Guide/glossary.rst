@@ -8573,11 +8573,6 @@ METplus Configuration Glossary
 
      | *Used by:* PB2NC
 
-   PB2NC_OBS_PREPBUFR_MAP
-     Specify the value for 'obs_prepbufr_map' in the MET configuration file for PB2NC.
-
-     | *Used by:* PB2NC
-
    POINT_STAT_HIRA_FLAG
      Specify the value for 'hira.flag' in the MET configuration file for PointStat.
 

@@ -281,8 +281,6 @@ def test_find_input_files(metplus_config, offsets, offset_to_find):
                                            'vld_thresh = 0.1;}')}),
         ({'PB2NC_OBS_BUFR_MAP': '{key="POB"; val="PRES"; },{key="QOB"; val="SPFH";}', },
          {'METPLUS_OBS_BUFR_MAP': 'obs_bufr_map = [{key="POB"; val="PRES"; }, {key="QOB"; val="SPFH";}];'}),
-        ({'PB2NC_OBS_PREPBUFR_MAP': '{key="POB"; val="PRES"; },{key="QOB"; val="SPFH";}', },
-         {'METPLUS_OBS_PREPBUFR_MAP': 'obs_prepbufr_map = [{key="POB"; val="PRES"; }, {key="QOB"; val="SPFH";}];'}),
 
     ]
 )

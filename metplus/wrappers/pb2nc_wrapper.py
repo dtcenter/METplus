@@ -36,7 +36,6 @@ class PB2NCWrapper(CommandBuilder):
         'METPLUS_LEVEL_CATEGORY',
         'METPLUS_QUALITY_MARK_THRESH',
         'METPLUS_OBS_BUFR_MAP',
-        'METPLUS_OBS_PREPBUFR_MAP',
     ]
 
     def __init__(self, config, instance=None):
@@ -188,10 +187,6 @@ class PB2NCWrapper(CommandBuilder):
                             metplus_configs=['PB2NC_QUALITY_MARK_THRESH'])
 
         self.add_met_config(name='obs_bufr_map',
-                            data_type='list',
-                            extra_args={'remove_quotes': True})
-
-        self.add_met_config(name='obs_prepbufr_map',
                             data_type='list',
                             extra_args={'remove_quotes': True})
 
