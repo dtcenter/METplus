@@ -127,7 +127,7 @@ UserScript_fcstGFS_obsERA_WeatherRegime.py
 #
 # metcalcpy/contributed/blocking_weather_regime/WeatherRegime.py:
 # This script runs the requested steps, containing the code for computing the bend in the elbow, computing EOFs, and
-# computing weather regimes using k means clustering.  See the METcalcpy `Weather Regime Calculation Calculation <https://github.com/dtcenter/METcalcpy/blob/develop/metcalcpy/contributed/blocking_weather_regime/WeatherRegime.py>`_ for more information.
+# computing weather regimes using k means clustering.  See the METcalcpy `Weather Regime Calculation Script <https://github.com/dtcenter/METcalcpy/blob/develop/metcalcpy/contributed/blocking_weather_regime/WeatherRegime.py>`_ for more information.
 #
 # metcalcpy/contributed/blocking_weather_regime/Blocking_WeatherRegime_util.py:
 # This script contains functions used by both the blocking anwd weather regime analysis, including the code for
