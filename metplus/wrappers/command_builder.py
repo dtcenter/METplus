@@ -1796,3 +1796,17 @@ class CommandBuilder:
         return get_wrapped_met_config_file(self.config,
                                            self.app_name,
                                            default_config_file)
+
+    def handle_climo_cdf_dict(self, write_bins=True):
+        items = {
+            'cdf_bins': ('float', None, None,
+                         [f'{self.app_name.upper()}_CLIMO_CDF_BINS']),
+            'center_bins': 'bool',
+        }
+
+        # add write_bins unless it should be excluded
+        if write_bins:
+            items['write_bins'] = 'bool'
+
+        items['direct_prob'] = 'bool'
+        self.add_met_config_dict('climo_cdf', items)

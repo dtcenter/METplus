@@ -174,13 +174,17 @@ def test_met_dictionary_in_var_options(metplus_config):
         ({'POINT_STAT_CLIMO_CDF_WRITE_BINS': 'False', },
          {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {write_bins = FALSE;}'}),
 
+        ({'POINT_STAT_CLIMO_CDF_DIRECT_PROB': 'False', },
+         {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {direct_prob = FALSE;}'}),
+
         ({
              'POINT_STAT_CLIMO_CDF_CDF_BINS': '1',
              'POINT_STAT_CLIMO_CDF_CENTER_BINS': 'True',
              'POINT_STAT_CLIMO_CDF_WRITE_BINS': 'False',
+             'POINT_STAT_CLIMO_CDF_DIRECT_PROB': 'False',
          },
          {
-             'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {cdf_bins = 1.0;center_bins = TRUE;write_bins = FALSE;}'}),
+             'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {cdf_bins = 1.0;center_bins = TRUE;write_bins = FALSE;direct_prob = FALSE;}'}),
 
         ({'POINT_STAT_OBS_QUALITY_INC': '2,3,4', },
          {'METPLUS_OBS_QUALITY_INC': 'obs_quality_inc = ["2", "3", "4"];'}),

@@ -416,13 +416,17 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
         ({'ENSEMBLE_STAT_CLIMO_CDF_WRITE_BINS': 'False', },
          {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {write_bins = FALSE;}'}),
 
+        ({'ENSEMBLE_STAT_CLIMO_CDF_DIRECT_PROB': 'False', },
+         {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {direct_prob = FALSE;}'}),
+
         ({
              'ENSEMBLE_STAT_CLIMO_CDF_CDF_BINS': '1',
              'ENSEMBLE_STAT_CLIMO_CDF_CENTER_BINS': 'True',
              'ENSEMBLE_STAT_CLIMO_CDF_WRITE_BINS': 'False',
+             'ENSEMBLE_STAT_CLIMO_CDF_DIRECT_PROB': 'False',
          },
          {
-             'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {cdf_bins = 1.0;center_bins = TRUE;write_bins = FALSE;}'}),
+             'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {cdf_bins = 1.0;center_bins = TRUE;write_bins = FALSE;direct_prob = FALSE;}'}),
 
         ({'ENSEMBLE_STAT_INTERP_VLD_THRESH': '0.8', },
          {'METPLUS_INTERP_DICT': 'interp = {vld_thresh = 0.8;}'}),
