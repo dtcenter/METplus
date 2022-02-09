@@ -68,6 +68,9 @@ ${METPLUS_CLIMO_MEAN_DICT}
 //climo_stdev = {
 ${METPLUS_CLIMO_STDEV_DICT}
 
+//climo_cdf = {
+${METPLUS_CLIMO_CDF_DICT}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 //

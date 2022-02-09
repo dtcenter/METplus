@@ -216,6 +216,7 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_CLIMO_CDF_BINS`
 | :term:`ENSEMBLE_STAT_CLIMO_CDF_CENTER_BINS`
 | :term:`ENSEMBLE_STAT_CLIMO_CDF_WRITE_BINS`
+| :term:`ENSEMBLE_STAT_CLIMO_CDF_DIRECT_PROB`
 | :term:`ENSEMBLE_STAT_DUPLICATE_FLAG`
 | :term:`ENSEMBLE_STAT_SKIP_CONST`
 | :term:`ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_DX`
@@ -717,6 +718,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - climo_cdv.center_bins
    * - :term:`ENSEMBLE_STAT_CLIMO_CDF_WRITE_BINS`
      - climo_cdv.write_bins
+   * - :term:`ENSEMBLE_STAT_CLIMO_CDF_DIRECT_PROB`
+     - climo_cdf.direct_prob
 
 **${METPLUS_MASK_GRID}**
 
@@ -2806,6 +2809,7 @@ METplus Configuration
 | :term:`GRID_STAT_CLIMO_CDF_BINS`
 | :term:`GRID_STAT_CLIMO_CDF_CENTER_BINS`
 | :term:`GRID_STAT_CLIMO_CDF_WRITE_BINS`
+| :term:`GRID_STAT_CLIMO_CDF_DIRECT_PROB`
 | :term:`GRID_STAT_OUTPUT_FLAG_FHO`
 | :term:`GRID_STAT_OUTPUT_FLAG_CTC`
 | :term:`GRID_STAT_OUTPUT_FLAG_CTS`
@@ -3193,6 +3197,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - climo_cdf.center_bins
    * - :term:`GRID_STAT_CLIMO_CDF_WRITE_BINS`
      - climo_cdf.write_bins
+   * - :term:`GRID_STAT_CLIMO_CDF_DIRECT_PROB`
+     - climo_cdf.direct_prob
 
 **${METPLUS_OUTPUT_FLAG_DICT}**
 
@@ -5314,6 +5320,7 @@ Configuration
 | :term:`POINT_STAT_CLIMO_CDF_BINS`
 | :term:`POINT_STAT_CLIMO_CDF_CENTER_BINS`
 | :term:`POINT_STAT_CLIMO_CDF_WRITE_BINS`
+| :term:`POINT_STAT_CLIMO_CDF_DIRECT_PROB`
 | :term:`POINT_STAT_OBS_QUALITY_INC`
 | :term:`POINT_STAT_OBS_QUALITY_EXC`
 | :term:`POINT_STAT_OUTPUT_FLAG_FHO`
@@ -5679,6 +5686,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - climo_cdf.center_bins
    * - :term:`POINT_STAT_CLIMO_CDF_WRITE_BINS`
      - climo_cdf.write_bins
+   * - :term:`POINT_STAT_CLIMO_CDF_DIRECT_PROB`
+     - climo_cdf.direct_prob
 
 **${METPLUS_OBS_QUALITY_INC}**
 
@@ -5977,6 +5986,9 @@ METplus Configuration
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_FILE_TYPE`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_USE_FCST`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_USE_OBS`
+| :term:`SERIES_ANALYSIS_CLIMO_CDF_BINS`
+| :term:`SERIES_ANALYSIS_CLIMO_CDF_CENTER_BINS`
+| :term:`SERIES_ANALYSIS_CLIMO_CDF_DIRECT_PROB`
 | :term:`SERIES_ANALYSIS_HSS_EC_VALUE`
 | :term:`SERIES_ANALYSIS_OUTPUT_STATS_FHO`
 | :term:`SERIES_ANALYSIS_OUTPUT_STATS_CTC`
@@ -6208,6 +6220,20 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_FILE_TYPE`
      - climo_stdev.file_type
 
+**${METPLUS_CLIMO_CDF_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`SERIES_ANALYSIS_CLIMO_CDF_BINS`
+     - climo_cdf.cdf_bins
+   * - :term:`SERIES_ANALYSIS_CLIMO_CDF_CENTER_BINS`
+     - climo_cdf.center_bins
+   * - :term:`SERIES_ANALYSIS_CLIMO_CDF_DIRECT_PROB`
+     - climo_cdf.direct_prob
 
 **${METPLUS_BLOCK_SIZE}**
 

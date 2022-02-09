@@ -383,13 +383,17 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
         ({'GRID_STAT_CLIMO_CDF_WRITE_BINS': 'False', },
          {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {write_bins = FALSE;}'}),
 
+        ({'GRID_STAT_CLIMO_CDF_DIRECT_PROB': 'False', },
+         {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {direct_prob = FALSE;}'}),
+
         ({
              'GRID_STAT_CLIMO_CDF_CDF_BINS': '1',
              'GRID_STAT_CLIMO_CDF_CENTER_BINS': 'True',
              'GRID_STAT_CLIMO_CDF_WRITE_BINS': 'False',
+             'GRID_STAT_CLIMO_CDF_DIRECT_PROB': 'False',
          },
          {
-             'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {cdf_bins = 1.0;center_bins = TRUE;write_bins = FALSE;}'}),
+             'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {cdf_bins = 1.0;center_bins = TRUE;write_bins = FALSE;direct_prob = FALSE;}'}),
 
         ({'GRID_STAT_INTERP_FIELD': 'NONE', },
          {'METPLUS_INTERP_DICT': 'interp = {field = NONE;}'}),

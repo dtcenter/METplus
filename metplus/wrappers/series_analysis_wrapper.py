@@ -55,6 +55,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         'METPLUS_HSS_EC_VALUE',
         'METPLUS_FCST_CAT_THRESH',
         'METPLUS_OBS_CAT_THRESH',
+        'METPLUS_CLIMO_CDF_DICT',
     ]
 
     # handle deprecated env vars used pre v4.0.0
@@ -366,6 +367,9 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         # get climatology config variables
         self.handle_climo_dict()
 
+        # get climo_cdf dictionary
+        self.handle_climo_cdf_dict(write_bins=False)
+
         self.add_met_config(name='hss_ec_value',
                             data_type='float',
                             metplus_configs=['SERIES_ANALYSIS_HSS_EC_VALUE'])
@@ -670,6 +674,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             # set forecast lead to last lead in list to set in output filename
             if leads:
                 time_info['lead'] = leads[-1]
+
             if self.c_dict['USING_BOTH']:
                 both_path = do_string_sub(self.c_dict['BOTH_INPUT_FILE_LIST'],
                                           **time_info)
