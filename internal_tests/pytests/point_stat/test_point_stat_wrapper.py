@@ -113,6 +113,18 @@ def test_met_dictionary_in_var_options(metplus_config):
          {'METPLUS_MASK_GRID':
               'grid = ["FULL"];',
           }),
+        # mask.poly complex example
+        ({'POINT_STAT_MASK_POLY': ('["{ENV[MET_BUILD_BASE]}/share/met/poly/CAR.poly", '
+                                   '"{ENV[MET_BUILD_BASE]}/share/met/poly/GLF.poly", '
+                                   '"{ENV[MET_BUILD_BASE]}/share/met/poly/NAO.poly", '
+                                   '"{ENV[MET_BUILD_BASE]}/share/met/poly/SAO.poly" ];'),
+          },
+         {'METPLUS_MASK_POLY':
+              'poly = ["{ENV[MET_BUILD_BASE]}/share/met/poly/CAR.poly", '
+              '"{ENV[MET_BUILD_BASE]}/share/met/poly/GLF.poly", '
+              '"{ENV[MET_BUILD_BASE]}/share/met/poly/NAO.poly", '
+              '"{ENV[MET_BUILD_BASE]}/share/met/poly/SAO.poly"];',
+          }),
         # mask grid empty string (should create empty list)
         ({'POINT_STAT_MASK_GRID': '',
           },
