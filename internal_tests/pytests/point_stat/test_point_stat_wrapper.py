@@ -98,14 +98,14 @@ def test_met_dictionary_in_var_options(metplus_config):
           'POINT_STAT_VERIFICATION_MASK_TEMPLATE': 'one, two',
           },
          {'METPLUS_MASK_GRID': 'grid = ["FULL"];',
-          'METPLUS_MASK_POLY': 'poly = ["one","two"];',
+          'METPLUS_MASK_POLY': 'poly = ["one", "two"];',
           }),
         # mask grid and poly (new config var)
         ({'POINT_STAT_MASK_GRID': 'FULL',
           'POINT_STAT_MASK_POLY': 'one, two',
           },
          {'METPLUS_MASK_GRID': 'grid = ["FULL"];',
-          'METPLUS_MASK_POLY': 'poly = ["one","two"];',
+          'METPLUS_MASK_POLY': 'poly = ["one", "two"];',
           }),
         # mask grid value
         ({'POINT_STAT_MASK_GRID': 'FULL',
@@ -123,13 +123,13 @@ def test_met_dictionary_in_var_options(metplus_config):
         ({'POINT_STAT_VERIFICATION_MASK_TEMPLATE': 'one, two',
           },
          {'METPLUS_MASK_POLY':
-              'poly = ["one","two"];',
+              'poly = ["one", "two"];',
           }),
         # mask poly (new config var)
         ({'POINT_STAT_MASK_POLY': 'one, two',
           },
          {'METPLUS_MASK_POLY':
-              'poly = ["one","two"];',
+              'poly = ["one", "two"];',
           }),
 
         ({'POINT_STAT_MASK_SID': 'one, two',
