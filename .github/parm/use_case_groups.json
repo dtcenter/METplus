@@ -127,7 +127,7 @@
   {
     "category": "s2s",
     "index_list": "1-3",
-    "run": true
+    "run": false
   },
   {
     "category": "s2s",
@@ -157,7 +157,7 @@
   {
     "category": "s2s",
     "index_list": "11",
-    "run": true
+    "run": false
   },
   {
     "category": "s2s",
