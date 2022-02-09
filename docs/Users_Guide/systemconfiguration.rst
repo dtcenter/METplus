@@ -1569,17 +1569,18 @@ will look for the following forecast file:
 |   /my/path/to/grid_stat/input/fcst/prefix.2019013121_f003.ext
 |
 
-Some forecast files only contain the forecast lead time and it is padded
-with zeroes in the filename. In this case, only the 'lead' keyword is needed
-as shown below::
+Some forecast file names contain the forecast lead time in seconds,
+padded with zeros. In this case, the 'lead' keyword with the
+format (fmt) set to %8S will use the forecast lead seconds with
+8 digits as shown below::
 
   [config]
   FCST_GRID_STAT_INPUT_DIR = /my/path/to/grid_stat/input/fcst
 
   FCST_GRID_STAT_INPUT_TEMPLATE = {init?fmt=%Y%m%d}/g_{init?fmt=%H%M%S}/f_{lead?fmt=%8S}.ext
 
-For a valid time of 20190201_03Z and a forecast lead of 3, METplus Wrappers
-will look for the following forecast file:
+For a valid time of 20190201_03Z and a forecast lead of 3 hours,
+METplus Wrappers will look for the following forecast file:
 
 |   /my/path/to/grid_stat/input/fcst/20190201/g_000000/f_00010800.ext
 |
