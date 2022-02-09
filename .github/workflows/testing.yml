@@ -14,6 +14,9 @@ on:
 
   pull_request:
     types: [opened, synchronize, reopened]
+    branches:
+      - develop
+      - 'main_*'
     paths-ignore:
       - 'docs/**'
 
