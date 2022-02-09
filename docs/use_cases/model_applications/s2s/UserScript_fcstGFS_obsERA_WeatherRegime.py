@@ -1,5 +1,5 @@
 """
-WeatherRegime Calculation: RegridDataPlane, PcpCombine, and WeatherRegime python code
+WeatherRegime Calculation: GFS and ERA RegridDataPlane, PcpCombine, and WeatherRegime python code
 =====================================================================================
 
 model_applications/
