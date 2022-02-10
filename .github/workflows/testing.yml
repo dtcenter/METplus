@@ -67,6 +67,7 @@ jobs:
       run_diff: ${{ steps.job_status.outputs.run_diff }}
       run_save_truth_data: ${{ steps.job_status.outputs.run_save_truth_data }}
       external_trigger: ${{ steps.job_status.outputs.external_trigger }}
+      branch_name: ${{ steps.job_status.outputs.branch_name }}
 
   get_image:
     name: Docker Setup - Get METplus Image

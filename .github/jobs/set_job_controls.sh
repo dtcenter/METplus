@@ -86,5 +86,10 @@ echo ::set-output name=run_diff::$run_diff
 echo ::set-output name=run_save_truth_data::$run_save_truth_data
 echo ::set-output name=external_trigger::$external_trigger
 
+# get branch name
+branch_name=`${GITHUB_WORKSPACE}/.github/jobs/print_branch_name.py`
+
+echo ::set-output name=branch_name::$branch_name
+
 # get use cases to run
 .github/jobs/get_use_cases_to_run.sh $run_use_cases $run_all_use_cases $run_unit_tests
