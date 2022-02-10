@@ -4898,7 +4898,6 @@ METplus Configuration
 | :term:`PB2NC_LEVEL_CATEGORY`
 | :term:`PB2NC_QUALITY_MARK_THRESH`
 | :term:`PB2NC_OBS_BUFR_MAP`
-| :term:`PB2NC_OBS_PREPBUFR_MAP`
 
 .. warning:: **DEPRECATED:**
 
@@ -5097,17 +5096,6 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`PB2NC_OBS_BUFR_MAP`
      - obs_bufr_map
-
-**${METPLUS_OBS_PREPBUFR_MAP}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`PB2NC_OBS_PREPBUFR_MAP`
-     - obs_prepbufr_map
 
 .. _pcp_combine_wrapper:
 
