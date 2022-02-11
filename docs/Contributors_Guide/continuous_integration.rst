@@ -236,20 +236,40 @@ Each job in the testing workflow is described in its own section.
 Event Info
 ----------
 
+::
+
+    event_info:
+      name: "Trigger: ${{ github.event_name != 'workflow_dispatch' && github.event_name || github.event.inputs.repository }} ${{ github.event_name != 'workflow_dispatch' && 'local' || github.event.inputs.actor }} ${{ github.event_name != 'workflow_dispatch' && 'event' || github.event.inputs.sha }}"
+      runs-on: ubuntu-latest
+      steps:
+        - name: Print GitHub values for reference
+          env:
+            GITHUB_CONTEXT: ${{ toJson(github) }}
+          run: echo "$GITHUB_CONTEXT"
+
+
 This job contains information on what triggered the workflow.
 The name of the job contains complex logic to cleanly display information
 about an event triggered by an external repository when that occurs.
 Otherwise, it simply lists the type of local event (push or pull_request)
 that triggered the workflow.
 
-**Insert images of examples of the Trigger job name for local and external**
+Workflow Triggered by Another Repository:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. figure:: figure/ci-workflow-trigger-external.png
+
+Workflow Triggered by a Push to the METplus Repository:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. figure:: figure/ci-workflow-trigger-local.png
 
 It also logs all of the information contained in the 'github' object that
 includes all of the available information from the event that triggered
 the workflow. This is useful to see what information is available to use
 in the workflow based on the event.
 
-**Insert image of screenshot of the github.event info**
+.. figure:: figure/ci-github-context.png
 
 .. _cg-ci-job-control:
 
@@ -258,26 +278,27 @@ Job Control
 
 ::
 
-      job_control:
-        name: Determine which jobs to run
-        runs-on: ubuntu-latest
+    job_control:
+      name: Determine which jobs to run
+      runs-on: ubuntu-latest
 
-        steps:
-          - uses: actions/checkout@v2
-          - name: Set job controls
-            id: job_status
-            run: .github/jobs/set_job_controls.sh
-            env:
-              commit_msg: ${{ github.event.head_commit.message }}
+      steps:
+        - uses: actions/checkout@v2
+        - name: Set job controls
+          id: job_status
+          run: .github/jobs/set_job_controls.sh
+          env:
+            commit_msg: ${{ github.event.head_commit.message }}
 
-        outputs:
-          matrix: ${{ steps.job_status.outputs.matrix }}
-          run_some_tests: ${{ steps.job_status.outputs.run_some_tests }}
-          run_get_image: ${{ steps.job_status.outputs.run_get_image }}
-          run_get_input_data: ${{ steps.job_status.outputs.run_get_input_data }}
-          run_diff: ${{ steps.job_status.outputs.run_diff }}
-          run_save_truth_data: ${{ steps.job_status.outputs.run_save_truth_data }}
-          external_trigger: ${{ steps.job_status.outputs.external_trigger }}
+      outputs:
+        matrix: ${{ steps.job_status.outputs.matrix }}
+        run_some_tests: ${{ steps.job_status.outputs.run_some_tests }}
+        run_get_image: ${{ steps.job_status.outputs.run_get_image }}
+        run_get_input_data: ${{ steps.job_status.outputs.run_get_input_data }}
+        run_diff: ${{ steps.job_status.outputs.run_diff }}
+        run_save_truth_data: ${{ steps.job_status.outputs.run_save_truth_data }}
+        external_trigger: ${{ steps.job_status.outputs.external_trigger }}
+        branch_name: ${{ steps.job_status.outputs.branch_name }}
 
 This job runs a script called **set_job_controls.sh**
 that parses environment variables set by GitHub Actions to determine which
@@ -406,6 +427,25 @@ Here is a list of the currently supported keywords and what they control:
 Create/Update METplus Docker Image
 ----------------------------------
 
+::
+
+    get_image:
+      name: Docker Setup - Get METplus Image
+      runs-on: ubuntu-latest
+      needs: job_control
+      if: ${{ needs.job_control.outputs.run_get_image == 'true' }}
+      steps:
+        - uses: actions/checkout@v2
+        - uses: actions/setup-python@v2
+          with:
+            python-version: '3.6'
+        - name: Get METplus Image
+          run: .github/jobs/docker_setup.sh
+          env:
+            DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+            DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+            #MET_FORCE_TAG: 10.0.0
+
 This job calls the **docker_setup.sh** script.
 This script builds a METplus Docker image and pushes it to DockerHub.
 The image is pulled instead of built in each test job to save execution time.
@@ -439,20 +479,31 @@ MET_FORCE_TAG that can be uncommented and set to force the version of MET to
 use. This variable is found in the **get_image** job under the **env** section
 for the step named "Get METplus Image."
 
-::
-
-    - name: Get METplus Image
-      run: .github/jobs/docker_setup.sh
-      env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          #MET_FORCE_TAG: 10.0.0
-
 
 .. _cg-ci-update-data-volumes:
 
 Create/Update Docker Data Volumes
 ---------------------------------
+
+::
+
+    update_data_volumes:
+      name: Docker Setup - Update Data Volumes
+      runs-on: ubuntu-latest
+      needs: job_control
+      if: ${{ needs.job_control.outputs.run_get_input_data == 'true' }}
+      steps:
+        - uses: dtcenter/metplus-action-data-update@v1
+          with:
+            docker_name: ${{ secrets.DOCKER_USERNAME }}
+            docker_pass: ${{ secrets.DOCKER_PASSWORD }}
+            repo_name: ${{ github.repository }}
+            data_prefix: sample_data
+            branch_name: ${{ needs.job_control.outputs.branch_name }}
+            docker_data_dir: /data/input/METplus_Data
+            data_repo_dev: metplus-data-dev
+            data_repo_stable: metplus-data
+            use_feature_data: true
 
 The METplus use case tests obtain input data from Docker data volumes.
 Each use case category that corresponds to a directory in
@@ -461,10 +512,14 @@ all of the data needed to run those use cases. The MET Tool Wrapper use cases
 found under **parm/use_cases/met_tool_wrapper** also have a data volume.
 These data are made available on the DTC web server.
 
-The logic in this
-job checks if the tarfile that contains the data for a use case category has
+This job utilizes the
+`dtcenter/metplus-action-data-update <https://github.com/dtcenter/metplus-action-data-update>`_
+Github Action.
+The logic in this action checks if the tar file on the DTC web server
+that contains the data for a use case category has
 changed since the corresponding Docker data volume has been last updated.
 If it has, then the Docker data volume is regenerated with the new data.
+This action is also used by the MET repository.
 
 When new data is needed for a new METplus use case, a directory that is named
 after a feature branch is populated with the existing data for the use case
@@ -930,6 +985,21 @@ from the new output.
 
 Create/Update Output Data Volumes
 ---------------------------------
+
+::
+
+    create_output_data_volumes:
+      name: Create Output Docker Data Volumes
+      runs-on: ubuntu-latest
+      needs: [use_case_tests]
+      if: ${{ needs.job_control.outputs.run_save_truth_data == 'true' }}
+      steps:
+        - uses: actions/checkout@v2
+        - uses: actions/download-artifact@v2
+        - run: .github/jobs/create_output_data_volumes.sh
+          env:
+            DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+            DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
 Differences in the use case output may be expected.
 The most common difference is new data from a newly added use case that is
