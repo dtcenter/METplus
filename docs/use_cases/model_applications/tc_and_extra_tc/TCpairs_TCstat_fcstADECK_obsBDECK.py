@@ -37,9 +37,11 @@ model_applications/tc_and_extra_tc/TCpairs_TCstat_fcstADECK_obsBDECK.conf
 # The following tools are used for each run time:
 #
 # TCPairs
+# TCStat
 #
 # To generate TCPairs output, this example loops by initialization time for every 6 hour period that is available
-# in the data set for 20150301. The output is then used to generate the plot of all cyclone tracks.
+# in the data set between 2021082500 and 2021083000. Then TCStat filters the TCPairs output based on user criteria
+# (e.g. storm characteristics in this use case).
 #
 
 ##############################################################################
@@ -60,11 +62,10 @@ model_applications/tc_and_extra_tc/TCpairs_TCstat_fcstADECK_obsBDECK.conf
 #
 # | **Init/Valid:** 2021082500
 # | **End/Valid:** 2021083000
-# |
 #
 # TC-Stat is the second (and final) tool called in this example. It processes the output
 # from TCPairs. In this example the TC-Stat filters the TC-Pairs output based on the 
-# characteristics of the storm (HU,SD,SS,TS,TD). The output from the TC-Stat can be used to 
+# characteristics of the storm (HU, SD, SS, TS, TD). The output from the TC-Stat can be used to 
 # aggregate verification statistics (e.g. Track, Intensity, MSLP, wind radii errors etc.).
 # 
 
