@@ -141,8 +141,12 @@ METplus Components Python Requirements
       maps and other :raw-html:`<br />`
       geospatial data :raw-html:`<br />`
       analyses
-    -  NEED REF:raw-html:`<br />`
-       NEED REF
+    - `TCGen: Genesis Density Function (GDF) and
+      Track Density Function (TDF)
+      </generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html#sphx-glr-generated-model-applications-s2s-tcgen-fcstgfso-obsbdecks-gdf-tdf-py>`_  :raw-html:`<br />`
+       `CyclonePlotter: Extra-TC Tracker
+       and Plotting Capabilities
+       <../generated/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC.html#sphx-glr-generated-model-applications-tc-and-extra-tc-cycloneplotter-fcstgfs-obsgfs-userscript-extratc-py>`_
   * -
     -
     -
