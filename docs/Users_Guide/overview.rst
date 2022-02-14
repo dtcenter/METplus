@@ -127,7 +127,7 @@ METplus Components Python Requirements
     - METplus wrappers,
     -
     -
-    - `TEST <../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html>`_
+    - `Multi_Tool: Feature Relative by Lead using Multiple User-Defined Fields <../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html#sphx-glr-generated-model-applications-medium-range-tcstat-seriesanalysis-fcstgfs-obsgfs-featurerelative-seriesbylead-pyembed-multiple-diagnostics-py>`_
   * - cartopy
     - 0.18.0
     - METplus wrappers,  :raw-html:`<br />`
