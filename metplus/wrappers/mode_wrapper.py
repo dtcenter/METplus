@@ -59,6 +59,7 @@ class MODEWrapper(CompareGriddedWrapper):
         'METPLUS_PS_PLOT_FLAG',
         'METPLUS_CT_STATS_FLAG',
         'METPLUS_FCST_FILE_TYPE',
+        'METPLUS_OBS_FILE_TYPE',
     ]
 
     # handle deprecated env vars used pre v4.0.0
@@ -359,10 +360,23 @@ class MODEWrapper(CompareGriddedWrapper):
         self.add_met_config(name='ct_stats_flag',
                             data_type='bool')
 
-        self.add_met_config(name='fcst_file_type',
-            data_type='string'
-            metplus_configs=['POINT_STAT_FCST_FILE_TYPE'])
+        self.add_met_config(name='file_type',
+                            data_type='string',
+                            env_var_name='FCST_FILE_TYPE',
+                            metplus_configs=['MODE_FCST_FILE_TYPE',
+                                             'FCST_MODE_FILE_TYPE',
+                                             'MODE_FILE_TYPE'],
+                            extra_args={'remove_quotes': True,
+                                        'uppercase': True})
 
+        self.add_met_config(name='file_type',
+                            data_type='string',
+                            env_var_name='OBS_FILE_TYPE',
+                            metplus_configs=['MODE_OBS_FILE_TYPE',
+                                             'OBS_MODE_FILE_TYPE',
+                                             'MODE_FILE_TYPE'],
+                            extra_args={'remove_quotes': True,
+                                        'uppercase': True})
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False
 
