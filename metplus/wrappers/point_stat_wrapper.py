@@ -44,6 +44,7 @@ class PointStatWrapper(CompareGriddedWrapper):
         'METPLUS_HSS_EC_VALUE',
         'METPLUS_HIRA_DICT',
         'METPLUS_MESSAGE_TYPE_GROUP_MAP',
+        'METPLUS_FCST_FILE_TYPE',
     ]
 
     # handle deprecated env vars used pre v4.0.0
@@ -181,6 +182,10 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         self.add_met_config(name='message_type',
                             data_type='list')
+
+        self.add_met_config(name='fcst_file_type',
+                            data_type='string'
+                            metplus_configs=['POINT_STAT_FCST_FILE_TYPE'])
 
         self.handle_climo_cdf_dict()
 

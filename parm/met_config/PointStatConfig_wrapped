@@ -80,6 +80,11 @@ obs_perc_value = 50;
 //message_type_group_map =
 ${METPLUS_MESSAGE_TYPE_GROUP_MAP}
 
+//
+// Forecast file type string.
+//
+${METPLUS_FCST_FILE_TYPE}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 //

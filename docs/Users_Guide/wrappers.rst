@@ -4059,6 +4059,7 @@ METplus Configuration
 | :term:`OBS_MODE_VAR<n>_LEVELS` (optional)
 | :term:`OBS_MODE_VAR<n>_THRESH` (optional)
 | :term:`OBS_MODE_VAR<n>_OPTIONS` (optional)
+| :term:`MODE_FCST_FILE_TYPE` (optional)
 |
 
 .. warning:: **DEPRECATED:**
@@ -4119,6 +4120,19 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`OBTYPE`
      - obtype
+
+**${METPLUS_FCST_FILE_TYPE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_FCST_FILE_TYPE`
+     - fcst.file.type
+
+.. note:: For more information on controlling the forecast file type attribute in METplus, please see the :ref:`Field_Info` section of the User's Guide.
 
 **${METPLUS_REGRID_DICT}**
 
@@ -5383,6 +5397,7 @@ Configuration
 | :term:`OBS_POINT_STAT_VAR<n>_OPTIONS` (optional)
 | :term:`POINT_STAT_OBS_VALID_BEG` (optional)
 | :term:`POINT_STAT_OBS_VALID_END` (optional)
+| :term:`POINT_STAT_FCST_FILE_TYPE` (optional)
 |
 
 .. warning:: **DEPRECATED:**
@@ -5489,6 +5504,19 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - n/a
 
 .. note:: For more information on controlling the forecast field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
+
+**${METPLUS_FCST_FILE_TYPE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_FCST_FILE_TYPE`
+     - fcst.file.type
+
+.. note:: For more information on controlling the forecast file type attribute in METplus, please see the :ref:`Field_Info` section of the User's Guide.
 
 **${METPLUS_OBS_FIELD}**
 

@@ -58,6 +58,7 @@ class MODEWrapper(CompareGriddedWrapper):
         'METPLUS_INTEREST_FUNCTION_CONVEX_HULL_DIST',
         'METPLUS_PS_PLOT_FLAG',
         'METPLUS_CT_STATS_FLAG',
+        'METPLUS_FCST_FILE_TYPE',
     ]
 
     # handle deprecated env vars used pre v4.0.0
@@ -358,6 +359,10 @@ class MODEWrapper(CompareGriddedWrapper):
         self.add_met_config(name='ct_stats_flag',
                             data_type='bool')
 
+        self.add_met_config(name='fcst_file_type',
+            data_type='string'
+            metplus_configs=['POINT_STAT_FCST_FILE_TYPE'])
+
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False
 
@@ -381,6 +386,9 @@ class MODEWrapper(CompareGriddedWrapper):
         self.env_var_dict['VERIF_MASK'] = (
             self.get_env_var_value('METPLUS_VERIF_MASK').strip('[]')
         )
+
+
+
 
         return c_dict
 
