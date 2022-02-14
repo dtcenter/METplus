@@ -1468,7 +1468,12 @@ METplus Configuration Glossary
      | *Used by:*  PointStat
 
    POINT_STAT_FCST_FILE_TYPE
-     Specify the value for 'fcst_file_type' in the MET configuration file for PointStat.
+     Specify the value for 'fcst.file_type' in the MET configuration file for PointStat.
+
+     | *Used by:*  PointStat
+
+   POINT_STAT_OBS_FILE_TYPE
+     Specify the value for 'obs.file_type' in the MET configuration file for PointStat.
 
      | *Used by:*  PointStat
 
@@ -2470,10 +2475,14 @@ METplus Configuration Glossary
      | *Used by:*  MODE
 
    MODE_FCST_FILE_TYPE
-     Specify the value for 'fcst_file_type' in the MET configuration file for PointStat.
+     Specify the value for 'fcst.file_type' in the MET configuration file for MODE.
 
-     | *Used by:*  MODE 
+     | *Used by:*  MODE
 
+   MODE_OBS_FILE_TYPE
+     Specify the value for 'obs.file_type' in the MET configuration file for MODE.
+
+     | *Used by:*  MODE
 
    MODE_MERGE_CONFIG_FILE
      Path to mode merge config file.
