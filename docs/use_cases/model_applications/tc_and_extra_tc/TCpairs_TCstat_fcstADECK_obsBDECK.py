@@ -49,7 +49,7 @@ model_applications/tc_and_extra_tc/TCpairs_TCstat_fcstADECK_obsBDECK.conf
 # ------------------
 #
 # This use case first runs TC-Pairs to produce matched pairs of Adeck and Bdeck files.
-# The TC-Pairs output (*tcst files) is then read by the TC-Stat tool to further filter the *tcst files
+# The TC-Pairs output (tcst files) is then read by the TC-Stat tool to further filter the tcst files
 # as well as summarize the statistical information. 
 
 ##############################################################################
@@ -133,7 +133,7 @@ model_applications/tc_and_extra_tc/TCpairs_TCstat_fcstADECK_obsBDECK.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in tc_pairs/tc_pairs* tc_stat/* (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in tc_pairs/ tc_stat/ (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
 # * tc_pairs/tc_pairs.al092021.tcst
