@@ -127,13 +127,13 @@ METplus Components Python Requirements
     - METplus wrappers,
     -
     -
-    - `TEST <../../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html>`_
+    - `TEST </generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html>`_
   * - cartopy
     - 0.18.0
     - METplus wrappers,  :raw-html:`<br />`
       METcalcpy,  :raw-html:`<br />`
       METplotpy
-    - `Intro <https://scitools.org.uk/cartopy/docs/latest/>`_
+    - https://scitools.org.uk/cartopy/docs/latest/
     - Designed for :raw-html:`<br />`
       geospatial data :raw-html:`<br />`
       processing in :raw-html:`<br />`
