@@ -73,6 +73,7 @@ obs = {
    ${METPLUS_OBS_FILTER_ATTR_THRESH}
    ${METPLUS_OBS_MERGE_THRESH}
    ${METPLUS_OBS_MERGE_FLAG}
+   ${METPLUS_OBS_FILE_TYPE}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
