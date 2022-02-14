@@ -459,10 +459,10 @@ def test_met_dictionary_in_var_options(metplus_config):
                                    'prob_cat_thresh = [>1, <=2];}')}),
         ({'POINT_STAT_MESSAGE_TYPE_GROUP_MAP': '{ key = "SURFACE"; val = "ADPSFC,SFCSHP,MSONET";},{ key = "ANYAIR";  val = "AIRCAR,AIRCFT";}', },
          {'METPLUS_MESSAGE_TYPE_GROUP_MAP': 'message_type_group_map = [{ key = "SURFACE"; val = "ADPSFC,SFCSHP,MSONET";}, { key = "ANYAIR";  val = "AIRCAR,AIRCFT";}];'}),
-
         ({'POINT_STAT_FCST_FILE_TYPE': 'NETCDF_PINT', },
-         {'METPLUS_FCST_FILE_TYPE': 'fcst_file_typE = NETCDF_PINT;'}),
-
+         {'METPLUS_FCST_FILE_TYPE': 'file_type = NETCDF_PINT;'}),
+        ({'POINT_STAT_FCST_FILE_TYPE': 'NETCDF_PINT', },
+         {'METPLUS_FCST_FILE_TYPE': 'file_type = NETCDF_PINT;'}),
     ]
 )
 def test_point_stat_all_fields(metplus_config, config_overrides,
