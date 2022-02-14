@@ -48,10 +48,12 @@ rank_corr_flag = FALSE;
 // Forecast and observation fields to be verified
 //
 fcst = {
+  ${METPLUS_FCST_FILE_TYPE}
   ${METPLUS_FCST_FIELD}
 }
 
 obs = {
+  ${METPLUS_OBS_FILE_TYPE}
   ${METPLUS_OBS_FIELD}
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -79,11 +81,6 @@ obs_perc_value = 50;
 //
 //message_type_group_map =
 ${METPLUS_MESSAGE_TYPE_GROUP_MAP}
-
-//
-// Forecast file type string.
-//
-${METPLUS_FCST_FILE_TYPE}
 
 ////////////////////////////////////////////////////////////////////////////////
 
