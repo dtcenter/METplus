@@ -93,8 +93,8 @@ METplus Components Python Requirements
    Version - no more than 6 characters
    METplus component - no more than 17 characters
    Source - no more than 8 characters
-   Description - no more than 20 characters
-   Use Cases - no more than 10 characters
+   Description - no more than 22 (was 20) characters
+   Use Cases - no more than 17 (was 10) characters
 
 
 .. role:: raw-html(raw)
@@ -122,9 +122,45 @@ METplus Components Python Requirements
     -
     -
     -
-
-    
-
+  * - Python 3.7
+    -
+    - METplus wrappers,
+    -
+    -
+    - `TEST <../../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html>`_
+  * - cartopy
+    - 0.18.0
+    - METplus wrappers,  :raw-html:`<br />`
+      METcalcpy,  :raw-html:`<br />`
+      METplotpy
+    - `Intro <https://scitools.org.uk/cartopy/docs/latest/>`_
+    - Designed for :raw-html:`<br />`
+      geospatial data :raw-html:`<br />`
+      processing in :raw-html:`<br />`
+      order to produce :raw-html:`<br />`
+      maps and other :raw-html:`<br />`
+      geospatial data :raw-html:`<br />`
+      analyses
+    -  NEED REF:raw-html:`<br />`
+       NEED REF
+  * -
+    -
+    -
+    -
+    -
+    -
+  * -
+    -
+    -
+    -
+    -
+    -
+  * -
+    -
+    -
+    -
+    -
+    -       
 
 .. _release-notes:
 
