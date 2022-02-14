@@ -85,6 +85,46 @@ METplus Wrappers configuration files. Some Python wrappers do not
 correspond to a particular MET tool, but wrap utilities to extend
 METplus functionality.
 
+METplus Components Python Requirements
+======================================
+
+.. Number of characters per line:
+   Name - no more that 13 characters
+   Version - no more than 6 characters
+   METplus component - no more than 17 characters
+   Source - no more than 8 characters
+   Description - no more than 20 characters
+   Use Cases - no more than 10 characters
+
+
+.. role:: raw-html(raw)
+   :format: html	  
+
+.. list-table:: METplus Components Python Requirements
+  :widths: auto
+  :header-rows: 1
+		
+  * - Name
+    - Version
+    - METplus Component
+    - Source
+    - Description 
+    - Use Cases :raw-html:`<br />`
+      (only applicable  :raw-html:`<br />`
+      for METplus  :raw-html:`<br />`
+      wappers  :raw-html:`<br />`
+      component
+  * - Python 3.6.3+
+    -
+    - METplus wrappers, :raw-html:`<br />`
+      METcalcpy, :raw-html:`<br />`
+      METplotpy
+    -
+    -
+    -
+    
+
+
 .. _release-notes:
 
 .. include:: release-notes.rst
