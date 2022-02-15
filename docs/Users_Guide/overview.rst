@@ -127,7 +127,7 @@ METplus Components Python Requirements
     - METplus wrappers,
     -
     -
-    - `Multi_Tool: Feature Relative by Lead using Multiple User-Defined Fields <../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html#sphx-glr-generated-model-applications-medium-range-tcstat-seriesanalysis-fcstgfs-obsgfs-featurerelative-seriesbylead-pyembed-multiple-diagnostics-py>`_
+    - `Multi_Tool: Feature Relative by Lead using Multiple User-Defined Fields <../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html>`_
   * - cartopy
     - 0.18.0
     - METplus wrappers,  :raw-html:`<br />`
@@ -143,10 +143,10 @@ METplus Components Python Requirements
       analyses
     - `TCGen: Genesis Density Function (GDF)
       and Track Density Function (TDF)
-      <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html#sphx-glr-generated-model-applications-s2s-tcgen-fcstgfso-obsbdecks-gdf-tdf-py>`_  :raw-html:`<br />`
+      <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_  :raw-html:`<br />`
       `CyclonePlotter: Extra-TC Tracker
       and Plotting Capabilities
-      <../generated/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC.html#sphx-glr-generated-model-applications-tc-and-extra-tc-cycloneplotter-fcstgfs-obsgfs-userscript-extratc-py>`_
+      <../generated/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC.html>`_
   * -
     -
     -
