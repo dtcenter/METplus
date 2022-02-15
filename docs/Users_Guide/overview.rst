@@ -279,12 +279,36 @@ METplus Components Python Requirements
       Extra-TC Tracker and
       Plotting Capabilities
       <../generated/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC.html>`_ :raw-html:`<br />`
-  * -
+  * - metcalcpy
     -
-    -
-    -
-    -
-    -         
+    - METplus wrappers, :raw-html:`<br />`
+      METcalcpy, :raw-html:`<br />`
+      METplotpy
+    - https://github.com/dtcenter/METcalcpy/releases
+    - a Python version of the :raw-html:`<br />`
+      statistics calculation :raw-html:`<br />`
+      functionality of :raw-html:`<br />`
+      METviewer, METexpress, :raw-html:`<br />`
+      plotting packages in :raw-html:`<br />`
+      METplotpy and is a  :raw-html:`<br />`
+      stand-alone package for :raw-html:`<br />`
+      any other application
+    - `UserScript:
+      Make a Hovmoeller plot
+      <../generated/model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.html>`_ :raw-html:`<br />`
+       `UserScript:
+       Make a Cross Spectra plot
+       <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_ :raw-html:`<br />`
+      `Grid-Stat:
+      Verification of TC forecasts
+      against merged TDR data
+      <../generated/model_applications/s2s/UserScript_obsPrecip_obsOnly_CrossSpectraPlot.html>`_  :raw-html:`<br />`
+      `UserScript:
+      Calculate the Difficulty Index
+      <../generated/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.html>`_  :raw-html:`<br />`
+      `UserScript:
+      Make zonal and meridonial means
+      <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_Stratosphere.html>`_ :raw-html:`<br />`
   * -
     -
     -
