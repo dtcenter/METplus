@@ -147,6 +147,35 @@ METplus Components Python Requirements
       `CyclonePlotter: Extra-TC Tracker
       and Plotting Capabilities
       <../generated/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC.html>`_
+  * - cfgrib
+    -
+    - METplus wrappers
+    - https://pypi.org/project/cfgrib/
+    - map GRIB files :raw-html:`<br />`
+      to the NetCDF :raw-html:`<br />`
+      Common Data Model :raw-html:`<br />`
+      following the :raw-html:`<br />`
+      CF Convention :raw-html:`<br />`
+      using ecCodes
+    - `Multi_Tool: Feature Relative by Lead using Multiple User-Defined Fields <../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html>`_
+  * - cmocean
+    -
+    - METcalcpy, :raw-html:`<br />`
+      METplotpy
+    - https://pypi.org/project/cmocean/
+    - contains colormaps :raw-html:`<br />`
+      for commonly-used :raw-html:`<br />`
+      oceanographic variables
+    -
+  * - dateutil
+    - 2.8
+    - METplus wrappers
+    - https://github.com/dateutil/dateutil/releases
+    - provides powerful :raw-html:`<br />`
+      extensions to the  :raw-html:`<br />`
+      standard datetime :raw-html:`<br />`
+      module
+    - Most      
   * -
     -
     -
@@ -164,8 +193,22 @@ METplus Components Python Requirements
     -
     -
     -
-    -       
+    -
+  * -
+    -
+    -
+    -
+    -
+    -
+  * -
+    -
+    -
+    -
+    -
+    -         
 
+
+    
 .. _release-notes:
 
 .. include:: release-notes.rst
