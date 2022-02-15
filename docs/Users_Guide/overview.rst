@@ -256,7 +256,7 @@ METplus Components Python Requirements
       for creating static, :raw-html:`<br />`
       animated, and :raw-html:`<br />`
       interactive visualizations
-    - `UserScript: Make OMI plot from
+    - `??? UserScript: Make OMI plot from
       calculated MJO indices
       <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_OMI.html>`_  :raw-html:`<br />`
       `TCGen:
@@ -267,7 +267,7 @@ METplus Components Python Requirements
       Make a Phase Diagram plot
       from input RMM or OMI
       <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_PhaseDiagram.html>`_  :raw-html:`<br />`
-      `UserScript:
+      `? UserScript:
       Make OMI plot from
       calculated MJO indices
       <../generated/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI.html>`_ :raw-html:`<br />`
