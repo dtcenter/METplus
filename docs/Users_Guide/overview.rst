@@ -206,18 +206,62 @@ METplus Components Python Requirements
     - `PCPCombine:
       Python Embedding Use Case
       <../generated/met_tool_wrapper/PCPCombine/PCPCombine_python_embedding.html>`_
+  * - imutils
+    - 0.5.3
+    - METcalcpy, :raw-html:`<br />`
+      METplotpy
+    - https://pypi.org/project/imutils/
+    - A series of convenience :raw-html:`<br />`
+      functions to make basic :raw-html:`<br />`
+      image processing :raw-html:`<br />`
+      functions such as :raw-html:`<br />`
+      translation, rotation, :raw-html:`<br />`
+      resizing, skeletonization, :raw-html:`<br />`
+      displaying Matplotlib :raw-html:`<br />`
+      images, sorting contours, :raw-html:`<br />`
+      detecting edges, :raw-html:`<br />`
+      and much more easier
+    -
+  * - imageio
+    -
+    - METcalcpy, :raw-html:`<br />`
+      METplotpy
+    - https://pypi.org/project/imageio/
+    - provides an easy :raw-html:`<br />`
+      interface to read :raw-html:`<br />`
+      and write a wide :raw-html:`<br />`
+      range of image data, :raw-html:`<br />`
+      including animated :raw-html:`<br />`
+      images, volumetric data, :raw-html:`<br />`
+      and scientific formats
+    -
+  * - lxml
+    -
+    - METcalcpy, :raw-html:`<br />`
+      METplotpy
+    - https://pypi.org/project/lxml/
+    - a Pythonic binding for :raw-html:`<br />`
+      the C libraries :raw-html:`<br />`
+      libxml2 and libxslt
+    -         
   * -
     -
     -
     -
     -
-    -
+    -         
   * -
     -
     -
     -
     -
+    -         
+  * -
     -
+    -
+    -
+    -
+    -         
   * -
     -
     -
