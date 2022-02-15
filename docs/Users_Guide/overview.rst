@@ -296,9 +296,9 @@ METplus Components Python Requirements
     - `UserScript:
       Make a Hovmoeller plot
       <../generated/model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.html>`_ :raw-html:`<br />`
-       `UserScript:
-       Make a Cross Spectra plot
-       <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_ :raw-html:`<br />`
+      `UserScript:
+      Make a Cross Spectra plot
+      <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_ :raw-html:`<br />`
       `Grid-Stat:
       Verification of TC forecasts
       against merged TDR data
