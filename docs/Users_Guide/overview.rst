@@ -202,7 +202,9 @@ METplus Components Python Requirements
     -
     - METplus wrappers
     - https://github.com/h5py/h5py
-    - Pythonic interface to the HDF5 binary data format
+    - Pythonic interface :raw-html:`<br />`
+      to the HDF5:raw-html:`<br />`
+      binary data format
     - `PCPCombine:
       Python Embedding Use Case
       <../generated/met_tool_wrapper/PCPCombine/PCPCombine_python_embedding.html>`_
@@ -244,6 +246,39 @@ METplus Components Python Requirements
       the C libraries :raw-html:`<br />`
       libxml2 and libxslt
     -         
+  * - matplotlib
+    - 3.3.4
+    - METplus wrappers, :raw-html:`<br />`
+      METcalcpy, :raw-html:`<br />`
+      METplotpy
+    - https://matplotlib.org/stable/users/installing/index.html
+    - a comprehensive library :raw-html:`<br />`
+      for creating static, :raw-html:`<br />`
+      animated, and :raw-html:`<br />`
+      interactive visualizations
+    - `UserScript: Make OMI plot from
+      calculated MJO indices
+      <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_OMI.html>`_  :raw-html:`<br />`
+      `TCGen:
+      Genesis Density Function (GDF)
+      and Track Density Function (TDF)
+      <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_ :raw-html:`<br />`
+      `UserScript:
+      Make a Phase Diagram plot
+      from input RMM or OMI
+      <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_PhaseDiagram.html>`_  :raw-html:`<br />`
+      `UserScript:
+      Make OMI plot from
+      calculated MJO indices
+      <../generated/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI.html>`_ :raw-html:`<br />`
+      `UserScript:
+      Make RMM plots from
+      calculated MJO indices
+      <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_RMM.html>`_ :raw-html:`<br />`
+      `CyclonePlotter:
+      Extra-TC Tracker and
+      Plotting Capabilities
+      <../generated/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC.html>`_ :raw-html:`<br />`
   * -
     -
     -
@@ -267,8 +302,7 @@ METplus Components Python Requirements
     -
     -
     -
-    -         
-
+    -  
 
     
 .. _release-notes:
