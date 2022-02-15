@@ -157,7 +157,10 @@ METplus Components Python Requirements
       following the :raw-html:`<br />`
       CF Convention :raw-html:`<br />`
       using ecCodes
-    - `Multi_Tool: Feature Relative by Lead using Multiple User-Defined Fields <../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html>`_
+    - `Multi_Tool:
+      Feature Relative by Lead using
+      Multiple User-Defined Fields
+      <../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html>`_
   * - cmocean
     -
     - METcalcpy, :raw-html:`<br />`
@@ -176,18 +179,32 @@ METplus Components Python Requirements
       standard datetime :raw-html:`<br />`
       module
     - Most      
-  * -
+  * - eofs
     -
+    - METplus wrappers, :raw-html:`<br />`
+      METcalcpy, :raw-html:`<br />`
+      METplotpy
+    - https://pypi.org/project/eofs/
+    - empirical orthogonal :raw-html:`<br />`
+      functions analysis of :raw-html:`<br />`
+      spatial-temporal data
+    - `WeatherRegime Calculation:
+      RegridDataPlane,
+      PcpCombine,
+      and WeatherRegime python code
+      <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime.html>`_ :raw-html:`<br />`
+      `WeatherRegime Calculation:
+      RegridDataPlane, PcpCombine,
+      and WeatherRegime python code
+      <../generated/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.html>`_
+  * - h5py
     -
-    -
-    -
-    -
-  * -
-    -
-    -
-    -
-    -
-    -
+    - METplus wrappers
+    - https://github.com/h5py/h5py
+    - Pythonic interface to the HDF5 binary data format
+    - `PCPCombine:
+      Python Embedding Use Case
+      <../generated/met_tool_wrapper/PCPCombine/PCPCombine_python_embedding.html>`_
   * -
     -
     -
