@@ -438,7 +438,7 @@ METplus Components Python Requirements
     - `WeatherRegime Calculation:
       RegridDataPlane, PcpCombine,
       and WeatherRegime python code
-      <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime.html>`_
+      <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime.html>`_  :raw-html:`<br />`
       `?? WeatherRegime Calculation:
       GFS and ERA RegridDataPlane,
       PcpCombine, and WeatherRegime
