@@ -141,7 +141,7 @@ METplus Components Python Requirements
       maps and other :raw-html:`<br />`
       geospatial data :raw-html:`<br />`
       analyses
-    - `TCGen: Genesis Density Function (GDF)
+    - `???TCGen: Genesis Density Function (GDF)
       and Track Density Function (TDF)
       <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_ :raw-html:`<br />`
       `CyclonePlotter: Extra-TC Tracker
@@ -296,7 +296,7 @@ METplus Components Python Requirements
     - `UserScript:
       Make a Hovmoeller plot
       <../generated/model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.html>`_ :raw-html:`<br />`
-      `UserScript:
+      `???UserScript:
       Make a Cross Spectra plot
       <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_ :raw-html:`<br />`
       `Grid-Stat:
@@ -323,13 +323,13 @@ METplus Components Python Requirements
     - `UserScript:
       Make a Hovmoeller plot
       <../generated/model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.html>`_  :raw-html:`<br />`
-      `UserScript:
+      `??UserScript:
       Make a Cross Spectra plot
       <../generated/model_applications/s2s/UserScript_obsPrecip_obsOnly_CrossSpectraPlot.html>`_  :raw-html:`<br />`
       `UserScript:
       Calculate the Difficulty Index
       <../generated/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.html>`_  :raw-html:`<br />`
-      `TCGen:
+      `??TCGen:
       Genesis Density Function (GDF)
       and Track Density Function (TDF)
       <generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_
