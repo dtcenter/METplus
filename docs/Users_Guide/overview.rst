@@ -352,7 +352,7 @@ METplus Components Python Requirements
       stratosphere_diagnostics
     - https://github.com/SciTools/nc-time-axis
     - extension to cftime :raw-html:`<br />`
-      \**REQUIRES Python 3.7
+      \**REQUIRES Python 3.7 
     - 
   * - netCDF4
     - 1.5.4
