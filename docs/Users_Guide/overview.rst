@@ -309,6 +309,30 @@ METplus Components Python Requirements
       `UserScript:
       Make zonal and meridonial means
       <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_Stratosphere.html>`_ :raw-html:`<br />`
+  * - metplotpy
+    - 
+    - METplus wrappers
+    - https://github.com/dtcenter/METplotpy/releases
+    - contains packages for :raw-html:`<br />`
+      plotting in METplus as :raw-html:`<br />`
+      stand-alone, or part of :raw-html:`<br />`
+      METplus use case, :raw-html:`<br />`
+      METplus wrappers, :raw-html:`<br />`
+      METexpress, :raw-html:`<br />`
+      or METviewer
+    - `UserScript:
+      Make a Hovmoeller plot
+      <../generated/model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.html>`_  :raw-html:`<br />`
+      `UserScript:
+      Make a Cross Spectra plot
+      <../generated/model_applications/s2s/UserScript_obsPrecip_obsOnly_CrossSpectraPlot.html>`_  :raw-html:`<br />`
+      `UserScript:
+      Calculate the Difficulty Index
+      <../generated/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.html>`_  :raw-html:`<br />`
+      `TCGen:
+      Genesis Density Function (GDF)
+      and Track Density Function (TDF)
+      <generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_
   * -
     -
     -
