@@ -333,6 +333,95 @@ METplus Components Python Requirements
       Genesis Density Function (GDF)
       and Track Density Function (TDF)
       <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_
+  * - metpy
+    - 
+    - METplus wrappers
+    - https://www.unidata.ucar.edu/software/metpy/
+    - a collection of tools :raw-html:`<br />`
+      in Python for reading, :raw-html:`<br />`
+      visualizing, and :raw-html:`<br />`
+      performing calculations :raw-html:`<br />`
+      with weather data
+    - Multi_Tool: :raw-html:`<br />`
+      Feature Relative by Lead :raw-html:`<br />`
+      using Multiple User-Defined Fields
+  * - nc-time-axis
+    - 1.4
+    - METplotpy :raw-html:`<br />`
+      stratosphere_diagnostics
+    - https://github.com/SciTools/nc-time-axis
+    - extension to cftime :raw-html:`<br />`
+      **REQUIRES Python 3.7
+    - 
+  * - netCDF4
+    - 1.5.4
+    - METplus wrappers, :raw-html:`<br />`
+      METcalcpy, :raw-html:`<br />`
+      METplotpy
+    - https://unidata.github.io/netcdf4-python/
+    - a Python interface to :raw-html:`<br />`
+      the netCDF C library
+    - For using MET Python :raw-html:`<br />`
+      embedding functionality :raw-html:`<br />`
+      in use cases
+  * - numpy
+    - 1.19.2
+    - METplus wrappers, :raw-html:`<br />`
+      METcalcpy, :raw-html:`<br />`
+      METplotpy
+    - https://numpy.org/
+    - NumPy offers :raw-html:`<br />`
+      comprehensive :raw-html:`<br />`
+      mathematical functions, :raw-html:`<br />`
+      random number generators, :raw-html:`<br />`
+      linear algebra routines, :raw-html:`<br />`
+      Fourier transforms, and more.
+    - For using MET Python :raw-html:`<br />`
+      embedding functionality :raw-html:`<br />`
+      in use cases
+  * - pandas
+    - 1.0.5
+    - METplus wrappers, :raw-html:`<br />`
+      METcalcpy, :raw-html:`<br />`
+      METplotpy
+    - https://pypi.org/project/pandas
+    - a fast, powerful, :raw-html:`<br />`
+      flexible and easy to use :raw-html:`<br />`
+      open source data analysis :raw-html:`<br />`
+      and manipulation tool, :raw-html:`<br />`
+      built on top of the :raw-html:`<br />`
+      Python programming :raw-html:`<br />`
+      language
+    - For using MET Python :raw-html:`<br />`
+      embedding functionality :raw-html:`<br />`
+      in use cases
+  * - plotly
+    - 4.9.0
+    - METcalcpy, :raw-html:`<br />`
+      METplotpy
+    - https://github.com/plotly/plotly.py
+    - makes interactive, :raw-html:`<br />`
+      publication-quality graphs
+    - 
+  * - psutil
+    - 5.7.2
+    - METcalcpy, :raw-html:`<br />`
+      METplotpy
+    - https://pypi.org/project/psutil/
+    - Cross-platform lib for :raw-html:`<br />`
+      process and system :raw-html:`<br />`
+      monitoring in Python
+    - 
+  * - pygrib
+    - 
+    - METplus :raw-html:`<br />`
+      wrappers
+    - https://github.com/jswhit/pygrib
+    - for reading/writing :raw-html:`<br />`
+      GRIB files
+    - Multi_Tool: :raw-html:`<br />`
+      Feature Relative by Lead :raw-html:`<br />`
+      using Multiple User-Defined Fields
   * -
     -
     -
