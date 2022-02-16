@@ -342,9 +342,10 @@ METplus Components Python Requirements
       visualizing, and :raw-html:`<br />`
       performing calculations :raw-html:`<br />`
       with weather data
-    - Multi_Tool: :raw-html:`<br />`
-      Feature Relative by Lead :raw-html:`<br />`
-      using Multiple User-Defined Fields
+    - `??? Multi_Tool:
+      Feature Relative by Lead using
+      Multiple User-Defined Fields
+      <../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html>`_
   * - nc-time-axis
     - 1.4
     - METplotpy :raw-html:`<br />`
@@ -419,9 +420,10 @@ METplus Components Python Requirements
     - https://github.com/jswhit/pygrib
     - for reading/writing :raw-html:`<br />`
       GRIB files
-    - Multi_Tool: :raw-html:`<br />`
-      Feature Relative by Lead :raw-html:`<br />`
+    - `?? Multi_Tool:
+      Feature Relative by Lead
       using Multiple User-Defined Fields
+      <../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html>`_
   * -
     -
     -
