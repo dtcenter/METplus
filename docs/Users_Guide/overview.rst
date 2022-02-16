@@ -203,7 +203,7 @@ METplus Components Python Requirements
     - METplus wrappers
     - https://github.com/h5py/h5py
     - Pythonic interface :raw-html:`<br />`
-      to the HDF5:raw-html:`<br />`
+      to the HDF5 :raw-html:`<br />`
       binary data format
     - `PCPCombine:
       Python Embedding Use Case
@@ -424,6 +424,46 @@ METplus Components Python Requirements
       Feature Relative by Lead
       using Multiple User-Defined Fields
       <../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html>`_
+  * - pylab
+    - 
+    - METplus wrappers
+    - https://pypi.org/project/matplotlib/
+    - a convenience module :raw-html:`<br />`
+      that bulk imports :raw-html:`<br />`
+      matplotlib.pyplot (for :raw-html:`<br />`
+      plotting) and NumPy (for :raw-html:`<br />`
+      Mathematics and working :raw-html:`<br />`
+      with arrays) in a :raw-html:`<br />`
+      single name space
+    - `WeatherRegime Calculation:
+      RegridDataPlane, PcpCombine,
+      and WeatherRegime python code
+      <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime.html>`_
+      `WeatherRegime Calculation:
+      GFS and ERA RegridDataPlane,
+      PcpCombine, and WeatherRegime
+      python code
+      <..generated/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.html>`_
+  * - pymysql
+    - 
+    - METcalcpy, :raw-html:`<br />`
+      METplotpy
+    - https://pypi.org/project/psutil/
+    - a pure-Python MySQL :raw-html:`<br />`
+      client library, :raw-html:`<br />`
+      based on PEP 249
+    - 
+  * - pyproj
+    - 2.3.1
+    - METplus wrappers
+    - https://github.com/pyproj4/pyproj/archive/v2.3.1rel.tar.gz
+    - a pure-Python MySQL :raw-html:`<br />`
+      client library, :raw-html:`<br />`
+      based on PEP 249
+    - `GridStat:
+      Python Embedding to read
+      and process ice cover
+      <generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsOSTIA_iceCover.html#>`_
   * -
     -
     -
