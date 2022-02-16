@@ -332,7 +332,7 @@ METplus Components Python Requirements
       `??TCGen:
       Genesis Density Function (GDF)
       and Track Density Function (TDF)
-      <generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_
+      <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_
   * -
     -
     -
