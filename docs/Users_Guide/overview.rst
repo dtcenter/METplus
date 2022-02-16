@@ -443,7 +443,7 @@ METplus Components Python Requirements
       GFS and ERA RegridDataPlane,
       PcpCombine, and WeatherRegime
       python code
-      <..generated/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.html>`_
+      <../generated/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.html>`_
   * - pymysql
     - 
     - METcalcpy, :raw-html:`<br />`
@@ -463,7 +463,7 @@ METplus Components Python Requirements
     - `GridStat:
       Python Embedding to read
       and process ice cover
-      <generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsOSTIA_iceCover.html#>`_
+      <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsOSTIA_iceCover.html#>`_
   * -
     -
     -
