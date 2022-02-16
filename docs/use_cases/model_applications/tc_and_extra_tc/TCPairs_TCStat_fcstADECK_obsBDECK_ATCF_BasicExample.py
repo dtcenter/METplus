@@ -1,8 +1,8 @@
 """
 CycloneVerification: TC Verification Compare ADECK vs BDECK
-========================================================================
+===========================================================
 
-model_applications/tc_and_extra_tc/TCpairs_TCstat_fcstADECK_obsBDECK.conf
+model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample.conf
 
 """
 ###########################################
@@ -20,9 +20,9 @@ model_applications/tc_and_extra_tc/TCpairs_TCstat_fcstADECK_obsBDECK.conf
 #
 #
 # | **Forecast:** Adeck
-# |     /path/to/TCpairs_TCstat_fcstADECK_obsBDECK/a{basin}{cyclone}{init?fmt=%Y}.dat
+# |     /path/to/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample/a{basin}{cyclone}{init?fmt=%Y}.dat
 # | **Observation:** Bdeck
-# |     /path/to/{TCpairs_TCstat_fcstADECK_obsBDECK/b{basin}{cyclone}{init?fmt=%Y}.dat
+# |     /path/to/{TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample/b{basin}{cyclone}{init?fmt=%Y}.dat
 #
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # | The tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
@@ -75,10 +75,10 @@ model_applications/tc_and_extra_tc/TCpairs_TCstat_fcstADECK_obsBDECK.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c /path/to/TCpairs_TCstat_fcstADECK_obsBDECK.conf
+# with the -c option, i.e. -c /path/to/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/TCpairs_TCstat_fcstADECK_obsBDECK.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample.conf
 
 ##############################################################################
 # MET Configuration
@@ -104,9 +104,9 @@ model_applications/tc_and_extra_tc/TCpairs_TCstat_fcstADECK_obsBDECK.conf
 #
 # It is recommended to run this use case by:
 #
-# Passing in TCpairs_TCstat_fcstADECK_obsBDECK.conf then a user-specific system configuration file::
+# Passing in TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample.conf then a user-specific system configuration file::
 #
-#   run_metplus.py -c /path/to/TCpairs_TCstat_fcstADECK_obsBDECK.conf -c /path/to/user_system.conf
+#   run_metplus.py -c /path/to/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample.conf -c /path/to/user_system.conf
 #
 # The following METplus configuration variables must be set correctly to run this example.:
 #
