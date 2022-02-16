@@ -1467,6 +1467,16 @@ METplus Configuration Glossary
 
      | *Used by:*  PointStat
 
+   POINT_STAT_FCST_FILE_TYPE
+     Specify the value for 'fcst.file_type' in the MET configuration file for PointStat.
+
+     | *Used by:*  PointStat
+
+   POINT_STAT_OBS_FILE_TYPE
+     Specify the value for 'obs.file_type' in the MET configuration file for PointStat.
+
+     | *Used by:*  PointStat
+
    FCST_POINT_STAT_INPUT_DATATYPE
      Specify the data type of the input directory for forecast files used with the MET point_stat tool. Currently valid options are NETCDF, GRIB, and GEMPAK. If set to GEMPAK, data will automatically be converted to NetCDF via GempakToCF. A corresponding variable exists for observation data called :term:`OBS_POINT_STAT_INPUT_DATATYPE`.
 
@@ -2461,6 +2471,16 @@ METplus Configuration Glossary
 
    MODE_FCST_MERGE_THRESH
      Comma separated list of merge threshold values used by mode for forecast fields.
+
+     | *Used by:*  MODE
+
+   MODE_FCST_FILE_TYPE
+     Specify the value for 'fcst.file_type' in the MET configuration file for MODE.
+
+     | *Used by:*  MODE
+
+   MODE_OBS_FILE_TYPE
+     Specify the value for 'obs.file_type' in the MET configuration file for MODE.
 
      | *Used by:*  MODE
 
