@@ -516,7 +516,11 @@ METplus Components Python Requirements
     - >=0.2.1
     - METcalcpy, METplotpy
     - https://pypi.org/project/kaleido/
-    - provides a low-level Python API that is designed to be used by high-level plotting libraries like Plotly
+    - provides a low-level:raw-html:`<br />`
+      Python API that is:raw-html:`<br />`
+      designed to be used by:raw-html:`<br />`
+      high-level plotting:raw-html:`<br />`
+      libraries like Plotly
     - 
   * - pyyaml
     - >=5.3.1
