@@ -546,7 +546,8 @@ METplus Components Python Requirements
       METcalcpy, :raw-html:`<br />`
       METplotpy
     - https://github.com/scikit-learn/scikit-learn/releases
-    - Open Source library for Machine Learning in Python :raw-html:`<br />`
+    - Open Source library for :raw-html:`<br />`
+      Machine Learning in Python
     - `GridStat:
       Python Embedding to read and process SST
       (scikit-learn)
@@ -613,8 +614,14 @@ METplus Components Python Requirements
     - Simple and efficient :raw-html:`<br />`
       tools for predictive :raw-html:`<br />`
       data analysis
-    - `WeatherRegime Calculation: RegridDataPlane, PcpCombine, and WeatherRegime python code(sklearn) :raw-html:`<br />`
-      `WeatherRegime Calculation: GFS and ERA RegridDataPlane, PcpCombine, and WeatherRegime python code(sklearn)
+    - `WeatherRegime Calculation:
+      RegridDataPlane, PcpCombine, and WeatherRegime python code
+      (sklearn)
+      <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime.html>`_ :raw-html:`<br />`
+      `WeatherRegime Calculation:
+      GFS and ERA RegridDataPlane, PcpCombine, and WeatherRegime python code
+      (sklearn)
+      <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime.html>`_
   * -
     -
     -
