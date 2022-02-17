@@ -124,7 +124,11 @@ METplus Components Python Requirements
     - METplus wrappers,
     -
     -
-    - `Multi_Tool: Feature Relative by Lead using Multiple User-Defined Fields (Python 3.7) <../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html>`_
+    - `Multi_Tool:
+      Feature Relative by Lead
+      using Multiple User-Defined Fields
+      (Python 3.7)
+      <../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html>`_
   * - cartopy
     - >=0.18.0
     - METplus wrappers,  :raw-html:`<br />`
@@ -138,11 +142,13 @@ METplus Components Python Requirements
       maps and other :raw-html:`<br />`
       geospatial data :raw-html:`<br />`
       analyses
-    - `??? TCGen: Genesis Density Function (GDF)
+    - `TCGen: Genesis Density Function (GDF)
       and Track Density Function (TDF)
+      (cartopy)
       <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_ :raw-html:`<br />`
       `CyclonePlotter: Extra-TC Tracker
       and Plotting Capabilities
+      (cartopy)
       <../generated/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC.html>`_
   * - cfgrib
     -
@@ -157,6 +163,7 @@ METplus Components Python Requirements
     - `Multi_Tool:
       Feature Relative by Lead using
       Multiple User-Defined Fields
+      (cfgrib)
       <../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html>`_
   * - cmocean
     -
@@ -189,11 +196,13 @@ METplus Components Python Requirements
       RegridDataPlane,
       PcpCombine,
       and WeatherRegime python code
+      (eofs)
       <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime.html>`_ :raw-html:`<br />`
-      `??? WeatherRegime Calculation:
+      `WeatherRegime Calculation:
       GFS and ERA RegridDataPlane,
       PcpCombine, and
       WeatherRegime python code
+      (eofs)
       <../generated/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.html>`_
   * - h5py
     -
@@ -204,6 +213,7 @@ METplus Components Python Requirements
       binary data format
     - `PCPCombine:
       Python Embedding Use Case
+      (h5py)
       <../generated/met_tool_wrapper/PCPCombine/PCPCombine_python_embedding.html>`_
   * - imutils
     - 0.5.3
@@ -253,28 +263,35 @@ METplus Components Python Requirements
       for creating static, :raw-html:`<br />`
       animated, and :raw-html:`<br />`
       interactive visualizations
-    - `UserScript: Make OMI plot from
+    - `UserScript:
+      Make OMI plot from
       calculated MJO indices (obs only)
+      (matplotlib)
       <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_OMI.html>`_  :raw-html:`<br />`
       `TCGen:
       Genesis Density Function (GDF)
       and Track Density Function (TDF)
+      (matplotlib)
       <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_ :raw-html:`<br />`
       `UserScript:
       Make a Phase Diagram plot
       from input RMM or OMI
+      (matplotlib)
       <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_PhaseDiagram.html>`_  :raw-html:`<br />`
       `UserScript:
       Make OMI plot from
       calculated MJO indices
+      (matplotlib)
       <../generated/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI.html>`_ :raw-html:`<br />`
       `UserScript:
       Make RMM plots from
       calculated MJO indices
+      (matplotlib)
       <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_RMM.html>`_ :raw-html:`<br />`
       `CyclonePlotter:
       Extra-TC Tracker and
       Plotting Capabilities
+      (matplotlib)
       <../generated/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC.html>`_ :raw-html:`<br />`
   * - metcalcpy
     -
@@ -292,19 +309,24 @@ METplus Components Python Requirements
       any other application
     - `UserScript:
       Make a Hovmoeller plot
+      (metcalcpy)
       <../generated/model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.html>`_ :raw-html:`<br />`
-      `??? UserScript:
+      `UserScript:
       Make a Cross Spectra plot
+      (metcalcpy)
       <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_ :raw-html:`<br />`
       `Grid-Stat:
       Verification of TC forecasts
       against merged TDR data
+      (metcalcpy)
       <../generated/model_applications/s2s/UserScript_obsPrecip_obsOnly_CrossSpectraPlot.html>`_  :raw-html:`<br />`
       `UserScript:
       Calculate the Difficulty Index
+      (metcalcpy)
       <../generated/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.html>`_  :raw-html:`<br />`
       `UserScript:
       Make zonal and meridonial means
+      (metcalcpy)
       <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_Stratosphere.html>`_ :raw-html:`<br />`
   * - metplotpy
     - 
@@ -319,16 +341,20 @@ METplus Components Python Requirements
       or METviewer
     - `UserScript:
       Make a Hovmoeller plot
+      (metplotpy)
       <../generated/model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.html>`_  :raw-html:`<br />`
-      `?? UserScript:
+      `UserScript:
       Make a Cross Spectra plot
+      (metplotpy)
       <../generated/model_applications/s2s/UserScript_obsPrecip_obsOnly_CrossSpectraPlot.html>`_  :raw-html:`<br />`
       `UserScript:
       Calculate the Difficulty Index
+      (metplotpy)
       <../generated/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.html>`_  :raw-html:`<br />`
-      `?? TCGen:
+      `TCGen:
       Genesis Density Function (GDF)
       and Track Density Function (TDF)
+      (metplotpy)
       <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_
   * - metpy
     - 
@@ -339,9 +365,10 @@ METplus Components Python Requirements
       visualizing, and :raw-html:`<br />`
       performing calculations :raw-html:`<br />`
       with weather data
-    - `??? Multi_Tool:
+    - `Multi_Tool:
       Feature Relative by Lead using
       Multiple User-Defined Fields
+      (metpy)
       <../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html>`_
   * - nc-time-axis
     - 1.4
@@ -411,9 +438,10 @@ METplus Components Python Requirements
     - https://github.com/jswhit/pygrib
     - for reading/writing :raw-html:`<br />`
       GRIB files
-    - `?? Multi_Tool:
+    - `Multi_Tool:
       Feature Relative by Lead
       using Multiple User-Defined Fields
+      (pygrib)
       <../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html>`_
   * - pylab
     - 
@@ -429,11 +457,13 @@ METplus Components Python Requirements
     - `WeatherRegime Calculation:
       RegridDataPlane, PcpCombine,
       and WeatherRegime python code
+      (pylab)
       <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime.html>`_  :raw-html:`<br />`
-      `?? WeatherRegime Calculation:
+      `WeatherRegime Calculation:
       GFS and ERA RegridDataPlane,
       PcpCombine, and WeatherRegime
       python code
+      (pylab)
       <../generated/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.html>`_
   * - pymysql
     - 
@@ -454,6 +484,7 @@ METplus Components Python Requirements
     - `GridStat:
       Python Embedding to read
       and process ice cover
+      (pyproj)
       <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsOSTIA_iceCover.html#>`_
   * -
     -
