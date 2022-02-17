@@ -1,6 +1,6 @@
 """
-GridStat: Python Embedding to read and process ice cover
-========================================================
+GridStat: Python Embedding to read and process sea surface heights
+==================================================================
 
 model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsAVISO_climHYCOM_ssh.conf
 
