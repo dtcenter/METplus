@@ -486,6 +486,32 @@ METplus Components Python Requirements
       and process ice cover
       (pyproj)
       <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsOSTIA_iceCover.html#>`_
+  * - pyresample
+    - 
+    - METplus wrappers
+    - https://github.com/pytroll/pyresample
+    - for resampling geospatial:raw-html:`<br />`
+      image data
+    - `GridStat:
+      Python Embedding to read and
+      process SST
+      (pyresample)
+      <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.html>`_ :raw-html:`<br />`
+      `GridStat:
+      Python Embedding to read and
+      process ice cover
+      (pyresample)
+      <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsOSTIA_iceCover.html>`_ :raw-html:`<br />`
+      `GridStat:
+      Python Embedding for sea surface salinity
+      using level 3, 1 day composite obs
+      (pyresample)
+      <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMOS_climWOA_sss.html>`_ :raw-html:`<br />`
+      `GridStat:
+      Python Embedding for sea surface salinity
+      using level 3, 8 day mean obs
+      (pyresample)
+      <generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.html>`_
   * -
     -
     -
