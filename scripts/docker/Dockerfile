@@ -48,19 +48,6 @@ MAINTAINER George McCabe <mccabe@ucar.edu>
 RUN echo export PATH=$PATH:`pwd`/METplus/ush >> /etc/bashrc \
  && echo setenv PATH $PATH:`pwd`/METplus/ush >> /etc/csh.cshrc
 
-# Install required packages: Pandas, Cartopy*
-#  - *dateutil, pytest
-#
-# Install nco tools for ncap2
-# Install Java 1.8.0 OpenJDK for GempakToCF.jar
-# Install pytest and netCDF4 python packages
-# Obtain GempakToCF.jar
-#RUN yum -y update \
-# && yum -y install java-1.8.0-openjdk \
-# && mkdir -p /data/input \
-# && curl -L -o /data/input/GempakToCF.jar -O https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar || true
-
-
 # if source code was retrieved, set default config variables and install package
 ARG OBTAIN_SOURCE_CODE=clone
 RUN if [ ${OBTAIN_SOURCE_CODE} != "none" ]; then \
