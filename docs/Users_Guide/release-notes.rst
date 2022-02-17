@@ -60,6 +60,8 @@ METplus Version 4.1.0-beta6 Release Notes (2022-02-18)
 * New Use Cases:
 
   * Precipitation-type comparison across 3 models (`#1408 <https://github.com/dtcenter/METplus/issues/1408>`_)
+  * TC Verification Compare ADECK vs BDECK (`#911 <https://github.com/dtcenter/METplus/issues/911>`_)
+  * Satellite verification of sea surface salinity: AVISO vs RTOFS output HYCOM climo (`#1318 <https://github.com/dtcenter/METplus/issues/1318>`_)
 
 * Internal:
 
