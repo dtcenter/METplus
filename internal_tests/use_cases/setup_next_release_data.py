@@ -47,6 +47,11 @@ def get_files_from_dir(version_dir, check_dir):
             print(f"ERROR: Unexpected non-file found: {filepath}")
             return False
 
+        # skip files that have a timestamp of .sav in the name
+        if '.sav' in filename or sum(x.isdigit() for x in filename) > 7:
+            print(f"Skipping file flagged as duplicate: {filename}")
+            continue
+
         linkname = f"{'-'.join(filename.split('-')[0:-1])}.tgz"
         linkpath = os.path.join(version_dir, linkname)
         print(f"Creating symbolic link:\n"
