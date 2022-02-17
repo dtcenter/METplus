@@ -12,7 +12,6 @@ the Developmental Testbed Center (DTC).
 METplus is a Python scripting infrastructure around the MET verification tools
 (and eventually METViewer, a tool used for plotting MET output verification statistics).
 
-<<<<<<< HEAD
 Documentation for both Users and Contributors can be found [here](https://metplus.readthedocs.io).
 For more information about the entire suite of tools, please visit the
 [MET website](https://dtcenter.org/community-code/model-evaluation-tools-met).
@@ -22,12 +21,6 @@ Support for the METplus components is provided through the
 Users are welcome and encouraged to answer or address each other's questions there!  For more
 information, please read
 "[Welcome to the METplus Components Discussions](https://github.com/dtcenter/METplus/discussions/939)".
-=======
-Documentation for both Users and Contributors can be found here: https://dtcenter.github.io/METplus.
-For more information about the entire suite of tools, please visit the METplus website
-(https://dtcenter.org/community-code/metplus) and direct questions
-to met_help@ucar.edu.
->>>>>>> origin
 
 This infrastructure utilizes the NCEP produtil package, which is a platform-independent
 weather and ocean forecasting utility package developed at the National Oceanic

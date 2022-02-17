@@ -299,4 +299,3 @@ to the home page is */path/to/METplus/docs/doxygen/html/index.html*.
 Useful information can be found under the *Packages*, *Classes*, and
 *Python Files* tabs located at the top of the home page.
 
-

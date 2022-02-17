@@ -7,20 +7,12 @@ version: 2
 
 # Build all formats (htmlzip, pdf, epub)
 #formats: all
-<<<<<<< HEAD
 formats: [pdf]
-=======
-formats: []
->>>>>>> origin
 
 # Optionally set the version of Python and requirements required to build your
 # docs
 python:
-<<<<<<< HEAD
    version: 3.7
-=======
-   version: 3.6
->>>>>>> origin
    install:
    - requirements: docs/requirements.txt
    - requirements: requirements.txt
@@ -29,8 +21,4 @@ python:
 # type)
 sphinx:
   builder: html
-<<<<<<< HEAD
   configuration: docs/conf.py
-=======
-  configuration: docs/conf.py
->>>>>>> origin
