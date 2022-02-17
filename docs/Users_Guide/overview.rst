@@ -516,10 +516,10 @@ METplus Components Python Requirements
     - >=0.2.1
     - METcalcpy, METplotpy
     - https://pypi.org/project/kaleido/
-    - provides a low-level:raw-html:`<br />`
-      Python API that is:raw-html:`<br />`
-      designed to be used by:raw-html:`<br />`
-      high-level plotting:raw-html:`<br />`
+    - provides a low-level :raw-html:`<br />`
+      Python API that is :raw-html:`<br />`
+      designed to be used by :raw-html:`<br />`
+      high-level plotting :raw-html:`<br />`
       libraries like Plotly
     - 
   * - pyyaml
@@ -539,7 +539,58 @@ METplus Components Python Requirements
     - a collection of :raw-html:`<br />`
       algorithms for image :raw-html:`<br />`
       processing
+    -
+  * - scikit-learn
+    - 0.23.2
+    - METplus wrappers,  :raw-html:`<br />`
+      METcalcpy, :raw-html:`<br />`
+      METplotpy
+    - https://github.com/scikit-learn/scikit-learn/releases
+    - Open Source library for Machine Learning in Python :raw-html:`<br />`
+    - `GridStat:
+      Python Embedding to read and process SST
+      (scikit-learn)
+      <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.html>`_ :raw-html:`<br />`
+      `GridStat:
+      Python Embedding to read and process ice cover
+      (scikit-learn) <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsOSTIA_iceCover.html>`_ :raw-html:`<br />`
+      `GridStat:
+      Python Embedding for sea surface salinity using level 3,
+      1 day composite obs
+      (scikit-learn)
+      <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMOS_climWOA_sss.html>`_ :raw-html:`<br />`
+      `GridStat:
+      Python Embedding for sea surface salinity using level 3,
+      8 day mean obs
+      (scikit-learn)
+      <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.html>`_
+  * - scipy
+    - >=1.5.1
+    - METplus wrappers, :raw-html:`<br />`
+      METcalcpy, :raw-html:`<br />`
+      METplotpy
+    - https://www.scipy.org/
+    - wraps highly-optimized :raw-html:`<br />`
+      implementations written  :raw-html:`<br />`
+      in low-level languages :raw-html:`<br />`
+      like Fortran, C, and C++
+    - `Blocking Calculation: RegridDataPlane, PcpCombine, and Blocking python code(scipy) :raw-html:`<br />`
+      `WeatherRegime Calculation: RegridDataPlane, PcpCombine, and WeatherRegime python code(scipy) :raw-html:`<br />`
+      `UserScript: Make OMI plot from calculated MJO indices(scipy) :raw-html:`<br />`
+      `WeatherRegime Calculation: GFS and ERA RegridDataPlane, PcpCombine, and WeatherRegime python code(scipy) :raw-html:`<br />`
+      `Blocking Calculation: RegridDataPlane, PcpCombine, and Blocking python code(scipy) :raw-html:`<br />`
+      `UserScript: Make a Phase Diagram plot from input RMM or OMI(scipy) :raw-html:`<br />`
+      `UserScript: Make OMI plot from calculated MJO indices(scipy) :raw-html:`<br />`
+      `UserScript: Make RMM plots from calculated MJO indices(scipy)
+  * - sklearn
     - 
+    - METplus wrappers
+    - https://www.kite.com/python/docs/sklearn
+    - Simple and efficient :raw-html:`<br />`
+      tools for predictive :raw-html:`<br />`
+      data analysis
+    - `WeatherRegime Calculation: RegridDataPlane, PcpCombine, and WeatherRegime python code(sklearn) :raw-html:`<br />`
+      `WeatherRegime Calculation: GFS and ERA RegridDataPlane, PcpCombine, and WeatherRegime python code(sklearn)
   * -
     -
     -
