@@ -511,7 +511,7 @@ METplus Components Python Requirements
       Python Embedding for sea surface salinity
       using level 3, 8 day mean obs
       (pyresample)
-      <generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.html>`_
+      <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.html>`_
   * -
     -
     -
