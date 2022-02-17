@@ -126,7 +126,7 @@ METplus Components Python Requirements
     -
     - `Multi_Tool: Feature Relative by Lead using Multiple User-Defined Fields <../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html>`_
   * - cartopy
-    - 0.18.0
+    - >=0.18.0
     - METplus wrappers,  :raw-html:`<br />`
       METcalcpy,  :raw-html:`<br />`
       METplotpy
@@ -168,7 +168,7 @@ METplus Components Python Requirements
       oceanographic variables
     -
   * - dateutil
-    - 2.8
+    - >=2.8
     - METplus wrappers
     - https://github.com/dateutil/dateutil/releases
     - provides powerful :raw-html:`<br />`
@@ -244,7 +244,7 @@ METplus Components Python Requirements
       libxml2 and libxslt
     -         
   * - matplotlib
-    - 3.3.4
+    - >=3.3.4
     - METplus wrappers, :raw-html:`<br />`
       METcalcpy, :raw-html:`<br />`
       METplotpy
@@ -352,7 +352,7 @@ METplus Components Python Requirements
       \**REQUIRES Python 3.7 
     - 
   * - netCDF4
-    - 1.5.4
+    - >=1.5.4
     - METplus wrappers, :raw-html:`<br />`
       METcalcpy, :raw-html:`<br />`
       METplotpy
@@ -361,7 +361,7 @@ METplus Components Python Requirements
       the netCDF C library
     - For using MET Python embedding functionality in use cases
   * - numpy
-    - 1.19.2
+    - >=1.19.2
     - METplus wrappers, :raw-html:`<br />`
       METcalcpy, :raw-html:`<br />`
       METplotpy
@@ -374,7 +374,7 @@ METplus Components Python Requirements
       Fourier transforms, and more.
     - For using MET Python embedding functionality in use cases
   * - pandas
-    - 1.0.5
+    - >=1.0.5
     - METplus wrappers, :raw-html:`<br />`
       METcalcpy, :raw-html:`<br />`
       METplotpy
@@ -388,7 +388,7 @@ METplus Components Python Requirements
       language
     - For using MET Python embedding functionality in use cases
   * - plotly
-    - 4.9.0
+    - >=4.9.0
     - METcalcpy, :raw-html:`<br />`
       METplotpy
     - https://github.com/plotly/plotly.py
