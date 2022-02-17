@@ -109,11 +109,8 @@ METplus Components Python Requirements
     - METplus Component
     - Source
     - Description 
-    - Use Cases :raw-html:`<br />`
-      (only applicable  :raw-html:`<br />`
-      for METplus  :raw-html:`<br />`
-      wappers  :raw-html:`<br />`
-      component
+    - Use Cases (only applicable for METplus wrappers component)(followed by
+      python package name)
   * - Python 3.6.3+
     -
     - METplus wrappers, :raw-html:`<br />`
@@ -362,9 +359,7 @@ METplus Components Python Requirements
     - https://unidata.github.io/netcdf4-python/
     - a Python interface to :raw-html:`<br />`
       the netCDF C library
-    - For using MET Python :raw-html:`<br />`
-      embedding functionality :raw-html:`<br />`
-      in use cases
+    - For using MET Python embedding functionality in use cases
   * - numpy
     - 1.19.2
     - METplus wrappers, :raw-html:`<br />`
@@ -377,9 +372,7 @@ METplus Components Python Requirements
       random number generators, :raw-html:`<br />`
       linear algebra routines, :raw-html:`<br />`
       Fourier transforms, and more.
-    - For using MET Python :raw-html:`<br />`
-      embedding functionality :raw-html:`<br />`
-      in use cases
+    - For using MET Python embedding functionality in use cases
   * - pandas
     - 1.0.5
     - METplus wrappers, :raw-html:`<br />`
@@ -393,9 +386,7 @@ METplus Components Python Requirements
       built on top of the :raw-html:`<br />`
       Python programming :raw-html:`<br />`
       language
-    - For using MET Python :raw-html:`<br />`
-      embedding functionality :raw-html:`<br />`
-      in use cases
+    - For using MET Python embedding functionality in use cases
   * - plotly
     - 4.9.0
     - METcalcpy, :raw-html:`<br />`
