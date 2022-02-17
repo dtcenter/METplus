@@ -512,6 +512,30 @@ METplus Components Python Requirements
       using level 3, 8 day mean obs
       (pyresample)
       <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.html>`_
+  * - python-kaleido
+    - >=0.2.1
+    - METcalcpy, METplotpy
+    - https://pypi.org/project/kaleido/
+    - provides a low-level Python API that is designed to be used by high-level plotting libraries like Plotly
+    - 
+  * - pyyaml
+    - >=5.3.1
+    - METcalcpy, :raw-html:`<br />`
+      METplotpy
+    - https://github.com/yaml/pyyaml
+    - a full-featured YAML :raw-html:`<br />`
+      framework for the Python :raw-html:`<br />`
+      programming language
+    - 
+  * - scikit-image
+    - >=0.16.2
+    - METcalcpy, :raw-html:`<br />`
+      METplotpy
+    - https://scikit-image.org
+    - a collection of :raw-html:`<br />`
+      algorithms for image :raw-html:`<br />`
+      processing
+    - 
   * -
     -
     -
