@@ -16,8 +16,8 @@ refDir='/d1/biswas/feature_cable'
 DCOMDir='/d1/biswas/feature_cable'
 archDir='/d1/biswas/feature_cable/rtofs-cable'
 
-if len(sys.argv) < 6:
-    print("Must specify the following elements: rtofs_u, rtofs_v, cable_file, eightmile_file, valid_date, file_flag")
+if len(sys.argv) < 5:
+    print("Must specify the following elements: rtofs_u, rtofs_v, cable_file, eightmile_file, valid_date")
     sys.exit(1)
 
 rtofsfile_u = os.path.expandvars(sys.argv[1]) 
@@ -25,9 +25,8 @@ rtofsfile_v = os.path.expandvars(sys.argv[2])
 cablefile = os.path.expandvars(sys.argv[3]) 
 eightmilefile = os.path.expandvars(sys.argv[4]) 
 vDate=datetime.strptime(sys.argv[5],'%Y%m%d')
-file_flag = sys.argv[6] 
 
-print('Starting Cable V&V at',datetime.now(),'for',vDate, ' file_flag:',file_flag)
+print('Starting Cable V&V at',datetime.now(),'for',vDate)
 
 
 
@@ -37,8 +36,8 @@ if not os.path.exists(cablefile):
 #-----------------------------------------------
 # read cable transport data from AOML            
 #-----------------------------------------------
-cablefile='FC_cable_transport_2021.dat'
-eightmilefile='eightmilecable.dat'
+#cablefile='FC_cable_transport_2021.dat'
+#eightmilefile='eightmilecable.dat'
     
 # read the AOML dataset
 names=['year','month','day','transport']
@@ -50,7 +49,8 @@ cable['error']=2.0
 del cable['year'], cable['month'], cable['day'], cable['date']
 print(cable)
 
-fcst=rtofsfile_u.split("_")[3].split("f")[1].strip("0")
+print(rtofsfile_u)
+fcst=rtofsfile_u.split('/')[-1].split("_")[3].split("f")[1].strip("0")
 fcst=int(fcst)
 
 #-----------------------------------------------
@@ -88,8 +88,8 @@ def calc_transport(dates,fcst):
 #MKB        print(vfile)
 
 #MKB        try:
-       udata=Dataset(rtofsfile_u)
-       vdata=Dataset(rtofsfile_v)
+        udata=Dataset(rtofsfile_u)
+        vdata=Dataset(rtofsfile_v)
 #MKB        except:
 #MKB            print(rundate,fcst,'not found -- continuing')
 #MKB            transport.append(np.nan)
@@ -156,9 +156,28 @@ def rotate(u,v,phi):
     return u2,v2
 
 #-------------------------------------------------------------------------
+def rms(both,fcst):
+    print('Code call rmse')
+    fcst=both[fcst]
+    obs=both['transport']
+    B = fcst.mean() - obs.mean()
+    B2 = B**2
+    D = fcst-obs
+    S=D.std()
+    S2=S**2
+    return np.sqrt(S2 + B2)
+
+#-------------------------------------------------------------------------
+def bias(both,fcst):
+    print('Code call bias')
+    fcst=both[fcst]
+    obs=both['transport']
+    return fcst.mean() - obs.mean()
 
 
-want_date=datetime.strptime(sys.argv[1],'%Y%m%d')
+
+
+want_date=datetime.strptime(sys.argv[5],'%Y%m%d')
 print('WANT DATE :', want_date)
 DateSet=True
 
@@ -173,54 +192,22 @@ for end_date in pd.date_range(start_date,stop_date):
     model=get_model(dates,fcsts)
 
 both=pd.merge(cable,model,left_index=True,right_index=True,how='inner')
+print("both :", both)
 both=both[both.index.max()-timedelta(3):]
 fcst=both.dropna(inplace=True)
      
+print('BOTH :',both)
+print('BOTH(FCST) :',both[fcst])
+print('BOTH.TRANSPORT :',both.transport)
+diff=both[fcst] - both.transport
+print('DIFF :',diff)
+bias=diff.mean()
+rmse=mean_squared_error(both.transport,both[fcst])**0.5
+if both[fcst].mean() != 0.0:
+    scatter_index=100.0*(((diff**2).mean())**0.5 - bias**2)/both.transport.mean()
+else:
+    scatter_index=np.nan
 
+corr=both[fcst].corr(both.transport)
 
-#Create the MET grids based on the file_flag
-if file_flag == 'fcst':
-    met_data = model[:,:]
-    #trim the lat/lon grids so they match the data fields
-    lat_met = model.lat
-    lon_met = model3.lon
-    print(" RTOFS Data shape: "+repr(met_data.shape))
-    v_str = vDate.strftime("%Y%m%d")
-    v_str = v_str + '_000000'
-    lat_ll = float(lat_met.min())
-    lon_ll = float(lon_met.min())
-    n_lat = lat_met.shape[0]
-    n_lon = lon_met.shape[0]
-    delta_lat = (float(lat_met.max()) - float(lat_met.min()))/float(n_lat)
-    delta_lon = (float(lon_met.max()) - float(lon_met.min()))/float(n_lon)
-    print(f"variables:"
-            f"lat_ll: {lat_ll} lon_ll: {lon_ll} n_lat: {n_lat} n_lon: {n_lon} delta_lat: {delta_lat} delta_lon: {delta_lon}")
-    met_data.attrs = {
-            'valid': v_str,
-            'init': v_str,
-            'lead': "00",
-            'accum': "00",
-            'name': 'ssh',
-            'standard_name': 'zonal current',
-            'long_name': 'sea_surface_elevation',
-            'level': "SURFACE",
-            'units': "meters",
-
-            'grid': {
-                'type': "LatLon",
-                'name': "RTOFS Grid",
-                'lat_ll': lat_ll,
-                'lon_ll': lon_ll,
-                'delta_lat': delta_lat,
-                'delta_lon': delta_lon,
-                'Nlat': n_lat,
-                'Nlon': n_lon,
-                }
-            }
-    attrs = met_data.attrs
-
-
-if file_flag == 'obs':
-# Empty object
-    my_data = pd.DataFrame()
-    my_data = my_data.append(pd.DataFrame(np.array([["ADUPA", transport]])))
+print("BIAS :",bias, "RMSE :",rmse, "CORR :",corr, "SCATTER INDEX :",scatter_index)
