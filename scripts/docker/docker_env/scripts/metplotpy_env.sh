@@ -39,6 +39,7 @@ conda install -y --name ${ENV_NAME} -c conda-forge cmocean==2.0
 conda install -y --name ${ENV_NAME} -c conda-forge xarray==0.17
 conda install -y --name ${ENV_NAME} -c conda-forge netcdf4==1.5.6
 conda install -y --name ${ENV_NAME} -c conda-forge pyyaml
+conda install -y --name ${ENV_NAME} -c conda-forge statsmodels==0.11.1
 /usr/local/envs/${ENV_NAME}/bin/pip3 install kaleido==0.2.1
 
 yum -y install wget

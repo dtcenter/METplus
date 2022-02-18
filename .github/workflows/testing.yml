@@ -67,6 +67,7 @@ jobs:
       run_diff: ${{ steps.job_status.outputs.run_diff }}
       run_save_truth_data: ${{ steps.job_status.outputs.run_save_truth_data }}
       external_trigger: ${{ steps.job_status.outputs.external_trigger }}
+      branch_name: ${{ steps.job_status.outputs.branch_name }}
 
   get_image:
     name: Docker Setup - Get METplus Image
@@ -91,20 +92,17 @@ jobs:
     needs: job_control
     if: ${{ needs.job_control.outputs.run_get_input_data == 'true' }}
     steps:
-      - uses: actions/checkout@v2
-
-      - uses: actions/setup-python@v2
+      - uses: dtcenter/metplus-action-data-update@v1
         with:
-          python-version: '3.6'
-
-      - name: Install dependencies
-        run: python -m pip install --upgrade pip python-dateutil requests bs4
-
-      - name: Update Data Volumes
-        run: .github/jobs/docker_update_data_volumes.py
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          docker_name: ${{ secrets.DOCKER_USERNAME }}
+          docker_pass: ${{ secrets.DOCKER_PASSWORD }}
+          repo_name: ${{ github.repository }}
+          data_prefix: sample_data
+          branch_name: ${{ needs.job_control.outputs.branch_name }}
+          docker_data_dir: /data/input/METplus_Data
+          data_repo_dev: metplus-data-dev
+          data_repo_stable: metplus-data
+          use_feature_data: true
 
   use_case_tests:
     name: Use Case Tests

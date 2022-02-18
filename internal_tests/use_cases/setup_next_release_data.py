@@ -18,8 +18,10 @@
 import sys
 import os
 import re
+import shutil
 
-data_dir = '/home/met_test/METplus_Data'
+DATA_DIR = '/home/met_test/METplus_Data'
+VOLUME_MOUNT_FILE = 'volume_mount_directories'
 
 def get_files_from_dir(version_dir, check_dir):
     files = os.listdir(check_dir)
@@ -45,12 +47,29 @@ def get_files_from_dir(version_dir, check_dir):
             print(f"ERROR: Unexpected non-file found: {filepath}")
             return False
 
+        # skip files that have a timestamp of .sav in the name
+        if '.sav' in filename or sum(x.isdigit() for x in filename) > 7:
+            print(f"Skipping file flagged as duplicate: {filename}")
+            continue
+
         linkname = f"{'-'.join(filename.split('-')[0:-1])}.tgz"
         linkpath = os.path.join(version_dir, linkname)
         print(f"Creating symbolic link:\n"
               f"  TO: {filepath}\n  AT: {linkpath}")
         os.symlink(filepath, linkpath)
         found_files = True
+
+    # if found files to link, copy volume_mount_directories file
+    if found_files:
+        print(f"Copying {VOLUME_MOUNT_FILE} from {check_dir} to {version_dir}")
+        from_file = os.path.join(check_dir, VOLUME_MOUNT_FILE)
+        to_file = os.path.join(version_dir, VOLUME_MOUNT_FILE)
+        if not os.path.exists(from_file):
+            print(f"ERROR: {VOLUME_MOUNT_FILE} does not exist in {check_dir}")
+            print(f"Please copy the latest version of this file into {version_dir}")
+            sys.exit(1)
+
+        shutil.copyfile(from_file, to_file)
 
     return found_files
                 
@@ -66,7 +85,7 @@ def main(new_version):
     version = f'v{major}.{minor}'
     print(f"Handling {version}")
 
-    version_dir = os.path.join(data_dir, version)
+    version_dir = os.path.join(DATA_DIR, version)
 
     if not os.path.exists(version_dir):
         print(f"Creating directory: {version_dir}")
@@ -93,7 +112,7 @@ def main(new_version):
         for cur_minor in range(minor_start, -1, -1):
             cur_version = f'v{cur_major}.{cur_minor}'
             print(f"Looking for {cur_version}")
-            check_dir = os.path.join(data_dir, cur_version)
+            check_dir = os.path.join(DATA_DIR, cur_version)
             if os.path.exists(check_dir):
                 if get_files_from_dir(version_dir, check_dir):
                     print("\nSymbolic links created "

@@ -35,6 +35,14 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         'METPLUS_MASK_DICT',
     ]
 
+    # handle deprecated env vars used pre v4.0.0
+    DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
+        'DESC',
+        'DATA_FIELD',
+        'DATA_FILE_TYPE',
+        'VERIF_MASK',
+    ]
+
     def __init__(self, config, instance=None):
         self.app_name = "grid_diag"
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR'),
@@ -81,7 +89,18 @@ class GridDiagWrapper(RuntimeFreqWrapper):
                                                  data_type='FCST',
                                                  met_tool=self.app_name)
 
-        c_dict['MASK_POLY_TEMPLATE'] = self.read_mask_poly()
+        # handle setting VERIF_MASK for old wrapped MET config files
+        self.add_met_config(name='poly',
+                            data_type='list',
+                            env_var_name='METPLUS_VERIF_MASK',
+                            metplus_configs=['GRID_DIAG_MASK_POLY',
+                                             'GRID_DIAG_POLY',
+                                             ('GRID_DIAG_'
+                                              'VERIFICATION_MASK_TEMPLATE')],
+                            extra_args={'allow_empty': True})
+        self.env_var_dict['VERIF_MASK'] = (
+            self.env_var_dict.get('METPLUS_VERIF_MASK', '')
+        )
 
         return c_dict
 
@@ -94,8 +113,8 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         """
         data_dict = self.format_met_config_dict(self.c_dict,
                                                 'data',
-                                                 ['DATA_FILE_TYPE',
-                                                  'DATA_FIELD_FMT'])
+                                                ['DATA_FILE_TYPE',
+                                                 'DATA_FIELD_FMT'])
         self.env_var_dict['METPLUS_DATA_DICT'] = data_dict
 
         # support old method of setting MET config variables
@@ -107,13 +126,6 @@ class GridDiagWrapper(RuntimeFreqWrapper):
 
         self.add_env_var('DESC',
                          self.env_var_dict.get('METPLUS_DESC', ''))
-
-        verif_mask = self.c_dict.get('VERIFICATION_MASK', '')
-        if verif_mask:
-            verif_mask = f'poly = {verif_mask};'
-
-        self.add_env_var('VERIF_MASK',
-                         verif_mask)
 
         super().set_environment_variables(time_info)
 
@@ -173,9 +185,6 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         # get field information to set in MET config
         if not self.set_data_field(time_info):
             return
-
-        # get verification mask if available
-        self.get_verification_mask(time_info)
 
         # get other configurations for command
         self.set_command_line_arguments(time_info)

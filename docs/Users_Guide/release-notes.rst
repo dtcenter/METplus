@@ -39,6 +39,34 @@ describes the bugfix, enhancement, or new feature:
 https://github.com/dtcenter/METplus/issues
 
 
+METplus Version 4.1.0-beta6 Release Notes (2022-02-18)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Enhancements:
+
+  * Add support for setting file_type for fcst/obs for applications that process gridded data (`#1165 <https://github.com/dtcenter/METplus/issues/1165>`_)
+  * Enhance logic for setting mask.poly to allow MET list characters (square braces and semi-colon) (`#966 <https://github.com/dtcenter/METplus/issues/966>`_)
+  * Enhance TCGen wrapper to add support for new configurations (`#1273 <https://github.com/dtcenter/METplus/issues/1273>`_)
+  * Add support for new climo_cdf.direct_prob flag (`#1392 <https://github.com/dtcenter/METplus/issues/1392>`_)
+  * Implement various enhancements to climatology settings (`#1247 <https://github.com/dtcenter/METplus/issues/1247>`_)
+  * Enhance logic to set climatology info for Python embedding (`#944 <https://github.com/dtcenter/METplus/issues/944>`_)
+  * Incorporate basic zonal and meridional means into METplus (`#1230 <https://github.com/dtcenter/METplus/issues/1230>`_)
+  * Add support for explicitly setting file list file paths in wrappers that support multiple input files (`#1289 <https://github.com/dtcenter/METplus/issues/1289>`_)
+  * Add support for setting grid_weight_flag in EnsembleStat (`#1369 <https://github.com/dtcenter/METplus/issues/1369>`_)
+  * Add option to PCPCombine to force using 0 hr accum in subtract mode (`#1368 <https://github.com/dtcenter/METplus/issues/1368>`_)
+  * Fix logic to use fcst dictionary if ens dictionary is not set in EnsembleStat wrapper (`#1421 <https://github.com/dtcenter/METplus/issues/1421>`_)
+  * Fix logic to create instances of other wrappers within wrappers to avoid modifying global configurations (`#1356 <https://github.com/dtcenter/METplus/issues/1356>`_)
+
+* New Use Cases:
+
+  * Precipitation-type comparison across 3 models (`#1408 <https://github.com/dtcenter/METplus/issues/1408>`_)
+  * TC Verification Compare ADECK vs BDECK (`#911 <https://github.com/dtcenter/METplus/issues/911>`_)
+  * Satellite verification of sea surface salinity: AVISO vs RTOFS output HYCOM climo (`#1318 <https://github.com/dtcenter/METplus/issues/1318>`_)
+
+* Internal:
+
+  * Document Continous Integration Functionality in the METplus Contributor's Guide (`#675 <https://github.com/dtcenter/METplus/issues/675>`_)
+
 METplus Version 4.1.0-beta5 Release Notes (2022-01-14)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

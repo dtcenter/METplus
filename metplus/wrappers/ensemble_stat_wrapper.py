@@ -294,6 +294,15 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                             metplus_configs=['ENSEMBLE_STAT_MASK_GRID'],
                             extra_args={'allow_empty': True})
 
+        self.add_met_config(name='poly',
+                            data_type='list',
+                            env_var_name='METPLUS_MASK_POLY',
+                            metplus_configs=['ENSEMBLE_STAT_MASK_POLY',
+                                             'ENSEMBLE_STAT_POLY',
+                                             ('ENSEMBLE_STAT_'
+                                              'VERIFICATION_MASK_TEMPLATE')],
+                            extra_args={'allow_empty': True})
+
         self.add_met_config(name='ci_alpha',
                             data_type='list',
                             extra_args={'remove_quotes': True})
@@ -312,8 +321,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         self.add_met_config_window('obs_window')
         self.handle_obs_window_legacy(c_dict)
-
-        c_dict['MASK_POLY_TEMPLATE'] = self.read_mask_poly()
 
         self.add_met_config(
             name='obs_quality_inc',
@@ -505,11 +512,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                          str(self.c_dict['OBS_WINDOW_BEGIN']))
         self.add_env_var("OBS_WINDOW_END",
                          str(self.c_dict['OBS_WINDOW_END']))
-
-        # read output prefix at this step to ensure that
-        # CURRENT_[FCST/OBS]_[NAME/LEVEL] is substituted correctly
-        self.add_env_var('VERIF_MASK',
-                         self.c_dict.get('VERIFICATION_MASK', ''))
 
         # support old method of setting variables in MET config files
         self.add_env_var('ENS_THRESH',
