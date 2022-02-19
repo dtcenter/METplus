@@ -37,7 +37,7 @@ UserScript_obsPrecip_obsOnly_Hovmoeller.py
 #
 # This use case does not loop but plots the entire time period of data
 # 
-# UserScript
+# 
 # This uses data from 2016-01-01 to 2016-03-31
 #
 #
