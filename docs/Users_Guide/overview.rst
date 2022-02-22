@@ -490,7 +490,7 @@ METplus Components Python Requirements
     - 
     - METplus wrappers
     - https://github.com/pytroll/pyresample
-    - for resampling geospatial:raw-html:`<br />`
+    - for resampling geospatial :raw-html:`<br />`
       image data
     - `GridStat:
       Python Embedding to read and
@@ -633,9 +633,14 @@ METplus Components Python Requirements
     - METcalcpy, :raw-html:`<br />`
       METplotpy
     - https://www.statsmodels.org/
-    - provides classes and functions for the estimation :raw-html:`<br />`
-      of many different statistical models, as well as for :raw-html:`<br />`
-      conducting statistical tests, and statistical data exploration
+    - provides classes and  :raw-html:`<br />`
+      functions for the :raw-html:`<br />`
+      estimation of many :raw-html:`<br />`
+      different statistical :raw-html:`<br />`
+      models, as well as for :raw-html:`<br />`
+      conducting statistical :raw-html:`<br />`
+      tests, and statistical :raw-html:`<br />`
+      data exploration
     - 
   * - xarray
     - >=0.17.0
