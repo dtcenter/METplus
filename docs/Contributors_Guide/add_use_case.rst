@@ -903,15 +903,16 @@ something like this::
 Compare the volume_mount_directories file
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Compare the feature branch file to the develop directory file::
+Compare the feature branch file to the upcoming METplus version directory file::
 
-    diff ${METPLUS_FEATURE_BRANCH}/volume_mount_directories develop/volume_mount_directories
+    diff ${METPLUS_FEATURE_BRANCH}/volume_mount_directories ${METPLUS_VERSION}/volume_mount_directories
 
 **ONLY RUN THE COMMAND THAT IS APPROPRIATE TO YOUR USE CASE. READ CAREFULLY!**
 
 **CONDITION 1: IF there is a new entry or change in the feature version**,
-copy the feature file into the develop directory::
+copy the feature file into the upcoming METplus version directory and the develop directory::
 
+    cp ${METPLUS_FEATURE_BRANCH}/volume_mount_directories ${METPLUS_VERSION}/volume_mount_directories
     cp ${METPLUS_FEATURE_BRANCH}/volume_mount_directories develop/volume_mount_directories
 
 Copy data from the feature directory into the next version directory
