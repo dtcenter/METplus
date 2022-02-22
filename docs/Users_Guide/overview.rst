@@ -575,24 +575,28 @@ METplus Components Python Requirements
       implementations written  :raw-html:`<br />`
       in low-level languages :raw-html:`<br />`
       like Fortran, C, and C++
-    - `??? Blocking Calculation:
-      RegridDataPlane, PcpCombine, and Blocking python code
-      (scipy)
+    - `Blocking Calculation:
+      ERA RegridDataPlane,
+      PcpCombine,
+      and Blocking python code
+     (scipy)
       <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_Blocking.html>`_ :raw-html:`<br />`
       `WeatherRegime Calculation:
       RegridDataPlane, PcpCombine, and WeatherRegime python code
       (scipy)
       <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime.html>`_ :raw-html:`<br />`
-      `??? UserScript:
+      `UserScript:
       Make OMI plot from calculated MJO indices
-      (scipy)
+      (obs only) (scipy)
       <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_OMI.html>`_ :raw-html:`<br />`
       `WeatherRegime Calculation:
       GFS and ERA RegridDataPlane, PcpCombine, and WeatherRegime python code
       (scipy)
       <../generated/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.html>`_ :raw-html:`<br />`
-      `?? Blocking Calculation:
-      RegridDataPlane, PcpCombine, and Blocking python code
+      `Blocking Calculation:
+      GFS and ERA RegridDataPlane,
+      PcpCombine, and
+      Blocking python code
       (scipy)
       <../generated/model_applications/s2s/UserScript_fcstGFS_obsERA_Blocking.html>`_ :raw-html:`<br />`
       `UserScript:
