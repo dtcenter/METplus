@@ -628,25 +628,48 @@ METplus Components Python Requirements
       GFS and ERA RegridDataPlane, PcpCombine, and WeatherRegime python code
       (sklearn)
       <../generated/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.html>`_
-  * -
-    -
-    -
-    -
-    -
-    -         
-  * -
-    -
-    -
-    -
-    -
-    -         
-  * -
-    -
-    -
-    -
-    -
-    -  
-
+  * - statsmodels
+    - >=0.11.1
+    - METcalcpy, :raw-html:`<br />`
+      METplotpy
+    - https://www.statsmodels.org/
+    - provides classes and functions for the estimation :raw-html:`<br />`
+      of many different statistical models, as well as for :raw-html:`<br />`
+      conducting statistical tests, and statistical data exploration
+    - 
+  * - xarray
+    - >=0.17.0
+    - METplus wrappers, :raw-html:`<br />`
+      METcalcpy, :raw-html:`<br />`
+      METplotpy
+    - https://xarray.pydata.org/en/v0.17.0/
+    - makes working with :raw-html:`<br />`
+      labelled :raw-html:`<br />`
+      multi-dimensional arrays :raw-html:`<br />`
+      simple, efficient, :raw-html:`<br />`
+      and fun
+    - For using MET Python embedding functionality in use cases
+  * - xesmf
+    - 
+    - METplus wrappers
+    - NOTE: The xesmf package :raw-html:`<br />`
+      will not be installed :raw-html:`<br />`
+      on WCOSS2 and there is :raw-html:`<br />`
+      an open GitHub issue to :raw-html:`<br />`
+      replace the package in :raw-html:`<br />`
+      the use case that uses it: :raw-html:`<br />`
+      https://github.com/dtcenter/METplus/issues/1314
+    - for regridding
+    - PlotDataPlane: Python Embedding of tripolar coordinate file (zesmf)
+  * - yaml
+    - 
+    - METcalcpy, :raw-html:`<br />`
+      METplotpy
+    - https://pypi.org/project/PyYAML/
+    - to load, read, and write :raw-html:`<br />`
+      YAML files with PyYAML
+    - 
+  
     
 .. _release-notes:
 
