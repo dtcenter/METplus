@@ -15,6 +15,7 @@ If **yes**, describe the new output and/or changes to the existing output:</br>
 
 ## Pull Request Checklist ##
 See the [METplus Workflow](https://metplus.readthedocs.io/en/latest/Contributors_Guide/github_workflow.html) for details.
+- [ ] Review the source issue metadata (required labels, projects, and milestone).
 - [ ] Complete the PR definition above.
 - [ ] Ensure the PR title matches the feature or bugfix branch name.
 - [ ] Define the PR metadata, as permissions allow.
