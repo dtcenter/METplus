@@ -121,7 +121,7 @@ METplus Components Python Requirements
     -
   * - Python 3.7
     -
-    - METplus wrappers,
+    - METplus wrappers
     -
     -
     - `Multi_Tool:
