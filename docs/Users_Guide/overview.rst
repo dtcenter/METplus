@@ -512,6 +512,16 @@ METplus Components Python Requirements
       using level 3, 8 day mean obs
       (pyresample)
       <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.html>`_
+  * - pytest
+    - >=5.2.1
+    - METcalcpy, :raw-html:`<br />`
+      METplotpy
+    - https://github.com/pytest-dev/pytest/archive/5.2.1.tar.gz
+    - a mature full-featured :raw-html:`<br />`
+      Python testing tool that :raw-html:`<br />`
+      helps you write better :raw-html:`<br />`
+      programs
+    -       
   * - python-kaleido
     - >=0.2.1
     - METcalcpy, METplotpy
