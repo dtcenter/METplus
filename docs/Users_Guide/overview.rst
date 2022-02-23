@@ -675,7 +675,9 @@ METplus Components Python Requirements
       the use case that uses it: :raw-html:`<br />`
       https://github.com/dtcenter/METplus/issues/1314
     - for regridding
-    - PlotDataPlane: Python Embedding of tripolar coordinate file (zesmf)
+    - `PlotDataPlane: Python Embedding of tripolar coordinate file 
+       (zesmf)
+       <../generated/model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar.html>`_
   * - yaml
     - 
     - METcalcpy, :raw-html:`<br />`
