@@ -433,8 +433,7 @@ METplus Components Python Requirements
     - 
   * - pygrib
     - 
-    - METplus :raw-html:`<br />`
-      wrappers
+    - METplus  wrappers
     - https://github.com/jswhit/pygrib
     - for reading/writing :raw-html:`<br />`
       GRIB files
@@ -524,7 +523,8 @@ METplus Components Python Requirements
     -       
   * - python-kaleido
     - >=0.2.1
-    - METcalcpy, METplotpy
+    - METcalcpy, :raw-html:`<br />`
+      METplotpy
     - https://pypi.org/project/kaleido/
     - provides a low-level :raw-html:`<br />`
       Python API that is :raw-html:`<br />`
