@@ -484,7 +484,7 @@ METplus Components Python Requirements
       Python Embedding to read
       and process ice cover
       (pyproj)
-      <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsOSTIA_iceCover.html#>`_
+      <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsOSTIA_iceCover.html>`_
   * - pyresample
     - 
     - METplus wrappers
@@ -675,9 +675,11 @@ METplus Components Python Requirements
       the use case that uses it: :raw-html:`<br />`
       https://github.com/dtcenter/METplus/issues/1314
     - for regridding
-    - `PlotDataPlane: Python Embedding of tripolar coordinate file 
-       (zesmf)
-       <../generated/model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar.html>`_
+    - `PlotDataPlane:
+      Python Embedding of
+      tripolar coordinate file
+      (xesmf)
+      <../generated/model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar.html>`_
   * - yaml
     - 
     - METcalcpy, :raw-html:`<br />`
