@@ -477,9 +477,9 @@ METplus Components Python Requirements
     - 2.3.1
     - METplus wrappers
     - https://github.com/pyproj4/pyproj/archive/v2.3.1rel.tar.gz
-    - a pure-Python MySQL :raw-html:`<br />`
-      client library, :raw-html:`<br />`
-      based on PEP 249
+    - Python interface to PROJ :raw-html:`<br />`
+      (cartographic projections and  :raw-html:`<br />`
+      coordinate transformations library)
     - `GridStat:
       Python Embedding to read
       and process ice cover
