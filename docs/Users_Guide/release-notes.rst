@@ -56,7 +56,9 @@ METplus Version 4.1.0-beta6 Release Notes (2022-02-18)
   * Add option to PCPCombine to force using 0 hr accum in subtract mode (`#1368 <https://github.com/dtcenter/METplus/issues/1368>`_)
   * Fix logic to use fcst dictionary if ens dictionary is not set in EnsembleStat wrapper (`#1421 <https://github.com/dtcenter/METplus/issues/1421>`_)
   * Fix logic to create instances of other wrappers within wrappers to avoid modifying global configurations (`#1356 <https://github.com/dtcenter/METplus/issues/1356>`_)
-
+  * Remove support for PB2NC_OBS_PREPBUFR_MAP (`#1431 <https://github.com/dtcenter/METplus/issues/1431>`_)
+    
+    
 * New Use Cases:
 
   * Precipitation-type comparison across 3 models (`#1408 <https://github.com/dtcenter/METplus/issues/1408>`_)
