@@ -44,8 +44,8 @@ METplus Version 4.1.0-beta6 Release Notes (2022-02-25)
 
 * Enhancements:
 
-  * Add support for setting file_type for fcst/obs for applications that process gridded data (`#1165 <https://github.com/dtcenter/METplus/issues/1165>`_)
-  * Enhance logic for setting mask.poly to allow MET list characters (square braces and semi-colon) (`#966 <https://github.com/dtcenter/METplus/issues/966>`_)
+  * **Add support for setting file_type for fcst/obs for applications that process gridded data** (`#1165 <https://github.com/dtcenter/METplus/issues/1165>`_)
+  * **Enhance logic for setting mask.poly to allow MET list characters (square braces and semi-colon)** (`#966 <https://github.com/dtcenter/METplus/issues/966>`_)
   * Enhance TCGen wrapper to add support for new configurations (`#1273 <https://github.com/dtcenter/METplus/issues/1273>`_)
   * Add support for new climo_cdf.direct_prob flag (`#1392 <https://github.com/dtcenter/METplus/issues/1392>`_)
   * Implement various enhancements to climatology settings (`#1247 <https://github.com/dtcenter/METplus/issues/1247>`_)
