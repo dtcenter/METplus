@@ -42,7 +42,7 @@ https://github.com/dtcenter/METplus/issues
 METplus Version 4.1.0-beta6 Release Notes (2022-02-25)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* Enhancements:
+* Enhancements: 
 
   * **Add support for setting file_type for fcst/obs for applications that process gridded data** (`#1165 <https://github.com/dtcenter/METplus/issues/1165>`_)
   * **Enhance logic for setting mask.poly to allow MET list characters (square braces and semi-colon)** (`#966 <https://github.com/dtcenter/METplus/issues/966>`_)
