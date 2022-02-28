@@ -74,6 +74,10 @@ class TCGenWrapper(CommandBuilder):
                     'ctc',
                     'cts',
                     'genmpr',
+                    'pct',
+                    'pstd',
+                    'pjc',
+                    'prc',
                     ]
 
     NC_PAIRS_FLAGS = ['latlon',
