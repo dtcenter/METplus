@@ -417,11 +417,11 @@ METplus Components Python Requirements
   * - pint
     - >=0.18
     - METcalcpy
-    - I/O
     - https://github.com/hgrecco/pint
     - converting between units :raw-html:`<br />`
       for METcalcpy vertical :raw-html:`<br />`
       interpolation
+    -
   * - plotly
     - >=4.9.0
     - METcalcpy, :raw-html:`<br />`
