@@ -70,26 +70,28 @@ class TCGenWrapper(CommandBuilder):
         'METPLUS_GENESIS_MATCH_WINDOW_DICT',
     ]
 
-    OUTPUT_FLAGS = ['fho',
-                    'ctc',
-                    'cts',
-                    'genmpr',
-                    'pct',
-                    'pstd',
-                    'pjc',
-                    'prc',
-                    ]
+    OUTPUT_FLAGS = [
+        'fho',
+        'ctc',
+        'cts',
+        'pct',
+        'pstd',
+        'pjc',
+        'prc',
+        'genmpr',
+    ]
 
-    NC_PAIRS_FLAGS = ['latlon',
-                      'fcst_genesis',
-                      'fcst_tracks',
-                      'fcst_fy_oy',
-                      'fcst_fy_on',
-                      'best_genesis',
-                      'best_tracks',
-                      'best_fy_oy',
-                      'best_fn_oy',
-                    ]
+    NC_PAIRS_FLAGS = [
+        'latlon',
+        'fcst_genesis',
+        'fcst_tracks',
+        'fcst_fy_oy',
+        'fcst_fy_on',
+        'best_genesis',
+        'best_tracks',
+        'best_fy_oy',
+        'best_fn_oy',
+    ]
 
 
     def __init__(self, config, instance=None):

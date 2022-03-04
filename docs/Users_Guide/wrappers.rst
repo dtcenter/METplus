@@ -7000,6 +7000,10 @@ METplus Configuration
 | :term:`TC_GEN_OUTPUT_FLAG_FHO`
 | :term:`TC_GEN_OUTPUT_FLAG_CTC`
 | :term:`TC_GEN_OUTPUT_FLAG_CTS`
+| :term:`TC_GEN_OUTPUT_FLAG_PCT`
+| :term:`TC_GEN_OUTPUT_FLAG_PSTD`
+| :term:`TC_GEN_OUTPUT_FLAG_PJC`
+| :term:`TC_GEN_OUTPUT_FLAG_PRC`
 | :term:`TC_GEN_OUTPUT_FLAG_GENMPR`
 | :term:`TC_GEN_NC_PAIRS_FLAG_LATLON`
 | :term:`TC_GEN_NC_PAIRS_FLAG_FCST_GENESIS`
@@ -7443,6 +7447,14 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - output_flag.ctc
    * - :term:`TC_GEN_OUTPUT_FLAG_CTS`
      - output_flag.cts
+   * - :term:`TC_GEN_OUTPUT_FLAG_PCT`
+     - output_flag.pct
+   * - :term:`TC_GEN_OUTPUT_FLAG_PSTD`
+     - output_flag.pstd
+   * - :term:`TC_GEN_OUTPUT_FLAG_PJC`
+     - output_flag.pjc
+   * - :term:`TC_GEN_OUTPUT_FLAG_PRC`
+     - output_flag.prc
    * - :term:`TC_GEN_OUTPUT_FLAG_GENMPR`
      - output_flag.genmpr
 
