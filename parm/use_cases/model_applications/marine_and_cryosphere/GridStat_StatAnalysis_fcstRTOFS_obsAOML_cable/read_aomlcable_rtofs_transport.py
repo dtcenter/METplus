@@ -7,24 +7,27 @@ from netCDF4 import Dataset
 import numpy as np
 from pyproj import Geod
 import math
+from sklearn.metrics import mean_squared_error
 from datetime import datetime, timedelta
 import pandas as pd
 import sys, os
 
 # global subdirectories (will be env vars in next release)
-refDir='/d1/biswas/feature_cable'
-DCOMDir='/d1/biswas/feature_cable'
-archDir='/d1/biswas/feature_cable/rtofs-cable'
+refDir='/Volumes/d1/biswas/NCAR_PROJECTS/METplus/use_cases/cable/feature_cable'
+DCOMDir='/Volumes/d1/biswas/NCAR_PROJECTS/METplus/use_cases/cable/feature_cable'
+archDir='/Volumes/d1/biswas/NCAR_PROJECTS/METplus/use_cases/cable/feature_cable/rtofs-cable'
 
 if len(sys.argv) < 5:
-    print("Must specify the following elements: rtofs_u, rtofs_v, cable_file, eightmile_file, valid_date")
+    print("Must specify the following elements: rtofsdir, cable_file, eightmile_file, valid_date, forecast_lead")
     sys.exit(1)
 
-rtofsfile_u = os.path.expandvars(sys.argv[1]) 
-rtofsfile_v = os.path.expandvars(sys.argv[2]) 
-cablefile = os.path.expandvars(sys.argv[3]) 
-eightmilefile = os.path.expandvars(sys.argv[4]) 
-vDate=datetime.strptime(sys.argv[5],'%Y%m%d')
+#rtofsfile_u = os.path.expandvars(sys.argv[1]) 
+#rtofsfile_v = os.path.expandvars(sys.argv[2]) 
+rtofsdir = os.path.expandvars(sys.argv[1]) 
+cablefile = os.path.expandvars(sys.argv[2]) 
+eightmilefile = os.path.expandvars(sys.argv[3]) 
+vDate=datetime.strptime(sys.argv[4],'%Y%m%d')
+fcst=int(sys.argv[5])
 
 print('Starting Cable V&V at',datetime.now(),'for',vDate)
 
@@ -49,10 +52,6 @@ cable['error']=2.0
 del cable['year'], cable['month'], cable['day'], cable['date']
 print(cable)
 
-print(rtofsfile_u)
-fcst=rtofsfile_u.split('/')[-1].split("_")[3].split("f")[1].strip("0")
-fcst=int(fcst)
-
 #-----------------------------------------------
 # full cross-section transport calculation
 #-----------------------------------------------
@@ -62,10 +61,7 @@ def calc_transport(dates,fcst):
     This extracts the section and integrates the flow through it.
     """
     transport=[]
-#MKB    if fcst==0:
-#MKB        fcst_str='n024'
-#MKB    else:
-#MKB        fcst_str='f{:03d}'.format(fcst)
+    fcst_str='f{:03d}'.format(fcst)
     cable_loc=np.loadtxt(eightmilefile,dtype='int',usecols=(0,1))
     eightmile_lat = 26.5167
     eightmile_lon = -78.7833%360
@@ -79,21 +75,14 @@ def calc_transport(dates,fcst):
         print('processing',date.strftime('%Y%m%d'),'fcst',fcst)
 #MKB Does this means it needs files from -24 hr?
         rundate=date-timedelta(fcst/24.)  # calc rundate from fcst and date
-#MKB        ufile=archDir+'/'+rundate.strftime('%Y%m%d')+'/rtofs_glo_3dz_'+fcst_str+'_daily_3zuio.nc'
-#MKB        vfile=archDir+'/'+rundate.strftime('%Y%m%d')+'/rtofs_glo_3dz_'+fcst_str+'_daily_3zvio.nc'
-#MKB        ufile='rtofsfile_u'
-#MKB        vfile='rtofsfile_v'
+        ufile=rtofsdir+'/'+rundate.strftime('%Y%m%d')+'/rtofs_glo_3dz_'+fcst_str+'_daily_3zuio.nc'
+        vfile=rtofsdir+'/'+rundate.strftime('%Y%m%d')+'/rtofs_glo_3dz_'+fcst_str+'_daily_3zvio.nc'
 
-#MKB        print(ufile)
-#MKB        print(vfile)
+        print(ufile)
+        print(vfile)
 
-#MKB        try:
-        udata=Dataset(rtofsfile_u)
-        vdata=Dataset(rtofsfile_v)
-#MKB        except:
-#MKB            print(rundate,fcst,'not found -- continuing')
-#MKB            transport.append(np.nan)
-#MKB            continue
+        udata=Dataset(ufile)
+        vdata=Dataset(vfile)
 
         lon=udata['Longitude'][:]
         lat=udata['Latitude'][:]
@@ -177,7 +166,7 @@ def bias(both,fcst):
 
 
 
-want_date=datetime.strptime(sys.argv[5],'%Y%m%d')
+want_date=datetime.strptime(sys.argv[4],'%Y%m%d')
 print('WANT DATE :', want_date)
 DateSet=True
 
@@ -194,7 +183,7 @@ for end_date in pd.date_range(start_date,stop_date):
 both=pd.merge(cable,model,left_index=True,right_index=True,how='inner')
 print("both :", both)
 both=both[both.index.max()-timedelta(3):]
-fcst=both.dropna(inplace=True)
+#fcst=both.dropna(inplace=True)
      
 print('BOTH :',both)
 print('BOTH(FCST) :',both[fcst])
