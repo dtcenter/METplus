@@ -268,6 +268,11 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_OUTPUT_FLAG_ORANK`
 | :term:`ENSEMBLE_STAT_OUTPUT_FLAG_SSVAR`
 | :term:`ENSEMBLE_STAT_OUTPUT_FLAG_RELP`
+| :term:`ENSEMBLE_STAT_OUTPUT_FLAG_PCT`
+| :term:`ENSEMBLE_STAT_OUTPUT_FLAG_PSTD`
+| :term:`ENSEMBLE_STAT_OUTPUT_FLAG_PJC`
+| :term:`ENSEMBLE_STAT_OUTPUT_FLAG_PRC`
+| :term:`ENSEMBLE_STAT_OUTPUT_FLAG_ECLV`
 | :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_LATLON`
 | :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_MEAN`
 | :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_STDEV`
@@ -288,6 +293,8 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_ENS_MEMBER_IDS`
 | :term:`ENSEMBLE_STAT_CONTROL_ID`
 | :term:`ENSEMBLE_STAT_GRID_WEIGHT_FLAG`
+| :term:`ENSEMBLE_STAT_PROB_PCT_THRESH`
+| :term:`ENSEMBLE_STAT_ECLV_POINTS`
 | :term:`ENSEMBLE_STAT_VERIFICATION_MASK_TEMPLATE` (optional)
 | :term:`ENS_VAR<n>_NAME` (optional)
 | :term:`ENS_VAR<n>_LEVELS` (optional)
@@ -506,6 +513,28 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - nmep_smooth.type.method
    * - :term:`ENSEMBLE_STAT_NMEP_SMOOTH_WIDTH`
      - nmep_smooth.type.width
+
+**${METPLUS_PROB_PCT_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_PROB_PCT_THRESH`
+     - prob_pct_thresh
+
+**${METPLUS_ECLV_POINTS}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_ECLV_POINTS`
+     - eclv_points
 
 **${METPLUS_FCST_FILE_TYPE}**
 
@@ -795,6 +824,16 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - output_flag.ssvar
    * - :term:`ENSEMBLE_STAT_OUTPUT_FLAG_RELP`
      - output_flag.relp
+   * - :term:`ENSEMBLE_STAT_OUTPUT_FLAG_PCT`
+     - output_flag.pct
+   * - :term:`ENSEMBLE_STAT_OUTPUT_FLAG_PSTD`
+     - output_flag.pstd
+   * - :term:`ENSEMBLE_STAT_OUTPUT_FLAG_PJC`
+     - output_flag.pjc
+   * - :term:`ENSEMBLE_STAT_OUTPUT_FLAG_PRC`
+     - output_flag.prc
+   * - :term:`ENSEMBLE_STAT_OUTPUT_FLAG_ECLV`
+     - output_flag.eclv
 
 **${METPLUS_ENSEMBLE_FLAG_DICT}**
 

@@ -5716,6 +5716,31 @@ METplus Configuration Glossary
 
      | *Used by:*  EnsembleStat
 
+   ENSEMBLE_STAT_OUTPUT_FLAG_PCT
+     Specify the value for 'output_flag.pct' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OUTPUT_FLAG_PSTD
+     Specify the value for 'output_flag.pstd' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OUTPUT_FLAG_PJC
+     Specify the value for 'output_flag.pjc' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OUTPUT_FLAG_PRC
+     Specify the value for 'output_flag.prc' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OUTPUT_FLAG_ECLV
+     Specify the value for 'output_flag.eclv' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
    ENSEMBLE_STAT_ENSEMBLE_FLAG_LATLON
      Specify the value for 'ensemble_flag.latlon' in the MET configuration file for EnsembleStat.
 
@@ -9110,3 +9135,13 @@ METplus Configuration Glossary
      Specify the value for 'climo_cdf.direct_prob' in the MET configuration file for SeriesAnalysis.
 
      | *Used by:* SeriesAnalysis
+
+   ENSEMBLE_STAT_PROB_PCT_THRESH
+     Specify the value for 'prob_pct_thresh' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_ECLV_POINTS
+     Specify the value for 'eclv_points' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
