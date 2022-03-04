@@ -1000,7 +1000,7 @@ class CommandBuilder:
                                         **time_info)
 
         # replace wildcard character * with all
-        output_path = output_path.replace('*', 'all')
+        output_path.replace('*', 'all')
 
         skip_if_output_exists = self.c_dict.get('SKIP_IF_OUTPUT_EXISTS', False)
 
