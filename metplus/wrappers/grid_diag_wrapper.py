@@ -61,6 +61,8 @@ class GridDiagWrapper(RuntimeFreqWrapper):
 
         c_dict['INPUT_DIR'] = self.config.getdir('GRID_DIAG_INPUT_DIR', '')
         self.get_input_templates(c_dict)
+
+        # error if no input templates are set
         if not c_dict['TEMPLATE_DICT']:
             self.log_error('Must set GRID_DIAG_INPUT_TEMPLATE to run')
 
