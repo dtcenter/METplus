@@ -414,6 +414,12 @@ METplus Components Python Requirements
       Python programming :raw-html:`<br />`
       language
     - For using MET Python embedding functionality in use cases
+  * - pint
+    - >=0.18
+    - METcalcpy
+    - I/O
+    - https://github.com/hgrecco/pinthttps://pint.readthedocs.io/en/stable/
+    - converting between units
   * - plotly
     - >=4.9.0
     - METcalcpy, :raw-html:`<br />`
