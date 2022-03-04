@@ -418,9 +418,9 @@ METplus Components Python Requirements
     - >=0.18
     - METcalcpy
     - https://github.com/hgrecco/pint
-    - converting between units :raw-html:`<br />`
-      for METcalcpy vertical :raw-html:`<br />`
-      interpolation
+    - Python package to define, :raw-html:`<br />`
+      operate and manipulate :raw-html:`<br />`
+      physical quantities
     -
   * - plotly
     - >=4.9.0
