@@ -6453,6 +6453,7 @@ configuration file for running with LOOP_ORDER = times:
 | :term:`LINE_TYPE_LIST`
 | :term:`STAT_ANALYSIS_SKIP_IF_OUTPUT_EXISTS`
 | :term:`STAT_ANALYSIS_HSS_EC_VALUE`
+| :term:`STAT_ANALYSIS_OUTPUT_TEMPLATE`
 |
 
 The following values **must** be defined in the METplus Wrappers
@@ -6490,6 +6491,7 @@ file for running with LOOP_ORDER = processes:
 | :term:`COV_THRESH_LIST`
 | :term:`ALPHA_LIST`
 | :term:`STAT_ANALYSIS_HSS_EC_VALUE`
+| :term:`STAT_ANALYSIS_OUTPUT_TEMPLATE`
 |
 
 .. warning:: **DEPRECATED:**
