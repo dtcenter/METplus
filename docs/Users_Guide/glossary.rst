@@ -9110,3 +9110,8 @@ METplus Configuration Glossary
      Specify the value for 'climo_cdf.direct_prob' in the MET configuration file for SeriesAnalysis.
 
      | *Used by:* SeriesAnalysis
+
+   GEN_ENS_PROD_NORMALIZE
+     Specify the value for 'normalize' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd

@@ -342,12 +342,16 @@ def set_minimum_config_settings(config):
                      'type = [{method = GAUSSIAN;width = 1;}];}'
              )
          }),
-
+        # 59
         ({'GEN_ENS_PROD_ENS_MEMBER_IDS': '1,2,3,4', },
          {'METPLUS_ENS_MEMBER_IDS': 'ens_member_ids = ["1", "2", "3", "4"];'}),
-
+        # 60
         ({'GEN_ENS_PROD_CONTROL_ID': '0', },
          {'METPLUS_CONTROL_ID': 'control_id = "0";'}),
+        # 61
+        ({'GEN_ENS_PROD_NORMALIZE': 'CLIMO_STD_ANOM', },
+         {'METPLUS_NORMALIZE': 'normalize = CLIMO_STD_ANOM;'}),
+
     ]
 )
 def test_gen_ens_prod_single_field(metplus_config, config_overrides,

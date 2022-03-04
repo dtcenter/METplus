@@ -32,6 +32,7 @@ class GenEnsProdWrapper(LoopTimesWrapper):
         'METPLUS_ENSEMBLE_FLAG_DICT',
         'METPLUS_ENS_MEMBER_IDS',
         'METPLUS_CONTROL_ID',
+        'METPLUS_NORMALIZE',
     ]
 
     ENSEMBLE_FLAGS = [
@@ -165,6 +166,11 @@ class GenEnsProdWrapper(LoopTimesWrapper):
                             data_type='float',
                             metplus_configs=['GEN_ENS_PROD_VLD_THRESH',
                                              'GEN_ENS_PROD_ENS_VLD_THRESH'],
+                            )
+
+        self.add_met_config(name='normalize',
+                            data_type='string',
+                            extra_args={'remove_quotes': True},
                             )
 
         # parse var list for ENS fields
