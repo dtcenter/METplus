@@ -211,14 +211,14 @@ use case OR category directory for a model_applications use case
 
     * Update the list of External Dependencies (if applicable) to include any
       required Python packages.  Update the
-      `METplus  Components Python Requirements <https://docs.google.com/spreadsheets/d/1Lf-yxZBXTTnBaqCOWUk-jdP9RpaLfil_s-KKH29CkKU/edit#gid=0>`_
-      spreadsheet.  If the package is already listed in the spreadsheet, add
+      `METplus Components Python Requirements <https://metplus.readthedocs.io/en/develop/Users_Guide/overview.html#metplus-components-python-requirements>`_
+      table.  If the package is already listed in the spreadsheet, add
       a link to the documentation page for this new use case, following the
-      format in the spreadsheet.  If the package is not already listed, update
-      the spreadsheet to include the name of the required package, the version,
+      format in the table.  If the package is not already listed, update
+      the table to include the name of the required package, the version,
       the METplus component (e.g. METplus wrappers, METcalcpy, METplotpy), the
-      source, a brief description, and a link to this new use case that uses
-      this new Python package.
+      source, a brief description of the package, and a link to this new use
+      case that uses this new Python package.
       
     * Update the list of tools used in the METplus Components section.
 
