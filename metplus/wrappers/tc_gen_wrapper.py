@@ -412,14 +412,19 @@ class TCGenWrapper(CommandBuilder):
 
         # get genesis, edeck, and/or shape file(s) or directory
         for file_type in ('genesis', 'edeck', 'shape'):
+
+            # skip if template is not set for input type
             if not self.c_dict.get(f'{file_type.upper()}_INPUT_TEMPLATE'):
                 continue
+
             file_list = self.find_data(time_info,
                                        data_type=file_type.upper(),
                                        return_list=True,
                                        allow_dir=True)
+
+            # if template was provided but no files were found, skip run
             if not file_list:
-                continue
+                return False
 
             list_filename = f"{time_info['init_fmt']}_tc_gen_{file_type}.txt"
             self.c_dict[f'{file_type.upper()}_FILE'] = (
