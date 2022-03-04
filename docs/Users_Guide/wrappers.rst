@@ -8268,6 +8268,7 @@ METplus Configuration
 
 | :term:`TC_STAT_LOOKIN_DIR`
 | :term:`TC_STAT_OUTPUT_DIR`
+| :term:`TC_STAT_OUTPUT_TEMPLATE` (optional)
 | :term:`TC_STAT_CONFIG_FILE`
 | :term:`TC_STAT_JOB_ARGS`
 | :term:`TC_STAT_AMODEL`
