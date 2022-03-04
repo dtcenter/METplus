@@ -58,6 +58,8 @@ class MODEWrapper(CompareGriddedWrapper):
         'METPLUS_INTEREST_FUNCTION_CONVEX_HULL_DIST',
         'METPLUS_PS_PLOT_FLAG',
         'METPLUS_CT_STATS_FLAG',
+        'METPLUS_FCST_FILE_TYPE',
+        'METPLUS_OBS_FILE_TYPE',
     ]
 
     # handle deprecated env vars used pre v4.0.0
@@ -358,6 +360,23 @@ class MODEWrapper(CompareGriddedWrapper):
         self.add_met_config(name='ct_stats_flag',
                             data_type='bool')
 
+        self.add_met_config(name='file_type',
+                            data_type='string',
+                            env_var_name='FCST_FILE_TYPE',
+                            metplus_configs=['MODE_FCST_FILE_TYPE',
+                                             'FCST_MODE_FILE_TYPE',
+                                             'MODE_FILE_TYPE'],
+                            extra_args={'remove_quotes': True,
+                                        'uppercase': True})
+
+        self.add_met_config(name='file_type',
+                            data_type='string',
+                            env_var_name='OBS_FILE_TYPE',
+                            metplus_configs=['MODE_OBS_FILE_TYPE',
+                                             'OBS_MODE_FILE_TYPE',
+                                             'MODE_FILE_TYPE'],
+                            extra_args={'remove_quotes': True,
+                                        'uppercase': True})
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False
 
@@ -381,6 +400,9 @@ class MODEWrapper(CompareGriddedWrapper):
         self.env_var_dict['VERIF_MASK'] = (
             self.get_env_var_value('METPLUS_VERIF_MASK').strip('[]')
         )
+
+
+
 
         return c_dict
 

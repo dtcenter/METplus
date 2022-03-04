@@ -139,6 +139,31 @@ Push
         paths-ignore:
           - 'docs/**'
 
+      pull_request:
+        types: [opened, synchronize, reopened]
+        branches:
+          - develop
+          - 'main_*'
+        paths-ignore:
+          - 'docs/**'
+
+      workflow_dispatch:
+        inputs:
+          repository:
+            description: 'Repository that triggered workflow'
+            required: true
+          sha:
+            description: 'Commit hash that triggered the event'
+            required: true
+          ref:
+            description: 'Branch that triggered event'
+            required: true
+          actor:
+            description: 'User that triggered the event'
+          pusher_email:
+            description: 'Email address of user who triggered push event'
+
+
 This configuration tells GitHub Actions to trigger the workflow when changes
 are pushed to the repository and the following criteria are met:
 

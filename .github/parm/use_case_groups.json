@@ -65,6 +65,11 @@
     "run": false
   },
   {
+    "category": "marine_and_cryosphere",
+    "index_list": "5",
+    "run": false
+  },
+  {
     "category": "medium_range",
     "index_list": "0",
     "run": false
@@ -177,6 +182,11 @@
   {
     "category": "tc_and_extra_tc",
     "index_list": "3",
+    "run": false
+  },
+  {
+    "category": "tc_and_extra_tc",
+    "index_list": "4",
     "run": false
   }
 ]

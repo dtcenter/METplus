@@ -306,6 +306,10 @@ def set_minimum_config_settings(config):
          {'METPLUS_PS_PLOT_FLAG': 'ps_plot_flag = TRUE;'}),
         ({'MODE_CT_STATS_FLAG': 'True', },
          {'METPLUS_CT_STATS_FLAG': 'ct_stats_flag = TRUE;'}),
+        ({'MODE_FCST_FILE_TYPE': 'NETCDF_PINT', },
+         {'METPLUS_FCST_FILE_TYPE': 'file_type = NETCDF_PINT;'}),
+        ({'MODE_OBS_FILE_TYPE': 'NETCDF_PINT', },
+         {'METPLUS_OBS_FILE_TYPE': 'file_type = NETCDF_PINT;'}),
     ]
 )
 def test_mode_single_field(metplus_config, config_overrides,
