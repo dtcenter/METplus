@@ -68,7 +68,7 @@ class GridDiagWrapper(RuntimeFreqWrapper):
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('GRID_DIAG_OUTPUT_DIR', '')
         c_dict['OUTPUT_TEMPLATE'] = (
-            self.config.getraw('filename_templates',
+            self.config.getraw('config',
                                'GRID_DIAG_OUTPUT_TEMPLATE')
         )
 
