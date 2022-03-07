@@ -71,6 +71,11 @@ ${METPLUS_NBRHD_PROB_DICT}
 //
 ${METPLUS_NMEP_SMOOTH_DICT}
 
+////////////////////////////////////////////////////////////////////////////////
+
+//prob_cat_thresh =
+${METPLUS_PROB_CAT_THRESH}
+
 //prob_pct_thresh =
 ${METPLUS_PROB_PCT_THRESH}
 

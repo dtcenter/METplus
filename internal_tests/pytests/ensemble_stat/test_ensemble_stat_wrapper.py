@@ -655,6 +655,9 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
         ({'ENSEMBLE_STAT_GRID_WEIGHT_FLAG': 'COS_LAT', },
          {'METPLUS_GRID_WEIGHT_FLAG': 'grid_weight_flag = COS_LAT;'}),
 
+        ({'ENSEMBLE_STAT_PROB_CAT_THRESH': '<=0.25', },
+         {'METPLUS_PROB_CAT_THRESH': 'prob_cat_thresh = [<=0.25];'}),
+
         ({'ENSEMBLE_STAT_PROB_PCT_THRESH': '==0.25', },
          {'METPLUS_PROB_PCT_THRESH': 'prob_pct_thresh = [==0.25];'}),
 

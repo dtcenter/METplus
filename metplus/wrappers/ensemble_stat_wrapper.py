@@ -67,6 +67,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'METPLUS_ENS_MEMBER_IDS',
         'METPLUS_CONTROL_ID',
         'METPLUS_GRID_WEIGHT_FLAG',
+        'METPLUS_PROB_CAT_THRESH',
         'METPLUS_PROB_PCT_THRESH',
         'METPLUS_ECLV_POINTS',
     ]
@@ -360,6 +361,10 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         self.add_met_config(name='eclv_points',
                             data_type='float')
+
+        self.add_met_config(name='prob_cat_thresh',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
 
         # old method of setting MET config values
         c_dict['ENS_THRESH'] = (

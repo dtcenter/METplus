@@ -9152,6 +9152,11 @@ METplus Configuration Glossary
 
      | *Used by:* SeriesAnalysis
 
+   ENSEMBLE_STAT_PROB_CAT_THRESH
+     Specify the value for 'prob_cat_thresh' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
    ENSEMBLE_STAT_PROB_PCT_THRESH
      Specify the value for 'prob_pct_thresh' in the MET configuration file for EnsembleStat.
 
