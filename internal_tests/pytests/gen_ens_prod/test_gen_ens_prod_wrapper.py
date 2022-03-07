@@ -422,17 +422,23 @@ def test_gen_ens_prod_single_field(metplus_config, config_overrides,
             else:
                 assert(env_var_values.get(env_var_key, '') == actual_value)
 
-def test_get_config_file(metplus_config):
-    fake_config_name = '/my/config/file'
-
+@pytest.mark.parametrize(
+    'use_default_config_file', [
+        True,
+        False,
+    ]
+)
+def test_get_config_file(metplus_config, use_default_config_file):
     config = metplus_config()
-    default_config_file = os.path.join(config.getdir('PARM_BASE'),
-                                       'met_config',
-                                       'GenEnsProdConfig_wrapped')
+
+    if use_default_config_file:
+        config_file = os.path.join(config.getdir('PARM_BASE'),
+                                   'met_config',
+                                   'GenEnsProdConfig_wrapped')
+    else:
+        config_file = '/my/config/file'
+        config.set('config', 'GEN_ENS_PROD_CONFIG_FILE', config_file)
 
     wrapper = GenEnsProdWrapper(config)
-    assert wrapper.c_dict['CONFIG_FILE'] == default_config_file
+    assert wrapper.c_dict['CONFIG_FILE'] == config_file
 
-    config.set('config', 'GEN_ENS_PROD_CONFIG_FILE', fake_config_name)
-    wrapper = GenEnsProdWrapper(config)
-    assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name
