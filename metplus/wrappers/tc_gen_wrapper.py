@@ -70,26 +70,28 @@ class TCGenWrapper(CommandBuilder):
         'METPLUS_GENESIS_MATCH_WINDOW_DICT',
     ]
 
-    OUTPUT_FLAGS = ['fho',
-                    'ctc',
-                    'cts',
-                    'genmpr',
-                    'pct',
-                    'pstd',
-                    'pjc',
-                    'prc',
-                    ]
+    OUTPUT_FLAGS = [
+        'fho',
+        'ctc',
+        'cts',
+        'pct',
+        'pstd',
+        'pjc',
+        'prc',
+        'genmpr',
+    ]
 
-    NC_PAIRS_FLAGS = ['latlon',
-                      'fcst_genesis',
-                      'fcst_tracks',
-                      'fcst_fy_oy',
-                      'fcst_fy_on',
-                      'best_genesis',
-                      'best_tracks',
-                      'best_fy_oy',
-                      'best_fn_oy',
-                    ]
+    NC_PAIRS_FLAGS = [
+        'latlon',
+        'fcst_genesis',
+        'fcst_tracks',
+        'fcst_fy_oy',
+        'fcst_fy_on',
+        'best_genesis',
+        'best_tracks',
+        'best_fy_oy',
+        'best_fn_oy',
+    ]
 
 
     def __init__(self, config, instance=None):
@@ -412,14 +414,19 @@ class TCGenWrapper(CommandBuilder):
 
         # get genesis, edeck, and/or shape file(s) or directory
         for file_type in ('genesis', 'edeck', 'shape'):
+
+            # skip if template is not set for input type
             if not self.c_dict.get(f'{file_type.upper()}_INPUT_TEMPLATE'):
                 continue
+
             file_list = self.find_data(time_info,
                                        data_type=file_type.upper(),
                                        return_list=True,
                                        allow_dir=True)
+
+            # if template was provided but no files were found, skip run
             if not file_list:
-                continue
+                return False
 
             list_filename = f"{time_info['init_fmt']}_tc_gen_{file_type}.txt"
             self.c_dict[f'{file_type.upper()}_FILE'] = (

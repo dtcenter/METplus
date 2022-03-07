@@ -117,6 +117,13 @@ class TCStatWrapper(CommandBuilder):
         if not c_dict['OUTPUT_DIR']:
             self.log_error("TC_STAT_OUTPUT_DIR must be set")
 
+        # read optional output template to use for -out command line argument
+        # set JOB_OUTPUT_TEMPLATE instead of OUTPUT_TEMPLATE because
+        # OUTPUT_TEMPLATE is set in wrapper to handle -dump_row output
+        c_dict['JOB_OUTPUT_TEMPLATE'] = (
+            self.config.getraw('config', 'TC_STAT_OUTPUT_TEMPLATE', '')
+        )
+
         c_dict['JOBS'] = getlist(self.config.getraw('config',
                                                     'TC_STAT_JOB_ARGS',
                                                     ''))
@@ -224,11 +231,12 @@ class TCStatWrapper(CommandBuilder):
         if input_dict:
             time_info = ti_calculate(input_dict)
 
-        job_args_str = self.handle_jobs(time_info)
-        if job_args_str is None:
+        if not self.handle_jobs(time_info):
             return None
 
-        self.env_var_dict['METPLUS_JOBS'] = job_args_str
+        # handle -out file if set
+        if not self.handle_out_file(time_info):
+            return None
 
         self.set_environment_variables(time_info)
 
@@ -245,6 +253,10 @@ class TCStatWrapper(CommandBuilder):
         cmd += f" -lookin {self.c_dict['LOOKIN_DIR']}"
 
         cmd += f" -config {self.c_dict.get('CONFIG_FILE')}"
+
+        # add output path if requested
+        if self.c_dict['OUTPUT_TEMPLATE']:
+            cmd += f' -out {self.get_output_path()}'
 
         return cmd
 
@@ -336,11 +348,30 @@ class TCStatWrapper(CommandBuilder):
                 index = split_job.index('-dump_row') + 1
                 filepath = split_job[index]
                 self.c_dict['OUTPUT_TEMPLATE'] = filepath
-                if time_info is None:
-                    time_info = {}
 
                 if not self.find_and_check_output_file(time_info):
                     return None
 
         job_list_string = '","'.join(formatted_jobs)
-        return f'jobs = ["{job_list_string}"];'
+        job_list_string = f'jobs = ["{job_list_string}"];'
+
+        # set environment variable for MET config file
+        self.env_var_dict['METPLUS_JOBS'] = job_list_string
+
+        return job_list_string
+
+    def handle_out_file(self, time_info):
+        """! If output template is set,
+        """
+        # clear output template that may have been set for -dump_row
+        self.c_dict['OUTPUT_TEMPLATE'] = None
+
+        if not self.c_dict['JOB_OUTPUT_TEMPLATE']:
+            return True
+
+        self.c_dict['OUTPUT_TEMPLATE'] = self.c_dict['JOB_OUTPUT_TEMPLATE']
+
+        if not self.find_and_check_output_file(time_info):
+            return False
+
+        return True

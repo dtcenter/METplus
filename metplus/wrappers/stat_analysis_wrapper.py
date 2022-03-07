@@ -136,6 +136,9 @@ class StatAnalysisWrapper(CommandBuilder):
         else:
             cmd += f' {self.job_args}'
 
+        if self.c_dict.get('OUTPUT_FILENAME'):
+            cmd += f" -out {self.c_dict['OUTPUT_FILENAME']}"
+
         return cmd
      
     def create_c_dict(self):
@@ -162,6 +165,11 @@ class StatAnalysisWrapper(CommandBuilder):
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('STAT_ANALYSIS_OUTPUT_DIR',
                                                   '')
+
+        # read optional template to set -out command line argument
+        c_dict['OUTPUT_TEMPLATE'] = (
+            self.config.getraw('config', 'STAT_ANALYSIS_OUTPUT_TEMPLATE', '')
+        )
 
         c_dict['DATE_TYPE'] = self.config.getstr('config',
                                                  'DATE_TYPE',
@@ -1390,6 +1398,22 @@ class StatAnalysisWrapper(CommandBuilder):
                                                              group_lists,
                                                              )
 
+            # get -out argument if set
+            if self.c_dict['OUTPUT_TEMPLATE']:
+                output_filename = (
+                    self.get_output_filename('output',
+                                             self.c_dict['OUTPUT_TEMPLATE'],
+                                             'user',
+                                             loop_lists,
+                                             group_lists,
+                                             runtime_settings_dict)
+                )
+                output_file = os.path.join(self.c_dict['OUTPUT_DIR'],
+                                           output_filename)
+
+                # add output file path to runtime_settings_dict
+                runtime_settings_dict['OUTPUT_FILENAME'] = output_file
+
             # Set up forecast and observation valid
             # and initialization time information.
             runtime_settings_dict = (
@@ -1794,6 +1818,11 @@ class StatAnalysisWrapper(CommandBuilder):
             self.lookindir = runtime_settings_dict['LOOKIN_DIR']
             self.job_args = runtime_settings_dict['JOB']
 
+            # set -out file path if requested, value will be set to None if not
+            self.c_dict['OUTPUT_FILENAME'] = (
+                runtime_settings_dict.get('OUTPUT_FILENAME')
+            )
+
             self.build()
 
             self.clear()
@@ -1806,7 +1835,7 @@ class StatAnalysisWrapper(CommandBuilder):
              @returns True if job should be run, False if it should be skipped
         """
         run_job = True
-        for job_type in ['dump_row', 'out_stat']:
+        for job_type in ['dump_row', 'out_stat', 'output']:
             output_path = (
                 runtime_settings_dict.get(f'{job_type.upper()}_FILENAME')
             )
