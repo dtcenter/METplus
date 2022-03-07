@@ -15,6 +15,7 @@ import os
 from ..util import met_util as util
 from ..util import time_util
 from ..util import do_string_sub
+from ..util import remove_quotes
 from . import CommandBuilder
 
 '''!@namespace Point2GridWrapper
@@ -69,6 +70,9 @@ class Point2GridWrapper(CommandBuilder):
         c_dict['GRID'] = self.config.getstr('config',
                                             'POINT2GRID_REGRID_TO_GRID',
                                             '')
+        # grid is required
+        if not c_dict['GRID']:
+            self.log_error('Must specify a grid name')
 
         # optional arguments
         c_dict['INPUT_FIELD'] = self.config.getraw('config',
@@ -124,11 +128,9 @@ class Point2GridWrapper(CommandBuilder):
         for infile in self.infiles:
             cmd += ' ' + infile
 
-        # add grid name. point2grid requires a grid name between the input and output files
-        if not self.c_dict['GRID']:
-            self.log_error('Must specify a grid name')
-            return None
-        cmd += ' ' + self.c_dict['GRID'] 
+        # add grid name
+        grid = remove_quotes(self.c_dict['GRID'])
+        cmd += f' "{grid}"'
 
         # add output path
         out_path = self.get_output_path()
