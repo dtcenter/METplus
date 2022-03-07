@@ -122,6 +122,8 @@ class Point2GridWrapper(CommandBuilder):
 
         # add input files
         for infile in self.infiles:
+            if infile.startswith('PYTHON'):
+                infile = f"'{infile}'"
             cmd += ' ' + infile
 
         # add grid name. point2grid requires a grid name between the input and output files
