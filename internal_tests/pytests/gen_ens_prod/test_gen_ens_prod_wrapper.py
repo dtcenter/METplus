@@ -442,3 +442,39 @@ def test_get_config_file(metplus_config, use_default_config_file):
     wrapper = GenEnsProdWrapper(config)
     assert wrapper.c_dict['CONFIG_FILE'] == config_file
 
+@pytest.mark.parametrize(
+    'config_overrides, expected_num_files', [
+        ({}, 10),
+        ({'GEN_ENS_PROD_ENS_MEMBER_IDS': '1'}, 5),
+    ]
+)
+def test_gen_ens_prod_fill_missing(metplus_config, config_overrides,
+                                   expected_num_files):
+    config = metplus_config()
+
+    set_minimum_config_settings(config)
+    handle_input_dir(config)
+
+    # change some config values for this test
+    config.set('config', 'INIT_END', run_times[0])
+    config.set('config', 'GEN_ENS_PROD_N_MEMBERS', 10)
+
+    # set config variable overrides
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    wrapper = GenEnsProdWrapper(config)
+
+    file_list_file = os.path.join(wrapper.config.getdir('STAGING_DIR'),
+                                  'file_lists',
+                                  '20091231120000_24_gen_ens_prod.txt')
+    if os.path.exists(file_list_file):
+        os.remove(file_list_file)
+
+    all_cmds = wrapper.run_all_times()
+    assert len(all_cmds) == 1
+
+    with open(file_list_file, 'r') as file_handle:
+        actual_num_files = len(file_handle.read().splitlines()) - 1
+
+    assert actual_num_files == expected_num_files
