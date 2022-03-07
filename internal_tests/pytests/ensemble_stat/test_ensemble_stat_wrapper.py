@@ -322,6 +322,21 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
         ({'ENSEMBLE_STAT_OUTPUT_FLAG_RELP': 'STAT', },
          {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {relp = STAT;}'}),
 
+        ({'ENSEMBLE_STAT_OUTPUT_FLAG_PCT': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {pct = STAT;}'}),
+
+        ({'ENSEMBLE_STAT_OUTPUT_FLAG_PSTD': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {pstd = STAT;}'}),
+
+        ({'ENSEMBLE_STAT_OUTPUT_FLAG_PJC': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {pjc = STAT;}'}),
+
+        ({'ENSEMBLE_STAT_OUTPUT_FLAG_PRC': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {prc = STAT;}'}),
+
+        ({'ENSEMBLE_STAT_OUTPUT_FLAG_ECLV': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {eclv = STAT;}'}),
+
         ({
              'ENSEMBLE_STAT_OUTPUT_FLAG_ECNT': 'STAT',
              'ENSEMBLE_STAT_OUTPUT_FLAG_RPS': 'STAT',
@@ -330,12 +345,20 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
              'ENSEMBLE_STAT_OUTPUT_FLAG_ORANK': 'STAT',
              'ENSEMBLE_STAT_OUTPUT_FLAG_SSVAR': 'STAT',
              'ENSEMBLE_STAT_OUTPUT_FLAG_RELP': 'STAT',
+             'ENSEMBLE_STAT_OUTPUT_FLAG_PCT': 'STAT',
+             'ENSEMBLE_STAT_OUTPUT_FLAG_PSTD': 'STAT',
+             'ENSEMBLE_STAT_OUTPUT_FLAG_PJC': 'STAT',
+             'ENSEMBLE_STAT_OUTPUT_FLAG_PRC': 'STAT',
+             'ENSEMBLE_STAT_OUTPUT_FLAG_ECLV': 'STAT',
          },
          {
              'METPLUS_OUTPUT_FLAG_DICT': ('output_flag = {ecnt = STAT;'
-                                           'rps = STAT;rhist = STAT;'
-                                           'phist = STAT;orank = STAT;'
-                                           'ssvar = STAT;relp = STAT;}')}),
+                                          'rps = STAT;rhist = STAT;'
+                                          'phist = STAT;orank = STAT;'
+                                          'ssvar = STAT;relp = STAT;'
+                                          'pct = STAT;pstd = STAT;'
+                                          'pjc = STAT;prc = STAT;eclv = STAT;'
+                                          '}')}),
         # ensemble_flag
         ({'ENSEMBLE_STAT_ENSEMBLE_FLAG_LATLON': 'FALSE', },
          {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {latlon = FALSE;}'}),
@@ -631,6 +654,15 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
 
         ({'ENSEMBLE_STAT_GRID_WEIGHT_FLAG': 'COS_LAT', },
          {'METPLUS_GRID_WEIGHT_FLAG': 'grid_weight_flag = COS_LAT;'}),
+
+        ({'ENSEMBLE_STAT_PROB_CAT_THRESH': '<=0.25', },
+         {'METPLUS_PROB_CAT_THRESH': 'prob_cat_thresh = [<=0.25];'}),
+
+        ({'ENSEMBLE_STAT_PROB_PCT_THRESH': '==0.25', },
+         {'METPLUS_PROB_PCT_THRESH': 'prob_pct_thresh = [==0.25];'}),
+
+        ({'ENSEMBLE_STAT_ECLV_POINTS': '0.05', },
+         {'METPLUS_ECLV_POINTS': 'eclv_points = 0.05;'}),
 
     ]
 )

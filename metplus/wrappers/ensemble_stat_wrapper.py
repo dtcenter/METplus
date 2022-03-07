@@ -67,6 +67,9 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'METPLUS_ENS_MEMBER_IDS',
         'METPLUS_CONTROL_ID',
         'METPLUS_GRID_WEIGHT_FLAG',
+        'METPLUS_PROB_CAT_THRESH',
+        'METPLUS_PROB_PCT_THRESH',
+        'METPLUS_ECLV_POINTS',
     ]
 
     # handle deprecated env vars used pre v4.0.0
@@ -75,14 +78,20 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'CLIMO_STDEV_FILE',
     ]
 
-    OUTPUT_FLAGS = ['ecnt',
-                    'rps',
-                    'rhist',
-                    'phist',
-                    'orank',
-                    'ssvar',
-                    'relp'
-                    ]
+    OUTPUT_FLAGS = [
+        'ecnt',
+        'rps',
+        'rhist',
+        'phist',
+        'orank',
+        'ssvar',
+        'relp',
+        'pct',
+        'pstd',
+        'pjc',
+        'prc',
+        'eclv',
+    ]
 
     ENSEMBLE_FLAGS = ['latlon',
                       'mean',
@@ -345,6 +354,17 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                             data_type='string',
                             extra_args={'remove_quotes': True,
                                         'uppercase': True})
+
+        self.add_met_config(name='prob_pct_thresh',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
+
+        self.add_met_config(name='eclv_points',
+                            data_type='float')
+
+        self.add_met_config(name='prob_cat_thresh',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
 
         # old method of setting MET config values
         c_dict['ENS_THRESH'] = (
