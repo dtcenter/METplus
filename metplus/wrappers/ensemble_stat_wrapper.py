@@ -616,6 +616,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             cmd += self.param + " "
 
         for obs_file in self.point_obs_files:
+            if obs_file.startswith('PYTHON'):
+                obs_file = f"'{obs_file}'"
             cmd += "-point_obs " + obs_file + " "
 
         for obs_file in self.grid_obs_files:
