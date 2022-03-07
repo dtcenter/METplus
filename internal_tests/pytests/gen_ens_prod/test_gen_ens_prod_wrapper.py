@@ -51,6 +51,15 @@ def set_minimum_config_settings(config):
     config.set('config', 'ENS_VAR1_NAME', ens_name)
     config.set('config', 'ENS_VAR1_LEVELS', ens_level)
 
+def handle_input_dir(config):
+    test_data_dir = os.path.join(config.getdir('METPLUS_BASE'),
+                                 'internal_tests',
+                                 'data')
+    input_dir = os.path.join(test_data_dir, 'ens')
+    config.set('config', 'GEN_ENS_PROD_INPUT_DIR', input_dir)
+    config.set('config', 'GEN_ENS_PROD_CTRL_INPUT_DIR', input_dir)
+    return input_dir
+
 @pytest.mark.parametrize(
     'config_overrides, env_var_values', [
         # 0
@@ -365,12 +374,7 @@ def test_gen_ens_prod_single_field(metplus_config, config_overrides,
     for key, value in config_overrides.items():
         config.set('config', key, value)
 
-    test_data_dir = os.path.join(config.getdir('METPLUS_BASE'),
-                                 'internal_tests',
-                                 'data')
-    input_dir = os.path.join(test_data_dir, 'ens')
-    config.set('config', 'GEN_ENS_PROD_INPUT_DIR', input_dir)
-    config.set('config', 'GEN_ENS_PROD_CTRL_INPUT_DIR', input_dir)
+    input_dir = handle_input_dir(config)
 
     wrapper = GenEnsProdWrapper(config)
     assert wrapper.isOK
