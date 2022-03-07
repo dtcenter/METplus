@@ -32,6 +32,7 @@ class GenEnsProdWrapper(LoopTimesWrapper):
         'METPLUS_ENSEMBLE_FLAG_DICT',
         'METPLUS_ENS_MEMBER_IDS',
         'METPLUS_CONTROL_ID',
+        'METPLUS_NORMALIZE',
     ]
 
     ENSEMBLE_FLAGS = [
@@ -167,6 +168,11 @@ class GenEnsProdWrapper(LoopTimesWrapper):
                                              'GEN_ENS_PROD_ENS_VLD_THRESH'],
                             )
 
+        self.add_met_config(name='normalize',
+                            data_type='string',
+                            extra_args={'remove_quotes': True},
+                            )
+
         # parse var list for ENS fields
         c_dict['ENS_VAR_LIST_TEMP'] = parse_var_list(
             self.config,
@@ -178,7 +184,8 @@ class GenEnsProdWrapper(LoopTimesWrapper):
                             data_type='string',
                             env_var_name='ENS_FILE_TYPE',
                             metplus_configs=['GEN_ENS_PROD_ENS_FILE_TYPE',
-                                             'GEN_ENS_PROD_FILE_TYPE'],
+                                             'GEN_ENS_PROD_FILE_TYPE',
+                                             'ENS_FILE_TYPE'],
                             extra_args={'remove_quotes': True,
                                         'uppercase': True})
 
@@ -227,7 +234,10 @@ class GenEnsProdWrapper(LoopTimesWrapper):
         if not self.find_field_info(time_info):
             return False
 
-        if not self.find_input_files_ensemble(time_info):
+        # do not fill file list with missing if ens_member_ids is used
+        fill_missing = not self.env_var_dict.get('METPLUS_ENS_MEMBER_IDS')
+        if not self.find_input_files_ensemble(time_info,
+                                              fill_missing=fill_missing):
             return False
 
         if not self.find_and_check_output_file(time_info):

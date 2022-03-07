@@ -268,6 +268,11 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_OUTPUT_FLAG_ORANK`
 | :term:`ENSEMBLE_STAT_OUTPUT_FLAG_SSVAR`
 | :term:`ENSEMBLE_STAT_OUTPUT_FLAG_RELP`
+| :term:`ENSEMBLE_STAT_OUTPUT_FLAG_PCT`
+| :term:`ENSEMBLE_STAT_OUTPUT_FLAG_PSTD`
+| :term:`ENSEMBLE_STAT_OUTPUT_FLAG_PJC`
+| :term:`ENSEMBLE_STAT_OUTPUT_FLAG_PRC`
+| :term:`ENSEMBLE_STAT_OUTPUT_FLAG_ECLV`
 | :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_LATLON`
 | :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_MEAN`
 | :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_STDEV`
@@ -288,6 +293,9 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_ENS_MEMBER_IDS`
 | :term:`ENSEMBLE_STAT_CONTROL_ID`
 | :term:`ENSEMBLE_STAT_GRID_WEIGHT_FLAG`
+| :term:`ENSEMBLE_STAT_PROB_CAT_THRESH`
+| :term:`ENSEMBLE_STAT_PROB_PCT_THRESH`
+| :term:`ENSEMBLE_STAT_ECLV_POINTS`
 | :term:`ENSEMBLE_STAT_VERIFICATION_MASK_TEMPLATE` (optional)
 | :term:`ENS_VAR<n>_NAME` (optional)
 | :term:`ENS_VAR<n>_LEVELS` (optional)
@@ -506,6 +514,39 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - nmep_smooth.type.method
    * - :term:`ENSEMBLE_STAT_NMEP_SMOOTH_WIDTH`
      - nmep_smooth.type.width
+
+**${METPLUS_PROB_CAT_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_PROB_CAT_THRESH`
+     - prob_cat_thresh
+
+**${METPLUS_PROB_PCT_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_PROB_PCT_THRESH`
+     - prob_pct_thresh
+
+**${METPLUS_ECLV_POINTS}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_ECLV_POINTS`
+     - eclv_points
 
 **${METPLUS_FCST_FILE_TYPE}**
 
@@ -795,6 +836,16 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - output_flag.ssvar
    * - :term:`ENSEMBLE_STAT_OUTPUT_FLAG_RELP`
      - output_flag.relp
+   * - :term:`ENSEMBLE_STAT_OUTPUT_FLAG_PCT`
+     - output_flag.pct
+   * - :term:`ENSEMBLE_STAT_OUTPUT_FLAG_PSTD`
+     - output_flag.pstd
+   * - :term:`ENSEMBLE_STAT_OUTPUT_FLAG_PJC`
+     - output_flag.pjc
+   * - :term:`ENSEMBLE_STAT_OUTPUT_FLAG_PRC`
+     - output_flag.prc
+   * - :term:`ENSEMBLE_STAT_OUTPUT_FLAG_ECLV`
+     - output_flag.eclv
 
 **${METPLUS_ENSEMBLE_FLAG_DICT}**
 
@@ -1051,6 +1102,7 @@ METplus Configuration
 | :term:`GEN_ENS_PROD_CENSOR_THRESH`
 | :term:`GEN_ENS_PROD_CENSOR_VAL`
 | :term:`GEN_ENS_PROD_CAT_THRESH`
+| :term:`GEN_ENS_PROD_NORMALIZE`
 | :term:`GEN_ENS_PROD_NC_VAR_STR`
 | :term:`GEN_ENS_PROD_ENS_THRESH`
 | :term:`GEN_ENS_PROD_ENS_VLD_THRESH`
@@ -1187,6 +1239,17 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`GEN_ENS_PROD_CENSOR_VAL`
      - censor_val
+
+**${METPLUS_NORMALIZE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_NORMALIZE`
+     - normalize
 
 **${METPLUS_CAT_THRESH}**
 
@@ -6453,6 +6516,7 @@ configuration file for running with LOOP_ORDER = times:
 | :term:`LINE_TYPE_LIST`
 | :term:`STAT_ANALYSIS_SKIP_IF_OUTPUT_EXISTS`
 | :term:`STAT_ANALYSIS_HSS_EC_VALUE`
+| :term:`STAT_ANALYSIS_OUTPUT_TEMPLATE`
 |
 
 The following values **must** be defined in the METplus Wrappers
@@ -6490,6 +6554,7 @@ file for running with LOOP_ORDER = processes:
 | :term:`COV_THRESH_LIST`
 | :term:`ALPHA_LIST`
 | :term:`STAT_ANALYSIS_HSS_EC_VALUE`
+| :term:`STAT_ANALYSIS_OUTPUT_TEMPLATE`
 |
 
 .. warning:: **DEPRECATED:**
@@ -8280,6 +8345,7 @@ METplus Configuration
 
 | :term:`TC_STAT_LOOKIN_DIR`
 | :term:`TC_STAT_OUTPUT_DIR`
+| :term:`TC_STAT_OUTPUT_TEMPLATE` (optional)
 | :term:`TC_STAT_CONFIG_FILE`
 | :term:`TC_STAT_JOB_ARGS`
 | :term:`TC_STAT_AMODEL`

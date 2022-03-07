@@ -4094,6 +4094,22 @@ METplus Configuration Glossary
 
      | *Used by:*  TCStat
 
+   TC_STAT_OUTPUT_TEMPLATE
+     (Optional) Specify the template of the output file to write job output
+     from tc_stat.
+     If set, then the -out command line argument will the full
+     path to the file will be added to the tc_stat call.
+
+     | *Used by:*  TCStat
+
+   STAT_ANALYSIS_OUTPUT_TEMPLATE
+     (Optional) Specify the template of the output file to write job output
+     from stat_analysis.
+     If set, then the -out command line argument will the full
+     path to the file will be added to the stat_analysis call.
+
+     | *Used by:*  StatAnalysis
+
    TC_STAT_RUN_VIA
      .. warning:: **DEPRECATED:** Please set :term:`TC_STAT_CONFIG_FILE` to run using a config file and leave it unset to run via the command line.
 
@@ -5735,6 +5751,31 @@ METplus Configuration Glossary
      Specify the value for 'output_flag.relp' in the MET configuration file for EnsembleStat.
 
      | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_OUTPUT_FLAG_PCT
+     Specify the value for 'output_flag.pct' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OUTPUT_FLAG_PSTD
+     Specify the value for 'output_flag.pstd' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OUTPUT_FLAG_PJC
+     Specify the value for 'output_flag.pjc' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OUTPUT_FLAG_PRC
+     Specify the value for 'output_flag.prc' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OUTPUT_FLAG_ECLV
+     Specify the value for 'output_flag.eclv' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
 
    ENSEMBLE_STAT_ENSEMBLE_FLAG_LATLON
      Specify the value for 'ensemble_flag.latlon' in the MET configuration file for EnsembleStat.
@@ -9130,3 +9171,23 @@ METplus Configuration Glossary
      Specify the value for 'climo_cdf.direct_prob' in the MET configuration file for SeriesAnalysis.
 
      | *Used by:* SeriesAnalysis
+
+   GEN_ENS_PROD_NORMALIZE
+     Specify the value for 'normalize' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   ENSEMBLE_STAT_PROB_CAT_THRESH
+     Specify the value for 'prob_cat_thresh' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_PROB_PCT_THRESH
+     Specify the value for 'prob_pct_thresh' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_ECLV_POINTS
+     Specify the value for 'eclv_points' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat

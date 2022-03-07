@@ -67,6 +67,9 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'METPLUS_ENS_MEMBER_IDS',
         'METPLUS_CONTROL_ID',
         'METPLUS_GRID_WEIGHT_FLAG',
+        'METPLUS_PROB_CAT_THRESH',
+        'METPLUS_PROB_PCT_THRESH',
+        'METPLUS_ECLV_POINTS',
     ]
 
     # handle deprecated env vars used pre v4.0.0
@@ -75,14 +78,20 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'CLIMO_STDEV_FILE',
     ]
 
-    OUTPUT_FLAGS = ['ecnt',
-                    'rps',
-                    'rhist',
-                    'phist',
-                    'orank',
-                    'ssvar',
-                    'relp'
-                    ]
+    OUTPUT_FLAGS = [
+        'ecnt',
+        'rps',
+        'rhist',
+        'phist',
+        'orank',
+        'ssvar',
+        'relp',
+        'pct',
+        'pstd',
+        'pjc',
+        'prc',
+        'eclv',
+    ]
 
     ENSEMBLE_FLAGS = ['latlon',
                       'mean',
@@ -346,6 +355,17 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                             extra_args={'remove_quotes': True,
                                         'uppercase': True})
 
+        self.add_met_config(name='prob_pct_thresh',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
+
+        self.add_met_config(name='eclv_points',
+                            data_type='float')
+
+        self.add_met_config(name='prob_cat_thresh',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
+
         # old method of setting MET config values
         c_dict['ENS_THRESH'] = (
             self.config.getstr('config', 'ENSEMBLE_STAT_ENS_THRESH', '1.0')
@@ -396,7 +416,10 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                 @param time_info dictionary containing timing information
         """
         # get ensemble model files
-        if not self.find_input_files_ensemble(time_info):
+        # do not fill file list with missing if ens_member_ids is used
+        fill_missing = not self.env_var_dict.get('METPLUS_ENS_MEMBER_IDS')
+        if not self.find_input_files_ensemble(time_info,
+                                              fill_missing=fill_missing):
             return
 
         # parse var list for ENS fields
