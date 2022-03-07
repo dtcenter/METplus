@@ -184,7 +184,8 @@ class GenEnsProdWrapper(LoopTimesWrapper):
                             data_type='string',
                             env_var_name='ENS_FILE_TYPE',
                             metplus_configs=['GEN_ENS_PROD_ENS_FILE_TYPE',
-                                             'GEN_ENS_PROD_FILE_TYPE'],
+                                             'GEN_ENS_PROD_FILE_TYPE',
+                                             'ENS_FILE_TYPE'],
                             extra_args={'remove_quotes': True,
                                         'uppercase': True})
 
