@@ -9152,6 +9152,11 @@ METplus Configuration Glossary
 
      | *Used by:* SeriesAnalysis
 
+   GEN_ENS_PROD_NORMALIZE
+     Specify the value for 'normalize' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
    ENSEMBLE_STAT_PROB_CAT_THRESH
      Specify the value for 'prob_cat_thresh' in the MET configuration file for EnsembleStat.
 

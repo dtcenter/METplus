@@ -1102,6 +1102,7 @@ METplus Configuration
 | :term:`GEN_ENS_PROD_CENSOR_THRESH`
 | :term:`GEN_ENS_PROD_CENSOR_VAL`
 | :term:`GEN_ENS_PROD_CAT_THRESH`
+| :term:`GEN_ENS_PROD_NORMALIZE`
 | :term:`GEN_ENS_PROD_NC_VAR_STR`
 | :term:`GEN_ENS_PROD_ENS_THRESH`
 | :term:`GEN_ENS_PROD_ENS_VLD_THRESH`
@@ -1238,6 +1239,17 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`GEN_ENS_PROD_CENSOR_VAL`
      - censor_val
+
+**${METPLUS_NORMALIZE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_NORMALIZE`
+     - normalize
 
 **${METPLUS_CAT_THRESH}**
 

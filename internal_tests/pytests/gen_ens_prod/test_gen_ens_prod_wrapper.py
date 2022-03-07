@@ -51,6 +51,15 @@ def set_minimum_config_settings(config):
     config.set('config', 'ENS_VAR1_NAME', ens_name)
     config.set('config', 'ENS_VAR1_LEVELS', ens_level)
 
+def handle_input_dir(config):
+    test_data_dir = os.path.join(config.getdir('METPLUS_BASE'),
+                                 'internal_tests',
+                                 'data')
+    input_dir = os.path.join(test_data_dir, 'ens')
+    config.set('config', 'GEN_ENS_PROD_INPUT_DIR', input_dir)
+    config.set('config', 'GEN_ENS_PROD_CTRL_INPUT_DIR', input_dir)
+    return input_dir
+
 @pytest.mark.parametrize(
     'config_overrides, env_var_values', [
         # 0
@@ -342,12 +351,16 @@ def set_minimum_config_settings(config):
                      'type = [{method = GAUSSIAN;width = 1;}];}'
              )
          }),
-
+        # 59
         ({'GEN_ENS_PROD_ENS_MEMBER_IDS': '1,2,3,4', },
          {'METPLUS_ENS_MEMBER_IDS': 'ens_member_ids = ["1", "2", "3", "4"];'}),
-
+        # 60
         ({'GEN_ENS_PROD_CONTROL_ID': '0', },
          {'METPLUS_CONTROL_ID': 'control_id = "0";'}),
+        # 61
+        ({'GEN_ENS_PROD_NORMALIZE': 'CLIMO_STD_ANOM', },
+         {'METPLUS_NORMALIZE': 'normalize = CLIMO_STD_ANOM;'}),
+
     ]
 )
 def test_gen_ens_prod_single_field(metplus_config, config_overrides,
@@ -361,12 +374,7 @@ def test_gen_ens_prod_single_field(metplus_config, config_overrides,
     for key, value in config_overrides.items():
         config.set('config', key, value)
 
-    test_data_dir = os.path.join(config.getdir('METPLUS_BASE'),
-                                 'internal_tests',
-                                 'data')
-    input_dir = os.path.join(test_data_dir, 'ens')
-    config.set('config', 'GEN_ENS_PROD_INPUT_DIR', input_dir)
-    config.set('config', 'GEN_ENS_PROD_CTRL_INPUT_DIR', input_dir)
+    input_dir = handle_input_dir(config)
 
     wrapper = GenEnsProdWrapper(config)
     assert wrapper.isOK
@@ -414,17 +422,59 @@ def test_gen_ens_prod_single_field(metplus_config, config_overrides,
             else:
                 assert(env_var_values.get(env_var_key, '') == actual_value)
 
-def test_get_config_file(metplus_config):
-    fake_config_name = '/my/config/file'
-
+@pytest.mark.parametrize(
+    'use_default_config_file', [
+        True,
+        False,
+    ]
+)
+def test_get_config_file(metplus_config, use_default_config_file):
     config = metplus_config()
-    default_config_file = os.path.join(config.getdir('PARM_BASE'),
-                                       'met_config',
-                                       'GenEnsProdConfig_wrapped')
+
+    if use_default_config_file:
+        config_file = os.path.join(config.getdir('PARM_BASE'),
+                                   'met_config',
+                                   'GenEnsProdConfig_wrapped')
+    else:
+        config_file = '/my/config/file'
+        config.set('config', 'GEN_ENS_PROD_CONFIG_FILE', config_file)
 
     wrapper = GenEnsProdWrapper(config)
-    assert wrapper.c_dict['CONFIG_FILE'] == default_config_file
+    assert wrapper.c_dict['CONFIG_FILE'] == config_file
 
-    config.set('config', 'GEN_ENS_PROD_CONFIG_FILE', fake_config_name)
+@pytest.mark.parametrize(
+    'config_overrides, expected_num_files', [
+        ({}, 10),
+        ({'GEN_ENS_PROD_ENS_MEMBER_IDS': '1'}, 5),
+    ]
+)
+def test_gen_ens_prod_fill_missing(metplus_config, config_overrides,
+                                   expected_num_files):
+    config = metplus_config()
+
+    set_minimum_config_settings(config)
+    handle_input_dir(config)
+
+    # change some config values for this test
+    config.set('config', 'INIT_END', run_times[0])
+    config.set('config', 'GEN_ENS_PROD_N_MEMBERS', 10)
+
+    # set config variable overrides
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
     wrapper = GenEnsProdWrapper(config)
-    assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name
+
+    file_list_file = os.path.join(wrapper.config.getdir('STAGING_DIR'),
+                                  'file_lists',
+                                  '20091231120000_24_gen_ens_prod.txt')
+    if os.path.exists(file_list_file):
+        os.remove(file_list_file)
+
+    all_cmds = wrapper.run_all_times()
+    assert len(all_cmds) == 1
+
+    with open(file_list_file, 'r') as file_handle:
+        actual_num_files = len(file_handle.read().splitlines()) - 1
+
+    assert actual_num_files == expected_num_files

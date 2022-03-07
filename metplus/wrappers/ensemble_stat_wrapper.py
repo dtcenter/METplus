@@ -416,7 +416,10 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                 @param time_info dictionary containing timing information
         """
         # get ensemble model files
-        if not self.find_input_files_ensemble(time_info):
+        # do not fill file list with missing if ens_member_ids is used
+        fill_missing = not self.env_var_dict.get('METPLUS_ENS_MEMBER_IDS')
+        if not self.find_input_files_ensemble(time_info,
+                                              fill_missing=fill_missing):
             return
 
         # parse var list for ENS fields
