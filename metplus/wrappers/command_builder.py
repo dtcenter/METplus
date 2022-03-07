@@ -822,13 +822,16 @@ class CommandBuilder:
 
         return out
 
-    def find_input_files_ensemble(self, time_info):
+    def find_input_files_ensemble(self, time_info, fill_missing=True):
         """! Get a list of all input files and optional control file.
         Warn and remove control file if found in ensemble list. Ensure that
         if defined, the number of ensemble members (N_MEMBERS) corresponds to
         the file list that was found.
 
             @param time_info dictionary containing timing information
+            @param fill_missing If True, fill list of files with MISSING so
+            that number of files matches number of expected members. Defaults
+            to True.
             @returns True on success
         """
 
@@ -872,7 +875,9 @@ class CommandBuilder:
                 input_files.remove(ctrl_file)
 
         # compare number of files found to expected number of members
-        if not self._check_expected_ensembles(input_files):
+        if not fill_missing:
+            self.logger.debug('Skipping logic to fill file list with MISSING')
+        elif not self._check_expected_ensembles(input_files):
             return False
 
         # write file that contains list of ensemble files
