@@ -368,3 +368,9 @@ def test_get_config_file(metplus_config):
     config.set('config', 'PB2NC_CONFIG_FILE', fake_config_name)
     wrapper = PB2NCWrapper(config)
     assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name
+
+def test_pb2nc_file_window(metplus_config):
+    config = metplus_config()
+    config.set('config', 'PB2NC_FILE_WINDOW_BEGIN', '-3600')
+    wrapper = PB2NCWrapper(config)
+    assert wrapper.c_dict['OBS_FILE_WINDOW_BEGIN'] == -3600
