@@ -703,3 +703,39 @@ def test_get_config_file(metplus_config):
     config.set('config', 'ENSEMBLE_STAT_CONFIG_FILE', fake_config_name)
     wrapper = EnsembleStatWrapper(config)
     assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name
+
+@pytest.mark.parametrize(
+    'config_overrides, expected_num_files', [
+        ({}, 4),
+        ({'ENSEMBLE_STAT_ENS_MEMBER_IDS': '1'}, 1),
+    ]
+)
+def test_ensemble_stat_fill_missing(metplus_config, config_overrides,
+                                    expected_num_files):
+    config = metplus_config()
+
+    set_minimum_config_settings(config)
+
+    # change some config values for this test
+    config.set('config', 'INIT_END', run_times[0])
+    config.set('config', 'ENSEMBLE_STAT_N_MEMBERS', 4)
+
+    # set config variable overrides
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    wrapper = EnsembleStatWrapper(config)
+
+    file_list_file = os.path.join(wrapper.config.getdir('STAGING_DIR'),
+                                  'file_lists',
+                                  '20050807000000_12_ensemble_stat.txt')
+    if os.path.exists(file_list_file):
+        os.remove(file_list_file)
+
+    all_cmds = wrapper.run_all_times()
+    assert len(all_cmds) == 1
+
+    with open(file_list_file, 'r') as file_handle:
+        actual_num_files = len(file_handle.read().splitlines()) - 1
+
+    assert actual_num_files == expected_num_files
