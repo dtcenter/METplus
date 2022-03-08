@@ -379,10 +379,16 @@ that reformat gridded data
             return None
 
         # add forecast file
-        cmd += self.infiles[0] + ' '
+        fcst_file = self.infiles[0]
+        if fcst_file.startswith('PYTHON'):
+            fcst_file = f"'{fcst_file}'"
+        cmd += f'{fcst_file} '
 
         # add observation file
-        cmd += self.infiles[1] + ' '
+        obs_file = self.infiles[1]
+        if obs_file.startswith('PYTHON'):
+            obs_file = f"'{obs_file}'"
+        cmd += f'{obs_file} '
 
         if self.param == '':
             self.log_error('Must specify config file to run MET tool')
