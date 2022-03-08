@@ -163,15 +163,34 @@ from metplus.wrappers.tc_gen_wrapper import TCGenWrapper
         ({'TC_GEN_OUTPUT_FLAG_CTS': 'BOTH'},
          {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {cts = BOTH;}'}),
 
+        ({'TC_GEN_OUTPUT_FLAG_PCT': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {pct = BOTH;}'}),
+
+        ({'TC_GEN_OUTPUT_FLAG_PSTD': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {pstd = BOTH;}'}),
+
+        ({'TC_GEN_OUTPUT_FLAG_PJC': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {pjc = BOTH;}'}),
+
+        ({'TC_GEN_OUTPUT_FLAG_PRC': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {prc = BOTH;}'}),
+
         ({'TC_GEN_OUTPUT_FLAG_GENMPR': 'NONE'},
          {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {genmpr = NONE;}'}),
 
         ({'TC_GEN_OUTPUT_FLAG_FHO': 'BOTH',
           'TC_GEN_OUTPUT_FLAG_CTC': 'NONE',
           'TC_GEN_OUTPUT_FLAG_CTS': 'BOTH',
-          'TC_GEN_OUTPUT_FLAG_GENMPR': 'NONE'},
+          'TC_GEN_OUTPUT_FLAG_PCT': 'BOTH',
+          'TC_GEN_OUTPUT_FLAG_PSTD': 'BOTH',
+          'TC_GEN_OUTPUT_FLAG_PJC': 'BOTH',
+          'TC_GEN_OUTPUT_FLAG_PRC': 'BOTH',
+          'TC_GEN_OUTPUT_FLAG_GENMPR': 'NONE',
+          },
          {'METPLUS_OUTPUT_FLAG_DICT': ('output_flag = {fho = BOTH;ctc = NONE;'
-                                       'cts = BOTH;genmpr = NONE;}')}),
+                                       'cts = BOTH;pct = BOTH;pstd = BOTH;'
+                                       'pjc = BOTH;prc = BOTH;genmpr = NONE;}')
+          }),
 
         ({'TC_GEN_NC_PAIRS_FLAG_LATLON': 'false'},
          {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {latlon = FALSE;}'}),
