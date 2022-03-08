@@ -210,8 +210,7 @@ use case OR category directory for a model_applications use case
     * Update the description of the input data in the Datasets section.
 
     * Update the list of External Dependencies (if applicable) to include any
-      required Python packages.  Update the
-      `METplus Components Python Requirements <https://metplus.readthedocs.io/en/develop/Users_Guide/overview.html#metplus-components-python-requirements>`_
+      required Python packages.  Update the :ref:`python_requirements_table`
       table.  If the package is already listed in the spreadsheet, add
       a link to the documentation page for this new use case, following the
       format in the table.  If the package is not already listed, update

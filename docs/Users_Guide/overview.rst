@@ -85,6 +85,8 @@ METplus Wrappers configuration files. Some Python wrappers do not
 correspond to a particular MET tool, but wrap utilities to extend
 METplus functionality.
 
+.. _python_requirements_table:
+
 METplus Components Python Requirements
 ======================================
 
@@ -95,7 +97,6 @@ METplus Components Python Requirements
    Source - no more than 8 characters
    Description - no more than 22 (was 20) characters
    Use Cases - no more than 17 (was 10) characters
-
 
 .. role:: raw-html(raw)
    :format: html	  
