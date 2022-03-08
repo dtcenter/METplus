@@ -13,6 +13,7 @@
 #  version of that data set that was last updated. For example, if the
 #  climate data set has not been updated since v3.1, then the symbolic link
 #  will point into the v3.1 directory to that appropriate tar file.
+# Usage: setup_next_release_data.py v5.0
 ################################################################################
 
 import sys
@@ -38,14 +39,15 @@ def get_files_from_dir(version_dir, check_dir):
         filepath = os.path.join(check_dir, filename)
         if os.path.islink(filepath):
             print(f"\nFound symbolic link: {filepath}")
-            filepath = os.path.realpath(filepath)
-            filename = os.path.basename(filepath)
-            print(f"Real path: {filepath}")
         elif os.path.isfile(filepath):
             print(f"\nFound file: {filepath}")
         else:
             print(f"ERROR: Unexpected non-file found: {filepath}")
             return False
+
+        filepath = os.path.realpath(filepath)
+        filename = os.path.basename(filepath)
+        print(f"Real path: {filepath}")
 
         # skip files that have a timestamp of .sav in the name
         if '.sav' in filename or sum(x.isdigit() for x in filename) > 7:
@@ -72,12 +74,17 @@ def get_files_from_dir(version_dir, check_dir):
         shutil.copyfile(from_file, to_file)
 
     return found_files
-                
+
+def usage():
+    print(f"Usage: {os.path.basename(__file__)} vX.Y\n"
+          f"Example: {os.path.basename(__file__)} v5.0")
+    sys.exit(1)
+
 def main(new_version):
     match = re.match(r'^v([0-9]+)\.([0-9]+)', new_version)
     if not match:
         print(f"ERROR: Version does not match vX.Y format: {new_version}")
-        sys.exit(1)
+        usage()
 
     major = int(match.group(1))
     minor = int(match.group(2))
@@ -125,9 +132,9 @@ if __name__ == '__main__':
     if len(sys.argv) < 2:
         print("ERROR: Must supply new major/minor version "
               "as argument, i.e. v4.0")
-        sys.exit(1)
+        usage()
 
     new_version = sys.argv[1]
     if not main(new_version):
-        print("Something went wrong")
+        print("ERROR: Something went wrong")
         sys.exit(1)
