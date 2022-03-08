@@ -12,11 +12,6 @@ from datetime import datetime, timedelta
 import pandas as pd
 import sys, os
 
-# global subdirectories (will be env vars in next release)
-refDir='/Volumes/d1/biswas/NCAR_PROJECTS/METplus/use_cases/cable/feature_cable'
-DCOMDir='/Volumes/d1/biswas/NCAR_PROJECTS/METplus/use_cases/cable/feature_cable'
-archDir='/Volumes/d1/biswas/NCAR_PROJECTS/METplus/use_cases/cable/feature_cable/rtofs-cable'
-
 if len(sys.argv) < 5:
     print("Must specify the following elements: rtofsdir, cable_file, eightmile_file, valid_date, forecast_lead")
     sys.exit(1)
@@ -39,8 +34,6 @@ if not os.path.exists(cablefile):
 #-----------------------------------------------
 # read cable transport data from AOML            
 #-----------------------------------------------
-#cablefile='FC_cable_transport_2021.dat'
-#eightmilefile='eightmilecable.dat'
     
 # read the AOML dataset
 names=['year','month','day','transport']
@@ -127,8 +120,6 @@ def get_model(dates,fcsts):
             transport[fcst]=calc_transport(dates,fcst)
 
     model=pd.DataFrame(transport)
-    #model['validDates']=model.dates+timedelta(fcst/24.)
-    #model.index=model.validDates
     model.index=model.dates
     del model['dates']
     #del model['validDates']
@@ -144,59 +135,41 @@ def rotate(u,v,phi):
     v2 = -u*math.sin(phi) + v*math.cos(phi)
     return u2,v2
 
-#-------------------------------------------------------------------------
-def rms(both,fcst):
-    print('Code call rmse')
-    fcst=both[fcst]
-    obs=both['transport']
-    B = fcst.mean() - obs.mean()
-    B2 = B**2
-    D = fcst-obs
-    S=D.std()
-    S2=S**2
-    return np.sqrt(S2 + B2)
+#-----------------------------------------------
+if __name__ == "__main__":
 
-#-------------------------------------------------------------------------
-def bias(both,fcst):
-    print('Code call bias')
-    fcst=both[fcst]
-    obs=both['transport']
-    return fcst.mean() - obs.mean()
+    want_date=datetime.strptime(sys.argv[4],'%Y%m%d')
+    print('WANT DATE :', want_date)
+    DateSet=True
 
+    fcsts=list(range(fcst,fcst+1,24))
 
+    start_date=want_date
+    stop_date=want_date
+    cable=cable[:stop_date]
 
+    for end_date in pd.date_range(start_date,stop_date):
+        dates=pd.date_range(end=end_date,periods=3)
+        model=get_model(dates,fcsts)
 
-want_date=datetime.strptime(sys.argv[4],'%Y%m%d')
-print('WANT DATE :', want_date)
-DateSet=True
-
-fcsts=list(range(fcst,fcst+1,24))
-
-start_date=want_date
-stop_date=want_date
-cable=cable[:stop_date]
-
-for end_date in pd.date_range(start_date,stop_date):
-    dates=pd.date_range(end=end_date,periods=3)
-    model=get_model(dates,fcsts)
-
-both=pd.merge(cable,model,left_index=True,right_index=True,how='inner')
-print("both :", both)
-both=both[both.index.max()-timedelta(3):]
-#fcst=both.dropna(inplace=True)
+    both=pd.merge(cable,model,left_index=True,right_index=True,how='inner')
+    print("both :", both)
+    both=both[both.index.max()-timedelta(3):]
+    #fcst=both.dropna(inplace=True)
      
-print('BOTH :',both)
-print('BOTH(FCST) :',both[fcst])
-print('BOTH.TRANSPORT :',both.transport)
-diff=both[fcst] - both.transport
-print('DIFF :',diff)
-bias=diff.mean()
-rmse=mean_squared_error(both.transport,both[fcst])**0.5
-if both[fcst].mean() != 0.0:
-    scatter_index=100.0*(((diff**2).mean())**0.5 - bias**2)/both.transport.mean()
-else:
-    scatter_index=np.nan
+    print('BOTH :',both)
+    print('BOTH(FCST) :',both[fcst])
+    print('BOTH.TRANSPORT :',both.transport)
+    diff=both[fcst] - both.transport
+    print('DIFF :',diff)
+    bias=diff.mean()
+    rmse=mean_squared_error(both.transport,both[fcst])**0.5
+    if both[fcst].mean() != 0.0:
+        scatter_index=100.0*(((diff**2).mean())**0.5 - bias**2)/both.transport.mean()
+    else:
+        scatter_index=np.nan
 
-corr=both[fcst].corr(both.transport)
+    corr=both[fcst].corr(both.transport)
 
-print("BIAS :",bias, "RMSE :",rmse, "CORR :",corr, "SCATTER INDEX :",scatter_index)
+    print("BIAS :",bias, "RMSE :",rmse, "CORR :",corr, "SCATTER INDEX :",scatter_index)
+
