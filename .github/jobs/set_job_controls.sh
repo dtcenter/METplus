@@ -45,7 +45,6 @@ else
 	 [ "${branch_name:0:6}" == "main_v" ]; then
     run_use_cases=true
     run_all_use_cases=true
-    run_diff=true
   fi
 
   # check commit messages for skip or force keywords
