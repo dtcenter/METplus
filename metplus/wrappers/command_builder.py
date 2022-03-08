@@ -349,10 +349,12 @@ class CommandBuilder:
 
         for dtype in dtypes:
             for edge in edges:
-                input_list = [f'{dtype}_{app}_FILE_WINDOW_{edge}',
-                               f'{dtype}_FILE_WINDOW_{edge}',
-                               f'FILE_WINDOW_{edge}',
-                               ]
+                input_list = [
+                    f'{dtype}_{app}_FILE_WINDOW_{edge}',
+                    f'{app}_FILE_WINDOW_{edge}',
+                    f'{dtype}_FILE_WINDOW_{edge}',
+                    f'FILE_WINDOW_{edge}',
+                ]
                 output_key = f'{dtype}_FILE_WINDOW_{edge}'
                 value = self.handle_window_once(input_list, 0)
                 c_dict[output_key] = value
