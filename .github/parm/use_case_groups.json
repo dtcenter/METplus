@@ -11,13 +11,8 @@
   },
   {
     "category": "met_tool_wrapper",
-    "index_list": "59",
+    "index_list": "59-60",
     "run": false
-  },
-  {
-    "category": "met_tool_wrapper",
-    "index_list": "60",
-    "run": true
   },
   {
     "category": "air_quality_and_comp",
@@ -186,17 +181,7 @@
   },
   {
     "category": "tc_and_extra_tc",
-    "index_list": "3",
+    "index_list": "3-5",
     "run": false
   },
-  {
-    "category": "tc_and_extra_tc",
-    "index_list": "4",
-    "run": false
-  },
-  {
-    "category": "tc_and_extra_tc",
-    "index_list": "5",
-    "run": false
-  }
 ]
