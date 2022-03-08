@@ -13,10 +13,12 @@
 
 ARG OBTAIN_SOURCE_CODE=clone
 
+ARG MET_DOCKER_REPO=met
+
 ARG MET_TAG=develop
 
 # if OBTAIN_SOURCE_CODE=copy, copy files from build context into image
-FROM dtcenter/met:${MET_TAG} as build_copy
+FROM dtcenter/${MET_DOCKER_REPO}:${MET_TAG} as build_copy
 ONBUILD WORKDIR /metplus
 ONBUILD RUN mkdir -p METplus
 ONBUILD COPY . METplus
@@ -26,7 +28,7 @@ ONBUILD RUN if [ ! -e "METplus/ush/run_metplus.py" ]; then \
   fi
 
 # if OBTAIN_SOURCE_CODE=clone, clone repository
-FROM dtcenter/met:${MET_TAG} as build_clone
+FROM dtcenter/${MET_DOCKER_REPO}:${MET_TAG} as build_clone
 ONBUILD WORKDIR /metplus
 ONBUILD ARG SOURCE_VERSION
 ONBUILD RUN echo "Cloning METplus repository"; \
@@ -38,7 +40,7 @@ ONBUILD RUN echo "Cloning METplus repository"; \
   fi
 
 # if OBTAIN_SOURCE_CODE=none, do not retrieve files
-FROM dtcenter/met:${MET_TAG} as build_none
+FROM dtcenter/${MET_DOCKER_REPO}:${MET_TAG} as build_none
 ONBUILD WORKDIR /metplus
 
 # use build alias based on OBTAIN_SOURCE_CODE value
