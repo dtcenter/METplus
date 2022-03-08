@@ -94,13 +94,12 @@ def main(new_version):
 
     version_dir = os.path.join(DATA_DIR, version)
 
-    if not os.path.exists(version_dir):
-        print(f"Creating directory: {version_dir}")
-        os.makedirs(version_dir)
-
-    if os.listdir(version_dir):
-        print(f"ERROR: Directory is not empty: {version_dir}")
+    if os.path.exists(version_dir):
+        print(f"ERROR: Directory already exists: {version_dir}")
         sys.exit(1)
+
+    print(f"Creating directory: {version_dir}")
+    os.makedirs(version_dir)
 
     # loop down versions, i.e. 4.0, 3.1, 3.0, 2.X, etc.
     for cur_major in range(major, -1, -1):
