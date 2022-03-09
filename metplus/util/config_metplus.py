@@ -585,7 +585,7 @@ class METplusConfig(ProdConfig):
                 self._conf.remove_option('config', current_var)
 
     # override get methods to perform additional error checking
-    def getraw(self, sec, opt, default='', count=0):
+    def getraw(self, sec, opt, default='', count=0, sub_vars=True):
         """ parse parameter and replace any existing parameters
             referenced with the value (looking in same section, then
             config, dir, and os environment)
@@ -613,6 +613,10 @@ class METplusConfig(ProdConfig):
         if not in_template and default:
             self.check_default(sec, opt, default)
             return default
+
+        # if not substituting values of other variables return value
+        if not sub_vars:
+            return in_template
 
         # get inner-most tags that could potentially be other variables
         match_list = re.findall(r'\{([^}{]*)\}', in_template)
