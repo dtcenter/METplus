@@ -5,9 +5,9 @@ import numpy as np
 import netCDF4
 import warnings
 
-from WeatherRegime import WeatherRegimeCalculation
+from metcalcpy.contributed.blocking_weather_regime.WeatherRegime import WeatherRegimeCalculation
+from metcalcpy.contributed.blocking_weather_regime.Blocking_WeatherRegime_util import parse_steps, read_nc_met, write_mpr_file, reorder_fcst_regimes
 from metplotpy.contributed.weather_regime import plot_weather_regime as pwr
-from Blocking_WeatherRegime_util import parse_steps, read_nc_met, write_mpr_file
 
 
 def main():
@@ -136,6 +136,15 @@ def main():
             z500_fcst.shape)
 
     if ("KMEANS" in steps_list_obs) and ("KMEANS" in steps_list_fcst):
+        # Check to see if reordering the data so that the weather regime patterns match between
+        # the forecast and observations, is needed
+        #TODO:  make this automated based on spatial correlations
+        reorder_fcst = os.environ.get('REORDER_FCST','False').lower()
+        fcst_order_str = os.environ['FCST_ORDER'].split(',')
+        fcst_order = [int(fo) for fo in fcst_order_str]
+        if reorder_fcst == 'true':
+            kmeans_fcst,perc_fcst,wrc_fcst = reorder_fcst_regimes(kmeans_fcst,perc_fcst,wrc_fcst,wrnum_fcst,fcst_order)
+
         # Write matched pair output for weather regime classification
         modname = os.environ.get('MODEL_NAME','GFS')
         maskname = os.environ.get('MASK_NAME','FULL')

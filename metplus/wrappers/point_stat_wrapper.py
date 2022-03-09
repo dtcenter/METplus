@@ -12,6 +12,7 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
+from ..util import getlistint
 from ..util import met_util as util
 from ..util import time_util
 from ..util import do_string_sub
@@ -31,6 +32,7 @@ class PointStatWrapper(CompareGriddedWrapper):
         'METPLUS_MASK_GRID',
         'METPLUS_MASK_POLY',
         'METPLUS_MASK_SID',
+        'METPLUS_MASK_LLPNT',
         'METPLUS_OUTPUT_PREFIX',
         'METPLUS_CLIMO_CDF_DICT',
         'METPLUS_OBS_QUALITY_INC',
@@ -40,12 +42,20 @@ class PointStatWrapper(CompareGriddedWrapper):
         'METPLUS_CLIMO_MEAN_DICT',
         'METPLUS_CLIMO_STDEV_DICT',
         'METPLUS_HSS_EC_VALUE',
+        'METPLUS_HIRA_DICT',
+        'METPLUS_MESSAGE_TYPE_GROUP_MAP',
+        'METPLUS_FCST_FILE_TYPE',
+        'METPLUS_OBS_FILE_TYPE',
     ]
 
     # handle deprecated env vars used pre v4.0.0
     DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
         'CLIMO_MEAN_FILE',
         'CLIMO_STDEV_FILE',
+        'POINT_STAT_POLY',
+        'POINT_STAT_GRID',
+        'POINT_STAT_STATION_ID',
+        'POINT_STAT_MESSAGE_TYPE',
     ]
 
     OUTPUT_FLAGS = ['fho',
@@ -70,13 +80,11 @@ class PointStatWrapper(CompareGriddedWrapper):
                     'orank',
                     ]
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         self.app_name = 'point_stat'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
     def create_c_dict(self):
         """! Create a dictionary that holds all the values set in the
@@ -93,7 +101,7 @@ class PointStatWrapper(CompareGriddedWrapper):
                                 c_dict['VERBOSITY'])
         )
         c_dict['ALLOW_MULTIPLE_FILES'] = True
-        c_dict['OFFSETS'] = util.getlistint(
+        c_dict['OFFSETS'] = getlistint(
             self.config.getstr('config',
                                'POINT_STAT_OFFSETS',
                                '0')
@@ -140,34 +148,59 @@ class PointStatWrapper(CompareGriddedWrapper):
         # get the MET config file path or use default
         c_dict['CONFIG_FILE'] = self.get_config_file('PointStatConfig_wrapped')
 
-        self.handle_obs_window_variables(c_dict)
+        self.add_met_config_window('obs_window')
+        self.handle_obs_window_legacy(c_dict)
 
-        self.set_met_config_list(self.env_var_dict,
-                                 ['POINT_STAT_MASK_GRID',
-                                  'POINT_STAT_GRID'],
-                                 'grid',
-                                 'METPLUS_MASK_GRID',
-                                 allow_empty=True)
+        self.add_met_config(name='grid',
+                            data_type='list',
+                            env_var_name='METPLUS_MASK_GRID',
+                            metplus_configs=['POINT_STAT_MASK_GRID',
+                                             'POINT_STAT_GRID'],
+                            extra_args={'allow_empty': True})
 
-        self.set_met_config_list(self.env_var_dict,
-                                 ['POINT_STAT_MASK_POLY',
-                                  'POINT_STAT_POLY'],
-                                 'poly',
-                                 'METPLUS_MASK_POLY',
-                                 allow_empty=True)
+        self.add_met_config(name='poly',
+                            data_type='list',
+                            env_var_name='METPLUS_MASK_POLY',
+                            metplus_configs=['POINT_STAT_MASK_POLY',
+                                             'POINT_STAT_POLY',
+                                             ('POINT_STAT_'
+                                              'VERIFICATION_MASK_TEMPLATE')],
+                            extra_args={'allow_empty': True})
 
-        self.set_met_config_list(self.env_var_dict,
-                                 ['POINT_STAT_MASK_SID',
-                                  'POINT_STAT_STATION_ID'],
-                                 'sid',
-                                 'METPLUS_MASK_SID',
-                                 allow_empty=True)
+        self.add_met_config(name='sid',
+                            data_type='list',
+                            env_var_name='METPLUS_MASK_SID',
+                            metplus_configs=['POINT_STAT_MASK_SID',
+                                             'POINT_STAT_STATION_ID'],
+                            extra_args={'allow_empty': True})
 
+        self.add_met_config(name='llpnt',
+                            data_type='list',
+                            env_var_name='METPLUS_MASK_LLPNT',
+                            metplus_configs=['POINT_STAT_MASK_LLPNT'],
+                            extra_args={'allow_empty': True,
+                                        'remove_quotes': True})
 
-        self.set_met_config_list(self.env_var_dict,
-                                 'POINT_STAT_MESSAGE_TYPE',
-                                 'message_type',
-                                 'METPLUS_MESSAGE_TYPE',)
+        self.add_met_config(name='message_type',
+                            data_type='list')
+
+        self.add_met_config(name='file_type',
+                            data_type='string',
+                            env_var_name='FCST_FILE_TYPE',
+                            metplus_configs=['POINT_STAT_FCST_FILE_TYPE',
+                                             'FCST_POINT_STAT_FILE_TYPE',
+                                             'POINT_STAT_FILE_TYPE'],
+                            extra_args={'remove_quotes': True,
+                                        'uppercase': True})
+
+        self.add_met_config(name='file_type',
+                            data_type='string',
+                            env_var_name='OBS_FILE_TYPE',
+                            metplus_configs=['POINT_STAT_OBS_FILE_TYPE',
+                                             'OBS_POINT_STAT_FILE_TYPE',
+                                             'POINT_STAT_FILE_TYPE'],
+                            extra_args={'remove_quotes': True,
+                                        'uppercase': True})
 
         self.handle_climo_cdf_dict()
 
@@ -177,8 +210,6 @@ class PointStatWrapper(CompareGriddedWrapper):
         c_dict['OBS_VALID_END'] = (
             self.config.getraw('config', 'POINT_STAT_OBS_VALID_END', '')
         )
-
-        c_dict['MASK_POLY_TEMPLATE'] = self.read_mask_poly()
 
         c_dict['FCST_PROB_THRESH'] = (
             self.config.getstr('config',
@@ -232,6 +263,19 @@ class PointStatWrapper(CompareGriddedWrapper):
                             data_type='float',
                             metplus_configs=['POINT_STAT_HSS_EC_VALUE'])
 
+        self.add_met_config_dict('hira', {
+            'flag': 'bool',
+            'width': ('list', 'remove_quotes'),
+            'vld_thresh': 'float',
+            'cov_thresh': ('list', 'remove_quotes'),
+            'shape': ('string', 'remove_quotes, uppercase'),
+            'prob_cat_thresh': ('list', 'remove_quotes'),
+        })
+
+        self.add_met_config(name='message_type_group_map',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
+
         if not c_dict['FCST_INPUT_TEMPLATE']:
             self.log_error('Must set FCST_POINT_STAT_INPUT_TEMPLATE '
                            'in config file')
@@ -242,6 +286,22 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         if not c_dict['OUTPUT_DIR']:
             self.log_error('Must set POINT_STAT_OUTPUT_DIR in config file')
+
+        # handle old method of setting env vars in MET config files
+        # pull out value after equals sign before the last semi-colon of
+        # each value. If not set, then set the value to an empty string
+        self.env_var_dict['POINT_STAT_POLY'] = (
+            self.get_env_var_value('METPLUS_MASK_POLY', item_type='list')
+        )
+        self.env_var_dict['POINT_STAT_GRID'] = (
+            self.get_env_var_value('METPLUS_MASK_GRID', item_type='list')
+        )
+        self.env_var_dict['POINT_STAT_STATION_ID'] = (
+            self.get_env_var_value('METPLUS_MASK_SID', item_type='list')
+        )
+        self.env_var_dict['POINT_STAT_MESSAGE_TYPE'] = (
+            self.get_env_var_value('METPLUS_MESSAGE_TYPE', item_type='list')
+        )
 
         return c_dict
 
@@ -262,38 +322,6 @@ class PointStatWrapper(CompareGriddedWrapper):
                              to add each environment variable to run the
 
         """
-        # handle old method of setting env vars in MET config files
-        # pull out value after equals sign before the last semi-colon of
-        # each value. If not set, then set the value to an empty string
-        point_stat_poly = self.get_env_var_value('METPLUS_MASK_POLY')
-        if not point_stat_poly:
-            point_stat_poly = '[]'
-        point_stat_grid = self.get_env_var_value('METPLUS_MASK_GRID')
-        if not point_stat_grid:
-            point_stat_grid = '[]'
-        point_stat_sid = self.get_env_var_value('METPLUS_MASK_SID')
-        if not point_stat_sid:
-            point_stat_sid = '[]'
-
-        point_stat_message_type = (
-            self.get_env_var_value('METPLUS_MESSAGE_TYPE')
-        )
-
-        if not point_stat_message_type:
-            point_stat_message_type = '[]'
-
-        self.add_env_var('POINT_STAT_POLY',
-                         point_stat_poly)
-
-        self.add_env_var('POINT_STAT_GRID',
-                         point_stat_grid)
-
-        self.add_env_var('POINT_STAT_STATION_ID',
-                         point_stat_sid)
-
-        self.add_env_var('POINT_STAT_MESSAGE_TYPE',
-                         point_stat_message_type)
-
         # add old method of setting env vars
         self.add_env_var("FCST_FIELD",
                          self.c_dict.get('FCST_FIELD', ''))
@@ -305,9 +333,5 @@ class PointStatWrapper(CompareGriddedWrapper):
         self.add_env_var('OBS_WINDOW_BEGIN',
                          str(self.c_dict['OBS_WINDOW_BEGIN']))
         self.add_env_var('OBS_WINDOW_END', str(self.c_dict['OBS_WINDOW_END']))
-
-        # add additional env vars if they are specified
-        self.add_env_var('VERIF_MASK',
-                         self.c_dict.get('VERIFICATION_MASK', ''))
 
         super().set_environment_variables(time_info)

@@ -38,6 +38,59 @@ When applicable, release notes are followed by the GitHub issue number which
 describes the bugfix, enhancement, or new feature:
 https://github.com/dtcenter/METplus/issues
 
+
+METplus Version 4.1.0-beta6 Release Notes (2022-03-01)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Enhancements: 
+
+  * **Add support for setting file_type for fcst/obs for applications that process gridded data** (`#1165 <https://github.com/dtcenter/METplus/issues/1165>`_)
+  * **Enhance logic for setting mask.poly to allow MET list characters (square braces and semi-colon)** (`#966 <https://github.com/dtcenter/METplus/issues/966>`_)
+  * Enhance TCGen wrapper to add support for new configurations (`#1273 <https://github.com/dtcenter/METplus/issues/1273>`_)
+  * Add support for new climo_cdf.direct_prob flag (`#1392 <https://github.com/dtcenter/METplus/issues/1392>`_)
+  * Implement various enhancements to climatology settings (`#1247 <https://github.com/dtcenter/METplus/issues/1247>`_)
+  * Enhance logic to set climatology info for Python embedding (`#944 <https://github.com/dtcenter/METplus/issues/944>`_)
+  * Incorporate basic zonal and meridional means into METplus (`#1230 <https://github.com/dtcenter/METplus/issues/1230>`_)
+  * Add support for explicitly setting file list file paths in wrappers that support multiple input files (`#1289 <https://github.com/dtcenter/METplus/issues/1289>`_)
+  * Add support for setting grid_weight_flag in EnsembleStat (`#1369 <https://github.com/dtcenter/METplus/issues/1369>`_)
+  * Add option to PCPCombine to force using 0 hr accum in subtract mode (`#1368 <https://github.com/dtcenter/METplus/issues/1368>`_)
+  * Fix logic to use fcst dictionary if ens dictionary is not set in EnsembleStat wrapper (`#1421 <https://github.com/dtcenter/METplus/issues/1421>`_)
+  * Fix logic to create instances of other wrappers within wrappers to avoid modifying global configurations (`#1356 <https://github.com/dtcenter/METplus/issues/1356>`_)
+  * Remove support for PB2NC_OBS_PREPBUFR_MAP (`#1431 <https://github.com/dtcenter/METplus/issues/1431>`_)
+    
+    
+* New Use Cases:
+
+  * Precipitation-type comparison across 3 models (`#1408 <https://github.com/dtcenter/METplus/issues/1408>`_)
+  * TC Verification Compare ADECK vs BDECK (`#911 <https://github.com/dtcenter/METplus/issues/911>`_)
+
+* Internal:
+
+  * Document Continous Integration Functionality in the METplus Contributor's Guide (`#675 <https://github.com/dtcenter/METplus/issues/675>`_)
+
+METplus Version 4.1.0-beta5 Release Notes (2022-01-14)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Enhancements:
+
+  * **Add support for setting control members in EnsembleStat and GenEnsProd** (`#1236 <https://github.com/dtcenter/METplus/issues/1236>`_)
+  * **Enhance SeriesAnalysis wrapper to allow different field info values for each file in a list** (`#1166 <https://github.com/dtcenter/METplus/issues/1166>`_)
+  * Add support for setting INIT_LIST and VALID_LIST for irregular time intervals (`#1286 <https://github.com/dtcenter/METplus/issues/1286>`_)
+  * Support setting the OMP_NUM_THREADS environment variable (`#1320 <https://github.com/dtcenter/METplus/issues/1320>`_)
+  * Enhance ExtractTiles using MTD input to properly match times (`#1285 <https://github.com/dtcenter/METplus/issues/1285>`_)
+  * Add support for commonly changed MET config variables part 2 (`#896 <https://github.com/dtcenter/METplus/issues/896>`_)
+  * Prevent wildcard character from being used in output file path (`#1291 <https://github.com/dtcenter/METplus/issues/1291>`_)
+
+* New Use Cases:
+
+  * Satellite verification of sea surface salinity: SMOS vs RTOFS output (`#1116 <https://github.com/dtcenter/METplus/issues/1116>`_)
+
+* Internal:
+
+  * **Create guidance for memory-intensive use cases, introduce Python memory profiler** (`#1183 <https://github.com/dtcenter/METplus/issues/1183>`_)
+  * **Identify code throughout METplus components that are common utilities** (`#799 <https://github.com/dtcenter/METplus/issues/799>`_)
+  * **Add definitions to the Release Guide for the stages of the release cycle** (`#934 <https://github.com/dtcenter/METplus/issues/934>`_)
+
 METplus Version 4.1.0-beta4 Release Notes (2021-11-16)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

@@ -205,6 +205,13 @@ By default this is a directory called **stage** inside the
 
 This value is rarely changed, but it can be if desired.
 
+OMP_NUM_THREADS
+^^^^^^^^^^^^^^^
+
+If the MET executables were installed with threading support, then the number
+of threads used by the tools can be configured with this variable. See
+the glossary entry for :term:`OMP_NUM_THREADS` for more information.
+
 CONVERT
 ^^^^^^^
 
@@ -632,7 +639,9 @@ Looping by Valid Time
 When looping over valid time (`LOOP_BY` = VALID or REALTIME), the following
 variables must be set:
 
-:term:`VALID_TIME_FMT`:
+:term:`VALID_TIME_FMT`
+""""""""""""""""""""""
+
 This is the format of the valid times the user can configure in the METplus
 Wrappers. The value of `VALID_BEG` and `VALID_END` must correspond to this
 format.
@@ -644,13 +653,17 @@ Example::
 Using this format, the valid time range values specified must be defined
 as YYYYMMDDHH, i.e. 2019020112.
 
-:term:`VALID_BEG`:
+:term:`VALID_BEG`
+"""""""""""""""""
+
 This is the first valid time that will be processed. The format of this
 variable is controlled by :term:`VALID_TIME_FMT`. For example, if
 VALID_TIME_FMT=%Y%m%d, then VALID_BEG must be set to a valid time matching
 YYYYMMDD, such as 20190201.
 
-:term:`VALID_END`:
+:term:`VALID_END`
+"""""""""""""""""
+
 This is the last valid time that can be processed. The format of this
 variable is controlled by :term:`VALID_TIME_FMT`. For example, if
 VALID_TIME_FMT=%Y%m%d, then VALID_END must be set to a valid time matching
@@ -667,7 +680,9 @@ YYYYMMDD, such as 20190202.
     Wrappers will process valid times 20190201 and 20190202 before ending
     execution.
 
-:term:`VALID_INCREMENT`:
+:term:`VALID_INCREMENT`
+"""""""""""""""""""""""
+
 This is the time interval to add to each run time to determine the next run
 time to process. See :ref:`time-interval-units` for information on time
 interval formatting. Units of hours are assumed if no units are specified.
@@ -689,6 +704,20 @@ The following is a configuration that will process valid time 2019-02-01 at
 
 This will process data valid on 2019-02-01 at 00Z, 06Z, 12Z, and 18Z as well as 2019-02-02 at 00Z. For each of these valid times, the METplus wrappers can also loop over a set of forecast leads that are all valid at the current run time. See :ref:`looping_over_forecast_leads` for more information.
 
+:term:`VALID_LIST`
+""""""""""""""""""
+
+If the intervals between run times are irregular, then an explicit list of
+times can be defined. The following example will process the same times
+as the previous example::
+
+   [config]
+   LOOP_BY = VALID
+   VALID_TIME_FMT = %Y%m%d%H
+   VALID_LIST = 2019020100, 2019020106, 2019020112, 2019020118, 2019020200
+
+See the glossary entry for :term:`VALID_LIST` for more information.
+
 .. _Looping_by_Initialization_Time:
 
 Looping by Initialization Time
@@ -696,19 +725,27 @@ Looping by Initialization Time
 
 When looping over initialization time (:term:`LOOP_BY` = INIT or LOOP_BY = RETRO), the following variables must be set:
 
-:term:`INIT_TIME_FMT`:
+:term:`INIT_TIME_FMT`
+"""""""""""""""""""""
+
 This is the format of the initialization times the user can configure in METplus Wrappers. The value of :term:`INIT_BEG` and :term:`INIT_END` must correspond to this format. Example: INIT_TIME_FMT = %Y%m%d%H. Using this format, the initialization time range values specified must be defined as YYYYMMDDHH, i.e. 2019020112.
 
-:term:`INIT_BEG`:
+:term:`INIT_BEG`
+""""""""""""""""
+
 This is the first initialization time that will be processed. The format of this variable is controlled by :term:`INIT_TIME_FMT`. For example, if INIT_TIME_FMT = %Y%m%d, then INIT_BEG must be set to an initialization time matching YYYYMMDD, such as 20190201.
 
-:term:`INIT_END`:
+:term:`INIT_END`
+""""""""""""""""
+
 This is the last initialization time that can be processed. The format of this variable is controlled by INIT_TIME_FMT. For example, if INIT_TIME_FMT = %Y%m%d, then INIT_END must be set to an initialization time matching YYYYMMDD, such as 20190202.
 
 .. note::
     The time specified for this variable will not necessarily be processed. It is used to determine the cutoff of run times that can be processed. For example, if METplus Wrappers is configured to start at 2019-02-01 and end at 2019-02-02 processing data in 48 hour increments, it will process 2019-02-01 then increment the run time to 2019-02-03. This is later than the INIT_END valid, so execution will stop. However, if the increment is set to 24 hours (see INIT_INCREMENT), then METplus Wrappers will process initialization times 2019-02-01 and 2019-02-02 before ending executaion.
 
-:term:`INIT_INCREMENT`:
+:term:`INIT_INCREMENT`
+""""""""""""""""""""""
+
 This is the time interval to add to each run time to determine the next run time to process. See :ref:`time-interval-units` for information on time interval formatting. Units of hours are assumed if no units are specified. This value must be greater than or equal to 60 seconds because the METplus wrappers currently do not support processing intervals of less than one minute.
 
 The following is a configuration that will process initialization time 2019-02-01 at 00Z until 2019-02-02 at 00Z in 6 hour (21600 second) increments::
@@ -724,6 +761,21 @@ The following is a configuration that will process initialization time 2019-02-0
     Substituting VALID_INCREMENT = 21600 will generate the same result.
 
 This will process data initialized on 2019-02-01 at 00Z, 06Z, 12Z, and 18Z as well as 2019-02-02 at 00Z. For each of these initialization times, METplus Wrappers can also loop over a set of forecast leads that are all initialized at the current run time. See :ref:`looping_over_forecast_leads` for more information.
+
+:term:`INIT_LIST`
+"""""""""""""""""
+
+If the intervals between run times are irregular, then an explicit list of
+times can be defined. The following example will process the same times
+as the previous example::
+
+   [config]
+   LOOP_BY = INIT
+   INIT_TIME_FMT = %Y%m%d%H
+   INIT_LIST = 2019020100, 2019020106, 2019020112, 2019020118, 2019020200
+
+See the glossary entry for :term:`INIT_LIST` for more information.
+
 
 .. _looping_over_forecast_leads:
 
@@ -1059,15 +1111,14 @@ no space between the process name and the parenthesis.
     [config]
     PROCESS_LIST = GridStat, GridStat(my_instance_name)
 
-    [dir]
     GRID_STAT_OUTPUT_DIR = /grid/stat/output/dir
 
     [my_instance_name]
     GRID_STAT_OUTPUT_DIR = /my/instance/name/output/dir
 
-In this example, the first occurence of GridStat in the PROCESS_LIST does
+In this example, the first occurrence of GridStat in the PROCESS_LIST does
 not have an instance name associated with it, so it will use the value
-/grid/stat/output/dir as the output directory. The second occurence has
+/grid/stat/output/dir as the output directory. The second occurrence has
 an instance name 'my_instance_name' and there is a section header with
 the same name, so this instance will use /my/instance/name/output/dir as
 the output directory.
@@ -1164,10 +1215,8 @@ CUSTOM_LOOP_LIST for that wrapper only.
 
   PCP_COMBINE_CUSTOM_LOOP_LIST = mem_001, mem_002
 
-  [dir]
   FCST_PCP_COMBINE_INPUT_DIR = /d1/ensemble
 
-  [filename_templates]
   FCST_PCP_COMBINE_INPUT_TEMPLATE = {custom?fmt=%s}/{valid?fmt=%Y%m%d}.nc
 
 This configuration will run the following:
@@ -1193,7 +1242,6 @@ This configuration will run the following:
 
   SERIES_ANALYSIS_CONFIG_FILE = {CONFIG_DIR}/SAConfig_{custom?fmt=%s}
 
-  [dir]
   SERIES_ANALYSIS_OUTPUT_DIR = {OUTPUT_BASE}/SA/{custom?fmt=%s}
 
 This configuration will run SeriesAnalysis:
@@ -1470,10 +1518,9 @@ Using Templates to find Observation Data
 
 The following configuration variables describe input observation data::
 
-  [dir]
+  [config]
   OBS_GRID_STAT_INPUT_DIR = /my/path/to/grid_stat/input/obs
 
-  [filename_templates]
   OBS_GRID_STAT_INPUT_TEMPLATE = {valid?fmt=%Y%m%d}/prefix.{valid?fmt=%Y%m%d%H}.ext
 
 The input directory is the top level directory containing all of the
@@ -1511,16 +1558,31 @@ Most forecast files contain the initialization time and the forecast lead
 in the filename. The keywords 'init' and 'lead' can be used to describe
 the template of these files::
 
-  [dir]
+  [config]
   FCST_GRID_STAT_INPUT_DIR = /my/path/to/grid_stat/input/fcst
 
-  [filename_templates]
   FCST_GRID_STAT_INPUT_TEMPLATE = prefix.{init?fmt=%Y%m%d%H}_f{lead?fmt=%3H}.ext
 
 For a valid time of 20190201_00Z and a forecast lead of 3, METplus Wrappers
 will look for the following forecast file:
 
 |   /my/path/to/grid_stat/input/fcst/prefix.2019013121_f003.ext
+|
+
+Some forecast file names contain the forecast lead time in seconds,
+padded with zeros. In this case, the 'lead' keyword with the
+format (fmt) set to %8S will use the forecast lead seconds with
+8 digits as shown below::
+
+  [config]
+  FCST_GRID_STAT_INPUT_DIR = /my/path/to/grid_stat/input/fcst
+
+  FCST_GRID_STAT_INPUT_TEMPLATE = {init?fmt=%Y%m%d}/g_{init?fmt=%H%M%S}/f_{lead?fmt=%8S}.ext
+
+For a valid time of 20190201_03Z and a forecast lead of 3 hours,
+METplus Wrappers will look for the following forecast file:
+
+|   /my/path/to/grid_stat/input/fcst/20190201/g_000000/f_00010800.ext
 |
 
 Using Templates to find Data Assimilation Data
@@ -1533,10 +1595,8 @@ the valid time of the data. Consider the following configuration::
   [config]
   PB2NC_OFFSETS = 6, 3
 
-  [dir]
   PB2NC_INPUT_DIR = /my/path/to/prepbufr
 
-  [filename_templates]
   PB2NC_INPUT_TEMPLATE = prefix.{da_init?fmt=%Y%m%d}_{cycle?fmt=%H}_off{offset?fmt=%2H}.ext
 
 The PB2NC_OFFSETS list tells METplus Wrappers the order in which to
@@ -1565,7 +1625,7 @@ the following day. In this example, for a run at 00Z you want to use the
 file from the previous day and for the 01Z to 23Z runs you want to use the
 file that corresponds to the current day. Here is an example::
 
-  [filename_templates]
+  [config]
   OBS_POINT_STAT_INPUT_TEMPLATE = {valid?fmt=%Y%m%d?shift=-3600}.ext
 
 Running the above configuration at a valid time of 20190201_12Z will shift
@@ -1593,10 +1653,8 @@ configuration::
   OBS_FILE_WINDOW_BEGIN = -7200
   OBS_FILE_WINDOW_END = 7200
 
-  [dir]
   OBS_GRID_STAT_INPUT_DIR = /my/grid_stat/input/obs
 
-  [filename_templates]
   OBS_GRID_STAT_INPUT_TEMPLATE = {valid?fmt=%Y%m%d}/pre.{valid?fmt=%Y%m%d}_{valid?fmt=%H}.ext
 
 For a run time of 20190201_00Z, and a set of files in the input directory
@@ -1710,10 +1768,8 @@ how these variables affect how the data is processed.
 
     PROCESS_LIST = SeriesAnalysis
 
-    [dir]
     FCST_SERIES_ANALYSIS_INPUT_DIR = /my/fcst/dir
 
-    [filename_templates]
     FCST_SERIES_ANALYSIS_INPUT_TEMPLATE = I{init?fmt=%Y%m%d%H}_F{lead?fmt=%3H}_V{valid?fmt=%H}
 
 In this example, the wrapper will go through all initialization and forecast

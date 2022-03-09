@@ -15,6 +15,9 @@ import os
 from ..util import met_util as util
 from ..util import time_util
 from ..util import do_string_sub
+from ..util import parse_var_list
+from ..util import get_process_list
+from ..util import remove_quotes
 from . import ReformatGriddedWrapper
 
 # pylint:disable=pointless-string-statement
@@ -25,13 +28,11 @@ from . import ReformatGriddedWrapper
 class RegridDataPlaneWrapper(ReformatGriddedWrapper):
     '''! Wraps the MET tool regrid_data_plane to reformat gridded datasets
     '''
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         self.app_name = 'regrid_data_plane'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -106,7 +107,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 self.log_error("FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE must be set if "
                                "FCST_REGRID_DATA_PLANE_RUN is True")
 
-            c_dict['VAR_LIST_FCST'] = util.parse_var_list(
+            c_dict['VAR_LIST_FCST'] = parse_var_list(
                 self.config,
                 data_type='FCST',
                 met_tool=self.app_name
@@ -129,7 +130,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 self.log_error("OBS_REGRID_DATA_PLANE_OUTPUT_TEMPLATE must be set if "
                                "OBS_REGRID_DATA_PLANE_RUN is True")
 
-            c_dict['VAR_LIST_OBS'] = util.parse_var_list(
+            c_dict['VAR_LIST_OBS'] = parse_var_list(
                 self.config,
                 data_type='OBS',
                 met_tool=self.app_name
@@ -155,7 +156,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         # only check if VERIFICATION_GRID is set if running the tool from the process list
         # RegridDataPlane can be called from other tools like CustomIngest, which sets the
         # verification grid itself
-        if 'RegridDataPlane' in util.get_process_list(self.config):
+        if 'RegridDataPlane' in get_process_list(self.config):
             if not c_dict['VERIFICATION_GRID']:
                 self.log_error("REGRID_DATA_PLANE_VERIF_GRID must be set.")
 
@@ -381,7 +382,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
         field_name = field_info[f'{data_type.lower()}_name']
         # strip off quotes around input_level if found
-        input_level = util.remove_quotes(field_info[f'{data_type.lower()}_level'])
+        input_level = remove_quotes(field_info[f'{data_type.lower()}_level'])
 
         field_text = f"-field 'name=\"{field_name}\";"
 

@@ -12,6 +12,7 @@ from ..util import do_string_sub, getlist
 from ..util import get_seconds_from_string, ti_get_lead_string, ti_calculate
 from ..util import get_relativedelta, ti_get_seconds_from_relativedelta
 from ..util import time_string_to_met_time, seconds_to_met_time
+from ..util import parse_var_list
 from . import ReformatGriddedWrapper
 
 '''!@namespace PCPCombineWrapper
@@ -25,13 +26,11 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
     # valid values for [FCST/OBS]_PCP_COMBINE_METHOD
     valid_run_methods = ['ADD', 'SUM', 'SUBTRACT', 'DERIVE', 'USER_DEFINED']
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         self.app_name = 'pcp_combine'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
     def create_c_dict(self):
         """! Create dictionary from config items to be used in the wrapper
@@ -56,14 +55,14 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         if fcst_run:
             c_dict = self.set_fcst_or_obs_dict_items('FCST', c_dict)
-            c_dict['VAR_LIST_FCST'] = util.parse_var_list(
+            c_dict['VAR_LIST_FCST'] = parse_var_list(
                 self.config,
                 data_type='FCST',
                 met_tool=self.app_name
             )
         if obs_run:
             c_dict = self.set_fcst_or_obs_dict_items('OBS', c_dict)
-            c_dict['VAR_LIST_OBS'] = util.parse_var_list(
+            c_dict['VAR_LIST_OBS'] = parse_var_list(
                 self.config,
                 data_type='OBS',
                 met_tool=self.app_name
@@ -186,6 +185,11 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         c_dict[f'{d_type}_EXTRA_OUTPUT_NAMES'] = getlist(
             self.config.getraw('config',
                                f'{d_type}_PCP_COMBINE_EXTRA_OUTPUT_NAMES', '')
+        )
+
+        c_dict[f'{d_type}_USE_ZERO_ACCUM'] = self.config.getbool(
+            'config',
+            f'{d_type}_PCP_COMBINE_USE_ZERO_ACCUM', False
         )
 
         if run_method == 'DERIVE' and not c_dict[f'{d_type}_STAT_LIST']:
@@ -363,9 +367,11 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         # if data is GRIB and second lead is 0, then
         # run PCPCombine in -add mode with just the first file
-        if lead2 == 0 and self.c_dict[data_src+'_INPUT_DATATYPE'] == 'GRIB':
-            self.logger.debug("Subtracted accumulation is 0 for GRIB data,"
-                              " so running ADD mode on one file")
+        if lead2 == 0 and not self.c_dict[f'{data_src}_USE_ZERO_ACCUM']:
+            self.logger.info("Subtracted accumulation is 0,"
+                             " so running ADD mode on one file."
+                             "To use 0 accum data, set "
+                             f"{data_src}_PCP_COMBINE_USE_ZERO_ACCUM = True")
             self.args.clear()
             self.args.append('-add')
             field_info = self.get_field_string(

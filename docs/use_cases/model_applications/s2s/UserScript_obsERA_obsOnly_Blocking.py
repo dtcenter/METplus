@@ -1,6 +1,6 @@
 """
-Blocking Calculation: RegridDataPlane, PcpCombine, and Blocking python code
-===========================================================================
+Blocking Calculation: ERA RegridDataPlane, PcpCombine, and Blocking python code
+================================================================================
 
 model_applications/
 s2s/
@@ -114,19 +114,17 @@ UserScript_obsERA_obsOnly_Blocking.py
 # parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_Blocking/Blocking_driver.py:
 # This script calls the requested steps in the blocking analysis for a forecast, observation, or both.
 #
-# parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_Blocking/Blocking.py:
+# metcalcpy/contributed/blocking_weather_regime/Blocking.py:
 # This script runs the requested steps, containing the code for computing CBLs, computing IBLs, computing GIBLs,
-# and computing blocks.
+# and computing blocks.  See the METcalcpy `Blocking Calculation Script <https://github.com/dtcenter/METcalcpy/blob/develop/metcalcpy/contributed/blocking_weather_regime/Blocking.py>`_ for more information.
 #
-# parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_Blocking/Blocking_WeatherRegime_util.py:
+# metcalcpy/contributed/blocking_weather_regime/Blocking_WeatherRegime_util.py:
 # This script contains functions used by both the blocking anwd weather regime analysis, including the code for 
 # determining which steps the user wants to run, and finding and reading the input files in the format from the output
-# pre-processing steps
+# pre-processing steps.  See the METcalcpy `Utility script <https://github.com/dtcenter/METcalcpy/blob/develop/metcalcpy/contributed/blocking_weather_regime/Blocking_WeatherRegime_util.py>`_ for more information.
 #
 # .. highlight:: python
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_Blocking/Blocking_driver.py
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_Blocking/Blocking.py
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_Blocking/Blocking_WeatherRegime_util.py
 #
 
 ##############################################################################
@@ -137,11 +135,11 @@ UserScript_obsERA_obsOnly_Blocking.py
 #
 # 1) Passing in UserScript_obsERA_obsOnly_Blocking.py then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_Blocking.py -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_Blocking.py -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_obsERA_obsOnly_Blocking.py::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_Blocking.py
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_Blocking.py
 #
 # The following variables must be set correctly:
 #

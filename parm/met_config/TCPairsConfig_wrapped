@@ -82,13 +82,16 @@ valid_mask = "";
 //
 // Specify if the code should check for duplicate ATCF lines
 //
-check_dup = FALSE;
+//check_dup =
+${METPLUS_CHECK_DUP}
+
 
 //
 // Specify special processing to be performed for interpolated models.
 // Set to NONE, FILL, or REPLACE.
 //
-interp12 = REPLACE;
+//interp12 =
+${METPLUS_INTERP12}
 
 //
 // Specify how consensus forecasts should be defined

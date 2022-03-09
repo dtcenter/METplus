@@ -10,7 +10,7 @@ import pytest
 import datetime
 from metplus.wrappers.command_builder import CommandBuilder
 from metplus.util import time_util
-from metplus.util import METConfigInfo as met_config
+from metplus.util import METConfig
 
 
 @pytest.mark.parametrize(
@@ -236,39 +236,6 @@ def test_find_obs_dated_next_day(metplus_config):
     obs_file = pcw.find_obs(time_info, v)
     assert obs_file == pcw.c_dict['OBS_INPUT_DIR']+'/20180202/20180202_0013'
 
-@pytest.mark.parametrize(
-    'overrides, c_dict', [
-        ({'LOG_MET_VERBOSITY': '5', }, # string
-         {'VERBOSITY': '5', }),
-        ({'CUSTOM_LOOP_LIST': 'a,b,c', }, # list
-         {'CUSTOM_LOOP_LIST': ['a', 'b', 'c'], }),
-        ({'SKIP_TIMES': '"%H:12,18", "%Y%m%d:20200201"', },  # dict
-         {'SKIP_TIMES': {'%H': ['12', '18'],
-                         '%Y%m%d': ['20200201'], }}),
-        ]
-)
-def test_override_config_in_c_dict(metplus_config, overrides, c_dict):
-    config = metplus_config()
-
-    pcw = CommandBuilder(config, config_overrides=overrides)
-    for key, expected_value in c_dict.items():
-        assert pcw.c_dict.get(key) == expected_value
-
-@pytest.mark.parametrize(
-    'overrides', [
-        ({'LOG_MET_VERBOSITY': '5', }),
-        ({'CUSTOM_LOOP_LIST': 'a,b,c', }),
-        ({'SKIP_TIMES': '"%H:12,18", "%Y%m%d:20200201"', }),
-        ({'FAKE_TEMPLATE': '{valid?fmt=%Y%m%d%H}', }),
-        ]
-)
-def test_override_config(metplus_config, overrides):
-    config = metplus_config()
-
-    pcw = CommandBuilder(config, config_overrides=overrides)
-    for key, expected_value in overrides.items():
-        assert pcw.config.getraw('config', key) == expected_value
-
 # dictionary items with values will be set in [test_section]
 # items with value None will not be set, so it should use
 # the value in [config], which is always 'default'
@@ -381,19 +348,6 @@ def test_handle_description(metplus_config, config_overrides, expected_value):
     assert cbw.env_var_dict.get('METPLUS_DESC', '') == expected_value
 
 @pytest.mark.parametrize(
-    'input, output', [
-        ('', 'NONE'),
-        ('NONE', 'NONE'),
-        ('FCST', 'FCST'),
-        ('OBS', 'OBS'),
-        ('G002', '"G002"'),
-    ]
-)
-def test_format_regrid_to_grid(metplus_config, input, output):
-    cbw = CommandBuilder(metplus_config())
-    assert cbw.format_regrid_to_grid(input) == output
-
-@pytest.mark.parametrize(
     'config_overrides, set_to_grid, expected_dict', [
         ({}, True, {'REGRID_TO_GRID': 'NONE'}),
         ({}, False, {}),
@@ -499,25 +453,29 @@ def test_handle_regrid_new(metplus_config, config_overrides, expected_output):
          True, 'test_string_1 = value_1;'),
     ]
 )
-def test_set_met_config_string(metplus_config, mp_config_name, met_config_name,
+def test_add_met_config_string(metplus_config, mp_config_name, met_config_name,
                                c_dict_key, remove_quotes, expected_output):
     cbw = CommandBuilder(metplus_config())
 
     # set some config variables to test
     cbw.config.set('config', 'TEST_STRING_1', 'value_1')
 
-    c_dict = {}
+    extra_args = {}
+    if remove_quotes:
+        extra_args['remove_quotes'] = True
 
-    cbw.set_met_config_string(c_dict,
-                              mp_config_name,
-                              met_config_name,
-                              c_dict_key=c_dict_key,
-                              remove_quotes=remove_quotes)
     key = c_dict_key
     if key is None:
-        key = met_config_name.upper()
+        key = met_config_name
+    key = key.upper()
 
-    assert c_dict.get(key, '') == expected_output
+    cbw.add_met_config(name=met_config_name,
+                       data_type='string',
+                       env_var_name=key,
+                       metplus_configs=[mp_config_name],
+                       extra_args=extra_args)
+
+    assert cbw.env_var_dict.get(f'METPLUS_{key}', '') == expected_output
 
 @pytest.mark.parametrize(
     'mp_config_name,met_config_name,c_dict_key,uppercase,expected_output, is_ok', [
@@ -547,7 +505,7 @@ def test_set_met_config_string(metplus_config, mp_config_name, met_config_name,
          True, '', False),
     ]
 )
-def test_set_met_config_bool(metplus_config, mp_config_name, met_config_name,
+def test_add_met_config_bool(metplus_config, mp_config_name, met_config_name,
                              c_dict_key, uppercase, expected_output, is_ok):
     cbw = CommandBuilder(metplus_config())
 
@@ -556,18 +514,22 @@ def test_set_met_config_bool(metplus_config, mp_config_name, met_config_name,
     cbw.config.set('config', 'TEST_BOOL_3', False)
     cbw.config.set('config', 'TEST_BOOL_4', 'chicken')
 
-    c_dict = {}
+    extra_args = {}
+    if not uppercase:
+        extra_args['uppercase'] = False
 
-    cbw.set_met_config_bool(c_dict,
-                            mp_config_name,
-                            met_config_name,
-                            c_dict_key=c_dict_key,
-                            uppercase=uppercase)
     key = c_dict_key
     if key is None:
-        key = met_config_name.upper()
+        key = met_config_name
+    key = key.upper()
 
-    assert c_dict.get(key, '') == expected_output
+    cbw.add_met_config(name=met_config_name,
+                       data_type='bool',
+                       env_var_name=key,
+                       metplus_configs=[mp_config_name],
+                       extra_args=extra_args)
+
+    assert cbw.env_var_dict.get(f'METPLUS_{key}', '') == expected_output
     assert cbw.isOK == is_ok
 
 # int
@@ -590,7 +552,7 @@ def test_set_met_config_bool(metplus_config, mp_config_name, met_config_name,
          '', False),
     ]
 )
-def test_set_met_config_int(metplus_config, mp_config_name, met_config_name,
+def test_add_met_config_int(metplus_config, mp_config_name, met_config_name,
                              c_dict_key, expected_output, is_ok):
     cbw = CommandBuilder(metplus_config())
 
@@ -599,17 +561,17 @@ def test_set_met_config_int(metplus_config, mp_config_name, met_config_name,
     cbw.config.set('config', 'TEST_INT_3', -4)
     cbw.config.set('config', 'TEST_INT_4', 'chicken')
 
-    c_dict = {}
-
-    cbw.set_met_config_int(c_dict,
-                           mp_config_name,
-                           met_config_name,
-                           c_dict_key=c_dict_key)
     key = c_dict_key
     if key is None:
-        key = met_config_name.upper()
+        key = met_config_name
+    key = key.upper()
 
-    assert c_dict.get(key, '') == expected_output
+    cbw.add_met_config(name=met_config_name,
+                       data_type='int',
+                       env_var_name=key,
+                       metplus_configs=[mp_config_name])
+
+    assert cbw.env_var_dict.get(f'METPLUS_{key}', '') == expected_output
     assert cbw.isOK == is_ok
 
 @pytest.mark.parametrize(
@@ -631,7 +593,7 @@ def test_set_met_config_int(metplus_config, mp_config_name, met_config_name,
          '', False),
     ]
 )
-def test_set_met_config_float(metplus_config, mp_config_name, met_config_name,
+def test_add_met_config_float(metplus_config, mp_config_name, met_config_name,
                              c_dict_key, expected_output, is_ok):
     cbw = CommandBuilder(metplus_config())
 
@@ -640,17 +602,17 @@ def test_set_met_config_float(metplus_config, mp_config_name, met_config_name,
     cbw.config.set('config', 'TEST_FLOAT_3', 4)
     cbw.config.set('config', 'TEST_FLOAT_4', 'chicken')
 
-    c_dict = {}
-
-    cbw.set_met_config_float(c_dict,
-                             mp_config_name,
-                             met_config_name,
-                             c_dict_key=c_dict_key)
     key = c_dict_key
     if key is None:
-        key = met_config_name.upper()
+        key = met_config_name
+    key = key.upper()
 
-    assert c_dict.get(key, '') == expected_output
+    cbw.add_met_config(name=met_config_name,
+                       data_type='float',
+                       env_var_name=key,
+                       metplus_configs=[mp_config_name])
+
+    assert cbw.env_var_dict.get(f'METPLUS_{key}', '') == expected_output
     assert cbw.isOK == is_ok
 
 @pytest.mark.parametrize(
@@ -678,7 +640,7 @@ def test_set_met_config_float(metplus_config, mp_config_name, met_config_name,
          'test_thresh_6 = NA;', True),
     ]
 )
-def test_set_met_config_thresh(metplus_config, mp_config_name, met_config_name,
+def test_add_met_config_thresh(metplus_config, mp_config_name, met_config_name,
                                c_dict_key, expected_output, is_ok):
     cbw = CommandBuilder(metplus_config())
 
@@ -689,17 +651,18 @@ def test_set_met_config_thresh(metplus_config, mp_config_name, met_config_name,
     cbw.config.set('config', 'TEST_THRESH_5', '>CDP40&&<=CDP50')
     cbw.config.set('config', 'TEST_THRESH_6', 'NA')
 
-    c_dict = {}
-
-    cbw.set_met_config_thresh(c_dict,
-                              mp_config_name,
-                              met_config_name,
-                              c_dict_key=c_dict_key)
     key = c_dict_key
     if key is None:
-        key = met_config_name.upper()
+        key = met_config_name
+    key = key.upper()
 
-    assert c_dict.get(key, '') == expected_output
+    cbw.add_met_config(name=met_config_name,
+                       env_var_name=key,
+                       data_type='thresh',
+                       metplus_configs=[mp_config_name])
+
+    print(f"KEY: {key}, ENV VARS: {cbw.env_var_dict}")
+    assert cbw.env_var_dict.get(f'METPLUS_{key}', '') == expected_output
     assert cbw.isOK == is_ok
 
 @pytest.mark.parametrize(
@@ -727,7 +690,7 @@ def test_set_met_config_thresh(metplus_config, mp_config_name, met_config_name,
          True, 'test_list_4 = [value_1, value2];'),
     ]
 )
-def test_set_met_config_list(metplus_config, mp_config_name, met_config_name,
+def test_add_met_config_list(metplus_config, mp_config_name, met_config_name,
                              c_dict_key, remove_quotes, expected_output):
     cbw = CommandBuilder(metplus_config())
 
@@ -736,18 +699,23 @@ def test_set_met_config_list(metplus_config, mp_config_name, met_config_name,
     cbw.config.set('config', 'TEST_LIST_3', "'value_1',   'value2'")
     cbw.config.set('config', 'TEST_LIST_4', '"value_1",   "value2"')
 
-    c_dict = {}
+    extra_args = {}
+    if remove_quotes:
+        extra_args['remove_quotes'] = True
 
-    cbw.set_met_config_list(c_dict,
-                            mp_config_name,
-                            met_config_name,
-                            c_dict_key=c_dict_key,
-                            remove_quotes=remove_quotes)
     key = c_dict_key
     if key is None:
-        key = met_config_name.upper()
+        key = met_config_name
 
-    assert c_dict.get(key, '') == expected_output
+    key = key.upper()
+
+    cbw.add_met_config(name=met_config_name,
+                       data_type='list',
+                       env_var_name=key,
+                       metplus_configs=[mp_config_name],
+                       extra_args=extra_args)
+    print(f"KEY: {key}, ENV VARS: {cbw.env_var_dict}")
+    assert cbw.env_var_dict.get(f'METPLUS_{key}', '') == expected_output
 
 @pytest.mark.parametrize(
     'mp_config_name,allow_empty,expected_output', [
@@ -761,42 +729,28 @@ def test_set_met_config_list(metplus_config, mp_config_name, met_config_name,
         ('TEST_LIST_2', True, ''),
     ]
 )
-def test_set_met_config_list_allow_empty(metplus_config, mp_config_name,
+def test_add_met_config_list_allow_empty(metplus_config, mp_config_name,
                                          allow_empty, expected_output):
     cbw = CommandBuilder(metplus_config())
 
     # set some config variables to test
     cbw.config.set('config', 'TEST_LIST_1', '')
 
-    c_dict = {}
+    extra_args = {}
+    if allow_empty:
+        extra_args['allow_empty'] = True
 
     met_config_name = mp_config_name.lower()
 
-    cbw.set_met_config_list(c_dict,
-                            mp_config_name,
-                            met_config_name,
-                            allow_empty=allow_empty)
+    cbw.add_met_config(name=met_config_name,
+                       data_type='list',
+                       metplus_configs=[mp_config_name],
+                       extra_args=extra_args)
 
-    assert c_dict.get(mp_config_name, '') == expected_output
+    assert cbw.env_var_dict.get(f'METPLUS_{mp_config_name}', '') == expected_output
+    #assert c_dict.get(mp_config_name, '') == expected_output
 
-@pytest.mark.parametrize(
-    'data_type, expected_function', [
-        ('int', 'set_met_config_int'),
-        ('float', 'set_met_config_float'),
-        ('list', 'set_met_config_list'),
-        ('string', 'set_met_config_string'),
-        ('thresh', 'set_met_config_thresh'),
-        ('bool', 'set_met_config_bool'),
-        ('bad_name', None),
-    ]
-)
-def test_set_met_config_function(metplus_config, data_type, expected_function):
-    cbw = CommandBuilder(metplus_config())
-    function_found = cbw.set_met_config_function(data_type)
-    function_name = function_found.__name__ if function_found else None
-    assert(function_name == expected_function)
-
-def test_handle_met_config_dict(metplus_config):
+def test_add_met_config_dict(metplus_config):
     dict_name = 'fcst_hr_window'
     beg = -3
     end = 5
@@ -813,12 +767,12 @@ def test_handle_met_config_dict(metplus_config):
         'end': 'int',
     }
 
-    cbw.handle_met_config_dict(dict_name, items)
+    cbw.add_met_config_dict(dict_name, items)
     print(f"env_var_dict: {cbw.env_var_dict}")
     actual_value = cbw.env_var_dict.get('METPLUS_FCST_HR_WINDOW_DICT')
     assert actual_value == expected_value
 
-def test_handle_met_config_window(metplus_config):
+def test_add_met_config_window(metplus_config):
     dict_name = 'fcst_hr_window'
     beg = -3
     end = 5
@@ -830,7 +784,7 @@ def test_handle_met_config_window(metplus_config):
     cbw = CommandBuilder(config)
     cbw.app_name = 'tc_gen'
 
-    cbw.handle_met_config_window(dict_name)
+    cbw.add_met_config_window(dict_name)
     print(f"env_var_dict: {cbw.env_var_dict}")
     actual_value = cbw.env_var_dict.get('METPLUS_FCST_HR_WINDOW_DICT')
     assert actual_value == expected_value
@@ -848,7 +802,7 @@ def test_add_met_config(metplus_config):
     expected_value = f'valid_freq = {value};'
     assert cbw.env_var_dict['METPLUS_VALID_FREQ'] == expected_value
 
-def test_handle_met_config_dict_nested(metplus_config):
+def test_add_met_config_dict_nested(metplus_config):
     dict_name = 'outer'
     beg = -3
     end = 5
@@ -876,6 +830,6 @@ def test_handle_met_config_dict_nested(metplus_config):
                                  }),
     }
 
-    cbw.handle_met_config_dict(dict_name, items)
+    cbw.add_met_config_dict(dict_name, items)
     print(f"env_var_dict: {cbw.env_var_dict}")
     assert cbw.env_var_dict.get('METPLUS_OUTER_DICT') == expected_value

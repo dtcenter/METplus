@@ -16,6 +16,7 @@ from ..util import met_util as util
 from ..util import time_util
 from . import CommandBuilder
 from ..util import do_string_sub
+from ..util import parse_var_list
 
 '''!@namespace TCRMWWrapper
 @brief Wraps the TC-RMW tool
@@ -46,13 +47,12 @@ class TCRMWWrapper(CommandBuilder):
         'METPLUS_DELTA_RANGE_KM',
         'METPLUS_RMW_SCALE',
     ]
-    def __init__(self, config, instance=None, config_overrides=None):
+
+    def __init__(self, config, instance=None):
         self.app_name = "tc_rmw"
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR'),
                                      self.app_name)
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -65,108 +65,104 @@ class TCRMWWrapper(CommandBuilder):
         c_dict['CONFIG_FILE'] = self.get_config_file('TCRMWConfig_wrapped')
 
         c_dict['INPUT_DIR'] = self.config.getdir('TC_RMW_INPUT_DIR', '')
-        c_dict['INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
+        c_dict['INPUT_TEMPLATE'] = self.config.getraw('config',
                                                       'TC_RMW_INPUT_TEMPLATE')
+        c_dict['INPUT_FILE_LIST'] = self.config.getraw(
+            'config', 'TC_RMW_INPUT_FILE_LIST'
+        )
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('TC_RMW_OUTPUT_DIR', '')
         c_dict['OUTPUT_TEMPLATE'] = (
-            self.config.getraw('filename_templates',
+            self.config.getraw('config',
                                'TC_RMW_OUTPUT_TEMPLATE')
         )
 
         c_dict['DECK_INPUT_DIR'] = self.config.getdir('TC_RMW_DECK_INPUT_DIR',
                                                       '')
         c_dict['DECK_INPUT_TEMPLATE'] = (
-            self.config.getraw('filename_templates',
+            self.config.getraw('config',
                                'TC_RMW_DECK_TEMPLATE')
         )
 
-        self.set_met_config_string(self.env_var_dict,
-                                   'TC_RMW_INPUT_DATATYPE',
-                                   'file_type',
-                                   'METPLUS_DATA_FILE_TYPE')
+        self.add_met_config(name='file_type',
+                            data_type='string',
+                            env_var_name='METPLUS_DATA_FILE_TYPE',
+                            metplus_configs=['TC_RMW_INPUT_DATATYPE',
+                                             'TC_RMW_FILE_TYPE'])
 
-        # values used in configuration file
-        self.set_met_config_string(self.env_var_dict,
-                                   'MODEL',
-                                   'model',
-                                   'METPLUS_MODEL')
+        self.add_met_config(name='model',
+                            data_type='string',
+                            metplus_configs=['MODEL'])
 
         self.handle_regrid(c_dict, set_to_grid=False)
 
-        self.set_met_config_int(self.env_var_dict,
-                                'TC_RMW_N_RANGE',
-                                'n_range',
-                                'METPLUS_N_RANGE')
+        self.add_met_config(name='n_range',
+                            data_type='int')
 
-        self.set_met_config_int(self.env_var_dict,
-                                'TC_RMW_N_AZIMUTH',
-                                'n_azimuth',
-                                'METPLUS_N_AZIMUTH')
+        self.add_met_config(name='n_azimuth',
+                            data_type='int')
 
-        self.set_met_config_float(self.env_var_dict,
-                                  'TC_RMW_MAX_RANGE_KM',
-                                  'max_range_km',
-                                  'METPLUS_MAX_RANGE_KM')
+        self.add_met_config(name='max_range_km',
+                            data_type='float')
 
-        self.set_met_config_float(self.env_var_dict,
-                                  'TC_RMW_DELTA_RANGE_KM',
-                                  'delta_range_km',
-                                  'METPLUS_DELTA_RANGE_KM')
+        self.add_met_config(name='delta_range_km',
+                            data_type='float')
 
-        self.set_met_config_float(self.env_var_dict,
-                                  'TC_RMW_SCALE',
-                                  'rmw_scale',
-                                  'METPLUS_RMW_SCALE')
+        self.add_met_config(name='rmw_scale',
+                            data_type='float')
 
-        self.set_met_config_string(self.env_var_dict,
-                                   'TC_RMW_STORM_ID',
-                                   'storm_id',
-                                   'METPLUS_STORM_ID')
+        self.add_met_config(name='storm_id',
+                            data_type='string')
 
-        self.set_met_config_string(self.env_var_dict,
-                                   'TC_RMW_BASIN',
-                                   'basin',
-                                   'METPLUS_BASIN')
+        self.add_met_config(name='basin',
+                            data_type='string')
 
-        self.set_met_config_string(self.env_var_dict,
-                                   'TC_RMW_CYCLONE',
-                                   'cyclone',
-                                   'METPLUS_CYCLONE')
+        self.add_met_config(name='cyclone',
+                            data_type='string')
 
-        self.set_met_config_string(self.env_var_dict,
-                                   'TC_RMW_INIT_INCLUDE',
-                                   'init_inc',
-                                   'METPLUS_INIT_INCLUDE')
+        self.add_met_config(name='init_inc',
+                            data_type='string',
+                            env_var_name='METPLUS_INIT_INCLUDE',
+                            metplus_configs=['TC_RMW_INIT_INC',
+                                             'TC_RMW_INIT_INCLUDE'])
 
-        self.set_met_config_string(self.env_var_dict,
-                                   'TC_RMW_VALID_BEG',
-                                   'valid_beg',
-                                   'METPLUS_VALID_BEG')
+        self.add_met_config(name='valid_beg',
+                            data_type='string',
+                            metplus_configs=['TC_RMW_VALID_BEG',
+                                             'TC_RMW_VALID_BEGIN'])
 
-        self.set_met_config_string(self.env_var_dict,
-                                   'TC_RMW_VALID_END',
-                                   'valid_end',
-                                   'METPLUS_VALID_END')
+        self.add_met_config(name='valid_end',
+                            data_type='string',
+                            metplus_configs=['TC_RMW_VALID_END'])
 
-        self.set_met_config_list(self.env_var_dict,
-                                 'TC_RMW_VALID_INCLUDE_LIST',
-                                 'valid_inc',
-                                 'METPLUS_VALID_INCLUDE_LIST')
+        self.add_met_config(name='valid_inc',
+                            data_type='list',
+                            env_var_name='METPLUS_VALID_INCLUDE_LIST',
+                            metplus_configs=['TC_RMW_VALID_INCLUDE_LIST',
+                                             'TC_RMW_VALID_INC_LIST',
+                                             'TC_RMW_VALID_INCLUDE',
+                                             'TC_RMW_VALID_INC',
+                                             ])
 
-        self.set_met_config_list(self.env_var_dict,
-                                 'TC_RMW_VALID_EXCLUDE_LIST',
-                                 'valid_exc',
-                                 'METPLUS_VALID_EXCLUDE_LIST')
+        self.add_met_config(name='valid_exc',
+                            data_type='list',
+                            env_var_name='METPLUS_VALID_EXCLUDE_LIST',
+                            metplus_configs=['TC_RMW_VALID_EXCLUDE_LIST',
+                                             'TC_RMW_VALID_EXC_LIST',
+                                             'TC_RMW_VALID_EXCLUDE',
+                                             'TC_RMW_VALID_EXC',
+                                             ])
 
-        self.set_met_config_list(self.env_var_dict,
-                                 'TC_RMW_VALID_HOUR_LIST',
-                                 'valid_hour',
-                                 'METPLUS_VALID_HOUR_LIST')
+        self.add_met_config(name='valid_hour',
+                            data_type='list',
+                            env_var_name='METPLUS_VALID_HOUR_LIST',
+                            metplus_configs=['TC_RMW_VALID_HOUR_LIST',
+                                             'TC_RMW_VALID_HOUR',
+                                             ])
 
-        c_dict['VAR_LIST_TEMP'] = util.parse_var_list(self.config,
-                                                      data_type='FCST',
-                                                      met_tool=self.app_name)
+        c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
+                                                 data_type='FCST',
+                                                 met_tool=self.app_name)
 
         return c_dict
 
@@ -298,13 +294,6 @@ class TCRMWWrapper(CommandBuilder):
                 @param time_info time dictionary to use for string substitution
                 @returns Input file list if all files were found, None if not.
         """
-
-        # tc_rmw currently doesn't support an ascii file that contains a list of input files
-        # setting this to False will list each file in the command, which can be difficult to read
-        # when the tool supports reading a file list file, we should use the logic when
-        # use_file_list = True
-        use_file_list = False
-
         # get deck file
         deck_file = self.find_data(time_info, data_type='DECK')
         if not deck_file:
@@ -312,32 +301,42 @@ class TCRMWWrapper(CommandBuilder):
 
         self.c_dict['DECK_FILE'] = deck_file
 
-        all_input_files = []
-
         lead_seq = util.get_lead_sequence(self.config, time_info)
-        for lead in lead_seq:
-            self.clear()
-            time_info['lead'] = lead
 
-            time_info = time_util.ti_calculate(time_info)
-
-            # get a list of the input data files, write to an ascii file if there are more than one
-            input_files = self.find_data(time_info, return_list=True)
-            if not input_files:
-                continue
-
-            all_input_files.extend(input_files)
-
-        if not all_input_files:
-            return None
-
-        if use_file_list:
-            # create an ascii file with a list of the input files
-            list_file = self.write_list_file(f"{os.path.basename(adeck_file)}_data_files.txt",
-                                             all_input_files)
-            self.infiles.append(list_file)
+        # get input files
+        if self.c_dict['INPUT_FILE_LIST']:
+            self.logger.debug("Explicit file list file: "
+                              f"{self.c_dict['INPUT_FILE_LIST']}")
+            list_file = do_string_sub(self.c_dict['INPUT_FILE_LIST'],
+                                      **time_info)
+            if not os.path.exists(list_file):
+                self.log_error(f'Could not find file list: {list_file}')
+                return None
         else:
-            self.infiles.extend(all_input_files)
+            all_input_files = []
+
+            for lead in lead_seq:
+                self.clear()
+                time_info['lead'] = lead
+
+                time_info = time_util.ti_calculate(time_info)
+
+                # get a list of the input data files,
+                # write to an ascii file if there are more than one
+                input_files = self.find_data(time_info, return_list=True)
+                if not input_files:
+                    continue
+
+                all_input_files.extend(input_files)
+
+            if not all_input_files:
+                return None
+
+            # create an ascii file with a list of the input files
+            list_file = f"{os.path.basename(deck_file)}_data_files.txt"
+            list_file = self.write_list_file(list_file, all_input_files)
+
+        self.infiles.append(list_file)
 
         # set LEAD_LIST to list of forecast leads used
         if lead_seq != [0]:

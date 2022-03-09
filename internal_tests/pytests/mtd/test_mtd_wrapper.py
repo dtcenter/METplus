@@ -1,39 +1,12 @@
 #!/usr/bin/env python3
 
 import os
-import sys
-import re
-import logging
 import datetime
-from collections import namedtuple
 import pytest
 
-import produtil
-
 from metplus.wrappers.mtd_wrapper import MTDWrapper
-from metplus.util import met_util as util
-
-# --------------------TEST CONFIGURATION and FIXTURE SUPPORT -------------
-#
-# The test configuration and fixture support the additional configuration
-# files used in METplus
-#              !!!!!!!!!!!!!!!
-#              !!!IMPORTANT!!!
-#              !!!!!!!!!!!!!!!
-# The following two methods should be included in ALL pytest tests for METplus.
-#
-#
-#def pytest_addoption(parser):
-#    parser.addoption("-c", action="store", help=" -c <test config file>")
 
 
-# @pytest.fixture
-#def cmdopt(request):
-#    return request.config.getoption("-c")
-
-
-# -----------------FIXTURES THAT CAN BE USED BY ALL TESTS----------------
-#@pytest.fixture
 def mtd_wrapper(metplus_config, lead_seq=None):
     """! Returns a default MTDWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration

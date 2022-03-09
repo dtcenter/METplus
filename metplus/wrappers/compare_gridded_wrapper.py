@@ -14,6 +14,7 @@ import os
 
 from ..util import met_util as util
 from ..util import do_string_sub, ti_calculate
+from ..util import parse_var_list
 from . import CommandBuilder
 
 '''!@namespace CompareGriddedWrapper
@@ -30,14 +31,12 @@ class CompareGriddedWrapper(CommandBuilder):
 that reformat gridded data
     """
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         # set app_name if not set by child class to allow tests to run on this wrapper
         if not hasattr(self, 'app_name'):
             self.app_name = 'compare_gridded'
 
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
         # check to make sure all necessary probabilistic settings are set correctly
         # this relies on the subclass to finish creating the c_dict, so it has to
         # be checked after that happens
@@ -50,12 +49,17 @@ that reformat gridded data
             which config variables are used in the wrapper"""
         c_dict = super().create_c_dict()
 
-        self.set_met_config_string(self.env_var_dict, 'MODEL', 'model', 'METPLUS_MODEL')
-        self.set_met_config_string(self.env_var_dict, 'OBTYPE', 'obtype', 'METPLUS_OBTYPE')
+        self.add_met_config(name='model',
+                            data_type='string',
+                            metplus_configs=['MODEL'])
+
+        self.add_met_config(name='obtype',
+                            data_type='string',
+                            metplus_configs=['OBTYPE'])
 
         # set old MET config items for backwards compatibility
-        c_dict['MODEL_OLD'] = self.config.getstr('config', 'MODEL', 'FCST')
-        c_dict['OBTYPE_OLD'] = self.config.getstr('config', 'OBTYPE', 'OBS')
+        c_dict['MODEL_OLD'] = self.config.getraw('config', 'MODEL', 'FCST')
+        c_dict['OBTYPE_OLD'] = self.config.getraw('config', 'OBTYPE', 'OBS')
 
         # INPUT_BASE is not required unless it is referenced in a config file
         # it is used in the use case config files. Don't error if it is not set
@@ -88,13 +92,11 @@ that reformat gridded data
         # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
         self.handle_file_window_variables(c_dict)
 
-        self.set_met_config_string(self.env_var_dict,
-                                   f'{self.app_name.upper()}_OUTPUT_PREFIX',
-                                   'output_prefix',
-                                   'METPLUS_OUTPUT_PREFIX')
+        self.add_met_config(name='output_prefix',
+                            data_type='string')
 
-        c_dict['VAR_LIST_TEMP'] = util.parse_var_list(self.config,
-                                                      met_tool=self.app_name)
+        c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
+                                                 met_tool=self.app_name)
 
         return c_dict
 
@@ -111,8 +113,7 @@ that reformat gridded data
         self.add_env_var('MODEL', self.c_dict.get('MODEL_OLD', ''))
         self.add_env_var('OBTYPE', self.c_dict.get('OBTYPE_OLD', ''))
         self.add_env_var('REGRID_TO_GRID',
-                         self.c_dict.get('REGRID_TO_GRID',
-                                         'NONE'))
+                         self.c_dict.get('REGRID_TO_GRID', 'NONE'))
 
         super().set_environment_variables(time_info)
 
@@ -169,9 +170,6 @@ that reformat gridded data
                 @param time_info dictionary containing timing information
         """
         self.clear()
-
-        # get verification mask if available
-        self.get_verification_mask(time_info)
 
         var_list = util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
                                      time_info)
@@ -381,10 +379,16 @@ that reformat gridded data
             return None
 
         # add forecast file
-        cmd += self.infiles[0] + ' '
+        fcst_file = self.infiles[0]
+        if fcst_file.startswith('PYTHON'):
+            fcst_file = f"'{fcst_file}'"
+        cmd += f'{fcst_file} '
 
         # add observation file
-        cmd += self.infiles[1] + ' '
+        obs_file = self.infiles[1]
+        if obs_file.startswith('PYTHON'):
+            obs_file = f"'{obs_file}'"
+        cmd += f'{obs_file} '
 
         if self.param == '':
             self.log_error('Must specify config file to run MET tool')
@@ -398,13 +402,6 @@ that reformat gridded data
 
         cmd += '-outdir {}'.format(self.outdir)
         return cmd
-
-    def handle_climo_cdf_dict(self):
-        self.handle_met_config_dict('climo_cdf', {
-            'cdf_bins': ('float', None, None, ['CLIMO_CDF_BINS']),
-            'center_bins': 'bool',
-            'write_bins': 'bool',
-        })
 
     def handle_interp_dict(self, uses_field=False):
         """! Reads config variables for interp dictionary, i.e.
@@ -425,4 +422,4 @@ that reformat gridded data
         if uses_field:
             items['field'] = ('string', 'remove_quotes')
 
-        self.handle_met_config_dict('interp', items)
+        self.add_met_config_dict('interp', items)

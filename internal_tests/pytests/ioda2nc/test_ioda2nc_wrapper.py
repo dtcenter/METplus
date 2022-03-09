@@ -39,7 +39,7 @@ def set_minimum_config_settings(config):
          {'METPLUS_MESSAGE_TYPE_MAP': 'message_type_map = [{ key = “AIRCAR”; val = “AIRCAR_PROFILES”; }];'}, ''),
         # 2
         ({'IODA2NC_MESSAGE_TYPE_GROUP_MAP': '{ key = "SURFACE"; val = "ADPSFC,SFCSHP,MSONET";},{ key = "ANYAIR";  val = "AIRCAR,AIRCFT";}', },
-         {'METPLUS_MESSAGE_TYPE_GROUP_MAP': 'message_type_group_map = [{ key = "SURFACE"; val = "ADPSFC, SFCSHP, MSONET";}, { key = "ANYAIR";  val = "AIRCAR, AIRCFT";}];'}, ''),
+         {'METPLUS_MESSAGE_TYPE_GROUP_MAP': 'message_type_group_map = [{ key = "SURFACE"; val = "ADPSFC,SFCSHP,MSONET";}, { key = "ANYAIR";  val = "AIRCAR,AIRCFT";}];'}, ''),
         # 3
         ({'IODA2NC_STATION_ID': 'value1, value2', },
          {'METPLUS_STATION_ID': 'station_id = ["value1", "value2"];'}, ''),
@@ -221,7 +221,11 @@ def test_ioda2nc_wrapper(metplus_config, config_overrides,
         assert cmd == expected_cmd
 
         # check that environment variables were set properly
-        for env_var_key in wrapper.WRAPPER_ENV_VAR_KEYS:
+        # including deprecated env vars (not in wrapper env var keys)
+        env_var_keys = (wrapper.WRAPPER_ENV_VAR_KEYS +
+                        [name for name in env_var_values
+                         if name not in wrapper.WRAPPER_ENV_VAR_KEYS])
+        for env_var_key in env_var_keys:
             match = next((item for item in env_vars if
                           item.startswith(env_var_key)), None)
             assert match is not None

@@ -18,8 +18,10 @@ import glob
 import datetime
 import itertools
 
+from ..util import getlist
 from ..util import met_util as util
-from ..util import do_string_sub
+from ..util import do_string_sub, find_indices_in_config_section
+from ..util import parse_var_list, remove_quotes
 from . import CommandBuilder
 
 class StatAnalysisWrapper(CommandBuilder):
@@ -111,13 +113,11 @@ class StatAnalysisWrapper(CommandBuilder):
         'FCST_INIT_HOUR_LIST', 'OBS_INIT_HOUR_LIST'
     ]
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      'stat_analysis')
         self.app_name = os.path.basename(self.app_path)
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
     def get_command(self):
 
@@ -135,6 +135,9 @@ class StatAnalysisWrapper(CommandBuilder):
             cmd += f" -config {self.c_dict['CONFIG_FILE']}"
         else:
             cmd += f' {self.job_args}'
+
+        if self.c_dict.get('OUTPUT_FILENAME'):
+            cmd += f" -out {self.c_dict['OUTPUT_FILENAME']}"
 
         return cmd
      
@@ -163,6 +166,11 @@ class StatAnalysisWrapper(CommandBuilder):
         c_dict['OUTPUT_DIR'] = self.config.getdir('STAT_ANALYSIS_OUTPUT_DIR',
                                                   '')
 
+        # read optional template to set -out command line argument
+        c_dict['OUTPUT_TEMPLATE'] = (
+            self.config.getraw('config', 'STAT_ANALYSIS_OUTPUT_TEMPLATE', '')
+        )
+
         c_dict['DATE_TYPE'] = self.config.getstr('config',
                                                  'DATE_TYPE',
                                                  self.config.getstr('config',
@@ -183,7 +191,7 @@ class StatAnalysisWrapper(CommandBuilder):
                            conf_list in all_lists_to_read
                            if conf_list not in self.field_lists]
         for conf_list in non_field_lists:
-            c_dict[conf_list] = util.getlist(
+            c_dict[conf_list] = getlist(
                 self.config.getstr('config', conf_list, '')
             )
 
@@ -215,7 +223,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 if not self.MakePlotsWrapper.isOK:
                     self.log_error("MakePlotsWrapper was not initialized correctly.")
 
-        c_dict['VAR_LIST'] = util.parse_var_list(self.config)
+        c_dict['VAR_LIST'] = parse_var_list(self.config)
 
         c_dict['MODEL_INFO_LIST'] = self.parse_model_info()
         if not c_dict['MODEL_LIST'] and c_dict['MODEL_INFO_LIST']:
@@ -304,7 +312,7 @@ class StatAnalysisWrapper(CommandBuilder):
                     self.get_level_list(field_list.split('_')[0])
                 )
             else:
-                field_dict[field_list] = util.getlist(
+                field_dict[field_list] = getlist(
                     self.config.getstr('config',
                                        field_list,
                                        '')
@@ -1229,9 +1237,9 @@ class StatAnalysisWrapper(CommandBuilder):
         """
         model_info_list = []
         model_indices = list(
-            util.find_indices_in_config_section(r'MODEL(\d+)$',
-                                                self.config,
-                                                index_index=1).keys()
+            find_indices_in_config_section(r'MODEL(\d+)$',
+                                           self.config,
+                                           index_index=1).keys()
         )
         for m in model_indices:
             model_name = self.config.getstr('config', f'MODEL{m}')
@@ -1317,13 +1325,13 @@ class StatAnalysisWrapper(CommandBuilder):
         """
         level_list = []
 
-        level_input = util.getlist(
+        level_input = getlist(
             self.config.getstr('config', f'{data_type}_LEVEL_LIST', '')
         )
 
         for level in level_input:
             level = level.strip('(').strip(')')
-            level = f'{util.remove_quotes(level)}'
+            level = f'{remove_quotes(level)}'
             level_list.append(level)
 
         return level_list
@@ -1389,6 +1397,22 @@ class StatAnalysisWrapper(CommandBuilder):
                                                              loop_lists,
                                                              group_lists,
                                                              )
+
+            # get -out argument if set
+            if self.c_dict['OUTPUT_TEMPLATE']:
+                output_filename = (
+                    self.get_output_filename('output',
+                                             self.c_dict['OUTPUT_TEMPLATE'],
+                                             'user',
+                                             loop_lists,
+                                             group_lists,
+                                             runtime_settings_dict)
+                )
+                output_file = os.path.join(self.c_dict['OUTPUT_DIR'],
+                                           output_filename)
+
+                # add output file path to runtime_settings_dict
+                runtime_settings_dict['OUTPUT_FILENAME'] = output_file
 
             # Set up forecast and observation valid
             # and initialization time information.
@@ -1494,7 +1518,7 @@ class StatAnalysisWrapper(CommandBuilder):
                                     False)
             )
             if run_fourier:
-                fourier_wave_num_pairs = util.getlist(
+                fourier_wave_num_pairs = getlist(
                     self.config.getstr('config',
                                        'VAR' + var_info['index'] + '_WAVE_NUM_LIST',
                                        '')
@@ -1776,7 +1800,7 @@ class StatAnalysisWrapper(CommandBuilder):
             for mp_item in mp_items:
                 if not runtime_settings_dict.get(mp_item, ''):
                     continue
-                value = util.remove_quotes(runtime_settings_dict.get(mp_item,
+                value = remove_quotes(runtime_settings_dict.get(mp_item,
                                                                      ''))
                 value = (f"{mp_item.lower()} = \"{value}\";")
                 self.env_var_dict[f'METPLUS_{mp_item}'] = value
@@ -1794,6 +1818,11 @@ class StatAnalysisWrapper(CommandBuilder):
             self.lookindir = runtime_settings_dict['LOOKIN_DIR']
             self.job_args = runtime_settings_dict['JOB']
 
+            # set -out file path if requested, value will be set to None if not
+            self.c_dict['OUTPUT_FILENAME'] = (
+                runtime_settings_dict.get('OUTPUT_FILENAME')
+            )
+
             self.build()
 
             self.clear()
@@ -1806,7 +1835,7 @@ class StatAnalysisWrapper(CommandBuilder):
              @returns True if job should be run, False if it should be skipped
         """
         run_job = True
-        for job_type in ['dump_row', 'out_stat']:
+        for job_type in ['dump_row', 'out_stat', 'output']:
             output_path = (
                 runtime_settings_dict.get(f'{job_type.upper()}_FILENAME')
             )

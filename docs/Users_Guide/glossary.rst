@@ -1467,6 +1467,16 @@ METplus Configuration Glossary
 
      | *Used by:*  PointStat
 
+   POINT_STAT_FCST_FILE_TYPE
+     Specify the value for 'fcst.file_type' in the MET configuration file for PointStat.
+
+     | *Used by:*  PointStat
+
+   POINT_STAT_OBS_FILE_TYPE
+     Specify the value for 'obs.file_type' in the MET configuration file for PointStat.
+
+     | *Used by:*  PointStat
+
    FCST_POINT_STAT_INPUT_DATATYPE
      Specify the data type of the input directory for forecast files used with the MET point_stat tool. Currently valid options are NETCDF, GRIB, and GEMPAK. If set to GEMPAK, data will automatically be converted to NetCDF via GempakToCF. A corresponding variable exists for observation data called :term:`OBS_POINT_STAT_INPUT_DATATYPE`.
 
@@ -2464,6 +2474,16 @@ METplus Configuration Glossary
 
      | *Used by:*  MODE
 
+   MODE_FCST_FILE_TYPE
+     Specify the value for 'fcst.file_type' in the MET configuration file for MODE.
+
+     | *Used by:*  MODE
+
+   MODE_OBS_FILE_TYPE
+     Specify the value for 'obs.file_type' in the MET configuration file for MODE.
+
+     | *Used by:*  MODE
+
    MODE_MERGE_CONFIG_FILE
      Path to mode merge config file.
 
@@ -2695,7 +2715,7 @@ METplus Configuration Glossary
      | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PB2NC, PointStat
 
    OBS_FILE_WINDOW_END
-     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds.This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if :term:`OBS_GRID_STAT_WINDOW_END` is set, the GridStat wrapper will use that value. If :term:`PB2NC_WINDOW_END` is not set, then the PB2NC wrapper will use :term:`OBS_WINDOW_END`. A corresponding variable exists for forecast data called :term:`FCST_FILE_WINDOW_END`.
+     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds.This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if :term:`OBS_GRID_STAT_FILE_WINDOW_END` is set, the GridStat wrapper will use that value. If :term:`PB2NC_FILE_WINDOW_END` is not set, then the PB2NC wrapper will use :term:`OBS_FILE_WINDOW_END`. A corresponding variable exists for forecast data called :term:`FCST_FILE_WINDOW_END`.
 
      | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PB2NC, PointStat
 
@@ -3173,12 +3193,12 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`OBS_WINDOW_BEGIN`.
 
    OBS_WINDOW_BEGIN
-     Passed to the MET config file to determine the range of data within a file that should be used for processing.Units are seconds. This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if :term:`OBS_POINT_STAT_WINDOW_BEGIN` is set, the PointStat wrapper will use that value. If :term:`PB2NC_WINDOW_BEGIN` is not set, then the PB2NC wrapper will use :term:`OBS_WINDOW_BEGIN`. A corresponding variable exists for forecast data called :term:`FCST_WINDOW_BEGIN`.
+     Passed to the MET config file to determine the range of data within a file that should be used for processing.Units are seconds. This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if :term:`OBS_POINT_STAT_WINDOW_BEGIN` is set, the PointStat wrapper will use that value. If :term:`PB2NC_OBS_WINDOW_BEGIN` is not set, then the PB2NC wrapper will use :term:`OBS_WINDOW_BEGIN`. A corresponding variable exists for forecast data called :term:`FCST_WINDOW_BEGIN`.
 
      | *Used by:*  PB2NC, PointStat
 
    OBS_WINDOW_END
-     Passed to the MET config file to determine the range of data within a file that should be used for processing.Units are seconds. This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if :term:`OBS_POINT_STAT_WINDOW_END` is set, the PointStat wrapper will use that value. If :term:`PB2NC_WINDOW_END` is not set, then the PB2NC wrapper will use :term:`OBS_WINDOW_END`. A corresponding variable exists for forecast data called :term:`FCST_WINDOW_END`.
+     Passed to the MET config file to determine the range of data within a file that should be used for processing.Units are seconds. This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if :term:`OBS_POINT_STAT_WINDOW_END` is set, the PointStat wrapper will use that value. If :term:`PB2NC_OBS_WINDOW_END` is not set, then the PB2NC wrapper will use :term:`OBS_WINDOW_END`. A corresponding variable exists for forecast data called :term:`FCST_WINDOW_END`.
 
      | *Used by:*  PB2NC, PointStat
 
@@ -3317,12 +3337,12 @@ METplus Configuration Glossary
 
      | *Used by:*  PB2NC
 
-   PB2NC_WINDOW_BEGIN
+   PB2NC_OBS_WINDOW_BEGIN
      Passed to the pb2nc MET config file to determine the range of data within a file that should be used for processing.Units are seconds. If the variable is not set, pb2nc will use :term:`OBS_WINDOW_BEGIN`.
 
      | *Used by:*  PB2NC
 
-   PB2NC_WINDOW_END
+   PB2NC_OBS_WINDOW_END
      Passed to the pb2nc MET config file to determine the range of data within a file that should be used for processing. Units are seconds. If the variable is not set, pb2nc will use :term:`OBS_WINDOW_END`.
 
      | *Used by:*  PB2NC
@@ -3431,9 +3451,7 @@ METplus Configuration Glossary
      | *Used by:*  PB2NC
 
    POINT_STAT_STATION_ID
-     Specify the ID of a specific station to use with the MET point_stat tool.
-
-     | *Used by:*  PointStat
+     .. warning:: **DEPRECATED:** Please use :term:`POINT_STAT_MASK_SID` instead.
 
    POINT_STAT_VERIFICATION_MASK_TEMPLATE
      Template used to specify the verification mask filename for the MET tool point_stat. Now supports a list of filenames.
@@ -3651,6 +3669,20 @@ METplus Configuration Glossary
 
      | *Used by:*  SeriesAnalysis
 
+   BOTH_SERIES_ANALYSIS_INPUT_DIR
+     Specify the directory to read forecast and observation input from the
+     same file in SeriesAnalysis.
+     See also :term:`BOTH_SERIES_ANALYSIS_INPUT_TEMPLATE`
+
+     | *Used by:*  SeriesAnalysis
+
+   BOTH_SERIES_ANALYSIS_INPUT_TEMPLATE
+     Template to find forecast and observation input from the
+     same file in SeriesAnalysis.
+     See also :term:`BOTH_SERIES_ANALYSIS_INPUT_DIR`
+
+     | *Used by:*  SeriesAnalysis
+
    SERIES_ANALYSIS_OUTPUT_DIR
      Specify the directory where files will be written from the MET series analysis tool.
 
@@ -3734,17 +3766,13 @@ METplus Configuration Glossary
       .. warning:: **DEPRECATED:** Please use :term:`MAKE_PLOTS_INPUT_DIR` instead.
 
    SERIES_ANALYSIS_STAT_LIST
-     Specify a list of statistics to be computed by the MET series_analysis tool. Sets the 'cnt' value in the output_stats dictionary in the MET SeriesAnalysis config file
-
-     | *Used by:* SeriesAnalysis
+     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_OUTPUT_STATS_CNT` instead.
 
    SERIES_ANALYSIS_CTS_LIST
-     Specify a list of contingency table statistics to be computed by the MET series_analysis tool. Sets the 'cts' value in the output_stats dictionary in the MET SeriesAnalysis config file
-
-     | *Used by:* SeriesAnalysis
+     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_OUTPUT_STATS_CTS` instead.
 
    STAT_LIST
-     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_STAT_LIST` instead.
+     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_OUTPUT_STATS_CNT` instead.
 
    STORM_ID
      .. warning:: **DEPRECATED:** Please use :term:`TC_PAIRS_STORM_ID` or :term:`TC_STAT_STORM_ID`.
@@ -4065,6 +4093,22 @@ METplus Configuration Glossary
      Specify the output directory where the MET tc_stat tool will write files.
 
      | *Used by:*  TCStat
+
+   TC_STAT_OUTPUT_TEMPLATE
+     (Optional) Specify the template of the output file to write job output
+     from tc_stat.
+     If set, then the -out command line argument will the full
+     path to the file will be added to the tc_stat call.
+
+     | *Used by:*  TCStat
+
+   STAT_ANALYSIS_OUTPUT_TEMPLATE
+     (Optional) Specify the template of the output file to write job output
+     from stat_analysis.
+     If set, then the -out command line argument will the full
+     path to the file will be added to the stat_analysis call.
+
+     | *Used by:*  StatAnalysis
 
    TC_STAT_RUN_VIA
      .. warning:: **DEPRECATED:** Please set :term:`TC_STAT_CONFIG_FILE` to run using a config file and leave it unset to run via the command line.
@@ -4757,6 +4801,16 @@ METplus Configuration Glossary
 
      | *Used by:* TCGen
 
+   TC_GEN_EDECK_INPUT_DIR
+     Directory containing the edeck data used by TCGen. This variable is optional because you can specify the full path to edeck data using :term:`TC_GEN_EDECK_INPUT_TEMPLATE`.
+
+     | *Used by:* TCGen
+
+   TC_GEN_SHAPE_INPUT_DIR
+     Directory containing the shape data used by TCGen. This variable is optional because you can specify the full path to shape data using :term:`TC_GEN_SHAPE_INPUT_TEMPLATE`.
+
+     | *Used by:* TCGen
+
    TC_GEN_TRACK_INPUT_TEMPLATE
      Filename template of the track data used by TCGen. See also :term:`TC_GEN_TRACK_INPUT_DIR`.
 
@@ -4764,6 +4818,16 @@ METplus Configuration Glossary
 
    TC_GEN_GENESIS_INPUT_TEMPLATE
      Filename template of the genesis data used by TCGen. See also :term:`TC_GEN_GENESIS_INPUT_DIR`.
+
+     | *Used by:* TCGen
+
+   TC_GEN_EDECK_INPUT_TEMPLATE
+     Filename template of the edeck data used by TCGen. See also :term:`TC_GEN_EDECK_INPUT_DIR`.
+
+     | *Used by:* TCGen
+
+   TC_GEN_SHAPE_INPUT_TEMPLATE
+     Filename template of the shape data used by TCGen. See also :term:`TC_GEN_SHAPE_INPUT_DIR`.
 
      | *Used by:* TCGen
 
@@ -4974,24 +5038,44 @@ METplus Configuration Glossary
      | *Used by:*  TCGen
 
    TC_GEN_OUTPUT_FLAG_FHO
-     Specify the value of output_flag.fho in the MET configuration file.
+     Specify the value of output_flag.fho in the MET configuration file for TCGen.
 
      | *Used by:*  TCGen
 
    TC_GEN_OUTPUT_FLAG_CTC
-     Specify the value of output_flag.ctc in the MET configuration file.
+     Specify the value of output_flag.ctc in the MET configuration file for TCGen.
 
      | *Used by:*  TCGen
 
    TC_GEN_OUTPUT_FLAG_CTS
-     Specify the value of output_flag.cts in the MET configuration file.
+     Specify the value of output_flag.cts in the MET configuration file for TCGen.
 
      | *Used by:*  TCGen
 
    TC_GEN_OUTPUT_FLAG_GENMPR
-     Specify the value of output_flag.genmpr in the MET configuration file.
+     Specify the value of output_flag.genmpr in the MET configuration file for TCGen.
 
      | *Used by:*  TCGen
+
+   TC_GEN_OUTPUT_FLAG_PCT
+     Specify the value for 'output_flag.pct' in the MET configuration file for TCGen.
+
+     | *Used by:* TCGen
+
+   TC_GEN_OUTPUT_FLAG_PSTD
+     Specify the value for 'output_flag.pstd' in the MET configuration file for TCGen.
+
+     | *Used by:* TCGen
+
+   TC_GEN_OUTPUT_FLAG_PJC
+     Specify the value for 'output_flag.pjc' in the MET configuration file for TCGen.
+
+     | *Used by:* TCGen
+
+   TC_GEN_OUTPUT_FLAG_PRC
+     Specify the value for 'output_flag.prc' in the MET configuration file for TCGen.
+
+     | *Used by:* TCGen
 
    TC_GEN_NC_PAIRS_FLAG_LATLON
      Specify the value of nc_pairs_flag.latlon in the MET configuration file.
@@ -5437,6 +5521,11 @@ METplus Configuration Glossary
 
      | *Used by:*  EnsembleStat
 
+   ENSEMBLE_STAT_CLIMO_CDF_DIRECT_PROB
+     Specify the value for 'climo_cdf.direct_prob' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
    ENSEMBLE_STAT_DUPLICATE_FLAG
      Specify the value for 'duplicate_flag' in the MET configuration file for EnsembleStat.
 
@@ -5662,6 +5751,31 @@ METplus Configuration Glossary
      Specify the value for 'output_flag.relp' in the MET configuration file for EnsembleStat.
 
      | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_OUTPUT_FLAG_PCT
+     Specify the value for 'output_flag.pct' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OUTPUT_FLAG_PSTD
+     Specify the value for 'output_flag.pstd' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OUTPUT_FLAG_PJC
+     Specify the value for 'output_flag.pjc' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OUTPUT_FLAG_PRC
+     Specify the value for 'output_flag.prc' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OUTPUT_FLAG_ECLV
+     Specify the value for 'output_flag.eclv' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
 
    ENSEMBLE_STAT_ENSEMBLE_FLAG_LATLON
      Specify the value for 'ensemble_flag.latlon' in the MET configuration file for EnsembleStat.
@@ -6066,6 +6180,11 @@ METplus Configuration Glossary
 
      | *Used by:*  PointStat
 
+   POINT_STAT_MASK_LLPNT
+     Specify the value for 'mask.llpnt' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
    MODE_GRID_RES
      Set the grid_res entry in the MODE MET config file.
 
@@ -6253,6 +6372,11 @@ METplus Configuration Glossary
 
      | *Used by:* GridStat
 
+   GRID_STAT_CLIMO_CDF_DIRECT_PROB
+     Specify the value for 'climo_cdf.direct_prob' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
    POINT_STAT_CLIMO_CDF_CDF_BINS
      See :term:`POINT_STAT_CLIMO_CDF_BINS`
 
@@ -6268,6 +6392,11 @@ METplus Configuration Glossary
 
    POINT_STAT_CLIMO_CDF_WRITE_BINS
      Specify the value for 'climo_cdf.write_bins' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_CDF_DIRECT_PROB
+     Specify the value for 'climo_cdf.direct_prob' in the MET configuration file for PointStat.
 
      | *Used by:* PointStat
 
@@ -8527,5 +8656,538 @@ METplus Configuration Glossary
 
    ENSEMBLE_STAT_OBS_QUALITY_EXC
      Specify the value for 'obs_quality_exc' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   GRID_STAT_FOURIER_WAVE_1D_BEG
+     Specify the value for 'fourier.wave_1d_beg' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_FOURIER_WAVE_1D_END
+     Specify the value for 'fourier.wave_1d_end' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   PB2NC_OBS_BUFR_MAP
+     Specify the value for 'obs_bufr_map' in the MET configuration file for PB2NC.
+
+     | *Used by:* PB2NC
+
+   POINT_STAT_HIRA_FLAG
+     Specify the value for 'hira.flag' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_HIRA_WIDTH
+     Specify the value for 'hira.width' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_HIRA_VLD_THRESH
+     Specify the value for 'hira.vld_thresh' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_HIRA_COV_THRESH
+     Specify the value for 'hira.cov_thresh' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_HIRA_SHAPE
+     Specify the value for 'hira.shape' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_HIRA_PROB_CAT_THRESH
+     Specify the value for 'hira.prob_cat_thresh' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_MESSAGE_TYPE_GROUP_MAP
+     Specify the value for 'message_type_group_map' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   TC_PAIRS_CHECK_DUP
+     Specify the value for 'check_dup' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
+
+   TC_PAIRS_INTERP12
+     Specify the value for 'interp12' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
+
+   SERIES_ANALYSIS_OUTPUT_STATS_FHO
+     Specify the value for 'output_stats.fho' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OUTPUT_STATS_CTC
+     Specify the value for 'output_stats.ctc' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OUTPUT_STATS_CTS
+     Specify the value for 'output_stats.cts' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OUTPUT_STATS_MCTC
+     Specify the value for 'output_stats.mctc' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OUTPUT_STATS_MCTS
+     Specify the value for 'output_stats.mcts' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OUTPUT_STATS_CNT
+     Specify the value for 'output_stats.cnt' in the MET configuration file for SeriesAnalysis. Also used to generate plots for each value in the list.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OUTPUT_STATS_SL1L2
+     Specify the value for 'output_stats.sl1l2' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OUTPUT_STATS_SAL1L2
+     Specify the value for 'output_stats.sal1l2' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OUTPUT_STATS_PCT
+     Specify the value for 'output_stats.pct' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OUTPUT_STATS_PSTD
+     Specify the value for 'output_stats.pstd' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OUTPUT_STATS_PJC
+     Specify the value for 'output_stats.pjc' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OUTPUT_STATS_PRC
+     Specify the value for 'output_stats.prc' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   MODE_PS_PLOT_FLAG
+     Specify the value for 'ps_plot_flag' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_CT_STATS_FLAG
+     Specify the value for 'ct_stats_flag' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   GRID_STAT_CENSOR_THRESH
+     Specify the value for 'censor_thresh' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CENSOR_VAL
+     Specify the value for 'censor_val' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   INIT_LIST
+     List of initialization times to process.
+     This variable is used when intervals between run times are irregular.
+     It is only read if :term:`LOOP_BY` = INIT. If it is set, then
+     :term:`INIT_BEG`, :term:`INIT_END`, and :term:`INIT_INCREMENT`
+     are ignored. All values in the list must match the format of
+     :term:`INIT_TIME_FMT` or they will be skipped.
+
+     | *Used by:* All
+
+   VALID_LIST
+     List of valid times to process.
+     This variable is used when intervals between run times are irregular.
+     It is only read if :term:`LOOP_BY` = VALID. If it is set, then
+     :term:`VALID_BEG`, :term:`VALID_END`, and :term:`VALID_INCREMENT`
+     are ignored. All values in the list must match the format of
+     :term:`VALID_TIME_FMT` or they will be skipped.
+
+     | *Used by:* All
+
+   FCST_SERIES_ANALYSIS_CAT_THRESH
+     Specify the value for 'fcst.cat_thresh' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   OBS_SERIES_ANALYSIS_CAT_THRESH
+     Specify the value for 'obs.cat_thresh' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_MEAN_FILE_TYPE
+     Specify the value for 'climo_mean.file_type' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_STDEV_FILE_TYPE
+     Specify the value for 'climo_stdev.file_type' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   OMP_NUM_THREADS
+     Sets environment variable of the same name that determines the number
+     of threads to use in the MET executables. Defaults to 1 thread.
+     If the environment variable of the same name is already set in the
+     user's environment, then that value will be used instead of the value
+     set in the METplus configuration. A warning will be output if this is the
+     case and the values differ between them.
+
+     | *Used by:* All
+
+   GEN_ENS_PROD_ENS_MEMBER_IDS
+     Specify the value for 'ens_member_ids' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CONTROL_ID
+     Specify the value for 'control_id' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   ENSEMBLE_STAT_ENS_MEMBER_IDS
+     Specify the value for 'ens_member_ids' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CONTROL_ID
+     Specify the value for 'control_id' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CTRL_INPUT_DIR
+     Input directory for optional control file to use with EnsembleStat.
+     See also :term:`ENSEMBLE_STAT_CTRL_INPUT_TEMPLATE`.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_CTRL_INPUT_TEMPLATE
+     Template used to specify an optional control filename for EnsembleStat.
+     Note that if a control member file is found in the ensemble file list,
+     it will automatically be removed by the wrapper to prevent an error in the
+     MET tool. This may require adjusting the value for
+     :term:`ENSEMBLE_STAT_N_MEMBERS` and/or
+     :term:`ENSEMBLE_STAT_ENS_VLD_THRESH`.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_GRID_WEIGHT_FLAG
+     Specify the value for 'grid_weight_flag' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   FCST_PCP_COMBINE_USE_ZERO_ACCUM
+     Only used if running PCPCombine wrapper with
+     :term:`FCST_PCP_COMBINE_METHOD` = SUBTRACT. If True, build a -subtract
+     command using the 0 accumulation as the 2nd input. If False (default),
+     instead build an -add command with a single input if the 2nd input is
+     a 0 accumulation.
+
+     | *Used by:*  PCPCombine
+
+   OBS_PCP_COMBINE_USE_ZERO_ACCUM
+     Only used if running PCPCombine wrapper with
+     :term:`OBS_PCP_COMBINE_METHOD` = SUBTRACT.
+     See :term:`FCST_PCP_COMBINE_USE_ZERO_ACCUM` for more information.
+
+     | *Used by:*  PCPCombine
+
+   ENSEMBLE_STAT_CLIMO_MEAN_USE_FCST
+     If set to True, use the field array from the fcst dictionary for the
+     climo_mean fields for EnsembleStat.
+     Sets "climo_mean = fcst;" in the wrapped MET config file.
+     Only used if :term:`ENSEMBLE_STAT_CLIMO_MEAN_FIELD` is unset.
+     See also :term:`ENSEMBLE_STAT_CLIMO_MEAN_USE_OBS`.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CLIMO_MEAN_USE_OBS
+     If set to True, use the field array from the obs dictionary for the
+     climo_mean fields for EnsembleStat.
+     Sets "climo_mean = obs;" in the wrapped MET config file.
+     Only used if :term:`ENSEMBLE_STAT_CLIMO_MEAN_FIELD` is unset.
+     See also :term:`ENSEMBLE_STAT_CLIMO_MEAN_USE_FCST`.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CLIMO_STDEV_USE_FCST
+     If set to True, use the field array from the fcst dictionary for the
+     climo_stdev fields for EnsembleStat.
+     Sets "climo_stdev = fcst;" in the wrapped MET config file.
+     Only used if :term:`ENSEMBLE_STAT_CLIMO_STDEV_FIELD` is unset.
+     See also :term:`ENSEMBLE_STAT_CLIMO_STDEV_USE_OBS`.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CLIMO_STDEV_USE_OBS
+     If set to True, use the field array from the obs dictionary for the
+     climo_stdev fields for EnsembleStat.
+     Sets "climo_stdev = obs;" in the wrapped MET config file.
+     Only used if :term:`ENSEMBLE_STAT_CLIMO_STDEV_FIELD` is unset.
+     See also :term:`ENSEMBLE_STAT_CLIMO_STDEV_USE_FCST`.
+
+     | *Used by:* EnsembleStat
+
+   GEN_ENS_PROD_CLIMO_MEAN_USE_FCST
+     If set to True, use the field array from the fcst dictionary for the
+     climo_mean fields for GenEnsProd.
+     Sets "climo_mean = fcst;" in the wrapped MET config file.
+     Only used if :term:`GEN_ENS_PROD_CLIMO_MEAN_FIELD` is unset.
+     See also :term:`GEN_ENS_PROD_CLIMO_MEAN_USE_OBS`.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_MEAN_USE_OBS
+     If set to True, use the field array from the obs dictionary for the
+     climo_mean fields for GenEnsProd.
+     Sets "climo_mean = obs;" in the wrapped MET config file.
+     Only used if :term:`GEN_ENS_PROD_CLIMO_MEAN_FIELD` is unset.
+     See also :term:`GEN_ENS_PROD_CLIMO_MEAN_USE_FCST`.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_STDEV_USE_FCST
+     If set to True, use the field array from the fcst dictionary for the
+     climo_stdev fields for GenEnsProd.
+     Sets "climo_stdev = fcst;" in the wrapped MET config file.
+     Only used if :term:`GEN_ENS_PROD_CLIMO_STDEV_FIELD` is unset.
+     See also :term:`GEN_ENS_PROD_CLIMO_STDEV_USE_OBS`.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_STDEV_USE_OBS
+     If set to True, use the field array from the obs dictionary for the
+     climo_stdev fields for GenEnsProd.
+     Sets "climo_stdev = obs;" in the wrapped MET config file.
+     Only used if :term:`GEN_ENS_PROD_CLIMO_STDEV_FIELD` is unset.
+     See also :term:`GEN_ENS_PROD_CLIMO_STDEV_USE_FCST`.
+
+     | *Used by:* GenEnsProd
+
+   GRID_STAT_CLIMO_MEAN_USE_FCST
+     If set to True, use the field array from the fcst dictionary for the
+     climo_mean fields for GridStat.
+     Sets "climo_mean = fcst;" in the wrapped MET config file.
+     Only used if :term:`GRID_STAT_CLIMO_MEAN_FIELD` is unset.
+     See also :term:`GRID_STAT_CLIMO_MEAN_USE_OBS`.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_MEAN_USE_OBS
+     If set to True, use the field array from the obs dictionary for the
+     climo_mean fields for GridStat.
+     Sets "climo_mean = obs;" in the wrapped MET config file.
+     Only used if :term:`GRID_STAT_CLIMO_MEAN_FIELD` is unset.
+     See also :term:`GRID_STAT_CLIMO_MEAN_USE_FCST`.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_STDEV_USE_FCST
+     If set to True, use the field array from the fcst dictionary for the
+     climo_stdev fields for GridStat.
+     Sets "climo_stdev = fcst;" in the wrapped MET config file.
+     Only used if :term:`GRID_STAT_CLIMO_STDEV_FIELD` is unset.
+     See also :term:`GRID_STAT_CLIMO_STDEV_USE_OBS`.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_STDEV_USE_OBS
+     If set to True, use the field array from the obs dictionary for the
+     climo_stdev fields for GridStat.
+     Sets "climo_stdev = obs;" in the wrapped MET config file.
+     Only used if :term:`GRID_STAT_CLIMO_STDEV_FIELD` is unset.
+     See also :term:`GRID_STAT_CLIMO_STDEV_USE_FCST`.
+
+     | *Used by:* GridStat
+
+   POINT_STAT_CLIMO_MEAN_USE_FCST
+     If set to True, use the field array from the fcst dictionary for the
+     climo_mean fields for PointStat.
+     Sets "climo_mean = fcst;" in the wrapped MET config file.
+     Only used if :term:`POINT_STAT_CLIMO_MEAN_FIELD` is unset.
+     See also :term:`POINT_STAT_CLIMO_MEAN_USE_OBS`.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_MEAN_USE_OBS
+     If set to True, use the field array from the obs dictionary for the
+     climo_mean fields for PointStat.
+     Sets "climo_mean = obs;" in the wrapped MET config file.
+     Only used if :term:`POINT_STAT_CLIMO_MEAN_FIELD` is unset.
+     See also :term:`POINT_STAT_CLIMO_MEAN_USE_FCST`.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_STDEV_USE_FCST
+     If set to True, use the field array from the fcst dictionary for the
+     climo_stdev fields for PointStat.
+     Sets "climo_stdev = fcst;" in the wrapped MET config file.
+     Only used if :term:`POINT_STAT_CLIMO_STDEV_FIELD` is unset.
+     See also :term:`POINT_STAT_CLIMO_STDEV_USE_OBS`.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_STDEV_USE_OBS
+     If set to True, use the field array from the obs dictionary for the
+     climo_stdev fields for PointStat.
+     Sets "climo_stdev = obs;" in the wrapped MET config file.
+     Only used if :term:`POINT_STAT_CLIMO_STDEV_FIELD` is unset.
+     See also :term:`POINT_STAT_CLIMO_STDEV_USE_FCST`.
+
+     | *Used by:* PointStat
+
+   SERIES_ANALYSIS_CLIMO_MEAN_USE_FCST
+     If set to True, use the field array from the fcst dictionary for the
+     climo_mean fields for SeriesAnalysis.
+     Sets "climo_mean = fcst;" in the wrapped MET config file.
+     Only used if :term:`SERIES_ANALYSIS_CLIMO_MEAN_FIELD` is unset.
+     See also :term:`SERIES_ANALYSIS_CLIMO_MEAN_USE_OBS`.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_MEAN_USE_OBS
+     If set to True, use the field array from the obs dictionary for the
+     climo_mean fields for SeriesAnalysis.
+     Sets "climo_mean = obs;" in the wrapped MET config file.
+     Only used if :term:`SERIES_ANALYSIS_CLIMO_MEAN_FIELD` is unset.
+     See also :term:`SERIES_ANALYSIS_CLIMO_MEAN_USE_FCST`.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_STDEV_USE_FCST
+     If set to True, use the field array from the fcst dictionary for the
+     climo_stdev fields for SeriesAnalysis.
+     Sets "climo_stdev = fcst;" in the wrapped MET config file.
+     Only used if :term:`SERIES_ANALYSIS_CLIMO_STDEV_FIELD` is unset.
+     See also :term:`SERIES_ANALYSIS_CLIMO_STDEV_USE_OBS`.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_STDEV_USE_OBS
+     If set to True, use the field array from the obs dictionary for the
+     climo_stdev fields for SeriesAnalysis.
+     Sets "climo_stdev = obs;" in the wrapped MET config file.
+     Only used if :term:`SERIES_ANALYSIS_CLIMO_STDEV_FIELD` is unset.
+     See also :term:`SERIES_ANALYSIS_CLIMO_STDEV_USE_FCST`.
+
+     | *Used by:* SeriesAnalysis
+
+   FCST_SERIES_ANALYSIS_INPUT_FILE_LIST
+     Specifies an explicit path to a file list file to pass into
+     series_analysis with the -fcst argument. If set,
+     :term:`OBS_SERIES_ANALYSIS_INPUT_FILE_LIST` must also be set and
+     :term:`FCST_SERIES_ANALYSIS_INPUT_TEMPLATE` and
+     :term:`FCST_SERIES_ANALYSIS_INPUT_DIR` are ignored.
+     See also :term:`BOTH_SERIES_ANALYSIS_INPUT_FILE_LIST`.
+
+     | *Used by:* SeriesAnalysis
+
+   OBS_SERIES_ANALYSIS_INPUT_FILE_LIST
+     Specifies an explicit path to a file list file to pass into
+     series_analysis with the -obs argument. If set,
+     :term:`FCST_SERIES_ANALYSIS_INPUT_FILE_LIST` must also be set and
+     :term:`OBS_SERIES_ANALYSIS_INPUT_TEMPLATE` and
+     :term:`OBS_SERIES_ANALYSIS_INPUT_DIR` are ignored.
+     See also :term:`BOTH_SERIES_ANALYSIS_INPUT_FILE_LIST`.
+
+     | *Used by:* SeriesAnalysis
+
+   BOTH_SERIES_ANALYSIS_INPUT_FILE_LIST
+     Specifies an explicit path to a file list file to pass into
+     series_analysis with the -both argument. If set,
+     :term:`BOTH_SERIES_ANALYSIS_INPUT_TEMPLATE` and
+     :term:`BOTH_SERIES_ANALYSIS_INPUT_DIR` are ignored.
+     See also :term:`FCST_SERIES_ANALYSIS_INPUT_FILE_LIST` and
+     :term:`OBS_SERIES_ANALYSIS_INPUT_FILE_LIST`.
+
+     | *Used by:* SeriesAnalysis
+
+   FCST_MTD_INPUT_FILE_LIST
+     Specifies an explicit path to a file list file to pass into
+     mtd with the -fcst or -single argument. If set,
+     :term:`FCST_MTD_INPUT_TEMPLATE` and
+     :term:`FCST_MTD_INPUT_DIR` are ignored.
+     See also :term:`OBS_MTD_INPUT_FILE_LIST`.
+
+     | *Used by:* MTD
+
+   OBS_MTD_INPUT_FILE_LIST
+     Specifies an explicit path to a file list file to pass into
+     mtd with the -obs or -single argument. If set,
+     :term:`OBS_MTD_INPUT_TEMPLATE` and
+     :term:`OBS_MTD_INPUT_DIR` are ignored.
+     See also :term:`FCST_MTD_INPUT_FILE_LIST`.
+
+     | *Used by:* MTD
+
+   TC_RMW_INPUT_FILE_LIST
+     Specifies an explicit path to a file list file to pass into tc_rmw.
+     If set, :term:`TC_RMW_INPUT_TEMPLATE` and :term:`TC_RMW_INPUT_DIR`
+     are ignored.
+
+     | *Used by:* TCRMW
+
+   FCST_ENSEMBLE_STAT_INPUT_FILE_LIST
+     Specifies an explicit path to a file list file to pass ensembles into
+     ensemble_stat. If set,
+     :term:`FCST_ENSEMBLE_STAT_INPUT_TEMPLATE` and
+     :term:`FCST_ENSEMBLE_STAT_INPUT_DIR` are ignored.
+
+     | *Used by:* EnsembleStat
+
+   GEN_ENS_PROD_INPUT_FILE_LIST
+     Specifies an explicit path to a file list file to pass ensembles into
+     gen_ens_prod. If set,
+     :term:`GEN_ENS_PROD_INPUT_TEMPLATE` and
+     :term:`GEN_ENS_PROD_INPUT_DIR` are ignored.
+
+     | *Used by:* GenEnsProd
+
+   SERIES_ANALYSIS_CLIMO_CDF_BINS
+     Specify the value for 'climo_cdf.cdf_bins' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_CDF_CENTER_BINS
+     Specify the value for 'climo_cdf.center_bins' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_CDF_DIRECT_PROB
+     Specify the value for 'climo_cdf.direct_prob' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   GEN_ENS_PROD_NORMALIZE
+     Specify the value for 'normalize' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   ENSEMBLE_STAT_PROB_CAT_THRESH
+     Specify the value for 'prob_cat_thresh' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_PROB_PCT_THRESH
+     Specify the value for 'prob_pct_thresh' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_ECLV_POINTS
+     Specify the value for 'eclv_points' in the MET configuration file for EnsembleStat.
 
      | *Used by:* EnsembleStat

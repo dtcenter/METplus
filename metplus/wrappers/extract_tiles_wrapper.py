@@ -15,6 +15,7 @@ import re
 
 from ..util import met_util as util
 from ..util import do_string_sub, ti_calculate
+from ..util import parse_var_list
 from .regrid_data_plane_wrapper import RegridDataPlaneWrapper
 from . import CommandBuilder
 
@@ -49,11 +50,9 @@ class ExtractTilesWrapper(CommandBuilder):
         'MTD': 'OBJECT_CAT',
     }
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         self.app_name = 'extract_tiles'
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
         self.regrid_data_plane = self.regrid_data_plane_init()
 
     def create_c_dict(self):
@@ -152,8 +151,8 @@ class ExtractTilesWrapper(CommandBuilder):
         c_dict['LON_ADJ'] = self.config.getfloat('config',
                                                  'EXTRACT_TILES_LON_ADJ')
 
-        c_dict['VAR_LIST_TEMP'] = util.parse_var_list(self.config,
-                                                      met_tool=self.app_name)
+        c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
+                                                 met_tool=self.app_name)
         return c_dict
 
     def regrid_data_plane_init(self):
@@ -186,8 +185,16 @@ class ExtractTilesWrapper(CommandBuilder):
         )
         overrides[f'{rdp}_ONCE_PER_FIELD'] = False
         overrides[f'{rdp}_MANDATORY'] = False
+
+        # set all config variables in a new section
+        instance = 'extract_tiles_rdp'
+        if not self.config.has_section(instance):
+            self.config.add_section(instance)
+        for key, value in overrides.items():
+            self.config.set(instance, key, value)
+
         rdp_wrapper = RegridDataPlaneWrapper(self.config,
-                                             config_overrides=overrides)
+                                             instance=instance)
         rdp_wrapper.c_dict['SHOW_WARNINGS'] = False
         return rdp_wrapper
 
@@ -289,35 +296,38 @@ class ExtractTilesWrapper(CommandBuilder):
     def use_mtd_input(self, object_dict, idx_dict):
         """! Find lat/lons in MTD input file and create tiles from locations.
 
-         @param input_path path to MTD file to process
+         @param object_dict dictionary of MTD object data
          @param idx_dict dictionary with header names as keys and the index
           of those names as values.
         """
         indices = self.get_object_indices(object_dict.keys())
         if not indices:
-            self.log_error(f"No non-zero OBJECT_CAT found")
+            self.logger.warning(f"No non-zero OBJECT_CAT found")
             return
 
         # loop over corresponding CF### and CO### lines
         for index in indices:
             fcst_data_list = self.get_cluster_data(object_dict[f'CF{index}'],
-                                              idx_dict)
+                                                   idx_dict)
             obs_data_list = self.get_cluster_data(object_dict[f'CO{index}'],
-                                             idx_dict)
+                                                  idx_dict)
 
             track_data = {}
-            for fcst_data, obs_data in zip(fcst_data_list, obs_data_list):
-                if fcst_data.get('FCST_VALID') != obs_data.get('FCST_VALID'):
-                    self.log_error("Time mismatch in valid time between "
-                                   f"CF{index} and CO{index}: "
-                                   f"({fcst_data.get('FCST_VALID')} vs "
-                                   f"{obs_data.get('FCST_VALID')}). "
-                                   "Wrapper assumes fcst and obs cluster data "
-                                   "are in the same order.")
-                    return
+            # loop through fcst data and find obs data that matches the time
+            for fcst_data in fcst_data_list:
+                fcst_lead = fcst_data.get('FCST_LEAD')
+                fcst_valid = fcst_data.get('FCST_VALID')
+
+                obs_data = [item for item in obs_data_list
+                            if item.get('FCST_LEAD') == fcst_lead and
+                            item.get('FCST_VALID') == fcst_valid]
+
+                # skip if no obs data with the same fcst lead and valid time
+                if not obs_data:
+                    continue
 
                 track_data['FCST'] = fcst_data
-                track_data['OBS'] = obs_data
+                track_data['OBS'] = obs_data[0]
 
                 time_info = (
                     self.set_time_info_from_track_data(track_data['FCST'])
@@ -360,16 +370,16 @@ class ExtractTilesWrapper(CommandBuilder):
         indices = set()
         for key in object_cats:
             match = re.match(r'CF(\d+)', key)
-            if match:
+            # only use non-zero (000) objects
+            if match and int(match.group(1)) != 0:
                 indices.add(match.group(1))
 
         indices = sorted(list(indices))
-        # if no indices were found or there is 1 and it is zero, return None
-        if not indices or (len(indices) == 1 and int(indices[0]) == 0):
+        # if no indices were found, return None
+        if not indices:
             return None
 
         return indices
-
 
     def call_regrid_data_plane(self, time_info, track_data, input_type):
         # set var list from config using time info

@@ -16,6 +16,7 @@ import glob
 from ..util import met_util as util
 from . import CompareGriddedWrapper
 from ..util import do_string_sub
+from ..util import parse_var_list
 
 """!@namespace EnsembleStatWrapper
 @brief Wraps the MET tool ensemble_stat to compare ensemble datasets
@@ -63,6 +64,12 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'METPLUS_OUTPUT_PREFIX',
         'METPLUS_OBS_QUALITY_INC',
         'METPLUS_OBS_QUALITY_EXC',
+        'METPLUS_ENS_MEMBER_IDS',
+        'METPLUS_CONTROL_ID',
+        'METPLUS_GRID_WEIGHT_FLAG',
+        'METPLUS_PROB_CAT_THRESH',
+        'METPLUS_PROB_PCT_THRESH',
+        'METPLUS_ECLV_POINTS',
     ]
 
     # handle deprecated env vars used pre v4.0.0
@@ -71,14 +78,20 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'CLIMO_STDEV_FILE',
     ]
 
-    OUTPUT_FLAGS = ['ecnt',
-                    'rps',
-                    'rhist',
-                    'phist',
-                    'orank',
-                    'ssvar',
-                    'relp'
-                    ]
+    OUTPUT_FLAGS = [
+        'ecnt',
+        'rps',
+        'rhist',
+        'phist',
+        'orank',
+        'ssvar',
+        'relp',
+        'pct',
+        'pstd',
+        'pjc',
+        'prc',
+        'eclv',
+    ]
 
     ENSEMBLE_FLAGS = ['latlon',
                       'mean',
@@ -96,13 +109,11 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                       'weight',
                       ]
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         self.app_name = 'ensemble_stat'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
     def create_c_dict(self):
         """!Create a dictionary containing the values set in the config file
@@ -170,14 +181,14 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
           self.config.getdir('OBS_ENSEMBLE_STAT_POINT_INPUT_DIR', '')
 
         c_dict['OBS_POINT_INPUT_TEMPLATE'] = \
-          self.config.getraw('filename_templates',
+          self.config.getraw('config',
                              'OBS_ENSEMBLE_STAT_POINT_INPUT_TEMPLATE')
 
         c_dict['OBS_GRID_INPUT_DIR'] = \
           self.config.getdir('OBS_ENSEMBLE_STAT_GRID_INPUT_DIR', '')
 
         c_dict['OBS_GRID_INPUT_TEMPLATE'] = \
-          self.config.getraw('filename_templates',
+          self.config.getraw('config',
                              'OBS_ENSEMBLE_STAT_GRID_INPUT_TEMPLATE')
 
         # The ensemble forecast files input directory and filename templates
@@ -187,8 +198,13 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['FCST_INPUT_TEMPLATE'] = (
             self.config.getraw('config', 'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE')
         )
-        if not c_dict['FCST_INPUT_TEMPLATE']:
-            self.log_error("Must set FCST_ENSEMBLE_STAT_INPUT_TEMPLATE")
+        c_dict['FCST_INPUT_FILE_LIST'] = (
+            self.config.getraw('config', 'FCST_ENSEMBLE_STAT_INPUT_FILE_LIST')
+        )
+        if (not c_dict['FCST_INPUT_TEMPLATE'] and
+                not c_dict['FCST_INPUT_FILE_LIST']):
+            self.log_error("Must set FCST_ENSEMBLE_STAT_INPUT_TEMPLATE or "
+                           "FCST_ENSEMBLE_STAT_INPUT_FILE_LIST")
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('ENSEMBLE_STAT_OUTPUT_DIR',
                                                   '')
@@ -200,6 +216,16 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             self.config.getraw('config',
                                'ENSEMBLE_STAT_OUTPUT_TEMPLATE',
                                '')
+        )
+
+        # get ctrl (control) template/dir - optional
+        c_dict['CTRL_INPUT_TEMPLATE'] = self.config.getraw(
+            'config',
+            'ENSEMBLE_STAT_CTRL_INPUT_TEMPLATE'
+        )
+        c_dict['CTRL_INPUT_DIR'] = self.config.getdir(
+            'ENSEMBLE_STAT_CTRL_INPUT_DIR',
+            ''
         )
 
         # get climatology config variables
@@ -220,43 +246,39 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['MET_OBS_ERR_TABLE'] = \
             self.config.getstr('config', 'ENSEMBLE_STAT_MET_OBS_ERR_TABLE', '')
 
-        self.set_met_config_float(self.env_var_dict,
-                                  'ENSEMBLE_STAT_ENS_VLD_THRESH',
-                                  'vld_thresh',
-                                  'METPLUS_ENS_VLD_THRESH')
+        self.add_met_config(name='vld_thresh',
+                            data_type='float',
+                            env_var_name='METPLUS_ENS_VLD_THRESH',
+                            metplus_configs=['ENSEMBLE_STAT_ENS_VLD_THRESH',
+                                             'ENSEMBLE_STAT_VLD_THRESH',
+                                             'ENSEMBLE_STAT_ENS_VALID_THRESH',
+                                             'ENSEMBLE_STAT_VALID_THRESH',
+                                             ])
 
-        self.set_met_config_list(self.env_var_dict,
-                                 'ENSEMBLE_STAT_ENS_OBS_THRESH',
-                                 'obs_thresh',
-                                 'METPLUS_ENS_OBS_THRESH',
-                                 remove_quotes=True)
+        self.add_met_config(name='obs_thresh',
+                            data_type='list',
+                            env_var_name='METPLUS_ENS_OBS_THRESH',
+                            metplus_configs=['ENSEMBLE_STAT_ENS_OBS_THRESH',
+                                             'ENSEMBLE_STAT_OBS_THRESH'],
+                            extra_args={'remove_quotes': True})
 
-        self.set_met_config_float(self.env_var_dict,
-                                  'ENSEMBLE_STAT_ENS_SSVAR_BIN_SIZE',
-                                  'ens_ssvar_bin_size',
-                                  'METPLUS_ENS_SSVAR_BIN_SIZE')
-        self.set_met_config_float(self.env_var_dict,
-                                  'ENSEMBLE_STAT_ENS_PHIST_BIN_SIZE',
-                                  'ens_phist_bin_size',
-                                  'METPLUS_ENS_PHIST_BIN_SIZE')
+        self.add_met_config(name='ens_ssvar_bin_size',
+                            data_type='float')
+
+        self.add_met_config(name='ens_phist_bin_size',
+                            data_type='float')
 
         self.handle_nbrhd_prob_dict()
 
-        self.set_met_config_float(self.env_var_dict,
-                                  'ENSEMBLE_STAT_ENS_THRESH',
-                                  'ens_thresh',
-                                  'METPLUS_ENS_THRESH')
+        self.add_met_config(name='ens_thresh',
+                            data_type='float')
 
-        self.set_met_config_string(self.env_var_dict,
-                                   'ENSEMBLE_STAT_DUPLICATE_FLAG',
-                                   'duplicate_flag',
-                                   'METPLUS_DUPLICATE_FLAG',
-                                   remove_quotes=True)
+        self.add_met_config(name='duplicate_flag',
+                            data_type='string',
+                            extra_args={'remove_quotes': True})
 
-        self.set_met_config_bool(self.env_var_dict,
-                                 'ENSEMBLE_STAT_SKIP_CONST',
-                                 'skip_const',
-                                 'METPLUS_SKIP_CONST')
+        self.add_met_config(name='skip_const',
+                            data_type='bool')
 
         # set climo_cdf dictionary variables
         self.handle_climo_cdf_dict()
@@ -270,41 +292,44 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.handle_flags('OUTPUT')
         self.handle_flags('ENSEMBLE')
 
-        self.set_met_config_bool(self.env_var_dict,
-                                 'ENSEMBLE_STAT_OBS_ERROR_FLAG',
-                                 'flag',
-                                 'METPLUS_OBS_ERROR_FLAG')
-        self.set_met_config_list(self.env_var_dict,
-                                 'ENSEMBLE_STAT_MASK_GRID',
-                                 'grid',
-                                 'METPLUS_MASK_GRID',
-                                 allow_empty=True)
-        self.set_met_config_list(self.env_var_dict,
-                                 'ENSEMBLE_STAT_CI_ALPHA',
-                                 'ci_alpha',
-                                 'METPLUS_CI_ALPHA',
-                                 remove_quotes=True)
+        self.add_met_config(name='flag',
+                            data_type='bool',
+                            env_var_name='METPLUS_OBS_ERROR_FLAG',
+                            metplus_configs=['ENSEMBLE_STAT_OBS_ERROR_FLAG'])
 
-        self.set_met_config_list(self.env_var_dict,
-                                 'ENSEMBLE_STAT_CENSOR_THRESH',
-                                 'censor_thresh',
-                                 'METPLUS_CENSOR_THRESH',
-                                 remove_quotes=True)
-        self.set_met_config_list(self.env_var_dict,
-                                 'ENSEMBLE_STAT_CENSOR_VAL',
-                                 'censor_val',
-                                 'METPLUS_CENSOR_VAL',
-                                 remove_quotes=True)
+        self.add_met_config(name='grid',
+                            data_type='list',
+                            env_var_name='METPLUS_MASK_GRID',
+                            metplus_configs=['ENSEMBLE_STAT_MASK_GRID'],
+                            extra_args={'allow_empty': True})
 
-        self.set_met_config_list(self.env_var_dict,
-                                 'ENSEMBLE_STAT_MESSAGE_TYPE',
-                                 'message_type',
-                                 'METPLUS_MESSAGE_TYPE',
-                                 allow_empty=True)
+        self.add_met_config(name='poly',
+                            data_type='list',
+                            env_var_name='METPLUS_MASK_POLY',
+                            metplus_configs=['ENSEMBLE_STAT_MASK_POLY',
+                                             'ENSEMBLE_STAT_POLY',
+                                             ('ENSEMBLE_STAT_'
+                                              'VERIFICATION_MASK_TEMPLATE')],
+                            extra_args={'allow_empty': True})
 
-        self.handle_obs_window_variables(c_dict)
+        self.add_met_config(name='ci_alpha',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
 
-        c_dict['MASK_POLY_TEMPLATE'] = self.read_mask_poly()
+        self.add_met_config(name='censor_thresh',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
+
+        self.add_met_config(name='censor_val',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
+
+        self.add_met_config(name='message_type',
+                            data_type='list',
+                            extra_args={'allow_empty': True})
+
+        self.add_met_config_window('obs_window')
+        self.handle_obs_window_legacy(c_dict)
 
         self.add_met_config(
             name='obs_quality_inc',
@@ -319,6 +344,28 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                              'ENSEMBLE_STAT_OBS_QUALITY_EXCLUDE']
         )
 
+        self.add_met_config(name='ens_member_ids',
+                            data_type='list')
+
+        self.add_met_config(name='control_id',
+                            data_type='string')
+
+        self.add_met_config(name='grid_weight_flag',
+                            data_type='string',
+                            extra_args={'remove_quotes': True,
+                                        'uppercase': True})
+
+        self.add_met_config(name='prob_pct_thresh',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
+
+        self.add_met_config(name='eclv_points',
+                            data_type='float')
+
+        self.add_met_config(name='prob_cat_thresh',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
+
         # old method of setting MET config values
         c_dict['ENS_THRESH'] = (
             self.config.getstr('config', 'ENSEMBLE_STAT_ENS_THRESH', '1.0')
@@ -329,14 +376,14 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['VAR_LIST_OPTIONAL'] = True
 
         # parse var list for ENS fields
-        c_dict['ENS_VAR_LIST_TEMP'] = util.parse_var_list(
+        c_dict['ENS_VAR_LIST_TEMP'] = parse_var_list(
             self.config,
             data_type='ENS',
             met_tool=self.app_name
         )
 
         # parse optional var list for FCST and/or OBS fields
-        c_dict['VAR_LIST_TEMP'] = util.parse_var_list(
+        c_dict['VAR_LIST_TEMP'] = parse_var_list(
             self.config,
             met_tool=self.app_name
         )
@@ -344,7 +391,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         return c_dict
 
     def handle_nmep_smooth_dict(self):
-        self.handle_met_config_dict('nmep_smooth', {
+        self.add_met_config_dict('nmep_smooth', {
             'vld_thresh': 'float',
             'shape': ('string', 'uppercase,remove_quotes'),
             'gaussian_dx': 'float',
@@ -357,7 +404,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         })
 
     def handle_nbrhd_prob_dict(self):
-        self.handle_met_config_dict('nbrhd_prob', {
+        self.add_met_config_dict('nbrhd_prob', {
             'width': ('list', 'remove_quotes'),
             'shape': ('string', 'uppercase,remove_quotes'),
             'vld_thresh': 'float',
@@ -369,7 +416,10 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                 @param time_info dictionary containing timing information
         """
         # get ensemble model files
-        if not self.find_input_files_ensemble(time_info):
+        # do not fill file list with missing if ens_member_ids is used
+        fill_missing = not self.env_var_dict.get('METPLUS_ENS_MEMBER_IDS')
+        if not self.find_input_files_ensemble(time_info,
+                                              fill_missing=fill_missing):
             return
 
         # parse var list for ENS fields
@@ -410,6 +460,10 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         if not fcst_field and not obs_field and not ens_field:
             self.log_error("Could not build field info for fcst, obs, or ens")
             return
+
+        # if ens is not set, use fcst
+        if not ens_field:
+            ens_field = fcst_field
 
         self.format_field('FCST', fcst_field)
         self.format_field('OBS', obs_field)
@@ -460,84 +514,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         return ','.join(field_list)
 
-
-    def find_model_members(self, time_info):
-        """! Finds the model member files to compare
-              Args:
-                @param time_info dictionary containing timing information
-                @rtype string
-                @return Returns a list of the paths to the ensemble model files
-        """
-        model_dir = self.c_dict['FCST_INPUT_DIR']
-        # used for filling in missing files to ensure ens_thresh check is accurate
-        fake_dir = '/ensemble/member/is/missing'
-
-        # model_template is a list of 1 or more.
-        ens_members_path = []
-
-        # get all files that exist
-        for ens_member_template in self.c_dict['FCST_INPUT_TEMPLATE']:
-            member_file = do_string_sub(ens_member_template,
-                                        **time_info)
-            expected_path = os.path.join(model_dir, member_file)
-
-            # if wildcard expression, get all files that match
-            if '?' in expected_path or '*' in expected_path:
-                wildcard_files = sorted(glob.glob(expected_path))
-                self.logger.debug('Ensemble members file pattern: {}'
-                                  .format(expected_path))
-                self.logger.debug('{} members match file pattern'
-                                  .format(str(len(wildcard_files))))
-
-                # add files to list of ensemble members
-                for wildcard_file in wildcard_files:
-                    ens_members_path.append(wildcard_file)
-            else:
-                # otherwise check if file exists
-                expected_path = util.preprocess_file(expected_path,
-                                                     self.c_dict['FCST_INPUT_DATATYPE'],
-                                                     self.config)
-
-                # if the file exists, add it to the list
-                if expected_path:
-                    ens_members_path.append(expected_path)
-                else:
-                    # add relative path to fake dir and add to list
-                    ens_members_path.append(os.path.join(fake_dir, member_file))
-                    self.logger.warning('Expected ensemble file {} not found'
-                                        .format(member_file))
-
-        # if more files found than expected, error and exit
-        if len(ens_members_path) > self.c_dict['N_MEMBERS']:
-            msg = 'Found more files than expected! ' +\
-                  'Found {} expected {}. '.format(len(ens_members_path),
-                                                  self.c_dict['N_MEMBERS']) +\
-                  'Adjust wildcard expression in [filename_templates] '+\
-                  'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE or adjust [config] '+\
-                  'ENSEMBLE_STAT_N_MEMBERS. Files found: {}'.format(ens_members_path)
-            self.log_error(msg)
-            self.logger.error("Could not file files in {} for init {} f{} "
-                              .format(model_dir, time_info['init_fmt'],
-                                      str(time_info['lead_hours'])))
-            return False
-        # if fewer files found than expected, warn and add fake files
-        elif len(ens_members_path) < self.c_dict['N_MEMBERS']:
-            msg = 'Found fewer files than expected. '+\
-              'Found {} expected {}.'.format(len(ens_members_path),
-                                             self.c_dict['N_MEMBERS'])
-            self.logger.warning(msg)
-            # add fake files to list to get correct number of files for ens_thresh
-            diff = self.c_dict['N_MEMBERS'] - len(ens_members_path)
-            self.logger.warning('Adding {} fake files to '.format(str(diff))+\
-                                'ensure ens_thresh check is accurate')
-            for _ in range(0, diff, 1):
-                ens_members_path.append(fake_dir)
-
-        # write file that contains list of ensemble files
-        list_filename = time_info['init_fmt'] + '_' + \
-          str(time_info['lead_hours']) + '_ensemble.txt'
-        return self.write_list_file(list_filename, ens_members_path)
-
     def set_environment_variables(self, time_info):
         self.add_env_var("MET_OBS_ERROR_TABLE",
                          self.c_dict.get('MET_OBS_ERR_TABLE', ''))
@@ -559,11 +535,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                          str(self.c_dict['OBS_WINDOW_BEGIN']))
         self.add_env_var("OBS_WINDOW_END",
                          str(self.c_dict['OBS_WINDOW_END']))
-
-        # read output prefix at this step to ensure that
-        # CURRENT_[FCST/OBS]_[NAME/LEVEL] is substituted correctly
-        self.add_env_var('VERIF_MASK',
-                         self.c_dict.get('VERIFICATION_MASK', ''))
 
         # support old method of setting variables in MET config files
         self.add_env_var('ENS_THRESH',
@@ -645,6 +616,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             cmd += self.param + " "
 
         for obs_file in self.point_obs_files:
+            if obs_file.startswith('PYTHON'):
+                obs_file = f"'{obs_file}'"
             cmd += "-point_obs " + obs_file + " "
 
         for obs_file in self.grid_obs_files:

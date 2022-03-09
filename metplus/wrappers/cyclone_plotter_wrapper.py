@@ -1,5 +1,5 @@
 
-"""!@namespace ExtraTropicalCyclonePlotter
+"""!@namespace CyclonePlotter
 A Python class that generates plots of extra tropical cyclone forecast data,
  replicating the NCEP tropical and extra tropical cyclone tracks and
  verification plots http://www.emc.ncep.noaa.gov/mmb/gplou/emchurr/glblgen/
@@ -25,11 +25,13 @@ try:
     import cartopy
     from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 
-    ##If the script is run on a limited-internet access machine, the CARTOPY_DIR environment setting
-    ##will need to be set in the user-specific system configuration file. Review the Installation section
-    ##of the User's Guide for more details.
+    # If the script is run on a limited-internet access machine,
+    # the CARTOPY_DIR environment setting
+    # will need to be set in the user-specific system configuration file.
+    # Review the Installation section of the User's Guide for more details.
     if os.getenv('CARTOPY_DIR'):
-        cartopy.config['data_dir'] = os.getenv('CARTOPY_DIR', cartopy.config.get('data_dir'))
+        cartopy.config['data_dir'] = os.getenv('CARTOPY_DIR',
+                                               cartopy.config.get('data_dir'))
 
 except Exception as err_msg:
     WRAPPER_CANNOT_RUN = True
@@ -39,6 +41,7 @@ import produtil.setup
 
 from ..util import met_util as util
 from ..util import do_string_sub
+from ..util import time_generator, add_to_time_input
 from . import CommandBuilder
 
 
@@ -47,12 +50,10 @@ class CyclonePlotterWrapper(CommandBuilder):
         Reads input from ATCF files generated from MET TC-Pairs
     """
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         self.app_name = 'cyclone_plotter'
 
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
         if WRAPPER_CANNOT_RUN:
             self.log_error("There was a problem importing modules: "
@@ -65,23 +66,12 @@ class CyclonePlotterWrapper(CommandBuilder):
                                             'CYCLONE_PLOTTER_INIT_DATE')
         self.init_hr = self.config.getraw('config', 'CYCLONE_PLOTTER_INIT_HR')
 
-        init_time_fmt = self.config.getstr('config', 'INIT_TIME_FMT', '')
-
-        if init_time_fmt:
-            clock_time = datetime.datetime.strptime(
-                self.config.getstr('config',
-                                   'CLOCK_TIME'),
-                '%Y%m%d%H%M%S'
-            )
-
-            init_beg = self.config.getraw('config', 'INIT_BEG')
-            if init_beg:
-                init_beg_dt = util.get_time_obj(init_beg,
-                                                init_time_fmt,
-                                                clock_time,
-                                                logger=self.logger)
-                self.init_date = do_string_sub(self.init_date, init=init_beg_dt)
-                self.init_hr = do_string_sub(self.init_hr, init=init_beg_dt)
+        # attempt to get first runtime from config
+        # if successful, substitute time values into init date and hour
+        time_input = next(time_generator(self.config))
+        if time_input is not None:
+            self.init_date = do_string_sub(self.init_date, **time_input)
+            self.init_hr = do_string_sub(self.init_hr, **time_input)
 
         self.model = self.config.getstr('config', 'CYCLONE_PLOTTER_MODEL')
         self.title = self.config.getstr('config',

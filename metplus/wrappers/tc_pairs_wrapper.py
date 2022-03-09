@@ -20,10 +20,13 @@ import csv
 import datetime
 import glob
 
+from ..util import getlist
 from ..util import time_util
 from ..util import met_util as util
 from ..util import do_string_sub
 from ..util import get_tags
+from ..util.met_config import add_met_config_dict_list
+from ..util import time_generator, log_runtime_banner, add_to_time_input
 from . import CommandBuilder
 
 '''!@namespace TCPairsWrapper
@@ -58,6 +61,8 @@ class TCPairsWrapper(CommandBuilder):
         'METPLUS_WRITE_VALID',
         'METPLUS_VALID_INC',
         'METPLUS_VALID_EXC',
+        'METPLUS_CHECK_DUP',
+        'METPLUS_INTERP12',
     ]
 
     WILDCARDS = {
@@ -71,13 +76,11 @@ class TCPairsWrapper(CommandBuilder):
         'cyclone': r'[0-9]{2,4}',
     }
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         self.app_name = 'tc_pairs'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
         self.adeck = []
         self.bdeck = []
         self.edeck = []
@@ -166,13 +169,18 @@ class TCPairsWrapper(CommandBuilder):
 
         self.handle_consensus()
 
-        # if looping by processes, get the init or valid beg time and run once
-        c_dict['INPUT_DICT'] = self.get_start_time_input_dict()
+        self.add_met_config(name='check_dup',
+                            data_type='bool')
 
-        c_dict['INIT_INCLUDE'] = util.getlist(
+        self.add_met_config(name='interp12',
+                            data_type='string',
+                            extra_args={'remove_quotes': True,
+                                        'uppercase': True})
+
+        c_dict['INIT_INCLUDE'] = getlist(
             self.get_wrapper_or_generic_config('INIT_INCLUDE')
         )
-        c_dict['INIT_EXCLUDE'] = util.getlist(
+        c_dict['INIT_EXCLUDE'] = getlist(
             self.get_wrapper_or_generic_config('INIT_EXCLUDE')
         )
         c_dict['VALID_BEG'] = self.get_wrapper_or_generic_config('VALID_BEG')
@@ -194,7 +202,7 @@ class TCPairsWrapper(CommandBuilder):
         )
 
         # get list of models to process
-        c_dict['MODEL_LIST'] = util.getlist(
+        c_dict['MODEL_LIST'] = getlist(
             self.config.getraw('config', 'MODEL', '')
         )
         # if no models are requested, set list to contain a single string
@@ -204,7 +212,7 @@ class TCPairsWrapper(CommandBuilder):
 
         self._read_storm_info(c_dict)
 
-        c_dict['STORM_NAME_LIST'] = util.getlist(
+        c_dict['STORM_NAME_LIST'] = getlist(
             self.config.getraw('config', 'TC_PAIRS_STORM_NAME')
         )
         c_dict['DLAND_FILE'] = self.config.getraw('config',
@@ -286,13 +294,13 @@ class TCPairsWrapper(CommandBuilder):
         @param c_dict dictionary to populate with values from config
         @returns None
         """
-        storm_id_list = util.getlist(
+        storm_id_list = getlist(
             self.config.getraw('config', 'TC_PAIRS_STORM_ID', '')
         )
-        cyclone_list = util.getlist(
+        cyclone_list = getlist(
             self.config.getraw('config', 'TC_PAIRS_CYCLONE', '')
         )
-        basin_list = util.getlist(
+        basin_list = getlist(
             self.config.getraw('config', 'TC_PAIRS_BASIN', '')
         )
 
@@ -315,72 +323,33 @@ class TCPairsWrapper(CommandBuilder):
             c_dict['BASIN_LIST'] = basin_list
 
     def handle_consensus(self):
-        children = [
-            'NAME',
-            'MEMBERS',
-            'REQUIRED',
-            'MIN_REQ'
-        ]
-        regex = r'^TC_PAIRS_CONSENSUS(\d+)_(\w+)$'
-        indices = util.find_indices_in_config_section(regex, self.config,
-                                                      index_index=1,
-                                                      id_index=2)
+        dict_items = {
+            'name': 'string',
+            'members': 'list',
+            'required': ('list', 'remove_quotes'),
+            'min_req': 'int',
+        }
+        return_code = add_met_config_dict_list(config=self.config,
+                                               app_name=self.app_name,
+                                               output_dict=self.env_var_dict,
+                                               dict_name='consensus',
+                                               dict_items=dict_items)
+        if not return_code:
+            self.isOK = False
 
-        consensus_dict = {}
-        for index, items in indices.items():
-            # read all variables for each index
-            consensus_items = {}
-
-            # check if any variable found doesn't match valid variables
-            if any([item for item in items if item not in children]):
-                self.log_error("Invalid variable: "
-                               f"TC_PAIRS_CONSENSUS{index}_{item}")
-
-            self.add_met_config(
-                name='name',
-                data_type='string',
-                metplus_configs=[f'TC_PAIRS_CONSENSUS{index}_NAME'],
-                output_dict=consensus_items
-            )
-            self.add_met_config(
-                name='members',
-                data_type='list',
-                metplus_configs=[f'TC_PAIRS_CONSENSUS{index}_MEMBERS'],
-                output_dict=consensus_items
-            )
-            self.add_met_config(
-                name='required',
-                data_type='list',
-                metplus_configs=[f'TC_PAIRS_CONSENSUS{index}_REQUIRED'],
-                extra_args={'remove_quotes': True},
-                output_dict=consensus_items
-            )
-            self.add_met_config(
-                name='min_req',
-                data_type='int',
-                metplus_configs=[f'TC_PAIRS_CONSENSUS{index}_MIN_REQ'],
-                output_dict=consensus_items
-            )
-
-            self.logger.debug(f'Consensus Items: {consensus_items}')
-            # format dictionary, then add it to consensus_dict
-            dict_string = self.format_met_config('dict',
-                                                 consensus_items,
-                                                 name='')
-            consensus_dict[index] = dict_string
-
-        # format list of dictionaries
-        output_string = self.format_met_config('list',
-                                               consensus_dict,
-                                               'consensus')
-
-        self.env_var_dict['METPLUS_CONSENSUS_LIST'] = output_string
+        return return_code
 
     def run_all_times(self):
         """! Build up the command to invoke the MET tool tc_pairs.
         """
         # use first run time
-        input_dict = self.c_dict.get('INPUT_DICT')
+        input_dict = next(time_generator(self.config))
+        if not input_dict:
+            return self.all_commands
+
+        add_to_time_input(input_dict,
+                          instance=self.instance)
+        log_runtime_banner(self.config, input_dict, self)
 
         # if running in READ_ALL_FILES mode, call tc_pairs once and exit
         if self.c_dict['READ_ALL_FILES']:

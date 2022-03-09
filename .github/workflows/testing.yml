@@ -1,23 +1,64 @@
 name: Testing
+
 on:
+
   push:
     branches:
       - develop
       - develop-ref
-      - feature_*
-      - main_*
-      - bugfix_*
+      - 'feature_*'
+      - 'main_*'
+      - 'bugfix_*'
     paths-ignore:
-      - docs/**
+      - 'docs/**'
+
   pull_request:
-    types: [opened, reopened, synchronize]
+    types: [opened, synchronize, reopened]
+    branches:
+      - develop
+      - 'main_*'
     paths-ignore:
-      - docs/** 
+      - 'docs/**'
+
+  workflow_dispatch:
+    inputs:
+      repository:
+        description: 'Repository that triggered workflow'
+        required: true
+      sha:
+        description: 'Commit hash that triggered the event'
+        required: true
+      ref:
+        description: 'Branch that triggered event'
+        required: true
+      actor:
+        description: 'User that triggered the event'
+      pusher_email:
+        description: 'Email address of user who triggered push event'
 
 jobs:
+
+  event_info:
+    name: "Trigger: ${{ github.event_name != 'workflow_dispatch' && github.event_name || github.event.inputs.repository }} ${{ github.event_name != 'workflow_dispatch' && 'local' || github.event.inputs.actor }} ${{ github.event_name != 'workflow_dispatch' && 'event' || github.event.inputs.sha }}"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print GitHub values for reference
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+
   job_control:
     name: Determine which jobs to run
     runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set job controls
+        id: job_status
+        run: .github/jobs/set_job_controls.sh
+        env:
+          commit_msg: ${{ github.event.head_commit.message }}
+
     outputs:
       matrix: ${{ steps.job_status.outputs.matrix }}
       run_some_tests: ${{ steps.job_status.outputs.run_some_tests }}
@@ -25,21 +66,9 @@ jobs:
       run_get_input_data: ${{ steps.job_status.outputs.run_get_input_data }}
       run_diff: ${{ steps.job_status.outputs.run_diff }}
       run_save_truth_data: ${{ steps.job_status.outputs.run_save_truth_data }}
-    steps:
-      - uses: actions/checkout@v2
-      - name: Print GitHub values for reference
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-      - name: Set job controls
-        id: job_status
-        run: .github/jobs/set_job_controls.sh
-        env:
-          commit_msg: ${{ github.event.head_commit.message }}
-      - uses: actions/upload-artifact@v2
-        with:
-          name: job_control_status
-          path: job_control_status
+      external_trigger: ${{ steps.job_status.outputs.external_trigger }}
+      branch_name: ${{ steps.job_status.outputs.branch_name }}
+
   get_image:
     name: Docker Setup - Get METplus Image
     runs-on: ubuntu-latest
@@ -56,23 +85,25 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           #MET_FORCE_TAG: 10.0.0
+
   update_data_volumes:
     name: Docker Setup - Update Data Volumes
     runs-on: ubuntu-latest
     needs: job_control
     if: ${{ needs.job_control.outputs.run_get_input_data == 'true' }}
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: dtcenter/metplus-action-data-update@v1
         with:
-          python-version: '3.6'
-      - name: Install dependencies
-        run: python -m pip install --upgrade pip python-dateutil requests bs4
-      - name: Update Data Volumes
-        run: .github/jobs/docker_update_data_volumes.py
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          docker_name: ${{ secrets.DOCKER_USERNAME }}
+          docker_pass: ${{ secrets.DOCKER_PASSWORD }}
+          repo_name: ${{ github.repository }}
+          data_prefix: sample_data
+          branch_name: ${{ needs.job_control.outputs.branch_name }}
+          docker_data_dir: /data/input/METplus_Data
+          data_repo_dev: metplus-data-dev
+          data_repo_stable: metplus-data
+          use_feature_data: true
+
   use_case_tests:
     name: Use Case Tests
     runs-on: ubuntu-latest
@@ -82,21 +113,24 @@ jobs:
       fail-fast: false
       matrix: ${{fromJson(needs.job_control.outputs.matrix)}}
     steps:
+
+      - uses: actions/checkout@v2
+
       - name: Create directories for database
-        run: |
-          mkdir -p $RUNNER_WORKSPACE/mysql
-          mkdir -p $RUNNER_WORKSPACE/output/metviewer
-          chmod a+w $RUNNER_WORKSPACE/mysql
-          chmod a+w $RUNNER_WORKSPACE/output/metviewer
+        run: .github/jobs/create_dirs_for_database.sh
+
       - name: Create directory for artifacts
         run: mkdir -p artifact
-      - uses: actions/checkout@v2
+
       - name: Get artifact name
         id: get-artifact-name
         run: |
           artifact_name=`.github/jobs/get_artifact_name.sh ${{ matrix.categories }}`
           echo ::set-output name=artifact_name::${artifact_name}
-      - uses: ./.github/actions/run_tests
+
+      # run use case tests
+      - name: Run Use Cases
+        uses: ./.github/actions/run_tests
         id: run_tests
         with:
           categories: ${{ matrix.categories }}
@@ -105,61 +139,43 @@ jobs:
       - name: Save error logs
         id: save-errors
         if: ${{ always() && steps.run_tests.conclusion == 'failure' && matrix.categories != 'pytests' }}
-        run: |
-          .github/jobs/copy_error_logs.py \
-            ${RUNNER_WORKSPACE}/output \
-            artifact/error_logs
-          if [ -d "artifact/error_logs" ]; then
-            echo ::set-output name=upload_error_logs::true
-          else
-            echo ::set-output name=upload_error_logs::false
-          fi
+        run: .github/jobs/save_error_logs.sh
 
       # run difference testing
       - name: Run difference tests
         id: run-diff
         if: ${{ needs.job_control.outputs.run_diff == 'true' && steps.run_tests.conclusion == 'success'  && matrix.categories != 'pytests' }}
-        run: |
-          artifact_name=${{ steps.get-artifact-name.outputs.artifact_name }}
-          .github/jobs/setup_and_run_diff.py ${{ matrix.categories }} $artifact_name
-          if [ "$( ls -A ${RUNNER_WORKSPACE}/diff)" ]; then
-            echo ::set-output name=upload_diff::true
-            mkdir -p artifact/diff-${artifact_name}
-            cp -r ${RUNNER_WORKSPACE}/diff/* artifact/diff-${artifact_name}
-            exit 1
-          else
-            echo ::set-output name=upload_diff::false
-          fi
+        run: .github/jobs/run_difference_tests.sh ${{ matrix.categories }} ${{ steps.get-artifact-name.outputs.artifact_name }}
 
       # copy output data to save as artifact
       - name: Save output data
         id: save-output
         if: ${{ always() && steps.run_tests.conclusion != 'skipped'  && matrix.categories != 'pytests' }}
-        run: |
-          artifact_name=${{ steps.get-artifact-name.outputs.artifact_name }}
-          mkdir -p artifact/${artifact_name}
-          cp -r ${RUNNER_WORKSPACE}/output/* artifact/${artifact_name}/
+        run: .github/jobs/copy_output_to_artifact.sh ${{ steps.get-artifact-name.outputs.artifact_name }}
 
-      - uses: actions/upload-artifact@v2
-        name: Upload output data artifact
+      - name: Upload output data artifact
+        uses: actions/upload-artifact@v2
         if: ${{ always() && steps.run_tests.conclusion != 'skipped'  && matrix.categories != 'pytests' }}
         with:
           name: ${{ steps.get-artifact-name.outputs.artifact_name }}
           path: artifact/${{ steps.get-artifact-name.outputs.artifact_name }}
-      - uses: actions/upload-artifact@v2
-        name: Upload error logs artifact
+
+      - name: Upload error logs artifact
+        uses: actions/upload-artifact@v2
         if: ${{ always() && steps.save-errors.outputs.upload_error_logs }}
         with:
           name: error_logs
           path: artifact/error_logs
           if-no-files-found: ignore
-      - uses: actions/upload-artifact@v2
-        name: Upload difference data artifact
+
+      - name: Upload difference data artifact
+        uses: actions/upload-artifact@v2
         if: ${{ always() && steps.run-diff.outputs.upload_diff == 'true' }}
         with:
           name: diff-${{ steps.get-artifact-name.outputs.artifact_name }}
           path: artifact/diff-${{ steps.get-artifact-name.outputs.artifact_name }}
           if-no-files-found: ignore
+
   create_output_data_volumes:
     name: Create Output Docker Data Volumes
     runs-on: ubuntu-latest

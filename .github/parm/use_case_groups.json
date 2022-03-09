@@ -11,7 +11,7 @@
   },
   {
     "category": "met_tool_wrapper",
-    "index_list": "59",
+    "index_list": "59-60",
     "run": false
   },
   {
@@ -57,6 +57,16 @@
   {
     "category": "marine_and_cryosphere",
     "index_list": "0-2",
+    "run": false
+  },
+  {
+    "category": "marine_and_cryosphere",
+    "index_list": "3-4",
+    "run": false
+  },
+  {
+    "category": "marine_and_cryosphere",
+    "index_list": "5",
     "run": false
   },
   {
@@ -106,7 +116,12 @@
   },
   {
     "category": "precipitation",
-    "index_list": "3-8",
+    "index_list": "3-7",
+    "run": false
+  },
+  {
+    "category": "precipitation",
+    "index_list": "8",
     "run": false
   },
   {
@@ -150,6 +165,11 @@
     "run": false
   },
   {
+    "category": "s2s",
+    "index_list": "12",
+    "run": false 
+  },
+  {
     "category": "space_weather",
     "index_list": "0-1",
     "run": false
@@ -161,7 +181,7 @@
   },
   {
     "category": "tc_and_extra_tc",
-    "index_list": "3",
+    "index_list": "3-5",
     "run": false
   }
 ]

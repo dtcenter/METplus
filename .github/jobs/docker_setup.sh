@@ -29,15 +29,21 @@ duration=$(( SECONDS - start_seconds ))
 echo "TIMING: docker pull ${DOCKERHUB_TAG} took `printf '%02d' $(($duration / 60))`:`printf '%02d' $(($duration % 60))` (MM:SS)"
 
 # set DOCKERFILE_PATH that is used by docker hook script get_met_version
-export DOCKERFILE_PATH=${GITHUB_WORKSPACE}/ci/docker/Dockerfile
+export DOCKERFILE_PATH=${GITHUB_WORKSPACE}/scripts/docker/Dockerfile
 
-MET_TAG=`${GITHUB_WORKSPACE}/ci/docker/hooks/get_met_version`
+MET_TAG=`${GITHUB_WORKSPACE}/scripts/docker/hooks/get_met_version`
+
+MET_DOCKER_REPO=met-dev
+if [ "${MET_TAG}" != "develop" ]; then
+    MET_DOCKER_REPO=met
+fi
 
 # if MET_FORCE_TAG variable is set and not empty, use that version instead
 if [ ! -z "$MET_FORCE_TAG" ]; then
     MET_TAG=$MET_FORCE_TAG
 fi
 
+echo Using MET_DOCKER_REPO=$MET_DOCKER_REPO
 echo Using MET_TAG=$MET_TAG
 echo Setting DOCKER_BUILDKIT=1
 export DOCKER_BUILDKIT=1
@@ -45,6 +51,7 @@ export DOCKER_BUILDKIT=1
 time_command docker build --pull --cache-from ${DOCKERHUB_TAG} \
 -t ${DOCKERHUB_TAG} \
 --build-arg OBTAIN_SOURCE_CODE=copy \
+--build-arg MET_DOCKER_REPO=$MET_DOCKER_REPO \
 --build-arg MET_TAG=$MET_TAG \
 -f ${DOCKERFILE_PATH} ${GITHUB_WORKSPACE}
 

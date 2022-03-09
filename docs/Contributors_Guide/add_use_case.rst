@@ -144,8 +144,20 @@ Use Case Rules
 - The use case should be run by someone other than the author to ensure that it
   runs smoothly outside of the development environment set up by the author.
 
-.. _use_case_documentation:
+.. _memory-intense-use-cases:
 
+Use Cases That Exceed Github Actions Memory Limit
+-------------------------------------------------
+
+Below is a list of use cases in the repository that cannot be run in Github Actions 
+due to their excessive memory usage. They have been tested and cleared by reviewers 
+of any other issues and can be used by METplus users in the same manner as all 
+other use cases.
+
+- model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst
+
+.. _use_case_documentation:
+  
 Document New Use Case
 ---------------------
 
@@ -191,21 +203,31 @@ use case OR category directory for a model_applications use case
     * Users are encouraged to copy an existing documentation file and modify it
       to describe the new use case.
 
-    * Update any references to the .conf file to use the correct name
+    * Update any references to the .conf file to use the correct name.
 
-    * Update the Scientific Objective section to describe the use case
+    * Update the Scientific Objective section to describe the use case.
 
-    * Update the description of the input data in the Datasets section
+    * Update the description of the input data in the Datasets section.
 
-    * Update the list of tools used in the METplus Components section
+    * Update the list of External Dependencies (if applicable) to include any
+      required Python packages.  Update the :ref:`python_requirements_table`
+      table.  If the package is already listed in the spreadsheet, add
+      a link to the documentation page for this new use case, following the
+      format in the table.  If the package is not already listed, update
+      the table to include the name of the required package, the version,
+      the METplus component (e.g. METplus wrappers, METcalcpy, METplotpy), the
+      source, a brief description of the package, and a link to this new use
+      case that uses this new Python package.
+      
+    * Update the list of tools used in the METplus Components section.
 
-    * Update the list of run times in the METplus Workflow section
+    * Update the list of run times in the METplus Workflow section.
 
     * Update the list of keywords, referring to :ref:`quick-search` for
       a list of possible keywords to use (Note: The link text for the
       keywords must match the actual keyword exactly or it will not
       show up in the search, i.e. **ASCII2NCToolUseCase** must match
-      https://metplus.readthedocs.io/en/latest/search.html?q=**ASCII2NCToolUseCase**
+      https://metplus.readthedocs.io/en/latest/search.html?q=**ASCII2NCToolUseCase**.
 
     * Add an image to use as the thumbnail (if desired). Images can be added
       to the docs/_static directory and should be named <category>-<conf>.png
@@ -642,220 +664,10 @@ will be used in the final pull request.
 Add use case to the test suite
 ------------------------------
 
-In the METplus repository, there is a text file that contains the list of
-all use cases::
-
-  internal_tests/use_cases/all_use_cases.txt
-
+The **internal_tests/use_cases/all_use_cases.txt** file in the METplus
+repository contains the list of all use cases.
 Add the new use case to this file so it will be available in
-the tests. The file is organized by use case category. Each category starts
-a line that following the format::
-
-  Category: <category>
-
-where <category> is the name of the use case category. If you are adding a
-use case that will go into a new category, you will have to add a new category
-definition line to this file and add your new use case under it. Each use case
-in that category will be found on its own line after this line.
-The use cases can be defined using 3 different formats::
-
-    <index>::<config_args>
-    <index>::<name>::<config_args>
-    <index>::<name>::<config_args>::<dependencies>
-
-**<index>**
-
-The index is the number associated with the use case so it can be referenced
-easily. The first index number in a new category should be 0.
-Each use case added should have an index that is one greater than the previous.
-
-**<index>::<config_args>**
-
-This format should only be used if the use case has only 1 configuration file
-and no additional Python package dependencies besides the ones that are
-required by the METplus wrappers. <config_args> is the path of the conf file
-used for the use case relative to METplus/parm/use_cases. The filename of the
-config file without the .conf extension will be used as the name of the use
-case. Example::
-
-    6::model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr.conf
-
-The above example will be named
-'PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr' and will run using the
-configuration file listed.
-
-**<index>::<name>::<config_args>**
-
-This format is required if the use case contains multiple configuration files.
-Instead of forcing the script to guess which conf file should be used as the
-name of the use case, you must explicitly define it. The name of the use case
-must be separated from the <config_args> with '::' and each conf file path or
-conf variable override must be separated by a comma. Example::
-
-    44::GridStat_multiple_config:: met_tool_wrapper/GridStat/GridStat.conf,met_tool_wrapper/GridStat/GridStat_forecast.conf,met_tool_wrapper/GridStat/GridStat_observation.conf
-
-The above example is named 'GridStat_multiple_config' and uses 3 .conf files.
-Use cases with only one configuration file can also use this format is desired.
-
-**<index>::<name>::<config_args>::<dependencies>**
-
-This format is used if there are additional dependencies required to run
-the use case such as a different Python environment.
-<dependencies> is a list of keywords separated by commas.
-
-Example::
-
-    0::CyclonePlotter::met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf,user_env_vars.MET_PYTHON_EXE=python3:: cycloneplotter_env
-
-See the next section for more information on valid values to supply as
-dependencies.
-
-Dependencies
-^^^^^^^^^^^^
-
-Conda Environments
-""""""""""""""""""
-
-The keywords that end with "_env" are Python environments created in Docker
-images using Conda that can be used to run use cases. These images are stored
-on DockerHub in dtcenter/metplus-envs and are named with a tag that corresponds
-to the keyword without the "_env" suffix.
-The environments were created using Docker commands via scripts that are found
-in ci/docker/docker_env. Existing keywords that set up Conda environments used
-for use cases are:
-
-* metplotpy_env
-* spacetime_env
-* xesmf_env
-* netcdf4_env
-* pygrib_env
-* metdatadb_env
-* h5py_env
-* gempak_env
-
-Example::
-
-    spacetime_env
-
-The above example uses the Conda environment
-in dtcenter/metplus-envs:**spacetime** to run a user script.
-Note that only one dependency that contains the "_env" suffix can be supplied
-to a given use case.
-
-The **gempak_env** is handled a little differently. It is used if
-GempakToCF.jar is needed for a use case to convert GEMPAK data to NetCDF
-format so it can be read by the MET tools. Instead of creating a Python
-environment to use for the use case, this Docker image installs Java and
-obtains the GempakToCF.jar file. When creating the Docker container to run
-the use cases, the necessary Java files are copied over into the container
-that runs the use cases so that the JAR file can be run by METplus wrappers.
-
-Other Keywords
-""""""""""""""
-
-Besides specifying Python environments,
-there are additional keywords that can be used to set up the environment
-to run a use case:
-
-* **py_embed** - Used if a different Python environment is required to
-  run a Python Embedding script. If this keyword is included with a Python
-  environment, then the MET_PYTHON_EXE environment variable will be set to
-  specify the version of Python3 that is included in that environment
-
-Example::
-
-    pygrib_env,py_embed
-
-In this example, the dtcenter/metplus-envs:**pygrib** environment is used to
-run the use case. Since **py_embed** is also included, then the following will
-be added to the call to run_metplus.py so that the Python embedding script
-will use the **pygrib** environment to run::
-
-    user_env_vars.MET_PYTHON_EXE=/usr/local/envs/pygrib/bin/python3
-
-Please see the MET User's Guide for more information on how to use Python
-Embedding.
-
-* **metviewer** - Used if METviewer should be made available to the use case.
-  This is typically added for a METdbLoad use case that needs to populate a
-  database with MET output.
-
-* **metplus** - Used if a user script needs to call utility functions from the
-  metplus Python package. This keyword simply adds the METplus source code
-  directory to the PYTHONPATH so that the metplus.util functions can be
-  imported. Note that this keyword is not needed unless a different Python
-  environment is specified with a "_env" keyword. The version of Python that
-  is used to run typical use cases has already installed the METplus Python
-  package in its environment, so the package can be imported easily.
-
-
-Creating New Python Environments
-""""""""""""""""""""""""""""""""
-
-In METplus v4.0.0 and earlier, a list of Python packages were added to use
-cases that required additional packages. These packages were either installed
-with pip3 or using a script. This approach was very time consuming as some
-packages take a very long time to install in Docker. The new approach involves
-creating Docker images that use Conda to create a Python environment that can
-run the use case. To see what is available in each of the existing Python
-environments, refer to the comments in the scripts found in
-**ci/docker/docker_env/scripts**. New environments must be added by a METplus
-developer, so please contact MET Help if none of these environments contain the
-package requirements needed to run a new use case.
-
-A README file can be found in the ci/docker/docker_env directory that
-provides commands that can be run to recreate a Docker image if the
-conda environment needs to be updated. Please note that Docker must
-be installed on the workstation used to create new Docker images and
-a DockerHub account with access to the dtcenter repositories must
-be used to push Docker images to DockerHub.
-
-The README file also contains commands to create a conda environment
-that is used for the tests locally. Any base conda environments,
-such as metplus_base and py_embed_base, must be created locally first
-before creating an environment that builds upon these environments.
-Please note that some commands in the scripts are specific to
-the Docker environment and may need to be rerun to successfully
-build the environment locally.
-
-**Installing METplus Components**
-
-These scripts
-do not install any METplus components,
-such as metplotpy/metcalcpy/metplus, in the Python environment that
-may be needed for a use case. This is done because the automated tests
-will install and use the latest version (develop) of the packages to
-ensure that any changes to those components do not break any existing
-use cases. These packages will need to be installed by the user
-and need to be updated manually. To install these packages,
-activate the Conda environment, obtain the source code from GitHub,
-and run "pip3 install ." in the top level directory of the repository.
-
-Example::
-
-    conda activate weatherregime
-    git clone git@github.com:dtcenter/METplotpy
-    cd METplotpy
-    git checkout develop
-    git pull
-    pip3 install .
-
-**Cartopy Shapefiles**
-
-The cartopy python package automatically attempts to download
-shapefiles as needed.
-The URL that is used in cartopy version 0.18.0 and earlier no longer
-exists, so use cases that needs these files will fail if they are
-not found locally. If a conda environment uses cartopy, these
-shapefiles may need to be downloaded by the user running the use case
-even if the conda environment was created by another user.
-Cartopy provides a script that can be used to obtain these shapefiles
-from the updated URL::
-
-    wget https://raw.githubusercontent.com/SciTools/cartopy/master/tools/cartopy_feature_download.py
-    python3 cartopy_feature_download.py cultural physical cultural-extra
-
-
+the tests. See the :ref:`cg-ci-all-use-cases` section for details.
 
 .. _add_new_category_to_test_runs:
 
@@ -864,11 +676,12 @@ Add new category to test runs
 
 The **.github/parm/use_case_groups.json** file in the METplus repository
 contains a list of the use case groups to run together.
-In METplus version 4.0.0 and earlier, this list was
-found in the .github/workflows/testing.yml file.
 Add a new entry to the list that includes the category of the new use case,
 the list of indices that correspond to the index number described in the
 :ref:`add_use_case_to_test_suite` section.
+
+See the :ref:`cg-ci-use-case-groups` section for details.
+
 Set the "run" variable to true so that the new use case group will run in
 the automated test suite whenever a new change is pushed to GitHub. This
 allows users to test that the new use case runs successfully.
@@ -887,6 +700,7 @@ Example::
 
 This example adds a new use case group that contains the climate use case
 with index 2 and is marked to "run" for every push.
+
 New use cases are added as a separate item to make reviewing the test results
 easier. A new use case will produce new output data that is not found in the
 "truth" data set which is compared the output of the use case runs to check
@@ -895,66 +709,6 @@ it easier to verify that the only differences are caused by the new data.
 It also makes it easier to check the size of the output data and length of time
 the use case takes to run to determine if it can be added to an existing group
 or if it should remain in its own group.
-
-
-.. _subset_category:
-
-Subset Category into Multiple Tests
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Use cases can be separated into multiple test jobs.
-In the "index_list" value, define the cases to run for the job.
-Use cases are numbered starting with 0 and are in order of how they are
-found in the all_use_cases.txt file.
-
-The argument supports a comma-separated list of numbers. Example::
-
-      {
-        "category": "data_assimilation",
-        "index_list": "0,2,4",
-        "run": false
-      },
-      {
-        "category": "data_assimilation",
-        "index_list": "1,3",
-        "run": false
-      },
-
-The above example will run a job with data_assimilation use cases 0, 2, and
-4, then another job with data_assimilation use cases 1 and 3.
-
-It also supports a range of numbers separated with a dash. Example::
-
-      {
-        "category": "data_assimilation",
-        "index_list": "0-3",
-        "run": false
-      },
-      {
-        "category": "data_assimilation",
-        "index_list": "4-5",
-        "run": false
-      },
-
-The above example will run a job with data_assimilation 0, 1, 2, and 3, then
-another job with data_assimilation 4 and 5.
-
-You can also use a combination of commas and dashes to define the list of cases
-to run. Example::
-
-      {
-        "category": "data_assimilation",
-        "index_list": "0-2,4",
-        "run": false
-      },
-      {
-        "category": "data_assimilation",
-        "index_list": "3",
-        "run": false
-      },
-
-The above example will run data_assimilation 0, 1, 2, and 4 in one
-job, then data_assimilation 3 in another job.
 
 Monitoring Automated Tests
 --------------------------
@@ -1024,6 +778,24 @@ with "Use Case Tests." Click on the job and search for the use case config
 filename in the log output by using the search box on the top right of the
 log output.
 
+If the use case fails in GitHub Actions but runs successfully in the user's environment, 
+potential reasons include: 
+
+- Errors providing input data (see :ref:`use_case_input_data`)
+- Using hard-coded paths from the user's machine
+- Referencing variables set in the user's configuration file or local environment
+- Memory usuage of the use case exceeds the available memory in hte Github Actions environment
+
+Github Actions has `limited memory <https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources>`_
+available and will cause the use case to fail when exceeded. A failure caused by exceeding 
+the memory allocation in a Python Embedding script may result in an unclear error message. 
+If you suspect that this is the case, consider utilizing a Python memory profiler to check the
+Python script's memory usage. If your use case exceeds the limit, try to pare 
+down the data held in memory and use less memory intensive Python routines.
+
+If memory mitigation cannot move the use case’s memory usage below the Github Actions limit, 
+see :ref:`exceeded-Github-Actions` for next steps.
+
 Verify that the use case ran in a reasonable amount of time
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -1036,8 +808,42 @@ so that it runs in a reasonable time frame.
 
 If the new use case runs in a reasonable amount of time but the total time to
 run the set of use cases is now above 20 minutes or so, consider creating a
-new job for the new use case. See the :ref:`subset_category` section and the
-multiple medium_range jobs for an example.
+new job for the new use case. See the :ref:`cg-ci-subset_category` section
+and the multiple medium_range jobs for an example.
+
+
+.. _exceeded-Github-Actions:
+
+Use Cases That Exceed Memory Allocations of Github Actions
+----------------------------------------------------------
+
+If a use case utilizing Python embedding does not run successfully in 
+Github Actions due to exceeding the memory limit and memory mitigation 
+steps were unsuccessful in lowering memory usage, please take the following steps.
+
+- Document the Github Actions failure in the Github use case issue. 
+  Utilize a Python memory profiler to identify as specifically as possible 
+  where the script exceeds the memory limit.
+- Add the use case to the :ref:`memory-intense-use-cases` list.
+- In the internal_tests/use_cases/all_use_cases.txt file, ensure that the 
+  use case is listed as the lowest-listed use case in its respective category. 
+  Change the number in front of the new use case to an 'X', preceeded 
+  by the ‘#’ character::
+
+	#X::GridStat_fcstRTOFS_obsGHRSST_climWOA_sst::model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf, model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst/ci_overrides.conf:: icecover_env, py_embed
+
+- In the **.github/parm/use_case_groups.json** file, remove the entry that 
+  was added during the :ref:`add_new_category_to_test_runs` 
+  for the new use case. This will stop the use case from running on a pull request. 
+- Push these two updated files to your branch in Github and confirm that it 
+  now compiles successfully.
+- During the :ref:`create-a-pull-request` creation, inform the reviewer of 
+  the Github Actions failure. The reviewer should confirm the use case is 
+  successful when run manually, that the memory profiler output confirms that 
+  the Python embedding script exceeds the Github Actions limit, and that 
+  there are no other Github Actions compiling errors.
+
+.. _create-a-pull-request:
 
 Create a Pull Request
 =====================
@@ -1096,15 +902,16 @@ something like this::
 Compare the volume_mount_directories file
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Compare the feature branch file to the develop directory file::
+Compare the feature branch file to the upcoming METplus version directory file::
 
-    diff ${METPLUS_FEATURE_BRANCH}/volume_mount_directories develop/volume_mount_directories
+    diff ${METPLUS_FEATURE_BRANCH}/volume_mount_directories v${METPLUS_VERSION}/volume_mount_directories
 
 **ONLY RUN THE COMMAND THAT IS APPROPRIATE TO YOUR USE CASE. READ CAREFULLY!**
 
 **CONDITION 1: IF there is a new entry or change in the feature version**,
-copy the feature file into the develop directory::
+copy the feature file into the upcoming METplus version directory and the develop directory::
 
+    cp ${METPLUS_FEATURE_BRANCH}/volume_mount_directories v${METPLUS_VERSION}/volume_mount_directories
     cp ${METPLUS_FEATURE_BRANCH}/volume_mount_directories develop/volume_mount_directories
 
 Copy data from the feature directory into the next version directory

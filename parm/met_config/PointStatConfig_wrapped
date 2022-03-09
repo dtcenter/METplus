@@ -48,10 +48,12 @@ rank_corr_flag = FALSE;
 // Forecast and observation fields to be verified
 //
 fcst = {
+  ${METPLUS_FCST_FILE_TYPE}
   ${METPLUS_FCST_FIELD}
 }
 
 obs = {
+  ${METPLUS_OBS_FILE_TYPE}
   ${METPLUS_OBS_FIELD}
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -77,14 +79,8 @@ obs_perc_value = 50;
 //
 // Mapping of message type group name to comma-separated list of values.
 //
-message_type_group_map = [
-   { key = "SURFACE"; val = "ADPSFC,SFCSHP,MSONET";               },
-   { key = "ANYAIR";  val = "AIRCAR,AIRCFT";                      },
-   { key = "ANYSFC";  val = "ADPSFC,SFCSHP,ADPUPA,PROFLR,MSONET"; },
-   { key = "ONLYSF";  val = "ADPSFC,SFCSHP";                      },
-   { key = "LANDSF";  val = "ADPSFC,MSONET";                      },
-   { key = "WATERSF"; val = "SFCSHP";                             }
-];
+//message_type_group_map =
+${METPLUS_MESSAGE_TYPE_GROUP_MAP}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -121,7 +117,8 @@ mask = {
    ${METPLUS_MASK_GRID}
    ${METPLUS_MASK_POLY}
    ${METPLUS_MASK_SID}
-   llpnt = [];
+   //llpnt =
+   ${METPLUS_MASK_LLPNT}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -152,13 +149,8 @@ ${METPLUS_INTERP_DICT}
 //
 // HiRA verification method
 //
-hira = {
-   flag       = FALSE;
-   width      = [ 2, 3, 4, 5 ];
-   vld_thresh = 1.0;
-   cov_thresh = [ ==0.25 ];
-   shape      = SQUARE;
-}
+//hira = {
+${METPLUS_HIRA_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 

@@ -30,6 +30,9 @@ class GenEnsProdWrapper(LoopTimesWrapper):
         'METPLUS_CLIMO_MEAN_DICT',
         'METPLUS_CLIMO_STDEV_DICT',
         'METPLUS_ENSEMBLE_FLAG_DICT',
+        'METPLUS_ENS_MEMBER_IDS',
+        'METPLUS_CONTROL_ID',
+        'METPLUS_NORMALIZE',
     ]
 
     ENSEMBLE_FLAGS = [
@@ -49,13 +52,11 @@ class GenEnsProdWrapper(LoopTimesWrapper):
         'weight',
     ]
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         self.app_name = 'gen_ens_prod'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR'),
                                      self.app_name)
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -73,8 +74,14 @@ class GenEnsProdWrapper(LoopTimesWrapper):
         c_dict['FCST_INPUT_DIR'] = self.config.getdir('GEN_ENS_PROD_INPUT_DIR',
                                                       '')
 
-        if not c_dict['FCST_INPUT_TEMPLATE']:
-            self.log_error('GEN_ENS_PROD_INPUT_TEMPLATE must be set')
+        c_dict['FCST_INPUT_FILE_LIST'] = (
+            self.config.getraw('config', 'GEN_ENS_PROD_INPUT_FILE_LIST')
+        )
+
+        if (not c_dict['FCST_INPUT_TEMPLATE'] and
+                not c_dict['FCST_INPUT_FILE_LIST']):
+            self.log_error('GEN_ENS_PROD_INPUT_TEMPLATE or '
+                           'GEN_ENS_PROD_INPUT_FILE_LIST must be set')
 
         # not all input files are mandatory to be found
         c_dict['MANDATORY'] = False
@@ -118,7 +125,7 @@ class GenEnsProdWrapper(LoopTimesWrapper):
                             metplus_configs=['DESC', 'GEN_ENS_PROD_DESC'],
                             )
 
-        self.handle_met_config_dict('regrid', {
+        self.add_met_config_dict('regrid', {
             'to_grid': ('string', 'to_grid'),
             'method': ('string', 'uppercase,remove_quotes'),
             'width': 'int',
@@ -161,6 +168,11 @@ class GenEnsProdWrapper(LoopTimesWrapper):
                                              'GEN_ENS_PROD_ENS_VLD_THRESH'],
                             )
 
+        self.add_met_config(name='normalize',
+                            data_type='string',
+                            extra_args={'remove_quotes': True},
+                            )
+
         # parse var list for ENS fields
         c_dict['ENS_VAR_LIST_TEMP'] = parse_var_list(
             self.config,
@@ -172,17 +184,18 @@ class GenEnsProdWrapper(LoopTimesWrapper):
                             data_type='string',
                             env_var_name='ENS_FILE_TYPE',
                             metplus_configs=['GEN_ENS_PROD_ENS_FILE_TYPE',
-                                             'GEN_ENS_PROD_FILE_TYPE'],
+                                             'GEN_ENS_PROD_FILE_TYPE',
+                                             'ENS_FILE_TYPE'],
                             extra_args={'remove_quotes': True,
                                         'uppercase': True})
 
-        self.handle_met_config_dict('nbrhd_prob', {
+        self.add_met_config_dict('nbrhd_prob', {
             'width': ('list', 'remove_quotes'),
             'shape': ('string', 'uppercase,remove_quotes'),
             'vld_thresh': 'float',
         })
 
-        self.handle_met_config_dict('nmep_smooth', {
+        self.add_met_config_dict('nmep_smooth', {
             'vld_thresh': 'float',
             'shape': ('string', 'uppercase,remove_quotes'),
             'gaussian_dx': 'float',
@@ -198,6 +211,12 @@ class GenEnsProdWrapper(LoopTimesWrapper):
         self.handle_climo_dict()
 
         self.handle_flags('ENSEMBLE')
+
+        self.add_met_config(name='ens_member_ids',
+                            data_type='list')
+
+        self.add_met_config(name='control_id',
+                            data_type='string')
 
         c_dict['ALLOW_MULTIPLE_FILES'] = True
 
@@ -215,7 +234,10 @@ class GenEnsProdWrapper(LoopTimesWrapper):
         if not self.find_field_info(time_info):
             return False
 
-        if not self.find_input_files_ensemble(time_info):
+        # do not fill file list with missing if ens_member_ids is used
+        fill_missing = not self.env_var_dict.get('METPLUS_ENS_MEMBER_IDS')
+        if not self.find_input_files_ensemble(time_info,
+                                              fill_missing=fill_missing):
             return False
 
         if not self.find_and_check_output_file(time_info):
@@ -257,5 +279,6 @@ class GenEnsProdWrapper(LoopTimesWrapper):
            @return command to run
         """
         return (f"{self.app_path} -v {self.c_dict['VERBOSITY']}"
-                f" -ens {self.infiles[0]} -out {self.get_output_path()}"
+                f" -ens {self.infiles[0]}"
+                f" -out {self.get_output_path()}"
                 f" {' '.join(self.args)}")

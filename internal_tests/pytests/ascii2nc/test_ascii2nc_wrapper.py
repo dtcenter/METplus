@@ -28,8 +28,14 @@ def ascii2nc_wrapper(metplus_config, config_path=None, config_overrides=None):
         for key, value in config_overrides.items():
             overrides[key] = value
 
+    instance = 'overrides'
+    if not config.has_section(instance):
+        config.add_section(instance)
+    for key, value in overrides.items():
+        config.set(instance, key, value)
+
     return ASCII2NCWrapper(config,
-                           config_overrides=overrides)
+                           instance=instance)
 
 @pytest.mark.parametrize(
     'config_overrides, env_var_values', [
@@ -173,7 +179,12 @@ def test_ascii2nc_wrapper(metplus_config, config_overrides,
     assert(all_commands[0][0] == expected_cmd)
 
     env_vars = all_commands[0][1]
-    for env_var_key in wrapper.WRAPPER_ENV_VAR_KEYS:
+    # check that environment variables were set properly
+    # including deprecated env vars (not in wrapper env var keys)
+    env_var_keys = (wrapper.WRAPPER_ENV_VAR_KEYS +
+                    [name for name in env_var_values
+                     if name not in wrapper.WRAPPER_ENV_VAR_KEYS])
+    for env_var_key in env_var_keys:
         match = next((item for item in env_vars if
                       item.startswith(env_var_key)), None)
         assert (match is not None)

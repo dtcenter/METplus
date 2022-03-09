@@ -49,12 +49,16 @@ class GridStatWrapper(CompareGriddedWrapper):
         'METPLUS_OBS_FILE_TYPE',
         'METPLUS_HSS_EC_VALUE',
         'METPLUS_DISTANCE_MAP_DICT',
+        'METPLUS_FOURIER_DICT',
+        'METPLUS_CENSOR_THRESH',
+        'METPLUS_CENSOR_VAL',
     ]
 
     # handle deprecated env vars used pre v4.0.0
     DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
         'CLIMO_MEAN_FILE',
         'CLIMO_STDEV_FILE',
+        'VERIF_MASK',
     ]
 
     OUTPUT_FLAGS = ['fho',
@@ -93,13 +97,11 @@ class GridStatWrapper(CompareGriddedWrapper):
                       'apply_mask',
                     ]
 
-    def __init__(self, config, instance=None, config_overrides=None):
+    def __init__(self, config, instance=None):
         self.app_name = 'grid_stat'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -160,25 +162,31 @@ class GridStatWrapper(CompareGriddedWrapper):
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False
 
+        self.add_met_config(name='cov_thresh',
+                            data_type='list',
+                            env_var_name='METPLUS_NBRHD_COV_THRESH',
+                            metplus_configs=[
+                                'GRID_STAT_NEIGHBORHOOD_COV_THRESH'
+                            ],
+                            extra_args={'remove_quotes': True})
 
-        self.set_met_config_list(self.env_var_dict,
-                                 f'GRID_STAT_NEIGHBORHOOD_COV_THRESH',
-                                 'cov_thresh',
-                                 'METPLUS_NBRHD_COV_THRESH',
-                                 remove_quotes=True)
+        self.add_met_config(name='width',
+                            data_type='list',
+                            env_var_name='METPLUS_NBRHD_WIDTH',
+                            metplus_configs=[
+                                'GRID_STAT_NEIGHBORHOOD_WIDTH'
+                            ],
+                            extra_args={'remove_quotes': True})
 
-        self.set_met_config_list(self.env_var_dict,
-                                 f'GRID_STAT_NEIGHBORHOOD_WIDTH',
-                                 'width',
-                                 'METPLUS_NBRHD_WIDTH',
-                                 remove_quotes=True)
+        self.add_met_config(name='shape',
+                            data_type='string',
+                            env_var_name='METPLUS_NBRHD_SHAPE',
+                            metplus_configs=[
+                                'GRID_STAT_NEIGHBORHOOD_SHAPE'
+                            ],
+                            extra_args={'remove_quotes': True})
 
-        self.set_met_config_string(self.env_var_dict,
-                                   'GRID_STAT_NEIGHBORHOOD_SHAPE',
-                                   'shape',
-                                   'METPLUS_NBRHD_SHAPE',
-                                   remove_quotes=True)
-
+        # handle legacy environment variables used by old MET configs
         c_dict['NEIGHBORHOOD_WIDTH'] = (
             self.config.getstr('config',
                                'GRID_STAT_NEIGHBORHOOD_WIDTH', '1')
@@ -190,8 +198,18 @@ class GridStatWrapper(CompareGriddedWrapper):
 
         self.handle_mask(single_value=False)
 
-        # handle setting VERIFICATION_MASK for old wrapped MET config files
-        c_dict['MASK_POLY_TEMPLATE'] = self.read_mask_poly()
+        # handle setting VERIF_MASK for old wrapped MET config files
+        self.add_met_config(name='poly',
+                            data_type='list',
+                            env_var_name='METPLUS_MASK_POLY',
+                            metplus_configs=['GRID_STAT_MASK_POLY',
+                                             'GRID_STAT_POLY',
+                                             ('GRID_STAT_'
+                                              'VERIFICATION_MASK_TEMPLATE')],
+                            extra_args={'allow_empty': True})
+        self.env_var_dict['VERIF_MASK'] = (
+            self.get_env_var_value('METPLUS_MASK_POLY', item_type='list')
+        )
 
         self.handle_climo_cdf_dict()
 
@@ -232,13 +250,26 @@ class GridStatWrapper(CompareGriddedWrapper):
                             data_type='float',
                             metplus_configs=['GRID_STAT_HSS_EC_VALUE'])
 
-        self.handle_met_config_dict('distance_map', {
+        self.add_met_config_dict('distance_map', {
             'baddeley_p': 'int',
             'baddeley_max_dist': 'float',
             'fom_alpha': 'float',
             'zhu_weight': 'float',
             'beta_value(n)': ('string', 'remove_quotes'),
         })
+
+        self.add_met_config_dict('fourier', {
+            'wave_1d_beg': ('list', 'remove_quotes'),
+            'wave_1d_end': ('list', 'remove_quotes'),
+        })
+
+        self.add_met_config(name='censor_thresh',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
+
+        self.add_met_config(name='censor_val',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
 
         return c_dict
 
@@ -262,10 +293,8 @@ class GridStatWrapper(CompareGriddedWrapper):
         self.add_env_var('NEIGHBORHOOD_SHAPE',
                          self.c_dict['NEIGHBORHOOD_SHAPE'])
 
+        cov_thresh = self.get_env_var_value('METPLUS_NBRHD_COV_THRESH')
         self.add_env_var('NEIGHBORHOOD_COV_THRESH',
-                         self.c_dict.get('NBRHD_COV_THRESH', ''))
-
-        self.add_env_var('VERIF_MASK',
-                         self.c_dict.get('VERIFICATION_MASK', ''))
+                         cov_thresh)
 
         super().set_environment_variables(time_info)

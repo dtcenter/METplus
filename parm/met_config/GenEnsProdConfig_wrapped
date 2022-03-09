@@ -39,6 +39,9 @@ ${METPLUS_CENSOR_THRESH}
 //censor_val    =
 ${METPLUS_CENSOR_VAL}
 
+//normalize =
+${METPLUS_NORMALIZE}
+
 //cat_thresh    =
 ${METPLUS_CAT_THRESH}
 
@@ -62,6 +65,13 @@ ens = {
    ${METPLUS_ENS_FIELD}
 
 }
+
+//ens_member_ids =
+${METPLUS_ENS_MEMBER_IDS}
+
+//control_id =
+${METPLUS_CONTROL_ID}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 

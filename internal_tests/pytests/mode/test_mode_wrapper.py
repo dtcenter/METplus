@@ -74,7 +74,8 @@ def set_minimum_config_settings(config):
 
         ({'MODE_REGRID_TO_GRID': 'FCST',
           },
-         {'METPLUS_REGRID_DICT': 'regrid = {to_grid = FCST;}'}),
+         {'METPLUS_REGRID_DICT': 'regrid = {to_grid = FCST;}',
+          'REGRID_TO_GRID': 'FCST'}),
 
         ({'MODE_REGRID_METHOD': 'NEAREST',
           },
@@ -100,7 +101,8 @@ def set_minimum_config_settings(config):
           },
          {'METPLUS_REGRID_DICT': ('regrid = {to_grid = FCST;method = NEAREST;'
                                   'width = 1;vld_thresh = 0.5;shape = SQUARE;}'
-                                  )}),
+                                  ),
+          'REGRID_TO_GRID': 'FCST'}),
 
         ({'MODE_QUILT': 'True'},
          {'METPLUS_QUILT': 'quilt = TRUE;'}),
@@ -300,7 +302,14 @@ def set_minimum_config_settings(config):
                                                       '(0.0, 2.0) '
                                                       '200.0/grid_res, 1.0)'
                                                       ');')}),
-
+        ({'MODE_PS_PLOT_FLAG': 'True', },
+         {'METPLUS_PS_PLOT_FLAG': 'ps_plot_flag = TRUE;'}),
+        ({'MODE_CT_STATS_FLAG': 'True', },
+         {'METPLUS_CT_STATS_FLAG': 'ct_stats_flag = TRUE;'}),
+        ({'MODE_FCST_FILE_TYPE': 'NETCDF_PINT', },
+         {'METPLUS_FCST_FILE_TYPE': 'file_type = NETCDF_PINT;'}),
+        ({'MODE_OBS_FILE_TYPE': 'NETCDF_PINT', },
+         {'METPLUS_OBS_FILE_TYPE': 'file_type = NETCDF_PINT;'}),
     ]
 )
 def test_mode_single_field(metplus_config, config_overrides,
@@ -362,7 +371,11 @@ def test_mode_single_field(metplus_config, config_overrides,
         assert(cmd == expected_cmd)
 
         # check that environment variables were set properly
-        for env_var_key in wrapper.WRAPPER_ENV_VAR_KEYS:
+        # including deprecated env vars (not in wrapper env var keys)
+        env_var_keys = (wrapper.WRAPPER_ENV_VAR_KEYS +
+                        [name for name in expected_output
+                         if name not in wrapper.WRAPPER_ENV_VAR_KEYS])
+        for env_var_key in env_var_keys:
             match = next((item for item in env_vars if
                           item.startswith(env_var_key)), None)
             assert(match is not None)
