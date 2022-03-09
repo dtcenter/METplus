@@ -186,12 +186,13 @@ ___________________
       Ensemble-Stat
     - MPR :raw-html:`<br />`
       ORANK
-  * - Cloud Water / :raw-html:`<br />`
-      Precip Relationship
-    - CW/Precip :raw-html:`<br />`
-      Relationship
+  * - Space-Time Coherence :raw-html:`<br />`
+      Diagram
+    - Coherence :raw-html:`<br />`
+      Diagram
     - Diagnostic
-    - Grid-Diag
+    - METplus :raw-html:`<br />`
+      Use Case
     - n/a
   * - Continuous Ranked :raw-html:`<br />`
       Probability Score :raw-html:`<br />`
@@ -251,6 +252,13 @@ ___________________
     - CTS :raw-html:`<br />`
       MODE :raw-html:`<br />`
       MBRCTCS
+  * - Cloud Water / :raw-html:`<br />`
+      Precip Relationship
+    - CW/Precip :raw-html:`<br />`
+      Relationship
+    - Diagnostic
+    - Grid-Diag
+    - n/a
   * - Absolute value of :raw-html:`<br />`
       DIR_ERR (see below)
     - DIR_ABSERR
@@ -609,6 +617,12 @@ ___________________
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - MCTS
+  * - Hovmoeller Diagram
+    - Hovmoeller
+    - Diagnostic
+    - METplus :raw-html:`<br />`
+      Use Case
+    - n/a
   * - Ignorance Score
     - IGN
     - Ensemble 
@@ -619,7 +633,16 @@ ___________________
     - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
-    - CNT 
+    - CNT
+  * - Joint Probability :raw-html:`<br />`
+      Distribution between :raw-html:`<br />`
+      variable
+    - Joint PDF :raw-html:`<br />`
+      to Diagnose :raw-html:`<br />`
+      Relationship
+    - Diagnostic
+    - Grid-Diag
+    - n/a	
   * - Kendall’s tau statistic
     - KT_CORR
     - Continuous 
@@ -826,7 +849,13 @@ ___________________
     - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
-    - VCNT 
+    - VCNT
+  * - OLR-based MJO Index
+    - OMI
+    - Diagnostic
+    - METplus :raw-html:`<br />`
+      Use Case
+    - n/a
   * - Number of observation :raw-html:`<br />`
       when forecast is between :raw-html:`<br />`
       the ith and i+1th :raw-html:`<br />`
@@ -918,7 +947,7 @@ ___________________
     - Probability 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
-    - PJC 
+    - PJC
 
 
 Statistics List P-R
@@ -932,13 +961,21 @@ ___________________
   :widths: auto
   :header-rows: 1
 		
-  * - Statistics  :raw-html:`<br />`
+  * - Statistics :raw-html:`<br />`
       Long Name
     - METplus Name
     - Statistic Type
     - Tools
     - METplus :raw-html:`<br />`
-      Line Type      
+      Line Type
+  * - Phase Diagram:raw-html:`<br />`
+      for RMM and OMI
+    - Phase :raw-html:`<br />`
+      Diagram
+    - Diagnostic
+    - METplus :raw-html:`<br />`
+      Use Case
+    - n/a
   * - Probability Integral :raw-html:`<br />`
       Transform
     - PIT
@@ -1051,13 +1088,20 @@ ___________________
     - RELP_i
     - Ensemble 
     - Ensemble-Stat
-    - RELP 
+    - RELP
   * - Resolution
     - RESOLUTION
     - Probability 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - PSTD
+  * - Realtime Multivariate :raw-html:`<br />`
+      MJO Index
+    - RMM
+    - Diagnostic
+    - METplus :raw-html:`<br />`
+      Use Case
+    - n/a
   * - Root mean squared error
     - RMSE
     - Continuous 
@@ -1087,7 +1131,7 @@ ___________________
     - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
-    - CNT 
+    - CNT
   * - Square root of MSVE
     - RMSVE
     - Continuous 
@@ -2303,6 +2347,13 @@ ____________________
     - Diagnostic 
     - MTD
     - MTD 3D obj
+  * - Weather Regime Index
+    - Weather :raw-html:`<br />`
+      Regime Index
+    - Diagnostic
+    - METplus :raw-html:`<br />`
+      Use Case
+    - n/a
   * - Width of the enclosing :raw-html:`<br />`
       rectangle (in grid units)
     - WIDTH
@@ -2340,6 +2391,14 @@ ____________________
     - TC-Pairs
     - PROBRIRW :raw-html:`<br />`
       TCMPR
+  * - Zonal and Meridional Means
+    - Zonal and :raw-html:`<br />`
+      Meridional :raw-html:`<br />`
+      Means
+    - Diagnostic
+    - METplus :raw-html:`<br />`
+      Use Case
+    - n/a
   * - Zhu’s Measure from :raw-html:`<br />`
       observation to forecast
     - ZHU_FO
