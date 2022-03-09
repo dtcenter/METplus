@@ -109,13 +109,6 @@ ___________________
       Ensemble-Stat 
     - CNT :raw-html:`<br />`
       SSVAR
-  * - Blocking Index
-    - Blocking :raw-html:`<br />`
-      Index
-    - Diagnostic
-    - METplus Use :raw-html:`<br />`
-      Case
-    - n/a
   * - Brier Score
     - BRIER
     - Probability 
@@ -187,14 +180,6 @@ ___________________
       Ensemble-Stat
     - MPR :raw-html:`<br />`
       ORANK
-  * - Space-Time Coherence :raw-html:`<br />`
-      Diagram
-    - Coherence :raw-html:`<br />`
-      Diagram
-    - Diagnostic
-    - METplus :raw-html:`<br />`
-      Use Case
-    - n/a
   * - Continuous Ranked :raw-html:`<br />`
       Probability Score :raw-html:`<br />`
       (normal dist.)
@@ -253,13 +238,6 @@ ___________________
     - CTS :raw-html:`<br />`
       MODE :raw-html:`<br />`
       MBRCTCS
-  * - Cloud Water / :raw-html:`<br />`
-      Precip Relationship
-    - CW/Precip :raw-html:`<br />`
-      Relationship
-    - Diagnostic
-    - Grid-Diag
-    - n/a
   * - Absolute value of :raw-html:`<br />`
       DIR_ERR (see below)
     - DIR_ABSERR
@@ -618,12 +596,6 @@ ___________________
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - MCTS
-  * - Hovmoeller Diagram
-    - Hovmoeller
-    - Diagnostic
-    - METplus :raw-html:`<br />`
-      Use Case
-    - n/a
   * - Ignorance Score
     - IGN
     - Ensemble 
@@ -635,15 +607,6 @@ ___________________
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - CNT
-  * - Joint Probability :raw-html:`<br />`
-      Distribution between :raw-html:`<br />`
-      variable
-    - Joint PDF :raw-html:`<br />`
-      to Diagnose :raw-html:`<br />`
-      Relationship
-    - Diagnostic
-    - Grid-Diag
-    - n/a	
   * - Kendall’s tau statistic
     - KT_CORR
     - Continuous 
@@ -851,12 +814,6 @@ ___________________
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VCNT
-  * - OLR-based MJO Index
-    - OMI
-    - Diagnostic
-    - METplus :raw-html:`<br />`
-      Use Case
-    - n/a
   * - Number of observation :raw-html:`<br />`
       when forecast is between :raw-html:`<br />`
       the ith and i+1th :raw-html:`<br />`
@@ -969,14 +926,6 @@ ___________________
     - Tools
     - METplus :raw-html:`<br />`
       Line Type
-  * - Phase Diagram :raw-html:`<br />`
-      for RMM and OMI
-    - Phase :raw-html:`<br />`
-      Diagram
-    - Diagnostic
-    - METplus :raw-html:`<br />`
-      Use Case
-    - n/a
   * - Probability Integral :raw-html:`<br />`
       Transform
     - PIT
@@ -1096,13 +1045,6 @@ ___________________
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - PSTD
-  * - Realtime Multivariate :raw-html:`<br />`
-      MJO Index
-    - RMM
-    - Diagnostic
-    - METplus :raw-html:`<br />`
-      Use Case
-    - n/a
   * - Root mean squared error
     - RMSE
     - Continuous 
@@ -1556,6 +1498,13 @@ ____________________
     - Diagnostic 
     - MTD
     - MTD obj
+  * - Blocking Index
+    - Blocking :raw-html:`<br />`
+      Index
+    - Diagnostic
+    - METplus Use :raw-html:`<br />`
+      Case
+    - n/a
   * - Minimum distance between :raw-html:`<br />`
       the boundaries of two objects
     - BOUNDARY  :raw-html:`<br />`
@@ -1633,6 +1582,11 @@ ____________________
       MODE
     - MTD 2D & 3D obj :raw-html:`<br />`
       MODE obj
+  * - Space-Time Coherence Diagram
+    - Coherence Diagram
+    - Diagnostic
+    - METplus Use Case
+    - n/a
   * - Ratio of the difference :raw-html:`<br />`
       between the area of an :raw-html:`<br />`
       object and the area of :raw-html:`<br />`
@@ -1687,6 +1641,13 @@ ____________________
     - Diagnostic 
     - MODE
     - MODE obj
+  * - Cloud Water / :raw-html:`<br />`
+      Precip Relationship
+    - CW/Precip :raw-html:`<br />`
+      Relationship
+    - Diagnostic
+    - Grid-Diag
+    - n/a
   * - Difference in object :raw-html:`<br />`
       direction of movement
     - DIRECTION :raw-html:`<br />`
@@ -2006,7 +1967,13 @@ ____________________
     - HAUSDORFF
     - Diagnostic 
     - Grid-Stat
-    - DMAP 
+    - DMAP
+  * - Hovmoeller Diagram
+    - Hovmoeller
+    - Diagnostic
+    - METplus :raw-html:`<br />`
+      Use Case
+    - n/a
   * - Best track genesis minus :raw-html:`<br />`
       forecast initialization :raw-html:`<br />`
       time in HHMMSS format
@@ -2079,7 +2046,16 @@ ____________________
     - ISCALE
     -  
     - Wavelet-Stat
-    - ISC      
+    - ISC
+  * - Joint Probability :raw-html:`<br />`
+      Distribution between :raw-html:`<br />`
+      variable
+    - Joint PDF :raw-html:`<br />`
+      to Diagnose :raw-html:`<br />`
+      Relationship
+    - Diagnostic
+    - Grid-Diag
+    - n/a	
   * - Dimension of the latitude 
     - LAT
     - Diagnostic 
@@ -2115,6 +2091,11 @@ ____________________
     - Tools
     - METplus :raw-html:`<br />`
       Line Type
+  * - Meridional Means
+    - Meridional Means
+    - Diagnostic
+    - METplus Use Case
+    - n/a
   * - Mean of maximum of :raw-html:`<br />`
       absolute values of :raw-html:`<br />`
       forecast and observed :raw-html:`<br />`
@@ -2260,6 +2241,12 @@ ____________________
     -  
     - Grid-Stat
     - GRAD
+  * - OLR-based MJO Index
+    - OMI
+    - Diagnostic
+    - METplus :raw-html:`<br />`
+      Use Case
+    - n/a
 
 
 Diagnostics List P-Z
@@ -2289,6 +2276,21 @@ ____________________
     - Diagnostic 
     - MODE
     - MODE obj
+  * - Phase Diagram :raw-html:`<br />`
+      for RMM and OMI
+    - Phase :raw-html:`<br />`
+      Diagram
+    - Diagnostic
+    - METplus :raw-html:`<br />`
+      Use Case
+    - n/a
+  * - Realtime Multivariate :raw-html:`<br />`
+      MJO Index
+    - RMM
+    - Diagnostic
+    - METplus :raw-html:`<br />`
+      Use Case
+    - n/a
   * - Spatial distance between :raw-html:`<br />`
       (𝑥,𝑦)(x,y) coordinates of :raw-html:`<br />`
       object spacetime centroid
@@ -2392,10 +2394,8 @@ ____________________
     - TC-Pairs
     - PROBRIRW :raw-html:`<br />`
       TCMPR
-  * - Zonal and Meridional Means
-    - Zonal and :raw-html:`<br />`
-      Meridional :raw-html:`<br />`
-      Means
+  * - Zonal Means
+    - Zonal Means
     - Diagnostic
     - METplus :raw-html:`<br />`
       Use Case
