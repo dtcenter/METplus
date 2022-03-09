@@ -54,7 +54,7 @@ METplus Version 4.1.0-rc1 Release Notes (2022-03-09)
 
 * New Use Cases:
 
-  * **Python Embedding for Point Observations using PointStat (`#1490 <https://github.com/dtcenter/METplus/issues/1490>`_)**
+  * **Python Embedding for Point Observations using PointStat** (`#1490 <https://github.com/dtcenter/METplus/issues/1490>`_)
   * TCGen Verify Deterministic Genesis Forecasts and Probabilities from ATCF e-deck files (`#1274 <https://github.com/dtcenter/METplus/issues/1274>`_)
   * Satellite verification of sea surface salinity: AVISO vs RTOFS output HYCOM climo (`#1318 <https://github.com/dtcenter/METplus/issues/1318>`_)
   * Satellite verification of sea surface salinity: SMAP vs RTOFS output (`#1216 <https://github.com/dtcenter/METplus/issues/1216>`_)
