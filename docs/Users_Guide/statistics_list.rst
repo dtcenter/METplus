@@ -41,7 +41,7 @@ ___________________
       MCTS :raw-html:`<br />`
       NBRCTS  :raw-html:`<br />`
       MODE cts
-  * - Asymptotic:raw-html:`<br />`
+  * - Asymptotic :raw-html:`<br />`
       Fractions Skill Score
     - AFSS
     - Neighborhood 
