@@ -67,6 +67,7 @@ Branch name: `feature_<Issue Number>_<Description>`
 - [ ] Add/update log messages for easier debugging.
 - [ ] Add/update unit tests.
 - [ ] Add/update documentation.
+- [ ] Add any new Python packages to the [METplus Components Python Requirements](https://metplus.readthedocs.io/en/develop/Users_Guide/overview.html#metplus-components-python-requirements) table.
 - [ ] Push local changes to GitHub.
 - [ ] Submit a pull request to merge into **develop**.
 Pull request: `feature <Issue Number> <Description>`
