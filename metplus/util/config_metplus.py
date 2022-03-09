@@ -458,14 +458,14 @@ def replace_config_from_section(config, section, required=True):
         for key in all_configs:
             new_config.set(section_to_copy,
                            key,
-                           config.getraw(section_to_copy, key, sub_vars=False))
+                           config.getraw(section_to_copy, key)) #, sub_vars=False))
 
     # override values in [config] with values from {section}
     all_configs = config.keys(section)
     for key in all_configs:
         new_config.set('config',
                        key,
-                       config.getraw(section, key, sub_vars=False))
+                       config.getraw(section, key)) #, sub_vars=False))
 
     return new_config
 
