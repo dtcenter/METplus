@@ -992,3 +992,17 @@ def test_get_process_list_instances(metplus_config, input_list, expected_list):
     conf.set('config', 'PROCESS_LIST', input_list)
     output_list = config_metplus.get_process_list(conf)
     assert(output_list == expected_list)
+
+def test_getraw_sub_and_nosub(metplus_config):
+    raw_string = '{MODEL}_{CURRENT_FCST_NAME}'
+    sub_actual = 'FCST_NAME'
+
+    config = metplus_config()
+    config.set('config', 'MODEL', 'FCST')
+    config.set('config', 'CURRENT_FCST_NAME', 'NAME')
+    config.set('config', 'OUTPUT_PREFIX', raw_string)
+    nosub_value = config.getraw('config', 'OUTPUT_PREFIX', sub_vars=False)
+    assert nosub_value == raw_string
+
+    sub_value = config.getraw('config', 'OUTPUT_PREFIX', sub_vars=True)
+    assert sub_value == sub_actual
