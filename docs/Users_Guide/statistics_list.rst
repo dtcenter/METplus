@@ -41,7 +41,8 @@ ___________________
       MCTS :raw-html:`<br />`
       NBRCTS  :raw-html:`<br />`
       MODE cts
-  * - Asymptotic Fractions Skill Score
+  * - Asymptotic:raw-html:`<br />`
+      Fractions Skill Score
     - AFSS
     - Neighborhood 
     - Grid-Stat 
@@ -968,7 +969,7 @@ ___________________
     - Tools
     - METplus :raw-html:`<br />`
       Line Type
-  * - Phase Diagram:raw-html:`<br />`
+  * - Phase Diagram :raw-html:`<br />`
       for RMM and OMI
     - Phase :raw-html:`<br />`
       Diagram
