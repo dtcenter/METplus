@@ -7,6 +7,7 @@ METplus Statistics & Diagnostics
    Statistic Name - no more that 32 characters
    METplus Name - no more than 17 characters
    Statistic Type - no more than 19 characters
+   Tools - approx 18 characters?
    METplus Line Type - currently unlimited (approx 33 characters)
 
 Statistics Database
@@ -108,9 +109,11 @@ ___________________
     - CNT :raw-html:`<br />`
       SSVAR
   * - Blocking Index
-    - Blocking Index
+    - Blocking :raw-html:`<br />`
+      Index
     - Diagnostic
-    - METplus Use Case
+    - METplus Use :raw-html:`<br />`
+      Case
     - n/a
   * - Brier Score
     - BRIER
@@ -183,8 +186,10 @@ ___________________
       Ensemble-Stat
     - MPR :raw-html:`<br />`
       ORANK
-  * - Cloud Water / Precip Relationship
-    - CW/Precip Relationship
+  * - Cloud Water / :raw-html:`<br />`
+      Precip Relationship
+    - CW/Precip :raw-html:`<br />`
+      Relationship
     - Diagnostic
     - Grid-Diag
     - n/a
