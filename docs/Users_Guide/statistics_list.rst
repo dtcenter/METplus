@@ -1587,7 +1587,8 @@ ____________________
     - Coherence :raw-html:`<br />`
       Diagram
     - Diagnostic
-    - METplus Use Case
+    - METplus :raw-html:`<br />`
+      Use Case
     - n/a
   * - Ratio of the difference :raw-html:`<br />`
       between the area of an :raw-html:`<br />`
