@@ -1324,14 +1324,6 @@ def check_for_deprecated_met_config(config):
     sed_cmds = []
     all_good = True
 
-    # set CURRENT_* METplus variables in case they are referenced in a
-    # METplus config variable and not already set
-    #for fcst_or_obs in ['FCST', 'OBS']:
-    #    for name_or_level in ['NAME', 'LEVEL']:
-    #        current_var = f'CURRENT_{fcst_or_obs}_{name_or_level}'
-    #        if not config.has_option('config', current_var):
-    #            config.set('config', current_var, '')
-
     # check if *_CONFIG_FILE if set in the METplus config file and check for
     # deprecated environment variables in those files
     met_config_keys = [key for key in config.keys('config')
