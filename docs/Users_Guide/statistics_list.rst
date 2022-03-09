@@ -107,6 +107,11 @@ ___________________
       Ensemble-Stat 
     - CNT :raw-html:`<br />`
       SSVAR
+  * - Blocking Index
+    - Blocking Index
+    - Diagnostic
+    - METplus Use Case
+    - n/a
   * - Brier Score
     - BRIER
     - Probability 
@@ -178,6 +183,11 @@ ___________________
       Ensemble-Stat
     - MPR :raw-html:`<br />`
       ORANK
+  * - Cloud Water / Precip Relationship
+    - CW/Precip Relationship
+    - Diagnostic
+    - Grid-Diag
+    - n/a
   * - Continuous Ranked :raw-html:`<br />`
       Probability Score :raw-html:`<br />`
       (normal dist.)
