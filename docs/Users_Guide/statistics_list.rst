@@ -1582,8 +1582,10 @@ ____________________
       MODE
     - MTD 2D & 3D obj :raw-html:`<br />`
       MODE obj
-  * - Space-Time Coherence Diagram
-    - Coherence Diagram
+  * - Space-Time :raw-html:`<br />`
+      Coherence Diagram
+    - Coherence :raw-html:`<br />`
+      Diagram
     - Diagnostic
     - METplus Use Case
     - n/a
