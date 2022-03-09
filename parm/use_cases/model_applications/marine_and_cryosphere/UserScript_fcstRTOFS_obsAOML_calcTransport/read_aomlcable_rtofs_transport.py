@@ -148,6 +148,11 @@ if __name__ == "__main__":
     stop_date=want_date
     cable=cable[:stop_date]
 
+    # Count the number in the subdirs RTOFS dir
+    path, dirs, files = next(os.walk(rtofsdir))
+    dir_count = len(dirs)
+    dir_count
+
     for end_date in pd.date_range(start_date,stop_date):
         dates=pd.date_range(end=end_date,periods=3)
         model=get_model(dates,fcsts)
