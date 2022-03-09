@@ -12,17 +12,19 @@ from datetime import datetime, timedelta
 import pandas as pd
 import sys, os
 
-if len(sys.argv) < 5:
-    print("Must specify the following elements: rtofsdir, cable_file, eightmile_file, valid_date, forecast_lead")
+if len(sys.argv) < 4:
+    print("Must specify the following elements: rtofsdir, cable_file, eightmile_file, valid_date")
     sys.exit(1)
 
-#rtofsfile_u = os.path.expandvars(sys.argv[1]) 
-#rtofsfile_v = os.path.expandvars(sys.argv[2]) 
-rtofsdir = os.path.expandvars(sys.argv[1]) 
-cablefile = os.path.expandvars(sys.argv[2]) 
-eightmilefile = os.path.expandvars(sys.argv[3]) 
+#rtofsdir = os.path.expandvars(sys.argv[1]) 
+#cablefile = os.path.expandvars(sys.argv[2]) 
+#eightmilefile = os.path.expandvars(sys.argv[3]) 
+#vDate=datetime.strptime(sys.argv[4],'%Y%m%d')
+rtofsdir = os.environ.get('CALC_TRANSPORT_RTOFS_DIRNAME') 
+cablefile = os.environ.get('CALC_TRANSPORT_CABLE_FILENAME') 
+eightmilefile = os.environ.get('CALC_TRANSPORT_EIGHTMILE_FILENAME') 
 vDate=datetime.strptime(sys.argv[4],'%Y%m%d')
-fcst=int(sys.argv[5])
+#fcst=int(sys.argv[5])
 
 print('Starting Cable V&V at',datetime.now(),'for',vDate)
 
@@ -142,6 +144,9 @@ if __name__ == "__main__":
     print('WANT DATE :', want_date)
     DateSet=True
 
+    fcst = int(os.environ.get('CALC_TRANSPORT_LEAD_TIME')
+    no_of_fcst_stat_days = int(os.environ.get('CALC_TRANSPORT_STATS_DAY')
+
     fcsts=list(range(fcst,fcst+1,24))
 
     start_date=want_date
@@ -154,12 +159,12 @@ if __name__ == "__main__":
     dir_count
 
     for end_date in pd.date_range(start_date,stop_date):
-        dates=pd.date_range(end=end_date,periods=3)
+        dates=pd.date_range(end=end_date,periods=dir_count)
         model=get_model(dates,fcsts)
 
     both=pd.merge(cable,model,left_index=True,right_index=True,how='inner')
     print("both :", both)
-    both=both[both.index.max()-timedelta(3):]
+    both=both[both.index.max()-timedelta(no_of_fcst_stat_days):]
     #fcst=both.dropna(inplace=True)
      
     print('BOTH :',both)
