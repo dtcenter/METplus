@@ -210,15 +210,14 @@ use case OR category directory for a model_applications use case
     * Update the description of the input data in the Datasets section.
 
     * Update the list of External Dependencies (if applicable) to include any
-      required Python packages.  Update the
-      `METplus  Components Python Requirements <https://docs.google.com/spreadsheets/d/1Lf-yxZBXTTnBaqCOWUk-jdP9RpaLfil_s-KKH29CkKU/edit#gid=0>`_
-      spreadsheet.  If the package is already listed in the spreadsheet, add
+      required Python packages.  Update the :ref:`python_requirements_table`
+      table.  If the package is already listed in the spreadsheet, add
       a link to the documentation page for this new use case, following the
-      format in the spreadsheet.  If the package is not already listed, update
-      the spreadsheet to include the name of the required package, the version,
+      format in the table.  If the package is not already listed, update
+      the table to include the name of the required package, the version,
       the METplus component (e.g. METplus wrappers, METcalcpy, METplotpy), the
-      source, a brief description, and a link to this new use case that uses
-      this new Python package.
+      source, a brief description of the package, and a link to this new use
+      case that uses this new Python package.
       
     * Update the list of tools used in the METplus Components section.
 
@@ -905,14 +904,14 @@ Compare the volume_mount_directories file
 
 Compare the feature branch file to the upcoming METplus version directory file::
 
-    diff ${METPLUS_FEATURE_BRANCH}/volume_mount_directories ${METPLUS_VERSION}/volume_mount_directories
+    diff ${METPLUS_FEATURE_BRANCH}/volume_mount_directories v${METPLUS_VERSION}/volume_mount_directories
 
 **ONLY RUN THE COMMAND THAT IS APPROPRIATE TO YOUR USE CASE. READ CAREFULLY!**
 
 **CONDITION 1: IF there is a new entry or change in the feature version**,
 copy the feature file into the upcoming METplus version directory and the develop directory::
 
-    cp ${METPLUS_FEATURE_BRANCH}/volume_mount_directories ${METPLUS_VERSION}/volume_mount_directories
+    cp ${METPLUS_FEATURE_BRANCH}/volume_mount_directories v${METPLUS_VERSION}/volume_mount_directories
     cp ${METPLUS_FEATURE_BRANCH}/volume_mount_directories develop/volume_mount_directories
 
 Copy data from the feature directory into the next version directory
