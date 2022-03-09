@@ -1006,3 +1006,22 @@ def test_getraw_sub_and_nosub(metplus_config):
 
     sub_value = config.getraw('config', 'OUTPUT_PREFIX', sub_vars=True)
     assert sub_value == sub_actual
+
+def test_getraw_instance_with_unset_var(metplus_config):
+    """! Replicates bug where CURRENT_FCST_NAME is substituted with
+     an empty string when copied from an instance section
+     """
+    instance = 'my_section'
+    config = metplus_config()
+    config.set('config', 'MODEL', 'FCST')
+
+    config.add_section(instance)
+    config.set('config', 'CURRENT_FCST_NAME', '')
+    config.set(instance, 'OUTPUT_PREFIX', '{MODEL}_{CURRENT_FCST_NAME}')
+    new_config = (
+        config_metplus.replace_config_from_section(config,
+                                                   instance,
+                                                   required=False)
+    )
+    new_config.set('config', 'CURRENT_FCST_NAME', 'NAME')
+    assert new_config.getraw('config', 'OUTPUT_PREFIX') == 'FCST_NAME'
