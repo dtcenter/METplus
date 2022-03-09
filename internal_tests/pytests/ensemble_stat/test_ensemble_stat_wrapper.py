@@ -322,6 +322,21 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
         ({'ENSEMBLE_STAT_OUTPUT_FLAG_RELP': 'STAT', },
          {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {relp = STAT;}'}),
 
+        ({'ENSEMBLE_STAT_OUTPUT_FLAG_PCT': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {pct = STAT;}'}),
+
+        ({'ENSEMBLE_STAT_OUTPUT_FLAG_PSTD': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {pstd = STAT;}'}),
+
+        ({'ENSEMBLE_STAT_OUTPUT_FLAG_PJC': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {pjc = STAT;}'}),
+
+        ({'ENSEMBLE_STAT_OUTPUT_FLAG_PRC': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {prc = STAT;}'}),
+
+        ({'ENSEMBLE_STAT_OUTPUT_FLAG_ECLV': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {eclv = STAT;}'}),
+
         ({
              'ENSEMBLE_STAT_OUTPUT_FLAG_ECNT': 'STAT',
              'ENSEMBLE_STAT_OUTPUT_FLAG_RPS': 'STAT',
@@ -330,12 +345,20 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
              'ENSEMBLE_STAT_OUTPUT_FLAG_ORANK': 'STAT',
              'ENSEMBLE_STAT_OUTPUT_FLAG_SSVAR': 'STAT',
              'ENSEMBLE_STAT_OUTPUT_FLAG_RELP': 'STAT',
+             'ENSEMBLE_STAT_OUTPUT_FLAG_PCT': 'STAT',
+             'ENSEMBLE_STAT_OUTPUT_FLAG_PSTD': 'STAT',
+             'ENSEMBLE_STAT_OUTPUT_FLAG_PJC': 'STAT',
+             'ENSEMBLE_STAT_OUTPUT_FLAG_PRC': 'STAT',
+             'ENSEMBLE_STAT_OUTPUT_FLAG_ECLV': 'STAT',
          },
          {
              'METPLUS_OUTPUT_FLAG_DICT': ('output_flag = {ecnt = STAT;'
-                                           'rps = STAT;rhist = STAT;'
-                                           'phist = STAT;orank = STAT;'
-                                           'ssvar = STAT;relp = STAT;}')}),
+                                          'rps = STAT;rhist = STAT;'
+                                          'phist = STAT;orank = STAT;'
+                                          'ssvar = STAT;relp = STAT;'
+                                          'pct = STAT;pstd = STAT;'
+                                          'pjc = STAT;prc = STAT;eclv = STAT;'
+                                          '}')}),
         # ensemble_flag
         ({'ENSEMBLE_STAT_ENSEMBLE_FLAG_LATLON': 'FALSE', },
          {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {latlon = FALSE;}'}),
@@ -632,6 +655,15 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
         ({'ENSEMBLE_STAT_GRID_WEIGHT_FLAG': 'COS_LAT', },
          {'METPLUS_GRID_WEIGHT_FLAG': 'grid_weight_flag = COS_LAT;'}),
 
+        ({'ENSEMBLE_STAT_PROB_CAT_THRESH': '<=0.25', },
+         {'METPLUS_PROB_CAT_THRESH': 'prob_cat_thresh = [<=0.25];'}),
+
+        ({'ENSEMBLE_STAT_PROB_PCT_THRESH': '==0.25', },
+         {'METPLUS_PROB_PCT_THRESH': 'prob_pct_thresh = [==0.25];'}),
+
+        ({'ENSEMBLE_STAT_ECLV_POINTS': '0.05', },
+         {'METPLUS_ECLV_POINTS': 'eclv_points = 0.05;'}),
+
     ]
 )
 def test_ensemble_stat_single_field(metplus_config, config_overrides,
@@ -703,3 +735,39 @@ def test_get_config_file(metplus_config):
     config.set('config', 'ENSEMBLE_STAT_CONFIG_FILE', fake_config_name)
     wrapper = EnsembleStatWrapper(config)
     assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name
+
+@pytest.mark.parametrize(
+    'config_overrides, expected_num_files', [
+        ({}, 4),
+        ({'ENSEMBLE_STAT_ENS_MEMBER_IDS': '1'}, 1),
+    ]
+)
+def test_ensemble_stat_fill_missing(metplus_config, config_overrides,
+                                    expected_num_files):
+    config = metplus_config()
+
+    set_minimum_config_settings(config)
+
+    # change some config values for this test
+    config.set('config', 'INIT_END', run_times[0])
+    config.set('config', 'ENSEMBLE_STAT_N_MEMBERS', 4)
+
+    # set config variable overrides
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    wrapper = EnsembleStatWrapper(config)
+
+    file_list_file = os.path.join(wrapper.config.getdir('STAGING_DIR'),
+                                  'file_lists',
+                                  '20050807000000_12_ensemble_stat.txt')
+    if os.path.exists(file_list_file):
+        os.remove(file_list_file)
+
+    all_cmds = wrapper.run_all_times()
+    assert len(all_cmds) == 1
+
+    with open(file_list_file, 'r') as file_handle:
+        actual_num_files = len(file_handle.read().splitlines()) - 1
+
+    assert actual_num_files == expected_num_files
