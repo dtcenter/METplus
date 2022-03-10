@@ -38,6 +38,36 @@ When applicable, release notes are followed by the GitHub issue number which
 describes the bugfix, enhancement, or new feature:
 https://github.com/dtcenter/METplus/issues
 
+METplus Version 4.1.0-rc1 Release Notes (2022-03-09)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Bugfixes
+
+  * Fix read of PB2NC_FILE_WINDOW_[BEGIN/END] configuration variables (`#1486 <https://github.com/dtcenter/METplus/issues/1486>`_)
+  * Fix use of current field info in output prefix when using process list instances (`#1471 <https://github.com/dtcenter/METplus/issues/1471>`_)
+
+* Enhancements:
+
+  * Add support for the normalize option to the Gen-Ens-Prod wrapper (`#1445 <https://github.com/dtcenter/METplus/issues/1445>`_)
+  * Add support for probabilistic verification to the Ensemble-Stat wrapper (`#1464 <https://github.com/dtcenter/METplus/issues/1464>`_)
+  * Add support for setting -out argument in TCStat and StatAnalysis wrappers (`#1102 <https://github.com/dtcenter/METplus/issues/1102>`_)
+
+* New Use Cases:
+
+  * **Python Embedding for Point Observations using PointStat** (`#1490 <https://github.com/dtcenter/METplus/issues/1490>`_)
+  * TCGen Verify Deterministic Genesis Forecasts and Probabilities from ATCF e-deck files (`#1274 <https://github.com/dtcenter/METplus/issues/1274>`_)
+  * Satellite verification of sea surface salinity: AVISO vs RTOFS output HYCOM climo (`#1318 <https://github.com/dtcenter/METplus/issues/1318>`_)
+  * Satellite verification of sea surface salinity: SMAP vs RTOFS output (`#1216 <https://github.com/dtcenter/METplus/issues/1216>`_)
+
+* Documentation:
+
+  * Add list of METplus statistics to documentation (`#1049 <https://github.com/dtcenter/METplus/issues/1049>`_)
+
+* Internal:
+
+  * Update Contributor's Guide for new removing/adding data protocols (`#1227 <https://github.com/dtcenter/METplus/issues/1227>`_)
+  * Add recording of Python packages to Adding Use Cases documentation (`#1374 <https://github.com/dtcenter/METplus/issues/1374>`_)
+  * Remove public-facing access to outdated use case categories (Cryosphere, marine_and_coastal) (`#1226 <https://github.com/dtcenter/METplus/issues/1226>`_)
 
 METplus Version 4.1.0-beta6 Release Notes (2022-03-01)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -56,7 +86,6 @@ METplus Version 4.1.0-beta6 Release Notes (2022-03-01)
   * Add option to PCPCombine to force using 0 hr accum in subtract mode (`#1368 <https://github.com/dtcenter/METplus/issues/1368>`_)
   * Fix logic to use fcst dictionary if ens dictionary is not set in EnsembleStat wrapper (`#1421 <https://github.com/dtcenter/METplus/issues/1421>`_)
   * Fix logic to create instances of other wrappers within wrappers to avoid modifying global configurations (`#1356 <https://github.com/dtcenter/METplus/issues/1356>`_)
-  * Remove support for PB2NC_OBS_PREPBUFR_MAP (`#1431 <https://github.com/dtcenter/METplus/issues/1431>`_)
     
     
 * New Use Cases:
