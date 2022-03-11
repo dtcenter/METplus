@@ -1454,6 +1454,56 @@ fcst dictionary item. If this is the case, then use these variables. If
 it is not set, the values in the corresponding
 FCST_VAR<n>_[NAME/LEVELS/THRESH/OPTIONS] will be used in the ens dictionary.
 
+Probabilistic Forecast Fields
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If processing probabilistic forecast fields, there are additional configuration
+variables that are used to properly format the field info that is passed into
+the wrapped MET configuration files.
+:term:`FCST_IS_PROB` is used to process probabilistic data::
+
+    [config]
+    FCST_IS_PROB = True
+    FCST_VAR1_NAME = APCP
+    FCST_VAR1_LEVELS = "(*,*)"
+
+will add the following to the MET config file::
+
+    fcst = {field = [{ name="APCP"; level="(*,*)"; prob=TRUE; cat_thresh=[ ==0.1 ]; }];}
+
+The cat_thresh value used in this case defaults to ==0.1.
+It is set by FCST_GRID_STAT_PROB_THRESH (for GridStat)::
+
+    [config]
+    FCST_IS_PROB = True
+    FCST_VAR1_NAME = APCP
+    FCST_VAR1_LEVELS = "(*,*)"
+    FCST_GRID_STAT_PROB_THRESH = ==0.2
+
+will add the following to the MET config file::
+
+    fcst = {field = [{ name="APCP"; level="(*,*)"; prob=TRUE; cat_thresh=[ ==0.2 ]; }];}
+
+Some GRIB files contain probabilistic field information in the
+Product Definition Section (PDS). The format of the fcst.field info to read
+these data expect the name to be set to "PROB" and the field name/level values
+are set inside a prob dictionary.
+If this is the case, then :term:`FCST_PROB_IN_GRIB_PDS` should be set to True.
+At least 1 threshold must be set with :term:`FCST_VAR1_THRESH` in this case.
+The threshold value will be formatted in the prob dictionary using
+thresh_lo and/or thresh_hi values::
+
+    [config]
+    FCST_IS_PROB = True
+    FCST_PROB_IN_GRIB_PDS = True
+    FCST_VAR1_NAME = APCP
+    FCST_VAR1_LEVELS = A03
+    FCST_VAR1_THRESH = gt12.7
+
+will add the following to the MET config file::
+
+    fcst = {field = [{ name="PROB"; level="A03"; prob={ name="APCP"; thresh_lo=12.7; } cat_thresh=[ ==0.1 ]; }];}
+
 Wrapper Specific Field Info
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
