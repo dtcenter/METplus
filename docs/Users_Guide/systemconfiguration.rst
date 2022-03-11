@@ -1464,7 +1464,7 @@ the wrapped MET configuration files.
 
     [config]
     FCST_IS_PROB = True
-    FCST_VAR1_NAME = APCP
+    FCST_VAR1_NAME = APCP_24_A24_ENS_FREQ_gt0.0
     FCST_VAR1_LEVELS = "(*,*)"
 
 will add the following to the MET config file::
