@@ -1471,7 +1471,7 @@ will add the following to the MET config file::
 
     fcst = {field = [{ name="APCP_24_A24_ENS_FREQ_gt0.0"; level="(*,*)"; prob=TRUE; cat_thresh=[ ==0.1 ]; }];}
 
-The cat_thresh value used in this case defaults to ==0.1.
+The cat_thresh value defaults to ==0.1 and defines the size of the Nx2 probabilistic contingency table.
 It is set by :term:`FCST_GRID_STAT_PROB_THRESH` (for GridStat)::
 
     [config]
