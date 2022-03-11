@@ -1387,7 +1387,7 @@ a single run. If the MET tool allows it and METplus Wrappers is configured
 accordingly, these two comparisons would be configured in a single run.
 
 Read explicit time dimension from a NetCDF level
-""""""""""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If the input NetCDF data contains a time dimension, the time can be specified
 in the level value. The MET tool will find the data for the time requested::
@@ -1406,6 +1406,40 @@ functionality). The time can be specified based on the current run time, i.e.::
 
 In this example, {valid?fmt=%Y%m%d_%H%M%S} will be substituted with the valid
 time of the current run.
+
+Substituting Current Level
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+When using Python Embedding to pass in data for a field, one may want to
+call the same Python script for each vertical level specifying the level
+string for each call. In this case, a list of levels can be specified using
+:term:`FCST_VAR<n>_LEVELS` and the value can be substituted into the
+corresponding :term:`FCST_VAR<n>_NAME` using {fcst_level}::
+
+    [config]
+    FCST_VAR1_NAME = {INPUT_BASE}/myscripts/read_nc2xr.py {INPUT_BASE}/mydata/forecast_file.nc4 TMP {valid?fmt=%Y%m%d_%H%M} {fcst_level}
+    FCST_VAR1_LEVELS = P1000,P850,P700,P500,P250,P100
+
+This will call the Python script 6 times:
+
+{INPUT_BASE}/myscripts/read_nc2xr.py {INPUT_BASE}/mydata/forecast_file.nc4 TMP {valid?fmt=%Y%m%d_%H%M} P1000
+{INPUT_BASE}/myscripts/read_nc2xr.py {INPUT_BASE}/mydata/forecast_file.nc4 TMP {valid?fmt=%Y%m%d_%H%M} P850
+{INPUT_BASE}/myscripts/read_nc2xr.py {INPUT_BASE}/mydata/forecast_file.nc4 TMP {valid?fmt=%Y%m%d_%H%M} P700
+{INPUT_BASE}/myscripts/read_nc2xr.py {INPUT_BASE}/mydata/forecast_file.nc4 TMP {valid?fmt=%Y%m%d_%H%M} P500
+{INPUT_BASE}/myscripts/read_nc2xr.py {INPUT_BASE}/mydata/forecast_file.nc4 TMP {valid?fmt=%Y%m%d_%H%M} P250
+{INPUT_BASE}/myscripts/read_nc2xr.py {INPUT_BASE}/mydata/forecast_file.nc4 TMP {valid?fmt=%Y%m%d_%H%M} P100
+
+This only applies if the wrapper runs once per field name/level combination
+such as MODE or if the wrapper is configured to do so,
+for example GridStat using :term:`GRID_STAT_ONCE_PER_FIELD`.
+
+The same logic applies for observation data using
+:term:`OBS_VAR<n>_NAME`, :term:`OBS_VAR<n>_LEVELS`, and {obs_level}.
+
+To reference the current field name and/or level in another configuration
+variable such as :term:`MODE_OUTPUT_PREFIX`, use
+{CURRENT_FCST_NAME}, {CURRENT_FCST_LEVEL}, {CURRENT_OBS_NAME},
+and/or {CURRENT_OBS_LEVEL}.
 
 :term:`FCST_VAR<n>_THRESH` / :term:`OBS_VAR<n>_THRESH`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
