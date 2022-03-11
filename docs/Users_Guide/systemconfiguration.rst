@@ -1422,12 +1422,12 @@ corresponding :term:`FCST_VAR<n>_NAME` using {fcst_level}::
 
 This will call the Python script 6 times:
 
-{INPUT_BASE}/myscripts/read_nc2xr.py {INPUT_BASE}/mydata/forecast_file.nc4 TMP {valid?fmt=%Y%m%d_%H%M} P1000
-{INPUT_BASE}/myscripts/read_nc2xr.py {INPUT_BASE}/mydata/forecast_file.nc4 TMP {valid?fmt=%Y%m%d_%H%M} P850
-{INPUT_BASE}/myscripts/read_nc2xr.py {INPUT_BASE}/mydata/forecast_file.nc4 TMP {valid?fmt=%Y%m%d_%H%M} P700
-{INPUT_BASE}/myscripts/read_nc2xr.py {INPUT_BASE}/mydata/forecast_file.nc4 TMP {valid?fmt=%Y%m%d_%H%M} P500
-{INPUT_BASE}/myscripts/read_nc2xr.py {INPUT_BASE}/mydata/forecast_file.nc4 TMP {valid?fmt=%Y%m%d_%H%M} P250
-{INPUT_BASE}/myscripts/read_nc2xr.py {INPUT_BASE}/mydata/forecast_file.nc4 TMP {valid?fmt=%Y%m%d_%H%M} P100
+* {INPUT_BASE}/myscripts/read_nc2xr.py {INPUT_BASE}/mydata/forecast_file.nc4 TMP {valid?fmt=%Y%m%d_%H%M} P1000
+* {INPUT_BASE}/myscripts/read_nc2xr.py {INPUT_BASE}/mydata/forecast_file.nc4 TMP {valid?fmt=%Y%m%d_%H%M} P850
+* {INPUT_BASE}/myscripts/read_nc2xr.py {INPUT_BASE}/mydata/forecast_file.nc4 TMP {valid?fmt=%Y%m%d_%H%M} P700
+* {INPUT_BASE}/myscripts/read_nc2xr.py {INPUT_BASE}/mydata/forecast_file.nc4 TMP {valid?fmt=%Y%m%d_%H%M} P500
+* {INPUT_BASE}/myscripts/read_nc2xr.py {INPUT_BASE}/mydata/forecast_file.nc4 TMP {valid?fmt=%Y%m%d_%H%M} P250
+* {INPUT_BASE}/myscripts/read_nc2xr.py {INPUT_BASE}/mydata/forecast_file.nc4 TMP {valid?fmt=%Y%m%d_%H%M} P100
 
 This only applies if the wrapper runs once per field name/level combination
 such as MODE or if the wrapper is configured to do so,
