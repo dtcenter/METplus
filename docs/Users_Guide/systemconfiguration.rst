@@ -1489,7 +1489,7 @@ Product Definition Section (PDS). The format of the fcst.field info to read
 these data expect the name to be set to "PROB" and the field name/level values
 are set inside a prob dictionary.
 If this is the case, then :term:`FCST_PROB_IN_GRIB_PDS` should be set to True.
-At least 1 threshold must be set with :term:`FCST_VAR1_THRESH` in this case.
+At least 1 threshold must be set with :term:`FCST_VAR<n>_THRESH` in this case.
 The threshold value will be formatted in the prob dictionary using
 thresh_lo and/or thresh_hi values::
 
