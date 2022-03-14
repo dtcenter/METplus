@@ -30,7 +30,6 @@ author = 'UCAR/NCAR, NOAA, CSU/CIRA, and CU/CIRES'
 # To rotate this list of authors for each official release,
 # move the first author to the end of the list
 CURRENT_AUTHORS = [
-    'Minna Win-Gildenmeister',
     'George McCabe',
     'Julie Prestopnik',
     'John Opatz',
@@ -42,6 +41,7 @@ CURRENT_AUTHORS = [
     'Hank Fisher',
     'Lisa Goodrich',
     'Dan Adriaansen',
+    'Minna Win-Gildenmeister',
 ]
 
 # list of former contributors who are no longer involved with the project
