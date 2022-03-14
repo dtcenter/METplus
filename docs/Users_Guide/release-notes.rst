@@ -137,10 +137,10 @@ METplus Version 4.1.0 Release Notes (2022-03-14)
 
   * Use Cases:
 
-  * Add stat_analysis to the Blocking and Weather Regime processing (`#1001 <https://github.com/dtcenter/METplus/issues/1001>`_)
-  * Modify user diagnostic feature relative use case to use MetPy Python package (`#759 <https://github.com/dtcenter/METplus/issues/759>`_)
-  * Reorganize the Cryosphere and Marine and Coastal use case categories into one group (`#1200 <https://github.com/dtcenter/METplus/issues/1200>`_)
-  * Add harmonic pre-processing to the RMM use case (`#1019 <https://github.com/dtcenter/METplus/issues/1019>`_)
+    * Add stat_analysis to the Blocking and Weather Regime processing (`#1001 <https://github.com/dtcenter/METplus/issues/1001>`_)
+    * Modify user diagnostic feature relative use case to use MetPy Python package (`#759 <https://github.com/dtcenter/METplus/issues/759>`_)
+    * Reorganize the Cryosphere and Marine and Coastal use case categories into one group (`#1200 <https://github.com/dtcenter/METplus/issues/1200>`_)
+    * Add harmonic pre-processing to the RMM use case (`#1019 <https://github.com/dtcenter/METplus/issues/1019>`_)
 
 
 * New Wrappers:
