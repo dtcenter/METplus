@@ -27,7 +27,8 @@ project = 'METplus'
 author = 'UCAR/NCAR, NOAA, CSU/CIRA, and CU/CIRES'
 
 # list of contributing authors currently involved with the project
-# rotate this list of authors for each release
+# To rotate this list of authors for each official release,
+# move the first author to the end of the list
 CURRENT_AUTHORS = [
     'Minna Win-Gildenmeister',
     'George McCabe',
