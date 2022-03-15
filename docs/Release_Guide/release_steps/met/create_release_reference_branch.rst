@@ -12,7 +12,7 @@ Create Release Reference Branch
     git pull
     git checkout -b main_vX.Y-ref
 
-Push reference branch to GitHub
+Push Reference Branch to GitHub
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
