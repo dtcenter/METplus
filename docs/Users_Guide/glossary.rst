@@ -5038,24 +5038,44 @@ METplus Configuration Glossary
      | *Used by:*  TCGen
 
    TC_GEN_OUTPUT_FLAG_FHO
-     Specify the value of output_flag.fho in the MET configuration file.
+     Specify the value of output_flag.fho in the MET configuration file for TCGen.
 
      | *Used by:*  TCGen
 
    TC_GEN_OUTPUT_FLAG_CTC
-     Specify the value of output_flag.ctc in the MET configuration file.
+     Specify the value of output_flag.ctc in the MET configuration file for TCGen.
 
      | *Used by:*  TCGen
 
    TC_GEN_OUTPUT_FLAG_CTS
-     Specify the value of output_flag.cts in the MET configuration file.
+     Specify the value of output_flag.cts in the MET configuration file for TCGen.
 
      | *Used by:*  TCGen
 
    TC_GEN_OUTPUT_FLAG_GENMPR
-     Specify the value of output_flag.genmpr in the MET configuration file.
+     Specify the value of output_flag.genmpr in the MET configuration file for TCGen.
 
      | *Used by:*  TCGen
+
+   TC_GEN_OUTPUT_FLAG_PCT
+     Specify the value for 'output_flag.pct' in the MET configuration file for TCGen.
+
+     | *Used by:* TCGen
+
+   TC_GEN_OUTPUT_FLAG_PSTD
+     Specify the value for 'output_flag.pstd' in the MET configuration file for TCGen.
+
+     | *Used by:* TCGen
+
+   TC_GEN_OUTPUT_FLAG_PJC
+     Specify the value for 'output_flag.pjc' in the MET configuration file for TCGen.
+
+     | *Used by:* TCGen
+
+   TC_GEN_OUTPUT_FLAG_PRC
+     Specify the value for 'output_flag.prc' in the MET configuration file for TCGen.
+
+     | *Used by:* TCGen
 
    TC_GEN_NC_PAIRS_FLAG_LATLON
      Specify the value of nc_pairs_flag.latlon in the MET configuration file.

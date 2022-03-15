@@ -85,6 +85,8 @@ METplus Wrappers configuration files. Some Python wrappers do not
 correspond to a particular MET tool, but wrap utilities to extend
 METplus functionality.
 
+.. _python_requirements_table:
+
 METplus Components Python Requirements
 ======================================
 
@@ -95,7 +97,6 @@ METplus Components Python Requirements
    Source - no more than 8 characters
    Description - no more than 22 (was 20) characters
    Use Cases - no more than 17 (was 10) characters
-
 
 .. role:: raw-html(raw)
    :format: html	  
@@ -414,6 +415,14 @@ METplus Components Python Requirements
       Python programming :raw-html:`<br />`
       language
     - For using MET Python embedding functionality in use cases
+  * - pint
+    - >=0.18
+    - METcalcpy
+    - https://github.com/hgrecco/pint
+    - Python package to define, :raw-html:`<br />`
+      operate and manipulate :raw-html:`<br />`
+      physical quantities
+    -
   * - plotly
     - >=4.9.0
     - METcalcpy, :raw-html:`<br />`

@@ -11,7 +11,7 @@
   },
   {
     "category": "met_tool_wrapper",
-    "index_list": "59",
+    "index_list": "59-60",
     "run": false
   },
   {
@@ -181,12 +181,7 @@
   },
   {
     "category": "tc_and_extra_tc",
-    "index_list": "3",
-    "run": false
-  },
-  {
-    "category": "tc_and_extra_tc",
-    "index_list": "4",
+    "index_list": "3-5",
     "run": false
   }
 ]

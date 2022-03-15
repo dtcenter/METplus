@@ -1,19 +1,26 @@
-******************************
-METplus Database of Statistics
-******************************
+********************************
+METplus Statistics & Diagnostics
+********************************
 
 
 .. Number of characters per line:
    Statistic Name - no more that 32 characters
    METplus Name - no more than 17 characters
    Statistic Type - no more than 19 characters
+   Tools - approx 18 characters?
    METplus Line Type - currently unlimited (approx 33 characters)
 
+Statistics Database
+===================
+
+
+Statistics List A-B
+___________________
 
 .. role:: raw-html(raw)
    :format: html	  
 
-.. list-table:: Statistics List
+.. list-table:: Statistics List A-B
   :widths: auto
   :header-rows: 1
 		
@@ -34,7 +41,8 @@ METplus Database of Statistics
       MCTS :raw-html:`<br />`
       NBRCTS  :raw-html:`<br />`
       MODE cts
-  * - Asymptotic Fractions Skill Score
+  * - Asymptotic :raw-html:`<br />`
+      Fractions Skill Score
     - AFSS
     - Neighborhood 
     - Grid-Stat 
@@ -46,12 +54,6 @@ METplus Database of Statistics
       TC-Stat 
     - TCMPR :raw-html:`<br />`
       TCST
-  * - Difference between the axis :raw-html:`<br />`
-      angles of two objects (in degrees) 
-    - ANGLE_DIFF
-    - Diagnostic 
-    - MODE 
-    - MODE      
   * - Anomaly Correlation :raw-html:`<br />`
       including mean error
     - ANOM_CORR
@@ -64,56 +66,14 @@ METplus Database of Statistics
   * - Uncentered Anomaly :raw-html:`<br />`
       Correlation excluding mean :raw-html:`<br />`
       error
-    - ANOM_CORR  :raw-html:`<br />` _UNCNTR
+    - ANOM_CORR  :raw-html:`<br />`
+      _UNCNTR
     - Continuous 
     - Point-Stat  :raw-html:`<br />`
       Grid-Stat :raw-html:`<br />`
       Series-Analysis :raw-html:`<br />`
       Stat-Analysis
     - CNT
-  * - Object area (in grid squares)
-    - AREA
-    - Diagnostic 
-    - MODE :raw-html:`<br />`
-      MTD
-    - MODE obj
-  * - Forecast object area :raw-html:`<br />`
-      divided by the observation :raw-html:`<br />`
-      object area (unitless)
-    - AREA_RATIO
-    - Diagnostic 
-    - MODE 
-    - MODE obj
-  * - Area of the object :raw-html:`<br />`
-      that meet the object :raw-html:`<br />`
-      definition threshold :raw-html:`<br />`
-      criteria (in grid squares)
-    - AREA_THRESH
-    - Diagnostic 
-    - MODE 
-    - MODE obj 
-  * - Absolute value of :raw-html:`<br />`
-      the difference :raw-html:`<br />`
-      between the aspect :raw-html:`<br />`
-      ratios of two objects :raw-html:`<br />`
-      (unitless)
-    - ASPECT_DIFF
-    - Diagnostic 
-    - MODE 
-    - MODE obj
-  * - Object axis angle :raw-html:`<br />`
-      (in degrees)
-    - AXIS_ANG
-    - Diagnostic 
-    - MODE  :raw-html:`<br />`
-      MTD
-    - MTD obj
-  * - Difference in spatial :raw-html:`<br />`
-      axis plane angles
-    - AXIS_DIFF
-    - Diagnostic 
-    - MTD
-    - MTD obj
   * - Baddeley’s Delta Metric
     - BADDELEY
     - Distance Map 
@@ -149,13 +109,6 @@ METplus Database of Statistics
       Ensemble-Stat 
     - CNT :raw-html:`<br />`
       SSVAR
-  * - Minimum distance between :raw-html:`<br />`
-      the boundaries of two objects
-    - BOUNDARY  :raw-html:`<br />`
-      _DIST
-    - Diagnostic
-    - MODE
-    - MODE obj
   * - Brier Score
     - BRIER
     - Probability 
@@ -182,6 +135,24 @@ METplus Database of Statistics
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - PSTD
+
+Statistics List C-E
+___________________
+      
+.. role:: raw-html(raw)
+   :format: html	  
+
+.. list-table:: Statistics List C-E
+  :widths: auto
+  :header-rows: 1
+		
+  * - Statistics  :raw-html:`<br />`
+      Long Name
+    - METplus Name
+    - Statistic Type
+    - Tools
+    - METplus :raw-html:`<br />`
+      Line Type      
   * - Calibration when forecast :raw-html:`<br />`
       is between the ith and :raw-html:`<br />`
       i+1th probability :raw-html:`<br />`
@@ -192,58 +163,6 @@ METplus Database of Statistics
     - Point-Stat :raw-html:`<br />`
       Grid-Stat 
     - PJC
-  * - Total great circle distance :raw-html:`<br />`
-      travelled by the 2D spatial :raw-html:`<br />`
-      centroid over the lifetime :raw-html:`<br />`
-      of the 3D object
-    - CDIST :raw-html:`<br />`
-      _TRAVELLED
-    - Diagnostic 
-    - MTD
-    - MTD 3D obj
-  * - Distance between two :raw-html:`<br />`
-      objects centroids :raw-html:`<br />`
-      (in grid units)
-    - CENTROID :raw-html:`<br />`
-      _DIST
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Latitude of centroid :raw-html:`<br />`
-    - CENTROID :raw-html:`<br />`
-      _LAT
-    - Diagnostic 
-    - MTD :raw-html:`<br />`
-      MODE
-    - MTD 2D & 3D obj :raw-html:`<br />`
-      MODE obj
-  * - Longitude of centroid :raw-html:`<br />`
-    - CENTROID :raw-html:`<br />`
-      _LON
-    - Diagnostic 
-    - MTD :raw-html:`<br />`
-      MODE
-    - MTD 2D & 3D obj :raw-html:`<br />`
-      MODE obj
-  * - Time coordinate of centroid
-    - CENTROID_T
-    - Diagnostic 
-    - MTD
-    - MTD 3D obj
-  * - X coordinate of centroid :raw-html:`<br />`
-    - CENTROID_X
-    - Diagnostic 
-    - MTD :raw-html:`<br />`
-      MODE
-    - MTD 2D & 3D obj :raw-html:`<br />`
-      MODE obj
-  * - Y coordinate of centroid :raw-html:`<br />`
-    - CENTROID_Y
-    - Diagnostic 
-    - MTD :raw-html:`<br />`
-      MODE
-    - MTD 2D & 3D obj :raw-html:`<br />`
-      MODE obj
   * - Climatological mean value
     - CLIMO_MEAN
     - Continuous 
@@ -261,35 +180,6 @@ METplus Database of Statistics
       Ensemble-Stat
     - MPR :raw-html:`<br />`
       ORANK
-  * - Ratio of the difference :raw-html:`<br />`
-      between the area of an :raw-html:`<br />`
-      object and the area of :raw-html:`<br />`
-      its convex hull divided :raw-html:`<br />`
-      by the area of the :raw-html:`<br />`
-      complex hull (unitless)
-    - COMPLEXITY
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Ratio of complexities of :raw-html:`<br />`
-      two objects defined as :raw-html:`<br />`
-      the lesser of the forecast :raw-html:`<br />`
-      complexity divided by the :raw-html:`<br />`
-      observation complexity or :raw-html:`<br />`
-      its reciprocal (unitless)
-    - COMPLEXITY :raw-html:`<br />`
-      _RATIO
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Minimum distance between :raw-html:`<br />`
-      the convex hulls of two :raw-html:`<br />`
-      objects (in grid units)
-    - CONVEX_HULL :raw-html:`<br />`
-      _DIST
-    - Diagnostic 
-    - MODE
-    - MODE obj
   * - Continuous Ranked :raw-html:`<br />`
       Probability Score :raw-html:`<br />`
       (normal dist.)
@@ -348,31 +238,6 @@ METplus Database of Statistics
     - CTS :raw-html:`<br />`
       MODE :raw-html:`<br />`
       MBRCTCS
-  * - Radius of curvature
-    - CURVATURE
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Ratio of the curvature
-    - CURVATURE :raw-html:`<br />`
-      _RATIO
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Center of curvature :raw-html:`<br />`
-      (in grid coordinates)
-    - CURVATURE :raw-html:`<br />`
-      _X
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Center of curvature :raw-html:`<br />`
-      (in grid coordinates)
-    - CURVATURE :raw-html:`<br />`
-      _Y
-    - Diagnostic 
-    - MODE
-    - MODE obj
   * - Absolute value of :raw-html:`<br />`
       DIR_ERR (see below)
     - DIR_ABSERR
@@ -389,21 +254,6 @@ METplus Database of Statistics
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VCNT
-  * - Difference in object :raw-html:`<br />`
-      direction of movement
-    - DIRECTION :raw-html:`<br />`
-      _DIFF
-    - Diagnostic 
-    - MTD
-    - MTD 3D obj
-  * - Difference in the :raw-html:`<br />`
-      lifetimes of the :raw-html:`<br />`
-      two objects
-    - DURATION :raw-html:`<br />`
-      _DIFF
-    - Diagnostic 
-    - MTD
-    - MTD 3D obj
   * - Expected correct rate :raw-html:`<br />`
       used for MCTS HSS_EC
     - EC_VALUE
@@ -432,18 +282,6 @@ METplus Database of Statistics
     - Continuous 
     - Grid-Stat
     - GRAD 
-  * - Object end time
-    - END_TIME
-    - Diagnostic 
-    - MTD
-    - MTD 3D obj
-  * - Difference in object :raw-html:`<br />`
-      ending time steps
-    - END_TIME :raw-html:`<br />`
-      _DELTA
-    - Diagnostic 
-    - MTD
-    - MTD 3D obj
   * - The unperturbed :raw-html:`<br />`
       ensemble mean value
     - ENS_MEAN
@@ -467,6 +305,21 @@ METplus Database of Statistics
       Ensemble-Stat
     - CNT :raw-html:`<br />`
       SSVAR
+
+Statistics List F
+_________________
+      
+.. list-table:: Statistics List F
+  :widths: auto
+  :header-rows: 1
+		
+  * - Statistics  :raw-html:`<br />`
+      Long Name
+    - METplus Name
+    - Statistic Type
+    - Tools
+    - METplus :raw-html:`<br />`
+      Line Type     
   * - Forecast rate/event :raw-html:`<br />`
       frequency
     - F_RATE
@@ -478,7 +331,7 @@ METplus Database of Statistics
   * - Mean forecast wind speed
     - F_SPEED :raw-html:`<br />`
       _BAR
-    - Continous 
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VL1L2  
@@ -533,193 +386,6 @@ METplus Database of Statistics
     - Continuous 
     - Grid-Stat
     - NBRCNT
-  * - Number of forecast :raw-html:`<br />`
-      clusters
-    - fcst_clus
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Number of points used to :raw-html:`<br />`
-      define the hull of all :raw-html:`<br />`
-      of the cluster forecast :raw-html:`<br />`
-      objects
-    - fcst_clus :raw-html:`<br />`
-      _hull
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Forecast Cluster Convex :raw-html:`<br />`
-      Hull Point Latitude
-    - fcst_clus :raw-html:`<br />`
-      _hull_lat
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Forecast Cluster Convex :raw-html:`<br />`
-      Hull Point Longitude
-    - fcst_clus :raw-html:`<br />`
-      _hull _lon
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Number of Forecast :raw-html:`<br />`
-      Cluster Convex Hull Points
-    - fcst_clus :raw-html:`<br />`
-      _hull_npts
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Forecast Cluster Convex :raw-html:`<br />`
-      Hull Starting Index
-    - fcst_clus :raw-html:`<br />`
-      _hull_start
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Forecast Cluster Convex :raw-html:`<br />`
-      Hull Point X-Coordinate
-    - fcst_clus :raw-html:`<br />`
-      _hull_x
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Forecast Cluster Convex :raw-html:`<br />`
-      Hull Point Y-Coordinate
-    - fcst_clus :raw-html:`<br />`
-      _hull_y
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Forecast Object Raw :raw-html:`<br />`
-      Values
-    - fcst_obj :raw-html:`<br />`
-      _raw
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Number of simple  :raw-html:`<br />`
-      forecast objects
-    - fcst_simp
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Number of points used :raw-html:`<br />`
-      to define the boundaries :raw-html:`<br />`
-      of all of the simple :raw-html:`<br />`
-      forecast objects
-    - fcst_simp :raw-html:`<br />`
-      _bdy
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Forecast Simple :raw-html:`<br />`
-      Boundary Latitude
-    - fcst_simp :raw-html:`<br />`
-      _bdy_lat
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Forecast Simple :raw-html:`<br />`
-      Boundary Longitude
-    - fcst_simp :raw-html:`<br />`
-      _bdy_lon
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Number of Forecast :raw-html:`<br />`
-      Simple Boundary Points
-    - fcst_simp :raw-html:`<br />`
-      _bdy_npts
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Forecast Simple :raw-html:`<br />`
-      Boundary Starting Index
-    - fcst_simp :raw-html:`<br />`
-      _bdy_start
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Forecast Simple :raw-html:`<br />`
-      Boundary X-Coordinate
-    - fcst_simp :raw-html:`<br />`
-      _bdy_x
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Forecast Simple :raw-html:`<br />`
-      Boundary Y-Coordinate
-    - fcst_simp :raw-html:`<br />`
-      _bdy_y
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Number of points used to :raw-html:`<br />`
-      define the hull of all :raw-html:`<br />`
-      of the simple forecast :raw-html:`<br />`
-      objects
-    - fcst_simp :raw-html:`<br />`
-      _hull
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Forecast Simple Convex :raw-html:`<br />`
-      Hull Point Latitude
-    - fcst_simp :raw-html:`<br />`
-      _hull_lat
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Forecast Simple Convex :raw-html:`<br />`
-      Hull Point Longitude
-    - fcst_simp :raw-html:`<br />`
-      _hull_lon
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Number of Forecast :raw-html:`<br />`
-      Simple Convex Hull Points
-    - fcst_simp :raw-html:`<br />`
-      _hull_npts
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Forecast Simple Convex :raw-html:`<br />`
-      Hull Starting Index
-    - fcst_simp :raw-html:`<br />`
-      _hull_start
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Forecast Simple Convex :raw-html:`<br />`
-      Hull Point X-Coordinate
-    - fcst_simp :raw-html:`<br />`
-      _hull_x
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Forecast Simple Convex :raw-html:`<br />`
-      Hull Point Y-Coordinate
-    - fcst_simp :raw-html:`<br />`
-      _hull_y
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Number of thresholds  :raw-html:`<br />`
-      applied to the forecast
-    - fcst :raw-html:`<br />`
-      _thresh :raw-html:`<br />`
-      _length
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Number of thresholds :raw-html:`<br />`
-      applied to the forecast
-    - fcst_thresh :raw-html:`<br />`
-      _length
-    - Diagnostic 
-    - MODE
-    - MODE obj
   * - Direction of the average :raw-html:`<br />`
       forecast wind vector
     - FDIR
@@ -727,12 +393,6 @@ METplus Database of Statistics
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VCNT 
-  * - Forecast energy squared :raw-html:`<br />`
-      for this scale
-    - FENERGY
-    -  
-    - Wavelet-Stat
-    - ISC 
   * - Mean Forecast Anomaly Squared
     - FFABAR
     - Continuous 
@@ -748,18 +408,6 @@ METplus Database of Statistics
       Grid-Stat
     - SSVAR :raw-html:`<br />`
       SL1L2  
-  * - Mean of absolute value :raw-html:`<br />`
-      of forecast gradients
-    - FGBAR
-    -  
-    - Grid-Stat
-    - GRAD 
-  * - Ratio of forecast and :raw-html:`<br />`
-      observed gradients
-    - FGOG_RATIO
-    -  
-    - Grid-Stat
-    - GRAD 
   * - Count of events in :raw-html:`<br />`
       forecast category i and :raw-html:`<br />`
       observation category j
@@ -823,38 +471,6 @@ METplus Database of Statistics
       Grid-Stat
     - SSVAR :raw-html:`<br />`
       SL1L2  
-  * - Pratt’s Figure of Merit :raw-html:`<br />`
-      from observation to :raw-html:`<br />`
-      forecast
-    - FOM_FO
-    - Diagnostic 
-    - Grid-Stat
-    - DMAP 
-  * - Maximum of FOM_FO :raw-html:`<br />`
-      and FOM_OF
-    - FOM_MAX
-    - Diagnostic 
-    - Grid-Stat
-    - DMAP 
-  * - Mean of FOM_FO :raw-html:`<br />`
-      and FOM_OF :raw-html:`<br />`
-    - FOM_MEAN
-    - Diagnostic 
-    - Grid-Stat
-    - DMAP 
-  * - Minimum of FOM_FO :raw-html:`<br />`
-      and FOM_OF
-    - FOM_MIN
-    - Diagnostic 
-    - Grid-Stat
-    - DMAP 
-  * - Pratt’s Figure of Merit :raw-html:`<br />`
-      from forecast to :raw-html:`<br />`
-      observation
-    - FOM_OF
-    - Diagnostic 
-    - Grid-Stat
-    - DMAP 
   * - Number of tied forecast :raw-html:`<br />`
       ranks used in computing :raw-html:`<br />`
       Kendall’s tau statistic
@@ -910,20 +526,25 @@ METplus Database of Statistics
     - MODE :raw-html:`<br />`
       CTC :raw-html:`<br />`
       NBRCTC
-  * - Distance between the :raw-html:`<br />`
-      forecast and Best track :raw-html:`<br />`
-      genesis events (km)
-    - GEN_DIST
-    - Diagnostic 
-    - TC-Gen
-    - GENMPR 
-  * - Forecast minus Best track :raw-html:`<br />`
-      genesis time in HHMMSS :raw-html:`<br />`
-      format
-    - GEN_TDIFF
-    - Diagnostic 
-    - TC-Gen
-    - GENMPR 
+
+Statistics List G-M
+___________________
+      
+.. role:: raw-html(raw)
+   :format: html	  
+
+.. list-table:: Statistics List G-M
+  :widths: auto
+  :header-rows: 1
+		
+  * - Statistics  :raw-html:`<br />`
+      Long Name
+    - METplus Name
+    - Statistic Type
+    - Tools
+    - METplus :raw-html:`<br />`
+      Line Type      
+      
   * - Gerrity Score and :raw-html:`<br />`
       bootstrap confidence limits
     - GER
@@ -946,11 +567,6 @@ METplus Database of Statistics
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - FHO 
-  * - Hausdorff Distance
-    - HAUSDORFF
-    - Diagnostic 
-    - Grid-Stat
-    - DMAP 
   * - Hanssen and Kuipers :raw-html:`<br />`
       Discriminant 
     - HK
@@ -973,7 +589,7 @@ METplus Database of Statistics
       CTS :raw-html:`<br />`
       NBRCTS
   * - Heidke Skill Score :raw-html:`<br />`
-      user-specific expected  :raw-html:`<br />`
+      user-specific expected :raw-html:`<br />`
       correct
     - HSS_EC
     - Categorical
@@ -985,102 +601,18 @@ METplus Database of Statistics
     - Ensemble 
     - Ensemble-Stat
     - ECNT
-  * - Best track genesis minus :raw-html:`<br />`
-      forecast initialization :raw-html:`<br />`
-      time in HHMMSS format
-    - INIT_TDIFF
-    - Diagnostic 
-    - TC-Gen
-    - GENMPR 
-  * - 10th, 25th, 50th, 75th, :raw-html:`<br />`
-      90th, and user-specified :raw-html:`<br />`
-      percentiles of :raw-html:`<br />`
-      intensity of the raw :raw-html:`<br />`
-      field within the  :raw-html:`<br />`
-      object or time slice
-    - INTENSITY :raw-html:`<br />`
-      _10, _25, :raw-html:`<br />`
-      _50, _75, :raw-html:`<br />`
-      _90, _NN
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Sum of the intensities of :raw-html:`<br />`
-      the raw field within the :raw-html:`<br />`
-      object (variable units)
-    - INTENSITY  :raw-html:`<br />`
-      _SUM
-    - Diagnostics 
-    - MODE
-    - MODE obj
-  * - Total interest for this :raw-html:`<br />`
-      object pair
-    - INTEREST
-    - Diagnostic 
-    - MTD :raw-html:`<br />`
-      MODE
-    - MTD 3D obj :raw-html:`<br />`
-      MODE obj
-  * - Intersection area of two :raw-html:`<br />`
-      objects (in grid squares)
-    - INTERSECT  :raw-html:`<br />`
-      ION_AREA
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Ratio of intersection area :raw-html:`<br />`
-      to the lesser of the  :raw-html:`<br />`
-      forecast and observation :raw-html:`<br />`
-      object areas (unitless)
-    - INTERSECT :raw-html:`<br />`
-      ION_OVER :raw-html:`<br />`
-      _AREA
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - “Volume” of object :raw-html:`<br />`
-      intersection
-    - INTERSECT  :raw-html:`<br />`
-      ION_VOLUME
-    - Diagnostic 
-    - MTD
-    - MTD 3D obj
   * - Interquartile Range :raw-html:`<br />`
     - IQR
     - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
-    - CNT 
-  * - The intensity scale :raw-html:`<br />`
-      skill score
-    - ISC
-    - 
-    - Wavelet-Stat
-    - ISC 
-  * - The scale at which all  :raw-html:`<br />`
-      information following :raw-html:`<br />`
-      applies
-    - ISCALE
-    -  
-    - Wavelet-Stat
-    - ISC 
+    - CNT
   * - Kendall’s tau statistic
     - KT_CORR
     - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - CNT 
-  * - Dimension of the latitude 
-    - LAT
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Length of the :raw-html:`<br />`
-      enclosing rectangle 
-    - LENGTH
-    - Diagnostic 
-    - MODE
-    - MODE obj
   * - Likelihood when forecast :raw-html:`<br />`
       is between the ith and :raw-html:`<br />`
       i+1th probability :raw-html:`<br />`
@@ -1098,11 +630,6 @@ METplus Database of Statistics
       Grid-Stat
     - CTS :raw-html:`<br />`
       NBRCTS
-  * - Dimension of the longitude 
-    - LON
-    - Diagnostic 
-    - MODE
-    - MODE obj
   * - The Median Absolute :raw-html:`<br />`
       Deviation
     - MAD
@@ -1179,14 +706,6 @@ METplus Database of Statistics
     - Distance 
     - Grid-Stat
     - DMAP 
-  * - Mean of maximum of :raw-html:`<br />`
-      absolute values of :raw-html:`<br />`
-      forecast and observed :raw-html:`<br />`
-      gradients
-    - MGBAR
-    -  
-    - Grid-Stat
-    - GRAD
   * - Mean squared error
     - MSE
     - Continuous 
@@ -1212,7 +731,25 @@ METplus Database of Statistics
     - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
-    - VCNT 
+    - VCNT
+
+Statistics List N-O
+___________________
+      
+.. role:: raw-html(raw)
+   :format: html	  
+
+.. list-table:: Statistics List N-O
+  :widths: auto
+  :header-rows: 1
+		
+  * - Statistics  :raw-html:`<br />`
+      Long Name
+    - METplus Name
+    - Statistic Type
+    - Tools
+    - METplus :raw-html:`<br />`
+      Line Type      
   * - Dimension of the :raw-html:`<br />`
       contingency table & the :raw-html:`<br />`
       total number of :raw-html:`<br />`
@@ -1224,23 +761,6 @@ METplus Database of Statistics
       Grid-Stat
     - MCTC :raw-html:`<br />`
       MCTS
-  * - Number of cluster objects
-    - N_CLUS
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Number of simple :raw-html:`<br />`
-      forecast objects
-    - N_FCST_SIMP
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Number of simple :raw-html:`<br />`
-      observation objects
-    - N_OBS_SIMP
-    - Diagnostic 
-    - MODE
-    - MODE obj
   * - Observation rate
     - O_RATE
     - Categorical 
@@ -1278,114 +798,6 @@ METplus Database of Statistics
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VCNT 
-  * - Number of observed :raw-html:`<br />`
-      clusters
-    - obs_clus
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Number of points used to :raw-html:`<br />`
-      define the hull of all of :raw-html:`<br />`
-      the cluster observation :raw-html:`<br />`
-      objects
-    - obs_clus :raw-html:`<br />`
-      _hull
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Observation Cluster Convex :raw-html:`<br />`
-      Hull Point Latitude
-    - obs_clus :raw-html:`<br />`
-      _hull_lat
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Observation Cluster Convex :raw-html:`<br />`
-      Hull Point Longitude
-    - obs_clus :raw-html:`<br />`
-      _hull_lon
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Number of Observation :raw-html:`<br />`
-      Cluster Convex Hull Points
-    - obs_clus :raw-html:`<br />`
-      _hull_npts
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Observation Cluster Convex :raw-html:`<br />`
-      Hull Starting Index
-    - obs_clus :raw-html:`<br />`
-      _hull_start
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Observation Cluster Convex :raw-html:`<br />`
-      Hull Point X-Coordinate
-    - obs_clus :raw-html:`<br />`
-      _hull_x
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Observation Cluster Convex :raw-html:`<br />`
-      Hull Point Y-Coordinate
-    - obs_clus :raw-html:`<br />`
-      _hull_y
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Number of simple :raw-html:`<br />`
-      observation objects
-    - obs_simp
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Number of points used :raw-html:`<br />`
-      to define the boundaries :raw-html:`<br />`
-      of the simple observation :raw-html:`<br />`
-      objects
-    - obs_simp :raw-html:`<br />`
-      _bdy
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Observation Simple  :raw-html:`<br />`
-      Boundary Point Latitude
-    - obs_simp :raw-html:`<br />`
-      _bdy_lat
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Observation Simple :raw-html:`<br />`
-      Boundary Point Longitude
-    - obs_simp :raw-html:`<br />`
-      _bdy_lon
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Number of Observation :raw-html:`<br />`
-      Simple Boundary Points
-    - obs_simp :raw-html:`<br />`
-      _bdy_npts
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Number of points used to :raw-html:`<br />`
-      define the hull of the :raw-html:`<br />`
-      simple observation objects
-    - obs_simp :raw-html:`<br />`
-      _hull
-    - Diagnostic 
-    - MODE
-    - MODE obj
-  * - Number of Observation :raw-html:`<br />`
-      Simple Convex Hull Points
-    - obs_simp :raw-html:`<br />`
-      _hull_npts
-    - Diagnostic 
-    - MODE
-    - MODE obj
   * - Odds Ratio
     - ODDS
     - Categorical 
@@ -1401,19 +813,7 @@ METplus Database of Statistics
     - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
-    - VCNT 
-  * - Observed energy squared :raw-html:`<br />`
-      for this scale
-    - OENERGY
-    -  
-    - Wavelet-Stat
-    - ISC 
-  * - Mean of absolute value :raw-html:`<br />`
-      of observed gradients
-    - OGBAR
-    -  
-    - Grid-Stat
-    - GRAD 
+    - VCNT
   * - Number of observation :raw-html:`<br />`
       when forecast is between :raw-html:`<br />`
       the ith and i+1th :raw-html:`<br />`
@@ -1505,17 +905,27 @@ METplus Database of Statistics
     - Probability 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
-    - PJC 
-  * - Ratio of the nth percentile :raw-html:`<br />`
-      (INTENSITY_NN column) of :raw-html:`<br />`
-      intensity of the two :raw-html:`<br />`
-      objects
-    - PERCENTILE :raw-html:`<br />`
-      _INTENSITY :raw-html:`<br />`
-      _RATIO
-    - Diagnostic 
-    - MODE
-    - MODE obj
+    - PJC
+
+
+Statistics List P-R
+___________________
+
+
+.. role:: raw-html(raw)
+   :format: html	  
+
+.. list-table:: Statistics List P-R
+  :widths: auto
+  :header-rows: 1
+		
+  * - Statistics :raw-html:`<br />`
+      Long Name
+    - METplus Name
+    - Statistic Type
+    - Tools
+    - METplus :raw-html:`<br />`
+      Line Type
   * - Probability Integral :raw-html:`<br />`
       Transform
     - PIT
@@ -1628,7 +1038,7 @@ METplus Database of Statistics
     - RELP_i
     - Ensemble 
     - Ensemble-Stat
-    - RELP 
+    - RELP
   * - Resolution
     - RESOLUTION
     - Probability 
@@ -1664,7 +1074,7 @@ METplus Database of Statistics
     - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
-    - CNT 
+    - CNT
   * - Square root of MSVE
     - RMSVE
     - Continuous 
@@ -1717,6 +1127,26 @@ METplus Database of Statistics
     - Ensemble 
     - Ensemble-Stat
     - RPS
+
+
+Statistics List S-T
+___________________
+
+
+.. role:: raw-html(raw)
+   :format: html	  
+
+.. list-table:: Statistics List S-T
+  :widths: auto
+  :header-rows: 1
+		
+  * - Statistics  :raw-html:`<br />`
+      Long Name
+    - METplus Name
+    - Statistic Type
+    - Tools
+    - METplus :raw-html:`<br />`
+      Line Type           
   * - S1 score
     - S1
     - Continuous 
@@ -1757,15 +1187,6 @@ METplus Database of Statistics
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - CNT 
-  * - Spatial distance between :raw-html:`<br />`
-      (𝑥,𝑦)(x,y) coordinates of :raw-html:`<br />`
-      object spacetime centroid
-    - SPACE :raw-html:`<br />`
-      _CENTROID :raw-html:`<br />`
-      _DIST
-    - Diagnostics 
-    - MTD
-    - MTD 3D obs
   * - Absolute value of SPEED_ERR
     - SPEED :raw-html:`<br />`
       _ABSERR
@@ -1773,11 +1194,6 @@ METplus Database of Statistics
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VCNT 
-  * - Difference in object speeds
-    - SPEED_DELTA
-    - Diagnostics 
-    - MTD
-    - MTD 3D obs
   * - Difference between the :raw-html:`<br />`
       length of the average :raw-html:`<br />`
       forecast wind vector and :raw-html:`<br />`
@@ -1814,29 +1230,6 @@ METplus Database of Statistics
     - Ensemble-Stat
     - ECNT :raw-html:`<br />`
       ORANK
-  * - Difference in object :raw-html:`<br />`
-      starting time steps
-    - START_TIME :raw-html:`<br />`
-      _DELTA
-    - Diagnostic 
-    - MTD
-    - MTD 3D obj
-  * - Symmetric difference of :raw-html:`<br />`
-      two objects :raw-html:`<br />`
-      (in grid squares)
-    - SYMMETRIC :raw-html:`<br />`
-      _DIFF
-    - Diagnostics
-    - MODE
-    - MODE obj
-  * - Difference in t index of :raw-html:`<br />`
-      object spacetime centroid
-    - TIME :raw-html:`<br />`
-      _CENTROID :raw-html:`<br />`
-      _DELTA
-    - Diagnostic  
-    - MTD
-    - MTD 3D obj
   * - Track error of adeck :raw-html:`<br />`
       relative to bdeck (nm)
     - TK_ERR
@@ -1849,6 +1242,26 @@ METplus Database of Statistics
     - Continuous 
     - TC-Pairs
     - TCMPR
+
+      
+
+Statistics List U-Z
+___________________
+      
+.. role:: raw-html(raw)
+   :format: html	  
+
+.. list-table:: Statistics List U-Z
+  :widths: auto
+  :header-rows: 1
+		
+  * - Statistics  :raw-html:`<br />`
+      Long Name
+    - METplus Name
+    - Statistic Type
+    - Tools
+    - METplus :raw-html:`<br />`
+      Line Type            
   * - Mean U-component :raw-html:`<br />`
       Forecast Anomaly
     - UFABAR
@@ -1875,13 +1288,6 @@ METplus Database of Statistics
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - PSTD
-  * - Union area of :raw-html:`<br />`
-      two objects :raw-html:`<br />`
-      (in grid squares)
-    - UNION_AREA
-    - Diagnostic 
-    - MODE
-    - MODE obj
   * - Mean U-component :raw-html:`<br />`
       Observation Anomaly
     - UOABAR
@@ -1992,7 +1398,7 @@ METplus Database of Statistics
     - VCNT 
   * - Mean(vf-vc)
     - VFABAR
-    - Continous 
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VAL1L2  
@@ -2013,7 +1419,925 @@ METplus Database of Statistics
     - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
-    - VL1L2  
+    - VL1L2
+
+
+Diagnostics Database
+====================
+
+
+.. Number of characters per line:
+   Statistic Name - no more that 32 characters
+   METplus Name - no more than 17 characters
+   Statistic Type - no more than 19 characters
+   METplus Line Type - currently unlimited (approx 33 characters)
+
+Diagnostics List A-B
+____________________
+
+.. role:: raw-html(raw)
+   :format: html	  
+
+.. list-table:: Diagnostics List A-B
+  :widths: auto
+  :header-rows: 1
+		
+  * - Statistics  :raw-html:`<br />`
+      Long Name
+    - METplus Name
+    - Statistic Type
+    - Tools
+    - METplus :raw-html:`<br />`
+      Line Type
+  * - Difference between the axis :raw-html:`<br />`
+      angles of two objects (in degrees) 
+    - ANGLE_DIFF
+    - Diagnostic 
+    - MODE 
+    - MODE      
+  * - Object area (in grid squares)
+    - AREA
+    - Diagnostic 
+    - MODE :raw-html:`<br />`
+      MTD
+    - MODE obj
+  * - Forecast object area :raw-html:`<br />`
+      divided by the observation :raw-html:`<br />`
+      object area (unitless)
+    - AREA_RATIO
+    - Diagnostic 
+    - MODE 
+    - MODE obj
+  * - Area of the object :raw-html:`<br />`
+      that meet the object :raw-html:`<br />`
+      definition threshold :raw-html:`<br />`
+      criteria (in grid squares)
+    - AREA_THRESH
+    - Diagnostic 
+    - MODE 
+    - MODE obj 
+  * - Absolute value of :raw-html:`<br />`
+      the difference :raw-html:`<br />`
+      between the aspect :raw-html:`<br />`
+      ratios of two objects :raw-html:`<br />`
+      (unitless)
+    - ASPECT_DIFF
+    - Diagnostic 
+    - MODE 
+    - MODE obj
+  * - Object axis angle :raw-html:`<br />`
+      (in degrees)
+    - AXIS_ANG
+    - Diagnostic 
+    - MODE  :raw-html:`<br />`
+      MTD
+    - MTD obj
+  * - Difference in spatial :raw-html:`<br />`
+      axis plane angles
+    - AXIS_DIFF
+    - Diagnostic 
+    - MTD
+    - MTD obj
+  * - Blocking Index
+    - Blocking :raw-html:`<br />`
+      Index
+    - Diagnostic
+    - METplus Use :raw-html:`<br />`
+      Case
+    - n/a
+  * - Minimum distance between :raw-html:`<br />`
+      the boundaries of two objects
+    - BOUNDARY  :raw-html:`<br />`
+      _DIST
+    - Diagnostic
+    - MODE
+    - MODE obj
+
+Diagnostics List C-E
+____________________
+
+.. role:: raw-html(raw)
+   :format: html	  
+
+.. list-table:: Diagnostics List C-E
+  :widths: auto
+  :header-rows: 1
+		
+  * - Statistics  :raw-html:`<br />`
+      Long Name
+    - METplus Name
+    - Statistic Type
+    - Tools
+    - METplus :raw-html:`<br />`
+      Line Type    
+  * - Total great circle distance :raw-html:`<br />`
+      travelled by the 2D spatial :raw-html:`<br />`
+      centroid over the lifetime :raw-html:`<br />`
+      of the 3D object
+    - CDIST :raw-html:`<br />`
+      _TRAVELLED
+    - Diagnostic 
+    - MTD
+    - MTD 3D obj
+  * - Distance between two :raw-html:`<br />`
+      objects centroids :raw-html:`<br />`
+      (in grid units)
+    - CENTROID :raw-html:`<br />`
+      _DIST
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Latitude of centroid :raw-html:`<br />`
+    - CENTROID :raw-html:`<br />`
+      _LAT
+    - Diagnostic 
+    - MTD :raw-html:`<br />`
+      MODE
+    - MTD 2D & 3D obj :raw-html:`<br />`
+      MODE obj
+  * - Longitude of centroid :raw-html:`<br />`
+    - CENTROID :raw-html:`<br />`
+      _LON
+    - Diagnostic 
+    - MTD :raw-html:`<br />`
+      MODE
+    - MTD 2D & 3D obj :raw-html:`<br />`
+      MODE obj
+  * - Time coordinate of centroid
+    - CENTROID_T
+    - Diagnostic 
+    - MTD
+    - MTD 3D obj
+  * - X coordinate of centroid :raw-html:`<br />`
+    - CENTROID_X
+    - Diagnostic 
+    - MTD :raw-html:`<br />`
+      MODE
+    - MTD 2D & 3D obj :raw-html:`<br />`
+      MODE obj
+  * - Y coordinate of centroid :raw-html:`<br />`
+    - CENTROID_Y
+    - Diagnostic 
+    - MTD :raw-html:`<br />`
+      MODE
+    - MTD 2D & 3D obj :raw-html:`<br />`
+      MODE obj
+  * - Space-Time :raw-html:`<br />`
+      Coherence Diagram
+    - Coherence :raw-html:`<br />`
+      Diagram
+    - Diagnostic
+    - METplus :raw-html:`<br />`
+      Use Case
+    - n/a
+  * - Ratio of the difference :raw-html:`<br />`
+      between the area of an :raw-html:`<br />`
+      object and the area of :raw-html:`<br />`
+      its convex hull divided :raw-html:`<br />`
+      by the area of the :raw-html:`<br />`
+      complex hull (unitless)
+    - COMPLEXITY
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Ratio of complexities of :raw-html:`<br />`
+      two objects defined as :raw-html:`<br />`
+      the lesser of the forecast :raw-html:`<br />`
+      complexity divided by the :raw-html:`<br />`
+      observation complexity or :raw-html:`<br />`
+      its reciprocal (unitless)
+    - COMPLEXITY :raw-html:`<br />`
+      _RATIO
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Minimum distance between :raw-html:`<br />`
+      the convex hulls of two :raw-html:`<br />`
+      objects (in grid units)
+    - CONVEX_HULL :raw-html:`<br />`
+      _DIST
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Radius of curvature
+    - CURVATURE
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Ratio of the curvature
+    - CURVATURE :raw-html:`<br />`
+      _RATIO
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Center of curvature :raw-html:`<br />`
+      (in grid coordinates)
+    - CURVATURE :raw-html:`<br />`
+      _X
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Center of curvature :raw-html:`<br />`
+      (in grid coordinates)
+    - CURVATURE :raw-html:`<br />`
+      _Y
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Cloud Water / :raw-html:`<br />`
+      Precip Relationship
+    - CW/Precip :raw-html:`<br />`
+      Relationship
+    - Diagnostic
+    - Grid-Diag
+    - n/a
+  * - Difference in object :raw-html:`<br />`
+      direction of movement
+    - DIRECTION :raw-html:`<br />`
+      _DIFF
+    - Diagnostic 
+    - MTD
+    - MTD 3D obj
+  * - Difference in the :raw-html:`<br />`
+      lifetimes of the :raw-html:`<br />`
+      two objects
+    - DURATION :raw-html:`<br />`
+      _DIFF
+    - Diagnostic 
+    - MTD
+    - MTD 3D obj
+  * - Object end time
+    - END_TIME
+    - Diagnostic 
+    - MTD
+    - MTD 3D obj
+  * - Difference in object :raw-html:`<br />`
+      ending time steps
+    - END_TIME :raw-html:`<br />`
+      _DELTA
+    - Diagnostic 
+    - MTD
+    - MTD 3D obj
+      
+Diagnostics List F
+__________________
+
+.. role:: raw-html(raw)
+   :format: html	  
+
+.. list-table:: Diagnostics List F
+  :widths: auto
+  :header-rows: 1
+		
+  * - Statistics  :raw-html:`<br />`
+      Long Name
+    - METplus Name
+    - Statistic Type
+    - Tools
+    - METplus :raw-html:`<br />`
+      Line Type
+  * - Number of forecast :raw-html:`<br />`
+      clusters
+    - FCST_CLUS
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Number of points used to :raw-html:`<br />`
+      define the hull of all :raw-html:`<br />`
+      of the cluster forecast :raw-html:`<br />`
+      objects
+    - FCST_CLUS :raw-html:`<br />`
+      _HULL
+    - Diagnostic 
+    - MODE
+    - MODE obj      
+  * - Forecast Cluster Convex :raw-html:`<br />`
+      Hull Point Latitude
+    - FCST_CLUS :raw-html:`<br />`
+      _HULL_LAT
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Forecast Cluster Convex :raw-html:`<br />`
+      Hull Point Longitude
+    - FCST_CLUS :raw-html:`<br />`
+      _HULL _LON
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Number of Forecast :raw-html:`<br />`
+      Cluster Convex Hull Points
+    - FCST_CLUS :raw-html:`<br />`
+      _HULL_NPTS
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Forecast Cluster Convex :raw-html:`<br />`
+      Hull Starting Index
+    - FCST_CLUS :raw-html:`<br />`
+      _HULL_START
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Forecast Cluster Convex :raw-html:`<br />`
+      Hull Point X-Coordinate
+    - FCST_CLUS :raw-html:`<br />`
+      _HULL_X
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Forecast Cluster Convex :raw-html:`<br />`
+      Hull Point Y-Coordinate
+    - FCST_CLUS :raw-html:`<br />`
+      _HULL_Y
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Forecast Object Raw :raw-html:`<br />`
+      Values
+    - FCST_OBJ :raw-html:`<br />`
+      _RAW
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Number of simple  :raw-html:`<br />`
+      forecast objects
+    - FCST_SIMP
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Number of points used :raw-html:`<br />`
+      to define the boundaries :raw-html:`<br />`
+      of all of the simple :raw-html:`<br />`
+      forecast objects
+    - FCST_SIMP :raw-html:`<br />`
+      _BDY
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Forecast Simple :raw-html:`<br />`
+      Boundary Latitude
+    - FCST_SIMP :raw-html:`<br />`
+      _BDY_LAT
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Forecast Simple :raw-html:`<br />`
+      Boundary Longitude
+    - FCST_SIMP :raw-html:`<br />`
+      _BDY_LON
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Number of Forecast :raw-html:`<br />`
+      Simple Boundary Points
+    - FCST_SIMP :raw-html:`<br />`
+      _BDY_NPTS
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Forecast Simple :raw-html:`<br />`
+      Boundary Starting Index
+    - FCST_SIMP :raw-html:`<br />`
+      _BDY_START
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Forecast Simple :raw-html:`<br />`
+      Boundary X-Coordinate
+    - FCST_SIMP :raw-html:`<br />`
+      _BDY_X
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Forecast Simple :raw-html:`<br />`
+      Boundary Y-Coordinate
+    - FCST_SIMP :raw-html:`<br />`
+      _BDY_Y
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Number of points used to :raw-html:`<br />`
+      define the hull of all :raw-html:`<br />`
+      of the simple forecast :raw-html:`<br />`
+      objects
+    - FCST_SIMP :raw-html:`<br />`
+      _HULL
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Forecast Simple Convex :raw-html:`<br />`
+      Hull Point Latitude
+    - FCST_SIMP :raw-html:`<br />`
+      _HULL_LAT
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Forecast Simple Convex :raw-html:`<br />`
+      Hull Point Longitude
+    - FCST_SIMP :raw-html:`<br />`
+      _HULL_LON
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Number of Forecast :raw-html:`<br />`
+      Simple Convex Hull Points
+    - FCST_SIMP :raw-html:`<br />`
+      _HULL_NPTS
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Forecast Simple Convex :raw-html:`<br />`
+      Hull Starting Index
+    - FCST_SIMP :raw-html:`<br />`
+      _HULL_START
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Forecast Simple Convex :raw-html:`<br />`
+      Hull Point X-Coordinate
+    - FCST_SIMP :raw-html:`<br />`
+      _HULL_X
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Forecast Simple Convex :raw-html:`<br />`
+      Hull Point Y-Coordinate
+    - FCST_SIMP :raw-html:`<br />`
+      _HULL_Y
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Number of thresholds  :raw-html:`<br />`
+      applied to the forecast
+    - FCST :raw-html:`<br />`
+      _THRESH :raw-html:`<br />`
+      _LENGTH
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Number of thresholds :raw-html:`<br />`
+      applied to the forecast
+    - FCST_THRESH :raw-html:`<br />`
+      _LENGTH
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Forecast energy squared :raw-html:`<br />`
+      for this scale
+    - FENERGY
+    -  
+    - Wavelet-Stat
+    - ISC
+  * - Mean of absolute value :raw-html:`<br />`
+      of forecast gradients
+    - FGBAR
+    -  
+    - Grid-Stat
+    - GRAD 
+  * - Ratio of forecast and :raw-html:`<br />`
+      observed gradients
+    - FGOG_RATIO
+    -  
+    - Grid-Stat
+    - GRAD       
+  * - Pratt’s Figure of Merit :raw-html:`<br />`
+      from observation to :raw-html:`<br />`
+      forecast
+    - FOM_FO
+    - Diagnostic 
+    - Grid-Stat
+    - DMAP 
+  * - Maximum of FOM_FO :raw-html:`<br />`
+      and FOM_OF
+    - FOM_MAX
+    - Diagnostic 
+    - Grid-Stat
+    - DMAP 
+  * - Mean of FOM_FO :raw-html:`<br />`
+      and FOM_OF :raw-html:`<br />`
+    - FOM_MEAN
+    - Diagnostic 
+    - Grid-Stat
+    - DMAP 
+  * - Minimum of FOM_FO :raw-html:`<br />`
+      and FOM_OF
+    - FOM_MIN
+    - Diagnostic 
+    - Grid-Stat
+    - DMAP 
+  * - Pratt’s Figure of Merit :raw-html:`<br />`
+      from forecast to :raw-html:`<br />`
+      observation
+    - FOM_OF
+    - Diagnostic 
+    - Grid-Stat
+    - DMAP
+
+
+Diagnostics List G-L
+____________________
+
+.. role:: raw-html(raw)
+   :format: html	  
+
+.. list-table:: Diagnostics List G-L
+  :widths: auto
+  :header-rows: 1
+		
+  * - Statistics  :raw-html:`<br />`
+      Long Name
+    - METplus Name
+    - Statistic Type
+    - Tools
+    - METplus :raw-html:`<br />`
+      Line Type      
+  * - Distance between the :raw-html:`<br />`
+      forecast and Best track :raw-html:`<br />`
+      genesis events (km)
+    - GEN_DIST
+    - Diagnostic 
+    - TC-Gen
+    - GENMPR 
+  * - Forecast minus Best track :raw-html:`<br />`
+      genesis time in HHMMSS :raw-html:`<br />`
+      format
+    - GEN_TDIFF
+    - Diagnostic 
+    - TC-Gen
+    - GENMPR 
+  * - Hausdorff Distance
+    - HAUSDORFF
+    - Diagnostic 
+    - Grid-Stat
+    - DMAP
+  * - Hovmoeller Diagram
+    - Hovmoeller
+    - Diagnostic
+    - METplus :raw-html:`<br />`
+      Use Case
+    - n/a
+  * - Best track genesis minus :raw-html:`<br />`
+      forecast initialization :raw-html:`<br />`
+      time in HHMMSS format
+    - INIT_TDIFF
+    - Diagnostic 
+    - TC-Gen
+    - GENMPR 
+  * - 10th, 25th, 50th, 75th, :raw-html:`<br />`
+      90th, and user-specified :raw-html:`<br />`
+      percentiles of :raw-html:`<br />`
+      intensity of the raw :raw-html:`<br />`
+      field within the  :raw-html:`<br />`
+      object or time slice
+    - INTENSITY :raw-html:`<br />`
+      _10, _25, :raw-html:`<br />`
+      _50, _75, :raw-html:`<br />`
+      _90, _NN
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Sum of the intensities of :raw-html:`<br />`
+      the raw field within the :raw-html:`<br />`
+      object (variable units)
+    - INTENSITY  :raw-html:`<br />`
+      _SUM
+    - Diagnostic
+    - MODE
+    - MODE obj
+  * - Total interest for this :raw-html:`<br />`
+      object pair
+    - INTEREST
+    - Diagnostic 
+    - MTD :raw-html:`<br />`
+      MODE
+    - MTD 3D obj :raw-html:`<br />`
+      MODE obj
+  * - Intersection area of two :raw-html:`<br />`
+      objects (in grid squares)
+    - INTERSECT  :raw-html:`<br />`
+      ION_AREA
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Ratio of intersection area :raw-html:`<br />`
+      to the lesser of the  :raw-html:`<br />`
+      forecast and observation :raw-html:`<br />`
+      object areas (unitless)
+    - INTERSECT :raw-html:`<br />`
+      ION_OVER :raw-html:`<br />`
+      _AREA
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - “Volume” of object :raw-html:`<br />`
+      intersection
+    - INTERSECT  :raw-html:`<br />`
+      ION_VOLUME
+    - Diagnostic 
+    - MTD
+    - MTD 3D obj
+  * - The intensity scale :raw-html:`<br />`
+      skill score
+    - ISC
+    - 
+    - Wavelet-Stat
+    - ISC 
+  * - The scale at which all  :raw-html:`<br />`
+      information following :raw-html:`<br />`
+      applies
+    - ISCALE
+    -  
+    - Wavelet-Stat
+    - ISC
+  * - Joint Probability :raw-html:`<br />`
+      Distribution between :raw-html:`<br />`
+      variable
+    - Joint PDF :raw-html:`<br />`
+      to Diagnose :raw-html:`<br />`
+      Relationship
+    - Diagnostic
+    - Grid-Diag
+    - n/a	
+  * - Dimension of the latitude 
+    - LAT
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Length of the :raw-html:`<br />`
+      enclosing rectangle 
+    - LENGTH
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Dimension of the longitude 
+    - LON
+    - Diagnostic 
+    - MODE
+    - MODE obj
+
+
+Diagnostics List M-O
+____________________
+
+.. role:: raw-html(raw)
+   :format: html	  
+
+.. list-table:: Diagnostics List M-O
+  :widths: auto
+  :header-rows: 1
+		
+  * - Statistics  :raw-html:`<br />`
+      Long Name
+    - METplus Name
+    - Statistic Type
+    - Tools
+    - METplus :raw-html:`<br />`
+      Line Type
+  * - Meridional Means
+    - Meridional Means
+    - Diagnostic
+    - METplus Use Case
+    - n/a
+  * - Mean of maximum of :raw-html:`<br />`
+      absolute values of :raw-html:`<br />`
+      forecast and observed :raw-html:`<br />`
+      gradients
+    - MGBAR
+    -  
+    - Grid-Stat
+    - GRAD
+  * - Number of cluster objects
+    - N_CLUS
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Number of simple :raw-html:`<br />`
+      forecast objects
+    - N_FCST_SIMP
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Number of simple :raw-html:`<br />`
+      observation objects
+    - N_OBS_SIMP
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Number of observed :raw-html:`<br />`
+      clusters
+    - OBS_CLUS
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Number of points used to :raw-html:`<br />`
+      define the hull of all of :raw-html:`<br />`
+      the cluster observation :raw-html:`<br />`
+      objects
+    - OBS_CLUS :raw-html:`<br />`
+      _HULL
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Observation Cluster Convex :raw-html:`<br />`
+      Hull Point Latitude
+    - OBS_CLUS :raw-html:`<br />`
+      _HULL_LAT
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Observation Cluster Convex :raw-html:`<br />`
+      Hull Point Longitude
+    - OBS_CLUS :raw-html:`<br />`
+      _HULL_LON
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Number of Observation :raw-html:`<br />`
+      Cluster Convex Hull Points
+    - OBS_CLUS :raw-html:`<br />`
+      _HULL_NPTS
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Observation Cluster Convex :raw-html:`<br />`
+      Hull Starting Index
+    - OBS_CLUS :raw-html:`<br />`
+      _HULL_START
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Observation Cluster Convex :raw-html:`<br />`
+      Hull Point X-Coordinate
+    - OBS_CLUS :raw-html:`<br />`
+      _HULL_X
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Observation Cluster Convex :raw-html:`<br />`
+      Hull Point Y-Coordinate
+    - OBS_CLUS :raw-html:`<br />`
+      _HULL_Y
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Number of simple :raw-html:`<br />`
+      observation objects
+    - OBS_SIMP
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Number of points used :raw-html:`<br />`
+      to define the boundaries :raw-html:`<br />`
+      of the simple observation :raw-html:`<br />`
+      objects
+    - OBS_SIMP :raw-html:`<br />`
+      _BDY
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Observation Simple  :raw-html:`<br />`
+      Boundary Point Latitude
+    - OBS_SIMP :raw-html:`<br />`
+      _BDY_LAT
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Observation Simple :raw-html:`<br />`
+      Boundary Point Longitude
+    - OBS_SIMP :raw-html:`<br />`
+      _BDY_LON
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Number of Observation :raw-html:`<br />`
+      Simple Boundary Points
+    - OBS_SIMP :raw-html:`<br />`
+      _BDY_NPTS
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Number of points used to :raw-html:`<br />`
+      define the hull of the :raw-html:`<br />`
+      simple observation objects
+    - OBS_SIMP :raw-html:`<br />`
+      _HULL
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Number of Observation :raw-html:`<br />`
+      Simple Convex Hull Points
+    - OBS_SIMP :raw-html:`<br />`
+      _HULL_NPTS
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Observed energy squared :raw-html:`<br />`
+      for this scale
+    - OENERGY
+    -  
+    - Wavelet-Stat
+    - ISC 
+  * - Mean of absolute value :raw-html:`<br />`
+      of observed gradients
+    - OGBAR
+    -  
+    - Grid-Stat
+    - GRAD
+  * - OLR-based MJO Index
+    - OMI
+    - Diagnostic
+    - METplus :raw-html:`<br />`
+      Use Case
+    - n/a
+
+
+Diagnostics List P-Z
+____________________
+
+.. role:: raw-html(raw)
+   :format: html	  
+
+.. list-table:: Diagnostics List P-Z
+  :widths: auto
+  :header-rows: 1
+		
+  * - Statistics  :raw-html:`<br />`
+      Long Name
+    - METplus Name
+    - Statistic Type
+    - Tools
+    - METplus :raw-html:`<br />`
+      Line Type 
+  * - Ratio of the nth percentile :raw-html:`<br />`
+      (INTENSITY_NN column) of :raw-html:`<br />`
+      intensity of the two :raw-html:`<br />`
+      objects
+    - PERCENTILE :raw-html:`<br />`
+      _INTENSITY :raw-html:`<br />`
+      _RATIO
+    - Diagnostic 
+    - MODE
+    - MODE obj
+  * - Phase Diagram :raw-html:`<br />`
+      for RMM and OMI
+    - Phase :raw-html:`<br />`
+      Diagram
+    - Diagnostic
+    - METplus :raw-html:`<br />`
+      Use Case
+    - n/a
+  * - Realtime Multivariate :raw-html:`<br />`
+      MJO Index
+    - RMM
+    - Diagnostic
+    - METplus :raw-html:`<br />`
+      Use Case
+    - n/a
+  * - Spatial distance between :raw-html:`<br />`
+      (𝑥,𝑦)(x,y) coordinates of :raw-html:`<br />`
+      object spacetime centroid
+    - SPACE :raw-html:`<br />`
+      _CENTROID :raw-html:`<br />`
+      _DIST
+    - Diagnostic
+    - MTD
+    - MTD 3D obs
+  * - Difference in object speeds
+    - SPEED_DELTA
+    - Diagnostic
+    - MTD
+    - MTD 3D obs
+  * - Difference in object :raw-html:`<br />`
+      starting time steps
+    - START_TIME :raw-html:`<br />`
+      _DELTA
+    - Diagnostic 
+    - MTD
+    - MTD 3D obj
+  * - Symmetric difference of :raw-html:`<br />`
+      two objects :raw-html:`<br />`
+      (in grid squares)
+    - SYMMETRIC :raw-html:`<br />`
+      _DIFF
+    - Diagnostic
+    - MODE
+    - MODE obj
+  * - Difference in t index of :raw-html:`<br />`
+      object spacetime centroid
+    - TIME :raw-html:`<br />`
+      _CENTROID :raw-html:`<br />`
+      _DELTA
+    - Diagnostic  
+    - MTD
+    - MTD 3D obj
+  * - Union area of :raw-html:`<br />`
+      two objects :raw-html:`<br />`
+      (in grid squares)
+    - UNION_AREA
+    - Diagnostic 
+    - MODE
+    - MODE obj
   * - Integer count of the :raw-html:`<br />`
       number of 3D “cells” :raw-html:`<br />`
       in an object
@@ -2029,6 +2353,13 @@ METplus Database of Statistics
     - Diagnostic 
     - MTD
     - MTD 3D obj
+  * - Weather Regime Index
+    - Weather :raw-html:`<br />`
+      Regime Index
+    - Diagnostic
+    - METplus :raw-html:`<br />`
+      Use Case
+    - n/a
   * - Width of the enclosing :raw-html:`<br />`
       rectangle (in grid units)
     - WIDTH
@@ -2066,6 +2397,12 @@ METplus Database of Statistics
     - TC-Pairs
     - PROBRIRW :raw-html:`<br />`
       TCMPR
+  * - Zonal Means
+    - Zonal Means
+    - Diagnostic
+    - METplus :raw-html:`<br />`
+      Use Case
+    - n/a
   * - Zhu’s Measure from :raw-html:`<br />`
       observation to forecast
     - ZHU_FO
@@ -2096,3 +2433,4 @@ METplus Database of Statistics
     - Diagnostic 
     - Grid-Stat
     - DMAP 
+
