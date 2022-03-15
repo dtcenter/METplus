@@ -100,7 +100,6 @@ ${METPLUS_OBS_BUFR_MAP}
 // This map is for PREPBUFR. It will be added into obs_bufr_map.
 // Please do not override this map.
 //obs_prepbufr_map =
-${METPLUS_OBS_PREPBUFR_MAP}
 
 
 ////////////////////////////////////////////////////////////////////////////////

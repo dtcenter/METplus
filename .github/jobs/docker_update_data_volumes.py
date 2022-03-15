@@ -22,7 +22,7 @@ WEB_DATA_DIR = 'https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/'
 
 # path to script that builds docker data volumes
 BUILD_DOCKER_IMAGES = os.path.join(os.environ.get('GITHUB_WORKSPACE', ''),
-                                   'ci',
+                                   'scripts',
                                    'docker',
                                    'docker_data',
                                    'build_docker_images.sh')

@@ -58,6 +58,13 @@ class MODEWrapper(CompareGriddedWrapper):
         'METPLUS_INTEREST_FUNCTION_CONVEX_HULL_DIST',
         'METPLUS_PS_PLOT_FLAG',
         'METPLUS_CT_STATS_FLAG',
+        'METPLUS_FCST_FILE_TYPE',
+        'METPLUS_OBS_FILE_TYPE',
+    ]
+
+    # handle deprecated env vars used pre v4.0.0
+    DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
+        'VERIF_MASK',
     ]
 
     WEIGHTS = {
@@ -353,6 +360,23 @@ class MODEWrapper(CompareGriddedWrapper):
         self.add_met_config(name='ct_stats_flag',
                             data_type='bool')
 
+        self.add_met_config(name='file_type',
+                            data_type='string',
+                            env_var_name='FCST_FILE_TYPE',
+                            metplus_configs=['MODE_FCST_FILE_TYPE',
+                                             'FCST_MODE_FILE_TYPE',
+                                             'MODE_FILE_TYPE'],
+                            extra_args={'remove_quotes': True,
+                                        'uppercase': True})
+
+        self.add_met_config(name='file_type',
+                            data_type='string',
+                            env_var_name='OBS_FILE_TYPE',
+                            metplus_configs=['MODE_OBS_FILE_TYPE',
+                                             'OBS_MODE_FILE_TYPE',
+                                             'MODE_FILE_TYPE'],
+                            extra_args={'remove_quotes': True,
+                                        'uppercase': True})
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False
 
@@ -364,9 +388,21 @@ class MODEWrapper(CompareGriddedWrapper):
         self.handle_mask(single_value=True,
                          get_flags=True)
 
-        # handle setting VERIFICATION_MASK for old wrapped MET config files
-        c_dict['MASK_POLY_TEMPLATE'] = self.read_mask_poly()
-        c_dict['MASK_POLY_IS_LIST'] = False
+        # handle setting VERIF_MASK for old wrapped MET config files
+        self.add_met_config(name='poly',
+                            data_type='list',
+                            env_var_name='METPLUS_VERIF_MASK',
+                            metplus_configs=['MODE_MASK_POLY',
+                                             'MODE_POLY',
+                                             ('MODE_'
+                                              'VERIFICATION_MASK_TEMPLATE')],
+                            extra_args={'allow_empty': True})
+        self.env_var_dict['VERIF_MASK'] = (
+            self.get_env_var_value('METPLUS_VERIF_MASK').strip('[]')
+        )
+
+
+
 
         return c_dict
 
@@ -396,8 +432,6 @@ class MODEWrapper(CompareGriddedWrapper):
         self.add_env_var("OBS_MERGE_THRESH", self.c_dict["OBS_MERGE_THRESH"])
         self.add_env_var("FCST_MERGE_FLAG", self.c_dict["FCST_MERGE_FLAG"])
         self.add_env_var("OBS_MERGE_FLAG", self.c_dict["OBS_MERGE_FLAG"])
-        self.add_env_var('VERIF_MASK', self.c_dict.get('VERIFICATION_MASK',
-                                                       '""'))
 
         super().set_environment_variables(time_info)
 

@@ -12,9 +12,9 @@ Create a new vX.Y.Z official release from the develop branch.
 .. include:: release_steps/metplus/update_release_date.rst
 .. include:: release_steps/update_release_notes_official.rst
 .. include:: release_steps/rotate_authorship.rst
+.. include:: release_steps/metplus/update_manage_externals.rst
 .. include:: release_steps/merge_release_issue.rst
 .. include:: release_steps/metplus/create_release_reference_branch.rst
-.. include:: release_steps/metplus/update_release_content.rst
 .. include:: release_steps/push_release_branch.rst
 .. include:: release_steps/create_release_on_github.rst
 .. include:: release_steps/metplus/create_release_extra.rst

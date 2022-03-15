@@ -15,7 +15,7 @@ UserScript_obsPrecip_obsOnly_Hovmoeller.py
 # This use case calls the METplotpy hovmoeller plot to create a sample Hovmoeller diagram
 # using sample data created by METcalcpy hovmoeller functions
 #
-# The Hovmoeller plot and hovmoeller calculations were created by Maria Gehne at the 
+# The Hovmoeller plot and hovmoeller calculations where created by Maria Gehne at the 
 # Physical Sciences Labratory in NOAA 
 
 ##############################################################################
@@ -37,7 +37,7 @@ UserScript_obsPrecip_obsOnly_Hovmoeller.py
 #
 # This use case does not loop but plots the entire time period of data
 # 
-# UserScript
+# 
 # This uses data from 2016-01-01 to 2016-03-31
 #
 #
@@ -74,17 +74,17 @@ UserScript_obsPrecip_obsOnly_Hovmoeller.py
 #
 # This use case can be run two ways:
 #
-# 1) Passing in hovmoeller_diagram.conf, 
+# 1) Passing in UserScript_obsPrecip_obsOnly_Hovmoeller.conf, 
 # then a user-specific system configuration file::
 #
 #        run_metplus.py \
-#        -c /path/to/METplus/parm/use_cases/model_applications/s2s/hovmoeller_diagram.conf \
+#        -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.conf \
 #        -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in hovmoeller_diagram.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_obsPrecip_obsOnly_Hovmoeller.conf::
 #
 #        run_metplus.py \
-#        -c /path/to/METplus/parm/use_cases/model_applications/s2s/hovmoeller_diagram.conf
+#        -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #

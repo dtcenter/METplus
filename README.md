@@ -14,7 +14,7 @@ METplus is a Python scripting infrastructure around the MET verification tools
 
 Documentation for both Users and Contributors can be found [here](https://metplus.readthedocs.io).
 For more information about the entire suite of tools, please visit the
-[MET website](https://dtcenter.org/community-code/model-evaluation-tools-met).
+[DTC METplus website](https://dtcenter.org/community-code/metplus).
 
 Support for the METplus components is provided through the
 [METplus Discussions](https://github.com/dtcenter/METplus/discussions) forum.

@@ -39,139 +39,192 @@ describes the bugfix, enhancement, or new feature:
 https://github.com/dtcenter/METplus/issues
 
 
-METplus Version 4.1.0-beta5 Release Notes (2022-01-14)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+METplus Version 4.1.0 Release Notes (2022-03-14)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * Enhancements:
 
-  * **Add support for setting control members in EnsembleStat and GenEnsProd** (`#1236 <https://github.com/dtcenter/METplus/issues/1236>`_)
-  * **Enhance SeriesAnalysis wrapper to allow different field info values for each file in a list** (`#1166 <https://github.com/dtcenter/METplus/issues/1166>`_)
-  * Add support for setting INIT_LIST and VALID_LIST for irregular time intervals (`#1286 <https://github.com/dtcenter/METplus/issues/1286>`_)
-  * Support setting the OMP_NUM_THREADS environment variable (`#1320 <https://github.com/dtcenter/METplus/issues/1320>`_)
-  * Enhance ExtractTiles using MTD input to properly match times (`#1285 <https://github.com/dtcenter/METplus/issues/1285>`_)
-  * Add support for commonly changed MET config variables part 2 (`#896 <https://github.com/dtcenter/METplus/issues/896>`_)
-  * Prevent wildcard character from being used in output file path (`#1291 <https://github.com/dtcenter/METplus/issues/1291>`_)
+  * General:
 
-* New Use Cases:
+    * **Add support for setting control members in EnsembleStat and GenEnsProd** (`#1236 <https://github.com/dtcenter/METplus/issues/1236>`_)
+    * **Create an Amazon AMI containing all METplus components** (`#506 <https://github.com/dtcenter/METplus/issues/506>`_)
+    * Modify wrappers that use wrapped MET config files to default to parm/met_config versions if unset (`#931 <https://github.com/dtcenter/METplus/issues/931>`_)
+    * Add support for setting hss_ec_value in MET config files (`#951 <https://github.com/dtcenter/METplus/issues/951>`_)
+    * Added support for setting a dictionary value for time_summary.width (`#1252 <https://github.com/dtcenter/METplus/issues/1252>`_)
+    * Properly handle list values that include square braces (`#1212 <https://github.com/dtcenter/METplus/issues/1212>`_)
+    * Update wrapped MET config files to reference MET_TMP_DIR in tmp value (`#1101 <https://github.com/dtcenter/METplus/issues/1101>`_)
+    * Add support for setting INIT_LIST and VALID_LIST for irregular time intervals (`#1286 <https://github.com/dtcenter/METplus/issues/1286>`_)
+    * Support setting the OMP_NUM_THREADS environment variable (`#1320 <https://github.com/dtcenter/METplus/issues/1320>`_)
+    * Add support for commonly changed MET config variables (`#896 <https://github.com/dtcenter/METplus/issues/896>`_)
+    * Prevent wildcard character from being used in output file path (`#1291 <https://github.com/dtcenter/METplus/issues/1291>`_)
+    * Add support for setting file_type for fcst/obs for applications that process gridded data (`#1165 <https://github.com/dtcenter/METplus/issues/1165>`_)
+    * Enhance logic for setting mask.poly to allow MET list characters (square braces and semi-colon) (`#966 <https://github.com/dtcenter/METplus/issues/966>`_)
+    * Add support for new climo_cdf.direct_prob flag (`#1392 <https://github.com/dtcenter/METplus/issues/1392>`_)
+    * Implement various enhancements to climatology settings (`#1247 <https://github.com/dtcenter/METplus/issues/1247>`_)
+    * Enhance logic to set climatology info for Python embedding (`#944 <https://github.com/dtcenter/METplus/issues/944>`_)
+    * Updated logic for handling _CLIMO_MEAN_FIELD variables for specifying climatology fields (`#1021 <https://github.com/dtcenter/METplus/issues/1021>`_)
+    * Incorporate basic zonal and meridional means into METplus (`#1230 <https://github.com/dtcenter/METplus/issues/1230>`_)
+    * Add support for explicitly setting file list file paths in wrappers that support multiple input files (`#1289 <https://github.com/dtcenter/METplus/issues/1289>`_)
+    * Add support for setting -out argument in TCStat and StatAnalysis wrappers (`#1102 <https://github.com/dtcenter/METplus/issues/1102>`_)
 
-  * Satellite verification of sea surface salinity: SMOS vs RTOFS output (`#1116 <https://github.com/dtcenter/METplus/issues/1116>`_)
+  * PointStat:
 
-* Internal:
+    * Make output_flag.orank configurable for Point-Stat (`#1103 <https://github.com/dtcenter/METplus/issues/1103>`_)
+    * Added support for setting obs_quality_inc/exc in PointStat (`#1213 <https://github.com/dtcenter/METplus/issues/1213>`_)
 
-  * **Create guidance for memory-intensive use cases, introduce Python memory profiler** (`#1183 <https://github.com/dtcenter/METplus/issues/1183>`_)
-  * **Identify code throughout METplus components that are common utilities** (`#799 <https://github.com/dtcenter/METplus/issues/799>`_)
-  * **Add definitions to the Release Guide for the stages of the release cycle** (`#934 <https://github.com/dtcenter/METplus/issues/934>`_)
+  * GridStat:
 
-METplus Version 4.1.0-beta4 Release Notes (2021-11-16)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    * Add Grid-Stat configuration options for distance_map dictionary (`#1089 <https://github.com/dtcenter/METplus/issues/1089>`_)
 
-* Enhancements:
+  * EnsembleStat:
 
-  * **Create an Amazon AMI containing all METplus components** (`#506 <https://github.com/dtcenter/METplus/issues/506>`_)
-  * Added support for setting a dictionary value for time_summary.width (`#1252 <https://github.com/dtcenter/METplus/issues/1252>`_)
-  * Added support for setting obs_quality_inc/exc in PointStat (`#1213 <https://github.com/dtcenter/METplus/issues/1213>`_)
-  * Properly handle list values that include square braces (`#1212 <https://github.com/dtcenter/METplus/issues/1212>`_)
-  * Reorganize the Cryosphere and Marine and Coastal use case categories into one group (`#1200 <https://github.com/dtcenter/METplus/issues/1200>`_)
-  * Update wrapped MET config files to reference MET_TMP_DIR in tmp value (`#1101 <https://github.com/dtcenter/METplus/issues/1101>`_)
-  * CyclonePlotter, create options to format output grid area to user-desired area (`#1091 <https://github.com/dtcenter/METplus/issues/1091>`_)
-  * CyclonePlotter, connected lines run over the Prime Meridian (`#1000 <https://github.com/dtcenter/METplus/issues/1000>`_)
-  * Add harmonic pre-processing to the RMM use case (`#1019 <https://github.com/dtcenter/METplus/issues/1019>`_)
+    * Add support for setting grid_weight_flag in EnsembleStat (`#1369 <https://github.com/dtcenter/METplus/issues/1369>`_)
+    * Fix logic to use fcst dictionary if ens dictionary is not set in EnsembleStat wrapper (`#1421 <https://github.com/dtcenter/METplus/issues/1421>`_)
+    * Add support for probabilistic verification to the Ensemble-Stat wrapper (`#1464 <https://github.com/dtcenter/METplus/issues/1464>`_)
+
+  * GenEnsProd:
+
+    * Add support for the normalize option to the Gen-Ens-Prod wrapper (`#1445 <https://github.com/dtcenter/METplus/issues/1445>`_)
+
+  * TCPairs:
+
+    * Enhance TC-Pairs wrapper to make valid_inc, valid_exc, and write_valid configurable options (`#1069 <https://github.com/dtcenter/METplus/issues/1069>`_)
+    * Improve logic of TCPairs wrapper (`#749 <https://github.com/dtcenter/METplus/issues/749>`_)
+    * Enhance TCPairs to loop by valid time and allow looping when LOOP_ORDER = processes (`#986 <https://github.com/dtcenter/METplus/issues/986>`_)
+
+  * TCGen:
+
+    * Enhance TCGen wrapper to add support for new configurations (`#1273 <https://github.com/dtcenter/METplus/issues/1273>`_)
+
+  * SeriesAnalysis:
+
+    * **Enhance SeriesAnalysis wrapper to allow different field info values for each file in a list** (`#1166 <https://github.com/dtcenter/METplus/issues/1166>`_)
+    * Add support for probability field threshold in SeriesAnalysis (`#875 <https://github.com/dtcenter/METplus/issues/875>`_)
+
+  * RegridDataPlane:
+
+    * **Add support for extra field options in RegridDataPlane wrapper** (`#924 <https://github.com/dtcenter/METplus/issues/924>`_)
+
+  * PCPCombine:
+
+    * Improve PCPCombine derive mode logic to skip lookback (`#928 <https://github.com/dtcenter/METplus/issues/928>`_)
+    * Add support for using filename templates for defining input level in PCPCombine (`#1062 <https://github.com/dtcenter/METplus/issues/1062>`_)
+    * Add option to PCPCombine to force using 0 hr accum in subtract mode (`#1368 <https://github.com/dtcenter/METplus/issues/1368>`_)
+
+  * GenVxMask:
+
+    * Update GenVxMask wrapper to require setting -type (`#960 <https://github.com/dtcenter/METplus/issues/960>`_)
+
+  * UserScript:
+
+    * **Enhance UserScript to get a list of files that match the run times instead of using a wildcard** (`#1002 <https://github.com/dtcenter/METplus/issues/1002>`_)
+
+  * ExtractTiles:
+
+    * Enhance ExtractTiles using MTD input to properly match times (`#1285 <https://github.com/dtcenter/METplus/issues/1285>`_)
+
+  * TCMPRPlotter:
+
+    * Improvements to TCMPRPlotter wrapper logging and output control (`#926 <https://github.com/dtcenter/METplus/issues/926>`_)
+    * Add option to TCMPRPlotter to pass in directory to tc_stat instead of individual files (`#1057 <https://github.com/dtcenter/METplus/issues/1057>`_)
+    * Add option to pass in the input directory to TCMPRPlotter instead of finding all tcst files and passing the list (`#1084 <https://github.com/dtcenter/METplus/issues/1084>`_)
+
+  * CyclonePlotter:
+
+    * Update CyclonePlotter for offline/HPC usage (`#933 <https://github.com/dtcenter/METplus/issues/933>`_)
+    * CyclonePlotter, create options to format output grid area to user-desired area (`#1091 <https://github.com/dtcenter/METplus/issues/1091>`_)
+    * CyclonePlotter, connected lines run over the Prime Meridian (`#1000 <https://github.com/dtcenter/METplus/issues/1000>`_)
+
+  * Use Cases:
+
+    * Add stat_analysis to the Blocking and Weather Regime processing (`#1001 <https://github.com/dtcenter/METplus/issues/1001>`_)
+    * Modify user diagnostic feature relative use case to use MetPy Python package (`#759 <https://github.com/dtcenter/METplus/issues/759>`_)
+    * Reorganize the Cryosphere and Marine and Coastal use case categories into one group (`#1200 <https://github.com/dtcenter/METplus/issues/1200>`_)
+    * Add harmonic pre-processing to the RMM use case (`#1019 <https://github.com/dtcenter/METplus/issues/1019>`_)
+
 
 * New Wrappers:
 
-  * **IODA2NC** (`#1203 <https://github.com/dtcenter/METplus/issues/1203>`_)
-  * **GenEnsProd** (`#1180 <https://github.com/dtcenter/METplus/issues/1180>`_, `#1266 <https://github.com/dtcenter/METplus/issues/1266>`_)
+  * GenEnsProd (`#1180 <https://github.com/dtcenter/METplus/issues/1180>`_, `#1266 <https://github.com/dtcenter/METplus/issues/1266>`_)
+  * GFDLTracker (`#615 <https://github.com/dtcenter/METplus/issues/615>`_)
+  * IODA2NC (`#1203 <https://github.com/dtcenter/METplus/issues/1203>`_)
+
 
 * New Use Cases:
 
-  * **IODA2NC** (`#1204 <https://github.com/dtcenter/METplus/issues/1204>`_)
-  * **GenEnsProd** (`#1180 <https://github.com/dtcenter/METplus/issues/1180>`_, `#1266 <https://github.com/dtcenter/METplus/issues/1266>`_)
+  * MET Tool Wrapper:
+
+    * **PointStat: Python Embedding for Point Observations** (`#1490 <https://github.com/dtcenter/METplus/issues/1490>`_)
+    * IODA2NC (`#1204 <https://github.com/dtcenter/METplus/issues/1204>`_)
+    * GenEnsProd (`#1180 <https://github.com/dtcenter/METplus/issues/1180>`_, `#1266 <https://github.com/dtcenter/METplus/issues/1266>`_)
+    * GFDLTracker for TropicalCyclone (`#615 <https://github.com/dtcenter/METplus/issues/615>`_)
+    * GFDLTracker for TC Genesis (`#616 <https://github.com/dtcenter/METplus/issues/616>`_)
+    * GFDLTracker for Extra-TC Tracking (`#617 <https://github.com/dtcenter/METplus/issues/617>`_)
 
 
-METplus Version 4.1.0-beta3 Release Notes (2021-10-06)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  * Marine and Cryosphere:
 
-* Enhancements:
+    * GridStat_fcstRTOFS_obsOSTIA_iceCover (`#834 <https://github.com/dtcenter/METplus/issues/834>`_)
+    * Satellite verification of sea surface temperature (GHRSST) against RTOFS output (`#1004 <https://github.com/dtcenter/METplus/issues/1004>`_)
+    * Satellite verification of sea surface salinity: SMOS vs RTOFS output (`#1116 <https://github.com/dtcenter/METplus/issues/1116>`_)
+    * Satellite verification of sea surface salinity: AVISO vs RTOFS output HYCOM climo (`#1318 <https://github.com/dtcenter/METplus/issues/1318>`_)
+    * Satellite verification of sea surface salinity: SMAP vs RTOFS output (`#1216 <https://github.com/dtcenter/METplus/issues/1216>`_)
 
-  * Add Grid-Stat configuration options for distance_map dictionary (`#1089 <https://github.com/dtcenter/METplus/issues/1089>`_)
+
+  * Medium Range:
+
+    * Feature Relative using MTD output for feature centroid lat/lon (`#641 <https://github.com/dtcenter/METplus/issues/641>`_)
+
+
+  * Precipitation:
+
+    * Precipitation-type comparison across 3 models (`#1408 <https://github.com/dtcenter/METplus/issues/1408>`_)
+
+
+  * Seasonal to Subseasonal (S2S):
+
+    * UserScript_fcstGFS_obsERA_OMI (`#892 <https://github.com/dtcenter/METplus/issues/892>`_)
+    * UserScript_fcstGFS_obsERA_PhaseDiagram (`#1019 <https://github.com/dtcenter/METplus/issues/1019>`_)
+    * UserScript_fcstGFS_obsERA_RMM (`#892 <https://github.com/dtcenter/METplus/issues/892>`_)
+    * RMM and OMI (driver scripts) (`#892 <https://github.com/dtcenter/METplus/issues/892>`_)
+
+
+  * Tropical Cyclone and Extra Tropical Cyclone (tc_and_extra_tc):
+
+    * TC Verification Compare ADECK vs BDECK (`#911 <https://github.com/dtcenter/METplus/issues/911>`_)
+    * TCGen Verify Deterministic Genesis Forecasts and Probabilities from ATCF e-deck files (`#1274 <https://github.com/dtcenter/METplus/issues/1274>`_)
+
+
+* Bugfixes:
+
+  * Fix read of PB2NC_FILE_WINDOW_[BEGIN/END] configuration variables (`#1486 <https://github.com/dtcenter/METplus/issues/1486>`_)
+  * Fix use of current field info in output prefix when using process list instances (`#1471 <https://github.com/dtcenter/METplus/issues/1471>`_)
+  * Fix logic to create instances of other wrappers within wrappers to avoid modifying global configurations (`#1356 <https://github.com/dtcenter/METplus/issues/1356>`_)
+
+
+* Documentation:
+
+  * Add list of METplus statistics to documentation (`#1049 <https://github.com/dtcenter/METplus/issues/1049>`_)
+  * Update documentation to reference GitHub Discussions instead of MET Help (`#956 <https://github.com/dtcenter/METplus/issues/956>`_)
   * Fix installation instructions in User's Guide (`#1067 <https://github.com/dtcenter/METplus/issues/1067>`_)
   * Add instructions to update old METplus configuration files that reference user-defined wrapped MET config files (`#1147 <https://github.com/dtcenter/METplus/issues/1147>`_)
-
-* New Use Cases:
-
-  * Satellite verification of sea surface temperature (GHRSST) against RTOFS output (`#1004 <https://github.com/dtcenter/METplus/issues/1004>`_)
-  * Feature Relative using MTD output for feature centroid lat/lon (`#641 <https://github.com/dtcenter/METplus/issues/641>`_)
-
-* Internal:
-
-  * Transition Community and Developer Support to Github Discussions (`#932 <https://github.com/dtcenter/METplus/issues/932>`_)
-  * Add documentation about the Release Guide and Verification Datasets Guide (`#874 <https://github.com/dtcenter/METplus/issues/874>`_)
-
-METplus Version 4.1.0-beta2 Release Notes (2021-08-31)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-* Enhancements:
-
-  * Add stat_analysis to the Blocking and Weather Regime processing (`#1001 <https://github.com/dtcenter/METplus/issues/1001>`_)
-  * Make output_flag.orank configurable for Point-Stat (`#1103 <https://github.com/dtcenter/METplus/issues/1103>`_)
-  * Enhance TC-Pairs wrapper to make valid_inc, valid_exc, and write_valid configurable options (`#1069 <https://github.com/dtcenter/METplus/issues/1069>`_)
-  * Add option to TCMPRPlotter to pass in directory to tc_stat instead of individual files (`#1057 <https://github.com/dtcenter/METplus/issues/1057>`_)
-  * **Add support for using filename templates for defining input level in PCPCombine** (`#1062 <https://github.com/dtcenter/METplus/issues/1062>`_)
-  * Modify wrappers that use wrapped MET config files to default to parm/met_config versions if unset (`#931 <https://github.com/dtcenter/METplus/issues/931>`_)
-  * Modify user diagnostic feature relative use case to use MetPy Python package (`#759 <https://github.com/dtcenter/METplus/issues/759>`_)
-  * Add option to pass in the input directory to TCMPRPlotter instead of finding all tcst files and passing the list (`#1084 <https://github.com/dtcenter/METplus/issues/1084>`_)
-  * Updated logic for handling _CLIMO_MEAN_FIELD variables for specifying climatology fields (`#1021 <https://github.com/dtcenter/METplus/issues/1021>`_)
-  * Add support for setting hss_ec_value in MET config files (`#951 <https://github.com/dtcenter/METplus/issues/951>`_)
-  * Update documentation to reference GitHub Discussions instead of MET Help (`#956 <https://github.com/dtcenter/METplus/issues/956>`_)
-
-* New Wrappers:
-
-* New Use Cases:
-
-  * GFDL tracker for TC genesis (`#616 <https://github.com/dtcenter/METplus/issues/616>`_)
-  * GFDL tracker for Extra-TC tracking (`#617 <https://github.com/dtcenter/METplus/issues/617>`_)
-  * RMM and OMI (driver scripts) (`#892 <https://github.com/dtcenter/METplus/issues/892>`_)
-
-* Internal:
-
-  * Make updates to the Release Guide (`#935 <https://github.com/dtcenter/METplus/issues/935>`_)
-  * Clean up GitHub wiki broken links and out-of-date information (`#237 <https://github.com/dtcenter/METplus/issues/237>`_)
-  * Add option to override MET version used for automated tests (`#936 <https://github.com/dtcenter/METplus/issues/936>`_)
-
-
-METplus Version 4.1.0-beta1 Release Notes (2021-07-21)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-* Enhancements:
-
-  * **Improve logic of TCPairs wrapper** (`#749 <https://github.com/dtcenter/METplus/issues/749>`_)
-  * **Add support for probability field threshold in SeriesAnalysis** (`#875 <https://github.com/dtcenter/METplus/issues/875>`_)
-  * **Add support for extra field options in RegridDataPlane wrapper** (`#924 <https://github.com/dtcenter/METplus/issues/924>`_)
-  * **Improvements to TCMPRPlotter wrapper logging and output control** (`#926 <https://github.com/dtcenter/METplus/issues/926>`_)
-  * **Improve PCPCombine derive mode logic to skip lookback** (`#928 <https://github.com/dtcenter/METplus/issues/928>`_)
-  * **Update CyclonePlotter for offline/HPC usage** (`#933 <https://github.com/dtcenter/METplus/issues/933>`_)
-  * **Update GenVxMask wrapper to require setting -type** (`#960 <https://github.com/dtcenter/METplus/issues/960>`_)
-  * **Enhance TCPairs to loop by valid time and allow looping when LOOP_ORDER = processes** (`#986 <https://github.com/dtcenter/METplus/issues/986>`_)
-  * **Enhance UserScript to get a list of files that match the run times instead of using a wildcard** (`#1002 <https://github.com/dtcenter/METplus/issues/1002>`_)
-
-
-* New Wrappers:
-
-  * **GFDLTracker**
-
-
-* New Use Cases:
-
-  * Marine and Cryosphere: GridStat_fcstRTOFS_obsOSTIA_iceCover (`#834 <https://github.com/dtcenter/METplus/issues/834>`_)
-  * met_tool_wrapper: GFDLTracker_TC (`#615 <https://github.com/dtcenter/METplus/issues/615>`_)
-  * Seasonal to Subseasonal: UserScript_fcstGFS_obsERA_OMI
-  * Seasonal to Subseasonal: UserScript_fcstGFS_obsERA_PhaseDiagram
-  * Seasonal to Subseasonal: UserScript_fcstGFS_obsERA_RMM
-
 
 * Internal:
 
   * Improve approach to obtain additional python packages needed for some use cases (`#839 <https://github.com/dtcenter/METplus/issues/839>`_)
+  * Make updates to the Release Guide (`#935 <https://github.com/dtcenter/METplus/issues/935>`_)
+  * Clean up GitHub wiki broken links and out-of-date information (`#237 <https://github.com/dtcenter/METplus/issues/237>`_)
+  * Add option to override MET version used for automated tests (`#936 <https://github.com/dtcenter/METplus/issues/936>`_)
+  * Transition Community and Developer Support to Github Discussions (`#932 <https://github.com/dtcenter/METplus/issues/932>`_)
+  * Add documentation about the Release Guide and Verification Datasets Guide (`#874 <https://github.com/dtcenter/METplus/issues/874>`_)
+  * Create guidance for memory-intensive use cases, introduce Python memory profiler (`#1183 <https://github.com/dtcenter/METplus/issues/1183>`_)
+  * Identify code throughout METplus components that are common utilities (`#799 <https://github.com/dtcenter/METplus/issues/799>`_)
+  * Add definitions to the Release Guide for the stages of the release cycle (`#934 <https://github.com/dtcenter/METplus/issues/934>`_)
+  * Document Continous Integration Functionality in the METplus Contributor's Guide (`#675 <https://github.com/dtcenter/METplus/issues/675>`_)
+  * Update Contributor's Guide for new removing/adding data protocols (`#1227 <https://github.com/dtcenter/METplus/issues/1227>`_)
+  * Add recording of Python packages to Adding Use Cases documentation (`#1374 <https://github.com/dtcenter/METplus/issues/1374>`_)
+  * Remove public-facing access to outdated use case categories (Cryosphere, marine_and_coastal) (`#1226 <https://github.com/dtcenter/METplus/issues/1226>`_)
+
 
 METplus Version 4.0.0 Release Notes (2021-05-10)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

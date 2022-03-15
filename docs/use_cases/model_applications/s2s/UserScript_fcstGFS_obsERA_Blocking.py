@@ -1,6 +1,6 @@
 """
-Blocking Calculation: RegridDataPlane, PcpCombine, and Blocking python code
-============================================================================
+Blocking Calculation: GFS and ERA RegridDataPlane, PcpCombine, and Blocking python code
+========================================================================================
 
 model_applications/
 s2s/
@@ -117,19 +117,17 @@ UserScript_fcstGFS_obsERA_Blocking.py
 # steps are computing CBLs, plotting CBLs, computing IBLs, plotting IBLs, computing GIBLs, computing blocks, and
 # plotting blocks.
 #
-# parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_Blocking/Blocking.py:
+# metcalcpy/contributed/blocking_weather_regime/Blocking.py:
 # This script runs the requested steps, containing the code for computing CBLs, computing IBLs, computing GIBLs,
-# and computing blocks.
+# and computing blocks.  See the METcalcpy `Blocking Calculation Script <https://github.com/dtcenter/METcalcpy/blob/develop/metcalcpy/contributed/blocking_weather_regime/Blocking.py>`_ for more information.
 #
-# parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_Blocking/Blocking_WeatherRegime_util.py:
+# metcalcpy/contributed/blocking_weather_regime/Blocking_WeatherRegime_util.py:
 # This script contains functions used by both the blocking anwd weather regime analysis, including the code for
 # determining which steps the user wants to run, and finding and reading the input files in the format from the output
-# pre-processing steps
+# pre-processing steps.  See the METcalcpy `Utility script <https://github.com/dtcenter/METcalcpy/blob/develop/metcalcpy/contributed/blocking_weather_regime/Blocking_WeatherRegime_util.py>`_ for more information.
 #
 # .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_Blocking/Blocking_driver.py
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_Blocking/Blocking.py
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_Blocking/Blocking_WeatherRegime_util.py
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_Blocking/Blocking_driver.py 
 #
 
 ##############################################################################

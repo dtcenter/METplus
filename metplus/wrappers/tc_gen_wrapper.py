@@ -70,22 +70,28 @@ class TCGenWrapper(CommandBuilder):
         'METPLUS_GENESIS_MATCH_WINDOW_DICT',
     ]
 
-    OUTPUT_FLAGS = ['fho',
-                    'ctc',
-                    'cts',
-                    'genmpr',
-                    ]
+    OUTPUT_FLAGS = [
+        'fho',
+        'ctc',
+        'cts',
+        'pct',
+        'pstd',
+        'pjc',
+        'prc',
+        'genmpr',
+    ]
 
-    NC_PAIRS_FLAGS = ['latlon',
-                      'fcst_genesis',
-                      'fcst_tracks',
-                      'fcst_fy_oy',
-                      'fcst_fy_on',
-                      'best_genesis',
-                      'best_tracks',
-                      'best_fy_oy',
-                      'best_fn_oy',
-                    ]
+    NC_PAIRS_FLAGS = [
+        'latlon',
+        'fcst_genesis',
+        'fcst_tracks',
+        'fcst_fy_oy',
+        'fcst_fy_on',
+        'best_genesis',
+        'best_tracks',
+        'best_fy_oy',
+        'best_fn_oy',
+    ]
 
 
     def __init__(self, config, instance=None):
@@ -112,18 +118,31 @@ class TCGenWrapper(CommandBuilder):
             self.config.getdir(f'{app_name_upper}_GENESIS_INPUT_DIR', '')
         )
         c_dict['GENESIS_INPUT_TEMPLATE'] = (
-            self.config.getraw('filename_templates',
+            self.config.getraw('config',
                                f'{app_name_upper}_GENESIS_INPUT_TEMPLATE')
         )
-        if not c_dict['GENESIS_INPUT_TEMPLATE']:
-            self.log_error(f'{app_name_upper}_GENESIS_INPUT_TEMPLATE must be '
-                           'set to run TCGen')
+
+        c_dict['EDECK_INPUT_DIR'] = (
+            self.config.getdir(f'{app_name_upper}_EDECK_INPUT_DIR', '')
+        )
+        c_dict['EDECK_INPUT_TEMPLATE'] = (
+            self.config.getraw('config',
+                               f'{app_name_upper}_EDECK_INPUT_TEMPLATE')
+        )
+
+        c_dict['SHAPE_INPUT_DIR'] = (
+            self.config.getdir(f'{app_name_upper}_SHAPE_INPUT_DIR', '')
+        )
+        c_dict['SHAPE_INPUT_TEMPLATE'] = (
+            self.config.getraw('config',
+                               f'{app_name_upper}_SHAPE_INPUT_TEMPLATE')
+        )
 
         c_dict['OUTPUT_DIR'] = (
             self.config.getdir(f'{app_name_upper}_OUTPUT_DIR', '')
         )
         c_dict['OUTPUT_TEMPLATE'] = (
-            self.config.getraw('filename_templates',
+            self.config.getraw('config',
                                f'{app_name_upper}_OUTPUT_TEMPLATE')
         )
 
@@ -131,7 +150,7 @@ class TCGenWrapper(CommandBuilder):
             self.config.getdir(f'{app_name_upper}_TRACK_INPUT_DIR', '')
         )
         c_dict['TRACK_INPUT_TEMPLATE'] = (
-            self.config.getraw('filename_templates',
+            self.config.getraw('config',
                                f'{app_name_upper}_TRACK_INPUT_TEMPLATE')
         )
         if not c_dict['TRACK_INPUT_TEMPLATE']:
@@ -294,8 +313,11 @@ class TCGenWrapper(CommandBuilder):
     def get_command(self):
         cmd = f"{self.app_path} -v {self.c_dict['VERBOSITY']}"
 
-        # add genesis
-        cmd += ' -genesis ' + self.c_dict['GENESIS_FILE']
+        # add genesis, edeck, and/or shape if set
+        for file_type in ('genesis', 'edeck', 'shape'):
+            file_path = self.c_dict.get(f'{file_type.upper()}_FILE')
+            if file_path:
+                cmd += f' -{file_type} {file_path}'
 
         # add track
         cmd += ' -track ' + self.c_dict['TRACK_FILE']
@@ -390,18 +412,26 @@ class TCGenWrapper(CommandBuilder):
         self.c_dict['TRACK_FILE'] = self.write_list_file(list_filename,
                                                          track_files)
 
-        # get genesis file(s) or directory
-        genesis_files = self.find_data(time_info,
-                                       data_type='GENESIS',
+        # get genesis, edeck, and/or shape file(s) or directory
+        for file_type in ('genesis', 'edeck', 'shape'):
+
+            # skip if template is not set for input type
+            if not self.c_dict.get(f'{file_type.upper()}_INPUT_TEMPLATE'):
+                continue
+
+            file_list = self.find_data(time_info,
+                                       data_type=file_type.upper(),
                                        return_list=True,
                                        allow_dir=True)
 
-        if not genesis_files:
-            return False
+            # if template was provided but no files were found, skip run
+            if not file_list:
+                return False
 
-        list_filename = time_info['init_fmt'] + '_tc_gen_genesis.txt'
-        self.c_dict['GENESIS_FILE'] = self.write_list_file(list_filename,
-                                                           genesis_files)
+            list_filename = f"{time_info['init_fmt']}_tc_gen_{file_type}.txt"
+            self.c_dict[f'{file_type.upper()}_FILE'] = (
+                self.write_list_file(list_filename, file_list)
+            )
 
         # set METPLUS_LEAD_LIST to list of forecast leads used
         lead_seq = util.get_lead_sequence(self.config, time_info)

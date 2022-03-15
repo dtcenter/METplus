@@ -276,6 +276,21 @@ def set_minimum_config_settings(config):
         ({'SERIES_ANALYSIS_OBS_CAT_THRESH': '<=CDP33', },
          {'METPLUS_OBS_CAT_THRESH': 'cat_thresh = [<=CDP33];'}),
 
+        ({'SERIES_ANALYSIS_CLIMO_CDF_CDF_BINS': '1', },
+         {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {cdf_bins = 1.0;}'}),
+
+        ({'SERIES_ANALYSIS_CLIMO_CDF_CENTER_BINS': 'True', },
+         {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {center_bins = TRUE;}'}),
+
+        ({'SERIES_ANALYSIS_CLIMO_CDF_DIRECT_PROB': 'False', },
+         {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {direct_prob = FALSE;}'}),
+
+        ({'SERIES_ANALYSIS_CLIMO_CDF_CDF_BINS': '1',
+          'SERIES_ANALYSIS_CLIMO_CDF_CENTER_BINS': 'True',
+          'SERIES_ANALYSIS_CLIMO_CDF_DIRECT_PROB': 'False',
+         },
+         {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {cdf_bins = 1.0;center_bins = TRUE;direct_prob = FALSE;}'}),
+
     ]
 )
 def test_series_analysis_single_field(metplus_config, config_overrides,
@@ -692,9 +707,9 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
          ]),
     ]
 )
-def test_create_ascii_storm_files_list(metplus_config, config_overrides,
-                                       time_info, storm_id, lead_group,
-                                       expect_fcst_subset, expect_obs_subset):
+def test_get_fcst_and_obs_path(metplus_config, config_overrides,
+                               time_info, storm_id, lead_group,
+                               expect_fcst_subset, expect_obs_subset):
     all_config_overrides = {
         'LOOP_BY': 'INIT',
         'SERIES_ANALYSIS_RUNTIME_FREQ': 'RUN_ONCE',
@@ -757,9 +772,9 @@ def test_create_ascii_storm_files_list(metplus_config, config_overrides,
     if os.path.exists(obs_file_path):
         os.remove(obs_file_path)
 
-    fcst_path, obs_path = wrapper._create_ascii_storm_files_list(time_info,
-                                                                 storm_id,
-                                                                 lead_group)
+    fcst_path, obs_path = wrapper._get_fcst_and_obs_path(time_info,
+                                                         storm_id,
+                                                         lead_group)
     assert(fcst_path == fcst_file_path and obs_path == obs_file_path)
 
     with open(fcst_file_path, 'r') as file_handle:
