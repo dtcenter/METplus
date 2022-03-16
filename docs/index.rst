@@ -47,6 +47,10 @@ wrappers to provide low-level automation and examples, also called use-cases.
 A description of each tool along with some ancillary repositories are as
 follows:
 
+* **METplus wrappers** (`repo <https://github.com/dtcenter/METplus>`_, `docs <https://metplus.readthedocs.io/en/latest/>`_) - suite of Python-based wrappers that provide
+  low-level automation of MET tools and newly developed plotting capability
+* **METplus use-cases** - configuration files and sample data to show how to
+  invoke METplus wrappers to make using MET tools easier and reproducible
 * **MET** (`repo <https://github.com/dtcenter/MET>`_, `docs <https://met.readthedocs.io/en/latest/>`_) - core statistical tool that matches up grids with either gridded
   analyses or point observations and applies configurable methods to compute
   statistics and diagnostics
@@ -54,10 +58,6 @@ follows:
   of MET output
 * **METexpress** (`repo <https://github.com/dtcenter/METexpress>`_, `docs <https://metexpress.readthedocs.io/en/latest/>`_) - core database and display system intended for quick
   analysis via pre-defined queries of MET output
-* **METplus wrappers** (`repo <https://github.com/dtcenter/METplus>`_, `docs <https://metplus.readthedocs.io/en/latest/>`_) - suite of Python-based wrappers that provide
-  low-level automation of MET tools and newly developed plotting capability
-* **METplus use-cases** - configuration files and sample data to show how to
-  invoke METplus wrappers to make using MET tools easier and reproducible
 * **METcalcpy** (`repo <https://github.com/dtcenter/METcalcpy>`_, `docs <https://metcalcpy.readthedocs.io/en/latest/>`_) - suite of Python-based scripts to be used by other
   components of METplus tools for statistical aggregation, event
   equalization, and other analysis needs
