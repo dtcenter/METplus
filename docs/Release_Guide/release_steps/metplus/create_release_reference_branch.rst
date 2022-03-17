@@ -38,7 +38,7 @@ Remove **-dev** from the version number:
 
 Commit these changes.
 
-Push reference branch to GitHub
+Push Reference Branch to GitHub
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
