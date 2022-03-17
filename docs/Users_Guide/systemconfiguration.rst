@@ -6,6 +6,82 @@ System Configuration
 
 This chapter is a guide on configuring METplus Wrappers.
 
+Questions to Consider
+=====================
+
+What questions to ask when applying METplus to a new testing and evaluation project
+---------------------------------------------------------------------------------
+
+If you are new to developing a verification or evaluation system or
+to using METplus, there are questions that you should consider to help
+you determine which tools to use and how to set it up.
+* First and foremost, what are the questions you are trying to answer
+  with this testing and evaluation project?
+* What type of forecasts and type of observations will be used and how
+  they can/should be matched?
+  *  What attributes of the forecast should be evaluated?
+  *  What is the standard for comparison that provides a reference level
+     of skill (e.g., persistence, climatology, reference model)?
+  *  What is the geographic location of the model data being evaluated?
+     Are there specific areas of interest for the evaluation?
+  *  Do you want to evaluate on the model domain, observation domain
+     (if gridded), or some other domain?
+  *  What is the evaluation time period?
+     Retrospective with specific dates?
+     Ongoing, near-real-time evaluation?
+     Or both retrospective and real-time?
+*  How should the testing and evaluation project be broken down into
+   METplus Use Cases? One large one or multiple smaller ones?
+  *  How will METplus be run? Manually? Scheduled, through cron?
+     Automated via a workflow manager (e.g. Rocoto, EC-Flow, Rose-Cylc)?
+  *  Where will METplus be run? Local machine, project machine,
+     HPC system, in the cloud (e.g. AWS)? Serial runs or parallelized?
+     
+This section will provide some guidance on how to use METplus based on
+the answers.
+
+·         What type of forecasts and type of observations will be used – will they be gridded or point-based?  The METplus tools that can be used will vary depending on the answer.  Here’s a matrix to help:
+
+.. role:: raw-html(raw)
+   :format: html	  
+
+.. list-table:: METplus Tools Decision Matrix
+  :widths: auto
+  :header-rows: 1
+		
+  * - 
+    - Gridded Forecast
+    - Point Forecast
+  * - Gridded :raw-html:`<br />`
+      Observation/Analyses
+    - Gen-Ens-Prod :raw-html:`<br />`
+      PCP-Combine :raw-html:`<br />`
+      Ensemble-Stat :raw-html:`<br />`
+      Grid-Stat :raw-html:`<br />`
+      Wavelet-Stat :raw-html:`<br />`
+      MODE :raw-html:`<br />`
+      MTD :raw-html:`<br />`
+      Series-Analysis :raw-html:`<br />`
+      Grid-Diag :raw-html:`<br />`
+      TC-Gen :raw-html:`<br />`
+      TC-RMW :raw-html:`<br />`
+    - Point-Stat :raw-html:`<br />`
+      (run with the Analyses :raw-html:`<br />`
+      as the “forecast” :raw-html:`<br />`
+      and Point Forecast :raw-html:`<br />`
+      as the “observation”)
+  * - Point Observations
+    - Point-Stat :raw-html:`<br />`
+      Ensemble-Stat
+    - Stat-Analysis :raw-html:`<br />`
+      (run by passing :raw-html:`<br />`
+      in MPR records) :raw-html:`<br />`
+      TC-Pairs :raw-html:`<br />`
+      TC-Gen :raw-html:`<br />`
+      TC-Stat
+
+ 
+
 Config Best Practices / Recommendations
 =======================================
 
