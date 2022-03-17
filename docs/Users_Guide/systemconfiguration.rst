@@ -76,6 +76,21 @@ the answers.
       TC-Gen :raw-html:`<br />`
       TC-Stat
 
+* What attributes of the forecast should be evaluated?
+  * This refers to not only defining the forecast fields to be evaluated
+    but also the forecast characteristics such as bias, reliability,
+    resolution, and prediction of events.  It also means understanding
+    the nature of the forecast and observations. 
+
+Examples of the nature of fields to be evaluated, are they:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+·         Continuous fields – the values change at the decimal level
+·         Categorical fields – the values change incrementally most
+likely as integers or categories.  Continuous fields can also be turned into categorical fields via applying thresholds.
+·         Probability fields – the values represent the probability or likelihood of an event occurring, usually represented by thresholds.
+·         Ensemble fields – are made up of multiple predictions either from the same modeling system or multiple systems.
+
  
 
 Config Best Practices / Recommendations
