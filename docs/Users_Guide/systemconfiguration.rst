@@ -65,17 +65,13 @@ the answers.
       Grid-Diag :raw-html:`<br />`
       TC-Gen :raw-html:`<br />`
       TC-RMW :raw-html:`<br />`
-    - Point-Stat :raw-html:`<br />`
-      (run with the Analyses :raw-html:`<br />`
-      as the “forecast” :raw-html:`<br />`
-      and Point Forecast :raw-html:`<br />`
+    - Point-Stat (run with the Analyses :raw-html:`<br />`
+      as the “forecast” and Point Forecast :raw-html:`<br />`
       as the “observation”)
   * - Point Observations
     - Point-Stat :raw-html:`<br />`
       Ensemble-Stat
-    - Stat-Analysis :raw-html:`<br />`
-      (run by passing :raw-html:`<br />`
-      in MPR records) :raw-html:`<br />`
+    - Stat-Analysis (run by passing in MPR records) :raw-html:`<br />`
       TC-Pairs :raw-html:`<br />`
       TC-Gen :raw-html:`<br />`
       TC-Stat
