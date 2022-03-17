@@ -1,3 +1,4 @@
+#! /usr/bin/env python3
 """
 Florida Cable Transport Class-4 Validation System
 Adapted from Todd Spindler's code
@@ -11,20 +12,23 @@ from sklearn.metrics import mean_squared_error
 from datetime import datetime, timedelta
 import pandas as pd
 import sys, os
+import yaml
+import logging
+import metcalcpy.util.read_env_vars_in_config as readconfig
 
-if len(sys.argv) < 4:
-    print("Must specify the following elements: rtofsdir, cable_file, eightmile_file, valid_date")
-    sys.exit(1)
-
-#rtofsdir = os.path.expandvars(sys.argv[1]) 
-#cablefile = os.path.expandvars(sys.argv[2]) 
-#eightmilefile = os.path.expandvars(sys.argv[3]) 
-#vDate=datetime.strptime(sys.argv[4],'%Y%m%d')
 rtofsdir = os.environ.get('CALC_TRANSPORT_RTOFS_DIRNAME') 
 cablefile = os.environ.get('CALC_TRANSPORT_CABLE_FILENAME') 
 eightmilefile = os.environ.get('CALC_TRANSPORT_EIGHTMILE_FILENAME') 
-vDate=datetime.strptime(sys.argv[4],'%Y%m%d')
-#fcst=int(sys.argv[5])
+begDate=os.getenv("YAML_CONFIG_NAME","UserScript_fcstRTOFS_obsAOML_calcTransport.yaml")
+
+try:
+   config = readconfig.parse_config(begDate)
+   logging.info(config)
+except yaml.YAMLError as exc:
+   logging.error(exc)
+
+date_start = config['date_start']
+vDate = date_start.strftime('%Y%m%d')
 
 print('Starting Cable V&V at',datetime.now(),'for',vDate)
 
@@ -68,7 +72,6 @@ def calc_transport(dates,fcst):
     for date in dates:
         print('DATE :', date, ' DATES :',dates)
         print('processing',date.strftime('%Y%m%d'),'fcst',fcst)
-#MKB Does this means it needs files from -24 hr?
         rundate=date-timedelta(fcst/24.)  # calc rundate from fcst and date
         ufile=rtofsdir+'/'+rundate.strftime('%Y%m%d')+'/rtofs_glo_3dz_'+fcst_str+'_daily_3zuio.nc'
         vfile=rtofsdir+'/'+rundate.strftime('%Y%m%d')+'/rtofs_glo_3dz_'+fcst_str+'_daily_3zvio.nc'
@@ -140,12 +143,11 @@ def rotate(u,v,phi):
 #-----------------------------------------------
 if __name__ == "__main__":
 
-    want_date=datetime.strptime(sys.argv[4],'%Y%m%d')
-    print('WANT DATE :', want_date)
+    want_date=vDate
     DateSet=True
 
-    fcst = int(os.environ.get('CALC_TRANSPORT_LEAD_TIME')
-    no_of_fcst_stat_days = int(os.environ.get('CALC_TRANSPORT_STATS_DAY')
+    fcst = int(os.environ.get('CALC_TRANSPORT_LEAD_TIME'))
+    no_of_fcst_stat_days = int(os.environ.get('CALC_TRANSPORT_STATS_DAY'))
 
     fcsts=list(range(fcst,fcst+1,24))
 
@@ -158,6 +160,14 @@ if __name__ == "__main__":
     dir_count = len(dirs)
     dir_count
 
+    """
+    Setup logging
+    """
+    logfile = "Cable_Transport.log"
+    logging_level = os.environ.get("LOG_LEVEL","logging.INFO")
+    logging.basicConfig(stream=logfile, level=logging_level)
+
+
     for end_date in pd.date_range(start_date,stop_date):
         dates=pd.date_range(end=end_date,periods=dir_count)
         model=get_model(dates,fcsts)
@@ -165,13 +175,8 @@ if __name__ == "__main__":
     both=pd.merge(cable,model,left_index=True,right_index=True,how='inner')
     print("both :", both)
     both=both[both.index.max()-timedelta(no_of_fcst_stat_days):]
-    #fcst=both.dropna(inplace=True)
      
-    print('BOTH :',both)
-    print('BOTH(FCST) :',both[fcst])
-    print('BOTH.TRANSPORT :',both.transport)
     diff=both[fcst] - both.transport
-    print('DIFF :',diff)
     bias=diff.mean()
     rmse=mean_squared_error(both.transport,both[fcst])**0.5
     if both[fcst].mean() != 0.0:
