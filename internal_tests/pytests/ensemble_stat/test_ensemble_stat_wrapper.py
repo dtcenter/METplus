@@ -31,7 +31,7 @@ ens_fmt = f'field = [{{ name="{ens_name}"; level="{ens_level}"; }}];'
 time_fmt = '%Y%m%d%H'
 run_times = ['2005080700', '2005080712']
 
-def set_minimum_config_settings(config):
+def set_minimum_config_settings(config, set_fields=True):
     # set config variables to prevent command from running and bypass check
     # if input files actually exist
     config.set('config', 'DO_NOT_RUN_EXE', True)
@@ -59,12 +59,84 @@ def set_minimum_config_settings(config):
                '{OUTPUT_BASE}/EnsembleStat/output')
     config.set('config', 'ENSEMBLE_STAT_OUTPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}')
 
-    config.set('config', 'FCST_VAR1_NAME', fcst_name)
-    config.set('config', 'FCST_VAR1_LEVELS', fcst_level)
-    config.set('config', 'OBS_VAR1_NAME', obs_name)
-    config.set('config', 'OBS_VAR1_LEVELS', obs_level)
-    config.set('config', 'ENS_VAR1_NAME', ens_name)
-    config.set('config', 'ENS_VAR1_LEVELS', ens_level)
+    if set_fields:
+        config.set('config', 'FCST_VAR1_NAME', fcst_name)
+        config.set('config', 'FCST_VAR1_LEVELS', fcst_level)
+        config.set('config', 'OBS_VAR1_NAME', obs_name)
+        config.set('config', 'OBS_VAR1_LEVELS', obs_level)
+        config.set('config', 'ENS_VAR1_NAME', ens_name)
+        config.set('config', 'ENS_VAR1_LEVELS', ens_level)
+
+@pytest.mark.parametrize(
+    'config_overrides, env_var_values', [
+        # 0 : 3 ens, 1 fcst, 1 obs
+        ({'ENS_VAR1_NAME': 'ens_name_1',
+          'ENS_VAR1_LEVELS': 'ENS_LEVEL_1',
+          'ENS_VAR2_NAME': 'ens_name_2',
+          'ENS_VAR2_LEVELS': 'ENS_LEVEL_2A, ENS_LEVEL_2B',
+          'FCST_VAR1_NAME': 'fcst_name_1',
+          'FCST_VAR1_LEVELS': 'FCST_LEVEL_1',
+          'OBS_VAR1_NAME': 'obs_name_1',
+          'OBS_VAR1_LEVELS': 'OBS_LEVEL_1',
+          },
+         {'METPLUS_ENS_FIELD': ('field = ['
+                                '{ name="ens_name_1"; level="ENS_LEVEL_1"; },'
+                                '{ name="ens_name_2"; level="ENS_LEVEL_2A"; },'
+                                '{ name="ens_name_2"; level="ENS_LEVEL_2B"; }'
+                                '];'),
+          'METPLUS_FCST_FIELD': ('field = ['
+                                 '{ name="fcst_name_1"; level="FCST_LEVEL_1"; }'
+                                 '];'),
+          'METPLUS_OBS_FIELD': ('field = ['
+                                '{ name="obs_name_1"; level="OBS_LEVEL_1"; }'
+                                '];'),
+          }),
+        # 1 : no ens, 1 fcst, 1 obs -- use fcst for ens
+        ({'FCST_VAR1_NAME': 'fcst_name_1',
+          'FCST_VAR1_LEVELS': 'FCST_LEVEL_1',
+          'OBS_VAR1_NAME': 'obs_name_1',
+          'OBS_VAR1_LEVELS': 'OBS_LEVEL_1',
+          },
+         {'METPLUS_ENS_FIELD': ('field = ['
+                                '{ name="fcst_name_1"; level="FCST_LEVEL_1"; }'
+                                '];'),
+          'METPLUS_FCST_FIELD': ('field = ['
+                                 '{ name="fcst_name_1"; level="FCST_LEVEL_1"; }'
+                                 '];'),
+          'METPLUS_OBS_FIELD': ('field = ['
+                                '{ name="obs_name_1"; level="OBS_LEVEL_1"; }'
+                                '];'),
+          }),
+    ]
+)
+def test_ensemble_stat_field_info(metplus_config, config_overrides,
+                                  env_var_values):
+
+    config = metplus_config()
+
+    set_minimum_config_settings(config, set_fields=False)
+
+    # set config variable overrides
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    wrapper = EnsembleStatWrapper(config)
+    assert wrapper.isOK
+
+    all_cmds = wrapper.run_all_times()
+
+    assert len(all_cmds) == 2
+
+    actual_env_vars = all_cmds[0][1]
+    for key, expected_value in env_var_values.items():
+        match = next((item for item in actual_env_vars if
+                      item.startswith(key)), None)
+        assert match is not None
+        actual_value = match.split('=', 1)[1]
+        assert actual_value == expected_value
+        print(f"ACTUAL  : {actual_value}")
+        print(f"EXPECTED: {expected_value}")
+
 
 @pytest.mark.parametrize(
     'config_overrides, env_var_values', [
@@ -190,7 +262,7 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
          {'METPLUS_MASK_GRID':
               'grid = ["FULL"];',
           'METPLUS_MASK_POLY':
-              'poly = ["one","two"];',
+              'poly = ["one", "two"];',
           }),
         # 13 mask grid and poly (new config var)
         ({'ENSEMBLE_STAT_MASK_GRID': 'FULL',
@@ -199,7 +271,7 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
          {'METPLUS_MASK_GRID':
               'grid = ["FULL"];',
           'METPLUS_MASK_POLY':
-              'poly = ["one","two"];',
+              'poly = ["one", "two"];',
           }),
         # 14 mask grid value
         ({'ENSEMBLE_STAT_MASK_GRID': 'FULL',
@@ -217,13 +289,13 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
         ({'ENSEMBLE_STAT_VERIFICATION_MASK_TEMPLATE': 'one, two',
           },
          {'METPLUS_MASK_POLY':
-              'poly = ["one","two"];',
+              'poly = ["one", "two"];',
           }),
         # 27 mask poly (new config var)
         ({'ENSEMBLE_STAT_MASK_POLY': 'one, two',
           },
          {'METPLUS_MASK_POLY':
-              'poly = ["one","two"];',
+              'poly = ["one", "two"];',
           }),
         # output_prefix
         ({'ENSEMBLE_STAT_OUTPUT_PREFIX': 'my_output_prefix'},
@@ -250,6 +322,21 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
         ({'ENSEMBLE_STAT_OUTPUT_FLAG_RELP': 'STAT', },
          {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {relp = STAT;}'}),
 
+        ({'ENSEMBLE_STAT_OUTPUT_FLAG_PCT': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {pct = STAT;}'}),
+
+        ({'ENSEMBLE_STAT_OUTPUT_FLAG_PSTD': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {pstd = STAT;}'}),
+
+        ({'ENSEMBLE_STAT_OUTPUT_FLAG_PJC': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {pjc = STAT;}'}),
+
+        ({'ENSEMBLE_STAT_OUTPUT_FLAG_PRC': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {prc = STAT;}'}),
+
+        ({'ENSEMBLE_STAT_OUTPUT_FLAG_ECLV': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {eclv = STAT;}'}),
+
         ({
              'ENSEMBLE_STAT_OUTPUT_FLAG_ECNT': 'STAT',
              'ENSEMBLE_STAT_OUTPUT_FLAG_RPS': 'STAT',
@@ -258,12 +345,20 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
              'ENSEMBLE_STAT_OUTPUT_FLAG_ORANK': 'STAT',
              'ENSEMBLE_STAT_OUTPUT_FLAG_SSVAR': 'STAT',
              'ENSEMBLE_STAT_OUTPUT_FLAG_RELP': 'STAT',
+             'ENSEMBLE_STAT_OUTPUT_FLAG_PCT': 'STAT',
+             'ENSEMBLE_STAT_OUTPUT_FLAG_PSTD': 'STAT',
+             'ENSEMBLE_STAT_OUTPUT_FLAG_PJC': 'STAT',
+             'ENSEMBLE_STAT_OUTPUT_FLAG_PRC': 'STAT',
+             'ENSEMBLE_STAT_OUTPUT_FLAG_ECLV': 'STAT',
          },
          {
              'METPLUS_OUTPUT_FLAG_DICT': ('output_flag = {ecnt = STAT;'
-                                           'rps = STAT;rhist = STAT;'
-                                           'phist = STAT;orank = STAT;'
-                                           'ssvar = STAT;relp = STAT;}')}),
+                                          'rps = STAT;rhist = STAT;'
+                                          'phist = STAT;orank = STAT;'
+                                          'ssvar = STAT;relp = STAT;'
+                                          'pct = STAT;pstd = STAT;'
+                                          'pjc = STAT;prc = STAT;eclv = STAT;'
+                                          '}')}),
         # ensemble_flag
         ({'ENSEMBLE_STAT_ENSEMBLE_FLAG_LATLON': 'FALSE', },
          {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {latlon = FALSE;}'}),
@@ -344,13 +439,17 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
         ({'ENSEMBLE_STAT_CLIMO_CDF_WRITE_BINS': 'False', },
          {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {write_bins = FALSE;}'}),
 
+        ({'ENSEMBLE_STAT_CLIMO_CDF_DIRECT_PROB': 'False', },
+         {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {direct_prob = FALSE;}'}),
+
         ({
              'ENSEMBLE_STAT_CLIMO_CDF_CDF_BINS': '1',
              'ENSEMBLE_STAT_CLIMO_CDF_CENTER_BINS': 'True',
              'ENSEMBLE_STAT_CLIMO_CDF_WRITE_BINS': 'False',
+             'ENSEMBLE_STAT_CLIMO_CDF_DIRECT_PROB': 'False',
          },
          {
-             'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {cdf_bins = 1.0;center_bins = TRUE;write_bins = FALSE;}'}),
+             'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {cdf_bins = 1.0;center_bins = TRUE;write_bins = FALSE;direct_prob = FALSE;}'}),
 
         ({'ENSEMBLE_STAT_INTERP_VLD_THRESH': '0.8', },
          {'METPLUS_INTERP_DICT': 'interp = {vld_thresh = 0.8;}'}),
@@ -556,6 +655,15 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
         ({'ENSEMBLE_STAT_GRID_WEIGHT_FLAG': 'COS_LAT', },
          {'METPLUS_GRID_WEIGHT_FLAG': 'grid_weight_flag = COS_LAT;'}),
 
+        ({'ENSEMBLE_STAT_PROB_CAT_THRESH': '<=0.25', },
+         {'METPLUS_PROB_CAT_THRESH': 'prob_cat_thresh = [<=0.25];'}),
+
+        ({'ENSEMBLE_STAT_PROB_PCT_THRESH': '==0.25', },
+         {'METPLUS_PROB_PCT_THRESH': 'prob_pct_thresh = [==0.25];'}),
+
+        ({'ENSEMBLE_STAT_ECLV_POINTS': '0.05', },
+         {'METPLUS_ECLV_POINTS': 'eclv_points = 0.05;'}),
+
     ]
 )
 def test_ensemble_stat_single_field(metplus_config, config_overrides,
@@ -627,3 +735,39 @@ def test_get_config_file(metplus_config):
     config.set('config', 'ENSEMBLE_STAT_CONFIG_FILE', fake_config_name)
     wrapper = EnsembleStatWrapper(config)
     assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name
+
+@pytest.mark.parametrize(
+    'config_overrides, expected_num_files', [
+        ({}, 4),
+        ({'ENSEMBLE_STAT_ENS_MEMBER_IDS': '1'}, 1),
+    ]
+)
+def test_ensemble_stat_fill_missing(metplus_config, config_overrides,
+                                    expected_num_files):
+    config = metplus_config()
+
+    set_minimum_config_settings(config)
+
+    # change some config values for this test
+    config.set('config', 'INIT_END', run_times[0])
+    config.set('config', 'ENSEMBLE_STAT_N_MEMBERS', 4)
+
+    # set config variable overrides
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    wrapper = EnsembleStatWrapper(config)
+
+    file_list_file = os.path.join(wrapper.config.getdir('STAGING_DIR'),
+                                  'file_lists',
+                                  '20050807000000_12_ensemble_stat.txt')
+    if os.path.exists(file_list_file):
+        os.remove(file_list_file)
+
+    all_cmds = wrapper.run_all_times()
+    assert len(all_cmds) == 1
+
+    with open(file_list_file, 'r') as file_handle:
+        actual_num_files = len(file_handle.read().splitlines()) - 1
+
+    assert actual_num_files == expected_num_files

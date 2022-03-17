@@ -1,6 +1,13 @@
 Create Release Reference Branch
 -------------------------------
 
+* For METplus, the corresponding MET release must be created before starting
+  this step. Specifically, a DockerHub tag on dtcenter/met that is named
+  (X+6).Y-latest must already exist. For example, for METplus 4.1.0, the MET
+  DockerHub tag for 10.1-latest must be built.
+  See https://hub.docker.com/repository/docker/dtcenter/met/general for
+  a list of existing tags.
+
 * Create a branch from the develop branch for the reference branch for the
   new official release and push it to GitHub. The branch name should match
   the format main_vX.Y-ref where X.Y is the major/minor release number.

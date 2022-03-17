@@ -328,9 +328,11 @@ class CommandBuilder:
                  ('END', 5400)]
         app = self.app_name.upper()
 
+        # check {app}_WINDOW_{edge} to support PB2NC_WINDOW_[BEGIN/END]
         for edge, default_val in edges:
             input_list = [f'OBS_{app}_WINDOW_{edge}',
                           f'{app}_OBS_WINDOW_{edge}',
+                          f'{app}_WINDOW_{edge}',
                           f'OBS_WINDOW_{edge}',
                          ]
             output_key = f'OBS_WINDOW_{edge}'
@@ -349,10 +351,12 @@ class CommandBuilder:
 
         for dtype in dtypes:
             for edge in edges:
-                input_list = [f'{dtype}_{app}_FILE_WINDOW_{edge}',
-                               f'{dtype}_FILE_WINDOW_{edge}',
-                               f'FILE_WINDOW_{edge}',
-                               ]
+                input_list = [
+                    f'{dtype}_{app}_FILE_WINDOW_{edge}',
+                    f'{app}_FILE_WINDOW_{edge}',
+                    f'{dtype}_FILE_WINDOW_{edge}',
+                    f'FILE_WINDOW_{edge}',
+                ]
                 output_key = f'{dtype}_FILE_WINDOW_{edge}'
                 value = self.handle_window_once(input_list, 0)
                 c_dict[output_key] = value
@@ -822,20 +826,18 @@ class CommandBuilder:
 
         return out
 
-    def find_input_files_ensemble(self, time_info):
+    def find_input_files_ensemble(self, time_info, fill_missing=True):
         """! Get a list of all input files and optional control file.
         Warn and remove control file if found in ensemble list. Ensure that
         if defined, the number of ensemble members (N_MEMBERS) corresponds to
         the file list that was found.
 
             @param time_info dictionary containing timing information
+            @param fill_missing If True, fill list of files with MISSING so
+            that number of files matches number of expected members. Defaults
+            to True.
             @returns True on success
         """
-        # get list of ensemble files to process
-        input_files = self.find_model(time_info, return_list=True)
-        if not input_files:
-            self.log_error("Could not find any input files")
-            return False
 
         # get control file if requested
         if self.c_dict.get('CTRL_INPUT_TEMPLATE'):
@@ -847,6 +849,28 @@ class CommandBuilder:
 
             self.args.append(f'-ctrl {ctrl_file}')
 
+        # if explicit file list file is specified, use it and
+        # bypass logic to error check model files
+        if self.c_dict.get('FCST_INPUT_FILE_LIST'):
+            file_list_path = do_string_sub(self.c_dict['FCST_INPUT_FILE_LIST'],
+                                           **time_info)
+            self.logger.debug(f"Explicit file list file: {file_list_path}")
+            if not os.path.exists(file_list_path):
+                self.log_error("Could not find file list file")
+                return False
+
+            self.infiles.append(file_list_path)
+            return True
+
+        # get list of ensemble files to process
+        input_files = self.find_model(time_info, return_list=True)
+        if not input_files:
+            self.log_error("Could not find any input files")
+            return False
+
+        # if control file is requested, remove it from input list
+        if self.c_dict.get('CTRL_INPUT_TEMPLATE'):
+
             # check if control file is found in ensemble list
             if ctrl_file in input_files:
                 # warn and remove control file if found
@@ -855,7 +879,9 @@ class CommandBuilder:
                 input_files.remove(ctrl_file)
 
         # compare number of files found to expected number of members
-        if not self._check_expected_ensembles(input_files):
+        if not fill_missing:
+            self.logger.debug('Skipping logic to fill file list with MISSING')
+        elif not self._check_expected_ensembles(input_files):
             return False
 
         # write file that contains list of ensemble files
@@ -983,7 +1009,7 @@ class CommandBuilder:
                                         **time_info)
 
         # replace wildcard character * with all
-        output_path.replace('*', 'all')
+        output_path = output_path.replace('*', 'all')
 
         skip_if_output_exists = self.c_dict.get('SKIP_IF_OUTPUT_EXISTS', False)
 
@@ -1033,19 +1059,6 @@ class CommandBuilder:
                           f'{self.app_name.upper()}_SKIP_IF_OUTPUT_EXISTS to False '
                           'to process')
         return False
-
-    def format_list_string(self, list_string):
-        """!Add quotation marks around each comma separated item in the string"""
-        strings = []
-        for string in list_string.split(','):
-            string = string.strip().replace('\'', '\"')
-            if not string:
-                continue
-            if string[0] != '"' and string[-1] != '"':
-                string = f'"{string}"'
-            strings.append(string)
-
-        return ','.join(strings)
 
     def check_for_externals(self):
         self.check_for_gempak()
@@ -1254,40 +1267,6 @@ class CommandBuilder:
 
         # add closing curly brace for prob=
         return f'{field} }}'
-
-    def read_mask_poly(self):
-        """! Read old or new config variables used to set mask.poly in MET
-             config files
-
-            @returns value from config or empty string if neither variable
-             is set
-        """
-        app = self.app_name.upper()
-        conf_value = self.config.getraw('config', f'{app}_MASK_POLY', '')
-        if not conf_value:
-            conf_value = (
-                self.config.getraw('config',
-                                   f'{app}_VERIFICATION_MASK_TEMPLATE',
-                                   '')
-        )
-        return conf_value
-
-    def get_verification_mask(self, time_info):
-        """!If verification mask template is set in the config file,
-            use it to find the verification mask filename"""
-        template = self.c_dict.get('MASK_POLY_TEMPLATE')
-        if not template:
-            return
-
-        filenames = do_string_sub(template,
-                                  **time_info)
-        mask_list_string = self.format_list_string(filenames)
-        self.c_dict['VERIFICATION_MASK'] = mask_list_string
-        if self.c_dict.get('MASK_POLY_IS_LIST', True):
-            mask_list_string = f'[{mask_list_string}]'
-        mask_fmt = f"poly = {mask_list_string};"
-        self.c_dict['MASK_POLY'] = mask_fmt
-        self.env_var_dict['METPLUS_MASK_POLY'] = mask_fmt
 
     def get_command(self):
         """! Builds the command to run the MET application
@@ -1826,3 +1805,17 @@ class CommandBuilder:
         return get_wrapped_met_config_file(self.config,
                                            self.app_name,
                                            default_config_file)
+
+    def handle_climo_cdf_dict(self, write_bins=True):
+        items = {
+            'cdf_bins': ('float', None, None,
+                         [f'{self.app_name.upper()}_CLIMO_CDF_BINS']),
+            'center_bins': 'bool',
+        }
+
+        # add write_bins unless it should be excluded
+        if write_bins:
+            items['write_bins'] = 'bool'
+
+        items['direct_prob'] = 'bool'
+        self.add_met_config_dict('climo_cdf', items)

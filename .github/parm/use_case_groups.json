@@ -11,7 +11,7 @@
   },
   {
     "category": "met_tool_wrapper",
-    "index_list": "59",
+    "index_list": "59-60",
     "run": false
   },
   {
@@ -65,6 +65,11 @@
     "run": false
   },
   {
+    "category": "marine_and_cryosphere",
+    "index_list": "5",
+    "run": false
+  },
+  {
     "category": "medium_range",
     "index_list": "0",
     "run": false
@@ -111,7 +116,12 @@
   },
   {
     "category": "precipitation",
-    "index_list": "3-8",
+    "index_list": "3-7",
+    "run": false
+  },
+  {
+    "category": "precipitation",
+    "index_list": "8",
     "run": false
   },
   {
@@ -171,7 +181,7 @@
   },
   {
     "category": "tc_and_extra_tc",
-    "index_list": "3",
+    "index_list": "3-5",
     "run": false
   }
 ]

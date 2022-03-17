@@ -1188,6 +1188,12 @@ def preprocess_file(filename, data_type, config, allow_dir=False):
     if os.path.basename(filename) in PYTHON_EMBEDDING_TYPES:
         return os.path.basename(filename)
 
+    # if filename starts with a python embedding type, return the full value
+    for py_embed_type in PYTHON_EMBEDDING_TYPES:
+        if filename.startswith(py_embed_type):
+            return filename
+
+    # if _INPUT_DATATYPE value contains PYTHON, return the full value
     if data_type is not None and 'PYTHON' in data_type:
         return filename
 

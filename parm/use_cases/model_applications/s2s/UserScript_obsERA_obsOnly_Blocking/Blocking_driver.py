@@ -6,10 +6,10 @@ import datetime
 import netCDF4
 import warnings
 
-from Blocking import BlockingCalculation
+from metcalcpy.contributed.blocking_weather_regime.Blocking import BlockingCalculation
+from metcalcpy.contributed.blocking_weather_regime.Blocking_WeatherRegime_util import parse_steps, write_mpr_file
 from metplotpy.contributed.blocking_s2s import plot_blocking as pb
 from metplotpy.contributed.blocking_s2s.CBL_plot import create_cbl_plot
-from Blocking_WeatherRegime_util import parse_steps, write_mpr_file
 
 
 def main():

@@ -39,6 +39,9 @@ ${METPLUS_CENSOR_THRESH}
 //censor_val    =
 ${METPLUS_CENSOR_VAL}
 
+//normalize =
+${METPLUS_NORMALIZE}
+
 //cat_thresh    =
 ${METPLUS_CAT_THRESH}
 

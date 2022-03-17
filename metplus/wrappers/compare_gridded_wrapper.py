@@ -58,8 +58,8 @@ that reformat gridded data
                             metplus_configs=['OBTYPE'])
 
         # set old MET config items for backwards compatibility
-        c_dict['MODEL_OLD'] = self.config.getstr('config', 'MODEL', 'FCST')
-        c_dict['OBTYPE_OLD'] = self.config.getstr('config', 'OBTYPE', 'OBS')
+        c_dict['MODEL_OLD'] = self.config.getraw('config', 'MODEL', 'FCST')
+        c_dict['OBTYPE_OLD'] = self.config.getraw('config', 'OBTYPE', 'OBS')
 
         # INPUT_BASE is not required unless it is referenced in a config file
         # it is used in the use case config files. Don't error if it is not set
@@ -170,9 +170,6 @@ that reformat gridded data
                 @param time_info dictionary containing timing information
         """
         self.clear()
-
-        # get verification mask if available
-        self.get_verification_mask(time_info)
 
         var_list = util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
                                      time_info)
@@ -382,10 +379,16 @@ that reformat gridded data
             return None
 
         # add forecast file
-        cmd += self.infiles[0] + ' '
+        fcst_file = self.infiles[0]
+        if fcst_file.startswith('PYTHON'):
+            fcst_file = f"'{fcst_file}'"
+        cmd += f'{fcst_file} '
 
         # add observation file
-        cmd += self.infiles[1] + ' '
+        obs_file = self.infiles[1]
+        if obs_file.startswith('PYTHON'):
+            obs_file = f"'{obs_file}'"
+        cmd += f'{obs_file} '
 
         if self.param == '':
             self.log_error('Must specify config file to run MET tool')
@@ -399,14 +402,6 @@ that reformat gridded data
 
         cmd += '-outdir {}'.format(self.outdir)
         return cmd
-
-    def handle_climo_cdf_dict(self):
-        self.add_met_config_dict('climo_cdf', {
-            'cdf_bins': ('float', None, None,
-                         [f'{self.app_name.upper()}_CLIMO_CDF_BINS']),
-            'center_bins': 'bool',
-            'write_bins': 'bool',
-        })
 
     def handle_interp_dict(self, uses_field=False):
         """! Reads config variables for interp dictionary, i.e.

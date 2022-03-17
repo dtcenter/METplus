@@ -182,6 +182,7 @@ METplus Configuration
 | :term:`OBS_ENSEMBLE_STAT_POINT_INPUT_TEMPLATE`
 | :term:`OBS_ENSEMBLE_STAT_GRID_INPUT_TEMPLATE`
 | :term:`FCST_ENSEMBLE_STAT_INPUT_TEMPLATE`
+| :term:`FCST_ENSEMBLE_STAT_INPUT_FILE_LIST`
 | :term:`ENSEMBLE_STAT_OUTPUT_TEMPLATE`
 | :term:`ENSEMBLE_STAT_CTRL_INPUT_DIR`
 | :term:`ENSEMBLE_STAT_CTRL_INPUT_TEMPLATE`
@@ -215,6 +216,7 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_CLIMO_CDF_BINS`
 | :term:`ENSEMBLE_STAT_CLIMO_CDF_CENTER_BINS`
 | :term:`ENSEMBLE_STAT_CLIMO_CDF_WRITE_BINS`
+| :term:`ENSEMBLE_STAT_CLIMO_CDF_DIRECT_PROB`
 | :term:`ENSEMBLE_STAT_DUPLICATE_FLAG`
 | :term:`ENSEMBLE_STAT_SKIP_CONST`
 | :term:`ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_DX`
@@ -266,6 +268,11 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_OUTPUT_FLAG_ORANK`
 | :term:`ENSEMBLE_STAT_OUTPUT_FLAG_SSVAR`
 | :term:`ENSEMBLE_STAT_OUTPUT_FLAG_RELP`
+| :term:`ENSEMBLE_STAT_OUTPUT_FLAG_PCT`
+| :term:`ENSEMBLE_STAT_OUTPUT_FLAG_PSTD`
+| :term:`ENSEMBLE_STAT_OUTPUT_FLAG_PJC`
+| :term:`ENSEMBLE_STAT_OUTPUT_FLAG_PRC`
+| :term:`ENSEMBLE_STAT_OUTPUT_FLAG_ECLV`
 | :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_LATLON`
 | :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_MEAN`
 | :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_STDEV`
@@ -286,6 +293,9 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_ENS_MEMBER_IDS`
 | :term:`ENSEMBLE_STAT_CONTROL_ID`
 | :term:`ENSEMBLE_STAT_GRID_WEIGHT_FLAG`
+| :term:`ENSEMBLE_STAT_PROB_CAT_THRESH`
+| :term:`ENSEMBLE_STAT_PROB_PCT_THRESH`
+| :term:`ENSEMBLE_STAT_ECLV_POINTS`
 | :term:`ENSEMBLE_STAT_VERIFICATION_MASK_TEMPLATE` (optional)
 | :term:`ENS_VAR<n>_NAME` (optional)
 | :term:`ENS_VAR<n>_LEVELS` (optional)
@@ -505,6 +515,39 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`ENSEMBLE_STAT_NMEP_SMOOTH_WIDTH`
      - nmep_smooth.type.width
 
+**${METPLUS_PROB_CAT_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_PROB_CAT_THRESH`
+     - prob_cat_thresh
+
+**${METPLUS_PROB_PCT_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_PROB_PCT_THRESH`
+     - prob_pct_thresh
+
+**${METPLUS_ECLV_POINTS}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_ECLV_POINTS`
+     - eclv_points
+
 **${METPLUS_FCST_FILE_TYPE}**
 
 .. list-table::
@@ -716,6 +759,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - climo_cdv.center_bins
    * - :term:`ENSEMBLE_STAT_CLIMO_CDF_WRITE_BINS`
      - climo_cdv.write_bins
+   * - :term:`ENSEMBLE_STAT_CLIMO_CDF_DIRECT_PROB`
+     - climo_cdf.direct_prob
 
 **${METPLUS_MASK_GRID}**
 
@@ -791,6 +836,16 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - output_flag.ssvar
    * - :term:`ENSEMBLE_STAT_OUTPUT_FLAG_RELP`
      - output_flag.relp
+   * - :term:`ENSEMBLE_STAT_OUTPUT_FLAG_PCT`
+     - output_flag.pct
+   * - :term:`ENSEMBLE_STAT_OUTPUT_FLAG_PSTD`
+     - output_flag.pstd
+   * - :term:`ENSEMBLE_STAT_OUTPUT_FLAG_PJC`
+     - output_flag.pjc
+   * - :term:`ENSEMBLE_STAT_OUTPUT_FLAG_PRC`
+     - output_flag.prc
+   * - :term:`ENSEMBLE_STAT_OUTPUT_FLAG_ECLV`
+     - output_flag.eclv
 
 **${METPLUS_ENSEMBLE_FLAG_DICT}**
 
@@ -1031,6 +1086,7 @@ METplus Configuration
 
 | :term:`GEN_ENS_PROD_INPUT_DIR`
 | :term:`GEN_ENS_PROD_INPUT_TEMPLATE`
+| :term:`GEN_ENS_PROD_INPUT_FILE_LIST`
 | :term:`GEN_ENS_PROD_CTRL_INPUT_DIR`
 | :term:`GEN_ENS_PROD_CTRL_INPUT_TEMPLATE`
 | :term:`GEN_ENS_PROD_OUTPUT_DIR`
@@ -1046,6 +1102,7 @@ METplus Configuration
 | :term:`GEN_ENS_PROD_CENSOR_THRESH`
 | :term:`GEN_ENS_PROD_CENSOR_VAL`
 | :term:`GEN_ENS_PROD_CAT_THRESH`
+| :term:`GEN_ENS_PROD_NORMALIZE`
 | :term:`GEN_ENS_PROD_NC_VAR_STR`
 | :term:`GEN_ENS_PROD_ENS_THRESH`
 | :term:`GEN_ENS_PROD_ENS_VLD_THRESH`
@@ -1182,6 +1239,17 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`GEN_ENS_PROD_CENSOR_VAL`
      - censor_val
+
+**${METPLUS_NORMALIZE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_NORMALIZE`
+     - normalize
 
 **${METPLUS_CAT_THRESH}**
 
@@ -2804,6 +2872,7 @@ METplus Configuration
 | :term:`GRID_STAT_CLIMO_CDF_BINS`
 | :term:`GRID_STAT_CLIMO_CDF_CENTER_BINS`
 | :term:`GRID_STAT_CLIMO_CDF_WRITE_BINS`
+| :term:`GRID_STAT_CLIMO_CDF_DIRECT_PROB`
 | :term:`GRID_STAT_OUTPUT_FLAG_FHO`
 | :term:`GRID_STAT_OUTPUT_FLAG_CTC`
 | :term:`GRID_STAT_OUTPUT_FLAG_CTS`
@@ -3191,6 +3260,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - climo_cdf.center_bins
    * - :term:`GRID_STAT_CLIMO_CDF_WRITE_BINS`
      - climo_cdf.write_bins
+   * - :term:`GRID_STAT_CLIMO_CDF_DIRECT_PROB`
+     - climo_cdf.direct_prob
 
 **${METPLUS_OUTPUT_FLAG_DICT}**
 
@@ -4047,10 +4118,12 @@ METplus Configuration
 | :term:`FCST_MODE_VAR<n>_LEVELS` (optional)
 | :term:`FCST_MODE_VAR<n>_THRESH` (optional)
 | :term:`FCST_MODE_VAR<n>_OPTIONS` (optional)
+| :term:`MODE_FCST_FILE_TYPE` (optional)
 | :term:`OBS_MODE_VAR<n>_NAME` (optional)
 | :term:`OBS_MODE_VAR<n>_LEVELS` (optional)
 | :term:`OBS_MODE_VAR<n>_THRESH` (optional)
 | :term:`OBS_MODE_VAR<n>_OPTIONS` (optional)
+| :term:`MODE_OBS_FILE_TYPE` (optional)
 |
 
 .. warning:: **DEPRECATED:**
@@ -4216,6 +4289,18 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`MODE_FCST_MERGE_FLAG`
      - fcst.merge_flag
 
+**${METPLUS_FCST_FILE_TYPE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_FCST_FILE_TYPE`
+     - fcst.file_type
+
+
 **${METPLUS_OBS_FIELD}**
 
 .. list-table::
@@ -4278,6 +4363,17 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`OBS_MODE_MERGE_FLAG`
      - obs.merge_flag
+
+**${METPLUS_OBS_FILE_TYPE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_OBS_FILE_TYPE`
+     - obs.file_type
 
 **${METPLUS_MASK_POLY}**
 
@@ -4598,6 +4694,8 @@ METplus Configuration
 | :term:`MTD_OUTPUT_DIR`
 | :term:`FCST_MTD_INPUT_TEMPLATE`
 | :term:`OBS_MTD_INPUT_TEMPLATE`
+| :term:`FCST_MTD_INPUT_FILE_LIST`
+| :term:`OBS_MTD_INPUT_FILE_LIST`
 | :term:`MTD_OUTPUT_TEMPLATE`
 | :term:`MTD_CONFIG_FILE`
 | :term:`MTD_MIN_VOLUME`
@@ -4876,8 +4974,8 @@ METplus Configuration
 | :term:`PB2NC_TIME_SUMMARY_END`
 | :term:`PB2NC_TIME_SUMMARY_VAR_NAMES`
 | :term:`PB2NC_TIME_SUMMARY_TYPES`
-| :term:`PB2NC_WINDOW_BEGIN`
-| :term:`PB2NC_WINDOW_END`
+| :term:`PB2NC_OBS_WINDOW_BEGIN`
+| :term:`PB2NC_OBS_WINDOW_END`
 | :term:`PB2NC_VALID_BEGIN`
 | :term:`PB2NC_VALID_END`
 | :term:`PB2NC_CUSTOM_LOOP_LIST`
@@ -4888,7 +4986,6 @@ METplus Configuration
 | :term:`PB2NC_LEVEL_CATEGORY`
 | :term:`PB2NC_QUALITY_MARK_THRESH`
 | :term:`PB2NC_OBS_BUFR_MAP`
-| :term:`PB2NC_OBS_PREPBUFR_MAP`
 
 .. warning:: **DEPRECATED:**
 
@@ -4958,9 +5055,9 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`PB2NC_WINDOW_BEGIN`
+   * - :term:`PB2NC_OBS_WINDOW_BEGIN`
      - obs_window.beg
-   * - :term:`PB2NC_WINDOW_END`
+   * - :term:`PB2NC_OBS_WINDOW_END`
      - obs_window.end
 
 **${METPLUS_MASK_DICT}**
@@ -5087,17 +5184,6 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`PB2NC_OBS_BUFR_MAP`
      - obs_bufr_map
-
-**${METPLUS_OBS_PREPBUFR_MAP}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`PB2NC_OBS_PREPBUFR_MAP`
-     - obs_prepbufr_map
 
 .. _pcp_combine_wrapper:
 
@@ -5291,6 +5377,8 @@ Configuration
 | :term:`POINT_STAT_OFFSETS`
 | :term:`FCST_POINT_STAT_INPUT_DATATYPE`
 | :term:`OBS_POINT_STAT_INPUT_DATATYPE`
+| :term:`POINT_STAT_FCST_FILE_TYPE`
+| :term:`POINT_STAT_OBS_FILE_TYPE`
 | :term:`POINT_STAT_CONFIG_FILE`
 | :term:`MODEL`
 | :term:`POINT_STAT_REGRID_TO_GRID`
@@ -5310,6 +5398,7 @@ Configuration
 | :term:`POINT_STAT_CLIMO_CDF_BINS`
 | :term:`POINT_STAT_CLIMO_CDF_CENTER_BINS`
 | :term:`POINT_STAT_CLIMO_CDF_WRITE_BINS`
+| :term:`POINT_STAT_CLIMO_CDF_DIRECT_PROB`
 | :term:`POINT_STAT_OBS_QUALITY_INC`
 | :term:`POINT_STAT_OBS_QUALITY_EXC`
 | :term:`POINT_STAT_OUTPUT_FLAG_FHO`
@@ -5491,6 +5580,17 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. note:: For more information on controlling the forecast field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
 
+**${METPLUS_FCST_FILE_TYPE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_FCST_FILE_TYPE`
+     - fcst.file_type
+
 **${METPLUS_OBS_FIELD}**
 
 .. list-table::
@@ -5500,15 +5600,26 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - METplus Config(s)
      - MET Config File
    * - :term:`OBS_VAR<n>_NAME`
-     - fcst.field.name
+     - obs.field.name
    * - :term:`OBS_VAR<n>_LEVELS`
-     - fcst.field.level
+     - obs.field.level
    * - :term:`OBS_VAR<n>_THRESH`
-     - fcst.field.cat_thresh
+     - obs.field.cat_thresh
    * - :term:`OBS_VAR<n>_OPTIONS`
      - n/a
 
 .. note:: For more information on controlling the observation field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
+
+**${METPLUS_OBS_FILE_TYPE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_OBS_FILE_TYPE`
+     - obs.file_type
 
 **${METPLUS_MESSAGE_TYPE}**
 
@@ -5675,6 +5786,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - climo_cdf.center_bins
    * - :term:`POINT_STAT_CLIMO_CDF_WRITE_BINS`
      - climo_cdf.write_bins
+   * - :term:`POINT_STAT_CLIMO_CDF_DIRECT_PROB`
+     - climo_cdf.direct_prob
 
 **${METPLUS_OBS_QUALITY_INC}**
 
@@ -5936,10 +6049,15 @@ METplus Configuration
 | :term:`SERIES_ANALYSIS_MET_CONFIG_OVERRIDES`
 | :term:`FCST_SERIES_ANALYSIS_INPUT_DIR`
 | :term:`OBS_SERIES_ANALYSIS_INPUT_DIR`
+| :term:`BOTH_SERIES_ANALYSIS_INPUT_DIR`
 | :term:`SERIES_ANALYSIS_TC_STAT_INPUT_DIR`
 | :term:`SERIES_ANALYSIS_OUTPUT_DIR`
 | :term:`FCST_SERIES_ANALYSIS_INPUT_TEMPLATE`
 | :term:`OBS_SERIES_ANALYSIS_INPUT_TEMPLATE`
+| :term:`BOTH_SERIES_ANALYSIS_INPUT_TEMPLATE`
+| :term:`FCST_SERIES_ANALYSIS_INPUT_FILE_LIST`
+| :term:`OBS_SERIES_ANALYSIS_INPUT_FILE_LIST`
+| :term:`BOTH_SERIES_ANALYSIS_INPUT_FILE_LIST`
 | :term:`SERIES_ANALYSIS_TC_STAT_INPUT_TEMPLATE`
 | :term:`SERIES_ANALYSIS_OUTPUT_TEMPLATE`
 | :term:`SERIES_ANALYSIS_CLIMO_MEAN_FILE_NAME`
@@ -5968,6 +6086,9 @@ METplus Configuration
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_FILE_TYPE`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_USE_FCST`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_USE_OBS`
+| :term:`SERIES_ANALYSIS_CLIMO_CDF_BINS`
+| :term:`SERIES_ANALYSIS_CLIMO_CDF_CENTER_BINS`
+| :term:`SERIES_ANALYSIS_CLIMO_CDF_DIRECT_PROB`
 | :term:`SERIES_ANALYSIS_HSS_EC_VALUE`
 | :term:`SERIES_ANALYSIS_OUTPUT_STATS_FHO`
 | :term:`SERIES_ANALYSIS_OUTPUT_STATS_CTC`
@@ -6199,6 +6320,20 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_FILE_TYPE`
      - climo_stdev.file_type
 
+**${METPLUS_CLIMO_CDF_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`SERIES_ANALYSIS_CLIMO_CDF_BINS`
+     - climo_cdf.cdf_bins
+   * - :term:`SERIES_ANALYSIS_CLIMO_CDF_CENTER_BINS`
+     - climo_cdf.center_bins
+   * - :term:`SERIES_ANALYSIS_CLIMO_CDF_DIRECT_PROB`
+     - climo_cdf.direct_prob
 
 **${METPLUS_BLOCK_SIZE}**
 
@@ -6381,6 +6516,7 @@ configuration file for running with LOOP_ORDER = times:
 | :term:`LINE_TYPE_LIST`
 | :term:`STAT_ANALYSIS_SKIP_IF_OUTPUT_EXISTS`
 | :term:`STAT_ANALYSIS_HSS_EC_VALUE`
+| :term:`STAT_ANALYSIS_OUTPUT_TEMPLATE`
 |
 
 The following values **must** be defined in the METplus Wrappers
@@ -6418,6 +6554,7 @@ file for running with LOOP_ORDER = processes:
 | :term:`COV_THRESH_LIST`
 | :term:`ALPHA_LIST`
 | :term:`STAT_ANALYSIS_HSS_EC_VALUE`
+| :term:`STAT_ANALYSIS_OUTPUT_TEMPLATE`
 |
 
 .. warning:: **DEPRECATED:**
@@ -6873,6 +7010,10 @@ METplus Configuration
 | :term:`TC_GEN_TRACK_INPUT_TEMPLATE`
 | :term:`TC_GEN_GENESIS_INPUT_DIR`
 | :term:`TC_GEN_GENESIS_INPUT_TEMPLATE`
+| :term:`TC_GEN_EDECK_INPUT_DIR`
+| :term:`TC_GEN_EDECK_INPUT_TEMPLATE`
+| :term:`TC_GEN_SHAPE_INPUT_DIR`
+| :term:`TC_GEN_SHAPE_INPUT_TEMPLATE`
 | :term:`TC_GEN_OUTPUT_DIR`
 | :term:`TC_GEN_OUTPUT_TEMPLATE`
 | :term:`LOG_TC_GEN_VERBOSITY`
@@ -6924,6 +7065,10 @@ METplus Configuration
 | :term:`TC_GEN_OUTPUT_FLAG_FHO`
 | :term:`TC_GEN_OUTPUT_FLAG_CTC`
 | :term:`TC_GEN_OUTPUT_FLAG_CTS`
+| :term:`TC_GEN_OUTPUT_FLAG_PCT`
+| :term:`TC_GEN_OUTPUT_FLAG_PSTD`
+| :term:`TC_GEN_OUTPUT_FLAG_PJC`
+| :term:`TC_GEN_OUTPUT_FLAG_PRC`
 | :term:`TC_GEN_OUTPUT_FLAG_GENMPR`
 | :term:`TC_GEN_NC_PAIRS_FLAG_LATLON`
 | :term:`TC_GEN_NC_PAIRS_FLAG_FCST_GENESIS`
@@ -7367,6 +7512,14 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - output_flag.ctc
    * - :term:`TC_GEN_OUTPUT_FLAG_CTS`
      - output_flag.cts
+   * - :term:`TC_GEN_OUTPUT_FLAG_PCT`
+     - output_flag.pct
+   * - :term:`TC_GEN_OUTPUT_FLAG_PSTD`
+     - output_flag.pstd
+   * - :term:`TC_GEN_OUTPUT_FLAG_PJC`
+     - output_flag.pjc
+   * - :term:`TC_GEN_OUTPUT_FLAG_PRC`
+     - output_flag.prc
    * - :term:`TC_GEN_OUTPUT_FLAG_GENMPR`
      - output_flag.genmpr
 
@@ -7894,6 +8047,7 @@ METplus Configuration
 | :term:`TC_RMW_OUTPUT_DIR`
 | :term:`TC_RMW_DECK_TEMPLATE`
 | :term:`TC_RMW_INPUT_TEMPLATE`
+| :term:`TC_RMW_INPUT_FILE_LIST`
 | :term:`TC_RMW_OUTPUT_TEMPLATE`
 | :term:`LOG_TC_RMW_VERBOSITY`
 | :term:`TC_RMW_CONFIG_FILE`
@@ -8191,6 +8345,7 @@ METplus Configuration
 
 | :term:`TC_STAT_LOOKIN_DIR`
 | :term:`TC_STAT_OUTPUT_DIR`
+| :term:`TC_STAT_OUTPUT_TEMPLATE` (optional)
 | :term:`TC_STAT_CONFIG_FILE`
 | :term:`TC_STAT_JOB_ARGS`
 | :term:`TC_STAT_AMODEL`

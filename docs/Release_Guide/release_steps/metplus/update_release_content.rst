@@ -17,13 +17,3 @@ Remove **-dev** from the version number:
   with -dev added to the end like X.Y.Z-betaN-dev, i.e. 4.0.0-beta1-dev
 * Remove **-dev** from the version number so that it matches the release
   you are creating.
-
-Update the version numbers in the manage externals files
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-build_components/Externals_stable.cfg
-
-Each of the components in these files has a branch associated with them.
-Update the value for branch to the tag associated with the release for each
-METplus component that is part of this METplus coordinated release, i.e.
-MET should be 10.0.0 for the METplus 4.0.0 coordinated release.

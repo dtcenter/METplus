@@ -189,6 +189,12 @@ def test_find_input_files(metplus_config, offsets, offset_to_find):
              'OBS_PB2NC_WINDOW_END': '1800',
          },
          {'METPLUS_OBS_WINDOW_DICT': 'obs_window = {beg = -1800;end = 1800;}'}),
+        # test legacy PB2NC_WINDOW_[BEGIN/END]
+        ({'PB2NC_WINDOW_BEGIN': '-1800', },
+         {'METPLUS_OBS_WINDOW_DICT': 'obs_window = {beg = -1800;}'}),
+
+        ({'PB2NC_WINDOW_END': '1800', },
+         {'METPLUS_OBS_WINDOW_DICT': 'obs_window = {end = 1800;}'}),
 
         ({'PB2NC_MASK_GRID': 'FULL', },
          {'METPLUS_MASK_DICT': 'mask = {grid = "FULL";}'}),
@@ -281,8 +287,6 @@ def test_find_input_files(metplus_config, offsets, offset_to_find):
                                            'vld_thresh = 0.1;}')}),
         ({'PB2NC_OBS_BUFR_MAP': '{key="POB"; val="PRES"; },{key="QOB"; val="SPFH";}', },
          {'METPLUS_OBS_BUFR_MAP': 'obs_bufr_map = [{key="POB"; val="PRES"; }, {key="QOB"; val="SPFH";}];'}),
-        ({'PB2NC_OBS_PREPBUFR_MAP': '{key="POB"; val="PRES"; },{key="QOB"; val="SPFH";}', },
-         {'METPLUS_OBS_PREPBUFR_MAP': 'obs_prepbufr_map = [{key="POB"; val="PRES"; }, {key="QOB"; val="SPFH";}];'}),
 
     ]
 )
@@ -370,3 +374,14 @@ def test_get_config_file(metplus_config):
     config.set('config', 'PB2NC_CONFIG_FILE', fake_config_name)
     wrapper = PB2NCWrapper(config)
     assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name
+
+def test_pb2nc_file_window(metplus_config):
+    begin_value = -3600
+    end_value = 3600
+
+    config = metplus_config()
+    config.set('config', 'PB2NC_FILE_WINDOW_BEGIN', begin_value)
+    config.set('config', 'PB2NC_FILE_WINDOW_END', end_value)
+    wrapper = PB2NCWrapper(config)
+    assert wrapper.c_dict['OBS_FILE_WINDOW_BEGIN'] == begin_value
+    assert wrapper.c_dict['OBS_FILE_WINDOW_END'] == end_value
