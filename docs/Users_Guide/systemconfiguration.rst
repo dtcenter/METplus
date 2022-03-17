@@ -10,7 +10,7 @@ Questions to Consider
 =====================
 
 What questions to ask when applying METplus to a new testing and evaluation project
----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
 
 If you are new to developing a verification or evaluation system or
 to using METplus, there are questions that you should consider to help
@@ -116,10 +116,12 @@ type of field
   *  METplus line types: SL1L2, SAL1L2, VL1L2, VAL1L2, CNT, VCNT
      
   *   METplus tools:
+      
 *  Categorical statistics - measures how well the forecast captures events
    
   * METplus line types: FHO, CTC, CTS, MCTC, MCTS, ECLV, TC stats,
     ExtraTC stats, TC Gen stats
+    
 *  Probability statistics - measures attributes such as reliability,
    resolution, sharpness, and uncertainty
 
