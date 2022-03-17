@@ -38,8 +38,8 @@ you determine which tools to use and how to set it up.
     Ongoing, near-real-time evaluation?
     Or both retrospective and real-time?
      
-*  How should the testing and evaluation project be broken down into
-   METplus Use Cases? One large one or multiple smaller ones?
+* How should the testing and evaluation project be broken down into
+  METplus Use Cases? One large one or multiple smaller ones?
    
   * How will METplus be run? Manually? Scheduled, through cron?
     Automated via a workflow manager (e.g. Rocoto, EC-Flow, Rose-Cylc)?
@@ -86,6 +86,7 @@ the answers.
       TC-Gen :raw-html:`<br />`
       TC-Stat
 
+      
 * What attributes of the forecast should be evaluated?
   
   * This refers to not only defining the forecast fields to be evaluated
