@@ -40,11 +40,11 @@ you determine which tools to use and how to set it up.
 *  How should the testing and evaluation project be broken down into
    METplus Use Cases? One large one or multiple smaller ones?
    
-  *  How will METplus be run? Manually? Scheduled, through cron?
-     Automated via a workflow manager (e.g. Rocoto, EC-Flow, Rose-Cylc)?
+  * How will METplus be run? Manually? Scheduled, through cron?
+    Automated via a workflow manager (e.g. Rocoto, EC-Flow, Rose-Cylc)?
      
-  *  Where will METplus be run? Local machine, project machine,
-     HPC system, in the cloud (e.g. AWS)? Serial runs or parallelized?
+  * Where will METplus be run? Local machine, project machine,
+    HPC system, in the cloud (e.g. AWS)? Serial runs or parallelized?
      
 This section will provide some guidance on how to use METplus based on
 the answers.
@@ -113,9 +113,9 @@ type of field
 *  Continuous statistics - measures how the values of the forecasts
    differ from the values of the observations
    
-  *  METplus line types: SL1L2, SAL1L2, VL1L2, VAL1L2, CNT, VCNT
+  * METplus line types: SL1L2, SAL1L2, VL1L2, VAL1L2, CNT, VCNT
      
-  *   METplus tools:
+  * METplus tools:
       
 *  Categorical statistics - measures how well the forecast captures events
    
@@ -125,7 +125,7 @@ type of field
 *  Probability statistics - measures attributes such as reliability,
    resolution, sharpness, and uncertainty
 
-   * METplus line types: PCT, PSTD, PJC, PRC
+  * METplus line types: PCT, PSTD, PJC, PRC
      
 *  Ensemble statistics - measures attributes as the relationship between
    rank of observation and members, spread of ensemble member solutions
@@ -168,7 +168,7 @@ There are also additional verification and diagnostic approaches that can be hel
 *  Feature Relative identifies systematic errors associated with a group
    of case studies
 
-   * METplus methods: Feature Relative Use Cases
+  * METplus methods: Feature Relative Use Cases
      
 *  Relationship between two fields: generates a joint PDF between two field
    
@@ -187,9 +187,9 @@ following configuration options
 
 * {MET TOOL}_CLIMO_MEAN
   
-*  {MET TOOL}_CLIMO_STDEV
+* {MET TOOL}_CLIMO_STDEV
    
-*  {MET TOOL}_CLIMO_CDF
+* {MET TOOL}_CLIMO_CDF
    
 This can be found in Grid-Stat, Point-Stat, Gen-Ens-Prod, and Ensemble-Stat
 tools
@@ -207,14 +207,14 @@ Do you want to evaluate on the model domain, observation domain (if gridded), or
 The decision to evaluate on model or observation/analysis domain is
 user-specific but you may want to consider the following:
 
-*  Regridding to the courser domain will smooth high resolution information
-   that may be important but smoother forecasts tend to score better
+* Regridding to the courser domain will smooth high resolution information
+  that may be important but smoother forecasts tend to score better
    
-*  Regridding to a finer domain essentially adds in additional information
-   that is not real
+* Regridding to a finer domain essentially adds in additional information
+  that is not real
    
-*  One way to avoid the interpolation debate is to regrid both to a third
-   grid
+* One way to avoid the interpolation debate is to regrid both to a third
+  grid
    
 Regridding in METplus can be completed using the Regrid-Data-Plane tool if
 the fields will be used more than once.
