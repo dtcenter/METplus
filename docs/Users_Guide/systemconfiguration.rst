@@ -22,21 +22,21 @@ you determine which tools to use and how to set it up.
 * What type of forecasts and type of observations will be used and how
   they can/should be matched?
   
-  *  What attributes of the forecast should be evaluated?
+  * What attributes of the forecast should be evaluated?
      
-  *  What is the standard for comparison that provides a reference level
-     of skill (e.g., persistence, climatology, reference model)?
+  * What is the standard for comparison that provides a reference level
+    of skill (e.g., persistence, climatology, reference model)?
      
-  *  What is the geographic location of the model data being evaluated?
-     Are there specific areas of interest for the evaluation?
+  * What is the geographic location of the model data being evaluated?
+    Are there specific areas of interest for the evaluation?
      
-  *  Do you want to evaluate on the model domain, observation domain
-     (if gridded), or some other domain?
+  * Do you want to evaluate on the model domain, observation domain
+    (if gridded), or some other domain?
      
-  *  What is the evaluation time period?
-     Retrospective with specific dates?
-     Ongoing, near-real-time evaluation?
-     Or both retrospective and real-time?
+  * What is the evaluation time period?
+    Retrospective with specific dates?
+    Ongoing, near-real-time evaluation?
+    Or both retrospective and real-time?
      
 *  How should the testing and evaluation project be broken down into
    METplus Use Cases? One large one or multiple smaller ones?
@@ -141,24 +141,24 @@ There are also additional verification and diagnostic approaches that can be hel
     
   * METplus line types: Most Grid-Stat and Point-Stat line types
     
-*  Object Based measures the location error of the forecast and how the
-   total error break down into variety of descriptive attributes
+* Object Based measures the location error of the forecast and how the
+  total error break down into variety of descriptive attributes
    
   * METplus methods: MODE, MTD, MvMODE, Grid-Stat Distance Maps
     
   * METplus line types: MODE object attribute files, MODE CTS, MTD object
     attribute files, MTD CTS, Grid-Stat DMAP
     
-*  Neighborhoods relaxes the requirement for an exact match by evaluating
-   forecasts in the local neighborhood of the observations
+* Neighborhoods relaxes the requirement for an exact match by evaluating
+  forecasts in the local neighborhood of the observations
    
   * METplus methods: Grid-Stat Neighborhood, Point-Stat HiRA, Ensemble-Stat
     HiRA
 
-  *  METplus line types: NBRCTC, NBRCTS, NBRCNT, ECNT, ORANK, RPS
+  * METplus line types: NBRCTC, NBRCTS, NBRCNT, ECNT, ORANK, RPS
      
-*  Domain Decomposition and Transforms applies a transform to a given field
-   to identify errors on different spatial scales:
+* Domain Decomposition and Transforms applies a transform to a given field
+  to identify errors on different spatial scales:
    
   * METplus methods: Grid-Stat Fourier Decomposition; Wavelet-Stat tool,
     TC-RMW tool
@@ -166,17 +166,17 @@ There are also additional verification and diagnostic approaches that can be hel
   * METplus line types: Grid-Stat SL1L2, SAL1L2, VL1L2, VAL1L2, CNT, VCNT;
     Wavelet Stat: ISC, RMW output file
     
-*  Feature Relative identifies systematic errors associated with a group
-   of case studies
+* Feature Relative identifies systematic errors associated with a group
+  of case studies
 
   * METplus methods: Feature Relative Use Cases
      
-*  Relationship between two fields: generates a joint PDF between two field
+* Relationship between two fields: generates a joint PDF between two field
    
   * METplus methods: Grid-Diag tool
     
-*  Subseasonal-to-Seasonal Diagnostics compute indices to establish the
-   ability of the model to predict S2S drivers
+* Subseasonal-to-Seasonal Diagnostics compute indices to establish the
+  ability of the model to predict S2S drivers
    
   * METplus methods: S2S Use Cases
     
