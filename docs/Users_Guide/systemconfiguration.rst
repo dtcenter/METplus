@@ -12,11 +12,11 @@ Questions to Consider
 What questions to ask when applying METplus to a new testing and evaluation project
 -----------------------------------------------------------------------------------
 
-If you are new to developing a verification or evaluation system or
-to using METplus, there are questions that you should consider to help
-you determine which tools to use and how to set it up.
+If the user is new to developing a verification or evaluation system or
+to using METplus, there are questions that should be considered to help
+determine which tools to use and how to set it up.
 
-* First and foremost, what are the questions you are trying to answer
+* First and foremost, what are the questions need to be answered
   with this testing and evaluation project?
   
 * What type of forecasts and type of observations will be used and how
@@ -30,8 +30,8 @@ you determine which tools to use and how to set it up.
   * What is the geographic location of the model data being evaluated?
     Are there specific areas of interest for the evaluation?
      
-  * Do you want to evaluate on the model domain, observation domain
-    (if gridded), or some other domain?
+  * What domain should be used to evaluate on the model domain, 
+    observation domain (if gridded), or some other domain?
      
   * What is the evaluation time period?
     Retrospective with specific dates?
@@ -203,11 +203,11 @@ Masking regions are what METplus uses to define verification areas of
 interest. These can be defined prior to running tools using the
 Gen-Vx-Mask tool, or during run-time using the METPLUS_MASK_DICT options.
 
-Do you want to evaluate on the model domain, observation domain (if gridded), or some other domain?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+What domain should be used to evaluate on the model domain, observation domain (if gridded), or some other domain?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The decision to evaluate on model or observation/analysis domain is
-user-specific but you may want to consider the following:
+user-specific but the user may want to consider the following:
 
 * Regridding to the courser domain will smooth high resolution information
   that may be important but smoother forecasts tend to score better
@@ -250,7 +250,7 @@ Use Cases? One large one or multiple smaller ones?
   * If scheduled through cron, a bash or csh script can be written to
     set up environment variables to pass into METplus.
     
-  * If automated via a workflow manager, it is recommended you consider
+  * If automated via a workflow manager, it is recommended the user consider
     configuring the use cases to run smaller amounts of data
     
 * Where will METplus be run? Local machine, project machine, HPC system,
@@ -261,7 +261,7 @@ Use Cases? One large one or multiple smaller ones?
     additional user.conf or system.conf file is passed into the
     run_metplus.py to direct where output should be written.
     
-  * Running on HPC systems, check with your system admin to see if it
+  * Running on HPC systems, check with the system admin to see if it
     has been configured as a module and how to load netCDF and Python
     modules.  For NOAA and NCAR HPCs systems, please refer to the
     Existing Builds pages for instructions on how to load the METplus
@@ -269,8 +269,8 @@ Use Cases? One large one or multiple smaller ones?
     
   * Running on Cloud (AWS), these instructions are coming soon.
     
-  * Running in parallel, As of MET v10.1.0 Grid-Stat can be run in parallel.
-    Please reach out via METplus Discussions if you need help with doing this.
+  * Running in parallel. As of MET v10.1.0 Grid-Stat can be run in parallel.
+    Please reach out via METplus Discussions if help is needed.
 
 
 Config Best Practices / Recommendations
@@ -1077,7 +1077,7 @@ then three times will be processed:
 2. Initialized on 2019-02-01 at 00Z / valid on 2019-02-01 at 06Z
 3. Initialized on 2019-02-01 at 00Z / valid on 2019-02-01 at 09Z
 
-You can also define :term:`LEAD_SEQ` using a special notation for many
+The user can also define :term:`LEAD_SEQ` using a special notation for many
 forecast leads. The notation is **begin_end_incr(b,e,i)** where b = the
 first lead value, e = the last lead value (inclusive), and
 i = the increment between leads. For example::
@@ -1095,9 +1095,9 @@ the :term:`LEAD_SEQ` variable for the
 **SeriesByLead Wrapper Only**.
 If :term:`SERIES_BY_LEAD_GROUP_FCSTS` = True, then groups of
 forecast leads can be defined to be evaluated together.
-You can define any number of these groups by setting
+Any number of these groups can be defined by setting
 configuration variables LEAD_SEQ_1, LEAD_SEQ_2, ..., :term:`LEAD_SEQ_\<n\>`.
-You can define the value with a
+The value can be defined with a
 comma-separated list of integers (currently only hours are supported here)
 or using the special begin_end_incr(b,e,i) notation described just
 above. Each :term:`LEAD_SEQ_\<n\>` must have a corresponding
@@ -1208,7 +1208,7 @@ Example 3::
 This will skip every 30th and 31st day **and** every 3rd month.
 
 
-You can use **begin_end_incr(b,e,i)** syntax to define a range of times to
+**begin_end_incr(b,e,i)** syntax can be used to define a range of times to
 skip.
 
 b = begin value, e = end value,
@@ -1226,7 +1226,7 @@ This is equivalent to::
     [config]
     SKIP_TIMES = "%H:0,2,4,6,8,10,12,14,16,18,20,22"
 
-You can also specify multiple strftime directives in a single time format.
+Multiple strftime directives can be specified in a single time format.
 
 Example 5::
 
@@ -1264,15 +1264,15 @@ and the METplus Wrappers is run with::
   [config]
   VALID_END = {now?fmt=%Y%m%d%H}
 
-then the value of :term:`VALID_END` will be set to 2019042608. You can also
-use {today} to substitute the
-current YYYYMMDD, i.e. 20190426. You cannot change the formatting for
-the 'today' keyword.
+then the value of :term:`VALID_END` will be set to 2019042608. {today} 
+can also be used to substitute the
+current YYYYMMDD, i.e. 20190426. The formatting for
+the 'today' keyword cannot be changed..
 
 Shift Keyword
 """""""""""""
 
-You can use the 'shift' keyword to shift the current time by any number of
+The 'shift' keyword can be used to shift the current time by any number of
 seconds. For example, if the METplus Wrappers are run at the
 same clock time with::
 
@@ -1296,7 +1296,7 @@ METplus Wrappers will process the following valid times:
 Truncate Keyword
 """"""""""""""""
 
-You may want to configure the METplus Wrappers to process at 00Z, 06Z, 12Z,
+The user may want to configure the METplus Wrappers to process at 00Z, 06Z, 12Z,
 and 18Z of a given day instead of 02Z, 08Z, 14Z, and 20Z. Having to adjust
 the shift amount differently if running at 08Z or 09Z to get the
 times to line up would be tedious. Instead, use the 'truncate' keyword.
@@ -1972,8 +1972,8 @@ Shifting Times in Filename Templates
 Users can use the 'shift' keyword to adjust the time referenced in the
 filename template relative to the run time. For example, if the input files
 used contained data from 01Z on the date specified in the filename to 01Z on
-the following day. In this example, for a run at 00Z you want to use the
-file from the previous day and for the 01Z to 23Z runs you want to use the
+the following day. In this example, for a run at 00Z use the
+file from the previous day and for the 01Z to 23Z runs, use the
 file that corresponds to the current day. Here is an example::
 
   [config]
@@ -1991,7 +1991,7 @@ Using Windows to find Valid Files
 
 The [FCST/OBS]_FILE_WINDOW_[BEGIN/END] configuration variables can be used
 if the time information in the input data does not exactly line up with the
-run time but you still want to process the data. The default value of the
+run time but the user still wants to process the data. The default value of the
 file window begin and end variables are both 0 seconds. If both values are
 set to 0, METplus Wrappers will require that a file matching the template
 with the exact time requested exists. If either value is non-zero, METplus
@@ -2044,7 +2044,7 @@ Wrapper Specific Windows
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 A user may need to specify a different window on a wrapper-by-wrapper basis.
-If this is the case, you can override the file window values for each
+If this is the case, the user can override the file window values for each
 wrapper. Consider the following configuration::
 
   [config]
@@ -2068,7 +2068,7 @@ Runtime Frequency
 
 Some wrappers have an option to specify how frequently to process data. It can
 be run once to process all of the available files in the desired time range,
-or it can be configured to run over different intervals. This allows you to
+or it can be configured to run over different intervals. This allows the user to
 aggregate the output in a variety of ways. The wrappers that support this
 functionality (along with the configuration variable that controls the setting)
 include:
@@ -2273,12 +2273,12 @@ supports METplus configuration variables that control the MET tool
 configuration file settings.
 **The METplus wrappers provide a special "wrapped" MET configuration file that
 references environment variables that are set by the wrappers based on the
-values set in the METplus configuration files. YOU SHOULD NOT SET ANY OF THESE
-ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT
+values set in the METplus configuration files. THE USER SHOULD NOT SET ANY OF 
+THESE ENVIRONMENT VARIABLES! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT
 CALLS THE MET TOOLS!**
 
 If there is a setting in the MET configuration file that is not currently
-supported by METplus you'd like to control, please refer to:
+supported by METplus that the user would like to control, please refer to:
 :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`.
 
 The following section demonstrates a few examples using GridStat.
@@ -2916,7 +2916,7 @@ This is the equivalent of running this bash command::
 
 on the command line before calling run_metplus.py.
 
-You can also reference other variables in the METplus config file.
+Other variables can also be referenced in the METplus config file.
 For example::
 
   [config]
@@ -2941,7 +2941,7 @@ on the command line before calling run_metplus.py.
 Setting Config Variables with Environment Variables
 ===================================================
 
-You can set METplus config variables to the value of local environment
+The METplus config variables can be set to the value of local environment
 variables when METplus is run. To set any METplus config variable to the
 value of a local environment variable, use the following syntax::
 
@@ -3002,10 +3002,10 @@ Starting in METplus 3.0, users are required to either explicitly set both FCST_*
 
 Example::
 
-    (met_util.py) ERROR: If FCST_VAR1_NAME is set, you must either set OBS_VAR1_NAME or change FCST_VAR1_NAME to BOTH_VAR1_NAME
-    (met_util.py) ERROR: If FCST_VAR2_NAME is set, you must either set OBS_VAR2_NAME or change FCST_VAR2_NAME to BOTH_VAR2_NAME
-    (met_util.py) ERROR: If FCST_VAR1_LEVELS is set, you must either set OBS_VAR1_LEVELS or change FCST_VAR1_LEVELS to BOTH_VAR1_LEVELS
-    (met_util.py) ERROR: If FCST_VAR2_LEVELS is set, you must either set OBS_VAR2_LEVELS or change FCST_VAR2_LEVELS to BOTH_VAR2_LEVELS
+    (met_util.py) ERROR: If FCST_VAR1_NAME is set, the user must either set OBS_VAR1_NAME or change FCST_VAR1_NAME to BOTH_VAR1_NAME
+    (met_util.py) ERROR: If FCST_VAR2_NAME is set, the user must either set OBS_VAR2_NAME or change FCST_VAR2_NAME to BOTH_VAR2_NAME
+    (met_util.py) ERROR: If FCST_VAR1_LEVELS is set, the user must either set OBS_VAR1_LEVELS or change FCST_VAR1_LEVELS to BOTH_VAR1_LEVELS
+    (met_util.py) ERROR: If FCST_VAR2_LEVELS is set, the user must either set OBS_VAR2_LEVELS or change FCST_VAR2_LEVELS to BOTH_VAR2_LEVELS
 
 These cases can be handled automatically by using the :ref:`validate_config`, but users should review the suggested changes, as they may want to update differently.
 
@@ -3064,7 +3064,7 @@ Example log output::
     (met_util.py) ERROR: Set GRID_STAT_CLIMO_MEAN_INPUT_[DIR/TEMPLATE] in a METplus config file to set CLIMO_MEAN_FILE in a MET config
 
     (met_util.py) ERROR: output_prefix variable should reference ${OUTPUT_PREFIX} environment variable
-    (met_util.py) INFO: You will need to add GRID_STAT_OUTPUT_PREFIX to the METplus config file that sets GRID_STAT_CONFIG_FILE. Set it to:
+    (met_util.py) INFO: GRID_STAT_OUTPUT_PREFIX will need to be added to the METplus config file that sets GRID_STAT_CONFIG_FILE. Set it to:
     (met_util.py) INFO: GRID_STAT_OUTPUT_PREFIX = {CURRENT_FCST_NAME}_vs_{CURRENT_OBS_NAME}
 
 These cases can be handled automatically by using the :ref:`validate_config`, but users should review the suggested changes and make sure they add the appropriate recommended METplus configuration variables to their files to achieve the same behavior.
@@ -3098,7 +3098,7 @@ The script named validate_config.py is found in the same directory as run_metplu
   run_metplus.py  ./my_conf.py ./another_config.py
   validate_config.py ./my_conf.py ./another_config.py
 
-You must pass a valid configuration to the script, as in you must properly set :term:`MET_INSTALL_DIR`, :term:`INPUT_BASE`, and :term:`OUTPUT_BASE`, or it will not run.
+A valid configuration must be passed to the script, as in the user must properly set :term:`MET_INSTALL_DIR`, :term:`INPUT_BASE`, and :term:`OUTPUT_BASE`, or it will not run.
 
 The script will evaluate all of the configuration files, including any MET configuration file that is referenced in a _CONFIG_FILE variable, such as :term:`GRID_STAT_CONFIG_FILE`.  For each deprecated item that is found, the script will suggest a replacement for the file where the deprecated item was found.
 
@@ -3167,7 +3167,7 @@ Example 5 (Another MET Configuration File)::
 
   Would you like the make this change to DeprecatedConfig? (y/n)[n]
 
-  IMPORTANT: If it is not already set, add the following in the [config] section to your METplus configuration file that sets GRID_STAT_CONFIG_FILE:
+  IMPORTANT: If it is not already set, add the following in the [config] section to the METplus configuration file that sets GRID_STAT_CONFIG_FILE:
 
   GRID_STAT_OUTPUT_PREFIX = {CURRENT_FCST_NAME}_vs_{CURRENT_OBS_NAME}
   Make this change before continuing! [OK]
@@ -3176,7 +3176,7 @@ Example 5 (Another MET Configuration File)::
     While the METplus developers are very diligent to include deprecated
     variables in this functionality, some may slip through the cracks.
     When upgrading to a new version of METplus, it is important to test
-    and review your use cases to ensure they produce the same results as
+    and review the use cases to ensure they produce the same results as
     the previous version. Please create a post in the
     `METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_
     with any questions.
