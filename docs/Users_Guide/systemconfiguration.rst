@@ -103,35 +103,35 @@ Examples of the nature of fields to be evaluated, are they:
   likely as integers or categories.  Continuous fields can also be
   turned into categorical fields via applying thresholds.
   
-*  Probability fields – the values represent the probability or
-   likelihood of an event occurring, usually represented by thresholds.
+* Probability fields – the values represent the probability or
+  likelihood of an event occurring, usually represented by thresholds.
    
-*  Ensemble fields – are made up of multiple predictions either from
-   the same modeling system or multiple systems.
+* Ensemble fields – are made up of multiple predictions either from
+  the same modeling system or multiple systems.
 
 Here are the definitions statistics categories associated with each
 type of field
  
-*  Continuous statistics - measures how the values of the forecasts
-   differ from the values of the observations
+* Continuous statistics - measures how the values of the forecasts
+  differ from the values of the observations
    
   * METplus line types: SL1L2, SAL1L2, VL1L2, VAL1L2, CNT, VCNT
      
   * METplus tools:
       
-*  Categorical statistics - measures how well the forecast captures events
+* Categorical statistics - measures how well the forecast captures events
    
   * METplus line types: FHO, CTC, CTS, MCTC, MCTS, ECLV, TC stats,
     ExtraTC stats, TC Gen stats
     
-*  Probability statistics - measures attributes such as reliability,
-   resolution, sharpness, and uncertainty
+* Probability statistics - measures attributes such as reliability,
+  resolution, sharpness, and uncertainty
 
   * METplus line types: PCT, PSTD, PJC, PRC
      
-*  Ensemble statistics - measures attributes as the relationship between
-   rank of observation and members, spread of ensemble member solutions
-   and continuous measures of skill
+* Ensemble statistics - measures attributes as the relationship between
+  rank of observation and members, spread of ensemble member solutions
+  and continuous measures of skill
 
 There are also additional verification and diagnostic approaches that can be helpful:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -298,13 +298,13 @@ Config Best Practices / Recommendations
 
 * If configuring METplus Wrappers in a common location for multiple users:
 
-    * It is recommended that the values for **MET_INSTALL_DIR** and
-      **INPUT_BASE** are changed to valid values in the
-      :ref:`default_configuration_file`.
+  * It is recommended that the values for **MET_INSTALL_DIR** and
+    **INPUT_BASE** are changed to valid values in the
+    :ref:`default_configuration_file`.
 
-    * It is recommended to leave **OUTPUT_BASE** set to the default value in
-      the :ref:`default_configuration_file`. This prevents multiple users from
-      accidentally writing to the same output directory.
+  * It is recommended to leave **OUTPUT_BASE** set to the default value in
+    the :ref:`default_configuration_file`. This prevents multiple users from
+    accidentally writing to the same output directory.
 
 * If obtaining the METplus Wrappers with the intention of updating
   the same local directory as new versions become available,
