@@ -9,9 +9,9 @@ model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransp
 # Scientific Objective
 # --------------------
 #
-# This use case utilizes Python embedding to calculate transport variations of the Florida current
+# This use case utilizes Python embedding to calculate transport (units Sv) variations of the Florida current
 # using a submarine cable and snapshot estimates made by shipboard instruments. The code compares the transport 
-# using RTOFS data and compare it with the AOML cable transport data and computes BIAS, RMSE and 
+# using RTOFS data and compare it with the AOML cable transport data and computes BIAS, RMSE, CORRELATION, and 
 # Scatter Index. The operational code utilizes 21 days of data and computes 7 day statistics. 
 # For the use case 3 days of data are utilized. The valid date is passed though an argument. The valid date 
 # is the last processed day i.e. the code grabs 3 previous days of data.    
