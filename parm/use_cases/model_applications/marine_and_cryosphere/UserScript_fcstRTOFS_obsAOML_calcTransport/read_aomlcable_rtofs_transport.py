@@ -12,23 +12,12 @@ from sklearn.metrics import mean_squared_error
 from datetime import datetime, timedelta
 import pandas as pd
 import sys, os
-import yaml
 import logging
-import metcalcpy.util.read_env_vars_in_config as readconfig
 
+vDate=datetime.strptime(sys.argv[1],'%Y%m%d')
 rtofsdir = os.environ.get('CALC_TRANSPORT_RTOFS_DIRNAME') 
 cablefile = os.environ.get('CALC_TRANSPORT_CABLE_FILENAME') 
 eightmilefile = os.environ.get('CALC_TRANSPORT_EIGHTMILE_FILENAME') 
-begDate=os.getenv("YAML_CONFIG_NAME","UserScript_fcstRTOFS_obsAOML_calcTransport.yaml")
-
-try:
-   config = readconfig.parse_config(begDate)
-   logging.info(config)
-except yaml.YAMLError as exc:
-   logging.error(exc)
-
-date_start = config['date_start']
-vDate = date_start.strftime('%Y%m%d')
 
 print('Starting Cable V&V at',datetime.now(),'for',vDate)
 
@@ -163,9 +152,7 @@ if __name__ == "__main__":
     """
     Setup logging
     """
-    logfile = "Cable_Transport.log"
-    logging_level = os.environ.get("LOG_LEVEL","logging.INFO")
-    logging.basicConfig(stream=logfile, level=logging_level)
+    logfile = os.environ.get('CALC_TRANSPORT_LOG_FILE')
 
 
     for end_date in pd.date_range(start_date,stop_date):
@@ -186,5 +173,16 @@ if __name__ == "__main__":
 
     corr=both[fcst].corr(both.transport)
 
-    print("BIAS :",bias, "RMSE :",rmse, "CORR :",corr, "SCATTER INDEX :",scatter_index)
+#    print("BIAS :",bias, "RMSE :",rmse, "CORR :",corr, "SCATTER INDEX :",scatter_index)
 
+    outdir = os.environ.get('OUTPUT_DIR')
+
+    if not os.path.exists(outdir):
+        print(f"Creating output directory: {outdir}")
+        os.makedirs(outdir)
+
+    expected_file = os.path.join(outdir,logfile)
+    print(expected_file)
+
+    with open(expected_file, 'w') as f:
+       print("BIAS :",bias, "RMSE :",rmse, "CORR :",corr, "SCATTER INDEX :",scatter_index, file=f)
