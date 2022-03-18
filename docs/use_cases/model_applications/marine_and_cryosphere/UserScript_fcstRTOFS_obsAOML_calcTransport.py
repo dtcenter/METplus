@@ -8,6 +8,8 @@ model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransp
 ##############################################################################
 # Scientific Objective
 # --------------------
+# The Florida Current flows northward along the eastern Florida coast and feeds to the Gulf Stream. More info can
+# be obtained from: https://www.aoml.noaa.gov/phod/floridacurrent/index.php
 #
 # This use case utilizes Python embedding to calculate transport (units Sv) variations of the Florida current
 # using a submarine cable and snapshot estimates made by shipboard instruments. The code compares the transport 
@@ -20,7 +22,7 @@ model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransp
 # Datasets
 # --------
 #
-# | **Forecast:** RTOFS u (3zuio) amd ,v (3zvio) files via Python Embedding script/file
+# | **Forecast:** RTOFS u(3zuio) amd ,v(3zvio) files via Python Embedding script/file
 #
 # | **Observations:** AOML Florida Current data via Python Embedding script/file
 #
@@ -28,8 +30,7 @@ model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransp
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 #
-# | **Data Source:** NOMADS RTOFS Global + Daily mean transport (https://www.aoml.noaa.gov/phod/floridacurrent/data_access.php) 
-# | + Eightmilecable (static, provided with the use case)
+# | **Data Source:** NOMADS RTOFS Global + Daily mean transport (https://www.aoml.noaa.gov/phod/floridacurrent/data_access.php)+ Eightmilecable (static, provided with the use case)
 
 ##############################################################################
 # External Dependencies
