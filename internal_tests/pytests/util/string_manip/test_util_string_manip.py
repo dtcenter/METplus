@@ -64,6 +64,9 @@ def test_remove_quotes(before, after):
         # 13: single item ending with semi-colon should keep semi-colon
         ('file_type = NETCDF_NCCF;',
          ["file_type = NETCDF_NCCF;"]),
+        # 14: list with line break at beginning
+        ('\nsome_value,\n some_other_value',
+         ["some_value", "some_other_value"]),
     ]
 )
 def test_getlist(string_list, output_list):
