@@ -34,14 +34,14 @@ def getlist(list_str, expand_begin_end_incr=True):
         return []
 
     # remove surrounding comma and spaces from the string
-    list_str = list_str.strip(', ')
+    list_str = list_str.strip(', ').strip()
 
     # remove trailing semi-colon IF found after []s
     if list_str.endswith('];'):
-        list_str = list_str.strip('; ')
+        list_str = list_str.strip('; ').strip()
 
     # remove [ from start (left) and ] from end (right)
-    list_str = list_str.lstrip('[ ').rstrip('] ')
+    list_str = list_str.lstrip('[ ').rstrip('] ').strip()
 
     # remove space around commas
     list_str = re.sub(r'\s*,\s*', ',', list_str)
