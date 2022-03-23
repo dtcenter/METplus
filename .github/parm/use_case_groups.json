@@ -61,13 +61,13 @@
   },
   {
     "category": "marine_and_cryosphere",
-    "index_list": "3-4",
+    "index_list": "3-5",
     "run": false
   },
   {
     "category": "marine_and_cryosphere",
-    "index_list": "5",
-    "run": false
+    "index_list": "6",
+    "run": true
   },
   {
     "category": "medium_range",
