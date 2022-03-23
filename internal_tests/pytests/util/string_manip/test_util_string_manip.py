@@ -61,6 +61,9 @@ def test_remove_quotes(before, after):
         # 12: list with square braces and ending semi-colon (MET format) no quotes
         ('[MET_BASE/poly/LMV.poly];',
          ["MET_BASE/poly/LMV.poly"]),
+        # 13: single item ending with semi-colon should keep semi-colon
+        ('file_type = NETCDF_NCCF;',
+         ["file_type = NETCDF_NCCF;"]),
     ]
 )
 def test_getlist(string_list, output_list):
