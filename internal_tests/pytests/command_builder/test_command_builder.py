@@ -833,3 +833,27 @@ def test_add_met_config_dict_nested(metplus_config):
     cbw.add_met_config_dict(dict_name, items)
     print(f"env_var_dict: {cbw.env_var_dict}")
     assert cbw.env_var_dict.get('METPLUS_OUTER_DICT') == expected_value
+
+@pytest.mark.parametrize(
+    'extra, expected_value', [
+        # trailing semi-colon should be added at end automatically
+        ('file_type = NETCDF_NCCF',
+         "'name=\"name\"; level=\"(*,*)\"; file_type = NETCDF_NCCF;'"),
+        ('file_type = NETCDF_NCCF;',
+         "'name=\"name\"; level=\"(*,*)\"; file_type = NETCDF_NCCF;'"),
+    ]
+)
+def test_get_field_info_extra(metplus_config, extra, expected_value):
+    d_type = 'FCST'
+    name = 'name'
+    level = '"(*,*)"'
+    config = metplus_config()
+    wrapper = CommandBuilder(config)
+    actual_value = wrapper.get_field_info(
+        d_type=d_type,
+        v_name=name,
+        v_level=level,
+        v_extra=extra,
+        add_curly_braces=False
+    )[0]
+    assert actual_value == expected_value
