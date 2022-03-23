@@ -841,6 +841,8 @@ def test_add_met_config_dict_nested(metplus_config):
          "'name=\"name\"; level=\"(*,*)\"; file_type = NETCDF_NCCF;'"),
         ('file_type = NETCDF_NCCF;',
          "'name=\"name\"; level=\"(*,*)\"; file_type = NETCDF_NCCF;'"),
+        ('file_type = NETCDF_NCCF; other_opt = "opt"',
+         "'name=\"name\"; level=\"(*,*)\"; file_type = NETCDF_NCCF; other_opt = \"opt\";'"),
     ]
 )
 def test_get_field_info_extra(metplus_config, extra, expected_value):
