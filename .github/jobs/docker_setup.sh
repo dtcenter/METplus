@@ -41,6 +41,7 @@ fi
 # if MET_FORCE_TAG variable is set and not empty, use that version instead
 if [ ! -z "$MET_FORCE_TAG" ]; then
     MET_TAG=$MET_FORCE_TAG
+    MET_DOCKER_REPO=met
 fi
 
 echo Using MET_DOCKER_REPO=$MET_DOCKER_REPO
