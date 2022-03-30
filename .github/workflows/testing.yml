@@ -84,6 +84,7 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          EXTERNAL_TRIGGER: ${{ needs.job_control.outputs.external_trigger }}
           #MET_FORCE_TAG: 10.0.0
 
   update_data_volumes:
