@@ -94,3 +94,11 @@ echo ::set-output name=branch_name::$branch_name
 
 # get use cases to run
 .github/jobs/get_use_cases_to_run.sh $run_use_cases $run_all_use_cases $run_unit_tests
+
+# echo output variables to review in logs
+echo branch_name: $branch_name
+echo run_diff: $run_diff
+echo run_save_truth_data: $run_save_truth_data
+echo external_trigger: $external_trigger
+echo run_get_image: $run_get_image
+echo run_get_input_data: $run_get_input_data
