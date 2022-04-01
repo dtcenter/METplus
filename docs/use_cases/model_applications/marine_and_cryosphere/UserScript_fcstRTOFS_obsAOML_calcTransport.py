@@ -11,7 +11,7 @@ model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransp
 # The Florida Current flows northward along the eastern Florida coast and feeds to the Gulf Stream. More info can
 # be obtained from: https://www.aoml.noaa.gov/phod/floridacurrent/index.php
 #
-# This use case utilizes Python embedding to calculate transport (units Sv) variations of the Florida current
+# This use case utilizes a Python script to calculate transport (units Sv) variations of the Florida current
 # using a submarine cable and snapshot estimates made by shipboard instruments. The code compares the transport 
 # using RTOFS data and compare it with the AOML cable transport data and computes BIAS, RMSE, CORRELATION, and 
 # Scatter Index. The operational code utilizes 21 days of data and computes 7 day statistics. 
