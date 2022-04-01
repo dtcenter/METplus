@@ -1,5 +1,5 @@
 """
-UserScript: Python Embedding to compute cable transport
+UserScript: Python Script to compute cable transport
 =======================================================
 
 model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransport.conf
