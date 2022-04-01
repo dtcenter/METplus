@@ -86,7 +86,7 @@ model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransp
 #
 
 ##############################################################################
-# Python Embedding
+# User Script
 # ----------------
 #
 # This use case uses one Python script to read forecast and observation data
