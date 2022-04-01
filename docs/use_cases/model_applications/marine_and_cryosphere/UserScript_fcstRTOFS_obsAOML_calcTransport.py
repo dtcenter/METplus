@@ -43,7 +43,7 @@ model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransp
 #
 # If the version of Python used to compile MET did not have these libraries at the time of compilation, you will need to add these packages or create a new Python environment with these packages.
 #
-# If this is the case, you will need to set the MET_PYTHON_EXE environment variable to the path of the version of Python you want to use. If you want this version of Python to only apply to this use case, set it in the [user_env_vars] section of a METplus configuration file.:
+# If this is the case, you will need to set the MET_PYTHON_EXE environment variable to the path of the version of Python you want to use. If you want this version of Python to only apply to this use case, set it in the [user_env_vars] section of a METplus configuration file.::
 #
 #    [user_env_vars]
 #    MET_PYTHON_EXE = /path/to/python/with/required/packages/bin/python
@@ -73,7 +73,7 @@ model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransp
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransport.conf
+# i.e. -c parm/use_cases/model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransport.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransport.conf
@@ -106,11 +106,11 @@ model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransp
 #
 # 1) Passing in UserScript_fcstRTOFS_obsAOML_calcTransport.conf then a user-specific system configuration file::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransport.conf -c /path/to/user_system.conf
+#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransport.conf /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_fcstRTOFS_obsAOML_calcTransport.conf::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransport.conf
+#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransport.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -120,12 +120,11 @@ model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransp
 #
 # Example User Configuration File::
 #
-#   [dir]
+#   [config]
 #   INPUT_BASE = /path/to/sample/input/data
 #   OUTPUT_BASE = /path/to/output/dir
 #   MET_INSTALL_DIR = /path/to/met-X.Y 
 #
-# **NOTE:** All of these items must be found under the [dir] section.
 #
 
 ##############################################################################
