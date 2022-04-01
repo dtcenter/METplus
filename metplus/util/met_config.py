@@ -165,6 +165,12 @@ def add_met_config_dict(config, app_name, output_dict, dict_name, items):
                 metplus_configs.append(
                     f"OBS_{app_name}_WINDOW_{suffix}".upper()
                 )
+
+                # also add support for legacy PB2NC_WINDOW_[BEGIN/END]
+                metplus_configs.append(
+                    f"{app_name}_WINDOW_{suffix}".upper()
+                )
+
                 # also add OBS_WINDOW_[BEGIN/END]
                 metplus_configs.append(f"OBS_WINDOW_{suffix}")
 

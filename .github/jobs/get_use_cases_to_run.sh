@@ -9,7 +9,7 @@ run_all_use_cases=$2
 run_unit_tests=$3
 
 echo Run use cases: $run_use_cases
-echo Run All use cases: $run_all_use_cases
+echo Run all use cases: $run_all_use_cases
 echo Run unit tests: $run_unit_tests
 
 # if running use cases, generate JQ filter to use

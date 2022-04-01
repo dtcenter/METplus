@@ -189,6 +189,12 @@ def test_find_input_files(metplus_config, offsets, offset_to_find):
              'OBS_PB2NC_WINDOW_END': '1800',
          },
          {'METPLUS_OBS_WINDOW_DICT': 'obs_window = {beg = -1800;end = 1800;}'}),
+        # test legacy PB2NC_WINDOW_[BEGIN/END]
+        ({'PB2NC_WINDOW_BEGIN': '-1800', },
+         {'METPLUS_OBS_WINDOW_DICT': 'obs_window = {beg = -1800;}'}),
+
+        ({'PB2NC_WINDOW_END': '1800', },
+         {'METPLUS_OBS_WINDOW_DICT': 'obs_window = {end = 1800;}'}),
 
         ({'PB2NC_MASK_GRID': 'FULL', },
          {'METPLUS_MASK_DICT': 'mask = {grid = "FULL";}'}),

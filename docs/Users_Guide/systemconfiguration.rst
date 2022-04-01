@@ -1387,7 +1387,7 @@ a single run. If the MET tool allows it and METplus Wrappers is configured
 accordingly, these two comparisons would be configured in a single run.
 
 Read explicit time dimension from a NetCDF level
-""""""""""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If the input NetCDF data contains a time dimension, the time can be specified
 in the level value. The MET tool will find the data for the time requested::
@@ -1406,6 +1406,40 @@ functionality). The time can be specified based on the current run time, i.e.::
 
 In this example, {valid?fmt=%Y%m%d_%H%M%S} will be substituted with the valid
 time of the current run.
+
+Substituting Current Level
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+When using Python Embedding to pass in data for a field, one may want to
+call the same Python script for each vertical level specifying the level
+string for each call. In this case, a list of levels can be specified using
+:term:`FCST_VAR<n>_LEVELS` and the value can be substituted into the
+corresponding :term:`FCST_VAR<n>_NAME` using {fcst_level}::
+
+    [config]
+    FCST_VAR1_NAME = {INPUT_BASE}/myscripts/read_nc2xr.py {INPUT_BASE}/mydata/forecast_file.nc4 TMP {valid?fmt=%Y%m%d_%H%M} {fcst_level}
+    FCST_VAR1_LEVELS = P1000,P850,P700,P500,P250,P100
+
+This will call the Python script 6 times:
+
+* {INPUT_BASE}/myscripts/read_nc2xr.py {INPUT_BASE}/mydata/forecast_file.nc4 TMP {valid?fmt=%Y%m%d_%H%M} P1000
+* {INPUT_BASE}/myscripts/read_nc2xr.py {INPUT_BASE}/mydata/forecast_file.nc4 TMP {valid?fmt=%Y%m%d_%H%M} P850
+* {INPUT_BASE}/myscripts/read_nc2xr.py {INPUT_BASE}/mydata/forecast_file.nc4 TMP {valid?fmt=%Y%m%d_%H%M} P700
+* {INPUT_BASE}/myscripts/read_nc2xr.py {INPUT_BASE}/mydata/forecast_file.nc4 TMP {valid?fmt=%Y%m%d_%H%M} P500
+* {INPUT_BASE}/myscripts/read_nc2xr.py {INPUT_BASE}/mydata/forecast_file.nc4 TMP {valid?fmt=%Y%m%d_%H%M} P250
+* {INPUT_BASE}/myscripts/read_nc2xr.py {INPUT_BASE}/mydata/forecast_file.nc4 TMP {valid?fmt=%Y%m%d_%H%M} P100
+
+This only applies if the wrapper runs once per field name/level combination
+such as MODE or if the wrapper is configured to do so,
+for example GridStat using :term:`GRID_STAT_ONCE_PER_FIELD`.
+
+The same logic applies for observation data using
+:term:`OBS_VAR<n>_NAME`, :term:`OBS_VAR<n>_LEVELS`, and {obs_level}.
+
+To reference the current field name and/or level in another configuration
+variable such as :term:`MODE_OUTPUT_PREFIX`, use
+{CURRENT_FCST_NAME}, {CURRENT_FCST_LEVEL}, {CURRENT_OBS_NAME},
+and/or {CURRENT_OBS_LEVEL}.
 
 :term:`FCST_VAR<n>_THRESH` / :term:`OBS_VAR<n>_THRESH`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1453,6 +1487,56 @@ dictionary item in the MET EnsembleStat config file differently than the
 fcst dictionary item. If this is the case, then use these variables. If
 it is not set, the values in the corresponding
 FCST_VAR<n>_[NAME/LEVELS/THRESH/OPTIONS] will be used in the ens dictionary.
+
+Probabilistic Forecast Fields
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If processing probabilistic forecast fields, there are additional configuration
+variables that are used to properly format the field info that is passed into
+the wrapped MET configuration files.
+:term:`FCST_IS_PROB` is used to process probabilistic data::
+
+    [config]
+    FCST_IS_PROB = True
+    FCST_VAR1_NAME = APCP_24_A24_ENS_FREQ_gt0.0
+    FCST_VAR1_LEVELS = "(*,*)"
+
+will add the following to the MET config file::
+
+    fcst = {field = [{ name="APCP_24_A24_ENS_FREQ_gt0.0"; level="(*,*)"; prob=TRUE; cat_thresh=[ ==0.1 ]; }];}
+
+The cat_thresh value defaults to ==0.1 and defines the size of the Nx2 probabilistic contingency table.
+It is set by :term:`FCST_GRID_STAT_PROB_THRESH` (for GridStat)::
+
+    [config]
+    FCST_IS_PROB = True
+    FCST_VAR1_NAME = APCP
+    FCST_VAR1_LEVELS = "(*,*)"
+    FCST_GRID_STAT_PROB_THRESH = ==0.2
+
+will add the following to the MET config file::
+
+    fcst = {field = [{ name="APCP"; level="(*,*)"; prob=TRUE; cat_thresh=[ ==0.2 ]; }];}
+
+Some GRIB files contain probabilistic field information in the
+Product Definition Section (PDS). The format of the fcst.field info to read
+these data expect the name to be set to "PROB" and the field name/level values
+are set inside a prob dictionary.
+If this is the case, then :term:`FCST_PROB_IN_GRIB_PDS` should be set to True.
+At least 1 threshold must be set with :term:`FCST_VAR<n>_THRESH` in this case.
+The threshold value will be formatted in the prob dictionary using
+thresh_lo and/or thresh_hi values::
+
+    [config]
+    FCST_IS_PROB = True
+    FCST_PROB_IN_GRIB_PDS = True
+    FCST_VAR1_NAME = APCP
+    FCST_VAR1_LEVELS = A03
+    FCST_VAR1_THRESH = gt12.7
+
+will add the following to the MET config file::
+
+    fcst = {field = [{ name="PROB"; level="A03"; prob={ name="APCP"; thresh_lo=12.7; } cat_thresh=[ ==0.1 ]; }];}
 
 Wrapper Specific Field Info
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -458,14 +458,14 @@ def replace_config_from_section(config, section, required=True):
         for key in all_configs:
             new_config.set(section_to_copy,
                            key,
-                           config.getraw(section_to_copy, key))
+                           config.getraw(section_to_copy, key, sub_vars=False))
 
     # override values in [config] with values from {section}
     all_configs = config.keys(section)
     for key in all_configs:
         new_config.set('config',
                        key,
-                       config.getraw(section, key))
+                       config.getraw(section, key, sub_vars=False))
 
     return new_config
 
@@ -585,7 +585,7 @@ class METplusConfig(ProdConfig):
                 self._conf.remove_option('config', current_var)
 
     # override get methods to perform additional error checking
-    def getraw(self, sec, opt, default='', count=0):
+    def getraw(self, sec, opt, default='', count=0, sub_vars=True):
         """ parse parameter and replace any existing parameters
             referenced with the value (looking in same section, then
             config, dir, and os environment)
@@ -613,6 +613,10 @@ class METplusConfig(ProdConfig):
         if not in_template and default:
             self.check_default(sec, opt, default)
             return default
+
+        # if not substituting values of other variables return value
+        if not sub_vars:
+            return in_template
 
         # get inner-most tags that could potentially be other variables
         match_list = re.findall(r'\{([^}{]*)\}', in_template)
@@ -1319,14 +1323,6 @@ def check_for_deprecated_config(config):
 def check_for_deprecated_met_config(config):
     sed_cmds = []
     all_good = True
-
-    # set CURRENT_* METplus variables in case they are referenced in a
-    # METplus config variable and not already set
-    for fcst_or_obs in ['FCST', 'OBS']:
-        for name_or_level in ['NAME', 'LEVEL']:
-            current_var = f'CURRENT_{fcst_or_obs}_{name_or_level}'
-            if not config.has_option('config', current_var):
-                config.set('config', current_var, '')
 
     # check if *_CONFIG_FILE if set in the METplus config file and check for
     # deprecated environment variables in those files
