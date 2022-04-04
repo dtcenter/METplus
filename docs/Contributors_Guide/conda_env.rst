@@ -13,7 +13,7 @@ the user to manage dependencies and to isolate the METplus version
 of Python from other Python applications.
 
 To replicate the packages used in the development of METplus, use the
-environment.yml file to recreate the Python environment used by METplus.
+**environment.yml** file to recreate the Python environment used by METplus.
 This file is found at the top-level directory of the
 METplus source code:
 
