@@ -83,10 +83,9 @@ Parent Class
 ^^^^^^^^^^^^
 
 If the new tool falls under one of the existing tool categories,
-then make the tool a subclass of one of those other classes.
+then make the tool a subclass of one of these other classes.
 This should only be done if the functions in the parent class are needed
-by the new wrapper. Use CommandBuilder if there is any doubt about what
-to use.
+by the new wrapper. When in doubt, use the CommandBuilder.
 
 Init Function
 ^^^^^^^^^^^^^
