@@ -99,9 +99,8 @@ isOK is defined in CommandBuilder (ush/command_builder.py).
 
 Its function is to note a failed process while not stopping a parent process.
 Instead of instantly exiting a larger wrapper script once one sub process has
-failed we
-want all of the processes to attempt to be executed and then note which ones
-failed.
+failed this allows all of the processes to attempt to be executed and
+then note which ones failed.
 
 At the end of the wrapper initialization step, all isOK=false will be
 collected and reported. Execution of the wrappers will not occur unless all
