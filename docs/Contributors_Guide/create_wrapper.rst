@@ -7,10 +7,10 @@ Naming
 File Name
 ^^^^^^^^^
 
-To create the new wrapper in the METplus/metplus/wrappers directory and
+To create the new wrapper in the *METplus/metplus/wrappers* directory and
 name it to reflect the wrapper's function, e.g.: new_tool_wrapper.py is
 a wrapper around an application named "new_tool."
-Copy the example_wrapper.py to start the process.
+Copy the **example_wrapper.py** to start the process.
 
 Class Name
 ^^^^^^^^^^
@@ -65,7 +65,7 @@ Naming
 ^^^^^^
 
 Rename the class to match the wrapper's class from the above sections.
-Most wrappers should be a sub-class of the CommandBuilder wrapper::
+Most wrappers should be a subclass of the CommandBuilder wrapper::
 
     class NewToolWrapper(CommandBuilder)
 
@@ -92,7 +92,7 @@ Init Function
 ^^^^^^^^^^^^^
 
 Modify the init function to initialize NewTool from its base class
-to set the self.app_name variable to name of the application.
+to set the self.app_name variable to the name of the application.
 If the application is a MET tool, then set self.app_path to the full path
 of the tool under **MET_BIN_DIR**.
 See the Basic Components :ref:`bc_init_function` section for more information::
@@ -197,7 +197,7 @@ If the wrapper will not loop and process for each forecast lead,
 put the logic to build the command in the run_at_time method.
 
 * It is recommended to divide up the logic into components, as illustrated
-  above, the make the code more readable and easier to test.
+  above, to make the code more readable and easier to test.
 
 * The function self.set_environment_variables should be called by all
   wrappers even if the MET tool does not have a config file. This is done
@@ -284,7 +284,7 @@ Documentation
   section of the User's Guide.
 
 * Create Sphinx documentation files for each new use case
-  (under docs/use_cases). There should be at least one use case in the
-  docs/use_cases/met_tool_wrapper subdirectory for the new wrapper (more if
-  it can be configured in diffferent ways that should be shown in an example).
-  Be sure to add a README.rst file for the header.
+  (under *docs/use_cases*). There should be at least one use case in the
+  *docs/use_cases/met_tool_wrapper* subdirectory for the new wrapper (more if
+  it can be configured in different ways that should be shown in an example).
+  Be sure to add a **README.rst** file for the header.
