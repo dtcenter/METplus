@@ -203,28 +203,32 @@ put the logic to build the command in the run_at_time method.
   wrappers even if the MET tool does not have a config file. This is done
   to set environment variables that MET expects to be set when running, such
   as MET_TMP_DIR and MET_PYTHON_EXE. If no environment variables need to be
-  set specific to the wrapper, you do not need to write your own
-  implementation of the function in the wrapper. You can call the
+  set specific to the wrapper, then no
+  implementation of the function in the wrapper needs to be written.
+  Call the
   implementation of the function from CommandBuilder, which sets the
   environment variables defined in the [user_env_vars] section of the
   configuration file and outputs DEBUG logs for each environment variable
   that has been set in the wrapper. MET_TMP_DIR is automatically set for
   each wrapper.
 
-* Once you have provided all the necessary information to create the MET
+* Once all the necessary information has been provided to create the MET
   command, call self.build_and_run_command(). This calls self.get_command()
-  to assemble the command and verify that the command your wrapper generated
-  contains all of the required arguments.  You may need to override
-  get_command() in your wrapper if your MET application is different from
-  the example.  For instance, some MET tools require flags such as -f to
-  precede the input filename.  You can override get_command in the wrapper
-  to prepend the required flag to the filename in your constructed MET command.
+  to assemble the command and verify that the command wrapper generated
+  contains all of the required arguments. The get_command() in the wrapper
+  may need to be overridden if the MET application is different from
+  the example.
+  For instance, some MET tools require flags such as -f to
+  precede the input filename. The get_command in the wrapper can be
+  overwritten to prepend the required flag to the filename in the
+  constructed MET command.
+
 
 * Call self.clear() at the beginning of each loop iteration that tries to
   build/run a MET command to prevent inadvertently reusing/re-running
   commands that were previously created.
 
-* To allow your use case to use your wrapper, assign the wrapper name to
+* To allow the use case to use the specific wrapper, assign the wrapper name to
   PROCESS_LIST::
 
     [config]
@@ -232,8 +236,8 @@ put the logic to build the command in the run_at_time method.
 
 .. note::
 
-    Do not include the text "Wrapper" at the end of your wrapper name.
-    The PROCESS_LIST is located under the [config] section header in your
+    Do not include the text "Wrapper" at the end of the wrapper name.
+    The PROCESS_LIST is located under the [config] section header in the
     use case and/or example configuration file.
 
 * Add a section to the Python Wrappers page of the documentation with
@@ -257,7 +261,7 @@ put the logic to build the command in the run_at_time method.
   documentation for that use case and a README file to create a header for
   the documentation page.
 
-Your use case/example configuration file is located in a directory structure
+The use case/example configuration file is located in a directory structure
 like the following::
 
     METplus/parm/use_cases/met_tool_wrapper/NewTool/NewTool.conf
