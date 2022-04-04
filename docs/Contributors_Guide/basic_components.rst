@@ -145,11 +145,11 @@ run_all_times function
 
 run_all_times loops over a series of times calling run_at_time for one
 process for each time
-Defined in CommandBuilder but overridden in a wrappers that process all of
+defined in CommandBuilder but overridden in wrappers that process all of
 the data from every run time at once.
 
 See SeriesByLeadWrapper (ush/series_by_lead_wrapper.py) for an example of
-overridding the function
+overriding the function.
 
 get_command function
 ====================
@@ -185,7 +185,7 @@ within the file window range should be used. Some tools allow multiple
 files to be selected. If a tool does not allow multiple files, the file
 closest to the valid time is returned. If multiple files are the same
 distance from the valid time, the first file that was found is used.
-If a wrapper can read in multiple files, the c_dict item
+If a wrapper can be read in multiple files, the c_dict item
 'ALLOW_MULTIPLE_FILES' should be set to True.
 
 do_string_sub function
@@ -215,7 +215,7 @@ information.
 Time Utilities
 ==============
 
-time_util is a collection of functions to handle the idosyncracies of working
+time_util is a collection of functions to handle the idiosyncrasies of working
 with valid, initialization and observation times.
 METplus creates a dictionary containing the current time and either init or
 valid time::
@@ -249,7 +249,7 @@ Adding Support for MET Configuration Variables
 
 The METplus wrappers utilize environment variables to override values in the
 MET configuration files. There are functions in CommandBuilder that can be
-used to easily add support for override MET configuration variables that did
+used to easily add support for override MET configuration variables that
 were not previously supported in METplus configuration files.
 
 There is a utility that can be used to easily see what changes are needed to
@@ -285,9 +285,9 @@ The add_met_config function can be used to set a single MET config variable.
 The function takes a few named arguments to determine how the variable
 should be set.
 
-* name: Name of the variable to set, i.e. model
+* name: Name of the variable to set, i.e. model.
 * data_type: Type of variable. Valid options are int, string, list, float,
-  bool, and thresh
+  bool, and thresh.
 * metplus_configs: List of METplus configuration variable names that should be
   checked. Variable names are checked in order that they appear in the list.
   If any of the variables are set in the config object, then the value will be
@@ -371,7 +371,7 @@ CompareGriddedWrapper and is used by GridStat, PointStat, and EnsembleStat::
 This function handles setting the climo_cdf dictionary. The METplus config
 variable that fits the format {APP_NAME}_{DICTIONARY_NAME}_{VARIABLE_NAME},
 i.e. GRID_STAT_CLIMO_CDF_CDF_BINS for GridStat's climo_cdf.cdf_bins, is
-quieried first. However, this default name is a little redundant, so adding
+queried first. However, this default name is a little redundant, so adding
 the nickname 'GRID_STAT_CLIMO_CDF_BINS' allows the user to set the variable
 GRID_STAT_CLIMO_CDF_BINS instead.
 
