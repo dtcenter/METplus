@@ -78,6 +78,7 @@ is sponsored by NSF.
    :numbered: 4
 
    overview
+   start
    installation
    systemconfiguration
    wrappers
