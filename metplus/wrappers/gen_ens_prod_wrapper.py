@@ -227,6 +227,7 @@ class GenEnsProdWrapper(LoopTimesWrapper):
 
             @param time_info dictionary containing timing information
         """
+        self.clear()
         # add config file to arguments
         config_file = do_string_sub(self.c_dict['CONFIG_FILE'], **time_info)
         self.args.append(f"-config {config_file}")
