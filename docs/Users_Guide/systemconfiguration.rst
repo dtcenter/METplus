@@ -6,6 +6,46 @@ System Configuration
 
 This chapter is a guide on configuring METplus Wrappers.
 
+Config Best Practices / Recommendations
+=======================================
+
+* Set the log level (:ref:`log_level`) to an appropriate level. Setting the
+  value to DEBUG will generate more information in the log output. Users are
+  encouraged to run with DEBUG when getting started with METplus or when
+  investigating unexpected behavior.
+
+* Review the log files to verify that all of the processes ran cleanly.
+  Some log output will be written to the screen, but the log files
+  contain more information, such as log output from the MET tools.
+
+* The order in which METplus config files are read by run_metplus.py matters.
+  Each subsequent config file defined on the command line will override any
+  values defined in an earlier config file. It is recommended to create a
+  :ref:`user_configuration_file` and pass it to the script last to guarantee
+  that those values are used in case any variables are accidentally defined
+  in multiple conf files.
+
+* Check the metplus_final.conf (see :ref:`metplus_final_conf`) file to
+  verify that all variables are set to the expected value,
+  as it contains all the key-values that were specified.
+
+* If configuring METplus Wrappers in a common location for multiple users:
+
+    * It is recommended that the values for **MET_INSTALL_DIR** and
+      **INPUT_BASE** are changed to valid values in the
+      :ref:`default_configuration_file`.
+
+    * It is recommended to leave **OUTPUT_BASE** set to the default value in
+      the :ref:`default_configuration_file`. This prevents multiple users from
+      accidentally writing to the same output directory.
+
+* If obtaining the METplus Wrappers with the intention of updating
+  the same local directory as new versions become available,
+  it is recommended to leave all default values in the
+  :ref:`default_configuration_file` unchanged and set them in a
+  :ref:`user_configuration_file` that is passed into every call to
+  run_metplus.py. This is done to avoid the need to change the default values
+  after every update.
 
 .. _default_configuration_file:
 
@@ -493,79 +533,6 @@ given use case.
 
 More information about the variables set in the use case configuration files
 can be found in the :ref:`common_config_variables` section.
-
-.. _running-metplus:
-
-Running METplus
-===============
-
-Example Wrapper Use Case
-------------------------
-
-* Create a :ref:`user_configuration_file`
-  (named user_system.conf in this example)
-
-* Run the Example Wrapper use case. In a terminal, run::
-
-    run_metplus.py \
-    /path/to/METplus/parm/use_cases/met_tool_wrapper/Example/Example.conf \
-    /path/to/user_system.conf
-
-replacing **/path/to/user_system.conf** with the path to the
-user configuration file and
-**/path/to/METplus** with the path to the location where METplus is installed
-
-The last line of the screen output should match this format::
-
-    05/04 09:42:52.277 metplus (met_util.py:212) INFO: METplus has successfully finished running.
-
-If this log message is not shown, there is likely an issue with one or more
-of the default configuration variable overrides in the
-:ref:`user_configuration_file`.
-
-This use case does not utilize any of the MET tools, but simply demonstrates
-how the :ref:`common_config_variables` control a use case run.
-
-If the run was successful, the line above the success message should contain
-the path to the METplus log file that was generated::
-
-    05/04 09:44:21.534 metplus (met_util.py:211) INFO: Check the log file for more information: /path/to/output/logs/metplus.log.20210504094421
-
-* Review the log file and compare it to the Example.conf use case
-  configuration file to see how the settings correspond to the result.
-
-* Review the :ref:`metplus_final.conf<metplus_final_conf>` file to see all
-  of the settings that were used in the use case.
-
-GridStat Wrapper Basic Use Case
--------------------------------
-
-* :ref:`obtain_sample_input_data` for the **met_tool_wrapper** use cases.
-  The tarfile should be in the directory that corresponds to the
-  major/minor release and starts with sample_data-met_tool_wrapper
-
-* Create a :ref:`user_configuration_file` (named user_system.conf in this
-  example). Ensure that **INPUT_BASE** is set
-  to the directory where the sample data tarfile was uncompressed.
-
-* Run the GridStat Wrapper basic use case. In a terminal, run::
-
-    run_metplus.py \
-    /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf \
-    /path/to/user_system.conf
-
-replacing **/path/to/user_system.conf** with the path to the
-user configuration file and
-**/path/to/METplus** with the path to the location where METplus is installed
-
-If the run was successful, the line above the success message should contain
-the path to the METplus log file that was generated.
-
-* Review the log file and compare it to the GridStat.conf use case
-  configuration file to see how the settings correspond to the result.
-
-* Review the :ref:`metplus_final.conf<metplus_final_conf>` file to see all
-  of the settings that were used in the use case.
 
 .. _common_config_variables:
 
