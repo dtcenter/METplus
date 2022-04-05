@@ -1,8 +1,8 @@
 .. _sysconf:
 
-********************
-System Configuration
-********************
+*************
+Configuration
+*************
 
 This chapter is a guide on configuring METplus Wrappers.
 

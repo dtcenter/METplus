@@ -1,8 +1,8 @@
 .. _install:
 
-*********************
-Software Installation
-*********************
+************
+Installation
+************
 
 Introduction
 ============
