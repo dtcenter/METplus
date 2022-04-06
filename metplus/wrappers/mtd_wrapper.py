@@ -387,6 +387,7 @@ class MTDWrapper(CompareGriddedWrapper):
                 @param model_path forecast file list path
                 @param obs_path observation file list path
         """
+        #?self.clear()
         fcst_field_list = []
         obs_field_list = []
 
