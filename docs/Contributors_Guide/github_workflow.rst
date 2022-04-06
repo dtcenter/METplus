@@ -96,9 +96,10 @@ Fork the dtcenter/METplus repository
 
     https://github.com/<your-github-user>/METplus
 
-  Where *<your-github-user>* is replaced with the user's GitHub username.
-  An entire copy of the dtcenter/METplus Github repository is now in the
-  User's area.
+  Where *<your-github-user>* is replaced with the user's GitHub username,
+  without the angle brackets <>.
+  An entire copy of the *dtcenter/METplus* Github repository is now in the
+  user's area.
 
 
 Clone the fork to a local repository
@@ -113,7 +114,8 @@ Clone the fork to a local repository
 
     git clone https://github.com/<your-github-user>/METplus
 
-  Replacing <your-github-user> with the user's GitHub username.
+  Replacing <your-github-user> with the user's GitHub username and without the
+  angle brackets <>.
 
 * Change directories to the METplus directory:
 
@@ -149,7 +151,8 @@ Set upstream remote
     upstream	https://github.com/dtcenter/METplus (fetch)
     upstream	https://github.com/dtcenter/METplus (push)
 
-  where <your-github-user> is the user's GitHub username.
+  Where <your-github-user> is the user's GitHub username without the
+  angle brackets <>.
 
 
 Generate a feature branch from the 'develop' branch for new development
@@ -173,7 +176,7 @@ Generate a feature branch from the 'develop' branch for new development
 
     git checkout develop
 
-* To verify the current development branch, type:
+* To verify the current development branch is active:
 
   .. code-block:: ini
 
@@ -260,9 +263,9 @@ Commit changes to feature branch
     git add <filename>
     git commit <filename>
 
-  replacing <filename> with the filename and removing the angle brackets<>.
+  Replacing <filename> with the filename and removing the angle brackets<>.
 
-  A popup window will appear. Enter a description of this commit, using the
+  A popup window will appear. Enter a description about this commit, using the
   editor the user selected when the Git account was set up.
   Please refer to the
   `Git Setup <https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup>`_
@@ -292,7 +295,7 @@ Push the feature branch to GitHub
   repository).
 
 Open a pull request using a browser
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * To request to have the changes be incorporated into the remote repository
   (i.e. the
@@ -316,7 +319,7 @@ Open a pull request using a browser
 
     * For the base button, make sure to select 'base:develop'.
 
-    * For the head repository button, make sure to selecte
+    * For the head repository button, make sure to select
       'head repository:<your-github-user>/METplus'
       where <your-github-user> is the user's GitHub
       account name without the angle brackets <>.
@@ -495,7 +498,7 @@ Clean up after a successfully merged pull request
     *git branch -D <branch name>*
     *git push --delete origin <branch name>*
 
-  where <branch name> is the feature branch name, e.g. feature_777_wrapper_xyz.
+  Where <branch name> is the feature branch name, e.g. feature_777_wrapper_xyz.
 
   To verify that the feature branch has been successfully removed/deleted
   via the web browser. Navigate to
