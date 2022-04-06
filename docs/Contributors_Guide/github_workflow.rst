@@ -13,7 +13,7 @@ where new or updated code is created on a 'feature' branch that is based on
 the `dtcenter/METplus GitHub 'develop' branch <https://github.com/dtcenter/METplus/tree/develop>`_.
 
 From James McCreight (WRF-Hydro team) this is a good write-up on
-`best practices for collaboration on GitHub <docs.google.com/document/d/1DxsViogPdA0uObHgNx4YFKd4ClC-m9UFcX0rO-ZJTY0/edit?pli=1#heading=h.g4dgc8a6erna>`_
+`best practices for collaboration on GitHub <docs.google.com/document/d/1DxsViogPdA0uObHgNx4YFKd4ClC-m9UFcX0rO-ZJTY0/edit?pli=1#heading=h.g4dgc8a6erna>`_.
 
 The feature branch is named after the corresponding GitHub issue:
 
@@ -88,9 +88,9 @@ Fork the dtcenter/METplus repository
   `METplus repository <https://github.com/dtcenter/METplus>`_.
 
 * Click on the appropriate GitHub account when presented with the pop-up window
-  with the question 'Where should we fork METplus?'.
+  with the question 'Where should we fork METplus?'
 
-* The web page will refresh to the GitHub repository at, for example:
+* The web page will refresh to the GitHub repository. For example:
 
   .. code-block:: ini
 
@@ -161,14 +161,13 @@ Generate a feature branch from the 'develop' branch for new development
 * Create a feature branch in the *dtcenter/METplus* GitHub repository
   following this naming convention:
 
-| *feature_<Github Issue number>_<brief_description>*
-|
+  *feature_<Github Issue number>_<brief_description>*
 
   For example, for GitHub issue #777 that creates new wrapper xyz, the
   feature branch would be named:
 
-| *feature_777_wrapper_xyz*
-|
+  *feature_777_wrapper_xyz*
+
 
 * Create the feature branch based off the develop branch:
 
@@ -256,7 +255,7 @@ Commit changes to feature branch
 
 * Commit any new files by running the following.  Run the *'git add'*
   command only if this file is
-  newly created and does not yet exist in your repository.
+  newly created and does not yet exist in the repository.
 
   .. code-block:: ini
 
