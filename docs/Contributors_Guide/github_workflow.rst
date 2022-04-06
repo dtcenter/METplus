@@ -196,7 +196,7 @@ Generate a feature branch from the 'develop' branch for new development
 
     git checkout -b feature_777_wrapper_xyz
 
-  replacing *feature_777_wrapper_xyz* with the user's feature branch name.
+  Replacing *feature_777_wrapper_xyz* with the user's feature branch name.
 
 * Verify that the user is working in the correct branch by running:
 
