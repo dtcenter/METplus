@@ -178,6 +178,7 @@ class RuntimeFreqWrapper(CommandBuilder):
 
             time_input['lead'] = '*'
 
+            self.clear()
             if not self.run_at_time_once(time_input):
                 success = False
 
@@ -204,6 +205,7 @@ class RuntimeFreqWrapper(CommandBuilder):
             time_input['init'] = '*'
             time_input['valid'] = '*'
 
+            self.clear()
             if not self.run_at_time_once(time_input):
                 success = False
 
@@ -251,6 +253,7 @@ class RuntimeFreqWrapper(CommandBuilder):
                 self.c_dict['ALL_FILES'] = all_files
 
                 # Run for given init/valid time and forecast lead combination
+                self.clear()
                 self.run_at_time_once(time_info)
 
     def get_all_files(self, custom=None):
