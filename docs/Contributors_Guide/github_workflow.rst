@@ -29,10 +29,10 @@ which includes data tarballs for use in running use cases.
 Sequence of Events - Contributing Code
 --------------------------------------
 
-*Pre-requisite:*
+*Prerequisite:*
 
 The user must set up a GitHub repository account if one does not already
-have exhist.
+exist.
 Log into the account.  For more information about GitHub accounts, please refer
 to the GitHub Documentation on
 `GitHub accounts <https://help.github.com/en/github/getting-started-with-github/signing-up-for-a-new-github-account>`_.
@@ -44,9 +44,9 @@ A contributor to METplus will do the following:
 
 1.  Create a GitHub Issue to track the new contribution.
 
-2.  Fork the dtcenter/METplus repository.
+2.  Fork the *dtcenter/METplus* repository.
 
-3.  Clone the fork to local repository.
+3.  Clone the fork to the local repository.
 
 4.  Set upstream remote (to assist in keeping upstream and local repositories
     synchronized).
@@ -55,7 +55,7 @@ A contributor to METplus will do the following:
 
 6.  Make changes to code in the feature branch.
 
-7.  Commit changes to feature branch (limit one change per commit).
+7.  Commit changes to the feature branch (limit one change per commit).
 
 8.  Push the feature branch to GitHub.
 
@@ -82,9 +82,9 @@ Create a GitHub Issue that reflects what needs to be done
 Fork the dtcenter/METplus repository
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* Retrieve a copy of the source code by forking the dtcenter/METplus repository
-  into the user's own GitHub repository. Click on the **Fork** button in the
-  upper right hand side of the
+* Retrieve a copy of the source code by forking the *dtcenter/METplus*
+  repository into the user's own GitHub repository. Click on the **Fork**
+  button in the upper right hand side of the
   `METplus repository <https://github.com/dtcenter/METplus>`_.
 
 * Click on the appropriate GitHub account when presented with the pop-up window
@@ -96,7 +96,7 @@ Fork the dtcenter/METplus repository
 
     https://github.com/<your-github-user>/METplus
 
-  where *<your-github-user>* is replaced with the user's GitHub username.
+  Where *<your-github-user>* is replaced with the user's GitHub username.
   An entire copy of the dtcenter/METplus Github repository is now in the
   User's area.
 
@@ -113,7 +113,7 @@ Clone the fork to a local repository
 
     git clone https://github.com/<your-github-user>/METplus
 
-  replacing <your-github-user> with the user's GitHub username.
+  Replacing <your-github-user> with the user's GitHub username.
 
 * Change directories to the METplus directory:
 
@@ -401,8 +401,8 @@ Creating a pull request
          email letting them know the reviewer has made a suggested change.
 
     b. Or, a reviewer can edit the file directly on the web by clicking on the
-       “...” icon (three dots) in the right hand corner next to
-       “Viewed” icon and select “Edit file”. 	
+       “...” icon (three dots) in the right hand corner next to the
+       “Viewed” icon and selecting “Edit file”. 	
 
        .. figure:: figure/how_to_edit_file.png
 
