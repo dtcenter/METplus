@@ -8,12 +8,12 @@ a METplus project.
 Questions to Consider
 =====================
 
-What questions to ask when applying METplus to a new testing and evaluation project
------------------------------------------------------------------------------------
+Questions to ask when applying METplus to a new testing and evaluation project
+------------------------------------------------------------------------------
 
-If the user is new to developing a verification or evaluation system or
+If a user is new to developing a verification or evaluation system or
 to using METplus, there are questions that should be considered to help
-determine which tools to use and how to set it up.
+determine which tools to use and how to set up METplus.
 
 * First and foremost, what are the questions need to be answered
   with this testing and evaluation project?
@@ -49,7 +49,9 @@ determine which tools to use and how to set it up.
 This section will provide some guidance on how to use METplus based on
 the answers.
 
-* What type of forecasts and type of observations will be used – will they be gridded or point-based?  The METplus tools that can be used will vary depending on the answer.  Here’s a matrix to help:
+* What type of forecasts and type of observations will be used? Will they be
+  gridded or point-based?  The METplus tools that can be used will vary
+  depending on the answer.  Here’s a matrix to help:
 
 .. role:: raw-html(raw)
    :format: html	  
@@ -93,10 +95,12 @@ the answers.
     resolution, and prediction of events.  It also means understanding
     the nature of the forecast and observations. 
 
-Examples of the nature of fields to be evaluated, are they:
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Examples of the nature of fields to be evaluated
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* Continuous fields – the values change at the decimal level
+Are they?
+
+* Continuous fields – the values change at the decimal level.
 
 * Categorical fields – the values change incrementally most
   likely as integers or categories.  Continuous fields can also be
@@ -108,8 +112,7 @@ Examples of the nature of fields to be evaluated, are they:
 * Ensemble fields – are made up of multiple predictions either from
   the same modeling system or multiple systems.
 
-Here are the definitions statistics categories associated with each
-type of field
+Definitions of statistics categories associated with each type of field:
  
 * Continuous statistics - measures how the values of the forecasts
   differ from the values of the observations
@@ -121,7 +124,7 @@ type of field
 * Categorical statistics - measures how well the forecast captures events
    
   * METplus line types: FHO, CTC, CTS, MCTC, MCTS, ECLV, TC stats,
-    ExtraTC stats, TC Gen stats
+    ExtraTC stats, TC-Gen stats
     
 * Probability statistics - measures attributes such as reliability,
   resolution, sharpness, and uncertainty
@@ -132,10 +135,10 @@ type of field
   rank of observation and members, spread of ensemble member solutions
   and continuous measures of skill
 
-There are also additional verification and diagnostic approaches that can be helpful:
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Additional verification and diagnostic approaches that can be helpful
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* Geographical methods demonstrates where geographically the error occurs
+* Geographical methods demonstrate where the error occurs geographically
 
   * METplus methods: Series-Analysis tool
     
@@ -149,7 +152,7 @@ There are also additional verification and diagnostic approaches that can be hel
   * METplus line types: MODE object attribute files, MODE CTS, MTD object
     attribute files, MTD CTS, Grid-Stat DMAP
     
-* Neighborhoods relaxes the requirement for an exact match by evaluating
+* Neighborhood relaxes the requirement for an exact match by evaluating
   forecasts in the local neighborhood of the observations
    
   * METplus methods: Grid-Stat Neighborhood, Point-Stat HiRA, Ensemble-Stat
@@ -157,7 +160,7 @@ There are also additional verification and diagnostic approaches that can be hel
 
   * METplus line types: NBRCTC, NBRCTS, NBRCNT, ECNT, ORANK, RPS
      
-* Domain Decomposition and Transforms applies a transform to a given field
+* Domain Decomposition and Transform applies a transform to a given field
   to identify errors on different spatial scales:
    
   * METplus methods: Grid-Stat Fourier Decomposition; Wavelet-Stat tool,
@@ -171,7 +174,7 @@ There are also additional verification and diagnostic approaches that can be hel
 
   * METplus methods: Feature Relative Use Cases
      
-* Relationship between two fields: generates a joint PDF between two field
+* Relationship between two fields: generates a joint PDF between two fields
    
   * METplus methods: Grid-Diag tool
     
@@ -180,11 +183,11 @@ There are also additional verification and diagnostic approaches that can be hel
    
   * METplus methods: S2S Use Cases
     
-What is the standard for comparison that provides a reference level of skill (e.g., persistence, climatology, reference model)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+What is the standard for comparison that provides a reference level of skill (e.g., persistence, climatology, reference model)?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Climatologies or Reference models may be passed into METplus using the
-following configuration options
+following configuration options:
 
 * {MET TOOL}_CLIMO_MEAN
   
@@ -193,7 +196,7 @@ following configuration options
 * {MET TOOL}_CLIMO_CDF
    
 This can be found in Grid-Stat, Point-Stat, Gen-Ens-Prod, and Ensemble-Stat
-tools
+tools.
 
 What is the geographic location of the model data being evaluated? Are there specific areas of interest for the evaluation?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -209,13 +212,13 @@ The decision to evaluate on model or observation/analysis domain is
 user-specific but the user may want to consider the following:
 
 * Regridding to the courser domain will smooth high resolution information
-  that may be important but smoother forecasts tend to score better
+  that may be important but smoother forecasts tend to score better.
    
 * Regridding to a finer domain essentially adds in additional information
-  that is not real
+  that is not real.
    
 * One way to avoid the interpolation debate is to regrid both to a third
-  grid
+  grid.
    
 Regridding in METplus can be completed using the Regrid-Data-Plane tool if
 the fields will be used more than once.
@@ -230,7 +233,7 @@ Basically, running retrospectively means that the observations/analyses are
 already available on disk and running in realtime is when the system needs
 to wait for the observations to be available on the system.
 
-In METplus, the LOOP_BY configuration can be used
+In METplus, the LOOP_BY configuration can be used.
 
 LOOP_BY = VALID or REALTIME to have METplus proceed through the data based
 on Valid Time.
@@ -244,32 +247,35 @@ Use Cases? One large one or multiple smaller ones?
 * How will METplus be run? Manually? Scheduled, through cron?
   Automated via a workflow manger (e.g. Rocoto, EC-Flow, Rose-Cylc)?
 
-  * If run manually, this can be done
+  * If run manually, this can be done.
     
   * If scheduled through cron, a bash or csh script can be written to
     set up environment variables to pass into METplus.
     
   * If automated via a workflow manager, it is recommended the user consider
-    configuring the use cases to run smaller amounts of data
+    configuring the use cases to run smaller amounts of data.
     
 * Where will METplus be run? Local machine, project machine, HPC system,
   in the cloud (e.g. AWS)? Serial runs or parallelized?
   
-  * Running on linux or a project machine– identify where METplus is
-    installed by using which run_metplus.py; it is recommended and
+  * Running on linux or a project machine – identify where METplus is
+    installed by running *which run_metplus.py*; it is recommended an
     additional user.conf or system.conf file is passed into the
-    run_metplus.py to direct where output should be written.
+    **run_metplus.py** to direct where output should be written.
     
-  * Running on HPC systems, check with the system admin to see if it
+  * Running on HPC systems - check with the system admin to see if it
     has been configured as a module and how to load netCDF and Python
     modules.  For NOAA and NCAR HPCs systems, please refer to the
-    Existing Builds pages for instructions on how to load the METplus
+    `Existing Builds <https://dtcenter.org/community-code/metplus/download>`_
+    pages for the desired version for instructions on how to load the METplus
     related modules.
     
-  * Running on Cloud (AWS), these instructions are coming soon.
+  * Running on Cloud (AWS) - these instructions are coming soon.
     
-  * Running in parallel. As of MET v10.1.0 Grid-Stat can be run in parallel.
-    Please reach out via METplus Discussions if help is needed.
+  * Running in parallel - As of MET v10.1.0 Grid-Stat can be run in parallel.
+    Please reach out via
+    `METplus Discussions <https://github.com/dtcenter/METplus/discussions>`_
+    if help is needed.
 
 .. _running-metplus:
 
