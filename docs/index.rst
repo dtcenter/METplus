@@ -48,8 +48,10 @@ A description of each tool along with some ancillary repositories are as
 follows:
 
 * **METplus** (`repo <https://github.com/dtcenter/METplus>`__, `docs <https://metplus.readthedocs.io/en/latest/>`__)
-  * **wrappers** - suite of Python-based wrappers that provide low-level automation of METplus software components listed below
-  * **use-cases** - example configuration files and sample data for invoking the METplus wrappers
+
+   * **wrappers** - suite of Python-based wrappers that provide low-level automation of METplus software components listed below
+   * **use-cases** - example configuration files and sample data to demonstrate scientific applications of the METplus wrappers
+
 * **MET** (`repo <https://github.com/dtcenter/MET>`__, `docs <https://met.readthedocs.io/en/latest/>`__) - core statistical tool that matches up grids with either gridded
   analyses or point observations and applies configurable methods to compute
   statistics and diagnostics
