@@ -388,11 +388,12 @@ def is_loop_by_init(config):
 
     return None
 
-def loop_over_times_and_call(config, processes):
+def loop_over_times_and_call(config, processes, custom=None):
     """! Loop over all run times and call wrappers listed in config
 
     @param config METplusConfig object
     @param processes list of CommandBuilder subclass objects (Wrappers) to call
+    @param custom (optional) custom loop string value
     @returns list of tuples with all commands run and the environment variables
     that were set for each
     """
@@ -410,7 +411,8 @@ def loop_over_times_and_call(config, processes):
 
             log_runtime_banner(config, time_input, process)
             add_to_time_input(time_input,
-                              instance=process.instance)
+                              instance=process.instance,
+                              custom=custom)
 
             process.clear()
             process.run_at_time(time_input)
