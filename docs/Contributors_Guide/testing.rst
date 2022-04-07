@@ -7,7 +7,7 @@ directory.
 Unit Tests
 ----------
 
-Unit tests are run with pytest. They are found in the 'pytests' directory.
+Unit tests are run with pytest. They are found in the *pytests* directory.
 Each tool has its own subdirectory containing its test files.
 
 **run_pytests.sh** is a bash script that can be run to execute all of the
