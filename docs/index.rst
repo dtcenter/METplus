@@ -47,10 +47,9 @@ wrappers to provide low-level automation and examples, also called use-cases.
 A description of each tool along with some ancillary repositories are as
 follows:
 
-* **METplus wrappers** (`repo <https://github.com/dtcenter/METplus>`__, `docs <https://metplus.readthedocs.io/en/latest/>`__) - suite of Python-based wrappers that provide
-  low-level automation of MET tools and newly developed plotting capability
-* **METplus use-cases** - configuration files and sample data to show how to
-  invoke METplus wrappers to make using MET tools easier and reproducible
+* **METplus** (`repo <https://github.com/dtcenter/METplus>`__, `docs <https://metplus.readthedocs.io/en/latest/>`__)
+  * **wrappers** - suite of Python-based wrappers that provide low-level automation of METplus software components listed below
+  * **use-cases** - example configuration files and sample data for invoking the METplus wrappers
 * **MET** (`repo <https://github.com/dtcenter/MET>`__, `docs <https://met.readthedocs.io/en/latest/>`__) - core statistical tool that matches up grids with either gridded
   analyses or point observations and applies configurable methods to compute
   statistics and diagnostics
