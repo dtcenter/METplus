@@ -1,7 +1,8 @@
 .. _codingstandards:
 
+****************
 Coding Standards
-================
+****************
 
 
 
@@ -15,14 +16,16 @@ Coding Standards
 * **NOTE: Please do not use f-strings in the run_metplus.py file so that the Python version check can notify the user of the incorrect version. Using Python 3.5 or earlier will output the SyntaxError from the f-string instead of the useful error message.**
 
 Python code analysis tools
---------------------------
+==========================
 
 Static:
+-------
 
 pylint
 ^^^^^^
 
 ::
+   
     pip install pylint or conda install pylint
 
     pylint.org
@@ -61,7 +64,7 @@ vulture
     https://pypi.python.org/pypi/vulture
 
 Dynamic (run-time):
-
+-------------------
 
 cpde-coverage analysis
 ^^^^^^^^^^^^^^^^^^^^^^
