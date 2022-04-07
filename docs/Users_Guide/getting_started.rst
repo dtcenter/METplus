@@ -98,8 +98,6 @@ the answers.
 Examples of the nature of fields to be evaluated
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Are they?
-
 * Continuous fields – the values change at the decimal level.
 
 * Categorical fields – the values change incrementally most
