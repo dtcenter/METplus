@@ -33,7 +33,8 @@ into a directory such as */d1/<USER>/test-use-case-b*, defined in the
 environment file.
 If */d1/<USER>/test-use-case-b* already exists, its content will be copied
 over to */d1/<USER>/test-use-case-a*. If data is found in
-*/d1/<USER>/test-use-case-b* already exists, its content will be copied
+the */d1/<USER>/test-use-case-b* directory  already exists, its content
+will be copied
 over to the */d1/<USER>/test-use-case-a* directory, the script will prompt
 the user to remove those files.
 Once the tests have finished running, the output found in the two
