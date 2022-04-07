@@ -238,7 +238,8 @@ put the logic to build the command in the run_at_time method.
     Do not include the text "Wrapper" at the end of the wrapper name.
 
     Each value must match an existing wrapper name without the ‘Wrapper'
-    suffix. PROCESS_LIST is located under the [config] section header in the
+    suffix. PROCESS_LIST :numref:`Process_list`  is located under the
+    [config] section header in the
     use case and/or example configuration file.
 
 * Add a section to the Python Wrappers page of the documentation with
