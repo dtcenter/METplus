@@ -15,83 +15,105 @@ Coding Standards
   `Sphinx <http://www.sphinx-doc.org/en/master/>`_ for documentation
 * **NOTE: Please do not use f-strings in the run_metplus.py file so that the Python version check can notify the user of the incorrect version. Using Python 3.5 or earlier will output the SyntaxError from the f-string instead of the useful error message.**
 
-Python code analysis tools
+Python Code Analysis Tools
 ==========================
 
-Static:
--------
+Static Tools
+------------
 
 pylint
 ^^^^^^
 
-::
-   
-    pip install pylint or conda install pylint
+`pylint <https://pylint.pycqa.org/en/latest/intro.html>`_ is a tool that checks
+for errors in Python code, tries to enforce a coding standard and looks for code
+smells.
 
-    pylint.org
+To `install pylint <https://pylint.pycqa.org/en/latest/user_guide/installation.html>`_
+the following can be run:
 
-    checks for code errors
+.. code-block:: ini
 
-    pylint pep8 code-to-analyze will check for errors as well as PEP-8 style code
+  pip install pylint
+
+or
+
+.. code-block:: ini
+
+  conda install pylint 
+
+
+To check for errors as well as PEP-8 style code, run:
+
+.. code-block:: ini
+
+  pylint pep8 <code-to-analyze>
+
+replacing <code-to-analyze> with the name of the file to analyze.
+
 
 pyflakes
 ^^^^^^^^
 
-::
+`pyflakes <https://pypi.org/project/pyflakes/>`_ is a simple program which
+checks Python source files for errors. Pyflakes analyzes programs and
+detects various errors. It works by parsing the source file, not importing
+it, so it is safe to use on modules with side effects. It’s also much faster.
 
-    pip install pyflakes or conda install pyflakes
 
-    parses code rather than importing code, therefore OK to use on modules with side-effects
+To install pyflakes the following can be run:
 
-    checks for code errors
+.. code-block:: ini
 
-    faster than pylint
+  pip install pyflakes
 
-    https://pypi.python.org/pypi/pyflakes
+or
 
-    flake8 is wrapper to pyflakes, performs PEP-8 style checking in addition to error checking
-        http://flake8.pycqa.org/en/latest/index.html#quickstart
+.. code-block:: ini
+
+  conda install pyflakes
+
+
+`flake8 <http://flake8.pycqa.org/en/latest/index.html#quickstart>`_ is wrapper
+to pyflakes, performs PEP-8 style checking in addition to error checking.
 
 vulture
 ^^^^^^^
 
-::
+`vulture <https://pypi.org/project/vulture/>`_ finds unused code in Python
+programs and is useful for cleaning up and finding errors in large code bases.
+It checks for unused imports, variables, methods, and classes.
 
-    checks for unused imports, variables, methods, classed ie "dead code"
+To install vulture the following can be run:
 
-    pip install vulture or conda install vulture
+.. code-block:: ini
 
-    https://pypi.python.org/pypi/vulture
+  pip install vulture
 
-Dynamic (run-time):
--------------------
+or
 
-cpde-coverage analysis
+.. code-block:: ini
+
+  conda install vulture
+
+
+Dynamic (run-time) Tools
+------------------------
+
+Code Coverage Analysis
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Useful when running unit tests to determine whether tests are executing all possible branches, loops, etc.
+Code coverage analysis tools are useful when running unit tests to determine
+whether tests are executing all possible branches, loops, etc.
 
-figleaf
-^^^^^^^
+**Examples:**
 
-http://darcs.idyll.org/~t/projects/figleaf/doc/
-Checking for God objects and God methods:
+`Coverage.py <https://coverage.readthedocs.io/>`_: A free tool for
+monitoring the coverage of your Python apps, monitoring every bit of your code
+to find what was executed and what was not.
 
-(from Chapter 4 of "How to Make Mistakes in Python", Mike Pirnat)
+`pytest-cov <https://pypi.org/project/pytest-cov/>`_: A free language plug-in
+to produce a coverage report of your app.
 
-::
-
-    find . -name "*.py" -exec wc -l {} \; | sort -g -r
-        for all Python source files, order by size
-        anything over 1000 lines is worth investigating (as general rule of thumb)
-
-    grep "^class " mybigmodule.py |wc -l
-        counts the number of classes defined in mybigmodule.py
-
-    grep "\sdef " mybigmodule.py |wc -l
-
-        counts the number of methods defined within a class or other function (ie at some level of indentation) in mybigmodule.py
-
-        try this if the above doesn't work: grep "def " mybigmodule.py |wc -l
-
-    A high ratio of methods to classes warrants investigation (what constitutes a high ratio- 10:1, 5:1???)
+`figleaf <https://ctb.github.io/figleaf/doc/>`_: A code coverage analysis
+tool intended to be to be a minimal replacement of 'coverage.py' that supports
+more configurable coverage gathering and reporting.
