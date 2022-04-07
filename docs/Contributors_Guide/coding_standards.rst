@@ -28,7 +28,7 @@ pylint
 for errors in Python code, tries to enforce a coding standard and looks for code
 smells.
 
-To `install pylint <https://pylint.pycqa.org/en/latest/user_guide/installation.html>`
+To `install pylint <https://pylint.pycqa.org/en/latest/user_guide/installation.html>`_
 the following can be run:
 
 .. code-block:: ini
@@ -46,7 +46,9 @@ To check for errors as well as PEP-8 style code, run:
 
 .. code-block:: ini
 
-  pylint pep8 code-to-analyze
+  pylint pep8 <code-to-analyze>
+
+replacing <code-to-analyze> with the name of the file to analyze.
 
 
 pyflakes
@@ -71,13 +73,6 @@ or
   conda install pyflakes
 
 
-To check for errors as well as PEP-8 style code, run:
-
-.. code-block:: ini
-
-  pylint pep8 code-to-analyze
-
-
 `flake8 <http://flake8.pycqa.org/en/latest/index.html#quickstart>`_ is wrapper
 to pyflakes, performs PEP-8 style checking in addition to error checking.
 
@@ -85,7 +80,7 @@ vulture
 ^^^^^^^
 
 `vulture <https://pypi.org/project/vulture/>`_ finds unused code in Python
-programs. This is useful for cleaning up and finding errors in large code bases.
+programs and is useful for cleaning up and finding errors in large code bases.
 It checks for unused imports, variables, methods, and classes.
 
 To install vulture the following can be run:
@@ -110,15 +105,15 @@ Code Coverage Analysis
 Code coverage analysis tools are useful when running unit tests to determine
 whether tests are executing all possible branches, loops, etc.
 
-Examples:
+**Examples:**
 
-`Coverage.py <https://coverage.readthedocs.io/en/v4.5.x/>`_: A free tool for
+`Coverage.py <https://coverage.readthedocs.io/>`_: A free tool for
 monitoring the coverage of your Python apps, monitoring every bit of your code
 to find what was executed and what was not.
 
 `pytest-cov <https://pypi.org/project/pytest-cov/>`_: A free language plug-in
 to produce a coverage report of your app.
 
-`Figleaf <https://ctb.github.io/figleaf/doc/>`_: A code coverage analysis
+`figleaf <https://ctb.github.io/figleaf/doc/>`_: A code coverage analysis
 tool intended to be to be a minimal replacement of 'coverage.py' that supports
 more configurable coverage gathering and reporting.
