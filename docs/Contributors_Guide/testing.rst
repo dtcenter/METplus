@@ -21,7 +21,7 @@ Use Case Tests
 --------------
 
 Use case tests are run via a Python script called **test_use_cases.py**,
-found in the use_cases directory.
+found in the *use_cases* directory.
 Eventually the running of these tests will be automated using an external
 tool, such as GitHub Actions or Travis CI.
 The script contains a list of use cases that are found in the repository.
@@ -32,10 +32,10 @@ All of the use cases can be run by executing the script
 into a directory such as */d1/<USER>/test-use-case-b*, defined in the
 environment file.
 If */d1/<USER>/test-use-case-b* already exists, its content will be copied
-over to */d1/<USER>/test-use-case-a*. If data is found in If
+over to */d1/<USER>/test-use-case-a*. If data is found in
 */d1/<USER>/test-use-case-b* already exists, its content will be copied
-over the */d1/<USER>/test-use-case-a*, the script will prompt the user to
-remove those files.
+over to the */d1/<USER>/test-use-case-a* directory, the script will prompt
+the user to remove those files.
 Once the tests have finished running, the output found in the two
 directories can be compared to see what has changed. Suggested commands
 to run to compare the output will be shown on the screen after completion
