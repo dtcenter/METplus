@@ -274,14 +274,12 @@ class PB2NCWrapper(CommandBuilder):
                 input_dict['custom'] = custom_string
 
                 # Run for given init/valid time and forecast lead combination
+                self.clear()
                 self.run_at_time_once(input_dict)
 
 
     def run_at_time_once(self, input_dict):
         """!Find files needed to run pb2nc and run if found"""
-        # clear out information set from previous run
-        self.clear()
-
         # look for input files to process
         time_info = self.find_input_files(input_dict)
 

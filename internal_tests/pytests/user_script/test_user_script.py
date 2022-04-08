@@ -321,6 +321,30 @@ def set_run_type_info(config, run_type):
           'echo init_20141026093015_valid_20141101093015_lead_144.nc',
           'echo init_20141025093015_valid_20141101093015_lead_168.nc',
           ]),
+        # run once custom loop list
+        ({'USER_SCRIPT_RUNTIME_FREQ': 'RUN_ONCE',
+          'USER_SCRIPT_COMMAND': 'echo {custom}',
+          'USER_SCRIPT_CUSTOM_LOOP_LIST': 'a,b'},
+         None,
+         ['echo a', 'echo b']),
+        # run per valid custom loop list
+        ({'USER_SCRIPT_RUNTIME_FREQ': 'RUN_ONCE_PER_INIT_OR_VALID',
+          'USER_SCRIPT_COMMAND': 'echo {custom}',
+          'USER_SCRIPT_CUSTOM_LOOP_LIST': 'a,b'},
+         ['VALID'],
+         ['echo a'] * 3 + ['echo b'] * 3),
+        # run per init custom loop list
+        ({'USER_SCRIPT_RUNTIME_FREQ': 'RUN_ONCE_PER_INIT_OR_VALID',
+          'USER_SCRIPT_COMMAND': 'echo {custom}',
+          'USER_SCRIPT_CUSTOM_LOOP_LIST': 'a,b'},
+         ['INIT'],
+         ['echo a'] * 3 + ['echo b'] * 3),
+        # run all init/lead sequence - simple
+        ({'USER_SCRIPT_RUNTIME_FREQ': 'RUN_ONCE_FOR_EACH',
+          'USER_SCRIPT_COMMAND': 'echo {custom}',
+          'USER_SCRIPT_CUSTOM_LOOP_LIST': 'a,b'},
+         ['LEAD_SEQ', 'INIT'],
+         ['echo a'] * 12 + ['echo b'] * 12),
     ]
 )
 def test_run_user_script_all_times(metplus_config, input_configs,
@@ -340,7 +364,7 @@ def test_run_user_script_all_times(metplus_config, input_configs,
     all_commands = wrapper.run_all_times()
 
     if not all_commands:
-        assert(False)
+        assert False
 
     clock_time = datetime.strptime(config.getstr('config', 'CLOCK_TIME'),
                                    '%Y%m%d%H%M%S')
@@ -349,4 +373,4 @@ def test_run_user_script_all_times(metplus_config, input_configs,
         expected_cmd = sub_clock_time(expected_cmd, clock_time)
         print(f"  ACTUAL:{actual_cmd}")
         print(f"EXPECTED:{expected_cmd}")
-        assert(actual_cmd == expected_cmd)
+        assert actual_cmd == expected_cmd
