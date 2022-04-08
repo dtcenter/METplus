@@ -3,7 +3,7 @@ Deprecating an Old Config Variable
 
 If a config variable changes names, an alert is needed to let
 the user know that they need to update the config files if they
-are using adeprecated variable.
+are using a deprecated variable.
 
 Example
 -------
@@ -54,13 +54,14 @@ If any of these old variables are found in any config file passed to
 METplus by the user, an error report will be displayed with the old
 variables and suggested new ones if applicable.
 
-If the user would like to use an old config variable, a warning can
-be set up to warn the users that they should still update because it
-will be phased out in the future. To do this, the user can add the
-‘req’ item to the dictionary and set it to False. It
-will warn the user but not stop execution. If this is done, the user needs
-to be sure to modify the code to check for the new config and if it is
-not set, check for the old config as well.
+If support for an old config variable is temporarily needed, the
+user should be warned to update their config file because the
+variable will be phased out in the future. In this case, add the
+‘req’ item to the dictionary and set it to False.  This will provide
+a warning to the user but will not stop the execution of the code.
+If this is done, be sure to modify the code to check for the new
+config variable, and if it is not set, check the old config variable
+to see if it is set. 
 
 **Example**
 ::

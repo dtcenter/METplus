@@ -105,7 +105,7 @@ Fork the dtcenter/METplus repository
 Clone the fork to a local repository
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* Copy the source code to the directory where the user will be working.
+* Copy the source code to the working directory.
 
 * Change directories to a working directory. From the command line,
   enter the following:
@@ -114,7 +114,7 @@ Clone the fork to a local repository
 
     git clone https://github.com/<your-github-user>/METplus
 
-  Replacing <your-github-user> with the user's GitHub username and without the
+  replacing <your-github-user> with the user's GitHub username and without the
   angle brackets <>.
 
 * Change directories to the METplus directory:
@@ -123,13 +123,13 @@ Clone the fork to a local repository
 
     cd METplus
 
-  This is the local METplus repository for the user.
+  This is the local METplus repository.
 
 Set upstream remote
 ^^^^^^^^^^^^^^^^^^^
 
 * Add a remote named origin to the clone of the local Git repository, which
-  will allow changes to be pushed to the repository that was forked in step 1.
+  will allow changes to be pushed to the repository that was forked above.
 
   .. code-block:: ini
 
@@ -142,7 +142,7 @@ Set upstream remote
 
     git remote -v
 
-  Something like the following should appear:
+  Something like the following will be output:
 
   .. code-block:: ini
 
@@ -151,7 +151,7 @@ Set upstream remote
     upstream	https://github.com/dtcenter/METplus (fetch)
     upstream	https://github.com/dtcenter/METplus (push)
 
-  Where <your-github-user> is the user's GitHub username without the
+  where <your-github-user> is the user's GitHub username without the
   angle brackets <>.
 
 
@@ -175,13 +175,13 @@ Generate a feature branch from the 'develop' branch for new development
 
     git checkout develop
 
-* To verify the current development branch is active:
+* Verify the current development branch is active by running:
 
   .. code-block:: ini
 
     git branch
 
-  Something like the following should appear:
+  Something like the following will be output:
 
   .. code-block:: ini
 
@@ -196,7 +196,7 @@ Generate a feature branch from the 'develop' branch for new development
 
     git checkout -b feature_777_wrapper_xyz
 
-  Replacing *feature_777_wrapper_xyz* with the user's feature branch name.
+  replacing *feature_777_wrapper_xyz* with the user's feature branch name.
 
 * Verify that the user is working in the correct branch by running:
 
@@ -204,7 +204,7 @@ Generate a feature branch from the 'develop' branch for new development
 
     git branch
 
-  Something like the following should appear:
+  Something like the following will be output:
 
   .. code-block:: ini
 
@@ -212,7 +212,7 @@ Generate a feature branch from the 'develop' branch for new development
     main_v3.1
     * feature_777_wrapper_xyz
 
-  Where the asterisk, "*", indicates which branch is currently in
+  where the asterisk, "*", indicates which branch is currently in
   use/checked out.
 
 
@@ -229,9 +229,9 @@ local repository.
   user documentation
   describing what the code does, and provide any necessary data.
 
-* Keep the fork in sync. with the original repository. While working, it is
+* Keep the fork in sync with the original repository. While working, it is
   highly likely that changes are occurring in
-  the original repository.  This may impact the user's work.
+  the original repository, which could have an impact.
   Regularly use the following commands
   to keep the fork in sync with the original repository.
 
@@ -243,9 +243,10 @@ local repository.
 
   The first command pulls changes from the original repository (the
   `METplus GitHub repository <https://github.com/dtcenter/METplus>`_
-  that will be seen when
-  running *git remote -v* and that the user set to upstream in step 4 above).
-  The second command pushes those changes to the user's forked repository.
+  that is output when 
+  running *git remote -v* and that was set to upstream in the
+  "Set upstream remote" section above).
+  The second command pushes those changes to the forked repository.
   The third command will merge the local
   develop branch into the feature branch.
 
@@ -262,7 +263,7 @@ Commit changes to feature branch
     git add <filename>
     git commit <filename>
 
-  Replacing <filename> with the filename and removing the angle brackets<>.
+  replacing <filename> with the filename and removing the angle brackets (<>).
 
   A popup window will appear. Enter a description about this commit, using the
   editor the user selected when the Git account was set up.
@@ -288,8 +289,8 @@ Push the feature branch to GitHub
 
     git push origin <feature_777_wrapper_xyz>
 
-  Replacing *<feature_777_wrapper_xyz>* with the feature branch name.
-  Push the changes to
+  replacing *<feature_777_wrapper_xyz>* with the feature branch name
+  to push the changes to
   the origin (i.e. to the *https://github.com/<your-github-user>/METplus*
   repository).
 
@@ -320,8 +321,8 @@ Open a pull request using a browser
 
     * For the head repository button, make sure to select
       'head repository:<your-github-user>/METplus'
-      where <your-github-user> is the user's GitHub
-      account name without the angle brackets <>.
+      with the appropriate replacement for
+      <your-github-user>.
 
     * For the compare button, make sure to select
       'compare:<your_feature_branch>'
@@ -330,8 +331,8 @@ Open a pull request using a browser
 
     * In the 'write' window, follow the directions and fill in the template.
       Add any additional comments/details.  When filling in the template,
-      users will need to "Define the PR metadata, as permissions allow.
-      Select: **Reviewer(s), Project(s)**, and **Milestone**" When selecting a
+      be sure to "Define the PR metadata, as permissions allow.
+      Select: **Reviewer(s), Project(s)**, and **Milestone**". When selecting a
       reviewer, internal contributors submitting pull requests should select
       the appropriate reviewer(s) and let the reviewer know that the pull
       request has been assigned to them. If external contributors are unsure
@@ -387,7 +388,7 @@ Creating a pull request
 
     A reviewer can suggest changes be made by:
     
-    a. Mousing over the line to make a comment.
+    a. Mousing over the line to comment on.
 
        .. figure:: figure/add_comment_on_line.png
 
@@ -475,7 +476,7 @@ Clean up after a successfully merged pull request
 
     git checkout develop
 
-* Verify that the user is now working from the develop branch:
+* Verify that the develop branch is now active:
 
   .. code-block:: ini
 
@@ -497,15 +498,14 @@ Clean up after a successfully merged pull request
     *git branch -D <branch name>*
     *git push --delete origin <branch name>*
 
-  Where <branch name> is the feature branch name, e.g. feature_777_wrapper_xyz.
+  where <branch name> is the feature branch name, e.g. feature_777_wrapper_xyz.
 
-  To verify that the feature branch has been successfully removed/deleted
+  Verify that the feature branch has been successfully removed/deleted
   via the web browser. Navigate to
   https://github.com/<your-github-user>/METplus,
-  replacing <your-github-user> with the user's GitHub username without the
-  angle brackets <>. Under the 'Branch'
+  replacing <your-github-user> appropriately. Under the 'Branch'
   pulldown menu, the feature branch name should no longer be seen
-  as a selection.
+  as an option.
 
 
 

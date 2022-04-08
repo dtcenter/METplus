@@ -12,10 +12,10 @@ Each tool has its own subdirectory containing its test files.
 
 **run_pytests.sh** is a bash script that can be run to execute all of the
 pytests. A report will be output showing which pytest categories failed.
-When running on a new computer, the user must create a
-**minimum_pytest.<HOST>.sh**
-file to be able to run the script. This file contains information about
-the local environment so that the tests can run.
+When running on a new computer, a
+**minimum_pytest.<HOST>.sh** 
+file must be created to be able to run the script. This file contains
+information about the local environment so that the tests can run.
 
 Use Case Tests
 --------------

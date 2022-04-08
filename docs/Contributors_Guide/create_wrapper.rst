@@ -7,7 +7,7 @@ Naming
 File Name
 ^^^^^^^^^
 
-To create the new wrapper in the *METplus/metplus/wrappers* directory and
+Create the new wrapper in the *METplus/metplus/wrappers* directory and
 name it to reflect the wrapper's function, e.g.: new_tool_wrapper.py is
 a wrapper around an application named "new_tool."
 Copy the **example_wrapper.py** to start the process.
@@ -83,7 +83,7 @@ Parent Class
 ^^^^^^^^^^^^
 
 If the new tool falls under one of the existing tool categories,
-then make the tool a subclass of one of these other classes.
+then make the tool a subclass of one of the existing classes.
 This should only be done if the functions in the parent class are needed
 by the new wrapper. When in doubt, use the CommandBuilder.
 
@@ -218,10 +218,9 @@ put the logic to build the command in the run_at_time method.
   may need to be overridden if the MET application is different from
   the example.
   For instance, some MET tools require flags such as -f to
-  precede the input filename. The get_command in the wrapper can be
+  precede the input filename. The get_command function in the wrapper can be
   overwritten to prepend the required flag to the filename in the
   constructed MET command.
-
 
 * Call self.clear() at the beginning of each loop iteration that tries to
   build/run a MET command to prevent inadvertently reusing/re-running
@@ -238,7 +237,7 @@ put the logic to build the command in the run_at_time method.
     Do not include the text "Wrapper" at the end of the wrapper name.
 
     Each value must match an existing wrapper name without the ‘Wrapper'
-    suffix. PROCESS_LIST :numref:`Process_list`  is located under the
+    suffix. The PROCESS_LIST :numref:`Process_list`  is located under the
     [config] section header in the
     use case and/or example configuration file.
 
@@ -263,7 +262,7 @@ put the logic to build the command in the run_at_time method.
   documentation for that use case and a README file to create a header for
   the documentation page.
 
-The use case/example configuration file is located in a directory structure
+This new uuse case/example configuration file is located in a directory structure
 like the following::
 
     METplus/parm/use_cases/met_tool_wrapper/NewTool/NewTool.conf
@@ -271,7 +270,7 @@ like the following::
     METplus/docs/use_cases/met_tool_wrapper/NewTool/README.md
 
 Note the documentation file is in METplus/docs while the use case conf file
-is in METplus/parm
+is in METplus/parm.
 
 Refer to the :ref:`basic_components_of_wrappers` section of the Contributor's
 Guide for more information on what should be added.
@@ -284,7 +283,7 @@ Documentation
   to this wrapper.
 
 * Add all new configuration variables to the 'METplus Configuration Glossary'
-  section of the User's Guide
+  section of the User's Guide.
 
 * Add any relevant new keywords to the 'METplus Quick Search for Use Cases'
   section of the User's Guide.

@@ -144,9 +144,8 @@ run_all_times function
 ======================
 
 run_all_times loops over a series of times calling run_at_time for one
-process for each time
-defined in CommandBuilder but overridden in wrappers that process all of
-the data from every run time at once.
+process for each time. Defined in CommandBuilder but overridden in
+wrappers that process all of the data from every run time at once.
 
 See SeriesByLeadWrapper (ush/series_by_lead_wrapper.py) for an example of
 overriding the function.
@@ -174,10 +173,10 @@ MET_TMP_DIR and MET_PYTHON_EXE.
 find_data/find_model/find_obs functions (in CommandBuilder)
 ===========================================================
 
-find_* uses the c_dict directory templates and then queries the file system
-to find files.
-c_dict dictionary uses items [FCST/OBS]_FILE_WINDOW_[BEGIN/END],
-[FCST/OBS]_INPUT_[DIR/TEMPLATE], etc.
+These find_* functions use the c_dict directory templates, queries
+the file system to find files, and use c_dict dictionary items
+like [FCST/OBS]_FILE_WINDOW_[BEGIN/END], [FCST/OBS]_INPUT_[DIR/TEMPLATE],
+etc.
 If [FCST/OBS]_FILE_WINDOW_[BEGIN/END] are non-zero, these functions will
 list all files under [FCST/OBS]_INPUT_DIR and use [FCST/OBS]_INPUT_TEMPLATE
 to extract out time information from each file to determine which files
@@ -249,7 +248,7 @@ Adding Support for MET Configuration Variables
 
 The METplus wrappers utilize environment variables to override values in the
 MET configuration files. There are functions in CommandBuilder that can be
-used to easily add support for override MET configuration variables that
+used to easily add support for overriding MET configuration variables that
 were not previously supported in METplus configuration files.
 
 There is a utility that can be used to easily see what changes are needed to
@@ -285,7 +284,7 @@ The add_met_config function can be used to set a single MET config variable.
 The function takes a few named arguments to determine how the variable
 should be set.
 
-* name: Name of the variable to set, i.e. model.
+* name: Name of the variable to set, i.e. model
 * data_type: Type of variable. Valid options are int, string, list, float,
   bool, and thresh.
 * metplus_configs: List of METplus configuration variable names that should be
