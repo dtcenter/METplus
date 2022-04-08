@@ -34,7 +34,7 @@ def set_minimum_config_settings(config):
     config.set('config', 'INIT_BEG', run_times[0])
     config.set('config', 'INIT_END', run_times[-1])
     config.set('config', 'INIT_INCREMENT', '6H')
-    config.set('config', 'LEAD_SEQ', '24H')
+    config.set('config', 'LEAD_SEQ', '24H, 48H')
     config.set('config', 'LOOP_ORDER', 'times')
     config.set('config', 'GEN_ENS_PROD_CONFIG_FILE',
                '{PARM_BASE}/met_config/GenEnsProdConfig_wrapped')
@@ -385,19 +385,32 @@ def test_gen_ens_prod_single_field(metplus_config, config_overrides,
                                  'file_lists')
     config_file = wrapper.c_dict.get('CONFIG_FILE')
     out_dir = wrapper.c_dict.get('OUTPUT_DIR')
-    expected_cmds = [(f"{app_path} {verbosity} -ens "
-                      f"{file_list_dir}/20091231120000_24_gen_ens_prod.txt "
-                      "-out "
-                      f"{out_dir}/gen_ens_prod_20100101_120000V_ens.nc "
-                      f"-config {config_file} -ctrl "
-                      f"{input_dir}/2009123112/arw-tom-gep3/d01_2009123112_02400.grib"),
-                     (f"{app_path} {verbosity} -ens "
-                      f"{file_list_dir}/20091231180000_24_gen_ens_prod.txt "
-                      "-out "
-                      f"{out_dir}/gen_ens_prod_20100101_180000V_ens.nc "
-                      f"-config {config_file} -ctrl "
-                      f"{input_dir}/2009123118/arw-tom-gep3/d01_2009123118_02400.grib"),
-                     ]
+    expected_cmds = [
+        (f"{app_path} {verbosity} -ens "
+         f"{file_list_dir}/20091231120000_24_gen_ens_prod.txt "
+         "-out "
+         f"{out_dir}/gen_ens_prod_20100101_120000V_ens.nc "
+         f"-config {config_file} -ctrl "
+         f"{input_dir}/2009123112/arw-tom-gep3/d01_2009123112_02400.grib"),
+        (f"{app_path} {verbosity} -ens "
+         f"{file_list_dir}/20091231120000_48_gen_ens_prod.txt "
+         "-out "
+         f"{out_dir}/gen_ens_prod_20100102_120000V_ens.nc "
+         f"-config {config_file} -ctrl "
+         f"{input_dir}/2009123112/arw-tom-gep3/d01_2009123112_04800.grib"),
+        (f"{app_path} {verbosity} -ens "
+         f"{file_list_dir}/20091231180000_24_gen_ens_prod.txt "
+         "-out "
+         f"{out_dir}/gen_ens_prod_20100101_180000V_ens.nc "
+         f"-config {config_file} -ctrl "
+         f"{input_dir}/2009123118/arw-tom-gep3/d01_2009123118_02400.grib"),
+        (f"{app_path} {verbosity} -ens "
+         f"{file_list_dir}/20091231180000_48_gen_ens_prod.txt "
+         "-out "
+         f"{out_dir}/gen_ens_prod_20100102_180000V_ens.nc "
+         f"-config {config_file} -ctrl "
+         f"{input_dir}/2009123118/arw-tom-gep3/d01_2009123118_04800.grib"),
+    ]
 
     all_cmds = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_cmds}")
@@ -472,7 +485,7 @@ def test_gen_ens_prod_fill_missing(metplus_config, config_overrides,
         os.remove(file_list_file)
 
     all_cmds = wrapper.run_all_times()
-    assert len(all_cmds) == 1
+    assert len(all_cmds) == 2
 
     with open(file_list_file, 'r') as file_handle:
         actual_num_files = len(file_handle.read().splitlines()) - 1

@@ -138,7 +138,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         elif runtime_freq == 'RUN_ONCE_PER_LEAD':
             self.run_once_per_lead(custom)
         elif runtime_freq == 'RUN_ONCE_FOR_EACH':
-            self.all_commands = super().run_all_times()
+            self.all_commands = super().run_all_times(custom)
 
     def run_once(self, custom):
         self.logger.debug("Running once for all files")
@@ -178,6 +178,7 @@ class RuntimeFreqWrapper(CommandBuilder):
 
             time_input['lead'] = '*'
 
+            self.clear()
             if not self.run_at_time_once(time_input):
                 success = False
 
@@ -204,6 +205,7 @@ class RuntimeFreqWrapper(CommandBuilder):
             time_input['init'] = '*'
             time_input['valid'] = '*'
 
+            self.clear()
             if not self.run_at_time_once(time_input):
                 success = False
 
@@ -216,42 +218,37 @@ class RuntimeFreqWrapper(CommandBuilder):
 
             @param input_dict dictionary containing time information
         """
-        for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
-            if custom_string:
-                self.logger.info(f"Processing custom string: {custom_string}")
+        # loop of forecast leads and process each
+        lead_seq = get_lead_sequence(self.config, input_dict)
+        for lead in lead_seq:
+            input_dict['lead'] = lead
 
-            input_dict['custom'] = custom_string
+            # set current lead time config and environment variables
+            time_info = time_util.ti_calculate(input_dict)
 
-            # loop of forecast leads and process each
-            lead_seq = get_lead_sequence(self.config, input_dict)
-            for lead in lead_seq:
-                input_dict['lead'] = lead
+            self.logger.info(
+                f"Processing forecast lead {time_info['lead_string']}"
+            )
 
-                # set current lead time config and environment variables
-                time_info = time_util.ti_calculate(input_dict)
+            if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+                self.logger.debug('Skipping run time')
+                continue
 
-                self.logger.info(
-                    f"Processing forecast lead {time_info['lead_string']}"
-                )
+            # since run_all_times was not called (LOOP_BY=times) then
+            # get files for current run time
+            file_dict = self.get_files_from_time(time_info)
+            all_files = []
+            if file_dict:
+                if isinstance(file_dict, list):
+                    all_files = file_dict
+                else:
+                    all_files = [file_dict]
 
-                if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
-                    self.logger.debug('Skipping run time')
-                    continue
+            self.c_dict['ALL_FILES'] = all_files
 
-                # since run_all_times was not called (LOOP_BY=times) then
-                # get files for current run time
-                file_dict = self.get_files_from_time(time_info)
-                all_files = []
-                if file_dict:
-                    if isinstance(file_dict, list):
-                        all_files = file_dict
-                    else:
-                        all_files = [file_dict]
-
-                self.c_dict['ALL_FILES'] = all_files
-
-                # Run for given init/valid time and forecast lead combination
-                self.run_at_time_once(time_info)
+            # Run for given init/valid time and forecast lead combination
+            self.clear()
+            self.run_at_time_once(time_info)
 
     def get_all_files(self, custom=None):
         """! Get all files that can be processed with the app.

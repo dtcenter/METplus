@@ -1373,10 +1373,13 @@ class CommandBuilder:
                        'wrapper. Cannot run with LOOP_ORDER = times')
         return None
 
-    def run_all_times(self):
-        """!Loop over time range specified in conf file and
-        call METplus wrapper for each time"""
-        return util.loop_over_times_and_call(self.config, self)
+    def run_all_times(self, custom=None):
+        """! Loop over time range specified in conf file and
+        call METplus wrapper for each time
+
+        @param custom (optional) custom loop string value
+        """
+        return util.loop_over_times_and_call(self.config, self, custom=custom)
 
     @staticmethod
     def format_met_config_dict(c_dict, name, keys=None):
