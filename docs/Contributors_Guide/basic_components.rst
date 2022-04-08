@@ -98,7 +98,7 @@ isOK class variable
 isOK is defined in CommandBuilder (ush/command_builder.py).
 
 Its function is to note a failed process while not stopping a parent process.
-Instead of instantly exiting a larger wrapper script once one sub process has
+Instead of instantly exiting a larger wrapper script once one subprocess has
 failed this allows all of the processes to attempt to be executed and
 then note which ones failed.
 
