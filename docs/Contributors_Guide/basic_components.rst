@@ -44,7 +44,20 @@ found in metplus/wrappers/ascii2nc_wrapper.py.
 The class name should always be the item that is passed into the
 METplus configuration variable list PROCESS_LIST with 'Wrapper' at the end.
 
-CommandBuilder's initialization function sets default values for instance variables, initializes the CommandRunner object (used to execute shell commands), and calls the create_c_dict() function. This function is found in CommandBuilder but it is also implemented by most (eventually all) wrappers. The wrapper implementations start off by calling the parent's version of create_c_dict using super(), then adding additional dictionary items that are specific to that wrapper and finally returning the dictionary that was created. If possible, all of the calls to the 'get' functions of the cMETplusConfig object should be found in the create_c_dict function. This allows the configuration values to be referenced throughout the wrapper without the redundantly referencing the wrapper name (i.e. ASCII2NC_INPUT_DIR can be referenced as INPUT_DIR in ASCII2NC since we already it pertains to ASCII2NC) It also makes it easier to see which configuration variables are used in each wrapper.
+CommandBuilder's initialization function sets default values for instance
+variables, initializes the CommandRunner object (used to execute shell
+commands), and calls the create_c_dict() function. This function is found
+in CommandBuilder but it is also implemented by most (eventually all)
+wrappers. The wrapper implementations start off by calling the parent's
+version of create_c_dict using super(), then adding additional dictionary
+items that are specific to that wrapper and finally returning the dictionary
+that was created. If possible, all of the calls to the 'get' functions of the
+cMETplusConfig object should be found in the create_c_dict function. This
+allows the configuration values to be referenced throughout the wrapper
+without the redundantly referencing the wrapper name (i.e. ASCII2NC_INPUT_DIR
+can be referenced as INPUT_DIR in ASCII2NC since it already pertains to
+ASCII2NC) It also makes it easier to see which configuration variables are
+used in each wrapper.
 
 create_c_dict (ExampleWrapper)::
 
@@ -85,10 +98,13 @@ isOK class variable
 isOK is defined in CommandBuilder (ush/command_builder.py).
 
 Its function is to note a failed process while not stopping a parent process.
-Instead of instantly exiting a larger wrapper script once one sub process has failed we
-want all of the processes to attempt to be executed and then note which ones failed.
+Instead of instantly exiting a larger wrapper script once one subprocess has
+failed this allows all of the processes to attempt to be executed and
+then note which ones failed.
 
-At the end of the wrapper initialization step, all isOK=false will be collected and reported. Execution of the wrappers will not occur unless all wrappers in the process list are initialized correctly.
+At the end of the wrapper initialization step, all isOK=false will be
+collected and reported. Execution of the wrappers will not occur unless all
+wrappers in the process list are initialized correctly.
 
 .. code-block:: python
 
@@ -127,38 +143,57 @@ See ush/pb2nc_wrapper.py for an example.
 run_all_times function
 ======================
 
-run_all_times loops over a series of times calling run_at_time for one process for each time
-Defined in CommandBuilder but overridden in a wrappers that process all of the data from every run time at once.
+run_all_times loops over a series of times calling run_at_time for one
+process for each time. Defined in CommandBuilder but overridden in
+wrappers that process all of the data from every run time at once.
 
-See SeriesByLeadWrapper (ush/series_by_lead_wrapper.py) for an example of overridding the function
+See SeriesByLeadWrapper (ush/series_by_lead_wrapper.py) for an example of
+overriding the function.
 
 get_command function
 ====================
 
-get_command assembles a MET command with arguments that can be run via the shell or the wrapper.
-It is defined in CommandBuilder but is overridden in most wrappers because the command line arguments differ for each MET tool.
+get_command assembles a MET command with arguments that can be run via the
+shell or the wrapper.
+It is defined in CommandBuilder but is overridden in most wrappers because
+the command line arguments differ for each MET tool.
 
 set_environment_variables function
 ==================================
 
-Uses add_env_var function (CommandBuilder) to set any shell environment variables that MET or other METplus wrappers
-need to be set. This allows a wrapper to pass information into a MET configuration file. The MET config file refers to the environment variables.
-This is currently only set in wrappers that use MET config files, but the other wrappers will also need to set environment variables
-that are needed to be set in the environment when running, such as MET_TMP_DIR and MET_PYTHON_EXE.
+Uses add_env_var function (CommandBuilder) to set any shell environment
+variables that MET or other METplus wrappers
+need to be set. This allows a wrapper to pass information into a MET
+configuration file. The MET config file refers to the environment variables.
+This is currently only set in wrappers that use MET config files, but the
+other wrappers will also need to set environment variables
+that are needed to be set in the environment when running, such as
+MET_TMP_DIR and MET_PYTHON_EXE.
 
 find_data/find_model/find_obs functions (in CommandBuilder)
 ===========================================================
 
-find_* uses the c_dict directory templates and then queries the file system to find the files you are looking for
-uses c_dict dictionary items [FCST/OBS]_FILE_WINDOW_[BEGIN/END], [FCST/OBS]_INPUT_[DIR/TEMPLATE], etc.
-If [FCST/OBS]_FILE_WINDOW_[BEGIN/END] are non-zero, these functions will list all files under [FCST/OBS]_INPUT_DIR and use [FCST/OBS]_INPUT_TEMPLATE to extract out time information from each file to determine which files within the file window range should be used. Some tools allow multiple files to be selected. If a tool does not allow multiple files, the file closest to the valid time is returned. If multiple files are the same distance from the valid time, the first file that was found is used.
-If a wrapper can read in multiple files, the c_dict item 'ALLOW_MULTIPLE_FILES' should be set to True.
+These find_* functions use the c_dict directory templates, queries
+the file system to find files, and use c_dict dictionary items
+like [FCST/OBS]_FILE_WINDOW_[BEGIN/END], [FCST/OBS]_INPUT_[DIR/TEMPLATE],
+etc.
+If [FCST/OBS]_FILE_WINDOW_[BEGIN/END] are non-zero, these functions will
+list all files under [FCST/OBS]_INPUT_DIR and use [FCST/OBS]_INPUT_TEMPLATE
+to extract out time information from each file to determine which files
+within the file window range should be used. Some tools allow multiple
+files to be selected. If a tool does not allow multiple files, the file
+closest to the valid time is returned. If multiple files are the same
+distance from the valid time, the first file that was found is used.
+If a wrapper can be read in multiple files, the c_dict item
+'ALLOW_MULTIPLE_FILES' should be set to True.
 
 do_string_sub function
 ======================
 
-do_string_sub is found in ush/string_template_substitution.py and is the critical function for substituting the placeholder
-values in templates with the actual values needed for running a particular wrapper
+do_string_sub is found in ush/string_template_substitution.py and is the
+critical function for substituting the placeholder
+values in templates with the actual values needed for running a particular
+wrapper
 
 tc_pairs_wrapper has a good example
 
@@ -172,13 +207,17 @@ tc_pairs_wrapper has a good example
         bdeck_glob = os.path.join(self.c_dict['BDECK_DIR'],
                                   bdeck_file)
 
-time_info is a dictionary of current run time information that can be substituted into the template. See the 'Time Utilities' section for more information.
+time_info is a dictionary of current run time information that can be
+substituted into the template. See the 'Time Utilities' section for more
+information.
 
 Time Utilities
 ==============
 
-time_util is a collection of functions to handle the idosyncracies of working with valid, initialization and observation times.
-METplus creates a dictionary containing the current time and either init or valid time::
+time_util is a collection of functions to handle the idiosyncrasies of working
+with valid, initialization and observation times.
+METplus creates a dictionary containing the current time and either init or
+valid time::
 
     input_dict = {}
     input_dict['now'] = clock_time_obj
@@ -188,7 +227,9 @@ METplus creates a dictionary containing the current time and either init or vali
     else:
         input_dict['valid'] = loop_time
 
-The forecast lead is also set if provided ('lead'). This dictionary is passed into time_util's ti_calculate function, which determines the other time values that were not provided::
+The forecast lead is also set if provided ('lead'). This dictionary is
+passed into time_util's ti_calculate function, which determines the other
+time values that were not provided::
 
     >>> import time_util
     >>> import datetime
@@ -196,16 +237,18 @@ The forecast lead is also set if provided ('lead'). This dictionary is passed in
     >>> time_util.ti_calculate(input_dict)
     {'lead': 10800, 'offset': 0, 'init': datetime.datetime(1987, 2, 1, 6, 0), 'valid': datetime.datetime(1987, 2, 1, 9, 0), 'loop_by': 'init', 'da_init': datetime.datetime(1987, 2, 1, 9, 0), 'init_fmt': '19870201060000', 'da_init_fmt': '19870201090000', 'valid_fmt': '19870201090000', 'lead_string': '3 hours', 'lead_hours': 3, 'lead_minutes': 180, 'lead_seconds': 10800, 'offset_hours': 0, 'date': datetime.datetime(1987, 2, 1, 9, 0), 'cycle': datetime.datetime(1987, 2, 1, 9, 0)}
 
-Items that will be parsed from the input dictionary are: now, init, valid, lead, lead_seconds, lead_minutes, lead_hours, offset, offset_hours, da_init
+Items that will be parsed from the input dictionary are: now, init, valid,
+lead, lead_seconds, lead_minutes, lead_hours, offset, offset_hours, da_init
 
-pcp_combine uses a variety of time_util functions like ti_calculate and ti_get_lead_string
+pcp_combine uses a variety of time_util functions like ti_calculate and
+ti_get_lead_string
 
 Adding Support for MET Configuration Variables
 ==============================================
 
 The METplus wrappers utilize environment variables to override values in the
 MET configuration files. There are functions in CommandBuilder that can be
-used to easily add support for override MET configuration variables that did
+used to easily add support for overriding MET configuration variables that
 were not previously supported in METplus configuration files.
 
 There is a utility that can be used to easily see what changes are needed to
@@ -243,7 +286,7 @@ should be set.
 
 * name: Name of the variable to set, i.e. model
 * data_type: Type of variable. Valid options are int, string, list, float,
-  bool, and thresh
+  bool, and thresh.
 * metplus_configs: List of METplus configuration variable names that should be
   checked. Variable names are checked in order that they appear in the list.
   If any of the variables are set in the config object, then the value will be
@@ -305,11 +348,12 @@ data type, extra info, children, and nicknames.
   set by the METplus config variable GRID_STAT_MASK_POLY. However, in older
   versions of the METplus wrappers, the variable used was
   GRID_STAT_VERIFICATION_MASK_TEMPLATE. To preserve support for this name, the
-  nickname can be set to [f'{self.app_name.upper()}_VERIFICATION_MASK_TEMPLATE'] and the old variable
+  nickname can be set to
+  [f'{self.app_name.upper()}_VERIFICATION_MASK_TEMPLATE'] and the old variable
   will be checked if GRID_STAT_MASK_POLY is not set.
 
 Values must be set to None to preserve the order.
-For example, if you need to define a nickname but no extra info or children,
+For example, to define a nickname but no extra info or children,
 then use: ('string', None, None, ['NICKNAME1]).
 
 If a complex MET configuration dictionary is used by multiple MET tools, then
@@ -326,7 +370,7 @@ CompareGriddedWrapper and is used by GridStat, PointStat, and EnsembleStat::
 This function handles setting the climo_cdf dictionary. The METplus config
 variable that fits the format {APP_NAME}_{DICTIONARY_NAME}_{VARIABLE_NAME},
 i.e. GRID_STAT_CLIMO_CDF_CDF_BINS for GridStat's climo_cdf.cdf_bins, is
-quieried first. However, this default name is a little redundant, so adding
+queried first. However, this default name is a little redundant, so adding
 the nickname 'GRID_STAT_CLIMO_CDF_BINS' allows the user to set the variable
 GRID_STAT_CLIMO_CDF_BINS instead.
 

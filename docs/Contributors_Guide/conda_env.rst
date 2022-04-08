@@ -8,13 +8,13 @@ _______________________________________________________________________
 
 If the host (i.e. the computer on which the METplus and MET tools are
 running) doesn't already have all the necessary packages installed, it is
-recommend that METplus be run within a conda environment. This enables
+recommended that METplus be run within a conda environment. This enables
 the user to manage dependencies and to isolate the METplus version
 of Python from other Python applications.
 
 To replicate the packages used in the development of METplus, use the
-environment.yml file to recreate the Python environment used by METplus.
-This file is found at the top-level dirctory of the
+**environment.yml** file to recreate the Python environment used by METplus.
+This file is found at the top-level directory of the
 METplus source code:
 
    *METplus/environment.yml*
@@ -30,18 +30,19 @@ _______________________________________________________________________
    (this is a minimal installer that contains the package manager,
    *conda* that has Python 3 and other dependent packages.)
 
-   If it doesn't exist on the computer, download it `here <https://conda.io/en/latest/miniconda.html>`_.
+   If it doesn't exist on the computer, download it
+   `here <https://conda.io/en/latest/miniconda.html>`_.
    
-| 
-
 2. Select the appropriate Python 3.7 (or newer) version for the operating
    system and computer's architecture.
 
-   Follow the `installation instructions <https://conda.io/projects/conda/en/latest/user-guide/install/index.html>`_.
+   Follow the
+   `installation instructions <https://conda.io/projects/conda/en/latest/user-guide/install/index.html>`_.
 
    .. note::
       
-     It may be worth considering changing the default installation location to a partition with more space.
+     It may be worth considering changing the default installation location
+     to a partition with more space.
 
    From the command line, enter:
 
@@ -49,9 +50,8 @@ _______________________________________________________________________
 
      df -h
 
-   to see how much space is available on the disk partitions on the computer/host.
-   
-| 
+   to see how much space is available on the disk partitions on the
+   computer/host.
    
 3. When queried whether to run initialization:
 
@@ -91,21 +91,21 @@ to end the application.
 
    .. note::
 
-      The user's prompt may vary, based on how the system administrator set up the account.
+      The user's prompt may vary, based on how the system administrator
+      set up the account.
       
-   |
 
 2.  Recreate the Python 3.x environment used for METplus via the
-    environment.yml file found in the repository under the METplus directory:
+    **environment.yml** file found in the repository under the METplus
+    directory:
 
     .. code-block:: ini
 		    
       conda env create -f environment.yml
 
     This may take a few minutes to install all the packages specified
-    in the environment.yml file.
+    in the **environment.yml** file.
     
-| 
 
 3.  Activate the environment.  From the (base) prompt, enter:
 
@@ -113,15 +113,14 @@ to end the application.
 
       conda activate name-of-env
 
-    where name-of-env is found at the top of the environment.yml file
+    where name-of-env is found at the top of the **environment.yml** file
 
         e.g. *mini3.6.3*
 
 
 4.  Run the METplus applications in this conda env.
 
-    |
-    
+  
 5.  When finished, deactivate the environment:
 
     .. code-block:: ini
@@ -142,8 +141,6 @@ conda env", follow these instructions to start running METplus :
     .. note::
        
       The prompt may vary, based on how the sys admin set up the account.
-    
-| 
 
 2.  Activate the environment.  From the (base) prompt, enter:
 
@@ -168,8 +165,9 @@ conda env", follow these instructions to start running METplus :
 
 Optional: Checking for missing packages and mismatched version
 ______________________________________________________________
-To check for missing and mismatched packages run the check_python.py script
-in the METplus directory:
+
+To check for missing and mismatched packages run the **check_python.py**
+script in the METplus directory:
 
 .. code-block:: ini
 
@@ -177,16 +175,16 @@ in the METplus directory:
 
 The results are sent to stdout (screen) and three files are created:
 
-   * actual.txt:
+   * **actual.txt**:
 
      * A list of Python packages that are on the host system
 
-   * missing_packages.txt:
+   * **missing_packages.txt**:
 
      * A list of Python packages needed for METplus but not found on the
        host system
 
-   * mismatched.txt:
+   * **mismatched.txt**:
 
      * A list of Python packages on the host system but with different
        version than what is used by METplus
