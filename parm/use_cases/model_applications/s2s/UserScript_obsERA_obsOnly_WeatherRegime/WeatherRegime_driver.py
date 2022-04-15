@@ -16,7 +16,8 @@ def main():
 
     if not steps_list_obs and not steps_list_fcst:
         warnings.warn('No processing steps requested for either the model or observations,')
-        warnings.warn('No data will be processed')
+        warnings.warn(' nothing will be run')
+        warnings.warn('Set FCST_STEPS and/or OBS_STEPS in the [user_env_vars] section to process data')
 
 
     ######################################################################
@@ -178,9 +179,13 @@ def main():
 
 
     if ("TIMEFREQ" in steps_list_obs):
+        if not ("KMEANS" in steps_list_obs):
+            raise Exception('Must run observed Kmeans before running frequencies.')
         wrfreq_obs,dlen_obs,ts_diff_obs = steps_obs.compute_wr_freq(wrc_obs)
 
     if ("TIMEFREQ" in steps_list_fcst):
+        if not ("KMEANS" in steps_list_fcst):
+            raise Exception('Must run forecast Kmeans before running frequencies.')
         wrfreq_fcst,dlen_fcst,ts_diff_fcst = steps_fcst.compute_wr_freq(wrc_fcst)
 
     if ("TIMEFREQ" in steps_list_obs) and ("TIMEFREQ" in steps_list_fcst):
