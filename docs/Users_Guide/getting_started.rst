@@ -113,73 +113,73 @@ Examples of the nature of fields to be evaluated
 Definitions of statistics categories associated with each type of field:
  
 * Continuous statistics - measures how the values of the forecasts
-  differ from the values of the observations
+  differ from the values of the observations.
    
-  * METplus line types: SL1L2, SAL1L2, VL1L2, VAL1L2, CNT, VCNT
+  * METplus line types: SL1L2, SAL1L2, VL1L2, VAL1L2, CNT, VCNT.
      
   * METplus tools:
       
-* Categorical statistics - measures how well the forecast captures events
+* Categorical statistics - measures how well the forecast captures events.
    
   * METplus line types: FHO, CTC, CTS, MCTC, MCTS, ECLV, TC stats,
-    ExtraTC stats, TC-Gen stats
+    ExtraTC stats, TC-Gen stats.
     
 * Probability statistics - measures attributes such as reliability,
-  resolution, sharpness, and uncertainty
+  resolution, sharpness, and uncertainty.
 
-  * METplus line types: PCT, PSTD, PJC, PRC
+  * METplus line types: PCT, PSTD, PJC, PRC.
      
 * Ensemble statistics - measures attributes as the relationship between
   rank of observation and members, spread of ensemble member solutions
-  and continuous measures of skill
+  and continuous measures of skill.
 
 Additional verification and diagnostic approaches that can be helpful
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* Geographical methods demonstrate where the error occurs geographically
+* Geographical methods demonstrate where the error occurs geographically.
 
-  * METplus methods: Series-Analysis tool
+  * METplus methods: Series-Analysis tool.
     
-  * METplus line types: Most Grid-Stat and Point-Stat line types
+  * METplus line types: Most Grid-Stat and Point-Stat line types.
     
 * Object Based measures the location error of the forecast and how the
-  total error break down into variety of descriptive attributes
+  total error break down into variety of descriptive attributes.
    
-  * METplus methods: MODE, MTD, MvMODE, Grid-Stat Distance Maps
+  * METplus methods: MODE, MTD, MvMODE, Grid-Stat Distance Maps.
     
   * METplus line types: MODE object attribute files, MODE CTS, MTD object
-    attribute files, MTD CTS, Grid-Stat DMAP
+    attribute files, MTD CTS, Grid-Stat DMAP.
     
 * Neighborhood relaxes the requirement for an exact match by evaluating
-  forecasts in the local neighborhood of the observations
+  forecasts in the local neighborhood of the observations.
    
   * METplus methods: Grid-Stat Neighborhood, Point-Stat HiRA, Ensemble-Stat
-    HiRA
+    HiRA.
 
-  * METplus line types: NBRCTC, NBRCTS, NBRCNT, ECNT, ORANK, RPS
+  * METplus line types: NBRCTC, NBRCTS, NBRCNT, ECNT, ORANK, RPS.
      
 * Domain Decomposition and Transform applies a transform to a given field
   to identify errors on different spatial scales:
    
   * METplus methods: Grid-Stat Fourier Decomposition; Wavelet-Stat tool,
-    TC-RMW tool
+    TC-RMW tool.
     
   * METplus line types: Grid-Stat SL1L2, SAL1L2, VL1L2, VAL1L2, CNT, VCNT;
-    Wavelet Stat: ISC, RMW output file
+    Wavelet Stat: ISC, RMW output file.
     
 * Feature Relative identifies systematic errors associated with a group
-  of case studies
+  of case studies.
 
-  * METplus methods: Feature Relative Use Cases
+  * METplus methods: Feature Relative Use Cases.
      
-* Relationship between two fields: generates a joint PDF between two fields
+* Relationship between two fields: generates a joint PDF between two fields.
    
-  * METplus methods: Grid-Diag tool
+  * METplus methods: Grid-Diag tool.
     
 * Subseasonal-to-Seasonal Diagnostics compute indices to establish the
-  ability of the model to predict S2S drivers
+  ability of the model to predict S2S drivers.
    
-  * METplus methods: S2S Use Cases
+  * METplus methods: S2S Use Cases.
     
 What is the standard for comparison that provides a reference level of skill (e.g., persistence, climatology, reference model)?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -275,6 +275,12 @@ Use Cases? One large one or multiple smaller ones?
     `METplus Discussions <https://github.com/dtcenter/METplus/discussions>`_
     if help is needed.
 
+Would a flowchart help to provide clarity?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Consider creating one or more flowcharts to illustrate the data flow
+and verification logic for quick reference and for visual learners.
+
 .. _running-metplus:
 
 Running METplus
@@ -284,7 +290,7 @@ Example Wrapper Use Case
 ------------------------
 
 * Create a :ref:`user_configuration_file`
-  (named user_system.conf in this example)
+  (named user_system.conf in this example).
 
 * Run the Example Wrapper use case. In a terminal, run::
 
@@ -292,9 +298,9 @@ Example Wrapper Use Case
     /path/to/METplus/parm/use_cases/met_tool_wrapper/Example/Example.conf \
     /path/to/user_system.conf
 
-replacing **/path/to/user_system.conf** with the path to the
+Replacing */path/to/user_system.conf* with the path to the
 user configuration file and
-**/path/to/METplus** with the path to the location where METplus is installed
+*/path/to/METplus* with the path to the location where METplus is installed.
 
 The last line of the screen output should match this format::
 
@@ -323,7 +329,7 @@ GridStat Wrapper Basic Use Case
 
 * :ref:`obtain_sample_input_data` for the **met_tool_wrapper** use cases.
   The tarfile should be in the directory that corresponds to the
-  major/minor release and starts with sample_data-met_tool_wrapper
+  major/minor release and starts with sample_data-met_tool_wrapper.
 
 * Create a :ref:`user_configuration_file` (named user_system.conf in this
   example). Ensure that **INPUT_BASE** is set
@@ -335,9 +341,9 @@ GridStat Wrapper Basic Use Case
     /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf \
     /path/to/user_system.conf
 
-replacing **/path/to/user_system.conf** with the path to the
+Replacing */path/to/user_system.conf* with the path to the
 user configuration file and
-**/path/to/METplus** with the path to the location where METplus is installed
+*/path/to/METplus* with the path to the location where METplus is installed.
 
 If the run was successful, the line above the success message should contain
 the path to the METplus log file that was generated.
