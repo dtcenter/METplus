@@ -329,10 +329,13 @@ def test_tc_gen(metplus_config, config_overrides, env_var_values):
     config.set('config', 'TC_GEN_SHAPE_INPUT_DIR', shape_dir)
     config.set('config', 'TC_GEN_SHAPE_INPUT_TEMPLATE', shape_template)
     config.set('config', 'TC_GEN_OUTPUT_DIR', '{OUTPUT_BASE}/TCGen/output')
-    config.set('config', 'TC_GEN_OUTPUT_TEMPLATE', 'tc_gen_{init?fmt=%Y}')
+    config.set('config', 'TC_GEN_OUTPUT_TEMPLATE',
+               'tc_gen_{custom}_{init?fmt=%Y}')
 
     config.set('config', 'TC_GEN_CONFIG_FILE',
                '{PARM_BASE}/met_config/TCGenConfig_wrapped')
+
+    config.set('config', 'TC_GEN_CUSTOM_LOOP_LIST', 'a, b')
 
     # set config variable overrides
     for key, value in config_overrides.items():
@@ -368,7 +371,13 @@ def test_tc_gen(metplus_config, config_overrides, env_var_values):
          f"-edeck {edeck_path} "
          f"-shape {shape_path} "
          f"-track {track_path} "
-         f"-config {config_file} -out {out_dir}/tc_gen_2016"),
+         f"-config {config_file} -out {out_dir}/tc_gen_a_2016"),
+        (f"{app_path} {verbosity} "
+         f"-genesis {genesis_path} "
+         f"-edeck {edeck_path} "
+         f"-shape {shape_path} "
+         f"-track {track_path} "
+         f"-config {config_file} -out {out_dir}/tc_gen_b_2016"),
     ]
 
     all_cmds = wrapper.run_all_times()

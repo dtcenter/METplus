@@ -225,6 +225,7 @@ class TCRMWWrapper(CommandBuilder):
                 self.logger.debug('Skipping run time')
                 continue
 
+            self.clear()
             self.run_at_time_once(time_info)
 
     def run_at_time_once(self, time_info):
