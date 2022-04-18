@@ -976,7 +976,8 @@ the use case category just in case something goes wrong::
 
 **OR**
 
-**CONDITION 2: IF the sample data tarfile for the category is a link to another METplus
+**CONDITION 2: IF the sample data tarfile for the category is a link to
+another METplus
 version**, then simply remove the tarfile link::
 
     unlink sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz
