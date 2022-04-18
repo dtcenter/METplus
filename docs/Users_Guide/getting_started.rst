@@ -257,7 +257,7 @@ Use Cases? One large one or multiple smaller ones?
   in the cloud (e.g. AWS)? Serial runs or parallelized?
   
   * Running on linux or a project machine – identify where METplus is
-    installed by running *which run_metplus.py*; it is recommended an
+    installed by running **which run_metplus.py**; it is recommended an
     additional user.conf or system.conf file is passed into the
     **run_metplus.py** to direct where output should be written.
     
@@ -348,7 +348,7 @@ user configuration file and
 If the run was successful, the line above the success message should contain
 the path to the METplus log file that was generated.
 
-* Review the log file and compare it to the GridStat.conf use case
+* Review the log file and compare it to the **GridStat.conf** use case
   configuration file to see how the settings correspond to the result.
 
 * Review the :ref:`metplus_final.conf<metplus_final_conf>` file to see all
