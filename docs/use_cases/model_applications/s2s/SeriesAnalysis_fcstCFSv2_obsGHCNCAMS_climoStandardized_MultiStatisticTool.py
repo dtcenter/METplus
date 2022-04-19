@@ -159,5 +159,5 @@ model_applications/s2s/SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_Mu
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/marine_and_cryosphere-UserScript_fcstRTOFS_obsAOML_calcTransport.png'
+# sphinx_gallery_thumbnail_path = '_static/s2s-SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_MultiStatisticTool.png'
 
