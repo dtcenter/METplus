@@ -55,9 +55,9 @@ one of the following:
 * space_weather
 * tc_and_extra_tc (Tropical Cyclone and Extratropical Cyclone)
 
-If you feel that the new use case does not fall into any of these categories
-or are unsure which category is the most appropriate, please create a post in
-the
+If the new use case does not fall into any of these categories
+or it is unclear which category is the most appropriate,
+please create a post in the
 `METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_.
 
 Use Case Content
@@ -165,7 +165,7 @@ Document New Use Case
 Create a New Model Applications Docs Directory
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-**If the use case falls under an existing Model Applications category, you can
+**If the use case falls under an existing Model Applications category,
 skip this section.**
 
 If the use case is the first in a new Model Applications category, create the
@@ -280,10 +280,10 @@ or
     conda activate /home/met_test/.conda/envs/sphinx_env
 
 .. note::
-    If conda is not already in your path, you will have to find it and run it
+    If conda is not already in the path, find it and run it
     from the full path.
 
-or you can create your own conda environment and install the packages::
+Or create a conda environment and install the packages::
 
     conda create --name sphinx_env python=3.6
     conda activate sphinx_env
@@ -292,15 +292,16 @@ or you can create your own conda environment and install the packages::
     pip install git+https://github.com/ESMCI/sphinx_rtd_theme@version-dropdown-with-fixes
 
 .. note::
-    The specific version of sphinx_rtd_theme is needed to build the documentation
-    with the version selector. If you are building the docs locally, you don't
-    necessarily need this version. If it is easier, you can run 'conda install
-    sphinx_rtd_theme' instead of the pip from git command to install the package
+    The specific version of sphinx_rtd_theme is needed to build the
+    documentation with the version selector.
+    If the docs are being built locally, this version is not
+    necessarily needed. If it is easier, run 'conda install
+    sphinx_rtd_theme' instead of the pip from git command
+    to install the package.
 
 To build the docs, run the **build_docs.py** script from the docs directory.
-Make
-sure your conda environment is activated or the required packages are available
-in your Python 3 environment::
+Make sure the conda environment is activated or the required packages
+are available in the Python 3 environment::
 
     cd ~/METplus/docs
     ./build_docs.py
@@ -311,8 +312,8 @@ Input Data
 ==========
 
 Sample input data needed to run the use case should be provided. Please try to
-limit your input data to the minimum that is
-needed to demonstrate your use case effectively. GRIB2 files can be pared down
+limit the input data to the minimum that is
+needed to demonstrate the use case effectively. GRIB2 files can be pared down
 to only contain the fields and/or vertical levels that are needed using
 `wgrib2 <https://www.cpc.ncep.noaa.gov/products/wesley/wgrib2/>`_.
 
@@ -328,19 +329,20 @@ the file(s).
 Providing new data
 ------------------
 
-Log into the computer where your input data resides
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Log into the computer where the input data resides
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Switch to Bash
 ^^^^^^^^^^^^^^
 
-If you are using a shell other than bash, run "bash" to activate a bash
-shell. This will make the instructions you need to run on the DTC web server
-as the met_test user easier because met_test's default shell is bash::
+Run "bash" to activate a bash shell. This step isn't necessary if bash
+is already running. The met_test's default shell is bash.
+The instructions needed to run
+on the DTC web server will run smoothly in bash::
 
     bash
 
-If you are unsure which shell you use, run the following command::
+Run the following command to see which shell is currently in use::
 
     echo $SHELL
 
@@ -349,15 +351,15 @@ If you are unsure which shell you use, run the following command::
     running these instructions easier. Make sure they are set to the correct
     values that correspond to the use case being added before
     copy/pasting any of these commands or there may be unintended consequences.
-    Copy and paste these values after you have modified them into a text file
-    that you can copy and paste into the terminal.
+    Copy and paste these values after they have been modified into a text file
+    that can be copy and pasted into the terminal.
 
 Download the template environment file
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This file is available on the DTC web server. You can use wget to download the
-file to your current working directory, or visit the URL in a browser and save
-it to your computer::
+This file is available on the DTC web server. Use 'wget' to download the
+file to the current working directory, or visit the URL in a browser and save
+it on the computer::
 
     wget https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/add_use_case_env.bash
 
@@ -366,7 +368,7 @@ Or click this `link <https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/
 Rename env file
 ^^^^^^^^^^^^^^^
 
-Rename this file to include your feature branch. For example, if your branch
+Rename this file to include the feature branch. For example, if the branch
 is feature_ABC_desc, then run::
 
     mv add_use_case_env.bash feature_ABC_desc_env.bash
@@ -374,8 +376,8 @@ is feature_ABC_desc, then run::
 Change the values of the env file
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Open this file with your favorite editor and modify it to include the
-appropriate information for your use case.
+Open this file with a favorite editor and modify it to include the
+appropriate information for the use case.
 
 * METPLUS_VERSION should only include the major and minor version. For example,
   if the next release is 4.0.0, set this value to 4.0. If the next release is
@@ -391,7 +393,7 @@ The first line of output will list the current development version. The first
 If the above is shown, then METPLUS_VERSION should be set to 4.0
 
 * METPLUS_USE_CASE_CATEGORY should be one of the list items in the
-  :ref:`use_case_categories` section unless you have received approval to
+  :ref:`use_case_categories` section unless approval has been received  to
   create a new category. For a new met_tool_wrapper use case, set this value
   to met_tool_wrapper.
 
@@ -400,22 +402,22 @@ If the above is shown, then METPLUS_VERSION should be set to 4.0
   met_tool_wrapper use case, set this value to met_test_YYYYMMDD where
   YYYYMMDD is today's date.
 
-* METPLUS_FEATURE_BRANCH should match the name of the branch you are working in
-  exactly.
+* METPLUS_FEATURE_BRANCH should match the exact name of the current working
+  branch.
 
 Source the env file and check environment
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Source your environment file and verify that the variables are set
-correctly. If the source command fails, make sure you have switched to using
-bash::
+Source the environment file and verify that the variables are set
+correctly. If the source command fails, make sure that the current
+working shell is bash::
 
     source feature_ABC_desc_env.bash
     printenv | grep METPLUS_
 
 .. note::
     The value for METPLUS_USER_ENV_FILE should be the name of the environment
-    file that you just sourced.
+    file that was just sourced.
 
 Create sub-directories for input data
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -434,16 +436,16 @@ Verify use case config file contains correct directory
 
 Set directory paths in the use case config file relative to INPUT_BASE
 i.e *{INPUT_BASE}/model_applications/<category>/<use_case>* where
-<category> is the value you set for ${METPLUS_USE_CASE_CATEGORY} and
-<use_case> is the value you set for ${METPLUS_USE_CASE_NAME}. For a new
-met_tool_wrapper use case, use *{INPUT_BASE}/met_test/new*.
-You can set {INPUT_BASE} to your local directory to test that the use case
+<category> is the value that has been set for ${METPLUS_USE_CASE_CATEGORY} and
+<use_case> is the value that has been set set for ${METPLUS_USE_CASE_NAME}.
+For a new met_tool_wrapper use case, use *{INPUT_BASE}/met_test/new*.
+Set {INPUT_BASE} to the local directory to test that the use case
 still runs properly.
 
 Create new data tarfile
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-Create a tarfile on your development machine with the new dataset. Make sure
+Create a tarfile on the development machine with the new dataset. Make sure
 the tarfile contains directories, i.e.
 *model_applications/${METPLUS_USE_CASE_CATEGORY}*::
 
@@ -469,7 +471,7 @@ The output should show that all of the data is found under the
 Copy files to DTC Web Server
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If you have access to the internal DTC web server, copy over the tarfile and
+If there is access to the internal DTC web server, copy over the tarfile and
 the environment file to the staging directory:
 
 .. parsed-literal::
@@ -477,7 +479,8 @@ the environment file to the staging directory:
     scp ${METPLUS_NEW_DATA_TARFILE} |dtc_web_server|:|metplus_staging_dir|/
     scp ${METPLUS_USER_ENV_FILE} |dtc_web_server|:|metplus_staging_dir|/
 
-If you do not, upload the files to the RAL FTP::
+If access to the internal DTC web server is not available,
+upload the files to the RAL FTP::
 
     ftp -p ftp.rap.ucar.edu
 
@@ -488,19 +491,20 @@ For an example on how to upload data to the ftp site see
 Adding new data to full sample data tarfile
 -------------------------------------------
 
-If you are unable to access the DTC web server to upload data or if you do
-not have permission to use the met_test shared user account, someone from the
+If access to the DTC web server is unavailable to upload data or if
+permission has not been granted to use the met_test shared user
+account, someone from the
 METplus development team will have to complete the instructions in this
 section. Please let one of the team members know if this is the case.
 Comment on the GitHub issue associated with this use case and/or email the team
-member(s) you have been coordinating with for this work. If you are unsure who
-to contact, then please create a post in the
-`METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_.
+member(s) that have been coordinating with this work. Please create a
+post in the
+`METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_ if it is unclear who to contact.
 
 Log into the DTC Web Server with SSH
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The web server is only accessible if you are on the NCAR VPN.
+The web server is only accessible on the NCAR VPN.
 
 .. parsed-literal::
 
@@ -520,7 +524,7 @@ Setup the environment to run commands on web server
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Change directory to the data staging dir,
-source the environment file you created, and make sure the environment
+source the environment file that was created, and make sure the environment
 variables are set properly.
 
 .. parsed-literal::
@@ -565,24 +569,24 @@ or develop directories.
 Add contents of existing tarfile to feature branch directory (if applicable)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-**ONLY RUN THE COMMAND THAT IS APPROPRIATE TO YOUR USE CASE. READ CAREFULLY!**
+**ONLY RUN THE COMMAND THAT IS APPROPRIATE TO THE USE CASE. READ CAREFULLY!**
 
-**CONDITION 1: If you have determined that there is an existing tarfile
+**CONDITION 1: If there is an existing tarfile
 for the category (from the previous step)**,
 then untar the sample data tarball into the feature branch directory::
 
     tar zxf ${METPLUS_EXISTING_DATA_TARFILE} -C ${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
 
-**CONDITION 2: If no tarfile exists yet, you can skip this step**
+**CONDITION 2: If no tarfile exists yet, skip this step**
 
 Rename or modify existing data or data structure (if applicable)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-**If the reason for your feature branch is to adjust an existing use case,
+**If the reason for the feature branch is to adjust an existing use case,
 such as renaming a use case
 or changing the data file,** then adjust the directory structure and/or
 the data files which should now
-be in your feature branch directory (from your last step). Changes to a
+be in the feature branch directory (from the last step). Changes to a
 use case name or input data for
 a pre-existing use case should be separately verified to run successfully,
 and noted in the Pull Request form
@@ -602,7 +606,7 @@ Create the new tarfile
 ^^^^^^^^^^^^^^^^^^^^^^
 Create the new sample data tarball.
 
-**ONLY RUN THE COMMAND THAT IS APPROPRIATE TO YOUR USE CASE. READ CAREFULLY!**
+**ONLY RUN THE COMMAND THAT IS APPROPRIATE TO THE USE CASE. READ CAREFULLY!**
 
 **CONDITION 1:** Model Application Use Case Example::
 
@@ -637,7 +641,7 @@ If working in the *dtcenter/METplus repository*, please skip this step.
 If working in a forked METplus repository, the newly added input data will not
 become available for the tests unless it is triggered from the dtcenter
 repository. A METplus developer will need to run the following steps. Please
-provide them with the name of your forked repository and the branch that will
+provide them with the name of the forked repository and the branch that will
 be used to create the pull request with the new use case. In this example,
 the branch feature_XYZ exists in the *my_fake_user/METplus* repository. First,
 clone the *dtcenter/METplus* repository, the run the following::
@@ -725,12 +729,13 @@ All of the use cases in the METplus repository are run via GitHub Actions to
 ensure
 that everything runs smoothly. If the above instructions to add new data were
 followed correctly, then GitHub Actions will automatically obtain the
-new data and use it for the tests when you push your changes to GitHub.
-Adding the use case to the test suite will allow you to check that the data
+new data and use it for the tests when the changes are pushed to GitHub.
+Adding the use case to the test suite will allow the ability to check
+that the data
 was uploaded correctly and that the use case runs in the Python environment
 created in Docker. The status of the tests can be viewed on GitHub under the
 `Actions tab <https://github.com/dtcenter/METplus/actions>`_.
-Your feature branch should be found in the list of results near the top.
+The feature branch should be found in the list of results near the top.
 At the far left of the entry will be a small status icon:
 
 - A yellow circle that is spinning indicates that the build is currently
@@ -780,7 +785,7 @@ for assistance.
 Verify that the use case ran successfully
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-You should verify that the use case was
+Please verify that the use case was
 actually run by referring to the appropriate section under "Jobs" that starts
 with "Use Case Tests." Click on the job and search for the use case config
 filename in the log output by using the search box on the top right of the
@@ -801,9 +806,9 @@ Github Actions has
 available and will cause the use case to fail when exceeded. A failure
 caused by exceeding the memory allocation in a Python Embedding script
 may result in an unclear error message. 
-If you suspect that this is the case, consider utilizing a Python
+If it is suspected that this is the case, consider utilizing a Python
 memory profiler to check the
-Python script's memory usage. If your use case exceeds the limit, try to pare 
+Python script's memory usage. If the use case exceeds the limit, try to pare 
 down the data held in memory and use less memory intensive Python routines.
 
 If memory mitigation cannot move the use case’s memory usage below the
@@ -849,7 +854,7 @@ steps were unsuccessful in lowering memory usage, please take the following step
 - In the *.github/parm/use_case_groups.json* file, remove the entry that 
   was added during the :ref:`add_new_category_to_test_runs` 
   for the new use case. This will stop the use case from running on a pull request. 
-- Push these two updated files to your branch in Github and confirm that it 
+- Push these two updated files to the branch in Github and confirm that it 
   now compiles successfully.
 - During the :ref:`create-a-pull-request` creation, inform the reviewer of 
   the Github Actions failure. The reviewer should confirm the use case is 
@@ -862,7 +867,8 @@ steps were unsuccessful in lowering memory usage, please take the following step
 Create a Pull Request
 =====================
 
-Create a pull request to merge the changes from your branch into the develop
+Create a pull request to merge the changes from the working branch
+into the develop
 branch. More information on this process can be found in the
 :ref:`GitHub Workflow <gitHub-workflow>` chapter under
 "Open a pull request using your browser."
@@ -881,14 +887,14 @@ pull request is merged so that the develop branch will contain the new data.
 .. warning::
     Check if there are multiple feature branch directories that have data for
     the same model_applications category. If there are more than one, then
-    you will need to be careful not to overwrite the final tarfile so that
+    it is important to be careful not to overwrite the final tarfile so that
     one or more of the new data files are lost! These instructions need
     to be updated to handle this situation.
 
 Log into the DTC Web Server with SSH
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The web server is only accessible if you are on the NCAR VPN.
+The web server is only accessible on the NCAR VPN.
 
 .. parsed-literal::
 
@@ -920,7 +926,7 @@ Compare the feature branch file to the upcoming METplus version directory file::
 
     diff ${METPLUS_FEATURE_BRANCH}/volume_mount_directories v${METPLUS_VERSION}/volume_mount_directories
 
-**ONLY RUN THE COMMAND THAT IS APPROPRIATE TO YOUR USE CASE. READ CAREFULLY!**
+**ONLY RUN THE COMMAND THAT IS APPROPRIATE TO THE USE CASE. READ CAREFULLY!**
 
 **CONDITION 1: IF there is a new entry or change in the feature version**,
 copy the feature file into the upcoming METplus version directory and the develop directory::
@@ -933,7 +939,7 @@ Copy data from the feature directory into the next version directory
 
 **Make sure the paths are correct before copying.**
 
-**ONLY RUN THE COMMAND THAT IS APPROPRIATE TO YOUR USE CASE. READ CAREFULLY!**
+**ONLY RUN THE COMMAND THAT IS APPROPRIATE TO THE USE CASE. READ CAREFULLY!**
 
 **CONDITION 1:** Model Applications Use Cases::
 
@@ -957,7 +963,7 @@ Copy data from the feature directory into the next version directory
     echo $to_directory
     ls $to_directory
 
-Once you have verified the correct directories are set, copy the files::
+Once the correct directories have been verified, copy the files::
 
     cp -r $from_directory $to_directory/
 
@@ -966,7 +972,7 @@ List the tarfile for the use case category in the next release version directory
     cd ${METPLUS_DATA_TARFILE_DIR}/v${METPLUS_VERSION}
     ls -lh sample_data-${METPLUS_USE_CASE_CATEGORY}*
 
-**ONLY RUN THE COMMAND THAT IS APPROPRIATE TO YOUR USE CASE. READ CAREFULLY!**
+**ONLY RUN THE COMMAND THAT IS APPROPRIATE TO THE USE CASE. READ CAREFULLY!**
 
 **CONDITION 1: IF the latest version of the tarfile is in this directory**,
 then rename the existing sample data tarball for
@@ -984,7 +990,7 @@ version**, then simply remove the tarfile link::
 
 Create the new sample data tarfile.
 
-**ONLY RUN THE COMMAND THAT IS APPROPRIATE TO YOUR USE CASE. READ CAREFULLY!**
+**ONLY RUN THE COMMAND THAT IS APPROPRIATE TO THE USE CASE. READ CAREFULLY!**
 
 **CONDITION 1:** Model Applications Use Cases::
 
@@ -1072,12 +1078,12 @@ The addition of a new use case results in new output data. When this happens,
 the reference branch needs to be updated so that future pull requests will
 compare their results to a "truth" data set that contains the new files.
 Create a pull request with "develop" as the source branch and "develop-ref" as
-the destination branch. This is done so we can reference the pull request
+the destination branch. This is done so that the pull request can reference the
 number that is responsible for the changes in the truth data to easily track
 where differences occurred.
 
-Merging develop into develop-ref often causes strange conflicts. We really
-want to update develop-ref with the latest content of develop, so follow
+Merging develop into develop-ref often causes strange conflicts. It is
+important to update develop-ref with the latest content of develop, so follow
 these command line instructions in the METplus repository to reconcile the
 conflicts before creating the pull request.
 
