@@ -16,7 +16,7 @@ are pushed to GitHub. These tasks include:
 GitHub Actions Workflows
 ========================
 
-GitHub Actions runs workflows defined by files in the **.github/workflows**
+GitHub Actions runs workflows defined by files in the *.github/workflows*
 directory of a GitHub repository.
 Files with the .yml suffix are parsed and GitHub Actions will
 trigger a workflow run if the triggering criteria is met.
@@ -81,7 +81,7 @@ at the bottom of the workflow summary page when the workflow has completed.
 Release Published (release_published.yml) - DEPRECATED
 ------------------------------------------------------
 
-**This workflow is no longer be required, as Slack now has GitHub integration
+**This workflow is no longer required, as Slack now has GitHub integration
 to automatically create posts on certain events.** The workflow YAML file
 is still found in the repository for reference, but the workflow has been
 disabled via the Actions tab of the METplus GitHub webpage.
@@ -101,7 +101,7 @@ Name
 ----
 
 The name of a workflow can be specified to describe an overview of what is run.
-The following line in the testing.yml file::
+The following line in the **testing.yml** file::
 
     name: Testing
 
@@ -167,9 +167,9 @@ Push
 This configuration tells GitHub Actions to trigger the workflow when changes
 are pushed to the repository and the following criteria are met:
 
-* The branch is named **develop** or **develop-ref**
-* The branch starts with **feature\_**, **main\_**, or **bugfix\_**
-* Changes were made to at least one file that is not in the **docs** directory.
+* The branch is named *develop* or *develop-ref*
+* The branch starts with *feature\_, main\_*, or *bugfix\_*
+* Changes were made to at least one file that is not in the *docs* directory.
 
 Pull Request
 ^^^^^^^^^^^^
@@ -185,7 +185,7 @@ This configuration tells GitHub Actions to trigger the workflow for
 pull requests in the repository and the following criteria are met:
 
 * The pull request was opened, reopened, or synchronized.
-* Changes were made to at least one file that is not in the **docs** directory.
+* Changes were made to at least one file that is not in the *docs* directory.
 
 The **synchronize** type triggers a workflow for every push to a branch
 that is included in an open pull request.
@@ -224,10 +224,10 @@ to trigger this workflow.
 It lists the input values that are passed from the external repository.
 The inputs include:
 
-* The repository that triggered the workflow, such as dtcenter/MET
+* The repository that triggered the workflow, such as *dtcenter/MET*
 * The commit hash in the external repository that triggered the event
 * The reference (or branch) that triggered the event, such as
-  refs/heads/develop
+  *refs/heads/develop*
 * The GitHub username that triggered the event in the external repository
   (optional)
 
@@ -238,7 +238,7 @@ develop branch.
 
 Future work is planned to support main_v* branches, which
 will involve using the 'ref' input to determine what to obtain in the workflow.
-For example, changes pushed to dtcenter/MET main_v10.1 should trigger a
+For example, changes pushed to *dtcenter/MET* main_v10.1 should trigger a
 testing workflow that runs on the METplus main_v4.1 branch.
 
 Jobs
@@ -398,7 +398,7 @@ When a push event occurs the default behavior is to run the following:
 * Run unit tests
 * Run any use cases marked to run (see :ref:`cg-ci-use-case-tests`)
 
-If the push is on the **develop** or a **main_vX.Y** branch, then all
+If the push is on the *develop* or a *main_vX.Y* branch, then all
 of the use cases are run.
 
 Default behavior for push events can be overridden using
@@ -407,8 +407,8 @@ Default behavior for push events can be overridden using
 On Pull Request
 """""""""""""""
 
-When a pull request is created into the **develop** branch or
-a **main_vX.Y** branch, additional jobs are run in automation.
+When a pull request is created into the *develop* branch or
+a *main_vX.Y* branch, additional jobs are run in automation.
 In addition to the jobs run for a push, the scripts will:
 
 * Run all use cases
@@ -419,7 +419,7 @@ In addition to the jobs run for a push, the scripts will:
 On Push to Reference Branch
 """""""""""""""""""""""""""
 
-Branches with a name that ends with **-ref** contain the state of the
+Branches with a name that ends with *-ref* contain the state of the
 repository that will generate output that is considered "truth" data.
 In addition to the jobs run for a push, the scripts will:
 
@@ -475,7 +475,7 @@ This job calls the **docker_setup.sh** script.
 This script builds a METplus Docker image and pushes it to DockerHub.
 The image is pulled instead of built in each test job to save execution time.
 The script attempts to pull the appropriate Docker image from DockerHub
-(dtcenter/metplus-dev:*BRANCH_NAME*) if it already exists so that unchanged
+(*dtcenter/metplus-dev:BRANCH_NAME*) if it already exists so that unchanged
 components of the Docker image do not need to be rebuilt.
 This reduces the time it takes to rebuild the image for a given branch on
 a subsequent workflow run.
@@ -498,7 +498,7 @@ i.e. METplotpy or METviewer, until a corresponding change is made to that
 component. If this occurs then some of the METplus use cases may break. To
 allow the tests to run successfully in the meantime, an option was added to
 force the version of the MET tag that is used to build the METplus Docker image
-that is used for testing. In the testing.yml workflow file,
+that is used for testing. In the **testing.yml** workflow file,
 there is a commented variable called
 MET_FORCE_TAG that can be uncommented and set to force the version of MET to
 use. This variable is found in the **get_image** job under the **env** section
@@ -532,9 +532,9 @@ Create/Update Docker Data Volumes
 
 The METplus use case tests obtain input data from Docker data volumes.
 Each use case category that corresponds to a directory in
-**parm/use_cases/model_applications** has its own data volume that contains
+*parm/use_cases/model_applications* has its own data volume that contains
 all of the data needed to run those use cases. The MET Tool Wrapper use cases
-found under **parm/use_cases/met_tool_wrapper** also have a data volume.
+found under *parm/use_cases/met_tool_wrapper* also have a data volume.
 These data are made available on the DTC web server.
 
 This job utilizes the
@@ -568,7 +568,7 @@ All Use Cases
 ^^^^^^^^^^^^^
 
 All of the existing use cases are listed in **all_use_cases.txt**,
-found in internal_tests/use_cases.
+found in *internal_tests/use_cases*.
 
 The file is organized by use case category. Each category starts
 a line that following the format::
@@ -576,9 +576,10 @@ a line that following the format::
   Category: <category>
 
 where *<category>* is the name of the use case category.
-See :ref:`use_case_categories` for more information. If you are adding a
-use case that will go into a new category, you will have to add a new category
-definition line to this file and add your new use case under it. Each use case
+See :ref:`use_case_categories` for more information. If a use case
+is being added that will go into a new category, 
+a new category definition line will have to be added
+to this file and add the new use case under it. Each use case
 in that category will be found on its own line after this line.
 The use cases can be defined using the following formats::
 
@@ -592,7 +593,7 @@ The index is the number associated with the use case so it can be referenced
 easily. The first index number in a new category should be 0.
 Each use case added should have an index that is one greater than the previous.
 If it has been determined that a use case cannot run in the automated tests,
-then the index number should be replaced with "#X" so that is it included
+then the index number should be replaced with "#X" so that it is included
 in the list for reference but not run by the tests.
 
 name
@@ -610,7 +611,7 @@ config_args
 """""""""""
 
 This is the path of the config file used for the use case relative to
-**parm/use_cases**.
+*parm/use_cases*.
 
 Example::
 
@@ -651,7 +652,7 @@ images using Conda that can be used to run use cases. These images are stored
 on DockerHub in *dtcenter/metplus-envs* and are named with a tag that
 corresponds to the keyword without the **_env** suffix.
 The environments were created using Docker commands via scripts that are found
-in **scripts/docker/docker_env**.
+in *scripts/docker/docker_env*.
 Existing keywords that set up Conda environments used for use cases are:
 
 * cfgrib_env
@@ -670,7 +671,7 @@ Example::
     spacetime_env
 
 The above example uses the Conda environment
-in dtcenter/metplus-envs:**spacetime** to run a user script.
+in *dtcenter/metplus-envs*:**spacetime** to run a user script.
 Note that only one dependency that contains the **_env** suffix can be supplied
 to a given use case.
 
@@ -680,10 +681,11 @@ Other Environments
 A few of the environments do not contain Conda environments and
 are handled a little differently.
 
-* **gempak_env** - Used if GempakToCF.jar is needed for a use case to convert
+* **gempak_env** - Used if **GempakToCF.jar **is needed for a use
+  case to convert
   GEMPAK data to NetCDF format so it can be read by the MET tools.
   Instead of creating a Python environment to use for the use case,
-  this Docker image installs Java and obtains the GempakToCF.jar file.
+  this Docker image installs Java and obtains the **GempakToCF.jar** file.
   When creating the Docker container to run the use cases,
   the necessary Java files are copied over into the container
   that runs the use cases so that the JAR file can be run by METplus wrappers.
@@ -707,7 +709,7 @@ Example::
 
     pygrib_env,py_embed
 
-In this example, the dtcenter/metplus-envs:**pygrib** environment is used to
+In this example, the *dtcenter/metplus-envs*:**pygrib** environment is used to
 run the use case. Since **py_embed** is also included, then the following will
 be added to the call to run_metplus.py so that the Python embedding script
 will use the **pygrib** environment to run::
@@ -736,14 +738,15 @@ for more information on how to use Python Embedding.
 
 * **cartopy** - Used if cartopy 0.18.0 is needed in the Conda environment.
   Cartopy uses shapefiles that are downloaded as needed. The URL that is used
-  to download the files has changed since cartopy 0.18.0 and we have run into
-  issues where the files cannot be obtained. To remedy this issue, we modified
-  the scripts that generate the Docker images that contain the Conda
+  to download the files has changed since cartopy 0.18.0 and there have been
+  issues where the files cannot be obtained. To remedy this issue,
+  the scripts have been modified that generate the Docker images
+  that contain the Conda
   environments that use cartopy to download these shape files so they will
   always be available. These files need to be copied from the Docker
   environment image into the testing image. When this keyword is found in the
-  dependency list, a different Dockerfile (Dockerfile.run_cartopy found in
-  .github/actions/run_tests) is used to create the testing environment and
+  dependency list, a different Dockerfile (**Dockerfile.run_cartopy** found in
+  *.github/actions/run_tests*) is used to create the testing environment and
   copy the required shapefiles into place.
 
 
@@ -757,14 +760,14 @@ packages take a very long time to install in Docker. The new approach involves
 creating Docker images that use Conda to create a Python environment that can
 run the use case. To see what is available in each of the existing Python
 environments, refer to the comments in the scripts found in
-**scripts/docker/docker_env/scripts**.
+*scripts/docker/docker_env/scripts*.
 New environments must be added by a METplus developer,
 so please create a discussion on the
 `METplus GitHub Discussions <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html>`_
 forum if none of these environments contain the package requirements
 needed to run a new use case.
 
-A **README.md** file can be found in **scripts/docker/docker_env** that
+A **README.md** file can be found in *scripts/docker/docker_env* that
 provides commands that can be run to recreate a Docker image if the
 conda environment needs to be updated. Please note that Docker must
 be installed on the workstation used to create new Docker images and
@@ -807,7 +810,7 @@ Example::
 The cartopy python package automatically attempts to download
 shapefiles as needed.
 The URL that is used in cartopy version 0.18.0 and earlier no longer
-exists, so use cases that needs these files will fail if they are
+exists, so use cases that need these files will fail if they are
 not found locally. If a conda environment uses cartopy, these
 shapefiles may need to be downloaded by the user running the use case
 even if the conda environment was created by another user.
@@ -826,10 +829,10 @@ Use Case Groups
 The use cases that are run in the automated test suite are divided into
 groups that can be run concurrently.
 
-The **use_case_groups.json** file (found in **.github/parm**)
+The **use_case_groups.json** file (found in *.github/parm*)
 contains a list of the use case groups to run together.
 In METplus version 4.0.0 and earlier, this list was
-found in the .github/workflows/testing.yml file.
+found in the *.github/workflows/testing.yml* file.
 
 Each use case group is defined with the following format::
 
@@ -904,7 +907,7 @@ It also supports a range of numbers separated with a dash. Example::
 The above example will run a job with data_assimilation 0, 1, 2, and 3, then
 another job with data_assimilation 4 and 5.
 
-You can also use a combination of commas and dashes to define the list of cases
+Use a combination of commas and dashes to define the list of cases
 to run. Example::
 
       {
@@ -993,7 +996,7 @@ After all of the use cases in a group have finished running, the output
 that was generated is compared to the truth data to determine if any of
 the output was changed. The truth data for each use case group is stored
 in a Docker data volume on DockerHub. The **diff_util.py** script
-(found in **metplus/util**) is run to compare all of the output files in
+(found in *metplus/util*) is run to compare all of the output files in
 different ways depending on the file type.
 
 The logic in this script could be improved to provide more robust testing.
