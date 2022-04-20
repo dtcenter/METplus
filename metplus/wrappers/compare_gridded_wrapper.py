@@ -169,8 +169,6 @@ that reformat gridded data
               Args:
                 @param time_info dictionary containing timing information
         """
-        self.clear()
-
         var_list = util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
                                      time_info)
 
@@ -191,6 +189,7 @@ that reformat gridded data
             if var_list:
                 self.c_dict['CURRENT_VAR_INFO'] = var_list[0]
 
+            self.clear()
             self.run_at_time_all_fields(time_info)
 
     def run_at_time_one_field(self, time_info, var_info):
