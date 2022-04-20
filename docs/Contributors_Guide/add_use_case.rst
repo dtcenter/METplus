@@ -352,7 +352,7 @@ Run the following command to see which shell is currently in use::
     values that correspond to the use case being added before
     copy/pasting any of these commands or there may be unintended consequences.
     Copy and paste these values after they have been modified into a text file
-    that can be copy and pasted into the terminal.
+    that can be copied and pasted into the terminal.
 
 Download the template environment file
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -577,7 +577,7 @@ then untar the sample data tarball into the feature branch directory::
 
     tar zxf ${METPLUS_EXISTING_DATA_TARFILE} -C ${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
 
-**CONDITION 2: If no tarfile exists yet, skip this step**
+**CONDITION 2: If no tarfile exists yet, skip this step.**
 
 Rename or modify existing data or data structure (if applicable)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1078,12 +1078,10 @@ The addition of a new use case results in new output data. When this happens,
 the reference branch needs to be updated so that future pull requests will
 compare their results to a "truth" data set that contains the new files.
 Create a pull request with "develop" as the source branch and "develop-ref" as
-the destination branch. This is done so that the pull request can reference the
-number that is responsible for the changes in the truth data to easily track
-where differences occurred.
+the destination branch. This is done so that the pull request number that is responsible for the changes in the truth data  can be referenced to easily track where differences occurred.
 
 Merging develop into develop-ref often causes strange conflicts. It is
-important to update develop-ref with the latest content of develop, so follow
+important to update develop-ref with the latest content of develop. Follow
 these command line instructions in the METplus repository to reconcile the
 conflicts before creating the pull request.
 
