@@ -39,6 +39,15 @@ describes the bugfix, enhancement, or new feature:
 https://github.com/dtcenter/METplus/issues
 
 
+METplus Version 4.1.1 Release Notes (2022-04-20)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Bugfixes:
+
+    * Fix reset of arguments for some wrappers (i.e. GenEnsProd) after each run (`#1555 <https://github.com/dtcenter/METplus/issues/1555>`_)
+    * Fix PCPCombine extra options removal of semi-colon (`#1534 <https://github.com/dtcenter/METplus/issues/1534>`_)
+    * Fix inconsistent Weather Regime classification numbers when the forecast is reordered (`#1553 <https://github.com/dtcenter/METplus/issues/1553>`_)
+
 METplus Version 4.1.0 Release Notes (2022-03-14)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
