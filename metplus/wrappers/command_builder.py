@@ -1234,7 +1234,11 @@ class CommandBuilder:
 
             # handle extra options if set
             if v_extra:
-                field += f' {v_extra}'
+                extra = v_extra.strip()
+                # if trailing semi-colon is not found, add it
+                if not extra.endswith(';'):
+                    extra = f"{extra};"
+                field += f' {extra}'
 
             # add curly braces around field info
             if add_curly_braces:
