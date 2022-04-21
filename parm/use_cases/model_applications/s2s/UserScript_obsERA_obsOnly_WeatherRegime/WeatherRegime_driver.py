@@ -6,7 +6,7 @@ import netCDF4
 import warnings
 
 from metcalcpy.contributed.blocking_weather_regime.WeatherRegime import WeatherRegimeCalculation
-from metcalcpy.contributed.blocking_weather_regime.Blocking_WeatherRegime_util import parse_steps, read_nc_met, write_mpr_file, reorder_fcst_regimes
+from metcalcpy.contributed.blocking_weather_regime.Blocking_WeatherRegime_util import parse_steps, read_nc_met, write_mpr_file, reorder_fcst_regimes,reorder_fcst_regimes_correlate
 from metplotpy.contributed.weather_regime import plot_weather_regime as pwr
 
 
@@ -16,7 +16,8 @@ def main():
 
     if not steps_list_obs and not steps_list_fcst:
         warnings.warn('No processing steps requested for either the model or observations,')
-        warnings.warn('No data will be processed')
+        warnings.warn(' nothing will be run')
+        warnings.warn('Set FCST_STEPS and/or OBS_STEPS in the [user_env_vars] section to process data')
 
 
     ######################################################################
@@ -129,21 +130,22 @@ def main():
     if ("KMEANS" in steps_list_obs):
         print('Running Obs K Means')
         kmeans_obs,wrnum_obs,perc_obs,wrc_obs= steps_obs.run_K_means(z500_detrend_2d_obs,timedict_obs,z500_obs.shape)
+        steps_obs.write_K_means_file(timedict_obs,wrc_obs)
 
     if ("KMEANS" in steps_list_fcst):
         print('Running Forecast K Means')
         kmeans_fcst,wrnum_fcst,perc_fcst,wrc_fcst = steps_fcst.run_K_means(z500_detrend_2d_fcst,timedict_fcst,
             z500_fcst.shape)
-
-    if ("KMEANS" in steps_list_obs) and ("KMEANS" in steps_list_fcst):
-        # Check to see if reordering the data so that the weather regime patterns match between
-        # the forecast and observations, is needed
-        #TODO:  make this automated based on spatial correlations
         reorder_fcst = os.environ.get('REORDER_FCST','False').lower()
-        fcst_order_str = os.environ['FCST_ORDER'].split(',')
-        fcst_order = [int(fo) for fo in fcst_order_str]
-        if reorder_fcst == 'true':
+        reorder_fcst_manual = os.environ.get('REORDER_FCST_MANUAL','False').lower()
+        if (reorder_fcst == 'true') and ("KMEANS" in steps_list_obs): 
+            kmeans_fcst,perc_fcst,wrc_fcst = reorder_fcst_regimes_correlate(kmeans_obs,kmeans_fcst,perc_fcst,wrc_fcst,wrnum_fcst)
+        if reorder_fcst_manual == 'true':
+            fcst_order_str = os.environ['FCST_ORDER'].split(',')
+            fcst_order = [int(fo) for fo in fcst_order_str]
             kmeans_fcst,perc_fcst,wrc_fcst = reorder_fcst_regimes(kmeans_fcst,perc_fcst,wrc_fcst,wrnum_fcst,fcst_order)
+        steps_fcst.write_K_means_file(timedict_fcst,wrc_fcst)
+
 
         # Write matched pair output for weather regime classification
         modname = os.environ.get('MODEL_NAME','GFS')
@@ -177,9 +179,13 @@ def main():
 
 
     if ("TIMEFREQ" in steps_list_obs):
+        if not ("KMEANS" in steps_list_obs):
+            raise Exception('Must run observed Kmeans before running frequencies.')
         wrfreq_obs,dlen_obs,ts_diff_obs = steps_obs.compute_wr_freq(wrc_obs)
 
     if ("TIMEFREQ" in steps_list_fcst):
+        if not ("KMEANS" in steps_list_fcst):
+            raise Exception('Must run forecast Kmeans before running frequencies.')
         wrfreq_fcst,dlen_fcst,ts_diff_fcst = steps_fcst.compute_wr_freq(wrc_fcst)
 
     if ("TIMEFREQ" in steps_list_obs) and ("TIMEFREQ" in steps_list_fcst):

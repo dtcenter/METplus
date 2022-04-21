@@ -144,7 +144,7 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
     if not os.path.exists(filepath_b):
         if debug:
             print(f"ERROR: File does not exist: {filepath_b}")
-        return (filepath_a, '', 'file not found', '')
+        return (filepath_a, '', 'file not found (in truth but missing now)', '')
 
     file_type = get_file_type(filepath_a)
     if file_type.startswith('skip'):
