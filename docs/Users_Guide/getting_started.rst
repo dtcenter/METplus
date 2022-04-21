@@ -19,7 +19,7 @@ determine which tools to use and how to set up METplus.
   with this testing and evaluation project?
   
 * What type of forecasts and type of observations will be used and how
-  they can/should be matched?
+  can/should they be matched?
   
   * What attributes of the forecast should be evaluated?
      
