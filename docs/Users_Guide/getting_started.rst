@@ -11,11 +11,11 @@ Questions to Consider
 Questions to ask when applying METplus to a new testing and evaluation project
 ------------------------------------------------------------------------------
 
-If a user is new to developing a verification or evaluation system or
-to using METplus, there are questions that should be considered to help
+If a user is new to the concept of developing a verification or
+evaluations system, there are questions that should be considered to help
 determine which tools to use and how to set up METplus.
 
-* First and foremost, what are the questions need to be answered
+* First and foremost, what are the questions that need to be answered
   with this testing and evaluation project?
   
 * What type of forecasts and type of observations will be used and how
@@ -26,10 +26,10 @@ determine which tools to use and how to set up METplus.
   * What is the standard for comparison that provides a reference level
     of skill (e.g., persistence, climatology, reference model)?
      
-  * What is the geographic location of the model data being evaluated?
-    Are there specific areas of interest for the evaluation?
+  * What domain should be used to evaluate on:
+    The model domain, observation domain (if gridded), or some other domain?
      
-  * What domain should be used to evaluate on the model domain, 
+  * What domain should be used to evaluate on: The model domain, 
     observation domain (if gridded), or some other domain?
      
   * What is the evaluation time period?
@@ -63,8 +63,8 @@ the answers.
   * - 
     - Gridded Forecast
     - Point Forecast
-  * - Gridded :raw-html:`<br />`
-      Observation/Analysis
+  * - **Gridded** :raw-html:`<br />`
+      **Observation/Analysis**
     - Gen-Ens-Prod :raw-html:`<br />`
       PCP-Combine :raw-html:`<br />`
       Ensemble-Stat :raw-html:`<br />`
@@ -79,7 +79,7 @@ the answers.
     - Point-Stat (run with the Analyses :raw-html:`<br />`
       as the “forecast” and Point Forecast :raw-html:`<br />`
       as the “observation”)
-  * - Point Observations
+  * - **Point Observations**
     - Point-Stat :raw-html:`<br />`
       Ensemble-Stat
     - Stat-Analysis (run by passing in MPR records) :raw-html:`<br />`
@@ -90,8 +90,8 @@ the answers.
       
 * What attributes of the forecast should be evaluated?
   
-  * This refers to not only defining the forecast fields to be evaluated
-    but also the forecast characteristics such as bias, reliability,
+  * This refers to defining the forecast fields to be evaluated,
+    as well as the forecast characteristics such as bias, reliability,
     resolution, and prediction of events.  It also means understanding
     the nature of the forecast and observations. 
 
@@ -193,18 +193,18 @@ following configuration options:
    
 * {MET TOOL}_CLIMO_CDF
    
-This can be found in Grid-Stat, Point-Stat, Gen-Ens-Prod, and Ensemble-Stat
-tools.
+This can be found in Grid-Stat, Point-Stat, Gen-Ens-Prod, Series-Analysis,
+and Ensemble-Stat tools.
 
-What is the geographic location of the model data being evaluated? Are there specific areas of interest for the evaluation?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+What domain should be used to evaluate on: The model domain, observation domain (if gridded), or some other domain?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Masking regions are what METplus uses to define verification areas of
 interest. These can be defined prior to running tools using the
 Gen-Vx-Mask tool, or during run-time using the METPLUS_MASK_DICT options.
 
-What domain should be used to evaluate on the model domain, observation domain (if gridded), or some other domain?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+What domain should be used to evaluate on: The model domain, observation domain (if gridded), or some other domain?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The decision to evaluate on model or observation/analysis domain is
 user-specific but the user may want to consider the following:
@@ -239,11 +239,11 @@ on Valid Time.
 LOOP_BY = INIT or RETRO to have METplus proceed through the data based
 on Initialization Time.
 
-How should the testing and evaluation project be broken down into METplus
-Use Cases? One large one or multiple smaller ones?
+How should the testing and evaluation project be broken down into METplus Use Cases? One large one or multiple smaller ones?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* How will METplus be run? Manually? Scheduled, through cron?
-  Automated via a workflow manger (e.g. Rocoto, EC-Flow, Rose-Cylc)?
+How will METplus be run? Manually? Scheduled, through cron? Automated via a workflow manger (e.g. Rocoto, EC-Flow, Rose-Cylc)?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
   * If run manually, this can be done.
     
@@ -253,8 +253,8 @@ Use Cases? One large one or multiple smaller ones?
   * If automated via a workflow manager, it is recommended the user consider
     configuring the use cases to run smaller amounts of data.
     
-* Where will METplus be run? Local machine, project machine, HPC system,
-  in the cloud (e.g. AWS)? Serial runs or parallelized?
+Where will METplus be run? Local machine, project machine, HPC system, in the cloud (e.g. AWS)? Serial runs or parallelized?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   
   * Running on linux or a project machine – identify where METplus is
     installed by running **which run_metplus.py**; it is recommended an
@@ -278,8 +278,8 @@ Use Cases? One large one or multiple smaller ones?
 Would a flowchart help to provide clarity?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Consider creating one or more flowcharts to illustrate the data flow
-and verification logic for quick reference and for visual learners.
+Utilizing a flowchart can assist in identifying which verification
+steps can be completed by which METplus tools.
 
 .. _running-metplus:
 
