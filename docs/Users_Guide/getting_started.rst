@@ -25,7 +25,10 @@ determine which tools to use and how to set up METplus.
      
   * What is the standard for comparison that provides a reference level
     of skill (e.g., persistence, climatology, reference model)?
-     
+
+  * What is the geographic location of the model data being evaluated?
+    Are there specific areas of interest for the evaluation?
+    
   * What domain should be used to evaluate on: The model domain, 
     observation domain (if gridded), or some other domain?
      
@@ -193,12 +196,15 @@ following configuration options:
 This can be found in Grid-Stat, Point-Stat, Gen-Ens-Prod, Series-Analysis,
 and Ensemble-Stat tools.
 
-What domain should be used to evaluate on: The model domain, observation domain (if gridded), or some other domain?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+What is the geographic location of the model data being evaluated? Are there specific areas of interest for the evaluation?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Masking regions are what METplus uses to define verification areas of
 interest. These can be defined prior to running tools using the
 Gen-Vx-Mask tool, or during run-time using the METPLUS_MASK_DICT options.
+
+What domain should be used to evaluate on: The model domain, observation domain (if gridded), or some other domain?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The decision to evaluate on model or observation/analysis domain is
 user-specific but the user may want to consider the following:
