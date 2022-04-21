@@ -39,7 +39,7 @@ describes the bugfix, enhancement, or new feature:
 https://github.com/dtcenter/METplus/issues
 
 
-METplus Version 4.1.1 Release Notes (2022-04-20)
+METplus Version 4.1.1 Release Notes (2022-04-21)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * Bugfixes:
