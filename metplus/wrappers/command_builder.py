@@ -1234,7 +1234,11 @@ class CommandBuilder:
 
             # handle extra options if set
             if v_extra:
-                field += f' {v_extra}'
+                extra = v_extra.strip()
+                # if trailing semi-colon is not found, add it
+                if not extra.endswith(';'):
+                    extra = f"{extra};"
+                field += f' {extra}'
 
             # add curly braces around field info
             if add_curly_braces:
@@ -1373,10 +1377,13 @@ class CommandBuilder:
                        'wrapper. Cannot run with LOOP_ORDER = times')
         return None
 
-    def run_all_times(self):
-        """!Loop over time range specified in conf file and
-        call METplus wrapper for each time"""
-        return util.loop_over_times_and_call(self.config, self)
+    def run_all_times(self, custom=None):
+        """! Loop over time range specified in conf file and
+        call METplus wrapper for each time
+
+        @param custom (optional) custom loop string value
+        """
+        return util.loop_over_times_and_call(self.config, self, custom=custom)
 
     @staticmethod
     def format_met_config_dict(c_dict, name, keys=None):
