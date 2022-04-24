@@ -123,9 +123,9 @@ model_applications/s2s/SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_Mu
 # where ?? will be replaced by values corresponding to each of the ensemble members (0 through 23).
 # The output for GenEnsProd goes into **GEP** and contains the following files:
 #
-# * gen_ens_prod_????01_ens.nc
+# * gen_ens_prod_YYYY01_ens.nc
 #
-# where ???? will be replaced by each year of the forecast data being processed (1982 through 2010).
+# where YYYY will be replaced by each year of the forecast data being processed (1982 through 2010).
 # The output from the second SeriesAnalysis call goes to **SA_run2** and contains the following files:
 #
 # * 198201to201002_CFSv2_SA.nc
