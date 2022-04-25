@@ -314,7 +314,7 @@ Input Data
 Sample input data needed to run the use case should be provided. Please try to
 limit the input data to the minimum that is
 needed to demonstrate the use case effectively. GRIB2 files can be pared down
-to only contain the fields and/or vertical levels that are needed using
+to only contain the fields and/or vertical levels that are needed for using
 `wgrib2 <https://www.cpc.ncep.noaa.gov/products/wesley/wgrib2/>`_.
 
 Example: To create a file called subset.grib2 that only contains TMP data from
@@ -854,8 +854,8 @@ steps were unsuccessful in lowering memory usage, please take the following step
 - In the *.github/parm/use_case_groups.json* file, remove the entry that 
   was added during the :ref:`add_new_category_to_test_runs` 
   for the new use case. This will stop the use case from running on a pull request. 
-- Push these two updated files to the branch in Github and confirm that it 
-  now compiles successfully.
+- Push these two updated files to the working branch in Github and
+  confirm that it now compiles successfully.
 - During the :ref:`create-a-pull-request` creation, inform the reviewer of 
   the Github Actions failure. The reviewer should confirm the use case is 
   successful when run manually, that the memory profiler output confirms that 

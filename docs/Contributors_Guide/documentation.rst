@@ -139,7 +139,7 @@ Release Guide:
   (e.g. **open_release_issue.rst, clone_project_repository.rst**, etc.)
   may be common to multiple METplus components.  These common steps
   are located in the *release_steps* directory.  However, a METplus
-  component may have different instructions from other componenets
+  component may have different instructions from other components
   (e.g. For **METplus wrappers, update_version.rst,
   create_release_extra.rst**, etc.). In this case, the instructions
   that are specific to that component are located in a subdirectory
@@ -156,7 +156,7 @@ Release Guide:
 Verification Datasets Guide:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* To add/modify any relevant datasets in attempt to create a
+* To add/modify any relevant datasets in an attempt to create a
   centralized catalogue of verification datasets to provide the model
   verification community with relevant "truth" datasets. See the
   `Verification Datasets Guide Overview <https://metplus.readthedocs.io/en/latest/Verification_Datasets/overview.html>`_
@@ -172,11 +172,11 @@ build and display the documentation. Read the Docs simplifies the
 documentation process by building, versioning, and hosting the documentation.
 
 Read the Docs supports multiple versions for each repository. For the METplus
-compoents, the "latest" version will point to the latest official (stable)
+components, the "latest" version will point to the latest official (stable)
 release. The "develop" or "development" version will point to the most up to
 date development code. There may also be other previous versions of the
 software available in the version selector menu, which is accessible by
-clicking in the bottom left corner of the the documentation pages.
+clicking in the bottom left corner of the documentation pages.
 
 Automation rules allow project maintainers to automate actions on new branches
 and tags on repositories.  For the METplus components, documentation is
@@ -199,8 +199,8 @@ view "feature_836_rtd_doc" for the METplus repository the URL would be:
   
 The URL branch name will be lowercase regardless of the actual branch
 letter casing,
-i.e. "*feature_836_RTD_Doc*" branch would be accessed by the above
-mentioned URL.
+i.e. "*feature_836_RTD_Doc*" branch would be accessed by the
+above-mentioned URL.
   
 Read the Docs will automatically delete the documentation for a feature
 branch and a bugfix branch when the branch is deleted.
@@ -264,7 +264,7 @@ _______________________________________
 The Doxygen tool is employed to create documentation from the source code.
 This documentation is useful in generating details about the METplus wrapper
 API (Application Programming Interface).
-This is a useful reference for contributors to peruse prior to creating
+This is a useful reference for contributors to pursue prior to creating
 new METplus wrappers.
 The Doxygen files located in the */path/to/METplus/docs/doxygen* directory
 do **NOT** need to be modified and should not be modified.
