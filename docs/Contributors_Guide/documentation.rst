@@ -30,7 +30,7 @@ documentation:
   * sphinx_rtd_theme-0.4.3.
 
 Which versions are being used by the current METplus release can be viewed
-by looking at either environment.yml or requirements.txt, both of which
+by looking at either **environment.yml** or **requirements.txt**, both of which
 are found in the *METplus/* directory.  If the desire is to replicate all the
 packages employed by METplus, please refer to :numref:`conda_env` of the
 Contributor's Guide.
@@ -157,7 +157,7 @@ Verification Datasets Guide:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 * To add/modify any relevant datasets in an attempt to create a
-  centralized catalogue of verification datasets to provide the model
+  centralized catalog of verification datasets to provide the model
   verification community with relevant "truth" datasets. See the
   `Verification Datasets Guide Overview <https://metplus.readthedocs.io/en/latest/Verification_Datasets/overview.html>`_
   for more information. 
