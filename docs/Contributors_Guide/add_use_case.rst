@@ -51,9 +51,9 @@ one of the following:
 * miscellaneous
 * pbl
 * precipitation
-* s2s (Subseasonal to Seasonal)
+* s2s (Subseasonal to Seasonal.)
 * space_weather
-* tc_and_extra_tc (Tropical Cyclone and Extratropical Cyclone)
+* tc_and_extra_tc (Tropical Cyclone and Extratropical Cyclone.)
 
 If the new use case does not fall into any of these categories
 or it is unclear which category is the most appropriate,
@@ -85,19 +85,19 @@ following:
   where
 
     * *<MET-TOOL>* is the MET tool that performs the primary statistical
-      analysis, i.e. GridStat or SeriesAnalysis
+      analysis, i.e. GridStat or SeriesAnalysis.
 
     * *<FCST>* is the name of the forecast input data source (this can be
-      excluded if no forecast data is used)
+      excluded if no forecast data is used).
 
     * *<OBS>* is the name of the observation input data source (this can be
-      excluded if no observation data is used)
+      excluded if no observation data is used).
 
     * *<CLIMO>* is the optional climatology input data source (this can be
-      excluded if no climatology data is used)
+      excluded if no climatology data is used).
 
     * *<DESCRIPTOR>* is an optional description that can include field
-      category, number of fields, statistical types, and file formats
+      category, number of fields, statistical types, and file formats.
 
 If the use case uses a Python Embedding script or any other additional files
 (besides input data), then put them in a sub-directory that matches the METplus
@@ -173,9 +173,9 @@ directory under *docs/use_cases/model_applications* if it does not already
 exist. Inside this directory, create a file called **README.rst**.
 Inside this file add the following each on a single line:
 
-* Title of category
-* Dashes (-) that are the exact same length as the title
-* A short description of the category
+* Title of category.
+* Dashes (-) that are the exact same length as the title.
+* A short description of the category.
 
 For example,
 *docs/use_cases/model_applications*/**air_quality_and_comp/README.rst**
