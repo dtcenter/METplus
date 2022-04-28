@@ -4097,7 +4097,7 @@ METplus Configuration Glossary
    TC_STAT_OUTPUT_TEMPLATE
      (Optional) Specify the template of the output file to write job output
      from tc_stat.
-     If set, then the -out command line argument will the full
+     If set, then the -out command line argument with the full
      path to the file will be added to the tc_stat call.
 
      | *Used by:*  TCStat
@@ -4105,7 +4105,7 @@ METplus Configuration Glossary
    STAT_ANALYSIS_OUTPUT_TEMPLATE
      (Optional) Specify the template of the output file to write job output
      from stat_analysis.
-     If set, then the -out command line argument will the full
+     If set, then the -out command line argument with the full
      path to the file will be added to the stat_analysis call.
 
      | *Used by:*  StatAnalysis
