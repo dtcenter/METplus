@@ -8894,6 +8894,8 @@ referenced inside the user-defined script to obtain a list of the files that
 should be processed.
 See :term:`USER_SCRIPT_INPUT_TEMPLATE` for more information.
 
+Note: This wrapper may be disabled upon installation to prevent security risks.
+
 METplus Configuration
 ---------------------
 
