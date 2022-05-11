@@ -8,8 +8,8 @@
 # directed to the LOGFILE, per cron convention. To run this script, use
 # the following commands:
 #
-#    git clone https://github.com/dtcenter/MET
-#    MET/scripts/sosnarqube/run_nightly.sh name
+#    git clone https://github.com/dtcenter/METplus
+#    METplus/internal_tests/scanning/sonarqube/run_nightly.sh name
 #
 # Usage: run_nightly.sh name
 #    where "name" specifies a branch, tag, or hash
@@ -22,7 +22,6 @@
 # Constants
 #EMAIL_LIST="johnhg@ucar.edu hsoh@ucar.edu jpresto@ucar.edu linden@ucar.edu mccabe@ucar.edu"
 EMAIL_LIST="johnhg@ucar.edu hsoh@ucar.edu mccabe@ucar.edu"
-#EMAIL_LIST="hsoh@ucar.edu"
 KEEP_DAYS=5
 
 function usage {

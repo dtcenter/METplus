@@ -8,14 +8,14 @@
 # go to the directory where you would like the SCA output written and
 # then run:
 #
-#    git clone https://github.com/dtcenter/MET
-#    MET/scripts/sonarqube/run_sonarqube_sca.sh name
+#    git clone https://github.com/dtcenter/METplus
+#    METplus/internal_tests/scanning/sonarqube/run_sonarqube.sh name
 #
-# Usage: run_sonarqube_sca.sh name
+# Usage: run_sonarqube.sh name
 #    Test the specified branched version of MET:
-#       run_sonarqube_sca.sh {branch name}
+#       run_sonarqube.sh {branch name}
 #    Test the specified tagged version of MET:
-#       run_sonarqube_sca.sh {tag name}
+#       run_sonarqube.sh {tag name}
 #
 #=======================================================================
 
@@ -100,9 +100,6 @@ fi
 run_command "git clone ${GIT_REPO} ${REPO_DIR}"
 run_command "cd ${REPO_DIR}"
 run_command "git checkout ${1}"
-
-# Set the build id
-#BUILD_ID="MET-${1}"
 
 SONAR_PROPERTIES=sonar-project.properties
 
