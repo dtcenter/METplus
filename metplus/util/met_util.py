@@ -119,8 +119,13 @@ def run_metplus(config, process_list):
                     command_builder.run_all_times()
                     return 0
             except AttributeError:
-                raise NameError("There was a problem loading "
-                                f"{process} wrapper.")
+                logger.error("There was a problem loading "
+                             f"{process} wrapper.")
+                return 1
+            except ModuleNotFoundError:
+                logger.error(f"Could not load {process} wrapper. "
+                             "Wrapper may have been disabled.")
+                return 1
 
             processes.append(command_builder)
 
