@@ -13,8 +13,8 @@ This environment includes the minimum requirements to run the METplus wrappers.
 ### Docker
 
 ```
-docker build -t dtcenter/metplus-envs:metplus_base -f Dockerfile.metplus_base .
-docker push dtcenter/metplus-envs:metplus_base
+docker build -t dtcenter/metplus-envs:metplus_base.v5 -f Dockerfile.metplus_base .
+docker push dtcenter/metplus-envs:metplus_base.v5
 ```
 
 ### Local
