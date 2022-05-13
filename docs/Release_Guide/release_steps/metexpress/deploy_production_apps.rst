@@ -1,12 +1,13 @@
-Deploy AWS apps
--------------------
+Deploy Production Apps
+-----------------------
 
-* On metexpress.nws.noaa.gov (VPN and permissions required), go to the container_deployment directory.
+* If the beta tester approves the apps, deploy them to the production server (mats-docker).
+
+* On mats-docker.gsd.esrl.noaa.gov (the production server, VPN and permissions required), go to the container_deployment directory.
 
 .. parsed-literal::
 
-  ssh metexpress.nws.noaa.gov
-  sudo -i -u metexpress
+  ssh www-data@mats-docker.gsd.esrl.noaa.gov
   cd container_deployment
 
 * Add any new apps to docker_compose.yml and web/applist.json. Update the container version numbers in docker_compose.yml, and any settings files in settings/
@@ -21,6 +22,4 @@ Deploy AWS apps
 
 .. parsed-literal::
 
-  bin/redeploy metexpress
-
-* Sometimes the apps take a while to start up on AWS. Be patient.
+  bin/redeploy production
