@@ -39,6 +39,13 @@ describes the bugfix, enhancement, or new feature:
 https://github.com/dtcenter/METplus/issues
 
 
+METplus Version 4.1.2 Release Notes (2022-05-16)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Bugfixes:
+
+  * Add logic to catch error thrown when wrapper has been disabled and update documentation to include instructions to disable UserScript wrapper (`METplus-Internal #33 <https://github.com/dtcenter/METplus-Internal/issues/33>`_)
+
 METplus Version 4.1.1 Release Notes (2022-04-21)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
