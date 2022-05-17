@@ -72,7 +72,7 @@ Branch name: `feature_<Issue Number>_<Description>`
 - [ ] Submit a pull request to merge into **develop**.
 Pull request: `feature <Issue Number> <Description>`
 - [ ] Define the pull request metadata, as permissions allow.
-Select: **Reviewer(s)** and **Linked issues**
+Select: **Reviewer(s)** and **Development** issues
 Select: **Repository** level development cycle **Project** for the next official release
 Select: **Milestone** as the next official version
 - [ ] Iterate until the reviewer(s) accept your changes. Merge branch into **develop**.
