@@ -54,7 +54,29 @@ Update DTC Website
       
     * For an official release, remove the corresponding development
       releases.
+
+  * Create or edit the "Coordinated METplus Version X.Y" software release.
+
+    * For a beta1 development release, create the "Coordinated METplus
+      Version X.Y" release section if it doesn't already exist.  Ensure the
+      "Release Type" is set to *Development*. Add links for the |projectRepo|
+      X.Y.Z beta1, the METplus "Documentation", and METplus "Existing Builds
+      and Docker" and under "Release Notes" add a bullet point linking to the
+      |projectRepo| Release Notes with the text |projectRepo|.
       
+    * For a beta2-X development release, update the existing link and text in
+      the "Coordinated METplus Version X.Y" page from the beta1 information to
+      the beta2-X information.
+
+    * For an official release, update the existing link and text in
+      the "Coordinated METplus Version X.Y" page from the beta2-X information
+      to the X.Y.Z information. Change the "Release Type" from *Development*
+      to *Recommended*.
+
+    * For a bugfix release, update the existing link and text in
+      the "Coordinated METplus Version X.Y" page from the X.Y.Z information
+      to the X.Y.Z+1 information.
+
   * |otherWebsiteUpdates|
 
   * Click on "Save".
