@@ -281,8 +281,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                     )
 
                 # set *_WINDOW_* variables for FCST and OBS
-                self.handle_file_window_variables(c_dict,
-                                                  dtypes=['FCST', 'OBS'])
+                self.handle_file_window_variables(c_dict)
             # if fcst input list or obs input list are not set
             else:
                 self.log_error('Cannot set '

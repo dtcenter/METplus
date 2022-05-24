@@ -339,25 +339,29 @@ class CommandBuilder:
             value = self._handle_window_once(input_list, default_val)
             c_dict[output_key] = value
 
-    def handle_file_window_variables(self, c_dict, dtypes=['FCST', 'OBS']):
+    def handle_file_window_variables(self, c_dict, data_types=None):
         """! Handle all window config variables like
               [FCST/OBS]_<app_name>_WINDOW_[BEGIN/END] and
               [FCST/OBS]_<app_name>_FILE_WINDOW_[BEGIN/END]
-              Args:
+
                 @param c_dict dictionary to set items in
+                @param data_types tuple of data types to check, i.e. FCST, OBS
         """
         edges = ['BEGIN', 'END']
         app = self.app_name.upper()
 
-        for dtype in dtypes:
+        if not data_types:
+            data_types = ['FCST', 'OBS']
+
+        for data_type in data_types:
             for edge in edges:
                 input_list = [
-                    f'{dtype}_{app}_FILE_WINDOW_{edge}',
+                    f'{data_type}_{app}_FILE_WINDOW_{edge}',
                     f'{app}_FILE_WINDOW_{edge}',
-                    f'{dtype}_FILE_WINDOW_{edge}',
+                    f'{data_type}_FILE_WINDOW_{edge}',
                     f'FILE_WINDOW_{edge}',
                 ]
-                output_key = f'{dtype}_FILE_WINDOW_{edge}'
+                output_key = f'{data_type}_FILE_WINDOW_{edge}'
                 value = self._handle_window_once(input_list, 0)
                 c_dict[output_key] = value
 
