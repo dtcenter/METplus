@@ -65,7 +65,7 @@ Update DTC Website
       |projectRepo| Release Notes.
       
     * For a beta2 or beyond development release, update the existing link and text in
-      the "Coordinated METplus Version X.Y" release section with the beta>=2
+      the "Coordinated METplus Version X.Y" release section with the updated
       development release information.
 
     * For an official release, update the existing link and text in
