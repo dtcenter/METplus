@@ -156,7 +156,7 @@ class METDbLoadWrapper(RuntimeFreqWrapper):
 
     def get_stat_directories(self, input_paths):
         """! Traverse through files under input path and find all directories
-        that contain .stat, .tcst, MODE*.txt, and MTD*.txt files.
+        that contain .stat, .tcst, mode*.txt, and mtd*.txt files.
 
         @param input_path top level directory to search
         @returns list of unique directories that contain stat files
@@ -185,8 +185,8 @@ class METDbLoadWrapper(RuntimeFreqWrapper):
         return (filename.endswith('.stat') or
                 filename.endswith('.tcst') or
                 (filename.endswith('.txt') and
-                 (filename.startswith('MODE') or
-                  filename.startswith('MTD'))))
+                 (filename.startswith('mode') or
+                  filename.startswith('mtd'))))
 
     @staticmethod
     def format_stat_dirs(stat_dirs):
