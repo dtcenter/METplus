@@ -71,7 +71,7 @@ Update DTC Website
     * For an official release, update the existing link and text in
       the "Coordinated METplus Version X.Y" release section with the X.Y.Z
       information. Change the "Release Type" from *Development* to
-      *Recommended*.
+      *Recommended*. Consider changing the "Release Type" of previous coordinated releases from *Recommended* to *Other*.
 
     * For a bugfix release, update the existing link and text in
       the "Coordinated METplus Version X.Y" release section with the
