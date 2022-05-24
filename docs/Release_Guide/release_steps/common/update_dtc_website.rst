@@ -60,7 +60,7 @@ Update DTC Website
     * For a beta1 development release, create the "Coordinated METplus
       Version X.Y" release entry if it doesn't already exist.  Ensure the
       "Release Type" is set to *Development*. Add links for the |projectRepo|
-      X.Y.Z beta1, the METplus "Documentation", and METplus "Existing Builds
+      X.Y.Z beta1, the METplus "Documentation", the METplus "Existing Builds
       and Docker" and under "Release Notes" add a bullet point linking to the
       |projectRepo| Release Notes with the text |projectRepo|.
       
