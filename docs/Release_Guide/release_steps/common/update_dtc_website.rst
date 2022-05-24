@@ -64,7 +64,7 @@ Update DTC Website
       and Docker" page, and the "Release Notes". Add to the Release Notes a link to the
       |projectRepo| Release Notes.
       
-    * For a beta>=2 development release, update the existing link and text in
+    * For a beta2 or beyond development release, update the existing link and text in
       the "Coordinated METplus Version X.Y" release section with the beta>=2
       development release information.
 
