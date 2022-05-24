@@ -64,18 +64,18 @@ Update DTC Website
       and Docker" and under "Release Notes" add a bullet point linking to the
       |projectRepo| Release Notes with the text |projectRepo|.
       
-    * For a beta2-X development release, update the existing link and text in
-      the "Coordinated METplus Version X.Y" page from the beta1 information to
-      the beta2-X information.
+    * For a beta>=2 development release, update the existing link and text in
+      the "Coordinated METplus Version X.Y" release section with the beta>=2
+      development release information.
 
     * For an official release, update the existing link and text in
-      the "Coordinated METplus Version X.Y" page from the beta2-X information
-      to the X.Y.Z information. Change the "Release Type" from *Development*
-      to *Recommended*.
+      the "Coordinated METplus Version X.Y" release section with the X.Y.Z
+      information. Change the "Release Type" from *Development* to
+      *Recommended*.
 
     * For a bugfix release, update the existing link and text in
-      the "Coordinated METplus Version X.Y" page from the X.Y.Z information
-      to the X.Y.Z+1 information.
+      the "Coordinated METplus Version X.Y" release section with the
+      X.Y.Z+1 information.
 
   * |otherWebsiteUpdates|
 
