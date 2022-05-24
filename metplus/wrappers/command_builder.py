@@ -302,7 +302,7 @@ class CommandBuilder:
 
         return msg
 
-    def handle_window_once(self, input_list, default_val=0):
+    def _handle_window_once(self, input_list, default_val=0):
         """! Check and set window dictionary variables like
               OBS_WINDOW_BEG or FCST_FILE_WINDOW_END
 
@@ -336,7 +336,7 @@ class CommandBuilder:
                           f'OBS_WINDOW_{edge}',
                          ]
             output_key = f'OBS_WINDOW_{edge}'
-            value = self.handle_window_once(input_list, default_val)
+            value = self._handle_window_once(input_list, default_val)
             c_dict[output_key] = value
 
     def handle_file_window_variables(self, c_dict, dtypes=['FCST', 'OBS']):
@@ -358,7 +358,7 @@ class CommandBuilder:
                     f'FILE_WINDOW_{edge}',
                 ]
                 output_key = f'{dtype}_FILE_WINDOW_{edge}'
-                value = self.handle_window_once(input_list, 0)
+                value = self._handle_window_once(input_list, 0)
                 c_dict[output_key] = value
 
     def set_met_config_obs_window(self, c_dict):
