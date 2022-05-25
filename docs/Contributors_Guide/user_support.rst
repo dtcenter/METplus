@@ -7,7 +7,7 @@ Support for the METplus components is provided through the
 Discussions is a collaborative communication forum, where METplus users can ask
 and answer questions, gather feedback, and share tips and tricks. Discussions
 are categorized to help community members find related discussions and begin
-conversations in the right place.
+conversations in the right place. 
 
 Five staff members take turns monitoring Discussions each day of the week.
 
@@ -39,7 +39,7 @@ Review the `unanswered discussions <https://github.com/dtcenter/METplus/discussi
 * For new discussions that have been posted within 24 hours:
 
   * If the issue is time sensitive, i.e. related to an upcoming training series
-  session, take action.  See :ref:`actions_new_discussions`.
+    session, take action.  See :ref:`actions_new_discussions`.
 
   * Otherwise, leave the discussion unanswered until the next day to allow the
     user community time to respond.
@@ -92,8 +92,9 @@ Actions for Handling New Discussions
   * If it would be better to have someone else answer, coordinate in the User
     Support Slack channel of dtc-metplus.slack.com or comment on the discussion
     with something like::
-      @<fill in username> would be the best person to address your question.
-      He should respond within a couple of days.
+    @<fill in username> would be the best person to address your question.
+    He should respond within a couple of days.
+
     If it is obvious that we also need to test data, please ask the user to
     send that data, pointing them to the
     `How to Send Us Data <https://github.com/dtcenter/METplus/discussions/954>`_
