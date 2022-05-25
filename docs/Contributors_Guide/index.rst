@@ -17,6 +17,7 @@ Contributor's Guide
    add_use_case
    continuous_integration
    documentation
+   user_support
 
 Indices and tables
 ==================
