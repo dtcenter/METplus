@@ -94,6 +94,7 @@ Actions for Handling New Discussions
   * If it would be better to have someone else answer, coordinate in the User
     Support Slack channel of dtc-metplus.slack.com or comment on the discussion
     with something like::
+      
       @<fill in username> would be the best person to address your question.
       He should respond within a couple of days.
 
