@@ -4,15 +4,17 @@ User Support
 
 Support for the METplus components is provided through the
 `METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_.
-Discussions is a collaborative communication forum, where METplus users can ask
-and answer questions, gather feedback, and share tips and tricks. Discussions
-are categorized to help community members find related discussions and begin
-conversations in the right place. 
+Discussions is a collaborative communication forum, where the METplus
+community can ask and answer questions, gather feedback, and share tips and
+tricks. Discussions are categorized to help community members find related
+discussions and begin conversations in the right place. 
 
-Five staff members take turns monitoring Discussions each day of the week.
 
 Support Responsibilities
 ========================
+
+Five staff members take turns monitoring Discussions each day of the week.
+
 
 Review the Tips/Tricks Page
 ---------------------------
@@ -23,8 +25,8 @@ page.
 Check for any new dicussions that have been added by users that are actually
 questions. If there are, move the discussion to a more approprate category so
 that it can be found when filtering for unanswered discussions.  Please note
-that if you have filtered by "Unanswered" and navigate to the Tips/Tricks
-category, no results will be found because these discussions are not
+that if the discussions have been filtered by "Unanswered" and the Tips/Tricks
+category is selected, no results will be found because these discussions are not
 answerable.
 
 If a new tip or trick has been added, please review the addition.  Consider
@@ -92,8 +94,8 @@ Actions for Handling New Discussions
   * If it would be better to have someone else answer, coordinate in the User
     Support Slack channel of dtc-metplus.slack.com or comment on the discussion
     with something like::
-    @<fill in username> would be the best person to address your question.
-    He should respond within a couple of days.
+      @<fill in username> would be the best person to address your question.
+      He should respond within a couple of days.
 
     If it is obvious that we also need to test data, please ask the user to
     send that data, pointing them to the
