@@ -97,8 +97,8 @@ Actions for Handling New Discussions
     Support Slack channel of dtc-metplus.slack.com or comment on the discussion
     with something like:
       
-    | @<fill in username> would be the best person to address your question
-    | and should respond within a couple of days.
+    *@<fill in username> would be the best person to address your question
+    and should respond within a couple of days.*
 
     If it is obvious that test data will be needed, please ask the user to
     send that data, pointing them to the
@@ -115,37 +115,21 @@ If an obvious answer exists and it is apparent the questioner is satisified
 with the response, consider posting something like the following before locking
 the discussion:
 
-| At this point I'm going to LOCK this conversation to prevent future posts.
-| Our team has decided that once discussions have been answered, and the
-| answer has been confirmed, we'll lock them. We want to encourage users to
-| ask new questions in new discussions rather than posting to old ones.
-| Hopefully that'll make the questions/answers easier for other users to
-| follow. So if/when more issues/questions arise, please feel free to start
-| a new discussion.
+*At this point I'm going to LOCK this conversation to prevent future posts. Our team has decided that once discussions have been answered, and the answer has been confirmed, we'll lock them. We want to encourage users to ask new questions in new discussions rather than posting to old ones. Hopefully that'll make the questions/answers easier for other users to follow. So if/when more issues/questions arise, please feel free to start a new discussion.*
 
 If there is no answer selected and no indication that the questioner is
 satisified with the response, follow up, requesting that the user mark
 the best answer so we can lock the discussion. The following text may need
 to be modified to match a specific situation, but this is a good starting
-point as an example::
+point as an example:
 
-| I'd like to mark this discussion as being answered and "lock it" to prevent
-|  future posts. That's how we encourage users to create new discussions for
-| new questions. But I wanted to give you an opportunity to comment on it
-| before doing so. Please feel free to select one of the responses as being
-| the best answer to your original question. That'll help future users with
-| similar questions find answers.
+*I'd like to mark this discussion as being answered and "lock it" to prevent future posts. That's how we encourage users to create new discussions for new questions. But I wanted to give you an opportunity to comment on it before doing so. Please feel free to select one of the responses as being the best answer to your original question. That'll help future users with similar questions find answers.*
 
 If following up on discussions where the user hasn't responded back in a while,
 consider posting something like the following before locking the discussion,
-filling in the MONTH and DAY below::
+filling in the MONTH and DAY below:
 
-| I wanted to check in with you about the initial discussion you submitted. We
-| were able to provide some guidance for you on <MONTH DAY>, but haven't heard
-| back if the suggested actions helped. If it did, or if you found a different
-| way of accomplishing your goal, we'd appreciate hearing from you. If you
-| have additional questions on this, we can try to find a solution; otherwise
-| we'll choose an answer and lock this discussion due to inactivity.
+*I wanted to check in with you about the initial discussion you submitted. We were able to provide some guidance for you on <MONTH DAY>, but haven't heard back if the suggested actions helped. If it did, or if you found a different way of accomplishing your goal, we'd appreciate hearing from you. If you have additional questions on this, we can try to find a solution; otherwise we'll choose an answer and lock this discussion due to inactivity.*
 
 GitHub users with sufficient permissions in the METplus repository should see a
 "Lock conversation" link on the right side navigation of each Discussions page.
