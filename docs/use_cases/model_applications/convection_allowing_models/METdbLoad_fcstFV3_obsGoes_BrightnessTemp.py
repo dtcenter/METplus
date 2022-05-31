@@ -11,8 +11,9 @@ METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 # Scientific Objective
 # --------------------
 #
-# Load MET data into a database using the met_db_load.py 
-# script found in dtcenter/METdatadb.
+# Load MET data into a database using the met_db_load.py script found in 
+# dtcenter/METdatadb.  Specifically, this use case loads distance map output 
+# from grid_stat and mode output into a database called mv_brightness_temp.
 
 ##############################################################################
 # Datasets
@@ -20,7 +21,6 @@ METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 #
 # | **Input:** MET .stat files and MODE text files
 #
-# ********FIX ME...  Need to figure out where the .stat files are stored.  Are they already in the tarball or do I need to add??********** 
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to see the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 # |
@@ -32,10 +32,9 @@ METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 # This use case utilizes the METplus METdbLoad wrapper to search for
 # files ending with .stat or .txt, substitute values into an XML load
 # configuration file, and call met_db_load.py.  It then loads data
-# into a METviewer database for the following use cases, 
+# into a METviewer database called mv_brightness_temp for the following use cases, 
 # MODE_fcstFV3_obsGOES_BrightnessTemp, MODE_fcstFV3_obsGOES_BrightnessTempObjs,
-# and GridStat_fcstFV3_obsGOES_BrightnessTempDmap.  It loads the data into a database
-# called mv_brightness_temp
+# and GridStat_fcstFV3_obsGOES_BrightnessTempDmap.
 
 ##############################################################################
 # METplus Workflow
@@ -43,6 +42,14 @@ METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 # The METdbload is run once and loads data for two ensemble members, one model initialization
 # time and 2 forecast lead times, listed below.
 #
+# | **Valid:** 2019-05-21_01Z
+# | **Forecast lead:** 01
+# |
+#
+# | **Valid:** 2019-05-21_02Z
+# | **Forecast lead:** 02
+# |
+
 
 ##############################################################################
 # METplus Configuration
