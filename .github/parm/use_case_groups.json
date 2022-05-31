@@ -41,13 +41,13 @@
   },
   {
     "category": "convection_allowing_models",
-    "index_list": "7",
+    "index_list": "7-8",
     "run": false
   },
   {
     "category": "convection_allowing_models",
-    "index_list": "8",
-    "run": false
+    "index_list": "9",
+    "run": true
   },
   {
     "category": "data_assimilation",
