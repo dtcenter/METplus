@@ -254,7 +254,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             else:
                 # set *_WINDOW_* variables for BOTH
                 # used in CommandBuilder.find_data function)
-                self.handle_file_window_variables(c_dict, dtypes=['BOTH'])
+                self.handle_file_window_variables(c_dict, data_types=['BOTH'])
 
             prob_thresh = self.config.getraw(
                 'config',
