@@ -1,6 +1,6 @@
 """
 Program Name: field_util.py
-Contact(s): George McCabe
+Contact(s): George McCabe <mccabe@ucar.edu>
 Description: METplus utility to handle MET config dictionaries with field info
 """
 
