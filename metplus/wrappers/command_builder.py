@@ -28,6 +28,7 @@ from ..util import MISSING_DATA_VALUE
 from ..util import get_custom_string_list
 from ..util import get_wrapped_met_config_file, add_met_config_item, format_met_config
 from ..util import remove_quotes
+from ..util import get_field_info
 from ..util.met_config import add_met_config_dict
 
 # pylint:disable=pointless-string-statement
@@ -1131,105 +1132,35 @@ class CommandBuilder:
 
     def get_field_info(self, d_type='', v_name='', v_level='', v_thresh=None,
                        v_extra='', add_curly_braces=True):
-        """! Format field information into format expected by MET config file
-              Args:
-                @param v_level level of data to extract
-                @param v_thresh threshold value to use in comparison
-                @param v_name name of field to process
-                @param v_extra additional field information to add if available
-                @param d_type type of data to find i.e. FCST or OBS
-                @param add_curly_braces if True, add curly braces around each
-                 field info string. If False, add single quotes around each
-                 field info string (defaults to True)
-                @rtype string
-                @return Returns formatted field information
+        """! Format field information into format expected by MET config file.
+             Calls utility function found in metplus.util.field_util.
+
+            @param v_level level of data to extract
+            @param v_thresh threshold value to use in comparison
+            @param v_name name of field to process
+            @param v_extra additional field information to add if available
+            @param d_type type of data to find i.e. FCST or OBS
+            @param add_curly_braces if True, add curly braces around each
+             field info string. If False, add single quotes around each
+             field info string (defaults to True)
+            @rtype string
+            @return Returns formatted field information or None on error
         """
-        # if thresholds are set
-        if v_thresh:
-            # if neither fcst or obs are probabilistic,
-            # pass in all thresholds as a comma-separated list for 1 field info
-            if (not self.c_dict.get('FCST_IS_PROB', False) and
-                    not self.c_dict.get('OBS_IS_PROB', False)):
-                thresholds = [','.join(v_thresh)]
-            else:
-                thresholds = v_thresh
-        # if no thresholds are specified, fail if prob field is in grib PDS
-        elif (self.c_dict.get(d_type + '_IS_PROB', False) and
-              self.c_dict.get(d_type + '_PROB_IN_GRIB_PDS', False) and
-              not util.is_python_script(v_name)):
-            self.log_error('No threshold was specified for probabilistic '
-                           'forecast GRIB data')
+        fields = get_field_info(c_dict=self.c_dict,
+                                data_type=d_type,
+                                v_name=v_name,
+                                v_level=v_level,
+                                v_thresh=v_thresh,
+                                v_extra=v_extra,
+                                add_curly_braces=add_curly_braces)
+
+        # if value returned is a string, it is an error message,
+        # so log error and return None
+        if isinstance(fields, str):
+            self.log_error(fields)
             return None
-        else:
-            thresholds = [None]
 
-        # list to hold field information
-        fields = []
-
-        for thresh in thresholds:
-            if (self.c_dict.get(d_type + '_PROB_IN_GRIB_PDS', False) and
-                    not util.is_python_script(v_name)):
-                field = self._handle_grib_pds_field_info(v_name, v_level,
-                                                         thresh)
-            else:
-                # add field name
-                field = f'name="{v_name}";'
-
-                if v_level:
-                    field += f' level="{remove_quotes(v_level)}";'
-
-                if self.c_dict.get(d_type + '_IS_PROB', False):
-                    field += " prob=TRUE;"
-
-            # handle cat_thresh
-            if self.c_dict.get(d_type + '_IS_PROB', False):
-                # add probabilistic cat thresh if different from default ==0.1
-                cat_thresh = self.c_dict.get(d_type + '_PROB_THRESH')
-            else:
-                cat_thresh = thresh
-
-            if cat_thresh:
-                field += f" cat_thresh=[ {cat_thresh} ];"
-
-            # handle extra options if set
-            if v_extra:
-                extra = v_extra.strip()
-                # if trailing semi-colon is not found, add it
-                if not extra.endswith(';'):
-                    extra = f"{extra};"
-                field += f' {extra}'
-
-            # add curly braces around field info
-            if add_curly_braces:
-                field = f'{{ {field} }}'
-            # otherwise add single quotes around field info
-            else:
-                field = f"'{field}'"
-
-            # add field info string to list of fields
-            fields.append(field)
-
-        # return list of field dictionary items
         return fields
-
-    def _handle_grib_pds_field_info(self, v_name, v_level, thresh):
-
-        field = f'name="PROB"; level="{v_level}"; prob={{ name="{v_name}";'
-
-        if thresh:
-            thresh_tuple_list = util.get_threshold_via_regex(thresh)
-            for comparison, number in thresh_tuple_list:
-                # skip adding thresh_lo or thresh_hi if comparison is NA
-                if comparison == 'NA':
-                    continue
-
-                if comparison in ["gt", "ge", ">", ">=", "==", "eq"]:
-                    field = f"{field} thresh_lo={number};"
-                if comparison in ["lt", "le", "<", "<=", "==", "eq"]:
-                    field = f"{field} thresh_hi={number};"
-
-        # add closing curly brace for prob=
-        return f'{field} }}'
 
     def get_command(self):
         """! Builds the command to run the MET application
