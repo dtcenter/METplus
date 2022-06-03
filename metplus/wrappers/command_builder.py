@@ -430,51 +430,6 @@ class CommandBuilder:
         """
         return f"{item}={self.env[item]}"
 
-    def handle_fcst_and_obs_field(self, gen_name, fcst_name, obs_name, default=None, sec='config'):
-        """!Handles config variables that have fcst/obs versions or a generic
-            variable to handle both, i.e. FCST_NAME, OBS_NAME, and NAME.
-            If FCST_NAME and OBS_NAME both exist, they are used. If both are don't
-            exist, NAME is used.
-        """
-        has_gen = self.config.has_option(sec, gen_name)
-        has_fcst = self.config.has_option(sec, fcst_name)
-        has_obs = self.config.has_option(sec, obs_name)
-
-        # use fcst and obs if both are set
-        if has_fcst and has_obs:
-            fcst_conf = self.config.getstr(sec, fcst_name)
-            obs_conf = self.config.getstr(sec, obs_name)
-            if has_gen:
-                self.logger.warning('Ignoring conf {} and using {} and {}'
-                                    .format(gen_name, fcst_name, obs_name))
-            return fcst_conf, obs_conf
-
-        # if one but not the other is set, error and exit
-        if has_fcst and not has_obs:
-            self.log_error('Cannot use {} without {}'.format(fcst_name, obs_name))
-            return None, None
-
-        if has_obs and not has_fcst:
-            self.log_error('Cannot use {} without {}'.format(obs_name, fcst_name))
-            return None, None
-
-        # if generic conf is set, use for both
-        if has_gen:
-            gen_conf = self.config.getstr(sec, gen_name)
-            return gen_conf, gen_conf
-
-        # if none of the options are set, use default value for both if specified
-        if default is None:
-            msg = 'Must set both {} and {} in the config files'.format(fcst_name,
-                                                                       obs_name)
-            msg += ' or set {} instead'.format(gen_name)
-            self.log_error(msg)
-
-            return None, None
-
-        self.logger.warning('Using default values for {}'.format(gen_name))
-        return default, default
-
     def find_model(self, time_info, var_info=None, mandatory=True,
                    return_list=False):
         """! Finds the model file to compare
