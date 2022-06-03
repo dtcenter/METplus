@@ -1,18 +1,10 @@
 #!/usr/bin/env python3
 
-import os
-import sys
-import re
-import logging
-from collections import namedtuple
 import pytest
+import os
 from datetime import datetime
 
-import produtil
-
 from metplus.wrappers.grid_stat_wrapper import GridStatWrapper
-from metplus.util import met_util as util
-from metplus.util import time_util
 
 fcst_dir = '/some/path/fcst'
 obs_dir = '/some/path/obs'
