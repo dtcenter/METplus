@@ -22,14 +22,14 @@ except Exception as err_msg:
     WRAPPER_CANNOT_RUN = True
     EXCEPTION_ERR = err_msg
 
-from ..util import getlist
-from ..util import met_util as util
+from ..util import getlist, get_storms
 from ..util import do_string_sub, parse_template, get_tags
 from ..util import get_lead_sequence, get_lead_sequence_groups
 from ..util import ti_get_hours_from_lead, ti_get_seconds_from_lead
 from ..util import ti_get_lead_string
 from ..util import parse_var_list
 from ..util import add_to_time_input
+from ..util import field_read_prob_info
 from .plot_data_plane_wrapper import PlotDataPlaneWrapper
 from . import RuntimeFreqWrapper
 
@@ -178,6 +178,12 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                                'SERIES_ANALYSIS_IS_PAIRED',
                                                False)
 
+        # read probabilistic variables for FCST and OBS fields
+        field_read_prob_info(config=self.config,
+                             c_dict=c_dict,
+                             data_types=('FCST', 'OBS'),
+                             app_name=self.app_name)
+
         # get input dir, template, and datatype for FCST, OBS, and BOTH
         for data_type in ('FCST', 'OBS', 'BOTH'):
 
@@ -232,16 +238,6 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                  f'{data_type}_CAT_THRESH'],
                 extra_args={'remove_quotes': True}
             )
-
-            c_dict[f'{data_type}_IS_PROB'] = (
-                self.config.getbool('config', f'{data_type}_IS_PROB', False)
-            )
-            if c_dict[f'{data_type}_IS_PROB']:
-                c_dict[f'{data_type}_PROB_IN_GRIB_PDS'] = (
-                    self.config.getbool('config',
-                                        f'{data_type}_PROB_IN_GRIB_PDS',
-                                        False)
-                )
 
         c_dict['USING_BOTH'] = (c_dict['BOTH_INPUT_TEMPLATE'] or
                                 c_dict['BOTH_INPUT_FILE_LIST'])
@@ -543,7 +539,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         # Now that we have the filter filename for the init time, let's
         # extract all the storm ids in this filter file.
-        storm_list = util.get_storms(filter_file, id_only=True)
+        storm_list = get_storms(filter_file, id_only=True)
         if not storm_list:
             # No storms for this init time, check next init time in list
             self.logger.debug("No storms found for current runtime")

@@ -15,6 +15,7 @@ import os
 from ..util import do_string_sub, ti_calculate
 from ..util import parse_var_list
 from ..util import get_lead_sequence, skip_time, sub_var_list
+from ..util import field_read_prob_info
 from . import CommandBuilder
 
 '''!@namespace CompareGriddedWrapper
@@ -37,10 +38,6 @@ that reformat gridded data
             self.app_name = 'compare_gridded'
 
         super().__init__(config, instance=instance)
-        # make sure all necessary probabilistic settings are set correctly
-        # this relies on the subclass to finish creating the c_dict,
-        # so it has to be checked after that happens
-        self.check_probabilistic_settings()
 
     def create_c_dict(self):
         """!Create dictionary from config items to be used in the wrapper
@@ -66,17 +63,11 @@ that reformat gridded data
         # to a value that contains /path/to
         c_dict['INPUT_BASE'] = self.config.getdir_nocheck('INPUT_BASE', '')
 
-        c_dict['FCST_IS_PROB'] = self.config.getbool('config', 'FCST_IS_PROB', False)
-        # if forecast is PROB, get variable to check if prob is in GRIB PDS
-        # it can be unset if the INPUT_DATATYPE is NetCDF, so check that after
-        # the entire c_dict is created
-        if c_dict['FCST_IS_PROB']:
-            c_dict['FCST_PROB_IN_GRIB_PDS'] = self.config.getbool('config', 'FCST_PROB_IN_GRIB_PDS', '')
-
-        c_dict['OBS_IS_PROB'] = self.config.getbool('config', 'OBS_IS_PROB', False)
-        # see comment for FCST_IS_PROB
-        if c_dict['OBS_IS_PROB']:
-            c_dict['OBS_PROB_IN_GRIB_PDS'] = self.config.getbool('config', 'OBS_PROB_IN_GRIB_PDS', '')
+        # read probabilistic variables for FCST and OBS fields
+        field_read_prob_info(config=self.config,
+                             c_dict=c_dict,
+                             data_types=('FCST', 'OBS'),
+                             app_name=self.app_name)
 
         c_dict['FCST_PROB_THRESH'] = None
         c_dict['OBS_PROB_THRESH'] = None
@@ -117,26 +108,6 @@ that reformat gridded data
                          self.c_dict.get('REGRID_TO_GRID', 'NONE'))
 
         super().set_environment_variables(time_info)
-
-    def check_probabilistic_settings(self):
-        """! If dataset is probabilistic, check if *_PROB_IN_GRIB_PDS or
-            INPUT_DATATYPE are set. If not enough information is set,
-            report an error and set isOK to False
-        """
-        for dtype in ['FCST', 'OBS']:
-            if self.c_dict[f'{dtype}_IS_PROB']:
-                # if the data type is NetCDF, then we know how to
-                # format the probabilistic fields
-                if self.c_dict[f'{dtype}_INPUT_DATATYPE'] != 'GRIB':
-                    continue
-
-                # if the data is grib, the user must specify if the data is in
-                # the GRIB PDS or not
-                if self.c_dict[f'{dtype}_PROB_IN_GRIB_PDS'] == '':
-                    self.log_error(f"If {dtype}_IS_PROB is True, you must set "
-                                   f"{dtype}_PROB_IN_GRIB_PDS unless the "
-                                   "forecast datatype is set to NetCDF")
-                    self.isOK = False
 
     def run_at_time(self, input_dict):
         """! Runs the MET application for a given run time. This function loops
