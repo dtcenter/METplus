@@ -1756,7 +1756,6 @@ class StatAnalysisWrapper(CommandBuilder):
             # with other wrappers
             mp_lists = ['MODEL',
                         'DESC',
-                        'OBTYPE',
                         'FCST_LEAD',
                         'OBS_LEAD',
                         'FCST_VALID_HOUR',
@@ -1769,6 +1768,7 @@ class StatAnalysisWrapper(CommandBuilder):
                         'OBS_UNITS',
                         'FCST_LEVEL',
                         'OBS_LEVEL',
+                        'OBTYPE',
                         'VX_MASK',
                         'INTERP_MTHD',
                         'INTERP_PNTS',
