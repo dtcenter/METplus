@@ -1774,7 +1774,7 @@ class StatAnalysisWrapper(CommandBuilder):
                         'INTERP_PNTS',
                         'FCST_THRESH',
                         'OBS_THRESH',
-                        'CONV_THRESH',
+                        'COV_THRESH',
                         'ALPHA',
                         'LINE_TYPE'
                         ]
