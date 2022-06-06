@@ -9,16 +9,19 @@
 //
 // Output model name to be written
 //
+// model =
 ${METPLUS_MODEL}
 
 //
 // Output description to be written
 //
+// desc =
 ${METPLUS_DESC}
 
 //
 // Output observation type to be written
 //
+// obtype =
 ${METPLUS_OBTYPE}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -26,6 +29,7 @@ ${METPLUS_OBTYPE}
 //
 // Verification grid
 //
+// regrid = {
 ${METPLUS_REGRID_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -41,6 +45,7 @@ ${METPLUS_GRID_RES}
 //
 // Run all permutations of radius and threshold
 //
+// quilt =
 ${METPLUS_QUILT}
 
 //
@@ -81,7 +86,8 @@ obs = {
 //
 // Handle missing data
 //
-mask_missing_flag = BOTH;
+// mask_missing_flag =
+${METPLUS_MASK_MISSING_FLAG}
 
 //
 // Match objects between the forecast and observation fields
@@ -183,14 +189,12 @@ fcst_raw_plot = {
    color_table      = "MET_BASE/colortables/met_default.ctable";
    plot_min         = 0.0;
    plot_max         = 0.0;
-   colorbar_spacing = 1;
 }
 
 obs_raw_plot = {
    color_table      = "MET_BASE/colortables/met_default.ctable";
    plot_min         = 0.0;
    plot_max         = 0.0;
-   colorbar_spacing = 1;
 }
 
 object_plot = {

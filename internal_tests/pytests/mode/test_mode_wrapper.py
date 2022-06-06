@@ -310,6 +310,9 @@ def set_minimum_config_settings(config):
          {'METPLUS_FCST_FILE_TYPE': 'file_type = NETCDF_PINT;'}),
         ({'MODE_OBS_FILE_TYPE': 'NETCDF_PINT', },
          {'METPLUS_OBS_FILE_TYPE': 'file_type = NETCDF_PINT;'}),
+        ({'MODE_MASK_MISSING_FLAG': 'BOTH', },
+         {'METPLUS_MASK_MISSING_FLAG': 'mask_missing_flag = BOTH;'}),
+
     ]
 )
 def test_mode_single_field(metplus_config, config_overrides,

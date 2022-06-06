@@ -48,6 +48,7 @@ class MODEWrapper(CompareGriddedWrapper):
         'METPLUS_MASK_DICT',
         'METPLUS_OUTPUT_PREFIX',
         'METPLUS_GRID_RES',
+        'METPLUS_MASK_MISSING_FLAG',
         'METPLUS_MATCH_FLAG',
         'METPLUS_WEIGHT_DICT',
         'METPLUS_NC_PAIRS_FLAG_DICT',
@@ -297,6 +298,15 @@ class MODEWrapper(CompareGriddedWrapper):
                          'MERGE_FLAG']:
                 value = self.get_env_var_value(f'METPLUS_{data_type}_{name}')
                 c_dict[f'{data_type}_{name}'] = value
+
+        self.add_met_config(
+            name='mask_missing_flag',
+            data_type='string',
+            extra_args={
+                'remove_quotes': True,
+                'uppercase': True,
+            }
+        )
 
         self.add_met_config(
             name='match_flag',

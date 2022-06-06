@@ -9191,3 +9191,8 @@ METplus Configuration Glossary
      Specify the value for 'eclv_points' in the MET configuration file for EnsembleStat.
 
      | *Used by:* EnsembleStat
+
+   MODE_MASK_MISSING_FLAG
+     Specify the value for 'mask_missing_flag' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
