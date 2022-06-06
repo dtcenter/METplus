@@ -133,6 +133,7 @@ class MODEWrapper(CompareGriddedWrapper):
         # MODE can only process a single pair of fcst/obs fields at a time
         # unless it is a multi-variate MODE run
         c_dict['ONCE_PER_FIELD'] = True
+        c_dict['ALLOW_MULTIPLE_FILES'] = False
 
         # observation input file info
         c_dict['OBS_INPUT_DIR'] = (
@@ -398,8 +399,6 @@ class MODEWrapper(CompareGriddedWrapper):
                                              f'{tool}_FILE_TYPE'],
                             extra_args={'remove_quotes': True,
                                         'uppercase': True})
-
-        c_dict['ALLOW_MULTIPLE_FILES'] = False
 
         c_dict['MERGE_CONFIG_FILE'] = (
             self.config.getraw('config', f'{tool}_MERGE_CONFIG_FILE', '')
