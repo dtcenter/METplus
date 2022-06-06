@@ -164,8 +164,7 @@ class CommandBuilder:
 
     def create_c_dict(self):
         c_dict = dict()
-        # set skip if output exists to False for all wrappers
-        # wrappers that support this functionality can override this value
+
         c_dict['VERBOSITY'] = self.config.getstr('config',
                                                  'LOG_MET_VERBOSITY',
                                                  '2')
