@@ -1793,9 +1793,6 @@ class StatAnalysisWrapper(CommandBuilder):
                         'FCST_INIT_END',
                         'OBS_INIT_BEG',
                         'OBS_INIT_END',
-                        'DESC',
-                        'OBTYPE',
-                        'FCST_LEAD'
                         ]
             for mp_item in mp_items:
                 if not runtime_settings_dict.get(mp_item, ''):
