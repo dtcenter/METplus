@@ -475,16 +475,19 @@ class MODEWrapper(CompareGriddedWrapper):
         if obs_path is None:
             return
 
-        # loop over all variables and levels (and probability thresholds) and call the app for each
-        self.process_fields_one_thresh(time_info, var_info, model_path, obs_path)
+        # loop over all variables and levels (and probability thresholds) and
+        # call the app for each
+        self.process_fields_one_thresh(time_info, var_info, model_path,
+                                       obs_path)
 
-    def process_fields_one_thresh(self, time_info, var_info, model_path, obs_path):
+    def process_fields_one_thresh(self, time_info, var_info, model_path,
+                                  obs_path):
         """! For each threshold, set up environment variables and run mode
-              Args:
-                @param time_info dictionary containing timing information
-                @param var_info object containing variable information
-                @param model_path forecast file
-                @param obs_path observation file
+
+            @param time_info dictionary containing timing information
+            @param var_info object containing variable information
+            @param model_path forecast file
+            @param obs_path observation file
         """
         # if no thresholds are specified, run once
         fcst_thresh_list = []
