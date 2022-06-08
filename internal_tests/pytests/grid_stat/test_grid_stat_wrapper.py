@@ -74,6 +74,9 @@ def set_minimum_config_settings(config):
         # 6 generic OBS unset, wrapper OBS true
         ({'OBS_GRID_STAT_IS_PROB': True},
          {'FCST_IS_PROB': False, 'OBS_IS_PROB': True}),
+        # 7 generic FCST false, wrapper FCST true
+        ({'FCST_IS_PROB': False, 'FCST_GRID_STAT_IS_PROB': True},
+         {'FCST_IS_PROB': True, 'OBS_IS_PROB': False}),
     ]
 )
 def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
