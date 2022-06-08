@@ -132,8 +132,16 @@ class MODEWrapper(CompareGriddedWrapper):
 
         # MODE can only process a single pair of fcst/obs fields at a time
         # unless it is a multi-variate MODE run
-        c_dict['ONCE_PER_FIELD'] = True
-        c_dict['ALLOW_MULTIPLE_FILES'] = False
+        mv_logic = self.config.getstr('config', f'{tool}_MULTIVAR_LOGIC', '')
+        if not mv_logic:
+            c_dict['ONCE_PER_FIELD'] = True
+            c_dict['ALLOW_MULTIPLE_FILES'] = False
+        else:
+            c_dict['ONCE_PER_FIELD'] = False
+            c_dict['ALLOW_MULTIPLE_FILES'] = True
+            self.add_met_config(name='multivar_logic', data_type='string')
+            self.logger.info(f'{tool}_MULTIVAR_LOGIC was set, so running '
+                             'multi-variate MODE')
 
         # observation input file info
         c_dict['OBS_INPUT_DIR'] = (
