@@ -185,7 +185,8 @@ that reformat gridded data
                 self.c_dict['CURRENT_VAR_INFO'] = var_info
                 self.run_at_time_one_field(time_info, var_info)
         else:
-            # loop over all variables and all them to the field list, then call the app once
+            # loop over all variables and all them to the field list,
+            # then call the app once
             if var_list:
                 self.c_dict['CURRENT_VAR_INFO'] = var_list[0]
 
@@ -302,12 +303,12 @@ that reformat gridded data
 
     def process_fields(self, time_info):
         """! Set and print environment variables, then build/run MET command
-              Args:
-                @param time_info dictionary with time information
-                @param fcst_field field information formatted for MET config file
-                @param obs_field field information formatted for MET config file
-                @param ens_field field information formatted for MET config file
-                only used for ensemble_stat
+
+            @param time_info dictionary with time information
+            @param fcst_field field information formatted for MET config file
+            @param obs_field field information formatted for MET config file
+            @param ens_field field information formatted for MET config file
+             only used for ensemble_stat
         """
         # set config file since command is reset after each run
         self.param = do_string_sub(self.c_dict['CONFIG_FILE'],
@@ -322,12 +323,6 @@ that reformat gridded data
 
         # set environment variables needed by MET config file
         self.set_environment_variables(time_info)
-
-        # check if METplus can generate the command successfully
-        cmd = self.get_command()
-        if cmd is None:
-            self.log_error("Could not generate command")
-            return
 
         # run the MET command
         self.build()
