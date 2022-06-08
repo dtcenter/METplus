@@ -49,6 +49,12 @@ ${METPLUS_GRID_RES}
 ${METPLUS_QUILT}
 
 //
+// MODE Multivar boolean combination logic
+//
+//multivar_logic =
+${METPLUS_MULTIVAR_LOGIC}
+
+//
 // Forecast and observation fields to be verified
 //
 fcst = {

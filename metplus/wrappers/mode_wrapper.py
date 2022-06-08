@@ -61,6 +61,7 @@ class MODEWrapper(CompareGriddedWrapper):
         'METPLUS_CT_STATS_FLAG',
         'METPLUS_FCST_FILE_TYPE',
         'METPLUS_OBS_FILE_TYPE',
+        'METPLUS_MULTIVAR_LOGIC',
     ]
 
     # handle deprecated env vars used pre v4.0.0
