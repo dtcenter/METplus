@@ -14,6 +14,7 @@ Support Responsibilities
 ========================
 
 Five staff members take turns monitoring Discussions each day of the week.
+The responsibilities for each daily assignee are described below.
 
 
 Review the Tips/Tricks Page
@@ -25,7 +26,7 @@ page.
 The Tips/Tricks page is for discussion only and does not have the ability to
 have an *answer* assigned to it. Check for any new dicussions that have been
 added by users that are actually questions. If there are, move the discussion
-to a more approprate category so that it can be found when filtering for
+to a more appropriate category so that it can be found when filtering for
 unanswered discussions.  Please note that if the discussions have been
 filtered by "Unanswered" and the Tips/Tricks category is selected, no results
 will be found because these discussions are not answerable.
@@ -39,10 +40,10 @@ Review the Unanswered Discussions
 
 Review the `unanswered discussions <https://github.com/dtcenter/METplus/discussions?discussions_q=is%3Aunanswered>`_.
 
-* For new discussions that have been posted within 24 hours:
+* For new discussions that have been posted on the current day (i.e. since last midnight):
 
-  * If the issue is time sensitive, i.e. related to an upcoming training series
-    session, take action.  See :ref:`actions_new_discussions`.
+  * If the issue is time sensitive (i.e. related to an upcoming training series
+    session) or from a user with priority support, take action.  See :ref:`actions_new_discussions`.
 
   * Otherwise, leave the discussion unanswered until the next day to allow the
     user community time to respond.
