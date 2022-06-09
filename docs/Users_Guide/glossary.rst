@@ -1250,14 +1250,92 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:**
 
    FCST_IS_PROB
-     Specify whether the forecast data are probabilistic or not. Acceptable values: true/false
+     Boolean to specify whether the forecast data are probabilistic or not.
 
-     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PointStat
+     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PointStat, SeriesAnalysis
 
    FCST_PROB_IN_GRIB_PDS
-     Specify whether the probabilistic forecast data is stored in the GRIB Product Definition Section or not.Acceptable values: true/false. Only used when FCST_IS_PROB is True. This does not need to be set if the FCST_<APP_NAME>_INPUT_DATATYPE is set to NetCDF.
+     Boolean to specify whether the probabilistic forecast data is stored in
+     the GRIB Product Definition Section or not.
+     Only used when :term:`FCST_IS_PROB` is True.
 
-     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PointStat
+     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PointStat, SeriesAnalysis
+
+   OBS_IS_PROB
+     Specify whether the observation data are probabilistic or not.
+     Used when setting OBS_* variables to process probabilistic forecast data.
+     See :term:`FCST_IS_PROB`
+
+     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PointStat, SeriesAnalysis
+
+   OBS_PROB_IN_GRIB_PDS
+     Boolean to specify whether the probabilistic forecast data is stored in
+     the GRIB Product Definition Section or not.
+     Used when setting OBS_* variables to process probabilistic forecast data.
+     Only used when :term:`OBS_IS_PROB` is True.
+     See :term:`FCST_PROB_IN_GRIB_PDS` and :term:`FCST_IS_PROB`.
+
+     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PointStat, SeriesAnalysis
+
+   FCST_GRID_STAT_IS_PROB
+      Wrapper-specific version of :term:`FCST_IS_PROB`.
+
+     | *Used by:*  GridStat
+
+   FCST_GRID_STAT_PROB_IN_GRIB_PDS
+      Wrapper-specific version of :term:`FCST_PROB_IN_GRIB_PDS`.
+
+     | *Used by:*  GridStat
+
+   FCST_ENSEMBLE_STAT_IS_PROB
+      Wrapper-specific version of :term:`FCST_IS_PROB`.
+
+     | *Used by:*  EnsembleStat
+
+   FCST_ENSEMBLE_STAT_PROB_IN_GRIB_PDS
+      Wrapper-specific version of :term:`FCST_PROB_IN_GRIB_PDS`.
+
+     | *Used by:*  EnsembleStat
+
+   FCST_MODE_IS_PROB
+      Wrapper-specific version of :term:`FCST_IS_PROB`.
+
+     | *Used by:*  MODE
+
+   FCST_MODE_PROB_IN_GRIB_PDS
+      Wrapper-specific version of :term:`FCST_PROB_IN_GRIB_PDS`.
+
+     | *Used by:*  MODE
+
+   FCST_MTD_IS_PROB
+      Wrapper-specific version of :term:`FCST_IS_PROB`.
+
+     | *Used by:*  MTD
+
+   FCST_MTD_PROB_IN_GRIB_PDS
+      Wrapper-specific version of :term:`FCST_PROB_IN_GRIB_PDS`.
+
+     | *Used by:*  MTD
+
+   FCST_POINT_STAT_IS_PROB
+      Wrapper-specific version of :term:`FCST_IS_PROB`.
+
+     | *Used by:*  PointStat
+
+   FCST_POINT_STAT_PROB_IN_GRIB_PDS
+      Wrapper-specific version of :term:`FCST_PROB_IN_GRIB_PDS`.
+
+     | *Used by:*  PointStat
+
+   FCST_SERIES_ANALYSIS_IS_PROB
+      Wrapper-specific version of :term:`FCST_IS_PROB`.
+
+     | *Used by:*  SeriesAnalysis
+
+   FCST_SERIES_ANALYSIS_PROB_IN_GRIB_PDS
+      Wrapper-specific version of :term:`FCST_PROB_IN_GRIB_PDS`.
+
+     | *Used by:*  SeriesAnalysis
 
    FCST_LEAD
      .. warning:: **DEPRECATED:** Please use :term:`FCST_LEAD_LIST` instead.
@@ -2796,16 +2874,6 @@ METplus Configuration Glossary
    OBS_IS_DAILY_FILE
      .. warning:: **DEPRECATED:**
 
-   OBS_IS_PROB
-     Used when setting OBS_* variables to process forecast data for comparisons with mtd. Specify whether the observation data are probabilistic or not. See :term:`FCST_IS_PROB` .Acceptable values: true/false
-
-     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PointStat
-
-   OBS_PROB_IN_GRIB_PDS
-     Specify whether the probabilistic observation data is stored in the GRIB Product Definition Section or not.Acceptable values: true/false. Only used when :term:`OBS_IS_PROB` is True. This does not need to be set if the OBS_<APP_NAME>_INPUT_DATATYPE is set to NetCDF.
-
-     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PointStat
-
    OBS_LEVEL
      .. warning:: **DEPRECATED:** Please use :term:`OBS_PCP_COMBINE_INPUT_LEVEL` instead.
 
@@ -4097,7 +4165,7 @@ METplus Configuration Glossary
    TC_STAT_OUTPUT_TEMPLATE
      (Optional) Specify the template of the output file to write job output
      from tc_stat.
-     If set, then the -out command line argument will the full
+     If set, then the -out command line argument with the full
      path to the file will be added to the tc_stat call.
 
      | *Used by:*  TCStat
@@ -4105,7 +4173,7 @@ METplus Configuration Glossary
    STAT_ANALYSIS_OUTPUT_TEMPLATE
      (Optional) Specify the template of the output file to write job output
      from stat_analysis.
-     If set, then the -out command line argument will the full
+     If set, then the -out command line argument with the full
      path to the file will be added to the stat_analysis call.
 
      | *Used by:*  StatAnalysis

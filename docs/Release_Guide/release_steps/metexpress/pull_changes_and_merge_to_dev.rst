@@ -14,21 +14,21 @@ Pull Changes, Create Release Branch, And Merge To Development
     git pull
     cd ../..
 
-* Create a release branch of the format main_vX.X.X. using your release version.
+* Create a release branch of the format main_vX.Y.Z. using your release version.
 
 .. parsed-literal::
 
-    git checkout -b main_vX.X.X
-    git push -u origin main_vX.X.X
+    git checkout -b main_vX.Y.Z
+    git push -u origin main_vX.Y.Z
     cd MATScommon
-    git checkout -b main_vX.X.X
-    git push -u origin main_vX.X.X
+    git checkout -b main_vX.Y.Z
+    git push -u origin main_vX.Y.Z
     cd ../METexpress
-    git checkout -b main_vX.X.X
-    git push -u origin main_vX.X.X
+    git checkout -b main_vX.Y.Z
+    git push -u origin main_vX.Y.Z
     cd MATScommon
-    git checkout -b main_vX.X.X
-    git push -u origin main_vX.X.X
+    git checkout -b main_vX.Y.Z
+    git push -u origin main_vX.Y.Z
     cd ../..
 
 * Checkout development and merge any build-related changes.

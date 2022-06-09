@@ -490,7 +490,7 @@ class CyclonePlotterWrapper(CommandBuilder):
 
         # Dummy point to add the additional label explaining the labelling of the first
         # point in the storm track
-        plt.scatter(0, 0, zorder=2, marker=None, c='',
+        plt.scatter(0, 0, zorder=2, marker=None, c=[],
                     label="Date (dd/hhz) is the first " +
                             "time storm was able to be tracked in model")
 
