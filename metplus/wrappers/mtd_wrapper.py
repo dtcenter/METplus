@@ -111,17 +111,6 @@ class MTDWrapper(CompareGriddedWrapper):
         if c_dict['FCST_FILE_LIST'] or c_dict['OBS_FILE_LIST']:
             c_dict['EXPLICIT_FILE_LIST'] = True
 
-        c_dict['FCST_IS_PROB'] = (
-            self.config.getbool('config',
-                                'FCST_IS_PROB',
-                                False)
-        )
-        c_dict['OBS_IS_PROB'] = (
-            self.config.getbool('config',
-                                'OBS_IS_PROB',
-                                False)
-        )
-
         # if single run for OBS, read OBS values into FCST keys
         read_type = 'FCST'
         if c_dict['SINGLE_RUN'] and c_dict.get('SINGLE_DATA_SRC') == 'OBS':

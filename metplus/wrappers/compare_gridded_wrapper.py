@@ -12,9 +12,10 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import met_util as util
 from ..util import do_string_sub, ti_calculate
 from ..util import parse_var_list
+from ..util import get_lead_sequence, skip_time, sub_var_list
+from ..util import field_read_prob_info
 from . import CommandBuilder
 
 '''!@namespace CompareGriddedWrapper
@@ -32,15 +33,11 @@ that reformat gridded data
     """
 
     def __init__(self, config, instance=None):
-        # set app_name if not set by child class to allow tests to run on this wrapper
+        # set app_name if not set by child class for unit tests
         if not hasattr(self, 'app_name'):
             self.app_name = 'compare_gridded'
 
         super().__init__(config, instance=instance)
-        # check to make sure all necessary probabilistic settings are set correctly
-        # this relies on the subclass to finish creating the c_dict, so it has to
-        # be checked after that happens
-        self.check_probabilistic_settings()
 
     def create_c_dict(self):
         """!Create dictionary from config items to be used in the wrapper
@@ -66,17 +63,11 @@ that reformat gridded data
         # to a value that contains /path/to
         c_dict['INPUT_BASE'] = self.config.getdir_nocheck('INPUT_BASE', '')
 
-        c_dict['FCST_IS_PROB'] = self.config.getbool('config', 'FCST_IS_PROB', False)
-        # if forecast is PROB, get variable to check if prob is in GRIB PDS
-        # it can be unset if the INPUT_DATATYPE is NetCDF, so check that after
-        # the entire c_dict is created
-        if c_dict['FCST_IS_PROB']:
-            c_dict['FCST_PROB_IN_GRIB_PDS'] = self.config.getbool('config', 'FCST_PROB_IN_GRIB_PDS', '')
-
-        c_dict['OBS_IS_PROB'] = self.config.getbool('config', 'OBS_IS_PROB', False)
-        # see comment for FCST_IS_PROB
-        if c_dict['OBS_IS_PROB']:
-            c_dict['OBS_PROB_IN_GRIB_PDS'] = self.config.getbool('config', 'OBS_PROB_IN_GRIB_PDS', '')
+        # read probabilistic variables for FCST and OBS fields
+        field_read_prob_info(config=self.config,
+                             c_dict=c_dict,
+                             data_types=('FCST', 'OBS'),
+                             app_name=self.app_name)
 
         c_dict['FCST_PROB_THRESH'] = None
         c_dict['OBS_PROB_THRESH'] = None
@@ -101,11 +92,12 @@ that reformat gridded data
         return c_dict
 
     def set_environment_variables(self, time_info):
-        """!Set environment variables that will be read set when running this tool.
-            Wrappers could override it to set wrapper-specific values, then call super
-            version to handle user configs and printing
-            Args:
-              @param time_info dictionary containing timing info from current run"""
+        """! Set environment variables that will be set when running this tool.
+            Wrappers can override this function to set wrapper-specific values,
+            then call this (super) version to handle user configs and printing
+
+            @param time_info dictionary containing timing info from current run
+        """
 
         self.get_output_prefix(time_info)
 
@@ -117,47 +109,32 @@ that reformat gridded data
 
         super().set_environment_variables(time_info)
 
-    def check_probabilistic_settings(self):
-        """!If dataset is probabilistic, check if *_PROB_IN_GRIB_PDS or INPUT_DATATYPE
-            are set. If not enough information is set, report an error and set isOK to False"""
-        for dtype in ['FCST', 'OBS']:
-            if self.c_dict[f'{dtype}_IS_PROB']:
-                # if the data type is NetCDF, then we know how to
-                # format the probabilistic fields
-                if self.c_dict[f'{dtype}_INPUT_DATATYPE'] != 'GRIB':
-                    continue
-
-                # if the data is grib, the user must specify if the data is in
-                # the GRIB PDS or not
-                if self.c_dict[f'{dtype}_PROB_IN_GRIB_PDS'] == '':
-                    self.log_error(f"If {dtype}_IS_PROB is True, you must set {dtype}_PROB_IN"
-                                   "_GRIB_PDS unless the forecast datatype is set to NetCDF")
-                    self.isOK = False
-
     def run_at_time(self, input_dict):
         """! Runs the MET application for a given run time. This function loops
-              over the list of forecast leads and runs the application for each.
-              Args:
-                @param input_dict dictionary containing time information
+             over the list of forecast leads and runs the application for each.
+
+             @param input_dict dictionary containing time information
         """
 
         # loop of forecast leads and process each
-        lead_seq = util.get_lead_sequence(self.config, input_dict)
+        lead_seq = get_lead_sequence(self.config, input_dict)
         for lead in lead_seq:
             input_dict['lead'] = lead
 
             # set current lead time config and environment variables
             time_info = ti_calculate(input_dict)
 
-            self.logger.info("Processing forecast lead {}".format(time_info['lead_string']))
+            self.logger.info("Processing forecast lead "
+                             f"{time_info['lead_string']}")
 
-            if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+            if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
                 self.logger.debug('Skipping run time')
                 continue
 
             for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
                 if custom_string:
-                    self.logger.info(f"Processing custom string: {custom_string}")
+                    self.logger.info("Processing custom string: "
+                                     f"{custom_string}")
 
                 time_info['custom'] = custom_string
 
@@ -165,12 +142,12 @@ that reformat gridded data
                 self.run_at_time_once(time_info)
 
     def run_at_time_once(self, time_info):
-        """! Build MET command for a given init/valid time and forecast lead combination
-              Args:
-                @param time_info dictionary containing timing information
+        """! Build MET command for a given init/valid time and
+         forecast lead combination.
+
+            @param time_info dictionary containing timing information
         """
-        var_list = util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
-                                     time_info)
+        var_list = sub_var_list(self.c_dict['VAR_LIST_TEMP'], time_info)
 
         if not var_list and not self.c_dict.get('VAR_LIST_OPTIONAL', False):
             self.log_error('No input fields were specified. You must set '
@@ -245,13 +222,12 @@ that reformat gridded data
         self.process_fields(time_info)
 
     def run_at_time_all_fields(self, time_info):
-        """! Build MET command for all of the field/level combinations for a given
-             init/valid time and forecast lead combination
-              Args:
-                @param time_info dictionary containing timing information
+        """! Build MET command for all of the field/level combinations for a
+             given init/valid time and forecast lead combination
+
+             @param time_info dictionary containing timing information
         """
-        var_list = util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
-                                     time_info)
+        var_list = sub_var_list(self.c_dict['VAR_LIST_TEMP'], time_info)
 
         # get model from first var to compare
         model_path = self.find_model(time_info,
@@ -323,11 +299,7 @@ that reformat gridded data
     def process_fields(self, time_info):
         """! Set and print environment variables, then build/run MET command
 
-            @param time_info dictionary with time information
-            @param fcst_field field information formatted for MET config file
-            @param obs_field field information formatted for MET config file
-            @param ens_field field information formatted for MET config file
-             only used for ensemble_stat
+             @param time_info dictionary with time information
         """
         # set config file since command is reset after each run
         self.param = do_string_sub(self.c_dict['CONFIG_FILE'],
@@ -355,7 +327,7 @@ that reformat gridded data
         out_dir = self.c_dict['OUTPUT_DIR']
 
         # use output template if it is set
-        # if output template is not set, do not add any extra directories to path
+        # if not set, do not add any extra directories to path
         out_template_name = '{}_OUTPUT_TEMPLATE'.format(self.app_name.upper())
         if self.config.has_option('config',
                                   out_template_name):

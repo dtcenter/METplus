@@ -514,22 +514,19 @@ def are_lead_configs_ok(lead_seq, init_seq, lead_groups,
     if lead_groups is None:
         return False
 
-    error_message = ('%s and %s are both listed in the configuration. '
+    error_message = ('are both listed in the configuration. '
                      'Only one may be used at a time.')
     if lead_seq:
         if init_seq:
-            config.logger.error(error_message.format('LEAD_SEQ',
-                                                     'INIT_SEQ'))
+            config.logger.error(f'LEAD_SEQ and INIT_SEQ {error_message}')
             return False
 
         if lead_groups:
-            config.logger.error(error_message.format('LEAD_SEQ',
-                                                     'LEAD_SEQ_<n>'))
+            config.logger.error(f'LEAD_SEQ and LEAD_SEQ_<n> {error_message}')
             return False
 
     if init_seq and lead_groups:
-        config.logger.error(error_message.format('INIT_SEQ',
-                                                 'LEAD_SEQ_<n>'))
+        config.logger.error(f'INIT_SEQ and LEAD_SEQ_<n> {error_message}')
         return False
 
     if init_seq:
