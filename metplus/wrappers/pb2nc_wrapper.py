@@ -141,7 +141,7 @@ class PB2NCWrapper(CommandBuilder):
                                              'PB2NC_TIME_SUMMARY_TYPES'],
                             extra_args={'allow_empty': True})
 
-        self.handle_file_window_variables(c_dict, dtypes=['OBS'])
+        self.handle_file_window_variables(c_dict, data_types=['OBS'])
 
         c_dict['VALID_BEGIN_TEMPLATE'] = \
           self.config.getraw('config', 'PB2NC_VALID_BEGIN', '')
