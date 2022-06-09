@@ -13,7 +13,7 @@ METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 #
 # Load MET data into a database using the met_db_load.py script found in 
 # dtcenter/METdatadb.  Specifically, this use case loads distance map output 
-# from grid_stat and mode output into a database called mv_brightness_temp.
+# from grid_stat and mode output into a database.
 
 ##############################################################################
 # Datasets
@@ -32,7 +32,7 @@ METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 # This use case utilizes the METplus METdbLoad wrapper to search for
 # files ending with .stat or .txt, substitute values into an XML load
 # configuration file, and call met_db_load.py.  It then loads data
-# into a METviewer database called mv_brightness_temp for the following use cases, 
+# into a METviewer database for the following use cases:
 # MODE_fcstFV3_obsGOES_BrightnessTemp, MODE_fcstFV3_obsGOES_BrightnessTempObjs,
 # and GridStat_fcstFV3_obsGOES_BrightnessTempDmap.
 
@@ -57,7 +57,6 @@ METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/convection_allowing_models/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/convection_allowing_models/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
@@ -87,11 +86,11 @@ METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 #
 # 1) Passing in METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf followed by a user-specific system configuration file::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/convection_allowing_models/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf -c /path/to/user_system.conf
+#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/convection_allowing_models/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config and then passing in METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/convection_allowing_models/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
+#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/convection_allowing_models/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -101,12 +100,11 @@ METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 #
 # Example User Configuration File::
 #
-#   [dir]
+#   [config]
 #   INPUT_BASE = /path/to/sample/input/data
 #   OUTPUT_BASE = /path/to/output/dir
 #   MET_INSTALL_DIR = /path/to/met-X.Y 
 #
-# **NOTE:** All of these items must be found under the [dir] section.
 #
 
 ##############################################################################
