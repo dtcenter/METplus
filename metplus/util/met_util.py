@@ -24,8 +24,6 @@ from .. import get_metplus_version
 
 from .constants import *
 
-PYTHON_EMBEDDING_TYPES = ['PYTHON_NUMPY', 'PYTHON_XARRAY', 'PYTHON_PANDAS']
-
 valid_comparisons = {">=": "ge",
                      ">": "gt",
                      "==": "eq",

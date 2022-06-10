@@ -15,9 +15,10 @@ import glob
 from datetime import datetime
 from abc import ABCMeta
 from inspect import getframeinfo, stack
-import re
 
 from .command_runner import CommandRunner
+
+from ..util.constants import PYTHON_EMBEDDING_TYPES
 from ..util import getlist
 from ..util import met_util as util
 from ..util import do_string_sub, ti_calculate, get_seconds_from_string
@@ -29,7 +30,7 @@ from ..util import get_custom_string_list
 from ..util import get_wrapped_met_config_file, add_met_config_item, format_met_config
 from ..util import remove_quotes
 from ..util import get_field_info
-from ..util.met_config import add_met_config_dict
+from ..util.met_config import add_met_config_dict, handle_climo_dict
 
 # pylint:disable=pointless-string-statement
 '''!@namespace CommandBuilder
@@ -45,9 +46,6 @@ class CommandBuilder:
     """!Common functionality to wrap all MET applications
     """
     __metaclass__ = ABCMeta
-
-    # types of climatology values that should be checked and set
-    climo_types = ['MEAN', 'STDEV']
 
     # name of variable to hold any MET config overrides
     MET_OVERRIDES_KEY = 'METPLUS_MET_CONFIG_OVERRIDES'
@@ -1118,10 +1116,10 @@ class CommandBuilder:
         # if it is a python script, set file extension to show that and make sure *_INPUT_DATATYPE is a valid PYTHON_* string
         file_ext = 'python_embedding'
         data_type = self.c_dict.get(f'{input_type}_INPUT_DATATYPE', '')
-        if data_type not in util.PYTHON_EMBEDDING_TYPES:
+        if data_type not in PYTHON_EMBEDDING_TYPES:
             self.log_error(f"{input_type}_{self.app_name.upper()}_INPUT_DATATYPE ({data_type}) must be set to a valid Python Embedding type "
                            f"if supplying a Python script as the {input_type}_VAR<n>_NAME. Valid options: "
-                           f"{','.join(util.PYTHON_EMBEDDING_TYPES)}")
+                           f"{','.join(PYTHON_EMBEDDING_TYPES)}")
             return None
 
         # set file type string to be set in MET config file to specify Python Embedding is being used for this dataset
@@ -1378,122 +1376,12 @@ class CommandBuilder:
          by wrapped MET configs pre 4.0 (CLIMO_MEAN_FILE and CLIMO_STDEV_FILE)
 
         """
-        items = {
-            'file_name': 'list',
-            'field': ('list', 'remove_quotes'),
-            'regrid': ('dict', '', {
-                'method': ('string', 'uppercase,remove_quotes'),
-                'width': 'int',
-                'vld_thresh': 'float',
-                'shape': ('string', 'uppercase,remove_quotes'),
-            }),
-            'time_interp_method': ('string', 'remove_quotes,uppercase'),
-            'match_month': ('bool', 'uppercase'),
-            'day_interval': 'int',
-            'hour_interval': 'int',
-            'file_type': ('string', 'remove_quotes'),
-        }
-        for climo_type in self.climo_types:
-            dict_name = f'climo_{climo_type.lower()}'
+        if not handle_climo_dict(config=self.config,
+                                 app_name=self.app_name,
+                                 output_dict=self.env_var_dict):
+            self.errors += 1
 
-            # make sure _FILE_NAME is set from INPUT_TEMPLATE/DIR if used
-            self.read_climo_file_name(climo_type)
 
-            self.add_met_config_dict(dict_name, items)
-
-            # handle use_fcst or use_obs options for setting field list
-            self.climo_use_fcst_or_obs_fields(dict_name)
-
-            # handle deprecated env vars CLIMO_MEAN_FILE and CLIMO_STDEV_FILE
-            # that are used by pre v4.0.0 wrapped MET config files
-            env_var_name = f'METPLUS_{dict_name.upper()}_DICT'
-            dict_value = self.env_var_dict.get(env_var_name, '')
-            match = re.match(r'.*file_name = \[([^\[\]]*)\];.*', dict_value)
-            if match:
-                file_name = match.group(1)
-                self.env_var_dict[f'{dict_name.upper()}_FILE'] = file_name
-
-    def read_climo_file_name(self, climo_type):
-        """! Check values for {APP}_CLIMO_{climo_type}_ variables FILE_NAME,
-        INPUT_TEMPLATE, and INPUT_DIR. If FILE_NAME is set, use it and warn
-        if the INPUT_TEMPLATE/DIR variables are also set. If FILE_NAME is not
-        set, read template and dir variables and format the values to set
-        FILE_NAME, i.e. the variables:
-          GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE = a, b
-          GRID_STAT_CLIMO_MEAN_INPUT_DIR = /some/dir
-        will set:
-          GRID_STAT_CLIMO_MEAN_FILE_NAME = /some/dir/a, some/dir/b
-        Used to support pre v4.0 variables.
-
-            @param climo_type type of climo field (mean or stdev)
-        """
-        # prefix i.e. GRID_STAT_CLIMO_MEAN_
-        prefix = f'{self.app_name.upper()}_CLIMO_{climo_type.upper()}_'
-
-        input_dir = self.config.getdir_nocheck(f'{prefix}INPUT_DIR', '')
-        input_template = self.config.getraw('config',
-                                            f'{prefix}INPUT_TEMPLATE', '')
-        file_name = self.config.getraw('config',
-                                       f'{prefix}FILE_NAME', '')
-
-        # if input template is not set, nothing to do
-        if not input_template:
-            return
-
-        # if input template is set and file name is also set,
-        # warn and use file name values
-        if file_name:
-            self.logger.warning(f'Both {prefix}INPUT_TEMPLATE and '
-                                f'{prefix}FILE_NAME are set. Using '
-                                f'value set in {prefix}FILE_NAME '
-                                f'({file_name})')
-            return
-
-        template_list_string = input_template
-        # if file name is not set but template is, set file name from template
-        # if dir is set and not python embedding,
-        # prepend it to each template in list
-        if input_dir and input_template not in util.PYTHON_EMBEDDING_TYPES:
-            template_list = getlist(input_template)
-            for index, template in enumerate(template_list):
-                template_list[index] = os.path.join(input_dir, template)
-
-            # change formatted list back to string
-            template_list_string = ','.join(template_list)
-
-        self.config.set('config', f'{prefix}FILE_NAME', template_list_string)
-
-    def climo_use_fcst_or_obs_fields(self, dict_name):
-        """! If climo field is not explicitly set, check if config is set
-         to use forecast or observation fields.
-
-         @param dict_name name of climo to check: climo_mean or climo_stdev
-        """
-        # if {APP}_CLIMO_[MEAN/STDEV]_FIELD is set, do nothing
-        field_conf = f'{self.app_name}_{dict_name}_FIELD'.upper()
-        if self.config.has_option('config', field_conf):
-            return
-
-        use_fcst_conf = f'{self.app_name}_{dict_name}_USE_FCST'.upper()
-        use_obs_conf = f'{self.app_name}_{dict_name}_USE_OBS'.upper()
-
-        use_fcst = self.config.getbool('config', use_fcst_conf, False)
-        use_obs = self.config.getbool('config', use_obs_conf, False)
-
-        # if both are set, report an error
-        if use_fcst and use_obs:
-            self.log_error(f'Cannot set both {use_fcst_conf} and '
-                           f'{use_obs_conf} in config.')
-            return
-
-        # if neither are set, do nothing
-        if not use_fcst and not use_obs:
-            return
-
-        env_var_name = f'METPLUS_{dict_name.upper()}_DICT'
-        rvalue = 'fcst' if use_fcst else 'obs'
-
-        self.env_var_dict[env_var_name] += f'{dict_name} = {rvalue};'
 
     def get_wrapper_or_generic_config(self, generic_config_name):
         """! Check for config variable with <APP_NAME>_ prepended first. If set
