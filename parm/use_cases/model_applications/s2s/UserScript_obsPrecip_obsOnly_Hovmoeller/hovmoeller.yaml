@@ -1,11 +1,14 @@
-height: 800
-width: 1200
+plot_filename: !ENV '${OUTPUT_DIR}/erai_precip2.png'
+input_data_file: !ENV '${METPLUS_DATA}/model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller/precip.erai.sfc.1p0.2x.2014-2016.nc'
+plot_height: 800
+plot_width: 1200
 title: ERAI Precipitation
 
-font_size: 20
+xy_label_font_size: 20
+title_size: 20
 
-xaxis_title: Longitude
-yaxis_title: Time
+xaxis: Longitude
+yaxis: Time
 
 date_start: 2016-01-01
 date_end: 2016-03-31
@@ -21,5 +24,3 @@ contour_min: 0.2
 contour_max: 1.6
 contour_del: 0.2
 colorscale: 'BuPu'
-plot_filename: 
-- !ENV '${OUTPUT_DIR}/erai_precip2.png'
