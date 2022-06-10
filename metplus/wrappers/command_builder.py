@@ -29,7 +29,7 @@ from ..util import MISSING_DATA_VALUE
 from ..util import get_custom_string_list
 from ..util import get_wrapped_met_config_file, add_met_config_item, format_met_config
 from ..util import remove_quotes
-from ..util import get_field_info
+from ..util import get_field_info, format_field_info
 from ..util.met_config import add_met_config_dict, handle_climo_dict
 
 # pylint:disable=pointless-string-statement
@@ -1159,6 +1159,30 @@ class CommandBuilder:
             return None
 
         return fields
+
+    def format_field_info(self, var_info, data_type, add_curly_braces=True):
+        """! Format field information into format expected by MET config file.
+             Calls utility function found in metplus.util.field_util.
+             This may eventually replace get_field_info.
+
+            @param var_info dictionary of field info to format
+            @param data_type type of data to find i.e. FCST or OBS
+            @param add_curly_braces if True, add curly braces around each
+             field info string. If False, add single quotes around each
+             field info string (defaults to True)
+            @rtype string
+            @return Returns formatted field information or None on error
+        """
+        fields = format_field_info(c_dict=self.c_dict,
+                                   var_info=var_info,
+                                   data_type=data_type,
+                                   add_curly_braces=add_curly_braces)
+
+        # if value returned is a string, it is an error message,
+        # so log error and return None
+        if isinstance(fields, str):
+            self.log_error(fields)
+            return None
 
     def get_command(self):
         """! Builds the command to run the MET application
