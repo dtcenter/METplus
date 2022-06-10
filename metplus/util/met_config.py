@@ -10,7 +10,8 @@ from .constants import PYTHON_EMBEDDING_TYPES, CLIMO_TYPES
 from .string_manip import getlist
 from .met_util import get_threshold_via_regex, MISSING_DATA_VALUE
 from .string_manip import remove_quotes as util_remove_quotes
-from .config_metplus import find_indices_in_config_section
+from .config_metplus import find_indices_in_config_section, parse_var_list
+from .field_util import format_all_field_info
 
 class METConfig:
     """! Stores information for a member of a MET config variables that
@@ -765,6 +766,9 @@ def handle_climo_dict(config, app_name, output_dict):
         # make sure _FILE_NAME is set from INPUT_TEMPLATE/DIR if used
         _read_climo_file_name(climo_type, config, app_name)
 
+        # make sure _FIELD is set from VAR<n> vars if used
+        _read_climo_field(climo_type, config, app_name)
+
         add_met_config_dict(config=config, app_name=app_name,
                             output_dict=output_dict,
                             dict_name=dict_name, items=items)
@@ -835,6 +839,46 @@ def _read_climo_file_name(climo_type, config, app_name):
 
     config.set('config', f'{prefix}FILE_NAME', template_list_string)
 
+def _read_climo_field(climo_type, config, app_name):
+    """! Check values for {APP}_CLIMO_{climo_type}_ variable FIELD and
+    VAR<n>_[NAME/LEVELS/OPTIONS]. If VAR<n> variables are set, format those
+    values and set the FIELD variable in the METplusConfig.
+    If FIELD is also set warn that it the value will be replaced. If only
+    FIELD is set, use that value.
+    The variables:
+      GRID_STAT_CLIMO_MEAN_VAR1_NAME = TMP
+      GRID_STAT_CLIMO_MEAN_VAR1_LEVELS = "(*,*)"
+    will set:
+      GRID_STAT_CLIMO_MEAN_FIELD = {name="TMP"; level="(*,*)";}
+    Used to allow users to format the field info for climo fields in the same
+    way as other field info such as FCST or OBS.
+
+    @param climo_type type of climo field (mean or stdev)
+    @param config METplusConfig object to read
+    @param app_name name of application to find wrapper-specific variables
+    """
+    # prefix i.e. GRID_STAT_CLIMO_MEAN
+    prefix = f'{app_name.upper()}_CLIMO_{climo_type.upper()}'
+
+    field = config.getraw('config', f'{prefix}_FIELD', '')
+    var_list = parse_var_list(config, data_type=prefix)
+
+    # if field info is not set using VAR<n> variables, nothing to do
+    if not var_list:
+        return
+
+    # if FIELD is set and VAR<n> is also set, warn and use VAR<n> values
+    if field:
+        config.logger.warning(f'Both {prefix}_FIELD and '
+                              f'{prefix}_VAR<n>_* variables are set. Using '
+                              f'values set in {prefix}_VAR<n>_* variables')
+
+    # format var list and set it to the _FIELD value
+    all_formatted = format_all_field_info(c_dict={},
+                                          var_list=var_list,
+                                          data_type=prefix)
+
+    config.set('config', f'{prefix}_FIELD', all_formatted)
 
 def _climo_use_fcst_or_obs_fields(dict_name, config, app_name, output_dict):
     """! If climo field is not explicitly set, check if config is set

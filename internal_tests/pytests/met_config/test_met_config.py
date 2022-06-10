@@ -3,8 +3,45 @@
 import pytest
 
 from metplus.util.met_config import *
-from metplus.util.met_config import _read_climo_file_name
+from metplus.util.met_config import _read_climo_file_name, _read_climo_field
 from metplus.util import CLIMO_TYPES
+
+@pytest.mark.parametrize(
+    'config_overrides, expected_value', [
+        # 0 no relevant config set
+        ({}, ''),
+        # 1 _FIELD set
+        ({'GRID_STAT_CLIMO_MEAN_FIELD': '{name="TMP"; level="(*,*)";}'},
+         '{name="TMP"; level="(*,*)";}'),
+        # 2 VAR1 name/level set
+        ({'GRID_STAT_CLIMO_MEAN_VAR1_NAME': 'TMP',
+          'GRID_STAT_CLIMO_MEAN_VAR1_LEVELS': '"(*,*)"'},
+         '{ name="TMP"; level="(*,*)"; }'),
+        # 3 VAR1/2 name/level set
+        ({'GRID_STAT_CLIMO_MEAN_VAR1_NAME': 'TMP',
+          'GRID_STAT_CLIMO_MEAN_VAR1_LEVELS': '"(*,*)"',
+          'GRID_STAT_CLIMO_MEAN_VAR2_NAME': 'PRES',
+          'GRID_STAT_CLIMO_MEAN_VAR2_LEVELS': '"(0,*,*)"'},
+         '{ name="TMP"; level="(*,*)"; },{ name="PRES"; level="(0,*,*)"; }'),
+        # 4 VAR1 name/level and FIELD set - prefer VAR<n>
+        ({'GRID_STAT_CLIMO_MEAN_FIELD': '{name="TEMP"; level="(0,*,*)";}',
+          'GRID_STAT_CLIMO_MEAN_VAR1_NAME': 'TMP',
+          'GRID_STAT_CLIMO_MEAN_VAR1_LEVELS': '"(*,*)"'},
+         '{ name="TMP"; level="(*,*)"; }'),
+    ]
+)
+def test_read_climo_field(metplus_config, config_overrides, expected_value):
+    app_name = 'grid_stat'
+    climo_type = 'MEAN'
+    expected_var = f'{app_name}_CLIMO_{climo_type}_FIELD'.upper()
+    config = metplus_config()
+
+    # set config values
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    _read_climo_field(climo_type, config, app_name)
+    assert config.getraw('config', expected_var) == expected_value
 
 @pytest.mark.parametrize(
     'name, data_type, mp_configs, extra_args', [
