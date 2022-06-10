@@ -112,6 +112,7 @@ class METConfig:
 
         self._children = children
 
+
 def get_wrapped_met_config_file(config, app_name, default_config_file=None):
     """! Get the MET config file path for the wrapper from the
     METplusConfig object. If unset, use the default value if provided.
@@ -134,6 +135,7 @@ def get_wrapped_met_config_file(config, app_name, default_config_file=None):
     config.logger.debug(f"{config_name} is not set. "
                         f"Using {default_config_path}")
     return default_config_path
+
 
 def add_met_config_dict(config, app_name, output_dict, dict_name, items):
     """! Read config variables for MET config dictionary and set output_dict
@@ -237,6 +239,7 @@ def add_met_config_dict(config, app_name, output_dict, dict_name, items):
                                final_met_config,
                                output_dict)
 
+
 def add_met_config_item(config, item, output_dict, depth=0):
     """! Reads info from METConfig object, gets value from
     METplusConfig, and formats it based on the specifications. Sets
@@ -285,6 +288,7 @@ def add_met_config_item(config, item, output_dict, depth=0):
                           item.name,
                           c_dict_key=env_var_name,
                           **item.extra_args)
+
 
 def add_met_config_dict_list(config, app_name, output_dict, dict_name,
                              dict_items):
@@ -347,6 +351,7 @@ def add_met_config_dict_list(config, app_name, output_dict, dict_name,
     output_dict[f'METPLUS_{dict_name.upper()}_LIST'] = output_string
     return is_ok
 
+
 def format_met_config(data_type, c_dict, name, keys=None):
     """! Return formatted variable named <name> with any <items> if they
     are set to a value. If none of the items are set, return empty string
@@ -386,6 +391,7 @@ def format_met_config(data_type, c_dict, name, keys=None):
         output = f'{name} = {output}'
     return output
 
+
 def set_met_config_function(item_type):
     """! Return function to use based on item type
 
@@ -408,6 +414,7 @@ def set_met_config_function(item_type):
     else:
         raise ValueError(f"Invalid argument for item type: {item_type}")
 
+
 def _get_config_or_default(mp_config_name, get_function,
                            default=None):
     conf_value = ''
@@ -429,6 +436,7 @@ def _get_config_or_default(mp_config_name, get_function,
         conf_value = default
 
     return conf_value
+
 
 def set_met_config_list(config, c_dict, mp_config, met_config_name,
                         c_dict_key=None, **kwargs):
@@ -489,6 +497,7 @@ def set_met_config_list(config, c_dict, mp_config, met_config_name,
 
     return True
 
+
 def set_met_config_string(config, c_dict, mp_config, met_config_name,
                           c_dict_key=None, **kwargs):
     """! Get string from METplus configuration file and format it to be passed
@@ -535,6 +544,7 @@ def set_met_config_string(config, c_dict, mp_config, met_config_name,
     c_dict[c_key] = conf_value
     return True
 
+
 def set_met_config_number(config, c_dict, num_type, mp_config,
                           met_config_name, c_dict_key=None, **kwargs):
     """! Get integer from METplus configuration file and format it to be passed
@@ -578,6 +588,7 @@ def set_met_config_number(config, c_dict, num_type, mp_config,
 
     return True
 
+
 def set_met_config_int(config, c_dict, mp_config_name, met_config_name,
                        c_dict_key=None, **kwargs):
     return set_met_config_number(config, c_dict, 'int',
@@ -586,6 +597,7 @@ def set_met_config_int(config, c_dict, mp_config_name, met_config_name,
                                  c_dict_key=c_dict_key,
                                  **kwargs)
 
+
 def set_met_config_float(config, c_dict, mp_config_name,
                          met_config_name, c_dict_key=None, **kwargs):
     return set_met_config_number(config, c_dict, 'float',
@@ -593,6 +605,7 @@ def set_met_config_float(config, c_dict, mp_config_name,
                                  met_config_name,
                                  c_dict_key=c_dict_key,
                                  **kwargs)
+
 
 def set_met_config_thresh(config, c_dict, mp_config, met_config_name,
                           c_dict_key=None, **kwargs):
@@ -618,6 +631,7 @@ def set_met_config_thresh(config, c_dict, mp_config, met_config_name,
 
         c_dict[c_key] = out_value
         return True
+
 
 def set_met_config_bool(config, c_dict, mp_config, met_config_name,
                         c_dict_key=None, **kwargs):
@@ -663,6 +677,7 @@ def set_met_config_bool(config, c_dict, mp_config, met_config_name,
     c_dict[c_key] = conf_value
     return True
 
+
 def format_regrid_to_grid(to_grid):
     to_grid = to_grid.strip('"')
     if not to_grid:
@@ -675,6 +690,7 @@ def format_regrid_to_grid(to_grid):
         to_grid = f'"{to_grid}"'
 
     return to_grid
+
 
 def _parse_item_info(item_info):
     """! Parses info about a MET config dictionary item. The input can
@@ -710,6 +726,7 @@ def _parse_item_info(item_info):
 
     return data_type, extra, kids, nicknames
 
+
 def _parse_extra_args(extra):
     """! Check string for extra option keywords and set them to True in
      dictionary if they are found. Supports 'remove_quotes', 'uppercase'
@@ -733,6 +750,7 @@ def _parse_extra_args(extra):
         if extra_option in extra:
             extra_args[extra_option] = True
     return extra_args
+
 
 def handle_climo_dict(config, app_name, output_dict):
     """! Read climo mean/stdev variables with and set env_var_dict
@@ -789,6 +807,7 @@ def handle_climo_dict(config, app_name, output_dict):
 
     return is_ok
 
+
 def _read_climo_file_name(climo_type, config, app_name):
     """! Check values for {APP}_CLIMO_{climo_type}_ variables FILE_NAME,
     INPUT_TEMPLATE, and INPUT_DIR. If FILE_NAME is set, use it and warn
@@ -839,6 +858,7 @@ def _read_climo_file_name(climo_type, config, app_name):
 
     config.set('config', f'{prefix}FILE_NAME', template_list_string)
 
+
 def _read_climo_field(climo_type, config, app_name):
     """! Check values for {APP}_CLIMO_{climo_type}_ variable FIELD and
     VAR<n>_[NAME/LEVELS/OPTIONS]. If VAR<n> variables are set, format those
@@ -879,6 +899,7 @@ def _read_climo_field(climo_type, config, app_name):
                                           data_type=prefix)
 
     config.set('config', f'{prefix}_FIELD', all_formatted)
+
 
 def _climo_use_fcst_or_obs_fields(dict_name, config, app_name, output_dict):
     """! If climo field is not explicitly set, check if config is set
