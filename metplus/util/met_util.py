@@ -24,14 +24,6 @@ from .. import get_metplus_version
 
 from .constants import *
 
-valid_comparisons = {">=": "ge",
-                     ">": "gt",
-                     "==": "eq",
-                     "!=": "ne",
-                     "<=": "le",
-                     "<": "lt",
-                     }
-
 # missing data value used to check if integer values are not set
 # we often check for None if a variable is not set, but 0 and None
 # have the same result in a test. 0 may be a valid integer value
@@ -835,7 +827,7 @@ def get_threshold_via_regex(thresh_string):
     # check each threshold for validity
     for thresh in thresh_split:
         found_match = False
-        for comp in list(valid_comparisons.keys())+list(valid_comparisons.values()):
+        for comp in list(VALID_COMPARISONS)+list(VALID_COMPARISONS.values()):
             # if valid, add to list of tuples
             # must be one of the valid comparison operators followed by
             # at least 1 digit or NA
@@ -873,7 +865,7 @@ def comparison_to_letter_format(expression):
           convert, i.e. gt3 or <=5.4
          @returns letter comparison operator, i.e. gt3 or le5.4 or None if invalid
     """
-    for symbol_comp, letter_comp in valid_comparisons.items():
+    for symbol_comp, letter_comp in VALID_COMPARISONS.items():
         if letter_comp in expression or symbol_comp in expression:
             return expression.replace(symbol_comp, letter_comp)
 

@@ -17,3 +17,14 @@ CLIMO_TYPES = [
     'MEAN',
     'STDEV',
 ]
+
+# comparison operators that the MET tools support
+# key is an operator and value is the alphabetic equivalent
+VALID_COMPARISONS = {
+    '>=': 'ge',
+    '>': 'gt',
+    '==': 'eq',
+    '!=': 'ne',
+    '<=': 'le',
+    '<': 'lt',
+}
