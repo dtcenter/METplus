@@ -149,7 +149,8 @@ def run_metplus(config, process_list):
             return 1
 
         # write out all commands and environment variables to file
-        write_all_commands(all_commands, config)
+        if not write_all_commands(all_commands, config):
+            total_errors += 1
 
        # compute total number of errors that occurred and output results
         for process in processes:
@@ -207,10 +208,20 @@ def post_run_cleanup(config, app_name, total_errors):
     sys.exit(1)
 
 def write_all_commands(all_commands, config):
+    """! Write all commands that were run to a file in the log
+     directory. This includes the environment variables that
+     were set before each command.
+
+    @param all_commands list of tuples with command run and
+     list of environment variables that were set
+    @param config METplusConfig object used to write log output
+     and get the log timestamp to name the output file
+    @returns False if no commands were provided, True otherwise
+    """
     if not all_commands:
-        config.logger.debug("No commands were run. "
+        config.logger.error("No commands were run. "
                             "Skip writing all_commands file")
-        return
+        return False
 
     log_timestamp = config.getstr('config', 'LOG_TIMESTAMP')
     filename = os.path.join(config.getdir('LOG_DIR'),
@@ -223,6 +234,8 @@ def write_all_commands(all_commands, config):
 
             file_handle.write("COMMAND:\n")
             file_handle.write(f"{command}\n\n")
+
+    return True
 
 def handle_tmp_dir(config):
     """! if env var MET_TMP_DIR is set, override config TMP_DIR with value
