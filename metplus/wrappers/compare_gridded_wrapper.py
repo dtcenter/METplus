@@ -198,17 +198,11 @@ that reformat gridded data
         self.infiles.extend(obs_path)
 
         # get field info field a single field to pass to the MET config file
-        fcst_field_list = self.get_field_info(v_level=var_info['fcst_level'],
-                                              v_thresh=var_info['fcst_thresh'],
-                                              v_name=var_info['fcst_name'],
-                                              v_extra=var_info['fcst_extra'],
-                                              d_type='FCST')
+        fcst_field_list = self.format_field_info(var_info=var_info,
+                                                 data_type='FCST')
 
-        obs_field_list = self.get_field_info(v_level=var_info['obs_level'],
-                                             v_thresh=var_info['obs_thresh'],
-                                             v_name=var_info['obs_name'],
-                                             v_extra=var_info['obs_extra'],
-                                             d_type='OBS')
+        obs_field_list = self.format_field_info(var_info=var_info,
+                                                data_type='OBS')
 
         if fcst_field_list is None or obs_field_list is None:
             return
