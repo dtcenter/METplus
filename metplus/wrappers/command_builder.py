@@ -1184,6 +1184,8 @@ class CommandBuilder:
             self.log_error(fields)
             return None
 
+        return fields
+
     def get_command(self):
         """! Builds the command to run the MET application
            @rtype string
