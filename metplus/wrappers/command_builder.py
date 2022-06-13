@@ -1407,8 +1407,6 @@ class CommandBuilder:
                                  output_dict=self.env_var_dict):
             self.errors += 1
 
-
-
     def get_wrapper_or_generic_config(self, generic_config_name):
         """! Check for config variable with <APP_NAME>_ prepended first. If set
         use that value. If not, check for config without prefix.
