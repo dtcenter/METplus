@@ -135,4 +135,44 @@ def test_set_command_line_arguments(metplus_config):
 
     wrap.args.clear()
 
+    wrap.c_dict['QC_FLAGS'] = 1
+
+    expected_args = ['-qc 1',
+                     '-method UW_MEAN',
+                     '-gaussian_dx 2',
+                     '-gaussian_radius 3',
+                     '-prob_cat_thresh 1',
+                     '-vld_thresh 0.5',
+                     ]
+
+    wrap.set_command_line_arguments(time_info)
+    if wrap.args != expected_args:
+        test_passed = False
+        print("Test 5 failed")
+        print(f"ARGS: {wrap.args}")
+        print(f"EXP: {expected_args}")
+
+    wrap.args.clear()
+
+    wrap.c_dict['ADP'] = 'test.nc'
+
+    expected_args = ['-qc 1',
+                     '-adp test.nc',
+                     '-method UW_MEAN',
+                     '-gaussian_dx 2',
+                     '-gaussian_radius 3',
+                     '-prob_cat_thresh 1',
+                     '-vld_thresh 0.5',
+                     ]
+
+    wrap.set_command_line_arguments(time_info)
+    if wrap.args != expected_args:
+        test_passed = False
+        print("Test 6 failed")
+        print(f"ARGS: {wrap.args}")
+        print(f"EXP: {expected_args}")
+
+    wrap.args.clear()
+
+
     assert(test_passed)
