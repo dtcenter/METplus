@@ -30,7 +30,14 @@ UserScript_obsPrecip_obsOnly_Hovmoeller.py
 # This use case runs the UserScript wrapper tool to run a user provided script,
 # in this case, hovmoeller.py.
 #
-
+# It also requires the METcalcpy and METplotpy source code to generate the plot.
+# Clone the METcalcpy repository (https://github.com/dtcenter/METcalcpy) and the
+# METplotpy repository (https://github.com/dtcenter/METplotpy) under the same base
+# directory as the METPLUS_BASE directory so that the METplotpy, METcalcpy, and
+# METplotpy directories are under the same base directory (i.e. if the METPLUS_BASE directory is
+# /home/username/working/METplus, then clone the METcalcpy and METplotpy source
+# code into the /home/username/working directory).  
+#
 ##############################################################################
 # METplus Workflow
 # ----------------
@@ -48,7 +55,7 @@ UserScript_obsPrecip_obsOnly_Hovmoeller.py
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.conf
+# parm/use_cases/model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.conf
@@ -78,14 +85,14 @@ UserScript_obsPrecip_obsOnly_Hovmoeller.py
 # then a user-specific system configuration file::
 #
 #        run_metplus.py \
-#        -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.conf \
-#        -c /path/to/user_system.conf
+#        /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.conf \
+#        /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_obsPrecip_obsOnly_Hovmoeller.conf::
 #
 #        run_metplus.py \
-#        -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.conf
-#
+#        /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.conf
+#     
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
 # * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
