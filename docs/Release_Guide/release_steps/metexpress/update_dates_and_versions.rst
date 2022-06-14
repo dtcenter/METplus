@@ -12,8 +12,7 @@ release. Open the following URLs in a browser:
 * Compile a list of all changes since the last time the development branch was merged into the main branch.
 
 * Update the top entry in MATS/MATScommon/meteor_packages/mats-common/public/MATSReleaseNotes.html to reflect
-  these changes, as well as the new version number. Leave the date fields as-is, they will be automatically
-  set by the container build.
+  these changes, as well as the new version number. Set the Production Build Date to the current date.
 
 * Update the version and release date in docs/conf.py.
   

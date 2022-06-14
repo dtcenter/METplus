@@ -1,18 +1,10 @@
 #!/usr/bin/env python3
 
-import os
-import sys
-import re
-import logging
-from collections import namedtuple
 import pytest
+import os
 from datetime import datetime
 
-import produtil
-
 from metplus.wrappers.grid_stat_wrapper import GridStatWrapper
-from metplus.util import met_util as util
-from metplus.util import time_util
 
 fcst_dir = '/some/path/fcst'
 obs_dir = '/some/path/obs'
@@ -58,6 +50,52 @@ def set_minimum_config_settings(config):
     config.set('config', 'FCST_VAR1_LEVELS', fcst_level)
     config.set('config', 'OBS_VAR1_NAME', obs_name)
     config.set('config', 'OBS_VAR1_LEVELS', obs_level)
+
+@pytest.mark.parametrize(
+    'config_overrides, expected_values', [
+        # 0 generic FCST is prob
+        ({'FCST_IS_PROB': True},
+         {'FCST_IS_PROB': True, 'OBS_IS_PROB': False}),
+        # 1 generic OBS is prob
+        ({'OBS_IS_PROB': True},
+         {'FCST_IS_PROB': False, 'OBS_IS_PROB': True}),
+        # 2 generic FCST and OBS is prob
+        ({'FCST_IS_PROB': True, 'OBS_IS_PROB': True},
+         {'FCST_IS_PROB': True, 'OBS_IS_PROB': True}),
+        # 3 generic FCST true, wrapper FCST false
+        ({'FCST_IS_PROB': True, 'FCST_GRID_STAT_IS_PROB': False},
+         {'FCST_IS_PROB': False, 'OBS_IS_PROB': False}),
+        # 4 generic OBS true, wrapper OBS false
+        ({'OBS_IS_PROB': True, 'OBS_GRID_STAT_IS_PROB': False},
+         {'FCST_IS_PROB': False, 'OBS_IS_PROB': False}),
+        # 5 generic FCST unset, wrapper FCST true
+        ({'FCST_GRID_STAT_IS_PROB': True},
+         {'FCST_IS_PROB': True, 'OBS_IS_PROB': False}),
+        # 6 generic OBS unset, wrapper OBS true
+        ({'OBS_GRID_STAT_IS_PROB': True},
+         {'FCST_IS_PROB': False, 'OBS_IS_PROB': True}),
+        # 7 generic FCST false, wrapper FCST true
+        ({'FCST_IS_PROB': False, 'FCST_GRID_STAT_IS_PROB': True},
+         {'FCST_IS_PROB': True, 'OBS_IS_PROB': False}),
+        # 8 generic FCST true, wrapper FCST false
+        ({'FCST_IS_PROB': True, 'FCST_GRID_STAT_IS_PROB': False},
+         {'FCST_IS_PROB': False, 'OBS_IS_PROB': False}),
+    ]
+)
+def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
+
+    config = metplus_config()
+
+    set_minimum_config_settings(config)
+
+    # set config variable overrides
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    wrapper = GridStatWrapper(config)
+    assert wrapper.isOK
+    for key, expected_value in expected_values.items():
+        assert expected_value == wrapper.c_dict[key]
 
 @pytest.mark.parametrize(
     'config_overrides, env_var_values', [

@@ -1,0 +1,10 @@
+# Define the development environment for NCAR project machine seneca
+# Based on settings in /usr/local/src/met/README.snat
+
+# Top-level MET project directory
+MET_PROJ_DIR=`ls -1d /met/MET*`
+
+# SonarQube
+#export SONARQUBE_DIR=/d1/projects/SonarQube/
+#export SONARQUBE_WRAPPER_BIN=$SONARQUBE_DIR/build-wrapper-linux-x86
+#export SONARQUBE_SCANNER_BIN=$SONARQUBE_DIR/sonar-scanner-4.6.2.2472-linux/bin
