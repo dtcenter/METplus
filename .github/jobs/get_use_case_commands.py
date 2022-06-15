@@ -37,6 +37,9 @@ def handle_automation_env(host_name, reqs, work_dir):
     if use_env:
         conda_env = use_env[0].replace('_env', '')
 
+    if conda_env == 'metplotpy':
+        conda_env = f'{conda_env}.v5'
+
     # if not using docker (automation),
     # return no setup commands and python embedding argument to command
     if host_name != 'docker':

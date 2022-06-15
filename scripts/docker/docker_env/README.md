@@ -150,8 +150,8 @@ docker push dtcenter/metplus-envs:spacetime
 ### Docker
 
 ```
-docker build -t dtcenter/metplus-envs:metplotpy --build-arg ENV_NAME=metplotpy .
-docker push dtcenter/metplus-envs:metplotpy
+docker build -t dtcenter/metplus-envs:metplotpy.v5 --build-arg ENV_NAME=metplotpy .
+docker push dtcenter/metplus-envs:metplotpy.v5
 ```
 
 ### Local
