@@ -28,6 +28,7 @@ from ..util import MISSING_DATA_VALUE
 from ..util import get_custom_string_list
 from ..util import get_wrapped_met_config_file, add_met_config_item, format_met_config
 from ..util import remove_quotes
+from ..util import get_field_info
 from ..util.met_config import add_met_config_dict
 
 # pylint:disable=pointless-string-statement
@@ -302,7 +303,7 @@ class CommandBuilder:
 
         return msg
 
-    def handle_window_once(self, input_list, default_val=0):
+    def _handle_window_once(self, input_list, default_val=0):
         """! Check and set window dictionary variables like
               OBS_WINDOW_BEG or FCST_FILE_WINDOW_END
 
@@ -336,29 +337,33 @@ class CommandBuilder:
                           f'OBS_WINDOW_{edge}',
                          ]
             output_key = f'OBS_WINDOW_{edge}'
-            value = self.handle_window_once(input_list, default_val)
+            value = self._handle_window_once(input_list, default_val)
             c_dict[output_key] = value
 
-    def handle_file_window_variables(self, c_dict, dtypes=['FCST', 'OBS']):
+    def handle_file_window_variables(self, c_dict, data_types=None):
         """! Handle all window config variables like
               [FCST/OBS]_<app_name>_WINDOW_[BEGIN/END] and
               [FCST/OBS]_<app_name>_FILE_WINDOW_[BEGIN/END]
-              Args:
+
                 @param c_dict dictionary to set items in
+                @param data_types tuple of data types to check, i.e. FCST, OBS
         """
         edges = ['BEGIN', 'END']
         app = self.app_name.upper()
 
-        for dtype in dtypes:
+        if not data_types:
+            data_types = ['FCST', 'OBS']
+
+        for data_type in data_types:
             for edge in edges:
                 input_list = [
-                    f'{dtype}_{app}_FILE_WINDOW_{edge}',
+                    f'{data_type}_{app}_FILE_WINDOW_{edge}',
                     f'{app}_FILE_WINDOW_{edge}',
-                    f'{dtype}_FILE_WINDOW_{edge}',
+                    f'{data_type}_FILE_WINDOW_{edge}',
                     f'FILE_WINDOW_{edge}',
                 ]
-                output_key = f'{dtype}_FILE_WINDOW_{edge}'
-                value = self.handle_window_once(input_list, 0)
+                output_key = f'{data_type}_FILE_WINDOW_{edge}'
+                value = self._handle_window_once(input_list, 0)
                 c_dict[output_key] = value
 
     def set_met_config_obs_window(self, c_dict):
@@ -425,51 +430,6 @@ class CommandBuilder:
         """!Print single environment variable in the log file
         """
         return f"{item}={self.env[item]}"
-
-    def handle_fcst_and_obs_field(self, gen_name, fcst_name, obs_name, default=None, sec='config'):
-        """!Handles config variables that have fcst/obs versions or a generic
-            variable to handle both, i.e. FCST_NAME, OBS_NAME, and NAME.
-            If FCST_NAME and OBS_NAME both exist, they are used. If both are don't
-            exist, NAME is used.
-        """
-        has_gen = self.config.has_option(sec, gen_name)
-        has_fcst = self.config.has_option(sec, fcst_name)
-        has_obs = self.config.has_option(sec, obs_name)
-
-        # use fcst and obs if both are set
-        if has_fcst and has_obs:
-            fcst_conf = self.config.getstr(sec, fcst_name)
-            obs_conf = self.config.getstr(sec, obs_name)
-            if has_gen:
-                self.logger.warning('Ignoring conf {} and using {} and {}'
-                                    .format(gen_name, fcst_name, obs_name))
-            return fcst_conf, obs_conf
-
-        # if one but not the other is set, error and exit
-        if has_fcst and not has_obs:
-            self.log_error('Cannot use {} without {}'.format(fcst_name, obs_name))
-            return None, None
-
-        if has_obs and not has_fcst:
-            self.log_error('Cannot use {} without {}'.format(obs_name, fcst_name))
-            return None, None
-
-        # if generic conf is set, use for both
-        if has_gen:
-            gen_conf = self.config.getstr(sec, gen_name)
-            return gen_conf, gen_conf
-
-        # if none of the options are set, use default value for both if specified
-        if default is None:
-            msg = 'Must set both {} and {} in the config files'.format(fcst_name,
-                                                                       obs_name)
-            msg += ' or set {} instead'.format(gen_name)
-            self.log_error(msg)
-
-            return None, None
-
-        self.logger.warning('Using default values for {}'.format(gen_name))
-        return default, default
 
     def find_model(self, time_info, var_info=None, mandatory=True,
                    return_list=False):
@@ -1172,101 +1132,35 @@ class CommandBuilder:
 
     def get_field_info(self, d_type='', v_name='', v_level='', v_thresh=None,
                        v_extra='', add_curly_braces=True):
-        """! Format field information into format expected by MET config file
-              Args:
-                @param v_level level of data to extract
-                @param v_thresh threshold value to use in comparison
-                @param v_name name of field to process
-                @param v_extra additional field information to add if available
-                @param d_type type of data to find i.e. FCST or OBS
-                @param add_curly_braces if True, add curly braces around each
-                 field info string. If False, add single quotes around each
-                 field info string (defaults to True)
-                @rtype string
-                @return Returns formatted field information
+        """! Format field information into format expected by MET config file.
+             Calls utility function found in metplus.util.field_util.
+
+            @param v_level level of data to extract
+            @param v_thresh threshold value to use in comparison
+            @param v_name name of field to process
+            @param v_extra additional field information to add if available
+            @param d_type type of data to find i.e. FCST or OBS
+            @param add_curly_braces if True, add curly braces around each
+             field info string. If False, add single quotes around each
+             field info string (defaults to True)
+            @rtype string
+            @return Returns formatted field information or None on error
         """
-        # if thresholds are set
-        if v_thresh:
-            # if neither fcst or obs are probabilistic,
-            # pass in all thresholds as a comma-separated list for 1 field info
-            if (not self.c_dict.get('FCST_IS_PROB', False) and
-                    not self.c_dict.get('OBS_IS_PROB', False)):
-                thresholds = [','.join(v_thresh)]
-            else:
-                thresholds = v_thresh
-        # if no thresholds are specified, fail if prob field is in grib PDS
-        elif (self.c_dict.get(d_type + '_IS_PROB', False) and
-              self.c_dict.get(d_type + '_PROB_IN_GRIB_PDS', False) and
-              not util.is_python_script(v_name)):
-            self.log_error('No threshold was specified for probabilistic '
-                           'forecast GRIB data')
+        fields = get_field_info(c_dict=self.c_dict,
+                                data_type=d_type,
+                                v_name=v_name,
+                                v_level=v_level,
+                                v_thresh=v_thresh,
+                                v_extra=v_extra,
+                                add_curly_braces=add_curly_braces)
+
+        # if value returned is a string, it is an error message,
+        # so log error and return None
+        if isinstance(fields, str):
+            self.log_error(fields)
             return None
-        else:
-            thresholds = [None]
 
-        # list to hold field information
-        fields = []
-
-        for thresh in thresholds:
-            if (self.c_dict.get(d_type + '_PROB_IN_GRIB_PDS', False) and
-                    not util.is_python_script(v_name)):
-                field = self._handle_grib_pds_field_info(v_name, v_level,
-                                                         thresh)
-            else:
-                # add field name
-                field = f'name="{v_name}";'
-
-                if v_level:
-                    field += f' level="{remove_quotes(v_level)}";'
-
-                if self.c_dict.get(d_type + '_IS_PROB', False):
-                    field += " prob=TRUE;"
-
-            # handle cat_thresh
-            if self.c_dict.get(d_type + '_IS_PROB', False):
-                # add probabilistic cat thresh if different from default ==0.1
-                cat_thresh = self.c_dict.get(d_type + '_PROB_THRESH')
-            else:
-                cat_thresh = thresh
-
-            if cat_thresh:
-                field += f" cat_thresh=[ {cat_thresh} ];"
-
-            # handle extra options if set
-            if v_extra:
-                field += f' {v_extra}'
-
-            # add curly braces around field info
-            if add_curly_braces:
-                field = f'{{ {field} }}'
-            # otherwise add single quotes around field info
-            else:
-                field = f"'{field}'"
-
-            # add field info string to list of fields
-            fields.append(field)
-
-        # return list of field dictionary items
         return fields
-
-    def _handle_grib_pds_field_info(self, v_name, v_level, thresh):
-
-        field = f'name="PROB"; level="{v_level}"; prob={{ name="{v_name}";'
-
-        if thresh:
-            thresh_tuple_list = util.get_threshold_via_regex(thresh)
-            for comparison, number in thresh_tuple_list:
-                # skip adding thresh_lo or thresh_hi if comparison is NA
-                if comparison == 'NA':
-                    continue
-
-                if comparison in ["gt", "ge", ">", ">=", "==", "eq"]:
-                    field = f"{field} thresh_lo={number};"
-                if comparison in ["lt", "le", "<", "<=", "==", "eq"]:
-                    field = f"{field} thresh_hi={number};"
-
-        # add closing curly brace for prob=
-        return f'{field} }}'
 
     def get_command(self):
         """! Builds the command to run the MET application
@@ -1373,10 +1267,13 @@ class CommandBuilder:
                        'wrapper. Cannot run with LOOP_ORDER = times')
         return None
 
-    def run_all_times(self):
-        """!Loop over time range specified in conf file and
-        call METplus wrapper for each time"""
-        return util.loop_over_times_and_call(self.config, self)
+    def run_all_times(self, custom=None):
+        """! Loop over time range specified in conf file and
+        call METplus wrapper for each time
+
+        @param custom (optional) custom loop string value
+        """
+        return util.loop_over_times_and_call(self.config, self, custom=custom)
 
     @staticmethod
     def format_met_config_dict(c_dict, name, keys=None):

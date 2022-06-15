@@ -141,7 +141,7 @@ class PB2NCWrapper(CommandBuilder):
                                              'PB2NC_TIME_SUMMARY_TYPES'],
                             extra_args={'allow_empty': True})
 
-        self.handle_file_window_variables(c_dict, dtypes=['OBS'])
+        self.handle_file_window_variables(c_dict, data_types=['OBS'])
 
         c_dict['VALID_BEGIN_TEMPLATE'] = \
           self.config.getraw('config', 'PB2NC_VALID_BEGIN', '')
@@ -274,14 +274,12 @@ class PB2NCWrapper(CommandBuilder):
                 input_dict['custom'] = custom_string
 
                 # Run for given init/valid time and forecast lead combination
+                self.clear()
                 self.run_at_time_once(input_dict)
 
 
     def run_at_time_once(self, input_dict):
         """!Find files needed to run pb2nc and run if found"""
-        # clear out information set from previous run
-        self.clear()
-
         # look for input files to process
         time_info = self.find_input_files(input_dict)
 

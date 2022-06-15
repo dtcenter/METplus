@@ -238,10 +238,10 @@ class Point2GridWrapper(CommandBuilder):
             self.args.append(f"-field 'name=\"{input_field}\"; level=\"{input_level}\";'")
 
         if self.c_dict['QC_FLAGS']:
-            self.args.append("-qc")
+            self.args.append(f"-qc {self.c_dict['QC_FLAGS']}")
 
         if self.c_dict['ADP']:
-            self.args.append("-adp")
+            self.args.append(f"-adp {self.c_dict['ADP']}")
 
         if self.c_dict['REGRID_METHOD']:
             self.args.append(f"-method {self.c_dict['REGRID_METHOD']}")

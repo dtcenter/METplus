@@ -50,6 +50,11 @@
     "run": false
   },
   {
+    "category": "convection_allowing_models",
+    "index_list": "9",
+    "run": false
+  },
+  {
     "category": "data_assimilation",
     "index_list": "0",
     "run": false
@@ -61,12 +66,12 @@
   },
   {
     "category": "marine_and_cryosphere",
-    "index_list": "3-4",
+    "index_list": "3-5",
     "run": false
   },
   {
     "category": "marine_and_cryosphere",
-    "index_list": "5",
+    "index_list": "6",
     "run": false
   },
   {
