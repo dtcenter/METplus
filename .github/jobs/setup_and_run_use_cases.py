@@ -70,6 +70,9 @@ def main():
         else:
             env_tag = 'metplus_base'
 
+        if env_tag == 'metplotpy':
+            env_tag = f'{env_tag}.v5'
+
         # get Dockerfile to use
         dockerfile_name = 'Dockerfile.run'
         if 'gempak' in str(requirements).lower():
