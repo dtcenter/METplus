@@ -28,3 +28,10 @@ VALID_COMPARISONS = {
     '<=': 'le',
     '<': 'lt',
 }
+
+# wrappers that do not run shell commands
+# used to check that at least one command was generated if it should
+NO_COMMAND_WRAPPERS = (
+    'Example',
+    'CyclonePlotter',
+)
