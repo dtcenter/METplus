@@ -2386,6 +2386,18 @@ obs_raw_plot.color_table
 | METplus Config:  | :term:`MODE_MET_CONFIG_OVERRIDES` = obs_raw_plot = {color_table = "MET_BASE/colortables/mode_raw.ctable";} |
 +------------------+------------------------------------------------------------------------------------------------------------+
 
+mask_missing_flag
+^^^^^^^^^^^^^^^^^
+
++------------------+---------------------------------------+
+| Old (Incorrect): | mask_missing_flag = BOTH;             |
++------------------+---------------------------------------+
+| New (Correct):   | mask_missing_flag = NONE;             |
++------------------+---------------------------------------+
+| METplus Config:  | :term:`MODE_MASK_MISSING_FLAG` = BOTH |
++------------------+---------------------------------------+
+
+
 PB2NCConfig
 -----------
 
