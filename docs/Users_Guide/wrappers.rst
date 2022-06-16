@@ -4110,6 +4110,7 @@ METplus Configuration
 | :term:`MODE_NC_PAIRS_FLAG_OBJECT_ID`
 | :term:`MODE_NC_PAIRS_FLAG_CLUSTER_ID`
 | :term:`MODE_NC_PAIRS_FLAG_POLYLINES`
+| :term:`MODE_MASK_MISSING_FLAG`
 | :term:`MODE_MATCH_FLAG`
 | :term:`MODE_MAX_CENTROID_DIST`
 | :term:`MODE_TOTAL_INTEREST_THRESH`
@@ -4120,6 +4121,7 @@ METplus Configuration
 | :term:`MODE_CT_STATS_FLAG`
 | :term:`FCST_MODE_IS_PROB`
 | :term:`FCST_MODE_PROB_IN_GRIB_PDS`
+| :term:`MODE_MULTIVAR_LOGIC`
 | :term:`FCST_MODE_VAR<n>_NAME` (optional)
 | :term:`FCST_MODE_VAR<n>_LEVELS` (optional)
 | :term:`FCST_MODE_VAR<n>_THRESH` (optional)
@@ -4231,6 +4233,17 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`MODE_QUILT`
      - quilt
+
+**${METPLUS_MULTIVAR_LOGIC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_MULTIVAR_LOGIC`
+     - multivar_logic
 
 **${METPLUS_FCST_FIELD}**
 
@@ -4540,6 +4553,17 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - mask.poly
    * - :term:`MODE_MASK_POLY_FLAG`
      - mask.poly_flag
+
+**${METPLUS_MASK_MISSING_FLAG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_MASK_MISSING_FLAG`
+     - mask_missing_flag
 
 **${METPLUS_MATCH_FLAG}**
 
