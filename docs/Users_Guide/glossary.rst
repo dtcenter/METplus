@@ -9259,3 +9259,17 @@ METplus Configuration Glossary
      Specify the value for 'eclv_points' in the MET configuration file for EnsembleStat.
 
      | *Used by:* EnsembleStat
+
+   MODE_MASK_MISSING_FLAG
+     Specify the value for 'mask_missing_flag' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_MULTIVAR_LOGIC
+     Specify the value for 'multivar_logic' in the MET configuration file
+     for MODE. If this variable is set, then multi-variate MODE will be run.
+     This means that more than 1 input file will be read and all of the fields
+     specified will be processed in a single call to MODE. See the MET User's
+     Guide for more information on multi-variate MODE.
+
+     | *Used by:* MODE
