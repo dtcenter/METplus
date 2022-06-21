@@ -1,5 +1,5 @@
 plot_filename: !ENV '${OUTPUT_DIR}/erai_precip2.png'
-input_data_file: !ENV '${METPLUS_DATA}/model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller/precip.erai.sfc.1p0.2x.2014-2016.nc'
+input_data_file: !ENV '${INPUT_FILE_NAME}'
 plot_height: 800
 plot_width: 1200
 title: ERAI Precipitation
