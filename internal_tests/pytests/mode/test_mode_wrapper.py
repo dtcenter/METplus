@@ -25,6 +25,12 @@ fcst_fmt = f'field = {{ name="{fcst_name}"; level="{fcst_level}"; }};'
 obs_fmt = (f'field = {{ name="{obs_name}"; '
            f'level="{obs_level_no_quotes}"; }};')
 
+fcst_multi_fmt = (f'field = [{{ name="{fcst_name}"; level="{fcst_level}"; }},'
+                  f'{{ name="{fcst_name}"; level="{fcst_level}"; }}];')
+obs_multi_fmt = (f'field = [{{ name="{obs_name}"; '
+                 f'level="{obs_level_no_quotes}"; }},'
+                 f'{{ name="{obs_name}"; level="{obs_level_no_quotes}"; }}];')
+
 
 def set_minimum_config_settings(config):
     # set config variables to prevent command from running and bypass check
@@ -310,6 +316,9 @@ def set_minimum_config_settings(config):
          {'METPLUS_FCST_FILE_TYPE': 'file_type = NETCDF_PINT;'}),
         ({'MODE_OBS_FILE_TYPE': 'NETCDF_PINT', },
          {'METPLUS_OBS_FILE_TYPE': 'file_type = NETCDF_PINT;'}),
+        ({'MODE_MASK_MISSING_FLAG': 'BOTH', },
+         {'METPLUS_MASK_MISSING_FLAG': 'mask_missing_flag = BOTH;'}),
+
     ]
 )
 def test_mode_single_field(metplus_config, config_overrides,
@@ -368,7 +377,7 @@ def test_mode_single_field(metplus_config, config_overrides,
 
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
-        assert(cmd == expected_cmd)
+        assert cmd == expected_cmd
 
         # check that environment variables were set properly
         # including deprecated env vars (not in wrapper env var keys)
@@ -378,14 +387,83 @@ def test_mode_single_field(metplus_config, config_overrides,
         for env_var_key in env_var_keys:
             match = next((item for item in env_vars if
                           item.startswith(env_var_key)), None)
-            assert(match is not None)
+            assert match is not None
             value = match.split('=', 1)[1]
             if env_var_key == 'METPLUS_FCST_FIELD':
-                assert(value == fcst_fmt)
+                assert value == fcst_fmt
             elif env_var_key == 'METPLUS_OBS_FIELD':
-                assert (value == obs_fmt)
+                assert value == obs_fmt
             else:
-                assert(expected_output.get(env_var_key, '') == value)
+                assert expected_output.get(env_var_key, '') == value
+
+@pytest.mark.parametrize(
+    'config_overrides, expected_output', [
+        ({'MODE_MULTIVAR_LOGIC': '#1 && #2 && #3', },
+         {'METPLUS_MULTIVAR_LOGIC': 'multivar_logic = "#1 && #2 && #3";'}),
+    ]
+)
+def test_mode_multi_variate(metplus_config, config_overrides,
+                            expected_output):
+    config = metplus_config()
+
+    # set config variables needed to run
+    set_minimum_config_settings(config)
+
+    # change config values to reflect an expected multi-variate run
+    # multiple fields and input files
+    config.set('config', 'FCST_VAR2_NAME', fcst_name)
+    config.set('config', 'FCST_VAR2_LEVELS', fcst_level)
+    config.set('config', 'OBS_VAR2_NAME', obs_name)
+    config.set('config', 'OBS_VAR2_LEVELS', obs_level)
+    config.set('config', 'FCST_MODE_INPUT_TEMPLATE',
+               ('{init?fmt=%Y%m%d%H}/fcst_file_F{lead?fmt=%3H},'
+                '{init?fmt=%Y%m%d%H}/fcst_file_F{lead?fmt=%3H}'))
+    config.set('config', 'OBS_MODE_INPUT_TEMPLATE',
+               '{valid?fmt=%Y%m%d%H}/obs_file,{valid?fmt=%Y%m%d%H}/obs_file')
+
+    wrapper = MODEWrapper(config)
+    assert wrapper.isOK
+
+    app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
+    verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
+    config_file = wrapper.c_dict.get('CONFIG_FILE')
+    out_dir = wrapper.c_dict.get('OUTPUT_DIR')
+    file_list_dir = os.path.join(config.getdir('STAGING_DIR'), 'file_lists')
+
+    expected_cmds = [(f"{app_path} {verbosity} "
+                      f"{file_list_dir}/20050807000000_12_mode_fcst.txt "
+                      f"{file_list_dir}/20050807000000_12_mode_obs.txt "
+                      f"{config_file} -outdir {out_dir}/2005080712"),
+                     (f"{app_path} {verbosity} "
+                      f"{file_list_dir}/20050807120000_12_mode_fcst.txt "
+                      f"{file_list_dir}/20050807120000_12_mode_obs.txt "
+                      f"{config_file} -outdir {out_dir}/2005080800"),
+                     ]
+
+    all_cmds = wrapper.run_all_times()
+    print(f"ALL COMMANDS: {all_cmds}")
+
+    for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
+        # ensure commands are generated as expected
+        assert cmd == expected_cmd
+
+        # check that environment variables were set properly
+        # including deprecated env vars (not in wrapper env var keys)
+        env_var_keys = (wrapper.WRAPPER_ENV_VAR_KEYS +
+                        [name for name in expected_output
+                         if name not in wrapper.WRAPPER_ENV_VAR_KEYS])
+        for env_var_key in env_var_keys:
+            match = next((item for item in env_vars if
+                          item.startswith(env_var_key)), None)
+            assert match is not None
+            value = match.split('=', 1)[1]
+            if env_var_key == 'METPLUS_FCST_FIELD':
+                assert value == fcst_multi_fmt
+            elif env_var_key == 'METPLUS_OBS_FIELD':
+                assert value == obs_multi_fmt
+            else:
+                assert expected_output.get(env_var_key, '') == value
+
 
 @pytest.mark.parametrize(
     'config_name, env_var_name, met_name, var_type', [
@@ -450,7 +528,7 @@ def test_config_synonyms(metplus_config, config_name, env_var_name,
 
 
     expected_output = f'{met_name} = {out_value};'
-    assert(wrapper.env_var_dict[env_var_name] == expected_output)
+    assert wrapper.env_var_dict[env_var_name] == expected_output
 
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'

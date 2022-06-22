@@ -296,6 +296,8 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_PROB_CAT_THRESH`
 | :term:`ENSEMBLE_STAT_PROB_PCT_THRESH`
 | :term:`ENSEMBLE_STAT_ECLV_POINTS`
+| :term:`FCST_ENSEMBLE_STAT_IS_PROB`
+| :term:`FCST_ENSEMBLE_STAT_PROB_IN_GRIB_PDS`
 | :term:`ENSEMBLE_STAT_VERIFICATION_MASK_TEMPLATE` (optional)
 | :term:`ENS_VAR<n>_NAME` (optional)
 | :term:`ENS_VAR<n>_LEVELS` (optional)
@@ -2948,6 +2950,8 @@ METplus Configuration
 | :term:`GRID_STAT_FOURIER_WAVE_1D_END`
 | :term:`GRID_STAT_CENSOR_THRESH`
 | :term:`GRID_STAT_CENSOR_VAL`
+| :term:`FCST_GRID_STAT_IS_PROB`
+| :term:`FCST_GRID_STAT_PROB_IN_GRIB_PDS`
 | :term:`GRID_STAT_MASK_GRID` (optional)
 | :term:`GRID_STAT_MASK_POLY` (optional)
 | :term:`GRID_STAT_MET_CONFIG_OVERRIDES`
@@ -4106,6 +4110,7 @@ METplus Configuration
 | :term:`MODE_NC_PAIRS_FLAG_OBJECT_ID`
 | :term:`MODE_NC_PAIRS_FLAG_CLUSTER_ID`
 | :term:`MODE_NC_PAIRS_FLAG_POLYLINES`
+| :term:`MODE_MASK_MISSING_FLAG`
 | :term:`MODE_MATCH_FLAG`
 | :term:`MODE_MAX_CENTROID_DIST`
 | :term:`MODE_TOTAL_INTEREST_THRESH`
@@ -4114,6 +4119,9 @@ METplus Configuration
 | :term:`MODE_INTEREST_FUNCTION_CONVEX_HULL_DIST`
 | :term:`MODE_PS_PLOT_FLAG`
 | :term:`MODE_CT_STATS_FLAG`
+| :term:`FCST_MODE_IS_PROB`
+| :term:`FCST_MODE_PROB_IN_GRIB_PDS`
+| :term:`MODE_MULTIVAR_LOGIC`
 | :term:`FCST_MODE_VAR<n>_NAME` (optional)
 | :term:`FCST_MODE_VAR<n>_LEVELS` (optional)
 | :term:`FCST_MODE_VAR<n>_THRESH` (optional)
@@ -4225,6 +4233,17 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`MODE_QUILT`
      - quilt
+
+**${METPLUS_MULTIVAR_LOGIC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_MULTIVAR_LOGIC`
+     - multivar_logic
 
 **${METPLUS_FCST_FIELD}**
 
@@ -4535,6 +4554,17 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`MODE_MASK_POLY_FLAG`
      - mask.poly_flag
 
+**${METPLUS_MASK_MISSING_FLAG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_MASK_MISSING_FLAG`
+     - mask_missing_flag
+
 **${METPLUS_MATCH_FLAG}**
 
 .. list-table::
@@ -4716,6 +4746,8 @@ METplus Configuration
 | :term:`MTD_REGRID_VLD_THRESH`
 | :term:`MTD_REGRID_SHAPE`
 | :term:`MTD_MET_CONFIG_OVERRIDES`
+| :term:`FCST_MTD_IS_PROB`
+| :term:`FCST_MTD_PROB_IN_GRIB_PDS`
 | :term:`FCST_MTD_VAR<n>_NAME` (optional)
 | :term:`FCST_MTD_VAR<n>_LEVELS` (optional)
 | :term:`FCST_MTD_VAR<n>_THRESH` (optional)
@@ -5209,8 +5241,6 @@ METplus Configuration
 | :term:`OBS_PCP_COMBINE_INPUT_TEMPLATE`
 | :term:`OBS_PCP_COMBINE_OUTPUT_TEMPLATE`
 | :term:`LOG_PCP_COMBINE_VERBOSITY`
-| :term:`FCST_IS_PROB`
-| :term:`OBS_IS_PROB`
 | :term:`FCST_PCP_COMBINE_INPUT_ACCUMS`
 | :term:`FCST_PCP_COMBINE_INPUT_NAMES`
 | :term:`FCST_PCP_COMBINE_INPUT_LEVELS`
@@ -5457,6 +5487,8 @@ Configuration
 | :term:`POINT_STAT_HIRA_SHAPE`
 | :term:`POINT_STAT_HIRA_PROB_CAT_THRESH`
 | :term:`POINT_STAT_MESSAGE_TYPE_GROUP_MAP`
+| :term:`FCST_POINT_STAT_IS_PROB`
+| :term:`FCST_POINT_STAT_PROB_IN_GRIB_PDS`
 | :term:`FCST_POINT_STAT_WINDOW_BEGIN` (optional)
 | :term:`FCST_POINT_STAT_WINDOW_END` (optional)
 | :term:`OBS_POINT_STAT_WINDOW_BEGIN` (optional)
@@ -6104,6 +6136,8 @@ METplus Configuration
 | :term:`SERIES_ANALYSIS_OUTPUT_STATS_PRC`
 | :term:`FCST_SERIES_ANALYSIS_CAT_THRESH`
 | :term:`OBS_SERIES_ANALYSIS_CAT_THRESH`
+| :term:`FCST_SERIES_ANALYSIS_IS_PROB`
+| :term:`FCST_SERIES_ANALYSIS_PROB_IN_GRIB_PDS`
 |
 
 .. warning:: **DEPRECATED:**
@@ -8893,6 +8927,8 @@ the file list text files are set as environment variables that can be
 referenced inside the user-defined script to obtain a list of the files that
 should be processed.
 See :term:`USER_SCRIPT_INPUT_TEMPLATE` for more information.
+
+Note: This wrapper may be disabled upon installation to prevent security risks.
 
 METplus Configuration
 ---------------------

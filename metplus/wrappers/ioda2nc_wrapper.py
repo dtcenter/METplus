@@ -63,7 +63,7 @@ class IODA2NCWrapper(LoopTimesWrapper):
             self.log_error("IODA2NC_INPUT_TEMPLATE required to run")
 
         # handle input file window variables
-        self.handle_file_window_variables(c_dict, dtypes=['OBS'])
+        self.handle_file_window_variables(c_dict, data_types=['OBS'])
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('IODA2NC_OUTPUT_DIR', '')
         c_dict['OUTPUT_TEMPLATE'] = (
