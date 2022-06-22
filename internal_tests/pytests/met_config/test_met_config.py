@@ -11,27 +11,27 @@ from metplus.util import CLIMO_TYPES
         # 0 no relevant config set
         ({}, ''),
         # 1 _FIELD set
-        ({'GRID_STAT_CLIMO_MEAN_FIELD': '{name="TMP"; level="(*,*)";}'},
+        ({'APP_CLIMO_MEAN_FIELD': '{name="TMP"; level="(*,*)";}'},
          '{name="TMP"; level="(*,*)";}'),
         # 2 VAR1 name/level set
-        ({'GRID_STAT_CLIMO_MEAN_VAR1_NAME': 'TMP',
-          'GRID_STAT_CLIMO_MEAN_VAR1_LEVELS': '"(*,*)"'},
+        ({'APP_CLIMO_MEAN_VAR1_NAME': 'TMP',
+          'APP_CLIMO_MEAN_VAR1_LEVELS': '"(*,*)"'},
          '{ name="TMP"; level="(*,*)"; }'),
         # 3 VAR1/2 name/level set
-        ({'GRID_STAT_CLIMO_MEAN_VAR1_NAME': 'TMP',
-          'GRID_STAT_CLIMO_MEAN_VAR1_LEVELS': '"(*,*)"',
-          'GRID_STAT_CLIMO_MEAN_VAR2_NAME': 'PRES',
-          'GRID_STAT_CLIMO_MEAN_VAR2_LEVELS': '"(0,*,*)"'},
+        ({'APP_CLIMO_MEAN_VAR1_NAME': 'TMP',
+          'APP_CLIMO_MEAN_VAR1_LEVELS': '"(*,*)"',
+          'APP_CLIMO_MEAN_VAR2_NAME': 'PRES',
+          'APP_CLIMO_MEAN_VAR2_LEVELS': '"(0,*,*)"'},
          '{ name="TMP"; level="(*,*)"; },{ name="PRES"; level="(0,*,*)"; }'),
         # 4 VAR1 name/level and FIELD set - prefer VAR<n>
-        ({'GRID_STAT_CLIMO_MEAN_FIELD': '{name="TEMP"; level="(0,*,*)";}',
-          'GRID_STAT_CLIMO_MEAN_VAR1_NAME': 'TMP',
-          'GRID_STAT_CLIMO_MEAN_VAR1_LEVELS': '"(*,*)"'},
+        ({'APP_CLIMO_MEAN_FIELD': '{name="TEMP"; level="(0,*,*)";}',
+          'APP_CLIMO_MEAN_VAR1_NAME': 'TMP',
+          'APP_CLIMO_MEAN_VAR1_LEVELS': '"(*,*)"'},
          '{ name="TMP"; level="(*,*)"; }'),
     ]
 )
 def test_read_climo_field(metplus_config, config_overrides, expected_value):
-    app_name = 'grid_stat'
+    app_name = 'app'
     climo_type = 'MEAN'
     expected_var = f'{app_name}_CLIMO_{climo_type}_FIELD'.upper()
     config = metplus_config()
@@ -42,6 +42,48 @@ def test_read_climo_field(metplus_config, config_overrides, expected_value):
 
     _read_climo_field(climo_type, config, app_name)
     assert config.getraw('config', expected_var) == expected_value
+
+@pytest.mark.parametrize(
+    'config_overrides, expected_value', [
+        # 0 no relevant config set
+        ({}, ''),
+        # 1 file name single
+        ({'APP_CLIMO_MEAN_FILE_NAME': 'some/file/path'},
+         'climo_mean = {file_name = ["some/file/path"];}'),
+        # 2 file name multiple
+        ({'APP_CLIMO_MEAN_FILE_NAME': 'some/file/path, other/path'},
+         'climo_mean = {file_name = ["some/file/path", "other/path"];}'),
+        # 3 field single
+        ({'APP_CLIMO_MEAN_FIELD': '{name="TMP"; level="(*,*)";}'},
+         'climo_mean = {field = [{name="TMP"; level="(*,*)";}];}'),
+        # 4 field multiple
+        ({'APP_CLIMO_MEAN_FIELD': ('{name="TMP"; level="(*,*)";},'
+                                         '{name="TEMP"; level="P500";}')},
+         ('climo_mean = {field = [{name="TMP"; level="(*,*)";}, '
+          '{name="TEMP"; level="P500";}];}')),
+        # day interval only - int
+        ({'APP_CLIMO_MEAN_DAY_INTERVAL': '3'},
+         'climo_mean = {day_interval = 3;}'),
+        # day interval only - NA
+        ({'APP_CLIMO_MEAN_DAY_INTERVAL': 'NA'},
+         'climo_mean = {day_interval = NA;}'),
+    ]
+)
+def test_handle_climo_dict(metplus_config, config_overrides, expected_value):
+    app_name = 'app'
+    climo_type = 'MEAN'
+    expected_var = f'METPLUS_CLIMO_{climo_type}_DICT'
+    config = metplus_config()
+    output_dict = {}
+
+    # set config values
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    handle_climo_dict(config, app_name, output_dict)
+    print(output_dict)
+    assert output_dict[expected_var] == expected_value
+
 
 @pytest.mark.parametrize(
     'name, data_type, mp_configs, extra_args', [
