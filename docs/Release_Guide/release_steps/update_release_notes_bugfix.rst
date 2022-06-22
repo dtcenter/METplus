@@ -12,7 +12,7 @@ release. Open the following URL in a browser:
   |projectRepo| Version 4.1 Support
 
 * Navigate to the "Closed Issues" tab.
-  If this tab does not exist, follow these instructions to create it:
+  **If this tab does not exist**, follow these instructions to create it:
 
   * Click on "+ New view" button on the far right side of the view tabs
   * Click on "View <N>" (where <N> is an integer) and rename it to
