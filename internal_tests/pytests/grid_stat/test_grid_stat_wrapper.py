@@ -478,6 +478,9 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
         ({'GRID_STAT_CLIMO_MEAN_DAY_INTERVAL': '30', },
          {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {day_interval = 30;}'}),
 
+        ({'GRID_STAT_CLIMO_MEAN_DAY_INTERVAL': 'NA', },
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {day_interval = NA;}'}),
+
         ({'GRID_STAT_CLIMO_MEAN_HOUR_INTERVAL': '12', },
          {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {hour_interval = 12;}'}),
 
