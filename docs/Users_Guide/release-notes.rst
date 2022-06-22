@@ -60,9 +60,9 @@ METplus Version 5.0.0 Beta 1 Release Notes (2022-06-22)
   *  Add missing brackets around list variable values for StatAnalysis wrapper (`#1641 <https://github.com/dtcenter/METplus/issues/1641>`_)
   *  Allow NA value for <TOOL-NAME>_CLIMO_[MEAN/STDEV]_DAY_INTERVAL (`#1653 <https://github.com/dtcenter/METplus/issues/1653>`_)
 
-* New Wrappers:
+* New Wrappers: None
 
-* New Use Cases:
+* New Use Cases: None
 
 * Documentation:
 
