@@ -4,11 +4,14 @@ Contact(s): George McCabe
 """
 
 import os
+import re
 
+from .constants import PYTHON_EMBEDDING_TYPES, CLIMO_TYPES
 from .string_manip import getlist
 from .met_util import get_threshold_via_regex, MISSING_DATA_VALUE
 from .string_manip import remove_quotes as util_remove_quotes
-from .config_metplus import find_indices_in_config_section
+from .config_metplus import find_indices_in_config_section, parse_var_list
+from .field_util import format_all_field_info
 
 class METConfig:
     """! Stores information for a member of a MET config variables that
@@ -109,6 +112,7 @@ class METConfig:
 
         self._children = children
 
+
 def get_wrapped_met_config_file(config, app_name, default_config_file=None):
     """! Get the MET config file path for the wrapper from the
     METplusConfig object. If unset, use the default value if provided.
@@ -132,12 +136,16 @@ def get_wrapped_met_config_file(config, app_name, default_config_file=None):
                         f"Using {default_config_path}")
     return default_config_path
 
-def add_met_config_dict(config, app_name, output_dict, dict_name, items):
-    """! Read config variables for MET config dictionary and set
-     env_var_dict with formatted values
 
-    @params dict_name name of MET dictionary variable
-    @params items dictionary where the key is name of variable inside MET
+def add_met_config_dict(config, app_name, output_dict, dict_name, items):
+    """! Read config variables for MET config dictionary and set output_dict
+     (typically CommandBuilder's env_var_dict) with formatted values
+
+    @param config METplusConfig object to read
+    @param app_name name of application to find wrapper-specific variables
+    @param output_dict dictionary to save formatted output
+    @param dict_name name of MET dictionary variable
+    @param items dictionary where the key is name of variable inside MET
      dictionary and the value is info about the item (see parse_item_info
      function for more information)
     """
@@ -231,11 +239,13 @@ def add_met_config_dict(config, app_name, output_dict, dict_name, items):
                                final_met_config,
                                output_dict)
 
+
 def add_met_config_item(config, item, output_dict, depth=0):
     """! Reads info from METConfig object, gets value from
     METplusConfig, and formats it based on the specifications. Sets
     value in output dictionary with key starting with METPLUS_.
 
+    @param config METplusConfig object to read
     @param item METConfig object to read and determine what to get
     @param output_dict dictionary to save formatted output
     @param depth counter to check if item being processed is nested within
@@ -279,8 +289,20 @@ def add_met_config_item(config, item, output_dict, depth=0):
                           c_dict_key=env_var_name,
                           **item.extra_args)
 
+
 def add_met_config_dict_list(config, app_name, output_dict, dict_name,
                              dict_items):
+    """! Read METplusConfig and format MET config variables that are a list of
+    dictionaries. Sets value in output dict with key starting with METPLUS_.
+
+    @param config METplusConfig object to read
+    @param app_name name of application to find wrapper-specific variables
+    @param output_dict dictionary to save formatted output
+    @param dict_name name of MET dictionary variable
+    @param dict_items dictionary where the key is name of variable inside MET
+     dictionary and the value is info about the item (see parse_item_info
+     function for more information)
+    """
     search_string = f'{app_name}_{dict_name}'.upper()
     regex = r'^' + search_string + r'(\d+)_(\w+)$'
     indices = find_indices_in_config_section(regex, config,
@@ -329,6 +351,7 @@ def add_met_config_dict_list(config, app_name, output_dict, dict_name,
     output_dict[f'METPLUS_{dict_name.upper()}_LIST'] = output_string
     return is_ok
 
+
 def format_met_config(data_type, c_dict, name, keys=None):
     """! Return formatted variable named <name> with any <items> if they
     are set to a value. If none of the items are set, return empty string
@@ -368,6 +391,7 @@ def format_met_config(data_type, c_dict, name, keys=None):
         output = f'{name} = {output}'
     return output
 
+
 def set_met_config_function(item_type):
     """! Return function to use based on item type
 
@@ -390,6 +414,7 @@ def set_met_config_function(item_type):
     else:
         raise ValueError(f"Invalid argument for item type: {item_type}")
 
+
 def _get_config_or_default(mp_config_name, get_function,
                            default=None):
     conf_value = ''
@@ -411,6 +436,7 @@ def _get_config_or_default(mp_config_name, get_function,
         conf_value = default
 
     return conf_value
+
 
 def set_met_config_list(config, c_dict, mp_config, met_config_name,
                         c_dict_key=None, **kwargs):
@@ -471,6 +497,7 @@ def set_met_config_list(config, c_dict, mp_config, met_config_name,
 
     return True
 
+
 def set_met_config_string(config, c_dict, mp_config, met_config_name,
                           c_dict_key=None, **kwargs):
     """! Get string from METplus configuration file and format it to be passed
@@ -517,22 +544,24 @@ def set_met_config_string(config, c_dict, mp_config, met_config_name,
     c_dict[c_key] = conf_value
     return True
 
+
 def set_met_config_number(config, c_dict, num_type, mp_config,
                           met_config_name, c_dict_key=None, **kwargs):
     """! Get integer from METplus configuration file and format it to be passed
           into a MET configuration file. Set c_dict item with formatted string.
-         Args:
-             @param c_dict configuration dictionary to set
-             @param num_type type of number to get from config. If set to 'int', call
-               getint function. If not, call getfloat function.
-             @param mp_config METplus configuration variable name. Assumed to be
-              in the [config] section. Value can be a comma-separated list of items.
-             @param met_config_name name of MET configuration variable to set. Also used
-              to determine the key in c_dict to set (upper-case) if c_dict_key is None
-             @param c_dict_key optional argument to specify c_dict key to store result. If
-              set to None (default) then use upper-case of met_config_name
-             @param default (Optional) if set, use this value as default
-              if config is not set
+
+       @param c_dict configuration dictionary to set
+       @param num_type type of number to get from config. If set to 'int',
+        call getint function. If not, call getfloat function.
+       @param mp_config METplus configuration variable name. Assumed to be
+        in the [config] section. Value can be a comma-separated list of items.
+       @param met_config_name name of MET configuration variable to set.
+        Also used to determine the key in c_dict to set (upper-case) if
+        c_dict_key is None.
+       @param c_dict_key optional argument to specify c_dict key to store
+        result. If set to None (default) then use upper-case of met_config_name
+       @param default (Optional) if set, use this value as default
+        if config is not set
     """
     mp_config_name = config.get_mp_config_name(mp_config)
     if mp_config_name is None:
@@ -559,6 +588,7 @@ def set_met_config_number(config, c_dict, num_type, mp_config,
 
     return True
 
+
 def set_met_config_int(config, c_dict, mp_config_name, met_config_name,
                        c_dict_key=None, **kwargs):
     return set_met_config_number(config, c_dict, 'int',
@@ -567,6 +597,7 @@ def set_met_config_int(config, c_dict, mp_config_name, met_config_name,
                                  c_dict_key=c_dict_key,
                                  **kwargs)
 
+
 def set_met_config_float(config, c_dict, mp_config_name,
                          met_config_name, c_dict_key=None, **kwargs):
     return set_met_config_number(config, c_dict, 'float',
@@ -574,6 +605,7 @@ def set_met_config_float(config, c_dict, mp_config_name,
                                  met_config_name,
                                  c_dict_key=c_dict_key,
                                  **kwargs)
+
 
 def set_met_config_thresh(config, c_dict, mp_config, met_config_name,
                           c_dict_key=None, **kwargs):
@@ -599,6 +631,7 @@ def set_met_config_thresh(config, c_dict, mp_config, met_config_name,
 
         c_dict[c_key] = out_value
         return True
+
 
 def set_met_config_bool(config, c_dict, mp_config, met_config_name,
                         c_dict_key=None, **kwargs):
@@ -644,6 +677,7 @@ def set_met_config_bool(config, c_dict, mp_config, met_config_name,
     c_dict[c_key] = conf_value
     return True
 
+
 def format_regrid_to_grid(to_grid):
     to_grid = to_grid.strip('"')
     if not to_grid:
@@ -656,6 +690,7 @@ def format_regrid_to_grid(to_grid):
         to_grid = f'"{to_grid}"'
 
     return to_grid
+
 
 def _parse_item_info(item_info):
     """! Parses info about a MET config dictionary item. The input can
@@ -691,6 +726,7 @@ def _parse_item_info(item_info):
 
     return data_type, extra, kids, nicknames
 
+
 def _parse_extra_args(extra):
     """! Check string for extra option keywords and set them to True in
      dictionary if they are found. Supports 'remove_quotes', 'uppercase'
@@ -714,3 +750,190 @@ def _parse_extra_args(extra):
         if extra_option in extra:
             extra_args[extra_option] = True
     return extra_args
+
+
+def handle_climo_dict(config, app_name, output_dict):
+    """! Read climo mean/stdev variables with and set env_var_dict
+     appropriately. Handle previous environment variables that are used
+     by wrapped MET configs pre 4.0 (CLIMO_MEAN_FILE and CLIMO_STDEV_FILE)
+
+    @param config METplusConfig object to read
+    @param app_name name of application to find wrapper-specific variables
+    @param output_dict dictionary to save formatted output
+    @returns False if config settings are invalid, otherwise True
+    """
+    items = {
+        'file_name': 'list',
+        'field': ('list', 'remove_quotes'),
+        'regrid': ('dict', '', {
+            'method': ('string', 'uppercase,remove_quotes'),
+            'width': 'int',
+            'vld_thresh': 'float',
+            'shape': ('string', 'uppercase,remove_quotes'),
+        }),
+        'time_interp_method': ('string', 'remove_quotes,uppercase'),
+        'match_month': ('bool', 'uppercase'),
+        'day_interval': 'int',
+        'hour_interval': 'int',
+        'file_type': ('string', 'remove_quotes'),
+    }
+    is_ok = True
+    for climo_type in CLIMO_TYPES:
+        dict_name = f'climo_{climo_type.lower()}'
+
+        # make sure _FILE_NAME is set from INPUT_TEMPLATE/DIR if used
+        _read_climo_file_name(climo_type, config, app_name)
+
+        # make sure _FIELD is set from VAR<n> vars if used
+        _read_climo_field(climo_type, config, app_name)
+
+        add_met_config_dict(config=config, app_name=app_name,
+                            output_dict=output_dict,
+                            dict_name=dict_name, items=items)
+
+        # handle use_fcst or use_obs options for setting field list
+        if not _climo_use_fcst_or_obs_fields(dict_name, config, app_name,
+                                             output_dict):
+            is_ok = False
+
+        # handle deprecated env vars CLIMO_MEAN_FILE and CLIMO_STDEV_FILE
+        # that are used by pre v4.0.0 wrapped MET config files
+        env_var_name = f'METPLUS_{dict_name.upper()}_DICT'
+        dict_value = output_dict.get(env_var_name, '')
+        match = re.match(r'.*file_name = \[([^\[\]]*)\];.*', dict_value)
+        if match:
+            file_name = match.group(1)
+            output_dict[f'{dict_name.upper()}_FILE'] = file_name
+
+    return is_ok
+
+
+def _read_climo_file_name(climo_type, config, app_name):
+    """! Check values for {APP}_CLIMO_{climo_type}_ variables FILE_NAME,
+    INPUT_TEMPLATE, and INPUT_DIR. If FILE_NAME is set, use it and warn
+    if the INPUT_TEMPLATE/DIR variables are also set. If FILE_NAME is not
+    set, read template and dir variables and format the values to set
+    FILE_NAME, i.e. the variables:
+      GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE = a, b
+      GRID_STAT_CLIMO_MEAN_INPUT_DIR = /some/dir
+    will set:
+      GRID_STAT_CLIMO_MEAN_FILE_NAME = /some/dir/a, some/dir/b
+    Used to support pre v4.0 variables.
+
+    @param climo_type type of climo field (mean or stdev)
+    @param config METplusConfig object to read
+    @param app_name name of application to find wrapper-specific variables
+    """
+    # prefix i.e. GRID_STAT_CLIMO_MEAN_
+    prefix = f'{app_name.upper()}_CLIMO_{climo_type.upper()}_'
+
+    input_dir = config.getdir_nocheck(f'{prefix}INPUT_DIR', '')
+    input_template = config.getraw('config', f'{prefix}INPUT_TEMPLATE', '')
+    file_name = config.getraw('config', f'{prefix}FILE_NAME', '')
+
+    # if input template is not set, nothing to do
+    if not input_template:
+        return
+
+    # if input template is set and file name is also set,
+    # warn and use file name values
+    if file_name:
+        config.logger.warning(f'Both {prefix}INPUT_TEMPLATE and '
+                              f'{prefix}FILE_NAME are set. Using '
+                              f'value set in {prefix}FILE_NAME '
+                              f'({file_name})')
+        return
+
+    template_list_string = input_template
+    # if file name is not set but template is, set file name from template
+    # if dir is set and not python embedding,
+    # prepend it to each template in list
+    if input_dir and input_template not in PYTHON_EMBEDDING_TYPES:
+        template_list = getlist(input_template)
+        for index, template in enumerate(template_list):
+            template_list[index] = os.path.join(input_dir, template)
+
+        # change formatted list back to string
+        template_list_string = ','.join(template_list)
+
+    config.set('config', f'{prefix}FILE_NAME', template_list_string)
+
+
+def _read_climo_field(climo_type, config, app_name):
+    """! Check values for {APP}_CLIMO_{climo_type}_ variable FIELD and
+    VAR<n>_[NAME/LEVELS/OPTIONS]. If VAR<n> variables are set, format those
+    values and set the FIELD variable in the METplusConfig.
+    If FIELD is also set warn that it the value will be replaced. If only
+    FIELD is set, use that value.
+    The variables:
+      GRID_STAT_CLIMO_MEAN_VAR1_NAME = TMP
+      GRID_STAT_CLIMO_MEAN_VAR1_LEVELS = "(*,*)"
+    will set:
+      GRID_STAT_CLIMO_MEAN_FIELD = {name="TMP"; level="(*,*)";}
+    Used to allow users to format the field info for climo fields in the same
+    way as other field info such as FCST or OBS.
+
+    @param climo_type type of climo field (mean or stdev)
+    @param config METplusConfig object to read
+    @param app_name name of application to find wrapper-specific variables
+    """
+    # prefix i.e. GRID_STAT_CLIMO_MEAN
+    prefix = f'{app_name.upper()}_CLIMO_{climo_type.upper()}'
+
+    field = config.getraw('config', f'{prefix}_FIELD', '')
+    var_list = parse_var_list(config, data_type=prefix)
+
+    # if field info is not set using VAR<n> variables, nothing to do
+    if not var_list:
+        return
+
+    # if FIELD is set and VAR<n> is also set, warn and use VAR<n> values
+    if field:
+        config.logger.warning(f'Both {prefix}_FIELD and '
+                              f'{prefix}_VAR<n>_* variables are set. Using '
+                              f'values set in {prefix}_VAR<n>_* variables')
+
+    # format var list and set it to the _FIELD value
+    all_formatted = format_all_field_info(c_dict={},
+                                          var_list=var_list,
+                                          data_type=prefix)
+
+    config.set('config', f'{prefix}_FIELD', all_formatted)
+
+
+def _climo_use_fcst_or_obs_fields(dict_name, config, app_name, output_dict):
+    """! If climo field is not explicitly set, check if config is set
+     to use forecast or observation fields.
+
+    @param dict_name name of climo to check: climo_mean or climo_stdev
+    @param config METplusConfig object to read
+    @param app_name name of application to find wrapper-specific variables
+    @param output_dict dictionary to save formatted output
+    @returns False if config settings are invalid, otherwise True
+    """
+    # if {APP}_CLIMO_[MEAN/STDEV]_FIELD is set, do nothing
+    field_conf = f'{app_name}_{dict_name}_FIELD'.upper()
+    if config.has_option('config', field_conf):
+        return True
+
+    use_fcst_conf = f'{app_name}_{dict_name}_USE_FCST'.upper()
+    use_obs_conf = f'{app_name}_{dict_name}_USE_OBS'.upper()
+
+    use_fcst = config.getbool('config', use_fcst_conf, False)
+    use_obs = config.getbool('config', use_obs_conf, False)
+
+    # if both are set, report an error
+    if use_fcst and use_obs:
+        config.logger.error(f'Cannot set both {use_fcst_conf} and '
+                            f'{use_obs_conf} in config.')
+        return False
+
+    # if neither are set, do nothing
+    if not use_fcst and not use_obs:
+        return True
+
+    env_var_name = f'METPLUS_{dict_name.upper()}_DICT'
+    rvalue = 'fcst' if use_fcst else 'obs'
+
+    output_dict[env_var_name] += f'{dict_name} = {rvalue};'
+    return True
