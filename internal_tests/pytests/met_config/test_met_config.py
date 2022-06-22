@@ -11,37 +11,139 @@ from metplus.util import CLIMO_TYPES
         # 0 no relevant config set
         ({}, ''),
         # 1 _FIELD set
-        ({'GRID_STAT_CLIMO_MEAN_FIELD': '{name="TMP"; level="(*,*)";}'},
+        ({'APP_CLIMO_<TYPE>_FIELD': '{name="TMP"; level="(*,*)";}'},
          '{name="TMP"; level="(*,*)";}'),
         # 2 VAR1 name/level set
-        ({'GRID_STAT_CLIMO_MEAN_VAR1_NAME': 'TMP',
-          'GRID_STAT_CLIMO_MEAN_VAR1_LEVELS': '"(*,*)"'},
+        ({'APP_CLIMO_<TYPE>_VAR1_NAME': 'TMP',
+          'APP_CLIMO_<TYPE>_VAR1_LEVELS': '"(*,*)"'},
          '{ name="TMP"; level="(*,*)"; }'),
         # 3 VAR1/2 name/level set
-        ({'GRID_STAT_CLIMO_MEAN_VAR1_NAME': 'TMP',
-          'GRID_STAT_CLIMO_MEAN_VAR1_LEVELS': '"(*,*)"',
-          'GRID_STAT_CLIMO_MEAN_VAR2_NAME': 'PRES',
-          'GRID_STAT_CLIMO_MEAN_VAR2_LEVELS': '"(0,*,*)"'},
+        ({'APP_CLIMO_<TYPE>_VAR1_NAME': 'TMP',
+          'APP_CLIMO_<TYPE>_VAR1_LEVELS': '"(*,*)"',
+          'APP_CLIMO_<TYPE>_VAR2_NAME': 'PRES',
+          'APP_CLIMO_<TYPE>_VAR2_LEVELS': '"(0,*,*)"'},
          '{ name="TMP"; level="(*,*)"; },{ name="PRES"; level="(0,*,*)"; }'),
         # 4 VAR1 name/level and FIELD set - prefer VAR<n>
-        ({'GRID_STAT_CLIMO_MEAN_FIELD': '{name="TEMP"; level="(0,*,*)";}',
-          'GRID_STAT_CLIMO_MEAN_VAR1_NAME': 'TMP',
-          'GRID_STAT_CLIMO_MEAN_VAR1_LEVELS': '"(*,*)"'},
+        ({'APP_CLIMO_<TYPE>_FIELD': '{name="TEMP"; level="(0,*,*)";}',
+          'APP_CLIMO_<TYPE>_VAR1_NAME': 'TMP',
+          'APP_CLIMO_<TYPE>_VAR1_LEVELS': '"(*,*)"'},
          '{ name="TMP"; level="(*,*)"; }'),
     ]
 )
 def test_read_climo_field(metplus_config, config_overrides, expected_value):
-    app_name = 'grid_stat'
-    climo_type = 'MEAN'
-    expected_var = f'{app_name}_CLIMO_{climo_type}_FIELD'.upper()
-    config = metplus_config()
+    app_name = 'app'
+    for climo_type in ('MEAN', 'STDEV'):
+        expected_var = f'{app_name}_CLIMO_{climo_type}_FIELD'.upper()
+        config = metplus_config()
 
-    # set config values
-    for key, value in config_overrides.items():
-        config.set('config', key, value)
+        # set config values
+        for key, value in config_overrides.items():
+            key_sub = key.replace('<TYPE>', climo_type)
+            value_sub = value.replace('<type>', climo_type.lower())
+            config.set('config', key_sub, value_sub)
 
-    _read_climo_field(climo_type, config, app_name)
-    assert config.getraw('config', expected_var) == expected_value
+        _read_climo_field(climo_type, config, app_name)
+        assert config.getraw('config', expected_var) == expected_value
+
+@pytest.mark.parametrize(
+    'config_overrides, expected_value', [
+        # 0 no relevant config set
+        ({}, ''),
+        # 1 file name single
+        ({'APP_CLIMO_<TYPE>_FILE_NAME': 'some/file/path'},
+         'climo_<type> = {file_name = ["some/file/path"];}'),
+        # 2 file name multiple
+        ({'APP_CLIMO_<TYPE>_FILE_NAME': 'some/file/path, other/path'},
+         'climo_<type> = {file_name = ["some/file/path", "other/path"];}'),
+        # 3 field single
+        ({'APP_CLIMO_<TYPE>_FIELD': '{name="TMP"; level="(*,*)";}'},
+         'climo_<type> = {field = [{name="TMP"; level="(*,*)";}];}'),
+        # 4 field multiple
+        ({'APP_CLIMO_<TYPE>_FIELD': ('{name="TMP"; level="(*,*)";},'
+                                         '{name="TEMP"; level="P500";}')},
+         ('climo_<type> = {field = [{name="TMP"; level="(*,*)";}, '
+          '{name="TEMP"; level="P500";}];}')),
+        # 5 use fcst no other climo_<type>
+        ({'APP_CLIMO_<TYPE>_USE_FCST': 'TRUE'},
+         'climo_<type> = fcst;'),
+        # 6 use obs no other climo_<type>
+        ({'APP_CLIMO_<TYPE>_USE_OBS': 'TRUE'},
+         'climo_<type> = obs;'),
+        # 7 use fcst with other climo_<type>
+        ({'APP_CLIMO_<TYPE>_REGRID_METHOD': 'NEAREST',
+          'APP_CLIMO_<TYPE>_USE_FCST': 'TRUE'},
+         'climo_<type> = {regrid = {method = NEAREST;}}climo_<type> = fcst;'),
+        # 8 use obs with other climo_<type>
+        ({'APP_CLIMO_<TYPE>_REGRID_METHOD': 'NEAREST',
+          'APP_CLIMO_<TYPE>_USE_OBS': 'TRUE'},
+         'climo_<type> = {regrid = {method = NEAREST;}}climo_<type> = obs;'),
+        # 9 regrid method
+        ({'APP_CLIMO_<TYPE>_REGRID_METHOD': 'NEAREST', },
+         'climo_<type> = {regrid = {method = NEAREST;}}'),
+        # 10 regrid width
+        ({'APP_CLIMO_<TYPE>_REGRID_WIDTH': '1', },
+         'climo_<type> = {regrid = {width = 1;}}'),
+        # 11 regrid vld_thresh
+        ({'APP_CLIMO_<TYPE>_REGRID_VLD_THRESH': '0.5', },
+         'climo_<type> = {regrid = {vld_thresh = 0.5;}}'),
+        # 12 regrid shape
+        ({'APP_CLIMO_<TYPE>_REGRID_SHAPE': 'SQUARE', },
+         'climo_<type> = {regrid = {shape = SQUARE;}}'),
+        # 13 time_interp_method
+        ({'APP_CLIMO_<TYPE>_TIME_INTERP_METHOD': 'NEAREST', },
+         'climo_<type> = {time_interp_method = NEAREST;}'),
+        # 14 match_month
+        ({'APP_CLIMO_<TYPE>_MATCH_MONTH': 'True', },
+         'climo_<type> = {match_month = TRUE;}'),
+        # 15 day_interval - int
+        ({'APP_CLIMO_<TYPE>_DAY_INTERVAL': '30', },
+         'climo_<type> = {day_interval = 30;}'),
+        # 16 day_interval - NA
+        ({'APP_CLIMO_<TYPE>_DAY_INTERVAL': 'NA', },
+         'climo_<type> = {day_interval = NA;}'),
+        # 17 hour_interval
+        ({'APP_CLIMO_<TYPE>_HOUR_INTERVAL': '12', },
+         'climo_<type> = {hour_interval = 12;}'),
+        # 18 all
+        ({
+             'APP_CLIMO_<TYPE>_FILE_NAME': '/some/climo_<type>/file.txt',
+             'APP_CLIMO_<TYPE>_FIELD': '{name="CLM_NAME"; level="(0,0,*,*)";}',
+             'APP_CLIMO_<TYPE>_REGRID_METHOD': 'NEAREST',
+             'APP_CLIMO_<TYPE>_REGRID_WIDTH': '1',
+             'APP_CLIMO_<TYPE>_REGRID_VLD_THRESH': '0.5',
+             'APP_CLIMO_<TYPE>_REGRID_SHAPE': 'SQUARE',
+             'APP_CLIMO_<TYPE>_TIME_INTERP_METHOD': 'NEAREST',
+             'APP_CLIMO_<TYPE>_MATCH_MONTH': 'True',
+             'APP_CLIMO_<TYPE>_DAY_INTERVAL': '30',
+             'APP_CLIMO_<TYPE>_HOUR_INTERVAL': '12',
+         },
+         ('climo_<type> = {file_name = '
+          '["/some/climo_<type>/file.txt"];'
+          'field = [{name="CLM_NAME"; level="(0,0,*,*)";}];'
+          'regrid = {method = NEAREST;width = 1;'
+          'vld_thresh = 0.5;shape = SQUARE;}'
+          'time_interp_method = NEAREST;'
+          'match_month = TRUE;day_interval = 30;'
+          'hour_interval = 12;}')),
+    ]
+)
+def test_handle_climo_dict(metplus_config, config_overrides, expected_value):
+    app_name = 'app'
+    for climo_type in ('MEAN', 'STDEV'):
+        expected_var = f'METPLUS_CLIMO_{climo_type}_DICT'
+        config = metplus_config()
+        output_dict = {}
+
+        # set config values
+        for key, value in config_overrides.items():
+            key_sub = key.replace('<TYPE>', climo_type)
+            value_sub = value.replace('<type>', climo_type.lower())
+            config.set('config', key_sub, value_sub)
+
+        handle_climo_dict(config, app_name, output_dict)
+        print(output_dict)
+        expected_sub = expected_value.replace('<type>', climo_type.lower())
+        assert output_dict[expected_var] == expected_sub
 
 @pytest.mark.parametrize(
     'name, data_type, mp_configs, extra_args', [
