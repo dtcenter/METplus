@@ -24,16 +24,6 @@ from .. import get_metplus_version
 
 from .constants import *
 
-PYTHON_EMBEDDING_TYPES = ['PYTHON_NUMPY', 'PYTHON_XARRAY', 'PYTHON_PANDAS']
-
-valid_comparisons = {">=": "ge",
-                     ">": "gt",
-                     "==": "eq",
-                     "!=": "ne",
-                     "<=": "le",
-                     "<": "lt",
-                     }
-
 # missing data value used to check if integer values are not set
 # we often check for None if a variable is not set, but 0 and None
 # have the same result in a test. 0 may be a valid integer value
@@ -119,8 +109,13 @@ def run_metplus(config, process_list):
                     command_builder.run_all_times()
                     return 0
             except AttributeError:
-                raise NameError("There was a problem loading "
-                                f"{process} wrapper.")
+                logger.error("There was a problem loading "
+                             f"{process} wrapper.")
+                return 1
+            except ModuleNotFoundError:
+                logger.error(f"Could not load {process} wrapper. "
+                             "Wrapper may have been disabled.")
+                return 1
 
             processes.append(command_builder)
 
@@ -154,7 +149,12 @@ def run_metplus(config, process_list):
             return 1
 
         # write out all commands and environment variables to file
-        write_all_commands(all_commands, config)
+        if not write_all_commands(all_commands, config):
+            # if process list contains any wrapper that should run commands,
+            # report an error if no commands were generated
+            if any([item[0] not in NO_COMMAND_WRAPPERS
+                    for item in process_list]):
+                total_errors += 1
 
        # compute total number of errors that occurred and output results
         for process in processes:
@@ -212,10 +212,20 @@ def post_run_cleanup(config, app_name, total_errors):
     sys.exit(1)
 
 def write_all_commands(all_commands, config):
+    """! Write all commands that were run to a file in the log
+     directory. This includes the environment variables that
+     were set before each command.
+
+    @param all_commands list of tuples with command run and
+     list of environment variables that were set
+    @param config METplusConfig object used to write log output
+     and get the log timestamp to name the output file
+    @returns False if no commands were provided, True otherwise
+    """
     if not all_commands:
-        config.logger.debug("No commands were run. "
+        config.logger.error("No commands were run. "
                             "Skip writing all_commands file")
-        return
+        return False
 
     log_timestamp = config.getstr('config', 'LOG_TIMESTAMP')
     filename = os.path.join(config.getdir('LOG_DIR'),
@@ -228,6 +238,8 @@ def write_all_commands(all_commands, config):
 
             file_handle.write("COMMAND:\n")
             file_handle.write(f"{command}\n\n")
+
+    return True
 
 def handle_tmp_dir(config):
     """! if env var MET_TMP_DIR is set, override config TMP_DIR with value
@@ -509,22 +521,19 @@ def are_lead_configs_ok(lead_seq, init_seq, lead_groups,
     if lead_groups is None:
         return False
 
-    error_message = ('%s and %s are both listed in the configuration. '
+    error_message = ('are both listed in the configuration. '
                      'Only one may be used at a time.')
     if lead_seq:
         if init_seq:
-            config.logger.error(error_message.format('LEAD_SEQ',
-                                                     'INIT_SEQ'))
+            config.logger.error(f'LEAD_SEQ and INIT_SEQ {error_message}')
             return False
 
         if lead_groups:
-            config.logger.error(error_message.format('LEAD_SEQ',
-                                                     'LEAD_SEQ_<n>'))
+            config.logger.error(f'LEAD_SEQ and LEAD_SEQ_<n> {error_message}')
             return False
 
     if init_seq and lead_groups:
-        config.logger.error(error_message.format('INIT_SEQ',
-                                                 'LEAD_SEQ_<n>'))
+        config.logger.error(f'INIT_SEQ and LEAD_SEQ_<n> {error_message}')
         return False
 
     if init_seq:
@@ -835,7 +844,7 @@ def get_threshold_via_regex(thresh_string):
     # check each threshold for validity
     for thresh in thresh_split:
         found_match = False
-        for comp in list(valid_comparisons.keys())+list(valid_comparisons.values()):
+        for comp in list(VALID_COMPARISONS)+list(VALID_COMPARISONS.values()):
             # if valid, add to list of tuples
             # must be one of the valid comparison operators followed by
             # at least 1 digit or NA
@@ -873,7 +882,7 @@ def comparison_to_letter_format(expression):
           convert, i.e. gt3 or <=5.4
          @returns letter comparison operator, i.e. gt3 or le5.4 or None if invalid
     """
-    for symbol_comp, letter_comp in valid_comparisons.items():
+    for symbol_comp, letter_comp in VALID_COMPARISONS.items():
         if letter_comp in expression or symbol_comp in expression:
             return expression.replace(symbol_comp, letter_comp)
 

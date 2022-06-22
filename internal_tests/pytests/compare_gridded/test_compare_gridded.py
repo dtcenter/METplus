@@ -274,12 +274,12 @@ def test_handle_window_once(metplus_config, win, app_win, file_win, app_file_win
                   'FCST_FILE_WINDOW_BEGIN',
                   'FILE_WINDOW_BEGIN',
                  ]
-    fcst_file_window_begin = cgw.handle_window_once(input_list, 0)
+    fcst_file_window_begin = cgw._handle_window_once(input_list, 0)
 
     input_list = ['OBS_APP_NAME_WINDOW_BEGIN',
                   'OBS_WINDOW_BEGIN',
                  ]
-    obs_window_begin = cgw.handle_window_once(input_list, -5400)
+    obs_window_begin = cgw._handle_window_once(input_list, -5400)
 
     assert(obs_window_begin == win_value and
            fcst_file_window_begin == file_win_value)
