@@ -9,7 +9,7 @@ release. Open the following URL in a browser:
     https://github.com/orgs/dtcenter/projects?type=beta
 
 * Click on the project that corresponds to this release, i.e.
-  |projectRepo|-5.0.0-beta1
+  |projectRepo|-X.Y.Z-betaN
 
 * Navigate to the "Closed Issues" tab.
   **If this tab does not exist**, follow these instructions to create it:
