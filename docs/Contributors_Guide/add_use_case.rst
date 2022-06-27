@@ -886,12 +886,6 @@ was run successfully using the new data,
 they will need to update the links on the DTC web server before the
 pull request is merged so that the develop branch will contain the new data.
 
-.. warning::
-    Check if there are multiple feature branch directories that have data for
-    the same model_applications category. If there are more than one, then
-    it is important to be careful not to overwrite the final tarfile so that
-    one or more of the new data files are lost! These instructions need
-    to be updated to handle this situation.
 
 Log into the DTC Web Server with SSH
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
