@@ -739,11 +739,11 @@ for more information on how to use Python Embedding.
 * **cartopy** - Used if cartopy 0.18.0 is needed in the Conda environment.
   Cartopy uses shapefiles that are downloaded as needed. The URL that is used
   to download the files has changed since cartopy 0.18.0 and there have been
-  issues where the files cannot be obtained. To remedy this issue,
-  the scripts have been modified that generate the Docker images
-  that contain the Conda
-  environments that use cartopy to download these shape files so they will
-  always be available. These files need to be copied from the Docker
+  issues where the files cannot be obtained.
+  To remedy this issue, the METplus Docker images, which contain the
+  Conda environments, including Cartopy, have been modified to download
+  the necessary shape files so that they will always be available. These
+  files need to be copied from the Docker
   environment image into the testing image. When this keyword is found in the
   dependency list, a different Dockerfile (**Dockerfile.run_cartopy** found in
   *.github/actions/run_tests*) is used to create the testing environment and
