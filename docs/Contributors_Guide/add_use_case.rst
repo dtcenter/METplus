@@ -27,7 +27,7 @@ Types of Use Cases
   in the *METplus/parm/use_cases/model_applications* directory, under a
   subdirectory that corresponds to a specific category.  
 
-.. _use_case_categories:
+.. _use_case_categoriesc:
 
 Use Case Categories
 ===================
@@ -871,7 +871,8 @@ Create a pull request to merge the changes from the working branch
 into the develop
 branch. More information on this process can be found in the
 :ref:`GitHub Workflow <gitHub-workflow>`
-chapter under :ref:`pullRequestBrowser`.
+chapter under
+:ref:`Open a pull request using a browser <pull-request-browser>`.
 
 
 Pull Request Reviewer Instructions

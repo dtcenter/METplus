@@ -295,7 +295,7 @@ Push the feature branch to GitHub
   repository).
   
 
-.. _pullRequestBrowser:
+.. _pull-request-browser:
   
 Open a pull request using a browser
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
