@@ -36,8 +36,6 @@ Many useful actions are provided by GitHub and external collaborators.
 Developers can also write their own custom actions to perform complex tasks
 to simplify a workflow.
 
-**TODO Add screenshots**
-
 Testing (testing.yml)
 ---------------------
 
