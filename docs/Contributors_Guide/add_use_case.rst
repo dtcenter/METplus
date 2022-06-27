@@ -583,10 +583,9 @@ Rename or modify existing data or data structure (if applicable)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **If the reason for the feature branch is to adjust an existing use case,
-such as renaming a use case
-or changing the data file,** then adjust the directory structure and/or
-the data files which should now
-be in the feature branch directory (from the last step). Changes to a
+such as renaming a use case or changing the data file, then adjust the
+directory structure and/or the data files which should now be in the
+feature branch directory (from the last step).** Changes to a
 use case name or input data for
 a pre-existing use case should be separately verified to run successfully,
 and noted in the Pull Request form
