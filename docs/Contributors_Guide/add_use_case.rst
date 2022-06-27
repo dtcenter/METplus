@@ -871,7 +871,8 @@ Create a pull request to merge the changes from the working branch
 into the develop
 branch. More information on this process can be found in the
 :ref:`GitHub Workflow <gitHub-workflow>` chapter under
-"Open a pull request using your browser."
+'Open a pull request using a browser :ref:`pull_request_browser`.
+
 
 Pull Request Reviewer Instructions
 ==================================
