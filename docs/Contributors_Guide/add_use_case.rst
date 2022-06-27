@@ -27,7 +27,7 @@ Types of Use Cases
   in the *METplus/parm/use_cases/model_applications* directory, under a
   subdirectory that corresponds to a specific category.  
 
-.. _use_case_categoriesc:
+.. _use_case_categories:
 
 Use Case Categories
 ===================
