@@ -36,6 +36,7 @@ Many useful actions are provided by GitHub and external collaborators.
 Developers can also write their own custom actions to perform complex tasks
 to simplify a workflow.
 
+
 Testing (testing.yml)
 ---------------------
 
@@ -357,8 +358,10 @@ syntax::
     ${{ steps.job_status.outputs.run_get_image }}
 
 The ID of the step is needed to reference the outputs for that step.
-**Note that this notation should be referenced directly in the workflow YAML
-file and not inside a script that is called by the workflow.**
+
+.. note::
+   This notation should be referenced directly in the workflow YAML
+   file and not inside a script that is called by the workflow.
 
 To make the variable available to other jobs in the workflow, it will need
 to be set in the **outputs** section of the job::
