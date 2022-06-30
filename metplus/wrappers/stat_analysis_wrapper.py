@@ -179,8 +179,12 @@ class StatAnalysisWrapper(CommandBuilder):
                                                                     ''))
 
         start_dt, end_dt = get_start_and_end_times(self.config)
-        c_dict['DATE_BEG'] = start_dt.strftime('%Y%m%d')
-        c_dict['DATE_END'] = end_dt.strftime('%Y%m%d')
+        if not start_dt:
+            self.log_error('Could not get start and end times. '
+                           'VALID_BEG/END or INIT_BEG/END must be set.')
+        else:
+            c_dict['DATE_BEG'] = start_dt.strftime('%Y%m%d')
+            c_dict['DATE_END'] = end_dt.strftime('%Y%m%d')
 
         for job_conf in ['JOB_NAME', 'JOB_ARGS']:
             c_dict[job_conf] = self.config.getstr('config',
