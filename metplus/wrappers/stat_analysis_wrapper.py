@@ -184,8 +184,8 @@ class StatAnalysisWrapper(CommandBuilder):
 
         for job_conf in ['JOB_NAME', 'JOB_ARGS']:
             c_dict[job_conf] = self.config.getstr('config',
-                                                   f'STAT_ANALYSIS_{job_conf}',
-                                                   '')
+                                                  f'STAT_ANALYSIS_{job_conf}',
+                                                  '')
 
         # read in all lists except field lists, which will be read in afterwards and checked
         all_lists_to_read = self.expected_config_lists + self.list_categories
@@ -1813,7 +1813,7 @@ class StatAnalysisWrapper(CommandBuilder):
             self.set_environment_variables()
 
             # set lookin dir
-            self.logger.debug(f"Setting -lookindir to {runtime_settings_dict['LOOKIN_DIR']}")
+            self.logger.debug(f"Setting -lookin dir to {runtime_settings_dict['LOOKIN_DIR']}")
             self.lookindir = runtime_settings_dict['LOOKIN_DIR']
             self.job_args = runtime_settings_dict['JOB']
 
