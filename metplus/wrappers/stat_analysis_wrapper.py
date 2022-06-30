@@ -22,6 +22,7 @@ from ..util import getlist
 from ..util import met_util as util
 from ..util import do_string_sub, find_indices_in_config_section
 from ..util import parse_var_list, remove_quotes
+from ..util import get_start_and_end_times
 from . import CommandBuilder
 
 class StatAnalysisWrapper(CommandBuilder):
@@ -177,8 +178,9 @@ class StatAnalysisWrapper(CommandBuilder):
                                                                     'LOOP_BY',
                                                                     ''))
 
-        for time_conf in ['VALID_BEG', 'VALID_END', 'INIT_BEG', 'INIT_END']:
-            c_dict[time_conf] = self.config.getstr('config', time_conf, '')
+        start_dt, end_dt = get_start_and_end_times(self.config)
+        c_dict['DATE_BEG'] = start_dt.strftime('%Y%m%d')
+        c_dict['DATE_END'] = end_dt.strftime('%Y%m%d')
 
         for job_conf in ['JOB_NAME', 'JOB_ARGS']:
             c_dict[job_conf] = self.config.getstr('config',
@@ -1844,24 +1846,11 @@ class StatAnalysisWrapper(CommandBuilder):
         return run_job
 
     def run_all_times(self):
-        date_type = self.c_dict['DATE_TYPE']
-        self.c_dict['DATE_BEG'] = self.c_dict[date_type+'_BEG']
-        self.c_dict['DATE_END'] = self.c_dict[date_type+'_END']
         self.run_stat_analysis()
         return self.all_commands
 
     def run_at_time(self, input_dict):
-        loop_by_init = util.is_loop_by_init(self.config)
-        if loop_by_init is None:
-            return
-
-        if loop_by_init:
-            loop_by = 'INIT'
-        else:
-            loop_by = 'VALID'
-
-        self.c_dict['DATE_TYPE'] = loop_by
-
+        loop_by = self.c_dict['DATE_TYPE']
         run_date = input_dict[loop_by.lower()].strftime('%Y%m%d')
         self.c_dict['DATE_BEG'] = run_date
         self.c_dict['DATE_END'] = run_date
