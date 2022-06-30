@@ -1,76 +1,12 @@
 #!/usr/bin/env python3
 
-import os
-import sys
-import re
-import logging
-from collections import namedtuple
-import produtil
 import pytest
+
+import os
 import datetime
+
 from metplus.wrappers.command_builder import CommandBuilder
-from metplus.util import time_util
-from metplus.util import METConfig
-
-
-@pytest.mark.parametrize(
-    'config_overrides, expected_value', [
-        # 0 no climo variables set
-        ({}, ''),
-        # 1 file name set only
-        ({'FILE_NAME': '/mean/dir/gs_climo_{init?fmt=%Y%m%d%H}.tmpl'},
-         '/mean/dir/gs_climo_{init?fmt=%Y%m%d%H}.tmpl'),
-        # 2 input template set
-        ({'INPUT_TEMPLATE': '/mean/dir/gs_climo_{init?fmt=%Y%m%d%H}.tmpl'},
-         '/mean/dir/gs_climo_{init?fmt=%Y%m%d%H}.tmpl'),
-        # 3 input template and dir set
-        ({'INPUT_DIR': '/mean/dir',
-          'INPUT_TEMPLATE': 'gs_climo_{init?fmt=%Y%m%d%H}.tmpl'},
-         '/mean/dir/gs_climo_{init?fmt=%Y%m%d%H}.tmpl'),
-        # 4 input template and dir set multiple templates
-        ({'INPUT_DIR': '/mean/dir',
-          'INPUT_TEMPLATE': 'gs_climo_1.tmpl, gs_climo_2.tmpl'},
-         '/mean/dir/gs_climo_1.tmpl,/mean/dir/gs_climo_2.tmpl'),
-        # 5file name, input template and dir all set
-        ({'FILE_NAME': '/mean/dir/gs_climo_{init?fmt=%Y%m%d%H}.tmpl',
-          'INPUT_DIR': '/mean/dir',
-          'INPUT_TEMPLATE': 'gs_climo_1.tmpl, gs_climo_2.tmpl'},
-         '/mean/dir/gs_climo_{init?fmt=%Y%m%d%H}.tmpl'),
-        # 6 input template is python embedding keyword and dir is set
-        ({'INPUT_DIR': '/mean/dir',
-          'INPUT_TEMPLATE': 'PYTHON_NUMPY'},
-         'PYTHON_NUMPY'),
-        # 7 input template is python embedding keyword and dir is set
-        ({'INPUT_DIR': '/mean/dir',
-          'INPUT_TEMPLATE': 'PYTHON_XARRAY'},
-         'PYTHON_XARRAY'),
-    ]
-)
-def test_read_climo_file_name(metplus_config, config_overrides,
-                                expected_value):
-    # name of app used for testing to read/set config variables
-    app_name = 'grid_stat'
-
-    # check mean and stdev climo variables
-    for climo_type in CommandBuilder.climo_types:
-        prefix = f'{app_name.upper()}_CLIMO_{climo_type.upper()}_'
-
-        config = metplus_config()
-
-        # set config values
-        for key, value in config_overrides.items():
-            config.set('config', f'{prefix}{key}', value)
-
-        cbw = CommandBuilder(config)
-
-        # set app_name to grid_stat for testing
-        cbw.app_name = app_name
-
-        cbw.read_climo_file_name(climo_type)
-        actual_value = cbw.config.getraw('config',
-                                         f'{prefix}FILE_NAME',
-                                         '')
-        assert actual_value == expected_value
+from metplus.util import ti_calculate
 
 # ------------------------
 #  test_find_data_no_dated
@@ -93,7 +29,7 @@ def test_find_data_no_dated(metplus_config, data_type):
     task_info = {}
     task_info['valid'] = datetime.datetime.strptime("201802010000",'%Y%m%d%H%M')
     task_info['lead'] = 0
-    time_info = time_util.ti_calculate(task_info)
+    time_info = ti_calculate(task_info)
     
     pcw.c_dict[f'{data_type}FILE_WINDOW_BEGIN'] = -3600
     pcw.c_dict[f'{data_type}FILE_WINDOW_END'] = 3600
@@ -120,7 +56,7 @@ def test_find_data_not_a_path(metplus_config, data_type):
     task_info = {}
     task_info['valid'] = datetime.datetime.strptime("201802010000",'%Y%m%d%H%M')
     task_info['lead'] = 0
-    time_info = time_util.ti_calculate(task_info)
+    time_info = ti_calculate(task_info)
     
     pcw.c_dict[f'{data_type}FILE_WINDOW_BEGIN'] = 0
     pcw.c_dict[f'{data_type}FILE_WINDOW_END'] = 0
@@ -138,7 +74,7 @@ def test_find_obs_no_dated(metplus_config):
     task_info = {}
     task_info['valid'] = datetime.datetime.strptime("201802010000", '%Y%m%d%H%M')
     task_info['lead'] = 0
-    time_info = time_util.ti_calculate(task_info)
+    time_info = ti_calculate(task_info)
 
     pcw.c_dict['OBS_FILE_WINDOW_BEGIN'] = -3600
     pcw.c_dict['OBS_FILE_WINDOW_END'] = 3600
@@ -156,7 +92,7 @@ def test_find_obs_dated(metplus_config):
     task_info = {}
     task_info['valid'] = datetime.datetime.strptime("201802010000", '%Y%m%d%H%M')
     task_info['lead'] = 0
-    time_info = time_util.ti_calculate(task_info)
+    time_info = ti_calculate(task_info)
 
     pcw.c_dict['OBS_FILE_WINDOW_BEGIN'] = -3600
     pcw.c_dict['OBS_FILE_WINDOW_END'] = 3600
@@ -184,7 +120,7 @@ def test_find_obs_offset(metplus_config, offsets, expected_file, offset_seconds)
     task_info = {}
     task_info['valid'] = datetime.datetime.strptime("2020020112", '%Y%m%d%H')
     task_info['lead'] = 0
-    time_info = time_util.ti_calculate(task_info)
+    time_info = ti_calculate(task_info)
 
     pcw.c_dict['OFFSETS'] = offsets
     pcw.c_dict['OBS_INPUT_DIR'] = pcw.config.getdir('METPLUS_BASE') + "/internal_tests/data/obs"
@@ -209,7 +145,7 @@ def test_find_obs_dated_previous_day(metplus_config):
     task_info = {}
     task_info['valid'] = datetime.datetime.strptime("201802010000", '%Y%m%d%H%M')
     task_info['lead'] = 0
-    time_info = time_util.ti_calculate(task_info)
+    time_info = ti_calculate(task_info)
 
     pcw.c_dict['OBS_INPUT_DIR'] = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
     pcw.c_dict['OBS_INPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d}/{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}'
@@ -227,7 +163,7 @@ def test_find_obs_dated_next_day(metplus_config):
     task_info = {}
     task_info['valid'] = datetime.datetime.strptime("201802012345", '%Y%m%d%H%M')
     task_info['lead'] = 0
-    time_info = time_util.ti_calculate(task_info)
+    time_info = ti_calculate(task_info)
     
     pcw.c_dict['OBS_INPUT_DIR'] = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
     pcw.c_dict['OBS_INPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d}/{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}'
