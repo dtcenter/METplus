@@ -1067,14 +1067,12 @@ class StatAnalysisWrapper(CommandBuilder):
                  lookin_dir        - string of the filled directory
                                      from dir_path
         """
-        if '?fmt=' in dir_path:
-            stringsub_dict = self.build_stringsub_dict(lists_to_loop,
-                                                       lists_to_group, 
-                                                       config_dict)
-            dir_path_filled = do_string_sub(dir_path,
-                                            **stringsub_dict)
-        else:
-            dir_path_filled = dir_path
+        stringsub_dict = self.build_stringsub_dict(lists_to_loop,
+                                                   lists_to_group,
+                                                   config_dict)
+        dir_path_filled = do_string_sub(dir_path,
+                                        **stringsub_dict)
+
         if '*' in dir_path_filled:
             self.logger.debug(f"Expanding wildcard path: {dir_path_filled}")
             dir_path_filled_all = ' '.join(sorted(glob.glob(dir_path_filled)))
