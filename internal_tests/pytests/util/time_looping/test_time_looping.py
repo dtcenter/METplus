@@ -2,6 +2,8 @@ import pytest
 
 from metplus.util.time_looping import *
 
+
+@pytest.mark.util
 def test_time_generator_list(metplus_config):
     for prefix in ['INIT', 'VALID']:
         config = metplus_config()
@@ -23,6 +25,8 @@ def test_time_generator_list(metplus_config):
         except StopIteration:
             assert True
 
+
+@pytest.mark.util
 def test_time_generator_increment(metplus_config):
     for prefix in ['INIT', 'VALID']:
         config = metplus_config()
@@ -48,6 +52,8 @@ def test_time_generator_increment(metplus_config):
         except StopIteration:
             assert True
 
+
+@pytest.mark.util
 def test_time_generator_error_check(metplus_config):
     """! Test that None is returned by the time generator when
     the time looping config variables are not set properly. Tests:

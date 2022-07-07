@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import pytest
-import logging
+
 import datetime
 import os
 
@@ -9,22 +9,27 @@ from metplus.util import do_string_sub, parse_template, get_time_from_file
 from metplus.util import get_tags,format_one_time_item, format_hms
 from metplus.util import add_to_dict, populate_match_dict, get_fmt_info
 
+
+@pytest.mark.util
 def test_cycle_hour():
     cycle_string = 0
     valid_string = datetime.datetime.strptime("20180103", '%Y%m%d')
     templ = "prefix.{valid?fmt=%Y%m%d}.tm{cycle?fmt=%2H}"
     expected_filename = "prefix.20180103.tm00"
     filename = do_string_sub(templ, valid=valid_string, cycle=cycle_string)
-    assert(filename == expected_filename)
+    assert filename == expected_filename
 
 
+@pytest.mark.util
 def test_offset_hour():
     expected_hour = "03"
     offset = 10800
     templ = "{offset?fmt=%2H}"
     offset_hour = do_string_sub(templ, offset=offset)
-    assert (offset_hour == expected_hour)
+    assert offset_hour == expected_hour
 
+
+@pytest.mark.util
 def test_gdas_substitution():
     # Test that the string template substitution works correctly for GDAS
     # prepbufr files, which do not make use of the cycle hour or the offset
@@ -34,7 +39,8 @@ def test_gdas_substitution():
     templ = "prepbufr.gdas.{valid?fmt=%Y%m%d%H}.nc"
     expected_filename = 'prepbufr.gdas.' + valid_string + '.nc'
     filename = do_string_sub(templ, valid=valid_obj)
-    assert(filename == expected_filename)
+    assert filename == expected_filename
+
 
 @pytest.mark.parametrize(
         'template, filepath, expected_valid', [
@@ -64,11 +70,14 @@ def test_gdas_substitution():
          "201412150000"),
     ]
 )
+@pytest.mark.util
 def test_parse_template(template, filepath, expected_valid):
     out = parse_template(template, filepath)
     ftime = out['valid'].strftime('%Y%m%d%H%M')
-    assert (ftime == expected_valid)
+    assert ftime == expected_valid
 
+
+@pytest.mark.util
 def test_h_lead_no_pad_1_digit_sub():
     file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%1H}h"
     init_time = datetime.datetime.strptime("1987020103", '%Y%m%d%H')
@@ -76,9 +85,10 @@ def test_h_lead_no_pad_1_digit_sub():
     out_string = do_string_sub(file_template,
                                init=init_time,
                                lead=lead_time)
-    assert(out_string == "1987020103_A3h")
+    assert out_string == "1987020103_A3h"
 
 
+@pytest.mark.util
 def test_h_lead_no_pad_2_digit_sub():
     file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%1H}h"
     init_time = datetime.datetime.strptime("1987020103", '%Y%m%d%H')
@@ -86,9 +96,10 @@ def test_h_lead_no_pad_2_digit_sub():
     out_string = do_string_sub(file_template,
                                init=init_time,
                                lead=lead_time)
-    assert(out_string == "1987020103_A12h")
+    assert out_string == "1987020103_A12h"
 
 
+@pytest.mark.util
 def test_h_lead_no_pad_3_digit_sub():
     file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%1H}h"
     init_time = datetime.datetime.strptime("1987020103", '%Y%m%d%H')
@@ -96,9 +107,10 @@ def test_h_lead_no_pad_3_digit_sub():
     out_string = do_string_sub(file_template,
                                init=init_time,
                                lead=lead_time)
-    assert(out_string == "1987020103_A102h")
+    assert out_string == "1987020103_A102h"
 
 
+@pytest.mark.util
 def test_h_lead_pad_1_digit_sub():
     file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%.1H}h"
     init_time = datetime.datetime.strptime("1987020103", '%Y%m%d%H')
@@ -106,9 +118,10 @@ def test_h_lead_pad_1_digit_sub():
     out_string = do_string_sub(file_template,
                                init=init_time,
                                lead=lead_time)
-    assert(out_string == "1987020103_A3h")
+    assert out_string == "1987020103_A3h"
 
 
+@pytest.mark.util
 def test_h_lead_pad_2_digit_sub():
     file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%.2H}h"
     init_time = datetime.datetime.strptime("1987020103", '%Y%m%d%H')
@@ -116,9 +129,10 @@ def test_h_lead_pad_2_digit_sub():
     out_string = do_string_sub(file_template,
                                init=init_time,
                                lead=lead_time)
-    assert(out_string == "1987020103_A03h")
+    assert out_string == "1987020103_A03h"
 
 
+@pytest.mark.util
 def test_h_lead_pad_2_digit_sub():
     file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%.3H}h"
     init_time = datetime.datetime.strptime("1987020103", '%Y%m%d%H')
@@ -126,9 +140,10 @@ def test_h_lead_pad_2_digit_sub():
     out_string = do_string_sub(file_template,
                                init=init_time,
                                lead=lead_time)
-    assert(out_string == "1987020103_A003h")
+    assert out_string == "1987020103_A003h"
 
 
+@pytest.mark.util
 def test_ym_date_dir_init():
     # Test that the ym directory can be read in and does substitution correctly
     # e.g. /d1/METplus_TC/adeck_orig/201708/atcfunix.gfs.2017080100
@@ -142,6 +157,7 @@ def test_ym_date_dir_init():
     assert filename == expected_filename
 
 
+@pytest.mark.util
 def test_ym_date_dir():
     # Test that the ym directory can be read in and does substitution correctly
     # e.g. /d1/METplus_TC/adeck_orig/201708/atcfunix.gfs.2017080100
@@ -154,6 +170,7 @@ def test_ym_date_dir():
     assert filename == expected_filename
 
 
+@pytest.mark.util
 def test_ymd_date_dir():
     # Test that the ymd directory can be read in and does substitution correctly
     # e.g. /d1/METplus_TC/adeck_orig/20170811/atcfunix.gfs.2017080100
@@ -167,6 +184,7 @@ def test_ymd_date_dir():
     assert filename == expected_filename
 
 
+@pytest.mark.util
 def test_ymd_region_cyclone():
     # Test that we can recreate the full file path with a date,
     # region, and cyclone
@@ -182,6 +200,8 @@ def test_ymd_region_cyclone():
     expected_full_file = '/d1/METplus_TC/bdeck/201708/bal052017.dat'
     assert full_file == expected_full_file
 
+
+@pytest.mark.util
 def test_crow_variable_hour():
     # Test that do_string_sub() correctly creates the valid hour
     # without any zero-padding when given the following as input:
@@ -206,21 +226,25 @@ def test_crow_variable_hour():
            crow_2_output == crow_input_file_2 and
            crow_3_output == crow_input_file_3)
 
+
+@pytest.mark.util
 def test_multiple_valid_substitution_valid():
     valid_string = datetime.datetime.strptime("2018020112", '%Y%m%d%H')
     lead_string = int("123") * 3600
     templ = "{valid?fmt=%Y%m%d%H}/gfs.t{valid?fmt=%H}.pgrb2.0p25.{lead?fmt=%HHH}"
     expected_filename = "2018020112/gfs.t12.pgrb2.0p25.123"
     filename = do_string_sub(templ, valid=valid_string, lead=lead_string)
-    assert(filename == expected_filename)
+    assert filename == expected_filename
 
+
+@pytest.mark.util
 def test_multiple_valid_substitution_init():
     init_string = datetime.datetime.strptime("2017060400", '%Y%m%d%H')
     lead_string = 0
     templ = "{init?fmt=%Y%m%d%H}/gfs.t{init?fmt=%H}z.pgrb2.0p25.f{lead?fmt=%.2H}"
     expected_filename = "2017060400/gfs.t00z.pgrb2.0p25.f00"
     filename = do_string_sub(templ, init=init_string, lead=lead_string)
-    assert(filename == expected_filename)
+    assert filename == expected_filename
 
 
 def test_multiple_valid_substitution_init_and_valid():
@@ -231,8 +255,10 @@ def test_multiple_valid_substitution_init_and_valid():
     expected_filename = "2017060400/gfs.t00z.pgrb2.0p25.f00"
     filename = do_string_sub(templ, init=init_string,
                              lead=lead_string, valid=valid_string)
-    assert(filename == expected_filename)
+    assert filename == expected_filename
 
+
+@pytest.mark.util
 def test_multiple_valid_substitution_init_and_valid_w_lead():
     init_string = datetime.datetime.strptime("2017060400", '%Y%m%d%H')
     valid_string = datetime.datetime.strptime("2017060500", '%Y%m%d%H')
@@ -241,39 +267,47 @@ def test_multiple_valid_substitution_init_and_valid_w_lead():
     expected_filename = "2017060500/gfs.t00z.pgrb2.0p25.f24"
     filename = do_string_sub(templ, init=init_string,
                              lead=lead_string, valid=valid_string)
-    assert(filename == expected_filename)
+    assert filename == expected_filename
 
+
+@pytest.mark.util
 def test_multiple_valid_substitution_init_complex():
     init_string = datetime.datetime.strptime("2016061018", '%Y%m%d%H')
     lead_string = int("6") * 3600
     templ = "ncar.ral.CoSPA.HRRR.{init?fmt=%Y-%m-%dT%H:%M:%S}.PT{lead?fmt=%.2H}:00.nc"
     expected_filename = "ncar.ral.CoSPA.HRRR.2016-06-10T18:00:00.PT06:00.nc"
     filename = do_string_sub(templ, init=init_string, lead=lead_string)
-    assert(filename == expected_filename)
+    assert filename == expected_filename
+
 
 # NOTE: this test has a shift in init time, which may not be supported
 #  parse_template will currently error out if it finds a shift that is not
 #  on valid time
+@pytest.mark.util
 def test_shift_time():
     init_string = datetime.datetime.strptime("2017060400", '%Y%m%d%H')
     templ = "{init?fmt=%Y%m%d%H?shift=86400}"
     expected_filename = "2017060500"
     filename = do_string_sub(templ, init=init_string)
-    assert(filename == expected_filename)
+    assert filename == expected_filename
+
 
 # NOTE: this test has a shift in init time, which may not be supported
 #  parse_template will currently error out if it finds a shift that is not
 #  on valid time
+@pytest.mark.util
 def test_shift_time_negative():
     init_string = datetime.datetime.strptime("2017060400", '%Y%m%d%H')
     templ = "{init?fmt=%Y%m%d%H?shift=-86400}"
     expected_filename = "2017060300"
     filename = do_string_sub(templ, init=init_string)
-    assert(filename == expected_filename)
+    assert filename == expected_filename
+
 
 # NOTE: this test has a shift in lead time, which may not be supported
 #  parse_template will currently error out if it finds a shift that is not
 #  on valid time
+@pytest.mark.util
 def test_shift_time_lead_negative():
     init_string = datetime.datetime.strptime("2019020700", '%Y%m%d%H')
     lead_string = int("60") * 3600
@@ -287,51 +321,58 @@ def test_shift_time_extract():
     templ = "{valid?fmt=%Y%m%d%H?shift=-21600}"
     filename = "2017060400"
     dt = parse_template(templ, filename)['valid']
-    assert(dt.strftime('%Y%m%d%H') == valid_dt.strftime('%Y%m%d%H'))
+    assert dt.strftime('%Y%m%d%H') == valid_dt.strftime('%Y%m%d%H')
 
+
+@pytest.mark.util
 def test_ccpa_template():
-    passed = True
     valid_string = datetime.datetime.strptime("2019022403", '%Y%m%d%H')
     lead_string = 10800
     templ = "ccpa.{valid?fmt=%Y%m%d}/06/ccpa.t{valid?fmt=%H}z.{lead?fmt=%.2H}h.hrap.conus.gb2"
     expected_filename = "ccpa.20190224/06/ccpa.t03z.03h.hrap.conus.gb2"
     filename = do_string_sub(templ, valid=valid_string, lead=lead_string)
-    if filename != expected_filename:
-        passed = False
+    assert filename == expected_filename
 
     valid_string = datetime.datetime.strptime("2019022406", '%Y%m%d%H')
     lead_string = int("6") * 3600
     expected_filename = "ccpa.20190224/06/ccpa.t06z.06h.hrap.conus.gb2"
     filename = do_string_sub(templ, valid=valid_string, lead=lead_string)
-    if filename == expected_filename:
-        passed = False
+    assert filename == expected_filename
 
-    return passed
 
+@pytest.mark.util
 def test_filename_matches_template():
     template = "{init?fmt=%Y%m%d%H}_dog_A{lead?fmt=%HH}h"
     filepath = "1987020103_dog_A03h"
     out = parse_template(template, filepath)
     ftime = out['valid'].strftime('%Y%m%d%H%M')
-    assert(ftime == "198702010600")
+    assert ftime == "198702010600"
 
+
+@pytest.mark.util
 def test_filename_does_not_match_template():
     template = "{init?fmt=%Y%m%d%H}_dog_A{lead?fmt=%HH}h"
     filepath = "1987020103_cat_A03h"
     out = parse_template(template, filepath)
-    assert(out == None)
+    assert out == None
 
+
+@pytest.mark.util
 def test_filename_does_not_match_template_end():
     template = "{init?fmt=%Y%m%d%H}_dog_A{lead?fmt=%HH}h"
     filepath = "1987020103_dog_A03d"
     out = parse_template(template, filepath)
-    assert(out == None)
+    assert out == None
 
+
+@pytest.mark.util
 def test_get_tags():
     template = '*{basin?fmt=%s}_some_stuff_{cyclone?fmt=%02d}_{date?fmt=%Y%m}'
     tags = get_tags(template)
 
-    assert( tags[0] == '*' and tags[1] == 'basin' and tags[2] == 'cyclone' and tags[3] == 'date')
+    assert( tags[0] == '*' and tags[1] == 'basin' and tags[2] == 'cyclone' and
+            tags[3] == 'date')
+
 
 # format should be something like H 2H 3H 2M etc
 # key is the time value integer to convert, like 1 or 60
@@ -376,9 +417,10 @@ def test_get_tags():
         ('.3d', 1, '001', 'd'),
     ]
 )
-
+@pytest.mark.util
 def test_format_one_time_item(format, key ,value, ttype):
-    assert(format_one_time_item(format, key, ttype) == value)
+    assert format_one_time_item(format, key, ttype) == value
+
 
 # format is the time format to use, like, %M or %H%M
 # seconds is the integer number of seconds of the offset to use, i.e. 3601
@@ -405,16 +447,20 @@ def test_format_one_time_item(format, key ,value, ttype):
         ('%d', 86401, '01'),
     ]
 )
+@pytest.mark.util
 def test_format_hms(format, seconds, value):
     # format should be something like %M or %H%M
-    assert(format_hms(format, seconds == value))
+    assert format_hms(format, seconds == value)
 
+
+@pytest.mark.util
 def test_underscore_in_time_fmt():
     valid_string = datetime.datetime.strptime("20170604010203", '%Y%m%d%H%M%S')
     templ = "{valid?fmt=%Y%m%d_%H%M%S}"
     expected_filename = "20170604_010203"
     filename = do_string_sub(templ, valid=valid_string)
-    assert(filename == expected_filename)
+    assert filename == expected_filename
+
 
 @pytest.mark.parametrize(
     'match, match_dict, full_str, new_len, expected_result', [
@@ -429,8 +475,10 @@ def test_underscore_in_time_fmt():
         ('valid+H', {'init+Y': '2019', 'valid+H': '2'}, '02.01.12.and.some.more.stuff', 2, True),
     ]
 )
+@pytest.mark.util
 def test_add_to_dict(match, match_dict, full_str, new_len, expected_result):
-    assert(add_to_dict(match, match_dict, full_str, new_len) == expected_result)
+    assert add_to_dict(match, match_dict, full_str, new_len) == expected_result
+
 
 @pytest.mark.parametrize(
     'template, filepath, expected_match_dict, expected_valid_shift', [
@@ -480,16 +528,17 @@ def test_add_to_dict(match, match_dict, full_str, new_len, expected_result):
          None),
     ]
 )
+@pytest.mark.util
 def test_populate_match_dict(template, filepath, expected_match_dict, expected_valid_shift):
     try:
         match_dict, valid_shift = populate_match_dict(template, filepath)
 
         # if expecting match_dict to be None, assert that actual is also None
         if expected_match_dict is None:
-            assert(match_dict is None)
+            assert match_dict is None
         elif match_dict is None:
             # if expected is not None, fail if actual is None
-            assert(False)
+            assert False
             return
 
         num_keys = len(match_dict.keys())
@@ -498,25 +547,26 @@ def test_populate_match_dict(template, filepath, expected_match_dict, expected_v
             print(f"Number of match_dict keys do not match. Actual: {num_keys}, Expected: {expected_num_keys}")
             print(f"Found: {match_dict}")
             print(f"Expected: {expected_match_dict}")
-            assert(False)
+            assert False
 
         for key, value in match_dict.items():
             if key not in expected_match_dict:
                 print(f"Key {key} not found in expected match_dict: {expected_match_dict}")
-                assert(False)
+                assert False
 
             if value != expected_match_dict[key]:
                 print(f"Match dict value from {key} does not match expected value")
-                assert(False)
+                assert False
 
         if valid_shift != expected_valid_shift:
             print(f"Incorrect valid shift. Actual {valid_shift}, Expected: {expected_valid_shift}")
-            assert(False)
+            assert False
 
-        assert(True)
+        assert True
 
     except TypeError:
-        assert(expected_match_dict is None and expected_valid_shift is None)
+        assert expected_match_dict is None and expected_valid_shift is None
+
 
 @pytest.mark.parametrize(
     'fmt, filepath, identifier, expected_fmt_len, expected_match_dict', [
@@ -528,19 +578,21 @@ def test_populate_match_dict(template, filepath, expected_match_dict, expected_v
          {'valid+Y': '2020', 'valid+m': '02', 'valid+d': '01',},),
     ]
 )
+@pytest.mark.util
 def test_get_fmt_info(fmt, filepath, identifier, expected_fmt_len, expected_match_dict):
     match_dict = {}
     fmt_len = get_fmt_info(fmt, filepath, match_dict, identifier)
     if fmt_len != expected_fmt_len:
         print(f"FMT length: {fmt_len}, match_dict: {match_dict}")
-        assert(False)
+        assert False
 
     if match_dict != expected_match_dict:
         print(f"Match Dictionary: {match_dict}")
         print(f"Expected Dictionary: {expected_match_dict}")
-        assert(False)
+        assert False
 
-    assert(True)
+    assert True
+
 
 @pytest.mark.parametrize(
     'templ, expected_filename', [
@@ -549,6 +601,7 @@ def test_get_fmt_info(fmt, filepath, identifier, expected_fmt_len, expected_matc
          "2017060400_{missing_tag?fmt=%H}_f06"),
     ]
 )
+@pytest.mark.util
 def test_do_string_sub_skip_missing_tags(templ, expected_filename):
     init_string = datetime.datetime.strptime("2017060400", '%Y%m%d%H')
     lead_string = int("6") * 3600
@@ -557,7 +610,8 @@ def test_do_string_sub_skip_missing_tags(templ, expected_filename):
                              lead=lead_string,
                              skip_missing_tags=True,
                              recurse=True)
-    assert(filename == expected_filename)
+    assert filename == expected_filename
+
 
 @pytest.mark.parametrize(
     'templ, expected_filename', [
@@ -570,6 +624,7 @@ def test_do_string_sub_skip_missing_tags(templ, expected_filename):
          "climo_stdev = {field = [{name= \"filename.py other.nc:0406\";}]};")
     ]
 )
+@pytest.mark.util
 def test_do_string_sub_recurse(templ, expected_filename):
     init_string = datetime.datetime.strptime("2017060400", '%Y%m%d%H')
     lead_string = int("6") * 3600
@@ -578,7 +633,8 @@ def test_do_string_sub_recurse(templ, expected_filename):
                              lead=lead_string,
                              skip_missing_tags=True,
                              recurse=True)
-    assert(filename == expected_filename)
+    assert filename == expected_filename
+
 
 @pytest.mark.parametrize(
     'templ, expected_filename', [
@@ -587,6 +643,7 @@ def test_do_string_sub_recurse(templ, expected_filename):
          "201706/b([a-zA-Z]{2})q201706*.gfso.([0-9]{2,4})"),
     ]
 )
+@pytest.mark.util
 def test_do_string_sub_no_recurse_no_missing(templ, expected_filename):
     date_dt = datetime.datetime.strptime("2017060400", '%Y%m%d%H')
     basin_regex = "([a-zA-Z]{2})"
@@ -595,7 +652,8 @@ def test_do_string_sub_no_recurse_no_missing(templ, expected_filename):
                              date=date_dt,
                              basin=basin_regex,
                              cyclone=cyclone_regex)
-    assert(filename == expected_filename)
+    assert filename == expected_filename
+
 
 @pytest.mark.parametrize(
     'filepath, template, expected_result', [
@@ -606,6 +664,7 @@ def test_do_string_sub_no_recurse_no_missing(templ, expected_filename):
         ('filename.2019020104.ext.gz', 'file.{valid?fmt=%Y%m%d%H}.ext', None),
     ]
 )
+@pytest.mark.util
 def test_get_time_from_file(filepath, template, expected_result):
     result = get_time_from_file(filepath, template)
 

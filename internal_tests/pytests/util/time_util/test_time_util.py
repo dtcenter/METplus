@@ -7,6 +7,7 @@ from dateutil.relativedelta import relativedelta
 
 from metplus.util import time_util
 
+
 @pytest.mark.parametrize(
     'rd, seconds, time_string, time_letter_only, hours', [
         (relativedelta(seconds=1), 1, '1 second', '1S', 0),
@@ -41,11 +42,13 @@ from metplus.util import time_util
         (relativedelta(seconds=-3721), -3721, '-1 hour 2 minutes 1 second', '-1H2M1S', -1),
     ]
 )
+@pytest.mark.util
 def test_ti_get_seconds_and_string(rd, seconds, time_string, time_letter_only, hours):
-    assert(time_util.ti_get_seconds_from_relativedelta(rd) == seconds)
-    assert(time_util.ti_get_lead_string(rd) == time_string)
-    assert(time_util.ti_get_lead_string(rd, letter_only=True) == time_letter_only)
-    assert(time_util.ti_get_hours_from_relativedelta(rd) == hours)
+    assert time_util.ti_get_seconds_from_relativedelta(rd) == seconds
+    assert time_util.ti_get_lead_string(rd) == time_string
+    assert time_util.ti_get_lead_string(rd, letter_only=True) == time_letter_only
+    assert time_util.ti_get_hours_from_relativedelta(rd) == hours
+
 
 @pytest.mark.parametrize(
     'key, value', [
@@ -66,10 +69,12 @@ def test_ti_get_seconds_and_string(rd, seconds, time_string, time_letter_only, h
         ('393d', datetime(2020, 2, 29, 0) ), # leap year
     ]
 )
+@pytest.mark.util
 def test_get_relativedelta(key, value):
     # start time is 2019-02-01_0Z
     start_time = datetime(2019, 2, 1, 0)
-    assert(start_time + time_util.get_relativedelta(key) == value)
+    assert start_time + time_util.get_relativedelta(key) == value
+
 
 @pytest.mark.parametrize(
     'time_string, default_unit, met_time', [
@@ -87,25 +92,28 @@ def test_get_relativedelta(key, value):
         ('3723S', None, '010203'),
         ]
 )
+@pytest.mark.util
 def test_time_string_to_met_time(time_string, default_unit, met_time):
-  assert(time_util.time_string_to_met_time(time_string, default_unit) == met_time)
+  assert time_util.time_string_to_met_time(time_string, default_unit) == met_time
+
 
 @pytest.mark.parametrize(
     'input_dict, expected_time_info', [
         ({'init': datetime(2014, 10, 31, 12),
           'lead': relativedelta(hours=3)},
           {'init': datetime(2014, 10, 31, 12),
-          'lead': 10800,
-          'valid':  datetime(2014, 10, 31, 15)}
-        ),
+           'lead': 10800,
+           'valid':  datetime(2014, 10, 31, 15)}
+         ),
         ]
 )
+@pytest.mark.util
 def test_ti_calculate(input_dict, expected_time_info):
     time_info = time_util.ti_calculate(input_dict)
     for key, value in expected_time_info.items():
-        assert(time_info[key] == value)
+        assert time_info[key] == value
 
     time_info2 = time_util.ti_calculate(time_info)
     for key, value in expected_time_info.items():
-        assert(time_info[key] == value)
-        assert(time_info2[key] == value)
+        assert time_info[key] == value
+        assert time_info2[key] == value

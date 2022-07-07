@@ -1,8 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import pytest
 
 from metplus.util import metplus_check
+
 
 # test that:
 #  the same version of python passes
@@ -19,8 +20,10 @@ from metplus.util import metplus_check
         ('4.0.0', '3.6.3', True), # later major
     ]
 )
+@pytest.mark.util
 def test_metplus_check_python(user, supported, torf):
-    assert(metplus_check.metplus_check_python_version(user, supported) == torf)
+    assert metplus_check.metplus_check_python_version(user, supported) == torf
+
 
 # checking METPLUS_DISABLE_PLOT_WRAPPERS and METPLUS_ENABLE_PLOT_WRAPPERS
 # both cannot be set
@@ -33,8 +36,10 @@ def test_metplus_check_python(user, supported, torf):
           'METPLUS_DISABLE_PLOT_WRAPPERS': 'yes'}, False), #both set
     ]
 )
+@pytest.mark.util
 def test_metplus_check_environment_variables(env_vars, expected_result):
-    assert(metplus_check.metplus_check_environment_variables(env_vars) == expected_result)
+    assert metplus_check.metplus_check_environment_variables(env_vars) == expected_result
+
 
 # checking METPLUS_DISABLE_PLOT_WRAPPERS and METPLUS_ENABLE_PLOT_WRAPPERS to determine
 # if plot wrappers are enabled. Default is True (run). Both cannot be set
@@ -47,8 +52,10 @@ def test_metplus_check_environment_variables(env_vars, expected_result):
           'METPLUS_DISABLE_PLOT_WRAPPERS': 'yes'}, None), #both set
     ]
 )
+@pytest.mark.util
 def test_plot_wrappers_are_enabled(env_vars, expected_result):
-    assert(metplus_check.plot_wrappers_are_enabled(env_vars) == expected_result)
+    assert metplus_check.plot_wrappers_are_enabled(env_vars) == expected_result
+
 
 @pytest.mark.parametrize(
     'value, expected_result', [
@@ -75,5 +82,6 @@ def test_plot_wrappers_are_enabled(env_vars, expected_result):
         ('f', False),
     ]
 )
+@pytest.mark.util
 def test_evaluates_to_true(value, expected_result):
-    assert(metplus_check.evaluates_to_true(value) == expected_result)
+    assert metplus_check.evaluates_to_true(value) == expected_result
