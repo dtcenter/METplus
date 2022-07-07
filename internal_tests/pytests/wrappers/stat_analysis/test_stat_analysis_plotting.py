@@ -27,7 +27,7 @@ def stat_analysis_wrapper(metplus_config):
     return StatAnalysisWrapper(config)
 
 
-@pytest.mark.wrapper
+@pytest.mark.plotting
 def test_set_lists_as_loop_or_group(metplus_config):
     # Independently test that the lists that are set
     # in the config file are being set
@@ -89,7 +89,7 @@ def test_set_lists_as_loop_or_group(metplus_config):
                 for elem in test_lists_to_loop_items))
 
 
-@pytest.mark.wrapper
+@pytest.mark.plotting
 def test_get_output_filename(metplus_config):
     # Independently test the building of
     # the output file name
@@ -163,7 +163,7 @@ def test_get_output_filename(metplus_config):
     assert expected_output_filename == test_output_filename
 
 
-@pytest.mark.wrapper
+@pytest.mark.plotting
 def test_filter_for_plotting(metplus_config):
     # Test running of stat_analysis
     st = stat_analysis_wrapper(metplus_config)

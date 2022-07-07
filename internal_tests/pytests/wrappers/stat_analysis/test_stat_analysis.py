@@ -26,7 +26,7 @@ def stat_analysis_wrapper(metplus_config):
     return StatAnalysisWrapper(config)
 
 
-@pytest.mark.wrapper
+@pytest.mark.plotting
 def test_get_command(metplus_config):
     # Independently test that the stat_analysis command
     # is being put together correctly with
@@ -46,7 +46,7 @@ def test_get_command(metplus_config):
     assert expected_command == test_command
 
 
-@pytest.mark.wrapper
+@pytest.mark.plotting
 def test_create_c_dict(metplus_config):
     # Independently test that c_dict is being created
     # and that the wrapper and config reader 
@@ -79,7 +79,7 @@ def test_create_c_dict(metplus_config):
     assert c_dict['LINE_TYPE_LIST'] == []
 
 
-@pytest.mark.wrapper
+@pytest.mark.plotting
 def test_list_to_str(metplus_config):
     # Independently test that a list of strings
     # are being converted to a one
@@ -95,7 +95,7 @@ def test_list_to_str(metplus_config):
     assert(expected_list == test_list)
 
 
-@pytest.mark.wrapper
+@pytest.mark.plotting
 def test_set_lists_as_loop_or_group(metplus_config):
     # Independently test that the lists that are set
     # in the config file are being set 
@@ -171,7 +171,7 @@ def test_set_lists_as_loop_or_group(metplus_config):
          'lt805,lt1609,lt4828,lt8045,ge8045,lt16090'),
     ]
 )
-@pytest.mark.wrapper
+@pytest.mark.plotting
 def test_format_thresh(metplus_config, expression, expected_result):
     # Independently test the creation of
     # string values for defining thresholds
@@ -180,7 +180,7 @@ def test_format_thresh(metplus_config, expression, expected_result):
     assert st.format_thresh(expression) == expected_result
 
 
-@pytest.mark.wrapper
+@pytest.mark.plotting
 def test_build_stringsub_dict(metplus_config):
     # Independently test the building of 
     # the dictionary used in the stringtemplate
@@ -384,7 +384,7 @@ def test_build_stringsub_dict(metplus_config):
            datetime.datetime(1900, 1, 1, 23, 59 ,59))
 
 
-@pytest.mark.wrapper
+@pytest.mark.plotting
 def test_get_output_filename(metplus_config):
     # Independently test the building of
     # the output file name 
@@ -502,7 +502,7 @@ def test_get_output_filename(metplus_config):
     assert expected_output_filename == test_output_filename
 
 
-@pytest.mark.wrapper
+@pytest.mark.plotting
 def test_get_lookin_dir(metplus_config):
     # Independently test the building of
     # the lookin directory
@@ -568,15 +568,14 @@ def test_get_lookin_dir(metplus_config):
 
     # Test 3 - no matches for lookin dir wildcard
     expected_lookin_dir = ''
-    dir_path = os.path.join(stat_analysis_pytest_dir,
-                            '../../data/fake/*nothingmatches*')
+    dir_path = os.path.join(pytest_data_dir, 'fake/*nothingmatches*')
 
     test_lookin_dir = st.get_lookin_dir(dir_path, lists_to_loop,
                                         lists_to_group, config_dict)
     assert expected_lookin_dir == test_lookin_dir
 
 
-@pytest.mark.wrapper
+@pytest.mark.plotting
 def test_format_valid_init(metplus_config):
     # Independently test the formatting 
     # of the valid and initialization date and hours
@@ -678,7 +677,7 @@ def test_format_valid_init(metplus_config):
     assert(config_dict['OBS_INIT_HOUR'] == '"000000", "120000"')
 
 
-@pytest.mark.wrapper
+@pytest.mark.plotting
 def test_parse_model_info(metplus_config):
     # Independently test the creation of 
     # the model information dictionary
@@ -717,7 +716,7 @@ def test_parse_model_info(metplus_config):
            expected_out_stat_filename_type)
 
 
-@pytest.mark.wrapper
+@pytest.mark.plotting
 def test_run_stat_analysis(metplus_config):
     # Test running of stat_analysis
     st = stat_analysis_wrapper(metplus_config)
@@ -747,7 +746,7 @@ def test_run_stat_analysis(metplus_config):
       ('OBS', '\"(0,*,*)\", \"(1,*,*)\"', ["0,*,*", "1,*,*"]),
     ]
 )
-@pytest.mark.wrapper
+@pytest.mark.plotting
 def test_get_level_list(metplus_config, data_type, config_list, expected_list):
     config = metplus_config()
     config.set('config', f'{data_type}_LEVEL_LIST', config_list)
@@ -757,7 +756,7 @@ def test_get_level_list(metplus_config, data_type, config_list, expected_list):
     assert saw.get_level_list(data_type) == expected_list
 
 
-@pytest.mark.wrapper
+@pytest.mark.plotting
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
     config = metplus_config()
