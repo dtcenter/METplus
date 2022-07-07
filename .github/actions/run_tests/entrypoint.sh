@@ -33,7 +33,7 @@ fi
 #
 # running unit tests (pytests)
 #
-if [ "$INPUT_CATEGORIES" == "pytests" ]; then
+if [ "$INPUT_CATEGORIES" == pytests* ]; then
   export METPLUS_ENV_TAG="pytest"
   export METPLUS_IMG_TAG=${branch_name}
   echo METPLUS_ENV_TAG=${METPLUS_ENV_TAG}
@@ -55,8 +55,9 @@ if [ "$INPUT_CATEGORIES" == "pytests" ]; then
 	 -f .github/actions/run_tests/Dockerfile.run \
 	 .
 
-  echo Running Pytests
-  command="export METPLUS_PYTEST_HOST=docker; cd internal_tests/pytests; /usr/local/envs/pytest/bin/pytest -vv --cov=../../metplus"
+  marker=`echo $INPUT_CATEGORIES | awk -F_ '{print $2}'`
+  echo Running Pytests marker=$marker
+  command="export METPLUS_PYTEST_HOST=docker; cd internal_tests/pytests; /usr/local/envs/pytest/bin/pytest -vv --cov=../../metplus -m $marker"
   time_command docker run -v $WS_PATH:$GITHUB_WORKSPACE --workdir $GITHUB_WORKSPACE $RUN_TAG bash -c "$command"
   exit $?
 fi
