@@ -163,7 +163,7 @@ def test_get_output_filename(metplus_config):
     assert expected_output_filename == test_output_filename
 
 
-@pytest.mark.long
+@pytest.mark.wrapper
 def test_filter_for_plotting(metplus_config):
     # Test running of stat_analysis
     st = stat_analysis_wrapper(metplus_config)
