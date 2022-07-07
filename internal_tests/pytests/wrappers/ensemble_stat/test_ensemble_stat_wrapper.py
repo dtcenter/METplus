@@ -106,7 +106,7 @@ def set_minimum_config_settings(config, set_fields=True):
           }),
     ]
 )
-@pytest.mark.wrapper_a
+@pytest.mark.wrapper_c
 def test_ensemble_stat_field_info(metplus_config, config_overrides,
                                   env_var_values):
 
@@ -158,7 +158,7 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
          {'CLIMO_STDEV_FILE': '"/climo/stdev/dir/gs_stdev_YMDH.tmpl"', }),
     ]
 )
-@pytest.mark.wrapper_a
+@pytest.mark.wrapper_c
 def test_handle_climo_file_variables(metplus_config, config_overrides,
                                      env_var_values):
     """! Ensure that old and new variables for setting climo_mean and
@@ -666,7 +666,7 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
 
     ]
 )
-@pytest.mark.wrapper_a
+@pytest.mark.wrapper_c
 def test_ensemble_stat_single_field(metplus_config, config_overrides,
                                     env_var_values):
 
@@ -723,7 +723,7 @@ def test_ensemble_stat_single_field(metplus_config, config_overrides,
                 assert(env_var_values.get(env_var_key, '') == actual_value)
 
 
-@pytest.mark.wrapper_a
+@pytest.mark.wrapper_c
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
 
@@ -746,7 +746,7 @@ def test_get_config_file(metplus_config):
         ({'ENSEMBLE_STAT_ENS_MEMBER_IDS': '1'}, 1),
     ]
 )
-@pytest.mark.wrapper_a
+@pytest.mark.wrapper_c
 def test_ensemble_stat_fill_missing(metplus_config, config_overrides,
                                     expected_num_files):
     config = metplus_config()
