@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 
 import pytest
+
 import pprint
 import os
 from datetime import datetime
 
 from metplus.util import config_metplus
 
+
+@pytest.mark.util
 def test_get_default_config_list():
     test_data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                  os.pardir,
@@ -38,6 +41,7 @@ def test_get_default_config_list():
     assert actual_new == expected_new
     assert actual_both == expected_both
 
+
 @pytest.mark.parametrize(
     'regex,index,id,expected_result', [
         # 0: No ID
@@ -65,6 +69,7 @@ def test_get_default_config_list():
           '2': ['NAME', 'MEMBERS', 'REQUIRED', 'MIN_REQ']}),
     ]
 )
+@pytest.mark.util
 def test_find_indices_in_config_section(metplus_config, regex, index,
                                         id, expected_result):
     config = metplus_config()
@@ -84,7 +89,6 @@ def test_find_indices_in_config_section(metplus_config, regex, index,
     config.set('config', 'TC_PAIRS_CONSENSUS2_REQUIRED', 'True')
     config.set('config', 'TC_PAIRS_CONSENSUS2_MIN_REQ', '2')
 
-
     indices = config_metplus.find_indices_in_config_section(regex, config,
                                                             index_index=index,
                                                             id_index=id)
@@ -94,6 +98,7 @@ def test_find_indices_in_config_section(metplus_config, regex, index,
     pp.pprint(indices)
 
     assert indices == expected_result
+
 
 @pytest.mark.parametrize(
     'conf_items, met_tool, expected_result', [
@@ -111,12 +116,14 @@ def test_find_indices_in_config_section(metplus_config, regex, index,
           'POINT2GRID_CUSTOM_LOOP_LIST': "four, five",}, 'point2grid', ['four', 'five']),
     ]
 )
+@pytest.mark.util
 def test_get_custom_string_list(metplus_config, conf_items, met_tool, expected_result):
     config = metplus_config()
     for conf_key, conf_value in conf_items.items():
         config.set('config', conf_key, conf_value)
 
-    assert(config_metplus.get_custom_string_list(config, met_tool) == expected_result)
+    assert config_metplus.get_custom_string_list(config, met_tool) == expected_result
+
 
 @pytest.mark.parametrize(
     'config_var_name, expected_indices, set_met_tool', [
@@ -134,6 +141,7 @@ def test_get_custom_string_list(metplus_config, conf_items, met_tool, expected_r
         ('BOTH_VAR12_FIELD_NAME', ['12'], False),
     ]
 )
+@pytest.mark.util
 def test_find_var_indices_fcst(metplus_config,
                                config_var_name,
                                expected_indices,
@@ -146,9 +154,10 @@ def test_find_var_indices_fcst(metplus_config,
                                                             data_types=data_types,
                                                             met_tool=met_tool)
 
-    assert(len(var_name_indices) == len(expected_indices))
+    assert len(var_name_indices) == len(expected_indices)
     for actual_index in var_name_indices:
-        assert(actual_index in expected_indices)
+        assert actual_index in expected_indices
+
 
 @pytest.mark.parametrize(
     'data_type, met_tool, expected_out', [
@@ -173,9 +182,11 @@ def test_find_var_indices_fcst(metplus_config,
 
     ]
 )
+@pytest.mark.util
 def test_get_field_search_prefixes(data_type, met_tool, expected_out):
     assert(config_metplus.get_field_search_prefixes(data_type,
                                                     met_tool) == expected_out)
+
 
 @pytest.mark.parametrize(
     'item_list, extension, is_valid', [
@@ -216,9 +227,11 @@ def test_get_field_search_prefixes(data_type, met_tool, expected_out):
 
     ]
 )
+@pytest.mark.util
 def test_is_var_item_valid(metplus_config, item_list, extension, is_valid):
     conf = metplus_config()
-    assert(config_metplus.is_var_item_valid(item_list, '1', extension, conf)[0] == is_valid)
+    assert config_metplus.is_var_item_valid(item_list, '1', extension, conf)[0] == is_valid
+
 
 @pytest.mark.parametrize(
     'item_list, configs_to_set, is_valid', [
@@ -257,12 +270,14 @@ def test_is_var_item_valid(metplus_config, item_list, extension, is_valid):
 
     ]
 )
+@pytest.mark.util
 def test_is_var_item_valid_levels(metplus_config, item_list, configs_to_set, is_valid):
     conf = metplus_config()
     for key, value in configs_to_set.items():
         conf.set('config', key, value)
 
-    assert(config_metplus.is_var_item_valid(item_list, '1', 'LEVELS', conf)[0] == is_valid)
+    assert config_metplus.is_var_item_valid(item_list, '1', 'LEVELS', conf)[0] == is_valid
+
 
 # search prefixes are valid prefixes to append to field info variables
 # config_overrides are a dict of config vars and their values
@@ -301,6 +316,7 @@ def test_is_var_item_valid_levels(metplus_config, item_list, configs_to_set, is_
 
     ]
 )
+@pytest.mark.util
 def test_get_field_config_variables(metplus_config,
                                     search_prefixes,
                                     config_overrides,
@@ -318,7 +334,8 @@ def test_get_field_config_variables(metplus_config,
                                                         index,
                                                         search_prefixes)
 
-        assert(field_configs.get(field_info_type) == expected_value)
+        assert field_configs.get(field_info_type) == expected_value
+
 
 @pytest.mark.parametrize(
     'config_keys, field_key, expected_value', [
@@ -366,6 +383,7 @@ def test_get_field_config_variables(metplus_config,
         ([], 'output_names', None),
     ]
 )
+@pytest.mark.util
 def test_get_field_config_variables_synonyms(metplus_config,
                                              config_keys,
                                              field_key,
@@ -380,7 +398,8 @@ def test_get_field_config_variables_synonyms(metplus_config,
                                                     index,
                                                     [prefix])
 
-    assert(field_configs.get(field_key) == expected_value)
+    assert field_configs.get(field_key) == expected_value
+
 
 # field info only defined in the FCST_* variables
 @pytest.mark.parametrize(
@@ -390,6 +409,7 @@ def test_get_field_config_variables_synonyms(metplus_config,
         ('OBS', False),
     ]
 )
+@pytest.mark.util
 def test_parse_var_list_fcst_only(metplus_config, data_type, list_created):
     conf = metplus_config()
     conf.set('config', 'FCST_VAR1_NAME', "NAME1")
@@ -399,7 +419,7 @@ def test_parse_var_list_fcst_only(metplus_config, data_type, list_created):
 
     # this should not occur because OBS variables are missing
     if config_metplus.validate_configuration_variables(conf, force_check=True)[1]:
-        assert(False)
+        assert False
 
     var_list = config_metplus.parse_var_list(conf, time_info=None, data_type=data_type)
 
@@ -415,7 +435,8 @@ def test_parse_var_list_fcst_only(metplus_config, data_type, list_created):
                var_list[2]['fcst_level'] == "LEVELS21" and \
                var_list[3]['fcst_level'] == "LEVELS22")
     else:
-        assert(not var_list)
+        assert not var_list
+
 
 # field info only defined in the OBS_* variables
 @pytest.mark.parametrize(
@@ -425,6 +446,7 @@ def test_parse_var_list_fcst_only(metplus_config, data_type, list_created):
         ('FCST', False),
     ]
 )
+@pytest.mark.util
 def test_parse_var_list_obs(metplus_config, data_type, list_created):
     conf = metplus_config()
     conf.set('config', 'OBS_VAR1_NAME', "NAME1")
@@ -434,7 +456,7 @@ def test_parse_var_list_obs(metplus_config, data_type, list_created):
 
     # this should not occur because FCST variables are missing
     if config_metplus.validate_configuration_variables(conf, force_check=True)[1]:
-        assert(False)
+        assert False
 
     var_list = config_metplus.parse_var_list(conf, time_info=None, data_type=data_type)
 
@@ -450,7 +472,7 @@ def test_parse_var_list_obs(metplus_config, data_type, list_created):
                var_list[2]['obs_level'] == "LEVELS21" and \
                var_list[3]['obs_level'] == "LEVELS22")
     else:
-        assert(not var_list)
+        assert not var_list
 
 
 # field info only defined in the BOTH_* variables
@@ -461,6 +483,7 @@ def test_parse_var_list_obs(metplus_config, data_type, list_created):
         ('OBS', 'obs'),
     ]
 )
+@pytest.mark.util
 def test_parse_var_list_both(metplus_config, data_type, list_created):
     conf = metplus_config()
     conf.set('config', 'BOTH_VAR1_NAME', "NAME1")
@@ -470,7 +493,7 @@ def test_parse_var_list_both(metplus_config, data_type, list_created):
 
     # this should not occur because BOTH variables are used
     if not config_metplus.validate_configuration_variables(conf, force_check=True)[1]:
-        assert(False)
+        assert False
 
     var_list = config_metplus.parse_var_list(conf, time_info=None, data_type=data_type)
     print(f'var_list:{var_list}')
@@ -483,9 +506,11 @@ def test_parse_var_list_both(metplus_config, data_type, list_created):
            not var_list[1][f'{list_to_check}_level'] == "LEVELS12" or \
            not var_list[2][f'{list_to_check}_level'] == "LEVELS21" or \
            not var_list[3][f'{list_to_check}_level'] == "LEVELS22":
-           assert(False)
+           assert False
+
 
 # field info defined in both FCST_* and OBS_* variables
+@pytest.mark.util
 def test_parse_var_list_fcst_and_obs(metplus_config):
     conf = metplus_config()
     conf.set('config', 'FCST_VAR1_NAME', "FNAME1")
@@ -499,7 +524,7 @@ def test_parse_var_list_fcst_and_obs(metplus_config):
 
     # this should not occur because FCST and OBS variables are found
     if not config_metplus.validate_configuration_variables(conf, force_check=True)[1]:
-        assert(False)
+        assert False
 
     var_list = config_metplus.parse_var_list(conf)
 
@@ -520,7 +545,9 @@ def test_parse_var_list_fcst_and_obs(metplus_config):
            var_list[3]['fcst_level'] == "FLEVELS22" and \
            var_list[3]['obs_level'] == "OLEVELS22")
 
+
 # VAR1 defined by FCST, VAR2 defined by OBS
+@pytest.mark.util
 def test_parse_var_list_fcst_and_obs_alternate(metplus_config):
     conf = metplus_config()
     conf.set('config', 'FCST_VAR1_NAME', "FNAME1")
@@ -531,6 +558,7 @@ def test_parse_var_list_fcst_and_obs_alternate(metplus_config):
     # configuration is invalid and parse var list should not give any results
     assert(not config_metplus.validate_configuration_variables(conf, force_check=True)[1] and not config_metplus.parse_var_list(conf))
 
+
 # VAR1 defined by OBS, VAR2 by FCST, VAR3 by both FCST AND OBS
 @pytest.mark.parametrize(
     'data_type, list_len, name_levels', [
@@ -539,6 +567,7 @@ def test_parse_var_list_fcst_and_obs_alternate(metplus_config):
         ('OBS', 4, ('ONAME1:OLEVELS11','ONAME1:OLEVELS12','ONAME3:OLEVELS31','ONAME3:OLEVELS32')),
     ]
 )
+@pytest.mark.util
 def test_parse_var_list_fcst_and_obs_and_both(metplus_config, data_type, list_len, name_levels):
     conf = metplus_config()
     conf.set('config', 'OBS_VAR1_NAME', "ONAME1")
@@ -552,15 +581,15 @@ def test_parse_var_list_fcst_and_obs_and_both(metplus_config, data_type, list_le
 
     # configuration is invalid and parse var list should not give any results
     if config_metplus.validate_configuration_variables(conf, force_check=True)[1]:
-        assert(False)
+        assert False
 
     var_list = config_metplus.parse_var_list(conf, time_info=None, data_type=data_type)
 
     if len(var_list) != list_len:
-        assert(False)
+        assert False
 
     if data_type is None:
-        assert(len(var_list) == 0)
+        assert len(var_list) == 0
 
     if name_levels is not None:
         dt_lower = data_type.lower()
@@ -572,12 +601,13 @@ def test_parse_var_list_fcst_and_obs_and_both(metplus_config, data_type, list_le
 
         for expect, reality in zip(expected,var_list):
             if expect[f'{dt_lower}_name'] != reality[f'{dt_lower}_name']:
-                assert(False)
+                assert False
 
             if expect[f'{dt_lower}_level'] != reality[f'{dt_lower}_level']:
-                assert(False)
+                assert False
 
-        assert(True)
+        assert True
+
 
 # option defined in obs only
 @pytest.mark.parametrize(
@@ -587,6 +617,7 @@ def test_parse_var_list_fcst_and_obs_and_both(metplus_config, data_type, list_le
         ('OBS', 0),
     ]
 )
+@pytest.mark.util
 def test_parse_var_list_fcst_only_options(metplus_config, data_type, list_len):
     conf = metplus_config()
     conf.set('config', 'FCST_VAR1_NAME', "NAME1")
@@ -596,11 +627,12 @@ def test_parse_var_list_fcst_only_options(metplus_config, data_type, list_len):
 
     # this should not occur because OBS variables are missing
     if config_metplus.validate_configuration_variables(conf, force_check=True)[1]:
-        assert(False)
+        assert False
 
     var_list = config_metplus.parse_var_list(conf, time_info=None, data_type=data_type)
 
-    assert(len(var_list) == list_len)
+    assert len(var_list) == list_len
+
 
 @pytest.mark.parametrize(
     'met_tool, indices', [
@@ -609,6 +641,7 @@ def test_parse_var_list_fcst_only_options(metplus_config, data_type, list_len):
         ('ENSEMBLE_STAT', {}),
     ]
 )
+@pytest.mark.util
 def test_find_var_indices_wrapper_specific(metplus_config, met_tool, indices):
     conf = metplus_config()
     data_type = 'FCST'
@@ -618,11 +651,13 @@ def test_find_var_indices_wrapper_specific(metplus_config, met_tool, indices):
     var_name_indices = config_metplus.find_var_name_indices(conf, data_types=[data_type],
                                                   met_tool=met_tool)
 
-    assert(var_name_indices == indices)
+    assert var_name_indices == indices
+
 
 # ensure that the field configuration used for
 # met_tool_wrapper/EnsembleStat/EnsembleStat.conf
 # works as expected
+@pytest.mark.util
 def test_parse_var_list_ensemble(metplus_config):
     config = metplus_config()
     config.set('config', 'ENS_VAR1_NAME', 'APCP')
@@ -705,13 +740,15 @@ def test_parse_var_list_ensemble(metplus_config):
     assert(len(ensemble_var_list) == len(expected_ens_list))
     for actual_ens, expected_ens in zip(ensemble_var_list, expected_ens_list):
         for key, value in expected_ens.items():
-            assert(actual_ens.get(key) == value)
+            assert actual_ens.get(key) == value
 
     assert(len(var_list) == len(expected_var_list))
     for actual_var, expected_var in zip(var_list, expected_var_list):
         for key, value in expected_var.items():
-            assert(actual_var.get(key) == value)
+            assert actual_var.get(key) == value
 
+
+@pytest.mark.util
 def test_parse_var_list_series_by(metplus_config):
     config = metplus_config()
     config.set('config', 'BOTH_EXTRACT_TILES_VAR1_NAME', 'RH')
@@ -769,16 +806,18 @@ def test_parse_var_list_series_by(metplus_config):
     print(f'SeriesAnalysis var list:')
     pp.pprint(actual_sa_list)
 
-    assert(len(actual_et_list) == len(expected_et_list))
+    assert len(actual_et_list) == len(expected_et_list)
     for actual_et, expected_et in zip(actual_et_list, expected_et_list):
         for key, value in expected_et.items():
-            assert(actual_et.get(key) == value)
+            assert actual_et.get(key) == value
 
     assert(len(actual_sa_list) == len(expected_sa_list))
     for actual_sa, expected_sa in zip(actual_sa_list, expected_sa_list):
         for key, value in expected_sa.items():
-            assert(actual_sa.get(key) == value)
+            assert actual_sa.get(key) == value
 
+
+@pytest.mark.util
 def test_parse_var_list_priority_fcst(metplus_config):
     priority_list = ['FCST_GRID_STAT_VAR1_NAME',
                      'FCST_GRID_STAT_VAR1_INPUT_FIELD_NAME',
@@ -807,13 +846,15 @@ def test_parse_var_list_priority_fcst(metplus_config):
                                        data_type='FCST',
                                        met_tool='grid_stat')
 
-        assert(len(var_list) == 1)
-        assert(var_list[0].get('fcst_name') == priority_list[0].lower())
+        assert len(var_list) == 1
+        assert var_list[0].get('fcst_name') == priority_list[0].lower()
         priority_list.pop(0)
+
 
 # test that if wrapper specific field info is specified, it only gets
 # values from that list. All generic values should be read if no
 # wrapper specific field info variables are specified
+@pytest.mark.util
 def test_parse_var_list_wrapper_specific(metplus_config):
     conf = metplus_config()
     conf.set('config', 'FCST_VAR1_NAME', "ENAME1")
@@ -846,6 +887,7 @@ def test_parse_var_list_wrapper_specific(metplus_config):
            g_var_list[1]['fcst_name'] == "GNAME1" and
            g_var_list[0]['fcst_level'] == "GLEVELS11" and
            g_var_list[1]['fcst_level'] == "GLEVELS12")
+
 
 @pytest.mark.parametrize(
     'config_overrides, expected_results', [
@@ -897,6 +939,7 @@ def test_parse_var_list_wrapper_specific(metplus_config):
          ]),
     ]
 )
+@pytest.mark.util
 def test_parse_var_list_py_embed_multi_levels(metplus_config, config_overrides,
                                               expected_results):
     config = metplus_config()
@@ -907,19 +950,19 @@ def test_parse_var_list_py_embed_multi_levels(metplus_config, config_overrides,
     var_list = config_metplus.parse_var_list(config,
                                    time_info=time_info,
                                    data_type=None)
-    assert(len(var_list) == len(expected_results))
+    assert len(var_list) == len(expected_results)
 
     for var_item, expected_result in zip(var_list, expected_results):
-        assert(var_item['fcst_name'] == expected_result)
+        assert var_item['fcst_name'] == expected_result
 
     # run again with data type specified
     var_list = config_metplus.parse_var_list(config,
                                     time_info=time_info,
                                     data_type='FCST')
-    assert(len(var_list) == len(expected_results))
+    assert len(var_list) == len(expected_results)
 
     for var_item, expected_result in zip(var_list, expected_results):
-        assert(var_item['fcst_name'] == expected_result)
+        assert var_item['fcst_name'] == expected_result
 
 
 @pytest.mark.parametrize(
@@ -956,12 +999,14 @@ def test_parse_var_list_py_embed_multi_levels(metplus_config, config_overrides,
         ('StatAnalysis, MakePlots', ['StatAnalysis']),
     ]
 )
+@pytest.mark.util
 def test_get_process_list(metplus_config, input_list, expected_list):
     conf = metplus_config()
     conf.set('config', 'PROCESS_LIST', input_list)
     process_list = config_metplus.get_process_list(conf)
     output_list = [item[0] for item in process_list]
-    assert(output_list == expected_list)
+    assert output_list == expected_list
+
 
 @pytest.mark.parametrize(
     'input_list, expected_list', [
@@ -988,12 +1033,15 @@ def test_get_process_list(metplus_config, input_list, expected_list):
                                                   ('TCStat', 'two')]),
     ]
 )
+@pytest.mark.util
 def test_get_process_list_instances(metplus_config, input_list, expected_list):
     conf = metplus_config()
     conf.set('config', 'PROCESS_LIST', input_list)
     output_list = config_metplus.get_process_list(conf)
-    assert(output_list == expected_list)
+    assert output_list == expected_list
 
+
+@pytest.mark.util
 def test_getraw_sub_and_nosub(metplus_config):
     raw_string = '{MODEL}_{CURRENT_FCST_NAME}'
     sub_actual = 'FCST_NAME'
@@ -1008,6 +1056,8 @@ def test_getraw_sub_and_nosub(metplus_config):
     sub_value = config.getraw('config', 'OUTPUT_PREFIX', sub_vars=True)
     assert sub_value == sub_actual
 
+
+@pytest.mark.util
 def test_getraw_instance_with_unset_var(metplus_config):
     """! Replicates bug where CURRENT_FCST_NAME is substituted with
      an empty string when copied from an instance section
