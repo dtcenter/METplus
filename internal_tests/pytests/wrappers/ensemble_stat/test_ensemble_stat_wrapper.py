@@ -776,3 +776,8 @@ def test_ensemble_stat_fill_missing(metplus_config, config_overrides,
         actual_num_files = len(file_handle.read().splitlines()) - 1
 
     assert actual_num_files == expected_num_files
+
+
+@pytest.mark.wrapper_c
+def test_failure_testing():
+    assert False
