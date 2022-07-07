@@ -1,18 +1,14 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+
+import pytest
 
 import os
-import sys
-import re
-import logging
-from collections import namedtuple
-import pytest
+
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
-import produtil
-
 from metplus.wrappers.grid_diag_wrapper import GridDiagWrapper
-from metplus.util import time_util
+
 
 @pytest.mark.parametrize(
     'time_info, expected_subset', [
@@ -65,7 +61,9 @@ from metplus.util import time_util
           'lead': 86400},
          ['init_20141031213015_valid_20141101213015_lead_024.nc',
           ]),
-    ])
+    ]
+)
+@pytest.mark.wrapper
 def test_get_all_files_and_subset(metplus_config, time_info, expected_subset):
     """! Test to ensure that get_all_files only gets the files that are
     relevant to the runtime settings and not every file in the directory
@@ -119,6 +117,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expected_subset):
         actual_file = actual_file.strip()
         assert(os.path.basename(actual_file) == expected_file)
 
+
 @pytest.mark.parametrize(
     'time_info, expected_filename', [
         # all wildcard
@@ -166,11 +165,15 @@ def test_get_all_files_and_subset(metplus_config, time_info, expected_subset):
           'valid': datetime(2014, 11, 1, 9, 30, 15),
           'lead': relativedelta(hours=24)},
          'grid_diag_files_input0_init_20141031093015_valid_20141101093015_lead_86400.txt'),
-])
+    ]
+)
+@pytest.mark.wrapper
 def test_get_list_file_name(metplus_config, time_info, expected_filename):
     wrapper = GridDiagWrapper(metplus_config())
     assert(wrapper.get_list_file_name(time_info, 'input0') == expected_filename)
 
+
+@pytest.mark.wrapper
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
 

@@ -1,40 +1,12 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+
+import pytest
 
 import os
-import sys
-import re
-import logging
-from collections import namedtuple
-import pytest
 import datetime
 
-import produtil
-
 from metplus.wrappers.compare_gridded_wrapper import CompareGriddedWrapper
-from metplus.util import met_util as util
-from metplus.util import time_util
 
-# --------------------TEST CONFIGURATION and FIXTURE SUPPORT -------------
-#
-# The test configuration and fixture support the additional configuration
-# files used in METplus
-#              !!!!!!!!!!!!!!!
-#              !!!IMPORTANT!!!
-#              !!!!!!!!!!!!!!!
-# The following two methods should be included in ALL pytest tests for METplus.
-#
-#
-#def pytest_addoption(parser):
-#    parser.addoption("-c", action="store", help=" -c <test config file>")
-
-
-# @pytest.fixture
-#def cmdopt(request):
-#    return request.config.getoption("-c")
-
-
-# -----------------FIXTURES THAT CAN BE USED BY ALL TESTS----------------
-#@pytest.fixture
 def compare_gridded_wrapper(metplus_config):
     """! Returns a default GridStatWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
@@ -44,13 +16,7 @@ def compare_gridded_wrapper(metplus_config):
     config = metplus_config()
     return CompareGriddedWrapper(config)
 
-# ------------------------ TESTS GO HERE --------------------------
 
-# ------------------------
-#  test_get_field_info_no_prob
-# ------------------------
-# key is a list of inputs to get_field_info: name, level, thresh_list, extras, and data type (FCST/OBS)
-# value is a list of field info lists that are generated from the keys
 @pytest.mark.parametrize(
     'key, value', [
         # forecast name and level
@@ -95,7 +61,7 @@ def compare_gridded_wrapper(metplus_config):
 
     ]
 )
-
+@pytest.mark.wrapper
 def test_get_field_info_no_prob(metplus_config, key, value):
     w = compare_gridded_wrapper(metplus_config)
     w.c_dict['FCST_IS_PROB'] = False
@@ -111,12 +77,7 @@ def test_get_field_info_no_prob(metplus_config, key, value):
     fields = w.get_field_info(**field_dict)
     assert(fields == value)
 
-# ------------------------
-#  test_get_field_info_fcst_prob_grib_pds
-#   - forecast is grib probabalistic but observation is not
-# ------------------------
-# key is a list of inputs to get_field_info: name, level, thresh_list, extras, and data type (FCST/OBS)
-# value is a list of field info lists that are generated from the keys
+
 @pytest.mark.parametrize(
     'key, value', [
         # forecast grib name level thresh
@@ -142,6 +103,7 @@ def test_get_field_info_no_prob(metplus_config, key, value):
 
          ]
 )
+@pytest.mark.wrapper
 def test_get_field_info_fcst_prob_grib_pds(metplus_config, key, value):
     w = compare_gridded_wrapper(metplus_config)
     w.c_dict['FCST_IS_PROB'] = True
@@ -159,6 +121,7 @@ def test_get_field_info_fcst_prob_grib_pds(metplus_config, key, value):
 
     fields = w.get_field_info(**field_dict)
     assert(fields == value)
+
 
 # ------------------------
 #  test_get_field_info_fcst_prob_grib_non_pds
@@ -191,6 +154,7 @@ def test_get_field_info_fcst_prob_grib_pds(metplus_config, key, value):
 
          ]
 )
+@pytest.mark.wrapper
 def test_get_field_info_fcst_prob_grib_non_pds(metplus_config, key, value):
     w = compare_gridded_wrapper(metplus_config)
     w.c_dict['FCST_IS_PROB'] = True
@@ -209,7 +173,8 @@ def test_get_field_info_fcst_prob_grib_non_pds(metplus_config, key, value):
     fields = w.get_field_info(**field_dict)
     assert(fields == value)
 
-    # ------------------------
+
+# ------------------------
 #  test_get_field_info_fcst_prob
 #   - forecast is probabalistic but observation is not
 # ------------------------
@@ -227,6 +192,7 @@ def test_get_field_info_fcst_prob_grib_non_pds(metplus_config, key, value):
          ['{ name=\"NAME\"; level=\"L0\"; cat_thresh=[ gt3 ]; }']),
          ]
 )
+@pytest.mark.wrapper
 def test_get_field_info_fcst_prob_netcdf(metplus_config, key, value):
     w = compare_gridded_wrapper(metplus_config)
     w.c_dict['FCST_IS_PROB'] = True
@@ -243,6 +209,7 @@ def test_get_field_info_fcst_prob_netcdf(metplus_config, key, value):
     fields = w.get_field_info(**field_dict)
     assert(fields == value)
 
+
 @pytest.mark.parametrize(
     'win, app_win, file_win, app_file_win, win_value, file_win_value', [
         ([1, 2, 3, 4, 2, 4]),
@@ -254,6 +221,7 @@ def test_get_field_info_fcst_prob_netcdf(metplus_config, key, value):
         ([1, None, 3, 4, 1, 4]),
          ]
 )
+@pytest.mark.wrapper
 def test_handle_window_once(metplus_config, win, app_win, file_win, app_file_win, win_value, file_win_value):
     cgw = compare_gridded_wrapper(metplus_config)
     config = cgw.config

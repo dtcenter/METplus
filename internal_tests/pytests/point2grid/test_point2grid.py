@@ -1,39 +1,12 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
-import os
-import sys
-import re
-import logging
-from collections import namedtuple
-import produtil
 import pytest
 import datetime
 
 from metplus.wrappers.point2grid_wrapper import Point2GridWrapper
-from metplus.util import met_util as util
 from metplus.util import time_util
 
-# --------------------TEST CONFIGURATION and FIXTURE SUPPORT -------------
-#
-# The test configuration and fixture support the additional configuration
-# files used in METplus
-#              !!!!!!!!!!!!!!!
-#              !!!IMPORTANT!!!
-#              !!!!!!!!!!!!!!!
-# The following two methods should be included in ALL pytest tests for METplus.
-#
-#
-#def pytest_addoption(parser):
-#    parser.addoption("-c", action="store", help=" -c <test config file>")
 
-
-# @pytest.fixture
-#def cmdopt(request):
-#    return request.config.getoption("-c")
-
-
-# -----------------FIXTURES THAT CAN BE USED BY ALL TESTS----------------
-#@pytest.fixture
 def p2g_wrapper(metplus_config):
     """! Returns a default Point2Grid with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
@@ -44,9 +17,8 @@ def p2g_wrapper(metplus_config):
     config.set('config', 'DO_NOT_RUN_EXE', True)
     return Point2GridWrapper(config)
 
-# ------------------------ TESTS GO HERE --------------------------
 
-
+@pytest.mark.wrapper
 def test_set_command_line_arguments(metplus_config):
     test_passed = True
     wrap = p2g_wrapper(metplus_config)
@@ -174,5 +146,4 @@ def test_set_command_line_arguments(metplus_config):
 
     wrap.args.clear()
 
-
-    assert(test_passed)
+    assert test_passed

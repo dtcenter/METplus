@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import pytest
+
 import os
 from datetime import datetime
 
@@ -18,6 +19,7 @@ obs_fmt = (f'field = [{{ name="{obs_name}"; '
            f'level="{obs_level_no_quotes}"; }}];')
 time_fmt = '%Y%m%d%H'
 run_times = ['2005080700', '2005080712']
+
 
 def set_minimum_config_settings(config):
     # set config variables to prevent command from running and bypass check
@@ -51,6 +53,7 @@ def set_minimum_config_settings(config):
     config.set('config', 'OBS_VAR1_NAME', obs_name)
     config.set('config', 'OBS_VAR1_LEVELS', obs_level)
 
+
 @pytest.mark.parametrize(
     'config_overrides, expected_values', [
         # 0 generic FCST is prob
@@ -82,6 +85,7 @@ def set_minimum_config_settings(config):
          {'FCST_IS_PROB': False, 'OBS_IS_PROB': False}),
     ]
 )
+@pytest.mark.wrapper
 def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
 
     config = metplus_config()
@@ -96,6 +100,7 @@ def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
     assert wrapper.isOK
     for key, expected_value in expected_values.items():
         assert expected_value == wrapper.c_dict[key]
+
 
 @pytest.mark.parametrize(
     'config_overrides, env_var_values', [
@@ -119,6 +124,7 @@ def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
          {'CLIMO_STDEV_FILE': '"/climo/stdev/dir/gs_stdev_YMDH.tmpl"', }),
     ]
 )
+@pytest.mark.wrapper
 def test_handle_climo_file_variables(metplus_config, config_overrides,
                                      env_var_values):
     """! Ensure that old and new variables for setting climo_mean and
@@ -145,11 +151,12 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
         for old_env in old_env_vars:
             match = next((item for item in actual_env_vars if
                           item.startswith(old_env)), None)
-            assert(match is not None)
+            assert match is not None
             actual_value = match.split('=', 1)[1]
             expected_value = env_var_values.get(old_env, '')
             expected_value = expected_value.replace('YMDH', ymdh)
-            assert(expected_value == actual_value)
+            assert expected_value == actual_value
+
 
 @pytest.mark.parametrize(
     'config_overrides, env_var_values', [
@@ -681,6 +688,7 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
 
     ]
 )
+@pytest.mark.wrapper
 def test_grid_stat_single_field(metplus_config, config_overrides,
                                 env_var_values):
 
@@ -709,13 +717,12 @@ def test_grid_stat_single_field(metplus_config, config_overrides,
                       f"{config_file} -outdir {out_dir}/2005080800"),
                      ]
 
-
     all_cmds = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_cmds}")
 
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
-        assert(cmd == expected_cmd)
+        assert cmd == expected_cmd
 
         # check that environment variables were set properly
         # including deprecated env vars (not in wrapper env var keys)
@@ -725,16 +732,18 @@ def test_grid_stat_single_field(metplus_config, config_overrides,
         for env_var_key in env_var_keys:
             match = next((item for item in env_vars if
                           item.startswith(env_var_key)), None)
-            assert(match is not None)
+            assert match is not None
             actual_value = match.split('=', 1)[1]
             print(f"ENV VAR: {env_var_key}")
             if env_var_key == 'METPLUS_FCST_FIELD':
-                assert(actual_value == fcst_fmt)
+                assert actual_value == fcst_fmt
             elif env_var_key == 'METPLUS_OBS_FIELD':
-                assert (actual_value == obs_fmt)
+                assert actual_value == obs_fmt
             else:
-                assert(env_var_values.get(env_var_key, '') == actual_value)
+                assert env_var_values.get(env_var_key, '') == actual_value
 
+
+@pytest.mark.wrapper
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
 

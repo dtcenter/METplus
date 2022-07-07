@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
-import os
-import sys
 import pytest
-import datetime
+
+import os
 
 from metplus.wrappers.tc_gen_wrapper import TCGenWrapper
+
 
 @pytest.mark.parametrize(
     'config_overrides, env_var_values', [
@@ -285,6 +285,7 @@ from metplus.wrappers.tc_gen_wrapper import TCGenWrapper
 
     ]
 )
+@pytest.mark.wrapper
 def test_tc_gen(metplus_config, config_overrides, env_var_values):
     # expected number of 2016 files (including file_list line)
     expected_genesis_count = 7
@@ -382,11 +383,11 @@ def test_tc_gen(metplus_config, config_overrides, env_var_values):
 
     all_cmds = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_cmds}")
-    assert(len(all_cmds) == len(expected_cmds))
+    assert len(all_cmds) == len(expected_cmds)
 
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
-        assert(cmd == expected_cmd)
+        assert cmd == expected_cmd
 
         # check that environment variables were set properly
         # including deprecated env vars (not in wrapper env var keys)
@@ -396,27 +397,29 @@ def test_tc_gen(metplus_config, config_overrides, env_var_values):
         for env_var_key in env_var_keys:
             match = next((item for item in env_vars if
                           item.startswith(env_var_key)), None)
-            assert(match is not None)
+            assert match is not None
             value = match.split('=', 1)[1]
-            assert(env_var_values.get(env_var_key, '') == value)
+            assert env_var_values.get(env_var_key, '') == value
 
     # verify file count of genesis, edeck, shape, and track file list files
     with open(genesis_path, 'r') as file_handle:
         lines = file_handle.read().splitlines()
-    assert(len(lines) == expected_genesis_count)
+    assert len(lines) == expected_genesis_count
 
     with open(edeck_path, 'r') as file_handle:
         lines = file_handle.read().splitlines()
-    assert(len(lines) == expected_edeck_count)
+    assert len(lines) == expected_edeck_count
 
     with open(shape_path, 'r') as file_handle:
         lines = file_handle.read().splitlines()
-    assert(len(lines) == expected_shape_count)
+    assert len(lines) == expected_shape_count
 
     with open(track_path, 'r') as file_handle:
         lines = file_handle.read().splitlines()
-    assert(len(lines) == expected_track_count)
+    assert len(lines) == expected_track_count
 
+
+@pytest.mark.wrapper
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
 

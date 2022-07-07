@@ -1,18 +1,12 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
-import os
-import sys
-import re
-import logging
-from collections import namedtuple
 import pytest
+
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
-import produtil
-
 from metplus.wrappers.runtime_freq_wrapper import RuntimeFreqWrapper
-from metplus.util import time_util
+
 
 @pytest.mark.parametrize(
     'runtime, filetime, expected_result', [
@@ -106,9 +100,10 @@ from metplus.util import time_util
          True),
     ]
 )
+@pytest.mark.wrapper
 def test_compare_time_info(metplus_config, runtime, filetime, expected_result):
     config = metplus_config()
 
     wrapper = RuntimeFreqWrapper(config)
     actual_result = wrapper.compare_time_info(runtime, filetime)
-    assert(actual_result == expected_result)
+    assert actual_result == expected_result

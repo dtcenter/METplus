@@ -1,18 +1,13 @@
 #!/usr/bin/env python3
 
-import os
-import sys
-import re
-import logging
-from collections import namedtuple
 import pytest
+
+import os
+
 from datetime import datetime
 
-import produtil
 
 from metplus.wrappers.ensemble_stat_wrapper import EnsembleStatWrapper
-from metplus.util import met_util as util
-from metplus.util import time_util
 
 fcst_dir = '/some/path/fcst'
 obs_dir = '/some/path/obs'
@@ -30,6 +25,7 @@ ens_fmt = f'field = [{{ name="{ens_name}"; level="{ens_level}"; }}];'
 
 time_fmt = '%Y%m%d%H'
 run_times = ['2005080700', '2005080712']
+
 
 def set_minimum_config_settings(config, set_fields=True):
     # set config variables to prevent command from running and bypass check
@@ -66,6 +62,7 @@ def set_minimum_config_settings(config, set_fields=True):
         config.set('config', 'OBS_VAR1_LEVELS', obs_level)
         config.set('config', 'ENS_VAR1_NAME', ens_name)
         config.set('config', 'ENS_VAR1_LEVELS', ens_level)
+
 
 @pytest.mark.parametrize(
     'config_overrides, env_var_values', [
@@ -109,6 +106,7 @@ def set_minimum_config_settings(config, set_fields=True):
           }),
     ]
 )
+@pytest.mark.wrapper
 def test_ensemble_stat_field_info(metplus_config, config_overrides,
                                   env_var_values):
 
@@ -160,6 +158,7 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
          {'CLIMO_STDEV_FILE': '"/climo/stdev/dir/gs_stdev_YMDH.tmpl"', }),
     ]
 )
+@pytest.mark.wrapper
 def test_handle_climo_file_variables(metplus_config, config_overrides,
                                      env_var_values):
     """! Ensure that old and new variables for setting climo_mean and
@@ -192,6 +191,7 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
             expected_value = env_var_values.get(old_env, '')
             expected_value = expected_value.replace('YMDH', ymdh)
             assert(expected_value == actual_value)
+
 
 @pytest.mark.parametrize(
     'config_overrides, env_var_values', [
@@ -666,6 +666,7 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
 
     ]
 )
+@pytest.mark.wrapper
 def test_ensemble_stat_single_field(metplus_config, config_overrides,
                                     env_var_values):
 
@@ -721,6 +722,8 @@ def test_ensemble_stat_single_field(metplus_config, config_overrides,
             else:
                 assert(env_var_values.get(env_var_key, '') == actual_value)
 
+
+@pytest.mark.wrapper
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
 
@@ -736,12 +739,14 @@ def test_get_config_file(metplus_config):
     wrapper = EnsembleStatWrapper(config)
     assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name
 
+
 @pytest.mark.parametrize(
     'config_overrides, expected_num_files', [
         ({}, 4),
         ({'ENSEMBLE_STAT_ENS_MEMBER_IDS': '1'}, 1),
     ]
 )
+@pytest.mark.wrapper
 def test_ensemble_stat_fill_missing(metplus_config, config_overrides,
                                     expected_num_files):
     config = metplus_config()

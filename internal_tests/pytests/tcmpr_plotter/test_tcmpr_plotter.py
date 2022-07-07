@@ -1,12 +1,8 @@
 #!/usr/bin/env python3
 
-import os
-import sys
-import re
 import pytest
-from datetime import datetime
 
-import produtil
+import os
 
 from metplus.wrappers.tcmpr_plotter_wrapper import TCMPRPlotterWrapper
 
@@ -17,6 +13,7 @@ EXPECTED_INPUT_FILES = [
 ]
 TIME_FMT = '%Y%m%d%H'
 RUN_TIME = '20141214'
+
 
 def set_minimum_config_settings(config):
     # set config variables to prevent command from running and bypass check
@@ -36,6 +33,7 @@ def set_minimum_config_settings(config):
                 'TCMPRPlotter/TCMPRPlotterConfig_Customize'))
     config.set('config', 'TCMPR_PLOTTER_PLOT_OUTPUT_DIR',
                '{OUTPUT_BASE}/TCMPRPlotter/tcmpr_plots')
+
 
 @pytest.mark.parametrize(
     'config_overrides,expected_loop_args', [
@@ -99,6 +97,7 @@ def set_minimum_config_settings(config):
           'plot': [('pitem1', 'P Label 1'), ('pitem2', 'P Label 2')]}),
     ]
 )
+@pytest.mark.wrapper
 def test_read_loop_info(metplus_config, config_overrides, expected_loop_args):
     config = metplus_config()
 
@@ -110,6 +109,7 @@ def test_read_loop_info(metplus_config, config_overrides, expected_loop_args):
 
     wrapper = TCMPRPlotterWrapper(config)
     assert wrapper.read_loop_info() == expected_loop_args
+
 
 @pytest.mark.parametrize(
     'config_overrides,expected_strings', [
@@ -178,7 +178,7 @@ def test_read_loop_info(metplus_config, config_overrides, expected_loop_args):
            '-dep ditem1 -plot pitem1')]),
     ]
 )
-
+@pytest.mark.wrapper
 def test_tcmpr_plotter_loop(metplus_config, config_overrides,
                             expected_strings):
     config = metplus_config()
@@ -271,7 +271,7 @@ def test_tcmpr_plotter_loop(metplus_config, config_overrides,
         ({'TCMPR_PLOTTER_PLOT_TYPES': 'item1'}, '-plot item1'),
     ]
 )
-
+@pytest.mark.wrapper
 def test_tcmpr_plotter(metplus_config, config_overrides, expected_string):
     # add a space before value if expected string has a value
     if expected_string:

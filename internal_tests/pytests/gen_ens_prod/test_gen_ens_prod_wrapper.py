@@ -1,18 +1,10 @@
 #!/usr/bin/env python3
 
-import os
-import sys
-import re
-import logging
-from collections import namedtuple
 import pytest
-from datetime import datetime
 
-import produtil
+import os
 
 from metplus.wrappers.gen_ens_prod_wrapper import GenEnsProdWrapper
-from metplus.util import met_util as util
-from metplus.util import time_util
 
 ens_name = 'REFC'
 ens_level = 'L0'
@@ -20,6 +12,7 @@ ens_fmt = f'field = [{{ name="{ens_name}"; level="{ens_level}"; }}];'
 
 time_fmt = '%Y%m%d%H'
 run_times = ['2009123112', '2009123118']
+
 
 def set_minimum_config_settings(config):
     # set config variables to prevent command from running and bypass check
@@ -51,6 +44,7 @@ def set_minimum_config_settings(config):
     config.set('config', 'ENS_VAR1_NAME', ens_name)
     config.set('config', 'ENS_VAR1_LEVELS', ens_level)
 
+
 def handle_input_dir(config):
     test_data_dir = os.path.join(config.getdir('METPLUS_BASE'),
                                  'internal_tests',
@@ -59,6 +53,7 @@ def handle_input_dir(config):
     config.set('config', 'GEN_ENS_PROD_INPUT_DIR', input_dir)
     config.set('config', 'GEN_ENS_PROD_CTRL_INPUT_DIR', input_dir)
     return input_dir
+
 
 @pytest.mark.parametrize(
     'config_overrides, env_var_values', [
@@ -363,8 +358,9 @@ def handle_input_dir(config):
 
     ]
 )
+@pytest.mark.wrapper
 def test_gen_ens_prod_single_field(metplus_config, config_overrides,
-                                    env_var_values):
+                                   env_var_values):
 
     config = metplus_config()
 
@@ -435,12 +431,14 @@ def test_gen_ens_prod_single_field(metplus_config, config_overrides,
             else:
                 assert(env_var_values.get(env_var_key, '') == actual_value)
 
+
 @pytest.mark.parametrize(
     'use_default_config_file', [
         True,
         False,
     ]
 )
+@pytest.mark.wrapper
 def test_get_config_file(metplus_config, use_default_config_file):
     config = metplus_config()
 
@@ -455,12 +453,14 @@ def test_get_config_file(metplus_config, use_default_config_file):
     wrapper = GenEnsProdWrapper(config)
     assert wrapper.c_dict['CONFIG_FILE'] == config_file
 
+
 @pytest.mark.parametrize(
     'config_overrides, expected_num_files', [
         ({}, 10),
         ({'GEN_ENS_PROD_ENS_MEMBER_IDS': '1'}, 5),
     ]
 )
+@pytest.mark.wrapper
 def test_gen_ens_prod_fill_missing(metplus_config, config_overrides,
                                    expected_num_files):
     config = metplus_config()

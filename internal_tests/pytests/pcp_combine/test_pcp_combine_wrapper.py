@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 
+import pytest
+
 import os
 from datetime import datetime
-import pytest
 
 from metplus.wrappers.pcp_combine_wrapper import PCPCombineWrapper
 from metplus.util import ti_calculate
+
 
 def pcp_combine_wrapper(metplus_config, d_type):
     """! Returns a default PCPCombineWrapper with /path/to entries in the
@@ -25,6 +27,8 @@ def pcp_combine_wrapper(metplus_config, d_type):
 
     return PCPCombineWrapper(config)
 
+
+@pytest.mark.wrapper
 def test_get_accumulation_1_to_6(metplus_config):
     data_src = "OBS"
     pcw = pcp_combine_wrapper(metplus_config, data_src)
@@ -48,6 +52,8 @@ def test_get_accumulation_1_to_6(metplus_config):
             input_dir+"/20160904/file.2016090414.01h" in in_files and
             input_dir+"/20160904/file.2016090413.01h" in in_files)
 
+
+@pytest.mark.wrapper
 def test_get_accumulation_6_to_6(metplus_config):
     data_src = "FCST"
     pcw = pcp_combine_wrapper(metplus_config, data_src)
@@ -68,6 +74,8 @@ def test_get_accumulation_6_to_6(metplus_config):
     assert (len(in_files) == 1 and
             input_dir+"/20160904/file.2016090418.06h" in in_files)
 
+
+@pytest.mark.wrapper
 def test_get_lowest_forecast_file_dated_subdir(metplus_config):
     data_src = "FCST"
     pcw = pcp_combine_wrapper(metplus_config, data_src)
@@ -79,6 +87,8 @@ def test_get_lowest_forecast_file_dated_subdir(metplus_config):
     assert(out_file == input_dir+"/20180201/file.2018020118f003.nc" and
            fcst == 10800)
 
+
+@pytest.mark.wrapper
 def test_forecast_constant_init(metplus_config):
     data_src = "FCST"
     pcw = pcp_combine_wrapper(metplus_config, data_src)
@@ -91,6 +101,8 @@ def test_forecast_constant_init(metplus_config):
     assert(out_file == input_dir+"/20180201/file.2018020112f009.nc" and
            fcst == 32400)
 
+
+@pytest.mark.wrapper
 def test_forecast_not_constant_init(metplus_config):
     data_src = "FCST"
     pcw = pcp_combine_wrapper(metplus_config, data_src)
@@ -105,6 +117,7 @@ def test_forecast_not_constant_init(metplus_config):
            fcst == 10800)
 
 
+@pytest.mark.wrapper
 def test_get_lowest_forecast_file_no_subdir(metplus_config):
     data_src = "FCST"
     pcw = pcp_combine_wrapper(metplus_config, data_src)
@@ -117,6 +130,8 @@ def test_get_lowest_forecast_file_no_subdir(metplus_config):
     out_file, fcst = pcw.get_lowest_fcst_file(valid_time, data_src)
     assert(out_file == input_dir+"/file.2018020118f003.nc" and fcst == 10800)
 
+
+@pytest.mark.wrapper
 def test_get_lowest_forecast_file_yesterday(metplus_config):
     data_src = "FCST"
     pcw = pcp_combine_wrapper(metplus_config, data_src)
@@ -129,6 +144,8 @@ def test_get_lowest_forecast_file_yesterday(metplus_config):
     out_file, fcst = pcw.get_lowest_fcst_file(valid_time, data_src)
     assert(out_file == input_dir+"/file.2018013118f012.nc" and fcst == 43200)
 
+
+@pytest.mark.wrapper
 def test_setup_add_method(metplus_config):
     data_src = "OBS"
     pcw = pcp_combine_wrapper(metplus_config, data_src)
@@ -151,7 +168,9 @@ def test_setup_add_method(metplus_config):
             input_dir+"/20160904/file.2016090414.01h" in in_files and
             input_dir+"/20160904/file.2016090413.01h" in in_files)
 
+
 # how to test? check output?
+@pytest.mark.wrapper
 def test_setup_sum_method(metplus_config):
     data_src = "OBS"
     pcw = pcp_combine_wrapper(metplus_config, data_src)
@@ -162,6 +181,8 @@ def test_setup_sum_method(metplus_config):
     lookback = 6 * 3600
     assert pcw.setup_sum_method(time_info, lookback, data_src)
 
+
+@pytest.mark.wrapper
 def test_setup_subtract_method(metplus_config):
     data_src = "FCST"
     pcw = pcp_combine_wrapper(metplus_config, data_src)
@@ -175,6 +196,8 @@ def test_setup_subtract_method(metplus_config):
 
     assert len(in_files) == 2
 
+
+@pytest.mark.wrapper
 def test_pcp_combine_add_subhourly(metplus_config):
     fcst_name = 'A000500'
     fcst_level = 'Surface'
@@ -243,6 +266,8 @@ def test_pcp_combine_add_subhourly(metplus_config):
         # ensure commands are generated as expected
         assert cmd == expected_cmd
 
+
+@pytest.mark.wrapper
 def test_pcp_combine_bucket(metplus_config):
     fcst_output_name = 'APCP'
     config = metplus_config()
@@ -307,6 +332,7 @@ def test_pcp_combine_bucket(metplus_config):
         # ensure commands are generated as expected
         assert cmd == expected_cmd
 
+
 @pytest.mark.parametrize(
     'config_overrides, extra_fields', [
         ({},
@@ -320,6 +346,7 @@ def test_pcp_combine_bucket(metplus_config):
           "-field 'name=\"NAME2\"; level=\"LEVEL2\";' ")),
     ]
 )
+@pytest.mark.wrapper
 def test_pcp_combine_derive(metplus_config, config_overrides, extra_fields):
     stat_list = 'sum,min,max,range,mean,stdev,vld_count'
     fcst_name = 'APCP'
@@ -395,6 +422,8 @@ def test_pcp_combine_derive(metplus_config, config_overrides, extra_fields):
         # ensure commands are generated as expected
         assert cmd == expected_cmd
 
+
+@pytest.mark.wrapper
 def test_pcp_combine_loop_custom(metplus_config):
     fcst_name = 'APCP'
     ens_list = ['ens1', 'ens2', 'ens3', 'ens4', 'ens5', 'ens6']
@@ -459,6 +488,8 @@ def test_pcp_combine_loop_custom(metplus_config):
         # ensure commands are generated as expected
         assert cmd == expected_cmd
 
+
+@pytest.mark.wrapper
 def test_pcp_combine_subtract(metplus_config):
     config = metplus_config()
 
@@ -518,6 +549,8 @@ def test_pcp_combine_subtract(metplus_config):
         # ensure commands are generated as expected
         assert cmd == expected_cmd
 
+
+@pytest.mark.wrapper
 def test_pcp_combine_sum_subhourly(metplus_config):
     fcst_name = 'A000500'
     fcst_level = 'Surface'
@@ -585,6 +618,7 @@ def test_pcp_combine_sum_subhourly(metplus_config):
         # ensure commands are generated as expected
         assert cmd == expected_cmd
 
+
 @pytest.mark.parametrize(
     'output_name,extra_output,expected_results', [
         # 0
@@ -598,6 +632,7 @@ def test_pcp_combine_sum_subhourly(metplus_config):
          ['-name "out_name1","out_name2","out_name3"']),
     ]
 )
+@pytest.mark.wrapper
 def test_handle_name_argument(metplus_config, output_name, extra_output,
                               expected_results):
     data_src = 'FCST'
@@ -637,6 +672,7 @@ def test_handle_name_argument(metplus_config, output_name, extra_output,
            "-field 'name=\"input2\";'"]),
     ]
 )
+@pytest.mark.wrapper
 def test_get_extra_fields(metplus_config, names, levels, expected_args):
     data_src = 'FCST'
     config = metplus_config()
@@ -652,6 +688,8 @@ def test_get_extra_fields(metplus_config, names, levels, expected_args):
     for index, expected_arg in enumerate(expected_args):
         assert wrapper.args[index] == expected_arg
 
+
+@pytest.mark.wrapper
 def test_add_method_single_file(metplus_config):
     data_src = 'FCST'
     config = metplus_config()
@@ -717,6 +755,8 @@ def test_add_method_single_file(metplus_config):
         # ensure commands are generated as expected
         assert cmd == expected_cmd
 
+
+@pytest.mark.wrapper
 def test_subtract_method_zero_accum(metplus_config):
     input_name = 'stratiform_rainfall_amount'
     input_level = '"(*,*)"'

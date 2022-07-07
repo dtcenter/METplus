@@ -1,39 +1,15 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+
+import pytest
 
 import os
-import sys
-import re
-import logging
-from collections import namedtuple
-import pytest
 import datetime
 
-import produtil
 
 from metplus.wrappers.gen_vx_mask_wrapper import GenVxMaskWrapper
 from metplus.util import time_util
 
-# --------------------TEST CONFIGURATION and FIXTURE SUPPORT -------------
-#
-# The test configuration and fixture support the additional configuration
-# files used in METplus
-#              !!!!!!!!!!!!!!!
-#              !!!IMPORTANT!!!
-#              !!!!!!!!!!!!!!!
-# The following two methods should be included in ALL pytest tests for METplus.
-#
-#
-#def pytest_addoption(parser):
-#    parser.addoption("-c", action="store", help=" -c <test config file>")
 
-
-# @pytest.fixture
-#def cmdopt(request):
-#    return request.config.getoption("-c")
-
-
-# -----------------FIXTURES THAT CAN BE USED BY ALL TESTS----------------
-#@pytest.fixture
 def gen_vx_mask_wrapper(metplus_config):
     """! Returns a default GenVxMaskWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
@@ -44,12 +20,8 @@ def gen_vx_mask_wrapper(metplus_config):
     config.set('config', 'DO_NOT_RUN_EXE', True)
     return GenVxMaskWrapper(config)
 
-# ------------------------ TESTS GO HERE --------------------------
 
-
-# ------------------------
-#  test_
-# ------------------------
+@pytest.mark.wrapper
 def test_run_gen_vx_mask_once(metplus_config):
     input_dict = {'valid': datetime.datetime.strptime("201802010000",'%Y%m%d%H%M'),
                   'lead': 0}
@@ -72,8 +44,10 @@ def test_run_gen_vx_mask_once(metplus_config):
     for cmd, _ in wrap.all_commands:
         print(f"COMMAND:{cmd}")
         print("EXPECTED:{expected_cmd}")
-        assert(cmd == expected_cmd)
+        assert cmd == expected_cmd
 
+
+@pytest.mark.wrapper
 def test_run_gen_vx_mask_twice(metplus_config):
     input_dict = {'valid': datetime.datetime.strptime("201802010000",'%Y%m%d%H%M'),
                   'lead': 0}
@@ -97,7 +71,7 @@ def test_run_gen_vx_mask_twice(metplus_config):
 
     if len(wrap.all_commands) != len(expected_cmds):
         print("Number of commands run is not the same as expected")
-        assert(False)
+        assert False
 
     for (cmd, _), expected_cmd in zip(wrap.all_commands, expected_cmds):
         print(f"  ACTUAL:{cmd}")
@@ -105,5 +79,5 @@ def test_run_gen_vx_mask_twice(metplus_config):
         if cmd != expected_cmd:
             test_passed = False
 
-    assert(test_passed)
+    assert test_passed
 

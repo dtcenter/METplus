@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
+import pytest
+
 import os
 from datetime import datetime
-import pytest
 
 from metplus.wrappers.tc_pairs_wrapper import TCPairsWrapper
 
@@ -14,6 +15,7 @@ output_template = '{basin?fmt=%s}q{date?fmt=%Y%m%d%H}.gfso.{cyclone?fmt=%s}'
 
 time_fmt = '%Y%m%d%H'
 run_times = ['2014121318']
+
 
 def set_minimum_config_settings(config, loop_by='INIT'):
     # set config variables to prevent command from running and bypass check
@@ -40,6 +42,7 @@ def set_minimum_config_settings(config, loop_by='INIT'):
 
     # can set adeck or edeck variables
     config.set('config', 'TC_PAIRS_ADECK_TEMPLATE', adeck_template)
+
 
 @pytest.mark.parametrize(
     'config_overrides, isOK', [
@@ -80,6 +83,7 @@ def test_read_storm_info(metplus_config, config_overrides, isOK):
         ('2020100700_F000_261N_1101W_FOF', 'wildcard', 'wildcard'),
     ]
 )
+@pytest.mark.wrapper
 def test_parse_storm_id(metplus_config, storm_id, basin, cyclone):
     """! Check that storm ID is parsed properly to get basin and cyclone.
     Check that it returns wildcard expressions basin and cyclone cannot be
@@ -107,6 +111,7 @@ def test_parse_storm_id(metplus_config, storm_id, basin, cyclone):
     assert actual_basin == expected_basin
     assert actual_cyclone == expected_cyclone
 
+
 @pytest.mark.parametrize(
     'basin,cyclone,expected_files,expected_wildcard', [
         ('al', '0104', ['get_bdeck_balq2014123118.gfso.0104'], False),
@@ -123,6 +128,7 @@ def test_parse_storm_id(metplus_config, storm_id, basin, cyclone):
                      'get_bdeck_bmlq2014123118.gfso.0105'], True),
     ]
 )
+@pytest.mark.wrapper
 def test_get_bdeck(metplus_config, basin, cyclone, expected_files,
                    expected_wildcard):
     """! Checks that the correct list of empty test files are found and the
@@ -150,11 +156,12 @@ def test_get_bdeck(metplus_config, basin, cyclone, expected_files,
     wrapper = TCPairsWrapper(config)
     actual_files, actual_wildcard = wrapper._get_bdeck(basin, cyclone,
                                                        time_info)
-    assert(actual_wildcard == expected_wildcard)
-    assert(len(actual_files) == len(expected_files))
+    assert actual_wildcard == expected_wildcard
+    assert len(actual_files) == len(expected_files)
     for actual_file, expected_file in zip(sorted(actual_files),
                                           sorted(expected_files)):
-        assert(os.path.basename(actual_file) == expected_file)
+        assert os.path.basename(actual_file) == expected_file
+
 
 @pytest.mark.parametrize(
     'template, filename,other_basin,other_cyclone', [
@@ -178,6 +185,7 @@ def test_get_bdeck(metplus_config, basin, cyclone, expected_files,
          '20141009bml.dat', 'ml', None),
     ]
 )
+@pytest.mark.wrapper
 def test_get_basin_cyclone_from_bdeck(metplus_config, template, filename,
                                       other_cyclone, other_basin):
     fake_dir = '/fake/dir'
@@ -210,6 +218,7 @@ def test_get_basin_cyclone_from_bdeck(metplus_config, template, filename,
         assert actual_basin == expected_basin
         assert actual_cyclone == expected_cyclone
 
+
 @pytest.mark.parametrize(
     'config_overrides, storm_type, values_to_check', [
         # 0: storm_id
@@ -231,6 +240,7 @@ def test_get_basin_cyclone_from_bdeck(metplus_config, template, filename,
          'cyclone', ['09', '10', '09', '10']),
     ]
 )
+@pytest.mark.wrapper
 def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
                                  storm_type, values_to_check):
     config = metplus_config()
@@ -272,19 +282,20 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
         print(f"CMD{idx}: {cmd}")
         print(f"ENV{idx}: {env_list}")
 
-    assert(len(all_cmds) == len(values_to_check))
+    assert len(all_cmds) == len(values_to_check)
 
     for (cmd, env_vars), value_to_check in zip(all_cmds, values_to_check):
         env_var_key = f'METPLUS_{storm_type.upper()}'
 
         match = next((item for item in env_vars if
                       item.startswith(env_var_key)), None)
-        assert (match is not None)
+        assert match is not None
         print(f"Checking env var: {env_var_key}")
         actual_value = match.split('=', 1)[1]
         expected_value = f'{storm_type} = ["{value_to_check}"];'
 
         assert actual_value == expected_value
+
 
 @pytest.mark.parametrize(
     'config_overrides, env_var_values', [
@@ -370,6 +381,7 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
 
     ]
 )
+@pytest.mark.wrapper
 def test_tc_pairs_loop_order_processes(metplus_config, config_overrides,
                                        env_var_values):
     # run using init and valid time variables
@@ -425,25 +437,26 @@ def test_tc_pairs_loop_order_processes(metplus_config, config_overrides,
 
         all_cmds = wrapper.run_all_times()
         print(f"ALL COMMANDS: {all_cmds}")
-        assert(len(all_cmds) == len(expected_cmds))
+        assert len(all_cmds) == len(expected_cmds)
 
         for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
             # ensure commands are generated as expected
-            assert(cmd == expected_cmd)
+            assert cmd == expected_cmd
 
             # check that environment variables were set properly
             for env_var_key in wrapper.WRAPPER_ENV_VAR_KEYS:
                 match = next((item for item in env_vars if
                               item.startswith(env_var_key)), None)
-                assert(match is not None)
+                assert match is not None
                 print(f'Checking env var: {env_var_key}')
                 actual_value = match.split('=', 1)[1]
-                assert(env_var_values.get(env_var_key, '') == actual_value)
+                assert env_var_values.get(env_var_key, '') == actual_value
 
         if remove_beg:
             del env_var_values[f'METPLUS_{loop_by}_BEG']
         if remove_end:
             del env_var_values[f'METPLUS_{loop_by}_END']
+
 
 @pytest.mark.parametrize(
     'config_overrides, env_var_values', [
@@ -460,6 +473,7 @@ def test_tc_pairs_loop_order_processes(metplus_config, config_overrides,
          {'METPLUS_CYCLONE': 'cyclone = ["1005", "0104"];'}),
     ]
 )
+@pytest.mark.wrapper
 def test_tc_pairs_read_all_files(metplus_config, config_overrides,
                                  env_var_values):
     # run using init and valid time variables
@@ -512,22 +526,24 @@ def test_tc_pairs_read_all_files(metplus_config, config_overrides,
 
         all_cmds = wrapper.run_all_times()
         print(f"ALL COMMANDS: {all_cmds}")
-        assert(len(all_cmds) == len(expected_cmds))
+        assert len(all_cmds) == len(expected_cmds)
 
         for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
             # check that environment variables were set properly
             for env_var_key in wrapper.WRAPPER_ENV_VAR_KEYS:
                 match = next((item for item in env_vars if
                               item.startswith(env_var_key)), None)
-                assert(match is not None)
+                assert match is not None
                 print(f'Checking env var: {env_var_key}')
                 actual_value = match.split('=', 1)[1]
-                assert(env_var_values.get(env_var_key, '') == actual_value)
+                assert env_var_values.get(env_var_key, '') == actual_value
 
         # unset begin and end for next loop
         del env_var_values[f'METPLUS_{loop_by}_BEG']
         del env_var_values[f'METPLUS_{loop_by}_END']
 
+
+@pytest.mark.wrapper
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
 

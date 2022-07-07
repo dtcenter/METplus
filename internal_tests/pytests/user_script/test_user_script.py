@@ -1,17 +1,13 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
-import os
-import sys
-import re
-import logging
-from collections import namedtuple
 import pytest
+
+import re
 from datetime import datetime
 
-import produtil
 
 from metplus.wrappers.user_script_wrapper import UserScriptWrapper
-from metplus.util import time_util
+
 
 def sub_clock_time(input_cmd, clock_time):
     """! Helper function to replace clock time from config in expected output
@@ -53,6 +49,7 @@ def sub_clock_time(input_cmd, clock_time):
         output_cmd = output_cmd.replace(replace_text, sub_time_text)
 
     return output_cmd
+
 
 def set_run_type_info(config, run_type):
     """! Set time values for init or valid time in config object
@@ -347,6 +344,7 @@ def set_run_type_info(config, run_type):
          ['echo a'] * 12 + ['echo b'] * 12),
     ]
 )
+@pytest.mark.wrapper
 def test_run_user_script_all_times(metplus_config, input_configs,
                                    run_types, expected_cmds):
     config = metplus_config()

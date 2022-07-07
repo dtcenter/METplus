@@ -1,18 +1,11 @@
 #!/usr/bin/env python3
 
-import os
-import sys
-import re
-import logging
-from collections import namedtuple
 import pytest
-import datetime
 
-import produtil
+import os
 
 from metplus.wrappers.ascii2nc_wrapper import ASCII2NCWrapper
-from metplus.util import met_util as util
-from metplus.util import time_util
+
 
 def ascii2nc_wrapper(metplus_config, config_path=None, config_overrides=None):
     config = metplus_config()
@@ -36,6 +29,7 @@ def ascii2nc_wrapper(metplus_config, config_path=None, config_overrides=None):
 
     return ASCII2NCWrapper(config,
                            instance=instance)
+
 
 @pytest.mark.parametrize(
     'config_overrides, env_var_values', [
@@ -145,6 +139,7 @@ def ascii2nc_wrapper(metplus_config, config_path=None, config_overrides=None):
 
     ]
 )
+@pytest.mark.wrapper
 def test_ascii2nc_wrapper(metplus_config, config_overrides,
                           env_var_values):
     wrapper = (
@@ -192,6 +187,8 @@ def test_ascii2nc_wrapper(metplus_config, config_overrides,
 
         assert (env_var_values.get(env_var_key, '') == value)
 
+
+@pytest.mark.wrapper
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
     config = metplus_config()

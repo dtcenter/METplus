@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
+import pytest
+
 import os
 import datetime
-import pytest
 
 from metplus.wrappers.mtd_wrapper import MTDWrapper
 
@@ -25,8 +26,8 @@ def mtd_wrapper(metplus_config, lead_seq=None):
 
     return MTDWrapper(config)
 
-# ------------------------ TESTS GO HERE --------------------------
 
+@pytest.mark.wrapper
 def test_mtd_by_init_all_found(metplus_config):
     mw = mtd_wrapper(metplus_config, '1,2,3')
     obs_dir = mw.config.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
@@ -59,6 +60,8 @@ def test_mtd_by_init_all_found(metplus_config):
            obs_list[2] == os.path.join(obs_dir,'20170510', 'qpe_2017051006_A06.nc')
            )
 
+
+@pytest.mark.wrapper
 def test_mtd_by_valid_all_found(metplus_config):
     mw = mtd_wrapper(metplus_config, '1, 2, 3')
     obs_dir = mw.config.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
@@ -90,7 +93,9 @@ def test_mtd_by_valid_all_found(metplus_config):
            obs_list[1] == os.path.join(obs_dir,'20170510', 'qpe_2017051003_A06.nc') and
            obs_list[2] == os.path.join(obs_dir,'20170510', 'qpe_2017051003_A06.nc')
            )
-           
+
+
+@pytest.mark.wrapper
 def test_mtd_by_init_miss_fcst(metplus_config):
     mw = mtd_wrapper(metplus_config, '3, 6, 9, 12')
     obs_dir = mw.config.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
@@ -123,6 +128,8 @@ def test_mtd_by_init_miss_fcst(metplus_config):
            obs_list[2] == os.path.join(obs_dir,'20170510', 'qpe_2017051015_A06.nc')
            )
 
+
+@pytest.mark.wrapper
 def test_mtd_by_init_miss_both(metplus_config):
     mw = mtd_wrapper(metplus_config, '6, 12, 18')
     obs_dir = mw.config.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
@@ -154,6 +161,7 @@ def test_mtd_by_init_miss_both(metplus_config):
            )
 
 
+@pytest.mark.wrapper
 def test_mtd_single(metplus_config):
     mw = mtd_wrapper(metplus_config, '1, 2, 3')
     fcst_dir = mw.config.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
@@ -177,6 +185,8 @@ def test_mtd_single(metplus_config):
            single_list[2] == os.path.join(fcst_dir,'20170510', '20170510_i03_f003_HRRRTLE_PHPT.grb2')
            )
 
+
+@pytest.mark.wrapper
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
 

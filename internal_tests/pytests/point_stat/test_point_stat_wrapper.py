@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 
-import os
 import pytest
+
+import os
 
 from metplus.wrappers.point_stat_wrapper import PointStatWrapper
 
 fcst_dir = '/some/path/fcst'
 obs_dir = '/some/path/obs'
+
 
 def set_minimum_config_settings(config):
     # set config variables to prevent command from running and bypass check
@@ -36,6 +38,8 @@ def set_minimum_config_settings(config):
                '{OUTPUT_BASE}/GridStat/output')
     config.set('config', 'POINT_STAT_OUTPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}')
 
+
+@pytest.mark.wrapper
 def test_met_dictionary_in_var_options(metplus_config):
     config = metplus_config()
     set_minimum_config_settings(config)
@@ -49,6 +53,7 @@ def test_met_dictionary_in_var_options(metplus_config):
     assert wrapper.isOK
 
     all_cmds = wrapper.run_all_times()
+
 
 @pytest.mark.parametrize(
     'config_overrides, env_var_values', [
@@ -465,6 +470,7 @@ def test_met_dictionary_in_var_options(metplus_config):
          {'METPLUS_FCST_FILE_TYPE': 'file_type = NETCDF_PINT;'}),
     ]
 )
+@pytest.mark.wrapper
 def test_point_stat_all_fields(metplus_config, config_overrides,
                                env_var_values):
     level_no_quotes = '(*,*)'
@@ -553,7 +559,7 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
 
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
-        assert(cmd == expected_cmd)
+        assert cmd == expected_cmd
 
         # check that environment variables were set properly
         # including deprecated env vars (not in wrapper env var keys)
@@ -563,15 +569,17 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
         for env_var_key in env_var_keys:
             match = next((item for item in env_vars if
                           item.startswith(env_var_key)), None)
-            assert(match is not None)
+            assert match is not None
             value = match.split('=', 1)[1]
             if env_var_key == 'METPLUS_FCST_FIELD':
-                assert(value == fcst_fmt)
+                assert value == fcst_fmt
             elif env_var_key == 'METPLUS_OBS_FIELD':
-                assert (value == obs_fmt)
+                assert value == obs_fmt
             else:
-                assert(env_var_values.get(env_var_key, '') == value)
+                assert env_var_values.get(env_var_key, '') == value
 
+
+@pytest.mark.wrapper
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
 

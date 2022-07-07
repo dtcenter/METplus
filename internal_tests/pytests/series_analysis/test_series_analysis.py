@@ -1,11 +1,8 @@
 import pytest
+
 import os
-import sys
-import logging
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-
-import produtil
 
 from metplus.util import ti_get_seconds_from_lead, sub_var_list
 from metplus.wrappers.series_analysis_wrapper import SeriesAnalysisWrapper
@@ -27,6 +24,7 @@ stat_list = 'TOTAL,RMSE,FBAR,OBAR'
 stat_list_quotes = '", "'.join(stat_list.split(','))
 stat_list_fmt = f'output_stats = {{cnt = ["{stat_list_quotes}"];}}'
 
+
 def get_input_dirs(config):
     fake_data_dir = os.path.join(config.getdir('METPLUS_BASE'),
                                  'internal_tests',
@@ -36,6 +34,7 @@ def get_input_dirs(config):
     tile_input_dir = os.path.join(fake_data_dir,
                                   'tiles')
     return stat_input_dir, tile_input_dir
+
 
 def series_analysis_wrapper(metplus_config, config_overrides=None):
     extra_configs = []
@@ -48,6 +47,7 @@ def series_analysis_wrapper(metplus_config, config_overrides=None):
             config.set('config', key, value)
 
     return SeriesAnalysisWrapper(config)
+
 
 def set_minimum_config_settings(config):
     # set config variables to prevent command from running and bypass check
@@ -293,6 +293,7 @@ def set_minimum_config_settings(config):
 
     ]
 )
+@pytest.mark.wrapper
 def test_series_analysis_single_field(metplus_config, config_overrides,
                                       env_var_values):
 
@@ -325,24 +326,26 @@ def test_series_analysis_single_field(metplus_config, config_overrides,
 
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
-        assert(cmd == expected_cmd)
+        assert cmd == expected_cmd
 
         # check that environment variables were set properly
         for env_var_key in wrapper.WRAPPER_ENV_VAR_KEYS:
             match = next((item for item in env_vars if
                           item.startswith(env_var_key)), None)
-            assert(match is not None)
+            assert match is not None
             actual_value = match.split('=', 1)[1]
             print(f"ENV VAR: {env_var_key}")
             if env_var_key == 'METPLUS_FCST_FIELD':
-                assert(actual_value == fcst_fmt)
+                assert actual_value == fcst_fmt
             elif env_var_key == 'METPLUS_OBS_FIELD':
-                assert (actual_value == obs_fmt)
+                assert actual_value == obs_fmt
             elif env_var_key == 'METPLUS_OUTPUT_STATS_DICT' and 'METPLUS_OUTPUT_STATS_DICT' not in env_var_values:
-                assert (actual_value == stat_list_fmt)
+                assert actual_value == stat_list_fmt
             else:
-                assert(env_var_values.get(env_var_key, '') == actual_value)
+                assert env_var_values.get(env_var_key, '') == actual_value
 
+
+@pytest.mark.wrapper
 def test_get_fcst_file_info(metplus_config):
     """ Verify that the tuple created by get_fcst_file_info is
         not an empty tuple, and that the number, beginning
@@ -376,12 +379,12 @@ def test_get_fcst_file_info(metplus_config):
     assert beg == expected_beg
     assert end == expected_end
 
+
+@pytest.mark.wrapper
 def test_get_storms_list(metplus_config):
     """Verify that the expected number of storms
        are found for the init time 20141214_00
     """
-    config = metplus_config()
-
     expected_storm_list = ['ML1201072014',
                            'ML1221072014',
                            'ML1241072014',
@@ -399,6 +402,7 @@ def test_get_storms_list(metplus_config):
 
     storm_list = wrapper.get_storm_list(time_info)
     assert storm_list == expected_storm_list
+
 
 # added list of all files for reference for creating subsets
 all_fake_fcst = ['fcst/20141214_00/ML1201072014/FCST_TILE_F000_gfs_4_20141214_0000_000.nc',
@@ -421,6 +425,8 @@ all_fake_obs = ['obs/20141214_00/ML1201072014/OBS_TILE_F000_gfs_4_20141214_0000_
                  'obs/20141215_00/ML1291072014/OBS_TILE_F006_gfs_4_20141215_0000_006.nc',
                  'obs/20141215_00/ML1291072014/OBS_TILE_F012_gfs_4_20141215_0000_012.nc',
                   ]
+
+
 @pytest.mark.parametrize(
         'time_info, expect_fcst_subset, expect_obs_subset', [
         # filter by init all storms
@@ -485,6 +491,7 @@ all_fake_obs = ['obs/20141214_00/ML1201072014/OBS_TILE_F000_gfs_4_20141214_0000_
          ]),
     ]
 )
+@pytest.mark.wrapper
 def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset, expect_obs_subset):
     """! Test to ensure that get_all_files only gets the files that are
     relevant to the runtime settings and not every file in the directory
@@ -515,7 +522,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
     wrapper.c_dict['FCST_INPUT_DIR'] = fcst_input_dir
     wrapper.c_dict['OBS_INPUT_DIR'] = obs_input_dir
 
-    assert(wrapper.get_all_files())
+    assert wrapper.get_all_files()
 
     expected_fcst = [
         'fcst/20141214_00/ML1201072014/FCST_TILE_F000_gfs_4_20141214_0000_000.nc',
@@ -548,18 +555,19 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
     obs_files = [item['obs'] for item in wrapper.c_dict['ALL_FILES']]
     obs_files = [item for sub in obs_files for item in sub]
 
-    assert(fcst_files == expected_fcst_files)
-    assert(obs_files == expected_obs_files)
+    assert fcst_files == expected_fcst_files
+    assert obs_files == expected_obs_files
 
     fcst_files_sub, obs_files_sub = wrapper.subset_input_files(time_info)
-    assert(fcst_files_sub and obs_files_sub)
-    assert(len(fcst_files_sub) == len(obs_files_sub))
+    assert fcst_files_sub and obs_files_sub
+    assert len(fcst_files_sub) == len(obs_files_sub)
 
     for actual_file, expected_file in zip(fcst_files_sub, expect_fcst_subset):
-        assert(actual_file.replace(tile_input_dir, '').lstrip('/') == expected_file)
+        assert actual_file.replace(tile_input_dir, '').lstrip('/') == expected_file
 
     for actual_file, expected_file in zip(obs_files_sub, expect_obs_subset):
-        assert(actual_file.replace(tile_input_dir, '').lstrip('/') == expected_file)
+        assert actual_file.replace(tile_input_dir, '').lstrip('/') == expected_file
+
 
 @pytest.mark.parametrize(
         'config_overrides, time_info, storm_id, lead_group, expect_fcst_subset, expect_obs_subset', [
@@ -707,6 +715,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
          ]),
     ]
 )
+@pytest.mark.wrapper
 def test_get_fcst_and_obs_path(metplus_config, config_overrides,
                                time_info, storm_id, lead_group,
                                expect_fcst_subset, expect_obs_subset):
@@ -740,7 +749,7 @@ def test_get_fcst_and_obs_path(metplus_config, config_overrides,
                               test_out_dirname)
     wrapper.c_dict['OUTPUT_DIR'] = output_dir
 
-    assert(wrapper.get_all_files())
+    assert wrapper.get_all_files()
 
     # read output files and compare to expected list
     if storm_id == '*':
@@ -775,7 +784,7 @@ def test_get_fcst_and_obs_path(metplus_config, config_overrides,
     fcst_path, obs_path = wrapper._get_fcst_and_obs_path(time_info,
                                                          storm_id,
                                                          lead_group)
-    assert(fcst_path == fcst_file_path and obs_path == obs_file_path)
+    assert fcst_path == fcst_file_path and obs_path == obs_file_path
 
     with open(fcst_file_path, 'r') as file_handle:
         actual_fcsts = file_handle.readlines()
@@ -783,7 +792,7 @@ def test_get_fcst_and_obs_path(metplus_config, config_overrides,
 
     for actual_file, expected_file in zip(actual_fcsts, expect_fcst_subset):
         actual_file = actual_file.replace(tile_input_dir, '').lstrip('/')
-        assert(actual_file == expected_file)
+        assert actual_file == expected_file
 
     with open(obs_file_path, 'r') as file_handle:
         actual_obs_files = file_handle.readlines()
@@ -791,7 +800,8 @@ def test_get_fcst_and_obs_path(metplus_config, config_overrides,
 
     for actual_file, expected_file in zip(actual_obs_files, expect_obs_subset):
         actual_file = actual_file.replace(tile_input_dir, '').lstrip('/')
-        assert(actual_file == expected_file)
+        assert actual_file == expected_file
+
 
 @pytest.mark.parametrize(
         'storm_id, leads, expected_result', [
@@ -823,6 +833,7 @@ def test_get_fcst_and_obs_path(metplus_config, config_overrides,
          '_FILES_F012_to_F018'),
     ]
 )
+@pytest.mark.wrapper
 def test_get_ascii_filename(metplus_config, storm_id, leads,
                             expected_result):
     wrapper = series_analysis_wrapper(metplus_config)
@@ -830,7 +841,7 @@ def test_get_ascii_filename(metplus_config, storm_id, leads,
         actual_result = wrapper._get_ascii_filename(data_type,
                                                    storm_id,
                                                    leads)
-        assert(actual_result == f"{data_type}{expected_result}")
+        assert actual_result == f"{data_type}{expected_result}"
 
         if leads is None:
             return
@@ -839,7 +850,9 @@ def test_get_ascii_filename(metplus_config, storm_id, leads,
         actual_result = wrapper._get_ascii_filename(data_type,
                                                    storm_id,
                                                    lead_seconds)
-        assert(actual_result == f"{data_type}{expected_result}")
+        assert actual_result == f"{data_type}{expected_result}"
+
+
 @pytest.mark.parametrize(
         # no storm ID, label
         'template, storm_id, label, expected_result', [
@@ -856,6 +869,7 @@ def test_get_ascii_filename(metplus_config, storm_id, leads,
          'ML1221072014', '', '20141031_12/ML1221072014_'),
     ]
 )
+@pytest.mark.wrapper
 def test_get_output_dir(metplus_config, template, storm_id, label, expected_result):
     time_info = {'init': datetime(2014, 10, 31, 12, 15),
                  'valid': datetime(2014, 10, 31, 18, 15),
@@ -867,6 +881,8 @@ def test_get_output_dir(metplus_config, template, storm_id, label, expected_resu
     actual_result = wrapper.get_output_dir(time_info, storm_id, label)
     assert(actual_result == os.path.join(output_dir, expected_result))
 
+
+@pytest.mark.wrapper
 def test_get_netcdf_min_max(metplus_config):
     expected_min = 0.0
     expected_max = 8.0
@@ -880,9 +896,11 @@ def test_get_netcdf_min_max(metplus_config):
                             'basin_global_tenth_degree.nc')
     variable_name = 'basin'
     min, max = wrapper._get_netcdf_min_max(filepath, variable_name)
-    assert(min == expected_min)
-    assert(max == expected_max)
+    assert min == expected_min
+    assert max == expected_max
 
+
+@pytest.mark.wrapper
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
 

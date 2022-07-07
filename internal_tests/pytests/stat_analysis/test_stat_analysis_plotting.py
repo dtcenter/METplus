@@ -1,48 +1,17 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+
+import pytest
 
 import os
-import datetime
-import sys
-import logging
-import pytest
-import datetime
+
 import glob
 
-import produtil.setup
-
 from metplus.wrappers.stat_analysis_wrapper import StatAnalysisWrapper
-from metplus.util import met_util as util
+from metplus.util import handle_tmp_dir
 
-#
-# These are tests (not necessarily unit tests) for the
-# MET stat_analysis wrapper, stat_analysis_wrapper.py
-# NOTE:  This test requires pytest, which is NOT part of the standard Python
-# library.
-# These tests require one configuration file in addition to the three
-# required METplus configuration files:  test_stat_analysis.conf.  This contains
-# the information necessary for running all the tests.  Each test can be
-# customized to replace various settings if needed.
-#
-
-#
-# -----------Mandatory-----------
-#  configuration and fixture to support METplus configuration files beyond
-#  the metplus_data, metplus_system, and metplus_runtime conf files.
-#
+METPLUS_BASE = os.getcwd().split('/internal_tests')[0]
 
 
-# Add a test configuration
-def pytest_addoption(parser):
-    parser.addoption("-c", action="store", help=" -c <test config file>")
-
-# @pytest.fixture
-def cmdopt(request):
-    return request.config.getoption("-c")
-    
-#
-# ------------Pytest fixtures that can be used for all tests ---------------
-#
-#@pytest.fixture
 def stat_analysis_wrapper(metplus_config):
     """! Returns a default StatAnalysisWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
@@ -54,39 +23,11 @@ def stat_analysis_wrapper(metplus_config):
     extra_configs = []
     extra_configs.append(os.path.join(os.path.dirname(__file__), 'test_plotting.conf'))
     config = metplus_config(extra_configs)
-    util.handle_tmp_dir(config)
+    handle_tmp_dir(config)
     return StatAnalysisWrapper(config)
 
-# ------------------TESTS GO BELOW ---------------------------
-#
 
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# To test numerous files for filesize, use parametrization:
-# @pytest.mark.parametrize(
-#     'key, value', [
-#         ('/usr/local/met-6.1/bin/point_stat', 382180),
-#         ('/usr/local/met-6.1/bin/stat_analysis', 3438944),
-#         ('/usr/local/met-6.1/bin/pb2nc', 3009056)
-#
-#     ]
-# )
-# def test_file_sizes(key, value):
-#     st = stat_analysis_wrapper()
-#     # Retrieve the value of the class attribute that corresponds
-#     # to the key in the parametrization
-#     files_in_dir = []
-#     for dirpath, dirnames, files in os.walk("/usr/local/met-6.1/bin"):
-#         for name in files:
-#             files_in_dir.append(os.path.join(dirpath, name))
-#         if actual_key in files_in_dir:
-#         # The actual_key is one of the files of interest we retrieved from
-#         # the output directory.  Verify that it's file size is what we
-#         # expected.
-#             assert actual_key == key
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-METPLUS_BASE = os.getcwd().split('/internal_tests')[0]
-
-
+@pytest.mark.wrapper
 def test_set_lists_as_loop_or_group(metplus_config):
     # Independently test that the lists that are set
     # in the config file are being set
@@ -148,6 +89,7 @@ def test_set_lists_as_loop_or_group(metplus_config):
                 for elem in test_lists_to_loop_items))
 
 
+@pytest.mark.wrapper
 def test_get_output_filename(metplus_config):
     # Independently test the building of
     # the output file name
@@ -218,66 +160,10 @@ def test_get_output_filename(metplus_config):
                                                   lists_to_loop,
                                                   lists_to_group,
                                                   config_dict)
-    assert (expected_output_filename == test_output_filename)
+    assert expected_output_filename == test_output_filename
 
 
-def test_parse_model_info(metplus_config):
-    pytest.skip("This function will be removed from MakePlots")
-    # Independently test the creation of
-    # the model information dictionary
-    # and the reading from the config file
-    # are as expected
-    st = stat_analysis_wrapper(metplus_config)
-    # Test 1
-    expected_name1 = 'MODEL_TEST1'
-    expected_reference_name1 = 'MODEL_TEST1'
-    expected_obtype1 = 'MODEL_TEST1_ANL'
-    expected_dump_row_filename_template1 = (
-        '{model?fmt=%s}_{obtype?fmt=%s}_valid{valid_beg?fmt=%Y%m%d}'
-        'to{valid_end?fmt=%Y%m%d}_valid{valid_hour_beg?fmt=%H%M}to'
-        '{valid_hour_end?fmt=%H%M}Z_init{init_hour_beg?fmt=%H%M}to'
-        '{init_hour_end?fmt=%H%M}Z_fcst_lead{fcst_lead?fmt=%s}_'
-        'fcst{fcst_var?fmt=%s}{fcst_level?fmt=%s}{fcst_thresh?fmt=%s}'
-        '{interp_mthd?fmt=%s}_obs{obs_var?fmt=%s}{obs_level?fmt=%s}'
-        '{obs_thresh?fmt=%s}{interp_mthd?fmt=%s}_vxmask{vx_mask?fmt=%s}'
-        '_dump_row.stat'
-    )
-    expected_dump_row_filename_type1 = 'user'
-    expected_out_stat_filename_template1 = 'NA'
-    expected_out_stat_filename_type1 = 'NA'
-    expected_name2 = 'TEST2_MODEL'
-    expected_reference_name2 = 'TEST2_MODEL'
-    expected_obtype2 = 'ANLYS2'
-    expected_dump_row_filename_template2 = expected_dump_row_filename_template1
-    expected_dump_row_filename_type2 = 'user'
-    expected_out_stat_filename_template2 = 'NA'
-    expected_out_stat_filename_type2 = 'NA'
-    test_model_info_list = st.parse_model_info()
-    assert (test_model_info_list[0]['name'] == expected_name1)
-    assert (test_model_info_list[0]['reference_name'] ==
-            expected_reference_name1)
-    assert (test_model_info_list[0]['obtype'] == expected_obtype1)
-    assert (test_model_info_list[0]['dump_row_filename_template'] ==
-            expected_dump_row_filename_template1)
-    assert (test_model_info_list[0]['dump_row_filename_type'] ==
-            expected_dump_row_filename_type1)
-    assert (test_model_info_list[0]['out_stat_filename_template'] ==
-            expected_out_stat_filename_template1)
-    assert (test_model_info_list[0]['out_stat_filename_type'] ==
-            expected_out_stat_filename_type1)
-    assert (test_model_info_list[1]['name'] == expected_name2)
-    assert (test_model_info_list[1]['reference_name'] ==
-            expected_reference_name2)
-    assert (test_model_info_list[1]['obtype'] == expected_obtype2)
-    assert (test_model_info_list[1]['dump_row_filename_template'] ==
-            expected_dump_row_filename_template2)
-    assert (test_model_info_list[1]['dump_row_filename_type'] ==
-            expected_dump_row_filename_type2)
-    assert (test_model_info_list[1]['out_stat_filename_template'] ==
-            expected_out_stat_filename_template2)
-    assert (test_model_info_list[1]['out_stat_filename_type'] ==
-            expected_out_stat_filename_type2)
-
+@pytest.mark.long
 def test_filter_for_plotting(metplus_config):
     # Test running of stat_analysis
     st = stat_analysis_wrapper(metplus_config)
@@ -510,6 +396,6 @@ def test_filter_for_plotting(metplus_config):
         os.listdir(st.config.getdir('OUTPUT_BASE')
                                     +'/plotting/stat_analysis')
     )
-    assert(ntest_files == 32)
+    assert ntest_files == 32
     for expected_filename in expected_filename_list:
-        assert(os.path.exists(expected_filename))
+        assert os.path.exists(expected_filename)

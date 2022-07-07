@@ -1,48 +1,16 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+
+import pytest
 
 import os
 import datetime
-import sys
-import logging
-import pytest
-import datetime
-
-import produtil.setup
 
 from metplus.wrappers.stat_analysis_wrapper import StatAnalysisWrapper
-from metplus.util import met_util as util
+from metplus.util import handle_tmp_dir
+
+METPLUS_BASE = os.getcwd().split('/internal_tests')[0]
 
 
-#
-# These are tests (not necessarily unit tests) for the
-# MET stat_analysis wrapper, stat_analysis_wrapper.py
-# NOTE:  This test requires pytest, which is NOT part of the standard Python
-# library.
-# These tests require one configuration file in addition to the three
-# required METplus configuration files:  test_stat_analysis.conf.  This contains
-# the information necessary for running all the tests.  Each test can be
-# customized to replace various settings if needed.
-#
-
-#
-# -----------Mandatory-----------
-#  configuration and fixture to support METplus configuration files beyond
-#  the metplus_data, metplus_system, and metplus_runtime conf files.
-#
-
-
-# Add a test configuration
-def pytest_addoption(parser):
-    parser.addoption("-c", action="store", help=" -c <test config file>")
-
-# @pytest.fixture
-def cmdopt(request):
-    return request.config.getoption("-c")
-    
-#
-# ------------Pytest fixtures that can be used for all tests ---------------
-#
-#@pytest.fixture
 def stat_analysis_wrapper(metplus_config):
     """! Returns a default StatAnalysisWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
@@ -54,38 +22,11 @@ def stat_analysis_wrapper(metplus_config):
     extra_configs = []
     extra_configs.append(os.path.join(os.path.dirname(__file__), 'test.conf'))
     config = metplus_config(extra_configs)
-    util.handle_tmp_dir(config)
+    handle_tmp_dir(config)
     return StatAnalysisWrapper(config)
 
-# ------------------TESTS GO BELOW ---------------------------
-#
 
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# To test numerous files for filesize, use parametrization:
-# @pytest.mark.parametrize(
-#     'key, value', [
-#         ('/usr/local/met-6.1/bin/point_stat', 382180),
-#         ('/usr/local/met-6.1/bin/stat_analysis', 3438944),
-#         ('/usr/local/met-6.1/bin/pb2nc', 3009056)
-#
-#     ]
-# )
-# def test_file_sizes(key, value):
-#     st = stat_analysis_wrapper()
-#     # Retrieve the value of the class attribute that corresponds
-#     # to the key in the parametrization
-#     files_in_dir = []
-#     for dirpath, dirnames, files in os.walk("/usr/local/met-6.1/bin"):
-#         for name in files:
-#             files_in_dir.append(os.path.join(dirpath, name))
-#         if actual_key in files_in_dir:
-#         # The actual_key is one of the files of interest we retrieved from
-#         # the output directory.  Verify that it's file size is what we
-#         # expected.
-#             assert actual_key == key
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-METPLUS_BASE = os.getcwd().split('/internal_tests')[0]
-
+@pytest.mark.wrapper
 def test_get_command(metplus_config):
     # Independently test that the stat_analysis command
     # is being put together correctly with
@@ -102,8 +43,10 @@ def test_get_command(metplus_config):
     st.lookindir = '/path/to/lookin_dir'
     st.c_dict['CONFIG_FILE'] = '/path/to/STATAnalysisConfig'
     test_command = st.get_command()
-    assert(expected_command == test_command)
+    assert expected_command == test_command
 
+
+@pytest.mark.wrapper
 def test_create_c_dict(metplus_config):
     # Independently test that c_dict is being created
     # and that the wrapper and config reader 
@@ -111,30 +54,32 @@ def test_create_c_dict(metplus_config):
     st = stat_analysis_wrapper(metplus_config)
     # Test 1
     c_dict = st.create_c_dict()
-    assert(c_dict['LOOP_ORDER'] == 'times')
+    assert c_dict['LOOP_ORDER'] == 'times'
     assert(os.path.realpath(c_dict['CONFIG_FILE']) == (METPLUS_BASE+'/internal_tests/'
                                                        +'config/STATAnalysisConfig'))
     assert(c_dict['OUTPUT_DIR'] == (st.config.getdir('OUTPUT_BASE')
                                          +'/stat_analysis'))
-    assert('FCST_INIT_HOUR_LIST' in c_dict['GROUP_LIST_ITEMS'])
+    assert 'FCST_INIT_HOUR_LIST' in c_dict['GROUP_LIST_ITEMS']
     assert('FCST_VALID_HOUR_LIST' in c_dict['LOOP_LIST_ITEMS'] and
            'MODEL_LIST' in c_dict['LOOP_LIST_ITEMS'])
-    assert(c_dict['VAR_LIST'] == [])
-    assert(c_dict['MODEL_LIST'] == ['MODEL_TEST'])
-    assert(c_dict['DESC_LIST'] == [])
-    assert(c_dict['FCST_LEAD_LIST'] == [])
-    assert(c_dict['OBS_LEAD_LIST'] == [])
-    assert(c_dict['FCST_VALID_HOUR_LIST'] == ['000000'])
-    assert(c_dict['FCST_INIT_HOUR_LIST'] == ['000000', '060000', '120000', '180000'])
-    assert(c_dict['OBS_VALID_HOUR_LIST'] == [])
-    assert(c_dict['OBS_INIT_HOUR_LIST'] == [])
-    assert(c_dict['VX_MASK_LIST'] == [])
-    assert(c_dict['INTERP_MTHD_LIST'] == [])
-    assert(c_dict['INTERP_PNTS_LIST'] == [])
-    assert(c_dict['COV_THRESH_LIST'] == [])
-    assert(c_dict['ALPHA_LIST'] == [])
-    assert(c_dict['LINE_TYPE_LIST'] == [])
+    assert c_dict['VAR_LIST'] == []
+    assert c_dict['MODEL_LIST'] == ['MODEL_TEST']
+    assert c_dict['DESC_LIST'] == []
+    assert c_dict['FCST_LEAD_LIST'] == []
+    assert c_dict['OBS_LEAD_LIST'] == []
+    assert c_dict['FCST_VALID_HOUR_LIST'] == ['000000']
+    assert c_dict['FCST_INIT_HOUR_LIST'] == ['000000', '060000', '120000', '180000']
+    assert c_dict['OBS_VALID_HOUR_LIST'] == []
+    assert c_dict['OBS_INIT_HOUR_LIST'] == []
+    assert c_dict['VX_MASK_LIST'] == []
+    assert c_dict['INTERP_MTHD_LIST'] == []
+    assert c_dict['INTERP_PNTS_LIST'] == []
+    assert c_dict['COV_THRESH_LIST'] == []
+    assert c_dict['ALPHA_LIST'] == []
+    assert c_dict['LINE_TYPE_LIST'] == []
 
+
+@pytest.mark.wrapper
 def test_list_to_str(metplus_config):
     # Independently test that a list of strings
     # are being converted to a one
@@ -149,6 +94,8 @@ def test_list_to_str(metplus_config):
     test_list = st.list_to_str([ '0', '1', '2' ])
     assert(expected_list == test_list)
 
+
+@pytest.mark.wrapper
 def test_set_lists_as_loop_or_group(metplus_config):
     # Independently test that the lists that are set
     # in the config file are being set 
@@ -209,6 +156,7 @@ def test_set_lists_as_loop_or_group(metplus_config):
     assert(all(elem in expected_lists_to_loop_items 
                for elem in test_lists_to_loop_items))
 
+
 @pytest.mark.parametrize(
     'expression, expected_result', [
         ('>1', 'gt1'),
@@ -223,13 +171,16 @@ def test_set_lists_as_loop_or_group(metplus_config):
          'lt805,lt1609,lt4828,lt8045,ge8045,lt16090'),
     ]
 )
+@pytest.mark.wrapper
 def test_format_thresh(metplus_config, expression, expected_result):
-    # Idependently test the creation of 
+    # Independently test the creation of
     # string values for defining thresholds
     st = stat_analysis_wrapper(metplus_config)
 
-    assert(st.format_thresh(expression) == expected_result)
+    assert st.format_thresh(expression) == expected_result
 
+
+@pytest.mark.wrapper
 def test_build_stringsub_dict(metplus_config):
     # Independently test the building of 
     # the dictionary used in the stringtemplate
@@ -431,7 +382,9 @@ def test_build_stringsub_dict(metplus_config):
            datetime.datetime(1900, 1, 1, 0, 0, 0))                               
     assert(test_stringsub_dict['obs_init_hour_end'] == 
            datetime.datetime(1900, 1, 1, 23, 59 ,59))
- 
+
+
+@pytest.mark.wrapper
 def test_get_output_filename(metplus_config):
     # Independently test the building of
     # the output file name 
@@ -488,7 +441,7 @@ def test_get_output_filename(metplus_config):
                                                   lists_to_loop,
                                                   lists_to_group,
                                                   config_dict)
-    assert(expected_output_filename == test_output_filename)
+    assert expected_output_filename == test_output_filename
     # Test 2
     expected_output_filename = (
         'MODEL_TEST_MODEL_TEST_ANL_'
@@ -508,7 +461,7 @@ def test_get_output_filename(metplus_config):
                                                   lists_to_loop,
                                                   lists_to_group,
                                                   config_dict)
-    assert(expected_output_filename == test_output_filename)   
+    assert expected_output_filename == test_output_filename
     # Test 3
     expected_output_filename = (
         'MODEL_TEST_MODEL_TEST_ANL'
@@ -528,7 +481,7 @@ def test_get_output_filename(metplus_config):
                                                   lists_to_loop,
                                                   lists_to_group,
                                                   config_dict)
-    assert(expected_output_filename == test_output_filename)
+    assert expected_output_filename == test_output_filename
     # Test 4
     expected_output_filename = (
         'MODEL_TEST_MODEL_TEST_ANL'
@@ -546,8 +499,10 @@ def test_get_output_filename(metplus_config):
                                                   lists_to_loop,
                                                   lists_to_group,
                                                   config_dict)
-    assert(expected_output_filename == test_output_filename)
+    assert expected_output_filename == test_output_filename
 
+
+@pytest.mark.wrapper
 def test_get_lookin_dir(metplus_config):
     # Independently test the building of
     # the lookin directory
@@ -602,7 +557,7 @@ def test_get_lookin_dir(metplus_config):
 
     test_lookin_dir = st.get_lookin_dir(dir_path, lists_to_loop,
                                         lists_to_group, config_dict)
-    assert(expected_lookin_dir == test_lookin_dir)
+    assert expected_lookin_dir == test_lookin_dir
 
     # Test 2
     expected_lookin_dir = os.path.join(stat_analysis_pytest_dir,
@@ -612,7 +567,7 @@ def test_get_lookin_dir(metplus_config):
 
     test_lookin_dir = st.get_lookin_dir(dir_path, lists_to_loop,
                                         lists_to_group, config_dict)
-    assert(expected_lookin_dir == test_lookin_dir)
+    assert expected_lookin_dir == test_lookin_dir
 
     # Test 3 - no matches for lookin dir wildcard
     expected_lookin_dir = ''
@@ -621,8 +576,10 @@ def test_get_lookin_dir(metplus_config):
 
     test_lookin_dir = st.get_lookin_dir(dir_path, lists_to_loop,
                                         lists_to_group, config_dict)
-    assert(expected_lookin_dir == test_lookin_dir)
+    assert expected_lookin_dir == test_lookin_dir
 
+
+@pytest.mark.wrapper
 def test_format_valid_init(metplus_config):
     # Independently test the formatting 
     # of the valid and initialization date and hours
@@ -723,6 +680,8 @@ def test_format_valid_init(metplus_config):
     assert(config_dict['OBS_INIT_END'] == '20190101_120000')
     assert(config_dict['OBS_INIT_HOUR'] == '"000000", "120000"')
 
+
+@pytest.mark.wrapper
 def test_parse_model_info(metplus_config):
     # Independently test the creation of 
     # the model information dictionary
@@ -760,6 +719,8 @@ def test_parse_model_info(metplus_config):
     assert(test_model_info_list[0]['out_stat_filename_type'] == 
            expected_out_stat_filename_type)
 
+
+@pytest.mark.wrapper
 def test_run_stat_analysis(metplus_config):
     # Test running of stat_analysis
     st = stat_analysis_wrapper(metplus_config)
@@ -772,9 +733,10 @@ def test_run_stat_analysis(metplus_config):
     st.c_dict['DATE_END'] = '20190101'
     st.c_dict['DATE_TYPE'] = 'VALID'
     st.run_stat_analysis()
-    assert(os.path.exists(expected_filename))
+    assert os.path.exists(expected_filename)
     assert(os.path.getsize(expected_filename)
            == os.path.getsize(comparison_filename))
+
 
 @pytest.mark.parametrize(
     'data_type, config_list, expected_list', [
@@ -788,14 +750,17 @@ def test_run_stat_analysis(metplus_config):
       ('OBS', '\"(0,*,*)\", \"(1,*,*)\"', ["0,*,*", "1,*,*"]),
     ]
 )
+@pytest.mark.wrapper
 def test_get_level_list(metplus_config, data_type, config_list, expected_list):
     config = metplus_config()
     config.set('config', f'{data_type}_LEVEL_LIST', config_list)
 
     saw = StatAnalysisWrapper(config)
 
-    assert(saw.get_level_list(data_type) == expected_list)
+    assert saw.get_level_list(data_type) == expected_list
 
+
+@pytest.mark.wrapper
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
     config = metplus_config()

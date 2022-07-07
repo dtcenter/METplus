@@ -1,20 +1,21 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+
+import pytest
 
 import os
 import sys
-import pytest
 import datetime
-
-import produtil
 
 from metplus.wrappers.tc_stat_wrapper import TCStatWrapper
 from metplus.util import ti_calculate
+
 
 def get_config(metplus_config):
     extra_configs = []
     extra_configs.append(os.path.join(os.path.dirname(__file__),
                                       'tc_stat_conf.conf'))
     return metplus_config(extra_configs)
+
 
 def tc_stat_wrapper(metplus_config):
     """! Returns a default TCStatWrapper with /path/to entries in the
@@ -26,6 +27,7 @@ def tc_stat_wrapper(metplus_config):
     # to /path/to:
     config = get_config(metplus_config)
     return TCStatWrapper(config)
+
 
 @pytest.mark.parametrize(
         'overrides, c_dict', [
@@ -106,7 +108,8 @@ def tc_stat_wrapper(metplus_config):
           'INIT_STR_EXC_VAL': 'init_str_exc_val = ["HUWARN"];'}),
 
     ]
-    )
+)
+@pytest.mark.wrapper
 def test_override_config_in_c_dict(metplus_config, overrides, c_dict):
     config = get_config(metplus_config)
     instance = 'tc_stat_overrides'
@@ -118,6 +121,7 @@ def test_override_config_in_c_dict(metplus_config, overrides, c_dict):
     for key, expected_value in c_dict.items():
         assert (wrapper.env_var_dict.get(f'METPLUS_{key}') == expected_value or
                 wrapper.c_dict.get(key) == expected_value)
+
 
 @pytest.mark.parametrize(
     'jobs, init_dt, expected_output', [
@@ -143,6 +147,7 @@ def test_override_config_in_c_dict(metplus_config, overrides, c_dict):
          ),
     ]
 )
+@pytest.mark.wrapper
 def test_handle_jobs(metplus_config, jobs, init_dt, expected_output):
     if init_dt:
         time_info = ti_calculate({'init': init_dt})
@@ -158,7 +163,7 @@ def test_handle_jobs(metplus_config, jobs, init_dt, expected_output):
         wrapper.c_dict['JOBS'].append(job.replace('<output_dir>', output_dir))
 
     output = wrapper.handle_jobs(time_info)
-    assert(output == expected_output.replace('<output_dir>', output_dir))
+    assert output == expected_output.replace('<output_dir>', output_dir)
 
 
 def cleanup_test_dirs(parent_dirs, output_dir):
@@ -167,6 +172,7 @@ def cleanup_test_dirs(parent_dirs, output_dir):
             parent_dir_sub = parent_dir.replace('<output_dir>', output_dir)
             if os.path.exists(parent_dir_sub):
                 os.removedirs(parent_dir_sub)
+
 
 @pytest.mark.parametrize(
     'jobs, init_dt, expected_output, parent_dirs', [
@@ -216,6 +222,7 @@ def cleanup_test_dirs(parent_dirs, output_dir):
          ),
     ]
 )
+@pytest.mark.wrapper
 def test_handle_jobs_create_parent_dir(metplus_config, jobs, init_dt,
                                        expected_output, parent_dirs):
     # if init time is provided, calculate other time dict items
@@ -254,6 +261,7 @@ def test_handle_jobs_create_parent_dir(metplus_config, jobs, init_dt,
     cleanup_test_dirs(parent_dirs, output_dir)
 
 
+@pytest.mark.wrapper
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
 

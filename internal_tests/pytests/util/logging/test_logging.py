@@ -1,9 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+
+import pytest
 
 import logging
 import re
 import os
-import pytest
 
 #
 # -----------Mandatory-----------

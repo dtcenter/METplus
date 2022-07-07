@@ -1,12 +1,12 @@
-import os
-
 import pytest
+
+import os
 
 from metplus.wrappers.ioda2nc_wrapper import IODA2NCWrapper
 
-
 time_fmt = '%Y%m%d%H'
 run_times = ['2020031012', '2020031100']
+
 
 def set_minimum_config_settings(config):
     config.set('config', 'DO_NOT_RUN_EXE', True)
@@ -28,6 +28,7 @@ def set_minimum_config_settings(config):
                '{OUTPUT_BASE}/ioda2nc')
     config.set('config', 'IODA2NC_OUTPUT_TEMPLATE',
                'ioda.NC001007.{valid?fmt=%Y%m%d%H}.summary.nc')
+
 
 @pytest.mark.parametrize(
     'config_overrides, env_var_values, extra_args', [
@@ -182,6 +183,7 @@ def set_minimum_config_settings(config):
          {}, ' -iodafile *INPUT_DIR*/other/file.nc -valid_beg 20200309_12 -valid_end 20200310_12 -nmsg 10'),
     ]
 )
+@pytest.mark.wrapper
 def test_ioda2nc_wrapper(metplus_config, config_overrides,
                          env_var_values, extra_args):
     config = metplus_config()
@@ -230,8 +232,10 @@ def test_ioda2nc_wrapper(metplus_config, config_overrides,
                           item.startswith(env_var_key)), None)
             assert match is not None
             actual_value = match.split('=', 1)[1]
-            assert(env_var_values.get(env_var_key, '') == actual_value)
+            assert env_var_values.get(env_var_key, '') == actual_value
 
+
+@pytest.mark.wrapper
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
     config = metplus_config()

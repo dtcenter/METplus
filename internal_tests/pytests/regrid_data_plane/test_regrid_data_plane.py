@@ -1,40 +1,14 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+
+import pytest
 
 import os
-import sys
-import re
-import logging
-from collections import namedtuple
-import pytest
 import datetime
 
-import produtil
-
 from metplus.wrappers.regrid_data_plane_wrapper import RegridDataPlaneWrapper
-from metplus.util import met_util as util
 from metplus.util import time_util
 
-# --------------------TEST CONFIGURATION and FIXTURE SUPPORT -------------
-#
-# The test configuration and fixture support the additional configuration
-# files used in METplus
-#              !!!!!!!!!!!!!!!
-#              !!!IMPORTANT!!!
-#              !!!!!!!!!!!!!!!
-# The following two methods should be included in ALL pytest tests for METplus.
-#
-#
-#def pytest_addoption(parser):
-#    parser.addoption("-c", action="store", help=" -c <test config file>")
 
-
-# @pytest.fixture
-#def cmdopt(request):
-#    return request.config.getoption("-c")
-
-
-# -----------------FIXTURES THAT CAN BE USED BY ALL TESTS----------------
-#@pytest.fixture
 def rdp_wrapper(metplus_config):
     """! Returns a default RegridDataPlane with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
@@ -45,7 +19,6 @@ def rdp_wrapper(metplus_config):
     config.set('config', 'DO_NOT_RUN_EXE', True)
     return RegridDataPlaneWrapper(config)
 
-# ------------------------ TESTS GO HERE --------------------------
 
 # field info is the input dictionary with name and level info to parse
 # expected_arg is the argument that should be set by the function
@@ -84,7 +57,7 @@ def rdp_wrapper(metplus_config):
          ),
     ]
 )
-
+@pytest.mark.wrapper
 def test_set_field_command_line_arguments(metplus_config, field_info, expected_arg):
     data_type = 'FCST'
 
@@ -93,7 +66,8 @@ def test_set_field_command_line_arguments(metplus_config, field_info, expected_a
     rdp = RegridDataPlaneWrapper(config)
 
     rdp.set_field_command_line_arguments(field_info, data_type)
-    assert(rdp.args[0] == expected_arg)
+    assert rdp.args[0] == expected_arg
+
 
 @pytest.mark.parametrize(
     'var_list, expected_names', [
@@ -150,13 +124,16 @@ def test_set_field_command_line_arguments(metplus_config, field_info, expected_a
 
     ]
 )
+@pytest.mark.wrapper
 def test_get_output_names(metplus_config, var_list, expected_names):
     data_type = 'FCST'
 
     rdp = RegridDataPlaneWrapper(metplus_config())
 
-    assert(rdp.get_output_names(var_list, data_type) == expected_names)
+    assert rdp.get_output_names(var_list, data_type) == expected_names
 
+
+@pytest.mark.wrapper
 def test_run_rdp_once_per_field(metplus_config):
     data_type = 'FCST'
 
@@ -195,7 +172,7 @@ def test_run_rdp_once_per_field(metplus_config):
         print("Number of commands run is not the same as expected")
         print(f"Actual commands: {wrap.all_commands}\n")
         print(f"Expected commands: {expected_cmds}\n")
-        assert(False)
+        assert False
 
     for (cmd, _), expected_cmd in zip(wrap.all_commands, expected_cmds):
         print(f"  ACTUAL:{cmd}")
@@ -203,8 +180,10 @@ def test_run_rdp_once_per_field(metplus_config):
         if cmd != expected_cmd:
             test_passed = False
 
-    assert(test_passed)
+    assert test_passed
 
+
+@pytest.mark.wrapper
 def test_run_rdp_all_fields(metplus_config):
     data_type = 'FCST'
 
@@ -239,7 +218,7 @@ def test_run_rdp_all_fields(metplus_config):
 
     if len(wrap.all_commands) != len(expected_cmds):
         print("Number of commands run is not the same as expected")
-        assert(False)
+        assert False
 
     for (cmd, _), expected_cmd in zip(wrap.all_commands, expected_cmds):
         print(f"  ACTUAL:{cmd}")
@@ -247,8 +226,10 @@ def test_run_rdp_all_fields(metplus_config):
         if cmd != expected_cmd:
             test_passed = False
 
-    assert(test_passed)
+    assert test_passed
 
+
+@pytest.mark.wrapper
 def test_set_command_line_arguments(metplus_config):
     test_passed = True
     wrap = rdp_wrapper(metplus_config)
@@ -329,4 +310,4 @@ def test_set_command_line_arguments(metplus_config):
 
     wrap.args.clear()
 
-    assert(test_passed)
+    assert test_passed

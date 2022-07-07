@@ -1,39 +1,16 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+
+import pytest
 
 import os
-import sys
-import re
-import logging
-from collections import namedtuple
-import pytest
 import datetime
 
-import produtil
-
 from metplus.wrappers.pb2nc_wrapper import PB2NCWrapper
-from metplus.util import met_util as util
+
 from metplus.util import time_util
 from metplus.util import do_string_sub
 
-# --------------------TEST CONFIGURATION and FIXTURE SUPPORT -------------
-#
-# The test configuration and fixture support the additional configuration
-# files used in METplus
-#              !!!!!!!!!!!!!!!
-#              !!!IMPORTANT!!!
-#              !!!!!!!!!!!!!!!
-# The following two methods should be included in ALL pytest tests for METplus.
-#
-#
-def pytest_addoption(parser):
-    parser.addoption("-c", action="store", help=" -c <test config file>")
 
-
-def cmdopt(request):
-    return request.config.getoption("-c")
-
-
-# -----------------FIXTURES THAT CAN BE USED BY ALL TESTS----------------
 def pb2nc_wrapper(metplus_config):
     """! Returns a default PB2NCWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
@@ -47,13 +24,7 @@ def pb2nc_wrapper(metplus_config):
     config = metplus_config(extra_configs)
     return PB2NCWrapper(config)
 
-# ------------------------ TESTS GO HERE --------------------------
 
-# ---------------------
-# test_find_and_check_output_file_skip
-# test that find_and_check_output_file returns correctly based on
-# if file exists and if 'skip if exists' is turned on
-# ---------------------
 @pytest.mark.parametrize(
     # key = grid_id, value = expected reformatted grid id
         'exists, skip, run', [
@@ -63,6 +34,7 @@ def pb2nc_wrapper(metplus_config):
             (False, False, True),
         ]
 )
+@pytest.mark.wrapper
 def test_find_and_check_output_file_skip(metplus_config, exists, skip, run):
     pb = pb2nc_wrapper(metplus_config)
     exist_file = 'wackyfilenametocreate'
@@ -88,6 +60,7 @@ def test_find_and_check_output_file_skip(metplus_config, exists, skip, run):
     # cast result to bool because None isn't equal to False
     assert bool(result) == run
 
+
 # ---------------------
 # test_get_command
 # test that command is generated correctly
@@ -101,6 +74,7 @@ def test_find_and_check_output_file_skip(metplus_config, exists, skip, run):
             ['file1', 'file2', 'file3'],
         ]
 )
+@pytest.mark.wrapper
 def test_get_command(metplus_config, infiles):
     pb = pb2nc_wrapper(metplus_config)
     pb.outfile = 'outfilename.txt'
@@ -119,6 +93,7 @@ def test_get_command(metplus_config, infiles):
 
     assert cmd == expected_cmd
 
+
 # ---------------------
 # test_find_input_files
 # test files can be found with find_input_files with varying offset lists
@@ -133,6 +108,7 @@ def test_get_command(metplus_config, infiles):
             ([2, 4, 6], None),
         ]
 )
+@pytest.mark.wrapper
 def test_find_input_files(metplus_config, offsets, offset_to_find):
     pb = pb2nc_wrapper(metplus_config)
     # for valid 20190201_12, offsets 3 and 5, create files to find
@@ -169,6 +145,7 @@ def test_find_input_files(metplus_config, offsets, offset_to_find):
         assert result is None
     else:
         assert result['offset_hours'] == offset_to_find
+
 
 @pytest.mark.parametrize(
     'config_overrides, env_var_values', [
@@ -290,6 +267,7 @@ def test_find_input_files(metplus_config, offsets, offset_to_find):
 
     ]
 )
+@pytest.mark.wrapper
 def test_pb2nc_all_fields(metplus_config, config_overrides,
                           env_var_values):
     input_dir = '/some/input/dir'
@@ -346,7 +324,7 @@ def test_pb2nc_all_fields(metplus_config, config_overrides,
 
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
-        assert(cmd == expected_cmd)
+        assert cmd == expected_cmd
 
         # check that environment variables were set properly
         # including deprecated env vars (not in wrapper env var keys)
@@ -356,10 +334,12 @@ def test_pb2nc_all_fields(metplus_config, config_overrides,
         for env_var_key in env_var_keys:
             match = next((item for item in env_vars if
                           item.startswith(env_var_key)), None)
-            assert(match is not None)
+            assert match is not None
             value = match.split('=', 1)[1]
-            assert(env_var_values.get(env_var_key, '') == value)
+            assert env_var_values.get(env_var_key, '') == value
 
+
+@pytest.mark.wrapper
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
 
@@ -375,6 +355,8 @@ def test_get_config_file(metplus_config):
     wrapper = PB2NCWrapper(config)
     assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name
 
+
+@pytest.mark.wrapper
 def test_pb2nc_file_window(metplus_config):
     begin_value = -3600
     end_value = 3600

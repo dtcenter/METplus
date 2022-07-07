@@ -11,6 +11,7 @@ def test_get_default_config_list():
     test_data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                  os.pardir,
                                                  os.pardir,
+                                                 os.pardir,
                                                  'data',
                                                  'config_metplus'))
     old_parm_base = os.path.join(test_data_dir, 'old')

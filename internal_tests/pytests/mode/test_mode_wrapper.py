@@ -1,18 +1,11 @@
 #!/usr/bin/env python3
 
-import os
-import sys
-import re
-import logging
-from collections import namedtuple
 import pytest
-import datetime
 
-import produtil
+import os
+
 
 from metplus.wrappers.mode_wrapper import MODEWrapper
-from metplus.util import met_util as util
-from metplus.util import time_util
 
 fcst_dir = '/some/path/fcst'
 obs_dir = '/some/path/obs'
@@ -63,6 +56,7 @@ def set_minimum_config_settings(config):
     config.set('config', 'FCST_VAR1_LEVELS', fcst_level)
     config.set('config', 'OBS_VAR1_NAME', obs_name)
     config.set('config', 'OBS_VAR1_LEVELS', obs_level)
+
 
 @pytest.mark.parametrize(
     'config_overrides, expected_output', [
@@ -321,6 +315,7 @@ def set_minimum_config_settings(config):
 
     ]
 )
+@pytest.mark.wrapper
 def test_mode_single_field(metplus_config, config_overrides,
                            expected_output):
     config = metplus_config()
@@ -396,12 +391,14 @@ def test_mode_single_field(metplus_config, config_overrides,
             else:
                 assert expected_output.get(env_var_key, '') == value
 
+
 @pytest.mark.parametrize(
     'config_overrides, expected_output', [
         ({'MODE_MULTIVAR_LOGIC': '#1 && #2 && #3', },
          {'METPLUS_MULTIVAR_LOGIC': 'multivar_logic = "#1 && #2 && #3";'}),
     ]
 )
+@pytest.mark.wrapper
 def test_mode_multi_variate(metplus_config, config_overrides,
                             expected_output):
     config = metplus_config()
@@ -506,6 +503,7 @@ def test_mode_multi_variate(metplus_config, config_overrides,
 
     ]
 )
+@pytest.mark.wrapper
 def test_config_synonyms(metplus_config, config_name, env_var_name,
                          met_name, var_type):
     """! Ensure that different METplus config variable names set the correct
@@ -530,6 +528,8 @@ def test_config_synonyms(metplus_config, config_name, env_var_name,
     expected_output = f'{met_name} = {out_value};'
     assert wrapper.env_var_dict[env_var_name] == expected_output
 
+
+@pytest.mark.wrapper
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
 

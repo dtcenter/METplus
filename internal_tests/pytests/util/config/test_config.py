@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 import pytest
@@ -28,6 +28,7 @@ from metplus.util import met_util as util
         (None, None),
     ]
 )
+@pytest.mark.util
 def test_getseconds(metplus_config, input_value, result):
     conf = metplus_config()
     if input_value is not None:
