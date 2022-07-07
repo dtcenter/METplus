@@ -55,9 +55,9 @@ if [[ "$INPUT_CATEGORIES" == pytests* ]]; then
 	 -f .github/actions/run_tests/Dockerfile.run \
 	 .
 
-  marker=`echo $INPUT_CATEGORIES | awk -F_ '{print $2}'`
+  marker="$( cut -d '_' -f 2- <<< "$INPUT_CATEGORIES" )"
   if [[ "$marker" == not* ]]; then
-    marker=not `echo $marker | awk -F_ '{print $2}'`
+    marker=not "$( cut -d '_' -f 2- <<< "marker" )"
   fi
   echo Running Pytests marker=$marker
   command="export METPLUS_PYTEST_HOST=docker; cd internal_tests/pytests; /usr/local/envs/pytest/bin/pytest -vv --cov=../../metplus -m \"$marker\""
