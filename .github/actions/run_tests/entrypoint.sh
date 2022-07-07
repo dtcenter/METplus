@@ -64,7 +64,7 @@ if [[ "$INPUT_CATEGORIES" == pytests* ]]; then
     command+="/usr/local/envs/pytest/bin/pytest -vv --cov=../../metplus -m \"$marker\""
     command+=";if [ \$? != 0 ]; then status=1; fi;"
   done
-  command+="if [ \$status != 0 ]; then false; fi"
+  command+="if [ \$status != 0 ]; then echo ERROR: Some pytests failed. Search for FAILED to review; false; fi"
   time_command docker run -v $WS_PATH:$GITHUB_WORKSPACE --workdir $GITHUB_WORKSPACE $RUN_TAG bash -c "$command"
   exit $?
 fi
