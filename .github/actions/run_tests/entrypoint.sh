@@ -57,7 +57,7 @@ if [[ "$INPUT_CATEGORIES" == pytests* ]]; then
 
   marker="$( cut -d '_' -f 2- <<< "$INPUT_CATEGORIES" )"
   if [[ "$marker" == not* ]]; then
-    marker=not "$( cut -d '_' -f 2- <<< "$marker" )"
+    marker="not $( cut -d '_' -f 2- <<< "$marker" )"
   fi
   echo Running Pytests marker=$marker
   command="export METPLUS_PYTEST_HOST=docker; cd internal_tests/pytests; /usr/local/envs/pytest/bin/pytest -vv --cov=../../metplus -m \"$marker\""
