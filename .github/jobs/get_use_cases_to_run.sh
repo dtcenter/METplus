@@ -1,7 +1,7 @@
 #! /bin/bash
 
 use_case_groups_filepath=.github/parm/use_case_groups.json
-pytests_groups_filepath=.github/parm/pytest_groups.txt
+
 # set matrix to string of an empty array in case no use cases will be run
 matrix="[]"
 
@@ -32,10 +32,6 @@ fi
 if [ "$run_unit_tests" == "true" ]; then
   echo Adding unit tests to list to run
 
-  #pytests=""
-  #for x in `cat $pytests_groups_filepath`; do
-  #  pytests=$pytests"\"pytests_$x\","
-  #done
   pytests="\"pytests\","
 
   # if matrix is empty, set to an array that only includes pytests

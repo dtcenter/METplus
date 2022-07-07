@@ -8,6 +8,8 @@ WS_PATH=$RUNNER_WORKSPACE/$REPO_NAME
 # set CI jobs directory variable to easily move it
 CI_JOBS_DIR=.github/jobs
 
+PYTESTS_GROUPS_FILEPATH=.github/parm/pytest_groups.txt
+
 source ${GITHUB_WORKSPACE}/${CI_JOBS_DIR}/bash_functions.sh
 
 # get branch name for push or pull request events
@@ -30,9 +32,7 @@ if [ $? != 0 ]; then
    ${GITHUB_WORKSPACE}/${CI_JOBS_DIR}/docker_setup.sh
 fi
 
-#
 # running unit tests (pytests)
-#
 if [[ "$INPUT_CATEGORIES" == pytests* ]]; then
   export METPLUS_ENV_TAG="pytest"
   export METPLUS_IMG_TAG=${branch_name}
@@ -55,16 +55,10 @@ if [[ "$INPUT_CATEGORIES" == pytests* ]]; then
 	 -f .github/actions/run_tests/Dockerfile.run \
 	 .
 
-  pytests_groups_filepath=.github/parm/pytest_groups.txt
-  # strip off pytests_ from marker string
-  #marker="$( cut -d '_' -f 2- <<< "$INPUT_CATEGORIES" )"
-  # remove underscore after 'not' and around 'or'
-  #marker="${marker//_or_/ or }"
-  #marker="${marker//not_/not }"
-  echo Running Pytests #marker=$marker
+  echo Running Pytests
   command="export METPLUS_PYTEST_HOST=docker; cd internal_tests/pytests;"
   command+="status=0;"
-  for x in `cat $pytests_groups_filepath`; do
+  for x in `cat $PYTESTS_GROUPS_FILEPATH`; do
     marker="${x//_or_/ or }"
     marker="${marker//not_/not }"
     command+="/usr/local/envs/pytest/bin/pytest -vv --cov=../../metplus -m \"$marker\""
@@ -75,9 +69,7 @@ if [[ "$INPUT_CATEGORIES" == pytests* ]]; then
   exit $?
 fi
 
-#
 # running use case tests
-#
 
 # split apart use case category and subset list from input
 CATEGORIES=`echo $INPUT_CATEGORIES | awk -F: '{print $1}'`
