@@ -27,7 +27,7 @@
   {
     "category": "convection_allowing_models",
     "index_list": "0",
-    "run": true
+    "run": false
   },
   {
     "category": "convection_allowing_models",
