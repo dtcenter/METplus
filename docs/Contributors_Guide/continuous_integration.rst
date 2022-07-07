@@ -557,6 +557,38 @@ process can be found in the :ref:`use_case_input_data` section of the
 Add Use Cases chapter of the Contributor's Guide.
 
 
+.. _cg-ci-unit-tests:
+
+Unit Tests
+----------
+
+Unit tests are run via pytest.
+Groups of pytests are run in the 'pytests' job.
+The list of groups that will be run in the automated tests are found in
+.github/parm/pytest_groups.txt.
+See :ref:`cg-unit-tests` for more information on pytest groups.
+
+Items in pytest_groups.txt can include::
+
+    * A single group marker name, i.e. wrapper_a
+    * Multiple group marker names separated by _or_, i.e. plotting_or_long
+    * A group marker name to exclude starting with not_, i.e. not_wrapper
+
+All pytest groups are currently run in a single GitHub Actions job.
+This was done because the existing automation logic builds a Docker
+environment to run the tests and each testing environment takes a few minutes
+to create (future improvements may speed up execution time by running the
+pytests directly in the GitHub Actions environment instead of Docker).
+Running the pytests in smaller groups serially takes substantially less time
+than calling all of the existing pytests in a single call to pytest,
+so dividing tests into groups is recommended to improve performance.
+Searching for the string "deselected in" in the pytests job log can be used
+to see how long each group took to run.
+
+Future enhancements could be made to save and parse this information for each
+run to output a summary at the end of the log file to more easily see which
+groups could be broken up to improve performance.
+
 .. _cg-ci-use-case-tests:
 
 Use Case Tests

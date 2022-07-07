@@ -4,18 +4,54 @@ Testing
 Test scripts are found in the GitHub repository in the internal_tests
 directory.
 
+.. _cg-unit-tests:
+
 Unit Tests
 ----------
 
 Unit tests are run with pytest. They are found in the *pytests* directory.
 Each tool has its own subdirectory containing its test files.
 
-**run_pytests.sh** is a bash script that can be run to execute all of the
-pytests. A report will be output showing which pytest categories failed.
-When running on a new computer, a
-**minimum_pytest.<HOST>.sh** 
+Unit tests can be run by running the 'pytest' command from the
+internal_tests/pytests directory of the repository.
+The 'pytest' Python package must be available.
+A report will be output showing which pytest categories failed.
+When running on a new computer, a **minimum_pytest.<HOST>.sh**
 file must be created to be able to run the script. This file contains
 information about the local environment so that the tests can run.
+
+All unit tests must include one of the custom markers listed in the
+internal_tests/pytests/pytest.ini file. Some examples include:
+
+    * util
+    * wrapper_a
+    * wrapper_b
+    * wrapper_c
+    * wrapper
+    * long
+    * plotting
+
+To apply a marker to a unit test function, add the following on the line before
+the function definition::
+
+    @pytest.mark.<MARKER-NAME>
+
+where <MARKER-NAME> is one of the custom marker strings listed in pytest.ini.
+
+There are many unit tests for METplus and false failures can occur if all of
+the are attempted to run at once.
+To run only tests with a given marker, run::
+
+    pytest -m <MARKER-NAME>
+
+To run all tests that do not have a given marker, run::
+
+    pytest -m "not <MARKER-NAME>"
+
+Multiple marker groups can be run by using the 'or' keyword::
+
+    pytest -m "<MARKER-NAME1> or <MARKER-NAME2>"
+
 
 Use Case Tests
 --------------
