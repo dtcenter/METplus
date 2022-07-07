@@ -39,7 +39,7 @@ def set_minimum_config_settings(config):
     config.set('config', 'POINT_STAT_OUTPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}')
 
 
-@pytest.mark.wrapper
+@pytest.mark.wrapper_a
 def test_met_dictionary_in_var_options(metplus_config):
     config = metplus_config()
     set_minimum_config_settings(config)
@@ -470,7 +470,7 @@ def test_met_dictionary_in_var_options(metplus_config):
          {'METPLUS_FCST_FILE_TYPE': 'file_type = NETCDF_PINT;'}),
     ]
 )
-@pytest.mark.wrapper
+@pytest.mark.wrapper_a
 def test_point_stat_all_fields(metplus_config, config_overrides,
                                env_var_values):
     level_no_quotes = '(*,*)'
@@ -579,7 +579,7 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
                 assert env_var_values.get(env_var_key, '') == value
 
 
-@pytest.mark.wrapper
+@pytest.mark.wrapper_a
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
 

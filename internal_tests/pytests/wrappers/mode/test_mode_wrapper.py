@@ -315,7 +315,7 @@ def set_minimum_config_settings(config):
 
     ]
 )
-@pytest.mark.wrapper
+@pytest.mark.wrapper_a
 def test_mode_single_field(metplus_config, config_overrides,
                            expected_output):
     config = metplus_config()
@@ -398,7 +398,7 @@ def test_mode_single_field(metplus_config, config_overrides,
          {'METPLUS_MULTIVAR_LOGIC': 'multivar_logic = "#1 && #2 && #3";'}),
     ]
 )
-@pytest.mark.wrapper
+@pytest.mark.wrapper_a
 def test_mode_multi_variate(metplus_config, config_overrides,
                             expected_output):
     config = metplus_config()
@@ -503,7 +503,7 @@ def test_mode_multi_variate(metplus_config, config_overrides,
 
     ]
 )
-@pytest.mark.wrapper
+@pytest.mark.wrapper_a
 def test_config_synonyms(metplus_config, config_name, env_var_name,
                          met_name, var_type):
     """! Ensure that different METplus config variable names set the correct
@@ -529,7 +529,7 @@ def test_config_synonyms(metplus_config, config_name, env_var_name,
     assert wrapper.env_var_dict[env_var_name] == expected_output
 
 
-@pytest.mark.wrapper
+@pytest.mark.wrapper_a
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
 

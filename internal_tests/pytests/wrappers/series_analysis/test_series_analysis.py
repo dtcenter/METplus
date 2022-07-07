@@ -293,7 +293,7 @@ def set_minimum_config_settings(config):
 
     ]
 )
-@pytest.mark.wrapper
+@pytest.mark.wrapper_a
 def test_series_analysis_single_field(metplus_config, config_overrides,
                                       env_var_values):
 
@@ -345,7 +345,7 @@ def test_series_analysis_single_field(metplus_config, config_overrides,
                 assert env_var_values.get(env_var_key, '') == actual_value
 
 
-@pytest.mark.wrapper
+@pytest.mark.wrapper_a
 def test_get_fcst_file_info(metplus_config):
     """ Verify that the tuple created by get_fcst_file_info is
         not an empty tuple, and that the number, beginning
@@ -380,7 +380,7 @@ def test_get_fcst_file_info(metplus_config):
     assert end == expected_end
 
 
-@pytest.mark.wrapper
+@pytest.mark.wrapper_a
 def test_get_storms_list(metplus_config):
     """Verify that the expected number of storms
        are found for the init time 20141214_00
@@ -491,7 +491,7 @@ all_fake_obs = ['obs/20141214_00/ML1201072014/OBS_TILE_F000_gfs_4_20141214_0000_
          ]),
     ]
 )
-@pytest.mark.wrapper
+@pytest.mark.wrapper_a
 def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset, expect_obs_subset):
     """! Test to ensure that get_all_files only gets the files that are
     relevant to the runtime settings and not every file in the directory
@@ -715,7 +715,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
          ]),
     ]
 )
-@pytest.mark.wrapper
+@pytest.mark.wrapper_a
 def test_get_fcst_and_obs_path(metplus_config, config_overrides,
                                time_info, storm_id, lead_group,
                                expect_fcst_subset, expect_obs_subset):
@@ -833,7 +833,7 @@ def test_get_fcst_and_obs_path(metplus_config, config_overrides,
          '_FILES_F012_to_F018'),
     ]
 )
-@pytest.mark.wrapper
+@pytest.mark.wrapper_a
 def test_get_ascii_filename(metplus_config, storm_id, leads,
                             expected_result):
     wrapper = series_analysis_wrapper(metplus_config)
@@ -869,7 +869,7 @@ def test_get_ascii_filename(metplus_config, storm_id, leads,
          'ML1221072014', '', '20141031_12/ML1221072014_'),
     ]
 )
-@pytest.mark.wrapper
+@pytest.mark.wrapper_a
 def test_get_output_dir(metplus_config, template, storm_id, label, expected_result):
     time_info = {'init': datetime(2014, 10, 31, 12, 15),
                  'valid': datetime(2014, 10, 31, 18, 15),
@@ -882,7 +882,7 @@ def test_get_output_dir(metplus_config, template, storm_id, label, expected_resu
     assert(actual_result == os.path.join(output_dir, expected_result))
 
 
-@pytest.mark.wrapper
+@pytest.mark.wrapper_a
 def test_get_netcdf_min_max(metplus_config):
     expected_min = 0.0
     expected_max = 8.0
@@ -900,7 +900,7 @@ def test_get_netcdf_min_max(metplus_config):
     assert max == expected_max
 
 
-@pytest.mark.wrapper
+@pytest.mark.wrapper_a
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
 

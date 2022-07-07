@@ -285,7 +285,7 @@ from metplus.wrappers.tc_gen_wrapper import TCGenWrapper
 
     ]
 )
-@pytest.mark.wrapper
+@pytest.mark.wrapper_a
 def test_tc_gen(metplus_config, config_overrides, env_var_values):
     # expected number of 2016 files (including file_list line)
     expected_genesis_count = 7
@@ -419,7 +419,7 @@ def test_tc_gen(metplus_config, config_overrides, env_var_values):
     assert len(lines) == expected_track_count
 
 
-@pytest.mark.wrapper
+@pytest.mark.wrapper_a
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
 
