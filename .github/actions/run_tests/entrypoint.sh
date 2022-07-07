@@ -67,10 +67,10 @@ if [[ "$INPUT_CATEGORIES" == pytests* ]]; then
   for x in `cat $pytests_groups_filepath`; do
     marker="${x//_or_/ or }"
     marker="${marker//not_/not }"
-    command+= "/usr/local/envs/pytest/bin/pytest -vv --cov=../../metplus -m \"$marker\""
-    command+=";if [ $? != 0 ]; then status=1; fi;"
+    command+="/usr/local/envs/pytest/bin/pytest -vv --cov=../../metplus -m \"$marker\""
+    command+=";if [ \$? != 0 ]; then status=1; fi;"
   done
-  command+="if [ $status != 0 ]; then false; fi"
+  command+="if [ \$status != 0 ]; then false; fi"
   time_command docker run -v $WS_PATH:$GITHUB_WORKSPACE --workdir $GITHUB_WORKSPACE $RUN_TAG bash -c "$command"
   exit $?
 fi
