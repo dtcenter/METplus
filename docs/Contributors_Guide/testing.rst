@@ -38,6 +38,10 @@ the function definition::
 
 where <MARKER-NAME> is one of the custom marker strings listed in pytest.ini.
 
+New pytest markers should be added to the pytest.ini file with a brief
+description. If they are not added to the markers list, then a warning will
+be output when running the tests.
+
 There are many unit tests for METplus and false failures can occur if all of
 the are attempted to run at once.
 To run only tests with a given marker, run::
