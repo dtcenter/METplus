@@ -138,7 +138,7 @@ def ti_get_seconds_from_relativedelta(lead, valid_time=None):
         return None
 
     # if valid time is specified, use it to determine seconds
-    if valid_time is not None:
+    if valid_time:
         return int((valid_time - (valid_time - lead)).total_seconds())
 
     if lead.months != 0 or lead.years != 0:
