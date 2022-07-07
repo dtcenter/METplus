@@ -1073,14 +1073,18 @@ class StatAnalysisWrapper(CommandBuilder):
         dir_path_filled = do_string_sub(dir_path,
                                         **stringsub_dict)
 
-        if '*' in dir_path_filled:
-            self.logger.debug(f"Expanding wildcard path: {dir_path_filled}")
-            dir_path_filled_all = ' '.join(sorted(glob.glob(dir_path_filled)))
-            self.logger.warning(f"Wildcard expansion found no matches")
-        else:
-            dir_path_filled_all = dir_path_filled
-        lookin_dir = dir_path_filled_all
-        return lookin_dir
+        all_paths = []
+        for one_path in dir_path_filled.split(','):
+            if '*' in one_path:
+                self.logger.debug(f"Expanding wildcard path: {one_path}")
+                expand_path = glob.glob(one_path.strip())
+                if not expand_path:
+                    self.logger.warning(f"Wildcard expansion found no matches")
+                    continue
+                all_paths.extend(sorted(expand_path))
+            else:
+               all_paths.append(one_path.strip())
+        return ' '.join(all_paths)
 
     def format_valid_init(self, config_dict):
         """! Format the valid and initialization dates and
