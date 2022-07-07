@@ -55,13 +55,22 @@ if [[ "$INPUT_CATEGORIES" == pytests* ]]; then
 	 -f .github/actions/run_tests/Dockerfile.run \
 	 .
 
+  pytests_groups_filepath=.github/parm/pytest_groups.txt
   # strip off pytests_ from marker string
-  marker="$( cut -d '_' -f 2- <<< "$INPUT_CATEGORIES" )"
+  #marker="$( cut -d '_' -f 2- <<< "$INPUT_CATEGORIES" )"
   # remove underscore after 'not' and around 'or'
-  marker="${marker//_or_/ or }"
-  marker="${marker//not_/not }"
-  echo Running Pytests marker=$marker
-  command="export METPLUS_PYTEST_HOST=docker; cd internal_tests/pytests; /usr/local/envs/pytest/bin/pytest -vv --cov=../../metplus -m \"$marker\""
+  #marker="${marker//_or_/ or }"
+  #marker="${marker//not_/not }"
+  echo Running Pytests #marker=$marker
+  command="export METPLUS_PYTEST_HOST=docker; cd internal_tests/pytests;"
+  command+="status=0;"
+  for x in `cat $pytests_groups_filepath`; do
+    marker="${x//_or_/ or }"
+    marker="${marker//not_/not }"
+    command+= "/usr/local/envs/pytest/bin/pytest -vv --cov=../../metplus -m \"$marker\""
+    command+=";if [ $? != 0 ]; then status=1; fi;"
+  done
+  command+="if [ $status != 0 ]; then false; fi"
   time_command docker run -v $WS_PATH:$GITHUB_WORKSPACE --workdir $GITHUB_WORKSPACE $RUN_TAG bash -c "$command"
   exit $?
 fi

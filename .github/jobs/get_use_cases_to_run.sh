@@ -32,10 +32,11 @@ fi
 if [ "$run_unit_tests" == "true" ]; then
   echo Adding unit tests to list to run
 
-  pytests=""
-  for x in `cat $pytests_groups_filepath`; do
-    pytests=$pytests"\"pytests_$x\","
-  done
+  #pytests=""
+  #for x in `cat $pytests_groups_filepath`; do
+  #  pytests=$pytests"\"pytests_$x\","
+  #done
+  pytests="\"pytests\","
 
   # if matrix is empty, set to an array that only includes pytests
   if [ "$matrix" == "[]" ]; then
