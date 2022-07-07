@@ -574,6 +574,16 @@ def test_get_lookin_dir(metplus_config):
                                         lists_to_group, config_dict)
     assert expected_lookin_dir == test_lookin_dir
 
+    # Test 4 - 2 paths, one with wildcard
+    expected_lookin_dir = os.path.join(pytest_data_dir, 'fake/20180201')
+    expected_lookin_dir = f'{expected_lookin_dir} {expected_lookin_dir}'
+    dir_path = os.path.join(pytest_data_dir, 'fake/*')
+    dir_path = f'{dir_path}, {dir_path}'
+
+    test_lookin_dir = st.get_lookin_dir(dir_path, lists_to_loop,
+                                        lists_to_group, config_dict)
+    assert expected_lookin_dir == test_lookin_dir
+
 
 @pytest.mark.plotting
 def test_format_valid_init(metplus_config):
@@ -594,18 +604,18 @@ def test_format_valid_init(metplus_config):
     config_dict['OBS_VALID_HOUR'] = ''
     config_dict['OBS_INIT_HOUR'] = ''
     config_dict = st.format_valid_init(config_dict)
-    assert(config_dict['FCST_VALID_BEG'] == '20190101_000000')
-    assert(config_dict['FCST_VALID_END'] == '20190105_000000')
-    assert(config_dict['FCST_VALID_HOUR'] == '"000000"')
-    assert(config_dict['FCST_INIT_BEG'] == '')
-    assert(config_dict['FCST_INIT_END'] == '')
-    assert(config_dict['FCST_INIT_HOUR'] == '"000000", "120000"')
-    assert(config_dict['OBS_VALID_BEG'] == '')
-    assert(config_dict['OBS_VALID_END'] == '')
-    assert(config_dict['OBS_VALID_HOUR'] == '')
-    assert(config_dict['OBS_INIT_BEG'] == '')
-    assert(config_dict['OBS_INIT_END'] == '')
-    assert(config_dict['OBS_INIT_HOUR'] == '')
+    assert config_dict['FCST_VALID_BEG'] == '20190101_000000'
+    assert config_dict['FCST_VALID_END'] == '20190105_000000'
+    assert config_dict['FCST_VALID_HOUR'] == '"000000"'
+    assert config_dict['FCST_INIT_BEG'] == ''
+    assert config_dict['FCST_INIT_END'] == ''
+    assert config_dict['FCST_INIT_HOUR'] == '"000000", "120000"'
+    assert config_dict['OBS_VALID_BEG'] == ''
+    assert config_dict['OBS_VALID_END'] == ''
+    assert config_dict['OBS_VALID_HOUR'] == ''
+    assert config_dict['OBS_INIT_BEG'] == ''
+    assert config_dict['OBS_INIT_END'] == ''
+    assert config_dict['OBS_INIT_HOUR'] == ''
     # Test 2
     st.c_dict['DATE_BEG'] = '20190101'
     st.c_dict['DATE_END'] = '20190105'
@@ -617,18 +627,18 @@ def test_format_valid_init(metplus_config):
     config_dict['OBS_VALID_HOUR'] = ''
     config_dict['OBS_INIT_HOUR'] = ''
     config_dict = st.format_valid_init(config_dict)
-    assert(config_dict['FCST_VALID_BEG'] == '20190101_000000')
-    assert(config_dict['FCST_VALID_END'] == '20190105_120000')
-    assert(config_dict['FCST_VALID_HOUR'] == '"000000", "120000"')
-    assert(config_dict['FCST_INIT_BEG'] == '')
-    assert(config_dict['FCST_INIT_END'] == '')
-    assert(config_dict['FCST_INIT_HOUR'] == '"000000", "120000"')
-    assert(config_dict['OBS_VALID_BEG'] == '')
-    assert(config_dict['OBS_VALID_END'] == '')
-    assert(config_dict['OBS_VALID_HOUR'] == '')
-    assert(config_dict['OBS_INIT_BEG'] == '')
-    assert(config_dict['OBS_INIT_END'] == '')
-    assert(config_dict['OBS_INIT_HOUR'] == '')
+    assert config_dict['FCST_VALID_BEG'] == '20190101_000000'
+    assert config_dict['FCST_VALID_END'] == '20190105_120000'
+    assert config_dict['FCST_VALID_HOUR'] == '"000000", "120000"'
+    assert config_dict['FCST_INIT_BEG'] == ''
+    assert config_dict['FCST_INIT_END'] == ''
+    assert config_dict['FCST_INIT_HOUR'] == '"000000", "120000"'
+    assert config_dict['OBS_VALID_BEG'] == ''
+    assert config_dict['OBS_VALID_END'] == ''
+    assert config_dict['OBS_VALID_HOUR'] == ''
+    assert config_dict['OBS_INIT_BEG'] == ''
+    assert config_dict['OBS_INIT_END'] == ''
+    assert config_dict['OBS_INIT_HOUR'] == ''
     # Test 3
     st.c_dict['DATE_BEG'] = '20190101'
     st.c_dict['DATE_END'] = '20190101'
@@ -640,18 +650,18 @@ def test_format_valid_init(metplus_config):
     config_dict['OBS_VALID_HOUR'] = '000000'
     config_dict['OBS_INIT_HOUR'] = '"000000", "120000"'
     config_dict = st.format_valid_init(config_dict)
-    assert(config_dict['FCST_VALID_BEG'] == '')
-    assert(config_dict['FCST_VALID_END'] == '')
-    assert(config_dict['FCST_VALID_HOUR'] == '')
-    assert(config_dict['FCST_INIT_BEG'] == '')
-    assert(config_dict['FCST_INIT_END'] == '')
-    assert(config_dict['FCST_INIT_HOUR'] == '')
-    assert(config_dict['OBS_VALID_BEG'] == '20190101_000000')
-    assert(config_dict['OBS_VALID_END'] == '20190101_000000')
-    assert(config_dict['OBS_VALID_HOUR'] == '"000000"')
-    assert(config_dict['OBS_INIT_BEG'] == '')
-    assert(config_dict['OBS_INIT_END'] == '')
-    assert(config_dict['OBS_INIT_HOUR'] == '"000000", "120000"')
+    assert config_dict['FCST_VALID_BEG'] == ''
+    assert config_dict['FCST_VALID_END'] == ''
+    assert config_dict['FCST_VALID_HOUR'] == ''
+    assert config_dict['FCST_INIT_BEG'] == ''
+    assert config_dict['FCST_INIT_END'] == ''
+    assert config_dict['FCST_INIT_HOUR'] == ''
+    assert config_dict['OBS_VALID_BEG'] == '20190101_000000'
+    assert config_dict['OBS_VALID_END'] == '20190101_000000'
+    assert config_dict['OBS_VALID_HOUR'] == '"000000"'
+    assert config_dict['OBS_INIT_BEG'] == ''
+    assert config_dict['OBS_INIT_END'] == ''
+    assert config_dict['OBS_INIT_HOUR'] == '"000000", "120000"'
     # Test 3
     st.c_dict['DATE_BEG'] = '20190101'
     st.c_dict['DATE_END'] = '20190101'
@@ -663,18 +673,18 @@ def test_format_valid_init(metplus_config):
     config_dict['OBS_VALID_HOUR'] = '000000'
     config_dict['OBS_INIT_HOUR'] = '"000000", "120000"'
     config_dict = st.format_valid_init(config_dict)
-    assert(config_dict['FCST_VALID_BEG'] == '')
-    assert(config_dict['FCST_VALID_END'] == '')
-    assert(config_dict['FCST_VALID_HOUR'] == '')
-    assert(config_dict['FCST_INIT_BEG'] == '')
-    assert(config_dict['FCST_INIT_END'] == '')
-    assert(config_dict['FCST_INIT_HOUR'] == '')
-    assert(config_dict['OBS_VALID_BEG'] == '')
-    assert(config_dict['OBS_VALID_END'] == '')
-    assert(config_dict['OBS_VALID_HOUR'] == '"000000"')
-    assert(config_dict['OBS_INIT_BEG'] == '20190101_000000')
-    assert(config_dict['OBS_INIT_END'] == '20190101_120000')
-    assert(config_dict['OBS_INIT_HOUR'] == '"000000", "120000"')
+    assert config_dict['FCST_VALID_BEG'] == ''
+    assert config_dict['FCST_VALID_END'] == ''
+    assert config_dict['FCST_VALID_HOUR'] == ''
+    assert config_dict['FCST_INIT_BEG'] == ''
+    assert config_dict['FCST_INIT_END'] == ''
+    assert config_dict['FCST_INIT_HOUR'] == ''
+    assert config_dict['OBS_VALID_BEG'] == ''
+    assert config_dict['OBS_VALID_END'] == ''
+    assert config_dict['OBS_VALID_HOUR'] == '"000000"'
+    assert config_dict['OBS_INIT_BEG'] == '20190101_000000'
+    assert config_dict['OBS_INIT_END'] == '20190101_120000'
+    assert config_dict['OBS_INIT_HOUR'] == '"000000", "120000"'
 
 
 @pytest.mark.plotting
@@ -702,18 +712,13 @@ def test_parse_model_info(metplus_config):
 
     expected_out_stat_filename_type = 'user'
     test_model_info_list = st.parse_model_info()
-    assert(test_model_info_list[0]['name'] == expected_name)
-    assert(test_model_info_list[0]['reference_name'] == 
-           expected_reference_name)
-    assert(test_model_info_list[0]['obtype'] == expected_obtype)
-    assert(test_model_info_list[0]['dump_row_filename_template'] == 
-           expected_dump_row_filename_template)
-    assert(test_model_info_list[0]['dump_row_filename_type'] == 
-           expected_dump_row_filename_type)
-    assert(test_model_info_list[0]['out_stat_filename_template'] == 
-           expected_out_stat_filename_template)
-    assert(test_model_info_list[0]['out_stat_filename_type'] == 
-           expected_out_stat_filename_type)
+    assert test_model_info_list[0]['name'] == expected_name
+    assert test_model_info_list[0]['reference_name'] == expected_reference_name
+    assert test_model_info_list[0]['obtype'] == expected_obtype
+    assert test_model_info_list[0]['dump_row_filename_template'] == expected_dump_row_filename_template
+    assert test_model_info_list[0]['dump_row_filename_type'] == expected_dump_row_filename_type
+    assert test_model_info_list[0]['out_stat_filename_template'] == expected_out_stat_filename_template
+    assert test_model_info_list[0]['out_stat_filename_type'] == expected_out_stat_filename_type
 
 
 @pytest.mark.plotting
@@ -730,8 +735,7 @@ def test_run_stat_analysis(metplus_config):
     st.c_dict['DATE_TYPE'] = 'VALID'
     st.run_stat_analysis()
     assert os.path.exists(expected_filename)
-    assert(os.path.getsize(expected_filename)
-           == os.path.getsize(comparison_filename))
+    assert os.path.getsize(expected_filename) == os.path.getsize(comparison_filename)
 
 
 @pytest.mark.parametrize(

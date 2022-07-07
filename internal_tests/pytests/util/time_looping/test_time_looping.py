@@ -1,6 +1,60 @@
 import pytest
 
+from dateutil.relativedelta import relativedelta
+
 from metplus.util.time_looping import *
+
+
+@pytest.mark.util
+def test_get_start_and_end_times(metplus_config):
+    start_time = '2014103109'
+    end_time = '2018103109'
+    time_format = '%Y%m%d%H'
+    for prefix in ['INIT', 'VALID']:
+        config = metplus_config()
+        config.set('config', 'LOOP_BY', prefix)
+        config.set('config', f'{prefix}_TIME_FMT', time_format)
+        config.set('config', f'{prefix}_BEG', start_time)
+        config.set('config', f'{prefix}_END', end_time)
+        start_dt, end_dt = get_start_and_end_times(config)
+        assert start_dt.strftime(time_format) == start_time
+        assert end_dt.strftime(time_format) == end_time
+
+
+@pytest.mark.util
+def test_get_start_and_end_times_now(metplus_config):
+    time_format = '%Y%m%d%H%M%S'
+    for prefix in ['INIT', 'VALID']:
+        config = metplus_config()
+        config.set('config', 'LOOP_BY', prefix)
+        config.set('config', f'{prefix}_TIME_FMT', time_format)
+        config.set('config', f'{prefix}_BEG', '{now?fmt=%Y%m%d%H%M%S?shift=-1d}')
+        config.set('config', f'{prefix}_END', '{now?fmt=%Y%m%d%H%M%S}')
+        start_dt, end_dt = get_start_and_end_times(config)
+        expected_end_time = config.getstr('config', 'CLOCK_TIME')
+        yesterday_dt = datetime.strptime(expected_end_time, time_format) - relativedelta(days=1)
+        expected_start_time = yesterday_dt.strftime(time_format)
+
+        assert start_dt.strftime(time_format) == expected_start_time
+        assert end_dt.strftime(time_format) == expected_end_time
+
+
+@pytest.mark.util
+def test_get_start_and_end_times_today(metplus_config):
+    time_format = '%Y%m%d'
+    for prefix in ['INIT', 'VALID']:
+        config = metplus_config()
+        config.set('config', 'LOOP_BY', prefix)
+        config.set('config', f'{prefix}_TIME_FMT', time_format)
+        config.set('config', f'{prefix}_BEG', '{today}')
+        config.set('config', f'{prefix}_END', '{today}')
+        start_dt, end_dt = get_start_and_end_times(config)
+        clock_time = config.getstr('config', 'CLOCK_TIME')
+        clock_dt = datetime.strptime(clock_time, '%Y%m%d%H%M%S')
+        expected_time = clock_dt.strftime(time_format)
+
+        assert start_dt.strftime(time_format) == expected_time
+        assert end_dt.strftime(time_format) == expected_time
 
 
 @pytest.mark.util
