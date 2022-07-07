@@ -6,6 +6,7 @@ from metplus.util.met_config import *
 from metplus.util.met_config import _read_climo_file_name, _read_climo_field
 from metplus.util import CLIMO_TYPES
 
+
 @pytest.mark.parametrize(
     'config_overrides, expected_value', [
         # 0 no relevant config set
@@ -30,6 +31,7 @@ from metplus.util import CLIMO_TYPES
          '{ name="TMP"; level="(*,*)"; }'),
     ]
 )
+@pytest.mark.util
 def test_read_climo_field(metplus_config, config_overrides, expected_value):
     app_name = 'app'
     for climo_type in ('MEAN', 'STDEV'):
@@ -44,6 +46,7 @@ def test_read_climo_field(metplus_config, config_overrides, expected_value):
 
         _read_climo_field(climo_type, config, app_name)
         assert config.getraw('config', expected_var) == expected_value
+
 
 @pytest.mark.parametrize(
     'config_overrides, expected_value', [
@@ -127,6 +130,7 @@ def test_read_climo_field(metplus_config, config_overrides, expected_value):
           'hour_interval = 12;}')),
     ]
 )
+@pytest.mark.util
 def test_handle_climo_dict(metplus_config, config_overrides, expected_value):
     app_name = 'app'
     for climo_type in ('MEAN', 'STDEV'):
@@ -145,27 +149,30 @@ def test_handle_climo_dict(metplus_config, config_overrides, expected_value):
         expected_sub = expected_value.replace('<type>', climo_type.lower())
         assert output_dict[expected_var] == expected_sub
 
+
 @pytest.mark.parametrize(
     'name, data_type, mp_configs, extra_args', [
         ('beg', 'int', 'BEG', None),
         ('end', 'int', ['END'], None),
     ]
 )
+@pytest.mark.util
 def test_met_config_info(name, data_type, mp_configs, extra_args):
     item = METConfig(name=name, data_type=data_type)
 
     item.metplus_configs = mp_configs
     item.extra_args = extra_args
 
-    assert(item.name == name)
-    assert(item.data_type == data_type)
+    assert item.name == name
+    assert item.data_type == data_type
     if isinstance(mp_configs, list):
-        assert(item.metplus_configs == mp_configs)
+        assert item.metplus_configs == mp_configs
     else:
-        assert(item.metplus_configs == [mp_configs])
+        assert item.metplus_configs == [mp_configs]
 
     if not extra_args:
-        assert(item.extra_args == {})
+        assert item.extra_args == {}
+
 
 @pytest.mark.parametrize(
     'data_type, expected_function', [
@@ -178,11 +185,12 @@ def test_met_config_info(name, data_type, mp_configs, extra_args):
         ('bad_name', None),
     ]
 )
+@pytest.mark.util
 def test_set_met_config_function(data_type, expected_function):
     try:
         function_found = set_met_config_function(data_type)
         function_name = function_found.__name__ if function_found else None
-        assert(function_name == expected_function)
+        assert function_name == expected_function
     except ValueError:
         assert expected_function is None
 
@@ -196,8 +204,10 @@ def test_set_met_config_function(data_type, expected_function):
         ('G002', '"G002"'),
     ]
 )
+@pytest.mark.util
 def test_format_regrid_to_grid(input, output):
     assert format_regrid_to_grid(input) == output
+
 
 @pytest.mark.parametrize(
     'config_overrides, expected_value', [
@@ -232,6 +242,7 @@ def test_format_regrid_to_grid(input, output):
          'PYTHON_XARRAY'),
     ]
 )
+@pytest.mark.util
 def test_read_climo_file_name(metplus_config, config_overrides,
                               expected_value):
     # name of app used for testing to read/set config variables

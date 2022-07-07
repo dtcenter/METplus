@@ -6,22 +6,8 @@ import logging
 import re
 import os
 
-#
-# -----------Mandatory-----------
-#  configuration and fixture to support METplus configuration files beyond
-#  the metplus_data, metplus_system, and metplus_runtime conf files.
-#
 
-
-# Add a test configuration
-def pytest_addoption(parser):
-    parser.addoption("-c", action="store", help=" -c <test config file>")
-
-
-# @pytest.fixture
-def cmdopt(request):
-    return request.config.getoption("-c")
-
+@pytest.mark.util
 def test_log_level(metplus_config):
     # Verify that the log level is set to what we indicated in the config file.
     config = metplus_config()
@@ -31,6 +17,7 @@ def test_log_level(metplus_config):
     assert fixture_logger.isEnabledFor(level)
 
 
+@pytest.mark.util
 def test_log_level_key(metplus_config):
     # Verify that the LOG_LEVEL key is in the config file
     config_instance = metplus_config()
@@ -39,6 +26,7 @@ def test_log_level_key(metplus_config):
     assert config_instance.has_option(section, option)
 
 
+@pytest.mark.util
 def test_logdir_exists(metplus_config):
     # Verify that the expected log dir exists.
     config = metplus_config()
@@ -48,6 +36,7 @@ def test_logdir_exists(metplus_config):
     assert os.path.exists(log_dir)
 
 
+@pytest.mark.util
 def test_logfile_exists(metplus_config):
     # Verify that a logfile with format metplus.log exists
     # We are assuming that there can be numerous files in the log directory.
@@ -68,9 +57,3 @@ def test_logfile_exists(metplus_config):
     else:
         # There is no log directory
         assert False
-
-
-
-
-
-

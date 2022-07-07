@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 
-import sys
+import pytest
+
 import datetime
 import os
 from dateutil.relativedelta import relativedelta
 import pprint
-import pytest
 
 from metplus.util import met_util as util
 from metplus.util import time_util
 from metplus.util.config_metplus import parse_var_list
+
 
 @pytest.mark.parametrize(
     'key, value', [
@@ -43,14 +44,15 @@ from metplus.util.config_metplus import parse_var_list
         ([">SFP70", ">SFP80", ">SFP90", ">SFP95"], True),
     ]
 )
+@pytest.mark.util
 def test_threshold(key, value):
-    assert(util.validate_thresholds(key) == value)
+    assert util.validate_thresholds(key) == value
+
 
 # parses a threshold and returns a list of tuples of
 # comparison and number, i.e.:
 # 'gt4' => [('gt', 4)]
 # gt4&&lt5 => [('gt', 4), ('lt', 5)]
-
 @pytest.mark.parametrize(
     'key, value', [
         ('gt4', [('gt', 4)]),
@@ -81,8 +83,10 @@ def test_threshold(key, value):
         ("<USP90(2.5)", [('<', 'USP90(2.5)')]),
     ]
 )
+@pytest.mark.util
 def test_get_threshold_via_regex(key, value):
-    assert(util.get_threshold_via_regex(key) == value)
+    assert util.get_threshold_via_regex(key) == value
+
 
 @pytest.mark.parametrize(
     'filename, ext', [
@@ -92,6 +96,7 @@ def test_get_threshold_via_regex(key, value):
         ('internal_tests/data/zip/testfile4.txt', ''),
     ]
 )
+@pytest.mark.util
 def test_preprocess_file_stage(metplus_config, filename, ext):
     conf = metplus_config()
     metplus_base = conf.getdir('METPLUS_BASE')
@@ -109,7 +114,8 @@ def test_preprocess_file_stage(metplus_config, filename, ext):
         stagepath = filepath
 
     outpath = util.preprocess_file(filepath, None, conf)
-    assert(stagepath == outpath and os.path.exists(outpath))
+    assert stagepath == outpath and os.path.exists(outpath)
+
 
 @pytest.mark.parametrize(
     'filename, data_type, allow_dir, expected', [
@@ -128,6 +134,7 @@ def test_preprocess_file_stage(metplus_config, filename, ext):
         ('/some/path/PYTHON_PANDAS', None, False, 'PYTHON_PANDAS'),
     ]
 )
+@pytest.mark.util
 def test_preprocess_file_options(metplus_config,
                                  filename,
                                  data_type,
@@ -138,7 +145,8 @@ def test_preprocess_file_options(metplus_config,
         filename = config.getdir('METPLUS_BASE')
         expected = filename
     result = util.preprocess_file(filename, data_type, config, allow_dir)
-    assert(result == expected)
+    assert result == expected
+
 
 def test_get_lead_sequence_lead(metplus_config):
     input_dict = {'valid': datetime.datetime(2019, 2, 1, 13)}
@@ -149,7 +157,7 @@ def test_get_lead_sequence_lead(metplus_config):
     for test in test_seq:
         hour_seq.append(time_util.ti_get_hours_from_relativedelta(test))
     lead_seq = [3, 6, 9, 12]
-    assert(hour_seq == lead_seq)
+    assert hour_seq == lead_seq
 
 
 @pytest.mark.parametrize(
@@ -166,6 +174,7 @@ def test_get_lead_sequence_lead(metplus_config):
         ('begin_end_incr(0,10800,3600)S, 4H',  [ 0, 1, 2, 3, 4]),
     ]
 )
+@pytest.mark.util
 def test_get_lead_sequence_lead_list(metplus_config, key, value):
     input_dict = { 'valid' : datetime.datetime(2019, 2, 1, 13) }
     conf = metplus_config()
@@ -176,7 +185,8 @@ def test_get_lead_sequence_lead_list(metplus_config, key, value):
     for test in test_seq:
         hour_seq.append(time_util.ti_get_hours_from_relativedelta(test))
     lead_seq = value
-    assert(hour_seq == lead_seq)
+    assert hour_seq == lead_seq
+
 
 @pytest.mark.parametrize(
     'config_dict, expected_list', [
@@ -210,6 +220,7 @@ def test_get_lead_sequence_lead_list(metplus_config, key, value):
           }, [3, 4, 5, 6, 0, 1, 2]),
     ]
 )
+@pytest.mark.util
 def test_get_lead_sequence_groups(metplus_config, config_dict, expected_list):
     config = metplus_config()
     for key, value in config_dict.items():
@@ -223,7 +234,8 @@ def test_get_lead_sequence_groups(metplus_config, config_dict, expected_list):
             time_util.ti_get_hours_from_relativedelta(output)
         )
 
-    assert(hour_seq == expected_list)
+    assert hour_seq == expected_list
+
 
 @pytest.mark.parametrize(
     'current_hour, lead_seq', [
@@ -253,14 +265,17 @@ def test_get_lead_sequence_groups(metplus_config, config_dict, expected_list):
         (23, [11, 23, 35])
     ]
 )
+@pytest.mark.util
 def test_get_lead_sequence_init(metplus_config, current_hour, lead_seq):
     input_dict = {'valid': datetime.datetime(2019, 2, 1, current_hour)}
     conf = metplus_config()
     conf.set('config', 'INIT_SEQ', "0, 12")
     conf.set('config', 'LEAD_SEQ_MAX', 36)
     test_seq = util.get_lead_sequence(conf, input_dict)
-    assert(test_seq == [relativedelta(hours=lead) for lead in lead_seq])
+    assert test_seq == [relativedelta(hours=lead) for lead in lead_seq]
 
+
+@pytest.mark.util
 def test_get_lead_sequence_init_min_10(metplus_config):
     input_dict = {'valid': datetime.datetime(2019, 2, 1, 12)}
     conf = metplus_config()
@@ -269,7 +284,8 @@ def test_get_lead_sequence_init_min_10(metplus_config):
     conf.set('config', 'LEAD_SEQ_MIN', 10)
     test_seq = util.get_lead_sequence(conf, input_dict)
     lead_seq = [12, 24]
-    assert(test_seq == [relativedelta(hours=lead) for lead in lead_seq])
+    assert test_seq == [relativedelta(hours=lead) for lead in lead_seq]
+
 
 @pytest.mark.parametrize(
     'camel, underscore', [
@@ -297,8 +313,10 @@ def test_get_lead_sequence_init_min_10(metplus_config):
         ('TCStatWrapper', 'tc_stat_wrapper'),
     ]
 )
+@pytest.mark.util
 def test_camel_to_underscore(camel, underscore):
-    assert(util.camel_to_underscore(camel) == underscore)
+    assert util.camel_to_underscore(camel) == underscore
+
 
 @pytest.mark.parametrize(
     'value, expected_result', [
@@ -308,8 +326,10 @@ def test_camel_to_underscore(camel, underscore):
         (-3.8, -4.0),
     ]
 )
+@pytest.mark.util
 def test_round_0p5(value, expected_result):
-    assert(util.round_0p5(value) == expected_result)
+    assert util.round_0p5(value) == expected_result
+
 
 @pytest.mark.parametrize(
     'expression, expected_result', [
@@ -321,8 +341,10 @@ def test_round_0p5(value, expected_result):
         ('!=3.5', 'ne3.5'),
     ]
 )
+@pytest.mark.util
 def test_comparison_to_letter_format(expression, expected_result):
-    assert(util.comparison_to_letter_format(expression) == expected_result)
+    assert util.comparison_to_letter_format(expression) == expected_result
+
 
 @pytest.mark.parametrize(
     'skip_times_conf, expected_dict', [
@@ -335,11 +357,13 @@ def test_comparison_to_letter_format(expression, expected_result):
                                           '%Y': ['2019']}),
     ]
 )
+@pytest.mark.util
 def test_get_skip_times(metplus_config, skip_times_conf, expected_dict):
     conf = metplus_config()
     conf.set('config', 'SKIP_TIMES', skip_times_conf)
 
-    assert(util.get_skip_times(conf) == expected_dict)
+    assert util.get_skip_times(conf) == expected_dict
+
 
 @pytest.mark.parametrize(
     'skip_times_conf, expected_dict', [
@@ -352,13 +376,15 @@ def test_get_skip_times(metplus_config, skip_times_conf, expected_dict):
                                           '%Y': ['2019']}),
     ]
 )
+@pytest.mark.util
 def test_get_skip_times_wrapper(metplus_config, skip_times_conf, expected_dict):
     conf = metplus_config()
 
     # set wrapper specific skip times, then ensure it is found
     conf.set('config', 'GRID_STAT_SKIP_TIMES', skip_times_conf)
 
-    assert(util.get_skip_times(conf, 'grid_stat') == expected_dict)
+    assert util.get_skip_times(conf, 'grid_stat') == expected_dict
+
 
 @pytest.mark.parametrize(
     'skip_times_conf, expected_dict', [
@@ -371,13 +397,15 @@ def test_get_skip_times_wrapper(metplus_config, skip_times_conf, expected_dict):
                                           '%Y': ['2019']}),
     ]
 )
+@pytest.mark.util
 def test_get_skip_times_wrapper_not_used(metplus_config, skip_times_conf, expected_dict):
     conf = metplus_config()
 
     # set generic SKIP_TIMES, then request grid_stat to ensure it uses generic
     conf.set('config', 'SKIP_TIMES', skip_times_conf)
 
-    assert(util.get_skip_times(conf, 'grid_stat') == expected_dict)
+    assert util.get_skip_times(conf, 'grid_stat') == expected_dict
+
 
 @pytest.mark.parametrize(
     'run_time, skip_times, expected_result', [
@@ -407,13 +435,17 @@ def test_get_skip_times_wrapper_not_used(metplus_config, skip_times_conf, expect
         (datetime.datetime(2019, 12, 30, 13), {'%H': ['12', '18']}, False),
     ]
 )
+@pytest.mark.util
 def test_get_skip_time(run_time, skip_times, expected_result):
     time_info = time_util.ti_calculate({'valid': run_time})
-    assert(util.skip_time(time_info, skip_times) == expected_result)
+    assert util.skip_time(time_info, skip_times) == expected_result
 
+
+@pytest.mark.util
 def test_get_skip_time_no_valid():
     input_dict ={'init': datetime.datetime(2019, 1, 29)}
-    assert(util.skip_time(input_dict, {'%Y': ['2019']}) == False)
+    assert util.skip_time(input_dict, {'%Y': ['2019']}) == False
+
 
 @pytest.mark.parametrize(
     'int_string, expected_result', [
@@ -427,9 +459,11 @@ def test_get_skip_time_no_valid():
         ('7,8,9,13+', [7, 8, 9, 13, '+']),
     ]
 )
+@pytest.mark.util
 def test_expand_int_string_to_list(int_string, expected_result):
     result = util.expand_int_string_to_list(int_string)
-    assert(result == expected_result)
+    assert result == expected_result
+
 
 @pytest.mark.parametrize(
     'subset_definition, expected_result', [
@@ -443,10 +477,12 @@ def test_expand_int_string_to_list(int_string, expected_result):
         (slice(2,9,2), ['c', 'e', 'g', 'i']),
     ]
 )
+@pytest.mark.util
 def test_subset_list(subset_definition, expected_result):
     full_list = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
     result = util.subset_list(full_list, subset_definition)
-    assert(result == expected_result)
+    assert result == expected_result
+
 
 @pytest.mark.parametrize(
     'filename, expected_result', [
@@ -463,6 +499,7 @@ def test_subset_list(subset_definition, expected_result):
         ('test_20190101.stat', []),
     ]
 )
+@pytest.mark.util
 def test_get_storm_ids(metplus_config, filename, expected_result):
     config = metplus_config()
     filepath = os.path.join(config.getdir('METPLUS_BASE'),
@@ -471,7 +508,8 @@ def test_get_storm_ids(metplus_config, filename, expected_result):
                             'stat_data',
                             filename)
 
-    assert(util.get_storms(filepath, id_only=True) == expected_result)
+    assert util.get_storms(filepath, id_only=True) == expected_result
+
 
 @pytest.mark.parametrize(
     'filename, expected_result', [
@@ -489,6 +527,7 @@ def test_get_storm_ids(metplus_config, filename, expected_result):
         ('test_20190101.stat', []),
     ]
 )
+@pytest.mark.util
 def test_get_storms(metplus_config, filename, expected_result):
     storm_id_index = 4
     config = metplus_config()
@@ -500,16 +539,18 @@ def test_get_storms(metplus_config, filename, expected_result):
 
     storm_dict = util.get_storms(filepath)
     print(storm_dict)
-    assert(list(storm_dict.keys()) == expected_result)
+    assert list(storm_dict.keys()) == expected_result
     for storm_id in expected_result[1:]:
         for storm_line in storm_dict[storm_id]:
             # ensure storm_id_index matches storm ID
-            assert(storm_line.split()[storm_id_index] == storm_id)
+            assert storm_line.split()[storm_id_index] == storm_id
 
     # ensure header matches expected format
     if storm_dict:
-        assert(storm_dict['header'].split()[storm_id_index] == 'STORM_ID')
+        assert storm_dict['header'].split()[storm_id_index] == 'STORM_ID'
 
+
+@pytest.mark.util
 def test_get_storms_mtd(metplus_config):
     index = 23
     expected_result = [
@@ -527,15 +568,15 @@ def test_get_storms_mtd(metplus_config):
 
     storm_dict = util.get_storms(filepath, sort_column=sort_column)
     print(storm_dict)
-    assert(list(storm_dict.keys()) == expected_result)
+    assert list(storm_dict.keys()) == expected_result
     for storm_id in expected_result[1:]:
         for storm_line in storm_dict[storm_id]:
             # ensure index matches storm ID
-            assert(storm_line.split()[index] == storm_id)
+            assert storm_line.split()[index] == storm_id
 
     # ensure header matches expected format
     if storm_dict:
-        assert(storm_dict['header'].split()[index] == sort_column)
+        assert storm_dict['header'].split()[index] == sort_column
 
 
 @pytest.mark.parametrize(
@@ -554,6 +595,7 @@ def test_get_storms_mtd(metplus_config):
          'GRIB_lvl_typ = 234;'),
     ]
 )
+@pytest.mark.util
 def test_format_var_items_options_semicolon(config_value,
                                             expected_result):
     time_info = {}
@@ -564,7 +606,8 @@ def test_format_var_items_options_semicolon(config_value,
 
     var_items = util.format_var_items(field_configs, time_info)
     result = var_items.get('extra')
-    assert(result == expected_result)
+    assert result == expected_result
+
 
 @pytest.mark.parametrize(
     'level, expected_result', [
@@ -574,8 +617,10 @@ def test_format_var_items_options_semicolon(config_value,
         ('1,*,*', '1_all_all'),
     ]
 )
+@pytest.mark.util
 def test_format_level(level, expected_result):
-    assert(util.format_level(level) == expected_result)
+    assert util.format_level(level) == expected_result
+
 
 @pytest.mark.parametrize(
     'input_dict, expected_list', [
@@ -613,6 +658,7 @@ def test_format_level(level, expected_result):
          ]),
     ]
 )
+@pytest.mark.util
 def test_sub_var_list(metplus_config, input_dict, expected_list):
     config = metplus_config()
     config.set('config', 'FCST_VAR1_NAME', 'FNAME_{init?fmt=%Y}')
@@ -632,7 +678,7 @@ def test_sub_var_list(metplus_config, input_dict, expected_list):
     print(f'Actual var list (after sub):')
     pp.pprint(actual_list)
 
-    assert(len(actual_list) == len(expected_list))
+    assert len(actual_list) == len(expected_list)
     for actual, expected in zip(actual_list, expected_list):
         for key, value in expected.items():
-            assert(actual.get(key) == value)
+            assert actual.get(key) == value
