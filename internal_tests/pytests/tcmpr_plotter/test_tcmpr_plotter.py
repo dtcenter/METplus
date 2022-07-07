@@ -97,7 +97,7 @@ def set_minimum_config_settings(config):
           'plot': [('pitem1', 'P Label 1'), ('pitem2', 'P Label 2')]}),
     ]
 )
-@pytest.mark.wrapper
+@pytest.mark.plotting
 def test_read_loop_info(metplus_config, config_overrides, expected_loop_args):
     config = metplus_config()
 
@@ -178,7 +178,7 @@ def test_read_loop_info(metplus_config, config_overrides, expected_loop_args):
            '-dep ditem1 -plot pitem1')]),
     ]
 )
-@pytest.mark.wrapper
+@pytest.mark.plotting
 def test_tcmpr_plotter_loop(metplus_config, config_overrides,
                             expected_strings):
     config = metplus_config()
@@ -271,7 +271,7 @@ def test_tcmpr_plotter_loop(metplus_config, config_overrides,
         ({'TCMPR_PLOTTER_PLOT_TYPES': 'item1'}, '-plot item1'),
     ]
 )
-@pytest.mark.wrapper
+@pytest.mark.plotting
 def test_tcmpr_plotter(metplus_config, config_overrides, expected_string):
     # add a space before value if expected string has a value
     if expected_string:

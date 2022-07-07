@@ -17,7 +17,7 @@ import plot_util
 logger = logging.getLogger('~/metplus_pytest_plot_util.log')
 
 
-@pytest.mark.wrapper
+@pytest.mark.plotting
 def test_get_date_arrays():
     # Independently test the creation of 
     # the date arrays, one used for plotting
@@ -185,7 +185,7 @@ def test_get_date_arrays():
                 expected_expected_stat_file_dates[l])
 
 
-@pytest.mark.wrapper
+@pytest.mark.plotting
 def test_format_thresh():
     # Independently test the formatting
     # of thresholds
@@ -275,7 +275,7 @@ def test_format_thresh():
     assert(test_thresh_letter == expected_thresh_letter)
 
 
-@pytest.mark.wrapper
+@pytest.mark.plotting
 def test_get_stat_file_base_columns():
     # Independently test getting list
     # of the base MET version .stat file columns
@@ -312,7 +312,7 @@ def test_get_stat_file_base_columns():
     assert(test_stat_file_base_columns == expected_stat_file_base_columns)
 
 
-@pytest.mark.wrapper
+@pytest.mark.plotting
 def test_get_stat_file_line_type_columns():
     # Independently test getting list
     # of the line type MET version .stat file columns
@@ -423,7 +423,7 @@ def test_get_stat_file_line_type_columns():
             expected_stat_file_line_type_columns)
 
 
-@pytest.mark.wrapper
+@pytest.mark.plotting
 def get_clevels():
     # Independently test creating an array
     # of levels centered about 0 to plot
@@ -437,7 +437,7 @@ def get_clevels():
     assert(test_clevels == expected_clevels)
 
 
-@pytest.mark.wrapper
+@pytest.mark.plotting
 def test_calculate_average():
     # Independently test getting the average
     # of a data array based on method
@@ -679,7 +679,7 @@ def test_calculate_ci():
     assert(test_intvl == expected_intvl)
 
 
-@pytest.mark.wrapper
+@pytest.mark.plotting
 def test_get_stat_plot_name():
     # Independently test getting the
     # a more formalized statistic name
@@ -720,7 +720,7 @@ def test_get_stat_plot_name():
     assert(test_stat_plot_name == expected_stat_plot_name)
 
 
-@pytest.mark.wrapper
+@pytest.mark.plotting
 def test_calculate_stat():
     # Independently test calculating
     # statistic values

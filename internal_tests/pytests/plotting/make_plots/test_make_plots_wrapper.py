@@ -23,7 +23,7 @@ def make_plots_wrapper(metplus_config):
     return MakePlotsWrapper(config)
 
 
-@pytest.mark.wrapper
+@pytest.mark.plotting
 def test_get_command(metplus_config):
     # Independently test that the make_plots python
     # command is being put together correctly with
@@ -39,7 +39,7 @@ def test_get_command(metplus_config):
     assert(expected_command == test_command)
 
 
-@pytest.mark.wrapper
+@pytest.mark.plotting
 def test_create_c_dict(metplus_config):
     # Independently test that c_dict is being created
     # and that the wrapper and config reader 
