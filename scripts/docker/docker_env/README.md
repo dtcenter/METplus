@@ -267,13 +267,13 @@ docker push dtcenter/metplus-envs:icecover.v5
 ```
 
 
-## gempak (from metplus_base using Dockerfile.gempak_env)
+## gempak.v5 (from metplus_base.v5 using Dockerfile.gempak_env)
 
 ### Docker
 
 ```
-docker build -t dtcenter/metplus-envs:gempak --build-arg ENV_NAME=gempak -f ./Dockerfile.gempak_env .
-docker push dtcenter/metplus-envs:gempak
+docker build -t dtcenter/metplus-envs:gempak.v5 --build-arg ENV_NAME=gempak -f ./Dockerfile.gempak_env .
+docker push dtcenter/metplus-envs:gempak.v5
 ```
 
 ### Local
@@ -284,13 +284,13 @@ this environment locally, Java should be available on the system you are running
 JAR file should be downloaded from the DTC website.
 
 
-## gfdl-tracker (using Dockerfile.gfdl-tracker)
+## gfdl-tracker.v5 (using Dockerfile.gfdl-tracker)
 
 ### Docker
 
 ```
-docker build -t dtcenter/metplus-envs:gfdl-tracker -f ./Dockerfile.gfdl-tracker .
-docker push dtcenter/metplus-envs:gfdl-tracker
+docker build -t dtcenter/metplus-envs:gfdl-tracker.v5 -f ./Dockerfile.gfdl-tracker .
+docker push dtcenter/metplus-envs:gfdl-tracker.v5
 ```
 
 ### Local
