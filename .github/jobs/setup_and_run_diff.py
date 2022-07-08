@@ -46,12 +46,12 @@ volume_mounts = [
 mount_args = ' '.join(volume_mounts)
 
 # command to run inside Docker
-cmd = ('/usr/local/envs/diff/bin/python3 '
+cmd = ('/usr/local/envs/diff.v5/bin/python3 '
        f'{GITHUB_WORKSPACE}/{CI_JOBS_DIR}/run_diff_docker.py')
 
 # run inside diff env: mount METplus code and output dir, volumes from output volumes
 docker_cmd = (f'docker run -e GITHUB_WORKSPACE {VOLUMES_FROM} '
-              f'{mount_args} dtcenter/metplus-envs:diff '
+              f'{mount_args} dtcenter/metplus-envs:diff.v5 '
               f'bash -c "{cmd}"')
 print(f'RUNNING: {docker_cmd}')
 try:

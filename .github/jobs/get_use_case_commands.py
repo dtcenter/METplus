@@ -16,7 +16,7 @@ sys.path.insert(0, USE_CASES_DIR)
 from internal_tests.use_cases.metplus_use_case_suite import METplusUseCaseSuite
 from metplus.util.met_util import expand_int_string_to_list
 
-METPLUS_BASE_ENV = 'metplus_base'
+METPLUS_BASE_ENV = 'metplus_base.v5'
 METPLUS_DOCKER_LOC = '/metplus/METplus'
 
 # keywords in requirements list that trigger obtaining METcalcpy and METplotpy
@@ -25,6 +25,12 @@ PLOTCALC_KEYWORDS = [
     'metcalcpy',
     'spacetime',
     'weatherregime',
+]
+
+# Docker environments that do not use Python so they do not need to use .v5
+NOT_PYTHON_ENVS = [
+    'gfdl-tracker',
+    'gempak'
 ]
 
 def handle_automation_env(host_name, reqs, work_dir):
@@ -37,7 +43,7 @@ def handle_automation_env(host_name, reqs, work_dir):
     if use_env:
         conda_env = use_env[0].replace('_env', '')
 
-    if conda_env == 'metplotpy':
+    if conda_env not in NOT_PYTHON_ENVS and conda_env != METPLUS_BASE_ENV:
         conda_env = f'{conda_env}.v5'
 
     # if not using docker (automation),
@@ -95,7 +101,7 @@ def handle_automation_env(host_name, reqs, work_dir):
         setup_env += f'export PYTHONPATH={METPLUS_DOCKER_LOC}:$PYTHONPATH;'
 
     # list packages in python environment that will be used
-    if conda_env != 'gempak':
+    if conda_env not in NOT_PYTHON_ENVS:
         setup_env += (
             f'echo Using environment: dtcenter/metplus-envs:{conda_env};'
             f'echo cat /usr/local/envs/{conda_env}/environments.yml;'
