@@ -8,6 +8,7 @@ WORKDIR /scripts
 COPY scripts/${ENV_NAME}_env.sh .
 
 ARG BASE_ENV=metplus_base.v5
-RUN ./${ENV_NAME}_env.sh ${BASE_ENV}
+RUN conda update -y -n base -c defaults conda \
+  && ./${ENV_NAME}_env.sh ${BASE_ENV}
 
 RUN conda list --name ${ENV_NAME}.v5 > /usr/local/envs/${ENV_NAME}.v5/environments.yml
