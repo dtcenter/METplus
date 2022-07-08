@@ -51,6 +51,6 @@ conda install -y --name ${ENV_NAME} -c conda-forge pint
 conda install -y --name ${ENV_NAME} -c conda-forge metpy
 #/usr/local/envs/${ENV_NAME}/bin/pip3 install kaleido==0.2.1
 
-#yum -y install wget
-#wget https://raw.githubusercontent.com/SciTools/cartopy/master/tools/cartopy_feature_download.py
-#/usr/local/envs/${ENV_NAME}/bin/python3 cartopy_feature_download.py cultural physical
+yum -y install wget
+wget https://raw.githubusercontent.com/SciTools/cartopy/master/tools/cartopy_feature_download.py
+/usr/local/envs/${ENV_NAME}/bin/python3 cartopy_feature_download.py cultural physical

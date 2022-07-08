@@ -1,10 +1,11 @@
 #! /bin/sh
 
 ################################################################################
-# Environment: diff
-# Last Updated: 2021-06-08 (mccabe@ucar.edu)
+# Environment: diff.v5
+# Last Updated: 2022-07-08 (mccabe@ucar.edu)
 # Notes: Adds packages needed to run differences tests to compare output to
 #   truth data.
+# TODO: update version numbers
 # Python Packages:
 #   pillow==?
 #   pdf2image==?
@@ -14,10 +15,10 @@
 ################################################################################
 
 # Conda environment to create
-ENV_NAME=diff
+ENV_NAME=diff.v5
 
 # Conda environment to use as base for new environment
-BASE_ENV=$1
+BASE_ENV=netcdf4.v5
 
 conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 conda install -y --name ${ENV_NAME} -c conda-forge pillow
