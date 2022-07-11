@@ -5,6 +5,11 @@ Instructions include how to create Docker images in dtcenter/metplus-envs so
 environments are available for the automated tests. Instructions to create
 these Conda environments on a local machine are also provided.
 
+**IMPORTANT NOTE:** If all of the Docker Conda Environment images need to be
+rebuilt again, consider adding logic to update the OS packages first to
+prevent potential issues with wget commands used to download the cartopy
+shapefiles. Without this, the wget commands may fail because the
+certificate trust store is out of date.
 
 ## metplus_base.v5
 
