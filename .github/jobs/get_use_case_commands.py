@@ -8,10 +8,10 @@ import sys
 import os
 
 # add METplus directory to sys path so the test suite can be found
-USE_CASES_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                             os.pardir,
-                                             os.pardir))
-sys.path.insert(0, USE_CASES_DIR)
+METPLUS_TOP_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                               os.pardir,
+                                               os.pardir))
+sys.path.insert(0, METPLUS_TOP_DIR)
 
 from internal_tests.use_cases.metplus_use_case_suite import METplusUseCaseSuite
 from metplus.util.met_util import expand_int_string_to_list
@@ -117,7 +117,7 @@ def main(categories, subset_list, work_dir=None,
     all_commands = []
 
     if work_dir is None:
-        work_dir = USE_CASES_DIR
+        work_dir = METPLUS_TOP_DIR
 
     test_suite = METplusUseCaseSuite()
     test_suite.add_use_case_groups(categories, subset_list)
