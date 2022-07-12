@@ -119,6 +119,45 @@ def get_field_info(c_dict, data_type='', v_name='', v_level='', v_thresh=None,
     return fields
 
 
+def format_field_info(c_dict, var_info, data_type, add_curly_braces=True):
+    """! Format field information into format expected by MET config file
+
+         @param c_dict config dictionary to read values
+         @param var_info dictionary of field info to format
+         @param data_type type of data to find i.e. FCST or OBS
+         @param add_curly_braces if True, add curly braces around each
+          field info string. If False, add single quotes around each
+          field info string (defaults to True)
+         @rtype string
+         @return Returns a list of formatted field information or a string
+          containing an error message if something went wrong
+    """
+    dt_lower = data_type.lower()
+    return get_field_info(c_dict=c_dict,
+                          data_type=data_type,
+                          v_name=var_info.get(f'{dt_lower}_name'),
+                          v_level=var_info.get(f'{dt_lower}_level'),
+                          v_thresh=var_info.get(f'{dt_lower}_thresh'),
+                          v_extra=var_info.get(f'{dt_lower}_extra'),
+                          add_curly_braces=add_curly_braces,
+                          )
+
+
+def format_all_field_info(c_dict, var_list, data_type, add_curly_braces=True):
+    formatted_list = []
+    for var_info in var_list:
+        field_info = format_field_info(c_dict=c_dict,
+                                       var_info=var_info,
+                                       data_type=data_type,
+                                       add_curly_braces=add_curly_braces)
+        if not field_info:
+            return None
+
+        formatted_list.extend(field_info)
+
+    return ','.join(formatted_list)
+
+
 def _handle_grib_pds_field_info(v_name, v_level, thresh):
     """! Format field string to read probabilistic data from the PDS of a GRIB
      file. Thresholds are formatted using thresh_lo and thresh_hi syntax.

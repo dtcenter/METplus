@@ -623,6 +623,18 @@ def test_get_lookin_dir(metplus_config):
                                         lists_to_group, config_dict)
     assert(expected_lookin_dir == test_lookin_dir)
 
+    # Test 4 - 2 paths, one with wildcard
+    expected_lookin_dir = os.path.join(stat_analysis_pytest_dir,
+                                       '../../data/fake/20180201')
+    expected_lookin_dir = f'{expected_lookin_dir} {expected_lookin_dir}'
+    dir_path = os.path.join(stat_analysis_pytest_dir,
+                            '../../data/fake/*')
+    dir_path = f'{dir_path}, {dir_path}'
+
+    test_lookin_dir = st.get_lookin_dir(dir_path, lists_to_loop,
+                                        lists_to_group, config_dict)
+    assert(expected_lookin_dir == test_lookin_dir)
+
 def test_format_valid_init(metplus_config):
     # Independently test the formatting 
     # of the valid and initialization date and hours

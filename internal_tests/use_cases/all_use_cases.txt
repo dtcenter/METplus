@@ -137,6 +137,8 @@ Category: s2s
 10:: UserScript_obsERA_obsOnly_RMM:: model_applications/s2s/UserScript_obsERA_obsOnly_RMM.conf:: spacetime_env, metdatadb
 11:: UserScript_fcstGFS_obsERA_WeatherRegime:: model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.conf:: weatherregime_env,cartopy,metplus
 12:: UserScript_obsERA_obsOnly_Stratosphere:: model_applications/s2s/UserScript_obsERA_obsOnly_Stratosphere.conf:: metplotpy_env,metdatadb
+13::SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_MultiStatisticTool:: model_applications/s2s/SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_MultiStatisticTool.conf:: netcdf4_env
+14::GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile:: model_applications/s2s/GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile.conf:: netcdf4_env
 
 Category: space_weather
 0::GridStat_fcstGloTEC_obsGloTEC_vx7:: model_applications/space_weather/GridStat_fcstGloTEC_obsGloTEC_vx7.conf

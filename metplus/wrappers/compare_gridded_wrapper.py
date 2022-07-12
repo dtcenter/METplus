@@ -198,17 +198,11 @@ that reformat gridded data
         self.infiles.extend(obs_path)
 
         # get field info field a single field to pass to the MET config file
-        fcst_field_list = self.get_field_info(v_level=var_info['fcst_level'],
-                                              v_thresh=var_info['fcst_thresh'],
-                                              v_name=var_info['fcst_name'],
-                                              v_extra=var_info['fcst_extra'],
-                                              d_type='FCST')
+        fcst_field_list = self.format_field_info(var_info=var_info,
+                                                 data_type='FCST')
 
-        obs_field_list = self.get_field_info(v_level=var_info['obs_level'],
-                                             v_thresh=var_info['obs_thresh'],
-                                             v_name=var_info['obs_name'],
-                                             v_extra=var_info['obs_extra'],
-                                             d_type='OBS')
+        obs_field_list = self.format_field_info(var_info=var_info,
+                                                data_type='OBS')
 
         if fcst_field_list is None or obs_field_list is None:
             return
@@ -237,7 +231,17 @@ that reformat gridded data
         if not model_path:
             return
 
-        self.infiles.extend(model_path)
+        # if there is more than 1 file, create file list file
+        if len(model_path) > 1:
+            list_filename = (f"{time_info['init_fmt']}_"
+                             f"{time_info['lead_hours']}_"
+                             f"{self.app_name}_fcst.txt")
+            model_path = self.write_list_file(list_filename, model_path)
+        else:
+            model_path = model_path[0]
+
+        self.infiles.append(model_path)
+
         # get observation to from first var compare
         obs_path, time_info = self.find_obs_offset(time_info,
                                                    var_list[0],
@@ -246,7 +250,16 @@ that reformat gridded data
         if obs_path is None:
             return
 
-        self.infiles.extend(obs_path)
+        # if there is more than 1 file, create file list file
+        if len(obs_path) > 1:
+            list_filename = (f"{time_info['init_fmt']}_"
+                             f"{time_info['lead_hours']}_"
+                             f"{self.app_name}_obs.txt")
+            obs_path = self.write_list_file(list_filename, obs_path)
+        else:
+            obs_path = obs_path[0]
+
+        self.infiles.append(obs_path)
 
         fcst_field_list = []
         obs_field_list = []
@@ -295,12 +308,6 @@ that reformat gridded data
 
         # set environment variables needed by MET config file
         self.set_environment_variables(time_info)
-
-        # check if METplus can generate the command successfully
-        cmd = self.get_command()
-        if cmd is None:
-            self.log_error("Could not generate command")
-            return
 
         # run the MET command
         self.build()
