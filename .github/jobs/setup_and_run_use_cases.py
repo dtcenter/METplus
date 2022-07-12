@@ -16,13 +16,7 @@ import time
 
 import get_use_case_commands
 import get_data_volumes
-from docker_utils import get_branch_name
-
-# Docker environments that do not use Python so they do not need to use .v5
-NOT_PYTHON_ENVS = [
-    'gfdl-tracker',
-    'gempak'
-]
+from docker_utils import get_branch_name, VERSION_EXT
 
 runner_workspace = os.environ.get('RUNNER_WORKSPACE')
 github_workspace = os.environ.get('GITHUB_WORKSPACE')
@@ -76,8 +70,7 @@ def main():
         else:
             env_tag = 'metplus_base'
 
-        if env_tag not in NOT_PYTHON_ENVS:
-            env_tag = f'{env_tag}.v5'
+        env_tag = f'{env_tag}{VERSION_EXT}'
 
         # get Dockerfile to use
         dockerfile_name = 'Dockerfile.run'
