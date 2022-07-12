@@ -131,14 +131,18 @@ Category: s2s
 4::TCGen_fcstGFSO_obsBDECKS_GDF_TDF:: model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf:: metplotpy_env,cartopy,metplus
 5::UserScript_obsPrecip_obsOnly_Hovmoeller:: model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.conf:: metplotpy_env,cartopy
 6:: UserScript_obsPrecip_obsOnly_CrossSpectraPlot:: model_applications/s2s/UserScript_obsPrecip_obsOnly_CrossSpectraPlot.conf:: spacetime_env
-7:: UserScript_obsERA_obsOnly_PhaseDiagram:: model_applications/s2s/UserScript_obsERA_obsOnly_PhaseDiagram.conf:: spacetime_env
-8:: UserScript_fcstGFS_obsERA_OMI:: model_applications/s2s/UserScript_fcstGFS_obsERA_OMI.conf:: spacetime_env, metdatadb
-9:: UserScript_obsERA_obsOnly_OMI:: model_applications/s2s/UserScript_obsERA_obsOnly_OMI.conf:: spacetime_env, metdatadb
-10:: UserScript_obsERA_obsOnly_RMM:: model_applications/s2s/UserScript_obsERA_obsOnly_RMM.conf:: spacetime_env, metdatadb
-11:: UserScript_fcstGFS_obsERA_WeatherRegime:: model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.conf:: weatherregime_env,cartopy,metplus
-12:: UserScript_obsERA_obsOnly_Stratosphere:: model_applications/s2s/UserScript_obsERA_obsOnly_Stratosphere.conf:: metplotpy_env,metdatadb
-13::SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_MultiStatisticTool:: model_applications/s2s/SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_MultiStatisticTool.conf:: netcdf4_env
-14::GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile:: model_applications/s2s/GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile.conf:: netcdf4_env
+7:: UserScript_fcstGFS_obsERA_WeatherRegime:: model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.conf:: weatherregime_env,cartopy,metplus
+8:: UserScript_obsERA_obsOnly_Stratosphere:: model_applications/s2s/UserScript_obsERA_obsOnly_Stratosphere.conf:: metplotpy_env,metdatadb
+9::SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_MultiStatisticTool:: model_applications/s2s/SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_MultiStatisticTool.conf:: netcdf4_env
+10::GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile:: model_applications/s2s/GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile.conf:: netcdf4_env
+
+
+Category: s2s_mjo
+0:: UserScript_obsERA_obsOnly_PhaseDiagram:: model_applications/s2s/UserScript_obsERA_obsOnly_PhaseDiagram.conf:: spacetime_env
+1:: UserScript_fcstGFS_obsERA_OMI:: model_applications/s2s/UserScript_fcstGFS_obsERA_OMI.conf:: spacetime_env, metdatadb
+2:: UserScript_obsERA_obsOnly_OMI:: model_applications/s2s/UserScript_obsERA_obsOnly_OMI.conf:: spacetime_env, metdatadb
+3:: UserScript_obsERA_obsOnly_RMM:: model_applications/s2s/UserScript_obsERA_obsOnly_RMM.conf:: spacetime_env, metdatadb
+
 
 Category: space_weather
 0::GridStat_fcstGloTEC_obsGloTEC_vx7:: model_applications/space_weather/GridStat_fcstGloTEC_obsGloTEC_vx7.conf
