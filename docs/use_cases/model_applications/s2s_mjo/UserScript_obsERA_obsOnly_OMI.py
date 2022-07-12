@@ -1,10 +1,10 @@
 """
 UserScript: Make OMI plot from calculated MJO indices
-===========================================================================
+=====================================================
 
 model_applications/
-s2s/
-UserScript_fcstGFS_obsERA_OMI.py
+s2s_mjo/
+UserScript_obsERA_obsOnly_OMI.py
 
 """
 
@@ -12,14 +12,14 @@ UserScript_fcstGFS_obsERA_OMI.py
 # Scientific Objective
 # --------------------
 #
-# To use Outgoing Longwave Radiation (OLR) to compute the OLR based MJO Index (OMI).  Specifically, OMI is computed using OLR data between 20N and 20S.  The OLR data are then projected onto Empirical Orthogonal Function (EOF) data that is computed for each day of the year, latitude, and longitude.  The OLR is then filtered for 20 - 96 days, and regressed onto the daily EOFs.  Finally, it's normalized and these normalized components are plotted on a phase diagram.  Separate phase diagrams are created for the model and observations.
+# To use Outgoing Longwave Radiation (OLR) to compute the OLR based MJO Index (OMI).  Specifically, OMI is computed using OLR data between 20N and 20S.  The OLR data are then projected onto Empirical Orthogonal Function (EOF) data that is computed for each day of the year, latitude, and longitude.  The OLR is then filtered for 20 - 96 days, and regressed onto the daily EOFs.  Finally, it's normalized and these normalized components are plotted on a phase diagram.
 # 
 
 ##############################################################################
 # Datasets
 # --------
 #
-#  * Forecast dataset:  GFS Model Outgoing Longwave Radiation
+#  * Forecast dataset:  None
 #  * Observation dataset: ERA Reanlaysis Outgoing Longwave Radiation.
 
 ##############################################################################
@@ -63,12 +63,12 @@ UserScript_fcstGFS_obsERA_OMI.py
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# i.e. parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI.conf.  
-# The file UserScript_fcstGFS_obsERA_OMI/OMI_driver.py runs the python program and 
+# i.e. parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.conf.
+# The file UserScript_obsERA_obsOnly_OMI/OMI_driver.py runs the python program and 
 # UserScript_fcstGFS_obsERA_OMI.conf sets the variables for all steps of the OMI use case.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.conf
 
 ##############################################################################
 # MET Configuration
@@ -85,10 +85,10 @@ UserScript_fcstGFS_obsERA_OMI.py
 #
 # The OMI driver script orchestrates the calculation of the MJO indices and 
 # the generation of a phase diagram OMI plot:
-# parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI/OMI_driver.py:
+# parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI/OMI_driver.py:
 #
 # .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI/OMI_driver.py
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI/OMI_driver.py
 #
 
 ##############################################################################
@@ -97,13 +97,13 @@ UserScript_fcstGFS_obsERA_OMI.py
 #
 # This use case is run in the following ways:
 #
-# 1) Passing in UserScript_fcstGFS_obsERA_OMI.conf then a user-specific system configuration file::
+# 1) Passing in UserScript_obsERA_obsOnly_OMI.conf then a user-specific system configuration file::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI.conf -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_fcstGFS_obsERA_OMI.py::
+# 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_obsERA_obsOnly_OMI.py::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.conf
 #
 # The following variables must be set correctly:
 #
@@ -123,7 +123,7 @@ UserScript_fcstGFS_obsERA_OMI.py
 # Expected Output
 # ---------------
 #
-# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use case will be found in model_applications/s2s/UserScript_fcstGFS_obsERA_OMI.  This may include the regridded data and daily averaged files.  In addition, the phase diagram plots will be generated and the output location can be specified as OMI_PLOT_OUTPUT_DIR.  If it is not specified, plots will be sent to model_applications/s2s/UserScript_fcstGFS_obsERA_OMI/plots (relative to **OUTPUT_BASE**). 
+# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use case will be found in model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.  This may include the regridded data and daily averaged files.  In addition, the phase diagram plots will be generated and the output location can be specified as OMI_PLOT_OUTPUT_DIR.  If it is not specified, plots will be sent to model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI/plots (relative to **OUTPUT_BASE**).
 
 ##############################################################################
 # Keywords
@@ -132,10 +132,11 @@ UserScript_fcstGFS_obsERA_OMI.py
 # .. note::
 #
 #   * S2SAppUseCase
+#   * S2SMJOAppUseCase
 #   * RegridDataPlaneUseCase
 #   * PCPCombineUseCase
 #
 #   Navigate to :ref:`quick-search` to discover other similar use cases.
 #
-# sphinx_gallery_thumbnail_path = '_static/s2s-OMI_GFS_phase_diagram.png'
+# sphinx_gallery_thumbnail_path = '_static/s2s_mjo-UserScript_obsERA_obsOnly_OMI.png'
 #

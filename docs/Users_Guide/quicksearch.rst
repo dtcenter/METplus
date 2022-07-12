@@ -78,6 +78,7 @@ Use Cases by Application:
    | `Precipitation <../search.html?q=PrecipitationAppUseCase&check_keywords=yes&area=default>`_
    | `Space Weather <../search.html?q=SpaceWeatherAppUseCase&check_keywords=yes&area=default>`_
    | `Subseasonal to Seasonal <../search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_
+   | `Subseasonal to Seasonal: Madden-Julian Oscillation <../search.html?q=S2SMJOAppUseCase&check_keywords=yes&area=default>`_
    | `Tropical Cyclone and Extra-Tropical Cyclone <../search.html?q=TCandExtraTCAppUseCase&check_keywords=yes&area=default>`_
 
 .. only:: latex
@@ -92,6 +93,7 @@ Use Cases by Application:
    | **Precipitation**: *PrecipitationAppUseCase*
    | **Space Weather**: *SpaceWeatherAppUseCase*
    | **Subseasonal to Seasonal**: *S2SAppUseCase*
+   | **Subseasonal to Seasonal: Madden-Julian Oscillation**: *S2SMJOAppUseCase*
    | **Tropical Cyclone and Extra-Tropical Cyclone**: *TCandExtraTCAppUseCase*
 
 Use Cases by Organization:

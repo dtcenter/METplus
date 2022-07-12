@@ -1,10 +1,10 @@
 """
-UserScript: Make a Phase Diagram plot from input RMM or OMI
-===========================================================================
+UserScript: Make OMI plot from calculated MJO indices
+=====================================================
 
 model_applications/
-s2s/
-UserScript_obsERA_obsOnly_PhaseDiagram.py
+s2s_mjo/
+UserScript_fcstGFS_obsERA_OMI.py
 
 """
 
@@ -12,14 +12,14 @@ UserScript_obsERA_obsOnly_PhaseDiagram.py
 # Scientific Objective
 # --------------------
 #
-# To produce a phase diagram using either OLR based MJO Index (OMI) or the Real-time Multivariate MJO index (RMM)
+# To use Outgoing Longwave Radiation (OLR) to compute the OLR based MJO Index (OMI).  Specifically, OMI is computed using OLR data between 20N and 20S.  The OLR data are then projected onto Empirical Orthogonal Function (EOF) data that is computed for each day of the year, latitude, and longitude.  The OLR is then filtered for 20 - 96 days, and regressed onto the daily EOFs.  Finally, it's normalized and these normalized components are plotted on a phase diagram.  Separate phase diagrams are created for the model and observations.
 # 
 
 ##############################################################################
 # Datasets
 # --------
 #
-#  * Forecast dataset:  None.
+#  * Forecast dataset:  GFS Model Outgoing Longwave Radiation
 #  * Observation dataset: ERA Reanlaysis Outgoing Longwave Radiation.
 
 ##############################################################################
@@ -48,14 +48,14 @@ UserScript_obsERA_obsOnly_PhaseDiagram.py
 # METplus Components
 # ------------------
 #
-# This use case runs the Phase Diagram driver which and creates a phase diagram. Inputs to the driver are a text file containing the following columns, yyyy,mm,dd,hh,pc1,pc2,amp for OMI, or yyyy,mm,dd,pc1,pc2,phase,amp,source for RMM.
+# This use case runs the OMI driver which computes OMI and creates a phase diagram. Inputs to the OMI driver include netCDF files that are in MET's netCDF version.  In addition, a txt file containing the listing of these input netCDF files is required, as well as text file listings of the EOF1 and EOF2 files.  These text files can be generated using the USER_SCRIPT_INPUT_TEMPLATES in the [create_eof_filelist] and [script_omi] sections.  Some optional pre-processing steps include using regrid_data_plane to either regrid your data or cut the domain to 20N - 20S.
 #
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 # 
-# The Phase diagram driver script python code is run for each lead time on the forecast and observations data. This example loops by valid time for the model pre-processing, and valid time for the other steps.  It creates the phase diagram plot and a text file listing of the valid times to use in creating the plots.
+# The OMI driver script python code is run for each lead time on the forecast and observations data. This example loops by valid time for the model pre-processing, and valid time for the other steps.  This version is set to only process the OMI calculation and creating a text file listing of the EOF files, omitting the creation of daily means for the model and the regridding pre-processing steps.  However, the configurations for pre-processing are available for user reference.
 
 ##############################################################################
 # METplus Configuration
@@ -63,13 +63,12 @@ UserScript_obsERA_obsOnly_PhaseDiagram.py
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# i.e. parm/use_cases/model_applications/s2s/UserScript_obsERA_obsERA_OMI.conf.  
-# The file UserScript_obsERA_obsOnly_PhaseDiagram/PhaseDiagram_driver.py runs the python 
-# program and UserScript_obsERA_obsOnly_PhaseDiagram.conf sets the variables for all steps 
-# of the use case.
+# i.e. parm/use_cases/model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.conf.
+# The file UserScript_fcstGFS_obsERA_OMI/OMI_driver.py runs the python program and 
+# UserScript_fcstGFS_obsERA_OMI.conf sets the variables for all steps of the OMI use case.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_PhaseDiagram.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.conf
 
 ##############################################################################
 # MET Configuration
@@ -78,17 +77,18 @@ UserScript_obsERA_obsOnly_PhaseDiagram.py
 # METplus sets environment variables based on the values in the METplus configuration file.
 # These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
 #
+#
 
 ##############################################################################
 # Python Scripts
 # ----------------
 #
-# The phase diagram driver script orchestrates the generation of a phase diagram plot:
-# parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_OMI/PhaseDiagram_driver.py:
+# The OMI driver script orchestrates the calculation of the MJO indices and 
+# the generation of a phase diagram OMI plot:
+# parm/use_cases/model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI/OMI_driver.py:
 #
 # .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_PhaseDiagram/PhaseDiagram_driver.py
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_PhaseDiagram/save_input_files_txt.py
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI/OMI_driver.py
 #
 
 ##############################################################################
@@ -97,13 +97,13 @@ UserScript_obsERA_obsOnly_PhaseDiagram.py
 #
 # This use case is run in the following ways:
 #
-# 1) Passing in UserScript_obsERA_obsOnly_PhaseDiagram.conf then a user-specific system configuration file::
+# 1) Passing in UserScript_fcstGFS_obsERA_OMI.conf then a user-specific system configuration file::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_PhaseDiagram.conf -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_obsERA_obsOnly_PhaseDiagram.py::
+# 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_fcstGFS_obsERA_OMI.py::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_PhaseDiagram.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.conf
 #
 # The following variables must be set correctly:
 #
@@ -123,18 +123,20 @@ UserScript_obsERA_obsOnly_PhaseDiagram.py
 # Expected Output
 # ---------------
 #
-# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use case will be found in model_applications/s2s/UserScript_obsERA_obsOnly_PhaseDiagram.  This may include the regridded data and daily averaged files.  In addition, the phase diagram plots will be generated and the output location can be specified as PHASE_DIAGRAM_PLOT_OUTPUT_DIR.  If it is not specified, plots will be sent to model_applications/s2s/UserScript_obsERA_obsOnly_PhaseDiagram/plots (relative to **OUTPUT_BASE**). 
+# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use case will be found in model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.  This may include the regridded data and daily averaged files.  In addition, the phase diagram plots will be generated and the output location can be specified as OMI_PLOT_OUTPUT_DIR.  If it is not specified, plots will be sent to model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI/plots (relative to **OUTPUT_BASE**).
 
 ##############################################################################
 # Keywords
 # --------
 #
-#
 # .. note::
 #
 #   * S2SAppUseCase
+#   * S2SMJOAppUseCase
+#   * RegridDataPlaneUseCase
+#   * PCPCombineUseCase
 #
 #   Navigate to :ref:`quick-search` to discover other similar use cases.
 #
-# sphinx_gallery_thumbnail_path = '_static/s2s-PhaseDiagram.png'
+# sphinx_gallery_thumbnail_path = '_static/s2s_mjo-UserScript_fcstGFS_obsERA_OMI.png'
 #

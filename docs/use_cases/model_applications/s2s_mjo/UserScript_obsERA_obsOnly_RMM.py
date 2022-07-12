@@ -1,9 +1,9 @@
 """
 UserScript: Make RMM plots from calculated MJO indices
-===========================================================================
+======================================================
 
 model_applications/
-s2s/
+s2s_mjo/
 UserScript_obsERA_obsOnly_RMM.py
 
 """
@@ -63,12 +63,12 @@ UserScript_obsERA_obsOnly_RMM.py
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# i.e. parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_RMM.conf.  
+# i.e. parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.conf.
 # The file UserScript_obsERA_obsOnly_RMM/RMM_driver.py runs the python program and  
 # UserScript_obsERA_obsOnly_RMM.conf sets the variables for all steps of the RMM use case.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_RMM.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.conf
 
 ##############################################################################
 # MET Configuration
@@ -85,13 +85,13 @@ UserScript_obsERA_obsOnly_RMM.py
 #
 # The RMM driver script orchestrates the calculation of the MJO indices and 
 # the generation of three RMM plots:
-# parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_RMM/RMM_driver.py:
+# parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM/RMM_driver.py:
 # The harmonic anomalies script creates anomalies of input data using a harmonic analysis:
-# parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_RMM/compute_harmonic_anomalies.py
+# parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM/compute_harmonic_anomalies.py
 #
 # .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_RMM/RMM_driver.py
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_RMM/compute_harmonic_anomalies.py
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM/RMM_driver.py
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM/compute_harmonic_anomalies.py
 #
 
 ##############################################################################
@@ -102,11 +102,11 @@ UserScript_obsERA_obsOnly_RMM.py
 #
 # 1) Passing in UserScript_obsERA_obsOnly_RMM.conf then a user-specific system configuration file::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_RMM.conf -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.conf -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_obsERA_obsOnly_RMM.py::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_RMM.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.conf
 #
 # The following variables must be set correctly:
 #
@@ -126,7 +126,7 @@ UserScript_obsERA_obsOnly_RMM.py
 # Expected Output
 # ---------------
 #
-# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use case will be found in model_applications/s2s/UserScript_obsERA_obsOnly_RMM.  This may include the regridded data and daily averaged files.  In addition, three plots will be generated, a phase diagram, time series, and EOF plot, and the output location can be specified as RMM_PLOT_OUTPUT_DIR.  If it is not specified, plots will be sent to model_applications/s2s/UserScript_obsERA_obsOnly_RMM/plots (relative to **OUTPUT_BASE**).
+# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use case will be found in model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.  This may include the regridded data and daily averaged files.  In addition, three plots will be generated, a phase diagram, time series, and EOF plot, and the output location can be specified as RMM_PLOT_OUTPUT_DIR.  If it is not specified, plots will be sent to model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM/plots (relative to **OUTPUT_BASE**).
 # 
 
 ##############################################################################
@@ -137,11 +137,12 @@ UserScript_obsERA_obsOnly_RMM.py
 # .. note::
 #
 #   * S2SAppUseCase
+#   * S2SMJOAppUseCase
 #   * NetCDFFileUseCase
 #   * RegridDataPlaneUseCase
 #   * PCPCombineUseCase
 #
 #   Navigate to :ref:`quick-search` to discover other similar use cases.
 #
-# sphinx_gallery_thumbnail_path = '_static/s2s-RMM_time_series.png'
+# sphinx_gallery_thumbnail_path = '_static/s2s_mjo-UserScript_obsERA_obsOnly_RMM.png'
 #
