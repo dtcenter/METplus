@@ -7,8 +7,8 @@ echo Removing files as suggested by https://github.com/actions/virtual-environme
 
 #sudo rm -rf /usr/share/dotnet
 #sudo rm -rf /opt/ghc
-sudo rm -rf "/usr/local/share/boost"
-sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+#sudo rm -rf "/usr/local/share/boost"
+#sudo rm -rf "$AGENT_TOOLSDIRECTORY"
 
 echo Checking disk usage after cleanup
 df -h
