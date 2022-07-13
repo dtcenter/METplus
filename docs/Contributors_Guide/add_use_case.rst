@@ -52,6 +52,8 @@ one of the following:
 * pbl
 * precipitation
 * s2s (Subseasonal to Seasonal)
+* s2s_mid_lat (Subseasonal to Seasonal: Mid-Latitude)
+* s2s_mjo (Subseasonal to Seasonal: Madden-Julian Oscillation)
 * space_weather
 * tc_and_extra_tc (Tropcial Cyclone and Extra Tropical Cyclone)
 
