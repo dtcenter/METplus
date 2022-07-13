@@ -136,7 +136,17 @@
   },
   {
     "category": "s2s",
-    "index_list": "1-3",
+    "index_list": "1",
+    "run": true
+  },
+  {
+    "category": "s2s",
+    "index_list": "2",
+    "run": true
+  },
+  {
+    "category": "s2s",
+    "index_list": "3",
     "run": true
   },
   {
@@ -155,6 +165,16 @@
     "run": true
   },
   {
+    "category": "s2s_mid_lat",
+    "index_list": "0-1",
+    "run": true
+  },
+  {
+    "category": "s2s_mid_lat",
+    "index_list": "2-3",
+    "run": true
+  },
+  {
     "category": "s2s_mjo",
     "index_list": "0-2",
     "run": true
@@ -162,26 +182,6 @@
   {
     "category": "s2s_mjo",
     "index_list": "3",
-    "run": true
-  },
-  {
-    "category": "s2s",
-    "index_list": "7",
-    "run": true
-  },
-  {
-    "category": "s2s",
-    "index_list": "8",
-    "run": true
-  },
-  {
-    "category": "s2s",
-    "index_list": "9",
-    "run": true
-  },
-  {
-    "category": "s2s",
-    "index_list": "10",
     "run": true
   },
   {

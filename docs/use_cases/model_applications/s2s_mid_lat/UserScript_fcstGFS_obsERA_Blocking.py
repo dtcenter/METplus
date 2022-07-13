@@ -3,7 +3,7 @@ Blocking Calculation: GFS and ERA RegridDataPlane, PcpCombine, and Blocking pyth
 ========================================================================================
 
 model_applications/
-s2s/
+s2s_mid_lat/
 UserScript_fcstGFS_obsERA_Blocking.py
 
 """
@@ -82,13 +82,13 @@ UserScript_fcstGFS_obsERA_Blocking.py
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# i.e. parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_Blocking.py.  
+# i.e. parm/use_cases/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.py.
 # The file UserScript_fcstGFS_obsERA_Blocking.conf runs the python program, and the
 # variables for all steps of the Blocking calculation are given in the [user_env_vars]
 # section of the .conf file.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_Blocking.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.conf
 #
 
 ##############################################################################
@@ -112,7 +112,7 @@ UserScript_fcstGFS_obsERA_Blocking.py
 #
 # This use case uses Python scripts to perform the blocking calculation
 #
-# parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_Blocking/Blocking_driver.py:
+# parm/use_cases/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking/Blocking_driver.py:
 # This script calls the requested steps in the blocking analysis for a forecast, observation, or both.  The possible
 # steps are computing CBLs, plotting CBLs, computing IBLs, plotting IBLs, computing GIBLs, computing blocks, and
 # plotting blocks.
@@ -127,7 +127,7 @@ UserScript_fcstGFS_obsERA_Blocking.py
 # pre-processing steps.  See the METcalcpy `Utility script <https://github.com/dtcenter/METcalcpy/blob/develop/metcalcpy/contributed/blocking_weather_regime/Blocking_WeatherRegime_util.py>`_ for more information.
 #
 # .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_Blocking/Blocking_driver.py 
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking/Blocking_driver.py
 #
 
 ##############################################################################
@@ -138,11 +138,11 @@ UserScript_fcstGFS_obsERA_Blocking.py
 #
 # 1) Passing in UserScript_fcstGFS_obsERA_Blocking.py then a user-specific system configuration file::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_Blocking.py -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.py -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_fcstGFS_obsERA_Blocking.py::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_Blocking.py
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.py
 #
 # The following variables must be set correctly:
 #
@@ -163,7 +163,7 @@ UserScript_fcstGFS_obsERA_Blocking.py
 # ---------------
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use 
-# case will be found in model_applications/s2s/Blocking (relative to **OUTPUT_BASE**) and will contain output 
+# case will be found in model_applications/s2s_mid_lat/Blocking (relative to **OUTPUT_BASE**) and will contain output
 # for the steps requested.  This may include the regridded data, daily averaged files, running mean files, 
 # and anomaly files.  In addition, output CBL, IBL, and Blocking frequency plots can be generated.  The location
 # of these output plots can be specified as BLOCKING_PLOT_OUTPUT_DIR.  If it is not specified, plots will be sent 
@@ -184,6 +184,7 @@ UserScript_fcstGFS_obsERA_Blocking.py
 #   * PCPCombineUseCase
 #   * StatAnalysisUseCase
 #   * S2SAppUseCase
+#   * S2SMidLatAppUseCase
 #   * NetCDFFileUseCase
 #   * GRIB2FileUseCase
 #
@@ -191,4 +192,4 @@ UserScript_fcstGFS_obsERA_Blocking.py
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/s2s-IBL_frequency.png'
+# sphinx_gallery_thumbnail_path = '_static/s2s_mid_lat-UserScript_fcstGFS_obsERA_Blocking.png'
