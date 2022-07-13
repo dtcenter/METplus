@@ -37,10 +37,6 @@ def handle_automation_env(host_name, reqs, work_dir):
     if use_env:
         conda_env = use_env[0].replace('_env', '')
 
-    # temporary fix to get correct conda env until renamed env is created
-    if conda_env == 'metdataio':
-        conda_env = 'metdatadb'
-
     # if not using docker (automation),
     # return no setup commands and python embedding argument to command
     if host_name != 'docker':
