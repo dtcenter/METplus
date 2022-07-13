@@ -37,6 +37,10 @@ def handle_automation_env(host_name, reqs, work_dir):
     if use_env:
         conda_env = use_env[0].replace('_env', '')
 
+    # temporary fix to get correct conda env until renamed env is created
+    if conda_env == 'metdataio':
+        conda_env == 'metdatadb'
+
     # if not using docker (automation),
     # return no setup commands and python embedding argument to command
     if host_name != 'docker':
@@ -72,13 +76,13 @@ def handle_automation_env(host_name, reqs, work_dir):
             'cd -;'
         )
 
-    # if metdatadb is in requirements list, add command to obtain METdatadb
-    if 'metdatadb' in str(reqs).lower():
+    # if metdataio is in requirements list, add command to obtain METdataio
+    if 'metdataio' in str(reqs).lower():
         setup_env += (
             f'cd {METPLUS_DOCKER_LOC};'
             f'{work_dir}/manage_externals/checkout_externals'
-            f' -e {work_dir}/.github/parm/Externals_metdatadb.cfg;'
-            f'{python_path} -m pip install {METPLUS_DOCKER_LOC}/../METdatadb;'
+            f' -e {work_dir}/.github/parm/Externals_metdataio.cfg;'
+            f'{python_path} -m pip install {METPLUS_DOCKER_LOC}/../METdataio;'
             'cd -;'
         )
 
