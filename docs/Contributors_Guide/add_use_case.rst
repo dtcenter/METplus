@@ -42,7 +42,6 @@ one of the following:
 
 * air_quality_and_comp
 * climate
-* convection_allowing_models
 * data_assimilation
 * extremes
 * land_surface
@@ -54,6 +53,7 @@ one of the following:
 * s2s (Subseasonal to Seasonal)
 * s2s_mid_lat (Subseasonal to Seasonal: Mid-Latitude)
 * s2s_mjo (Subseasonal to Seasonal: Madden-Julian Oscillation)
+* short_range (formerly convection_allowing_models)
 * space_weather
 * tc_and_extra_tc (Tropcial Cyclone and Extra Tropical Cyclone)
 

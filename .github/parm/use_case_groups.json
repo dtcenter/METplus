@@ -25,34 +25,34 @@
     "run": false
   },
   {
-    "category": "convection_allowing_models",
+    "category": "short_range",
     "index_list": "0",
-    "run": false
+    "run": true
   },
   {
-    "category": "convection_allowing_models",
+    "category": "short_range",
     "index_list": "1",
-    "run": false
+    "run": true
   },
   {
-    "category": "convection_allowing_models",
+    "category": "short_range",
     "index_list": "2-6",
-    "run": false
+    "run": true
   },
   {
-    "category": "convection_allowing_models",
+    "category": "short_range",
     "index_list": "7",
-    "run": false
+    "run": true
   },
   {
-    "category": "convection_allowing_models",
+    "category": "short_range",
     "index_list": "8",
-    "run": false
+    "run": true
   },
   {
-    "category": "convection_allowing_models",
+    "category": "short_range",
     "index_list": "9",
-    "run": false
+    "run": true
   },
   {
     "category": "data_assimilation",

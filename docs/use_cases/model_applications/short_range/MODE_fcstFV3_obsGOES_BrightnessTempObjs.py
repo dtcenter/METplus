@@ -52,10 +52,10 @@ MODE_fcstFV3_obsGOES_BrightnessTempObjs.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/convection_allowing_models/MODE_fcstFV3_obsGOES_BrightnessTempObjs.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/short_range/MODE_fcstFV3_obsGOES_BrightnessTempObjs.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/convection_allowing_models/MODE_fcstFV3_obsGOES_BrightnessTempObjs.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/MODE_fcstFV3_obsGOES_BrightnessTempObjs.conf
 
 ##############################################################################
 # MET Configuration
@@ -87,11 +87,11 @@ MODE_fcstFV3_obsGOES_BrightnessTempObjs.conf
 #
 # 1) Passing in MODE_fcstFV3_obsGOES_BrightnessTempObjs.conf then a user-specific system configuration file::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/convection_allowing_models/MODE_fcstFV3_obsGOES_BrightnessTempObjs.conf -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/short_range/MODE_fcstFV3_obsGOES_BrightnessTempObjs.conf -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in MODE_fcstFV3_obsGOES_BrightnessTempObjs.conf::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/convection_allowing_models/MODE_fcstFV3_obsGOES_BrightnessTempObjs.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/short_range/MODE_fcstFV3_obsGOES_BrightnessTempObjs.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -118,7 +118,7 @@ MODE_fcstFV3_obsGOES_BrightnessTempObjs.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in convection_allowing_models/brightness_temperature 
+# Output for this use case will be found in short_range/brightness_temperature
 # (relative to **OUTPUT_BASE**) and will contain the following files:
 #
 # mode/mode_FV3_core_lsm1_010000L_20190521_010000V_NAA_cts.txt
@@ -163,7 +163,7 @@ MODE_fcstFV3_obsGOES_BrightnessTempObjs.conf
 #
 #   * MODEToolUseCase
 #   * GridStatToolUseCase
-#   * ConvectionAllowingModelsAppUseCase
+#   * ShortRangeAppUseCase
 #   * NetCDFFileUseCase
 #   * NOAAEMCOrgUseCase 
 #   * NOAAHWTOrgUseCase 
@@ -173,5 +173,5 @@ MODE_fcstFV3_obsGOES_BrightnessTempObjs.conf
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/convection_allowing_models-MODE_fcstFV3_obsGOES_BrightnessTempObjs.png'
+# sphinx_gallery_thumbnail_path = '_static/short_range-MODE_fcstFV3_obsGOES_BrightnessTempObjs.png'
 #

@@ -62,7 +62,7 @@ SurrogateSevere.conf
 # any configuration files passed to METplus by the command line with the -c option.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/convection_allowing_models/EnsembleStat_fcstHRRR_fcstOnly_SurrogateSevere.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/EnsembleStat_fcstHRRR_fcstOnly_SurrogateSevere.conf
 
 ###################################################################################################
 # MET Configuration
@@ -87,7 +87,7 @@ SurrogateSevere.conf
 #
 # The command to run this use case is::
 #
-#    run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/convection_allowing_models/EnsembleStat_fcstHRRR_fcstOnly_SurrogateSevere.conf
+#    run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/short_range/EnsembleStat_fcstHRRR_fcstOnly_SurrogateSevere.conf
 
 ###################################################################################################
 # Expected Output
@@ -128,5 +128,5 @@ SurrogateSevere.conf
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/convection_allowing_models-EnsembleStat_fcstHRRR_fcstOnly_SurrogateSevere.png'
+# sphinx_gallery_thumbnail_path = '_static/short_range-EnsembleStat_fcstHRRR_fcstOnly_SurrogateSevere.png'
 #

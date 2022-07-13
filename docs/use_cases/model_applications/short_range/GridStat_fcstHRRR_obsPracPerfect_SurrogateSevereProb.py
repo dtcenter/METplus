@@ -3,7 +3,7 @@ Grid-Stat: Surrogate Severe and Practically Perfect Probabilistic Evaluation
 ============================================================================
 
 model_applications/
-convection_allowing_models/
+short_range/
 GridStat_fcstHRRR_obsPracPerfect
 _SurrogateSevereProb.conf
 
@@ -50,10 +50,10 @@ _SurrogateSevereProb.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/convection_allowing_models/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/convection_allowing_models/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevereProb.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevereProb.conf
 
 ##############################################################################
 # MET Configuration
@@ -80,11 +80,11 @@ _SurrogateSevereProb.conf
 #
 # 1) Passing in GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf then a user-specific system configuration file::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/convection_allowing_models/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevereProb.conf -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevereProb.conf -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/convection_allowing_models/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevereProb.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevereProb.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -110,7 +110,7 @@ _SurrogateSevereProb.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in model_applications/convection_allowing_models/surrogate_severe_prac_perfect/grid_stat/prob (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in model_applications/short_range/surrogate_severe_prac_perfect/grid_stat/prob (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
 # grid_stat_360000L_20200206_120000V_pct.txt
@@ -127,7 +127,7 @@ _SurrogateSevereProb.conf
 # .. note::
 #
 #   * GridStatToolUseCase
-#   * ConvectionAllowingModelsAppUseCase  
+#   * ShortRangeAppUseCase
 #   * NetCDFFileUseCase 
 #   * NOAAHWTOrgUseCase 
 #   * NCAROrgUseCase 
@@ -137,5 +137,5 @@ _SurrogateSevereProb.conf
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/convection_allowing_models-SS_PP_prob.png'
+# sphinx_gallery_thumbnail_path = '_static/short_range-SS_PP_prob.png'
 #

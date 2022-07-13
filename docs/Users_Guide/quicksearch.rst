@@ -70,7 +70,7 @@ Use Cases by Application:
 
    | `Air Quality and Composition <../search.html?q=AirQualityAndCompAppUseCase&check_keywords=yes&area=default>`_
    | `Climate <../search.html?q=ClimateAppUseCase&check_keywords=yes&area=default>`_
-   | `Convection Allowing Models <../search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_
+   | `Short Range <../search.html?q=ShortRangeAppUseCase&check_keywords=yes&area=default>`_
    | `Data Assimilation  <../search.html?q=DataAssimilationAppUseCase&check_keywords=yes&area=default>`_
    | `Ensemble  <../search.html?q=EnsembleAppUseCase&check_keywords=yes&area=default>`_
    | `Marine and Cryosphere <../search.html?q=MarineAndCryosphereAppUseCase&check_keywords=yes&area=default>`_
@@ -86,7 +86,7 @@ Use Cases by Application:
 
    | **Air Quality and Composition**: *AirQualityAndCompAppUseCase*
    | **Climate**: *ClimateAppUseCase*
-   | **Convection Allowing Models**: *ConvectionAllowingModelsAppUseCase*
+   | **Short Range**: *ShortRangeAppUseCase*
    | **Data Assimilation**: *DataAssimilationAppUseCase*
    | **Ensemble**: *EnsembleAppUseCase*
    | **Marine and Cryosphere**: *MarineAndCryosphereAppUseCase*

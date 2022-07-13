@@ -59,7 +59,7 @@ METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 # then it loads any configuration files passed to METplus via the command line
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/convection_allowing_models/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 
 ##############################################################################
 # XML Configuration
@@ -86,11 +86,11 @@ METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 #
 # 1) Passing in METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf followed by a user-specific system configuration file::
 #
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/convection_allowing_models/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf /path/to/user_system.conf
+#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config and then passing in METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf::
 #
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/convection_allowing_models/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
+#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -128,7 +128,7 @@ METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 # .. note::
 #
 #   * METdbLoadUseCase
-#   * ConvectionAllowingModelsAppUseCase 
+#   * ShortRangeAppUseCase
 #   * NOAAEMCOrgUseCase
 #   * NOAAHWTOrgUseCase  
 #
@@ -136,5 +136,5 @@ METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/convection_allowing_models-METdbLoad_fcstFV3_obsGoes_BrightnessTemp.png'
+# sphinx_gallery_thumbnail_path = '_static/short_range-METdbLoad_fcstFV3_obsGoes_BrightnessTemp.png'
 #

@@ -3,7 +3,7 @@ Point2Grid: Calculate Practically Perfect Probabilities
 ============================================================
 
 model_applications/
-convection_allowing_models/
+short_range/
 Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
 
 """
@@ -56,10 +56,10 @@ Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/convection_allowing_models/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/short_range/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/convection_allowing_models/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
 #
 
 ##############################################################################
@@ -84,10 +84,10 @@ Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
 #
 # This use case uses a Python embedding script to read input data
 #
-# parm/use_cases/model_applications/convection_allowing_models/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect/read_ascii_storm.py
+# parm/use_cases/model_applications/short_range/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect/read_ascii_storm.py
 #
 # .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/convection_allowing_models/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect/read_ascii_storm.py
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect/read_ascii_storm.py
 #
 
 ##############################################################################
@@ -98,11 +98,11 @@ Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
 #
 # 1) Passing in EnsembleStat_fcstHRRRE_obsHRRRE_Sfc_MultiField.conf then a user-specific system configuration file::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/convection_allowing_models/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/short_range/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in EnsembleStat_fcstHRRRE_obsHRRRE_Sfc_MultiField.conf::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/convection_allowing_models/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/short_range/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -129,7 +129,7 @@ Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in model_applications/convection_allowing_models/practically_perfect/ (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in model_applications/short_range/practically_perfect/ (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
 # * StormReps_211_Probs.20200205.nc 
@@ -148,7 +148,7 @@ Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
 #   * RegriddingInToolUseCase 
 #   * NetCDFFileUseCase
 #   * PythonEmbeddingFileUseCase 
-#   * ConvectionAllowingModelsAppUseCase
+#   * ShortRangeAppUseCase
 #   * NCAROrgUseCase 
 #   * ProbabilityGenerationUseCase
 #   * MaskingFeatureUseCase 
@@ -158,4 +158,4 @@ Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/convection_allowing_models-Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.png'
+# sphinx_gallery_thumbnail_path = '_static/short_range-Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.png'
