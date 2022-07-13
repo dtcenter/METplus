@@ -24,7 +24,7 @@ docker ps -a
 
 # commands to run inside METviewer container
 cmd="mysql -hmysql_mv -uroot -pmvuser -e\"create database mv_metplus_test;\";"
-cmd+="mysql -hmysql_mv -uroot -pmvuser mv_metplus_test < /METviewer/sql/mv_mysql.sql"
+cmd+="mysql -hmysql_mv -uroot -pmvuser mv_metplus_test < /METviewer-python/METdatadb/sql/mv_mysql.sql"
 cmd+=";mysql -hmysql_mv -uroot -pmvuser -e\"show databases;\""
 
 # execute commands inside metviewer container to create database
