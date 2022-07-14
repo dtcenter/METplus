@@ -293,7 +293,10 @@ Push the feature branch to GitHub
   to push the changes to
   the origin (i.e. to the *https://github.com/<your-github-user>/METplus*
   repository).
+  
 
+.. _pull-request-browser:
+  
 Open a pull request using a browser
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
