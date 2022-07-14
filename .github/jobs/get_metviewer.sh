@@ -21,7 +21,7 @@ sleep 20
 # print list of currently running containers to
 # verify mysql and metviewer are running
 docker ps -a
-
+# TODO: when METviewer Dockerfile changes METdatadb to METdataio, update path to sql file accordingly
 # commands to run inside METviewer container
 cmd="mysql -hmysql_mv -uroot -pmvuser -e\"create database mv_metplus_test;\";"
 cmd+="mysql -hmysql_mv -uroot -pmvuser mv_metplus_test < /METviewer-python/METdatadb/METdbLoad/sql/mv_mysql.sql"
