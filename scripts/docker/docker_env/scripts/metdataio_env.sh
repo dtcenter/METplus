@@ -1,9 +1,9 @@
 #! /bin/sh
 
 ################################################################################
-# Environment: metdatadb.v5
-# Last Updated: 2021-06-08 (mccabe@ucar.edu)
-# Notes: Adds Python packages needed to run METdbLoad from METdatadb
+# Environment: metdataio.v5
+# Last Updated: 2021-07-13 (mccabe@ucar.edu)
+# Notes: Adds Python packages needed to run METdbLoad from METdataio
 # Python Packages:
 # TODO: update versions
 #   lxml==3.8.0
@@ -14,7 +14,7 @@
 ################################################################################
 
 # Conda environment to create
-ENV_NAME=metdatadb.v5
+ENV_NAME=metdataio.v5
 
 # Conda environment to use as base for new environment
 BASE_ENV=metplus_base.v5
