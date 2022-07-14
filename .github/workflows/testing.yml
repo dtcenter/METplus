@@ -139,24 +139,24 @@ jobs:
       # copy logs with errors to error_logs directory to save as artifact
       - name: Save error logs
         id: save-errors
-        if: ${{ always() && steps.run_tests.conclusion == 'failure' && matrix.categories != 'pytests' }}
+        if: ${{ always() && steps.run_tests.conclusion == 'failure' && !startsWith(matrix.categories,'pytests') }}
         run: .github/jobs/save_error_logs.sh
 
       # run difference testing
       - name: Run difference tests
         id: run-diff
-        if: ${{ needs.job_control.outputs.run_diff == 'true' && steps.run_tests.conclusion == 'success'  && matrix.categories != 'pytests' }}
+        if: ${{ needs.job_control.outputs.run_diff == 'true' && steps.run_tests.conclusion == 'success'  && !startsWith(matrix.categories,'pytests') }}
         run: .github/jobs/run_difference_tests.sh ${{ matrix.categories }} ${{ steps.get-artifact-name.outputs.artifact_name }}
 
       # copy output data to save as artifact
       - name: Save output data
         id: save-output
-        if: ${{ always() && steps.run_tests.conclusion != 'skipped'  && matrix.categories != 'pytests' }}
+        if: ${{ always() && steps.run_tests.conclusion != 'skipped'  && !startsWith(matrix.categories,'pytests') }}
         run: .github/jobs/copy_output_to_artifact.sh ${{ steps.get-artifact-name.outputs.artifact_name }}
 
       - name: Upload output data artifact
         uses: actions/upload-artifact@v2
-        if: ${{ always() && steps.run_tests.conclusion != 'skipped'  && matrix.categories != 'pytests' }}
+        if: ${{ always() && steps.run_tests.conclusion != 'skipped'  && !startsWith(matrix.categories,'pytests') }}
         with:
           name: ${{ steps.get-artifact-name.outputs.artifact_name }}
           path: artifact/${{ steps.get-artifact-name.outputs.artifact_name }}
