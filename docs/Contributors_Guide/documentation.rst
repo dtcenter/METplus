@@ -30,8 +30,8 @@ documentation:
   * sphinx_rtd_theme-0.4.3
 
 Which versions are being used by the current METplus release can be viewed
-by looking at either environment.yml or requirements.txt, both of which
-are found in the METplus/ directory.  If the desire is to replicate all the
+by looking at either **environment.yml** or **requirements.txt**, both of which
+are found in the *METplus/* directory.  If the desire is to replicate all the
 packages employed by METplus, please refer to :numref:`conda_env` of the
 Contributor's Guide.
 
@@ -53,7 +53,7 @@ Documentation for the use cases is found in the following directories:
 * *METplus/docs/use_cases/model_applications*
 	
   * This directory contains documentation pertaining to use cases that are
-    based on model data, and utilize more than one MET tool/METplus
+    based on model data, and utilize more than one MET *tool/METplus*
     wrapper.
 
 Please refer to the :ref:`Document New Use Case <use_case_documentation>`
@@ -87,11 +87,11 @@ User's Guide:
 * Modify any of the affected sections from the
   *METplus/docs/Users_Guide* directory:
   
-  * glossary.rst (Glossary)
-  * references.rst (Reference)
-  * systemconfiguration.rst (System Configuration)
-  * usecases.rst (Use cases)
-  * wrappers.rst (METplus wrappers)
+  * **glossary.rst** (Glossary)
+  * **references.rst** (Reference)
+  * **systemconfiguration.rst** (System Configuration)
+  * **usecases.rst** (Use cases)
+  * **wrappers.rst** (METplus wrappers)
 
 Contributor's Guide:
 ~~~~~~~~~~~~~~~~~~~~
@@ -100,21 +100,21 @@ Contributor's Guide:
 * Modify any of the affected sections from the
   *METplus/docs/Contributors_Guide* directory:
   
-  * add_use_case.rst (How to add new use cases)
-  * basic_components.rst (The basic components of a METplus wrapper)
-  * coding_standards.rst (The coding standards currently in use)
-  * conda_env.rst  (How to set up the conda environment for
+  * **add_use_case.rst** (How to add new use cases)
+  * **basic_components.rst** (The basic components of a METplus wrapper)
+  * **coding_standards.rst** (The coding standards currently in use)
+  * **conda_env.rst**  (How to set up the conda environment for
     running METplus)
-  * continuous_integration.rst (How to set up a continuous integration
-    workflow)  
-  * create_wrapper.rst (How to create a new METplus wrapper)
-  * deprecation.rst (What to do to deprecate a variable)
-  * documentation.rst (Describing the documentation process and files)
-  * github_workflow.rst (A description of how releases are made,
+  * **continuous_integration.rst** (How to set up a continuous integration
+    workflow)
+  * **create_wrapper.rst** (How to create a new METplus wrapper)
+  * **deprecation.rst** (What to do to deprecate a variable)
+  * **documentation.rst** (Describing the documentation process and files)
+  * **github_workflow.rst** (A description of how releases are made,
     how to to obtain source code from the GitHub repository)
-  * index.rst (The page that shows all the 'chapters/sections'
+  * **index.rst** (The page that shows all the 'chapters/sections'
     of the Contributor's Guide)
-  * testing.rst (A description of how to set up testing the
+  * **testing.rst** (A description of how to set up testing the
     wrapper code)
 
 Release Guide:
@@ -124,40 +124,40 @@ Release Guide:
   any METplus component, including official, bugfix, and development
   releases.
 
-* Each METplus component has a top level file (e.g. metplus.rst)
+* Each METplus component has a top level file (e.g. **metplus.rst**)
   which simply contains references to files for each of the
-  releases.  For example, metplus.rst contains references to:
+  releases.  For example, **metplus.rst** contains references to:
     
-  * metplus_official
-  * metplus_bugfix
-  * metplus_development
+  * metplus_official.
+  * metplus_bugfix.
+  * metplus_development.
 
-* Each release file (e.g. metplus_official.rst, metplus_bugfix.rst,
-  metplus_development.rst) contains, at a minimum, a replacement
+* Each release file (e.g. **metplus_official.rst**, **metplus_bugfix.rst**,
+  **metplus_development.rst**) contains, at a minimum, a replacement
   value for the projectRepo variable and include
   statements for each release step.  These individual steps
-  (e.g. open_release_issue.rst, clone_project_repository.rst, etc.)
+  (e.g. **open_release_issue.rst**, **clone_project_repository.rst**, etc.)
   may be common to multiple METplus components.  These common steps
   are located in the *release_steps* directory.  However, a METplus
-  component may have different instructions from other componenets
-  (e.g. For METplus wrappers, update_version.rst,
-  create_release_extra.rst, etc.). In this case, the instructions
+  component may have different instructions from other components
+  (e.g. For **METplus wrappers**, **update_version.rst**,
+  **create_release_extra.rst**, etc.). In this case, the instructions
   that are specific to that component are located in a subdirectory
   of *release_steps*.  For example, files that are specific to
   METplus wrappers are located in *release_steps/metplus*, files
   that are specific to METcalcpy are located in
   *release_steps/metcalcpy*.
 
-* The file for each individual step (e.g. open_release_issue.rst,
-  update_version.rst, etc.) contains the instructions for
+* The file for each individual step (e.g. **open_release_issue.rst**,
+  **update_version.rst**, etc.) contains the instructions for
   completing that step for the release.  
     
 
 Verification Datasets Guide:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* To add/modify any relevant datasets in attempt to create a
-  centralized catalogue of verification datasets to provide the model
+* To add/modify any relevant datasets in an attempt to create a
+  centralized catalog of verification datasets to provide the model
   verification community with relevant "truth" datasets. See the
   `Verification Datasets Guide Overview <https://metplus.readthedocs.io/en/latest/Verification_Datasets/overview.html>`_
   for more information. 
@@ -172,11 +172,11 @@ build and display the documentation. Read the Docs simplifies the
 documentation process by building, versioning, and hosting the documentation.
 
 Read the Docs supports multiple versions for each repository. For the METplus
-compoents, the "latest" version will point to the latest official (stable)
+components, the "latest" version will point to the latest official (stable)
 release. The "develop" or "development" version will point to the most up to
 date development code. There may also be other previous versions of the
 software available in the version selector menu, which is accessible by
-clicking in the bottom left corner of the the documentation pages.
+clicking in the bottom left corner of the documentation pages.
 
 Automation rules allow project maintainers to automate actions on new branches
 and tags on repositories.  For the METplus components, documentation is
@@ -191,14 +191,16 @@ The documentation of these "versions" are automatically hidden, however, the
 documentation can be accessed by directly modifying the URL. For example, to
 view "feature_836_rtd_doc" for the METplus repository the URL would be:
 
-  **https://metplus.readthedocs.io/en/feature_836_rtd_doc**
+  *https://metplus.readthedocs.io/en/feature_836_rtd_doc*
 
   (Note that this link is not valid as this branch does not currently exist,
-  however contributors can replace the "feature_836_rtd_doc" with the
+  however contributors can replace the "*feature_836_rtd_doc*" with the
   appropriate branch name.)
   
-The URL branch name will be lowercase regardless of the actual branch letter casing,
-i.e. "feature_836_RTD_Doc" branch would be accessed by the above mentioned URL.
+The URL branch name will be lowercase regardless of the actual branch
+letter casing,
+i.e. "*feature_836_RTD_Doc*" branch would be accessed by the
+above-mentioned URL.
   
 Read the Docs will automatically delete the documentation for a feature
 branch and a bugfix branch when the branch is deleted.
@@ -242,7 +244,7 @@ This script does the following:
 * Builds the Sphinx documentation
 * Builds the doxygen documentation
 * Removes unwanted text from use case documentation
-* Copies doxygen files into _build/html for easy deployment
+* Copies doxygen files into* _build/html* for easy deployment
 * Creates symbolic links under Users_Guide to the directories under
   'generated' to preserve old URL paths
 
