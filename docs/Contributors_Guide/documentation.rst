@@ -25,9 +25,9 @@ The documentation is created using
 The following Sphinx modules are required to generate the necessary
 documentation:
 
-  * sphinx-2.2.0.
-  * sphinx-gallery-0.7.
-  * sphinx_rtd_theme-0.4.3.
+  * sphinx-2.2.0
+  * sphinx-gallery-0.7
+  * sphinx_rtd_theme-0.4.3
 
 Which versions are being used by the current METplus release can be viewed
 by looking at either **environment.yml** or **requirements.txt**, both of which
@@ -45,12 +45,12 @@ under the *METplus/docs* directory and contain files ending in .rst.
 
 Documentation for the use cases is found in the following directories:
 
-* *METplus/docs/use_cases/met_tool_wrapper*.
+* *METplus/docs/use_cases/met_tool_wrapper*
 
   * This directory contains documentation pertaining to use cases that use
     one MET *tool/METplus* wrapper.
 
-* *METplus/docs/use_cases/model_applications*.
+* *METplus/docs/use_cases/model_applications*
 	
   * This directory contains documentation pertaining to use cases that are
     based on model data, and utilize more than one MET *tool/METplus*
@@ -87,11 +87,11 @@ User's Guide:
 * Modify any of the affected sections from the
   *METplus/docs/Users_Guide* directory:
   
-  * **glossary.rst** (Glossary).
-  * **references.rst** (Reference).
-  * **systemconfiguration.rst** (System Configuration).
-  * **usecases.rst** (Use cases).
-  * **wrappers.rst** (METplus wrappers).
+  * **glossary.rst** (Glossary)
+  * **references.rst** (Reference)
+  * **systemconfiguration.rst** (System Configuration)
+  * **usecases.rst** (Use cases)
+  * **wrappers.rst** (METplus wrappers)
 
 Contributor's Guide:
 ~~~~~~~~~~~~~~~~~~~~
@@ -100,22 +100,22 @@ Contributor's Guide:
 * Modify any of the affected sections from the
   *METplus/docs/Contributors_Guide* directory:
   
-  * **add_use_case.rst** (How to add new use cases).
-  * **basic_components.rst** (The basic components of a METplus wrapper).
-  * **coding_standards.rst** (The coding standards currently in use).
+  * **add_use_case.rst** (How to add new use cases)
+  * **basic_components.rst** (The basic components of a METplus wrapper)
+  * **coding_standards.rst** (The coding standards currently in use)
   * **conda_env.rst**  (How to set up the conda environment for
-    running METplus).
+    running METplus)
   * **continuous_integration.rst** (How to set up a continuous integration
-    workflow).
-  * **create_wrapper.rst** (How to create a new METplus wrapper).
-  * **deprecation.rst** (What to do to deprecate a variable).
-  * **documentation.rst** (Describing the documentation process and files).
+    workflow)
+  * **create_wrapper.rst** (How to create a new METplus wrapper)
+  * **deprecation.rst** (What to do to deprecate a variable)
+  * **documentation.rst** (Describing the documentation process and files)
   * **github_workflow.rst** (A description of how releases are made,
-    how to to obtain source code from the GitHub repository).
+    how to to obtain source code from the GitHub repository)
   * **index.rst** (The page that shows all the 'chapters/sections'
-    of the Contributor's Guide).
+    of the Contributor's Guide)
   * **testing.rst** (A description of how to set up testing the
-    wrapper code).
+    wrapper code)
 
 Release Guide:
 ~~~~~~~~~~~~~~
@@ -132,24 +132,24 @@ Release Guide:
   * metplus_bugfix.
   * metplus_development.
 
-* Each release file (e.g. **metplus_official.rst, metplus_bugfix.rst,
-  metplus_development.rst**) contains, at a minimum, a replacement
+* Each release file (e.g. **metplus_official.rst**, **metplus_bugfix.rst**,
+  **metplus_development.rst**) contains, at a minimum, a replacement
   value for the projectRepo variable and include
   statements for each release step.  These individual steps
-  (e.g. **open_release_issue.rst, clone_project_repository.rst**, etc.)
+  (e.g. **open_release_issue.rst**, **clone_project_repository.rst**, etc.)
   may be common to multiple METplus components.  These common steps
   are located in the *release_steps* directory.  However, a METplus
   component may have different instructions from other components
-  (e.g. For **METplus wrappers, update_version.rst,
-  create_release_extra.rst**, etc.). In this case, the instructions
+  (e.g. For **METplus wrappers**, **update_version.rst**,
+  **create_release_extra.rst**, etc.). In this case, the instructions
   that are specific to that component are located in a subdirectory
   of *release_steps*.  For example, files that are specific to
   METplus wrappers are located in *release_steps/metplus*, files
   that are specific to METcalcpy are located in
   *release_steps/metcalcpy*.
 
-* The file for each individual step (e.g. **open_release_issue.rst,
-  update_version.rst**, etc.) contains the instructions for
+* The file for each individual step (e.g. **open_release_issue.rst**,
+  **update_version.rst**, etc.) contains the instructions for
   completing that step for the release.  
     
 
@@ -183,9 +183,9 @@ and tags on repositories.  For the METplus components, documentation is
 automatically built by Read the Docs when a new tag is created and when a
 branch is created with the prefix:
 
-  * feature (e.g. feature_836_rtd_doc).
+  * feature (e.g. feature_836_rtd_doc)
     
-  * bugfix (e.g. bugfix_1716_develop_perc_thresh).
+  * bugfix (e.g. bugfix_1716_develop_perc_thresh)
 
 The documentation of these "versions" are automatically hidden, however, the
 documentation can be accessed by directly modifying the URL. For example, to
@@ -241,12 +241,12 @@ enter the following:
 
 This script does the following:
 
-* Builds the Sphinx documentation.
-* Builds the doxygen documentation.
-* Removes unwanted text from use case documentation.
-* Copies doxygen files into* _build/html* for easy deployment.
+* Builds the Sphinx documentation
+* Builds the doxygen documentation
+* Removes unwanted text from use case documentation
+* Copies doxygen files into* _build/html* for easy deployment
 * Creates symbolic links under Users_Guide to the directories under
-  'generated' to preserve old URL paths.
+  'generated' to preserve old URL paths
 
 The html files that are created can be found in the *METplus/docs/_build/html*
 directory.  The web browser can point to this directory by entering
@@ -264,7 +264,7 @@ _______________________________________
 The Doxygen tool is employed to create documentation from the source code.
 This documentation is useful in generating details about the METplus wrapper
 API (Application Programming Interface).
-This is a useful reference for contributors to pursue prior to creating
+This is a useful reference for contributors to peruse prior to creating
 new METplus wrappers.
 The Doxygen files located in the */path/to/METplus/docs/doxygen* directory
 do **NOT** need to be modified and should not be modified.

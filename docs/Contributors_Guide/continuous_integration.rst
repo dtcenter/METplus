@@ -5,13 +5,13 @@ Continuous Integration
 METplus utilizes GitHub Actions to run processes automatically when changes
 are pushed to GitHub. These tasks include:
 
-* Building documentation to catch warnings/errors.
-* Building a Docker image to run tests.
-* Creating/Updating Docker data volumes with new input data used for tests.
-* Running unit tests.
-* Running use cases.
-* Comparing use case output to truth data.
-* Creating/Updating Docker data volumes with truth data to use in comparisons.
+* Building documentation to catch warnings/errors
+* Building a Docker image to run tests
+* Creating/Updating Docker data volumes with new input data used for tests
+* Running unit tests
+* Running use cases
+* Comparing use case output to truth data
+* Creating/Updating Docker data volumes with truth data to use in comparisons
 
 GitHub Actions Workflows
 ========================
@@ -166,8 +166,8 @@ Push
 This configuration tells GitHub Actions to trigger the workflow when changes
 are pushed to the repository and the following criteria are met:
 
-* The branch is named *develop* or *develop-ref*.
-* The branch starts with *feature\_, main\_*, or *bugfix\_*.
+* The branch is named **develop** or **develop-ref**.
+* The branch starts with **feature\_**, **main\_**, or **bugfix\_**.
 * Changes were made to at least one file that is not in the *docs* directory.
 
 Pull Request
@@ -223,12 +223,12 @@ to trigger this workflow.
 It lists the input values that are passed from the external repository.
 The inputs include:
 
-* The repository that triggered the workflow, such as *dtcenter/MET*.
-* The commit hash in the external repository that triggered the event.
+* The repository that triggered the workflow, such as *dtcenter/MET*
+* The commit hash in the external repository that triggered the event
 * The reference (or branch) that triggered the event, such as
-  *refs/heads/develop*.
+  *refs/heads/develop*
 * The GitHub username that triggered the event in the external repository
-  (optional).
+  (optional)
 
 The MET, METcalcpy, and METplotpy repositories are configured to
 trigger this workflow since they are used in 1 or more METplus use cases.
@@ -248,12 +248,12 @@ Each item under **jobs** is a string that defines the ID of the job.
 This value can be referenced within the workflow as needed.
 Each job in the testing workflow is described in its own section.
 
-* :ref:`cg-ci-event-info`.
-* :ref:`cg-ci-job-control`.
-* :ref:`cg-ci-get-image`.
-* :ref:`cg-ci-update-data-volumes`.
-* :ref:`cg-ci-use-case-tests`.
-* :ref:`cg-ci-create-output-data-volumes`.
+* :ref:`cg-ci-event-info`
+* :ref:`cg-ci-job-control`
+* :ref:`cg-ci-get-image`
+* :ref:`cg-ci-update-data-volumes`
+* :ref:`cg-ci-use-case-tests`
+* :ref:`cg-ci-create-output-data-volumes`
 
 .. _cg-ci-event-info:
 
@@ -578,9 +578,9 @@ a line that following the format::
 
 where *<category>* is the name of the use case category.
 See :ref:`use_case_categories` for more information. If a use case
-is being added that will go into a new category, 
+is being added will go into a new category, 
 a new category definition line will have to be added
-to this file and add the new use case under it. Each use case
+to this file and the new use case added under it. Each use case
 in that category will be found on its own line after this line.
 The use cases can be defined using the following formats::
 
@@ -682,7 +682,7 @@ Other Environments
 A few of the environments do not contain Conda environments and
 are handled a little differently.
 
-* **gempak_env** - Used if **GempakToCF.jar **is needed for a use
+* **gempak_env** - Used if **GempakToCF.jar** is needed for a use
   case to convert
   GEMPAK data to NetCDF format so it can be read by the MET tools.
   Instead of creating a Python environment to use for the use case,
