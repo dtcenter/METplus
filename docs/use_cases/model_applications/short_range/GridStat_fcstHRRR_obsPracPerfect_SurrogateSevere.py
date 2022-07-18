@@ -3,7 +3,7 @@ Grid-Stat: Surrogate Severe and Practically Perfect Evaluation
 ==============================================================
 
 model_applications/
-convection_allowing_model/
+short_range/
 GridStat_fcstHRRR_obsPracPerfect
 _SurrogateSevere.conf
 

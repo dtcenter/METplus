@@ -3,7 +3,7 @@ METdbLoad: Brightness Temperature
 =================================
 
 model_applications/
-convection_allowing_model/
+short_range/
 METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 
 """

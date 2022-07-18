@@ -3,7 +3,7 @@ MODE/Grid-Stat: Brightness Temperature Verification and Distance Maps
 =========================================================================
 
 model_applications/
-convection_allowing_model/
+short_range/
 MODE_fcstFV3_obsGOES_BrightnessTempObjs.conf
 
 """

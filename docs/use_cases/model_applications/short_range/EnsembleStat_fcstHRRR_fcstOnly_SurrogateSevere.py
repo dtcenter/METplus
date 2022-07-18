@@ -2,10 +2,10 @@
 Surrogate Severe Calculation: PCPCombine, EnsembleStat, and RegridDataPlane 
 ===================================================================================================
 
-model_applications/\
-convection_allowing_model/\
-EnsembleStat_fcstHRRR_fcstOnly_\
-SurrogateSevere.conf
+model_applications/
+short_range/
+EnsembleStat_fcstHRRR_fcstOnly
+_SurrogateSevere.conf
 
 """
 ###################################################################################################

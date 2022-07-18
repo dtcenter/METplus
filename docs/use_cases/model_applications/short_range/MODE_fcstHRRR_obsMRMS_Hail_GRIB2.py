@@ -3,7 +3,7 @@ MODE: Hail Verification
 =========================================================================
 
 model_applications/
-convection_allowing_model/
+short_range/
 MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf
 
 """

@@ -3,7 +3,7 @@ Grid-Stat: Brightness Temperature Distance Maps
 =========================================================================
 
 model_applications/
-convection_allowing_model/
+short_range/
 GridStat_fcstFV3_obsGOES_BrightnessTempDmap.conf
 
 """
