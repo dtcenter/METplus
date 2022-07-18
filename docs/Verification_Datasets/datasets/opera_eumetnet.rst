@@ -51,4 +51,4 @@ METplus Use Cases
 Keywords
   .. note:: **Current Dataset:** VxDataOperaEumetnet
 
-  .. note:: **Data Labels:** DataTypeGridded, DataLevelSurface, DataProviderEUMETNET, DataApplicationPrecipitation, DataApplicationConvectionAllowingModels
+  .. note:: **Data Labels:** DataTypeGridded, DataLevelSurface, DataProviderEUMETNET, DataApplicationPrecipitation, DataApplicationShortRange

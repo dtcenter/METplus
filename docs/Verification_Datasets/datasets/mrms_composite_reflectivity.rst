@@ -41,4 +41,4 @@ METplus Use Cases
 Keywords
   .. note:: **Current Dataset:** VxDataMRMSCompositeReflectivity
 
-  .. note:: **Data Labels:** DataTypeGridded, DataLevelSurface, DataProviderNOAA, DataApplicationConvectionAllowingModels
+  .. note:: **Data Labels:** DataTypeGridded, DataLevelSurface, DataProviderNOAA, DataApplicationShortRange
