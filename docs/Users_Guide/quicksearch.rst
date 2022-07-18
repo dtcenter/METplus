@@ -70,7 +70,7 @@ Use Cases by Application:
 
    | `Air Quality and Composition <../search.html?q=AirQualityAndCompAppUseCase&check_keywords=yes&area=default>`_
    | `Climate <../search.html?q=ClimateAppUseCase&check_keywords=yes&area=default>`_
-   | `Convection Allowing Models <../search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_
+   | `Short Range <../search.html?q=ShortRangeAppUseCase&check_keywords=yes&area=default>`_
    | `Data Assimilation  <../search.html?q=DataAssimilationAppUseCase&check_keywords=yes&area=default>`_
    | `Ensemble  <../search.html?q=EnsembleAppUseCase&check_keywords=yes&area=default>`_
    | `Marine and Cryosphere <../search.html?q=MarineAndCryosphereAppUseCase&check_keywords=yes&area=default>`_
@@ -78,13 +78,15 @@ Use Cases by Application:
    | `Precipitation <../search.html?q=PrecipitationAppUseCase&check_keywords=yes&area=default>`_
    | `Space Weather <../search.html?q=SpaceWeatherAppUseCase&check_keywords=yes&area=default>`_
    | `Subseasonal to Seasonal <../search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_
+   | `Subseasonal to Seasonal: Madden-Julian Oscillation <../search.html?q=S2SMJOAppUseCase&check_keywords=yes&area=default>`_
+   | `Subseasonal to Seasonal: Mid-Latitude <../search.html?q=S2SMidLatAppUseCase&check_keywords=yes&area=default>`_
    | `Tropical Cyclone and Extra-Tropical Cyclone <../search.html?q=TCandExtraTCAppUseCase&check_keywords=yes&area=default>`_
 
 .. only:: latex
 
    | **Air Quality and Composition**: *AirQualityAndCompAppUseCase*
    | **Climate**: *ClimateAppUseCase*
-   | **Convection Allowing Models**: *ConvectionAllowingModelsAppUseCase*
+   | **Short Range**: *ShortRangeAppUseCase*
    | **Data Assimilation**: *DataAssimilationAppUseCase*
    | **Ensemble**: *EnsembleAppUseCase*
    | **Marine and Cryosphere**: *MarineAndCryosphereAppUseCase*
@@ -92,6 +94,8 @@ Use Cases by Application:
    | **Precipitation**: *PrecipitationAppUseCase*
    | **Space Weather**: *SpaceWeatherAppUseCase*
    | **Subseasonal to Seasonal**: *S2SAppUseCase*
+   | **Subseasonal to Seasonal: Madden-Julian Oscillation**: *S2SMJOAppUseCase*
+   | **Subseasonal to Seasonal: Mid-Latitude**: *S2SMidLatAppUseCase*
    | **Tropical Cyclone and Extra-Tropical Cyclone**: *TCandExtraTCAppUseCase*
 
 Use Cases by Organization:

@@ -11,4 +11,5 @@ sudo rm -rf "/usr/local/share/boost"
 sudo rm -rf "$AGENT_TOOLSDIRECTORY"
 
 printf "\nChecking disk usage after cleanup"
+
 df -h

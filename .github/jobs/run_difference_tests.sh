@@ -17,7 +17,7 @@ if [ "$( ls -A ${RUNNER_WORKSPACE}/diff)" ]; then
   echo ::set-output name=upload_diff::true
   mkdir -p artifact/diff-${artifact_name}
   cp -r ${RUNNER_WORKSPACE}/diff/* artifact/diff-${artifact_name}
-  exit 1
+  exit 2
 fi
 
 echo ::set-output name=upload_diff::false
