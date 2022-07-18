@@ -1,47 +1,14 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+
+import pytest
 
 import os
-import datetime
-import sys
-import logging
-import pytest
-import datetime
-
-import produtil.setup
 
 from metplus.wrappers.make_plots_wrapper import MakePlotsWrapper
-from metplus.util import met_util as util
 
-#
-# These are tests (not necessarily unit tests) for the
-# wrapper to make plots, make_plots_wrapper.py
-# NOTE:  This test requires pytest, which is NOT part of the standard Python
-# library.
-# These tests require one configuration file in addition to the three
-# required METplus configuration files:  test_make_plots.conf.  This contains
-# the information necessary for running all the tests.  Each test can be
-# customized to replace various settings if needed.
-#
-
-#
-# -----------Mandatory-----------
-#  configuration and fixture to support METplus configuration files beyond
-#  the metplus_data, metplus_system, and metplus_runtime conf files.
-#
+METPLUS_BASE = os.getcwd().split('/internal_tests')[0]
 
 
-# Add a test configuration
-def pytest_addoption(parser):
-    parser.addoption("-c", action="store", help=" -c <test config file>")
-
-# @pytest.fixture
-def cmdopt(request):
-    return request.config.getoption("-c")
-    
-#
-# ------------Pytest fixtures that can be used for all tests ---------------
-#
-#@pytest.fixture
 def make_plots_wrapper(metplus_config):
     """! Returns a default MakePlotsWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
@@ -55,35 +22,8 @@ def make_plots_wrapper(metplus_config):
     config = metplus_config(extra_configs)
     return MakePlotsWrapper(config)
 
-# ------------------TESTS GO BELOW ---------------------------
-#
 
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# To test numerous files for filesize, use parametrization:
-# @pytest.mark.parametrize(
-#     'key, value', [
-#         ('/usr/local/met-6.1/bin/point_stat', 382180),
-#         ('/usr/local/met-6.1/bin/stat_analysis', 3438944),
-#         ('/usr/local/met-6.1/bin/pb2nc', 3009056)
-#
-#     ]
-# )
-# def test_file_sizes(key, value):
-#     st = stat_analysis_wrapper()
-#     # Retrieve the value of the class attribute that corresponds
-#     # to the key in the parametrization
-#     files_in_dir = []
-#     for dirpath, dirnames, files in os.walk("/usr/local/met-6.1/bin"):
-#         for name in files:
-#             files_in_dir.append(os.path.join(dirpath, name))
-#         if actual_key in files_in_dir:
-#         # The actual_key is one of the files of interest we retrieved from
-#         # the output directory.  Verify that it's file size is what we
-#         # expected.
-#             assert actual_key == key
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-METPLUS_BASE = os.getcwd().split('/internal_tests')[0]
-
+@pytest.mark.plotting
 def test_get_command(metplus_config):
     # Independently test that the make_plots python
     # command is being put together correctly with
@@ -98,6 +38,8 @@ def test_get_command(metplus_config):
     test_command = mp.get_command()
     assert(expected_command == test_command)
 
+
+@pytest.mark.plotting
 def test_create_c_dict(metplus_config):
     # Independently test that c_dict is being created
     # and that the wrapper and config reader 

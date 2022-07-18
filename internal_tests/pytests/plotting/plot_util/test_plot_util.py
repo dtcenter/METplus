@@ -1,48 +1,23 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+
+import pytest
 
 import os
-import datetime
 import sys
-import logging
-import pytest
 import datetime
+import logging
+
 import numpy as np
 import pandas as pd
 
-import produtil.setup
 
-# ------------------TESTS GO BELOW ---------------------------
-#
-
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# To test numerous files for filesize, use parametrization:
-# @pytest.mark.parametrize(
-#     'key, value', [
-#         ('/usr/local/met-6.1/bin/point_stat', 382180),
-#         ('/usr/local/met-6.1/bin/stat_analysis', 3438944),
-#         ('/usr/local/met-6.1/bin/pb2nc', 3009056)
-#
-#     ]
-# )
-# def test_file_sizes(key, value):
-#     st = stat_analysis_wrapper()
-#     # Retrieve the value of the class attribute that corresponds
-#     # to the key in the parametrization
-#     files_in_dir = []
-#     for dirpath, dirnames, files in os.walk("/usr/local/met-6.1/bin"):
-#         for name in files:
-#             files_in_dir.append(os.path.join(dirpath, name))
-#         if actual_key in files_in_dir:
-#         # The actual_key is one of the files of interest we retrieved from
-#         # the output directory.  Verify that it's file size is what we
-#         # expected.
-#             assert actual_key == key
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 METPLUS_BASE = os.getcwd().split('/internal_tests')[0]
 sys.path.append(METPLUS_BASE+'/ush/plotting_scripts')
 import plot_util
 logger = logging.getLogger('~/metplus_pytest_plot_util.log')
 
+
+@pytest.mark.plotting
 def test_get_date_arrays():
     # Independently test the creation of 
     # the date arrays, one used for plotting
@@ -209,6 +184,8 @@ def test_get_date_arrays():
         assert(test_expected_stat_file_dates[l] ==    
                 expected_expected_stat_file_dates[l])
 
+
+@pytest.mark.plotting
 def test_format_thresh():
     # Independently test the formatting
     # of thresholds
@@ -297,6 +274,8 @@ def test_format_thresh():
     assert(test_thresh_symbol == expected_thresh_symbol)
     assert(test_thresh_letter == expected_thresh_letter)
 
+
+@pytest.mark.plotting
 def test_get_stat_file_base_columns():
     # Independently test getting list
     # of the base MET version .stat file columns
@@ -332,6 +311,8 @@ def test_get_stat_file_base_columns():
     )
     assert(test_stat_file_base_columns == expected_stat_file_base_columns)
 
+
+@pytest.mark.plotting
 def test_get_stat_file_line_type_columns():
     # Independently test getting list
     # of the line type MET version .stat file columns
@@ -441,6 +422,8 @@ def test_get_stat_file_line_type_columns():
     assert(test_stat_file_line_type_columns ==
             expected_stat_file_line_type_columns)
 
+
+@pytest.mark.plotting
 def get_clevels():
     # Independently test creating an array
     # of levels centered about 0 to plot
@@ -453,6 +436,8 @@ def get_clevels():
     test_clevels = plot_util.get_clevels(data)
     assert(test_clevels == expected_clevels)
 
+
+@pytest.mark.plotting
 def test_calculate_average():
     # Independently test getting the average
     # of a data array based on method
@@ -558,7 +543,9 @@ def test_calculate_average():
     assert(len(test_average_array) == len(expected_average_array))
     for l in range(len(test_average_array)):
         assert(round(test_average_array[l],6) == expected_average_array[l])
- 
+
+
+@pytest.mark.long
 def test_calculate_ci():
     pytest.skip("Takes far too long to run")
     # Independently test getting the
@@ -691,6 +678,8 @@ def test_calculate_ci():
                                         stat, average_method, randx)
     assert(test_intvl == expected_intvl)
 
+
+@pytest.mark.plotting
 def test_get_stat_plot_name():
     # Independently test getting the
     # a more formalized statistic name
@@ -730,6 +719,8 @@ def test_get_stat_plot_name():
     test_stat_plot_name = plot_util.get_stat_plot_name(logger, stat)
     assert(test_stat_plot_name == expected_stat_plot_name)
 
+
+@pytest.mark.plotting
 def test_calculate_stat():
     # Independently test calculating
     # statistic values

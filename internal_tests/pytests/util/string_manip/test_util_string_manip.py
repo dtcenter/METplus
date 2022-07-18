@@ -7,6 +7,7 @@ from csv import reader
 from metplus.util.string_manip import *
 from metplus.util.string_manip import _fix_list
 
+
 @pytest.mark.parametrize(
     'before, after', [
         ('string', 'string'),
@@ -16,8 +17,10 @@ from metplus.util.string_manip import _fix_list
         (None, ''),
     ]
 )
+@pytest.mark.util
 def test_remove_quotes(before, after):
-    assert(remove_quotes(before) == after)
+    assert remove_quotes(before) == after
+
 
 @pytest.mark.parametrize(
     'string_list, output_list', [
@@ -69,14 +72,18 @@ def test_remove_quotes(before, after):
          ["some_value", "some_other_value"]),
     ]
 )
+@pytest.mark.util
 def test_getlist(string_list, output_list):
     test_list = getlist(string_list)
     assert test_list == output_list
 
+
+@pytest.mark.util
 def test_getlist_int():
     string_list = '6, 7, 42'
     test_list = getlistint(string_list)
     assert test_list == [6, 7, 42]
+
 
 @pytest.mark.parametrize(
     'list_string, output_list', [
@@ -133,5 +140,6 @@ def test_getlist_int():
 
     ]
 )
+@pytest.mark.util
 def test_getlist_begin_end_incr(list_string, output_list):
     assert getlist(list_string) == output_list

@@ -55,13 +55,13 @@ docker push dtcenter/metplus-envs:h5py
 ./scripts/h5py_env.sh py_embed_base
 ```
 
-## metdatadb (from metplus_base)
+## metdataio (from metplus_base)
 
 ### Docker
 
 ```
-docker build -t dtcenter/metplus-envs:metdatadb --build-arg ENV_NAME=metdatadb .
-docker push dtcenter/metplus-envs:metdatadb
+docker build -t dtcenter/metplus-envs:metdataio --build-arg ENV_NAME=metdataio .
+docker push dtcenter/metplus-envs:metdataio
 ```
 
 ### Local
