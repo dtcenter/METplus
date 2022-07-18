@@ -27,11 +27,11 @@ Dataset Providers
 Dataset Applications
 --------------------
 | `Climate <https://metplus.readthedocs.io/en/develop/search.html?q=DataApplicationClimate&check_keywords=yes&area=default>`_
-| `Convection Allowing Models <https://metplus.readthedocs.io/en/develop/search.html?q=DataApplicationConvectionAllowingModels&check_keywords=yes&area=default>`_
 | `Ensemble  <https://metplus.readthedocs.io/en/develop/search.html?q=DataApplicationEnsemble&check_keywords=yes&area=default>`_
 | `Marine and Cryosphere <https://metplus.readthedocs.io/en/develop/search.html?q=DataApplicationMarineAndCryo&check_keywords=yes&area=default>`_
 | `Medium Range <https://metplus.readthedocs.io/en/develop/search.html?q=DataApplicationMediumRange&check_keywords=yes&area=default>`_
 | `Precipitation <https://metplus.readthedocs.io/en/develop/search.html?q=DataApplicationPrecipitation&check_keywords=yes&area=default>`_
+| `Short Range <https://metplus.readthedocs.io/en/develop/search.html?q=DataApplicationShortRange&check_keywords=yes&area=default>`_
 | `Space Weather <https://metplus.readthedocs.io/en/develop/search.html?q=DataApplicationSpaceWeather&check_keywords=yes&area=default>`_
 | `Subseasonal to Seasonal <https://metplus.readthedocs.io/en/develop/search.html?q=DataApplicationS2S&check_keywords=yes&area=default>`_
 | `Tropical Cyclone and Extra-Tropical Cyclone <https://metplus.readthedocs.io/en/develop/search.html?q=DataApplicationTCandExtraTC&check_keywords=yes&area=default>`_
