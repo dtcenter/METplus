@@ -1,6 +1,7 @@
 #! /bin/bash
 
 use_case_groups_filepath=.github/parm/use_case_groups.json
+
 # set matrix to string of an empty array in case no use cases will be run
 matrix="[]"
 
@@ -31,12 +32,14 @@ fi
 if [ "$run_unit_tests" == "true" ]; then
   echo Adding unit tests to list to run
 
+  pytests="\"pytests\","
+
   # if matrix is empty, set to an array that only includes pytests
   if [ "$matrix" == "[]" ]; then
-    matrix="[\"pytests\"]"
+    matrix="[${pytests:0: -1}]"
   # otherwise prepend item to list
   else
-    matrix="[\"pytests\", ${matrix:1}"
+    matrix="[${pytests}${matrix:1}"
   fi
 fi
 

@@ -64,13 +64,13 @@ docker push dtcenter/metplus-envs:h5py.v5
 ```
 
 
-## metdatadb.v5 (from metplus_base.v5)
+## metdataio.v5 (from metplus_base.v5)
 
 ### Docker
 
 ```
-docker build -t dtcenter/metplus-envs:metdatadb.v5 --build-arg ENV_NAME=metdatadb .
-docker push dtcenter/metplus-envs:metdatadb.v5
+docker build -t dtcenter/metplus-envs:metdataio.v5 --build-arg ENV_NAME=metdataio .
+docker push dtcenter/metplus-envs:metdataio.v5
 ```
 
 ### Local

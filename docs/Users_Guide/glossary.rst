@@ -9605,3 +9605,46 @@ METplus Configuration Glossary
      Guide for more information on multi-variate MODE.
 
      | *Used by:* MODE
+
+   CYCLONE_PLOTTER_GLOBAL_PLOT
+     Set to True to plot entire global extent in CyclonePlotter or set to False
+     to generate a plot of a defined region of the world, then define lons and
+     lats with :term:`CYCLONE_PLOTTER_WEST_LON`,
+     :term:`CYCLONE_PLOTTER_EAST_LON`, :term:`CYCLONE_PLOTTER_SOUTH_LAT`, and
+     :term:`CYCLONE_PLOTTER_NORTH_LAT`.
+
+     | *Used by:* CyclonePlotter
+
+   CYCLONE_PLOTTER_WEST_LON
+     Set the west longitude boundary for CyclonePlotter.
+     Only used if :term:`CYCLONE_PLOTTER_GLOBAL_PLOT` is False.
+
+     | *Used by:* CyclonePlotter
+
+   CYCLONE_PLOTTER_EAST_LON
+     Set the east longitude boundary for CyclonePlotter.
+     Only used if :term:`CYCLONE_PLOTTER_GLOBAL_PLOT` is False.
+
+     | *Used by:* CyclonePlotter
+
+   CYCLONE_PLOTTER_SOUTH_LAT
+     Set the south latitude boundary for CyclonePlotter.
+     Only used if :term:`CYCLONE_PLOTTER_GLOBAL_PLOT` is False.
+
+     | *Used by:* CyclonePlotter
+
+   CYCLONE_PLOTTER_NORTH_LAT
+     Set the north latitude boundary for CyclonePlotter.
+     Only used if :term:`CYCLONE_PLOTTER_GLOBAL_PLOT` is False.
+
+     | *Used by:* CyclonePlotter
+
+   CYCLONE_PLOTTER_ANNOTATION_FONT_SIZE
+     Set the annotation font size for CyclonePlotter output.
+
+     | *Used by:* CyclonePlotter
+
+   CYCLONE_PLOTTER_RESOLUTION_DPI
+     Set the resolution for CyclonePlotter output.
+
+     | *Used by:* CyclonePlotter

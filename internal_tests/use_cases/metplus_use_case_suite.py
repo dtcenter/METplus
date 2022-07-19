@@ -403,16 +403,20 @@ def parse_all_use_cases_file():
             num_cases += 1
 
     return all_cases, num_cases
-
+################################################################################
 if __name__ == "__main__":
+    # NOTE: This list of use cases to run is not maintaned, so it no longer
+    # contains the full list of existing use cases.
+    # It is not recommended to run the use cases by calling this script
+    # directly. This more serves as a reference of how use case commands
+    # can be generated.
+
     # run all use cases
     all_use_cases = METplusUseCaseSuite()
 
     all_use_cases.add_use_case_groups('met_tool_wrapper')
 
     all_use_cases.add_use_case_groups('climate')
-
-    all_use_cases.add_use_case_groups('convection_allowing_models')
 
     all_use_cases.add_use_case_groups('cryosphere')
 
@@ -429,6 +433,8 @@ if __name__ == "__main__":
                                       case_slice=range(6, 9))
 
     all_use_cases.add_use_case_groups('precipitation')
+
+    all_use_cases.add_use_case_groups('short_range')
 
     all_use_cases.add_use_case_groups('s2s&space_weather&tc_and_extra_tc')
 

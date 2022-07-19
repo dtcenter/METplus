@@ -48,4 +48,4 @@ METplus Use Cases
 Keywords
   .. note:: **Current Dataset:** VxDataGDASPREP
 
-  .. note:: **Data Labels:** DataTypePoint, DataLevelSurface, DataLevelUpperAir, DataProviderNOAA, DataApplicationConvectionAllowingModels, DataApplicationMediumRange
+  .. note:: **Data Labels:** DataTypePoint, DataLevelSurface, DataLevelUpperAir, DataProviderNOAA, DataApplicationShortRange, DataApplicationMediumRange
