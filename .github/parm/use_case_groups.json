@@ -87,7 +87,7 @@
   {
     "category": "medium_range",
     "index_list": "3-5",
-    "run": true
+    "run": false
   },
   {
     "category": "medium_range",
@@ -132,47 +132,47 @@
   {
     "category": "s2s",
     "index_list": "0",
-    "run": true
+    "run": false
   },
   {
     "category": "s2s",
     "index_list": "1",
-    "run": true
+    "run": false
   },
   {
     "category": "s2s",
     "index_list": "2",
-    "run": true
+    "run": false
   },
   {
     "category": "s2s",
     "index_list": "3",
-    "run": true
+    "run": false
   },
   {
     "category": "s2s",
     "index_list": "4",
-    "run": true
+    "run": false
   },
   {
     "category": "s2s",
     "index_list": "5",
-    "run": true
+    "run": false
   },
   {
     "category": "s2s",
     "index_list": "6",
-    "run": true
+    "run": false
   },
   {
     "category": "s2s_mid_lat",
     "index_list": "0-2",
-    "run": true
+    "run": false
   },
   {
     "category": "s2s_mid_lat",
     "index_list": "3",
-    "run": true
+    "run": false
   },
   {
     "category": "s2s_mjo",
@@ -182,7 +182,7 @@
   {
     "category": "s2s_mjo",
     "index_list": "3",
-    "run": true
+    "run": false
   },
   {
     "category": "space_weather",
