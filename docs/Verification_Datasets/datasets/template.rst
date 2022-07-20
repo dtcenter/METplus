@@ -80,7 +80,7 @@ Keywords
       DataProviderUSAF
     Select at least one DataApplication label:
       DataApplicationClimate
-      DataApplicationConvectionAllowingModels
+      DataApplicationShortRange
       DataApplicationEnsemble
       DataApplicationMarineAndCryo
       DataApplicationMediumRange

@@ -25,28 +25,33 @@
     "run": false
   },
   {
-    "category": "convection_allowing_models",
+    "category": "short_range",
     "index_list": "0",
     "run": false
   },
   {
-    "category": "convection_allowing_models",
+    "category": "short_range",
     "index_list": "1",
     "run": false
   },
   {
-    "category": "convection_allowing_models",
+    "category": "short_range",
     "index_list": "2-6",
     "run": false
   },
   {
-    "category": "convection_allowing_models",
+    "category": "short_range",
     "index_list": "7",
     "run": false
   },
   {
-    "category": "convection_allowing_models",
+    "category": "short_range",
     "index_list": "8",
+    "run": false
+  },
+  {
+    "category": "short_range",
+    "index_list": "9",
     "run": false
   },
   {
@@ -131,7 +136,17 @@
   },
   {
     "category": "s2s",
-    "index_list": "1-3",
+    "index_list": "1",
+    "run": false
+  },
+  {
+    "category": "s2s",
+    "index_list": "2",
+    "run": false
+  },
+  {
+    "category": "s2s",
+    "index_list": "3",
     "run": false
   },
   {
@@ -146,28 +161,28 @@
   },
   {
     "category": "s2s",
-    "index_list": "6-7",
+    "index_list": "6",
     "run": false
   },
   {
-    "category": "s2s",
-    "index_list": "7-9",
+    "category": "s2s_mid_lat",
+    "index_list": "0-2",
     "run": false
   },
   {
-    "category": "s2s",
-    "index_list": "10",
+    "category": "s2s_mid_lat",
+    "index_list": "3",
     "run": false
   },
   {
-    "category": "s2s",
-    "index_list": "11",
+    "category": "s2s_mjo",
+    "index_list": "0-2",
     "run": false
   },
   {
-    "category": "s2s",
-    "index_list": "12",
-    "run": false 
+    "category": "s2s_mjo",
+    "index_list": "3",
+    "run": false
   },
   {
     "category": "space_weather",

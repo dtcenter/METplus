@@ -1250,14 +1250,92 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:**
 
    FCST_IS_PROB
-     Specify whether the forecast data are probabilistic or not. Acceptable values: true/false
+     Boolean to specify whether the forecast data are probabilistic or not.
 
-     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PointStat
+     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PointStat, SeriesAnalysis
 
    FCST_PROB_IN_GRIB_PDS
-     Specify whether the probabilistic forecast data is stored in the GRIB Product Definition Section or not.Acceptable values: true/false. Only used when FCST_IS_PROB is True. This does not need to be set if the FCST_<APP_NAME>_INPUT_DATATYPE is set to NetCDF.
+     Boolean to specify whether the probabilistic forecast data is stored in
+     the GRIB Product Definition Section or not.
+     Only used when :term:`FCST_IS_PROB` is True.
 
-     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PointStat
+     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PointStat, SeriesAnalysis
+
+   OBS_IS_PROB
+     Specify whether the observation data are probabilistic or not.
+     Used when setting OBS_* variables to process probabilistic forecast data.
+     See :term:`FCST_IS_PROB`
+
+     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PointStat, SeriesAnalysis
+
+   OBS_PROB_IN_GRIB_PDS
+     Boolean to specify whether the probabilistic forecast data is stored in
+     the GRIB Product Definition Section or not.
+     Used when setting OBS_* variables to process probabilistic forecast data.
+     Only used when :term:`OBS_IS_PROB` is True.
+     See :term:`FCST_PROB_IN_GRIB_PDS` and :term:`FCST_IS_PROB`.
+
+     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PointStat, SeriesAnalysis
+
+   FCST_GRID_STAT_IS_PROB
+      Wrapper-specific version of :term:`FCST_IS_PROB`.
+
+     | *Used by:*  GridStat
+
+   FCST_GRID_STAT_PROB_IN_GRIB_PDS
+      Wrapper-specific version of :term:`FCST_PROB_IN_GRIB_PDS`.
+
+     | *Used by:*  GridStat
+
+   FCST_ENSEMBLE_STAT_IS_PROB
+      Wrapper-specific version of :term:`FCST_IS_PROB`.
+
+     | *Used by:*  EnsembleStat
+
+   FCST_ENSEMBLE_STAT_PROB_IN_GRIB_PDS
+      Wrapper-specific version of :term:`FCST_PROB_IN_GRIB_PDS`.
+
+     | *Used by:*  EnsembleStat
+
+   FCST_MODE_IS_PROB
+      Wrapper-specific version of :term:`FCST_IS_PROB`.
+
+     | *Used by:*  MODE
+
+   FCST_MODE_PROB_IN_GRIB_PDS
+      Wrapper-specific version of :term:`FCST_PROB_IN_GRIB_PDS`.
+
+     | *Used by:*  MODE
+
+   FCST_MTD_IS_PROB
+      Wrapper-specific version of :term:`FCST_IS_PROB`.
+
+     | *Used by:*  MTD
+
+   FCST_MTD_PROB_IN_GRIB_PDS
+      Wrapper-specific version of :term:`FCST_PROB_IN_GRIB_PDS`.
+
+     | *Used by:*  MTD
+
+   FCST_POINT_STAT_IS_PROB
+      Wrapper-specific version of :term:`FCST_IS_PROB`.
+
+     | *Used by:*  PointStat
+
+   FCST_POINT_STAT_PROB_IN_GRIB_PDS
+      Wrapper-specific version of :term:`FCST_PROB_IN_GRIB_PDS`.
+
+     | *Used by:*  PointStat
+
+   FCST_SERIES_ANALYSIS_IS_PROB
+      Wrapper-specific version of :term:`FCST_IS_PROB`.
+
+     | *Used by:*  SeriesAnalysis
+
+   FCST_SERIES_ANALYSIS_PROB_IN_GRIB_PDS
+      Wrapper-specific version of :term:`FCST_PROB_IN_GRIB_PDS`.
+
+     | *Used by:*  SeriesAnalysis
 
    FCST_LEAD
      .. warning:: **DEPRECATED:** Please use :term:`FCST_LEAD_LIST` instead.
@@ -2796,16 +2874,6 @@ METplus Configuration Glossary
    OBS_IS_DAILY_FILE
      .. warning:: **DEPRECATED:**
 
-   OBS_IS_PROB
-     Used when setting OBS_* variables to process forecast data for comparisons with mtd. Specify whether the observation data are probabilistic or not. See :term:`FCST_IS_PROB` .Acceptable values: true/false
-
-     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PointStat
-
-   OBS_PROB_IN_GRIB_PDS
-     Specify whether the probabilistic observation data is stored in the GRIB Product Definition Section or not.Acceptable values: true/false. Only used when :term:`OBS_IS_PROB` is True. This does not need to be set if the OBS_<APP_NAME>_INPUT_DATATYPE is set to NetCDF.
-
-     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PointStat
-
    OBS_LEVEL
      .. warning:: **DEPRECATED:** Please use :term:`OBS_PCP_COMBINE_INPUT_LEVEL` instead.
 
@@ -4097,7 +4165,7 @@ METplus Configuration Glossary
    TC_STAT_OUTPUT_TEMPLATE
      (Optional) Specify the template of the output file to write job output
      from tc_stat.
-     If set, then the -out command line argument will the full
+     If set, then the -out command line argument with the full
      path to the file will be added to the tc_stat call.
 
      | *Used by:*  TCStat
@@ -4105,7 +4173,7 @@ METplus Configuration Glossary
    STAT_ANALYSIS_OUTPUT_TEMPLATE
      (Optional) Specify the template of the output file to write job output
      from stat_analysis.
-     If set, then the -out command line argument will the full
+     If set, then the -out command line argument with the full
      path to the file will be added to the stat_analysis call.
 
      | *Used by:*  StatAnalysis
@@ -5587,7 +5655,22 @@ METplus Configuration Glossary
      | *Used by:* EnsembleStat
 
    ENSEMBLE_STAT_CLIMO_MEAN_FIELD
-     Specify the value for 'climo_mean.field' in the MET configuration file for EnsembleStat.
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_FIELD`
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CLIMO_MEAN_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_NAME`
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CLIMO_MEAN_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_LEVELS`
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CLIMO_MEAN_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_OPTIONS`
 
      | *Used by:* EnsembleStat
 
@@ -5637,7 +5720,42 @@ METplus Configuration Glossary
      | *Used by:* EnsembleStat
 
    ENSEMBLE_STAT_CLIMO_STDEV_FIELD
-     Specify the value for 'climo_stdev.field' in the MET configuration file for EnsembleStat.
+     Specify the value for 'climo_stdev.field' in the MET configuration file
+     for EnsembleStat.
+     The value set here must include the proper formatting that is expected in
+     MET configuration file for specifying field information.
+     Example: {name="TMP"; level="(*,*)";}
+     To set the field information un-formatted, use the
+     :term:`ENSEMBLE_STAT_CLIMO_STDEV_VAR<n>_NAME`,
+     :term:`ENSEMBLE_STAT_CLIMO_STDEV_VAR<n>_LEVELS`, and
+     :term:`ENSEMBLE_STAT_CLIMO_STDEV_VAR<n>_OPTIONS` variables.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CLIMO_STDEV_VAR<n>_NAME
+     Specify the name of the nth field for 'climo_stdev.field' in the
+     MET configuration file for EnsembleStat. If any fields are set using this
+     variable, then :term:`ENSEMBLE_STAT_CLIMO_STDEV_FIELD` will be ignored.
+     See also :term:`ENSEMBLE_STAT_CLIMO_STDEV_VAR<n>_LEVELS`
+     and :term:`ENSEMBLE_STAT_CLIMO_STDEV_VAR<n>_OPTIONS`.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CLIMO_STDEV_VAR<n>_LEVELS
+     Specify the level of the nth field for 'climo_stdev.field' in the
+     MET configuration file for EnsembleStat. If any fields are set using this
+     variable, then :term:`ENSEMBLE_STAT_CLIMO_STDEV_FIELD` will be ignored.
+     See also :term:`ENSEMBLE_STAT_CLIMO_STDEV_VAR<n>_NAME`
+     and :term:`ENSEMBLE_STAT_CLIMO_STDEV_VAR<n>_OPTIONS`.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CLIMO_STDEV_VAR<n>_OPTIONS
+     Specify the extra options of the nth field for 'climo_stdev.field' in the
+     MET configuration file for EnsembleStat. If any fields are set using this
+     variable, then :term:`ENSEMBLE_STAT_CLIMO_STDEV_FIELD` will be ignored.
+     See also :term:`ENSEMBLE_STAT_CLIMO_STDEV_VAR<n>_NAME`
+     and :term:`ENSEMBLE_STAT_CLIMO_STDEV_VAR<n>_LEVELS`.
 
      | *Used by:* EnsembleStat
 
@@ -6929,7 +7047,22 @@ METplus Configuration Glossary
      | *Used by:* PointStat
 
    POINT_STAT_CLIMO_MEAN_FIELD
-     Specify the value for 'climo_mean.field' in the MET configuration file for PointStat.
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_FIELD`
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_MEAN_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_NAME`
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_MEAN_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_LEVELS`
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_MEAN_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_OPTIONS`
 
      | *Used by:* PointStat
 
@@ -6979,7 +7112,42 @@ METplus Configuration Glossary
      | *Used by:* PointStat
 
    POINT_STAT_CLIMO_STDEV_FIELD
-     Specify the value for 'climo_stdev.field' in the MET configuration file for PointStat.
+     Specify the value for 'climo_stdev.field' in the MET configuration file
+     for PointStat.
+     The value set here must include the proper formatting that is expected in
+     MET configuration file for specifying field information.
+     Example: {name="TMP"; level="(*,*)";}
+     To set the field information un-formatted, use the
+     :term:`POINT_STAT_CLIMO_STDEV_VAR<n>_NAME`,
+     :term:`POINT_STAT_CLIMO_STDEV_VAR<n>_LEVELS`, and
+     :term:`POINT_STAT_CLIMO_STDEV_VAR<n>_OPTIONS` variables.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_STDEV_VAR<n>_NAME
+     Specify the name of the nth field for 'climo_stdev.field' in the
+     MET configuration file for PointStat. If any fields are set using this
+     variable, then :term:`POINT_STAT_CLIMO_STDEV_FIELD` will be ignored.
+     See also :term:`POINT_STAT_CLIMO_STDEV_VAR<n>_LEVELS`
+     and :term:`POINT_STAT_CLIMO_STDEV_VAR<n>_OPTIONS`.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_STDEV_VAR<n>_LEVELS
+     Specify the level of the nth field for 'climo_stdev.field' in the
+     MET configuration file for PointStat. If any fields are set using this
+     variable, then :term:`POINT_STAT_CLIMO_STDEV_FIELD` will be ignored.
+     See also :term:`POINT_STAT_CLIMO_STDEV_VAR<n>_NAME`
+     and :term:`POINT_STAT_CLIMO_STDEV_VAR<n>_OPTIONS`.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_STDEV_VAR<n>_OPTIONS
+     Specify the extra options of the nth field for 'climo_stdev.field' in the
+     MET configuration file for PointStat. If any fields are set using this
+     variable, then :term:`POINT_STAT_CLIMO_STDEV_FIELD` will be ignored.
+     See also :term:`POINT_STAT_CLIMO_STDEV_VAR<n>_NAME`
+     and :term:`POINT_STAT_CLIMO_STDEV_VAR<n>_LEVELS`.
 
      | *Used by:* PointStat
 
@@ -7059,7 +7227,22 @@ METplus Configuration Glossary
      | *Used by:* GridStat
 
    GRID_STAT_CLIMO_MEAN_FIELD
-     Specify the value for 'climo_mean.field' in the MET configuration file for GridStat.
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_FIELD`
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_MEAN_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_NAME`
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_MEAN_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_LEVELS`
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_MEAN_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_OPTIONS`
 
      | *Used by:* GridStat
 
@@ -7109,7 +7292,42 @@ METplus Configuration Glossary
      | *Used by:* GridStat
 
    GRID_STAT_CLIMO_STDEV_FIELD
-     Specify the value for 'climo_stdev.field' in the MET configuration file for GridStat.
+     Specify the value for 'climo_stdev.field' in the MET configuration file
+     for GridStat.
+     The value set here must include the proper formatting that is expected in
+     MET configuration file for specifying field information.
+     Example: {name="TMP"; level="(*,*)";}
+     To set the field information un-formatted, use the
+     :term:`GRID_STAT_CLIMO_STDEV_VAR<n>_NAME`,
+     :term:`GRID_STAT_CLIMO_STDEV_VAR<n>_LEVELS`, and
+     :term:`GRID_STAT_CLIMO_STDEV_VAR<n>_OPTIONS` variables.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_STDEV_VAR<n>_NAME
+     Specify the name of the nth field for 'climo_stdev.field' in the
+     MET configuration file for GridStat. If any fields are set using this
+     variable, then :term:`GRID_STAT_CLIMO_STDEV_FIELD` will be ignored.
+     See also :term:`GRID_STAT_CLIMO_STDEV_VAR<n>_LEVELS`
+     and :term:`GRID_STAT_CLIMO_STDEV_VAR<n>_OPTIONS`.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_STDEV_VAR<n>_LEVELS
+     Specify the level of the nth field for 'climo_stdev.field' in the
+     MET configuration file for GridStat. If any fields are set using this
+     variable, then :term:`GRID_STAT_CLIMO_STDEV_FIELD` will be ignored.
+     See also :term:`GRID_STAT_CLIMO_STDEV_VAR<n>_NAME`
+     and :term:`GRID_STAT_CLIMO_STDEV_VAR<n>_OPTIONS`.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_STDEV_VAR<n>_OPTIONS
+     Specify the extra options of the nth field for 'climo_stdev.field' in the
+     MET configuration file for GridStat. If any fields are set using this
+     variable, then :term:`GRID_STAT_CLIMO_STDEV_FIELD` will be ignored.
+     See also :term:`GRID_STAT_CLIMO_STDEV_VAR<n>_NAME`
+     and :term:`GRID_STAT_CLIMO_STDEV_VAR<n>_LEVELS`.
 
      | *Used by:* GridStat
 
@@ -7175,7 +7393,22 @@ METplus Configuration Glossary
      | *Used by:* SeriesAnalysis
 
    SERIES_ANALYSIS_CLIMO_MEAN_FIELD
-     Specify the value for 'climo_mean.field' in the MET configuration file for SeriesAnalysis.
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_FIELD`
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_MEAN_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_NAME`
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_MEAN_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_LEVELS`
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_MEAN_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_OPTIONS`
 
      | *Used by:* SeriesAnalysis
 
@@ -7225,7 +7458,42 @@ METplus Configuration Glossary
      | *Used by:* SeriesAnalysis
 
    SERIES_ANALYSIS_CLIMO_STDEV_FIELD
-     Specify the value for 'climo_stdev.field' in the MET configuration file for SeriesAnalysis.
+     Specify the value for 'climo_stdev.field' in the MET configuration file
+     for SeriesAnalysis.
+     The value set here must include the proper formatting that is expected in
+     MET configuration file for specifying field information.
+     Example: {name="TMP"; level="(*,*)";}
+     To set the field information un-formatted, use the
+     :term:`SERIES_ANALYSIS_CLIMO_STDEV_VAR<n>_NAME`,
+     :term:`SERIES_ANALYSIS_CLIMO_STDEV_VAR<n>_LEVELS`, and
+     :term:`SERIES_ANALYSIS_CLIMO_STDEV_VAR<n>_OPTIONS` variables.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_STDEV_VAR<n>_NAME
+     Specify the name of the nth field for 'climo_stdev.field' in the
+     MET configuration file for SeriesAnalysis. If any fields are set using this
+     variable, then :term:`SERIES_ANALYSIS_CLIMO_STDEV_FIELD` will be ignored.
+     See also :term:`SERIES_ANALYSIS_CLIMO_STDEV_VAR<n>_LEVELS`
+     and :term:`SERIES_ANALYSIS_CLIMO_STDEV_VAR<n>_OPTIONS`.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_STDEV_VAR<n>_LEVELS
+     Specify the level of the nth field for 'climo_stdev.field' in the
+     MET configuration file for SeriesAnalysis. If any fields are set using this
+     variable, then :term:`SERIES_ANALYSIS_CLIMO_STDEV_FIELD` will be ignored.
+     See also :term:`SERIES_ANALYSIS_CLIMO_STDEV_VAR<n>_NAME`
+     and :term:`SERIES_ANALYSIS_CLIMO_STDEV_VAR<n>_OPTIONS`.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_STDEV_VAR<n>_OPTIONS
+     Specify the extra options of the nth field for 'climo_stdev.field' in the
+     MET configuration file for SeriesAnalysis. If any fields are set using this
+     variable, then :term:`SERIES_ANALYSIS_CLIMO_STDEV_FIELD` will be ignored.
+     See also :term:`SERIES_ANALYSIS_CLIMO_STDEV_VAR<n>_NAME`
+     and :term:`SERIES_ANALYSIS_CLIMO_STDEV_VAR<n>_LEVELS`.
 
      | *Used by:* SeriesAnalysis
 
@@ -8207,9 +8475,22 @@ METplus Configuration Glossary
      | *Used by:* GenEnsProd
 
    GEN_ENS_PROD_CLIMO_MEAN_FIELD
-     Specify the value for 'climo_mean.field' in the MET configuration file for GenEnsProd.
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_FIELD`
 
      | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_MEAN_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_NAME`
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_MEAN_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_LEVELS`
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_MEAN_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_OPTIONS`
 
    GEN_ENS_PROD_CLIMO_MEAN_REGRID_METHOD
      Specify the value for 'climo_mean.regrid.method' in the MET configuration file for GenEnsProd.
@@ -8257,9 +8538,42 @@ METplus Configuration Glossary
      | *Used by:* GenEnsProd
 
    GEN_ENS_PROD_CLIMO_STDEV_FIELD
-     Specify the value for 'climo_stdev.field' in the MET configuration file for GenEnsProd.
+     Specify the value for 'climo_stdev.field' in the MET configuration file
+     for GenEnsProd.
+     The value set here must include the proper formatting that is expected in
+     MET configuration file for specifying field information.
+     Example: {name="TMP"; level="(*,*)";}
+     To set the field information un-formatted, use the
+     :term:`GEN_ENS_PROD_CLIMO_STDEV_VAR<n>_NAME`,
+     :term:`GEN_ENS_PROD_CLIMO_STDEV_VAR<n>_LEVELS`, and
+     :term:`GEN_ENS_PROD_CLIMO_STDEV_VAR<n>_OPTIONS` variables.
 
      | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_STDEV_VAR<n>_NAME
+     Specify the name of the nth field for 'climo_stdev.field' in the
+     MET configuration file for GenEnsProd. If any fields are set using this
+     variable, then :term:`GEN_ENS_PROD_CLIMO_STDEV_FIELD` will be ignored.
+     See also :term:`GEN_ENS_PROD_CLIMO_STDEV_VAR<n>_LEVELS`
+     and :term:`GEN_ENS_PROD_CLIMO_STDEV_VAR<n>_OPTIONS`.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_STDEV_VAR<n>_LEVELS
+     Specify the level of the nth field for 'climo_stdev.field' in the
+     MET configuration file for GenEnsProd. If any fields are set using this
+     variable, then :term:`GEN_ENS_PROD_CLIMO_STDEV_FIELD` will be ignored.
+     See also :term:`GEN_ENS_PROD_CLIMO_STDEV_VAR<n>_NAME`
+     and :term:`GEN_ENS_PROD_CLIMO_STDEV_VAR<n>_OPTIONS`.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_STDEV_VAR<n>_OPTIONS
+     Specify the extra options of the nth field for 'climo_stdev.field' in the
+     MET configuration file for GenEnsProd. If any fields are set using this
+     variable, then :term:`GEN_ENS_PROD_CLIMO_STDEV_FIELD` will be ignored.
+     See also :term:`GEN_ENS_PROD_CLIMO_STDEV_VAR<n>_NAME`
+     and :term:`GEN_ENS_PROD_CLIMO_STDEV_VAR<n>_LEVELS`.
 
    GEN_ENS_PROD_CLIMO_STDEV_REGRID_METHOD
      Specify the value for 'climo_stdev.regrid.method' in the MET configuration file for GenEnsProd.
@@ -9191,3 +9505,146 @@ METplus Configuration Glossary
      Specify the value for 'eclv_points' in the MET configuration file for EnsembleStat.
 
      | *Used by:* EnsembleStat
+
+   <TOOL-NAME>_CLIMO_MEAN_FIELD
+     Specify the value for 'climo_mean.field' in the MET configuration file for
+     <TOOL-NAME> i.e. EnsembleStat.
+     The value set here must include the proper formatting that is expected in
+     MET configuration file for specifying field information.
+     Example: {name="TMP"; level="(*,*)";}
+     To set the field information un-formatted, use the
+     :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_NAME`,
+     :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_LEVELS`, and
+     :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_OPTIONS` variables.
+
+     | *Used by:* Varies
+
+   <TOOL-NAME>_CLIMO_MEAN_VAR<n>_NAME
+     Specify the name of the nth field for 'climo_mean.field' in the
+     MET configuration file for <TOOL-NAME> i.e. EnsembleStat.
+     If any fields are set using this
+     variable, then :term:`<TOOL-NAME>_CLIMO_MEAN_FIELD` will be ignored.
+     See also :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_LEVELS`
+     and :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_OPTIONS`.
+
+     | *Used by:* Varies
+
+   <TOOL-NAME>_CLIMO_MEAN_VAR<n>_LEVELS
+     Specify the level of the nth field for 'climo_mean.field' in the
+     MET configuration file for <TOOL-NAME> i.e. EnsembleStat.
+     If any fields are set using this variable,
+     then :term:`<TOOL-NAME>_CLIMO_MEAN_FIELD` will be ignored.
+     See also :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_NAME`
+     and :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_OPTIONS`.
+
+     | *Used by:* Varies
+
+   <TOOL-NAME>_CLIMO_MEAN_VAR<n>_OPTIONS
+     Specify the extra options of the nth field for 'climo_mean.field' in the
+     MET configuration file for <TOOL-NAME> i.e. EnsembleStat.
+     If any fields are set using this variable,
+     then :term:`<TOOL-NAME>_CLIMO_MEAN_FIELD` will be ignored.
+     See also :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_NAME`
+     and :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_LEVELS`.
+
+     | *Used by:* Varies
+
+   <TOOL-NAME>_CLIMO_STDEV_FIELD
+     Specify the value for 'climo_stdev.field' in the MET configuration file for
+     <TOOL-NAME> i.e. EnsembleStat.
+     The value set here must include the proper formatting that is expected in
+     MET configuration file for specifying field information.
+     Example: {name="TMP"; level="(*,*)";}
+     To set the field information un-formatted, use the
+     :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_NAME`,
+     :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_LEVELS`, and
+     :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_OPTIONS` variables.
+
+     | *Used by:* Varies
+
+   <TOOL-NAME>_CLIMO_STDEV_VAR<n>_NAME
+     Specify the name of the nth field for 'climo_stdev.field' in the
+     MET configuration file for <TOOL-NAME> i.e. EnsembleStat.
+     If any fields are set using this
+     variable, then :term:`<TOOL-NAME>_CLIMO_STDEV_FIELD` will be ignored.
+     See also :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_LEVELS`
+     and :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_OPTIONS`.
+
+     | *Used by:* Varies
+
+   <TOOL-NAME>_CLIMO_STDEV_VAR<n>_LEVELS
+     Specify the level of the nth field for 'climo_stdev.field' in the
+     MET configuration file for <TOOL-NAME> i.e. EnsembleStat.
+     If any fields are set using this variable,
+     then :term:`<TOOL-NAME>_CLIMO_STDEV_FIELD` will be ignored.
+     See also :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_NAME`
+     and :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_OPTIONS`.
+
+     | *Used by:* Varies
+
+   <TOOL-NAME>_CLIMO_STDEV_VAR<n>_OPTIONS
+     Specify the extra options of the nth field for 'climo_stdev.field' in the
+     MET configuration file for <TOOL-NAME> i.e. EnsembleStat.
+     If any fields are set using this variable,
+     then :term:`<TOOL-NAME>_CLIMO_STDEV_FIELD` will be ignored.
+     See also :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_NAME`
+     and :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_LEVELS`.
+
+     | *Used by:* Varies
+
+   MODE_MASK_MISSING_FLAG
+     Specify the value for 'mask_missing_flag' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_MULTIVAR_LOGIC
+     Specify the value for 'multivar_logic' in the MET configuration file
+     for MODE. If this variable is set, then multi-variate MODE will be run.
+     This means that more than 1 input file will be read and all of the fields
+     specified will be processed in a single call to MODE. See the MET User's
+     Guide for more information on multi-variate MODE.
+
+     | *Used by:* MODE
+
+   CYCLONE_PLOTTER_GLOBAL_PLOT
+     Set to True to plot entire global extent in CyclonePlotter or set to False
+     to generate a plot of a defined region of the world, then define lons and
+     lats with :term:`CYCLONE_PLOTTER_WEST_LON`,
+     :term:`CYCLONE_PLOTTER_EAST_LON`, :term:`CYCLONE_PLOTTER_SOUTH_LAT`, and
+     :term:`CYCLONE_PLOTTER_NORTH_LAT`.
+
+     | *Used by:* CyclonePlotter
+
+   CYCLONE_PLOTTER_WEST_LON
+     Set the west longitude boundary for CyclonePlotter.
+     Only used if :term:`CYCLONE_PLOTTER_GLOBAL_PLOT` is False.
+
+     | *Used by:* CyclonePlotter
+
+   CYCLONE_PLOTTER_EAST_LON
+     Set the east longitude boundary for CyclonePlotter.
+     Only used if :term:`CYCLONE_PLOTTER_GLOBAL_PLOT` is False.
+
+     | *Used by:* CyclonePlotter
+
+   CYCLONE_PLOTTER_SOUTH_LAT
+     Set the south latitude boundary for CyclonePlotter.
+     Only used if :term:`CYCLONE_PLOTTER_GLOBAL_PLOT` is False.
+
+     | *Used by:* CyclonePlotter
+
+   CYCLONE_PLOTTER_NORTH_LAT
+     Set the north latitude boundary for CyclonePlotter.
+     Only used if :term:`CYCLONE_PLOTTER_GLOBAL_PLOT` is False.
+
+     | *Used by:* CyclonePlotter
+
+   CYCLONE_PLOTTER_ANNOTATION_FONT_SIZE
+     Set the annotation font size for CyclonePlotter output.
+
+     | *Used by:* CyclonePlotter
+
+   CYCLONE_PLOTTER_RESOLUTION_DPI
+     Set the resolution for CyclonePlotter output.
+
+     | *Used by:* CyclonePlotter

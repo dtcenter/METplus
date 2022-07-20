@@ -28,21 +28,22 @@ class METDbLoadWrapper(RuntimeFreqWrapper):
          and all c_dict values are prepended with MV_.
          The name is the key and string specifying the type is the value.
     """
-    CONFIG_NAMES = {'HOST': 'string',
-                    'DATABASE': 'string',
-                    'USER': 'string',
-                    'PASSWORD': 'string',
-                    'VERBOSE': 'bool',
-                    'INSERT_SIZE': 'int',
-                    'MODE_HEADER_DB_CHECK': 'bool',
-                    'DROP_INDEXES': 'bool',
-                    'APPLY_INDEXES': 'bool',
-                    'GROUP': 'string',
-                    'LOAD_STAT': 'bool',
-                    'LOAD_MODE': 'bool',
-                    'LOAD_MTD': 'bool',
-                    'LOAD_MPR': 'bool',
-                    }
+    CONFIG_NAMES = {
+        'HOST': 'string',
+        'DATABASE': 'string',
+        'USER': 'string',
+        'PASSWORD': 'string',
+        'VERBOSE': 'bool',
+        'INSERT_SIZE': 'int',
+        'MODE_HEADER_DB_CHECK': 'bool',
+        'DROP_INDEXES': 'bool',
+        'APPLY_INDEXES': 'bool',
+        'GROUP': 'string',
+        'LOAD_STAT': 'bool',
+        'LOAD_MODE': 'bool',
+        'LOAD_MTD': 'bool',
+        'LOAD_MPR': 'bool',
+    }
 
     def __init__(self, config, instance=None):
         met_data_db_dir = config.getdir('MET_DATA_DB_DIR')
@@ -147,7 +148,7 @@ class METDbLoadWrapper(RuntimeFreqWrapper):
         return success
 
     def get_all_files(self, custom=None):
-        """! Don't get list of all files for METdataDB wrapper
+        """! Don't get list of all files for METdbLoad wrapper
 
             @returns True to report that no failures occurred
         """
@@ -155,7 +156,7 @@ class METDbLoadWrapper(RuntimeFreqWrapper):
 
     def get_stat_directories(self, input_paths):
         """! Traverse through files under input path and find all directories
-        that contain .stat or .tcst files.
+        that contain .stat, .tcst, mode*.txt, and mtd*.txt files.
 
         @param input_path top level directory to search
         @returns list of unique directories that contain stat files
@@ -165,13 +166,8 @@ class METDbLoadWrapper(RuntimeFreqWrapper):
             self.logger.debug("Finding directories with stat files "
                               f"under {input_path}")
             for root, _, files in os.walk(input_path):
-                for filename in files:
-                    if (not filename.endswith('.stat') and
-                            not filename.endswith('.tcst')):
-                        continue
-                    filepath = os.path.join(root, filename)
-                    stat_dir = os.path.dirname(filepath)
-                    stat_dirs.add(stat_dir)
+                if self._has_loadable_file(files):
+                    stat_dirs.add(root)
 
         stat_dirs = list(stat_dirs)
         for stat_dir in stat_dirs:
@@ -179,7 +175,21 @@ class METDbLoadWrapper(RuntimeFreqWrapper):
 
         return stat_dirs
 
-    def format_stat_dirs(self, stat_dirs):
+    @staticmethod
+    def _has_loadable_file(files):
+        return any([filename for filename in files
+                    if METDbLoadWrapper._is_loadable_file(filename)])
+
+    @staticmethod
+    def _is_loadable_file(filename):
+        return (filename.endswith('.stat') or
+                filename.endswith('.tcst') or
+                (filename.endswith('.txt') and
+                 (filename.startswith('mode') or
+                  filename.startswith('mtd'))))
+
+    @staticmethod
+    def format_stat_dirs(stat_dirs):
         """! Format list of stat directories to substitute into XML file.
         <vaL></val> tags wil be added around each value.
 

@@ -52,4 +52,4 @@ METplus Use Cases
 
 Keywords
   .. note:: **Current Dataset:** VxDataVIIRS
-  .. note:: **Data Labels:** DataTypeGridded, DataLevelSatellite, DataProviderNASA, DataApplicationConvectionAllowingModels, DataApplicationMediumRange
+  .. note:: **Data Labels:** DataTypeGridded, DataLevelSatellite, DataProviderNASA, DataApplicationShortRange, DataApplicationMediumRange

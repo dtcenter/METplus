@@ -136,7 +136,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 met_tool=self.app_name
             )
 
-        self.handle_file_window_variables(c_dict, dtypes=window_types)
+        self.handle_file_window_variables(c_dict, data_types=window_types)
 
         c_dict['VERIFICATION_GRID'] = \
             self.config.getraw('config', 'REGRID_DATA_PLANE_VERIF_GRID', '')

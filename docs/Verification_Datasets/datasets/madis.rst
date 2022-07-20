@@ -47,4 +47,4 @@ METplus Use Cases
 Keywords
   .. note:: **Current Dataset:** VxDataMADIS
 
-  .. note:: **Data Labels:** DataTypePoint, DataLevelSurface, DataProviderNOAA, DataApplicationPrecipitation, DataApplicationConvectionAllowingModels, DataApplicationMediumRange
+  .. note:: **Data Labels:** DataTypePoint, DataLevelSurface, DataProviderNOAA, DataApplicationPrecipitation, DataApplicationShortRange, DataApplicationMediumRange

@@ -1,7 +1,7 @@
 Deploy AWS apps
 -------------------
 
-* On metexpress.nws.noaa.gov (permissions required), go to the container_deployment directory.
+* On metexpress.nws.noaa.gov (VPN and permissions required), go to the container_deployment directory.
 
 .. parsed-literal::
 
@@ -21,6 +21,6 @@ Deploy AWS apps
 
 .. parsed-literal::
 
-  bin/down metexpress
-  docker system prune -af
-  bin/up metexpress
+  bin/redeploy metexpress
+
+* Sometimes the apps take a while to start up on AWS. Be patient.

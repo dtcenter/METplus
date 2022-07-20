@@ -22,6 +22,7 @@ from ..util import getlist
 from ..util import met_util as util
 from ..util import do_string_sub, find_indices_in_config_section
 from ..util import parse_var_list, remove_quotes
+from ..util import get_start_and_end_times
 from . import CommandBuilder
 
 class StatAnalysisWrapper(CommandBuilder):
@@ -177,13 +178,18 @@ class StatAnalysisWrapper(CommandBuilder):
                                                                     'LOOP_BY',
                                                                     ''))
 
-        for time_conf in ['VALID_BEG', 'VALID_END', 'INIT_BEG', 'INIT_END']:
-            c_dict[time_conf] = self.config.getstr('config', time_conf, '')
+        start_dt, end_dt = get_start_and_end_times(self.config)
+        if not start_dt:
+            self.log_error('Could not get start and end times. '
+                           'VALID_BEG/END or INIT_BEG/END must be set.')
+        else:
+            c_dict['DATE_BEG'] = start_dt.strftime('%Y%m%d')
+            c_dict['DATE_END'] = end_dt.strftime('%Y%m%d')
 
         for job_conf in ['JOB_NAME', 'JOB_ARGS']:
             c_dict[job_conf] = self.config.getstr('config',
-                                                   f'STAT_ANALYSIS_{job_conf}',
-                                                   '')
+                                                  f'STAT_ANALYSIS_{job_conf}',
+                                                  '')
 
         # read in all lists except field lists, which will be read in afterwards and checked
         all_lists_to_read = self.expected_config_lists + self.list_categories
@@ -1061,22 +1067,24 @@ class StatAnalysisWrapper(CommandBuilder):
                  lookin_dir        - string of the filled directory
                                      from dir_path
         """
-        if '?fmt=' in dir_path:
-            stringsub_dict = self.build_stringsub_dict(lists_to_loop,
-                                                       lists_to_group, 
-                                                       config_dict)
-            dir_path_filled = do_string_sub(dir_path,
-                                            **stringsub_dict)
-        else:
-            dir_path_filled = dir_path
-        if '*' in dir_path_filled:
-            self.logger.debug(f"Expanding wildcard path: {dir_path_filled}")
-            dir_path_filled_all = ' '.join(sorted(glob.glob(dir_path_filled)))
-            self.logger.warning(f"Wildcard expansion found no matches")
-        else:
-            dir_path_filled_all = dir_path_filled
-        lookin_dir = dir_path_filled_all
-        return lookin_dir
+        stringsub_dict = self.build_stringsub_dict(lists_to_loop,
+                                                   lists_to_group,
+                                                   config_dict)
+        dir_path_filled = do_string_sub(dir_path,
+                                        **stringsub_dict)
+
+        all_paths = []
+        for one_path in dir_path_filled.split(','):
+            if '*' in one_path:
+                self.logger.debug(f"Expanding wildcard path: {one_path}")
+                expand_path = glob.glob(one_path.strip())
+                if not expand_path:
+                    self.logger.warning(f"Wildcard expansion found no matches")
+                    continue
+                all_paths.extend(sorted(expand_path))
+            else:
+               all_paths.append(one_path.strip())
+        return ' '.join(all_paths)
 
     def format_valid_init(self, config_dict):
         """! Format the valid and initialization dates and
@@ -1756,7 +1764,6 @@ class StatAnalysisWrapper(CommandBuilder):
             # with other wrappers
             mp_lists = ['MODEL',
                         'DESC',
-                        'OBTYPE',
                         'FCST_LEAD',
                         'OBS_LEAD',
                         'FCST_VALID_HOUR',
@@ -1769,12 +1776,13 @@ class StatAnalysisWrapper(CommandBuilder):
                         'OBS_UNITS',
                         'FCST_LEVEL',
                         'OBS_LEVEL',
+                        'OBTYPE',
                         'VX_MASK',
                         'INTERP_MTHD',
                         'INTERP_PNTS',
                         'FCST_THRESH',
                         'OBS_THRESH',
-                        'CONV_THRESH',
+                        'COV_THRESH',
                         'ALPHA',
                         'LINE_TYPE'
                         ]
@@ -1793,9 +1801,6 @@ class StatAnalysisWrapper(CommandBuilder):
                         'FCST_INIT_END',
                         'OBS_INIT_BEG',
                         'OBS_INIT_END',
-                        'DESC',
-                        'OBTYPE',
-                        'FCST_LEAD'
                         ]
             for mp_item in mp_items:
                 if not runtime_settings_dict.get(mp_item, ''):
@@ -1814,7 +1819,7 @@ class StatAnalysisWrapper(CommandBuilder):
             self.set_environment_variables()
 
             # set lookin dir
-            self.logger.debug(f"Setting -lookindir to {runtime_settings_dict['LOOKIN_DIR']}")
+            self.logger.debug(f"Setting -lookin dir to {runtime_settings_dict['LOOKIN_DIR']}")
             self.lookindir = runtime_settings_dict['LOOKIN_DIR']
             self.job_args = runtime_settings_dict['JOB']
 
@@ -1847,24 +1852,11 @@ class StatAnalysisWrapper(CommandBuilder):
         return run_job
 
     def run_all_times(self):
-        date_type = self.c_dict['DATE_TYPE']
-        self.c_dict['DATE_BEG'] = self.c_dict[date_type+'_BEG']
-        self.c_dict['DATE_END'] = self.c_dict[date_type+'_END']
         self.run_stat_analysis()
         return self.all_commands
 
     def run_at_time(self, input_dict):
-        loop_by_init = util.is_loop_by_init(self.config)
-        if loop_by_init is None:
-            return
-
-        if loop_by_init:
-            loop_by = 'INIT'
-        else:
-            loop_by = 'VALID'
-
-        self.c_dict['DATE_TYPE'] = loop_by
-
+        loop_by = self.c_dict['DATE_TYPE']
         run_date = input_dict[loop_by.lower()].strftime('%Y%m%d')
         self.c_dict['DATE_BEG'] = run_date
         self.c_dict['DATE_END'] = run_date

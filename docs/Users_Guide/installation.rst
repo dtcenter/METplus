@@ -256,8 +256,8 @@ External Components
 
 .. _external-components-gfdl-tracker:
 
-GFDL Tracker
-------------
+GFDL Tracker (optional)
+-----------------------
 
 - The standalone Geophysical Fluid Dynamics Laboratory (GFDL) vortex tracker
   is a program that objectively analyzes forecast data to provide an
@@ -277,6 +277,23 @@ GFDL Tracker
 
     -  Instructions on how to configure and use the GFDL tracker are found here
        https://dtcenter.org/sites/default/files/community-code/gfdl/standalone_tracker_UG_v3.9a.pdf
+
+Disable UserScript wrapper (optional)
+=====================================
+
+The UserScript wrapper allows any shell command or script to be run as part
+of a METplus use case. It is used to preprocess/postprocess data or to run
+intermediate commands between other wrappers.
+
+**If desired, this wrapper can be disabled upon installation to prevent
+security risks.** To disable the UserScript wrapper,
+simply remove the following file from the installation location::
+
+    METplus/metplus/wrapper/user_script_wrapper.py
+
+Please note that use cases provided with the METplus repository that utilize
+the UserScript wrapper will fail if attempted to run after it has been
+disabled.
 
 Add ush directory to shell path (optional)
 ==========================================
