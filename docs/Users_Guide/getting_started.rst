@@ -203,7 +203,7 @@ Masking regions are what METplus uses to define verification areas of
 interest. These can be defined prior to running tools using the
 Gen-Vx-Mask tool, or during run-time using the METPLUS_MASK_DICT options.
 
-What domain should be used to evaluate on: The model domain, observation domain (if gridded), or some other domain?
+What domain should be used for evaluation: The model domain, observation domain (if gridded), or some other domain?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The decision to evaluate on model or observation/analysis domain is
@@ -242,8 +242,8 @@ on Initialization Time.
 How should the testing and evaluation project be broken down into METplus Use Cases? One large one or multiple smaller ones?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-How will METplus be run? Manually? Scheduled, through cron? Automated via a workflow manger (e.g. Rocoto, EC-Flow, Rose-Cylc)?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+How will METplus be run? Manually? Scheduled through cron? Automated via a workflow manger (e.g. Rocoto, EC-Flow, Rose-Cylc)?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
   * If run manually, this can be done.
     
