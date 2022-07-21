@@ -11,11 +11,6 @@
   },
   {
     "category": "met_tool_wrapper",
-    "index_list": "55-57",
-    "run": true
-  },
-  {
-    "category": "met_tool_wrapper",
     "index_list": "59-60",
     "run": false
   },
@@ -172,12 +167,12 @@
   {
     "category": "s2s_mid_lat",
     "index_list": "0-2",
-    "run": true
+    "run": false
   },
   {
     "category": "s2s_mid_lat",
     "index_list": "3",
-    "run": true
+    "run": false
   },
   {
     "category": "s2s_mjo",
