@@ -52,7 +52,7 @@
   {
     "category": "short_range",
     "index_list": "9",
-    "run": true
+    "run": false
   },
   {
     "category": "data_assimilation",
