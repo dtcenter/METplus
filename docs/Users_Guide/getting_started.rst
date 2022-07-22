@@ -260,7 +260,9 @@ wrappers can be called with each desired combination.
   run_metplus.py forecastB.conf observationA.conf use_case_name.conf
   run_metplus.py forecastB.conf observationB.conf use_case_name.conf
 
-It is also worth considering the :ref:`use-case-rules`.  A case may be
+It is also worth considering the
+'Use Case Rules. <https://metplus.readthedocs.io/en/latest/Contributors_Guide/add_use_case.html#use-case-rules>_`
+A case may be
 affected by the size of the data, the length of time to run and other factors.
 
 How will METplus be run? Manually? Scheduled through cron? Automated via a workflow manger (e.g. Rocoto, EC-Flow, Rose-Cylc)?
