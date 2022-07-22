@@ -656,7 +656,7 @@ class METplusConfig(ProdConfig):
             raise
 
         # print debug message saying default value was used
-        if not default:
+        if default == '':
             default_text = 'empty string'
         else:
             default_text = default
