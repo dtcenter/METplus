@@ -242,6 +242,24 @@ on Initialization Time.
 How should the testing and evaluation project be broken down into METplus Use Cases? One large one or multiple smaller ones?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+A single use case is typically appropriate for a given evaluation so that
+all of the information is found in one configuration file. However, users
+may want to evaluate different combinations of models and observations.
+For example, they may want to compare forecastA with observationA,
+forecastA with observationB, forecastB with observationA, forecastB with
+observationB, etc. In this case, separate METplus configuration files can
+be created with information specific to each forecast or observation.
+Another configuration file can be used to control settings common to each
+evaluation, such as timing information and the process list. The METplus
+wrappers can be called with each desired combination.
+
+.. code-block:: ini
+		
+  run_metplus.py forecastA.conf observationA.conf use_case_name.conf
+  run_metplus.py forecastA.conf observationB.conf use_case_name.conf
+  run_metplus.py forecastB.conf observationA.conf use_case_name.conf
+  run_metplus.py forecastB.conf observationB.conf use_case_name.conf
+
 How will METplus be run? Manually? Scheduled through cron? Automated via a workflow manger (e.g. Rocoto, EC-Flow, Rose-Cylc)?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
