@@ -378,6 +378,9 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
         # 19: interp12
         ({'TC_PAIRS_INTERP12': 'replace', },
          {'METPLUS_INTERP12': 'interp12 = REPLACE;'}),
+        # 20 match_points
+        ({'TC_PAIRS_MATCH_POINTS': 'False', },
+         {'METPLUS_MATCH_POINTS': 'match_points = FALSE;'}),
 
     ]
 )

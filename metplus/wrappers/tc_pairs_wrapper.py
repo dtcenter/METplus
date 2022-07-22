@@ -63,6 +63,7 @@ class TCPairsWrapper(CommandBuilder):
         'METPLUS_VALID_EXC',
         'METPLUS_CHECK_DUP',
         'METPLUS_INTERP12',
+        'METPLUS_MATCH_POINTS',
     ]
 
     WILDCARDS = {
@@ -176,6 +177,8 @@ class TCPairsWrapper(CommandBuilder):
                             data_type='string',
                             extra_args={'remove_quotes': True,
                                         'uppercase': True})
+
+        self.add_met_config(name='match_points', data_type='bool')
 
         c_dict['INIT_INCLUDE'] = getlist(
             self.get_wrapper_or_generic_config('INIT_INCLUDE')
