@@ -76,7 +76,7 @@ docker push dtcenter/metplus-envs:metdataio.v5
 ### Local
 
 ```
-./scripts/metdatadb_env.sh
+./scripts/metdataio_env.sh
 ```
 
 
