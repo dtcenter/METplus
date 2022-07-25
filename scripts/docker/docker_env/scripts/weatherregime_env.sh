@@ -6,11 +6,10 @@
 # Notes: Adds Python packages needed to run weather regime use case
 #  METplotpy and METcalcpy
 # Python Packages:
-# TODO: update versions
-#   All packages from metplotpy_env
-#   scikit-learn==0.24.2
+#   All packages from metplotpy.v5
+#   scikit-learn==1.1.1
 #   eofs==1.4.0
-#   cmocean==
+#   cmocean==2.0
 #
 # Other Content: None
 ################################################################################
@@ -23,9 +22,9 @@ BASE_ENV=metplotpy.v5
 
 
 conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
-conda install -y --name ${ENV_NAME} -c conda-forge scikit-learn #==0.24.2
-conda install -y --name ${ENV_NAME} -c conda-forge eofs #==1.4.0
-conda install -y --name ${ENV_NAME} -c conda-forge cmocean
+conda install -y --name ${ENV_NAME} -c conda-forge scikit-learn==1.1.1
+conda install -y --name ${ENV_NAME} -c conda-forge eofs==1.4.0
+conda install -y --name ${ENV_NAME} -c conda-forge cmocean==2.0
 
 rm cartopy_feature_download.py
 yum -y install wget

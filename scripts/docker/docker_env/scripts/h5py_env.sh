@@ -5,8 +5,7 @@
 # Last Updated: 2022-06-15 (mccabe@ucar.edu)
 # Notes: Adds Python interface to the HDF5 binary format
 # Python Packages:
-# TODO: update versions
-#   h5py==2.10.0
+#   h5py==3.6.0
 #
 # Other Content: None
 ################################################################################
@@ -18,4 +17,4 @@ ENV_NAME=h5py.v5
 BASE_ENV=py_embed_base.v5
 
 conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
-conda install -y --name ${ENV_NAME} -c conda-forge h5py #==2.10.0
+conda install -y --name ${ENV_NAME} -c conda-forge h5py==3.6.0

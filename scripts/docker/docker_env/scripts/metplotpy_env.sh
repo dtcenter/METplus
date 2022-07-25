@@ -4,20 +4,20 @@
 # Environment: metplotpy
 # Last Updated: 2022-06-14 (mccabe@ucar.edu)
 # Notes: Adds Python packages needed to run METplotpy and METcalcpy
-#   Uses pip to install kaleido because
-#   could not install via Conda (glibc conflict)
 # Python Packages:
-# UPDATE THESE VERSION NUMBERS!
-#   matplotlib==3.3.0
-#   scipy==1.5.1
-#   plotly==4.9.0
-#   cartopy==0.18.0
-#   eofs==1.3.0
-#   cmocean==2.0
-#   xarray==0.17
-#   netcdf4==1.5.6
-#   pyyaml==?
+#   matplotlib==3.5.2
+#   scipy==1.8.1
+#   plotly==5.9.0
+#   xarray==2022.3.0
+#   netcdf4==1.6.0
+#   pyyaml==6.0
+#   statsmodels==0.13.2
 #   python-kaleido==0.2.1
+#   imageio==2.19.3
+#   imutils==0.5.4
+#   scikit-image==0.19.3
+#   pint==0.19.2
+#   metpy=1.3.1
 #
 # Other Content: None
 ################################################################################
@@ -31,25 +31,19 @@ BASE_ENV=metplus_base.v5
 
 conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 
-conda install -y --name ${ENV_NAME} -c conda-forge matplotlib #==3.3.0
-conda install -y --name ${ENV_NAME} -c conda-forge scipy #==1.5.1
-conda install -y --name ${ENV_NAME} -c conda-forge plotly #==4.9.0
-#conda install -y --name ${ENV_NAME} -c conda-forge cartopy #==0.18.0
-#conda install -y --name ${ENV_NAME} -c conda-forge eofs #==1.3.0
-#conda install -y --name ${ENV_NAME} -c conda-forge cmocean #==2.0
-conda install -y --name ${ENV_NAME} -c conda-forge xarray #==0.17
-conda install -y --name ${ENV_NAME} -c conda-forge netcdf4 #==1.5.6
-conda install -y --name ${ENV_NAME} -c conda-forge pyyaml
-conda install -y --name ${ENV_NAME} -c conda-forge statsmodels #==0.11.1
-conda install -y --name ${ENV_NAME} -c conda-forge python-kaleido
-
-conda install -y --name ${ENV_NAME} -c conda-forge imageio
-conda install -y --name ${ENV_NAME} -c conda-forge imutils
-#opencv-python?
-conda install -y --name ${ENV_NAME} -c conda-forge scikit-image
-conda install -y --name ${ENV_NAME} -c conda-forge pint
-conda install -y --name ${ENV_NAME} -c conda-forge metpy
-#/usr/local/envs/${ENV_NAME}/bin/pip3 install kaleido==0.2.1
+conda install -y --name ${ENV_NAME} -c conda-forge matplotlib==3.5.2
+conda install -y --name ${ENV_NAME} -c conda-forge scipy==1.8.1
+conda install -y --name ${ENV_NAME} -c conda-forge plotly==5.9.0
+conda install -y --name ${ENV_NAME} -c conda-forge xarray==2022.3.0
+conda install -y --name ${ENV_NAME} -c conda-forge netcdf4==1.6.0
+conda install -y --name ${ENV_NAME} -c conda-forge pyyaml==6.0
+conda install -y --name ${ENV_NAME} -c conda-forge statsmodels==0.13.2
+conda install -y --name ${ENV_NAME} -c conda-forge python-kaleido==0.2.1
+conda install -y --name ${ENV_NAME} -c conda-forge imageio==2.19.3
+conda install -y --name ${ENV_NAME} -c conda-forge imutils==0.5.4
+conda install -y --name ${ENV_NAME} -c conda-forge scikit-image==0.19.3
+conda install -y --name ${ENV_NAME} -c conda-forge pint==0.19.2
+conda install -y --name ${ENV_NAME} -c conda-forge metpy=1.3.1
 
 yum -y install wget
 wget https://raw.githubusercontent.com/SciTools/cartopy/master/tools/cartopy_feature_download.py

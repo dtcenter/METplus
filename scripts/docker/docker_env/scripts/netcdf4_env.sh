@@ -5,8 +5,7 @@
 # Last Updated: 2022-06-16 (mccabe@ucar.edu)
 # Notes: Adds NetCDF4 Python package
 # Python Packages:
-# TODO: update version numbers
-#   netcdf4==1.5.6
+#   netcdf4==1.5.8
 #
 # Other Content: None
 ################################################################################
@@ -18,4 +17,4 @@ ENV_NAME=netcdf4.v5
 BASE_ENV=metplus_base.v5
 
 conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
-conda install -y --name ${ENV_NAME} -c conda-forge netcdf4 #==1.5.6
+conda install -y --name ${ENV_NAME} -c conda-forge netcdf4==1.5.8
