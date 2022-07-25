@@ -108,7 +108,7 @@ configuration file name excluding the .conf suffix.
 .. figure:: figure/model_applications_example.png
 
 .. figure:: figure/model_applications_subdir.png
-
+	    
 Use Case Rules
 --------------
 
