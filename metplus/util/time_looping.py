@@ -12,7 +12,7 @@ def time_generator(config):
      Yields the next run time dictionary or None if something went wrong
     """
     # determine INIT or VALID prefix
-    prefix = get_time_prefix(config)
+    prefix = _get_time_prefix(config)
     if not prefix:
         yield None
         return
@@ -82,6 +82,44 @@ def time_generator(config):
 
         current_dt += time_interval
 
+def get_start_and_end_times(config):
+    prefix = _get_time_prefix(config)
+    if not prefix:
+        return None, None
+
+    # get clock time of when the run started
+    clock_dt = datetime.strptime(
+        config.getstr('config', 'CLOCK_TIME'),
+        '%Y%m%d%H%M%S'
+    )
+
+    time_format = config.getraw('config', f'{prefix}_TIME_FMT', '')
+    if not time_format:
+        config.logger.error(f'Could not read {prefix}_TIME_FMT')
+        return None, None
+
+    start_string = config.getraw('config', f'{prefix}_BEG')
+    end_string = config.getraw('config', f'{prefix}_END', start_string)
+
+    start_dt = _get_current_dt(start_string,
+                               time_format,
+                               clock_dt,
+                               config.logger)
+
+    end_dt = _get_current_dt(end_string,
+                             time_format,
+                             clock_dt,
+                             config.logger)
+
+    if not _validate_time_values(start_dt,
+                                 end_dt,
+                                 get_relativedelta('60'),
+                                 prefix,
+                                 config.logger):
+        return None, None
+
+    return start_dt, end_dt
+
 def _validate_time_values(start_dt, end_dt, time_interval, prefix, logger):
     if not start_dt:
         logger.error(f"Could not read {prefix}_BEG")
@@ -95,7 +133,7 @@ def _validate_time_values(start_dt, end_dt, time_interval, prefix, logger):
     if (start_dt + time_interval <
             start_dt + timedelta(seconds=60)):
         logger.error(f'{prefix}_INCREMENT must be greater than or '
-                            'equal to 60 seconds')
+                     'equal to 60 seconds')
         return False
 
     if start_dt > end_dt:
@@ -109,9 +147,10 @@ def _create_time_input_dict(prefix, current_dt, clock_dt):
         'loop_by': prefix.lower(),
         prefix.lower(): current_dt,
         'now': clock_dt,
+        'today': clock_dt.strftime('%Y%m%d'),
     }
 
-def get_time_prefix(config):
+def _get_time_prefix(config):
     """! Read the METplusConfig object and determine the prefix for the time
     looping variables.
 

@@ -7,4 +7,4 @@ Update Version Number
   
 * If the official release version has already been updated (e.g. beta2 and beyond), do the following:
   
-  * In *met/docs/conf.py*, update the *version*, *release_year*, and *release_date* variables for the documentation.
+  * In *docs/conf.py*, update the *version*, *release_year*, and *release_date* variables for the documentation.

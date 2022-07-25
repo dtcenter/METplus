@@ -5,6 +5,8 @@ import sys
 import subprocess
 import shlex
 
+from docker_utils import VERSION_EXT
+
 ci_dir = os.path.join(os.environ.get('GITHUB_WORKSPACE'), '.github')
 sys.path.insert(0, ci_dir)
 
@@ -46,12 +48,12 @@ volume_mounts = [
 mount_args = ' '.join(volume_mounts)
 
 # command to run inside Docker
-cmd = ('/usr/local/envs/diff.v5/bin/python3 '
+cmd = (f'/usr/local/envs/diff{VERSION_EXT}/bin/python3 '
        f'{GITHUB_WORKSPACE}/{CI_JOBS_DIR}/run_diff_docker.py')
 
 # run inside diff env: mount METplus code and output dir, volumes from output volumes
 docker_cmd = (f'docker run -e GITHUB_WORKSPACE {VOLUMES_FROM} '
-              f'{mount_args} dtcenter/metplus-envs:diff.v5 '
+              f'{mount_args} dtcenter/metplus-envs:diff{VERSION_EXT} '
               f'bash -c "{cmd}"')
 print(f'RUNNING: {docker_cmd}')
 try:

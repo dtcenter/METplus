@@ -8,16 +8,21 @@ import sys
 import os
 
 # add METplus directory to sys path so the test suite can be found
-USE_CASES_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                             os.pardir,
-                                             os.pardir))
-sys.path.insert(0, USE_CASES_DIR)
+METPLUS_TOP_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                               os.pardir,
+                                               os.pardir))
+sys.path.insert(0, METPLUS_TOP_DIR)
 
 from internal_tests.use_cases.metplus_use_case_suite import METplusUseCaseSuite
 from metplus.util.met_util import expand_int_string_to_list
+from docker_utils import VERSION_EXT
 
-METPLUS_BASE_ENV = 'metplus_base.v5'
+
+# path to METplus install location in Docker
 METPLUS_DOCKER_LOC = '/metplus/METplus'
+
+# name of conda environment used for cases that don't need special env
+METPLUS_BASE_ENV = 'metplus_base'
 
 # keywords in requirements list that trigger obtaining METcalcpy and METplotpy
 PLOTCALC_KEYWORDS = [
@@ -27,10 +32,10 @@ PLOTCALC_KEYWORDS = [
     'weatherregime',
 ]
 
-# Docker environments that do not use Python so they do not need to use .v5
+# Docker envs that do not use Python so they do not need print conda list
 NOT_PYTHON_ENVS = [
     'gfdl-tracker',
-    'gempak'
+    'gempak',
 ]
 
 def handle_automation_env(host_name, reqs, work_dir):
@@ -43,9 +48,6 @@ def handle_automation_env(host_name, reqs, work_dir):
     if use_env:
         conda_env = use_env[0].replace('_env', '')
 
-    if conda_env not in NOT_PYTHON_ENVS and conda_env != METPLUS_BASE_ENV:
-        conda_env = f'{conda_env}.v5'
-
     # if not using docker (automation),
     # return no setup commands and python embedding argument to command
     if host_name != 'docker':
@@ -53,12 +55,15 @@ def handle_automation_env(host_name, reqs, work_dir):
             return '', 'user_env_vars.MET_PYTHON_EXE=python3'
         return '', ''
 
+    # add version extension to conda environment name
+    conda_env_w_ext = f'{conda_env}{VERSION_EXT}'
+
     # start building commands to run before run_metplus.py in Docker
     setup_env = 'source /etc/bashrc;'
 
     # add conda bin to beginning of PATH
     python_dir = os.path.join('/usr', 'local', 'envs',
-                              conda_env, 'bin')
+                              conda_env_w_ext, 'bin')
     python_path = os.path.join(python_dir, 'python3')
     setup_env += f' export PATH={python_dir}:$PATH;'
 
@@ -81,13 +86,13 @@ def handle_automation_env(host_name, reqs, work_dir):
             'cd -;'
         )
 
-    # if metdatadb is in requirements list, add command to obtain METdatadb
-    if 'metdatadb' in str(reqs).lower():
+    # if metdataio is in requirements list, add command to obtain METdataio
+    if 'metdataio' in str(reqs).lower():
         setup_env += (
             f'cd {METPLUS_DOCKER_LOC};'
             f'{work_dir}/manage_externals/checkout_externals'
-            f' -e {work_dir}/.github/parm/Externals_metdatadb.cfg;'
-            f'{python_path} -m pip install {METPLUS_DOCKER_LOC}/../METdatadb;'
+            f' -e {work_dir}/.github/parm/Externals_metdataio.cfg;'
+            f'{python_path} -m pip install {METPLUS_DOCKER_LOC}/../METdataio;'
             'cd -;'
         )
 
@@ -103,10 +108,10 @@ def handle_automation_env(host_name, reqs, work_dir):
     # list packages in python environment that will be used
     if conda_env not in NOT_PYTHON_ENVS:
         setup_env += (
-            f'echo Using environment: dtcenter/metplus-envs:{conda_env};'
-            f'echo cat /usr/local/envs/{conda_env}/environments.yml;'
+            f'echo Using environment: dtcenter/metplus-envs:{conda_env_w_ext};'
+            f'echo cat /usr/local/envs/{conda_env_w_ext}/environments.yml;'
             f'echo ----------------------------------------;'
-            f'cat /usr/local/envs/{conda_env}/environments.yml;'
+            f'cat /usr/local/envs/{conda_env_w_ext}/environments.yml;'
             'echo ----------------------------------------;'
         )
 
@@ -117,7 +122,7 @@ def main(categories, subset_list, work_dir=None,
     all_commands = []
 
     if work_dir is None:
-        work_dir = USE_CASES_DIR
+        work_dir = METPLUS_TOP_DIR
 
     test_suite = METplusUseCaseSuite()
     test_suite.add_use_case_groups(categories, subset_list)

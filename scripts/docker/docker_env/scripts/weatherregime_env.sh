@@ -2,7 +2,7 @@
 
 ################################################################################
 # Environment: weatherregime.v5
-# Last Updated: 2022-06-16 (mccabe@ucar.edu)
+# Last Updated: 2022-07-19 (mccabe@ucar.edu)
 # Notes: Adds Python packages needed to run weather regime use case
 #  METplotpy and METcalcpy
 # Python Packages:
@@ -10,6 +10,7 @@
 #   All packages from metplotpy_env
 #   scikit-learn==0.24.2
 #   eofs==1.4.0
+#   cmocean==
 #
 # Other Content: None
 ################################################################################
@@ -24,6 +25,7 @@ BASE_ENV=metplotpy.v5
 conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 conda install -y --name ${ENV_NAME} -c conda-forge scikit-learn #==0.24.2
 conda install -y --name ${ENV_NAME} -c conda-forge eofs #==1.4.0
+conda install -y --name ${ENV_NAME} -c conda-forge cmocean
 
 rm cartopy_feature_download.py
 yum -y install wget

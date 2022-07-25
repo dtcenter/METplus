@@ -52,4 +52,4 @@ METplus Use Cases
 Keywords
   .. note:: **Current Dataset:** VxDataAERONET
 
-  .. note:: **Data Labels:** DataTypePoint, DataLevelSurface, DataLevelUpperAir, DataProviderNASA, DataApplicationConvectionAllowingModels, DataApplicationMediumRange
+  .. note:: **Data Labels:** DataTypePoint, DataLevelSurface, DataLevelUpperAir, DataProviderNASA, DataApplicationShortRange, DataApplicationMediumRange

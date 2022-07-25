@@ -52,4 +52,4 @@ METplus Use Cases
 Keywords
   .. note:: **Current Dataset:** VxDataNexradLevel3
 
-  .. note:: **Data Type Labels:** DataTypeGridded, DataLevelSurface, DataProviderNOAA, DataApplicationConvectionAllowingModels, DataApplicationMediumRange
+  .. note:: **Data Type Labels:** DataTypeGridded, DataLevelSurface, DataProviderNOAA, DataApplicationShortRange, DataApplicationMediumRange
