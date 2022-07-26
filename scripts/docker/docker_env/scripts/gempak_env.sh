@@ -1,8 +1,8 @@
 #! /bin/sh
 
 ################################################################################
-# Environment: gempak
-# Last Updated: 2021-06-22 (mccabe@ucar.edu)
+# Environment: gempak.v5
+# Last Updated: 2021-07-08 (mccabe@ucar.edu)
 # Notes: Installs Java and obtains GempakToCF.jar to convert GEMPAK
 #   files to NetCDF format.
 # Python Packages: None

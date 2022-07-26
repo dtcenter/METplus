@@ -139,6 +139,7 @@ Category: s2s_mid_lat
 2::UserScript_obsERA_obsOnly_WeatherRegime:: model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.conf:: weatherregime_env,cartopy,metplus
 3:: UserScript_fcstGFS_obsERA_WeatherRegime:: model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.conf:: weatherregime_env,cartopy,metplus
 
+
 Category: s2s_mjo
 0:: UserScript_obsERA_obsOnly_PhaseDiagram:: model_applications/s2s_mjo/UserScript_obsERA_obsOnly_PhaseDiagram.conf:: spacetime_env
 1:: UserScript_fcstGFS_obsERA_OMI:: model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.conf:: spacetime_env, metdataio
