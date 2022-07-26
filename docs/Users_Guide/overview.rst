@@ -112,7 +112,7 @@ METplus Components Python Requirements
     - Description 
     - Use Cases (only applicable for METplus wrappers component)(followed by
       python package name)
-  * - Python 3.6.3+
+  * - Python 3.8.6+
     -
     - METplus wrappers, :raw-html:`<br />`
       METcalcpy, :raw-html:`<br />`
@@ -120,16 +120,6 @@ METplus Components Python Requirements
     -
     -
     -
-  * - Python 3.7
-    -
-    - METplus wrappers
-    -
-    -
-    - `Multi_Tool:
-      Feature Relative by Lead
-      using Multiple User-Defined Fields
-      (Python 3.7)
-      <../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html>`_
   * - cartopy
     - >=0.18.0
     - METplus wrappers,  :raw-html:`<br />`
