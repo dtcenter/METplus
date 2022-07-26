@@ -10,4 +10,4 @@ COPY scripts/py_embed_base_env.sh .
 RUN conda update -y -n base -c defaults conda \
  && ./py_embed_base_env.sh
 
-RUN conda list --name py_embed_base > /usr/local/envs/py_embed_base/environments.yml
+RUN conda list --name py_embed_base.v5 > /usr/local/envs/py_embed_base.v5/environments.yml
