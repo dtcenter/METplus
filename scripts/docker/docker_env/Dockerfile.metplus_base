@@ -9,4 +9,4 @@ COPY scripts/metplus_base_env.sh .
 RUN conda update -y -n base -c defaults conda \
  && ./metplus_base_env.sh
 
-RUN conda list --name metplus_base > /usr/local/envs/metplus_base/environments.yml
+RUN conda list --name metplus_base.v5 > /usr/local/envs/metplus_base.v5/environments.yml
