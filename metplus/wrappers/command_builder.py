@@ -968,6 +968,9 @@ class CommandBuilder:
         # replace wildcard character * with all
         output_path = output_path.replace('*', 'all')
 
+        # replace any whitespace with an underscore
+        output_path = '_'.join(output_path.split())
+
         skip_if_output_exists = self.c_dict.get('SKIP_IF_OUTPUT_EXISTS', False)
 
         # get directory that the output file will exist
