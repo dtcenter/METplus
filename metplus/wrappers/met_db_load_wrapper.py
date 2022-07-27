@@ -148,7 +148,7 @@ class METDbLoadWrapper(RuntimeFreqWrapper):
         return success
 
     def get_all_files(self, custom=None):
-        """! Don't get list of all files for METdataDB wrapper
+        """! Don't get list of all files for METdbLoad wrapper
 
             @returns True to report that no failures occurred
         """

@@ -1,8 +1,8 @@
 .. _install:
 
-*********************
-Software Installation
-*********************
+************
+Installation
+************
 
 Introduction
 ============
@@ -24,7 +24,7 @@ Pre-built METplus images on DockerHub are also provided.
 Programming/scripting languages
 ===============================
 
-METplus Wrappers is written in Python 3.6.3. It is intended to be a tool
+METplus Wrappers is written in Python. It is intended to be a tool
 for the modeling community to use and adapt. As users make upgrades and
 improvements to the tools, they are encouraged to offer those upgrades
 to the broader community by offering feedback to the developers or
@@ -42,7 +42,7 @@ Software Requirements
 
 The following software is required to run METplus Wrappers:
 
--  Python 3.6.3 or above
+-  Python 3.8.6 or above
 
 -  MET version 10.0.0 or above - 
    For information on installing MET please see the `Software Installation/Getting Started <https://met.readthedocs.io/en/latest/Users_Guide/installation.html>`_
@@ -93,13 +93,13 @@ If running use cases that use Python embedding, the **MET** executables
 must be installed with Python enabled
 and the following Python packages installed:
 
-- xarray (0.17.0)
+- xarray (2022.3.0)
 
-- numpy (1.19.2)
+- numpy (1.22.4)
 
-- pandas (1.0.5)
+- pandas (1.4.2)
 
-- netCDF4 (1.5.4)
+- netCDF4 (1.5.8)
 
 See `Appendix F Python Embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html>`_
 section in the MET User's Guide for more information.
@@ -115,13 +115,13 @@ to run.
 
 -  MakePlots wrapper
 
-    - cartopy (0.18.0)
-    - pandas (1.0.5)
+    - cartopy (0.20.3)
+    - pandas (1.4.3)
 
 -  CyclonePlotter wrapper
 
-    - cartopy (0.18.0)
-    - matplotlib (3.3.4)
+    - cartopy (0.20.3)
+    - matplotlib (3.5.2)
 
 Cartopy, one of the dependencies of CyclonePlotter, attempts to download shapefiles from the internet to complete successfully. So if CyclonePlotter is run on a closed system (i.e. no internet), additional steps need to be taken. First, go to the Natural Earth Data webpage and download the small scale (1:110m) cultural and physical files that will have multiple extensions (e.g. .dbf, .shp, .shx). Untar these files in a noted location. Finally, create an environment variable in the user-specific system configuration file for CARTOPY_DIR, setting it to the location where the shapefiles are located. 
 

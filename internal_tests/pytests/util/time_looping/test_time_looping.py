@@ -5,6 +5,7 @@ from dateutil.relativedelta import relativedelta
 from metplus.util.time_looping import *
 
 
+@pytest.mark.util
 def test_get_start_and_end_times(metplus_config):
     start_time = '2014103109'
     end_time = '2018103109'
@@ -20,6 +21,7 @@ def test_get_start_and_end_times(metplus_config):
         assert end_dt.strftime(time_format) == end_time
 
 
+@pytest.mark.util
 def test_get_start_and_end_times_now(metplus_config):
     time_format = '%Y%m%d%H%M%S'
     for prefix in ['INIT', 'VALID']:
@@ -37,6 +39,7 @@ def test_get_start_and_end_times_now(metplus_config):
         assert end_dt.strftime(time_format) == expected_end_time
 
 
+@pytest.mark.util
 def test_get_start_and_end_times_today(metplus_config):
     time_format = '%Y%m%d'
     for prefix in ['INIT', 'VALID']:
@@ -54,6 +57,7 @@ def test_get_start_and_end_times_today(metplus_config):
         assert end_dt.strftime(time_format) == expected_time
 
 
+@pytest.mark.util
 def test_time_generator_list(metplus_config):
     for prefix in ['INIT', 'VALID']:
         config = metplus_config()
@@ -76,6 +80,7 @@ def test_time_generator_list(metplus_config):
             assert True
 
 
+@pytest.mark.util
 def test_time_generator_increment(metplus_config):
     for prefix in ['INIT', 'VALID']:
         config = metplus_config()
@@ -102,6 +107,7 @@ def test_time_generator_increment(metplus_config):
             assert True
 
 
+@pytest.mark.util
 def test_time_generator_error_check(metplus_config):
     """! Test that None is returned by the time generator when
     the time looping config variables are not set properly. Tests:

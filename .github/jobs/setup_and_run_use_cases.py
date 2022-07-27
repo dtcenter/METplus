@@ -16,7 +16,7 @@ import time
 
 import get_use_case_commands
 import get_data_volumes
-from docker_utils import get_branch_name
+from docker_utils import get_branch_name, VERSION_EXT
 
 runner_workspace = os.environ.get('RUNNER_WORKSPACE')
 github_workspace = os.environ.get('GITHUB_WORKSPACE')
@@ -69,6 +69,8 @@ def main():
             env_tag = use_env[0].replace('_env', '')
         else:
             env_tag = 'metplus_base'
+
+        env_tag = f'{env_tag}{VERSION_EXT}'
 
         # get Dockerfile to use
         dockerfile_name = 'Dockerfile.run'
