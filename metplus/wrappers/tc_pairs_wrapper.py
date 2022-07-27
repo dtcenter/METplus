@@ -180,6 +180,10 @@ class TCPairsWrapper(CommandBuilder):
 
         self.add_met_config(name='match_points', data_type='bool')
 
+        # if unset, set match_points to TRUE to match old default in wrapped
+        if not self.env_var_dict.get('METPLUS_MATCH_POINTS'):
+            self.env_var_dict['METPLUS_MATCH_POINTS'] = 'match_points = TRUE;'
+
         c_dict['INIT_INCLUDE'] = getlist(
             self.get_wrapper_or_generic_config('INIT_INCLUDE')
         )
