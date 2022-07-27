@@ -154,6 +154,18 @@ change the value appropriately::
 
     MET_BIN_DIR = {MET_INSTALL_DIR}/exec
 
+
+METPLOTPY_BASE (user_env_vars)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This is the path to the location where METplotpy is installed.
+The variable is found under the [user_env_vars] section heading, which
+will set it as an environment variable. See :ref:`user_defined_config`
+for more information on the [user_env_vars] section.
+This variable is referenced in some METplotpy functions.
+It is not necessary to set this variable if METplotpy will not be used or if
+it is already set in the user's environment.
+
 .. _metplus_final_conf:
 
 METPLUS_CONF
