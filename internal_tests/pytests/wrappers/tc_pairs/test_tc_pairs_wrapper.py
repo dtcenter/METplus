@@ -389,7 +389,7 @@ def test_tc_pairs_loop_order_processes(metplus_config, config_overrides,
                                        env_var_values):
     # run using init and valid time variables
     for loop_by in ['INIT', 'VALID']:
-        remove_beg = remove_end = False
+        remove_beg = remove_end = remove_match_points = False
         config = metplus_config()
 
         set_minimum_config_settings(config, loop_by)
@@ -422,6 +422,12 @@ def test_tc_pairs_loop_order_processes(metplus_config, config_overrides,
                 f'{loop_by.lower()}_end = "{run_times[-1]}";'
             )
             remove_end = True
+
+        if f'METPLUS_MATCH_POINTS' not in env_var_values:
+            env_var_values[f'METPLUS_MATCH_POINTS'] = (
+                'match_points = TRUE;'
+            )
+            remove_match_points = True
 
         wrapper = TCPairsWrapper(config)
         assert wrapper.isOK
@@ -459,6 +465,8 @@ def test_tc_pairs_loop_order_processes(metplus_config, config_overrides,
             del env_var_values[f'METPLUS_{loop_by}_BEG']
         if remove_end:
             del env_var_values[f'METPLUS_{loop_by}_END']
+        if remove_match_points:
+            del env_var_values['METPLUS_MATCH_POINTS']
 
 
 @pytest.mark.parametrize(
@@ -511,6 +519,10 @@ def test_tc_pairs_read_all_files(metplus_config, config_overrides,
 
         env_var_values[f'METPLUS_{loop_by}_END'] = (
             f'{loop_by.lower()}_end = "{run_times[-1]}";'
+        )
+
+        env_var_values['METPLUS_MATCH_POINTS'] = (
+            'match_points = TRUE;'
         )
 
         wrapper = TCPairsWrapper(config)
