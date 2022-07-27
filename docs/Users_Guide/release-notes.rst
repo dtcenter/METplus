@@ -39,6 +39,17 @@ describes the bugfix, enhancement, or new feature:
 https://github.com/dtcenter/METplus/issues
 
 
+METplus Version 4.1.3 Release Notes (2022-07-27)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Bugfixes:
+
+  * Set Point2Grid -adp and -qc arguments properly (`METplus #1623 <https://github.com/dtcenter/METplus/issues/1623>`_)
+  * Reconcile setting of METPLOTPY_BASE for use cases (`METplus #1713 <https://github.com/dtcenter/METplus/issues/1713>`_)
+  * Allow NA value for <TOOL-NAME>_CLIMO_[MEAN/STDEV]_DAY_INTERVAL (`METplus #1653 <https://github.com/dtcenter/METplus/issues/1653>`_)
+  * Add missing brackets around list variable values for StatAnalysis wrapper (`METplus #1641 <https://github.com/dtcenter/METplus/issues/1641>`_)
+  * Phase Diagram use case writes all output into OUTPUT_BASE instead of INPUT_BASE (`METplus #1706 <https://github.com/dtcenter/METplus/issues/1706>`_)
+
 METplus Version 4.1.2 Release Notes (2022-05-16)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
