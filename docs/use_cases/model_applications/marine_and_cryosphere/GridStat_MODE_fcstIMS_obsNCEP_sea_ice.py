@@ -14,6 +14,7 @@ _obsNCEP_sea_ice.conf
 # and Ice Mapping System (IMS) and the National Centers for Environmental Prediction (NCEP)
 # sea ice analysis.  This is a validation and diagnostics use case because it is limited to a
 # comparison between IMS analysis to NCEP analysis.
+# Written by Lindsay Blank, NCAR. January 2020
 
 ####################################################################################################
 # Datasets

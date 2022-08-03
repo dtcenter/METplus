@@ -7829,6 +7829,7 @@ METplus Configuration
 | :term:`TC_PAIRS_RUN_ONCE`
 | :term:`TC_PAIRS_CHECK_DUP`
 | :term:`TC_PAIRS_INTERP12`
+| :term:`TC_PAIRS_MATCH_POINTS`
 |
 
 .. warning:: **DEPRECATED:**
@@ -8038,6 +8039,17 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`TC_PAIRS_VALID_END`
      - valid_end
+
+**${METPLUS_MATCH_POINTS}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_PAIRS_MATCH_POINTS`
+     - match_points
 
 **${METPLUS_DLAND_FILE}**
 

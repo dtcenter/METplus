@@ -656,7 +656,7 @@ class METplusConfig(ProdConfig):
             raise
 
         # print debug message saying default value was used
-        if not default:
+        if default == '':
             default_text = 'empty string'
         else:
             default_text = default
@@ -1766,7 +1766,8 @@ def skip_field_info_validation(config):
     process_list = [item[0] for item in get_process_list(config)]
 
     # if running MTD in single mode, you don't need matching FCST/OBS
-    if 'MTD' in process_list and config.getbool('config', 'MTD_SINGLE_RUN'):
+    if ('MTD' in process_list and
+            config.getbool('config', 'MTD_SINGLE_RUN', False)):
         return True
 
     # if running any app other than the reformatters, you need matching FCST/OBS, so don't skip

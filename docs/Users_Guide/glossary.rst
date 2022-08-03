@@ -9648,3 +9648,8 @@ METplus Configuration Glossary
      Set the resolution for CyclonePlotter output.
 
      | *Used by:* CyclonePlotter
+
+   TC_PAIRS_MATCH_POINTS
+     Specify the value for 'match_points' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
