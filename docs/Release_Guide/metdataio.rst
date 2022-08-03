@@ -1,5 +1,5 @@
 *****************
-METdatadb Release
+METdataio Release
 *****************
 
 .. toctree::
