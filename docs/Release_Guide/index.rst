@@ -73,7 +73,7 @@ Release instructions for each of the METplus components are described in the fol
 
    metplus
    met
-   metdatadb
+   metdataio
    metcalcpy
    metplotpy
    metviewer
