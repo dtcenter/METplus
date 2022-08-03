@@ -5,6 +5,6 @@ METdatadb Release
 .. toctree::
    :titlesonly:
 
-   metdatadb_official
-   metdatadb_bugfix
-   metdatadb_development
+   metdataio_official
+   metdataio_bugfix
+   metdataio_development
