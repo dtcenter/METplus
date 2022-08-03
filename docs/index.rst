@@ -65,7 +65,7 @@ follows:
 * **METplotpy** (`repo <https://github.com/dtcenter/METplotpy>`__, `docs <https://metplotpy.readthedocs.io/en/latest/>`__) - suite of Python-based scripts to plot MET output,
   and in come cases provide additional post-processing of output prior
   to plotting
-* **METdatadb** (`repo <https://github.com/dtcenter/METdatadb>`__, `docs <https://metdatadb.readthedocs.io/en/latest/>`__) - database to store MET output and to be used by both
+* **METdataio** (`repo <https://github.com/dtcenter/METdataio>`__, `docs <https://metdataio.readthedocs.io/en/latest/>`__) - database to store MET output and to be used by both
   METviewer and METexpress
 
 The umbrella repository will be brought together by using a software package
