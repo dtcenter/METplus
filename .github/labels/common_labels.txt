@@ -30,6 +30,7 @@
 {"name": "requestor: DTC/PAS","color": "3101c1","description": "DTC Physics Across Scales T&E"}
 {"name": "requestor: DTC/Containers","color": "3101c1","description": "DTC Containers and Cloud Computing Project"}
 {"name": "requestor: DTC/AF V&V","color": "3101c1","description": "Air Force Verification and Validation Project"}
+{"name": "requestor: DTC/Ensembles","color": "3101c1","description": "DTC Ensembles Team"}
 {"name": "requestor: NASA/CCMC","color": "3101c1","description": "NASA Community Coordinated Modeling Center"}
 {"name": "requestor: NASA/other","color": "3101c1","description": "NASA, not otherwise specified"}
 {"name": "requestor: NCAR","color": "3101c1","description": "National Center for Atmospheric Research"}
