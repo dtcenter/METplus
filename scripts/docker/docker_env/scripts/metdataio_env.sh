@@ -7,7 +7,7 @@
 # Python Packages:
 #   lxml==4.9.1
 #   pymysql==1.0.2
-#   pandas==1.4.3
+#   pandas==1.2.3
 #
 # Other Content: None
 ################################################################################
@@ -22,4 +22,4 @@ conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 
 conda install -y --name ${ENV_NAME} -c conda-forge lxml==4.9.1
 conda install -y --name ${ENV_NAME} -c conda-forge pymysql==1.0.2
-conda install -y --name ${ENV_NAME} -c conda-forge pandas==1.4.3
+conda install -y --name ${ENV_NAME} -c conda-forge pandas==1.2.3
