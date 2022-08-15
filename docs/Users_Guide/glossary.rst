@@ -9653,3 +9653,103 @@ METplus Configuration Glossary
      Specify the value for 'match_points' in the MET configuration file for TCPairs.
 
      | *Used by:* TCPairs
+
+   PLOT_POINT_OBS_MSG_TYP
+     Specify the value for 'msg_typ' in the MET configuration file for PlotPointObs.
+
+     | *Used by:* PlotPointObs
+
+   PLOT_POINT_OBS_SID_INC
+     Specify the value for 'sid_inc' in the MET configuration file for PlotPointObs.
+
+     | *Used by:* PlotPointObs
+
+   PLOT_POINT_OBS_SID_EXC
+     Specify the value for 'sid_exc' in the MET configuration file for PlotPointObs.
+
+     | *Used by:* PlotPointObs
+
+   PLOT_POINT_OBS_OBS_VAR
+     Specify the value for 'obs_var' in the MET configuration file for PlotPointObs.
+
+     | *Used by:* PlotPointObs
+
+   PLOT_POINT_OBS_OBS_GC
+     Specify the value for 'obs_gc' in the MET configuration file for PlotPointObs.
+
+     | *Used by:* PlotPointObs
+
+   PLOT_POINT_OBS_OBS_QUALITY
+     Specify the value for 'obs_quality' in the MET configuration file for PlotPointObs.
+
+     | *Used by:* PlotPointObs
+
+   PLOT_POINT_OBS_VALID_BEG
+     Specify the value for 'valid_beg' in the MET configuration file for PlotPointObs.
+
+     | *Used by:* PlotPointObs
+
+   PLOT_POINT_OBS_VALID_END
+     Specify the value for 'valid_end' in the MET configuration file for PlotPointObs.
+
+     | *Used by:* PlotPointObs
+
+   PLOT_POINT_OBS_LAT_THRESH
+     Specify the value for 'lat_thresh' in the MET configuration file for PlotPointObs.
+
+     | *Used by:* PlotPointObs
+
+   PLOT_POINT_OBS_LON_THRESH
+     Specify the value for 'lon_thresh' in the MET configuration file for PlotPointObs.
+
+     | *Used by:* PlotPointObs
+
+   PLOT_POINT_OBS_ELV_THRESH
+     Specify the value for 'elv_thresh' in the MET configuration file for PlotPointObs.
+
+     | *Used by:* PlotPointObs
+
+   PLOT_POINT_OBS_HGT_THRESH
+     Specify the value for 'hgt_thresh' in the MET configuration file for PlotPointObs.
+
+     | *Used by:* PlotPointObs
+
+   PLOT_POINT_OBS_PRS_THRESH
+     Specify the value for 'prs_thresh' in the MET configuration file for PlotPointObs.
+
+     | *Used by:* PlotPointObs
+
+   PLOT_POINT_OBS_OBS_THRESH
+     Specify the value for 'obs_thresh' in the MET configuration file for PlotPointObs.
+
+     | *Used by:* PlotPointObs
+
+   PLOT_POINT_OBS_CENSOR_THRESH
+     Specify the value for 'censor_thresh' in the MET configuration file for PlotPointObs.
+
+     | *Used by:* PlotPointObs
+
+   PLOT_POINT_OBS_CENSOR_VAL
+     Specify the value for 'censor_val' in the MET configuration file for PlotPointObs.
+
+     | *Used by:* PlotPointObs
+
+   PLOT_POINT_OBS_DOTSIZE
+     Specify the value for 'dotsize' in the MET configuration file for PlotPointObs.
+
+     | *Used by:* PlotPointObs
+
+   PLOT_POINT_OBS_LINE_COLOR
+     Specify the value for 'line_color' in the MET configuration file for PlotPointObs.
+
+     | *Used by:* PlotPointObs
+
+   PLOT_POINT_OBS_LINE_WIDTH
+     Specify the value for 'line_width' in the MET configuration file for PlotPointObs.
+
+     | *Used by:* PlotPointObs
+
+   PLOT_POINT_OBS_FILL_COLOR
+     Specify the value for 'fill_color' in the MET configuration file for PlotPointObs.
+
+     | *Used by:* PlotPointObs
