@@ -5392,7 +5392,16 @@ Configuration
 | :term:`PLOT_POINT_OBS_OUTPUT_DIR`
 | :term:`PLOT_POINT_OBS_TITLE`
 | :term:`LOG_PLOT_POINT_OBS_VERBOSITY`
-
+| :term:`PLOT_POINT_OBS_GRID_DATA_FIELD`
+| :term:`PLOT_POINT_OBS_GRID_DATA_REGRID_TO_GRID`
+| :term:`PLOT_POINT_OBS_GRID_DATA_REGRID_METHOD`
+| :term:`PLOT_POINT_OBS_GRID_DATA_REGRID_WIDTH`
+| :term:`PLOT_POINT_OBS_GRID_DATA_REGRID_VLD_THRESH`
+| :term:`PLOT_POINT_OBS_GRID_DATA_REGRID_SHAPE`
+| :term:`PLOT_POINT_OBS_GRID_DATA_GRID_PLOT_INFO_COLOR_TABLE`
+| :term:`PLOT_POINT_OBS_GRID_DATA_GRID_PLOT_INFO_PLOT_MIN`
+| :term:`PLOT_POINT_OBS_GRID_DATA_GRID_PLOT_INFO_PLOT_MAX`
+| :term:`PLOT_POINT_OBS_GRID_DATA_GRID_PLOT_INFO_COLORBAR_FLAG`
 | :term:`PLOT_POINT_OBS_MSG_TYP`
 | :term:`PLOT_POINT_OBS_SID_INC`
 | :term:`PLOT_POINT_OBS_SID_EXC`
@@ -5413,6 +5422,12 @@ Configuration
 | :term:`PLOT_POINT_OBS_LINE_COLOR`
 | :term:`PLOT_POINT_OBS_LINE_WIDTH`
 | :term:`PLOT_POINT_OBS_FILL_COLOR`
+| :term:`PLOT_POINT_OBS_FILL_PLOT_INFO_FLAG`
+| :term:`PLOT_POINT_OBS_FILL_PLOT_INFO_COLOR_TABLE`
+| :term:`PLOT_POINT_OBS_FILL_PLOT_INFO_PLOT_MIN`
+| :term:`PLOT_POINT_OBS_FILL_PLOT_INFO_PLOT_MAX`
+| :term:`PLOT_POINT_OBS_FILL_PLOT_INFO_COLORBAR_FLAG`
+| :term:`PLOT_POINT_OBS_POINT_DATA`
 
 
 .. _plot-point-obs-met-conf:
@@ -5434,6 +5449,35 @@ how METplus sets the values of these environment variables,
 see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. literalinclude:: ../../parm/met_config/PlotPointObsConfig_wrapped
+
+**${METPLUS_GRID_DATA_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PLOT_POINT_OBS_GRID_DATA_FIELD`
+     - grid_data.field
+   * - :term:`PLOT_POINT_OBS_GRID_DATA_REGRID_TO_GRID`
+     - grid_data.regrid.to_grid
+   * - :term:`PLOT_POINT_OBS_GRID_DATA_REGRID_METHOD`
+     - grid_data.regrid.method
+   * - :term:`PLOT_POINT_OBS_GRID_DATA_REGRID_WIDTH`
+     - grid_data.regrid.width
+   * - :term:`PLOT_POINT_OBS_GRID_DATA_REGRID_VLD_THRESH`
+     - grid_data.regrid.vld_thresh
+   * - :term:`PLOT_POINT_OBS_GRID_DATA_REGRID_SHAPE`
+     - grid_data.regrid.shape
+   * - :term:`PLOT_POINT_OBS_GRID_DATA_GRID_PLOT_INFO_COLOR_TABLE`
+     - grid_data.grid_plot_info.color_table
+   * - :term:`PLOT_POINT_OBS_GRID_DATA_GRID_PLOT_INFO_PLOT_MIN`
+     - grid_data.grid_plot_info.plot_min
+   * - :term:`PLOT_POINT_OBS_GRID_DATA_GRID_PLOT_INFO_PLOT_MAX`
+     - grid_data.grid_plot_info.plot_max
+   * - :term:`PLOT_POINT_OBS_GRID_DATA_GRID_PLOT_INFO_COLORBAR_FLAG`
+     - grid_data.grid_plot_info.colorbar_flag
 
 **${METPLUS_MSG_TYP}**
 
@@ -5654,6 +5698,36 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`PLOT_POINT_OBS_FILL_COLOR`
      - fill_color
+
+**${METPLUS_FILL_PLOT_INFO_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PLOT_POINT_OBS_FILL_PLOT_INFO_FLAG`
+     - fill_plot_info.flag
+   * - :term:`PLOT_POINT_OBS_FILL_PLOT_INFO_COLOR_TABLE`
+     - fill_plot_info.color_table
+   * - :term:`PLOT_POINT_OBS_FILL_PLOT_INFO_PLOT_MIN`
+     - fill_plot_info.plot_min
+   * - :term:`PLOT_POINT_OBS_FILL_PLOT_INFO_PLOT_MAX`
+     - fill_plot_info.plot_max
+   * - :term:`PLOT_POINT_OBS_FILL_PLOT_INFO_COLORBAR_FLAG`
+     - fill_plot_info.colorbar_flag
+
+**${METPLUS_POINT_DATA}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PLOT_POINT_OBS_POINT_DATA`
+     - point_data
 
 
 .. _point2grid_wrapper:

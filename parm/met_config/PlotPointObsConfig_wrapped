@@ -8,26 +8,8 @@
 
 // Gridded data plotting options
 
-grid_data = {
-
-   field = [];
-
-   regrid = {
-      to_grid    = NONE;
-      method     = NEAREST;
-      width      = 1;
-      vld_thresh = 0.5;
-      shape      = SQUARE;
-   }
-
-   grid_plot_info = {
-      color_table   = "MET_BASE/colortables/met_default.ctable";
-      plot_min      = 0.0;
-      plot_max      = 0.0;
-      colorbar_flag = TRUE; 
-   }
-
-}
+//grid_data = {
+${METPLUS_GRID_DATA_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -102,18 +84,11 @@ ${METPLUS_LINE_WIDTH}
 //fill_color =
 ${METPLUS_FILL_COLOR}
 
-
-fill_plot_info = { // Overrides fill_color
-   flag          = FALSE;
-   color_table   = "MET_BASE/colortables/met_default.ctable";
-   plot_min      = 0.0;
-   plot_max      = 0.0;
-   colorbar_flag = TRUE; 
-}
+//fill_plot_info = {
+${METPLUS_FILL_PLOT_INFO_DICT}
 
 // Array of point data filtering, pre-processing, and plotting options
-point_data = [
-   { fill_color = [ 255, 0, 0 ]; }
-];
+//point_data =
+${METPLUS_POINT_DATA}
 
 ////////////////////////////////////////////////////////////////////////////////

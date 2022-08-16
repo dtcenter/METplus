@@ -42,6 +42,8 @@ class PlotPointObsWrapper(RuntimeFreqWrapper):
         'METPLUS_LINE_COLOR',
         'METPLUS_LINE_WIDTH',
         'METPLUS_FILL_COLOR',
+        'METPLUS_FILL_PLOT_INFO_DICT',
+        'METPLUS_POINT_DATA',
     ]
 
     def __init__(self, config, instance=None):
@@ -53,6 +55,10 @@ class PlotPointObsWrapper(RuntimeFreqWrapper):
     def create_c_dict(self):
         c_dict = super().create_c_dict()
         app = self.app_name.upper()
+
+        c_dict['VERBOSITY'] = self.config.getstr('config',
+                                                 f'LOG_{app}_VERBOSITY',
+                                                 c_dict['VERBOSITY'])
 
         # get point obs input files
         c_dict['INPUT_TEMPLATE'] = self.config.getraw('config',
@@ -76,8 +82,13 @@ class PlotPointObsWrapper(RuntimeFreqWrapper):
 
         # read config file settings
 
+        # get the MET config file path or use default
+        c_dict['CONFIG_FILE'] = (
+            self.get_config_file('PlotPointObsConfig_wrapped')
+        )
+
         # handle grid_data dictionary
-        items = {
+        self.add_met_config_dict('grid_data', {
             'field': ('list', 'remove_quotes'),
             'regrid': ('dict', '', {
                 'to_grid': ('string', 'uppercase,to_grid'),
@@ -92,8 +103,7 @@ class PlotPointObsWrapper(RuntimeFreqWrapper):
                 'plot_max': 'float',
                 'colorbar_flag': 'bool',
             }),
-        }
-        self.add_met_config_dict('grid_data', items)
+        })
 
         config_lists = [
             'msg_typ',
@@ -133,6 +143,18 @@ class PlotPointObsWrapper(RuntimeFreqWrapper):
                             extra_args={'remove_quotes': True},
                             metplus_configs=[f'{app}_DOTSIZE'])
         self.add_met_config(name='line_width', data_type='int')
+
+        self.add_met_config_dict('fill_plot_info', {
+            'flag': 'bool',
+            'color_table': 'string',
+            'plot_min': 'float',
+            'plot_max': 'float',
+            'colorbar_flag': 'bool',
+        })
+
+        self.add_met_config(name='point_data',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
 
         c_dict['ALLOW_MULTIPLE_FILES'] = True
         return c_dict
