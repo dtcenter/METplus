@@ -9883,3 +9883,9 @@ METplus Configuration Glossary
      Specify the value for 'point_data' in the MET configuration file for PlotPointObs.
 
      | *Used by:* PlotPointObs
+
+   PLOT_POINT_OBS_SKIP_IF_OUTPUT_EXISTS
+     If True, do not run plot_point_obs if output file already exists.
+     Set to False to overwrite files.
+
+     | *Used by:*  PlotPointObs
