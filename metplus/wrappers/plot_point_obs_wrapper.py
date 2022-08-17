@@ -76,7 +76,6 @@ class PlotPointObsWrapper(RuntimeFreqWrapper):
         )
         c_dict['GRID_INPUT_DIR'] = self.config.getdir(f'{app}_GRID_INPUT_DIR',
                                                       '')
-
         # get optional title command line argument
         c_dict['TITLE'] = self.config.getraw('config', f'{app}_TITLE')
 
@@ -159,62 +158,83 @@ class PlotPointObsWrapper(RuntimeFreqWrapper):
         c_dict['ALLOW_MULTIPLE_FILES'] = True
         return c_dict
 
-    def run_at_time(self, input_dict):
-        """! Do some processing for the current run time (init or valid)
+    def get_command(self):
+        return (f"{self.app_path} -v {self.c_dict['VERBOSITY']}"
+                f" {self.infiles[0]} {self.get_output_path()}"
+                f" {' '.join(self.args)}")
 
-            @param input_dict dictionary with time information of current run
+    def run_at_time_once(self, time_info):
+        """! Process runtime and try to build command to run plot_point_obs.
+
+        @param time_info dictionary containing timing information
+        @returns True if command was built/run successfully or
+         False if something went wrong
         """
-        # fill in time info dictionary
-        time_info = ti_calculate(input_dict)
+        # get input files
+        if not self.find_input_files(time_info):
+            return False
 
-        # check if looping by valid or init and log time for run
-        loop_by = time_info['loop_by']
-        current_time = time_info[loop_by + '_fmt']
-        self.logger.info('Running PlotPointObsWrapper at '
-                         f'{loop_by} time {current_time}')
+        # get output path
+        if not self.find_and_check_output_file(time_info):
+            return False
 
-        # read input directory and template from config dictionary
-        input_dir = self.c_dict['INPUT_DIR']
-        input_template = self.c_dict['INPUT_TEMPLATE']
-        self.logger.info(f'Input directory is {input_dir}')
-        self.logger.info(f'Input template is {input_template}')
+        # get other configurations for command
+        self.set_command_line_arguments(time_info)
 
-        # get forecast leads to loop over
-        lead_seq = get_lead_sequence(self.config, input_dict)
-        for lead in lead_seq:
+        # set environment variables if using config file
+        self.set_environment_variables(time_info)
 
-            # set forecast lead time in hours
-            time_info['lead'] = lead
+        # build command and run
+        return self.build()
 
-            # recalculate time info items
-            time_info = ti_calculate(time_info)
+    def find_input_files(self, time_info):
+        """! Get all input files for plot_point_obs. Sets self.infiles list.
 
-            if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
-                self.logger.debug('Skipping run time')
-                continue
+        @param time_info dictionary containing timing information
+        @returns List of files that were found or None if no files were found
+        """
+        input_files = self.find_data(time_info,
+                                     return_list=True,
+                                     mandatory=mandatory)
+        if input_files is None:
+            return None
 
-            for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
-                if custom_string:
-                    self.logger.info(
-                        f"Processing custom string: {custom_string}"
-                    )
+        self.infiles.extend(input_files)
 
-                time_info['custom'] = custom_string
+        # get optional grid file path
+        if self.c_dict['GRID_INPUT_TEMPLATE']:
+            grid_file = self.find_data(time_info,
+                                       data_type='GRID',
+                                       return_list=True)
+            if not grid_file:
+                return None
 
-                # log init/valid/forecast lead times for current loop iteration
-                self.logger.info(
-                    'Processing forecast lead '
-                    f'{time_info["lead_string"]} initialized at '
-                    f'{time_info["init"].strftime("%Y-%m-%d %HZ")} '
-                    'and valid at '
-                    f'{time_info["valid"].strftime("%Y-%m-%d %HZ")}'
-                )
+            if len(grid_file) > 1:
+                self.log_error('More than one file found from '
+                               'PLOT_POINT_OBS_GRID_INPUT_TEMPLATE: '
+                               f'{grid_file.split(",")}')
+                return None
 
-                # perform string substitution to find filename based on
-                # template and current run time
-                filename = do_string_sub(input_template,
-                                         **time_info)
-                self.logger.info('Looking in input directory '
-                                 f'for file: {filename}')
+            self.c_dict['GRID_INPUT_PATH'] = grid_file[0]
 
-        return True
+        return self.infiles
+
+    def set_command_line_arguments(self, time_info):
+        """! Set all arguments for plot_point_obs command.
+
+        @param time_info dictionary containing timing information
+        """
+        config_file = do_string_sub(self.c_dict['CONFIG_FILE'], **time_info)
+        self.args.append(f'-config {config_file}')
+
+        # if more than 1 input file was found, add them with -point_obs
+        for infile in self.infiles[1:]:
+            self.args.append(f'-point_obs {infile}')
+
+        if self.c_dict['TITLE']:
+            self.args.append(f"-title {self.c_dict['TITLE']}")
+
+        if self.c_dict['GRID_INPUT_PATH']:
+            grid_file = do_string_sub(self.c_dict['GRID_INPUT_PATH'],
+                                      **time_info)
+            self.args.append(f'-plot_grid {grid_file}')
