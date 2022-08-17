@@ -78,7 +78,7 @@ Release instructions for each of the METplus components are described in the fol
    metplotpy
    metviewer
    metexpress
-   
+   recreate_release
 
 
 Indices and tables
