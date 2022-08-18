@@ -9889,3 +9889,8 @@ METplus Configuration Glossary
      Set to False to overwrite files.
 
      | *Used by:*  PlotPointObs
+
+   PLOT_POINT_OBS_RUNTIME_FREQ
+     Frequency to run PlotPointObs. See :ref:`Runtime_Freq` for more information.
+
+     | *Used by:*  PlotPointObs

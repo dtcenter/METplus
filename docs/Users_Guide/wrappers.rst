@@ -5384,6 +5384,7 @@ MET can read and plot them.
 Configuration
 -------------
 
+| :term:`PLOT_POINT_OBS_RUNTIME_FREQ`
 | :term:`PLOT_POINT_OBS_INPUT_TEMPLATE`
 | :term:`PLOT_POINT_OBS_INPUT_DIR`
 | :term:`PLOT_POINT_OBS_GRID_INPUT_TEMPLATE`

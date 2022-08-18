@@ -56,6 +56,10 @@ class PlotPointObsWrapper(RuntimeFreqWrapper):
         c_dict = super().create_c_dict()
         app = self.app_name.upper()
 
+        # set default runtime frequency if unset explicitly
+        if not c_dict['RUNTIME_FREQ']:
+            c_dict['RUNTIME_FREQ'] = 'RUN_ONCE_FOR_EACH'
+
         c_dict['VERBOSITY'] = self.config.getstr('config',
                                                  f'LOG_{app}_VERBOSITY',
                                                  c_dict['VERBOSITY'])
