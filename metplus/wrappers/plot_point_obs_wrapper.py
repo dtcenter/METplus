@@ -240,7 +240,7 @@ class PlotPointObsWrapper(RuntimeFreqWrapper):
         for infile in self.infiles[1:]:
             self.args.append(f'-point_obs {infile}')
 
-        if self.c_dict['GRID_INPUT_PATH']:
+        if self.c_dict.get('GRID_INPUT_PATH'):
             grid_file = do_string_sub(self.c_dict['GRID_INPUT_PATH'],
                                       **time_info)
             self.args.append(f'-plot_grid {grid_file}')
@@ -248,6 +248,6 @@ class PlotPointObsWrapper(RuntimeFreqWrapper):
         config_file = do_string_sub(self.c_dict['CONFIG_FILE'], **time_info)
         self.args.append(f'-config {config_file}')
 
-        if self.c_dict['TITLE']:
+        if self.c_dict.get('TITLE'):
             title = do_string_sub(self.c_dict['TITLE'], **time_info)
             self.args.append(f'-title "{title}"')
