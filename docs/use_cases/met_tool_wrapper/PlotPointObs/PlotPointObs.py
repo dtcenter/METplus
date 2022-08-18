@@ -1,6 +1,6 @@
 """
 PlotPointObs: Basic Use Case
-==========================
+============================
 
 met_tool_wrapper/PlotPointObs/PlotPointObs.conf
 
