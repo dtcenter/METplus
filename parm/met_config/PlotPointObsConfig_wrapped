@@ -61,7 +61,8 @@ ${METPLUS_OBS_THRESH}
 // Point data pre-processing options
 // May be set separately in each "point_data" entry
 
-convert(x)    = x;
+//convert(x)    = x;
+
 //censor_thresh =
 ${METPLUS_CENSOR_THRESH}
 
