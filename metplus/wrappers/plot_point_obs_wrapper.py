@@ -236,17 +236,18 @@ class PlotPointObsWrapper(RuntimeFreqWrapper):
 
         @param time_info dictionary containing timing information
         """
-        config_file = do_string_sub(self.c_dict['CONFIG_FILE'], **time_info)
-        self.args.append(f'-config {config_file}')
-
         # if more than 1 input file was found, add them with -point_obs
         for infile in self.infiles[1:]:
             self.args.append(f'-point_obs {infile}')
-
-        if self.c_dict['TITLE']:
-            self.args.append(f"-title {self.c_dict['TITLE']}")
 
         if self.c_dict['GRID_INPUT_PATH']:
             grid_file = do_string_sub(self.c_dict['GRID_INPUT_PATH'],
                                       **time_info)
             self.args.append(f'-plot_grid {grid_file}')
+
+        config_file = do_string_sub(self.c_dict['CONFIG_FILE'], **time_info)
+        self.args.append(f'-config {config_file}')
+
+        if self.c_dict['TITLE']:
+            title = do_string_sub(self.c_dict['TITLE'], **time_info)
+            self.args.append(f'-title "{title}"')
