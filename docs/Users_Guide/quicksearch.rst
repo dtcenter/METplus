@@ -27,6 +27,7 @@ Use Cases by MET Tool:
    | `PCPCombine <../search.html?q=PCPCombineToolUseCase&check_keywords=yes&area=default>`_
    | `Point2Grid <../search.html?q=Point2GridToolUseCase&check_keywords=yes&area=default>`_
    | `PlotDataPlane <../search.html?q=PlotDataPlaneToolUseCase&check_keywords=yes&area=default>`_
+   | `PlotPointObs <../search.html?q=PlotPointObsToolUseCase&check_keywords=yes&area=default>`_
    | `PointStat <../search.html?q=PointStatToolUseCase&check_keywords=yes&area=default>`_
    | `RegridDataPlane <../search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_
    | `SeriesAnalysis <../search.html?q=SeriesAnalysisUseCase&check_keywords=yes&area=default>`_
@@ -53,6 +54,7 @@ Use Cases by MET Tool:
    | **PCPCombine**: *PCPCombineToolUseCase*
    | **Point2Grid**: *Point2GridToolUseCase*
    | **PlotDataPlane**: *PlotDataPlaneToolUseCase*
+   | **PlotPointObs**: *PlotPointObsToolUseCase*
    | **PointStat**: *PointStatToolUseCase*
    | **RegridDataPlane**: *RegridDataPlaneToolUseCase*
    | **SeriesAnalysis**: *SeriesAnalysisUseCase*
