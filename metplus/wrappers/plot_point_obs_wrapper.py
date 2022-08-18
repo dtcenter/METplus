@@ -80,6 +80,14 @@ class PlotPointObsWrapper(RuntimeFreqWrapper):
         )
         c_dict['GRID_INPUT_DIR'] = self.config.getdir(f'{app}_GRID_INPUT_DIR',
                                                       '')
+
+        # get output path
+        c_dict['OUTPUT_TEMPLATE'] = self.config.getraw(
+            'config',
+            f'{app}_OUTPUT_TEMPLATE'
+        )
+        c_dict['OUTPUT_DIR'] = self.config.getdir(f'{app}_OUTPUT_DIR', '')
+
         # get optional title command line argument
         c_dict['TITLE'] = self.config.getraw('config', f'{app}_TITLE')
 
