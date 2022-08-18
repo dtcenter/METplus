@@ -207,7 +207,7 @@ class PlotPointObsWrapper(RuntimeFreqWrapper):
         """
         input_files = self.find_data(time_info,
                                      return_list=True,
-                                     mandatory=mandatory)
+                                     mandatory=True)
         if input_files is None:
             return None
 
