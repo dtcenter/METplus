@@ -61,7 +61,7 @@ ${METPLUS_OBS_THRESH}
 // Point data pre-processing options
 // May be set separately in each "point_data" entry
 
-convert(x)    = x;
+//convert(x)    = x;
 
 //censor_thresh =
 ${METPLUS_CENSOR_THRESH}
@@ -91,6 +91,8 @@ ${METPLUS_FILL_PLOT_INFO_DICT}
 // Array of point data filtering, pre-processing, and plotting options
 //point_data =
 ${METPLUS_POINT_DATA}
+
+tmp_dir = "${MET_TMP_DIR}";
 
 ////////////////////////////////////////////////////////////////////////////////
 
