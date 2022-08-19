@@ -9894,3 +9894,17 @@ METplus Configuration Glossary
      Frequency to run PlotPointObs. See :ref:`Runtime_Freq` for more information.
 
      | *Used by:*  PlotPointObs
+
+   PLOT_POINT_OBS_MET_CONFIG_OVERRIDES
+     Override any variables in the MET configuration file that are not
+     supported by the wrapper. This should be set to the full variable name
+     and value that you want to override, including the equal sign and the
+     ending semi-colon. The value is directly appended to the end of the
+     wrapped MET config file.
+
+     Example:
+     PLOT_POINT_OBS_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
+
+     | *Used by:* PlotPointObs

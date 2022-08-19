@@ -5430,6 +5430,7 @@ Configuration
 | :term:`PLOT_POINT_OBS_FILL_PLOT_INFO_PLOT_MAX`
 | :term:`PLOT_POINT_OBS_FILL_PLOT_INFO_COLORBAR_FLAG`
 | :term:`PLOT_POINT_OBS_POINT_DATA`
+| :term:`PLOT_POINT_OBS_MET_CONFIG_OVERRIDES`
 
 
 .. _plot-point-obs-met-conf:
