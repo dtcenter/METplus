@@ -116,20 +116,28 @@ class PlotPointObsWrapper(RuntimeFreqWrapper):
             }),
         })
 
+        # string lists
         config_lists = [
             'msg_typ',
             'sid_inc',
             'sid_exc',
             'obs_var',
-            'obs_gc',
             'obs_quality',
+        ]
+        for config_list in config_lists:
+            self.add_met_config(name=config_list, data_type='list')
+
+        # integer and thresh lists
+        config_lists = [
+            'obs_gc',
             'censor_thresh',
             'censor_val',
             'line_color',
             'fill_color',
         ]
         for config_list in config_lists:
-            self.add_met_config(name=config_list, data_type='list')
+            self.add_met_config(name=config_list, data_type='list',
+                                extra_args={'remove_quotes': True})
 
         config_strings = [
             'valid_beg',
@@ -152,7 +160,8 @@ class PlotPointObsWrapper(RuntimeFreqWrapper):
 
         self.add_met_config(name='dotsize(x)', data_type='string',
                             extra_args={'remove_quotes': True},
-                            metplus_configs=[f'{app}_DOTSIZE'])
+                            metplus_configs=[f'{app}_DOTSIZE'],
+                            env_var_name='METPLUS_DOTSIZE')
         self.add_met_config(name='line_width', data_type='int')
 
         self.add_met_config_dict('fill_plot_info', {
