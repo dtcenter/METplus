@@ -17,6 +17,7 @@ input_template_two = (
     'pb2nc/ndas.{valid?fmt=%Y%m%d}.t{valid?fmt=%H}z.prepbufr.tm00.nc,'
     'ascii2nc/trmm_{valid?fmt=%Y%m%d%H}_3hr.nc'
 )
+
 grid_dir = '/some/path/grid'
 grid_template = 'nam_{init?fmt=%Y%m%d%H}_F{lead?fmt=%3H}.grib2'
 
@@ -36,7 +37,7 @@ time_fmt = '%Y%m%d%H'
 run_times = ['2012040912', '2012041000']
 
 
-def set_minimum_config_settings(config, set_fields=True):
+def set_minimum_config_settings(config):
     # set config variables to prevent command from running and bypass check
     # if input files actually exist
     config.set('config', 'DO_NOT_RUN_EXE', True)
@@ -166,40 +167,39 @@ def set_minimum_config_settings(config, set_fields=True):
         # 30: obs_thresh
         ({'PLOT_POINT_OBS_OBS_THRESH': '>1.0', },
          {'METPLUS_OBS_THRESH': 'obs_thresh = >1.0;'}),
-        # 31: censor_thresh
-        ({'PLOT_POINT_OBS_CENSOR_THRESH': '>12000', },
-         {'METPLUS_CENSOR_THRESH': 'censor_thresh = [>12000];'}),
-        # 32: censor_val
-        ({'PLOT_POINT_OBS_CENSOR_VAL': '>12000', },
-         {'METPLUS_CENSOR_VAL': 'censor_val = [>12000];'}),
-        # 33: dotsize
+        # 31: censor_thresh and censor_val
+        ({'PLOT_POINT_OBS_CENSOR_THRESH': '>12000',
+          'PLOT_POINT_OBS_CENSOR_VAL': '12000'},
+         {'METPLUS_CENSOR_THRESH': 'censor_thresh = [>12000];',
+          'METPLUS_CENSOR_VAL': 'censor_val = [12000];'}),
+        # 32: dotsize
         ({'PLOT_POINT_OBS_DOTSIZE': '10.0', },
          {'METPLUS_DOTSIZE': 'dotsize(x) = 10.0;'}),
-        # 34: line_color
+        # 33: line_color
         ({'PLOT_POINT_OBS_LINE_COLOR': '100,105,110', },
          {'METPLUS_LINE_COLOR': 'line_color = [100, 105, 110];'}),
-        # 35: line_width
+        # 34: line_width
         ({'PLOT_POINT_OBS_LINE_WIDTH': '4', },
          {'METPLUS_LINE_WIDTH': 'line_width = 4;'}),
-        # 36: fill_color
+        # 35: fill_color
         ({'PLOT_POINT_OBS_FILL_COLOR': '0,10,15', },
          {'METPLUS_FILL_COLOR': 'fill_color = [0, 10, 15];'}),
-        # 37: fill_plot_info.flag
+        # 36: fill_plot_info.flag
         ({'PLOT_POINT_OBS_FILL_PLOT_INFO_FLAG': 'true', },
          {'METPLUS_FILL_PLOT_INFO_DICT': 'fill_plot_info = {flag = TRUE;}'}),
-        # 38: fill_plot_info.color_table
+        # 37: fill_plot_info.color_table
         ({'PLOT_POINT_OBS_FILL_PLOT_INFO_COLOR_TABLE': 'MET_BASE/colortables/met_default.ctable', },
          {'METPLUS_FILL_PLOT_INFO_DICT': 'fill_plot_info = {color_table = "MET_BASE/colortables/met_default.ctable";}'}),
-        # 39: fill_plot_info.plot_min
+        # 38: fill_plot_info.plot_min
         ({'PLOT_POINT_OBS_FILL_PLOT_INFO_PLOT_MIN': '0.1', },
          {'METPLUS_FILL_PLOT_INFO_DICT': 'fill_plot_info = {plot_min = 0.1;}'}),
-        # 40: fill_plot_info.plot_max
+        # 39: fill_plot_info.plot_max
         ({'PLOT_POINT_OBS_FILL_PLOT_INFO_PLOT_MAX': '100.0', },
          {'METPLUS_FILL_PLOT_INFO_DICT': 'fill_plot_info = {plot_max = 100.0;}'}),
-        # 41: fill_plot_info.colorbar_flag
+        # 40: fill_plot_info.colorbar_flag
         ({'PLOT_POINT_OBS_FILL_PLOT_INFO_COLORBAR_FLAG': 'False', },
          {'METPLUS_FILL_PLOT_INFO_DICT': 'fill_plot_info = {colorbar_flag = FALSE;}'}),
-        # 42: fill_plot_info all
+        # 41: fill_plot_info all
         ({
              'PLOT_POINT_OBS_FILL_PLOT_INFO_FLAG': 'true',
              'PLOT_POINT_OBS_FILL_PLOT_INFO_COLOR_TABLE': 'MET_BASE/colortables/met_default.ctable',
@@ -208,7 +208,7 @@ def set_minimum_config_settings(config, set_fields=True):
              'PLOT_POINT_OBS_FILL_PLOT_INFO_COLORBAR_FLAG': 'false',
          },
          {'METPLUS_FILL_PLOT_INFO_DICT': 'fill_plot_info = {flag = TRUE;color_table = "MET_BASE/colortables/met_default.ctable";plot_min = 0.1;plot_max = 100.0;colorbar_flag = FALSE;}'}),
-        # 43: point_data
+        # 42: point_data
         ({'PLOT_POINT_OBS_POINT_DATA': point_data_input, },
          {'METPLUS_POINT_DATA': f'point_data = {point_data_format}'}),
 
@@ -265,10 +265,11 @@ def test_plot_point_obs(metplus_config, config_overrides, env_var_values):
     all_cmds = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_cmds}")
     assert len(all_cmds) == len(expected_cmds)
+    assert not wrapper.errors
 
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
-        assert(cmd == expected_cmd)
+        assert cmd == expected_cmd
 
         # check that environment variables were set properly
         # including deprecated env vars (not in wrapper env var keys)
@@ -278,9 +279,9 @@ def test_plot_point_obs(metplus_config, config_overrides, env_var_values):
         for env_var_key in env_var_keys:
             match = next((item for item in env_vars if
                           item.startswith(env_var_key)), None)
-            assert(match is not None)
+            assert match is not None
             actual_value = match.split('=', 1)[1]
-            assert(env_var_values.get(env_var_key, '') == actual_value)
+            assert env_var_values.get(env_var_key, '') == actual_value
 
 
 @pytest.mark.wrapper_c
