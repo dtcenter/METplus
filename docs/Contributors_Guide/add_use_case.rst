@@ -953,7 +953,7 @@ Copy data from the feature directory into the next version directory
 
 **CONDITION 2:** MET Tool Wrapper Use Cases::
 
-    from_directory=${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}/met_test
+    from_directory=${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}/met_test/new
     echo $from_directory
     ls $from_directory
 
