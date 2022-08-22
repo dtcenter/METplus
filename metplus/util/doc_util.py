@@ -26,6 +26,7 @@ LOWER_TO_WRAPPER_NAME = {
     'pb2nc': 'PB2NC',
     'pcpcombine': 'PCPCombine',
     'plotdataplane': 'PlotDataPlane',
+    'plotpointobs': 'PlotPointObs',
     'point2grid': 'Point2Grid',
     'pointtogrid': 'Point2Grid',
     'pointstat': 'PointStat',

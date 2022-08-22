@@ -108,6 +108,11 @@ def compare_dir(dir_a, dir_b, debug=False, save_diff=False):
 
         for filename in files:
             filepath_b = os.path.join(root, filename)
+
+            # skip metplus_final.conf
+            if filepath_b.endswith('metplus_final.conf'):
+                continue
+
             filepath_a = filepath_b.replace(dir_b, dir_a)
             if not os.path.exists(filepath_a):
                 # check if missing file is actually diff file that was generated

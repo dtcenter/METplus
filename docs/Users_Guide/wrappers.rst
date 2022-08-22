@@ -5368,7 +5368,370 @@ Configuration
 | :term:`PLOT_DATA_PLANE_RANGE_MIN_MAX`
 | :term:`PLOT_DATA_PLANE_CONVERT_TO_IMAGE`
 | :term:`PLOT_DATA_PLANE_SKIP_IF_OUTPUT_EXISTS`
-|
+
+.. _plot_point_obs_wrapper:
+
+PlotPointObs
+============
+
+Description
+-----------
+
+The PlotPointObs wrapper is a Python script that encapsulates the MET
+plot_point_obs tool. It provides the infrastructure to read in any input that
+MET can read and plot them.
+
+Configuration
+-------------
+
+| :term:`PLOT_POINT_OBS_RUNTIME_FREQ`
+| :term:`PLOT_POINT_OBS_INPUT_TEMPLATE`
+| :term:`PLOT_POINT_OBS_INPUT_DIR`
+| :term:`PLOT_POINT_OBS_GRID_INPUT_TEMPLATE`
+| :term:`PLOT_POINT_OBS_GRID_INPUT_DIR`
+| :term:`PLOT_POINT_OBS_OUTPUT_TEMPLATE`
+| :term:`PLOT_POINT_OBS_OUTPUT_DIR`
+| :term:`PLOT_POINT_OBS_SKIP_IF_OUTPUT_EXISTS`
+| :term:`PLOT_POINT_OBS_TITLE`
+| :term:`LOG_PLOT_POINT_OBS_VERBOSITY`
+| :term:`PLOT_POINT_OBS_GRID_DATA_FIELD`
+| :term:`PLOT_POINT_OBS_GRID_DATA_REGRID_TO_GRID`
+| :term:`PLOT_POINT_OBS_GRID_DATA_REGRID_METHOD`
+| :term:`PLOT_POINT_OBS_GRID_DATA_REGRID_WIDTH`
+| :term:`PLOT_POINT_OBS_GRID_DATA_REGRID_VLD_THRESH`
+| :term:`PLOT_POINT_OBS_GRID_DATA_REGRID_SHAPE`
+| :term:`PLOT_POINT_OBS_GRID_DATA_GRID_PLOT_INFO_COLOR_TABLE`
+| :term:`PLOT_POINT_OBS_GRID_DATA_GRID_PLOT_INFO_PLOT_MIN`
+| :term:`PLOT_POINT_OBS_GRID_DATA_GRID_PLOT_INFO_PLOT_MAX`
+| :term:`PLOT_POINT_OBS_GRID_DATA_GRID_PLOT_INFO_COLORBAR_FLAG`
+| :term:`PLOT_POINT_OBS_MSG_TYP`
+| :term:`PLOT_POINT_OBS_SID_INC`
+| :term:`PLOT_POINT_OBS_SID_EXC`
+| :term:`PLOT_POINT_OBS_OBS_VAR`
+| :term:`PLOT_POINT_OBS_OBS_GC`
+| :term:`PLOT_POINT_OBS_OBS_QUALITY`
+| :term:`PLOT_POINT_OBS_VALID_BEG`
+| :term:`PLOT_POINT_OBS_VALID_END`
+| :term:`PLOT_POINT_OBS_LAT_THRESH`
+| :term:`PLOT_POINT_OBS_LON_THRESH`
+| :term:`PLOT_POINT_OBS_ELV_THRESH`
+| :term:`PLOT_POINT_OBS_HGT_THRESH`
+| :term:`PLOT_POINT_OBS_PRS_THRESH`
+| :term:`PLOT_POINT_OBS_OBS_THRESH`
+| :term:`PLOT_POINT_OBS_CENSOR_THRESH`
+| :term:`PLOT_POINT_OBS_CENSOR_VAL`
+| :term:`PLOT_POINT_OBS_DOTSIZE`
+| :term:`PLOT_POINT_OBS_LINE_COLOR`
+| :term:`PLOT_POINT_OBS_LINE_WIDTH`
+| :term:`PLOT_POINT_OBS_FILL_COLOR`
+| :term:`PLOT_POINT_OBS_FILL_PLOT_INFO_FLAG`
+| :term:`PLOT_POINT_OBS_FILL_PLOT_INFO_COLOR_TABLE`
+| :term:`PLOT_POINT_OBS_FILL_PLOT_INFO_PLOT_MIN`
+| :term:`PLOT_POINT_OBS_FILL_PLOT_INFO_PLOT_MAX`
+| :term:`PLOT_POINT_OBS_FILL_PLOT_INFO_COLORBAR_FLAG`
+| :term:`PLOT_POINT_OBS_POINT_DATA`
+| :term:`PLOT_POINT_OBS_MET_CONFIG_OVERRIDES`
+
+
+.. _plot-point-obs-met-conf:
+
+MET Configuration
+-----------------
+
+Below is the wrapped MET configuration file used for this wrapper.
+Environment variables are used to control entries in this configuration file.
+The default value for each environment variable is obtained from
+(except where noted below):
+
+`MET_INSTALL_DIR/share/met/config/PlotPointObsConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/PlotPointObsConfig_default>`_
+
+Below the file contents are descriptions of each environment variable
+referenced in this file and the corresponding METplus configuration item used
+to set the value of the environment variable. For detailed examples showing
+how METplus sets the values of these environment variables,
+see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+
+.. literalinclude:: ../../parm/met_config/PlotPointObsConfig_wrapped
+
+**${METPLUS_GRID_DATA_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PLOT_POINT_OBS_GRID_DATA_FIELD`
+     - grid_data.field
+   * - :term:`PLOT_POINT_OBS_GRID_DATA_REGRID_TO_GRID`
+     - grid_data.regrid.to_grid
+   * - :term:`PLOT_POINT_OBS_GRID_DATA_REGRID_METHOD`
+     - grid_data.regrid.method
+   * - :term:`PLOT_POINT_OBS_GRID_DATA_REGRID_WIDTH`
+     - grid_data.regrid.width
+   * - :term:`PLOT_POINT_OBS_GRID_DATA_REGRID_VLD_THRESH`
+     - grid_data.regrid.vld_thresh
+   * - :term:`PLOT_POINT_OBS_GRID_DATA_REGRID_SHAPE`
+     - grid_data.regrid.shape
+   * - :term:`PLOT_POINT_OBS_GRID_DATA_GRID_PLOT_INFO_COLOR_TABLE`
+     - grid_data.grid_plot_info.color_table
+   * - :term:`PLOT_POINT_OBS_GRID_DATA_GRID_PLOT_INFO_PLOT_MIN`
+     - grid_data.grid_plot_info.plot_min
+   * - :term:`PLOT_POINT_OBS_GRID_DATA_GRID_PLOT_INFO_PLOT_MAX`
+     - grid_data.grid_plot_info.plot_max
+   * - :term:`PLOT_POINT_OBS_GRID_DATA_GRID_PLOT_INFO_COLORBAR_FLAG`
+     - grid_data.grid_plot_info.colorbar_flag
+
+**${METPLUS_MSG_TYP}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PLOT_POINT_OBS_MSG_TYP`
+     - msg_typ
+
+**${METPLUS_SID_INC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PLOT_POINT_OBS_SID_INC`
+     - sid_inc
+
+**${METPLUS_SID_EXC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PLOT_POINT_OBS_SID_EXC`
+     - sid_exc
+
+**${METPLUS_OBS_VAR}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PLOT_POINT_OBS_OBS_VAR`
+     - obs_var
+
+**${METPLUS_OBS_GC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PLOT_POINT_OBS_OBS_GC`
+     - obs_gc
+
+**${METPLUS_OBS_QUALITY}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PLOT_POINT_OBS_OBS_QUALITY`
+     - obs_quality
+
+**${METPLUS_VALID_BEG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PLOT_POINT_OBS_VALID_BEG`
+     - valid_beg
+
+**${METPLUS_VALID_END}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PLOT_POINT_OBS_VALID_END`
+     - valid_end
+
+**${METPLUS_LAT_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PLOT_POINT_OBS_LAT_THRESH`
+     - lat_thresh
+
+**${METPLUS_LON_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PLOT_POINT_OBS_LON_THRESH`
+     - lon_thresh
+
+**${METPLUS_ELV_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PLOT_POINT_OBS_ELV_THRESH`
+     - elv_thresh
+
+**${METPLUS_HGT_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PLOT_POINT_OBS_HGT_THRESH`
+     - hgt_thresh
+
+**${METPLUS_PRS_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PLOT_POINT_OBS_PRS_THRESH`
+     - prs_thresh
+
+**${METPLUS_OBS_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PLOT_POINT_OBS_OBS_THRESH`
+     - obs_thresh
+
+**${METPLUS_CENSOR_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PLOT_POINT_OBS_CENSOR_THRESH`
+     - censor_thresh
+
+**${METPLUS_CENSOR_VAL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PLOT_POINT_OBS_CENSOR_VAL`
+     - censor_val
+
+**${METPLUS_DOTSIZE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PLOT_POINT_OBS_DOTSIZE`
+     - dotsize
+
+**${METPLUS_LINE_COLOR}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PLOT_POINT_OBS_LINE_COLOR`
+     - line_color
+
+**${METPLUS_LINE_WIDTH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PLOT_POINT_OBS_LINE_WIDTH`
+     - line_width
+
+**${METPLUS_FILL_COLOR}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PLOT_POINT_OBS_FILL_COLOR`
+     - fill_color
+
+**${METPLUS_FILL_PLOT_INFO_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PLOT_POINT_OBS_FILL_PLOT_INFO_FLAG`
+     - fill_plot_info.flag
+   * - :term:`PLOT_POINT_OBS_FILL_PLOT_INFO_COLOR_TABLE`
+     - fill_plot_info.color_table
+   * - :term:`PLOT_POINT_OBS_FILL_PLOT_INFO_PLOT_MIN`
+     - fill_plot_info.plot_min
+   * - :term:`PLOT_POINT_OBS_FILL_PLOT_INFO_PLOT_MAX`
+     - fill_plot_info.plot_max
+   * - :term:`PLOT_POINT_OBS_FILL_PLOT_INFO_COLORBAR_FLAG`
+     - fill_plot_info.colorbar_flag
+
+**${METPLUS_POINT_DATA}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PLOT_POINT_OBS_POINT_DATA`
+     - point_data
+
 
 .. _point2grid_wrapper:
 
@@ -7829,6 +8192,7 @@ METplus Configuration
 | :term:`TC_PAIRS_RUN_ONCE`
 | :term:`TC_PAIRS_CHECK_DUP`
 | :term:`TC_PAIRS_INTERP12`
+| :term:`TC_PAIRS_MATCH_POINTS`
 |
 
 .. warning:: **DEPRECATED:**
@@ -8038,6 +8402,17 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`TC_PAIRS_VALID_END`
      - valid_end
+
+**${METPLUS_MATCH_POINTS}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_PAIRS_MATCH_POINTS`
+     - match_points
 
 **${METPLUS_DLAND_FILE}**
 

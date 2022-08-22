@@ -1,0 +1,20 @@
+#%Module######################################################################
+##
+##      METplus
+##
+proc ModulesHelp { } {
+  puts stderr "Sets up the paths and environment variables to use the METplus-4.1.1.
+     *** For help see the official MET webpage at http://www.dtcenter.org/met/users ***"
+}
+
+# Could not find a grib_util package on stampede
+module load intel/18.0.2
+module load nco/4.9.3
+module load RstatsPackages/3.5.1
+module load met/10.1.1
+setenv METPLUS_PATH /work2/06612/tg859120/stampede2/METplus/METplus-4.1.1
+# Path to wgrib
+prepend-path PATH /work/07738/kgerheis/stampede2/hpc-stack/v1.0.0-beta1/intel-18.0.2/grib_util/1.2.1/bin
+# Path to wgrib2
+prepend-path PATH /work/07738/kgerheis/stampede2/hpc-stack/v1.0.0-beta1/intel-18.0.2/impi-18.0.2/wgrib2/2.0.8/bin
+prepend-path PATH /work2/06612/tg859120/stampede2/METplus/METplus-4.1.1/ush

@@ -67,7 +67,7 @@ their verification environments. Wrappers can be run individually, or as
 a group of wrappers that represent a sequence of MET processes. New
 wrappers can readily be added to the METplus Wrappers package due to
 this modular design. Currently, METplus Wrappers can easily be applied
-by any user on their own computer platform that supports Python 3.6.  We have deprecated support to Python 2.7.
+by any user on their own computer platform that supports Python 3.8.  We have deprecated support to Python 2.7.
 
 The METplus Wrappers code and documentation is maintained by the DTC in
 Boulder, Colorado. METplus Wrappers is freely available to the modeling,
@@ -112,7 +112,7 @@ METplus Components Python Requirements
     - Description 
     - Use Cases (only applicable for METplus wrappers component)(followed by
       python package name)
-  * - Python 3.6.3+
+  * - Python 3.8.6+
     -
     - METplus wrappers, :raw-html:`<br />`
       METcalcpy, :raw-html:`<br />`
@@ -120,16 +120,6 @@ METplus Components Python Requirements
     -
     -
     -
-  * - Python 3.7
-    -
-    - METplus wrappers
-    -
-    -
-    - `Multi_Tool:
-      Feature Relative by Lead
-      using Multiple User-Defined Fields
-      (Python 3.7)
-      <../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html>`_
   * - cartopy
     - >=0.18.0
     - METplus wrappers,  :raw-html:`<br />`

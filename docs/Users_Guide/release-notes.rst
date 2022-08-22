@@ -39,6 +39,22 @@ describes the bugfix, enhancement, or new feature:
 https://github.com/dtcenter/METplus/issues
 
 
+METplus Version 5.0.0 Beta 2 Release Notes (2022-08-03)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Enhancements:
+
+  * Enhance StatAnalysis wrapper to support now and today (`#1669 <https://github.com/dtcenter/METplus/issues/1669>`_)
+
+  * Clean up and make more readable use case configuration files (`#1402 <https://github.com/dtcenter/METplus/issues/1402>`_)
+
+  * Add support for creating multiple input datasets (`#1694 <https://github.com/dtcenter/METplus/issues/1694>`_)
+
+* Bugfixes:
+
+  * Make setting of METPLOTPY_BASE consistent for use cases (`#1713 <https://github.com/dtcenter/METplus/issues/1713>`_)
+
+
 METplus Version 5.0.0 Beta 1 Release Notes (2022-06-22)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

@@ -638,7 +638,8 @@ created and tested.
 Trigger Input Data Ingest
 -------------------------
 
-If working in the *dtcenter/METplus repository*, please skip this step.
+**IF WORKING IN THE *dtcenter/METplus REPOSITORY*, PLEASE SKIP THIS STEP.**
+
 If working in a forked METplus repository, the newly added input data will not
 become available for the tests unless it is triggered from the dtcenter
 repository. A METplus developer will need to run the following steps. Please
@@ -952,7 +953,7 @@ Copy data from the feature directory into the next version directory
 
 **CONDITION 2:** MET Tool Wrapper Use Cases::
 
-    from_directory=${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}/met_test
+    from_directory=${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}/met_test/new
     echo $from_directory
     ls $from_directory
 

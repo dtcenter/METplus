@@ -40,45 +40,47 @@ elif [ "${GITHUB_REF: -4}" == -ref ]; then
 else
 
   # if develop or main branch, run all use cases
+  # and ignore commit message keywords
   branch_name=`cut -d "/" -f3 <<< "${GITHUB_REF}"`
   if [ "$branch_name" == "develop" ] || \
 	 [ "${branch_name:0:6}" == "main_v" ]; then
     run_use_cases=true
     run_all_use_cases=true
-  fi
+  else
 
-  # check commit messages for skip or force keywords
-  if grep -q "ci-skip-all" <<< "$commit_msg"; then
-    run_get_image=false
-    run_get_input_data=false
-    run_unit_tests=false
-    run_use_cases=false
-    run_save_truth_data=false
-    run_diff=false
-  fi
+    # check commit messages for skip or force keywords
+    if grep -q "ci-skip-all" <<< "$commit_msg"; then
+      run_get_image=false
+      run_get_input_data=false
+      run_unit_tests=false
+      run_use_cases=false
+      run_save_truth_data=false
+      run_diff=false
+    fi
 
-  if grep -q "ci-skip-use-cases" <<< "$commit_msg"; then
-    run_use_cases=false
-  fi
+    if grep -q "ci-skip-use-cases" <<< "$commit_msg"; then
+      run_use_cases=false
+    fi
 
-  if grep -q "ci-skip-unit-tests" <<< "$commit_msg"; then
-    run_unit_tests=false
-  fi
+    if grep -q "ci-skip-unit-tests" <<< "$commit_msg"; then
+      run_unit_tests=false
+    fi
 
-  if grep -q "ci-run-all-cases" <<< "$commit_msg"; then
-    run_use_cases=true
-    run_all_use_cases=true
-  fi
+    if grep -q "ci-run-all-cases" <<< "$commit_msg"; then
+      run_use_cases=true
+      run_all_use_cases=true
+    fi
 
-  if grep -q "ci-run-all-diff" <<< "$commit_msg"; then
-    run_all_use_cases=true
-    run_diff=true
-  fi
+    if grep -q "ci-run-all-diff" <<< "$commit_msg"; then
+      run_all_use_cases=true
+      run_diff=true
+    fi
 
-  if grep -q "ci-run-diff" <<< "$commit_msg"; then
-    run_diff=true
-  fi
+    if grep -q "ci-run-diff" <<< "$commit_msg"; then
+      run_diff=true
+    fi
 
+  fi
 fi
 
 echo ::set-output name=run_get_image::$run_get_image

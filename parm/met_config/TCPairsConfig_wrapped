@@ -124,7 +124,8 @@ anly_track = BDECK;
 // Specify if only those track points common to both the ADECK and BDECK
 // tracks be written out.
 //
-match_points = TRUE;
+//match_points =
+${METPLUS_MATCH_POINTS}
 
 //
 // Specify the NetCDF output of the gen_dland tool containing a gridded

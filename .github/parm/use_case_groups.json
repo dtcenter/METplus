@@ -1,17 +1,12 @@
 [
   {
     "category": "met_tool_wrapper",
-    "index_list": "0-29",
+    "index_list": "0-29,59-61",
     "run": false
   },
   {
     "category": "met_tool_wrapper",
     "index_list": "30-58",
-    "run": false
-  },
-  {
-    "category": "met_tool_wrapper",
-    "index_list": "59-60",
     "run": false
   },
   {
