@@ -48,7 +48,7 @@ Review the `unanswered discussions <https://github.com/dtcenter/METplus/discussi
   * Otherwise, leave the discussion unanswered until the next day to allow the
     user community time to respond.
 
-* For new discussions that have 0 repsonses and were posted the previous day:
+* For new discussions that have 0 responses and were posted the previous day:
 
   * Take action. See :ref:`actions_new_discussions`.
 
