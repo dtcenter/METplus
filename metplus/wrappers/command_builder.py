@@ -1194,7 +1194,7 @@ class CommandBuilder:
         """
         if self.app_path is None:
             self.log_error('No app path specified. '
-                              'You must use a subclass')
+                           'You must use a subclass')
             return None
 
         cmd = '{} -v {}'.format(self.app_path, self.c_dict['VERBOSITY'])
