@@ -12,8 +12,8 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import met_util as util
-from ..util import time_util
+from ..util import get_lead_sequence
+from ..util import ti_calculate
 from ..util import do_string_sub
 from ..util import remove_quotes
 from . import CommandBuilder
@@ -152,12 +152,12 @@ class Point2GridWrapper(CommandBuilder):
               Args:
                 @param input_dict dictionary containing timing information
         """
-        lead_seq = util.get_lead_sequence(self.config, input_dict)
+        lead_seq = get_lead_sequence(self.config, input_dict)
         for lead in lead_seq:
             self.clear()
             input_dict['lead'] = lead
 
-            time_info = time_util.ti_calculate(input_dict)
+            time_info = ti_calculate(input_dict)
             for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
                 if custom_string:
                     self.logger.info(f"Processing custom string: {custom_string}")
