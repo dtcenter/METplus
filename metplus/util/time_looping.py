@@ -159,6 +159,9 @@ def _get_time_prefix(config):
      valid time, or None if not enough information was found in the config
     """
     loop_by = config.getstr('config', 'LOOP_BY', '').upper()
+    if not loop_by:
+        return None
+
     if loop_by in ['INIT', 'RETRO']:
         return 'INIT'
 
