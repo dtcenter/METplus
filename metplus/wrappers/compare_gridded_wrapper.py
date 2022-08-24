@@ -312,33 +312,6 @@ that reformat gridded data
         # run the MET command
         self.build()
 
-    def create_and_set_output_dir(self, time_info):
-        """! Builds the full output dir path with valid or init time
-              Creates output directory if it doesn't already exist
-              Args:
-                @param time_info dictionary with time information
-        """
-        out_dir = self.c_dict['OUTPUT_DIR']
-
-        # use output template if it is set
-        # if not set, do not add any extra directories to path
-        out_template_name = '{}_OUTPUT_TEMPLATE'.format(self.app_name.upper())
-        if self.config.has_option('config',
-                                  out_template_name):
-            template = self.config.getraw('config',
-                                          out_template_name)
-            # perform string substitution to get full path
-            extra_path = do_string_sub(template,
-                                       **time_info)
-            out_dir = os.path.join(out_dir, extra_path)
-
-        # create full output dir if it doesn't already exist
-        if not os.path.exists(out_dir):
-            os.makedirs(out_dir)
-
-        # set output dir for wrapper
-        self.outdir = out_dir
-
     def get_command(self):
         """! Builds the command to run the MET application
            @rtype string
