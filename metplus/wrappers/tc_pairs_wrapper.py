@@ -20,9 +20,8 @@ import csv
 import datetime
 import glob
 
-from ..util import getlist
-from ..util import time_util
-from ..util import met_util as util
+from ..util import getlist, get_lead_sequence, skip_time, mkdir_p
+from ..util import ti_calculate
 from ..util import do_string_sub
 from ..util import get_tags
 from ..util.met_config import add_met_config_dict_list
@@ -385,13 +384,13 @@ class TCPairsWrapper(CommandBuilder):
             if self.c_dict['SKIP_LEAD_SEQ']:
                 lead_seq = [0]
             else:
-                lead_seq = util.get_lead_sequence(self.config, input_dict)
+                lead_seq = get_lead_sequence(self.config, input_dict)
 
             for lead in lead_seq:
                 input_dict['lead'] = lead
-                time_info = time_util.ti_calculate(input_dict)
+                time_info = ti_calculate(input_dict)
 
-                if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+                if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
                     self.logger.debug('Skipping run time')
                     return
 
@@ -930,7 +929,7 @@ class TCPairsWrapper(CommandBuilder):
             self.edeck = [edeck_dir]
 
         # get output filename from template
-        time_info = time_util.ti_calculate(input_dict)
+        time_info = ti_calculate(input_dict)
         time_storm_info = self._add_storm_info_to_dict(time_info)
         if not self.find_and_check_output_file(time_info=time_storm_info,
                                                check_extension='.tcst'):
