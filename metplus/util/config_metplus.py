@@ -294,6 +294,10 @@ def _set_logvars(config, logger=None):
 
     log_filenametimestamp = date_t.strftime(log_timestamp_template)
 
+    # Adding LOG_TIMESTAMP to the final configuration file.
+    logger.info('Adding LOG_TIMESTAMP=%s' % repr(log_filenametimestamp))
+    config.set('config', 'LOG_TIMESTAMP', log_filenametimestamp)
+
     log_dir = config.getdir('LOG_DIR')
 
     # NOTE: LOG_METPLUS or metpluslog is meant to include the absolute path
@@ -303,6 +307,7 @@ def _set_logvars(config, logger=None):
     # if LOG_METPLUS =  unset in the conf file, means NO logging.
     # Also, assUmes the user has included the intended path in LOG_METPLUS.
     user_defined_log_file = None
+    metpluslog = ''
     if config.has_option('config', 'LOG_METPLUS'):
         user_defined_log_file = True
         # strinterp will set metpluslog to '' if LOG_METPLUS =  is unset.
@@ -317,34 +322,6 @@ def _set_logvars(config, logger=None):
         if metpluslog:
             if os.path.basename(metpluslog) == metpluslog:
                 metpluslog = os.path.join(log_dir, metpluslog)
-    else:
-        # No LOG_METPLUS in conf file, so let the code try to set it,
-        # if the user defined the variable LOG_FILENAME_TEMPLATE.
-        # LOG_FILENAME_TEMPLATE is an 'unpublished' variable - no one knows
-        # about it unless you are reading this. Why does this exist ?
-        # It was from my first cycle implementation. I did not want to pull
-        # it out, in case the group wanted a stand alone metplus log filename
-        # template variable.
-
-        # If metpluslog_filename includes a path, python joins it intelligently
-        # Set the metplus log filename.
-        # strinterp will set metpluslog_filename to '' if template is empty
-        if config.has_option('config', 'LOG_FILENAME_TEMPLATE'):
-            metpluslog_filename = config.strinterp(
-                'config',
-                '{LOG_FILENAME_TEMPLATE}',
-                LOG_TIMESTAMP_TEMPLATE=log_filenametimestamp
-            )
-        else:
-            metpluslog_filename = ''
-        if metpluslog_filename:
-            metpluslog = os.path.join(log_dir, metpluslog_filename)
-        else:
-            metpluslog = ''
-
-    # Adding LOG_TIMESTAMP to the final configuration file.
-    logger.info('Adding LOG_TIMESTAMP=%s' % repr(log_filenametimestamp))
-    config.set('config', 'LOG_TIMESTAMP', log_filenametimestamp)
 
     # Setting LOG_METPLUS in the configuration object
     # At this point LOG_METPLUS will have a value or '' the empty string.
