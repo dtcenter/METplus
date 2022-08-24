@@ -272,11 +272,9 @@ class GFDLTrackerWrapper(CommandBuilder):
             self.log_error("TCVitals file not found")
             return False
 
-        # create output directory if it doesn't exist
-        output_dir = self.c_dict.get('OUTPUT_DIR')
-        if not os.path.exists(output_dir):
-            self.logger.debug(f"Creating output directory: {output_dir}")
-            os.makedirs(output_dir)
+        # get output path
+        if not self.find_and_check_output_file(input_dict):
+            return False
 
         # create sym link to output directory for all files (including tcvit)
         all_output_files, tc_vitals_out = (

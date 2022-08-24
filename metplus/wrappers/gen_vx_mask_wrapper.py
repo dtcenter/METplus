@@ -182,7 +182,8 @@ class GenVxMaskWrapper(CommandBuilder):
             temp_file = os.path.join(self.config.getdir('STAGING_DIR'),
                                      'gen_vx_mask',
                                      f'temp_{index}.nc')
-            self.set_output_path(temp_file)
+            self.find_and_check_output_file(time_info,
+                                            output_path_template=temp_file)
 
             # run GenVxMask
             self.build()
