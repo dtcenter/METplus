@@ -251,9 +251,7 @@ def handle_tmp_dir(config):
     # create temp dir if it doesn't exist already
     # this will fail if TMP_DIR is not set correctly and
     # env MET_TMP_DIR was not set
-    tmp_dir = config.getdir('TMP_DIR')
-    if not os.path.exists(tmp_dir):
-        os.makedirs(tmp_dir)
+    mkdir_p(config.getdir('TMP_DIR'))
 
 def handle_env_var_config(config, env_var_name, config_name):
     """! If environment variable is set, use that value
@@ -1229,9 +1227,7 @@ def preprocess_file(filename, data_type, config, allow_dir=False):
                 return stagefile
             # if it does not exist, run GempakToCF and return staged nc file
             # Create staging area if it does not exist
-            outdir = os.path.dirname(stagefile)
-            if not os.path.exists(outdir):
-                os.makedirs(outdir, mode=0o0775)
+            mkdir_p(os.path.dirname(stagefile))
 
             # only import GempakToCF if needed
             from ..wrappers import GempakToCFWrapper
@@ -1262,9 +1258,7 @@ def preprocess_file(filename, data_type, config, allow_dir=False):
     # Create staging area directory only if file has compression extension
     if any([os.path.isfile(f'{filename}{ext}')
             for ext in COMPRESSION_EXTENSIONS]):
-        outdir = os.path.dirname(outpath)
-        if not os.path.exists(outdir):
-            os.makedirs(outdir, mode=0o0775)
+        mkdir_p(os.path.dirname(outpath))
 
     # uncompress gz, bz2, or zip file
     if os.path.isfile(filename+".gz"):

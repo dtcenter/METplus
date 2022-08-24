@@ -912,8 +912,7 @@ class CommandBuilder:
 
         list_path = os.path.join(list_dir, filename)
 
-        if not os.path.exists(list_dir):
-            os.makedirs(list_dir, mode=0o0775)
+        util.mkdir_p(list_dir)
 
         self.logger.debug("Writing list of filenames...")
         with open(list_path, 'w') as file_handle:
@@ -1008,7 +1007,7 @@ class CommandBuilder:
         if (not os.path.exists(parent_dir) and
                 not self.c_dict.get('DO_NOT_RUN_EXE', False)):
             self.logger.debug(f"Creating output directory: {parent_dir}")
-            os.makedirs(parent_dir)
+            util.mkdir_p(parent_dir)
 
         if not output_exists or not skip_if_output_exists:
             return True
@@ -1222,8 +1221,7 @@ class CommandBuilder:
             self.log_error('Must specify path to output file')
             return None
 
-        if not os.path.exists(parent_dir):
-            os.makedirs(parent_dir)
+        util.mkdir_p(parent_dir)
 
         cmd += " " + out_path
 

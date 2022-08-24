@@ -863,8 +863,7 @@ class TCPairsWrapper(CommandBuilder):
                 @param logger the log where logging is directed
         """
         # create output directory if it does not exist
-        if not os.path.exists(os.path.dirname(out_csvfile)):
-            os.makedirs(os.path.dirname(out_csvfile))
+        mkdir_p(os.path.dirname(out_csvfile))
 
         # Open the output csv file
         out_file = open(out_csvfile, "w", newline='')

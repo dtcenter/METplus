@@ -226,7 +226,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
         if not os.path.exists(self.c_dict['OUTPUT_DIR']):
             self.logger.debug("Creating directory: "
                               f"{self.c_dict['OUTPUT_DIR']}")
-            os.makedirs(self.c_dict['OUTPUT_DIR'])
+            mkdir_p(self.c_dict['OUTPUT_DIR'])
 
         self.set_environment_variables()
 
