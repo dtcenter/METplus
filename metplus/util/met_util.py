@@ -148,15 +148,14 @@ def run_metplus(config, process_list):
                          "Options are processes, times")
             return 1
 
-        # write out all commands and environment variables to file
-        if not write_all_commands(all_commands, config):
-            # if process list contains any wrapper that should run commands,
-            # report an error if no commands were generated
-            if any([item[0] not in NO_COMMAND_WRAPPERS
-                    for item in process_list]):
+        # if process list contains any wrapper that should run commands
+        if any([item[0] not in NO_COMMAND_WRAPPERS for item in process_list]):
+            # write out all commands and environment variables to file
+            if not write_all_commands(all_commands, config):
+                # report an error if no commands were generated
                 total_errors += 1
 
-       # compute total number of errors that occurred and output results
+        # compute total number of errors that occurred and output results
         for process in processes:
             if process.errors != 0:
                 process_name = process.__class__.__name__.replace('Wrapper', '')
