@@ -901,12 +901,11 @@ class CommandBuilder:
             @param filename name of ascii file to write
             @param file_list list of files to write to ascii file
             @param output_dir (Optional) directory to write files. If None,
-             ascii files are written to {STAGING_DIR}/file_lists
+            ascii files are written to {FILE_LIST_DIR}
             @returns path to output file
         """
         if output_dir is None:
-            list_dir = os.path.join(self.config.getdir('STAGING_DIR'),
-                                    'file_lists')
+            list_dir = self.config.getdir('FILE_LISTS_DIR')
         else:
             list_dir = output_dir
 
