@@ -148,15 +148,14 @@ def run_metplus(config, process_list):
                          "Options are processes, times")
             return 1
 
-        # write out all commands and environment variables to file
-        if not write_all_commands(all_commands, config):
-            # if process list contains any wrapper that should run commands,
-            # report an error if no commands were generated
-            if any([item[0] not in NO_COMMAND_WRAPPERS
-                    for item in process_list]):
+        # if process list contains any wrapper that should run commands
+        if any([item[0] not in NO_COMMAND_WRAPPERS for item in process_list]):
+            # write out all commands and environment variables to file
+            if not write_all_commands(all_commands, config):
+                # report an error if no commands were generated
                 total_errors += 1
 
-       # compute total number of errors that occurred and output results
+        # compute total number of errors that occurred and output results
         for process in processes:
             if process.errors != 0:
                 process_name = process.__class__.__name__.replace('Wrapper', '')
@@ -252,9 +251,7 @@ def handle_tmp_dir(config):
     # create temp dir if it doesn't exist already
     # this will fail if TMP_DIR is not set correctly and
     # env MET_TMP_DIR was not set
-    tmp_dir = config.getdir('TMP_DIR')
-    if not os.path.exists(tmp_dir):
-        os.makedirs(tmp_dir)
+    mkdir_p(config.getdir('TMP_DIR'))
 
 def handle_env_var_config(config, env_var_name, config_name):
     """! If environment variable is set, use that value
@@ -1230,9 +1227,7 @@ def preprocess_file(filename, data_type, config, allow_dir=False):
                 return stagefile
             # if it does not exist, run GempakToCF and return staged nc file
             # Create staging area if it does not exist
-            outdir = os.path.dirname(stagefile)
-            if not os.path.exists(outdir):
-                os.makedirs(outdir, mode=0o0775)
+            mkdir_p(os.path.dirname(stagefile))
 
             # only import GempakToCF if needed
             from ..wrappers import GempakToCFWrapper
@@ -1263,9 +1258,7 @@ def preprocess_file(filename, data_type, config, allow_dir=False):
     # Create staging area directory only if file has compression extension
     if any([os.path.isfile(f'{filename}{ext}')
             for ext in COMPRESSION_EXTENSIONS]):
-        outdir = os.path.dirname(outpath)
-        if not os.path.exists(outdir):
-            os.makedirs(outdir, mode=0o0775)
+        mkdir_p(os.path.dirname(outpath))
 
     # uncompress gz, bz2, or zip file
     if os.path.isfile(filename+".gz"):

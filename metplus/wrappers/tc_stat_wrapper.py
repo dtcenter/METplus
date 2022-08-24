@@ -16,8 +16,6 @@ import os
 import sys
 from datetime import datetime
 
-from produtil.run import ExitStatusException
-
 from ..util import getlist, mkdir_p, do_string_sub, ti_calculate
 from . import CommandBuilder
 

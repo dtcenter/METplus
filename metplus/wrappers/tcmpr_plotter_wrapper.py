@@ -7,11 +7,12 @@ import os
 import shutil
 
 from ..util import getlist
-from ..util import met_util as util
 from ..util import time_util
 from ..util import do_string_sub
 from ..util import time_generator
 from ..util import remove_quotes
+from ..util import get_files
+from ..util import mkdir_p
 from . import CommandBuilder
 
 class TCMPRPlotterWrapper(CommandBuilder):
@@ -226,7 +227,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
         if not os.path.exists(self.c_dict['OUTPUT_DIR']):
             self.logger.debug("Creating directory: "
                               f"{self.c_dict['OUTPUT_DIR']}")
-            os.makedirs(self.c_dict['OUTPUT_DIR'])
+            mkdir_p(self.c_dict['OUTPUT_DIR'])
 
         self.set_environment_variables()
 
@@ -276,7 +277,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
             self.logger.debug('Passing in directory to R script')
             return [input_data]
 
-        input_files = util.get_files(input_data, ".*.tcst")
+        input_files = get_files(input_data, ".*.tcst")
         self.logger.debug(f"Number of files: {len(input_files)}")
         return input_files
 
