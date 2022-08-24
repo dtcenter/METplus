@@ -656,11 +656,6 @@ class GFDLTrackerWrapper(CommandBuilder):
                                    self.c_dict.get('OUTPUT_TEMPLATE'))
         output_path = do_string_sub(output_path, **time_info)
 
-        # create parent directory of output path if it does not exist
-        parent_dir = os.path.dirname(output_path)
-        if not os.path.exists(parent_dir):
-            self.logger.debug(f"Creating output directory: {parent_dir}")
-
         # copy fort.64/66 file to new file name
         self.logger.debug(f"Copying {fort_file} file to: {output_path}")
         try:

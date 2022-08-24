@@ -834,10 +834,6 @@ class TCPairsWrapper(CommandBuilder):
             self.log_error('Output path not set')
             return None
 
-        # create directory containing output file if it doesn't exist
-        if not os.path.exists(os.path.dirname(output_path)):
-            os.makedirs(os.path.dirname(output_path))
-
         cmd = '{} -v {}'.format(self.app_path, self.c_dict['VERBOSITY'])
         cmd += ' -bdeck {}'.format(' '.join(self.bdeck))
 
