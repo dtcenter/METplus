@@ -146,4 +146,9 @@ def test_set_command_line_arguments(metplus_config):
 
     wrap.args.clear()
 
+<<<<<<< HEAD:internal_tests/pytests/wrappers/point2grid/test_point2grid.py
     assert test_passed
+=======
+
+    assert(test_passed)
+>>>>>>> origin:internal_tests/pytests/point2grid/test_point2grid.py

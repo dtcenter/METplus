@@ -23,6 +23,10 @@ See the [METplus Workflow](https://metplus.readthedocs.io/en/latest/Contributors
 Select: **Reviewer(s)**
 Select: **Organization** level software support **Project** or **Repository** level development cycle **Project**
 Select: **Milestone** as the version that will include these changes
+<<<<<<< HEAD
 - [ ] After submitting the PR, select **Development** issue with the original issue number.
+=======
+- [ ] After submitting the PR, select **Development** with the original issue number.
+>>>>>>> origin
 - [ ] After the PR is approved, merge your changes. If permissions do not allow this, request that the reviewer do the merge.
 - [ ] Close the linked issue and delete your feature or bugfix branch from GitHub.
