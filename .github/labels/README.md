@@ -32,7 +32,7 @@ Sample commands for processing all METplus repos:
 # List of METplus repositories
 REPO_LIST="metplus met metplotpy metcalcpy metdataio metviewer \
                       metexpress metplus-training metplus-internal \
-		      metbaseimage";
+                      metbaseimage";
 
 # Build commands to add/update common labels
 for repo in ${REPO_LIST}; do
