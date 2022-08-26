@@ -228,15 +228,6 @@ class ASCII2NCWrapper(CommandBuilder):
         out_path = self.get_output_path()
         cmd += ' ' + out_path
 
-        parent_dir = os.path.dirname(out_path)
-        if parent_dir == '':
-            self.log_error('Must specify path to output file')
-            return None
-
-        # create full output dir if it doesn't already exist
-        if not os.path.exists(parent_dir):
-            os.makedirs(parent_dir)
-
         # add arguments
         cmd += ''.join(self.args)
 

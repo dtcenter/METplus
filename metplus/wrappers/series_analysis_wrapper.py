@@ -22,7 +22,7 @@ except Exception as err_msg:
     WRAPPER_CANNOT_RUN = True
     EXCEPTION_ERR = err_msg
 
-from ..util import getlist, get_storms
+from ..util import getlist, get_storms, mkdir_p
 from ..util import do_string_sub, parse_template, get_tags
 from ..util import get_lead_sequence, get_lead_sequence_groups
 from ..util import ti_get_hours_from_lead, ti_get_seconds_from_lead
@@ -1044,8 +1044,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         animate_dir = os.path.join(self.c_dict['OUTPUT_DIR'],
                                    'series_animate')
-        if not os.path.exists(animate_dir):
-            os.makedirs(animate_dir)
+        mkdir_p(animate_dir)
 
         for group, files in self.c_dict['PNG_FILES'].items():
             # write list of files to a text file
