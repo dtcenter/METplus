@@ -39,8 +39,40 @@ describes the bugfix, enhancement, or new feature:
 https://github.com/dtcenter/METplus/issues
 
 
+<<<<<<< HEAD
 METplus Version 5.0.0 Beta 2 Release Notes (2022-08-03)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+=======
+METplus Version 4.1.3 Release Notes (2022-07-27)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Bugfixes:
+
+  * Set Point2Grid -adp and -qc arguments properly (`METplus #1623 <https://github.com/dtcenter/METplus/issues/1623>`_)
+  * Reconcile setting of METPLOTPY_BASE for use cases (`METplus #1713 <https://github.com/dtcenter/METplus/issues/1713>`_)
+  * Allow NA value for <TOOL-NAME>_CLIMO_[MEAN/STDEV]_DAY_INTERVAL (`METplus #1653 <https://github.com/dtcenter/METplus/issues/1653>`_)
+  * Add missing brackets around list variable values for StatAnalysis wrapper (`METplus #1641 <https://github.com/dtcenter/METplus/issues/1641>`_)
+  * Phase Diagram use case writes all output into OUTPUT_BASE instead of INPUT_BASE (`METplus #1706 <https://github.com/dtcenter/METplus/issues/1706>`_)
+
+METplus Version 4.1.2 Release Notes (2022-05-16)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Bugfixes:
+
+  * Add logic to catch error thrown when wrapper has been disabled and update documentation to include instructions to disable UserScript wrapper (`METplus-Internal #33 <https://github.com/dtcenter/METplus-Internal/issues/33>`_)
+
+METplus Version 4.1.1 Release Notes (2022-04-21)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Bugfixes:
+
+    * Fix reset of arguments for some wrappers (i.e. GenEnsProd) after each run (`#1555 <https://github.com/dtcenter/METplus/issues/1555>`_)
+    * Fix PCPCombine extra options removal of semi-colon (`#1534 <https://github.com/dtcenter/METplus/issues/1534>`_)
+    * Fix inconsistent Weather Regime classification numbers when the forecast is reordered (`#1553 <https://github.com/dtcenter/METplus/issues/1553>`_)
+
+METplus Version 4.1.0 Release Notes (2022-03-14)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>>>>>>> origin
 
 * Enhancements:
 
