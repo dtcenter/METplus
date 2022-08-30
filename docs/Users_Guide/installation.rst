@@ -147,7 +147,7 @@ Get the source code via Web Browser
 -  Click on the 'Source code' link (either the *zip* or *tar.gz*) under Assets
    and when prompted, save it to the directory.
 
-- (Optional) To verify the checksum of the source code download:
+- (Optional) Verify the checksum of the source code download
     - Download the checksum file that corresponds to the source code download
       link that was used (checksum_zip.txt for the *zip* file and
       checksum_tar.txt for the *tar.gz* file).
