@@ -14,6 +14,7 @@ import re
 import sys
 import logging
 import datetime
+import time
 import shutil
 from configparser import ConfigParser, NoOptionError
 from pathlib import Path
@@ -79,6 +80,9 @@ OLD_BASE_CONFS = [
     'metplus_runtime.conf',
     'metplus_logging.conf'
 ]
+
+# set all loggers to use UTC
+logging.Formatter.converter = time.gmtime
 
 def setup(args, logger=None, base_confs=None):
     """!The METplus setup function.
