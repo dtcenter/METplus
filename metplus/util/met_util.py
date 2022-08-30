@@ -39,9 +39,14 @@ def pre_run_setup(config_inputs):
 
     logger = config.logger
 
+    try:
+        uid = f'as user {os.getlogin()}({os.getuid()})'
+    except AttributeError:
+        uid = f'as user {os.getlogin()}'
+
     config.set('config', 'METPLUS_VERSION', version_number)
-    logger.info('Running METplus v%s called with command: %s',
-                version_number, ' '.join(sys.argv))
+    logger.info('Running METplus v%s %s with command: %s',
+                version_number, uid, ' '.join(sys.argv))
 
     logger.info(f"Log file: {config.getstr('config', 'LOG_METPLUS')}")
     logger.info(f"METplus Base: {config.getdir('METPLUS_BASE')}")
@@ -197,12 +202,18 @@ def post_run_cleanup(config, app_name, total_errors):
     total_run_time = end_clock_time - start_clock_time
     logger.debug(f"{app_name} took {total_run_time} to run.")
 
+    try:
+        uid = f'as user {os.getlogin()}({os.getuid()})'
+    except AttributeError:
+        uid = f'as user {os.getlogin()}'
+
     if not total_errors:
         logger.info(log_message)
-        logger.info(f'{app_name} has successfully finished running.')
+        logger.info('%s has successfully finished running %s.', app_name, uid)
         return
 
-    error_msg = f"{app_name} has finished running but had {total_errors} error"
+    error_msg = (f'{app_name} has finished running {uid} '
+                 f'but had {total_errors} error')
     if total_errors > 1:
         error_msg += 's'
     error_msg += '.'
