@@ -412,13 +412,22 @@ def get_logger(config, sublog=None):
         if not os.path.exists(dir_name):
             util.mkdir_p(dir_name)
 
-        # set up the filehandler and the formatter, etc.
-        # The default matches the oformat log.py formatter of produtil
-        # So terminal output will now match log files.
+        # do not send logs up to root logger handlers
+        logger.propagate = False
+
+        # create log formatter from config settings
         formatter = METplusLogFormatter(config)
+
+        # set up the file logging
         file_handler = logging.FileHandler(metpluslog, mode='a')
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
+
+        # set up console logging
+        stream_handler = logging.StreamHandler()
+        stream_handler.setFormatter(formatter)
+        logger.addHandler(stream_handler)
+
 
     # set add the logger to the config
     config.logger = logger
