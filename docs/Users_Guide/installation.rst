@@ -164,6 +164,11 @@ Tar File::
 
     sha256sum --check checksum_tar.txt
 
+Note: If the source code is downloaded using wget, then the filenames will not
+match the filenames listed in the checksum files. If the source code is
+downloaded using curl, the *-LJO* flags should be added to the command to
+preserve the expected filenames found in the checksum files.
+
 
 -  Uncompress the source code (on Linux/Unix\ *: gunzip* for zip file or
    *tar xvfz* for the tar.gz file)
