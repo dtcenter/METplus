@@ -37,7 +37,19 @@ to the GitHub Documentation on
 Workflow Overview
 ~~~~~~~~~~~~~~~~~
 
-A contributor to METplus will do the following:
+Contributors will follow these instructions for new development.
+Detailed instructions for each item can be found below or by clicking the link.
+
+# .. :ref:`_wo-find-issue`
+# .. :ref:`_wo-fork-repo`
+# .. :ref:`_wo-clone-repo`
+# .. :ref:`_wo-set-upstream`
+# .. :ref:`_wo-feature-branch`
+# .. :ref:`_wo-make-changes`
+# .. :ref:`_wo-commit-changes`
+# .. :ref:`_wo-push-changes`
+
+.. _wo-find-issue:
 
 Find the GitHub issue
 ^^^^^^^^^^^^^^^^^^^^^
@@ -51,16 +63,24 @@ Find the GitHub issue
   `new Discussion <https://github.com/dtcenter/METplus/discussions/new>`_ on
   the METplus GitHub Discussions page to ask if an issue should be created.
 
+.. _wo-fork-repo:
 
 Fork the dtcenter/METplus repository
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* **If the contributor has write access to the dtcenter/METplus repository,
+  then forking the repository is not necessary.** If so, skip to the
+  instructions related to creating a fork and keeping the fork in sync with
+  the dtcenter/METplus repository.
 
 * Retrieve a copy of the source code by forking the *dtcenter/METplus*
   repository into the user's own GitHub repository. Click on the **Fork**
   button in the upper right hand side of the
   `METplus repository <https://github.com/dtcenter/METplus>`_.
 
-* Select your GitHub username in the **Owner** pull down menu.
+* Verify that your GitHub username is shown in the **Owner** pull down menu.
+  If it is not, then the forked repository likely already exists. If so,
+  continue to :ref:`wo-clone-repo`.
 
 * Unselect the checkbox that says *Copy the main_vX.Y branch only*.
 
@@ -74,9 +94,10 @@ Fork the dtcenter/METplus repository
   An entire copy of the *dtcenter/METplus* GitHub repository is now in the
   user's area.
 
+.. _wo-clone-repo:
 
-Clone the fork to a local repository
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Clone the repository locally
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * Change directories to a working directory. From the command line,
   enter the following:
@@ -86,6 +107,7 @@ Clone the fork to a local repository
     git clone https://github.com/{github-username}/METplus
 
   replacing *{github-username}* with the user's GitHub username.
+  If not working from a fork, then use *dtcenter*.
 
 * Change directories to the METplus directory:
 
@@ -95,8 +117,12 @@ Clone the fork to a local repository
 
   This is the local METplus repository.
 
+.. _wo-set-upstream:
+
 Set upstream remote
 ^^^^^^^^^^^^^^^^^^^
+
+* **If working from the dtcenter/METplus repository, skip this step.**
 
 * Add a remote named origin to the clone of the local Git repository, which
   will allow changes to be pushed to the repository that was forked above.
@@ -123,11 +149,12 @@ Set upstream remote
 
   where *{github-username}* is the user's GitHub username.
 
+.. _wo-feature-branch:
 
-Generate a feature branch from the 'develop' branch for new development
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Create a feature branch
+^^^^^^^^^^^^^^^^^^^^^^^
 
-* Create a feature branch in the *dtcenter/METplus* GitHub repository
+* Generate a feature branch from the *develop* branch for new development
   following this naming convention:
 
   *feature_<Github Issue number>_<brief_description>*
@@ -191,6 +218,7 @@ Generate a feature branch from the 'develop' branch for new development
 
   The asterisk (*) indicates the active branch.
 
+.. _wo-make-changes:
 
 Make changes to code in the feature branch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -212,7 +240,8 @@ local repository.
 
     * Add documentation
 
-* Keep the fork in sync with the origin repository:
+* If working in a forked repository, keep the fork in sync with the origin
+  repository:
 
     * New changes to the origin repository may be added by others during
       development. Periodically apply these changes to the feature branch to
@@ -231,23 +260,51 @@ local repository.
   The *merge* command merges the latest changes from the upstream develop
   branch into the feature branch.
 
-    * If the console output includes the text *CONFLICT*, then there are
-      conflicts between the two branches that must be resolved. HOW TO ADVISE?
+* If not working in a forked repository, keep the feature branch in sync with
+  the develop branch:
 
+  .. code-block:: ini
+
+    git fetch
+    git merge develop
+
+* If the console output includes the text *CONFLICT*, then there are
+  conflicts between the two branches that must be resolved manually.
+  Refer to the GitHub documentation for help with
+  `Resolving a merge conflict using the command line <https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-using-the-command-line>`_.
+
+.. _wo-commit-changes:
 
 Commit changes to feature branch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* Commit any new files by running the following.  Run the *'git add'*
-  command only if this file is
-  newly created and does not yet exist in the repository.
+* View all files that have changed since the last commit:
 
   .. code-block:: ini
 
-    git add <filename>
-    git commit <filename>
+    git status
 
-  replacing <filename> with the filename and removing the angle brackets (<>).
+* It is recommended to group related changes into a single commit.
+  Mark files to be committed using the *git add* followed by the filename:
+
+  .. code-block:: ini
+
+    git add <filename1>
+    git add <filename2>
+
+* Check the status again to verify that the correct files have been staged
+  for commit:
+
+  .. code-block:: ini
+
+    git status
+
+* Commit the files by running the *git commit* command. The -m argument can
+  be used to add a commit message to describe the changes.
+
+  .. code-block:: ini
+
+    git commit
 
   A popup window will appear. Enter a description about this commit, using the
   editor the user selected when the Git account was set up.
@@ -264,25 +321,37 @@ Commit changes to feature branch
   rather than wait
   until there are multiple changes to include in one commit.
 
+* Alternatively, the -m argument can be used to add a commit message to
+  describe the changes.
+
+  .. code-block:: ini
+
+    git commit -m "{commit_message}"
+
+  where {commit_message} is a descriptive message about the changes.
+
+
+.. _wo-push-changes:
+
 Push the feature branch to GitHub
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* Run the following:
+Pushing changes up to GitHub periodically is recommended to avoid losing
+progress by relying on the local copy of the changes.
+
+* To push changes to GitHub, run the following:
 
   .. code-block:: ini
 
     git push origin <feature_777_wrapper_xyz>
 
   replacing *<feature_777_wrapper_xyz>* with the feature branch name
-  to push the changes to
-  the origin (i.e. to the *https://github.com/<your-github-user>/METplus*
-  repository).
-  
+
 
 .. _pull-request-browser:
   
-Open a pull request using a browser
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Open a pull request
+^^^^^^^^^^^^^^^^^^^
 
 * To request to have the changes be incorporated into the remote repository
   (i.e. the
@@ -425,7 +494,7 @@ Creating a pull request
 
 12. Once the recommended testing is complete and any necessary changes have
     been made, approve the request.
-					  
+
 
 Merging pull requests
 ^^^^^^^^^^^^^^^^^^^^^
