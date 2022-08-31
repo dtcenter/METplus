@@ -160,7 +160,7 @@ Generate a feature branch from the 'develop' branch for new development
     * develop
     main_v4.1
 
-  The asterisk, "*", indicates the currently active branch.
+  The asterisk (*) indicates the active branch.
 
 * Ensure that the develop branch is in sync with the upstream develop branch:
 
@@ -192,7 +192,7 @@ Generate a feature branch from the 'develop' branch for new development
     main_v4.1
     * feature_777_wrapper_xyz
 
-  The asterisk (*) indicates which branch is currently in use/checked out.
+  The asterisk (*) indicates the active branch.
 
 
 Make changes to code in the feature branch
