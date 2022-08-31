@@ -40,14 +40,14 @@ Workflow Overview
 Contributors will follow these instructions for new development.
 Detailed instructions for each item can be found below or by clicking the link.
 
-# .. :ref:`_wo-find-issue`
-# .. :ref:`_wo-fork-repo`
-# .. :ref:`_wo-clone-repo`
-# .. :ref:`_wo-set-upstream`
-# .. :ref:`_wo-feature-branch`
-# .. :ref:`_wo-make-changes`
-# .. :ref:`_wo-commit-changes`
-# .. :ref:`_wo-push-changes`
+# .. :ref:`wo-find-issue`
+# .. :ref:`wo-fork-repo`
+# .. :ref:`wo-clone-repo`
+# .. :ref:`wo-set-upstream`
+# .. :ref:`wo-feature-branch`
+# .. :ref:`wo-make-changes`
+# .. :ref:`wo-commit-changes`
+# .. :ref:`wo-push-changes`
 
 .. _wo-find-issue:
 
