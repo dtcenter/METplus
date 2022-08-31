@@ -13,7 +13,7 @@ where new or updated code is created on a 'feature' branch that is based on
 the `dtcenter/METplus GitHub 'develop' branch <https://github.com/dtcenter/METplus/tree/develop>`_.
 
 From James McCreight (WRF-Hydro team) this is a good write-up on
-`best practices for collaboration on GitHub <docs.google.com/document/d/1DxsViogPdA0uObHgNx4YFKd4ClC-m9UFcX0rO-ZJTY0/edit?pli=1#heading=h.g4dgc8a6erna>`_.
+`best practices for collaboration on GitHub <https://docs.google.com/document/d/1DxsViogPdA0uObHgNx4YFKd4ClC-m9UFcX0rO-ZJTY0/edit?pli=1#heading=h.g4dgc8a6erna>`_.
 
 The feature branch is named after the corresponding GitHub issue:
 
@@ -31,8 +31,7 @@ Sequence of Events - Contributing Code
 
 *Prerequisite:*
 
-The user must set up a GitHub repository account if one does not already
-exist.
+The user must set up a GitHub account if one does not already exist.
 Log into the account.  For more information about GitHub accounts, please refer
 to the GitHub Documentation on
 `GitHub accounts <https://help.github.com/en/github/getting-started-with-github/signing-up-for-a-new-github-account>`_.
@@ -40,43 +39,20 @@ to the GitHub Documentation on
 
 Workflow Overview
 ~~~~~~~~~~~~~~~~~
+
 A contributor to METplus will do the following:
 
-1.  Create a GitHub Issue to track the new contribution.
-
-2.  Fork the *dtcenter/METplus* repository.
-
-3.  Clone the fork to the local repository.
-
-4.  Set upstream remote (to assist in keeping upstream and local repositories
-    synchronized).
-
-5.  Generate a feature branch from the 'develop' branch for new development.
-
-6.  Make changes to code in the feature branch.
-
-7.  Commit changes to the feature branch (limit one change per commit).
-
-8.  Push the feature branch to GitHub.
-
-9.  Open a pull request from feature branch to original repo (from which
-    the original branch was forked, in step 2 above).
-
-10.  Clean up after pull request has been merged by an authorized METplus
-     developer.
-
-
-
-Create a GitHub Issue that reflects what needs to be done
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Find the GitHub issue
+^^^^^^^^^^^^^^^^^^^^^
 
 * Go to the `METplus repository <https://github.com/dtcenter/METplus>`_  and
-  click on the `Issues link <https://github.com/dtcenter/METplus/issues>`_.
+  click on the `Issues tab <https://github.com/dtcenter/METplus/issues>`_.
 
-* Click on the green **New issue** button.
-
-* Write a description of the task and attach appropriate values to Assignee,
-  Labels, and Milestone links located on the right hand side of the page.
+* Search for an existing issue that describes the contribution.
+  If one exists, take note of the issue number.
+  If one cannot be found, create a
+  `new Discussion <https://github.com/dtcenter/METplus/discussions/new>`_ on
+  the METplus GitHub Discussions page to ask if an issue should be created.
 
 
 Fork the dtcenter/METplus repository
@@ -87,35 +63,32 @@ Fork the dtcenter/METplus repository
   button in the upper right hand side of the
   `METplus repository <https://github.com/dtcenter/METplus>`_.
 
-* Click on the appropriate GitHub account when presented with the pop-up window
-  with the question 'Where should we fork METplus?'
+* Select your GitHub username in the **Owner** pull down menu.
+
+* Unselect the checkbox that says *Copy the main_vX.Y branch only*.
 
 * The web page will refresh to the GitHub repository. For example:
 
   .. code-block:: ini
 
-    https://github.com/<your-github-user>/METplus
+    https://github.com/{github-username}/METplus
 
-  Where *<your-github-user>* is replaced with the user's GitHub username,
-  without the angle brackets <>.
-  An entire copy of the *dtcenter/METplus* Github repository is now in the
+  Where *{github-username}* is the user's GitHub username.
+  An entire copy of the *dtcenter/METplus* GitHub repository is now in the
   user's area.
 
 
 Clone the fork to a local repository
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* Copy the source code to the working directory.
-
 * Change directories to a working directory. From the command line,
   enter the following:
 
   .. code-block:: ini
 
-    git clone https://github.com/<your-github-user>/METplus
+    git clone https://github.com/{github-username}/METplus
 
-  replacing <your-github-user> with the user's GitHub username and without the
-  angle brackets <>.
+  replacing *{github-username}* with the user's GitHub username.
 
 * Change directories to the METplus directory:
 
@@ -146,13 +119,12 @@ Set upstream remote
 
   .. code-block:: ini
 
-    origin	https://github.com/<your-github-user>/METplus (fetch)
-    origin	https://github.com/<your-github-user>/METplus (push)
+    origin	https://github.com/{github-username}/METplus (fetch)
+    origin	https://github.com/{github-username}/METplus (push)
     upstream	https://github.com/dtcenter/METplus (fetch)
     upstream	https://github.com/dtcenter/METplus (push)
 
-  where <your-github-user> is the user's GitHub username without the
-  angle brackets <>.
+  where *{github-username}* is the user's GitHub username.
 
 
 Generate a feature branch from the 'develop' branch for new development
@@ -186,17 +158,25 @@ Generate a feature branch from the 'develop' branch for new development
   .. code-block:: ini
 
     * develop
-    main_v3.1
+    main_v4.1
 
   The asterisk, "*", indicates the currently active branch.
 
-* At the command line, create and checkout the feature branch. For example:
+* Ensure that the develop branch is in sync with the upstream develop branch:
+
+  .. code-block:: ini
+
+   git fetch upstream
+   git merge upstream/develop
+   git push origin develop
+
+* Create and checkout the feature branch. For example:
 
   .. code-block:: ini
 
     git checkout -b feature_777_wrapper_xyz
 
-  replacing *feature_777_wrapper_xyz* with the user's feature branch name.
+  replacing *feature_777_wrapper_xyz* with the feature branch name.
 
 * Verify that the user is working in the correct branch by running:
 
@@ -209,11 +189,10 @@ Generate a feature branch from the 'develop' branch for new development
   .. code-block:: ini
 
     develop
-    main_v3.1
+    main_v4.1
     * feature_777_wrapper_xyz
 
-  where the asterisk, "*", indicates which branch is currently in
-  use/checked out.
+  The asterisk (*) indicates which branch is currently in use/checked out.
 
 
 Make changes to code in the feature branch
@@ -222,33 +201,41 @@ Make changes to code in the feature branch
 Users should make changes to their feature branch and commit changes to their
 local repository.
 
-* Create code following the coding standards in the
-  :ref:`codingstandards` section of the Contributor's Guide.
+* If adding a new METplus use case:
 
-* Provide some tests for the code using the pytest framework, provide
-  user documentation
-  describing what the code does, and provide any necessary data.
+    * Follow the instructions on the :ref:`adding-use-cases` section of the
+      Contributor's Guide.
 
-* Keep the fork in sync with the original repository. While working, it is
-  highly likely that changes are occurring in
-  the original repository, which could have an impact.
-  Regularly use the following commands
-  to keep the fork in sync with the original repository.
+* If making code changes:
+
+    * Follow the coding standards in the :ref:`codingstandards` section of the
+      Contributor's Guide.
+
+    * Add unit tests using the pytest framework
+
+    * Add documentation
+
+* Keep the fork in sync with the origin repository:
+
+    * New changes to the origin repository may be added by others during
+      development. Periodically apply these changes to the feature branch to
+      avoid conflicts.
+
+    * To merge the latest changes from the origin develop branch into the
+      feature branch, run the following from the feature branch:
 
   .. code-block:: ini
 
-    git pull upstream develop
-    git push origin develop
-    git merge origin develop
+    git fetch upstream
+    git merge upstream/develop
 
-  The first command pulls changes from the original repository (the
-  `METplus GitHub repository <https://github.com/dtcenter/METplus>`_
-  that is output when 
-  running *git remote -v* and that was set to upstream in the
-  "Set upstream remote" section above).
-  The second command pushes those changes to the forked repository.
-  The third command will merge the local
-  develop branch into the feature branch.
+  The *fetch* command obtains all new changes from the upstream (dtcenter)
+  repository.
+  The *merge* command merges the latest changes from the upstream develop
+  branch into the feature branch.
+
+    * If the console output includes the text *CONFLICT*, then there are
+      conflicts between the two branches that must be resolved. HOW TO ADVISE?
 
 
 Commit changes to feature branch
