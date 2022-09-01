@@ -36,7 +36,7 @@ Output Files: N/A
 import os
 from produtil.run import exe, run
 import shlex
-from datetime import datetime
+from datetime import datetime, timezone
 
 class CommandRunner(object):
     """! Class for Creating and Running External Programs
@@ -134,7 +134,7 @@ class CommandRunner(object):
                 cmd_exe = exe(the_exe)[the_args].env(**env).err2out()
 
         # get current time to calculate total time to run command
-        start_cmd_time = datetime.now()
+        start_cmd_time = datetime.now(timezone.utc)
 
         # run command
         try:
@@ -143,7 +143,7 @@ class CommandRunner(object):
             ret = -1
         else:
             # calculate time to run
-            end_cmd_time = datetime.now()
+            end_cmd_time = datetime.now(timezone.utc)
             total_cmd_time = end_cmd_time - start_cmd_time
             self.logger.debug(f'Finished running {the_exe} '
                               f'in {total_cmd_time}')

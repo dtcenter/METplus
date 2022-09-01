@@ -13,7 +13,7 @@ import os
 import re
 import sys
 import logging
-import datetime
+from datetime import datetime, timezone
 import time
 import shutil
 from configparser import ConfigParser, NoOptionError
@@ -217,7 +217,7 @@ def launch(config_list):
 
     # set config variable for current time
     config.set('config', 'CLOCK_TIME',
-               datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
+               datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S'))
 
     config_format_list = []
     # Read in and parse all the conf files and overrides
@@ -283,18 +283,14 @@ def _set_logvars(config, logger=None):
     log_timestamp_template = config.getstr('config', 'LOG_TIMESTAMP_TEMPLATE',
                                            '')
     if config.getbool('config', 'LOG_TIMESTAMP_USE_DATATIME', False):
-        if util.is_loop_by_init(config):
-            loop_by = 'INIT'
-        else:
-            loop_by = 'VALID'
-
-        date_t = datetime.datetime.strptime(
-            config.getstr('config', f'{loop_by}_BEG'),
-            config.getstr('config', f'{loop_by}_TIME_FMT')
-        )
+        loop_by = 'INIT' if util.is_loop_by_init(config) else 'VALID'
+        time_str = config.getraw('config', f'{loop_by}_BEG')
+        time_fmt = config.getraw('config', f'{loop_by}_TIME_FMT')
     else:
-        date_t = datetime.datetime.now()
+        time_str = config.getraw('config', 'CLOCK_TIME')
+        time_fmt = '%Y%m%d%H%M%S'
 
+    date_t = datetime.strptime(time_str, time_fmt)
     log_filenametimestamp = date_t.strftime(log_timestamp_template)
 
     log_dir = config.getdir('LOG_DIR')

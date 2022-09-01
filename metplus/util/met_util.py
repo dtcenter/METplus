@@ -1,7 +1,7 @@
 import os
 import shutil
 import sys
-import datetime
+from datetime import datetime, timedelta, timezone
 import re
 import gzip
 import bz2
@@ -190,15 +190,14 @@ def post_run_cleanup(config, app_name, total_errors):
     log_message = (f"Check the log file for more information: "
                    f"{config.getstr('config', 'LOG_METPLUS')}")
 
-    start_clock_time = datetime.datetime.strptime(config.getstr('config',
-                                                                'CLOCK_TIME'),
-                                                  '%Y%m%d%H%M%S')
+    start_clock_time = datetime.strptime(config.getstr('config', 'CLOCK_TIME'),
+                                         '%Y%m%d%H%M%S').replace(tzinfo=timezone.utc)
 
     # rewrite final conf so it contains all of the default values used
     write_final_conf(config)
 
     # compute time it took to run
-    end_clock_time = datetime.datetime.now()
+    end_clock_time = datetime.now(timezone.utc)
     total_run_time = end_clock_time - start_clock_time
     logger.debug(f"{app_name} took {total_run_time} to run.")
 
@@ -457,7 +456,7 @@ def log_runtime_banner(config, time_input, process):
 
 def add_to_time_input(time_input, clock_time=None, instance=None, custom=None):
     if clock_time:
-        clock_dt = datetime.datetime.strptime(clock_time, '%Y%m%d%H%M%S')
+        clock_dt = datetime.strptime(clock_time, '%Y%m%d%H%M%S')
         time_input['now'] = clock_dt
 
     # if instance is set, use that value, otherwise use empty string
@@ -594,7 +593,8 @@ def handle_lead_seq(config, lead_strings, lead_min=None, lead_max=None):
     if lead_min is None and lead_max is None:
         return leads
 
-    now_time = datetime.datetime.now()
+    # add current time to leads to approximate month and year length
+    now_time = datetime.now(timezone.utc)
     lead_min_approx = now_time + lead_min
     lead_max_approx = now_time + lead_max
     for lead in leads:
@@ -831,8 +831,8 @@ def shift_time_seconds(time_str, shift):
         Returns:
             New time in format %Y%m%d%H%M%S
     """
-    return (datetime.datetime.strptime(time_str, "%Y%m%d%H%M%S") +
-            datetime.timedelta(seconds=shift)).strftime("%Y%m%d%H%M%S")
+    return (datetime.strptime(time_str, "%Y%m%d%H%M%S") +
+            timedelta(seconds=shift)).strftime("%Y%m%d%H%M%S")
 
 def get_threshold_via_regex(thresh_string):
     """!Ensure thresh values start with >,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le and then a number
