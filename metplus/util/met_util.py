@@ -39,11 +39,14 @@ def pre_run_setup(config_inputs):
 
     logger = config.logger
 
-    user_info = get_user_info()
-    user_string = f' as user {user_info} ' if user_info else ' '
+    try:
+        uid = f'as user {os.getlogin()}({os.getuid()})'
+    except AttributeError:
+        uid = f'as user {os.getlogin()}'
+
     config.set('config', 'METPLUS_VERSION', version_number)
-    logger.info('Running METplus v%s%swith command: %s',
-                version_number, user_string, ' '.join(sys.argv))
+    logger.info('Running METplus v%s %s with command: %s',
+                version_number, uid, ' '.join(sys.argv))
 
     logger.info(f"Log file: {config.getstr('config', 'LOG_METPLUS')}")
     logger.info(f"METplus Base: {config.getdir('METPLUS_BASE')}")
@@ -199,15 +202,17 @@ def post_run_cleanup(config, app_name, total_errors):
     total_run_time = end_clock_time - start_clock_time
     logger.debug(f"{app_name} took {total_run_time} to run.")
 
-    user_info = get_user_info()
-    user_string = f' as user {user_info}' if user_info else ''
+    try:
+        uid = f'as user {os.getlogin()}({os.getuid()})'
+    except AttributeError:
+        uid = f'as user {os.getlogin()}'
+
     if not total_errors:
         logger.info(log_message)
-        logger.info('%s has successfully finished running%s.',
-                    app_name, user_string)
+        logger.info('%s has successfully finished running %s.', app_name, uid)
         return
 
-    error_msg = (f'{app_name} has finished running{user_string} '
+    error_msg = (f'{app_name} has finished running {uid} '
                  f'but had {total_errors} error')
     if total_errors > 1:
         error_msg += 's'
@@ -215,35 +220,6 @@ def post_run_cleanup(config, app_name, total_errors):
     logger.error(error_msg)
     logger.info(log_message)
     sys.exit(1)
-
-def get_user_info():
-    """! Get user information from OS. Note that some OS cannot obtain user ID
-    and some cannot obtain username.
-
-    @returns username(uid) if both username and user ID can be read,
-     username if only username can be read, uid if only user ID can be read,
-     or an empty string if neither can be read.
-    """
-    try:
-        username = os.getlogin()
-    except FileNotFoundError:
-        username = None
-
-    try:
-        uid = os.getuid()
-    except AttributeError:
-        uid = None
-
-    if username and uid:
-        return f'{username}({uid})'
-
-    if username:
-        return username
-
-    if uid:
-        return uid
-
-    return ''
 
 def write_all_commands(all_commands, config):
     """! Write all commands that were run to a file in the log
