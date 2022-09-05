@@ -1,6 +1,6 @@
 """
-UserScript: Make MaKE-MaKI  plots from calculated MaKE and MaKI  indices
-======================================================
+UserScript: Make MaKE-MaKI plot from calculated MaKE and MaKI indices
+=====================================================================
 
 model_applications/
 s2s_mjo/
@@ -12,7 +12,7 @@ UserScript_obsCFSR_obsOnly_MJO_ENSO.py
 # Scientific Objective
 # --------------------
 #
-# To compute the MaKE and MaKI indices using the zonal and meridional comomponents of  windstress (taux,tauy), zonal and meridional components of surface ocean currents (u,v), and sea surface temperature (SST). Specifically, MaKE and MaKI indices aree computed using taux, tauy, u, v and SST ddata between 30S and 30N and 125E and 80W. Daily anomalies of wind stress components are filtered for 30-90 day using a Convolutional Neural Network-based filter. The weights of the filter are computed offline. The bandpass filtered wind stress components are projected onto 4 Empirical Orthogonal Functions (EOFs) data. The obtained PCs are standardized and combined with the EOFs to obtain the Madden-Julian Oscillation (MJO) component of the surface wind stress (taux_MJO, tauy_MJO). u and v daily anomalies are multiplied by meridional structure of Kelvin wave (u_K, v_K). Windpower (W_MJO,K) is then computed as taux_MJO*u_k+tauy_MJO*v_K. Theh standardized W_MJO,K and SST areree projected onto the first two multivariate EOFs of W_MJO,K and SST. The resulting dadily time seeries (PCs) are normalized and used to compute monthly values of MaKE and MaKI. Monthly valuees of MaKE and MaKI are saved into a text (.csv) file and plotted as time series.     
+# To compute the MaKE and MaKI indices using the zonal and meridional comomponents of windstress (TAUX,TAUY), zonal and meridional components of surface ocean currents (UCUR,VCUR), and sea surface temperature (SST). Specifically, MaKE and MaKI indices aree computed using TAUX, TAUY, UCUR, VCUR and SST data between 30S and 30N and 125E and 80W. Daily anomalies of wind stress components are filtered for 30-90 days using a Convolutional Neural Network (CNN)-based filter. The weights of the filter are computed offline. The bandpass filtered wind stress components are projected onto 4 Empirical Orthogonal Functions (EOFs) data. The obtained timeseries (PCs) are standardized and combined with the EOFs to obtain the Madden-Julian Oscillation (MJO) component of the surface wind stress (TAUX_MJO,TAUY_MJO). UCUR and VCUR daily anomalies are multiplied by the meridional structure of Kelvin wave (UCUR_K,VCUR_K). Windpower due to the MJO component of the windstress and oceanic Kelvin waves (W_MJO,K) is then computed as TAUX_MJO*UCUR_K+TAUY_MJO*VCUR_K. The standardized windpower and SST are projected onto the first two multivariate EOFs of W_MJO,K and SST. The resulting daily time series (PCs) are normalized and used to compute monthly values of MaKE and MaKI. Monthly values of MaKE and MaKI are saved into a text (.csv) file and plotted as time series.     
 # 
 
 ##############################################################################
