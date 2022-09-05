@@ -34,7 +34,6 @@ UserScript_obsCFSR_obsOnly_MJO_ENSO.py
 # * datetime
 # * xarray
 # * matplotlib
-# * scipy
 # * pandas 
 #
 # If the version of Python used to compile MET did not have these libraries at the time of compilation, you will need to add these packages or create a new Python environment with these packages.
