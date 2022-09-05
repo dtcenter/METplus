@@ -65,7 +65,7 @@ UserScript_obsCFSR_obsOnly_MJO_ENSO.py
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
 # i.e. parm/use_cases/model_applications/s2s_mjo/UserScript_obsCFSR_obsOnly_MJO_ENSO.conf.
-# The file UserScript_obsCFSR_obsOnly_MJO_ENSO/mjo_ensodriver.py runs the python program and  
+# The file UserScript_obsCFSR_obsOnly_MJO_ENSO/mjo_enso_driver.py runs the python program and  
 # UserScript_obsCFSR_obsOnly_MJO_ENSO.conf sets the variables for all steps of the MJO-ENSO use case.
 #
 # .. highlight:: bash
