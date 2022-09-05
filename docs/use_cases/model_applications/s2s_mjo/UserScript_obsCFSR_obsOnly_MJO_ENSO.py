@@ -124,7 +124,7 @@ UserScript_obsCFSR_obsOnly_MJO_ENSO.py
 # Expected Output
 # ---------------
 #
-# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use case will be found in model_applications/s2s_mjo/UserScript_obsCFSR_obsOnly_MJO_ENSO.  This may include the regridded data.  In addition, a text (.csv) file  will be generated and a time serie plot, and the output location can be specified as PLOT_OUTPUT_DIR.  If it is not specified, plots will be sent to model_applications/s2s_mjo/UserScript_obsCFSR_obsOnly_MJO_ENSO/plots (relative to **OUTPUT_BASE**).
+# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use case will be found in model_applications/s2s_mjo/UserScript_obsCFSR_obsOnly_MJO_ENSO. This may include the regridded data. In addition, a text (.csv) file will be generated and a time serie plot. The name of the text file can be specified as MAKE_MAKI_OUTPUT_TEXT_FILE. The output location can be specified as PLOT_OUTPUT_DIR. If it is not specified, plot will be sent to model_applications/s2s_mjo/UserScript_obsCFSR_obsOnly_MJO_ENSO/plots (relative to **OUTPUT_BASE**). The name of the plot file can be specified as OBS_PLOT_OUTPUT_NAME.
 # 
 
 ##############################################################################
