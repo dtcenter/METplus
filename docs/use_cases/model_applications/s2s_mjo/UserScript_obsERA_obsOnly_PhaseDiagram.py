@@ -137,4 +137,5 @@ UserScript_obsERA_obsOnly_PhaseDiagram.py
 #
 #   Navigate to :ref:`quick-search` to discover other similar use cases.
 #
+# sphinx_gallery_thumbnail_path = '_static/s2s_mjo-UserScript_obsERA_obsOnly_PhaseDiagram.png'
 #
