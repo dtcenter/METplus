@@ -190,13 +190,13 @@ def post_run_cleanup(config, app_name, total_errors):
                    f"{config.getstr('config', 'LOG_METPLUS')}")
 
     start_clock_time = datetime.strptime(config.getstr('config', 'CLOCK_TIME'),
-                                         '%Y%m%d%H%M%S').replace(tzinfo=timezone.utc)
+                                         '%Y%m%d%H%M%S')
 
     # rewrite final conf so it contains all of the default values used
     write_final_conf(config)
 
     # compute time it took to run
-    end_clock_time = datetime.now(timezone.utc)
+    end_clock_time = datetime.now()
     total_run_time = end_clock_time - start_clock_time
     logger.debug(f"{app_name} took {total_run_time} to run.")
 
@@ -619,7 +619,7 @@ def handle_lead_seq(config, lead_strings, lead_min=None, lead_max=None):
         return leads
 
     # add current time to leads to approximate month and year length
-    now_time = datetime.now(timezone.utc)
+    now_time = datetime.now()
     lead_min_approx = now_time + lead_min
     lead_max_approx = now_time + lead_max
     for lead in leads:

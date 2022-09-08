@@ -217,7 +217,7 @@ def launch(config_list):
 
     # set config variable for current time
     config.set('config', 'CLOCK_TIME',
-               datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S'))
+               datetime.now().strftime('%Y%m%d%H%M%S'))
 
     config_format_list = []
     # Read in and parse all the conf files and overrides
@@ -286,11 +286,10 @@ def _set_logvars(config, logger=None):
         loop_by = 'INIT' if util.is_loop_by_init(config) else 'VALID'
         time_str = config.getraw('config', f'{loop_by}_BEG')
         time_fmt = config.getraw('config', f'{loop_by}_TIME_FMT')
+        date_t = datetime.strptime(time_str, time_fmt)
     else:
-        time_str = config.getraw('config', 'CLOCK_TIME')
-        time_fmt = '%Y%m%d%H%M%S'
+        date_t = datetime.now(timezone.utc)
 
-    date_t = datetime.strptime(time_str, time_fmt)
     log_filenametimestamp = date_t.strftime(log_timestamp_template)
 
     log_dir = config.getdir('LOG_DIR')

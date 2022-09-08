@@ -134,7 +134,7 @@ class CommandRunner(object):
                 cmd_exe = exe(the_exe)[the_args].env(**env).err2out()
 
         # get current time to calculate total time to run command
-        start_cmd_time = datetime.now(timezone.utc)
+        start_cmd_time = datetime.now()
 
         # run command
         try:
@@ -143,7 +143,7 @@ class CommandRunner(object):
             ret = -1
         else:
             # calculate time to run
-            end_cmd_time = datetime.now(timezone.utc)
+            end_cmd_time = datetime.now()
             total_cmd_time = end_cmd_time - start_cmd_time
             self.logger.debug(f'Finished running {the_exe} '
                               f'in {total_cmd_time}')
