@@ -14,6 +14,9 @@ Config Best Practices / Recommendations
   encouraged to run with DEBUG when getting started with METplus or when
   investigating unexpected behavior.
 
+* Set :term:`SCRUB_STAGING_DIR` to False to preserve intermediate files to
+  help with debugging issues.
+
 * Review the log files to verify that all of the processes ran cleanly.
   Some log output will be written to the screen, but the log files
   contain more information, such as log output from the MET tools.
@@ -182,10 +185,11 @@ If a value set in the final conf differs from what was set in a configuration
 file passed to run_metplus.py, there is a good chance that this variable is
 set in another configuration file that was passed in afterwards.
 
-The default value is a file called metplus_final.conf that is written in the
+The default value is a file called metplus_final.conf followed by the
+log timestamp (see :term:`LOG_TIMESTAMP`) that is written in the
 :ref:`OUTPUT_BASE<sys_conf_output_base>` directory::
 
-    METPLUS_CONF = {OUTPUT_BASE}/metplus_final.conf
+    METPLUS_CONF = {OUTPUT_BASE}/metplus_final.conf.{LOG_TIMESTAMP}
 
 This value is rarely changed, but it can be if desired.
 
@@ -208,7 +212,7 @@ wrapper scripts. Files are written to this directory to prevent corrupting
 input data directories in case something goes wrong.
 File list ASCII files that contain a list of file paths to pass into MET
 tools such as MODE-TimeDomain or SeriesAnalysis are also written to this
-directory.
+directory. See :term:`FILE_LISTS_DIR` for more information.
 
 By default this is a directory called **stage** inside the
 :ref:`OUTPUT_BASE<sys_conf_output_base>` directory::
@@ -216,6 +220,13 @@ By default this is a directory called **stage** inside the
     STAGING_DIR = {OUTPUT_BASE}/stage
 
 This value is rarely changed, but it can be if desired.
+
+SCRUB_STAGING_DIR
+^^^^^^^^^^^^^^^^^
+
+True or False variable to determine if the :term:`STAGING_DIR` should be
+removed after the METplus has finished running.
+
 
 OMP_NUM_THREADS
 ^^^^^^^^^^^^^^^
