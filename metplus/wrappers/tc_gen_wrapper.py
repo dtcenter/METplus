@@ -329,15 +329,6 @@ class TCGenWrapper(CommandBuilder):
         out_path = self.get_output_path()
         cmd += ' -out ' + out_path
 
-        parent_dir = os.path.dirname(out_path)
-        if not parent_dir:
-            self.log_error('Must specify path to output file')
-            return None
-
-        # create full output dir if it doesn't already exist
-        if not os.path.exists(parent_dir):
-            os.makedirs(parent_dir)
-
         return cmd
 
     def run_all_times(self):

@@ -37,8 +37,6 @@ except Exception as err_msg:
     WRAPPER_CANNOT_RUN = True
     EXCEPTION_ERR = err_msg
 
-import produtil.setup
-
 from ..util import met_util as util
 from ..util import do_string_sub
 from ..util import time_generator, add_to_time_input

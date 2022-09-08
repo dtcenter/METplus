@@ -251,8 +251,7 @@ def launch(config_list):
 
     # create final conf directory if it doesn't already exist
     final_conf_dir = os.path.dirname(final_conf)
-    if not os.path.exists(final_conf_dir):
-        os.makedirs(final_conf_dir)
+    util.mkdir_p(final_conf_dir)
 
     # set METPLUS_BASE/PARM_BASE conf so they can be referenced in other confs
     config.set('config', 'METPLUS_BASE', METPLUS_BASE)
@@ -349,10 +348,8 @@ def get_logger(config, sublog=None):
     log_dir = config.getdir('LOG_DIR')
     log_level = config.getstr('config', 'LOG_LEVEL')
 
-    # Check if the directory path for the log file exists, if
-    # not create it.
-    if not os.path.exists(log_dir):
-        util.mkdir_p(log_dir)
+    # Create the log directory if it does not exist
+    util.mkdir_p(log_dir)
 
     if sublog is not None:
         logger = config.log(sublog)

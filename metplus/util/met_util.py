@@ -7,6 +7,7 @@ import gzip
 import bz2
 import zipfile
 import struct
+import getpass
 from dateutil.relativedelta import relativedelta
 from pathlib import Path
 from importlib import import_module
@@ -39,9 +40,12 @@ def pre_run_setup(config_inputs):
 
     logger = config.logger
 
+    user_info = get_user_info()
+    user_string = f' as user {user_info} ' if user_info else ' '
+
     config.set('config', 'METPLUS_VERSION', version_number)
-    logger.info('Running METplus v%s called with command: %s',
-                version_number, ' '.join(sys.argv))
+    logger.info('Running METplus v%s%swith command: %s',
+                version_number, user_string, ' '.join(sys.argv))
 
     logger.info(f"Log file: {config.getstr('config', 'LOG_METPLUS')}")
     logger.info(f"METplus Base: {config.getdir('METPLUS_BASE')}")
@@ -148,15 +152,14 @@ def run_metplus(config, process_list):
                          "Options are processes, times")
             return 1
 
-        # write out all commands and environment variables to file
-        if not write_all_commands(all_commands, config):
-            # if process list contains any wrapper that should run commands,
-            # report an error if no commands were generated
-            if any([item[0] not in NO_COMMAND_WRAPPERS
-                    for item in process_list]):
+        # if process list contains any wrapper that should run commands
+        if any([item[0] not in NO_COMMAND_WRAPPERS for item in process_list]):
+            # write out all commands and environment variables to file
+            if not write_all_commands(all_commands, config):
+                # report an error if no commands were generated
                 total_errors += 1
 
-       # compute total number of errors that occurred and output results
+        # compute total number of errors that occurred and output results
         for process in processes:
             if process.errors != 0:
                 process_name = process.__class__.__name__.replace('Wrapper', '')
@@ -198,18 +201,50 @@ def post_run_cleanup(config, app_name, total_errors):
     total_run_time = end_clock_time - start_clock_time
     logger.debug(f"{app_name} took {total_run_time} to run.")
 
+    user_info = get_user_info()
+    user_string = f' as user {user_info}' if user_info else ''
     if not total_errors:
         logger.info(log_message)
-        logger.info(f'{app_name} has successfully finished running.')
+        logger.info('%s has successfully finished running%s.',
+                    app_name, user_string)
         return
 
-    error_msg = f"{app_name} has finished running but had {total_errors} error"
+    error_msg = (f'{app_name} has finished running{user_string} '
+                 f'but had {total_errors} error')
     if total_errors > 1:
         error_msg += 's'
     error_msg += '.'
     logger.error(error_msg)
     logger.info(log_message)
     sys.exit(1)
+
+def get_user_info():
+    """! Get user information from OS. Note that some OS cannot obtain user ID
+    and some cannot obtain username.
+    @returns username(uid) if both username and user ID can be read,
+     username if only username can be read, uid if only user ID can be read,
+     or an empty string if neither can be read.
+    """
+    try:
+        username = getpass.getuser()
+    except OSError:
+        username = None
+
+    try:
+        uid = os.getuid()
+    except AttributeError:
+        uid = None
+
+    if username and uid:
+        return f'{username}({uid})'
+
+    if username:
+        return username
+
+    if uid:
+        return uid
+
+    return ''
 
 def write_all_commands(all_commands, config):
     """! Write all commands that were run to a file in the log
@@ -252,9 +287,7 @@ def handle_tmp_dir(config):
     # create temp dir if it doesn't exist already
     # this will fail if TMP_DIR is not set correctly and
     # env MET_TMP_DIR was not set
-    tmp_dir = config.getdir('TMP_DIR')
-    if not os.path.exists(tmp_dir):
-        os.makedirs(tmp_dir)
+    mkdir_p(config.getdir('TMP_DIR'))
 
 def handle_env_var_config(config, env_var_name, config_name):
     """! If environment variable is set, use that value
@@ -1230,9 +1263,7 @@ def preprocess_file(filename, data_type, config, allow_dir=False):
                 return stagefile
             # if it does not exist, run GempakToCF and return staged nc file
             # Create staging area if it does not exist
-            outdir = os.path.dirname(stagefile)
-            if not os.path.exists(outdir):
-                os.makedirs(outdir, mode=0o0775)
+            mkdir_p(os.path.dirname(stagefile))
 
             # only import GempakToCF if needed
             from ..wrappers import GempakToCFWrapper
@@ -1263,9 +1294,7 @@ def preprocess_file(filename, data_type, config, allow_dir=False):
     # Create staging area directory only if file has compression extension
     if any([os.path.isfile(f'{filename}{ext}')
             for ext in COMPRESSION_EXTENSIONS]):
-        outdir = os.path.dirname(outpath)
-        if not os.path.exists(outdir):
-            os.makedirs(outdir, mode=0o0775)
+        mkdir_p(os.path.dirname(outpath))
 
     # uncompress gz, bz2, or zip file
     if os.path.isfile(filename+".gz"):
