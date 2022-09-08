@@ -212,7 +212,7 @@ wrapper scripts. Files are written to this directory to prevent corrupting
 input data directories in case something goes wrong.
 File list ASCII files that contain a list of file paths to pass into MET
 tools such as MODE-TimeDomain or SeriesAnalysis are also written to this
-directory.
+directory. See :term:`FILE_LISTS_DIR` for more information.
 
 By default this is a directory called **stage** inside the
 :ref:`OUTPUT_BASE<sys_conf_output_base>` directory::
@@ -220,8 +220,6 @@ By default this is a directory called **stage** inside the
     STAGING_DIR = {OUTPUT_BASE}/stage
 
 This value is rarely changed, but it can be if desired.
-
-See also :term:`FILE_LISTS_DIR`.
 
 SCRUB_STAGING_DIR
 ^^^^^^^^^^^^^^^^^
