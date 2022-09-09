@@ -38,6 +38,12 @@ When applicable, release notes are followed by the GitHub issue number which
 describes the bugfix, enhancement, or new feature:
 https://github.com/dtcenter/METplus/issues
 
+METplus Version 4.1.4 Release Notes (2022-09-09)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Bugfixes:
+
+  * Allow NA value for <TOOL-NAME>_CLIMO_[MEAN/STDEV]_HOUR_INTERVAL (`METplus #1787 <https://github.com/dtcenter/METplus/issues/1787>`_)
 
 METplus Version 4.1.3 Release Notes (2022-07-27)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
