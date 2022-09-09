@@ -44,6 +44,7 @@ class UserScriptWrapper(RuntimeFreqWrapper):
                                                  '')
         self.get_input_templates(c_dict)
 
+        c_dict['ALLOW_MULTIPLE_FILES'] = True
         c_dict['IS_MET_CMD'] = False
         c_dict['LOG_THE_OUTPUT'] = True
 

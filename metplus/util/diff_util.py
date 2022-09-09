@@ -78,8 +78,8 @@ def compare_dir(dir_a, dir_b, debug=False, save_diff=False):
             if not os.path.isfile(filepath_a):
                 continue
 
-            # skip metplus_final.conf
-            if filepath_a.endswith('metplus_final.conf'):
+            # skip final conf file
+            if 'metplus_final.conf' in os.path.basename(filepath_a):
                 continue
 
             filepath_b = filepath_a.replace(dir_a, dir_b)
@@ -109,8 +109,8 @@ def compare_dir(dir_a, dir_b, debug=False, save_diff=False):
         for filename in files:
             filepath_b = os.path.join(root, filename)
 
-            # skip metplus_final.conf
-            if filepath_b.endswith('metplus_final.conf'):
+            # skip final conf file
+            if 'metplus_final.conf' in os.path.basename(filepath_b):
                 continue
 
             filepath_a = filepath_b.replace(dir_b, dir_a)

@@ -179,10 +179,12 @@ def run_metplus(config, process_list):
 def post_run_cleanup(config, app_name, total_errors):
     logger = config.logger
     # scrub staging directory if requested
-    if config.getbool('config', 'SCRUB_STAGING_DIR', False) and\
-       os.path.exists(config.getdir('STAGING_DIR')):
+    if (config.getbool('config', 'SCRUB_STAGING_DIR') and
+            os.path.exists(config.getdir('STAGING_DIR'))):
         staging_dir = config.getdir('STAGING_DIR')
         logger.info("Scrubbing staging dir: %s", staging_dir)
+        logger.info('Set SCRUB_STAGING_DIR to False to preserve '
+                    'intermediate files.')
         shutil.rmtree(staging_dir)
 
     # save log file path and clock time before writing final conf file

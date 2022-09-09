@@ -147,6 +147,29 @@ Get the source code via Web Browser
 -  Click on the 'Source code' link (either the *zip* or *tar.gz*) under Assets
    and when prompted, save it to the directory.
 
+- (Optional) Verify the checksum of the source code download
+  
+    - Download the checksum file that corresponds to the source code download
+      link that was used (checksum_zip.txt for the *zip* file and
+      checksum_tar.txt for the *tar.gz* file).
+      Put the checksum file into the same directory as the source code file.
+    - Run the *sha256sum* command with the --check argument to verify that the
+      source code download file was not corrupted.
+
+Zip File::
+
+    sha256sum --check checksum_zip.txt
+
+Tar File::
+
+    sha256sum --check checksum_tar.txt
+
+.. note::
+   If the source code is downloaded using **wget**, then the filenames will not
+   match the filenames listed in the checksum files. If the source code is
+   downloaded using **curl**, the *-LJO* flags should be added to the command to
+   preserve the expected filenames found in the checksum files.
+
 -  Uncompress the source code (on Linux/Unix\ *: gunzip* for zip file or
    *tar xvfz* for the tar.gz file)
 
