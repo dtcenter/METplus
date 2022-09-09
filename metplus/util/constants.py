@@ -35,3 +35,28 @@ NO_COMMAND_WRAPPERS = (
     'Example',
     'CyclonePlotter',
 )
+
+# configuration variables that are specific to a given run
+# these are copied from [config] to [runtime] at the
+# end of the run so they will not be read if the final
+# config file is passed back into METplus but they will
+# still be available to review
+RUNTIME_CONFS = [
+    'RUN_ID',
+    'CLOCK_TIME',
+    'METPLUS_VERSION',
+    'MET_INSTALL_DIR',
+    'CONFIG_INPUT',
+    'METPLUS_CONF',
+    'TMP_DIR',
+    'STAGING_DIR',
+    'FILE_LISTS_DIR',
+    'CONVERT',
+    'GEMPAKTOCF_JAR',
+    'GFDL_TRACKER_EXEC',
+    'INPUT_MUST_EXIST',
+    'USER_SHELL',
+    'DO_NOT_RUN_EXE',
+    'SCRUB_STAGING_DIR',
+    'MET_BIN_DIR',
+]
