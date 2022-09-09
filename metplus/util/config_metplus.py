@@ -17,6 +17,7 @@ import datetime
 import shutil
 from configparser import ConfigParser, NoOptionError
 from pathlib import Path
+import uuid
 
 from produtil.config import ProdConfig
 
@@ -237,6 +238,9 @@ def launch(config_list):
 
     # save list of user configuration files in a variable
     config.set('config', 'CONFIG_INPUT', ','.join(config_format_list))
+
+    # save unique identifier for the METplus run
+    config.set('config', 'RUN_ID', str(uuid.uuid4())[0:8])
 
     # get OUTPUT_BASE to make sure it is set correctly so the first error
     # that is logged relates to OUTPUT_BASE, not LOG_DIR, which is likely
