@@ -1,10 +1,12 @@
 Update DTC Website
 ------------------
 
+* Navigate to https://dtcenter.org and sign in to the Drupal interface.
+
 * Navigate to the downloads page for the |projectRepo| repository at
   https://dtcenter.org/community-code/metplus/download
 
-* Sign in to the Drupal interface and edit the Downloads page.
+* Click on the Edit button to edit the Downloads page.
 
 * Create a new *Software Release* for the newly released version by clicking
   on *Add New Release*.
