@@ -60,6 +60,11 @@ time_command docker build --pull --cache-from ${DOCKERHUB_TAG} \
 --build-arg MET_DOCKER_REPO=$MET_DOCKER_REPO \
 --build-arg MET_TAG=$MET_TAG \
 -f ${DOCKERFILE_PATH} ${GITHUB_WORKSPACE}
+if [ $? != 0 ]; then
+    echo "ERROR: Docker build failed"
+    exit 1
+fi
+
 
 # skip docker push if credentials are not set
 if [ -z ${DOCKER_USERNAME+x} ] || [ -z ${DOCKER_PASSWORD+x} ]; then
@@ -69,6 +74,10 @@ fi
 
 echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
 time_command docker push ${DOCKERHUB_TAG}
+if [ $? != 0 ]; then
+    echo "ERROR: Docker push failed"
+    exit 1
+fi
 
 echo Running docker images
 docker images
