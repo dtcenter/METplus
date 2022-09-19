@@ -1,3 +1,5 @@
+.. _adding-use-cases:
+
 ****************
 Adding Use Cases
 ****************
