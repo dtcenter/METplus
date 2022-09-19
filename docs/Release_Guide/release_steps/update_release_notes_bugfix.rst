@@ -9,7 +9,7 @@ release. Open the following URL in a browser:
     https://github.com/orgs/dtcenter/projects?type=beta
 
 * Click on the project that corresponds to support for the release, i.e.
-  |projectRepo| Version X.Y Support
+  METplus Version X.Y Support
 
 * Navigate to the "Closed Issues" tab.
   **If this tab does not exist**, follow these instructions to create it:
@@ -21,6 +21,18 @@ release. Open the following URL in a browser:
   * Click on "Search or filter this view"
   * Enter the following info into the filter bar: **is:closed is:issue**
   * Click on the down arrow next to the view and click "Save changes"
+
+* Find the closed issues with dtcenter/|projectRepo| in the Repository column
+  that have been added since the last bugfix release for |projectRepo|.
+
+* Open the following URL in a browser:
+
+.. parsed-literal::
+
+    https://github.com/dtcenter/|projectRepo|/issues
+
+* Navigate to the |projectRepo| X.Y.Z Milestone to check for any issues
+  that may not appear in the METplus Version X.Y Support project board.
 
 * Update the release-notes.rst file found in the User's Guide directory.
 
