@@ -109,7 +109,7 @@ jobs:
     name: Use Case Tests
     runs-on: ubuntu-latest
     needs: [get_image, update_data_volumes, job_control]
-    if: ${{ always() && needs.job_control.outputs.run_some_tests == 'true' }}
+    if: ${{ needs.job_control.outputs.run_some_tests == 'true' }}
     strategy:
       fail-fast: false
       matrix: ${{fromJson(needs.job_control.outputs.matrix)}}
