@@ -36,11 +36,6 @@
   },
   {
     "category": "short_range",
-    "index_list": "2",
-    "run": true
-  },
-  {
-    "category": "short_range",
     "index_list": "7",
     "run": false
   },
@@ -107,7 +102,7 @@
   {
     "category": "precipitation",
     "index_list": "0",
-    "run": true
+    "run": false
   },
   {
     "category": "precipitation",
@@ -123,11 +118,6 @@
     "category": "precipitation",
     "index_list": "3-7",
     "run": false
-  },
-  {
-    "category": "precipitation",
-    "index_list": "7",
-    "run": true
   },
   {
     "category": "precipitation",
