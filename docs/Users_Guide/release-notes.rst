@@ -39,6 +39,42 @@ describes the bugfix, enhancement, or new feature:
 https://github.com/dtcenter/METplus/issues
 
 
+METplus Version 5.0.0 Beta 3 Release Notes (2022-09-21)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+* Enhancements:
+
+  * Enhance logic to consistently create directories (`#1657 <https://github.com/dtcenter/METplus/issues/1657>`_)
+  * Create checksum for released code (`#262 <https://github.com/dtcenter/METplus/issues/262>`_)
+
+* Bugfixes:
+
+  * Allow NA value for <TOOL-NAME>_CLIMO_[MEAN/STDEV]_HOUR_INTERVAL (`#1787 <https://github.com/dtcenter/METplus/issues/1787>`_)
+
+* New Wrappers: 
+
+  * PlotPointObs (`#1489 <https://github.com/dtcenter/METplus/issues/1489>`_)
+
+* New Use Cases: 
+
+  * PANDA-C use cases  (`#1686 <https://github.com/dtcenter/METplus/issues/1686>`_)
+  * MJO-ENSO diagnostics (`#1330 <https://github.com/dtcenter/METplus/issues/1330>`_)
+
+
+* Documentation:
+
+
+* Internal:
+
+  * Add the user ID to the log output at beginning and end of each METplus wrappers run (`dtcenter/METplus-Internal#20 <https://github.com/dtcenter/METplus-Internal/issues/20>`_)
+  * Update logic to name final conf and intermediate files with a unique identifier (`dtcenter/METplus-Internal#32 <https://github.com/dtcenter/METplus-Internal/issues/32>`_)
+  * Add instructions in Release Guide for "Recreate an Existing Release" (`#1746 <https://github.com/dtcenter/METplus-Internal/issues/1746>`_)
+  * Change default logging time information (`dtcenter/METplus-Internal#34 <https://github.com/dtcenter/METplus-Internal/issues/34>`_)
+  * Add modulefiles used for installations on various machines (`dtcenter/METplus-Internal#1749 <https://github.com/dtcenter/METplus-Internal/issues/1749>`_)
+
+
+
 METplus Version 5.0.0 Beta 2 Release Notes (2022-08-03)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
