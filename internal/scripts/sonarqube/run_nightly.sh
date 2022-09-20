@@ -39,7 +39,7 @@ SCRIPT_DIR=`dirname $0`
 if [[ ${0:0:1} != "/" ]]; then SCRIPT_DIR=$(pwd)/${SCRIPT_DIR}; fi 
 
 # Define the development environment
-ENV_FILE=${SCRIPT_DIR}/../environment/development.`hostname`
+ENV_FILE=${SCRIPT_DIR}/environment/development.`hostname`
 if [[ ! -e ${ENV_FILE} ]]; then
   echo "$0: ERROR -> Development environment file missing: ${ENV_FILE}"
   exit 1
