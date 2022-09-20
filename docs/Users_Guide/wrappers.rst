@@ -210,8 +210,8 @@ METplus Configuration
 | :term:`OBS_ENSEMBLE_STAT_FILE_WINDOW_BEGIN`
 | :term:`OBS_ENSEMBLE_STAT_FILE_WINDOW_END`
 | :term:`ENSEMBLE_STAT_ENS_THRESH`
-| :term:`ENSEMBLE_STAT_ENS_VLD_THRESH`
-| :term:`ENSEMBLE_STAT_ENS_OBS_THRESH`
+| :term:`ENSEMBLE_STAT_VLD_THRESH`
+| :term:`ENSEMBLE_STAT_OBS_THRESH`
 | :term:`ENSEMBLE_STAT_CUSTOM_LOOP_LIST`
 | :term:`ENSEMBLE_STAT_SKIP_IF_OUTPUT_EXISTS`
 | :term:`ENSEMBLE_STAT_DESC`
@@ -435,20 +435,9 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - METplus Config(s)
      - MET Config File
    * - :term:`ENSEMBLE_STAT_ENS_THRESH`
-     - ens.ens_thresh
+     - fcst.ens_thresh
 
-**${METPLUS_ENS_VLD_THRESH}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`ENSEMBLE_STAT_ENS_VLD_THRESH`
-     - ens.vld_thresh
-
-**${METPLUS_ENS_OBS_THRESH}**
+**${METPLUS_VLD_THRESH}**
 
 .. list-table::
    :widths: 5 5
@@ -456,8 +445,19 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`ENSEMBLE_STAT_ENS_OBS_THRESH`
-     - ens.obs_thresh
+   * - :term:`ENSEMBLE_STAT_VLD_THRESH`
+     - fcst.vld_thresh
+
+**${METPLUS_OBS_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_OBS_THRESH`
+     - obs_thresh
 
 **${METPLUS_ENS_FIELD}**
 

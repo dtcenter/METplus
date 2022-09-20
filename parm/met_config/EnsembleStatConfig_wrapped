@@ -39,20 +39,6 @@ ${METPLUS_CENSOR_VAL}
 cat_thresh    = [];
 nc_var_str    = "";
 
-//
-// Ensemble product fields to be processed
-//
-ens = {
-
-   ${METPLUS_ENS_FILE_TYPE}
-
-   ${METPLUS_ENS_THRESH}
-   ${METPLUS_ENS_VLD_THRESH}
-   ${METPLUS_ENS_OBS_THRESH}
-
-   ${METPLUS_ENS_FIELD}
-}
-
 //ens_member_ids =
 ${METPLUS_ENS_MEMBER_IDS}
 
@@ -81,7 +67,8 @@ ${METPLUS_ECLV_POINTS}
 fcst = {
 
    ${METPLUS_FCST_FILE_TYPE}
-
+   ${METPLUS_ENS_THRESH}
+   ${METPLUS_VLD_THRESH}
    ${METPLUS_FCST_FIELD}
 }
 
@@ -101,7 +88,8 @@ obs = {
 
 ${METPLUS_MESSAGE_TYPE}
 sid_exc        = [];
-obs_thresh     = [ NA ];
+//obs_thresh     = [ NA ];
+${METPLUS_OBS_THRESH}
 
 //obs_quality_inc =
 ${METPLUS_OBS_QUALITY_INC}

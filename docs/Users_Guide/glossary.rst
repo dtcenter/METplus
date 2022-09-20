@@ -984,12 +984,18 @@ METplus Configuration Glossary
      | *Used by:*  EnsembleStat
 
    ENSEMBLE_STAT_ENS_VLD_THRESH
+     .. warning:: **DEPRECATED:** Please use :term:`ENSEMBLE_STAT_VLD_THRESH` instead.
+
+   ENSEMBLE_STAT_VLD_THRESH
      Threshold for the ratio of the number of valid data values to the total number of expected ensemble members. This value is passed into the ensemble_stat config file to make sure the percentage of files that are valid meets the expectation.
 
      | *Used by:*  EnsembleStat
 
    ENSEMBLE_STAT_ENS_OBS_THRESH
-     Sets the ens.obs_thresh value in the ensemble_stat MET config file.
+     .. warning:: **DEPRECATED:** Please use :term:`ENSEMBLE_STAT_OBS_THRESH`.
+
+   ENSEMBLE_STAT_OBS_THRESH
+     Sets the obs_thresh value in the ensemble_stat MET config file.
 
      | *Used by:*  EnsembleStat
 
@@ -6312,9 +6318,12 @@ METplus Configuration Glossary
      | *Used by:*  TCpairs
 
    ENS_ENSEMBLE_STAT_INPUT_DATATYPE
-     Set the file_type entry of the ens dictionary in the MET config file for EnsembleStat.
+          .. warning:: **DEPRECATED:** Please use :term:`GEN_ENS_PROD_INPUT_DATATYPE` in :ref:`gen_ens_prod_wrapper` instead.
 
-     | *Used by:*  EnsembleStat
+   GEN_ENS_PROD_INPUT_DATATYPE
+     Set the file_type entry of the ens dictionary in the MET config file for GenEnsProd.
+
+     | *Used by:*  GenEnsProd
 
    FCST_SERIES_ANALYSIS_INPUT_DATATYPE
      Set the file_type entry of the fcst dictionary in the MET config file for SeriesAnalysis.
@@ -9178,7 +9187,7 @@ METplus Configuration Glossary
      it will automatically be removed by the wrapper to prevent an error in the
      MET tool. This may require adjusting the value for
      :term:`ENSEMBLE_STAT_N_MEMBERS` and/or
-     :term:`ENSEMBLE_STAT_ENS_VLD_THRESH`.
+     :term:`ENSEMBLE_STAT_VLD_THRESH`.
 
      | *Used by:*  EnsembleStat
 

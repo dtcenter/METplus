@@ -16,12 +16,9 @@ fcst_level = 'A03'
 obs_name = 'APCP_03'
 obs_level_no_quotes = '(*,*)'
 obs_level = f'"{obs_level_no_quotes}"'
-ens_name = 'REFC'
-ens_level = 'L0'
 fcst_fmt = f'field = [{{ name="{fcst_name}"; level="{fcst_level}"; }}];'
 obs_fmt = (f'field = [{{ name="{obs_name}"; '
            f'level="{obs_level_no_quotes}"; }}];')
-ens_fmt = f'field = [{{ name="{ens_name}"; level="{ens_level}"; }}];'
 
 time_fmt = '%Y%m%d%H'
 run_times = ['2005080700', '2005080712']
@@ -60,44 +57,17 @@ def set_minimum_config_settings(config, set_fields=True):
         config.set('config', 'FCST_VAR1_LEVELS', fcst_level)
         config.set('config', 'OBS_VAR1_NAME', obs_name)
         config.set('config', 'OBS_VAR1_LEVELS', obs_level)
-        config.set('config', 'ENS_VAR1_NAME', ens_name)
-        config.set('config', 'ENS_VAR1_LEVELS', ens_level)
 
 
 @pytest.mark.parametrize(
     'config_overrides, env_var_values', [
-        # 0 : 3 ens, 1 fcst, 1 obs
-        ({'ENS_VAR1_NAME': 'ens_name_1',
-          'ENS_VAR1_LEVELS': 'ENS_LEVEL_1',
-          'ENS_VAR2_NAME': 'ens_name_2',
-          'ENS_VAR2_LEVELS': 'ENS_LEVEL_2A, ENS_LEVEL_2B',
-          'FCST_VAR1_NAME': 'fcst_name_1',
-          'FCST_VAR1_LEVELS': 'FCST_LEVEL_1',
-          'OBS_VAR1_NAME': 'obs_name_1',
-          'OBS_VAR1_LEVELS': 'OBS_LEVEL_1',
-          },
-         {'METPLUS_ENS_FIELD': ('field = ['
-                                '{ name="ens_name_1"; level="ENS_LEVEL_1"; },'
-                                '{ name="ens_name_2"; level="ENS_LEVEL_2A"; },'
-                                '{ name="ens_name_2"; level="ENS_LEVEL_2B"; }'
-                                '];'),
-          'METPLUS_FCST_FIELD': ('field = ['
-                                 '{ name="fcst_name_1"; level="FCST_LEVEL_1"; }'
-                                 '];'),
-          'METPLUS_OBS_FIELD': ('field = ['
-                                '{ name="obs_name_1"; level="OBS_LEVEL_1"; }'
-                                '];'),
-          }),
-        # 1 : no ens, 1 fcst, 1 obs -- use fcst for ens
+        # 0 : no ens, 1 fcst, 1 obs
         ({'FCST_VAR1_NAME': 'fcst_name_1',
           'FCST_VAR1_LEVELS': 'FCST_LEVEL_1',
           'OBS_VAR1_NAME': 'obs_name_1',
           'OBS_VAR1_LEVELS': 'OBS_LEVEL_1',
           },
-         {'METPLUS_ENS_FIELD': ('field = ['
-                                '{ name="fcst_name_1"; level="FCST_LEVEL_1"; }'
-                                '];'),
-          'METPLUS_FCST_FIELD': ('field = ['
+         {'METPLUS_FCST_FIELD': ('field = ['
                                  '{ name="fcst_name_1"; level="FCST_LEVEL_1"; }'
                                  '];'),
           'METPLUS_OBS_FIELD': ('field = ['
@@ -580,6 +550,14 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
         ({'ENSEMBLE_STAT_ECLV_POINTS': '0.05', },
          {'METPLUS_ECLV_POINTS': 'eclv_points = 0.05;'}),
 
+        ({'ENSEMBLE_STAT_ENS_THRESH': '0.1', },
+         {'METPLUS_ENS_THRESH': 'ens_thresh = 0.1;'}),
+
+        ({'ENSEMBLE_STAT_VLD_THRESH': '0.5', },
+         {'METPLUS_VLD_THRESH': 'vld_thresh = 0.5;'}),
+
+        ({'ENSEMBLE_STAT_OBS_THRESH': 'NA, 0.5', },
+         {'METPLUS_OBS_THRESH': 'obs_thresh = [NA, 0.5];'}),
     ]
 )
 @pytest.mark.wrapper_c
@@ -633,8 +611,6 @@ def test_ensemble_stat_single_field(metplus_config, config_overrides,
                 assert(actual_value == fcst_fmt)
             elif env_var_key == 'METPLUS_OBS_FIELD':
                 assert (actual_value == obs_fmt)
-            elif env_var_key == 'METPLUS_ENS_FIELD':
-                assert (actual_value == ens_fmt)
             else:
                 assert(env_var_values.get(env_var_key, '') == actual_value)
 
