@@ -5586,19 +5586,13 @@ METplus Configuration Glossary
      | *Used by:*  EnsembleStat
 
    ENSEMBLE_STAT_NBRHD_PROB_WIDTH
-     Specify the value for 'nbrhd_prob.width' in the MET configuration file for EnsembleStat.
-
-     | *Used by:*  EnsembleStat
+          .. warning:: **DEPRECATED:** Please use :term:`GEN_ENS_PROD_NBRHD_PROB_WIDTH` in :ref:`gen_ens_prod_wrapper` instead.
 
    ENSEMBLE_STAT_NBRHD_PROB_SHAPE
-     Specify the value for 'nbrhd_prob.shape' in the MET configuration file for EnsembleStat.
-
-     | *Used by:*  EnsembleStat
+          .. warning:: **DEPRECATED:** Please use :term:`GEN_ENS_PROD_NBRHD_PROB_SHAPE` in :ref:`gen_ens_prod_wrapper` instead.
 
    ENSEMBLE_STAT_NBRHD_PROB_VLD_THRESH
-     Specify the value for 'nbrhd_prob.vld_thresh' in the MET configuration file for EnsembleStat.
-
-     | *Used by:*  EnsembleStat
+          .. warning:: **DEPRECATED:** Please use :term:`GEN_ENS_PROD_NBRHD_PROB_VLD_THRESH` in :ref:`gen_ens_prod_wrapper` instead.
 
    ENSEMBLE_STAT_CLIMO_CDF_CDF_BINS
      See :term:`ENSEMBLE_STAT_CLIMO_CDF_BINS`
@@ -5634,34 +5628,22 @@ METplus Configuration Glossary
      | *Used by:*  EnsembleStat
 
    ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_DX
-     Specify the value for 'nmep_smooth.gaussian_dx' in the MET configuration file for EnsembleStat.
-
-     | *Used by:*  EnsembleStat
+          .. warning:: **DEPRECATED:** Please use :term:`GEN_ENS_PROD_NMEP_SMOOTH_GAUSSIAN_DX` in :ref:`gen_ens_prod_wrapper` instead.
 
    ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_RADIUS
-     Specify the value for 'nmep_smooth.gaussian_radius' in the MET configuration file for EnsembleStat.
-
-     | *Used by:*  EnsembleStat
+          .. warning:: **DEPRECATED:** Please use :term:`GEN_ENS_PROD_NMEP_SMOOTH_GAUSSIAN_RADIUS` in :ref:`gen_ens_prod_wrapper` instead.
 
    ENSEMBLE_STAT_NMEP_SMOOTH_VLD_THRESH
-     Specify the value for 'nmep_smooth.vld_thresh' in the MET configuration file for EnsembleStat.
-
-     | *Used by:*  EnsembleStat
+          .. warning:: **DEPRECATED:** Please use :term:`GEN_ENS_PROD_NMEP_SMOOTH_VLD_THRESH` in :ref:`gen_ens_prod_wrapper` instead.
 
    ENSEMBLE_STAT_NMEP_SMOOTH_SHAPE
-     Specify the value for 'nmep_smooth.shape' in the MET configuration file for EnsembleStat.
-
-     | *Used by:*  EnsembleStat
+          .. warning:: **DEPRECATED:** Please use :term:`GEN_ENS_PROD_NMEP_SMOOTH_SHAPE` in :ref:`gen_ens_prod_wrapper` instead.
 
    ENSEMBLE_STAT_NMEP_SMOOTH_METHOD
-     Specify the value for 'nmep_smooth.type.method' in the MET configuration file for EnsembleStat.
-
-     | *Used by:*  EnsembleStat
+          .. warning:: **DEPRECATED:** Please use :term:`GEN_ENS_PROD_NMEP_SMOOTH_METHOD` in :ref:`gen_ens_prod_wrapper` instead.
 
    ENSEMBLE_STAT_NMEP_SMOOTH_WIDTH
-     Specify the value for 'nmep_smooth.type.width' in the MET configuration file for EnsembleStat.
-
-     | *Used by:*  EnsembleStat
+          .. warning:: **DEPRECATED:** Please use :term:`GEN_ENS_PROD_NMEP_SMOOTH_WIDTH` in :ref:`gen_ens_prod_wrapper` instead.
 
    ENSEMBLE_STAT_CENSOR_THRESH
      Specify the value for 'censor_thresh' in the MET configuration file for EnsembleStat.
@@ -5925,74 +5907,46 @@ METplus Configuration Glossary
      | *Used by:* EnsembleStat
 
    ENSEMBLE_STAT_ENSEMBLE_FLAG_LATLON
-     Specify the value for 'ensemble_flag.latlon' in the MET configuration file for EnsembleStat.
-
-     | *Used by:*  EnsembleStat
+          .. warning:: **DEPRECATED:** Please use :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_LATLON` instead.
 
    ENSEMBLE_STAT_ENSEMBLE_FLAG_MEAN
-     Specify the value for 'ensemble_flag.mean' in the MET configuration file for EnsembleStat.
-
-     | *Used by:*  EnsembleStat
+          .. warning:: **DEPRECATED:** Please use :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_MEAN` instead.
 
    ENSEMBLE_STAT_ENSEMBLE_FLAG_STDEV
-     Specify the value for 'ensemble_flag.stdev' in the MET configuration file for EnsembleStat.
-
-     | *Used by:*  EnsembleStat
+          .. warning:: **DEPRECATED:** Please use :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_STDEV` in :ref:`gen_ens_prod_wrapper` instead.
 
    ENSEMBLE_STAT_ENSEMBLE_FLAG_MINUS
-     Specify the value for 'ensemble_flag.minus' in the MET configuration file for EnsembleStat.
-
-     | *Used by:*  EnsembleStat
+          .. warning:: **DEPRECATED:** Please use :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_MINUS` in :ref:`gen_ens_prod_wrapper` instead.
 
    ENSEMBLE_STAT_ENSEMBLE_FLAG_PLUS
-     Specify the value for 'ensemble_flag.plus' in the MET configuration file for EnsembleStat.
-
-     | *Used by:*  EnsembleStat
+          .. warning:: **DEPRECATED:** Please use :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_PLUS` in :ref:`gen_ens_prod_wrapper` instead.
 
    ENSEMBLE_STAT_ENSEMBLE_FLAG_MIN
-     Specify the value for 'ensemble_flag.min' in the MET configuration file for EnsembleStat.
-
-     | *Used by:*  EnsembleStat
+          .. warning:: **DEPRECATED:** Please use :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_MIN` in :ref:`gen_ens_prod_wrapper` instead.
 
    ENSEMBLE_STAT_ENSEMBLE_FLAG_MAX
-     Specify the value for 'ensemble_flag.max' in the MET configuration file for EnsembleStat.
-
-     | *Used by:*  EnsembleStat
+          .. warning:: **DEPRECATED:** Please use :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_MAX` in :ref:`gen_ens_prod_wrapper` instead.
 
    ENSEMBLE_STAT_ENSEMBLE_FLAG_RANGE
-     Specify the value for 'ensemble_flag.range' in the MET configuration file for EnsembleStat.
-
-     | *Used by:*  EnsembleStat
+          .. warning:: **DEPRECATED:** Please use :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_RANGE` in :ref:`gen_ens_prod_wrapper` instead.
 
    ENSEMBLE_STAT_ENSEMBLE_FLAG_VLD_COUNT
-     Specify the value for 'ensemble_flag.vld_count' in the MET configuration file for EnsembleStat.
-
-     | *Used by:*  EnsembleStat
+          .. warning:: **DEPRECATED:** Please use :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_VLD_COUNT` instead.
 
    ENSEMBLE_STAT_ENSEMBLE_FLAG_FREQUENCY
-     Specify the value for 'ensemble_flag.frequency' in the MET configuration file for EnsembleStat.
-
-     | *Used by:*  EnsembleStat
+          .. warning:: **DEPRECATED:** Please use :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_FREQUENCY` in :ref:`gen_ens_prod_wrapper` instead.
 
    ENSEMBLE_STAT_ENSEMBLE_FLAG_NEP
-     Specify the value for 'ensemble_flag.nep' in the MET configuration file for EnsembleStat.
-
-     | *Used by:*  EnsembleStat
+          .. warning:: **DEPRECATED:** Please use :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_NEP` in :ref:`gen_ens_prod_wrapper` instead.
 
    ENSEMBLE_STAT_ENSEMBLE_FLAG_NMEP
-     Specify the value for 'ensemble_flag.nmep' in the MET configuration file for EnsembleStat.
-
-     | *Used by:*  EnsembleStat
+          .. warning:: **DEPRECATED:** Please use :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_NMEP` in :ref:`gen_ens_prod_wrapper` instead.
 
    ENSEMBLE_STAT_ENSEMBLE_FLAG_RANK
-     Specify the value for 'ensemble_flag.rank' in the MET configuration file for EnsembleStat.
-
-     | *Used by:*  EnsembleStat
+          .. warning:: **DEPRECATED:** Please use :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_RANK` instead.
 
    ENSEMBLE_STAT_ENSEMBLE_FLAG_WEIGHT
-     Specify the value for 'ensemble_flag.weight' in the MET configuration file for EnsembleStat.
-
-     | *Used by:*  EnsembleStat
+          .. warning:: **DEPRECATED:** Please use :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_WEIGHT` instead.
 
    GRID_STAT_MASK_GRID
      Specify the value for 'mask.grid' in the MET configuration file for GridStat.
@@ -9937,3 +9891,38 @@ METplus Configuration Glossary
      See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
 
      | *Used by:* PlotPointObs
+
+   ENSEMBLE_STAT_NC_ORANK_FLAG_LATLON
+     Specify the value for 'nc_orank_flag.latlon' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_NC_ORANK_FLAG_MEAN
+     Specify the value for 'nc_orank_flag.mean' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_NC_ORANK_FLAG_RAW
+     Specify the value for 'nc_orank_flag.raw' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_NC_ORANK_FLAG_RANK
+     Specify the value for 'nc_orank_flag.rank' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_NC_ORANK_FLAG_PIT
+     Specify the value for 'nc_orank_flag.pit' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_NC_ORANK_FLAG_VLD_COUNT
+     Specify the value for 'nc_orank_flag.vld_count' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_NC_ORANK_FLAG_WEIGHT
+     Specify the value for 'nc_orank_flag.weight' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat

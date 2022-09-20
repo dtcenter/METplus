@@ -359,76 +359,46 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
                                           'pct = STAT;pstd = STAT;'
                                           'pjc = STAT;prc = STAT;eclv = STAT;'
                                           '}')}),
-        # ensemble_flag
-        ({'ENSEMBLE_STAT_ENSEMBLE_FLAG_LATLON': 'FALSE', },
-         {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {latlon = FALSE;}'}),
+        # nc_orank_flag
+        ({'ENSEMBLE_STAT_NC_ORANK_FLAG_LATLON': 'True', },
+         {'METPLUS_NC_ORANK_FLAG_DICT': 'nc_orank_flag = {latlon = TRUE;}'}),
 
-        ({'ENSEMBLE_STAT_ENSEMBLE_FLAG_MEAN': 'FALSE', },
-         {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {mean = FALSE;}'}),
+        ({'ENSEMBLE_STAT_NC_ORANK_FLAG_MEAN': 'True', },
+         {'METPLUS_NC_ORANK_FLAG_DICT': 'nc_orank_flag = {mean = TRUE;}'}),
 
-        ({'ENSEMBLE_STAT_ENSEMBLE_FLAG_STDEV': 'FALSE', },
-         {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {stdev = FALSE;}'}),
+        ({'ENSEMBLE_STAT_NC_ORANK_FLAG_RAW': 'True', },
+         {'METPLUS_NC_ORANK_FLAG_DICT': 'nc_orank_flag = {raw = TRUE;}'}),
 
-        ({'ENSEMBLE_STAT_ENSEMBLE_FLAG_MINUS': 'FALSE', },
-         {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {minus = FALSE;}'}),
+        ({'ENSEMBLE_STAT_NC_ORANK_FLAG_RANK': 'True', },
+         {'METPLUS_NC_ORANK_FLAG_DICT': 'nc_orank_flag = {rank = TRUE;}'}),
 
-        ({'ENSEMBLE_STAT_ENSEMBLE_FLAG_PLUS': 'FALSE', },
-         {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {plus = FALSE;}'}),
+        ({'ENSEMBLE_STAT_NC_ORANK_FLAG_PIT': 'True', },
+         {'METPLUS_NC_ORANK_FLAG_DICT': 'nc_orank_flag = {pit = TRUE;}'}),
 
-        ({'ENSEMBLE_STAT_ENSEMBLE_FLAG_MIN': 'FALSE', },
-         {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {min = FALSE;}'}),
-
-        ({'ENSEMBLE_STAT_ENSEMBLE_FLAG_MAX': 'FALSE', },
-         {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {max = FALSE;}'}),
-
-        ({'ENSEMBLE_STAT_ENSEMBLE_FLAG_RANGE': 'FALSE', },
-         {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {range = FALSE;}'}),
-
-        ({'ENSEMBLE_STAT_ENSEMBLE_FLAG_VLD_COUNT': 'FALSE', },
+        ({'ENSEMBLE_STAT_NC_ORANK_FLAG_VLD_COUNT': 'True', },
          {
-             'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {vld_count = FALSE;}'}),
+             'METPLUS_NC_ORANK_FLAG_DICT': 'nc_orank_flag = {vld_count = TRUE;}'}),
 
-        ({'ENSEMBLE_STAT_ENSEMBLE_FLAG_FREQUENCY': 'FALSE', },
-         {
-             'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {frequency = FALSE;}'}),
-
-        ({'ENSEMBLE_STAT_ENSEMBLE_FLAG_NEP': 'FALSE', },
-         {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {nep = FALSE;}'}),
-
-        ({'ENSEMBLE_STAT_ENSEMBLE_FLAG_NMEP': 'FALSE', },
-         {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {nmep = FALSE;}'}),
-
-        ({'ENSEMBLE_STAT_ENSEMBLE_FLAG_RANK': 'FALSE', },
-         {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {rank = FALSE;}'}),
-
-        ({'ENSEMBLE_STAT_ENSEMBLE_FLAG_WEIGHT': 'FALSE', },
-         {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {weight = FALSE;}'}),
+        ({'ENSEMBLE_STAT_NC_ORANK_FLAG_WEIGHT': 'True', },
+         {'METPLUS_NC_ORANK_FLAG_DICT': 'nc_orank_flag = {weight = TRUE;}'}),
 
         ({
-             'ENSEMBLE_STAT_ENSEMBLE_FLAG_LATLON': 'FALSE',
-             'ENSEMBLE_STAT_ENSEMBLE_FLAG_MEAN': 'FALSE',
-             'ENSEMBLE_STAT_ENSEMBLE_FLAG_STDEV': 'FALSE',
-             'ENSEMBLE_STAT_ENSEMBLE_FLAG_MINUS': 'FALSE',
-             'ENSEMBLE_STAT_ENSEMBLE_FLAG_PLUS': 'FALSE',
-             'ENSEMBLE_STAT_ENSEMBLE_FLAG_MIN': 'FALSE',
-             'ENSEMBLE_STAT_ENSEMBLE_FLAG_MAX': 'FALSE',
-             'ENSEMBLE_STAT_ENSEMBLE_FLAG_RANGE': 'FALSE',
-             'ENSEMBLE_STAT_ENSEMBLE_FLAG_VLD_COUNT': 'FALSE',
-             'ENSEMBLE_STAT_ENSEMBLE_FLAG_FREQUENCY': 'FALSE',
-             'ENSEMBLE_STAT_ENSEMBLE_FLAG_NEP': 'FALSE',
-             'ENSEMBLE_STAT_ENSEMBLE_FLAG_NMEP': 'FALSE',
-             'ENSEMBLE_STAT_ENSEMBLE_FLAG_RANK': 'FALSE',
-             'ENSEMBLE_STAT_ENSEMBLE_FLAG_WEIGHT': 'FALSE',
+             'ENSEMBLE_STAT_NC_ORANK_FLAG_LATLON': 'True',
+             'ENSEMBLE_STAT_NC_ORANK_FLAG_MEAN': 'True',
+             'ENSEMBLE_STAT_NC_ORANK_FLAG_RAW': 'True',
+             'ENSEMBLE_STAT_NC_ORANK_FLAG_RANK': 'True',
+             'ENSEMBLE_STAT_NC_ORANK_FLAG_PIT': 'True',
+             'ENSEMBLE_STAT_NC_ORANK_FLAG_VLD_COUNT': 'True',
+             'ENSEMBLE_STAT_NC_ORANK_FLAG_WEIGHT': 'True',
          },
          {
-             'METPLUS_ENSEMBLE_FLAG_DICT': ('ensemble_flag = {latlon = FALSE;'
-                                            'mean = FALSE;stdev = FALSE;'
-                                            'minus = FALSE;plus = FALSE;'
-                                            'min = FALSE;max = FALSE;'
-                                            'range = FALSE;vld_count = FALSE;'
-                                            'frequency = FALSE;nep = FALSE;'
-                                            'nmep = FALSE;rank = FALSE;'
-                                            'weight = FALSE;}')}),
+             'METPLUS_NC_ORANK_FLAG_DICT': ('nc_orank_flag = {latlon = TRUE;'
+                                            'mean = TRUE;raw = TRUE;'
+                                            'rank = TRUE;pit = TRUE;'
+                                            'vld_count = TRUE;'
+                                            'weight = TRUE;}')
+         }),
+
         # climo_cdf dictionary
         ({'ENSEMBLE_STAT_CLIMO_CDF_CDF_BINS': '1', },
          {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {cdf_bins = 1.0;}'}),
@@ -587,60 +557,6 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
                                       'match_month = TRUE;day_interval = 30;'
                                       'hour_interval = 12;}'),
           'CLIMO_STDEV_FILE': '"/some/climo_stdev/file.txt"'}),
-        ({'ENSEMBLE_STAT_NBRHD_PROB_WIDTH': '5', },
-         {'METPLUS_NBRHD_PROB_DICT': 'nbrhd_prob = {width = [5];}'}),
-
-        ({'ENSEMBLE_STAT_NBRHD_PROB_SHAPE': 'circle', },
-         {'METPLUS_NBRHD_PROB_DICT': 'nbrhd_prob = {shape = CIRCLE;}'}),
-
-        ({'ENSEMBLE_STAT_NBRHD_PROB_VLD_THRESH': '0.0', },
-         {'METPLUS_NBRHD_PROB_DICT': 'nbrhd_prob = {vld_thresh = 0.0;}'}),
-
-        ({
-             'ENSEMBLE_STAT_NBRHD_PROB_WIDTH': '5',
-             'ENSEMBLE_STAT_NBRHD_PROB_SHAPE': 'CIRCLE',
-             'ENSEMBLE_STAT_NBRHD_PROB_VLD_THRESH': '0.0',
-         },
-         {
-             'METPLUS_NBRHD_PROB_DICT': (
-                     'nbrhd_prob = {width = [5];shape = CIRCLE;'
-                     'vld_thresh = 0.0;}'
-             )
-         }),
-        ({'ENSEMBLE_STAT_NMEP_SMOOTH_VLD_THRESH': '0.0', },
-         {'METPLUS_NMEP_SMOOTH_DICT': 'nmep_smooth = {vld_thresh = 0.0;}'}),
-
-        ({'ENSEMBLE_STAT_NMEP_SMOOTH_SHAPE': 'circle', },
-         {'METPLUS_NMEP_SMOOTH_DICT': 'nmep_smooth = {shape = CIRCLE;}'}),
-
-        ({'ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_DX': '81.27', },
-         {'METPLUS_NMEP_SMOOTH_DICT': 'nmep_smooth = {gaussian_dx = 81.27;}'}),
-
-        ({'ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_RADIUS': '120', },
-         {
-             'METPLUS_NMEP_SMOOTH_DICT': 'nmep_smooth = {gaussian_radius = 120;}'}),
-
-        ({'ENSEMBLE_STAT_NMEP_SMOOTH_TYPE_METHOD': 'GAUSSIAN', },
-         {'METPLUS_NMEP_SMOOTH_DICT': 'nmep_smooth = {type = [{method = GAUSSIAN;}];}'}),
-
-        ({'ENSEMBLE_STAT_NMEP_SMOOTH_TYPE_WIDTH': '1', },
-         {'METPLUS_NMEP_SMOOTH_DICT': 'nmep_smooth = {type = [{width = 1;}];}'}),
-
-        ({
-             'ENSEMBLE_STAT_NMEP_SMOOTH_VLD_THRESH': '0.0',
-             'ENSEMBLE_STAT_NMEP_SMOOTH_SHAPE': 'circle',
-             'ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_DX': '81.27',
-             'ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_RADIUS': '120',
-             'ENSEMBLE_STAT_NMEP_SMOOTH_TYPE_METHOD': 'GAUSSIAN',
-             'ENSEMBLE_STAT_NMEP_SMOOTH_TYPE_WIDTH': '1',
-         },
-         {
-             'METPLUS_NMEP_SMOOTH_DICT': (
-                     'nmep_smooth = {vld_thresh = 0.0;shape = CIRCLE;'
-                     'gaussian_dx = 81.27;gaussian_radius = 120;'
-                     'type = [{method = GAUSSIAN;width = 1;}];}'
-             )
-         }),
         ({'ENSEMBLE_STAT_OBS_QUALITY_INC': '2,3,4', },
          {'METPLUS_OBS_QUALITY_INC': 'obs_quality_inc = ["2", "3", "4"];'}),
         ({'ENSEMBLE_STAT_OBS_QUALITY_EXC': '5,6,7', },

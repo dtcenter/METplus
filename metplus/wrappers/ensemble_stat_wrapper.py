@@ -39,8 +39,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'METPLUS_ENS_VLD_THRESH',
         'METPLUS_ENS_OBS_THRESH',
         'METPLUS_ENS_FIELD',
-        'METPLUS_NBRHD_PROB_DICT',
-        'METPLUS_NMEP_SMOOTH_DICT',
         'METPLUS_FCST_FILE_TYPE',
         'METPLUS_FCST_FIELD',
         'METPLUS_OBS_FILE_TYPE',
@@ -60,7 +58,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'METPLUS_CI_ALPHA',
         'METPLUS_INTERP_DICT',
         'METPLUS_OUTPUT_FLAG_DICT',
-        'METPLUS_ENSEMBLE_FLAG_DICT',
+        'METPLUS_NC_ORANK_FLAG_DICT',
         'METPLUS_OUTPUT_PREFIX',
         'METPLUS_OBS_QUALITY_INC',
         'METPLUS_OBS_QUALITY_EXC',
@@ -93,21 +91,15 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'eclv',
     ]
 
-    ENSEMBLE_FLAGS = ['latlon',
-                      'mean',
-                      'stdev',
-                      'minus',
-                      'plus',
-                      'min',
-                      'max',
-                      'range',
-                      'vld_count',
-                      'frequency',
-                      'nep',
-                      'nmep',
-                      'rank',
-                      'weight',
-                      ]
+    NC_ORANK_FLAGS = [
+        'latlon',
+        'mean',
+        'raw',
+        'rank',
+        'pit',
+        'vld_count',
+        'weight',
+    ]
 
     def __init__(self, config, instance=None):
         self.app_name = 'ensemble_stat'
@@ -268,8 +260,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.add_met_config(name='ens_phist_bin_size',
                             data_type='float')
 
-        self.handle_nbrhd_prob_dict()
-
         self.add_met_config(name='ens_thresh',
                             data_type='float')
 
@@ -283,14 +273,11 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         # set climo_cdf dictionary variables
         self.handle_climo_cdf_dict()
 
-        # set nmep_smooth dictionary variables
-        self.handle_nmep_smooth_dict()
-
         # interp dictionary values
         self.handle_interp_dict()
 
         self.handle_flags('OUTPUT')
-        self.handle_flags('ENSEMBLE')
+        self.handle_flags('NC_ORANK')
 
         self.add_met_config(name='flag',
                             data_type='bool',
@@ -389,26 +376,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         )
 
         return c_dict
-
-    def handle_nmep_smooth_dict(self):
-        self.add_met_config_dict('nmep_smooth', {
-            'vld_thresh': 'float',
-            'shape': ('string', 'uppercase,remove_quotes'),
-            'gaussian_dx': 'float',
-            'gaussian_radius': 'int',
-            'type': ('dictlist', '', {'method': ('string',
-                                                 'uppercase,remove_quotes'),
-                                      'width': 'int',
-                                      }
-                     )
-        })
-
-    def handle_nbrhd_prob_dict(self):
-        self.add_met_config_dict('nbrhd_prob', {
-            'width': ('list', 'remove_quotes'),
-            'shape': ('string', 'uppercase,remove_quotes'),
-            'vld_thresh': 'float',
-        })
 
     def run_at_time_all_fields(self, time_info):
         """! Runs the MET application for a given time and forecast lead combination
