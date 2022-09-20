@@ -9,7 +9,7 @@
 # the following commands:
 #
 #    git clone https://github.com/dtcenter/METplus
-#    METplus/internal_tests/scanning/sonarqube/run_nightly.sh name
+#    METplus/internal/scripts/sonarqube/run_nightly.sh name
 #
 # Usage: run_nightly.sh name
 #    where "name" specifies a branch, tag, or hash

@@ -9,7 +9,7 @@
 # then run:
 #
 #    git clone https://github.com/dtcenter/METplus
-#    METplus/internal_tests/scanning/sonarqube/run_sonarqube.sh name
+#    METplus/internal/scripts/sonarqube/run_sonarqube.sh name
 #
 # Usage: run_sonarqube.sh name
 #    Test the specified branched version of MET:

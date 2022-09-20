@@ -680,7 +680,7 @@ will be used in the final pull request.
 Add use case to the test suite
 ------------------------------
 
-The *internal_tests/use_cases/all_use_cases.txt* file in the METplus
+The *internal/tests/use_cases/all_use_cases.txt* file in the METplus
 repository contains the list of all use cases.
 Add the new use case to this file so it will be available in
 the tests. See the :ref:`cg-ci-all-use-cases` section for details.
@@ -848,7 +848,7 @@ steps were unsuccessful in lowering memory usage, please take the following step
   Utilize a Python memory profiler to identify as specifically as possible 
   where the script exceeds the memory limit.
 - Add the use case to the :ref:`memory-intense-use-cases` list.
-- In the *internal_tests/use_cases/all_use_cases.txt* file, ensure that the 
+- In the *internal/tests/use_cases/all_use_cases.txt* file, ensure that the 
   use case is listed as the lowest-listed use case in its respective category. 
   Change the number in front of the new use case to an 'X', preceded 
   by the ‘#’ character::

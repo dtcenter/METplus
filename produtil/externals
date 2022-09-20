@@ -82,7 +82,7 @@ commit: 9858fc849a8eba 2018 Jan 10 in the vlab git repository
 https://user.name@vlab.ncep.noaa.gov/code-review/a/EMC_produtil
 NOTE:
 EMC_produtil/ush/produtil moved to METplus/produtil
-EMC_produtil/usy/*.py test files moved to METplus/internal_tests/produtil
+EMC_produtil/usy/*.py test files moved to METplus/internal/tests/produtil
 
 
 ============================================
