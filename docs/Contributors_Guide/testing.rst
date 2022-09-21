@@ -1,7 +1,7 @@
 Testing
 =======
 
-Test scripts are found in the GitHub repository in the internal_tests
+Test scripts are found in the GitHub repository in the internal/tests
 directory.
 
 .. _cg-unit-tests:
@@ -13,7 +13,7 @@ Unit tests are run with pytest. They are found in the *pytests* directory.
 Each tool has its own subdirectory containing its test files.
 
 Unit tests can be run by running the 'pytest' command from the
-internal_tests/pytests directory of the repository.
+internal/tests/pytests directory of the repository.
 The 'pytest' Python package must be available.
 A report will be output showing which pytest categories failed.
 When running on a new computer, a **minimum_pytest.<HOST>.sh**
@@ -21,7 +21,7 @@ file must be created to be able to run the script. This file contains
 information about the local environment so that the tests can run.
 
 All unit tests must include one of the custom markers listed in the
-internal_tests/pytests/pytest.ini file. Some examples include:
+internal/tests/pytests/pytest.ini file. Some examples include:
 
     * util
     * wrapper_a

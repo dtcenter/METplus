@@ -7,7 +7,7 @@ Create Directory for Next Release
 On the DTC web server where the sample input data for use cases is hosted,
 run the setup_next_release_data.py script for the next upcoming release
 to set up the data directory for the next major/minor version development.
-The script can be found in the METplus repository in internal_tests/use_cases.
+The script can be found in the METplus repository in internal/tests/use_cases.
 The file should be found in the home directory of the met_test user on
 the DTC web server host. It is linked to the file in the METplus repository.
 Pull the latest changes from the develop branch before running the script::

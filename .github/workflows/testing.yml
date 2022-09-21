@@ -85,7 +85,7 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           EXTERNAL_TRIGGER: ${{ needs.job_control.outputs.external_trigger }}
-          #MET_FORCE_TAG: 10.0.0
+          #MET_FORCE_TAG: 10.1.0
 
   update_data_volumes:
     name: Docker Setup - Update Data Volumes
@@ -109,7 +109,7 @@ jobs:
     name: Use Case Tests
     runs-on: ubuntu-latest
     needs: [get_image, update_data_volumes, job_control]
-    if: ${{ always() && needs.job_control.outputs.run_some_tests == 'true' }}
+    if: ${{ needs.job_control.outputs.run_some_tests == 'true' }}
     strategy:
       fail-fast: false
       matrix: ${{fromJson(needs.job_control.outputs.matrix)}}

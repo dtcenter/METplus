@@ -48,8 +48,8 @@ class GenEnsProdWrapper(LoopTimesWrapper):
         'frequency',
         'nep',
         'nmep',
-        'rank',
-        'weight',
+        'climo',
+        'climo_cdp',
     ]
 
     def __init__(self, config, instance=None):
