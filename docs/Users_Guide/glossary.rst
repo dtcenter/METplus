@@ -5952,7 +5952,7 @@ METplus Configuration Glossary
           .. warning:: **DEPRECATED:** Please use :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_RANK` instead.
 
    ENSEMBLE_STAT_ENSEMBLE_FLAG_WEIGHT
-          .. warning:: **DEPRECATED:** Please use :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_WEIGHT` or :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_WEIGHT` in :ref:`gen_ens_prod_wrapper` instead.
+          .. warning:: **DEPRECATED:** Please use :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_WEIGHT` instead.
 
    GRID_STAT_MASK_GRID
      Specify the value for 'mask.grid' in the MET configuration file for GridStat.
