@@ -1,8 +1,8 @@
 """
-Ensemble-Stat: Basic Post-Processing only  
-================================================================
+Gen-Ens-Prod: Basic Post-Processing only
+========================================
 
-model_application/precipitation/EnsembleStat_fcstHRRRE
+model_application/precipitation/GenEnsProd_fcstHRRRE
 _FcstOnly_NetCDF.conf
 
 """
@@ -25,7 +25,7 @@ _FcstOnly_NetCDF.conf
 # METplus Components
 # ------------------
 #
-# This use case runs Ensemble-Stat on HRRRE data from 3 members after
+# This use case runs gen_ens_prod on HRRRE data from 3 members after
 # running it through pcp_combine to create a 3 hour precipitation accumulation
 
 ###############################################################################
@@ -33,7 +33,7 @@ _FcstOnly_NetCDF.conf
 # ----------------
 #
 # The following tools are used for each run time:
-# EnsembleStat
+# GenEnsProd
 #
 # This example loops by initialization time. For each initialization time
 # it will process forecast leads 3, 6, 9 and 12
@@ -70,12 +70,11 @@ _FcstOnly_NetCDF.conf
 # METplus Configuration
 # ---------------------
 #
-# METplus first loads all of the configuration files found in parm/metplus_config,
+# METplus first loads all of the configurations found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/precipitation/EnsembleStat_fcstHRRRE_FcstOnly_NetCDF.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/EnsembleStat_fcstHRRRE_FcstOnly_NetCDF.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/GenEnsProd_fcstHRRRE_FcstOnly_NetCDF.conf
 
 ##############################################################################
 # MET Configuration
@@ -89,39 +88,19 @@ _FcstOnly_NetCDF.conf
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. note:: See the :ref:`EnsembleStat MET Configuration<ens-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# .. note:: See the :ref:`GenEnsProd MET Configuration<gen-ens-prod-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/EnsembleStatConfig_wrapped
+# .. literalinclude:: ../../../../parm/met_config/GenEnsProdConfig_wrapped
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# This use case can be run two ways:
+# The command to run this use case is::
 #
-# 1) Passing in EnsembleStat_fcstHRRRE_FcstOnly_NetCDF.conf then a user-specific system configuration file::
+#    run_metplus.py /path/to/METplus/parm/use_cases/model_applications/precipitation/GenEnsProd_fcstHRRRE_FcstOnly_NetCDF.conf
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/EnsembleStat_fcstHRRRE_FcstOnly_NetCDF.conf -c /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in EnsembleStat_fcstHRRRE_FcstOnly_NetCDF.conf::
-#
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/EnsembleStat_fcstHRRRE_FcstOnly_NetCDF.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
-#
-# **NOTE:** All of these items must be found under the [dir] section.
 #
 
 ##############################################################################
@@ -133,22 +112,22 @@ _FcstOnly_NetCDF.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in model_applications/precipitation/EnsembleStat_fcstHRRRE_FcstOnly_NetCDF/EnsembleStat (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in model_applications/precipitation/GenEnsProd_fcstHRRRE_FcstOnly_NetCDF/GenEnsProd (relative to **OUTPUT_BASE**)
 # The following folder/file combination will be created:
 #
 # -201905191200
 #
-# * ensemble_stat_APCP_03_20190519_150000V_ens.nc
-# * ensemble_stat_APCP_03_20190519_180000V_ens.nc
-# * ensemble_stat_APCP_03_20190519_210000V_ens.nc
-# * ensemble_stat_APCP_03_20190520_000000V_ens.nc
+# * gen_ens_prod_APCP_03_20190519_150000V_ens.nc
+# * gen_ens_prod_APCP_03_20190519_180000V_ens.nc
+# * gen_ens_prod_APCP_03_20190519_210000V_ens.nc
+# * gen_ens_prod_APCP_03_20190520_000000V_ens.nc
 #
 # -201905200000
 #
-# * ensemble_stat_APCP_03_20190520_030000V_ens.nc
-# * ensemble_stat_APCP_03_20190520_060000V_ens.nc
-# * ensemble_stat_APCP_03_20190520_090000V_ens.nc
-# * ensemble_stat_APCP_03_20190520_120000V_ens.nc
+# * gen_ens_prod_APCP_03_20190520_030000V_ens.nc
+# * gen_ens_prod_APCP_03_20190520_060000V_ens.nc
+# * gen_ens_prod_APCP_03_20190520_090000V_ens.nc
+# * gen_ens_prod_APCP_03_20190520_120000V_ens.nc
 
 
 ##############################################################################
@@ -157,7 +136,7 @@ _FcstOnly_NetCDF.conf
 #
 # .. note::
 #
-#   * EnsembleStatToolUseCase
+#   * GenEnsProdToolUseCase
 #   * NOAAHWTOrgUseCase
 #   * PrecipitationAppUseCase
 #   * NetCDFFileUseCase
@@ -170,5 +149,5 @@ _FcstOnly_NetCDF.conf
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/precipitation-EnsembleStat_fcstHRRRE_FcstOnly_NetCDF.png'
+# sphinx_gallery_thumbnail_path = '_static/precipitation-GenEnsProd_fcstHRRRE_FcstOnly_NetCDF.png'
 #
