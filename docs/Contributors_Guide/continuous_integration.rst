@@ -601,7 +601,7 @@ All Use Cases
 ^^^^^^^^^^^^^
 
 All of the existing use cases are listed in **all_use_cases.txt**,
-found in *internal_tests/use_cases*.
+found in *internal/tests/use_cases*.
 
 The file is organized by use case category. Each category starts
 a line that following the format::
