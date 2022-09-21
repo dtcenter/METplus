@@ -117,7 +117,7 @@
   {
     "category": "precipitation",
     "index_list": "3-7",
-    "run": true
+    "run": false
   },
   {
     "category": "precipitation",
