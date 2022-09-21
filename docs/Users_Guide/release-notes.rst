@@ -42,7 +42,7 @@ https://github.com/dtcenter/METplus/issues
 METplus Version 5.0.0 Beta 3 Release Notes (2022-09-21)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. warning:: * **Major Changes**:
+.. warning:: **MAJOR CHANGES**:
 
   * Use cases that include **EnsembleStat** wrapper will require config file updates. **NEW USER'S GUIDE SECTION OUTLINING REQUIRED CHANGES COMING SOON**
   * The default value of :term:`SCRUB_STAGING_DIR` is now *True*.
