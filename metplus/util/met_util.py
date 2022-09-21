@@ -1391,7 +1391,7 @@ def expand_int_string_to_list(int_string):
 
 def subset_list(full_list, subset_definition):
     """! Extract subset of items from full_list based on subset_definition
-    Used in internal_tests/use_cases/metplus_use_case_suite.py
+    Used in internal/tests/use_cases/metplus_use_case_suite.py
 
     @param full_list List of all use cases that were requested
     @param subset_definition Defines how to subset the full list. If None,
