@@ -239,12 +239,12 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.add_met_config(name='vld_thresh',
                             data_type='float',
                             metplus_configs=[
-                                'ENSEMBLE_STAT_FCST_VLD_THRESH',
-                                'FCST_ENSEMBLE_STAT_FCST_VLD_THRESH',
                                 'ENSEMBLE_STAT_VLD_THRESH',
-                                'ENSEMBLE_STAT_FCST_VALID_THRESH',
-                                'FCST_ENSEMBLE_STAT_VALID_THRESH',
                                 'ENSEMBLE_STAT_VALID_THRESH',
+                                'ENSEMBLE_STAT_FCST_VLD_THRESH',
+                                'ENSEMBLE_STAT_FCST_VALID_THRESH',
+                                'FCST_ENSEMBLE_STAT_VLD_THRESH',
+                                'FCST_ENSEMBLE_STAT_VALID_THRESH',
                                 'ENSEMBLE_STAT_ENS_VLD_THRESH',
                             ])
 
