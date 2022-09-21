@@ -50,7 +50,7 @@ METplus Version 5.0.0 Beta 3 Release Notes (2022-09-21)
     uncompressed files will automatically be removed unless this option is set by the user.
     These files are typically only used to debug unexpected issues.
   * The default value of :term:`METPLUS_CONF` now includes the :term:`LOG_TIMESTAMP` so each METplus run
-    will generate a unique final config file, i.e. metplus_final.conf.20220921121733.
+    will generate a unique final config file, e.g. metplus_final.conf.20220921121733.
 
 
 * Enhancements:
@@ -81,8 +81,8 @@ METplus Version 5.0.0 Beta 3 Release Notes (2022-09-21)
 
 * Internal:
 
-  * Add instructions in Release Guide for "Recreate an Existing Release" (`#1746 <https://github.com/dtcenter/METplus-Internal/issues/1746>`_)
-  * Add modulefiles used for installations on various machines (`dtcenter/METplus-Internal#1749 <https://github.com/dtcenter/METplus-Internal/issues/1749>`_)
+  * Add instructions in Release Guide for "Recreate an Existing Release" (`#1746 <https://github.com/dtcenter/METplus/issues/1746>`_)
+  * Add modulefiles used for installations on various machines (`#1749 <https://github.com/dtcenter/METplus/issues/1749>`_)
 
 
 
