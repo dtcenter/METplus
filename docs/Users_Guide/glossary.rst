@@ -8672,8 +8672,8 @@ METplus Configuration Glossary
 
      | *Used by:*  GenEnsProd
 
-   GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO_CDF
-     Specify the value for 'ensemble_flag.climo_cdf' in the MET configuration file for GenEnsProd.
+   GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO_CDP
+     Specify the value for 'ensemble_flag.climo_cdp' in the MET configuration file for GenEnsProd.
 
      | *Used by:*  GenEnsProd
 
