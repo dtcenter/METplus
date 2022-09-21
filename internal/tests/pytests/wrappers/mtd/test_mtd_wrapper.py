@@ -7,11 +7,11 @@ import datetime
 
 from metplus.wrappers.mtd_wrapper import MTDWrapper
 
-INTERNAL_TEST_DATA_DIR = 'internal/tests/data'
 
 def get_test_data_dir(config, subdir):
     return os.path.join(config.getdir('METPLUS_BASE'),
                         'internal', 'tests', 'data', subdir)
+
 
 def mtd_wrapper(metplus_config, lead_seq=None):
     """! Returns a default MTDWrapper with /path/to entries in the
