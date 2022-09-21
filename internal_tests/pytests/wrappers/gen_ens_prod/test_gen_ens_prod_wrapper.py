@@ -149,11 +149,11 @@ def handle_input_dir(config):
         ({'GEN_ENS_PROD_ENSEMBLE_FLAG_NMEP': 'FALSE', },
          {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {nmep = FALSE;}'}),
         # 23
-        ({'GEN_ENS_PROD_ENSEMBLE_FLAG_RANK': 'FALSE', },
-         {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {rank = FALSE;}'}),
+        ({'GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO': 'FALSE', },
+         {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {climo = FALSE;}'}),
         # 24
-        ({'GEN_ENS_PROD_ENSEMBLE_FLAG_WEIGHT': 'FALSE', },
-         {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {weight = FALSE;}'}),
+        ({'GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO_CDP': 'FALSE', },
+         {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {climo_cdp = FALSE;}'}),
         # 25
         ({
              'GEN_ENS_PROD_ENSEMBLE_FLAG_LATLON': 'FALSE',
@@ -168,8 +168,8 @@ def handle_input_dir(config):
              'GEN_ENS_PROD_ENSEMBLE_FLAG_FREQUENCY': 'FALSE',
              'GEN_ENS_PROD_ENSEMBLE_FLAG_NEP': 'FALSE',
              'GEN_ENS_PROD_ENSEMBLE_FLAG_NMEP': 'FALSE',
-             'GEN_ENS_PROD_ENSEMBLE_FLAG_RANK': 'FALSE',
-             'GEN_ENS_PROD_ENSEMBLE_FLAG_WEIGHT': 'FALSE',
+             'GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO': 'FALSE',
+             'GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO_CDP': 'FALSE',
          },
          {
              'METPLUS_ENSEMBLE_FLAG_DICT': ('ensemble_flag = {latlon = FALSE;'
@@ -178,8 +178,8 @@ def handle_input_dir(config):
                                             'min = FALSE;max = FALSE;'
                                             'range = FALSE;vld_count = FALSE;'
                                             'frequency = FALSE;nep = FALSE;'
-                                            'nmep = FALSE;rank = FALSE;'
-                                            'weight = FALSE;}')}),
+                                            'nmep = FALSE;climo = FALSE;'
+                                            'climo_cdp = FALSE;}')}),
         # 26
         ({'GEN_ENS_PROD_CLIMO_MEAN_FILE_NAME': '/some/climo_mean/file.txt', },
          {'METPLUS_CLIMO_MEAN_DICT': ('climo_mean = {file_name = '

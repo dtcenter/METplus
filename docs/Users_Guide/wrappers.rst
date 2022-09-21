@@ -1107,7 +1107,7 @@ METplus Configuration
 | :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_NEP`
 | :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_NMEP`
 | :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO`
-| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO_CDF`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO_CDP`
 | :term:`GEN_ENS_PROD_ENS_MEMBER_IDS`
 | :term:`GEN_ENS_PROD_CONTROL_ID`
 | :term:`GEN_ENS_PROD_MET_CONFIG_OVERRIDES`
@@ -1408,8 +1408,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - ensemble_flag.nmep
    * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO`
      - ensemble_flag.climo
-   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO_CDF`
-     - ensemble_flag.climo_cdf
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO_CDP`
+     - ensemble_flag.climo_cdp
 
 **${METPLUS_ENS_MEMBER_IDS}**
 

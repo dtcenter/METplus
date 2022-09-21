@@ -1,10 +1,10 @@
 """
-Surrogate Severe Calculation: PCPCombine, EnsembleStat, and RegridDataPlane 
-===================================================================================================
+Surrogate Severe Calculation: PCPCombine, GenEnsProd, and RegridDataPlane
+=========================================================================
 
 model_applications/
 short_range/
-EnsembleStat_fcstHRRR_fcstOnly
+GenEnsProd_fcstHRRR_fcstOnly
 _SurrogateSevere.conf
 
 """
@@ -12,7 +12,7 @@ _SurrogateSevere.conf
 # Scientific Objective
 # --------------------
 #
-# Run PCPCombine, EnsembleStat, and RegridDataPlane tools to create surrogate severe probability 
+# Run PCPCombine, GenEnsProd, and RegridDataPlane tools to create surrogate severe probability
 # forecasts (SSPFs) for a given date. SSPFs are a severe weather forecasting tool and is a techniqu
 # used by the Storm Prediction Center (SPC) as well as others. SSPFs are based on updraft helicity 
 # (UH; UH = ∫z0 to zt (ω * ζ) dz) since certain thresholds of UH have been shown as good proxies for# severe weather. SSPFs can be thought of as the perfect model forecast. They are derived as follows:
@@ -44,25 +44,25 @@ _SurrogateSevere.conf
 # METplus Components
 # ------------------
 #
-# This use case runs the PCPCombine, EnsembleStat, and RegridDataPlane MET tools.
+# This use case runs the PCPCombine, GenEnsProd, and RegridDataPlane MET tools.
 
 ###################################################################################################
 # METplus Workflow
 # ----------------
 #
 # This workflow loops over the data by process, meaning that each MET tool will run over all times
-# before moving onto the tool. PCPCombine is called first, followed by EnsembleStat,
+# before moving onto the tool. PCPCombine is called first, followed by GenEnsProd,
 # and then, finally, RegridDataPlane.
 
 ###################################################################################################
 # METplus Configuration
 # ---------------------
 #
-# METplus first loads all of the configuration files found in parm/metplus_config. Then, it loads
-# any configuration files passed to METplus by the command line with the -c option.
+# METplus first loads all of the configurations found in parm/metplus_config.
+# Then it loads any configuration files passed to METplus by the command line.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/EnsembleStat_fcstHRRR_fcstOnly_SurrogateSevere.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/GenEnsProd_fcstHRRR_fcstOnly_SurrogateSevere.conf
 
 ###################################################################################################
 # MET Configuration
@@ -76,10 +76,10 @@ _SurrogateSevere.conf
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. note:: See the :ref:`EnsembleStat MET Configuration<ens-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# .. note:: See the :ref:`GenEnsProd MET Configuration<gen-ens-prod-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/EnsembleStatConfig_wrapped
+# .. literalinclude:: ../../../../parm/met_config/GenEnsProdConfig_wrapped
 
 ###################################################################################################
 # Running METplus
@@ -87,7 +87,7 @@ _SurrogateSevere.conf
 #
 # The command to run this use case is::
 #
-#    run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/short_range/EnsembleStat_fcstHRRR_fcstOnly_SurrogateSevere.conf
+#    run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/GenEnsProd_fcstHRRR_fcstOnly_SurrogateSevere.conf
 
 ###################################################################################################
 # Expected Output
@@ -105,9 +105,9 @@ _SurrogateSevere.conf
 #
 # * 20190518/hrrr_ncep_2019051800f036.nc
 #
-# **EnsembleStat output**:
+# **GenEnsProd output**:
 #
-# * ensemble_stat_20190519_120000V_ens.nc
+# * gen_ens_prod_20190519_120000V_ens.nc
 #
 # **RegridDataPlane output**:
 # 
@@ -121,12 +121,12 @@ _SurrogateSevere.conf
 # .. note::
 #
 #   * PCPCombineUseCase
-#   * EnsembleStatUseCase
+#   * GenEnsProdUseCase
 #   * RegridDataPlaneUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/short_range-EnsembleStat_fcstHRRR_fcstOnly_SurrogateSevere.png'
+# sphinx_gallery_thumbnail_path = '_static/short_range-GenEnsProd_fcstHRRR_fcstOnly_SurrogateSevere.png'
 #
