@@ -227,7 +227,7 @@ The METplus Wrappers source code contains the following directory structure::
     build_components/
     docs/
     environment.yml
-    internal_tests/
+    internal/
     manage_exernals/
     metplus/
     parm/
@@ -253,7 +253,7 @@ developer has Doxygen installed on the host.
 The Doxygen documentation is useful to
 contributors and is not necessary for METplus end-users.
 
-The **internal_tests/** directory contains test scripts that are only
+The **internal/** directory contains scripts that are only
 relevant to METplus developers and contributors.
 
 The **manage_externals/** directory contains scripts used to

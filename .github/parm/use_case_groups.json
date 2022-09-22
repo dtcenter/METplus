@@ -117,7 +117,7 @@
   {
     "category": "precipitation",
     "index_list": "3-7",
-    "run": false
+    "run": true
   },
   {
     "category": "precipitation",
@@ -177,6 +177,11 @@
   {
     "category": "s2s_mjo",
     "index_list": "3",
+    "run": false
+  },
+  {
+    "category": "s2s_mjo",
+    "index_list": "4",
     "run": false
   },
   {

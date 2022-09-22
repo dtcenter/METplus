@@ -210,28 +210,19 @@ METplus Configuration
 | :term:`OBS_ENSEMBLE_STAT_FILE_WINDOW_BEGIN`
 | :term:`OBS_ENSEMBLE_STAT_FILE_WINDOW_END`
 | :term:`ENSEMBLE_STAT_ENS_THRESH`
-| :term:`ENSEMBLE_STAT_ENS_VLD_THRESH`
-| :term:`ENSEMBLE_STAT_ENS_OBS_THRESH`
+| :term:`ENSEMBLE_STAT_VLD_THRESH`
+| :term:`ENSEMBLE_STAT_OBS_THRESH`
 | :term:`ENSEMBLE_STAT_CUSTOM_LOOP_LIST`
 | :term:`ENSEMBLE_STAT_SKIP_IF_OUTPUT_EXISTS`
 | :term:`ENSEMBLE_STAT_DESC`
 | :term:`ENSEMBLE_STAT_ENS_SSVAR_BIN_SIZE`
 | :term:`ENSEMBLE_STAT_ENS_PHIST_BIN_SIZE`
-| :term:`ENSEMBLE_STAT_NBRHD_PROB_WIDTH`
-| :term:`ENSEMBLE_STAT_NBRHD_PROB_SHAPE`
-| :term:`ENSEMBLE_STAT_NBRHD_PROB_VLD_THRESH`
 | :term:`ENSEMBLE_STAT_CLIMO_CDF_BINS`
 | :term:`ENSEMBLE_STAT_CLIMO_CDF_CENTER_BINS`
 | :term:`ENSEMBLE_STAT_CLIMO_CDF_WRITE_BINS`
 | :term:`ENSEMBLE_STAT_CLIMO_CDF_DIRECT_PROB`
 | :term:`ENSEMBLE_STAT_DUPLICATE_FLAG`
 | :term:`ENSEMBLE_STAT_SKIP_CONST`
-| :term:`ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_DX`
-| :term:`ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_RADIUS`
-| :term:`ENSEMBLE_STAT_NMEP_SMOOTH_VLD_THRESH`
-| :term:`ENSEMBLE_STAT_NMEP_SMOOTH_SHAPE`
-| :term:`ENSEMBLE_STAT_NMEP_SMOOTH_METHOD`
-| :term:`ENSEMBLE_STAT_NMEP_SMOOTH_WIDTH`
 | :term:`ENSEMBLE_STAT_CENSOR_THRESH`
 | :term:`ENSEMBLE_STAT_CENSOR_VAL`
 | :term:`ENSEMBLE_STAT_DUPLICATE_FLAG`
@@ -286,20 +277,13 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_OUTPUT_FLAG_PJC`
 | :term:`ENSEMBLE_STAT_OUTPUT_FLAG_PRC`
 | :term:`ENSEMBLE_STAT_OUTPUT_FLAG_ECLV`
-| :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_LATLON`
-| :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_MEAN`
-| :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_STDEV`
-| :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_MINUS`
-| :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_PLUS`
-| :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_MIN`
-| :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_MAX`
-| :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_RANGE`
-| :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_VLD_COUNT`
-| :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_FREQUENCY`
-| :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_NEP`
-| :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_NMEP`
-| :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_RANK`
-| :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_WEIGHT`
+| :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_LATLON`
+| :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_MEAN`
+| :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_RAW`
+| :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_RANK`
+| :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_PIT`
+| :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_VLD_COUNT`
+| :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_WEIGHT`
 | :term:`ENSEMBLE_STAT_OBS_QUALITY_INC`
 | :term:`ENSEMBLE_STAT_OBS_QUALITY_EXC`
 | :term:`ENSEMBLE_STAT_MET_CONFIG_OVERRIDES`
@@ -451,20 +435,9 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - METplus Config(s)
      - MET Config File
    * - :term:`ENSEMBLE_STAT_ENS_THRESH`
-     - ens.ens_thresh
+     - fcst.ens_thresh
 
-**${METPLUS_ENS_VLD_THRESH}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`ENSEMBLE_STAT_ENS_VLD_THRESH`
-     - ens.vld_thresh
-
-**${METPLUS_ENS_OBS_THRESH}**
+**${METPLUS_VLD_THRESH}**
 
 .. list-table::
    :widths: 5 5
@@ -472,8 +445,19 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`ENSEMBLE_STAT_ENS_OBS_THRESH`
-     - ens.obs_thresh
+   * - :term:`ENSEMBLE_STAT_VLD_THRESH`
+     - fcst.vld_thresh
+
+**${METPLUS_OBS_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_OBS_THRESH`
+     - obs_thresh
 
 **${METPLUS_ENS_FIELD}**
 
@@ -493,42 +477,6 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - n/a
 
 .. note:: For more information on controlling the forecast field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
-
-**${METPLUS_NBRHD_PROB_DICT}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`ENSEMBLE_STAT_NBRHD_PROB_WIDTH`
-     - nbrhd_prob.width
-   * - :term:`ENSEMBLE_STAT_NBRHD_PROB_SHAPE`
-     - nbrhd_prob.shape
-   * - :term:`ENSEMBLE_STAT_NBRHD_PROB_VLD_THRESH`
-     - nbrhd_prob.vld_thresh
-
-**${METPLUS_NMEP_SMOOTH_DICT}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`ENSEMBLE_STAT_NMEP_SMOOTH_VLD_THRESH`
-     - nmep_smooth.vld_thresh
-   * - :term:`ENSEMBLE_STAT_NMEP_SMOOTH_SHAPE`
-     - nmep_smooth.shape
-   * - :term:`ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_DX`
-     - nmep_smooth.gaussian_dx
-   * - :term:`ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_RADIUS`
-     - nmep_smooth.gaussian_radius
-   * - :term:`ENSEMBLE_STAT_NMEP_SMOOTH_METHOD`
-     - nmep_smooth.type.method
-   * - :term:`ENSEMBLE_STAT_NMEP_SMOOTH_WIDTH`
-     - nmep_smooth.type.width
 
 **${METPLUS_PROB_CAT_THRESH}**
 
@@ -862,7 +810,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`ENSEMBLE_STAT_OUTPUT_FLAG_ECLV`
      - output_flag.eclv
 
-**${METPLUS_ENSEMBLE_FLAG_DICT}**
+**${METPLUS_NC_ORANK_FLAG_DICT}**
 
 .. list-table::
    :widths: 5 5
@@ -870,34 +818,20 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_LATLON`
-     - ensemble_flag.latlon
-   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_MEAN`
-     - ensemble_flag.mean
-   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_STDEV`
-     - ensemble_flag.stdev
-   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_MINUS`
-     - ensemble_flag.minus
-   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_PLUS`
-     - ensemble_flag.plus
-   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_MIN`
-     - ensemble_flag.min
-   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_MAX`
-     - ensemble_flag.max
-   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_RANGE`
-     - ensemble_flag.range
-   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_VLD_COUNT`
-     - ensemble_flag.vld_count
-   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_FREQUENCY`
-     - ensemble_flag.frequency
-   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_NEP`
-     - ensemble_flag.nep
-   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_NMEP`
-     - ensemble_flag.nmep
-   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_RANK`
-     - ensemble_flag.rank
-   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_WEIGHT`
-     - ensemble_flag.weight
+   * - :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_LATLON`
+     - nc_orank_flag.latlon
+   * - :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_MEAN`
+     - nc_orank_flag.mean
+   * - :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_RAW`
+     - nc_orank_flag.raw
+   * - :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_RANK`
+     - nc_orank_flag.rank
+   * - :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_PIT`
+     - nc_orank_flag.pit
+   * - :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_VLD_COUNT`
+     - nc_orank_flag.vld_count
+   * - :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_WEIGHT`
+     - nc_orank_flag.weight
 
 **${METPLUS_OUTPUT_PREFIX}**
 
@@ -1173,7 +1107,7 @@ METplus Configuration
 | :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_NEP`
 | :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_NMEP`
 | :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO`
-| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO_CDF`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO_CDP`
 | :term:`GEN_ENS_PROD_ENS_MEMBER_IDS`
 | :term:`GEN_ENS_PROD_CONTROL_ID`
 | :term:`GEN_ENS_PROD_MET_CONFIG_OVERRIDES`
@@ -1474,8 +1408,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - ensemble_flag.nmep
    * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO`
      - ensemble_flag.climo
-   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO_CDF`
-     - ensemble_flag.climo_cdf
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO_CDP`
+     - ensemble_flag.climo_cdp
 
 **${METPLUS_ENS_MEMBER_IDS}**
 

@@ -56,7 +56,7 @@ if [[ "$INPUT_CATEGORIES" == pytests* ]]; then
 	 .
 
   echo Running Pytests
-  command="export METPLUS_PYTEST_HOST=docker; cd internal_tests/pytests;"
+  command="export METPLUS_PYTEST_HOST=docker; cd internal/tests/pytests;"
   command+="status=0;"
   for x in `cat $PYTESTS_GROUPS_FILEPATH`; do
     marker="${x//_or_/ or }"
