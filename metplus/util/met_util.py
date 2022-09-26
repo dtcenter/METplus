@@ -137,6 +137,7 @@ def run_metplus(config, process_list):
             return 1
 
         loop_order = config.getstr('config', 'LOOP_ORDER', '').lower()
+        loop_order = 'processes'
 
         if loop_order == "processes":
             all_commands = []
