@@ -88,10 +88,7 @@ class CommandBuilder:
             )
 
         self.instance = instance
-
-        self.env = os.environ.copy()
-        if hasattr(config, 'env'):
-            self.env = config.env
+        self.env = config.env if hasattr(config, 'env') else os.environ.copy()
 
         # populate c_dict dictionary
         self.c_dict = self.create_c_dict()
