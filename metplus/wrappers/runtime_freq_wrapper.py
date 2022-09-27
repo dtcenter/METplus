@@ -28,11 +28,12 @@ from ..util import time_generator, add_to_time_input
 class RuntimeFreqWrapper(CommandBuilder):
 
     # valid options for run frequency
-    FREQ_OPTIONS = ['RUN_ONCE',
-                    'RUN_ONCE_PER_INIT_OR_VALID',
-                    'RUN_ONCE_PER_LEAD',
-                    'RUN_ONCE_FOR_EACH'
-                    ]
+    FREQ_OPTIONS = [
+        'RUN_ONCE',
+        'RUN_ONCE_PER_INIT_OR_VALID',
+        'RUN_ONCE_PER_LEAD',
+        'RUN_ONCE_FOR_EACH'
+    ]
 
     def __init__(self, config, instance=None):
         super().__init__(config, instance=instance)
