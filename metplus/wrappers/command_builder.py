@@ -1624,3 +1624,8 @@ class CommandBuilder:
 
         items['direct_prob'] = 'bool'
         self.add_met_config_dict('climo_cdf', items)
+
+    def get_wrapper_instance_name(self):
+        if not self.instance:
+            return self.app_name
+        return f'{self.app_name}({self.instance})'
