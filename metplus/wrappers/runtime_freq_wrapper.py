@@ -110,6 +110,9 @@ class RuntimeFreqWrapper(CommandBuilder):
                                "mode unless LOOP_ORDER = processes")
                 return None
 
+        wrapper_instance_name = self.get_wrapper_instance_name()
+        self.logger.info(f'Running wrapper: {wrapper_instance_name}')
+
         # loop over all custom strings
         for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
             if custom_string:
