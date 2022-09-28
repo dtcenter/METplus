@@ -67,51 +67,53 @@ class StatAnalysisWrapper(CommandBuilder):
         'METPLUS_HSS_EC_VALUE',
     ]
 
-    field_lists = ['FCST_VAR_LIST',
-                   'OBS_VAR_LIST',
-                   'FCST_UNITS_LIST',
-                   'OBS_UNITS_LIST',
-                   'FCST_THRESH_LIST',
-                   'OBS_THRESH_LIST',
-                   'FCST_LEVEL_LIST',
-                   'OBS_LEVEL_LIST',
-                   ]
+    field_lists = [
+        'FCST_VAR_LIST',
+        'OBS_VAR_LIST',
+        'FCST_UNITS_LIST',
+        'OBS_UNITS_LIST',
+        'FCST_THRESH_LIST',
+        'OBS_THRESH_LIST',
+        'FCST_LEVEL_LIST',
+        'OBS_LEVEL_LIST',
+    ]
 
-    format_lists = ['FCST_VALID_HOUR_LIST',
-                    'FCST_INIT_HOUR_LIST',
-                    'OBS_VALID_HOUR_LIST',
-                    'OBS_INIT_HOUR_LIST',
-                    'FCST_LEAD_LIST',
-                    'OBS_LEAD_LIST',
-                    ]
+    format_lists = [
+        'FCST_VALID_HOUR_LIST',
+        'FCST_INIT_HOUR_LIST',
+        'OBS_VALID_HOUR_LIST',
+        'OBS_INIT_HOUR_LIST',
+        'FCST_LEAD_LIST',
+        'OBS_LEAD_LIST',
+    ]
 
-    expected_config_lists = ['MODEL_LIST',
-                             'DESC_LIST',
-                             'VX_MASK_LIST',
-                             'INTERP_MTHD_LIST',
-                             'INTERP_PNTS_LIST',
-                             'COV_THRESH_LIST',
-                             'ALPHA_LIST',
-                             'LINE_TYPE_LIST',
-                             ] + format_lists + field_lists
+    expected_config_lists = [
+        'MODEL_LIST',
+        'DESC_LIST',
+        'VX_MASK_LIST',
+        'INTERP_MTHD_LIST',
+        'INTERP_PNTS_LIST',
+        'COV_THRESH_LIST',
+        'ALPHA_LIST',
+        'LINE_TYPE_LIST',
+    ] + format_lists + field_lists
 
-    force_group_for_make_plots_lists = ['MODEL_LIST',
-                                        'FCST_LEAD_LIST',
-                                        'OBS_LEAD_LIST',
-                                        'FCST_LEVEL_LIST',
-                                        'OBS_LEVEL_LIST',
-                                        'FCST_THRESH_LIST',
-                                        'OBS_THRESH_LIST',
-                                        'FCST_UNITS_LIST',
-                                        'OBS_UNITS_LIST',
-                                       ]
+    force_group_for_make_plots_lists = [
+        'MODEL_LIST',
+        'FCST_LEAD_LIST',
+        'OBS_LEAD_LIST',
+        'FCST_LEVEL_LIST',
+        'OBS_LEVEL_LIST',
+        'FCST_THRESH_LIST',
+        'OBS_THRESH_LIST',
+        'FCST_UNITS_LIST',
+        'OBS_UNITS_LIST',
+    ]
 
     list_categories = ['GROUP_LIST_ITEMS', 'LOOP_LIST_ITEMS']
-    list_categories_make_plots = ['GROUP_LIST_ITEMS_MAKE_PLOTS', 'LOOP_LIST_ITEMS_MAKE_PLOTS']
-    # what is the used for? these are not formatted later
-    format_later_list = [
-        'MODEL_LIST', 'FCST_VALID_HOUR_LIST', 'OBS_VALID_HOUR_LIST',
-        'FCST_INIT_HOUR_LIST', 'OBS_INIT_HOUR_LIST'
+    list_categories_make_plots = [
+        'GROUP_LIST_ITEMS_MAKE_PLOTS',
+        'LOOP_LIST_ITEMS_MAKE_PLOTS'
     ]
 
     def __init__(self, config, instance=None):
@@ -141,7 +143,7 @@ class StatAnalysisWrapper(CommandBuilder):
             cmd += f" -out {self.c_dict['OUTPUT_FILENAME']}"
 
         return cmd
-     
+
     def create_c_dict(self):
         """! Create a data structure (dictionary) that contains all the
              values set in the configuration files that are common for 
@@ -158,7 +160,6 @@ class StatAnalysisWrapper(CommandBuilder):
             self.config.getstr('config', 'LOG_STAT_ANALYSIS_VERBOSITY',
                                c_dict['VERBOSITY'])
         )
-        c_dict['LOOP_ORDER'] = self.config.getstr('config', 'LOOP_ORDER')
 
         # STATAnalysis config file is optional, so
         # don't provide wrapped config file name as default value
@@ -186,10 +187,22 @@ class StatAnalysisWrapper(CommandBuilder):
             c_dict['DATE_BEG'] = start_dt.strftime('%Y%m%d')
             c_dict['DATE_END'] = end_dt.strftime('%Y%m%d')
 
-        for job_conf in ['JOB_NAME', 'JOB_ARGS']:
-            c_dict[job_conf] = self.config.getstr('config',
-                                                  f'STAT_ANALYSIS_{job_conf}',
-                                                  '')
+        # read jobs from STAT_ANALYSIS_JOB<n> or legacy JOB_NAME/ARGS if unset
+        c_dict['JOBS'] = []
+        job_indices = list(
+            find_indices_in_config_section(r'STAT_ANALYSIS_JOB(\d+)$',
+                                           self.config,
+                                           index_index=1).keys()
+        )
+
+        if job_indices:
+            for j_id in job_indices:
+                job = self.config.getraw('config', f'STAT_ANALYSIS_JOB{j_id}')
+                c_dict['JOBS'].append(job)
+        else:
+            job_name = self.config.getraw('config', 'STAT_ANALYSIS_JOB_NAME')
+            job_args = self.config.getraw('config', 'STAT_ANALYSIS_JOB_ARGS')
+            c_dict['JOBS'].append(f'-job {job_name} {job_args}')
 
         # read in all lists except field lists, which will be read in afterwards and checked
         all_lists_to_read = self.expected_config_lists + self.list_categories
@@ -249,17 +262,25 @@ class StatAnalysisWrapper(CommandBuilder):
     def c_dict_error_check(self, c_dict):
 
         if not c_dict.get('CONFIG_FILE'):
-            self.logger.info("STAT_ANALYSIS_CONFIG_FILE not set. Passing job arguments to "
-                             "stat_analysis directly on the command line. This will bypass "
-                             "any filtering done unless you add the arguments to "
-                             "STAT_ANALYSIS_JOB_ARGS")
+            if len(c_dict['JOBS']) > 1:
+                self.log_error(
+                    'Only 1 job can be set with STAT_ANALYSIS_JOB<n> if '
+                    'STAT_ANALYSIS_CONFIG_FILE is not set.'
+                )
+            else:
+                self.logger.info("STAT_ANALYSIS_CONFIG_FILE not set. Passing "
+                                 "job arguments to stat_analysis directly on "
+                                 "the command line. This will bypass "
+                                  "any filtering done unless you add the "
+                                 "arguments to STAT_ANALYSIS_JOBS<n>")
 
         if not c_dict['OUTPUT_DIR']:
             self.log_error("Must set STAT_ANALYSIS_OUTPUT_DIR")
 
-        for job_conf in ['JOB_NAME', 'JOB_ARGS']:
-            if not c_dict[job_conf]:
-                self.log_error(f"Must set STAT_ANALYSIS_{job_conf} to run StatAnalysis")
+        if not c_dict['JOBS']:
+            self.log_error(
+                "Must set at least one job with STAT_ANALYSIS_JOB<n>"
+            )
 
         for conf_list in self.list_categories:
             if not c_dict[conf_list]:
@@ -298,8 +319,6 @@ class StatAnalysisWrapper(CommandBuilder):
 
             if len(c_dict['MODEL_LIST']) > 8:
                 self.log_error("Number of models for plotting limited to 8.")
-
-#        self.check_dump_row_templates_for_plotting()
 
         # set forMakePlots to False to begin. When gathering settings to
         # send to MakePlots wrapper, this will be set to True
@@ -383,8 +402,9 @@ class StatAnalysisWrapper(CommandBuilder):
                                   +"StatAnalysis followed by MakePlots.")
 
         # if MakePlots is run but -dump_row is not found in the job args, error
-        if '-dump_row' not in c_dict['JOB_ARGS']:
-            self.log_error("Must include -dump_row in STAT_ANALYSIS_JOB_ARGS if running MakePlots")
+        if not any([item for item in c_dict['JOBS'] if '-dump_row' in item]):
+            self.log_error("Must include -dump_row in at least one "
+                           "STAT_ANALYSIS_JOB<n> if running MakePlots")
 
     def list_to_str(self, list_of_values, add_quotes=True):
         """! Turn a list of values into a single string so it can be 
@@ -436,7 +456,7 @@ class StatAnalysisWrapper(CommandBuilder):
         for missing_config in missing_config_list:
 
             # if running MakePlots
-            if (c_dict['LOOP_ORDER'] == 'processes' and self.runMakePlots):
+            if self.runMakePlots:
 
                 # if LINE_TYPE_LIST is missing, add it to group list
                 if missing_config == 'LINE_TYPE_LIST':
@@ -1365,7 +1385,7 @@ class StatAnalysisWrapper(CommandBuilder):
         output_file = os.path.join(self.c_dict['OUTPUT_DIR'],
                                    output_filename)
 
-        # substitute output filename in JOB_ARGS line
+        # substitute output filename in JOBS line
         job = job.replace(f'[{job_type}_file]', output_file)
         job = job.replace(f'[{job_type}_filename]', output_file)
 
@@ -1400,11 +1420,10 @@ class StatAnalysisWrapper(CommandBuilder):
             if model_info is None:
                 return None
 
-            runtime_settings_dict['JOB'] = self.get_job_info(model_info,
-                                                             runtime_settings_dict,
-                                                             loop_lists,
-                                                             group_lists,
-                                                             )
+            runtime_settings_dict['JOBS'] = (
+                self.get_job_info(model_info, runtime_settings_dict,
+                                  loop_lists, group_lists)
+            )
 
             # get -out argument if set
             if self.c_dict['OUTPUT_TEMPLATE']:
@@ -1469,7 +1488,6 @@ class StatAnalysisWrapper(CommandBuilder):
 
         for loop_list in loop_lists:
             # if not a threshold list, add quotes around each value in list
-            # if loop_list not in self.format_later_list and 'THRESH' not in loop_list:
             if 'THRESH' not in loop_list:
                 c_dict[loop_list] = [f'"{value}"' for value in c_dict[loop_list]]
 
@@ -1700,18 +1718,21 @@ class StatAnalysisWrapper(CommandBuilder):
              @params runtime_settings_dict dictionary containing all settings used in next run
              @returns string containing job information to pass to StatAnalysis config file
         """
-        job = '-job ' + self.c_dict['JOB_NAME'] + ' ' + self.c_dict['JOB_ARGS']
-        for job_type in ['dump_row', 'out_stat']:
-            if f"-{job_type}" in self.c_dict['JOB_ARGS']:
-                job = self.process_job_args(job_type,
-                                            job,
-                                            model_info,
-                                            loop_lists,
-                                            group_lists,
-                                            runtime_settings_dict,
-                                            )
+        jobs = []
+        for job in self.c_dict['JOBS']:
+            for job_type in ['dump_row', 'out_stat']:
+                if f"-{job_type}" in job:
+                    job = self.process_job_args(job_type,
+                                                job,
+                                                model_info,
+                                                loop_lists,
+                                                group_lists,
+                                                runtime_settings_dict,
+                                                )
 
-        return job
+            jobs.append(job)
+
+        return jobs
 
     def run_stat_analysis(self):
         """! This runs stat_analysis over a period of valid
@@ -1811,7 +1832,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 self.env_var_dict[f'METPLUS_{mp_item}'] = value
 
             value = f'jobs = ["'
-            value += runtime_settings_dict.get('JOB', '')
+            value += '","'.join(runtime_settings_dict['JOBS'])
             value += '"];'
             self.env_var_dict[f'METPLUS_JOBS'] = value
 
@@ -1821,7 +1842,7 @@ class StatAnalysisWrapper(CommandBuilder):
             # set lookin dir
             self.logger.debug(f"Setting -lookin dir to {runtime_settings_dict['LOOKIN_DIR']}")
             self.lookindir = runtime_settings_dict['LOOKIN_DIR']
-            self.job_args = runtime_settings_dict['JOB']
+            self.job_args = runtime_settings_dict['JOBS'][0]
 
             # set -out file path if requested, value will be set to None if not
             self.c_dict['OUTPUT_FILENAME'] = (
