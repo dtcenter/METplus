@@ -114,48 +114,29 @@ class METDbLoadWrapper(RuntimeFreqWrapper):
         """
         success = True
 
-        # if custom is already set in time info, run for only that item
-        # if not, loop over the CUSTOM_LOOP_LIST and process once for each
-        if 'custom' in time_info:
-            custom_loop_list = [time_info['custom']]
-        else:
-            custom_loop_list = self.c_dict['CUSTOM_LOOP_LIST']
+        # if lead and either init or valid are set, compute other string sub
+        if time_info.get('lead') != '*':
+            if (time_info.get('init') != '*'
+                    or time_info.get('valid') != '*'):
+                time_info = time_util.ti_calculate(time_info)
 
-        for custom_string in custom_loop_list:
-            if custom_string:
-                self.logger.info(f"Processing custom string: {custom_string}")
+        self.set_environment_variables(time_info)
 
-            time_info['custom'] = custom_string
-            # if lead and either init or valid are set, compute other string sub
-            if time_info.get('lead') != '*':
-                if (time_info.get('init') != '*'
-                        or time_info.get('valid') != '*'):
-                    time_info = time_util.ti_calculate(time_info)
+        if not self.replace_values_in_xml(time_info):
+            return
 
-            self.set_environment_variables(time_info)
+        # run command
+        if not self.build():
+            success = False
 
-            if not self.replace_values_in_xml(time_info):
-                return
-
-            # run command
-            if not self.build():
-                success = False
-
-            # remove tmp file
-            if self.c_dict.get('REMOVE_TMP_XML', True):
-                xml_file = self.c_dict.get('XML_TMP_FILE')
-                if xml_file and os.path.exists(xml_file):
-                    self.logger.debug(f"Removing tmp file: {xml_file}")
-                    os.remove(xml_file)
+        # remove tmp file
+        if self.c_dict.get('REMOVE_TMP_XML', True):
+            xml_file = self.c_dict.get('XML_TMP_FILE')
+            if xml_file and os.path.exists(xml_file):
+                self.logger.debug(f"Removing tmp file: {xml_file}")
+                os.remove(xml_file)
 
         return success
-
-    def get_all_files(self, custom=None):
-        """! Don't get list of all files for METdbLoad wrapper
-
-            @returns True to report that no failures occurred
-        """
-        return True
 
     def get_stat_directories(self, input_paths):
         """! Traverse through files under input path and find all directories
