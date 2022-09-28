@@ -70,8 +70,8 @@ class PlotPointObsWrapper(RuntimeFreqWrapper):
         c_dict['INPUT_DIR'] = self.config.getdir(f'{app}_INPUT_DIR', '')
 
         if not c_dict['INPUT_TEMPLATE']:
-            self.logger.warning(f'{app}_INPUT_TEMPLATE is required '
-                                'to run PlotPointObs wrapper.')
+            self.log_error(f'{app}_INPUT_TEMPLATE is required '
+                           'to run PlotPointObs wrapper.')
 
         # get optional grid input files
         c_dict['GRID_INPUT_TEMPLATE'] = self.config.getraw(
