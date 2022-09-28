@@ -27,6 +27,7 @@ from ..util import do_string_sub, parse_template, get_tags
 from ..util import get_lead_sequence, get_lead_sequence_groups
 from ..util import ti_get_hours_from_lead, ti_get_seconds_from_lead
 from ..util import ti_get_lead_string, ti_calculate
+from ..util import ti_get_seconds_from_relativedelta
 from ..util import parse_var_list
 from ..util import add_to_time_input
 from ..util import field_read_prob_info
@@ -466,19 +467,24 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             self.logger.debug(f"Processing {lead_group[0]} - forecast leads: "
                               f"{', '.join(lead_hours_str)}")
 
-            lead_hours = [ti_get_hours_from_lead(item) for item in lead_group[1]]
-            self.c_dict['ALL_FILES'] = self.get_all_files_for_leads(input_dict,
-                                                                    lead_hours)
+            self.c_dict['ALL_FILES'] = (
+                self.get_all_files_for_leads(input_dict, lead_group[1])
+            )
+
+            # if only 1 forecast lead is being processed, set it in time dict
+            if len(lead_group[1]) == 1:
+                input_dict['lead'] = lead_group[1][0]
+
             if not self.run_at_time_once(input_dict, lead_group):
                 success = False
 
         return success
 
-    def get_all_files_for_leads(self, input_dict, lead_hours):
+    def get_all_files_for_leads(self, input_dict, leads):
         all_files = []
         current_input_dict = input_dict.copy()
-        for lead_hour in lead_hours:
-            current_input_dict['lead_hours'] = lead_hour
+        for lead in leads:
+            current_input_dict['lead'] = lead
             new_files = self.get_all_files_for_lead(current_input_dict)
             all_files.extend(new_files)
         return all_files
@@ -701,13 +707,14 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         output_dir = self.get_output_dir(time_info, storm_id, label)
 
-        list_file_dict = self.subset_input_files(time_info, output_dir)
+        list_file_dict = self.subset_input_files(time_info,
+                                                 output_dir=output_dir,
+                                                 leads=leads)
         if not list_file_dict:
             return None, None
 
         # add storm_id and label to time_info for output filename
         self._add_storm_id_and_label(time_info, storm_id, label)
-
         fcst_key, obs_key = self._get_fcst_obs_keys(storm_id)
         fcst_path = list_file_dict[fcst_key]
         if self.c_dict['USING_BOTH']:

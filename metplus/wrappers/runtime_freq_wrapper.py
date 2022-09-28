@@ -414,7 +414,7 @@ class RuntimeFreqWrapper(CommandBuilder):
 
         return all_input_files
 
-    def subset_input_files(self, time_info, output_dir=None):
+    def subset_input_files(self, time_info, output_dir=None, leads=None):
         """! Obtain a subset of input files from the c_dict ALL_FILES based on
              the time information for the current run.
 
@@ -427,21 +427,34 @@ class RuntimeFreqWrapper(CommandBuilder):
         if not self.c_dict.get('ALL_FILES'):
             return all_input_files
 
-        for file_dict in self.c_dict['ALL_FILES']:
-            # compare time information for each input file
-            # add file to list of files to use if it matches
-            if not self.compare_time_info(time_info, file_dict['time_info']):
-                continue
+        if leads is None:
+            lead_loop = [None]
+        else:
+            lead_loop = leads
 
-            for input_key in file_dict:
-                # skip time info key
-                if input_key == 'time_info':
+        for file_dict in self.c_dict['ALL_FILES']:
+            for lead in lead_loop:
+                if lead is not None:
+                    current_time_info = time_info.copy()
+                    current_time_info['lead'] = lead
+                else:
+                    current_time_info = time_info
+
+                # compare time information for each input file
+                # add file to list of files to use if it matches
+                if not self.compare_time_info(current_time_info,
+                                              file_dict['time_info']):
                     continue
 
-                if input_key not in all_input_files:
-                    all_input_files[input_key] = []
+                for input_key in file_dict:
+                    # skip time info key
+                    if input_key == 'time_info':
+                        continue
 
-                all_input_files[input_key].extend(file_dict[input_key])
+                    if input_key not in all_input_files:
+                        all_input_files[input_key] = []
+
+                    all_input_files[input_key].extend(file_dict[input_key])
 
         # return None if no matching input files were found
         if not all_input_files:
