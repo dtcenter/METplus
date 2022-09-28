@@ -152,26 +152,6 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         return cmd
 
     def run_at_time_once(self, time_info):
-        """! Process runtime and try to build command to run ascii2nc
-             Args:
-                @param time_info dictionary containing timing information
-        """
-
-        # if custom is already set in time info, run for only that item
-        # if not, loop over the CUSTOM_LOOP_LIST and process once for each
-        if 'custom' in time_info:
-            custom_loop_list = [time_info['custom']]
-        else:
-            custom_loop_list = self.c_dict['CUSTOM_LOOP_LIST']
-
-        for custom_string in custom_loop_list:
-            if custom_string:
-                self.logger.info(f"Processing custom string: {custom_string}")
-
-            time_info['custom'] = custom_string
-            self.run_at_time_custom(time_info)
-
-    def run_at_time_custom(self, time_info):
         self.clear()
 
         # subset input files as appropriate
