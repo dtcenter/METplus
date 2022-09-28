@@ -408,7 +408,7 @@ def test_get_storms_list(metplus_config):
 
 @pytest.mark.parametrize(
         'time_info, expect_fcst_subset, expect_obs_subset', [
-        # filter by init all storms
+        # 0: filter by init all storms
         ({'init': datetime(2014, 12, 14, 0, 0),
           'valid': '*',
           'lead': '*',
@@ -425,7 +425,7 @@ def test_get_storms_list(metplus_config):
           'obs/20141214_00/ML1221072014/OBS_TILE_F000_gfs_4_20141214_0000_000.nc',
           'obs/20141214_00/ML1221072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
           'obs/20141214_00/ML1221072014/OBS_TILE_F012_gfs_4_20141214_0000_012.nc',]),
-        # filter by init single storm
+        # 1: filter by init single storm
         ({'init': datetime(2014, 12, 14, 0, 0),
           'valid': '*',
           'lead': '*',
@@ -440,7 +440,7 @@ def test_get_storms_list(metplus_config):
              'obs/20141214_00/ML1201072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
              'obs/20141214_00/ML1201072014/OBS_TILE_F012_gfs_4_20141214_0000_012.nc',
          ]),
-        # filter by init another single storm
+        # 2: filter by init another single storm
         ({'init': datetime(2014, 12, 14, 0, 0),
           'valid': '*',
           'lead': '*',
@@ -455,7 +455,7 @@ def test_get_storms_list(metplus_config):
              'obs/20141214_00/ML1221072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
              'obs/20141214_00/ML1221072014/OBS_TILE_F012_gfs_4_20141214_0000_012.nc',
          ]),
-        # filter by lead all storms
+        # 3: filter by lead all storms
         ({'init': '*',
           'valid': '*',
           'lead': 21600,
@@ -489,7 +489,6 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
     stat_input_dir, tile_input_dir = get_input_dirs(wrapper.config)
     stat_input_template = 'another_fake_filter_{init?fmt=%Y%m%d_%H}.tcst'
 
-    wrapper.c_dict['RUN_ONCE_PER_STORM_ID'] = True
     wrapper.c_dict['TC_STAT_INPUT_DIR'] = stat_input_dir
     wrapper.c_dict['TC_STAT_INPUT_TEMPLATE'] = stat_input_template
 
@@ -501,8 +500,13 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
     wrapper.c_dict['FCST_INPUT_DIR'] = fcst_input_dir
     wrapper.c_dict['OBS_INPUT_DIR'] = obs_input_dir
 
-    assert wrapper.get_all_files()
+    if time_info['storm_id'] == '*':
+        wrapper.c_dict['RUN_ONCE_PER_STORM_ID'] = False
+    else:
+        wrapper.c_dict['RUN_ONCE_PER_STORM_ID'] = True
 
+    assert wrapper.get_all_files()
+    print(f"ALL FILES: {wrapper.c_dict['ALL_FILES']}")
     expected_fcst = [
         'fcst/20141214_00/ML1201072014/FCST_TILE_F000_gfs_4_20141214_0000_000.nc',
         'fcst/20141214_00/ML1201072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
@@ -511,6 +515,9 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
         'fcst/20141214_00/ML1221072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
         'fcst/20141214_00/ML1221072014/FCST_TILE_F012_gfs_4_20141214_0000_012.nc',
     ]
+    if time_info['storm_id'] != '*':
+        expected_fcst = [item for item in expected_fcst
+                         if time_info['storm_id'] in item]
     expected_fcst_files = []
     for expected in expected_fcst:
         expected_fcst_files.append(os.path.join(tile_input_dir, expected))
@@ -524,19 +531,19 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
         'obs/20141214_00/ML1221072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
         'obs/20141214_00/ML1221072014/OBS_TILE_F012_gfs_4_20141214_0000_012.nc',
     ]
+    if time_info['storm_id'] != '*':
+        expected_obs = [item for item in expected_obs
+                        if time_info['storm_id'] in item]
     expected_obs_files = []
     for expected in expected_obs:
         expected_obs_files.append(os.path.join(tile_input_dir, expected))
 
+    fcst_key, obs_key = wrapper._get_fcst_obs_keys(time_info['storm_id'])
+    fcst_files = [item[fcst_key] for item in wrapper.c_dict['ALL_FILES']
+                  if fcst_key in item]
+    obs_files = [item[obs_key] for item in wrapper.c_dict['ALL_FILES']
+                 if obs_key in item]
     # convert list of lists into a single list to compare to expected results
-    fcst_files = []
-    obs_files = []
-    for item in wrapper.c_dict['ALL_FILES']:
-        for key, value in item.items():
-            if key.startswith('fcst'):
-                fcst_files.append(value)
-            if key.startswith('obs'):
-                obs_files.append(value)
     fcst_files = [item for sub in fcst_files for item in sub]
     obs_files = [item for sub in obs_files for item in sub]
     fcst_files.sort()
@@ -741,8 +748,7 @@ def test_get_fcst_and_obs_path(metplus_config, config_overrides,
                               'series_by', 'output', test_out_dirname)
     wrapper.c_dict['OUTPUT_DIR'] = output_dir
 
-    fcst_id = 'fcst'
-    obs_id = 'obs'
+    fcst_id, obs_id = wrapper._get_fcst_obs_keys(storm_id)
 
     # read output files and compare to expected list
     if storm_id == '*':
@@ -751,8 +757,6 @@ def test_get_fcst_and_obs_path(metplus_config, config_overrides,
     else:
         storm_dir = storm_id
         wrapper.c_dict['RUN_ONCE_PER_STORM_ID'] = True
-        fcst_id = f'{fcst_id}_{storm_id}'
-        obs_id = f'{obs_id}_{storm_id}'
 
     assert wrapper.get_all_files()
 
