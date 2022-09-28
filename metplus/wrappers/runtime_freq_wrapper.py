@@ -355,7 +355,8 @@ class RuntimeFreqWrapper(CommandBuilder):
 
         return new_files
 
-    def get_files_from_time(self, time_info):
+    @staticmethod
+    def get_files_from_time(time_info):
         """! Create dictionary containing time information (key time_info) and
              any relevant files for that runtime.
              @param time_info dictionary containing time information
@@ -366,7 +367,8 @@ class RuntimeFreqWrapper(CommandBuilder):
         file_dict['time_info'] = time_info.copy()
         return file_dict
 
-    def compare_time_info(self, runtime, filetime):
+    @staticmethod
+    def compare_time_info(runtime, filetime):
         """! Compare current runtime dictionary to current file time dictionary
              If runtime value for init, valid, or lead is not a wildcard and
              it doesn't match the file's time value, return False. Otherwise
