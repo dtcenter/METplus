@@ -7,7 +7,7 @@
   {
     "category": "met_tool_wrapper",
     "index_list": "30-58",
-    "run": true
+    "run": false
   },
   {
     "category": "air_quality_and_comp",
@@ -77,7 +77,7 @@
   {
     "category": "medium_range",
     "index_list": "1-2",
-    "run": true
+    "run": false
   },
   {
     "category": "medium_range",
@@ -92,12 +92,12 @@
   {
     "category": "medium_range",
     "index_list": "7",
-    "run": true
+    "run": false
   },
   {
     "category": "medium_range",
     "index_list": "8",
-    "run": true
+    "run": false
   },
   {
     "category": "precipitation",
@@ -117,7 +117,7 @@
   {
     "category": "precipitation",
     "index_list": "3-7",
-    "run": true
+    "run": false
   },
   {
     "category": "precipitation",
@@ -127,7 +127,7 @@
   {
     "category": "s2s",
     "index_list": "0",
-    "run": true
+    "run": false
   },
   {
     "category": "s2s",
@@ -152,7 +152,7 @@
   {
     "category": "s2s",
     "index_list": "5",
-    "run": true
+    "run": false
   },
   {
     "category": "s2s",
