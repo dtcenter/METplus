@@ -137,7 +137,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         elif runtime_freq == 'RUN_ONCE_PER_LEAD':
             self.run_once_per_lead(custom)
         elif runtime_freq == 'RUN_ONCE_FOR_EACH':
-            self.all_commands = super().run_all_times(custom)
+            self.run_once_for_each(custom)
 
     def run_once(self, custom):
         self.logger.debug("Running once for all files")
@@ -215,6 +215,55 @@ class RuntimeFreqWrapper(CommandBuilder):
             self.clear()
             if not self.run_at_time_once(time_input):
                 success = False
+
+        return success
+
+    def run_once_for_each(self, custom):
+        self.logger.debug(f"Running once for each init/valid and lead time")
+
+        success = True
+        for time_input in time_generator(self.config):
+            if time_input is None:
+                success = False
+                continue
+
+            log_runtime_banner(self.config, time_input, self)
+            add_to_time_input(time_input,
+                              instance=self.instance,
+                              custom=custom)
+
+            # loop of forecast leads and process each
+            lead_seq = get_lead_sequence(self.config, time_input)
+            for lead in lead_seq:
+                time_input['lead'] = lead
+
+                # set current lead time config and environment variables
+                time_info = time_util.ti_calculate(time_input)
+
+                self.logger.info(
+                    f"Processing forecast lead {time_info['lead_string']}"
+                )
+
+                if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+                    self.logger.debug('Skipping run time')
+                    continue
+
+                # since run_all_times was not called (LOOP_BY=times) then
+                # get files for current run time
+                file_dict = self.get_files_from_time(time_info)
+                all_files = []
+                if file_dict:
+                    if isinstance(file_dict, list):
+                        all_files = file_dict
+                    else:
+                        all_files = [file_dict]
+
+                self.c_dict['ALL_FILES'] = all_files
+
+                # Run for given init/valid time and forecast lead combination
+                self.clear()
+                if not self.run_at_time_once(time_info):
+                    success = False
 
         return success
 
