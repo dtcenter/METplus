@@ -462,7 +462,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             input_dict['init'] = '*'
             input_dict['valid'] = '*'
             lead_hours = [ti_get_lead_string(item, plural=False) for
-                              item in lead_group[1]]
+                          item in lead_group[1]]
 
             self.logger.debug(f"Processing {lead_group[0]} - forecast leads: "
                               f"{', '.join(lead_hours)}")
