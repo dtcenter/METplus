@@ -14,10 +14,10 @@ import os
 
 from ..util import do_string_sub, ti_calculate, get_lead_sequence
 from ..util import skip_time
-from . import RuntimeFreqWrapper
+from . import LoopTimesWrapper
 
 
-class PlotPointObsWrapper(RuntimeFreqWrapper):
+class PlotPointObsWrapper(LoopTimesWrapper):
     """! Wrapper used to build commands to call plot_point_obs """
 
     WRAPPER_ENV_VAR_KEYS = [
@@ -55,10 +55,6 @@ class PlotPointObsWrapper(RuntimeFreqWrapper):
     def create_c_dict(self):
         c_dict = super().create_c_dict()
         app = self.app_name.upper()
-
-        # set default runtime frequency if unset explicitly
-        if not c_dict['RUNTIME_FREQ']:
-            c_dict['RUNTIME_FREQ'] = 'RUN_ONCE_FOR_EACH'
 
         c_dict['VERBOSITY'] = self.config.getstr('config',
                                                  f'LOG_{app}_VERBOSITY',
