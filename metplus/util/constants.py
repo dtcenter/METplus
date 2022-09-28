@@ -1,3 +1,5 @@
+# Constant variables used throughout the METplus wrappers source code
+
 # dictionary used by get_wrapper_name function to easily convert wrapper
 # name in many formats to the correct name of the wrapper class
 LOWER_TO_WRAPPER_NAME = {
