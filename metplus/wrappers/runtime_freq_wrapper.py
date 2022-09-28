@@ -267,51 +267,15 @@ class RuntimeFreqWrapper(CommandBuilder):
 
         return success
 
-    def run_at_time(self, input_dict):
-        """! Runs the command for a given run time. This function loops
-              over the list of forecast leads and list of custom loops
-              and runs once for each combination
-
-            @param input_dict dictionary containing time information
-        """
-        # loop of forecast leads and process each
-        lead_seq = get_lead_sequence(self.config, input_dict)
-        for lead in lead_seq:
-            input_dict['lead'] = lead
-
-            # set current lead time config and environment variables
-            time_info = time_util.ti_calculate(input_dict)
-
-            self.logger.info(
-                f"Processing forecast lead {time_info['lead_string']}"
-            )
-
-            if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
-                self.logger.debug('Skipping run time')
-                continue
-
-            # since run_all_times was not called (LOOP_BY=times) then
-            # get files for current run time
-            file_dict = self.get_files_from_time(time_info)
-            all_files = []
-            if file_dict:
-                if isinstance(file_dict, list):
-                    all_files = file_dict
-                else:
-                    all_files = [file_dict]
-
-            self.c_dict['ALL_FILES'] = all_files
-
-            # Run for given init/valid time and forecast lead combination
-            self.clear()
-            self.run_at_time_once(time_info)
-
     def get_all_files(self, custom=None):
         """! Get all files that can be processed with the app.
         @returns A dictionary where the key is the type of data that was found,
         i.e. fcst or obs, and the value is a list of files that fit in that
         category
         """
+        if not self.c_dict.get('FIND_FILES', True):
+            return True
+
         self.logger.debug("Finding all input files")
         all_files = []
 
@@ -334,6 +298,9 @@ class RuntimeFreqWrapper(CommandBuilder):
         return True
 
     def get_all_files_from_leads(self, time_input):
+        if not self.c_dict.get('FIND_FILES', True):
+            return True
+
         lead_files = []
         # loop over all forecast leads
         wildcard_if_empty = self.c_dict.get('WILDCARD_LEAD_IF_EMPTY',
@@ -361,6 +328,9 @@ class RuntimeFreqWrapper(CommandBuilder):
         return lead_files
 
     def get_all_files_for_lead(self, time_input):
+        if not self.c_dict.get('FIND_FILES', True):
+            return True
+
         new_files = []
         for run_time in time_generator(self.config):
             if run_time is None:

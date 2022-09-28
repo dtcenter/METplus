@@ -94,6 +94,9 @@ class METDbLoadWrapper(RuntimeFreqWrapper):
                 self.log_error(f"Must set MET_DB_LOAD_MV_{name}")
             c_dict[f'MV_{name}'] = value
 
+        # set variable to skip finding input files
+        c_dict['FIND_FILES'] = False
+
         return c_dict
 
     def get_command(self):
