@@ -461,11 +461,11 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
             input_dict['init'] = '*'
             input_dict['valid'] = '*'
-            lead_hours_str = [ti_get_lead_string(item, plural=False) for
+            lead_hours = [ti_get_lead_string(item, plural=False) for
                               item in lead_group[1]]
 
             self.logger.debug(f"Processing {lead_group[0]} - forecast leads: "
-                              f"{', '.join(lead_hours_str)}")
+                              f"{', '.join(lead_hours)}")
 
             self.c_dict['ALL_FILES'] = (
                 self.get_all_files_for_leads(input_dict, lead_group[1])
