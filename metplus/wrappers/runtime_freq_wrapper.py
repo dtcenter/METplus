@@ -514,14 +514,14 @@ class RuntimeFreqWrapper(CommandBuilder):
 
         if time_info.get('lead', '*') == '*':
             lead = 'ALL'
-        # use lead with letter if seconds cannot be computed e.g. 3m
-        elif time_info['valid'] == '*':
-            lead = time_util.ti_get_lead_string(time_info['lead'],
-                                                plural=False,
-                                                letter_only=True)
         else:
             lead = time_util.ti_get_seconds_from_lead(time_info['lead'],
                                                       time_info['valid'])
+        # use lead with letter if seconds cannot be computed e.g. 3m
+        if lead is None:
+            lead = time_util.ti_get_lead_string(time_info['lead'],
+                                                plural=False,
+                                                letter_only=True)
 
         return (f"{self.app_name}_files_{identifier}_"
                 f"init_{init}_valid_{valid}_lead_{lead}.txt")
