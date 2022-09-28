@@ -30,6 +30,7 @@ from ..util import get_custom_string_list
 from ..util import get_wrapped_met_config_file, add_met_config_item, format_met_config
 from ..util import remove_quotes
 from ..util import get_field_info, format_field_info
+from ..util import get_wrapper_name
 from ..util.met_config import add_met_config_dict, handle_climo_dict
 
 # pylint:disable=pointless-string-statement
@@ -1626,6 +1627,7 @@ class CommandBuilder:
         self.add_met_config_dict('climo_cdf', items)
 
     def get_wrapper_instance_name(self):
+        wrapper_name = get_wrapper_name(self.app_name)
         if not self.instance:
-            return self.app_name
-        return f'{self.app_name}({self.instance})'
+            return wrapper_name
+        return f'{wrapper_name}({self.instance})'
