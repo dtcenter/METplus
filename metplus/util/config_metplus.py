@@ -1492,17 +1492,19 @@ def find_indices_in_config_section(regex, config, sec='config',
     regex = re.compile(regex)
     for conf in all_conf:
         result = regex.match(conf)
-        if result is not None:
-            index = result.group(index_index)
-            if id_index:
-                identifier = result.group(id_index)
-            else:
-                identifier = None
+        if result is None:
+            continue
 
-            if index not in indices:
-                indices[index] = [identifier]
-            else:
-                indices[index].append(identifier)
+        index = result.group(index_index)
+        if id_index:
+            identifier = result.group(id_index)
+        else:
+            identifier = None
+
+        if index not in indices:
+            indices[index] = [identifier]
+        else:
+            indices[index].append(identifier)
 
     return indices
 
