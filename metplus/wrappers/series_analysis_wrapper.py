@@ -733,50 +733,6 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         return True
 
-    @staticmethod
-    def _get_ascii_filename(data_type, storm_id, leads=None):
-        """! Build filename for ASCII file list file
-
-             @param data_type FCST, OBS, or BOTH
-             @param storm_id current storm ID or wildcard character
-             @param leads list of forecast leads to use add the forecast hour
-              string to the filename or the minimum and maximum forecast hour
-              strings if there are more than one lead
-             @returns string containing filename to use
-        """
-        prefix = f"{data_type}_FILES"
-
-        # of storm ID is set (not wildcard), then add it to filename
-        if storm_id == '*':
-            filename = ''
-        else:
-            filename = f"_{storm_id}"
-
-        # add forecast leads if specified
-        if leads is not None:
-            lead_hours_list = []
-            for lead in leads:
-                lead_hours = ti_get_hours_from_lead(lead)
-                if lead_hours is None:
-                    lead_hours = ti_get_lead_string(lead,
-                                                    letter_only=True)
-                lead_hours_list.append(lead_hours)
-
-            # get first forecast lead, convert to hours, and add to filename
-            lead_hours = min(lead_hours_list)
-
-            lead_str = str(lead_hours).zfill(3)
-            filename += f"_F{lead_str}"
-
-            # if list of forecast leads, get min and max and add them to name
-            if len(lead_hours_list) > 1:
-                max_lead_hours = max(lead_hours_list)
-                max_lead_str = str(max_lead_hours).zfill(3)
-                filename += f"_to_F{max_lead_str}"
-
-        ascii_filename = f"{prefix}{filename}"
-        return ascii_filename
-
     def get_output_dir(self, time_info, storm_id, label):
         """! Determine directory that will contain output data from the
               OUTPUT_DIR and OUTPUT_TEMPLATE. This will include any

@@ -798,59 +798,10 @@ def test_get_fcst_and_obs_path(metplus_config, config_overrides,
         actual_obs_files = file_handle.readlines()
     actual_obs_files = [item.strip() for item in actual_obs_files[1:]]
 
+    assert len(actual_obs_files) == len(expect_obs_subset)
     for actual_file, expected_file in zip(actual_obs_files, expect_obs_subset):
         actual_file = actual_file.replace(tile_input_dir, '').lstrip('/')
         assert actual_file == expected_file
-
-
-@pytest.mark.parametrize(
-        'storm_id, leads, expected_result', [
-        # storm ID, no leads
-        ('ML1221072014', None, '_FILES_ML1221072014'),
-        # no storm ID no leads
-        ('*', None, '_FILES'),
-        # storm ID, 1 lead
-        ('ML1221072014', [relativedelta(hours=12)], '_FILES_ML1221072014_F012'),
-        # no storm ID, 1 lead
-        ('*', [relativedelta(hours=12)], '_FILES_F012'),
-        # storm ID, 2 leads
-        ('ML1221072014', [relativedelta(hours=18),
-                                  relativedelta(hours=12)],
-         '_FILES_ML1221072014_F012_to_F018'),
-        # no storm ID, 2 leads
-        ('*', [relativedelta(hours=18),
-                       relativedelta(hours=12)],
-         '_FILES_F012_to_F018'),
-        # storm ID, 3 leads
-        ('ML1221072014', [relativedelta(hours=15),
-                                  relativedelta(hours=18),
-                                  relativedelta(hours=12)],
-         '_FILES_ML1221072014_F012_to_F018'),
-        # no storm ID, 3 leads
-        ('*', [relativedelta(hours=15),
-                       relativedelta(hours=18),
-                       relativedelta(hours=12)],
-         '_FILES_F012_to_F018'),
-    ]
-)
-@pytest.mark.wrapper_a
-def test_get_ascii_filename(metplus_config, storm_id, leads,
-                            expected_result):
-    wrapper = series_analysis_wrapper(metplus_config)
-    for data_type in ['FCST', 'OBS']:
-        actual_result = wrapper._get_ascii_filename(data_type,
-                                                   storm_id,
-                                                   leads)
-        assert actual_result == f"{data_type}{expected_result}"
-
-        if leads is None:
-            return
-
-        lead_seconds = [ti_get_seconds_from_lead(item) for item in leads]
-        actual_result = wrapper._get_ascii_filename(data_type,
-                                                   storm_id,
-                                                   lead_seconds)
-        assert actual_result == f"{data_type}{expected_result}"
 
 
 @pytest.mark.parametrize(
