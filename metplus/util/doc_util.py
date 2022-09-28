@@ -3,45 +3,8 @@
 import sys
 import os
 
-# dictionary used by get_wrapper_name function to easily convert wrapper
-# name in many formats to the correct name of the wrapper class
-LOWER_TO_WRAPPER_NAME = {
-    'ascii2nc': 'ASCII2NC',
-    'cycloneplotter': 'CyclonePlotter',
-    'ensemblestat': 'EnsembleStat',
-    'example': 'Example',
-    'extracttiles': 'ExtractTiles',
-    'gempaktocf': 'GempakToCF',
-    'genvxmask': 'GenVxMask',
-    'genensprod': 'GenEnsProd',
-    'gfdltracker': 'GFDLTracker',
-    'griddiag': 'GridDiag',
-    'gridstat': 'GridStat',
-    'ioda2nc': 'IODA2NC',
-    'makeplots': 'MakePlots',
-    'metdbload': 'METDbLoad',
-    'mode': 'MODE',
-    'mtd': 'MTD',
-    'modetimedomain': 'MTD',
-    'pb2nc': 'PB2NC',
-    'pcpcombine': 'PCPCombine',
-    'plotdataplane': 'PlotDataPlane',
-    'plotpointobs': 'PlotPointObs',
-    'point2grid': 'Point2Grid',
-    'pointtogrid': 'Point2Grid',
-    'pointstat': 'PointStat',
-    'pyembedingest': 'PyEmbedIngest',
-    'regriddataplane': 'RegridDataPlane',
-    'seriesanalysis': 'SeriesAnalysis',
-    'statanalysis': 'StatAnalysis',
-    'tcgen': 'TCGen',
-    'tcpairs': 'TCPairs',
-    'tcrmw': 'TCRMW',
-    'tcstat': 'TCStat',
-    'tcmprplotter': 'TCMPRPlotter',
-    'usage': 'Usage',
-    'userscript': 'UserScript',
-}
+from . import LOWER_TO_WRAPPER_NAME
+
 
 def get_wrapper_name(process_name):
     """! Determine name of wrapper from string that may not contain the correct
