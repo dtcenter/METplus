@@ -1079,7 +1079,7 @@ Loop Order
 ----------
 
 The METplus wrappers will run all times for the first process defined in the
-:term:`PROCESS_LIST, then run all times for the second process, and so on.
+:term:`PROCESS_LIST`, then run all times for the second process, and so on.
 The :term:`LOOP_ORDER` variable has been deprecated in v5.0.0.
 This is the behavior that was previously executed when LOOP_ORDER = processes.
 
