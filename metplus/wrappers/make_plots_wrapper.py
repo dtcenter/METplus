@@ -280,6 +280,8 @@ class MakePlotsWrapper(CommandBuilder):
         for runtime_settings_dict in runtime_settings_dict_list:
             # set environment variables
             for name, value in runtime_settings_dict.items():
+                if name == 'JOBS':
+                    continue
                 self.add_env_var(name, value.replace('"', ''))
 
             for key in self.add_from_c_dict_list:
