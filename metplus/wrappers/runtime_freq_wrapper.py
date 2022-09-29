@@ -233,37 +233,45 @@ class RuntimeFreqWrapper(CommandBuilder):
                               custom=custom)
 
             # loop of forecast leads and process each
-            lead_seq = get_lead_sequence(self.config, time_input)
-            for lead in lead_seq:
-                time_input['lead'] = lead
+            if not self.run_at_time(time_input):
+                success = False
 
-                # set current lead time config and environment variables
-                time_info = time_util.ti_calculate(time_input)
+        return success
 
-                self.logger.info(
-                    f"Processing forecast lead {time_info['lead_string']}"
-                )
+    def run_at_time(self, input_dict):
+        success = True
+        # loop of forecast leads and process each
+        lead_seq = get_lead_sequence(self.config, input_dict)
+        for lead in lead_seq:
+            input_dict['lead'] = lead
 
-                if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
-                    self.logger.debug('Skipping run time')
-                    continue
+            # set current lead time config and environment variables
+            time_info = time_util.ti_calculate(input_dict)
 
-                # since run_all_times was not called (LOOP_BY=times) then
-                # get files for current run time
-                file_dict = self.get_files_from_time(time_info)
-                all_files = []
-                if file_dict:
-                    if isinstance(file_dict, list):
-                        all_files = file_dict
-                    else:
-                        all_files = [file_dict]
+            self.logger.info(
+                f"Processing forecast lead {time_info['lead_string']}"
+            )
 
-                self.c_dict['ALL_FILES'] = all_files
+            if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+                self.logger.debug('Skipping run time')
+                continue
 
-                # Run for given init/valid time and forecast lead combination
-                self.clear()
-                if not self.run_at_time_once(time_info):
-                    success = False
+            # since run_all_times was not called (LOOP_BY=times) then
+            # get files for current run time
+            file_dict = self.get_files_from_time(time_info)
+            all_files = []
+            if file_dict:
+                if isinstance(file_dict, list):
+                    all_files = file_dict
+                else:
+                    all_files = [file_dict]
+
+            self.c_dict['ALL_FILES'] = all_files
+
+            # Run for given init/valid time and forecast lead combination
+            self.clear()
+            if not self.run_at_time_once(time_info):
+                success = False
 
         return success
 
