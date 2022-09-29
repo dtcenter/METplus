@@ -1278,16 +1278,6 @@ class CommandBuilder:
 
         return True
 
-    # argument needed to match call
-    # pylint:disable=unused-argument
-    def run_at_time(self, input_dict):
-        """! Used to output error and exit if wrapper is attempted to be run
-         with LOOP_ORDER = times and the run_at_time method is not implemented
-        """
-        self.log_error(f'run_at_time not implemented for {self.log_name} '
-                       'wrapper. Cannot run with LOOP_ORDER = times')
-        return None
-
     def run_all_times(self, custom=None):
         """! Loop over time range specified in conf file and
         call METplus wrapper for each time

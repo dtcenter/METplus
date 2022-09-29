@@ -101,15 +101,6 @@ class RuntimeFreqWrapper(CommandBuilder):
                            f" {', '.join(self.FREQ_OPTIONS)}")
             return None
 
-        # if not running once for each runtime and loop order is not set to
-        # 'processes' report an error
-        if self.c_dict['RUNTIME_FREQ'] != 'RUN_ONCE_FOR_EACH':
-            loop_order = self.config.getstr('config', 'LOOP_ORDER', '').lower()
-            if loop_order != 'processes':
-                self.log_error(f"Cannot run using {self.c_dict['RUNTIME_FREQ']} "
-                               "mode unless LOOP_ORDER = processes")
-                return None
-
         wrapper_instance_name = self.get_wrapper_instance_name()
         self.logger.info(f'Running wrapper: {wrapper_instance_name}')
 

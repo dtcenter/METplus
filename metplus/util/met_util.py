@@ -136,22 +136,11 @@ def run_metplus(config, process_list):
             logger.info("Refer to ERROR messages above to resolve issues.")
             return 1
 
-        loop_order = config.getstr('config', 'LOOP_ORDER', '').lower()
-        #loop_order = 'processes'
-
-        if loop_order == "processes":
-            all_commands = []
-            for process in processes:
-                new_commands = process.run_all_times()
-                if new_commands:
-                    all_commands.extend(new_commands)
-
-        elif loop_order == "times":
-            all_commands = loop_over_times_and_call(config, processes)
-        else:
-            logger.error("Invalid LOOP_ORDER defined. "
-                         "Options are processes, times")
-            return 1
+        all_commands = []
+        for process in processes:
+            new_commands = process.run_all_times()
+            if new_commands:
+                all_commands.extend(new_commands)
 
         # if process list contains any wrapper that should run commands
         if any([item[0] not in NO_COMMAND_WRAPPERS for item in process_list]):
