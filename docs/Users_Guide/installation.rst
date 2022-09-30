@@ -113,11 +113,6 @@ to run.
 
     - netCDF4 (1.5.4)
 
--  MakePlots wrapper
-
-    - cartopy (0.20.3)
-    - pandas (1.4.3)
-
 -  CyclonePlotter wrapper
 
     - cartopy (0.20.3)

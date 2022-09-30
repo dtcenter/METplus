@@ -98,23 +98,7 @@ class StatAnalysisWrapper(CommandBuilder):
         'LINE_TYPE_LIST',
     ] + format_lists + field_lists
 
-    force_group_for_make_plots_lists = [
-        'MODEL_LIST',
-        'FCST_LEAD_LIST',
-        'OBS_LEAD_LIST',
-        'FCST_LEVEL_LIST',
-        'OBS_LEVEL_LIST',
-        'FCST_THRESH_LIST',
-        'OBS_THRESH_LIST',
-        'FCST_UNITS_LIST',
-        'OBS_UNITS_LIST',
-    ]
-
     list_categories = ['GROUP_LIST_ITEMS', 'LOOP_LIST_ITEMS']
-    list_categories_make_plots = [
-        'GROUP_LIST_ITEMS_MAKE_PLOTS',
-        'LOOP_LIST_ITEMS_MAKE_PLOTS'
-    ]
 
     def __init__(self, config, instance=None):
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
@@ -224,24 +208,6 @@ class StatAnalysisWrapper(CommandBuilder):
 
         # read all field lists and check if they are all empty
         c_dict['all_field_lists_empty'] = self.read_field_lists_from_config(c_dict)
-
-        # check if MakePlots is in process list and set boolean
-        # MakePlots is removed from the list in met_util.get_process_list, so
-        # need to read the conf value again
-        self.runMakePlots = 'MakePlots' in self.config.getstr('config', 'PROCESS_LIST')
-        if self.runMakePlots:
-            # only import MakePlots wrappers if it will be used
-            from .make_plots_wrapper import MakePlotsWrapper, WRAPPER_CANNOT_RUN
-            if WRAPPER_CANNOT_RUN:
-                self.log_error("Cannot import MakePlots wrapper! Requires pandas and numpy")
-            else:
-                self.check_MakePlots_config(c_dict)
-
-                # create MakePlots wrapper instance
-                self.MakePlotsWrapper = MakePlotsWrapper(self.config)
-                if not self.MakePlotsWrapper.isOK:
-                    self.log_error("MakePlotsWrapper was not initialized correctly.")
-
         c_dict['VAR_LIST'] = parse_var_list(self.config)
 
         c_dict['MODEL_INFO_LIST'] = self.parse_model_info()
@@ -300,29 +266,10 @@ class StatAnalysisWrapper(CommandBuilder):
                            "[FCST/OBS]_VAR<n>_[NAME/LEVELS]. Use "
                            "one or the other formats to run")
 
-        # if no var list is found, other lists must be set to run MakePlots
-        elif not c_dict['VAR_LIST'] and c_dict['all_field_lists_empty'] and self.runMakePlots:
-            self.log_error("No field information found. Must define fields to "
-                           "process with either [FCST/OBS]_VAR_LIST or "
-                           "[FCST/OBS]_VAR<n>_[NAME/LEVELS]")
-
         # if MODEL_LIST was not set in config, populate it from the model info list
         # if model info list is also not set, report and error
         if not c_dict['MODEL_LIST'] and not c_dict['MODEL_INFO_LIST']:
             self.log_error("No model information was found.")
-
-        # if running MakePlots and model list in group list, error and exit
-        if self.runMakePlots:
-            if 'MODEL_LIST' in c_dict['GROUP_LIST_ITEMS']:
-                self.log_error("Cannot group MODELS if running MakePlots. Remove "
-                               "MODEL_LIST from LOOP_LIST_ITEMS")
-
-            if len(c_dict['MODEL_LIST']) > 8:
-                self.log_error("Number of models for plotting limited to 8.")
-
-        # set forMakePlots to False to begin. When gathering settings to
-        # send to MakePlots wrapper, this will be set to True
-        self.forMakePlots = False
 
         return c_dict
 
@@ -349,64 +296,8 @@ class StatAnalysisWrapper(CommandBuilder):
 
         return all_empty
 
-    def check_MakePlots_config(self, c_dict):
-
-        # the following are specific to running MakePlots wrapper
-        bad_config_variable_list = [
-            'FCST_VAR_LIST', 'FCST_LEVEL_LIST',
-            'FCST_THRESH_LIST', 'FCST_UNITS_LIST',
-            'OBS_VAR_LIST', 'OBS_LEVEL_LIST',
-            'OBS_THRESH_LIST', 'OBS_UNITS_LIST'
-        ]
-        for bad_config_variable in bad_config_variable_list:
-            if c_dict[bad_config_variable]:
-                self.log_error("Bad config option for running StatAnalysis "
-                               "followed by MakePlots. Please remove "
-                               +bad_config_variable+" and set using FCST/OBS_VARn")
-
-        loop_group_accepted_options = [
-            'FCST_VALID_HOUR_LIST', 'FCST_INIT_HOUR_LIST',
-            'OBS_VALID_HOUR_LIST', 'OBS_INIT_HOUR_LIST'
-        ]
-        for config_list in c_dict['GROUP_LIST_ITEMS']:
-            if config_list not in loop_group_accepted_options:
-                self.log_error("Bad config option for running StatAnalysis "
-                                  +"followed by MakePlots. Only accepted "
-                                  +"values in GROUP_LIST_ITEMS are "
-                                  +"FCST_VALID_HOUR_LIST, "
-                                  +"FCST_INIT_HOUR_LIST, "
-                                  +"OBS_VALID_HOUR_LIST, "
-                                  +"OBS_INIT_HOUR_LIST. "
-                                  +"Found "+config_list)
-
-        for config_list in c_dict['LOOP_LIST_ITEMS']:
-            if config_list not in loop_group_accepted_options:
-                self.log_error("Bad config option for running StatAnalysis "
-                                  +"followed by MakePlots. Only accepted "
-                                  +"values in LOOP_LIST_ITEMS are "
-                                  +"FCST_VALID_HOUR_LIST, "
-                                  +"FCST_INIT_HOUR_LIST, "
-                                  +"OBS_VALID_HOUR_LIST, "
-                                  +"OBS_INIT_HOUR_LIST. "
-                                  +"Found "+config_list)
-
-        # Do checks for required configuration file options that are
-        # defined by user.
-        required_config_variable_list = [
-            'VX_MASK_LIST', 'FCST_LEAD_LIST', 'LINE_TYPE_LIST'
-            ]
-        for required_config_variable in required_config_variable_list:
-            if len(c_dict[required_config_variable]) == 0:
-                self.log_error(required_config_variable+" has no items. "
-                                  +"This list must have items to run "
-                                  +"StatAnalysis followed by MakePlots.")
-
-        # if MakePlots is run but -dump_row is not found in the job args, error
-        if not any([item for item in c_dict['JOBS'] if '-dump_row' in item]):
-            self.log_error("Must include -dump_row in at least one "
-                           "STAT_ANALYSIS_JOB<n> if running MakePlots")
-
-    def list_to_str(self, list_of_values, add_quotes=True):
+    @staticmethod
+    def list_to_str(list_of_values, add_quotes=True):
         """! Turn a list of values into a single string so it can be 
              set to an environment variable and read by the MET 
              stat_analysis config file.
@@ -448,33 +339,17 @@ class StatAnalysisWrapper(CommandBuilder):
               the list names whose items are being looped over)
         """
         # get list of config variables not found in either GROUP_LIST_ITEMS or LOOP_LIST_ITEMS
-        missing_config_list = [conf for conf in self.expected_config_lists if conf not in c_dict['GROUP_LIST_ITEMS']]
-        missing_config_list = [conf for conf in missing_config_list if conf not in c_dict['LOOP_LIST_ITEMS']]
-        found_config_list = [conf for conf in self.expected_config_lists if conf not in missing_config_list]
+        missing_config_list = [conf for conf in self.expected_config_lists
+                               if conf not in c_dict['GROUP_LIST_ITEMS']]
+        missing_config_list = [conf for conf in missing_config_list
+                               if conf not in c_dict['LOOP_LIST_ITEMS']]
+        found_config_list = [conf for conf in self.expected_config_lists
+                             if conf not in missing_config_list]
 
         # loop through lists not found in either loop or group lists
         for missing_config in missing_config_list:
 
-            # if running MakePlots
-            if self.runMakePlots:
-
-                # if LINE_TYPE_LIST is missing, add it to group list
-                if missing_config == 'LINE_TYPE_LIST':
-                    c_dict['GROUP_LIST_ITEMS'].append(missing_config)
-
-                # else if list in config_dict is empty, warn and add to group list
-                elif not c_dict[missing_config]:
-                    self.logger.warning(missing_config + " is empty, "
-                                        + "will be treated as group.")
-                    c_dict['GROUP_LIST_ITEMS'].append(missing_config)
-
-                # otherwise add to loop list
-                else:
-                    c_dict['LOOP_LIST_ITEMS'].append(missing_config)
-
-            # if not running MakePlots, just add missing list to group list
-            else:
-                c_dict['GROUP_LIST_ITEMS'].append(missing_config)
+            c_dict['GROUP_LIST_ITEMS'].append(missing_config)
 
         # loop through lists found in either loop or group lists originally
         for found_config in found_config_list:
@@ -489,16 +364,6 @@ class StatAnalysisWrapper(CommandBuilder):
                           + ', '.join(c_dict['GROUP_LIST_ITEMS']))
         self.logger.debug("Items in these lists will be looped over: "
                           + ', '.join(c_dict['LOOP_LIST_ITEMS']))
-
-        # if running MakePlots, create new group and loop lists based on
-        # the criteria for running that wrapper
-        if self.runMakePlots:
-            c_dict['GROUP_LIST_ITEMS_MAKE_PLOTS'] = list(c_dict['GROUP_LIST_ITEMS'])
-            c_dict['LOOP_LIST_ITEMS_MAKE_PLOTS'] = list(c_dict['LOOP_LIST_ITEMS'])
-            for force_group_list in self.force_group_for_make_plots_lists:
-                if force_group_list in c_dict['LOOP_LIST_ITEMS_MAKE_PLOTS']:
-                    c_dict['LOOP_LIST_ITEMS_MAKE_PLOTS'].remove(force_group_list)
-                    c_dict['GROUP_LIST_ITEMS_MAKE_PLOTS'].append(force_group_list)
 
         return c_dict
 
@@ -549,13 +414,6 @@ class StatAnalysisWrapper(CommandBuilder):
             list_name = loop_list.replace('_LIST', '')
             stringsub_dict_keys.append(list_name.lower())
         for group_list in lists_to_group:
-            # if setting up MakePlots, skip adding forced
-            # group lists so they will remain templates
-            # to be filled in by the plotting scripts
-            if (self.forMakePlots and
-                    group_list in self.force_group_for_make_plots_lists):
-                continue
-
             list_name = group_list.replace('_LIST', '')
             stringsub_dict_keys.append(list_name.lower())
 
@@ -809,13 +667,10 @@ class StatAnalysisWrapper(CommandBuilder):
         for group_list in lists_to_group:
             list_name = group_list.replace('_LIST', '')
             list_name_value = (
-                config_dict[list_name].replace('"', '').replace(' ', '') \
+                config_dict[list_name].replace('"', '').replace(' ', '')
                 .replace(',', '_').replace('*', 'ALL')
             )
             if 'THRESH' in list_name:
-                if (self.forMakePlots and
-                        group_list in self.force_group_for_make_plots_lists):
-                    continue
 
                 thresh_letter = self.format_thresh(
                     config_dict[list_name]
@@ -920,11 +775,7 @@ class StatAnalysisWrapper(CommandBuilder):
                                 stringsub_dict['init_hour'] = (
                                     stringsub_dict['init_hour_end']
                                 )
-            elif not (self.forMakePlots and
-                      group_list in self.force_group_for_make_plots_lists):
-                # if setting up MakePlots, skip adding forced
-                # group lists so they will remain templates
-                # to be filled in by the plotting scripts
+            else:
                 stringsub_dict[list_name.lower()] = list_name_value
 
         nkeys_end = len(stringsub_dict_keys)
@@ -968,105 +819,38 @@ class StatAnalysisWrapper(CommandBuilder):
                                                    lists_to_group, config_dict)
 
         if filename_type == 'default':
-            if (self.runMakePlots and output_type == 'dump_row'):
-                filename_template_prefix = ( 
-                    filename_template+date_type.lower()
-                    +'{'+date_type.lower()+'_beg?fmt=%Y%m%d}'
-                    +'to{'+date_type.lower()+'_end?fmt=%Y%m%d}_'
+
+            if date_beg == date_end:
+                filename_template = (
+                    filename_template+date_type.lower()+date_beg
                 )
-                if (stringsub_dict['valid_hour_beg'] != ''
-                        and stringsub_dict['valid_hour_end'] != ''):
-                    filename_template_prefix+=(
-                        'valid{valid_hour_beg?fmt=%H%M}to'
-                        +'{valid_hour_end?fmt=%H%M}Z_'
-                    )
-                else:
-                    filename_template_prefix+=(
-                        'fcst_valid{fcst_valid_hour_beg?fmt=%H%M}to'
-                        +'{fcst_valid_hour_end?fmt=%H%M}Z_'
-                        'obs_valid{obs_valid_hour_beg?fmt=%H%M}to'
-                        +'{obs_valid_hour_end?fmt=%H%M}Z_'
-                    )
-                if (stringsub_dict['init_hour_beg'] != ''
-                        and stringsub_dict['init_hour_end'] != ''):
-                    filename_template_prefix+=(
-                        'init{init_hour_beg?fmt=%H%M}to'
-                        +'{init_hour_end?fmt=%H%M}Z'
-                    )
-                else:
-                    filename_template_prefix+=(
-                        'fcst_init{fcst_init_hour_beg?fmt=%H%M}to'
-                        +'{fcst_init_hour_end?fmt=%H%M}Z_'
-                        'obs_init{obs_init_hour_beg?fmt=%H%M}to'
-                        +'{obs_init_hour_end?fmt=%H%M}Z'
-                    )
-                filename_template_prefix+=(
-                    '_fcst_lead{fcst_lead?fmt=%s}'
-                    +'_fcst{fcst_var?fmt=%s}{fcst_level?fmt=%s}'
-                    +'{fcst_thresh?fmt=%s}{interp_mthd?fmt=%s}_'
-                    +'obs{obs_var?fmt=%s}{obs_level?fmt=%s}'
-                    +'{obs_thresh?fmt=%s}{interp_mthd?fmt=%s}_'
-                    +'vxmask{vx_mask?fmt=%s}'
-                )
-                if 'DESC_LIST' in lists_to_loop:
-                    filename_template_prefix = (
-                        filename_template_prefix
-                        +'_desc{desc?fmt=%s}'
-                    )
-                if 'OBS_LEAD_LIST' in lists_to_loop:
-                    filename_template_prefix = (
-                        filename_template_prefix
-                        +'_obs_lead{obs_lead?fmt=%s}'
-                    )
-                if 'INTERP_PNTS_LIST' in lists_to_loop:
-                    filename_template_prefix = (
-                        filename_template_prefix
-                        +'_interp_pnts{interp_pnts?fmt=%s}'
-                    )
-                if 'COV_THRESH_LIST' in lists_to_loop:
-                    filename_template_prefix = (
-                        filename_template_prefix
-                        +'_cov_thresh{cov_thresh?fmt=%s}'
-                    )
-                if 'ALPHA_LIST' in lists_to_loop:
-                    filename_template_prefix = (
-                        filename_template_prefix
-                        +'_alpha{alpha?fmt=%s}'
-                    )
-                filename_template = filename_template_prefix
             else:
-                if date_beg == date_end:
-                    filename_template = (
-                        filename_template+date_type.lower()+date_beg
-                    )
-                else:
-                    filename_template = (
-                        filename_template+date_type.lower()+
-                        date_beg+'to'+date_end
-                    )
-                for loop_list in lists_to_loop:
-                    if loop_list != 'MODEL_LIST':
-                        list_name = loop_list.replace('_LIST', '')
-                        if 'HOUR' in list_name:
-                            filename_template = (
-                                filename_template+'_'
-                                +list_name.replace('_', '').lower()
-                                +config_dict[list_name].replace('"', '')+'Z'
-                            )
-                        else:
-                            filename_template = (
-                                filename_template+'_'
-                                +list_name.replace('_', '').lower()
-                                +config_dict[list_name].replace('"', '')
-                            )
+                filename_template = (
+                    filename_template+date_type.lower()+
+                    date_beg+'to'+date_end
+                )
+            for loop_list in lists_to_loop:
+                if loop_list != 'MODEL_LIST':
+                    list_name = loop_list.replace('_LIST', '')
+                    if 'HOUR' in list_name:
+                        filename_template = (
+                            filename_template+'_'
+                            +list_name.replace('_', '').lower()
+                            +config_dict[list_name].replace('"', '')+'Z'
+                        )
+                    else:
+                        filename_template = (
+                            filename_template+'_'
+                            +list_name.replace('_', '').lower()
+                            +config_dict[list_name].replace('"', '')
+                        )
             filename_template += '_' + output_type + '.stat'
 
         self.logger.debug("Building "+output_type+" filename from "
                           +filename_type+" template: "+filename_template)
 
         output_filename = do_string_sub(filename_template,
-                                        **stringsub_dict,
-                                        skip_missing_tags=self.forMakePlots)
+                                        **stringsub_dict)
         return output_filename
 
     def get_lookin_dir(self, dir_path, lists_to_loop, lists_to_group, config_dict):
@@ -1315,15 +1099,10 @@ class StatAnalysisWrapper(CommandBuilder):
                      )
                      model_dump_row_filename_type = model_filename_type
                 elif output_type == 'OUT_STAT':
-                    # if MakePlots is run
-                    if self.runMakePlots:
-                        model_out_stat_filename_template = 'NA'
-                        model_out_stat_filename_type = 'NA'
-                    else:
-                        model_out_stat_filename_template = (
-                            model_filename_template
-                        )
-                        model_out_stat_filename_type = model_filename_type
+                    model_out_stat_filename_template = (
+                        model_filename_template
+                    )
+                    model_out_stat_filename_type = model_filename_type
 
             mod = {}
             mod['name'] = model_name
@@ -1404,12 +1183,8 @@ class StatAnalysisWrapper(CommandBuilder):
         # Loop over run settings.
         formatted_runtime_settings_dict_list = []
         for runtime_settings_dict in runtime_settings_dict_list:
-            if self.forMakePlots:
-                loop_lists = c_dict['LOOP_LIST_ITEMS_MAKE_PLOTS']
-                group_lists = c_dict['GROUP_LIST_ITEMS_MAKE_PLOTS']
-            else:
-                loop_lists = c_dict['LOOP_LIST_ITEMS']
-                group_lists = c_dict['GROUP_LIST_ITEMS']
+            loop_lists = c_dict['LOOP_LIST_ITEMS']
+            group_lists = c_dict['GROUP_LIST_ITEMS']
 
             # Set up stat_analysis -lookin argument, model and obs information
             # and stat_analysis job.
@@ -1457,10 +1232,6 @@ class StatAnalysisWrapper(CommandBuilder):
         group_lists = c_dict['GROUP_LIST_ITEMS']
         loop_lists = c_dict['LOOP_LIST_ITEMS']
 
-        if self.forMakePlots:
-            group_lists = c_dict['GROUP_LIST_ITEMS_MAKE_PLOTS']
-            loop_lists = c_dict['LOOP_LIST_ITEMS_MAKE_PLOTS']
-
         runtime_setup_dict = {}
         # Fill setup dictionary for MET config variable name
         # and its value as a string for group lists.
@@ -1468,15 +1239,7 @@ class StatAnalysisWrapper(CommandBuilder):
             runtime_setup_dict_name = group_list.replace('_LIST', '')
             add_quotes = False if 'THRESH' in group_list else True
 
-            # if preparing for MakePlots, change
-            # commas to _ and * to ALL in list items
-            if self.forMakePlots:
-                formatted_list = []
-                for format_list in c_dict[group_list]:
-                    formatted_list.append(format_list.replace(',', '_')
-                                          .replace('*', 'ALL'))
-            else:
-                formatted_list = c_dict[group_list]
+            formatted_list = c_dict[group_list]
             runtime_setup_dict[runtime_setup_dict_name] = (
                 [self.list_to_str(formatted_list,
                                   add_quotes=add_quotes)]
@@ -1608,35 +1371,6 @@ class StatAnalysisWrapper(CommandBuilder):
 
                     c_dict_list.append(c_dict)
 
-        # if preparing for MakePlots, combine levels and thresholds for each name
-        if self.forMakePlots:
-            output_c_dict_list = []
-            for c_dict in c_dict_list:
-                if c_dict['index'] not in [conf['index'] for conf in output_c_dict_list]:
-                    output_c_dict_list.append(c_dict)
-                else:
-                    for output_dict in output_c_dict_list:
-                        if c_dict['index'] == output_dict['index']:
-
-                            for level in c_dict['FCST_LEVEL_LIST']:
-                                if level not in output_dict['FCST_LEVEL_LIST']:
-                                    output_dict['FCST_LEVEL_LIST'].append(level)
-
-                            for level in c_dict['OBS_LEVEL_LIST']:
-                                if level not in output_dict['OBS_LEVEL_LIST']:
-                                    output_dict['OBS_LEVEL_LIST'].append(level)
-
-                            for thresh in c_dict['FCST_THRESH_LIST']:
-                                if thresh not in output_dict['FCST_THRESH_LIST']:
-                                    output_dict['FCST_THRESH_LIST'].append(thresh)
-
-                            for thresh in c_dict['OBS_THRESH_LIST']:
-                                if thresh not in output_dict['OBS_THRESH_LIST']:
-                                    output_dict['OBS_THRESH_LIST'].append(thresh)
-
-
-            return output_c_dict_list
-
         return c_dict_list
 
     def add_other_lists_to_c_dict(self, c_dict):
@@ -1646,9 +1380,6 @@ class StatAnalysisWrapper(CommandBuilder):
         """
         # add group and loop lists
         lists_to_add = self.list_categories
-        if self.runMakePlots:
-            lists_to_add.extend(self.list_categories_make_plots)
-
         for list_category in lists_to_add:
             list_items = self.c_dict[list_category]
             if list_category not in c_dict:
@@ -1683,20 +1414,19 @@ class StatAnalysisWrapper(CommandBuilder):
             # set MODEL and OBTYPE to single item to find lookin dir
             runtime_settings_dict['MODEL'] = '"'+model_info['name']+'"'
             runtime_settings_dict['OBTYPE'] = '"'+model_info['obtype']+'"'
-            # don't get lookin dir if getting settings for MakePlots
-            if not self.forMakePlots:
-                lookin_dirs.append(self.get_lookin_dir(model_info['dir'],
-                                                       loop_lists,
-                                                       group_lists,
-                                                       runtime_settings_dict,
-                                                       )
-                                   )
+
+            lookin_dirs.append(self.get_lookin_dir(model_info['dir'],
+                                                   loop_lists,
+                                                   group_lists,
+                                                   runtime_settings_dict,
+                                                   )
+                               )
 
         # set lookin dir command line argument
         runtime_settings_dict['LOOKIN_DIR'] = ' '.join(lookin_dirs)
 
         # error and return None if lookin dir is empty
-        if not self.forMakePlots and not runtime_settings_dict['LOOKIN_DIR']:
+        if not runtime_settings_dict['LOOKIN_DIR']:
             self.log_error("No value found for lookin dir")
             return None
 
@@ -1739,28 +1469,11 @@ class StatAnalysisWrapper(CommandBuilder):
              or initialization dates for a job defined by
              the user.
         """
-        self.forMakePlots = False
-
         runtime_settings_dict_list = self.get_runtime_settings_dict_list()
         if not runtime_settings_dict_list:
             return False
 
         self.run_stat_analysis_job(runtime_settings_dict_list)
-
-        # if running MakePlots, get its runtime_settings_dict_list and call
-        if self.runMakePlots:
-            self.logger.debug("Preparing settings to pass to MakePlots wrapper")
-            self.forMakePlots = True
-            runtime_settings_dict_list = (
-                self.get_runtime_settings_dict_list()
-            )
-            if not runtime_settings_dict_list:
-                return False
-
-            self.MakePlotsWrapper.create_plots(runtime_settings_dict_list)
-            if self.MakePlotsWrapper.errors:
-                self.log_error("MakePlots produced "
-                               f"{self.MakePlotsWrapper.errors} errors.")
 
         return True
 

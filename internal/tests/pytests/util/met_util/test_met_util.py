@@ -297,7 +297,6 @@ def test_get_lead_sequence_init_min_10(metplus_config):
         ('GempakToCFWrapper', 'gempak_to_cf_wrapper'),
         ('GenVxMaskWrapper', 'gen_vx_mask_wrapper'),
         ('GridStatWrapper', 'grid_stat_wrapper'),
-        ('MakePlotsWrapper', 'make_plots_wrapper'),
         ('MODEWrapper', 'mode_wrapper'),
         ('MTDWrapper', 'mtd_wrapper'),
         ('PB2NCWrapper', 'pb2nc_wrapper'),

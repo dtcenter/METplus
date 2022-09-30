@@ -1790,11 +1790,6 @@ def get_process_list(config):
                                   "may be invalid.")
             wrapper_name = process_name
 
-        # if MakePlots is in process list, remove it because
-        # it will be called directly from StatAnalysis
-        if wrapper_name == 'MakePlots':
-            continue
-
         out_process_list.append((wrapper_name, instance))
 
     return out_process_list
