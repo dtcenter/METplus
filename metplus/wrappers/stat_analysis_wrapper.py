@@ -124,7 +124,7 @@ class StatAnalysisWrapper(CommandBuilder):
 
     def get_command(self):
 
-        cmd = self.app_path
+        cmd = f"{self.app_path} -v {self.c_dict['VERBOSITY']}"
         if self.args:
             cmd += ' ' + ' '.join(self.args)
 
