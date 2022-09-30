@@ -105,6 +105,7 @@ class MakePlotsWrapper(CommandBuilder):
             self.config.getstr('config', 'LOG_MAKE_PLOTS_VERBOSITY',
                                c_dict['VERBOSITY'])
         )
+        c_dict['LOOP_ORDER'] = self.config.getstr('config', 'LOOP_ORDER')
         c_dict['INPUT_BASE_DIR'] = self.config.getdir('MAKE_PLOTS_INPUT_DIR')
         c_dict['OUTPUT_BASE_DIR'] = self.config.getdir('MAKE_PLOTS_OUTPUT_DIR')
         c_dict['SCRIPTS_BASE_DIR'] = self.config.getdir('MAKE_PLOTS_SCRIPTS_DIR')

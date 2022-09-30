@@ -47,7 +47,7 @@ def test_create_c_dict(metplus_config):
     mp = make_plots_wrapper(metplus_config)
     # Test 1
     c_dict = mp.create_c_dict()
-
+    assert(c_dict['LOOP_ORDER'] == 'processes')
     # NOTE: MakePlots relies on output from StatAnalysis
     #       so its input resides in the output of StatAnalysis
     assert(c_dict['INPUT_BASE_DIR'] == mp.config.getdir('OUTPUT_BASE')
