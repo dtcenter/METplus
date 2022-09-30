@@ -54,8 +54,8 @@ def test_create_c_dict(metplus_config):
     st = stat_analysis_wrapper(metplus_config)
     # Test 1
     c_dict = st.create_c_dict()
-    assert(os.path.realpath(c_dict['CONFIG_FILE']) == (METPLUS_BASE+'/internal/tests/'
-                                                       +'config/STATAnalysisConfig'))
+    assert(os.path.realpath(c_dict['CONFIG_FILE']) == (METPLUS_BASE+'/parm/met_config/'
+                                                       +'STATAnalysisConfig_wrapped'))
     assert(c_dict['OUTPUT_DIR'] == (st.config.getdir('OUTPUT_BASE')
                                          +'/stat_analysis'))
     assert 'FCST_INIT_HOUR_LIST' in c_dict['GROUP_LIST_ITEMS']
