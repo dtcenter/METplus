@@ -36,7 +36,7 @@ def test_get_command(metplus_config):
     # Test 1
     expected_command = (
         st.config.getdir('MET_BIN_DIR', '')
-        +'/stat_analysis '
+        +'/stat_analysis -v 2 '
         +'-lookin /path/to/lookin_dir '
         +'-config /path/to/STATAnalysisConfig'
     )
