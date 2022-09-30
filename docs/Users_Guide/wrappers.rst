@@ -6870,8 +6870,6 @@ file for running with LOOP_ORDER = processes:
    | :term:`STAT_ANALYSIS_DUMP_ROW_TMPL`
    | :term:`STAT_ANALYSIS_OUT_STAT_TMPL`
    | :term:`PLOT_TIME`
-   | :term:`VERIF_CASE`
-   | :term:`VERIF_TYPE`
    | :term:`MODEL<n>_NAME`
    | :term:`MODEL<n>_OBS_NAME`
    | :term:`MODEL<n>_NAME_ON_PLOT`
