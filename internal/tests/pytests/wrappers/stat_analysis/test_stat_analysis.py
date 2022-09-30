@@ -727,6 +727,8 @@ def test_run_stat_analysis(metplus_config):
     # Test 1
     expected_filename = (st.config.getdir('OUTPUT_BASE')+'/stat_analysis'
                          +'/00Z/MODEL_TEST/MODEL_TEST_20190101.stat')
+    if os.path.exists(expected_filename):
+        os.remove(expected_filename)
     comparison_filename = (METPLUS_BASE+'/internal/tests/data/stat_data/'
                            +'test_20190101.stat') 
     st.c_dict['DATE_BEG'] = '20190101'

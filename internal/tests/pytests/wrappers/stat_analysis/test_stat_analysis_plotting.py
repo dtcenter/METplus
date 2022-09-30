@@ -383,6 +383,12 @@ def test_filter_for_plotting(metplus_config):
                                expected_filename27, expected_filename28,
                                expected_filename29, expected_filename30,
                                expected_filename31, expected_filename32 ]
+
+    # remove expected files before running
+    for expected_filename in expected_filename_list:
+        if os.path.exists(expected_filename):
+            os.remove(expected_filename)
+
     st.c_dict['DATE_TYPE'] = 'VALID'
     st.c_dict['VALID_BEG'] = '20190101'
     st.c_dict['VALID_END'] = '20190101'
