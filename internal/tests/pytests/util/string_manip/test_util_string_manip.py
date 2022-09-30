@@ -121,23 +121,28 @@ def test_getlist_int():
          ['2']),
 
         ('begin_end_incr(0,2,1), begin_end_incr(3,9,3)',
-         ['0','1','2','3','6','9']),
+         ['0', '1', '2', '3', '6', '9']),
 
         ('mem_begin_end_incr(0,2,1), mem_begin_end_incr(3,9,3)',
-         ['mem_0','mem_1','mem_2','mem_3','mem_6','mem_9']),
+         ['mem_0', 'mem_1', 'mem_2', 'mem_3', 'mem_6', 'mem_9']),
 
         ('mem_begin_end_incr(0,2,1,3), mem_begin_end_incr(3,12,3,3)',
-         ['mem_000', 'mem_001', 'mem_002', 'mem_003', 'mem_006', 'mem_009', 'mem_012']),
+         ['mem_000', 'mem_001', 'mem_002', 'mem_003',
+          'mem_006', 'mem_009', 'mem_012']),
 
-        ('begin_end_incr(0,10,2)H, 12',  [ '0H', '2H', '4H', '6H', '8H', '10H', '12']),
+        ('begin_end_incr(0,10,2)H, 12',
+         ['0H', '2H', '4H', '6H', '8H', '10H', '12']),
 
-        ('begin_end_incr(0,10800,3600)S, 4H',  [ '0S', '3600S', '7200S', '10800S', '4H']),
+        ('begin_end_incr(0,10800,3600)S, 4H',
+         ['0S', '3600S', '7200S', '10800S', '4H']),
 
         ('data.{init?fmt=%Y%m%d%H?shift=begin_end_incr(0, 3, 3)H}.ext',
          ['data.{init?fmt=%Y%m%d%H?shift=0H}.ext',
           'data.{init?fmt=%Y%m%d%H?shift=3H}.ext',
           ]),
-
+        ('"%m:begin_end_incr(3,11,1)", "%m%d:0229"',
+         ['%m:3', '%m:4', '%m:5', '%m:6', '%m:7', '%m:8', '%m:9', '%m:10',
+          '%m:11', '%m%d:0229'])
     ]
 )
 @pytest.mark.util
