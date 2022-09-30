@@ -188,34 +188,16 @@ class StatAnalysisWrapper(CommandBuilder):
             job_args = self.config.getraw('config', 'STAT_ANALYSIS_JOB_ARGS')
             c_dict['JOBS'].append(f'-job {job_name} {job_args}')
 
-        # read in all lists except field lists, which will be read in afterwards and checked
-        all_lists_to_read = self.expected_config_lists + self.list_categories
-        non_field_lists = [conf_list for
-                           conf_list in all_lists_to_read
-                           if conf_list not in self.field_lists]
-        for conf_list in non_field_lists:
-            c_dict[conf_list] = getlist(
-                self.config.getstr('config', conf_list, '')
-            )
-
-            # if list in format lists, zero pad value to be at least 2
-            # digits, then add 4 zeros
-            if conf_list in self.format_lists:
-                c_dict[conf_list] = (
-                    [value.zfill(2).ljust(4 + len(value.zfill(2)), '0')
-                     for value in c_dict[conf_list]]
-                )
-
-        # read all field lists and check if they are all empty
-        c_dict['all_field_lists_empty'] = self.read_field_lists_from_config(c_dict)
+        # read all lists and check if field lists are all empty
+        c_dict['all_field_lists_empty'] = self.read_lists_from_config(c_dict)
         c_dict['VAR_LIST'] = parse_var_list(self.config)
 
         c_dict['MODEL_INFO_LIST'] = self.parse_model_info()
         if not c_dict['MODEL_LIST'] and c_dict['MODEL_INFO_LIST']:
-                self.logger.warning("MODEL_LIST was left blank, "
-                                    + "creating with MODELn information.")
-                for model_info in c_dict['MODEL_INFO_LIST']:
-                    c_dict['MODEL_LIST'].append(model_info['name'])
+            self.logger.warning("MODEL_LIST was left blank, "
+                                + "creating with MODELn information.")
+            for model_info in c_dict['MODEL_INFO_LIST']:
+                c_dict['MODEL_LIST'].append(model_info['name'])
 
         c_dict = self.set_lists_loop_or_group(c_dict)
 
@@ -224,6 +206,56 @@ class StatAnalysisWrapper(CommandBuilder):
                             metplus_configs=['STAT_ANALYSIS_HSS_EC_VALUE'])
 
         return self.c_dict_error_check(c_dict)
+
+    def _format_conf_list(self, conf_list):
+        items = getlist(
+            self.config.getraw('config', conf_list, '')
+        )
+
+        # if list if empty or unset, check for {LIST_NAME}<n>
+        if not items:
+            indices = list(
+                find_indices_in_config_section(fr'{conf_list}(\d+)$',
+                                               self.config,
+                                               index_index=1).keys()
+            )
+            if indices:
+                items = []
+                for index in indices:
+                    sub_items = getlist(
+                        self.config.getraw('config', f'{conf_list}{index}')
+                    )
+                    if not sub_items:
+                        continue
+
+                    items.append(','.join(sub_items))
+
+        # do not add quotes and format thresholds if threshold list
+        if 'THRESH' in conf_list:
+            return [self.format_thresh(item) for item in items]
+
+        if conf_list in self.list_categories:
+            return items
+
+        formatted_items = []
+        for item in items:
+            sub_items = []
+            for sub_item in item.split(','):
+                # if list in format lists, zero pad value to be at least 2
+                # digits, then add zeros to make 6 digits
+                if conf_list in self.format_lists:
+                    sub_item = self._format_hms(sub_item)
+                sub_items.append(sub_item)
+
+            # format list as string with quotes around each item
+            sub_item_str = '", "'.join(sub_items)
+            formatted_items.append(f'"{sub_item_str}"')
+
+        return formatted_items
+
+    @staticmethod
+    def _format_hms(value):
+        return value.zfill(2).ljust(6, '0')
 
     def c_dict_error_check(self, c_dict):
 
@@ -273,25 +305,25 @@ class StatAnalysisWrapper(CommandBuilder):
 
         return c_dict
 
-    def read_field_lists_from_config(self, field_dict):
-        """! Get field list configuration variables and add to dictionary
-             @param field_dict dictionary to hold output values
-             @returns True if all lists are empty or False if any have a value"""
+    def read_lists_from_config(self, c_dict):
+        """! Get list configuration variables and add to dictionary
+
+         @param c_dict dictionary to hold output values
+         @returns True if all field lists are empty or False if any are set
+        """
         all_empty = True
-        for field_list in self.field_lists:
-            if 'LEVEL_LIST' in field_list:
-                field_dict[field_list] = (
-                    self.get_level_list(field_list.split('_')[0])
+
+        all_lists_to_read = self.expected_config_lists + self.list_categories
+        for conf_list in all_lists_to_read:
+            if 'LEVEL_LIST' in conf_list:
+                c_dict[conf_list] = (
+                    self.get_level_list(conf_list.split('_')[0])
                 )
             else:
-                field_dict[field_list] = getlist(
-                    self.config.getstr('config',
-                                       field_list,
-                                       '')
-                )
+                c_dict[conf_list] = self._format_conf_list(conf_list)
 
-            # keep track if any list is not empty
-            if field_dict[field_list]:
+            # keep track if any field list is not empty
+            if conf_list in self.field_lists and c_dict[conf_list]:
                 all_empty = False
 
         return all_empty
@@ -367,17 +399,17 @@ class StatAnalysisWrapper(CommandBuilder):
 
         return c_dict
 
-    def format_thresh(self, thresh):
+    def format_thresh(self, thresh_str):
         """! Format thresholds for file naming
 
              Args:
-                @param thresh string of the thresholds. Can be a comma-separated list, i.e. gt3,<=5.5, ==7
+                @param thresh_str string of the thresholds. Can be a comma-separated list, i.e. gt3,<=5.5, ==7
 
              @returns string of comma-separated list of the threshold(s) with letter format, i.e. gt3, le5.5, eq7
         """
         formatted_thresh_list = []
         # separate thresholds by comma and strip off whitespace around values
-        thresh_list = [thresh.strip() for thresh in thresh.split(',')]
+        thresh_list = [thresh.strip() for thresh in thresh_str.split(',')]
         for thresh in thresh_list:
             if not thresh:
                 continue
@@ -410,6 +442,7 @@ class StatAnalysisWrapper(CommandBuilder):
         date_type = self.c_dict['DATE_TYPE']
 
         stringsub_dict_keys = []
+        # TODO: combine these 2 for loops?
         for loop_list in lists_to_loop:
             list_name = loop_list.replace('_LIST', '')
             stringsub_dict_keys.append(list_name.lower())
@@ -565,12 +598,7 @@ class StatAnalysisWrapper(CommandBuilder):
             list_name_value = (
                 config_dict[list_name].replace('"', '').replace(' ', '')
             )
-            # CHANGE: format thresh when it is read instead of here
-#            if 'THRESH' in list_name:
-#                stringsub_dict[list_name.lower()] = self.format_thresh(
-#                        list_name_value
-#                )
-#            elif list_name == 'MODEL':
+
             if list_name == 'MODEL':
                 stringsub_dict[list_name.lower()] = list_name_value
                 stringsub_dict['obtype'] = (
@@ -620,7 +648,9 @@ class StatAnalysisWrapper(CommandBuilder):
                            stringsub_dict['init_hour'] = (
                                 stringsub_dict['init_hour_end']
                            )
-            elif 'LEAD' in list_name:
+            # if multiple leads are specified, do not format lead info
+            # this behavior is the same as if lead list is in group lists
+            elif 'LEAD' in list_name and len(list_name_value.split(',')) == 1:
                 lead_timedelta = datetime.timedelta(
                     hours=int(list_name_value[:-4]),
                     minutes=int(list_name_value[-4:-2]),
@@ -670,16 +700,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 config_dict[list_name].replace('"', '').replace(' ', '')
                 .replace(',', '_').replace('*', 'ALL')
             )
-            if 'THRESH' in list_name:
-
-                thresh_letter = self.format_thresh(
-                    config_dict[list_name]
-                )
-
-                stringsub_dict[list_name.lower()] = (
-                    thresh_letter.replace(',', '_').replace('*', 'ALL')
-                )
-            elif 'HOUR' in list_name:
+            if 'HOUR' in list_name:
                 list_name_values_list = (
                     config_dict[list_name].replace('"', '').split(', ')
                 )
@@ -1133,7 +1154,7 @@ class StatAnalysisWrapper(CommandBuilder):
         level_list = []
 
         level_input = getlist(
-            self.config.getstr('config', f'{data_type}_LEVEL_LIST', '')
+            self.config.getraw('config', f'{data_type}_LEVEL_LIST', '')
         )
 
         for level in level_input:
@@ -1237,23 +1258,14 @@ class StatAnalysisWrapper(CommandBuilder):
         # and its value as a string for group lists.
         for group_list in group_lists:
             runtime_setup_dict_name = group_list.replace('_LIST', '')
-            add_quotes = False if 'THRESH' in group_list else True
-
-            formatted_list = c_dict[group_list]
-            runtime_setup_dict[runtime_setup_dict_name] = (
-                [self.list_to_str(formatted_list,
-                                  add_quotes=add_quotes)]
-            )
+            runtime_setup_dict[runtime_setup_dict_name] = [
+                ', '.join(c_dict[group_list])
+            ]
 
         # Fill setup dictionary for MET config variable name
-        # and its value as a list for loop lists. Some items
-        # in lists need to be formatted now, others done later.
+        # and its value as a list for loop lists.
 
         for loop_list in loop_lists:
-            # if not a threshold list, add quotes around each value in list
-            if 'THRESH' not in loop_list:
-                c_dict[loop_list] = [f'"{value}"' for value in c_dict[loop_list]]
-
             runtime_setup_dict_name = loop_list.replace('_LIST', '')
             runtime_setup_dict[runtime_setup_dict_name] = (
                 c_dict[loop_list]
@@ -1471,6 +1483,7 @@ class StatAnalysisWrapper(CommandBuilder):
         """
         runtime_settings_dict_list = self.get_runtime_settings_dict_list()
         if not runtime_settings_dict_list:
+            self.log_error('Could not get runtime settings dict list')
             return False
 
         self.run_stat_analysis_job(runtime_settings_dict_list)

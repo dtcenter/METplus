@@ -30,10 +30,11 @@ def stat_analysis_wrapper(metplus_config):
 @pytest.mark.parametrize(
     'input, expected_output', [
         ('', []),
-        ('0,1,2,3', ['000000', '010000', '020000', '030000']),
-        ('01', ['010000']),
-        #('010000', ['010000']),
-        ('begin_end_incr(0,3,1)', ['000000', '010000', '020000', '030000']),
+        ('0,1,2,3', ['"000000"', '"010000"', '"020000"', '"030000"']),
+        ('01', ['"010000"']),
+        ('010000', ['"010000"']),
+        ('begin_end_incr(0,3,1)', ['"000000"', '"010000"',
+                                   '"020000"', '"030000"']),
     ]
 )
 @pytest.mark.wrapper_d
@@ -83,12 +84,13 @@ def test_create_c_dict(metplus_config):
     assert 'FCST_VALID_HOUR_LIST' in c_dict['LOOP_LIST_ITEMS']
     assert 'MODEL_LIST' in c_dict['LOOP_LIST_ITEMS']
     assert c_dict['VAR_LIST'] == []
-    assert c_dict['MODEL_LIST'] == ['MODEL_TEST']
+    assert c_dict['MODEL_LIST'] == ['"MODEL_TEST"']
     assert c_dict['DESC_LIST'] == []
     assert c_dict['FCST_LEAD_LIST'] == []
     assert c_dict['OBS_LEAD_LIST'] == []
-    assert c_dict['FCST_VALID_HOUR_LIST'] == ['000000']
-    assert c_dict['FCST_INIT_HOUR_LIST'] == ['000000', '060000', '120000', '180000']
+    assert c_dict['FCST_VALID_HOUR_LIST'] == ['"000000"']
+    assert c_dict['FCST_INIT_HOUR_LIST'] == ['"000000"', '"060000"',
+                                             '"120000"', '"180000"']
     assert c_dict['OBS_VALID_HOUR_LIST'] == []
     assert c_dict['OBS_INIT_HOUR_LIST'] == []
     assert c_dict['VX_MASK_LIST'] == []
