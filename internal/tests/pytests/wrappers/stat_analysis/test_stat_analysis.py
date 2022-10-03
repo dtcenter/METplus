@@ -127,18 +127,18 @@ def test_set_lists_as_loop_or_group(metplus_config):
     # and those not set are set to GROUP_LIST_ITEMS
     st = stat_analysis_wrapper(metplus_config)
     # Test 1
-    expected_lists_to_group_items = [ 'FCST_INIT_HOUR_LIST', 'DESC_LIST',
-                                      'FCST_LEAD_LIST', 'OBS_LEAD_LIST',
-                                      'OBS_VALID_HOUR_LIST',
-                                      'OBS_INIT_HOUR_LIST', 'FCST_VAR_LIST',
-                                      'OBS_VAR_LIST', 'FCST_UNITS_LIST', 
-                                      'OBS_UNITS_LIST', 'FCST_LEVEL_LIST',
-                                      'OBS_LEVEL_LIST', 'VX_MASK_LIST',
-                                      'INTERP_MTHD_LIST', 'INTERP_PNTS_LIST', 
-                                      'FCST_THRESH_LIST', 'OBS_THRESH_LIST',
-                                      'COV_THRESH_LIST', 'ALPHA_LIST', 
-                                      'LINE_TYPE_LIST' ]
-    expected_lists_to_loop_items = [ 'FCST_VALID_HOUR_LIST', 'MODEL_LIST' ]
+    expected_lists_to_group_items = ['FCST_INIT_HOUR_LIST', 'DESC_LIST',
+                                     'FCST_LEAD_LIST', 'OBS_LEAD_LIST',
+                                     'OBS_VALID_HOUR_LIST',
+                                     'OBS_INIT_HOUR_LIST', 'FCST_VAR_LIST',
+                                     'OBS_VAR_LIST', 'FCST_UNITS_LIST',
+                                     'OBS_UNITS_LIST', 'FCST_LEVEL_LIST',
+                                     'OBS_LEVEL_LIST', 'VX_MASK_LIST',
+                                     'INTERP_MTHD_LIST', 'INTERP_PNTS_LIST',
+                                     'FCST_THRESH_LIST', 'OBS_THRESH_LIST',
+                                     'COV_THRESH_LIST', 'ALPHA_LIST',
+                                     'LINE_TYPE_LIST']
+    expected_lists_to_loop_items = ['FCST_VALID_HOUR_LIST', 'MODEL_LIST']
     config_dict = {}
     config_dict['LOOP_ORDER'] = 'times'
     config_dict['PROCESS_LIST'] = 'StatAnalysis'
@@ -146,8 +146,8 @@ def test_set_lists_as_loop_or_group(metplus_config):
         'PARM_BASE/grid_to_grid/met_config/STATAnalysisConfig'
     )
     config_dict['OUTPUT_DIR'] = 'OUTPUT_BASE/stat_analysis'
-    config_dict['GROUP_LIST_ITEMS'] = [ 'FCST_INIT_HOUR_LIST' ]
-    config_dict['LOOP_LIST_ITEMS'] = [ 'FCST_VALID_HOUR_LIST', 'MODEL_LIST']
+    config_dict['GROUP_LIST_ITEMS'] = ['FCST_INIT_HOUR_LIST']
+    config_dict['LOOP_LIST_ITEMS'] = ['FCST_VALID_HOUR_LIST', 'MODEL_LIST']
     config_dict['FCST_VAR_LIST'] = []
     config_dict['OBS_VAR_LIST'] = []
     config_dict['FCST_LEVEL_LIST'] = []
@@ -156,12 +156,12 @@ def test_set_lists_as_loop_or_group(metplus_config):
     config_dict['OBS_UNITS_LIST'] = []
     config_dict['FCST_THRESH_LIST'] = []
     config_dict['OBS_THRESH_LIST'] = []
-    config_dict['MODEL_LIST'] = [ 'MODEL_TEST' ]
+    config_dict['MODEL_LIST'] = ['MODEL_TEST']
     config_dict['DESC_LIST'] = []
     config_dict['FCST_LEAD_LIST'] = []
     config_dict['OBS_LEAD_LIST'] = []
-    config_dict['FCST_VALID_HOUR_LIST'] = [ '00', '06', '12', '18']
-    config_dict['FCST_INIT_HOUR_LIST'] = [ '00', '06', '12', '18']
+    config_dict['FCST_VALID_HOUR_LIST'] = ['00', '06', '12', '18']
+    config_dict['FCST_INIT_HOUR_LIST'] = ['00', '06', '12', '18']
     config_dict['OBS_VALID_HOUR_LIST'] = []
     config_dict['OBS_INIT_HOUR_LIST'] = []
     config_dict['VX_MASK_LIST'] = []
