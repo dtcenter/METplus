@@ -372,6 +372,15 @@ class StatAnalysisWrapper(CommandBuilder):
 
         return ', '.join(list_of_values)
 
+    @staticmethod
+    def str_to_list(string_value, sort_list=False):
+        # remove double quotes and split by comma
+        str_list = string_value.replace('"', '').split(',')
+        str_list = [item.strip() for item in str_list]
+        if sort_list:
+            str_list.sort()
+        return str_list
+
     def set_lists_loop_or_group(self, c_dict):
         """! Determine whether the lists from the METplus config file
              should treat the items in that list as a group or items 
@@ -479,12 +488,11 @@ class StatAnalysisWrapper(CommandBuilder):
         fcst_hour_list = config_dict['FCST_'+date_type+'_HOUR']
         obs_hour_list = config_dict['OBS_' + date_type + '_HOUR']
         if fcst_hour_list:
-            fcst_hour_list = [fhr.strip() for fhr in fcst_hour_list.replace('"', '').split(',')]
+            fcst_hour_list = self.str_to_list(fcst_hour_list, sort_list=True)
         if obs_hour_list:
-            obs_hour_list = [fhr.strip() for fhr in obs_hour_list.replace('"', '').split(',')]
+            obs_hour_list = self.str_to_list(obs_hour_list, sort_list=True)
 
         # if fcst hour list is set, set fcst_{data_type}_beg/end with first and last values
-        # TODO: values should be sorted first
         if fcst_hour_list:
             stringsub_dict['fcst_'+date_type.lower()+'_beg'] = (
                 datetime.datetime.strptime(
