@@ -371,7 +371,8 @@ class StatAnalysisWrapper(CommandBuilder):
               together) and lists_to_loop_items (list of all
               the list names whose items are being looped over)
         """
-        # get list of config variables not found in either GROUP_LIST_ITEMS or LOOP_LIST_ITEMS
+        # get list of config variables not found in either
+        # GROUP_LIST_ITEMS or LOOP_LIST_ITEMS
         missing_config_list = [conf for conf in self.expected_config_lists
                                if conf not in c_dict['GROUP_LIST_ITEMS']]
         missing_config_list = [conf for conf in missing_config_list
@@ -380,8 +381,8 @@ class StatAnalysisWrapper(CommandBuilder):
                              if conf not in missing_config_list]
 
         # loop through lists not found in either loop or group lists
+        # add missing lists to group_lists
         for missing_config in missing_config_list:
-
             c_dict['GROUP_LIST_ITEMS'].append(missing_config)
 
         # loop through lists found in either loop or group lists originally
@@ -444,13 +445,10 @@ class StatAnalysisWrapper(CommandBuilder):
         date_type = self.c_dict['DATE_TYPE']
 
         stringsub_dict_keys = []
-        # TODO: combine these 2 for loops?
-        for loop_list in lists_to_loop:
-            list_name = loop_list.replace('_LIST', '')
-            stringsub_dict_keys.append(list_name.lower())
-        for group_list in lists_to_group:
-            list_name = group_list.replace('_LIST', '')
-            stringsub_dict_keys.append(list_name.lower())
+        # add all loop list and group list items to string sub keys list
+        for list_item in lists_to_loop + lists_to_group:
+            list_name = list_item.replace('_LIST', '').lower()
+            stringsub_dict_keys.append(list_name)
 
         special_keys = [
             'fcst_valid_hour_beg', 'fcst_valid_hour_end',
