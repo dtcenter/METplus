@@ -67,7 +67,7 @@ class StatAnalysisWrapper(CommandBuilder):
         'METPLUS_HSS_EC_VALUE',
     ]
 
-    field_lists = [
+    FIELD_LISTS = [
         'FCST_VAR_LIST',
         'OBS_VAR_LIST',
         'FCST_UNITS_LIST',
@@ -78,7 +78,7 @@ class StatAnalysisWrapper(CommandBuilder):
         'OBS_LEVEL_LIST',
     ]
 
-    format_lists = [
+    FORMAT_LISTS = [
         'FCST_VALID_HOUR_LIST',
         'FCST_INIT_HOUR_LIST',
         'OBS_VALID_HOUR_LIST',
@@ -87,7 +87,7 @@ class StatAnalysisWrapper(CommandBuilder):
         'OBS_LEAD_LIST',
     ]
 
-    expected_config_lists = [
+    EXPECTED_CONFIG_LISTS = [
         'MODEL_LIST',
         'DESC_LIST',
         'VX_MASK_LIST',
@@ -96,9 +96,29 @@ class StatAnalysisWrapper(CommandBuilder):
         'COV_THRESH_LIST',
         'ALPHA_LIST',
         'LINE_TYPE_LIST',
-    ] + format_lists + field_lists
+    ] + FORMAT_LISTS + FIELD_LISTS
 
-    list_categories = ['GROUP_LIST_ITEMS', 'LOOP_LIST_ITEMS']
+    LIST_CATEGORIES = ['GROUP_LIST_ITEMS', 'LOOP_LIST_ITEMS']
+
+    STRING_SUB_SPECIAL_KEYS = [
+        'fcst_valid_hour_beg', 'fcst_valid_hour_end',
+        'fcst_init_hour_beg', 'fcst_init_hour_end',
+        'obs_valid_hour_beg', 'obs_valid_hour_end',
+        'obs_init_hour_beg', 'obs_init_hour_end',
+        'valid_hour', 'valid_hour_beg', 'valid_hour_end',
+        'init_hour', 'init_hour_beg', 'init_hour_end',
+        'fcst_valid', 'fcst_valid_beg', 'fcst_valid_end',
+        'fcst_init', 'fcst_init_beg', 'fcst_init_end',
+        'obs_valid', 'obs_valid_beg', 'obs_valid_end',
+        'obs_init', 'obs_init_beg', 'obs_init_end',
+        'valid', 'valid_beg', 'valid_end',
+        'init', 'init_beg', 'init_end',
+        'fcst_lead_hour', 'fcst_lead_min',
+        'fcst_lead_sec', 'fcst_lead_totalsec',
+        'obs_lead_hour', 'obs_lead_min',
+        'obs_lead_sec', 'obs_lead_totalsec',
+        'lead', 'lead_hour', 'lead_min', 'lead_sec', 'lead_totalsec'
+    ]
 
     def __init__(self, config, instance=None):
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
@@ -230,7 +250,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 "Must set at least one job with STAT_ANALYSIS_JOB<n>"
             )
 
-        for conf_list in self.list_categories:
+        for conf_list in self.LIST_CATEGORIES:
             if not c_dict[conf_list]:
                 self.log_error(f"Must set {conf_list} to run StatAnalysis")
 
@@ -263,7 +283,7 @@ class StatAnalysisWrapper(CommandBuilder):
         """
         all_empty = True
 
-        all_lists_to_read = self.expected_config_lists + self.list_categories
+        all_lists_to_read = self.EXPECTED_CONFIG_LISTS + self.LIST_CATEGORIES
         for conf_list in all_lists_to_read:
             if 'LEVEL_LIST' in conf_list:
                 c_dict[conf_list] = (
@@ -273,7 +293,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 c_dict[conf_list] = self._format_conf_list(conf_list)
 
             # keep track if any field list is not empty
-            if conf_list in self.field_lists and c_dict[conf_list]:
+            if conf_list in self.FIELD_LISTS and c_dict[conf_list]:
                 all_empty = False
 
         return all_empty
@@ -305,7 +325,7 @@ class StatAnalysisWrapper(CommandBuilder):
         if 'THRESH' in conf_list:
             return [self.format_thresh(item) for item in items]
 
-        if conf_list in self.list_categories:
+        if conf_list in self.LIST_CATEGORIES:
             return items
 
         formatted_items = []
@@ -314,7 +334,7 @@ class StatAnalysisWrapper(CommandBuilder):
             for sub_item in item.split(','):
                 # if list in format lists, zero pad value to be at least 2
                 # digits, then add zeros to make 6 digits
-                if conf_list in self.format_lists:
+                if conf_list in self.FORMAT_LISTS:
                     sub_item = self._format_hms(sub_item)
                 sub_items.append(sub_item)
 
@@ -373,11 +393,11 @@ class StatAnalysisWrapper(CommandBuilder):
         """
         # get list of config variables not found in either
         # GROUP_LIST_ITEMS or LOOP_LIST_ITEMS
-        missing_config_list = [conf for conf in self.expected_config_lists
+        missing_config_list = [conf for conf in self.EXPECTED_CONFIG_LISTS
                                if conf not in c_dict['GROUP_LIST_ITEMS']]
         missing_config_list = [conf for conf in missing_config_list
                                if conf not in c_dict['LOOP_LIST_ITEMS']]
-        found_config_list = [conf for conf in self.expected_config_lists
+        found_config_list = [conf for conf in self.EXPECTED_CONFIG_LISTS
                              if conf not in missing_config_list]
 
         # loop through lists not found in either loop or group lists
@@ -450,27 +470,8 @@ class StatAnalysisWrapper(CommandBuilder):
             list_name = list_item.replace('_LIST', '').lower()
             stringsub_dict_keys.append(list_name)
 
-        special_keys = [
-            'fcst_valid_hour_beg', 'fcst_valid_hour_end',
-            'fcst_init_hour_beg', 'fcst_init_hour_end',
-            'obs_valid_hour_beg', 'obs_valid_hour_end',
-            'obs_init_hour_beg', 'obs_init_hour_end',
-            'valid_hour', 'valid_hour_beg', 'valid_hour_end',
-            'init_hour', 'init_hour_beg', 'init_hour_end',
-            'fcst_valid', 'fcst_valid_beg', 'fcst_valid_end',
-            'fcst_init', 'fcst_init_beg', 'fcst_init_end',
-            'obs_valid', 'obs_valid_beg', 'obs_valid_end',
-            'obs_init', 'obs_init_beg', 'obs_init_end',
-            'valid', 'valid_beg', 'valid_end',
-            'init', 'init_beg', 'init_end',
-            'fcst_lead_hour', 'fcst_lead_min',
-            'fcst_lead_sec', 'fcst_lead_totalsec',
-            'obs_lead_hour', 'obs_lead_min',
-            'obs_lead_sec', 'obs_lead_totalsec',
-            'lead', 'lead_hour', 'lead_min', 'lead_sec', 'lead_totalsec'
-        ]
         # create a dictionary of empty string values from the special keys
-        for special_key in special_keys:
+        for special_key in self.STRING_SUB_SPECIAL_KEYS:
             stringsub_dict_keys.append(special_key)
         stringsub_dict = dict.fromkeys(stringsub_dict_keys, '')
 
@@ -1391,7 +1392,7 @@ class StatAnalysisWrapper(CommandBuilder):
              @param c_dict dictionary to add values to
         """
         # add group and loop lists
-        for list_category in self.list_categories:
+        for list_category in self.LIST_CATEGORIES:
             list_items = self.c_dict[list_category]
             if list_category not in c_dict:
                 c_dict[list_category] = list_items
