@@ -207,57 +207,6 @@ class StatAnalysisWrapper(CommandBuilder):
 
         return self.c_dict_error_check(c_dict)
 
-    def _format_conf_list(self, conf_list):
-        items = getlist(
-            self.config.getraw('config', conf_list, '')
-        )
-
-        # if list if empty or unset, check for {LIST_NAME}<n>
-        if not items:
-            indices = list(
-                find_indices_in_config_section(fr'{conf_list}(\d+)$',
-                                               self.config,
-                                               index_index=1).keys()
-            )
-            if indices:
-                items = []
-                for index in indices:
-                    sub_items = getlist(
-                        self.config.getraw('config', f'{conf_list}{index}')
-                    )
-                    if not sub_items:
-                        continue
-
-                    items.append(','.join(sub_items))
-
-        # do not add quotes and format thresholds if threshold list
-        if 'THRESH' in conf_list:
-            return [self.format_thresh(item) for item in items]
-
-        if conf_list in self.list_categories:
-            return items
-
-        formatted_items = []
-        for item in items:
-            sub_items = []
-            for sub_item in item.split(','):
-                # if list in format lists, zero pad value to be at least 2
-                # digits, then add zeros to make 6 digits
-                if conf_list in self.format_lists:
-                    sub_item = self._format_hms(sub_item)
-                sub_items.append(sub_item)
-
-            # format list as string with quotes around each item
-            sub_item_str = '", "'.join(sub_items)
-            formatted_items.append(f'"{sub_item_str}"')
-
-        return formatted_items
-
-    @staticmethod
-    def _format_hms(value):
-        padded_value = value.zfill(2)
-        return padded_value.ljust(len(padded_value) + 4, '0')
-
     def c_dict_error_check(self, c_dict):
 
         if not c_dict.get('CONFIG_FILE'):
@@ -328,6 +277,57 @@ class StatAnalysisWrapper(CommandBuilder):
                 all_empty = False
 
         return all_empty
+
+    def _format_conf_list(self, conf_list):
+        items = getlist(
+            self.config.getraw('config', conf_list, '')
+        )
+
+        # if list if empty or unset, check for {LIST_NAME}<n>
+        if not items:
+            indices = list(
+                find_indices_in_config_section(fr'{conf_list}(\d+)$',
+                                               self.config,
+                                               index_index=1).keys()
+            )
+            if indices:
+                items = []
+                for index in indices:
+                    sub_items = getlist(
+                        self.config.getraw('config', f'{conf_list}{index}')
+                    )
+                    if not sub_items:
+                        continue
+
+                    items.append(','.join(sub_items))
+
+        # do not add quotes and format thresholds if threshold list
+        if 'THRESH' in conf_list:
+            return [self.format_thresh(item) for item in items]
+
+        if conf_list in self.list_categories:
+            return items
+
+        formatted_items = []
+        for item in items:
+            sub_items = []
+            for sub_item in item.split(','):
+                # if list in format lists, zero pad value to be at least 2
+                # digits, then add zeros to make 6 digits
+                if conf_list in self.format_lists:
+                    sub_item = self._format_hms(sub_item)
+                sub_items.append(sub_item)
+
+            # format list as string with quotes around each item
+            sub_item_str = '", "'.join(sub_items)
+            formatted_items.append(f'"{sub_item_str}"')
+
+        return formatted_items
+
+    @staticmethod
+    def _format_hms(value):
+        padded_value = value.zfill(2)
+        return padded_value.ljust(len(padded_value) + 4, '0')
 
     @staticmethod
     def list_to_str(list_of_values, add_quotes=True):
