@@ -1162,7 +1162,7 @@ class StatAnalysisWrapper(CommandBuilder):
             level = f'{remove_quotes(level)}'
             level_list.append(level)
 
-        return level_list
+        return [f'"{item}"' for item in level_list]
 
     def process_job_args(self, job_type, job, model_info,
                          lists_to_loop_items, lists_to_group_items, runtime_settings_dict):
@@ -1344,16 +1344,16 @@ class StatAnalysisWrapper(CommandBuilder):
                     c_dict = {}
                     c_dict['index'] = var_info['index']
                     c_dict['FCST_VAR_LIST'] = [
-                        var_info['fcst_name']
+                        f'"{var_info["fcst_name"]}"'
                     ]
                     c_dict['OBS_VAR_LIST'] = [
-                        var_info['obs_name']
+                        f'"{var_info["obs_name"]}"'
                     ]
                     c_dict['FCST_LEVEL_LIST'] = [
-                        var_info['fcst_level']
+                        f'"{var_info["fcst_level"]}"'
                     ]
                     c_dict['OBS_LEVEL_LIST'] = [
-                        var_info['obs_level']
+                        f'"{var_info["obs_level"]}"'
                     ]
 
                     c_dict['FCST_THRESH_LIST'] = []
@@ -1369,9 +1369,9 @@ class StatAnalysisWrapper(CommandBuilder):
                     c_dict['FCST_UNITS_LIST'] = []
                     c_dict['OBS_UNITS_LIST'] = []
                     if fcst_units:
-                        c_dict['FCST_UNITS_LIST'].append(fcst_units)
+                        c_dict['FCST_UNITS_LIST'].append(f'"{fcst_units}"')
                     if obs_units:
-                        c_dict['OBS_UNITS_LIST'].append(obs_units)
+                        c_dict['OBS_UNITS_LIST'].append(f'"{obs_units}"')
 
                     c_dict['run_fourier'] = run_fourier
                     if pair:
@@ -1391,8 +1391,7 @@ class StatAnalysisWrapper(CommandBuilder):
              @param c_dict dictionary to add values to
         """
         # add group and loop lists
-        lists_to_add = self.list_categories
-        for list_category in lists_to_add:
+        for list_category in self.list_categories:
             list_items = self.c_dict[list_category]
             if list_category not in c_dict:
                 c_dict[list_category] = list_items
