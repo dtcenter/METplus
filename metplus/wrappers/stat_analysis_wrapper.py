@@ -469,141 +469,27 @@ class StatAnalysisWrapper(CommandBuilder):
                                   information to pass to the 
                                   string_template_substitution
         """
-        date_beg = self.c_dict['DATE_BEG']
-        date_end = self.c_dict['DATE_END']
         date_type = self.c_dict['DATE_TYPE']
 
-        stringsub_dict_keys = []
+        stringsub_dict = {}
         # add all loop list and group list items to string sub keys list
         for list_item in lists_to_loop + lists_to_group:
             list_name = list_item.replace('_LIST', '').lower()
-            stringsub_dict_keys.append(list_name)
+            stringsub_dict[list_name] = ''
 
         # create a dictionary of empty string values from the special keys
         for special_key in self.STRING_SUB_SPECIAL_KEYS:
-            stringsub_dict_keys.append(special_key)
-        stringsub_dict = dict.fromkeys(stringsub_dict_keys, '')
+            stringsub_dict[special_key] = ''
 
-        # Set full date information
-        fcst_hour_list = config_dict['FCST_'+date_type+'_HOUR']
-        obs_hour_list = config_dict['OBS_' + date_type + '_HOUR']
-        if fcst_hour_list:
-            fcst_hour_list = self.str_to_list(fcst_hour_list, sort_list=True)
-        if obs_hour_list:
-            obs_hour_list = self.str_to_list(obs_hour_list, sort_list=True)
-
-        # if fcst hour list is set, set fcst_{data_type}_beg/end with first and last values
-        if fcst_hour_list:
-            stringsub_dict['fcst_'+date_type.lower()+'_beg'] = (
-                datetime.datetime.strptime(
-                    date_beg+fcst_hour_list[0], '%Y%m%d%H%M%S'
-                )
-            )
-            stringsub_dict['fcst_'+date_type.lower()+'_end'] = (
-                datetime.datetime.strptime(
-                    date_end+fcst_hour_list[-1], '%Y%m%d%H%M%S'
-                )
-            )
-            if (stringsub_dict['fcst_'+date_type.lower()+'_beg']
-                    == stringsub_dict['fcst_'+date_type.lower()+'_end']):
-                stringsub_dict['fcst_'+date_type.lower()] = (
-                    stringsub_dict['fcst_'+date_type.lower()+'_beg']
-                )
-        # if fcst hour list is not set, use date beg 000000-235959 as fcst_{date_type}_beg/end
-        #TODO: should be date beg 000000 and date end 235959?
-        else:
-            stringsub_dict['fcst_'+date_type.lower()+'_beg'] = (
-                datetime.datetime.strptime(
-                    date_beg+'000000', '%Y%m%d%H%M%S'
-                )
-            )
-            stringsub_dict['fcst_'+date_type.lower()+'_end'] = (
-                datetime.datetime.strptime(
-                    date_beg+'235959', '%Y%m%d%H%M%S'
-                )
-            )
-        # if obs hour list is set, set obs_{data_type}_beg/end with first and last values
-        # TODO: values should be sorted first
-        # TODO: this could be made into function to handle fcst and obs
-        if obs_hour_list:
-            stringsub_dict['obs_'+date_type.lower()+'_beg'] = (
-                datetime.datetime.strptime(
-                    date_beg+obs_hour_list[0], '%Y%m%d%H%M%S'
-                )
-            )
-            stringsub_dict['obs_'+date_type.lower()+'_end'] = (
-                datetime.datetime.strptime(
-                    date_end+obs_hour_list[-1], '%Y%m%d%H%M%S'
-                )
-            )
-            if (stringsub_dict['obs_'+date_type.lower()+'_beg']
-                    == stringsub_dict['obs_'+date_type.lower()+'_end']):
-                stringsub_dict['obs_'+date_type.lower()] = (
-                    stringsub_dict['obs_'+date_type.lower()+'_beg']
-                )
-        # if obs hour list is not set, use date beg 000000-235959 as obs_{date_type}_beg/end
-        #TODO: should be date beg 000000 and date end 235959?
-        else:
-            stringsub_dict['obs_'+date_type.lower()+'_beg'] = (
-                datetime.datetime.strptime(
-                    date_beg+'000000', '%Y%m%d%H%M%S'
-                )
-            )
-            stringsub_dict['obs_'+date_type.lower()+'_end'] = (
-                datetime.datetime.strptime(
-                    date_beg+'235959', '%Y%m%d%H%M%S'
-                )
-            )
-        # if fcst and obs hour lists the same, set {date_type}_beg/end to fcst_{date_type}_beg/end
-        if fcst_hour_list == obs_hour_list:
-            stringsub_dict[date_type.lower()+'_beg'] = (
-                 stringsub_dict['fcst_'+date_type.lower()+'_beg']
-            )
-            stringsub_dict[date_type.lower()+'_end'] = (
-                 stringsub_dict['fcst_'+date_type.lower()+'_end']
-            )
-            # if {date_type} beg and end are the same, set {date_type}
-            if (stringsub_dict[date_type.lower()+'_beg']
-                    == stringsub_dict[date_type.lower()+'_end']):
-                 stringsub_dict[date_type.lower()] = (
-                     stringsub_dict['fcst_'+date_type.lower()+'_beg']
-                 )
-        # if fcst hr list is not set but obs hr list is, set {date_type}_beg/end to fcst_{date_type}_beg/end
-        # TODO: should be elif?
-        if fcst_hour_list and not obs_hour_list:
-            stringsub_dict[date_type.lower()+'_beg'] = (
-                stringsub_dict['fcst_'+date_type.lower()+'_beg']
-            )
-            stringsub_dict[date_type.lower()+'_end'] = (
-                stringsub_dict['fcst_'+date_type.lower()+'_end']
-            )
-            # if {date_type} beg and end are the same, set {date_type} (same as above)
-            if (stringsub_dict[date_type.lower()+'_beg']
-                    == stringsub_dict[date_type.lower()+'_end']):
-                stringsub_dict[date_type.lower()] = (
-                    stringsub_dict['fcst_'+date_type.lower()+'_beg']
-                )
-        # if fcst hr list is set but obs hr list is not, set {date_type}_beg/end to obs_{date_type}_beg/end
-        # TODO: should be elif?
-        if not fcst_hour_list and obs_hour_list:
-            stringsub_dict[date_type.lower()+'_beg'] = (
-                stringsub_dict['obs_'+date_type.lower()+'_beg']
-            )
-            stringsub_dict[date_type.lower()+'_end'] = (
-                stringsub_dict['obs_'+date_type.lower()+'_end']
-            )
-            # if {date_type} beg and end are the same, set {date_type} (same as above twice)
-            if (stringsub_dict[date_type.lower()+'_beg']
-                    == stringsub_dict[date_type.lower()+'_end']):
-                stringsub_dict[date_type.lower()] = (
-                    stringsub_dict['obs_'+date_type.lower()+'_beg']
-                )
-        # if neither fcst or obs hr list are set, {date_type}_beg/end are not set at all (empty string)
-        # also {date_type} is not set
+        # Set string sub info from fcst/obs hour lists
+        self._set_stringsub_hours(stringsub_dict,
+                                  config_dict[f'FCST_{date_type}_HOUR'],
+                                  config_dict[f'OBS_{date_type}_HOUR'])
 
         # Set loop information
         for loop_list in lists_to_loop:
             list_name = loop_list.replace('_LIST', '')
+            # TODO: change commas to underscores if loop item contains a list
             list_name_value = (
                 config_dict[list_name].replace('"', '').replace(' ', '')
             )
@@ -808,13 +694,102 @@ class StatAnalysisWrapper(CommandBuilder):
             else:
                 stringsub_dict[list_name.lower()] = list_name_value
 
-        nkeys_end = len(stringsub_dict_keys)
+        #nkeys_end = len(stringsub_dict_keys)
         # Some lines for debugging if needed in future
         #self.logger.info(nkeys_start)
         #self.logger.info(nkeys_end)
         #for key, value in stringsub_dict.items():
         #    self.logger.info("{} ({})".format(key, value))
         return stringsub_dict
+
+    def _set_stringsub_hours(self, sub_dict, fcst_hour_str, obs_hour_str):
+        """! Set string sub dictionary _beg and _end values for fcst and obs.
+        Set other values depending on values set in fcst and obs hour lists.
+        Values that are set depend on what it set in c_dict DATE_TYPE, which
+        is either INIT or VALID.
+
+        @param sub_dict dictionary to set string sub values
+        @param fcst_hour_str string with list of forecast hours to process
+        @param obs_hour_str string with list of observation hours to process
+        """
+        date_type = self.c_dict['DATE_TYPE'].lower()
+        if fcst_hour_str:
+            fcst_hour_list = self.str_to_list(fcst_hour_str, sort_list=True)
+        else:
+            fcst_hour_list = None
+
+        if obs_hour_str:
+            obs_hour_list = self.str_to_list(obs_hour_str, sort_list=True)
+        else:
+            obs_hour_list = None
+
+        self._set_stringsub_hours_item(sub_dict, 'fcst', fcst_hour_list)
+        self._set_stringsub_hours_item(sub_dict, 'obs', obs_hour_list)
+
+        # if fcst and obs hour lists the same or if fcst is set but not obs,
+        # set {date_type}_beg/end to fcst_{date_type}_beg/end
+        if (fcst_hour_list == obs_hour_list or
+                (fcst_hour_list and not obs_hour_list)):
+            sub_dict[f'{date_type}_beg'] = sub_dict[f'fcst_{date_type}_beg']
+            sub_dict[f'{date_type}_end'] = sub_dict[f'fcst_{date_type}_end']
+
+            # if {date_type} beg and end are the same, set {date_type}
+            if sub_dict[f'{date_type}_beg'] == sub_dict[f'{date_type}_end']:
+                sub_dict[date_type] = sub_dict[f'{date_type}_end']
+
+        # if fcst hr list is set but obs hr list is not,
+        # set {date_type}_beg/end to obs_{date_type}_beg/end
+        elif not fcst_hour_list and obs_hour_list:
+            sub_dict[f'{date_type}_beg'] = sub_dict[f'obs_{date_type}_beg']
+            sub_dict[f'{date_type}_end'] = sub_dict[f'obs_{date_type}_end']
+
+        # if {date_type} beg and end are the same, set {date_type}
+        if sub_dict[f'{date_type}_beg'] == sub_dict[f'{date_type}_end']:
+            sub_dict[date_type] = sub_dict[f'{date_type}_beg']
+
+        # if neither fcst or obs hr list are set,
+        # {date_type}_beg/end and {date_type} are not set at all (empty string)
+
+    def _set_stringsub_hours_item(self, sub_dict, fcst_or_obs, hour_list):
+        """! Set either fcst or obs values in string sub dictionary.
+
+        @param sub_dict dictionary to set string sub values
+        @param fcst_or_obs string to note processing either fcst or obs
+        @param hour_list list of fcst or obs hours
+        """
+        date_beg = self.c_dict['DATE_BEG']
+        date_end = self.c_dict['DATE_END']
+        prefix = f"{fcst_or_obs}_{self.c_dict['DATE_TYPE'].lower()}"
+
+        if hour_list:
+            sub_dict[f'{prefix}_beg'] = (
+                datetime.datetime.strptime(
+                    date_beg + hour_list[0], '%Y%m%d%H%M%S'
+                )
+            )
+            sub_dict[f'{prefix}_end'] = (
+                datetime.datetime.strptime(
+                    date_end + hour_list[-1], '%Y%m%d%H%M%S'
+                )
+            )
+            if sub_dict[f'{prefix}_beg'] == sub_dict[f'{prefix}_end']:
+                sub_dict[prefix] = sub_dict[f'{prefix}_beg']
+
+            return
+
+        # if fcst hour list is not set, use date beg 000000-235959 as
+        # fcst_{date_type}_beg/end
+        # TODO: should be date beg 000000 and date end 235959?
+        sub_dict[f'{prefix}_beg'] = (
+            datetime.datetime.strptime(
+                date_beg + '000000', '%Y%m%d%H%M%S'
+            )
+        )
+        sub_dict[f'{prefix}_end'] = (
+            datetime.datetime.strptime(
+                date_beg + '235959', '%Y%m%d%H%M%S'
+            )
+        )
 
     def get_output_filename(self, output_type, filename_template,
                             filename_type,
