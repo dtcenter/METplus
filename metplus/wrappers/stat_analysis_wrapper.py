@@ -255,7 +255,8 @@ class StatAnalysisWrapper(CommandBuilder):
 
     @staticmethod
     def _format_hms(value):
-        return value.zfill(2).ljust(6, '0')
+        padded_value = value.zfill(2)
+        return padded_value.ljust(len(padded_value) + 4, '0')
 
     def c_dict_error_check(self, c_dict):
 
@@ -399,7 +400,8 @@ class StatAnalysisWrapper(CommandBuilder):
 
         return c_dict
 
-    def format_thresh(self, thresh_str):
+    @staticmethod
+    def format_thresh(thresh_str):
         """! Format thresholds for file naming
 
              Args:

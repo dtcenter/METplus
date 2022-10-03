@@ -32,16 +32,17 @@ def stat_analysis_wrapper(metplus_config):
         ('', []),
         ('0,1,2,3', ['"000000"', '"010000"', '"020000"', '"030000"']),
         ('01', ['"010000"']),
-        ('010000', ['"010000"']),
         ('begin_end_incr(0,3,1)', ['"000000"', '"010000"',
                                    '"020000"', '"030000"']),
+        ('24, 48, 72, 96, 120, 144, 168, 192, 216, 240',
+         ['"240000"', '"480000"', '"720000"', '"960000"', '"1200000"',
+          '"1440000"', '"1680000"', '"1920000"', '"2160000"', '"2400000"']),
     ]
 )
 @pytest.mark.wrapper_d
 def test_handle_format_lists(metplus_config, input, expected_output):
     config = metplus_config([TEST_CONF])
     config.set('config', 'FCST_LEAD_LIST', input)
-    config.set('config', 'LOOP_LIST_ITEMS', 'FCST_LEAD_LIST')
     wrapper = StatAnalysisWrapper(config)
     assert wrapper.c_dict['FCST_LEAD_LIST'] == expected_output
 
