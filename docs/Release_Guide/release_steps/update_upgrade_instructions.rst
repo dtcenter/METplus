@@ -11,7 +11,8 @@ To alert the users to the necessary steps involved in the upgrade:
 * Update the Upgrade Instructions section of the release-notes.rst file found
   in the |projectRepo| User's Guide directory with the necessary information.
 
-* Add a section next to the appropriate METplus component (|projectRepo|) under
+* Add an "upgrade instructions" link next to the appropriate METplus component
+  (|projectRepo|) after "latest" and before "development" in
   the :ref:`METplus Components Release Note Links <components-release-notes>`
   section in the release-notes.rst file in the METplus User's Guide in the
   `METplus GitHub repository <https://github.com/dtcenter/METplus>`__ ONLY
