@@ -18,9 +18,11 @@ import time
 import shutil
 from configparser import ConfigParser, NoOptionError
 from pathlib import Path
+import uuid
 
 from produtil.config import ProdConfig
 
+from .constants import RUNTIME_CONFS
 from . import met_util as util
 from .string_template_substitution import get_tags, do_string_sub
 from .met_util import is_python_script, format_var_items
@@ -241,6 +243,9 @@ def launch(config_list):
 
     # save list of user configuration files in a variable
     config.set('config', 'CONFIG_INPUT', ','.join(config_format_list))
+
+    # save unique identifier for the METplus run
+    config.set('config', 'RUN_ID', str(uuid.uuid4())[0:8])
 
     # get OUTPUT_BASE to make sure it is set correctly so the first error
     # that is logged relates to OUTPUT_BASE, not LOG_DIR, which is likely
@@ -523,23 +528,6 @@ class METplusConfig(ProdConfig):
         """
         from_section = 'config'
         to_section = 'runtime'
-        RUNTIME_CONFS = [
-            'CLOCK_TIME',
-            'METPLUS_VERSION',
-            'MET_INSTALL_DIR',
-            'CONFIG_INPUT',
-            'METPLUS_CONF',
-            'TMP_DIR',
-            'STAGING_DIR',
-            'CONVERT',
-            'GEMPAKTOCF_JAR',
-            'GFDL_TRACKER_EXEC',
-            'INPUT_MUST_EXIST',
-            'USER_SHELL',
-            'DO_NOT_RUN_EXE',
-            'SCRUB_STAGING_DIR',
-            'MET_BIN_DIR',
-        ]
         more_run_confs = [item for item in self.keys(from_section)
                           if item.startswith('LOG') or item.endswith('BASE')]
 

@@ -9901,6 +9901,19 @@ METplus Configuration Glossary
 
      | *Used by:* PlotPointObs
 
+   RUN_ID
+     Eight character hash string unique to a given run of METplus.
+     Automatically set by METplus at the beginning of a run.
+     Can be referenced in other METplus config variables to distinguish
+     multiple METplus runs that may have started within the same second.
+     For example, it can be added to :term:`LOG_TIMESTAMP_TEMPLATE` to
+     create unique log files, final config files, etc.
+
+     Example:
+     LOG_TIMESTAMP_TEMPLATE = %Y%m%d%H%M%S.{RUN_ID}
+
+     | *Used by:*  All
+
    ENSEMBLE_STAT_NC_ORANK_FLAG_LATLON
      Specify the value for 'nc_orank_flag.latlon' in the MET configuration file for EnsembleStat.
 
