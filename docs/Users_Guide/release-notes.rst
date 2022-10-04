@@ -9,6 +9,8 @@ the Release Guide for descriptions of the development releases (including
 beta releases and release candidates), official releases, and bugfix
 releases for the METplus Components.
 
+.. _components-release-notes:
+
 METplus Components Release Note Links
 =====================================
 
