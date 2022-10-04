@@ -1,17 +1,47 @@
 Update Release Notes
 --------------------
 
-You can refer to the GitHub Issues page to see what has changed for this
+You can refer to the GitHub Project board to see what has changed for this
 release. Open the following URL in a browser:
+
+.. parsed-literal::
+
+    https://github.com/orgs/dtcenter/projects?type=beta
+
+* Click on the project that corresponds to support for the release, i.e.
+  METplus Version X.Y Support
+
+* Navigate to the "Closed Issues" tab.
+  **If this tab does not exist**, follow these instructions to create it:
+
+  * Click on "+ New view" button on the far right side of the view tabs
+  * Click on "View <N>" (where <N> is an integer) and rename it to
+    "Closed Issues"
+  * Click on the down arrow next to the newly created view
+  * Click on "Search or filter this view"
+  * Enter the following info into the filter bar: **is:closed is:issue**
+  * Click on the down arrow next to the view and click "Save changes"
+
+* Find the closed issues with dtcenter/|projectRepo| in the Repository column
+  that have been added since the last bugfix release for |projectRepo|.
+
+* Open the following URL in a browser:
 
 .. parsed-literal::
 
     https://github.com/dtcenter/|projectRepo|/issues
 
-* Click on the Projects tab and select the project (under Repository) that
-  corresponds to the release you are creating.
+* Navigate to the |projectRepo| X.Y.Z Milestone to check for any issues
+  that may not appear in the METplus Version X.Y Support project board.
 
 * Update the release-notes.rst file found in the User's Guide directory.
+
+* Consider organizing release notes into logical groups
+  (e.g. Enhancements, Bugfixes, Documentation, etc.) and modifying
+  GitHub issue titles for consistency. The release notes should match
+  the GitHub issue titles, when possible.
+  
+* Use your best judgement to apply bold formatting for any major or important changes.
 
 * When creating a bugfix release, leave the "Version X.Y.0 release notes
   (YYYYMMDD)" in place, along with any other bugfix release notes and

@@ -181,8 +181,14 @@ _Difficulty_Index.conf
 # --------
 #
 # .. note::
-#  `UserScriptUseCase <https://dtcenter.github.io/METplus/develop/search.html?q=UserScriptUseCase&check_keywords=yes&area=default>`_,
-#  `MediumRangeAppUseCase <https://dtcenter.github.io/METplus/search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_,
-#  `NRLOrgUseCase <https://dtcenter.github.io/METplus/search.html?q=NRLOrgUseCase&check_keywords=yes&area=default>`_
+#
+#   * UserScriptUseCase
+#   * MediumRangeAppUseCase
+#   * NRLOrgUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
 #
 # sphinx_gallery_thumbnail_path = '_static/medium_range-UserScript_fcstGEFS_Difficulty_Index.png'
+#

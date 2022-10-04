@@ -125,9 +125,15 @@ _embedding.conf
 # --------
 #
 # .. note::
-#  `SeriesAnalysisUseCase <https://dtcenter.github.io/METplus/search.html?q=SeriesAnalysisUseCase&check_keywords=yes&area=default>`_,
-#  `PythonEmbeddingFileUseCase <https://dtcenter.github.io/METplus/search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_
-#  `DiagnosticsUseCase <https://dtcenter.github.io/METplus/search.html?q=DiagnosticsUseCase&check_keywords=yes&area=default>`_,
-#  `RuntimeFreqUseCase <https://dtcenter.github.io/METplus/search.html?q=RuntimeFreqUseCase&check_keywords=yes&area=default>`_
+#
+#   * SeriesAnalysisUseCase
+#   * PythonEmbeddingFileUseCase
+#   * DiagnosticsUseCase
+#   * RuntimeFreqUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
 #
 # sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-SeriesAnalysis.png'
+#

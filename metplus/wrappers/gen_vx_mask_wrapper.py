@@ -12,8 +12,7 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import met_util as util
-from ..util import time_util
+from ..util import getlist, get_lead_sequence, skip_time, ti_calculate, mkdir_p
 from . import CommandBuilder
 from ..util import do_string_sub
 
@@ -25,13 +24,11 @@ from ..util import do_string_sub
 
 class GenVxMaskWrapper(CommandBuilder):
 
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None):
         self.app_name = "gen_vx_mask"
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -53,16 +50,18 @@ class GenVxMaskWrapper(CommandBuilder):
 
         c_dict['MASK_INPUT_DIR'] = self.config.getdir('GEN_VX_MASK_INPUT_MASK_DIR',
                                                       '')
-        c_dict['MASK_INPUT_TEMPLATES'] = util.getlist(self.config.getraw('filename_templates',
-                                                           'GEN_VX_MASK_INPUT_MASK_TEMPLATE'))
+        c_dict['MASK_INPUT_TEMPLATES'] = getlist(
+            self.config.getraw('config', 'GEN_VX_MASK_INPUT_MASK_TEMPLATE')
+        )
 
         if not c_dict['MASK_INPUT_TEMPLATES']:
             self.log_error("Must set GEN_VX_MASK_INPUT_MASK_TEMPLATE to run GenVxMask wrapper")
             self.isOK = False
 
         # optional arguments
-        c_dict['COMMAND_OPTIONS'] = util.getlist(self.config.getraw('config',
-                                                                    'GEN_VX_MASK_OPTIONS'))
+        c_dict['COMMAND_OPTIONS'] = getlist(
+            self.config.getraw('config', 'GEN_VX_MASK_OPTIONS')
+        )
 
         # if no options were specified, set to a list with an empty string
         if not c_dict['COMMAND_OPTIONS']:
@@ -116,15 +115,6 @@ class GenVxMaskWrapper(CommandBuilder):
         out_path = self.get_output_path()
         cmd += ' ' + out_path
 
-        parent_dir = os.path.dirname(out_path)
-        if not parent_dir:
-            self.log_error('Must specify path to output file')
-            return None
-
-        # create full output dir if it doesn't already exist
-        if not os.path.exists(parent_dir):
-            os.makedirs(parent_dir)
-
         # add arguments
         cmd += ' ' + self.args
 
@@ -140,14 +130,14 @@ class GenVxMaskWrapper(CommandBuilder):
                 @param input_dict dictionary containing timing information
                 @returns None
         """
-        lead_seq = util.get_lead_sequence(self.config, input_dict)
+        lead_seq = get_lead_sequence(self.config, input_dict)
         for lead in lead_seq:
             self.clear()
             input_dict['lead'] = lead
 
-            time_info = time_util.ti_calculate(input_dict)
+            time_info = ti_calculate(input_dict)
 
-            if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+            if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
                 self.logger.debug('Skipping run time')
                 continue
 
@@ -192,7 +182,8 @@ class GenVxMaskWrapper(CommandBuilder):
             temp_file = os.path.join(self.config.getdir('STAGING_DIR'),
                                      'gen_vx_mask',
                                      f'temp_{index}.nc')
-            self.set_output_path(temp_file)
+            self.find_and_check_output_file(time_info,
+                                            output_path_template=temp_file)
 
             # run GenVxMask
             self.build()

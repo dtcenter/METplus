@@ -12,9 +12,10 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import met_util as util
-from ..util import time_util
+from ..util import get_lead_sequence
+from ..util import ti_calculate
 from ..util import do_string_sub
+from ..util import remove_quotes
 from . import CommandBuilder
 
 '''!@namespace Point2GridWrapper
@@ -25,13 +26,11 @@ from . import CommandBuilder
 
 class Point2GridWrapper(CommandBuilder):
 
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None):
         self.app_name = "point2grid"
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -71,6 +70,9 @@ class Point2GridWrapper(CommandBuilder):
         c_dict['GRID'] = self.config.getstr('config',
                                             'POINT2GRID_REGRID_TO_GRID',
                                             '')
+        # grid is required
+        if not c_dict['GRID']:
+            self.log_error('Must specify a grid name')
 
         # optional arguments
         c_dict['INPUT_FIELD'] = self.config.getraw('config',
@@ -124,26 +126,17 @@ class Point2GridWrapper(CommandBuilder):
 
         # add input files
         for infile in self.infiles:
+            if infile.startswith('PYTHON'):
+                infile = f"'{infile}'"
             cmd += ' ' + infile
 
-        # add grid name. point2grid requires a grid name between the input and output files
-        if not self.c_dict['GRID']:
-            self.log_error('Must specify a grid name')
-            return None
-        cmd += ' ' + self.c_dict['GRID'] 
+        # add grid name
+        grid = remove_quotes(self.c_dict['GRID'])
+        cmd += f' "{grid}"'
 
         # add output path
         out_path = self.get_output_path()
         cmd += ' ' + out_path
-
-        parent_dir = os.path.dirname(out_path)
-        if parent_dir == '':
-            self.log_error('Must specify path to output file')
-            return None
-
-        # create full output dir if it doesn't already exist
-        if not os.path.exists(parent_dir):
-            os.makedirs(parent_dir)
 
         # add arguments
         cmd += ' ' + ' '.join(self.args)
@@ -159,12 +152,12 @@ class Point2GridWrapper(CommandBuilder):
               Args:
                 @param input_dict dictionary containing timing information
         """
-        lead_seq = util.get_lead_sequence(self.config, input_dict)
+        lead_seq = get_lead_sequence(self.config, input_dict)
         for lead in lead_seq:
             self.clear()
             input_dict['lead'] = lead
 
-            time_info = time_util.ti_calculate(input_dict)
+            time_info = ti_calculate(input_dict)
             for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
                 if custom_string:
                     self.logger.info(f"Processing custom string: {custom_string}")
@@ -236,10 +229,10 @@ class Point2GridWrapper(CommandBuilder):
             self.args.append(f"-field 'name=\"{input_field}\"; level=\"{input_level}\";'")
 
         if self.c_dict['QC_FLAGS']:
-            self.args.append("-qc")
+            self.args.append(f"-qc {self.c_dict['QC_FLAGS']}")
 
         if self.c_dict['ADP']:
-            self.args.append("-adp")
+            self.args.append(f"-adp {self.c_dict['ADP']}")
 
         if self.c_dict['REGRID_METHOD']:
             self.args.append(f"-method {self.c_dict['REGRID_METHOD']}")

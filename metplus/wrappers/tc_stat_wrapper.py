@@ -16,8 +16,6 @@ import os
 import sys
 from datetime import datetime
 
-from produtil.run import ExitStatusException
-
 from ..util import getlist, mkdir_p, do_string_sub, ti_calculate
 from . import CommandBuilder
 
@@ -79,14 +77,12 @@ class TCStatWrapper(CommandBuilder):
         'METPLUS_INIT_STR_EXC_VAL',
     ]
 
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None):
         self.app_name = 'tc_stat'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
 
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
         self.logger.debug("Initialized TCStatWrapper")
 
     def create_c_dict(self):
@@ -115,7 +111,16 @@ class TCStatWrapper(CommandBuilder):
         if not c_dict['LOOKIN_DIR']:
             self.log_error("TC_STAT_LOOKIN_DIR must be set")
 
-        c_dict['OUTPUT_DIR'] = self.config.getdir('TC_STAT_OUTPUT_DIR')
+        c_dict['OUTPUT_DIR'] = self.config.getdir('TC_STAT_OUTPUT_DIR', '')
+        if not c_dict['OUTPUT_DIR']:
+            self.log_error("TC_STAT_OUTPUT_DIR must be set")
+
+        # read optional output template to use for -out command line argument
+        # set JOB_OUTPUT_TEMPLATE instead of OUTPUT_TEMPLATE because
+        # OUTPUT_TEMPLATE is set in wrapper to handle -dump_row output
+        c_dict['JOB_OUTPUT_TEMPLATE'] = (
+            self.config.getraw('config', 'TC_STAT_OUTPUT_TEMPLATE', '')
+        )
 
         c_dict['JOBS'] = getlist(self.config.getraw('config',
                                                     'TC_STAT_JOB_ARGS',
@@ -124,26 +129,80 @@ class TCStatWrapper(CommandBuilder):
             self.log_error('No job arguments defined. '
                            'Please set TC_STAT_JOB_ARGS')
 
-        c_dict['CONFIG_FILE'] = self.config.getstr('config',
-                                                   'TC_STAT_CONFIG_FILE',
-                                                   '')
-        if not c_dict['CONFIG_FILE']:
-            default_config = os.path.join(self.config.getdir('PARM_BASE'),
-                                          'met_config',
-                                          'TCStatConfig_wrapped')
-            self.logger.debug("TC_STAT_CONFIG_FILE not set. Using "
-                              f"{default_config}")
-            c_dict['CONFIG_FILE'] = default_config
-
-        self.handle_description()
+        # get the MET config file path or use default
+        c_dict['CONFIG_FILE'] = self.get_config_file('TCStatConfig_wrapped')
 
         self.set_met_config_for_environment_variables()
+
+        return c_dict
+
+    def set_met_config_for_environment_variables(self):
+        """! Set c_dict dictionary entries that will be set as environment
+        variables to be read by the MET config file.
+            @param c_dict dictionary to add key/value pairs
+        """
+        self.handle_description()
+
+        for config_list in ['amodel',
+                            'bmodel',
+                            'storm_id',
+                            'basin',
+                            'cyclone',
+                            'storm_name',
+                            'init_hour',
+                            'lead_req',
+                            'init_mask',
+                            'valid_mask',
+                            'valid_hour',
+                            'lead',
+                            'track_watch_warn',
+                            'column_thresh_name',
+                            'column_thresh_val',
+                            'column_str_name',
+                            'column_str_val',
+                            'init_thresh_name',
+                            'init_thresh_val',
+                            'init_str_name',
+                            'init_str_val',
+                            ]:
+            self.add_met_config(name=config_list,
+                                data_type='list')
+
+        for iv_list in ['INIT', 'VALID']:
+            self.add_met_config(name=f'{iv_list.lower()}_inc',
+                                data_type='list',
+                                metplus_configs=[f'TC_STAT_{iv_list}_INC',
+                                                 f'TC_STAT_{iv_list}_INCLUDE'])
+            self.add_met_config(name=f'{iv_list.lower()}_exc',
+                                data_type='list',
+                                metplus_configs=[f'TC_STAT_{iv_list}_EXC',
+                                                 f'TC_STAT_{iv_list}_EXCLUDE'])
+
+        for config_str in ['INIT_BEG',
+                           'INIT_END',
+                           'VALID_BEG',
+                           'VALID_END',
+                           'LANDFALL_BEG',
+                           'LANDFALL_END',
+                            ]:
+            self.add_met_config(name=config_str.lower(),
+                                data_type='string',
+                                metplus_configs=[f'TC_STAT_{config_str}',
+                                                 config_str])
+
+        for config_bool in ['water_only',
+                            'landfall',
+                            'match_points',
+                            ]:
+
+            self.add_met_config(name=config_bool,
+                                data_type='bool')
 
         self.add_met_config(name='column_str_exc_name',
                             data_type='list',
                             metplus_configs=['TC_STAT_COLUMN_STR_EXC_NAME',
                                              'TC_STAT_COLUMN_STR_EXCLUDE_NAME',
-                                            ])
+                                             ])
         self.add_met_config(name='column_str_exc_val',
                             data_type='list',
                             metplus_configs=['TC_STAT_COLUMN_STR_EXC_VAL',
@@ -160,77 +219,6 @@ class TCStatWrapper(CommandBuilder):
                                              'TC_STAT_INIT_STR_EXCLUDE_VAL',
                                              ])
 
-        return c_dict
-
-    def set_met_config_for_environment_variables(self):
-        """! Set c_dict dictionary entries that will be set as environment
-        variables to be read by the MET config file.
-            @param c_dict dictionary to add key/value pairs
-        """
-        app_name_upper = self.app_name.upper()
-
-        for config_list in ['AMODEL',
-                            'BMODEL',
-                            'STORM_ID',
-                            'BASIN',
-                            'CYCLONE',
-                            'STORM_NAME',
-                            'INIT_HOUR',
-                            'LEAD_REQ',
-                            'INIT_MASK',
-                            'VALID_MASK',
-                            'VALID_HOUR',
-                            'LEAD',
-                            'TRACK_WATCH_WARN',
-                            'COLUMN_THRESH_NAME',
-                            'COLUMN_THRESH_VAL',
-                            'COLUMN_STR_NAME',
-                            'COLUMN_STR_VAL',
-                            'INIT_THRESH_NAME',
-                            'INIT_THRESH_VAL',
-                            'INIT_STR_NAME',
-                            'INIT_STR_VAL',
-                             ]:
-            self.set_met_config_list(self.env_var_dict,
-                                     f'{app_name_upper}_{config_list}',
-                                     config_list.lower(),
-                                     f'METPLUS_{config_list}')
-
-        for iv_list in ['INIT', 'VALID',]:
-            self.set_met_config_list(self.env_var_dict,
-                                     f'{app_name_upper}_{iv_list}_INCLUDE',
-                                     f'{iv_list.lower()}_inc',
-                                     f'METPLUS_{iv_list}_INC'
-                                     )
-            self.set_met_config_list(self.env_var_dict,
-                                     f'{app_name_upper}_{iv_list}_EXCLUDE',
-                                     f'{iv_list.lower()}_exc',
-                                     f'METPLUS_{iv_list}_EXC'
-                                     )
-
-        for config_str in ['INIT_BEG',
-                           'INIT_END',
-                           'VALID_BEG',
-                           'VALID_END',
-                           'LANDFALL_BEG',
-                           'LANDFALL_END',
-                            ]:
-            self.set_met_config_string(self.env_var_dict,
-                                       [f'{app_name_upper}_{config_str}',
-                                        f'{config_str}'],
-                                       config_str.lower(),
-                                       f'METPLUS_{config_str}')
-
-        for config_bool in ['WATER_ONLY',
-                            'LANDFALL',
-                            'MATCH_POINTS',
-                            ]:
-
-            self.set_met_config_bool(self.env_var_dict,
-                                     f'{app_name_upper}_{config_bool}',
-                                     config_bool.lower(),
-                                     f'METPLUS_{config_bool}')
-
     def run_at_time(self, input_dict=None):
         """! Builds the call to the MET tool TC-STAT for all requested
              initialization times (init or valid).  Called from run_metplus
@@ -241,11 +229,12 @@ class TCStatWrapper(CommandBuilder):
         if input_dict:
             time_info = ti_calculate(input_dict)
 
-        job_args_str = self.handle_jobs(time_info)
-        if job_args_str is None:
+        if not self.handle_jobs(time_info):
             return None
 
-        self.env_var_dict['METPLUS_JOBS'] = job_args_str
+        # handle -out file if set
+        if not self.handle_out_file(time_info):
+            return None
 
         self.set_environment_variables(time_info)
 
@@ -262,6 +251,10 @@ class TCStatWrapper(CommandBuilder):
         cmd += f" -lookin {self.c_dict['LOOKIN_DIR']}"
 
         cmd += f" -config {self.c_dict.get('CONFIG_FILE')}"
+
+        # add output path if requested
+        if self.c_dict['OUTPUT_TEMPLATE']:
+            cmd += f' -out {self.get_output_path()}'
 
         return cmd
 
@@ -353,11 +346,30 @@ class TCStatWrapper(CommandBuilder):
                 index = split_job.index('-dump_row') + 1
                 filepath = split_job[index]
                 self.c_dict['OUTPUT_TEMPLATE'] = filepath
-                if time_info is None:
-                    time_info = {}
 
                 if not self.find_and_check_output_file(time_info):
                     return None
 
         job_list_string = '","'.join(formatted_jobs)
-        return f'jobs = ["{job_list_string}"];'
+        job_list_string = f'jobs = ["{job_list_string}"];'
+
+        # set environment variable for MET config file
+        self.env_var_dict['METPLUS_JOBS'] = job_list_string
+
+        return job_list_string
+
+    def handle_out_file(self, time_info):
+        """! If output template is set,
+        """
+        # clear output template that may have been set for -dump_row
+        self.c_dict['OUTPUT_TEMPLATE'] = None
+
+        if not self.c_dict['JOB_OUTPUT_TEMPLATE']:
+            return True
+
+        self.c_dict['OUTPUT_TEMPLATE'] = self.c_dict['JOB_OUTPUT_TEMPLATE']
+
+        if not self.find_and_check_output_file(time_info):
+            return False
+
+        return True

@@ -1,0 +1,13 @@
+# Dockerfile to create conda environment used as base for
+# use cases that use python embedding but need additional
+# packages
+
+FROM conda/miniconda3-centos7
+
+WORKDIR /scripts
+COPY scripts/py_embed_base_env.sh .
+
+RUN conda update -y -n base -c defaults conda \
+ && ./py_embed_base_env.sh
+
+RUN conda list --name py_embed_base.v5 > /usr/local/envs/py_embed_base.v5/environments.yml

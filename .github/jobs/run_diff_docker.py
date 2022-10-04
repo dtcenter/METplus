@@ -13,9 +13,9 @@ import shlex
 import shutil
 
 GITHUB_WORKSPACE = os.environ.get('GITHUB_WORKSPACE')
-# add ci/util to sys path to get diff utility
+# add util directory to sys path to get diff utility
 diff_util_dir = os.path.join(GITHUB_WORKSPACE,
-                             'ci',
+                             'metplus',
                              'util')
 sys.path.insert(0, diff_util_dir)
 from diff_util import compare_dir
@@ -23,9 +23,6 @@ from diff_util import compare_dir
 TRUTH_DIR = '/data/truth'
 OUTPUT_DIR = '/data/output'
 DIFF_DIR = '/data/diff'
-# DIFF_DIR = os.path.join(GITHUB_WORKSPACE,
-#                         'artifact',
-#                         'diff')
 
 def copy_diff_output(diff_files):
     """!  Loop through difference output and copy files
@@ -80,7 +77,6 @@ def copy_to_diff_dir(file_path, data_type):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    print(f'Copying {file_path} to\n{output_path}')
     try:
         shutil.copyfile(file_path, output_path)
     except OSError as err:

@@ -9,16 +9,19 @@
 //
 // Output model name to be written
 //
+//model =
 ${METPLUS_MODEL}
 
 //
 // Output description to be written
 //
+//desc =
 ${METPLUS_DESC}
 
 //
 // Output observation type to be written
 //
+//obtype =
 ${METPLUS_OBTYPE}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -27,12 +30,14 @@ ${METPLUS_OBTYPE}
 // Verification grid
 // May be set separately in each "field" entry
 //
+//regrid = {
 ${METPLUS_REGRID_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 censor_thresh = [];
 censor_val    = [];
+//cat_thresh =
 ${METPLUS_CAT_THRESH}
 cnt_thresh    = [ NA ];
 cnt_logic     = UNION;
@@ -42,10 +47,12 @@ cnt_logic     = UNION;
 //
 fcst = {
    ${METPLUS_FCST_FILE_TYPE}
+   ${METPLUS_FCST_CAT_THRESH}
    ${METPLUS_FCST_FIELD}
 }
 obs = {
    ${METPLUS_OBS_FILE_TYPE}
+   ${METPLUS_OBS_CAT_THRESH}
    ${METPLUS_OBS_FIELD}
 }
 
@@ -60,6 +67,9 @@ ${METPLUS_CLIMO_MEAN_DICT}
 
 //climo_stdev = {
 ${METPLUS_CLIMO_STDEV_DICT}
+
+//climo_cdf = {
+${METPLUS_CLIMO_CDF_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -90,11 +100,13 @@ mask = {
 // Number of grid points to be processed concurrently.  Set smaller to use
 // less memory but increase the number of passes through the data.
 //
+//block_size =
 ${METPLUS_BLOCK_SIZE}
 
 //
 // Ratio of valid matched pairs to compute statistics for a grid point
 //
+//vld_thresh =
 ${METPLUS_VLD_THRESH}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -102,25 +114,17 @@ ${METPLUS_VLD_THRESH}
 //
 // Statistical output types
 //
-output_stats = {
-   fho    = [];
-   ctc    = [];
-   ${METPLUS_CTS_LIST}
-   mctc   = [];
-   mcts   = [];
-   ${METPLUS_STAT_LIST}
-   sl1l2  = [];
-   sal1l2 = [];
-   pct    = [];
-   pstd   = [];
-   pjc    = [];
-   prc    = [];
-}
+//output_stats = {
+${METPLUS_OUTPUT_STATS_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
+//hss_ec_value =
+${METPLUS_HSS_EC_VALUE}
 rank_corr_flag = FALSE;
-tmp_dir        = "/tmp";
+
+tmp_dir = "${MET_TMP_DIR}";
+
 //version        = "V10.0";
 
 ////////////////////////////////////////////////////////////////////////////////

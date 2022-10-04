@@ -1,0 +1,118 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Gen-Ens-Prod configuration file.
+//
+// For additional information, please see the MET Users Guide.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Output model name to be written
+//
+//model =
+${METPLUS_MODEL}
+
+//
+// Output description to be written
+// May be set separately in each "obs.field" entry
+//
+//desc =
+${METPLUS_DESC}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Verification grid
+// May be set separately in each "field" entry
+//
+//regrid = {
+${METPLUS_REGRID_DICT}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// May be set separately in each "field" entry
+//
+//censor_thresh =
+${METPLUS_CENSOR_THRESH}
+
+//censor_val    =
+${METPLUS_CENSOR_VAL}
+
+//normalize =
+${METPLUS_NORMALIZE}
+
+//cat_thresh    =
+${METPLUS_CAT_THRESH}
+
+//nc_var_str    =
+${METPLUS_NC_VAR_STR}
+
+//
+// Ensemble fields to be processed
+//
+ens = {
+   //file_type =
+   ${METPLUS_ENS_FILE_TYPE}
+
+   //ens_thresh =
+   ${METPLUS_ENS_THRESH}
+
+   //vld_thresh =
+   ${METPLUS_VLD_THRESH}
+
+   //field =
+   ${METPLUS_ENS_FIELD}
+
+}
+
+//ens_member_ids =
+${METPLUS_ENS_MEMBER_IDS}
+
+//control_id =
+${METPLUS_CONTROL_ID}
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Neighborhood ensemble probabilities
+//
+//nbrhd_prob = {
+${METPLUS_NBRHD_PROB_DICT}
+
+//
+// NMEP smoothing methods
+//
+//nmep_smooth = {
+${METPLUS_NMEP_SMOOTH_DICT}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Climatology data
+//
+//climo_mean = {
+${METPLUS_CLIMO_MEAN_DICT}
+
+//climo_stdev = {
+${METPLUS_CLIMO_STDEV_DICT}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Ensemble product output types
+// May be set separately in each "ens.field" entry
+//
+//ensemble_flag = {
+${METPLUS_ENSEMBLE_FLAG_DICT}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//version = "V10.1.0";
+
+////////////////////////////////////////////////////////////////////////////////
+
+tmp_dir = "${MET_TMP_DIR}";
+
+${METPLUS_MET_CONFIG_OVERRIDES}

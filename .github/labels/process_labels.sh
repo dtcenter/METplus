@@ -16,7 +16,7 @@ fi
 SCRIPT_DIR=`dirname $0`
 
 # List of METplus repositories
-REPO_LIST="metplus met metplotpy metcalcpy metdatadb metviewer \
+REPO_LIST="metplus met metplotpy metcalcpy metdataio metviewer \
            metexpress metplus-training";
 
 # Build commands to add/update common labels

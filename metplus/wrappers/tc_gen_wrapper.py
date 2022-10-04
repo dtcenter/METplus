@@ -16,8 +16,9 @@ import re
 
 from ..util import met_util as util
 from ..util import time_util
-from . import CommandBuilder
 from ..util import do_string_sub
+from ..util import time_generator
+from . import CommandBuilder
 
 '''!@namespace TCGenWrapper
 @brief Wraps the TC-Gen tool
@@ -69,31 +70,35 @@ class TCGenWrapper(CommandBuilder):
         'METPLUS_GENESIS_MATCH_WINDOW_DICT',
     ]
 
-    OUTPUT_FLAGS = ['fho',
-                    'ctc',
-                    'cts',
-                    'genmpr',
-                    ]
+    OUTPUT_FLAGS = [
+        'fho',
+        'ctc',
+        'cts',
+        'pct',
+        'pstd',
+        'pjc',
+        'prc',
+        'genmpr',
+    ]
 
-    NC_PAIRS_FLAGS = ['latlon',
-                      'fcst_genesis',
-                      'fcst_tracks',
-                      'fcst_fy_oy',
-                      'fcst_fy_on',
-                      'best_genesis',
-                      'best_tracks',
-                      'best_fy_oy',
-                      'best_fn_oy',
-                    ]
+    NC_PAIRS_FLAGS = [
+        'latlon',
+        'fcst_genesis',
+        'fcst_tracks',
+        'fcst_fy_oy',
+        'fcst_fy_on',
+        'best_genesis',
+        'best_tracks',
+        'best_fy_oy',
+        'best_fn_oy',
+    ]
 
 
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None):
         self.app_name = "tc_gen"
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR'),
                                      self.app_name)
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -105,27 +110,39 @@ class TCGenWrapper(CommandBuilder):
                                c_dict['VERBOSITY'])
         )
         c_dict['ALLOW_MULTIPLE_FILES'] = True
-        c_dict['CONFIG_FILE'] = (
-            self.config.getraw('config',
-                               f'{app_name_upper}_CONFIG_FILE', '')
-        )
+
+        # get the MET config file path or use default
+        c_dict['CONFIG_FILE'] = self.get_config_file('TCGenConfig_wrapped')
 
         c_dict['GENESIS_INPUT_DIR'] = (
             self.config.getdir(f'{app_name_upper}_GENESIS_INPUT_DIR', '')
         )
         c_dict['GENESIS_INPUT_TEMPLATE'] = (
-            self.config.getraw('filename_templates',
+            self.config.getraw('config',
                                f'{app_name_upper}_GENESIS_INPUT_TEMPLATE')
         )
-        if not c_dict['GENESIS_INPUT_TEMPLATE']:
-            self.log_error(f'{app_name_upper}_GENESIS_INPUT_TEMPLATE must be '
-                           'set to run TCGen')
+
+        c_dict['EDECK_INPUT_DIR'] = (
+            self.config.getdir(f'{app_name_upper}_EDECK_INPUT_DIR', '')
+        )
+        c_dict['EDECK_INPUT_TEMPLATE'] = (
+            self.config.getraw('config',
+                               f'{app_name_upper}_EDECK_INPUT_TEMPLATE')
+        )
+
+        c_dict['SHAPE_INPUT_DIR'] = (
+            self.config.getdir(f'{app_name_upper}_SHAPE_INPUT_DIR', '')
+        )
+        c_dict['SHAPE_INPUT_TEMPLATE'] = (
+            self.config.getraw('config',
+                               f'{app_name_upper}_SHAPE_INPUT_TEMPLATE')
+        )
 
         c_dict['OUTPUT_DIR'] = (
             self.config.getdir(f'{app_name_upper}_OUTPUT_DIR', '')
         )
         c_dict['OUTPUT_TEMPLATE'] = (
-            self.config.getraw('filename_templates',
+            self.config.getraw('config',
                                f'{app_name_upper}_OUTPUT_TEMPLATE')
         )
 
@@ -133,7 +150,7 @@ class TCGenWrapper(CommandBuilder):
             self.config.getdir(f'{app_name_upper}_TRACK_INPUT_DIR', '')
         )
         c_dict['TRACK_INPUT_TEMPLATE'] = (
-            self.config.getraw('filename_templates',
+            self.config.getraw('config',
                                f'{app_name_upper}_TRACK_INPUT_TEMPLATE')
         )
         if not c_dict['TRACK_INPUT_TEMPLATE']:
@@ -149,12 +166,22 @@ class TCGenWrapper(CommandBuilder):
                             data_type='int',
                             metplus_configs=['TC_GEN_VALID_FREQUENCY',
                                              'TC_GEN_VALID_FREQ'])
-        self.handle_fcst_hr_window()
+        self.add_met_config_window('fcst_hr_window')
         self.add_met_config(name='min_duration',
                             data_type='int',
                             metplus_configs=['TC_GEN_MIN_DURATION'])
-        self.handle_fcst_genesis()
-        self.handle_best_genesis()
+
+        self.add_met_config_dict('fcst_genesis', {
+            'vmax_thresh': 'thresh',
+            'mslp_thresh': 'thresh',
+        })
+        self.add_met_config_dict('best_genesis', {
+            'technique': 'string',
+            'category': 'list',
+            'vmax_thresh': 'thresh',
+            'mslp_thresh': 'thresh',
+        })
+
         self.add_met_config(name='oper_technique',
                             data_type='string',
                             metplus_configs=['TC_GEN_OPER_TECHNIQUE'])
@@ -211,8 +238,8 @@ class TCGenWrapper(CommandBuilder):
         self.add_met_config(name='dev_hit_radius',
                             data_type='int',
                             metplus_configs=['TC_GEN_DEV_HIT_RADIUS'])
-        self.handle_dev_hit_window()
-        self.handle_ops_hit_window()
+        self.add_met_config_window('dev_hit_window')
+        self.add_met_config_window('ops_hit_window')
         self.add_met_config(name='discard_init_post_genesis_flag',
                             data_type='bool',
                             metplus_configs=[
@@ -251,125 +278,14 @@ class TCGenWrapper(CommandBuilder):
             data_type='bool',
             metplus_configs=['TC_GEN_GENESIS_MATCH_POINT_TO_TRACK']
         )
-        self.handle_genesis_match_window()
+        self.add_met_config_window('genesis_match_window')
 
-        # get INPUT_TIME_DICT values since wrapper only runs
-        # once (doesn't look over time)
-        c_dict['INPUT_TIME_DICT'] = self.set_time_dict_for_single_runtime()
+        # get INPUT_TIME_DICT values since wrapper doesn't loop over time
+        c_dict['INPUT_TIME_DICT'] = next(time_generator(self.config))
         if not c_dict['INPUT_TIME_DICT']:
             self.isOK = False
 
         return c_dict
-
-    def handle_fcst_hr_window(self):
-        dict_name = 'fcst_hr_window'
-        dict_items = []
-        dict_items.append(
-            self.get_met_config(name='beg',
-                           data_type='int',
-                           metplus_configs=['TC_GEN_FCST_HR_WINDOW_BEGIN',
-                                            'TC_GEN_FCST_HR_WINDOW_BEG',
-                                            'TC_GEN_LEAD_WINDOW_BEGIN',
-                                            'TC_GEN_LEAD_WINDOW_BEG'])
-        )
-        dict_items.append(
-            self.get_met_config(name='end',
-                       data_type='int',
-                       metplus_configs=['TC_GEN_FCST_HR_WINDOW_END',
-                                        'TC_GEN_LEAD_WINDOW_END'])
-        )
-        self.handle_met_config_dict(dict_name, dict_items)
-
-    def handle_dev_hit_window(self):
-        dict_name = 'dev_hit_window'
-        dict_items = []
-        dict_items.append(
-            self.get_met_config(name='beg',
-                       data_type='int',
-                       metplus_configs=['TC_GEN_DEV_HIT_WINDOW_BEGIN',
-                                        'TC_GEN_DEV_HIT_WINDOW_BEG',
-                                        'TC_GEN_GENESIS_WINDOW_BEGIN',
-                                        'TC_GEN_GENESIS_WINDOW_BEG'])
-        )
-        dict_items.append(
-            self.get_met_config(name='end',
-                       data_type='int',
-                       metplus_configs=['TC_GEN_DEV_HIT_WINDOW_END',
-                                        'TC_GEN_GENESIS_WINDOW_END'])
-        )
-        self.handle_met_config_dict(dict_name, dict_items)
-
-    def handle_ops_hit_window(self):
-        dict_name = 'ops_hit_window'
-        dict_items = []
-        dict_items.append(
-            self.get_met_config(name='beg',
-                       data_type='int',
-                       metplus_configs=['TC_GEN_OPS_HIT_WINDOW_BEGIN',
-                                        'TC_GEN_OPS_HIT_WINDOW_BEG',])
-        )
-        dict_items.append(
-            self.get_met_config(name='end',
-                       data_type='int',
-                       metplus_configs=['TC_GEN_OPS_HIT_WINDOW_END',])
-        )
-        self.handle_met_config_dict(dict_name, dict_items)
-
-    def handle_genesis_match_window(self):
-        dict_name = 'genesis_match_window'
-        dict_items = []
-        dict_items.append(
-            self.get_met_config(name='beg',
-                       data_type='int',
-                       metplus_configs=['TC_GEN_GENESIS_MATCH_WINDOW_BEGIN',
-                                        'TC_GEN_GENESIS_MATCH_WINDOW_BEG',])
-        )
-        dict_items.append(
-            self.get_met_config(name='end',
-                       data_type='int',
-                       metplus_configs=['TC_GEN_GENESIS_MATCH_WINDOW_END',])
-        )
-        self.handle_met_config_dict(dict_name, dict_items)
-
-    def handle_fcst_genesis(self):
-        dict_name = 'fcst_genesis'
-        dict_items = []
-        dict_items.append(
-            self.get_met_config(name='vmax_thresh',
-                       data_type='thresh',
-                       metplus_configs=['TC_GEN_FCST_GENESIS_VMAX_THRESH'])
-        )
-        dict_items.append(
-            self.get_met_config(name='mslp_thresh',
-                       data_type='thresh',
-                       metplus_configs=['TC_GEN_FCST_GENESIS_MSLP_THRESH'])
-        )
-        self.handle_met_config_dict(dict_name, dict_items)
-
-    def handle_best_genesis(self):
-        dict_name = 'best_genesis'
-        dict_items = []
-        dict_items.append(
-            self.get_met_config(name='technique',
-                       data_type='string',
-                       metplus_configs=['TC_GEN_BEST_GENESIS_TECHNIQUE'])
-        )
-        dict_items.append(
-            self.get_met_config(name='category',
-                       data_type='list',
-                       metplus_configs=['TC_GEN_BEST_GENESIS_CATEGORY'])
-        )
-        dict_items.append(
-            self.get_met_config(name='vmax_thresh',
-                       data_type='thresh',
-                       metplus_configs=['TC_GEN_BEST_GENESIS_VMAX_THRESH'])
-        )
-        dict_items.append(
-            self.get_met_config(name='mslp_thresh',
-                       data_type='thresh',
-                       metplus_configs=['TC_GEN_BEST_GENESIS_MSLP_THRESH'])
-        )
-        self.handle_met_config_dict(dict_name, dict_items)
 
     def handle_filter(self):
         """! find all TC_GEN_FILTER_<n> values in the config files
@@ -397,8 +313,11 @@ class TCGenWrapper(CommandBuilder):
     def get_command(self):
         cmd = f"{self.app_path} -v {self.c_dict['VERBOSITY']}"
 
-        # add genesis
-        cmd += ' -genesis ' + self.c_dict['GENESIS_FILE']
+        # add genesis, edeck, and/or shape if set
+        for file_type in ('genesis', 'edeck', 'shape'):
+            file_path = self.c_dict.get(f'{file_type.upper()}_FILE')
+            if file_path:
+                cmd += f' -{file_type} {file_path}'
 
         # add track
         cmd += ' -track ' + self.c_dict['TRACK_FILE']
@@ -409,15 +328,6 @@ class TCGenWrapper(CommandBuilder):
         # add output path
         out_path = self.get_output_path()
         cmd += ' -out ' + out_path
-
-        parent_dir = os.path.dirname(out_path)
-        if not parent_dir:
-            self.log_error('Must specify path to output file')
-            return None
-
-        # create full output dir if it doesn't already exist
-        if not os.path.exists(parent_dir):
-            os.makedirs(parent_dir)
 
         return cmd
 
@@ -449,6 +359,7 @@ class TCGenWrapper(CommandBuilder):
                 self.logger.debug('Skipping run time')
                 continue
 
+            self.clear()
             self.run_at_time_once(time_info)
 
     def run_at_time_once(self, time_info):
@@ -493,18 +404,26 @@ class TCGenWrapper(CommandBuilder):
         self.c_dict['TRACK_FILE'] = self.write_list_file(list_filename,
                                                          track_files)
 
-        # get genesis file(s) or directory
-        genesis_files = self.find_data(time_info,
-                                       data_type='GENESIS',
+        # get genesis, edeck, and/or shape file(s) or directory
+        for file_type in ('genesis', 'edeck', 'shape'):
+
+            # skip if template is not set for input type
+            if not self.c_dict.get(f'{file_type.upper()}_INPUT_TEMPLATE'):
+                continue
+
+            file_list = self.find_data(time_info,
+                                       data_type=file_type.upper(),
                                        return_list=True,
                                        allow_dir=True)
 
-        if not genesis_files:
-            return False
+            # if template was provided but no files were found, skip run
+            if not file_list:
+                return False
 
-        list_filename = time_info['init_fmt'] + '_tc_gen_genesis.txt'
-        self.c_dict['GENESIS_FILE'] = self.write_list_file(list_filename,
-                                                           genesis_files)
+            list_filename = f"{time_info['init_fmt']}_tc_gen_{file_type}.txt"
+            self.c_dict[f'{file_type.upper()}_FILE'] = (
+                self.write_list_file(list_filename, file_list)
+            )
 
         # set METPLUS_LEAD_LIST to list of forecast leads used
         lead_seq = util.get_lead_sequence(self.config, time_info)

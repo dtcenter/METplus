@@ -35,17 +35,22 @@ ${METPLUS_REGRID_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
-censor_thresh    = [];
-censor_val       = [];
+//censor_thresh =
+${METPLUS_CENSOR_THRESH}
+//censor_val =
+${METPLUS_CENSOR_VAL}
 cat_thresh  	 = [];
 cnt_thresh  	 = [ NA ];
 cnt_logic   	 = UNION;
 wind_thresh 	 = [ NA ];
 wind_logic  	 = UNION;
 eclv_points      = 0.05;
-nc_pairs_var_suffix = "";
 //nc_pairs_var_name =
 ${METPLUS_NC_PAIRS_VAR_NAME}
+nc_pairs_var_suffix = "";
+//hss_ec_value =
+${METPLUS_HSS_EC_VALUE}
+
 rank_corr_flag   = FALSE;
 
 //
@@ -131,10 +136,8 @@ nbrhd = {
 // Fourier decomposition
 // May be set separately in each "obs.field" entry
 //
-fourier = {
-   wave_1d_beg = [];
-   wave_1d_end = [];
-}
+//fourier = {
+${METPLUS_FOURIER_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -153,12 +156,8 @@ gradient = {
 // Distance Map statistics
 // May be set separately in each "obs.field" entry
 //
-distance_map = {
-   baddeley_p        = 2;
-   baddeley_max_dist = NA;
-   fom_alpha         = 0.1;
-   zhu_weight        = 0.5;
-}
+//distance_map = {
+${METPLUS_DISTANCE_MAP_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -179,7 +178,9 @@ ${METPLUS_NC_PAIRS_FLAG_DICT}
 
 //grid_weight_flag =
 ${METPLUS_GRID_WEIGHT_FLAG}
-tmp_dir          = "/tmp";
+
+tmp_dir = "${MET_TMP_DIR}";
+
 // output_prefix =
 ${METPLUS_OUTPUT_PREFIX}
 

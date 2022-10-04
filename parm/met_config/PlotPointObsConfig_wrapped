@@ -1,0 +1,99 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Plot-Point-Obs configuration file.
+//
+// For additional information, please see the MET Users Guide.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+// Gridded data plotting options
+
+//grid_data = {
+${METPLUS_GRID_DATA_DICT}
+
+////////////////////////////////////////////////////////////////////////////////
+
+// Point data filtering options
+// May be set separately in each "point_data" entry
+
+//msg_typ =
+${METPLUS_MSG_TYP}
+
+//sid_inc =
+${METPLUS_SID_INC}
+
+//sid_exc =
+${METPLUS_SID_EXC}
+
+//obs_var =
+${METPLUS_OBS_VAR}
+
+//obs_gc =
+${METPLUS_OBS_GC}
+
+//obs_quality =
+${METPLUS_OBS_QUALITY}
+
+//valid_beg =
+${METPLUS_VALID_BEG}
+
+//valid_end =
+${METPLUS_VALID_END}
+
+//lat_thresh =
+${METPLUS_LAT_THRESH}
+
+//lon_thresh =
+${METPLUS_LON_THRESH}
+
+//elv_thresh =
+${METPLUS_ELV_THRESH}
+
+//hgt_thresh =
+${METPLUS_HGT_THRESH}
+
+//prs_thresh =
+${METPLUS_PRS_THRESH}
+
+//obs_thresh =
+${METPLUS_OBS_THRESH}
+
+// Point data pre-processing options
+// May be set separately in each "point_data" entry
+
+//convert(x)    = x;
+
+//censor_thresh =
+${METPLUS_CENSOR_THRESH}
+
+//censor_val =
+${METPLUS_CENSOR_VAL}
+
+
+// Point data plotting options
+// May be set separately in each "point_data" entry
+
+//dotsize =
+${METPLUS_DOTSIZE}
+
+//line_color =
+${METPLUS_LINE_COLOR}
+
+//line_width =
+${METPLUS_LINE_WIDTH}
+
+//fill_color =
+${METPLUS_FILL_COLOR}
+
+//fill_plot_info = {
+${METPLUS_FILL_PLOT_INFO_DICT}
+
+// Array of point data filtering, pre-processing, and plotting options
+//point_data =
+${METPLUS_POINT_DATA}
+
+tmp_dir = "${MET_TMP_DIR}";
+
+////////////////////////////////////////////////////////////////////////////////
+
+${METPLUS_MET_CONFIG_OVERRIDES}

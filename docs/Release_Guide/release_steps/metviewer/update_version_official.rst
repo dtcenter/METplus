@@ -9,3 +9,5 @@ Remove **-dev** from the version number:
 * In the METviewer/vebapp/metviewer/metviewer1.jsp file, assign the version to <div id='release'> and <title>
 
 * Save and close the file.
+
+In docs/conf.py, update the version, release_year, and release_date variables for the documentation.

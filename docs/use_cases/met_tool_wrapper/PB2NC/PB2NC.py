@@ -115,6 +115,12 @@ met_tool_wrapper/PB2NC/PB2NC.conf
 # Keywords
 # --------
 #
-# .. note:: `PB2NCToolUseCase <https://dtcenter.github.io/METplus/search.html?q=PB2NCToolUseCase&check_keywords=yes&area=default>`_
+# .. note::
+#
+#   * PB2NCToolUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
 #
 # sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-PB2NC.png'

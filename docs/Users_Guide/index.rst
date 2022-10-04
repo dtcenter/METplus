@@ -21,9 +21,9 @@ software package. The METplus Wrappers package was first released
 in 2017. This documentation describes the |release_info|.
 Intermediate releases may include bug fixes. METplus Wrappers is also be
 able to accept new modules contributed by the community. While we are
-setting up our community contribution protocol, please send email
-to: `met_help@ucar.edu <mailto:>`__ and inform us of your desired
-contribution. We will then determine the
+setting up our community contribution protocol, please create a post in the
+`METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_
+and inform us of your desired contribution. We will then determine the
 maturity of any new verification method and coordinate the inclusion of
 the new module in a future version.
 
@@ -78,6 +78,7 @@ is sponsored by NSF.
    :numbered: 4
 
    overview
+   getting_started
    installation
    systemconfiguration
    wrappers
@@ -85,6 +86,7 @@ is sponsored by NSF.
    quicksearch
    glossary
    references
+   statistics_list
 
 ..
    Indices and tables

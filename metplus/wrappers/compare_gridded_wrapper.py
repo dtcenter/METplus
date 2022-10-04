@@ -12,8 +12,10 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import met_util as util
 from ..util import do_string_sub, ti_calculate
+from ..util import parse_var_list
+from ..util import get_lead_sequence, skip_time, sub_var_list
+from ..util import field_read_prob_info
 from . import CommandBuilder
 
 '''!@namespace CompareGriddedWrapper
@@ -30,18 +32,12 @@ class CompareGriddedWrapper(CommandBuilder):
 that reformat gridded data
     """
 
-    def __init__(self, config, instance=None, config_overrides={}):
-        # set app_name if not set by child class to allow tests to run on this wrapper
+    def __init__(self, config, instance=None):
+        # set app_name if not set by child class for unit tests
         if not hasattr(self, 'app_name'):
             self.app_name = 'compare_gridded'
 
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
-        # check to make sure all necessary probabilistic settings are set correctly
-        # this relies on the subclass to finish creating the c_dict, so it has to
-        # be checked after that happens
-        self.check_probabilistic_settings()
+        super().__init__(config, instance=instance)
 
     def create_c_dict(self):
         """!Create dictionary from config items to be used in the wrapper
@@ -50,29 +46,28 @@ that reformat gridded data
             which config variables are used in the wrapper"""
         c_dict = super().create_c_dict()
 
-        self.set_met_config_string(self.env_var_dict, 'MODEL', 'model', 'METPLUS_MODEL')
-        self.set_met_config_string(self.env_var_dict, 'OBTYPE', 'obtype', 'METPLUS_OBTYPE')
+        self.add_met_config(name='model',
+                            data_type='string',
+                            metplus_configs=['MODEL'])
+
+        self.add_met_config(name='obtype',
+                            data_type='string',
+                            metplus_configs=['OBTYPE'])
 
         # set old MET config items for backwards compatibility
-        c_dict['MODEL_OLD'] = self.config.getstr('config', 'MODEL', 'FCST')
-        c_dict['OBTYPE_OLD'] = self.config.getstr('config', 'OBTYPE', 'OBS')
+        c_dict['MODEL_OLD'] = self.config.getraw('config', 'MODEL', 'FCST')
+        c_dict['OBTYPE_OLD'] = self.config.getraw('config', 'OBTYPE', 'OBS')
 
         # INPUT_BASE is not required unless it is referenced in a config file
         # it is used in the use case config files. Don't error if it is not set
         # to a value that contains /path/to
         c_dict['INPUT_BASE'] = self.config.getdir_nocheck('INPUT_BASE', '')
 
-        c_dict['FCST_IS_PROB'] = self.config.getbool('config', 'FCST_IS_PROB', False)
-        # if forecast is PROB, get variable to check if prob is in GRIB PDS
-        # it can be unset if the INPUT_DATATYPE is NetCDF, so check that after
-        # the entire c_dict is created
-        if c_dict['FCST_IS_PROB']:
-            c_dict['FCST_PROB_IN_GRIB_PDS'] = self.config.getbool('config', 'FCST_PROB_IN_GRIB_PDS', '')
-
-        c_dict['OBS_IS_PROB'] = self.config.getbool('config', 'OBS_IS_PROB', False)
-        # see comment for FCST_IS_PROB
-        if c_dict['OBS_IS_PROB']:
-            c_dict['OBS_PROB_IN_GRIB_PDS'] = self.config.getbool('config', 'OBS_PROB_IN_GRIB_PDS', '')
+        # read probabilistic variables for FCST and OBS fields
+        field_read_prob_info(config=self.config,
+                             c_dict=c_dict,
+                             data_types=('FCST', 'OBS'),
+                             app_name=self.app_name)
 
         c_dict['FCST_PROB_THRESH'] = None
         c_dict['OBS_PROB_THRESH'] = None
@@ -88,22 +83,21 @@ that reformat gridded data
         # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
         self.handle_file_window_variables(c_dict)
 
-        self.set_met_config_string(self.env_var_dict,
-                                   f'{self.app_name.upper()}_OUTPUT_PREFIX',
-                                   'output_prefix',
-                                   'METPLUS_OUTPUT_PREFIX')
+        self.add_met_config(name='output_prefix',
+                            data_type='string')
 
-        c_dict['VAR_LIST_TEMP'] = util.parse_var_list(self.config,
-                                                      met_tool=self.app_name)
+        c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
+                                                 met_tool=self.app_name)
 
         return c_dict
 
     def set_environment_variables(self, time_info):
-        """!Set environment variables that will be read set when running this tool.
-            Wrappers could override it to set wrapper-specific values, then call super
-            version to handle user configs and printing
-            Args:
-              @param time_info dictionary containing timing info from current run"""
+        """! Set environment variables that will be set when running this tool.
+            Wrappers can override this function to set wrapper-specific values,
+            then call this (super) version to handle user configs and printing
+
+            @param time_info dictionary containing timing info from current run
+        """
 
         self.get_output_prefix(time_info)
 
@@ -111,52 +105,36 @@ that reformat gridded data
         self.add_env_var('MODEL', self.c_dict.get('MODEL_OLD', ''))
         self.add_env_var('OBTYPE', self.c_dict.get('OBTYPE_OLD', ''))
         self.add_env_var('REGRID_TO_GRID',
-                         self.c_dict.get('REGRID_TO_GRID',
-                                         'NONE'))
+                         self.c_dict.get('REGRID_TO_GRID', 'NONE'))
 
         super().set_environment_variables(time_info)
 
-    def check_probabilistic_settings(self):
-        """!If dataset is probabilistic, check if *_PROB_IN_GRIB_PDS or INPUT_DATATYPE
-            are set. If not enough information is set, report an error and set isOK to False"""
-        for dtype in ['FCST', 'OBS']:
-            if self.c_dict[f'{dtype}_IS_PROB']:
-                # if the data type is NetCDF, then we know how to
-                # format the probabilistic fields
-                if self.c_dict[f'{dtype}_INPUT_DATATYPE'] != 'GRIB':
-                    continue
-
-                # if the data is grib, the user must specify if the data is in
-                # the GRIB PDS or not
-                if self.c_dict[f'{dtype}_PROB_IN_GRIB_PDS'] == '':
-                    self.log_error(f"If {dtype}_IS_PROB is True, you must set {dtype}_PROB_IN"
-                                   "_GRIB_PDS unless the forecast datatype is set to NetCDF")
-                    self.isOK = False
-
     def run_at_time(self, input_dict):
         """! Runs the MET application for a given run time. This function loops
-              over the list of forecast leads and runs the application for each.
-              Args:
-                @param input_dict dictionary containing time information
+             over the list of forecast leads and runs the application for each.
+
+             @param input_dict dictionary containing time information
         """
 
         # loop of forecast leads and process each
-        lead_seq = util.get_lead_sequence(self.config, input_dict)
+        lead_seq = get_lead_sequence(self.config, input_dict)
         for lead in lead_seq:
             input_dict['lead'] = lead
 
             # set current lead time config and environment variables
             time_info = ti_calculate(input_dict)
 
-            self.logger.info("Processing forecast lead {}".format(time_info['lead_string']))
+            self.logger.info("Processing forecast lead "
+                             f"{time_info['lead_string']}")
 
-            if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+            if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
                 self.logger.debug('Skipping run time')
                 continue
 
             for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
                 if custom_string:
-                    self.logger.info(f"Processing custom string: {custom_string}")
+                    self.logger.info("Processing custom string: "
+                                     f"{custom_string}")
 
                 time_info['custom'] = custom_string
 
@@ -164,17 +142,12 @@ that reformat gridded data
                 self.run_at_time_once(time_info)
 
     def run_at_time_once(self, time_info):
-        """! Build MET command for a given init/valid time and forecast lead combination
-              Args:
-                @param time_info dictionary containing timing information
+        """! Build MET command for a given init/valid time and
+         forecast lead combination.
+
+            @param time_info dictionary containing timing information
         """
-        self.clear()
-
-        # get verification mask if available
-        self.get_verification_mask(time_info)
-
-        var_list = util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
-                                     time_info)
+        var_list = sub_var_list(self.c_dict['VAR_LIST_TEMP'], time_info)
 
         if not var_list and not self.c_dict.get('VAR_LIST_OPTIONAL', False):
             self.log_error('No input fields were specified. You must set '
@@ -189,10 +162,12 @@ that reformat gridded data
                 self.c_dict['CURRENT_VAR_INFO'] = var_info
                 self.run_at_time_one_field(time_info, var_info)
         else:
-            # loop over all variables and all them to the field list, then call the app once
+            # loop over all variables and all them to the field list,
+            # then call the app once
             if var_list:
                 self.c_dict['CURRENT_VAR_INFO'] = var_list[0]
 
+            self.clear()
             self.run_at_time_all_fields(time_info)
 
     def run_at_time_one_field(self, time_info, var_info):
@@ -223,17 +198,11 @@ that reformat gridded data
         self.infiles.extend(obs_path)
 
         # get field info field a single field to pass to the MET config file
-        fcst_field_list = self.get_field_info(v_level=var_info['fcst_level'],
-                                              v_thresh=var_info['fcst_thresh'],
-                                              v_name=var_info['fcst_name'],
-                                              v_extra=var_info['fcst_extra'],
-                                              d_type='FCST')
+        fcst_field_list = self.format_field_info(var_info=var_info,
+                                                 data_type='FCST')
 
-        obs_field_list = self.get_field_info(v_level=var_info['obs_level'],
-                                             v_thresh=var_info['obs_thresh'],
-                                             v_name=var_info['obs_name'],
-                                             v_extra=var_info['obs_extra'],
-                                             d_type='OBS')
+        obs_field_list = self.format_field_info(var_info=var_info,
+                                                data_type='OBS')
 
         if fcst_field_list is None or obs_field_list is None:
             return
@@ -247,13 +216,12 @@ that reformat gridded data
         self.process_fields(time_info)
 
     def run_at_time_all_fields(self, time_info):
-        """! Build MET command for all of the field/level combinations for a given
-             init/valid time and forecast lead combination
-              Args:
-                @param time_info dictionary containing timing information
+        """! Build MET command for all of the field/level combinations for a
+             given init/valid time and forecast lead combination
+
+             @param time_info dictionary containing timing information
         """
-        var_list = util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
-                                     time_info)
+        var_list = sub_var_list(self.c_dict['VAR_LIST_TEMP'], time_info)
 
         # get model from first var to compare
         model_path = self.find_model(time_info,
@@ -263,7 +231,17 @@ that reformat gridded data
         if not model_path:
             return
 
-        self.infiles.extend(model_path)
+        # if there is more than 1 file, create file list file
+        if len(model_path) > 1:
+            list_filename = (f"{time_info['init_fmt']}_"
+                             f"{time_info['lead_hours']}_"
+                             f"{self.app_name}_fcst.txt")
+            model_path = self.write_list_file(list_filename, model_path)
+        else:
+            model_path = model_path[0]
+
+        self.infiles.append(model_path)
+
         # get observation to from first var compare
         obs_path, time_info = self.find_obs_offset(time_info,
                                                    var_list[0],
@@ -272,7 +250,16 @@ that reformat gridded data
         if obs_path is None:
             return
 
-        self.infiles.extend(obs_path)
+        # if there is more than 1 file, create file list file
+        if len(obs_path) > 1:
+            list_filename = (f"{time_info['init_fmt']}_"
+                             f"{time_info['lead_hours']}_"
+                             f"{self.app_name}_obs.txt")
+            obs_path = self.write_list_file(list_filename, obs_path)
+        else:
+            obs_path = obs_path[0]
+
+        self.infiles.append(obs_path)
 
         fcst_field_list = []
         obs_field_list = []
@@ -305,12 +292,8 @@ that reformat gridded data
 
     def process_fields(self, time_info):
         """! Set and print environment variables, then build/run MET command
-              Args:
-                @param time_info dictionary with time information
-                @param fcst_field field information formatted for MET config file
-                @param obs_field field information formatted for MET config file
-                @param ens_field field information formatted for MET config file
-                only used for ensemble_stat
+
+             @param time_info dictionary with time information
         """
         # set config file since command is reset after each run
         self.param = do_string_sub(self.c_dict['CONFIG_FILE'],
@@ -326,41 +309,8 @@ that reformat gridded data
         # set environment variables needed by MET config file
         self.set_environment_variables(time_info)
 
-        # check if METplus can generate the command successfully
-        cmd = self.get_command()
-        if cmd is None:
-            self.log_error("Could not generate command")
-            return
-
         # run the MET command
         self.build()
-
-    def create_and_set_output_dir(self, time_info):
-        """! Builds the full output dir path with valid or init time
-              Creates output directory if it doesn't already exist
-              Args:
-                @param time_info dictionary with time information
-        """
-        out_dir = self.c_dict['OUTPUT_DIR']
-
-        # use output template if it is set
-        # if output template is not set, do not add any extra directories to path
-        out_template_name = '{}_OUTPUT_TEMPLATE'.format(self.app_name.upper())
-        if self.config.has_option('config',
-                                  out_template_name):
-            template = self.config.getraw('config',
-                                          out_template_name)
-            # perform string substitution to get full path
-            extra_path = do_string_sub(template,
-                                       **time_info)
-            out_dir = os.path.join(out_dir, extra_path)
-
-        # create full output dir if it doesn't already exist
-        if not os.path.exists(out_dir):
-            os.makedirs(out_dir)
-
-        # set output dir for wrapper
-        self.outdir = out_dir
 
     def get_command(self):
         """! Builds the command to run the MET application
@@ -381,10 +331,16 @@ that reformat gridded data
             return None
 
         # add forecast file
-        cmd += self.infiles[0] + ' '
+        fcst_file = self.infiles[0]
+        if fcst_file.startswith('PYTHON'):
+            fcst_file = f"'{fcst_file}'"
+        cmd += f'{fcst_file} '
 
         # add observation file
-        cmd += self.infiles[1] + ' '
+        obs_file = self.infiles[1]
+        if obs_file.startswith('PYTHON'):
+            obs_file = f"'{obs_file}'"
+        cmd += f'{obs_file} '
 
         if self.param == '':
             self.log_error('Must specify config file to run MET tool')
@@ -399,31 +355,6 @@ that reformat gridded data
         cmd += '-outdir {}'.format(self.outdir)
         return cmd
 
-    def handle_climo_cdf_dict(self):
-        app_name_upper = self.app_name.upper()
-        tmp_dict = {}
-        self.set_met_config_float(tmp_dict,
-                                  [f'{app_name_upper}_CLIMO_CDF_BINS',
-                                   f'{app_name_upper}_CLIMO_CDF_CDF_BINS'],
-                                  'cdf_bins',
-                                  'CLIMO_CDF_BINS')
-        self.set_met_config_bool(tmp_dict,
-                                 f'{app_name_upper}_CLIMO_CDF_CENTER_BINS',
-                                 'center_bins',
-                                 'CLIMO_CDF_CENTER_BINS')
-        self.set_met_config_bool(tmp_dict,
-                                 f'{app_name_upper}_CLIMO_CDF_WRITE_BINS',
-                                 'write_bins',
-                                 'CLIMO_CDF_WRITE_BINS')
-        climo_cdf = (
-            self.format_met_config_dict(tmp_dict,
-                                        'climo_cdf',
-                                        ['CLIMO_CDF_BINS',
-                                         'CLIMO_CDF_CENTER_BINS',
-                                         'CLIMO_CDF_WRITE_BINS'])
-        )
-        self.env_var_dict['METPLUS_CLIMO_CDF_DICT'] = climo_cdf
-
     def handle_interp_dict(self, uses_field=False):
         """! Reads config variables for interp dictionary, i.e.
              _INTERP_VLD_THRESH, _INTERP_SHAPE, _INTERP_METHOD, and
@@ -432,63 +363,15 @@ that reformat gridded data
             @param uses_field if True, read field variable as well
              (default is False)
         """
-        app = self.app_name.upper()
-
-        dict_name = 'interp'
-        dict_items = []
-
-        metplus_prefix = f'{app}_{dict_name.upper()}_'
-
-        # items to set for interp dictionary
-        # key is MET config name and used for METplus config and env var names
-        # value is a tuple of data type of item and names of any children items
-        interp_items = {
-            'vld_thresh': ('float', None),
-            'shape': ('string', None),
-            'type': ('dict', [('method', 'string'),
-                              ('width', 'int')]),
+        items = {
+            'vld_thresh': 'float',
+            'shape': ('string', 'remove_quotes'),
+            'type': ('dict', None, {
+                'method': ('string', 'remove_quotes'),
+                'width': 'int',
+            }),
         }
-
         if uses_field:
-            interp_items['field'] = ('string', None)
+            items['field'] = ('string', 'remove_quotes')
 
-        for name, (data_type, kids) in interp_items.items():
-            metplus_name = f'{metplus_prefix}{name.upper()}'
-            metplus_configs = []
-
-            # if dictionary, read get children from MET config
-            if data_type == 'dict':
-                children = []
-                for kid, kid_type in kids:
-                    # add APP_INTERP_TYPE_METHOD and APP_INTERP_METHOD
-                    metplus_configs.append(f'{metplus_name}_{kid.upper()}')
-                    metplus_configs.append(f'{metplus_prefix}{kid.upper()}')
-
-                    child_item = self.get_met_config(
-                        name=kid,
-                        data_type=kid_type,
-                        metplus_configs=metplus_configs.copy(),
-                        extra_args={'remove_quotes': True}
-                    )
-                    children.append(child_item)
-
-                    # reset metplus config list for next kid
-                    metplus_configs.clear()
-
-                # set metplus_configs
-                metplus_configs = None
-            else:
-                children = None
-                metplus_configs.append(metplus_name)
-
-            dict_items.append(
-                self.get_met_config(
-                    name=name,
-                    data_type=data_type,
-                    metplus_configs=metplus_configs,
-                    extra_args={'remove_quotes': True},
-                    children=children,
-                )
-            )
-
-        self.handle_met_config_dict(dict_name, dict_items)
+        self.add_met_config_dict('interp', items)

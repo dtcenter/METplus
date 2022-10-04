@@ -1,9 +1,9 @@
 Update Version on Develop Branch
 --------------------------------
 
-Change metplus/VERSION value to the next release after this one with -dev added
-to the end. Releases will loosely following these names, but are subject to
-change:
+Switch to the develop branch and change metplus/VERSION value to the
+next release after this one with -dev added to the end.
+Releases will loosely following these names, but are subject to change:
 
 +-------------------+-----------------------+
 | Release Version   | New Develop Version   |

@@ -1,4 +1,4 @@
-ARG METPLUS_ENV_TAG=metplus_base
+ARG METPLUS_ENV_TAG=metplus_base.v5
 ARG METPLUS_IMG_TAG=develop
 
 FROM dtcenter/metplus-envs:${METPLUS_ENV_TAG} as env
@@ -7,5 +7,4 @@ ARG METPLUS_IMG_TAG=develop
 FROM dtcenter/metplus-dev:${METPLUS_IMG_TAG}
 
 COPY --from=env /usr/local/envs /usr/local/envs/
-
 COPY --from=env /usr/local/bin/conda /usr/local/bin/conda

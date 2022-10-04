@@ -1,0 +1,3 @@
+files:
+- !ENV '${CALCPY_DATA}/OLR_20070421.nc'
+- !ENV '${CALCPY_DATA}/OLR_20070422.nc'

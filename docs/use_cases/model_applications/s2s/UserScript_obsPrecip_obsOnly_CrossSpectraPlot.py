@@ -88,14 +88,11 @@ UserScript_obsPrecip_obsOnly_CrossSpectraPlot.py
 # 1) Passing in UserScript_obsPrecip_obsOnly_CrossSpectraPlot.conf, 
 # then a user-specific system configuration file::
 #
-#        run_metplus.py \
-#        -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_obsPrecip_obsOnly_CrossSpectraPlot.conf \
-#        -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_obsPrecip_obsOnly_CrossSpectraPlot.conf -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_obsPrecip_obsOnly_CrossSpectraPlot.conf::
 #
-#        run_metplus.py \
-#        -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_obsPrecip_obsOnly_CrossSpectraPlot.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_obsPrecip_obsOnly_CrossSpectraPlot.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -138,7 +135,12 @@ UserScript_obsPrecip_obsOnly_CrossSpectraPlot.py
 # --------
 #
 # .. note::
-#  `UserScriptUseCase <https://dtcenter.github.io/METplus/develop/search.html?q=UserScriptUseCase&check_keywords=yes&area=default>`_,
-#  `S2SAppUseCase <https://dtcenter.github.io/METplus/search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_,
+#
+#   * UserScriptUseCase
+#   * S2SAppUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
 #
 # sphinx_gallery_thumbnail_path = '_static/UserScript_obsPrecip_obsOnly_CrossSpectraPlot.png'

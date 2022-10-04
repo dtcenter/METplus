@@ -16,7 +16,7 @@ import time
 
 import get_use_case_commands
 import get_data_volumes
-from docker_utils import get_branch_name
+from docker_utils import get_branch_name, VERSION_EXT
 
 runner_workspace = os.environ.get('RUNNER_WORKSPACE')
 github_workspace = os.environ.get('GITHUB_WORKSPACE')
@@ -70,11 +70,16 @@ def main():
         else:
             env_tag = 'metplus_base'
 
-        # get Dockerfile to use (gempak if using gempak)
+        env_tag = f'{env_tag}{VERSION_EXT}'
+
+        # get Dockerfile to use
+        dockerfile_name = 'Dockerfile.run'
         if 'gempak' in str(requirements).lower():
-            dockerfile_name = 'Dockerfile.gempak'
-        else:
-            dockerfile_name = 'Dockerfile.run'
+            dockerfile_name = f'{dockerfile_name}_gempak'
+        elif 'gfdl' in str(requirements).lower():
+            dockerfile_name = f'{dockerfile_name}_gfdl'
+        elif 'cartopy' in str(requirements).lower():
+            dockerfile_name = f'{dockerfile_name}_cartopy'
 
         docker_build_cmd = (
             f"docker build -t {run_tag} "
@@ -94,7 +99,7 @@ def main():
 
         end_time = time.time()
         print("TIMING: Command took "
-              f"{time.strftime('%H:%M', time.gmtime(end_time - start_time))}"
+              f"{time.strftime('%M:%S', time.gmtime(end_time - start_time))}"
               f" (MM:SS): '{docker_build_cmd}')")
 
         cmd_args = {'check': True,
@@ -136,7 +141,7 @@ def main():
 
         end_time = time.time()
         print("TIMING: Command took "
-              f"{time.strftime('%H:%M', time.gmtime(end_time - start_time))}"
+              f"{time.strftime('%M:%S', time.gmtime(end_time - start_time))}"
               f" (MM:SS): '{full_cmd}')")
 
     if not isOK:

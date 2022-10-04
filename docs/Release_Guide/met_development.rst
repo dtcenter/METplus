@@ -13,6 +13,6 @@ Create a new vX.Y.Z-betaN or vX.Y.Z-rcN development release from the develop bra
 .. include:: release_steps/update_release_notes_development.rst
 .. include:: release_steps/merge_release_issue.rst
 .. include:: release_steps/create_release_on_github.rst
-.. include:: release_steps/met/attach_release_tarfile.rst
+.. include:: release_steps/create_release_extra.rst
 .. include:: release_steps/met/update_dtc_website.rst
 .. include:: release_steps/finalize_release_on_github_development.rst

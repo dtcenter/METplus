@@ -117,6 +117,14 @@ met_tool_wrapper/ExtractTiles/ExtractTiles_mtd.conf
 # Keywords
 # --------
 #
-#  RegridDataPlaneToolUseCase, GRIB2FileUseCase
+# .. note::
+#
+#   * RegridDataPlaneToolUseCase
+#   * GRIB2FileUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
 #
 # sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-ExtractTiles.png'
+#

@@ -1,0 +1,21 @@
+#%Module######################################################################
+##
+##      Model Evaluation Tools
+##
+proc ModulesHelp { } {
+  puts stderr "Sets up the paths and environment variables to use the METplus v5.0.0
+   *** For help see the official MET webpage at http://www.dtcenter.org/met/users ***"
+}
+
+prereq intel
+prereq intelpython/3.6.5
+prereq netcdf/4.6.1
+prereq hdf5/1.10.4
+prereq nco/4.9.1
+prereq wgrib/1.8.1.0b
+prereq wgrib2/2.0.8
+prereq R/4.0.2 
+prereq met/11.0.0
+
+setenv METPLUS_PATH /contrib/met/METplus/METplus-5.0.0
+prepend-path PATH /contrib/met/METplus/METplus-5.0.0/ush

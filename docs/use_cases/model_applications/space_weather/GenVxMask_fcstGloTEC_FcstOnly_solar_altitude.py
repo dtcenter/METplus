@@ -156,9 +156,14 @@ _altitude.conf
 # --------
 #
 # .. note::
-#    `GenVxMaskToolUseCase <https://dtcenter.github.io/METplus/search.html?q=GenVxMaskToolUseCase&check_keywords=yes&area=default>`_,
-#    `SpaceWeatherAppUseCase <https://dtcenter.github.io/METplus/search.html?q=SpaceWeatherAppUseCase&check_keywords=yes&area=default>`_,
-#    `NOAASWPCOrgUseCase  <https://dtcenter.github.io/METplus/search.html?q=NOAASWPCOrgUseCase&check_keywords=yes&area=default>`_,
-#    `MaskingFeatureUseCase  <https://dtcenter.github.io/METplus/search.html?q=MaskingFeatureUseCase&check_keywords=yes&area=default>`_,
+#
+#   * GenVxMaskToolUseCase
+#   * SpaceWeatherAppUseCase
+#   * NOAASWPCOrgUseCase
+#   * MaskingFeatureUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
 #
 # sphinx_gallery_thumbnail_path = '_static/space_weather-GenVxMask_fcstGloTEC_solar_altitude.png'

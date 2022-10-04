@@ -209,9 +209,14 @@ model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
 # --------
 #
 # .. note::
-#    `TCGenToolUseCase <https://dtcenter.github.io/METplus/develop/search.html?q=TCGenToolUseCase&check_keywords=yes&area=default>`_
-#    `S2SAppUseCase <https://dtcenter.github.io/METplus/develop/search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_
-#    `UserScriptUseCase <https://dtcenter.github.io/METplus/develop/search.html?q=UserScriptUseCase&check_keywords=yes&area=default>`_
+#
+#   * TCGenToolUseCase 
+#   * S2SAppUseCase
+#   * UserScriptUseCase 
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
 #
 # sphinx_gallery_thumbnail_path = '_static/s2s-TCGen_fcstGFSO_obsBDECKS_GDF_TDF.png'
 #

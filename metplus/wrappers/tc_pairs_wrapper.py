@@ -20,10 +20,12 @@ import csv
 import datetime
 import glob
 
-from ..util import time_util
-from ..util import met_util as util
+from ..util import getlist, get_lead_sequence, skip_time, mkdir_p
+from ..util import ti_calculate
 from ..util import do_string_sub
 from ..util import get_tags
+from ..util.met_config import add_met_config_dict_list
+from ..util import time_generator, log_runtime_banner, add_to_time_input
 from . import CommandBuilder
 
 '''!@namespace TCPairsWrapper
@@ -49,12 +51,18 @@ class TCPairsWrapper(CommandBuilder):
         'METPLUS_STORM_NAME',
         'METPLUS_INIT_BEG',
         'METPLUS_INIT_END',
-        'METPLUS_INIT_INCLUDE',
-        'METPLUS_INIT_EXCLUDE',
+        'METPLUS_INIT_INC',
+        'METPLUS_INIT_EXC',
         'METPLUS_VALID_BEG',
         'METPLUS_VALID_END',
         'METPLUS_DLAND_FILE',
         'METPLUS_CONSENSUS_LIST',
+        'METPLUS_WRITE_VALID',
+        'METPLUS_VALID_INC',
+        'METPLUS_VALID_EXC',
+        'METPLUS_CHECK_DUP',
+        'METPLUS_INTERP12',
+        'METPLUS_MATCH_POINTS',
     ]
 
     WILDCARDS = {
@@ -68,13 +76,11 @@ class TCPairsWrapper(CommandBuilder):
         'cyclone': r'[0-9]{2,4}',
     }
 
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None):
         self.app_name = 'tc_pairs'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
         self.adeck = []
         self.bdeck = []
         self.edeck = []
@@ -96,12 +102,9 @@ class TCPairsWrapper(CommandBuilder):
         c_dict['MISSING_VAL'] = (
             self.config.getstr('config', 'TC_PAIRS_MISSING_VAL', '-9999')
         )
-        c_dict['CONFIG_FILE'] = self.config.getraw('config',
-                                                   'TC_PAIRS_CONFIG_FILE',
-                                                   '')
-        if not c_dict['CONFIG_FILE']:
-            self.log_error("TC_PAIRS_CONFIG_FILE is required to "
-                           "run TCPairs wrapper")
+
+        # get the MET config file path or use default
+        c_dict['CONFIG_FILE'] = self.get_config_file('TCPairsConfig_wrapped')
 
         self.add_met_config(name='init_beg',
                             data_type='string',
@@ -115,15 +118,31 @@ class TCPairsWrapper(CommandBuilder):
 
         self.add_met_config(name='init_inc',
                             data_type='list',
-                            env_var_name='METPLUS_INIT_INCLUDE',
                             metplus_configs=['TC_PAIRS_INIT_INCLUDE',
+                                             'TC_PAIRS_INIT_INC',
                                              'INIT_INCLUDE'])
 
         self.add_met_config(name='init_exc',
                             data_type='list',
-                            env_var_name='METPLUS_INIT_EXCLUDE',
                             metplus_configs=['TC_PAIRS_INIT_EXCLUDE',
+                                             'TC_PAIRS_INIT_EXC',
                                              'INIT_EXCLUDE'])
+
+        self.add_met_config(name='valid_inc',
+                            data_type='list',
+                            metplus_configs=['TC_PAIRS_VALID_INCLUDE',
+                                             'TC_PAIRS_VALID_INC',
+                                             'VALID_INCLUDE'])
+
+        self.add_met_config(name='valid_exc',
+                            data_type='list',
+                            metplus_configs=['TC_PAIRS_VALID_EXCLUDE',
+                                             'TC_PAIRS_VALID_EXC',
+                                             'VALID_EXCLUDE'])
+
+        self.add_met_config(name='write_valid',
+                            data_type='list',
+                            metplus_configs=['TC_PAIRS_WRITE_VALID'])
 
         self.add_met_config(name='valid_beg',
                             data_type='string',
@@ -150,24 +169,24 @@ class TCPairsWrapper(CommandBuilder):
 
         self.handle_consensus()
 
-        init_time_fmt = self.config.getstr('config', 'INIT_TIME_FMT')
-        clock_time = datetime.datetime.strptime(
-            self.config.getstr('config',
-                               'CLOCK_TIME'),
-            '%Y%m%d%H%M%S'
-        )
+        self.add_met_config(name='check_dup',
+                            data_type='bool')
 
-        init_beg = self.config.getraw('config', 'INIT_BEG')
-        init_beg_dt = util.get_time_obj(init_beg,
-                                        init_time_fmt,
-                                        clock_time,
-                                        logger=self.logger)
-        c_dict['INIT_BEG'] = init_beg_dt.strftime('%Y%m%d_%H%M%S')
+        self.add_met_config(name='interp12',
+                            data_type='string',
+                            extra_args={'remove_quotes': True,
+                                        'uppercase': True})
 
-        c_dict['INIT_INCLUDE'] = util.getlist(
+        self.add_met_config(name='match_points', data_type='bool')
+
+        # if unset, set match_points to TRUE to match old default in wrapped
+        if not self.env_var_dict.get('METPLUS_MATCH_POINTS'):
+            self.env_var_dict['METPLUS_MATCH_POINTS'] = 'match_points = TRUE;'
+
+        c_dict['INIT_INCLUDE'] = getlist(
             self.get_wrapper_or_generic_config('INIT_INCLUDE')
         )
-        c_dict['INIT_EXCLUDE'] = util.getlist(
+        c_dict['INIT_EXCLUDE'] = getlist(
             self.get_wrapper_or_generic_config('INIT_EXCLUDE')
         )
         c_dict['VALID_BEG'] = self.get_wrapper_or_generic_config('VALID_BEG')
@@ -178,14 +197,18 @@ class TCPairsWrapper(CommandBuilder):
                 self.config.getdir('TC_PAIRS_BDECK_INPUT_DIR', '')
         c_dict['EDECK_DIR'] = \
                 self.config.getdir('TC_PAIRS_EDECK_INPUT_DIR', '')
-        c_dict['OUTPUT_DIR'] = self.config.getdir('TC_PAIRS_OUTPUT_DIR')
+        c_dict['OUTPUT_DIR'] = self.config.getdir('TC_PAIRS_OUTPUT_DIR', '')
+        if not c_dict['OUTPUT_DIR']:
+            self.log_error('TC_PAIRS_OUTPUT_DIR must be set')
+
         c_dict['READ_ALL_FILES'] = (
             self.config.getbool('config',
-                                'TC_PAIRS_READ_ALL_FILES')
+                                'TC_PAIRS_READ_ALL_FILES',
+                                False)
         )
 
         # get list of models to process
-        c_dict['MODEL_LIST'] = util.getlist(
+        c_dict['MODEL_LIST'] = getlist(
             self.config.getraw('config', 'MODEL', '')
         )
         # if no models are requested, set list to contain a single string
@@ -195,7 +218,7 @@ class TCPairsWrapper(CommandBuilder):
 
         self._read_storm_info(c_dict)
 
-        c_dict['STORM_NAME_LIST'] = util.getlist(
+        c_dict['STORM_NAME_LIST'] = getlist(
             self.config.getraw('config', 'TC_PAIRS_STORM_NAME')
         )
         c_dict['DLAND_FILE'] = self.config.getraw('config',
@@ -256,6 +279,16 @@ class TCPairsWrapper(CommandBuilder):
 
         self.handle_description()
 
+        c_dict['SKIP_LEAD_SEQ'] = (
+            self.config.getbool('config',
+                                'TC_PAIRS_SKIP_LEAD_SEQ',
+                                False)
+        )
+
+        # if LOOP_ORDER = processes, only run once if True
+        c_dict['RUN_ONCE'] = self.config.getbool('config',
+                                                 'TC_PAIRS_RUN_ONCE',
+                                                 True)
         return c_dict
 
     def _read_storm_info(self, c_dict):
@@ -267,13 +300,13 @@ class TCPairsWrapper(CommandBuilder):
         @param c_dict dictionary to populate with values from config
         @returns None
         """
-        storm_id_list = util.getlist(
+        storm_id_list = getlist(
             self.config.getraw('config', 'TC_PAIRS_STORM_ID', '')
         )
-        cyclone_list = util.getlist(
+        cyclone_list = getlist(
             self.config.getraw('config', 'TC_PAIRS_CYCLONE', '')
         )
-        basin_list = util.getlist(
+        basin_list = getlist(
             self.config.getraw('config', 'TC_PAIRS_BASIN', '')
         )
 
@@ -296,79 +329,40 @@ class TCPairsWrapper(CommandBuilder):
             c_dict['BASIN_LIST'] = basin_list
 
     def handle_consensus(self):
-        children = [
-            'NAME',
-            'MEMBERS',
-            'REQUIRED',
-            'MIN_REQ'
-        ]
-        regex = r'^TC_PAIRS_CONSENSUS(\d+)_(\w+)$'
-        indices = util.find_indices_in_config_section(regex, self.config,
-                                                      index_index=1,
-                                                      id_index=2)
+        dict_items = {
+            'name': 'string',
+            'members': 'list',
+            'required': ('list', 'remove_quotes'),
+            'min_req': 'int',
+        }
+        return_code = add_met_config_dict_list(config=self.config,
+                                               app_name=self.app_name,
+                                               output_dict=self.env_var_dict,
+                                               dict_name='consensus',
+                                               dict_items=dict_items)
+        if not return_code:
+            self.isOK = False
 
-        consensus_dict = {}
-        for index, items in indices.items():
-            # read all variables for each index
-            consensus_items = {}
-
-            # check if any variable found doesn't match valid variables
-            if any([item for item in items if item not in children]):
-                self.log_error("Invalid variable: "
-                               f"TC_PAIRS_CONSENSUS{index}_{item}")
-
-            self.add_met_config(
-                name='name',
-                data_type='string',
-                metplus_configs=[f'TC_PAIRS_CONSENSUS{index}_NAME'],
-                output_dict=consensus_items
-            )
-            self.add_met_config(
-                name='members',
-                data_type='list',
-                metplus_configs=[f'TC_PAIRS_CONSENSUS{index}_MEMBERS'],
-                output_dict=consensus_items
-            )
-            self.add_met_config(
-                name='required',
-                data_type='list',
-                metplus_configs=[f'TC_PAIRS_CONSENSUS{index}_REQUIRED'],
-                extra_args={'remove_quotes': True},
-                output_dict=consensus_items
-            )
-            self.add_met_config(
-                name='min_req',
-                data_type='int',
-                metplus_configs=[f'TC_PAIRS_CONSENSUS{index}_MIN_REQ'],
-                output_dict=consensus_items
-            )
-
-            self.logger.debug(f'Consensus Items: {consensus_items}')
-            # format dictionary, then add it to consensus_dict
-            dict_string = self.format_met_config('dict',
-                                                 consensus_items,
-                                                 name='')
-            consensus_dict[index] = dict_string
-
-        # format list of dictionaries
-        output_string = self.format_met_config('list',
-                                               consensus_dict,
-                                               'consensus')
-
-        self.env_var_dict['METPLUS_CONSENSUS_LIST'] = output_string
+        return return_code
 
     def run_all_times(self):
         """! Build up the command to invoke the MET tool tc_pairs.
         """
-        # use init begin as run time (start of the storm)
-        input_dict = {'init':
-                      datetime.datetime.strptime(self.c_dict['INIT_BEG'],
-                                                 '%Y%m%d_%H%M%S')
-                      }
+        # use first run time
+        input_dict = next(time_generator(self.config))
+        if not input_dict:
+            return self.all_commands
+
+        add_to_time_input(input_dict,
+                          instance=self.instance)
+        log_runtime_banner(self.config, input_dict, self)
 
         # if running in READ_ALL_FILES mode, call tc_pairs once and exit
         if self.c_dict['READ_ALL_FILES']:
             return self._read_all_files(input_dict)
+
+        if not self.c_dict['RUN_ONCE']:
+            return super().run_all_times()
 
         self.run_at_time(input_dict)
         return self.all_commands
@@ -385,12 +379,22 @@ class TCPairsWrapper(CommandBuilder):
                 self.logger.info(f"Processing custom string: {custom_string}")
 
             input_dict['custom'] = custom_string
-            time_info = time_util.ti_calculate(input_dict)
-            if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
-                self.logger.debug('Skipping run time')
-                return
 
-            self.run_at_time_loop_string(time_info)
+            # if skipping lead sequence, only run once per init/valid time
+            if self.c_dict['SKIP_LEAD_SEQ']:
+                lead_seq = [0]
+            else:
+                lead_seq = get_lead_sequence(self.config, input_dict)
+
+            for lead in lead_seq:
+                input_dict['lead'] = lead
+                time_info = ti_calculate(input_dict)
+
+                if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+                    self.logger.debug('Skipping run time')
+                    return
+
+                self.run_at_time_loop_string(time_info)
 
     def run_at_time_loop_string(self, time_info):
         """! Create the arguments to run MET tc_pairs
@@ -536,10 +540,7 @@ class TCPairsWrapper(CommandBuilder):
             # add storm month to each cyclone item if reformatting SBU
             if self.c_dict['REFORMAT_DECK'] and \
                self.c_dict['REFORMAT_DECK_TYPE'] == 'SBU':
-                if time_info is None:
-                    storm_month = self.c_dict['INIT_BEG'][4:6]
-                else:
-                    storm_month = time_info['init'].strftime('%m')
+                storm_month = time_info['init'].strftime('%m')
                 cyclone = [storm_month + c for c in cyclone]
 
             cyclone = str(cyclone).replace("'", '"')
@@ -634,7 +635,7 @@ class TCPairsWrapper(CommandBuilder):
                 return []
 
             # Set up the environment variable to be used in the TCPairs Config
-            self.set_environment_variables(time_info)
+            self.set_environment_variables(time_storm_info)
 
             self.build()
 
@@ -832,10 +833,6 @@ class TCPairsWrapper(CommandBuilder):
             self.log_error('Output path not set')
             return None
 
-        # create directory containing output file if it doesn't exist
-        if not os.path.exists(os.path.dirname(output_path)):
-            os.makedirs(os.path.dirname(output_path))
-
         cmd = '{} -v {}'.format(self.app_path, self.c_dict['VERBOSITY'])
         cmd += ' -bdeck {}'.format(' '.join(self.bdeck))
 
@@ -861,8 +858,7 @@ class TCPairsWrapper(CommandBuilder):
                 @param logger the log where logging is directed
         """
         # create output directory if it does not exist
-        if not os.path.exists(os.path.dirname(out_csvfile)):
-            os.makedirs(os.path.dirname(out_csvfile))
+        mkdir_p(os.path.dirname(out_csvfile))
 
         # Open the output csv file
         out_file = open(out_csvfile, "w", newline='')
@@ -911,7 +907,7 @@ class TCPairsWrapper(CommandBuilder):
         directories to search for files to let the application determine
         which data to process
 
-        @param input_dict dictionary containing init time set from INIT_BEG
+        @param input_dict dictionary containing some time information
         @returns list of tuples containing commands that are run and which env
          vars were set for the command
         """
@@ -933,13 +929,13 @@ class TCPairsWrapper(CommandBuilder):
             self.edeck = [edeck_dir]
 
         # get output filename from template
-        time_info = time_util.ti_calculate(input_dict)
+        time_info = ti_calculate(input_dict)
         time_storm_info = self._add_storm_info_to_dict(time_info)
         if not self.find_and_check_output_file(time_info=time_storm_info,
                                                check_extension='.tcst'):
             return []
 
-        self.set_environment_variables(input_dict)
+        self.set_environment_variables(time_storm_info)
 
         self.build()
         return self.all_commands

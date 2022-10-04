@@ -111,6 +111,13 @@ met_tool_wrapper/METdbLoad/METdbLoad.conf
 # Keywords
 # --------
 #
+# .. note::
+#
+#   * METdbLoadUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
+#
 # sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-METdbLoad.png'
 #
-# .. note:: `METdbLoadUseCase <https://dtcenter.github.io/METplus/search.html?q=METdbLoadUseCase&check_keywords=yes&area=default>`_

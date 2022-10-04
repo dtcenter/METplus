@@ -8,13 +8,13 @@ import sys
 
 import get_use_case_commands
 
-# add internal_tests/use_cases directory to path so the test suite can be found
-USE_CASES_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                             os.pardir,
-                                             os.pardir))
-sys.path.insert(0, USE_CASES_DIR)
+# add METplus directory to path so the test suite can be found
+METPLUS_TOP_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                               os.pardir,
+                                               os.pardir))
+sys.path.insert(0, METPLUS_TOP_DIR)
 
-from internal_tests.use_cases.metplus_use_case_suite import METplusUseCaseSuite
+from internal.tests.use_cases.metplus_use_case_suite import METplusUseCaseSuite
 
 def main():
     all_requirements = set()

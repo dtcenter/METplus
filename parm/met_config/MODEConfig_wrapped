@@ -9,16 +9,19 @@
 //
 // Output model name to be written
 //
+// model =
 ${METPLUS_MODEL}
 
 //
 // Output description to be written
 //
+// desc =
 ${METPLUS_DESC}
 
 //
 // Output observation type to be written
 //
+// obtype =
 ${METPLUS_OBTYPE}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -26,6 +29,7 @@ ${METPLUS_OBTYPE}
 //
 // Verification grid
 //
+// regrid = {
 ${METPLUS_REGRID_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -41,7 +45,14 @@ ${METPLUS_GRID_RES}
 //
 // Run all permutations of radius and threshold
 //
+// quilt =
 ${METPLUS_QUILT}
+
+//
+// MODE Multivar boolean combination logic
+//
+//multivar_logic =
+${METPLUS_MULTIVAR_LOGIC}
 
 //
 // Forecast and observation fields to be verified
@@ -58,6 +69,7 @@ fcst = {
    ${METPLUS_FCST_FILTER_ATTR_THRESH}
    ${METPLUS_FCST_MERGE_THRESH}
    ${METPLUS_FCST_MERGE_FLAG}
+   ${METPLUS_FCST_FILE_TYPE}
 }
 
 obs = {
@@ -72,6 +84,7 @@ obs = {
    ${METPLUS_OBS_FILTER_ATTR_THRESH}
    ${METPLUS_OBS_MERGE_THRESH}
    ${METPLUS_OBS_MERGE_FLAG}
+   ${METPLUS_OBS_FILE_TYPE}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -79,7 +92,8 @@ obs = {
 //
 // Handle missing data
 //
-mask_missing_flag = BOTH;
+// mask_missing_flag =
+${METPLUS_MASK_MISSING_FLAG}
 
 //
 // Match objects between the forecast and observation fields
@@ -181,14 +195,12 @@ fcst_raw_plot = {
    color_table      = "MET_BASE/colortables/met_default.ctable";
    plot_min         = 0.0;
    plot_max         = 0.0;
-   colorbar_spacing = 1;
 }
 
 obs_raw_plot = {
    color_table      = "MET_BASE/colortables/met_default.ctable";
    plot_min         = 0.0;
    plot_max         = 0.0;
-   colorbar_spacing = 1;
 }
 
 object_plot = {
@@ -210,12 +222,15 @@ plot_gcarc_flag = FALSE;
 //
 // NetCDF matched pairs, PostScript, and contingency table output files
 //
-ps_plot_flag    = TRUE;
+//ps_plot_flag =
+${METPLUS_PS_PLOT_FLAG}
 
 //nc_pairs_flag = {
 ${METPLUS_NC_PAIRS_FLAG_DICT}
 
-ct_stats_flag   = TRUE;
+//ct_stats_flag =
+${METPLUS_CT_STATS_FLAG}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -225,6 +240,8 @@ shift_right = 0;   //  grid squares
 
 ${METPLUS_OUTPUT_PREFIX}
 //version        = "V10.0";
+
+tmp_dir = "${MET_TMP_DIR}";
 
 ////////////////////////////////////////////////////////////////////////////////
 

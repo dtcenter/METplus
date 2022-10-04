@@ -12,6 +12,9 @@ DOCKERHUB_METPLUS_DATA = 'dtcenter/metplus-data'
 # repository used for storing input data for development branches
 DOCKERHUB_METPLUS_DATA_DEV = 'dtcenter/metplus-data-dev'
 
+# extension to add to conda environments
+VERSION_EXT = '.v5'
+
 def get_data_repo(branch_name):
     """! Branch names that start with main_v or contain only
        digits and dots with out without a prefix 'v' will return

@@ -93,7 +93,7 @@ met_tool_wrapper/EnsembleStat/EnsembleStat.conf
 #
 # Passing in EnsembleStat.conf then a user-specific system configuration file::
 #
-#   run_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/EnsembleStat/EnsembleStat.conf -c /path/to/user_system.conf
+#   run_metplus.py /path/to/METplus/parm/use_cases/met_tool_wrapper/EnsembleStat/EnsembleStat.conf /path/to/user_system.conf
 #
 # The following METplus configuration variables must be set correctly to run this example.:
 #
@@ -140,10 +140,16 @@ met_tool_wrapper/EnsembleStat/EnsembleStat.conf
 # --------
 #
 # .. note::
-#  `EnsembleStatToolUseCase <https://dtcenter.github.io/METplus/search.html?q=EnsembleStatToolUseCase&check_keywords=yes&area=default>`_,
-#  `PythonEmbeddingFileUseCase <https://dtcenter.github.io/METplus/search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_,
-#  `EnsembleAppUseCase <https://dtcenter.github.io/METplus/search.html?q=EnsembleAppUseCase&check_keywords=yes&area=default>`_,
-#  `ProbabilityGenerationAppUseCase <https://dtcenter.github.io/METplus/search.html?q=ProbabilityGenerationAppUseCase&check_keywords=yes&area=default>`_
-#  `GRIBFileUseCase <https://dtcenter.github.io/METplus/search.html?q=GRIBFileUseCase&check_keywords=yes&area=default>`_,
+#
+#   * EnsembleStatToolUseCase
+#   * PythonEmbeddingFileUseCase
+#   * EnsembleAppUseCase
+#   * ProbabilityGenerationAppUseCase
+#   * GRIBFileUseCase
+#
+#   Navigate to :ref:`quick-search` to discover other similar use cases.
+#
+#
 #
 # sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-EnsembleStat.png'
+#

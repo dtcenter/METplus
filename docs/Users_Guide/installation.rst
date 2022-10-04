@@ -1,8 +1,8 @@
 .. _install:
 
-*********************
-Software Installation
-*********************
+************
+Installation
+************
 
 Introduction
 ============
@@ -24,13 +24,13 @@ Pre-built METplus images on DockerHub are also provided.
 Programming/scripting languages
 ===============================
 
-METplus Wrappers is written in Python 3.6.3. It is intended to be a tool
+METplus Wrappers is written in Python. It is intended to be a tool
 for the modeling community to use and adapt. As users make upgrades and
 improvements to the tools, they are encouraged to offer those upgrades
 to the broader community by offering feedback to the developers or
 coordinating for a GitHub pull. For more information on contributing
-code to METplus Wrappers, please contact
-`met_help@ucar.edu <met_help@ucar.edu>`__.
+code to METplus Wrappers, please create a post in the
+`METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_.
 
 Requirements
 ============
@@ -42,9 +42,11 @@ Software Requirements
 
 The following software is required to run METplus Wrappers:
 
--  Python 3.6.3 or above
+-  Python 3.8.6 or above
 
--  MET version 10.0.0 or above
+-  MET version 10.0.0 or above - 
+   For information on installing MET please see the `Software Installation/Getting Started <https://met.readthedocs.io/en/latest/Users_Guide/installation.html>`_
+   section of the MET User's Guide. 
 
 **Wrapper Specific Requirements**
 
@@ -54,12 +56,12 @@ The following software is required to run METplus Wrappers:
 
 -  SeriesAnalysis wrapper
 
-    - convert (ImageMagick) utility
+    - convert (ImageMagick) utility -
       if generating plots and/or animated images from the output
 
 -  PlotDataPlane wrapper
 
-    - convert (ImageMagick) utility
+    - convert (ImageMagick) utility - 
       if generating images from the Postscript output
 
 Python Package Requirements
@@ -91,15 +93,15 @@ If running use cases that use Python embedding, the **MET** executables
 must be installed with Python enabled
 and the following Python packages installed:
 
-- xarray (0.17.0)
+- xarray (2022.3.0)
 
-- numpy (1.19.2)
+- numpy (1.22.4)
 
-- pandas (1.0.5)
+- pandas (1.4.2)
 
-- netCDF4 (1.5.4)
+- netCDF4 (1.5.8)
 
-See the `Software Installation <https://met.readthedocs.io/en/latest/Users_Guide/installation.html#software-installation-getting-started>`_
+See `Appendix F Python Embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html>`_
 section in the MET User's Guide for more information.
 
 **Wrapper Specific Requirements**
@@ -113,13 +115,13 @@ to run.
 
 -  MakePlots wrapper
 
-    - cartopy (0.17.0)
-    - pandas (1.0.5)
+    - cartopy (0.20.3)
+    - pandas (1.4.3)
 
 -  CyclonePlotter wrapper
 
-    - cartopy (0.17.0)
-    - matplotlib (3.3.4)
+    - cartopy (0.20.3)
+    - matplotlib (3.5.2)
 
 Cartopy, one of the dependencies of CyclonePlotter, attempts to download shapefiles from the internet to complete successfully. So if CyclonePlotter is run on a closed system (i.e. no internet), additional steps need to be taken. First, go to the Natural Earth Data webpage and download the small scale (1:110m) cultural and physical files that will have multiple extensions (e.g. .dbf, .shp, .shx). Untar these files in a noted location. Finally, create an environment variable in the user-specific system configuration file for CARTOPY_DIR, setting it to the location where the shapefiles are located. 
 
@@ -129,7 +131,7 @@ Getting the METplus Wrappers source code
 ========================================
 
 The METplus Wrappers source code is available for download from the public
-GitHub repository. The source code can be retrieved through a web
+GitHub repository. The source code can be retrieved either through a web
 browser or the command line.
 
 Get the source code via Web Browser
@@ -137,14 +139,36 @@ Get the source code via Web Browser
 
 -  Create a directory where the METplus Wrappers will be installed
 
--  Open a web browser and navigate to
-   https://github.com/dtcenter/METplus/releases/latest to view the
-   latest stable release.
+-  Open a web browser and go to the
+   `latest stable METplus release <https://github.com/dtcenter/METplus/releases/latest>`_.
 
 .. image:: ../_static/metplus_repo_releases_page.png
 
 -  Click on the 'Source code' link (either the *zip* or *tar.gz*) under Assets
    and when prompted, save it to the directory.
+
+- (Optional) Verify the checksum of the source code download
+  
+    - Download the checksum file that corresponds to the source code download
+      link that was used (checksum_zip.txt for the *zip* file and
+      checksum_tar.txt for the *tar.gz* file).
+      Put the checksum file into the same directory as the source code file.
+    - Run the *sha256sum* command with the --check argument to verify that the
+      source code download file was not corrupted.
+
+Zip File::
+
+    sha256sum --check checksum_zip.txt
+
+Tar File::
+
+    sha256sum --check checksum_tar.txt
+
+.. note::
+   If the source code is downloaded using **wget**, then the filenames will not
+   match the filenames listed in the checksum files. If the source code is
+   downloaded using **curl**, the *-LJO* flags should be added to the command to
+   preserve the expected filenames found in the checksum files.
 
 -  Uncompress the source code (on Linux/Unix\ *: gunzip* for zip file or
    *tar xvfz* for the tar.gz file)
@@ -167,23 +191,24 @@ HTTPS::
 .. _obtain_sample_input_data:
 
 Obtain sample input data
-------------------------
+========================
 
 The use cases provided with the METplus release have sample input data
 associated with them. This step is optional but is required to be able to run
 the example use cases, which illustrate how the wrappers work.
 
--  Create a directory to put the sample input data. This will be the directory
-   to set for the value of INPUT_BASE in the METplus Configuration.
+- Create a directory to put the sample input data. This will be the directory
+  to set for the value of INPUT_BASE in the METplus Configuration.
 
-- Navigate to the sample input data web URL: https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data
+- Go to the web page with the
+  `sample input data <https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data>`_.
 
 - Click on the vX.Y version directory that corresponds to the release to
   install, i.e. v4.0 directory for the v4.0.0 release.
 
--  Click on the sample data tgz file for the desired use case category or
-   categories run and when prompted, save the file to the directory created
-   above.
+- Click on the sample data tgz file for the desired use case category or
+  categories run and when prompted, save the file to the directory created
+  above.
 
 .. note::
     Files with the version number in the name,
@@ -200,16 +225,16 @@ The METplus Wrappers source code contains the following directory structure::
 
   METplus/
     build_components/
-    ci/
     docs/
     environment.yml
-    internal_tests/
+    internal/
     manage_exernals/
     metplus/
     parm/
     produtil/
     README.md
     requirements.txt
+    scripts/
     setup.py
     ush/
 
@@ -220,9 +245,6 @@ The **build_components/** directory contains scripts that use manage_externals
 and files available on dtcenter.org to download MET and start
 the build process.
 
-The **ci/** directory contains scripts that are used for creating
-Docker images and scripts that are used internally for automation.
-
 The **docs/** directory contains documentation for users and contributors
 (HTML) and Doxygen
 files that are used to create the METplus wrapper API documentation. The
@@ -231,7 +253,7 @@ developer has Doxygen installed on the host.
 The Doxygen documentation is useful to
 contributors and is not necessary for METplus end-users.
 
-The **internal_tests/** directory contains test scripts that are only
+The **internal/** directory contains scripts that are only
 relevant to METplus developers and contributors.
 
 The **manage_externals/** directory contains scripts used to
@@ -245,28 +267,20 @@ METplus Wrappers.
 
 The **produtil/** directory contains part of the external utility produtil.
 
+The **scripts/** directory contains scripts that are used for creating
+Docker images.
+
 The **ush/** directory contains the run_metplus.py script that is
 executed to run use cases.
 
-Build_components and using manage_externals
-===========================================
-
-Running build_components/build_MET.sh will
-
--  clone MET and METviewer from github using the manage_externals scripts
--  grab the current MET compile script and all of the necessary external libraries
--  build the external libraries
--  attempt to build MET
-
-Building MET requires fine tuning on just about all systems.
-However, using manage_externals should at least get most of the way through
-the process and allow MET to be built with just a few manual changes.
 
 External Components
 ===================
 
-GFDL Tracker
-------------
+.. _external-components-gfdl-tracker:
+
+GFDL Tracker (optional)
+-----------------------
 
 - The standalone Geophysical Fluid Dynamics Laboratory (GFDL) vortex tracker
   is a program that objectively analyzes forecast data to provide an
@@ -286,6 +300,23 @@ GFDL Tracker
 
     -  Instructions on how to configure and use the GFDL tracker are found here
        https://dtcenter.org/sites/default/files/community-code/gfdl/standalone_tracker_UG_v3.9a.pdf
+
+Disable UserScript wrapper (optional)
+=====================================
+
+The UserScript wrapper allows any shell command or script to be run as part
+of a METplus use case. It is used to preprocess/postprocess data or to run
+intermediate commands between other wrappers.
+
+**If desired, this wrapper can be disabled upon installation to prevent
+security risks.** To disable the UserScript wrapper,
+simply remove the following file from the installation location::
+
+    METplus/metplus/wrapper/user_script_wrapper.py
+
+Please note that use cases provided with the METplus repository that utilize
+the UserScript wrapper will fail if attempted to run after it has been
+disabled.
 
 Add ush directory to shell path (optional)
 ==========================================

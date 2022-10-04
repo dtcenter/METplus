@@ -1,0 +1,127 @@
+&datein
+  inp%bcc = ${METPLUS_DATEIN_INP_BCC},
+  inp%byy = ${METPLUS_DATEIN_INP_BYY},
+  inp%bmm = ${METPLUS_DATEIN_INP_BMM},
+  inp%bdd = ${METPLUS_DATEIN_INP_BDD},
+  inp%bhh = ${METPLUS_DATEIN_INP_BHH},
+  inp%model = ${METPLUS_DATEIN_INP_MODEL},
+  inp%modtyp = ${METPLUS_DATEIN_INP_MODTYP},
+  inp%lt_units = ${METPLUS_DATEIN_INP_LT_UNITS},
+  inp%file_seq = ${METPLUS_DATEIN_INP_FILE_SEQ},
+  inp%nesttyp = ${METPLUS_DATEIN_INP_NESTTYP},
+/
+
+&atcfinfo
+  atcfnum = ${METPLUS_ATCFINFO_ATCFNUM},
+  atcfname = ${METPLUS_ATCFINFO_ATCFNAME},
+  atcfymdh = ${METPLUS_ATCFINFO_ATCFYMDH},
+  atcffreq = ${METPLUS_ATCFINFO_ATCFFREQ},
+/
+
+&trackerinfo
+  trkrinfo%type = ${METPLUS_TRACKERINFO_TYPE},
+  trkrinfo%mslpthresh = ${METPLUS_TRACKERINFO_MSLPTHRESH},
+  trkrinfo%use_backup_mslp_grad_check = ${METPLUS_TRACKERINFO_USE_BACKUP_MSLP_GRAD_CHECK},
+  trkrinfo%v850thresh = ${METPLUS_TRACKERINFO_V850THRESH},
+  trkrinfo%use_backup_850_vt_check = ${METPLUS_TRACKERINFO_USE_BACKUP_850_VT_CHECK},
+  trkrinfo%enable_timing = ${METPLUS_TRACKERINFO_ENABLE_TIMING},
+  trkrinfo%gridtype = ${METPLUS_TRACKERINFO_GRIDTYPE},
+  trkrinfo%contint = ${METPLUS_TRACKERINFO_CONTINT},
+  trkrinfo%want_oci = ${METPLUS_TRACKERINFO_WANT_OCI},
+  trkrinfo%out_vit = ${METPLUS_TRACKERINFO_OUT_VIT},
+  trkrinfo%use_land_mask = ${METPLUS_TRACKERINFO_USE_LAND_MASK},
+  trkrinfo%inp_data_type = ${METPLUS_TRACKERINFO_INP_DATA_TYPE},
+  trkrinfo%gribver = ${METPLUS_TRACKERINFO_GRIBVER},
+  trkrinfo%g2_jpdtn = ${METPLUS_TRACKERINFO_G2_JPDTN},
+  trkrinfo%g2_mslp_parm_id = ${METPLUS_TRACKERINFO_G2_MSLP_PARM_ID},
+  trkrinfo%g1_mslp_parm_id = ${METPLUS_TRACKERINFO_G1_MSLP_PARM_ID},
+  trkrinfo%g1_sfcwind_lev_typ = ${METPLUS_TRACKERINFO_G1_SFCWIND_LEV_TYP},
+  trkrinfo%g1_sfcwind_lev_val = ${METPLUS_TRACKERINFO_G1_SFCWIND_LEV_VAL},
+  trkrinfo%westbd = ${METPLUS_TRACKERINFO_WESTBD},
+  trkrinfo%eastbd = ${METPLUS_TRACKERINFO_EASTBD},
+  trkrinfo%southbd = ${METPLUS_TRACKERINFO_SOUTHBD},
+  trkrinfo%northbd = ${METPLUS_TRACKERINFO_NORTHBD},
+/
+
+&phaseinfo
+  phaseflag = ${METPLUS_PHASEINFO_PHASEFLAG},
+  phasescheme = ${METPLUS_PHASEINFO_PHASESCHEME},
+  wcore_depth = ${METPLUS_PHASEINFO_WCORE_DEPTH},
+/
+
+&structinfo
+  structflag = ${METPLUS_STRUCTINFO_STRUCTFLAG},
+  ikeflag = ${METPLUS_STRUCTINFO_IKEFLAG},
+/
+
+&fnameinfo
+  gmodname = ${METPLUS_FNAMEINFO_GMODNAME},
+  rundescr = ${METPLUS_FNAMEINFO_RUNDESCR},
+  atcfdescr = ${METPLUS_FNAMEINFO_ATCFDESCR},
+/
+
+&waitinfo
+  use_waitfor = ${METPLUS_WAITINFO_USE_WAITFOR},
+  wait_min_age = ${METPLUS_WAITINFO_WAIT_MIN_AGE},
+  wait_min_size = ${METPLUS_WAITINFO_WAIT_MIN_SIZE},
+  wait_max_wait = ${METPLUS_WAITINFO_WAIT_MAX_WAIT},
+  wait_sleeptime = ${METPLUS_WAITINFO_WAIT_SLEEPTIME},
+  use_per_fcst_command = ${METPLUS_WAITINFO_USE_PER_FCST_COMMAND},
+  per_fcst_command = ${METPLUS_WAITINFO_PER_FCST_COMMAND},
+/
+
+&netcdflist
+  netcdfinfo%lat_name = ${METPLUS_NETCDFINFO_LAT_NAME},
+  netcdfinfo%lmaskname = ${METPLUS_NETCDFINFO_LMASKNAME},
+  netcdfinfo%lon_name = ${METPLUS_NETCDFINFO_LON_NAME},
+  netcdfinfo%mslpname = ${METPLUS_NETCDFINFO_MSLPNAME},
+  netcdfinfo%netcdf_filename = ${METPLUS_NETCDFINFO_NETCDF_FILENAME},
+  netcdfinfo%num_netcdf_vars = ${METPLUS_NETCDFINFO_NUM_NETCDF_VARS},
+  netcdfinfo%rv700name = ${METPLUS_NETCDFINFO_RV700NAME},
+  netcdfinfo%rv850name = ${METPLUS_NETCDFINFO_RV850NAME},
+  netcdfinfo%time_name = ${METPLUS_NETCDFINFO_TIME_NAME},
+  netcdfinfo%time_units = ${METPLUS_NETCDFINFO_TIME_UNITS},
+  netcdfinfo%tmean_300_500_name = ${METPLUS_NETCDFINFO_TMEAN_300_500_NAME},
+  netcdfinfo%u500name = ${METPLUS_NETCDFINFO_U500NAME},
+  netcdfinfo%u700name = ${METPLUS_NETCDFINFO_U700NAME},
+  netcdfinfo%u850name = ${METPLUS_NETCDFINFO_U850NAME},
+  netcdfinfo%usfcname = ${METPLUS_NETCDFINFO_USFCNAME},
+  netcdfinfo%v500name = ${METPLUS_NETCDFINFO_V500NAME},
+  netcdfinfo%v700name = ${METPLUS_NETCDFINFO_V700NAME},
+  netcdfinfo%v850name = ${METPLUS_NETCDFINFO_V850NAME},
+  netcdfinfo%vsfcname = ${METPLUS_NETCDFINFO_VSFCNAME},
+  netcdfinfo%z200name = ${METPLUS_NETCDFINFO_Z200NAME},
+  netcdfinfo%z300name = ${METPLUS_NETCDFINFO_Z300NAME},
+  netcdfinfo%z350name = ${METPLUS_NETCDFINFO_Z350NAME},
+  netcdfinfo%z400name = ${METPLUS_NETCDFINFO_Z400NAME},
+  netcdfinfo%z450name = ${METPLUS_NETCDFINFO_Z450NAME},
+  netcdfinfo%z500name = ${METPLUS_NETCDFINFO_Z500NAME},
+  netcdfinfo%z550name = ${METPLUS_NETCDFINFO_Z550NAME},
+  netcdfinfo%z600name = ${METPLUS_NETCDFINFO_Z600NAME},
+  netcdfinfo%z650name = ${METPLUS_NETCDFINFO_Z650NAME},
+  netcdfinfo%z700name = ${METPLUS_NETCDFINFO_Z700NAME},
+  netcdfinfo%z750name = ${METPLUS_NETCDFINFO_Z750NAME},
+  netcdfinfo%z800name = ${METPLUS_NETCDFINFO_Z800NAME},
+  netcdfinfo%z850name = ${METPLUS_NETCDFINFO_Z850NAME},
+  netcdfinfo%z900name = ${METPLUS_NETCDFINFO_Z900NAME},
+/
+
+&parmpreflist
+  user_wants_to_track_zeta700 = ${METPLUS_USER_WANTS_TO_TRACK_ZETA700},
+  user_wants_to_track_wcirc850 = ${METPLUS_USER_WANTS_TO_TRACK_WCIRC850},
+  user_wants_to_track_wcirc700 = ${METPLUS_USER_WANTS_TO_TRACK_WCIRC700},
+  user_wants_to_track_gph850 = ${METPLUS_USER_WANTS_TO_TRACK_GPH850},
+  user_wants_to_track_gph700 = ${METPLUS_USER_WANTS_TO_TRACK_GPH700},
+  user_wants_to_track_mslp = ${METPLUS_USER_WANTS_TO_TRACK_MSLP},
+  user_wants_to_track_wcircsfc = ${METPLUS_USER_WANTS_TO_TRACK_WCIRCSFC},
+  user_wants_to_track_zetasfc = ${METPLUS_USER_WANTS_TO_TRACK_ZETASFC},
+  user_wants_to_track_thick500850 = ${METPLUS_USER_WANTS_TO_TRACK_THICK500850},
+  user_wants_to_track_thick200500 = ${METPLUS_USER_WANTS_TO_TRACK_THICK200500},
+  user_wants_to_track_thick200850 = ${METPLUS_USER_WANTS_TO_TRACK_THICK200850},
+  user_wants_to_track_zeta850 = ${METPLUS_USER_WANTS_TO_TRACK_ZETA850},
+/
+
+&verbose
+  verb = ${METPLUS_VERBOSE_VERB},
+  verb_g2 = ${METPLUS_VERBOSE_VERB_G2},
+/

@@ -15,10 +15,10 @@ import os
 from ..util import met_util as util
 from ..util import time_util
 from ..util import do_string_sub
-from . import MODEWrapper
+from ..util import parse_var_list
 from . import CompareGriddedWrapper
 
-class MTDWrapper(MODEWrapper):
+class MTDWrapper(CompareGriddedWrapper):
 
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_MODEL',
@@ -37,18 +37,16 @@ class MTDWrapper(MODEWrapper):
         'METPLUS_OUTPUT_PREFIX',
     ]
 
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None):
         self.app_name = 'mtd'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
         self.fcst_file = None
         self.obs_file = None
 
     def create_c_dict(self):
-        c_dict = CompareGriddedWrapper.create_c_dict(self)
+        c_dict = super().create_c_dict()
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_MTD_VERBOSITY',
                                                  c_dict['VERBOSITY'])
 
@@ -62,12 +60,13 @@ class MTDWrapper(MODEWrapper):
             self.config.getraw('config',
                                'MTD_OUTPUT_TEMPLATE')
         )
-        c_dict['CONFIG_FILE'] = self.config.getraw('config',
-                                                   'MTD_CONFIG_FILE',
-                                                   '')
+
+        # get the MET config file path or use default
+        c_dict['CONFIG_FILE'] = self.get_config_file('MTDConfig_wrapped')
+
         # new method of reading/setting MET config values
-        self.set_met_config_int(self.env_var_dict, 'MTD_MIN_VOLUME',
-                                'min_volume', 'METPLUS_MIN_VOLUME')
+        self.add_met_config(name='min_volume',
+                            data_type='int')
 
         # old approach to reading/setting MET config values
         c_dict['MIN_VOLUME'] = self.config.getstr('config',
@@ -101,16 +100,16 @@ class MTDWrapper(MODEWrapper):
                                'OBS_MTD_INPUT_TEMPLATE')
         )
 
-        c_dict['FCST_IS_PROB'] = (
-            self.config.getbool('config',
-                                'FCST_IS_PROB',
-                                False)
+        c_dict['FCST_FILE_LIST'] = (
+            self.config.getraw('config',
+                               'FCST_MTD_INPUT_FILE_LIST')
         )
-        c_dict['OBS_IS_PROB'] = (
-            self.config.getbool('config',
-                                'OBS_IS_PROB',
-                                False)
+        c_dict['OBS_FILE_LIST'] = (
+            self.config.getraw('config',
+                               'OBS_MTD_INPUT_FILE_LIST')
         )
+        if c_dict['FCST_FILE_LIST'] or c_dict['OBS_FILE_LIST']:
+            c_dict['EXPLICIT_FILE_LIST'] = True
 
         # if single run for OBS, read OBS values into FCST keys
         read_type = 'FCST'
@@ -124,9 +123,9 @@ class MTDWrapper(MODEWrapper):
             self.read_field_values(c_dict, 'OBS', 'OBS')
 
         c_dict['VAR_LIST_TEMP'] = (
-            util.parse_var_list(self.config,
-                                data_type=c_dict.get('SINGLE_DATA_SRC'),
-                                met_tool=self.app_name)
+            parse_var_list(self.config,
+                           data_type=c_dict.get('SINGLE_DATA_SRC'),
+                           met_tool=self.app_name)
         )
 
         return c_dict
@@ -137,17 +136,17 @@ class MTDWrapper(MODEWrapper):
             self.config.getstr('config', f'{read_type}_MTD_INPUT_DATATYPE', '')
         )
 
-        self.set_met_config_int(self.env_var_dict,
-                                [f'{read_type}_MTD_CONV_RADIUS',
-                                 'MTD_CONV_RADIUS'],
-                                'conv_radius',
-                                f'METPLUS_{write_type}_CONV_RADIUS')
+        self.add_met_config(name='conv_radius',
+                            data_type='int',
+                            env_var_name=f'METPLUS_{write_type}_CONV_RADIUS',
+                            metplus_configs=[f'{read_type}_MTD_CONV_RADIUS',
+                                             'MTD_CONV_RADIUS'])
 
-        self.set_met_config_thresh(self.env_var_dict,
-                                   [f'{read_type}_MTD_CONV_THRESH',
-                                    'MTD_CONV_THRESH'],
-                                   'conv_thresh',
-                                   f'METPLUS_{write_type}_CONV_THRESH')
+        self.add_met_config(name='conv_thresh',
+                            data_type='thresh',
+                            env_var_name=f'METPLUS_{write_type}_CONV_THRESH',
+                            metplus_configs=[f'{read_type}_MTD_CONV_THRESH',
+                                             'MTD_CONV_THRESH'])
 
         # support old method of setting env vars
         conf_value = (
@@ -198,10 +197,6 @@ class MTDWrapper(MODEWrapper):
               Args:
                 @param input_dict dictionary containing timing information
         """        
-#        max_lookback = self.c_dict['MAX_LOOKBACK']
-#        file_interval = self.c_dict['FILE_INTERVAL']
-        lead_seq = util.get_lead_sequence(self.config, input_dict)
-
         var_list = util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
                                      input_dict)
 
@@ -223,9 +218,36 @@ class MTDWrapper(MODEWrapper):
 
         for var_info in var_list:
 
+            if self.c_dict.get('EXPLICIT_FILE_LIST', False):
+                time_info = time_util.ti_calculate(input_dict)
+                model_list_path = do_string_sub(self.c_dict['FCST_FILE_LIST'],
+                                                **time_info)
+                self.logger.debug(f"Explicit FCST file: {model_list_path}")
+                if not os.path.exists(model_list_path):
+                    self.log_error('FCST file list file does not exist: '
+                                   f'{model_list_path}')
+                    return None
+
+                obs_list_path = do_string_sub(self.c_dict['OBS_FILE_LIST'],
+                                              **time_info)
+                self.logger.debug(f"Explicit OBS file: {obs_list_path}")
+                if not os.path.exists(obs_list_path):
+                    self.log_error('OBS file list file does not exist: '
+                                   f'{obs_list_path}')
+                    return None
+
+                arg_dict = {'obs_path': obs_list_path,
+                            'model_path': model_list_path}
+
+                self.process_fields_one_thresh(time_info, var_info, **arg_dict)
+                continue
+
             model_list = []
             obs_list = []
+
             # find files for each forecast lead time
+            lead_seq = util.get_lead_sequence(self.config, input_dict)
+
             tasks = []
             for lead in lead_seq:
                 input_dict['lead'] = lead
@@ -289,36 +311,51 @@ class MTDWrapper(MODEWrapper):
         single_list = []
 
         data_src = self.c_dict.get('SINGLE_DATA_SRC')
-        if data_src == 'OBS':
-            find_method = self.find_obs
+
+        if self.c_dict.get('EXPLICIT_FILE_LIST', False):
+            time_info = time_util.ti_calculate(input_dict)
+            single_list_path = do_string_sub(
+                self.c_dict[f'{data_src}_FILE_LIST'],
+                **time_info
+            )
+            self.logger.debug(f"Explicit file list: {single_list_path}")
+            if not os.path.exists(single_list_path):
+                self.log_error(f'{data_src} file list file does not exist: '
+                               f'{single_list_path}')
+                return None
+
         else:
-            find_method = self.find_model
+            if data_src == 'OBS':
+                find_method = self.find_obs
+            else:
+                find_method = self.find_model
 
-        lead_seq = util.get_lead_sequence(self.config, input_dict)
-        for lead in lead_seq:
-            input_dict['lead'] = lead
-            current_task = time_util.ti_calculate(input_dict)
+            lead_seq = util.get_lead_sequence(self.config, input_dict)
+            for lead in lead_seq:
+                input_dict['lead'] = lead
+                current_task = time_util.ti_calculate(input_dict)
 
-            single_file = find_method(current_task, var_info)
-            if single_file is None:
-                continue
+                single_file = find_method(current_task, var_info)
+                if single_file is None:
+                    continue
 
-            single_list.append(single_file)
+                single_list.append(single_file)
 
-        if len(single_list) == 0:
-            return
+            if len(single_list) == 0:
+                return
 
-        # write ascii file with list of files to process
-        input_dict['lead'] = lead_seq[0]
-        time_info = time_util.ti_calculate(input_dict)
-        file_ext = self.check_for_python_embedding(data_src, var_info)
-        if not file_ext:
-            return
+            # write ascii file with list of files to process
+            input_dict['lead'] = lead_seq[0]
+            time_info = time_util.ti_calculate(input_dict)
+            file_ext = self.check_for_python_embedding(data_src, var_info)
+            if not file_ext:
+                return
 
-        single_outfile = (
-                f"{time_info['valid_fmt']}_mtd_single_{file_ext}.txt"
-        )
-        single_list_path = self.write_list_file(single_outfile, single_list)
+            single_outfile = (
+                    f"{time_info['valid_fmt']}_mtd_single_{file_ext}.txt"
+            )
+            single_list_path = self.write_list_file(single_outfile,
+                                                    single_list)
 
         arg_dict = {}
         if data_src == 'OBS':
@@ -467,7 +504,7 @@ class MTDWrapper(MODEWrapper):
         self.add_env_var("OBS_FILE_TYPE",
                          self.c_dict.get('OBS_FILE_TYPE', ''))
 
-        CompareGriddedWrapper.set_environment_variables(self, time_info)
+        super().set_environment_variables(time_info)
 
     def get_command(self):
         """! Builds the command to run the MET application

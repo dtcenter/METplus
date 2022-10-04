@@ -36,7 +36,7 @@ Output Files: N/A
 import os
 from produtil.run import exe, run
 import shlex
-from datetime import datetime
+from datetime import datetime, timezone
 
 class CommandRunner(object):
     """! Class for Creating and Running External Programs
@@ -51,9 +51,8 @@ class CommandRunner(object):
         self.skip_run = skip_run
         self.log_command_to_met_log = False
 
-    def run_cmd(self, cmd, env=None, ismetcmd = True, log_name=None,
-                run_inshell=False,
-                log_theoutput=False, copyable_env=None, **kwargs):
+    def run_cmd(self, cmd, env=None, log_name=None,
+                copyable_env=None, **kwargs):
         """!The command cmd is a string which is converted to a produtil
         exe Runner object and than run. Output of the command may also
         be redirected to either METplus log, MET log, or TTY.
@@ -66,18 +65,8 @@ class CommandRunner(object):
             @param cmd: A string, Command used in the produtil exe Runner object.
             @param env: Default None, environment for run to pass in, uses
             os.environ if not set.
-            @param ismetcmd: Default True, Will direct output to METplus log,
-            Metlog , or TTY. Set to False and use the other keywords as needed.
             @param log_name: Used only when ismetcmd=True, The name of the exectable
             being run.
-            @param run_inshell: Used only when ismetcmd=False, will Create a
-            runner object with the cmd being run through a shell, exe('sh')['-c', cmd]
-            This is required by commands, such as ncdump that are redirecting
-            output to a file, and other commands such as the convert command
-            when creating animated gifs.
-            @param log_theoutput: Used only when ismetcmd=False, will redirect
-            the stderr and stdout to a the METplus log file or tty.
-            DO Not set to True if the command is redirecting output to a file.
             @param kwargs Other options sent to the produtil Run constructor
         """
 
@@ -90,89 +79,59 @@ class CommandRunner(object):
 
         self.logger.info("COMMAND: %s" % cmd)
 
-        if ismetcmd:
-
-            # self.log_name MUST be defined in the subclass' constructor,
-            # this code block is a safety net in case that was not done.
-            # self.log_name is used to generate the MET log output name,
-            # if output is directed there, based on the conf settings.
-            #
-            # cmd.split()[0] 'should' be the /path/to/<some_met_binary>
-            if not log_name:
-                log_name = os.path.basename(cmd.split()[0])
-                self.logger.warning('MISSING self.log_name, '
-                                    'setting name to: %s' % repr(log_name))
-                self.logger.warning('Fix the code and edit the following objects'
-                                    ' contructor: %s, ' % repr(self))
-
-            # Determine where to send the output from the MET command.
-            log_dest = self.cmdlog_destination(cmdlog=log_name+'.log')
-
-            # KEEP This comment as a reference note.
-            # Run the executable in a new process instead of through a shell.
-            # FYI. We were originally running the command through a shell
-            # which also works just fine. IF we go back to running through
-            # a shell, The string ,cmd, is formatted exactly as is needed.
-            # By formatted, it is as it would be when typed at the shell prompt.
-            # This includes, for example, quoting or backslash escaping filenames
-            # with spaces in them.
-
-            # Run the executable and pass the arguments as a sequence.
-            # Split the command in to a sequence using shell syntax.
-            the_exe = shlex.split(cmd)[0]
-            the_args = shlex.split(cmd)[1:]
-            if log_dest:
-                self.logger.debug("log_name is: %s, output sent to: %s" % (log_name, log_dest))
-
-                self.log_header_info(log_dest, copyable_env, cmd)
-
-                cmd_exe = exe(the_exe)[the_args].env(**env).err2out() >> log_dest
-            else:
-                cmd_exe = exe(the_exe)[the_args].env(**env).err2out()
-
-        else:
-            # This block is for all the Non-MET commands
-            # Some commands still need to be run in  a shell in order to work.
-            #
-            # There are currently 3 cases of non met commnds that need to be handled.
-            # case 1. Redirecting to a file in cmd string, which must be through a shell
-            #         ie. cmd = ncdump ...series_F006/min.nc > .../min.txt
-            #             cmd = exe('sh')['-c', cmd]
-            # case 2. Running the executable directly, w/ arguments, NO redirection
-            #         ie. ncap2,  cmd = exe(the_exe)[the_args]
-            # case 3. Runnng the command and logging the output to
-            #         log_dest
-            if log_theoutput:
-                log_dest = self.cmdlog_destination(cmdlog=log_name + '.log')
-                if log_dest:
-                    self.logger.debug(
-                        "log_name is: %s, output sent to: %s" % (
-                            log_name, log_dest))
-                    self.log_header_info(log_dest, copyable_env, cmd)
-
-            if run_inshell:
-                # set the_exe to log command has finished running
-                the_exe = shlex.split(cmd)[0]
-
-                if log_theoutput:
-                    log_dest = self.cmdlog_destination(cmdlog=log_name+'.log')
-                    cmd_exe = exe('sh')['-c', cmd].env(**env).err2out() >> log_dest
-                else:
-                    cmd_exe = exe('sh')['-c', cmd].env(**env)
-
-            else:
-                the_exe = shlex.split(cmd)[0]
-                the_args = shlex.split(cmd)[1:]
-                if log_theoutput:
-                    log_dest = self.cmdlog_destination(cmdlog=log_name+'.log')
-                    cmd_exe = exe(the_exe)[the_args].env(**env).err2out() >> log_dest
-                else:
-                    cmd_exe = exe(the_exe)[the_args].env(**env)
-
         # don't run app if DO_NOT_RUN_EXE is set to True
         if self.skip_run:
             self.logger.info("Not running command (DO_NOT_RUN_EXE = True)")
             return 0, cmd
+
+        # self.log_name MUST be defined in the subclass' constructor,
+        # this code block is a safety net in case that was not done.
+        # self.log_name is used to generate the MET log output name,
+        # if output is directed there, based on the conf settings.
+        #
+        # cmd.split()[0] 'should' be the /path/to/<some_met_binary>
+        if not log_name:
+            log_name = os.path.basename(cmd.split()[0])
+            self.logger.warning('MISSING self.log_name, '
+                                'setting name to: %s' % repr(log_name))
+            self.logger.warning('Fix the code and edit the following objects'
+                                ' contructor: %s, ' % repr(self))
+
+        # Determine where to send the output from the MET command.
+        log_dest = self.cmdlog_destination(cmdlog=log_name+'.log')
+
+        # determine if command must be run in a shell
+        run_inshell = False
+        if '*' in cmd or ';' in cmd or '<' in cmd or '>' in cmd:
+            run_inshell=True
+
+        # KEEP This comment as a reference note.
+        # Run the executable in a new process instead of through a shell.
+        # FYI. We were originally running the command through a shell
+        # which also works just fine. IF we go back to running through
+        # a shell, The string ,cmd, is formatted exactly as is needed.
+        # By formatted, it is as it would be when typed at the shell prompt.
+        # This includes, for example, quoting or backslash escaping filenames
+        # with spaces in them.
+
+        # Run the executable and pass the arguments as a sequence.
+        # Split the command in to a sequence using shell syntax.
+        the_exe = shlex.split(cmd)[0]
+        the_args = shlex.split(cmd)[1:]
+        if log_dest:
+            self.logger.debug("log_name is: %s, output sent to: %s" % (log_name, log_dest))
+
+            self.log_header_info(log_dest, copyable_env, cmd)
+
+            if run_inshell:
+                cmd_exe = exe('sh')['-c', cmd].env(**env).err2out() >> log_dest
+            else:
+                cmd_exe = exe(the_exe)[the_args].env(**env).err2out() >> log_dest
+        else:
+            if run_inshell:
+                cmd_exe = exe('sh')['-c', cmd].env(**env)
+            else:
+                cmd_exe = exe(the_exe)[the_args].env(**env).err2out()
 
         # get current time to calculate total time to run command
         start_cmd_time = datetime.now()
@@ -190,31 +149,6 @@ class CommandRunner(object):
                               f'in {total_cmd_time}')
 
         return ret, cmd
-
-    # TODO: Refactor seriesbylead.
-    # For now we are back to running through a shell.
-    # Can not run its cmd string, unless we run through a shell.
-
-    # TODO refactor commands that are redirecting to a file.
-    # They should be brought in to the produtil framework
-    # the commands should not be required to run through a shell
-    # in order to work. we can either capture the output and write
-    # to a file or pass in the output_file and build the runner
-    # object usng exe('ncump')['file.nc'].out(output_file,append=False)
-
-    # The non met command where ismetcmd=False and log_theoutput=False block above
-    # was created specfically for running any command that is capturing its
-    # output to a file. Such as in series by lead.
-    # ie. cmd = '/usr/local/bin/ncdump ...series_F006/min.nc > .../min.txt'
-    # The way those commands,as of 2018Apr20, are being defined,
-    # the > redirection is in the command. We don't want
-    # to send the command cmd output to a log file, it will mess up the
-    # intention. Also, cmd can not be run when decontructed with shlex
-    # You can't have a redirect symbol as an argument, it gets quoted
-    # and I'm not sure how to get around that ...
-    # /usr/local/bin/ncdump ...series_F006/min.nc ">" .../min.txt
-    # We don't want to use run_cmd since that function may redirect
-    # output to a log file.
 
     def log_header_info(self, log_dest, copyable_env, cmd):
         with open(log_dest, 'a+') as log_file_handle:

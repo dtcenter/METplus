@@ -85,6 +85,7 @@ met_tool_wrapper/TCPairs/TCPairs_tropical.conf
 #        run_metplus.py -c /path/to/TCPairs_tropical.conf -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in TCPairs_tropical.conf::
+#
 #        run_metplus.py -c /path/to/TCPairs_tropical.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following METplus configuration variables must be set correctly to run this example.:
@@ -124,7 +125,13 @@ met_tool_wrapper/TCPairs/TCPairs_tropical.conf
 # --------
 #
 # .. note::
-#  `TCPairsToolUseCase <https://dtcenter.github.io/METplus/search.html?q=TCPairsToolUseCase&check_keywords=yes&area=default>`_,
-#  `DTCOrgUseCase <https://dtcenter.github.io/METplus/search.html?q=DTCOrgUseCase&check_keywords=yes&area=default>`_,
+#
+#   * TCPairsToolUseCase
+#   * DTCOrgUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
 #
 # sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-TCPairs.png'
+#

@@ -129,15 +129,21 @@ _RevisionSeries_GRIB.conf
 # --------
 #
 # .. note::
-#     `MTDToolUseCase <https://dtcenter.github.io/METplus/search.html?q=MTDToolUseCase&check_keywords=yes&area=default>`_,
-#     `PrecipitationAppUseCase <https://dtcenter.github.io/METplus/search.html?q=PrecipitationAppUseCase&check_keywords=yes&area=default>`_,
-#     `NOAAHMTOrgUseCase <https://dtcenter.github.io/METplus/search.html?q=NOAAHMTOrgUseCase&check_keywords=yes&area=default>`_,
-#     `GRIB2FileUseCase <https://dtcenter.github.io/METplus/search.html?q=GRIB2FileUseCase&check_keywords=yes&area=default>`_,
-#     `NOAAWPCOrgUseCase  <https://dtcenter.github.io/METplus/search.html?q=NOAAWPCOrgUseCase&check_keywords=yes&area=default>`_,
-#     `NOAAHMTOrgUseCase  <https://dtcenter.github.io/METplus/search.html?q=NOAAHMTOrgUseCase&check_keywords=yes&area=default>`_,
-#     `NOAAHWTOrgUseCase  <https://dtcenter.github.io/METplus/search.html?q=NOAAHWTOrgUseCase&check_keywords=yes&area=default>`_,
-#     `ConvectionAllowingModelsAppUseCase <https://dtcenter.github.io/METplus/search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_,
-#     `RevisionSeriesUseCase  <https://dtcenter.github.io/METplus/search.html?q=RevisionSeriesUseCase&check_keywords=yes&area=default>`_,
-#     `DiagnosticsUseCase <https://dtcenter.github.io/METplus/search.html?q=DiagnosticsUseCase&check_keywords=yes&area=default>`_
+#
+#   * MTDToolUseCase
+#   * PrecipitationAppUseCase
+#   * NOAAHMTOrgUseCase
+#   * GRIB2FileUseCase
+#   * NOAAWPCOrgUseCase
+#   * NOAAHMTOrgUseCase
+#   * NOAAHWTOrgUseCase
+#   * ConvectionAllowingModelsAppUseCase
+#   * RevisionSeriesUseCase
+#   * DiagnosticsUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
 #
 # sphinx_gallery_thumbnail_path = '_static/precipitation-MTD_fcstHRRR-TLE_FcstOnly_RevisionSeries_GRIB.png'
+#

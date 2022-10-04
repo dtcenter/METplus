@@ -18,8 +18,11 @@ import glob
 import datetime
 import itertools
 
+from ..util import getlist
 from ..util import met_util as util
-from ..util import do_string_sub
+from ..util import do_string_sub, find_indices_in_config_section
+from ..util import parse_var_list, remove_quotes
+from ..util import get_start_and_end_times
 from . import CommandBuilder
 
 class StatAnalysisWrapper(CommandBuilder):
@@ -61,6 +64,7 @@ class StatAnalysisWrapper(CommandBuilder):
         'METPLUS_ALPHA',
         'METPLUS_LINE_TYPE',
         'METPLUS_JOBS',
+        'METPLUS_HSS_EC_VALUE',
     ]
 
     field_lists = ['FCST_VAR_LIST',
@@ -110,13 +114,11 @@ class StatAnalysisWrapper(CommandBuilder):
         'FCST_INIT_HOUR_LIST', 'OBS_INIT_HOUR_LIST'
     ]
 
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None):
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      'stat_analysis')
         self.app_name = os.path.basename(self.app_path)
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
     def get_command(self):
 
@@ -134,6 +136,9 @@ class StatAnalysisWrapper(CommandBuilder):
             cmd += f" -config {self.c_dict['CONFIG_FILE']}"
         else:
             cmd += f' {self.job_args}'
+
+        if self.c_dict.get('OUTPUT_FILENAME'):
+            cmd += f" -out {self.c_dict['OUTPUT_FILENAME']}"
 
         return cmd
      
@@ -154,12 +159,18 @@ class StatAnalysisWrapper(CommandBuilder):
                                c_dict['VERBOSITY'])
         )
         c_dict['LOOP_ORDER'] = self.config.getstr('config', 'LOOP_ORDER')
-        c_dict['CONFIG_FILE'] = self.config.getstr('config', 
-                                                   'STAT_ANALYSIS_CONFIG_FILE',
-                                                   '')
+
+        # STATAnalysis config file is optional, so
+        # don't provide wrapped config file name as default value
+        c_dict['CONFIG_FILE'] = self.get_config_file()
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('STAT_ANALYSIS_OUTPUT_DIR',
                                                   '')
+
+        # read optional template to set -out command line argument
+        c_dict['OUTPUT_TEMPLATE'] = (
+            self.config.getraw('config', 'STAT_ANALYSIS_OUTPUT_TEMPLATE', '')
+        )
 
         c_dict['DATE_TYPE'] = self.config.getstr('config',
                                                  'DATE_TYPE',
@@ -167,13 +178,18 @@ class StatAnalysisWrapper(CommandBuilder):
                                                                     'LOOP_BY',
                                                                     ''))
 
-        for time_conf in ['VALID_BEG', 'VALID_END', 'INIT_BEG', 'INIT_END']:
-            c_dict[time_conf] = self.config.getstr('config', time_conf, '')
+        start_dt, end_dt = get_start_and_end_times(self.config)
+        if not start_dt:
+            self.log_error('Could not get start and end times. '
+                           'VALID_BEG/END or INIT_BEG/END must be set.')
+        else:
+            c_dict['DATE_BEG'] = start_dt.strftime('%Y%m%d')
+            c_dict['DATE_END'] = end_dt.strftime('%Y%m%d')
 
         for job_conf in ['JOB_NAME', 'JOB_ARGS']:
             c_dict[job_conf] = self.config.getstr('config',
-                                                   f'STAT_ANALYSIS_{job_conf}',
-                                                   '')
+                                                  f'STAT_ANALYSIS_{job_conf}',
+                                                  '')
 
         # read in all lists except field lists, which will be read in afterwards and checked
         all_lists_to_read = self.expected_config_lists + self.list_categories
@@ -181,7 +197,7 @@ class StatAnalysisWrapper(CommandBuilder):
                            conf_list in all_lists_to_read
                            if conf_list not in self.field_lists]
         for conf_list in non_field_lists:
-            c_dict[conf_list] = util.getlist(
+            c_dict[conf_list] = getlist(
                 self.config.getstr('config', conf_list, '')
             )
 
@@ -213,7 +229,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 if not self.MakePlotsWrapper.isOK:
                     self.log_error("MakePlotsWrapper was not initialized correctly.")
 
-        c_dict['VAR_LIST'] = util.parse_var_list(self.config)
+        c_dict['VAR_LIST'] = parse_var_list(self.config)
 
         c_dict['MODEL_INFO_LIST'] = self.parse_model_info()
         if not c_dict['MODEL_LIST'] and c_dict['MODEL_INFO_LIST']:
@@ -223,6 +239,10 @@ class StatAnalysisWrapper(CommandBuilder):
                     c_dict['MODEL_LIST'].append(model_info['name'])
 
         c_dict = self.set_lists_loop_or_group(c_dict)
+
+        self.add_met_config(name='hss_ec_value',
+                            data_type='float',
+                            metplus_configs=['STAT_ANALYSIS_HSS_EC_VALUE'])
 
         return self.c_dict_error_check(c_dict)
 
@@ -298,7 +318,7 @@ class StatAnalysisWrapper(CommandBuilder):
                     self.get_level_list(field_list.split('_')[0])
                 )
             else:
-                field_dict[field_list] = util.getlist(
+                field_dict[field_list] = getlist(
                     self.config.getstr('config',
                                        field_list,
                                        '')
@@ -1047,22 +1067,24 @@ class StatAnalysisWrapper(CommandBuilder):
                  lookin_dir        - string of the filled directory
                                      from dir_path
         """
-        if '?fmt=' in dir_path:
-            stringsub_dict = self.build_stringsub_dict(lists_to_loop,
-                                                       lists_to_group, 
-                                                       config_dict)
-            dir_path_filled = do_string_sub(dir_path,
-                                            **stringsub_dict)
-        else:
-            dir_path_filled = dir_path
-        if '*' in dir_path_filled:
-            self.logger.debug(f"Expanding wildcard path: {dir_path_filled}")
-            dir_path_filled_all = ' '.join(sorted(glob.glob(dir_path_filled)))
-            self.logger.warning(f"Wildcard expansion found no matches")
-        else:
-            dir_path_filled_all = dir_path_filled
-        lookin_dir = dir_path_filled_all
-        return lookin_dir
+        stringsub_dict = self.build_stringsub_dict(lists_to_loop,
+                                                   lists_to_group,
+                                                   config_dict)
+        dir_path_filled = do_string_sub(dir_path,
+                                        **stringsub_dict)
+
+        all_paths = []
+        for one_path in dir_path_filled.split(','):
+            if '*' in one_path:
+                self.logger.debug(f"Expanding wildcard path: {one_path}")
+                expand_path = glob.glob(one_path.strip())
+                if not expand_path:
+                    self.logger.warning(f"Wildcard expansion found no matches")
+                    continue
+                all_paths.extend(sorted(expand_path))
+            else:
+               all_paths.append(one_path.strip())
+        return ' '.join(all_paths)
 
     def format_valid_init(self, config_dict):
         """! Format the valid and initialization dates and
@@ -1223,9 +1245,9 @@ class StatAnalysisWrapper(CommandBuilder):
         """
         model_info_list = []
         model_indices = list(
-            util.find_indices_in_config_section(r'MODEL(\d+)$',
-                                                self.config,
-                                                index_index=1).keys()
+            find_indices_in_config_section(r'MODEL(\d+)$',
+                                           self.config,
+                                           index_index=1).keys()
         )
         for m in model_indices:
             model_name = self.config.getstr('config', f'MODEL{m}')
@@ -1311,13 +1333,13 @@ class StatAnalysisWrapper(CommandBuilder):
         """
         level_list = []
 
-        level_input = util.getlist(
+        level_input = getlist(
             self.config.getstr('config', f'{data_type}_LEVEL_LIST', '')
         )
 
         for level in level_input:
             level = level.strip('(').strip(')')
-            level = f'{util.remove_quotes(level)}'
+            level = f'{remove_quotes(level)}'
             level_list.append(level)
 
         return level_list
@@ -1383,6 +1405,22 @@ class StatAnalysisWrapper(CommandBuilder):
                                                              loop_lists,
                                                              group_lists,
                                                              )
+
+            # get -out argument if set
+            if self.c_dict['OUTPUT_TEMPLATE']:
+                output_filename = (
+                    self.get_output_filename('output',
+                                             self.c_dict['OUTPUT_TEMPLATE'],
+                                             'user',
+                                             loop_lists,
+                                             group_lists,
+                                             runtime_settings_dict)
+                )
+                output_file = os.path.join(self.c_dict['OUTPUT_DIR'],
+                                           output_filename)
+
+                # add output file path to runtime_settings_dict
+                runtime_settings_dict['OUTPUT_FILENAME'] = output_file
 
             # Set up forecast and observation valid
             # and initialization time information.
@@ -1488,7 +1526,7 @@ class StatAnalysisWrapper(CommandBuilder):
                                     False)
             )
             if run_fourier:
-                fourier_wave_num_pairs = util.getlist(
+                fourier_wave_num_pairs = getlist(
                     self.config.getstr('config',
                                        'VAR' + var_info['index'] + '_WAVE_NUM_LIST',
                                        '')
@@ -1726,7 +1764,6 @@ class StatAnalysisWrapper(CommandBuilder):
             # with other wrappers
             mp_lists = ['MODEL',
                         'DESC',
-                        'OBTYPE',
                         'FCST_LEAD',
                         'OBS_LEAD',
                         'FCST_VALID_HOUR',
@@ -1739,12 +1776,13 @@ class StatAnalysisWrapper(CommandBuilder):
                         'OBS_UNITS',
                         'FCST_LEVEL',
                         'OBS_LEVEL',
+                        'OBTYPE',
                         'VX_MASK',
                         'INTERP_MTHD',
                         'INTERP_PNTS',
                         'FCST_THRESH',
                         'OBS_THRESH',
-                        'CONV_THRESH',
+                        'COV_THRESH',
                         'ALPHA',
                         'LINE_TYPE'
                         ]
@@ -1763,14 +1801,11 @@ class StatAnalysisWrapper(CommandBuilder):
                         'FCST_INIT_END',
                         'OBS_INIT_BEG',
                         'OBS_INIT_END',
-                        'DESC',
-                        'OBTYPE',
-                        'FCST_LEAD'
                         ]
             for mp_item in mp_items:
                 if not runtime_settings_dict.get(mp_item, ''):
                     continue
-                value = util.remove_quotes(runtime_settings_dict.get(mp_item,
+                value = remove_quotes(runtime_settings_dict.get(mp_item,
                                                                      ''))
                 value = (f"{mp_item.lower()} = \"{value}\";")
                 self.env_var_dict[f'METPLUS_{mp_item}'] = value
@@ -1784,9 +1819,14 @@ class StatAnalysisWrapper(CommandBuilder):
             self.set_environment_variables()
 
             # set lookin dir
-            self.logger.debug(f"Setting -lookindir to {runtime_settings_dict['LOOKIN_DIR']}")
+            self.logger.debug(f"Setting -lookin dir to {runtime_settings_dict['LOOKIN_DIR']}")
             self.lookindir = runtime_settings_dict['LOOKIN_DIR']
             self.job_args = runtime_settings_dict['JOB']
+
+            # set -out file path if requested, value will be set to None if not
+            self.c_dict['OUTPUT_FILENAME'] = (
+                runtime_settings_dict.get('OUTPUT_FILENAME')
+            )
 
             self.build()
 
@@ -1800,7 +1840,7 @@ class StatAnalysisWrapper(CommandBuilder):
              @returns True if job should be run, False if it should be skipped
         """
         run_job = True
-        for job_type in ['dump_row', 'out_stat']:
+        for job_type in ['dump_row', 'out_stat', 'output']:
             output_path = (
                 runtime_settings_dict.get(f'{job_type.upper()}_FILENAME')
             )
@@ -1812,24 +1852,11 @@ class StatAnalysisWrapper(CommandBuilder):
         return run_job
 
     def run_all_times(self):
-        date_type = self.c_dict['DATE_TYPE']
-        self.c_dict['DATE_BEG'] = self.c_dict[date_type+'_BEG']
-        self.c_dict['DATE_END'] = self.c_dict[date_type+'_END']
         self.run_stat_analysis()
         return self.all_commands
 
     def run_at_time(self, input_dict):
-        loop_by_init = util.is_loop_by_init(self.config)
-        if loop_by_init is None:
-            return
-
-        if loop_by_init:
-            loop_by = 'INIT'
-        else:
-            loop_by = 'VALID'
-
-        self.c_dict['DATE_TYPE'] = loop_by
-
+        loop_by = self.c_dict['DATE_TYPE']
         run_date = input_dict[loop_by.lower()].strftime('%Y%m%d')
         self.c_dict['DATE_BEG'] = run_date
         self.c_dict['DATE_END'] = run_date

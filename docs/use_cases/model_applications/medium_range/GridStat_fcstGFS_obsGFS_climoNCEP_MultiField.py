@@ -140,6 +140,18 @@ _climoNCEP_MultiField.conf
 # Keywords
 # --------
 #
+# .. note::
+#
+#   * GridStatToolUseCase
+#   * MediumRangeAppUseCase
+#   * StatAnalysisToolUseCase
+#   * GRIBFileUseCase
+#   * NOAAEMCOrgUseCase
+#   * RegriddinginTool
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
+#
 # sphinx_gallery_thumbnail_path = '_static/medium_range-GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.png'
 #
-# .. note:: `GridStatToolUseCase <https://dtcenter.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_, `MediumRangeAppUseCase <https://dtcenter.github.io/METplus/search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_, `StatAnalysisToolUseCase <https://dtcenter.github.io/METplus/search.html?q=StatAnalysisToolUseCase&check_keywords=yes&area=default>`_, `GRIBFileUseCase <https://dtcenter.github.io/METplus/search.html?q=GRIBFileUseCase&check_keywords=yes&area=default>`_, `NOAAEMCOrgUseCase <https://dtcenter.github.io/METplus/search.html?q=NOAAEMCOrgUseCase&check_keywords=yes&area=default>`_, `RegriddinginTool <https://dtcenter.github.io/METplus/search.html?q=RegriddingInToolUseCase&check_keywords=yes&area=default>`_     

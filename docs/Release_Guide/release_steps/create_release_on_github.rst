@@ -9,6 +9,10 @@ Create Release on GitHub
 
 * Choose a release name (i.e. |projectRepo|-X.Y.Z-betaN, |projectRepo|-X.Y.Z-rcN, or |projectRepo|-X.Y.Z)
 
-* Add a link to the release notes from the |projectRepo| User's Guide
+* Add a link to the release notes from the |projectRepo| User's Guide, i.e.
+  https://|projectRepo|.readthedocs.io/en/vX.Y.Z-betaN/Users_Guide/release-notes.html
+  (Note: the URL will not be active until the release is created)
 
-* Attach a PDF of the |projectRepo| User's Guide, if available
+* Add links to the HTML and PDF versions of the |projectRepo| User's Guide on ReadTheDocs.
+  https://|projectRepo|.readthedocs.io/_/downloads/en/vX.Y.Z-betaN/pdf/
+  (Note: the URL will not be active until the release is created)

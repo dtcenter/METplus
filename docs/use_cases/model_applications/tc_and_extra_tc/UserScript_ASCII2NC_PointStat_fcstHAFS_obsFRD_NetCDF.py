@@ -158,6 +158,16 @@ _NetCDF.conf
 # Keywords
 # --------
 #
+# .. note::
+#
+#   * TCandExtraTCAppUseCase
+#   * UserScriptUseCase
+#   * PointStatToolUseCase
+#   * ASCII2NCToolUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
+#
 # sphinx_gallery_thumbnail_path = '_static/tc_and_extra_tc-UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD_NetCDF.png'
 #
-# .. note:: `TCandExtraTCAppUseCase <https://dtcenter.github.io/METplus/develop/search.html?q=TCandExtraTCAppUseCase&check_keywords=yes&area=default>`_, `UserScriptUseCase <https://dtcenter.github.io/METplus/develop/search.html?q=UserScriptUseCase&check_keywords=yes&area=default>`_, `PointStatToolUseCase <https://dtcenter.github.io/METplus/develop/search.html?q=PointStatToolUseCase&check_keywords=yes&area=default>`_, `ASCII2NC <https://dtcenter.github.io/METplus/search.html?q=ASCII2NCToolUseCase&check_keywords=yes&area=default>`_

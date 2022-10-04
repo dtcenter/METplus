@@ -7,6 +7,7 @@ a panel plot of coherence spectra.
 """
 import numpy as np
 import os
+import sys
 import xarray as xr
 
 import metplotpy.contributed.spacetime_plot.spacetime_plot as stp

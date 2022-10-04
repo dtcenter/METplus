@@ -15,7 +15,7 @@ import os
 from ..util import met_util as util
 from ..util import time_util
 from . import CommandBuilder
-from ..util import do_string_sub
+from ..util import do_string_sub, remove_quotes
 
 '''!@namespace PlotDataPlaneWrapper
 @brief Wraps the PlotDataPlane tool to plot data
@@ -24,13 +24,11 @@ from ..util import do_string_sub
 
 
 class PlotDataPlaneWrapper(CommandBuilder):
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None):
         self.app_name = "plot_data_plane"
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -187,7 +185,7 @@ class PlotDataPlaneWrapper(CommandBuilder):
                                    **time_info)
         field_info = f" 'name=\"{field_name}\";"
         if self.c_dict['FIELD_LEVEL']:
-            field_level = util.remove_quotes(self.c_dict['FIELD_LEVEL'])
+            field_level = remove_quotes(self.c_dict['FIELD_LEVEL'])
             field_info += f" level=\"{field_level}\";"
 
         if self.c_dict['FIELD_EXTRA']:

@@ -1,17 +1,35 @@
 Update Release Notes
 --------------------
 
-You can refer to the GitHub Issues page to see what has changed for this
+You can refer to the GitHub Project board to see what has changed for this
 release. Open the following URL in a browser:
 
 .. parsed-literal::
 
-    https://github.com/dtcenter/|projectRepo|/issues
+    https://github.com/orgs/dtcenter/projects?type=beta
 
-* Click on the Projects tab and select the project (under Repository) that
-  corresponds to the release you are creating.
+* Click on the project that corresponds to this release, i.e.
+  |projectRepo|-X.Y.Z-betaN
+
+* Navigate to the "Closed Issues" tab.
+  **If this tab does not exist**, follow these instructions to create it:
+
+  * Click on "+ New view" button on the far right side of the view tabs
+  * Click on "View <N>" (where <N> is an integer) and rename it to
+    "Closed Issues"
+  * Click on the down arrow next to the newly created view
+  * Click on "Search or filter this view"
+  * Enter the following info into the filter bar: **is:closed is:issue**
+  * Click on the down arrow next to the view and click "Save changes"
 
 * Update the release-notes.rst file found in the User's Guide directory.
+
+* Consider organizing release notes into logical groups
+  (e.g. Enhancements, Bugfixes, Documentation, etc.) and modifying
+  GitHub issue titles for consistency. The release notes should match
+  the GitHub issue titles, when possible.
+
+* Use your best judgement to apply bold formatting for any major or important changes.
 
 * If you are creating a beta1 release, remove the previous version's release
   notes, i.e. for 3.0.0-beta1, remove all 2.Y.Z notes and start a 3.0.0

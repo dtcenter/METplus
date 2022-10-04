@@ -10,7 +10,7 @@ The branching model employed by the METplus GitHub repository is similar to
 that described in
 `A successful Git branching model <https://nvie.com/posts/a-successful-git-branching-model/>`_,
 where new or updated code is created on a 'feature' branch that is based on
-the `NCAR/METplus GitHub 'develop' branch <https://github.com/dtcenter/METplus/tree/develop>`_.
+the `dtcenter/METplus GitHub 'develop' branch <https://github.com/dtcenter/METplus/tree/develop>`_.
 
 The feature branch is named after the corresponding GitHub issue:
 
@@ -26,9 +26,9 @@ which includes data tarballs for use in running use cases.
 Sequence of Events - Contributing Code
 --------------------------------------
 
-*Pre-requisite:*
+*Prerequisite:*
 
-The user must set up a GitHub repository account if one does not already have exhist.
+The user must set up a GitHub account if one does not already exist.
 Log into the account.  For more information about GitHub accounts, please refer
 to the GitHub Documentation on
 `GitHub accounts <https://help.github.com/en/github/getting-started-with-github/signing-up-for-a-new-github-account>`_.
@@ -36,76 +36,78 @@ to the GitHub Documentation on
 
 Workflow Overview
 ~~~~~~~~~~~~~~~~~
-A contributor to METplus will do the following:
 
-1.  Create a GitHub Issue to track the new contribution.
+Contributors will follow these instructions for new development.
+Detailed instructions for each item can be found below or by clicking the link.
 
-2.  Fork the NCAR/METplus repository.
+#. :ref:`wo-find-issue`
+#. :ref:`wo-fork-repo`
+#. :ref:`wo-clone-repo`
+#. :ref:`wo-set-upstream`
+#. :ref:`wo-feature-branch`
+#. :ref:`wo-make-changes`
+#. :ref:`wo-commit-changes`
+#. :ref:`wo-push-changes`
 
-3.  Clone the fork to local repository.
+.. _wo-find-issue:
 
-4.  Set upstream remote (to assist in keeping upstream and local repositories synchronized).
-
-5.  Generate a feature branch from the 'develop' branch for new development.
-
-6.  Make changes to code in the feature branch.
-
-7.  Commit changes to feature branch (limit one change per commit).
-
-8.  Push the feature branch to GitHub.
-
-9.  Open a pull request from feature branch to original repo (from which the original
-    branch was forked, in step 2 above).
-
-10.  Clean up after pull request has been merged by an authorized METplus developer.
-
-
-
-Create a GitHub Issue that reflects what needs to be done
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Find the GitHub issue
+^^^^^^^^^^^^^^^^^^^^^
 
 * Go to the `METplus repository <https://github.com/dtcenter/METplus>`_  and
-  click on the `Issues link <https://github.com/dtcenter/METplus/issues>`_.
+  click on the `Issues tab <https://github.com/dtcenter/METplus/issues>`_.
 
-* Click on the green **New issue** button.
+* Search for an existing issue that describes the contribution.
+  If one exists, take note of the issue number.
+  If one cannot be found, create a
+  `new Discussion <https://github.com/dtcenter/METplus/discussions/new>`_ on
+  the METplus GitHub Discussions page to ask if an issue should be created.
 
-* Write a description of the task and attach appropriate values to Assignee,
-  Labels, and Milestone links located on the right hand side of the page.
+.. _wo-fork-repo:
 
+Fork the dtcenter/METplus repository
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Fork the NCAR/METplus repository
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+* **If the contributor has write access to the dtcenter/METplus repository,
+  then forking the repository is not necessary.** If so, skip to the
+  instructions related to creating a fork and keeping the fork in sync with
+  the dtcenter/METplus repository.
 
-* Retrieve a copy of the source code by forking the NCAR/METplus repository
-  into the user's own GitHub repository. Click on the **Fork** button in the upper right
-  hand side of the `METplus repository <https://github.com/dtcenter/METplus>`_.
+* Retrieve a copy of the source code by forking the *dtcenter/METplus*
+  repository into the user's own GitHub repository. Click on the **Fork**
+  button in the upper right hand side of the
+  `METplus repository <https://github.com/dtcenter/METplus>`_.
 
-* Click on the appropriate GitHub account when presented with the pop-up window
-  with the question 'Where should we fork METplus?'.
+* Verify that your GitHub username is shown in the **Owner** pull down menu.
+  If it is not, then the forked repository likely already exists. If so,
+  continue to :ref:`wo-clone-repo`.
 
-* The web page will refresh to the GitHub repository at, for example:
+* Unselect the checkbox that says *Copy the main_vX.Y branch only*.
+
+* The web page will refresh to the GitHub repository. For example:
 
   .. code-block:: ini
 
-    https://github.com/<your-github-user>/METplus
+    https://github.com/{github-username}/METplus
 
-  where *<your-github-user>* is replaced with the user's GitHub username.
-  An entire copy of the NCAR/METplus Github repository is now in the User's area.
+  Where *{github-username}* is the user's GitHub username.
+  An entire copy of the *dtcenter/METplus* GitHub repository is now in the
+  user's area.
 
+.. _wo-clone-repo:
 
-Clone the fork to a local repository
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-* Copy the source code to the directory where you will be doing your work.
+Clone the repository locally
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * Change directories to a working directory. From the command line,
   enter the following:
 
   .. code-block:: ini
 
-    git clone https://github.com/<your-github-user>/METplus
+    git clone https://github.com/{github-username}/METplus
 
-  replacing <your-github-user> with your GitHub username.
+  replacing *{github-username}* with the user's GitHub username.
+  If not working from a fork, then use *dtcenter*.
 
 * Change directories to the METplus directory:
 
@@ -113,94 +115,110 @@ Clone the fork to a local repository
 
     cd METplus
 
-  Now you are in your local METplus repository.
+  This is the local METplus repository.
+
+.. _wo-set-upstream:
 
 Set upstream remote
 ^^^^^^^^^^^^^^^^^^^
 
-* Add a remote named origin to the clone of your local Git repository, which
-  will allow you to push changes to the repository you forked in step 1.
+* **If working from the dtcenter/METplus repository, skip this step.**
+
+* Add a remote named origin to the clone of the local Git repository, which
+  will allow changes to be pushed to the repository that was forked above.
 
   .. code-block:: ini
 
     git remote add upstream https://github.com/dtcenter/METplus
 
-* To verify that the upstream and origin are correct, at the command line enter:
+* To verify that the upstream and origin are correct, at the command
+  line enter:
 
   .. code-block:: ini
 
     git remote -v
 
-  You should see something like the following:
+  Something like the following will be output:
 
   .. code-block:: ini
 
-    origin	https://github.com/<your-github-user>/METplus (fetch)
-    origin	https://github.com/<your-github-user>/METplus (push)
+    origin	https://github.com/{github-username}/METplus (fetch)
+    origin	https://github.com/{github-username}/METplus (push)
     upstream	https://github.com/dtcenter/METplus (fetch)
     upstream	https://github.com/dtcenter/METplus (push)
 
-  where <your-github-user> is your GitHub username.
+  where *{github-username}* is the user's GitHub username.
+
+.. _wo-feature-branch:
+
+Create a feature branch
+^^^^^^^^^^^^^^^^^^^^^^^
+
+* Generate a feature branch from the *develop* branch for new development
+  following this naming convention:
+
+  *feature_<Github Issue number>_<brief_description>*
+
+  For example, for GitHub issue #777 that creates new wrapper xyz, the
+  feature branch would be named:
+
+  *feature_777_wrapper_xyz*
 
 
-Generate a feature branch from the 'develop' branch for new development
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-* Create a feature branch in the NCAR/METplus GitHub repository following this naming convention
-
-| *feature_<Github Issue number>_<brief_description>*
-|
-
-  For example, for GitHub issue #777 that creates new wrapper xyz, the feature branch would be named:
-
-| *feature_777_wrapper_xyz*
-|
-
-* Create your feature branch based off the develop branch
+* Create the feature branch based off the develop branch:
 
   .. code-block:: ini
 
     git checkout develop
 
-* Verify that you are currently working in the develop branch by running
+* Verify the current development branch is active by running:
 
   .. code-block:: ini
 
     git branch
 
-  You should see something like the following:
+  Something like the following will be output:
 
   .. code-block:: ini
 
     * develop
-    main_v3.1
+    main_v4.1
 
-  The asterisk, "*", indicates the currently active branch.
+  The asterisk (*) indicates the active branch.
 
-* At the command line, create and checkout the feature branch. For example:
+* Ensure that the develop branch is in sync with the upstream develop branch:
+
+  .. code-block:: ini
+
+   git fetch upstream
+   git merge upstream/develop
+   git push origin develop
+
+* Create and checkout the feature branch. For example:
 
   .. code-block:: ini
 
     git checkout -b feature_777_wrapper_xyz
 
-  replacing *feature_777_wrapper_xyz* with your feature branch name.
+  replacing *feature_777_wrapper_xyz* with the feature branch name.
 
-* Verify that you are working in the correct branch by running:
+* Verify that the user is working in the correct branch by running:
 
   .. code-block:: ini
 
     git branch
 
-  You should see something like the following:
+  Something like the following will be output:
 
   .. code-block:: ini
 
     develop
-    main_v3.1
+    main_v4.1
     * feature_777_wrapper_xyz
 
-  where the asterisk, "*", indicates which branch is currently in use/checked out.
+  The asterisk (*) indicates the active branch.
 
+.. _wo-make-changes:
 
 Make changes to code in the feature branch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -208,112 +226,181 @@ Make changes to code in the feature branch
 Users should make changes to their feature branch and commit changes to their
 local repository.
 
-* Create code following the coding standards in the :ref:`codingstandards` section of
-  the Contributor's Guide.
+* If adding a new METplus use case:
 
-* Provide some tests for your code using the pytest framework, provide user documentation
-  describing what the code does, and provide any necessary data.
+    * Follow the instructions on the :ref:`adding-use-cases` section of the
+      Contributor's Guide.
 
-* Keep your fork in sync. While working, it is highly likely that changes are occurring in
-  the original repository.  This may impact your work.  Regularly use the following commands
-  to keep your fork in sync with the original repository.
+* If making code changes:
+
+    * Follow the coding standards in the :ref:`codingstandards` section of the
+      Contributor's Guide.
+
+    * Add unit tests using the pytest framework
+
+    * Add documentation
+
+* If working in a forked repository, keep the fork in sync with the origin
+  repository:
+
+    * New changes to the origin repository may be added by others during
+      development. Periodically apply these changes to the feature branch to
+      avoid conflicts.
+
+    * To merge the latest changes from the origin develop branch into the
+      feature branch, run the following from the feature branch:
 
   .. code-block:: ini
 
-    git pull upstream develop
-    git push origin develop
-    git merge origin develop
+    git fetch upstream
+    git merge upstream/develop
 
-  The first command pulls changes from the original repository (the
-  `METplus GitHub repository <https://github.com/dtcenter/METplus>`_ that you see when you
-  run *git remote -v* and that you set to upstream in step 4 above).  The second command
-  pushes those changes to your forked repository.  The third command will merge the local
-  develop branch into the feature branch.
+  The *fetch* command obtains all new changes from the upstream (dtcenter)
+  repository.
+  The *merge* command merges the latest changes from the upstream develop
+  branch into the feature branch.
 
+* If not working in a forked repository, keep the feature branch in sync with
+  the develop branch:
+
+  .. code-block:: ini
+
+    git fetch
+    git merge develop
+
+* If the console output includes the text *CONFLICT*, then there are
+  conflicts between the two branches that must be resolved manually.
+  Refer to the GitHub documentation for help with
+  `Resolving a merge conflict using the command line <https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-using-the-command-line>`_.
+
+.. _wo-commit-changes:
 
 Commit changes to feature branch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* Commit any new files by running the following.  Run the *'git add'* command only if this file is
-  newly created and does not yet exist in your repository.
+* View all files that have changed since the last commit:
 
   .. code-block:: ini
 
-    git add <filename>
-    git commit <filename>
+    git status
 
-  replacing <filename> with the filename.
+* It is recommended to group related changes into a single commit.
+  Mark files to be committed using the *git add* followed by the filename:
 
-  A popup window will appear, where you will enter a description of this commit, using the
-  editor you selected when you set up your Git account.  Please refer to the
+  .. code-block:: ini
+
+    git add <filename1>
+    git add <filename2>
+
+* Check the status again to verify that the correct files have been staged
+  for commit:
+
+  .. code-block:: ini
+
+    git status
+
+* Commit the files by running the *git commit* command. The -m argument can
+  be used to add a commit message to describe the changes.
+
+  .. code-block:: ini
+
+    git commit
+
+  A popup window will appear. Enter a description about this commit, using the
+  editor the user selected when the Git account was set up.
+  Please refer to the
   `Git Setup <https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup>`_
-  documentation on configuring your Git account.
+  documentation on configuring a Git account.
 
-  For the first line of your commit comment, enter a brief description, such as the GitHub
-  Issue number and a brief description.  On the second and subsequent lines, provide a
-  detailed description of the changes/additions you made.
+  For the first line of the commit comment, enter a brief description,
+  such as the GitHub
+  Issue number and a brief description.  On the second and subsequent lines,
+  provide a detailed description of the changes/additions that were made.
 
-  **Note**: It is a best practice to commit one change per commit, rather than wait
-  until you have multiple changes to include in one commit.
+  **Note**: It is a best practice to commit one change per commit,
+  rather than wait
+  until there are multiple changes to include in one commit.
+
+* Alternatively, the -m argument can be used to add a commit message to
+  describe the changes.
+
+  .. code-block:: ini
+
+    git commit -m "{commit_message}"
+
+  where {commit_message} is a descriptive message about the changes.
+
+
+.. _wo-push-changes:
 
 Push the feature branch to GitHub
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* Run the following:
+Pushing changes up to GitHub periodically is recommended to avoid losing
+progress by relying on the local copy of the changes.
+
+* To push changes to GitHub, run the following:
 
   .. code-block:: ini
 
     git push origin <feature_777_wrapper_xyz>
 
-  replacing *feature_777_wrapper_xyz* with your feature branch name, to push your changes to
-  the origin (i.e. to your *https://github.com/<your-github-user>/METplus* repository)
+  replacing *<feature_777_wrapper_xyz>* with the feature branch name
 
-Open a pull request using a browser
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* To request to have your changes be incorporated into the remote repository
-  (i.e. the `GitHub METplus repository <https://github.com/dtcenter/METplus>`_).
+.. _pull-request-browser:
+  
+Open a pull request
+^^^^^^^^^^^^^^^^^^^
 
-* An authorized METplus developer will need to approve the request and then merge your files
-  into the repository's develop branch.  The develop branch will be used to create a future
-  METplus release.
+* To request to have the changes be incorporated into the remote repository
+  (i.e. the
+  `GitHub METplus repository <https://github.com/dtcenter/METplus>`_).
 
-* In your browser, navigate to *https://github.com/<your-github-user>/METplus* replacing
-  <your-github-user> with your GitHub username.
+* An authorized METplus developer will need to approve the request and
+  then merge the files into the repository's develop branch.
+  The develop branch will be used to create a future METplus release.
 
-* Click on the green 'Compare & pull request' button
+* In the browser, navigate to https://github.com/<your-github-user>/METplus
+  replacing
+  <your-github-user> with the user's GitHub username and no angle brackets <>.
+
+* Click on the green 'Compare & pull request' button.
 
   * A web page with four grey buttons should appear:
 
-    * On the left-most button (for setting the base repository), make sure you have selected
-      'base repository:NCAR/METplus'
+    * On the left-most button (for setting the base repository),
+      make sure the
+      'base repository:dtcenter/METplus' is selected.
 
-    * For the base button, make sure you have selected 'base:develop'
+    * For the base button, make sure to select 'base:develop'.
 
-    * For the head repository button, make sure you have selected
-      'head repository:<your-github-user>/METplus' where <your-github-user> is your GitHub
-      account name.
+    * For the head repository button, make sure to select
+      'head repository:<your-github-user>/METplus'
+      with the appropriate replacement for
+      <your-github-user>.
 
-    * For the compare button, make sure you have selected 'compare:<your_feature_branch>'
-      where <your_feature_branch> corresponds to the feature branch where you have been
-      making your changes (e.g. feature_777_wrapper_xyz).
+    * For the compare button, make sure to select
+      'compare:<your_feature_branch>'
+      where <your_feature_branch> corresponds to the feature branch
+      where the changes have been made (e.g. feature_777_wrapper_xyz).
 
-    * In the 'write' window, follow the directions and fill in the template
-      add any additional comments/details.  When filling in the template,
-      users will need to "Define the PR metadata, as permissions allow.
-      Select: **Reviewer(s), Project(s)**, and **Milestone**" When selecting a
+    * In the 'write' window, follow the directions and fill in the template.
+      Add any additional comments/details.  When filling in the template,
+      be sure to "Define the PR metadata, as permissions allow.
+      Select: **Reviewer(s), Project(s)**, and **Milestone**". When selecting a
       reviewer, internal contributors submitting pull requests should select
       the appropriate reviewer(s) and let the reviewer know that the pull
       request has been assigned to them. If external contributors are unsure
-      who to assign as a reviewer, they should send an email to
-      met_help@ucar.edu asking the met-help point person to help with the
-      assignment of a reviewer.
+      who to assign as a reviewer, create a post in the
+      `METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_
+      asking for help with the assignment of a reviewer.
       
     * When everything looks satisfactory, click on the green 'Create pull
       request' button.
 
     * An authorized METplus developer will accept the pull request (if
-      everything meets acceptance criteria) and merge your code into the remote
+      everything meets acceptance criteria) and merge the code into the remote
       repository's develop branch.
 
 Approve a pull request using a browser
@@ -341,7 +428,7 @@ Creating a pull request
     `GitHub Actions <https://github.com/dtcenter/METplus/actions>`_ have
     passed.  See "All checks have passed" in the figure below. If the tests
     were not successful or if there are conflicts with the base branch,
-    ask the requestor make changes.
+    ask the requestor to make changes.
 
     .. figure:: figure/checks_pass_no_conflicts.png
     
@@ -365,14 +452,16 @@ Creating a pull request
 
        .. figure:: figure/insert_suggestion.png
     
-         Click on the icon of a paper with +/- to “Insert a Suggestion”.  The line
-         will be quoted and the reviewer can enter their suggestion below. Then, click on
+         Click on the icon of a paper with +/- to “Insert a Suggestion”.
+	 The line
+         will be quoted and the reviewer can enter their suggestion below.
+	 Then, click on
          the “Add Single Comment” button, so that the requestor will get an
          email letting them know the reviewer has made a suggested change.
 
     b. Or, a reviewer can edit the file directly on the web by clicking on the
-       “...” icon (three dots) in the right hand corner next to
-       “Viewed” icon and select “Edit file”. 	
+       “...” icon (three dots) in the right hand corner next to the
+       “Viewed” icon and selecting “Edit file”. 	
 
        .. figure:: figure/how_to_edit_file.png
 
@@ -399,13 +488,13 @@ Creating a pull request
 	    
      .. figure:: figure/review_approve_changes.png
 
-     A reviewer should click on: "Review changes", add comments to
-     the "Write box", and select either  "Comment", "Approve",
-     or "Request Changes", and then click on "Submit Review".
+         A reviewer should click on: "Review changes", add comments to
+	 the "Write box", and select either  "Comment", "Approve",
+	 or "Request Changes", and then click on "Submit Review".
 
 12. Once the recommended testing is complete and any necessary changes have
     been made, approve the request.
-					  
+
 
 Merging pull requests
 ^^^^^^^^^^^^^^^^^^^^^
@@ -420,7 +509,8 @@ There are three merge methods to choose from: "Create a merge commit",
 combined into one and a clean history is retained. Click on the chosen merge
 method.  
 
-After merging, the requestor can then decide whether or not to delete the branch.
+After merging, the requestor can then decide whether or not to delete
+the branch.
 
 .. figure:: figure/delete_branch.png
 
@@ -431,44 +521,47 @@ button should be selected and the corresponding GitHub issue should be closed.
 Clean up after a successfully merged pull request
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* After an authorized METplus developer has accepted your changes and merged
-  them into the develop repository, update your local clone by pulling changes
-  from the original repository's (i.e. the `METplus develop branch <https://github.com/dtcenter/METplus/tree/develop>`_):
+* After an authorized METplus developer has accepted the changes and merged
+  them into the develop repository, update the local clone by pulling changes
+  from the original repository's (i.e. the
+  `METplus develop branch <https://github.com/dtcenter/METplus/tree/develop>`_):
 
-* Checkout your develop branch
+* Checkout the develop branch:
 
   .. code-block:: ini
 
     git checkout develop
 
-* Verify that you are now working from the develop branch
+* Verify that the develop branch is now active:
 
   .. code-block:: ini
 
     git branch
 
-* Merge changes from the upstream develop branch with your local develop branch
+* Merge changes from the upstream develop branch with the local develop branch:
 
   .. code-block:: ini
 
     git pull upstream develop
 
-* Your local cloned repository should now have all the latest changes from the
+* The local cloned repository should now have all the latest changes from the
   original repository's develop branch.
 
-  Now you can delete your feature branch:
+  Now the feature branch can be deleted:
 
   .. code-block:: ini
 
     *git branch -D <branch name>*
     *git push --delete origin <branch name>*
 
-  where <branch name> is your feature branch name, e.g. feature_777_wrapper_xyz
+  where <branch name> is the feature branch name, e.g. feature_777_wrapper_xyz.
 
-  You can verify that your feature branch has been successfully removed/deleted
-  via your web browser. Navigate to *https://github.com/<your-github-user>/METplus*,
-  replacing <your-github-user> with your GitHub username, and under the 'Branch'
-  pulldown menu, you should no longer find your feature branch as a selection.
+  Verify that the feature branch has been successfully removed/deleted
+  via the web browser. Navigate to
+  https://github.com/<your-github-user>/METplus,
+  replacing <your-github-user> appropriately. Under the 'Branch'
+  pulldown menu, the feature branch name should no longer be seen
+  as an option.
 
 
 

@@ -90,16 +90,11 @@ def main(args):
         else:
             volume_name = f'{metplus_version}-{model_app_name}'
 
-        cmd = f'docker pull {repo_to_use}:{volume_name}'
-        ret = subprocess.run(shlex.split(cmd), stdout=subprocess.DEVNULL)
-
-        # if return code is non-zero, a failure occurred
-        if ret.returncode:
-            continue
-
+        full_volume_name = f'{repo_to_use}:{volume_name}'
+        print(f"CREATING DATA VOLUME FROM: {full_volume_name}")
         cmd = (f'docker create --name {model_app_name} '
-               f'{repo_to_use}:{volume_name}')
-        ret = subprocess.run(shlex.split(cmd), stdout=subprocess.DEVNULL)
+               f'{full_volume_name}')
+        ret = subprocess.run(shlex.split(cmd))
 
         if ret.returncode:
             continue

@@ -121,7 +121,13 @@ met_tool_wrapper/TCPairs/TCPairs_extra_tropical.conf
 # --------
 #
 # .. note::
-#  `TCPairsToolUseCase <https://dtcenter.github.io/METplus/search.html?q=TCPairsToolUseCase&check_keywords=yes&area=default>`_,
-#  `SBUOrgUseCase <https://dtcenter.github.io/METplus/search.html?q=SBUOrgUseCase&check_keywords=yes&area=default>`_
+#
+#   * TCPairsToolUseCase
+#   * SBUOrgUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
 #
 # sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-TCPairs.png'
+#

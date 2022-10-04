@@ -39,31 +39,24 @@ ${METPLUS_CENSOR_VAL}
 cat_thresh    = [];
 nc_var_str    = "";
 
-//
-// Ensemble product fields to be processed
-//
-ens = {
+//ens_member_ids =
+${METPLUS_ENS_MEMBER_IDS}
 
-   ${METPLUS_ENS_FILE_TYPE}
+//control_id =
+${METPLUS_CONTROL_ID}
 
-   ${METPLUS_ENS_THRESH}
-   ${METPLUS_ENS_VLD_THRESH}
-   ${METPLUS_ENS_OBS_THRESH}
-
-   ${METPLUS_ENS_FIELD}
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 
-//
-// Neighborhood ensemble probabilities
-//
-${METPLUS_NBRHD_PROB_DICT}
+//prob_cat_thresh =
+${METPLUS_PROB_CAT_THRESH}
 
-//
-// NMEP smoothing methods
-//
-${METPLUS_NMEP_SMOOTH_DICT}
+//prob_pct_thresh =
+${METPLUS_PROB_PCT_THRESH}
+
+//eclv_points =
+${METPLUS_ECLV_POINTS}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -74,7 +67,8 @@ ${METPLUS_NMEP_SMOOTH_DICT}
 fcst = {
 
    ${METPLUS_FCST_FILE_TYPE}
-
+   ${METPLUS_ENS_THRESH}
+   ${METPLUS_VLD_THRESH}
    ${METPLUS_FCST_FIELD}
 }
 
@@ -94,8 +88,15 @@ obs = {
 
 ${METPLUS_MESSAGE_TYPE}
 sid_exc        = [];
-obs_thresh     = [ NA ];
-obs_quality    = [];
+//obs_thresh     = [ NA ];
+${METPLUS_OBS_THRESH}
+
+//obs_quality_inc =
+${METPLUS_OBS_QUALITY_INC}
+
+//obs_quality_exc =
+${METPLUS_OBS_QUALITY_EXC}
+
 ${METPLUS_DUPLICATE_FLAG}
 obs_summary    = NONE;
 obs_perc_value = 50;
@@ -195,9 +196,10 @@ ${METPLUS_OUTPUT_FLAG_DICT}
 ////////////////////////////////////////////////////////////////////////////////
 
 //
-// Ensemble product output types
+// Gridded verification output types
+// May be set separately in each "obs.field" entry
 //
-${METPLUS_ENSEMBLE_FLAG_DICT}
+${METPLUS_NC_ORANK_FLAG_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -211,10 +213,14 @@ rng = {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-grid_weight_flag = NONE;
+//grid_weight_flag =
+${METPLUS_GRID_WEIGHT_FLAG}
+
 ${METPLUS_OUTPUT_PREFIX}
 //version          = "V9.0";
 
 ////////////////////////////////////////////////////////////////////////////////
+
+tmp_dir = "${MET_TMP_DIR}";
 
 ${METPLUS_MET_CONFIG_OVERRIDES}

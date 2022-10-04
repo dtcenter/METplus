@@ -239,6 +239,8 @@ txt_output = {
 ${METPLUS_OUTPUT_PREFIX}
 //version        = "V9.0";
 
+tmp_dir = "${MET_TMP_DIR}";
+
 ////////////////////////////////////////////////////////////////////////////////
 
 ${METPLUS_MET_CONFIG_OVERRIDES}

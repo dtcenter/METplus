@@ -1,142 +1,202 @@
 [
   {
     "category": "met_tool_wrapper",
-    "index_list": "0-54",
-    "new": false
+    "index_list": "0-29,59-61",
+    "run": false
+  },
+  {
+    "category": "met_tool_wrapper",
+    "index_list": "30-58",
+    "run": false
   },
   {
     "category": "air_quality_and_comp",
     "index_list": "0",
-    "new": false
+    "run": false
   },
   {
     "category": "climate",
     "index_list": "0-1",
-    "new": false
+    "run": false
   },
   {
-    "category": "convection_allowing_models",
+    "category": "short_range",
     "index_list": "0",
-    "new": false
+    "run": false
   },
   {
-    "category": "convection_allowing_models",
+    "category": "short_range",
     "index_list": "1",
-    "new": false
+    "run": false
   },
   {
-    "category": "convection_allowing_models",
+    "category": "short_range",
     "index_list": "2-6",
-    "new": false
+    "run": false
   },
   {
-    "category": "convection_allowing_models",
+    "category": "short_range",
     "index_list": "7",
-    "new": false
+    "run": false
   },
   {
-    "category": "convection_allowing_models",
+    "category": "short_range",
     "index_list": "8",
-    "new": false
+    "run": false
   },
   {
-    "category": "cryosphere",
-    "index_list": "0",
-    "new": false
+    "category": "short_range",
+    "index_list": "9",
+    "run": false
   },
   {
     "category": "data_assimilation",
     "index_list": "0",
-    "new": false
+    "run": false
   },
   {
-    "category": "marine_and_coastal",
-    "index_list": "0-1",
-    "new": false
+    "category": "marine_and_cryosphere",
+    "index_list": "0-2",
+    "run": false
+  },
+  {
+    "category": "marine_and_cryosphere",
+    "index_list": "3-5",
+    "run": false
+  },
+  {
+    "category": "marine_and_cryosphere",
+    "index_list": "6",
+    "run": false
   },
   {
     "category": "medium_range",
     "index_list": "0",
-    "new": false
+    "run": false
   },
   {
     "category": "medium_range",
     "index_list": "1-2",
-    "new": false
+    "run": false
   },
   {
     "category": "medium_range",
     "index_list": "3-5",
-    "new": false
+    "run": false
   },
   {
     "category": "medium_range",
     "index_list": "6",
-    "new": false
+    "run": false
   },
   {
     "category": "medium_range",
-    "index_list": "7-8",
-    "new": false
+    "index_list": "7",
+    "run": false
+  },
+  {
+    "category": "medium_range",
+    "index_list": "8",
+    "run": false
   },
   {
     "category": "precipitation",
     "index_list": "0",
-    "new": false
+    "run": false
   },
   {
     "category": "precipitation",
     "index_list": "1",
-    "new": false
+    "run": false
   },
   {
     "category": "precipitation",
     "index_list": "2",
-    "new": false
+    "run": false
   },
   {
     "category": "precipitation",
-    "index_list": "3-8",
-    "new": false
+    "index_list": "3-7",
+    "run": false
+  },
+  {
+    "category": "precipitation",
+    "index_list": "8",
+    "run": false
   },
   {
     "category": "s2s",
     "index_list": "0",
-    "new": false
+    "run": false
   },
   {
     "category": "s2s",
-    "index_list": "1-3",
-    "new": false
+    "index_list": "1",
+    "run": false
+  },
+  {
+    "category": "s2s",
+    "index_list": "2",
+    "run": false
+  },
+  {
+    "category": "s2s",
+    "index_list": "3",
+    "run": false
   },
   {
     "category": "s2s",
     "index_list": "4",
-    "new": false
+    "run": false
   },
   {
     "category": "s2s",
     "index_list": "5",
-    "new": false
+    "run": false
   },
   {
     "category": "s2s",
     "index_list": "6",
-    "new": false
+    "run": false
+  },
+  {
+    "category": "s2s_mid_lat",
+    "index_list": "0-2",
+    "run": false
+  },
+  {
+    "category": "s2s_mid_lat",
+    "index_list": "3",
+    "run": false
+  },
+  {
+    "category": "s2s_mjo",
+    "index_list": "0-2",
+    "run": false
+  },
+  {
+    "category": "s2s_mjo",
+    "index_list": "3",
+    "run": false
+  },
+  {
+    "category": "s2s_mjo",
+    "index_list": "4",
+    "run": false
   },
   {
     "category": "space_weather",
     "index_list": "0-1",
-    "new": false
+    "run": false
   },
   {
     "category": "tc_and_extra_tc",
     "index_list": "0-2",
-    "new": false
+    "run": false
   },
   {
     "category": "tc_and_extra_tc",
-    "index_list": "3",
-    "new": false
+    "index_list": "3-5",
+    "run": false
   }
 ]

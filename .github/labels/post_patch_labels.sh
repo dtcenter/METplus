@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Must specify 4 arguments:
 #   - username
@@ -8,7 +8,7 @@
 
 if [[ $# -ne 4 ]]; then
   echo "ERROR: `basename $0` ... must specify the GitHub username, authorization key, repository name, and label file."
-  echo "ERROR:   repo names: metplus, met, metdatadb, metcalcpy, metplotpy, metviewer, metexpress, metplus-training"
+  echo "ERROR:   repo names: metplus, met, metdataio, metcalcpy, metplotpy, metviewer, metexpress, metplus-training, metplus-internal, metbaseimage"
   exit 1
 else
   user=$1

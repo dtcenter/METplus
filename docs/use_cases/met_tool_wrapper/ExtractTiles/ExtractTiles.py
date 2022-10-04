@@ -237,6 +237,15 @@ met_tool_wrapper/ExtractTiles/ExtractTiles.conf
 # Keywords
 # --------
 #
-# .. note:: `RegridDataPlaneToolUseCase <https://dtcenter.github.io/METplus/develop/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_, `GRIB2FileUseCase  <https://dtcenter.github.io/METplus/develop/search.html?q=GRIB2FileUseCase&check_keywords=yes&area=default>`_, `FeatureRelativeUseCase  <https://dtcenter.github.io/METplus/develop/search.html?q=FeatureRelativeUseCase&check_keywords=yes&area=default>`_
+# .. note::
+#
+#   * RegridDataPlaneToolUseCase
+#   * GRIB2FileUseCase
+#   * FeatureRelativeUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
 #
 # sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-ExtractTiles.png'
+#

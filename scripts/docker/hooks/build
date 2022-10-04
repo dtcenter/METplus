@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# get version, use develop or X+6.Y for MET_TAG
+met_tag=`$(dirname $DOCKERFILE_PATH)/hooks/get_met_version`
+
+echo $met_tag
+
+MET_DOCKER_REPO=met
+if [ "$met_tag" == "develop" ]; then
+    MET_DOCKER_REPO=met-dev
+fi
+
+docker build -t $IMAGE_NAME \
+       --build-arg SOURCE_VERSION=$SOURCE_BRANCH \
+       --build-arg MET_TAG=$met_tag \
+       --build-arg MET_DOCKER_REPO=$MET_DOCKER_REPO \
+       .

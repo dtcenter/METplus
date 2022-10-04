@@ -1,4 +1,5 @@
-"""!@namespace ExtraTropicalCyclonePlotter
+
+"""!@namespace CyclonePlotter
 A Python class that generates plots of extra tropical cyclone forecast data,
  replicating the NCEP tropical and extra tropical cyclone tracks and
  verification plots http://www.emc.ncep.noaa.gov/mmb/gplou/emchurr/glblgen/
@@ -9,34 +10,37 @@ import time
 import datetime
 import re
 import sys
-import collections
+from collections import namedtuple
+
 
 # handle if module can't be loaded to run wrapper
 WRAPPER_CANNOT_RUN = False
 EXCEPTION_ERR = ''
 try:
+    import pandas as pd
     import matplotlib.pyplot as plt
     import matplotlib.ticker as mticker
     import cartopy.crs as ccrs
     import cartopy.feature as cfeature
     import cartopy
     from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
-    ##If the script is run on a limited-internet access machine, the CARTOPY_DIR environment setting
-    ##will need to be set in the user-specific system configuration file. Review the Installation section
-    ##of the User's Guide for more details.
+
+    # If the script is run on a limited-internet access machine,
+    # the CARTOPY_DIR environment setting
+    # will need to be set in the user-specific system configuration file.
+    # Review the Installation section of the User's Guide for more details.
     if os.getenv('CARTOPY_DIR'):
-        cartopy.config['data_dir'] = os.getenv('CARTOPY_DIR', cartopy.config.get('data_dir'))
+        cartopy.config['data_dir'] = os.getenv('CARTOPY_DIR',
+                                               cartopy.config.get('data_dir'))
 
 except Exception as err_msg:
     WRAPPER_CANNOT_RUN = True
     EXCEPTION_ERR = err_msg
 
-import produtil.setup
-
 from ..util import met_util as util
 from ..util import do_string_sub
+from ..util import time_generator, add_to_time_input
 from . import CommandBuilder
-
 
 
 class CyclonePlotterWrapper(CommandBuilder):
@@ -44,12 +48,10 @@ class CyclonePlotterWrapper(CommandBuilder):
         Reads input from ATCF files generated from MET TC-Pairs
     """
 
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None):
         self.app_name = 'cyclone_plotter'
 
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
         if WRAPPER_CANNOT_RUN:
             self.log_error("There was a problem importing modules: "
@@ -62,22 +64,12 @@ class CyclonePlotterWrapper(CommandBuilder):
                                             'CYCLONE_PLOTTER_INIT_DATE')
         self.init_hr = self.config.getraw('config', 'CYCLONE_PLOTTER_INIT_HR')
 
-        init_time_fmt = self.config.getstr('config', 'INIT_TIME_FMT', '')
-        if init_time_fmt:
-            clock_time = datetime.datetime.strptime(
-                self.config.getstr('config',
-                                   'CLOCK_TIME'),
-                '%Y%m%d%H%M%S'
-            )
-
-            init_beg = self.config.getraw('config', 'INIT_BEG')
-            if init_beg:
-                init_beg_dt = util.get_time_obj(init_beg,
-                                                init_time_fmt,
-                                                clock_time,
-                                                logger=self.logger)
-                self.init_date = do_string_sub(self.init_date, init=init_beg_dt)
-                self.init_hr = do_string_sub(self.init_hr, init=init_beg_dt)
+        # attempt to get first runtime from config
+        # if successful, substitute time values into init date and hour
+        time_input = next(time_generator(self.config))
+        if time_input is not None:
+            self.init_date = do_string_sub(self.init_date, **time_input)
+            self.init_hr = do_string_sub(self.init_hr, **time_input)
 
         self.model = self.config.getstr('config', 'CYCLONE_PLOTTER_MODEL')
         self.title = self.config.getstr('config',
@@ -90,11 +82,11 @@ class CyclonePlotterWrapper(CommandBuilder):
         self.unique_storm_id = set()
         # Data structure to separate data based on storm id.
         self.storm_id_dict = {}
+
         # Data/info which we want to retrieve from the track files.
-        self.columns_of_interest = ['AMODEL', 'STORM_ID', 'BASIN', 'INIT',
-                                    'LEAD', 'VALID', 'ALAT', 'ALON', 'BLAT',
-                                    'BLON', 'AMSLP', 'BMSLP']
-        self.circle_marker = (
+        self.columns_of_interest = ['AMODEL', 'STORM_ID', 'INIT',
+                                    'LEAD', 'VALID', 'ALAT', 'ALON']
+        self.circle_marker_size = (
             self.config.getint('config',
                                'CYCLONE_PLOTTER_CIRCLE_MARKER_SIZE')
         )
@@ -102,8 +94,16 @@ class CyclonePlotterWrapper(CommandBuilder):
             self.config.getint('config',
                                'CYCLONE_PLOTTER_ANNOTATION_FONT_SIZE')
         )
-        self.cross_marker = (
+
+        self.legend_font_size = (
             self.config.getint('config',
+                               'CYCLONE_PLOTTER_LEGEND_FONT_SIZE')
+        )
+
+        # Map centered on Pacific Ocean
+        self.central_longitude = 180.0
+
+        self.cross_marker_size = (self.config.getint('config',
                                'CYCLONE_PLOTTER_CROSS_MARKER_SIZE')
         )
         self.resolution_dpi = (
@@ -114,6 +114,56 @@ class CyclonePlotterWrapper(CommandBuilder):
         self.add_watermark = self.config.getbool('config',
                                                  'CYCLONE_PLOTTER_ADD_WATERMARK',
                                                  True)
+        # Set the marker symbols, '+' for a small cross, '.' for a small circle.
+        # NOTE: originally, 'o' was used.  'o' is also a circle, but it creates a
+        # very large filled circle on the plots that appears too large.
+        self.cross_marker = '+'
+        self.circle_marker = '.'
+
+        # Map extent, global if CYCLONE_PLOTTER_GLOBAL_PLOT is True
+        self.is_global_extent = (self.config.getbool('config',
+                       'CYCLONE_PLOTTER_GLOBAL_PLOT')
+        )
+        self.logger.debug(f"global_extent value: {self.is_global_extent}")
+
+        # User-defined map extent, lons and lats
+        if self.is_global_extent:
+            self.logger.debug("Global extent")
+        else:
+            self.logger.debug("Getting lons and lats that define the plot's extent")
+            west_lon = (self.config.getstr('config',
+                                           'CYCLONE_PLOTTER_WEST_LON', '')
+            )
+            east_lon = (self.config.getstr('config',
+                                           'CYCLONE_PLOTTER_EAST_LON', '')
+            )
+            north_lat = (self.config.getstr('config',
+                                            'CYCLONE_PLOTTER_NORTH_LAT', '')
+            )
+            south_lat = (self.config.getstr('config',
+                                            'CYCLONE_PLOTTER_SOUTH_LAT', '')
+            )
+
+            # Check for unconfigured lons and lats needed for defining the extent
+            if not west_lon:
+                self.log_error("Missing CYCLONE_PLOTTER_WEST_LON in config file. ")
+            else:
+                self.west_lon = (float(west_lon))
+            if not east_lon:
+                self.log_error("Missing CYCLONE_PLOTTER_EAST_LON in config file. ")
+            else:
+                self.east_lon = (float(east_lon))
+            if not south_lat:
+                self.log_error("Missing CYCLONE_PLOTTER_SOUTH_LAT in config file. ")
+            else:
+                self.south_lat = float(south_lat)
+            if not north_lat:
+                self.log_error("Missing CYCLONE_PLOTTER_NORTH_LAT in config file. ")
+            else:
+                self.north_lat = float(north_lat)
+
+            self.extent_region = [self.west_lon, self.east_lon, self.south_lat, self.north_lat]
+            self.logger.debug(f"extent region: {self.extent_region}")
 
 
     def run_all_times(self):
@@ -121,266 +171,238 @@ class CyclonePlotterWrapper(CommandBuilder):
              run_all_times() is required by CommandBuilder.
 
         """
-        self.retrieve_data()
+        self.sanitized_df = self.retrieve_data()
+        if self.sanitized_df is None:
+            return None
         self.create_plot()
 
+
     def retrieve_data(self):
-        """! Retrieve data from track files and return the min and max lon.
+        """! Retrieve data from track files.
             Returns:
-               None
+               sanitized_df:  a pandas dataframe containing the
+                              "sanitized" longitudes, as well as some markers and
+                              lead group information needed for generating
+                              scatter plots.
+
         """
         self.logger.debug("Begin retrieving data...")
         all_tracks_list = []
 
         # Store the data in the track list.
         if os.path.isdir(self.input_data):
-            self.logger.debug("Generate plot for all files in the directory" +
+            self.logger.debug("Get data from all files in the directory " +
                               self.input_data)
             # Get the list of all files (full file path) in this directory
-            all_init_files = util.get_files(self.input_data, ".*.tcst",
-                                            self.logger)
+            all_input_files = util.get_files(self.input_data, ".*.tcst",
+                                             self.logger)
 
-            for init_file in all_init_files:
-                # Ignore empty files
-                if os.stat(init_file).st_size == 0:
-                    self.logger.info(f"Ignoring empty file {init_file}")
-                    continue
+            # read each file into pandas then concatenate them together
+            df_list = [pd.read_csv(file, delim_whitespace=True) for file in all_input_files]
+            combined = pd.concat(df_list, ignore_index=True)
 
-                # logger.info("Consider all files under directory" +
-                #  init_file + " with " + " init time (ymd): " +
-                # self.init_date + " and lead time (hh):" + self.lead_hr)
-                with open(init_file, 'r') as infile:
-                    self.logger.debug("Parsing file {}".format(init_file))
+            # check for empty dataframe, set error message and exit
+            if combined.empty:
+                self.logger.error("No data found in specified files. Please check your config file settings.")
+                return None
 
-                    # Extract information from the header, which is
-                    # the first line.
-                    header = infile.readline()
-                    # print("header: {}".format(header))
-                    column_indices = self.get_columns_and_indices(header)
+            # if there are any NaN values in the ALAT, ALON, STORM_ID, LEAD, INIT, AMODEL, or VALID column,
+            # drop that row of data (axis=0).  We need all these columns to contain valid data in order
+            # to create a meaningful plot.
+            combined_df = combined.copy(deep=True)
+            combined_df = combined.dropna(axis=0, how='any',
+                                          subset=self.columns_of_interest)
 
-                    # For the remaining lines of this file,
-                    # retrieve information from each row:
-                    # lon, lat, init time, lead hour, valid time,
-                    # model name, mslp, and basin.
-                    # NOTE: Some of these columns aren't used until we fully
-                    # emulate Guang Ping's plots (ie collect all columns).
-                    for line in infile:
-                        track_dict = {}
-                        col = line.split()
-                        lat = col[column_indices['ALAT']]
-                        lon = col[column_indices['ALON']]
-                        init_time = col[column_indices['INIT']]
-                        fcst_lead_hh = \
-                            str(col[column_indices['LEAD']]).zfill(3)
-                        model_name = col[column_indices['AMODEL']]
-                        valid_time = col[column_indices['VALID']]
-                        storm_id = col[column_indices['STORM_ID']]
+            # Retrieve and create the columns of interest
+            self.logger.debug(f"Number of rows of data: {combined_df.shape[0]}")
+            combined_subset = combined_df[self.columns_of_interest]
+            df = combined_subset.copy(deep=True)
+            df.allows_duplicate_labels = False
+            # INIT, LEAD, VALID correspond to the column headers from the MET
+            # TC tool output.  INIT_YMD, INIT_HOUR, VALID_DD, and VALID_HOUR are
+            # new columns (for a new dataframe) created from these MET columns.
+            df['INIT'] = df['INIT'].astype(str)
+            df['INIT_YMD'] = (df['INIT'].str[:8]).astype(int)
+            df['INIT_HOUR'] = (df['INIT'].str[9:11]).astype(int)
+            df['LEAD']  = df['LEAD']/10000
+            df['LEAD'] = df['LEAD'].astype(int)
+            df['VALID_DD'] = (df['VALID'].str[6:8]).astype(int)
+            df['VALID_HOUR'] = (df['VALID'].str[9:11]).astype(int)
+            df['VALID'] = df['VALID'].astype(int)
 
-                        # Not needed until support for regional plots
-                        # is implemented.
-                        # mslp = col[column_indices['AMSLP']]
-                        # basin = col[column_indices['BASIN']]
+            # Subset the dataframe to include only the data relevant to the user's criteria as
+            # specified in the configuration file.
+            init_date = int(self.init_date)
+            init_hh = int(self.init_hr)
+            model_name = self.model
 
-                        # Check for NA values in lon and lat, skip to
-                        # next line in file if 'NA' is encountered.
-                        if lon == 'NA' or lat == 'NA':
-                            continue
-                        else:
-                            # convert longitudes that are in the 0 to 360 scale
-                            # to the -180 to 180 scale
-                            track_dict['lon'] = self.rescale_lon(float(lon))
-                            track_dict['lat'] = float(lat)
+            if model_name:
+                self.logger.debug("Subsetting based on " + str(init_date) + " " + str(init_hh) +
+                                  ", and model:" + model_name )
+                mask = df[(df['AMODEL'] == model_name) & (df['INIT_YMD'] >= init_date) &
+                          (df['INIT_HOUR'] >= init_hh)]
+            else:
+                # no model specified, just subset on init date and init hour
+                mask = df[(df['INIT_YMD'] >= init_date) &
+                          (df['INIT_HOUR'] >= init_hh)]
+                self.logger.debug("Subsetting based on " + str(init_date) + ", and "+ str(init_hh))
 
-                        # If the lead hour is 'NA', skip to next line.
-                        # The track data was very likely generated with
-                        # TC-Stat set to match-pairs set to True.
-                        lead_hr = self.extract_lead_hr(fcst_lead_hh)
-                        if lead_hr == 'NA':
-                            continue
+            user_criteria_df = mask
+            # reset the index so things are ordered properly in the new dataframe
+            user_criteria_df.reset_index(inplace=True)
 
-                        # Check that the init date, init hour
-                        # and model name are what the user requested.
-                        init_ymd, init_hh = \
-                            self.extract_date_and_time_from_init(init_time)
+            # Aggregate the ALON values based on unique storm id to facilitate "sanitizing" the
+            # longitude values (to handle lons that cross the International Date Line).
+            unique_storm_ids_set = set(user_criteria_df['STORM_ID'])
+            self.unique_storm_ids = list(unique_storm_ids_set)
+            nunique = len(self.unique_storm_ids)
+            self.logger.debug(f" {nunique} unique storm ids identified")
 
-                        if init_ymd == self.init_date and \
-                                init_hh == self.init_hr:
-                            if model_name == self.model:
-                                # Check for the requested model,
-                                # if the model matches the requested
-                                # model name, then we have all the
-                                # necessary information to continue.
-                                # Store all data in dictionary
-                                track_dict['fcst_lead_hh'] = fcst_lead_hh
-                                track_dict['init_time'] = init_time
-                                track_dict['model_name'] = model_name
-                                track_dict['valid_time'] = valid_time
-                                track_dict['storm_id'] = storm_id
+            # Use named tuples to store the relevant storm track information (their index value in the dataframe,
+            # track id, and ALON values and later on the SLON (sanitized ALON values).
+            TrackPt = namedtuple("TrackPt", "indices track alons alats")
 
-                                # Identify the 'first' point of the
-                                # storm track.  If the storm id is novel, then
-                                # retrieve the date and hh from the valid time
-                                if storm_id in self.unique_storm_id:
-                                    track_dict['first_point'] = False
-                                    track_dict['valid_dd'] = ''
-                                    track_dict['valid_hh'] = ''
-                                else:
-                                    self.unique_storm_id.add(storm_id)
-                                    # Since this is the first storm_id with
-                                    # a valid value for lat and lon (ie not
-                                    # 'NA'), this is the first track point
-                                    # in the storm track and will be
-                                    # labelled with the corresponding
-                                    # date/hh z on the plot.
-                                    valid_match = \
-                                        re.match(r'[0-9]{6}([0-9]{2})_' +
-                                                 '([0-9]{2})[0-9]{4}',
-                                                 track_dict['valid_time'])
-                                    if valid_match:
-                                        valid_dd = valid_match.group(1)
-                                        valid_hh = valid_match.group(2)
-                                    else:
-                                        # Shouldn't get here if this is
-                                        # the first point of the track.
-                                        valid_dd = ''
-                                        valid_hh = ''
-                                    track_dict['first_point'] = True
-                                    track_dict['valid_dd'] = valid_dd
-                                    track_dict['valid_hh'] = valid_hh
+            # named tuple holding "sanitized" longitudes
+            SanTrackPt = namedtuple("SanTrackPt", "indices track alons slons")
 
-                                # Identify points based on valid time (hh).
-                                # Useful for plotting later on.
-                                valid_match = \
-                                    re.match(r'[0-9]{8}_([0-9]{2})[0-9]{4}',
-                                             track_dict['valid_time'])
-                                if valid_match:
-                                    # Since we are only interested in 00,
-                                    # 06, 12, and 18 hr times...
-                                    valid_hh = valid_match.group(1)
+            # Keep track of the unique storm tracks by their storm_id
+            storm_track_dict = {}
 
-                                if valid_hh == '00' or valid_hh == '12':
-                                    track_dict['lead_group'] = '0'
-                                elif valid_hh == '06' or valid_hh == '18':
-                                    track_dict['lead_group'] = '6'
-                                else:
-                                    # To gracefully handle any hours other
-                                    # than 0, 6, 12, or 18
-                                    track_dict['lead_group'] = ''
+            for cur_unique in self.unique_storm_ids:
+                idx_list = user_criteria_df.index[user_criteria_df['STORM_ID'] == cur_unique].tolist()
+                alons = []
+                alats = []
+                indices = []
 
-                                all_tracks_list.append(track_dict)
+                for idx in idx_list:
+                    alons.append(user_criteria_df.loc[idx, 'ALON'])
+                    alats.append(user_criteria_df.loc[idx, 'ALAT'])
+                    indices.append(idx)
 
-                                # For future work, support for MSLP when
-                                # generating regional plots-
-                                # implementation goes here...
-                                # Finishing up, do any cleaning up,
-                                # logging, etc.
-                                self.logger.info("All criteria met, " +
-                                                 "saving track data init " +
-                                                 track_dict['init_time'] +
-                                                 " lead " +
-                                                 track_dict['fcst_lead_hh'] +
-                                                 " lon " +
-                                                 str(track_dict['lon']) +
-                                                 " lat " +
-                                                 str(track_dict['lat']))
+                # create the track_pt tuple and add it to the storm track dictionary
+                track_pt = TrackPt(indices, cur_unique, alons, alats)
+                storm_track_dict[cur_unique] = track_pt
 
-                            else:
-                                # Not the requested model, move to next
-                                # row of data
-                                continue
+            # create a new dataframe to contain the sanitized lons (i.e. the original ALONs that have
+            # been cleaned up when crossing the International Date Line)
+            sanitized_df = user_criteria_df.copy(deep=True)
 
-                        else:
-                            # Not the requested init ymd move to next
-                            # row of data
-                            continue
+            # Now we have a dictionary that helps in aggregating the data based on
+            # storm tracks (via storm id) and will contain the "sanitized" lons
+            sanitized_storm_tracks = {}
+            for key in storm_track_dict:
+                # "Sanitize" the longitudes to shift the lons that cross the International Date Line.
+                # Create a new SanTrackPt named tuple and add that to a new dictionary
+                # that keeps track of the sanitized data based on the storm id
+                # sanitized_lons = self.sanitize_lonlist(storm_track_dict[key].alons)
+                sanitized_lons = self.sanitize_lonlist(storm_track_dict[key].alons)
+                sanitized_track_pt = SanTrackPt(storm_track_dict[key].indices, storm_track_dict[key].track,
+                                                  storm_track_dict[key].alons, sanitized_lons)
+                sanitized_storm_tracks[key] = sanitized_track_pt
 
-                # Now separate the data based on storm id.
-                for cur_unique in self.unique_storm_id:
-                    cur_storm_list = []
-                    for cur_line in all_tracks_list:
-                        if cur_line['storm_id'] == cur_unique:
-                            cur_storm_list.append(cur_line)
-                        else:
-                            # Continue to next line in all_tracks_list
-                            continue
+            # fill in the sanitized dataframe, sanitized_df
+            for key in sanitized_storm_tracks:
+                # now use the indices of the storm tracks to correctly assign the sanitized
+                # lons to the appropriate row in the dataframe to maintain the row ordering of
+                # the original dataframe
+                idx_list = sanitized_storm_tracks[key].indices
 
-                    # Create the storm_id_dict, which is the data
-                    # structure used to separate the storm data based on
-                    # storm id.
-                    self.storm_id_dict[cur_unique] = cur_storm_list
+                for i, idx in enumerate(idx_list):
+                    sanitized_df.loc[idx,'SLON'] = sanitized_storm_tracks[key].slons[i]
 
+                    # Set some useful values used for plotting.
+                    # Set the IS_FIRST value to True if this is the first
+                    # point in the storm track, False
+                    # otherwise
+                    if i == 0:
+                        sanitized_df.loc[idx, 'IS_FIRST'] = True
+                    else:
+                        sanitized_df.loc[idx, 'IS_FIRST'] = False
+
+                    # Set the lead group to the character '0' if the valid hour is 0 or 12,
+                    # or to the charcter '6' if the valid hour is 6 or 18. Set the marker
+                    # to correspond to the valid hour: 'o' (open circle) for 0 or 12 valid hour,
+                    # or '+' (small plus/cross) for 6 or 18.
+                    if sanitized_df.loc[idx, 'VALID_HOUR'] == 0 or sanitized_df.loc[idx, 'VALID_HOUR'] == 12:
+                        sanitized_df.loc[idx, 'LEAD_GROUP'] ='0'
+                        sanitized_df.loc[idx, 'MARKER'] = self.circle_marker
+                    elif sanitized_df.loc[idx, 'VALID_HOUR'] == 6 or sanitized_df.loc[idx, 'VALID_HOUR'] == 18:
+                        sanitized_df.loc[idx, 'LEAD_GROUP'] = '6'
+                        sanitized_df.loc[idx, 'MARKER'] = self.cross_marker
+
+            # If the user has specified a region of interest rather than the
+            # global extent, subset the data even further to points that are within a bounding box.
+            if not self.is_global_extent:
+                self.logger.debug(f"Subset the data based on the region of interest.")
+                subset_by_region_df = self.subset_by_region(sanitized_df)
+                final_df = subset_by_region_df.copy(deep=True)
+            else:
+                final_df = sanitized_df.copy(deep=True)
+
+            # Write output ASCII file (csv) summarizing the information extracted from the input
+            # which is used to generate the plot.
+            if self.gen_ascii:
+               self.logger.debug(f" output dir: {self.output_dir}")
+               util.mkdir_p(self.output_dir)
+               ascii_track_parts = [self.init_date, '.csv']
+               ascii_track_output_name = ''.join(ascii_track_parts)
+               final_df_filename = os.path.join(self.output_dir, ascii_track_output_name)
+
+               # Make sure that the dataframe is sorted by STORM_ID, INIT_YMD, INIT_HOUR, and LEAD
+               # to ensure that the line plot is connecting the points in the correct order.
+               final_sorted_df = final_df.sort_values(by=['STORM_ID', 'INIT_YMD', 'INIT_HOUR', 'LEAD'], ignore_index=True)
+               final_df.reset_index(drop=True,inplace=True)
+               final_sorted_df.to_csv(final_df_filename)
         else:
-            self.log_error("{} should be a directory".format(self.input_data))
-            sys.exit(1)
-
-    def get_columns_and_indices(self, header):
-        """ Parse the header for the columns of interest and store the
-            information in a dictionary where the key is the column name
-            and value is the index/column number.
-            Returns:
-                column_dict:  A dictionary containing the column name
-                              and its index
-        """
-
-        all_columns = header.split()
-        column_dict = {}
-
-        # Retrieve the index number of the column of interest in the header.
-        for col in self.columns_of_interest:
-            index = all_columns.index(col)
-            column_dict[col] = index
-        return column_dict
-
-    @staticmethod
-    def extract_date_and_time_from_init(init_time_str):
-        """ Extract and return the YYYYMMDD portion and the
-            hh portion from the init time taken from the .tcst file.
-        """
-        match_ymd = re.match(r'([0-9]{8}).*', init_time_str)
-        match_hh = re.match(r'[0-9]{8}_([0-9]{2,3})[0-9]{4}', init_time_str)
-        # pylint:disable=no-else-return
-        # Explicitly return None if no match is found
-        if match_ymd and match_hh:
-            return match_ymd.group(1), match_hh.group(1)
-        else:
+            # The user's specified directory isn't valid, log the error and exit.
+            self.logger.error("CYCLONE_PLOTTER_INPUT_DIR isn't a valid directory, check config file.")
             return None
 
-    @staticmethod
-    def extract_lead_hr(lead_str):
-        """ Extract and return the lead hours from the hhmmss lead string.
-        """
-        match = re.match(r'([0-9]{2,3})[0-9]{4}', str(lead_str))
-        if match:
-            return match.group(1)
+        return final_sorted_df
+
 
     def create_plot(self):
-        """! Create the plot, using Cartopy.
+        """
+         Create the plot, using Cartopy
 
         """
 
+        # Use PlateCarree projection for scatter plots
+        # and Geodetic projection for line plots.
+        cm_lon = self.central_longitude
+        prj = ccrs.PlateCarree(central_longitude=cm_lon)
+        ax = plt.axes(projection=prj)
 
-        # Use PlateCarree projection for now
-        #use central meridian for central longitude
-        cm_lon = 180
-        ax = plt.axes(projection=ccrs.PlateCarree(central_longitude=cm_lon))
-        prj = ccrs.PlateCarree()
+        # for transforming the annotations (matplotlib to cartopy workaround from Stack Overflow)
+        transform = ccrs.PlateCarree()._as_mpl_transform(ax)
 
         # Add land, coastlines, and ocean
         ax.add_feature(cfeature.LAND)
         ax.coastlines()
         ax.add_feature(cfeature.OCEAN)
-        # keep map zoomed out to full world.  If this
-        # is absent, the default behavior is to zoom
-        # into the portion of the map that contains points.
-        ax.set_global()
+
+        # keep map zoomed out to full world (ie global extent) if CYCLONE_PLOTTER_GLOBAL_PLOT is
+        # yes or True, otherwise use the lons and lats defined in the config file to
+        # create a polygon (rectangular box) defining the region of interest.
+        if self.is_global_extent:
+            ax.set_global()
+            self.logger.debug("Generating a plot of the global extent")
+        else:
+            self.logger.debug(f"Generating a plot of the user-defined extent:{self.west_lon}, {self.east_lon}, "
+                              f"{self.south_lat}, {self.north_lat}")
+            extent_list = [self.west_lon, self.east_lon, self.south_lat, self.north_lat]
+            self.logger.debug(f"Setting map extent to: {self.west_lon}, {self.east_lon}, {self.south_lat}, {self.north_lat}")
+            # Bounding box will not necessarily be centered about the 180 degree longitude, so
+            # DO NOT explicitly set the central longitude.
+            ax.set_extent(extent_list, ccrs.PlateCarree())
 
         # Add grid lines for longitude and latitude
-        ax.gridlines(draw_labels=False, xlocs=[180, -180])
-        gl = ax.gridlines(crs=prj,
+        gl = ax.gridlines(crs=ccrs.PlateCarree(),
                           draw_labels=True, linewidth=1, color='gray',
                           alpha=0.5, linestyle='--')
-        gl.xlabels_top = False
-        gl.ylabels_left = False
+
+        gl.top_labels = False
+        gl.left_labels = True
         gl.xlines = True
         gl.xformatter = LONGITUDE_FORMATTER
         gl.yformatter = LATITUDE_FORMATTER
@@ -391,7 +413,7 @@ class CyclonePlotterWrapper(CommandBuilder):
         plt.title(self.title + "\nFor forecast with initial time = " +
                   self.init_date)
 
-        # Create the NCAR watermark with a timestamp
+        # Optional: Create the NCAR watermark with a timestamp
         # This will appear in the bottom right corner of the plot, below
         # the x-axis.  NOTE: The timestamp is in the user's local time zone
         # and not in UTC time.
@@ -405,167 +427,88 @@ class CyclonePlotterWrapper(CommandBuilder):
         # Make sure the output directory exists, and create it if it doesn't.
         util.mkdir_p(self.output_dir)
 
-        # Iterate over each unique storm id in self.storm_id_dict and
-        # set the marker, marker size, and annotation
-        # before drawing the line and scatter plots.
+        # get the points for the scatter plots (and the relevant information for annotations, etc.)
+        points_list = self.get_plot_points()
 
-        # Use counters to set the labels for the legend. Since we don't
-        # want repetitions in the legend, do this for a select number
-        # of points.
-        circle_counter = 0
-        plus_counter = 0
-        dummy_counter = 0
+        # Legend labels
+        lead_group_0_legend = "Indicates a position at 00 or 12 UTC"
+        lead_group_6_legend = "Indicates a position at 06 or 18 UTC"
 
-        lines_to_write = []
-        for cur_storm_id in sorted(self.unique_storm_id):
-            # Lists used in creating each storm track.
-            cyclone_points = []
-            lon = []
-            lat = []
-            marker_list = []
-            size_list = []
-            anno_list = []
+        # to be consistent with the NOAA website, use red for annotations, markers, and lines.
+        pt_color = 'red'
+        cross_marker_size = self.cross_marker_size
+        circle_marker_size = self.circle_marker_size
 
-            # For this storm id, get a list of all data (corresponding
-            # to lines/rows in the tcst data file).
-            track_info_list = self.storm_id_dict[cur_storm_id]
-            if not track_info_list:
-                self.log_error("Empty track list, no data extracted " +
-                                  "from track files, exiting.")
-                return
+        # Get all the lat and lon (i.e. x and y) points for the '+' and 'o' marker types
+        # to be used in generating the scatter plots (one for the 0/12 hr and one for the 6/18 hr lead
+        # groups).  Also collect ALL the lons and lats, which will be used to generate the
+        # line plot (the last plot that goes on top of all the scatter plots).
+        cross_lons = []
+        cross_lats = []
+        cross_annotations = []
+        circle_lons = []
+        circle_lats = []
+        circle_annotations = []
 
-            for track in track_info_list:
-                # For now, all the marker symbols will be one color.
-                color_list = ['red' for _ in range(0, len(track_info_list))]
+        for idx,pt in enumerate(points_list):
+            if pt.marker == self.cross_marker:
+                cross_lons.append(pt.lon)
+                cross_lats.append(pt.lat)
+                cross_annotations.append(pt.annotation)
+                # cross_marker = pt.marker
+            elif pt.marker == self.circle_marker:
+                circle_lons.append(pt.lon)
+                circle_lats.append(pt.lat)
+                circle_annotations.append(pt.annotation)
+                # circle_marker = pt.marker
 
-                lon.append(float(track['lon']))
-                lat.append(float(track['lat']))
+        # Now generate the scatter plots for the lead group 0/12 hr ('+' marker) and the
+        # lead group 6/18 hr ('.' marker).
+        plt.scatter(circle_lons, circle_lats, s=self.circle_marker_size, c=pt_color,
+                    marker=self.circle_marker, zorder=2, label=lead_group_0_legend, transform=ccrs.PlateCarree())
+        plt.scatter(cross_lons, cross_lats, s=self.cross_marker_size, c=pt_color,
+                    marker=self.cross_marker, zorder=2, label=lead_group_6_legend, transform=ccrs.PlateCarree())
 
-                # Differentiate between the forecast lead "groups",
-                # i.e. 0/12 vs 6/18 hr and
-                # assign the marker symbol and size.
-                if track['lead_group'] == '0':
-                    marker = 'o'
-                    marker_list.append(marker)
-                    marker_size = self.circle_marker
-                    size_list.append(marker_size)
-                    label = "Indicates a position at 00 or 12 UTC"
+        # annotations for the scatter plots
+        counter = 0
+        for x,y in zip(circle_lons, circle_lats):
+            plt.annotate(circle_annotations[counter], (x,y+1), xycoords=transform, color=pt_color,
+                         fontsize=self.annotation_font_size)
+            counter += 1
 
-                elif track['lead_group'] == '6':
-                    marker = '+'
-                    marker_list.append(marker)
-                    marker_size = self.cross_marker
-                    size_list.append(marker_size)
-                    label = "\nIndicates a position at 06 or 18 UTC\n"
+        counter = 0
+        for x, y in zip(cross_lons, cross_lats):
+            plt.annotate(cross_annotations[counter], (x, y + 1), xycoords=transform, color=pt_color,
+                         fontsize=self.annotation_font_size)
+            counter += 1
 
-                # Determine the first point, needed later to annotate.
-                # pylint:disable=invalid-name
-                dd = track['valid_dd']
-                hh = track['valid_hh']
-                if dd and hh:
-                    date_hr_str = dd + '/' + hh + 'z'
-                    anno_list.append(date_hr_str)
-                else:
-                    date_hr_str = ''
-                    anno_list.append(date_hr_str)
+        # Dummy point to add the additional label explaining the labelling of the first
+        # point in the storm track
+        plt.scatter(0, 0, zorder=2, marker=None, c=[],
+                    label="Date (dd/hhz) is the first " +
+                            "time storm was able to be tracked in model")
 
-                # Write to the ASCII track file, if requested
-                if self.gen_ascii:
-                    line_parts = ['model_name: ', track['model_name'], '   ',
-                                  'storm_id: ', track['storm_id'], '   ',
-                                  'init_time: ', track['init_time'], '   ',
-                                  'valid_time: ', track['valid_time'], '   ',
-                                  'lat: ', str(track['lat']), '   ',
-                                  'lon: ', str(track['lon']), '   ',
-                                  'lead_group: ', track['lead_group'], '   ',
-                                  'first_point:', str(track['first_point'])]
-                    line = ''.join(line_parts)
-                    lines_to_write.append(line)
-
-            # Create a scatter plot to add
-            # the appropriate marker symbol to the forecast
-            # hours corresponding to 6/18 hours.
-
-            # Annotate the first point of the storm track
-            for anno, adj_lon, adj_lat in zip(anno_list, lon, lat):
-                # Annotate the first point of the storm track by
-                # overlaying the annotation text over all points (all but
-                # one will have text). plt.annotate DOES NOT work with cartopy,
-                # instead, use the plt.text method.
-                plt.text(adj_lon+2, adj_lat+2, anno, transform=prj,
-                         fontsize=self.annotation_font_size, color='red')
-
-            # Generate the scatterplot, where the 6/18 Z forecast times
-            # are labelled with a '+'
-            for adj_lon, adj_lat, symbol, sz, colours in zip(lon, lat,
-                                                             marker_list,
-                                                             size_list,
-                                                             color_list):
-                # red line, red +, red o, marker sizes are recognized,
-                # no outline color of black for 'o'
-                # plt.scatter(x, y, s=sz, c=colours, edgecolors=colours,
-                # facecolors='none', marker=symbol, zorder=2)
-                # Solid circle, just like the EMC NCEP plots
-                # Separate the first two points so we can generate the legend
-                if circle_counter == 0 or plus_counter == 0:
-                    if symbol == 'o':
-                        plt.scatter(adj_lon, adj_lat, s=sz, c=colours,
-                                    edgecolors=colours, facecolors=colours,
-                                    marker='o', zorder=2,
-                                    label="Indicates a position " +
-                                    "at 00 or 12 UTC", transform=prj)
-                        circle_counter += 1
-                    elif symbol == '+':
-                        plt.scatter(adj_lon, adj_lat, s=sz, c=colours,
-                                    edgecolors=colours, facecolors=colours,
-                                    marker='+', zorder=2,
-                                    label="\nIndicates a position at 06 or " +
-                                    "18 UTC\n", transform=prj)
-                        plus_counter += 1
-
-                else:
-                    # Set the legend for additional text using a
-                    # dummy scatter point
-                    if dummy_counter == 0:
-                        plt.scatter(0, 0, zorder=2, marker=None, c='',
-                                    label="Date (dd/hhz) is the first " +
-                                    "time storm was able to be tracked " +
-                                    "in model")
-                        dummy_counter += 1
-                    plt.scatter(adj_lon, adj_lat, s=sz, c=colours,
-                                edgecolors=colours,
-                                facecolors=colours, marker=symbol, zorder=2,
-                                transform=prj)
-
-            # Finally, overlay the line plot to define the storm tracks
-            plt.plot(lon, lat, linestyle='-', color=colours, linewidth=.3,
-                     transform=prj)
-
-        # If requested, create an ASCII file with the tracks that are going to
-        # be plotted.  This is useful to debug or verify that what you
-        # see on the plot is what is expected.
-        if self.gen_ascii:
-            ascii_track_parts = [self.init_date, '.txt']
-            ascii_track_output_name = ''.join(ascii_track_parts)
-            track_filename = os.path.join(self.output_dir,
-                                         ascii_track_output_name)
-            self.logger.info(f"Writing ascii track info: {track_filename}")
-            with open(track_filename, 'w') as file_handle:
-                for line in lines_to_write:
-                    file_handle.write(f"{line}\n")
-
-        # Draw the legend on the plot
-        # If you wish to have the legend within the plot:
-        # plt.legend(loc='lower left', prop={'size':5}, scatterpoints=1)
-        # The legend is outside the plot, below the x-axis to
-        # avoid obscuring any storm tracks in the Southern
-        # Hemisphere.
-        # ax.legend(loc='lower left', bbox_to_anchor=(-0.03, -0.5),
-        #           fancybox=True, shadow=True, scatterpoints=1,
-        #           prop={'size': 6})
-        ax.legend(loc='lower left', bbox_to_anchor=(-0.01, -0.4),
+        # Settings for the legend box location.
+        ax.legend(loc='lower left', bbox_to_anchor=(0, -0.4),
                   fancybox=True, shadow=True, scatterpoints=1,
-                  prop={'size': 6})
+                  prop={'size':self.legend_font_size})
+
+        # Generate the line plot
+        # First collect all the lats and lons for each storm track. Then for each storm track,
+        # generate a line plot.
+        pts_by_track_dict = self.get_points_by_track()
+
+        for key in pts_by_track_dict:
+            lons = []
+            lats = []
+            for idx, pt in enumerate(pts_by_track_dict[key]):
+                lons.append(pt.lon)
+                lats.append(pt.lat)
+
+            # Create the line plot for the current storm track, use the Geodetic coordinate reference system
+            # to correctly connect adjacent points that have been sanitized and cross the
+            # International Date line or the Prime Meridian.
+            plt.plot(lons, lats, linestyle='-', color=pt_color, linewidth=.4, transform=ccrs.Geodetic(), zorder=3)
 
         # Write the plot to the output directory
         out_filename_parts = [self.init_date, '.png']
@@ -578,23 +521,134 @@ class CyclonePlotterWrapper(CommandBuilder):
             plt.savefig(plot_filename)
 
 
-        # Plot data onto axes
-        # Uncomment the two lines below if you wish to have a pop up 
-        # window of the plot automatically appear, in addition to the creation
-        # of the .png version of the plot.
-        #self.logger.info("Plot is displayed in separate window.
-        # Close window to continue METplus execution")
-        # plt.show()
+    def get_plot_points(self):
+        """
+           Get the lon and lat points to be plotted, along with any other plotting-relevant
+           information like the marker, whether this is a first point (to be used in
+           annotating the first point using the valid day date and valid hour), etc.
+
+        :return:  A list of named tuples that represent the points to plot with corresponding
+                  plotting information
+        """
+
+        # Create a named tuple to store the point information
+        PlotPt = namedtuple("PlotPt", "storm_id lon lat is_first marker valid_dd valid_hour annotation")
+
+        points_list = []
+        storm_id = self.sanitized_df['STORM_ID']
+        lons = self.sanitized_df['SLON']
+        lats = self.sanitized_df['ALAT']
+        is_first_list = self.sanitized_df['IS_FIRST']
+        marker_list = self.sanitized_df['MARKER']
+        valid_dd_list = self.sanitized_df['VALID_DD']
+        valid_hour_list = self.sanitized_df['VALID_HOUR']
+        annotation_list = []
+
+        for idx, cur_lon in enumerate(lons):
+            if is_first_list[idx] is True:
+                annotation = str(valid_dd_list[idx]).zfill(2) + '/' + \
+                             str(valid_hour_list[idx]).zfill(2) + 'z'
+            else:
+                annotation = None
+
+            annotation_list.append(annotation)
+            cur_pt = PlotPt(storm_id, lons[idx], lats[idx], is_first_list[idx], marker_list[idx],
+                            valid_dd_list[idx], valid_hour_list[idx], annotation)
+            points_list.append(cur_pt)
+
+        return points_list
+
+
+    def get_points_by_track(self):
+        """
+            Get all the lats and lons for each storm track. Used to generate the line
+            plot of the storm tracks.
+
+            Args:
+
+            :return:
+                points_by_track:  Points aggregated by storm track.
+                                Returns a dictionary where the key is the storm_id
+                                and values are the points (lon,lat) stored in a named tuple
+        """
+        track_dict = {}
+        LonLat = namedtuple("LonLat", "lon lat")
+        for cur_unique in self.unique_storm_ids:
+            # retrieve the ALAT and ALON values that correspond to the rows for a unique storm id.
+            # i.e. Get the index value(s) corresponding to this unique storm id
+            idx_list = self.sanitized_df.index[self.sanitized_df['STORM_ID'] == cur_unique].tolist()
+            sanitized_lons_and_lats = []
+            indices = []
+            for idx in idx_list:
+                cur_lonlat = LonLat(self.sanitized_df.loc[idx, 'SLON'], self.sanitized_df.loc[idx, 'ALAT'])
+                sanitized_lons_and_lats.append(cur_lonlat)
+                indices.append(idx)
+
+            # update the track dictionary
+            track_dict[cur_unique] = sanitized_lons_and_lats
+
+        return track_dict
+
+
+    def subset_by_region(self, sanitized_df):
+        """
+            Args:
+               @param: sanitized_df the pandas dataframe containing
+                       the "sanitized" longitudes and other useful
+                       plotting information
+
+            Returns:
+               :return:
+        """
+        self.logger.debug("Subsetting by region...")
+
+        # Copy the sanitized_df dataframe
+        sanitized_by_region_df = sanitized_df.copy(deep=True)
+
+        # Iterate over ALL the rows and if any point is within the polygon,
+        # save it's index so we can create a new dataframe with just the
+        # relevant data.
+        for index, row in sanitized_by_region_df.iterrows():
+            if (self.west_lon <= row['ALON'] <= self.east_lon) and (self.south_lat <= row['ALAT'] <= self.north_lat):
+                sanitized_by_region_df.loc[index,'INSIDE'] = True
+            else:
+                sanitized_by_region_df.loc[index,'INSIDE'] = False
+
+        # Now filter the input dataframe based on the whether points are inside
+        # the specified boundaries.
+        masked = sanitized_by_region_df[sanitized_by_region_df['INSIDE'] == True]
+        masked.reset_index(drop=True,inplace=True)
+
+        if len(masked) == 0:
+            sys.exit("No data in region specified, please check your lon and lat values in the config file.")
+
+        return masked
 
 
     @staticmethod
-    def rescale_lon(lon):
-        """! Rescales longitude, using the same logic employed by MET
+    def sanitize_lonlist(lon_list):
+        """
+        Solution from Stack Overflow for "sanitizing" longitudes that cross the International Date Line
+        https://stackoverflow.com/questions/67730660/plotting-line-across-international-dateline-with-cartopy
+
+        Args:
+           @param lon_list:  A list of longitudes (float) that correspond to a storm track
+
+        Returns:
+            new_list: a list of "sanitized" lons that are "corrected" for crossing the
+            International Date Line
         """
 
-        if float(lon) > 180.:
-            adj_lon = lon - 360.
-        else:
-            adj_lon = lon
+        new_list = []
+        oldval = 0
+        # used to compare adjacent longitudes in a storm track
+        treshold = 10
+        for ix, ea in enumerate(lon_list):
+            diff = oldval - ea
+            if (ix > 0):
+                if (diff > treshold):
+                    ea = ea + 360
+            oldval = ea
+            new_list.append(ea)
 
-        return adj_lon
+        return new_list

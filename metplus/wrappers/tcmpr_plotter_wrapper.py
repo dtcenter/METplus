@@ -6,9 +6,13 @@ Contact(s): George McCabe
 import os
 import shutil
 
-from ..util import met_util as util
+from ..util import getlist
 from ..util import time_util
 from ..util import do_string_sub
+from ..util import time_generator
+from ..util import remove_quotes
+from ..util import get_files
+from ..util import mkdir_p
 from . import CommandBuilder
 
 class TCMPRPlotterWrapper(CommandBuilder):
@@ -56,12 +60,10 @@ class TCMPRPlotterWrapper(CommandBuilder):
         'save': 'bool',
     }
 
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None):
         self.app_name = 'tcmpr_plotter'
 
-        super().__init__(config,
-                         instance=instance,
-                         config_overrides=config_overrides)
+        super().__init__(config, instance=instance)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -107,7 +109,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
             self.log_error("TCMPR_PLOTTER_CONFIG_FILE must be set")
 
         # get time information
-        input_dict = self.set_time_dict_for_single_runtime()
+        input_dict = next(time_generator(self.config))
         if not input_dict:
             self.isOK = False
         c_dict['TIME_INFO'] = time_util.ti_calculate(input_dict)
@@ -116,6 +118,11 @@ class TCMPRPlotterWrapper(CommandBuilder):
         c_dict['COMMAND_ARGS'] = self.read_optional_args()
         c_dict['LOOP_INFO'] = self.read_loop_info()
         c_dict['LOOP_ARGS'] = {}
+
+        # get option to pass input directory instead of finding .tcst files
+        c_dict['READ_ALL_FILES'] = (
+            self.config.getbool('config', 'TCMPR_PLOTTER_READ_ALL_FILES', False)
+        )
 
         return c_dict
 
@@ -146,16 +153,14 @@ class TCMPRPlotterWrapper(CommandBuilder):
             elif 'bool' in data_type:
                 value = self.config.getbool('config', config_name, '')
             elif 'list' in data_type:
-                value = util.getlist(self.config.getraw('config',
-                                                        config_name,
-                                                        ''))
+                value = getlist(self.config.getraw('config', config_name))
             else:
                 self.log_error(f"Invalid type for {name}: {data_type}")
 
             if value:
                 # add quotes around value if they are not already there
                 if 'quotes' in data_type:
-                    value = f'"{util.remove_quotes(value)}"'
+                    value = f'"{remove_quotes(value)}"'
 
                 # don't add value for boolean
                 if data_type == 'bool':
@@ -181,12 +186,8 @@ class TCMPRPlotterWrapper(CommandBuilder):
             elif name == 'dep':
                 config_name = f'{config_name}_VARS'
 
-            values = util.getlist(self.config.getraw('config',
-                                                     config_name,
-                                                     ''))
-            labels = util.getlist(self.config.getraw('config',
-                                                     label_config_name,
-                                                     ''))
+            values = getlist(self.config.getraw('config', config_name))
+            labels = getlist(self.config.getraw('config', label_config_name))
 
             # if labels are not set, use values as labels
             if not labels:
@@ -226,7 +227,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
         if not os.path.exists(self.c_dict['OUTPUT_DIR']):
             self.logger.debug("Creating directory: "
                               f"{self.c_dict['OUTPUT_DIR']}")
-            os.makedirs(self.c_dict['OUTPUT_DIR'])
+            mkdir_p(self.c_dict['OUTPUT_DIR'])
 
         self.set_environment_variables()
 
@@ -272,9 +273,13 @@ class TCMPRPlotterWrapper(CommandBuilder):
 
         # input is directory, so find all tcst files to process
         self.logger.debug(f'Plotting all files in: {input_data}')
-        input_files = util.get_files(input_data, ".*.tcst")
+        if self.c_dict['READ_ALL_FILES']:
+            self.logger.debug('Passing in directory to R script')
+            return [input_data]
+
+        input_files = get_files(input_data, ".*.tcst")
         self.logger.debug(f"Number of files: {len(input_files)}")
-        return sorted(input_files)
+        return input_files
 
     def format_arg_string(self):
         arg_list = []

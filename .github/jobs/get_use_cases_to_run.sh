@@ -1,6 +1,7 @@
 #! /bin/bash
 
 use_case_groups_filepath=.github/parm/use_case_groups.json
+
 # set matrix to string of an empty array in case no use cases will be run
 matrix="[]"
 
@@ -9,7 +10,7 @@ run_all_use_cases=$2
 run_unit_tests=$3
 
 echo Run use cases: $run_use_cases
-echo Run All use cases: $run_all_use_cases
+echo Run all use cases: $run_all_use_cases
 echo Run unit tests: $run_unit_tests
 
 # if running use cases, generate JQ filter to use
@@ -18,8 +19,8 @@ if [ "$run_use_cases" == "true" ]; then
 
   # if only running new use cases, add to filter criteria
   if [ "$run_all_use_cases" == "false" ]; then
-    echo Only run new use cases
-    matrix=$(jq '[.[] | select(.new == true) | (.category + ":" + .index_list)]' $use_case_groups_filepath)
+    echo "Only run use cases that are marked to run every time (run = true)"
+    matrix=$(jq '[.[] | select(.run == true) | (.category + ":" + .index_list)]' $use_case_groups_filepath)
   else
     echo Add all available use cases
     matrix=$(jq '[.[] | (.category + ":" + .index_list)]' $use_case_groups_filepath)
@@ -31,12 +32,14 @@ fi
 if [ "$run_unit_tests" == "true" ]; then
   echo Adding unit tests to list to run
 
+  pytests="\"pytests\","
+
   # if matrix is empty, set to an array that only includes pytests
   if [ "$matrix" == "[]" ]; then
-    matrix="[\"pytests\"]"
+    matrix="[${pytests:0: -1}]"
   # otherwise prepend item to list
   else
-    matrix="[\"pytests\", ${matrix:1}"
+    matrix="[${pytests}${matrix:1}"
   fi
 fi
 

@@ -17,14 +17,17 @@ Use Cases by MET Tool:
    | `CyclonePlotter <../search.html?q=CyclonePlotterUseCase&check_keywords=yes&area=default>`_
    | `EnsembleStat <../search.html?q=EnsembleStatToolUseCase&check_keywords=yes&area=default>`_
    | `GenVxMask <../search.html?q=GenVxMaskToolUseCase&check_keywords=yes&area=default>`_
+   | `GenEnsProd <../search.html?q=GenEnsProdToolUseCase&check_keywords=yes&area=default>`_
    | `GridStat <../search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_
    | `GridDiag <../search.html?q=GridDiagToolUseCase&check_keywords=yes&area=default>`_
+   | `IODA2NC <../search.html?q=IODA2NCToolUseCase&check_keywords=yes&area=default>`_
    | `MODE <../search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_
    | `MTD <../search.html?q=MTDToolUseCase&check_keywords=yes&area=default>`_
    | `PB2NC <../search.html?q=PB2NCToolUseCase&check_keywords=yes&area=default>`_
    | `PCPCombine <../search.html?q=PCPCombineToolUseCase&check_keywords=yes&area=default>`_
    | `Point2Grid <../search.html?q=Point2GridToolUseCase&check_keywords=yes&area=default>`_
    | `PlotDataPlane <../search.html?q=PlotDataPlaneToolUseCase&check_keywords=yes&area=default>`_
+   | `PlotPointObs <../search.html?q=PlotPointObsToolUseCase&check_keywords=yes&area=default>`_
    | `PointStat <../search.html?q=PointStatToolUseCase&check_keywords=yes&area=default>`_
    | `RegridDataPlane <../search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_
    | `SeriesAnalysis <../search.html?q=SeriesAnalysisUseCase&check_keywords=yes&area=default>`_
@@ -41,14 +44,17 @@ Use Cases by MET Tool:
    | **CyclonePlotter**: *CyclonePlotterUseCase*
    | **EnsembleStat**: *EnsembleStatToolUseCase*
    | **GenVxMask**: *GenVxMaskToolUseCase*
+   | **GenEnsProd**: *GenEnsProdToolUseCase*
    | **GridStat**: *GridStatToolUseCase*
    | **GridDiag**: *GridDiagToolUseCase*
+   | **IODA2NC**: *IODA2NCToolUseCase*
    | **MODE**: *MODEToolUseCase*
    | **MTD**: *MTDToolUseCase*
    | **PB2NC**: *PB2NCToolUseCase*
    | **PCPCombine**: *PCPCombineToolUseCase*
    | **Point2Grid**: *Point2GridToolUseCase*
    | **PlotDataPlane**: *PlotDataPlaneToolUseCase*
+   | **PlotPointObs**: *PlotPointObsToolUseCase*
    | **PointStat**: *PointStatToolUseCase*
    | **RegridDataPlane**: *RegridDataPlaneToolUseCase*
    | **SeriesAnalysis**: *SeriesAnalysisUseCase*
@@ -66,30 +72,32 @@ Use Cases by Application:
 
    | `Air Quality and Composition <../search.html?q=AirQualityAndCompAppUseCase&check_keywords=yes&area=default>`_
    | `Climate <../search.html?q=ClimateAppUseCase&check_keywords=yes&area=default>`_
-   | `Convection Allowing Models <../search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_
-   | `Cryosphere  <../search.html?q=CryosphereAppUseCase&check_keywords=yes&area=default>`_
+   | `Short Range <../search.html?q=ShortRangeAppUseCase&check_keywords=yes&area=default>`_
    | `Data Assimilation  <../search.html?q=DataAssimilationAppUseCase&check_keywords=yes&area=default>`_
    | `Ensemble  <../search.html?q=EnsembleAppUseCase&check_keywords=yes&area=default>`_
-   | `Marine and Coastal <../search.html?q=MarineAndCoastalAppUseCase&check_keywords=yes&area=default>`_
+   | `Marine and Cryosphere <../search.html?q=MarineAndCryosphereAppUseCase&check_keywords=yes&area=default>`_
    | `Medium Range <../search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_
    | `Precipitation <../search.html?q=PrecipitationAppUseCase&check_keywords=yes&area=default>`_
    | `Space Weather <../search.html?q=SpaceWeatherAppUseCase&check_keywords=yes&area=default>`_
    | `Subseasonal to Seasonal <../search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_
+   | `Subseasonal to Seasonal: Madden-Julian Oscillation <../search.html?q=S2SMJOAppUseCase&check_keywords=yes&area=default>`_
+   | `Subseasonal to Seasonal: Mid-Latitude <../search.html?q=S2SMidLatAppUseCase&check_keywords=yes&area=default>`_
    | `Tropical Cyclone and Extra-Tropical Cyclone <../search.html?q=TCandExtraTCAppUseCase&check_keywords=yes&area=default>`_
 
 .. only:: latex
 
    | **Air Quality and Composition**: *AirQualityAndCompAppUseCase*
    | **Climate**: *ClimateAppUseCase*
-   | **Convection Allowing Models**: *ConvectionAllowingModelsAppUseCase*
-   | **Cryosphere**: *CryosphereAppUseCase*
+   | **Short Range**: *ShortRangeAppUseCase*
    | **Data Assimilation**: *DataAssimilationAppUseCase*
    | **Ensemble**: *EnsembleAppUseCase*
-   | **Marine and Coastal**: *MarineAndCoastalAppUseCase*
+   | **Marine and Cryosphere**: *MarineAndCryosphereAppUseCase*
    | **Medium Range**: *MediumRangeAppUseCase*
    | **Precipitation**: *PrecipitationAppUseCase*
    | **Space Weather**: *SpaceWeatherAppUseCase*
    | **Subseasonal to Seasonal**: *S2SAppUseCase*
+   | **Subseasonal to Seasonal: Madden-Julian Oscillation**: *S2SMJOAppUseCase*
+   | **Subseasonal to Seasonal: Mid-Latitude**: *S2SMidLatAppUseCase*
    | **Tropical Cyclone and Extra-Tropical Cyclone**: *TCandExtraTCAppUseCase*
 
 Use Cases by Organization:
@@ -129,6 +137,7 @@ Use Cases by METplus Feature:
    | `Diagnostics <../search.html?q=DiagnosticsUseCase&check_keywords=yes&area=default>`_
    | `Feature Relative  <../search.html?q=FeatureRelativeUseCase&check_keywords=yes&area=default>`_
    | `GempakToCF <../search.html?q=GempakToCFToolUseCase&check_keywords=yes&area=default>`_
+   | `GFDLTracker <../search.html?q=GFDLTrackerToolUseCase&check_keywords=yes&area=default>`_
    | `Looping by Month or Year <../search.html?q=LoopByMonthFeatureUseCase&check_keywords=yes&area=default>`_
    | `List Expansion (using begin_end_incr syntax) <../search.html?q=ListExpansionFeatureUseCase&check_keywords=yes&area=default>`_
    | `Masking for Regions of Interest <../search.html?q=MaskingFeatureUseCase&check_keywords=yes&area=default>`_
@@ -155,6 +164,7 @@ Use Cases by METplus Feature:
    | **Diagnostics**: *DiagnosticsUseCase*
    | **Feature Relative**: *FeatureRelativeUseCase*
    | **GempakToCF**: *GempakToCFToolUseCase*
+   | **GFDL Tracker**: *GFDLTrackerToolUseCase*
    | **Looping by Month or Year**: *LoopByMonthFeatureUseCase*
    | **List Expansion (using begin_end_incr syntax)**: *ListExpansionFeatureUseCase*
    | **Masking for Regions of Interest**: *MaskingFeatureUseCase*

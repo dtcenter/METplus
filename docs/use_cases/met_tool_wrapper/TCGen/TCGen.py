@@ -121,7 +121,13 @@ met_tool_wrapper/TCGen/TCGen.conf
 # --------
 #
 # .. note::
-#  `TCGenToolUseCase <https://dtcenter.github.io/METplus/search.html?q=TCGenToolUseCase&check_keywords=yes&area=default>`_,
-#  `DTCOrgUseCase <https://dtcenter.github.io/METplus/search.html?q=DTCOrgUseCase&check_keywords=yes&area=default>`_,
+#
+#   * TCGenToolUseCase
+#   * DTCOrgUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
 #
 # sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-TCGen.png'
+#

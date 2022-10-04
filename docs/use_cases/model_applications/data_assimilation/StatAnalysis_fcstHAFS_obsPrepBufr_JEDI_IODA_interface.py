@@ -150,9 +150,13 @@ model_applications/data_assimilation/StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA
 # --------
 #
 # .. note::
-#  `StatAnalysisToolUseCase <https://dtcenter.github.io/METplus/search.html?q=StatAnalysisToolUseCase&check_keywords=yes&area=default>`_
-#  `PythonEmbeddingFileUseCase <https://dtcenter.github.io/METplus/search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_
-#  `TCandExtraTCAppUseCase <https://dtcenter.github.io/METplus/search.html?q=TCandExtraTCAppUseCase&check_keywords=yes&area=default>`_
-#  `NOAAEMCOrgUseCase <https://dtcenter.github.io/METplus/search.html?q=NOAAEMCOrgUseCase&check_keywords=yes&area=default>`_
+#
+#   * StatAnalysisToolUseCase 
+#   * PythonEmbeddingFileUseCase 
+#   * TCandExtraTCAppUseCase 
+#   * NOAAEMCOrgUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
 #
 # sphinx_gallery_thumbnail_path = '_static/data_assimilation-StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA_interface.png'

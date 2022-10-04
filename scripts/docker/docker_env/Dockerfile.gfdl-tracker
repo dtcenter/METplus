@@ -1,0 +1,35 @@
+FROM dtcenter/met:10.0.0
+
+# Needed to install GFDL Tracker
+ENV LIB_Z_PATH /usr/lib64
+ENV LIB_JASPER_PATH /usr/lib64
+ENV LIB_PNG_PATH /usr/lib64
+
+# Needed to install NetCDF-Fortran
+ENV NCDIR /usr/local
+
+# Install NetCDF-C 4.8.0
+RUN cd / \
+ && curl https://codeload.github.com/Unidata/netcdf-c/tar.gz/refs/tags/v4.8.0 --output v4.8.0.tar.gz \
+ && tar zxf v4.8.0.tar.gz \
+ && cd netcdf-c-4.8.0 \
+ && ./configure --disable-dap \
+ && make check install
+
+# Install NetCDF-Fortran 4.5.3
+RUN cd / \
+ && wget https://github.com/Unidata/netcdf-fortran/archive/refs/tags/v4.5.3.tar.gz \
+ && tar zxf v4.5.3.tar.gz \
+ && cd netcdf-fortran-4.5.3 \
+ && ./configure \
+ && make check install
+
+RUN cd / \
+ && wget https://dtcenter.ucar.edu/dfiles/code/METplus/gfdl_patch/standalone_gfdl-vortextracker_v3.9a_gcc.tar.gz \
+ && tar zxf standalone_gfdl-vortextracker_v3.9a_gcc.tar.gz \
+ && cd standalone_gfdl-vortextracker_v3.9a_gcc \
+ && unset FC && unset CC \
+ && ./configure \
+ && mv configure.trk-docker-gnu configure.trk \
+ && ./compile 2>&1 | tee tracker.log
+
