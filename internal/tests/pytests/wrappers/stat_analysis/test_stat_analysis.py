@@ -4,6 +4,7 @@ import pytest
 
 import os
 import datetime
+from dateutil.relativedelta import relativedelta
 
 from metplus.wrappers.stat_analysis_wrapper import StatAnalysisWrapper
 from metplus.util import handle_tmp_dir
@@ -26,25 +27,24 @@ def stat_analysis_wrapper(metplus_config):
     handle_tmp_dir(config)
     return StatAnalysisWrapper(config)
 
-
 @pytest.mark.parametrize(
-    'input, expected_output', [
+    'input_str, expected_output', [
         ('', []),
-        ('0,1,2,3', ['"000000"', '"010000"', '"020000"', '"030000"']),
-        ('01', ['"010000"']),
-        ('begin_end_incr(0,3,1)', ['"000000"', '"010000"',
-                                   '"020000"', '"030000"']),
+        ('0,1,2,3', ['000000', '010000', '020000', '030000']),
+        ('12, 24', ['120000', '240000']),
+        ('196', ['1960000']),
+        ('12H, 24H', ['120000', '240000']),
+        ('45M', ['004500']),
+        ('42S', ['000042']),
         ('24, 48, 72, 96, 120, 144, 168, 192, 216, 240',
-         ['"240000"', '"480000"', '"720000"', '"960000"', '"1200000"',
-          '"1440000"', '"1680000"', '"1920000"', '"2160000"', '"2400000"']),
+         ['240000', '480000', '720000', '960000', '1200000',
+          '1440000', '1680000', '1920000', '2160000', '2400000']),
     ]
 )
 @pytest.mark.wrapper_d
-def test_handle_format_lists(metplus_config, input, expected_output):
-    config = metplus_config([TEST_CONF])
-    config.set('config', 'FCST_LEAD_LIST', input)
-    wrapper = StatAnalysisWrapper(config)
-    assert wrapper.c_dict['FCST_LEAD_LIST'] == expected_output
+def test_get_met_time_list(metplus_config, input_str, expected_output):
+    wrapper = stat_analysis_wrapper(metplus_config)
+    assert wrapper._get_met_time_list(input_str) == expected_output
 
 
 @pytest.mark.wrapper_d
@@ -89,9 +89,8 @@ def test_create_c_dict(metplus_config):
     assert c_dict['DESC_LIST'] == []
     assert c_dict['FCST_LEAD_LIST'] == []
     assert c_dict['OBS_LEAD_LIST'] == []
-    assert c_dict['FCST_VALID_HOUR_LIST'] == ['"000000"']
-    assert c_dict['FCST_INIT_HOUR_LIST'] == ['"000000"', '"060000"',
-                                             '"120000"', '"180000"']
+    assert c_dict['FCST_VALID_HOUR_LIST'] == ['00']
+    assert c_dict['FCST_INIT_HOUR_LIST'] == ['00', '06', '12', '18']
     assert c_dict['OBS_VALID_HOUR_LIST'] == []
     assert c_dict['OBS_INIT_HOUR_LIST'] == []
     assert c_dict['VX_MASK_LIST'] == []
@@ -222,7 +221,7 @@ def test_build_stringsub_dict(metplus_config):
     config_dict['OBS_UNITS'] = ''
     config_dict['FCST_THRESH'] = ''
     config_dict['OBS_VAR'] = ''
-    config_dict['FCST_INIT_HOUR'] = '"000000", "060000", "120000", "180000"'
+    config_dict['FCST_INIT_HOUR'] = '0, 6, 12, 18'
     config_dict['INTERP_PNTS'] = ''
     config_dict['FCST_LEAD'] = ''
     config_dict['LINE_TYPE'] = ''
@@ -253,41 +252,41 @@ def test_build_stringsub_dict(metplus_config):
            datetime.datetime(2019, 1, 1, 0, 0, 0))
     assert(test_stringsub_dict['valid_end'] == 
            datetime.datetime(2019, 1, 5, 0, 0, 0))
-    assert(test_stringsub_dict['fcst_valid_hour'] == 
-           datetime.datetime(1900, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['fcst_valid_hour_beg'] == 
-           datetime.datetime(1900, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['fcst_valid_hour_end'] == 
-           datetime.datetime(1900, 1, 1, 0, 0, 0))
+    assert test_stringsub_dict['fcst_valid_hour'] == relativedelta()
+           #datetime.datetime(1900, 1, 1, 0, 0, 0))
+    assert test_stringsub_dict['fcst_valid_hour_beg'] == relativedelta()
+           #datetime.datetime(1900, 1, 1, 0, 0, 0))
+    assert test_stringsub_dict['fcst_valid_hour_end'] == relativedelta()
+           #datetime.datetime(1900, 1, 1, 0, 0, 0))
     assert(test_stringsub_dict['fcst_valid_beg'] == 
            datetime.datetime(2019, 1, 1, 0, 0, 0))
     assert(test_stringsub_dict['fcst_valid_end'] == 
            datetime.datetime(2019, 1, 5, 0, 0, 0))
-    assert(test_stringsub_dict['valid_hour'] == 
-           datetime.datetime(1900, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['valid_hour_beg'] == 
-           datetime.datetime(1900, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['valid_hour_end'] == 
-           datetime.datetime(1900, 1, 1, 0, 0, 0))
+    assert test_stringsub_dict['valid_hour'] == relativedelta()
+           #datetime.datetime(1900, 1, 1, 0, 0, 0))
+    assert test_stringsub_dict['valid_hour_beg'] == relativedelta()
+           #datetime.datetime(1900, 1, 1, 0, 0, 0))
+    assert test_stringsub_dict['valid_hour_end'] == relativedelta()
+           #datetime.datetime(1900, 1, 1, 0, 0, 0))
     assert(test_stringsub_dict['model'] == 'MODEL_TEST')
     assert(test_stringsub_dict['obtype'] == 'MODEL_TEST_ANL')
     assert(test_stringsub_dict['fcst_init_hour'] == 
            '000000_060000_120000_180000')
-    assert(test_stringsub_dict['fcst_init_hour_beg'] == 
-           datetime.datetime(1900, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['fcst_init_hour_end'] == 
-           datetime.datetime(1900, 1, 1, 18, 0, 0))
-    assert(test_stringsub_dict['init_hour_beg'] == 
-           datetime.datetime(1900, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['init_hour_end'] == 
-           datetime.datetime(1900, 1, 1, 18, 0, 0)) 
+    assert test_stringsub_dict['fcst_init_hour_beg'] == relativedelta(hours=0)
+           #datetime.datetime(1900, 1, 1, 0, 0, 0))
+    assert test_stringsub_dict['fcst_init_hour_end'] == relativedelta(hours=18)
+           #datetime.datetime(1900, 1, 1, 18, 0, 0))
+    assert test_stringsub_dict['init_hour_beg'] ==  relativedelta(hours=0)
+           #datetime.datetime(1900, 1, 1, 0, 0, 0))
+    assert test_stringsub_dict['init_hour_end'] ==  relativedelta(hours=18)
+           #datetime.datetime(1900, 1, 1, 18, 0, 0))
     assert(test_stringsub_dict['fcst_var'] == '')
     assert(test_stringsub_dict['fcst_level'] == '')
     assert(test_stringsub_dict['fcst_units'] == '')
     assert(test_stringsub_dict['fcst_thresh'] == '')
     assert(test_stringsub_dict['desc'] == '')
     # Test 2
-    config_dict['FCST_LEAD'] = '240000'
+    config_dict['FCST_LEAD'] = '24'
     st.c_dict['DATE_BEG'] = '20190101'
     st.c_dict['DATE_END'] = '20190101'
     st.c_dict['DATE_TYPE'] = 'VALID'
@@ -317,7 +316,7 @@ def test_build_stringsub_dict(metplus_config):
     assert(test_stringsub_dict['lead_sec'] == '00')
     assert(test_stringsub_dict['lead'] == '240000')
     # Test 3
-    config_dict['FCST_LEAD'] = '1200000'
+    config_dict['FCST_LEAD'] = '120'
     st.c_dict['DATE_BEG'] = '20190101'
     st.c_dict['DATE_END'] = '20190101'
     st.c_dict['DATE_TYPE'] = 'VALID'
@@ -352,18 +351,18 @@ def test_build_stringsub_dict(metplus_config):
     st.c_dict['DATE_TYPE'] = 'INIT'
     test_stringsub_dict = st.build_stringsub_dict(lists_to_loop,
                                                   lists_to_group, config_dict)
-    assert(test_stringsub_dict['fcst_init_hour_beg'] == 
-           datetime.datetime(1900, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['fcst_init_hour_end'] == 
-           datetime.datetime(1900, 1, 1, 18, 0, 0))
-    assert(test_stringsub_dict['fcst_init_beg'] == 
-           datetime.datetime(2019, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['fcst_init_end'] == 
+    assert test_stringsub_dict['fcst_init_hour_beg'] == relativedelta()
+           #datetime.datetime(1900, 1, 1, 0, 0, 0))
+    assert test_stringsub_dict['fcst_init_hour_end'] == relativedelta(hours=18)
+           #datetime.datetime(1900, 1, 1, 18, 0, 0))
+    assert (test_stringsub_dict['fcst_init_beg'] ==
+            datetime.datetime(2019, 1, 1, 0, 0, 0))
+    assert (test_stringsub_dict['fcst_init_end'] ==
            datetime.datetime(2019, 1, 5, 18, 0, 0))
-    assert(test_stringsub_dict['init_hour_beg'] == 
-           datetime.datetime(1900, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['init_hour_end'] == 
-           datetime.datetime(1900, 1, 1, 18, 0, 0))
+    assert test_stringsub_dict['init_hour_beg'] == relativedelta()
+           #datetime.datetime(1900, 1, 1, 0, 0, 0))
+    assert test_stringsub_dict['init_hour_end'] == relativedelta(hours=18)
+           #datetime.datetime(1900, 1, 1, 18, 0, 0))
     assert(test_stringsub_dict['init_beg'] == 
            datetime.datetime(2019, 1, 1, 0, 0, 0))
     assert(test_stringsub_dict['init_end'] == 
@@ -397,14 +396,15 @@ def test_build_stringsub_dict(metplus_config):
            datetime.datetime(2019, 1, 1, 0, 0 ,0))
     assert(test_stringsub_dict['obs_init_end'] == 
            datetime.datetime(2019, 1, 1, 23, 59 ,59))
-    assert(test_stringsub_dict['fcst_init_hour_beg'] == 
-           datetime.datetime(1900, 1, 1, 0, 0, 0)) 
-    assert(test_stringsub_dict['fcst_init_hour_end'] == 
-           datetime.datetime(1900, 1, 1, 23, 59 ,59))
-    assert(test_stringsub_dict['obs_init_hour_beg'] == 
-           datetime.datetime(1900, 1, 1, 0, 0, 0))                               
-    assert(test_stringsub_dict['obs_init_hour_end'] == 
-           datetime.datetime(1900, 1, 1, 23, 59 ,59))
+    assert test_stringsub_dict['fcst_init_hour_beg'] == relativedelta()
+           #datetime.datetime(1900, 1, 1, 0, 0, 0))
+    assert (test_stringsub_dict['fcst_init_hour_end'] ==
+            relativedelta(hours=23, minutes=59, seconds=59))
+           #datetime.datetime(1900, 1, 1, 23, 59 ,59))
+    assert test_stringsub_dict['obs_init_hour_beg'] == relativedelta()
+           #datetime.datetime(1900, 1, 1, 0, 0, 0))
+    assert (test_stringsub_dict['obs_init_hour_end'] ==
+            relativedelta(hours=23, minutes=59, seconds=59))
 
 
 @pytest.mark.wrapper_d
@@ -416,7 +416,7 @@ def test_get_output_filename(metplus_config):
     # as expected
     st = stat_analysis_wrapper(metplus_config)
     config_dict = {}
-    config_dict['FCST_VALID_HOUR'] = '000000'
+    config_dict['FCST_VALID_HOUR'] = '0'
     config_dict['FCST_VAR'] = ''
     config_dict['FCST_LEVEL'] = ''
     config_dict['INTERP_MTHD'] = ''
@@ -427,7 +427,7 @@ def test_get_output_filename(metplus_config):
     config_dict['OBS_UNITS'] = ''
     config_dict['FCST_THRESH'] = ''
     config_dict['OBS_VAR'] = ''
-    config_dict['FCST_INIT_HOUR'] = '"000000", "060000", "120000", "180000"'
+    config_dict['FCST_INIT_HOUR'] = '0, 6, 12, 18'
     config_dict['INTERP_PNTS'] = ''
     config_dict['FCST_LEAD'] = ''
     config_dict['LINE_TYPE'] = ''
@@ -535,7 +535,7 @@ def test_get_lookin_dir(metplus_config):
     # as expected
     st = stat_analysis_wrapper(metplus_config)
     config_dict = {}
-    config_dict['FCST_VALID_HOUR'] = '000000'
+    config_dict['FCST_VALID_HOUR'] = '0'
     config_dict['FCST_VAR'] = ''
     config_dict['FCST_LEVEL'] = ''
     config_dict['INTERP_MTHD'] = ''
@@ -546,7 +546,7 @@ def test_get_lookin_dir(metplus_config):
     config_dict['OBS_UNITS'] = ''
     config_dict['FCST_THRESH'] = ''
     config_dict['OBS_VAR'] = ''
-    config_dict['FCST_INIT_HOUR'] = '"000000", "060000", "120000", "180000"'
+    config_dict['FCST_INIT_HOUR'] = '0, 6, 12, 18'
     config_dict['INTERP_PNTS'] = ''
     config_dict['FCST_LEAD'] = ''
     config_dict['LINE_TYPE'] = ''
@@ -622,8 +622,8 @@ def test_format_valid_init(metplus_config):
     st.c_dict['DATE_TYPE'] = 'VALID'
 
     config_dict = {}
-    config_dict['FCST_VALID_HOUR'] = '000000'
-    config_dict['FCST_INIT_HOUR'] = '"000000", "120000"'
+    config_dict['FCST_VALID_HOUR'] = '0'
+    config_dict['FCST_INIT_HOUR'] = '0, 12'
     config_dict['OBS_VALID_HOUR'] = ''
     config_dict['OBS_INIT_HOUR'] = ''
     config_dict = st.format_valid_init(config_dict)
@@ -645,8 +645,8 @@ def test_format_valid_init(metplus_config):
     st.c_dict['DATE_TYPE'] = 'VALID'
 
     config_dict = {}
-    config_dict['FCST_VALID_HOUR'] = '"000000", "120000"'
-    config_dict['FCST_INIT_HOUR'] = '"000000", "120000"'
+    config_dict['FCST_VALID_HOUR'] = '0, 12'
+    config_dict['FCST_INIT_HOUR'] = '0, 12'
     config_dict['OBS_VALID_HOUR'] = ''
     config_dict['OBS_INIT_HOUR'] = ''
     config_dict = st.format_valid_init(config_dict)
@@ -671,7 +671,7 @@ def test_format_valid_init(metplus_config):
     config_dict['FCST_VALID_HOUR'] = ''
     config_dict['FCST_INIT_HOUR'] = ''
     config_dict['OBS_VALID_HOUR'] = '000000'
-    config_dict['OBS_INIT_HOUR'] = '"000000", "120000"'
+    config_dict['OBS_INIT_HOUR'] = '0, 12'
     config_dict = st.format_valid_init(config_dict)
     assert config_dict['FCST_VALID_BEG'] == ''
     assert config_dict['FCST_VALID_END'] == ''
@@ -694,7 +694,7 @@ def test_format_valid_init(metplus_config):
     config_dict['FCST_VALID_HOUR'] = ''
     config_dict['FCST_INIT_HOUR'] = ''
     config_dict['OBS_VALID_HOUR'] = '000000'
-    config_dict['OBS_INIT_HOUR'] = '"000000", "120000"'
+    config_dict['OBS_INIT_HOUR'] = '0, 12'
     config_dict = st.format_valid_init(config_dict)
     assert config_dict['FCST_VALID_BEG'] == ''
     assert config_dict['FCST_VALID_END'] == ''
