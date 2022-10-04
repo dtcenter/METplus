@@ -89,13 +89,13 @@ def get_seconds_from_string(value, default_unit='S', valid_time=None):
     rd_obj = get_relativedelta(value, default_unit)
     return ti_get_seconds_from_relativedelta(rd_obj, valid_time)
 
-def time_string_to_met_time(time_string, default_unit='S'):
+def time_string_to_met_time(time_string, default_unit='S', force_hms=False):
     """!Convert time string (3H, 4M, 7, etc.) to format expected by the MET
         tools ([H]HH[MM[SS]])"""
     total_seconds = get_seconds_from_string(time_string, default_unit)
-    return seconds_to_met_time(total_seconds)
+    return seconds_to_met_time(total_seconds, force_hms=force_hms)
 
-def seconds_to_met_time(total_seconds):
+def seconds_to_met_time(total_seconds, force_hms=False):
     seconds_time_string = str(total_seconds % 60).zfill(2)
     minutes_time_string = str(total_seconds // 60 % 60).zfill(2)
     hour_time_string = str(total_seconds // 3600).zfill(2)
@@ -103,7 +103,8 @@ def seconds_to_met_time(total_seconds):
     # if hour is 6 or more digits, we need to add minutes and seconds
     # also if minutes and/or seconds they are defined
     # add minutes if seconds are defined as well
-    if len(hour_time_string) > 5 or minutes_time_string != '00' or seconds_time_string != '00':
+    if (force_hms or len(hour_time_string) > 5 or
+            minutes_time_string != '00' or seconds_time_string != '00'):
         return hour_time_string + minutes_time_string + seconds_time_string
     else:
         return hour_time_string
