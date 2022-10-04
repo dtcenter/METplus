@@ -18,15 +18,14 @@ METplus Components Release Note Links
 * METcalcpy (`latest <https://metcalcpy.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__, `development <https://metcalcpy.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__)
 * METdataio (`latest <https://metdataio.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__, `development <https://metdataio.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__)
 * METexpress (`latest <https://github.com/dtcenter/METexpress/releases>`__, `development <https://github.com/dtcenter/METexpress/releases>`__)
-* METplus Wrappers (`latest <https://metplus.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__, :ref:`upgrade instructions <upgrade-instructions>`__, `development <https://metplus.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__)
+* METplus Wrappers (`latest <https://metplus.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__, :ref:`upgrade instructions <upgrade-instructions>`, `development <https://metplus.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__)
 
 
 METplus Wrappers Release Notes
 ==============================
 
-When applicable, release notes are followed by the GitHub issue number which
-describes the bugfix, enhancement, or new feature:
-https://github.com/dtcenter/METplus/issues
+When applicable, release notes are followed by the `GitHub issue <https://github.com/dtcenter/METplus/issues>`__ number which
+describes the bugfix, enhancement, or new feature.
 
 
 METplus Version 5.0.0 Beta 3 Release Notes (2022-09-21)
