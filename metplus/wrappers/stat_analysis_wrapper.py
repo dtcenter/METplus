@@ -684,7 +684,6 @@ class StatAnalysisWrapper(CommandBuilder):
 
         # if fcst hour list is not set, use date beg 000000-235959 as
         # fcst_{date_type}_beg/end
-        # TODO: should be date beg 000000 and date end 235959?
         sub_dict[f'{prefix}_beg'] = (
             datetime.datetime.strptime(
                 date_beg + '000000', '%Y%m%d%H%M%S'
@@ -692,7 +691,7 @@ class StatAnalysisWrapper(CommandBuilder):
         )
         sub_dict[f'{prefix}_end'] = (
             datetime.datetime.strptime(
-                date_beg + '235959', '%Y%m%d%H%M%S'
+                date_end + '235959', '%Y%m%d%H%M%S'
             )
         )
 
@@ -753,9 +752,6 @@ class StatAnalysisWrapper(CommandBuilder):
 
         min_lead = hour_list[0]
         max_lead = hour_list[-1]
-        # else:
-        #     min_lead = relativedelta()
-        #     max_lead = relativedelta()
 
         if date_type == 'init':
             sub_dict[f'{other_prefix}_beg'] = sub_dict[f'{date_prefix}_beg'] + min_lead
@@ -763,7 +759,6 @@ class StatAnalysisWrapper(CommandBuilder):
         else:
             sub_dict[f'{other_prefix}_beg'] = sub_dict[f'{date_prefix}_beg'] - max_lead
             sub_dict[f'{other_prefix}_end'] = sub_dict[f'{date_prefix}_end'] - min_lead
-
 
     def get_output_filename(self, output_type, filename_template,
                             filename_type,
