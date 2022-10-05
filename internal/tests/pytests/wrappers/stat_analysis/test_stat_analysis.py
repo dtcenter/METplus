@@ -27,6 +27,60 @@ def stat_analysis_wrapper(metplus_config):
     handle_tmp_dir(config)
     return StatAnalysisWrapper(config)
 
+
+def _set_config_dict_values():
+    config_dict = {}
+    config_dict['FCST_VALID_HOUR'] = ''
+    config_dict['FCST_VAR'] = ''
+    config_dict['FCST_LEVEL'] = ''
+    config_dict['INTERP_MTHD'] = ''
+    config_dict['MODEL'] = '"MODEL_TEST"'
+    config_dict['VX_MASK'] = ''
+    config_dict['OBS_INIT_HOUR'] = ''
+    config_dict['COV_THRESH'] = ''
+    config_dict['OBS_UNITS'] = ''
+    config_dict['FCST_THRESH'] = ''
+    config_dict['OBS_VAR'] = ''
+    config_dict['FCST_INIT_HOUR'] = ''
+    config_dict['INTERP_PNTS'] = ''
+    config_dict['FCST_LEAD'] = ''
+    config_dict['LINE_TYPE'] = ''
+    config_dict['FCST_UNITS'] = ''
+    config_dict['DESC'] = ''
+    config_dict['OBS_LEAD'] = ''
+    config_dict['OBS_THRESH'] = ''
+    config_dict['OBTYPE'] = '"MODEL_TEST_ANL"'
+    config_dict['OBS_VALID_HOUR'] = ''
+    config_dict['ALPHA'] = ''
+    config_dict['OBS_LEVEL'] = ''
+    return config_dict
+
+
+@pytest.mark.parametrize(
+    'list_name, config_overrides, expected_value', [
+      ('FCST_LEAD_LIST', {'FCST_LEAD_LIST': '12'}, ['12']),
+      ('FCST_LEAD_LIST', {'FCST_LEAD_LIST': '12,24'}, ['12', '24']),
+      ('FCST_LEAD_LIST',
+       {'FCST_LEAD_LIST1': '12,24', 'FCST_LEAD_LIST2': '48,96'},
+       ['12,24', '48,96']),
+      ('FCST_LEAD_LIST',
+       {'FCST_LEAD_LIST1': 'begin_end_incr(12,24,12)',
+        'FCST_LEAD_LIST2': 'begin_end_incr(48,96,48)'},
+       ['12,24', '48,96']),
+    ]
+)
+@pytest.mark.wrapper_d
+def test_format_conf_list(metplus_config, list_name, config_overrides,
+                          expected_value):
+    config = metplus_config()
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    wrapper = StatAnalysisWrapper(config)
+
+    assert wrapper._format_conf_list(list_name) == expected_value
+
+
 @pytest.mark.parametrize(
     'input_str, expected_output', [
         ('', []),
@@ -203,40 +257,12 @@ def test_format_thresh(metplus_config, expression, expected_result):
     assert st.format_thresh(expression) == expected_result
 
 
-def _set_config_dict_values():
-    config_dict = {}
-    config_dict['FCST_VALID_HOUR'] = '0'
-    config_dict['FCST_VAR'] = ''
-    config_dict['FCST_LEVEL'] = ''
-    config_dict['INTERP_MTHD'] = ''
-    config_dict['MODEL'] = '"MODEL_TEST"'
-    config_dict['VX_MASK'] = ''
-    config_dict['OBS_INIT_HOUR'] = ''
-    config_dict['COV_THRESH'] = ''
-    config_dict['OBS_UNITS'] = ''
-    config_dict['FCST_THRESH'] = ''
-    config_dict['OBS_VAR'] = ''
-    config_dict['FCST_INIT_HOUR'] = '0, 6, 12, 18'
-    config_dict['INTERP_PNTS'] = ''
-    config_dict['FCST_LEAD'] = ''
-    config_dict['LINE_TYPE'] = ''
-    config_dict['FCST_UNITS'] = ''
-    config_dict['DESC'] = ''
-    config_dict['OBS_LEAD'] = ''
-    config_dict['OBS_THRESH'] = ''
-    config_dict['OBTYPE'] = '"MODEL_TEST_ANL"'
-    config_dict['OBS_VALID_HOUR'] = ''
-    config_dict['ALPHA'] = ''
-    config_dict['OBS_LEVEL'] = ''
-    return config_dict
-
-
 @pytest.mark.parametrize(
     'lists_to_loop,c_dict_overrides,config_dict_overrides,expected_values', [
         # Test 0
         (['FCST_VALID_HOUR_LIST', 'MODEL_LIST'],
          {'DATE_BEG': '20190101', 'DATE_END': '20190105', 'DATE_TYPE': 'VALID'},
-         {},
+         {'FCST_VALID_HOUR': '0', 'FCST_INIT_HOUR': '0, 6, 12, 18'},
          {'valid_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
           'valid_end': datetime.datetime(2019, 1, 5, 0, 0, 0),
           'fcst_valid_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
@@ -264,7 +290,8 @@ def _set_config_dict_values():
         # Test 1
         (['FCST_VALID_HOUR_LIST', 'MODEL_LIST', 'FCST_LEAD_LIST'],
          {'DATE_BEG': '20190101', 'DATE_END': '20190101', 'DATE_TYPE': 'VALID'},
-         {'FCST_LEAD': '24'},
+         {'FCST_VALID_HOUR': '0', 'FCST_INIT_HOUR': '0, 6, 12, 18',
+          'FCST_LEAD': '24'},
          {'valid': datetime.datetime(2019, 1, 1, 0, 0, 0),
           'fcst_valid': datetime.datetime(2019, 1, 1, 0, 0, 0),
           'fcst_lead_totalsec': '86400',
@@ -281,9 +308,9 @@ def _set_config_dict_values():
          ),
         # Test 2
         (['FCST_VALID_HOUR_LIST', 'MODEL_LIST', 'FCST_LEAD_LIST'],
-         {'DATE_BEG': '20190101', 'DATE_END': '20190101',
-          'DATE_TYPE': 'VALID'},
-         {'FCST_LEAD': '120'},
+         {'DATE_BEG': '20190101', 'DATE_END': '20190101', 'DATE_TYPE': 'VALID'},
+         {'FCST_VALID_HOUR': '0', 'FCST_INIT_HOUR': '0, 6, 12, 18',
+          'FCST_LEAD': '120'},
          {'valid': datetime.datetime(2019, 1, 1, 0, 0, 0),
           'fcst_valid': datetime.datetime(2019, 1, 1, 0, 0, 0),
           'fcst_lead_totalsec': '432000',
@@ -300,9 +327,8 @@ def _set_config_dict_values():
          ),
         # Test 3
         (['FCST_VALID_HOUR_LIST', 'MODEL_LIST'],
-         {'DATE_BEG': '20190101', 'DATE_END': '20190105',
-          'DATE_TYPE': 'INIT'},
-         {},
+         {'DATE_BEG': '20190101', 'DATE_END': '20190105', 'DATE_TYPE': 'INIT'},
+         {'FCST_VALID_HOUR': '0', 'FCST_INIT_HOUR': '0, 6, 12, 18'},
          {'init_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
           'init_end': datetime.datetime(2019, 1, 5, 18, 0, 0),
           'fcst_init_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
@@ -315,9 +341,8 @@ def _set_config_dict_values():
          ),
         # Test 4
         (['FCST_VALID_HOUR_LIST', 'MODEL_LIST'],
-         {'DATE_BEG': '20190101', 'DATE_END': '20190101',
-          'DATE_TYPE': 'INIT'},
-         {'FCST_INIT_HOUR': '', 'FCST_LEAD': ''},
+         {'DATE_BEG': '20190101', 'DATE_END': '20190101', 'DATE_TYPE': 'INIT'},
+         {'FCST_VALID_HOUR': '0', 'FCST_INIT_HOUR': '', 'FCST_LEAD': ''},
          {'init_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
           'init_end': datetime.datetime(2019, 1, 1, 23, 59, 59),
           'fcst_init_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
@@ -354,9 +379,11 @@ def test_build_stringsub_dict(metplus_config, lists_to_loop, c_dict_overrides,
     test_stringsub_dict = st.build_stringsub_dict(lists_to_loop,
                                                   lists_to_group, config_dict)
 
+    print(test_stringsub_dict)
     for key, value in expected_values.items():
         print(f'key: {key}')
         assert test_stringsub_dict[key] == value
+
 
 @pytest.mark.parametrize(
     'filename_template, output_type, filename_type,expected_output', [
@@ -389,6 +416,8 @@ def test_get_output_filename(metplus_config, filename_template, output_type,
     # as expected
     st = stat_analysis_wrapper(metplus_config)
     config_dict = _set_config_dict_values()
+    config_dict['FCST_VALID_HOUR'] = '0'
+    config_dict['FCST_INIT_HOUR'] = '0, 6, 12, 18'
 
     st.c_dict['DATE_BEG'] = '20190101'
     st.c_dict['DATE_END'] = '20190101'
