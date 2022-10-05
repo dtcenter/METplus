@@ -689,10 +689,6 @@ METplus Components Python Requirements
     - 
   
     
-.. _release-notes:
-
-.. include:: release-notes.rst
-
 Future development plans
 ========================
 
