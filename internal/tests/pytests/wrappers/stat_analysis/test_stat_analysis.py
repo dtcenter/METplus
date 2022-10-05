@@ -201,16 +201,9 @@ def test_format_thresh(metplus_config, expression, expected_result):
 
     assert st.format_thresh(expression) == expected_result
 
-
-@pytest.mark.wrapper_d
-def test_build_stringsub_dict(metplus_config):
-    # Independently test the building of 
-    # the dictionary used in the stringtemplate
-    # substitution and the values are being set
-    # as expected
-    st = stat_analysis_wrapper(metplus_config)
+def _set_config_dict_values():
     config_dict = {}
-    config_dict['FCST_VALID_HOUR'] = '000000'
+    config_dict['FCST_VALID_HOUR'] = '0'
     config_dict['FCST_VAR'] = ''
     config_dict['FCST_LEVEL'] = ''
     config_dict['INTERP_MTHD'] = ''
@@ -233,212 +226,167 @@ def test_build_stringsub_dict(metplus_config):
     config_dict['OBS_VALID_HOUR'] = ''
     config_dict['ALPHA'] = ''
     config_dict['OBS_LEVEL'] = ''
-    # Test 1
-    st.c_dict['DATE_BEG'] = '20190101'
-    st.c_dict['DATE_END'] = '20190105'
-    st.c_dict['DATE_TYPE'] = 'VALID'
-    lists_to_group = ['FCST_INIT_HOUR_LIST', 'DESC_LIST', 'FCST_LEAD_LIST',
-                      'OBS_LEAD_LIST', 'OBS_VALID_HOUR_LIST',
-                      'OBS_INIT_HOUR_LIST', 'FCST_VAR_LIST', 'OBS_VAR_LIST',
-                      'FCST_UNITS_LIST', 'OBS_UNITS_LIST', 'FCST_LEVEL_LIST',
-                      'OBS_LEVEL_LIST', 'VX_MASK_LIST', 'INTERP_MTHD_LIST',
-                      'INTERP_PNTS_LIST', 'FCST_THRESH_LIST',
-                      'OBS_THRESH_LIST', 'COV_THRESH_LIST', 'ALPHA_LIST',
-                      'LINE_TYPE_LIST']
-    lists_to_loop = ['FCST_VALID_HOUR_LIST', 'MODEL_LIST']
-    test_stringsub_dict = st.build_stringsub_dict(lists_to_loop,
-                                                  lists_to_group, config_dict)
-    assert(test_stringsub_dict['valid_beg'] == 
-           datetime.datetime(2019, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['valid_end'] == 
-           datetime.datetime(2019, 1, 5, 0, 0, 0))
-    assert test_stringsub_dict['fcst_valid_hour'] == relativedelta()
-           #datetime.datetime(1900, 1, 1, 0, 0, 0))
-    assert test_stringsub_dict['fcst_valid_hour_beg'] == relativedelta()
-           #datetime.datetime(1900, 1, 1, 0, 0, 0))
-    assert test_stringsub_dict['fcst_valid_hour_end'] == relativedelta()
-           #datetime.datetime(1900, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['fcst_valid_beg'] == 
-           datetime.datetime(2019, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['fcst_valid_end'] == 
-           datetime.datetime(2019, 1, 5, 0, 0, 0))
-    assert test_stringsub_dict['valid_hour'] == relativedelta()
-           #datetime.datetime(1900, 1, 1, 0, 0, 0))
-    assert test_stringsub_dict['valid_hour_beg'] == relativedelta()
-           #datetime.datetime(1900, 1, 1, 0, 0, 0))
-    assert test_stringsub_dict['valid_hour_end'] == relativedelta()
-           #datetime.datetime(1900, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['model'] == 'MODEL_TEST')
-    assert(test_stringsub_dict['obtype'] == 'MODEL_TEST_ANL')
-    assert(test_stringsub_dict['fcst_init_hour'] == 
-           '000000_060000_120000_180000')
-    assert test_stringsub_dict['fcst_init_hour_beg'] == relativedelta(hours=0)
-           #datetime.datetime(1900, 1, 1, 0, 0, 0))
-    assert test_stringsub_dict['fcst_init_hour_end'] == relativedelta(hours=18)
-           #datetime.datetime(1900, 1, 1, 18, 0, 0))
-    assert test_stringsub_dict['init_hour_beg'] ==  relativedelta(hours=0)
-           #datetime.datetime(1900, 1, 1, 0, 0, 0))
-    assert test_stringsub_dict['init_hour_end'] ==  relativedelta(hours=18)
-           #datetime.datetime(1900, 1, 1, 18, 0, 0))
-    assert(test_stringsub_dict['fcst_var'] == '')
-    assert(test_stringsub_dict['fcst_level'] == '')
-    assert(test_stringsub_dict['fcst_units'] == '')
-    assert(test_stringsub_dict['fcst_thresh'] == '')
-    assert(test_stringsub_dict['desc'] == '')
-    # Test 2
-    config_dict['FCST_LEAD'] = '24'
-    st.c_dict['DATE_BEG'] = '20190101'
-    st.c_dict['DATE_END'] = '20190101'
-    st.c_dict['DATE_TYPE'] = 'VALID'
-    lists_to_group = ['FCST_INIT_HOUR_LIST', 'DESC_LIST',
-                      'OBS_LEAD_LIST', 'OBS_VALID_HOUR_LIST',
-                      'OBS_INIT_HOUR_LIST', 'FCST_VAR_LIST', 'OBS_VAR_LIST',
-                      'FCST_UNITS_LIST', 'OBS_UNITS_LIST', 'FCST_LEVEL_LIST',
-                      'OBS_LEVEL_LIST', 'VX_MASK_LIST', 'INTERP_MTHD_LIST',
-                      'INTERP_PNTS_LIST', 'FCST_THRESH_LIST',
-                      'OBS_THRESH_LIST', 'COV_THRESH_LIST', 'ALPHA_LIST',
-                      'LINE_TYPE_LIST']
-    lists_to_loop = ['FCST_VALID_HOUR_LIST', 'MODEL_LIST', 'FCST_LEAD_LIST']
-    test_stringsub_dict = st.build_stringsub_dict(lists_to_loop,
-                                                  lists_to_group, config_dict)
-    assert(test_stringsub_dict['valid'] == 
-           datetime.datetime(2019, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['fcst_valid'] == 
-           datetime.datetime(2019, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['fcst_lead_totalsec'] == '86400')
-    assert(test_stringsub_dict['fcst_lead_hour'] == '24')
-    assert(test_stringsub_dict['fcst_lead_min'] == '00')
-    assert(test_stringsub_dict['fcst_lead_sec'] == '00')
-    assert(test_stringsub_dict['fcst_lead'] == '240000')
-    assert(test_stringsub_dict['lead_totalsec'] == '86400')
-    assert(test_stringsub_dict['lead_hour'] == '24')
-    assert(test_stringsub_dict['lead_min'] == '00')
-    assert(test_stringsub_dict['lead_sec'] == '00')
-    assert(test_stringsub_dict['lead'] == '240000')
-    # Test 3
-    config_dict['FCST_LEAD'] = '120'
-    st.c_dict['DATE_BEG'] = '20190101'
-    st.c_dict['DATE_END'] = '20190101'
-    st.c_dict['DATE_TYPE'] = 'VALID'
-    lists_to_group = ['FCST_INIT_HOUR_LIST', 'DESC_LIST',
-                      'OBS_LEAD_LIST', 'OBS_VALID_HOUR_LIST',
-                      'OBS_INIT_HOUR_LIST', 'FCST_VAR_LIST', 'OBS_VAR_LIST',
-                      'FCST_UNITS_LIST', 'OBS_UNITS_LIST', 'FCST_LEVEL_LIST',
-                      'OBS_LEVEL_LIST', 'VX_MASK_LIST', 'INTERP_MTHD_LIST',
-                      'INTERP_PNTS_LIST', 'FCST_THRESH_LIST',
-                      'OBS_THRESH_LIST', 'COV_THRESH_LIST', 'ALPHA_LIST',
-                      'LINE_TYPE_LIST']
-    lists_to_loop = ['FCST_VALID_HOUR_LIST', 'MODEL_LIST', 'FCST_LEAD_LIST']
-    test_stringsub_dict = st.build_stringsub_dict(lists_to_loop,
-                                                  lists_to_group, config_dict)
-    assert(test_stringsub_dict['valid'] ==
-           datetime.datetime(2019, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['fcst_valid'] ==
-           datetime.datetime(2019, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['fcst_lead_totalsec'] == '432000')
-    assert(test_stringsub_dict['fcst_lead_hour'] == '120')
-    assert(test_stringsub_dict['fcst_lead_min'] == '00')
-    assert(test_stringsub_dict['fcst_lead_sec'] == '00')
-    assert(test_stringsub_dict['fcst_lead'] == '1200000')
-    assert(test_stringsub_dict['lead_totalsec'] == '432000')
-    assert(test_stringsub_dict['lead_hour'] == '120')
-    assert(test_stringsub_dict['lead_min'] == '00')
-    assert(test_stringsub_dict['lead_sec'] == '00')
-    assert(test_stringsub_dict['lead'] == '1200000')
-    # Test 4
-    st.c_dict['DATE_BEG'] = '20190101'
-    st.c_dict['DATE_END'] = '20190105'
-    st.c_dict['DATE_TYPE'] = 'INIT'
-    test_stringsub_dict = st.build_stringsub_dict(lists_to_loop,
-                                                  lists_to_group, config_dict)
-    assert test_stringsub_dict['fcst_init_hour_beg'] == relativedelta()
-           #datetime.datetime(1900, 1, 1, 0, 0, 0))
-    assert test_stringsub_dict['fcst_init_hour_end'] == relativedelta(hours=18)
-           #datetime.datetime(1900, 1, 1, 18, 0, 0))
-    assert (test_stringsub_dict['fcst_init_beg'] ==
-            datetime.datetime(2019, 1, 1, 0, 0, 0))
-    assert (test_stringsub_dict['fcst_init_end'] ==
-           datetime.datetime(2019, 1, 5, 18, 0, 0))
-    assert test_stringsub_dict['init_hour_beg'] == relativedelta()
-           #datetime.datetime(1900, 1, 1, 0, 0, 0))
-    assert test_stringsub_dict['init_hour_end'] == relativedelta(hours=18)
-           #datetime.datetime(1900, 1, 1, 18, 0, 0))
-    assert(test_stringsub_dict['init_beg'] == 
-           datetime.datetime(2019, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['init_end'] == 
-           datetime.datetime(2019, 1, 5, 18, 0, 0))
-    # Test 5
-    config_dict['FCST_INIT_HOUR'] = ''
-    config_dict['FCST_LEAD'] = ''
-    st.c_dict['DATE_BEG'] = '20190101'
-    st.c_dict['DATE_END'] = '20190101'
-    st.c_dict['DATE_TYPE'] = 'INIT'
-    lists_to_group = ['FCST_INIT_HOUR_LIST', 'DESC_LIST', 'FCST_LEAD_LIST',
-                      'OBS_LEAD_LIST', 'OBS_VALID_HOUR_LIST',
-                      'OBS_INIT_HOUR_LIST', 'FCST_VAR_LIST', 'OBS_VAR_LIST',
-                      'FCST_UNITS_LIST', 'OBS_UNITS_LIST', 'FCST_LEVEL_LIST',
-                      'OBS_LEVEL_LIST', 'VX_MASK_LIST', 'INTERP_MTHD_LIST',
-                      'INTERP_PNTS_LIST', 'FCST_THRESH_LIST',
-                      'OBS_THRESH_LIST', 'COV_THRESH_LIST', 'ALPHA_LIST',
-                      'LINE_TYPE_LIST']
-    lists_to_loop = ['FCST_VALID_HOUR_LIST', 'MODEL_LIST']
-    test_stringsub_dict = st.build_stringsub_dict(lists_to_loop,
-                                                  lists_to_group, config_dict)
-    assert(test_stringsub_dict['init_beg'] == 
-           datetime.datetime(2019, 1, 1, 0, 0 ,0))
-    assert(test_stringsub_dict['init_end'] == 
-           datetime.datetime(2019, 1, 1, 23, 59 ,59))
-    assert(test_stringsub_dict['fcst_init_beg'] == 
-           datetime.datetime(2019, 1, 1, 0, 0 ,0))
-    assert(test_stringsub_dict['fcst_init_end'] == 
-           datetime.datetime(2019, 1, 1, 23, 59 ,59))
-    assert(test_stringsub_dict['obs_init_beg'] == 
-           datetime.datetime(2019, 1, 1, 0, 0 ,0))
-    assert(test_stringsub_dict['obs_init_end'] == 
-           datetime.datetime(2019, 1, 1, 23, 59 ,59))
-    assert test_stringsub_dict['fcst_init_hour_beg'] == relativedelta()
-           #datetime.datetime(1900, 1, 1, 0, 0, 0))
-    assert (test_stringsub_dict['fcst_init_hour_end'] ==
-            relativedelta(hours=23, minutes=59, seconds=59))
-           #datetime.datetime(1900, 1, 1, 23, 59 ,59))
-    assert test_stringsub_dict['obs_init_hour_beg'] == relativedelta()
-           #datetime.datetime(1900, 1, 1, 0, 0, 0))
-    assert (test_stringsub_dict['obs_init_hour_end'] ==
-            relativedelta(hours=23, minutes=59, seconds=59))
+    return config_dict
 
-
+@pytest.mark.parametrize(
+    'lists_to_loop,c_dict_overrides,config_dict_overrides,expected_values', [
+        # Test 0
+        (['FCST_VALID_HOUR_LIST', 'MODEL_LIST'],
+         {'DATE_BEG': '20190101', 'DATE_END': '20190105', 'DATE_TYPE': 'VALID'},
+         {},
+         {'valid_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
+         'valid_end': datetime.datetime(2019, 1, 5, 0, 0, 0),
+         'fcst_valid_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
+         'fcst_valid_end': datetime.datetime(2019, 1, 5, 0, 0, 0),
+         'fcst_valid_hour': relativedelta(),
+         'valid_hour': relativedelta(),
+         'fcst_valid_hour_beg': relativedelta(),
+         'fcst_valid_hour_end': relativedelta(),
+         'valid_hour_beg': relativedelta(),
+         'valid_hour_end': relativedelta(),
+         'model': 'MODEL_TEST',
+         'obtype': 'MODEL_TEST_ANL',
+         'fcst_init_hour': '000000_060000_120000_180000',
+         'fcst_init_hour_beg': relativedelta(),
+         'fcst_init_hour_end': relativedelta(hours=18),
+         'init_hour_beg': relativedelta(),
+         'init_hour_end': relativedelta(hours=18),
+         'fcst_var': '',
+         'fcst_level': '',
+         'fcst_units': '',
+         'fcst_thresh': '',
+         'desc': '',
+         },
+        ),
+        # Test 1
+        (['FCST_VALID_HOUR_LIST', 'MODEL_LIST', 'FCST_LEAD_LIST'],
+         {'DATE_BEG': '20190101', 'DATE_END': '20190101', 'DATE_TYPE': 'VALID'},
+         {'FCST_LEAD': '24'},
+         {'valid': datetime.datetime(2019, 1, 1, 0, 0, 0),
+          'fcst_valid': datetime.datetime(2019, 1, 1, 0, 0, 0),
+          'fcst_lead_totalsec': '86400',
+          'fcst_lead_hour': '24',
+          'fcst_lead_min': '00',
+          'fcst_lead_sec': '00',
+          'fcst_lead': '240000',
+          'lead_totalsec': '86400',
+          'lead_hour': '24',
+          'lead_min': '00',
+          'lead_sec': '00',
+          'lead': '240000',
+          },
+         ),
+        # Test 2
+        (['FCST_VALID_HOUR_LIST', 'MODEL_LIST', 'FCST_LEAD_LIST'],
+         {'DATE_BEG': '20190101', 'DATE_END': '20190101',
+          'DATE_TYPE': 'VALID'},
+         {'FCST_LEAD': '120'},
+         {'valid': datetime.datetime(2019, 1, 1, 0, 0, 0),
+          'fcst_valid': datetime.datetime(2019, 1, 1, 0, 0, 0),
+          'fcst_lead_totalsec': '432000',
+          'fcst_lead_hour': '120',
+          'fcst_lead_min': '00',
+          'fcst_lead_sec': '00',
+          'fcst_lead': '1200000',
+          'lead_totalsec': '432000',
+          'lead_hour': '120',
+          'lead_min': '00',
+          'lead_sec': '00',
+          'lead': '1200000',
+          },
+         ),
+        # Test 3
+        (['FCST_VALID_HOUR_LIST', 'MODEL_LIST'],
+         {'DATE_BEG': '20190101', 'DATE_END': '20190105',
+          'DATE_TYPE': 'INIT'},
+         {},
+         {'init_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
+          'init_end': datetime.datetime(2019, 1, 5, 18, 0, 0),
+          'fcst_init_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
+          'fcst_init_end': datetime.datetime(2019, 1, 5, 18, 0, 0),
+          'fcst_init_hour_beg': relativedelta(),
+          'fcst_init_hour_end': relativedelta(hours=18),
+          'init_hour_beg': relativedelta(),
+          'init_hour_end': relativedelta(hours=18),
+          },
+         ),
+        # Test 4
+        (['FCST_VALID_HOUR_LIST', 'MODEL_LIST'],
+         {'DATE_BEG': '20190101', 'DATE_END': '20190101',
+          'DATE_TYPE': 'INIT'},
+         {'FCST_INIT_HOUR': '', 'FCST_LEAD': ''},
+         {'init_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
+          'init_end': datetime.datetime(2019, 1, 1, 23, 59, 59),
+          'fcst_init_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
+          'fcst_init_end': datetime.datetime(2019, 1, 1, 23, 59, 59),
+          'obs_init_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
+          'obs_init_end': datetime.datetime(2019, 1, 1, 23, 59, 59),
+          'fcst_init_hour_beg': relativedelta(),
+          'fcst_init_hour_end': relativedelta(hours=23, minutes=59, seconds=59),
+          'obs_init_hour_beg': relativedelta(),
+          'obs_init_hour_end': relativedelta(hours=23, minutes=59, seconds=59),
+          },
+         ),
+    ]
+)
 @pytest.mark.wrapper_d
-def test_get_output_filename(metplus_config):
+def test_build_stringsub_dict(metplus_config, lists_to_loop, c_dict_overrides,
+                              config_dict_overrides, expected_values):
+    # Independently test the building of 
+    # the dictionary used in the stringtemplate
+    # substitution and the values are being set
+    # as expected
+    st = stat_analysis_wrapper(metplus_config)
+    config_dict = _set_config_dict_values()
+
+    # Test 1
+    for key, value in c_dict_overrides.items():
+        st.c_dict[key] = value
+
+    for key, value in config_dict_overrides.items():
+        config_dict[key] = value
+
+    lists_to_group = [item for item in st.EXPECTED_CONFIG_LISTS
+                      if item not in lists_to_loop]
+    test_stringsub_dict = st.build_stringsub_dict(lists_to_loop,
+                                                  lists_to_group, config_dict)
+
+    for key, value in expected_values.items():
+        print(f'key: {key}')
+        assert test_stringsub_dict[key] == value
+
+@pytest.mark.parametrize(
+    'filename_template, output_type, filename_type,expected_output', [
+        (('{fcst_valid_hour?fmt=%H}Z/{model?fmt=%s}/'
+          '{model?fmt=%s}_{valid?fmt=%Y%m%d}.stat'),
+         'dump_row', 'user', '00Z/MODEL_TEST/MODEL_TEST_20190101.stat'),
+        (('{model?fmt=%s}_{obtype?fmt=%s}_valid{valid?fmt=%Y%m%d}_'
+          'fcstvalidhour000000Z_dump_row.stat'),
+         'dump_row', 'user', ('MODEL_TEST_MODEL_TEST_ANL_valid20190101_'
+                              'fcstvalidhour000000Z_dump_row.stat')
+        ),
+        (('{model?fmt=%s}_{obtype?fmt=%s}_valid{valid?fmt=%Y%m%d}'
+          '{valid_hour?fmt=%H}_init{fcst_init_hour?fmt=%s}.stat'),
+         'out_stat', 'user', ('MODEL_TEST_MODEL_TEST_ANL_valid2019010100'
+                              '_init000000_060000_120000_180000.stat')
+         ),
+        ('{model?fmt=%s}_{obtype?fmt=%s}',
+         'out_stat', 'default', ('MODEL_TEST_MODEL_TEST_ANLvalid20190101'
+                                 '_fcstvalidhour000000Z_out_stat.stat')
+         ),
+    ]
+)
+@pytest.mark.wrapper_d
+def test_get_output_filename(metplus_config, filename_template, output_type,
+                             filename_type, expected_output):
     # Independently test the building of
     # the output file name 
     # using string template substitution
     # and test the values is
     # as expected
     st = stat_analysis_wrapper(metplus_config)
-    config_dict = {}
-    config_dict['FCST_VALID_HOUR'] = '0'
-    config_dict['FCST_VAR'] = ''
-    config_dict['FCST_LEVEL'] = ''
-    config_dict['INTERP_MTHD'] = ''
-    config_dict['MODEL'] = '"MODEL_TEST"'
-    config_dict['VX_MASK'] = ''
-    config_dict['OBS_INIT_HOUR'] = ''
-    config_dict['COV_THRESH'] = ''
-    config_dict['OBS_UNITS'] = ''
-    config_dict['FCST_THRESH'] = ''
-    config_dict['OBS_VAR'] = ''
-    config_dict['FCST_INIT_HOUR'] = '0, 6, 12, 18'
-    config_dict['INTERP_PNTS'] = ''
-    config_dict['FCST_LEAD'] = ''
-    config_dict['LINE_TYPE'] = ''
-    config_dict['FCST_UNITS'] = ''
-    config_dict['DESC'] = ''
-    config_dict['OBS_LEAD'] = ''
-    config_dict['OBS_THRESH'] = ''
-    config_dict['OBTYPE'] =  '"MODEL_TEST_ANL"'
-    config_dict['OBS_VALID_HOUR'] = ''
-    config_dict['ALPHA'] = ''
-    config_dict['OBS_LEVEL'] = ''
+    config_dict = _set_config_dict_values()
+
     st.c_dict['DATE_BEG'] = '20190101'
     st.c_dict['DATE_END'] = '20190101'
     st.c_dict['DATE_TYPE'] = 'VALID'
@@ -451,78 +399,14 @@ def test_get_output_filename(metplus_config):
                       'OBS_THRESH_LIST', 'COV_THRESH_LIST', 'ALPHA_LIST',
                       'LINE_TYPE_LIST']
     lists_to_loop = ['FCST_VALID_HOUR_LIST', 'MODEL_LIST']
-    # Test 1
-    expected_output_filename = '00Z/MODEL_TEST/MODEL_TEST_20190101.stat'
-    output_type = 'dump_row'
-    filename_template = (
-        '{fcst_valid_hour?fmt=%H}Z/{model?fmt=%s}/{model?fmt=%s}_{valid?fmt=%Y%m%d}.stat'
-    )
-    filename_type = 'user'
+
     test_output_filename = st.get_output_filename(output_type,
                                                   filename_template,
                                                   filename_type,
                                                   lists_to_loop,
                                                   lists_to_group,
                                                   config_dict)
-    assert expected_output_filename == test_output_filename
-    # Test 2
-    expected_output_filename = (
-        'MODEL_TEST_MODEL_TEST_ANL_'
-        +'valid20190101_fcstvalidhour000000Z'
-        +'_dump_row.stat'
-    )
-    output_type = 'dump_row'
-    filename_template = (
-        '{model?fmt=%s}_{obtype?fmt=%s}'
-        +'_valid{valid?fmt=%Y%m%d}_'
-        +'fcstvalidhour000000Z_dump_row.stat'
-    )
-    filename_type = 'user'
-    test_output_filename = st.get_output_filename(output_type,
-                                                  filename_template,
-                                                  filename_type,
-                                                  lists_to_loop,
-                                                  lists_to_group,
-                                                  config_dict)
-    assert expected_output_filename == test_output_filename
-    # Test 3
-    expected_output_filename = (
-        'MODEL_TEST_MODEL_TEST_ANL'
-        +'_valid2019010100'
-        +'_init000000_060000_120000_180000.stat'
-    )
-    output_type = 'out_stat'
-    filename_template = (
-        '{model?fmt=%s}_{obtype?fmt=%s}'
-        +'_valid{valid?fmt=%Y%m%d}{valid_hour?fmt=%H}'
-        +'_init{fcst_init_hour?fmt=%s}.stat'
-    )
-    filename_type = 'user'
-    test_output_filename = st.get_output_filename(output_type,
-                                                  filename_template,
-                                                  filename_type,
-                                                  lists_to_loop,
-                                                  lists_to_group,
-                                                  config_dict)
-    assert expected_output_filename == test_output_filename
-    # Test 4
-    expected_output_filename = (
-        'MODEL_TEST_MODEL_TEST_ANL'
-        +'valid20190101_fcstvalidhour000000Z'
-        +'_out_stat.stat'
-    )
-    output_type = 'out_stat'
-    filename_template = (
-        '{model?fmt=%s}_{obtype?fmt=%s}'
-    )
-    filename_type = 'default'
-    test_output_filename = st.get_output_filename(output_type,
-                                                  filename_template,
-                                                  filename_type,
-                                                  lists_to_loop,
-                                                  lists_to_group,
-                                                  config_dict)
-    assert expected_output_filename == test_output_filename
+    assert expected_output == test_output_filename
 
 
 @pytest.mark.wrapper_d

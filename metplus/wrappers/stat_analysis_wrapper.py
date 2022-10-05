@@ -341,26 +341,7 @@ class StatAnalysisWrapper(CommandBuilder):
             else:
                 formatted_items.append(item)
 
-        # formatted_items = []
-        # for item in items:
-        #     sub_items = []
-        #     for sub_item in item.split(','):
-        #         # if list in format lists, zero pad value to be at least 2
-        #         # digits, then add zeros to make 6 digits
-        #         if conf_list in self.FORMAT_LISTS:
-        #             sub_item = self._format_hms(sub_item)
-        #         sub_items.append(sub_item)
-        #
-        #     # format list as string with quotes around each item
-        #     sub_item_str = '", "'.join(sub_items)
-        #     formatted_items.append(f'"{sub_item_str}"')
-
         return formatted_items
-
-    # @staticmethod
-    # def _format_hms(value):
-    #     padded_value = value.zfill(2)
-    #     return padded_value.ljust(len(padded_value) + 4, '0')
 
     @staticmethod
     def list_to_str(list_of_values, add_quotes=True):
@@ -456,7 +437,8 @@ class StatAnalysisWrapper(CommandBuilder):
         # loop through lists found in either loop or group lists originally
         for found_config in found_config_list:
             # if list is empty and in loop list, warn and move to group list
-            if not c_dict[found_config] and found_config in c_dict['LOOP_LIST_ITEMS']:
+            if (not c_dict[found_config] and
+                    found_config in c_dict['LOOP_LIST_ITEMS']):
                 self.logger.warning(found_config + " is empty, "
                                     + "will be treated as group.")
                 c_dict['GROUP_LIST_ITEMS'].append(found_config)
@@ -473,10 +455,11 @@ class StatAnalysisWrapper(CommandBuilder):
     def format_thresh(thresh_str):
         """! Format thresholds for file naming
 
-             Args:
-                @param thresh_str string of the thresholds. Can be a comma-separated list, i.e. gt3,<=5.5, ==7
+        @param thresh_str string of the thresholds.
+         Can be a comma-separated list, i.e. gt3,<=5.5, ==7
 
-             @returns string of comma-separated list of the threshold(s) with letter format, i.e. gt3, le5.5, eq7
+        @returns string of comma-separated list of the threshold(s) with
+         letter format, i.e. gt3, le5.5, eq7
         """
         formatted_thresh_list = []
         # separate thresholds by comma and strip off whitespace around values
@@ -528,38 +511,36 @@ class StatAnalysisWrapper(CommandBuilder):
         # Set loop information
         for loop_list in lists_to_loop:
             list_name = loop_list.replace('_LIST', '')
-            # TODO: change commas to underscores if loop item contains a list
+            sub_name = list_name.lower()
             list_name_value = (
                 config_dict[list_name].replace('"', '').replace(' ', '')
+                                      .replace(',', '_').replace('*', 'ALL')
             )
 
             if list_name == 'MODEL':
-                stringsub_dict[list_name.lower()] = list_name_value
+                stringsub_dict[sub_name] = list_name_value
                 stringsub_dict['obtype'] = (
                     config_dict['OBTYPE'].replace('"', '').replace(' ', '')
                 )
             elif 'HOUR' in list_name:
                 # TODO: should this only handle opposite of date_type?
-                delta_list = self._get_relativedelta_list(list_name_value)
+                delta_list = self._get_relativedelta_list(config_dict[list_name])
                 if not delta_list:
+                    # TODO: should this be set to 0:0:0 to 23:59:59?
+                    stringsub_dict[sub_name + '_beg'] = relativedelta()
+                    stringsub_dict[sub_name + '_end'] = (
+                        relativedelta(hours=+23, minutes=+59, seconds=+59)
+                    )
                     continue
                 if len(delta_list) == 1:
-                    stringsub_dict[list_name.lower()] = delta_list[0]
+                    stringsub_dict[sub_name] = delta_list[0]
                 else:
-                    stringsub_dict[list_name.lower()] = (
-                        '_'.join(self._get_met_time_list(list_name_value))
+                    stringsub_dict[sub_name] = (
+                        '_'.join(self._get_met_time_list(config_dict[list_name]))
                     )
-                # stringsub_dict[list_name.lower()] = (
-                #     datetime.datetime.strptime(list_name_value, '%H%M%S')
-                # )
-                stringsub_dict[list_name.lower() + '_beg'] = delta_list[0]
-                stringsub_dict[list_name.lower() + '_end'] = delta_list[-1]
-                # stringsub_dict[list_name.lower()+'_beg'] = stringsub_dict[
-                #     list_name.lower()
-                # ]
-                # stringsub_dict[list_name.lower()+'_end'] = stringsub_dict[
-                #     list_name.lower()
-                # ]
+
+                stringsub_dict[sub_name + '_beg'] = delta_list[0]
+                stringsub_dict[sub_name + '_end'] = delta_list[-1]
 
                 if 'FCST' in list_name:
                     check_list = config_dict[list_name.replace('FCST',
@@ -570,107 +551,92 @@ class StatAnalysisWrapper(CommandBuilder):
                 # if opposite fcst is not set or the same,
                 # set init/valid hour beg/end to fcst, same for obs
                 if not check_list or config_dict[list_name] == check_list:
-                    # list type e.g. fcst_valid_hour
-                    list_type = list_name.lower()
+                    # sub name e.g. fcst_valid_hour
                     # generic list e.g. valid_hour
                     generic_list = (
-                        list_type.replace('fcst_', '').replace('obs_', '')
+                        sub_name.replace('fcst_', '').replace('obs_', '')
                     )
                     stringsub_dict[f'{generic_list}_beg'] = (
-                        stringsub_dict[f'{list_type}_beg']
+                        stringsub_dict[f'{sub_name}_beg']
                     )
                     stringsub_dict[f'{generic_list}_end'] = (
-                        stringsub_dict[f'{list_type}_end']
+                        stringsub_dict[f'{sub_name}_end']
                     )
                     if (stringsub_dict[f'{generic_list}_beg'] ==
                             stringsub_dict[f'{generic_list}_end']):
                         stringsub_dict[generic_list] = (
-                            stringsub_dict[f'{list_type}_end']
+                            stringsub_dict[f'{sub_name}_end']
                         )
-
+            # TODO: LEAD can be used for both loop and group
             elif 'LEAD' in list_name:
-                lead_list = self._get_met_time_list(list_name_value)
+                lead_list = self._get_met_time_list(config_dict[list_name])
 
                 # if multiple leads are specified, format lead info
                 # using met time notation separated by underscore
                 if len(lead_list) > 1:
-                    stringsub_dict[list_name.lower()] = (
+                    stringsub_dict[sub_name] = (
                         '_'.join(lead_list)
                     )
                     continue
 
-                stringsub_dict[list_name.lower()] = lead_list[0]
+                stringsub_dict[sub_name] = lead_list[0]
 
-                lead_rd = self._get_relativedelta_list(list_name_value)[0]
+                lead_rd = self._get_relativedelta_list(config_dict[list_name])[0]
                 total_sec = ti_get_seconds_from_relativedelta(lead_rd)
-                stringsub_dict[list_name.lower()+'_totalsec'] = str(total_sec)
+                stringsub_dict[sub_name+'_totalsec'] = str(total_sec)
 
-                stringsub_dict[f'{list_name.lower()}_hour'] = lead_list[0][:-4]
-                stringsub_dict[f'{list_name.lower()}_min'] = lead_list[0][-4:-2]
-                stringsub_dict[f'{list_name.lower()}_sec'] = lead_list[0][-2:]
-                # lead_timedelta = datetime.timedelta(
-                #     hours=int(list_name_value[:-4]),
-                #     minutes=int(list_name_value[-4:-2]),
-                #     seconds=int(list_name_value[-2:])
-                # )
-                # #stringsub_dict[list_name.lower()] = list_name_value
-                # stringsub_dict[list_name.lower()+'_hour'] = (
-                #     list_name_value[:-4]
-                # )
-                # stringsub_dict[list_name.lower()+'_min'] = (
-                #     list_name_value[-4:-2]
-                # )
-                # stringsub_dict[list_name.lower()+'_sec'] = (
-                #     list_name_value[-2:]
-                # )
+                stringsub_dict[f'{sub_name}_hour'] = lead_list[0][:-4]
+                stringsub_dict[f'{sub_name}_min'] = lead_list[0][-4:-2]
+                stringsub_dict[f'{sub_name}_sec'] = lead_list[0][-2:]
 
                 if 'FCST' in list_name:
                     check_list = config_dict[list_name.replace('FCST', 'OBS')]
                 elif 'OBS' in list_name:
                     check_list = config_dict[list_name.replace('OBS', 'FCST')]
                 if not check_list or config_dict[list_name] == check_list:
-                    stringsub_dict['lead'] = stringsub_dict[list_name.lower()]
+                    stringsub_dict['lead'] = stringsub_dict[sub_name]
                     stringsub_dict['lead_hour'] = (
-                        stringsub_dict[list_name.lower()+'_hour']
+                        stringsub_dict[sub_name+'_hour']
                     )
                     stringsub_dict['lead_min'] = (
-                        stringsub_dict[list_name.lower()+'_min']
+                        stringsub_dict[sub_name+'_min']
                     )
                     stringsub_dict['lead_sec'] = (
-                        stringsub_dict[list_name.lower()+'_sec']
+                        stringsub_dict[sub_name+'_sec']
                     )
                     stringsub_dict['lead_totalsec'] = (
-                        stringsub_dict[list_name.lower()+'_totalsec']
+                        stringsub_dict[sub_name+'_totalsec']
                     )
             else:
-                stringsub_dict[list_name.lower()] = list_name_value
+                stringsub_dict[sub_name] = list_name_value
 
         # Set group information
         for group_list in lists_to_group:
             list_name = group_list.replace('_LIST', '')
+            sub_name = list_name.lower()
             list_name_value = (
                 config_dict[list_name].replace('"', '').replace(' ', '')
                 .replace(',', '_').replace('*', 'ALL')
             )
             if 'LEAD' in list_name:
                 lead_list = self._get_met_time_list(config_dict[list_name])
-                stringsub_dict[list_name.lower()] = '_'.join(lead_list)
+                stringsub_dict[sub_name] = '_'.join(lead_list)
 
             elif 'HOUR' in list_name:
                 list_name_values_list = (
                     config_dict[list_name].replace('"', '').split(', ')
                 )
-                stringsub_dict[list_name.lower()] = list_name_value
+                stringsub_dict[sub_name] = list_name_value
                 if list_name_values_list == ['']:
-                    stringsub_dict[list_name.lower()+'_beg'] = relativedelta()
-                    stringsub_dict[list_name.lower()+'_end'] = (
+                    stringsub_dict[sub_name+'_beg'] = relativedelta()
+                    stringsub_dict[sub_name+'_end'] = (
                         relativedelta(hours=+23, minutes=+59, seconds=+59)
                     )
-                    # stringsub_dict[list_name.lower()+'_beg'] = (
+                    # stringsub_dict[sub_name+'_beg'] = (
                     #     datetime.datetime.strptime('000000',
                     #                                '%H%M%S')
                     # )
-                    # stringsub_dict[list_name.lower()+'_end'] = (
+                    # stringsub_dict[sub_name+'_end'] = (
                     #     datetime.datetime.strptime('235959',
                     #                                '%H%M%S')
                     # )
@@ -680,28 +646,28 @@ class StatAnalysisWrapper(CommandBuilder):
                     if not delta_list:
                         continue
                     if len(delta_list) == 1:
-                        stringsub_dict[list_name.lower()] = delta_list[0]
+                        stringsub_dict[sub_name] = delta_list[0]
                     else:
-                        stringsub_dict[list_name.lower()] = (
+                        stringsub_dict[sub_name] = (
                             '_'.join(self._get_met_time_list(config_dict[list_name]))
                         )
 
                     # set min and max values as beg and end
-                    stringsub_dict[list_name.lower() + '_beg'] = delta_list[0]
-                    stringsub_dict[list_name.lower() + '_end'] = delta_list[-1]
+                    stringsub_dict[sub_name + '_beg'] = delta_list[0]
+                    stringsub_dict[sub_name + '_end'] = delta_list[-1]
 
-                    # stringsub_dict[list_name.lower()+'_beg'] = (
+                    # stringsub_dict[sub_name+'_beg'] = (
                     #     datetime.datetime.strptime(list_name_values_list[0],
                     #                                '%H%M%S')
                     # )
-                    # stringsub_dict[list_name.lower()+'_end'] = (
+                    # stringsub_dict[sub_name+'_end'] = (
                     #     datetime.datetime.strptime(list_name_values_list[-1],
                     #                                '%H%M%S')
                     # )
-                    # if (stringsub_dict[list_name.lower()+'_beg']
-                    #         == stringsub_dict[list_name.lower()+'_end']):
-                    #    stringsub_dict[list_name.lower()] = (
-                    #        stringsub_dict[list_name.lower()+'_end']
+                    # if (stringsub_dict[sub_name+'_beg']
+                    #         == stringsub_dict[sub_name+'_end']):
+                    #    stringsub_dict[sub_name] = (
+                    #        stringsub_dict[sub_name+'_end']
                     #    )
 
                 if 'FCST' in list_name:
@@ -712,7 +678,7 @@ class StatAnalysisWrapper(CommandBuilder):
                                                                 'FCST')]
                 if not check_list or config_dict[list_name] == check_list:
                     # list type e.g. fcst_valid_hour
-                    list_type = list_name.lower()
+                    list_type = sub_name
                     # generic list e.g. valid_hour
                     generic_list = (
                         list_type.replace('fcst_', '').replace('obs_', '')
@@ -730,7 +696,7 @@ class StatAnalysisWrapper(CommandBuilder):
                         )
 
             else:
-                stringsub_dict[list_name.lower()] = list_name_value
+                stringsub_dict[sub_name] = list_name_value
 
         #nkeys_end = len(stringsub_dict_keys)
         # Some lines for debugging if needed in future
