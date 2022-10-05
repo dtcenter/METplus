@@ -508,6 +508,11 @@ class StatAnalysisWrapper(CommandBuilder):
                                   config_dict[f'FCST_{date_type}_HOUR'],
                                   config_dict[f'OBS_{date_type}_HOUR'])
 
+        # handle opposite of date_type VALID if INIT and vice versa
+        self._set_strinsub_other(stringsub_dict, date_type.lower(),
+                                 config_dict['FCST_LEAD'],
+                                 config_dict['OBS_LEAD'])
+
         # Set loop information
         for loop_or_group_list in lists_to_loop + lists_to_group:
             list_name = loop_or_group_list.replace('_LIST', '')
@@ -522,7 +527,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 stringsub_dict['obtype'] = (
                     config_dict['OBTYPE'].replace('"', '').replace(' ', '')
                 )
-            # TODO: HOUR can be used for both loop and group
+
             elif 'HOUR' in list_name:
                 # TODO: should this only handle opposite of date_type?
                 delta_list = self._get_relativedelta_list(config_dict[list_name])
@@ -569,7 +574,7 @@ class StatAnalysisWrapper(CommandBuilder):
                         stringsub_dict[generic_list] = (
                             stringsub_dict[f'{sub_name}_end']
                         )
-            # TODO: LEAD can be used for both loop and group
+
             elif 'LEAD' in list_name:
                 lead_list = self._get_met_time_list(config_dict[list_name])
 
@@ -621,7 +626,8 @@ class StatAnalysisWrapper(CommandBuilder):
         return stringsub_dict
 
     def _set_stringsub_hours(self, sub_dict, fcst_hour_str, obs_hour_str):
-        """! Set string sub dictionary _beg and _end values for fcst and obs.
+        """! Set string sub dictionary _beg and _end values for fcst and obs
+        hour lists.
         Set other values depending on values set in fcst and obs hour lists.
         Values that are set depend on what it set in c_dict DATE_TYPE, which
         is either INIT or VALID.
@@ -630,6 +636,7 @@ class StatAnalysisWrapper(CommandBuilder):
         @param fcst_hour_str string with list of forecast hours to process
         @param obs_hour_str string with list of observation hours to process
         """
+        # date_type is valid or init depending on LOOP_BY
         date_type = self.c_dict['DATE_TYPE'].lower()
         if fcst_hour_str:
             fcst_hour_list = self._get_relativedelta_list(fcst_hour_str)
@@ -644,32 +651,16 @@ class StatAnalysisWrapper(CommandBuilder):
         self._set_stringsub_hours_item(sub_dict, 'fcst', fcst_hour_list)
         self._set_stringsub_hours_item(sub_dict, 'obs', obs_hour_list)
 
-        # if fcst and obs hour lists the same or if fcst is set but not obs,
-        # set {date_type}_beg/end to fcst_{date_type}_beg/end
-        if (fcst_hour_list == obs_hour_list or
-                (fcst_hour_list and not obs_hour_list)):
-            sub_dict[f'{date_type}_beg'] = sub_dict[f'fcst_{date_type}_beg']
-            sub_dict[f'{date_type}_end'] = sub_dict[f'fcst_{date_type}_end']
+        self._set_stringsub_generic(sub_dict, fcst_hour_list, obs_hour_list, date_type)
 
-            # if {date_type} beg and end are the same, set {date_type}
-            if sub_dict[f'{date_type}_beg'] == sub_dict[f'{date_type}_end']:
-                sub_dict[date_type] = sub_dict[f'{date_type}_end']
-
-        # if fcst hr list is set but obs hr list is not,
-        # set {date_type}_beg/end to obs_{date_type}_beg/end
-        elif not fcst_hour_list and obs_hour_list:
-            sub_dict[f'{date_type}_beg'] = sub_dict[f'obs_{date_type}_beg']
-            sub_dict[f'{date_type}_end'] = sub_dict[f'obs_{date_type}_end']
-
-        # if {date_type} beg and end are the same, set {date_type}
-        if sub_dict[f'{date_type}_beg'] == sub_dict[f'{date_type}_end']:
-            sub_dict[date_type] = sub_dict[f'{date_type}_beg']
 
         # if neither fcst or obs hr list are set,
         # {date_type}_beg/end and {date_type} are not set at all (empty string)
 
     def _set_stringsub_hours_item(self, sub_dict, fcst_or_obs, hour_list):
         """! Set either fcst or obs values in string sub dictionary.
+        Values that are set depend on what it set in c_dict DATE_TYPE, which
+        is either INIT or VALID.
 
         @param sub_dict dictionary to set string sub values
         @param fcst_or_obs string to note processing either fcst or obs
@@ -704,6 +695,75 @@ class StatAnalysisWrapper(CommandBuilder):
                 date_beg + '235959', '%Y%m%d%H%M%S'
             )
         )
+
+    def _set_stringsub_generic(self, sub_dict, fcst_hour_list, obs_hour_list,
+                               date_type):
+        # if fcst and obs hour lists the same or if fcst is set but not obs,
+        # set {date_type}_beg/end to fcst_{date_type}_beg/end
+        if (fcst_hour_list == obs_hour_list or
+                (fcst_hour_list and not obs_hour_list)):
+            sub_dict[f'{date_type}_beg'] = sub_dict[f'fcst_{date_type}_beg']
+            sub_dict[f'{date_type}_end'] = sub_dict[f'fcst_{date_type}_end']
+
+        # if fcst hr list is set but obs hr list is not,
+        # set {date_type}_beg/end to obs_{date_type}_beg/end
+        elif not fcst_hour_list and obs_hour_list:
+            sub_dict[f'{date_type}_beg'] = sub_dict[f'obs_{date_type}_beg']
+            sub_dict[f'{date_type}_end'] = sub_dict[f'obs_{date_type}_end']
+
+        # if {date_type} beg and end are the same, set {date_type}
+        if sub_dict[f'{date_type}_beg'] == sub_dict[f'{date_type}_end']:
+            sub_dict[date_type] = sub_dict[f'{date_type}_beg']
+
+    def _set_strinsub_other(self, sub_dict, date_type, fcst_lead_str,
+                            obs_lead_str):
+        if fcst_lead_str:
+            fcst_lead_list = self._get_relativedelta_list(fcst_lead_str)
+        else:
+            fcst_lead_list = None
+
+        if obs_lead_str:
+            obs_lead_list = self._get_relativedelta_list(obs_lead_str)
+        else:
+            obs_lead_list = None
+
+        other_type = 'valid' if date_type == 'init' else 'init'
+        self._set_strinsub_other_item(sub_dict, date_type, 'fcst',
+                                     fcst_lead_list)
+        self._set_strinsub_other_item(sub_dict, date_type, 'obs',
+                                     obs_lead_list)
+        self._set_stringsub_generic(sub_dict, fcst_lead_list, obs_lead_list,
+                                    other_type)
+
+    def _set_strinsub_other_item(self, sub_dict, date_type, fcst_or_obs,
+                                 hour_list):
+        """! Compute other type's begin and end values using the beg/end and
+        min/max forecast leads. For example, if date_type is init, compute
+        valid_beg using init_beg with min lead and compute valid_end using
+        init_end with max lead.
+
+        """
+        other_type = 'valid' if date_type == 'init' else 'init'
+        date_prefix = f'{fcst_or_obs}_{date_type}'
+        other_prefix = f'{fcst_or_obs}_{other_type}'
+        if not hour_list:
+            sub_dict[f'{other_prefix}_beg'] = sub_dict[f'{date_prefix}_beg']
+            sub_dict[f'{other_prefix}_end'] = sub_dict[f'{date_prefix}_end']
+            return
+
+        min_lead = hour_list[0]
+        max_lead = hour_list[-1]
+        # else:
+        #     min_lead = relativedelta()
+        #     max_lead = relativedelta()
+
+        if date_type == 'init':
+            sub_dict[f'{other_prefix}_beg'] = sub_dict[f'{date_prefix}_beg'] + min_lead
+            sub_dict[f'{other_prefix}_end'] = sub_dict[f'{date_prefix}_end'] + max_lead
+        else:
+            sub_dict[f'{other_prefix}_beg'] = sub_dict[f'{date_prefix}_beg'] - max_lead
+            sub_dict[f'{other_prefix}_end'] = sub_dict[f'{date_prefix}_end'] - min_lead
+
 
     def get_output_filename(self, output_type, filename_template,
                             filename_type,

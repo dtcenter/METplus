@@ -355,6 +355,28 @@ def test_format_thresh(metplus_config, expression, expected_result):
           'obs_init_hour_end': relativedelta(hours=23, minutes=59, seconds=59),
           },
          ),
+        # Test 5 - check computed init_beg/end
+        (['FCST_LEAD_LIST'],
+         {'DATE_BEG': '20190101', 'DATE_END': '20190105',
+          'DATE_TYPE': 'VALID'},
+         {'FCST_VALID_HOUR': '0', 'FCST_LEAD': '12,24'},
+         {'valid_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
+          'valid_end': datetime.datetime(2019, 1, 5, 0, 0, 0),
+          'init_beg': datetime.datetime(2018, 12, 31, 0, 0, 0),
+          'init_end': datetime.datetime(2019, 1, 4, 12, 0, 0),
+          },
+         ),
+        # Test 6 - check computed valid_beg/end
+        (['FCST_LEAD_LIST'],
+         {'DATE_BEG': '20190101', 'DATE_END': '20190105',
+          'DATE_TYPE': 'INIT'},
+         {'FCST_INIT_HOUR': '0', 'FCST_LEAD': '12,24'},
+         {'init_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
+          'init_end': datetime.datetime(2019, 1, 5, 0, 0, 0),
+          'valid_beg': datetime.datetime(2019, 1, 1, 12, 0, 0),
+          'valid_end': datetime.datetime(2019, 1, 6, 0, 0, 0),
+          },
+         ),
     ]
 )
 @pytest.mark.wrapper_d
