@@ -3693,9 +3693,9 @@ Description
 -----------
 
 The MakePlots wrapper creates various statistical plots using python
-scripts for the various METplus Wrappers use cases. This can only be run
-following StatAnalysis wrapper when LOOP_ORDER = processes. To run
-MakePlots wrapper, include MakePlots in PROCESS_LIST.
+scripts for the various METplus Wrappers use cases.
+This can only be run following StatAnalysis wrapper.
+To run MakePlots wrapper, include MakePlots in PROCESS_LIST.
 
 METplus Configuration
 ---------------------
@@ -6829,71 +6829,15 @@ Description
 
 The StatAnalysis wrapper encapsulates the behavior of the MET
 stat_analysis tool. It provides the infrastructure to summarize and
-filter the MET .stat files. StatAnalysis wrapper can be run in two
-different methods. First is to look at the STAT lines for a single date,
-to use this method set LOOP_ORDER = times. Second is to look at the STAT
-lines over a span of dates, to use this method set LOOP_ORDER =
-processes. To run StatAnalysis wrapper, include StatAnalysis in
-PROCESS_LIST.
+filter the MET .stat files.
 
 METplus Configuration
 ---------------------
 
-The following values must be defined in the METplus Wrappers
-configuration file for running with LOOP_ORDER = times:
-
-| :term:`STAT_ANALYSIS_OUTPUT_DIR`
-| :term:`MODEL<n>_STAT_ANALYSIS_DUMP_ROW_TEMPLATE`
-| :term:`MODEL<n>_STAT_ANALYSIS_OUT_STAT_TEMPLATE`
-| :term:`LOG_STAT_ANALYSIS_VERBOSITY`
-| :term:`MODEL\<n\>`
-| :term:`MODEL<n>_OBTYPE`
-| :term:`MODEL<n>_STAT_ANALYSIS_LOOKIN_DIR`
-| :term:`MODEL_LIST`
-| :term:`GROUP_LIST_ITEMS`
-| :term:`LOOP_LIST_ITEMS`
-| :term:`STAT_ANALYSIS_CONFIG_FILE`
-| :term:`STAT_ANALYSIS_JOB_NAME`
-| :term:`STAT_ANALYSIS_JOB_ARGS`
-| :term:`STAT_ANALYSIS_MET_CONFIG_OVERRIDES`
-|
-
-The following values are **optional** in the METplus Wrappers
-configuration file for running with LOOP_ORDER = times:
-
-| :term:`DESC_LIST`
-| :term:`FCST_VALID_HOUR_LIST`
-| :term:`OBS_VALID_HOUR_LIST`
-| :term:`FCST_INIT_HOUR_LIST`
-| :term:`OBS_INIT_HOUR_LIST`
-| :term:`FCST_VAR_LIST`
-| :term:`OBS_VAR_LIST`
-| :term:`FCST_LEVEL_LIST`
-| :term:`OBS_LEVEL_LIST`
-| :term:`FCST_UNITS_LIST`
-| :term:`OBS_UNITS_LIST`
-| :term:`FCST_THRESH_LIST`
-| :term:`OBS_THRESH_LIST`
-| :term:`FCST_LEAD_LIST`
-| :term:`OBS_LEAD_LIST`
-| :term:`VX_MASK_LIST`
-| :term:`INTERP_MTHD_LIST`
-| :term:`INTERP_PNTS_LIST`
-| :term:`ALPHA_LIST`
-| :term:`COV_THRESH_LIST`
-| :term:`LINE_TYPE_LIST`
-| :term:`STAT_ANALYSIS_SKIP_IF_OUTPUT_EXISTS`
-| :term:`STAT_ANALYSIS_HSS_EC_VALUE`
-| :term:`STAT_ANALYSIS_OUTPUT_TEMPLATE`
-|
-
-The following values **must** be defined in the METplus Wrappers
-configuration file for running with LOOP_ORDER = processes:
+The following values **must** be defined in the METplus configuration file:
 
 | :term:`STAT_ANALYSIS_OUTPUT_DIR`
 | :term:`LOG_STAT_ANALYSIS_VERBOSITY`
-| :term:`DATE_TYPE`
-| :term:`STAT_ANALYSIS_CONFIG_FILE`
 | :term:`MODEL\<n\>`
 | :term:`MODEL<n>_OBTYPE`
 | :term:`MODEL<n>_STAT_ANALYSIS_LOOKIN_DIR`
@@ -6904,11 +6848,14 @@ configuration file for running with LOOP_ORDER = processes:
 | :term:`VX_MASK_LIST`
 | :term:`FCST_LEAD_LIST`
 | :term:`LINE_TYPE_LIST`
+| :term:`STAT_ANALYSIS_JOB_NAME`
+| :term:`STAT_ANALYSIS_JOB_ARGS`
+| :term:`STAT_ANALYSIS_MET_CONFIG_OVERRIDES`
 |
 
-The following values are optional in the METplus Wrappers configuration
-file for running with LOOP_ORDER = processes:
+The following values are optional in the METplus configuration file:
 
+| :term:`STAT_ANALYSIS_CONFIG_FILE`
 | :term:`VAR<n>_FOURIER_DECOMP`
 | :term:`VAR<n>_WAVE_NUM_LIST`
 | :term:`FCST_VALID_HOUR_LIST`
@@ -6923,6 +6870,8 @@ file for running with LOOP_ORDER = processes:
 | :term:`ALPHA_LIST`
 | :term:`STAT_ANALYSIS_HSS_EC_VALUE`
 | :term:`STAT_ANALYSIS_OUTPUT_TEMPLATE`
+| :term:`MODEL<n>_STAT_ANALYSIS_DUMP_ROW_TEMPLATE`
+| :term:`MODEL<n>_STAT_ANALYSIS_OUT_STAT_TEMPLATE`
 |
 
 .. warning:: **DEPRECATED:**

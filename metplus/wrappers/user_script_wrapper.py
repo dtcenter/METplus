@@ -63,43 +63,25 @@ class UserScriptWrapper(RuntimeFreqWrapper):
              @param time_info dictionary containing time information
              @returns True if command was run successfully, False otherwise
         """
-        success = True
+        # if lead and either init or valid are set, compute other string sub
+        if time_info.get('lead') != '*':
+            if (time_info.get('init') != '*'
+                    or time_info.get('valid') != '*'):
+                time_info = time_util.ti_calculate(time_info)
 
-        # if custom is already set in time info, run for only that item
-        # if not, loop over the CUSTOM_LOOP_LIST and process once for each
-        if 'custom' in time_info:
-            custom_loop_list = [time_info['custom']]
-        else:
-            custom_loop_list = self.c_dict['CUSTOM_LOOP_LIST']
+        # create file list text files for the current run time criteria
+        # set c_dict to the input file dict to set as environment vars
+        self.c_dict['INPUT_LIST_DICT'] = self.subset_input_files(time_info)
 
-        for custom_string in custom_loop_list:
-            if custom_string:
-                self.logger.info(f"Processing custom string: {custom_string}")
+        self.set_environment_variables(time_info)
 
-            time_info['custom'] = custom_string
-            # if lead and either init or valid are set, compute other string sub
-            if time_info.get('lead') != '*':
-                if (time_info.get('init') != '*'
-                        or time_info.get('valid') != '*'):
-                    time_info = time_util.ti_calculate(time_info)
+        # substitute values from dictionary into command
+        self.c_dict['COMMAND'] = (
+            do_string_sub(self.c_dict['COMMAND_TEMPLATE'],
+                          **time_info)
+        )
 
-            # create file list text files for the current run time criteria
-            # set c_dict to the input file dict to set as environment vars
-            self.c_dict['INPUT_LIST_DICT'] = self.subset_input_files(time_info)
-
-            self.set_environment_variables(time_info)
-
-            # substitute values from dictionary into command
-            self.c_dict['COMMAND'] = (
-                do_string_sub(self.c_dict['COMMAND_TEMPLATE'],
-                              **time_info)
-            )
-
-            # run command
-            if not self.build():
-                success = False
-
-        return success
+        return self.build()
 
     def get_files_from_time(self, time_info):
         """! Create dictionary containing time information (key time_info) and

@@ -14,10 +14,10 @@ import os
 
 from ..util import do_string_sub, ti_calculate, get_lead_sequence
 from ..util import skip_time
-from . import RuntimeFreqWrapper
+from . import LoopTimesWrapper
 
 
-class PlotPointObsWrapper(RuntimeFreqWrapper):
+class PlotPointObsWrapper(LoopTimesWrapper):
     """! Wrapper used to build commands to call plot_point_obs """
 
     WRAPPER_ENV_VAR_KEYS = [
@@ -56,10 +56,6 @@ class PlotPointObsWrapper(RuntimeFreqWrapper):
         c_dict = super().create_c_dict()
         app = self.app_name.upper()
 
-        # set default runtime frequency if unset explicitly
-        if not c_dict['RUNTIME_FREQ']:
-            c_dict['RUNTIME_FREQ'] = 'RUN_ONCE_FOR_EACH'
-
         c_dict['VERBOSITY'] = self.config.getstr('config',
                                                  f'LOG_{app}_VERBOSITY',
                                                  c_dict['VERBOSITY'])
@@ -70,8 +66,8 @@ class PlotPointObsWrapper(RuntimeFreqWrapper):
         c_dict['INPUT_DIR'] = self.config.getdir(f'{app}_INPUT_DIR', '')
 
         if not c_dict['INPUT_TEMPLATE']:
-            self.logger.warning(f'{app}_INPUT_TEMPLATE is required '
-                                'to run PlotPointObs wrapper.')
+            self.log_error(f'{app}_INPUT_TEMPLATE is required '
+                           'to run PlotPointObs wrapper.')
 
         # get optional grid input files
         c_dict['GRID_INPUT_TEMPLATE'] = self.config.getraw(

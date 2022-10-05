@@ -26,7 +26,8 @@ from ..util import getlist, get_storms, mkdir_p
 from ..util import do_string_sub, parse_template, get_tags
 from ..util import get_lead_sequence, get_lead_sequence_groups
 from ..util import ti_get_hours_from_lead, ti_get_seconds_from_lead
-from ..util import ti_get_lead_string
+from ..util import ti_get_lead_string, ti_calculate
+from ..util import ti_get_seconds_from_relativedelta
 from ..util import parse_var_list
 from ..util import add_to_time_input
 from ..util import field_read_prob_info
@@ -465,10 +466,28 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
             self.logger.debug(f"Processing {lead_group[0]} - forecast leads: "
                               f"{', '.join(lead_hours)}")
+
+            self.c_dict['ALL_FILES'] = (
+                self.get_all_files_for_leads(input_dict, lead_group[1])
+            )
+
+            # if only 1 forecast lead is being processed, set it in time dict
+            if len(lead_group[1]) == 1:
+                input_dict['lead'] = lead_group[1][0]
+
             if not self.run_at_time_once(input_dict, lead_group):
                 success = False
 
         return success
+
+    def get_all_files_for_leads(self, input_dict, leads):
+        all_files = []
+        current_input_dict = input_dict.copy()
+        for lead in leads:
+            current_input_dict['lead'] = lead
+            new_files = self.get_all_files_for_lead(current_input_dict)
+            all_files.extend(new_files)
+        return all_files
 
     def run_at_time_once(self, time_info, lead_group=None):
         """! Attempt to build series_analysis command for run time
@@ -577,11 +596,22 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             if fcst_files is None or obs_files is None:
                 return None
 
-            file_dict['fcst'] = fcst_files
-            file_dict['obs'] = obs_files
+            fcst_key, obs_key = self._get_fcst_obs_keys(storm_id)
+
+            file_dict[fcst_key] = fcst_files
+            file_dict[obs_key] = obs_files
             file_dict_list.append(file_dict)
 
         return file_dict_list
+
+    @staticmethod
+    def _get_fcst_obs_keys(storm_id):
+        fcst_key = 'fcst'
+        obs_key = 'obs'
+        if storm_id != '*':
+            fcst_key = f'{fcst_key}_{storm_id}'
+            obs_key = f'{obs_key}_{storm_id}'
+        return fcst_key, obs_key
 
     def find_input_files(self, time_info, data_type):
         """! Loop over list of input templates and find files for each
@@ -595,27 +625,6 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                      data_type=data_type,
                                      mandatory=False)
         return input_files
-
-    def subset_input_files(self, time_info):
-        """! Obtain a subset of input files from the c_dict ALL_FILES based on
-             the time information for the current run.
-
-              @param time_info dictionary containing time information
-              @returns the path to a ascii file containing the list of files
-               or None if could not find any files
-        """
-        fcst_files = []
-        obs_files = []
-        for file_dict in self.c_dict['ALL_FILES']:
-            # compare time information for each input file
-            # add file to list of files to use if it matches
-            if not self.compare_time_info(time_info, file_dict['time_info']):
-                continue
-
-            fcst_files.extend(file_dict['fcst'])
-            obs_files.extend(file_dict['obs'])
-
-        return fcst_files, obs_files
 
     def compare_time_info(self, runtime, filetime):
         """! Call parents implementation then if the current run time and file
@@ -696,48 +705,21 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
             return fcst_path, obs_path
 
-        all_fcst_files = []
-        all_obs_files = []
-        lead_loop = leads if leads else [None]
-        for lead in lead_loop:
-            if lead is not None:
-                time_info['lead'] = lead
-
-            fcst_files, obs_files = self.subset_input_files(time_info)
-            if fcst_files and obs_files:
-                all_fcst_files.extend(fcst_files)
-                all_obs_files.extend(obs_files)
-
-        # skip if no files were found
-        if not all_fcst_files or not all_obs_files:
-            return None, None
-
         output_dir = self.get_output_dir(time_info, storm_id, label)
 
-        # create forecast (or both) file list
-        if self.c_dict['USING_BOTH']:
-            data_type = 'BOTH'
-        else:
-            data_type = 'FCST'
+        list_file_dict = self.subset_input_files(time_info,
+                                                 output_dir=output_dir,
+                                                 leads=leads)
+        if not list_file_dict:
+            return None, None
 
-        fcst_ascii_filename = self._get_ascii_filename(data_type,
-                                                       storm_id,
-                                                       leads)
-        fcst_path = self.write_list_file(fcst_ascii_filename,
-                                         all_fcst_files,
-                                         output_dir=output_dir)
-
+        # add storm_id and label to time_info for output filename
+        self._add_storm_id_and_label(time_info, storm_id, label)
+        fcst_key, obs_key = self._get_fcst_obs_keys(storm_id)
+        fcst_path = list_file_dict[fcst_key]
         if self.c_dict['USING_BOTH']:
             return fcst_path, fcst_path
-
-        # create analysis file list
-        obs_ascii_filename = self._get_ascii_filename('OBS',
-                                                      storm_id,
-                                                      leads)
-        obs_path = self.write_list_file(obs_ascii_filename,
-                                        all_obs_files,
-                                        output_dir=output_dir)
-
+        obs_path = list_file_dict[obs_key]
         return fcst_path, obs_path
 
     def _check_python_embedding(self):
@@ -758,50 +740,6 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         return True
 
-    @staticmethod
-    def _get_ascii_filename(data_type, storm_id, leads=None):
-        """! Build filename for ASCII file list file
-
-             @param data_type FCST, OBS, or BOTH
-             @param storm_id current storm ID or wildcard character
-             @param leads list of forecast leads to use add the forecast hour
-              string to the filename or the minimum and maximum forecast hour
-              strings if there are more than one lead
-             @returns string containing filename to use
-        """
-        prefix = f"{data_type}_FILES"
-
-        # of storm ID is set (not wildcard), then add it to filename
-        if storm_id == '*':
-            filename = ''
-        else:
-            filename = f"_{storm_id}"
-
-        # add forecast leads if specified
-        if leads is not None:
-            lead_hours_list = []
-            for lead in leads:
-                lead_hours = ti_get_hours_from_lead(lead)
-                if lead_hours is None:
-                    lead_hours = ti_get_lead_string(lead,
-                                                    letter_only=True)
-                lead_hours_list.append(lead_hours)
-
-            # get first forecast lead, convert to hours, and add to filename
-            lead_hours = min(lead_hours_list)
-
-            lead_str = str(lead_hours).zfill(3)
-            filename += f"_F{lead_str}"
-
-            # if list of forecast leads, get min and max and add them to name
-            if len(lead_hours_list) > 1:
-                max_lead_hours = max(lead_hours_list)
-                max_lead_str = str(max_lead_hours).zfill(3)
-                filename += f"_to_F{max_lead_str}"
-
-        ascii_filename = f"{prefix}{filename}"
-        return ascii_filename
-
     def get_output_dir(self, time_info, storm_id, label):
         """! Determine directory that will contain output data from the
               OUTPUT_DIR and OUTPUT_TEMPLATE. This will include any
@@ -818,17 +756,23 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         output_dir_template = os.path.join(self.c_dict['OUTPUT_DIR'],
                                            self.c_dict['OUTPUT_TEMPLATE'])
         output_dir_template = os.path.dirname(output_dir_template)
+
+        # get output directory including storm ID and label
+        current_time_info = time_info.copy()
+        self._add_storm_id_and_label(current_time_info, storm_id, label)
+        output_dir = do_string_sub(output_dir_template,
+                                   **current_time_info)
+        return output_dir
+
+    @staticmethod
+    def _add_storm_id_and_label(time_info, storm_id, label):
         if storm_id == '*':
             storm_id_out = 'all_storms'
         else:
             storm_id_out = storm_id
 
-        # get output directory including storm ID and label
         time_info['storm_id'] = storm_id_out
         time_info['label'] = label
-        output_dir = do_string_sub(output_dir_template,
-                                   **time_info)
-        return output_dir
 
     def build_and_run_series_request(self, time_info, fcst_path, obs_path):
         """! Build up the -obs, -fcst, -out necessary for running the

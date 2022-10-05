@@ -30,6 +30,7 @@ from ..util import get_custom_string_list
 from ..util import get_wrapped_met_config_file, add_met_config_item, format_met_config
 from ..util import remove_quotes
 from ..util import get_field_info, format_field_info
+from ..util import get_wrapper_name
 from ..util.met_config import add_met_config_dict, handle_climo_dict
 
 # pylint:disable=pointless-string-statement
@@ -88,10 +89,7 @@ class CommandBuilder:
             )
 
         self.instance = instance
-
-        self.env = os.environ.copy()
-        if hasattr(config, 'env'):
-            self.env = config.env
+        self.env = config.env if hasattr(config, 'env') else os.environ.copy()
 
         # populate c_dict dictionary
         self.c_dict = self.create_c_dict()
@@ -1280,16 +1278,6 @@ class CommandBuilder:
 
         return True
 
-    # argument needed to match call
-    # pylint:disable=unused-argument
-    def run_at_time(self, input_dict):
-        """! Used to output error and exit if wrapper is attempted to be run
-         with LOOP_ORDER = times and the run_at_time method is not implemented
-        """
-        self.log_error(f'run_at_time not implemented for {self.log_name} '
-                       'wrapper. Cannot run with LOOP_ORDER = times')
-        return None
-
     def run_all_times(self, custom=None):
         """! Loop over time range specified in conf file and
         call METplus wrapper for each time
@@ -1627,3 +1615,9 @@ class CommandBuilder:
 
         items['direct_prob'] = 'bool'
         self.add_met_config_dict('climo_cdf', items)
+
+    def get_wrapper_instance_name(self):
+        wrapper_name = get_wrapper_name(self.app_name)
+        if not self.instance:
+            return wrapper_name
+        return f'{wrapper_name}({self.instance})'
