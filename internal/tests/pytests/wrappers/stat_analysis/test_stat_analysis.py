@@ -202,6 +202,7 @@ def test_format_thresh(metplus_config, expression, expected_result):
 
     assert st.format_thresh(expression) == expected_result
 
+
 def _set_config_dict_values():
     config_dict = {}
     config_dict['FCST_VALID_HOUR'] = '0'
@@ -229,6 +230,7 @@ def _set_config_dict_values():
     config_dict['OBS_LEVEL'] = ''
     return config_dict
 
+
 @pytest.mark.parametrize(
     'lists_to_loop,c_dict_overrides,config_dict_overrides,expected_values', [
         # Test 0
@@ -236,29 +238,29 @@ def _set_config_dict_values():
          {'DATE_BEG': '20190101', 'DATE_END': '20190105', 'DATE_TYPE': 'VALID'},
          {},
          {'valid_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
-         'valid_end': datetime.datetime(2019, 1, 5, 0, 0, 0),
-         'fcst_valid_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
-         'fcst_valid_end': datetime.datetime(2019, 1, 5, 0, 0, 0),
-         'fcst_valid_hour': relativedelta(),
-         'valid_hour': relativedelta(),
-         'fcst_valid_hour_beg': relativedelta(),
-         'fcst_valid_hour_end': relativedelta(),
-         'valid_hour_beg': relativedelta(),
-         'valid_hour_end': relativedelta(),
-         'model': 'MODEL_TEST',
-         'obtype': 'MODEL_TEST_ANL',
-         'fcst_init_hour': '000000_060000_120000_180000',
-         'fcst_init_hour_beg': relativedelta(),
-         'fcst_init_hour_end': relativedelta(hours=18),
-         'init_hour_beg': relativedelta(),
-         'init_hour_end': relativedelta(hours=18),
-         'fcst_var': '',
-         'fcst_level': '',
-         'fcst_units': '',
-         'fcst_thresh': '',
-         'desc': '',
-         },
-        ),
+          'valid_end': datetime.datetime(2019, 1, 5, 0, 0, 0),
+          'fcst_valid_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
+          'fcst_valid_end': datetime.datetime(2019, 1, 5, 0, 0, 0),
+          'fcst_valid_hour': relativedelta(),
+          'valid_hour': relativedelta(),
+          'fcst_valid_hour_beg': relativedelta(),
+          'fcst_valid_hour_end': relativedelta(),
+          'valid_hour_beg': relativedelta(),
+          'valid_hour_end': relativedelta(),
+          'model': 'MODEL_TEST',
+          'obtype': 'MODEL_TEST_ANL',
+          'fcst_init_hour': '000000_060000_120000_180000',
+          'fcst_init_hour_beg': relativedelta(),
+          'fcst_init_hour_end': relativedelta(hours=18),
+          'init_hour_beg': relativedelta(),
+          'init_hour_end': relativedelta(hours=18),
+          'fcst_var': '',
+          'fcst_level': '',
+          'fcst_units': '',
+          'fcst_thresh': '',
+          'desc': '',
+          },
+         ),
         # Test 1
         (['FCST_VALID_HOUR_LIST', 'MODEL_LIST', 'FCST_LEAD_LIST'],
          {'DATE_BEG': '20190101', 'DATE_END': '20190101', 'DATE_TYPE': 'VALID'},
@@ -439,7 +441,7 @@ def test_get_lookin_dir(metplus_config):
     config_dict['DESC'] = ''
     config_dict['OBS_LEAD'] = ''
     config_dict['OBS_THRESH'] = ''
-    config_dict['OBTYPE'] =  '"MODEL_TEST_ANL"'
+    config_dict['OBTYPE'] = '"MODEL_TEST_ANL"'
     config_dict['OBS_VALID_HOUR'] = ''
     config_dict['ALPHA'] = ''
     config_dict['OBS_LEVEL'] = ''
