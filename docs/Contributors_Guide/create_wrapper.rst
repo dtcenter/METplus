@@ -22,7 +22,7 @@ For example, the new_tool wrapper would be named **NewToolWrapper**.
 Add Entry to LOWER_TO_WRAPPER_NAME Dictionary
 ---------------------------------------------
 
-In *metplus/util/doc_util.py*, add entries to the LOWER_TO_WRAPPER_NAME
+In *metplus/util/constants.py*, add entries to the LOWER_TO_WRAPPER_NAME
 dictionary so that the wrapper can be found in the PROCESS_LIST even if
 it is formatted differently. The key should be the wrapper name in all
 lower-case letters without any underscores. The value should be the class name

@@ -75,6 +75,7 @@ def test_create_c_dict(metplus_config):
     st = stat_analysis_wrapper(metplus_config)
     # Test 1
     c_dict = st.create_c_dict()
+
     actual_config = os.path.join(METPLUS_BASE, 'parm', 'met_config',
                                  'STATAnalysisConfig_wrapped')
     actual_outdir = os.path.join(st.config.getdir('OUTPUT_BASE'),
