@@ -509,8 +509,8 @@ class StatAnalysisWrapper(CommandBuilder):
                                   config_dict[f'OBS_{date_type}_HOUR'])
 
         # Set loop information
-        for loop_list in lists_to_loop:
-            list_name = loop_list.replace('_LIST', '')
+        for loop_or_group_list in lists_to_loop + lists_to_group:
+            list_name = loop_or_group_list.replace('_LIST', '')
             sub_name = list_name.lower()
             list_name_value = (
                 config_dict[list_name].replace('"', '').replace(' ', '')
@@ -522,10 +522,12 @@ class StatAnalysisWrapper(CommandBuilder):
                 stringsub_dict['obtype'] = (
                     config_dict['OBTYPE'].replace('"', '').replace(' ', '')
                 )
+            # TODO: HOUR can be used for both loop and group
             elif 'HOUR' in list_name:
                 # TODO: should this only handle opposite of date_type?
                 delta_list = self._get_relativedelta_list(config_dict[list_name])
                 if not delta_list:
+                    stringsub_dict[sub_name] = list_name_value
                     # TODO: should this be set to 0:0:0 to 23:59:59?
                     stringsub_dict[sub_name + '_beg'] = relativedelta()
                     stringsub_dict[sub_name + '_end'] = (
@@ -571,6 +573,9 @@ class StatAnalysisWrapper(CommandBuilder):
             elif 'LEAD' in list_name:
                 lead_list = self._get_met_time_list(config_dict[list_name])
 
+                if not lead_list:
+                    continue
+
                 # if multiple leads are specified, format lead info
                 # using met time notation separated by underscore
                 if len(lead_list) > 1:
@@ -610,100 +615,9 @@ class StatAnalysisWrapper(CommandBuilder):
             else:
                 stringsub_dict[sub_name] = list_name_value
 
-        # Set group information
-        for group_list in lists_to_group:
-            list_name = group_list.replace('_LIST', '')
-            sub_name = list_name.lower()
-            list_name_value = (
-                config_dict[list_name].replace('"', '').replace(' ', '')
-                .replace(',', '_').replace('*', 'ALL')
-            )
-            if 'LEAD' in list_name:
-                lead_list = self._get_met_time_list(config_dict[list_name])
-                stringsub_dict[sub_name] = '_'.join(lead_list)
-
-            elif 'HOUR' in list_name:
-                list_name_values_list = (
-                    config_dict[list_name].replace('"', '').split(', ')
-                )
-                stringsub_dict[sub_name] = list_name_value
-                if list_name_values_list == ['']:
-                    stringsub_dict[sub_name+'_beg'] = relativedelta()
-                    stringsub_dict[sub_name+'_end'] = (
-                        relativedelta(hours=+23, minutes=+59, seconds=+59)
-                    )
-                    # stringsub_dict[sub_name+'_beg'] = (
-                    #     datetime.datetime.strptime('000000',
-                    #                                '%H%M%S')
-                    # )
-                    # stringsub_dict[sub_name+'_end'] = (
-                    #     datetime.datetime.strptime('235959',
-                    #                                '%H%M%S')
-                    # )
-                else:
-                    # TODO: should this only handle opposite of date_type?
-                    delta_list = self._get_relativedelta_list(config_dict[list_name])
-                    if not delta_list:
-                        continue
-                    if len(delta_list) == 1:
-                        stringsub_dict[sub_name] = delta_list[0]
-                    else:
-                        stringsub_dict[sub_name] = (
-                            '_'.join(self._get_met_time_list(config_dict[list_name]))
-                        )
-
-                    # set min and max values as beg and end
-                    stringsub_dict[sub_name + '_beg'] = delta_list[0]
-                    stringsub_dict[sub_name + '_end'] = delta_list[-1]
-
-                    # stringsub_dict[sub_name+'_beg'] = (
-                    #     datetime.datetime.strptime(list_name_values_list[0],
-                    #                                '%H%M%S')
-                    # )
-                    # stringsub_dict[sub_name+'_end'] = (
-                    #     datetime.datetime.strptime(list_name_values_list[-1],
-                    #                                '%H%M%S')
-                    # )
-                    # if (stringsub_dict[sub_name+'_beg']
-                    #         == stringsub_dict[sub_name+'_end']):
-                    #    stringsub_dict[sub_name] = (
-                    #        stringsub_dict[sub_name+'_end']
-                    #    )
-
-                if 'FCST' in list_name:
-                    check_list = config_dict[list_name.replace('FCST',
-                                                                'OBS')]
-                elif 'OBS' in list_name:
-                    check_list = config_dict[list_name.replace('OBS',
-                                                                'FCST')]
-                if not check_list or config_dict[list_name] == check_list:
-                    # list type e.g. fcst_valid_hour
-                    list_type = sub_name
-                    # generic list e.g. valid_hour
-                    generic_list = (
-                        list_type.replace('fcst_', '').replace('obs_', '')
-                    )
-                    stringsub_dict[f'{generic_list}_beg'] = (
-                        stringsub_dict[f'{list_type}_beg']
-                    )
-                    stringsub_dict[f'{generic_list}_end'] = (
-                        stringsub_dict[f'{list_type}_end']
-                    )
-                    if (stringsub_dict[f'{generic_list}_beg'] ==
-                            stringsub_dict[f'{generic_list}_end']):
-                        stringsub_dict[generic_list] = (
-                            stringsub_dict[f'{list_type}_end']
-                        )
-
-            else:
-                stringsub_dict[sub_name] = list_name_value
-
-        #nkeys_end = len(stringsub_dict_keys)
         # Some lines for debugging if needed in future
-        #self.logger.info(nkeys_start)
-        #self.logger.info(nkeys_end)
         #for key, value in stringsub_dict.items():
-        #    self.logger.info("{} ({})".format(key, value))
+        #    self.logger.debug("{} ({})".format(key, value))
         return stringsub_dict
 
     def _set_stringsub_hours(self, sub_dict, fcst_hour_str, obs_hour_str):
