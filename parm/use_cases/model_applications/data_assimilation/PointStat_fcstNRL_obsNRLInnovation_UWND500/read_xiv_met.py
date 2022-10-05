@@ -65,11 +65,23 @@ def create_met_dataframe(df,hdr):
   # only supports 1 string for each string column, and only the "&" operator for combining with qstr
   qstr = os.environ.get('NRL_QUERY_STRING','')
   cpfstr = os.environ.get('NRL_CPFOB_SUBSTR','')
-  cpfbeg = int(os.environ.get('NRL_CPFOB_BEGIND',0))
-  cpfend = int(os.environ.get('NRL_CPFOB_ENDIND',16))
+  if os.environ['NRL_CPFOB_BEGIND']=='':
+    cpfbeg = 0
+  else:
+    cpfbeg = int(os.environ['NRL_CPFOB_BEGIND'])
+  if os.environ['NRL_CPFOB_ENDIND']=='':
+    cpfend=16
+  else:
+    cpfend = int(os.environ['NRL_CPFOB_ENDIND'])
   cdbstr = os.environ.get('NRL_CDBOB_SUBSTR','')
-  cdbbeg = int(os.environ.get('NRL_CDBOB_BEGIND',0))
-  cdbend = int(os.environ.get('NRL_CDBOB_ENDIND',10))
+  if os.environ['NRL_CDBOB_BEGIND']=='':
+    cdbbeg = 0
+  else:
+    cdbbeg = int(os.environ.get('NRL_CDBOB_BEGIND',0))
+  if os.environ['NRL_CDBOB_ENDIND']=='':
+    cdbend = 10
+  else:
+    cdbend = int(os.environ.get('NRL_CDBOB_ENDIND',10))
 
   # Filter based on user requested filter strings
   if qstr!='':
@@ -92,8 +104,18 @@ def create_met_dataframe(df,hdr):
   hdrcols = hdr['column_titles']
 
   # Double check there are at least some variables set. The minimum required are LAT, LON, and OBS.
-  if os.environ['NRL_LAT_STRING'] == '' or os.environ['NRL_LON_STRING'] == '' or os.environ['NRL_OBS_STRING'] == '':
-    print("\nFATAL! NRL_LAT_STRING, NRL_LON_STRING, or NRL_OBS STRING are not set. All of these must be set.")
+  if os.environ['NRL_LAT_STRING'] == '' or os.environ['NRL_LON_STRING'] == '' or os.environ['NRL_OBS_STRING'] == '' or\
+     os.environ['NRL_TYP_STRING'] == '' or os.environ['NRL_LVL_STRING'] == '' or os.environ['NRL_VAR_STRING'] == '' or\
+     os.environ['NRL_VLD_STRING'] == '':
+    print("\nFATAL!\n\
+           NRL_LAT_STRING,\n\
+           NRL_LON_STRING,\n\
+           NRL_OBS STRING,\n\
+           NRL_TYP_STRING,\n\
+           NRL_LVL_STRING,\n\
+           NRL_VAR_STRING,\n\
+           or NRL_VLD_STRING\n\
+           are not set. All of these must be set.")
     exit(1)
 
   # Define a dictionary to map values from NRL to MET values
@@ -165,6 +187,9 @@ def create_met_dataframe(df,hdr):
   if os.environ['NRL_HGT_STRING']=='':
     print("\nUSING DEFAULT VALUE FOR [MET] hgt")
     df['hgt'] = ['-9999'] * len(df)
+  if os.environ['NRL_QC_STRING']=='':
+    print("\nUSING DEFAULT VALUE FOR [MET] qc")
+    df['qc'] = ['NA'] * len(df)
 
   # Convert the column dtypes
   df = df.astype(col_dtypes)
