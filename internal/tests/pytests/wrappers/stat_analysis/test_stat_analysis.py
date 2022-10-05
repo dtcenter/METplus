@@ -54,7 +54,6 @@ def test_create_c_dict(metplus_config):
     st = stat_analysis_wrapper(metplus_config)
     # Test 1
     c_dict = st.create_c_dict()
-    assert c_dict['LOOP_ORDER'] == 'times'
     assert(os.path.realpath(c_dict['CONFIG_FILE']) == (METPLUS_BASE+'/internal/tests/'
                                                        +'config/STATAnalysisConfig'))
     assert(c_dict['OUTPUT_DIR'] == (st.config.getdir('OUTPUT_BASE')

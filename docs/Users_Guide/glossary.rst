@@ -1620,12 +1620,12 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`FCST_THRESH_LIST` instead.
 
    FCST_THRESH_LIST
-     Specify the values of the FCST_THRESH column in the MET .stat file to use. This is optional in the METplus configuration file for running with :term:`LOOP_ORDER` = times.
+     Specify the values of the FCST_THRESH column in the MET .stat file to use.
 
      | *Used by:*  StatAnalysis
 
    OBS_THRESH_LIST
-     Specify the values of the OBS_THRESH column in the MET .stat file to use. This is optional in the METplus configuration file for running with :term:`LOOP_ORDER` = times.
+     Specify the values of the OBS_THRESH column in the MET .stat file to use.
 
      | *Used by:*  StatAnalysis
 
@@ -1647,7 +1647,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`FCST_LEVEL_LIST` instead.
 
    FCST_LEVEL_LIST
-     Specify the values of the FCST_LEV column in the MET .stat file to use. This is optional in the METplus configuration file for running with :term:`LOOP_ORDER` = times.
+     Specify the values of the FCST_LEV column in the MET .stat file to use.
 
      | *Used by:*  StatAnalysis
 
@@ -1655,12 +1655,12 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`FCST_VAR_LIST` instead.
 
    FCST_VAR_LIST
-     Specify the values of the FCST_VAR column in the MET .stat file to use. This is optional in the METplus configuration file for running with :term:`LOOP_ORDER` = times.
+     Specify the values of the FCST_VAR column in the MET .stat file to use.
 
      | *Used by:*  StatAnalysis
 
    FCST_UNITS_LIST
-     Specify the values of the FCST_UNITS column in the MET .stat file to use. This is optional in the METplus configuration file for running with :term:`LOOP_ORDER` = times.
+     Specify the values of the FCST_UNITS column in the MET .stat file to use.
 
      | *Used by:*  StatAnalysis
 
@@ -2319,7 +2319,7 @@ METplus Configuration Glossary
 
 
    LINE_TYPE_LIST
-     Specify the MET STAT line types to be considered. For TCMPRPlotter, this is optional in the METplus configuration file for running with :term:`LOOP_ORDER` = times.
+     Specify the MET STAT line types to be considered.
 
      | *Used by:*  MakePlots, StatAnalysis, TCMPRPlotter
 
@@ -2395,7 +2395,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`LOOP_BY` instead.
 
    LOOP_ORDER
-     Control the looping order for METplus. Valid options are "times" or "processes". "times" runs all items in the :term:`PROCESS_LIST` for a single run time, then repeat until all times have been evaluated. "processes" runs each item in the :term:`PROCESS_LIST` for all times specified, then repeat for the next item in the :term:`PROCESS_LIST`.
+     .. warning:: **DEPRECATED:** This previously controlled the looping order for METplus. This was removed in v5.0.0. The wrappers will always execute the logic that was previously run when LOOP_ORDER = processes, which runs each item in the :term:`PROCESS_LIST` for all times specified, then repeat for the next item in the :term:`PROCESS_LIST`.
 
      | *Used by:*  All
 
@@ -3207,7 +3207,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`OBS_LEVEL_LIST` instead.
 
    OBS_LEVEL_LIST
-     Specify the values of the OBS_LEV column in the MET .stat file to use. This is optional in the METplus configuration file for running with :term:`LOOP_ORDER` = times.
+     Specify the values of the OBS_LEV column in the MET .stat file to use.
 
      | *Used by:*  StatAnalysis
 
@@ -3215,12 +3215,12 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`OBS_VAR_LIST` instead.
 
    OBS_VAR_LIST
-     Specify the values of the OBS_VAR column in the MET .stat file to use. This is optional in the METplus configuration file for running with :term:`LOOP_ORDER` = times.
+     Specify the values of the OBS_VAR column in the MET .stat file to use.
 
      | *Used by:*  StatAnalysis
 
    OBS_UNITS_LIST
-     Specify the values of the OBS_UNITS column in the MET .stat file to use. This is optional in the METplus configuration file for running with :term:`LOOP_ORDER` = times.
+     Specify the values of the OBS_UNITS column in the MET .stat file to use.
 
      | *Used by:*  StatAnalysis
 
@@ -3837,7 +3837,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`MODEL<n>_STAT_ANALYSIS_DUMP_ROW_TEMPLATE` instead.
 
    MODEL<n>_STAT_ANALYSIS_DUMP_ROW_TEMPLATE
-     Specify the template to use for the stat_analysis dump_row file. A user customized template to use for the dump_row file. If left blank and a dump_row file is requested, a default version will be used. This is optional in the METplus configuration file for running with :term:`LOOP_ORDER` = times.
+     Specify the template to use for the stat_analysis dump_row file. A user customized template to use for the dump_row file. If left blank and a dump_row file is requested, a default version will be used.
 
      | *Used by:*  StatAnalysis
 
@@ -3853,7 +3853,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`MODEL<n>_STAT_ANALYSIS_OUT_STAT_TEMPLATE` instead.
 
    MODEL<n>_STAT_ANALYSIS_OUT_STAT_TEMPLATE
-     Specify the template to use for the stat_analysis out_stat file. A user customized template to use for the out_stat file. If left blank and a out_stat file is requested, a default version will be used. This is optional in the METplus configuration file for running with :term:`LOOP_ORDER` = times.
+     Specify the template to use for the stat_analysis out_stat file. A user customized template to use for the out_stat file. If left blank and a out_stat file is requested, a default version will be used.
 
      | *Used by:*  StatAnalysis
 
@@ -7636,12 +7636,11 @@ METplus Configuration Glossary
      | *Used by:*  UserScript
 
    TC_PAIRS_RUN_ONCE
-     If True and LOOP_ORDER = processes, TCPairs will be run once using the
+     If True, TCPairs will be run once using the
      INIT_BEG or VALID_BEG value (depending on the value of LOOP_BY).
      This is the default setting and preserves the original logic of the
      wrapper. If this variable is set to False, then TCPairs will run once
-     for each run time iteration. If LOOP_ORDER = times, then TCPairs will
-     still run for each run time. The preferred configuration settings to
+     for each run time iteration. The preferred configuration settings to
      run TCPairs once for a range of init or valid times is to set INIT_BEG
      to INIT_END (if LOOP_BY = INIT) and define the range of init times to
      filter the data inside TCPairs with TC_PAIRS_INIT_BEG and
@@ -9900,6 +9899,19 @@ METplus Configuration Glossary
      See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
 
      | *Used by:* PlotPointObs
+
+   RUN_ID
+     Eight character hash string unique to a given run of METplus.
+     Automatically set by METplus at the beginning of a run.
+     Can be referenced in other METplus config variables to distinguish
+     multiple METplus runs that may have started within the same second.
+     For example, it can be added to :term:`LOG_TIMESTAMP_TEMPLATE` to
+     create unique log files, final config files, etc.
+
+     Example:
+     LOG_TIMESTAMP_TEMPLATE = %Y%m%d%H%M%S.{RUN_ID}
+
+     | *Used by:*  All
 
    ENSEMBLE_STAT_NC_ORANK_FLAG_LATLON
      Specify the value for 'nc_orank_flag.latlon' in the MET configuration file for EnsembleStat.

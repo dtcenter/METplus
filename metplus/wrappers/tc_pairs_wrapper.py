@@ -285,7 +285,7 @@ class TCPairsWrapper(CommandBuilder):
                                 False)
         )
 
-        # if LOOP_ORDER = processes, only run once if True
+        # only run once if True
         c_dict['RUN_ONCE'] = self.config.getbool('config',
                                                  'TC_PAIRS_RUN_ONCE',
                                                  True)
