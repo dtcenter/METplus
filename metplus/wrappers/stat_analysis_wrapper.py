@@ -158,7 +158,6 @@ class StatAnalysisWrapper(CommandBuilder):
             self.config.getstr('config', 'LOG_STAT_ANALYSIS_VERBOSITY',
                                c_dict['VERBOSITY'])
         )
-        c_dict['LOOP_ORDER'] = self.config.getstr('config', 'LOOP_ORDER')
 
         # STATAnalysis config file is optional, so
         # don't provide wrapped config file name as default value
@@ -436,7 +435,7 @@ class StatAnalysisWrapper(CommandBuilder):
         for missing_config in missing_config_list:
 
             # if running MakePlots
-            if (c_dict['LOOP_ORDER'] == 'processes' and self.runMakePlots):
+            if self.runMakePlots:
 
                 # if LINE_TYPE_LIST is missing, add it to group list
                 if missing_config == 'LINE_TYPE_LIST':

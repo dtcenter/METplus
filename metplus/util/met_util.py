@@ -136,21 +136,11 @@ def run_metplus(config, process_list):
             logger.info("Refer to ERROR messages above to resolve issues.")
             return 1
 
-        loop_order = config.getstr('config', 'LOOP_ORDER', '').lower()
-
-        if loop_order == "processes":
-            all_commands = []
-            for process in processes:
-                new_commands = process.run_all_times()
-                if new_commands:
-                    all_commands.extend(new_commands)
-
-        elif loop_order == "times":
-            all_commands = loop_over_times_and_call(config, processes)
-        else:
-            logger.error("Invalid LOOP_ORDER defined. "
-                         "Options are processes, times")
-            return 1
+        all_commands = []
+        for process in processes:
+            new_commands = process.run_all_times()
+            if new_commands:
+                all_commands.extend(new_commands)
 
         # if process list contains any wrapper that should run commands
         if any([item[0] not in NO_COMMAND_WRAPPERS for item in process_list]):
@@ -396,12 +386,6 @@ def write_final_conf(config):
 
         @param config METplusConfig object to write to file
      """
-    # write out os environment to file for debugging
-    env_file = os.path.join(config.getdir('LOG_DIR'), '.metplus_user_env')
-    with open(env_file, 'w') as env_file:
-        for key, value in os.environ.items():
-            env_file.write('{}={}\n'.format(key, value))
-
     final_conf = config.getstr('config', 'METPLUS_CONF')
 
     # remove variables that start with CURRENT

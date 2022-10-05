@@ -313,9 +313,13 @@ def test_series_analysis_single_field(metplus_config, config_overrides,
 
     config_file = wrapper.c_dict.get('CONFIG_FILE')
     out_dir = wrapper.c_dict.get('OUTPUT_DIR')
+    prefix = 'series_analysis_files_'
+    suffix = '_init_20050807000000_valid_ALL_lead_ALL.txt'
+    fcst_file = f'{prefix}fcst{suffix}'
+    obs_file = f'{prefix}obs{suffix}'
     expected_cmds = [(f"{app_path} "
-                      f"-fcst {out_dir}/FCST_FILES "
-                      f"-obs {out_dir}/OBS_FILES "
+                      f"-fcst {out_dir}/{fcst_file} "
+                      f"-obs {out_dir}/{obs_file} "
                       f"-out {out_dir}/2005080700 "
                       f"-config {config_file} {verbosity}"),
                      ]
@@ -355,8 +359,6 @@ def test_get_fcst_file_info(metplus_config):
     expected_num = str(9)
     expected_beg = '000'
     expected_end = '048'
-
-    time_info = {'storm_id': storm_id, 'lead': 0, 'valid': '', 'init': ''}
 
     wrapper = series_analysis_wrapper(metplus_config)
     wrapper.c_dict['FCST_INPUT_DIR'] = '/fake/path/of/file'
@@ -404,49 +406,26 @@ def test_get_storms_list(metplus_config):
     assert storm_list == expected_storm_list
 
 
-# added list of all files for reference for creating subsets
-all_fake_fcst = ['fcst/20141214_00/ML1201072014/FCST_TILE_F000_gfs_4_20141214_0000_000.nc',
-                 'fcst/20141214_00/ML1221072014/FCST_TILE_F000_gfs_4_20141214_0000_000.nc',
-                 'fcst/20141214_00/ML1201072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
-                 'fcst/20141214_00/ML1221072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
-                 'fcst/20141214_00/ML1201072014/FCST_TILE_F012_gfs_4_20141214_0000_012.nc',
-                 'fcst/20141214_00/ML1221072014/FCST_TILE_F012_gfs_4_20141214_0000_012.nc',
-                 'fcst/20141215_00/ML1291072014/FCST_TILE_F000_gfs_4_20141215_0000_000.nc',
-                 'fcst/20141215_00/ML1291072014/FCST_TILE_F006_gfs_4_20141215_0000_006.nc',
-                 'fcst/20141215_00/ML1291072014/FCST_TILE_F012_gfs_4_20141215_0000_012.nc',
-                  ]
-all_fake_obs = ['obs/20141214_00/ML1201072014/OBS_TILE_F000_gfs_4_20141214_0000_000.nc',
-                 'obs/20141214_00/ML1221072014/OBS_TILE_F000_gfs_4_20141214_0000_000.nc',
-                 'obs/20141214_00/ML1201072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
-                 'obs/20141214_00/ML1221072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
-                 'obs/20141214_00/ML1201072014/OBS_TILE_F012_gfs_4_20141214_0000_012.nc',
-                 'obs/20141214_00/ML1221072014/OBS_TILE_F012_gfs_4_20141214_0000_012.nc',
-                 'obs/20141215_00/ML1291072014/OBS_TILE_F000_gfs_4_20141215_0000_000.nc',
-                 'obs/20141215_00/ML1291072014/OBS_TILE_F006_gfs_4_20141215_0000_006.nc',
-                 'obs/20141215_00/ML1291072014/OBS_TILE_F012_gfs_4_20141215_0000_012.nc',
-                  ]
-
-
 @pytest.mark.parametrize(
         'time_info, expect_fcst_subset, expect_obs_subset', [
-        # filter by init all storms
+        # 0: filter by init all storms
         ({'init': datetime(2014, 12, 14, 0, 0),
           'valid': '*',
           'lead': '*',
           'storm_id': '*'},
          ['fcst/20141214_00/ML1201072014/FCST_TILE_F000_gfs_4_20141214_0000_000.nc',
-          'fcst/20141214_00/ML1221072014/FCST_TILE_F000_gfs_4_20141214_0000_000.nc',
           'fcst/20141214_00/ML1201072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
-          'fcst/20141214_00/ML1221072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
           'fcst/20141214_00/ML1201072014/FCST_TILE_F012_gfs_4_20141214_0000_012.nc',
+          'fcst/20141214_00/ML1221072014/FCST_TILE_F000_gfs_4_20141214_0000_000.nc',
+          'fcst/20141214_00/ML1221072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
           'fcst/20141214_00/ML1221072014/FCST_TILE_F012_gfs_4_20141214_0000_012.nc',],
          ['obs/20141214_00/ML1201072014/OBS_TILE_F000_gfs_4_20141214_0000_000.nc',
-          'obs/20141214_00/ML1221072014/OBS_TILE_F000_gfs_4_20141214_0000_000.nc',
           'obs/20141214_00/ML1201072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
-          'obs/20141214_00/ML1221072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
           'obs/20141214_00/ML1201072014/OBS_TILE_F012_gfs_4_20141214_0000_012.nc',
+          'obs/20141214_00/ML1221072014/OBS_TILE_F000_gfs_4_20141214_0000_000.nc',
+          'obs/20141214_00/ML1221072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
           'obs/20141214_00/ML1221072014/OBS_TILE_F012_gfs_4_20141214_0000_012.nc',]),
-        # filter by init single storm
+        # 1: filter by init single storm
         ({'init': datetime(2014, 12, 14, 0, 0),
           'valid': '*',
           'lead': '*',
@@ -461,7 +440,7 @@ all_fake_obs = ['obs/20141214_00/ML1201072014/OBS_TILE_F000_gfs_4_20141214_0000_
              'obs/20141214_00/ML1201072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
              'obs/20141214_00/ML1201072014/OBS_TILE_F012_gfs_4_20141214_0000_012.nc',
          ]),
-        # filter by init another single storm
+        # 2: filter by init another single storm
         ({'init': datetime(2014, 12, 14, 0, 0),
           'valid': '*',
           'lead': '*',
@@ -476,7 +455,7 @@ all_fake_obs = ['obs/20141214_00/ML1201072014/OBS_TILE_F000_gfs_4_20141214_0000_
              'obs/20141214_00/ML1221072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
              'obs/20141214_00/ML1221072014/OBS_TILE_F012_gfs_4_20141214_0000_012.nc',
          ]),
-        # filter by lead all storms
+        # 3: filter by lead all storms
         ({'init': '*',
           'valid': '*',
           'lead': 21600,
@@ -510,7 +489,6 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
     stat_input_dir, tile_input_dir = get_input_dirs(wrapper.config)
     stat_input_template = 'another_fake_filter_{init?fmt=%Y%m%d_%H}.tcst'
 
-    wrapper.c_dict['RUN_ONCE_PER_STORM_ID'] = True
     wrapper.c_dict['TC_STAT_INPUT_DIR'] = stat_input_dir
     wrapper.c_dict['TC_STAT_INPUT_TEMPLATE'] = stat_input_template
 
@@ -522,16 +500,24 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
     wrapper.c_dict['FCST_INPUT_DIR'] = fcst_input_dir
     wrapper.c_dict['OBS_INPUT_DIR'] = obs_input_dir
 
-    assert wrapper.get_all_files()
+    if time_info['storm_id'] == '*':
+        wrapper.c_dict['RUN_ONCE_PER_STORM_ID'] = False
+    else:
+        wrapper.c_dict['RUN_ONCE_PER_STORM_ID'] = True
 
+    assert wrapper.get_all_files()
+    print(f"ALL FILES: {wrapper.c_dict['ALL_FILES']}")
     expected_fcst = [
         'fcst/20141214_00/ML1201072014/FCST_TILE_F000_gfs_4_20141214_0000_000.nc',
-        'fcst/20141214_00/ML1221072014/FCST_TILE_F000_gfs_4_20141214_0000_000.nc',
         'fcst/20141214_00/ML1201072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
-        'fcst/20141214_00/ML1221072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
         'fcst/20141214_00/ML1201072014/FCST_TILE_F012_gfs_4_20141214_0000_012.nc',
+        'fcst/20141214_00/ML1221072014/FCST_TILE_F000_gfs_4_20141214_0000_000.nc',
+        'fcst/20141214_00/ML1221072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
         'fcst/20141214_00/ML1221072014/FCST_TILE_F012_gfs_4_20141214_0000_012.nc',
     ]
+    if time_info['storm_id'] != '*':
+        expected_fcst = [item for item in expected_fcst
+                         if time_info['storm_id'] in item]
     expected_fcst_files = []
     for expected in expected_fcst:
         expected_fcst_files.append(os.path.join(tile_input_dir, expected))
@@ -539,26 +525,44 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
 
     expected_obs = [
         'obs/20141214_00/ML1201072014/OBS_TILE_F000_gfs_4_20141214_0000_000.nc',
-        'obs/20141214_00/ML1221072014/OBS_TILE_F000_gfs_4_20141214_0000_000.nc',
         'obs/20141214_00/ML1201072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
-        'obs/20141214_00/ML1221072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
         'obs/20141214_00/ML1201072014/OBS_TILE_F012_gfs_4_20141214_0000_012.nc',
+        'obs/20141214_00/ML1221072014/OBS_TILE_F000_gfs_4_20141214_0000_000.nc',
+        'obs/20141214_00/ML1221072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
         'obs/20141214_00/ML1221072014/OBS_TILE_F012_gfs_4_20141214_0000_012.nc',
     ]
+    if time_info['storm_id'] != '*':
+        expected_obs = [item for item in expected_obs
+                        if time_info['storm_id'] in item]
     expected_obs_files = []
     for expected in expected_obs:
         expected_obs_files.append(os.path.join(tile_input_dir, expected))
 
+    fcst_key, obs_key = wrapper._get_fcst_obs_keys(time_info['storm_id'])
+    fcst_files = [item[fcst_key] for item in wrapper.c_dict['ALL_FILES']
+                  if fcst_key in item]
+    obs_files = [item[obs_key] for item in wrapper.c_dict['ALL_FILES']
+                 if obs_key in item]
     # convert list of lists into a single list to compare to expected results
-    fcst_files = [item['fcst'] for item in wrapper.c_dict['ALL_FILES']]
     fcst_files = [item for sub in fcst_files for item in sub]
-    obs_files = [item['obs'] for item in wrapper.c_dict['ALL_FILES']]
     obs_files = [item for sub in obs_files for item in sub]
-
+    fcst_files.sort()
+    obs_files.sort()
     assert fcst_files == expected_fcst_files
     assert obs_files == expected_obs_files
 
-    fcst_files_sub, obs_files_sub = wrapper.subset_input_files(time_info)
+    list_file_dict = wrapper.subset_input_files(time_info)
+    fcst_files_sub = []
+    obs_files_sub = []
+    for key, value in list_file_dict.items():
+        if key.startswith('fcst'):
+            with open(value, 'r') as file_handle:
+                fcst_files_sub.extend(file_handle.read().splitlines()[1:])
+        if key.startswith('obs'):
+            with open(value, 'r') as file_handle:
+                obs_files_sub.extend(file_handle.read().splitlines()[1:])
+    fcst_files_sub.sort()
+    obs_files_sub.sort()
     assert fcst_files_sub and obs_files_sub
     assert len(fcst_files_sub) == len(obs_files_sub)
 
@@ -571,7 +575,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
 
 @pytest.mark.parametrize(
         'config_overrides, time_info, storm_id, lead_group, expect_fcst_subset, expect_obs_subset', [
-        # filter by init all storms
+        # 0: filter by init all storms
         ({'LEAD_SEQ': '0H, 6H, 12H',
           'SERIES_ANALYSIS_OUTPUT_TEMPLATE': "{init?fmt=%Y%m%d_%H}/{storm_id}/series_{fcst_name}_{fcst_level}.nc",
           'TEST_OUTPUT_DIRNAME': 'byinitallstorms'},
@@ -593,7 +597,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
           'obs/20141214_00/ML1221072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
           'obs/20141214_00/ML1201072014/OBS_TILE_F012_gfs_4_20141214_0000_012.nc',
           'obs/20141214_00/ML1221072014/OBS_TILE_F012_gfs_4_20141214_0000_012.nc',]),
-        # filter by init single storm
+        # 1: filter by init single storm
         ({'LEAD_SEQ': '0H, 6H, 12H',
           'SERIES_ANALYSIS_OUTPUT_TEMPLATE': "{init?fmt=%Y%m%d_%H}/{storm_id}/series_{fcst_name}_{fcst_level}.nc",
           'TEST_OUTPUT_DIRNAME': 'byinitstormA'},
@@ -611,7 +615,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
           'obs/20141214_00/ML1201072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
           'obs/20141214_00/ML1201072014/OBS_TILE_F012_gfs_4_20141214_0000_012.nc',
          ]),
-        # filter by init another single storm
+        # 2: filter by init another single storm
         ({'LEAD_SEQ': '0H, 6H, 12H',
           'SERIES_ANALYSIS_OUTPUT_TEMPLATE': "{init?fmt=%Y%m%d_%H}/{storm_id}/series_{fcst_name}_{fcst_level}.nc",
           'TEST_OUTPUT_DIRNAME': 'byinitstormB'},
@@ -629,7 +633,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
           'obs/20141214_00/ML1221072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
           'obs/20141214_00/ML1221072014/OBS_TILE_F012_gfs_4_20141214_0000_012.nc',
          ]),
-        # filter by lead all storms
+        # 3: filter by lead all storms
         ({'LEAD_SEQ': '0H, 6H, 12H',
           'SERIES_ANALYSIS_OUTPUT_TEMPLATE': "series_{fcst_name}_{fcst_level}.nc",
           'TEST_OUTPUT_DIRNAME': 'byleadallstorms'},
@@ -645,7 +649,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
          ['obs/20141214_00/ML1201072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
           'obs/20141214_00/ML1221072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
          ]),
-        # filter by lead 1 storm
+        # 4: filter by lead 1 storm
         ({'LEAD_SEQ': '0H, 6H, 12H',
           'SERIES_ANALYSIS_OUTPUT_TEMPLATE': "series_{fcst_name}_{fcst_level}.nc",
           'TEST_OUTPUT_DIRNAME': 'byleadstormA'},
@@ -659,7 +663,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
          ],
          ['obs/20141214_00/ML1201072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
          ]),
-        # filter by lead another storm
+        # 5: filter by lead another storm
         ({'LEAD_SEQ': '0H, 6H, 12H',
           'SERIES_ANALYSIS_OUTPUT_TEMPLATE': "series_{fcst_name}_{fcst_level}.nc",
           'TEST_OUTPUT_DIRNAME': 'byleadstormB'},
@@ -673,7 +677,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
          ],
          ['obs/20141214_00/ML1221072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
          ]),
-        # filter by lead groups A all storms
+        # 6: filter by lead groups A all storms
         ({'LEAD_SEQ_1': '0H, 6H',
           'LEAD_SEQ_1_LABEL': 'Group1',
           'LEAD_SEQ_2': '12H',
@@ -695,7 +699,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
           'obs/20141214_00/ML1201072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
           'obs/20141214_00/ML1221072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
          ]),
-        # filter by lead groups B all storms
+        # 7: filter by lead groups B all storms
         ({'LEAD_SEQ_1': '0H, 6H',
           'LEAD_SEQ_1_LABEL': 'Group1',
           'LEAD_SEQ_2': '12H',
@@ -730,32 +734,31 @@ def test_get_fcst_and_obs_path(metplus_config, config_overrides,
     all_config_overrides.update(config_overrides)
     wrapper = series_analysis_wrapper(metplus_config, all_config_overrides)
     stat_input_dir, tile_input_dir = get_input_dirs(wrapper.config)
-    fcst_input_dir = os.path.join(tile_input_dir,
-                                  'fcst')
-    obs_input_dir = os.path.join(tile_input_dir,
-                                 'obs')
+    fcst_input_dir = os.path.join(tile_input_dir, 'fcst')
+    obs_input_dir = os.path.join(tile_input_dir, 'obs')
 
     stat_input_template = 'another_fake_filter_{init?fmt=%Y%m%d_%H}.tcst'
 
     wrapper.c_dict['TC_STAT_INPUT_DIR'] = stat_input_dir
     wrapper.c_dict['TC_STAT_INPUT_TEMPLATE'] = stat_input_template
-    wrapper.c_dict['RUN_ONCE_PER_STORM_ID'] = True
     wrapper.c_dict['FCST_INPUT_DIR'] = fcst_input_dir
     wrapper.c_dict['OBS_INPUT_DIR'] = obs_input_dir
     test_out_dirname = wrapper.config.getstr('config', 'TEST_OUTPUT_DIRNAME')
     output_dir = os.path.join(wrapper.config.getdir('OUTPUT_BASE'),
-                              'series_by',
-                              'output',
-                              test_out_dirname)
+                              'series_by', 'output', test_out_dirname)
     wrapper.c_dict['OUTPUT_DIR'] = output_dir
 
-    assert wrapper.get_all_files()
+    fcst_id, obs_id = wrapper._get_fcst_obs_keys(storm_id)
 
     # read output files and compare to expected list
     if storm_id == '*':
         storm_dir = 'all_storms'
+        wrapper.c_dict['RUN_ONCE_PER_STORM_ID'] = False
     else:
         storm_dir = storm_id
+        wrapper.c_dict['RUN_ONCE_PER_STORM_ID'] = True
+
+    assert wrapper.get_all_files()
 
     templates = config_overrides['SERIES_ANALYSIS_OUTPUT_TEMPLATE'].split('/')
     if len(templates) == 1:
@@ -763,21 +766,13 @@ def test_get_fcst_and_obs_path(metplus_config, config_overrides,
     else:
         output_prefix = os.path.join('20141214_00', storm_dir)
 
-    if lead_group:
-        leads = lead_group[1]
-    else:
-        leads = None
-    fcst_list_file = wrapper._get_ascii_filename('FCST', storm_id, leads)
-    fcst_file_path = os.path.join(output_dir,
-                                  output_prefix,
-                                  fcst_list_file)
+    fcst_list_file = wrapper.get_list_file_name(time_info, fcst_id)
+    fcst_file_path = os.path.join(output_dir, output_prefix, fcst_list_file)
     if os.path.exists(fcst_file_path):
         os.remove(fcst_file_path)
 
-    obs_list_file = wrapper._get_ascii_filename('OBS', storm_id, leads)
-    obs_file_path = os.path.join(output_dir,
-                                  output_prefix,
-                                  obs_list_file)
+    obs_list_file = wrapper.get_list_file_name(time_info, obs_id)
+    obs_file_path = os.path.join(output_dir, output_prefix, obs_list_file)
     if os.path.exists(obs_file_path):
         os.remove(obs_file_path)
 
@@ -790,6 +785,7 @@ def test_get_fcst_and_obs_path(metplus_config, config_overrides,
         actual_fcsts = file_handle.readlines()
     actual_fcsts = [item.strip() for item in actual_fcsts[1:]]
 
+    assert len(actual_fcsts) == len(expect_fcst_subset)
     for actual_file, expected_file in zip(actual_fcsts, expect_fcst_subset):
         actual_file = actual_file.replace(tile_input_dir, '').lstrip('/')
         assert actual_file == expected_file
@@ -798,59 +794,10 @@ def test_get_fcst_and_obs_path(metplus_config, config_overrides,
         actual_obs_files = file_handle.readlines()
     actual_obs_files = [item.strip() for item in actual_obs_files[1:]]
 
+    assert len(actual_obs_files) == len(expect_obs_subset)
     for actual_file, expected_file in zip(actual_obs_files, expect_obs_subset):
         actual_file = actual_file.replace(tile_input_dir, '').lstrip('/')
         assert actual_file == expected_file
-
-
-@pytest.mark.parametrize(
-        'storm_id, leads, expected_result', [
-        # storm ID, no leads
-        ('ML1221072014', None, '_FILES_ML1221072014'),
-        # no storm ID no leads
-        ('*', None, '_FILES'),
-        # storm ID, 1 lead
-        ('ML1221072014', [relativedelta(hours=12)], '_FILES_ML1221072014_F012'),
-        # no storm ID, 1 lead
-        ('*', [relativedelta(hours=12)], '_FILES_F012'),
-        # storm ID, 2 leads
-        ('ML1221072014', [relativedelta(hours=18),
-                                  relativedelta(hours=12)],
-         '_FILES_ML1221072014_F012_to_F018'),
-        # no storm ID, 2 leads
-        ('*', [relativedelta(hours=18),
-                       relativedelta(hours=12)],
-         '_FILES_F012_to_F018'),
-        # storm ID, 3 leads
-        ('ML1221072014', [relativedelta(hours=15),
-                                  relativedelta(hours=18),
-                                  relativedelta(hours=12)],
-         '_FILES_ML1221072014_F012_to_F018'),
-        # no storm ID, 3 leads
-        ('*', [relativedelta(hours=15),
-                       relativedelta(hours=18),
-                       relativedelta(hours=12)],
-         '_FILES_F012_to_F018'),
-    ]
-)
-@pytest.mark.wrapper_a
-def test_get_ascii_filename(metplus_config, storm_id, leads,
-                            expected_result):
-    wrapper = series_analysis_wrapper(metplus_config)
-    for data_type in ['FCST', 'OBS']:
-        actual_result = wrapper._get_ascii_filename(data_type,
-                                                   storm_id,
-                                                   leads)
-        assert actual_result == f"{data_type}{expected_result}"
-
-        if leads is None:
-            return
-
-        lead_seconds = [ti_get_seconds_from_lead(item) for item in leads]
-        actual_result = wrapper._get_ascii_filename(data_type,
-                                                   storm_id,
-                                                   lead_seconds)
-        assert actual_result == f"{data_type}{expected_result}"
 
 
 @pytest.mark.parametrize(
