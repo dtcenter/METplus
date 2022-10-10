@@ -4,6 +4,7 @@ import pytest
 
 import os
 import datetime
+import pprint
 from dateutil.relativedelta import relativedelta
 
 from metplus.wrappers.stat_analysis_wrapper import StatAnalysisWrapper
@@ -12,6 +13,8 @@ from metplus.util import handle_tmp_dir
 METPLUS_BASE = os.getcwd().split('/internal')[0]
 
 TEST_CONF = os.path.join(os.path.dirname(__file__), 'test.conf')
+
+pp = pprint.PrettyPrinter()
 
 def stat_analysis_wrapper(metplus_config):
     """! Returns a default StatAnalysisWrapper with /path/to entries in the
@@ -55,6 +58,87 @@ def _set_config_dict_values():
     config_dict['OBS_LEVEL'] = ''
     return config_dict
 
+
+@pytest.mark.parametrize(
+    'c_dict, expected_result', [
+      # 0
+      ({
+           'GROUP_LIST_ITEMS': ['MODEL_LIST', 'FCST_LEAD_LIST'],
+           'LOOP_LIST_ITEMS': [],
+           'MODEL_LIST': ['"MODEL1"', '"MODEL2"'],
+           'FCST_LEAD_LIST': ['0', '24'],
+       },
+       [
+           {'MODEL': '"MODEL1", "MODEL2"',
+            'FCST_LEAD': '0, 24'
+            }
+       ]
+       ),
+      # 1
+      ({
+           'GROUP_LIST_ITEMS': ['FCST_LEAD_LIST'],
+           'LOOP_LIST_ITEMS': ['MODEL_LIST'],
+           'MODEL_LIST': ['"MODEL1"', '"MODEL2"'],
+           'FCST_LEAD_LIST': ['0', '24'],
+       },
+       [
+           {'MODEL': '"MODEL1"', 'FCST_LEAD': '0, 24'},
+           {'MODEL': '"MODEL2"', 'FCST_LEAD': '0, 24'},
+       ]
+       ),
+      # 2
+      ({
+         'GROUP_LIST_ITEMS': [],
+         'LOOP_LIST_ITEMS': ['MODEL_LIST', 'FCST_LEAD_LIST'],
+         'MODEL_LIST': ['"MODEL1"', '"MODEL2"'],
+         'FCST_LEAD_LIST': ['0', '24'],
+       },
+       [
+           {'MODEL': '"MODEL1"', 'FCST_LEAD': '0'},
+           {'MODEL': '"MODEL2"', 'FCST_LEAD': '0'},
+           {'MODEL': '"MODEL1"', 'FCST_LEAD': '24'},
+           {'MODEL': '"MODEL2"', 'FCST_LEAD': '24'},
+       ]
+       ),
+      # 3
+      ({
+         'GROUP_LIST_ITEMS': ['DESC_LIST'],
+         'LOOP_LIST_ITEMS': ['MODEL_LIST', 'FCST_LEAD_LIST',
+                             'FCST_THRESH_LIST'],
+         'MODEL_LIST': ['"MODEL1"', '"MODEL2"'],
+         'FCST_LEAD_LIST': ['0', '24'],
+         'FCST_THRESH_LIST': ['gt3', 'ge4'],
+         'DESC_LIST': ['"ONE_DESC"'],
+       },
+       [
+           {'DESC': '"ONE_DESC"',
+            'FCST_LEAD': '0', 'FCST_THRESH': 'gt3', 'MODEL': '"MODEL1"'},
+           {'DESC': '"ONE_DESC"',
+            'FCST_LEAD': '0', 'FCST_THRESH': 'gt3', 'MODEL': '"MODEL2"'},
+           {'DESC': '"ONE_DESC"',
+            'FCST_LEAD': '0', 'FCST_THRESH': 'ge4', 'MODEL': '"MODEL1"'},
+           {'DESC': '"ONE_DESC"',
+            'FCST_LEAD': '0', 'FCST_THRESH': 'ge4', 'MODEL': '"MODEL2"'},
+           {'DESC': '"ONE_DESC"',
+            'FCST_LEAD': '24', 'FCST_THRESH': 'gt3', 'MODEL': '"MODEL1"'},
+           {'DESC': '"ONE_DESC"',
+            'FCST_LEAD': '24', 'FCST_THRESH': 'gt3', 'MODEL': '"MODEL2"'},
+           {'DESC': '"ONE_DESC"',
+            'FCST_LEAD': '24', 'FCST_THRESH': 'ge4', 'MODEL': '"MODEL1"'},
+           {'DESC': '"ONE_DESC"',
+            'FCST_LEAD': '24', 'FCST_THRESH': 'ge4', 'MODEL': '"MODEL2"'},
+       ]
+       ),
+    ]
+)
+@pytest.mark.wrapper_d
+def test_get_runtime_settings(metplus_config, c_dict, expected_result):
+    config = metplus_config()
+    wrapper = StatAnalysisWrapper(config)
+
+    runtime_settings = wrapper.get_runtime_settings(c_dict)
+    pp.pprint(runtime_settings)
+    assert runtime_settings == expected_result
 
 @pytest.mark.parametrize(
     'list_name, config_overrides, expected_value', [
@@ -398,8 +482,9 @@ def test_build_stringsub_dict(metplus_config, lists_to_loop, c_dict_overrides,
 
     lists_to_group = [item for item in st.EXPECTED_CONFIG_LISTS
                       if item not in lists_to_loop]
-    test_stringsub_dict = st.build_stringsub_dict(lists_to_loop,
-                                                  lists_to_group, config_dict)
+    config_dict['LISTS_TO_GROUP'] = lists_to_group
+    config_dict['LISTS_TO_LOOP'] = lists_to_loop
+    test_stringsub_dict = st.build_stringsub_dict(config_dict)
 
     print(test_stringsub_dict)
     for key, value in expected_values.items():
@@ -444,21 +529,13 @@ def test_get_output_filename(metplus_config, filename_template, output_type,
     st.c_dict['DATE_BEG'] = '20190101'
     st.c_dict['DATE_END'] = '20190101'
     st.c_dict['DATE_TYPE'] = 'VALID'
-    lists_to_group = ['FCST_INIT_HOUR_LIST', 'DESC_LIST', 'FCST_LEAD_LIST',
-                      'OBS_LEAD_LIST', 'OBS_VALID_HOUR_LIST',
-                      'OBS_INIT_HOUR_LIST', 'FCST_VAR_LIST', 'OBS_VAR_LIST',
-                      'FCST_UNITS_LIST', 'OBS_UNITS_LIST', 'FCST_LEVEL_LIST',
-                      'OBS_LEVEL_LIST', 'VX_MASK_LIST', 'INTERP_MTHD_LIST',
-                      'INTERP_PNTS_LIST', 'FCST_THRESH_LIST',
-                      'OBS_THRESH_LIST', 'COV_THRESH_LIST', 'ALPHA_LIST',
-                      'LINE_TYPE_LIST']
+
     lists_to_loop = ['FCST_VALID_HOUR_LIST', 'MODEL_LIST']
 
     test_output_filename = st.get_output_filename(output_type,
                                                   filename_template,
                                                   filename_type,
                                                   lists_to_loop,
-                                                  lists_to_group,
                                                   config_dict)
     assert expected_output == test_output_filename
 
@@ -509,30 +586,30 @@ def test_get_lookin_dir(metplus_config):
                       'OBS_THRESH_LIST', 'COV_THRESH_LIST', 'ALPHA_LIST',
                       'LINE_TYPE_LIST']
     lists_to_loop = ['FCST_VALID_HOUR_LIST', 'MODEL_LIST']
+    config_dict['LISTS_TO_GROUP'] = lists_to_group
+    config_dict['LISTS_TO_LOOP'] = lists_to_loop
+
     pytest_data_dir = os.path.join(os.path.dirname(__file__), os.pardir,
                                    os.pardir, os.pardir, 'data')
     # Test 1
     expected_lookin_dir = os.path.join(pytest_data_dir, 'fake/20180201')
     dir_path = os.path.join(pytest_data_dir, 'fake/*')
 
-    test_lookin_dir = st.get_lookin_dir(dir_path, lists_to_loop,
-                                        lists_to_group, config_dict)
+    test_lookin_dir = st.get_lookin_dir(dir_path, config_dict)
     assert expected_lookin_dir == test_lookin_dir
 
     # Test 2
     expected_lookin_dir = os.path.join(pytest_data_dir, 'fake/20180201')
     dir_path = os.path.join(pytest_data_dir, 'fake/{valid?fmt=%Y%m%d}')
 
-    test_lookin_dir = st.get_lookin_dir(dir_path, lists_to_loop,
-                                        lists_to_group, config_dict)
+    test_lookin_dir = st.get_lookin_dir(dir_path, config_dict)
     assert expected_lookin_dir == test_lookin_dir
 
     # Test 3 - no matches for lookin dir wildcard
     expected_lookin_dir = ''
     dir_path = os.path.join(pytest_data_dir, 'fake/*nothingmatches*')
 
-    test_lookin_dir = st.get_lookin_dir(dir_path, lists_to_loop,
-                                        lists_to_group, config_dict)
+    test_lookin_dir = st.get_lookin_dir(dir_path, config_dict)
     assert expected_lookin_dir == test_lookin_dir
 
     # Test 4 - 2 paths, one with wildcard
@@ -541,8 +618,7 @@ def test_get_lookin_dir(metplus_config):
     dir_path = os.path.join(pytest_data_dir, 'fake/*')
     dir_path = f'{dir_path}, {dir_path}'
 
-    test_lookin_dir = st.get_lookin_dir(dir_path, lists_to_loop,
-                                        lists_to_group, config_dict)
+    test_lookin_dir = st.get_lookin_dir(dir_path, config_dict)
     assert expected_lookin_dir == test_lookin_dir
 
 
