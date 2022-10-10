@@ -1298,7 +1298,7 @@ class StatAnalysisWrapper(CommandBuilder):
         if not self.c_dict['VAR_LIST']:
             c_dict = {}
             self.add_other_lists_to_c_dict(c_dict)
-            return [copy.deepcopy(self.c_dict)]
+            return [c_dict]
 
         # otherwise, use field information to build lists with single items
         # make individual dictionaries for each threshold
