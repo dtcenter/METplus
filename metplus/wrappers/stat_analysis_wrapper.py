@@ -180,6 +180,7 @@ class StatAnalysisWrapper(CommandBuilder):
             self.config.getraw('config', 'STAT_ANALYSIS_OUTPUT_TEMPLATE', '')
         )
 
+        # set date type, which is typically controlled by LOOP_BY
         c_dict['DATE_TYPE'] = self.config.getstr('config',
                                                  'DATE_TYPE',
                                                  self.config.getstr('config',
@@ -195,7 +196,34 @@ class StatAnalysisWrapper(CommandBuilder):
             c_dict['DATE_END'] = end_dt.strftime('%Y%m%d')
 
         # read jobs from STAT_ANALYSIS_JOB<n> or legacy JOB_NAME/ARGS if unset
-        c_dict['JOBS'] = []
+        c_dict['JOBS'] = self._read_jobs_from_config()
+
+        # read all lists and check if field lists are all empty
+        all_field_lists_empty = self.read_lists_from_config(c_dict)
+
+        # read any [FCST/OBS]_VAR<n>_* variables if they are set
+        c_dict['VAR_LIST'] = parse_var_list(self.config)
+
+        c_dict['MODEL_INFO_LIST'] = self.parse_model_info()
+
+        # if MODEL_LIST was not set, populate it from the model info list
+        if not c_dict['MODEL_LIST'] and c_dict['MODEL_INFO_LIST']:
+            self.logger.warning("MODEL_LIST was left blank, "
+                                + "creating with MODELn information.")
+            for model_info in c_dict['MODEL_INFO_LIST']:
+                c_dict['MODEL_LIST'].append(model_info['name'])
+
+        c_dict = self.set_lists_loop_or_group(c_dict)
+
+        # read MET config settings that will apply to every run
+        self.add_met_config(name='hss_ec_value',
+                            data_type='float',
+                            metplus_configs=['STAT_ANALYSIS_HSS_EC_VALUE'])
+
+        return self.c_dict_error_check(c_dict, all_field_lists_empty)
+
+    def _read_jobs_from_config(self):
+        jobs = []
         job_indices = list(
             find_indices_in_config_section(r'STAT_ANALYSIS_JOB(\d+)$',
                                            self.config,
@@ -205,32 +233,15 @@ class StatAnalysisWrapper(CommandBuilder):
         if job_indices:
             for j_id in job_indices:
                 job = self.config.getraw('config', f'STAT_ANALYSIS_JOB{j_id}')
-                c_dict['JOBS'].append(job)
+                jobs.append(job)
         else:
             job_name = self.config.getraw('config', 'STAT_ANALYSIS_JOB_NAME')
             job_args = self.config.getraw('config', 'STAT_ANALYSIS_JOB_ARGS')
-            c_dict['JOBS'].append(f'-job {job_name} {job_args}')
+            jobs.append(f'-job {job_name} {job_args}')
 
-        # read all lists and check if field lists are all empty
-        c_dict['all_field_lists_empty'] = self.read_lists_from_config(c_dict)
-        c_dict['VAR_LIST'] = parse_var_list(self.config)
+        return jobs
 
-        c_dict['MODEL_INFO_LIST'] = self.parse_model_info()
-        if not c_dict['MODEL_LIST'] and c_dict['MODEL_INFO_LIST']:
-            self.logger.warning("MODEL_LIST was left blank, "
-                                + "creating with MODELn information.")
-            for model_info in c_dict['MODEL_INFO_LIST']:
-                c_dict['MODEL_LIST'].append(model_info['name'])
-
-        c_dict = self.set_lists_loop_or_group(c_dict)
-
-        self.add_met_config(name='hss_ec_value',
-                            data_type='float',
-                            metplus_configs=['STAT_ANALYSIS_HSS_EC_VALUE'])
-
-        return self.c_dict_error_check(c_dict)
-
-    def c_dict_error_check(self, c_dict):
+    def c_dict_error_check(self, c_dict, all_field_lists_empty):
 
         if not c_dict.get('CONFIG_FILE'):
             if len(c_dict['JOBS']) > 1:
@@ -265,14 +276,13 @@ class StatAnalysisWrapper(CommandBuilder):
             self.log_error("DATE_TYPE must be VALID or INIT")
 
         # if var list is set and field lists are not all empty, error
-        if c_dict['VAR_LIST'] and not c_dict['all_field_lists_empty']:
+        if c_dict['VAR_LIST'] and not all_field_lists_empty:
             self.log_error("Field information defined in both "
                            "[FCST/OBS]_VAR_LIST and "
                            "[FCST/OBS]_VAR<n>_[NAME/LEVELS]. Use "
                            "one or the other formats to run")
 
-        # if MODEL_LIST was not set in config, populate it from the model info list
-        # if model info list is also not set, report and error
+        # if model list and info list were not set, report and error
         if not c_dict['MODEL_LIST'] and not c_dict['MODEL_INFO_LIST']:
             self.log_error("No model information was found.")
 
@@ -396,7 +406,7 @@ class StatAnalysisWrapper(CommandBuilder):
                                       sort_list=sort_list)
 
     @staticmethod
-    def _get_relativedelta_list(string_value, sort_list=True):
+    def _get_delta_list(string_value, sort_list=True):
         return StatAnalysisWrapper._format_time_list(string_value,
                                       get_met_format=False,
                                       sort_list=sort_list)
@@ -406,44 +416,35 @@ class StatAnalysisWrapper(CommandBuilder):
              should treat the items in that list as a group or items 
              to be looped over based on user settings, the values
              in the list, and process being run.
-             
-             Args:
-                 @param group_items list of the METplus config list
-                  names to group the list's items set by user
-                 @param loop_items list of the METplus config list
-                  names to loop over the list's items set by user
-                 @param config_dict dictionary containing the
-                  configuration information
-             
+
+             @param c_dict dictionary containing the configuration information
+
              @returns tuple containing lists_to_group_items ( list of
               all the list names whose items are being grouped
               together) and lists_to_loop_items (list of all
               the list names whose items are being looped over)
         """
-        # get list of config variables not found in either
-        # GROUP_LIST_ITEMS or LOOP_LIST_ITEMS
+        # get list of list variables not found in group or loop lists
         missing_config_list = [conf for conf in self.EXPECTED_CONFIG_LISTS
-                               if conf not in c_dict['GROUP_LIST_ITEMS']]
-        missing_config_list = [conf for conf in missing_config_list
-                               if conf not in c_dict['LOOP_LIST_ITEMS']]
-        found_config_list = [conf for conf in self.EXPECTED_CONFIG_LISTS
-                             if conf not in missing_config_list]
+                               if conf not in c_dict['GROUP_LIST_ITEMS']
+                               and conf not in c_dict['LOOP_LIST_ITEMS']]
 
-        # loop through lists not found in either loop or group lists
         # add missing lists to group_lists
         for missing_config in missing_config_list:
             c_dict['GROUP_LIST_ITEMS'].append(missing_config)
 
-        # loop through lists found in either loop or group lists originally
-        for found_config in found_config_list:
-            # if list is empty and in loop list, warn and move to group list
-            if (not c_dict[found_config] and
-                    found_config in c_dict['LOOP_LIST_ITEMS']):
-                self.logger.warning(found_config + " is empty, "
-                                    + "will be treated as group.")
-                c_dict['GROUP_LIST_ITEMS'].append(found_config)
-                c_dict['LOOP_LIST_ITEMS'].remove(found_config)
+        # move empty lists in loop lists to group lists
+        for list_name in c_dict['LOOP_LIST_ITEMS']:
+            # skip if list has values
+            if c_dict[list_name]:
+                continue
 
+            self.logger.warning(f'{list_name} was found in LOOP_LIST_ITEMS'
+                                ' but is empty. Moving to group list')
+            c_dict['GROUP_LIST_ITEMS'].append(list_name)
+            c_dict['LOOP_LIST_ITEMS'].remove(list_name)
+
+        # log summary of group and loop lists
         self.logger.debug("Items in these lists will be grouped together: "
                           + ', '.join(c_dict['GROUP_LIST_ITEMS']))
         self.logger.debug("Items in these lists will be looped over: "
@@ -459,7 +460,7 @@ class StatAnalysisWrapper(CommandBuilder):
          Can be a comma-separated list, i.e. gt3,<=5.5, ==7
 
         @returns string of comma-separated list of the threshold(s) with
-         letter format, i.e. gt3, le5.5, eq7
+         letter format, i.e. gt3,le5.5,eq7
         """
         formatted_thresh_list = []
         # separate thresholds by comma and strip off whitespace around values
@@ -478,18 +479,12 @@ class StatAnalysisWrapper(CommandBuilder):
         """! Build a dictionary with list names, dates, and commonly
              used identifiers to pass to string_template_substitution.
             
-             Args:
-                 lists_to_loop  - list of all the list names whose items
-                                  are being grouped together
-                 lists_to group - list of all the list names whose items
-                                  are being looped over
-                 config_dict    - dictionary containing the configuration 
-                                  information
-            
-             Returns:
-                 stringsub_dict - dictionary containing the formatted
-                                  information to pass to the 
-                                  string_template_substitution
+        @param lists_to_loop list of all the list names whose items
+         are being grouped together
+        @param lists_to_group list of all the list names whose items
+         are being looped over
+        @param config_dict dictionary containing the configuration information
+        @returns dictionary with the formatted info to pass to do_string_sub
         """
         date_type = self.c_dict['DATE_TYPE']
 
@@ -530,7 +525,7 @@ class StatAnalysisWrapper(CommandBuilder):
 
             elif 'HOUR' in list_name:
                 # TODO: should this only handle opposite of date_type?
-                delta_list = self._get_relativedelta_list(config_dict[list_name])
+                delta_list = self._get_delta_list(config_dict[list_name])
                 if not delta_list:
                     stringsub_dict[sub_name] = list_name_value
                     # TODO: should this be set to 0:0:0 to 23:59:59?
@@ -591,7 +586,7 @@ class StatAnalysisWrapper(CommandBuilder):
 
                 stringsub_dict[sub_name] = lead_list[0]
 
-                lead_rd = self._get_relativedelta_list(config_dict[list_name])[0]
+                lead_rd = self._get_delta_list(config_dict[list_name])[0]
                 total_sec = ti_get_seconds_from_relativedelta(lead_rd)
                 stringsub_dict[sub_name+'_totalsec'] = str(total_sec)
 
@@ -630,7 +625,8 @@ class StatAnalysisWrapper(CommandBuilder):
         hour lists.
         Set other values depending on values set in fcst and obs hour lists.
         Values that are set depend on what it set in c_dict DATE_TYPE, which
-        is either INIT or VALID.
+        is either INIT or VALID. If neither fcst or obs hr list are set,
+        {date_type}_beg/end and {date_type} are not set at all (empty string).
 
         @param sub_dict dictionary to set string sub values
         @param fcst_hour_str string with list of forecast hours to process
@@ -639,28 +635,28 @@ class StatAnalysisWrapper(CommandBuilder):
         # date_type is valid or init depending on LOOP_BY
         date_type = self.c_dict['DATE_TYPE'].lower()
         if fcst_hour_str:
-            fcst_hour_list = self._get_relativedelta_list(fcst_hour_str)
+            fcst_hour_list = self._get_delta_list(fcst_hour_str)
         else:
             fcst_hour_list = None
 
         if obs_hour_str:
-            obs_hour_list = self._get_relativedelta_list(obs_hour_str)
+            obs_hour_list = self._get_delta_list(obs_hour_str)
         else:
             obs_hour_list = None
 
         self._set_stringsub_hours_item(sub_dict, 'fcst', fcst_hour_list)
         self._set_stringsub_hours_item(sub_dict, 'obs', obs_hour_list)
 
-        self._set_stringsub_generic(sub_dict, fcst_hour_list, obs_hour_list, date_type)
-
-
-        # if neither fcst or obs hr list are set,
-        # {date_type}_beg/end and {date_type} are not set at all (empty string)
+        self._set_stringsub_generic(sub_dict, fcst_hour_list, obs_hour_list,
+                                    date_type)
 
     def _set_stringsub_hours_item(self, sub_dict, fcst_or_obs, hour_list):
-        """! Set either fcst or obs values in string sub dictionary.
+        """! Set either fcst or obs values in string sub dictionary, e.g.
+        [fcst/obs]_[init/valid]_[beg/end].
         Values that are set depend on what it set in c_dict DATE_TYPE, which
-        is either INIT or VALID.
+        is either INIT or VALID. If the beg and end values are the same, then
+        also set the same variable without the _beg/end extension, e.g. if
+        fcst_valid_beg is equal to fcst_valid_end, also set fcst_valid.
 
         @param sub_dict dictionary to set string sub values
         @param fcst_or_obs string to note processing either fcst or obs
@@ -695,8 +691,22 @@ class StatAnalysisWrapper(CommandBuilder):
             )
         )
 
-    def _set_stringsub_generic(self, sub_dict, fcst_hour_list, obs_hour_list,
+    @staticmethod
+    def _set_stringsub_generic(sub_dict, fcst_hour_list, obs_hour_list,
                                date_type):
+        """! Set [init/valid]_[beg/end] values based on the hour lists that
+        are provided.
+        Set {date_type}_[beg/end] to fcst_{date_type}_[beg/end] if
+        fcst and obs lists are the same or if fcst list is set and obs is not.
+        Set {date_type}_[beg/end] to obs_{date_type}_[beg/end] if obs list is
+        set and fcst is not.
+        Also sets {date_type} if {date_type}_beg and {date_type}_end are equal.
+
+        @param sub_dict dictionary to set string sub values
+        @param fcst_hour_list list of forecast hours or leads
+        @param obs_hour_list list of observation hours or leads
+        @param date_type type of date to process: valid or init
+        """
         # if fcst and obs hour lists the same or if fcst is set but not obs,
         # set {date_type}_beg/end to fcst_{date_type}_beg/end
         if (fcst_hour_list == obs_hour_list or
@@ -716,31 +726,47 @@ class StatAnalysisWrapper(CommandBuilder):
 
     def _set_strinsub_other(self, sub_dict, date_type, fcst_lead_str,
                             obs_lead_str):
+        """! Compute beg and end values for opposite of date_type (e.g. valid
+        if init and vice versa) using min/max forecast leads.
+
+        @param sub_dict dictionary to set string sub values
+        @param date_type type of date to process: valid or init
+        @param fcst_lead_str string to parse list of forecast leads
+        @param obs_lead_str string to parse list of observation leads
+        """
         if fcst_lead_str:
-            fcst_lead_list = self._get_relativedelta_list(fcst_lead_str)
+            fcst_lead_list = self._get_delta_list(fcst_lead_str)
         else:
             fcst_lead_list = None
 
         if obs_lead_str:
-            obs_lead_list = self._get_relativedelta_list(obs_lead_str)
+            obs_lead_list = self._get_delta_list(obs_lead_str)
         else:
             obs_lead_list = None
 
         other_type = 'valid' if date_type == 'init' else 'init'
         self._set_strinsub_other_item(sub_dict, date_type, 'fcst',
-                                     fcst_lead_list)
+                                      fcst_lead_list)
         self._set_strinsub_other_item(sub_dict, date_type, 'obs',
-                                     obs_lead_list)
+                                      obs_lead_list)
         self._set_stringsub_generic(sub_dict, fcst_lead_list, obs_lead_list,
                                     other_type)
 
-    def _set_strinsub_other_item(self, sub_dict, date_type, fcst_or_obs,
-                                 hour_list):
+    @staticmethod
+    def _set_strinsub_other_item(sub_dict, date_type, fcst_or_obs, hour_list):
         """! Compute other type's begin and end values using the beg/end and
-        min/max forecast leads. For example, if date_type is init, compute
-        valid_beg using init_beg with min lead and compute valid_end using
-        init_end with max lead.
+        min/max forecast leads.
+        If date_type is init,
+         compute valid_beg by adding init_beg and min lead,
+         compute valid_end by adding init_end and max lead.
+        If date_type is valid,
+         compute init_beg by subtracting max lead from valid_beg,
+         compute init_end by subtracting min lead from valid_end.
 
+        @param sub_dict dictionary to set string sub values
+        @param date_type type of date to process: valid or init
+        @param fcst_or_obs string to use to process either fcst or obs
+        @param hour_list list of forecast leads to use to calculate times
         """
         other_type = 'valid' if date_type == 'init' else 'init'
         date_prefix = f'{fcst_or_obs}_{date_type}'
@@ -754,11 +780,19 @@ class StatAnalysisWrapper(CommandBuilder):
         max_lead = hour_list[-1]
 
         if date_type == 'init':
-            sub_dict[f'{other_prefix}_beg'] = sub_dict[f'{date_prefix}_beg'] + min_lead
-            sub_dict[f'{other_prefix}_end'] = sub_dict[f'{date_prefix}_end'] + max_lead
+            sub_dict[f'{other_prefix}_beg'] = (
+                    sub_dict[f'{date_prefix}_beg'] + min_lead
+            )
+            sub_dict[f'{other_prefix}_end'] = (
+                    sub_dict[f'{date_prefix}_end'] + max_lead
+            )
         else:
-            sub_dict[f'{other_prefix}_beg'] = sub_dict[f'{date_prefix}_beg'] - max_lead
-            sub_dict[f'{other_prefix}_end'] = sub_dict[f'{date_prefix}_end'] - min_lead
+            sub_dict[f'{other_prefix}_beg'] = (
+                    sub_dict[f'{date_prefix}_beg'] - max_lead
+            )
+            sub_dict[f'{other_prefix}_end'] = (
+                    sub_dict[f'{date_prefix}_end'] - min_lead
+            )
 
     def get_output_filename(self, output_type, filename_template,
                             filename_type,
