@@ -1319,8 +1319,6 @@ class StatAnalysisWrapper(CommandBuilder):
                                        '')
                 )
             else:
-                # if not running fourier, use a list
-                # containing an empty string to loop one iteration
                 fourier_wave_num_pairs = ['']
 
             # if no thresholds were specified, use a list
@@ -1335,23 +1333,17 @@ class StatAnalysisWrapper(CommandBuilder):
 
             for fcst_thresh, obs_thresh in zip(fcst_thresholds, obs_thresholds):
                 for pair in fourier_wave_num_pairs:
-                    c_dict = {}
-                    c_dict['index'] = var_info['index']
-                    c_dict['FCST_VAR_LIST'] = [
-                        f'"{var_info["fcst_name"]}"'
-                    ]
-                    c_dict['OBS_VAR_LIST'] = [
-                        f'"{var_info["obs_name"]}"'
-                    ]
-                    c_dict['FCST_LEVEL_LIST'] = [
-                        f'"{var_info["fcst_level"]}"'
-                    ]
-                    c_dict['OBS_LEVEL_LIST'] = [
-                        f'"{var_info["obs_level"]}"'
-                    ]
+                    c_dict = {
+                        'index': var_info['index'],
+                        'FCST_VAR_LIST': [f'"{var_info["fcst_name"]}"'],
+                        'OBS_VAR_LIST': [f'"{var_info["obs_name"]}"'],
+                        'FCST_LEVEL_LIST': [f'"{var_info["fcst_level"]}"'],
+                        'OBS_LEVEL_LIST': [f'"{var_info["obs_level"]}"'],
+                        'FCST_THRESH_LIST': [], 'OBS_THRESH_LIST': [],
+                        'FCST_UNITS_LIST': [], 'OBS_UNITS_LIST': [],
+                        'INTERP_MTHD_LIST': [],
+                    }
 
-                    c_dict['FCST_THRESH_LIST'] = []
-                    c_dict['OBS_THRESH_LIST'] = []
                     if fcst_thresh:
                         thresh_formatted = self.format_thresh(fcst_thresh)
                         c_dict['FCST_THRESH_LIST'].append(thresh_formatted)
@@ -1360,8 +1352,6 @@ class StatAnalysisWrapper(CommandBuilder):
                         thresh_formatted = self.format_thresh(obs_thresh)
                         c_dict['OBS_THRESH_LIST'].append(thresh_formatted)
 
-                    c_dict['FCST_UNITS_LIST'] = []
-                    c_dict['OBS_UNITS_LIST'] = []
                     if fcst_units:
                         c_dict['FCST_UNITS_LIST'].append(f'"{fcst_units}"')
                     if obs_units:
@@ -1370,8 +1360,6 @@ class StatAnalysisWrapper(CommandBuilder):
                     c_dict['run_fourier'] = run_fourier
                     if pair:
                         c_dict['INTERP_MTHD_LIST'] = ['WV1_' + pair]
-                    else:
-                        c_dict['INTERP_MTHD_LIST'] = []
 
                     self.add_other_lists_to_c_dict(c_dict)
 
@@ -1414,10 +1402,12 @@ class StatAnalysisWrapper(CommandBuilder):
                     c_dict[list_item] = self.c_dict[list_item]
 
     def get_model_obtype_and_lookindir(self, runtime_settings_dict):
-        """! Reads through model info dictionaries for given run. Sets lookindir command line
-             argument. Sets MODEL and OBTYPE values in runtime setting dictionary.
-             @param runtime_settings_dict dictionary containing all settings used in next run
-             @returns last model info dictionary is successful, None if not.
+        """! Reads through model info dictionaries for given run.
+        Sets lookindir command line argument. Sets MODEL and OBTYPE values in
+        runtime setting dictionary.
+
+        @param runtime_settings_dict dictionary with all settings used in run
+        @returns last model info dictionary is successful, None if not.
         """
         lookin_dirs = []
         model_list = []
@@ -1425,7 +1415,10 @@ class StatAnalysisWrapper(CommandBuilder):
         obtype_list = []
         dump_row_filename_list = []
         # get list of models to process
-        models_to_run = [model.strip().replace('"', '') for model in runtime_settings_dict['MODEL'].split(',')]
+        models_to_run = [
+            model.strip().replace('"', '')
+            for model in runtime_settings_dict['MODEL'].split(',')
+        ]
         for model_info in self.c_dict['MODEL_INFO_LIST']:
             # skip model if not in list of models to process
             if model_info['name'] not in models_to_run:
@@ -1434,15 +1427,16 @@ class StatAnalysisWrapper(CommandBuilder):
             model_list.append(model_info['name'])
             reference_list.append(model_info['reference_name'])
             obtype_list.append(model_info['obtype'])
-            dump_row_filename_list.append(model_info['dump_row_filename_template'])
+            dump_row_filename_list.append(
+                model_info['dump_row_filename_template']
+            )
             # set MODEL and OBTYPE to single item to find lookin dir
-            runtime_settings_dict['MODEL'] = '"'+model_info['name']+'"'
-            runtime_settings_dict['OBTYPE'] = '"'+model_info['obtype']+'"'
+            runtime_settings_dict['MODEL'] = f'"{model_info["name"]}"'
+            runtime_settings_dict['OBTYPE'] = f'"{model_info["obtype"]}"'
 
-            lookin_dirs.append(self.get_lookin_dir(model_info['dir'],
-                                                   runtime_settings_dict,
-                                                   )
-                               )
+            lookin_dirs.append(
+                self.get_lookin_dir(model_info['dir'], runtime_settings_dict)
+            )
 
         # set lookin dir command line argument
         runtime_settings_dict['LOOKIN_DIR'] = ' '.join(lookin_dirs)
@@ -1458,7 +1452,9 @@ class StatAnalysisWrapper(CommandBuilder):
 
         # set values in runtime settings dict for model and obtype
         runtime_settings_dict['MODEL'] = self.list_to_str(model_list)
-        runtime_settings_dict['MODEL_REFERENCE_NAME'] = self.list_to_str(reference_list)
+        runtime_settings_dict['MODEL_REFERENCE_NAME'] = (
+            self.list_to_str(reference_list)
+        )
         runtime_settings_dict['OBTYPE'] = self.list_to_str(obtype_list)
 
         # return last model info dict used
