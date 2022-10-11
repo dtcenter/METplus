@@ -1,6 +1,6 @@
 '''
 Program Name: stat_analysis_wrapper.py
-Contact(s): Mallory Row
+Contact(s): Mallory Row, George McCabe
 Abstract: Runs stat_analysis
 History Log: Fourth version
 Usage: stat_analysis_wrapper.py
@@ -402,14 +402,14 @@ class StatAnalysisWrapper(CommandBuilder):
     @staticmethod
     def _get_met_time_list(string_value, sort_list=True):
         return StatAnalysisWrapper._format_time_list(string_value,
-                                      get_met_format=True,
-                                      sort_list=sort_list)
+                                                     get_met_format=True,
+                                                     sort_list=sort_list)
 
     @staticmethod
     def _get_delta_list(string_value, sort_list=True):
         return StatAnalysisWrapper._format_time_list(string_value,
-                                      get_met_format=False,
-                                      sort_list=sort_list)
+                                                     get_met_format=False,
+                                                     sort_list=sort_list)
 
     def set_lists_loop_or_group(self, c_dict):
         """! Determine whether the lists from the METplus config file
@@ -524,7 +524,6 @@ class StatAnalysisWrapper(CommandBuilder):
                 )
 
             elif 'HOUR' in list_name:
-                # TODO: should this only handle opposite of date_type?
                 delta_list = self._get_delta_list(config_dict[list_name])
                 if not delta_list:
                     stringsub_dict[sub_name] = list_name_value
@@ -632,8 +631,6 @@ class StatAnalysisWrapper(CommandBuilder):
         @param fcst_hour_str string with list of forecast hours to process
         @param obs_hour_str string with list of observation hours to process
         """
-        # date_type is valid or init depending on LOOP_BY
-        date_type = self.c_dict['DATE_TYPE'].lower()
         if fcst_hour_str:
             fcst_hour_list = self._get_delta_list(fcst_hour_str)
         else:
@@ -648,7 +645,7 @@ class StatAnalysisWrapper(CommandBuilder):
         self._set_stringsub_hours_item(sub_dict, 'obs', obs_hour_list)
 
         self._set_stringsub_generic(sub_dict, fcst_hour_list, obs_hour_list,
-                                    date_type)
+                                    self.c_dict['DATE_TYPE'].lower())
 
     def _set_stringsub_hours_item(self, sub_dict, fcst_or_obs, hour_list):
         """! Set either fcst or obs values in string sub dictionary, e.g.
