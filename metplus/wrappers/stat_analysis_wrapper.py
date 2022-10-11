@@ -1072,19 +1072,16 @@ class StatAnalysisWrapper(CommandBuilder):
                 return None, None
 
             for output_type in ['DUMP_ROW', 'OUT_STAT']:
+                var_name = f'STAT_ANALYSIS_{output_type}_TEMPLATE'
                 # if MODEL<n>_STAT_ANALYSIS_<output_type>_TEMPLATE is set, use that
                 model_filename_template = (
-                    self.config.getraw('config',
-                                       'MODEL'+m+'_STAT_ANALYSIS_'
-                                       +output_type+'_TEMPLATE')
+                    self.config.getraw('config', f'MODEL{m}_{var_name}')
                 )
 
                 # if not set, use STAT_ANALYSIS_<output_type>_TEMPLATE
                 if not model_filename_template:
                     model_filename_template = (
-                        self.config.getraw('config',
-                                           'STAT_ANALYSIS_'
-                                           + output_type + '_TEMPLATE')
+                        self.config.getraw('config', var_name)
                     )
 
                 if not model_filename_template:
@@ -1456,6 +1453,9 @@ class StatAnalysisWrapper(CommandBuilder):
              @params runtime_settings_dict dictionary containing all settings used in next run
              @returns string containing job information to pass to StatAnalysis config file
         """
+        # get values to substitute filename template tags
+        stringsub_dict = self.build_stringsub_dict(runtime_settings_dict)
+
         jobs = []
         for job in self.c_dict['JOBS']:
             for job_type in ['dump_row', 'out_stat']:
@@ -1466,6 +1466,9 @@ class StatAnalysisWrapper(CommandBuilder):
                                                 loop_lists,
                                                 runtime_settings_dict,
                                                 )
+
+            # substitute filename templates that may be found in rest of job
+            job = do_string_sub(job, **stringsub_dict)
 
             jobs.append(job)
 
