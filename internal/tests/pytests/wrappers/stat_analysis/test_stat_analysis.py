@@ -622,106 +622,76 @@ def test_get_lookin_dir(metplus_config):
     assert expected_lookin_dir == test_lookin_dir
 
 
+@pytest.mark.parametrize(
+    'c_dict_overrides, config_dict_overrides, expected_values', [
+        # Test 0
+        ({'DATE_BEG': '20190101', 'DATE_END': '20190105', 'DATE_TYPE': 'VALID'},
+         {'FCST_VALID_HOUR': '0', 'FCST_INIT_HOUR': '0, 12',
+          'OBS_VALID_HOUR': '', 'OBS_INIT_HOUR': ''},
+         {'FCST_VALID_BEG': '20190101_000000',
+          'FCST_VALID_END': '20190105_000000',
+          'FCST_VALID_HOUR': '"000000"',
+          'FCST_INIT_HOUR': '"000000", "120000"',
+          },
+         ),
+        # Test 1
+        (
+        {'DATE_BEG': '20190101', 'DATE_END': '20190105', 'DATE_TYPE': 'VALID'},
+        {'FCST_VALID_HOUR': '0, 12', 'FCST_INIT_HOUR': '0, 12',
+         'OBS_VALID_HOUR': '', 'OBS_INIT_HOUR': ''},
+        {'FCST_VALID_BEG': '20190101_000000',
+         'FCST_VALID_END': '20190105_120000',
+         'FCST_VALID_HOUR': '"000000", "120000"',
+         'FCST_INIT_HOUR': '"000000", "120000"',
+         },
+        ),
+        # Test 2
+        (
+        {'DATE_BEG': '20190101', 'DATE_END': '20190101', 'DATE_TYPE': 'VALID'},
+        {'FCST_VALID_HOUR': '', 'FCST_INIT_HOUR': '',
+         'OBS_VALID_HOUR': '000000', 'OBS_INIT_HOUR': '0, 12'},
+        {'OBS_VALID_BEG': '20190101_000000',
+         'OBS_VALID_END': '20190101_000000',
+         'OBS_VALID_HOUR': '"000000"',
+         'OBS_INIT_HOUR': '"000000", "120000"',
+         },
+        ),
+        # Test 3
+        ({'DATE_BEG': '20190101', 'DATE_END': '20190101', 'DATE_TYPE': 'INIT'},
+         {'FCST_VALID_HOUR': '', 'FCST_INIT_HOUR': '',
+          'OBS_VALID_HOUR': '000000', 'OBS_INIT_HOUR': '0, 12'},
+         {'OBS_INIT_BEG': '20190101_000000',
+          'OBS_INIT_END': '20190101_120000',
+          'OBS_VALID_HOUR': '"000000"',
+          'OBS_INIT_HOUR': '"000000", "120000"',
+          },
+        ),
+    ]
+)
 @pytest.mark.wrapper_d
-def test_format_valid_init(metplus_config):
+def test_format_valid_init(metplus_config, c_dict_overrides,
+                           config_dict_overrides, expected_values):
     # Independently test the formatting 
     # of the valid and initialization date and hours
     # from the METplus config file for the MET
     # config file and that they are formatted
     # correctly
     st = stat_analysis_wrapper(metplus_config)
-    # Test 1
-    st.c_dict['DATE_BEG'] = '20190101'
-    st.c_dict['DATE_END'] = '20190105'
-    st.c_dict['DATE_TYPE'] = 'VALID'
+
+    for key, value in c_dict_overrides.items():
+        st.c_dict[key] = value
 
     config_dict = {}
-    config_dict['FCST_VALID_HOUR'] = '0'
-    config_dict['FCST_INIT_HOUR'] = '0, 12'
-    config_dict['OBS_VALID_HOUR'] = ''
-    config_dict['OBS_INIT_HOUR'] = ''
-    config_dict = st.format_valid_init(config_dict)
-    assert config_dict['FCST_VALID_BEG'] == '20190101_000000'
-    assert config_dict['FCST_VALID_END'] == '20190105_000000'
-    assert config_dict['FCST_VALID_HOUR'] == '"000000"'
-    assert config_dict['FCST_INIT_BEG'] == ''
-    assert config_dict['FCST_INIT_END'] == ''
-    assert config_dict['FCST_INIT_HOUR'] == '"000000", "120000"'
-    assert config_dict['OBS_VALID_BEG'] == ''
-    assert config_dict['OBS_VALID_END'] == ''
-    assert config_dict['OBS_VALID_HOUR'] == ''
-    assert config_dict['OBS_INIT_BEG'] == ''
-    assert config_dict['OBS_INIT_END'] == ''
-    assert config_dict['OBS_INIT_HOUR'] == ''
-    # Test 2
-    st.c_dict['DATE_BEG'] = '20190101'
-    st.c_dict['DATE_END'] = '20190105'
-    st.c_dict['DATE_TYPE'] = 'VALID'
+    for key, value in config_dict_overrides.items():
+        config_dict[key] = value
 
-    config_dict = {}
-    config_dict['FCST_VALID_HOUR'] = '0, 12'
-    config_dict['FCST_INIT_HOUR'] = '0, 12'
-    config_dict['OBS_VALID_HOUR'] = ''
-    config_dict['OBS_INIT_HOUR'] = ''
     config_dict = st.format_valid_init(config_dict)
-    assert config_dict['FCST_VALID_BEG'] == '20190101_000000'
-    assert config_dict['FCST_VALID_END'] == '20190105_120000'
-    assert config_dict['FCST_VALID_HOUR'] == '"000000", "120000"'
-    assert config_dict['FCST_INIT_BEG'] == ''
-    assert config_dict['FCST_INIT_END'] == ''
-    assert config_dict['FCST_INIT_HOUR'] == '"000000", "120000"'
-    assert config_dict['OBS_VALID_BEG'] == ''
-    assert config_dict['OBS_VALID_END'] == ''
-    assert config_dict['OBS_VALID_HOUR'] == ''
-    assert config_dict['OBS_INIT_BEG'] == ''
-    assert config_dict['OBS_INIT_END'] == ''
-    assert config_dict['OBS_INIT_HOUR'] == ''
-    # Test 3
-    st.c_dict['DATE_BEG'] = '20190101'
-    st.c_dict['DATE_END'] = '20190101'
-    st.c_dict['DATE_TYPE'] = 'VALID'
-
-    config_dict = {}
-    config_dict['FCST_VALID_HOUR'] = ''
-    config_dict['FCST_INIT_HOUR'] = ''
-    config_dict['OBS_VALID_HOUR'] = '000000'
-    config_dict['OBS_INIT_HOUR'] = '0, 12'
-    config_dict = st.format_valid_init(config_dict)
-    assert config_dict['FCST_VALID_BEG'] == ''
-    assert config_dict['FCST_VALID_END'] == ''
-    assert config_dict['FCST_VALID_HOUR'] == ''
-    assert config_dict['FCST_INIT_BEG'] == ''
-    assert config_dict['FCST_INIT_END'] == ''
-    assert config_dict['FCST_INIT_HOUR'] == ''
-    assert config_dict['OBS_VALID_BEG'] == '20190101_000000'
-    assert config_dict['OBS_VALID_END'] == '20190101_000000'
-    assert config_dict['OBS_VALID_HOUR'] == '"000000"'
-    assert config_dict['OBS_INIT_BEG'] == ''
-    assert config_dict['OBS_INIT_END'] == ''
-    assert config_dict['OBS_INIT_HOUR'] == '"000000", "120000"'
-    # Test 3
-    st.c_dict['DATE_BEG'] = '20190101'
-    st.c_dict['DATE_END'] = '20190101'
-    st.c_dict['DATE_TYPE'] = 'INIT'
-
-    config_dict = {}
-    config_dict['FCST_VALID_HOUR'] = ''
-    config_dict['FCST_INIT_HOUR'] = ''
-    config_dict['OBS_VALID_HOUR'] = '000000'
-    config_dict['OBS_INIT_HOUR'] = '0, 12'
-    config_dict = st.format_valid_init(config_dict)
-    assert config_dict['FCST_VALID_BEG'] == ''
-    assert config_dict['FCST_VALID_END'] == ''
-    assert config_dict['FCST_VALID_HOUR'] == ''
-    assert config_dict['FCST_INIT_BEG'] == ''
-    assert config_dict['FCST_INIT_END'] == ''
-    assert config_dict['FCST_INIT_HOUR'] == ''
-    assert config_dict['OBS_VALID_BEG'] == ''
-    assert config_dict['OBS_VALID_END'] == ''
-    assert config_dict['OBS_VALID_HOUR'] == '"000000"'
-    assert config_dict['OBS_INIT_BEG'] == '20190101_000000'
-    assert config_dict['OBS_INIT_END'] == '20190101_120000'
-    assert config_dict['OBS_INIT_HOUR'] == '"000000", "120000"'
+    print(config_dict)
+    for key, value in config_dict.items():
+        if key not in expected_values:
+            assert value == ''
+        else:
+            assert value == expected_values[key]
 
 
 @pytest.mark.wrapper_d
