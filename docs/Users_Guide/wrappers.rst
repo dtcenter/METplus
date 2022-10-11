@@ -6746,6 +6746,39 @@ The StatAnalysis wrapper encapsulates the behavior of the MET
 stat_analysis tool. It provides the infrastructure to summarize and
 filter the MET .stat files.
 
+This wrapper is configured differently than many of the other wrappers that
+loop over multiple run times. The StatAnalysis wrapper is designed to process
+a range of run times at once using filtering to subset what is processed.
+The VALID_BEG and VALID_END or INIT_BEG and INIT_END variables are used to
+calculate filtering criteria.
+The LEAD_SEQ variable that typically defines a list of forecast leads to
+process is not used by the wrapper. Instead the FCST_LEAD_LIST and
+OBS_LEAD_LIST are used to filter out forecast leads from the data.
+
+There are many configuration variables that end with \_LIST that control
+settings in the STATAnalysisConfig_wrapped file.
+For example, MODEL_LIST controls the model variable in the MET config file and
+FCST_LEAD_LIST controls the fcst_lead variable. The value for each of these
+\_LIST variables can be a list of values separated by comma.
+The value of GROUP_LIST_ITEMS is a comma-separated list of \_LIST variable
+names that will be grouped together for each call to stat_analysis.
+The value of LOOP_LIST_ITEMS is a comma-separated list of \_LIST variable
+names that will be looped over to create multiple calls to stat_analysis.
+The tool will be called with every combination of the LOOP_LIST_ITEMS
+list values. List variables that are not included in either GROUP_LIST_ITEMS
+or LOOP_LIST_ITEMS will be automatically added to GROUP_LIST_ITEMS. Lists
+defined in LOOP_LIST_ITEMS that are empty lists will be automatically moved
+to GROUP_LIST_ITEMS.
+
+Output files: -dump_row, -out_stat, and -out
+
+Config file optional
+
+New in v5.0.0: Multiple jobs
+
+New in v5.0.0: Looping over groups of list items
+
+
 METplus Configuration
 ---------------------
 
