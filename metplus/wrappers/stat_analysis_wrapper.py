@@ -792,27 +792,20 @@ class StatAnalysisWrapper(CommandBuilder):
             )
 
     def get_output_filename(self, output_type, filename_template,
-                            filename_type,
-                            lists_to_loop,config_dict):
+                            filename_type, lists_to_loop, config_dict):
         """! Create a file name for stat_analysis output.
-             
-             Args:
-                 output_type       - string for the type of
-                                     stat_analysis output, either 
-                                     dump_row or out_stat
-                 filename_template - string of the template to be used 
-                                     to create the file name
-                 filename_type     - string of the source of the
-                                     template being used, either 
-                                     default or user
-                 lists_to_loop     - list of all the list names whose
-                                     items are being grouped together
-                 config_dict       - dictionary containing the
-                                     configuration information
 
-             Returns:
-                 output_filename   - string of the filled file name
-                                     template
+        @param output_type string for the type of stat_analysis output, either
+        dump_row, out_stat, or output. Only used if filename_type is default.
+        @param filename_template string of the template to create the file
+         name. Info from the loop list items are appended to the template if
+         filename_type is default.
+        @param filename_type string of the source of the template being used,
+         either default or user.
+        @param lists_to_loop list of all the list names whose items are being
+         grouped together
+        @param config_dict dictionary containing the configuration information
+        @returns string of the filled file name template
         """
         date_beg = self.c_dict['DATE_BEG']
         date_end = self.c_dict['DATE_END']
@@ -1065,7 +1058,7 @@ class StatAnalysisWrapper(CommandBuilder):
             model_reference_name = self.config.getstr('config',
                                                       f'MODEL{m}_REFERENCE_NAME',
                                                       model_name)
-            model_dir = self.config.getraw('dir',
+            model_dir = self.config.getraw('config',
                                            f'MODEL{m}_STAT_ANALYSIS_LOOKIN_DIR')
             if not model_dir:
                 self.log_error(f"MODEL{m}_STAT_ANALYSIS_LOOKIN_DIR must be set "
@@ -1081,7 +1074,7 @@ class StatAnalysisWrapper(CommandBuilder):
             for output_type in ['DUMP_ROW', 'OUT_STAT']:
                 # if MODEL<n>_STAT_ANALYSIS_<output_type>_TEMPLATE is set, use that
                 model_filename_template = (
-                    self.config.getraw('filename_templates',
+                    self.config.getraw('config',
                                        'MODEL'+m+'_STAT_ANALYSIS_'
                                        +output_type+'_TEMPLATE')
                 )
@@ -1089,7 +1082,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 # if not set, use STAT_ANALYSIS_<output_type>_TEMPLATE
                 if not model_filename_template:
                     model_filename_template = (
-                        self.config.getraw('filename_templates',
+                        self.config.getraw('config',
                                            'STAT_ANALYSIS_'
                                            + output_type + '_TEMPLATE')
                     )
