@@ -888,155 +888,56 @@ class StatAnalysisWrapper(CommandBuilder):
         """! Format the valid and initialization dates and
              hours for the MET stat_analysis config file.
 
-             Args:
-                 config_dict - dictionary containing the
-                               configuration information
-
-             Returns:
-                 config_dict - dictionary containing the
-                               edited configuration information
-                               for valid and initialization dates
-                               and hours 
+        @param config_dict dictionary containing the configuration information
+        @returns dictionary containing the edited configuration information
+         for valid and initialization dates and hours
         """
-        date_beg = self.c_dict['DATE_BEG']
-        date_end = self.c_dict['DATE_END']
-        date_type = self.c_dict['DATE_TYPE']
-
         for list_name in self.FORMAT_LISTS:
             list_name = list_name.replace('_LIST', '')
             values = self._get_met_time_list(config_dict.get(list_name, ''))
             values = [f'"{item}"' for item in values]
             config_dict[list_name] = ', '.join(values)
 
-        fcst_valid_hour_list = config_dict['FCST_VALID_HOUR'].split(', ')
-        fcst_init_hour_list = config_dict['FCST_INIT_HOUR'].split(', ')
-        obs_valid_hour_list = config_dict['OBS_VALID_HOUR'].split(', ')
-        obs_init_hour_list = config_dict['OBS_INIT_HOUR'].split(', ')
-        nfcst_valid_hour = len(fcst_valid_hour_list)
-        nfcst_init_hour = len(fcst_init_hour_list)
-        nobs_valid_hour = len(obs_valid_hour_list)
-        nobs_init_hour = len(obs_init_hour_list)
-        if nfcst_valid_hour > 1:
-            if date_type == 'VALID':
-                fcst_valid_hour_beg = fcst_valid_hour_list[0].replace('"','')
-                fcst_valid_hour_end = fcst_valid_hour_list[-1].replace('"','')
-                config_dict['FCST_VALID_BEG'] = (
-                    str(date_beg)+'_'+fcst_valid_hour_beg
-                )
-                config_dict['FCST_VALID_END'] = (
-                    str(date_end)+'_'+fcst_valid_hour_end
-                )
-            elif date_type == 'INIT':
-                config_dict['FCST_VALID_BEG'] = ''
-                config_dict['FCST_VALID_END'] = ''
-        elif nfcst_valid_hour == 1 and fcst_valid_hour_list != ['']:
-            fcst_valid_hour_now = fcst_valid_hour_list[0].replace('"','')
-            config_dict['FCST_VALID_HOUR'] = '"'+fcst_valid_hour_now+'"'
-            if date_type == 'VALID':
-                config_dict['FCST_VALID_BEG'] = (
-                    str(date_beg)+'_'+fcst_valid_hour_now
-                )
-                config_dict['FCST_VALID_END'] = (
-                    str(date_end)+'_'+fcst_valid_hour_now
-                )
-            elif date_type == 'INIT':
-                config_dict['FCST_VALID_BEG'] = ''
-                config_dict['FCST_VALID_END'] = ''
-        else:
-            config_dict['FCST_VALID_BEG'] = ''
-            config_dict['FCST_VALID_END'] = ''
-            config_dict['FCST_VALID_HOUR'] = ''
-        if nfcst_init_hour > 1:
-            if date_type == 'VALID':
-                config_dict['FCST_INIT_BEG'] = ''
-                config_dict['FCST_INIT_END'] = ''
-            elif date_type == 'INIT':
-                fcst_init_hour_beg = fcst_init_hour_list[0].replace('"','')
-                fcst_init_hour_end = fcst_init_hour_list[-1].replace('"','')
-                config_dict['FCST_INIT_BEG'] = (
-                    str(date_beg)+'_'+fcst_init_hour_beg
-                )
-                config_dict['FCST_INIT_END'] = (
-                    str(date_end)+'_'+fcst_init_hour_end
-                )
-        elif nfcst_init_hour == 1 and fcst_init_hour_list != ['']:
-            fcst_init_hour_now = fcst_init_hour_list[0].replace('"','')
-            config_dict['FCST_INIT_HOUR'] = '"'+fcst_init_hour_now+'"'
-            if date_type == 'VALID':
-                config_dict['FCST_INIT_BEG'] = ''
-                config_dict['FCST_INIT_END'] = ''
-            elif date_type == 'INIT':
-                config_dict['FCST_INIT_BEG'] = (
-                    str(date_beg)+'_'+fcst_init_hour_now
-                )
-                config_dict['FCST_INIT_END'] = (
-                    str(date_end)+'_'+fcst_init_hour_now
-                )
-        else:
-            config_dict['FCST_INIT_BEG'] = ''
-            config_dict['FCST_INIT_END'] = ''
-            config_dict['FCST_INIT_HOUR'] = ''
-        if nobs_valid_hour > 1:
-            if date_type == 'VALID':
-                obs_valid_hour_beg = obs_valid_hour_list[0].replace('"','')
-                obs_valid_hour_end = obs_valid_hour_list[-1].replace('"','')
-                config_dict['OBS_VALID_BEG'] = (
-                    str(date_beg)+'_'+obs_valid_hour_beg
-                )
-                config_dict['OBS_VALID_END'] = (
-                    str(date_end)+'_'+obs_valid_hour_end
-                )
-            elif date_type == 'INIT':
-                config_dict['OBS_VALID_BEG'] = ''
-                config_dict['OBS_VALID_END'] = ''
-        elif nobs_valid_hour == 1 and obs_valid_hour_list != ['']:
-            obs_valid_hour_now = obs_valid_hour_list[0].replace('"','')
-            config_dict['OBS_VALID_HOUR'] = '"'+obs_valid_hour_now+'"'
-            if date_type == 'VALID':
-                config_dict['OBS_VALID_BEG'] = (
-                     str(date_beg)+'_'+obs_valid_hour_now
-                )
-                config_dict['OBS_VALID_END'] = (
-                     str(date_end)+'_'+obs_valid_hour_now
-                )
-            elif date_type == 'INIT':
-                config_dict['OBS_VALID_BEG'] = ''
-                config_dict['OBS_VALID_END'] = ''
-        else:
-            config_dict['OBS_VALID_BEG'] = ''
-            config_dict['OBS_VALID_END'] = ''
-            config_dict['OBS_VALID_HOUR'] = ''
-        if nobs_init_hour > 1:
-            if date_type == 'VALID':
-                config_dict['OBS_INIT_BEG'] = ''
-                config_dict['OBS_INIT_END'] = ''
-            elif date_type == 'INIT':
-                obs_init_hour_beg = obs_init_hour_list[0].replace('"','')
-                obs_init_hour_end = obs_init_hour_list[-1].replace('"','')
-                config_dict['OBS_INIT_BEG'] = (
-                    str(date_beg)+'_'+obs_init_hour_beg
-                )
-                config_dict['OBS_INIT_END'] = (
-                    str(date_end)+'_'+obs_init_hour_end
-                )
-        elif nobs_init_hour == 1 and obs_init_hour_list != ['']:
-            obs_init_hour_now = obs_init_hour_list[0].replace('"','')
-            config_dict['OBS_INIT_HOUR'] = '"'+obs_init_hour_now+'"'
-            if date_type == 'VALID':
-                config_dict['OBS_INIT_BEG'] = ''
-                config_dict['OBS_INIT_END'] = ''
-            elif date_type == 'INIT':
-                config_dict['OBS_INIT_BEG'] = (
-                    str(date_beg)+'_'+obs_init_hour_now
-                )
-                config_dict['OBS_INIT_END'] = (
-                    str(date_end)+'_'+obs_init_hour_now
-                )
-        else:
-            config_dict['OBS_INIT_BEG'] = ''
-            config_dict['OBS_INIT_END'] = ''
-            config_dict['OBS_INIT_HOUR'] = ''
+        for fcst_or_obs in ['FCST', 'OBS']:
+            for init_or_valid in ['INIT', 'VALID']:
+                self._format_valid_init_item(config_dict,
+                                             fcst_or_obs,
+                                             init_or_valid,
+                                             self.c_dict['DATE_TYPE'])
+
         return config_dict
+
+    def _format_valid_init_item(self, config_dict, fcst_or_obs, init_or_valid,
+                                date_type):
+        date_beg = self.c_dict['DATE_BEG']
+        date_end = self.c_dict['DATE_END']
+
+        prefix = f'{fcst_or_obs}_{init_or_valid}'
+        hour_list = config_dict[f'{prefix}_HOUR'].split(', ')
+
+        # if hour list is not set
+        if not hour_list or (len(hour_list) == 1 and hour_list == ['']):
+            #config_dict[f'{prefix}_BEG'] = ''
+            #config_dict[f'{prefix}_END'] = ''
+            #config_dict[f'{prefix}_HOUR'] = ''
+            return
+
+        # if multiple hours are specified
+        if len(hour_list) > 1:
+            if date_type == init_or_valid:
+                hour_beg = hour_list[0].replace('"', '')
+                hour_end = hour_list[-1].replace('"', '')
+                config_dict[f'{prefix}_BEG'] = str(date_beg)+'_'+hour_beg
+                config_dict[f'{prefix}_END'] = str(date_end)+'_'+hour_end
+
+            return
+
+        # if 1 hour specified
+        hour_now = hour_list[0].replace('"', '')
+        config_dict[f'{prefix}_HOUR'] = '"'+hour_now+'"'
+        if date_type == init_or_valid:
+            config_dict[f'{prefix}_BEG'] = str(date_beg)+'_'+hour_now
+            config_dict[f'{prefix}_END'] = str(date_end)+'_'+hour_now
 
     def parse_model_info(self):
         """! Parse for model information.
@@ -1550,8 +1451,7 @@ class StatAnalysisWrapper(CommandBuilder):
             for mp_item in mp_items:
                 if not runtime_settings_dict.get(mp_item, ''):
                     continue
-                value = remove_quotes(runtime_settings_dict.get(mp_item,
-                                                                     ''))
+                value = remove_quotes(runtime_settings_dict.get(mp_item, ''))
                 value = (f"{mp_item.lower()} = \"{value}\";")
                 self.env_var_dict[f'METPLUS_{mp_item}'] = value
 
