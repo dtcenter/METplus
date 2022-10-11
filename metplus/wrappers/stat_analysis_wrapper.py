@@ -917,9 +917,10 @@ class StatAnalysisWrapper(CommandBuilder):
 
         # if hour list is not set
         if not hour_list or (len(hour_list) == 1 and hour_list == ['']):
-            #config_dict[f'{prefix}_BEG'] = ''
-            #config_dict[f'{prefix}_END'] = ''
-            #config_dict[f'{prefix}_HOUR'] = ''
+            if date_type == init_or_valid:
+                config_dict[f'{prefix}_BEG'] = f'{date_beg}_000000'
+                config_dict[f'{prefix}_END'] = f'{date_end}_235959'
+
             return
 
         # if multiple hours are specified

@@ -632,6 +632,8 @@ def test_get_lookin_dir(metplus_config):
           'FCST_VALID_END': '20190105_000000',
           'FCST_VALID_HOUR': '"000000"',
           'FCST_INIT_HOUR': '"000000", "120000"',
+          'OBS_VALID_BEG': '20190101_000000',
+          'OBS_VALID_END': '20190105_235959',
           },
          ),
         # Test 1
@@ -643,6 +645,8 @@ def test_get_lookin_dir(metplus_config):
          'FCST_VALID_END': '20190105_120000',
          'FCST_VALID_HOUR': '"000000", "120000"',
          'FCST_INIT_HOUR': '"000000", "120000"',
+         'OBS_VALID_BEG': '20190101_000000',
+         'OBS_VALID_END': '20190105_235959',
          },
         ),
         # Test 2
@@ -654,6 +658,8 @@ def test_get_lookin_dir(metplus_config):
          'OBS_VALID_END': '20190101_000000',
          'OBS_VALID_HOUR': '"000000"',
          'OBS_INIT_HOUR': '"000000", "120000"',
+         'FCST_VALID_BEG': '20190101_000000',
+         'FCST_VALID_END': '20190101_235959',
          },
         ),
         # Test 3
@@ -664,6 +670,8 @@ def test_get_lookin_dir(metplus_config):
           'OBS_INIT_END': '20190101_120000',
           'OBS_VALID_HOUR': '"000000"',
           'OBS_INIT_HOUR': '"000000", "120000"',
+          'FCST_INIT_BEG': '20190101_000000',
+          'FCST_INIT_END': '20190101_235959',
           },
         ),
     ]
@@ -688,6 +696,7 @@ def test_format_valid_init(metplus_config, c_dict_overrides,
     config_dict = st.format_valid_init(config_dict)
     print(config_dict)
     for key, value in config_dict.items():
+        print(key)
         if key not in expected_values:
             assert value == ''
         else:
