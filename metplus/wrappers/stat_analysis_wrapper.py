@@ -10,10 +10,7 @@ Output Files: MET STAT files
 Condition codes: 0 for success, 1 for failure
 '''
 
-import logging
 import os
-import copy
-import re
 import glob
 import datetime
 import itertools
@@ -29,8 +26,8 @@ from ..util import ti_get_seconds_from_relativedelta
 from . import CommandBuilder
 
 class StatAnalysisWrapper(CommandBuilder):
-    """! Wrapper to the MET tool stat_analysis which is used to filter 
-         and summarize data from MET's point_stat, grid_stat, 
+    """! Wrapper to the MET tool stat_analysis which is used to filter
+         and summarize data from MET's point_stat, grid_stat,
          ensemble_stat, and wavelet_stat
     """
 
@@ -135,16 +132,12 @@ class StatAnalysisWrapper(CommandBuilder):
         if self.args:
             cmd += ' ' + ' '.join(self.args)
 
-        if not self.lookindir:
-            self.log_error("No lookin directory specified")
-            return None
-        
-        cmd += ' -lookin ' + self.lookindir
+        cmd += ' -lookin ' + self.c_dict['LOOKIN_DIR']
 
         if self.c_dict.get('CONFIG_FILE'):
             cmd += f" -config {self.c_dict['CONFIG_FILE']}"
         else:
-            cmd += f' {self.job_args}'
+            cmd += f' {self.c_dict["JOB_ARGS"]}'
 
         if self.c_dict.get('OUTPUT_FILENAME'):
             cmd += f" -out {self.c_dict['OUTPUT_FILENAME']}"
@@ -153,14 +146,11 @@ class StatAnalysisWrapper(CommandBuilder):
 
     def create_c_dict(self):
         """! Create a data structure (dictionary) that contains all the
-             values set in the configuration files that are common for 
+             values set in the configuration files that are common for
              stat_analysis_wrapper.py.
-        
-             Args:
- 
-             Returns:
-                 c_dict  - a dictionary containing the settings in the
-                           configuration files unique to the wrapper
+
+        @returns dictionary containing the settings in the configuration files
+         unique to the wrapper
         """
         c_dict = super().create_c_dict()
         c_dict['VERBOSITY'] = (
@@ -221,6 +211,17 @@ class StatAnalysisWrapper(CommandBuilder):
                             metplus_configs=['STAT_ANALYSIS_HSS_EC_VALUE'])
 
         return self.c_dict_error_check(c_dict, all_field_lists_empty)
+
+    def run_all_times(self):
+        self.run_stat_analysis()
+        return self.all_commands
+
+    def run_at_time(self, input_dict):
+        loop_by = self.c_dict['DATE_TYPE']
+        run_date = input_dict[loop_by.lower()].strftime('%Y%m%d')
+        self.c_dict['DATE_BEG'] = run_date
+        self.c_dict['DATE_END'] = run_date
+        self.run_stat_analysis()
 
     def _read_jobs_from_config(self):
         jobs = []
@@ -300,7 +301,7 @@ class StatAnalysisWrapper(CommandBuilder):
         for conf_list in all_lists_to_read:
             if 'LEVEL_LIST' in conf_list:
                 c_dict[conf_list] = (
-                    self.get_level_list(conf_list.split('_')[0])
+                    self._get_level_list(conf_list.split('_')[0])
                 )
             else:
                 c_dict[conf_list] = self._format_conf_list(conf_list)
@@ -310,6 +311,28 @@ class StatAnalysisWrapper(CommandBuilder):
                 all_empty = False
 
         return all_empty
+
+    def _get_level_list(self, data_type):
+        """!Read forecast or observation level list from config.
+            Format list items to match the format expected by
+            StatAnalysis by removing parenthesis and any quotes,
+            then adding back single quotes
+            Args:
+              @param data_type type of list to get, FCST or OBS
+              @returns list containing the formatted level list
+        """
+        level_list = []
+
+        level_input = getlist(
+            self.config.getraw('config', f'{data_type}_LEVEL_LIST', '')
+        )
+
+        for level in level_input:
+            level = level.strip('(').strip(')')
+            level = f'{remove_quotes(level)}'
+            level_list.append(level)
+
+        return [f'"{item}"' for item in level_list]
 
     def _format_conf_list(self, conf_list):
         items = getlist(
@@ -355,17 +378,16 @@ class StatAnalysisWrapper(CommandBuilder):
 
     @staticmethod
     def list_to_str(list_of_values, add_quotes=True):
-        """! Turn a list of values into a single string so it can be 
-             set to an environment variable and read by the MET 
+        """! Turn a list of values into a single string so it can be
+             set to an environment variable and read by the MET
              stat_analysis config file.
-                 
-             Args:
-                 @param list_of_values - list of values, i.e. ['value1', 'value2']
-                 @param add_quotes if True, add quotation marks around values
-                  default is True
-  
-             @returns string created from list_of_values with the values separated
-               by commas, i.e. '"value1", "value2"'  or 1, 3 if add_quotes is False
+
+        @param list_of_values list of values, i.e. ['value1', 'value2']
+        @param add_quotes if True, add quotation marks around values,
+         default is True
+
+        @returns string created from list_of_values with the values separated
+          by commas, i.e. '"value1", "value2"'  or 1, 3 if add_quotes is False
         """
         # return empty string if list is empty
         if not list_of_values:
@@ -413,7 +435,7 @@ class StatAnalysisWrapper(CommandBuilder):
 
     def set_lists_loop_or_group(self, c_dict):
         """! Determine whether the lists from the METplus config file
-             should treat the items in that list as a group or items 
+             should treat the items in that list as a group or items
              to be looped over based on user settings, the values
              in the list, and process being run.
 
@@ -478,7 +500,7 @@ class StatAnalysisWrapper(CommandBuilder):
     def build_stringsub_dict(self, config_dict):
         """! Build a dictionary with list names, dates, and commonly
              used identifiers to pass to string_template_substitution.
-            
+
         @param lists_to_loop list of all the list names whose items
          are being grouped together
         @param lists_to_group list of all the list names whose items
@@ -517,13 +539,7 @@ class StatAnalysisWrapper(CommandBuilder):
                                       .replace(',', '_').replace('*', 'ALL')
             )
 
-            if list_name == 'MODEL':
-                stringsub_dict[sub_name] = list_name_value
-                stringsub_dict['obtype'] = (
-                    config_dict['OBTYPE'].replace('"', '').replace(' ', '')
-                )
-
-            elif 'HOUR' in list_name:
+            if 'HOUR' in list_name:
                 delta_list = self._get_delta_list(config_dict[list_name])
                 if not delta_list:
                     stringsub_dict[sub_name] = list_name_value
@@ -543,12 +559,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 stringsub_dict[sub_name + '_beg'] = delta_list[0]
                 stringsub_dict[sub_name + '_end'] = delta_list[-1]
 
-                if 'FCST' in list_name:
-                    check_list = config_dict[list_name.replace('FCST',
-                                                               'OBS')]
-                elif 'OBS' in list_name:
-                    check_list = config_dict[list_name.replace('OBS',
-                                                               'FCST')]
+                check_list = self._get_check_list(list_name, config_dict)
                 # if opposite fcst is not set or the same,
                 # set init/valid hour beg/end to fcst, same for obs
                 if not check_list or config_dict[list_name] == check_list:
@@ -578,9 +589,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 # if multiple leads are specified, format lead info
                 # using met time notation separated by underscore
                 if len(lead_list) > 1:
-                    stringsub_dict[sub_name] = (
-                        '_'.join(lead_list)
-                    )
+                    stringsub_dict[sub_name] = '_'.join(lead_list)
                     continue
 
                 stringsub_dict[sub_name] = lead_list[0]
@@ -593,10 +602,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 stringsub_dict[f'{sub_name}_min'] = lead_list[0][-4:-2]
                 stringsub_dict[f'{sub_name}_sec'] = lead_list[0][-2:]
 
-                if 'FCST' in list_name:
-                    check_list = config_dict[list_name.replace('FCST', 'OBS')]
-                elif 'OBS' in list_name:
-                    check_list = config_dict[list_name.replace('OBS', 'FCST')]
+                check_list = self._get_check_list(list_name, config_dict)
                 if not check_list or config_dict[list_name] == check_list:
                     stringsub_dict['lead'] = stringsub_dict[sub_name]
                     stringsub_dict['lead_hour'] = (
@@ -614,10 +620,32 @@ class StatAnalysisWrapper(CommandBuilder):
             else:
                 stringsub_dict[sub_name] = list_name_value
 
+            # if list is MODEL, also set obtype
+            if list_name == 'MODEL':
+                stringsub_dict['obtype'] = (
+                    config_dict['OBTYPE'].replace('"', '').replace(' ', '')
+                )
+
         # Some lines for debugging if needed in future
-        #for key, value in stringsub_dict.items():
+        # for key, value in stringsub_dict.items():
         #    self.logger.debug("{} ({})".format(key, value))
         return stringsub_dict
+
+    @staticmethod
+    def _get_check_list(list_name, config_dict):
+        """! Helper function for getting opposite list from config dict.
+
+        @param list_name either FCST or OBS
+        @param config_dict dictionary to query
+        @returns equivalent OBS item if list_name is FCST,
+         equivalent FCST item if list_name is OBS, or
+         None if list_name is not FCST or OBS
+        """
+        if 'FCST' in list_name:
+            return config_dict[list_name.replace('FCST', 'OBS')]
+        if 'OBS' in list_name:
+            return config_dict[list_name.replace('OBS', 'FCST')]
+        return None
 
     def _set_stringsub_hours(self, sub_dict, fcst_hour_str, obs_hour_str):
         """! Set string sub dictionary _beg and _end values for fcst and obs
@@ -813,6 +841,7 @@ class StatAnalysisWrapper(CommandBuilder):
 
         stringsub_dict = self.build_stringsub_dict(config_dict)
 
+        # if template was not specified by user, build template from values
         if filename_type == 'default':
 
             if date_beg == date_end:
@@ -825,47 +854,41 @@ class StatAnalysisWrapper(CommandBuilder):
                     date_beg+'to'+date_end
                 )
             for loop_list in lists_to_loop:
-                if loop_list != 'MODEL_LIST':
-                    list_name = loop_list.replace('_LIST', '')
-                    if 'HOUR' in list_name:
-                        value = self._get_met_time_list(config_dict[list_name])[0]
-                        filename_template = (
-                            filename_template+'_'
-                            +list_name.replace('_', '').lower()
-                            +value+'Z'
-                        )
-                    else:
-                        filename_template = (
-                            filename_template+'_'
-                            +list_name.replace('_', '').lower()
-                            +config_dict[list_name].replace('"', '')
-                        )
+                # don't format MODEL because it is already in default template
+                if loop_list == 'MODEL_LIST':
+                    continue
+
+                list_name = loop_list.replace('_LIST', '')
+                filename_template += (
+                    f"_{list_name.replace('_', '').lower()}"
+                )
+                # if add value without formatting if not HOUR variable
+                if 'HOUR' not in list_name:
+                    filename_template += (
+                        config_dict[list_name].replace('"', '')
+                    )
+                    continue
+
+                # get first hour in MET time fmt (HHMMSS) and add with Z
+                value = self._get_met_time_list(config_dict[list_name])[0]
+                filename_template += value+'Z'
+
             filename_template += '_' + output_type + '.stat'
 
-        self.logger.debug("Building "+output_type+" filename from "
-                          +filename_type+" template: "+filename_template)
+        self.logger.debug(f"Building {output_type} filename from "
+                          f"{filename_type} template: {filename_template}")
 
         output_filename = do_string_sub(filename_template,
                                         **stringsub_dict)
         return output_filename
 
     def get_lookin_dir(self, dir_path, config_dict):
-        """!Fill in necessary information to get the path to
-            the lookin directory to pass to stat_analysis.
-             
-             Args:
-                 dir_path          - string of the user provided
-                                     directory path
-                 lists_to_loop     - list of all the list names whose
-                                     items are being grouped together
-                 lists_to group    - list of all the list names whose
-                                     items are being looped over
-                 config_dict       - dictionary containing the
-                                     configuration information
+        """!Fill in necessary information to get the path to the lookin
+         directory to pass to stat_analysis. Expand any wildcards.
 
-             Returns:
-                 lookin_dir        - string of the filled directory
-                                     from dir_path
+        @param dir_path string of the user provided directory path
+        @param config_dict dictionary containing the configuration information
+        @returns string of the filled directory from dir_path
         """
         stringsub_dict = self.build_stringsub_dict(config_dict)
         dir_path_filled = do_string_sub(dir_path,
@@ -873,15 +896,17 @@ class StatAnalysisWrapper(CommandBuilder):
 
         all_paths = []
         for one_path in dir_path_filled.split(','):
-            if '*' in one_path:
-                self.logger.debug(f"Expanding wildcard path: {one_path}")
-                expand_path = glob.glob(one_path.strip())
-                if not expand_path:
-                    self.logger.warning(f"Wildcard expansion found no matches")
-                    continue
-                all_paths.extend(sorted(expand_path))
-            else:
-               all_paths.append(one_path.strip())
+            if '*' not in one_path:
+                all_paths.append(one_path.strip())
+                continue
+
+            self.logger.debug(f"Expanding wildcard path: {one_path}")
+            expand_path = glob.glob(one_path.strip())
+            if not expand_path:
+                self.logger.warning(f"Wildcard expansion found no matches")
+                continue
+            all_paths.extend(sorted(expand_path))
+
         return ' '.join(all_paths)
 
     def format_valid_init(self, config_dict):
@@ -942,12 +967,8 @@ class StatAnalysisWrapper(CommandBuilder):
 
     def parse_model_info(self):
         """! Parse for model information.
-             
-             Args:
-                
-             Returns:
-                 model_list - list of dictionaries containing
-                              model information
+
+        @returns list of dictionaries containing model information
         """
         model_info_list = []
         model_indices = list(
@@ -956,15 +977,18 @@ class StatAnalysisWrapper(CommandBuilder):
                                            index_index=1).keys()
         )
         for m in model_indices:
-            model_name = self.config.getstr('config', f'MODEL{m}')
-            model_reference_name = self.config.getstr('config',
-                                                      f'MODEL{m}_REFERENCE_NAME',
-                                                      model_name)
-            model_dir = self.config.getraw('config',
-                                           f'MODEL{m}_STAT_ANALYSIS_LOOKIN_DIR')
+            model_name = self.config.getraw('config', f'MODEL{m}')
+            model_reference_name = (
+                self.config.getraw('config', f'MODEL{m}_REFERENCE_NAME',
+                                   model_name)
+            )
+            model_dir = (
+                self.config.getraw('config',
+                                   f'MODEL{m}_STAT_ANALYSIS_LOOKIN_DIR')
+            )
             if not model_dir:
-                self.log_error(f"MODEL{m}_STAT_ANALYSIS_LOOKIN_DIR must be set "
-                               f"if MODEL{m} is set.")
+                self.log_error(f"MODEL{m}_STAT_ANALYSIS_LOOKIN_DIR must be "
+                               f"set if MODEL{m} is set.")
                 return None, None
 
             model_obtype = self.config.getstr('config', f'MODEL{m}_OBTYPE', '')
@@ -975,7 +999,7 @@ class StatAnalysisWrapper(CommandBuilder):
 
             for output_type in ['DUMP_ROW', 'OUT_STAT']:
                 var_name = f'STAT_ANALYSIS_{output_type}_TEMPLATE'
-                # if MODEL<n>_STAT_ANALYSIS_<output_type>_TEMPLATE is set, use that
+                # use MODEL<n>_STAT_ANALYSIS_<output_type>_TEMPLATE if set
                 model_filename_template = (
                     self.config.getraw('config', f'MODEL{m}_{var_name}')
                 )
@@ -987,60 +1011,35 @@ class StatAnalysisWrapper(CommandBuilder):
                     )
 
                 if not model_filename_template:
-                     model_filename_template = '{model?fmt=%s}_{obtype?fmt=%s}_'
-                     model_filename_type = 'default'
+                    model_filename_template = '{model?fmt=%s}_{obtype?fmt=%s}_'
+                    model_filename_type = 'default'
                 else:
-                     model_filename_type = 'user'
+                    model_filename_type = 'user'
 
                 if output_type == 'DUMP_ROW':
-                     model_dump_row_filename_template = (
-                         model_filename_template
-                     )
-                     model_dump_row_filename_type = model_filename_type
+                    model_dump_row_filename_template = (
+                        model_filename_template
+                    )
+                    model_dump_row_filename_type = model_filename_type
                 elif output_type == 'OUT_STAT':
                     model_out_stat_filename_template = (
                         model_filename_template
                     )
                     model_out_stat_filename_type = model_filename_type
 
-            mod = {}
-            mod['name'] = model_name
-            mod['reference_name'] = model_reference_name
-            mod['dir'] = model_dir
-            mod['obtype'] = model_obtype
-            mod['dump_row_filename_template'] = (
-                model_dump_row_filename_template
-            )
-            mod['dump_row_filename_type'] = model_dump_row_filename_type
-            mod['out_stat_filename_template'] = (
-                model_out_stat_filename_template
-            )
-            mod['out_stat_filename_type'] = model_out_stat_filename_type
+            mod = {
+                'name': model_name,
+                'reference_name': model_reference_name,
+                'dir': model_dir,
+                'obtype': model_obtype,
+                'dump_row_filename_template': model_dump_row_filename_template,
+                'dump_row_filename_type': model_dump_row_filename_type,
+                'out_stat_filename_template': model_out_stat_filename_template,
+                'out_stat_filename_type': model_out_stat_filename_type,
+            }
             model_info_list.append(mod)
 
         return model_info_list
-
-    def get_level_list(self, data_type):
-        """!Read forecast or observation level list from config.
-            Format list items to match the format expected by
-            StatAnalysis by removing parenthesis and any quotes,
-            then adding back single quotes
-            Args:
-              @param data_type type of list to get, FCST or OBS
-              @returns list containing the formatted level list
-        """
-        level_list = []
-
-        level_input = getlist(
-            self.config.getraw('config', f'{data_type}_LEVEL_LIST', '')
-        )
-
-        for level in level_input:
-            level = level.strip('(').strip(')')
-            level = f'{remove_quotes(level)}'
-            level_list.append(level)
-
-        return [f'"{item}"' for item in level_list]
 
     def process_job_args(self, job_type, job, model_info,
                          lists_to_loop_items, runtime_settings_dict):
@@ -1080,18 +1079,16 @@ class StatAnalysisWrapper(CommandBuilder):
 
         # Loop over run settings.
         formatted_runtime_settings_dict_list = []
-        for runtime_settings_dict in runtime_settings_dict_list:
-            loop_lists = c_dict['LOOP_LIST_ITEMS']
-
+        for runtime_settings in runtime_settings_dict_list:
             # Set up stat_analysis -lookin argument, model and obs information
             # and stat_analysis job.
-            model_info = self.get_model_obtype_and_lookindir(runtime_settings_dict)
+            model_info = self.get_model_obtype_and_lookindir(runtime_settings)
             if model_info is None:
                 return None
 
-            runtime_settings_dict['JOBS'] = (
-                self.get_job_info(model_info, runtime_settings_dict,
-                                  loop_lists)
+            runtime_settings['JOBS'] = (
+                self.get_job_info(model_info, runtime_settings,
+                                  self.c_dict['LOOP_LIST_ITEMS'])
             )
 
             # get -out argument if set
@@ -1100,77 +1097,20 @@ class StatAnalysisWrapper(CommandBuilder):
                     self.get_output_filename('output',
                                              self.c_dict['OUTPUT_TEMPLATE'],
                                              'user',
-                                             loop_lists,
-                                             runtime_settings_dict)
+                                             self.c_dict['LOOP_LIST_ITEMS'],
+                                             runtime_settings)
                 )
                 output_file = os.path.join(self.c_dict['OUTPUT_DIR'],
                                            output_filename)
 
-                # add output file path to runtime_settings_dict
-                runtime_settings_dict['OUTPUT_FILENAME'] = output_file
+                # add output file path to runtime_settings
+                runtime_settings['OUTPUT_FILENAME'] = output_file
 
-            # Set up forecast and observation valid
-            # and initialization time information.
-            runtime_settings_dict = (
-                self.format_valid_init(runtime_settings_dict)
-            )
-            formatted_runtime_settings_dict_list.append(runtime_settings_dict)
+            # Set up forecast and observation valid and init time information
+            runtime_settings = self.format_valid_init(runtime_settings)
+            formatted_runtime_settings_dict_list.append(runtime_settings)
 
         return formatted_runtime_settings_dict_list
-
-    def get_runtime_settings(self, c_dict):
-        """! Build list of all combinations of runtime settings that should be
-        run. Combine all group lists into a single item separated by comma.
-        Compute the cartesian product to get all of the different combinations
-        of the loop lists to create the final list of settings to run.
-
-        @param c_dict dictionary containing [GROUP/LOOP]_LIST_ITEMS that
-        contain list names to group or loop, as well the actual lists which
-        are named the same as the values in the [GROUP/LOOP]_LIST_ITEMS but
-        with the _LIST extension removed.
-        @returns list of dictionaries that contain all of the settings to use
-        for a given run.
-        """
-        runtime_setup_dict = {}
-
-        # for group items, set the value to a list with a single item that is
-        # a string of all items separated by a comma
-        for group_list in c_dict['GROUP_LIST_ITEMS']:
-            key = group_list.replace('_LIST', '')
-            runtime_setup_dict[key] = [', '.join(c_dict[group_list])]
-
-        # for loop items, pass the list directly as the value
-        for loop_list in c_dict['LOOP_LIST_ITEMS']:
-            key = loop_list.replace('_LIST', '')
-            runtime_setup_dict[key] = c_dict[loop_list]
-
-        # Create a dict with all the combinations of settings to be run
-        runtime_setup_dict_names = sorted(runtime_setup_dict)
-
-        runtime_settings_dict_list = []
-
-        # find cartesian product (all combos of the lists) of each dict key
-        products = itertools.product(
-            *(runtime_setup_dict[name] for name in runtime_setup_dict_names)
-        )
-        for product in products:
-            # pair up product values with dict keys and add them to new dict
-            next_dict = {}
-            for key, value in zip(runtime_setup_dict_names, product):
-                next_dict[key] = value
-            runtime_settings_dict_list.append(next_dict)
-
-        # NOTE: Logic to create list of runtime settings was previously
-        # handled using complex list comprehension that was difficult to
-        # read. New logic was intended to be more readable by other developers.
-        # Original code is commented below for reference:
-        # runtime_settings_dict_list = [
-        #     dict(zip(runtime_setup_dict_names, prod)) for prod in
-        #     itertools.product(*(runtime_setup_dict[name] for name in
-        #                         runtime_setup_dict_names))
-        # ]
-
-        return runtime_settings_dict_list
 
     def get_c_dict_list(self):
         """! Build list of config dictionaries for each field
@@ -1256,21 +1196,72 @@ class StatAnalysisWrapper(CommandBuilder):
 
         return c_dict_list
 
+    @staticmethod
+    def get_runtime_settings(c_dict):
+        """! Build list of all combinations of runtime settings that should be
+        run. Combine all group lists into a single item separated by comma.
+        Compute the cartesian product to get all of the different combinations
+        of the loop lists to create the final list of settings to run.
+
+        @param c_dict dictionary containing [GROUP/LOOP]_LIST_ITEMS that
+        contain list names to group or loop, as well the actual lists which
+        are named the same as the values in the [GROUP/LOOP]_LIST_ITEMS but
+        with the _LIST extension removed.
+        @returns list of dictionaries that contain all of the settings to use
+        for a given run.
+        """
+        runtime_setup_dict = {}
+
+        # for group items, set the value to a list with a single item that is
+        # a string of all items separated by a comma
+        for group_list in c_dict['GROUP_LIST_ITEMS']:
+            key = group_list.replace('_LIST', '')
+            runtime_setup_dict[key] = [', '.join(c_dict[group_list])]
+
+        # for loop items, pass the list directly as the value
+        for loop_list in c_dict['LOOP_LIST_ITEMS']:
+            key = loop_list.replace('_LIST', '')
+            runtime_setup_dict[key] = c_dict[loop_list]
+
+        # Create a dict with all the combinations of settings to be run
+        runtime_setup_dict_names = sorted(runtime_setup_dict)
+
+        runtime_settings_dict_list = []
+
+        # find cartesian product (all combos of the lists) of each dict key
+        products = itertools.product(
+            *(runtime_setup_dict[name] for name in runtime_setup_dict_names)
+        )
+        for product in products:
+            # pair up product values with dict keys and add them to new dict
+            next_dict = {}
+            for key, value in zip(runtime_setup_dict_names, product):
+                next_dict[key] = value
+            runtime_settings_dict_list.append(next_dict)
+
+        # NOTE: Logic to create list of runtime settings was previously
+        # handled using complex list comprehension that was difficult to
+        # read. New logic was intended to be more readable by other developers.
+        # Original code is commented below for reference:
+        # runtime_settings_dict_list = [
+        #     dict(zip(runtime_setup_dict_names, prod)) for prod in
+        #     itertools.product(*(runtime_setup_dict[name] for name in
+        #                         runtime_setup_dict_names))
+        # ]
+
+        return runtime_settings_dict_list
+
     def _get_field_units(self, index):
         """! Get units of fcst and obs fields if set based on VAR<n> index
 
          @param index VAR<n> index corresponding to other [FCST/OBS] info
          @returns tuple containing forecast and observation units respectively
         """
-        fcst_units = self.config.getstr('config',
-                                        f'FCST_VAR{index}_UNITS',
-                                        '')
-        obs_units = self.config.getstr('config',
-                                       f'OBS_VAR{index}_UNITS',
-                                       '')
+        fcst_units = self.config.getraw('config', f'FCST_VAR{index}_UNITS')
+        obs_units = self.config.getraw('config', f'OBS_VAR{index}_UNITS')
         if not obs_units and fcst_units:
             obs_units = fcst_units
-        if not fcst_units and obs_units:
+        elif not fcst_units and obs_units:
             fcst_units = obs_units
 
         return fcst_units, obs_units
@@ -1351,9 +1342,10 @@ class StatAnalysisWrapper(CommandBuilder):
 
     def get_job_info(self, model_info, runtime_settings_dict, loop_lists):
         """! Get job information and concatenate values into a string
-             @params model_info model information to use to determine output file paths
-             @params runtime_settings_dict dictionary containing all settings used in next run
-             @returns string containing job information to pass to StatAnalysis config file
+
+        @params model_info model info to use to determine output file paths
+        @params runtime_settings_dict dictionary with all settings for next run
+        @returns list of strings containing job info to pass config file
         """
         # get values to substitute filename template tags
         stringsub_dict = self.build_stringsub_dict(runtime_settings_dict)
@@ -1361,13 +1353,11 @@ class StatAnalysisWrapper(CommandBuilder):
         jobs = []
         for job in self.c_dict['JOBS']:
             for job_type in ['dump_row', 'out_stat']:
-                if f"-{job_type}" in job:
-                    job = self.process_job_args(job_type,
-                                                job,
-                                                model_info,
-                                                loop_lists,
-                                                runtime_settings_dict,
-                                                )
+                if f"-{job_type}" not in job:
+                    continue
+
+                job = self.process_job_args(job_type, job, model_info,
+                                            loop_lists, runtime_settings_dict)
 
             # substitute filename templates that may be found in rest of job
             job = do_string_sub(job, **stringsub_dict)
@@ -1398,15 +1388,14 @@ class StatAnalysisWrapper(CommandBuilder):
                  @param runtime_settings_dict_list list of dictionaries
                   containing information needed to run a StatAnalysis job
         """
-        for runtime_settings_dict in runtime_settings_dict_list:
-            if not self.create_output_directories(runtime_settings_dict):
+        for runtime_settings in runtime_settings_dict_list:
+            if not self.create_output_directories(runtime_settings):
                 continue
 
             # Set environment variables and run stat_analysis.
-            for name, value in runtime_settings_dict.items():
+            for name, value in runtime_settings.items():
                 self.add_env_var(name, value)
 
-            self.job_args = None
             # set METPLUS_ env vars for MET config file to be consistent
             # with other wrappers
             mp_lists = ['MODEL',
@@ -1434,10 +1423,10 @@ class StatAnalysisWrapper(CommandBuilder):
                         'LINE_TYPE'
                         ]
             for mp_list in mp_lists:
-                if not runtime_settings_dict.get(mp_list, ''):
+                if not runtime_settings.get(mp_list, ''):
                     continue
                 value = (f"{mp_list.lower()} = "
-                         f"[{runtime_settings_dict.get(mp_list, '')}];")
+                         f"[{runtime_settings.get(mp_list, '')}];")
                 self.env_var_dict[f'METPLUS_{mp_list}'] = value
 
             mp_items = ['FCST_VALID_BEG',
@@ -1450,14 +1439,14 @@ class StatAnalysisWrapper(CommandBuilder):
                         'OBS_INIT_END',
                         ]
             for mp_item in mp_items:
-                if not runtime_settings_dict.get(mp_item, ''):
+                if not runtime_settings.get(mp_item, ''):
                     continue
-                value = remove_quotes(runtime_settings_dict.get(mp_item, ''))
+                value = remove_quotes(runtime_settings.get(mp_item, ''))
                 value = (f"{mp_item.lower()} = \"{value}\";")
                 self.env_var_dict[f'METPLUS_{mp_item}'] = value
 
             value = f'jobs = ["'
-            value += '","'.join(runtime_settings_dict['JOBS'])
+            value += '","'.join(runtime_settings['JOBS'])
             value += '"];'
             self.env_var_dict[f'METPLUS_JOBS'] = value
 
@@ -1465,13 +1454,14 @@ class StatAnalysisWrapper(CommandBuilder):
             self.set_environment_variables()
 
             # set lookin dir
-            self.logger.debug(f"Setting -lookin dir to {runtime_settings_dict['LOOKIN_DIR']}")
-            self.lookindir = runtime_settings_dict['LOOKIN_DIR']
-            self.job_args = runtime_settings_dict['JOBS'][0]
+            self.logger.debug("Setting -lookin dir to "
+                              f"{runtime_settings['LOOKIN_DIR']}")
+            self.c_dict['LOOKIN_DIR'] = runtime_settings['LOOKIN_DIR']
+            self.c_dict['JOB_ARGS'] = runtime_settings['JOBS'][0]
 
             # set -out file path if requested, value will be set to None if not
             self.c_dict['OUTPUT_FILENAME'] = (
-                runtime_settings_dict.get('OUTPUT_FILENAME')
+                runtime_settings.get('OUTPUT_FILENAME')
             )
 
             self.build()
@@ -1486,24 +1476,15 @@ class StatAnalysisWrapper(CommandBuilder):
              @returns True if job should be run, False if it should be skipped
         """
         run_job = True
-        for job_type in ['dump_row', 'out_stat', 'output']:
+        for job_type in ['DUMP_ROW', 'OUT_STAT', 'OUTPUT']:
             output_path = (
-                runtime_settings_dict.get(f'{job_type.upper()}_FILENAME')
+                runtime_settings_dict.get(f'{job_type}_FILENAME')
             )
-            if output_path:
-                if not self.find_and_check_output_file(
-                        output_path_template=output_path):
-                    run_job = False
+            if not output_path:
+                continue
+
+            if not self.find_and_check_output_file(
+                    output_path_template=output_path):
+                run_job = False
 
         return run_job
-
-    def run_all_times(self):
-        self.run_stat_analysis()
-        return self.all_commands
-
-    def run_at_time(self, input_dict):
-        loop_by = self.c_dict['DATE_TYPE']
-        run_date = input_dict[loop_by.lower()].strftime('%Y%m%d')
-        self.c_dict['DATE_BEG'] = run_date
-        self.c_dict['DATE_END'] = run_date
-        self.run_stat_analysis()

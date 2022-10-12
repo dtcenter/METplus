@@ -199,7 +199,7 @@ def test_get_command(metplus_config):
         +'-lookin /path/to/lookin_dir '
         +'-config /path/to/STATAnalysisConfig'
     )
-    st.lookindir = '/path/to/lookin_dir'
+    st.c_dict['LOOKIN_DIR'] = '/path/to/lookin_dir'
     st.c_dict['CONFIG_FILE'] = '/path/to/STATAnalysisConfig'
     test_command = st.get_command()
     assert expected_command == test_command
@@ -776,7 +776,7 @@ def test_get_level_list(metplus_config, data_type, config_list, expected_list):
 
     saw = StatAnalysisWrapper(config)
 
-    assert saw.get_level_list(data_type) == expected_list
+    assert saw._get_level_list(data_type) == expected_list
 
 
 @pytest.mark.wrapper_d
