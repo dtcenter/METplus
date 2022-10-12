@@ -19,7 +19,7 @@ from dateutil.relativedelta import relativedelta
 from ..util import getlist
 from ..util import met_util as util
 from ..util import do_string_sub, find_indices_in_config_section
-from ..util import parse_var_list, remove_quotes
+from ..util import parse_var_list, remove_quotes, list_to_str
 from ..util import get_start_and_end_times
 from ..util import time_string_to_met_time, get_relativedelta
 from ..util import ti_get_seconds_from_relativedelta
@@ -375,28 +375,6 @@ class StatAnalysisWrapper(CommandBuilder):
                 formatted_items.append(item)
 
         return formatted_items
-
-    @staticmethod
-    def list_to_str(list_of_values, add_quotes=True):
-        """! Turn a list of values into a single string so it can be
-             set to an environment variable and read by the MET
-             stat_analysis config file.
-
-        @param list_of_values list of values, i.e. ['value1', 'value2']
-        @param add_quotes if True, add quotation marks around values,
-         default is True
-
-        @returns string created from list_of_values with the values separated
-          by commas, i.e. '"value1", "value2"'  or 1, 3 if add_quotes is False
-        """
-        # return empty string if list is empty
-        if not list_of_values:
-            return ''
-
-        if add_quotes:
-            return '"' + '", "'.join(list_of_values) + '"'
-
-        return ', '.join(list_of_values)
 
     @staticmethod
     def _format_time_list(string_value, get_met_format, sort_list=True):
@@ -1291,7 +1269,7 @@ class StatAnalysisWrapper(CommandBuilder):
         """
         lookin_dirs = []
         model_list = []
-        reference_list = []
+        ref_list = []
         obtype_list = []
         dump_row_filename_list = []
         # get list of models to process
@@ -1305,7 +1283,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 continue
 
             model_list.append(model_info['name'])
-            reference_list.append(model_info['reference_name'])
+            ref_list.append(model_info['reference_name'])
             obtype_list.append(model_info['obtype'])
             dump_row_filename_list.append(
                 model_info['dump_row_filename_template']
@@ -1331,11 +1309,9 @@ class StatAnalysisWrapper(CommandBuilder):
             return None
 
         # set values in runtime settings dict for model and obtype
-        runtime_settings_dict['MODEL'] = self.list_to_str(model_list)
-        runtime_settings_dict['MODEL_REFERENCE_NAME'] = (
-            self.list_to_str(reference_list)
-        )
-        runtime_settings_dict['OBTYPE'] = self.list_to_str(obtype_list)
+        runtime_settings_dict['MODEL'] = list_to_str(model_list)
+        runtime_settings_dict['MODEL_REFERENCE_NAME'] = list_to_str(ref_list)
+        runtime_settings_dict['OBTYPE'] = list_to_str(obtype_list)
 
         # return last model info dict used
         return model_info

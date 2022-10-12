@@ -148,3 +148,21 @@ def test_getlist_int():
 @pytest.mark.util
 def test_getlist_begin_end_incr(list_string, output_list):
     assert getlist(list_string) == output_list
+
+
+@pytest.mark.parametrize(
+    'input, add_quotes, expected_output', [
+        (['a', 'b', 'c'], None, '"a", "b", "c"'),
+        (['0', '1', '2'], None, '"0", "1", "2"'),
+        (['a', 'b', 'c'], True, '"a", "b", "c"'),
+        (['0', '1', '2'], True, '"0", "1", "2"'),
+        (['a', 'b', 'c'], False, 'a, b, c'),
+        (['0', '1', '2'], False, '0, 1, 2'),
+    ]
+)
+@pytest.mark.util
+def test_list_to_str(input, add_quotes, expected_output):
+    if add_quotes is None:
+        assert list_to_str(input) == expected_output
+    else:
+        assert list_to_str(input, add_quotes=add_quotes) == expected_output

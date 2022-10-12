@@ -7,6 +7,7 @@ Description: METplus utility to handle string manipulation
 import re
 from csv import reader
 
+
 def remove_quotes(input_string):
     """!Remove quotes from string"""
     if not input_string:
@@ -14,6 +15,7 @@ def remove_quotes(input_string):
 
     # strip off double and single quotes
     return input_string.strip('"').strip("'")
+
 
 def getlist(list_str, expand_begin_end_incr=True):
     """! Returns a list of string elements from a comma
@@ -60,6 +62,7 @@ def getlist(list_str, expand_begin_end_incr=True):
 
     return item_list
 
+
 def getlistint(list_str):
     """! Get list and convert all values to int
 
@@ -88,6 +91,7 @@ def _handle_begin_end_incr(list_str):
 
     return list_str
 
+
 def _begin_end_incr_findall(list_str):
     """! Find all instances of begin_end_incr in list string
 
@@ -105,6 +109,7 @@ def _begin_end_incr_findall(list_str):
         r"([^,]*begin_end_incr\(\s*-?\d*,-?\d*,-*\d*,?\d*\s*\)[^,]*)",
         list_str
     )
+
 
 def _begin_end_incr_evaluate(item):
     """! Expand begin_end_incr() items into a list of values
@@ -142,6 +147,7 @@ def _begin_end_incr_evaluate(item):
         return out_list
 
     return None
+
 
 def _fix_list(item_list):
     """! The logic that calls this function may have incorrectly split up
@@ -182,3 +188,23 @@ def _fix_list(item_list):
             out_list.append(item)
 
     return out_list
+
+
+def list_to_str(list_of_values, add_quotes=True):
+    """! Turn a list of values into a single string
+
+    @param list_of_values list of values, i.e. ['value1', 'value2']
+    @param add_quotes if True, add quotation marks around values,
+     default is True
+
+    @returns string created from list_of_values with the values separated
+      by commas, i.e. '"value1", "value2"'  or 1, 3 if add_quotes is False
+    """
+    # return empty string if list is empty
+    if not list_of_values:
+        return ''
+
+    if add_quotes:
+        return '"' + '", "'.join(list_of_values) + '"'
+
+    return ', '.join(list_of_values)

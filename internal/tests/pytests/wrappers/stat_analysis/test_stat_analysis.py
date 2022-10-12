@@ -241,22 +241,6 @@ def test_create_c_dict(metplus_config):
 
 
 @pytest.mark.wrapper_d
-def test_list_to_str(metplus_config):
-    # Independently test that a list of strings
-    # are being converted to a one
-    # string list correctly
-    st = stat_analysis_wrapper(metplus_config)
-    # Test 1
-    expected_list = '"a", "b", "c"'
-    test_list = st.list_to_str(['a', 'b', 'c'])
-    assert expected_list == test_list
-    # Test 2
-    expected_list = '"0", "1", "2"'
-    test_list = st.list_to_str(['0', '1', '2'])
-    assert expected_list == test_list
-
-
-@pytest.mark.wrapper_d
 def test_set_lists_as_loop_or_group(metplus_config):
     # Independently test that the lists that are set
     # in the config file are being set 
