@@ -480,29 +480,25 @@ def test_build_stringsub_dict(metplus_config, lists_to_loop, c_dict_overrides,
 
 
 @pytest.mark.parametrize(
-    'filename_template, output_type, filename_type,expected_output', [
+    'filename_template, output_type, expected_output', [
         (('{fcst_valid_hour?fmt=%H}Z/{model?fmt=%s}/'
           '{model?fmt=%s}_{valid?fmt=%Y%m%d}.stat'),
-         'dump_row', 'user', '00Z/MODEL_TEST/MODEL_TEST_20190101.stat'),
+         'dump_row', '00Z/MODEL_TEST/MODEL_TEST_20190101.stat'),
         (('{model?fmt=%s}_{obtype?fmt=%s}_valid{valid?fmt=%Y%m%d}_'
           'fcstvalidhour000000Z_dump_row.stat'),
-         'dump_row', 'user', ('MODEL_TEST_MODEL_TEST_ANL_valid20190101_'
-                              'fcstvalidhour000000Z_dump_row.stat')
+         'dump_row', ('MODEL_TEST_MODEL_TEST_ANL_valid20190101_'
+                      'fcstvalidhour000000Z_dump_row.stat')
         ),
         (('{model?fmt=%s}_{obtype?fmt=%s}_valid{valid?fmt=%Y%m%d}'
           '{valid_hour?fmt=%H}_init{fcst_init_hour?fmt=%s}.stat'),
-         'out_stat', 'user', ('MODEL_TEST_MODEL_TEST_ANL_valid2019010100'
-                              '_init000000_060000_120000_180000.stat')
-         ),
-        ('{model?fmt=%s}_{obtype?fmt=%s}',
-         'out_stat', 'default', ('MODEL_TEST_MODEL_TEST_ANLvalid20190101'
-                                 '_fcstvalidhour000000Z_out_stat.stat')
+         'out_stat', ('MODEL_TEST_MODEL_TEST_ANL_valid2019010100'
+                      '_init000000_060000_120000_180000.stat')
          ),
     ]
 )
 @pytest.mark.wrapper_d
 def test_get_output_filename(metplus_config, filename_template, output_type,
-                             filename_type, expected_output):
+                             expected_output):
     # Independently test the building of
     # the output file name 
     # using string template substitution
@@ -517,12 +513,8 @@ def test_get_output_filename(metplus_config, filename_template, output_type,
     st.c_dict['DATE_END'] = datetime.datetime.strptime('20190101', '%Y%m%d')
     st.c_dict['DATE_TYPE'] = 'VALID'
 
-    lists_to_loop = ['FCST_VALID_HOUR_LIST', 'MODEL_LIST']
-
     test_output_filename = st.get_output_filename(output_type,
                                                   filename_template,
-                                                  filename_type,
-                                                  lists_to_loop,
                                                   config_dict)
     assert expected_output == test_output_filename
 

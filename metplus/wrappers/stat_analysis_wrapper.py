@@ -797,64 +797,19 @@ class StatAnalysisWrapper(CommandBuilder):
                     sub_dict[f'{date_prefix}_end'] - min_lead
             )
 
-    def get_output_filename(self, output_type, filename_template,
-                            filename_type, lists_to_loop, config_dict):
+    def get_output_filename(self, output_type, filename_template, config_dict):
         """! Create a file name for stat_analysis output.
 
         @param output_type string for the type of stat_analysis output, either
-        dump_row, out_stat, or output. Only used if filename_type is default.
+        dump_row, out_stat, or output.
         @param filename_template string of the template to create the file
-         name. Info from the loop list items are appended to the template if
-         filename_type is default.
-        @param filename_type string of the source of the template being used,
-         either default or user.
-        @param lists_to_loop list of all the list names whose items are being
-         grouped together
+         name.
         @param config_dict dictionary containing the configuration information
         @returns string of the filled file name template
         """
-        date_beg = self.c_dict['DATE_BEG']
-        date_end = self.c_dict['DATE_END']
-        date_type = self.c_dict['DATE_TYPE']
-
         stringsub_dict = self.build_stringsub_dict(config_dict)
-
-        # if template was not specified by user, build template from values
-        if filename_type == 'default':
-
-            if date_beg == date_end:
-                filename_template = (
-                    filename_template+date_type.lower()+date_beg
-                )
-            else:
-                filename_template = (
-                    filename_template+date_type.lower()+
-                    date_beg+'to'+date_end
-                )
-            for loop_list in lists_to_loop:
-                # don't format MODEL because it is already in default template
-                if loop_list == 'MODEL_LIST':
-                    continue
-
-                list_name = loop_list.replace('_LIST', '')
-                filename_template += (
-                    f"_{list_name.replace('_', '').lower()}"
-                )
-                # if add value without formatting if not HOUR variable
-                if 'HOUR' not in list_name:
-                    filename_template += (
-                        config_dict[list_name].replace('"', '')
-                    )
-                    continue
-
-                # get first hour in MET time fmt (HHMMSS) and add with Z
-                value = self._get_met_time_list(config_dict[list_name])[0]
-                filename_template += value+'Z'
-
-            filename_template += '_' + output_type + '.stat'
-
         self.logger.debug(f"Building {output_type} filename from "
-                          f"{filename_type} template: {filename_template}")
+                          f"template: {filename_template}")
 
         output_filename = do_string_sub(filename_template,
                                         **stringsub_dict)
@@ -1043,8 +998,6 @@ class StatAnalysisWrapper(CommandBuilder):
         output_filename = (
             self.get_output_filename(job_type,
                                      output_template,
-                                     filename_type,
-                                     lists_to_loop_items,
                                      runtime_settings_dict)
         )
         output_file = os.path.join(self.c_dict['OUTPUT_DIR'],
@@ -1085,8 +1038,6 @@ class StatAnalysisWrapper(CommandBuilder):
                 output_filename = (
                     self.get_output_filename('output',
                                              self.c_dict['OUTPUT_TEMPLATE'],
-                                             'user',
-                                             self.c_dict['LOOP_LIST_ITEMS'],
                                              runtime_settings)
                 )
                 output_file = os.path.join(self.c_dict['OUTPUT_DIR'],
