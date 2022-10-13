@@ -12,7 +12,7 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 import glob
-import datetime
+from datetime import datetime
 import itertools
 from dateutil.relativedelta import relativedelta
 
@@ -182,8 +182,8 @@ class StatAnalysisWrapper(CommandBuilder):
             self.log_error('Could not get start and end times. '
                            'VALID_BEG/END or INIT_BEG/END must be set.')
         else:
-            c_dict['DATE_BEG'] = start_dt.strftime('%Y%m%d')
-            c_dict['DATE_END'] = end_dt.strftime('%Y%m%d')
+            c_dict['DATE_BEG'] = start_dt
+            c_dict['DATE_END'] = end_dt
 
         # read jobs from STAT_ANALYSIS_JOB<n> or legacy JOB_NAME/ARGS if unset
         c_dict['JOBS'] = self._read_jobs_from_config()
@@ -669,30 +669,30 @@ class StatAnalysisWrapper(CommandBuilder):
         date_end = self.c_dict['DATE_END']
         prefix = f"{fcst_or_obs}_{self.c_dict['DATE_TYPE'].lower()}"
 
+        # get YYYYMMDD of begin and end time
+        beg_ymd = datetime.strptime(date_beg.strftime('%Y%m%d'), '%Y%m%d')
+        end_ymd = datetime.strptime(date_end.strftime('%Y%m%d'), '%Y%m%d')
+
+        # if hour list is provided, truncate begin and end time to YYYYMMDD
+        # and add first hour offset to begin time and last hour to end time
         if hour_list:
-            sub_dict[f'{prefix}_beg'] = (
-                datetime.datetime.strptime(date_beg, '%Y%m%d') + hour_list[0]
-            )
-            sub_dict[f'{prefix}_end'] = (
-                datetime.datetime.strptime(date_end, '%Y%m%d') + hour_list[-1]
-            )
+            sub_dict[f'{prefix}_beg'] = beg_ymd + hour_list[0]
+            sub_dict[f'{prefix}_end'] = end_ymd + hour_list[-1]
             if sub_dict[f'{prefix}_beg'] == sub_dict[f'{prefix}_end']:
                 sub_dict[prefix] = sub_dict[f'{prefix}_beg']
 
             return
 
-        # if fcst hour list is not set, use date beg 000000-235959 as
-        # fcst_{date_type}_beg/end
-        sub_dict[f'{prefix}_beg'] = (
-            datetime.datetime.strptime(
-                date_beg + '000000', '%Y%m%d%H%M%S'
-            )
-        )
-        sub_dict[f'{prefix}_end'] = (
-            datetime.datetime.strptime(
-                date_end + '235959', '%Y%m%d%H%M%S'
-            )
-        )
+        sub_dict[f'{prefix}_beg'] = date_beg
+
+        # if end time is only YYYYMMDD, set HHMMSS to 23:59:59
+        # otherwise use HHMMSS from end time
+        if date_end == end_ymd:
+            sub_dict[f'{prefix}_end'] = end_ymd + relativedelta(hours=+23,
+                                                                minutes=+59,
+                                                                seconds=+59)
+        else:
+            sub_dict[f'{prefix}_end'] = date_end
 
     @staticmethod
     def _set_stringsub_generic(sub_dict, fcst_hour_list, obs_hour_list,
@@ -915,15 +915,26 @@ class StatAnalysisWrapper(CommandBuilder):
         date_beg = self.c_dict['DATE_BEG']
         date_end = self.c_dict['DATE_END']
 
+        ymd = '%Y%m%d'
+        ymd_hms = '%Y%m%d_%H%M%S'
+
+        # get YYYYMMDD of begin and end time
+        beg_ymd = date_beg.strftime(ymd)
+        end_ymd = date_end.strftime(ymd)
+
         prefix = f'{fcst_or_obs}_{init_or_valid}'
         hour_list = config_dict[f'{prefix}_HOUR'].split(', ')
 
         # if hour list is not set
         if not hour_list or (len(hour_list) == 1 and hour_list == ['']):
             if date_type == init_or_valid:
-                config_dict[f'{prefix}_BEG'] = f'{date_beg}_000000'
-                config_dict[f'{prefix}_END'] = f'{date_end}_235959'
+                config_dict[f'{prefix}_BEG'] = date_beg.strftime(ymd_hms)
 
+                # if end time is only YYYYMMDD, set HHHMMSS to 23:59:59
+                if date_end == datetime.strptime(end_ymd, ymd):
+                    config_dict[f'{prefix}_END'] = f'{end_ymd}_235959'
+                else:
+                    config_dict[f'{prefix}_END'] = date_end.strftime(ymd_hms)
             return
 
         # if multiple hours are specified
@@ -931,8 +942,8 @@ class StatAnalysisWrapper(CommandBuilder):
             if date_type == init_or_valid:
                 hour_beg = hour_list[0].replace('"', '')
                 hour_end = hour_list[-1].replace('"', '')
-                config_dict[f'{prefix}_BEG'] = str(date_beg)+'_'+hour_beg
-                config_dict[f'{prefix}_END'] = str(date_end)+'_'+hour_end
+                config_dict[f'{prefix}_BEG'] = f'{beg_ymd}_{hour_beg}'
+                config_dict[f'{prefix}_END'] = f'{end_ymd}_{hour_end}'
 
             return
 
@@ -940,8 +951,8 @@ class StatAnalysisWrapper(CommandBuilder):
         hour_now = hour_list[0].replace('"', '')
         config_dict[f'{prefix}_HOUR'] = '"'+hour_now+'"'
         if date_type == init_or_valid:
-            config_dict[f'{prefix}_BEG'] = str(date_beg)+'_'+hour_now
-            config_dict[f'{prefix}_END'] = str(date_end)+'_'+hour_now
+            config_dict[f'{prefix}_BEG'] = f'{beg_ymd}_{hour_now}'
+            config_dict[f'{prefix}_END'] = f'{end_ymd}_{hour_now}'
 
     def parse_model_info(self):
         """! Parse for model information.

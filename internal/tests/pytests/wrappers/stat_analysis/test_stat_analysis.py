@@ -459,7 +459,10 @@ def test_build_stringsub_dict(metplus_config, lists_to_loop, c_dict_overrides,
 
     # Test 1
     for key, value in c_dict_overrides.items():
-        st.c_dict[key] = value
+        if key in ('DATE_BEG', 'DATE_END'):
+            st.c_dict[key] = datetime.datetime.strptime(value, '%Y%m%d')
+        else:
+            st.c_dict[key] = value
 
     for key, value in config_dict_overrides.items():
         config_dict[key] = value
@@ -510,8 +513,8 @@ def test_get_output_filename(metplus_config, filename_template, output_type,
     config_dict['FCST_VALID_HOUR'] = '0'
     config_dict['FCST_INIT_HOUR'] = '0, 6, 12, 18'
 
-    st.c_dict['DATE_BEG'] = '20190101'
-    st.c_dict['DATE_END'] = '20190101'
+    st.c_dict['DATE_BEG'] = datetime.datetime.strptime('20190101', '%Y%m%d')
+    st.c_dict['DATE_END'] = datetime.datetime.strptime('20190101', '%Y%m%d')
     st.c_dict['DATE_TYPE'] = 'VALID'
 
     lists_to_loop = ['FCST_VALID_HOUR_LIST', 'MODEL_LIST']
@@ -557,8 +560,8 @@ def test_get_lookin_dir(metplus_config):
     config_dict['OBS_VALID_HOUR'] = ''
     config_dict['ALPHA'] = ''
     config_dict['OBS_LEVEL'] = ''
-    st.c_dict['DATE_BEG'] = '20180201'
-    st.c_dict['DATE_END'] = '20180201'
+    st.c_dict['DATE_BEG'] = datetime.datetime.strptime('20180201', '%Y%m%d')
+    st.c_dict['DATE_END'] = datetime.datetime.strptime('20180201', '%Y%m%d')
     st.c_dict['DATE_TYPE'] = 'VALID'
 
     lists_to_group = ['FCST_INIT_HOUR_LIST', 'DESC_LIST', 'FCST_LEAD_LIST',
@@ -671,7 +674,10 @@ def test_format_valid_init(metplus_config, c_dict_overrides,
     st = stat_analysis_wrapper(metplus_config)
 
     for key, value in c_dict_overrides.items():
-        st.c_dict[key] = value
+        if key in ('DATE_BEG', 'DATE_END'):
+            st.c_dict[key] = datetime.datetime.strptime(value, '%Y%m%d')
+        else:
+            st.c_dict[key] = value
 
     config_dict = {}
     for key, value in config_dict_overrides.items():
@@ -732,8 +738,8 @@ def test_run_stat_analysis(metplus_config):
         os.remove(expected_filename)
     comparison_filename = (METPLUS_BASE+'/internal/tests/data/stat_data/'
                            +'test_20190101.stat') 
-    st.c_dict['DATE_BEG'] = '20190101'
-    st.c_dict['DATE_END'] = '20190101'
+    st.c_dict['DATE_BEG'] = datetime.datetime.strptime('20190101', '%Y%m%d')
+    st.c_dict['DATE_END'] = datetime.datetime.strptime('20190101', '%Y%m%d')
     st.c_dict['DATE_TYPE'] = 'VALID'
     st.run_stat_analysis()
     assert os.path.exists(expected_filename)
