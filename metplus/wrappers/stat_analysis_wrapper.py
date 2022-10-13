@@ -216,12 +216,12 @@ class StatAnalysisWrapper(CommandBuilder):
         self.run_stat_analysis()
         return self.all_commands
 
-    def run_at_time(self, input_dict):
-        loop_by = self.c_dict['DATE_TYPE']
-        run_date = input_dict[loop_by.lower()].strftime('%Y%m%d')
-        self.c_dict['DATE_BEG'] = run_date
-        self.c_dict['DATE_END'] = run_date
-        self.run_stat_analysis()
+    # def run_at_time(self, input_dict):
+    #     loop_by = self.c_dict['DATE_TYPE']
+    #     run_date = input_dict[loop_by.lower()].strftime('%Y%m%d')
+    #     self.c_dict['DATE_BEG'] = run_date
+    #     self.c_dict['DATE_END'] = run_date
+    #     self.run_stat_analysis()
 
     def _read_jobs_from_config(self):
         jobs = []
