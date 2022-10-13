@@ -23,6 +23,7 @@ from ..util import parse_var_list, remove_quotes, list_to_str
 from ..util import get_start_and_end_times
 from ..util import time_string_to_met_time, get_relativedelta
 from ..util import ti_get_seconds_from_relativedelta
+from ..util import YMD, YMD_HMS
 from . import CommandBuilder
 
 class StatAnalysisWrapper(CommandBuilder):
@@ -218,7 +219,7 @@ class StatAnalysisWrapper(CommandBuilder):
 
     # def run_at_time(self, input_dict):
     #     loop_by = self.c_dict['DATE_TYPE']
-    #     run_date = input_dict[loop_by.lower()].strftime('%Y%m%d')
+    #     run_date = input_dict[loop_by.lower()].strftime(YMD)
     #     self.c_dict['DATE_BEG'] = run_date
     #     self.c_dict['DATE_END'] = run_date
     #     self.run_stat_analysis()
@@ -670,8 +671,8 @@ class StatAnalysisWrapper(CommandBuilder):
         prefix = f"{fcst_or_obs}_{self.c_dict['DATE_TYPE'].lower()}"
 
         # get YYYYMMDD of begin and end time
-        beg_ymd = datetime.strptime(date_beg.strftime('%Y%m%d'), '%Y%m%d')
-        end_ymd = datetime.strptime(date_end.strftime('%Y%m%d'), '%Y%m%d')
+        beg_ymd = datetime.strptime(date_beg.strftime(YMD), YMD)
+        end_ymd = datetime.strptime(date_end.strftime(YMD), YMD)
 
         # if hour list is provided, truncate begin and end time to YYYYMMDD
         # and add first hour offset to begin time and last hour to end time
@@ -870,12 +871,9 @@ class StatAnalysisWrapper(CommandBuilder):
         date_beg = self.c_dict['DATE_BEG']
         date_end = self.c_dict['DATE_END']
 
-        ymd = '%Y%m%d'
-        ymd_hms = '%Y%m%d_%H%M%S'
-
         # get YYYYMMDD of begin and end time
-        beg_ymd = date_beg.strftime(ymd)
-        end_ymd = date_end.strftime(ymd)
+        beg_ymd = date_beg.strftime(YMD)
+        end_ymd = date_end.strftime(YMD)
 
         prefix = f'{fcst_or_obs}_{init_or_valid}'
         hour_list = config_dict[f'{prefix}_HOUR'].split(', ')
@@ -883,13 +881,13 @@ class StatAnalysisWrapper(CommandBuilder):
         # if hour list is not set
         if not hour_list or (len(hour_list) == 1 and hour_list == ['']):
             if date_type == init_or_valid:
-                config_dict[f'{prefix}_BEG'] = date_beg.strftime(ymd_hms)
+                config_dict[f'{prefix}_BEG'] = date_beg.strftime(YMD_HMS)
 
                 # if end time is only YYYYMMDD, set HHHMMSS to 23:59:59
-                if date_end == datetime.strptime(end_ymd, ymd):
+                if date_end == datetime.strptime(end_ymd, YMD):
                     config_dict[f'{prefix}_END'] = f'{end_ymd}_235959'
                 else:
-                    config_dict[f'{prefix}_END'] = date_end.strftime(ymd_hms)
+                    config_dict[f'{prefix}_END'] = date_end.strftime(YMD_HMS)
             return
 
         # if multiple hours are specified
