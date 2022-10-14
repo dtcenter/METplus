@@ -59,6 +59,73 @@ def _set_config_dict_values():
     return config_dict
 
 
+def set_minimum_config_settings(config):
+    # set config variables to prevent command from running and bypass check
+    # if input files actually exist
+    config.set('config', 'DO_NOT_RUN_EXE', True)
+    config.set('config', 'INPUT_MUST_EXIST', False)
+
+    # set process and time config variables
+    config.set('config', 'PROCESS_LIST', 'StatAnalysis')
+    config.set('config', 'LOOP_BY', 'INIT')
+    config.set('config', 'INIT_TIME_FMT', '%Y%m%d')
+    config.set('config', 'INIT_BEG', '20221014')
+    config.set('config', 'INIT_END', '20221014')
+    config.set('config', 'STAT_ANALYSIS_OUTPUT_DIR',
+               '{OUTPUT_BASE}/StatAnalysis/output')
+    config.set('config', 'STAT_ANALYSIS_OUTPUT_TEMPLATE',
+               '{valid?fmt=%Y%m%d%H}')
+    config.set('config', 'GROUP_LIST_ITEMS', 'DESC_LIST')
+    config.set('config', 'LOOP_LIST_ITEMS', 'MODEL_LIST')
+    config.set('config', 'MODEL_LIST', 'MODEL1')
+    config.set('config', 'STAT_ANALYSIS_JOB1', '-job filter')
+    config.set('config', 'MODEL1', 'MODEL_A')
+    config.set('config', 'MODEL1_OBTYPE', 'OBTYPE_A')
+    config.set('config', 'MODEL1_STAT_ANALYSIS_LOOKIN_DIR', '/some/lookin/dir')
+
+    # not required, can be unset for certain tests
+    config.set('config', 'STAT_ANALYSIS_CONFIG_FILE',
+               '{PARM_BASE}/met_config/STATAnalysisConfig_wrapped')
+
+
+@pytest.mark.parametrize(
+    'config_overrides, expected_result', [
+        ({}, True),
+        ({'STAT_ANALYSIS_JOB1': '-job filter -dump_row [dump_row_file]'},
+         False),
+        ({'STAT_ANALYSIS_JOB1': '-job filter -dump_row [dump_row_file]',
+          'MODEL1_STAT_ANALYSIS_DUMP_ROW_TEMPLATE': 'some/template'},
+         True),
+        ({'STAT_ANALYSIS_JOB1': '-job filter -out_stat [out_stat_file]'},
+         False),
+        ({'STAT_ANALYSIS_JOB1': '-job filter -out_stat [out_stat_file]',
+          'MODEL1_STAT_ANALYSIS_OUT_STAT_TEMPLATE': 'some/template'},
+         True),
+        ({'STAT_ANALYSIS_JOB1': '-job filter -dump_row [dump_row_file]',
+          'STAT_ANALYSIS_JOB2': '-job filter -out_stat [out_stat_file]',
+          'MODEL1_STAT_ANALYSIS_DUMP_ROW_TEMPLATE': 'some/template'},
+         False),
+        ({'STAT_ANALYSIS_JOB1': '-job filter -dump_row [dump_row_file]',
+          'STAT_ANALYSIS_JOB2': '-job filter -out_stat [out_stat_file]',
+          'MODEL1_STAT_ANALYSIS_DUMP_ROW_TEMPLATE': 'some/template',
+          'MODEL1_STAT_ANALYSIS_OUT_STAT_TEMPLATE': 'some/template'},
+         True),
+    ]
+)
+@pytest.mark.wrapper_d
+def test_check_required_job_template(metplus_config, config_overrides,
+                                     expected_result):
+    config = metplus_config()
+    set_minimum_config_settings(config)
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    wrapper = StatAnalysisWrapper(config)
+    print(wrapper.c_dict['JOBS'])
+    print(wrapper.c_dict['MODEL_INFO_LIST'])
+    assert wrapper.isOK == expected_result
+
+
 @pytest.mark.parametrize(
     'c_dict, expected_result', [
       # 0
@@ -713,10 +780,10 @@ def test_parse_model_info(metplus_config):
     assert test_model_info_list[0]['name'] == expected_name
     assert test_model_info_list[0]['reference_name'] == expected_reference_name
     assert test_model_info_list[0]['obtype'] == expected_obtype
-    assert test_model_info_list[0]['dump_row_filename_template'] == expected_dump_row_filename_template
-    assert test_model_info_list[0]['dump_row_filename_type'] == expected_dump_row_filename_type
-    assert test_model_info_list[0]['out_stat_filename_template'] == expected_out_stat_filename_template
-    assert test_model_info_list[0]['out_stat_filename_type'] == expected_out_stat_filename_type
+    assert (test_model_info_list[0]['dump_row_filename_template'] ==
+            expected_dump_row_filename_template)
+    assert (test_model_info_list[0]['out_stat_filename_template']
+            == expected_out_stat_filename_template)
 
 
 @pytest.mark.wrapper_d

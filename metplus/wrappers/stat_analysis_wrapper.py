@@ -235,11 +235,15 @@ class StatAnalysisWrapper(CommandBuilder):
         if job_indices:
             for j_id in job_indices:
                 job = self.config.getraw('config', f'STAT_ANALYSIS_JOB{j_id}')
-                jobs.append(job)
-        else:
+                if job:
+                    jobs.append(job)
+
+        # if not jobs found, check for old _JOB_NAME and _JOB_ARGS variables
+        if not jobs:
             job_name = self.config.getraw('config', 'STAT_ANALYSIS_JOB_NAME')
             job_args = self.config.getraw('config', 'STAT_ANALYSIS_JOB_ARGS')
-            jobs.append(f'-job {job_name} {job_args}')
+            if job_name and job_args:
+                jobs.append(f'-job {job_name} {job_args}')
 
         return jobs
 
@@ -265,6 +269,22 @@ class StatAnalysisWrapper(CommandBuilder):
             self.log_error(
                 "Must set at least one job with STAT_ANALYSIS_JOB<n>"
             )
+        else:
+            # check if [dump_row_file] or [out_stat_file] are in any job
+            for job in c_dict['JOBS']:
+                for check in ('dump_row_file', 'out_stat_file'):
+                    if f'[{check}]' not in job:
+                        continue
+                    for model in c_dict['MODEL_INFO_LIST']:
+                        if model[f'{check}name_template']:
+                            continue
+                        conf = check.replace('_file', '').upper()
+                        conf = f"STAT_ANALYSIS_{conf}_TEMPLATE"
+                        self.log_error(f'Must set {conf} if [{check}] is used'
+                                       ' in a job')
+            # error if they are found but their templates are not set
+
+
 
         for conf_list in self.LIST_CATEGORIES:
             if not c_dict[conf_list]:
@@ -933,7 +953,7 @@ class StatAnalysisWrapper(CommandBuilder):
                                f"set if MODEL{m} is set.")
                 return None, None
 
-            model_obtype = self.config.getstr('config', f'MODEL{m}_OBTYPE', '')
+            model_obtype = self.config.getraw('config', f'MODEL{m}_OBTYPE')
             if not model_obtype:
                 self.log_error(f"MODEL{m}_OBTYPE must be set "
                                f"if MODEL{m} is set.")
@@ -952,22 +972,10 @@ class StatAnalysisWrapper(CommandBuilder):
                         self.config.getraw('config', var_name)
                     )
 
-                if not model_filename_template:
-                    model_filename_template = '{model?fmt=%s}_{obtype?fmt=%s}_'
-                    model_filename_type = 'default'
-                else:
-                    model_filename_type = 'user'
-
                 if output_type == 'DUMP_ROW':
-                    model_dump_row_filename_template = (
-                        model_filename_template
-                    )
-                    model_dump_row_filename_type = model_filename_type
+                    model_dump_row_filename_template = model_filename_template
                 elif output_type == 'OUT_STAT':
-                    model_out_stat_filename_template = (
-                        model_filename_template
-                    )
-                    model_out_stat_filename_type = model_filename_type
+                    model_out_stat_filename_template = model_filename_template
 
             mod = {
                 'name': model_name,
@@ -975,22 +983,22 @@ class StatAnalysisWrapper(CommandBuilder):
                 'dir': model_dir,
                 'obtype': model_obtype,
                 'dump_row_filename_template': model_dump_row_filename_template,
-                'dump_row_filename_type': model_dump_row_filename_type,
                 'out_stat_filename_template': model_out_stat_filename_template,
-                'out_stat_filename_type': model_out_stat_filename_type,
             }
             model_info_list.append(mod)
+
+        if not model_info_list:
+            self.log_error('At least one set of model information must be '
+                           'set using MODEL<n>, MODEL<n>_OBTYPE, and '
+                           'MODEL<n>_STAT_ANALYSIS_LOOKIN_DIR')
 
         return model_info_list
 
     def process_job_args(self, job_type, job, model_info,
-                         lists_to_loop_items, runtime_settings_dict):
+                         runtime_settings_dict):
 
         output_template = (
             model_info[f'{job_type}_filename_template']
-        )
-        filename_type = (
-            model_info[f'{job_type}_filename_type']
         )
 
         output_filename = (
@@ -1027,8 +1035,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 return None
 
             runtime_settings['JOBS'] = (
-                self.get_job_info(model_info, runtime_settings,
-                                  self.c_dict['LOOP_LIST_ITEMS'])
+                self.get_job_info(model_info, runtime_settings)
             )
 
             # get -out argument if set
@@ -1276,7 +1283,7 @@ class StatAnalysisWrapper(CommandBuilder):
         # return last model info dict used
         return model_info
 
-    def get_job_info(self, model_info, runtime_settings_dict, loop_lists):
+    def get_job_info(self, model_info, runtime_settings_dict):
         """! Get job information and concatenate values into a string
 
         @params model_info model info to use to determine output file paths
@@ -1293,7 +1300,7 @@ class StatAnalysisWrapper(CommandBuilder):
                     continue
 
                 job = self.process_job_args(job_type, job, model_info,
-                                            loop_lists, runtime_settings_dict)
+                                            runtime_settings_dict)
 
             # substitute filename templates that may be found in rest of job
             job = do_string_sub(job, **stringsub_dict)
