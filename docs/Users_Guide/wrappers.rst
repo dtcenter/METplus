@@ -6789,7 +6789,6 @@ The following values **must** be defined in the METplus configuration file:
 | :term:`MODEL\<n\>`
 | :term:`MODEL<n>_OBTYPE`
 | :term:`MODEL<n>_STAT_ANALYSIS_LOOKIN_DIR`
-| :term:`MODEL<n>_REFERENCE_NAME`
 | :term:`GROUP_LIST_ITEMS`
 | :term:`LOOP_LIST_ITEMS`
 | :term:`MODEL_LIST`
@@ -6798,7 +6797,6 @@ The following values **must** be defined in the METplus configuration file:
 | :term:`LINE_TYPE_LIST`
 | :term:`STAT_ANALYSIS_JOB_NAME`
 | :term:`STAT_ANALYSIS_JOB_ARGS`
-| :term:`STAT_ANALYSIS_MET_CONFIG_OVERRIDES`
 |
 
 The following values are optional in the METplus configuration file:
@@ -6820,6 +6818,7 @@ The following values are optional in the METplus configuration file:
 | :term:`STAT_ANALYSIS_OUTPUT_TEMPLATE`
 | :term:`MODEL<n>_STAT_ANALYSIS_DUMP_ROW_TEMPLATE`
 | :term:`MODEL<n>_STAT_ANALYSIS_OUT_STAT_TEMPLATE`
+| :term:`STAT_ANALYSIS_MET_CONFIG_OVERRIDES`
 |
 
 .. warning:: **DEPRECATED:**

@@ -940,10 +940,10 @@ class StatAnalysisWrapper(CommandBuilder):
         )
         for m in model_indices:
             model_name = self.config.getraw('config', f'MODEL{m}')
-            model_reference_name = (
-                self.config.getraw('config', f'MODEL{m}_REFERENCE_NAME',
-                                   model_name)
-            )
+
+            # add quotes to model name if a value is set
+            model_name = f'"{model_name}"' if model_name else ''
+
             model_dir = (
                 self.config.getraw('config',
                                    f'MODEL{m}_STAT_ANALYSIS_LOOKIN_DIR')
@@ -954,10 +954,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 return None, None
 
             model_obtype = self.config.getraw('config', f'MODEL{m}_OBTYPE')
-            if not model_obtype:
-                self.log_error(f"MODEL{m}_OBTYPE must be set "
-                               f"if MODEL{m} is set.")
-                return None, None
+            model_obtype = f'"{model_obtype}"' if model_obtype else ''
 
             for output_type in ['DUMP_ROW', 'OUT_STAT']:
                 var_name = f'STAT_ANALYSIS_{output_type}_TEMPLATE'
@@ -979,7 +976,6 @@ class StatAnalysisWrapper(CommandBuilder):
 
             mod = {
                 'name': model_name,
-                'reference_name': model_reference_name,
                 'dir': model_dir,
                 'obtype': model_obtype,
                 'dump_row_filename_template': model_dump_row_filename_template,
@@ -1236,28 +1232,25 @@ class StatAnalysisWrapper(CommandBuilder):
         """
         lookin_dirs = []
         model_list = []
-        ref_list = []
         obtype_list = []
         dump_row_filename_list = []
         # get list of models to process
-        models_to_run = [
-            model.strip().replace('"', '')
-            for model in runtime_settings_dict['MODEL'].split(',')
-        ]
+        models_to_run = runtime_settings_dict['MODEL'].split(',')
         for model_info in self.c_dict['MODEL_INFO_LIST']:
             # skip model if not in list of models to process
             if model_info['name'] not in models_to_run:
                 continue
 
             model_list.append(model_info['name'])
-            ref_list.append(model_info['reference_name'])
-            obtype_list.append(model_info['obtype'])
+            if model_info['obtype']:
+                obtype_list.append(model_info['obtype'])
             dump_row_filename_list.append(
                 model_info['dump_row_filename_template']
             )
+
             # set MODEL and OBTYPE to single item to find lookin dir
-            runtime_settings_dict['MODEL'] = f'"{model_info["name"]}"'
-            runtime_settings_dict['OBTYPE'] = f'"{model_info["obtype"]}"'
+            runtime_settings_dict['MODEL'] = model_info["name"]
+            runtime_settings_dict['OBTYPE'] = model_info["obtype"]
 
             lookin_dirs.append(
                 self.get_lookin_dir(model_info['dir'], runtime_settings_dict)
@@ -1271,13 +1264,12 @@ class StatAnalysisWrapper(CommandBuilder):
             self.log_error("No value found for lookin dir")
             return None
 
-        if not model_list or not obtype_list:
-            self.log_error("Could not find model or obtype to process")
+        if not model_list:
+            self.log_error("Could not find model to process")
             return None
 
         # set values in runtime settings dict for model and obtype
         runtime_settings_dict['MODEL'] = list_to_str(model_list)
-        runtime_settings_dict['MODEL_REFERENCE_NAME'] = list_to_str(ref_list)
         runtime_settings_dict['OBTYPE'] = list_to_str(obtype_list)
 
         # return last model info dict used

@@ -80,7 +80,6 @@ def set_minimum_config_settings(config):
     config.set('config', 'MODEL_LIST', 'MODEL1')
     config.set('config', 'STAT_ANALYSIS_JOB1', '-job filter')
     config.set('config', 'MODEL1', 'MODEL_A')
-    config.set('config', 'MODEL1_OBTYPE', 'OBTYPE_A')
     config.set('config', 'MODEL1_STAT_ANALYSIS_LOOKIN_DIR', '/some/lookin/dir')
 
     # not required, can be unset for certain tests
@@ -760,9 +759,8 @@ def test_parse_model_info(metplus_config):
     # are as expected
     st = stat_analysis_wrapper(metplus_config)
     # Test 1
-    expected_name = 'MODEL_TEST'
-    expected_reference_name = 'MODELTEST'
-    expected_obtype = 'MODEL_TEST_ANL'
+    expected_name = '"MODEL_TEST"'
+    expected_obtype = '"MODEL_TEST_ANL"'
     expected_dump_row_filename_template = (
         '{fcst_valid_hour?fmt=%H}Z/MODEL_TEST/'
         +'MODEL_TEST_{valid?fmt=%Y%m%d}.stat'
@@ -778,7 +776,6 @@ def test_parse_model_info(metplus_config):
     expected_out_stat_filename_type = 'user'
     test_model_info_list = st.parse_model_info()
     assert test_model_info_list[0]['name'] == expected_name
-    assert test_model_info_list[0]['reference_name'] == expected_reference_name
     assert test_model_info_list[0]['obtype'] == expected_obtype
     assert (test_model_info_list[0]['dump_row_filename_template'] ==
             expected_dump_row_filename_template)

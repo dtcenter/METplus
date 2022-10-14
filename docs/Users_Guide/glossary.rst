@@ -2421,18 +2421,8 @@ METplus Configuration Glossary
 
      | *Used by:*  StatAnalysis
 
-   MODEL<n>_NAME_ON_PLOT
-     .. warning:: **DEPRECATED:** Please use :term:`MODEL<n>_REFERENCE_NAME` instead.
-
    MODEL<n>_REFERENCE_NAME
-     Define the name the first model will be listed as on the plots. There can be <n> number of models defined in configuration files, simply increment the "MODEL1" string to match the total number of models being used, e.g.:
-
-     | MODEL1_REFERENCE_NAME
-     | MODEL2_REFERENCE_NAME
-     | ...
-     | MODELN_REFERENCE_NAME
-
-     | *Used by:*  StatAnalysis
+     .. warning:: **DEPRECATED:** No longer used.
 
    MODEL<n>_OBS_NAME
      .. warning:: **DEPRECATED:** Please use :term:`MODEL<n>_OBTYPE` instead.
