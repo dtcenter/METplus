@@ -6925,9 +6925,9 @@ setting :term:`STAT_ANALYSIS_OUTPUT_TEMPLATE` and optionally
 Output files specified with the -dump_row or -out_stat arguments must be
 defined in a job using :term:`STAT_ANALYSIS_JOB\<n\>`.
 The [dump_row_file] keyword can be added to a job after the -dump_row argument
-only if a :term:`MODEL<n>_STAT_ANALYSIS_DUMP_ROW_TEMPLATE is set. Similarly,
+only if a :term:`MODEL<n>_STAT_ANALYSIS_DUMP_ROW_TEMPLATE` is set. Similarly,
 the [out_stat_file] keyword can be added to a job after the -out_stat argument
-only if a :term:`MODEL<n>_STAT_ANALYSIS_OUT_STAT_TEMPLATE is set.
+only if a :term:`MODEL<n>_STAT_ANALYSIS_OUT_STAT_TEMPLATE` is set.
 
 
 METplus Configuration
