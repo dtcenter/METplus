@@ -2198,18 +2198,23 @@ METplus Configuration Glossary
    JOB_ARGS
      .. warning:: **DEPRECATED:** Please use :term:`STAT_ANALYSIS_JOB_ARGS` instead.
 
-   STAT_ANALYSIS_JOB_ARGS
-     Specify stat_analysis job arguments to run. The job arguments that are to be run with the corresponding :term:`STAT_ANALYSIS_JOB_NAME`. If using -dump_row, use -dump_row [dump_row_filename]. If using -out_stat, -out_stat [out_stat_filename]. For more information on these job arguments, please see the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_.
+   STAT_ANALYSIS_JOB<n>
+     Specify StatAnalysis job arguments to run. Include the full set of job
+     arguments including the -job argument. Multiple jobs can be defined by
+     with STAT_ANALYSIS_JOB1, STAT_ANALYSIS_JOB2, etc.
+     Filename template tags can be used to insert values from a given run into
+     the job arguments. The keywords [dump_row_file] and [out_stat_file] can
+     be used and will be substituted with values from
+     :term:`MODEL<n>_STAT_ANALYSIS_DUMP_ROW_TEMPLATE` and
+     :term:`MODEL<n>_STAT_ANALYSIS_OUT_STAT_TEMPLATE` respectively.
 
      | *Used by:*  StatAnalysis
 
-   JOB_NAME
-     .. warning:: **DEPRECATED:** Please use :term:`STAT_ANALYSIS_JOB_NAME` instead.
+   STAT_ANALYSIS_JOB_ARGS
+     .. warning:: **DEPRECATED:** Please use :term:`STAT_ANALYSIS_JOB\<n\>` instead.
 
    STAT_ANALYSIS_JOB_NAME
-     Specify stat_analysis job name to run. Valid options are filter, summary, aggregate, aggregate_stat, go_index, and ramp. For more information on these job names and what they do, please see the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_.
-
-     | *Used by:*  StatAnalysis
+      .. warning:: **DEPRECATED:** Please use :term:`STAT_ANALYSIS_JOB\<n\>` instead.
 
    EXTRACT_TILES_LAT_ADJ
      Specify a latitude adjustment, in degrees to be used in the analysis. In the ExtractTiles wrapper, this corresponds to the 2m portion of the 2n x 2m subregion tile.
