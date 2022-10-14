@@ -6754,7 +6754,16 @@ loop over multiple run times. The StatAnalysis wrapper is designed to process
 a range of run times at once using filtering to subset what is processed.
 The VALID_BEG and VALID_END or INIT_BEG and INIT_END variables are used to
 calculate filtering criteria.
-The LEAD_SEQ variable that typically defines a list of forecast leads to
+
+Prior to v5.0.0, only the year, month, and day (YYYYMMDD) of the init/valid
+begin and end times were read by the wrapper. The hours, minutes, and seconds
+were ignored to be filtered using FCST_HOUR_LIST and OBS_HOUR_LIST.
+Now the full time information is read and to enable users to process a more
+specific range of time. To preserve the original behavior, end times that
+do not include hours, minutes, or seconds will process up to 23:59:59 on that
+day unless specific hours are defined with FCST_HOUR_LIST or OBS_HOUR_LIST.
+
+Note: The LEAD_SEQ variable that typically defines a list of forecast leads to
 process is not used by the wrapper. Instead the FCST_LEAD_LIST and
 OBS_LEAD_LIST are used to filter out forecast leads from the data.
 
