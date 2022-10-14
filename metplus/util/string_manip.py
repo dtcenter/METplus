@@ -205,6 +205,8 @@ def list_to_str(list_of_values, add_quotes=True):
         return ''
 
     if add_quotes:
-        return '"' + '", "'.join(list_of_values) + '"'
+        # remove any quotes that are already around items, then add quotes
+        values = [remove_quotes(item) for item in list_of_values]
+        return '"' + '", "'.join(values) + '"'
 
     return ', '.join(list_of_values)

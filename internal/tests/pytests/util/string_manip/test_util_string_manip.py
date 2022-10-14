@@ -158,6 +158,8 @@ def test_getlist_begin_end_incr(list_string, output_list):
         (['0', '1', '2'], True, '"0", "1", "2"'),
         (['a', 'b', 'c'], False, 'a, b, c'),
         (['0', '1', '2'], False, '0, 1, 2'),
+        (['"a"', '"b"', '"c"'], True, '"a", "b", "c"'),
+        (['"0"', '"1"', '"2"'], True, '"0", "1", "2"'),
     ]
 )
 @pytest.mark.util
