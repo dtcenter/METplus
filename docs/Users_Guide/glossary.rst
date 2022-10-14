@@ -2236,7 +2236,11 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`FCST_LEAD_LIST` instead.
 
    FCST_LEAD_LIST
-     Specify the values of the FSCT_LEAD column in the MET .stat file to use. Comma separated list format, e.g.: 00, 24, 48, 72, 96, 120
+     Specify the values of the FSCT_LEAD column in the MET .stat file to use.
+     Comma separated list format, e.g.: 00, 24, 48, 72, 96, 120
+     Groups of values can be looped over by setting FCST_LEAD_LIST<n> and
+     adding FCST_LEAD_LIST to :term:`LOOP_LIST_ITEMS`.
+     See :ref:`stat_analysis_wrapper` Description for more information.
 
      | *Used by:*  StatAnalysis
 
