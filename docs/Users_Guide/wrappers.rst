@@ -6746,6 +6746,9 @@ The StatAnalysis wrapper encapsulates the behavior of the MET
 stat_analysis tool. It provides the infrastructure to summarize and
 filter the MET .stat files.
 
+Timing
+^^^^^^
+
 This wrapper is configured differently than many of the other wrappers that
 loop over multiple run times. The StatAnalysis wrapper is designed to process
 a range of run times at once using filtering to subset what is processed.
@@ -6754,6 +6757,35 @@ calculate filtering criteria.
 The LEAD_SEQ variable that typically defines a list of forecast leads to
 process is not used by the wrapper. Instead the FCST_LEAD_LIST and
 OBS_LEAD_LIST are used to filter out forecast leads from the data.
+
+Optional MET Configuration File
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The wrapped MET config file specified with :term:`STAT_ANALYSIS_CONFIG_FILE` is
+optional in the StatAnalysis wrapper. Excluding this option will result in a
+call to stat_analysis with the job arguments added via the command line.
+Only 1 job can be defined in no wrapped MET configuration file is used.
+To use a configuration file, set the following in the METplus config file::
+
+    STAT_ANALYSIS_CONFIG_FILE = {PARM_BASE}/met_config/STATAnalysisConfig_wrapped
+
+Jobs
+^^^^
+
+The job arguments can be defined by setting :term:`STAT_ANALYSIS_JOB\<n\>`
+variables, e.g. STAT_ANALYSIS_JOB1. All of the job commands including the -job
+argument are set here.
+Prior to v5.0.0, the config variables STAT_ANALYSIS_JOB_NAME and
+STAT_ANALYSIS_JOB_ARGS were used to set the value following the -job argument
+and any other job arguments respectively.
+
+Multiple jobs can be defined as of v5.0.0 using
+STAT_ANALYSIS_JOB1, STAT_ANALYSIS_JOB2, etc. All jobs will be passed to each
+call to stat_analysis. Only 1 job can be specified if no MET config file is
+set with :term:`STAT_ANALYSIS_CONFIG_FILE`.
+
+Filtering with Lists
+^^^^^^^^^^^^^^^^^^^^
 
 There are many configuration variables that end with \_LIST that control
 settings in the STATAnalysisConfig_wrapped file.
@@ -6770,13 +6802,38 @@ or LOOP_LIST_ITEMS will be automatically added to GROUP_LIST_ITEMS. Lists
 defined in LOOP_LIST_ITEMS that are empty lists will be automatically moved
 to GROUP_LIST_ITEMS.
 
-Output files: -dump_row, -out_stat, and -out
+.. _stat-analysis-looping-groups:
 
-Config file optional
+Looping Over Groups of Lists
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-New in v5.0.0: Multiple jobs
+New in v5.0.0 is the ability to define groups of list items that can be looped
+over. For example, a user may want to process forecast leads 1-3 in a
+single run, then process forecast leads 4-6 in the next. To accomplish this,
+define each group of items in a separate config variable ending with a number.
+Then add the name of the list (without the numbers) to LOOP_LIST_ITEMS::
 
-New in v5.0.0: Looping over groups of list items
+    [config]
+    FCST_LEAD_LIST1 = 1,2,3
+    FCST_LEAD_LIST2 = 4,5,6
+    LOOP_LIST_ITEMS = FCST_LEAD_LIST
+
+If FCST_LEAD_LIST was added to GROUP_LIST_ITEMS instead, then all 6 items
+defined in the 2 lists will be combined and passed to the tool at once.
+
+Outputs
+^^^^^^^
+
+This wrapper can be configured to write 3 types of output files.
+Output files specified with the -out command line argument can be defined by
+setting :term:`STAT_ANALYSIS_OUTPUT_TEMPLATE` and optionally
+:term:`STAT_ANALYSIS_OUTPUT_DIR`.
+Output files specified with the -dump_row or -out_stat arguments must be
+defined in a job using :term:`STAT_ANALYSIS_JOB\<n\>`.
+The [dump_row_file] keyword can be added to a job after the -dump_row argument
+only if a :term:`MODEL<n>_STAT_ANALYSIS_DUMP_ROW_TEMPLATE is set. Similarly,
+the [out_stat_file] keyword can be added to a job after the -out_stat argument
+only if a :term:`MODEL<n>_STAT_ANALYSIS_OUT_STAT_TEMPLATE is set.
 
 
 METplus Configuration

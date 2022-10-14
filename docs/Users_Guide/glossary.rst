@@ -875,12 +875,22 @@ METplus Configuration Glossary
      | *Used by:*  TCMPRPlotter
 
    DESC_LIST
-     A single value or list of values used in the stat_analysis data stratification. Specifies the values of the DESC column in the MET .stat file to use.
+     A single value or list of values used in the stat_analysis data
+     stratification.
+     Specifies the values of the DESC column in the MET .stat file to use.
+
+     Groups of values can be looped over by setting DESC_LIST<n> and
+     adding DESC_LIST to :term:`LOOP_LIST_ITEMS`.
+     See :ref:`stat-analysis-looping-groups` for more information.
 
      | *Used by:*  StatAnalysis
 
    ALPHA_LIST
      A single value or list of values used in the stat_analysis data stratification. Specifies the values of the ALPHA column in the MET .stat file to use.
+
+     Groups of values can be looped over by setting ALPHA_LIST<n> and
+     adding ALPHA_LIST to :term:`LOOP_LIST_ITEMS`.
+     See :ref:`stat-analysis-looping-groups` for more information.
 
      | *Used by:*  StatAnalysis
 
@@ -1581,10 +1591,18 @@ METplus Configuration Glossary
    FCST_THRESH_LIST
      Specify the values of the FCST_THRESH column in the MET .stat file to use.
 
+     Groups of values can be looped over by setting FCST_THRESH_LIST<n> and
+     adding FCST_THRESH_LIST to :term:`LOOP_LIST_ITEMS`.
+     See :ref:`stat-analysis-looping-groups` for more information.
+
      | *Used by:*  StatAnalysis
 
    OBS_THRESH_LIST
      Specify the values of the OBS_THRESH column in the MET .stat file to use.
+
+     Groups of values can be looped over by setting OBS_THRESH_LIST<n> and
+     adding OBS_THRESH_LIST to :term:`LOOP_LIST_ITEMS`.
+     See :ref:`stat-analysis-looping-groups` for more information.
 
      | *Used by:*  StatAnalysis
 
@@ -1608,6 +1626,10 @@ METplus Configuration Glossary
    FCST_LEVEL_LIST
      Specify the values of the FCST_LEV column in the MET .stat file to use.
 
+     Groups of values can be looped over by setting FCST_LEVEL_LIST<n> and
+     adding FCST_LEVEL_LIST to :term:`LOOP_LIST_ITEMS`.
+     See :ref:`stat-analysis-looping-groups` for more information.
+
      | *Used by:*  StatAnalysis
 
    FCST_VAR_NAME
@@ -1616,10 +1638,18 @@ METplus Configuration Glossary
    FCST_VAR_LIST
      Specify the values of the FCST_VAR column in the MET .stat file to use.
 
+     Groups of values can be looped over by setting FCST_VAR_LIST<n> and
+     adding FCST_VAR_LIST to :term:`LOOP_LIST_ITEMS`.
+     See :ref:`stat-analysis-looping-groups` for more information.
+
      | *Used by:*  StatAnalysis
 
    FCST_UNITS_LIST
      Specify the values of the FCST_UNITS column in the MET .stat file to use.
+
+     Groups of values can be looped over by setting FCST_UNITS_LIST<n> and
+     adding FCST_UNITS_LIST to :term:`LOOP_LIST_ITEMS`.
+     See :ref:`stat-analysis-looping-groups` for more information.
 
      | *Used by:*  StatAnalysis
 
@@ -2130,12 +2160,22 @@ METplus Configuration Glossary
      | *Used by:*  TCPairs
 
    FCST_INIT_HOUR_LIST
-     Specify a list of hours for initialization times of forecast files for use in the analysis.
+     Specify a list of hours for initialization times of forecast files for
+     use in the analysis.
+
+     Groups of values can be looped over by setting FCST_INIT_HOUR_LIST<n> and
+     adding FCST_INIT_HOUR_LIST to :term:`LOOP_LIST_ITEMS`.
+     See :ref:`stat-analysis-looping-groups` for more information.
 
      | *Used by:*  StatAnalysis
 
    OBS_INIT_HOUR_LIST
-     Specify a list of hours for initialization times of observation files for use in the analysis.
+     Specify a list of hours for initialization times of observation files for
+     use in the analysis.
+
+     Groups of values can be looped over by setting OBS_INIT_HOUR_LIST<n> and
+     adding OBS_INIT_HOUR_LIST to :term:`LOOP_LIST_ITEMS`.
+     See :ref:`stat-analysis-looping-groups` for more information.
 
      | *Used by:*  StatAnalysis
 
@@ -2178,7 +2218,12 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`INTERP_MTHD_LIST` instead.
 
    INTERP_MTHD_LIST
-     Specify the values of the INTERP_MTHD column in the MET .stat file to use; specify the interpolation used to create the MET .stat files.
+     Specify the values of the INTERP_MTHD column in the MET .stat file to use;
+     specify the interpolation used to create the MET .stat files.
+
+     Groups of values can be looped over by setting INTERP_MTHD_LIST<n> and
+     adding INTERP_MTHD_LIST to :term:`LOOP_LIST_ITEMS`.
+     See :ref:`stat-analysis-looping-groups` for more information.
 
      | *Used by:*  StatAnalysis
 
@@ -2186,7 +2231,12 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`INTERP_PNTS_LIST` instead.
 
    INTERP_PNTS_LIST
-     Specify the values of the INTERP_PNTS column in the MET .stat file to use; corresponds to the interpolation in the MET .stat files.
+     Specify the values of the INTERP_PNTS column in the MET .stat file to use;
+     corresponds to the interpolation in the MET .stat files.
+
+     Groups of values can be looped over by setting INTERP_PNTS_LIST<n> and
+     adding INTERP_PNTS_LIST to :term:`LOOP_LIST_ITEMS`.
+     See :ref:`stat-analysis-looping-groups` for more information.
 
      | *Used by:*  StatAnalysis
 
@@ -2238,14 +2288,19 @@ METplus Configuration Glossary
    FCST_LEAD_LIST
      Specify the values of the FSCT_LEAD column in the MET .stat file to use.
      Comma separated list format, e.g.: 00, 24, 48, 72, 96, 120
+
      Groups of values can be looped over by setting FCST_LEAD_LIST<n> and
      adding FCST_LEAD_LIST to :term:`LOOP_LIST_ITEMS`.
-     See :ref:`stat_analysis_wrapper` Description for more information.
+     See :ref:`stat-analysis-looping-groups` for more information.
 
      | *Used by:*  StatAnalysis
 
    OBS_LEAD_LIST
      Specify the values of the OBS_LEAD column in the MET .stat file to use. Comma separated list format, e.g.: 00, 24, 48, 72, 96, 120
+
+     Groups of values can be looped over by setting OBS_LEAD_LIST<n> and
+     adding OBS_LEAD_LIST to :term:`LOOP_LIST_ITEMS`.
+     See :ref:`stat-analysis-looping-groups` for more information.
 
      | *Used by:*  StatAnalysis
 
@@ -2288,6 +2343,10 @@ METplus Configuration Glossary
 
    LINE_TYPE_LIST
      Specify the MET STAT line types to be considered.
+
+     Groups of values can be looped over by setting LINE_TYPE_LIST<n> and
+     adding LINE_TYPE_LIST to :term:`LOOP_LIST_ITEMS`.
+     See :ref:`stat-analysis-looping-groups` for more information.
 
      | *Used by:*  StatAnalysis, TCMPRPlotter
 
@@ -2414,6 +2473,11 @@ METplus Configuration Glossary
 
    MODEL_LIST
      List of the specified the model names.
+     If this is left unset, then values from :term:`MODEL\<n\>` will be used.
+
+     Groups of values can be looped over by setting MODEL_LIST<n> and
+     adding MODEL_LIST to :term:`LOOP_LIST_ITEMS`.
+     See :ref:`stat-analysis-looping-groups` for more information.
 
      | *Used by:*  StatAnalysis
 
@@ -3167,6 +3231,10 @@ METplus Configuration Glossary
    OBS_LEVEL_LIST
      Specify the values of the OBS_LEV column in the MET .stat file to use.
 
+     Groups of values can be looped over by setting OBS_LEVEL_LIST<n> and
+     adding OBS_LEVEL_LIST to :term:`LOOP_LIST_ITEMS`.
+     See :ref:`stat-analysis-looping-groups` for more information.
+
      | *Used by:*  StatAnalysis
 
    OBS_VAR_NAME
@@ -3175,10 +3243,18 @@ METplus Configuration Glossary
    OBS_VAR_LIST
      Specify the values of the OBS_VAR column in the MET .stat file to use.
 
+     Groups of values can be looped over by setting OBS_VAR_LIST<n> and
+     adding OBS_VAR_LIST to :term:`LOOP_LIST_ITEMS`.
+     See :ref:`stat-analysis-looping-groups` for more information.
+
      | *Used by:*  StatAnalysis
 
    OBS_UNITS_LIST
      Specify the values of the OBS_UNITS column in the MET .stat file to use.
+
+     Groups of values can be looped over by setting OBS_UNITS_LIST<n> and
+     adding OBS_UNITS_LIST to :term:`LOOP_LIST_ITEMS`.
+     See :ref:`stat-analysis-looping-groups` for more information.
 
      | *Used by:*  StatAnalysis
 
@@ -3528,7 +3604,12 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`VX_MASK_LIST` instead.
 
    VX_MASK_LIST
-     Specify the values of the VX_MASK column in the MET .stat file to use; a list of the verification regions of interest.
+     Specify the values of the VX_MASK column in the MET .stat file to use;
+     a list of the verification regions of interest.
+
+     Groups of values can be looped over by setting VX_MASK_LIST<n> and
+     adding VX_MASK_LIST to :term:`LOOP_LIST_ITEMS`.
+     See :ref:`stat-analysis-looping-groups` for more information.
 
      | *Used by:*  StatAnalysis
 
@@ -4266,12 +4347,22 @@ METplus Configuration Glossary
      | *Used by:*  All
 
    FCST_VALID_HOUR_LIST
-     Specify a list of hours for valid times of forecast files for use in the analysis.
+     Specify a list of hours for valid times of forecast files for use
+     in the analysis.
+
+     Groups of values can be looped over by setting FCST_VALID_HOUR_LIST<n> and
+     adding FCST_VALID_HOUR_LIST to :term:`LOOP_LIST_ITEMS`.
+     See :ref:`stat-analysis-looping-groups` for more information.
 
      | *Used by:*  StatAnalysis
 
    OBS_VALID_HOUR_LIST
-     Specify a list of hours for valid times of observation files for use in the analysis.
+     Specify a list of hours for valid times of observation files for use
+     in the analysis.
+
+     Groups of values can be looped over by setting OBS_VALID_HOUR_LIST<n> and
+     adding OBS_VALID_HOUR_LIST to :term:`LOOP_LIST_ITEMS`.
+     See :ref:`stat-analysis-looping-groups` for more information.
 
      | *Used by:*  StatAnalysis
 
