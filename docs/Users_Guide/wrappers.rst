@@ -6821,6 +6821,91 @@ Then add the name of the list (without the numbers) to LOOP_LIST_ITEMS::
 If FCST_LEAD_LIST was added to GROUP_LIST_ITEMS instead, then all 6 items
 defined in the 2 lists will be combined and passed to the tool at once.
 
+Additional Filename Template Tags
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The StatAnalysis wrapper supports additional tags that can be substituted into
+the input and output paths because the wrapper processes a range of time.
+
+The following filename template tags can be used:
+
+* model
+* desc
+* vx_mask
+* interp_mthd
+* interp_pnts
+* cov_thresh
+* alpha
+* line_type
+* fcst_var
+* obs_var
+* fcst_units
+* obs_units
+* fcst_thresh
+* obs_thresh
+* fcst_level
+* obs_level
+* fcst_valid_hour
+* obs_valid_hour
+* fcst_init_hour
+* obs_init_hour
+* fcst_lead
+* obs_lead
+* fcst_valid_hour_beg
+* fcst_valid_hour_end
+* obs_valid_hour_beg
+* obs_valid_hour_end
+* fcst_init_hour_beg
+* fcst_init_hour_end
+* obs_init_hour_beg
+* obs_init_hour_end
+* valid_hour
+* valid_hour_beg
+* valid_hour_end
+* init_hour
+* init_hour_beg
+* init_hour_end
+* fcst_valid
+* fcst_valid_beg
+* fcst_valid_end
+* fcst_init
+* fcst_init_beg
+* fcst_init_end
+* obs_valid
+* obs_valid_beg
+* obs_valid_end
+* obs_init
+* obs_init_beg
+* obs_init_end
+* valid
+* valid_beg
+* valid_end
+* init
+* init_beg
+* init_end
+* fcst_lead
+* fcst_lead_hour
+* fcst_lead_min
+* fcst_lead_sec
+* fcst_lead_totalsec
+* obs_lead
+* obs_lead_hour
+* obs_lead_min
+* obs_lead_sec
+* obs_lead_totalsec
+* lead
+* lead_hour
+* lead_min
+* lead_sec
+* lead_totalsec
+
+Please note that some of these items will be set to an empty string depending
+on the configuration. For example, lead_hour, lead_min, lead_sec, and
+lead_totalsec cannot be computed if there are multiple leads being processed
+in a given run. Another example, if fcst_valid_beg has the same value as
+fcst_valid_end, then fcst_valid will be set to the same value, otherwise it
+will be left as an empty string.
+
 Outputs
 ^^^^^^^
 
