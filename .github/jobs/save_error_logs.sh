@@ -8,7 +8,7 @@
 
 .github/jobs/copy_error_logs.py ${RUNNER_WORKSPACE}/output artifact/error_logs
 if [ -d "artifact/error_logs" ]; then
-  echo ::set-output name=upload_error_logs::true
+  echo "upload_error_logs=true" >> $GITHUB_OUTPUT
 else
-  echo ::set-output name=upload_error_logs::false
+  echo "upload_error_logs=false" >> $GITHUB_OUTPUT
 fi
