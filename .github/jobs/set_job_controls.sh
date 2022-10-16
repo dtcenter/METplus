@@ -83,16 +83,16 @@ else
   fi
 fi
 
-echo ::set-output name=run_get_image::$run_get_image
-echo ::set-output name=run_get_input_data::$run_get_input_data
-echo ::set-output name=run_diff::$run_diff
-echo ::set-output name=run_save_truth_data::$run_save_truth_data
-echo ::set-output name=external_trigger::$external_trigger
+echo "run_get_image=$run_get_image" >> $GITHUB_OUTPUT
+echo "run_get_input_data=$run_get_input_data" >> $GITHUB_OUTPUT
+echo "run_diff=$run_diff" >> $GITHUB_OUTPUT
+echo "run_save_truth_data=$run_save_truth_data" >> $GITHUB_OUTPUT
+echo "external_trigger=$external_trigger" >> $GITHUB_OUTPUT
 
 # get branch name
 branch_name=`${GITHUB_WORKSPACE}/.github/jobs/print_branch_name.py`
 
-echo ::set-output name=branch_name::$branch_name
+echo "branch_name=$branch_name" >> $GITHUB_OUTPUT
 
 # get use cases to run
 .github/jobs/get_use_cases_to_run.sh $run_use_cases $run_all_use_cases $run_unit_tests
