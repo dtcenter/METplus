@@ -5,6 +5,7 @@ UserScript: Physics Tendency Vertical Profile plot
 model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalProfile.conf
 
 """
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -20,19 +21,20 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 # tendencies.  One can plpt a single tendency component at multiple pressure levels or
 # plot all tendency components at a single pressure level.  This use case illustrates 
 # how to generate the vertical profile plot.
+
 ##############################################################################
 # Datasets
 # --------
 #
 #  * Forecast dataset: FV3 Model member data
 #  * Grid specification: Grid specification data
-#  * Mid-CONUS Shapefiles:
-#      * MID_CONUS.cpg
-#      * MID_CONUS.dbf
-#      * MID_CONUS.poly
-#      * MID_CONUS.prj
-#      * MID_CONUS.shp
-#      * MID_CONUS.shx
+#  * Mid-CONUS Shapefiles: (uncompress and place under shapefile/MID_CONUS directory under the appropriate METPLUS_DATA directory)
+#    * MID_CONUS.cpg
+#    * MID_CONUS.dbf
+#    * MID_CONUS.poly
+#    * MID_CONUS.prj
+#    * MID_CONUS.shp
+#    * MID_CONUS.shx
 #
 #
 
@@ -40,7 +42,8 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 # METplus Components
 # ------------------
 #
-# This use case runs the METplotpy planview_fv3.py script to generate the plan views. 
+# This use case runs the METplotpy vert_profile_fv3.py script to generate the plan views.
+#
 
 ##############################################################################
 # METplus Workflow
@@ -58,7 +61,7 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# i.e.  parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
+# i.e.  parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalProfile.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalProfile.conf
