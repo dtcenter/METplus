@@ -2,9 +2,7 @@
 UserScript: Physics Tendency Planview plot
 =========================================================================
 
-model_applications/
-short_range/
-UserScript_fcstFV3_PhysicsTendency_Planview.conf
+model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
 
 """
 ##############################################################################
@@ -42,11 +40,10 @@ UserScript_fcstFV3_PhysicsTendency_Planview.conf
 # ----------------
 #
 #
-# | **Valid:** 2019-05-04
+# | This use case does not loop but plots physics tendency data that has been
+# | subsetted to one date: 2019-05-04.
 # |
-# |
-#
-# |
+
 
 ##############################################################################
 # METplus Configuration
@@ -54,10 +51,11 @@ UserScript_fcstFV3_PhysicsTendency_Planview.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/short_range/UserScript_fcstFV3_PhysicsTendency_Planview.conf
+# i.e.  parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstFV3__fcstOnly_PhysicsTendency_Planview.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
+#
 
 ##############################################################################
 # MET Configuration
@@ -79,11 +77,11 @@ UserScript_fcstFV3_PhysicsTendency_Planview.conf
 #
 # 1) Passing in UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf then a user-specific system configuration file::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf  /path/to/user_system.conf
+#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf  /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf::
 #
-#        run_metplus.py  /path/to/METplus/parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
+#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -110,11 +108,11 @@ UserScript_fcstFV3_PhysicsTendency_Planview.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in short_range/brightness_temperature
-# (relative to **OUTPUT_BASE**) and will contain the following files:
+# The following file will be created:
 #
-# fvs_history.nc
-# grid_spec.nc
+# physics_tendency_planview.png
+#
+#
 
 
 ##############################################################################
@@ -133,5 +131,5 @@ UserScript_fcstFV3_PhysicsTendency_Planview.conf
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/short_range-MODE_fcstFV3_obsGOES_BrightnessTemp.png'
+# sphinx_gallery_thumbnail_path = '_static/short_range-UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.png'
 #
