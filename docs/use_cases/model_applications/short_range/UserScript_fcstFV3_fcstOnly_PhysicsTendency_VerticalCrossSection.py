@@ -1,8 +1,8 @@
 """
-UserScript: Physics Tendency Vertical Profile plot
+UserScript: Physics Tendency Vertical Cross Section plot
 =========================================================================
 
-model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalProfile.conf
+model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalCrossSection.conf
 
 """
 
@@ -28,14 +28,6 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 #
 #  * Forecast dataset: FV3 Model member data
 #  * Grid specification: Grid specification data
-#  * Mid-CONUS Shapefiles: (uncompress and place under shapefile/MID_CONUS directory under the appropriate METPLUS_DATA directory)
-#    * MID_CONUS.cpg
-#    * MID_CONUS.dbf
-#    * MID_CONUS.poly
-#    * MID_CONUS.prj
-#    * MID_CONUS.shp
-#    * MID_CONUS.shx
-#
 #
 
 ##############################################################################
@@ -61,10 +53,10 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# i.e.  parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalProfile.conf
+# i.e.  parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalCrossSection.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalProfile.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalCrossSection.conf
 #
 
 ##############################################################################
@@ -85,13 +77,13 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 #
 # This use case can be run in the following way: 
 #
-# 1) Passing in UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalProfile.conf then a user-specific system configuration file::
+# 1) Passing in UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalCrossSection.conf then a user-specific system configuration file::
 #
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalProfile.conf  /path/to/user_system.conf
+#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalCrossSection.conf  /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalProfile.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalCrossSection.conf::
 #
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalProfile.conf
+#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalCrossSection.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -120,10 +112,9 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
 # The following file will be created:
 #
-# short_range-physics_tendency_vertical_profile.png
+# short_range-physics_tendency_vertical_cross_section.png
 #
 #
-
 
 
 ##############################################################################
@@ -142,5 +133,5 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/short_range-UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalProfile.png'
+# sphinx_gallery_thumbnail_path = '_static/short_range-UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalCrossSection.png'
 #
