@@ -13,7 +13,7 @@ from dateutil.relativedelta import relativedelta
 from ..util import getlist, format_thresh
 from ..util import do_string_sub, find_indices_in_config_section
 from ..util import parse_var_list, remove_quotes, list_to_str
-from ..util import get_start_and_end_times
+from ..util import get_start_and_end_times, get_time_prefix
 from ..util import ti_get_seconds_from_relativedelta
 from ..util import get_met_time_list, get_delta_list
 from ..util import YMD, YMD_HMS
@@ -152,18 +152,18 @@ class StatAnalysisWrapper(CommandBuilder):
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('STAT_ANALYSIS_OUTPUT_DIR',
                                                   '')
+        if not c_dict['OUTPUT_DIR']:
+            self.log_error("Must set STAT_ANALYSIS_OUTPUT_DIR")
 
         # read optional template to set -out command line argument
         c_dict['OUTPUT_TEMPLATE'] = (
             self.config.getraw('config', 'STAT_ANALYSIS_OUTPUT_TEMPLATE', '')
         )
 
-        # set date type, which is typically controlled by LOOP_BY
-        c_dict['DATE_TYPE'] = self.config.getstr('config',
-                                                 'DATE_TYPE',
-                                                 self.config.getstr('config',
-                                                                    'LOOP_BY',
-                                                                    ''))
+        # set date type, which is controlled by LOOP_BY
+        c_dict['DATE_TYPE'] = get_time_prefix(self.config)
+        if not c_dict['DATE_TYPE']:
+            self.isOK = False
 
         start_dt, end_dt = get_start_and_end_times(self.config)
         if not start_dt:
@@ -198,9 +198,14 @@ class StatAnalysisWrapper(CommandBuilder):
                             data_type='float',
                             metplus_configs=['STAT_ANALYSIS_HSS_EC_VALUE'])
 
-        return self.c_dict_error_check(c_dict, all_field_lists_empty)
+        return self._c_dict_error_check(c_dict, all_field_lists_empty)
 
     def run_all_times(self):
+        """! Function called when processing all times.
+
+         @returns list of tuples containing all commands that were run and the
+         environment variables that were set for each
+        """
         self.run_stat_analysis()
         return self.all_commands
 
@@ -212,6 +217,10 @@ class StatAnalysisWrapper(CommandBuilder):
     #     self.run_stat_analysis()
 
     def _read_jobs_from_config(self):
+        """! Parse the jobs from the METplusConfig object
+
+        @returns list of strings containing each job specifications
+        """
         jobs = []
         job_indices = list(
             find_indices_in_config_section(r'STAT_ANALYSIS_JOB(\d+)$',
@@ -234,7 +243,7 @@ class StatAnalysisWrapper(CommandBuilder):
 
         return jobs
 
-    def c_dict_error_check(self, c_dict, all_field_lists_empty):
+    def _c_dict_error_check(self, c_dict, all_field_lists_empty):
         """! Check values read into c_dict from METplusConfig and report errors
         if anything is misconfigured.
 
@@ -254,9 +263,6 @@ class StatAnalysisWrapper(CommandBuilder):
                                  "any filtering done unless you add the "
                                  "arguments to STAT_ANALYSIS_JOBS<n>")
 
-        if not c_dict['OUTPUT_DIR']:
-            self.log_error("Must set STAT_ANALYSIS_OUTPUT_DIR")
-
         if not c_dict['JOBS']:
             self.log_error(
                 "Must set at least one job with STAT_ANALYSIS_JOB<n>"
@@ -274,17 +280,6 @@ class StatAnalysisWrapper(CommandBuilder):
                         conf = f"STAT_ANALYSIS_{conf}_TEMPLATE"
                         self.log_error(f'Must set {conf} if [{check}] is used'
                                        ' in a job')
-
-        for conf_list in self.LIST_CATEGORIES:
-            if not c_dict[conf_list]:
-                self.log_error(f"Must set {conf_list} to run StatAnalysis")
-
-        if not c_dict['DATE_TYPE']:
-            self.log_error("DATE_TYPE or LOOP_BY must be set to run "
-                           "StatAnalysis wrapper")
-
-        if c_dict['DATE_TYPE'] not in ['VALID', 'INIT']:
-            self.log_error("DATE_TYPE must be VALID or INIT")
 
         # if var list is set and field lists are not all empty, error
         if c_dict['VAR_LIST'] and not all_field_lists_empty:
@@ -478,96 +473,125 @@ class StatAnalysisWrapper(CommandBuilder):
                                       .replace(',', '_').replace('*', 'ALL')
             )
 
-            if 'HOUR' in list_name:
-                delta_list = get_delta_list(config_dict[list_name])
-                if not delta_list:
-                    stringsub_dict[sub_name] = list_name_value
-                    stringsub_dict[sub_name + '_beg'] = relativedelta()
-                    stringsub_dict[sub_name + '_end'] = (
-                        relativedelta(hours=+23, minutes=+59, seconds=+59)
-                    )
-                    continue
-                if len(delta_list) == 1:
-                    stringsub_dict[sub_name] = delta_list[0]
-                else:
-                    stringsub_dict[sub_name] = (
-                        '_'.join(get_met_time_list(config_dict[list_name]))
-                    )
-
-                stringsub_dict[sub_name + '_beg'] = delta_list[0]
-                stringsub_dict[sub_name + '_end'] = delta_list[-1]
-
-                check_list = self._get_check_list(list_name, config_dict)
-                # if opposite fcst is not set or the same,
-                # set init/valid hour beg/end to fcst, same for obs
-                if not check_list or config_dict[list_name] == check_list:
-                    # sub name e.g. fcst_valid_hour
-                    # generic list e.g. valid_hour
-                    generic_list = (
-                        sub_name.replace('fcst_', '').replace('obs_', '')
-                    )
-                    stringsub_dict[f'{generic_list}_beg'] = (
-                        stringsub_dict[f'{sub_name}_beg']
-                    )
-                    stringsub_dict[f'{generic_list}_end'] = (
-                        stringsub_dict[f'{sub_name}_end']
-                    )
-                    if (stringsub_dict[f'{generic_list}_beg'] ==
-                            stringsub_dict[f'{generic_list}_end']):
-                        stringsub_dict[generic_list] = (
-                            stringsub_dict[f'{sub_name}_end']
-                        )
-
-            elif 'LEAD' in list_name:
-                lead_list = get_met_time_list(config_dict[list_name])
-
-                if not lead_list:
-                    continue
-
-                # if multiple leads are specified, format lead info
-                # using met time notation separated by underscore
-                if len(lead_list) > 1:
-                    stringsub_dict[sub_name] = '_'.join(lead_list)
-                    continue
-
-                stringsub_dict[sub_name] = lead_list[0]
-
-                lead_rd = get_delta_list(config_dict[list_name])[0]
-                total_sec = ti_get_seconds_from_relativedelta(lead_rd)
-                stringsub_dict[sub_name+'_totalsec'] = str(total_sec)
-
-                stringsub_dict[f'{sub_name}_hour'] = lead_list[0][:-4]
-                stringsub_dict[f'{sub_name}_min'] = lead_list[0][-4:-2]
-                stringsub_dict[f'{sub_name}_sec'] = lead_list[0][-2:]
-
-                check_list = self._get_check_list(list_name, config_dict)
-                if not check_list or config_dict[list_name] == check_list:
-                    stringsub_dict['lead'] = stringsub_dict[sub_name]
-                    stringsub_dict['lead_hour'] = (
-                        stringsub_dict[sub_name+'_hour']
-                    )
-                    stringsub_dict['lead_min'] = (
-                        stringsub_dict[sub_name+'_min']
-                    )
-                    stringsub_dict['lead_sec'] = (
-                        stringsub_dict[sub_name+'_sec']
-                    )
-                    stringsub_dict['lead_totalsec'] = (
-                        stringsub_dict[sub_name+'_totalsec']
-                    )
-            else:
+            if 'HOUR' not in list_name and 'LEAD' not in list_name:
                 stringsub_dict[sub_name] = list_name_value
 
-            # if list is MODEL, also set obtype
-            if list_name == 'MODEL':
-                stringsub_dict['obtype'] = (
-                    config_dict['OBTYPE'].replace('"', '').replace(' ', '')
-                )
+                # if list is MODEL, also set obtype
+                if list_name == 'MODEL':
+                    stringsub_dict['obtype'] = (
+                        config_dict['OBTYPE'].replace('"', '').replace(' ', '')
+                    )
+
+                continue
+
+            if 'HOUR' in list_name:
+                self._build_stringsub_hours(list_name, config_dict,
+                                            stringsub_dict)
+            elif 'LEAD' in list_name:
+                self._build_stringsub_leads(list_name, config_dict,
+                                            stringsub_dict)
 
         # Some lines for debugging if needed in future
         # for key, value in stringsub_dict.items():
         #    self.logger.debug("{} ({})".format(key, value))
         return stringsub_dict
+
+    def _build_stringsub_hours(self, list_name, config_dict, stringsub_dict):
+        """! Handle logic specific to setting lists named with HOUR
+
+        @param list_name name of list to process
+        @param config_dict dictionary to read values from
+        @param stringsub_dict dictionary to set values
+        """
+        sub_name = list_name.lower()
+        delta_list = get_delta_list(config_dict[list_name])
+        if not delta_list:
+            list_name_value = (
+                config_dict[list_name].replace('"', '').replace(' ', '')
+                                      .replace(',', '_').replace('*', 'ALL')
+            )
+            stringsub_dict[sub_name] = list_name_value
+            stringsub_dict[sub_name + '_beg'] = relativedelta()
+            stringsub_dict[sub_name + '_end'] = (
+                relativedelta(hours=+23, minutes=+59, seconds=+59)
+            )
+            return
+
+        if len(delta_list) == 1:
+            stringsub_dict[sub_name] = delta_list[0]
+        else:
+            stringsub_dict[sub_name] = (
+                '_'.join(get_met_time_list(config_dict[list_name]))
+            )
+
+        stringsub_dict[sub_name + '_beg'] = delta_list[0]
+        stringsub_dict[sub_name + '_end'] = delta_list[-1]
+
+        check_list = self._get_check_list(list_name, config_dict)
+        # if opposite fcst is not set or the same,
+        # set init/valid hour beg/end to fcst, same for obs
+        if not check_list or config_dict[list_name] == check_list:
+            # sub name e.g. fcst_valid_hour
+            # generic list e.g. valid_hour
+            generic_list = (
+                sub_name.replace('fcst_', '').replace('obs_', '')
+            )
+            stringsub_dict[f'{generic_list}_beg'] = (
+                stringsub_dict[f'{sub_name}_beg']
+            )
+            stringsub_dict[f'{generic_list}_end'] = (
+                stringsub_dict[f'{sub_name}_end']
+            )
+            if (stringsub_dict[f'{generic_list}_beg'] ==
+                    stringsub_dict[f'{generic_list}_end']):
+                stringsub_dict[generic_list] = (
+                    stringsub_dict[f'{sub_name}_end']
+                )
+
+    def _build_stringsub_leads(self, list_name, config_dict, stringsub_dict):
+        """! Handle logic specific to setting lists named with LEAD
+
+        @param list_name name of list to process
+        @param config_dict dictionary to read values from
+        @param stringsub_dict dictionary to set values
+        """
+        sub_name = list_name.lower()
+        lead_list = get_met_time_list(config_dict[list_name])
+
+        if not lead_list:
+            return
+
+        # if multiple leads are specified, format lead info
+        # using met time notation separated by underscore
+        if len(lead_list) > 1:
+            stringsub_dict[sub_name] = '_'.join(lead_list)
+            return
+
+        stringsub_dict[sub_name] = lead_list[0]
+
+        lead_rd = get_delta_list(config_dict[list_name])[0]
+        total_sec = ti_get_seconds_from_relativedelta(lead_rd)
+        stringsub_dict[sub_name + '_totalsec'] = str(total_sec)
+
+        stringsub_dict[f'{sub_name}_hour'] = lead_list[0][:-4]
+        stringsub_dict[f'{sub_name}_min'] = lead_list[0][-4:-2]
+        stringsub_dict[f'{sub_name}_sec'] = lead_list[0][-2:]
+
+        check_list = self._get_check_list(list_name, config_dict)
+        if not check_list or config_dict[list_name] == check_list:
+            stringsub_dict['lead'] = stringsub_dict[sub_name]
+            stringsub_dict['lead_hour'] = (
+                stringsub_dict[sub_name + '_hour']
+            )
+            stringsub_dict['lead_min'] = (
+                stringsub_dict[sub_name + '_min']
+            )
+            stringsub_dict['lead_sec'] = (
+                stringsub_dict[sub_name + '_sec']
+            )
+            stringsub_dict['lead_totalsec'] = (
+                stringsub_dict[sub_name + '_totalsec']
+            )
 
     @staticmethod
     def _get_check_list(list_name, config_dict):
@@ -1036,14 +1060,13 @@ class StatAnalysisWrapper(CommandBuilder):
                                     f"VAR{var_info['index']}_FOURIER_DECOMP",
                                     False)
             )
+            fourier_wave_num_pairs = ['']
             if run_fourier:
                 fourier_wave_num_pairs = getlist(
                     self.config.getstr('config',
                                        f"VAR{var_info['index']}_WAVE_NUM_LIST",
                                        '')
                 )
-            else:
-                fourier_wave_num_pairs = ['']
 
             # if no thresholds were specified, use a list
             # containing an empty string to loop one iteration
@@ -1252,7 +1275,6 @@ class StatAnalysisWrapper(CommandBuilder):
 
             # substitute filename templates that may be found in rest of job
             job = do_string_sub(job, **stringsub_dict)
-
             jobs.append(job)
 
         return jobs
@@ -1284,62 +1306,25 @@ class StatAnalysisWrapper(CommandBuilder):
             if not self.create_output_directories(runtime_settings):
                 continue
 
-            # Set environment variables and run stat_analysis.
+            # Set legacy environment variables
             for name, value in runtime_settings.items():
                 self.add_env_var(name, value)
 
             # set METPLUS_ env vars for MET config file to be consistent
             # with other wrappers
-            mp_lists = ['MODEL',
-                        'DESC',
-                        'FCST_LEAD',
-                        'OBS_LEAD',
-                        'FCST_VALID_HOUR',
-                        'OBS_VALID_HOUR',
-                        'FCST_INIT_HOUR',
-                        'OBS_INIT_HOUR',
-                        'FCST_VAR',
-                        'OBS_VAR',
-                        'FCST_UNITS',
-                        'OBS_UNITS',
-                        'FCST_LEVEL',
-                        'OBS_LEVEL',
-                        'OBTYPE',
-                        'VX_MASK',
-                        'INTERP_MTHD',
-                        'INTERP_PNTS',
-                        'FCST_THRESH',
-                        'OBS_THRESH',
-                        'COV_THRESH',
-                        'ALPHA',
-                        'LINE_TYPE'
-                        ]
-            for mp_list in mp_lists:
-                if not runtime_settings.get(mp_list, ''):
+            for key in self.WRAPPER_ENV_VAR_KEYS:
+                item = key.replace('METPLUS_', '')
+                if not runtime_settings.get(item, ''):
                     continue
-                value = (f"{mp_list.lower()} = "
-                         f"[{runtime_settings.get(mp_list, '')}];")
-                self.env_var_dict[f'METPLUS_{mp_list}'] = value
-
-            mp_items = ['FCST_VALID_BEG',
-                        'FCST_VALID_END',
-                        'OBS_VALID_BEG',
-                        'OBS_VALID_END',
-                        'FCST_INIT_BEG',
-                        'FCST_INIT_END',
-                        'OBS_INIT_BEG',
-                        'OBS_INIT_END',
-                        ]
-            for mp_item in mp_items:
-                if not runtime_settings.get(mp_item, ''):
-                    continue
-                value = remove_quotes(runtime_settings.get(mp_item, ''))
-                value = (f"{mp_item.lower()} = \"{value}\";")
-                self.env_var_dict[f'METPLUS_{mp_item}'] = value
-
-            value = '","'.join(runtime_settings['JOBS'])
-            value = f'jobs = ["{value}"];'
-            self.env_var_dict['METPLUS_JOBS'] = value
+                value = runtime_settings.get(item, '')
+                if key.endswith('_JOBS'):
+                    value = '["' + '","'.join(value) + '"]'
+                elif key.endswith('_BEG') or key.endswith('_END'):
+                    value = f'"{value}"'
+                else:
+                    value = f'[{value}]'
+                value = f'{item.lower()} = {value};'
+                self.env_var_dict[key] = value
 
             # send environment variables to logger
             self.set_environment_variables()
