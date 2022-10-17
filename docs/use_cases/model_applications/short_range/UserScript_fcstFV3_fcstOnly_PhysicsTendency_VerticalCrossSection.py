@@ -26,8 +26,8 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 # Datasets
 # --------
 #
-# | **Forecast dataset: FV3 Model member data
-# | **Grid specification: Grid specification data
+# | Forecast dataset: FV3 Model member data
+# | Grid specification: Grid specification data
 #
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # | The tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
@@ -45,10 +45,9 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 # METplus Workflow
 # ----------------
 #
-#
-# | This use case does not loop but plots physics tendency data that has been
-# | subsetted to one date: 2019-05-04.
-# |
+# This use case does not loop but plots physics tendency data that has been
+# subsetted to one date: 2019-05-04.
+# 
 
 
 ##############################################################################
