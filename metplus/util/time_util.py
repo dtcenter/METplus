@@ -32,6 +32,7 @@ TIME_LETTER_TO_STRING = {
     'S': 'second',
 }
 
+
 def get_relativedelta(value, default_unit='S'):
     """!Converts time values ending in Y, m, d, H, M, or S to relativedelta object
         Args:
@@ -80,6 +81,7 @@ def get_relativedelta(value, default_unit='S'):
         # unsupported time unit specified, return None
         return None
 
+
 def get_seconds_from_string(value, default_unit='S', valid_time=None):
     """!Convert string of time (optionally ending with time letter, i.e. HMSyMD to seconds
         Args:
@@ -89,11 +91,13 @@ def get_seconds_from_string(value, default_unit='S', valid_time=None):
     rd_obj = get_relativedelta(value, default_unit)
     return ti_get_seconds_from_relativedelta(rd_obj, valid_time)
 
+
 def time_string_to_met_time(time_string, default_unit='S', force_hms=False):
     """!Convert time string (3H, 4M, 7, etc.) to format expected by the MET
         tools ([H]HH[MM[SS]])"""
     total_seconds = get_seconds_from_string(time_string, default_unit)
     return seconds_to_met_time(total_seconds, force_hms=force_hms)
+
 
 def seconds_to_met_time(total_seconds, force_hms=False):
     seconds_time_string = str(total_seconds % 60).zfill(2)
@@ -108,6 +112,7 @@ def seconds_to_met_time(total_seconds, force_hms=False):
         return hour_time_string + minutes_time_string + seconds_time_string
     else:
         return hour_time_string
+
 
 def ti_get_hours_from_relativedelta(lead, valid_time=None):
     """! Get hours from relativedelta. Simply calls get seconds function and
@@ -128,6 +133,7 @@ def ti_get_hours_from_relativedelta(lead, valid_time=None):
         return - (-lead_seconds // 3600)
 
     return lead_seconds // 3600
+
 
 def ti_get_seconds_from_relativedelta(lead, valid_time=None):
     """!Check relativedelta object contents and compute the total number of seconds
@@ -161,6 +167,7 @@ def ti_get_seconds_from_relativedelta(lead, valid_time=None):
 
     return total_seconds
 
+
 def ti_get_seconds_from_lead(lead, valid='*'):
     if isinstance(lead, int):
         return lead
@@ -172,6 +179,7 @@ def ti_get_seconds_from_lead(lead, valid='*'):
 
     return ti_get_seconds_from_relativedelta(lead, valid_time)
 
+
 def ti_get_hours_from_lead(lead, valid='*'):
     lead_seconds = ti_get_seconds_from_lead(lead, valid)
     if lead_seconds is None:
@@ -179,11 +187,13 @@ def ti_get_hours_from_lead(lead, valid='*'):
 
     return lead_seconds // 3600
 
+
 def get_time_suffix(letter, letter_only):
     if letter_only:
         return letter
 
     return f" {TIME_LETTER_TO_STRING[letter]} "
+
 
 def format_time_string(lead, letter, plural, letter_only):
     if letter == 'Y':
@@ -211,6 +221,7 @@ def format_time_string(lead, letter, plural, letter_only):
         output = f"{output.strip()}s "
 
     return output
+
 
 def ti_get_lead_string(lead, plural=True, letter_only=False):
     """!Check relativedelta object contents and create string representation
@@ -249,6 +260,64 @@ def ti_get_lead_string(lead, plural=True, letter_only=False):
     output = output.strip()
 
     return f"{negative}{output}"
+
+
+def get_met_time_list(string_value, sort_list=True):
+    """! Convert a string into a list of strings in MET time format HHMMSS.
+
+    @param string_value input string to parse
+    @param sort_list If True, sort the list values. If False, skip sorting.
+     Default is True.
+    @returns list of strings with MET times
+    """
+    return _format_time_list(string_value, get_met_format=True,
+                             sort_list=sort_list)
+
+
+def get_delta_list(string_value, sort_list=True):
+    """! Convert a string into a list of relativedelta objects.
+
+    @param string_value input string to parse
+    @param sort_list If True, sort the list values. If False, skip sorting.
+     Default is True.
+    @returns list of relativedelta objects
+    """
+    return _format_time_list(string_value, get_met_format=False,
+                             sort_list=sort_list)
+
+
+def _format_time_list(string_value, get_met_format, sort_list=True):
+    """! Helper function to convert a string into a list of times.
+
+    @param string_value input string to parse
+    @param get_met_format If True, format the items in MET time format HHMMSS.
+     If False, format each item as a relativedelta object
+    @param sort_list If True, sort the list values. If False, skip sorting.
+     Default is True.
+    @returns list of either strings with MET times or relativedelta objects
+    """
+    out_list = []
+    if not string_value:
+        return []
+
+    for time_string in string_value.split(','):
+        time_string = time_string.strip()
+        if get_met_format:
+            value = time_string_to_met_time(time_string, default_unit='H',
+                                            force_hms=True)
+            out_list.append(value)
+        else:
+            delta_obj = get_relativedelta(time_string, default_unit='H')
+            out_list.append(delta_obj)
+
+    if sort_list:
+        if get_met_format:
+            out_list.sort(key=int)
+        else:
+            out_list.sort(key=ti_get_seconds_from_relativedelta)
+
+    return out_list
+
 
 def ti_calculate(input_dict_preserve):
     out_dict = {}

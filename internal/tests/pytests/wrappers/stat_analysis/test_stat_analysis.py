@@ -231,26 +231,6 @@ def test_format_conf_list(metplus_config, list_name, config_overrides,
     assert wrapper._format_conf_list(list_name) == expected_value
 
 
-@pytest.mark.parametrize(
-    'input_str, expected_output', [
-        ('', []),
-        ('0,1,2,3', ['000000', '010000', '020000', '030000']),
-        ('12, 24', ['120000', '240000']),
-        ('196', ['1960000']),
-        ('12H, 24H', ['120000', '240000']),
-        ('45M', ['004500']),
-        ('42S', ['000042']),
-        ('24, 48, 72, 96, 120, 144, 168, 192, 216, 240',
-         ['240000', '480000', '720000', '960000', '1200000',
-          '1440000', '1680000', '1920000', '2160000', '2400000']),
-    ]
-)
-@pytest.mark.wrapper_d
-def test_get_met_time_list(metplus_config, input_str, expected_output):
-    wrapper = stat_analysis_wrapper(metplus_config)
-    assert wrapper._get_met_time_list(input_str) == expected_output
-
-
 @pytest.mark.wrapper_d
 def test_get_command(metplus_config):
     # Independently test that the stat_analysis command
@@ -266,7 +246,7 @@ def test_get_command(metplus_config):
         +'-config /path/to/STATAnalysisConfig'
     )
     st.c_dict['LOOKIN_DIR'] = '/path/to/lookin_dir'
-    st.c_dict['CONFIG_FILE'] = '/path/to/STATAnalysisConfig'
+    st.args.append('-config /path/to/STATAnalysisConfig')
     test_command = st.get_command()
     assert expected_command == test_command
 

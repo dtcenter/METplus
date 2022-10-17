@@ -1,14 +1,8 @@
-'''
+"""!
 Program Name: stat_analysis_wrapper.py
 Contact(s): Mallory Row, George McCabe
-Abstract: Runs stat_analysis
-History Log: Fourth version
-Usage: stat_analysis_wrapper.py
-Parameters: None
-Input Files: MET STAT files
-Output Files: MET STAT files
-Condition codes: 0 for success, 1 for failure
-'''
+Abstract: Builds commands to run stat_analysis
+"""
 
 import os
 import glob
@@ -21,10 +15,11 @@ from ..util import met_util as util
 from ..util import do_string_sub, find_indices_in_config_section
 from ..util import parse_var_list, remove_quotes, list_to_str
 from ..util import get_start_and_end_times
-from ..util import time_string_to_met_time, get_relativedelta
 from ..util import ti_get_seconds_from_relativedelta
+from ..util import get_met_time_list, get_delta_list
 from ..util import YMD, YMD_HMS
 from . import CommandBuilder
+
 
 class StatAnalysisWrapper(CommandBuilder):
     """! Wrapper to the MET tool stat_analysis which is used to filter
@@ -128,22 +123,15 @@ class StatAnalysisWrapper(CommandBuilder):
         super().__init__(config, instance=instance)
 
     def get_command(self):
+        """! Build command to run. It is assumed that any errors preventing a
+        successfully run will have preventing this function from being called.
 
-        cmd = f"{self.app_path} -v {self.c_dict['VERBOSITY']}"
-        if self.args:
-            cmd += ' ' + ' '.join(self.args)
+        @returns string with command to run
+        """
+        return (f"{self.app_path} -v {self.c_dict['VERBOSITY']}"
+                f" -lookin {self.c_dict['LOOKIN_DIR']}"
+                f" {' '.join(self.args)}").rstrip()
 
-        cmd += ' -lookin ' + self.c_dict['LOOKIN_DIR']
-
-        if self.c_dict.get('CONFIG_FILE'):
-            cmd += f" -config {self.c_dict['CONFIG_FILE']}"
-        else:
-            cmd += f' {self.c_dict["JOB_ARGS"]}'
-
-        if self.c_dict.get('OUTPUT_FILENAME'):
-            cmd += f" -out {self.c_dict['OUTPUT_FILENAME']}"
-
-        return cmd
 
     def create_c_dict(self):
         """! Create a data structure (dictionary) that contains all the
@@ -248,7 +236,12 @@ class StatAnalysisWrapper(CommandBuilder):
         return jobs
 
     def c_dict_error_check(self, c_dict, all_field_lists_empty):
+        """! Check values read into c_dict from METplusConfig and report errors
+        if anything is misconfigured.
 
+        @param c_dict dictionary containing config values to check
+        @param all_field_lists_empty True if no field lists were parsed
+        """
         if not c_dict.get('CONFIG_FILE'):
             if len(c_dict['JOBS']) > 1:
                 self.log_error(
@@ -259,7 +252,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 self.logger.info("STAT_ANALYSIS_CONFIG_FILE not set. Passing "
                                  "job arguments to stat_analysis directly on "
                                  "the command line. This will bypass "
-                                  "any filtering done unless you add the "
+                                 "any filtering done unless you add the "
                                  "arguments to STAT_ANALYSIS_JOBS<n>")
 
         if not c_dict['OUTPUT_DIR']:
@@ -282,9 +275,6 @@ class StatAnalysisWrapper(CommandBuilder):
                         conf = f"STAT_ANALYSIS_{conf}_TEMPLATE"
                         self.log_error(f'Must set {conf} if [{check}] is used'
                                        ' in a job')
-            # error if they are found but their templates are not set
-
-
 
         for conf_list in self.LIST_CATEGORIES:
             if not c_dict[conf_list]:
@@ -338,7 +328,7 @@ class StatAnalysisWrapper(CommandBuilder):
             Format list items to match the format expected by
             StatAnalysis by removing parenthesis and any quotes,
             then adding back single quotes
-            Args:
+
               @param data_type type of list to get, FCST or OBS
               @returns list containing the formatted level list
         """
@@ -356,11 +346,20 @@ class StatAnalysisWrapper(CommandBuilder):
         return [f'"{item}"' for item in level_list]
 
     def _format_conf_list(self, conf_list):
+        """! Process config list. If list name (e.g. FCST_LEAD_LIST) is not
+        set, then check if numbered config variable (e.g. FCST_LEAD_LIST<n>)
+        is set. Format thresholds lists as thresholds. Add quotation marks
+        around any list not found in the self.FORMAT_LISTS. Format lists will
+        be formatted later based on the loop/group conditions.
+
+         @param conf_list name of METplus config variable to process
+         @returns list of items parsed from configuration
+        """
         items = getlist(
             self.config.getraw('config', conf_list, '')
         )
 
-        # if list if empty or unset, check for {LIST_NAME}<n>
+        # if list is empty or unset, check for {LIST_NAME}<n>
         if not items:
             indices = list(
                 find_indices_in_config_section(fr'{conf_list}(\d+)$',
@@ -396,41 +395,6 @@ class StatAnalysisWrapper(CommandBuilder):
                 formatted_items.append(item)
 
         return formatted_items
-
-    @staticmethod
-    def _format_time_list(string_value, get_met_format, sort_list=True):
-        out_list = []
-        if not string_value:
-            return []
-        for time_string in string_value.split(','):
-            time_string = time_string.strip()
-            if get_met_format:
-                value = time_string_to_met_time(time_string, default_unit='H',
-                                                force_hms=True)
-                out_list.append(value)
-            else:
-                delta_obj = get_relativedelta(time_string, default_unit='H')
-                out_list.append(delta_obj)
-
-        if sort_list:
-            if get_met_format:
-                out_list.sort(key=int)
-            else:
-                out_list.sort(key=ti_get_seconds_from_relativedelta)
-
-        return out_list
-
-    @staticmethod
-    def _get_met_time_list(string_value, sort_list=True):
-        return StatAnalysisWrapper._format_time_list(string_value,
-                                                     get_met_format=True,
-                                                     sort_list=sort_list)
-
-    @staticmethod
-    def _get_delta_list(string_value, sort_list=True):
-        return StatAnalysisWrapper._format_time_list(string_value,
-                                                     get_met_format=False,
-                                                     sort_list=sort_list)
 
     def set_lists_loop_or_group(self, c_dict):
         """! Determine whether the lists from the METplus config file
@@ -539,10 +503,9 @@ class StatAnalysisWrapper(CommandBuilder):
             )
 
             if 'HOUR' in list_name:
-                delta_list = self._get_delta_list(config_dict[list_name])
+                delta_list = get_delta_list(config_dict[list_name])
                 if not delta_list:
                     stringsub_dict[sub_name] = list_name_value
-                    # TODO: should this be set to 0:0:0 to 23:59:59?
                     stringsub_dict[sub_name + '_beg'] = relativedelta()
                     stringsub_dict[sub_name + '_end'] = (
                         relativedelta(hours=+23, minutes=+59, seconds=+59)
@@ -552,7 +515,7 @@ class StatAnalysisWrapper(CommandBuilder):
                     stringsub_dict[sub_name] = delta_list[0]
                 else:
                     stringsub_dict[sub_name] = (
-                        '_'.join(self._get_met_time_list(config_dict[list_name]))
+                        '_'.join(get_met_time_list(config_dict[list_name]))
                     )
 
                 stringsub_dict[sub_name + '_beg'] = delta_list[0]
@@ -580,7 +543,7 @@ class StatAnalysisWrapper(CommandBuilder):
                         )
 
             elif 'LEAD' in list_name:
-                lead_list = self._get_met_time_list(config_dict[list_name])
+                lead_list = get_met_time_list(config_dict[list_name])
 
                 if not lead_list:
                     continue
@@ -593,7 +556,7 @@ class StatAnalysisWrapper(CommandBuilder):
 
                 stringsub_dict[sub_name] = lead_list[0]
 
-                lead_rd = self._get_delta_list(config_dict[list_name])[0]
+                lead_rd = get_delta_list(config_dict[list_name])[0]
                 total_sec = ti_get_seconds_from_relativedelta(lead_rd)
                 stringsub_dict[sub_name+'_totalsec'] = str(total_sec)
 
@@ -659,12 +622,12 @@ class StatAnalysisWrapper(CommandBuilder):
         @param obs_hour_str string with list of observation hours to process
         """
         if fcst_hour_str:
-            fcst_hour_list = self._get_delta_list(fcst_hour_str)
+            fcst_hour_list = get_delta_list(fcst_hour_str)
         else:
             fcst_hour_list = None
 
         if obs_hour_str:
-            obs_hour_list = self._get_delta_list(obs_hour_str)
+            obs_hour_list = get_delta_list(obs_hour_str)
         else:
             obs_hour_list = None
 
@@ -759,12 +722,12 @@ class StatAnalysisWrapper(CommandBuilder):
         @param obs_lead_str string to parse list of observation leads
         """
         if fcst_lead_str:
-            fcst_lead_list = self._get_delta_list(fcst_lead_str)
+            fcst_lead_list = get_delta_list(fcst_lead_str)
         else:
             fcst_lead_list = None
 
         if obs_lead_str:
-            obs_lead_list = self._get_delta_list(obs_lead_str)
+            obs_lead_list = get_delta_list(obs_lead_str)
         else:
             obs_lead_list = None
 
@@ -857,7 +820,7 @@ class StatAnalysisWrapper(CommandBuilder):
             self.logger.debug(f"Expanding wildcard path: {one_path}")
             expand_path = glob.glob(one_path.strip())
             if not expand_path:
-                self.logger.warning(f"Wildcard expansion found no matches")
+                self.logger.warning("Wildcard expansion found no matches")
                 continue
             all_paths.extend(sorted(expand_path))
 
@@ -873,7 +836,7 @@ class StatAnalysisWrapper(CommandBuilder):
         """
         for list_name in self.FORMAT_LISTS:
             list_name = list_name.replace('_LIST', '')
-            values = self._get_met_time_list(config_dict.get(list_name, ''))
+            values = get_met_time_list(config_dict.get(list_name, ''))
             values = [f'"{item}"' for item in values]
             config_dict[list_name] = ', '.join(values)
 
@@ -992,7 +955,18 @@ class StatAnalysisWrapper(CommandBuilder):
 
     def process_job_args(self, job_type, job, model_info,
                          runtime_settings_dict):
+        """! Get dump_row or out_stat file paths and replace [dump_row_file]
+        and [out_stat_file] keywords from job arguments with the paths.
 
+        @param job_type type of job, either dump_row or out_stat
+        @param job string of job arguments to replace keywords
+        @param model_info dictionary containing info for each model processed.
+         Used to get filename template to use for substitution
+        @param runtime_settings_dict dictionary containing information for the
+        run that is being processed. Used to substitute values.
+        @returns job string with values substituted for [dump_row_file] or
+         [out_stat_file]
+        """
         output_template = (
             model_info[f'{job_type}_filename_template']
         )
@@ -1015,6 +989,10 @@ class StatAnalysisWrapper(CommandBuilder):
         return job
 
     def get_all_runtime_settings(self):
+        """! Get all settings for each run of stat_analysis.
+
+        @returns list of dictionaries containing settings for each run
+        """
         runtime_settings_dict_list = []
         c_dict_list = self.get_c_dict_list()
         for c_dict in c_dict_list:
@@ -1234,6 +1212,8 @@ class StatAnalysisWrapper(CommandBuilder):
         model_list = []
         obtype_list = []
         dump_row_filename_list = []
+        model_info = None
+
         # get list of models to process
         models_to_run = runtime_settings_dict['MODEL'].split(',')
         for model_info in self.c_dict['MODEL_INFO_LIST']:
@@ -1324,6 +1304,7 @@ class StatAnalysisWrapper(CommandBuilder):
                   containing information needed to run a StatAnalysis job
         """
         for runtime_settings in runtime_settings_dict_list:
+            self.clear()
             if not self.create_output_directories(runtime_settings):
                 continue
 
@@ -1380,28 +1361,30 @@ class StatAnalysisWrapper(CommandBuilder):
                 value = (f"{mp_item.lower()} = \"{value}\";")
                 self.env_var_dict[f'METPLUS_{mp_item}'] = value
 
-            value = f'jobs = ["'
-            value += '","'.join(runtime_settings['JOBS'])
-            value += '"];'
-            self.env_var_dict[f'METPLUS_JOBS'] = value
+            value = '","'.join(runtime_settings['JOBS'])
+            value = f'jobs = ["{value}"];'
+            self.env_var_dict['METPLUS_JOBS'] = value
 
             # send environment variables to logger
             self.set_environment_variables()
 
-            # set lookin dir
+            # set lookin dir to add to command
             self.logger.debug("Setting -lookin dir to "
                               f"{runtime_settings['LOOKIN_DIR']}")
             self.c_dict['LOOKIN_DIR'] = runtime_settings['LOOKIN_DIR']
-            self.c_dict['JOB_ARGS'] = runtime_settings['JOBS'][0]
+
+            # set any command line arguments
+            if self.c_dict.get('CONFIG_FILE'):
+                self.args.append(f"-config {self.c_dict['CONFIG_FILE']}")
+            else:
+                self.args.append(runtime_settings['JOBS'][0])
 
             # set -out file path if requested, value will be set to None if not
-            self.c_dict['OUTPUT_FILENAME'] = (
-                runtime_settings.get('OUTPUT_FILENAME')
-            )
+            output_filename = runtime_settings.get('OUTPUT_FILENAME')
+            if output_filename:
+                self.args.append(f"-out {output_filename}")
 
             self.build()
-
-            self.clear()
 
     def create_output_directories(self, runtime_settings_dict):
         """! Check if output filename is set for dump_row or out_stat. If set,
