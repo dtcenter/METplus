@@ -10,8 +10,7 @@ from datetime import datetime
 import itertools
 from dateutil.relativedelta import relativedelta
 
-from ..util import getlist
-from ..util import met_util as util
+from ..util import getlist, format_thresh
 from ..util import do_string_sub, find_indices_in_config_section
 from ..util import parse_var_list, remove_quotes, list_to_str
 from ..util import get_start_and_end_times
@@ -379,7 +378,7 @@ class StatAnalysisWrapper(CommandBuilder):
 
         # do not add quotes and format thresholds if threshold list
         if 'THRESH' in conf_list:
-            return [self.format_thresh(item) for item in items]
+            return [format_thresh(item) for item in items]
 
         if conf_list in self.LIST_CATEGORIES:
             return items
@@ -436,29 +435,6 @@ class StatAnalysisWrapper(CommandBuilder):
                           + ', '.join(c_dict['LOOP_LIST_ITEMS']))
 
         return c_dict
-
-    @staticmethod
-    def format_thresh(thresh_str):
-        """! Format thresholds for file naming
-
-        @param thresh_str string of the thresholds.
-         Can be a comma-separated list, i.e. gt3,<=5.5, ==7
-
-        @returns string of comma-separated list of the threshold(s) with
-         letter format, i.e. gt3,le5.5,eq7
-        """
-        formatted_thresh_list = []
-        # separate thresholds by comma and strip off whitespace around values
-        thresh_list = [thresh.strip() for thresh in thresh_str.split(',')]
-        for thresh in thresh_list:
-            if not thresh:
-                continue
-
-            thresh_letter = util.comparison_to_letter_format(thresh)
-            if thresh_letter:
-                formatted_thresh_list.append(thresh_letter)
-
-        return ','.join(formatted_thresh_list)
 
     def build_stringsub_dict(self, config_dict):
         """! Build a dictionary with list names, dates, and commonly
@@ -1093,11 +1069,11 @@ class StatAnalysisWrapper(CommandBuilder):
                     }
 
                     if fcst_thresh:
-                        thresh_formatted = self.format_thresh(fcst_thresh)
+                        thresh_formatted = format_thresh(fcst_thresh)
                         c_dict['FCST_THRESH_LIST'].append(thresh_formatted)
 
                     if obs_thresh:
-                        thresh_formatted = self.format_thresh(obs_thresh)
+                        thresh_formatted = format_thresh(obs_thresh)
                         c_dict['OBS_THRESH_LIST'].append(thresh_formatted)
 
                     if fcst_units:

@@ -349,29 +349,6 @@ def test_set_lists_as_loop_or_group(metplus_config):
 
 
 @pytest.mark.parametrize(
-    'expression, expected_result', [
-        ('>1', 'gt1'),
-        ('>=0.2', 'ge0.2'),
-        ('<30', 'lt30'),
-        ('<=0.04', 'le0.04'),
-        ('==5', 'eq5'),
-        ('!=0.06', 'ne0.06'),
-        ('>0.05, gt0.05, >=1, ge1, <5, lt5, <=10, le10, ==15, eq15, !=20, ne20',
-         'gt0.05,gt0.05,ge1,ge1,lt5,lt5,le10,le10,eq15,eq15,ne20,ne20'),
-        ('<805, <1609, <4828, <8045, >=8045, <16090',
-         'lt805,lt1609,lt4828,lt8045,ge8045,lt16090'),
-    ]
-)
-@pytest.mark.wrapper_d
-def test_format_thresh(metplus_config, expression, expected_result):
-    # Independently test the creation of
-    # string values for defining thresholds
-    st = stat_analysis_wrapper(metplus_config)
-
-    assert st.format_thresh(expression) == expected_result
-
-
-@pytest.mark.parametrize(
     'lists_to_loop,c_dict_overrides,config_dict_overrides,expected_values', [
         # Test 0
         (['FCST_VALID_HOUR_LIST', 'MODEL_LIST'],

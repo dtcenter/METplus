@@ -168,3 +168,37 @@ def test_list_to_str(input, add_quotes, expected_output):
         assert list_to_str(input) == expected_output
     else:
         assert list_to_str(input, add_quotes=add_quotes) == expected_output
+
+
+@pytest.mark.parametrize(
+    'expression, expected_result', [
+        ('gt3', 'gt3'),
+        ('>3', 'gt3'),
+        ('le3.5', 'le3.5'),
+        ('<=3.5', 'le3.5'),
+        ('==4', 'eq4'),
+        ('!=3.5', 'ne3.5'),
+    ]
+)
+@pytest.mark.util
+def test_comparison_to_letter_format(expression, expected_result):
+    assert comparison_to_letter_format(expression) == expected_result
+
+
+@pytest.mark.parametrize(
+    'expression, expected_result', [
+        ('>1', 'gt1'),
+        ('>=0.2', 'ge0.2'),
+        ('<30', 'lt30'),
+        ('<=0.04', 'le0.04'),
+        ('==5', 'eq5'),
+        ('!=0.06', 'ne0.06'),
+        ('>0.05, gt0.05, >=1, ge1, <5, lt5, <=10, le10, ==15, eq15, !=20, ne20',
+         'gt0.05,gt0.05,ge1,ge1,lt5,lt5,le10,le10,eq15,eq15,ne20,ne20'),
+        ('<805, <1609, <4828, <8045, >=8045, <16090',
+         'lt805,lt1609,lt4828,lt8045,ge8045,lt16090'),
+    ]
+)
+@pytest.mark.util
+def test_format_thresh(expression, expected_result):
+    assert format_thresh(expression) == expected_result

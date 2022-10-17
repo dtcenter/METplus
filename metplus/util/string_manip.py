@@ -7,6 +7,8 @@ Description: METplus utility to handle string manipulation
 import re
 from csv import reader
 
+from .constants import VALID_COMPARISONS
+
 
 def remove_quotes(input_string):
     """!Remove quotes from string"""
@@ -210,3 +212,40 @@ def list_to_str(list_of_values, add_quotes=True):
         return '"' + '", "'.join(values) + '"'
 
     return ', '.join(list_of_values)
+
+
+def comparison_to_letter_format(expression):
+    """! Convert comparison operator to the letter version if it is not already
+
+    @param expression string starting with comparison operator to convert,
+     i.e. gt3 or <=5.4
+    @returns letter comparison operator, i.e. gt3 or le5.4 or None if invalid
+    """
+    for symbol_comp, letter_comp in VALID_COMPARISONS.items():
+        if letter_comp in expression or symbol_comp in expression:
+            return expression.replace(symbol_comp, letter_comp)
+
+    return None
+
+
+def format_thresh(thresh_str):
+    """! Format thresholds for file naming
+
+    @param thresh_str string of the thresholds.
+     Can be a comma-separated list, i.e. gt3,<=5.5, ==7
+
+    @returns string of comma-separated list of the threshold(s) with
+     letter format, i.e. gt3,le5.5,eq7
+    """
+    formatted_thresh_list = []
+    # separate thresholds by comma and strip off whitespace around values
+    thresh_list = [thresh.strip() for thresh in thresh_str.split(',')]
+    for thresh in thresh_list:
+        if not thresh:
+            continue
+
+        thresh_letter = comparison_to_letter_format(thresh)
+        if thresh_letter:
+            formatted_thresh_list.append(thresh_letter)
+
+    return ','.join(formatted_thresh_list)

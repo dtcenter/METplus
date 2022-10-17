@@ -331,21 +331,6 @@ def test_round_0p5(value, expected_result):
 
 
 @pytest.mark.parametrize(
-    'expression, expected_result', [
-        ('gt3', 'gt3'),
-        ('>3', 'gt3'),
-        ('le3.5', 'le3.5'),
-        ('<=3.5', 'le3.5'),
-        ('==4', 'eq4'),
-        ('!=3.5', 'ne3.5'),
-    ]
-)
-@pytest.mark.util
-def test_comparison_to_letter_format(expression, expected_result):
-    assert util.comparison_to_letter_format(expression) == expected_result
-
-
-@pytest.mark.parametrize(
     'skip_times_conf, expected_dict', [
         ('"%d:30,31"', {'%d': ['30','31']}),
         ('"%m:begin_end_incr(3,11,1)"', {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
