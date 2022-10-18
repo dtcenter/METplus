@@ -1,6 +1,6 @@
 """
-UserScript: Physics Tendency Planview plot
-=========================================================================
+UserScript: Physics Tendency Planview Plot
+==========================================
 
 model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
 
@@ -59,7 +59,7 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planv
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # No MET tools are used in this use case.
 #
