@@ -423,8 +423,10 @@ def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
     if is_stat_file:
         print("Comparing stat file")
         header_a = lines_a.pop(0).split()[1:]
+        header_b = lines_b.pop(0).split()[1:]
     else:
         header_a = None
+        header_b = None
 
     if len(lines_a) != len(lines_b):
         print(f"ERROR: Different number of lines in {filepath_b}")
