@@ -1,6 +1,7 @@
 import os
 import netCDF4
 import filecmp
+import csv
 from PIL import Image, ImageChops
 import numpy
 
@@ -25,11 +26,23 @@ PDF_EXTENSIONS = [
     '.pdf',
 ]
 
+CSV_EXTENSIONS = [
+    '.csv',
+]
+
 UNSUPPORTED_EXTENSIONS = [
 ]
 
+# number of decision places to accept float differences
+# Note: Completing METplus issue #1873 could allow this to be set to 6
+ROUNDING_PRECISION = 5
+
 def get_file_type(filepath):
     _, file_extension = os.path.splitext(filepath)
+
+    if file_extension in CSV_EXTENSIONS:
+        return 'csv'
+
     if file_extension in IMAGE_EXTENSIONS:
         return 'image'
 
@@ -55,6 +68,7 @@ def get_file_type(filepath):
         return f'unsupported{file_extension}'
 
     return 'unknown'
+
 
 def compare_dir(dir_a, dir_b, debug=False, save_diff=False):
     # if input are files and not directories, compare them 
@@ -137,6 +151,7 @@ def compare_dir(dir_a, dir_b, debug=False, save_diff=False):
           "**************************************************\n\n")
     return diff_files
 
+
 def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
                   save_diff=False):
     # dir_a and dir_b are only needed if comparing file lists that need those
@@ -149,7 +164,7 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
     if not os.path.exists(filepath_b):
         if debug:
             print(f"ERROR: File does not exist: {filepath_b}")
-        return (filepath_a, '', 'file not found (in truth but missing now)', '')
+        return filepath_a, '', 'file not found (in truth but missing now)', ''
 
     file_type = get_file_type(filepath_a)
     if file_type.startswith('skip'):
@@ -158,12 +173,18 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
 
     if file_type.startswith('unsupported'):
         print(f"Unsupported file type encountered: {file_type.split('.')[1]}")
-        return (filepath_a, filepath_b, file_type, '')
+        return filepath_a, filepath_b, file_type, ''
+
+    if file_type == 'csv':
+        print('Comparing CSV')
+        if not compare_csv_files(filepath_a, filepath_b):
+            print(f'ERROR: CSV file differs: {filepath_b}')
+            return filepath_a, filepath_b, 'CSV diff', ''
 
     if file_type == 'netcdf':
         print("Comparing NetCDF")
         if not nc_is_equal(filepath_a, filepath_b):
-            return (filepath_a, filepath_b, 'NetCDF diff', '')
+            return filepath_a, filepath_b, 'NetCDF diff', ''
 
         print("No differences in NetCDF files")
         return True
@@ -179,7 +200,7 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
         if diff_file is False:
             diff_file = ''
 
-        return (filepath_a, filepath_b, 'PDF diff', diff_file)
+        return filepath_a, filepath_b, 'PDF diff', diff_file
 
     if file_type == 'image':
         print("Comparing images")
@@ -192,7 +213,7 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
         if diff_file is False:
             diff_file = ''
 
-        return (filepath_a, filepath_b, 'Image diff', diff_file)
+        return filepath_a, filepath_b, 'Image diff', diff_file
 
     # if not any of the above types, use diff to compare
     print("Comparing text files")
@@ -200,7 +221,7 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
         # if files differ, open files and handle expected diffs
         if not compare_txt_files(filepath_a, filepath_b, dir_a, dir_b):
             print(f"ERROR: File differs: {filepath_b}")
-            return (filepath_a, filepath_b, 'Text diff', '')
+            return filepath_a, filepath_b, 'Text diff', ''
 
         print("No differences in text files")
         return True
@@ -208,6 +229,7 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
         print("No differences in text files")
 
     return True
+
 
 def compare_pdf_as_images(filepath_a, filepath_b, save_diff=False):
     try:
@@ -234,6 +256,7 @@ def compare_pdf_as_images(filepath_a, filepath_b, save_diff=False):
 
     return True
 
+
 def compare_image_files(filepath_a, filepath_b, save_diff=False):
     image_a = Image.open(filepath_a)
     image_b = Image.open(filepath_b)
@@ -245,6 +268,7 @@ def compare_image_files(filepath_a, filepath_b, save_diff=False):
         return False
 
     return save_diff_file(image_diff, filepath_b)
+
 
 def compare_images(image_a, image_b):
     """! Compare pillow image objects. Returns difference image object if there
@@ -264,12 +288,93 @@ def compare_images(image_a, image_b):
         return image_diff
     return None
 
+
 def save_diff_file(image_diff, filepath_b):
     rel_path, file_extension = os.path.splitext(filepath_b)
     diff_file = f'{rel_path}_diff.png'
     print(f"Saving diff file: {diff_file}")
     image_diff.save(diff_file, "PNG")
     return diff_file
+
+
+def compare_csv_files(filepath_a, filepath_b):
+    lines_a = []
+    lines_b = []
+
+    with open(filepath_a, 'r') as file_handle:
+        csv_read = csv.DictReader(file_handle, delimiter=',')
+        for row in csv_read:
+            lines_a.append(row)
+
+    with open(filepath_b, 'r') as file_handle:
+        csv_read = csv.DictReader(file_handle, delimiter=',')
+        for row in csv_read:
+            lines_b.append(row)
+
+    keys_a = lines_a[0].keys()
+    keys_b = lines_b[0].keys()
+    # compare header columns and report error if they differ
+    if len(keys_a) != len(keys_b):
+        print(f'ERROR: Different number of columns in TRUTH ({len(keys_a)}) '
+              f'than in OUTPUT ({len(keys_b)})')
+        only_a = [item for item in keys_a if item not in keys_b]
+        if only_a:
+            print(f'Columns only in TRUTH: {",".join(only_a)}')
+
+        only_b = [item for item in keys_b if item not in keys_a]
+        if only_b:
+            print(f'Columns only in OUTPUT: {",".join(only_b)}')
+        return False
+
+    # compare number of lines and error if they differ
+    if len(lines_a) != len(lines_b):
+        print(f'ERROR: Different number of lines in TRUTH ({len(lines_a)}) '
+              f'than in OUTPUT ({len(lines_b)})')
+        return False
+
+    # compare each CSV column
+    status = True
+    for num, (line_a, line_b) in enumerate(zip(lines_a, lines_b), start=1):
+        for key in keys_a:
+            val_a = line_a[key]
+            val_b = line_b[key]
+            if val_a == val_b:
+                continue
+            # prevent error if values are diffs are less than
+            # ROUNDING_PRECISION decimal places
+            # METplus issue #1873 addresses the real problem
+            try:
+                if is_equal_rounded(val_a, val_b):
+                    continue
+                print(f"ERROR: Line {num} - {key} differs by "
+                      f"less than {ROUNDING_PRECISION} decimals: "
+                      f"TRUTH = {val_a}, OUTPUT = {val_b}")
+                status = False
+            except ValueError:
+                # handle values that can't be cast to float
+                print(f"ERROR: Line {num} - {key} differs: "
+                      f"TRUTH = {val_a}, OUTPUT = {val_b}")
+                status = False
+
+    return status
+
+
+def is_equal_rounded(value_a, value_b):
+    if _truncate_float(value_a) == _truncate_float(value_b):
+        return True
+    if _round_float(value_a) == _round_float(value_b):
+        return True
+    return False
+
+
+def _truncate_float(value):
+    factor = 1 / (10 ** ROUNDING_PRECISION)
+    return float(value) // factor * factor
+
+
+def _round_float(value):
+    return round(float(value), ROUNDING_PRECISION)
+
 
 def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
     with open(filepath_a, 'r') as file_handle:
@@ -315,9 +420,8 @@ def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
     if is_stat_file:
         print("Comparing stat file")
         header_a = lines_a.pop(0).split()[1:]
-        header_b = lines_b.pop(0).split()[1:]
     else:
-        header_a = header_b = None
+        header_a = None
 
     if len(lines_a) != len(lines_b):
         print(f"ERROR: Different number of lines in {filepath_b}")
@@ -347,6 +451,7 @@ def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
                                    header_a=header_a)
 
     return all_good
+
 
 def diff_text_lines(lines_a, lines_b,
                     dir_a=None, dir_b=None,
@@ -381,6 +486,7 @@ def diff_text_lines(lines_a, lines_b,
                 all_good = False
 
     return all_good
+
 
 def nc_is_equal(file_a, file_b, fields=None, debug=False):
     """! Check if two NetCDF files have the same data
@@ -461,6 +567,7 @@ def nc_is_equal(file_a, file_b, fields=None, debug=False):
         return False
 
     return is_equal
+
 
 if __name__ == '__main__':
     dir_a = sys.argv[1]
