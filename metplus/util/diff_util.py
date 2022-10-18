@@ -181,6 +181,9 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
             print(f'ERROR: CSV file differs: {filepath_b}')
             return filepath_a, filepath_b, 'CSV diff', ''
 
+        print("No differences in CSV files")
+        return True
+
     if file_type == 'netcdf':
         print("Comparing NetCDF")
         if not nc_is_equal(filepath_a, filepath_b):
