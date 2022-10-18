@@ -7,6 +7,7 @@ short_range/
 UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
 
 """
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -32,12 +33,12 @@ UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
 #  * Grid specification: Grid specification data
 #
 #  **Location:** All of the input data required for this use case can be
-# found in the met_test sample data tarball. Click here to the METplus
-# releases page and download sample data for the appropriate release:
-# https://github.com/dtcenter/METplus/releases
-# The tarball should be unpacked into the directory that you will set
-# the value of INPUT_BASE. See the "Running METplus" section below for more
-# information.
+#  found in the met_test sample data tarball. Click here to the METplus
+#  releases page and download sample data for the appropriate release:
+#  https://github.com/dtcenter/METplus/releases
+#  The tarball should be unpacked into the directory that you will set
+#  the value of INPUT_BASE. See the "Running METplus" section below for more
+#  information.
 
 ##############################################################################
 # METplus Components
@@ -49,7 +50,7 @@ UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
 ##############################################################################
 # METplus Workflow
 # ----------------
-#
+# 
 # This use case does not loop but plots physics tendency data that has been
 # subsetted to one date: 2019-05-04.
 # 
@@ -76,10 +77,7 @@ UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
 # configuration file. 
 # See :ref:`How METplus controls MET config file settings<metplus-control-met>`
 # for more details. 
-#
-# .. note:: See the :ref:`MODE MET Configuration<mode-met-conf>` section of
-# the User's Guide for more information on the environment variables
-# used in the file below:
+
 
 ##############################################################################
 # Running METplus
