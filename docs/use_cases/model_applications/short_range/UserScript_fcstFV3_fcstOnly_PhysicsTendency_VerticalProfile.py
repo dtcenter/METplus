@@ -52,7 +52,7 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 # METplus Components
 # ------------------
 #
-# This use case runs the METplotpy vert_profile_fv3.py script to generate the plan views.
+# This use case runs the METplotpy vert_profile_fv3.py script to generate the vertical profile plot.
 #
 
 ##############################################################################
