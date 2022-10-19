@@ -863,14 +863,14 @@ class StatAnalysisWrapper(CommandBuilder):
 
         # if hour list is not set
         if not hour_list or (len(hour_list) == 1 and hour_list == ['']):
-            if date_type == init_or_valid:
-                config_dict[f'{prefix}_BEG'] = date_beg.strftime(YMD_HMS)
-
-                # if end time is only YYYYMMDD, set HHHMMSS to 23:59:59
-                if date_end == datetime.strptime(end_ymd, YMD):
-                    config_dict[f'{prefix}_END'] = f'{end_ymd}_235959'
-                else:
-                    config_dict[f'{prefix}_END'] = date_end.strftime(YMD_HMS)
+        #     if date_type == init_or_valid:
+        #         config_dict[f'{prefix}_BEG'] = date_beg.strftime(YMD_HMS)
+        #
+        #         # if end time is only YYYYMMDD, set HHHMMSS to 23:59:59
+        #         if date_end == datetime.strptime(end_ymd, YMD):
+        #             config_dict[f'{prefix}_END'] = f'{end_ymd}_235959'
+        #         else:
+        #             config_dict[f'{prefix}_END'] = date_end.strftime(YMD_HMS)
             return
 
         # if multiple hours are specified
@@ -886,9 +886,24 @@ class StatAnalysisWrapper(CommandBuilder):
         # if 1 hour specified
         hour_now = hour_list[0].replace('"', '')
         config_dict[f'{prefix}_HOUR'] = '"'+hour_now+'"'
-        if date_type == init_or_valid:
-            config_dict[f'{prefix}_BEG'] = f'{beg_ymd}_{hour_now}'
-            config_dict[f'{prefix}_END'] = f'{end_ymd}_{hour_now}'
+        # if date_type == init_or_valid:
+        #     config_dict[f'{prefix}_BEG'] = f'{beg_ymd}_{hour_now}'
+        #     config_dict[f'{prefix}_END'] = f'{end_ymd}_{hour_now}'
+
+        # check if explicit value is set for _BEG or _END
+        # e.g. STAT_ANALYSIS_FCST_INIT_BEG
+        app = self.app_name.upper()
+        for beg_or_end in ('BEG', 'END'):
+            var_prefix = f'{app}_{prefix}_{beg_or_end}'
+            generic_prefix = f'{app}_{init_or_valid}_{beg_or_end}'
+            value = None
+            if self.config.has_option('config', var_prefix):
+                value = self.config.getraw('config', var_prefix)
+            elif self.config.has_option('config', generic_prefix):
+                value = self.config.getraw('config', generic_prefix)
+
+            if value:
+                config_dict[f'{prefix}_{beg_or_end}'] = value
 
     def parse_model_info(self):
         """! Parse for model information.
