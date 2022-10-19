@@ -58,8 +58,8 @@ UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
 # 
 # This use case does not loop but plots physics tendency data that has been
 # subsetted to one date: 2019-05-04.
-# 
-##############################################################################
+
+###################################################################################################
 # METplus Configuration
 # ---------------------
 #
