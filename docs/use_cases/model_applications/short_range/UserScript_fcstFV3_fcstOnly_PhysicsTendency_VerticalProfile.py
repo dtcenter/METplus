@@ -18,17 +18,24 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 # are due to horizontal and vertical motion.  The residual (which should be zero)
 # is the difference between the actual change in the state variable over the requested
 # time window and the expected change due to physics parameterizations and dynamics
-# tendencies.  One can plpt a single tendency component at multiple pressure levels or
+# tendencies.  One can plot a single tendency component at multiple pressure levels or
 # plot all tendency components at a single pressure level.  This use case illustrates 
-# how to generate the vertical profile plot.
+# how to generate the vertical profile plot.  The METplotpy source code is needed to generate the plot.           
+# Clone the METplotpy repository (https://github.com/dtcenter/METplotpy) under the same base
+# directory as the METPLUS_BASE directory so that the METplus and
+# METplotpy directories are under the same base directory (i.e. if the METPLUS_BASE directory is
+# /home/username/working/METplus, then clone the METplotpy source
+# code into the /home/username/working directory).  
+
+
 
 ##############################################################################
 # Datasets
 # --------
 #
-#  * Forecast dataset: FV3 Model member data
-#  * Grid specification: Grid specification data
-#  * Mid-CONUS Shapefiles: (uncompress and place under shapefile/MID_CONUS directory under the appropriate METPLUS_DATA directory)
+#  * Forecast dataset: FV3 3-D history file with physics and dynamics tendencies
+#  * Grid specification: FV3 2-D grid specification file with latitude and longitude of each grid point
+#  * Mid-CONUS Shapefiles: 
 #
 #    * MID_CONUS.cpg
 #    * MID_CONUS.dbf
