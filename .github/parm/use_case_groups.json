@@ -1,10 +1,5 @@
 [
-  {
-    "category": "short_range",
-    "index_list": "10-12",
-    "run": false
-  },
-  {
+   {
     "category": "met_tool_wrapper",
     "index_list": "0-29,59-61",
     "run": false
@@ -52,6 +47,11 @@
   {
     "category": "short_range",
     "index_list": "9",
+    "run": false
+  },
+  {
+    "category": "short_range",
+    "index_list": "10-12",
     "run": false
   },
   {
