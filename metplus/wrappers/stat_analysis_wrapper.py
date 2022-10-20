@@ -834,6 +834,7 @@ class StatAnalysisWrapper(CommandBuilder):
         @returns dictionary containing the edited configuration information
          for valid and initialization dates and hours
         """
+        # set all of the HOUR and LEAD lists to include the MET time format
         for list_name in self.FORMAT_LISTS:
             list_name = list_name.replace('_LIST', '')
             values = get_met_time_list(config_dict.get(list_name, ''))
@@ -844,51 +845,19 @@ class StatAnalysisWrapper(CommandBuilder):
             for init_or_valid in ['INIT', 'VALID']:
                 self._format_valid_init_item(config_dict,
                                              fcst_or_obs,
-                                             init_or_valid,
-                                             self.c_dict['DATE_TYPE'])
+                                             init_or_valid)
 
         return config_dict
 
-    def _format_valid_init_item(self, config_dict, fcst_or_obs, init_or_valid,
-                                date_type):
-        date_beg = self.c_dict['DATE_BEG']
-        date_end = self.c_dict['DATE_END']
+    def _format_valid_init_item(self, config_dict, fcst_or_obs, init_or_valid):
+        """! Check if variables are set in the METplusConfig to explicitly
+        set the begin and end values in the wrapped MET config file.
 
-        # get YYYYMMDD of begin and end time
-        beg_ymd = date_beg.strftime(YMD)
-        end_ymd = date_end.strftime(YMD)
-
+        @param config_dict dictionary to set values to set in MET config
+        @param fcst_or_obs string either FCST or OBS
+        @param init_or_valid string either INIT or VALID
+        """
         prefix = f'{fcst_or_obs}_{init_or_valid}'
-        hour_list = config_dict[f'{prefix}_HOUR'].split(', ')
-
-        # if hour list is not set
-        if not hour_list or (len(hour_list) == 1 and hour_list == ['']):
-        #     if date_type == init_or_valid:
-        #         config_dict[f'{prefix}_BEG'] = date_beg.strftime(YMD_HMS)
-        #
-        #         # if end time is only YYYYMMDD, set HHHMMSS to 23:59:59
-        #         if date_end == datetime.strptime(end_ymd, YMD):
-        #             config_dict[f'{prefix}_END'] = f'{end_ymd}_235959'
-        #         else:
-        #             config_dict[f'{prefix}_END'] = date_end.strftime(YMD_HMS)
-            return
-
-        # if multiple hours are specified
-        if len(hour_list) > 1:
-            if date_type == init_or_valid:
-                hour_beg = hour_list[0].replace('"', '')
-                hour_end = hour_list[-1].replace('"', '')
-                config_dict[f'{prefix}_BEG'] = f'{beg_ymd}_{hour_beg}'
-                config_dict[f'{prefix}_END'] = f'{end_ymd}_{hour_end}'
-
-            return
-
-        # if 1 hour specified
-        hour_now = hour_list[0].replace('"', '')
-        config_dict[f'{prefix}_HOUR'] = '"'+hour_now+'"'
-        # if date_type == init_or_valid:
-        #     config_dict[f'{prefix}_BEG'] = f'{beg_ymd}_{hour_now}'
-        #     config_dict[f'{prefix}_END'] = f'{end_ymd}_{hour_now}'
 
         # check if explicit value is set for _BEG or _END
         # e.g. STAT_ANALYSIS_FCST_INIT_BEG
