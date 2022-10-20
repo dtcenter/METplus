@@ -1311,7 +1311,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 self.env_var_dict[key] = value
 
             # send environment variables to logger
-            self.set_environment_variables()
+            self.set_environment_variables(runtime_settings)
 
             # set lookin dir to add to command
             self.logger.debug("Setting -lookin dir to "
