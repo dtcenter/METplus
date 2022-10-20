@@ -14,10 +14,10 @@ artifact_name=$2
 .github/jobs/setup_and_run_diff.py ${matrix_categories} $artifact_name
 
 if [ "$( ls -A ${RUNNER_WORKSPACE}/diff)" ]; then
-  echo ::set-output name=upload_diff::true
+  echo "upload_diff=true" >> $GITHUB_OUTPUT
   mkdir -p artifact/diff-${artifact_name}
   cp -r ${RUNNER_WORKSPACE}/diff/* artifact/diff-${artifact_name}
   exit 2
 fi
 
-echo ::set-output name=upload_diff::false
+echo "upload_diff=false" >> $GITHUB_OUTPUT
