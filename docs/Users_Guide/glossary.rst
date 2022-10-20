@@ -20,9 +20,9 @@ METplus Configuration Glossary
        [dir]
        SERIES_ANALYSIS_OUTPUT_DIR = {OUTPUT_BASE}/{custom?fmt=%s}
 
-    With this configuration, SeriesAnalysis will be called twice. The first run will use SeriesAnalysisConfig_one and write output to {OUTPUT_BASE}/one. The second run will use SeriesAnalysisConfig_two and write output to {OUTPUT_BASE}/two.
+     With this configuration, SeriesAnalysis will be called twice. The first run will use SeriesAnalysisConfig_one and write output to {OUTPUT_BASE}/one. The second run will use SeriesAnalysisConfig_two and write output to {OUTPUT_BASE}/two.
 
-    If unset or left blank, the wrapper will run once per run time. There are also wrapper-specific configuration variables to define a custom string loop list for a single wrapper, i.e. :term:`SERIES_ANALYSIS_CUSTOM_LOOP_LIST` and :term:`PCP_COMBINE_CUSTOM_LOOP_LIST`.
+     If unset or left blank, the wrapper will run once per run time. There are also wrapper-specific configuration variables to define a custom string loop list for a single wrapper, i.e. :term:`SERIES_ANALYSIS_CUSTOM_LOOP_LIST` and :term:`PCP_COMBINE_CUSTOM_LOOP_LIST`.
 
      | *Used by:* Many
 
@@ -9960,12 +9960,131 @@ METplus Configuration Glossary
    STAT_ANALYSIS_FCST_INIT_BEG
      Specify the value for 'fcst_init_beg' in the MET configuration file for
      StatAnalysis. This can refer to filename template tags that are set by
-     the wrapper. Example:
+     the wrapper. Example::
 
-     [config]
-     INIT_BEG = 20221014
-     STAT_ANALYSIS_FCST_INIT_BEG = {fcst_init_beg?fmt=%Y%m%d_%H}
+       [config]
+       INIT_BEG = 20221014
+       STAT_ANALYSIS_FCST_INIT_BEG = {fcst_init_beg?fmt=%Y%m%d_%H}
 
      will set fcst_init_beg = "20221014_00"; in the wrapped MET config file.
+
+     | *Used by:* StatAnalysis
+
+   STAT_ANALYSIS_FCST_INIT_END
+     Specify the value for 'fcst_init_end' in the MET configuration file for
+     StatAnalysis. This can refer to filename template tags that are set by
+     the wrapper. Example::
+
+       [config]
+       INIT_END = 20221015
+       STAT_ANALYSIS_FCST_INIT_END = {fcst_init_beg?fmt=%Y%m%d}_12
+
+     will set fcst_init_end = "20221014_12"; in the wrapped MET config file.
+
+     | *Used by:* StatAnalysis
+
+   STAT_ANALYSIS_OBS_INIT_BEG
+     Specify the value for 'obs_init_beg' in the MET configuration file for
+     StatAnalysis. This can refer to filename template tags that are set by
+     the wrapper. Example::
+
+       [config]
+       INIT_BEG = 20221014
+       STAT_ANALYSIS_OBS_INIT_BEG = {obs_init_beg?fmt=%Y%m%d_%H}
+
+     will set obs_init_beg = "20221014_00"; in the wrapped MET config file.
+
+     | *Used by:* StatAnalysis
+
+   STAT_ANALYSIS_OBS_INIT_END
+     Specify the value for 'obs_init_end' in the MET configuration file for
+     StatAnalysis. This can refer to filename template tags that are set by
+     the wrapper. Example::
+
+       [config]
+       INIT_END = 20221015
+       STAT_ANALYSIS_OBS_INIT_END = {obs_init_end?fmt=%Y%m%d}_12
+
+     will set obs_init_end = "20221014_12"; in the wrapped MET config file.
+
+     | *Used by:* StatAnalysis
+
+   STAT_ANALYSIS_FCST_VALID_BEG
+     Specify the value for 'fcst_valid_beg' in the MET configuration file for
+     StatAnalysis. This can refer to filename template tags that are set by
+     the wrapper. Example::
+
+       [config]
+       VALID_BEG = 20221014
+       STAT_ANALYSIS_FCST_VALID_BEG = {fcst_valid_beg?fmt=%Y%m%d_%H}
+
+     will set fcst_valid_beg = "20221014_00"; in the wrapped MET config file.
+
+     | *Used by:* StatAnalysis
+
+   STAT_ANALYSIS_FCST_VALID_END
+     Specify the value for 'fcst_valid_end' in the MET configuration file for
+     StatAnalysis. This can refer to filename template tags that are set by
+     the wrapper. Example::
+
+       [config]
+       VALID_END = 20221015
+       STAT_ANALYSIS_FCST_VALID_END = {fcst_valid_beg?fmt=%Y%m%d}_12
+
+     will set fcst_valid_end = "20221014_12"; in the wrapped MET config file.
+
+     | *Used by:* StatAnalysis
+
+   STAT_ANALYSIS_OBS_VALID_BEG
+     Specify the value for 'obs_valid_beg' in the MET configuration file for
+     StatAnalysis. This can refer to filename template tags that are set by
+     the wrapper. Example::
+
+       [config]
+       VALID_BEG = 20221014
+       STAT_ANALYSIS_OBS_VALID_BEG = {obs_valid_beg?fmt=%Y%m%d_%H}
+
+     will set obs_valid_beg = "20221014_00"; in the wrapped MET config file.
+
+     | *Used by:* StatAnalysis
+
+   STAT_ANALYSIS_OBS_VALID_END
+     Specify the value for 'obs_valid_end' in the MET configuration file for
+     StatAnalysis. This can refer to filename template tags that are set by
+     the wrapper. Example::
+
+       [config]
+       VALID_END = 20221015
+       STAT_ANALYSIS_OBS_VALID_END = {obs_valid_end?fmt=%Y%m%d}_12
+
+     will set obs_valid_end = "20221014_12"; in the wrapped MET config file.
+
+     | *Used by:* StatAnalysis
+
+   STAT_ANALYSIS_INIT_BEG
+     Specify the value for both 'fcst_init_beg' and 'obs_init_beg' in the MET
+     configuration file for StatAnalysis.
+     See :term:`STAT_ANALYSIS_FCST_INIT_BEG`.
+
+     | *Used by:* StatAnalysis
+
+   STAT_ANALYSIS_INIT_END
+     Specify the value for both 'fcst_init_end' and 'obs_init_end' in the MET
+     configuration file for StatAnalysis.
+     See :term:`STAT_ANALYSIS_FCST_INIT_END`.
+
+     | *Used by:* StatAnalysis
+
+   STAT_ANALYSIS_VALID_BEG
+     Specify the value for both 'fcst_valid_beg' and 'obs_valid_beg' in the MET
+     configuration file for StatAnalysis.
+     See :term:`STAT_ANALYSIS_FCST_VALID_BEG`.
+
+     | *Used by:* StatAnalysis
+
+   STAT_ANALYSIS_VALID_END
+     Specify the value for both 'fcst_valid_end' and 'obs_valid_end' in the MET
+     configuration file for StatAnalysis.
+     See :term:`STAT_ANALYSIS_FCST_VALID_END`.
 
      | *Used by:* StatAnalysis
