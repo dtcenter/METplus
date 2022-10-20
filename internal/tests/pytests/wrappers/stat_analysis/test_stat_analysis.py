@@ -77,14 +77,61 @@ def set_minimum_config_settings(config):
                '{valid?fmt=%Y%m%d%H}')
     config.set('config', 'GROUP_LIST_ITEMS', 'DESC_LIST')
     config.set('config', 'LOOP_LIST_ITEMS', 'MODEL_LIST')
-    config.set('config', 'MODEL_LIST', 'MODEL1')
+    config.set('config', 'MODEL_LIST', 'MODEL_A')
     config.set('config', 'STAT_ANALYSIS_JOB1', '-job filter')
     config.set('config', 'MODEL1', 'MODEL_A')
-    config.set('config', 'MODEL1_STAT_ANALYSIS_LOOKIN_DIR', '/some/lookin/dir')
+    config.set('config', 'MODEL1_STAT_ANALYSIS_LOOKIN_DIR',
+               '{METPLUS_BASE}/internal/tests/data/stat_data')
 
     # not required, can be unset for certain tests
     config.set('config', 'STAT_ANALYSIS_CONFIG_FILE',
                '{PARM_BASE}/met_config/STATAnalysisConfig_wrapped')
+
+
+@pytest.mark.parametrize(
+    'config_overrides, expected_env_vars', [
+        ({}, {}),
+        ({'STAT_ANALYSIS_FCST_VALID_BEG': '{fcst_valid_beg?fmt=%Y%m%d_%H%M%S}'},
+         {'METPLUS_FCST_VALID_BEG': 'fcst_valid_beg = "20221014_000000";'}),
+        ({'STAT_ANALYSIS_FCST_VALID_END': '{fcst_valid_end?fmt=%Y%m%d_%H%M%S}'},
+         {'METPLUS_FCST_VALID_END': 'fcst_valid_end = "20221015_235959";'}),
+        ({'FCST_VALID_HOUR_LIST': '12'},
+         {'METPLUS_FCST_VALID_HOUR': 'fcst_valid_hour = ["120000"];'}),
+        ({'FCST_VALID_HOUR_LIST': '12,108'},
+         {'METPLUS_FCST_VALID_HOUR': 'fcst_valid_hour = ["120000", "1080000"];'}),
+    ]
+)
+@pytest.mark.wrapper_c
+def test_valid_init_env_vars(metplus_config, config_overrides,
+                             expected_env_vars):
+    config = metplus_config()
+    set_minimum_config_settings(config)
+    config.set('config', 'INIT_END', '20221015')
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    wrapper = StatAnalysisWrapper(config)
+    assert wrapper.isOK
+
+    runtime_settings_dict_list = wrapper.get_all_runtime_settings()
+    assert runtime_settings_dict_list
+    first_runtime_only = [runtime_settings_dict_list[0]]
+    wrapper.run_stat_analysis_job(first_runtime_only)
+    print('FIRST RUNTIME SETTINGS:')
+    pp.pprint(first_runtime_only)
+    all_cmds = wrapper.all_commands
+    print(f"ALL COMMANDS: {all_cmds}")
+    _, actual_env_vars = all_cmds[0]
+
+    env_var_keys = [item for item in wrapper.WRAPPER_ENV_VAR_KEYS
+                    if 'BEG' in item or 'END' in item]
+    for env_var_key in env_var_keys:
+        match = next((item for item in actual_env_vars if
+                      item.startswith(env_var_key)), None)
+        assert match is not None
+        actual_value = match.split('=', 1)[1]
+        print(f"ENV VAR: {env_var_key}")
+        assert expected_env_vars.get(env_var_key, '') == actual_value
 
 
 @pytest.mark.parametrize(
