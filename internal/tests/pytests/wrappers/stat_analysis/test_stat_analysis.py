@@ -24,8 +24,7 @@ def stat_analysis_wrapper(metplus_config):
 
     # Default, empty StatAnalysisWrapper with some configuration values set
     # to /path/to:
-    extra_configs = []
-    extra_configs.append(TEST_CONF)
+    extra_configs = [TEST_CONF]
     config = metplus_config(extra_configs)
     handle_tmp_dir(config)
     return StatAnalysisWrapper(config)
@@ -90,18 +89,60 @@ def set_minimum_config_settings(config):
 
 @pytest.mark.parametrize(
     'config_overrides, expected_env_vars', [
+        # 0
         ({}, {}),
+        # 1 - fcst valid beg
         ({'STAT_ANALYSIS_FCST_VALID_BEG': '{fcst_valid_beg?fmt=%Y%m%d_%H%M%S}'},
          {'METPLUS_FCST_VALID_BEG': 'fcst_valid_beg = "20221014_000000";'}),
+        # 2 - fcst valid end
         ({'STAT_ANALYSIS_FCST_VALID_END': '{fcst_valid_end?fmt=%Y%m%d_%H%M%S}'},
          {'METPLUS_FCST_VALID_END': 'fcst_valid_end = "20221015_235959";'}),
+        # 3 - fcst valid end with shift
+        ({'STAT_ANALYSIS_FCST_VALID_END': '{fcst_valid_end?fmt=%Y%m%d?shift=1d}_000000'},
+         {'METPLUS_FCST_VALID_END': 'fcst_valid_end = "20221016_000000";'}),
+        # 4 - obs valid beg
+        ({'STAT_ANALYSIS_OBS_VALID_BEG': '{obs_valid_beg?fmt=%Y%m%d_%H%M%S}'},
+         {'METPLUS_OBS_VALID_BEG': 'obs_valid_beg = "20221014_000000";'}),
+        # 5 - obs valid end
+        ({'STAT_ANALYSIS_OBS_VALID_END': '{obs_valid_end?fmt=%Y%m%d_%H%M%S}'},
+         {'METPLUS_OBS_VALID_END': 'obs_valid_end = "20221015_235959";'}),
+        # 6 fcst init beg
+        ({'STAT_ANALYSIS_FCST_INIT_BEG': '{fcst_init_beg?fmt=%Y%m%d_%H%M%S}'},
+         {'METPLUS_FCST_INIT_BEG': 'fcst_init_beg = "20221014_000000";'}),
+        # 7 - fcst init end
+        ({'STAT_ANALYSIS_FCST_INIT_END': '{fcst_init_end?fmt=%Y%m%d_%H%M%S}'},
+         {'METPLUS_FCST_INIT_END': 'fcst_init_end = "20221015_235959";'}),
+        # 8 - fcst valid hour single
         ({'FCST_VALID_HOUR_LIST': '12'},
          {'METPLUS_FCST_VALID_HOUR': 'fcst_valid_hour = ["120000"];'}),
+        # 9 - fcst valid hour multiple
         ({'FCST_VALID_HOUR_LIST': '12,108'},
          {'METPLUS_FCST_VALID_HOUR': 'fcst_valid_hour = ["120000", "1080000"];'}),
+        # 10 - obs init beg
+        ({'STAT_ANALYSIS_OBS_INIT_BEG': '{obs_init_beg?fmt=%Y%m%d_%H%M%S}'},
+         {'METPLUS_OBS_INIT_BEG': 'obs_init_beg = "20221014_000000";'}),
+        # 11 - obs init end
+        ({'STAT_ANALYSIS_OBS_INIT_END': '{obs_init_end?fmt=%Y%m%d_%H%M%S}'},
+         {'METPLUS_OBS_INIT_END': 'obs_init_end = "20221015_235959";'}),
+        # 12 - generic valid beg
+        ({'STAT_ANALYSIS_VALID_BEG': '{fcst_valid_beg?fmt=%Y%m%d}_12'},
+         {'METPLUS_FCST_VALID_BEG': 'fcst_valid_beg = "20221014_12";',
+          'METPLUS_OBS_VALID_BEG': 'obs_valid_beg = "20221014_12";'}),
+        # 13 - generic valid end
+        ({'STAT_ANALYSIS_VALID_END': '{fcst_valid_end?fmt=%Y%m%d}_12'},
+         {'METPLUS_FCST_VALID_END': 'fcst_valid_end = "20221015_12";',
+          'METPLUS_OBS_VALID_END': 'obs_valid_end = "20221015_12";'}),
+        # 14 - generic init beg
+        ({'STAT_ANALYSIS_INIT_BEG': '{fcst_init_beg?fmt=%Y%m%d}_12'},
+         {'METPLUS_FCST_INIT_BEG': 'fcst_init_beg = "20221014_12";',
+          'METPLUS_OBS_INIT_BEG': 'obs_init_beg = "20221014_12";'}),
+        # 15 - generic init end
+        ({'STAT_ANALYSIS_INIT_END': '{fcst_init_end?fmt=%Y%m%d}_12'},
+         {'METPLUS_FCST_INIT_END': 'fcst_init_end = "20221015_12";',
+          'METPLUS_OBS_INIT_END': 'obs_init_end = "20221015_12";'}),
     ]
 )
-@pytest.mark.wrapper_c
+@pytest.mark.wrapper_d
 def test_valid_init_env_vars(metplus_config, config_overrides,
                              expected_env_vars):
     config = metplus_config()
@@ -115,11 +156,11 @@ def test_valid_init_env_vars(metplus_config, config_overrides,
 
     runtime_settings_dict_list = wrapper.get_all_runtime_settings()
     assert runtime_settings_dict_list
+
     first_runtime_only = [runtime_settings_dict_list[0]]
     wrapper.run_stat_analysis_job(first_runtime_only)
-    print('FIRST RUNTIME SETTINGS:')
-    pp.pprint(first_runtime_only)
     all_cmds = wrapper.all_commands
+
     print(f"ALL COMMANDS: {all_cmds}")
     _, actual_env_vars = all_cmds[0]
 
