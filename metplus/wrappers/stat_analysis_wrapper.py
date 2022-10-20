@@ -1293,10 +1293,6 @@ class StatAnalysisWrapper(CommandBuilder):
             if not self.create_output_directories(runtime_settings):
                 continue
 
-            # Set legacy environment variables
-            for name, value in runtime_settings.items():
-                self.add_env_var(name, value)
-
             # set METPLUS_ env vars for MET config file to be consistent
             # with other wrappers
             for key in self.WRAPPER_ENV_VAR_KEYS:
