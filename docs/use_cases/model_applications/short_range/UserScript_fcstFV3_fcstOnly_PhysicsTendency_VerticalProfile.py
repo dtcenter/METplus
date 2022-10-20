@@ -48,6 +48,25 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 # | The tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 #
 
+
+
+##############################################################################
+# External Dependencies 
+# ---------------------
+# You will need to use a versio of Python 3.86 that has the following packages
+# installed:
+#
+#  * cartopy (0.20.3 only)
+#  * matplotlib
+#  * metpy
+#  * numpy
+#  * pandas
+#  * shapely
+#  * xarray
+#
+
+
+
 ##############################################################################
 # METplus Components
 # ------------------
