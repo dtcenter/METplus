@@ -435,10 +435,6 @@ class StatAnalysisWrapper(CommandBuilder):
         """! Build a dictionary with list names, dates, and commonly
              used identifiers to pass to string_template_substitution.
 
-        @param lists_to_loop list of all the list names whose items
-         are being grouped together
-        @param lists_to_group list of all the list names whose items
-         are being looped over
         @param config_dict dictionary containing the configuration information
         @returns dictionary with the formatted info to pass to do_string_sub
         """
@@ -456,22 +452,19 @@ class StatAnalysisWrapper(CommandBuilder):
 
         # Set string sub info from fcst/obs hour lists
         self._set_stringsub_hours(stringsub_dict,
-                                  config_dict[f'FCST_{date_type}_HOUR'],
-                                  config_dict[f'OBS_{date_type}_HOUR'])
+                                  config_dict.get(f'FCST_{date_type}_HOUR'),
+                                  config_dict.get(f'OBS_{date_type}_HOUR'))
 
         # handle opposite of date_type VALID if INIT and vice versa
         self._set_strinsub_other(stringsub_dict, date_type.lower(),
-                                 config_dict['FCST_LEAD'],
-                                 config_dict['OBS_LEAD'])
+                                 config_dict.get('FCST_LEAD'),
+                                 config_dict.get('OBS_LEAD'))
 
         # Set loop information
         for loop_or_group_list in self.EXPECTED_CONFIG_LISTS:
             list_name = loop_or_group_list.replace('_LIST', '')
             sub_name = list_name.lower()
-            list_name_value = (
-                config_dict[list_name].replace('"', '').replace(' ', '')
-                                      .replace(',', '_').replace('*', 'ALL')
-            )
+            list_name_value = self._get_list_name_value(list_name, config_dict)
 
             if 'HOUR' not in list_name and 'LEAD' not in list_name:
                 stringsub_dict[sub_name] = list_name_value
@@ -479,7 +472,8 @@ class StatAnalysisWrapper(CommandBuilder):
                 # if list is MODEL, also set obtype
                 if list_name == 'MODEL':
                     stringsub_dict['obtype'] = (
-                        config_dict['OBTYPE'].replace('"', '').replace(' ', '')
+                        config_dict.get('OBTYPE', '').replace('"', '')
+                        .replace(' ', '')
                     )
 
                 continue
@@ -506,10 +500,7 @@ class StatAnalysisWrapper(CommandBuilder):
         sub_name = list_name.lower()
         delta_list = get_delta_list(config_dict[list_name])
         if not delta_list:
-            list_name_value = (
-                config_dict[list_name].replace('"', '').replace(' ', '')
-                                      .replace(',', '_').replace('*', 'ALL')
-            )
+            list_name_value = self._get_list_name_value(list_name, config_dict)
             stringsub_dict[sub_name] = list_name_value
             stringsub_dict[sub_name + '_beg'] = relativedelta()
             stringsub_dict[sub_name + '_end'] = (
@@ -548,6 +539,13 @@ class StatAnalysisWrapper(CommandBuilder):
                     stringsub_dict[f'{sub_name}_end']
                 )
 
+    @staticmethod
+    def _get_list_name_value(list_name, config_dict):
+        value = config_dict.get(list_name, '')
+        value = value.replace('"', '').replace(' ', '').replace(',', '_')
+        value = value.replace('*', 'ALL')
+        return value
+
     def _build_stringsub_leads(self, list_name, config_dict, stringsub_dict):
         """! Handle logic specific to setting lists named with LEAD
 
@@ -556,7 +554,7 @@ class StatAnalysisWrapper(CommandBuilder):
         @param stringsub_dict dictionary to set values
         """
         sub_name = list_name.lower()
-        lead_list = get_met_time_list(config_dict[list_name])
+        lead_list = get_met_time_list(config_dict.get(list_name))
 
         if not lead_list:
             return
@@ -834,6 +832,7 @@ class StatAnalysisWrapper(CommandBuilder):
         @returns dictionary containing the edited configuration information
          for valid and initialization dates and hours
         """
+        stringsub_dict = self.build_stringsub_dict(config_dict)
         # set all of the HOUR and LEAD lists to include the MET time format
         for list_name in self.FORMAT_LISTS:
             list_name = list_name.replace('_LIST', '')
@@ -844,12 +843,13 @@ class StatAnalysisWrapper(CommandBuilder):
         for fcst_or_obs in ['FCST', 'OBS']:
             for init_or_valid in ['INIT', 'VALID']:
                 self._format_valid_init_item(config_dict,
+                                             stringsub_dict,
                                              fcst_or_obs,
                                              init_or_valid)
 
         return config_dict
 
-    def _format_valid_init_item(self, config_dict, fcst_or_obs, init_or_valid):
+    def _format_valid_init_item(self, config_dict, stringsub_dict, fcst_or_obs, init_or_valid):
         """! Check if variables are set in the METplusConfig to explicitly
         set the begin and end values in the wrapped MET config file.
 
@@ -872,7 +872,8 @@ class StatAnalysisWrapper(CommandBuilder):
                 value = self.config.getraw('config', generic_prefix)
 
             if value:
-                config_dict[f'{prefix}_{beg_or_end}'] = value
+                formatted_value = do_string_sub(value, **stringsub_dict)
+                config_dict[f'{prefix}_{beg_or_end}'] = formatted_value
 
     def parse_model_info(self):
         """! Parse for model information.
@@ -1202,6 +1203,8 @@ class StatAnalysisWrapper(CommandBuilder):
         for model_info in self.c_dict['MODEL_INFO_LIST']:
             # skip model if not in list of models to process
             if model_info['name'] not in models_to_run:
+                self.logger.debug(f"Model {model_info['name']} not found in "
+                                  "list of models to run. Skipping.")
                 continue
 
             model_list.append(model_info['name'])
@@ -1311,7 +1314,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 self.env_var_dict[key] = value
 
             # send environment variables to logger
-            self.set_environment_variables(runtime_settings)
+            self.set_environment_variables()
 
             # set lookin dir to add to command
             self.logger.debug("Setting -lookin dir to "
