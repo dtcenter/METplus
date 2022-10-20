@@ -9956,3 +9956,16 @@ METplus Configuration Glossary
      Specify the value for 'nc_orank_flag.weight' in the MET configuration file for EnsembleStat.
 
      | *Used by:* EnsembleStat
+
+   STAT_ANALYSIS_FCST_INIT_BEG
+     Specify the value for 'fcst_init_beg' in the MET configuration file for
+     StatAnalysis. This can refer to filename template tags that are set by
+     the wrapper. Example:
+
+     [config]
+     INIT_BEG = 20221014
+     STAT_ANALYSIS_FCST_INIT_BEG = {fcst_init_beg?fmt=%Y%m%d_%H}
+
+     will set fcst_init_beg = "20221014_00"; in the wrapped MET config file.
+
+     | *Used by:* StatAnalysis

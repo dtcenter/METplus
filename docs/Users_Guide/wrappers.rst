@@ -6830,6 +6830,28 @@ Then add the name of the list (without the numbers) to LOOP_LIST_ITEMS::
 If FCST_LEAD_LIST was added to GROUP_LIST_ITEMS instead, then all 6 items
 defined in the 2 lists will be combined and passed to the tool at once.
 
+Filtering Begin and End Times
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Starting in v5.0.0, the [fcst/obs]_[init/valid]_[beg/end] in the wrapped
+MET config file can be set using the corresponding METplus config variables.
+The values can include the filename template tags that are supported in the
+wrapper (see :ref:`stat-analysis-filename-template`). For example,
+to set the fcst_valid_beg value::
+
+    [config]
+    VALID_BEG = 20221014
+    STAT_ANALYSIS_FCST_VALID_BEG = {fcst_valid_beg?fmt=%Y%m%d_%H%M%S}
+
+This will set fcst_valid_beg = "20221014_000000"; in the MET config file.
+
+Prior to v5.0.0, settings hour values in [FCST/OBS]_[INIT/VALID]_HOUR_LIST
+would result in the corresponding _beg and _end values in the wrapped MET
+config file to be set based on the hours and the [INIT/VALID]_[BEG/END] values.
+
+
+.. _stat-analysis-filename-template:
+
 Additional Filename Template Tags
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -6975,6 +6997,14 @@ The following values are optional in the METplus configuration file:
 | :term:`STAT_ANALYSIS_OUTPUT_TEMPLATE`
 | :term:`MODEL<n>_STAT_ANALYSIS_DUMP_ROW_TEMPLATE`
 | :term:`MODEL<n>_STAT_ANALYSIS_OUT_STAT_TEMPLATE`
+| :term:`STAT_ANALYSIS_FCST_INIT_BEG`
+| :term:`STAT_ANALYSIS_FCST_INIT_END`
+| :term:`STAT_ANALYSIS_FCST_VALID_BEG`
+| :term:`STAT_ANALYSIS_FCST_VALID_END`
+| :term:`STAT_ANALYSIS_OBS_INIT_BEG`
+| :term:`STAT_ANALYSIS_OBS_INIT_END`
+| :term:`STAT_ANALYSIS_OBS_VALID_BEG`
+| :term:`STAT_ANALYSIS_OBS_VALID_END`
 | :term:`STAT_ANALYSIS_MET_CONFIG_OVERRIDES`
 
 .. warning:: **DEPRECATED:**
