@@ -16,17 +16,40 @@ def get_test_data_dir(config, subdir=None):
         top_dir = os.path.join(top_dir, subdir)
     return top_dir
 
-def pcp_combine_wrapper(metplus_config_files, d_type):
+
+def pcp_combine_wrapper(metplus_config, d_type):
     """! Returns a default PCPCombineWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
          files.  Subsequent tests can customize the final METplus configuration
          to over-ride these /path/to values."""
-
-    # PCPCombineWrapper with configuration values determined by what is set in
-    # the test1.conf file.
-    extra_configs = []
-    extra_configs.append(os.path.join(os.path.dirname(__file__), 'test1.conf'))
-    config = metplus_config_files(extra_configs)
+    config = metplus_config
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_ACCUMS', '6')
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_NAMES', 'P06M_NONE')
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_LEVELS', '"(*,*)"')
+    config.set('config', 'OBS_PCP_COMBINE_INPUT_ACCUMS', '1')
+    config.set('config', 'OBS_PCP_COMBINE_INPUT_NAMES', 'P01M_NONE')
+    config.set('config', 'OBS_PCP_COMBINE_DATA_INTERVAL', '1')
+    config.set('config', 'OBS_PCP_COMBINE_TIMES_PER_FILE', '4')
+    config.set('config', 'FCST_PCP_COMBINE_METHOD', 'ADD')
+    config.set('config', 'OBS_PCP_COMBINE_METHOD', 'ADD')
+    config.set('config', 'OBS_PCP_COMBINE_INPUT_DIR',
+               '{METPLUS_BASE}/internal/tests/data/accum')
+    config.set('config', 'OBS_PCP_COMBINE_OUTPUT_DIR',
+               '{OUTPUT_BASE}/internal/tests/data/fakeout')
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_DIR',
+               '{METPLUS_BASE}/internal/tests/data/fcst')
+    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_DIR',
+               '{OUTPUT_BASE}/internal/tests/data/fakeout')
+    config.set('config', 'OBS_PCP_COMBINE_INPUT_TEMPLATE',
+               '{valid?fmt=%Y%m%d}/file.{valid?fmt=%Y%m%d%H}.{level?fmt=%HH}h')
+    config.set('config', 'OBS_PCP_COMBINE_OUTPUT_TEMPLATE',
+               '{valid?fmt=%Y%m%d}/outfile.{valid?fmt=%Y%m%d%H}_A{level?fmt=%HH}h')
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_TEMPLATE',
+               '{init?fmt=%Y%m%d}/file.{init?fmt=%Y%m%d%H}f{lead?fmt=%HHH}.nc')
+    config.set('config', 'FCST2_PCP_COMBINE_INPUT_TEMPLATE',
+               'file.{init?fmt=%Y%m%d%H}f{lead?fmt=%HHH}.nc')
+    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_TEMPLATE',
+               '{valid?fmt=%Y%m%d}/file.{valid?fmt=%Y%m%d%H}_A{level?fmt=%HHH}.nc')
 
     if d_type == "FCST":
         config.set('config', 'FCST_PCP_COMBINE_RUN', True)
@@ -37,9 +60,9 @@ def pcp_combine_wrapper(metplus_config_files, d_type):
 
 
 @pytest.mark.wrapper
-def test_get_accumulation_1_to_6(metplus_config_files):
+def test_get_accumulation_1_to_6(metplus_config):
     data_src = "OBS"
-    pcw = pcp_combine_wrapper(metplus_config_files, data_src)
+    pcw = pcp_combine_wrapper(metplus_config, data_src)
     input_dir = get_test_data_dir(pcw.config, subdir='accum')
     task_info = {}
     task_info['valid'] = datetime.strptime("2016090418", '%Y%m%d%H')
@@ -62,9 +85,9 @@ def test_get_accumulation_1_to_6(metplus_config_files):
 
 
 @pytest.mark.wrapper
-def test_get_accumulation_6_to_6(metplus_config_files):
+def test_get_accumulation_6_to_6(metplus_config):
     data_src = "FCST"
-    pcw = pcp_combine_wrapper(metplus_config_files, data_src)
+    pcw = pcp_combine_wrapper(metplus_config, data_src)
     input_dir = get_test_data_dir(pcw.config, subdir='accum')
     task_info = {}
     task_info['valid'] = datetime.strptime("2016090418", '%Y%m%d%H')
@@ -84,9 +107,9 @@ def test_get_accumulation_6_to_6(metplus_config_files):
 
 
 @pytest.mark.wrapper
-def test_get_lowest_forecast_file_dated_subdir(metplus_config_files):
+def test_get_lowest_forecast_file_dated_subdir(metplus_config):
     data_src = "FCST"
-    pcw = pcp_combine_wrapper(metplus_config_files, data_src)
+    pcw = pcp_combine_wrapper(metplus_config, data_src)
     input_dir = get_test_data_dir(pcw.config, subdir='fcst')
     valid_time = datetime.strptime("201802012100", '%Y%m%d%H%M')
     pcw.c_dict[f'{data_src}_INPUT_DIR'] = input_dir
@@ -97,9 +120,9 @@ def test_get_lowest_forecast_file_dated_subdir(metplus_config_files):
 
 
 @pytest.mark.wrapper
-def test_forecast_constant_init(metplus_config_files):
+def test_forecast_constant_init(metplus_config):
     data_src = "FCST"
-    pcw = pcp_combine_wrapper(metplus_config_files, data_src)
+    pcw = pcp_combine_wrapper(metplus_config, data_src)
     pcw.c_dict['FCST_CONSTANT_INIT'] = True
     input_dir = get_test_data_dir(pcw.config, subdir='fcst')
     init_time = datetime.strptime("2018020112", '%Y%m%d%H')
@@ -111,9 +134,9 @@ def test_forecast_constant_init(metplus_config_files):
 
 
 @pytest.mark.wrapper
-def test_forecast_not_constant_init(metplus_config_files):
+def test_forecast_not_constant_init(metplus_config):
     data_src = "FCST"
-    pcw = pcp_combine_wrapper(metplus_config_files, data_src)
+    pcw = pcp_combine_wrapper(metplus_config, data_src)
     pcw.c_dict['FCST_CONSTANT_INIT'] = False
     input_dir = get_test_data_dir(pcw.config, subdir='fcst')
     init_time = datetime.strptime("2018020112", '%Y%m%d%H')
@@ -126,9 +149,9 @@ def test_forecast_not_constant_init(metplus_config_files):
 
 
 @pytest.mark.wrapper
-def test_get_lowest_forecast_file_no_subdir(metplus_config_files):
+def test_get_lowest_forecast_file_no_subdir(metplus_config):
     data_src = "FCST"
-    pcw = pcp_combine_wrapper(metplus_config_files, data_src)
+    pcw = pcp_combine_wrapper(metplus_config, data_src)
     input_dir = get_test_data_dir(pcw.config, subdir='fcst')
     valid_time = datetime.strptime("201802012100", '%Y%m%d%H%M')
     template = "file.{init?fmt=%Y%m%d%H}f{lead?fmt=%HHH}.nc"
@@ -140,9 +163,9 @@ def test_get_lowest_forecast_file_no_subdir(metplus_config_files):
 
 
 @pytest.mark.wrapper
-def test_get_lowest_forecast_file_yesterday(metplus_config_files):
+def test_get_lowest_forecast_file_yesterday(metplus_config):
     data_src = "FCST"
-    pcw = pcp_combine_wrapper(metplus_config_files, data_src)
+    pcw = pcp_combine_wrapper(metplus_config, data_src)
     input_dir = get_test_data_dir(pcw.config, subdir='fcst')
     valid_time = datetime.strptime("201802010600", '%Y%m%d%H%M')
     template = "file.{init?fmt=%Y%m%d%H}f{lead?fmt=%HHH}.nc"
@@ -154,9 +177,9 @@ def test_get_lowest_forecast_file_yesterday(metplus_config_files):
 
 
 @pytest.mark.wrapper
-def test_setup_add_method(metplus_config_files):
+def test_setup_add_method(metplus_config):
     data_src = "OBS"
-    pcw = pcp_combine_wrapper(metplus_config_files, data_src)
+    pcw = pcp_combine_wrapper(metplus_config, data_src)
     task_info = {}
     task_info['valid'] = datetime.strptime("2016090418", '%Y%m%d%H')
     time_info = ti_calculate(task_info)
@@ -179,9 +202,9 @@ def test_setup_add_method(metplus_config_files):
 
 # how to test? check output?
 @pytest.mark.wrapper
-def test_setup_sum_method(metplus_config_files):
+def test_setup_sum_method(metplus_config):
     data_src = "OBS"
-    pcw = pcp_combine_wrapper(metplus_config_files, data_src)
+    pcw = pcp_combine_wrapper(metplus_config, data_src)
     task_info = {}
     task_info['valid'] = datetime.strptime("2016090418", '%Y%m%d%H')
     task_info['lead'] = 0
@@ -191,9 +214,9 @@ def test_setup_sum_method(metplus_config_files):
 
 
 @pytest.mark.wrapper
-def test_setup_subtract_method(metplus_config_files):
+def test_setup_subtract_method(metplus_config):
     data_src = "FCST"
-    pcw = pcp_combine_wrapper(metplus_config_files, data_src)
+    pcw = pcp_combine_wrapper(metplus_config, data_src)
     task_info = {}
     task_info['valid'] = datetime.strptime("201609050000", '%Y%m%d%H%M')
     task_info['lead_hours'] = 9

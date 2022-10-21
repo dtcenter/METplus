@@ -11,23 +11,20 @@ from metplus.util import time_util
 from metplus.util import do_string_sub
 
 
-def pb2nc_wrapper(metplus_config_files):
+def pb2nc_wrapper(metplus_config):
     """! Returns a default PB2NCWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
          files.  Subsequent tests can customize the final METplus configuration
-         to over-ride these /path/to values."""
-
-    # PB2NCWrapper with configuration values determined by what is set in
-    # the pb2nc_test.conf file.
-    extra_configs = []
-    extra_configs.append(os.path.join(os.path.dirname(__file__), 'conf1'))
-    config = metplus_config_files(extra_configs)
+         to over-ride these /path/to values.
+    """
+    config = metplus_config
+    config.set('config', 'PB2NC_INPUT_TEMPLATE',
+               't{da_init?fmt=%2H}z.prepbufr.tm{offset?fmt=%2H}')
     return PB2NCWrapper(config)
 
 
 @pytest.mark.parametrize(
-    # key = grid_id, value = expected reformatted grid id
-        'exists, skip, run', [
+    'exists, skip, run', [
             (True, True, False),
             (True, False, True),
             (False, True, True),
@@ -35,8 +32,8 @@ def pb2nc_wrapper(metplus_config_files):
         ]
 )
 @pytest.mark.wrapper
-def test_find_and_check_output_file_skip(metplus_config_files, exists, skip, run):
-    pb = pb2nc_wrapper(metplus_config_files)
+def test_find_and_check_output_file_skip(metplus_config, exists, skip, run):
+    pb = pb2nc_wrapper(metplus_config)
     exist_file = 'wackyfilenametocreate'
     non_exist_file = 'wackyfilethatdoesntexist'
 
@@ -67,16 +64,16 @@ def test_find_and_check_output_file_skip(metplus_config_files, exists, skip, run
 # ---------------------
 @pytest.mark.parametrize(
     # list of input files
-        'infiles', [
-            [],
-            ['file1'],
-            ['file1', 'file2'],
-            ['file1', 'file2', 'file3'],
-        ]
+    'infiles', [
+        [],
+        ['file1'],
+        ['file1', 'file2'],
+        ['file1', 'file2', 'file3'],
+    ]
 )
 @pytest.mark.wrapper
-def test_get_command(metplus_config_files, infiles):
-    pb = pb2nc_wrapper(metplus_config_files)
+def test_get_command(metplus_config, infiles):
+    pb = pb2nc_wrapper(metplus_config)
     pb.outfile = 'outfilename.txt'
     pb.outdir = pb.config.getdir('OUTPUT_BASE')
     outpath = os.path.join(pb.outdir, pb.outfile)
@@ -101,16 +98,16 @@ def test_get_command(metplus_config_files, infiles):
 @pytest.mark.parametrize(
     # offset = list of offsets to search
     # offset_to_find = expected offset file to find, None if no files should be found
-        'offsets, offset_to_find', [
-            ([6, 5, 4, 3], 5),
-            ([6, 4, 3], 3),
-            ([2, 3, 4, 5, 6], 3),
-            ([2, 4, 6], None),
-        ]
+    'offsets, offset_to_find', [
+        ([6, 5, 4, 3], 5),
+        ([6, 4, 3], 3),
+        ([2, 3, 4, 5, 6], 3),
+        ([2, 4, 6], None),
+    ]
 )
 @pytest.mark.wrapper
-def test_find_input_files(metplus_config_files, offsets, offset_to_find):
-    pb = pb2nc_wrapper(metplus_config_files)
+def test_find_input_files(metplus_config, offsets, offset_to_find):
+    pb = pb2nc_wrapper(metplus_config)
     # for valid 20190201_12, offsets 3 and 5, create files to find
     # in the fake input directory based on input template
     input_dict = { 'valid' : datetime.datetime(2019, 2, 1, 12) }

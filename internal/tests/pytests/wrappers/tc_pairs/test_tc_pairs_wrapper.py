@@ -384,12 +384,14 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
     ]
 )
 @pytest.mark.wrapper
-def test_tc_pairs_loop_order_processes(metplus_config_files, config_overrides,
+def test_tc_pairs_loop_order_processes(metplus_config, config_overrides,
                                        env_var_values):
+    my_config = metplus_config
     # run using init and valid time variables
     for loop_by in ['INIT', 'VALID']:
         remove_beg = remove_end = remove_match_points = False
-        config = metplus_config_files([])
+        #config = metplus_config_files([])
+        config = my_config.copy()
 
         set_minimum_config_settings(config, loop_by)
 

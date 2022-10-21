@@ -8,17 +8,32 @@ import datetime
 from metplus.wrappers.extract_tiles_wrapper import ExtractTilesWrapper
 
 
-def get_config(metplus_config_files):
-    extra_configs = []
-    extra_configs.append(os.path.join(os.path.dirname(__file__),
-                                      'extract_tiles_test.conf'))
-    return metplus_config_files(extra_configs)
+def extract_tiles_wrapper(metplus_config):
+    config = metplus_config
+    config.set('config', 'PROCESS_LIST', 'ExtractTiles')
+    config.set('config', 'LOOP_BY', 'INIT')
+    config.set('config', 'INIT_TIME_FMT', '%Y%m%d')
+    config.set('config', 'INIT_BEG', '20141214')
+    config.set('config', 'INIT_END', '20141214')
+    config.set('config', 'INIT_INCREMENT', '21600')
+    config.set('config', 'EXTRACT_TILES_NLAT', '60')
+    config.set('config', 'EXTRACT_TILES_NLON', '60')
+    config.set('config', 'EXTRACT_TILES_DLAT', '0.5')
+    config.set('config', 'EXTRACT_TILES_DLON', '0.5')
+    config.set('config', 'EXTRACT_TILES_LAT_ADJ', '15')
+    config.set('config', 'EXTRACT_TILES_LON_ADJ', '15')
+    config.set('config', 'EXTRACT_TILES_FILTER_OPTS', '-basin ML')
+    config.set('config', 'FCST_EXTRACT_TILES_INPUT_TEMPLATE',
+               'gfs_4_{init?fmt=%Y%m%d}_{init?fmt=%H}00_{lead?fmt=%HHH}.grb2')
+    config.set('config', 'OBS_EXTRACT_TILES_INPUT_TEMPLATE',
+               'gfs_4_{valid?fmt=%Y%m%d}_{valid?fmt=%H}00_000.grb2')
+    config.set('config', 'EXTRACT_TILES_GRID_INPUT_DIR',
+               '{INPUT_BASE}/cyclone_track_feature/reduced_model_data')
+    config.set('config', 'EXTRACT_TILES_PAIRS_INPUT_DIR',
+               '{OUTPUT_BASE}/tc_pairs')
+    config.set('config', 'EXTRACT_TILES_OUTPUT_DIR',
+               '{OUTPUT_BASE}/extract_tiles')
 
-
-def extract_tiles_wrapper(metplus_config_files):
-    config = get_config(metplus_config_files)
-
-    config.set('config', 'LOOP_ORDER', 'processes')
     wrapper = ExtractTilesWrapper(config)
     return wrapper
 
@@ -60,8 +75,8 @@ def get_input_lines(filepath):
     ]
 )
 @pytest.mark.wrapper
-def test_get_object_indices(metplus_config_files, object_cats, expected_indices):
-    wrapper = extract_tiles_wrapper(metplus_config_files)
+def test_get_object_indices(metplus_config, object_cats, expected_indices):
+    wrapper = extract_tiles_wrapper(metplus_config)
     assert wrapper.get_object_indices(object_cats) == expected_indices
 
 
@@ -79,8 +94,8 @@ def test_get_object_indices(metplus_config_files, object_cats, expected_indices)
     ]
 )
 @pytest.mark.wrapper
-def test_get_header_indices(metplus_config_files,header_name, index):
-    wrapper = extract_tiles_wrapper(metplus_config_files)
+def test_get_header_indices(metplus_config,header_name, index):
+    wrapper = extract_tiles_wrapper(metplus_config)
     header = get_storm_lines(wrapper)[0]
     idx_dict = wrapper.get_header_indices(header)
     assert(idx_dict[header_name] == index)
@@ -98,8 +113,8 @@ def test_get_header_indices(metplus_config_files,header_name, index):
     ]
 )
 @pytest.mark.wrapper
-def test_get_header_indices_mtd(metplus_config_files, header_name, index):
-    wrapper = extract_tiles_wrapper(metplus_config_files)
+def test_get_header_indices_mtd(metplus_config, header_name, index):
+    wrapper = extract_tiles_wrapper(metplus_config)
     header = get_mtd_lines(wrapper)[0]
     idx_dict = wrapper.get_header_indices(header, 'MTD')
     assert(idx_dict[header_name] == index)
@@ -119,8 +134,8 @@ def test_get_header_indices_mtd(metplus_config_files, header_name, index):
     ]
 )
 @pytest.mark.wrapper
-def test_get_data_from_track_line(metplus_config_files, header_name, value):
-    wrapper = extract_tiles_wrapper(metplus_config_files)
+def test_get_data_from_track_line(metplus_config, header_name, value):
+    wrapper = extract_tiles_wrapper(metplus_config)
     storm_lines = get_storm_lines(wrapper)
     header = storm_lines[0]
     idx_dict = wrapper.get_header_indices(header)
@@ -140,8 +155,8 @@ def test_get_data_from_track_line(metplus_config_files, header_name, value):
     ]
 )
 @pytest.mark.wrapper
-def test_get_data_from_track_line_mtd(metplus_config_files, header_name, value):
-    wrapper = extract_tiles_wrapper(metplus_config_files)
+def test_get_data_from_track_line_mtd(metplus_config, header_name, value):
+    wrapper = extract_tiles_wrapper(metplus_config)
     storm_lines = get_mtd_lines(wrapper)
     header = storm_lines[0]
     idx_dict = wrapper.get_header_indices(header, 'MTD')
@@ -150,9 +165,9 @@ def test_get_data_from_track_line_mtd(metplus_config_files, header_name, value):
 
 
 @pytest.mark.wrapper
-def test_set_time_info_from_track_data(metplus_config_files):
+def test_set_time_info_from_track_data(metplus_config):
     storm_id = 'ML1221072014'
-    wrapper = extract_tiles_wrapper(metplus_config_files)
+    wrapper = extract_tiles_wrapper(metplus_config)
     storm_lines = get_storm_lines(wrapper)
     header = storm_lines[0]
     idx_dict = wrapper.get_header_indices(header)
@@ -174,8 +189,8 @@ def test_set_time_info_from_track_data(metplus_config_files):
     ]
 )
 @pytest.mark.wrapper
-def test_get_grid_info(metplus_config_files, lat, lon, expected_result):
-    wrapper = extract_tiles_wrapper(metplus_config_files)
+def test_get_grid_info(metplus_config, lat, lon, expected_result):
+    wrapper = extract_tiles_wrapper(metplus_config)
     assert(wrapper.get_grid_info(lat, lon, 'FCST') == expected_result)
 
 
@@ -186,7 +201,7 @@ def test_get_grid_info(metplus_config_files, lat, lon, expected_result):
     ]
 )
 @pytest.mark.wrapper
-def test_get_grid(metplus_config_files, lat, lon, expected_result):
-    wrapper = extract_tiles_wrapper(metplus_config_files)
+def test_get_grid(metplus_config, lat, lon, expected_result):
+    wrapper = extract_tiles_wrapper(metplus_config)
     storm_data = {'ALAT': lat, 'ALON': lon}
     assert(wrapper.get_grid('FCST', storm_data) == expected_result)

@@ -8,10 +8,32 @@ import shutil
 from metplus.wrappers.ascii2nc_wrapper import ASCII2NCWrapper
 
 
-def ascii2nc_wrapper(metplus_config_files, config_path=None, config_overrides=None):
-    config = metplus_config_files([config_path])
-    overrides = {'DO_NOT_RUN_EXE': True,
-                 'INPUT_MUST_EXIST': False}
+def ascii2nc_wrapper(metplus_config, config_overrides=None):
+    config = metplus_config
+    overrides = {
+        'DO_NOT_RUN_EXE': True,
+        'INPUT_MUST_EXIST': False,
+        'PROCESS_LIST': 'ASCII2NC',
+        'LOOP_BY': 'VALID',
+        'VALID_TIME_FMT': '%Y%m%d%H',
+        'VALID_BEG': '2010010112',
+        'VALID_END': '2010010112',
+        'VALID_INCREMENT': '1M',
+        'ASCII2NC_INPUT_TEMPLATE': '{INPUT_BASE}/met_test/data/sample_obs/ascii/precip24_{valid?fmt=%Y%m%d%H}.ascii',
+        'ASCII2NC_OUTPUT_TEMPLATE': '{OUTPUT_BASE}/ascii2nc/precip24_{valid?fmt=%Y%m%d%H}.nc',
+        'ASCII2NC_CONFIG_FILE': '{PARM_BASE}/met_config/Ascii2NcConfig_wrapped',
+        'ASCII2NC_TIME_SUMMARY_FLAG': 'False',
+        'ASCII2NC_TIME_SUMMARY_RAW_DATA': 'False',
+        'ASCII2NC_TIME_SUMMARY_BEG': '000000',
+        'ASCII2NC_TIME_SUMMARY_END': '235959',
+        'ASCII2NC_TIME_SUMMARY_STEP': '300',
+        'ASCII2NC_TIME_SUMMARY_WIDTH': '600',
+        'ASCII2NC_TIME_SUMMARY_GRIB_CODES': '11, 204, 211',
+        'ASCII2NC_TIME_SUMMARY_VAR_NAMES': '',
+        'ASCII2NC_TIME_SUMMARY_TYPES': 'min, max, range, mean, stdev, median, p80',
+        'ASCII2NC_TIME_SUMMARY_VALID_FREQ': '0',
+        'ASCII2NC_TIME_SUMMARY_VALID_THRESH': '0.0',
+    }
     if config_overrides:
         for key, value in config_overrides.items():
             overrides[key] = value
@@ -134,13 +156,9 @@ def ascii2nc_wrapper(metplus_config_files, config_path=None, config_overrides=No
     ]
 )
 @pytest.mark.wrapper
-def test_ascii2nc_wrapper(metplus_config_files, config_overrides,
+def test_ascii2nc_wrapper(metplus_config, config_overrides,
                           env_var_values):
-    wrapper = (
-        ascii2nc_wrapper(metplus_config_files,
-                         'use_cases/met_tool_wrapper/ASCII2NC/ASCII2NC.conf',
-                         config_overrides)
-    )
+    wrapper = ascii2nc_wrapper(metplus_config, config_overrides)
     assert wrapper.isOK
 
     input_path = wrapper.config.getraw('config', 'ASCII2NC_INPUT_TEMPLATE')
