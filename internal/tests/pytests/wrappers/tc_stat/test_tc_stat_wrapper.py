@@ -110,8 +110,8 @@ def tc_stat_wrapper(metplus_config_files):
     ]
 )
 @pytest.mark.wrapper
-def test_override_config_in_c_dict(metplus_config, overrides, c_dict):
-    config = get_config(metplus_config)
+def test_override_config_in_c_dict(metplus_config_files, overrides, c_dict):
+    config = get_config(metplus_config_files)
     instance = 'tc_stat_overrides'
     if not config.has_section(instance):
         config.add_section(instance)
