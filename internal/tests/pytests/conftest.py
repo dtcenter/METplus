@@ -4,6 +4,7 @@ import shlex
 import subprocess
 import pytest
 import getpass
+import shutil
 from pathlib import Path
 
 # add METplus directory to path so the wrappers and utilities can be found
@@ -19,7 +20,8 @@ pytest_host = os.environ.get('METPLUS_PYTEST_HOST')
 if pytest_host is None:
     import socket
     pytest_host = socket.gethostname()
-    print(f"No hostname provided with METPLUS_PYTEST_HOST, using {pytest_host}")
+    print("No hostname provided with METPLUS_PYTEST_HOST, "
+          f"using {pytest_host}")
 else:
     print(f"METPLUS_PYTEST_HOST = {pytest_host}")
 
@@ -33,7 +35,8 @@ if not os.path.exists(minimum_pytest_file):
 
 # source minimum_pytest.<pytest_host>.sh script
 current_user = getpass.getuser()
-command = shlex.split(f"env -i bash -c 'export USER={current_user} && source {minimum_pytest_file} && env'")
+command = shlex.split(f"env -i bash -c 'export USER={current_user} && "
+                      f"source {minimum_pytest_file} && env'")
 proc = subprocess.Popen(command, stdout=subprocess.PIPE)
 
 for line in proc.stdout:
@@ -42,6 +45,18 @@ for line in proc.stdout:
     os.environ[key] = value
 
 proc.communicate()
+
+output_base = os.environ['METPLUS_TEST_OUTPUT_BASE']
+if not output_base:
+    print('ERROR: METPLUS_TEST_OUTPUT_BASE must be set to a path to write')
+    sys.exit(1)
+
+test_output_dir = os.path.join(output_base, 'test_output')
+print(f'Test output dir is {test_output_dir}')
+if os.path.exists(test_output_dir):
+    print(f'Removing test output dir: {test_output_dir}')
+    shutil.rmtree(test_output_dir)
+
 
 @pytest.fixture(scope='function')
 def metplus_config():
