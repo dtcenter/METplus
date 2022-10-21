@@ -52,7 +52,6 @@ if not output_base:
     sys.exit(1)
 
 test_output_dir = os.path.join(output_base, 'test_output')
-print(f'Test output dir is {test_output_dir}')
 if os.path.exists(test_output_dir):
     print(f'Removing test output dir: {test_output_dir}')
     shutil.rmtree(test_output_dir)
@@ -70,8 +69,11 @@ def metplus_config():
         script_dir = os.path.dirname(__file__)
         minimum_conf = os.path.join(script_dir, 'minimum_pytest.conf')
         args = [minimum_conf]
-        if extra_configs:
-            args.extend(extra_configs)
+        for extra_config in extra_configs:
+            if extra_config.startswith('use_cases'):
+                args.append(os.path.join(metplus_dir, 'parm', extra_config))
+            elif extra_config:
+                args.append(extra_config)
 
         config = config_metplus.setup(args)
         return config

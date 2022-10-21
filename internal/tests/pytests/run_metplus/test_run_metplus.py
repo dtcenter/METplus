@@ -4,6 +4,7 @@ import pytest
 
 from pathlib import Path
 import os
+import shutil
 from subprocess import run
 
 # get METplus directory relative to this file
@@ -16,7 +17,8 @@ MINIMUM_CONF = os.path.join(METPLUS_DIR, 'internal', 'tests', 'pytests',
                             'minimum_pytest.conf')
 TEST_OUTPUT_DIR = os.path.join(os.environ['METPLUS_TEST_OUTPUT_BASE'],
                                'test_output')
-
+NEW_OUTPUT_BASE = os.path.join(TEST_OUTPUT_DIR, 'run_metplus')
+OUTPUT_BASE_OVERRIDE = f"config.OUTPUT_BASE={NEW_OUTPUT_BASE}"
 
 @pytest.mark.run_metplus
 def test_run_metplus_exists():
@@ -26,9 +28,9 @@ def test_run_metplus_exists():
 
 @pytest.mark.parametrize(
     'command, expected_return_code', [
-        ([RUN_METPLUS], 2),  # 0 - no arguments, failure
-        ([RUN_METPLUS, EXAMPLE_CONF], 2),  # 1 - minimum conf unset, failure
-        ([RUN_METPLUS, EXAMPLE_CONF, MINIMUM_CONF], 0),  # 2 - success
+        ([RUN_METPLUS], 2),
+        ([RUN_METPLUS, EXAMPLE_CONF], 2),
+        ([RUN_METPLUS, EXAMPLE_CONF, MINIMUM_CONF, OUTPUT_BASE_OVERRIDE], 0),
     ]
 )
 @pytest.mark.run_metplus
@@ -39,6 +41,9 @@ def test_run_metplus_check_return_code(command, expected_return_code):
     """
     process = run(command)
     assert process.returncode == expected_return_code
+
+    if os.path.exists(NEW_OUTPUT_BASE):
+        shutil.rmtree(NEW_OUTPUT_BASE)
 
 
 @pytest.mark.run_metplus

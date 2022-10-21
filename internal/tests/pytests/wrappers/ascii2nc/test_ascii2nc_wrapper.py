@@ -3,17 +3,20 @@
 import pytest
 
 import os
+import shutil
 
 from metplus.wrappers.ascii2nc_wrapper import ASCII2NCWrapper
 
 
 def ascii2nc_wrapper(metplus_config, config_path=None, config_overrides=None):
-    config = metplus_config()
-
-    if config_path:
-        parm_base = config.getdir('PARM_BASE')
-        config_full_path = os.path.join(parm_base, config_path)
-        config = metplus_config([config_full_path])
+    config = metplus_config([config_path])
+    # config = metplus_config()
+    #
+    # if config_path:
+    #     config = metplus_config([config_path])
+        # parm_base = config.getdir('PARM_BASE')
+        # config_full_path = os.path.join(parm_base, config_path)
+        # config = metplus_config([config_full_path])
 
     overrides = {'DO_NOT_RUN_EXE': True,
                  'INPUT_MUST_EXIST': False}
@@ -27,8 +30,7 @@ def ascii2nc_wrapper(metplus_config, config_path=None, config_overrides=None):
     for key, value in overrides.items():
         config.set(instance, key, value)
 
-    return ASCII2NCWrapper(config,
-                           instance=instance)
+    return ASCII2NCWrapper(config, instance=instance)
 
 
 @pytest.mark.parametrize(
@@ -171,7 +173,7 @@ def test_ascii2nc_wrapper(metplus_config, config_overrides,
                     f"-config {config_file} "
                     f"{verbosity}")
 
-    assert(all_commands[0][0] == expected_cmd)
+    assert all_commands[0][0] == expected_cmd
 
     env_vars = all_commands[0][1]
     # check that environment variables were set properly
@@ -182,10 +184,14 @@ def test_ascii2nc_wrapper(metplus_config, config_overrides,
     for env_var_key in env_var_keys:
         match = next((item for item in env_vars if
                       item.startswith(env_var_key)), None)
-        assert (match is not None)
+        assert match is not None
         value = match.split('=', 1)[1]
 
-        assert (env_var_values.get(env_var_key, '') == value)
+        assert env_var_values.get(env_var_key, '') == value
+
+    #output_base = wrapper.config.getdir('OUTPUT_BASE')
+    #if output_base:
+    #    shutil.rmtree(output_base)
 
 
 @pytest.mark.wrapper
@@ -200,3 +206,7 @@ def test_get_config_file(metplus_config):
     config.set('config', 'ASCII2NC_CONFIG_FILE', fake_config_name)
     wrapper = ASCII2NCWrapper(config)
     assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name
+
+    #output_base = wrapper.config.getdir('OUTPUT_BASE')
+    #if output_base:
+    #    shutil.rmtree(output_base)
