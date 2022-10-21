@@ -440,7 +440,13 @@ class StatAnalysisWrapper(CommandBuilder):
         """
         date_type = self.c_dict['DATE_TYPE']
 
-        stringsub_dict = {}
+        clock_dt = datetime.strptime(
+            self.config.getstr('config', 'CLOCK_TIME'), '%Y%m%d%H%M%S'
+        )
+        stringsub_dict = {
+            'now': clock_dt,
+            'today': clock_dt.strftime('%Y%m%d')
+        }
         # add all loop list and group list items to string sub keys list
         for list_item in self.EXPECTED_CONFIG_LISTS:
             list_name = list_item.replace('_LIST', '').lower()
