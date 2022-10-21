@@ -4,7 +4,7 @@ import pytest
 
 import os
 from configparser import NoOptionError
-from shutil import which
+from shutil import which, rmtree
 
 from metplus.util import met_util as util
 
@@ -251,6 +251,9 @@ def test_move_all_to_config_section(metplus_config_files, config_key,
     config_files = [os.path.join(test_dir, item) for item in config_files]
     config = metplus_config_files(config_files)
     assert config.getstr('config', config_key) == expected_result
+    output_base = config.getdir('OUTPUT_BASE')
+    if output_base and os.path.exists(output_base):
+        rmtree(output_base)
 
 
 @pytest.mark.parametrize(
@@ -286,6 +289,9 @@ def test_move_all_to_config_section_cmd_line(metplus_config_files, overrides,
     config = metplus_config_files(overrides)
     assert config.getstr('config', config_key, '') == expected_result
 
+    output_base = config.getdir('OUTPUT_BASE')
+    if output_base and os.path.exists(output_base):
+        rmtree(output_base)
 
 @pytest.mark.parametrize(
     'config_name, expected_result', [
@@ -341,3 +347,7 @@ def test_getraw_nested_curly_braces(metplus_config_files,
     config = metplus_config_files(config_files)
     sec, name = config_name.split('.', 1)
     assert config.getraw(sec, name) == expected_result
+
+    output_base = config.getdir('OUTPUT_BASE')
+    if output_base and os.path.exists(output_base):
+        rmtree(output_base)

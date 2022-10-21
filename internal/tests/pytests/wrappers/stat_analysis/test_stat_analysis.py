@@ -16,17 +16,42 @@ TEST_CONF = os.path.join(os.path.dirname(__file__), 'test.conf')
 
 pp = pprint.PrettyPrinter()
 
-def stat_analysis_wrapper(metplus_config_files):
+
+def stat_analysis_wrapper(metplus_config):
     """! Returns a default StatAnalysisWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
          files.  Subsequent tests can customize the final METplus configuration
          to over-ride these /path/to values."""
-
-    # Default, empty StatAnalysisWrapper with some configuration values set
-    # to /path/to:
-    extra_configs = [TEST_CONF]
-    config = metplus_config_files(extra_configs)
+    config = metplus_config
     handle_tmp_dir(config)
+    config.set('config', 'PROCESS_LIST', 'StatAnalysis')
+    config.set('config', 'STAT_ANALYSIS_OUTPUT_DIR',
+               '{OUTPUT_BASE}/stat_analysis')
+    config.set('config', 'MODEL1_STAT_ANALYSIS_LOOKIN_DIR',
+               '{METPLUS_BASE}/internal/tests/data/stat_data')
+    config.set('config', 'LOOP_BY', 'VALID')
+    config.set('config', 'VALID_TIME_FMT', '%Y%m%d')
+    config.set('config', 'VALID_BEG', '20190101')
+    config.set('config', 'VALID_END', '20190101')
+    config.set('config', 'VALID_INCREMENT', '86400')
+    config.set('config', 'MODEL1', 'MODEL_TEST')
+    config.set('config', 'MODEL1_REFERENCE_NAME', 'MODELTEST')
+    config.set('config', 'MODEL1_OBTYPE', 'MODEL_TEST_ANL')
+    config.set('config', 'STAT_ANALYSIS_CONFIG_FILE',
+               '{PARM_BASE}/met_config/STATAnalysisConfig_wrapped')
+    config.set('config', 'STAT_ANALYSIS_JOB_NAME', 'filter')
+    config.set('config', 'STAT_ANALYSIS_JOB_ARGS', '-dump_row [dump_row_file]')
+    config.set('config', 'MODEL_LIST', '{MODEL1}')
+    config.set('config', 'FCST_VALID_HOUR_LIST', '00')
+    config.set('config', 'FCST_INIT_HOUR_LIST', '00, 06, 12, 18')
+    config.set('config', 'GROUP_LIST_ITEMS', 'FCST_INIT_HOUR_LIST')
+    config.set('config', 'LOOP_LIST_ITEMS', 'FCST_VALID_HOUR_LIST, MODEL_LIST')
+    config.set('config', 'MODEL1_STAT_ANALYSIS_DUMP_ROW_TEMPLATE',
+               ('{fcst_valid_hour?fmt=%H}Z/{MODEL1}/'
+                '{MODEL1}_{valid?fmt=%Y%m%d}.stat'))
+    config.set('config', 'MODEL1_STAT_ANALYSIS_OUT_STAT_TEMPLATE',
+               ('{model?fmt=%s}_{obtype?fmt=%s}_valid{valid?fmt=%Y%m%d}'
+                '{valid_hour?fmt=%H}_init{fcst_init_hour?fmt=%s}.stat'))
     return StatAnalysisWrapper(config)
 
 
