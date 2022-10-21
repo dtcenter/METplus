@@ -7,6 +7,9 @@ Description: METplus utility to handle string manipulation
 import re
 from csv import reader
 
+from .constants import VALID_COMPARISONS
+
+
 def remove_quotes(input_string):
     """!Remove quotes from string"""
     if not input_string:
@@ -14,6 +17,7 @@ def remove_quotes(input_string):
 
     # strip off double and single quotes
     return input_string.strip('"').strip("'")
+
 
 def getlist(list_str, expand_begin_end_incr=True):
     """! Returns a list of string elements from a comma
@@ -60,6 +64,7 @@ def getlist(list_str, expand_begin_end_incr=True):
 
     return item_list
 
+
 def getlistint(list_str):
     """! Get list and convert all values to int
 
@@ -88,6 +93,7 @@ def _handle_begin_end_incr(list_str):
 
     return list_str
 
+
 def _begin_end_incr_findall(list_str):
     """! Find all instances of begin_end_incr in list string
 
@@ -105,6 +111,7 @@ def _begin_end_incr_findall(list_str):
         r"([^,]*begin_end_incr\(\s*-?\d*,-?\d*,-*\d*,?\d*\s*\)[^,]*)",
         list_str
     )
+
 
 def _begin_end_incr_evaluate(item):
     """! Expand begin_end_incr() items into a list of values
@@ -142,6 +149,7 @@ def _begin_end_incr_evaluate(item):
         return out_list
 
     return None
+
 
 def _fix_list(item_list):
     """! The logic that calls this function may have incorrectly split up
@@ -182,3 +190,62 @@ def _fix_list(item_list):
             out_list.append(item)
 
     return out_list
+
+
+def list_to_str(list_of_values, add_quotes=True):
+    """! Turn a list of values into a single string
+
+    @param list_of_values list of values, i.e. ['value1', 'value2']
+    @param add_quotes if True, add quotation marks around values,
+     default is True
+
+    @returns string created from list_of_values with the values separated
+      by commas, i.e. '"value1", "value2"'  or 1, 3 if add_quotes is False
+    """
+    # return empty string if list is empty
+    if not list_of_values:
+        return ''
+
+    if add_quotes:
+        # remove any quotes that are already around items, then add quotes
+        values = [remove_quotes(item) for item in list_of_values]
+        return '"' + '", "'.join(values) + '"'
+
+    return ', '.join(list_of_values)
+
+
+def comparison_to_letter_format(expression):
+    """! Convert comparison operator to the letter version if it is not already
+
+    @param expression string starting with comparison operator to convert,
+     i.e. gt3 or <=5.4
+    @returns letter comparison operator, i.e. gt3 or le5.4 or None if invalid
+    """
+    for symbol_comp, letter_comp in VALID_COMPARISONS.items():
+        if letter_comp in expression or symbol_comp in expression:
+            return expression.replace(symbol_comp, letter_comp)
+
+    return None
+
+
+def format_thresh(thresh_str):
+    """! Format thresholds for file naming
+
+    @param thresh_str string of the thresholds.
+     Can be a comma-separated list, i.e. gt3,<=5.5, ==7
+
+    @returns string of comma-separated list of the threshold(s) with
+     letter format, i.e. gt3,le5.5,eq7
+    """
+    formatted_thresh_list = []
+    # separate thresholds by comma and strip off whitespace around values
+    thresh_list = [thresh.strip() for thresh in thresh_str.split(',')]
+    for thresh in thresh_list:
+        if not thresh:
+            continue
+
+        thresh_letter = comparison_to_letter_format(thresh)
+        if thresh_letter:
+            formatted_thresh_list.append(thresh_letter)
+
+    return ','.join(formatted_thresh_list)

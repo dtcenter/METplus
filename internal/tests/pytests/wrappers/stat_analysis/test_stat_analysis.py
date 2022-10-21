@@ -4,12 +4,17 @@ import pytest
 
 import os
 import datetime
+import pprint
+from dateutil.relativedelta import relativedelta
 
 from metplus.wrappers.stat_analysis_wrapper import StatAnalysisWrapper
 from metplus.util import handle_tmp_dir
 
 METPLUS_BASE = os.getcwd().split('/internal')[0]
 
+TEST_CONF = os.path.join(os.path.dirname(__file__), 'test.conf')
+
+pp = pprint.PrettyPrinter()
 
 def stat_analysis_wrapper(metplus_config):
     """! Returns a default StatAnalysisWrapper with /path/to entries in the
@@ -19,14 +24,302 @@ def stat_analysis_wrapper(metplus_config):
 
     # Default, empty StatAnalysisWrapper with some configuration values set
     # to /path/to:
-    extra_configs = []
-    extra_configs.append(os.path.join(os.path.dirname(__file__), 'test.conf'))
+    extra_configs = [TEST_CONF]
     config = metplus_config(extra_configs)
     handle_tmp_dir(config)
     return StatAnalysisWrapper(config)
 
 
-@pytest.mark.plotting
+def _set_config_dict_values():
+    config_dict = {}
+    config_dict['FCST_VALID_HOUR'] = ''
+    config_dict['FCST_VAR'] = ''
+    config_dict['FCST_LEVEL'] = ''
+    config_dict['INTERP_MTHD'] = ''
+    config_dict['MODEL'] = '"MODEL_TEST"'
+    config_dict['VX_MASK'] = ''
+    config_dict['OBS_INIT_HOUR'] = ''
+    config_dict['COV_THRESH'] = ''
+    config_dict['OBS_UNITS'] = ''
+    config_dict['FCST_THRESH'] = ''
+    config_dict['OBS_VAR'] = ''
+    config_dict['FCST_INIT_HOUR'] = ''
+    config_dict['INTERP_PNTS'] = ''
+    config_dict['FCST_LEAD'] = ''
+    config_dict['LINE_TYPE'] = ''
+    config_dict['FCST_UNITS'] = ''
+    config_dict['DESC'] = ''
+    config_dict['OBS_LEAD'] = ''
+    config_dict['OBS_THRESH'] = ''
+    config_dict['OBTYPE'] = '"MODEL_TEST_ANL"'
+    config_dict['OBS_VALID_HOUR'] = ''
+    config_dict['ALPHA'] = ''
+    config_dict['OBS_LEVEL'] = ''
+    return config_dict
+
+
+def set_minimum_config_settings(config):
+    # set config variables to prevent command from running and bypass check
+    # if input files actually exist
+    config.set('config', 'DO_NOT_RUN_EXE', True)
+    config.set('config', 'INPUT_MUST_EXIST', False)
+
+    # set process and time config variables
+    config.set('config', 'PROCESS_LIST', 'StatAnalysis')
+    config.set('config', 'LOOP_BY', 'INIT')
+    config.set('config', 'INIT_TIME_FMT', '%Y%m%d')
+    config.set('config', 'INIT_BEG', '20221014')
+    config.set('config', 'INIT_END', '20221014')
+    config.set('config', 'STAT_ANALYSIS_OUTPUT_DIR',
+               '{OUTPUT_BASE}/StatAnalysis/output')
+    config.set('config', 'STAT_ANALYSIS_OUTPUT_TEMPLATE',
+               '{valid?fmt=%Y%m%d%H}')
+    config.set('config', 'GROUP_LIST_ITEMS', 'DESC_LIST')
+    config.set('config', 'LOOP_LIST_ITEMS', 'MODEL_LIST')
+    config.set('config', 'MODEL_LIST', 'MODEL_A')
+    config.set('config', 'STAT_ANALYSIS_JOB1', '-job filter')
+    config.set('config', 'MODEL1', 'MODEL_A')
+    config.set('config', 'MODEL1_STAT_ANALYSIS_LOOKIN_DIR',
+               '{METPLUS_BASE}/internal/tests/data/stat_data')
+
+    # not required, can be unset for certain tests
+    config.set('config', 'STAT_ANALYSIS_CONFIG_FILE',
+               '{PARM_BASE}/met_config/STATAnalysisConfig_wrapped')
+
+
+@pytest.mark.parametrize(
+    'config_overrides, expected_env_vars', [
+        # 0
+        ({}, {}),
+        # 1 - fcst valid beg
+        ({'STAT_ANALYSIS_FCST_VALID_BEG': '{fcst_valid_beg?fmt=%Y%m%d_%H%M%S}'},
+         {'METPLUS_FCST_VALID_BEG': 'fcst_valid_beg = "20221014_000000";'}),
+        # 2 - fcst valid end
+        ({'STAT_ANALYSIS_FCST_VALID_END': '{fcst_valid_end?fmt=%Y%m%d_%H%M%S}'},
+         {'METPLUS_FCST_VALID_END': 'fcst_valid_end = "20221015_235959";'}),
+        # 3 - fcst valid end with shift
+        ({'STAT_ANALYSIS_FCST_VALID_END': '{fcst_valid_end?fmt=%Y%m%d?shift=1d}_000000'},
+         {'METPLUS_FCST_VALID_END': 'fcst_valid_end = "20221016_000000";'}),
+        # 4 - obs valid beg
+        ({'STAT_ANALYSIS_OBS_VALID_BEG': '{obs_valid_beg?fmt=%Y%m%d_%H%M%S}'},
+         {'METPLUS_OBS_VALID_BEG': 'obs_valid_beg = "20221014_000000";'}),
+        # 5 - obs valid end
+        ({'STAT_ANALYSIS_OBS_VALID_END': '{obs_valid_end?fmt=%Y%m%d_%H%M%S}'},
+         {'METPLUS_OBS_VALID_END': 'obs_valid_end = "20221015_235959";'}),
+        # 6 fcst init beg
+        ({'STAT_ANALYSIS_FCST_INIT_BEG': '{fcst_init_beg?fmt=%Y%m%d_%H%M%S}'},
+         {'METPLUS_FCST_INIT_BEG': 'fcst_init_beg = "20221014_000000";'}),
+        # 7 - fcst init end
+        ({'STAT_ANALYSIS_FCST_INIT_END': '{fcst_init_end?fmt=%Y%m%d_%H%M%S}'},
+         {'METPLUS_FCST_INIT_END': 'fcst_init_end = "20221015_235959";'}),
+        # 8 - fcst valid hour single
+        ({'FCST_VALID_HOUR_LIST': '12'},
+         {'METPLUS_FCST_VALID_HOUR': 'fcst_valid_hour = ["120000"];'}),
+        # 9 - fcst valid hour multiple
+        ({'FCST_VALID_HOUR_LIST': '12,108'},
+         {'METPLUS_FCST_VALID_HOUR': 'fcst_valid_hour = ["120000", "1080000"];'}),
+        # 10 - obs init beg
+        ({'STAT_ANALYSIS_OBS_INIT_BEG': '{obs_init_beg?fmt=%Y%m%d_%H%M%S}'},
+         {'METPLUS_OBS_INIT_BEG': 'obs_init_beg = "20221014_000000";'}),
+        # 11 - obs init end
+        ({'STAT_ANALYSIS_OBS_INIT_END': '{obs_init_end?fmt=%Y%m%d_%H%M%S}'},
+         {'METPLUS_OBS_INIT_END': 'obs_init_end = "20221015_235959";'}),
+        # 12 - generic valid beg
+        ({'STAT_ANALYSIS_VALID_BEG': '{fcst_valid_beg?fmt=%Y%m%d}_12'},
+         {'METPLUS_FCST_VALID_BEG': 'fcst_valid_beg = "20221014_12";',
+          'METPLUS_OBS_VALID_BEG': 'obs_valid_beg = "20221014_12";'}),
+        # 13 - generic valid end
+        ({'STAT_ANALYSIS_VALID_END': '{fcst_valid_end?fmt=%Y%m%d}_12'},
+         {'METPLUS_FCST_VALID_END': 'fcst_valid_end = "20221015_12";',
+          'METPLUS_OBS_VALID_END': 'obs_valid_end = "20221015_12";'}),
+        # 14 - generic init beg
+        ({'STAT_ANALYSIS_INIT_BEG': '{fcst_init_beg?fmt=%Y%m%d}_12'},
+         {'METPLUS_FCST_INIT_BEG': 'fcst_init_beg = "20221014_12";',
+          'METPLUS_OBS_INIT_BEG': 'obs_init_beg = "20221014_12";'}),
+        # 15 - generic init end
+        ({'STAT_ANALYSIS_INIT_END': '{fcst_init_end?fmt=%Y%m%d}_12'},
+         {'METPLUS_FCST_INIT_END': 'fcst_init_end = "20221015_12";',
+          'METPLUS_OBS_INIT_END': 'obs_init_end = "20221015_12";'}),
+    ]
+)
+@pytest.mark.wrapper_d
+def test_valid_init_env_vars(metplus_config, config_overrides,
+                             expected_env_vars):
+    config = metplus_config()
+    set_minimum_config_settings(config)
+    config.set('config', 'INIT_END', '20221015')
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    wrapper = StatAnalysisWrapper(config)
+    assert wrapper.isOK
+
+    runtime_settings_dict_list = wrapper.get_all_runtime_settings()
+    assert runtime_settings_dict_list
+
+    first_runtime_only = [runtime_settings_dict_list[0]]
+    wrapper.run_stat_analysis_job(first_runtime_only)
+    all_cmds = wrapper.all_commands
+
+    print(f"ALL COMMANDS: {all_cmds}")
+    _, actual_env_vars = all_cmds[0]
+
+    env_var_keys = [item for item in wrapper.WRAPPER_ENV_VAR_KEYS
+                    if 'BEG' in item or 'END' in item]
+    for env_var_key in env_var_keys:
+        match = next((item for item in actual_env_vars if
+                      item.startswith(env_var_key)), None)
+        assert match is not None
+        actual_value = match.split('=', 1)[1]
+        print(f"ENV VAR: {env_var_key}")
+        assert expected_env_vars.get(env_var_key, '') == actual_value
+
+
+@pytest.mark.parametrize(
+    'config_overrides, expected_result', [
+        ({}, True),
+        ({'STAT_ANALYSIS_JOB1': '-job filter -dump_row [dump_row_file]'},
+         False),
+        ({'STAT_ANALYSIS_JOB1': '-job filter -dump_row [dump_row_file]',
+          'MODEL1_STAT_ANALYSIS_DUMP_ROW_TEMPLATE': 'some/template'},
+         True),
+        ({'STAT_ANALYSIS_JOB1': '-job filter -out_stat [out_stat_file]'},
+         False),
+        ({'STAT_ANALYSIS_JOB1': '-job filter -out_stat [out_stat_file]',
+          'MODEL1_STAT_ANALYSIS_OUT_STAT_TEMPLATE': 'some/template'},
+         True),
+        ({'STAT_ANALYSIS_JOB1': '-job filter -dump_row [dump_row_file]',
+          'STAT_ANALYSIS_JOB2': '-job filter -out_stat [out_stat_file]',
+          'MODEL1_STAT_ANALYSIS_DUMP_ROW_TEMPLATE': 'some/template'},
+         False),
+        ({'STAT_ANALYSIS_JOB1': '-job filter -dump_row [dump_row_file]',
+          'STAT_ANALYSIS_JOB2': '-job filter -out_stat [out_stat_file]',
+          'MODEL1_STAT_ANALYSIS_DUMP_ROW_TEMPLATE': 'some/template',
+          'MODEL1_STAT_ANALYSIS_OUT_STAT_TEMPLATE': 'some/template'},
+         True),
+    ]
+)
+@pytest.mark.wrapper_d
+def test_check_required_job_template(metplus_config, config_overrides,
+                                     expected_result):
+    config = metplus_config()
+    set_minimum_config_settings(config)
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    wrapper = StatAnalysisWrapper(config)
+    print(wrapper.c_dict['JOBS'])
+    print(wrapper.c_dict['MODEL_INFO_LIST'])
+    assert wrapper.isOK == expected_result
+
+
+@pytest.mark.parametrize(
+    'c_dict, expected_result', [
+      # 0
+      ({
+           'GROUP_LIST_ITEMS': ['MODEL_LIST', 'FCST_LEAD_LIST'],
+           'LOOP_LIST_ITEMS': [],
+           'MODEL_LIST': ['"MODEL1"', '"MODEL2"'],
+           'FCST_LEAD_LIST': ['0', '24'],
+       },
+       [
+           {'MODEL': '"MODEL1", "MODEL2"',
+            'FCST_LEAD': '0, 24'
+            }
+       ]
+       ),
+      # 1
+      ({
+           'GROUP_LIST_ITEMS': ['FCST_LEAD_LIST'],
+           'LOOP_LIST_ITEMS': ['MODEL_LIST'],
+           'MODEL_LIST': ['"MODEL1"', '"MODEL2"'],
+           'FCST_LEAD_LIST': ['0', '24'],
+       },
+       [
+           {'MODEL': '"MODEL1"', 'FCST_LEAD': '0, 24'},
+           {'MODEL': '"MODEL2"', 'FCST_LEAD': '0, 24'},
+       ]
+       ),
+      # 2
+      ({
+         'GROUP_LIST_ITEMS': [],
+         'LOOP_LIST_ITEMS': ['MODEL_LIST', 'FCST_LEAD_LIST'],
+         'MODEL_LIST': ['"MODEL1"', '"MODEL2"'],
+         'FCST_LEAD_LIST': ['0', '24'],
+       },
+       [
+           {'MODEL': '"MODEL1"', 'FCST_LEAD': '0'},
+           {'MODEL': '"MODEL2"', 'FCST_LEAD': '0'},
+           {'MODEL': '"MODEL1"', 'FCST_LEAD': '24'},
+           {'MODEL': '"MODEL2"', 'FCST_LEAD': '24'},
+       ]
+       ),
+      # 3
+      ({
+         'GROUP_LIST_ITEMS': ['DESC_LIST'],
+         'LOOP_LIST_ITEMS': ['MODEL_LIST', 'FCST_LEAD_LIST',
+                             'FCST_THRESH_LIST'],
+         'MODEL_LIST': ['"MODEL1"', '"MODEL2"'],
+         'FCST_LEAD_LIST': ['0', '24'],
+         'FCST_THRESH_LIST': ['gt3', 'ge4'],
+         'DESC_LIST': ['"ONE_DESC"'],
+       },
+       [
+           {'DESC': '"ONE_DESC"',
+            'FCST_LEAD': '0', 'FCST_THRESH': 'gt3', 'MODEL': '"MODEL1"'},
+           {'DESC': '"ONE_DESC"',
+            'FCST_LEAD': '0', 'FCST_THRESH': 'gt3', 'MODEL': '"MODEL2"'},
+           {'DESC': '"ONE_DESC"',
+            'FCST_LEAD': '0', 'FCST_THRESH': 'ge4', 'MODEL': '"MODEL1"'},
+           {'DESC': '"ONE_DESC"',
+            'FCST_LEAD': '0', 'FCST_THRESH': 'ge4', 'MODEL': '"MODEL2"'},
+           {'DESC': '"ONE_DESC"',
+            'FCST_LEAD': '24', 'FCST_THRESH': 'gt3', 'MODEL': '"MODEL1"'},
+           {'DESC': '"ONE_DESC"',
+            'FCST_LEAD': '24', 'FCST_THRESH': 'gt3', 'MODEL': '"MODEL2"'},
+           {'DESC': '"ONE_DESC"',
+            'FCST_LEAD': '24', 'FCST_THRESH': 'ge4', 'MODEL': '"MODEL1"'},
+           {'DESC': '"ONE_DESC"',
+            'FCST_LEAD': '24', 'FCST_THRESH': 'ge4', 'MODEL': '"MODEL2"'},
+       ]
+       ),
+    ]
+)
+@pytest.mark.wrapper_d
+def test_get_runtime_settings(metplus_config, c_dict, expected_result):
+    config = metplus_config()
+    wrapper = StatAnalysisWrapper(config)
+
+    runtime_settings = wrapper.get_runtime_settings(c_dict)
+    pp.pprint(runtime_settings)
+    assert runtime_settings == expected_result
+
+@pytest.mark.parametrize(
+    'list_name, config_overrides, expected_value', [
+      ('FCST_LEAD_LIST', {'FCST_LEAD_LIST': '12'}, ['12']),
+      ('FCST_LEAD_LIST', {'FCST_LEAD_LIST': '12,24'}, ['12', '24']),
+      ('FCST_LEAD_LIST',
+       {'FCST_LEAD_LIST1': '12,24', 'FCST_LEAD_LIST2': '48,96'},
+       ['12,24', '48,96']),
+      ('FCST_LEAD_LIST',
+       {'FCST_LEAD_LIST1': 'begin_end_incr(12,24,12)',
+        'FCST_LEAD_LIST2': 'begin_end_incr(48,96,48)'},
+       ['12,24', '48,96']),
+    ]
+)
+@pytest.mark.wrapper_d
+def test_format_conf_list(metplus_config, list_name, config_overrides,
+                          expected_value):
+    config = metplus_config()
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    wrapper = StatAnalysisWrapper(config)
+
+    assert wrapper._format_conf_list(list_name) == expected_value
+
+
+@pytest.mark.wrapper_d
 def test_get_command(metplus_config):
     # Independently test that the stat_analysis command
     # is being put together correctly with
@@ -36,17 +329,17 @@ def test_get_command(metplus_config):
     # Test 1
     expected_command = (
         st.config.getdir('MET_BIN_DIR', '')
-        +'/stat_analysis '
+        +'/stat_analysis -v 2 '
         +'-lookin /path/to/lookin_dir '
         +'-config /path/to/STATAnalysisConfig'
     )
-    st.lookindir = '/path/to/lookin_dir'
-    st.c_dict['CONFIG_FILE'] = '/path/to/STATAnalysisConfig'
+    st.c_dict['LOOKIN_DIR'] = '/path/to/lookin_dir'
+    st.args.append('-config /path/to/STATAnalysisConfig')
     test_command = st.get_command()
     assert expected_command == test_command
 
 
-@pytest.mark.plotting
+@pytest.mark.wrapper_d
 def test_create_c_dict(metplus_config):
     # Independently test that c_dict is being created
     # and that the wrapper and config reader 
@@ -54,20 +347,23 @@ def test_create_c_dict(metplus_config):
     st = stat_analysis_wrapper(metplus_config)
     # Test 1
     c_dict = st.create_c_dict()
-    assert(os.path.realpath(c_dict['CONFIG_FILE']) == (METPLUS_BASE+'/internal/tests/'
-                                                       +'config/STATAnalysisConfig'))
-    assert(c_dict['OUTPUT_DIR'] == (st.config.getdir('OUTPUT_BASE')
-                                         +'/stat_analysis'))
+
+    actual_config = os.path.join(METPLUS_BASE, 'parm', 'met_config',
+                                 'STATAnalysisConfig_wrapped')
+    actual_outdir = os.path.join(st.config.getdir('OUTPUT_BASE'),
+                                 'stat_analysis')
+    assert os.path.realpath(c_dict['CONFIG_FILE']) == actual_config
+    assert c_dict['OUTPUT_DIR'] == actual_outdir
     assert 'FCST_INIT_HOUR_LIST' in c_dict['GROUP_LIST_ITEMS']
-    assert('FCST_VALID_HOUR_LIST' in c_dict['LOOP_LIST_ITEMS'] and
-           'MODEL_LIST' in c_dict['LOOP_LIST_ITEMS'])
+    assert 'FCST_VALID_HOUR_LIST' in c_dict['LOOP_LIST_ITEMS']
+    assert 'MODEL_LIST' in c_dict['LOOP_LIST_ITEMS']
     assert c_dict['VAR_LIST'] == []
-    assert c_dict['MODEL_LIST'] == ['MODEL_TEST']
+    assert c_dict['MODEL_LIST'] == ['"MODEL_TEST"']
     assert c_dict['DESC_LIST'] == []
     assert c_dict['FCST_LEAD_LIST'] == []
     assert c_dict['OBS_LEAD_LIST'] == []
-    assert c_dict['FCST_VALID_HOUR_LIST'] == ['000000']
-    assert c_dict['FCST_INIT_HOUR_LIST'] == ['000000', '060000', '120000', '180000']
+    assert c_dict['FCST_VALID_HOUR_LIST'] == ['00']
+    assert c_dict['FCST_INIT_HOUR_LIST'] == ['00', '06', '12', '18']
     assert c_dict['OBS_VALID_HOUR_LIST'] == []
     assert c_dict['OBS_INIT_HOUR_LIST'] == []
     assert c_dict['VX_MASK_LIST'] == []
@@ -78,23 +374,7 @@ def test_create_c_dict(metplus_config):
     assert c_dict['LINE_TYPE_LIST'] == []
 
 
-@pytest.mark.plotting
-def test_list_to_str(metplus_config):
-    # Independently test that a list of strings
-    # are being converted to a one
-    # string list correctly
-    st = stat_analysis_wrapper(metplus_config)
-    # Test 1
-    expected_list = '"a", "b", "c"'
-    test_list = st.list_to_str([ 'a', 'b', 'c' ])
-    assert(expected_list == test_list)
-    # Test 2
-    expected_list = '"0", "1", "2"'
-    test_list = st.list_to_str([ '0', '1', '2' ])
-    assert(expected_list == test_list)
-
-
-@pytest.mark.plotting
+@pytest.mark.wrapper_d
 def test_set_lists_as_loop_or_group(metplus_config):
     # Independently test that the lists that are set
     # in the config file are being set 
@@ -103,18 +383,18 @@ def test_set_lists_as_loop_or_group(metplus_config):
     # and those not set are set to GROUP_LIST_ITEMS
     st = stat_analysis_wrapper(metplus_config)
     # Test 1
-    expected_lists_to_group_items = [ 'FCST_INIT_HOUR_LIST', 'DESC_LIST',
-                                      'FCST_LEAD_LIST', 'OBS_LEAD_LIST',
-                                      'OBS_VALID_HOUR_LIST',
-                                      'OBS_INIT_HOUR_LIST', 'FCST_VAR_LIST',
-                                      'OBS_VAR_LIST', 'FCST_UNITS_LIST', 
-                                      'OBS_UNITS_LIST', 'FCST_LEVEL_LIST',
-                                      'OBS_LEVEL_LIST', 'VX_MASK_LIST',
-                                      'INTERP_MTHD_LIST', 'INTERP_PNTS_LIST', 
-                                      'FCST_THRESH_LIST', 'OBS_THRESH_LIST',
-                                      'COV_THRESH_LIST', 'ALPHA_LIST', 
-                                      'LINE_TYPE_LIST' ]
-    expected_lists_to_loop_items = [ 'FCST_VALID_HOUR_LIST', 'MODEL_LIST' ]
+    expected_lists_to_group_items = ['FCST_INIT_HOUR_LIST', 'DESC_LIST',
+                                     'FCST_LEAD_LIST', 'OBS_LEAD_LIST',
+                                     'OBS_VALID_HOUR_LIST',
+                                     'OBS_INIT_HOUR_LIST', 'FCST_VAR_LIST',
+                                     'OBS_VAR_LIST', 'FCST_UNITS_LIST',
+                                     'OBS_UNITS_LIST', 'FCST_LEVEL_LIST',
+                                     'OBS_LEVEL_LIST', 'VX_MASK_LIST',
+                                     'INTERP_MTHD_LIST', 'INTERP_PNTS_LIST',
+                                     'FCST_THRESH_LIST', 'OBS_THRESH_LIST',
+                                     'COV_THRESH_LIST', 'ALPHA_LIST',
+                                     'LINE_TYPE_LIST']
+    expected_lists_to_loop_items = ['FCST_VALID_HOUR_LIST', 'MODEL_LIST']
     config_dict = {}
     config_dict['LOOP_ORDER'] = 'times'
     config_dict['PROCESS_LIST'] = 'StatAnalysis'
@@ -122,8 +402,8 @@ def test_set_lists_as_loop_or_group(metplus_config):
         'PARM_BASE/grid_to_grid/met_config/STATAnalysisConfig'
     )
     config_dict['OUTPUT_DIR'] = 'OUTPUT_BASE/stat_analysis'
-    config_dict['GROUP_LIST_ITEMS'] = [ 'FCST_INIT_HOUR_LIST' ]
-    config_dict['LOOP_LIST_ITEMS'] = [ 'FCST_VALID_HOUR_LIST', 'MODEL_LIST']
+    config_dict['GROUP_LIST_ITEMS'] = ['FCST_INIT_HOUR_LIST']
+    config_dict['LOOP_LIST_ITEMS'] = ['FCST_VALID_HOUR_LIST', 'MODEL_LIST']
     config_dict['FCST_VAR_LIST'] = []
     config_dict['OBS_VAR_LIST'] = []
     config_dict['FCST_LEVEL_LIST'] = []
@@ -132,12 +412,12 @@ def test_set_lists_as_loop_or_group(metplus_config):
     config_dict['OBS_UNITS_LIST'] = []
     config_dict['FCST_THRESH_LIST'] = []
     config_dict['OBS_THRESH_LIST'] = []
-    config_dict['MODEL_LIST'] = [ 'MODEL_TEST' ]
+    config_dict['MODEL_LIST'] = ['MODEL_TEST']
     config_dict['DESC_LIST'] = []
     config_dict['FCST_LEAD_LIST'] = []
     config_dict['OBS_LEAD_LIST'] = []
-    config_dict['FCST_VALID_HOUR_LIST'] = [ '00', '06', '12', '18']
-    config_dict['FCST_INIT_HOUR_LIST'] = [ '00', '06', '12', '18']
+    config_dict['FCST_VALID_HOUR_LIST'] = ['00', '06', '12', '18']
+    config_dict['FCST_INIT_HOUR_LIST'] = ['00', '06', '12', '18']
     config_dict['OBS_VALID_HOUR_LIST'] = []
     config_dict['OBS_INIT_HOUR_LIST'] = []
     config_dict['VX_MASK_LIST'] = []
@@ -157,351 +437,200 @@ def test_set_lists_as_loop_or_group(metplus_config):
 
 
 @pytest.mark.parametrize(
-    'expression, expected_result', [
-        ('>1', 'gt1'),
-        ('>=0.2', 'ge0.2'),
-        ('<30', 'lt30'),
-        ('<=0.04', 'le0.04'),
-        ('==5', 'eq5'),
-        ('!=0.06', 'ne0.06'),
-        ('>0.05, gt0.05, >=1, ge1, <5, lt5, <=10, le10, ==15, eq15, !=20, ne20',
-           'gt0.05,gt0.05,ge1,ge1,lt5,lt5,le10,le10,eq15,eq15,ne20,ne20'),
-        ('<805, <1609, <4828, <8045, >=8045, <16090',
-         'lt805,lt1609,lt4828,lt8045,ge8045,lt16090'),
+    'lists_to_loop,c_dict_overrides,config_dict_overrides,expected_values', [
+        # Test 0
+        (['FCST_VALID_HOUR_LIST', 'MODEL_LIST'],
+         {'DATE_BEG': '20190101', 'DATE_END': '20190105', 'DATE_TYPE': 'VALID'},
+         {'FCST_VALID_HOUR': '0', 'FCST_INIT_HOUR': '0, 6, 12, 18'},
+         {'valid_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
+          'valid_end': datetime.datetime(2019, 1, 5, 0, 0, 0),
+          'fcst_valid_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
+          'fcst_valid_end': datetime.datetime(2019, 1, 5, 0, 0, 0),
+          'fcst_valid_hour': relativedelta(),
+          'valid_hour': relativedelta(),
+          'fcst_valid_hour_beg': relativedelta(),
+          'fcst_valid_hour_end': relativedelta(),
+          'valid_hour_beg': relativedelta(),
+          'valid_hour_end': relativedelta(),
+          'model': 'MODEL_TEST',
+          'obtype': 'MODEL_TEST_ANL',
+          'fcst_init_hour': '000000_060000_120000_180000',
+          'fcst_init_hour_beg': relativedelta(),
+          'fcst_init_hour_end': relativedelta(hours=18),
+          'init_hour_beg': relativedelta(),
+          'init_hour_end': relativedelta(hours=18),
+          'fcst_var': '',
+          'fcst_level': '',
+          'fcst_units': '',
+          'fcst_thresh': '',
+          'desc': '',
+          },
+         ),
+        # Test 1
+        (['FCST_VALID_HOUR_LIST', 'MODEL_LIST', 'FCST_LEAD_LIST'],
+         {'DATE_BEG': '20190101', 'DATE_END': '20190101', 'DATE_TYPE': 'VALID'},
+         {'FCST_VALID_HOUR': '0', 'FCST_INIT_HOUR': '0, 6, 12, 18',
+          'FCST_LEAD': '24'},
+         {'valid': datetime.datetime(2019, 1, 1, 0, 0, 0),
+          'fcst_valid': datetime.datetime(2019, 1, 1, 0, 0, 0),
+          'fcst_lead_totalsec': '86400',
+          'fcst_lead_hour': '24',
+          'fcst_lead_min': '00',
+          'fcst_lead_sec': '00',
+          'fcst_lead': '240000',
+          'lead_totalsec': '86400',
+          'lead_hour': '24',
+          'lead_min': '00',
+          'lead_sec': '00',
+          'lead': '240000',
+          },
+         ),
+        # Test 2
+        (['FCST_VALID_HOUR_LIST', 'MODEL_LIST', 'FCST_LEAD_LIST'],
+         {'DATE_BEG': '20190101', 'DATE_END': '20190101', 'DATE_TYPE': 'VALID'},
+         {'FCST_VALID_HOUR': '0', 'FCST_INIT_HOUR': '0, 6, 12, 18',
+          'FCST_LEAD': '120'},
+         {'valid': datetime.datetime(2019, 1, 1, 0, 0, 0),
+          'fcst_valid': datetime.datetime(2019, 1, 1, 0, 0, 0),
+          'fcst_lead_totalsec': '432000',
+          'fcst_lead_hour': '120',
+          'fcst_lead_min': '00',
+          'fcst_lead_sec': '00',
+          'fcst_lead': '1200000',
+          'lead_totalsec': '432000',
+          'lead_hour': '120',
+          'lead_min': '00',
+          'lead_sec': '00',
+          'lead': '1200000',
+          },
+         ),
+        # Test 3
+        (['FCST_VALID_HOUR_LIST', 'MODEL_LIST'],
+         {'DATE_BEG': '20190101', 'DATE_END': '20190105', 'DATE_TYPE': 'INIT'},
+         {'FCST_VALID_HOUR': '0', 'FCST_INIT_HOUR': '0, 6, 12, 18'},
+         {'init_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
+          'init_end': datetime.datetime(2019, 1, 5, 18, 0, 0),
+          'fcst_init_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
+          'fcst_init_end': datetime.datetime(2019, 1, 5, 18, 0, 0),
+          'fcst_init_hour_beg': relativedelta(),
+          'fcst_init_hour_end': relativedelta(hours=18),
+          'init_hour_beg': relativedelta(),
+          'init_hour_end': relativedelta(hours=18),
+          },
+         ),
+        # Test 4
+        (['FCST_VALID_HOUR_LIST', 'MODEL_LIST'],
+         {'DATE_BEG': '20190101', 'DATE_END': '20190101', 'DATE_TYPE': 'INIT'},
+         {'FCST_VALID_HOUR': '0', 'FCST_INIT_HOUR': '', 'FCST_LEAD': ''},
+         {'init_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
+          'init_end': datetime.datetime(2019, 1, 1, 23, 59, 59),
+          'fcst_init_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
+          'fcst_init_end': datetime.datetime(2019, 1, 1, 23, 59, 59),
+          'obs_init_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
+          'obs_init_end': datetime.datetime(2019, 1, 1, 23, 59, 59),
+          'fcst_init_hour_beg': relativedelta(),
+          'fcst_init_hour_end': relativedelta(hours=23, minutes=59, seconds=59),
+          'obs_init_hour_beg': relativedelta(),
+          'obs_init_hour_end': relativedelta(hours=23, minutes=59, seconds=59),
+          },
+         ),
+        # Test 5 - check computed init_beg/end
+        (['FCST_LEAD_LIST'],
+         {'DATE_BEG': '20190101', 'DATE_END': '20190105',
+          'DATE_TYPE': 'VALID'},
+         {'FCST_VALID_HOUR': '0', 'FCST_LEAD': '12,24'},
+         {'valid_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
+          'valid_end': datetime.datetime(2019, 1, 5, 0, 0, 0),
+          'init_beg': datetime.datetime(2018, 12, 31, 0, 0, 0),
+          'init_end': datetime.datetime(2019, 1, 4, 12, 0, 0),
+          },
+         ),
+        # Test 6 - check computed valid_beg/end
+        (['FCST_LEAD_LIST'],
+         {'DATE_BEG': '20190101', 'DATE_END': '20190105',
+          'DATE_TYPE': 'INIT'},
+         {'FCST_INIT_HOUR': '0', 'FCST_LEAD': '12,24'},
+         {'init_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
+          'init_end': datetime.datetime(2019, 1, 5, 0, 0, 0),
+          'valid_beg': datetime.datetime(2019, 1, 1, 12, 0, 0),
+          'valid_end': datetime.datetime(2019, 1, 6, 0, 0, 0),
+          },
+         ),
     ]
 )
-@pytest.mark.plotting
-def test_format_thresh(metplus_config, expression, expected_result):
-    # Independently test the creation of
-    # string values for defining thresholds
-    st = stat_analysis_wrapper(metplus_config)
-
-    assert st.format_thresh(expression) == expected_result
-
-
-@pytest.mark.plotting
-def test_build_stringsub_dict(metplus_config):
+@pytest.mark.wrapper_d
+def test_build_stringsub_dict(metplus_config, lists_to_loop, c_dict_overrides,
+                              config_dict_overrides, expected_values):
     # Independently test the building of 
     # the dictionary used in the stringtemplate
     # substitution and the values are being set
     # as expected
     st = stat_analysis_wrapper(metplus_config)
-    config_dict = {}
-    config_dict['FCST_VALID_HOUR'] = '000000'
-    config_dict['FCST_VAR'] = ''
-    config_dict['FCST_LEVEL'] = ''
-    config_dict['INTERP_MTHD'] = ''
-    config_dict['MODEL'] = '"MODEL_TEST"'
-    config_dict['VX_MASK'] = ''
-    config_dict['OBS_INIT_HOUR'] = ''
-    config_dict['COV_THRESH'] = ''
-    config_dict['OBS_UNITS'] = ''
-    config_dict['FCST_THRESH'] = ''
-    config_dict['OBS_VAR'] = ''
-    config_dict['FCST_INIT_HOUR'] = '"000000", "060000", "120000", "180000"'
-    config_dict['INTERP_PNTS'] = ''
-    config_dict['FCST_LEAD'] = ''
-    config_dict['LINE_TYPE'] = ''
-    config_dict['FCST_UNITS'] = ''
-    config_dict['DESC'] = ''
-    config_dict['OBS_LEAD'] = ''
-    config_dict['OBS_THRESH'] = ''
-    config_dict['OBTYPE'] =  '"MODEL_TEST_ANL"'
-    config_dict['OBS_VALID_HOUR'] = ''
-    config_dict['ALPHA'] = ''
-    config_dict['OBS_LEVEL'] = ''
+    config_dict = _set_config_dict_values()
+
     # Test 1
-    st.c_dict['DATE_BEG'] = '20190101'
-    st.c_dict['DATE_END'] = '20190105'
-    st.c_dict['DATE_TYPE'] = 'VALID'
-    lists_to_group = [ 'FCST_INIT_HOUR_LIST', 'DESC_LIST', 'FCST_LEAD_LIST',
-                       'OBS_LEAD_LIST', 'OBS_VALID_HOUR_LIST',
-                       'OBS_INIT_HOUR_LIST', 'FCST_VAR_LIST', 'OBS_VAR_LIST',
-                       'FCST_UNITS_LIST', 'OBS_UNITS_LIST', 'FCST_LEVEL_LIST',
-                       'OBS_LEVEL_LIST', 'VX_MASK_LIST', 'INTERP_MTHD_LIST',
-                       'INTERP_PNTS_LIST', 'FCST_THRESH_LIST',
-                       'OBS_THRESH_LIST', 'COV_THRESH_LIST', 'ALPHA_LIST',
-                       'LINE_TYPE_LIST' ]
-    lists_to_loop = [ 'FCST_VALID_HOUR_LIST', 'MODEL_LIST' ] 
-    test_stringsub_dict = st.build_stringsub_dict(lists_to_loop,
-                                                  lists_to_group, config_dict)
-    assert(test_stringsub_dict['valid_beg'] == 
-           datetime.datetime(2019, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['valid_end'] == 
-           datetime.datetime(2019, 1, 5, 0, 0, 0))
-    assert(test_stringsub_dict['fcst_valid_hour'] == 
-           datetime.datetime(1900, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['fcst_valid_hour_beg'] == 
-           datetime.datetime(1900, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['fcst_valid_hour_end'] == 
-           datetime.datetime(1900, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['fcst_valid_beg'] == 
-           datetime.datetime(2019, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['fcst_valid_end'] == 
-           datetime.datetime(2019, 1, 5, 0, 0, 0))
-    assert(test_stringsub_dict['valid_hour'] == 
-           datetime.datetime(1900, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['valid_hour_beg'] == 
-           datetime.datetime(1900, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['valid_hour_end'] == 
-           datetime.datetime(1900, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['model'] == 'MODEL_TEST')
-    assert(test_stringsub_dict['obtype'] == 'MODEL_TEST_ANL')
-    assert(test_stringsub_dict['fcst_init_hour'] == 
-           '000000_060000_120000_180000')
-    assert(test_stringsub_dict['fcst_init_hour_beg'] == 
-           datetime.datetime(1900, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['fcst_init_hour_end'] == 
-           datetime.datetime(1900, 1, 1, 18, 0, 0))
-    assert(test_stringsub_dict['init_hour_beg'] == 
-           datetime.datetime(1900, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['init_hour_end'] == 
-           datetime.datetime(1900, 1, 1, 18, 0, 0)) 
-    assert(test_stringsub_dict['fcst_var'] == '')
-    assert(test_stringsub_dict['fcst_level'] == '')
-    assert(test_stringsub_dict['fcst_units'] == '')
-    assert(test_stringsub_dict['fcst_thresh'] == '')
-    assert(test_stringsub_dict['desc'] == '')
-    # Test 2
-    config_dict['FCST_LEAD'] = '240000'
-    st.c_dict['DATE_BEG'] = '20190101'
-    st.c_dict['DATE_END'] = '20190101'
-    st.c_dict['DATE_TYPE'] = 'VALID'
-    lists_to_group = [ 'FCST_INIT_HOUR_LIST', 'DESC_LIST',
-                       'OBS_LEAD_LIST', 'OBS_VALID_HOUR_LIST',
-                       'OBS_INIT_HOUR_LIST', 'FCST_VAR_LIST', 'OBS_VAR_LIST',
-                       'FCST_UNITS_LIST', 'OBS_UNITS_LIST', 'FCST_LEVEL_LIST',
-                       'OBS_LEVEL_LIST', 'VX_MASK_LIST', 'INTERP_MTHD_LIST',
-                       'INTERP_PNTS_LIST', 'FCST_THRESH_LIST', 
-                       'OBS_THRESH_LIST', 'COV_THRESH_LIST', 'ALPHA_LIST',
-                       'LINE_TYPE_LIST' ]
-    lists_to_loop = [ 'FCST_VALID_HOUR_LIST', 'MODEL_LIST', 'FCST_LEAD_LIST' ]
-    test_stringsub_dict = st.build_stringsub_dict(lists_to_loop,
-                                                  lists_to_group, config_dict)
-    assert(test_stringsub_dict['valid'] == 
-           datetime.datetime(2019, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['fcst_valid'] == 
-           datetime.datetime(2019, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['fcst_lead_totalsec'] == '86400')
-    assert(test_stringsub_dict['fcst_lead_hour'] == '24')
-    assert(test_stringsub_dict['fcst_lead_min'] == '00')
-    assert(test_stringsub_dict['fcst_lead_sec'] == '00')
-    assert(test_stringsub_dict['fcst_lead'] == '240000')
-    assert(test_stringsub_dict['lead_totalsec'] == '86400')
-    assert(test_stringsub_dict['lead_hour'] == '24')
-    assert(test_stringsub_dict['lead_min'] == '00')
-    assert(test_stringsub_dict['lead_sec'] == '00')
-    assert(test_stringsub_dict['lead'] == '240000')
-    # Test 3
-    config_dict['FCST_LEAD'] = '1200000'
-    st.c_dict['DATE_BEG'] = '20190101'
-    st.c_dict['DATE_END'] = '20190101'
-    st.c_dict['DATE_TYPE'] = 'VALID'
-    lists_to_group = [ 'FCST_INIT_HOUR_LIST', 'DESC_LIST',
-                       'OBS_LEAD_LIST', 'OBS_VALID_HOUR_LIST',
-                       'OBS_INIT_HOUR_LIST', 'FCST_VAR_LIST', 'OBS_VAR_LIST',
-                       'FCST_UNITS_LIST', 'OBS_UNITS_LIST', 'FCST_LEVEL_LIST',
-                       'OBS_LEVEL_LIST', 'VX_MASK_LIST', 'INTERP_MTHD_LIST',
-                       'INTERP_PNTS_LIST', 'FCST_THRESH_LIST',
-                       'OBS_THRESH_LIST', 'COV_THRESH_LIST', 'ALPHA_LIST',
-                       'LINE_TYPE_LIST' ]
-    lists_to_loop = [ 'FCST_VALID_HOUR_LIST', 'MODEL_LIST', 'FCST_LEAD_LIST' ]
-    test_stringsub_dict = st.build_stringsub_dict(lists_to_loop,
-                                                  lists_to_group, config_dict)
-    assert(test_stringsub_dict['valid'] ==
-           datetime.datetime(2019, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['fcst_valid'] ==
-           datetime.datetime(2019, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['fcst_lead_totalsec'] == '432000')
-    assert(test_stringsub_dict['fcst_lead_hour'] == '120')
-    assert(test_stringsub_dict['fcst_lead_min'] == '00')
-    assert(test_stringsub_dict['fcst_lead_sec'] == '00')
-    assert(test_stringsub_dict['fcst_lead'] == '1200000')
-    assert(test_stringsub_dict['lead_totalsec'] == '432000')
-    assert(test_stringsub_dict['lead_hour'] == '120')
-    assert(test_stringsub_dict['lead_min'] == '00')
-    assert(test_stringsub_dict['lead_sec'] == '00')
-    assert(test_stringsub_dict['lead'] == '1200000')
-    # Test 4
-    st.c_dict['DATE_BEG'] = '20190101'
-    st.c_dict['DATE_END'] = '20190105'
-    st.c_dict['DATE_TYPE'] = 'INIT'
-    test_stringsub_dict = st.build_stringsub_dict(lists_to_loop,
-                                                  lists_to_group, config_dict)
-    assert(test_stringsub_dict['fcst_init_hour_beg'] == 
-           datetime.datetime(1900, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['fcst_init_hour_end'] == 
-           datetime.datetime(1900, 1, 1, 18, 0, 0))
-    assert(test_stringsub_dict['fcst_init_beg'] == 
-           datetime.datetime(2019, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['fcst_init_end'] == 
-           datetime.datetime(2019, 1, 5, 18, 0, 0))
-    assert(test_stringsub_dict['init_hour_beg'] == 
-           datetime.datetime(1900, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['init_hour_end'] == 
-           datetime.datetime(1900, 1, 1, 18, 0, 0))
-    assert(test_stringsub_dict['init_beg'] == 
-           datetime.datetime(2019, 1, 1, 0, 0, 0))
-    assert(test_stringsub_dict['init_end'] == 
-           datetime.datetime(2019, 1, 5, 18, 0, 0))
-    # Test 5
-    config_dict['FCST_INIT_HOUR'] = ''
-    config_dict['FCST_LEAD'] = ''
-    st.c_dict['DATE_BEG'] = '20190101'
-    st.c_dict['DATE_END'] = '20190101'
-    st.c_dict['DATE_TYPE'] = 'INIT'
-    lists_to_group = [ 'FCST_INIT_HOUR_LIST', 'DESC_LIST', 'FCST_LEAD_LIST',
-                       'OBS_LEAD_LIST', 'OBS_VALID_HOUR_LIST',
-                       'OBS_INIT_HOUR_LIST', 'FCST_VAR_LIST', 'OBS_VAR_LIST',
-                       'FCST_UNITS_LIST', 'OBS_UNITS_LIST', 'FCST_LEVEL_LIST',
-                       'OBS_LEVEL_LIST', 'VX_MASK_LIST', 'INTERP_MTHD_LIST',
-                       'INTERP_PNTS_LIST', 'FCST_THRESH_LIST',
-                       'OBS_THRESH_LIST', 'COV_THRESH_LIST', 'ALPHA_LIST',
-                       'LINE_TYPE_LIST' ]
-    lists_to_loop = [ 'FCST_VALID_HOUR_LIST', 'MODEL_LIST' ]
-    test_stringsub_dict = st.build_stringsub_dict(lists_to_loop,
-                                                  lists_to_group, config_dict)
-    assert(test_stringsub_dict['init_beg'] == 
-           datetime.datetime(2019, 1, 1, 0, 0 ,0))
-    assert(test_stringsub_dict['init_end'] == 
-           datetime.datetime(2019, 1, 1, 23, 59 ,59))
-    assert(test_stringsub_dict['fcst_init_beg'] == 
-           datetime.datetime(2019, 1, 1, 0, 0 ,0))
-    assert(test_stringsub_dict['fcst_init_end'] == 
-           datetime.datetime(2019, 1, 1, 23, 59 ,59))
-    assert(test_stringsub_dict['obs_init_beg'] == 
-           datetime.datetime(2019, 1, 1, 0, 0 ,0))
-    assert(test_stringsub_dict['obs_init_end'] == 
-           datetime.datetime(2019, 1, 1, 23, 59 ,59))
-    assert(test_stringsub_dict['fcst_init_hour_beg'] == 
-           datetime.datetime(1900, 1, 1, 0, 0, 0)) 
-    assert(test_stringsub_dict['fcst_init_hour_end'] == 
-           datetime.datetime(1900, 1, 1, 23, 59 ,59))
-    assert(test_stringsub_dict['obs_init_hour_beg'] == 
-           datetime.datetime(1900, 1, 1, 0, 0, 0))                               
-    assert(test_stringsub_dict['obs_init_hour_end'] == 
-           datetime.datetime(1900, 1, 1, 23, 59 ,59))
+    for key, value in c_dict_overrides.items():
+        if key in ('DATE_BEG', 'DATE_END'):
+            st.c_dict[key] = datetime.datetime.strptime(value, '%Y%m%d')
+        else:
+            st.c_dict[key] = value
+
+    for key, value in config_dict_overrides.items():
+        config_dict[key] = value
+
+    lists_to_group = [item for item in st.EXPECTED_CONFIG_LISTS
+                      if item not in lists_to_loop]
+    config_dict['LISTS_TO_GROUP'] = lists_to_group
+    config_dict['LISTS_TO_LOOP'] = lists_to_loop
+    test_stringsub_dict = st.build_stringsub_dict(config_dict)
+
+    print(test_stringsub_dict)
+    for key, value in expected_values.items():
+        print(f'key: {key}')
+        assert test_stringsub_dict[key] == value
 
 
-@pytest.mark.plotting
-def test_get_output_filename(metplus_config):
+@pytest.mark.parametrize(
+    'filename_template, output_type, expected_output', [
+        (('{fcst_valid_hour?fmt=%H}Z/{model?fmt=%s}/'
+          '{model?fmt=%s}_{valid?fmt=%Y%m%d}.stat'),
+         'dump_row', '00Z/MODEL_TEST/MODEL_TEST_20190101.stat'),
+        (('{model?fmt=%s}_{obtype?fmt=%s}_valid{valid?fmt=%Y%m%d}_'
+          'fcstvalidhour000000Z_dump_row.stat'),
+         'dump_row', ('MODEL_TEST_MODEL_TEST_ANL_valid20190101_'
+                      'fcstvalidhour000000Z_dump_row.stat')
+        ),
+        (('{model?fmt=%s}_{obtype?fmt=%s}_valid{valid?fmt=%Y%m%d}'
+          '{valid_hour?fmt=%H}_init{fcst_init_hour?fmt=%s}.stat'),
+         'out_stat', ('MODEL_TEST_MODEL_TEST_ANL_valid2019010100'
+                      '_init000000_060000_120000_180000.stat')
+         ),
+    ]
+)
+@pytest.mark.wrapper_d
+def test_get_output_filename(metplus_config, filename_template, output_type,
+                             expected_output):
     # Independently test the building of
     # the output file name 
     # using string template substitution
     # and test the values is
     # as expected
     st = stat_analysis_wrapper(metplus_config)
-    config_dict = {}
-    config_dict['FCST_VALID_HOUR'] = '000000'
-    config_dict['FCST_VAR'] = ''
-    config_dict['FCST_LEVEL'] = ''
-    config_dict['INTERP_MTHD'] = ''
-    config_dict['MODEL'] = '"MODEL_TEST"'
-    config_dict['VX_MASK'] = ''
-    config_dict['OBS_INIT_HOUR'] = ''
-    config_dict['COV_THRESH'] = ''
-    config_dict['OBS_UNITS'] = ''
-    config_dict['FCST_THRESH'] = ''
-    config_dict['OBS_VAR'] = ''
-    config_dict['FCST_INIT_HOUR'] = '"000000", "060000", "120000", "180000"'
-    config_dict['INTERP_PNTS'] = ''
-    config_dict['FCST_LEAD'] = ''
-    config_dict['LINE_TYPE'] = ''
-    config_dict['FCST_UNITS'] = ''
-    config_dict['DESC'] = ''
-    config_dict['OBS_LEAD'] = ''
-    config_dict['OBS_THRESH'] = ''
-    config_dict['OBTYPE'] =  '"MODEL_TEST_ANL"'
-    config_dict['OBS_VALID_HOUR'] = ''
-    config_dict['ALPHA'] = ''
-    config_dict['OBS_LEVEL'] = ''
-    st.c_dict['DATE_BEG'] = '20190101'
-    st.c_dict['DATE_END'] = '20190101'
+    config_dict = _set_config_dict_values()
+    config_dict['FCST_VALID_HOUR'] = '0'
+    config_dict['FCST_INIT_HOUR'] = '0, 6, 12, 18'
+
+    st.c_dict['DATE_BEG'] = datetime.datetime.strptime('20190101', '%Y%m%d')
+    st.c_dict['DATE_END'] = datetime.datetime.strptime('20190101', '%Y%m%d')
     st.c_dict['DATE_TYPE'] = 'VALID'
-    lists_to_group = [ 'FCST_INIT_HOUR_LIST', 'DESC_LIST', 'FCST_LEAD_LIST',
-                       'OBS_LEAD_LIST', 'OBS_VALID_HOUR_LIST',
-                       'OBS_INIT_HOUR_LIST', 'FCST_VAR_LIST', 'OBS_VAR_LIST',
-                       'FCST_UNITS_LIST', 'OBS_UNITS_LIST', 'FCST_LEVEL_LIST',
-                       'OBS_LEVEL_LIST', 'VX_MASK_LIST', 'INTERP_MTHD_LIST',
-                       'INTERP_PNTS_LIST', 'FCST_THRESH_LIST',
-                       'OBS_THRESH_LIST', 'COV_THRESH_LIST', 'ALPHA_LIST',
-                       'LINE_TYPE_LIST' ]
-    lists_to_loop = [ 'FCST_VALID_HOUR_LIST', 'MODEL_LIST' ]
-    # Test 1
-    expected_output_filename = '00Z/MODEL_TEST/MODEL_TEST_20190101.stat'
-    output_type = 'dump_row'
-    filename_template = (
-        '{fcst_valid_hour?fmt=%H}Z/{model?fmt=%s}/{model?fmt=%s}_{valid?fmt=%Y%m%d}.stat'
-    )
-    filename_type = 'user'
+
     test_output_filename = st.get_output_filename(output_type,
                                                   filename_template,
-                                                  filename_type,
-                                                  lists_to_loop,
-                                                  lists_to_group,
                                                   config_dict)
-    assert expected_output_filename == test_output_filename
-    # Test 2
-    expected_output_filename = (
-        'MODEL_TEST_MODEL_TEST_ANL_'
-        +'valid20190101_fcstvalidhour000000Z'
-        +'_dump_row.stat'
-    )
-    output_type = 'dump_row'
-    filename_template = (
-        '{model?fmt=%s}_{obtype?fmt=%s}'
-        +'_valid{valid?fmt=%Y%m%d}_'
-        +'fcstvalidhour000000Z_dump_row.stat'
-    )
-    filename_type = 'user'
-    test_output_filename = st.get_output_filename(output_type,
-                                                  filename_template,
-                                                  filename_type,
-                                                  lists_to_loop,
-                                                  lists_to_group,
-                                                  config_dict)
-    assert expected_output_filename == test_output_filename
-    # Test 3
-    expected_output_filename = (
-        'MODEL_TEST_MODEL_TEST_ANL'
-        +'_valid2019010100'
-        +'_init000000_060000_120000_180000.stat'
-    )
-    output_type = 'out_stat'
-    filename_template = (
-        '{model?fmt=%s}_{obtype?fmt=%s}'
-        +'_valid{valid?fmt=%Y%m%d}{valid_hour?fmt=%H}'
-        +'_init{fcst_init_hour?fmt=%s}.stat'
-    )
-    filename_type = 'user'
-    test_output_filename = st.get_output_filename(output_type,
-                                                  filename_template,
-                                                  filename_type,
-                                                  lists_to_loop,
-                                                  lists_to_group,
-                                                  config_dict)
-    assert expected_output_filename == test_output_filename
-    # Test 4
-    expected_output_filename = (
-        'MODEL_TEST_MODEL_TEST_ANL'
-        +'valid20190101_fcstvalidhour000000Z'
-        +'_out_stat.stat'
-    )
-    output_type = 'out_stat'
-    filename_template = (
-        '{model?fmt=%s}_{obtype?fmt=%s}'
-    )
-    filename_type = 'default'
-    test_output_filename = st.get_output_filename(output_type,
-                                                  filename_template,
-                                                  filename_type,
-                                                  lists_to_loop,
-                                                  lists_to_group,
-                                                  config_dict)
-    assert expected_output_filename == test_output_filename
+    assert expected_output == test_output_filename
 
 
-@pytest.mark.plotting
+@pytest.mark.wrapper_d
 def test_get_lookin_dir(metplus_config):
     # Independently test the building of
     # the lookin directory
@@ -511,7 +640,7 @@ def test_get_lookin_dir(metplus_config):
     # as expected
     st = stat_analysis_wrapper(metplus_config)
     config_dict = {}
-    config_dict['FCST_VALID_HOUR'] = '000000'
+    config_dict['FCST_VALID_HOUR'] = '0'
     config_dict['FCST_VAR'] = ''
     config_dict['FCST_LEVEL'] = ''
     config_dict['INTERP_MTHD'] = ''
@@ -522,7 +651,7 @@ def test_get_lookin_dir(metplus_config):
     config_dict['OBS_UNITS'] = ''
     config_dict['FCST_THRESH'] = ''
     config_dict['OBS_VAR'] = ''
-    config_dict['FCST_INIT_HOUR'] = '"000000", "060000", "120000", "180000"'
+    config_dict['FCST_INIT_HOUR'] = '0, 6, 12, 18'
     config_dict['INTERP_PNTS'] = ''
     config_dict['FCST_LEAD'] = ''
     config_dict['LINE_TYPE'] = ''
@@ -530,47 +659,47 @@ def test_get_lookin_dir(metplus_config):
     config_dict['DESC'] = ''
     config_dict['OBS_LEAD'] = ''
     config_dict['OBS_THRESH'] = ''
-    config_dict['OBTYPE'] =  '"MODEL_TEST_ANL"'
+    config_dict['OBTYPE'] = '"MODEL_TEST_ANL"'
     config_dict['OBS_VALID_HOUR'] = ''
     config_dict['ALPHA'] = ''
     config_dict['OBS_LEVEL'] = ''
-    st.c_dict['DATE_BEG'] = '20180201'
-    st.c_dict['DATE_END'] = '20180201'
+    st.c_dict['DATE_BEG'] = datetime.datetime.strptime('20180201', '%Y%m%d')
+    st.c_dict['DATE_END'] = datetime.datetime.strptime('20180201', '%Y%m%d')
     st.c_dict['DATE_TYPE'] = 'VALID'
 
-    lists_to_group = [ 'FCST_INIT_HOUR_LIST', 'DESC_LIST', 'FCST_LEAD_LIST',
-                       'OBS_LEAD_LIST', 'OBS_VALID_HOUR_LIST',
-                       'OBS_INIT_HOUR_LIST', 'FCST_VAR_LIST', 'OBS_VAR_LIST',
-                       'FCST_UNITS_LIST', 'OBS_UNITS_LIST', 'FCST_LEVEL_LIST',
-                       'OBS_LEVEL_LIST', 'VX_MASK_LIST', 'INTERP_MTHD_LIST',
-                       'INTERP_PNTS_LIST', 'FCST_THRESH_LIST',
-                       'OBS_THRESH_LIST', 'COV_THRESH_LIST', 'ALPHA_LIST',
-                       'LINE_TYPE_LIST' ]
-    lists_to_loop = [ 'FCST_VALID_HOUR_LIST', 'MODEL_LIST' ]
+    lists_to_group = ['FCST_INIT_HOUR_LIST', 'DESC_LIST', 'FCST_LEAD_LIST',
+                      'OBS_LEAD_LIST', 'OBS_VALID_HOUR_LIST',
+                      'OBS_INIT_HOUR_LIST', 'FCST_VAR_LIST', 'OBS_VAR_LIST',
+                      'FCST_UNITS_LIST', 'OBS_UNITS_LIST', 'FCST_LEVEL_LIST',
+                      'OBS_LEVEL_LIST', 'VX_MASK_LIST', 'INTERP_MTHD_LIST',
+                      'INTERP_PNTS_LIST', 'FCST_THRESH_LIST',
+                      'OBS_THRESH_LIST', 'COV_THRESH_LIST', 'ALPHA_LIST',
+                      'LINE_TYPE_LIST']
+    lists_to_loop = ['FCST_VALID_HOUR_LIST', 'MODEL_LIST']
+    config_dict['LISTS_TO_GROUP'] = lists_to_group
+    config_dict['LISTS_TO_LOOP'] = lists_to_loop
+
     pytest_data_dir = os.path.join(os.path.dirname(__file__), os.pardir,
                                    os.pardir, os.pardir, 'data')
     # Test 1
     expected_lookin_dir = os.path.join(pytest_data_dir, 'fake/20180201')
     dir_path = os.path.join(pytest_data_dir, 'fake/*')
 
-    test_lookin_dir = st.get_lookin_dir(dir_path, lists_to_loop,
-                                        lists_to_group, config_dict)
+    test_lookin_dir = st.get_lookin_dir(dir_path, config_dict)
     assert expected_lookin_dir == test_lookin_dir
 
     # Test 2
     expected_lookin_dir = os.path.join(pytest_data_dir, 'fake/20180201')
     dir_path = os.path.join(pytest_data_dir, 'fake/{valid?fmt=%Y%m%d}')
 
-    test_lookin_dir = st.get_lookin_dir(dir_path, lists_to_loop,
-                                        lists_to_group, config_dict)
+    test_lookin_dir = st.get_lookin_dir(dir_path, config_dict)
     assert expected_lookin_dir == test_lookin_dir
 
     # Test 3 - no matches for lookin dir wildcard
     expected_lookin_dir = ''
     dir_path = os.path.join(pytest_data_dir, 'fake/*nothingmatches*')
 
-    test_lookin_dir = st.get_lookin_dir(dir_path, lists_to_loop,
-                                        lists_to_group, config_dict)
+    test_lookin_dir = st.get_lookin_dir(dir_path, config_dict)
     assert expected_lookin_dir == test_lookin_dir
 
     # Test 4 - 2 paths, one with wildcard
@@ -579,114 +708,95 @@ def test_get_lookin_dir(metplus_config):
     dir_path = os.path.join(pytest_data_dir, 'fake/*')
     dir_path = f'{dir_path}, {dir_path}'
 
-    test_lookin_dir = st.get_lookin_dir(dir_path, lists_to_loop,
-                                        lists_to_group, config_dict)
+    test_lookin_dir = st.get_lookin_dir(dir_path, config_dict)
     assert expected_lookin_dir == test_lookin_dir
 
 
-@pytest.mark.plotting
-def test_format_valid_init(metplus_config):
+@pytest.mark.parametrize(
+    'c_dict_overrides, config_dict_overrides, expected_values', [
+        # Test 0
+        ({'DATE_BEG': '20190101', 'DATE_END': '20190105', 'DATE_TYPE': 'VALID'},
+         {'FCST_VALID_HOUR': '0', 'FCST_INIT_HOUR': '0, 12',
+          'OBS_VALID_HOUR': '', 'OBS_INIT_HOUR': ''},
+         {'FCST_VALID_BEG': '20190101_000000',
+          'FCST_VALID_END': '20190105_000000',
+          'FCST_VALID_HOUR': '"000000"',
+          'FCST_INIT_HOUR': '"000000", "120000"',
+          'OBS_VALID_BEG': '20190101_000000',
+          'OBS_VALID_END': '20190105_235959',
+          },
+         ),
+        # Test 1
+        (
+        {'DATE_BEG': '20190101', 'DATE_END': '20190105', 'DATE_TYPE': 'VALID'},
+        {'FCST_VALID_HOUR': '0, 12', 'FCST_INIT_HOUR': '0, 12',
+         'OBS_VALID_HOUR': '', 'OBS_INIT_HOUR': ''},
+        {'FCST_VALID_BEG': '20190101_000000',
+         'FCST_VALID_END': '20190105_120000',
+         'FCST_VALID_HOUR': '"000000", "120000"',
+         'FCST_INIT_HOUR': '"000000", "120000"',
+         'OBS_VALID_BEG': '20190101_000000',
+         'OBS_VALID_END': '20190105_235959',
+         },
+        ),
+        # Test 2
+        (
+        {'DATE_BEG': '20190101', 'DATE_END': '20190101', 'DATE_TYPE': 'VALID'},
+        {'FCST_VALID_HOUR': '', 'FCST_INIT_HOUR': '',
+         'OBS_VALID_HOUR': '000000', 'OBS_INIT_HOUR': '0, 12'},
+        {'OBS_VALID_BEG': '20190101_000000',
+         'OBS_VALID_END': '20190101_000000',
+         'OBS_VALID_HOUR': '"000000"',
+         'OBS_INIT_HOUR': '"000000", "120000"',
+         'FCST_VALID_BEG': '20190101_000000',
+         'FCST_VALID_END': '20190101_235959',
+         },
+        ),
+        # Test 3
+        ({'DATE_BEG': '20190101', 'DATE_END': '20190101', 'DATE_TYPE': 'INIT'},
+         {'FCST_VALID_HOUR': '', 'FCST_INIT_HOUR': '',
+          'OBS_VALID_HOUR': '000000', 'OBS_INIT_HOUR': '0, 12'},
+         {'OBS_INIT_BEG': '20190101_000000',
+          'OBS_INIT_END': '20190101_120000',
+          'OBS_VALID_HOUR': '"000000"',
+          'OBS_INIT_HOUR': '"000000", "120000"',
+          'FCST_INIT_BEG': '20190101_000000',
+          'FCST_INIT_END': '20190101_235959',
+          },
+        ),
+    ]
+)
+@pytest.mark.wrapper_d
+def test_format_valid_init(metplus_config, c_dict_overrides,
+                           config_dict_overrides, expected_values):
     # Independently test the formatting 
     # of the valid and initialization date and hours
     # from the METplus config file for the MET
     # config file and that they are formatted
     # correctly
     st = stat_analysis_wrapper(metplus_config)
-    # Test 1
-    st.c_dict['DATE_BEG'] = '20190101'
-    st.c_dict['DATE_END'] = '20190105'
-    st.c_dict['DATE_TYPE'] = 'VALID'
+
+    for key, value in c_dict_overrides.items():
+        if key in ('DATE_BEG', 'DATE_END'):
+            st.c_dict[key] = datetime.datetime.strptime(value, '%Y%m%d')
+        else:
+            st.c_dict[key] = value
 
     config_dict = {}
-    config_dict['FCST_VALID_HOUR'] = '000000'
-    config_dict['FCST_INIT_HOUR'] = '"000000", "120000"'
-    config_dict['OBS_VALID_HOUR'] = ''
-    config_dict['OBS_INIT_HOUR'] = ''
+    for key, value in config_dict_overrides.items():
+        config_dict[key] = value
+
     config_dict = st.format_valid_init(config_dict)
-    assert config_dict['FCST_VALID_BEG'] == '20190101_000000'
-    assert config_dict['FCST_VALID_END'] == '20190105_000000'
-    assert config_dict['FCST_VALID_HOUR'] == '"000000"'
-    assert config_dict['FCST_INIT_BEG'] == ''
-    assert config_dict['FCST_INIT_END'] == ''
-    assert config_dict['FCST_INIT_HOUR'] == '"000000", "120000"'
-    assert config_dict['OBS_VALID_BEG'] == ''
-    assert config_dict['OBS_VALID_END'] == ''
-    assert config_dict['OBS_VALID_HOUR'] == ''
-    assert config_dict['OBS_INIT_BEG'] == ''
-    assert config_dict['OBS_INIT_END'] == ''
-    assert config_dict['OBS_INIT_HOUR'] == ''
-    # Test 2
-    st.c_dict['DATE_BEG'] = '20190101'
-    st.c_dict['DATE_END'] = '20190105'
-    st.c_dict['DATE_TYPE'] = 'VALID'
-
-    config_dict = {}
-    config_dict['FCST_VALID_HOUR'] = '"000000", "120000"'
-    config_dict['FCST_INIT_HOUR'] = '"000000", "120000"'
-    config_dict['OBS_VALID_HOUR'] = ''
-    config_dict['OBS_INIT_HOUR'] = ''
-    config_dict = st.format_valid_init(config_dict)
-    assert config_dict['FCST_VALID_BEG'] == '20190101_000000'
-    assert config_dict['FCST_VALID_END'] == '20190105_120000'
-    assert config_dict['FCST_VALID_HOUR'] == '"000000", "120000"'
-    assert config_dict['FCST_INIT_BEG'] == ''
-    assert config_dict['FCST_INIT_END'] == ''
-    assert config_dict['FCST_INIT_HOUR'] == '"000000", "120000"'
-    assert config_dict['OBS_VALID_BEG'] == ''
-    assert config_dict['OBS_VALID_END'] == ''
-    assert config_dict['OBS_VALID_HOUR'] == ''
-    assert config_dict['OBS_INIT_BEG'] == ''
-    assert config_dict['OBS_INIT_END'] == ''
-    assert config_dict['OBS_INIT_HOUR'] == ''
-    # Test 3
-    st.c_dict['DATE_BEG'] = '20190101'
-    st.c_dict['DATE_END'] = '20190101'
-    st.c_dict['DATE_TYPE'] = 'VALID'
-
-    config_dict = {}
-    config_dict['FCST_VALID_HOUR'] = ''
-    config_dict['FCST_INIT_HOUR'] = ''
-    config_dict['OBS_VALID_HOUR'] = '000000'
-    config_dict['OBS_INIT_HOUR'] = '"000000", "120000"'
-    config_dict = st.format_valid_init(config_dict)
-    assert config_dict['FCST_VALID_BEG'] == ''
-    assert config_dict['FCST_VALID_END'] == ''
-    assert config_dict['FCST_VALID_HOUR'] == ''
-    assert config_dict['FCST_INIT_BEG'] == ''
-    assert config_dict['FCST_INIT_END'] == ''
-    assert config_dict['FCST_INIT_HOUR'] == ''
-    assert config_dict['OBS_VALID_BEG'] == '20190101_000000'
-    assert config_dict['OBS_VALID_END'] == '20190101_000000'
-    assert config_dict['OBS_VALID_HOUR'] == '"000000"'
-    assert config_dict['OBS_INIT_BEG'] == ''
-    assert config_dict['OBS_INIT_END'] == ''
-    assert config_dict['OBS_INIT_HOUR'] == '"000000", "120000"'
-    # Test 3
-    st.c_dict['DATE_BEG'] = '20190101'
-    st.c_dict['DATE_END'] = '20190101'
-    st.c_dict['DATE_TYPE'] = 'INIT'
-
-    config_dict = {}
-    config_dict['FCST_VALID_HOUR'] = ''
-    config_dict['FCST_INIT_HOUR'] = ''
-    config_dict['OBS_VALID_HOUR'] = '000000'
-    config_dict['OBS_INIT_HOUR'] = '"000000", "120000"'
-    config_dict = st.format_valid_init(config_dict)
-    assert config_dict['FCST_VALID_BEG'] == ''
-    assert config_dict['FCST_VALID_END'] == ''
-    assert config_dict['FCST_VALID_HOUR'] == ''
-    assert config_dict['FCST_INIT_BEG'] == ''
-    assert config_dict['FCST_INIT_END'] == ''
-    assert config_dict['FCST_INIT_HOUR'] == ''
-    assert config_dict['OBS_VALID_BEG'] == ''
-    assert config_dict['OBS_VALID_END'] == ''
-    assert config_dict['OBS_VALID_HOUR'] == '"000000"'
-    assert config_dict['OBS_INIT_BEG'] == '20190101_000000'
-    assert config_dict['OBS_INIT_END'] == '20190101_120000'
-    assert config_dict['OBS_INIT_HOUR'] == '"000000", "120000"'
+    print(config_dict)
+    for key, value in config_dict.items():
+        print(key)
+        if key not in expected_values:
+            assert value == ''
+        else:
+            assert value == expected_values[key]
 
 
-@pytest.mark.plotting
+@pytest.mark.wrapper_d
 def test_parse_model_info(metplus_config):
     # Independently test the creation of 
     # the model information dictionary
@@ -694,9 +804,8 @@ def test_parse_model_info(metplus_config):
     # are as expected
     st = stat_analysis_wrapper(metplus_config)
     # Test 1
-    expected_name = 'MODEL_TEST'
-    expected_reference_name = 'MODELTEST'
-    expected_obtype = 'MODEL_TEST_ANL'
+    expected_name = '"MODEL_TEST"'
+    expected_obtype = '"MODEL_TEST_ANL"'
     expected_dump_row_filename_template = (
         '{fcst_valid_hour?fmt=%H}Z/MODEL_TEST/'
         +'MODEL_TEST_{valid?fmt=%Y%m%d}.stat'
@@ -712,54 +821,56 @@ def test_parse_model_info(metplus_config):
     expected_out_stat_filename_type = 'user'
     test_model_info_list = st.parse_model_info()
     assert test_model_info_list[0]['name'] == expected_name
-    assert test_model_info_list[0]['reference_name'] == expected_reference_name
     assert test_model_info_list[0]['obtype'] == expected_obtype
-    assert test_model_info_list[0]['dump_row_filename_template'] == expected_dump_row_filename_template
-    assert test_model_info_list[0]['dump_row_filename_type'] == expected_dump_row_filename_type
-    assert test_model_info_list[0]['out_stat_filename_template'] == expected_out_stat_filename_template
-    assert test_model_info_list[0]['out_stat_filename_type'] == expected_out_stat_filename_type
+    assert (test_model_info_list[0]['dump_row_filename_template'] ==
+            expected_dump_row_filename_template)
+    assert (test_model_info_list[0]['out_stat_filename_template']
+            == expected_out_stat_filename_template)
 
 
-@pytest.mark.plotting
+@pytest.mark.wrapper_d
 def test_run_stat_analysis(metplus_config):
     # Test running of stat_analysis
     st = stat_analysis_wrapper(metplus_config)
     # Test 1
     expected_filename = (st.config.getdir('OUTPUT_BASE')+'/stat_analysis'
-                         +'/00Z/MODEL_TEST/MODEL_TEST_20190101.stat')
+                         '/00Z/MODEL_TEST/MODEL_TEST_20190101.stat')
+    if os.path.exists(expected_filename):
+        os.remove(expected_filename)
     comparison_filename = (METPLUS_BASE+'/internal/tests/data/stat_data/'
                            +'test_20190101.stat') 
-    st.c_dict['DATE_BEG'] = '20190101'
-    st.c_dict['DATE_END'] = '20190101'
+    st.c_dict['DATE_BEG'] = datetime.datetime.strptime('20190101', '%Y%m%d')
+    st.c_dict['DATE_END'] = datetime.datetime.strptime('20190101', '%Y%m%d')
     st.c_dict['DATE_TYPE'] = 'VALID'
     st.run_stat_analysis()
     assert os.path.exists(expected_filename)
-    assert os.path.getsize(expected_filename) == os.path.getsize(comparison_filename)
+    assert (os.path.getsize(expected_filename) ==
+            os.path.getsize(comparison_filename))
 
 
 @pytest.mark.parametrize(
     'data_type, config_list, expected_list', [
-      ('FCST', '\"0,*,*\"', ["0,*,*"]),
-      ('FCST', '\"(0,*,*)\"', ["0,*,*"]),
-      ('FCST', '\"0,*,*\", \"1,*,*\"', ["0,*,*", "1,*,*"]),
-      ('FCST', '\"(0,*,*)\", \"(1,*,*)\"', ["0,*,*", "1,*,*"]),
-      ('OBS', '\"0,*,*\"', ["0,*,*"]),
-      ('OBS', '\"(0,*,*)\"', ["0,*,*"]),
-      ('OBS', '\"0,*,*\", \"1,*,*\"', ["0,*,*", "1,*,*"]),
-      ('OBS', '\"(0,*,*)\", \"(1,*,*)\"', ["0,*,*", "1,*,*"]),
+      ('FCST', '\"0,*,*\"', ['"0,*,*"']),
+      ('FCST', '\"(0,*,*)\"', ['"0,*,*"']),
+      ('FCST', '\"0,*,*\", \"1,*,*\"', ['"0,*,*"', '"1,*,*"']),
+      ('FCST', '\"(0,*,*)\", \"(1,*,*)\"', ['"0,*,*"', '"1,*,*"']),
+      ('OBS', '\"0,*,*\"', ['"0,*,*"']),
+      ('OBS', '\"(0,*,*)\"', ['"0,*,*"']),
+      ('OBS', '\"0,*,*\", \"1,*,*\"', ['"0,*,*"', '"1,*,*"']),
+      ('OBS', '\"(0,*,*)\", \"(1,*,*)\"', ['"0,*,*"', '"1,*,*"']),
     ]
 )
-@pytest.mark.plotting
+@pytest.mark.wrapper_d
 def test_get_level_list(metplus_config, data_type, config_list, expected_list):
     config = metplus_config()
     config.set('config', f'{data_type}_LEVEL_LIST', config_list)
 
     saw = StatAnalysisWrapper(config)
 
-    assert saw.get_level_list(data_type) == expected_list
+    assert saw._get_level_list(data_type) == expected_list
 
 
-@pytest.mark.plotting
+@pytest.mark.wrapper_d
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
     config = metplus_config()

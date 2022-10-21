@@ -102,3 +102,9 @@ RUNTIME_CONFS = [
     'SCRUB_STAGING_DIR',
     'MET_BIN_DIR',
 ]
+
+# datetime year month day (YYYYMMDD) notation
+YMD = '%Y%m%d'
+
+# datetime year month day hour minute second (YYYYMMDD_HHMMSS) notation
+YMD_HMS = '%Y%m%d_%H%M%S'

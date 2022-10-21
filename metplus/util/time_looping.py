@@ -12,7 +12,7 @@ def time_generator(config):
      Yields the next run time dictionary or None if something went wrong
     """
     # determine INIT or VALID prefix
-    prefix = _get_time_prefix(config)
+    prefix = get_time_prefix(config)
     if not prefix:
         yield None
         return
@@ -83,7 +83,7 @@ def time_generator(config):
         current_dt += time_interval
 
 def get_start_and_end_times(config):
-    prefix = _get_time_prefix(config)
+    prefix = get_time_prefix(config)
     if not prefix:
         return None, None
 
@@ -150,7 +150,7 @@ def _create_time_input_dict(prefix, current_dt, clock_dt):
         'today': clock_dt.strftime('%Y%m%d'),
     }
 
-def _get_time_prefix(config):
+def get_time_prefix(config):
     """! Read the METplusConfig object and determine the prefix for the time
     looping variables.
 

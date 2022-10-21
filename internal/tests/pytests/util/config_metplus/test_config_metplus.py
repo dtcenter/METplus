@@ -995,8 +995,6 @@ def test_parse_var_list_py_embed_multi_levels(metplus_config, config_overrides,
                                                    'ASCII2NC',
                                                    'TCStat',
                                                    'TCPairs']),
-        # remove MakePlots from list
-        ('StatAnalysis, MakePlots', ['StatAnalysis']),
     ]
 )
 @pytest.mark.util

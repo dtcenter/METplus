@@ -121,25 +121,84 @@ def test_getlist_int():
          ['2']),
 
         ('begin_end_incr(0,2,1), begin_end_incr(3,9,3)',
-         ['0','1','2','3','6','9']),
+         ['0', '1', '2', '3', '6', '9']),
 
         ('mem_begin_end_incr(0,2,1), mem_begin_end_incr(3,9,3)',
-         ['mem_0','mem_1','mem_2','mem_3','mem_6','mem_9']),
+         ['mem_0', 'mem_1', 'mem_2', 'mem_3', 'mem_6', 'mem_9']),
 
         ('mem_begin_end_incr(0,2,1,3), mem_begin_end_incr(3,12,3,3)',
-         ['mem_000', 'mem_001', 'mem_002', 'mem_003', 'mem_006', 'mem_009', 'mem_012']),
+         ['mem_000', 'mem_001', 'mem_002', 'mem_003',
+          'mem_006', 'mem_009', 'mem_012']),
 
-        ('begin_end_incr(0,10,2)H, 12',  [ '0H', '2H', '4H', '6H', '8H', '10H', '12']),
+        ('begin_end_incr(0,10,2)H, 12',
+         ['0H', '2H', '4H', '6H', '8H', '10H', '12']),
 
-        ('begin_end_incr(0,10800,3600)S, 4H',  [ '0S', '3600S', '7200S', '10800S', '4H']),
+        ('begin_end_incr(0,10800,3600)S, 4H',
+         ['0S', '3600S', '7200S', '10800S', '4H']),
 
         ('data.{init?fmt=%Y%m%d%H?shift=begin_end_incr(0, 3, 3)H}.ext',
          ['data.{init?fmt=%Y%m%d%H?shift=0H}.ext',
           'data.{init?fmt=%Y%m%d%H?shift=3H}.ext',
           ]),
-
+        ('"%m:begin_end_incr(3,11,1)", "%m%d:0229"',
+         ['%m:3', '%m:4', '%m:5', '%m:6', '%m:7', '%m:8', '%m:9', '%m:10',
+          '%m:11', '%m%d:0229'])
     ]
 )
 @pytest.mark.util
 def test_getlist_begin_end_incr(list_string, output_list):
     assert getlist(list_string) == output_list
+
+
+@pytest.mark.parametrize(
+    'input, add_quotes, expected_output', [
+        (['a', 'b', 'c'], None, '"a", "b", "c"'),
+        (['0', '1', '2'], None, '"0", "1", "2"'),
+        (['a', 'b', 'c'], True, '"a", "b", "c"'),
+        (['0', '1', '2'], True, '"0", "1", "2"'),
+        (['a', 'b', 'c'], False, 'a, b, c'),
+        (['0', '1', '2'], False, '0, 1, 2'),
+        (['"a"', '"b"', '"c"'], True, '"a", "b", "c"'),
+        (['"0"', '"1"', '"2"'], True, '"0", "1", "2"'),
+    ]
+)
+@pytest.mark.util
+def test_list_to_str(input, add_quotes, expected_output):
+    if add_quotes is None:
+        assert list_to_str(input) == expected_output
+    else:
+        assert list_to_str(input, add_quotes=add_quotes) == expected_output
+
+
+@pytest.mark.parametrize(
+    'expression, expected_result', [
+        ('gt3', 'gt3'),
+        ('>3', 'gt3'),
+        ('le3.5', 'le3.5'),
+        ('<=3.5', 'le3.5'),
+        ('==4', 'eq4'),
+        ('!=3.5', 'ne3.5'),
+    ]
+)
+@pytest.mark.util
+def test_comparison_to_letter_format(expression, expected_result):
+    assert comparison_to_letter_format(expression) == expected_result
+
+
+@pytest.mark.parametrize(
+    'expression, expected_result', [
+        ('>1', 'gt1'),
+        ('>=0.2', 'ge0.2'),
+        ('<30', 'lt30'),
+        ('<=0.04', 'le0.04'),
+        ('==5', 'eq5'),
+        ('!=0.06', 'ne0.06'),
+        ('>0.05, gt0.05, >=1, ge1, <5, lt5, <=10, le10, ==15, eq15, !=20, ne20',
+         'gt0.05,gt0.05,ge1,ge1,lt5,lt5,le10,le10,eq15,eq15,ne20,ne20'),
+        ('<805, <1609, <4828, <8045, >=8045, <16090',
+         'lt805,lt1609,lt4828,lt8045,ge8045,lt16090'),
+    ]
+)
+@pytest.mark.util
+def test_format_thresh(expression, expected_result):
+    assert format_thresh(expression) == expected_result

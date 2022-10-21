@@ -297,7 +297,6 @@ def test_get_lead_sequence_init_min_10(metplus_config):
         ('GempakToCFWrapper', 'gempak_to_cf_wrapper'),
         ('GenVxMaskWrapper', 'gen_vx_mask_wrapper'),
         ('GridStatWrapper', 'grid_stat_wrapper'),
-        ('MakePlotsWrapper', 'make_plots_wrapper'),
         ('MODEWrapper', 'mode_wrapper'),
         ('MTDWrapper', 'mtd_wrapper'),
         ('PB2NCWrapper', 'pb2nc_wrapper'),
@@ -329,21 +328,6 @@ def test_camel_to_underscore(camel, underscore):
 @pytest.mark.util
 def test_round_0p5(value, expected_result):
     assert util.round_0p5(value) == expected_result
-
-
-@pytest.mark.parametrize(
-    'expression, expected_result', [
-        ('gt3', 'gt3'),
-        ('>3', 'gt3'),
-        ('le3.5', 'le3.5'),
-        ('<=3.5', 'le3.5'),
-        ('==4', 'eq4'),
-        ('!=3.5', 'ne3.5'),
-    ]
-)
-@pytest.mark.util
-def test_comparison_to_letter_format(expression, expected_result):
-    assert util.comparison_to_letter_format(expression) == expected_result
 
 
 @pytest.mark.parametrize(
