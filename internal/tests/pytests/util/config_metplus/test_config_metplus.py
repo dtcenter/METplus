@@ -817,8 +817,13 @@ def test_parse_var_list_series_by(metplus_config):
             assert actual_sa.get(key) == value
 
 
+@pytest.mark.parametrize(
+    'start_index', [
+      0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+    ]
+)
 @pytest.mark.util
-def test_parse_var_list_priority_fcst(metplus_config):
+def test_parse_var_list_priority_fcst(metplus_config, start_index):
     priority_list = ['FCST_GRID_STAT_VAR1_NAME',
                      'FCST_GRID_STAT_VAR1_INPUT_FIELD_NAME',
                      'FCST_GRID_STAT_VAR1_FIELD_NAME',
@@ -833,22 +838,15 @@ def test_parse_var_list_priority_fcst(metplus_config):
                      'BOTH_VAR1_FIELD_NAME',
                      ]
     time_info = {}
+    config = metplus_config
+    for key in priority_list[start_index:]:
+        config.set('config', key, key.lower())
 
-    # loop through priority list, process, then pop first value off and
-    # process again until all items have been popped.
-    # This will check that list is in priority order
-    while(priority_list):
-        config = metplus_config
-        for key in priority_list:
-            config.set('config', key, key.lower())
-
-        var_list = config_metplus.parse_var_list(config, time_info=time_info,
-                                       data_type='FCST',
-                                       met_tool='grid_stat')
-
-        assert len(var_list) == 1
-        assert var_list[0].get('fcst_name') == priority_list[0].lower()
-        priority_list.pop(0)
+    var_list = config_metplus.parse_var_list(config, time_info=time_info,
+                                             data_type='FCST',
+                                             met_tool='grid_stat')
+    assert len(var_list) == 1
+    assert var_list[0].get('fcst_name') == priority_list[start_index].lower()
 
 
 # test that if wrapper specific field info is specified, it only gets

@@ -211,7 +211,7 @@ def test_pcp_combine_add_subhourly(metplus_config):
     fcst_level = 'Surface'
     fcst_output_name = 'A001500'
     fcst_fmt = f'\'name="{fcst_name}"; level="{fcst_level}";\''
-    config = metplus_config()
+    config = metplus_config
 
     test_data_dir = get_test_data_dir(config)
     fcst_input_dir = os.path.join(test_data_dir,
@@ -276,7 +276,7 @@ def test_pcp_combine_add_subhourly(metplus_config):
 @pytest.mark.wrapper
 def test_pcp_combine_bucket(metplus_config):
     fcst_output_name = 'APCP'
-    config = metplus_config()
+    config = metplus_config
 
     test_data_dir = get_test_data_dir(config)
     fcst_input_dir = os.path.join(test_data_dir,
@@ -356,7 +356,7 @@ def test_pcp_combine_derive(metplus_config, config_overrides, extra_fields):
     fcst_name = 'APCP'
     fcst_level = 'A03'
     fcst_fmt = f'-field \'name="{fcst_name}"; level="{fcst_level}";\''
-    config = metplus_config()
+    config = metplus_config
 
     test_data_dir = get_test_data_dir(config)
     fcst_input_dir = os.path.join(test_data_dir,
@@ -429,7 +429,7 @@ def test_pcp_combine_derive(metplus_config, config_overrides, extra_fields):
 def test_pcp_combine_loop_custom(metplus_config):
     fcst_name = 'APCP'
     ens_list = ['ens1', 'ens2', 'ens3', 'ens4', 'ens5', 'ens6']
-    config = metplus_config()
+    config = metplus_config
 
     test_data_dir = get_test_data_dir(config)
     fcst_input_dir = os.path.join(test_data_dir,
@@ -491,7 +491,7 @@ def test_pcp_combine_loop_custom(metplus_config):
 
 @pytest.mark.wrapper
 def test_pcp_combine_subtract(metplus_config):
-    config = metplus_config()
+    config = metplus_config
 
     test_data_dir = get_test_data_dir(config)
     fcst_input_dir = os.path.join(test_data_dir,
@@ -554,7 +554,7 @@ def test_pcp_combine_sum_subhourly(metplus_config):
     fcst_level = 'Surface'
     fcst_output_name = 'A001500'
     fcst_fmt = f'-field \'name="{fcst_name}"; level="{fcst_level}";\''
-    config = metplus_config()
+    config = metplus_config
 
     test_data_dir = get_test_data_dir(config)
     fcst_input_dir = os.path.join(test_data_dir,
@@ -632,7 +632,7 @@ def test_pcp_combine_sum_subhourly(metplus_config):
 def test_handle_name_argument(metplus_config, output_name, extra_output,
                               expected_results):
     data_src = 'FCST'
-    config = metplus_config()
+    config = metplus_config
     wrapper = PCPCombineWrapper(config)
     wrapper.c_dict[data_src + '_EXTRA_OUTPUT_NAMES'] = extra_output
     wrapper._handle_name_argument(output_name, data_src)
@@ -671,7 +671,7 @@ def test_handle_name_argument(metplus_config, output_name, extra_output,
 @pytest.mark.wrapper
 def test_get_extra_fields(metplus_config, names, levels, expected_args):
     data_src = 'FCST'
-    config = metplus_config()
+    config = metplus_config
     config.set('config', 'FCST_PCP_COMBINE_RUN', True)
     config.set('config', 'FCST_PCP_COMBINE_METHOD', 'ADD')
     config.set('config', 'FCST_PCP_COMBINE_EXTRA_NAMES', names)
@@ -688,7 +688,7 @@ def test_get_extra_fields(metplus_config, names, levels, expected_args):
 @pytest.mark.wrapper
 def test_add_method_single_file(metplus_config):
     data_src = 'FCST'
-    config = metplus_config()
+    config = metplus_config
     config.set('config', 'DO_NOT_RUN_EXE', True)
     config.set('config', 'INPUT_MUST_EXIST', False)
 
@@ -758,7 +758,7 @@ def test_subtract_method_zero_accum(metplus_config):
     input_level = '"(*,*)"'
     in_dir = '/some/input/dir'
     out_dir = '/some/output/dir'
-    config = metplus_config()
+    config = metplus_config
     config.set('config', 'DO_NOT_RUN_EXE', True)
     config.set('config', 'INPUT_MUST_EXIST', False)
 

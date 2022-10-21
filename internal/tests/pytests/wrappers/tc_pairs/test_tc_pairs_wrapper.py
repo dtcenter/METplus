@@ -384,12 +384,12 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
     ]
 )
 @pytest.mark.wrapper
-def test_tc_pairs_loop_order_processes(metplus_config, config_overrides,
+def test_tc_pairs_loop_order_processes(metplus_config_files, config_overrides,
                                        env_var_values):
     # run using init and valid time variables
     for loop_by in ['INIT', 'VALID']:
         remove_beg = remove_end = remove_match_points = False
-        config = metplus_config
+        config = metplus_config_files([])
 
         set_minimum_config_settings(config, loop_by)
 
@@ -439,7 +439,6 @@ def test_tc_pairs_loop_order_processes(metplus_config, config_overrides,
                           f"-out {out_dir}/mlq2014121318.gfso.0104"),
                          ]
 
-
         all_cmds = wrapper.run_all_times()
         print(f"ALL COMMANDS: {all_cmds}")
         assert len(all_cmds) == len(expected_cmds)
@@ -481,11 +480,11 @@ def test_tc_pairs_loop_order_processes(metplus_config, config_overrides,
     ]
 )
 @pytest.mark.wrapper
-def test_tc_pairs_read_all_files(metplus_config, config_overrides,
+def test_tc_pairs_read_all_files(metplus_config_files, config_overrides,
                                  env_var_values):
     # run using init and valid time variables
     for loop_by in ['INIT', 'VALID']:
-        config = metplus_config
+        config = metplus_config_files([])
 
         set_minimum_config_settings(config, loop_by)
 
