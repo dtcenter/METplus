@@ -8,16 +8,8 @@ import shutil
 from metplus.wrappers.ascii2nc_wrapper import ASCII2NCWrapper
 
 
-def ascii2nc_wrapper(metplus_config, config_path=None, config_overrides=None):
-    config = metplus_config([config_path])
-    # config = metplus_config()
-    #
-    # if config_path:
-    #     config = metplus_config([config_path])
-        # parm_base = config.getdir('PARM_BASE')
-        # config_full_path = os.path.join(parm_base, config_path)
-        # config = metplus_config([config_full_path])
-
+def ascii2nc_wrapper(metplus_config_files, config_path=None, config_overrides=None):
+    config = metplus_config_files([config_path])
     overrides = {'DO_NOT_RUN_EXE': True,
                  'INPUT_MUST_EXIST': False}
     if config_overrides:
@@ -142,10 +134,10 @@ def ascii2nc_wrapper(metplus_config, config_path=None, config_overrides=None):
     ]
 )
 @pytest.mark.wrapper
-def test_ascii2nc_wrapper(metplus_config, config_overrides,
+def test_ascii2nc_wrapper(metplus_config_files, config_overrides,
                           env_var_values):
     wrapper = (
-        ascii2nc_wrapper(metplus_config,
+        ascii2nc_wrapper(metplus_config_files,
                          'use_cases/met_tool_wrapper/ASCII2NC/ASCII2NC.conf',
                          config_overrides)
     )
@@ -189,15 +181,15 @@ def test_ascii2nc_wrapper(metplus_config, config_overrides,
 
         assert env_var_values.get(env_var_key, '') == value
 
-    #output_base = wrapper.config.getdir('OUTPUT_BASE')
-    #if output_base:
-    #    shutil.rmtree(output_base)
+    output_base = wrapper.config.getdir('OUTPUT_BASE')
+    if output_base:
+        shutil.rmtree(output_base)
 
 
 @pytest.mark.wrapper
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
-    config = metplus_config()
+    config = metplus_config
     config.set('config', 'INPUT_MUST_EXIST', False)
 
     wrapper = ASCII2NCWrapper(config)
@@ -206,7 +198,3 @@ def test_get_config_file(metplus_config):
     config.set('config', 'ASCII2NC_CONFIG_FILE', fake_config_name)
     wrapper = ASCII2NCWrapper(config)
     assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name
-
-    #output_base = wrapper.config.getdir('OUTPUT_BASE')
-    #if output_base:
-    #    shutil.rmtree(output_base)

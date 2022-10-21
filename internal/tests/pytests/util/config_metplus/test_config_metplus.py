@@ -72,7 +72,7 @@ def test_get_default_config_list():
 @pytest.mark.util
 def test_find_indices_in_config_section(metplus_config, regex, index,
                                         id, expected_result):
-    config = metplus_config()
+    config = metplus_config
     config.set('config', 'FCST_VAR1_NAME', 'name1')
     config.set('config', 'FCST_VAR1_LEVELS', 'level1')
     config.set('config', 'FCST_VAR2_NAME', 'name2')
@@ -118,7 +118,7 @@ def test_find_indices_in_config_section(metplus_config, regex, index,
 )
 @pytest.mark.util
 def test_get_custom_string_list(metplus_config, conf_items, met_tool, expected_result):
-    config = metplus_config()
+    config = metplus_config
     for conf_key, conf_value in conf_items.items():
         config.set('config', conf_key, conf_value)
 
@@ -146,7 +146,7 @@ def test_find_var_indices_fcst(metplus_config,
                                config_var_name,
                                expected_indices,
                                set_met_tool):
-    config = metplus_config()
+    config = metplus_config
     data_types = ['FCST']
     config.set('config', config_var_name, "NAME1")
     met_tool = 'grid_stat' if set_met_tool else None
@@ -229,7 +229,7 @@ def test_get_field_search_prefixes(data_type, met_tool, expected_out):
 )
 @pytest.mark.util
 def test_is_var_item_valid(metplus_config, item_list, extension, is_valid):
-    conf = metplus_config()
+    conf = metplus_config
     assert config_metplus.is_var_item_valid(item_list, '1', extension, conf)[0] == is_valid
 
 
@@ -272,7 +272,7 @@ def test_is_var_item_valid(metplus_config, item_list, extension, is_valid):
 )
 @pytest.mark.util
 def test_is_var_item_valid_levels(metplus_config, item_list, configs_to_set, is_valid):
-    conf = metplus_config()
+    conf = metplus_config
     for key, value in configs_to_set.items():
         conf.set('config', key, value)
 
@@ -321,7 +321,7 @@ def test_get_field_config_variables(metplus_config,
                                     search_prefixes,
                                     config_overrides,
                                     expected_value):
-    config = metplus_config()
+    config = metplus_config
     index = '1'
     field_info_types = ['name', 'levels', 'thresh', 'options', 'output_names']
     for field_info_type in field_info_types:
@@ -388,7 +388,7 @@ def test_get_field_config_variables_synonyms(metplus_config,
                                              config_keys,
                                              field_key,
                                              expected_value):
-    config = metplus_config()
+    config = metplus_config
     index = '1'
     prefix = 'BOTH_REGRID_DATA_PLANE_'
     for key in config_keys:
@@ -411,7 +411,7 @@ def test_get_field_config_variables_synonyms(metplus_config,
 )
 @pytest.mark.util
 def test_parse_var_list_fcst_only(metplus_config, data_type, list_created):
-    conf = metplus_config()
+    conf = metplus_config
     conf.set('config', 'FCST_VAR1_NAME', "NAME1")
     conf.set('config', 'FCST_VAR1_LEVELS', "LEVELS11, LEVELS12")
     conf.set('config', 'FCST_VAR2_NAME', "NAME2")
@@ -448,7 +448,7 @@ def test_parse_var_list_fcst_only(metplus_config, data_type, list_created):
 )
 @pytest.mark.util
 def test_parse_var_list_obs(metplus_config, data_type, list_created):
-    conf = metplus_config()
+    conf = metplus_config
     conf.set('config', 'OBS_VAR1_NAME', "NAME1")
     conf.set('config', 'OBS_VAR1_LEVELS', "LEVELS11, LEVELS12")
     conf.set('config', 'OBS_VAR2_NAME', "NAME2")
@@ -485,7 +485,7 @@ def test_parse_var_list_obs(metplus_config, data_type, list_created):
 )
 @pytest.mark.util
 def test_parse_var_list_both(metplus_config, data_type, list_created):
-    conf = metplus_config()
+    conf = metplus_config
     conf.set('config', 'BOTH_VAR1_NAME', "NAME1")
     conf.set('config', 'BOTH_VAR1_LEVELS', "LEVELS11, LEVELS12")
     conf.set('config', 'BOTH_VAR2_NAME', "NAME2")
@@ -512,7 +512,7 @@ def test_parse_var_list_both(metplus_config, data_type, list_created):
 # field info defined in both FCST_* and OBS_* variables
 @pytest.mark.util
 def test_parse_var_list_fcst_and_obs(metplus_config):
-    conf = metplus_config()
+    conf = metplus_config
     conf.set('config', 'FCST_VAR1_NAME', "FNAME1")
     conf.set('config', 'FCST_VAR1_LEVELS', "FLEVELS11, FLEVELS12")
     conf.set('config', 'FCST_VAR2_NAME', "FNAME2")
@@ -549,7 +549,7 @@ def test_parse_var_list_fcst_and_obs(metplus_config):
 # VAR1 defined by FCST, VAR2 defined by OBS
 @pytest.mark.util
 def test_parse_var_list_fcst_and_obs_alternate(metplus_config):
-    conf = metplus_config()
+    conf = metplus_config
     conf.set('config', 'FCST_VAR1_NAME', "FNAME1")
     conf.set('config', 'FCST_VAR1_LEVELS', "FLEVELS11, FLEVELS12")
     conf.set('config', 'OBS_VAR2_NAME', "ONAME2")
@@ -569,7 +569,7 @@ def test_parse_var_list_fcst_and_obs_alternate(metplus_config):
 )
 @pytest.mark.util
 def test_parse_var_list_fcst_and_obs_and_both(metplus_config, data_type, list_len, name_levels):
-    conf = metplus_config()
+    conf = metplus_config
     conf.set('config', 'OBS_VAR1_NAME', "ONAME1")
     conf.set('config', 'OBS_VAR1_LEVELS', "OLEVELS11, OLEVELS12")
     conf.set('config', 'FCST_VAR2_NAME', "FNAME2")
@@ -619,7 +619,7 @@ def test_parse_var_list_fcst_and_obs_and_both(metplus_config, data_type, list_le
 )
 @pytest.mark.util
 def test_parse_var_list_fcst_only_options(metplus_config, data_type, list_len):
-    conf = metplus_config()
+    conf = metplus_config
     conf.set('config', 'FCST_VAR1_NAME', "NAME1")
     conf.set('config', 'FCST_VAR1_LEVELS', "LEVELS11, LEVELS12")
     conf.set('config', 'FCST_VAR1_THRESH', ">1, >2")
@@ -643,7 +643,7 @@ def test_parse_var_list_fcst_only_options(metplus_config, data_type, list_len):
 )
 @pytest.mark.util
 def test_find_var_indices_wrapper_specific(metplus_config, met_tool, indices):
-    conf = metplus_config()
+    conf = metplus_config
     data_type = 'FCST'
     conf.set('config', f'{data_type}_VAR1_NAME', "NAME1")
     conf.set('config', f'{data_type}_GRID_STAT_VAR2_NAME', "GSNAME2")
@@ -659,7 +659,7 @@ def test_find_var_indices_wrapper_specific(metplus_config, met_tool, indices):
 # works as expected
 @pytest.mark.util
 def test_parse_var_list_ensemble(metplus_config):
-    config = metplus_config()
+    config = metplus_config
     config.set('config', 'ENS_VAR1_NAME', 'APCP')
     config.set('config', 'ENS_VAR1_LEVELS', 'A24')
     config.set('config', 'ENS_VAR1_THRESH', '>0.0, >=10.0')
@@ -750,7 +750,7 @@ def test_parse_var_list_ensemble(metplus_config):
 
 @pytest.mark.util
 def test_parse_var_list_series_by(metplus_config):
-    config = metplus_config()
+    config = metplus_config
     config.set('config', 'BOTH_EXTRACT_TILES_VAR1_NAME', 'RH')
     config.set('config', 'BOTH_EXTRACT_TILES_VAR1_LEVELS', 'P850, P700')
     config.set('config', 'BOTH_EXTRACT_TILES_VAR1_OUTPUT_NAMES',
@@ -838,7 +838,7 @@ def test_parse_var_list_priority_fcst(metplus_config):
     # process again until all items have been popped.
     # This will check that list is in priority order
     while(priority_list):
-        config = metplus_config()
+        config = metplus_config
         for key in priority_list:
             config.set('config', key, key.lower())
 
@@ -856,7 +856,7 @@ def test_parse_var_list_priority_fcst(metplus_config):
 # wrapper specific field info variables are specified
 @pytest.mark.util
 def test_parse_var_list_wrapper_specific(metplus_config):
-    conf = metplus_config()
+    conf = metplus_config
     conf.set('config', 'FCST_VAR1_NAME', "ENAME1")
     conf.set('config', 'FCST_VAR1_LEVELS', "ELEVELS11, ELEVELS12")
     conf.set('config', 'FCST_VAR2_NAME', "ENAME2")
@@ -942,7 +942,7 @@ def test_parse_var_list_wrapper_specific(metplus_config):
 @pytest.mark.util
 def test_parse_var_list_py_embed_multi_levels(metplus_config, config_overrides,
                                               expected_results):
-    config = metplus_config()
+    config = metplus_config
     for key, value in config_overrides.items():
         config.set('config', key, value)
 
@@ -999,7 +999,7 @@ def test_parse_var_list_py_embed_multi_levels(metplus_config, config_overrides,
 )
 @pytest.mark.util
 def test_get_process_list(metplus_config, input_list, expected_list):
-    conf = metplus_config()
+    conf = metplus_config
     conf.set('config', 'PROCESS_LIST', input_list)
     process_list = config_metplus.get_process_list(conf)
     output_list = [item[0] for item in process_list]
@@ -1033,7 +1033,7 @@ def test_get_process_list(metplus_config, input_list, expected_list):
 )
 @pytest.mark.util
 def test_get_process_list_instances(metplus_config, input_list, expected_list):
-    conf = metplus_config()
+    conf = metplus_config
     conf.set('config', 'PROCESS_LIST', input_list)
     output_list = config_metplus.get_process_list(conf)
     assert output_list == expected_list
@@ -1044,7 +1044,7 @@ def test_getraw_sub_and_nosub(metplus_config):
     raw_string = '{MODEL}_{CURRENT_FCST_NAME}'
     sub_actual = 'FCST_NAME'
 
-    config = metplus_config()
+    config = metplus_config
     config.set('config', 'MODEL', 'FCST')
     config.set('config', 'CURRENT_FCST_NAME', 'NAME')
     config.set('config', 'OUTPUT_PREFIX', raw_string)
@@ -1062,7 +1062,7 @@ def test_getraw_instance_with_unset_var(metplus_config):
      """
     pytest.skip()
     instance = 'my_section'
-    config = metplus_config()
+    config = metplus_config
     config.set('config', 'MODEL', 'FCST')
 
     config.add_section(instance)

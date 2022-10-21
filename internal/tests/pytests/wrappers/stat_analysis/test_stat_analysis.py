@@ -16,7 +16,7 @@ TEST_CONF = os.path.join(os.path.dirname(__file__), 'test.conf')
 
 pp = pprint.PrettyPrinter()
 
-def stat_analysis_wrapper(metplus_config):
+def stat_analysis_wrapper(metplus_config_files):
     """! Returns a default StatAnalysisWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
          files.  Subsequent tests can customize the final METplus configuration
@@ -25,7 +25,7 @@ def stat_analysis_wrapper(metplus_config):
     # Default, empty StatAnalysisWrapper with some configuration values set
     # to /path/to:
     extra_configs = [TEST_CONF]
-    config = metplus_config(extra_configs)
+    config = metplus_config_files(extra_configs)
     handle_tmp_dir(config)
     return StatAnalysisWrapper(config)
 
@@ -145,7 +145,7 @@ def set_minimum_config_settings(config):
 @pytest.mark.wrapper_d
 def test_valid_init_env_vars(metplus_config, config_overrides,
                              expected_env_vars):
-    config = metplus_config()
+    config = metplus_config
     set_minimum_config_settings(config)
     config.set('config', 'INIT_END', '20221015')
     for key, value in config_overrides.items():
@@ -202,7 +202,7 @@ def test_valid_init_env_vars(metplus_config, config_overrides,
 @pytest.mark.wrapper_d
 def test_check_required_job_template(metplus_config, config_overrides,
                                      expected_result):
-    config = metplus_config()
+    config = metplus_config
     set_minimum_config_settings(config)
     for key, value in config_overrides.items():
         config.set('config', key, value)
@@ -287,7 +287,7 @@ def test_check_required_job_template(metplus_config, config_overrides,
 )
 @pytest.mark.wrapper_d
 def test_get_runtime_settings(metplus_config, c_dict, expected_result):
-    config = metplus_config()
+    config = metplus_config
     wrapper = StatAnalysisWrapper(config)
 
     runtime_settings = wrapper.get_runtime_settings(c_dict)
@@ -310,7 +310,7 @@ def test_get_runtime_settings(metplus_config, c_dict, expected_result):
 @pytest.mark.wrapper_d
 def test_format_conf_list(metplus_config, list_name, config_overrides,
                           expected_value):
-    config = metplus_config()
+    config = metplus_config
     for key, value in config_overrides.items():
         config.set('config', key, value)
 
@@ -862,7 +862,7 @@ def test_run_stat_analysis(metplus_config):
 )
 @pytest.mark.wrapper_d
 def test_get_level_list(metplus_config, data_type, config_list, expected_list):
-    config = metplus_config()
+    config = metplus_config
     config.set('config', f'{data_type}_LEVEL_LIST', config_list)
 
     saw = StatAnalysisWrapper(config)
@@ -873,7 +873,7 @@ def test_get_level_list(metplus_config, data_type, config_list, expected_list):
 @pytest.mark.wrapper_d
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
-    config = metplus_config()
+    config = metplus_config
     config.set('config', 'INPUT_MUST_EXIST', False)
 
     wrapper = StatAnalysisWrapper(config)

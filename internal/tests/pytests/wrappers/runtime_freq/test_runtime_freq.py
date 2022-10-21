@@ -102,7 +102,7 @@ from metplus.wrappers.runtime_freq_wrapper import RuntimeFreqWrapper
 )
 @pytest.mark.wrapper
 def test_compare_time_info(metplus_config, runtime, filetime, expected_result):
-    config = metplus_config()
+    config = metplus_config
 
     wrapper = RuntimeFreqWrapper(config)
     actual_result = wrapper.compare_time_info(runtime, filetime)

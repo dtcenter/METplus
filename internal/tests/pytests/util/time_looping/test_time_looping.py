@@ -11,7 +11,7 @@ def test_get_start_and_end_times(metplus_config):
     end_time = '2018103109'
     time_format = '%Y%m%d%H'
     for prefix in ['INIT', 'VALID']:
-        config = metplus_config()
+        config = metplus_config
         config.set('config', 'LOOP_BY', prefix)
         config.set('config', f'{prefix}_TIME_FMT', time_format)
         config.set('config', f'{prefix}_BEG', start_time)
@@ -25,7 +25,7 @@ def test_get_start_and_end_times(metplus_config):
 def test_get_start_and_end_times_now(metplus_config):
     time_format = '%Y%m%d%H%M%S'
     for prefix in ['INIT', 'VALID']:
-        config = metplus_config()
+        config = metplus_config
         config.set('config', 'LOOP_BY', prefix)
         config.set('config', f'{prefix}_TIME_FMT', time_format)
         config.set('config', f'{prefix}_BEG', '{now?fmt=%Y%m%d%H%M%S?shift=-1d}')
@@ -43,7 +43,7 @@ def test_get_start_and_end_times_now(metplus_config):
 def test_get_start_and_end_times_today(metplus_config):
     time_format = '%Y%m%d'
     for prefix in ['INIT', 'VALID']:
-        config = metplus_config()
+        config = metplus_config
         config.set('config', 'LOOP_BY', prefix)
         config.set('config', f'{prefix}_TIME_FMT', time_format)
         config.set('config', f'{prefix}_BEG', '{today}')
@@ -60,7 +60,7 @@ def test_get_start_and_end_times_today(metplus_config):
 @pytest.mark.util
 def test_time_generator_list(metplus_config):
     for prefix in ['INIT', 'VALID']:
-        config = metplus_config()
+        config = metplus_config
         config.set('config', 'LOOP_BY', prefix)
         config.set('config', f'{prefix}_TIME_FMT', '%Y%m%d%H')
         config.set('config', f'{prefix}_LIST', '2021020104, 2021103121')
@@ -83,7 +83,7 @@ def test_time_generator_list(metplus_config):
 @pytest.mark.util
 def test_time_generator_increment(metplus_config):
     for prefix in ['INIT', 'VALID']:
-        config = metplus_config()
+        config = metplus_config
         config.set('config', 'LOOP_BY', prefix)
         config.set('config', f'{prefix}_TIME_FMT', '%Y%m%d%H')
         config.set('config', f'{prefix}_BEG', '2021020104')
@@ -121,7 +121,7 @@ def test_time_generator_error_check(metplus_config):
     """
     time_fmt = '%Y%m%d%H'
     for prefix in ['INIT', 'VALID']:
-        config = metplus_config()
+        config = metplus_config
 
         # unset LOOP_BY
         assert next(time_generator(config)) is None
@@ -153,7 +153,7 @@ def test_time_generator_error_check(metplus_config):
         assert next(time_generator(config))[prefix.lower()] == expected_time
 
         # get a fresh config object to test BEG/END configurations
-        config = metplus_config()
+        config = metplus_config
         config.set('config', 'LOOP_BY', prefix)
         config.set('config', f'{prefix}_TIME_FMT', time_fmt)
 

@@ -347,7 +347,7 @@ def set_run_type_info(config, run_type):
 @pytest.mark.wrapper
 def test_run_user_script_all_times(metplus_config, input_configs,
                                    run_types, expected_cmds):
-    config = metplus_config()
+    config = metplus_config
     config.set('config', 'DO_NOT_RUN_EXE', True)
 
     for key, value in input_configs.items():

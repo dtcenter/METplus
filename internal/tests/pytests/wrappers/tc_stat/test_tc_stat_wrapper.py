@@ -10,14 +10,14 @@ from metplus.wrappers.tc_stat_wrapper import TCStatWrapper
 from metplus.util import ti_calculate
 
 
-def get_config(metplus_config):
+def get_config(metplus_config_files):
     extra_configs = []
     extra_configs.append(os.path.join(os.path.dirname(__file__),
                                       'tc_stat_conf.conf'))
-    return metplus_config(extra_configs)
+    return metplus_config_files(extra_configs)
 
 
-def tc_stat_wrapper(metplus_config):
+def tc_stat_wrapper(metplus_config_files):
     """! Returns a default TCStatWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
          files.  Subsequent tests can customize the final METplus configuration
@@ -25,7 +25,7 @@ def tc_stat_wrapper(metplus_config):
 
     # Default, empty TcStatWrapper with some configuration values set
     # to /path/to:
-    config = get_config(metplus_config)
+    config = get_config(metplus_config_files)
     return TCStatWrapper(config)
 
 
@@ -148,13 +148,13 @@ def test_override_config_in_c_dict(metplus_config, overrides, c_dict):
     ]
 )
 @pytest.mark.wrapper
-def test_handle_jobs(metplus_config, jobs, init_dt, expected_output):
+def test_handle_jobs(metplus_config_files, jobs, init_dt, expected_output):
     if init_dt:
         time_info = ti_calculate({'init': init_dt})
     else:
         time_info = None
 
-    wrapper = tc_stat_wrapper(metplus_config)
+    wrapper = tc_stat_wrapper(metplus_config_files)
     output_base = wrapper.config.getdir('OUTPUT_BASE')
     output_dir = os.path.join(output_base, 'test_handle_jobs')
 
@@ -223,7 +223,7 @@ def cleanup_test_dirs(parent_dirs, output_dir):
     ]
 )
 @pytest.mark.wrapper
-def test_handle_jobs_create_parent_dir(metplus_config, jobs, init_dt,
+def test_handle_jobs_create_parent_dir(metplus_config_files, jobs, init_dt,
                                        expected_output, parent_dirs):
     # if init time is provided, calculate other time dict items
     if init_dt:
@@ -231,7 +231,7 @@ def test_handle_jobs_create_parent_dir(metplus_config, jobs, init_dt,
     else:
         time_info = None
 
-    wrapper = tc_stat_wrapper(metplus_config)
+    wrapper = tc_stat_wrapper(metplus_config_files)
 
     # create directory path relative to OUTPUT_BASE to test that function
     # creates parent directories properly
@@ -265,7 +265,7 @@ def test_handle_jobs_create_parent_dir(metplus_config, jobs, init_dt,
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
 
-    config = metplus_config()
+    config = metplus_config
 
     default_config_file = os.path.join(config.getdir('PARM_BASE'),
                                        'met_config',

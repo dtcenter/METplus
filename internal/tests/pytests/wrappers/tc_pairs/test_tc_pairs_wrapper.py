@@ -68,7 +68,7 @@ def set_minimum_config_settings(config, loop_by='INIT'):
 )
 def test_read_storm_info(metplus_config, config_overrides, isOK):
     """! Check if error is thrown if storm_id and basin or cyclone are set """
-    config = metplus_config()
+    config = metplus_config
     set_minimum_config_settings(config)
 
     # set config variable overrides
@@ -94,7 +94,7 @@ def test_parse_storm_id(metplus_config, storm_id, basin, cyclone):
     Check that it returns wildcard expressions basin and cyclone cannot be
     parsed from storm ID
     """
-    config = metplus_config()
+    config = metplus_config
 
     set_minimum_config_settings(config)
 
@@ -141,7 +141,7 @@ def test_get_bdeck(metplus_config, basin, cyclone, expected_files,
     combinations of basin/cyclone inputs
     """
     time_info = {'date': datetime(2014, 12, 31, 18)}
-    config = metplus_config()
+    config = metplus_config
 
     set_minimum_config_settings(config)
 
@@ -194,7 +194,7 @@ def test_get_basin_cyclone_from_bdeck(metplus_config, template, filename,
     expected_basin = other_basin if other_basin else 'al'
     expected_cyclone = other_cyclone if other_cyclone else '1009'
     time_info = {'date': datetime(2014, 12, 31, 18)}
-    config = metplus_config()
+    config = metplus_config
 
     set_minimum_config_settings(config)
     wrapper = TCPairsWrapper(config)
@@ -245,7 +245,7 @@ def test_get_basin_cyclone_from_bdeck(metplus_config, template, filename,
 @pytest.mark.wrapper
 def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
                                  storm_type, values_to_check):
-    config = metplus_config()
+    config = metplus_config
 
     set_minimum_config_settings(config)
 
@@ -389,7 +389,7 @@ def test_tc_pairs_loop_order_processes(metplus_config, config_overrides,
     # run using init and valid time variables
     for loop_by in ['INIT', 'VALID']:
         remove_beg = remove_end = remove_match_points = False
-        config = metplus_config()
+        config = metplus_config
 
         set_minimum_config_settings(config, loop_by)
 
@@ -485,7 +485,7 @@ def test_tc_pairs_read_all_files(metplus_config, config_overrides,
                                  env_var_values):
     # run using init and valid time variables
     for loop_by in ['INIT', 'VALID']:
-        config = metplus_config()
+        config = metplus_config
 
         set_minimum_config_settings(config, loop_by)
 
@@ -555,7 +555,7 @@ def test_tc_pairs_read_all_files(metplus_config, config_overrides,
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
 
-    config = metplus_config()
+    config = metplus_config
     config.set('config', 'INIT_TIME_FMT', time_fmt)
     config.set('config', 'INIT_BEG', run_times[0])
     default_config_file = os.path.join(config.getdir('PARM_BASE'),

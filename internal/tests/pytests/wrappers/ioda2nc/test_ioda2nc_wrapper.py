@@ -186,7 +186,7 @@ def set_minimum_config_settings(config):
 @pytest.mark.wrapper
 def test_ioda2nc_wrapper(metplus_config, config_overrides,
                          env_var_values, extra_args):
-    config = metplus_config()
+    config = metplus_config
 
     set_minimum_config_settings(config)
 
@@ -238,7 +238,7 @@ def test_ioda2nc_wrapper(metplus_config, config_overrides,
 @pytest.mark.wrapper
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
-    config = metplus_config()
+    config = metplus_config
     config.set('config', 'INPUT_MUST_EXIST', False)
 
     wrapper = IODA2NCWrapper(config)

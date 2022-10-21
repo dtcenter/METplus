@@ -58,13 +58,13 @@ if os.path.exists(test_output_dir):
 
 
 @pytest.fixture(scope='function')
-def metplus_config():
+def metplus_config_files():
     """! Create a METplus configuration object that can be
     manipulated/modified to
          reflect different paths, directories, values, etc. for individual
          tests.
     """
-    def read_configs(extra_configs=[]):
+    def read_configs(extra_configs):
         # Read in minimum pytest config file and any other extra configs
         script_dir = os.path.dirname(__file__)
         minimum_conf = os.path.join(script_dir, 'minimum_pytest.conf')
@@ -79,3 +79,34 @@ def metplus_config():
         return config
 
     return read_configs
+
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    # execute all other hooks to obtain the report object
+    outcome = yield
+    rep = outcome.get_result()
+
+    # set a report attribute for each phase of a call, which can
+    # be "setup", "call", "teardown"
+
+    setattr(item, "rep_" + rep.when, rep)
+
+#@pytest.fixture(scope='function')
+@pytest.fixture()
+def metplus_config(request):
+    """! Create a METplus configuration object that can be
+    manipulated/modified to
+         reflect different paths, directories, values, etc. for individual
+         tests.
+    """
+    script_dir = os.path.dirname(__file__)
+    args = [os.path.join(script_dir, 'minimum_pytest.conf')]
+    config = config_metplus.setup(args)
+    yield config
+
+    # don't remove output base if test fails
+    if request.node.rep_call.failed:
+        return
+    config_output_base = config.getdir('OUTPUT_BASE')
+    if config_output_base and os.path.exists(config_output_base):
+        shutil.rmtree(config_output_base)

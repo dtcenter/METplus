@@ -11,7 +11,7 @@ from metplus.util import time_util
 from metplus.util import do_string_sub
 
 
-def pb2nc_wrapper(metplus_config):
+def pb2nc_wrapper(metplus_config_files):
     """! Returns a default PB2NCWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
          files.  Subsequent tests can customize the final METplus configuration
@@ -21,7 +21,7 @@ def pb2nc_wrapper(metplus_config):
     # the pb2nc_test.conf file.
     extra_configs = []
     extra_configs.append(os.path.join(os.path.dirname(__file__), 'conf1'))
-    config = metplus_config(extra_configs)
+    config = metplus_config_files(extra_configs)
     return PB2NCWrapper(config)
 
 
@@ -35,8 +35,8 @@ def pb2nc_wrapper(metplus_config):
         ]
 )
 @pytest.mark.wrapper
-def test_find_and_check_output_file_skip(metplus_config, exists, skip, run):
-    pb = pb2nc_wrapper(metplus_config)
+def test_find_and_check_output_file_skip(metplus_config_files, exists, skip, run):
+    pb = pb2nc_wrapper(metplus_config_files)
     exist_file = 'wackyfilenametocreate'
     non_exist_file = 'wackyfilethatdoesntexist'
 
@@ -75,8 +75,8 @@ def test_find_and_check_output_file_skip(metplus_config, exists, skip, run):
         ]
 )
 @pytest.mark.wrapper
-def test_get_command(metplus_config, infiles):
-    pb = pb2nc_wrapper(metplus_config)
+def test_get_command(metplus_config_files, infiles):
+    pb = pb2nc_wrapper(metplus_config_files)
     pb.outfile = 'outfilename.txt'
     pb.outdir = pb.config.getdir('OUTPUT_BASE')
     outpath = os.path.join(pb.outdir, pb.outfile)
@@ -109,8 +109,8 @@ def test_get_command(metplus_config, infiles):
         ]
 )
 @pytest.mark.wrapper
-def test_find_input_files(metplus_config, offsets, offset_to_find):
-    pb = pb2nc_wrapper(metplus_config)
+def test_find_input_files(metplus_config_files, offsets, offset_to_find):
+    pb = pb2nc_wrapper(metplus_config_files)
     # for valid 20190201_12, offsets 3 and 5, create files to find
     # in the fake input directory based on input template
     input_dict = { 'valid' : datetime.datetime(2019, 2, 1, 12) }
@@ -271,7 +271,7 @@ def test_find_input_files(metplus_config, offsets, offset_to_find):
 def test_pb2nc_all_fields(metplus_config, config_overrides,
                           env_var_values):
     input_dir = '/some/input/dir'
-    config = metplus_config()
+    config = metplus_config
 
     # set config variables to prevent command from running and bypass check
     # if input files actually exist
@@ -343,7 +343,7 @@ def test_pb2nc_all_fields(metplus_config, config_overrides,
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
 
-    config = metplus_config()
+    config = metplus_config
     default_config_file = os.path.join(config.getdir('PARM_BASE'),
                                        'met_config',
                                        'PB2NCConfig_wrapped')
@@ -361,7 +361,7 @@ def test_pb2nc_file_window(metplus_config):
     begin_value = -3600
     end_value = 3600
 
-    config = metplus_config()
+    config = metplus_config
     config.set('config', 'PB2NC_FILE_WINDOW_BEGIN', begin_value)
     config.set('config', 'PB2NC_FILE_WINDOW_END', end_value)
     wrapper = PB2NCWrapper(config)

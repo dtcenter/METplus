@@ -13,7 +13,7 @@ def compare_gridded_wrapper(metplus_config):
          files.  Subsequent tests can customize the final METplus configuration
          to over-ride these /path/to values."""
 
-    config = metplus_config()
+    config = metplus_config
     return CompareGriddedWrapper(config)
 
 
