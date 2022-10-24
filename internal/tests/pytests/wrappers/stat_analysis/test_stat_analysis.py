@@ -154,11 +154,11 @@ def test_valid_init_env_vars(metplus_config, config_overrides,
     wrapper = StatAnalysisWrapper(config)
     assert wrapper.isOK
 
-    runtime_settings_dict_list = wrapper.get_all_runtime_settings()
+    runtime_settings_dict_list = wrapper._get_all_runtime_settings()
     assert runtime_settings_dict_list
 
     first_runtime_only = [runtime_settings_dict_list[0]]
-    wrapper.run_stat_analysis_job(first_runtime_only)
+    wrapper._run_stat_analysis_job(first_runtime_only)
     all_cmds = wrapper.all_commands
 
     print(f"ALL COMMANDS: {all_cmds}")
@@ -290,7 +290,7 @@ def test_get_runtime_settings(metplus_config, c_dict, expected_result):
     config = metplus_config()
     wrapper = StatAnalysisWrapper(config)
 
-    runtime_settings = wrapper.get_runtime_settings(c_dict)
+    runtime_settings = wrapper._get_runtime_settings(c_dict)
     pp.pprint(runtime_settings)
     assert runtime_settings == expected_result
 
@@ -426,7 +426,7 @@ def test_set_lists_as_loop_or_group(metplus_config):
     config_dict['COV_THRESH_LIST'] = []
     config_dict['ALPHA_LIST'] = []
     config_dict['LINE_TYPE_LIST'] = []
-    config_dict = st.set_lists_loop_or_group(config_dict)
+    config_dict = st._set_lists_loop_or_group(config_dict)
     test_lists_to_loop_items = config_dict['LOOP_LIST_ITEMS']
     test_lists_to_group_items = config_dict['GROUP_LIST_ITEMS']
 
@@ -582,7 +582,7 @@ def test_build_stringsub_dict(metplus_config, lists_to_loop, c_dict_overrides,
                       if item not in lists_to_loop]
     config_dict['LISTS_TO_GROUP'] = lists_to_group
     config_dict['LISTS_TO_LOOP'] = lists_to_loop
-    test_stringsub_dict = st.build_stringsub_dict(config_dict)
+    test_stringsub_dict = st._build_stringsub_dict(config_dict)
 
     print(test_stringsub_dict)
     for key, value in expected_values.items():
@@ -624,9 +624,10 @@ def test_get_output_filename(metplus_config, filename_template, output_type,
     st.c_dict['DATE_END'] = datetime.datetime.strptime('20190101', '%Y%m%d')
     st.c_dict['DATE_TYPE'] = 'VALID'
 
-    test_output_filename = st.get_output_filename(output_type,
-                                                  filename_template,
-                                                  config_dict)
+    stringsub_dict = st._build_stringsub_dict(config_dict)
+    test_output_filename = st._get_output_filename(output_type,
+                                                   filename_template,
+                                                   stringsub_dict)
     assert expected_output == test_output_filename
 
 
@@ -685,21 +686,21 @@ def test_get_lookin_dir(metplus_config):
     expected_lookin_dir = os.path.join(pytest_data_dir, 'fake/20180201')
     dir_path = os.path.join(pytest_data_dir, 'fake/*')
 
-    test_lookin_dir = st.get_lookin_dir(dir_path, config_dict)
+    test_lookin_dir = st._get_lookin_dir(dir_path, config_dict)
     assert expected_lookin_dir == test_lookin_dir
 
     # Test 2
     expected_lookin_dir = os.path.join(pytest_data_dir, 'fake/20180201')
     dir_path = os.path.join(pytest_data_dir, 'fake/{valid?fmt=%Y%m%d}')
 
-    test_lookin_dir = st.get_lookin_dir(dir_path, config_dict)
+    test_lookin_dir = st._get_lookin_dir(dir_path, config_dict)
     assert expected_lookin_dir == test_lookin_dir
 
     # Test 3 - no matches for lookin dir wildcard
     expected_lookin_dir = ''
     dir_path = os.path.join(pytest_data_dir, 'fake/*nothingmatches*')
 
-    test_lookin_dir = st.get_lookin_dir(dir_path, config_dict)
+    test_lookin_dir = st._get_lookin_dir(dir_path, config_dict)
     assert expected_lookin_dir == test_lookin_dir
 
     # Test 4 - 2 paths, one with wildcard
@@ -708,7 +709,7 @@ def test_get_lookin_dir(metplus_config):
     dir_path = os.path.join(pytest_data_dir, 'fake/*')
     dir_path = f'{dir_path}, {dir_path}'
 
-    test_lookin_dir = st.get_lookin_dir(dir_path, config_dict)
+    test_lookin_dir = st._get_lookin_dir(dir_path, config_dict)
     assert expected_lookin_dir == test_lookin_dir
 
 
@@ -786,9 +787,10 @@ def test_format_valid_init(metplus_config, c_dict_overrides,
     for key, value in config_dict_overrides.items():
         config_dict[key] = value
 
-    config_dict = st.format_valid_init(config_dict)
-    print(config_dict)
-    for key, value in config_dict.items():
+    stringsub_dict = st._build_stringsub_dict(config_dict)
+    output_dict = st._format_valid_init(config_dict, stringsub_dict)
+    print(output_dict)
+    for key, value in output_dict.items():
         print(key)
         if key not in expected_values:
             assert value == ''
@@ -819,7 +821,7 @@ def test_parse_model_info(metplus_config):
     )
 
     expected_out_stat_filename_type = 'user'
-    test_model_info_list = st.parse_model_info()
+    test_model_info_list = st._parse_model_info()
     assert test_model_info_list[0]['name'] == expected_name
     assert test_model_info_list[0]['obtype'] == expected_obtype
     assert (test_model_info_list[0]['dump_row_filename_template'] ==
@@ -842,7 +844,7 @@ def test_run_stat_analysis(metplus_config):
     st.c_dict['DATE_BEG'] = datetime.datetime.strptime('20190101', '%Y%m%d')
     st.c_dict['DATE_END'] = datetime.datetime.strptime('20190101', '%Y%m%d')
     st.c_dict['DATE_TYPE'] = 'VALID'
-    st.run_stat_analysis()
+    st._run_stat_analysis()
     assert os.path.exists(expected_filename)
     assert (os.path.getsize(expected_filename) ==
             os.path.getsize(comparison_filename))
