@@ -1018,6 +1018,8 @@ class StatAnalysisWrapper(CommandBuilder):
             model_obtype = self.config.getraw('config', f'MODEL{m}_OBTYPE')
             model_obtype = f'"{model_obtype}"' if model_obtype else ''
 
+            model_dump_row_filename_template = None
+            model_out_stat_filename_template = None
             for output_type in ['DUMP_ROW', 'OUT_STAT']:
                 var_name = f'STAT_ANALYSIS_{output_type}_TEMPLATE'
                 # use MODEL<n>_STAT_ANALYSIS_<output_type>_TEMPLATE if set
@@ -1268,7 +1270,6 @@ class StatAnalysisWrapper(CommandBuilder):
         lookin_dirs = []
         model_list = []
         obtype_list = []
-        dump_row_filename_list = []
         model_info = None
 
         # get list of models to process
@@ -1283,9 +1284,6 @@ class StatAnalysisWrapper(CommandBuilder):
             model_list.append(model_info['name'])
             if model_info['obtype']:
                 obtype_list.append(model_info['obtype'])
-            dump_row_filename_list.append(
-                model_info['dump_row_filename_template']
-            )
 
             # set MODEL and OBTYPE to single item to find lookin dir
             runtime_settings_dict['MODEL'] = model_info["name"]
