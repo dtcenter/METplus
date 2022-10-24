@@ -213,20 +213,20 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
     def run_at_time_once(self, time_input):
         """! Function called when processing all times.
 
-         @param time_input currently not used since only RUN_ONCE runtime
-         frequency is supported
+         @param time_input currently only used to set custom, now and today
+         since only RUN_ONCE runtime frequency is supported
          @returns list of tuples containing all commands that were run and the
          environment variables that were set for each
         """
-        self._run_stat_analysis()
+        self._run_stat_analysis(time_input)
         return self.all_commands
 
-    def _run_stat_analysis(self):
+    def _run_stat_analysis(self, time_input):
         """! This runs stat_analysis over a period of valid
              or initialization dates for a job defined by
              the user.
         """
-        runtime_settings_dict_list = self._get_all_runtime_settings()
+        runtime_settings_dict_list = self._get_all_runtime_settings(time_input)
         if not runtime_settings_dict_list:
             self.log_error('Could not get runtime settings dict list')
             return False
@@ -235,7 +235,7 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
 
         return True
 
-    def _get_all_runtime_settings(self):
+    def _get_all_runtime_settings(self, time_input):
         """! Get all settings for each run of stat_analysis.
 
         @returns list of dictionaries containing settings for each run
@@ -249,6 +249,11 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         # Loop over run settings.
         formatted_runtime_settings_dict_list = []
         for runtime_settings in runtime_settings_dict_list:
+            # set custom, today, and now from time input
+            runtime_settings['custom'] = time_input.get('custom', '')
+            runtime_settings['today'] = time_input.get('today', '')
+            runtime_settings['now'] = time_input.get('now', '')
+
             stringsub_dict = self._build_stringsub_dict(runtime_settings)
 
             # Set up stat_analysis -lookin argument, model and obs information
@@ -556,13 +561,12 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         """
         date_type = self.c_dict['DATE_TYPE']
 
-        clock_dt = datetime.strptime(
-            self.config.getstr('config', 'CLOCK_TIME'), '%Y%m%d%H%M%S'
-        )
         stringsub_dict = {
-            'now': clock_dt,
-            'today': clock_dt.strftime('%Y%m%d')
+            'now': config_dict.get('now'),
+            'today': config_dict.get('today'),
+            'custom': config_dict.get('custom'),
         }
+
         # add all loop list and group list items to string sub keys list
         for list_item in self.EXPECTED_CONFIG_LISTS:
             list_name = list_item.replace('_LIST', '').lower()

@@ -154,7 +154,7 @@ def test_valid_init_env_vars(metplus_config, config_overrides,
     wrapper = StatAnalysisWrapper(config)
     assert wrapper.isOK
 
-    runtime_settings_dict_list = wrapper._get_all_runtime_settings()
+    runtime_settings_dict_list = wrapper._get_all_runtime_settings({})
     assert runtime_settings_dict_list
 
     first_runtime_only = [runtime_settings_dict_list[0]]
@@ -844,7 +844,7 @@ def test_run_stat_analysis(metplus_config):
     st.c_dict['DATE_BEG'] = datetime.datetime.strptime('20190101', '%Y%m%d')
     st.c_dict['DATE_END'] = datetime.datetime.strptime('20190101', '%Y%m%d')
     st.c_dict['DATE_TYPE'] = 'VALID'
-    st._run_stat_analysis()
+    st._run_stat_analysis({})
     assert os.path.exists(expected_filename)
     assert (os.path.getsize(expected_filename) ==
             os.path.getsize(comparison_filename))
