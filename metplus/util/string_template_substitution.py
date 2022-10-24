@@ -281,7 +281,7 @@ def handle_format_delimiter(split_string, idx, shift_seconds, truncate_seconds, 
             seconds = time_util.ti_get_seconds_from_relativedelta(obj)
             if seconds is None:
                 return time_util.ti_get_lead_string(obj, letter_only=True)
-
+            seconds += shift_seconds
             return format_hms(fmt, seconds)
 
         # if input is integer, format with H, M, and S

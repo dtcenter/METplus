@@ -9,6 +9,7 @@ import glob
 from datetime import datetime
 import itertools
 from dateutil.relativedelta import relativedelta
+import copy
 
 from ..util import getlist, format_thresh
 from ..util import do_string_sub, find_indices_in_config_section
@@ -131,7 +132,6 @@ class StatAnalysisWrapper(CommandBuilder):
                 f" -lookin {self.c_dict['LOOKIN_DIR']}"
                 f" {' '.join(self.args)}").rstrip()
 
-
     def create_c_dict(self):
         """! Create a data structure (dictionary) that contains all the
              values set in the configuration files that are common for
@@ -177,12 +177,11 @@ class StatAnalysisWrapper(CommandBuilder):
         c_dict['JOBS'] = self._read_jobs_from_config()
 
         # read all lists and check if field lists are all empty
-        all_field_lists_empty = self.read_lists_from_config(c_dict)
+        all_field_lists_empty = self._read_lists_from_config(c_dict)
 
         # read any [FCST/OBS]_VAR<n>_* variables if they are set
         c_dict['VAR_LIST'] = parse_var_list(self.config)
-
-        c_dict['MODEL_INFO_LIST'] = self.parse_model_info()
+        c_dict['MODEL_INFO_LIST'] = self._parse_model_info()
 
         # if MODEL_LIST was not set, populate it from the model info list
         if not c_dict['MODEL_LIST'] and c_dict['MODEL_INFO_LIST']:
@@ -191,7 +190,7 @@ class StatAnalysisWrapper(CommandBuilder):
             for model_info in c_dict['MODEL_INFO_LIST']:
                 c_dict['MODEL_LIST'].append(model_info['name'])
 
-        c_dict = self.set_lists_loop_or_group(c_dict)
+        c_dict = self._set_lists_loop_or_group(c_dict)
 
         # read MET config settings that will apply to every run
         self.add_met_config(name='hss_ec_value',
@@ -206,15 +205,119 @@ class StatAnalysisWrapper(CommandBuilder):
          @returns list of tuples containing all commands that were run and the
          environment variables that were set for each
         """
-        self.run_stat_analysis()
+        self._run_stat_analysis()
         return self.all_commands
 
-    # def run_at_time(self, input_dict):
-    #     loop_by = self.c_dict['DATE_TYPE']
-    #     run_date = input_dict[loop_by.lower()].strftime(YMD)
-    #     self.c_dict['DATE_BEG'] = run_date
-    #     self.c_dict['DATE_END'] = run_date
-    #     self.run_stat_analysis()
+    def _run_stat_analysis(self):
+        """! This runs stat_analysis over a period of valid
+             or initialization dates for a job defined by
+             the user.
+        """
+        runtime_settings_dict_list = self._get_all_runtime_settings()
+        if not runtime_settings_dict_list:
+            self.log_error('Could not get runtime settings dict list')
+            return False
+
+        self._run_stat_analysis_job(runtime_settings_dict_list)
+
+        return True
+
+    def _get_all_runtime_settings(self):
+        """! Get all settings for each run of stat_analysis.
+
+        @returns list of dictionaries containing settings for each run
+        """
+        runtime_settings_dict_list = []
+        c_dict_list = self._get_c_dict_list()
+        for c_dict in c_dict_list:
+            runtime_settings = self._get_runtime_settings(c_dict)
+            runtime_settings_dict_list.extend(runtime_settings)
+
+        # Loop over run settings.
+        formatted_runtime_settings_dict_list = []
+        for runtime_settings in runtime_settings_dict_list:
+            stringsub_dict = self._build_stringsub_dict(runtime_settings)
+
+            # Set up stat_analysis -lookin argument, model and obs information
+            # and stat_analysis job.
+            model_info = self._get_model_obtype_and_lookindir(runtime_settings)
+            if model_info is None:
+                return None
+
+            jobs = self._get_job_info(model_info, runtime_settings,
+                                      stringsub_dict)
+
+            # get -out argument if set
+            output_file = None
+            if self.c_dict['OUTPUT_TEMPLATE']:
+                output_filename = (
+                    self._get_output_filename('output',
+                                              self.c_dict['OUTPUT_TEMPLATE'],
+                                              stringsub_dict)
+                )
+                output_file = os.path.join(self.c_dict['OUTPUT_DIR'],
+                                           output_filename)
+
+            # Set up forecast and observation valid and init time information
+            runtime_settings_fmt = self._format_valid_init(runtime_settings,
+                                                           stringsub_dict)
+
+            # add jobs and output file path to formatted runtime_settings
+            runtime_settings_fmt['JOBS'] = jobs
+            runtime_settings_fmt['OUTPUT_FILENAME'] = output_file
+            formatted_runtime_settings_dict_list.append(runtime_settings_fmt)
+
+        return formatted_runtime_settings_dict_list
+
+    def _run_stat_analysis_job(self, runtime_settings_dict_list):
+        """! Sets environment variables need to run StatAnalysis jobs
+             and calls the tool for each job.
+
+             Args:
+                 @param runtime_settings_dict_list list of dictionaries
+                  containing information needed to run a StatAnalysis job
+        """
+        for runtime_settings in runtime_settings_dict_list:
+            self.clear()
+            if not self._create_output_directories(runtime_settings):
+                continue
+
+            # set METPLUS_ env vars for MET config file to be consistent
+            # with other wrappers
+            for key in self.WRAPPER_ENV_VAR_KEYS:
+                item = key.replace('METPLUS_', '')
+                if not runtime_settings.get(item, ''):
+                    continue
+                value = runtime_settings.get(item, '')
+                if key.endswith('_JOBS'):
+                    value = '["' + '","'.join(value) + '"]'
+                elif key.endswith('_BEG') or key.endswith('_END'):
+                    value = f'"{value}"'
+                else:
+                    value = f'[{value}]'
+                value = f'{item.lower()} = {value};'
+                self.env_var_dict[key] = value
+
+            # send environment variables to logger
+            self.set_environment_variables()
+
+            # set lookin dir to add to command
+            self.logger.debug("Setting -lookin dir to "
+                              f"{runtime_settings['LOOKIN_DIR']}")
+            self.c_dict['LOOKIN_DIR'] = runtime_settings['LOOKIN_DIR']
+
+            # set any command line arguments
+            if self.c_dict.get('CONFIG_FILE'):
+                self.args.append(f"-config {self.c_dict['CONFIG_FILE']}")
+            else:
+                self.args.append(runtime_settings['JOBS'][0])
+
+            # set -out file path if requested, value will be set to None if not
+            output_filename = runtime_settings.get('OUTPUT_FILENAME')
+            if output_filename:
+                self.args.append(f"-out {output_filename}")
+
+            self.build()
 
     def _read_jobs_from_config(self):
         """! Parse the jobs from the METplusConfig object
@@ -294,7 +397,7 @@ class StatAnalysisWrapper(CommandBuilder):
 
         return c_dict
 
-    def read_lists_from_config(self, c_dict):
+    def _read_lists_from_config(self, c_dict):
         """! Get list configuration variables and add to dictionary
 
          @param c_dict dictionary to hold output values
@@ -390,7 +493,7 @@ class StatAnalysisWrapper(CommandBuilder):
 
         return formatted_items
 
-    def set_lists_loop_or_group(self, c_dict):
+    def _set_lists_loop_or_group(self, c_dict):
         """! Determine whether the lists from the METplus config file
              should treat the items in that list as a group or items
              to be looped over based on user settings, the values
@@ -431,7 +534,7 @@ class StatAnalysisWrapper(CommandBuilder):
 
         return c_dict
 
-    def build_stringsub_dict(self, config_dict):
+    def _build_stringsub_dict(self, config_dict):
         """! Build a dictionary with list names, dates, and commonly
              used identifiers to pass to string_template_substitution.
 
@@ -439,7 +542,6 @@ class StatAnalysisWrapper(CommandBuilder):
         @returns dictionary with the formatted info to pass to do_string_sub
         """
         date_type = self.c_dict['DATE_TYPE']
-
         clock_dt = datetime.strptime(
             self.config.getstr('config', 'CLOCK_TIME'), '%Y%m%d%H%M%S'
         )
@@ -539,6 +641,7 @@ class StatAnalysisWrapper(CommandBuilder):
             stringsub_dict[f'{generic_list}_end'] = (
                 stringsub_dict[f'{sub_name}_end']
             )
+
             if (stringsub_dict[f'{generic_list}_beg'] ==
                     stringsub_dict[f'{generic_list}_end']):
                 stringsub_dict[generic_list] = (
@@ -785,17 +888,18 @@ class StatAnalysisWrapper(CommandBuilder):
                     sub_dict[f'{date_prefix}_end'] - min_lead
             )
 
-    def get_output_filename(self, output_type, filename_template, config_dict):
+    def _get_output_filename(self, output_type, filename_template,
+                             stringsub_dict):
         """! Create a file name for stat_analysis output.
 
         @param output_type string for the type of stat_analysis output, either
         dump_row, out_stat, or output.
         @param filename_template string of the template to create the file
          name.
-        @param config_dict dictionary containing the configuration information
+        @param stringsub_dict dictionary with info to substitute into filename
+        templates
         @returns string of the filled file name template
         """
-        stringsub_dict = self.build_stringsub_dict(config_dict)
         self.logger.debug(f"Building {output_type} filename from "
                           f"template: {filename_template}")
 
@@ -803,7 +907,7 @@ class StatAnalysisWrapper(CommandBuilder):
                                         **stringsub_dict)
         return output_filename
 
-    def get_lookin_dir(self, dir_path, config_dict):
+    def _get_lookin_dir(self, dir_path, config_dict):
         """!Fill in necessary information to get the path to the lookin
          directory to pass to stat_analysis. Expand any wildcards.
 
@@ -811,7 +915,7 @@ class StatAnalysisWrapper(CommandBuilder):
         @param config_dict dictionary containing the configuration information
         @returns string of the filled directory from dir_path
         """
-        stringsub_dict = self.build_stringsub_dict(config_dict)
+        stringsub_dict = self._build_stringsub_dict(config_dict)
         dir_path_filled = do_string_sub(dir_path,
                                         **stringsub_dict)
 
@@ -830,36 +934,39 @@ class StatAnalysisWrapper(CommandBuilder):
 
         return ' '.join(all_paths)
 
-    def format_valid_init(self, config_dict):
+    def _format_valid_init(self, config_dict, stringsub_dict):
         """! Format the valid and initialization dates and
              hours for the MET stat_analysis config file.
 
         @param config_dict dictionary containing the configuration information
+        @param stringsub_dict dictionary with info to substitute into filename
+        templates
         @returns dictionary containing the edited configuration information
          for valid and initialization dates and hours
         """
-        stringsub_dict = self.build_stringsub_dict(config_dict)
+        output_dict = copy.deepcopy(config_dict)
         # set all of the HOUR and LEAD lists to include the MET time format
         for list_name in self.FORMAT_LISTS:
             list_name = list_name.replace('_LIST', '')
             values = get_met_time_list(config_dict.get(list_name, ''))
             values = [f'"{item}"' for item in values]
-            config_dict[list_name] = ', '.join(values)
+            output_dict[list_name] = ', '.join(values)
 
         for fcst_or_obs in ['FCST', 'OBS']:
             for init_or_valid in ['INIT', 'VALID']:
-                self._format_valid_init_item(config_dict,
+                self._format_valid_init_item(output_dict,
                                              stringsub_dict,
                                              fcst_or_obs,
                                              init_or_valid)
 
-        return config_dict
+        return output_dict
 
-    def _format_valid_init_item(self, config_dict, stringsub_dict, fcst_or_obs, init_or_valid):
+    def _format_valid_init_item(self, output_dict, stringsub_dict, fcst_or_obs,
+                                init_or_valid):
         """! Check if variables are set in the METplusConfig to explicitly
         set the begin and end values in the wrapped MET config file.
 
-        @param config_dict dictionary to set values to set in MET config
+        @param output_dict dictionary to set values to set in MET config
         @param fcst_or_obs string either FCST or OBS
         @param init_or_valid string either INIT or VALID
         """
@@ -879,9 +986,9 @@ class StatAnalysisWrapper(CommandBuilder):
 
             if value:
                 formatted_value = do_string_sub(value, **stringsub_dict)
-                config_dict[f'{prefix}_{beg_or_end}'] = formatted_value
+                output_dict[f'{prefix}_{beg_or_end}'] = formatted_value
 
-    def parse_model_info(self):
+    def _parse_model_info(self):
         """! Parse for model information.
 
         @returns list of dictionaries containing model information
@@ -910,6 +1017,8 @@ class StatAnalysisWrapper(CommandBuilder):
             model_obtype = self.config.getraw('config', f'MODEL{m}_OBTYPE')
             model_obtype = f'"{model_obtype}"' if model_obtype else ''
 
+            model_dump_row_filename_template = None
+            model_out_stat_filename_template = None
             for output_type in ['DUMP_ROW', 'OUT_STAT']:
                 var_name = f'STAT_ANALYSIS_{output_type}_TEMPLATE'
                 # use MODEL<n>_STAT_ANALYSIS_<output_type>_TEMPLATE if set
@@ -944,8 +1053,8 @@ class StatAnalysisWrapper(CommandBuilder):
 
         return model_info_list
 
-    def process_job_args(self, job_type, job, model_info,
-                         runtime_settings_dict):
+    def _process_job_args(self, job_type, job, model_info,
+                         runtime_settings_dict, stringsub_dict):
         """! Get dump_row or out_stat file paths and replace [dump_row_file]
         and [out_stat_file] keywords from job arguments with the paths.
 
@@ -955,6 +1064,8 @@ class StatAnalysisWrapper(CommandBuilder):
          Used to get filename template to use for substitution
         @param runtime_settings_dict dictionary containing information for the
         run that is being processed. Used to substitute values.
+        @param stringsub_dict dictionary with info to substitute into filename
+        templates
         @returns job string with values substituted for [dump_row_file] or
          [out_stat_file]
         """
@@ -963,9 +1074,9 @@ class StatAnalysisWrapper(CommandBuilder):
         )
 
         output_filename = (
-            self.get_output_filename(job_type,
-                                     output_template,
-                                     runtime_settings_dict)
+            self._get_output_filename(job_type,
+                                      output_template,
+                                      stringsub_dict)
         )
         output_file = os.path.join(self.c_dict['OUTPUT_DIR'],
                                    output_filename)
@@ -979,56 +1090,13 @@ class StatAnalysisWrapper(CommandBuilder):
 
         return job
 
-    def get_all_runtime_settings(self):
-        """! Get all settings for each run of stat_analysis.
-
-        @returns list of dictionaries containing settings for each run
-        """
-        runtime_settings_dict_list = []
-        c_dict_list = self.get_c_dict_list()
-        for c_dict in c_dict_list:
-            runtime_settings = self.get_runtime_settings(c_dict)
-            runtime_settings_dict_list.extend(runtime_settings)
-
-        # Loop over run settings.
-        formatted_runtime_settings_dict_list = []
-        for runtime_settings in runtime_settings_dict_list:
-            # Set up stat_analysis -lookin argument, model and obs information
-            # and stat_analysis job.
-            model_info = self.get_model_obtype_and_lookindir(runtime_settings)
-            if model_info is None:
-                return None
-
-            runtime_settings['JOBS'] = (
-                self.get_job_info(model_info, runtime_settings)
-            )
-
-            # get -out argument if set
-            if self.c_dict['OUTPUT_TEMPLATE']:
-                output_filename = (
-                    self.get_output_filename('output',
-                                             self.c_dict['OUTPUT_TEMPLATE'],
-                                             runtime_settings)
-                )
-                output_file = os.path.join(self.c_dict['OUTPUT_DIR'],
-                                           output_filename)
-
-                # add output file path to runtime_settings
-                runtime_settings['OUTPUT_FILENAME'] = output_file
-
-            # Set up forecast and observation valid and init time information
-            runtime_settings = self.format_valid_init(runtime_settings)
-            formatted_runtime_settings_dict_list.append(runtime_settings)
-
-        return formatted_runtime_settings_dict_list
-
-    def get_c_dict_list(self):
+    def _get_c_dict_list(self):
         """! Build list of config dictionaries for each field
         name/level/threshold specified by the [FCST/OBS]_VAR<n>_* config vars.
         If field information was specified in the field lists
         [FCST_OBS]_[VAR/UNITS/THRESH/LEVEL]_LIST instead of these
-        variables, then return a list with a single item that is a deep copy
-        of the self.c_dict.
+        variables, then return a list with a single dictionary that contains
+        the relevant values from self.c_dict.
 
         @returns list of dictionaries for each field to process
         """
@@ -1036,7 +1104,7 @@ class StatAnalysisWrapper(CommandBuilder):
         # return and array with only self.c_dict
         if not self.c_dict['VAR_LIST']:
             c_dict = {}
-            self.add_other_lists_to_c_dict(c_dict)
+            self._add_other_lists_to_c_dict(c_dict)
             return [c_dict]
 
         # otherwise, use field information to build lists with single items
@@ -1099,14 +1167,14 @@ class StatAnalysisWrapper(CommandBuilder):
                     if pair:
                         c_dict['INTERP_MTHD_LIST'] = ['WV1_' + pair]
 
-                    self.add_other_lists_to_c_dict(c_dict)
+                    self._add_other_lists_to_c_dict(c_dict)
 
                     c_dict_list.append(c_dict)
 
         return c_dict_list
 
     @staticmethod
-    def get_runtime_settings(c_dict):
+    def _get_runtime_settings(c_dict):
         """! Build list of all combinations of runtime settings that should be
         run. Combine all group lists into a single item separated by comma.
         Compute the cartesian product to get all of the different combinations
@@ -1175,7 +1243,7 @@ class StatAnalysisWrapper(CommandBuilder):
 
         return fcst_units, obs_units
 
-    def add_other_lists_to_c_dict(self, c_dict):
+    def _add_other_lists_to_c_dict(self, c_dict):
         """! Using GROUP_LIST_ITEMS and LOOP_LIST_ITEMS, add lists from
              self.c_dict that are not already in c_dict.
              @param c_dict dictionary to add values to
@@ -1190,7 +1258,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 if list_item not in c_dict:
                     c_dict[list_item] = self.c_dict[list_item]
 
-    def get_model_obtype_and_lookindir(self, runtime_settings_dict):
+    def _get_model_obtype_and_lookindir(self, runtime_settings_dict):
         """! Reads through model info dictionaries for given run.
         Sets lookindir command line argument. Sets MODEL and OBTYPE values in
         runtime setting dictionary.
@@ -1201,7 +1269,6 @@ class StatAnalysisWrapper(CommandBuilder):
         lookin_dirs = []
         model_list = []
         obtype_list = []
-        dump_row_filename_list = []
         model_info = None
 
         # get list of models to process
@@ -1216,16 +1283,13 @@ class StatAnalysisWrapper(CommandBuilder):
             model_list.append(model_info['name'])
             if model_info['obtype']:
                 obtype_list.append(model_info['obtype'])
-            dump_row_filename_list.append(
-                model_info['dump_row_filename_template']
-            )
 
             # set MODEL and OBTYPE to single item to find lookin dir
             runtime_settings_dict['MODEL'] = model_info["name"]
             runtime_settings_dict['OBTYPE'] = model_info["obtype"]
 
             lookin_dirs.append(
-                self.get_lookin_dir(model_info['dir'], runtime_settings_dict)
+                self._get_lookin_dir(model_info['dir'], runtime_settings_dict)
             )
 
         # set lookin dir command line argument
@@ -1247,24 +1311,24 @@ class StatAnalysisWrapper(CommandBuilder):
         # return last model info dict used
         return model_info
 
-    def get_job_info(self, model_info, runtime_settings_dict):
+    def _get_job_info(self, model_info, runtime_settings_dict, stringsub_dict):
         """! Get job information and concatenate values into a string
 
-        @params model_info model info to use to determine output file paths
-        @params runtime_settings_dict dictionary with all settings for next run
+        @param model_info model info to use to determine output file paths
+        @param runtime_settings_dict dictionary with all settings for next run
+        @param stringsub_dict dictionary with info to substitute into filename
+        templates
         @returns list of strings containing job info to pass config file
         """
-        # get values to substitute filename template tags
-        stringsub_dict = self.build_stringsub_dict(runtime_settings_dict)
-
         jobs = []
         for job in self.c_dict['JOBS']:
             for job_type in ['dump_row', 'out_stat']:
                 if f"-{job_type}" not in job:
                     continue
 
-                job = self.process_job_args(job_type, job, model_info,
-                                            runtime_settings_dict)
+                job = self._process_job_args(job_type, job, model_info,
+                                             runtime_settings_dict,
+                                             stringsub_dict)
 
             # substitute filename templates that may be found in rest of job
             job = do_string_sub(job, **stringsub_dict)
@@ -1272,71 +1336,7 @@ class StatAnalysisWrapper(CommandBuilder):
 
         return jobs
 
-    def run_stat_analysis(self):
-        """! This runs stat_analysis over a period of valid
-             or initialization dates for a job defined by
-             the user.
-        """
-        runtime_settings_dict_list = self.get_all_runtime_settings()
-        if not runtime_settings_dict_list:
-            self.log_error('Could not get runtime settings dict list')
-            return False
-
-        self.run_stat_analysis_job(runtime_settings_dict_list)
-
-        return True
-
-    def run_stat_analysis_job(self, runtime_settings_dict_list):
-        """! Sets environment variables need to run StatAnalysis jobs
-             and calls the tool for each job.
-
-             Args:
-                 @param runtime_settings_dict_list list of dictionaries
-                  containing information needed to run a StatAnalysis job
-        """
-        for runtime_settings in runtime_settings_dict_list:
-            self.clear()
-            if not self.create_output_directories(runtime_settings):
-                continue
-
-            # set METPLUS_ env vars for MET config file to be consistent
-            # with other wrappers
-            for key in self.WRAPPER_ENV_VAR_KEYS:
-                item = key.replace('METPLUS_', '')
-                if not runtime_settings.get(item, ''):
-                    continue
-                value = runtime_settings.get(item, '')
-                if key.endswith('_JOBS'):
-                    value = '["' + '","'.join(value) + '"]'
-                elif key.endswith('_BEG') or key.endswith('_END'):
-                    value = f'"{value}"'
-                else:
-                    value = f'[{value}]'
-                value = f'{item.lower()} = {value};'
-                self.env_var_dict[key] = value
-
-            # send environment variables to logger
-            self.set_environment_variables()
-
-            # set lookin dir to add to command
-            self.logger.debug("Setting -lookin dir to "
-                              f"{runtime_settings['LOOKIN_DIR']}")
-            self.c_dict['LOOKIN_DIR'] = runtime_settings['LOOKIN_DIR']
-
-            # set any command line arguments
-            if self.c_dict.get('CONFIG_FILE'):
-                self.args.append(f"-config {self.c_dict['CONFIG_FILE']}")
-            else:
-                self.args.append(runtime_settings['JOBS'][0])
-
-            # set -out file path if requested, value will be set to None if not
-            output_filename = runtime_settings.get('OUTPUT_FILENAME')
-            if output_filename:
-                self.args.append(f"-out {output_filename}")
-
-            self.build()
-
-    def create_output_directories(self, runtime_settings_dict):
+    def _create_output_directories(self, runtime_settings_dict):
         """! Check if output filename is set for dump_row or out_stat. If set,
              Check if the file already exists and if it should be skipped.
 

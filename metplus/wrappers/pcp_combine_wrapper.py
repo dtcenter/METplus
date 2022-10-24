@@ -391,8 +391,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                        'lead': lead2}
         time_info2 = ti_calculate(input_dict2)
         time_info2['level'] = accum
-        if hasattr(time_info, 'custom'):
-            time_info2['custom'] = time_info['custom']
+        time_info2['custom'] = time_info.get('custom', '')
 
         filepath2 = do_string_sub(full_template, **time_info2)
         file2 = util.preprocess_file(filepath2,
