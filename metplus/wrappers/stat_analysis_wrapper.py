@@ -18,10 +18,10 @@ from ..util import get_start_and_end_times, get_time_prefix
 from ..util import ti_get_seconds_from_relativedelta
 from ..util import get_met_time_list, get_delta_list
 from ..util import YMD, YMD_HMS
-from . import CommandBuilder
+from . import RuntimeFreqWrapper
 
 
-class StatAnalysisWrapper(CommandBuilder):
+class StatAnalysisWrapper(RuntimeFreqWrapper):
     """! Wrapper to the MET tool stat_analysis which is used to filter
          and summarize data from MET's point_stat, grid_stat,
          ensemble_stat, and wavelet_stat
@@ -146,6 +146,16 @@ class StatAnalysisWrapper(CommandBuilder):
                                c_dict['VERBOSITY'])
         )
 
+        if not c_dict['RUNTIME_FREQ']:
+            c_dict['RUNTIME_FREQ'] = 'RUN_ONCE'
+
+        if c_dict['RUNTIME_FREQ'] != 'RUN_ONCE':
+            self.log_error('Only RUN_ONCE is currently supported for '
+                           'STAT_ANALYSIS_RUNTIME_FREQ')
+
+        # skip RuntimeFreq wrapper logic to find files
+        c_dict['FIND_FILES'] = False
+
         # STATAnalysis config file is optional, so
         # don't provide wrapped config file name as default value
         c_dict['CONFIG_FILE'] = self.get_config_file()
@@ -200,9 +210,11 @@ class StatAnalysisWrapper(CommandBuilder):
 
         return self._c_dict_error_check(c_dict, all_field_lists_empty)
 
-    def run_all_times(self):
+    def run_at_time_once(self, time_input):
         """! Function called when processing all times.
 
+         @param time_input currently not used since only RUN_ONCE runtime
+         frequency is supported
          @returns list of tuples containing all commands that were run and the
          environment variables that were set for each
         """
