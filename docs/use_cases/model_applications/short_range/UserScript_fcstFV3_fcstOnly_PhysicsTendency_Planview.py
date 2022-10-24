@@ -15,7 +15,7 @@ UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
 # To plot tendencies of temperature, moisture, and wind components averaged over 
 # a time window and spatial domain.  Tendencies are partitioned into physics 
 # parameterizations and dynamics.  Physics parameterizations include schemes like 
-# deep convection, convective gravity wave drag, short wave radiatioin, plantetary
+# deep convection, convective gravity wave drag, short wave radiation, plantetary
 # boundary layer, microphysics, and others.  Non-physics tendencies (or dynamics)
 # are due to horizontal and vertical motion.  The residual (which should be zero)
 # is the difference between the actual change in the state variable over the
