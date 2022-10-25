@@ -189,13 +189,23 @@ def test_setup_sum_method(metplus_config):
     assert pcw.setup_sum_method(time_info, lookback, data_src)
 
 
+@pytest.mark.parametrize(
+    'custom', [
+        False, True,
+    ]
+)
 @pytest.mark.wrapper
-def test_setup_subtract_method(metplus_config):
+def test_setup_subtract_method(metplus_config, custom):
     data_src = "FCST"
     pcw = pcp_combine_wrapper(metplus_config, data_src)
     task_info = {}
     task_info['valid'] = datetime.strptime("201609050000", '%Y%m%d%H%M')
     task_info['lead_hours'] = 9
+    if custom:
+        task_info['custom'] = 'file'
+        temp = pcw.config.getraw('config', 'FCST_PCP_COMBINE_INPUT_TEMPLATE')
+        temp = temp.replace('file.', '{custom}.')
+        pcw.config.set('config', 'FCST_PCP_COMBINE_INPUT_TEMPLATE', temp)
     time_info = ti_calculate(task_info)
     lookback = 6 * 3600
     files_found = pcw.setup_subtract_method(time_info, lookback, data_src)

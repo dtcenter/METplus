@@ -160,6 +160,10 @@ def main():
     if os.stat(warning_file).st_size == 0:
         print(f"No warnings found, removing {warning_file}")
         os.remove(warning_file)
+    else:
+        print('ERROR: Doc build contains warnings or errors. '
+              f'Please review {warning_file}')
+        sys.exit(1)
 
     print("Documentation build completed")
 

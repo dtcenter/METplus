@@ -895,17 +895,6 @@ def get_threshold_via_regex(thresh_string):
 
     return comparison_number_list
 
-def comparison_to_letter_format(expression):
-    """! Convert comparison operator to the letter version if it is not already
-         @args expression string starting with comparison operator to
-          convert, i.e. gt3 or <=5.4
-         @returns letter comparison operator, i.e. gt3 or le5.4 or None if invalid
-    """
-    for symbol_comp, letter_comp in VALID_COMPARISONS.items():
-        if letter_comp in expression or symbol_comp in expression:
-            return expression.replace(symbol_comp, letter_comp)
-
-    return None
 
 def validate_thresholds(thresh_list):
     """ Checks list of thresholds to ensure all of them have the correct format
