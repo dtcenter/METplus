@@ -108,9 +108,7 @@ def metplus_config_files():
         # Read in minimum pytest config file and any other extra configs
         script_dir = os.path.dirname(__file__)
         minimum_conf = os.path.join(script_dir, 'minimum_pytest.conf')
-        args = []
-        for extra_config in extra_configs:
-            args.append(extra_config)
+        args = extra_configs.copy()
         args.append(minimum_conf)
         config = config_metplus.setup(args)
         return config
