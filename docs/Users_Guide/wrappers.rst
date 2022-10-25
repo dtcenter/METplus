@@ -6968,6 +6968,7 @@ The following values are optional in the METplus configuration file:
 
 | :term:`STAT_ANALYSIS_CONFIG_FILE`
 | :term:`LOG_STAT_ANALYSIS_VERBOSITY`
+| :term:`STAT_ANALYSIS_CUSTOM_LOOP_LIST`
 | :term:`MODEL<n>_OBTYPE`
 | :term:`VAR<n>_FOURIER_DECOMP`
 | :term:`VAR<n>_WAVE_NUM_LIST`
