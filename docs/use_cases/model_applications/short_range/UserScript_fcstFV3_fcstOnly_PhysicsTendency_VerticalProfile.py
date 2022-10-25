@@ -13,7 +13,7 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 # To plot tendencies of temperature, moisture, and wind components averaged over 
 # a time window and spatial domain.  Tendencies are partitioned into physics 
 # parameterizations and dynamics.  Physics parameterizations include schemes like 
-# deep convection, convective gravity wave drag, short wave radiatioin, plantetary
+# deep convection, convective gravity wave drag, short wave radiation, plantetary
 # boundary layer, microphysics, and others.  Non-physics tendencies (or dynamics)
 # are due to horizontal and vertical motion.  The residual (which should be zero)
 # is the difference between the actual change in the state variable over the requested
@@ -47,6 +47,25 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # | The tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 #
+
+
+
+##############################################################################
+# External Dependencies 
+# ---------------------
+# You will need to use a versio of Python 3.86 that has the following packages
+# installed:
+#
+#  * cartopy (0.20.3 only)
+#  * matplotlib
+#  * metpy
+#  * numpy
+#  * pandas
+#  * shapely
+#  * xarray
+#
+
+
 
 ##############################################################################
 # METplus Components
