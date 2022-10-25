@@ -140,11 +140,16 @@ def set_minimum_config_settings(config):
         ({'STAT_ANALYSIS_INIT_END': '{fcst_init_end?fmt=%Y%m%d}_12'},
          {'METPLUS_FCST_INIT_END': 'fcst_init_end = "20221015_12";',
           'METPLUS_OBS_INIT_END': 'obs_init_end = "20221015_12";'}),
+        # 16 - custom in MODEL1
+        ({'STAT_ANALYSIS_CUSTOM_LOOP_LIST': 'CUSTOM_MODEL',
+          'STAT_ANALYSIS_MODEL1': '{custom}',
+          'STAT_ANALYSIS_MODEL_LIST': '{custom}'},
+         {'METPLUS_MODEL': 'model = "CUSTOM_MODEL";'}),
     ]
 )
 @pytest.mark.wrapper_d
-def test_valid_init_env_vars(metplus_config, config_overrides,
-                             expected_env_vars):
+def test_stat_analysis_env_vars(metplus_config, config_overrides,
+                                expected_env_vars):
     config = metplus_config()
     set_minimum_config_settings(config)
     config.set('config', 'INIT_END', '20221015')
