@@ -262,6 +262,9 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
             if model_info is None:
                 return None
 
+            # add obtype to string sub dict since it was added in
+            # the call to _get_model_obtype_and_lookindir
+            stringsub_dict['obtype'] = runtime_settings['OBTYPE'].strip('" ')
             jobs = self._get_job_info(model_info, runtime_settings,
                                       stringsub_dict)
 
