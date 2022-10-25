@@ -9,6 +9,25 @@ from metplus.util import time_util
 
 
 @pytest.mark.parametrize(
+    'input_str, expected_output', [
+        ('', []),
+        ('0,1,2,3', ['000000', '010000', '020000', '030000']),
+        ('12, 24', ['120000', '240000']),
+        ('196', ['1960000']),
+        ('12H, 24H', ['120000', '240000']),
+        ('45M', ['004500']),
+        ('42S', ['000042']),
+        ('24, 48, 72, 96, 120, 144, 168, 192, 216, 240',
+         ['240000', '480000', '720000', '960000', '1200000',
+          '1440000', '1680000', '1920000', '2160000', '2400000']),
+    ]
+)
+@pytest.mark.wrapper_d
+def test_get_met_time_list(input_str, expected_output):
+    assert time_util.get_met_time_list(input_str) == expected_output
+
+
+@pytest.mark.parametrize(
     'rd, seconds, time_string, time_letter_only, hours', [
         (relativedelta(seconds=1), 1, '1 second', '1S', 0),
         (relativedelta(seconds=-1), -1, '-1 second', '-1S', 0),

@@ -1479,17 +1479,19 @@ def find_indices_in_config_section(regex, config, sec='config',
     regex = re.compile(regex)
     for conf in all_conf:
         result = regex.match(conf)
-        if result is not None:
-            index = result.group(index_index)
-            if id_index:
-                identifier = result.group(id_index)
-            else:
-                identifier = None
+        if result is None:
+            continue
 
-            if index not in indices:
-                indices[index] = [identifier]
-            else:
-                indices[index].append(identifier)
+        index = result.group(index_index)
+        if id_index:
+            identifier = result.group(id_index)
+        else:
+            identifier = None
+
+        if index not in indices:
+            indices[index] = [identifier]
+        else:
+            indices[index].append(identifier)
 
     return indices
 
@@ -1774,11 +1776,6 @@ def get_process_list(config):
             config.logger.warning(f"PROCESS_LIST item {process_name} "
                                   "may be invalid.")
             wrapper_name = process_name
-
-        # if MakePlots is in process list, remove it because
-        # it will be called directly from StatAnalysis
-        if wrapper_name == 'MakePlots':
-            continue
 
         out_process_list.append((wrapper_name, instance))
 

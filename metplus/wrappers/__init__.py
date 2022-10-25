@@ -9,7 +9,6 @@ from ..util.metplus_check import plot_wrappers_are_enabled
 plotting_wrappers = [
     'tcmpr_plotter_wrapper',
     'cyclone_plotter_wrapper',
-    'make_plots_wrapper',
 ]
 
 # import classes that other wrappers import

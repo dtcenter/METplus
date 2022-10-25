@@ -25,6 +25,7 @@ from ..util import time_generator, add_to_time_input
 @endcode
 '''
 
+
 class RuntimeFreqWrapper(CommandBuilder):
 
     # valid options for run frequency
