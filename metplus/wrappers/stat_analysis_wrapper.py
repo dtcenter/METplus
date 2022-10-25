@@ -283,6 +283,10 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
             # add jobs and output file path to formatted runtime_settings
             runtime_settings_fmt['JOBS'] = jobs
             runtime_settings_fmt['OUTPUT_FILENAME'] = output_file
+
+            # save string sub dictionary to sub any other env vars for each run
+            runtime_settings_fmt['string_sub'] = stringsub_dict
+
             formatted_runtime_settings_dict_list.append(runtime_settings_fmt)
 
         return formatted_runtime_settings_dict_list
@@ -317,7 +321,7 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
                 self.env_var_dict[key] = value
 
             # send environment variables to logger
-            self.set_environment_variables()
+            self.set_environment_variables(runtime_settings['string_sub'])
 
             # set lookin dir to add to command
             self.logger.debug("Setting -lookin dir to "
