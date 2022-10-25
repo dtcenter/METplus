@@ -31,6 +31,11 @@ METplus Configuration Glossary
 
      | *Used by:* SeriesAnalysis
 
+   STAT_ANALYSIS_CUSTOM_LOOP_LIST
+    Sets custom string loop list for a specific wrapper. See :term:`CUSTOM_LOOP_LIST`.
+
+     | *Used by:* StatAnalysis
+
    PCP_COMBINE_CUSTOM_LOOP_LIST
     Sets custom string loop list for a specific wrapper. See :term:`CUSTOM_LOOP_LIST`.
 
