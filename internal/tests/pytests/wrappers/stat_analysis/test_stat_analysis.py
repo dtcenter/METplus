@@ -140,11 +140,16 @@ def set_minimum_config_settings(config):
         ({'STAT_ANALYSIS_INIT_END': '{fcst_init_end?fmt=%Y%m%d}_12'},
          {'METPLUS_FCST_INIT_END': 'fcst_init_end = "20221015_12";',
           'METPLUS_OBS_INIT_END': 'obs_init_end = "20221015_12";'}),
+        # 16 - custom in MODEL1
+        ({'STAT_ANALYSIS_CUSTOM_LOOP_LIST': 'CUSTOM_MODEL',
+          'STAT_ANALYSIS_MODEL1': '{custom}',
+          'STAT_ANALYSIS_MODEL_LIST': '{custom}'},
+         {'METPLUS_MODEL': 'model = "CUSTOM_MODEL";'}),
     ]
 )
 @pytest.mark.wrapper_d
-def test_valid_init_env_vars(metplus_config, config_overrides,
-                             expected_env_vars):
+def test_stat_analysis_env_vars(metplus_config, config_overrides,
+                                expected_env_vars):
     config = metplus_config()
     set_minimum_config_settings(config)
     config.set('config', 'INIT_END', '20221015')
@@ -154,7 +159,7 @@ def test_valid_init_env_vars(metplus_config, config_overrides,
     wrapper = StatAnalysisWrapper(config)
     assert wrapper.isOK
 
-    runtime_settings_dict_list = wrapper._get_all_runtime_settings()
+    runtime_settings_dict_list = wrapper._get_all_runtime_settings({})
     assert runtime_settings_dict_list
 
     first_runtime_only = [runtime_settings_dict_list[0]]
@@ -844,7 +849,7 @@ def test_run_stat_analysis(metplus_config):
     st.c_dict['DATE_BEG'] = datetime.datetime.strptime('20190101', '%Y%m%d')
     st.c_dict['DATE_END'] = datetime.datetime.strptime('20190101', '%Y%m%d')
     st.c_dict['DATE_TYPE'] = 'VALID'
-    st._run_stat_analysis()
+    st._run_stat_analysis({})
     assert os.path.exists(expected_filename)
     assert (os.path.getsize(expected_filename) ==
             os.path.getsize(comparison_filename))

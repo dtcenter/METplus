@@ -18,10 +18,10 @@ from ..util import get_start_and_end_times, get_time_prefix
 from ..util import ti_get_seconds_from_relativedelta
 from ..util import get_met_time_list, get_delta_list
 from ..util import YMD, YMD_HMS
-from . import CommandBuilder
+from . import RuntimeFreqWrapper
 
 
-class StatAnalysisWrapper(CommandBuilder):
+class StatAnalysisWrapper(RuntimeFreqWrapper):
     """! Wrapper to the MET tool stat_analysis which is used to filter
          and summarize data from MET's point_stat, grid_stat,
          ensemble_stat, and wavelet_stat
@@ -146,6 +146,16 @@ class StatAnalysisWrapper(CommandBuilder):
                                c_dict['VERBOSITY'])
         )
 
+        if not c_dict['RUNTIME_FREQ']:
+            c_dict['RUNTIME_FREQ'] = 'RUN_ONCE'
+
+        if c_dict['RUNTIME_FREQ'] != 'RUN_ONCE':
+            self.log_error('Only RUN_ONCE is currently supported for '
+                           'STAT_ANALYSIS_RUNTIME_FREQ')
+
+        # skip RuntimeFreq wrapper logic to find files
+        c_dict['FIND_FILES'] = False
+
         # STATAnalysis config file is optional, so
         # don't provide wrapped config file name as default value
         c_dict['CONFIG_FILE'] = self.get_config_file()
@@ -200,21 +210,23 @@ class StatAnalysisWrapper(CommandBuilder):
 
         return self._c_dict_error_check(c_dict, all_field_lists_empty)
 
-    def run_all_times(self):
+    def run_at_time_once(self, time_input):
         """! Function called when processing all times.
 
+         @param time_input currently only used to set custom, now and today
+         since only RUN_ONCE runtime frequency is supported
          @returns list of tuples containing all commands that were run and the
          environment variables that were set for each
         """
-        self._run_stat_analysis()
+        self._run_stat_analysis(time_input)
         return self.all_commands
 
-    def _run_stat_analysis(self):
+    def _run_stat_analysis(self, time_input):
         """! This runs stat_analysis over a period of valid
              or initialization dates for a job defined by
              the user.
         """
-        runtime_settings_dict_list = self._get_all_runtime_settings()
+        runtime_settings_dict_list = self._get_all_runtime_settings(time_input)
         if not runtime_settings_dict_list:
             self.log_error('Could not get runtime settings dict list')
             return False
@@ -223,7 +235,7 @@ class StatAnalysisWrapper(CommandBuilder):
 
         return True
 
-    def _get_all_runtime_settings(self):
+    def _get_all_runtime_settings(self, time_input):
         """! Get all settings for each run of stat_analysis.
 
         @returns list of dictionaries containing settings for each run
@@ -237,6 +249,11 @@ class StatAnalysisWrapper(CommandBuilder):
         # Loop over run settings.
         formatted_runtime_settings_dict_list = []
         for runtime_settings in runtime_settings_dict_list:
+            # set custom, today, and now from time input
+            runtime_settings['custom'] = time_input.get('custom', '')
+            runtime_settings['today'] = time_input.get('today', '')
+            runtime_settings['now'] = time_input.get('now', '')
+
             stringsub_dict = self._build_stringsub_dict(runtime_settings)
 
             # Set up stat_analysis -lookin argument, model and obs information
@@ -245,6 +262,9 @@ class StatAnalysisWrapper(CommandBuilder):
             if model_info is None:
                 return None
 
+            # add obtype to string sub dict since it was added in
+            # the call to _get_model_obtype_and_lookindir
+            stringsub_dict['obtype'] = runtime_settings['OBTYPE'].strip('" ')
             jobs = self._get_job_info(model_info, runtime_settings,
                                       stringsub_dict)
 
@@ -266,6 +286,10 @@ class StatAnalysisWrapper(CommandBuilder):
             # add jobs and output file path to formatted runtime_settings
             runtime_settings_fmt['JOBS'] = jobs
             runtime_settings_fmt['OUTPUT_FILENAME'] = output_file
+
+            # save string sub dictionary to sub any other env vars for each run
+            runtime_settings_fmt['string_sub'] = stringsub_dict
+
             formatted_runtime_settings_dict_list.append(runtime_settings_fmt)
 
         return formatted_runtime_settings_dict_list
@@ -300,7 +324,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 self.env_var_dict[key] = value
 
             # send environment variables to logger
-            self.set_environment_variables()
+            self.set_environment_variables(runtime_settings['string_sub'])
 
             # set lookin dir to add to command
             self.logger.debug("Setting -lookin dir to "
@@ -544,13 +568,12 @@ class StatAnalysisWrapper(CommandBuilder):
         """
         date_type = self.c_dict['DATE_TYPE']
 
-        clock_dt = datetime.strptime(
-            self.config.getstr('config', 'CLOCK_TIME'), '%Y%m%d%H%M%S'
-        )
         stringsub_dict = {
-            'now': clock_dt,
-            'today': clock_dt.strftime('%Y%m%d')
+            'now': config_dict.get('now'),
+            'today': config_dict.get('today'),
+            'custom': config_dict.get('custom'),
         }
+
         # add all loop list and group list items to string sub keys list
         for list_item in self.EXPECTED_CONFIG_LISTS:
             list_name = list_item.replace('_LIST', '').lower()
