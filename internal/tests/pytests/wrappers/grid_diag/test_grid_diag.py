@@ -68,7 +68,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expected_subset):
     """! Test to ensure that get_all_files only gets the files that are
     relevant to the runtime settings and not every file in the directory
     """
-    config = metplus_config()
+    config = metplus_config
     config.set('config', 'LOOP_BY', 'INIT')
     config.set('config', 'GRID_DIAG_RUNTIME_FREQ', 'RUN_ONCE')
     config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H%M%S')
@@ -169,7 +169,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expected_subset):
 )
 @pytest.mark.wrapper
 def test_get_list_file_name(metplus_config, time_info, expected_filename):
-    wrapper = GridDiagWrapper(metplus_config())
+    wrapper = GridDiagWrapper(metplus_config)
     assert(wrapper.get_list_file_name(time_info, 'input0') == expected_filename)
 
 
@@ -177,7 +177,7 @@ def test_get_list_file_name(metplus_config, time_info, expected_filename):
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
 
-    config = metplus_config()
+    config = metplus_config
     default_config_file = os.path.join(config.getdir('PARM_BASE'),
                                        'met_config',
                                        'GridDiagConfig_wrapped')

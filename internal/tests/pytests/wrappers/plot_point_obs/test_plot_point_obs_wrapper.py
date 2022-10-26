@@ -217,7 +217,7 @@ def set_minimum_config_settings(config):
 @pytest.mark.wrapper_c
 def test_plot_point_obs(metplus_config, config_overrides, env_var_values):
 
-    config = metplus_config()
+    config = metplus_config
 
     set_minimum_config_settings(config)
 
@@ -288,7 +288,7 @@ def test_plot_point_obs(metplus_config, config_overrides, env_var_values):
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
 
-    config = metplus_config()
+    config = metplus_config
     default_config_file = os.path.join(config.getdir('PARM_BASE'),
                                        'met_config',
                                        'PlotPointObsConfig_wrapped')

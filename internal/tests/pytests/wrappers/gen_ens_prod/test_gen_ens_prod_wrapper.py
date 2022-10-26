@@ -362,7 +362,7 @@ def handle_input_dir(config):
 def test_gen_ens_prod_single_field(metplus_config, config_overrides,
                                    env_var_values):
 
-    config = metplus_config()
+    config = metplus_config
 
     set_minimum_config_settings(config)
 
@@ -440,7 +440,7 @@ def test_gen_ens_prod_single_field(metplus_config, config_overrides,
 )
 @pytest.mark.wrapper
 def test_get_config_file(metplus_config, use_default_config_file):
-    config = metplus_config()
+    config = metplus_config
 
     if use_default_config_file:
         config_file = os.path.join(config.getdir('PARM_BASE'),
@@ -463,7 +463,7 @@ def test_get_config_file(metplus_config, use_default_config_file):
 @pytest.mark.wrapper
 def test_gen_ens_prod_fill_missing(metplus_config, config_overrides,
                                    expected_num_files):
-    config = metplus_config()
+    config = metplus_config
 
     set_minimum_config_settings(config)
     handle_input_dir(config)

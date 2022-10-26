@@ -3,20 +3,37 @@
 import pytest
 
 import os
+import shutil
 
 from metplus.wrappers.ascii2nc_wrapper import ASCII2NCWrapper
 
 
-def ascii2nc_wrapper(metplus_config, config_path=None, config_overrides=None):
-    config = metplus_config()
-
-    if config_path:
-        parm_base = config.getdir('PARM_BASE')
-        config_full_path = os.path.join(parm_base, config_path)
-        config = metplus_config([config_full_path])
-
-    overrides = {'DO_NOT_RUN_EXE': True,
-                 'INPUT_MUST_EXIST': False}
+def ascii2nc_wrapper(metplus_config, config_overrides=None):
+    config = metplus_config
+    overrides = {
+        'DO_NOT_RUN_EXE': True,
+        'INPUT_MUST_EXIST': False,
+        'PROCESS_LIST': 'ASCII2NC',
+        'LOOP_BY': 'VALID',
+        'VALID_TIME_FMT': '%Y%m%d%H',
+        'VALID_BEG': '2010010112',
+        'VALID_END': '2010010112',
+        'VALID_INCREMENT': '1M',
+        'ASCII2NC_INPUT_TEMPLATE': '{INPUT_BASE}/met_test/data/sample_obs/ascii/precip24_{valid?fmt=%Y%m%d%H}.ascii',
+        'ASCII2NC_OUTPUT_TEMPLATE': '{OUTPUT_BASE}/ascii2nc/precip24_{valid?fmt=%Y%m%d%H}.nc',
+        'ASCII2NC_CONFIG_FILE': '{PARM_BASE}/met_config/Ascii2NcConfig_wrapped',
+        'ASCII2NC_TIME_SUMMARY_FLAG': 'False',
+        'ASCII2NC_TIME_SUMMARY_RAW_DATA': 'False',
+        'ASCII2NC_TIME_SUMMARY_BEG': '000000',
+        'ASCII2NC_TIME_SUMMARY_END': '235959',
+        'ASCII2NC_TIME_SUMMARY_STEP': '300',
+        'ASCII2NC_TIME_SUMMARY_WIDTH': '600',
+        'ASCII2NC_TIME_SUMMARY_GRIB_CODES': '11, 204, 211',
+        'ASCII2NC_TIME_SUMMARY_VAR_NAMES': '',
+        'ASCII2NC_TIME_SUMMARY_TYPES': 'min, max, range, mean, stdev, median, p80',
+        'ASCII2NC_TIME_SUMMARY_VALID_FREQ': '0',
+        'ASCII2NC_TIME_SUMMARY_VALID_THRESH': '0.0',
+    }
     if config_overrides:
         for key, value in config_overrides.items():
             overrides[key] = value
@@ -27,8 +44,7 @@ def ascii2nc_wrapper(metplus_config, config_path=None, config_overrides=None):
     for key, value in overrides.items():
         config.set(instance, key, value)
 
-    return ASCII2NCWrapper(config,
-                           instance=instance)
+    return ASCII2NCWrapper(config, instance=instance)
 
 
 @pytest.mark.parametrize(
@@ -142,11 +158,7 @@ def ascii2nc_wrapper(metplus_config, config_path=None, config_overrides=None):
 @pytest.mark.wrapper
 def test_ascii2nc_wrapper(metplus_config, config_overrides,
                           env_var_values):
-    wrapper = (
-        ascii2nc_wrapper(metplus_config,
-                         'use_cases/met_tool_wrapper/ASCII2NC/ASCII2NC.conf',
-                         config_overrides)
-    )
+    wrapper = ascii2nc_wrapper(metplus_config, config_overrides)
     assert wrapper.isOK
 
     input_path = wrapper.config.getraw('config', 'ASCII2NC_INPUT_TEMPLATE')
@@ -171,7 +183,7 @@ def test_ascii2nc_wrapper(metplus_config, config_overrides,
                     f"-config {config_file} "
                     f"{verbosity}")
 
-    assert(all_commands[0][0] == expected_cmd)
+    assert all_commands[0][0] == expected_cmd
 
     env_vars = all_commands[0][1]
     # check that environment variables were set properly
@@ -182,16 +194,20 @@ def test_ascii2nc_wrapper(metplus_config, config_overrides,
     for env_var_key in env_var_keys:
         match = next((item for item in env_vars if
                       item.startswith(env_var_key)), None)
-        assert (match is not None)
+        assert match is not None
         value = match.split('=', 1)[1]
 
-        assert (env_var_values.get(env_var_key, '') == value)
+        assert env_var_values.get(env_var_key, '') == value
+
+    output_base = wrapper.config.getdir('OUTPUT_BASE')
+    if output_base:
+        shutil.rmtree(output_base)
 
 
 @pytest.mark.wrapper
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
-    config = metplus_config()
+    config = metplus_config
     config.set('config', 'INPUT_MUST_EXIST', False)
 
     wrapper = ASCII2NCWrapper(config)

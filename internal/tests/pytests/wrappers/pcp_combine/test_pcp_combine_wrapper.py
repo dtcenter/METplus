@@ -16,17 +16,41 @@ def get_test_data_dir(config, subdir=None):
         top_dir = os.path.join(top_dir, subdir)
     return top_dir
 
+
 def pcp_combine_wrapper(metplus_config, d_type):
     """! Returns a default PCPCombineWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
          files.  Subsequent tests can customize the final METplus configuration
          to over-ride these /path/to values."""
+    config = metplus_config
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_ACCUMS', '6')
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_NAMES', 'P06M_NONE')
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_LEVELS', '"(*,*)"')
+    config.set('config', 'OBS_PCP_COMBINE_INPUT_ACCUMS', '1')
+    config.set('config', 'OBS_PCP_COMBINE_INPUT_NAMES', 'P01M_NONE')
+    config.set('config', 'OBS_PCP_COMBINE_DATA_INTERVAL', '1')
+    config.set('config', 'OBS_PCP_COMBINE_TIMES_PER_FILE', '4')
+    config.set('config', 'FCST_PCP_COMBINE_METHOD', 'ADD')
+    config.set('config', 'OBS_PCP_COMBINE_METHOD', 'ADD')
+    config.set('config', 'OBS_PCP_COMBINE_INPUT_DIR',
+               '{METPLUS_BASE}/internal/tests/data/accum')
+    config.set('config', 'OBS_PCP_COMBINE_OUTPUT_DIR',
+               '{OUTPUT_BASE}/internal/tests/data/fakeout')
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_DIR',
+               '{METPLUS_BASE}/internal/tests/data/fcst')
+    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_DIR',
+               '{OUTPUT_BASE}/internal/tests/data/fakeout')
+    config.set('config', 'OBS_PCP_COMBINE_INPUT_TEMPLATE',
+               '{valid?fmt=%Y%m%d}/file.{valid?fmt=%Y%m%d%H}.{level?fmt=%HH}h')
+    config.set('config', 'OBS_PCP_COMBINE_OUTPUT_TEMPLATE',
+               '{valid?fmt=%Y%m%d}/outfile.{valid?fmt=%Y%m%d%H}_A{level?fmt=%HH}h')
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_TEMPLATE',
+               '{init?fmt=%Y%m%d}/file.{init?fmt=%Y%m%d%H}f{lead?fmt=%HHH}.nc')
+    config.set('config', 'FCST2_PCP_COMBINE_INPUT_TEMPLATE',
+               'file.{init?fmt=%Y%m%d%H}f{lead?fmt=%HHH}.nc')
+    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_TEMPLATE',
+               '{valid?fmt=%Y%m%d}/file.{valid?fmt=%Y%m%d%H}_A{level?fmt=%HHH}.nc')
 
-    # PCPCombineWrapper with configuration values determined by what is set in
-    # the test1.conf file.
-    extra_configs = []
-    extra_configs.append(os.path.join(os.path.dirname(__file__), 'test1.conf'))
-    config = metplus_config(extra_configs)
     if d_type == "FCST":
         config.set('config', 'FCST_PCP_COMBINE_RUN', True)
     elif d_type == "OBS":
@@ -220,7 +244,7 @@ def test_pcp_combine_add_subhourly(metplus_config):
     fcst_level = 'Surface'
     fcst_output_name = 'A001500'
     fcst_fmt = f'\'name="{fcst_name}"; level="{fcst_level}";\''
-    config = metplus_config()
+    config = metplus_config
 
     test_data_dir = get_test_data_dir(config)
     fcst_input_dir = os.path.join(test_data_dir,
@@ -285,7 +309,7 @@ def test_pcp_combine_add_subhourly(metplus_config):
 @pytest.mark.wrapper
 def test_pcp_combine_bucket(metplus_config):
     fcst_output_name = 'APCP'
-    config = metplus_config()
+    config = metplus_config
 
     test_data_dir = get_test_data_dir(config)
     fcst_input_dir = os.path.join(test_data_dir,
@@ -365,7 +389,7 @@ def test_pcp_combine_derive(metplus_config, config_overrides, extra_fields):
     fcst_name = 'APCP'
     fcst_level = 'A03'
     fcst_fmt = f'-field \'name="{fcst_name}"; level="{fcst_level}";\''
-    config = metplus_config()
+    config = metplus_config
 
     test_data_dir = get_test_data_dir(config)
     fcst_input_dir = os.path.join(test_data_dir,
@@ -438,7 +462,7 @@ def test_pcp_combine_derive(metplus_config, config_overrides, extra_fields):
 def test_pcp_combine_loop_custom(metplus_config):
     fcst_name = 'APCP'
     ens_list = ['ens1', 'ens2', 'ens3', 'ens4', 'ens5', 'ens6']
-    config = metplus_config()
+    config = metplus_config
 
     test_data_dir = get_test_data_dir(config)
     fcst_input_dir = os.path.join(test_data_dir,
@@ -500,7 +524,7 @@ def test_pcp_combine_loop_custom(metplus_config):
 
 @pytest.mark.wrapper
 def test_pcp_combine_subtract(metplus_config):
-    config = metplus_config()
+    config = metplus_config
 
     test_data_dir = get_test_data_dir(config)
     fcst_input_dir = os.path.join(test_data_dir,
@@ -563,7 +587,7 @@ def test_pcp_combine_sum_subhourly(metplus_config):
     fcst_level = 'Surface'
     fcst_output_name = 'A001500'
     fcst_fmt = f'-field \'name="{fcst_name}"; level="{fcst_level}";\''
-    config = metplus_config()
+    config = metplus_config
 
     test_data_dir = get_test_data_dir(config)
     fcst_input_dir = os.path.join(test_data_dir,
@@ -641,7 +665,7 @@ def test_pcp_combine_sum_subhourly(metplus_config):
 def test_handle_name_argument(metplus_config, output_name, extra_output,
                               expected_results):
     data_src = 'FCST'
-    config = metplus_config()
+    config = metplus_config
     wrapper = PCPCombineWrapper(config)
     wrapper.c_dict[data_src + '_EXTRA_OUTPUT_NAMES'] = extra_output
     wrapper._handle_name_argument(output_name, data_src)
@@ -680,7 +704,7 @@ def test_handle_name_argument(metplus_config, output_name, extra_output,
 @pytest.mark.wrapper
 def test_get_extra_fields(metplus_config, names, levels, expected_args):
     data_src = 'FCST'
-    config = metplus_config()
+    config = metplus_config
     config.set('config', 'FCST_PCP_COMBINE_RUN', True)
     config.set('config', 'FCST_PCP_COMBINE_METHOD', 'ADD')
     config.set('config', 'FCST_PCP_COMBINE_EXTRA_NAMES', names)
@@ -697,7 +721,7 @@ def test_get_extra_fields(metplus_config, names, levels, expected_args):
 @pytest.mark.wrapper
 def test_add_method_single_file(metplus_config):
     data_src = 'FCST'
-    config = metplus_config()
+    config = metplus_config
     config.set('config', 'DO_NOT_RUN_EXE', True)
     config.set('config', 'INPUT_MUST_EXIST', False)
 
@@ -767,7 +791,7 @@ def test_subtract_method_zero_accum(metplus_config):
     input_level = '"(*,*)"'
     in_dir = '/some/input/dir'
     out_dir = '/some/output/dir'
-    config = metplus_config()
+    config = metplus_config
     config.set('config', 'DO_NOT_RUN_EXE', True)
     config.set('config', 'INPUT_MUST_EXIST', False)
 

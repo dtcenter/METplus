@@ -36,7 +36,7 @@ def test_read_climo_field(metplus_config, config_overrides, expected_value):
     app_name = 'app'
     for climo_type in ('MEAN', 'STDEV'):
         expected_var = f'{app_name}_CLIMO_{climo_type}_FIELD'.upper()
-        config = metplus_config()
+        config = metplus_config
 
         # set config values
         for key, value in config_overrides.items():
@@ -135,7 +135,7 @@ def test_handle_climo_dict(metplus_config, config_overrides, expected_value):
     app_name = 'app'
     for climo_type in ('MEAN', 'STDEV'):
         expected_var = f'METPLUS_CLIMO_{climo_type}_DICT'
-        config = metplus_config()
+        config = metplus_config
         output_dict = {}
 
         # set config values
@@ -252,7 +252,7 @@ def test_read_climo_file_name(metplus_config, config_overrides,
     for climo_type in CLIMO_TYPES:
         prefix = f'{app_name.upper()}_CLIMO_{climo_type.upper()}_'
 
-        config = metplus_config()
+        config = metplus_config
 
         # set config values
         for key, value in config_overrides.items():

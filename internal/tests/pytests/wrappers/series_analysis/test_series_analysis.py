@@ -37,11 +37,27 @@ def get_input_dirs(config):
 
 
 def series_analysis_wrapper(metplus_config, config_overrides=None):
-    extra_configs = []
-    extra_configs.append(os.path.join(os.path.dirname(__file__),
-                                      'series_test.conf'))
-    config = metplus_config(extra_configs)
-    config.set('config', 'LOOP_ORDER', 'processes')
+    config = metplus_config
+    config.set('config', 'SERIES_ANALYSIS_STAT_LIST', 'TOTAL, FBAR, OBAR, ME')
+    config.set('config', 'INIT_TIME_FMT', '%Y%m%d')
+    config.set('config', 'INIT_BEG', '20141214')
+    config.set('config', 'INIT_END', '20141214')
+    config.set('config', 'INIT_INCREMENT', '21600')
+    config.set('config', 'SERIES_ANALYSIS_BACKGROUND_MAP', 'no')
+    config.set('config', 'FCST_SERIES_ANALYSIS_INPUT_TEMPLATE',
+               ('{init?fmt=%Y%m%d_%H}/{storm_id}/FCST_TILE_F{lead?fmt=%3H}_'
+                'gfs_4_{init?fmt=%Y%m%d}_{init?fmt=%H}00_{lead?fmt=%3H}.nc'))
+    config.set('config', 'OBS_SERIES_ANALYSIS_INPUT_TEMPLATE',
+               ('{init?fmt=%Y%m%d_%H}/{storm_id}/OBS_TILE_F{lead?fmt=%3H}_gfs'
+                '_4_{init?fmt=%Y%m%d}_{init?fmt=%H}00_{lead?fmt=%3H}.nc'))
+    config.set('config', 'EXTRACT_TILES_OUTPUT_DIR',
+               '{OUTPUT_BASE}/extract_tiles')
+    config.set('config', 'FCST_SERIES_ANALYSIS_INPUT_DIR',
+               '{EXTRACT_TILES_OUTPUT_DIR}')
+    config.set('config', 'OBS_SERIES_ANALYSIS_INPUT_DIR',
+               '{EXTRACT_TILES_OUTPUT_DIR}')
+    config.set('config', 'SERIES_ANALYSIS_OUTPUT_DIR',
+               '{OUTPUT_BASE}/series_analysis_init')
     if config_overrides:
         for key, value in config_overrides.items():
             config.set('config', key, value)
@@ -297,7 +313,7 @@ def set_minimum_config_settings(config):
 def test_series_analysis_single_field(metplus_config, config_overrides,
                                       env_var_values):
 
-    config = metplus_config()
+    config = metplus_config
 
     set_minimum_config_settings(config)
 
@@ -851,7 +867,7 @@ def test_get_netcdf_min_max(metplus_config):
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
 
-    config = metplus_config()
+    config = metplus_config
     default_config_file = os.path.join(config.getdir('PARM_BASE'),
                                        'met_config',
                                        'SeriesAnalysisConfig_wrapped')

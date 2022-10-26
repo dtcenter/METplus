@@ -15,7 +15,7 @@ def rdp_wrapper(metplus_config):
          files.  Subsequent tests can customize the final METplus configuration
          to over-ride these /path/to values."""
 
-    config = metplus_config()
+    config = metplus_config
     config.set('config', 'DO_NOT_RUN_EXE', True)
     return RegridDataPlaneWrapper(config)
 
@@ -61,7 +61,7 @@ def rdp_wrapper(metplus_config):
 def test_set_field_command_line_arguments(metplus_config, field_info, expected_arg):
     data_type = 'FCST'
 
-    config = metplus_config()
+    config = metplus_config
 
     rdp = RegridDataPlaneWrapper(config)
 
@@ -128,7 +128,7 @@ def test_set_field_command_line_arguments(metplus_config, field_info, expected_a
 def test_get_output_names(metplus_config, var_list, expected_names):
     data_type = 'FCST'
 
-    rdp = RegridDataPlaneWrapper(metplus_config())
+    rdp = RegridDataPlaneWrapper(metplus_config)
 
     assert rdp.get_output_names(var_list, data_type) == expected_names
 

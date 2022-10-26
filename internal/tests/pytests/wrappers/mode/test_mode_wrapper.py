@@ -318,7 +318,7 @@ def set_minimum_config_settings(config):
 @pytest.mark.wrapper_a
 def test_mode_single_field(metplus_config, config_overrides,
                            expected_output):
-    config = metplus_config()
+    config = metplus_config
 
     # set config variables needed to run
     set_minimum_config_settings(config)
@@ -401,7 +401,7 @@ def test_mode_single_field(metplus_config, config_overrides,
 @pytest.mark.wrapper_a
 def test_mode_multi_variate(metplus_config, config_overrides,
                             expected_output):
-    config = metplus_config()
+    config = metplus_config
 
     # set config variables needed to run
     set_minimum_config_settings(config)
@@ -518,7 +518,7 @@ def test_config_synonyms(metplus_config, config_name, env_var_name,
     elif var_type == 'float':
         in_value = out_value = 4.0
 
-    config = metplus_config()
+    config = metplus_config
     set_minimum_config_settings(config)
     config.set('config', config_name, in_value)
     wrapper = MODEWrapper(config)
@@ -533,7 +533,7 @@ def test_config_synonyms(metplus_config, config_name, env_var_name,
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
 
-    config = metplus_config()
+    config = metplus_config
     default_config_file = os.path.join(config.getdir('PARM_BASE'),
                                        'met_config',
                                        'MODEConfig_wrapped')

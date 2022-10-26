@@ -191,7 +191,6 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
 
         # read any [FCST/OBS]_VAR<n>_* variables if they are set
         c_dict['VAR_LIST'] = parse_var_list(self.config)
-
         c_dict['MODEL_INFO_LIST'] = self._parse_model_info()
 
         # if MODEL_LIST was not set, populate it from the model info list
@@ -666,6 +665,7 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
             stringsub_dict[f'{generic_list}_end'] = (
                 stringsub_dict[f'{sub_name}_end']
             )
+
             if (stringsub_dict[f'{generic_list}_beg'] ==
                     stringsub_dict[f'{generic_list}_end']):
                 stringsub_dict[generic_list] = (

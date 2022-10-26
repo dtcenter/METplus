@@ -8,17 +8,32 @@ import datetime
 from metplus.wrappers.extract_tiles_wrapper import ExtractTilesWrapper
 
 
-def get_config(metplus_config):
-    extra_configs = []
-    extra_configs.append(os.path.join(os.path.dirname(__file__),
-                                      'extract_tiles_test.conf'))
-    return metplus_config(extra_configs)
-
-
 def extract_tiles_wrapper(metplus_config):
-    config = get_config(metplus_config)
+    config = metplus_config
+    config.set('config', 'PROCESS_LIST', 'ExtractTiles')
+    config.set('config', 'LOOP_BY', 'INIT')
+    config.set('config', 'INIT_TIME_FMT', '%Y%m%d')
+    config.set('config', 'INIT_BEG', '20141214')
+    config.set('config', 'INIT_END', '20141214')
+    config.set('config', 'INIT_INCREMENT', '21600')
+    config.set('config', 'EXTRACT_TILES_NLAT', '60')
+    config.set('config', 'EXTRACT_TILES_NLON', '60')
+    config.set('config', 'EXTRACT_TILES_DLAT', '0.5')
+    config.set('config', 'EXTRACT_TILES_DLON', '0.5')
+    config.set('config', 'EXTRACT_TILES_LAT_ADJ', '15')
+    config.set('config', 'EXTRACT_TILES_LON_ADJ', '15')
+    config.set('config', 'EXTRACT_TILES_FILTER_OPTS', '-basin ML')
+    config.set('config', 'FCST_EXTRACT_TILES_INPUT_TEMPLATE',
+               'gfs_4_{init?fmt=%Y%m%d}_{init?fmt=%H}00_{lead?fmt=%HHH}.grb2')
+    config.set('config', 'OBS_EXTRACT_TILES_INPUT_TEMPLATE',
+               'gfs_4_{valid?fmt=%Y%m%d}_{valid?fmt=%H}00_000.grb2')
+    config.set('config', 'EXTRACT_TILES_GRID_INPUT_DIR',
+               '{INPUT_BASE}/cyclone_track_feature/reduced_model_data')
+    config.set('config', 'EXTRACT_TILES_PAIRS_INPUT_DIR',
+               '{OUTPUT_BASE}/tc_pairs')
+    config.set('config', 'EXTRACT_TILES_OUTPUT_DIR',
+               '{OUTPUT_BASE}/extract_tiles')
 
-    config.set('config', 'LOOP_ORDER', 'processes')
     wrapper = ExtractTilesWrapper(config)
     return wrapper
 

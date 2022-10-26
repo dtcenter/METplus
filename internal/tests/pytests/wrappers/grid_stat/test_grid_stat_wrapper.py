@@ -88,7 +88,7 @@ def set_minimum_config_settings(config):
 @pytest.mark.wrapper_b
 def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
 
-    config = metplus_config()
+    config = metplus_config
 
     set_minimum_config_settings(config)
 
@@ -132,7 +132,7 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
     """
     old_env_vars = ['CLIMO_MEAN_FILE',
                     'CLIMO_STDEV_FILE']
-    config = metplus_config()
+    config = metplus_config
 
     set_minimum_config_settings(config)
 
@@ -695,7 +695,7 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
 def test_grid_stat_single_field(metplus_config, config_overrides,
                                 env_var_values):
 
-    config = metplus_config()
+    config = metplus_config
 
     set_minimum_config_settings(config)
 
@@ -750,7 +750,7 @@ def test_grid_stat_single_field(metplus_config, config_overrides,
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
 
-    config = metplus_config()
+    config = metplus_config
     default_config_file = os.path.join(config.getdir('PARM_BASE'),
                                        'met_config',
                                        'GridStatConfig_wrapped')

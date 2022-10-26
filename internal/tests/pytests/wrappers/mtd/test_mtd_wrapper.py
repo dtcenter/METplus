@@ -19,7 +19,7 @@ def mtd_wrapper(metplus_config, lead_seq=None):
          files.  Subsequent tests can customize the final METplus configuration
          to over-ride these /path/to values."""
 
-    config = metplus_config()
+    config = metplus_config
     config.set('config', 'DO_NOT_RUN_EXE', True)
     config.set('config', 'BOTH_VAR1_NAME', 'APCP')
     config.set('config', 'BOTH_VAR1_LEVELS', 'A06')
@@ -195,7 +195,7 @@ def test_mtd_single(metplus_config):
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
 
-    config = metplus_config()
+    config = metplus_config
     default_config_file = os.path.join(config.getdir('PARM_BASE'),
                                        'met_config',
                                        'MTDConfig_wrapped')

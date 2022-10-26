@@ -293,7 +293,7 @@ def test_tc_gen(metplus_config, config_overrides, env_var_values):
     expected_edeck_count = 6
     expected_shape_count = 5
 
-    config = metplus_config()
+    config = metplus_config
 
     test_data_dir = os.path.join(config.getdir('METPLUS_BASE'),
                                  'internal', 'tests',
@@ -423,7 +423,7 @@ def test_tc_gen(metplus_config, config_overrides, env_var_values):
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
 
-    config = metplus_config()
+    config = metplus_config
     default_config_file = os.path.join(config.getdir('PARM_BASE'),
                                        'met_config',
                                        'TCGenConfig_wrapped')

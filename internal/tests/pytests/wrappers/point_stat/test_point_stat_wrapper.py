@@ -41,7 +41,7 @@ def set_minimum_config_settings(config):
 
 @pytest.mark.wrapper_a
 def test_met_dictionary_in_var_options(metplus_config):
-    config = metplus_config()
+    config = metplus_config
     set_minimum_config_settings(config)
 
     config.set('config', 'BOTH_VAR1_NAME', 'name')
@@ -514,7 +514,7 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
         fcst_fmts.append(fcst_fmt)
         obs_fmts.append(obs_fmt)
 
-    config = metplus_config()
+    config = metplus_config
     set_minimum_config_settings(config)
 
     for index, (fcst, obs) in enumerate(zip(fcsts, obss)):
@@ -583,7 +583,7 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
 
-    config = metplus_config()
+    config = metplus_config
     default_config_file = os.path.join(config.getdir('PARM_BASE'),
                                        'met_config',
                                        'PointStatConfig_wrapped')
