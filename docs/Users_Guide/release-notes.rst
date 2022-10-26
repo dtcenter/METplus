@@ -75,6 +75,8 @@ METplus Version 5.0.0 Beta 4 Release Notes (2022-10-26)
 
   * Probability of Exceedence for 85th percentile temperatures (`#1808 <https://github.com/dtcenter/METplus/issues/1808>`_)
 
+  * FV3 Physics Tendency plotting via METplotpy (`#1852 <https://github.com/dtcenter/METplus/issues/1852>`_)
+
 * Documentation:
 
 * Internal:
@@ -82,6 +84,8 @@ METplus Version 5.0.0 Beta 4 Release Notes (2022-10-26)
   * Fix GitHub Actions warnings - update the version of actions and replace set-output (`#1863 <https://github.com/dtcenter/METplus/issues/1863>`_)
 
   * Update diff logic to handle CSV files that have rounding differences (`#1865 <https://github.com/dtcenter/METplus/issues/1865>`_)
+
+  * Add unit tests for expected failure (`dtcenter/METplus-Internal#24 <https://github.com/dtcenter/METplus-Internal/issues/24>`_)
 
 METplus Version 5.0.0 Beta 3 Release Notes (2022-09-21)
 -------------------------------------------------------
