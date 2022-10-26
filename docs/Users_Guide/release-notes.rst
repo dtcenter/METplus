@@ -69,7 +69,7 @@ METplus Version 5.0.0 Beta 4 Release Notes (2022-10-26)
 
   * PCPCombine - custom loop list does not work for subtract method (`#1884 <https://github.com/dtcenter/METplus/issues/1884>`_)
 
-* New Wrappers:
+* New Wrappers: None
 
 * New Use Cases:
 
@@ -77,7 +77,7 @@ METplus Version 5.0.0 Beta 4 Release Notes (2022-10-26)
 
   * FV3 Physics Tendency plotting via METplotpy (`#1852 <https://github.com/dtcenter/METplus/issues/1852>`_)
 
-* Documentation:
+* Documentation: None
 
 * Internal:
 
@@ -124,8 +124,7 @@ METplus Version 5.0.0 Beta 3 Release Notes (2022-09-21)
   * MJO-ENSO diagnostics (`#1330 <https://github.com/dtcenter/METplus/issues/1330>`_)
 
 
-* Documentation:
-
+* Documentation: None
 
 * Internal:
 
