@@ -13,82 +13,6 @@ from metplus.util.config_metplus import parse_var_list
 
 
 @pytest.mark.parametrize(
-    'key, value', [
-        ({"gt2.3", "gt5.5"}, True),
-        ({"ge2.3", "ge5.5"}, True),
-        ({"eq2.3"}, True),
-        ({"ne2.3"}, True),
-        ({"lt2.3", "lt1.1"}, True),
-        ({"le2.3", "le1.1"}, True),
-        ({">2.3", ">5.5"}, True),
-        ({">=2.3", ">=5.5"}, True),
-        ({"==2.3"}, True),
-        ({"!=.3"}, True),
-        ({"<2.3", "<1."}, True),
-        ({"<=2.3", "<=1.1"}, True),
-        ({"gta"}, False),
-        ({"gt"}, False),
-        ({">=a"}, False),
-        ({"2.3"}, False),
-        ({"<=2.3", "2.4", "gt2.7"}, False),
-        ({"<=2.3||>=4.2", "gt2.3&&lt4.2"}, True),
-        ({"gt2.3&&lt4.2a"}, True),
-        ({"gt2sd.3&&lt4.2"}, True),
-        ({"gt2.3&a&lt4.2"}, True), # invalid but is accepted
-        ({'gt4&&lt5&&ne4.5'}, True),
-        ({"<2.3", "ge5", ">SPF90"}, True),
-        (["NA"], True),
-        (["<USP90(2.5)"], True),
-        ([""], False),
-        ([">SFP70", ">SFP80", ">SFP90", ">SFP95"], True),
-        ([">SFP70", ">SFP80", ">SFP90", ">SFP95"], True),
-    ]
-)
-@pytest.mark.util
-def test_threshold(key, value):
-    assert util.validate_thresholds(key) == value
-
-
-# parses a threshold and returns a list of tuples of
-# comparison and number, i.e.:
-# 'gt4' => [('gt', 4)]
-# gt4&&lt5 => [('gt', 4), ('lt', 5)]
-@pytest.mark.parametrize(
-    'key, value', [
-        ('gt4', [('gt', 4)]),
-        ('gt4&&lt5', [('gt', 4), ('lt', 5)]),
-        ('gt4&&lt5&&ne4.5', [('gt', 4), ('lt', 5), ('ne', 4.5)]),
-        (">4.545", [('>', 4.545)]),
-        (">=4.0", [('>=', 4.0)]),
-        ("<4.5", [('<', 4.5)]),
-        ("<=4.5", [('<=', 4.5)]),
-        ("!=4.5", [('!=', 4.5)]),
-        ("==4.5", [('==', 4.5)]),
-        ("gt4.5", [('gt', 4.5)]),
-        ("ge4.5", [('ge', 4.5)]),
-        ("lt4.5", [('lt', 4.5)]),
-        ("le4.5", [('le', 4.5)]),
-        ("ne10.5", [('ne', 10.5)]),
-        ("eq4.5", [('eq', 4.5)]),
-        ("eq-4.5", [('eq', -4.5)]),
-        ("eq+4.5", [('eq', 4.5)]),
-        ("eq.5", [('eq', 0.5)]),
-        ("eq5.", [('eq', 5)]),
-        ("eq5.||ne0.0", [('eq', 5), ('ne', 0.0)]),
-        (">SFP90", [('>', 'SFP90')]),
-        ("SFP90", None),
-        ("gtSFP90", [('gt', 'SFP90')]),
-        ("goSFP90", None),
-        ("NA", [('NA', '')]),
-        ("<USP90(2.5)", [('<', 'USP90(2.5)')]),
-    ]
-)
-@pytest.mark.util
-def test_get_threshold_via_regex(key, value):
-    assert util.get_threshold_via_regex(key) == value
-
-
-@pytest.mark.parametrize(
     'filename, ext', [
         ('internal/tests/data/zip/testfile.txt', '.gz'),
         ('internal/tests/data/zip/testfile2.txt', '.bz2'),
@@ -288,36 +212,6 @@ def test_get_lead_sequence_init_min_10(metplus_config):
 
 
 @pytest.mark.parametrize(
-    'camel, underscore', [
-        ('ASCII2NCWrapper', 'ascii2nc_wrapper'),
-        ('CyclonePlotterWrapper', 'cyclone_plotter_wrapper'),
-        ('EnsembleStatWrapper', 'ensemble_stat_wrapper'),
-        ('ExampleWrapper', 'example_wrapper'),
-        ('ExtractTilesWrapper', 'extract_tiles_wrapper'),
-        ('GempakToCFWrapper', 'gempak_to_cf_wrapper'),
-        ('GenVxMaskWrapper', 'gen_vx_mask_wrapper'),
-        ('GridStatWrapper', 'grid_stat_wrapper'),
-        ('MODEWrapper', 'mode_wrapper'),
-        ('MTDWrapper', 'mtd_wrapper'),
-        ('PB2NCWrapper', 'pb2nc_wrapper'),
-        ('PCPCombineWrapper', 'pcp_combine_wrapper'),
-        ('Point2GridWrapper', 'point2grid_wrapper'),
-        ('PointStatWrapper', 'point_stat_wrapper'),
-        ('PyEmbedWrapper', 'py_embed_wrapper'),
-        ('RegridDataPlaneWrapper', 'regrid_data_plane_wrapper'),
-        ('SeriesAnalysisWrapper', 'series_analysis_wrapper'),
-        ('StatAnalysisWrapper', 'stat_analysis_wrapper'),
-        ('TCMPRPlotterWrapper', 'tcmpr_plotter_wrapper'),
-        ('TCPairsWrapper', 'tc_pairs_wrapper'),
-        ('TCStatWrapper', 'tc_stat_wrapper'),
-    ]
-)
-@pytest.mark.util
-def test_camel_to_underscore(camel, underscore):
-    assert util.camel_to_underscore(camel) == underscore
-
-
-@pytest.mark.parametrize(
     'value, expected_result', [
         (3.3, 3.5),
         (3.1, 3.0),
@@ -328,107 +222,6 @@ def test_camel_to_underscore(camel, underscore):
 @pytest.mark.util
 def test_round_0p5(value, expected_result):
     assert util.round_0p5(value) == expected_result
-
-
-@pytest.mark.parametrize(
-    'skip_times_conf, expected_dict', [
-        ('"%d:30,31"', {'%d': ['30','31']}),
-        ('"%m:begin_end_incr(3,11,1)"', {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
-        ('"%d:30,31", "%m:begin_end_incr(3,11,1)"', {'%d': ['30','31'],
-                                                     '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
-        ('"%Y%m%d:20201031"', {'%Y%m%d': ['20201031']}),
-        ('"%Y%m%d:20201031", "%Y:2019"', {'%Y%m%d': ['20201031'],
-                                          '%Y': ['2019']}),
-    ]
-)
-@pytest.mark.util
-def test_get_skip_times(metplus_config, skip_times_conf, expected_dict):
-    conf = metplus_config
-    conf.set('config', 'SKIP_TIMES', skip_times_conf)
-
-    assert util.get_skip_times(conf) == expected_dict
-
-
-@pytest.mark.parametrize(
-    'skip_times_conf, expected_dict', [
-        ('"%d:30,31"', {'%d': ['30','31']}),
-        ('"%m:begin_end_incr(3,11,1)"', {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
-        ('"%d:30,31", "%m:begin_end_incr(3,11,1)"', {'%d': ['30','31'],
-                                                     '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
-        ('"%Y%m%d:20201031"', {'%Y%m%d': ['20201031']}),
-        ('"%Y%m%d:20201031", "%Y:2019"', {'%Y%m%d': ['20201031'],
-                                          '%Y': ['2019']}),
-    ]
-)
-@pytest.mark.util
-def test_get_skip_times_wrapper(metplus_config, skip_times_conf, expected_dict):
-    conf = metplus_config
-
-    # set wrapper specific skip times, then ensure it is found
-    conf.set('config', 'GRID_STAT_SKIP_TIMES', skip_times_conf)
-
-    assert util.get_skip_times(conf, 'grid_stat') == expected_dict
-
-
-@pytest.mark.parametrize(
-    'skip_times_conf, expected_dict', [
-        ('"%d:30,31"', {'%d': ['30','31']}),
-        ('"%m:begin_end_incr(3,11,1)"', {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
-        ('"%d:30,31", "%m:begin_end_incr(3,11,1)"', {'%d': ['30','31'],
-                                                     '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
-        ('"%Y%m%d:20201031"', {'%Y%m%d': ['20201031']}),
-        ('"%Y%m%d:20201031", "%Y:2019"', {'%Y%m%d': ['20201031'],
-                                          '%Y': ['2019']}),
-    ]
-)
-@pytest.mark.util
-def test_get_skip_times_wrapper_not_used(metplus_config, skip_times_conf, expected_dict):
-    conf = metplus_config
-
-    # set generic SKIP_TIMES, then request grid_stat to ensure it uses generic
-    conf.set('config', 'SKIP_TIMES', skip_times_conf)
-
-    assert util.get_skip_times(conf, 'grid_stat') == expected_dict
-
-
-@pytest.mark.parametrize(
-    'run_time, skip_times, expected_result', [
-        (datetime.datetime(2019, 12, 30), {'%d': ['30', '31']}, True),
-        (datetime.datetime(2019, 12, 30), {'%d': ['29', '31']}, False),
-        (datetime.datetime(2019, 2, 27), {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, False),
-        (datetime.datetime(2019, 3, 30), {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, True),
-        (datetime.datetime(2019, 3, 30), {'%d': ['30', '31'],
-                                          '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, True),
-        (datetime.datetime(2019, 3, 29), {'%d': ['30', '31'],
-                                          '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, True),
-        (datetime.datetime(2019, 1, 29), {'%d': ['30', '31'],
-                                          '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, False),
-        (datetime.datetime(2020, 10, 31), {'%Y%m%d': ['20201031']}, True),
-        (datetime.datetime(2020, 3, 31), {'%Y%m%d': ['20201031']}, False),
-        (datetime.datetime(2020, 10, 30), {'%Y%m%d': ['20201031']}, False),
-        (datetime.datetime(2019, 10, 31), {'%Y%m%d': ['20201031']}, False),
-        (datetime.datetime(2020, 10, 31), {'%Y%m%d': ['20201031'],
-                                          '%Y': ['2019']}, True),
-        (datetime.datetime(2019, 10, 31), {'%Y%m%d': ['20201031'],
-                                          '%Y': ['2019']}, True),
-        (datetime.datetime(2019, 1, 13), {'%Y%m%d': ['20201031'],
-                                          '%Y': ['2019']}, True),
-        (datetime.datetime(2018, 10, 31), {'%Y%m%d': ['20201031'],
-                                          '%Y': ['2019']}, False),
-        (datetime.datetime(2019, 12, 30, 12), {'%H': ['12', '18']}, True),
-        (datetime.datetime(2019, 12, 30, 13), {'%H': ['12', '18']}, False),
-    ]
-)
-@pytest.mark.util
-def test_get_skip_time(run_time, skip_times, expected_result):
-    time_info = time_util.ti_calculate({'valid': run_time})
-    assert util.skip_time(time_info, skip_times) == expected_result
-
-
-@pytest.mark.util
-def test_get_skip_time_no_valid():
-    input_dict ={'init': datetime.datetime(2019, 1, 29)}
-    assert util.skip_time(input_dict, {'%Y': ['2019']}) == False
 
 
 @pytest.mark.parametrize(
@@ -561,36 +354,6 @@ def test_get_storms_mtd(metplus_config):
     # ensure header matches expected format
     if storm_dict:
         assert storm_dict['header'].split()[index] == sort_column
-
-
-@pytest.mark.parametrize(
-    'config_value, expected_result', [
-        # 2 items semi-colon at end
-        ('GRIB_lvl_typ = 234;  desc = "HI_CLOUD";',
-         'GRIB_lvl_typ = 234; desc = "HI_CLOUD";'),
-        # 2 items no semi-colon at end
-        ('GRIB_lvl_typ = 234;  desc = "HI_CLOUD"',
-         'GRIB_lvl_typ = 234; desc = "HI_CLOUD";'),
-        # 1 item semi-colon at end
-        ('GRIB_lvl_typ = 234;',
-         'GRIB_lvl_typ = 234;'),
-        # 1 item no semi-colon at end
-        ('GRIB_lvl_typ = 234',
-         'GRIB_lvl_typ = 234;'),
-    ]
-)
-@pytest.mark.util
-def test_format_var_items_options_semicolon(config_value,
-                                            expected_result):
-    time_info = {}
-
-    field_configs = {'name': 'FNAME',
-                     'levels': 'FLEVEL',
-                     'options': config_value}
-
-    var_items = util.format_var_items(field_configs, time_info)
-    result = var_items.get('extra')
-    assert result == expected_result
 
 
 @pytest.mark.parametrize(

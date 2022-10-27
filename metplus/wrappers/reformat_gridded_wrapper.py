@@ -13,7 +13,7 @@ Condition codes: 0 for success, 1 for failure
 import os
 
 from ..util import met_util as util
-from ..util import time_util
+from ..util import time_util, skip_time
 from . import CommandBuilder
 
 # pylint:disable=pointless-string-statement
@@ -78,7 +78,7 @@ class ReformatGriddedWrapper(CommandBuilder):
                 self.logger.info("Processing forecast lead "
                                  f"{time_info['lead_string']}")
 
-                if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES')):
+                if skip_time(time_info, self.c_dict.get('SKIP_TIMES')):
                     self.logger.debug('Skipping run time')
                     continue
 

@@ -15,7 +15,7 @@ import os
 from ..util import met_util as util
 from ..util import time_util
 from . import CommandBuilder
-from ..util import do_string_sub, remove_quotes
+from ..util import do_string_sub, remove_quotes, skip_time
 
 '''!@namespace PlotDataPlaneWrapper
 @brief Wraps the PlotDataPlane tool to plot data
@@ -122,7 +122,7 @@ class PlotDataPlaneWrapper(CommandBuilder):
 
             time_info = time_util.ti_calculate(input_dict)
 
-            if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+            if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
                 self.logger.debug('Skipping run time')
                 continue
 

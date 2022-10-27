@@ -40,6 +40,7 @@ except Exception as err_msg:
 from ..util import met_util as util
 from ..util import do_string_sub
 from ..util import time_generator, add_to_time_input
+from ..util import mkdir_p
 from . import CommandBuilder
 
 
@@ -343,7 +344,7 @@ class CyclonePlotterWrapper(CommandBuilder):
             # which is used to generate the plot.
             if self.gen_ascii:
                self.logger.debug(f" output dir: {self.output_dir}")
-               util.mkdir_p(self.output_dir)
+               mkdir_p(self.output_dir)
                ascii_track_parts = [self.init_date, '.csv']
                ascii_track_output_name = ''.join(ascii_track_parts)
                final_df_filename = os.path.join(self.output_dir, ascii_track_output_name)
@@ -425,7 +426,7 @@ class CyclonePlotterWrapper(CommandBuilder):
             plt.text(60, -130, watermark, fontsize=5, alpha=0.25)
 
         # Make sure the output directory exists, and create it if it doesn't.
-        util.mkdir_p(self.output_dir)
+        mkdir_p(self.output_dir)
 
         # get the points for the scatter plots (and the relevant information for annotations, etc.)
         points_list = self.get_plot_points()

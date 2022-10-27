@@ -13,7 +13,7 @@ Condition codes: 0 for success, 1 for failure
 import os
 import re
 
-from ..util import getlistint
+from ..util import getlistint, skip_time
 from ..util import met_util as util
 from ..util import time_util
 from ..util import do_string_sub
@@ -287,7 +287,7 @@ class PB2NCWrapper(CommandBuilder):
         if time_info is None:
             return
 
-        if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+        if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
             self.logger.debug('Skipping run time')
             return
 

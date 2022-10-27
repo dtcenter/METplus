@@ -30,8 +30,9 @@ from ..util import get_custom_string_list
 from ..util import get_wrapped_met_config_file, add_met_config_item, format_met_config
 from ..util import remove_quotes
 from ..util import get_field_info, format_field_info
-from ..util import get_wrapper_name
+from ..util import get_wrapper_name, is_python_script
 from ..util.met_config import add_met_config_dict, handle_climo_dict
+from ..util import mkdir_p, get_skip_times
 
 # pylint:disable=pointless-string-statement
 '''!@namespace CommandBuilder
@@ -174,8 +175,7 @@ class CommandBuilder:
         c_dict['CUSTOM_LOOP_LIST'] = get_custom_string_list(self.config,
                                                             app_name)
 
-        c_dict['SKIP_TIMES'] = util.get_skip_times(self.config,
-                                                   app_name)
+        c_dict['SKIP_TIMES'] = get_skip_times(self.config, app_name)
 
         c_dict['MANDATORY'] = (
             self.config.getbool('config',
@@ -909,7 +909,7 @@ class CommandBuilder:
 
         list_path = os.path.join(list_dir, filename)
 
-        util.mkdir_p(list_dir)
+        mkdir_p(list_dir)
 
         self.logger.debug("Writing list of filenames...")
         with open(list_path, 'w') as file_handle:
@@ -1004,7 +1004,7 @@ class CommandBuilder:
         if (not os.path.exists(parent_dir) and
                 not self.c_dict.get('DO_NOT_RUN_EXE', False)):
             self.logger.debug(f"Creating output directory: {parent_dir}")
-            util.mkdir_p(parent_dir)
+            mkdir_p(parent_dir)
 
         if not output_exists or not skip_if_output_exists:
             return True
@@ -1107,7 +1107,7 @@ class CommandBuilder:
         # reset file type to empty string to handle if python embedding is used for one field but not for the next
         self.c_dict[f'{input_type}_FILE_TYPE'] = ''
 
-        if not util.is_python_script(var_info[f"{var_input_type}_name"]):
+        if not is_python_script(var_info[f"{var_input_type}_name"]):
             # if not a python script, return var name
             return var_info[f"{var_input_type}_name"]
 
@@ -1218,7 +1218,7 @@ class CommandBuilder:
             self.log_error('Must specify path to output file')
             return None
 
-        util.mkdir_p(parent_dir)
+        mkdir_p(parent_dir)
 
         cmd += " " + out_path
 

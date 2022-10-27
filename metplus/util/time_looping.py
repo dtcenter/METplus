@@ -4,6 +4,7 @@ from .string_manip import getlist
 from .time_util import get_relativedelta
 from .string_template_substitution import do_string_sub
 
+
 def time_generator(config):
     """! Generator used to read METplusConfig variables for time looping
 
@@ -82,6 +83,7 @@ def time_generator(config):
 
         current_dt += time_interval
 
+
 def get_start_and_end_times(config):
     prefix = get_time_prefix(config)
     if not prefix:
@@ -120,6 +122,7 @@ def get_start_and_end_times(config):
 
     return start_dt, end_dt
 
+
 def _validate_time_values(start_dt, end_dt, time_interval, prefix, logger):
     if not start_dt:
         logger.error(f"Could not read {prefix}_BEG")
@@ -142,6 +145,7 @@ def _validate_time_values(start_dt, end_dt, time_interval, prefix, logger):
 
     return True
 
+
 def _create_time_input_dict(prefix, current_dt, clock_dt):
     return {
         'loop_by': prefix.lower(),
@@ -149,6 +153,7 @@ def _create_time_input_dict(prefix, current_dt, clock_dt):
         'now': clock_dt,
         'today': clock_dt.strftime('%Y%m%d'),
     }
+
 
 def get_time_prefix(config):
     """! Read the METplusConfig object and determine the prefix for the time
@@ -179,6 +184,7 @@ def get_time_prefix(config):
     config.logger.error('MUST SET LOOP_BY to VALID, INIT, RETRO, or REALTIME')
     return None
 
+
 def _get_current_dt(time_string, time_format, clock_dt, logger):
     """! Use time format to get datetime object from time string, substituting
      values for today or now template tags if specified.
@@ -204,3 +210,80 @@ def _get_current_dt(time_string, time_format, clock_dt, logger):
         return None
 
     return current_dt
+
+
+def get_skip_times(config, wrapper_name=None):
+    """! Read SKIP_TIMES config variable and populate dictionary of times that should be skipped.
+         SKIP_TIMES should be in the format: "%m:begin_end_incr(3,11,1)", "%d:30,31", "%Y%m%d:20201031"
+         where each item inside quotes is a datetime format, colon, then a list of times in that format
+         to skip.
+         Args:
+             @param config configuration object to pull SKIP_TIMES
+             @param wrapper_name name of wrapper if supporting
+               skipping times only for certain wrappers, i.e. grid_stat
+             @returns dictionary containing times to skip
+    """
+    skip_times_dict = {}
+    skip_times_string = None
+
+    # if wrapper name is set, look for wrapper-specific _SKIP_TIMES variable
+    if wrapper_name:
+        skip_times_string = config.getstr('config',
+                                          f'{wrapper_name.upper()}_SKIP_TIMES', '')
+
+    # if skip times string has not been found, check for generic SKIP_TIMES
+    if not skip_times_string:
+        skip_times_string = config.getstr('config', 'SKIP_TIMES', '')
+
+        # if no generic SKIP_TIMES, return empty dictionary
+        if not skip_times_string:
+            return {}
+
+    # get list of skip items, but don't expand begin_end_incr yet
+    skip_list = getlist(skip_times_string, expand_begin_end_incr=False)
+
+    for skip_item in skip_list:
+        try:
+            time_format, skip_times = skip_item.split(':')
+
+            # get list of skip times for the time format, expanding begin_end_incr
+            skip_times_list = getlist(skip_times)
+
+            # if time format is already in skip times dictionary, extend list
+            if time_format in skip_times_dict:
+                skip_times_dict[time_format].extend(skip_times_list)
+            else:
+                skip_times_dict[time_format] = skip_times_list
+
+        except ValueError:
+            config.logger.error(f"SKIP_TIMES item does not match format: {skip_item}")
+            return None
+
+    return skip_times_dict
+
+
+def skip_time(time_info, skip_times):
+    """!Used to check the valid time of the current run time against list of times to skip.
+        Args:
+            @param time_info dictionary with time information to check
+            @param skip_times dictionary of times to skip, i.e. {'%d': [31]} means skip 31st day
+            @returns True if run time should be skipped, False if not
+    """
+    if not skip_times:
+        return False
+
+    for time_format, skip_time_list in skip_times.items():
+        # extract time information from valid time based on skip time format
+        run_time_value = time_info.get('valid')
+        if not run_time_value:
+            return False
+
+        run_time_value = run_time_value.strftime(time_format)
+
+        # loop over times to skip for this format and check if it matches
+        for skip_time in skip_time_list:
+            if int(run_time_value) == int(skip_time):
+                return True
+
+    # if skip time never matches, return False
+    return False

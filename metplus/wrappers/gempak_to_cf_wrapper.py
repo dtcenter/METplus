@@ -13,7 +13,7 @@ Condition codes: 0 for success, 1 for failure
 import os
 
 from ..util import met_util as util
-from ..util import do_string_sub
+from ..util import do_string_sub, skip_time
 from ..util import time_util
 from . import CommandBuilder
 
@@ -87,7 +87,7 @@ class GempakToCFWrapper(CommandBuilder):
 
                 time_info = time_util.ti_calculate(input_dict)
 
-                if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+                if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
                     self.logger.debug('Skipping run time')
                     continue
 

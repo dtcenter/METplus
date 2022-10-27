@@ -14,7 +14,7 @@ import os
 
 from ..util import met_util as util
 from ..util import time_util
-from ..util import do_string_sub
+from ..util import do_string_sub, skip_time
 from ..util import parse_var_list
 from . import CompareGriddedWrapper
 
@@ -179,7 +179,7 @@ class MTDWrapper(CompareGriddedWrapper):
                 @param input_dict dictionary containing timing information
         """
 
-        if util.skip_time(input_dict, self.c_dict.get('SKIP_TIMES', {})):
+        if skip_time(input_dict, self.c_dict.get('SKIP_TIMES', {})):
             self.logger.debug('Skipping run time')
             return
 

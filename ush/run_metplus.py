@@ -27,12 +27,12 @@ import produtil.setup
 
 from metplus.util import metplus_check
 from metplus.util import pre_run_setup, run_metplus, post_run_cleanup
-from metplus.util import get_process_list
 from metplus import __version__ as metplus_version
 
 '''!@namespace run_metplus
 Main script the processes all the tasks in the PROCESS_LIST
 '''
+
 
 def main():
     """!Main program.
@@ -49,12 +49,10 @@ def main():
                "This script name will be removed in a future version.")
         config.logger.warning(msg)
 
-    # Use config object to get the list of processes to call
-    process_list = get_process_list(config)
-
-    total_errors = run_metplus(config, process_list)
+    total_errors = run_metplus(config)
 
     post_run_cleanup(config, 'METplus', total_errors)
+
 
 def usage():
     """! How to call this script.
@@ -72,6 +70,7 @@ section.option=value -- override conf options on the command line
 
 '''%(filename))
     sys.exit(2)
+
 
 def get_config_inputs_from_command_line():
     """! Read command line arguments. Pull out configuration
@@ -120,6 +119,7 @@ def get_config_inputs_from_command_line():
         usage()
 
     return config_inputs
+
 
 if __name__ == "__main__":
     try:

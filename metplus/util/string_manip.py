@@ -249,3 +249,105 @@ def format_thresh(thresh_str):
             formatted_thresh_list.append(thresh_letter)
 
     return ','.join(formatted_thresh_list)
+
+
+def is_python_script(name):
+    """ Check if field name is a python script by checking if any of the words
+     in the string end with .py
+
+     @param name string to check
+     @returns True if the name is determined to be a python script command
+     """
+    if not name:
+        return False
+
+    all_items = name.split(' ')
+    if any(item.endswith('.py') for item in all_items):
+        return True
+
+    return False
+
+
+def camel_to_underscore(camel):
+    """! Change camel case notation to underscore notation, i.e. GridStatWrapper to grid_stat_wrapper
+         Multiple capital letters are excluded, i.e. PCPCombineWrapper to pcp_combine_wrapper
+         Numerals are also skipped, i.e. ASCII2NCWrapper to ascii2nc_wrapper
+         Args:
+             @param camel string to convert
+             @returns string in underscore notation
+    """
+    s1 = re.sub(r'([^\d])([A-Z][a-z]+)', r'\1_\2', camel)
+    return re.sub(r'([a-z])([A-Z])', r'\1_\2', s1).lower()
+
+
+def get_threshold_via_regex(thresh_string):
+    """!Ensure thresh values start with >,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le and then a number
+        Optionally can have multiple comparison/number pairs separated with && or ||.
+        Args:
+            @param thresh_string: String to examine, i.e. <=3.4
+        Returns:
+            None if string does not match any valid comparison operators or does
+              not contain a number afterwards
+            regex match object with comparison operator in group 1 and
+            number in group 2 if valid
+    """
+
+    comparison_number_list = []
+    # split thresh string by || or &&
+    thresh_split = re.split(r'\|\||&&', thresh_string)
+    # check each threshold for validity
+    for thresh in thresh_split:
+        found_match = False
+        for comp in list(VALID_COMPARISONS)+list(VALID_COMPARISONS.values()):
+            # if valid, add to list of tuples
+            # must be one of the valid comparison operators followed by
+            # at least 1 digit or NA
+            if thresh == 'NA':
+                comparison_number_list.append((thresh, ''))
+                found_match = True
+                break
+
+            match = re.match(r'^('+comp+r')(.*\d.*)$', thresh)
+            if match:
+                comparison = match.group(1)
+                number = match.group(2)
+                # try to convert to float if it can, but allow string
+                try:
+                    number = float(number)
+                except ValueError:
+                    pass
+
+                comparison_number_list.append((comparison, number))
+                found_match = True
+                break
+
+        # if no match was found for the item, return None
+        if not found_match:
+            return None
+
+    if not comparison_number_list:
+        return None
+
+    return comparison_number_list
+
+
+def validate_thresholds(thresh_list):
+    """ Checks list of thresholds to ensure all of them have the correct format
+        Should be a comparison operator with number pair combined with || or &&
+        i.e. gt4 or >3&&<5 or gt3||lt1
+        Args:
+            @param thresh_list list of strings to check
+        Returns:
+            True if all items in the list are valid format, False if not
+    """
+    valid = True
+    for thresh in thresh_list:
+        match = get_threshold_via_regex(thresh)
+        if match is None:
+            valid = False
+
+    if valid is False:
+        print("ERROR: Threshold values must use >,>=,==,!=,<,<=,gt,ge,eq,ne,lt, or le with a number, "
+              "optionally combined with && or ||")
+        return False
+    return True

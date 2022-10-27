@@ -1,8 +1,111 @@
 import pytest
 
+from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 from metplus.util.time_looping import *
+from metplus.util.time_util import ti_calculate
+
+
+@pytest.mark.parametrize(
+    'run_time, skip_times, expected_result', [
+        (datetime(2019, 12, 30), {'%d': ['30', '31']}, True),
+        (datetime(2019, 12, 30), {'%d': ['29', '31']}, False),
+        (datetime(2019, 2, 27), {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, False),
+        (datetime(2019, 3, 30), {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, True),
+        (datetime(2019, 3, 30), {'%d': ['30', '31'],
+                                          '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, True),
+        (datetime(2019, 3, 29), {'%d': ['30', '31'],
+                                          '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, True),
+        (datetime(2019, 1, 29), {'%d': ['30', '31'],
+                                          '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, False),
+        (datetime(2020, 10, 31), {'%Y%m%d': ['20201031']}, True),
+        (datetime(2020, 3, 31), {'%Y%m%d': ['20201031']}, False),
+        (datetime(2020, 10, 30), {'%Y%m%d': ['20201031']}, False),
+        (datetime(2019, 10, 31), {'%Y%m%d': ['20201031']}, False),
+        (datetime(2020, 10, 31), {'%Y%m%d': ['20201031'],
+                                          '%Y': ['2019']}, True),
+        (datetime(2019, 10, 31), {'%Y%m%d': ['20201031'],
+                                          '%Y': ['2019']}, True),
+        (datetime(2019, 1, 13), {'%Y%m%d': ['20201031'],
+                                          '%Y': ['2019']}, True),
+        (datetime(2018, 10, 31), {'%Y%m%d': ['20201031'],
+                                          '%Y': ['2019']}, False),
+        (datetime(2019, 12, 30, 12), {'%H': ['12', '18']}, True),
+        (datetime(2019, 12, 30, 13), {'%H': ['12', '18']}, False),
+    ]
+)
+@pytest.mark.util
+def test_get_skip_time(run_time, skip_times, expected_result):
+    time_info = ti_calculate({'valid': run_time})
+    assert skip_time(time_info, skip_times) == expected_result
+
+
+@pytest.mark.util
+def test_get_skip_time_no_valid():
+    input_dict ={'init': datetime(2019, 1, 29)}
+    assert skip_time(input_dict, {'%Y': ['2019']}) == False
+
+
+@pytest.mark.parametrize(
+    'skip_times_conf, expected_dict', [
+        ('"%d:30,31"', {'%d': ['30','31']}),
+        ('"%m:begin_end_incr(3,11,1)"', {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
+        ('"%d:30,31", "%m:begin_end_incr(3,11,1)"', {'%d': ['30','31'],
+                                                     '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
+        ('"%Y%m%d:20201031"', {'%Y%m%d': ['20201031']}),
+        ('"%Y%m%d:20201031", "%Y:2019"', {'%Y%m%d': ['20201031'],
+                                          '%Y': ['2019']}),
+    ]
+)
+@pytest.mark.util
+def test_get_skip_times(metplus_config, skip_times_conf, expected_dict):
+    conf = metplus_config
+    conf.set('config', 'SKIP_TIMES', skip_times_conf)
+
+    assert get_skip_times(conf) == expected_dict
+
+
+@pytest.mark.parametrize(
+    'skip_times_conf, expected_dict', [
+        ('"%d:30,31"', {'%d': ['30','31']}),
+        ('"%m:begin_end_incr(3,11,1)"', {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
+        ('"%d:30,31", "%m:begin_end_incr(3,11,1)"', {'%d': ['30','31'],
+                                                     '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
+        ('"%Y%m%d:20201031"', {'%Y%m%d': ['20201031']}),
+        ('"%Y%m%d:20201031", "%Y:2019"', {'%Y%m%d': ['20201031'],
+                                          '%Y': ['2019']}),
+    ]
+)
+@pytest.mark.util
+def test_get_skip_times_wrapper(metplus_config, skip_times_conf, expected_dict):
+    conf = metplus_config
+
+    # set wrapper specific skip times, then ensure it is found
+    conf.set('config', 'GRID_STAT_SKIP_TIMES', skip_times_conf)
+
+    assert get_skip_times(conf, 'grid_stat') == expected_dict
+
+
+@pytest.mark.parametrize(
+    'skip_times_conf, expected_dict', [
+        ('"%d:30,31"', {'%d': ['30','31']}),
+        ('"%m:begin_end_incr(3,11,1)"', {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
+        ('"%d:30,31", "%m:begin_end_incr(3,11,1)"', {'%d': ['30','31'],
+                                                     '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
+        ('"%Y%m%d:20201031"', {'%Y%m%d': ['20201031']}),
+        ('"%Y%m%d:20201031", "%Y:2019"', {'%Y%m%d': ['20201031'],
+                                          '%Y': ['2019']}),
+    ]
+)
+@pytest.mark.util
+def test_get_skip_times_wrapper_not_used(metplus_config, skip_times_conf, expected_dict):
+    conf = metplus_config
+
+    # set generic SKIP_TIMES, then request grid_stat to ensure it uses generic
+    conf.set('config', 'SKIP_TIMES', skip_times_conf)
+
+    assert get_skip_times(conf, 'grid_stat') == expected_dict
 
 
 @pytest.mark.util

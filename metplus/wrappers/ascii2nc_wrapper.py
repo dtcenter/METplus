@@ -15,7 +15,7 @@ import os
 from ..util import met_util as util
 from ..util import time_util
 from . import CommandBuilder
-from ..util import do_string_sub
+from ..util import do_string_sub, skip_time
 
 '''!@namespace ASCII2NCWrapper
 @brief Wraps the ASCII2NC tool to reformat ascii format to NetCDF
@@ -249,7 +249,7 @@ class ASCII2NCWrapper(CommandBuilder):
 
             time_info = time_util.ti_calculate(input_dict)
 
-            if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+            if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
                 self.logger.debug('Skipping run time')
                 continue
 

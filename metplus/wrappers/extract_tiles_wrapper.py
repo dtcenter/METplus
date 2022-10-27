@@ -14,7 +14,7 @@ from datetime import datetime
 import re
 
 from ..util import met_util as util
-from ..util import do_string_sub, ti_calculate
+from ..util import do_string_sub, ti_calculate, skip_time
 from ..util import parse_var_list
 from .regrid_data_plane_wrapper import RegridDataPlaneWrapper
 from . import CommandBuilder
@@ -217,7 +217,7 @@ class ExtractTilesWrapper(CommandBuilder):
                 f"Processing forecast lead {time_info['lead_string']}"
             )
 
-            if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+            if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
                 self.logger.debug('Skipping run time')
                 continue
 
