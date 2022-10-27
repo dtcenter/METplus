@@ -9,6 +9,9 @@ def get_metplus_release_date():
 def get_python_version():
     return get_metplus_info('PYTHON_VERSION')
 
+def get_python_version_min():
+    return get_metplus_info('PYTHON_VERSION_MIN')
+
 def get_metplus_info(info_rel_path):
     info_file = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                              info_rel_path))
