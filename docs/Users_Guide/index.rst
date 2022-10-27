@@ -78,6 +78,7 @@ is sponsored by NSF.
    :numbered: 4
 
    overview
+   release-notes
    getting_started
    installation
    systemconfiguration

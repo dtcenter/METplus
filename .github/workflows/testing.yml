@@ -52,7 +52,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set job controls
         id: job_status
         run: .github/jobs/set_job_controls.sh
@@ -75,8 +75,8 @@ jobs:
     needs: job_control
     if: ${{ needs.job_control.outputs.run_get_image == 'true' }}
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.6'
       - name: Get METplus Image
@@ -85,7 +85,7 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           EXTERNAL_TRIGGER: ${{ needs.job_control.outputs.external_trigger }}
-          #MET_FORCE_TAG: 10.0.0
+          #MET_FORCE_TAG: 10.1.0
 
   update_data_volumes:
     name: Docker Setup - Update Data Volumes
@@ -109,13 +109,13 @@ jobs:
     name: Use Case Tests
     runs-on: ubuntu-latest
     needs: [get_image, update_data_volumes, job_control]
-    if: ${{ always() && needs.job_control.outputs.run_some_tests == 'true' }}
+    if: ${{ needs.job_control.outputs.run_some_tests == 'true' }}
     strategy:
       fail-fast: false
       matrix: ${{fromJson(needs.job_control.outputs.matrix)}}
     steps:
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Free disk space
         run: .github/jobs/free_disk_space.sh
@@ -130,7 +130,7 @@ jobs:
         id: get-artifact-name
         run: |
           artifact_name=`.github/jobs/get_artifact_name.sh ${{ matrix.categories }}`
-          echo ::set-output name=artifact_name::${artifact_name}
+          echo "artifact_name=${artifact_name}" >> $GITHUB_OUTPUT
 
       # run use case tests
       - name: Run Use Cases
@@ -158,14 +158,14 @@ jobs:
         run: .github/jobs/copy_output_to_artifact.sh ${{ steps.get-artifact-name.outputs.artifact_name }}
 
       - name: Upload output data artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: ${{ always() && steps.run_tests.conclusion != 'skipped'  && !startsWith(matrix.categories,'pytests') }}
         with:
           name: ${{ steps.get-artifact-name.outputs.artifact_name }}
           path: artifact/${{ steps.get-artifact-name.outputs.artifact_name }}
 
       - name: Upload error logs artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: ${{ always() && steps.save-errors.outputs.upload_error_logs }}
         with:
           name: error_logs
@@ -173,7 +173,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Upload difference data artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: ${{ always() && steps.run-diff.outputs.upload_diff == 'true' }}
         with:
           name: diff-${{ steps.get-artifact-name.outputs.artifact_name }}
@@ -186,8 +186,8 @@ jobs:
     needs: [use_case_tests]
     if: ${{ needs.job_control.outputs.run_save_truth_data == 'true' }}
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/download-artifact@v2
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
       - run: .github/jobs/create_output_data_volumes.sh
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}

@@ -210,28 +210,19 @@ METplus Configuration
 | :term:`OBS_ENSEMBLE_STAT_FILE_WINDOW_BEGIN`
 | :term:`OBS_ENSEMBLE_STAT_FILE_WINDOW_END`
 | :term:`ENSEMBLE_STAT_ENS_THRESH`
-| :term:`ENSEMBLE_STAT_ENS_VLD_THRESH`
-| :term:`ENSEMBLE_STAT_ENS_OBS_THRESH`
+| :term:`ENSEMBLE_STAT_VLD_THRESH`
+| :term:`ENSEMBLE_STAT_OBS_THRESH`
 | :term:`ENSEMBLE_STAT_CUSTOM_LOOP_LIST`
 | :term:`ENSEMBLE_STAT_SKIP_IF_OUTPUT_EXISTS`
 | :term:`ENSEMBLE_STAT_DESC`
 | :term:`ENSEMBLE_STAT_ENS_SSVAR_BIN_SIZE`
 | :term:`ENSEMBLE_STAT_ENS_PHIST_BIN_SIZE`
-| :term:`ENSEMBLE_STAT_NBRHD_PROB_WIDTH`
-| :term:`ENSEMBLE_STAT_NBRHD_PROB_SHAPE`
-| :term:`ENSEMBLE_STAT_NBRHD_PROB_VLD_THRESH`
 | :term:`ENSEMBLE_STAT_CLIMO_CDF_BINS`
 | :term:`ENSEMBLE_STAT_CLIMO_CDF_CENTER_BINS`
 | :term:`ENSEMBLE_STAT_CLIMO_CDF_WRITE_BINS`
 | :term:`ENSEMBLE_STAT_CLIMO_CDF_DIRECT_PROB`
 | :term:`ENSEMBLE_STAT_DUPLICATE_FLAG`
 | :term:`ENSEMBLE_STAT_SKIP_CONST`
-| :term:`ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_DX`
-| :term:`ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_RADIUS`
-| :term:`ENSEMBLE_STAT_NMEP_SMOOTH_VLD_THRESH`
-| :term:`ENSEMBLE_STAT_NMEP_SMOOTH_SHAPE`
-| :term:`ENSEMBLE_STAT_NMEP_SMOOTH_METHOD`
-| :term:`ENSEMBLE_STAT_NMEP_SMOOTH_WIDTH`
 | :term:`ENSEMBLE_STAT_CENSOR_THRESH`
 | :term:`ENSEMBLE_STAT_CENSOR_VAL`
 | :term:`ENSEMBLE_STAT_DUPLICATE_FLAG`
@@ -286,20 +277,13 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_OUTPUT_FLAG_PJC`
 | :term:`ENSEMBLE_STAT_OUTPUT_FLAG_PRC`
 | :term:`ENSEMBLE_STAT_OUTPUT_FLAG_ECLV`
-| :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_LATLON`
-| :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_MEAN`
-| :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_STDEV`
-| :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_MINUS`
-| :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_PLUS`
-| :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_MIN`
-| :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_MAX`
-| :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_RANGE`
-| :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_VLD_COUNT`
-| :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_FREQUENCY`
-| :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_NEP`
-| :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_NMEP`
-| :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_RANK`
-| :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_WEIGHT`
+| :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_LATLON`
+| :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_MEAN`
+| :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_RAW`
+| :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_RANK`
+| :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_PIT`
+| :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_VLD_COUNT`
+| :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_WEIGHT`
 | :term:`ENSEMBLE_STAT_OBS_QUALITY_INC`
 | :term:`ENSEMBLE_STAT_OBS_QUALITY_EXC`
 | :term:`ENSEMBLE_STAT_MET_CONFIG_OVERRIDES`
@@ -451,20 +435,9 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - METplus Config(s)
      - MET Config File
    * - :term:`ENSEMBLE_STAT_ENS_THRESH`
-     - ens.ens_thresh
+     - fcst.ens_thresh
 
-**${METPLUS_ENS_VLD_THRESH}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`ENSEMBLE_STAT_ENS_VLD_THRESH`
-     - ens.vld_thresh
-
-**${METPLUS_ENS_OBS_THRESH}**
+**${METPLUS_VLD_THRESH}**
 
 .. list-table::
    :widths: 5 5
@@ -472,8 +445,19 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`ENSEMBLE_STAT_ENS_OBS_THRESH`
-     - ens.obs_thresh
+   * - :term:`ENSEMBLE_STAT_VLD_THRESH`
+     - fcst.vld_thresh
+
+**${METPLUS_OBS_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_OBS_THRESH`
+     - obs_thresh
 
 **${METPLUS_ENS_FIELD}**
 
@@ -493,42 +477,6 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - n/a
 
 .. note:: For more information on controlling the forecast field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
-
-**${METPLUS_NBRHD_PROB_DICT}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`ENSEMBLE_STAT_NBRHD_PROB_WIDTH`
-     - nbrhd_prob.width
-   * - :term:`ENSEMBLE_STAT_NBRHD_PROB_SHAPE`
-     - nbrhd_prob.shape
-   * - :term:`ENSEMBLE_STAT_NBRHD_PROB_VLD_THRESH`
-     - nbrhd_prob.vld_thresh
-
-**${METPLUS_NMEP_SMOOTH_DICT}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`ENSEMBLE_STAT_NMEP_SMOOTH_VLD_THRESH`
-     - nmep_smooth.vld_thresh
-   * - :term:`ENSEMBLE_STAT_NMEP_SMOOTH_SHAPE`
-     - nmep_smooth.shape
-   * - :term:`ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_DX`
-     - nmep_smooth.gaussian_dx
-   * - :term:`ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_RADIUS`
-     - nmep_smooth.gaussian_radius
-   * - :term:`ENSEMBLE_STAT_NMEP_SMOOTH_METHOD`
-     - nmep_smooth.type.method
-   * - :term:`ENSEMBLE_STAT_NMEP_SMOOTH_WIDTH`
-     - nmep_smooth.type.width
 
 **${METPLUS_PROB_CAT_THRESH}**
 
@@ -862,7 +810,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`ENSEMBLE_STAT_OUTPUT_FLAG_ECLV`
      - output_flag.eclv
 
-**${METPLUS_ENSEMBLE_FLAG_DICT}**
+**${METPLUS_NC_ORANK_FLAG_DICT}**
 
 .. list-table::
    :widths: 5 5
@@ -870,34 +818,20 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_LATLON`
-     - ensemble_flag.latlon
-   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_MEAN`
-     - ensemble_flag.mean
-   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_STDEV`
-     - ensemble_flag.stdev
-   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_MINUS`
-     - ensemble_flag.minus
-   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_PLUS`
-     - ensemble_flag.plus
-   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_MIN`
-     - ensemble_flag.min
-   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_MAX`
-     - ensemble_flag.max
-   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_RANGE`
-     - ensemble_flag.range
-   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_VLD_COUNT`
-     - ensemble_flag.vld_count
-   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_FREQUENCY`
-     - ensemble_flag.frequency
-   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_NEP`
-     - ensemble_flag.nep
-   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_NMEP`
-     - ensemble_flag.nmep
-   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_RANK`
-     - ensemble_flag.rank
-   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_WEIGHT`
-     - ensemble_flag.weight
+   * - :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_LATLON`
+     - nc_orank_flag.latlon
+   * - :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_MEAN`
+     - nc_orank_flag.mean
+   * - :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_RAW`
+     - nc_orank_flag.raw
+   * - :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_RANK`
+     - nc_orank_flag.rank
+   * - :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_PIT`
+     - nc_orank_flag.pit
+   * - :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_VLD_COUNT`
+     - nc_orank_flag.vld_count
+   * - :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_WEIGHT`
+     - nc_orank_flag.weight
 
 **${METPLUS_OUTPUT_PREFIX}**
 
@@ -1173,7 +1107,7 @@ METplus Configuration
 | :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_NEP`
 | :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_NMEP`
 | :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO`
-| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO_CDF`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO_CDP`
 | :term:`GEN_ENS_PROD_ENS_MEMBER_IDS`
 | :term:`GEN_ENS_PROD_CONTROL_ID`
 | :term:`GEN_ENS_PROD_MET_CONFIG_OVERRIDES`
@@ -1474,8 +1408,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - ensemble_flag.nmep
    * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO`
      - ensemble_flag.climo
-   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO_CDF`
-     - ensemble_flag.climo_cdf
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO_CDP`
+     - ensemble_flag.climo_cdp
 
 **${METPLUS_ENS_MEMBER_IDS}**
 
@@ -3750,91 +3684,6 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`IODA2NC_MET_CONFIG_OVERRIDES`
      - n/a
 
-.. _make_plots_wrapper:
-
-MakePlots
-=========
-
-Description
------------
-
-The MakePlots wrapper creates various statistical plots using python
-scripts for the various METplus Wrappers use cases. This can only be run
-following StatAnalysis wrapper when LOOP_ORDER = processes. To run
-MakePlots wrapper, include MakePlots in PROCESS_LIST.
-
-METplus Configuration
----------------------
-
-The following values **must** be defined in the METplus Wrappers
-configuration file:
-
-| :term:`MAKE_PLOTS_SCRIPTS_DIR`
-| :term:`MAKE_PLOTS_INPUT_DIR`
-| :term:`MAKE_PLOTS_OUTPUT_DIR`
-| :term:`MAKE_PLOTS_VERIF_CASE`
-| :term:`MAKE_PLOTS_VERIF_TYPE`
-| :term:`DATE_TYPE`
-| :term:`MODEL\<n\>`
-| :term:`MODEL<n>_OBTYPE`
-| :term:`MODEL<n>_REFERENCE_NAME`
-| :term:`GROUP_LIST_ITEMS`
-| :term:`LOOP_LIST_ITEMS`
-| :term:`MODEL_LIST`
-| :term:`FCST_LEAD_LIST`
-| :term:`VX_MASK_LIST`
-| :term:`LINE_TYPE_LIST`
-| :term:`MAKE_PLOTS_AVERAGE_METHOD`
-| :term:`MAKE_PLOTS_STATS_LIST`
-| :term:`MAKE_PLOTS_CI_METHOD`
-| :term:`MAKE_PLOTS_VERIF_GRID`
-| :term:`MAKE_PLOTS_EVENT_EQUALIZATION`
-|
-
-The following values are **optional** in the METplus Wrappers
-configuration file:
-
-| :term:`VAR<n>_FOURIER_DECOMP`
-| :term:`VAR<n>_WAVE_NUM_LIST`
-| :term:`FCST_VALID_HOUR_LIST`
-| :term:`OBS_VALID_HOUR_LIST`
-| :term:`FCST_INIT_HOUR_LIST`
-| :term:`OBS_INIT_HOUR_LIST`
-| :term:`OBS_LEAD_LIST`
-| :term:`DESC_LIST`
-| :term:`INTERP_MTHD_LIST`
-| :term:`INTERP_PNTS_LIST`
-| :term:`COV_THRESH_LIST`
-| :term:`ALPHA_LIST`
-|
-
-.. warning:: **DEPRECATED:**
-
-   | :term:`PLOTTING_SCRIPTS_DIR`
-   | :term:`STAT_FILES_INPUT_DIR`
-   | :term:`PLOTTING_OUTPUT_DIR`
-   | :term:`VERIF_CASE`
-   | :term:`VERIF_TYPE`
-   | :term:`PLOT_TIME`
-   | :term:`MODEL<n>_NAME`
-   | :term:`MODEL<n>_OBS_NAME`
-   | :term:`MODEL<n>_NAME_ON_PLOT`
-   | :term:`VALID_HOUR_METHOD`
-   | :term:`VALID_HOUR_BEG`
-   | :term:`VALID_HOUR_END`
-   | :term:`VALID_HOUR_INCREMENT`
-   | :term:`INIT_HOUR_BEG`
-   | :term:`INIT_HOUR_END`
-   | :term:`INIT_HOUR_INCREMENT`
-   | :term:`REGION_LIST`
-   | :term:`LEAD_LIST`
-   | :term:`LINE_TYPE`
-   | :term:`INTERP`
-   | :term:`PLOT_STATS_LIST`
-   | :term:`CI_METHOD`
-   | :term:`VERIF_GRID`
-   | :term:`EVENT_EQUALIZATION`
-   |
 
 .. _met_db_load_wrapper:
 
@@ -6895,101 +6744,269 @@ Description
 
 The StatAnalysis wrapper encapsulates the behavior of the MET
 stat_analysis tool. It provides the infrastructure to summarize and
-filter the MET .stat files. StatAnalysis wrapper can be run in two
-different methods. First is to look at the STAT lines for a single date,
-to use this method set LOOP_ORDER = times. Second is to look at the STAT
-lines over a span of dates, to use this method set LOOP_ORDER =
-processes. To run StatAnalysis wrapper, include StatAnalysis in
-PROCESS_LIST.
+filter the MET .stat files.
+
+Timing
+^^^^^^
+
+This wrapper is configured differently than many of the other wrappers that
+loop over multiple run times. The StatAnalysis wrapper is designed to process
+a range of run times at once using filtering to subset what is processed.
+The VALID_BEG and VALID_END or INIT_BEG and INIT_END variables are used to
+calculate filtering criteria.
+
+Prior to v5.0.0, only the year, month, and day (YYYYMMDD) of the init/valid
+begin and end times were read by the wrapper. The hours, minutes, and seconds
+were ignored to be filtered using FCST_HOUR_LIST and OBS_HOUR_LIST.
+Now the full time information is read and to enable users to process a more
+specific range of time. To preserve the original behavior, end times that
+do not include hours, minutes, or seconds will process up to 23:59:59 on that
+day unless specific hours are defined with FCST_HOUR_LIST or OBS_HOUR_LIST.
+
+Note: The LEAD_SEQ variable that typically defines a list of forecast leads to
+process is not used by the wrapper. Instead the FCST_LEAD_LIST and
+OBS_LEAD_LIST are used to filter out forecast leads from the data.
+
+Optional MET Configuration File
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The wrapped MET config file specified with :term:`STAT_ANALYSIS_CONFIG_FILE` is
+optional in the StatAnalysis wrapper. Excluding this option will result in a
+call to stat_analysis with the job arguments added via the command line.
+Only 1 job can be defined in no wrapped MET configuration file is used.
+To use a configuration file, set the following in the METplus config file::
+
+    STAT_ANALYSIS_CONFIG_FILE = {PARM_BASE}/met_config/STATAnalysisConfig_wrapped
+
+Jobs
+^^^^
+
+The job arguments can be defined by setting :term:`STAT_ANALYSIS_JOB\<n\>`
+variables, e.g. STAT_ANALYSIS_JOB1. All of the job commands including the -job
+argument are set here.
+Prior to v5.0.0, the config variables STAT_ANALYSIS_JOB_NAME and
+STAT_ANALYSIS_JOB_ARGS were used to set the value following the -job argument
+and any other job arguments respectively.
+
+Multiple jobs can be defined as of v5.0.0 using
+STAT_ANALYSIS_JOB1, STAT_ANALYSIS_JOB2, etc. All jobs will be passed to each
+call to stat_analysis. Only 1 job can be specified if no MET config file is
+set with :term:`STAT_ANALYSIS_CONFIG_FILE`.
+
+Filtering with Lists
+^^^^^^^^^^^^^^^^^^^^
+
+There are many configuration variables that end with \_LIST that control
+settings in the STATAnalysisConfig_wrapped file.
+For example, MODEL_LIST controls the model variable in the MET config file and
+FCST_LEAD_LIST controls the fcst_lead variable. The value for each of these
+\_LIST variables can be a list of values separated by comma.
+The value of GROUP_LIST_ITEMS is a comma-separated list of \_LIST variable
+names that will be grouped together for each call to stat_analysis.
+The value of LOOP_LIST_ITEMS is a comma-separated list of \_LIST variable
+names that will be looped over to create multiple calls to stat_analysis.
+The tool will be called with every combination of the LOOP_LIST_ITEMS
+list values. List variables that are not included in either GROUP_LIST_ITEMS
+or LOOP_LIST_ITEMS will be automatically added to GROUP_LIST_ITEMS. Lists
+defined in LOOP_LIST_ITEMS that are empty lists will be automatically moved
+to GROUP_LIST_ITEMS.
+
+.. _stat-analysis-looping-groups:
+
+Looping Over Groups of Lists
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+New in v5.0.0 is the ability to define groups of list items that can be looped
+over. For example, a user may want to process forecast leads 1-3 in a
+single run, then process forecast leads 4-6 in the next. To accomplish this,
+define each group of items in a separate config variable ending with a number.
+Then add the name of the list (without the numbers) to LOOP_LIST_ITEMS::
+
+    [config]
+    FCST_LEAD_LIST1 = 1,2,3
+    FCST_LEAD_LIST2 = 4,5,6
+    LOOP_LIST_ITEMS = FCST_LEAD_LIST
+
+If FCST_LEAD_LIST was added to GROUP_LIST_ITEMS instead, then all 6 items
+defined in the 2 lists will be combined and passed to the tool at once.
+
+Filtering Begin and End Times
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Starting in v5.0.0, the [fcst/obs]_[init/valid]_[beg/end] in the wrapped
+MET config file can be set using the corresponding METplus config variables.
+The values can include the filename template tags that are supported in the
+wrapper (see :ref:`stat-analysis-filename-template`). For example,
+to set the fcst_valid_beg value::
+
+    [config]
+    VALID_BEG = 20221014
+    STAT_ANALYSIS_FCST_VALID_BEG = {fcst_valid_beg?fmt=%Y%m%d_%H%M%S}
+
+This will set fcst_valid_beg = "20221014_000000"; in the MET config file.
+
+Prior to v5.0.0, settings hour values in [FCST/OBS]_[INIT/VALID]_HOUR_LIST
+would result in the corresponding _beg and _end values in the wrapped MET
+config file to be set based on the hours and the [INIT/VALID]_[BEG/END] values.
+
+
+.. _stat-analysis-filename-template:
+
+Additional Filename Template Tags
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The StatAnalysis wrapper supports additional tags that can be substituted into
+the input and output paths because the wrapper processes a range of time.
+
+The following filename template tags can be used:
+
+* model
+* desc
+* vx_mask
+* interp_mthd
+* interp_pnts
+* cov_thresh
+* alpha
+* line_type
+* fcst_var
+* obs_var
+* fcst_units
+* obs_units
+* fcst_thresh
+* obs_thresh
+* fcst_level
+* obs_level
+* fcst_valid_hour
+* obs_valid_hour
+* fcst_init_hour
+* obs_init_hour
+* fcst_lead
+* obs_lead
+* fcst_valid_hour_beg
+* fcst_valid_hour_end
+* obs_valid_hour_beg
+* obs_valid_hour_end
+* fcst_init_hour_beg
+* fcst_init_hour_end
+* obs_init_hour_beg
+* obs_init_hour_end
+* valid_hour
+* valid_hour_beg
+* valid_hour_end
+* init_hour
+* init_hour_beg
+* init_hour_end
+* fcst_valid
+* fcst_valid_beg
+* fcst_valid_end
+* fcst_init
+* fcst_init_beg
+* fcst_init_end
+* obs_valid
+* obs_valid_beg
+* obs_valid_end
+* obs_init
+* obs_init_beg
+* obs_init_end
+* valid
+* valid_beg
+* valid_end
+* init
+* init_beg
+* init_end
+* fcst_lead
+* fcst_lead_hour
+* fcst_lead_min
+* fcst_lead_sec
+* fcst_lead_totalsec
+* obs_lead
+* obs_lead_hour
+* obs_lead_min
+* obs_lead_sec
+* obs_lead_totalsec
+* lead
+* lead_hour
+* lead_min
+* lead_sec
+* lead_totalsec
+
+Please note that some of these items will be set to an empty string depending
+on the configuration. For example, lead_hour, lead_min, lead_sec, and
+lead_totalsec cannot be computed if there are multiple leads being processed
+in a given run. Another example, if fcst_valid_beg has the same value as
+fcst_valid_end, then fcst_valid will be set to the same value, otherwise it
+will be left as an empty string.
+
+Outputs
+^^^^^^^
+
+This wrapper can be configured to write 3 types of output files.
+Output files specified with the -out command line argument can be defined by
+setting :term:`STAT_ANALYSIS_OUTPUT_TEMPLATE` and optionally
+:term:`STAT_ANALYSIS_OUTPUT_DIR`.
+Output files specified with the -dump_row or -out_stat arguments must be
+defined in a job using :term:`STAT_ANALYSIS_JOB\<n\>`.
+The [dump_row_file] keyword can be added to a job after the -dump_row argument
+only if a :term:`MODEL<n>_STAT_ANALYSIS_DUMP_ROW_TEMPLATE` is set. Similarly,
+the [out_stat_file] keyword can be added to a job after the -out_stat argument
+only if a :term:`MODEL<n>_STAT_ANALYSIS_OUT_STAT_TEMPLATE` is set.
+
 
 METplus Configuration
 ---------------------
 
-The following values must be defined in the METplus Wrappers
-configuration file for running with LOOP_ORDER = times:
+The following values **must** be defined in the METplus configuration file:
 
+| :term:`STAT_ANALYSIS_JOB\<n\>`
 | :term:`STAT_ANALYSIS_OUTPUT_DIR`
-| :term:`MODEL<n>_STAT_ANALYSIS_DUMP_ROW_TEMPLATE`
-| :term:`MODEL<n>_STAT_ANALYSIS_OUT_STAT_TEMPLATE`
-| :term:`LOG_STAT_ANALYSIS_VERBOSITY`
 | :term:`MODEL\<n\>`
-| :term:`MODEL<n>_OBTYPE`
 | :term:`MODEL<n>_STAT_ANALYSIS_LOOKIN_DIR`
-| :term:`MODEL_LIST`
 | :term:`GROUP_LIST_ITEMS`
 | :term:`LOOP_LIST_ITEMS`
+
+The following values are optional in the METplus configuration file:
+
 | :term:`STAT_ANALYSIS_CONFIG_FILE`
-| :term:`STAT_ANALYSIS_JOB_NAME`
-| :term:`STAT_ANALYSIS_JOB_ARGS`
-| :term:`STAT_ANALYSIS_MET_CONFIG_OVERRIDES`
-|
-
-The following values are **optional** in the METplus Wrappers
-configuration file for running with LOOP_ORDER = times:
-
+| :term:`LOG_STAT_ANALYSIS_VERBOSITY`
+| :term:`STAT_ANALYSIS_CUSTOM_LOOP_LIST`
+| :term:`MODEL<n>_OBTYPE`
+| :term:`VAR<n>_FOURIER_DECOMP`
+| :term:`VAR<n>_WAVE_NUM_LIST`
+| :term:`MODEL_LIST`
 | :term:`DESC_LIST`
+| :term:`FCST_LEAD_LIST`
+| :term:`OBS_LEAD_LIST`
 | :term:`FCST_VALID_HOUR_LIST`
-| :term:`OBS_VALID_HOUR_LIST`
 | :term:`FCST_INIT_HOUR_LIST`
+| :term:`OBS_VALID_HOUR_LIST`
 | :term:`OBS_INIT_HOUR_LIST`
 | :term:`FCST_VAR_LIST`
 | :term:`OBS_VAR_LIST`
-| :term:`FCST_LEVEL_LIST`
-| :term:`OBS_LEVEL_LIST`
 | :term:`FCST_UNITS_LIST`
 | :term:`OBS_UNITS_LIST`
+| :term:`FCST_LEVEL_LIST`
+| :term:`OBS_LEVEL_LIST`
+| :term:`VX_MASK_LIST`
+| :term:`INTERP_MTHD_LIST`
+| :term:`INTERP_PNTS_LIST`
 | :term:`FCST_THRESH_LIST`
 | :term:`OBS_THRESH_LIST`
-| :term:`FCST_LEAD_LIST`
-| :term:`OBS_LEAD_LIST`
-| :term:`VX_MASK_LIST`
-| :term:`INTERP_MTHD_LIST`
-| :term:`INTERP_PNTS_LIST`
-| :term:`ALPHA_LIST`
-| :term:`COV_THRESH_LIST`
-| :term:`LINE_TYPE_LIST`
-| :term:`STAT_ANALYSIS_SKIP_IF_OUTPUT_EXISTS`
-| :term:`STAT_ANALYSIS_HSS_EC_VALUE`
-| :term:`STAT_ANALYSIS_OUTPUT_TEMPLATE`
-|
-
-The following values **must** be defined in the METplus Wrappers
-configuration file for running with LOOP_ORDER = processes:
-
-| :term:`STAT_ANALYSIS_OUTPUT_DIR`
-| :term:`LOG_STAT_ANALYSIS_VERBOSITY`
-| :term:`DATE_TYPE`
-| :term:`STAT_ANALYSIS_CONFIG_FILE`
-| :term:`MODEL\<n\>`
-| :term:`MODEL<n>_OBTYPE`
-| :term:`MODEL<n>_STAT_ANALYSIS_LOOKIN_DIR`
-| :term:`MODEL<n>_REFERENCE_NAME`
-| :term:`GROUP_LIST_ITEMS`
-| :term:`LOOP_LIST_ITEMS`
-| :term:`MODEL_LIST`
-| :term:`VX_MASK_LIST`
-| :term:`FCST_LEAD_LIST`
-| :term:`LINE_TYPE_LIST`
-|
-
-The following values are optional in the METplus Wrappers configuration
-file for running with LOOP_ORDER = processes:
-
-| :term:`VAR<n>_FOURIER_DECOMP`
-| :term:`VAR<n>_WAVE_NUM_LIST`
-| :term:`FCST_VALID_HOUR_LIST`
-| :term:`OBS_VALID_HOUR_LIST`
-| :term:`FCST_INIT_HOUR_LIST`
-| :term:`OBS_INIT_HOUR_LIST`
-| :term:`OBS_LEAD_LIST`
-| :term:`DESC_LIST`
-| :term:`INTERP_MTHD_LIST`
-| :term:`INTERP_PNTS_LIST`
 | :term:`COV_THRESH_LIST`
 | :term:`ALPHA_LIST`
+| :term:`LINE_TYPE_LIST`
 | :term:`STAT_ANALYSIS_HSS_EC_VALUE`
 | :term:`STAT_ANALYSIS_OUTPUT_TEMPLATE`
-|
+| :term:`MODEL<n>_STAT_ANALYSIS_DUMP_ROW_TEMPLATE`
+| :term:`MODEL<n>_STAT_ANALYSIS_OUT_STAT_TEMPLATE`
+| :term:`STAT_ANALYSIS_FCST_INIT_BEG`
+| :term:`STAT_ANALYSIS_FCST_INIT_END`
+| :term:`STAT_ANALYSIS_FCST_VALID_BEG`
+| :term:`STAT_ANALYSIS_FCST_VALID_END`
+| :term:`STAT_ANALYSIS_OBS_INIT_BEG`
+| :term:`STAT_ANALYSIS_OBS_INIT_END`
+| :term:`STAT_ANALYSIS_OBS_VALID_BEG`
+| :term:`STAT_ANALYSIS_OBS_VALID_END`
+| :term:`STAT_ANALYSIS_MET_CONFIG_OVERRIDES`
 
 .. warning:: **DEPRECATED:**
 
@@ -7005,7 +7022,7 @@ file for running with LOOP_ORDER = processes:
    | :term:`INIT_HOUR_INCREMENT`
    | :term:`MODEL`
    | :term:`OBTYPE`
-   | :term:`JOB_NAME`
+   | JOB_NAME
    | :term:`JOB_ARGS`
    | :term:`FCST_LEAD`
    | :term:`FCST_VAR_NAME`
@@ -7021,15 +7038,15 @@ file for running with LOOP_ORDER = processes:
    | :term:`STAT_ANALYSIS_DUMP_ROW_TMPL`
    | :term:`STAT_ANALYSIS_OUT_STAT_TMPL`
    | :term:`PLOT_TIME`
-   | :term:`VERIF_CASE`
-   | :term:`VERIF_TYPE`
    | :term:`MODEL<n>_NAME`
    | :term:`MODEL<n>_OBS_NAME`
-   | :term:`MODEL<n>_NAME_ON_PLOT`
+   | MODEL<n>_NAME_ON_PLOT
    | :term:`MODEL<n>_STAT_DIR`
    | :term:`REGION_LIST`
    | :term:`LEAD_LIST`
-   |
+   | :term:`STAT_ANALYSIS_JOB_NAME`
+   | :term:`STAT_ANALYSIS_JOB_ARGS`
+
 
 .. _stat-analysis-met-conf:
 

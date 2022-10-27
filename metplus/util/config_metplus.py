@@ -13,13 +13,16 @@ import os
 import re
 import sys
 import logging
-import datetime
+from datetime import datetime, timezone
+import time
 import shutil
 from configparser import ConfigParser, NoOptionError
 from pathlib import Path
+import uuid
 
 from produtil.config import ProdConfig
 
+from .constants import RUNTIME_CONFS
 from . import met_util as util
 from .string_template_substitution import get_tags, do_string_sub
 from .met_util import is_python_script, format_var_items
@@ -79,6 +82,9 @@ OLD_BASE_CONFS = [
     'metplus_runtime.conf',
     'metplus_logging.conf'
 ]
+
+# set all loggers to use UTC
+logging.Formatter.converter = time.gmtime
 
 def setup(args, logger=None, base_confs=None):
     """!The METplus setup function.
@@ -213,7 +219,7 @@ def launch(config_list):
 
     # set config variable for current time
     config.set('config', 'CLOCK_TIME',
-               datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
+               datetime.now().strftime('%Y%m%d%H%M%S'))
 
     config_format_list = []
     # Read in and parse all the conf files and overrides
@@ -237,6 +243,9 @@ def launch(config_list):
 
     # save list of user configuration files in a variable
     config.set('config', 'CONFIG_INPUT', ','.join(config_format_list))
+
+    # save unique identifier for the METplus run
+    config.set('config', 'RUN_ID', str(uuid.uuid4())[0:8])
 
     # get OUTPUT_BASE to make sure it is set correctly so the first error
     # that is logged relates to OUTPUT_BASE, not LOG_DIR, which is likely
@@ -279,17 +288,12 @@ def _set_logvars(config, logger=None):
     log_timestamp_template = config.getstr('config', 'LOG_TIMESTAMP_TEMPLATE',
                                            '')
     if config.getbool('config', 'LOG_TIMESTAMP_USE_DATATIME', False):
-        if util.is_loop_by_init(config):
-            loop_by = 'INIT'
-        else:
-            loop_by = 'VALID'
-
-        date_t = datetime.datetime.strptime(
-            config.getstr('config', f'{loop_by}_BEG'),
-            config.getstr('config', f'{loop_by}_TIME_FMT')
-        )
+        loop_by = 'INIT' if util.is_loop_by_init(config) else 'VALID'
+        time_str = config.getraw('config', f'{loop_by}_BEG')
+        time_fmt = config.getraw('config', f'{loop_by}_TIME_FMT')
+        date_t = datetime.strptime(time_str, time_fmt)
     else:
-        date_t = datetime.datetime.now()
+        date_t = datetime.now(timezone.utc)
 
     log_filenametimestamp = date_t.strftime(log_timestamp_template)
 
@@ -385,13 +389,22 @@ def get_logger(config, sublog=None):
         if not os.path.exists(dir_name):
             util.mkdir_p(dir_name)
 
-        # set up the filehandler and the formatter, etc.
-        # The default matches the oformat log.py formatter of produtil
-        # So terminal output will now match log files.
+        # do not send logs up to root logger handlers
+        logger.propagate = False
+
+        # create log formatter from config settings
         formatter = METplusLogFormatter(config)
+
+        # set up the file logging
         file_handler = logging.FileHandler(metpluslog, mode='a')
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
+
+        # set up console logging
+        stream_handler = logging.StreamHandler()
+        stream_handler.setFormatter(formatter)
+        logger.addHandler(stream_handler)
+
 
     # set add the logger to the config
     config.logger = logger
@@ -515,23 +528,6 @@ class METplusConfig(ProdConfig):
         """
         from_section = 'config'
         to_section = 'runtime'
-        RUNTIME_CONFS = [
-            'CLOCK_TIME',
-            'METPLUS_VERSION',
-            'MET_INSTALL_DIR',
-            'CONFIG_INPUT',
-            'METPLUS_CONF',
-            'TMP_DIR',
-            'STAGING_DIR',
-            'CONVERT',
-            'GEMPAKTOCF_JAR',
-            'GFDL_TRACKER_EXEC',
-            'INPUT_MUST_EXIST',
-            'USER_SHELL',
-            'DO_NOT_RUN_EXE',
-            'SCRUB_STAGING_DIR',
-            'MET_BIN_DIR',
-        ]
         more_run_confs = [item for item in self.keys(from_section)
                           if item.startswith('LOG') or item.endswith('BASE')]
 
@@ -992,7 +988,6 @@ def check_for_deprecated_config(config):
     #     modify the code to handle both variables accordingly
     deprecated_dict = {
         'LOOP_BY_INIT' : {'sec' : 'config', 'alt' : 'LOOP_BY', 'copy': False},
-        'LOOP_METHOD' : {'sec' : 'config', 'alt' : 'LOOP_ORDER'},
         'PREPBUFR_DIR_REGEX' : {'sec' : 'regex_pattern', 'alt' : None},
         'PREPBUFR_FILE_REGEX' : {'sec' : 'regex_pattern', 'alt' : None},
         'OBS_INPUT_DIR_REGEX' : {'sec' : 'regex_pattern', 'alt' : 'OBS_POINT_STAT_INPUT_DIR', 'copy': False},
@@ -1484,17 +1479,19 @@ def find_indices_in_config_section(regex, config, sec='config',
     regex = re.compile(regex)
     for conf in all_conf:
         result = regex.match(conf)
-        if result is not None:
-            index = result.group(index_index)
-            if id_index:
-                identifier = result.group(id_index)
-            else:
-                identifier = None
+        if result is None:
+            continue
 
-            if index not in indices:
-                indices[index] = [identifier]
-            else:
-                indices[index].append(identifier)
+        index = result.group(index_index)
+        if id_index:
+            identifier = result.group(id_index)
+        else:
+            identifier = None
+
+        if index not in indices:
+            indices[index] = [identifier]
+        else:
+            indices[index].append(identifier)
 
     return indices
 
@@ -1779,11 +1776,6 @@ def get_process_list(config):
             config.logger.warning(f"PROCESS_LIST item {process_name} "
                                   "may be invalid.")
             wrapper_name = process_name
-
-        # if MakePlots is in process list, remove it because
-        # it will be called directly from StatAnalysis
-        if wrapper_name == 'MakePlots':
-            continue
 
         out_process_list.append((wrapper_name, instance))
 

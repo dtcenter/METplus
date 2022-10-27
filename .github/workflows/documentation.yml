@@ -16,8 +16,8 @@ jobs:
     name: Documentation
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.6'
       - name: Install dependencies
@@ -26,12 +26,12 @@ jobs:
           python -m pip install python-dateutil requests Pillow
       - name: Build Documentation
         run: ./.github/jobs/build_documentation.sh
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: always()
         with:
           name: METplus_documentation
           path: artifact/documentation
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: failure()
         with:
           name: documentation_warnings.log

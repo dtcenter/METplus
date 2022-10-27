@@ -1,46 +1,140 @@
-METplus Release Notes
-=====================
+***************************
+METplus Release Information
+***************************
+
+.. _release-notes:
 
 Users can view the :ref:`releaseCycleStages` section of
 the Release Guide for descriptions of the development releases (including
 beta releases and release candidates), official releases, and bugfix
 releases for the METplus Components.
 
+.. _components-release-notes:
+
 METplus Components Release Note Links
--------------------------------------
+=====================================
 
-Release Notes - Latest Official Release
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+* MET (`latest <https://met.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__, `development <https://met.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__)
+* METviewer (`latest <https://metviewer.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__, `development <https://metviewer.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__)
+* METplotpy (`latest <https://metplotpy.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__, `development <https://metplotpy.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__)
+* METcalcpy (`latest <https://metcalcpy.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__, `development <https://metcalcpy.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__)
+* METdataio (`latest <https://metdataio.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__, `development <https://metdataio.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__)
+* METexpress (`latest <https://github.com/dtcenter/METexpress/releases>`__, `development <https://github.com/dtcenter/METexpress/releases>`__)
+* METplus Wrappers (`latest <https://metplus.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__, :ref:`upgrade instructions <upgrade-instructions>`, `development <https://metplus.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__)
 
-* `MET <https://met.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__
-* `METviewer <https://metviewer.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__
-* `METplotpy <https://metplotpy.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__
-* `METcalcpy <https://metcalcpy.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__
-* `METdatadb <https://metdatadb.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__
-* `METexpress <https://github.com/dtcenter/METexpress/releases>`__
-* `METplus Wrappers <https://metplus.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__
-
-Release Notes - Development Release
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-* `MET <https://met.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__
-* `METviewer <https://metviewer.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__
-* `METplotpy <https://metplotpy.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__
-* `METcalcpy <https://metcalcpy.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__
-* `METdatadb <https://metdatadb.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__
-* `METexpress <https://github.com/dtcenter/METexpress/releases>`__
-* `METplus Wrappers <https://metplus.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__
 
 METplus Wrappers Release Notes
-------------------------------
+==============================
 
-When applicable, release notes are followed by the GitHub issue number which
-describes the bugfix, enhancement, or new feature:
-https://github.com/dtcenter/METplus/issues
+When applicable, release notes are followed by the `GitHub issue <https://github.com/dtcenter/METplus/issues>`__ number which
+describes the bugfix, enhancement, or new feature.
+
+
+METplus Version 5.0.0 Beta 4 Release Notes (2022-10-26)
+-------------------------------------------------------
+
+.. warning:: **MAJOR CHANGES**:
+
+  * The LOOP_ORDER config variable was removed. The variable set in a user's
+    config file will be ignored in favor of executing the logic that
+    corresponds to *LOOP_ORDER = processes*, where all times are processed for
+    the first item in the PROCESS_LIST, then all times are processed for the
+    second item in the PROCESS_LIST, etc. This may change the order that
+    commands are executed in a use case, but it should not change the results.
+
+
+* Enhancements:
+
+  * Remove LOOP_ORDER config variable (`#1687 <https://github.com/dtcenter/METplus/issues/1687>`_)
+
+  * Add unique identifier for each METplus run to configuration (`#1829 <https://github.com/dtcenter/METplus/issues/1829>`_)
+
+  * StatAnalysis - Support setting multiple jobs (`#1842 <https://github.com/dtcenter/METplus/issues/1842>`_)
+
+  * StatAnalysis - Set MET verbosity (`#1772 <https://github.com/dtcenter/METplus/issues/1772>`_)
+
+  * StatAnalysis - Support using both init/valid variables in string substitution (`#1861 <https://github.com/dtcenter/METplus/issues/1861>`_)
+
+  * StatAnalysis - Allow filename template tags in jobs (`#1862 <https://github.com/dtcenter/METplus/issues/1862>`_)
+
+  * StatAnalysis - Support looping over groups of list items (`#1870 <https://github.com/dtcenter/METplus/issues/1870>`_)
+
+  * StatAnalysis - Allow processing of time ranges other than daily (`#1871 <https://github.com/dtcenter/METplus/issues/1871>`_)
+
+  * StatAnalysis - Add support for using a custom loop list (`#1893 <https://github.com/dtcenter/METplus/issues/1893>`_)
+
+  * Remove MakePlots wrapper (`#1843 <https://github.com/dtcenter/METplus/issues/1843>`_)
+
+* Bugfixes:
+
+  * PCPCombine - custom loop list does not work for subtract method (`#1884 <https://github.com/dtcenter/METplus/issues/1884>`_)
+
+* New Wrappers: None
+
+* New Use Cases:
+
+  * Probability of Exceedence for 85th percentile temperatures (`#1808 <https://github.com/dtcenter/METplus/issues/1808>`_)
+
+  * FV3 Physics Tendency plotting via METplotpy (`#1852 <https://github.com/dtcenter/METplus/issues/1852>`_)
+
+* Documentation: None
+
+* Internal:
+
+  * Fix GitHub Actions warnings - update the version of actions and replace set-output (`#1863 <https://github.com/dtcenter/METplus/issues/1863>`_)
+
+  * Update diff logic to handle CSV files that have rounding differences (`#1865 <https://github.com/dtcenter/METplus/issues/1865>`_)
+
+  * Add unit tests for expected failure (`dtcenter/METplus-Internal#24 <https://github.com/dtcenter/METplus-Internal/issues/24>`_)
+
+METplus Version 5.0.0 Beta 3 Release Notes (2022-09-21)
+-------------------------------------------------------
+
+.. warning:: **MAJOR CHANGES**:
+
+  * Use cases that include **EnsembleStat** wrapper will require config file updates. **NEW USER'S GUIDE SECTION OUTLINING REQUIRED CHANGES COMING SOON**
+  * The default value of :term:`SCRUB_STAGING_DIR` is now *True*.
+    This means some intermediate files that are auto-generated by METplus such as file lists and
+    uncompressed files will automatically be removed unless this option is set by the user.
+    These files are typically only used to debug unexpected issues.
+  * The default value of :term:`METPLUS_CONF` now includes the :term:`LOG_TIMESTAMP` so each METplus run
+    will generate a unique final config file, e.g. metplus_final.conf.20220921121733.
+
+
+* Enhancements:
+
+  * **Update the EnsembleStat wrapper and use case examples to remove ensemble post processing logic** (`#1816 <https://github.com/dtcenter/METplus/issues/1816>`_)
+  * Enhance logic to consistently create directories (`#1657 <https://github.com/dtcenter/METplus/issues/1657>`_)
+  * Create checksum for released code (`#262 <https://github.com/dtcenter/METplus/issues/262>`_)
+  * Add the user ID to the log output at beginning and end of each METplus wrappers run (`dtcenter/METplus-Internal#20 <https://github.com/dtcenter/METplus-Internal/issues/20>`_)
+  * Update logic to name final conf and intermediate files with a unique identifier (`dtcenter/METplus-Internal#32 <https://github.com/dtcenter/METplus-Internal/issues/32>`_)
+  * Change default logging time information (`dtcenter/METplus-Internal#34 <https://github.com/dtcenter/METplus-Internal/issues/34>`_)
+
+* Bugfixes:
+
+  * Allow NA value for <TOOL-NAME>_CLIMO_[MEAN/STDEV]_HOUR_INTERVAL (`#1787 <https://github.com/dtcenter/METplus/issues/1787>`_)
+
+* New Wrappers: 
+
+  * PlotPointObs (`#1489 <https://github.com/dtcenter/METplus/issues/1489>`_)
+
+* New Use Cases: 
+
+  * PANDA-C use cases  (`#1686 <https://github.com/dtcenter/METplus/issues/1686>`_)
+  * MJO-ENSO diagnostics (`#1330 <https://github.com/dtcenter/METplus/issues/1330>`_)
+
+
+* Documentation: None
+
+* Internal:
+
+  * Add instructions in Release Guide for "Recreate an Existing Release" (`#1746 <https://github.com/dtcenter/METplus/issues/1746>`_)
+  * Add modulefiles used for installations on various machines (`#1749 <https://github.com/dtcenter/METplus/issues/1749>`_)
+
 
 
 METplus Version 5.0.0 Beta 2 Release Notes (2022-08-03)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------------------------------------
 
 * Enhancements:
 
@@ -56,7 +150,7 @@ METplus Version 5.0.0 Beta 2 Release Notes (2022-08-03)
 
 
 METplus Version 5.0.0 Beta 1 Release Notes (2022-06-22)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------------------------------------
 
 * Enhancements:
 
@@ -89,3 +183,10 @@ METplus Version 5.0.0 Beta 1 Release Notes (2022-06-22)
   * Document GitHub Discussions procedure for the Contributor's Guide (`#1159 <https://github.com/dtcenter/METplus/issues/1159>`_)
   * Create a METplus "Release Guide" describing how to build releases for the METplus components (`#673 <https://github.com/dtcenter/METplus/issues/673>`_)
   * Update documentation about viewing RTD URLs on branches (`#1512 <https://github.com/dtcenter/METplus/issues/1512>`_)
+
+.. _upgrade-instructions:
+    
+METplus Wrappers Upgrade Instructions
+=====================================
+
+Coming Soon!

@@ -1,7 +1,7 @@
 import os
 import shutil
 import sys
-import datetime
+from datetime import datetime, timedelta, timezone
 import re
 import gzip
 import bz2
@@ -136,21 +136,11 @@ def run_metplus(config, process_list):
             logger.info("Refer to ERROR messages above to resolve issues.")
             return 1
 
-        loop_order = config.getstr('config', 'LOOP_ORDER', '').lower()
-
-        if loop_order == "processes":
-            all_commands = []
-            for process in processes:
-                new_commands = process.run_all_times()
-                if new_commands:
-                    all_commands.extend(new_commands)
-
-        elif loop_order == "times":
-            all_commands = loop_over_times_and_call(config, processes)
-        else:
-            logger.error("Invalid LOOP_ORDER defined. "
-                         "Options are processes, times")
-            return 1
+        all_commands = []
+        for process in processes:
+            new_commands = process.run_all_times()
+            if new_commands:
+                all_commands.extend(new_commands)
 
         # if process list contains any wrapper that should run commands
         if any([item[0] not in NO_COMMAND_WRAPPERS for item in process_list]):
@@ -191,15 +181,14 @@ def post_run_cleanup(config, app_name, total_errors):
     log_message = (f"Check the log file for more information: "
                    f"{config.getstr('config', 'LOG_METPLUS')}")
 
-    start_clock_time = datetime.datetime.strptime(config.getstr('config',
-                                                                'CLOCK_TIME'),
-                                                  '%Y%m%d%H%M%S')
+    start_clock_time = datetime.strptime(config.getstr('config', 'CLOCK_TIME'),
+                                         '%Y%m%d%H%M%S')
 
     # rewrite final conf so it contains all of the default values used
     write_final_conf(config)
 
     # compute time it took to run
-    end_clock_time = datetime.datetime.now()
+    end_clock_time = datetime.now()
     total_run_time = end_clock_time - start_clock_time
     logger.debug(f"{app_name} took {total_run_time} to run.")
 
@@ -397,12 +386,6 @@ def write_final_conf(config):
 
         @param config METplusConfig object to write to file
      """
-    # write out os environment to file for debugging
-    env_file = os.path.join(config.getdir('LOG_DIR'), '.metplus_user_env')
-    with open(env_file, 'w') as env_file:
-        for key, value in os.environ.items():
-            env_file.write('{}={}\n'.format(key, value))
-
     final_conf = config.getstr('config', 'METPLUS_CONF')
 
     # remove variables that start with CURRENT
@@ -484,7 +467,7 @@ def log_runtime_banner(config, time_input, process):
 
 def add_to_time_input(time_input, clock_time=None, instance=None, custom=None):
     if clock_time:
-        clock_dt = datetime.datetime.strptime(clock_time, '%Y%m%d%H%M%S')
+        clock_dt = datetime.strptime(clock_time, '%Y%m%d%H%M%S')
         time_input['now'] = clock_dt
 
     # if instance is set, use that value, otherwise use empty string
@@ -621,7 +604,8 @@ def handle_lead_seq(config, lead_strings, lead_min=None, lead_max=None):
     if lead_min is None and lead_max is None:
         return leads
 
-    now_time = datetime.datetime.now()
+    # add current time to leads to approximate month and year length
+    now_time = datetime.now()
     lead_min_approx = now_time + lead_min
     lead_max_approx = now_time + lead_max
     for lead in leads:
@@ -858,8 +842,8 @@ def shift_time_seconds(time_str, shift):
         Returns:
             New time in format %Y%m%d%H%M%S
     """
-    return (datetime.datetime.strptime(time_str, "%Y%m%d%H%M%S") +
-            datetime.timedelta(seconds=shift)).strftime("%Y%m%d%H%M%S")
+    return (datetime.strptime(time_str, "%Y%m%d%H%M%S") +
+            timedelta(seconds=shift)).strftime("%Y%m%d%H%M%S")
 
 def get_threshold_via_regex(thresh_string):
     """!Ensure thresh values start with >,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le and then a number
@@ -911,17 +895,6 @@ def get_threshold_via_regex(thresh_string):
 
     return comparison_number_list
 
-def comparison_to_letter_format(expression):
-    """! Convert comparison operator to the letter version if it is not already
-         @args expression string starting with comparison operator to
-          convert, i.e. gt3 or <=5.4
-         @returns letter comparison operator, i.e. gt3 or le5.4 or None if invalid
-    """
-    for symbol_comp, letter_comp in VALID_COMPARISONS.items():
-        if letter_comp in expression or symbol_comp in expression:
-            return expression.replace(symbol_comp, letter_comp)
-
-    return None
 
 def validate_thresholds(thresh_list):
     """ Checks list of thresholds to ensure all of them have the correct format
@@ -1391,7 +1364,7 @@ def expand_int_string_to_list(int_string):
 
 def subset_list(full_list, subset_definition):
     """! Extract subset of items from full_list based on subset_definition
-    Used in internal_tests/use_cases/metplus_use_case_suite.py
+    Used in internal/tests/use_cases/metplus_use_case_suite.py
 
     @param full_list List of all use cases that were requested
     @param subset_definition Defines how to subset the full list. If None,

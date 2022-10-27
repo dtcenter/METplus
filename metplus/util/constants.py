@@ -1,3 +1,45 @@
+# Constant variables used throughout the METplus wrappers source code
+
+# dictionary used by get_wrapper_name function to easily convert wrapper
+# name in many formats to the correct name of the wrapper class
+LOWER_TO_WRAPPER_NAME = {
+    'ascii2nc': 'ASCII2NC',
+    'cycloneplotter': 'CyclonePlotter',
+    'ensemblestat': 'EnsembleStat',
+    'example': 'Example',
+    'extracttiles': 'ExtractTiles',
+    'gempaktocf': 'GempakToCF',
+    'genvxmask': 'GenVxMask',
+    'genensprod': 'GenEnsProd',
+    'gfdltracker': 'GFDLTracker',
+    'griddiag': 'GridDiag',
+    'gridstat': 'GridStat',
+    'ioda2nc': 'IODA2NC',
+    'makeplots': 'MakePlots',
+    'metdbload': 'METDbLoad',
+    'mode': 'MODE',
+    'mtd': 'MTD',
+    'modetimedomain': 'MTD',
+    'pb2nc': 'PB2NC',
+    'pcpcombine': 'PCPCombine',
+    'plotdataplane': 'PlotDataPlane',
+    'plotpointobs': 'PlotPointObs',
+    'point2grid': 'Point2Grid',
+    'pointtogrid': 'Point2Grid',
+    'pointstat': 'PointStat',
+    'pyembedingest': 'PyEmbedIngest',
+    'regriddataplane': 'RegridDataPlane',
+    'seriesanalysis': 'SeriesAnalysis',
+    'statanalysis': 'StatAnalysis',
+    'tcgen': 'TCGen',
+    'tcpairs': 'TCPairs',
+    'tcrmw': 'TCRMW',
+    'tcstat': 'TCStat',
+    'tcmprplotter': 'TCMPRPlotter',
+    'usage': 'Usage',
+    'userscript': 'UserScript',
+}
+
 # supported file extensions that will automatically be uncompressed
 COMPRESSION_EXTENSIONS = [
     '.gz',
@@ -35,3 +77,34 @@ NO_COMMAND_WRAPPERS = (
     'Example',
     'CyclonePlotter',
 )
+
+# configuration variables that are specific to a given run
+# these are copied from [config] to [runtime] at the
+# end of the run so they will not be read if the final
+# config file is passed back into METplus but they will
+# still be available to review
+RUNTIME_CONFS = [
+    'RUN_ID',
+    'CLOCK_TIME',
+    'METPLUS_VERSION',
+    'MET_INSTALL_DIR',
+    'CONFIG_INPUT',
+    'METPLUS_CONF',
+    'TMP_DIR',
+    'STAGING_DIR',
+    'FILE_LISTS_DIR',
+    'CONVERT',
+    'GEMPAKTOCF_JAR',
+    'GFDL_TRACKER_EXEC',
+    'INPUT_MUST_EXIST',
+    'USER_SHELL',
+    'DO_NOT_RUN_EXE',
+    'SCRUB_STAGING_DIR',
+    'MET_BIN_DIR',
+]
+
+# datetime year month day (YYYYMMDD) notation
+YMD = '%Y%m%d'
+
+# datetime year month day hour minute second (YYYYMMDD_HHMMSS) notation
+YMD_HMS = '%Y%m%d_%H%M%S'

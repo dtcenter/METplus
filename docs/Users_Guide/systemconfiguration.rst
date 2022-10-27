@@ -1078,38 +1078,14 @@ the output directory.
 Loop Order
 ----------
 
-The METplus wrappers can be configured to loop first by times then
-processes or vice-versa. Looping by times first will run each process in
-the process list for a given run time, increment to the next run time, run
-each process in the process list, and so on. Looping by processes first
-will run all times for the first process, then run all times for the
-second process, and so on.
+The METplus wrappers will run all times for the first process defined in the
+:term:`PROCESS_LIST`, then run all times for the second process, and so on.
+The :term:`LOOP_ORDER` variable has been deprecated in v5.0.0.
+This is the behavior that was previously executed when LOOP_ORDER = processes.
 
-**Example 1 Configuration**::
+**Example Configuration**::
 
   [config]
-  LOOP_ORDER = times
-
-  PROCESS_LIST = PCPCombine, GridStat
-
-  VALID_BEG = 20190201
-  VALID_END = 20190203
-  VALID_INCREMENT = 1d
-
-will run in the following order::
-
-  * PCPCombine at 2019-02-01
-  * GridStat   at 2019-02-01
-  * PCPCombine at 2019-02-02
-  * GridStat   at 2019-02-02
-  * PCPCombine at 2019-02-03
-  * GridStat   at 2019-02-03
-
-
-**Example 2 Configuration**::
-
-  [config]
-  LOOP_ORDER = processes
 
   PROCESS_LIST = PCPCombine, GridStat
 
@@ -1126,12 +1102,7 @@ will run in the following order::
   * GridStat   at 2019-02-02
   * GridStat   at 2019-02-03
 
-.. note::
-    If running a MET tool that processes data over a time range, such as
-    SeriesAnalysis or StatAnalysis, the tool must be run with
-    LOOP_ORDER = processes.
 
-    
 .. _Custom_Looping:
 
 Custom Looping
@@ -1145,7 +1116,7 @@ paths, and more. The value of each list item can be referenced in the
 METplus configuration variables by using {custom?fmt=%s}. The variable
 CUSTOM_LOOP_LIST will apply the values to each wrapper in the PROCESS_LIST
 unless the wrapper does not support this functionality. CyclonePlotter,
-MakePlots, SeriesByInit, SeriesByLead, StatAnalysis, TCStat, and
+StatAnalysis, TCStat, and
 TCMPRPlotter wrappers are not supported. If the variable is not set or set
 to an empty string, the wrapper will execute as normal without additional
 runs. The name of the wrapper-specific variables contain the name of the
@@ -1782,15 +1753,13 @@ The possible values for the \*_RUNTIME_FREQ variables are:
   (init or valid and forecast lead combination).
   All filename templates are substituted with values.
 
-Note that :term:`LOOP_ORDER` must be set to processes to run these wrappers.
-Also note that the following example may not contain all of the configuration
+Note that the following example may not contain all of the configuration
 variables that are required for a successful run. The are intended to show
 how these variables affect how the data is processed.
 
 **SeriesAnalysis Examples**::
 
     [config]
-    LOOP_ORDER = processes
 
     LOOP_BY = INIT
     INIT_TIME_FMT = %Y%m%d%H

@@ -1,5 +1,5 @@
 [
-  {
+   {
     "category": "met_tool_wrapper",
     "index_list": "0-29,59-61",
     "run": false
@@ -50,6 +50,11 @@
     "run": false
   },
   {
+    "category": "short_range",
+    "index_list": "10-12",
+    "run": false
+  },
+  {
     "category": "data_assimilation",
     "index_list": "0",
     "run": false
@@ -97,6 +102,11 @@
   {
     "category": "medium_range",
     "index_list": "8",
+    "run": false
+  },
+  {
+    "category": "medium_range",
+    "index_list": "9",
     "run": false
   },
   {
@@ -177,6 +187,11 @@
   {
     "category": "s2s_mjo",
     "index_list": "3",
+    "run": false
+  },
+  {
+    "category": "s2s_mjo",
+    "index_list": "4",
     "run": false
   },
   {
