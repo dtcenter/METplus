@@ -9,6 +9,43 @@ from metplus.util.string_manip import _fix_list
 
 
 @pytest.mark.parametrize(
+    'subset_definition, expected_result', [
+        ([1, 3, 5], ['b', 'd', 'f']),
+        ([1, 3, 5, '+'], ['b', 'd', 'f', 'g', 'h', 'i', 'j']),
+        ([1], ['b']),
+        (1, ['b']),
+        ([3, '+'], ['d', 'e', 'f', 'g', 'h', 'i', 'j']),
+        (None, ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']),
+        (slice(1,4,1), ['b', 'c', 'd']),
+        (slice(2,9,2), ['c', 'e', 'g', 'i']),
+    ]
+)
+@pytest.mark.util
+def test_subset_list(subset_definition, expected_result):
+    full_list = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
+    result = subset_list(full_list, subset_definition)
+    assert result == expected_result
+
+
+@pytest.mark.parametrize(
+    'int_string, expected_result', [
+        ('4', [4]),
+        ('4-12', [4, 5, 6, 7, 8, 9, 10, 11, 12]),
+        ('5,18-24,29', [5, 18, 19, 20, 21, 22, 23, 24, 29]),
+        ('7,8,9,13', [7, 8, 9, 13]),
+        ('4+', [4, '+']),
+        ('4-12+', [4, 5, 6, 7, 8, 9, 10, 11, 12, '+']),
+        ('5,18-24,29+', [5, 18, 19, 20, 21, 22, 23, 24, 29, '+']),
+        ('7,8,9,13+', [7, 8, 9, 13, '+']),
+    ]
+)
+@pytest.mark.util
+def test_expand_int_string_to_list(int_string, expected_result):
+    result = expand_int_string_to_list(int_string)
+    assert result == expected_result
+
+
+@pytest.mark.parametrize(
     'value, expected_result', [
         (3.3, 3.5),
         (3.1, 3.0),
@@ -321,3 +358,16 @@ def test_comparison_to_letter_format(expression, expected_result):
 @pytest.mark.util
 def test_format_thresh(expression, expected_result):
     assert format_thresh(expression) == expected_result
+
+
+@pytest.mark.parametrize(
+    'level, expected_result', [
+        ('level', 'level'),
+        ('P500', 'P500'),
+        ('*,*', 'all_all'),
+        ('1,*,*', '1_all_all'),
+    ]
+)
+@pytest.mark.util
+def test_format_level(level, expected_result):
+    assert format_level(level) == expected_result

@@ -9,6 +9,16 @@ from metplus.util import time_util
 
 
 @pytest.mark.parametrize(
+    'time_str, shift, expected_output', [
+        ('20221101000000', -1, '20221031235959'),
+    ]
+)
+@pytest.mark.util
+def test_shift_time_seconds(time_str, shift, expected_output):
+    assert time_util.shift_time_seconds(time_str, shift) == expected_output
+
+
+@pytest.mark.parametrize(
     'input_str, expected_output', [
         ('', []),
         ('0,1,2,3', ['000000', '010000', '020000', '030000']),
@@ -22,7 +32,7 @@ from metplus.util import time_util
           '1440000', '1680000', '1920000', '2160000', '2400000']),
     ]
 )
-@pytest.mark.wrapper_d
+@pytest.mark.util
 def test_get_met_time_list(input_str, expected_output):
     assert time_util.get_met_time_list(input_str) == expected_output
 

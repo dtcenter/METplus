@@ -12,12 +12,11 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import met_util as util
 from ..util import time_util
 from ..util import do_string_sub
 from ..util import parse_var_list
 from ..util import get_process_list
-from ..util import remove_quotes
+from ..util import remove_quotes, split_level, format_level
 from . import ReformatGriddedWrapper
 
 # pylint:disable=pointless-string-statement
@@ -173,7 +172,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
              @returns True if command should be run, False if it should
               not be run
         """
-        _, level = util.split_level(field_info[f'{data_type.lower()}_level'])
+        _, level = split_level(field_info[f'{data_type.lower()}_level'])
         time_info['level'] = time_util.get_seconds_from_string(level, 'H')
         return self.find_and_check_output_file(time_info)
 
@@ -255,7 +254,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
             for field_info in var_list:
                 input_name = field_info[f'{data_type.lower()}_name']
                 input_level = field_info[f'{data_type.lower()}_level']
-                input_level = util.format_level(input_level)
+                input_level = format_level(input_level)
                 output_name = f"{input_name}_{input_level}"
                 output_names.append(output_name)
 

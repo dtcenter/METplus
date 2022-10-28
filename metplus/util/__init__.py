@@ -7,7 +7,6 @@ from .string_template_substitution import *
 from .doc_util import *
 from .config_metplus import *
 from .run_util import *
-from .met_util import *
 from .met_config import *
 from .time_looping import *
 from .field_util import *

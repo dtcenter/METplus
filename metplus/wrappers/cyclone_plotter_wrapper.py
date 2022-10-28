@@ -37,10 +37,9 @@ except Exception as err_msg:
     WRAPPER_CANNOT_RUN = True
     EXCEPTION_ERR = err_msg
 
-from ..util import met_util as util
 from ..util import do_string_sub
 from ..util import time_generator, add_to_time_input
-from ..util import mkdir_p
+from ..util import mkdir_p, get_files
 from . import CommandBuilder
 
 
@@ -195,8 +194,7 @@ class CyclonePlotterWrapper(CommandBuilder):
             self.logger.debug("Get data from all files in the directory " +
                               self.input_data)
             # Get the list of all files (full file path) in this directory
-            all_input_files = util.get_files(self.input_data, ".*.tcst",
-                                             self.logger)
+            all_input_files = get_files(self.input_data, ".*.tcst", self.logger)
 
             # read each file into pandas then concatenate them together
             df_list = [pd.read_csv(file, delim_whitespace=True) for file in all_input_files]

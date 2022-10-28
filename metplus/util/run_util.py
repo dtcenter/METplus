@@ -10,7 +10,6 @@ from .. import get_metplus_version
 from . import config_metplus
 from . import camel_to_underscore
 
-
 def pre_run_setup(config_inputs):
 
     version_number = get_metplus_version()

@@ -51,10 +51,12 @@ __all__ = [
     'get_custom_string_list',
     'find_indices_in_config_section',
     'parse_var_list',
+    'sub_var_list',
     'get_process_list',
     'validate_configuration_variables',
     'is_loop_by_init',
     'handle_tmp_dir',
+    'log_runtime_banner',
 ]
 
 '''!@var METPLUS_BASE
@@ -2137,3 +2139,57 @@ def write_final_conf(config):
     config.logger.info('Overwrite final conf here: %s' % (final_conf,))
     with open(final_conf, 'wt') as conf_file:
         config.write(conf_file)
+
+
+def log_runtime_banner(config, time_input, process):
+    loop_by = time_input['loop_by']
+    run_time = time_input[loop_by].strftime("%Y-%m-%d %H:%M")
+
+    process_name = process.__class__.__name__
+    if process.instance:
+        process_name = f"{process_name}({process.instance})"
+
+    config.logger.info("****************************************")
+    config.logger.info(f"* Running METplus {process_name}")
+    config.logger.info(f"*  at {loop_by} time: {run_time}")
+    config.logger.info("****************************************")
+
+
+def sub_var_list(var_list, time_info):
+    """! Perform string substitution on var list values with time info
+
+        @param var_list list of field info to substitute values into
+        @param time_info dictionary containing time information
+        @returns var_list with values substituted
+    """
+    if not var_list:
+        return []
+
+    out_var_list = []
+    for var_info in var_list:
+        out_var_info = _sub_var_info(var_info, time_info)
+        out_var_list.append(out_var_info)
+
+    return out_var_list
+
+
+def _sub_var_info(var_info, time_info):
+    if not var_info:
+        return {}
+
+    out_var_info = {}
+    for key, value in var_info.items():
+        if isinstance(value, list):
+            out_value = []
+            for item in value:
+                out_value.append(do_string_sub(item,
+                                               skip_missing_tags=True,
+                                               **time_info))
+        else:
+            out_value = do_string_sub(value,
+                                      skip_missing_tags=True,
+                                      **time_info)
+
+        out_var_info[key] = out_value
+
+    return out_var_info

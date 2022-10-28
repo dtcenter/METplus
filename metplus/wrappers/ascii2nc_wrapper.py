@@ -12,10 +12,9 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import met_util as util
 from ..util import time_util
 from . import CommandBuilder
-from ..util import do_string_sub, skip_time
+from ..util import do_string_sub, skip_time, get_lead_sequence
 
 '''!@namespace ASCII2NCWrapper
 @brief Wraps the ASCII2NC tool to reformat ascii format to NetCDF
@@ -242,7 +241,7 @@ class ASCII2NCWrapper(CommandBuilder):
               Args:
                 @param input_dict dictionary containing timing information
         """
-        lead_seq = util.get_lead_sequence(self.config, input_dict)
+        lead_seq = get_lead_sequence(self.config, input_dict)
         for lead in lead_seq:
             self.clear()
             input_dict['lead'] = lead

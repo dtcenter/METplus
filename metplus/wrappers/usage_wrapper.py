@@ -13,7 +13,7 @@ class UsageWrapper(CommandBuilder):
     def __init__(self, config, instance=None):
         self.app_name = 'Usage'
         super().__init__(config, instance=instance)
-        # get unique list of processes from met_util
+        # get unique list of processes
         self.available_processes = list(set(val for val in LOWER_TO_WRAPPER_NAME.values()))
         self.available_processes.sort()
 

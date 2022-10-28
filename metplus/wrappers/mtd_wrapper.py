@@ -12,8 +12,8 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import met_util as util
-from ..util import time_util
+from ..util import get_lead_sequence, sub_var_list
+from ..util import ti_calculate
 from ..util import do_string_sub, skip_time
 from ..util import parse_var_list
 from . import CompareGriddedWrapper
@@ -197,8 +197,7 @@ class MTDWrapper(CompareGriddedWrapper):
               Args:
                 @param input_dict dictionary containing timing information
         """        
-        var_list = util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
-                                     input_dict)
+        var_list = sub_var_list(self.c_dict['VAR_LIST_TEMP'], input_dict)
 
         # if only processing a single data set (FCST or OBS) then only read
         # that var list and process
@@ -219,7 +218,7 @@ class MTDWrapper(CompareGriddedWrapper):
         for var_info in var_list:
 
             if self.c_dict.get('EXPLICIT_FILE_LIST', False):
-                time_info = time_util.ti_calculate(input_dict)
+                time_info = ti_calculate(input_dict)
                 model_list_path = do_string_sub(self.c_dict['FCST_FILE_LIST'],
                                                 **time_info)
                 self.logger.debug(f"Explicit FCST file: {model_list_path}")
@@ -246,13 +245,13 @@ class MTDWrapper(CompareGriddedWrapper):
             obs_list = []
 
             # find files for each forecast lead time
-            lead_seq = util.get_lead_sequence(self.config, input_dict)
+            lead_seq = get_lead_sequence(self.config, input_dict)
 
             tasks = []
             for lead in lead_seq:
                 input_dict['lead'] = lead
 
-                time_info = time_util.ti_calculate(input_dict)
+                time_info = ti_calculate(input_dict)
                 tasks.append(time_info)
 
             for current_task in tasks:
@@ -282,7 +281,7 @@ class MTDWrapper(CompareGriddedWrapper):
 
             # write ascii file with list of files to process
             input_dict['lead'] = lead_seq[0]
-            time_info = time_util.ti_calculate(input_dict)
+            time_info = ti_calculate(input_dict)
 
             # if var name is a python embedding script, check type of python
             # input and name file list file accordingly
@@ -313,7 +312,7 @@ class MTDWrapper(CompareGriddedWrapper):
         data_src = self.c_dict.get('SINGLE_DATA_SRC')
 
         if self.c_dict.get('EXPLICIT_FILE_LIST', False):
-            time_info = time_util.ti_calculate(input_dict)
+            time_info = ti_calculate(input_dict)
             single_list_path = do_string_sub(
                 self.c_dict[f'{data_src}_FILE_LIST'],
                 **time_info
@@ -330,10 +329,10 @@ class MTDWrapper(CompareGriddedWrapper):
             else:
                 find_method = self.find_model
 
-            lead_seq = util.get_lead_sequence(self.config, input_dict)
+            lead_seq = get_lead_sequence(self.config, input_dict)
             for lead in lead_seq:
                 input_dict['lead'] = lead
-                current_task = time_util.ti_calculate(input_dict)
+                current_task = ti_calculate(input_dict)
 
                 single_file = find_method(current_task, var_info)
                 if single_file is None:
@@ -346,7 +345,7 @@ class MTDWrapper(CompareGriddedWrapper):
 
             # write ascii file with list of files to process
             input_dict['lead'] = lead_seq[0]
-            time_info = time_util.ti_calculate(input_dict)
+            time_info = ti_calculate(input_dict)
             file_ext = self.check_for_python_embedding(data_src, var_info)
             if not file_ext:
                 return

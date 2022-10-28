@@ -26,7 +26,7 @@ wrong variable and it is using WGRIB2 = wgrib2.
 
 check_for_deprecated_config()
 -----------------------------
-In **met_util.py** there is a function called
+In **metplus/util/config_metplus.py** there is a function called
 check_for_deprecated_config. It contains a dictionary of dictionaries
 called deprecated_dict that specifies the old config name, the section
 it was found in, and a suggested alternative (None if no alternative

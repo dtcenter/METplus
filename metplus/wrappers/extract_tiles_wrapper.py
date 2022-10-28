@@ -13,8 +13,8 @@ import os
 from datetime import datetime
 import re
 
-from ..util import met_util as util
 from ..util import do_string_sub, ti_calculate, skip_time
+from ..util import get_lead_sequence, sub_var_list
 from ..util import parse_var_list, round_0p5, get_storms, prune_empty
 from .regrid_data_plane_wrapper import RegridDataPlaneWrapper
 from . import CommandBuilder
@@ -206,7 +206,7 @@ class ExtractTilesWrapper(CommandBuilder):
         """
 
         # loop of forecast leads and process each
-        lead_seq = util.get_lead_sequence(self.config, input_dict)
+        lead_seq = get_lead_sequence(self.config, input_dict)
         for lead in lead_seq:
             input_dict['lead'] = lead
 
@@ -383,8 +383,7 @@ class ExtractTilesWrapper(CommandBuilder):
 
     def call_regrid_data_plane(self, time_info, track_data, input_type):
         # set var list from config using time info
-        var_list = util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
-                                     time_info)
+        var_list = sub_var_list(self.c_dict['VAR_LIST_TEMP'], time_info)
 
         for data_type in ['FCST', 'OBS']:
             grid = self.get_grid(data_type, track_data[data_type],

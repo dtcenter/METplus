@@ -97,3 +97,63 @@ def test_get_storms_mtd(metplus_config):
     # ensure header matches expected format
     if storm_dict:
         assert storm_dict['header'].split()[index] == sort_column
+
+
+@pytest.mark.parametrize(
+    'filename, ext', [
+        ('internal/tests/data/zip/testfile.txt', '.gz'),
+        ('internal/tests/data/zip/testfile2.txt', '.bz2'),
+        ('internal/tests/data/zip/testfile3.txt', '.zip'),
+        ('internal/tests/data/zip/testfile4.txt', ''),
+    ]
+)
+@pytest.mark.util
+def test_preprocess_file_stage(metplus_config, filename, ext):
+    conf = metplus_config
+    metplus_base = conf.getdir('METPLUS_BASE')
+    stage_dir = conf.getdir('STAGING_DIR',
+                            os.path.join(conf.getdir('OUTPUT_BASE'),
+                                         'stage'))
+    filepath = os.path.join(metplus_base,
+                            filename+ext)
+    if ext:
+        stagepath = stage_dir + os.path.join(metplus_base,
+                                             filename)
+        if os.path.exists(stagepath):
+            os.remove(stagepath)
+    else:
+        stagepath = filepath
+
+    outpath = preprocess_file(filepath, None, conf)
+    assert stagepath == outpath and os.path.exists(outpath)
+
+
+@pytest.mark.parametrize(
+    'filename, data_type, allow_dir, expected', [
+        # filename is None or empty string - return None
+        (None, None, False, None),
+        ('', None, False, None),
+        # python data types - pass through full filename value
+        ('some:set:of:words', 'PYTHON_NUMPY', False, 'some:set:of:words'),
+        ('some:set:of:words', 'PYTHON_XARRAY', False, 'some:set:of:words'),
+        ('some:set:of:words', 'PYTHON_PANDAS', False, 'some:set:of:words'),
+        # allow directory - pass through full dir path
+        ('dir', None, True, 'dir'),
+        # base filename is python embedding type - return python embed type
+        ('/some/path/PYTHON_NUMPY', None, False, 'PYTHON_NUMPY'),
+        ('/some/path/PYTHON_XARRAY', None, False, 'PYTHON_XARRAY'),
+        ('/some/path/PYTHON_PANDAS', None, False, 'PYTHON_PANDAS'),
+    ]
+)
+@pytest.mark.util
+def test_preprocess_file_options(metplus_config,
+                                 filename,
+                                 data_type,
+                                 allow_dir,
+                                 expected):
+    config = metplus_config
+    if filename == 'dir':
+        filename = config.getdir('METPLUS_BASE')
+        expected = filename
+    result = preprocess_file(filename, data_type, config, allow_dir)
+    assert result == expected

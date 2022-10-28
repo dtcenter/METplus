@@ -12,7 +12,6 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import met_util as util
 from . import CompareGriddedWrapper
 
 # pylint:disable=pointless-string-statement

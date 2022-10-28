@@ -33,6 +33,18 @@ TIME_LETTER_TO_STRING = {
 }
 
 
+def shift_time_seconds(time_str, shift):
+    """ Adjust time by shift seconds. Format is %Y%m%d%H%M%S
+        Args:
+            @param time_str: Start time in %Y%m%d%H%M%S
+            @param shift: Amount to adjust time in seconds
+        Returns:
+            New time in format %Y%m%d%H%M%S
+    """
+    return (datetime.datetime.strptime(time_str, "%Y%m%d%H%M%S") +
+            datetime.timedelta(seconds=shift)).strftime("%Y%m%d%H%M%S")
+
+
 def get_relativedelta(value, default_unit='S'):
     """!Converts time values ending in Y, m, d, H, M, or S to relativedelta object
         Args:
@@ -483,3 +495,17 @@ def ti_calculate(input_dict_preserve):
     out_dict['lead_seconds'] = total_seconds
 
     return out_dict
+
+
+def add_to_time_input(time_input, clock_time=None, instance=None, custom=None):
+    if clock_time:
+        clock_dt = datetime.strptime(clock_time, '%Y%m%d%H%M%S')
+        time_input['now'] = clock_dt
+
+    # if instance is set, use that value, otherwise use empty string
+    time_input['instance'] = instance if instance else ''
+
+    # if custom is specified, set it
+    # otherwise leave it unset so it can be set within the wrapper
+    if custom:
+        time_input['custom'] = custom
