@@ -6,8 +6,7 @@ import os
 from configparser import NoOptionError
 from shutil import which, rmtree
 
-from metplus.util import met_util as util
-
+from metplus.util.constants import MISSING_DATA_VALUE
 
 @pytest.mark.parametrize(
     'input_value, result', [
@@ -178,14 +177,14 @@ def test_getexe(metplus_config, input_value, result):
     'input_value, default, result', [
         ('1.1', None, 1.1),
         ('1.1', 2.2, 1.1),
-        (None, None, util.MISSING_DATA_VALUE),
+        (None, None, MISSING_DATA_VALUE),
         (None, 1.1, 1.1),
         ('integer', None, None),
         ('integer', 1.1, None),
         ('0', None, 0.0),
         ('0', 2.2, 0.0),
-        ('', None, util.MISSING_DATA_VALUE),
-        ('', 2.2, util.MISSING_DATA_VALUE),
+        ('', None, MISSING_DATA_VALUE),
+        ('', 2.2, MISSING_DATA_VALUE),
     ]
 )
 def test_getfloat(metplus_config, input_value, default, result):
@@ -205,7 +204,7 @@ def test_getfloat(metplus_config, input_value, default, result):
     'input_value, default, result', [
         ('1', None, 1),
         ('1', 2, 1),
-        (None, None, util.MISSING_DATA_VALUE),
+        (None, None, MISSING_DATA_VALUE),
         (None, 1, 1),
         ('integer', None, None),
         ('integer', 1, None),
@@ -214,8 +213,8 @@ def test_getfloat(metplus_config, input_value, default, result):
         ('1.7', 2, None),
         ('1.0', None, None),
         ('1.0', 2, None),
-        ('', None, util.MISSING_DATA_VALUE),
-        ('', 2.2, util.MISSING_DATA_VALUE),
+        ('', None, MISSING_DATA_VALUE),
+        ('', 2.2, MISSING_DATA_VALUE),
     ]
 )
 @pytest.mark.util
