@@ -12,7 +12,7 @@ from ..util import do_string_sub, getlist
 from ..util import get_seconds_from_string, ti_get_lead_string, ti_calculate
 from ..util import get_relativedelta, ti_get_seconds_from_relativedelta
 from ..util import time_string_to_met_time, seconds_to_met_time
-from ..util import parse_var_list
+from ..util import parse_var_list, template_to_regex
 from . import ReformatGriddedWrapper
 
 '''!@namespace PCPCombineWrapper
@@ -445,10 +445,10 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         out_accum = time_string_to_met_time(lookback, 'S')
 
         time_info['level'] = in_accum
-        pcp_regex = util.template_to_regex(
-            self.c_dict[f'{data_src}_INPUT_TEMPLATE'],
-            time_info
+        pcp_regex = template_to_regex(
+            self.c_dict[f'{data_src}_INPUT_TEMPLATE']
         )
+        pcp_regex = do_string_sub(pcp_regex, **time_info)
         pcp_regex_split = pcp_regex.split('/')
         pcp_dir = os.path.join(self.c_dict[f'{data_src}_INPUT_DIR'],
                                *pcp_regex_split[0:-1])
@@ -817,8 +817,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         # string sub values into full field info string using search time info
         if time_info:
-            field_info = do_string_sub(field_info,
-                                       **time_info)
+            field_info = do_string_sub(field_info, **time_info)
         return field_info
 
     def find_input_file(self, init_time, valid_time, search_accum, data_src):

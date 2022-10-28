@@ -324,41 +324,6 @@ def get_files(filedir, filename_regex, logger=None):
                 continue
     return sorted(file_paths)
 
-def prune_empty(output_dir, logger):
-    """! Start from the output_dir, and recursively check
-        all directories and files.  If there are any empty
-        files or directories, delete/remove them so they
-        don't cause performance degradation or errors
-        when performing subsequent tasks.
-        Input:
-            @param output_dir:  The directory from which searching
-                                should begin.
-            @param logger: The logger to which all logging is
-                           directed.
-    """
-
-    # Check for empty files.
-    for root, dirs, files in os.walk(output_dir):
-        # Create a full file path by joining the path
-        # and filename.
-        for a_file in files:
-            a_file = os.path.join(root, a_file)
-            if os.stat(a_file).st_size == 0:
-                logger.debug("Empty file: " + a_file +
-                             "...removing")
-                os.remove(a_file)
-
-    # Now check for any empty directories, some
-    # may have been created when removing
-    # empty files.
-    for root, dirs, files in os.walk(output_dir):
-        for direc in dirs:
-            full_dir = os.path.join(root, direc)
-            if not os.listdir(full_dir):
-                logger.debug("Empty directory: " + full_dir +
-                             "...removing")
-                os.rmdir(full_dir)
-
 
 def shift_time_seconds(time_str, shift):
     """ Adjust time by shift seconds. Format is %Y%m%d%H%M%S
@@ -668,12 +633,6 @@ def preprocess_file(filename, data_type, config, allow_dir=False):
 
     return None
 
-def template_to_regex(template, time_info):
-    in_template = re.sub(r'\.', '\\.', template)
-    in_template = re.sub(r'{lead.*?}', '.*', in_template)
-    return do_string_sub(in_template,
-                         **time_info)
-
 
 def expand_int_string_to_list(int_string):
     """! Expand string into a list of integer values. Items are separated by
@@ -807,12 +766,6 @@ def netcdf_has_var(file_path, name, level):
     except (AttributeError, OSError, ImportError):
         return False
 
-def generate_tmp_filename():
-    import random
-    import string
-    random_string = ''.join(random.choice(string.ascii_letters)
-                            for i in range(10))
-    return f"metplus_tmp_{random_string}"
 
 def format_level(level):
     """! Format level string to prevent NetCDF level values from creating

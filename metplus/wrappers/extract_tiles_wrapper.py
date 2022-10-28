@@ -15,7 +15,7 @@ import re
 
 from ..util import met_util as util
 from ..util import do_string_sub, ti_calculate, skip_time
-from ..util import parse_var_list, round_0p5, get_storms
+from ..util import parse_var_list, round_0p5, get_storms, prune_empty
 from .regrid_data_plane_wrapper import RegridDataPlaneWrapper
 from . import CommandBuilder
 
@@ -267,7 +267,7 @@ class ExtractTilesWrapper(CommandBuilder):
         else:
             self.use_tc_stat_input(storm_dict, idx_dict)
 
-        util.prune_empty(self.c_dict['OUTPUT_DIR'], self.logger)
+        prune_empty(self.c_dict['OUTPUT_DIR'], self.logger)
 
     def use_tc_stat_input(self, storm_dict, idx_dict):
         """! Find storms in TCStat input file and create tiles using the storm.

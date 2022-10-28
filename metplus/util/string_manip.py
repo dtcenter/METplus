@@ -6,6 +6,8 @@ Description: METplus utility to handle string manipulation
 
 import re
 from csv import reader
+import random
+import string
 
 from .constants import VALID_COMPARISONS
 
@@ -365,3 +367,14 @@ def round_0p5(val):
     @returns n.0, n.5, or (n+1).0 value as a result of rounding
     """
     return round(val * 2) / 2
+
+
+def generate_tmp_filename():
+    random_string = ''.join(random.choice(string.ascii_letters)
+                            for i in range(10))
+    return f"metplus_tmp_{random_string}"
+
+
+def template_to_regex(template):
+    in_template = re.sub(r'\.', '\\.', template)
+    return re.sub(r'{lead.*?}', '.*', in_template)

@@ -100,3 +100,37 @@ def get_storms(filter_filename, id_only=False, sort_column='STORM_ID'):
         storm_dict[storm] = [line for line in lines if storm in line]
 
     return storm_dict
+
+
+def prune_empty(output_dir, logger):
+    """! Start from the output_dir, and recursively check
+        all directories and files.  If there are any empty
+        files or directories, delete/remove them so they
+        don't cause performance degradation or errors
+        when performing subsequent tasks.
+
+        @param output_dir The directory from which searching should begin.
+        @param logger The logger to which all logging is directed.
+    """
+
+    # Check for empty files.
+    for root, dirs, files in os.walk(output_dir):
+        # Create a full file path by joining the path
+        # and filename.
+        for a_file in files:
+            a_file = os.path.join(root, a_file)
+            if os.stat(a_file).st_size == 0:
+                logger.debug("Empty file: " + a_file +
+                             "...removing")
+                os.remove(a_file)
+
+    # Now check for any empty directories, some
+    # may have been created when removing
+    # empty files.
+    for root, dirs, files in os.walk(output_dir):
+        for direc in dirs:
+            full_dir = os.path.join(root, direc)
+            if not os.listdir(full_dir):
+                logger.debug("Empty directory: " + full_dir +
+                             "...removing")
+                os.rmdir(full_dir)
