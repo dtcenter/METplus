@@ -499,7 +499,7 @@ def ti_calculate(input_dict_preserve):
 
 def add_to_time_input(time_input, clock_time=None, instance=None, custom=None):
     if clock_time:
-        clock_dt = datetime.strptime(clock_time, '%Y%m%d%H%M%S')
+        clock_dt = datetime.datetime.strptime(clock_time, '%Y%m%d%H%M%S')
         time_input['now'] = clock_dt
 
     # if instance is set, use that value, otherwise use empty string
