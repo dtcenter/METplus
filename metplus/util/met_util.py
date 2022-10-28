@@ -293,65 +293,6 @@ def get_lead_sequence_groups(config):
 
     return lead_seq_dict
 
-def round_0p5(val):
-    """! Round to the nearest point five (ie 3.3 rounds to 3.5, 3.1
-       rounds to 3.0) Take the input value, multiply by two, round to integer
-       (no decimal places) then divide by two.  Expect any input value of n.0,
-       n.1, or n.2 to round down to n.0, and any input value of n.5, n.6 or
-       n.7 to round to n.5. Finally, any input value of n.8 or n.9 will
-       round to (n+1).0
-       Args:
-          @param val :  The number to be rounded to the nearest .5
-       Returns:
-          pt_five:  The n.0, n.5, or (n+1).0 value as
-                            a result of rounding the input value, val.
-    """
-
-    return round(val * 2) / 2
-
-
-def get_storms(filter_filename, id_only=False, sort_column='STORM_ID'):
-    """! Get each storm as identified by a column in the input file.
-         Create dictionary storm ID as the key and a list of lines for that
-         storm as the value.
-
-         @param filter_filename name of tcst file to read and extract storm id
-         @param sort_column column to use to sort and group storms. Default
-          value is STORM_ID
-         @returns 2 item tuple - 1)dictionary where key is storm ID and value
-          is list of relevant lines from tcst file, 2) header line from tcst
-           file. Item with key 'header' contains the header of the tcst file
-    """
-    # Initialize a set because we want unique storm ids.
-    storm_id_list = set()
-
-    try:
-        with open(filter_filename, "r") as file_handle:
-            header, *lines = file_handle.readlines()
-
-        storm_id_column = header.split().index(sort_column)
-        for line in lines:
-            storm_id_list.add(line.split()[storm_id_column])
-    except (ValueError, FileNotFoundError):
-        if id_only:
-            return []
-        return {}
-
-    # sort the unique storm ids, copy the original
-    # set by using sorted rather than sort.
-    sorted_storms = sorted(storm_id_list)
-    if id_only:
-        return sorted_storms
-
-    if not sorted_storms:
-        return {}
-
-    storm_dict = {'header': header}
-    # for each storm, get all lines for that storm
-    for storm in sorted_storms:
-        storm_dict[storm] = [line for line in lines if storm in line]
-
-    return storm_dict
 
 def get_files(filedir, filename_regex, logger=None):
     """! Get all the files (with a particular

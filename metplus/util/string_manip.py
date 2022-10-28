@@ -351,3 +351,17 @@ def validate_thresholds(thresh_list):
               "optionally combined with && or ||")
         return False
     return True
+
+
+def round_0p5(val):
+    """! Round to the nearest point five (ie 3.3 rounds to 3.5, 3.1
+       rounds to 3.0) Take the input value, multiply by two, round to integer
+       (no decimal places) then divide by two.  Expect any input value of n.0,
+       n.1, or n.2 to round down to n.0, and any input value of n.5, n.6 or
+       n.7 to round to n.5. Finally, any input value of n.8 or n.9 will
+       round to (n+1).0
+
+      @param val :  The number to be rounded to the nearest .5
+    @returns n.0, n.5, or (n+1).0 value as a result of rounding
+    """
+    return round(val * 2) / 2

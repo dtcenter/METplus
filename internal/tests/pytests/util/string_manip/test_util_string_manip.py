@@ -9,6 +9,19 @@ from metplus.util.string_manip import _fix_list
 
 
 @pytest.mark.parametrize(
+    'value, expected_result', [
+        (3.3, 3.5),
+        (3.1, 3.0),
+        (-3.2, -3.0),
+        (-3.8, -4.0),
+    ]
+)
+@pytest.mark.util
+def test_round_0p5(value, expected_result):
+    assert round_0p5(value) == expected_result
+
+
+@pytest.mark.parametrize(
     'key, value', [
         ({"gt2.3", "gt5.5"}, True),
         ({"ge2.3", "ge5.5"}, True),

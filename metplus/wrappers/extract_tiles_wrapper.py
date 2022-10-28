@@ -15,7 +15,7 @@ import re
 
 from ..util import met_util as util
 from ..util import do_string_sub, ti_calculate, skip_time
-from ..util import parse_var_list
+from ..util import parse_var_list, round_0p5, get_storms
 from .regrid_data_plane_wrapper import RegridDataPlaneWrapper
 from . import CommandBuilder
 
@@ -247,7 +247,7 @@ class ExtractTilesWrapper(CommandBuilder):
 
         # get unique storm ids or object cats from the input file
         # store list of lines from tcst/mtd file for each ID as the value
-        storm_dict = util.get_storms(
+        storm_dict = get_storms(
             input_path,
             sort_column=self.SORT_COLUMN[location_input]
         )
@@ -515,8 +515,8 @@ class ExtractTilesWrapper(CommandBuilder):
         # float(lon) - lon_subtr
         adj_lon = float(lon) - self.c_dict['LON_ADJ']
         adj_lat = float(lat) - self.c_dict['LAT_ADJ']
-        lon0 = str(util.round_0p5(adj_lon))
-        lat0 = str(util.round_0p5(adj_lat))
+        lon0 = round_0p5(adj_lon)
+        lat0 = round_0p5(adj_lat)
 
         self.logger.debug(f'{data_type} '
                           f'lat: {lat} (track lat) => {lat0} (lat lower left), '
