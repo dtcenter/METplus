@@ -28,7 +28,7 @@ if [ $? != 0 ]; then
   exit 1
 fi
 
-docker_data_output_dir=scripts/docker/docker_data_output
+docker_data_output_dir=.github/jobs/docker_data_output
 
 success=1
 for vol_name in use_cases_*; do
