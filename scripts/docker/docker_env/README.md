@@ -1,6 +1,6 @@
 # Docker Conda Environments
 
-Run the commands from this directory (internal/scripts/docker_env).
+Run the commands from this directory (scripts/docker/docker_env).
 Instructions include how to create Docker images in dtcenter/metplus-envs so
 environments are available for the automated tests. Instructions to create
 these Conda environments on a local machine are also provided.
