@@ -221,16 +221,11 @@ The METplus Wrappers source code contains the following directory structure::
   METplus/
     build_components/
     docs/
-    environment.yml
     internal/
     manage_exernals/
     metplus/
     parm/
     produtil/
-    README.md
-    requirements.txt
-    scripts/
-    setup.py
     ush/
 
 The top-level METplus Wrappers directory consists of a README.md file
@@ -249,7 +244,8 @@ The Doxygen documentation is useful to
 contributors and is not necessary for METplus end-users.
 
 The **internal/** directory contains scripts that are only
-relevant to METplus developers and contributors.
+relevant to METplus developers and contributors, such as tests and files
+used with Docker.
 
 The **manage_externals/** directory contains scripts used to
 facilitate the downloading and management
@@ -261,9 +257,6 @@ The **parm/** directory contains all the configuration files for MET and
 METplus Wrappers.
 
 The **produtil/** directory contains part of the external utility produtil.
-
-The **scripts/** directory contains scripts that are used for creating
-Docker images.
 
 The **ush/** directory contains the run_metplus.py script that is
 executed to run use cases.
