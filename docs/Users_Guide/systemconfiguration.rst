@@ -426,7 +426,7 @@ This defines the format of the ERROR log messages. Setting the value to::
 
 Produces a log file with ERROR lines that match this format::
 
-    04/29 16:03:34.858 metplus (met_util.py:218) ERROR: METplus has finished running but had 1 error.
+    04/29 16:03:34.858 metplus (run_util.py:192) ERROR: METplus has finished running but had 1 error.
 
 The format of the timestamp is set by
 :ref:`LOG_LINE_DATE_FORMAT<log_line_date_format>`.
@@ -442,7 +442,7 @@ This defines the format of the DEBUG log messages. Setting the value to::
 
 Produces a log file with DEBUG lines that match this format::
 
-    04/29 15:54:22.851 metplus (met_util.py:207) DEBUG: METplus took 0:00:00.850983 to run.
+    04/29 15:54:22.851 metplus (run_util.py:177) DEBUG: METplus took 0:00:00.850983 to run.
 
 The format of the timestamp is set by
 :ref:`LOG_LINE_DATE_FORMAT<log_line_date_format>`.
@@ -2648,9 +2648,9 @@ In most cases, there is a simple one-to-one relationship between a deprecated co
 
 Example::
 
-    (met_util.py) ERROR: DEPRECATED CONFIG ITEMS WERE FOUND. PLEASE REMOVE/REPLACE THEM FROM CONFIG FILES
-    (met_util.py) ERROR: [dir] MODEL_DATA_DIR should be replaced with EXTRACT_TILES_GRID_INPUT_DIR
-    (met_util.py) ERROR: [config] STAT_LIST should be replaced with SERIES_ANALYSIS_STAT_LIST
+    ERROR: DEPRECATED CONFIG ITEMS WERE FOUND. PLEASE REMOVE/REPLACE THEM FROM CONFIG FILES
+    ERROR: [dir] MODEL_DATA_DIR should be replaced with EXTRACT_TILES_GRID_INPUT_DIR
+    ERROR: [config] STAT_LIST should be replaced with SERIES_ANALYSIS_STAT_LIST
 
 These cases can be handled automatically by using the :ref:`validate_config`.
 
@@ -2666,10 +2666,10 @@ Starting in METplus 3.0, users are required to either explicitly set both FCST_*
 
 Example::
 
-    (met_util.py) ERROR: If FCST_VAR1_NAME is set, the user must either set OBS_VAR1_NAME or change FCST_VAR1_NAME to BOTH_VAR1_NAME
-    (met_util.py) ERROR: If FCST_VAR2_NAME is set, the user must either set OBS_VAR2_NAME or change FCST_VAR2_NAME to BOTH_VAR2_NAME
-    (met_util.py) ERROR: If FCST_VAR1_LEVELS is set, the user must either set OBS_VAR1_LEVELS or change FCST_VAR1_LEVELS to BOTH_VAR1_LEVELS
-    (met_util.py) ERROR: If FCST_VAR2_LEVELS is set, the user must either set OBS_VAR2_LEVELS or change FCST_VAR2_LEVELS to BOTH_VAR2_LEVELS
+    ERROR: If FCST_VAR1_NAME is set, the user must either set OBS_VAR1_NAME or change FCST_VAR1_NAME to BOTH_VAR1_NAME
+    ERROR: If FCST_VAR2_NAME is set, the user must either set OBS_VAR2_NAME or change FCST_VAR2_NAME to BOTH_VAR2_NAME
+    ERROR: If FCST_VAR1_LEVELS is set, the user must either set OBS_VAR1_LEVELS or change FCST_VAR1_LEVELS to BOTH_VAR1_LEVELS
+    ERROR: If FCST_VAR2_LEVELS is set, the user must either set OBS_VAR2_LEVELS or change FCST_VAR2_LEVELS to BOTH_VAR2_LEVELS
 
 These cases can be handled automatically by using the :ref:`validate_config`, but users should review the suggested changes, as they may want to update differently.
 
@@ -2682,7 +2682,7 @@ Instead of only being able to specify FCST_PCP_COMBINE_INPUT_LEVEL, users can no
 
 Example::
 
-    (met_util.py) ERROR: [config] OBS_PCP_COMBINE_INPUT_LEVEL should be replaced with OBS_PCP_COMBINE_INPUT_ACCUMS
+    ERROR: [config] OBS_PCP_COMBINE_INPUT_LEVEL should be replaced with OBS_PCP_COMBINE_INPUT_ACCUMS
 
 These cases can be handled automatically by using the :ref:`validate_config`, but users should review the suggested changes, as they may want to include other available input accumulations.
 
@@ -2719,17 +2719,17 @@ Due to these changes, MET configuration files that refer to any of these depreca
 
 Example log output::
 
-    (met_util.py) DEBUG: Checking for deprecated environment variables in: DeprecatedConfig
-    (met_util.py) ERROR: Please remove deprecated environment variable ${GRID_VX} found in MET config file: DeprecatedConfig
-    (met_util.py) ERROR: MET to_grid variable should reference ${REGRID_TO_GRID} environment variable
-    (met_util.py) INFO: Be sure to set GRID_STAT_REGRID_TO_GRID to the correct value.
+    DEBUG: Checking for deprecated environment variables in: DeprecatedConfig
+    ERROR: Please remove deprecated environment variable ${GRID_VX} found in MET config file: DeprecatedConfig
+    ERROR: MET to_grid variable should reference ${REGRID_TO_GRID} environment variable
+    INFO: Be sure to set GRID_STAT_REGRID_TO_GRID to the correct value.
 
-    (met_util.py) ERROR: Please remove deprecated environment variable ${MET_VALID_HHMM} found in MET config file: DeprecatedConfig
-    (met_util.py) ERROR: Set GRID_STAT_CLIMO_MEAN_INPUT_[DIR/TEMPLATE] in a METplus config file to set CLIMO_MEAN_FILE in a MET config
+    ERROR: Please remove deprecated environment variable ${MET_VALID_HHMM} found in MET config file: DeprecatedConfig
+    ERROR: Set GRID_STAT_CLIMO_MEAN_INPUT_[DIR/TEMPLATE] in a METplus config file to set CLIMO_MEAN_FILE in a MET config
 
-    (met_util.py) ERROR: output_prefix variable should reference ${OUTPUT_PREFIX} environment variable
-    (met_util.py) INFO: GRID_STAT_OUTPUT_PREFIX will need to be added to the METplus config file that sets GRID_STAT_CONFIG_FILE. Set it to:
-    (met_util.py) INFO: GRID_STAT_OUTPUT_PREFIX = {CURRENT_FCST_NAME}_vs_{CURRENT_OBS_NAME}
+    ERROR: output_prefix variable should reference ${OUTPUT_PREFIX} environment variable
+    INFO: GRID_STAT_OUTPUT_PREFIX will need to be added to the METplus config file that sets GRID_STAT_CONFIG_FILE. Set it to:
+    INFO: GRID_STAT_OUTPUT_PREFIX = {CURRENT_FCST_NAME}_vs_{CURRENT_OBS_NAME}
 
 These cases can be handled automatically by using the :ref:`validate_config`, but users should review the suggested changes and make sure they add the appropriate recommended METplus configuration variables to their files to achieve the same behavior.
 

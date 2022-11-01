@@ -108,3 +108,8 @@ YMD = '%Y%m%d'
 
 # datetime year month day hour minute second (YYYYMMDD_HHMMSS) notation
 YMD_HMS = '%Y%m%d_%H%M%S'
+
+# missing data value used to check if integer values are not set
+# we often check for None if a variable is not set, but 0 and None
+# have the same result in a test. 0 may be a valid integer value
+MISSING_DATA_VALUE = -9999

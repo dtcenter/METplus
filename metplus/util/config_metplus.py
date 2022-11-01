@@ -22,11 +22,11 @@ import uuid
 
 from produtil.config import ProdConfig
 
-from .constants import RUNTIME_CONFS
-from . import met_util as util
+from .constants import RUNTIME_CONFS, MISSING_DATA_VALUE
 from .string_template_substitution import get_tags, do_string_sub
-from .met_util import is_python_script, format_var_items
-from .string_manip import getlist, remove_quotes
+from .string_manip import getlist, remove_quotes, is_python_script
+from .string_manip import validate_thresholds
+from .system_util import mkdir_p
 from .doc_util import get_wrapper_name
 
 """!Creates the initial METplus directory structure,
@@ -51,8 +51,12 @@ __all__ = [
     'get_custom_string_list',
     'find_indices_in_config_section',
     'parse_var_list',
+    'sub_var_list',
     'get_process_list',
     'validate_configuration_variables',
+    'is_loop_by_init',
+    'handle_tmp_dir',
+    'log_runtime_banner',
 ]
 
 '''!@var METPLUS_BASE
@@ -251,7 +255,7 @@ def launch(config_list):
     # that is logged relates to OUTPUT_BASE, not LOG_DIR, which is likely
     # only set incorrectly because OUTPUT_BASE is set incorrectly
     # Initialize the output directories
-    util.mkdir_p(config.getdir('OUTPUT_BASE'))
+    mkdir_p(config.getdir('OUTPUT_BASE'))
 
     # set and log variables to the config object
     get_logger(config)
@@ -260,7 +264,7 @@ def launch(config_list):
 
     # create final conf directory if it doesn't already exist
     final_conf_dir = os.path.dirname(final_conf)
-    util.mkdir_p(final_conf_dir)
+    mkdir_p(final_conf_dir)
 
     # set METPLUS_BASE/PARM_BASE conf so they can be referenced in other confs
     config.set('config', 'METPLUS_BASE', METPLUS_BASE)
@@ -288,7 +292,7 @@ def _set_logvars(config, logger=None):
     log_timestamp_template = config.getstr('config', 'LOG_TIMESTAMP_TEMPLATE',
                                            '')
     if config.getbool('config', 'LOG_TIMESTAMP_USE_DATATIME', False):
-        loop_by = 'INIT' if util.is_loop_by_init(config) else 'VALID'
+        loop_by = 'INIT' if is_loop_by_init(config) else 'VALID'
         time_str = config.getraw('config', f'{loop_by}_BEG')
         time_fmt = config.getraw('config', f'{loop_by}_TIME_FMT')
         date_t = datetime.strptime(time_str, time_fmt)
@@ -353,7 +357,7 @@ def get_logger(config, sublog=None):
     log_level = config.getstr('config', 'LOG_LEVEL')
 
     # Create the log directory if it does not exist
-    util.mkdir_p(log_dir)
+    mkdir_p(log_dir)
 
     if sublog is not None:
         logger = config.log(sublog)
@@ -387,7 +391,7 @@ def get_logger(config, sublog=None):
         # So lets check and make more directory if needed.
         dir_name = os.path.dirname(metpluslog)
         if not os.path.exists(dir_name):
-            util.mkdir_p(dir_name)
+            mkdir_p(dir_name)
 
         # do not send logs up to root logger handlers
         logger.propagate = False
@@ -796,7 +800,7 @@ class METplusConfig(ProdConfig):
         # if config variable is not set
         except NoOptionError:
             if default is None:
-                default = util.MISSING_DATA_VALUE
+                default = MISSING_DATA_VALUE
 
             self.check_default(sec, name, default)
             return default
@@ -805,7 +809,7 @@ class METplusConfig(ProdConfig):
         except ValueError:
             # check if it was an empty string and return MISSING_DATA_VALUE
             if super().getstr(sec, name) == '':
-                return util.MISSING_DATA_VALUE
+                return MISSING_DATA_VALUE
 
             # if value is not correct type, log error and return None
             self.logger.error(f"[{sec}] {name} must be an integer.")
@@ -830,7 +834,7 @@ class METplusConfig(ProdConfig):
         # if config variable is not set
         except NoOptionError:
             if default is None:
-                default = float(util.MISSING_DATA_VALUE)
+                default = float(MISSING_DATA_VALUE)
 
             self.check_default(sec, name, default)
             return default
@@ -839,7 +843,7 @@ class METplusConfig(ProdConfig):
         except ValueError:
             # check if it was an empty string and return MISSING_DATA_VALUE
             if super().getstr(sec, name) == '':
-                return util.MISSING_DATA_VALUE
+                return MISSING_DATA_VALUE
 
             # if value is not correct type, log error and return None
             self.logger.error(f"[{sec}] {name} must be a float.")
@@ -1585,9 +1589,9 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None,
     # get indices of VAR<n> items for data type and/or met tool
     indices = []
     if met_tool:
-        indices = find_var_name_indices(config, data_types, met_tool).keys()
+        indices = _find_var_name_indices(config, data_types, met_tool).keys()
     if not indices:
-        indices = find_var_name_indices(config, data_types).keys()
+        indices = _find_var_name_indices(config, data_types).keys()
 
     # get config name prefixes for each data type to find
     dt_search_prefixes = {}
@@ -1606,7 +1610,7 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None,
                                                        index,
                                                        search_prefixes)
 
-            field_info = format_var_items(field_configs, time_info)
+            field_info = _format_var_items(field_configs, time_info)
             if not isinstance(field_info, dict):
                 config.logger.error(f'Could not process {current_type}_'
                                     f'VAR{index} variables: {field_info}')
@@ -1707,7 +1711,7 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None,
     '''
     return sorted(var_list, key=lambda x: x['index'])
 
-def find_var_name_indices(config, data_types, met_tool=None):
+def _find_var_name_indices(config, data_types, met_tool=None):
     data_type_regex = f"{'|'.join(data_types)}"
 
     # if data_types includes FCST or OBS, also search for BOTH
@@ -1727,6 +1731,94 @@ def find_var_name_indices(config, data_types, met_tool=None):
                                           config,
                                           index_index=2,
                                           id_index=1)
+
+
+def _format_var_items(field_configs, time_info=None):
+    """! Substitute time information into field information and format values.
+
+        @param field_configs dictionary with config variable names to read
+        @param time_info dictionary containing time info for current run
+        @returns dictionary containing name, levels, and output_names, as
+         well as thresholds and extra options if found. If not enough
+         information was set in the METplusConfig object, an empty
+         dictionary is returned.
+    """
+    # dictionary to hold field (var) item info
+    var_items = {}
+
+    # set defaults for optional items
+    var_items['levels'] = []
+    var_items['thresh'] = []
+    var_items['extra'] = ''
+    var_items['output_names'] = []
+
+    # get name, return error string if not found
+    search_name = field_configs.get('name')
+    if not search_name:
+        return 'Name not found'
+
+    # perform string substitution on name
+    if time_info:
+        search_name = do_string_sub(search_name,
+                                    skip_missing_tags=True,
+                                    **time_info)
+    var_items['name'] = search_name
+
+    # get levels, performing string substitution on each item of list
+    for level in getlist(field_configs.get('levels')):
+        if time_info:
+            level = do_string_sub(level,
+                                  **time_info)
+        var_items['levels'].append(level)
+
+    # if no levels are found, add an empty string
+    if not var_items['levels']:
+        var_items['levels'].append('')
+
+    # get threshold list if it is set
+    # return error string if any thresholds not formatted properly
+    search_thresh = field_configs.get('thresh')
+    if search_thresh:
+        thresh = getlist(search_thresh)
+        if not validate_thresholds(thresh):
+            return 'Invalid threshold supplied'
+
+        var_items['thresh'] = thresh
+
+    # get extra options if it is set, format with semi-colons between items
+    search_extra = field_configs.get('options')
+    if search_extra:
+        if time_info:
+            search_extra = do_string_sub(search_extra,
+                                         **time_info)
+
+        # strip off empty space around each value
+        extra_list = [item.strip() for item in search_extra.split(';')]
+
+        # split up each item by semicolon, then add a semicolon to the end
+        # use list(filter(None to remove empty strings from list
+        extra_list = list(filter(None, extra_list))
+        var_items['extra'] = f"{'; '.join(extra_list)};"
+
+    # get output names if they are set
+    out_name_str = field_configs.get('output_names')
+
+    # use input name for each level if not set
+    if not out_name_str:
+        for _ in var_items['levels']:
+            var_items['output_names'].append(var_items['name'])
+    else:
+        for out_name in getlist(out_name_str):
+            if time_info:
+                out_name = do_string_sub(out_name,
+                                         **time_info)
+            var_items['output_names'].append(out_name)
+
+    if len(var_items['levels']) != len(var_items['output_names']):
+        return 'Number of levels does not match number of output names'
+
+    return var_items
+
 
 def skip_field_info_validation(config):
     """!Check config to see if having corresponding FCST/OBS variables is necessary. If process list only
@@ -1934,3 +2026,170 @@ def get_field_config_variables(config, index, search_prefixes):
                 break
 
     return field_configs
+
+
+def is_loop_by_init(config):
+    """!Check config variables to determine if looping by valid or init time"""
+    if config.has_option('config', 'LOOP_BY'):
+        loop_by = config.getstr('config', 'LOOP_BY').lower()
+        if loop_by in ['init', 'retro']:
+            return True
+        elif loop_by in ['valid', 'realtime']:
+            return False
+
+    if config.has_option('config', 'LOOP_BY_INIT'):
+        return config.getbool('config', 'LOOP_BY_INIT')
+
+    msg = 'MUST SET LOOP_BY to VALID, INIT, RETRO, or REALTIME'
+    if config.logger is None:
+        print(msg)
+    else:
+        config.logger.error(msg)
+
+    return None
+
+
+def handle_tmp_dir(config):
+    """! if env var MET_TMP_DIR is set, override config TMP_DIR with value
+     if it differs from what is set
+     get config temp dir using getdir_nocheck to bypass check for /path/to
+     this is done so the user can set env MET_TMP_DIR instead of config TMP_DIR
+     and config TMP_DIR will be set automatically"""
+    handle_env_var_config(config, 'MET_TMP_DIR', 'TMP_DIR')
+
+    # create temp dir if it doesn't exist already
+    # this will fail if TMP_DIR is not set correctly and
+    # env MET_TMP_DIR was not set
+    mkdir_p(config.getdir('TMP_DIR'))
+
+
+def handle_env_var_config(config, env_var_name, config_name):
+    """! If environment variable is set, use that value
+     for the config variable and warn if the previous config value differs
+
+     @param config METplusConfig object to read
+     @param env_var_name name of environment variable to read
+     @param config_name name of METplus config variable to check
+    """
+    env_var_value = os.environ.get(env_var_name, '')
+    config_value = config.getdir_nocheck(config_name, '')
+
+    # do nothing if environment variable is not set
+    if not env_var_value:
+        return
+
+    # override config config variable to environment variable value
+    config.set('config', config_name, env_var_value)
+
+    # if config config value differed from environment variable value, warn
+    if config_value == env_var_value:
+        return
+
+    config.logger.warning(f'Config variable {config_name} ({config_value}) '
+                          'will be overridden by the environment variable '
+                          f'{env_var_name} ({env_var_value})')
+
+
+def write_all_commands(all_commands, config):
+    """! Write all commands that were run to a file in the log
+     directory. This includes the environment variables that
+     were set before each command.
+
+    @param all_commands list of tuples with command run and
+     list of environment variables that were set
+    @param config METplusConfig object used to write log output
+     and get the log timestamp to name the output file
+    @returns False if no commands were provided, True otherwise
+    """
+    if not all_commands:
+        config.logger.error("No commands were run. "
+                            "Skip writing all_commands file")
+        return False
+
+    log_timestamp = config.getstr('config', 'LOG_TIMESTAMP')
+    filename = os.path.join(config.getdir('LOG_DIR'),
+                            f'.all_commands.{log_timestamp}')
+    config.logger.debug(f"Writing all commands and environment to {filename}")
+    with open(filename, 'w') as file_handle:
+        for command, envs in all_commands:
+            for env in envs:
+                file_handle.write(f"{env}\n")
+
+            file_handle.write("COMMAND:\n")
+            file_handle.write(f"{command}\n\n")
+
+    return True
+
+
+def write_final_conf(config):
+    """! Write final conf file including default values that were set during
+     run. Move variables that are specific to the user's run to the [runtime]
+     section to avoid issues such as overwriting existing log files.
+
+        @param config METplusConfig object to write to file
+     """
+    final_conf = config.getstr('config', 'METPLUS_CONF')
+
+    # remove variables that start with CURRENT
+    config.remove_current_vars()
+
+    # move runtime variables to [runtime] section
+    config.move_runtime_configs()
+
+    config.logger.info('Overwrite final conf here: %s' % (final_conf,))
+    with open(final_conf, 'wt') as conf_file:
+        config.write(conf_file)
+
+
+def log_runtime_banner(config, time_input, process):
+    loop_by = time_input['loop_by']
+    run_time = time_input[loop_by].strftime("%Y-%m-%d %H:%M")
+
+    process_name = process.__class__.__name__
+    if process.instance:
+        process_name = f"{process_name}({process.instance})"
+
+    config.logger.info("****************************************")
+    config.logger.info(f"* Running METplus {process_name}")
+    config.logger.info(f"*  at {loop_by} time: {run_time}")
+    config.logger.info("****************************************")
+
+
+def sub_var_list(var_list, time_info):
+    """! Perform string substitution on var list values with time info
+
+        @param var_list list of field info to substitute values into
+        @param time_info dictionary containing time information
+        @returns var_list with values substituted
+    """
+    if not var_list:
+        return []
+
+    out_var_list = []
+    for var_info in var_list:
+        out_var_info = _sub_var_info(var_info, time_info)
+        out_var_list.append(out_var_info)
+
+    return out_var_list
+
+
+def _sub_var_info(var_info, time_info):
+    if not var_info:
+        return {}
+
+    out_var_info = {}
+    for key, value in var_info.items():
+        if isinstance(value, list):
+            out_value = []
+            for item in value:
+                out_value.append(do_string_sub(item,
+                                               skip_missing_tags=True,
+                                               **time_info))
+        else:
+            out_value = do_string_sub(value,
+                                      skip_missing_tags=True,
+                                      **time_info)
+
+        out_var_info[key] = out_value
+
+    return out_var_info

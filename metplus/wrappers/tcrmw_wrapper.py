@@ -12,11 +12,10 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import met_util as util
 from ..util import time_util
 from . import CommandBuilder
-from ..util import do_string_sub
-from ..util import parse_var_list
+from ..util import do_string_sub, skip_time, get_lead_sequence
+from ..util import parse_var_list, sub_var_list
 
 '''!@namespace TCRMWWrapper
 @brief Wraps the TC-RMW tool
@@ -212,7 +211,7 @@ class TCRMWWrapper(CommandBuilder):
 
             time_info = time_util.ti_calculate(input_dict)
 
-            if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+            if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
                 self.logger.debug('Skipping run time')
                 continue
 
@@ -258,8 +257,7 @@ class TCRMWWrapper(CommandBuilder):
                 @param time_info time dictionary to use for string substitution
                 @returns True if field list could be built, False if not.
         """
-        field_list = util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
-                                       time_info)
+        field_list = sub_var_list(self.c_dict['VAR_LIST_TEMP'], time_info)
         if not field_list:
             self.log_error("Could not get field information from config.")
             return False
@@ -293,7 +291,7 @@ class TCRMWWrapper(CommandBuilder):
 
         self.c_dict['DECK_FILE'] = deck_file
 
-        lead_seq = util.get_lead_sequence(self.config, time_info)
+        lead_seq = get_lead_sequence(self.config, time_info)
 
         # get input files
         if self.c_dict['INPUT_FILE_LIST']:

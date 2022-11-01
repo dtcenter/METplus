@@ -11,7 +11,7 @@ from os.path import dirname, realpath
 sys.path.insert(0, os.path.join(os.path.abspath(dirname(__file__)),
                                 os.pardir,
                                 os.pardir))
-from metplus.util.met_util import subset_list
+from metplus.util.string_manip import subset_list
 
 class METplusUseCase:
     """! Contains name of use case and a list of configuration command line

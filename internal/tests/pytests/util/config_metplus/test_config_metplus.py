@@ -7,7 +7,7 @@ import os
 from datetime import datetime
 
 from metplus.util import config_metplus
-
+from metplus.util.time_util import ti_calculate
 
 @pytest.mark.util
 def test_get_default_config_list():
@@ -150,9 +150,9 @@ def test_find_var_indices_fcst(metplus_config,
     data_types = ['FCST']
     config.set('config', config_var_name, "NAME1")
     met_tool = 'grid_stat' if set_met_tool else None
-    var_name_indices = config_metplus.find_var_name_indices(config,
-                                                            data_types=data_types,
-                                                            met_tool=met_tool)
+    var_name_indices = config_metplus._find_var_name_indices(config,
+                                                             data_types=data_types,
+                                                             met_tool=met_tool)
 
     assert len(var_name_indices) == len(expected_indices)
     for actual_index in var_name_indices:
@@ -648,7 +648,7 @@ def test_find_var_indices_wrapper_specific(metplus_config, met_tool, indices):
     conf.set('config', f'{data_type}_VAR1_NAME', "NAME1")
     conf.set('config', f'{data_type}_GRID_STAT_VAR2_NAME', "GSNAME2")
 
-    var_name_indices = config_metplus.find_var_name_indices(conf, data_types=[data_type],
+    var_name_indices = config_metplus._find_var_name_indices(conf,data_types=[data_type],
                                                   met_tool=met_tool)
 
     assert var_name_indices == indices
@@ -1073,3 +1073,95 @@ def test_getraw_instance_with_unset_var(metplus_config):
     )
     new_config.set('config', 'CURRENT_FCST_NAME', 'NAME')
     assert new_config.getraw('config', 'OUTPUT_PREFIX') == 'FCST_NAME'
+
+
+@pytest.mark.parametrize(
+    'config_value, expected_result', [
+        # 2 items semi-colon at end
+        ('GRIB_lvl_typ = 234;  desc = "HI_CLOUD";',
+         'GRIB_lvl_typ = 234; desc = "HI_CLOUD";'),
+        # 2 items no semi-colon at end
+        ('GRIB_lvl_typ = 234;  desc = "HI_CLOUD"',
+         'GRIB_lvl_typ = 234; desc = "HI_CLOUD";'),
+        # 1 item semi-colon at end
+        ('GRIB_lvl_typ = 234;',
+         'GRIB_lvl_typ = 234;'),
+        # 1 item no semi-colon at end
+        ('GRIB_lvl_typ = 234',
+         'GRIB_lvl_typ = 234;'),
+    ]
+)
+@pytest.mark.util
+def test_format_var_items_options_semicolon(config_value,
+                                            expected_result):
+    time_info = {}
+
+    field_configs = {'name': 'FNAME',
+                     'levels': 'FLEVEL',
+                     'options': config_value}
+
+    var_items = config_metplus._format_var_items(field_configs, time_info)
+    result = var_items.get('extra')
+    assert result == expected_result
+
+
+@pytest.mark.parametrize(
+    'input_dict, expected_list', [
+        ({'init': datetime(2019, 2, 1, 6),
+          'lead': 7200, },
+         [
+             {'index': '1',
+              'fcst_name': 'FNAME_2019',
+              'fcst_level': 'Z06',
+              'obs_name': 'ONAME_2019',
+              'obs_level': 'L06',
+             },
+             {'index': '1',
+              'fcst_name': 'FNAME_2019',
+              'fcst_level': 'Z08',
+              'obs_name': 'ONAME_2019',
+              'obs_level': 'L08',
+             },
+         ]),
+        ({'init': datetime(2021, 4, 13, 9),
+          'lead': 10800, },
+         [
+             {'index': '1',
+              'fcst_name': 'FNAME_2021',
+              'fcst_level': 'Z09',
+              'obs_name': 'ONAME_2021',
+              'obs_level': 'L09',
+              },
+             {'index': '1',
+              'fcst_name': 'FNAME_2021',
+              'fcst_level': 'Z12',
+              'obs_name': 'ONAME_2021',
+              'obs_level': 'L12',
+              },
+         ]),
+    ]
+)
+@pytest.mark.util
+def test_sub_var_list(metplus_config, input_dict, expected_list):
+    config = metplus_config
+    config.set('config', 'FCST_VAR1_NAME', 'FNAME_{init?fmt=%Y}')
+    config.set('config', 'FCST_VAR1_LEVELS', 'Z{init?fmt=%H}, Z{valid?fmt=%H}')
+    config.set('config', 'OBS_VAR1_NAME', 'ONAME_{init?fmt=%Y}')
+    config.set('config', 'OBS_VAR1_LEVELS', 'L{init?fmt=%H}, L{valid?fmt=%H}')
+
+    time_info = ti_calculate(input_dict)
+
+    actual_temp = config_metplus.parse_var_list(config)
+
+    pp = pprint.PrettyPrinter()
+    print(f'Actual var list (before sub):')
+    pp.pprint(actual_temp)
+
+    actual_list = config_metplus.sub_var_list(actual_temp, time_info)
+    print(f'Actual var list (after sub):')
+    pp.pprint(actual_list)
+
+    assert len(actual_list) == len(expected_list)
+    for actual, expected in zip(actual_list, expected_list):
+        for key, value in expected.items():
+            assert actual.get(key) == value

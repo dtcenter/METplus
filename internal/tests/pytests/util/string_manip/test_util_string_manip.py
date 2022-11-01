@@ -9,6 +9,162 @@ from metplus.util.string_manip import _fix_list
 
 
 @pytest.mark.parametrize(
+    'subset_definition, expected_result', [
+        ([1, 3, 5], ['b', 'd', 'f']),
+        ([1, 3, 5, '+'], ['b', 'd', 'f', 'g', 'h', 'i', 'j']),
+        ([1], ['b']),
+        (1, ['b']),
+        ([3, '+'], ['d', 'e', 'f', 'g', 'h', 'i', 'j']),
+        (None, ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']),
+        (slice(1,4,1), ['b', 'c', 'd']),
+        (slice(2,9,2), ['c', 'e', 'g', 'i']),
+    ]
+)
+@pytest.mark.util
+def test_subset_list(subset_definition, expected_result):
+    full_list = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
+    result = subset_list(full_list, subset_definition)
+    assert result == expected_result
+
+
+@pytest.mark.parametrize(
+    'int_string, expected_result', [
+        ('4', [4]),
+        ('4-12', [4, 5, 6, 7, 8, 9, 10, 11, 12]),
+        ('5,18-24,29', [5, 18, 19, 20, 21, 22, 23, 24, 29]),
+        ('7,8,9,13', [7, 8, 9, 13]),
+        ('4+', [4, '+']),
+        ('4-12+', [4, 5, 6, 7, 8, 9, 10, 11, 12, '+']),
+        ('5,18-24,29+', [5, 18, 19, 20, 21, 22, 23, 24, 29, '+']),
+        ('7,8,9,13+', [7, 8, 9, 13, '+']),
+    ]
+)
+@pytest.mark.util
+def test_expand_int_string_to_list(int_string, expected_result):
+    result = expand_int_string_to_list(int_string)
+    assert result == expected_result
+
+
+@pytest.mark.parametrize(
+    'value, expected_result', [
+        (3.3, 3.5),
+        (3.1, 3.0),
+        (-3.2, -3.0),
+        (-3.8, -4.0),
+    ]
+)
+@pytest.mark.util
+def test_round_0p5(value, expected_result):
+    assert round_0p5(value) == expected_result
+
+
+@pytest.mark.parametrize(
+    'key, value', [
+        ({"gt2.3", "gt5.5"}, True),
+        ({"ge2.3", "ge5.5"}, True),
+        ({"eq2.3"}, True),
+        ({"ne2.3"}, True),
+        ({"lt2.3", "lt1.1"}, True),
+        ({"le2.3", "le1.1"}, True),
+        ({">2.3", ">5.5"}, True),
+        ({">=2.3", ">=5.5"}, True),
+        ({"==2.3"}, True),
+        ({"!=.3"}, True),
+        ({"<2.3", "<1."}, True),
+        ({"<=2.3", "<=1.1"}, True),
+        ({"gta"}, False),
+        ({"gt"}, False),
+        ({">=a"}, False),
+        ({"2.3"}, False),
+        ({"<=2.3", "2.4", "gt2.7"}, False),
+        ({"<=2.3||>=4.2", "gt2.3&&lt4.2"}, True),
+        ({"gt2.3&&lt4.2a"}, True),
+        ({"gt2sd.3&&lt4.2"}, True),
+        ({"gt2.3&a&lt4.2"}, True), # invalid but is accepted
+        ({'gt4&&lt5&&ne4.5'}, True),
+        ({"<2.3", "ge5", ">SPF90"}, True),
+        (["NA"], True),
+        (["<USP90(2.5)"], True),
+        ([""], False),
+        ([">SFP70", ">SFP80", ">SFP90", ">SFP95"], True),
+        ([">SFP70", ">SFP80", ">SFP90", ">SFP95"], True),
+    ]
+)
+@pytest.mark.util
+def test_threshold(key, value):
+    assert validate_thresholds(key) == value
+
+
+# parses a threshold and returns a list of tuples of
+# comparison and number, i.e.:
+# 'gt4' => [('gt', 4)]
+# gt4&&lt5 => [('gt', 4), ('lt', 5)]
+@pytest.mark.parametrize(
+    'key, value', [
+        ('gt4', [('gt', 4)]),
+        ('gt4&&lt5', [('gt', 4), ('lt', 5)]),
+        ('gt4&&lt5&&ne4.5', [('gt', 4), ('lt', 5), ('ne', 4.5)]),
+        (">4.545", [('>', 4.545)]),
+        (">=4.0", [('>=', 4.0)]),
+        ("<4.5", [('<', 4.5)]),
+        ("<=4.5", [('<=', 4.5)]),
+        ("!=4.5", [('!=', 4.5)]),
+        ("==4.5", [('==', 4.5)]),
+        ("gt4.5", [('gt', 4.5)]),
+        ("ge4.5", [('ge', 4.5)]),
+        ("lt4.5", [('lt', 4.5)]),
+        ("le4.5", [('le', 4.5)]),
+        ("ne10.5", [('ne', 10.5)]),
+        ("eq4.5", [('eq', 4.5)]),
+        ("eq-4.5", [('eq', -4.5)]),
+        ("eq+4.5", [('eq', 4.5)]),
+        ("eq.5", [('eq', 0.5)]),
+        ("eq5.", [('eq', 5)]),
+        ("eq5.||ne0.0", [('eq', 5), ('ne', 0.0)]),
+        (">SFP90", [('>', 'SFP90')]),
+        ("SFP90", None),
+        ("gtSFP90", [('gt', 'SFP90')]),
+        ("goSFP90", None),
+        ("NA", [('NA', '')]),
+        ("<USP90(2.5)", [('<', 'USP90(2.5)')]),
+    ]
+)
+@pytest.mark.util
+def test_get_threshold_via_regex(key, value):
+    assert get_threshold_via_regex(key) == value
+
+
+@pytest.mark.parametrize(
+    'camel, underscore', [
+        ('ASCII2NCWrapper', 'ascii2nc_wrapper'),
+        ('CyclonePlotterWrapper', 'cyclone_plotter_wrapper'),
+        ('EnsembleStatWrapper', 'ensemble_stat_wrapper'),
+        ('ExampleWrapper', 'example_wrapper'),
+        ('ExtractTilesWrapper', 'extract_tiles_wrapper'),
+        ('GempakToCFWrapper', 'gempak_to_cf_wrapper'),
+        ('GenVxMaskWrapper', 'gen_vx_mask_wrapper'),
+        ('GridStatWrapper', 'grid_stat_wrapper'),
+        ('MODEWrapper', 'mode_wrapper'),
+        ('MTDWrapper', 'mtd_wrapper'),
+        ('PB2NCWrapper', 'pb2nc_wrapper'),
+        ('PCPCombineWrapper', 'pcp_combine_wrapper'),
+        ('Point2GridWrapper', 'point2grid_wrapper'),
+        ('PointStatWrapper', 'point_stat_wrapper'),
+        ('PyEmbedWrapper', 'py_embed_wrapper'),
+        ('RegridDataPlaneWrapper', 'regrid_data_plane_wrapper'),
+        ('SeriesAnalysisWrapper', 'series_analysis_wrapper'),
+        ('StatAnalysisWrapper', 'stat_analysis_wrapper'),
+        ('TCMPRPlotterWrapper', 'tcmpr_plotter_wrapper'),
+        ('TCPairsWrapper', 'tc_pairs_wrapper'),
+        ('TCStatWrapper', 'tc_stat_wrapper'),
+    ]
+)
+@pytest.mark.util
+def test_camel_to_underscore(camel, underscore):
+    assert camel_to_underscore(camel) == underscore
+
+
+@pytest.mark.parametrize(
     'before, after', [
         ('string', 'string'),
         ('"string"', 'string'),
@@ -202,3 +358,16 @@ def test_comparison_to_letter_format(expression, expected_result):
 @pytest.mark.util
 def test_format_thresh(expression, expected_result):
     assert format_thresh(expression) == expected_result
+
+
+@pytest.mark.parametrize(
+    'level, expected_result', [
+        ('level', 'level'),
+        ('P500', 'P500'),
+        ('*,*', 'all_all'),
+        ('1,*,*', '1_all_all'),
+    ]
+)
+@pytest.mark.util
+def test_format_level(level, expected_result):
+    assert format_level(level) == expected_result
