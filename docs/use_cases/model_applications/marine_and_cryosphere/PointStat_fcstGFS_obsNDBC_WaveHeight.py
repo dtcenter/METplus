@@ -18,7 +18,7 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsNDBC_WaveHeight.co
 #
 # | **Forecast:** GFSv16 forecast data from WAVE file category 
 #
-# | **Observations:** ASCII buoy files from NDBC, less than 45 days old so no QC
+# | **Observations:** ASCII buoy files from NDBC
 #
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
@@ -34,8 +34,8 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsNDBC_WaveHeight.co
 # METplus Workflow
 # ----------------
 #
-# ASCII2NC is the first tool called. It pulls in all files with a .txt type, which is what
-# the ASCII buoy data were saved as. These observations are saved into a netCDF, which is then called by PointStat
+# ASCII2NC is the first tool called. It pulls in all files with a .txt type, which is 
+# the ASCII buoy data saved format. These observations are converted into a netCDF, which is then called by PointStat
 # as the observation dataset. PointStat also pulls in a 3 hour forecast from the GFS for wave heights, which is included
 # in the range of available buoy observation times. A +/- 30 minute window is allowed for the observational data. 
 # Thresholds are set that correspond to operational usage, and the CTC and CTS line types are requested.
@@ -87,7 +87,7 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsNDBC_WaveHeight.co
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in PointStat_fcstGFS_obsNDBC_WaveHeight.conf::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsAVISO_WaveHeight.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsNDBC_WaveHeight.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -114,7 +114,7 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsNDBC_WaveHeight.co
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for thisIce use case will be found in 20210503 (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in  PointStat and buoy_ASCII directories (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
 # * point_stat_030000L_20221016_090000V_ctc.txt
