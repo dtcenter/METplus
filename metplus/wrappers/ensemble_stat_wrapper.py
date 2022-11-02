@@ -415,26 +415,26 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
               Args:
                 @param time_info dictionary containing timing information
         """
-        # get ensemble model files
-        # do not fill file list with missing if ens_member_ids is used
-        fill_missing = not self.env_var_dict.get('METPLUS_ENS_MEMBER_IDS')
-        if not self.find_input_files_ensemble(time_info,
-                                              fill_missing=fill_missing):
-            return
-
-        # parse var list for ENS fields
-        ensemble_var_list = util.sub_var_list(self.c_dict['ENS_VAR_LIST_TEMP'],
-                                              time_info)
-
         # parse optional var list for FCST and/or OBS fields
         var_list = util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
                                      time_info)
 
         # if empty var list for FCST/OBS, use None as first var, else use first var in list
-        if not var_list:
-            first_var_info = None
-        else:
+        first_var_info = None
+        if var_list:
             first_var_info = var_list[0]
+
+        # get ensemble model files
+        # do not fill file list with missing if ens_member_ids is used
+        fill_missing = not self.env_var_dict.get('METPLUS_ENS_MEMBER_IDS')
+        if not self.find_input_files_ensemble(time_info,
+                                              fill_missing=fill_missing,
+                                              var_info=first_var_info):
+            return
+
+        # parse var list for ENS fields
+        ensemble_var_list = util.sub_var_list(self.c_dict['ENS_VAR_LIST_TEMP'],
+                                              time_info)
 
         # get point observation file if requested
         if self.c_dict['OBS_POINT_INPUT_TEMPLATE']:

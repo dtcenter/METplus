@@ -826,7 +826,8 @@ class CommandBuilder:
 
         return out
 
-    def find_input_files_ensemble(self, time_info, fill_missing=True):
+    def find_input_files_ensemble(self, time_info, fill_missing=True,
+                                  var_info=None):
         """! Get a list of all input files and optional control file.
         Warn and remove control file if found in ensemble list. Ensure that
         if defined, the number of ensemble members (N_MEMBERS) corresponds to
@@ -836,12 +837,15 @@ class CommandBuilder:
             @param fill_missing If True, fill list of files with MISSING so
             that number of files matches number of expected members. Defaults
             to True.
+            @param var_info optional dictionary with field information used to
+             set level
             @returns True on success
         """
 
         # get control file if requested
         if self.c_dict.get('CTRL_INPUT_TEMPLATE'):
-            ctrl_file = self.find_data(time_info, data_type='CTRL')
+            ctrl_file = self.find_data(time_info, data_type='CTRL',
+                                       var_info=var_info)
 
             # return if requested control file was not found
             if not ctrl_file:
@@ -863,7 +867,8 @@ class CommandBuilder:
             return True
 
         # get list of ensemble files to process
-        input_files = self.find_model(time_info, return_list=True)
+        input_files = self.find_model(time_info, return_list=True,
+                                      var_info=var_info)
         if not input_files:
             self.log_error("Could not find any input files")
             return False
