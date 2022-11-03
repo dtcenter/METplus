@@ -109,6 +109,7 @@ Category: precipitation
 6::MTD_fcstHRRR-TLE_obsMRMS:: model_applications/precipitation/MTD_fcstHRRR-TLE_obsMRMS.conf
 7::EnsembleStat_fcstWOFS_obsWOFS:: model_applications/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf::
 8::PointStat_fcstMULTI_obsMETAR_PtypeComparisons:: model_applications/precipitation/PointStat_fcstMULTI_obsMETAR_PtypeComparisons.conf
+9::PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip:: model_applications/precipitation/PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip.conf
 
 
 Category: s2s
