@@ -334,12 +334,13 @@ def _format_time_list(string_value, get_met_format, sort_list=True):
 
 
 def ti_calculate(input_dict_preserve):
-    out_dict = {}
+    #out_dict = {}
     # copy input dictionary so valid or init can be removed to recalculate it
     # without modifying the input to the function
     input_dict = input_dict_preserve.copy()
+    out_dict = input_dict
 
-    KEYS_TO_COPY = ['custom', 'instance']
+    #KEYS_TO_COPY = ['custom', 'instance']
 
     # set output dictionary to input items
     if 'now' in input_dict.keys():
@@ -347,9 +348,9 @@ def ti_calculate(input_dict_preserve):
         out_dict['today'] = out_dict['now'].strftime('%Y%m%d')
 
     # copy over values of some keys if it is set in input dictionary
-    for key in KEYS_TO_COPY:
-        if key in input_dict.keys():
-            out_dict[key] = input_dict[key]
+    #for key in KEYS_TO_COPY:
+    #    if key in input_dict.keys():
+    #        out_dict[key] = input_dict[key]
 
     # read in input dictionary items and compute missing items
     # valid inputs: valid, init, lead, offset
