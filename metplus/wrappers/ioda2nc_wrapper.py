@@ -140,7 +140,7 @@ class IODA2NCWrapper(LoopTimesWrapper):
         @returns List of files that were found or None if no files were found
         """
         # get list of files even if only one is found (return_list=True)
-        obs_path = self.find_obs(time_info, var_info=None, return_list=True)
+        obs_path = self.find_obs(time_info, return_list=True)
         if obs_path is None:
             return None
 

@@ -466,12 +466,12 @@ class MODEWrapper(CompareGriddedWrapper):
                 @param var_info object containing variable information
         """
         # get model to compare
-        model_path = self.find_model(time_info, var_info)
+        model_path = self.find_model(time_info)
         if model_path is None:
             return
 
         # get observation to compare
-        obs_path = self.find_obs(time_info, var_info)
+        obs_path = self.find_obs(time_info)
         if obs_path is None:
             return
 
