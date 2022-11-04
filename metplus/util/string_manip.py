@@ -239,9 +239,6 @@ def format_thresh(thresh_str):
     @returns string of comma-separated list of the threshold(s) with
      letter format, i.e. gt3,le5.5,eq7
     """
-    if isinstance(thresh_str, list):
-        return format_thresh(','.join(thresh_str))
-
     formatted_thresh_list = []
     # separate thresholds by comma and strip off whitespace around values
     thresh_list = [thresh.strip() for thresh in thresh_str.split(',')]
