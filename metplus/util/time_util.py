@@ -528,15 +528,8 @@ def add_field_info_to_time_info(time_info, var_info):
         # skip index and extra field info
         if key == 'index' or key.endswith('extra'):
             continue
-        # format level and thresh
-        if key.endswith('level'):
-            # strip off prefix letter if it exists
-            value = split_level(value)[1]
 
-            # set level to 0 character if it is not a number, e.g. NetCDF level
-            if not value.isdigit():
-                value = '0'
-        elif key.endswith('thresh'):
+        if key.endswith('thresh'):
             value = format_thresh(value)
 
         time_info[key] = value

@@ -517,6 +517,13 @@ class CommandBuilder:
         # set generic 'level' to level that corresponds to data_type if set
         level = time_info.get(f'{data_type_fmt.lower()}level', '0')
 
+        # strip off prefix letter if it exists
+        level = split_level(level)[1]
+
+        # set level to 0 character if it is not a number, e.g. NetCDF level
+        if not level.isdigit():
+            level = '0'
+
         # if level is a range, use the first value, i.e. if 250-500 use 250
         level = level.split('-')[0]
 
