@@ -19,19 +19,19 @@ from inspect import getframeinfo, stack
 from .command_runner import CommandRunner
 
 from ..util.constants import PYTHON_EMBEDDING_TYPES
-from ..util import getlist
-from ..util import met_util as util
+from ..util import getlist, preprocess_file, loop_over_times_and_call
 from ..util import do_string_sub, ti_calculate, get_seconds_from_string
-from ..util import get_time_from_file
+from ..util import get_time_from_file, shift_time_seconds
 from ..util import config_metplus
 from ..util import METConfig
 from ..util import MISSING_DATA_VALUE
 from ..util import get_custom_string_list
 from ..util import get_wrapped_met_config_file, add_met_config_item, format_met_config
-from ..util import remove_quotes
+from ..util import remove_quotes, split_level
 from ..util import get_field_info, format_field_info
-from ..util import get_wrapper_name
+from ..util import get_wrapper_name, is_python_script
 from ..util.met_config import add_met_config_dict, handle_climo_dict
+from ..util import mkdir_p, get_skip_times
 
 # pylint:disable=pointless-string-statement
 '''!@namespace CommandBuilder
@@ -174,8 +174,7 @@ class CommandBuilder:
         c_dict['CUSTOM_LOOP_LIST'] = get_custom_string_list(self.config,
                                                             app_name)
 
-        c_dict['SKIP_TIMES'] = util.get_skip_times(self.config,
-                                                   app_name)
+        c_dict['SKIP_TIMES'] = get_skip_times(self.config, app_name)
 
         c_dict['MANDATORY'] = (
             self.config.getbool('config',
@@ -533,7 +532,7 @@ class CommandBuilder:
 
             # separate character from beginning of numeric
             # level value if applicable
-            level = util.split_level(v_level)[1]
+            level = split_level(v_level)[1]
 
             # set level to 0 character if it is not a number
             if not level.isdigit():
@@ -660,10 +659,10 @@ class CommandBuilder:
 
             # check if file exists
             input_data_type = self.c_dict.get(data_type + 'INPUT_DATATYPE', '')
-            processed_path = util.preprocess_file(file_path,
-                                                  input_data_type,
-                                                  self.config,
-                                                  allow_dir=allow_dir)
+            processed_path = preprocess_file(file_path,
+                                             input_data_type,
+                                             self.config,
+                                             allow_dir=allow_dir)
 
             # report error if file path could not be found
             if not processed_path:
@@ -706,9 +705,9 @@ class CommandBuilder:
         # get range of times that will be considered
         valid_range_lower = self.c_dict.get(data_type + 'FILE_WINDOW_BEGIN', 0)
         valid_range_upper = self.c_dict.get(data_type + 'FILE_WINDOW_END', 0)
-        lower_limit = int(datetime.strptime(util.shift_time_seconds(valid_time, valid_range_lower),
+        lower_limit = int(datetime.strptime(shift_time_seconds(valid_time, valid_range_lower),
                                             "%Y%m%d%H%M%S").strftime("%s"))
-        upper_limit = int(datetime.strptime(util.shift_time_seconds(valid_time, valid_range_upper),
+        upper_limit = int(datetime.strptime(shift_time_seconds(valid_time, valid_range_upper),
                                             "%Y%m%d%H%M%S").strftime("%s"))
 
         msg = f"Looking for {data_type}INPUT files under {data_dir} within range " +\
@@ -767,16 +766,16 @@ class CommandBuilder:
         # check if file(s) needs to be preprocessed before returning the path
         # if one file was found and return_list if False, return single file
         if len(closest_files) == 1 and not return_list:
-            return util.preprocess_file(closest_files[0],
-                                        self.c_dict.get(data_type + 'INPUT_DATATYPE', ''),
-                                        self.config)
+            return preprocess_file(closest_files[0],
+                                   self.c_dict.get(data_type + 'INPUT_DATATYPE', ''),
+                                   self.config)
 
         # return list if multiple files are found
         out = []
         for close_file in closest_files:
-            outfile = util.preprocess_file(close_file,
-                                           self.c_dict.get(data_type + 'INPUT_DATATYPE', ''),
-                                           self.config)
+            outfile = preprocess_file(close_file,
+                                      self.c_dict.get(data_type + 'INPUT_DATATYPE', ''),
+                                      self.config)
             out.append(outfile)
 
         return out
@@ -909,7 +908,7 @@ class CommandBuilder:
 
         list_path = os.path.join(list_dir, filename)
 
-        util.mkdir_p(list_dir)
+        mkdir_p(list_dir)
 
         self.logger.debug("Writing list of filenames...")
         with open(list_path, 'w') as file_handle:
@@ -1004,7 +1003,7 @@ class CommandBuilder:
         if (not os.path.exists(parent_dir) and
                 not self.c_dict.get('DO_NOT_RUN_EXE', False)):
             self.logger.debug(f"Creating output directory: {parent_dir}")
-            util.mkdir_p(parent_dir)
+            mkdir_p(parent_dir)
 
         if not output_exists or not skip_if_output_exists:
             return True
@@ -1107,7 +1106,7 @@ class CommandBuilder:
         # reset file type to empty string to handle if python embedding is used for one field but not for the next
         self.c_dict[f'{input_type}_FILE_TYPE'] = ''
 
-        if not util.is_python_script(var_info[f"{var_input_type}_name"]):
+        if not is_python_script(var_info[f"{var_input_type}_name"]):
             # if not a python script, return var name
             return var_info[f"{var_input_type}_name"]
 
@@ -1218,7 +1217,7 @@ class CommandBuilder:
             self.log_error('Must specify path to output file')
             return None
 
-        util.mkdir_p(parent_dir)
+        mkdir_p(parent_dir)
 
         cmd += " " + out_path
 
@@ -1284,7 +1283,7 @@ class CommandBuilder:
 
         @param custom (optional) custom loop string value
         """
-        return util.loop_over_times_and_call(self.config, self, custom=custom)
+        return loop_over_times_and_call(self.config, self, custom=custom)
 
     @staticmethod
     def format_met_config_dict(c_dict, name, keys=None):

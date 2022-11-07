@@ -13,7 +13,6 @@ Condition codes: 0 for success, 1 for failure
 import os
 from datetime import datetime
 
-from ..util import met_util as util
 from ..util import time_util
 from . import RuntimeFreqWrapper
 from ..util import do_string_sub

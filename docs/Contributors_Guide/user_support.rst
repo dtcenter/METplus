@@ -14,6 +14,10 @@ Support Responsibilities
 ========================
 
 Five staff members take turns monitoring Discussions each day of the week.
+
+Each day, all support members should follow up on existing Discussions in
+which they are assigned (i.e. tagged).
+
 The responsibilities for each daily assignee are described below.
 
 

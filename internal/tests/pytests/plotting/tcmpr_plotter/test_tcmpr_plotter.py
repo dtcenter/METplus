@@ -99,7 +99,7 @@ def set_minimum_config_settings(config):
 )
 @pytest.mark.plotting
 def test_read_loop_info(metplus_config, config_overrides, expected_loop_args):
-    config = metplus_config()
+    config = metplus_config
 
     set_minimum_config_settings(config)
 
@@ -181,7 +181,7 @@ def test_read_loop_info(metplus_config, config_overrides, expected_loop_args):
 @pytest.mark.plotting
 def test_tcmpr_plotter_loop(metplus_config, config_overrides,
                             expected_strings):
-    config = metplus_config()
+    config = metplus_config
 
     set_minimum_config_settings(config)
 
@@ -278,7 +278,7 @@ def test_tcmpr_plotter(metplus_config, config_overrides, expected_string):
         expected_string = f' {expected_string}'
 
     for single_file in [True, False]:
-        config = metplus_config()
+        config = metplus_config
 
         set_minimum_config_settings(config)
 

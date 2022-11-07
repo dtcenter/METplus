@@ -24,7 +24,7 @@ def get_data_dir(config):
 )
 @pytest.mark.wrapper
 def test_find_data_no_dated(metplus_config, data_type):
-    config = metplus_config()
+    config = metplus_config
 
     pcw = CommandBuilder(config)
     v = {}
@@ -55,7 +55,7 @@ def test_find_data_no_dated(metplus_config, data_type):
 )
 @pytest.mark.wrapper
 def test_find_data_not_a_path(metplus_config, data_type):
-    config = metplus_config()
+    config = metplus_config
     
     pcw = CommandBuilder(config)
     task_info = {}
@@ -73,7 +73,7 @@ def test_find_data_not_a_path(metplus_config, data_type):
 
 @pytest.mark.wrapper
 def test_find_obs_no_dated(metplus_config):
-    config = metplus_config()
+    config = metplus_config
 
     pcw = CommandBuilder(config)
     v = {}
@@ -93,7 +93,7 @@ def test_find_obs_no_dated(metplus_config):
 
 @pytest.mark.wrapper
 def test_find_obs_dated(metplus_config):
-    config = metplus_config()
+    config = metplus_config
     
     pcw = CommandBuilder(config)
     v = {}
@@ -123,7 +123,7 @@ def test_find_obs_dated(metplus_config):
 )
 @pytest.mark.wrapper
 def test_find_obs_offset(metplus_config, offsets, expected_file, offset_seconds):
-    config = metplus_config()
+    config = metplus_config
 
     pcw = CommandBuilder(config)
     v = {}
@@ -150,7 +150,7 @@ def test_find_obs_offset(metplus_config, offsets, expected_file, offset_seconds)
 
 @pytest.mark.wrapper
 def test_find_obs_dated_previous_day(metplus_config):
-    config = metplus_config()
+    config = metplus_config
     
     pcw = CommandBuilder(config)
     v = {}
@@ -170,7 +170,7 @@ def test_find_obs_dated_previous_day(metplus_config):
 
 @pytest.mark.wrapper
 def test_find_obs_dated_next_day(metplus_config):
-    config = metplus_config()
+    config = metplus_config
     
     pcw = CommandBuilder(config)
     v = {}
@@ -209,7 +209,7 @@ def test_find_obs_dated_next_day(metplus_config):
 )
 @pytest.mark.wrapper
 def test_override_by_instance(metplus_config, section_items):
-    config = metplus_config()
+    config = metplus_config
 
     # set config variables to default
     for key in section_items:
@@ -240,7 +240,7 @@ def test_override_by_instance(metplus_config, section_items):
 )
 @pytest.mark.wrapper
 def test_write_list_file(metplus_config, filename, file_list, output_dir):
-    config = metplus_config()
+    config = metplus_config
     cbw = CommandBuilder(config)
 
     # use output_dir relative to OUTPUT_BASE if it is specified
@@ -290,7 +290,7 @@ def test_write_list_file(metplus_config, filename, file_list, output_dir):
 )
 @pytest.mark.wrapper
 def test_handle_description(metplus_config, config_overrides, expected_value):
-    config = metplus_config()
+    config = metplus_config
 
     # set config values
     for key, value in config_overrides.items():
@@ -332,7 +332,7 @@ def test_handle_description(metplus_config, config_overrides, expected_value):
 @pytest.mark.wrapper
 def test_handle_regrid_old(metplus_config, config_overrides, set_to_grid,
                            expected_dict):
-    config = metplus_config()
+    config = metplus_config
 
     # set config values
     for key, value in config_overrides.items():
@@ -381,7 +381,7 @@ def test_handle_regrid_old(metplus_config, config_overrides, set_to_grid,
 )
 @pytest.mark.wrapper
 def test_handle_regrid_new(metplus_config, config_overrides, expected_output):
-    config = metplus_config()
+    config = metplus_config
 
     # set config values
     for key, value in config_overrides.items():
@@ -418,7 +418,7 @@ def test_handle_regrid_new(metplus_config, config_overrides, expected_output):
 @pytest.mark.wrapper
 def test_add_met_config_string(metplus_config, mp_config_name, met_config_name,
                                c_dict_key, remove_quotes, expected_output):
-    cbw = CommandBuilder(metplus_config())
+    cbw = CommandBuilder(metplus_config)
 
     # set some config variables to test
     cbw.config.set('config', 'TEST_STRING_1', 'value_1')
@@ -472,7 +472,7 @@ def test_add_met_config_string(metplus_config, mp_config_name, met_config_name,
 @pytest.mark.wrapper
 def test_add_met_config_bool(metplus_config, mp_config_name, met_config_name,
                              c_dict_key, uppercase, expected_output, is_ok):
-    cbw = CommandBuilder(metplus_config())
+    cbw = CommandBuilder(metplus_config)
 
     # set some config variables to test
     cbw.config.set('config', 'TEST_BOOL_1', True)
@@ -520,7 +520,7 @@ def test_add_met_config_bool(metplus_config, mp_config_name, met_config_name,
 @pytest.mark.wrapper
 def test_add_met_config_int(metplus_config, mp_config_name, met_config_name,
                              c_dict_key, expected_output, is_ok):
-    cbw = CommandBuilder(metplus_config())
+    cbw = CommandBuilder(metplus_config)
 
     # set some config variables to test
     cbw.config.set('config', 'TEST_INT_1', 7)
@@ -563,7 +563,7 @@ def test_add_met_config_int(metplus_config, mp_config_name, met_config_name,
 @pytest.mark.wrapper
 def test_add_met_config_float(metplus_config, mp_config_name, met_config_name,
                              c_dict_key, expected_output, is_ok):
-    cbw = CommandBuilder(metplus_config())
+    cbw = CommandBuilder(metplus_config)
 
     # set some config variables to test
     cbw.config.set('config', 'TEST_FLOAT_1', 7.0)
@@ -612,7 +612,7 @@ def test_add_met_config_float(metplus_config, mp_config_name, met_config_name,
 @pytest.mark.wrapper
 def test_add_met_config_thresh(metplus_config, mp_config_name, met_config_name,
                                c_dict_key, expected_output, is_ok):
-    cbw = CommandBuilder(metplus_config())
+    cbw = CommandBuilder(metplus_config)
 
     # set some config variables to test
     cbw.config.set('config', 'TEST_THRESH_1', 'gt74')
@@ -664,7 +664,7 @@ def test_add_met_config_thresh(metplus_config, mp_config_name, met_config_name,
 @pytest.mark.wrapper
 def test_add_met_config_list(metplus_config, mp_config_name, met_config_name,
                              c_dict_key, remove_quotes, expected_output):
-    cbw = CommandBuilder(metplus_config())
+    cbw = CommandBuilder(metplus_config)
 
     # set some config variables to test
     cbw.config.set('config', 'TEST_LIST_1', 'value_1,   value2')
@@ -705,7 +705,7 @@ def test_add_met_config_list(metplus_config, mp_config_name, met_config_name,
 @pytest.mark.wrapper
 def test_add_met_config_list_allow_empty(metplus_config, mp_config_name,
                                          allow_empty, expected_output):
-    cbw = CommandBuilder(metplus_config())
+    cbw = CommandBuilder(metplus_config)
 
     # set some config variables to test
     cbw.config.set('config', 'TEST_LIST_1', '')
@@ -731,7 +731,7 @@ def test_add_met_config_dict(metplus_config):
     end = 5
     expected_value = f'{dict_name} = {{beg = -3;end = 5;}}'
 
-    config = metplus_config()
+    config = metplus_config
     config.set('config', 'TC_GEN_FCST_HR_WINDOW_BEG', beg)
     config.set('config', 'TC_GEN_FCST_HR_WINDOW_END', end)
     cbw = CommandBuilder(config)
@@ -755,7 +755,7 @@ def test_add_met_config_window(metplus_config):
     end = 5
     expected_value = f'{dict_name} = {{beg = -3;end = 5;}}'
 
-    config = metplus_config()
+    config = metplus_config
     config.set('config', 'TC_GEN_FCST_HR_WINDOW_BEG', beg)
     config.set('config', 'TC_GEN_FCST_HR_WINDOW_END', end)
     cbw = CommandBuilder(config)
@@ -769,7 +769,7 @@ def test_add_met_config_window(metplus_config):
 
 @pytest.mark.wrapper
 def test_add_met_config(metplus_config):
-    config = metplus_config()
+    config = metplus_config
     value = 5
     config.set('config', 'TC_GEN_VALID_FREQUENCY', value)
     cbw = CommandBuilder(config)
@@ -795,7 +795,7 @@ def test_add_met_config_dict_nested(metplus_config):
         f'{{var1 = {sub_dict_value1};var2 = {sub_dict_value2};}}}}'
     )
 
-    config = metplus_config()
+    config = metplus_config
     config.set('config', 'APP_OUTER_BEG', beg)
     config.set('config', 'APP_OUTER_END', end)
     config.set('config', 'APP_OUTER_INNER_VAR1', sub_dict_value1)
@@ -832,7 +832,7 @@ def test_get_field_info_extra(metplus_config, extra, expected_value):
     d_type = 'FCST'
     name = 'name'
     level = '"(*,*)"'
-    config = metplus_config()
+    config = metplus_config
     wrapper = CommandBuilder(config)
     actual_value = wrapper.get_field_info(
         d_type=d_type,

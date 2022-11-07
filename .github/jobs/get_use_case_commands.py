@@ -14,7 +14,7 @@ METPLUS_TOP_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__),
 sys.path.insert(0, METPLUS_TOP_DIR)
 
 from internal.tests.use_cases.metplus_use_case_suite import METplusUseCaseSuite
-from metplus.util.met_util import expand_int_string_to_list
+from metplus.util.string_manip import expand_int_string_to_list
 from docker_utils import VERSION_EXT
 
 

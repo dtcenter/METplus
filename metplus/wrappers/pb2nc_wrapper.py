@@ -13,9 +13,8 @@ Condition codes: 0 for success, 1 for failure
 import os
 import re
 
-from ..util import getlistint
-from ..util import met_util as util
-from ..util import time_util
+from ..util import getlistint, skip_time, get_lead_sequence
+from ..util import ti_calculate
 from ..util import do_string_sub
 from . import CommandBuilder
 
@@ -258,11 +257,11 @@ class PB2NCWrapper(CommandBuilder):
     def run_at_time(self, input_dict):
         """! Loop over each forecast lead and build pb2nc command """
          # loop of forecast leads and process each
-        lead_seq = util.get_lead_sequence(self.config, input_dict)
+        lead_seq = get_lead_sequence(self.config, input_dict)
         for lead in lead_seq:
             input_dict['lead'] = lead
 
-            lead_string = time_util.ti_calculate(input_dict)['lead_string']
+            lead_string = ti_calculate(input_dict)['lead_string']
             self.logger.info("Processing forecast lead {}".format(lead_string))
 
             for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
@@ -287,7 +286,7 @@ class PB2NCWrapper(CommandBuilder):
         if time_info is None:
             return
 
-        if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+        if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
             self.logger.debug('Skipping run time')
             return
 

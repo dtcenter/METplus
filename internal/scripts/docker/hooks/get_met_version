@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # get version, use develop or X+6.Y for MET_BRANCH
-version_file=$(dirname $DOCKERFILE_PATH)/../../metplus/VERSION
+version_file=$(dirname $DOCKERFILE_PATH)/../../../metplus/VERSION
 
 if cat $version_file | egrep -q '^[0-9.]+$'; then
   let major=$(cut -d '.' -f1 $version_file)+6

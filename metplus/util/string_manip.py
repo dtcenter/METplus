@@ -6,6 +6,8 @@ Description: METplus utility to handle string manipulation
 
 import re
 from csv import reader
+import random
+import string
 
 from .constants import VALID_COMPARISONS
 
@@ -249,3 +251,245 @@ def format_thresh(thresh_str):
             formatted_thresh_list.append(thresh_letter)
 
     return ','.join(formatted_thresh_list)
+
+
+def is_python_script(name):
+    """ Check if field name is a python script by checking if any of the words
+     in the string end with .py
+
+     @param name string to check
+     @returns True if the name is determined to be a python script command
+     """
+    if not name:
+        return False
+
+    all_items = name.split(' ')
+    if any(item.endswith('.py') for item in all_items):
+        return True
+
+    return False
+
+
+def camel_to_underscore(camel):
+    """! Change camel case notation to underscore notation, i.e. GridStatWrapper to grid_stat_wrapper
+         Multiple capital letters are excluded, i.e. PCPCombineWrapper to pcp_combine_wrapper
+         Numerals are also skipped, i.e. ASCII2NCWrapper to ascii2nc_wrapper
+         Args:
+             @param camel string to convert
+             @returns string in underscore notation
+    """
+    s1 = re.sub(r'([^\d])([A-Z][a-z]+)', r'\1_\2', camel)
+    return re.sub(r'([a-z])([A-Z])', r'\1_\2', s1).lower()
+
+
+def get_threshold_via_regex(thresh_string):
+    """!Ensure thresh values start with >,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le and then a number
+        Optionally can have multiple comparison/number pairs separated with && or ||.
+        Args:
+            @param thresh_string: String to examine, i.e. <=3.4
+        Returns:
+            None if string does not match any valid comparison operators or does
+              not contain a number afterwards
+            regex match object with comparison operator in group 1 and
+            number in group 2 if valid
+    """
+
+    comparison_number_list = []
+    # split thresh string by || or &&
+    thresh_split = re.split(r'\|\||&&', thresh_string)
+    # check each threshold for validity
+    for thresh in thresh_split:
+        found_match = False
+        for comp in list(VALID_COMPARISONS)+list(VALID_COMPARISONS.values()):
+            # if valid, add to list of tuples
+            # must be one of the valid comparison operators followed by
+            # at least 1 digit or NA
+            if thresh == 'NA':
+                comparison_number_list.append((thresh, ''))
+                found_match = True
+                break
+
+            match = re.match(r'^('+comp+r')(.*\d.*)$', thresh)
+            if match:
+                comparison = match.group(1)
+                number = match.group(2)
+                # try to convert to float if it can, but allow string
+                try:
+                    number = float(number)
+                except ValueError:
+                    pass
+
+                comparison_number_list.append((comparison, number))
+                found_match = True
+                break
+
+        # if no match was found for the item, return None
+        if not found_match:
+            return None
+
+    if not comparison_number_list:
+        return None
+
+    return comparison_number_list
+
+
+def validate_thresholds(thresh_list):
+    """ Checks list of thresholds to ensure all of them have the correct format
+        Should be a comparison operator with number pair combined with || or &&
+        i.e. gt4 or >3&&<5 or gt3||lt1
+        Args:
+            @param thresh_list list of strings to check
+        Returns:
+            True if all items in the list are valid format, False if not
+    """
+    valid = True
+    for thresh in thresh_list:
+        match = get_threshold_via_regex(thresh)
+        if match is None:
+            valid = False
+
+    if valid is False:
+        print("ERROR: Threshold values must use >,>=,==,!=,<,<=,gt,ge,eq,ne,lt, or le with a number, "
+              "optionally combined with && or ||")
+        return False
+    return True
+
+
+def round_0p5(val):
+    """! Round to the nearest point five (ie 3.3 rounds to 3.5, 3.1
+       rounds to 3.0) Take the input value, multiply by two, round to integer
+       (no decimal places) then divide by two.  Expect any input value of n.0,
+       n.1, or n.2 to round down to n.0, and any input value of n.5, n.6 or
+       n.7 to round to n.5. Finally, any input value of n.8 or n.9 will
+       round to (n+1).0
+
+      @param val :  The number to be rounded to the nearest .5
+    @returns n.0, n.5, or (n+1).0 value as a result of rounding
+    """
+    return round(val * 2) / 2
+
+
+def generate_tmp_filename():
+    random_string = ''.join(random.choice(string.ascii_letters)
+                            for i in range(10))
+    return f"metplus_tmp_{random_string}"
+
+
+def template_to_regex(template):
+    in_template = re.sub(r'\.', '\\.', template)
+    return re.sub(r'{lead.*?}', '.*', in_template)
+
+
+def split_level(level):
+    """! If level value starts with a letter, then separate that letter from
+     the rest of the string. i.e. 'A03' will be returned as 'A', '03'. If no
+     level type letter is found and the level value consists of alpha-numeric
+     characters, return an empty string as the level type and the full level
+     string as the level value
+
+     @param level input string to parse/split
+     @returns tuple of level type and level value
+    """
+    if not level:
+        return '', ''
+
+    match = re.match(r'^([a-zA-Z])(\w+)$', level)
+    if match:
+        level_type = match.group(1)
+        level = match.group(2)
+        return level_type, level
+
+    match = re.match(r'^[\w]+$', level)
+    if match:
+        return '', level
+
+    return '', ''
+
+
+def format_level(level):
+    """! Format level string to prevent NetCDF level values from creating
+         filenames and field names with bad characters. Replaces '*' with 'all'
+         and ',' with '_'
+
+        @param level string of level to format
+        @returns formatted string
+    """
+    return level.replace('*', 'all').replace(',', '_')
+
+
+def expand_int_string_to_list(int_string):
+    """! Expand string into a list of integer values. Items are separated by
+    commas. Items that are formatted X-Y will be expanded into each number
+    from X to Y inclusive. If the string ends with +, then add a str '+'
+    to the end of the list. Used in .github/jobs/get_use_case_commands.py
+
+    @param int_string String containing a comma-separated list of integers
+    @returns List of integers and potentially '+' as the last item
+    """
+    subset_list = []
+
+    # if string ends with +, remove it and add it back at the end
+    if int_string.strip().endswith('+'):
+        int_string = int_string.strip(' +')
+        hasPlus = True
+    else:
+        hasPlus = False
+
+    # separate into list by comma
+    comma_list = int_string.split(',')
+    for comma_item in comma_list:
+        dash_list = comma_item.split('-')
+        # if item contains X-Y, expand it
+        if len(dash_list) == 2:
+            for i in range(int(dash_list[0].strip()),
+                           int(dash_list[1].strip())+1,
+                           1):
+                subset_list.append(i)
+        else:
+            subset_list.append(int(comma_item.strip()))
+
+    if hasPlus:
+        subset_list.append('+')
+
+    return subset_list
+
+
+def subset_list(full_list, subset_definition):
+    """! Extract subset of items from full_list based on subset_definition
+    Used in internal/tests/use_cases/metplus_use_case_suite.py
+
+    @param full_list List of all use cases that were requested
+    @param subset_definition Defines how to subset the full list. If None,
+    no subsetting occurs. If an integer value, select that index only.
+    If a slice object, i.e. slice(2,4,1), pass slice object into list.
+    If list, subset full list by integer index values in list. If
+    last item in list is '+' then subset list up to 2nd last index, then
+    get all items from 2nd last item and above
+    """
+    if subset_definition is not None:
+        subset_list = []
+
+        # if case slice is a list, use only the indices in the list
+        if isinstance(subset_definition, list):
+            # if last slice value is a plus sign, get rest of items
+            # after 2nd last slice value
+            if subset_definition[-1] == '+':
+                plus_value = subset_definition[-2]
+                # add all values before last index before plus
+                subset_list.extend([full_list[i]
+                                    for i in subset_definition[:-2]])
+                # add last index listed + all items above
+                subset_list.extend(full_list[plus_value:])
+            else:
+                # list of integers, so get items based on indices
+                subset_list = [full_list[i] for i in subset_definition]
+        else:
+            subset_list = full_list[subset_definition]
+    else:
+        subset_list = full_list
+
+    # if only 1 item is left, make it a list before returning
+    if not isinstance(subset_list, list):
+        subset_list = [subset_list]
+
+    return subset_list

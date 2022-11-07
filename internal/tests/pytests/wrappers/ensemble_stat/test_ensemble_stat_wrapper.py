@@ -80,7 +80,7 @@ def set_minimum_config_settings(config, set_fields=True):
 def test_ensemble_stat_field_info(metplus_config, config_overrides,
                                   env_var_values):
 
-    config = metplus_config()
+    config = metplus_config
 
     set_minimum_config_settings(config, set_fields=False)
 
@@ -136,7 +136,7 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
     """
     old_env_vars = ['CLIMO_MEAN_FILE',
                     'CLIMO_STDEV_FILE']
-    config = metplus_config()
+    config = metplus_config
 
     set_minimum_config_settings(config)
 
@@ -564,7 +564,7 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
 def test_ensemble_stat_single_field(metplus_config, config_overrides,
                                     env_var_values):
 
-    config = metplus_config()
+    config = metplus_config
 
     set_minimum_config_settings(config)
 
@@ -619,7 +619,7 @@ def test_ensemble_stat_single_field(metplus_config, config_overrides,
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
 
-    config = metplus_config()
+    config = metplus_config
     default_config_file = os.path.join(config.getdir('PARM_BASE'),
                                        'met_config',
                                        'EnsembleStatConfig_wrapped')
@@ -641,7 +641,7 @@ def test_get_config_file(metplus_config):
 @pytest.mark.wrapper_c
 def test_ensemble_stat_fill_missing(metplus_config, config_overrides,
                                     expected_num_files):
-    config = metplus_config()
+    config = metplus_config
 
     set_minimum_config_settings(config)
 

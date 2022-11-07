@@ -11,10 +11,25 @@ from metplus.util import ti_calculate
 
 
 def get_config(metplus_config):
-    extra_configs = []
-    extra_configs.append(os.path.join(os.path.dirname(__file__),
-                                      'tc_stat_conf.conf'))
-    return metplus_config(extra_configs)
+    # extra_configs = []
+    # extra_configs.append(os.path.join(os.path.dirname(__file__),
+    #                                   'tc_stat_conf.conf'))
+    config = metplus_config
+    config.set('config', 'PROCESS_LIST', 'TCStat')
+    config.set('config', 'INIT_BEG', '20150301')
+    config.set('config', 'INIT_END', '20150304')
+    config.set('config', 'INIT_INCREMENT', '21600')
+    config.set('config', 'TC_STAT_INIT_BEG', '20170705')
+    config.set('config', 'TC_STAT_INIT_END', '20170901')
+    config.set('config', 'TC_STAT_INIT_HOUR', '00')
+    config.set('config', 'TC_STAT_JOB_ARGS',
+               ("-job summary -line_type TCMPR -column "
+                "'ABS(AMAX_WIND-BMAX_WIND)' "
+                "-dump_row {OUTPUT_BASE}/tc_stat/tc_stat_summary.tcst"))
+    config.set('config', 'TC_STAT_LOOKIN_DIR',
+               '{INPUT_BASE}/met_test/tc_pairs')
+    config.set('config', 'TC_STAT_OUTPUT_DIR', '{OUTPUT_BASE}/tc_stat')
+    return config
 
 
 def tc_stat_wrapper(metplus_config):
@@ -265,7 +280,7 @@ def test_handle_jobs_create_parent_dir(metplus_config, jobs, init_dt,
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
 
-    config = metplus_config()
+    config = metplus_config
 
     default_config_file = os.path.join(config.getdir('PARM_BASE'),
                                        'met_config',

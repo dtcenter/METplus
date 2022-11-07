@@ -4,10 +4,9 @@ import pytest
 
 import os
 from configparser import NoOptionError
-from shutil import which
+from shutil import which, rmtree
 
-from metplus.util import met_util as util
-
+from metplus.util.constants import MISSING_DATA_VALUE
 
 @pytest.mark.parametrize(
     'input_value, result', [
@@ -28,7 +27,7 @@ from metplus.util import met_util as util
 )
 @pytest.mark.util
 def test_getseconds(metplus_config, input_value, result):
-    conf = metplus_config()
+    conf = metplus_config
     if input_value is not None:
         conf.set('config', 'TEST_SECONDS', input_value)
 
@@ -57,7 +56,7 @@ def test_getseconds(metplus_config, input_value, result):
 )
 @pytest.mark.util
 def test_getstr(metplus_config, input_value, default, result):
-    conf = metplus_config()
+    conf = metplus_config
     if input_value is not None:
         conf.set('config', 'TEST_GETSTR', input_value)
 
@@ -82,7 +81,7 @@ def test_getstr(metplus_config, input_value, default, result):
 )
 @pytest.mark.util
 def test_getdir(metplus_config, input_value, default, result):
-    conf = metplus_config()
+    conf = metplus_config
     if input_value is not None:
         conf.set('config', 'TEST_GETDIR', input_value)
 
@@ -110,7 +109,7 @@ def test_getdir(metplus_config, input_value, default, result):
 )
 @pytest.mark.util
 def test_getraw(metplus_config, input_value, default, result):
-    conf = metplus_config()
+    conf = metplus_config
     conf.set('config', 'TEST_EXTRA', 'extra')
     conf.set('config', 'TEST_EXTRA2', '{TEST_EXTRA}_extra')
 
@@ -144,7 +143,7 @@ def test_getraw(metplus_config, input_value, default, result):
 )
 @pytest.mark.util
 def test_getbool(metplus_config, input_value, default, result):
-    conf = metplus_config()
+    conf = metplus_config
     if input_value is not None:
         conf.set('config', 'TEST_GETBOOL', input_value)
 
@@ -167,7 +166,7 @@ def test_getbool(metplus_config, input_value, default, result):
 )
 @pytest.mark.util
 def test_getexe(metplus_config, input_value, result):
-    conf = metplus_config()
+    conf = metplus_config
     if input_value is not None:
         conf.set('config', 'TEST_GETEXE', input_value)
 
@@ -178,18 +177,18 @@ def test_getexe(metplus_config, input_value, result):
     'input_value, default, result', [
         ('1.1', None, 1.1),
         ('1.1', 2.2, 1.1),
-        (None, None, util.MISSING_DATA_VALUE),
+        (None, None, MISSING_DATA_VALUE),
         (None, 1.1, 1.1),
         ('integer', None, None),
         ('integer', 1.1, None),
         ('0', None, 0.0),
         ('0', 2.2, 0.0),
-        ('', None, util.MISSING_DATA_VALUE),
-        ('', 2.2, util.MISSING_DATA_VALUE),
+        ('', None, MISSING_DATA_VALUE),
+        ('', 2.2, MISSING_DATA_VALUE),
     ]
 )
 def test_getfloat(metplus_config, input_value, default, result):
-    conf = metplus_config()
+    conf = metplus_config
     if input_value is not None:
         conf.set('config', 'TEST_GETFLOAT', input_value)
 
@@ -205,7 +204,7 @@ def test_getfloat(metplus_config, input_value, default, result):
     'input_value, default, result', [
         ('1', None, 1),
         ('1', 2, 1),
-        (None, None, util.MISSING_DATA_VALUE),
+        (None, None, MISSING_DATA_VALUE),
         (None, 1, 1),
         ('integer', None, None),
         ('integer', 1, None),
@@ -214,13 +213,13 @@ def test_getfloat(metplus_config, input_value, default, result):
         ('1.7', 2, None),
         ('1.0', None, None),
         ('1.0', 2, None),
-        ('', None, util.MISSING_DATA_VALUE),
-        ('', 2.2, util.MISSING_DATA_VALUE),
+        ('', None, MISSING_DATA_VALUE),
+        ('', 2.2, MISSING_DATA_VALUE),
     ]
 )
 @pytest.mark.util
 def test_getint(metplus_config, input_value, default, result):
-    conf = metplus_config()
+    conf = metplus_config
     if input_value is not None:
         conf.set('config', 'TEST_GETINT', input_value)
 
@@ -241,15 +240,19 @@ def test_getint(metplus_config, input_value, default, result):
     ]
 )
 @pytest.mark.util
-def test_move_all_to_config_section(metplus_config, config_key, expected_result):
+def test_move_all_to_config_section(metplus_config_files, config_key,
+                                    expected_result):
     config_files = ['config_1.conf',
                     'config_2.conf',
                     'config_3.conf',
                    ]
     test_dir = os.path.dirname(__file__)
     config_files = [os.path.join(test_dir, item) for item in config_files]
-    config = metplus_config(config_files)
+    config = metplus_config_files(config_files)
     assert config.getstr('config', config_key) == expected_result
+    output_base = config.getdir('OUTPUT_BASE')
+    if output_base and os.path.exists(output_base):
+        rmtree(output_base)
 
 
 @pytest.mark.parametrize(
@@ -280,11 +283,14 @@ def test_move_all_to_config_section(metplus_config, config_key, expected_result)
     ]
 )
 @pytest.mark.util
-def test_move_all_to_config_section_cmd_line(metplus_config, overrides,
+def test_move_all_to_config_section_cmd_line(metplus_config_files, overrides,
                                              config_key, expected_result):
-    config = metplus_config(overrides)
+    config = metplus_config_files(overrides)
     assert config.getstr('config', config_key, '') == expected_result
 
+    output_base = config.getdir('OUTPUT_BASE')
+    if output_base and os.path.exists(output_base):
+        rmtree(output_base)
 
 @pytest.mark.parametrize(
     'config_name, expected_result', [
@@ -330,13 +336,17 @@ def test_move_all_to_config_section_cmd_line(metplus_config, overrides,
     ]
 )
 @pytest.mark.util
-def test_getraw_nested_curly_braces(metplus_config,
+def test_getraw_nested_curly_braces(metplus_config_files,
                                     config_name,
                                     expected_result):
     config_files = ['config_1.conf',
                    ]
     test_dir = os.path.dirname(__file__)
     config_files = [os.path.join(test_dir, item) for item in config_files]
-    config = metplus_config(config_files)
+    config = metplus_config_files(config_files)
     sec, name = config_name.split('.', 1)
     assert config.getraw(sec, name) == expected_result
+
+    output_base = config.getdir('OUTPUT_BASE')
+    if output_base and os.path.exists(output_base):
+        rmtree(output_base)

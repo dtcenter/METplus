@@ -13,10 +13,9 @@ Condition codes: 0 for success, 1 for failure
 import os
 import glob
 
-from ..util import met_util as util
+from ..util import sub_var_list
+from ..util import do_string_sub, parse_var_list, PYTHON_EMBEDDING_TYPES
 from . import CompareGriddedWrapper
-from ..util import do_string_sub
-from ..util import parse_var_list
 
 """!@namespace EnsembleStatWrapper
 @brief Wraps the MET tool ensemble_stat to compare ensemble datasets
@@ -136,8 +135,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         # check if more than 1 obs datatype is set to python embedding,
         # only one can be used
-        if (c_dict['OBS_POINT_INPUT_DATATYPE'] in util.PYTHON_EMBEDDING_TYPES and
-            c_dict['OBS_GRID_INPUT_DATATYPE'] in util.PYTHON_EMBEDDING_TYPES):
+        if (c_dict['OBS_POINT_INPUT_DATATYPE'] in PYTHON_EMBEDDING_TYPES and
+            c_dict['OBS_GRID_INPUT_DATATYPE'] in PYTHON_EMBEDDING_TYPES):
             self.log_error("Both OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE and "
                            "OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE"
                            " are set to Python Embedding types. "
@@ -145,9 +144,9 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         # if either are set, set OBS_INPUT_DATATYPE to that value so
         # it can be found by the check_for_python_embedding function
-        elif c_dict['OBS_POINT_INPUT_DATATYPE'] in util.PYTHON_EMBEDDING_TYPES:
+        elif c_dict['OBS_POINT_INPUT_DATATYPE'] in PYTHON_EMBEDDING_TYPES:
             c_dict['OBS_INPUT_DATATYPE'] = c_dict['OBS_POINT_INPUT_DATATYPE']
-        elif c_dict['OBS_GRID_INPUT_DATATYPE'] in util.PYTHON_EMBEDDING_TYPES:
+        elif c_dict['OBS_GRID_INPUT_DATATYPE'] in PYTHON_EMBEDDING_TYPES:
             c_dict['OBS_INPUT_DATATYPE'] = c_dict['OBS_GRID_INPUT_DATATYPE']
 
         c_dict['N_MEMBERS'] = (
@@ -424,8 +423,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             return
 
         # parse optional var list for FCST and/or OBS fields
-        var_list = util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
-                                     time_info)
+        var_list = sub_var_list(self.c_dict['VAR_LIST_TEMP'], time_info)
 
         # if empty var list for FCST/OBS, use None as first var,
         # else use first var in list

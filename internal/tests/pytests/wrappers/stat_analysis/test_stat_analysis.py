@@ -16,17 +16,43 @@ TEST_CONF = os.path.join(os.path.dirname(__file__), 'test.conf')
 
 pp = pprint.PrettyPrinter()
 
+
 def stat_analysis_wrapper(metplus_config):
     """! Returns a default StatAnalysisWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
          files.  Subsequent tests can customize the final METplus configuration
          to over-ride these /path/to values."""
+    config = metplus_config
 
-    # Default, empty StatAnalysisWrapper with some configuration values set
-    # to /path/to:
-    extra_configs = [TEST_CONF]
-    config = metplus_config(extra_configs)
     handle_tmp_dir(config)
+    config.set('config', 'PROCESS_LIST', 'StatAnalysis')
+    config.set('config', 'STAT_ANALYSIS_OUTPUT_DIR',
+               '{OUTPUT_BASE}/stat_analysis')
+    config.set('config', 'MODEL1_STAT_ANALYSIS_LOOKIN_DIR',
+               '{METPLUS_BASE}/internal/tests/data/stat_data')
+    config.set('config', 'LOOP_BY', 'VALID')
+    config.set('config', 'VALID_TIME_FMT', '%Y%m%d')
+    config.set('config', 'VALID_BEG', '20190101')
+    config.set('config', 'VALID_END', '20190101')
+    config.set('config', 'VALID_INCREMENT', '86400')
+    config.set('config', 'MODEL1', 'MODEL_TEST')
+    config.set('config', 'MODEL1_REFERENCE_NAME', 'MODELTEST')
+    config.set('config', 'MODEL1_OBTYPE', 'MODEL_TEST_ANL')
+    config.set('config', 'STAT_ANALYSIS_CONFIG_FILE',
+               '{PARM_BASE}/met_config/STATAnalysisConfig_wrapped')
+    config.set('config', 'STAT_ANALYSIS_JOB_NAME', 'filter')
+    config.set('config', 'STAT_ANALYSIS_JOB_ARGS', '-dump_row [dump_row_file]')
+    config.set('config', 'MODEL_LIST', '{MODEL1}')
+    config.set('config', 'FCST_VALID_HOUR_LIST', '00')
+    config.set('config', 'FCST_INIT_HOUR_LIST', '00, 06, 12, 18')
+    config.set('config', 'GROUP_LIST_ITEMS', 'FCST_INIT_HOUR_LIST')
+    config.set('config', 'LOOP_LIST_ITEMS', 'FCST_VALID_HOUR_LIST, MODEL_LIST')
+    config.set('config', 'MODEL1_STAT_ANALYSIS_DUMP_ROW_TEMPLATE',
+               ('{fcst_valid_hour?fmt=%H}Z/{MODEL1}/'
+                '{MODEL1}_{valid?fmt=%Y%m%d}.stat'))
+    config.set('config', 'MODEL1_STAT_ANALYSIS_OUT_STAT_TEMPLATE',
+               ('{model?fmt=%s}_{obtype?fmt=%s}_valid{valid?fmt=%Y%m%d}'
+                '{valid_hour?fmt=%H}_init{fcst_init_hour?fmt=%s}.stat'))
     return StatAnalysisWrapper(config)
 
 
@@ -148,9 +174,9 @@ def set_minimum_config_settings(config):
     ]
 )
 @pytest.mark.wrapper_d
-def test_stat_analysis_env_vars(metplus_config, config_overrides,
-                                expected_env_vars):
-    config = metplus_config()
+def test_valid_init_env_vars(metplus_config, config_overrides,
+                             expected_env_vars):
+    config = metplus_config
     set_minimum_config_settings(config)
     config.set('config', 'INIT_END', '20221015')
     for key, value in config_overrides.items():
@@ -207,7 +233,7 @@ def test_stat_analysis_env_vars(metplus_config, config_overrides,
 @pytest.mark.wrapper_d
 def test_check_required_job_template(metplus_config, config_overrides,
                                      expected_result):
-    config = metplus_config()
+    config = metplus_config
     set_minimum_config_settings(config)
     for key, value in config_overrides.items():
         config.set('config', key, value)
@@ -292,10 +318,11 @@ def test_check_required_job_template(metplus_config, config_overrides,
 )
 @pytest.mark.wrapper_d
 def test_get_runtime_settings(metplus_config, c_dict, expected_result):
-    config = metplus_config()
+    config = metplus_config
     wrapper = StatAnalysisWrapper(config)
 
     runtime_settings = wrapper._get_runtime_settings(c_dict)
+
     pp.pprint(runtime_settings)
     assert runtime_settings == expected_result
 
@@ -315,7 +342,7 @@ def test_get_runtime_settings(metplus_config, c_dict, expected_result):
 @pytest.mark.wrapper_d
 def test_format_conf_list(metplus_config, list_name, config_overrides,
                           expected_value):
-    config = metplus_config()
+    config = metplus_config
     for key, value in config_overrides.items():
         config.set('config', key, value)
 
@@ -587,6 +614,7 @@ def test_build_stringsub_dict(metplus_config, lists_to_loop, c_dict_overrides,
                       if item not in lists_to_loop]
     config_dict['LISTS_TO_GROUP'] = lists_to_group
     config_dict['LISTS_TO_LOOP'] = lists_to_loop
+
     test_stringsub_dict = st._build_stringsub_dict(config_dict)
 
     print(test_stringsub_dict)
@@ -869,7 +897,7 @@ def test_run_stat_analysis(metplus_config):
 )
 @pytest.mark.wrapper_d
 def test_get_level_list(metplus_config, data_type, config_list, expected_list):
-    config = metplus_config()
+    config = metplus_config
     config.set('config', f'{data_type}_LEVEL_LIST', config_list)
 
     saw = StatAnalysisWrapper(config)
@@ -880,7 +908,7 @@ def test_get_level_list(metplus_config, data_type, config_list, expected_list):
 @pytest.mark.wrapper_d
 def test_get_config_file(metplus_config):
     fake_config_name = '/my/config/file'
-    config = metplus_config()
+    config = metplus_config
     config.set('config', 'INPUT_MUST_EXIST', False)
 
     wrapper = StatAnalysisWrapper(config)

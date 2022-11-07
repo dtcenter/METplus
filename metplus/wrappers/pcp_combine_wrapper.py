@@ -7,12 +7,11 @@ Abstract: Builds commands to run MET tool pcp_combine
 import os
 from datetime import timedelta
 
-from ..util import met_util as util
-from ..util import do_string_sub, getlist
+from ..util import do_string_sub, getlist, preprocess_file
 from ..util import get_seconds_from_string, ti_get_lead_string, ti_calculate
 from ..util import get_relativedelta, ti_get_seconds_from_relativedelta
 from ..util import time_string_to_met_time, seconds_to_met_time
-from ..util import parse_var_list
+from ..util import parse_var_list, template_to_regex, split_level
 from . import ReformatGriddedWrapper
 
 '''!@namespace PCPCombineWrapper
@@ -348,9 +347,9 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         # get first file
         filepath1 = do_string_sub(full_template, **time_info)
-        file1 = util.preprocess_file(filepath1,
-                                     self.c_dict[data_src+'_INPUT_DATATYPE'],
-                                     self.config)
+        file1 = preprocess_file(filepath1,
+                                self.c_dict[data_src+'_INPUT_DATATYPE'],
+                                self.config)
 
         if file1 is None:
             self.log_error(f'Could not find {data_src} file {filepath1} '
@@ -394,9 +393,9 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         time_info2['custom'] = time_info.get('custom', '')
 
         filepath2 = do_string_sub(full_template, **time_info2)
-        file2 = util.preprocess_file(filepath2,
-                                     self.c_dict[data_src+'_INPUT_DATATYPE'],
-                                     self.config)
+        file2 = preprocess_file(filepath2,
+                                self.c_dict[data_src+'_INPUT_DATATYPE'],
+                                self.config)
 
         if file2 is None:
             self.log_error(f'Could not find {data_src} file {filepath2} '
@@ -445,10 +444,10 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         out_accum = time_string_to_met_time(lookback, 'S')
 
         time_info['level'] = in_accum
-        pcp_regex = util.template_to_regex(
-            self.c_dict[f'{data_src}_INPUT_TEMPLATE'],
-            time_info
+        pcp_regex = template_to_regex(
+            self.c_dict[f'{data_src}_INPUT_TEMPLATE']
         )
+        pcp_regex = do_string_sub(pcp_regex, **time_info)
         pcp_regex_split = pcp_regex.split('/')
         pcp_dir = os.path.join(self.c_dict[f'{data_src}_INPUT_DIR'],
                                *pcp_regex_split[0:-1])
@@ -611,7 +610,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         else:
             lookback = '0'
 
-        _, lookback = util.split_level(lookback)
+        _, lookback = split_level(lookback)
 
         lookback_seconds = get_seconds_from_string(
             lookback,
@@ -791,7 +790,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             search_file = do_string_sub(search_file, **time_info)
             self.logger.debug(f"Looking for {search_file}")
 
-            search_file = util.preprocess_file(
+            search_file = preprocess_file(
                 search_file,
                 self.c_dict[data_src+'_INPUT_DATATYPE'],
                 self.config)
@@ -817,8 +816,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         # string sub values into full field info string using search time info
         if time_info:
-            field_info = do_string_sub(field_info,
-                                       **time_info)
+            field_info = do_string_sub(field_info, **time_info)
         return field_info
 
     def find_input_file(self, init_time, valid_time, search_accum, data_src):
@@ -848,9 +846,9 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                                   in_template)
         input_path = do_string_sub(input_path, **time_info)
 
-        return util.preprocess_file(input_path,
-                                    self.c_dict[f'{data_src}_INPUT_DATATYPE'],
-                                    self.config), lead
+        return preprocess_file(input_path,
+                               self.c_dict[f'{data_src}_INPUT_DATATYPE'],
+                               self.config), lead
 
     def get_template_accum(self, accum_dict, search_time, lead, data_src):
         # apply string substitution to accum amount

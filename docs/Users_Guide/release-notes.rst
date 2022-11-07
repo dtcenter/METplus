@@ -30,6 +30,63 @@ When applicable, release notes are followed by the `GitHub issue <https://github
 describes the bugfix, enhancement, or new feature.
 
 
+METplus Version 5.0.0 Beta 4 Release Notes (2022-10-26)
+-------------------------------------------------------
+
+.. warning:: **MAJOR CHANGES**:
+
+  * The LOOP_ORDER config variable was removed. The variable set in a user's
+    config file will be ignored in favor of executing the logic that
+    corresponds to *LOOP_ORDER = processes*, where all times are processed for
+    the first item in the PROCESS_LIST, then all times are processed for the
+    second item in the PROCESS_LIST, etc. This may change the order that
+    commands are executed in a use case, but it should not change the results.
+
+
+* Enhancements:
+
+  * Remove LOOP_ORDER config variable (`#1687 <https://github.com/dtcenter/METplus/issues/1687>`_)
+
+  * Add unique identifier for each METplus run to configuration (`#1829 <https://github.com/dtcenter/METplus/issues/1829>`_)
+
+  * StatAnalysis - Support setting multiple jobs (`#1842 <https://github.com/dtcenter/METplus/issues/1842>`_)
+
+  * StatAnalysis - Set MET verbosity (`#1772 <https://github.com/dtcenter/METplus/issues/1772>`_)
+
+  * StatAnalysis - Support using both init/valid variables in string substitution (`#1861 <https://github.com/dtcenter/METplus/issues/1861>`_)
+
+  * StatAnalysis - Allow filename template tags in jobs (`#1862 <https://github.com/dtcenter/METplus/issues/1862>`_)
+
+  * StatAnalysis - Support looping over groups of list items (`#1870 <https://github.com/dtcenter/METplus/issues/1870>`_)
+
+  * StatAnalysis - Allow processing of time ranges other than daily (`#1871 <https://github.com/dtcenter/METplus/issues/1871>`_)
+
+  * StatAnalysis - Add support for using a custom loop list (`#1893 <https://github.com/dtcenter/METplus/issues/1893>`_)
+
+  * Remove MakePlots wrapper (`#1843 <https://github.com/dtcenter/METplus/issues/1843>`_)
+
+* Bugfixes:
+
+  * PCPCombine - custom loop list does not work for subtract method (`#1884 <https://github.com/dtcenter/METplus/issues/1884>`_)
+
+* New Wrappers: None
+
+* New Use Cases:
+
+  * Probability of Exceedence for 85th percentile temperatures (`#1808 <https://github.com/dtcenter/METplus/issues/1808>`_)
+
+  * FV3 Physics Tendency plotting via METplotpy (`#1852 <https://github.com/dtcenter/METplus/issues/1852>`_)
+
+* Documentation: None
+
+* Internal:
+
+  * Fix GitHub Actions warnings - update the version of actions and replace set-output (`#1863 <https://github.com/dtcenter/METplus/issues/1863>`_)
+
+  * Update diff logic to handle CSV files that have rounding differences (`#1865 <https://github.com/dtcenter/METplus/issues/1865>`_)
+
+  * Add unit tests for expected failure (`dtcenter/METplus-Internal#24 <https://github.com/dtcenter/METplus-Internal/issues/24>`_)
+
 METplus Version 5.0.0 Beta 3 Release Notes (2022-09-21)
 -------------------------------------------------------
 
@@ -67,8 +124,7 @@ METplus Version 5.0.0 Beta 3 Release Notes (2022-09-21)
   * MJO-ENSO diagnostics (`#1330 <https://github.com/dtcenter/METplus/issues/1330>`_)
 
 
-* Documentation:
-
+* Documentation: None
 
 * Internal:
 
