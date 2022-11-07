@@ -425,8 +425,7 @@ class CommandBuilder:
         """
         return f"{item}={self.env[item]}"
 
-    def find_model(self, time_info, mandatory=True,
-                   return_list=False):
+    def find_model(self, time_info, mandatory=True, return_list=False):
         """! Finds the model file to compare
 
                 @param time_info dictionary containing timing information
@@ -440,8 +439,7 @@ class CommandBuilder:
                               mandatory=mandatory,
                               return_list=return_list)
 
-    def find_obs(self, time_info, mandatory=True,
-                 return_list=False):
+    def find_obs(self, time_info, mandatory=True, return_list=False):
         """! Finds the observation file to compare
 
                 @param time_info dictionary containing timing information
