@@ -177,7 +177,7 @@ class PlotPointObsWrapper(LoopTimesWrapper):
 
     def get_command(self):
         return (f"{self.app_path} -v {self.c_dict['VERBOSITY']}"
-                f" {self.infiles[0]} {self.get_output_path()}"
+                f' "{self.infiles[0]}" {self.get_output_path()}'
                 f" {' '.join(self.args)}")
 
     def run_at_time_once(self, time_info):
@@ -243,7 +243,7 @@ class PlotPointObsWrapper(LoopTimesWrapper):
         """
         # if more than 1 input file was found, add them with -point_obs
         for infile in self.infiles[1:]:
-            self.args.append(f'-point_obs {infile}')
+            self.args.append(f'-point_obs "{infile}"')
 
         if self.c_dict.get('GRID_INPUT_PATH'):
             grid_file = do_string_sub(self.c_dict['GRID_INPUT_PATH'],

@@ -84,7 +84,7 @@ model_applications/s2s/GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile::
 #
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile.conf
+#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s/GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -130,7 +130,7 @@ model_applications/s2s/GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile.conf
 #
 # .. note::
 #
-#   * GridStatUseCase
+#   * GridStatToolUseCase
 #   * ProbabilityVerificationUseCase
 #   * PythonEmbeddingFileUseCase
 #   * S2SAppUseCase
