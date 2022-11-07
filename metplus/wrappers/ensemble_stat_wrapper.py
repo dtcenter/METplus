@@ -422,16 +422,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                               fill_missing=fill_missing):
             return
 
-        # # parse optional var list for FCST and/or OBS fields
-        var_list = sub_var_list(self.c_dict['VAR_LIST_TEMP'], time_info)
-        #
-        # # if empty var list for FCST/OBS, use None as first var,
-        # # else use first var in list
-        # if not var_list:
-        #     first_var_info = None
-        # else:
-        #     first_var_info = var_list[0]
-
         # get point observation file if requested
         if self.c_dict['OBS_POINT_INPUT_TEMPLATE']:
             point_obs_path = self.find_data(time_info, data_type='OBS_POINT')
@@ -447,6 +437,9 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                 return
 
             self.grid_obs_files.append(grid_obs_path)
+
+        # parse optional var list for FCST and/or OBS fields
+        var_list = sub_var_list(self.c_dict['VAR_LIST_TEMP'], time_info)
 
         # set field info
         fcst_field = self.get_all_field_info(var_list, 'FCST')

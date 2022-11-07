@@ -1043,16 +1043,6 @@ class CommandBuilder:
                              "on how to obtain the tool: parm/use_cases/met_tool_wrapper/GempakToCF/GempakToCF.py")
             self.isOK = False
 
-    # def add_field_info_to_time_info(self, time_info, field_info):
-    #     """!Add name and level values from field info to time info dict to be used in string substitution
-    #         Args:
-    #             @param time_info time dictionary to add items to
-    #             @param field_info field dictionary to get values from
-    #     """
-    #     field_items = ['fcst_name', 'fcst_level', 'obs_name', 'obs_level']
-    #     for field_item in field_items:
-    #         time_info[field_item] = field_info[field_item] if field_item in field_info else ''
-
     def set_current_field_config(self, field_info=None):
         """! Sets config variables for current fcst/obs name/level that can be
          referenced by other config variables such as OUTPUT_PREFIX.
