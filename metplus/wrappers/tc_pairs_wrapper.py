@@ -23,7 +23,7 @@ import glob
 from ..util import getlist, get_lead_sequence, skip_time, mkdir_p
 from ..util import ti_calculate
 from ..util import do_string_sub
-from ..util import get_tags
+from ..util import get_tags, find_indices_in_config_section
 from ..util.met_config import add_met_config_dict_list
 from ..util import time_generator, log_runtime_banner, add_to_time_input
 from . import CommandBuilder
@@ -92,6 +92,8 @@ class TCPairsWrapper(CommandBuilder):
         c_dict['VERBOSITY'] = self.config.getstr('config',
                                                  'LOG_TC_PAIRS_VERBOSITY',
                                                  c_dict['VERBOSITY'])
+        c_dict['ALLOW_MULTIPLE_FILES'] = True
+
         c_dict['MISSING_VAL_TO_REPLACE'] = (
             self.config.getstr('config',
                                'TC_PAIRS_MISSING_VAL_TO_REPLACE', '-99')
@@ -164,7 +166,7 @@ class TCPairsWrapper(CommandBuilder):
                             data_type='list',
                             metplus_configs=['TC_PAIRS_STORM_NAME'])
 
-        self.handle_consensus()
+        self._handle_consensus()
 
         self.add_met_config(name='check_dup',
                             data_type='bool')
@@ -239,10 +241,7 @@ class TCPairsWrapper(CommandBuilder):
         )
 
         # read optional -diag argument variables
-        c_dict['DIAG_TEMPLATE'] = (
-            self.config.getraw('config', 'TC_PAIRS_DIAG_INPUT_TEMPLATE')
-        )
-        c_dict['DIAG_DIR'] = self.config.getdir('TC_PAIRS_DIAG_INPUT_DIR', '')
+        self._handle_diag(c_dict)
 
         # handle output template
         output_template = (
@@ -293,60 +292,6 @@ class TCPairsWrapper(CommandBuilder):
                                                  'TC_PAIRS_RUN_ONCE',
                                                  True)
         return c_dict
-
-    def _read_storm_info(self, c_dict):
-        """! Read config variables that specify the storms to process. Report
-        an error if attempting to filter by storm_id if also specifying
-        basin or cyclone. Sets c_dict depending on what is set: STORM_ID_LIST
-        if filtering by storm_id, or CYCLONE_LIST and BASIN_LIST otherwise
-
-        @param c_dict dictionary to populate with values from config
-        @returns None
-        """
-        storm_id_list = getlist(
-            self.config.getraw('config', 'TC_PAIRS_STORM_ID', '')
-        )
-        cyclone_list = getlist(
-            self.config.getraw('config', 'TC_PAIRS_CYCLONE', '')
-        )
-        basin_list = getlist(
-            self.config.getraw('config', 'TC_PAIRS_BASIN', '')
-        )
-
-        if storm_id_list:
-            # if using storm id and any other filter is set, report an error
-            if basin_list:
-                self.log_error('Cannot filter by both BASIN and STORM_ID')
-
-            if cyclone_list:
-                self.log_error('Cannot filter by both CYCLONE and STORM_ID')
-
-            c_dict['STORM_ID_LIST'] = storm_id_list
-            return
-
-        # if storm_id is not used, set cyclone and basin lists if they are set
-        if cyclone_list:
-            c_dict['CYCLONE_LIST'] = cyclone_list
-
-        if basin_list:
-            c_dict['BASIN_LIST'] = basin_list
-
-    def handle_consensus(self):
-        dict_items = {
-            'name': 'string',
-            'members': 'list',
-            'required': ('list', 'remove_quotes'),
-            'min_req': 'int',
-        }
-        return_code = add_met_config_dict_list(config=self.config,
-                                               app_name=self.app_name,
-                                               output_dict=self.env_var_dict,
-                                               dict_name='consensus',
-                                               dict_items=dict_items)
-        if not return_code:
-            self.isOK = False
-
-        return return_code
 
     def run_all_times(self):
         """! Build up the command to invoke the MET tool tc_pairs.
@@ -415,6 +360,95 @@ class TCPairsWrapper(CommandBuilder):
             return self._loop_storm_ids(time_info)
 
         return self._loop_basin_and_cyclone(time_info)
+
+    def _read_storm_info(self, c_dict):
+        """! Read config variables that specify the storms to process. Report
+        an error if attempting to filter by storm_id if also specifying
+        basin or cyclone. Sets c_dict depending on what is set: STORM_ID_LIST
+        if filtering by storm_id, or CYCLONE_LIST and BASIN_LIST otherwise
+
+        @param c_dict dictionary to populate with values from config
+        @returns None
+        """
+        storm_id_list = getlist(
+            self.config.getraw('config', 'TC_PAIRS_STORM_ID', '')
+        )
+        cyclone_list = getlist(
+            self.config.getraw('config', 'TC_PAIRS_CYCLONE', '')
+        )
+        basin_list = getlist(
+            self.config.getraw('config', 'TC_PAIRS_BASIN', '')
+        )
+
+        if storm_id_list:
+            # if using storm id and any other filter is set, report an error
+            if basin_list:
+                self.log_error('Cannot filter by both BASIN and STORM_ID')
+
+            if cyclone_list:
+                self.log_error('Cannot filter by both CYCLONE and STORM_ID')
+
+            c_dict['STORM_ID_LIST'] = storm_id_list
+            return
+
+        # if storm_id is not used, set cyclone and basin lists if they are set
+        if cyclone_list:
+            c_dict['CYCLONE_LIST'] = cyclone_list
+
+        if basin_list:
+            c_dict['BASIN_LIST'] = basin_list
+
+    def _handle_consensus(self):
+        dict_items = {
+            'name': 'string',
+            'members': 'list',
+            'required': ('list', 'remove_quotes'),
+            'min_req': 'int',
+        }
+        return_code = add_met_config_dict_list(config=self.config,
+                                               app_name=self.app_name,
+                                               output_dict=self.env_var_dict,
+                                               dict_name='consensus',
+                                               dict_items=dict_items)
+        if not return_code:
+            self.isOK = False
+
+        return return_code
+
+    def _handle_diag(self, c_dict):
+        diag_indices = list(
+            find_indices_in_config_section(r'TC_PAIRS_DIAG_TEMPLATE(\d+)$',
+                                           self.config,
+                                           index_index=1).keys()
+        )
+        if not diag_indices:
+            return
+
+        diag_info_list = []
+        for idx in diag_indices:
+            template = (
+                self.config.getraw('config', f'TC_PAIRS_DIAG_TEMPLATE{idx}')
+            )
+            diag_dir = (
+                self.config.getdir(f'TC_PAIRS_DIAG_DIR{idx}', '')
+            )
+            if diag_dir:
+                template = os.path.join(diag_dir, template)
+
+            source = (
+                self.config.getraw('config', f'TC_PAIRS_DIAG_SOURCE{idx}')
+            )
+            models = getlist(
+                self.config.getraw('config', f'TC_PAIRS_DIAG_MODELS{idx}')
+            )
+            diag_info = {
+                'template': template,
+                'source': source,
+                'models': models,
+            }
+            diag_info_list.append(diag_info)
+
+        c_dict['DIAG_INFO_LIST'] = diag_info_list
 
     def _loop_storm_ids(self, time_info):
         for storm_id in self.c_dict['STORM_ID_LIST']:
@@ -638,7 +672,7 @@ class TCPairsWrapper(CommandBuilder):
             time_storm_info['cyclone'] = current_cyclone
 
             # find -diag file if requested
-            if not self._handle_diag_file(time_storm_info):
+            if not self._get_diag_file(time_storm_info):
                 return []
 
             if not self.find_and_check_output_file(time_info=time_storm_info,
@@ -904,21 +938,20 @@ class TCPairsWrapper(CommandBuilder):
         self.c_dict['BASIN'] = self.c_dict.get('BASIN_LIST', '')
 
         # Set up the environment variable to be used in the tc_pairs Config
-        self.args.append(f"-bdeck {' '.join(self.c_dict['BDECK_DIR'])}")
-        #self.bdeck = [self.c_dict['BDECK_DIR']]
+        self.args.append(f"-bdeck {self.c_dict['BDECK_DIR']}")
 
         if self.c_dict['ADECK_DIR']:
-            self.args.append(f"-adeck {' '.join(self.c_dict['ADECK_DIR'])}")
+            self.args.append(f"-adeck {self.c_dict['ADECK_DIR']}")
 
         if self.c_dict['EDECK_DIR']:
-            self.args.append(f"-edeck {' '.join(self.c_dict['EDECK_DIR'])}")
+            self.args.append(f"-edeck {self.c_dict['EDECK_DIR']}")
 
         # get output filename from template
         time_info = ti_calculate(input_dict)
         time_storm_info = self._add_storm_info_to_dict(time_info)
 
         # handle -diag file if requested
-        if not self._handle_diag_file(time_storm_info):
+        if not self._get_diag_file(time_storm_info):
             return []
 
         if not self.find_and_check_output_file(time_info=time_storm_info,
@@ -930,7 +963,7 @@ class TCPairsWrapper(CommandBuilder):
         self.build()
         return self.all_commands
 
-    def _handle_diag_file(self, time_info):
+    def _get_diag_file(self, time_info):
         """! Get optional -diag argument file path if requested.
 
         @param time_info dictionary containing values to substitute into
@@ -938,17 +971,22 @@ class TCPairsWrapper(CommandBuilder):
         @returns True if file was found successfully or no file was requested.
          False if the file does not exist.
         """
-        if not self.c_dict['DIAG_TEMPLATE']:
+        if not self.c_dict.get('DIAG_INFO_LIST'):
             return True
+        self.log_error(self.c_dict.get('DIAG_INFO_LIST'))
+        for diag_info in self.c_dict.get('DIAG_INFO_LIST'):
+            self.c_dict['DIAG_INPUT_TEMPLATE'] = diag_info['template']
+            filepaths = self.find_data(time_info, data_type='DIAG',
+                                       return_list=True)
+            if not filepaths:
+                self.log_error('Could not get -diag files')
+                return False
 
-        filepath = os.path.join(self.c_dict['DIAG_DIR'],
-                                self.c_dict['DIAG_TEMPLATE'])
-        filepath = do_string_sub(filepath, **time_info)
-        if not os.path.exists(filepath):
-            self.log_error(f'Diag file does not exist: {filepath}')
-            return False
+            arg = f"-diag {diag_info['source']} {' '.join(filepaths)}"
+            if diag_info['models']:
+                arg = f"{arg} model={','.join(diag_info['models'])}"
+            self.args.append(arg)
 
-        self.args.append(f'-diag {filepath}')
         return True
 
     def _add_storm_info_to_dict(self, time_info):
