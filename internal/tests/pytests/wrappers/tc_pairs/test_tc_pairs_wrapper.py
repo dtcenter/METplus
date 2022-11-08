@@ -467,14 +467,14 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
             'TC_PAIRS_DIAG_SOURCE1': 'TCDIAG',
          },
          {'DIAG_ARG': '-diag TCDIAG /some/path/2014121318.dat'}),
-        # 42 -diag argument with models
+        # 43 -diag argument with models
         ('VALID', {
             'TC_PAIRS_DIAG_TEMPLATE1': '/some/path/{valid?fmt=%Y%m%d%H}.dat',
             'TC_PAIRS_DIAG_SOURCE1': 'TCDIAG',
             'TC_PAIRS_DIAG_MODELS1': 'OFCL, SHIP',
          },
          {'DIAG_ARG': '-diag TCDIAG /some/path/2014121318.dat model=OFCL,SHIP'}),
-        # 43 2 -diag arguments
+        # 44 2 -diag arguments
         ('VALID', {
             'TC_PAIRS_DIAG_TEMPLATE1': '/some/path/{valid?fmt=%Y%m%d%H}.dat',
             'TC_PAIRS_DIAG_SOURCE1': 'TCDIAG',
@@ -485,6 +485,26 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
          {'DIAG_ARG': ('-diag TCDIAG /some/path/2014121318.dat '
                        '-diag LSDIAG_RT /some/path/rt_2014121318.dat '
                        'model=OFCL,SHIP')}),
+        # 45
+        ('VALID', {'TC_PAIRS_DIAG_NAME': 'TC_DIAG, TC_DIAG2', },
+         {'METPLUS_DIAG_NAME': 'diag_name = ["TC_DIAG", "TC_DIAG2"];'}),
+        # 46
+        ('VALID', {'TC_PAIRS_DIAG_CONVERT_MAP1_SOURCE': 'TCDIAG', },
+         {'METPLUS_DIAG_CONVERT_MAP_LIST': 'diag_convert_map = [{source = "TCDIAG";}];'}),
+        # 47
+        ('VALID', {'TC_PAIRS_DIAG_CONVERT_MAP1_KEY': '(10C),(10KT),(10M/S)', },
+         {'METPLUS_DIAG_CONVERT_MAP_LIST': 'diag_convert_map = [{key = ["(10C)", "(10KT)", "(10M/S)"];}];'}),
+        # 48
+        ('VALID', {'TC_PAIRS_DIAG_CONVERT_MAP1_CONVERT': 'x/10', },
+         {'METPLUS_DIAG_CONVERT_MAP_LIST': 'diag_convert_map = [{convert(x) = x/10;}];'}),
+        # 49
+        ('VALID', {
+             'TC_PAIRS_DIAG_CONVERT_MAP1_SOURCE': 'TCDIAG',
+             'TC_PAIRS_DIAG_CONVERT_MAP1_KEY': '(10C),(10KT),(10M/S)',
+             'TC_PAIRS_DIAG_CONVERT_MAP1_CONVERT': 'x/10',
+         },
+         {'METPLUS_DIAG_CONVERT_MAP_LIST': 'diag_convert_map = [{source = "TCDIAG";key = ["(10C)", "(10KT)", "(10M/S)"];convert(x) = x/10;}];'}),
+
     ]
 )
 @pytest.mark.wrapper

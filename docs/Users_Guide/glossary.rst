@@ -7569,22 +7569,22 @@ METplus Configuration Glossary
      | *Used by:* PB2NC
 
    TC_PAIRS_CONSENSUS<n>_NAME
-     Specify the value for nth 'consensus.name' in the MET configuration file for TCPairs.
+     Specify the value for the nth 'consensus.name' in the MET configuration file for TCPairs.
 
      | *Used by:* TCPairs
 
    TC_PAIRS_CONSENSUS<n>_MEMBERS
-     Specify the value for nth 'consensus.members' in the MET configuration file for TCPairs.
+     Specify the value for the nth 'consensus.members' in the MET configuration file for TCPairs.
 
      | *Used by:* TCPairs
 
    TC_PAIRS_CONSENSUS<n>_REQUIRED
-     Specify the value for nth 'consensus.required' in the MET configuration file for TCPairs.
+     Specify the value for the nth 'consensus.required' in the MET configuration file for TCPairs.
 
      | *Used by:* TCPairs
 
    TC_PAIRS_CONSENSUS<n>_MIN_REQ
-     Specify the value for nth 'consensus.min_req' in the MET configuration file for TCPairs.
+     Specify the value for the nth 'consensus.min_req' in the MET configuration file for TCPairs.
 
      | *Used by:* TCPairs
 
@@ -10093,3 +10093,23 @@ METplus Configuration Glossary
      See :term:`STAT_ANALYSIS_FCST_VALID_END`.
 
      | *Used by:* StatAnalysis
+
+   TC_PAIRS_DIAG_NAME
+     Specify the value for 'diag_name' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
+
+   TC_PAIRS_DIAG_CONVERT_MAP<n>_SOURCE
+     Specify the value for the nth 'diag_convert_map.source' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
+
+   TC_PAIRS_DIAG_CONVERT_MAP<n>_KEY
+     Specify the value for the nth 'diag_convert_map.key' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
+
+   TC_PAIRS_DIAG_CONVERT_MAP<n>_CONVERT
+     Specify the value for the nth 'diag_convert_map.convert' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs

@@ -8210,6 +8210,10 @@ METplus Configuration
 | :term:`TC_PAIRS_CHECK_DUP`
 | :term:`TC_PAIRS_INTERP12`
 | :term:`TC_PAIRS_MATCH_POINTS`
+| :term:`TC_PAIRS_DIAG_NAME`
+| :term:`TC_PAIRS_DIAG_CONVERT_MAP<n>_SOURCE`
+| :term:`TC_PAIRS_DIAG_CONVERT_MAP<n>_KEY`
+| :term:`TC_PAIRS_DIAG_CONVERT_MAP<n>_CONVERT`
 |
 
 .. warning:: **DEPRECATED:**
@@ -8491,6 +8495,33 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`TC_PAIRS_INTERP12`
      - interp12
+
+**${METPLUS_DIAG_NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_PAIRS_DIAG_NAME`
+     - diag_name
+
+**${METPLUS_DIAG_CONVERT_MAP_LIST}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_PAIRS_DIAG_CONVERT_MAP<n>_SOURCE`
+     - diag_convert_map.source
+   * - :term:`TC_PAIRS_DIAG_CONVERT_MAP<n>_KEY`
+     - diag_convert_map.key
+   * - :term:`TC_PAIRS_DIAG_CONVERT_MAP<n>_CONVERT`
+     - diag_convert_map.convert
+
 
 .. _tcrmw_wrapper:
 

@@ -63,6 +63,8 @@ class TCPairsWrapper(CommandBuilder):
         'METPLUS_CHECK_DUP',
         'METPLUS_INTERP12',
         'METPLUS_MATCH_POINTS',
+        'METPLUS_DIAG_NAME',
+        'METPLUS_DIAG_CONVERT_MAP_LIST',
     ]
 
     WILDCARDS = {
@@ -177,6 +179,10 @@ class TCPairsWrapper(CommandBuilder):
                                         'uppercase': True})
 
         self.add_met_config(name='match_points', data_type='bool')
+
+        self.add_met_config(name='diag_name', data_type='list')
+
+        self._handle_diag_convert_map()
 
         # if unset, set match_points to TRUE to match old default in wrapped
         if not self.env_var_dict.get('METPLUS_MATCH_POINTS'):
@@ -413,7 +419,25 @@ class TCPairsWrapper(CommandBuilder):
         if not return_code:
             self.isOK = False
 
-        return return_code
+    def _handle_diag_convert_map(self):
+        dict_items = {
+            'source': 'string',
+            'key': 'list',
+            'convert': ('string', 'remove_quotes'),
+        }
+        return_code = add_met_config_dict_list(config=self.config,
+                                               app_name=self.app_name,
+                                               output_dict=self.env_var_dict,
+                                               dict_name='diag_convert_map',
+                                               dict_items=dict_items)
+        if not return_code:
+            self.isOK = False
+            return
+
+        # change "convert =" to "convert(x) ="
+        value = self.env_var_dict.get('METPLUS_DIAG_CONVERT_MAP_LIST', '')
+        value = value.replace('convert =', 'convert(x) =')
+        self.env_var_dict['METPLUS_DIAG_CONVERT_MAP_LIST'] = value
 
     def _handle_diag(self, c_dict):
         diag_indices = list(
