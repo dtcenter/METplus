@@ -15,7 +15,7 @@ import os
 from ..util import get_lead_sequence, sub_var_list
 from ..util import ti_calculate
 from ..util import do_string_sub, skip_time
-from ..util import parse_var_list
+from ..util import parse_var_list, add_field_info_to_time_info
 from . import CompareGriddedWrapper
 
 class MTDWrapper(CompareGriddedWrapper):
@@ -219,6 +219,7 @@ class MTDWrapper(CompareGriddedWrapper):
 
             if self.c_dict.get('EXPLICIT_FILE_LIST', False):
                 time_info = ti_calculate(input_dict)
+                add_field_info_to_time_info(time_info, var_info)
                 model_list_path = do_string_sub(self.c_dict['FCST_FILE_LIST'],
                                                 **time_info)
                 self.logger.debug(f"Explicit FCST file: {model_list_path}")
@@ -252,14 +253,13 @@ class MTDWrapper(CompareGriddedWrapper):
                 input_dict['lead'] = lead
 
                 time_info = ti_calculate(input_dict)
+                add_field_info_to_time_info(time_info, var_info)
                 tasks.append(time_info)
 
             for current_task in tasks:
                 # call find_model/obs as needed
-                model_file = self.find_model(current_task, var_info,
-                                             mandatory=False)
-                obs_file = self.find_obs(current_task, var_info,
-                                         mandatory=False)
+                model_file = self.find_model(current_task, mandatory=False)
+                obs_file = self.find_obs(current_task, mandatory=False)
                 if model_file is None and obs_file is None:
                     continue
 
@@ -313,6 +313,7 @@ class MTDWrapper(CompareGriddedWrapper):
 
         if self.c_dict.get('EXPLICIT_FILE_LIST', False):
             time_info = ti_calculate(input_dict)
+            add_field_info_to_time_info(time_info, var_info)
             single_list_path = do_string_sub(
                 self.c_dict[f'{data_src}_FILE_LIST'],
                 **time_info
@@ -334,7 +335,7 @@ class MTDWrapper(CompareGriddedWrapper):
                 input_dict['lead'] = lead
                 current_task = ti_calculate(input_dict)
 
-                single_file = find_method(current_task, var_info)
+                single_file = find_method(current_task)
                 if single_file is None:
                     continue
 
@@ -407,7 +408,6 @@ class MTDWrapper(CompareGriddedWrapper):
                     return
 
                 fcst_field_list.extend(fcst_field)
-
 
         if obs_path:
             obs_thresh_list = var_info['obs_thresh']
@@ -496,7 +496,6 @@ class MTDWrapper(CompareGriddedWrapper):
                          self.c_dict.get('FCST_CONV_THRESH', ''))
 
         self.add_env_var("MIN_VOLUME", self.c_dict["MIN_VOLUME"])
-
 
         self.add_env_var("FCST_FILE_TYPE",
                          self.c_dict.get('FCST_FILE_TYPE', ''))
