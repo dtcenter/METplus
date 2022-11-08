@@ -265,9 +265,6 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
     config.set('config', 'TC_PAIRS_EDECK_TEMPLATE',
                'storm_id_e{basin?fmt=%s}{cyclone?fmt=%s}{date?fmt=%Y}.dat')
 
-    # LOOP_ORDER processes runs once, times runs once per time
-    config.set('config', 'LOOP_ORDER', 'processes')
-
     # set config variable overrides
     for key, value in config_overrides.items():
         config.set('config', key, value)
@@ -481,9 +478,6 @@ def test_tc_pairs_loop_order_processes(metplus_config, loop_by,
     config.set('config', 'TC_PAIRS_BDECK_INPUT_DIR', bdeck_dir)
     config.set('config', 'TC_PAIRS_ADECK_INPUT_DIR', adeck_dir)
 
-    # LOOP_ORDER processes runs once, times runs once per time
-    config.set('config', 'LOOP_ORDER', 'processes')
-
     # set config variable overrides
     for key, value in config_overrides.items():
         config.set('config', key, value)
@@ -584,10 +578,6 @@ def test_tc_pairs_read_all_files(metplus_config, loop_by, config_overrides,
 
     config.set('config', 'TC_PAIRS_BDECK_INPUT_DIR', bdeck_dir)
     config.set('config', 'TC_PAIRS_ADECK_INPUT_DIR', adeck_dir)
-
-    # LOOP_ORDER processes runs once, times runs once per time
-    config.set('config', 'LOOP_ORDER', 'processes')
-
     config.set('config', 'TC_PAIRS_READ_ALL_FILES', True)
     config.set('config', 'TC_PAIRS_OUTPUT_TEMPLATE', '')
 
@@ -626,6 +616,8 @@ def test_tc_pairs_read_all_files(metplus_config, loop_by, config_overrides,
     assert len(all_cmds) == len(expected_cmds)
 
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
+        # ensure commands are generated as expected
+        assert cmd == expected_cmd
         # check that environment variables were set properly
         for env_var_key in wrapper.WRAPPER_ENV_VAR_KEYS:
             match = next((item for item in env_vars if
