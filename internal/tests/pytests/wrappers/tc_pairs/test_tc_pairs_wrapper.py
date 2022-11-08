@@ -461,11 +461,35 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
         # 41 match_points
         ('VALID', {'TC_PAIRS_MATCH_POINTS': 'False', },
          {'METPLUS_MATCH_POINTS': 'match_points = FALSE;'}),
+        # 42 -diag argument
+        ('VALID', {
+            'TC_PAIRS_DIAG_TEMPLATE1': '/some/path/{valid?fmt=%Y%m%d%H}.dat',
+            'TC_PAIRS_DIAG_SOURCE1': 'TCDIAG',
+         },
+         {'DIAG_ARG': '-diag TCDIAG /some/path/2014121318.dat'}),
+        # 42 -diag argument with models
+        ('VALID', {
+            'TC_PAIRS_DIAG_TEMPLATE1': '/some/path/{valid?fmt=%Y%m%d%H}.dat',
+            'TC_PAIRS_DIAG_SOURCE1': 'TCDIAG',
+            'TC_PAIRS_DIAG_MODELS1': 'OFCL, SHIP',
+         },
+         {'DIAG_ARG': '-diag TCDIAG /some/path/2014121318.dat model=OFCL,SHIP'}),
+        # 43 2 -diag arguments
+        ('VALID', {
+            'TC_PAIRS_DIAG_TEMPLATE1': '/some/path/{valid?fmt=%Y%m%d%H}.dat',
+            'TC_PAIRS_DIAG_SOURCE1': 'TCDIAG',
+            'TC_PAIRS_DIAG_TEMPLATE2': '/some/path/rt_{valid?fmt=%Y%m%d%H}.dat',
+            'TC_PAIRS_DIAG_SOURCE2': 'LSDIAG_RT',
+            'TC_PAIRS_DIAG_MODELS2': 'OFCL, SHIP',
+         },
+         {'DIAG_ARG': ('-diag TCDIAG /some/path/2014121318.dat '
+                       '-diag LSDIAG_RT /some/path/rt_2014121318.dat '
+                       'model=OFCL,SHIP')}),
     ]
 )
 @pytest.mark.wrapper
-def test_tc_pairs_loop_order_processes(metplus_config, loop_by,
-                                       config_overrides, env_var_values):
+def test_tc_pairs_run(metplus_config, loop_by, config_overrides,
+                      env_var_values):
     config = metplus_config
     remove_beg = remove_end = remove_match_points = False
 
@@ -507,12 +531,26 @@ def test_tc_pairs_loop_order_processes(metplus_config, loop_by,
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
     config_file = wrapper.c_dict.get('CONFIG_FILE')
     out_dir = wrapper.c_dict.get('OUTPUT_DIR')
+    diag_arg = ''
+    if 'DIAG_ARG' in env_var_values:
+        diag_arg = f" {env_var_values['DIAG_ARG']}"
+
     expected_cmds = [(f"{app_path} {verbosity} "
                       f"-bdeck {bdeck_dir}/bmlq2014123118.gfso.0104 "
-                      f"-adeck {adeck_dir}/amlq2014123118.gfso.0104 "
-                      f"-config {config_file} "
+                      f"-adeck {adeck_dir}/amlq2014123118.gfso.0104{diag_arg}"
+                      f" -config {config_file} "
                       f"-out {out_dir}/mlq2014121318.gfso.0104"),
                      ]
+
+    # add 2nd command for cyclone 106 unless specific cyclones are requested
+    if 'TC_PAIRS_CYCLONE' not in config_overrides:
+        expected_cmds.append(
+            (f"{app_path} {verbosity} "
+             f"-bdeck {bdeck_dir}/bmlq2014123118.gfso.0106 "
+             f"-adeck {adeck_dir}/amlq2014123118.gfso.0106{diag_arg}"
+             f" -config {config_file} "
+             f"-out {out_dir}/mlq2014121318.gfso.0106")
+        )
 
     all_cmds = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_cmds}")
