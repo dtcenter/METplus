@@ -383,7 +383,7 @@ def format_met_config(data_type, c_dict, name, keys=None):
 
     # add square braces if list
     if 'list' in data_type:
-        output = f"[{output}];"
+        output = f"[{','.join(values)}];"
 
     # if name is not empty, add variable name and equals sign
     if name:

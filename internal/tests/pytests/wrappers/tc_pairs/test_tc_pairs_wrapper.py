@@ -356,7 +356,7 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
          {'METPLUS_CONSENSUS_LIST': (
                  'consensus = ['
                  '{name = "name1";members = ["member1a", "member1b"];'
-                 'required = [true, false];min_req = 1;}'
+                 'required = [true, false];min_req = 1;},'
                  '{name = "name2";members = ["member2a", "member2b"];'
                  'required = [false, true];min_req = 2;}];'
          )}),
@@ -439,7 +439,7 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
          {'METPLUS_CONSENSUS_LIST': (
                  'consensus = ['
                  '{name = "name1";members = ["member1a", "member1b"];'
-                 'required = [true, false];min_req = 1;}'
+                 'required = [true, false];min_req = 1;},'
                  '{name = "name2";members = ["member2a", "member2b"];'
                  'required = [false, true];min_req = 2;}];'
          )}),
@@ -504,6 +504,23 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
              'TC_PAIRS_DIAG_CONVERT_MAP1_CONVERT': 'x/10',
          },
          {'METPLUS_DIAG_CONVERT_MAP_LIST': 'diag_convert_map = [{source = "TCDIAG";key = ["(10C)", "(10KT)", "(10M/S)"];convert(x) = x/10;}];'}),
+        # 50
+        ('VALID', {
+            'TC_PAIRS_DIAG_CONVERT_MAP1_SOURCE': 'TCDIAG',
+            'TC_PAIRS_DIAG_CONVERT_MAP1_KEY': '(10C),(10KT),(10M/S)',
+            'TC_PAIRS_DIAG_CONVERT_MAP1_CONVERT': 'x/10',
+            'TC_PAIRS_DIAG_CONVERT_MAP2_SOURCE': 'LSDIAG_RT',
+            'TC_PAIRS_DIAG_CONVERT_MAP2_KEY': 'LAT,LON,CSST,RSST,DSST,DSTA',
+            'TC_PAIRS_DIAG_CONVERT_MAP2_CONVERT': 'x/100',
+        },
+         {'METPLUS_DIAG_CONVERT_MAP_LIST': ('diag_convert_map = [{source = '
+                                            '"TCDIAG";key = ["(10C)", '
+                                            '"(10KT)", "(10M/S)"];'
+                                            'convert(x) = x/10;},'
+                                            '{source = "LSDIAG_RT";key = ['
+                                            '"LAT", "LON", "CSST", "RSST", '
+                                            '"DSST", "DSTA"];'
+                                            'convert(x) = x/100;}];')}),
 
     ]
 )
