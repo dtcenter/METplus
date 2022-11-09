@@ -59,7 +59,7 @@ def set_minimum_config_settings(config):
 
 
 @pytest.mark.parametrize(
-    'config_overrides, expected_output', [
+    'config_overrides, env_var_values', [
         ({'MODEL': 'my_model'},
          {'METPLUS_MODEL': 'model = "my_model";'}),
 
@@ -316,8 +316,7 @@ def set_minimum_config_settings(config):
     ]
 )
 @pytest.mark.wrapper_a
-def test_mode_single_field(metplus_config, config_overrides,
-                           expected_output):
+def test_mode_single_field(metplus_config, config_overrides, env_var_values):
     config = metplus_config
 
     # set config variables needed to run
@@ -344,7 +343,6 @@ def test_mode_single_field(metplus_config, config_overrides,
                       f"{config_file} -outdir {out_dir}/2005080800"),
                      ]
 
-
     all_cmds = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_cmds}")
 
@@ -366,9 +364,13 @@ def test_mode_single_field(metplus_config, config_overrides,
                 if met_name in met_lists:
                     default_val = f'[{default_val}]'
 
-                expected_output[f'METPLUS_{name}'] = (
+                env_var_values[f'METPLUS_{name}'] = (
                     f'{met_name} = {default_val};'
                 )
+
+    missing_env = [item for item in env_var_values
+                   if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
+    env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
 
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
@@ -376,9 +378,6 @@ def test_mode_single_field(metplus_config, config_overrides,
 
         # check that environment variables were set properly
         # including deprecated env vars (not in wrapper env var keys)
-        env_var_keys = (wrapper.WRAPPER_ENV_VAR_KEYS +
-                        [name for name in expected_output
-                         if name not in wrapper.WRAPPER_ENV_VAR_KEYS])
         for env_var_key in env_var_keys:
             match = next((item for item in env_vars if
                           item.startswith(env_var_key)), None)
@@ -389,18 +388,18 @@ def test_mode_single_field(metplus_config, config_overrides,
             elif env_var_key == 'METPLUS_OBS_FIELD':
                 assert value == obs_fmt
             else:
-                assert expected_output.get(env_var_key, '') == value
+                assert env_var_values.get(env_var_key, '') == value
 
 
 @pytest.mark.parametrize(
-    'config_overrides, expected_output', [
+    'config_overrides, env_var_values', [
         ({'MODE_MULTIVAR_LOGIC': '#1 && #2 && #3', },
          {'METPLUS_MULTIVAR_LOGIC': 'multivar_logic = "#1 && #2 && #3";'}),
     ]
 )
 @pytest.mark.wrapper_a
 def test_mode_multi_variate(metplus_config, config_overrides,
-                            expected_output):
+                            env_var_values):
     config = metplus_config
 
     # set config variables needed to run
@@ -440,15 +439,16 @@ def test_mode_multi_variate(metplus_config, config_overrides,
     all_cmds = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_cmds}")
 
+    missing_env = [item for item in env_var_values
+                   if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
+    env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
+
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
         assert cmd == expected_cmd
 
         # check that environment variables were set properly
         # including deprecated env vars (not in wrapper env var keys)
-        env_var_keys = (wrapper.WRAPPER_ENV_VAR_KEYS +
-                        [name for name in expected_output
-                         if name not in wrapper.WRAPPER_ENV_VAR_KEYS])
         for env_var_key in env_var_keys:
             match = next((item for item in env_vars if
                           item.startswith(env_var_key)), None)
@@ -459,7 +459,7 @@ def test_mode_multi_variate(metplus_config, config_overrides,
             elif env_var_key == 'METPLUS_OBS_FIELD':
                 assert value == obs_multi_fmt
             else:
-                assert expected_output.get(env_var_key, '') == value
+                assert env_var_values.get(env_var_key, '') == value
 
 
 @pytest.mark.parametrize(
@@ -523,7 +523,6 @@ def test_config_synonyms(metplus_config, config_name, env_var_name,
     config.set('config', config_name, in_value)
     wrapper = MODEWrapper(config)
     assert wrapper.isOK
-
 
     expected_output = f'{met_name} = {out_value};'
     assert wrapper.env_var_dict[env_var_name] == expected_output
