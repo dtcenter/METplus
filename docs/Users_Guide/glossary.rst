@@ -10158,3 +10158,13 @@ METplus Configuration Glossary
      Specify the value for 'out_valid_mask' in the MET configuration file for TCStat.
 
      | *Used by:* TCStat
+
+   SERIES_ANALYSIS_MASK_GRID
+     Specify the value for 'mask.grid' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_MASK_POLY
+     Specify the value for 'mask.poly' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis

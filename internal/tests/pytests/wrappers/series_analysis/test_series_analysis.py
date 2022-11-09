@@ -306,6 +306,17 @@ def set_minimum_config_settings(config):
           'SERIES_ANALYSIS_CLIMO_CDF_DIRECT_PROB': 'False',
          },
          {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {cdf_bins = 1.0;center_bins = TRUE;direct_prob = FALSE;}'}),
+        ({'SERIES_ANALYSIS_MASK_GRID': 'FULL', },
+         {'METPLUS_MASK_DICT': 'mask = {grid = "FULL";}'}),
+
+        ({'SERIES_ANALYSIS_MASK_POLY': 'MET_BASE/poly/EAST.poly', },
+         {'METPLUS_MASK_DICT': 'mask = {poly = "MET_BASE/poly/EAST.poly";}'}),
+
+        ({
+             'SERIES_ANALYSIS_MASK_GRID': 'FULL',
+             'SERIES_ANALYSIS_MASK_POLY': 'MET_BASE/poly/EAST.poly',
+         },
+         {'METPLUS_MASK_DICT': 'mask = {grid = "FULL";poly = "MET_BASE/poly/EAST.poly";}'}),
 
     ]
 )

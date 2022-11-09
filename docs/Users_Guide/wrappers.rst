@@ -6387,6 +6387,8 @@ METplus Configuration
 | :term:`OBS_SERIES_ANALYSIS_CAT_THRESH`
 | :term:`FCST_SERIES_ANALYSIS_IS_PROB`
 | :term:`FCST_SERIES_ANALYSIS_PROB_IN_GRIB_PDS`
+| :term:`SERIES_ANALYSIS_MASK_GRID`
+| :term:`SERIES_ANALYSIS_MASK_POLY`
 |
 
 .. warning:: **DEPRECATED:**
@@ -6617,6 +6619,19 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - climo_cdf.center_bins
    * - :term:`SERIES_ANALYSIS_CLIMO_CDF_DIRECT_PROB`
      - climo_cdf.direct_prob
+
+**${METPLUS_MASK_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`SERIES_ANALYSIS_MASK_GRID`
+     - mask.grid
+   * - :term:`SERIES_ANALYSIS_MASK_POLY`
+     - mask.poly
 
 **${METPLUS_BLOCK_SIZE}**
 
