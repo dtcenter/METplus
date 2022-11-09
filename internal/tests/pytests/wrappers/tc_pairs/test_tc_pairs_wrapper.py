@@ -485,26 +485,26 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
          {'DIAG_ARG': ('-diag TCDIAG /some/path/2014121318.dat '
                        '-diag LSDIAG_RT /some/path/rt_2014121318.dat '
                        'model=OFCL,SHIP')}),
-        # 45
+        # 45 diag_name
         ('VALID', {'TC_PAIRS_DIAG_NAME': 'TC_DIAG, TC_DIAG2', },
          {'METPLUS_DIAG_NAME': 'diag_name = ["TC_DIAG", "TC_DIAG2"];'}),
-        # 46
+        # 46 diag_convert_map source
         ('VALID', {'TC_PAIRS_DIAG_CONVERT_MAP1_SOURCE': 'TCDIAG', },
          {'METPLUS_DIAG_CONVERT_MAP_LIST': 'diag_convert_map = [{source = "TCDIAG";}];'}),
-        # 47
+        # 47 diag_convert_map key
         ('VALID', {'TC_PAIRS_DIAG_CONVERT_MAP1_KEY': '(10C),(10KT),(10M/S)', },
          {'METPLUS_DIAG_CONVERT_MAP_LIST': 'diag_convert_map = [{key = ["(10C)", "(10KT)", "(10M/S)"];}];'}),
-        # 48
+        # 48 diag_convert_map convert
         ('VALID', {'TC_PAIRS_DIAG_CONVERT_MAP1_CONVERT': 'x/10', },
          {'METPLUS_DIAG_CONVERT_MAP_LIST': 'diag_convert_map = [{convert(x) = x/10;}];'}),
-        # 49
+        # 49 diag_convert_map 1 dictionary in list
         ('VALID', {
              'TC_PAIRS_DIAG_CONVERT_MAP1_SOURCE': 'TCDIAG',
              'TC_PAIRS_DIAG_CONVERT_MAP1_KEY': '(10C),(10KT),(10M/S)',
              'TC_PAIRS_DIAG_CONVERT_MAP1_CONVERT': 'x/10',
          },
          {'METPLUS_DIAG_CONVERT_MAP_LIST': 'diag_convert_map = [{source = "TCDIAG";key = ["(10C)", "(10KT)", "(10M/S)"];convert(x) = x/10;}];'}),
-        # 50
+        # 50 diag_convert_map 2 dictionaries in list
         ('VALID', {
             'TC_PAIRS_DIAG_CONVERT_MAP1_SOURCE': 'TCDIAG',
             'TC_PAIRS_DIAG_CONVERT_MAP1_KEY': '(10C),(10KT),(10M/S)',
