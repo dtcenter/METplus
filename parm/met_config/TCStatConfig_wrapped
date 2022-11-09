@@ -86,6 +86,14 @@ ${METPLUS_LEAD_REQ}
 ${METPLUS_INIT_MASK}
 ${METPLUS_VALID_MASK}
 
+
+//
+// Stratify by the LINE_TYPE column.
+//
+//line_type =
+${METPLUS_LINE_TYPE}
+
+
 //
 // Stratify by checking the watch/warning status for each track point
 // common to both the ADECK and BDECK tracks.  If the watch/warning status
@@ -135,6 +143,19 @@ ${METPLUS_INIT_STR_EXC_NAME}
 //init_str_exc_val =
 ${METPLUS_INIT_STR_EXC_VAL}
 
+//diag_thresh_name =
+${METPLUS_DIAG_THRESH_NAME}
+
+//diag_thresh_val =
+${METPLUS_DIAG_THRESH_VAL}
+
+//init_diag_thresh_name =
+${METPLUS_INIT_DIAG_THRESH_NAME}
+
+//init_diag_thresh_val =
+${METPLUS_INIT_DIAG_THRESH_VAL}
+
+
 //
 // Stratify by the ADECK and BDECK distances to land.
 //
@@ -155,6 +176,19 @@ ${METPLUS_LANDFALL_END}
 // option.
 //
 ${METPLUS_MATCH_POINTS}
+
+//event_equal =
+${METPLUS_EVENT_EQUAL}
+
+//event_equal_lead =
+${METPLUS_EVENT_EQUAL_LEAD}
+
+//out_init_mask =
+${METPLUS_OUT_INIT_MASK}
+
+//out_valid_mask =
+${METPLUS_OUT_VALID_MASK}
+
 
 //
 // Array of TCStat analysis jobs to be performed on the filtered data

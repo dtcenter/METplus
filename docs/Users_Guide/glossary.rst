@@ -10113,3 +10113,48 @@ METplus Configuration Glossary
      Specify the value for the nth 'diag_convert_map.convert' in the MET configuration file for TCPairs.
 
      | *Used by:* TCPairs
+
+   TC_STAT_DIAG_THRESH_NAME
+     Specify the value for 'diag_thresh_name' in the MET configuration file for TCStat.
+
+     | *Used by:* TCStat
+
+   TC_STAT_DIAG_THRESH_VAL
+     Specify the value for 'diag_thresh_val' in the MET configuration file for TCStat.
+
+     | *Used by:* TCStat
+
+   TC_STAT_INIT_DIAG_THRESH_NAME
+     Specify the value for 'init_diag_thresh_name' in the MET configuration file for TCStat.
+
+     | *Used by:* TCStat
+
+   TC_STAT_INIT_DIAG_THRESH_VAL
+     Specify the value for 'init_diag_thresh_val' in the MET configuration file for TCStat.
+
+     | *Used by:* TCStat
+
+   TC_STAT_LINE_TYPE
+     Specify the value for 'line_type' in the MET configuration file for TCStat.
+
+     | *Used by:* TCStat
+
+   TC_STAT_EVENT_EQUAL
+     Specify the value for 'event_equal' in the MET configuration file for TCStat.
+
+     | *Used by:* TCStat
+
+   TC_STAT_EVENT_EQUAL_LEAD
+     Specify the value for 'event_equal_lead' in the MET configuration file for TCStat.
+
+     | *Used by:* TCStat
+
+   TC_STAT_OUT_INIT_MASK
+     Specify the value for 'out_init_mask' in the MET configuration file for TCStat.
+
+     | *Used by:* TCStat
+
+   TC_STAT_OUT_VALID_MASK
+     Specify the value for 'out_valid_mask' in the MET configuration file for TCStat.
+
+     | *Used by:* TCStat

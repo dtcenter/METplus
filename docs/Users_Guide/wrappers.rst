@@ -8883,6 +8883,15 @@ METplus Configuration
 | :term:`TC_STAT_COLUMN_STR_EXC_VAL`
 | :term:`TC_STAT_INIT_STR_EXC_NAME`
 | :term:`TC_STAT_INIT_STR_EXC_VAL`
+| :term:`TC_STAT_DIAG_THRESH_NAME`
+| :term:`TC_STAT_DIAG_THRESH_VAL`
+| :term:`TC_STAT_INIT_DIAG_THRESH_NAME`
+| :term:`TC_STAT_INIT_DIAG_THRESH_VAL`
+| :term:`TC_STAT_LINE_TYPE`
+| :term:`TC_STAT_EVENT_EQUAL`
+| :term:`TC_STAT_EVENT_EQUAL_LEAD`
+| :term:`TC_STAT_OUT_INIT_MASK`
+| :term:`TC_STAT_OUT_VALID_MASK`
 |
 
 .. warning:: **DEPRECATED:**
@@ -9144,6 +9153,17 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`TC_STAT_VALID_MASK`
      - valid_mask
 
+**${METPLUS_LINE_TYPE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_LINE_TYPE`
+     - line_type
+
 **${METPLUS_TRACK_WATCH_WARN}**
 
 .. list-table::
@@ -9287,6 +9307,50 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`TC_STAT_INIT_STR_EXC_VAL`
      - init_str_exc_val
 
+**${METPLUS_DIAG_THRESH_NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_DIAG_THRESH_NAME`
+     - diag_thresh_name
+
+**${METPLUS_DIAG_THRESH_VAL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_DIAG_THRESH_VAL`
+     - diag_thresh_val
+
+**${METPLUS_INIT_DIAG_THRESH_NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_INIT_DIAG_THRESH_NAME`
+     - init_diag_thresh_name
+
+**${METPLUS_INIT_DIAG_THRESH_VAL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_INIT_DIAG_THRESH_VAL`
+     - init_diag_thresh_val
+
 **${METPLUS_WATER_ONLY}**
 
 .. list-table::
@@ -9363,6 +9427,51 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`TC_STAT_MET_CONFIG_OVERRIDES`
      - n/a
+
+**${METPLUS_EVENT_EQUAL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_EVENT_EQUAL`
+     - event_equal
+
+**${METPLUS_EVENT_EQUAL_LEAD}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_EVENT_EQUAL_LEAD`
+     - event_equal_lead
+
+**${METPLUS_OUT_INIT_MASK}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_OUT_INIT_MASK`
+     - out_init_mask
+
+**${METPLUS_OUT_VALID_MASK}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_OUT_VALID_MASK`
+     - out_valid_mask
+
 
 .. _user_script_wrapper:
 
