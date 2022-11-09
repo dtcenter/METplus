@@ -195,6 +195,8 @@ class GenEnsProdWrapper(LoopTimesWrapper):
             'vld_thresh': 'float',
         })
 
+        # note: nmep_smooth.type is a list of dictionaries,
+        # but only setting 1 dictionary in the list is supported
         self.add_met_config_dict('nmep_smooth', {
             'vld_thresh': 'float',
             'shape': ('string', 'uppercase,remove_quotes'),
