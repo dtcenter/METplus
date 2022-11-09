@@ -376,14 +376,19 @@ def format_met_config(data_type, c_dict, name, keys=None):
     if not values:
         return ''
 
-    output = ''.join(values)
+    # separate items with commas if data type is list (not dictlist)
+    if data_type == 'list':
+        output = ','.join(values)
+    else:
+        output = ''.join(values)
+
     # add curly braces if dictionary
     if 'dict' in data_type:
         output = f"{{{output}}}"
 
     # add square braces if list
     if 'list' in data_type:
-        output = f"[{','.join(values)}];"
+        output = f"[{output}];"
 
     # if name is not empty, add variable name and equals sign
     if name:
