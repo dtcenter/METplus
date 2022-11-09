@@ -218,7 +218,7 @@ def test_ioda2nc_wrapper(metplus_config, config_overrides,
     print(f"ALL COMMANDS: {all_cmds}")
     assert len(all_cmds) == len(expected_cmds)
 
-    missing_env = [item for item in expected_env_vars
+    missing_env = [item for item in env_var_values
                    if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
     env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
 
