@@ -152,8 +152,7 @@ model_applications/unstructured_grids/StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEm
 #
 #   * StatAnalysisToolUseCase 
 #   * PythonEmbeddingFileUseCase 
-#   * TCandExtraTCAppUseCase 
-#   * NOAAEMCOrgUseCase
+#   * UnstructureGridsUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
