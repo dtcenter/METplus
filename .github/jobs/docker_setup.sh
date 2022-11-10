@@ -67,7 +67,7 @@ fi
 
 
 # skip docker push if credentials are not set
-if [ -z ${DOCKER_USERNAME+x} ] || [ -z ${DOCKER_PASSWORD+x} ]; then
+if [ -z ${DOCKER_USERNAME} ] || [ -z ${DOCKER_PASSWORD} ]; then
     echo "DockerHub credentials not set. Skipping docker push"
     exit 0
 fi
