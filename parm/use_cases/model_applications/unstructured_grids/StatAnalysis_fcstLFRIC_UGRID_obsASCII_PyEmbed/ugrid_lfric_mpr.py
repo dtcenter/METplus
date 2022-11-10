@@ -165,12 +165,6 @@ if len(sys.argv) == 3:
                 print(var_data)
             ob_vals = var_data['obs_value'].values
             f_vals = var_data['fcst_value'].values
-            plt.scatter(ob_vals, f_vals)
-            plt.title(str(obs_var))
-            plt.xlabel('observation')
-            plt.ylabel('forecast')
-            plt.savefig('./scatter' + str(obs_var) + '.png')
-            plt.close()
 
             match_df = pd.concat([match_df, var_data], ignore_index=True)
 
@@ -202,7 +196,7 @@ if len(sys.argv) == 3:
         print("Can't find the input files or the variables.")
         print("Variables in this file:\t" + repr(var_list))
 else:
-    print("ERROR: read_ioda_mpr.py -> Must specify directory of files.\n")
+    print("ERROR: ugrid_lfric_mpr.py -> Must specify directory of files.\n")
     sys.exit(1)
 
 ########################################################################

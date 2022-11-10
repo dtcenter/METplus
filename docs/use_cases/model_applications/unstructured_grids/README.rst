@@ -1,4 +1,4 @@
 Unstructured Grids
 -----------------
 
-Unstructured Grids used by model for numerical weather prediction
+Unstructured grids used by models for numerical weather prediction.

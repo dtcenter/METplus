@@ -23,8 +23,9 @@ model_applications/unstructured_grids/StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEm
 # pairs to pass to stat_analysis. In order to perform the interpolation using a 
 # nearest-neighbors approach, the geovista python package is also used to form a 
 # KD tree to be used in identifying the interpolation points to be used. This
-# package is located at https://github.com/bjlittle/geovista/. ASCII files containing
-# observations are also ingested.
+# package is located at https://github.com/bjlittle/geovista/ and can be installed
+# from a development version. It is also required to install the pyvista python 
+# package. ASCII files containing observations are also ingested.
 #
 # The python embedding script itself performs the interpolation in time, and
 # for this use case thins the observation data in order to reduce the run time.
