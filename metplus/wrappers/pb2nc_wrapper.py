@@ -226,7 +226,6 @@ class PB2NCWrapper(CommandBuilder):
         """
 
         infiles, time_info = self.find_obs_offset(input_dict,
-                                                  None,
                                                   mandatory=True,
                                                   return_list=True)
 

@@ -170,9 +170,7 @@ class PlotDataPlaneWrapper(CommandBuilder):
             self.infiles.append(self.c_dict['INPUT_TEMPLATE'])
             return self.infiles
 
-        file_path = self.find_data(time_info,
-                                   var_info=None,
-                                   return_list=False)
+        file_path = self.find_data(time_info, return_list=False)
         if not file_path:
             return None
 
