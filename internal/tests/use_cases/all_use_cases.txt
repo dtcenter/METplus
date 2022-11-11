@@ -167,3 +167,7 @@ Category: tc_and_extra_tc
 3::GridStat_fcstHAFS_obsTDR_NetCDF:: model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.conf:: py_embed
 4::TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample:: model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample.conf
 5::TCGen_fcstGFS_obsBDECK_2021season:: model_applications/tc_and_extra_tc/TCGen_fcstGFS_obsBDECK_2021season.conf
+
+
+Category: unstructured_grids
+0::StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEmbed:: model_applications/unstructured_grids/StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEmbed.conf:: geovista_env, py_embed
