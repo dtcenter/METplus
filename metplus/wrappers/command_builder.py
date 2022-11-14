@@ -24,7 +24,7 @@ from ..util import do_string_sub, ti_calculate, get_seconds_from_string
 from ..util import get_time_from_file
 from ..util import config_metplus
 from ..util import METConfig
-from ..util import MISSING_DATA_VALUE
+from ..util import MISSING_DATA_VALUE, COMPRESSION_EXTENSIONS
 from ..util import get_custom_string_list
 from ..util import get_wrapped_met_config_file, add_met_config_item, format_met_config
 from ..util import remove_quotes
@@ -809,16 +809,27 @@ class CommandBuilder:
 
             return None
 
+        # remove any files that are the same as another but zipped
+        closest_files_fixed = []
+        for filepath in closest_files:
+            duplicate_found = False
+            for ext in COMPRESSION_EXTENSIONS:
+                if filepath.endswith(ext) and filepath[0:-len(ext)] in closest_files:
+                    duplicate_found = True
+                    continue
+            if not duplicate_found:
+                closest_files_fixed.append(filepath)
+
         # check if file(s) needs to be preprocessed before returning the path
         # if one file was found and return_list if False, return single file
-        if len(closest_files) == 1 and not return_list:
-            return util.preprocess_file(closest_files[0],
+        if len(closest_files_fixed) == 1 and not return_list:
+            return util.preprocess_file(closest_files_fixed[0],
                                         self.c_dict.get(data_type + 'INPUT_DATATYPE', ''),
                                         self.config)
 
         # return list if multiple files are found
         out = []
-        for close_file in closest_files:
+        for close_file in closest_files_fixed:
             outfile = util.preprocess_file(close_file,
                                            self.c_dict.get(data_type + 'INPUT_DATATYPE', ''),
                                            self.config)
