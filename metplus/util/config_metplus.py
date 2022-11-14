@@ -999,7 +999,7 @@ def check_for_deprecated_config(config):
 
         # check if <n> is found in old item, use regex to find vars if found
         if '<n>' not in old:
-            handle_deprecated(old, depr_info['alt'], depr_info,
+            handle_deprecated(old, depr_info.get('alt', ''), depr_info,
                               config, all_sed_cmds, w_list, e_list)
             continue
 
@@ -1009,33 +1009,10 @@ def check_for_deprecated_config(config):
                                                  index_index=1).keys()
         for index in indices:
             old_with_index = old.replace('<n>', index)
-            if depr_info['alt']:
-                alt_with_index = depr_info['alt'].replace('<n>', index)
-            else:
-                alt_with_index = ''
+            alt_with_index = depr_info.get('alt', '').replace('<n>', index)
 
             handle_deprecated(old_with_index, alt_with_index, depr_info,
                               config, all_sed_cmds, w_list, e_list)
-
-    # check all templates and error if any deprecated tags are used
-    # value of dict is replacement tag, set to None if no replacement exists
-    # deprecated tags: region (replace with basin)
-    deprecated_tags = {'region': 'basin'}
-    template_vars = config.keys('config')
-    template_vars = [tvar for tvar in template_vars
-                     if tvar.endswith('_TEMPLATE')]
-    for temp_var in template_vars:
-        template = config.getraw('filename_templates', temp_var)
-        tags = get_tags(template)
-
-        for depr_tag, replace_tag in deprecated_tags.items():
-            if depr_tag in tags:
-                e_msg = 'Deprecated tag {{{}}} found in {}.'.format(depr_tag,
-                                                                    temp_var)
-                if replace_tag is not None:
-                    e_msg += ' Replace with {{{}}}'.format(replace_tag)
-
-                e_list.append(e_msg)
 
     # if any warning exist, report them
     if w_list:
@@ -1265,27 +1242,18 @@ def find_indices_in_config_section(regex, config, sec='config',
 
 
 def handle_deprecated(old, alt, depr_info, config, all_sed_cmds, w_list, e_list):
-    sec = config
+    sec = 'config'
     config_files = config.getstr('config', 'CONFIG_INPUT', '').split(',')
     # if deprecated config item is found
     if not config.has_option(sec, old):
         return
 
-    # if it is not required to remove, add to warning list
-    if 'req' in depr_info.keys() and depr_info['req'] is False:
-        msg = '[{}] {} is deprecated and will be '.format(sec, old) + \
-              'removed in a future version of METplus'
-        if alt:
-            msg += ". Please replace with {}".format(alt)
-        w_list.append(msg)
-        return
-
     # if it is required to remove, add to error list
     if not alt:
-        e_list.append("[{}] {} should be removed".format(sec, old))
+        e_list.append("{} should be removed".format(old))
         return
 
-    e_list.append("[{}] {} should be replaced with {}".format(sec, old, alt))
+    e_list.append("{} should be replaced with {}".format(old, alt))
 
     if 'copy' not in depr_info.keys() or depr_info['copy']:
         for config_file in config_files:
