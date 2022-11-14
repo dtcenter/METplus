@@ -121,6 +121,7 @@ MISSING_DATA_VALUE = -9999
 #     just remove the variable
 # 'copy' is an optional item (defaults to True). set this to False if one cannot simply replace
 #     the deprecated config variable name with the value in 'alt'
+# template       '' : {'alt' : '', 'copy': True},
 DEPRECATED_DICT = {
     'ENSEMBLE_STAT_ENSEMBLE_FLAG_LATLON': {},
     'ENSEMBLE_STAT_ENSEMBLE_FLAG_MEAN': {},
@@ -134,6 +135,13 @@ DEPRECATED_DICT = {
     'ENSEMBLE_STAT_ENSEMBLE_FLAG_FREQUENCY': {},
     'ENSEMBLE_STAT_ENSEMBLE_FLAG_NEP': {},
     'ENSEMBLE_STAT_ENSEMBLE_FLAG_NMEP': {},
+    'ENSEMBLE_STAT_NBRHD_PROB_WIDTH': {},
+    'ENSEMBLE_STAT_NBRHD_PROB_SHAPE': {},
+    'ENSEMBLE_STAT_NBRHD_PROB_VLD_THRESH': {},
+    'ENSEMBLE_STAT_NMEP_SMOOTH_VLD_THRESH': {},
+    'ENSEMBLE_STAT_NMEP_SMOOTH_SHAPE': {},
+    'ENSEMBLE_STAT_NMEP_SMOOTH_METHOD': {},
+    'ENSEMBLE_STAT_NMEP_SMOOTH_WIDTH': {},
+    'ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_DX': {},
+    'ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_RADIUS': {},
 }
-
-# template       '' : {'alt' : '', 'copy': True},
