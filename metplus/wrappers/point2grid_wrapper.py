@@ -201,8 +201,7 @@ class Point2GridWrapper(CommandBuilder):
         """
         # get input file
         # calling find_obs because we set OBS_ variables in c_dict for the input data
-        input_path = self.find_obs(time_info,
-                                   var_info=None)
+        input_path = self.find_obs(time_info)
         if input_path is None:
             return None
 

@@ -15,7 +15,7 @@ import os
 from ..util import do_string_sub, ti_calculate
 from ..util import parse_var_list
 from ..util import get_lead_sequence, skip_time, sub_var_list
-from ..util import field_read_prob_info
+from ..util import field_read_prob_info, add_field_info_to_time_info
 from . import CommandBuilder
 
 '''!@namespace CompareGriddedWrapper
@@ -160,12 +160,14 @@ that reformat gridded data
             for var_info in var_list:
                 self.clear()
                 self.c_dict['CURRENT_VAR_INFO'] = var_info
+                add_field_info_to_time_info(time_info, var_info)
                 self.run_at_time_one_field(time_info, var_info)
         else:
             # loop over all variables and all them to the field list,
             # then call the app once
             if var_list:
                 self.c_dict['CURRENT_VAR_INFO'] = var_list[0]
+                add_field_info_to_time_info(time_info, var_list[0])
 
             self.clear()
             self.run_at_time_all_fields(time_info)
@@ -180,7 +182,6 @@ that reformat gridded data
 
         # get model to compare, return None if not found
         model_path = self.find_model(time_info,
-                                     var_info,
                                      mandatory=True,
                                      return_list=True)
         if model_path is None:
@@ -189,7 +190,6 @@ that reformat gridded data
         self.infiles.extend(model_path)
         # get observation to compare, return None if not found
         obs_path, time_info = self.find_obs_offset(time_info,
-                                                   var_info,
                                                    mandatory=True,
                                                    return_list=True)
         if obs_path is None:
@@ -225,7 +225,6 @@ that reformat gridded data
 
         # get model from first var to compare
         model_path = self.find_model(time_info,
-                                     var_list[0],
                                      mandatory=True,
                                      return_list=True)
         if not model_path:
@@ -244,7 +243,6 @@ that reformat gridded data
 
         # get observation to from first var compare
         obs_path, time_info = self.find_obs_offset(time_info,
-                                                   var_list[0],
                                                    mandatory=True,
                                                    return_list=True)
         if obs_path is None:

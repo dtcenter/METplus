@@ -425,47 +425,39 @@ class CommandBuilder:
         """
         return f"{item}={self.env[item]}"
 
-    def find_model(self, time_info, var_info=None, mandatory=True,
-                   return_list=False):
+    def find_model(self, time_info, mandatory=True, return_list=False):
         """! Finds the model file to compare
-              Args:
+
                 @param time_info dictionary containing timing information
-                @param var_info object containing variable information
                 @param mandatory if True, report error if not found, warning
                  if not, default is True
                 @rtype string
                 @return Returns the path to an model file
         """
         return self.find_data(time_info,
-                              var_info=var_info,
                               data_type="FCST",
                               mandatory=mandatory,
                               return_list=return_list)
 
-    def find_obs(self, time_info, var_info=None, mandatory=True,
-                 return_list=False):
+    def find_obs(self, time_info, mandatory=True, return_list=False):
         """! Finds the observation file to compare
-              Args:
+
                 @param time_info dictionary containing timing information
-                @param var_info object containing variable information
                 @param mandatory if True, report error if not found, warning
                  if not, default is True
                 @rtype string
                 @return Returns the path to an observation file
         """
         return self.find_data(time_info,
-                              var_info=var_info,
                               data_type="OBS",
                               mandatory=mandatory,
                               return_list=return_list)
 
-    def find_obs_offset(self, time_info, var_info=None, mandatory=True,
-                        return_list=False):
+    def find_obs_offset(self, time_info, mandatory=True, return_list=False):
         """! Finds the observation file to compare, looping through offset
             list until a file is found
 
              @param time_info dictionary containing timing information
-             @param var_info object containing variable information
              @param mandatory if True, report error if not found, warning
               if not, default is True
              @rtype string
@@ -483,7 +475,6 @@ class CommandBuilder:
             time_info['offset_hours'] = offset
             time_info = ti_calculate(time_info)
             obs_path = self.find_obs(time_info,
-                                     var_info=var_info,
                                      mandatory=is_mandatory,
                                      return_list=return_list)
 
@@ -505,12 +496,10 @@ class CommandBuilder:
 
         return None, time_info
 
-    def find_data(self, time_info, var_info=None, data_type='', mandatory=True,
+    def find_data(self, time_info, data_type='', mandatory=True,
                   return_list=False, allow_dir=False):
         """! Finds the data file to compare
-              Args:
                 @param time_info dictionary containing timing information
-                @param var_info object containing variable information
                 @param data_type type of data to find (i.e. FCST_ or OBS_)
                 @param mandatory if True, report error if not found, warning
                  if not. default is True
@@ -523,21 +512,14 @@ class CommandBuilder:
         if data_type and not data_type.endswith('_'):
             data_type_fmt += '_'
 
-        if var_info is not None:
-            # set level based on input data type
-            if data_type_fmt.startswith("OBS"):
-                v_level = var_info['obs_level']
-            else:
-                v_level = var_info['fcst_level']
+        # set generic 'level' to level that corresponds to data_type if set
+        level = time_info.get(f'{data_type_fmt.lower()}level', '0')
 
-            # separate character from beginning of numeric
-            # level value if applicable
-            level = split_level(v_level)[1]
+        # strip off prefix letter if it exists
+        level = split_level(level)[1]
 
-            # set level to 0 character if it is not a number
-            if not level.isdigit():
-                level = '0'
-        else:
+        # set level to 0 character if it is not a number, e.g. NetCDF level
+        if not level.isdigit():
             level = '0'
 
         # if level is a range, use the first value, i.e. if 250-500 use 250
@@ -627,7 +609,7 @@ class CommandBuilder:
                 check_file_list.append(full_path)
 
         # if it was set, add level back to time_info
-        if saved_level:
+        if saved_level is not None:
             time_info['level'] = saved_level
 
         # if multiple files are not supported by the wrapper and multiple
@@ -1060,16 +1042,6 @@ class CommandBuilder:
             self.logger.info("Refer to the GempakToCF use case documentation for information "
                              "on how to obtain the tool: parm/use_cases/met_tool_wrapper/GempakToCF/GempakToCF.py")
             self.isOK = False
-
-    def add_field_info_to_time_info(self, time_info, field_info):
-        """!Add name and level values from field info to time info dict to be used in string substitution
-            Args:
-                @param time_info time dictionary to add items to
-                @param field_info field dictionary to get values from
-        """
-        field_items = ['fcst_name', 'fcst_level', 'obs_name', 'obs_level']
-        for field_item in field_items:
-            time_info[field_item] = field_info[field_item] if field_item in field_info else ''
 
     def set_current_field_config(self, field_info=None):
         """! Sets config variables for current fcst/obs name/level that can be

@@ -12,10 +12,9 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import time_util
-from ..util import do_string_sub
-from ..util import parse_var_list
-from ..util import get_process_list
+from ..util import get_seconds_from_string, do_string_sub
+from ..util import parse_var_list, get_process_list
+from ..util import add_field_info_to_time_info
 from ..util import remove_quotes, split_level, format_level
 from . import ReformatGriddedWrapper
 
@@ -173,7 +172,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
               not be run
         """
         _, level = split_level(field_info[f'{data_type.lower()}_level'])
-        time_info['level'] = time_util.get_seconds_from_string(level, 'H')
+        time_info['level'] = get_seconds_from_string(level, 'H')
         return self.find_and_check_output_file(time_info)
 
     def run_once_per_field(self, time_info, var_list, data_type):
@@ -189,8 +188,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
             self.set_command_line_arguments()
 
-            self.add_field_info_to_time_info(time_info,
-                                             field_info)
+            add_field_info_to_time_info(time_info, field_info)
 
             input_name = field_info[f'{data_type.lower()}_name']
             input_level = field_info[f'{data_type.lower()}_level']
@@ -271,8 +269,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         self.set_command_line_arguments()
 
         for field_info in var_list:
-            self.add_field_info_to_time_info(time_info,
-                                             field_info)
+            add_field_info_to_time_info(time_info, field_info)
 
             input_name = field_info[f'{data_type.lower()}_name']
             input_level = field_info[f'{data_type.lower()}_level']
@@ -289,9 +286,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         # add list of output names
         self.args.append("-name " + ','.join(output_names))
 
-        if not self.handle_output_file(time_info,
-                                       var_list[0],
-                                       data_type):
+        if not self.handle_output_file(time_info, var_list[0], data_type):
             return False
 
         # build and run commands
@@ -320,7 +315,8 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                            f'NAME or {data_type}_VAR<n>_NAME.')
             return False
 
-        if not self.find_input_files(time_info, data_type, var_list):
+        add_field_info_to_time_info(time_info, var_list[0])
+        if not self.find_input_files(time_info, data_type):
             return False
 
         # set environment variables
@@ -334,12 +330,16 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         # if not running once per field, process all fields and run once
         return self.run_once_for_all_fields(time_info, var_list, data_type)
 
-    def find_input_files(self, time_info, data_type, var_list):
-        """!Get input file and verification grid to process. Use the first field in the
-            list to substitute level if that is provided in the filename template"""
-        input_path = self.find_data(time_info,
-                                    var_info=var_list[0],
-                                    data_type=data_type)
+    def find_input_files(self, time_info, data_type):
+        """!Get input file and verification grid to process. Use the first
+         field in the list to substitute level if that is provided in the
+         filename template
+
+         @param time_info time dictionary used for string substitution
+         @param data_type type of data to process, i.e. FCST or OBS
+         @returns list of input files if files were found, None if not
+         """
+        input_path = self.find_data(time_info, data_type=data_type)
         if not input_path:
             return None
 
