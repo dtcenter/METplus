@@ -12,6 +12,7 @@ from ..util import get_seconds_from_string, ti_get_lead_string, ti_calculate
 from ..util import get_relativedelta, ti_get_seconds_from_relativedelta
 from ..util import time_string_to_met_time, seconds_to_met_time
 from ..util import parse_var_list, template_to_regex, split_level
+from ..util import add_field_info_to_time_info
 from . import ReformatGriddedWrapper
 
 '''!@namespace PCPCombineWrapper
@@ -252,6 +253,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             return False
 
         time_info['level'] = lookback_seconds
+        add_field_info_to_time_info(time_info, var_info)
 
         # if method is not USER_DEFINED or DERIVE,
         # check that field information is set
@@ -259,7 +261,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             can_run = self.setup_user_method(time_info, data_src)
         elif method == "DERIVE":
             can_run = self.setup_derive_method(time_info, lookback_seconds,
-                                               var_info, data_src)
+                                               data_src)
         elif method == "ADD":
             can_run = self.setup_add_method(time_info, lookback_seconds,
                                             data_src)
@@ -494,12 +496,11 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         return files_found
 
-    def setup_derive_method(self, time_info, lookback, var_info, data_src):
+    def setup_derive_method(self, time_info, lookback, data_src):
         """! Setup pcp_combine to derive stats
 
           @param time_info dictionary containing timing information
           @param lookback accumulation amount to compute in seconds
-          @param var_info object containing variable information
           @param data_src data type (FCST or OBS)
           @rtype string
           @return path to output file
@@ -524,7 +525,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                                                level=accum_dict['level'],
                                                extra=accum_dict['extra'])
             input_files = self.find_data(time_info,
-                                         var_info,
                                          data_type=data_src,
                                          return_list=True)
             if not input_files:

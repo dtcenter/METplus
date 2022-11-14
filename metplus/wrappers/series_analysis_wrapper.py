@@ -30,7 +30,7 @@ from ..util import ti_get_lead_string, ti_calculate
 from ..util import ti_get_seconds_from_relativedelta
 from ..util import parse_var_list
 from ..util import add_to_time_input
-from ..util import field_read_prob_info
+from ..util import field_read_prob_info, add_field_info_to_time_info
 from .plot_data_plane_wrapper import PlotDataPlaneWrapper
 from . import RuntimeFreqWrapper
 
@@ -803,7 +803,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                 self.c_dict['FCST_LIST_PATH'] = fcst_path
                 self.c_dict['OBS_LIST_PATH'] = obs_path
 
-            self.add_field_info_to_time_info(time_info, var_info)
+            add_field_info_to_time_info(time_info, var_info)
 
             # get formatted field dictionary to pass into the MET config file
             fcst_field, obs_field = self.get_formatted_fields(var_info,
@@ -916,7 +916,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         for var_info in self.c_dict['VAR_LIST']:
             name = var_info['fcst_name']
             level = var_info['fcst_level']
-            self.add_field_info_to_time_info(time_info, var_info)
+            add_field_info_to_time_info(time_info, var_info)
 
             # change wildcard storm ID to all_storms
             if storm_id == '*':

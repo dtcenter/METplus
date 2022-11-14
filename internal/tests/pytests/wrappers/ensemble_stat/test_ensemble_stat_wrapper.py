@@ -60,6 +60,49 @@ def set_minimum_config_settings(config, set_fields=True):
 
 
 @pytest.mark.parametrize(
+    'config_overrides, expected_filename', [
+        # 0 - set forecast level
+        ({'FCST_VAR1_NAME': 'fcst_file',
+          'FCST_VAR1_LEVELS': 'A06',
+          'OBS_VAR1_NAME': 'obs_file',
+          'OBS_VAR1_LEVELS': 'A06',
+          'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE': '{fcst_name}_A{level?fmt=%3H}',
+          },
+         f'{fcst_dir}/fcst_file_A006'),
+        # 1 - don't set forecast level
+        ({'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE': 'fcst_file_A{level?fmt=%3H}'},
+         f'{fcst_dir}/fcst_file_A000'),
+    ]
+)
+@pytest.mark.wrapper_c
+def test_ensemble_stat_level_in_template(metplus_config, config_overrides,
+                                         expected_filename):
+
+    config = metplus_config
+
+    set_minimum_config_settings(config, set_fields=False)
+
+    # set config variable overrides
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    wrapper = EnsembleStatWrapper(config)
+    assert wrapper.isOK
+
+    file_list_dir = wrapper.config.getdir('FILE_LISTS_DIR')
+    file_list_file = f"{file_list_dir}/20050807000000_12_ensemble_stat.txt"
+    if os.path.exists(file_list_file):
+        os.remove(file_list_file)
+
+    wrapper.run_all_times()
+    assert os.path.exists(file_list_file)
+    with open(file_list_file, 'r') as file_handle:
+        filenames = file_handle.read().splitlines()[1:]
+    assert len(filenames) == 1
+    assert filenames[0] == expected_filename
+
+
+@pytest.mark.parametrize(
     'config_overrides, env_var_values', [
         # 0 : no ens, 1 fcst, 1 obs
         ({'FCST_VAR1_NAME': 'fcst_name_1',
@@ -577,8 +620,7 @@ def test_ensemble_stat_single_field(metplus_config, config_overrides,
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
-    file_list_dir = os.path.join(wrapper.config.getdir('STAGING_DIR'),
-                                 'file_lists')
+    file_list_dir = wrapper.config.getdir('FILE_LISTS_DIR')
     config_file = wrapper.c_dict.get('CONFIG_FILE')
     out_dir = wrapper.c_dict.get('OUTPUT_DIR')
     expected_cmds = [(f"{app_path} {verbosity} "
@@ -655,8 +697,7 @@ def test_ensemble_stat_fill_missing(metplus_config, config_overrides,
 
     wrapper = EnsembleStatWrapper(config)
 
-    file_list_file = os.path.join(wrapper.config.getdir('STAGING_DIR'),
-                                  'file_lists',
+    file_list_file = os.path.join(wrapper.config.getdir('FILE_LISTS_DIR'),
                                   '20050807000000_12_ensemble_stat.txt')
     if os.path.exists(file_list_file):
         os.remove(file_list_file)
