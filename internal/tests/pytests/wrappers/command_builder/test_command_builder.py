@@ -15,15 +15,19 @@ def get_data_dir(config):
 
 
 @pytest.mark.parametrize(
-    'data_type', [
-        ("FCST_"),
-        ("OBS_"),
-        (""),
-        ("MASK_"),
-        ]
+    'data_type,allow_multiple', [
+        ("FCST_", False),
+        ("OBS_", False),
+        ("", False),
+        ("MASK_", False),
+        ("FCST_", True),
+        ("OBS_", True),
+        ("", True),
+        ("MASK_", True),
+    ]
 )
 @pytest.mark.wrapper
-def test_find_data_no_dated(metplus_config, data_type):
+def test_find_data_no_dated(metplus_config, data_type, allow_multiple):
     config = metplus_config
 
     pcw = CommandBuilder(config)
@@ -39,8 +43,10 @@ def test_find_data_no_dated(metplus_config, data_type):
     pcw.c_dict[f'{data_type}FILE_WINDOW_END'] = 3600
     pcw.c_dict[f'{data_type}INPUT_DIR'] = get_data_dir(pcw.config)
     pcw.c_dict[f'{data_type}INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}"
+    pcw.c_dict[f'ALLOW_MULTIPLE_FILES'] = allow_multiple
     add_field_info_to_time_info(time_info, var_info)
     obs_file = pcw.find_data(time_info, data_type)
+    assert not isinstance(obs_file, list)
     assert obs_file == pcw.c_dict[f'{data_type}INPUT_DIR']+'/20180201_0045'
 
 
