@@ -3,25 +3,7 @@
 import sys
 import os
 
-from . import LOWER_TO_WRAPPER_NAME
-
-
-def get_wrapper_name(process_name):
-    """! Determine name of wrapper from string that may not contain the correct
-         capitalization, i.e. Pcp-Combine translates to PCPCombine
-
-         @param process_name string that was listed in the PROCESS_LIST
-         @returns name of wrapper (without 'Wrapper' at the end) and None if
-          name cannot be determined
-    """
-    lower_process = (process_name.replace('-', '')
-                         .replace('_', '')
-                         .replace(' ', '')
-                         .lower())
-    if lower_process in LOWER_TO_WRAPPER_NAME.keys():
-        return LOWER_TO_WRAPPER_NAME[lower_process]
-
-    return None
+from .config_util import get_wrapper_name
 
 
 def print_doc_text(tool_name, input_dict):

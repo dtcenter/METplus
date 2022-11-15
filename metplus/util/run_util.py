@@ -6,6 +6,8 @@ from importlib import import_module
 
 from .constants import NO_COMMAND_WRAPPERS
 from .system_util import get_user_info, write_list_to_file
+from .config_util import get_process_list
+from .config_validate import validate_config_variables
 from .. import get_metplus_version
 from . import config_metplus
 from . import camel_to_underscore
@@ -36,7 +38,7 @@ def pre_run_setup(config_inputs):
         logger.info(f"Config Input: {config_item}")
 
     # validate configuration variables
-    is_ok, all_sed_cmds = config_metplus.validate_configuration_variables(config)
+    is_ok, all_sed_cmds = validate_config_variables(config)
     if not is_ok:
         # if any sed commands were generated, write them to the sed file
         if all_sed_cmds:
@@ -47,10 +49,12 @@ def pre_run_setup(config_inputs):
                 os.remove(sed_file)
 
             write_list_to_file(sed_file, all_sed_cmds)
-            config.logger.error(f"Find/Replace commands have been generated in {sed_file}")
+            config.logger.error("Find/Replace commands have been "
+                                f"generated in {sed_file}")
 
         logger.error("Correct configuration variables and rerun. Exiting.")
-        logger.info(f"Check the log file for more information: {config.getstr('config', 'LOG_METPLUS')}")
+        logger.info("Check the log file for more information: "
+                    f"{config.getstr('config', 'LOG_METPLUS')}")
         sys.exit(1)
 
     if not config.getdir('MET_INSTALL_DIR', must_exist=True):
@@ -79,7 +83,7 @@ def run_metplus(config):
     total_errors = 0
 
     # Use config object to get the list of processes to call
-    process_list = config_metplus.get_process_list(config)
+    process_list = get_process_list(config)
 
     try:
         processes = []

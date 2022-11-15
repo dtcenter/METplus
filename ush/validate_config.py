@@ -24,7 +24,7 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                 os.pardir)))
 
-from metplus.util import config_metplus, validate_configuration_variables
+from metplus.util import config_metplus, validate_config_variables
 from run_metplus import get_config_inputs_from_command_line
 
 
@@ -35,7 +35,7 @@ def main():
     config = config_metplus.setup(config_inputs)
 
     # validate configuration variables
-    is_ok, sed_commands = validate_configuration_variables(config)
+    is_ok, sed_commands = validate_config_variables(config)
 
     # if everything is valid, report success and exit
     if is_ok:

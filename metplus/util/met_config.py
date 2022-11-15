@@ -9,7 +9,8 @@ import re
 from .constants import PYTHON_EMBEDDING_TYPES, CLIMO_TYPES, MISSING_DATA_VALUE
 from .string_manip import getlist, get_threshold_via_regex
 from .string_manip import remove_quotes as util_remove_quotes
-from .config_metplus import find_indices_in_config_section, parse_var_list
+from .string_manip import find_indices_in_config_section
+from .config_metplus import parse_var_list
 from .field_util import format_all_field_info
 
 class METConfig:
