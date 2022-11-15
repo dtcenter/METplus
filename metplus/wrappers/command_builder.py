@@ -22,7 +22,7 @@ from ..util.constants import PYTHON_EMBEDDING_TYPES
 from ..util import getlist, preprocess_file, loop_over_times_and_call
 from ..util import do_string_sub, ti_calculate, get_seconds_from_string
 from ..util import get_time_from_file, shift_time_seconds
-from ..util import config_metplus
+from ..util import replace_config_from_section
 from ..util import METConfig
 from ..util import MISSING_DATA_VALUE
 from ..util import get_custom_string_list
@@ -82,11 +82,8 @@ class CommandBuilder:
         # if instance is set, check for a section with the same name in the
         # METplusConfig object. If found, copy all values into the config
         if instance:
-            self.config = (
-                config_metplus.replace_config_from_section(self.config,
-                                                           instance,
-                                                           required=False)
-            )
+            self.config = replace_config_from_section(self.config, instance,
+                                                      required=False)
 
         self.instance = instance
         self.env = config.env if hasattr(config, 'env') else os.environ.copy()

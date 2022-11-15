@@ -50,6 +50,7 @@ All symbols exported by "from metplus.util.config_metplus import *"
 __all__ = [
     'setup',
     'parse_var_list',
+    'replace_config_from_section',
 ]
 
 '''!@var METPLUS_BASE
