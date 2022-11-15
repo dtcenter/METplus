@@ -7,6 +7,7 @@ import os
 from datetime import datetime
 
 from metplus.util.config_util import *
+from metplus.util.config_metplus import parse_var_list
 from metplus.util.time_util import ti_calculate
 
 
@@ -107,3 +108,65 @@ def test_get_process_list_instances(metplus_config, input_list, expected_list):
     conf.set('config', 'PROCESS_LIST', input_list)
     output_list = get_process_list(conf)
     assert output_list == expected_list
+
+
+@pytest.mark.parametrize(
+    'input_dict, expected_list', [
+        ({'init': datetime(2019, 2, 1, 6),
+          'lead': 7200, },
+         [
+             {'index': '1',
+              'fcst_name': 'FNAME_2019',
+              'fcst_level': 'Z06',
+              'obs_name': 'ONAME_2019',
+              'obs_level': 'L06',
+             },
+             {'index': '1',
+              'fcst_name': 'FNAME_2019',
+              'fcst_level': 'Z08',
+              'obs_name': 'ONAME_2019',
+              'obs_level': 'L08',
+             },
+         ]),
+        ({'init': datetime(2021, 4, 13, 9),
+          'lead': 10800, },
+         [
+             {'index': '1',
+              'fcst_name': 'FNAME_2021',
+              'fcst_level': 'Z09',
+              'obs_name': 'ONAME_2021',
+              'obs_level': 'L09',
+              },
+             {'index': '1',
+              'fcst_name': 'FNAME_2021',
+              'fcst_level': 'Z12',
+              'obs_name': 'ONAME_2021',
+              'obs_level': 'L12',
+              },
+         ]),
+    ]
+)
+@pytest.mark.util
+def test_sub_var_list(metplus_config, input_dict, expected_list):
+    config = metplus_config
+    config.set('config', 'FCST_VAR1_NAME', 'FNAME_{init?fmt=%Y}')
+    config.set('config', 'FCST_VAR1_LEVELS', 'Z{init?fmt=%H}, Z{valid?fmt=%H}')
+    config.set('config', 'OBS_VAR1_NAME', 'ONAME_{init?fmt=%Y}')
+    config.set('config', 'OBS_VAR1_LEVELS', 'L{init?fmt=%H}, L{valid?fmt=%H}')
+
+    time_info = ti_calculate(input_dict)
+
+    actual_temp = parse_var_list(config)
+
+    pp = pprint.PrettyPrinter()
+    print(f'Actual var list (before sub):')
+    pp.pprint(actual_temp)
+
+    actual_list = sub_var_list(actual_temp, time_info)
+    print(f'Actual var list (after sub):')
+    pp.pprint(actual_list)
+
+    assert len(actual_list) == len(expected_list)
+    for actual, expected in zip(actual_list, expected_list):
+        for key, value in expected.items():
+            assert actual.get(key) == value

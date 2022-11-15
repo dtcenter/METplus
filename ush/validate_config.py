@@ -8,7 +8,7 @@ Abstract: Checks configuration files and reports if anything needs to be changed
   the changes made for them.
 History Log:  Initial version
 Usage: Call the same as run_metplus.py, 
-  i.e. validate_config.py -c <config_file> -c <config_file>
+  i.e. validate_config.py <config_file> <config_file>
 Parameters: None
 Input Files: Configuration files
 Output Files:
