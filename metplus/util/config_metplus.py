@@ -23,6 +23,7 @@ import uuid
 from produtil.config import ProdConfig
 
 from .constants import RUNTIME_CONFS, MISSING_DATA_VALUE, DEPRECATED_DICT
+from .constants import UPGRADE_INSTRUCTIONS_URL, DEPRECATED_MET_LIST
 from .string_template_substitution import get_tags, do_string_sub
 from .string_manip import getlist, remove_quotes, is_python_script
 from .string_manip import validate_thresholds
@@ -993,14 +994,20 @@ def check_for_deprecated_config(config):
     w_list = []
     all_sed_cmds = []
 
+    # keep track of upgrade instructions to output after all variables are checked
+    upgrade_notes = set()
+
     for old, depr_info in DEPRECATED_DICT.items():
         if not isinstance(depr_info, dict):
             continue
 
         # check if <n> is found in old item, use regex to find vars if found
         if '<n>' not in old:
-            handle_deprecated(old, depr_info.get('alt', ''), depr_info,
-                              config, all_sed_cmds, w_list, e_list)
+            upgrade_note = handle_deprecated(old, depr_info.get('alt', ''),
+                                             depr_info, config, all_sed_cmds,
+                                             w_list, e_list)
+            if upgrade_note:
+                upgrade_notes.add(upgrade_note)
             continue
 
         old_regex = old.replace('<n>', r'(\d+)')
@@ -1011,18 +1018,32 @@ def check_for_deprecated_config(config):
             old_with_index = old.replace('<n>', index)
             alt_with_index = depr_info.get('alt', '').replace('<n>', index)
 
-            handle_deprecated(old_with_index, alt_with_index, depr_info,
-                              config, all_sed_cmds, w_list, e_list)
+            upgrade_note = handle_deprecated(old_with_index, alt_with_index,
+                                             depr_info, config, all_sed_cmds,
+                                             w_list, e_list)
+            if upgrade_note:
+                upgrade_notes.add(upgrade_note)
 
     # if any warning exist, report them
     if w_list:
         for warning_msg in w_list:
             logger.warning(warning_msg)
 
+    if 'ensemble' in upgrade_notes:
+        short_msg = ('Please navigate to the upgrade instructions: '
+                     f'{UPGRADE_INSTRUCTIONS_URL}')
+        msg = ('EnsembleStat functionality has been moved to GenEnsProd. '
+               'The required changes to the config files depend on '
+               'the type of evaluation that is being performed. '
+               f'{short_msg}')
+
+        e_list.insert(0, msg)
+        e_list.append(short_msg)
+
     # if any errors exist, report them and exit
     if e_list:
-        logger.error('DEPRECATED CONFIG ITEMS WERE FOUND. '
-                     'PLEASE REMOVE/REPLACE THEM FROM CONFIG FILES')
+        logger.error('DEPRECATED CONFIG ITEMS WERE FOUND. PLEASE FOLLOW THE '
+                     'INSTRUCTIONS TO UPDATE THE CONFIG FILES')
         for error_msg in e_list:
             logger.error(error_msg)
         return False, all_sed_cmds
@@ -1065,15 +1086,17 @@ def check_for_deprecated_met_config_file(config, met_config, sed_cmds, met_tool)
         config.logger.error(f"Config file does not exist: {met_config}")
         return False
 
-    deprecated_met_list = ['MET_VALID_HHMM', 'GRID_VX', 'CONFIG_DIR']
-    deprecated_output_prefix_list = ['FCST_VAR', 'OBS_VAR']
+    # skip check if no deprecated variables are set
+    if not DEPRECATED_MET_LIST:
+        return all_good
+
     config.logger.debug(f"Checking for deprecated environment variables in: {met_config}")
 
     with open(met_config, 'r') as file_handle:
         lines = file_handle.read().splitlines()
 
     for line in lines:
-        for deprecated_item in deprecated_met_list:
+        for deprecated_item in DEPRECATED_MET_LIST:
             if '${' + deprecated_item + '}' in line:
                 all_good = False
                 config.logger.error("Please remove deprecated environment variable "
@@ -1106,28 +1129,6 @@ def check_for_deprecated_met_config_file(config, met_config, sed_cmds, met_tool)
                     add_line = f"{met_tool}_REGRID_TO_GRID"
                     sed_cmds.append(f"#Add {add_line}")
                     break
-
-
-        for deprecated_item in deprecated_output_prefix_list:
-            # if deprecated item found in output prefix or to_grid line, replace line to use
-            # env var OUTPUT_PREFIX or REGRID_TO_GRID
-            if '${' + deprecated_item + '}' in line and 'output_prefix' in line:
-                config.logger.error("output_prefix variable should reference "
-                                    "${OUTPUT_PREFIX} environment variable")
-                new_line = "output_prefix    = \"${OUTPUT_PREFIX}\";"
-
-                # escape [ and ] because they are special characters in sed commands
-                old_line = line.rstrip().replace('[', r'\[').replace(']', r'\]')
-
-                sed_cmds.append(f"sed -i 's|^{old_line}|{new_line}|g' {met_config}")
-                config.logger.info(f"You will need to add {met_tool}_OUTPUT_PREFIX to the METplus config file"
-                                   f" that sets {met_tool}_CONFIG_FILE. Set it to:")
-                output_prefix = _replace_output_prefix(line)
-                add_line = f"{met_tool}_OUTPUT_PREFIX = {output_prefix}"
-                config.logger.info(add_line)
-                sed_cmds.append(f"#Add {add_line}")
-                all_good = False
-                break
 
     return all_good
 
@@ -1244,14 +1245,19 @@ def find_indices_in_config_section(regex, config, sec='config',
 def handle_deprecated(old, alt, depr_info, config, all_sed_cmds, w_list, e_list):
     sec = 'config'
     config_files = config.getstr('config', 'CONFIG_INPUT', '').split(',')
+
+    upgrade_note = None
+
     # if deprecated config item is found
     if not config.has_option(sec, old):
-        return
+        return upgrade_note
+
+    upgrade_note = depr_info.get('upgrade')
 
     # if it is required to remove, add to error list
     if not alt:
         e_list.append("{} should be removed".format(old))
-        return
+        return upgrade_note
 
     e_list.append("{} should be replaced with {}".format(old, alt))
 
@@ -1259,6 +1265,8 @@ def handle_deprecated(old, alt, depr_info, config, all_sed_cmds, w_list, e_list)
         for config_file in config_files:
             all_sed_cmds.append(f"sed -i 's|^{old}|{alt}|g' {config_file}")
             all_sed_cmds.append(f"sed -i 's|{{{old}}}|{{{alt}}}|g' {config_file}")
+
+    return upgrade_note
 
 
 def get_custom_string_list(config, met_tool):

@@ -48,6 +48,7 @@ def pre_run_setup(config_inputs):
             config.logger.error(f"Find/Replace commands have been generated in {sed_file}")
 
         logger.error("Correct configuration variables and rerun. Exiting.")
+        logger.info(f"Check the log file for more information: {config.getstr('config', 'LOG_METPLUS')}")
         sys.exit(1)
 
     if not config.getdir('MET_INSTALL_DIR', must_exist=True):
@@ -147,7 +148,8 @@ def run_metplus(config):
         return total_errors
     except:
         logger.exception("Fatal error occurred")
-        logger.info(f"Check the log file for more information: {config.getstr('config', 'LOG_METPLUS')}")
+        logger.info("Check the log file for more information: "
+                    f"{config.getstr('config', 'LOG_METPLUS')}")
         return 1
 
 def post_run_cleanup(config, app_name, total_errors):
