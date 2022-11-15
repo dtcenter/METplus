@@ -951,29 +951,33 @@ def validate_configuration_variables(config, force_check=False):
 
     all_sed_cmds = []
     # check for deprecated config items and warn user to remove/replace them
-    deprecated_isOK, sed_cmds = check_for_deprecated_config(config)
+    deprecated_is_ok, sed_cmds = check_for_deprecated_config(config)
     all_sed_cmds.extend(sed_cmds)
 
-    # check for deprecated env vars in MET config files and warn user to remove/replace them
-    deprecatedMET_isOK, sed_cmds = check_for_deprecated_met_config(config)
+    # check for deprecated env vars in MET config files and
+    # warn user to remove/replace them
+    deprecated_met_is_ok, sed_cmds = check_for_deprecated_met_config(config)
     all_sed_cmds.extend(sed_cmds)
 
     # validate configuration variables
-    field_isOK, sed_cmds = validate_field_info_configs(config, force_check)
+    field_is_ok, sed_cmds = validate_field_info_configs(config, force_check)
     all_sed_cmds.extend(sed_cmds)
 
     # check that OUTPUT_BASE is not set to the exact same value as INPUT_BASE
-    inoutbase_isOK = True
+    inoutbase_is_ok = True
     input_real_path = os.path.realpath(config.getdir_nocheck('INPUT_BASE', ''))
     output_real_path = os.path.realpath(config.getdir('OUTPUT_BASE'))
     if input_real_path == output_real_path:
       config.logger.error(f"INPUT_BASE AND OUTPUT_BASE are set to the exact same path: {input_real_path}")
       config.logger.error("Please change one of these paths to avoid risk of losing input data")
-      inoutbase_isOK = False
+      inoutbase_is_ok = False
 
     check_user_environment(config)
 
-    return deprecated_isOK, field_isOK, inoutbase_isOK, deprecatedMET_isOK, all_sed_cmds
+    is_ok = (deprecated_is_ok and field_is_ok and
+             inoutbase_is_ok and deprecated_met_is_ok)
+
+    return is_ok, all_sed_cmds
 
 
 def check_for_deprecated_config(config):

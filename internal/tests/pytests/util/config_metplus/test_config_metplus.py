@@ -418,21 +418,20 @@ def test_parse_var_list_fcst_only(metplus_config, data_type, list_created):
     conf.set('config', 'FCST_VAR2_LEVELS', "LEVELS21, LEVELS22")
 
     # this should not occur because OBS variables are missing
-    if config_metplus.validate_configuration_variables(conf, force_check=True)[1]:
-        assert False
+    assert not config_metplus.validate_configuration_variables(conf, force_check=True)[0]
 
     var_list = config_metplus.parse_var_list(conf, time_info=None, data_type=data_type)
 
     # list will be created if requesting just OBS, but it should not be created if
     # nothing was requested because FCST values are missing
     if list_created:
-        assert(var_list[0]['fcst_name'] == "NAME1" and \
-               var_list[1]['fcst_name'] == "NAME1" and \
-               var_list[2]['fcst_name'] == "NAME2" and \
-               var_list[3]['fcst_name'] == "NAME2" and \
-               var_list[0]['fcst_level'] == "LEVELS11" and \
-               var_list[1]['fcst_level'] == "LEVELS12" and \
-               var_list[2]['fcst_level'] == "LEVELS21" and \
+        assert(var_list[0]['fcst_name'] == "NAME1" and
+               var_list[1]['fcst_name'] == "NAME1" and
+               var_list[2]['fcst_name'] == "NAME2" and
+               var_list[3]['fcst_name'] == "NAME2" and
+               var_list[0]['fcst_level'] == "LEVELS11" and
+               var_list[1]['fcst_level'] == "LEVELS12" and
+               var_list[2]['fcst_level'] == "LEVELS21" and
                var_list[3]['fcst_level'] == "LEVELS22")
     else:
         assert not var_list
@@ -455,7 +454,7 @@ def test_parse_var_list_obs(metplus_config, data_type, list_created):
     conf.set('config', 'OBS_VAR2_LEVELS', "LEVELS21, LEVELS22")
 
     # this should not occur because FCST variables are missing
-    if config_metplus.validate_configuration_variables(conf, force_check=True)[1]:
+    if config_metplus.validate_configuration_variables(conf, force_check=True)[0]:
         assert False
 
     var_list = config_metplus.parse_var_list(conf, time_info=None, data_type=data_type)
@@ -492,7 +491,7 @@ def test_parse_var_list_both(metplus_config, data_type, list_created):
     conf.set('config', 'BOTH_VAR2_LEVELS', "LEVELS21, LEVELS22")
 
     # this should not occur because BOTH variables are used
-    if not config_metplus.validate_configuration_variables(conf, force_check=True)[1]:
+    if not config_metplus.validate_configuration_variables(conf, force_check=True)[0]:
         assert False
 
     var_list = config_metplus.parse_var_list(conf, time_info=None, data_type=data_type)
@@ -523,7 +522,7 @@ def test_parse_var_list_fcst_and_obs(metplus_config):
     conf.set('config', 'OBS_VAR2_LEVELS', "OLEVELS21, OLEVELS22")
 
     # this should not occur because FCST and OBS variables are found
-    if not config_metplus.validate_configuration_variables(conf, force_check=True)[1]:
+    if not config_metplus.validate_configuration_variables(conf, force_check=True)[0]:
         assert False
 
     var_list = config_metplus.parse_var_list(conf)
@@ -556,7 +555,7 @@ def test_parse_var_list_fcst_and_obs_alternate(metplus_config):
     conf.set('config', 'OBS_VAR2_LEVELS', "OLEVELS21, OLEVELS22")
 
     # configuration is invalid and parse var list should not give any results
-    assert(not config_metplus.validate_configuration_variables(conf, force_check=True)[1] and not config_metplus.parse_var_list(conf))
+    assert(not config_metplus.validate_configuration_variables(conf, force_check=True)[0] and not config_metplus.parse_var_list(conf))
 
 
 # VAR1 defined by OBS, VAR2 by FCST, VAR3 by both FCST AND OBS
@@ -580,7 +579,7 @@ def test_parse_var_list_fcst_and_obs_and_both(metplus_config, data_type, list_le
     conf.set('config', 'OBS_VAR3_LEVELS', "OLEVELS31, OLEVELS32")
 
     # configuration is invalid and parse var list should not give any results
-    if config_metplus.validate_configuration_variables(conf, force_check=True)[1]:
+    if config_metplus.validate_configuration_variables(conf, force_check=True)[0]:
         assert False
 
     var_list = config_metplus.parse_var_list(conf, time_info=None, data_type=data_type)
@@ -626,7 +625,7 @@ def test_parse_var_list_fcst_only_options(metplus_config, data_type, list_len):
     conf.set('config', 'OBS_VAR1_OPTIONS', "OOPTIONS11")
 
     # this should not occur because OBS variables are missing
-    if config_metplus.validate_configuration_variables(conf, force_check=True)[1]:
+    if config_metplus.validate_configuration_variables(conf, force_check=True)[0]:
         assert False
 
     var_list = config_metplus.parse_var_list(conf, time_info=None, data_type=data_type)

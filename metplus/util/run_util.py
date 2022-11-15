@@ -10,6 +10,7 @@ from .. import get_metplus_version
 from . import config_metplus
 from . import camel_to_underscore
 
+
 def pre_run_setup(config_inputs):
 
     version_number = get_metplus_version()
@@ -35,11 +36,12 @@ def pre_run_setup(config_inputs):
         logger.info(f"Config Input: {config_item}")
 
     # validate configuration variables
-    isOK_A, isOK_B, isOK_C, isOK_D, all_sed_cmds = config_metplus.validate_configuration_variables(config)
-    if not (isOK_A and isOK_B and isOK_C and isOK_D):
+    is_ok, all_sed_cmds = config_metplus.validate_configuration_variables(config)
+    if not is_ok:
         # if any sed commands were generated, write them to the sed file
         if all_sed_cmds:
-            sed_file = os.path.join(config.getdir('OUTPUT_BASE'), 'sed_commands.txt')
+            sed_file = os.path.join(config.getdir('OUTPUT_BASE'),
+                                    'sed_commands.txt')
             # remove if sed file exists
             if os.path.exists(sed_file):
                 os.remove(sed_file)
@@ -136,14 +138,15 @@ def run_metplus(config):
 
         # compute total number of errors that occurred and output results
         for process in processes:
-            if process.errors != 0:
-                process_name = process.__class__.__name__.replace('Wrapper', '')
-                error_msg = '{} had {} error'.format(process_name, process.errors)
-                if process.errors > 1:
-                    error_msg += 's'
-                error_msg += '.'
-                logger.error(error_msg)
-                total_errors += process.errors
+            if not process.errors:
+                continue
+            process_name = process.__class__.__name__.replace('Wrapper', '')
+            error_msg = f'{process_name} had {process.errors} error'
+            if process.errors > 1:
+                error_msg += 's'
+            error_msg += '.'
+            logger.error(error_msg)
+            total_errors += process.errors
 
         return total_errors
     except:
@@ -151,6 +154,7 @@ def run_metplus(config):
         logger.info("Check the log file for more information: "
                     f"{config.getstr('config', 'LOG_METPLUS')}")
         return 1
+
 
 def post_run_cleanup(config, app_name, total_errors):
     logger = config.logger
