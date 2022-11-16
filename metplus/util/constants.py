@@ -1,7 +1,7 @@
 # Constant variables used throughout the METplus wrappers source code
 
 UPGRADE_INSTRUCTIONS_URL = (
-    'https://metplus.readthedocs.io/en/latest/Users_Guide/'
+    'https://metplus.readthedocs.io/en/develop/Users_Guide/'
     'release-notes.html#metplus-wrappers-upgrade-instructions'
 )
 
