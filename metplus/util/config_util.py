@@ -1,26 +1,9 @@
 import os
 import re
 
-from .constants import LOWER_TO_WRAPPER_NAME
-from .string_manip import getlist
+from .string_manip import getlist, get_wrapper_name
 from .string_template_substitution import do_string_sub
 from .system_util import mkdir_p
-
-
-def get_wrapper_name(process_name):
-    """! Determine name of wrapper from string that may not contain the correct
-         capitalization, i.e. Pcp-Combine translates to PCPCombine
-
-         @param process_name string that was listed in the PROCESS_LIST
-         @returns name of wrapper (without 'Wrapper' at the end) and None if
-          name cannot be determined
-    """
-    lower_process = (process_name.replace('-', '').replace('_', '')
-                     .replace(' ', '').lower())
-    if lower_process in LOWER_TO_WRAPPER_NAME.keys():
-        return LOWER_TO_WRAPPER_NAME[lower_process]
-
-    return None
 
 
 def get_process_list(config):
