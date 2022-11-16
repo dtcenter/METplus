@@ -18,11 +18,11 @@ from inspect import getframeinfo, stack
 
 from .command_runner import CommandRunner
 
-from ..util.constants import PYTHON_EMBEDDING_TYPES
+from ..util.constants import PYTHON_EMBEDDING_TYPES, COMPRESSION_EXTENSIONS
 from ..util import getlist, preprocess_file, loop_over_times_and_call
 from ..util import do_string_sub, ti_calculate, get_seconds_from_string
 from ..util import get_time_from_file, shift_time_seconds
-from ..util import config_metplus
+from ..util import replace_config_from_section
 from ..util import METConfig
 from ..util import MISSING_DATA_VALUE
 from ..util import get_custom_string_list
@@ -82,11 +82,8 @@ class CommandBuilder:
         # if instance is set, check for a section with the same name in the
         # METplusConfig object. If found, copy all values into the config
         if instance:
-            self.config = (
-                config_metplus.replace_config_from_section(self.config,
-                                                           instance,
-                                                           required=False)
-            )
+            self.config = replace_config_from_section(self.config, instance,
+                                                      required=False)
 
         self.instance = instance
         self.env = config.env if hasattr(config, 'env') else os.environ.copy()
@@ -736,8 +733,8 @@ class CommandBuilder:
                     closest_files.append(fullpath)
 
         if not closest_files:
-            msg = f"Could not find {data_type}INPUT files under {data_dir} within range " +\
-                  f"[{valid_range_lower},{valid_range_upper}] using template {template}"
+            msg = (f"Could not find {data_type}INPUT files under {data_dir} within range "
+                   f"[{valid_range_lower},{valid_range_upper}] using template {template}")
             if not mandatory:
                 self.logger.warning(msg)
             else:
@@ -745,16 +742,28 @@ class CommandBuilder:
 
             return None
 
+        # remove any files that are the same as another but zipped
+        closest_files_fixed = []
+        for filepath in closest_files:
+            duplicate_found = False
+            for ext in COMPRESSION_EXTENSIONS:
+                if filepath.endswith(ext) and filepath[0:-len(ext)] in closest_files:
+                    duplicate_found = True
+                    continue
+
+            if not duplicate_found:
+                closest_files_fixed.append(filepath)
+
         # check if file(s) needs to be preprocessed before returning the path
         # if one file was found and return_list if False, return single file
-        if len(closest_files) == 1 and not return_list:
-            return preprocess_file(closest_files[0],
+        if len(closest_files_fixed) == 1 and not return_list:
+            return preprocess_file(closest_files_fixed[0],
                                    self.c_dict.get(data_type + 'INPUT_DATATYPE', ''),
                                    self.config)
 
         # return list if multiple files are found
         out = []
-        for close_file in closest_files:
+        for close_file in closest_files_fixed:
             outfile = preprocess_file(close_file,
                                       self.c_dict.get(data_type + 'INPUT_DATATYPE', ''),
                                       self.config)
@@ -1300,7 +1309,7 @@ class CommandBuilder:
         dict_items['shape'] = ('string', 'uppercase,remove_quotes')
         self.add_met_config_dict('regrid', dict_items)
 
-    def handle_description(self):
+    def handle_description(self, is_list=False):
         """! Get description from config. If <app_name>_DESC is set, use
          that value. If not, check for DESC and use that if it is set.
          If set, set the METPLUS_DESC env_var_dict key to "desc = <value>;"
@@ -1308,21 +1317,20 @@ class CommandBuilder:
         """
         # check if <app_name>_DESC is set
         app_name_upper = self.app_name.upper()
-        conf_value = self.config.getstr('config',
-                                        f'{app_name_upper}_DESC',
-                                        '')
+        conf_value = self.config.getraw('config', f'{app_name_upper}_DESC')
 
         # if not, check if DESC is set
         if not conf_value:
-            conf_value = self.config.getstr('config',
-                                            'DESC',
-                                            '')
+            conf_value = self.config.getraw('config', 'DESC')
 
         # if the value is set, set the DESC c_dict
         if conf_value:
-            self.env_var_dict['METPLUS_DESC'] = (
-                f'desc = "{remove_quotes(conf_value)}";'
-            )
+            if is_list:
+                value = '", "'.join(getlist(conf_value))
+                value = f'["{value}"]'
+            else:
+                value = f'"{remove_quotes(conf_value)}"'
+            self.env_var_dict['METPLUS_DESC'] = f'desc = {value};'
 
     def get_output_prefix(self, time_info=None, set_env_vars=True):
         """! Read {APP_NAME}_OUTPUT_PREFIX from config. If time_info is set

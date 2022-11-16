@@ -44,18 +44,19 @@ class TCStatWrapper(CommandBuilder):
         'METPLUS_STORM_NAME',
         'METPLUS_INIT_BEG',
         'METPLUS_INIT_END',
-        'METPLUS_INIT_INCLUDE',
-        'METPLUS_INIT_EXCLUDE',
+        'METPLUS_INIT_INC',
+        'METPLUS_INIT_EXC',
         'METPLUS_VALID_BEG',
         'METPLUS_VALID_END',
-        'METPLUS_VALID_INCLUDE',
-        'METPLUS_VALID_EXCLUDE',
+        'METPLUS_VALID_INC',
+        'METPLUS_VALID_EXC',
         'METPLUS_INIT_HOUR',
         'METPLUS_VALID_HOUR',
         'METPLUS_LEAD',
         'METPLUS_LEAD_REQ',
         'METPLUS_INIT_MASK',
         'METPLUS_VALID_MASK',
+        'METPLUS_LINE_TYPE',
         'METPLUS_TRACK_WATCH_WARN',
         'METPLUS_COLUMN_THRESH_NAME',
         'METPLUS_COLUMN_THRESH_VAL',
@@ -75,6 +76,14 @@ class TCStatWrapper(CommandBuilder):
         'METPLUS_COLUMN_STR_EXC_VAL',
         'METPLUS_INIT_STR_EXC_NAME',
         'METPLUS_INIT_STR_EXC_VAL',
+        'METPLUS_DIAG_THRESH_NAME',
+        'METPLUS_DIAG_THRESH_VAL',
+        'METPLUS_INIT_DIAG_THRESH_NAME',
+        'METPLUS_INIT_DIAG_THRESH_VAL',
+        'METPLUS_EVENT_EQUAL',
+        'METPLUS_EVENT_EQUAL_LEAD',
+        'METPLUS_OUT_INIT_MASK',
+        'METPLUS_OUT_VALID_MASK',
     ]
 
     def __init__(self, config, instance=None):
@@ -141,32 +150,44 @@ class TCStatWrapper(CommandBuilder):
         variables to be read by the MET config file.
             @param c_dict dictionary to add key/value pairs
         """
-        self.handle_description()
+        self.handle_description(is_list=True)
 
-        for config_list in ['amodel',
-                            'bmodel',
-                            'storm_id',
-                            'basin',
-                            'cyclone',
-                            'storm_name',
-                            'init_hour',
-                            'lead_req',
-                            'init_mask',
-                            'valid_mask',
-                            'valid_hour',
-                            'lead',
-                            'track_watch_warn',
-                            'column_thresh_name',
-                            'column_thresh_val',
-                            'column_str_name',
-                            'column_str_val',
-                            'init_thresh_name',
-                            'init_thresh_val',
-                            'init_str_name',
-                            'init_str_val',
-                            ]:
+        for config_list in [
+            'amodel',
+            'bmodel',
+            'storm_id',
+            'basin',
+            'cyclone',
+            'storm_name',
+            'init_hour',
+            'lead_req',
+            'init_mask',
+            'valid_mask',
+            'line_type',
+            'valid_hour',
+            'lead',
+            'track_watch_warn',
+            'column_thresh_name',
+            'column_thresh_val',
+            'column_str_name',
+            'column_str_val',
+            'init_thresh_name',
+            'init_thresh_val',
+            'init_str_name',
+            'init_str_val',
+            'diag_thresh_name',
+            'diag_thresh_val',
+            'init_diag_thresh_name',
+            'init_diag_thresh_val',
+            'event_equal_lead',
+        ]:
+            extra_args = {}
+            # remove quotation marks from *_thresh_val lists
+            if 'thresh_val' in config_list:
+                extra_args['remove_quotes'] = True
             self.add_met_config(name=config_list,
-                                data_type='list')
+                                data_type='list',
+                                extra_args=extra_args)
 
         for iv_list in ['INIT', 'VALID']:
             self.add_met_config(name=f'{iv_list.lower()}_inc',
@@ -178,22 +199,27 @@ class TCStatWrapper(CommandBuilder):
                                 metplus_configs=[f'TC_STAT_{iv_list}_EXC',
                                                  f'TC_STAT_{iv_list}_EXCLUDE'])
 
-        for config_str in ['INIT_BEG',
-                           'INIT_END',
-                           'VALID_BEG',
-                           'VALID_END',
-                           'LANDFALL_BEG',
-                           'LANDFALL_END',
-                            ]:
+        for config_str in [
+            'INIT_BEG',
+            'INIT_END',
+            'VALID_BEG',
+            'VALID_END',
+            'LANDFALL_BEG',
+            'LANDFALL_END',
+            'OUT_INIT_MASK',
+            'OUT_VALID_MASK',
+        ]:
             self.add_met_config(name=config_str.lower(),
                                 data_type='string',
                                 metplus_configs=[f'TC_STAT_{config_str}',
                                                  config_str])
 
-        for config_bool in ['water_only',
-                            'landfall',
-                            'match_points',
-                            ]:
+        for config_bool in [
+            'water_only',
+            'landfall',
+            'match_points',
+            'event_equal',
+        ]:
 
             self.add_met_config(name=config_bool,
                                 data_type='bool')
