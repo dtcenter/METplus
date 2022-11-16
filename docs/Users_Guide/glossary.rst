@@ -10093,3 +10093,13 @@ METplus Configuration Glossary
      See :term:`STAT_ANALYSIS_FCST_VALID_END`.
 
      | *Used by:* StatAnalysis
+
+   ENSEMBLE_STAT_ENS_MEAN_INPUT_DIR
+     Input directory for the optional -ens_mean file to use with the MET tool ensemble_stat.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_ENS_MEAN_INPUT_TEMPLATE
+     Template used to specify the optional -ens_mean file for the MET tool ensemble_stat.
+
+     | *Used by:*  EnsembleStat
