@@ -189,4 +189,252 @@ METplus Version 5.0.0 Beta 1 Release Notes (2022-06-22)
 METplus Wrappers Upgrade Instructions
 =====================================
 
-Coming Soon!
+EnsembleStat/GenEnsProd
+-----------------------
+
+Note: If :ref:`ensemble_stat_wrapper` is not found in the :term:`PROCESS_LIST`
+for any use cases, then this section is not relevant.
+
+The METplus v5.0.0 coordinated release includes changes that remove ensemble
+product generation from EnsembleStat. GenEnsProd is now required to generate
+ensemble products. There are 3 situations listed below that require slightly
+different modifications.
+
+Case 1: EnsembleStat only generating ensemble products
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If the use case had been calling EnsembleStat **WITHOUT** the -grid_obs or
+-point_obs command line options, we can assume it was only doing ensemble
+post-processing.
+That call to EnsembleStat should be replaced with a call to GenEnsProd instead.
+
+Rename the following variables:
+"""""""""""""""""""""""""""""""
+
+FCST_ENSEMBLE_STAT_INPUT_DIR => GEN_ENS_PROD_INPUT_DIR
+
+FCST_ENSEMBLE_STAT_INPUT_TEMPLATE => GEN_ENS_PROD_INPUT_TEMPLATE
+
+ENSEMBLE_STAT_OUTPUT_DIR => GEN_ENS_PROD_OUTPUT_DIR
+
+ENSEMBLE_STAT_OUTPUT_TEMPLATE => GEN_ENS_PROD_OUTPUT_TEMPLATE
+**and add full filename template for NetCDF output file to end of value**, i.e.
+/gen_ens_prod_{valid?fmt=%Y%m%d_%H%M%S}V_ens.nc
+
+ENSEMBLE_STAT_N_MEMBERS => GEN_ENS_PROD_N_MEMBERS
+
+ENSEMBLE_STAT_ENS_THRESH => GEN_ENS_PROD_ENS_THRESH
+
+ENSEMBLE_STAT_ENS_VLD_THRESH => GEN_ENS_PROD_VLD_THRESH
+
+ENSEMBLE_STAT_ENSEMBLE_FLAG_LATLON => GEN_ENS_PROD_ENSEMBLE_FLAG_LATLON
+ENSEMBLE_STAT_ENSEMBLE_FLAG_MEAN => GEN_ENS_PROD_ENSEMBLE_FLAG_MEAN
+ENSEMBLE_STAT_ENSEMBLE_FLAG_STDEV => GEN_ENS_PROD_ENSEMBLE_FLAG_STDEV
+ENSEMBLE_STAT_ENSEMBLE_FLAG_MINUS => GEN_ENS_PROD_ENSEMBLE_FLAG_MINUS
+ENSEMBLE_STAT_ENSEMBLE_FLAG_PLUS => GEN_ENS_PROD_ENSEMBLE_FLAG_PLUS
+ENSEMBLE_STAT_ENSEMBLE_FLAG_MIN => GEN_ENS_PROD_ENSEMBLE_FLAG_MIN
+ENSEMBLE_STAT_ENSEMBLE_FLAG_MAX => GEN_ENS_PROD_ENSEMBLE_FLAG_MAX
+ENSEMBLE_STAT_ENSEMBLE_FLAG_RANGE => GEN_ENS_PROD_ENSEMBLE_FLAG_RANGE
+ENSEMBLE_STAT_ENSEMBLE_FLAG_VLD_COUNT => GEN_ENS_PROD_ENSEMBLE_FLAG_VLD_COUNT
+ENSEMBLE_STAT_ENSEMBLE_FLAG_FREQUENCY => GEN_ENS_PROD_ENSEMBLE_FLAG_FREQUENCY
+ENSEMBLE_STAT_ENSEMBLE_FLAG_NEP => GEN_ENS_PROD_ENSEMBLE_FLAG_NEP
+ENSEMBLE_STAT_ENSEMBLE_FLAG_NMEP => GEN_ENS_PROD_ENSEMBLE_FLAG_NMEP
+
+ENSEMBLE_STAT_REGRID_TO_GRID => GEN_ENS_PROD_REGRID_TO_GRID
+ENSEMBLE_STAT_REGRID_METHOD => GEN_ENS_PROD_REGRID_METHOD
+ENSEMBLE_STAT_REGRID_WIDTH => GEN_ENS_PROD_REGRID_WIDTH
+ENSEMBLE_STAT_REGRID_VLD_THRESH => GEN_ENS_PROD_REGRID_VLD_THRESH
+ENSEMBLE_STAT_REGRID_SHAPE => GEN_ENS_PROD_REGRID_SHAPE
+ENSEMBLE_STAT_NBRHD_PROB_WIDTH => GEN_ENS_PROD_NBRHD_PROB_WIDTH
+ENSEMBLE_STAT_NBRHD_PROB_SHAPE => GEN_ENS_PROD_NBRHD_PROB_SHAPE
+ENSEMBLE_STAT_NBRHD_PROB_VLD_THRESH => GEN_ENS_PROD_NBRHD_PROB_VLD_THRESH
+ENSEMBLE_STAT_NMEP_SMOOTH_VLD_THRESH => GEN_ENS_PROD_NMEP_SMOOTH_VLD_THRESH
+ENSEMBLE_STAT_NMEP_SMOOTH_SHAPE => GEN_ENS_PROD_NMEP_SMOOTH_SHAPE
+ENSEMBLE_STAT_NMEP_SMOOTH_METHOD => GEN_ENS_PROD_NMEP_SMOOTH_METHOD
+ENSEMBLE_STAT_NMEP_SMOOTH_WIDTH => GEN_ENS_PROD_NMEP_SMOOTH_WIDTH
+ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_DX => GEN_ENS_PROD_NMEP_SMOOTH_GAUSSIAN_DX
+ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_RADIUS => GEN_ENS_PROD_NMEP_SMOOTH_GAUSSIAN_RADIUS
+
+If ENS_VAR<n>_ variables are not set:
+"""""""""""""""""""""""""""""""""""""
+
+If no FCST/OBS verification is being performed in the use case using another
+wrapper, then rename the FCST_VAR<n> variables to ENS_VAR<n>.
+
+e.g.
+
+FCST_VAR1_NAME => ENS_VAR1_NAME
+FCST_VAR1_LEVELS => ENS_VAR1_LEVELS
+FCST_VAR2_NAME => ENS_VAR2_NAME
+FCST_VAR2_LEVELS => ENS_VAR2_LEVELS
+... etc
+
+If FCST/OBS verification is being performed by another tool, then add
+ENS_VAR<n> variables using the corresponding FCST_VAR<n> values.
+
+e.g.
+
+ENS_VAR1_NAME = {FCST_VAR1_NAME}
+ENS_VAR1_LEVELS = {FCST_VAR1_LEVELS}
+ENS_VAR2_NAME = {FCST_VAR2_NAME}
+ENS_VAR2_LEVELS = {FCST_VAR2_LEVELS}
+... etc
+
+Remove the following variables:
+"""""""""""""""""""""""""""""""
+
+Remove any remaining ENSEMBLE_STAT_* variables that are no longer used.
+Some examples:
+Remove ENSEMBLE_STAT_ENSEMBLE_FLAG_RANK
+Remove ENSEMBLE_STAT_ENSEMBLE_FLAG_WEIGHT
+Remove ENSEMBLE_STAT_MESSAGE_TYPE
+Remove ENSEMBLE_STAT_OUTPUT_FLAG_ECNT
+Remove ENSEMBLE_STAT_OUTPUT_FLAG_RPS
+Remove ENSEMBLE_STAT_OUTPUT_FLAG_RHIST
+Remove ENSEMBLE_STAT_OUTPUT_FLAG_PHIST
+Remove ENSEMBLE_STAT_OUTPUT_FLAG_ORANK
+Remove ENSEMBLE_STAT_OUTPUT_FLAG_SSVAR
+Remove ENSEMBLE_STAT_OUTPUT_FLAG_RELP
+Remove ENSEMBLE_STAT_OUTPUT_FLAG_PCT
+Remove ENSEMBLE_STAT_OUTPUT_FLAG_PSTD
+Remove ENSEMBLE_STAT_OUTPUT_FLAG_PJC
+Remove ENSEMBLE_STAT_OUTPUT_FLAG_PRC
+Remove ENSEMBLE_STAT_OUTPUT_FLAG_ECLV
+Remove ENSEMBLE_STAT_DUPLICATE_FLAG
+Remove ENSEMBLE_STAT_SKIP_CONST
+Remove ENSEMBLE_STAT_OBS_ERROR_FLAG
+Remove ENSEMBLE_STAT_ENS_SSVAR_BIN_SIZE
+Remove ENSEMBLE_STAT_ENS_PHIST_BIN_SIZE
+Remove ENSEMBLE_STAT_CI_ALPHA
+Remove ENSEMBLE_STAT_MASK_GRID
+Remove ENSEMBLE_STAT_MASK_POLY
+Remove ENSEMBLE_STAT_INTERP_FIELD
+Remove ENSEMBLE_STAT_INTERP_VLD_THRESH
+Remove ENSEMBLE_STAT_INTERP_SHAPE
+Remove ENSEMBLE_STAT_INTERP_METHOD
+Remove ENSEMBLE_STAT_INTERP_WIDTH
+Remove ENSEMBLE_STAT_OBS_QUALITY_INC/EXC
+Remove ENSEMBLE_STAT_GRID_WEIGHT_FLAG
+
+
+
+Case 2: EnsembleStat performing ensemble verification but not generating ensemble products
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+No changes should be required for this case to continue to work as expected
+except for removing configuration variables that are no longer used.
+The use case will no longer generate a _ens.nc file and may create other files
+(_orank.nc and txt) that contain requested output.
+
+Rename the following variables:
+"""""""""""""""""""""""""""""""
+
+ENSEMBLE_STAT_ENSEMBLE_FLAG_MEAN => ENSEMBLE_STAT_NC_ORANK_FLAG_MEAN
+ENSEMBLE_STAT_ENSEMBLE_FLAG_RANK => ENSEMBLE_STAT_NC_ORANK_FLAG_RANK
+ENSEMBLE_STAT_ENSEMBLE_FLAG_WEIGHT => ENSEMBLE_STAT_NC_ORANK_FLAG_WEIGHT
+ENSEMBLE_STAT_ENSEMBLE_FLAG_VLD_COUNT => ENSEMBLE_STAT_NC_ORANK_FLAG_VLD_COUNT
+
+
+Remove the following variables:
+"""""""""""""""""""""""""""""""
+
+Remove any ENS_VAR<n>_* variables
+Remove ENSEMBLE_STAT_ENSEMBLE_FLAG_*
+ENSEMBLE_STAT_NBRHD_PROB_WIDTH
+ENSEMBLE_STAT_NBRHD_PROB_SHAPE
+ENSEMBLE_STAT_NBRHD_PROB_VLD_THRESH
+ENSEMBLE_STAT_NMEP_SMOOTH_VLD_THRESH
+ENSEMBLE_STAT_NMEP_SMOOTH_SHAPE
+ENSEMBLE_STAT_NMEP_SMOOTH_METHOD
+ENSEMBLE_STAT_NMEP_SMOOTH_WIDTH
+ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_DX
+ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_RADIUS
+
+
+Case 3: EnsembleStat generating ensemble products and performing ensemble verification
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+GenEnsProd will need to be added to the PROCESS_LIST in addition to EnsembleStat to generate the ensemble verification output.
+
+PROCESS_LIST = ..., EnsembleStat, GenEnsProd, ...
+
+Set the input dir and template variables for GenEnsProd to match the values set for FCST input to EnsembleStat. Also set the output dir to match EnsembleStat output dir.
+
+GEN_ENS_PROD_INPUT_DIR = {FCST_ENSEMBLE_STAT_INPUT_DIR}
+GEN_ENS_PROD_INPUT_TEMPLATE = {FCST_ENSEMBLE_STAT_INPUT_TEMPLATE}
+GEN_ENS_PROD_OUTPUT_DIR = {ENSEMBLE_STAT_OUTPUT_DIR}
+
+If the EnsembleStat output template is set, then copy the value and add a template for the NetCDF output filename at the end following a forward slash ‘/’ character.
+
+If ENSEMBLE_STAT_OUTPUT_TEMPLATE = {valid?fmt=%Y%m%d%H}
+then set
+GEN_ENS_PROD_OUTPUT_TEMPLATE = {valid?fmt=%Y%m%d%H}/gen_ens_prod_{valid?fmt=%Y%m%d_%H%M%S}V_ens.nc
+or something similar.
+
+If the EnsembleStat output template is not set, then set GenEnsProd’s template to the desired NetCDF output filename. Here is an example:
+
+GEN_ENS_PROD_OUTPUT_TEMPLATE = gen_ens_prod_{valid?fmt=%Y%m%d_%H%M%S}V_ens.nc
+
+Ensure that any downstream wrappers in the PROCESS_LIST are configured to read the correct GenEnsProd output file instead of the _ens.nc file that was previously generated by EnsembleStat.
+
+If ENS_VAR<n>_ variables are not set, add ENS_VAR<n> variables using the corresponding FCST_ENSEMBLE_STAT_VAR<n> or FCST_VAR<n> values.
+If FCST_ENSEMBLE_VAR<n>_* variables are set, then use only those values, otherwise use FCST_VAR<n>_*
+
+e.g.
+
+ENS_VAR1_NAME = {FCST_VAR1_NAME}
+ENS_VAR1_LEVELS = {FCST_VAR1_LEVELS}
+ENS_VAR2_NAME = {FCST_VAR2_NAME}
+ENS_VAR2_LEVELS = {FCST_VAR2_LEVELS}
+
+
+If any of the following ENSEMBLE_STAT_* variables are set in the configuration file, then rename them to the corresponding GEN_ENS_PROD_* variable:
+
+ENSEMBLE_STAT_NBRHD_PROB_WIDTH => GEN_ENS_PROD_NBRHD_PROB_WIDTH
+ENSEMBLE_STAT_NBRHD_PROB_SHAPE => GEN_ENS_PROD_NBRHD_PROB_SHAPE
+ENSEMBLE_STAT_NBRHD_PROB_VLD_THRESH => GEN_ENS_PROD_NBRHD_PROB_VLD_THRESH
+ENSEMBLE_STAT_NMEP_SMOOTH_VLD_THRESH => GEN_ENS_PROD_NMEP_SMOOTH_VLD_THRESH
+ENSEMBLE_STAT_NMEP_SMOOTH_SHAPE => GEN_ENS_PROD_NMEP_SMOOTH_SHAPE
+ENSEMBLE_STAT_NMEP_SMOOTH_METHOD => GEN_ENS_PROD_NMEP_SMOOTH_METHOD
+ENSEMBLE_STAT_NMEP_SMOOTH_WIDTH => GEN_ENS_PROD_NMEP_SMOOTH_WIDTH
+ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_DX => GEN_ENS_PROD_NMEP_SMOOTH_GAUSSIAN_DX
+ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_RADIUS => GEN_ENS_PROD_NMEP_SMOOTH_GAUSSIAN_RADIUS
+FCST_ENSEMBLE_STAT_INPUT_GRID_DATATYPE => GEN_ENS_PROD_INPUT_DATATYPE
+
+
+If any of the following ENSEMBLE_STAT_* variables are set in the configuration file, then set the corresponding GEN_ENS_PROD_* variables to the same value or reference the ENSEMBLE_STAT_* version.
+
+GEN_ENS_PROD_N_MEMBERS = {ENSEMBLE_STAT_N_MEMBERS}
+GEN_ENS_PROD_ENS_THRESH = {ENSEMBLE_STAT_ENS_THRESH}
+GEN_ENS_PROD_REGRID_TO_GRID = {ENSEMBLE_STAT_REGRID_TO_GRID}
+GEN_ENS_PROD_REGRID_METHOD = {ENSEMBLE_STAT_REGRID_METHOD}
+GEN_ENS_PROD_REGRID_WIDTH = {ENSEMBLE_STAT_REGRID_WIDTH}
+GEN_ENS_PROD_VLD_THRESH = {ENSEMBLE_STAT_VLD_THRESH}
+GEN_ENS_PROD_SHAPE = {ENSEMBLE_STAT_SHAPE}
+
+
+If any of the following ENSEMBLE_STAT_ENSEMBLE_FLAG_* variables are set in the configuration file, then set the corresponding GEN_ENS_PROD_ENSEMBLE_FLAG_* variables to the same value.
+
+ENSEMBLE_STAT_ENSEMBLE_FLAG_LATLON
+ENSEMBLE_STAT_ENSEMBLE_FLAG_MEAN
+ENSEMBLE_STAT_ENSEMBLE_FLAG_STDEV
+ENSEMBLE_STAT_ENSEMBLE_FLAG_MINUS
+ENSEMBLE_STAT_ENSEMBLE_FLAG_PLUS
+ENSEMBLE_STAT_ENSEMBLE_FLAG_MIN
+ENSEMBLE_STAT_ENSEMBLE_FLAG_MAX
+ENSEMBLE_STAT_ENSEMBLE_FLAG_RANGE
+ENSEMBLE_STAT_ENSEMBLE_FLAG_VLD_COUNT
+ENSEMBLE_STAT_ENSEMBLE_FLAG_FREQUENCY
+ENSEMBLE_STAT_ENSEMBLE_FLAG_NEP
+ENSEMBLE_STAT_ENSEMBLE_FLAG_NMEP
+
+e.g.
+
+If ENSEMBLE_STAT_ENSEMBLE_FLAG_LATLON = TRUE
+Add GEN_ENS_PROD_ENSEMBLE_FLAG_LATLON = TRUE
+
+If any of the following ENSEMBLE_STAT_ENSEMBLE_FLAG_* variables are set in the configuration file, then rename them to the corresponding ENSEMBLE_STAT_NC_ORANK_FLAG_* variables.
+
+ENSEMBLE_STAT_ENSEMBLE_FLAG_LATLON => ENSEMBLE_STAT_NC_ORANK_FLAG_LATLON
+ENSEMBLE_STAT_ENSEMBLE_FLAG_MEAN => ENSEMBLE_STAT_NC_ORANK_FLAG_MEAN
+ENSEMBLE_STAT_ENSEMBLE_FLAG_VLD_COUNT => ENSEMBLE_STAT_NC_ORANK_FLAG_VLD_COUNT

@@ -23,11 +23,12 @@ import uuid
 from produtil.config import ProdConfig
 
 from .constants import RUNTIME_CONFS, MISSING_DATA_VALUE
-from .string_template_substitution import get_tags, do_string_sub
-from .string_manip import getlist, remove_quotes, is_python_script
-from .string_manip import validate_thresholds
+from .string_template_substitution import do_string_sub
+from .string_manip import getlist, remove_quotes
+from .string_manip import validate_thresholds, find_indices_in_config_section
 from .system_util import mkdir_p
-from .doc_util import get_wrapper_name
+from .config_util import is_loop_by_init
+from .config_validate import validate_field_info_configs
 
 """!Creates the initial METplus directory structure,
 loads information into each job.
@@ -48,15 +49,8 @@ All symbols exported by "from metplus.util.config_metplus import *"
 '''
 __all__ = [
     'setup',
-    'get_custom_string_list',
-    'find_indices_in_config_section',
     'parse_var_list',
-    'sub_var_list',
-    'get_process_list',
-    'validate_configuration_variables',
-    'is_loop_by_init',
-    'handle_tmp_dir',
-    'log_runtime_banner',
+    'replace_config_from_section',
 ]
 
 '''!@var METPLUS_BASE
@@ -90,6 +84,7 @@ OLD_BASE_CONFS = [
 # set all loggers to use UTC
 logging.Formatter.converter = time.gmtime
 
+
 def setup(args, logger=None, base_confs=None):
     """!The METplus setup function.
         @param args list of configuration files or configuration
@@ -115,6 +110,7 @@ def setup(args, logger=None, base_confs=None):
     logger.debug('Completed METplus configuration setup.')
 
     return config
+
 
 def _get_default_config_list(parm_base=None):
     """! Get list of default METplus config files. Look through BASE_CONFS list
@@ -144,6 +140,7 @@ def _get_default_config_list(parm_base=None):
         sys.exit(1)
 
     return default_config_list
+
 
 def _parse_launch_args(args, logger):
     """! Parsed arguments to scripts that launch the METplus wrappers.
@@ -210,6 +207,7 @@ def _parse_launch_args(args, logger):
 
     return override_list
 
+
 def launch(config_list):
     """! Process configuration files and explicit configuration variables
      overrides. Subsequent configuration files override values in previously
@@ -275,6 +273,7 @@ def launch(config_list):
 
     return config
 
+
 def _set_logvars(config, logger=None):
     """!Sets and adds the LOG_METPLUS and LOG_TIMESTAMP
        to the config object. If LOG_METPLUS was already defined by the
@@ -338,6 +337,7 @@ def _set_logvars(config, logger=None):
         logger.info('Adding LOG_METPLUS=%s' % repr(metpluslog))
     # expand LOG_METPLUS to ensure it is available
     config.set('config', 'LOG_METPLUS', metpluslog)
+
 
 def get_logger(config, sublog=None):
     """!This function will return a logger with a formatted file handler
@@ -414,6 +414,7 @@ def get_logger(config, sublog=None):
     config.logger = logger
     return logger
 
+
 def replace_config_from_section(config, section, required=True):
     """! Check if config has a section named [section] If it does, create a
     new METplusConfig object, set each value from the input config, then
@@ -459,6 +460,7 @@ def replace_config_from_section(config, section, required=True):
                        config.getraw(section, key, sub_vars=False))
 
     return new_config
+
 
 class METplusConfig(ProdConfig):
     """! Configuration class to store configuration values read from
@@ -937,618 +939,6 @@ class METplusLogFormatter(logging.Formatter):
 
         return output
 
-def validate_configuration_variables(config, force_check=False):
-
-    all_sed_cmds = []
-    # check for deprecated config items and warn user to remove/replace them
-    deprecated_isOK, sed_cmds = check_for_deprecated_config(config)
-    all_sed_cmds.extend(sed_cmds)
-
-    # check for deprecated env vars in MET config files and warn user to remove/replace them
-    deprecatedMET_isOK, sed_cmds = check_for_deprecated_met_config(config)
-    all_sed_cmds.extend(sed_cmds)
-
-    # validate configuration variables
-    field_isOK, sed_cmds = validate_field_info_configs(config, force_check)
-    all_sed_cmds.extend(sed_cmds)
-
-    # check that OUTPUT_BASE is not set to the exact same value as INPUT_BASE
-    inoutbase_isOK = True
-    input_real_path = os.path.realpath(config.getdir_nocheck('INPUT_BASE', ''))
-    output_real_path = os.path.realpath(config.getdir('OUTPUT_BASE'))
-    if input_real_path == output_real_path:
-      config.logger.error(f"INPUT_BASE AND OUTPUT_BASE are set to the exact same path: {input_real_path}")
-      config.logger.error("Please change one of these paths to avoid risk of losing input data")
-      inoutbase_isOK = False
-
-    check_user_environment(config)
-
-    return deprecated_isOK, field_isOK, inoutbase_isOK, deprecatedMET_isOK, all_sed_cmds
-
-def check_for_deprecated_config(config):
-    """!Checks user configuration files and reports errors or warnings if any deprecated variable
-        is found. If an alternate variable name can be suggested, add it to the 'alt' section
-        If the alternate cannot be literally substituted for the old name, set copy to False
-       Args:
-          @config : METplusConfig object to evaluate
-       Returns:
-          A tuple containing a boolean if the configuration is suitable to run or not and
-          if it is not correct, the 2nd item is a list of sed commands that can be run to help
-          fix the incorrect configuration variables
-          """
-
-    # key is the name of the depreacted variable that is no longer allowed in any config files
-    # value is a dictionary containing information about what to do with the deprecated config
-    # 'sec' is the section of the config file where the replacement resides, i.e. config, dir,
-    #     filename_templates
-    # 'alt' is the alternative name for the deprecated config. this can be a single variable name or
-    #     text to describe multiple variables or how to handle it. Set to None to tell the user to
-    #     just remove the variable
-    # 'copy' is an optional item (defaults to True). set this to False if one cannot simply replace
-    #     the deprecated config variable name with the value in 'alt'
-    # 'req' is an optional item (defaults to True). this to False to report a warning for the
-    #     deprecated config and allow execution to continue. this is generally no longer used
-    #     because we are requiring users to update the config files. if used, the developer must
-    #     modify the code to handle both variables accordingly
-    deprecated_dict = {
-        'LOOP_BY_INIT' : {'sec' : 'config', 'alt' : 'LOOP_BY', 'copy': False},
-        'PREPBUFR_DIR_REGEX' : {'sec' : 'regex_pattern', 'alt' : None},
-        'PREPBUFR_FILE_REGEX' : {'sec' : 'regex_pattern', 'alt' : None},
-        'OBS_INPUT_DIR_REGEX' : {'sec' : 'regex_pattern', 'alt' : 'OBS_POINT_STAT_INPUT_DIR', 'copy': False},
-        'FCST_INPUT_DIR_REGEX' : {'sec' : 'regex_pattern', 'alt' : 'FCST_POINT_STAT_INPUT_DIR', 'copy': False},
-        'FCST_INPUT_FILE_REGEX' :
-        {'sec' : 'regex_pattern', 'alt' : 'FCST_POINT_STAT_INPUT_TEMPLATE', 'copy': False},
-        'OBS_INPUT_FILE_REGEX' : {'sec' : 'regex_pattern', 'alt' : 'OBS_POINT_STAT_INPUT_TEMPLATE', 'copy': False},
-        'PREPBUFR_DATA_DIR' : {'sec' : 'dir', 'alt' : 'PB2NC_INPUT_DIR'},
-        'PREPBUFR_MODEL_DIR_NAME' : {'sec' : 'dir', 'alt' : 'PB2NC_INPUT_DIR', 'copy': False},
-        'OBS_INPUT_FILE_TMPL' :
-        {'sec' : 'filename_templates', 'alt' : 'OBS_POINT_STAT_INPUT_TEMPLATE'},
-        'FCST_INPUT_FILE_TMPL' :
-        {'sec' : 'filename_templates', 'alt' : 'FCST_POINT_STAT_INPUT_TEMPLATE'},
-        'NC_FILE_TMPL' : {'sec' : 'filename_templates', 'alt' : 'PB2NC_OUTPUT_TEMPLATE'},
-        'FCST_INPUT_DIR' : {'sec' : 'dir', 'alt' : 'FCST_POINT_STAT_INPUT_DIR'},
-        'OBS_INPUT_DIR' : {'sec' : 'dir', 'alt' : 'OBS_POINT_STAT_INPUT_DIR'},
-        'REGRID_TO_GRID' : {'sec' : 'config', 'alt' : 'POINT_STAT_REGRID_TO_GRID'},
-        'FCST_HR_START' : {'sec' : 'config', 'alt' : 'LEAD_SEQ', 'copy': False},
-        'FCST_HR_END' : {'sec' : 'config', 'alt' : 'LEAD_SEQ', 'copy': False},
-        'FCST_HR_INTERVAL' : {'sec' : 'config', 'alt' : 'LEAD_SEQ', 'copy': False},
-        'START_DATE' : {'sec' : 'config', 'alt' : 'INIT_BEG or VALID_BEG', 'copy': False},
-        'END_DATE' : {'sec' : 'config', 'alt' : 'INIT_END or VALID_END', 'copy': False},
-        'INTERVAL_TIME' : {'sec' : 'config', 'alt' : 'INIT_INCREMENT or VALID_INCREMENT', 'copy': False},
-        'BEG_TIME' : {'sec' : 'config', 'alt' : 'INIT_BEG or VALID_BEG', 'copy': False},
-        'END_TIME' : {'sec' : 'config', 'alt' : 'INIT_END or VALID_END', 'copy': False},
-        'START_HOUR' : {'sec' : 'config', 'alt' : 'INIT_BEG or VALID_BEG', 'copy': False},
-        'END_HOUR' : {'sec' : 'config', 'alt' : 'INIT_END or VALID_END', 'copy': False},
-        'OBS_BUFR_VAR_LIST' : {'sec' : 'config', 'alt' : 'PB2NC_OBS_BUFR_VAR_LIST'},
-        'TIME_SUMMARY_FLAG' : {'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_FLAG'},
-        'TIME_SUMMARY_BEG' : {'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_BEG'},
-        'TIME_SUMMARY_END' : {'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_END'},
-        'TIME_SUMMARY_VAR_NAMES' : {'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_VAR_NAMES'},
-        'TIME_SUMMARY_TYPE' : {'sec' : 'config', 'alt' : 'PB2NC_TIME_SUMMARY_TYPE'},
-        'OVERWRITE_NC_OUTPUT' : {'sec' : 'config', 'alt' : 'PB2NC_SKIP_IF_OUTPUT_EXISTS', 'copy': False},
-        'VERTICAL_LOCATION' : {'sec' : 'config', 'alt' : 'PB2NC_VERTICAL_LOCATION'},
-        'VERIFICATION_GRID' : {'sec' : 'config', 'alt' : 'REGRID_DATA_PLANE_VERIF_GRID'},
-        'WINDOW_RANGE_BEG' : {'sec' : 'config', 'alt' : 'OBS_WINDOW_BEGIN'},
-        'WINDOW_RANGE_END' : {'sec' : 'config', 'alt' : 'OBS_WINDOW_END'},
-        'OBS_EXACT_VALID_TIME' :
-        {'sec' : 'config', 'alt' : 'OBS_WINDOW_BEGIN and OBS_WINDOW_END', 'copy': False},
-        'FCST_EXACT_VALID_TIME' :
-        {'sec' : 'config', 'alt' : 'FCST_WINDOW_BEGIN and FCST_WINDOW_END', 'copy': False},
-        'PCP_COMBINE_METHOD' :
-        {'sec' : 'config', 'alt' : 'FCST_PCP_COMBINE_METHOD and/or OBS_PCP_COMBINE_METHOD', 'copy': False},
-        'FHR_BEG' : {'sec' : 'config', 'alt' : 'LEAD_SEQ', 'copy': False},
-        'FHR_END' : {'sec' : 'config', 'alt' : 'LEAD_SEQ', 'copy': False},
-        'FHR_INC' : {'sec' : 'config', 'alt' : 'LEAD_SEQ', 'copy': False},
-        'FHR_GROUP_BEG' : {'sec' : 'config', 'alt' : 'LEAD_SEQ_[N]', 'copy': False},
-        'FHR_GROUP_END' : {'sec' : 'config', 'alt' : 'LEAD_SEQ_[N]', 'copy': False},
-        'FHR_GROUP_LABELS' : {'sec' : 'config', 'alt' : 'LEAD_SEQ_[N]_LABEL', 'copy': False},
-        'CYCLONE_OUT_DIR' : {'sec' : 'dir', 'alt' : 'CYCLONE_OUTPUT_DIR'},
-        'ENSEMBLE_STAT_OUT_DIR' : {'sec' : 'dir', 'alt' : 'ENSEMBLE_STAT_OUTPUT_DIR'},
-        'EXTRACT_OUT_DIR' : {'sec' : 'dir', 'alt' : 'EXTRACT_TILES_OUTPUT_DIR'},
-        'GRID_STAT_OUT_DIR' : {'sec' : 'dir', 'alt' : 'GRID_STAT_OUTPUT_DIR'},
-        'MODE_OUT_DIR' : {'sec' : 'dir', 'alt' : 'MODE_OUTPUT_DIR'},
-        'MTD_OUT_DIR' : {'sec' : 'dir', 'alt' : 'MTD_OUTPUT_DIR'},
-        'SERIES_INIT_OUT_DIR' : {'sec' : 'dir', 'alt' : 'SERIES_ANALYSIS_OUTPUT_DIR'},
-        'SERIES_LEAD_OUT_DIR' : {'sec' : 'dir', 'alt' : 'SERIES_ANALYSIS_OUTPUT_DIR'},
-        'SERIES_INIT_FILTERED_OUT_DIR' :
-        {'sec' : 'dir', 'alt' : 'SERIES_ANALYSIS_FILTERED_OUTPUT_DIR'},
-        'SERIES_LEAD_FILTERED_OUT_DIR' :
-        {'sec' : 'dir', 'alt' : 'SERIES_ANALYSIS_FILTERED_OUTPUT_DIR'},
-        'STAT_ANALYSIS_OUT_DIR' :
-        {'sec' : 'dir', 'alt' : 'STAT_ANALYSIS_OUTPUT_DIR'},
-        'TCMPR_PLOT_OUT_DIR' : {'sec' : 'dir', 'alt' : 'TCMPR_PLOT_OUTPUT_DIR'},
-        'FCST_MIN_FORECAST' : {'sec' : 'config', 'alt' : 'LEAD_SEQ_MIN'},
-        'FCST_MAX_FORECAST' : {'sec' : 'config', 'alt' : 'LEAD_SEQ_MAX'},
-        'OBS_MIN_FORECAST' : {'sec' : 'config', 'alt' : 'OBS_PCP_COMBINE_MIN_LEAD'},
-        'OBS_MAX_FORECAST' : {'sec' : 'config', 'alt' : 'OBS_PCP_COMBINE_MAX_LEAD'},
-        'FCST_INIT_INTERVAL' : {'sec' : 'config', 'alt' : None},
-        'OBS_INIT_INTERVAL' : {'sec' : 'config', 'alt' : None},
-        'FCST_DATA_INTERVAL' : {'sec' : '', 'alt' : 'FCST_PCP_COMBINE_DATA_INTERVAL'},
-        'OBS_DATA_INTERVAL' : {'sec' : '', 'alt' : 'OBS_PCP_COMBINE_DATA_INTERVAL'},
-        'FCST_IS_DAILY_FILE' : {'sec' : '', 'alt' : 'FCST_PCP_COMBINE_IS_DAILY_FILE'},
-        'OBS_IS_DAILY_FILE' : {'sec' : '', 'alt' : 'OBS_PCP_COMBINE_IS_DAILY_FILE'},
-        'FCST_TIMES_PER_FILE' : {'sec' : '', 'alt' : 'FCST_PCP_COMBINE_TIMES_PER_FILE'},
-        'OBS_TIMES_PER_FILE' : {'sec' : '', 'alt' : 'OBS_PCP_COMBINE_TIMES_PER_FILE'},
-        'FCST_LEVEL' : {'sec' : '', 'alt' : 'FCST_PCP_COMBINE_INPUT_ACCUMS', 'copy': False},
-        'OBS_LEVEL' : {'sec' : '', 'alt' : 'OBS_PCP_COMBINE_INPUT_ACCUMS', 'copy': False},
-        'MODE_FCST_CONV_RADIUS' : {'sec' : 'config', 'alt' : 'FCST_MODE_CONV_RADIUS'},
-        'MODE_FCST_CONV_THRESH' : {'sec' : 'config', 'alt' : 'FCST_MODE_CONV_THRESH'},
-        'MODE_FCST_MERGE_FLAG' : {'sec' : 'config', 'alt' : 'FCST_MODE_MERGE_FLAG'},
-        'MODE_FCST_MERGE_THRESH' : {'sec' : 'config', 'alt' : 'FCST_MODE_MERGE_THRESH'},
-        'MODE_OBS_CONV_RADIUS' : {'sec' : 'config', 'alt' : 'OBS_MODE_CONV_RADIUS'},
-        'MODE_OBS_CONV_THRESH' : {'sec' : 'config', 'alt' : 'OBS_MODE_CONV_THRESH'},
-        'MODE_OBS_MERGE_FLAG' : {'sec' : 'config', 'alt' : 'OBS_MODE_MERGE_FLAG'},
-        'MODE_OBS_MERGE_THRESH' : {'sec' : 'config', 'alt' : 'OBS_MODE_MERGE_THRESH'},
-        'MTD_FCST_CONV_RADIUS' : {'sec' : 'config', 'alt' : 'FCST_MTD_CONV_RADIUS'},
-        'MTD_FCST_CONV_THRESH' : {'sec' : 'config', 'alt' : 'FCST_MTD_CONV_THRESH'},
-        'MTD_OBS_CONV_RADIUS' : {'sec' : 'config', 'alt' : 'OBS_MTD_CONV_RADIUS'},
-        'MTD_OBS_CONV_THRESH' : {'sec' : 'config', 'alt' : 'OBS_MTD_CONV_THRESH'},
-        'RM_EXE' : {'sec' : 'exe', 'alt' : 'RM'},
-        'CUT_EXE' : {'sec' : 'exe', 'alt' : 'CUT'},
-        'TR_EXE' : {'sec' : 'exe', 'alt' : 'TR'},
-        'NCAP2_EXE' : {'sec' : 'exe', 'alt' : 'NCAP2'},
-        'CONVERT_EXE' : {'sec' : 'exe', 'alt' : 'CONVERT'},
-        'NCDUMP_EXE' : {'sec' : 'exe', 'alt' : 'NCDUMP'},
-        'EGREP_EXE' : {'sec' : 'exe', 'alt' : 'EGREP'},
-        'ADECK_TRACK_DATA_DIR' : {'sec' : 'dir', 'alt' : 'TC_PAIRS_ADECK_INPUT_DIR'},
-        'BDECK_TRACK_DATA_DIR' : {'sec' : 'dir', 'alt' : 'TC_PAIRS_BDECK_INPUT_DIR'},
-        'MISSING_VAL_TO_REPLACE' : {'sec' : 'config', 'alt' : 'TC_PAIRS_MISSING_VAL_TO_REPLACE'},
-        'MISSING_VAL' : {'sec' : 'config', 'alt' : 'TC_PAIRS_MISSING_VAL'},
-        'TRACK_DATA_SUBDIR_MOD' : {'sec' : 'dir', 'alt' : None},
-        'ADECK_FILE_PREFIX' : {'sec' : 'config', 'alt' : 'TC_PAIRS_ADECK_TEMPLATE', 'copy': False},
-        'BDECK_FILE_PREFIX' : {'sec' : 'config', 'alt' : 'TC_PAIRS_BDECK_TEMPLATE', 'copy': False},
-        'TOP_LEVEL_DIRS' : {'sec' : 'config', 'alt' : 'TC_PAIRS_READ_ALL_FILES'},
-        'TC_PAIRS_DIR' : {'sec' : 'dir', 'alt' : 'TC_PAIRS_OUTPUT_DIR'},
-        'CYCLONE' : {'sec' : 'config', 'alt' : 'TC_PAIRS_CYCLONE'},
-        'STORM_ID' : {'sec' : 'config', 'alt' : 'TC_PAIRS_STORM_ID'},
-        'BASIN' : {'sec' : 'config', 'alt' : 'TC_PAIRS_BASIN'},
-        'STORM_NAME' : {'sec' : 'config', 'alt' : 'TC_PAIRS_STORM_NAME'},
-        'DLAND_FILE' : {'sec' : 'config', 'alt' : 'TC_PAIRS_DLAND_FILE'},
-        'TRACK_TYPE' : {'sec' : 'config', 'alt' : 'TC_PAIRS_REFORMAT_DECK'},
-        'FORECAST_TMPL' : {'sec' : 'filename_templates', 'alt' : 'TC_PAIRS_ADECK_TEMPLATE'},
-        'REFERENCE_TMPL' : {'sec' : 'filename_templates', 'alt' : 'TC_PAIRS_BDECK_TEMPLATE'},
-        'TRACK_DATA_MOD_FORCE_OVERWRITE' :
-        {'sec' : 'config', 'alt' : 'TC_PAIRS_SKIP_IF_REFORMAT_EXISTS', 'copy': False},
-        'TC_PAIRS_FORCE_OVERWRITE' : {'sec' : 'config', 'alt' : 'TC_PAIRS_SKIP_IF_OUTPUT_EXISTS', 'copy': False},
-        'GRID_STAT_CONFIG' : {'sec' : 'config', 'alt' : 'GRID_STAT_CONFIG_FILE'},
-        'MODE_CONFIG' : {'sec' : 'config', 'alt': 'MODE_CONFIG_FILE'},
-        'FCST_PCP_COMBINE_INPUT_LEVEL': {'sec': 'config', 'alt' : 'FCST_PCP_COMBINE_INPUT_ACCUMS'},
-        'OBS_PCP_COMBINE_INPUT_LEVEL': {'sec': 'config', 'alt' : 'OBS_PCP_COMBINE_INPUT_ACCUMS'},
-        'TIME_METHOD': {'sec': 'config', 'alt': 'LOOP_BY', 'copy': False},
-        'MODEL_DATA_DIR': {'sec': 'dir', 'alt': 'EXTRACT_TILES_GRID_INPUT_DIR'},
-        'STAT_LIST': {'sec': 'config', 'alt': 'SERIES_ANALYSIS_STAT_LIST'},
-        'NLAT': {'sec': 'config', 'alt': 'EXTRACT_TILES_NLAT'},
-        'NLON': {'sec': 'config', 'alt': 'EXTRACT_TILES_NLON'},
-        'DLAT': {'sec': 'config', 'alt': 'EXTRACT_TILES_DLAT'},
-        'DLON': {'sec': 'config', 'alt': 'EXTRACT_TILES_DLON'},
-        'LON_ADJ': {'sec': 'config', 'alt': 'EXTRACT_TILES_LON_ADJ'},
-        'LAT_ADJ': {'sec': 'config', 'alt': 'EXTRACT_TILES_LAT_ADJ'},
-        'OVERWRITE_TRACK': {'sec': 'config', 'alt': 'EXTRACT_TILES_OVERWRITE_TRACK'},
-        'BACKGROUND_MAP': {'sec': 'config', 'alt': 'SERIES_ANALYSIS_BACKGROUND_MAP'},
-        'GFS_FCST_FILE_TMPL': {'sec': 'filename_templates', 'alt': 'FCST_EXTRACT_TILES_INPUT_TEMPLATE'},
-        'GFS_ANLY_FILE_TMPL': {'sec': 'filename_templates', 'alt': 'OBS_EXTRACT_TILES_INPUT_TEMPLATE'},
-        'SERIES_BY_LEAD_FILTERED_OUTPUT_DIR': {'sec': 'dir', 'alt': 'SERIES_ANALYSIS_FILTERED_OUTPUT_DIR'},
-        'SERIES_BY_INIT_FILTERED_OUTPUT_DIR': {'sec': 'dir', 'alt': 'SERIES_ANALYSIS_FILTERED_OUTPUT_DIR'},
-        'SERIES_BY_LEAD_OUTPUT_DIR': {'sec': 'dir', 'alt': 'SERIES_ANALYSIS_OUTPUT_DIR'},
-        'SERIES_BY_INIT_OUTPUT_DIR': {'sec': 'dir', 'alt': 'SERIES_ANALYSIS_OUTPUT_DIR'},
-        'SERIES_BY_LEAD_GROUP_FCSTS': {'sec': 'config', 'alt': 'SERIES_ANALYSIS_GROUP_FCSTS'},
-        'SERIES_ANALYSIS_BY_LEAD_CONFIG_FILE': {'sec': 'config', 'alt': 'SERIES_ANALYSIS_CONFIG_FILE'},
-        'SERIES_ANALYSIS_BY_INIT_CONFIG_FILE': {'sec': 'config', 'alt': 'SERIES_ANALYSIS_CONFIG_FILE'},
-        'ENSEMBLE_STAT_MET_OBS_ERROR_TABLE': {'sec': 'config', 'alt': 'ENSEMBLE_STAT_MET_OBS_ERR_TABLE'},
-        'VAR_LIST': {'sec': 'config', 'alt': 'BOTH_VAR<n>_NAME BOTH_VAR<n>_LEVELS or SERIES_ANALYSIS_VAR_LIST', 'copy': False},
-        'SERIES_ANALYSIS_VAR_LIST': {'sec': 'config', 'alt': 'BOTH_VAR<n>_NAME BOTH_VAR<n>_LEVELS', 'copy': False},
-        'EXTRACT_TILES_VAR_LIST': {'sec': 'config', 'alt': ''},
-        'STAT_ANALYSIS_LOOKIN_DIR': {'sec': 'dir', 'alt': 'MODEL1_STAT_ANALYSIS_LOOKIN_DIR'},
-        'VALID_HOUR_METHOD': {'sec': 'config', 'alt': None},
-        'VALID_HOUR_BEG': {'sec': 'config', 'alt': None},
-        'VALID_HOUR_END': {'sec': 'config', 'alt': None},
-        'VALID_HOUR_INCREMENT': {'sec': 'config', 'alt': None},
-        'INIT_HOUR_METHOD': {'sec': 'config', 'alt': None},
-        'INIT_HOUR_BEG': {'sec': 'config', 'alt': None},
-        'INIT_HOUR_END': {'sec': 'config', 'alt': None},
-        'INIT_HOUR_INCREMENT': {'sec': 'config', 'alt': None},
-        'STAT_ANALYSIS_CONFIG': {'sec': 'config', 'alt': 'STAT_ANALYSIS_CONFIG_FILE'},
-        'JOB_NAME': {'sec': 'config', 'alt': 'STAT_ANALYSIS_JOB_NAME'},
-        'JOB_ARGS': {'sec': 'config', 'alt': 'STAT_ANALYSIS_JOB_ARGS'},
-        'FCST_LEAD': {'sec': 'config', 'alt': 'FCST_LEAD_LIST'},
-        'FCST_VAR_NAME': {'sec': 'config', 'alt': 'FCST_VAR_LIST'},
-        'FCST_VAR_LEVEL': {'sec': 'config', 'alt': 'FCST_VAR_LEVEL_LIST'},
-        'OBS_VAR_NAME': {'sec': 'config', 'alt': 'OBS_VAR_LIST'},
-        'OBS_VAR_LEVEL': {'sec': 'config', 'alt': 'OBS_VAR_LEVEL_LIST'},
-        'REGION': {'sec': 'config', 'alt': 'VX_MASK_LIST'},
-        'INTERP': {'sec': 'config', 'alt': 'INTERP_LIST'},
-        'INTERP_PTS': {'sec': 'config', 'alt': 'INTERP_PTS_LIST'},
-        'CONV_THRESH': {'sec': 'config', 'alt': 'CONV_THRESH_LIST'},
-        'FCST_THRESH': {'sec': 'config', 'alt': 'FCST_THRESH_LIST'},
-        'LINE_TYPE': {'sec': 'config', 'alt': 'LINE_TYPE_LIST'},
-        'STAT_ANALYSIS_DUMP_ROW_TMPL': {'sec': 'filename_templates', 'alt': 'STAT_ANALYSIS_DUMP_ROW_TEMPLATE'},
-        'STAT_ANALYSIS_OUT_STAT_TMPL': {'sec': 'filename_templates', 'alt': 'STAT_ANALYSIS_OUT_STAT_TEMPLATE'},
-        'PLOTTING_SCRIPTS_DIR': {'sec': 'dir', 'alt': 'MAKE_PLOTS_SCRIPTS_DIR'},
-        'STAT_FILES_INPUT_DIR': {'sec': 'dir', 'alt': 'MAKE_PLOTS_INPUT_DIR'},
-        'PLOTTING_OUTPUT_DIR': {'sec': 'dir', 'alt': 'MAKE_PLOTS_OUTPUT_DIR'},
-        'VERIF_CASE': {'sec': 'config', 'alt': 'MAKE_PLOTS_VERIF_CASE'},
-        'VERIF_TYPE': {'sec': 'config', 'alt': 'MAKE_PLOTS_VERIF_TYPE'},
-        'PLOT_TIME': {'sec': 'config', 'alt': 'DATE_TIME'},
-        'MODEL<n>_NAME': {'sec': 'config', 'alt': 'MODEL<n>'},
-        'MODEL<n>_OBS_NAME': {'sec': 'config', 'alt': 'MODEL<n>_OBTYPE'},
-        'MODEL<n>_STAT_DIR': {'sec': 'dir', 'alt': 'MODEL<n>_STAT_ANALYSIS_LOOKIN_DIR'},
-        'MODEL<n>_NAME_ON_PLOT': {'sec': 'config', 'alt': 'MODEL<n>_REFERENCE_NAME'},
-        'REGION_LIST': {'sec': 'config', 'alt': 'VX_MASK_LIST'},
-        'PLOT_STATS_LIST': {'sec': 'config', 'alt': 'MAKE_PLOT_STATS_LIST'},
-        'CI_METHOD': {'sec': 'config', 'alt': 'MAKE_PLOTS_CI_METHOD'},
-        'VERIF_GRID': {'sec': 'config', 'alt': 'MAKE_PLOTS_VERIF_GRID'},
-        'EVENT_EQUALIZATION': {'sec': 'config', 'alt': 'MAKE_PLOTS_EVENT_EQUALIZATION'},
-        'MTD_CONFIG': {'sec': 'config', 'alt': 'MTD_CONFIG_FILE'},
-        'CLIMO_GRID_STAT_INPUT_DIR': {'sec': 'dir', 'alt': 'GRID_STAT_CLIMO_MEAN_INPUT_DIR'},
-        'CLIMO_GRID_STAT_INPUT_TEMPLATE': {'sec': 'filename_templates', 'alt': 'GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE'},
-        'CLIMO_POINT_STAT_INPUT_DIR': {'sec': 'dir', 'alt': 'POINT_STAT_CLIMO_MEAN_INPUT_DIR'},
-        'CLIMO_POINT_STAT_INPUT_TEMPLATE': {'sec': 'filename_templates', 'alt': 'POINT_STAT_CLIMO_MEAN_INPUT_TEMPLATE'},
-        'GEMPAKTOCF_CLASSPATH': {'sec': 'exe', 'alt': 'GEMPAKTOCF_JAR', 'copy': False},
-        'CUSTOM_INGEST_<n>_OUTPUT_DIR': {'sec': 'dir', 'alt': 'PY_EMBED_INGEST_<n>_OUTPUT_DIR'},
-        'CUSTOM_INGEST_<n>_OUTPUT_TEMPLATE': {'sec': 'filename_templates', 'alt': 'PY_EMBED_INGEST_<n>_OUTPUT_TEMPLATE'},
-        'CUSTOM_INGEST_<n>_OUTPUT_GRID': {'sec': 'config', 'alt': 'PY_EMBED_INGEST_<n>_OUTPUT_GRID'},
-        'CUSTOM_INGEST_<n>_SCRIPT': {'sec': 'config', 'alt': 'PY_EMBED_INGEST_<n>_SCRIPT'},
-        'CUSTOM_INGEST_<n>_TYPE': {'sec': 'config', 'alt': 'PY_EMBED_INGEST_<n>_TYPE'},
-        'TC_STAT_RUN_VIA': {'sec': 'config', 'alt': 'TC_STAT_CONFIG_FILE',
-                            'copy': False},
-        'TC_STAT_CMD_LINE_JOB': {'sec': 'config', 'alt': 'TC_STAT_JOB_ARGS'},
-        'TC_STAT_JOBS_LIST': {'sec': 'config', 'alt': 'TC_STAT_JOB_ARGS'},
-        'EXTRACT_TILES_OVERWRITE_TRACK': {'sec': 'config',
-                                          'alt': 'EXTRACT_TILES_SKIP_IF_OUTPUT_EXISTS',
-                                          'copy': False},
-        'EXTRACT_TILES_PAIRS_INPUT_DIR': {'sec': 'dir',
-                                          'alt': 'EXTRACT_TILES_STAT_INPUT_DIR',
-                                          'copy': False},
-        'EXTRACT_TILES_FILTERED_OUTPUT_TEMPLATE': {'sec': 'filename_template',
-                                                   'alt': 'EXTRACT_TILES_STAT_INPUT_TEMPLATE',},
-        'EXTRACT_TILES_GRID_INPUT_DIR': {'sec': 'dir',
-                                         'alt': 'FCST_EXTRACT_TILES_INPUT_DIR'
-                                                'and '
-                                                'OBS_EXTRACT_TILES_INPUT_DIR',
-                                         'copy': False},
-        'SERIES_ANALYSIS_FILTER_OPTS': {'sec': 'config',
-                                        'alt': 'TC_STAT_JOB_ARGS',
-                                        'copy': False},
-        'SERIES_ANALYSIS_INPUT_DIR': {'sec': 'dir',
-                              'alt': 'FCST_SERIES_ANALYSIS_INPUT_DIR '
-                                     'and '
-                                     'OBS_SERIES_ANALYSIS_INPUT_DIR'},
-        'FCST_SERIES_ANALYSIS_TILE_INPUT_TEMPLATE': {'sec': 'filename_templates',
-                              'alt': 'FCST_SERIES_ANALYSIS_INPUT_TEMPLATE '},
-        'OBS_SERIES_ANALYSIS_TILE_INPUT_TEMPLATE': {'sec': 'filename_templates',
-                              'alt': 'OBS_SERIES_ANALYSIS_INPUT_TEMPLATE '},
-        'EXTRACT_TILES_STAT_INPUT_DIR': {'sec': 'dir',
-                                        'alt': 'EXTRACT_TILES_TC_STAT_INPUT_DIR',},
-        'EXTRACT_TILES_STAT_INPUT_TEMPLATE': {'sec': 'filename_templates',
-                                        'alt': 'EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE',},
-        'SERIES_ANALYSIS_STAT_INPUT_DIR': {'sec': 'dir',
-                                         'alt': 'SERIES_ANALYSIS_TC_STAT_INPUT_DIR', },
-        'SERIES_ANALYSIS_STAT_INPUT_TEMPLATE': {'sec': 'filename_templates',
-                                              'alt': 'SERIES_ANALYSIS_TC_STAT_INPUT_TEMPLATE', },
-    }
-
-    # template       '' : {'sec' : '', 'alt' : '', 'copy': True},
-
-    logger = config.logger
-
-    # create list of errors and warnings to report for deprecated configs
-    e_list = []
-    w_list = []
-    all_sed_cmds = []
-
-    for old, depr_info in deprecated_dict.items():
-        if isinstance(depr_info, dict):
-
-            # check if <n> is found in the old item, use regex to find variables if found
-            if '<n>' in old:
-                old_regex = old.replace('<n>', r'(\d+)')
-                indices = find_indices_in_config_section(old_regex,
-                                                         config,
-                                                         index_index=1).keys()
-                for index in indices:
-                    old_with_index = old.replace('<n>', index)
-                    if depr_info['alt']:
-                        alt_with_index = depr_info['alt'].replace('<n>', index)
-                    else:
-                        alt_with_index = ''
-
-                    handle_deprecated(old_with_index, alt_with_index, depr_info,
-                                      config, all_sed_cmds, w_list, e_list)
-            else:
-                handle_deprecated(old, depr_info['alt'], depr_info,
-                                  config, all_sed_cmds, w_list, e_list)
-
-
-    # check all templates and error if any deprecated tags are used
-    # value of dict is replacement tag, set to None if no replacement exists
-    # deprecated tags: region (replace with basin)
-    deprecated_tags = {'region' : 'basin'}
-    template_vars = config.keys('config')
-    template_vars = [tvar for tvar in template_vars if tvar.endswith('_TEMPLATE')]
-    for temp_var in template_vars:
-        template = config.getraw('filename_templates', temp_var)
-        tags = get_tags(template)
-
-        for depr_tag, replace_tag in deprecated_tags.items():
-            if depr_tag in tags:
-                e_msg = 'Deprecated tag {{{}}} found in {}.'.format(depr_tag,
-                                                                    temp_var)
-                if replace_tag is not None:
-                    e_msg += ' Replace with {{{}}}'.format(replace_tag)
-
-                e_list.append(e_msg)
-
-    # if any warning exist, report them
-    if w_list:
-        for warning_msg in w_list:
-            logger.warning(warning_msg)
-
-    # if any errors exist, report them and exit
-    if e_list:
-        logger.error('DEPRECATED CONFIG ITEMS WERE FOUND. ' +\
-                     'PLEASE REMOVE/REPLACE THEM FROM CONFIG FILES')
-        for error_msg in e_list:
-            logger.error(error_msg)
-        return False, all_sed_cmds
-
-    return True, []
-
-def check_for_deprecated_met_config(config):
-    sed_cmds = []
-    all_good = True
-
-    # check if *_CONFIG_FILE if set in the METplus config file and check for
-    # deprecated environment variables in those files
-    met_config_keys = [key for key in config.keys('config')
-                       if key.endswith('CONFIG_FILE')]
-
-    for met_config_key in met_config_keys:
-        met_tool = met_config_key.replace('_CONFIG_FILE', '')
-
-        # get custom loop list to check if multiple config files are used based on the custom string
-        custom_list = get_custom_string_list(config, met_tool)
-
-        for custom_string in custom_list:
-            met_config = config.getraw('config', met_config_key)
-            if not met_config:
-                continue
-
-            met_config_file = do_string_sub(met_config, custom=custom_string)
-
-            if not check_for_deprecated_met_config_file(config, met_config_file, sed_cmds, met_tool):
-                all_good = False
-
-    return all_good, sed_cmds
-
-def check_for_deprecated_met_config_file(config, met_config, sed_cmds, met_tool):
-
-    all_good = True
-    if not os.path.exists(met_config):
-        config.logger.error(f"Config file does not exist: {met_config}")
-        return False
-
-    deprecated_met_list = ['MET_VALID_HHMM', 'GRID_VX', 'CONFIG_DIR']
-    deprecated_output_prefix_list = ['FCST_VAR', 'OBS_VAR']
-    config.logger.debug(f"Checking for deprecated environment variables in: {met_config}")
-
-    with open(met_config, 'r') as file_handle:
-        lines = file_handle.read().splitlines()
-
-    for line in lines:
-        for deprecated_item in deprecated_met_list:
-            if '${' + deprecated_item + '}' in line:
-                all_good = False
-                config.logger.error("Please remove deprecated environment variable "
-                                    f"${{{deprecated_item}}} found in MET config file: "
-                                    f"{met_config}")
-
-                if deprecated_item == 'MET_VALID_HHMM' and 'file_name' in line:
-                    config.logger.error(f"Set {met_tool}_CLIMO_MEAN_INPUT_[DIR/TEMPLATE] in a "
-                                        "METplus config file to set CLIMO_MEAN_FILE in a MET config")
-                    new_line = "   file_name = [ ${CLIMO_MEAN_FILE} ];"
-
-                    # escape [ and ] because they are special characters in sed commands
-                    old_line = line.rstrip().replace('[', r'\[').replace(']', r'\]')
-
-                    sed_cmds.append(f"sed -i 's|^{old_line}|{new_line}|g' {met_config}")
-                    add_line = f"{met_tool}_CLIMO_MEAN_INPUT_TEMPLATE"
-                    sed_cmds.append(f"#Add {add_line}")
-                    break
-
-                if 'to_grid' in line:
-                    config.logger.error("MET to_grid variable should reference "
-                                        "${REGRID_TO_GRID} environment variable")
-                    new_line = "   to_grid    = ${REGRID_TO_GRID};"
-
-                    # escape [ and ] because they are special characters in sed commands
-                    old_line = line.rstrip().replace('[', r'\[').replace(']', r'\]')
-
-                    sed_cmds.append(f"sed -i 's|^{old_line}|{new_line}|g' {met_config}")
-                    config.logger.info(f"Be sure to set {met_tool}_REGRID_TO_GRID to the correct value.")
-                    add_line = f"{met_tool}_REGRID_TO_GRID"
-                    sed_cmds.append(f"#Add {add_line}")
-                    break
-
-
-        for deprecated_item in deprecated_output_prefix_list:
-            # if deprecated item found in output prefix or to_grid line, replace line to use
-            # env var OUTPUT_PREFIX or REGRID_TO_GRID
-            if '${' + deprecated_item + '}' in line and 'output_prefix' in line:
-                config.logger.error("output_prefix variable should reference "
-                                    "${OUTPUT_PREFIX} environment variable")
-                new_line = "output_prefix    = \"${OUTPUT_PREFIX}\";"
-
-                # escape [ and ] because they are special characters in sed commands
-                old_line = line.rstrip().replace('[', r'\[').replace(']', r'\]')
-
-                sed_cmds.append(f"sed -i 's|^{old_line}|{new_line}|g' {met_config}")
-                config.logger.info(f"You will need to add {met_tool}_OUTPUT_PREFIX to the METplus config file"
-                                   f" that sets {met_tool}_CONFIG_FILE. Set it to:")
-                output_prefix = _replace_output_prefix(line)
-                add_line = f"{met_tool}_OUTPUT_PREFIX = {output_prefix}"
-                config.logger.info(add_line)
-                sed_cmds.append(f"#Add {add_line}")
-                all_good = False
-                break
-
-    return all_good
-
-def validate_field_info_configs(config, force_check=False):
-    """!Verify that config variables with _VAR<n>_ in them are valid. Returns True if all are valid.
-       Returns False if any items are invalid"""
-
-    variable_extensions = ['NAME', 'LEVELS', 'THRESH', 'OPTIONS']
-    all_good = True, []
-
-    if skip_field_info_validation(config) and not force_check:
-        return True, []
-
-    # keep track of all sed commands to replace config variable names
-    all_sed_cmds = []
-
-    for ext in variable_extensions:
-        # find all _VAR<n>_<ext> keys in the conf files
-        data_types_and_indices = find_indices_in_config_section(r"(\w+)_VAR(\d+)_"+ext,
-                                                                config,
-                                                                index_index=2,
-                                                                id_index=1)
-
-        # if BOTH_VAR<n>_ is used, set FCST and OBS to the same value
-        # if FCST or OBS is used, the other must be present as well
-        # if BOTH and either FCST or OBS are set, report an error
-        # get other data type
-        for index, data_type_list in data_types_and_indices.items():
-
-            is_valid, err_msgs, sed_cmds = is_var_item_valid(data_type_list, index, ext, config)
-            if not is_valid:
-                for err_msg in err_msgs:
-                    config.logger.error(err_msg)
-                all_sed_cmds.extend(sed_cmds)
-                all_good = False
-
-            # make sure FCST and OBS have the same number of levels if coming from separate variables
-            elif ext == 'LEVELS' and all(item in ['FCST', 'OBS'] for item in data_type_list):
-                fcst_levels = getlist(config.getraw('config', f"FCST_VAR{index}_LEVELS", ''))
-
-                # add empty string if no levels are found because python embedding items do not need
-                # to include a level, but the other item may have a level and the numbers need to match
-                if not fcst_levels:
-                    fcst_levels.append('')
-
-                obs_levels = getlist(config.getraw('config', f"OBS_VAR{index}_LEVELS", ''))
-                if not obs_levels:
-                    obs_levels.append('')
-
-                if len(fcst_levels) != len(obs_levels):
-                    config.logger.error(f"FCST_VAR{index}_LEVELS and OBS_VAR{index}_LEVELS do not have "
-                                        "the same number of elements")
-                    all_good = False
-
-    return all_good, all_sed_cmds
-
-def check_user_environment(config):
-    """!Check if any environment variables set in [user_env_vars] are already set in
-    the user's environment. Warn them that it will be overwritten from the conf if it is"""
-    if not config.has_section('user_env_vars'):
-        return
-
-    for env_var in config.keys('user_env_vars'):
-        if env_var in os.environ:
-            msg = '{} is already set in the environment. '.format(env_var) +\
-                  'Overwriting from conf file'
-            config.logger.warning(msg)
-
-def find_indices_in_config_section(regex, config, sec='config',
-                                   index_index=1, id_index=None):
-    """! Use regular expression to get all config variables that match and
-    are set in the user's configuration. This is used to handle config
-    variables that have multiple indices, i.e. FCST_VAR1_NAME, FCST_VAR2_NAME,
-    etc.
-
-    @param regex regular expression to use to find variables
-    @param config METplusConfig object to search
-    @param sec (optional) config file section to search. Defaults to config
-    @param index_index 1 based number that is the regex match index for the
-     index number (default is 1)
-    @param id_index 1 based number that is the regex match index for the
-     identifier. Defaults to None which does not extract an indentifier
-
-     number and the first match is used as an identifier
-    @returns dictionary where keys are the index number and the value is a
-     list of identifiers (if noID=True) or a list containing None
-    """
-    # regex expression must have 2 () items and the 2nd item must be the index
-    all_conf = config.keys(sec)
-    indices = {}
-    regex = re.compile(regex)
-    for conf in all_conf:
-        result = regex.match(conf)
-        if result is None:
-            continue
-
-        index = result.group(index_index)
-        if id_index:
-            identifier = result.group(id_index)
-        else:
-            identifier = None
-
-        if index not in indices:
-            indices[index] = [identifier]
-        else:
-            indices[index].append(identifier)
-
-    return indices
-
-def handle_deprecated(old, alt, depr_info, config, all_sed_cmds, w_list, e_list):
-    sec = depr_info['sec']
-    config_files = config.getstr('config', 'CONFIG_INPUT', '').split(',')
-    # if deprecated config item is found
-    if config.has_option(sec, old):
-        # if it is not required to remove, add to warning list
-        if 'req' in depr_info.keys() and depr_info['req'] is False:
-            msg = '[{}] {} is deprecated and will be '.format(sec, old) + \
-                  'removed in a future version of METplus'
-            if alt:
-                msg += ". Please replace with {}".format(alt)
-            w_list.append(msg)
-        # if it is required to remove, add to error list
-        else:
-            if not alt:
-                e_list.append("[{}] {} should be removed".format(sec, old))
-            else:
-                e_list.append("[{}] {} should be replaced with {}".format(sec, old, alt))
-
-                if 'copy' not in depr_info.keys() or depr_info['copy']:
-                    for config_file in config_files:
-                        all_sed_cmds.append(f"sed -i 's|^{old}|{alt}|g' {config_file}")
-                        all_sed_cmds.append(f"sed -i 's|{{{old}}}|{{{alt}}}|g' {config_file}")
-
-def get_custom_string_list(config, met_tool):
-    var_name = 'CUSTOM_LOOP_LIST'
-    custom_loop_list = config.getstr_nocheck('config',
-                                             f'{met_tool.upper()}_{var_name}',
-                                             config.getstr_nocheck('config',
-                                                                   var_name,
-                                                                   ''))
-    custom_loop_list = getlist(custom_loop_list)
-    if not custom_loop_list:
-        custom_loop_list.append('')
-
-    return custom_loop_list
-
-def _replace_output_prefix(line):
-    op_replacements = {'${MODEL}': '{MODEL}',
-                       '${FCST_VAR}': '{CURRENT_FCST_NAME}',
-                       '${OBTYPE}': '{OBTYPE}',
-                       '${OBS_VAR}': '{CURRENT_OBS_NAME}',
-                       '${LEVEL}': '{CURRENT_FCST_LEVEL}',
-                       '${FCST_TIME}': '{lead?fmt=%3H}',
-                       }
-    prefix = line.split('=')[1].strip().rstrip(';').strip('"')
-    for key, value, in op_replacements.items():
-        prefix = prefix.replace(key, value)
-
-    return prefix
 
 def parse_var_list(config, time_info=None, data_type=None, met_tool=None,
                    levels_as_list=False):
@@ -1820,59 +1210,6 @@ def _format_var_items(field_configs, time_info=None):
     return var_items
 
 
-def skip_field_info_validation(config):
-    """!Check config to see if having corresponding FCST/OBS variables is necessary. If process list only
-        contains reformatter wrappers, don't validate field info. Also, if MTD is in the process list and
-        it is configured to only process either FCST or OBS, validation is unnecessary."""
-
-    reformatters = ['PCPCombine', 'RegridDataPlane']
-    process_list = [item[0] for item in get_process_list(config)]
-
-    # if running MTD in single mode, you don't need matching FCST/OBS
-    if ('MTD' in process_list and
-            config.getbool('config', 'MTD_SINGLE_RUN', False)):
-        return True
-
-    # if running any app other than the reformatters, you need matching FCST/OBS, so don't skip
-    if [item for item in process_list if item not in reformatters]:
-        return False
-
-    return True
-
-def get_process_list(config):
-    """!Read process list, Extract instance string if specified inside
-     parenthesis. Remove dashes/underscores and change to lower case,
-     then map the name to the correct wrapper name
-
-     @param config METplusConfig object to read PROCESS_LIST value
-     @returns list of tuple containing process name and instance identifier
-     (None if no instance was set)
-    """
-    # get list of processes
-    process_list = getlist(config.getstr('config', 'PROCESS_LIST'))
-
-    out_process_list = []
-    # for each item remove dashes, underscores, and cast to lower-case
-    for process in process_list:
-        # if instance is specified, extract the text inside parenthesis
-        match = re.match(r'(.*)\((.*)\)', process)
-        if match:
-            instance = match.group(2)
-            process_name = match.group(1)
-        else:
-            instance = None
-            process_name = process
-
-        wrapper_name = get_wrapper_name(process_name)
-        if wrapper_name is None:
-            config.logger.warning(f"PROCESS_LIST item {process_name} "
-                                  "may be invalid.")
-            wrapper_name = process_name
-
-        out_process_list.append((wrapper_name, instance))
-
-    return out_process_list
-
 def get_field_search_prefixes(data_type, met_tool=None):
     """! Get list of prefixes to search for field variables.
 
@@ -1902,67 +1239,6 @@ def get_field_search_prefixes(data_type, met_tool=None):
 
     return search_prefixes
 
-def is_var_item_valid(item_list, index, ext, config):
-    """!Given a list of data types (FCST, OBS, ENS, or BOTH) check if the
-        combination is valid.
-        If BOTH is found, FCST and OBS should not be found.
-        If FCST or OBS is found, the other must also be found.
-        @param item_list list of data types that were found for a given index
-        @param index number following _VAR in the variable name
-        @param ext extension to check, i.e. NAME, LEVELS, THRESH, or OPTIONS
-        @param config METplusConfig instance
-        @returns tuple containing boolean if var item is valid, list of error
-         messages and list of sed commands to help the user update their old
-         configuration files
-    """
-
-    full_ext = f"_VAR{index}_{ext}"
-    msg = []
-    sed_cmds = []
-    if 'BOTH' in item_list and ('FCST' in item_list or 'OBS' in item_list):
-
-        msg.append(f"Cannot set FCST{full_ext} or OBS{full_ext} if BOTH{full_ext} is set.")
-    elif ext == 'THRESH':
-        # allow thresholds unless BOTH and (FCST or OBS) are set
-        pass
-
-    elif 'FCST' in item_list and 'OBS' not in item_list:
-        # if FCST level has 1 item and OBS name is a python embedding script,
-        # don't report error
-        level_list = getlist(config.getraw('config',
-                                           f'FCST_VAR{index}_LEVELS',
-                                           ''))
-        other_name = config.getraw('config', f'OBS_VAR{index}_NAME', '')
-        skip_error_for_py_embed = ext == 'LEVELS' and is_python_script(other_name) and len(level_list) == 1
-        # do not report error for OPTIONS since it isn't required to be the same length
-        if ext not in ['OPTIONS'] and not skip_error_for_py_embed:
-            msg.append(f"If FCST{full_ext} is set, you must either set OBS{full_ext} or "
-                       f"change FCST{full_ext} to BOTH{full_ext}")
-
-            config_files = config.getstr('config', 'CONFIG_INPUT', '').split(',')
-            for config_file in config_files:
-                sed_cmds.append(f"sed -i 's|^FCST{full_ext}|BOTH{full_ext}|g' {config_file}")
-                sed_cmds.append(f"sed -i 's|{{FCST{full_ext}}}|{{BOTH{full_ext}}}|g' {config_file}")
-
-    elif 'OBS' in item_list and 'FCST' not in item_list:
-        # if OBS level has 1 item and FCST name is a python embedding script,
-        # don't report error
-        level_list = getlist(config.getraw('config',
-                                           f'OBS_VAR{index}_LEVELS',
-                                           ''))
-        other_name = config.getraw('config', f'FCST_VAR{index}_NAME', '')
-        skip_error_for_py_embed = ext == 'LEVELS' and is_python_script(other_name) and len(level_list) == 1
-
-        if ext not in ['OPTIONS'] and not skip_error_for_py_embed:
-            msg.append(f"If OBS{full_ext} is set, you must either set FCST{full_ext} or "
-                          f"change OBS{full_ext} to BOTH{full_ext}")
-
-            config_files = config.getstr('config', 'CONFIG_INPUT', '').split(',')
-            for config_file in config_files:
-                sed_cmds.append(f"sed -i 's|^OBS{full_ext}|BOTH{full_ext}|g' {config_file}")
-                sed_cmds.append(f"sed -i 's|{{OBS{full_ext}}}|{{BOTH{full_ext}}}|g' {config_file}")
-
-    return not bool(msg), msg, sed_cmds
 
 def get_field_config_variables(config, index, search_prefixes):
     """! Search for variables that are set in the config that correspond to
@@ -2026,170 +1302,3 @@ def get_field_config_variables(config, index, search_prefixes):
                 break
 
     return field_configs
-
-
-def is_loop_by_init(config):
-    """!Check config variables to determine if looping by valid or init time"""
-    if config.has_option('config', 'LOOP_BY'):
-        loop_by = config.getstr('config', 'LOOP_BY').lower()
-        if loop_by in ['init', 'retro']:
-            return True
-        elif loop_by in ['valid', 'realtime']:
-            return False
-
-    if config.has_option('config', 'LOOP_BY_INIT'):
-        return config.getbool('config', 'LOOP_BY_INIT')
-
-    msg = 'MUST SET LOOP_BY to VALID, INIT, RETRO, or REALTIME'
-    if config.logger is None:
-        print(msg)
-    else:
-        config.logger.error(msg)
-
-    return None
-
-
-def handle_tmp_dir(config):
-    """! if env var MET_TMP_DIR is set, override config TMP_DIR with value
-     if it differs from what is set
-     get config temp dir using getdir_nocheck to bypass check for /path/to
-     this is done so the user can set env MET_TMP_DIR instead of config TMP_DIR
-     and config TMP_DIR will be set automatically"""
-    handle_env_var_config(config, 'MET_TMP_DIR', 'TMP_DIR')
-
-    # create temp dir if it doesn't exist already
-    # this will fail if TMP_DIR is not set correctly and
-    # env MET_TMP_DIR was not set
-    mkdir_p(config.getdir('TMP_DIR'))
-
-
-def handle_env_var_config(config, env_var_name, config_name):
-    """! If environment variable is set, use that value
-     for the config variable and warn if the previous config value differs
-
-     @param config METplusConfig object to read
-     @param env_var_name name of environment variable to read
-     @param config_name name of METplus config variable to check
-    """
-    env_var_value = os.environ.get(env_var_name, '')
-    config_value = config.getdir_nocheck(config_name, '')
-
-    # do nothing if environment variable is not set
-    if not env_var_value:
-        return
-
-    # override config config variable to environment variable value
-    config.set('config', config_name, env_var_value)
-
-    # if config config value differed from environment variable value, warn
-    if config_value == env_var_value:
-        return
-
-    config.logger.warning(f'Config variable {config_name} ({config_value}) '
-                          'will be overridden by the environment variable '
-                          f'{env_var_name} ({env_var_value})')
-
-
-def write_all_commands(all_commands, config):
-    """! Write all commands that were run to a file in the log
-     directory. This includes the environment variables that
-     were set before each command.
-
-    @param all_commands list of tuples with command run and
-     list of environment variables that were set
-    @param config METplusConfig object used to write log output
-     and get the log timestamp to name the output file
-    @returns False if no commands were provided, True otherwise
-    """
-    if not all_commands:
-        config.logger.error("No commands were run. "
-                            "Skip writing all_commands file")
-        return False
-
-    log_timestamp = config.getstr('config', 'LOG_TIMESTAMP')
-    filename = os.path.join(config.getdir('LOG_DIR'),
-                            f'.all_commands.{log_timestamp}')
-    config.logger.debug(f"Writing all commands and environment to {filename}")
-    with open(filename, 'w') as file_handle:
-        for command, envs in all_commands:
-            for env in envs:
-                file_handle.write(f"{env}\n")
-
-            file_handle.write("COMMAND:\n")
-            file_handle.write(f"{command}\n\n")
-
-    return True
-
-
-def write_final_conf(config):
-    """! Write final conf file including default values that were set during
-     run. Move variables that are specific to the user's run to the [runtime]
-     section to avoid issues such as overwriting existing log files.
-
-        @param config METplusConfig object to write to file
-     """
-    final_conf = config.getstr('config', 'METPLUS_CONF')
-
-    # remove variables that start with CURRENT
-    config.remove_current_vars()
-
-    # move runtime variables to [runtime] section
-    config.move_runtime_configs()
-
-    config.logger.info('Overwrite final conf here: %s' % (final_conf,))
-    with open(final_conf, 'wt') as conf_file:
-        config.write(conf_file)
-
-
-def log_runtime_banner(config, time_input, process):
-    loop_by = time_input['loop_by']
-    run_time = time_input[loop_by].strftime("%Y-%m-%d %H:%M")
-
-    process_name = process.__class__.__name__
-    if process.instance:
-        process_name = f"{process_name}({process.instance})"
-
-    config.logger.info("****************************************")
-    config.logger.info(f"* Running METplus {process_name}")
-    config.logger.info(f"*  at {loop_by} time: {run_time}")
-    config.logger.info("****************************************")
-
-
-def sub_var_list(var_list, time_info):
-    """! Perform string substitution on var list values with time info
-
-        @param var_list list of field info to substitute values into
-        @param time_info dictionary containing time information
-        @returns var_list with values substituted
-    """
-    if not var_list:
-        return []
-
-    out_var_list = []
-    for var_info in var_list:
-        out_var_info = _sub_var_info(var_info, time_info)
-        out_var_list.append(out_var_info)
-
-    return out_var_list
-
-
-def _sub_var_info(var_info, time_info):
-    if not var_info:
-        return {}
-
-    out_var_info = {}
-    for key, value in var_info.items():
-        if isinstance(value, list):
-            out_value = []
-            for item in value:
-                out_value.append(do_string_sub(item,
-                                               skip_missing_tags=True,
-                                               **time_info))
-        else:
-            out_value = do_string_sub(value,
-                                      skip_missing_tags=True,
-                                      **time_info)
-
-        out_var_info[key] = out_value
-
-    return out_var_info

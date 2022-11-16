@@ -2,6 +2,7 @@
 
 import pytest
 
+import pprint
 from csv import reader
 
 from metplus.util.string_manip import *
@@ -371,3 +372,60 @@ def test_format_thresh(expression, expected_result):
 @pytest.mark.util
 def test_format_level(level, expected_result):
     assert format_level(level) == expected_result
+
+
+@pytest.mark.parametrize(
+    'regex,index,id,expected_result', [
+        # 0: No ID
+        (r'^FCST_VAR(\d+)_NAME$', 1, None,
+         {'1': [None],
+          '2': [None],
+          '4': [None]}),
+        # 1: ID and index 2
+        (r'(\w+)_VAR(\d+)_NAME', 2, 1,
+         {'1': ['FCST'],
+          '2': ['FCST'],
+          '4': ['FCST']}),
+        # 2: index 1, ID 2, multiple identifiers
+        (r'^FCST_VAR(\d+)_(\w+)$', 1, 2,
+         {'1': ['NAME', 'LEVELS'],
+          '2': ['NAME'],
+          '4': ['NAME']}),
+        # 3: command that StatAnalysis wrapper uses
+        (r'MODEL(\d+)$', 1, None,
+         {'1': [None],
+          '2': [None],}),
+        # 4: TCPairs conensus logic
+        (r'^TC_PAIRS_CONSENSUS(\d+)_(\w+)$', 1, 2,
+         {'1': ['NAME', 'MEMBERS', 'REQUIRED', 'MIN_REQ'],
+          '2': ['NAME', 'MEMBERS', 'REQUIRED', 'MIN_REQ']}),
+    ]
+)
+@pytest.mark.util
+def test_find_indices_in_config_section(metplus_config, regex, index,
+                                        id, expected_result):
+    config = metplus_config
+    config.set('config', 'FCST_VAR1_NAME', 'name1')
+    config.set('config', 'FCST_VAR1_LEVELS', 'level1')
+    config.set('config', 'FCST_VAR2_NAME', 'name2')
+    config.set('config', 'FCST_VAR4_NAME', 'name4')
+    config.set('config', 'MODEL1', 'model1')
+    config.set('config', 'MODEL2', 'model2')
+
+    config.set('config', 'TC_PAIRS_CONSENSUS1_NAME', 'name1')
+    config.set('config', 'TC_PAIRS_CONSENSUS1_MEMBERS', 'member1')
+    config.set('config', 'TC_PAIRS_CONSENSUS1_REQUIRED', 'True')
+    config.set('config', 'TC_PAIRS_CONSENSUS1_MIN_REQ', '1')
+    config.set('config', 'TC_PAIRS_CONSENSUS2_NAME', 'name2')
+    config.set('config', 'TC_PAIRS_CONSENSUS2_MEMBERS', 'member2')
+    config.set('config', 'TC_PAIRS_CONSENSUS2_REQUIRED', 'True')
+    config.set('config', 'TC_PAIRS_CONSENSUS2_MIN_REQ', '2')
+
+    indices = find_indices_in_config_section(regex, config, index_index=index,
+                                             id_index=id)
+
+    pp = pprint.PrettyPrinter()
+    print(f'Indices:')
+    pp.pprint(indices)
+
+    assert indices == expected_result
