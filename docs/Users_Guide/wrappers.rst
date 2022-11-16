@@ -8225,8 +8225,12 @@ METplus Configuration
 | :term:`TC_PAIRS_CHECK_DUP`
 | :term:`TC_PAIRS_INTERP12`
 | :term:`TC_PAIRS_MATCH_POINTS`
-| :term:`TC_PAIRS_DIAG_NAME`
-| :term:`TC_PAIRS_DIAG_CONVERT_MAP<n>_SOURCE`
+| :term:`TC_PAIRS_DIAG_INFO_MAP<n>_DIAG_SOURCE`
+| :term:`TC_PAIRS_DIAG_INFO_MAP<n>_TRACK_SOURCE`
+| :term:`TC_PAIRS_DIAG_INFO_MAP<n>_FIELD_SOURCE`
+| :term:`TC_PAIRS_DIAG_INFO_MAP<n>_MATCH_TO_TRACK`
+| :term:`TC_PAIRS_DIAG_INFO_MAP<n>_DIAG_NAME`
+| :term:`TC_PAIRS_DIAG_CONVERT_MAP<n>_DIAG_SOURCE`
 | :term:`TC_PAIRS_DIAG_CONVERT_MAP<n>_KEY`
 | :term:`TC_PAIRS_DIAG_CONVERT_MAP<n>_CONVERT`
 |
@@ -8511,7 +8515,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`TC_PAIRS_INTERP12`
      - interp12
 
-**${METPLUS_DIAG_NAME}**
+**${METPLUS_DIAG_INFO_MAP_LIST}**
 
 .. list-table::
    :widths: 5 5
@@ -8519,8 +8523,16 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_PAIRS_DIAG_NAME`
-     - diag_name
+   * - :term:`TC_PAIRS_DIAG_INFO_MAP<n>_DIAG_SOURCE`
+     - diag_info_map.diag_source
+   * - :term:`TC_PAIRS_DIAG_INFO_MAP<n>_TRACK_SOURCE`
+     - diag_info_map.track_source
+   * - :term:`TC_PAIRS_DIAG_INFO_MAP<n>_FIELD_SOURCE`
+     - diag_info_map.field_source
+   * - :term:`TC_PAIRS_DIAG_INFO_MAP<n>_MATCH_TO_TRACK`
+     - diag_info_map.match_to_track
+   * - :term:`TC_PAIRS_DIAG_INFO_MAP<n>_DIAG_NAME`
+     - diag_info_map.diag_name
 
 **${METPLUS_DIAG_CONVERT_MAP_LIST}**
 
@@ -8530,8 +8542,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_PAIRS_DIAG_CONVERT_MAP<n>_SOURCE`
-     - diag_convert_map.source
+   * - :term:`TC_PAIRS_DIAG_CONVERT_MAP<n>_DIAG_SOURCE`
+     - diag_convert_map.diag_source
    * - :term:`TC_PAIRS_DIAG_CONVERT_MAP<n>_KEY`
      - diag_convert_map.key
    * - :term:`TC_PAIRS_DIAG_CONVERT_MAP<n>_CONVERT`

@@ -63,7 +63,7 @@ class TCPairsWrapper(CommandBuilder):
         'METPLUS_CHECK_DUP',
         'METPLUS_INTERP12',
         'METPLUS_MATCH_POINTS',
-        'METPLUS_DIAG_NAME',
+        'METPLUS_DIAG_INFO_MAP_LIST',
         'METPLUS_DIAG_CONVERT_MAP_LIST',
     ]
 
@@ -180,7 +180,7 @@ class TCPairsWrapper(CommandBuilder):
 
         self.add_met_config(name='match_points', data_type='bool')
 
-        self.add_met_config(name='diag_name', data_type='list')
+        self._handle_diag_info_map()
 
         self._handle_diag_convert_map()
 
@@ -419,9 +419,25 @@ class TCPairsWrapper(CommandBuilder):
         if not return_code:
             self.isOK = False
 
+    def _handle_diag_info_map(self):
+        dict_items = {
+            'diag_source': 'string',
+            'track_source': 'string',
+            'field_source': 'string',
+            'match_to_track': 'list',
+            'diag_name': 'list',
+        }
+        return_code = add_met_config_dict_list(config=self.config,
+                                               app_name=self.app_name,
+                                               output_dict=self.env_var_dict,
+                                               dict_name='diag_info_map',
+                                               dict_items=dict_items)
+        if not return_code:
+            self.isOK = False
+
     def _handle_diag_convert_map(self):
         dict_items = {
-            'source': 'string',
+            'diag_source': 'string',
             'key': 'list',
             'convert': ('string', 'remove_quotes'),
         }

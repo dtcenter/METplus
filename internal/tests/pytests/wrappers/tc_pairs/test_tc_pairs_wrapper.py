@@ -485,34 +485,64 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
          {'DIAG_ARG': ('-diag TCDIAG /some/path/2014121318.dat '
                        '-diag LSDIAG_RT /some/path/rt_2014121318.dat '
                        'model=OFCL,SHIP')}),
-        # 45 diag_name
-        ('VALID', {'TC_PAIRS_DIAG_NAME': 'TC_DIAG, TC_DIAG2', },
-         {'METPLUS_DIAG_NAME': 'diag_name = ["TC_DIAG", "TC_DIAG2"];'}),
-        # 46 diag_convert_map 1 dictionary in list
+        # 45 diag_convert_map 1 dictionary in list
         ('VALID', {
-             'TC_PAIRS_DIAG_CONVERT_MAP1_SOURCE': 'TCDIAG',
+             'TC_PAIRS_DIAG_CONVERT_MAP1_DIAG_SOURCE': 'CIRA_DIAG',
              'TC_PAIRS_DIAG_CONVERT_MAP1_KEY': '(10C),(10KT),(10M/S)',
              'TC_PAIRS_DIAG_CONVERT_MAP1_CONVERT': 'x/10',
          },
-         {'METPLUS_DIAG_CONVERT_MAP_LIST': 'diag_convert_map = [{source = "TCDIAG";key = ["(10C)", "(10KT)", "(10M/S)"];convert(x) = x/10;}];'}),
-        # 47 diag_convert_map 2 dictionaries in list
+         {'METPLUS_DIAG_CONVERT_MAP_LIST': (
+                 'diag_convert_map = [{diag_source = "CIRA_DIAG";'
+                 'key = ["(10C)", "(10KT)", "(10M/S)"];convert(x) = x/10;}];'
+         )}),
+        # 46 diag_convert_map 2 dictionaries in list
         ('VALID', {
-            'TC_PAIRS_DIAG_CONVERT_MAP1_SOURCE': 'TCDIAG',
+            'TC_PAIRS_DIAG_CONVERT_MAP1_DIAG_SOURCE': 'CIRA_DIAG',
             'TC_PAIRS_DIAG_CONVERT_MAP1_KEY': '(10C),(10KT),(10M/S)',
             'TC_PAIRS_DIAG_CONVERT_MAP1_CONVERT': 'x/10',
-            'TC_PAIRS_DIAG_CONVERT_MAP2_SOURCE': 'LSDIAG_RT',
+            'TC_PAIRS_DIAG_CONVERT_MAP2_DIAG_SOURCE': 'SHIPS_DIAG',
             'TC_PAIRS_DIAG_CONVERT_MAP2_KEY': 'LAT,LON,CSST,RSST,DSST,DSTA',
             'TC_PAIRS_DIAG_CONVERT_MAP2_CONVERT': 'x/100',
         },
-         {'METPLUS_DIAG_CONVERT_MAP_LIST': ('diag_convert_map = [{source = '
-                                            '"TCDIAG";key = ["(10C)", '
-                                            '"(10KT)", "(10M/S)"];'
-                                            'convert(x) = x/10;},'
-                                            '{source = "LSDIAG_RT";key = ['
-                                            '"LAT", "LON", "CSST", "RSST", '
-                                            '"DSST", "DSTA"];'
-                                            'convert(x) = x/100;}];')}),
-
+         {'METPLUS_DIAG_CONVERT_MAP_LIST': (
+                 'diag_convert_map = [{diag_source = "CIRA_DIAG";'
+                 'key = ["(10C)", "(10KT)", "(10M/S)"];convert(x) = x/10;},'
+                 '{diag_source = "SHIPS_DIAG";key = ["LAT", "LON", "CSST", '
+                 '"RSST", "DSST", "DSTA"];convert(x) = x/100;}];'
+         )}),
+        # 47 diag_info_map 1 dictionary in list
+        ('VALID', {
+            'TC_PAIRS_DIAG_INFO_MAP1_DIAG_SOURCE': 'CIRA_DIAG_RT',
+            'TC_PAIRS_DIAG_INFO_MAP1_TRACK_SOURCE': 'GFS',
+            'TC_PAIRS_DIAG_INFO_MAP1_FIELD_SOURCE': 'GFS_0p50',
+            'TC_PAIRS_DIAG_INFO_MAP1_MATCH_TO_TRACK': 'GFS',
+            'TC_PAIRS_DIAG_INFO_MAP1_DIAG_NAME': 'MY_NAME',
+        },
+         {'METPLUS_DIAG_INFO_MAP_LIST': (
+                 'diag_info_map = [{diag_source = "CIRA_DIAG_RT";'
+                 'track_source = "GFS";field_source = "GFS_0p50";'
+                 'match_to_track = ["GFS"];diag_name = ["MY_NAME"];}];')}),
+        # 48 diag_info_map 2 dictionaries in list
+        ('VALID', {
+            'TC_PAIRS_DIAG_INFO_MAP1_DIAG_SOURCE': 'CIRA_DIAG_RT',
+            'TC_PAIRS_DIAG_INFO_MAP1_TRACK_SOURCE': 'GFS',
+            'TC_PAIRS_DIAG_INFO_MAP1_FIELD_SOURCE': 'GFS_0p50',
+            'TC_PAIRS_DIAG_INFO_MAP1_MATCH_TO_TRACK': 'GFS',
+            'TC_PAIRS_DIAG_INFO_MAP1_DIAG_NAME': 'MY_NAME',
+            'TC_PAIRS_DIAG_INFO_MAP2_DIAG_SOURCE': 'SHIPS_DIAG_RT',
+            'TC_PAIRS_DIAG_INFO_MAP2_TRACK_SOURCE': 'OFCL',
+            'TC_PAIRS_DIAG_INFO_MAP2_FIELD_SOURCE': 'GFS_0p50',
+            'TC_PAIRS_DIAG_INFO_MAP2_MATCH_TO_TRACK': 'OFCL',
+            'TC_PAIRS_DIAG_INFO_MAP2_DIAG_NAME': 'MY_NAME2',
+        },
+         {'METPLUS_DIAG_INFO_MAP_LIST': (
+                 'diag_info_map = [{diag_source = "CIRA_DIAG_RT";'
+                 'track_source = "GFS";field_source = "GFS_0p50";'
+                 'match_to_track = ["GFS"];diag_name = ["MY_NAME"];},'
+                 '{diag_source = "SHIPS_DIAG_RT";track_source = "OFCL";'
+                 'field_source = "GFS_0p50";match_to_track = ["OFCL"]'
+                 ';diag_name = ["MY_NAME2"];}];'
+         )}),
     ]
 )
 @pytest.mark.wrapper

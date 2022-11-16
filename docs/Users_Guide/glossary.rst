@@ -10094,13 +10094,33 @@ METplus Configuration Glossary
 
      | *Used by:* StatAnalysis
 
-   TC_PAIRS_DIAG_NAME
-     Specify the value for 'diag_name' in the MET configuration file for TCPairs.
+   TC_PAIRS_DIAG_INFO_MAP<n>_DIAG_SOURCE
+     Specify the value for the nth 'diag_info_map.diag_source' in the MET configuration file for TCPairs.
 
      | *Used by:* TCPairs
 
-   TC_PAIRS_DIAG_CONVERT_MAP<n>_SOURCE
-     Specify the value for the nth 'diag_convert_map.source' in the MET configuration file for TCPairs.
+   TC_PAIRS_DIAG_INFO_MAP<n>_TRACK_SOURCE
+     Specify the value for the nth 'diag_info_map.track_source' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
+
+   TC_PAIRS_DIAG_INFO_MAP<n>_FIELD_SOURCE
+     Specify the value for the nth 'diag_info_map.field_source' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
+
+   TC_PAIRS_DIAG_INFO_MAP<n>_MATCH_TO_TRACK
+     Specify the value for the nth 'diag_info_map.match_to_track' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
+
+   TC_PAIRS_DIAG_INFO_MAP<n>_DIAG_NAME
+     Specify the value for the nth 'diag_info_map.diag_name' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
+
+   TC_PAIRS_DIAG_CONVERT_MAP<n>_DIAG_SOURCE
+     Specify the value for the nth 'diag_convert_map.diag_source' in the MET configuration file for TCPairs.
 
      | *Used by:* TCPairs
 

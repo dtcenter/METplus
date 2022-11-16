@@ -144,8 +144,8 @@ watch_warn = {
 }
 
 
-//diag_name =
-${METPLUS_DIAG_NAME}
+//diag_info_map = {
+${METPLUS_DIAG_INFO_MAP_LIST}
 
 //diag_convert_map = {
 ${METPLUS_DIAG_CONVERT_MAP_LIST}
