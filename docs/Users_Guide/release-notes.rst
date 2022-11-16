@@ -201,7 +201,7 @@ ensemble products. There are 3 situations listed below that require slightly
 different modifications.
 
 Case 1: EnsembleStat only generating ensemble products
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If the use case had been calling EnsembleStat **WITHOUT** the -grid_obs or
 -point_obs command line options, we can assume it was only doing ensemble
