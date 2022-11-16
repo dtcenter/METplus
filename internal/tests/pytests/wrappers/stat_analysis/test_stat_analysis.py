@@ -16,6 +16,7 @@ TEST_CONF = os.path.join(os.path.dirname(__file__), 'test.conf')
 
 pp = pprint.PrettyPrinter()
 
+JOB_ARGS = '-job filter'
 
 def stat_analysis_wrapper(metplus_config):
     """! Returns a default StatAnalysisWrapper with /path/to entries in the
@@ -103,7 +104,7 @@ def set_minimum_config_settings(config):
     config.set('config', 'GROUP_LIST_ITEMS', 'DESC_LIST')
     config.set('config', 'LOOP_LIST_ITEMS', 'MODEL_LIST')
     config.set('config', 'MODEL_LIST', 'MODEL_A')
-    config.set('config', 'STAT_ANALYSIS_JOB1', '-job filter')
+    config.set('config', 'STAT_ANALYSIS_JOB1', JOB_ARGS)
     config.set('config', 'MODEL1', 'MODEL_A')
     config.set('config', 'MODEL1_STAT_ANALYSIS_LOOKIN_DIR',
                '{METPLUS_BASE}/internal/tests/data/stat_data')
@@ -168,9 +169,9 @@ def set_minimum_config_settings(config):
           'METPLUS_OBS_INIT_END': 'obs_init_end = "20221015_12";'}),
         # 16 - custom in MODEL1
         ({'STAT_ANALYSIS_CUSTOM_LOOP_LIST': 'CUSTOM_MODEL',
-          'STAT_ANALYSIS_MODEL1': '{custom}',
-          'STAT_ANALYSIS_MODEL_LIST': '{custom}'},
-         {'METPLUS_MODEL': 'model = "CUSTOM_MODEL";'}),
+          'MODEL1': '{custom}',
+          'MODEL_LIST': '{custom}'},
+         {'METPLUS_MODEL': 'model = ["CUSTOM_MODEL"];'}),
     ]
 )
 @pytest.mark.wrapper_d
@@ -182,10 +183,19 @@ def test_valid_init_env_vars(metplus_config, config_overrides,
     for key, value in config_overrides.items():
         config.set('config', key, value)
 
+    if 'METPLUS_MODEL' not in expected_env_vars:
+        expected_env_vars['METPLUS_MODEL'] = 'model = ["MODEL_A"];'
+
+    if 'METPLUS_JOBS' not in expected_env_vars:
+        expected_env_vars['METPLUS_JOBS'] = f'jobs = ["{JOB_ARGS}"];'
+
     wrapper = StatAnalysisWrapper(config)
     assert wrapper.isOK
 
-    runtime_settings_dict_list = wrapper._get_all_runtime_settings({})
+    time_input = {
+        'custom': config_overrides.get('STAT_ANALYSIS_CUSTOM_LOOP_LIST', '')
+    }
+    runtime_settings_dict_list = wrapper._get_all_runtime_settings(time_input)
     assert runtime_settings_dict_list
 
     first_runtime_only = [runtime_settings_dict_list[0]]
@@ -195,8 +205,10 @@ def test_valid_init_env_vars(metplus_config, config_overrides,
     print(f"ALL COMMANDS: {all_cmds}")
     _, actual_env_vars = all_cmds[0]
 
-    env_var_keys = [item for item in wrapper.WRAPPER_ENV_VAR_KEYS
-                    if 'BEG' in item or 'END' in item]
+    missing_env = [item for item in expected_env_vars
+                   if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
+    env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
+
     for env_var_key in env_var_keys:
         match = next((item for item in actual_env_vars if
                       item.startswith(env_var_key)), None)

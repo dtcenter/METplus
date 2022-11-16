@@ -57,6 +57,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         'METPLUS_FCST_CAT_THRESH',
         'METPLUS_OBS_CAT_THRESH',
         'METPLUS_CLIMO_CDF_DICT',
+        'METPLUS_MASK_DICT',
     ]
 
     # handle deprecated env vars used pre v4.0.0
@@ -174,6 +175,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                             env_var_name='METPLUS_CTS_LIST',
                             metplus_configs=['SERIES_ANALYSIS_CTS_LIST',
                                              'SERIES_ANALYSIS_CTS'])
+
+        self.handle_mask(single_value=True)
 
         c_dict['PAIRED'] = self.config.getbool('config',
                                                'SERIES_ANALYSIS_IS_PAIRED',
