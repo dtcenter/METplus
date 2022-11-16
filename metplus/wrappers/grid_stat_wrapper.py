@@ -20,9 +20,9 @@ from . import CompareGriddedWrapper
 @endcode
 """
 
+
 class GridStatWrapper(CompareGriddedWrapper):
-    '''!Wraps the MET tool grid_stat to compare gridded datasets
-    '''
+    """!Wraps the MET tool grid_stat to compare gridded datasets"""
 
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_MODEL',
