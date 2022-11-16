@@ -334,6 +334,9 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
         ({'GRID_STAT_OUTPUT_FLAG_DMAP': 'STAT', },
          {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {dmap = STAT;}'}),
 
+        ({'GRID_STAT_OUTPUT_FLAG_SEEPS': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {seeps = STAT;}'}),
+
         ({
              'GRID_STAT_OUTPUT_FLAG_FHO': 'STAT',
              'GRID_STAT_OUTPUT_FLAG_CTC': 'STAT',
@@ -356,6 +359,7 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
              'GRID_STAT_OUTPUT_FLAG_NBRCNT': 'STAT',
              'GRID_STAT_OUTPUT_FLAG_GRAD': 'STAT',
              'GRID_STAT_OUTPUT_FLAG_DMAP': 'STAT',
+             'GRID_STAT_OUTPUT_FLAG_SEEPS': 'STAT',
          },
          {
              'METPLUS_OUTPUT_FLAG_DICT': (
@@ -364,7 +368,7 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
                      'sal1l2 = STAT;vl1l2 = STAT;val1l2 = STAT;'
                      'vcnt = STAT;pct = STAT;pstd = STAT;pjc = STAT;'
                      'prc = STAT;eclv = STAT;nbrctc = STAT;nbrcts = STAT;'
-                     'nbrcnt = STAT;grad = STAT;dmap = STAT;}')}),
+                     'nbrcnt = STAT;grad = STAT;dmap = STAT;seeps = STAT;}')}),
 
         ({'GRID_STAT_NC_PAIRS_FLAG_LATLON': 'TRUE', },
          {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {latlon = TRUE;}'}),
@@ -403,6 +407,9 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
          {
              'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {apply_mask = TRUE;}'}),
 
+        ({'GRID_STAT_NC_PAIRS_FLAG_SEEPS': 'TRUE', },
+         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {seeps = TRUE;}'}),
+
         ({
              'GRID_STAT_NC_PAIRS_FLAG_LATLON': 'TRUE',
              'GRID_STAT_NC_PAIRS_FLAG_RAW': 'TRUE',
@@ -415,9 +422,14 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
              'GRID_STAT_NC_PAIRS_FLAG_GRADIENT': 'TRUE',
              'GRID_STAT_NC_PAIRS_FLAG_DISTANCE_MAP': 'TRUE',
              'GRID_STAT_NC_PAIRS_FLAG_APPLY_MASK': 'TRUE',
+             'GRID_STAT_NC_PAIRS_FLAG_SEEPS': 'TRUE',
          },
-         {
-             'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {latlon = TRUE;raw = TRUE;diff = TRUE;climo = TRUE;climo_cdp = TRUE;weight = TRUE;nbrhd = TRUE;fourier = TRUE;gradient = TRUE;distance_map = TRUE;apply_mask = TRUE;}'}),
+         {'METPLUS_NC_PAIRS_FLAG_DICT': (
+                 'nc_pairs_flag = {latlon = TRUE;raw = TRUE;diff = TRUE;'
+                 'climo = TRUE;climo_cdp = TRUE;weight = TRUE;nbrhd = TRUE;'
+                 'fourier = TRUE;gradient = TRUE;distance_map = TRUE;'
+                 'apply_mask = TRUE;seeps = TRUE;}'
+         )}),
 
         ({'GRID_STAT_CLIMO_CDF_CDF_BINS': '1', },
          {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {cdf_bins = 1.0;}'}),
@@ -688,6 +700,9 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
 
         ({'GRID_STAT_CENSOR_VAL': '12000, 5000', },
          {'METPLUS_CENSOR_VAL': 'censor_val = [12000, 5000];'}),
+
+        ({'GRID_STAT_SEEPS_P1_THRESH': 'gt4', },
+         {'METPLUS_SEEPS_P1_THRESH': 'seeps_p1_thresh = gt4;'}),
 
     ]
 )

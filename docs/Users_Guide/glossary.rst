@@ -6629,6 +6629,11 @@ METplus Configuration Glossary
 
      | *Used by:* GridStat
 
+   GRID_STAT_OUTPUT_FLAG_SEEPS
+     Specify the value for 'output_flag.seeps' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
    GRID_STAT_NC_PAIRS_FLAG_LATLON
      Specify the value for 'nc_pairs_flag.latlon' in the MET configuration file for GridStat.
 
@@ -6681,6 +6686,11 @@ METplus Configuration Glossary
 
    GRID_STAT_NC_PAIRS_FLAG_APPLY_MASK
      Specify the value for 'nc_pairs_flag.apply_mask' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_NC_PAIRS_FLAG_SEEPS
+     Specify the value for 'nc_pairs_flag.seeps' in the MET configuration file for GridStat.
 
      | *Used by:* GridStat
 
@@ -10203,3 +10213,13 @@ METplus Configuration Glossary
      Specify the value for 'mask.poly' in the MET configuration file for SeriesAnalysis.
 
      | *Used by:* SeriesAnalysis
+
+   GRID_STAT_SEEPS_P1_THRESH
+     Specify the value for 'seeps_p1_thresh' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   POINT_STAT_SEEPS_P1_THRESH
+     Specify the value for 'seeps_p1_thresh' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
