@@ -91,10 +91,8 @@ boot = {
 //
 // Verification masking regions
 //
-mask = {
-   grid = "";
-   poly = "";
-}
+//mask = {
+${METPLUS_MASK_DICT}
 
 //
 // Number of grid points to be processed concurrently.  Set smaller to use

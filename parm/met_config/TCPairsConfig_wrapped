@@ -143,6 +143,13 @@ watch_warn = {
    time_offset = -14400;
 }
 
+
+//diag_info_map = {
+${METPLUS_DIAG_INFO_MAP_LIST}
+
+//diag_convert_map = {
+${METPLUS_DIAG_CONVERT_MAP_LIST}
+
 //
 // Indicate a version number for the contents of this configuration file.
 // The value should generally not be modified.

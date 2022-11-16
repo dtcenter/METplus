@@ -1309,7 +1309,7 @@ class CommandBuilder:
         dict_items['shape'] = ('string', 'uppercase,remove_quotes')
         self.add_met_config_dict('regrid', dict_items)
 
-    def handle_description(self):
+    def handle_description(self, is_list=False):
         """! Get description from config. If <app_name>_DESC is set, use
          that value. If not, check for DESC and use that if it is set.
          If set, set the METPLUS_DESC env_var_dict key to "desc = <value>;"
@@ -1317,21 +1317,20 @@ class CommandBuilder:
         """
         # check if <app_name>_DESC is set
         app_name_upper = self.app_name.upper()
-        conf_value = self.config.getstr('config',
-                                        f'{app_name_upper}_DESC',
-                                        '')
+        conf_value = self.config.getraw('config', f'{app_name_upper}_DESC')
 
         # if not, check if DESC is set
         if not conf_value:
-            conf_value = self.config.getstr('config',
-                                            'DESC',
-                                            '')
+            conf_value = self.config.getraw('config', 'DESC')
 
         # if the value is set, set the DESC c_dict
         if conf_value:
-            self.env_var_dict['METPLUS_DESC'] = (
-                f'desc = "{remove_quotes(conf_value)}";'
-            )
+            if is_list:
+                value = '", "'.join(getlist(conf_value))
+                value = f'["{value}"]'
+            else:
+                value = f'"{remove_quotes(conf_value)}"'
+            self.env_var_dict['METPLUS_DESC'] = f'desc = {value};'
 
     def get_output_prefix(self, time_info=None, set_env_vars=True):
         """! Read {APP_NAME}_OUTPUT_PREFIX from config. If time_info is set

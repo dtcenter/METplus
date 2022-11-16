@@ -265,9 +265,6 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
     config.set('config', 'TC_PAIRS_EDECK_TEMPLATE',
                'storm_id_e{basin?fmt=%s}{cyclone?fmt=%s}{date?fmt=%Y}.dat')
 
-    # LOOP_ORDER processes runs once, times runs once per time
-    config.set('config', 'LOOP_ORDER', 'processes')
-
     # set config variable overrides
     for key, value in config_overrides.items():
         config.set('config', key, value)
@@ -359,7 +356,7 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
          {'METPLUS_CONSENSUS_LIST': (
                  'consensus = ['
                  '{name = "name1";members = ["member1a", "member1b"];'
-                 'required = [true, false];min_req = 1;}'
+                 'required = [true, false];min_req = 1;},'
                  '{name = "name2";members = ["member2a", "member2b"];'
                  'required = [false, true];min_req = 2;}];'
          )}),
@@ -442,7 +439,7 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
          {'METPLUS_CONSENSUS_LIST': (
                  'consensus = ['
                  '{name = "name1";members = ["member1a", "member1b"];'
-                 'required = [true, false];min_req = 1;}'
+                 'required = [true, false];min_req = 1;},'
                  '{name = "name2";members = ["member2a", "member2b"];'
                  'required = [false, true];min_req = 2;}];'
          )}),
@@ -464,11 +461,84 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
         # 41 match_points
         ('VALID', {'TC_PAIRS_MATCH_POINTS': 'False', },
          {'METPLUS_MATCH_POINTS': 'match_points = FALSE;'}),
+        # 42 -diag argument
+        ('VALID', {
+            'TC_PAIRS_DIAG_TEMPLATE1': '/some/path/{valid?fmt=%Y%m%d%H}.dat',
+            'TC_PAIRS_DIAG_SOURCE1': 'TCDIAG',
+         },
+         {'DIAG_ARG': '-diag TCDIAG /some/path/2014121318.dat'}),
+        # 43 2 -diag arguments
+        ('VALID', {
+            'TC_PAIRS_DIAG_TEMPLATE1': '/some/path/{valid?fmt=%Y%m%d%H}.dat',
+            'TC_PAIRS_DIAG_SOURCE1': 'TCDIAG',
+            'TC_PAIRS_DIAG_TEMPLATE2': '/some/path/rt_{valid?fmt=%Y%m%d%H}.dat',
+            'TC_PAIRS_DIAG_SOURCE2': 'LSDIAG_RT',
+         },
+         {'DIAG_ARG': ('-diag TCDIAG /some/path/2014121318.dat '
+                       '-diag LSDIAG_RT /some/path/rt_2014121318.dat')}),
+        # 44 diag_convert_map 1 dictionary in list
+        ('VALID', {
+             'TC_PAIRS_DIAG_CONVERT_MAP1_DIAG_SOURCE': 'CIRA_DIAG',
+             'TC_PAIRS_DIAG_CONVERT_MAP1_KEY': '(10C),(10KT),(10M/S)',
+             'TC_PAIRS_DIAG_CONVERT_MAP1_CONVERT': 'x/10',
+         },
+         {'METPLUS_DIAG_CONVERT_MAP_LIST': (
+                 'diag_convert_map = [{diag_source = "CIRA_DIAG";'
+                 'key = ["(10C)", "(10KT)", "(10M/S)"];convert(x) = x/10;}];'
+         )}),
+        # 45 diag_convert_map 2 dictionaries in list
+        ('VALID', {
+            'TC_PAIRS_DIAG_CONVERT_MAP1_DIAG_SOURCE': 'CIRA_DIAG',
+            'TC_PAIRS_DIAG_CONVERT_MAP1_KEY': '(10C),(10KT),(10M/S)',
+            'TC_PAIRS_DIAG_CONVERT_MAP1_CONVERT': 'x/10',
+            'TC_PAIRS_DIAG_CONVERT_MAP2_DIAG_SOURCE': 'SHIPS_DIAG',
+            'TC_PAIRS_DIAG_CONVERT_MAP2_KEY': 'LAT,LON,CSST,RSST,DSST,DSTA',
+            'TC_PAIRS_DIAG_CONVERT_MAP2_CONVERT': 'x/100',
+        },
+         {'METPLUS_DIAG_CONVERT_MAP_LIST': (
+                 'diag_convert_map = [{diag_source = "CIRA_DIAG";'
+                 'key = ["(10C)", "(10KT)", "(10M/S)"];convert(x) = x/10;},'
+                 '{diag_source = "SHIPS_DIAG";key = ["LAT", "LON", "CSST", '
+                 '"RSST", "DSST", "DSTA"];convert(x) = x/100;}];'
+         )}),
+        # 46 diag_info_map 1 dictionary in list
+        ('VALID', {
+            'TC_PAIRS_DIAG_INFO_MAP1_DIAG_SOURCE': 'CIRA_DIAG_RT',
+            'TC_PAIRS_DIAG_INFO_MAP1_TRACK_SOURCE': 'GFS',
+            'TC_PAIRS_DIAG_INFO_MAP1_FIELD_SOURCE': 'GFS_0p50',
+            'TC_PAIRS_DIAG_INFO_MAP1_MATCH_TO_TRACK': 'GFS',
+            'TC_PAIRS_DIAG_INFO_MAP1_DIAG_NAME': 'MY_NAME',
+        },
+         {'METPLUS_DIAG_INFO_MAP_LIST': (
+                 'diag_info_map = [{diag_source = "CIRA_DIAG_RT";'
+                 'track_source = "GFS";field_source = "GFS_0p50";'
+                 'match_to_track = ["GFS"];diag_name = ["MY_NAME"];}];')}),
+        # 47 diag_info_map 2 dictionaries in list
+        ('VALID', {
+            'TC_PAIRS_DIAG_INFO_MAP1_DIAG_SOURCE': 'CIRA_DIAG_RT',
+            'TC_PAIRS_DIAG_INFO_MAP1_TRACK_SOURCE': 'GFS',
+            'TC_PAIRS_DIAG_INFO_MAP1_FIELD_SOURCE': 'GFS_0p50',
+            'TC_PAIRS_DIAG_INFO_MAP1_MATCH_TO_TRACK': 'GFS',
+            'TC_PAIRS_DIAG_INFO_MAP1_DIAG_NAME': 'MY_NAME',
+            'TC_PAIRS_DIAG_INFO_MAP2_DIAG_SOURCE': 'SHIPS_DIAG_RT',
+            'TC_PAIRS_DIAG_INFO_MAP2_TRACK_SOURCE': 'OFCL',
+            'TC_PAIRS_DIAG_INFO_MAP2_FIELD_SOURCE': 'GFS_0p50',
+            'TC_PAIRS_DIAG_INFO_MAP2_MATCH_TO_TRACK': 'OFCL',
+            'TC_PAIRS_DIAG_INFO_MAP2_DIAG_NAME': 'MY_NAME2',
+        },
+         {'METPLUS_DIAG_INFO_MAP_LIST': (
+                 'diag_info_map = [{diag_source = "CIRA_DIAG_RT";'
+                 'track_source = "GFS";field_source = "GFS_0p50";'
+                 'match_to_track = ["GFS"];diag_name = ["MY_NAME"];},'
+                 '{diag_source = "SHIPS_DIAG_RT";track_source = "OFCL";'
+                 'field_source = "GFS_0p50";match_to_track = ["OFCL"]'
+                 ';diag_name = ["MY_NAME2"];}];'
+         )}),
     ]
 )
 @pytest.mark.wrapper
-def test_tc_pairs_loop_order_processes(metplus_config, loop_by,
-                                       config_overrides, env_var_values):
+def test_tc_pairs_run(metplus_config, loop_by, config_overrides,
+                      env_var_values):
     config = metplus_config
     remove_beg = remove_end = remove_match_points = False
 
@@ -480,9 +550,6 @@ def test_tc_pairs_loop_order_processes(metplus_config, loop_by,
 
     config.set('config', 'TC_PAIRS_BDECK_INPUT_DIR', bdeck_dir)
     config.set('config', 'TC_PAIRS_ADECK_INPUT_DIR', adeck_dir)
-
-    # LOOP_ORDER processes runs once, times runs once per time
-    config.set('config', 'LOOP_ORDER', 'processes')
 
     # set config variable overrides
     for key, value in config_overrides.items():
@@ -513,23 +580,42 @@ def test_tc_pairs_loop_order_processes(metplus_config, loop_by,
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
     config_file = wrapper.c_dict.get('CONFIG_FILE')
     out_dir = wrapper.c_dict.get('OUTPUT_DIR')
+    diag_arg = ''
+    if 'DIAG_ARG' in env_var_values:
+        diag_arg = f" {env_var_values['DIAG_ARG']}"
+
     expected_cmds = [(f"{app_path} {verbosity} "
                       f"-bdeck {bdeck_dir}/bmlq2014123118.gfso.0104 "
-                      f"-adeck {adeck_dir}/amlq2014123118.gfso.0104 "
-                      f"-config {config_file} "
+                      f"-adeck {adeck_dir}/amlq2014123118.gfso.0104{diag_arg}"
+                      f" -config {config_file} "
                       f"-out {out_dir}/mlq2014121318.gfso.0104"),
                      ]
+
+    # add 2nd command for cyclone 106 unless specific cyclones are requested
+    if 'TC_PAIRS_CYCLONE' not in config_overrides:
+        expected_cmds.append(
+            (f"{app_path} {verbosity} "
+             f"-bdeck {bdeck_dir}/bmlq2014123118.gfso.0106 "
+             f"-adeck {adeck_dir}/amlq2014123118.gfso.0106{diag_arg}"
+             f" -config {config_file} "
+             f"-out {out_dir}/mlq2014121318.gfso.0106")
+        )
 
     all_cmds = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_cmds}")
     assert len(all_cmds) == len(expected_cmds)
+
+    missing_env = [item for item in env_var_values
+                   if item not in wrapper.WRAPPER_ENV_VAR_KEYS
+                   and item != 'DIAG_ARG']
+    env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
 
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
         assert cmd == expected_cmd
 
         # check that environment variables were set properly
-        for env_var_key in wrapper.WRAPPER_ENV_VAR_KEYS:
+        for env_var_key in env_var_keys:
             match = next((item for item in env_vars if
                           item.startswith(env_var_key)), None)
             assert match is not None
@@ -584,10 +670,6 @@ def test_tc_pairs_read_all_files(metplus_config, loop_by, config_overrides,
 
     config.set('config', 'TC_PAIRS_BDECK_INPUT_DIR', bdeck_dir)
     config.set('config', 'TC_PAIRS_ADECK_INPUT_DIR', adeck_dir)
-
-    # LOOP_ORDER processes runs once, times runs once per time
-    config.set('config', 'LOOP_ORDER', 'processes')
-
     config.set('config', 'TC_PAIRS_READ_ALL_FILES', True)
     config.set('config', 'TC_PAIRS_OUTPUT_TEMPLATE', '')
 
@@ -625,9 +707,15 @@ def test_tc_pairs_read_all_files(metplus_config, loop_by, config_overrides,
     print(f"ALL COMMANDS: {all_cmds}")
     assert len(all_cmds) == len(expected_cmds)
 
+    missing_env = [item for item in env_var_values
+                   if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
+    env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
+
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
+        # ensure commands are generated as expected
+        assert cmd == expected_cmd
         # check that environment variables were set properly
-        for env_var_key in wrapper.WRAPPER_ENV_VAR_KEYS:
+        for env_var_key in env_var_keys:
             match = next((item for item in env_vars if
                           item.startswith(env_var_key)), None)
             assert match is not None
