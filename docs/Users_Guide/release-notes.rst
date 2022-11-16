@@ -196,11 +196,11 @@ Note: If :ref:`ensemble_stat_wrapper` is not found in the :term:`PROCESS_LIST`
 for any use cases, then this section is not relevant.
 
 The METplus v5.0.0 coordinated release includes changes that remove ensemble
-product generation from EnsembleStat. GenEnsProd is now required to generated
+product generation from EnsembleStat. GenEnsProd is now required to generate
 ensemble products. There are 3 situations listed below that require slightly
 different modifications.
 
-Case 1: EnsembleStat only generating ensemble product
+Case 1: EnsembleStat only generating ensemble products
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If the use case had been calling EnsembleStat **WITHOUT** the -grid_obs or
@@ -369,7 +369,7 @@ If the EnsembleStat output template is set, then copy the value and add a templa
 If ENSEMBLE_STAT_OUTPUT_TEMPLATE = {valid?fmt=%Y%m%d%H}
 then set
 GEN_ENS_PROD_OUTPUT_TEMPLATE = {valid?fmt=%Y%m%d%H}/gen_ens_prod_{valid?fmt=%Y%m%d_%H%M%S}V_ens.nc
-or something similar
+or something similar.
 
 If the EnsembleStat output template is not set, then set GenEnsProd’s template to the desired NetCDF output filename. Here is an example:
 
