@@ -4,10 +4,10 @@ import sys
 import os
 
 try:
-    from . import LOWER_TO_WRAPPER_NAME
+    from .config_util import get_wrapper_name
 except ImportError:
     sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
-    from constants import LOWER_TO_WRAPPER_NAME
+    from config_util import get_wrapper_name
 
 
 def get_wrapper_name(process_name):
