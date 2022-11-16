@@ -10134,6 +10134,21 @@ METplus Configuration Glossary
 
      | *Used by:* TCPairs
 
+   TC_PAIRS_DIAG_DIR<n>
+     Specify the (optional) directory for the nth -diag argument for TCPairs.
+
+     | *Used by:* TCPairs
+
+   TC_PAIRS_DIAG_TEMPLATE<n>
+     Specify the (optional) template for the nth -diag argument for TCPairs.
+
+     | *Used by:* TCPairs
+
+   TC_PAIRS_DIAG_SOURCE<n>
+     Specify the (optional) source string for the nth -diag argument for TCPairs.
+
+     | *Used by:* TCPairs
+
    TC_STAT_DIAG_THRESH_NAME
      Specify the value for 'diag_thresh_name' in the MET configuration file for TCStat.
 

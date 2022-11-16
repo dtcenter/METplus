@@ -8233,6 +8233,9 @@ METplus Configuration
 | :term:`TC_PAIRS_DIAG_CONVERT_MAP<n>_DIAG_SOURCE`
 | :term:`TC_PAIRS_DIAG_CONVERT_MAP<n>_KEY`
 | :term:`TC_PAIRS_DIAG_CONVERT_MAP<n>_CONVERT`
+| :term:`TC_PAIRS_DIAG_SOURCE\<n\>`
+| :term:`TC_PAIRS_DIAG_TEMPLATE\<n\>`
+| :term:`TC_PAIRS_DIAG_DIR\<n\>`
 |
 
 .. warning:: **DEPRECATED:**

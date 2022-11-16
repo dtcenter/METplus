@@ -478,13 +478,9 @@ class TCPairsWrapper(CommandBuilder):
             source = (
                 self.config.getraw('config', f'TC_PAIRS_DIAG_SOURCE{idx}')
             )
-            models = getlist(
-                self.config.getraw('config', f'TC_PAIRS_DIAG_MODELS{idx}')
-            )
             diag_info = {
                 'template': template,
                 'source': source,
-                'models': models,
             }
             diag_info_list.append(diag_info)
 
@@ -1023,8 +1019,6 @@ class TCPairsWrapper(CommandBuilder):
                 return False
 
             arg = f"-diag {diag_info['source']} {' '.join(filepaths)}"
-            if diag_info['models']:
-                arg = f"{arg} model={','.join(diag_info['models'])}"
             self.args.append(arg)
 
         return True

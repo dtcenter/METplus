@@ -467,25 +467,16 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
             'TC_PAIRS_DIAG_SOURCE1': 'TCDIAG',
          },
          {'DIAG_ARG': '-diag TCDIAG /some/path/2014121318.dat'}),
-        # 43 -diag argument with models
-        ('VALID', {
-            'TC_PAIRS_DIAG_TEMPLATE1': '/some/path/{valid?fmt=%Y%m%d%H}.dat',
-            'TC_PAIRS_DIAG_SOURCE1': 'TCDIAG',
-            'TC_PAIRS_DIAG_MODELS1': 'OFCL, SHIP',
-         },
-         {'DIAG_ARG': '-diag TCDIAG /some/path/2014121318.dat model=OFCL,SHIP'}),
-        # 44 2 -diag arguments
+        # 43 2 -diag arguments
         ('VALID', {
             'TC_PAIRS_DIAG_TEMPLATE1': '/some/path/{valid?fmt=%Y%m%d%H}.dat',
             'TC_PAIRS_DIAG_SOURCE1': 'TCDIAG',
             'TC_PAIRS_DIAG_TEMPLATE2': '/some/path/rt_{valid?fmt=%Y%m%d%H}.dat',
             'TC_PAIRS_DIAG_SOURCE2': 'LSDIAG_RT',
-            'TC_PAIRS_DIAG_MODELS2': 'OFCL, SHIP',
          },
          {'DIAG_ARG': ('-diag TCDIAG /some/path/2014121318.dat '
-                       '-diag LSDIAG_RT /some/path/rt_2014121318.dat '
-                       'model=OFCL,SHIP')}),
-        # 45 diag_convert_map 1 dictionary in list
+                       '-diag LSDIAG_RT /some/path/rt_2014121318.dat')}),
+        # 44 diag_convert_map 1 dictionary in list
         ('VALID', {
              'TC_PAIRS_DIAG_CONVERT_MAP1_DIAG_SOURCE': 'CIRA_DIAG',
              'TC_PAIRS_DIAG_CONVERT_MAP1_KEY': '(10C),(10KT),(10M/S)',
@@ -495,7 +486,7 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
                  'diag_convert_map = [{diag_source = "CIRA_DIAG";'
                  'key = ["(10C)", "(10KT)", "(10M/S)"];convert(x) = x/10;}];'
          )}),
-        # 46 diag_convert_map 2 dictionaries in list
+        # 45 diag_convert_map 2 dictionaries in list
         ('VALID', {
             'TC_PAIRS_DIAG_CONVERT_MAP1_DIAG_SOURCE': 'CIRA_DIAG',
             'TC_PAIRS_DIAG_CONVERT_MAP1_KEY': '(10C),(10KT),(10M/S)',
@@ -510,7 +501,7 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
                  '{diag_source = "SHIPS_DIAG";key = ["LAT", "LON", "CSST", '
                  '"RSST", "DSST", "DSTA"];convert(x) = x/100;}];'
          )}),
-        # 47 diag_info_map 1 dictionary in list
+        # 46 diag_info_map 1 dictionary in list
         ('VALID', {
             'TC_PAIRS_DIAG_INFO_MAP1_DIAG_SOURCE': 'CIRA_DIAG_RT',
             'TC_PAIRS_DIAG_INFO_MAP1_TRACK_SOURCE': 'GFS',
@@ -522,7 +513,7 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
                  'diag_info_map = [{diag_source = "CIRA_DIAG_RT";'
                  'track_source = "GFS";field_source = "GFS_0p50";'
                  'match_to_track = ["GFS"];diag_name = ["MY_NAME"];}];')}),
-        # 48 diag_info_map 2 dictionaries in list
+        # 47 diag_info_map 2 dictionaries in list
         ('VALID', {
             'TC_PAIRS_DIAG_INFO_MAP1_DIAG_SOURCE': 'CIRA_DIAG_RT',
             'TC_PAIRS_DIAG_INFO_MAP1_TRACK_SOURCE': 'GFS',
