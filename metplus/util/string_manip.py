@@ -4,12 +4,34 @@ Contact(s): George McCabe
 Description: METplus utility to handle string manipulation
 """
 
+import sys
+import os
 import re
 from csv import reader
 import random
 import string
 
-from .constants import VALID_COMPARISONS
+try:
+    from .constants import VALID_COMPARISONS, LOWER_TO_WRAPPER_NAME
+except ImportError:
+    sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
+    from constants import VALID_COMPARISONS, LOWER_TO_WRAPPER_NAME
+
+
+def get_wrapper_name(process_name):
+    """! Determine name of wrapper from string that may not contain the correct
+         capitalization, i.e. Pcp-Combine translates to PCPCombine
+
+         @param process_name string that was listed in the PROCESS_LIST
+         @returns name of wrapper (without 'Wrapper' at the end) and None if
+          name cannot be determined
+    """
+    lower_process = (process_name.replace('-', '').replace('_', '')
+                     .replace(' ', '').lower())
+    if lower_process in LOWER_TO_WRAPPER_NAME.keys():
+        return LOWER_TO_WRAPPER_NAME[lower_process]
+
+    return None
 
 
 def remove_quotes(input_string):
@@ -496,3 +518,45 @@ def subset_list(full_list, subset_definition):
         subset_list = [subset_list]
 
     return subset_list
+
+
+def find_indices_in_config_section(regex, config, sec='config',
+                                   index_index=1, id_index=None):
+    """! Use regular expression to get all config variables that match and
+    are set in the user's configuration. This is used to handle config
+    variables that have multiple indices, i.e. FCST_VAR1_NAME, FCST_VAR2_NAME,
+    etc.
+
+    @param regex regular expression to use to find variables
+    @param config METplusConfig object to search
+    @param sec (optional) config file section to search. Defaults to config
+    @param index_index 1 based number that is the regex match index for the
+     index number (default is 1)
+    @param id_index 1 based number that is the regex match index for the
+     identifier. Defaults to None which does not extract an indentifier
+
+     number and the first match is used as an identifier
+    @returns dictionary where keys are the index number and the value is a
+     list of identifiers (if noID=True) or a list containing None
+    """
+    # regex expression must have 2 () items and the 2nd item must be the index
+    all_conf = config.keys(sec)
+    indices = {}
+    regex = re.compile(regex)
+    for conf in all_conf:
+        result = regex.match(conf)
+        if result is None:
+            continue
+
+        index = result.group(index_index)
+        if id_index:
+            identifier = result.group(id_index)
+        else:
+            identifier = None
+
+        if index not in indices:
+            indices[index] = [identifier]
+        else:
+            indices[index].append(identifier)
+
+    return indices

@@ -7569,22 +7569,22 @@ METplus Configuration Glossary
      | *Used by:* PB2NC
 
    TC_PAIRS_CONSENSUS<n>_NAME
-     Specify the value for nth 'consensus.name' in the MET configuration file for TCPairs.
+     Specify the value for the nth 'consensus.name' in the MET configuration file for TCPairs.
 
      | *Used by:* TCPairs
 
    TC_PAIRS_CONSENSUS<n>_MEMBERS
-     Specify the value for nth 'consensus.members' in the MET configuration file for TCPairs.
+     Specify the value for the nth 'consensus.members' in the MET configuration file for TCPairs.
 
      | *Used by:* TCPairs
 
    TC_PAIRS_CONSENSUS<n>_REQUIRED
-     Specify the value for nth 'consensus.required' in the MET configuration file for TCPairs.
+     Specify the value for the nth 'consensus.required' in the MET configuration file for TCPairs.
 
      | *Used by:* TCPairs
 
    TC_PAIRS_CONSENSUS<n>_MIN_REQ
-     Specify the value for nth 'consensus.min_req' in the MET configuration file for TCPairs.
+     Specify the value for the nth 'consensus.min_req' in the MET configuration file for TCPairs.
 
      | *Used by:* TCPairs
 
@@ -10103,3 +10103,113 @@ METplus Configuration Glossary
      Template used to specify the optional -ens_mean file for the MET tool ensemble_stat.
 
      | *Used by:*  EnsembleStat
+
+   TC_PAIRS_DIAG_INFO_MAP<n>_DIAG_SOURCE
+     Specify the value for the nth 'diag_info_map.diag_source' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
+
+   TC_PAIRS_DIAG_INFO_MAP<n>_TRACK_SOURCE
+     Specify the value for the nth 'diag_info_map.track_source' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
+
+   TC_PAIRS_DIAG_INFO_MAP<n>_FIELD_SOURCE
+     Specify the value for the nth 'diag_info_map.field_source' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
+
+   TC_PAIRS_DIAG_INFO_MAP<n>_MATCH_TO_TRACK
+     Specify the value for the nth 'diag_info_map.match_to_track' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
+
+   TC_PAIRS_DIAG_INFO_MAP<n>_DIAG_NAME
+     Specify the value for the nth 'diag_info_map.diag_name' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
+
+   TC_PAIRS_DIAG_CONVERT_MAP<n>_DIAG_SOURCE
+     Specify the value for the nth 'diag_convert_map.diag_source' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
+
+   TC_PAIRS_DIAG_CONVERT_MAP<n>_KEY
+     Specify the value for the nth 'diag_convert_map.key' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
+
+   TC_PAIRS_DIAG_CONVERT_MAP<n>_CONVERT
+     Specify the value for the nth 'diag_convert_map.convert' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
+
+   TC_PAIRS_DIAG_DIR<n>
+     Specify the (optional) directory for the nth -diag argument for TCPairs.
+
+     | *Used by:* TCPairs
+
+   TC_PAIRS_DIAG_TEMPLATE<n>
+     Specify the (optional) template for the nth -diag argument for TCPairs.
+
+     | *Used by:* TCPairs
+
+   TC_PAIRS_DIAG_SOURCE<n>
+     Specify the (optional) source string for the nth -diag argument for TCPairs.
+
+     | *Used by:* TCPairs
+
+   TC_STAT_DIAG_THRESH_NAME
+     Specify the value for 'diag_thresh_name' in the MET configuration file for TCStat.
+
+     | *Used by:* TCStat
+
+   TC_STAT_DIAG_THRESH_VAL
+     Specify the value for 'diag_thresh_val' in the MET configuration file for TCStat.
+
+     | *Used by:* TCStat
+
+   TC_STAT_INIT_DIAG_THRESH_NAME
+     Specify the value for 'init_diag_thresh_name' in the MET configuration file for TCStat.
+
+     | *Used by:* TCStat
+
+   TC_STAT_INIT_DIAG_THRESH_VAL
+     Specify the value for 'init_diag_thresh_val' in the MET configuration file for TCStat.
+
+     | *Used by:* TCStat
+
+   TC_STAT_LINE_TYPE
+     Specify the value for 'line_type' in the MET configuration file for TCStat.
+
+     | *Used by:* TCStat
+
+   TC_STAT_EVENT_EQUAL
+     Specify the value for 'event_equal' in the MET configuration file for TCStat.
+
+     | *Used by:* TCStat
+
+   TC_STAT_EVENT_EQUAL_LEAD
+     Specify the value for 'event_equal_lead' in the MET configuration file for TCStat.
+
+     | *Used by:* TCStat
+
+   TC_STAT_OUT_INIT_MASK
+     Specify the value for 'out_init_mask' in the MET configuration file for TCStat.
+
+     | *Used by:* TCStat
+
+   TC_STAT_OUT_VALID_MASK
+     Specify the value for 'out_valid_mask' in the MET configuration file for TCStat.
+
+     | *Used by:* TCStat
+
+   SERIES_ANALYSIS_MASK_GRID
+     Specify the value for 'mask.grid' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_MASK_POLY
+     Specify the value for 'mask.poly' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis

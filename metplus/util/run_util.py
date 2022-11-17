@@ -6,9 +6,13 @@ from importlib import import_module
 
 from .constants import NO_COMMAND_WRAPPERS
 from .system_util import get_user_info, write_list_to_file
+from .config_util import get_process_list, handle_env_var_config
+from .config_util import handle_tmp_dir, write_final_conf, write_all_commands
+from .config_validate import validate_config_variables
 from .. import get_metplus_version
-from . import config_metplus
+from .config_metplus import setup
 from . import camel_to_underscore
+
 
 def pre_run_setup(config_inputs):
 
@@ -16,7 +20,7 @@ def pre_run_setup(config_inputs):
     print(f'Starting METplus v{version_number}')
 
     # Read config inputs and return a config instance
-    config = config_metplus.setup(config_inputs)
+    config = setup(config_inputs)
 
     logger = config.logger
 
@@ -35,19 +39,23 @@ def pre_run_setup(config_inputs):
         logger.info(f"Config Input: {config_item}")
 
     # validate configuration variables
-    isOK_A, isOK_B, isOK_C, isOK_D, all_sed_cmds = config_metplus.validate_configuration_variables(config)
-    if not (isOK_A and isOK_B and isOK_C and isOK_D):
+    is_ok, all_sed_cmds = validate_config_variables(config)
+    if not is_ok:
         # if any sed commands were generated, write them to the sed file
         if all_sed_cmds:
-            sed_file = os.path.join(config.getdir('OUTPUT_BASE'), 'sed_commands.txt')
+            sed_file = os.path.join(config.getdir('OUTPUT_BASE'),
+                                    'sed_commands.txt')
             # remove if sed file exists
             if os.path.exists(sed_file):
                 os.remove(sed_file)
 
             write_list_to_file(sed_file, all_sed_cmds)
-            config.logger.error(f"Find/Replace commands have been generated in {sed_file}")
+            config.logger.error("Find/Replace commands have been "
+                                f"generated in {sed_file}")
 
         logger.error("Correct configuration variables and rerun. Exiting.")
+        logger.info("Check the log file for more information: "
+                    f"{config.getstr('config', 'LOG_METPLUS')}")
         sys.exit(1)
 
     if not config.getdir('MET_INSTALL_DIR', must_exist=True):
@@ -60,10 +68,10 @@ def pre_run_setup(config_inputs):
                    os.path.join(config.getdir('OUTPUT_BASE'), "stage"))
 
     # handle dir to write temporary files
-    config_metplus.handle_tmp_dir(config)
+    handle_tmp_dir(config)
 
     # handle OMP_NUM_THREADS environment variable
-    config_metplus.handle_env_var_config(config,
+    handle_env_var_config(config,
                           env_var_name='OMP_NUM_THREADS',
                           config_name='OMP_NUM_THREADS')
 
@@ -76,7 +84,7 @@ def run_metplus(config):
     total_errors = 0
 
     # Use config object to get the list of processes to call
-    process_list = config_metplus.get_process_list(config)
+    process_list = get_process_list(config)
 
     try:
         processes = []
@@ -129,26 +137,29 @@ def run_metplus(config):
         # if process list contains any wrapper that should run commands
         if any([item[0] not in NO_COMMAND_WRAPPERS for item in process_list]):
             # write out all commands and environment variables to file
-            if not config_metplus.write_all_commands(all_commands, config):
+            if not write_all_commands(all_commands, config):
                 # report an error if no commands were generated
                 total_errors += 1
 
         # compute total number of errors that occurred and output results
         for process in processes:
-            if process.errors != 0:
-                process_name = process.__class__.__name__.replace('Wrapper', '')
-                error_msg = '{} had {} error'.format(process_name, process.errors)
-                if process.errors > 1:
-                    error_msg += 's'
-                error_msg += '.'
-                logger.error(error_msg)
-                total_errors += process.errors
+            if not process.errors:
+                continue
+            process_name = process.__class__.__name__.replace('Wrapper', '')
+            error_msg = f'{process_name} had {process.errors} error'
+            if process.errors > 1:
+                error_msg += 's'
+            error_msg += '.'
+            logger.error(error_msg)
+            total_errors += process.errors
 
         return total_errors
     except:
         logger.exception("Fatal error occurred")
-        logger.info(f"Check the log file for more information: {config.getstr('config', 'LOG_METPLUS')}")
+        logger.info("Check the log file for more information: "
+                    f"{config.getstr('config', 'LOG_METPLUS')}")
         return 1
+
 
 def post_run_cleanup(config, app_name, total_errors):
     logger = config.logger
@@ -169,7 +180,7 @@ def post_run_cleanup(config, app_name, total_errors):
                                          '%Y%m%d%H%M%S')
 
     # rewrite final conf so it contains all of the default values used
-    config_metplus.write_final_conf(config)
+    write_final_conf(config)
 
     # compute time it took to run
     end_clock_time = datetime.now()

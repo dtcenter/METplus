@@ -6389,6 +6389,8 @@ METplus Configuration
 | :term:`OBS_SERIES_ANALYSIS_CAT_THRESH`
 | :term:`FCST_SERIES_ANALYSIS_IS_PROB`
 | :term:`FCST_SERIES_ANALYSIS_PROB_IN_GRIB_PDS`
+| :term:`SERIES_ANALYSIS_MASK_GRID`
+| :term:`SERIES_ANALYSIS_MASK_POLY`
 |
 
 .. warning:: **DEPRECATED:**
@@ -6619,6 +6621,19 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - climo_cdf.center_bins
    * - :term:`SERIES_ANALYSIS_CLIMO_CDF_DIRECT_PROB`
      - climo_cdf.direct_prob
+
+**${METPLUS_MASK_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`SERIES_ANALYSIS_MASK_GRID`
+     - mask.grid
+   * - :term:`SERIES_ANALYSIS_MASK_POLY`
+     - mask.poly
 
 **${METPLUS_BLOCK_SIZE}**
 
@@ -8212,6 +8227,17 @@ METplus Configuration
 | :term:`TC_PAIRS_CHECK_DUP`
 | :term:`TC_PAIRS_INTERP12`
 | :term:`TC_PAIRS_MATCH_POINTS`
+| :term:`TC_PAIRS_DIAG_INFO_MAP<n>_DIAG_SOURCE`
+| :term:`TC_PAIRS_DIAG_INFO_MAP<n>_TRACK_SOURCE`
+| :term:`TC_PAIRS_DIAG_INFO_MAP<n>_FIELD_SOURCE`
+| :term:`TC_PAIRS_DIAG_INFO_MAP<n>_MATCH_TO_TRACK`
+| :term:`TC_PAIRS_DIAG_INFO_MAP<n>_DIAG_NAME`
+| :term:`TC_PAIRS_DIAG_CONVERT_MAP<n>_DIAG_SOURCE`
+| :term:`TC_PAIRS_DIAG_CONVERT_MAP<n>_KEY`
+| :term:`TC_PAIRS_DIAG_CONVERT_MAP<n>_CONVERT`
+| :term:`TC_PAIRS_DIAG_SOURCE\<n\>`
+| :term:`TC_PAIRS_DIAG_TEMPLATE\<n\>`
+| :term:`TC_PAIRS_DIAG_DIR\<n\>`
 |
 
 .. warning:: **DEPRECATED:**
@@ -8493,6 +8519,41 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`TC_PAIRS_INTERP12`
      - interp12
+
+**${METPLUS_DIAG_INFO_MAP_LIST}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_PAIRS_DIAG_INFO_MAP<n>_DIAG_SOURCE`
+     - diag_info_map.diag_source
+   * - :term:`TC_PAIRS_DIAG_INFO_MAP<n>_TRACK_SOURCE`
+     - diag_info_map.track_source
+   * - :term:`TC_PAIRS_DIAG_INFO_MAP<n>_FIELD_SOURCE`
+     - diag_info_map.field_source
+   * - :term:`TC_PAIRS_DIAG_INFO_MAP<n>_MATCH_TO_TRACK`
+     - diag_info_map.match_to_track
+   * - :term:`TC_PAIRS_DIAG_INFO_MAP<n>_DIAG_NAME`
+     - diag_info_map.diag_name
+
+**${METPLUS_DIAG_CONVERT_MAP_LIST}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_PAIRS_DIAG_CONVERT_MAP<n>_DIAG_SOURCE`
+     - diag_convert_map.diag_source
+   * - :term:`TC_PAIRS_DIAG_CONVERT_MAP<n>_KEY`
+     - diag_convert_map.key
+   * - :term:`TC_PAIRS_DIAG_CONVERT_MAP<n>_CONVERT`
+     - diag_convert_map.convert
+
 
 .. _tcrmw_wrapper:
 
@@ -8854,6 +8915,15 @@ METplus Configuration
 | :term:`TC_STAT_COLUMN_STR_EXC_VAL`
 | :term:`TC_STAT_INIT_STR_EXC_NAME`
 | :term:`TC_STAT_INIT_STR_EXC_VAL`
+| :term:`TC_STAT_DIAG_THRESH_NAME`
+| :term:`TC_STAT_DIAG_THRESH_VAL`
+| :term:`TC_STAT_INIT_DIAG_THRESH_NAME`
+| :term:`TC_STAT_INIT_DIAG_THRESH_VAL`
+| :term:`TC_STAT_LINE_TYPE`
+| :term:`TC_STAT_EVENT_EQUAL`
+| :term:`TC_STAT_EVENT_EQUAL_LEAD`
+| :term:`TC_STAT_OUT_INIT_MASK`
+| :term:`TC_STAT_OUT_VALID_MASK`
 |
 
 .. warning:: **DEPRECATED:**
@@ -9115,6 +9185,17 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`TC_STAT_VALID_MASK`
      - valid_mask
 
+**${METPLUS_LINE_TYPE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_LINE_TYPE`
+     - line_type
+
 **${METPLUS_TRACK_WATCH_WARN}**
 
 .. list-table::
@@ -9258,6 +9339,50 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`TC_STAT_INIT_STR_EXC_VAL`
      - init_str_exc_val
 
+**${METPLUS_DIAG_THRESH_NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_DIAG_THRESH_NAME`
+     - diag_thresh_name
+
+**${METPLUS_DIAG_THRESH_VAL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_DIAG_THRESH_VAL`
+     - diag_thresh_val
+
+**${METPLUS_INIT_DIAG_THRESH_NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_INIT_DIAG_THRESH_NAME`
+     - init_diag_thresh_name
+
+**${METPLUS_INIT_DIAG_THRESH_VAL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_INIT_DIAG_THRESH_VAL`
+     - init_diag_thresh_val
+
 **${METPLUS_WATER_ONLY}**
 
 .. list-table::
@@ -9334,6 +9459,51 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`TC_STAT_MET_CONFIG_OVERRIDES`
      - n/a
+
+**${METPLUS_EVENT_EQUAL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_EVENT_EQUAL`
+     - event_equal
+
+**${METPLUS_EVENT_EQUAL_LEAD}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_EVENT_EQUAL_LEAD`
+     - event_equal_lead
+
+**${METPLUS_OUT_INIT_MASK}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_OUT_INIT_MASK`
+     - out_init_mask
+
+**${METPLUS_OUT_VALID_MASK}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_OUT_VALID_MASK`
+     - out_valid_mask
+
 
 .. _user_script_wrapper:
 

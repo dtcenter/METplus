@@ -18,6 +18,7 @@ Developer Note: Please do not use f-strings in this file so that the
 
 import os
 import sys
+import traceback
 
 # add metplus directory to path so the wrappers and utilities can be found
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
@@ -126,5 +127,6 @@ if __name__ == "__main__":
         produtil.setup.setup(send_dbn=False, jobname='run-METplus')
         main()
     except Exception as exc:
+        print(traceback.format_exc())
         print('ERROR: run_metplus  failed: %s' % exc)
         sys.exit(2)

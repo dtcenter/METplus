@@ -186,11 +186,13 @@ def test_ascii2nc_wrapper(metplus_config, config_overrides,
     assert all_commands[0][0] == expected_cmd
 
     env_vars = all_commands[0][1]
+
+    missing_env = [item for item in env_var_values
+                   if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
+    env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
+
     # check that environment variables were set properly
     # including deprecated env vars (not in wrapper env var keys)
-    env_var_keys = (wrapper.WRAPPER_ENV_VAR_KEYS +
-                    [name for name in env_var_values
-                     if name not in wrapper.WRAPPER_ENV_VAR_KEYS])
     for env_var_key in env_var_keys:
         match = next((item for item in env_vars if
                       item.startswith(env_var_key)), None)

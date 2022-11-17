@@ -6,7 +6,8 @@ from .time_util import get_relativedelta, add_to_time_input
 from .time_util import ti_get_hours_from_relativedelta
 from .time_util import ti_get_seconds_from_relativedelta
 from .string_template_substitution import do_string_sub
-from .config_metplus import log_runtime_banner
+from .config_util import log_runtime_banner
+
 
 def time_generator(config):
     """! Generator used to read METplusConfig variables for time looping
