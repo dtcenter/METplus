@@ -14,9 +14,8 @@ import os
 import datetime
 import re
 
-from ..util import met_util as util
 from ..util import time_util
-from ..util import do_string_sub
+from ..util import do_string_sub, skip_time, get_lead_sequence
 from ..util import time_generator
 from . import CommandBuilder
 
@@ -355,7 +354,7 @@ class TCGenWrapper(CommandBuilder):
             input_dict['custom'] = custom_string
             time_info = time_util.ti_calculate(input_dict)
 
-            if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+            if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
                 self.logger.debug('Skipping run time')
                 continue
 
@@ -426,7 +425,7 @@ class TCGenWrapper(CommandBuilder):
             )
 
         # set METPLUS_LEAD_LIST to list of forecast leads used
-        lead_seq = util.get_lead_sequence(self.config, time_info)
+        lead_seq = get_lead_sequence(self.config, time_info)
         if lead_seq != [0]:
             lead_list = []
             for lead in lead_seq:

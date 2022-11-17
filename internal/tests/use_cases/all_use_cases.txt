@@ -73,6 +73,7 @@ Category: climate
 
 Category: data_assimilation
 0::StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA_interface::model_applications/data_assimilation/StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA_interface.conf
+0::StatAnalysis_fcstGFS_HofX_obsIODAv2_PyEmbed::model_applications/data_assimilation/StatAnalysis_fcstGFS_HofX_obsIODAv2_PyEmbed.conf:: py_embed
 
 
 Category: marine_and_cryosphere
@@ -83,6 +84,7 @@ Category: marine_and_cryosphere
 4::GridStat_fcstRTOFS_obsSMAP_climWOA_sss::model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.conf:: icecover_env, py_embed
 5::GridStat_fcstRTOFS_obsAVISO_climHYCOM_ssh::model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsAVISO_climHYCOM_ssh.conf:: icecover_env, py_embed
 6::UserScript_fcstRTOFS_obsAOML_calcTransport::model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransport.conf:: icecover_env, py_embed
+7::PointStat_fcstGFS_obsNDBC_WaveHeight::model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsNDBC_WaveHeight.conf
 #X::GridStat_fcstRTOFS_obsGHRSST_climWOA_sst::model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf, model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst/ci_overrides.conf:: icecover_env, py_embed
 
 
@@ -109,6 +111,7 @@ Category: precipitation
 6::MTD_fcstHRRR-TLE_obsMRMS:: model_applications/precipitation/MTD_fcstHRRR-TLE_obsMRMS.conf
 7::EnsembleStat_fcstWOFS_obsWOFS:: model_applications/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf::
 8::PointStat_fcstMULTI_obsMETAR_PtypeComparisons:: model_applications/precipitation/PointStat_fcstMULTI_obsMETAR_PtypeComparisons.conf
+9::PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip:: model_applications/precipitation/PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip.conf
 
 
 Category: s2s
@@ -164,3 +167,7 @@ Category: tc_and_extra_tc
 3::GridStat_fcstHAFS_obsTDR_NetCDF:: model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.conf:: py_embed
 4::TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample:: model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample.conf
 5::TCGen_fcstGFS_obsBDECK_2021season:: model_applications/tc_and_extra_tc/TCGen_fcstGFS_obsBDECK_2021season.conf
+
+
+Category: unstructured_grids
+0::StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEmbed:: model_applications/unstructured_grids/StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEmbed.conf:: geovista_env, py_embed

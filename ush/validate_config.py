@@ -8,7 +8,7 @@ Abstract: Checks configuration files and reports if anything needs to be changed
   the changes made for them.
 History Log:  Initial version
 Usage: Call the same as run_metplus.py, 
-  i.e. validate_config.py -c <config_file> -c <config_file>
+  i.e. validate_config.py <config_file> <config_file>
 Parameters: None
 Input Files: Configuration files
 Output Files:
@@ -24,8 +24,9 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                 os.pardir)))
 
-from metplus.util import config_metplus, validate_configuration_variables
+from metplus.util import config_metplus, validate_config_variables
 from run_metplus import get_config_inputs_from_command_line
+
 
 def main():
     config_inputs = get_config_inputs_from_command_line()
@@ -34,20 +35,17 @@ def main():
     config = config_metplus.setup(config_inputs)
 
     # validate configuration variables
-    deprecatedIsOK, fieldIsOK, inoutbaseIsOk, metIsOK, sed_cmds = validate_configuration_variables(config)
-
-    if metIsOK:
-        print("No MET config files are using deprecated environment variables")
+    is_ok, sed_commands = validate_config_variables(config)
 
     # if everything is valid, report success and exit
-    if deprecatedIsOK and fieldIsOK and inoutbaseIsOk and metIsOK:
+    if is_ok:
         print("SUCCESS: Configuration passed all of the validation tests.")
         sys.exit(0)
 
     # if sed commands can be run, output lines that will be changed and ask
     # user if they want to run the sed command
-    if sed_cmds:
-        for cmd in sed_cmds:
+    if sed_commands:
+        for cmd in sed_commands:
             if cmd.startswith('#Add'):
                 add_line = cmd.replace('#Add ', '')
                 met_tool = None

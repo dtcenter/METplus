@@ -306,6 +306,17 @@ def set_minimum_config_settings(config):
           'SERIES_ANALYSIS_CLIMO_CDF_DIRECT_PROB': 'False',
          },
          {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {cdf_bins = 1.0;center_bins = TRUE;direct_prob = FALSE;}'}),
+        ({'SERIES_ANALYSIS_MASK_GRID': 'FULL', },
+         {'METPLUS_MASK_DICT': 'mask = {grid = "FULL";}'}),
+
+        ({'SERIES_ANALYSIS_MASK_POLY': 'MET_BASE/poly/EAST.poly', },
+         {'METPLUS_MASK_DICT': 'mask = {poly = "MET_BASE/poly/EAST.poly";}'}),
+
+        ({
+             'SERIES_ANALYSIS_MASK_GRID': 'FULL',
+             'SERIES_ANALYSIS_MASK_POLY': 'MET_BASE/poly/EAST.poly',
+         },
+         {'METPLUS_MASK_DICT': 'mask = {grid = "FULL";poly = "MET_BASE/poly/EAST.poly";}'}),
 
     ]
 )
@@ -344,12 +355,16 @@ def test_series_analysis_single_field(metplus_config, config_overrides,
     all_cmds = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_cmds}")
 
+    missing_env = [item for item in env_var_values
+                   if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
+    env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
+
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
         assert cmd == expected_cmd
 
         # check that environment variables were set properly
-        for env_var_key in wrapper.WRAPPER_ENV_VAR_KEYS:
+        for env_var_key in env_var_keys:
             match = next((item for item in env_vars if
                           item.startswith(env_var_key)), None)
             assert match is not None

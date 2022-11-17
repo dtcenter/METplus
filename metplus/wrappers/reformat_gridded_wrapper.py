@@ -12,8 +12,8 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import met_util as util
-from ..util import time_util
+from ..util import get_lead_sequence, sub_var_list
+from ..util import time_util, skip_time
 from . import CommandBuilder
 
 # pylint:disable=pointless-string-statement
@@ -52,7 +52,7 @@ class ReformatGriddedWrapper(CommandBuilder):
         """
         app_name_caps = self.app_name.upper()
         class_name = self.__class__.__name__[0: -7]
-        lead_seq = util.get_lead_sequence(self.config, input_dict)
+        lead_seq = get_lead_sequence(self.config, input_dict)
 
         run_list = []
         if self.config.getbool('config', 'FCST_'+app_name_caps+'_RUN', False):
@@ -78,7 +78,7 @@ class ReformatGriddedWrapper(CommandBuilder):
                 self.logger.info("Processing forecast lead "
                                  f"{time_info['lead_string']}")
 
-                if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES')):
+                if skip_time(time_info, self.c_dict.get('SKIP_TIMES')):
                     self.logger.debug('Skipping run time')
                     continue
 
@@ -93,8 +93,8 @@ class ReformatGriddedWrapper(CommandBuilder):
                     self.c_dict['CUSTOM_STRING'] = custom_string
                     var_list_name = f'VAR_LIST_{to_run}'
                     var_list = (
-                        util.sub_var_list(self.c_dict.get(var_list_name, ''),
-                                          time_info)
+                        sub_var_list(self.c_dict.get(var_list_name, ''),
+                                     time_info)
                     )
                     if not var_list:
                         var_list = None

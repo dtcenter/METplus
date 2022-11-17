@@ -13,10 +13,9 @@ Condition codes: 0 for success, 1 for failure
 import os
 from datetime import datetime
 
-from ..util import met_util as util
-from ..util import time_util
+from ..util import ti_calculate
 from . import RuntimeFreqWrapper
-from ..util import do_string_sub, getlist
+from ..util import do_string_sub, getlist, generate_tmp_filename
 
 '''!@namespace METDbLoadWrapper
 @brief Parent class for wrappers that run over a grouping of times
@@ -118,7 +117,7 @@ class METDbLoadWrapper(RuntimeFreqWrapper):
         if time_info.get('lead') != '*':
             if (time_info.get('init') != '*'
                     or time_info.get('valid') != '*'):
-                time_info = time_util.ti_calculate(time_info)
+                time_info = ti_calculate(time_info)
 
         self.set_environment_variables(time_info)
 
@@ -234,7 +233,7 @@ class METDbLoadWrapper(RuntimeFreqWrapper):
             output_lines.append(output_line)
 
         # write tmp file with XML content with substituted values
-        out_filename = util.generate_tmp_filename()
+        out_filename = generate_tmp_filename()
         out_path = os.path.join(self.config.getdir('TMP_DIR'),
                                 out_filename)
         with open(out_path, 'w') as file_handle:

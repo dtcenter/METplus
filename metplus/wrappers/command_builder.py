@@ -18,20 +18,20 @@ from inspect import getframeinfo, stack
 
 from .command_runner import CommandRunner
 
-from ..util.constants import PYTHON_EMBEDDING_TYPES
-from ..util import getlist
-from ..util import met_util as util
+from ..util.constants import PYTHON_EMBEDDING_TYPES, COMPRESSION_EXTENSIONS
+from ..util import getlist, preprocess_file, loop_over_times_and_call
 from ..util import do_string_sub, ti_calculate, get_seconds_from_string
-from ..util import get_time_from_file
-from ..util import config_metplus
+from ..util import get_time_from_file, shift_time_seconds
+from ..util import replace_config_from_section
 from ..util import METConfig
 from ..util import MISSING_DATA_VALUE
 from ..util import get_custom_string_list
 from ..util import get_wrapped_met_config_file, add_met_config_item, format_met_config
-from ..util import remove_quotes
+from ..util import remove_quotes, split_level
 from ..util import get_field_info, format_field_info
-from ..util import get_wrapper_name
+from ..util import get_wrapper_name, is_python_script
 from ..util.met_config import add_met_config_dict, handle_climo_dict
+from ..util import mkdir_p, get_skip_times
 
 # pylint:disable=pointless-string-statement
 '''!@namespace CommandBuilder
@@ -82,11 +82,8 @@ class CommandBuilder:
         # if instance is set, check for a section with the same name in the
         # METplusConfig object. If found, copy all values into the config
         if instance:
-            self.config = (
-                config_metplus.replace_config_from_section(self.config,
-                                                           instance,
-                                                           required=False)
-            )
+            self.config = replace_config_from_section(self.config, instance,
+                                                      required=False)
 
         self.instance = instance
         self.env = config.env if hasattr(config, 'env') else os.environ.copy()
@@ -174,8 +171,7 @@ class CommandBuilder:
         c_dict['CUSTOM_LOOP_LIST'] = get_custom_string_list(self.config,
                                                             app_name)
 
-        c_dict['SKIP_TIMES'] = util.get_skip_times(self.config,
-                                                   app_name)
+        c_dict['SKIP_TIMES'] = get_skip_times(self.config, app_name)
 
         c_dict['MANDATORY'] = (
             self.config.getbool('config',
@@ -426,47 +422,39 @@ class CommandBuilder:
         """
         return f"{item}={self.env[item]}"
 
-    def find_model(self, time_info, var_info=None, mandatory=True,
-                   return_list=False):
+    def find_model(self, time_info, mandatory=True, return_list=False):
         """! Finds the model file to compare
-              Args:
+
                 @param time_info dictionary containing timing information
-                @param var_info object containing variable information
                 @param mandatory if True, report error if not found, warning
                  if not, default is True
                 @rtype string
                 @return Returns the path to an model file
         """
         return self.find_data(time_info,
-                              var_info=var_info,
                               data_type="FCST",
                               mandatory=mandatory,
                               return_list=return_list)
 
-    def find_obs(self, time_info, var_info=None, mandatory=True,
-                 return_list=False):
+    def find_obs(self, time_info, mandatory=True, return_list=False):
         """! Finds the observation file to compare
-              Args:
+
                 @param time_info dictionary containing timing information
-                @param var_info object containing variable information
                 @param mandatory if True, report error if not found, warning
                  if not, default is True
                 @rtype string
                 @return Returns the path to an observation file
         """
         return self.find_data(time_info,
-                              var_info=var_info,
                               data_type="OBS",
                               mandatory=mandatory,
                               return_list=return_list)
 
-    def find_obs_offset(self, time_info, var_info=None, mandatory=True,
-                        return_list=False):
+    def find_obs_offset(self, time_info, mandatory=True, return_list=False):
         """! Finds the observation file to compare, looping through offset
             list until a file is found
 
              @param time_info dictionary containing timing information
-             @param var_info object containing variable information
              @param mandatory if True, report error if not found, warning
               if not, default is True
              @rtype string
@@ -484,7 +472,6 @@ class CommandBuilder:
             time_info['offset_hours'] = offset
             time_info = ti_calculate(time_info)
             obs_path = self.find_obs(time_info,
-                                     var_info=var_info,
                                      mandatory=is_mandatory,
                                      return_list=return_list)
 
@@ -506,12 +493,10 @@ class CommandBuilder:
 
         return None, time_info
 
-    def find_data(self, time_info, var_info=None, data_type='', mandatory=True,
+    def find_data(self, time_info, data_type='', mandatory=True,
                   return_list=False, allow_dir=False):
         """! Finds the data file to compare
-              Args:
                 @param time_info dictionary containing timing information
-                @param var_info object containing variable information
                 @param data_type type of data to find (i.e. FCST_ or OBS_)
                 @param mandatory if True, report error if not found, warning
                  if not. default is True
@@ -524,21 +509,14 @@ class CommandBuilder:
         if data_type and not data_type.endswith('_'):
             data_type_fmt += '_'
 
-        if var_info is not None:
-            # set level based on input data type
-            if data_type_fmt.startswith("OBS"):
-                v_level = var_info['obs_level']
-            else:
-                v_level = var_info['fcst_level']
+        # set generic 'level' to level that corresponds to data_type if set
+        level = time_info.get(f'{data_type_fmt.lower()}level', '0')
 
-            # separate character from beginning of numeric
-            # level value if applicable
-            level = util.split_level(v_level)[1]
+        # strip off prefix letter if it exists
+        level = split_level(level)[1]
 
-            # set level to 0 character if it is not a number
-            if not level.isdigit():
-                level = '0'
-        else:
+        # set level to 0 character if it is not a number, e.g. NetCDF level
+        if not level.isdigit():
             level = '0'
 
         # if level is a range, use the first value, i.e. if 250-500 use 250
@@ -628,7 +606,7 @@ class CommandBuilder:
                 check_file_list.append(full_path)
 
         # if it was set, add level back to time_info
-        if saved_level:
+        if saved_level is not None:
             time_info['level'] = saved_level
 
         # if multiple files are not supported by the wrapper and multiple
@@ -660,10 +638,10 @@ class CommandBuilder:
 
             # check if file exists
             input_data_type = self.c_dict.get(data_type + 'INPUT_DATATYPE', '')
-            processed_path = util.preprocess_file(file_path,
-                                                  input_data_type,
-                                                  self.config,
-                                                  allow_dir=allow_dir)
+            processed_path = preprocess_file(file_path,
+                                             input_data_type,
+                                             self.config,
+                                             allow_dir=allow_dir)
 
             # report error if file path could not be found
             if not processed_path:
@@ -706,9 +684,9 @@ class CommandBuilder:
         # get range of times that will be considered
         valid_range_lower = self.c_dict.get(data_type + 'FILE_WINDOW_BEGIN', 0)
         valid_range_upper = self.c_dict.get(data_type + 'FILE_WINDOW_END', 0)
-        lower_limit = int(datetime.strptime(util.shift_time_seconds(valid_time, valid_range_lower),
+        lower_limit = int(datetime.strptime(shift_time_seconds(valid_time, valid_range_lower),
                                             "%Y%m%d%H%M%S").strftime("%s"))
-        upper_limit = int(datetime.strptime(util.shift_time_seconds(valid_time, valid_range_upper),
+        upper_limit = int(datetime.strptime(shift_time_seconds(valid_time, valid_range_upper),
                                             "%Y%m%d%H%M%S").strftime("%s"))
 
         msg = f"Looking for {data_type}INPUT files under {data_dir} within range " +\
@@ -755,8 +733,8 @@ class CommandBuilder:
                     closest_files.append(fullpath)
 
         if not closest_files:
-            msg = f"Could not find {data_type}INPUT files under {data_dir} within range " +\
-                  f"[{valid_range_lower},{valid_range_upper}] using template {template}"
+            msg = (f"Could not find {data_type}INPUT files under {data_dir} within range "
+                   f"[{valid_range_lower},{valid_range_upper}] using template {template}")
             if not mandatory:
                 self.logger.warning(msg)
             else:
@@ -764,19 +742,31 @@ class CommandBuilder:
 
             return None
 
+        # remove any files that are the same as another but zipped
+        closest_files_fixed = []
+        for filepath in closest_files:
+            duplicate_found = False
+            for ext in COMPRESSION_EXTENSIONS:
+                if filepath.endswith(ext) and filepath[0:-len(ext)] in closest_files:
+                    duplicate_found = True
+                    continue
+
+            if not duplicate_found:
+                closest_files_fixed.append(filepath)
+
         # check if file(s) needs to be preprocessed before returning the path
         # if one file was found and return_list if False, return single file
-        if len(closest_files) == 1 and not return_list:
-            return util.preprocess_file(closest_files[0],
-                                        self.c_dict.get(data_type + 'INPUT_DATATYPE', ''),
-                                        self.config)
+        if len(closest_files_fixed) == 1 and not return_list:
+            return preprocess_file(closest_files_fixed[0],
+                                   self.c_dict.get(data_type + 'INPUT_DATATYPE', ''),
+                                   self.config)
 
         # return list if multiple files are found
         out = []
-        for close_file in closest_files:
-            outfile = util.preprocess_file(close_file,
-                                           self.c_dict.get(data_type + 'INPUT_DATATYPE', ''),
-                                           self.config)
+        for close_file in closest_files_fixed:
+            outfile = preprocess_file(close_file,
+                                      self.c_dict.get(data_type + 'INPUT_DATATYPE', ''),
+                                      self.config)
             out.append(outfile)
 
         return out
@@ -909,7 +899,7 @@ class CommandBuilder:
 
         list_path = os.path.join(list_dir, filename)
 
-        util.mkdir_p(list_dir)
+        mkdir_p(list_dir)
 
         self.logger.debug("Writing list of filenames...")
         with open(list_path, 'w') as file_handle:
@@ -1004,7 +994,7 @@ class CommandBuilder:
         if (not os.path.exists(parent_dir) and
                 not self.c_dict.get('DO_NOT_RUN_EXE', False)):
             self.logger.debug(f"Creating output directory: {parent_dir}")
-            util.mkdir_p(parent_dir)
+            mkdir_p(parent_dir)
 
         if not output_exists or not skip_if_output_exists:
             return True
@@ -1062,16 +1052,6 @@ class CommandBuilder:
                              "on how to obtain the tool: parm/use_cases/met_tool_wrapper/GempakToCF/GempakToCF.py")
             self.isOK = False
 
-    def add_field_info_to_time_info(self, time_info, field_info):
-        """!Add name and level values from field info to time info dict to be used in string substitution
-            Args:
-                @param time_info time dictionary to add items to
-                @param field_info field dictionary to get values from
-        """
-        field_items = ['fcst_name', 'fcst_level', 'obs_name', 'obs_level']
-        for field_item in field_items:
-            time_info[field_item] = field_info[field_item] if field_item in field_info else ''
-
     def set_current_field_config(self, field_info=None):
         """! Sets config variables for current fcst/obs name/level that can be
          referenced by other config variables such as OUTPUT_PREFIX.
@@ -1107,7 +1087,7 @@ class CommandBuilder:
         # reset file type to empty string to handle if python embedding is used for one field but not for the next
         self.c_dict[f'{input_type}_FILE_TYPE'] = ''
 
-        if not util.is_python_script(var_info[f"{var_input_type}_name"]):
+        if not is_python_script(var_info[f"{var_input_type}_name"]):
             # if not a python script, return var name
             return var_info[f"{var_input_type}_name"]
 
@@ -1218,7 +1198,7 @@ class CommandBuilder:
             self.log_error('Must specify path to output file')
             return None
 
-        util.mkdir_p(parent_dir)
+        mkdir_p(parent_dir)
 
         cmd += " " + out_path
 
@@ -1284,7 +1264,7 @@ class CommandBuilder:
 
         @param custom (optional) custom loop string value
         """
-        return util.loop_over_times_and_call(self.config, self, custom=custom)
+        return loop_over_times_and_call(self.config, self, custom=custom)
 
     @staticmethod
     def format_met_config_dict(c_dict, name, keys=None):
@@ -1329,7 +1309,7 @@ class CommandBuilder:
         dict_items['shape'] = ('string', 'uppercase,remove_quotes')
         self.add_met_config_dict('regrid', dict_items)
 
-    def handle_description(self):
+    def handle_description(self, is_list=False):
         """! Get description from config. If <app_name>_DESC is set, use
          that value. If not, check for DESC and use that if it is set.
          If set, set the METPLUS_DESC env_var_dict key to "desc = <value>;"
@@ -1337,21 +1317,20 @@ class CommandBuilder:
         """
         # check if <app_name>_DESC is set
         app_name_upper = self.app_name.upper()
-        conf_value = self.config.getstr('config',
-                                        f'{app_name_upper}_DESC',
-                                        '')
+        conf_value = self.config.getraw('config', f'{app_name_upper}_DESC')
 
         # if not, check if DESC is set
         if not conf_value:
-            conf_value = self.config.getstr('config',
-                                            'DESC',
-                                            '')
+            conf_value = self.config.getraw('config', 'DESC')
 
         # if the value is set, set the DESC c_dict
         if conf_value:
-            self.env_var_dict['METPLUS_DESC'] = (
-                f'desc = "{remove_quotes(conf_value)}";'
-            )
+            if is_list:
+                value = '", "'.join(getlist(conf_value))
+                value = f'["{value}"]'
+            else:
+                value = f'"{remove_quotes(conf_value)}"'
+            self.env_var_dict['METPLUS_DESC'] = f'desc = {value};'
 
     def get_output_prefix(self, time_info=None, set_env_vars=True):
         """! Read {APP_NAME}_OUTPUT_PREFIX from config. If time_info is set

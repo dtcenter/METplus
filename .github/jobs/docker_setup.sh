@@ -29,9 +29,9 @@ duration=$(( SECONDS - start_seconds ))
 echo "TIMING: docker pull ${DOCKERHUB_TAG} took `printf '%02d' $(($duration / 60))`:`printf '%02d' $(($duration % 60))` (MM:SS)"
 
 # set DOCKERFILE_PATH that is used by docker hook script get_met_version
-export DOCKERFILE_PATH=${GITHUB_WORKSPACE}/scripts/docker/Dockerfile
+export DOCKERFILE_PATH=${GITHUB_WORKSPACE}/internal/scripts/docker/Dockerfile
 
-MET_TAG=`${GITHUB_WORKSPACE}/scripts/docker/hooks/get_met_version`
+MET_TAG=`${GITHUB_WORKSPACE}/internal/scripts/docker/hooks/get_met_version`
 
 MET_DOCKER_REPO=met-dev
 if [ "${MET_TAG}" != "develop" ]; then
@@ -67,7 +67,7 @@ fi
 
 
 # skip docker push if credentials are not set
-if [ -z ${DOCKER_USERNAME+x} ] || [ -z ${DOCKER_PASSWORD+x} ]; then
+if [ -z "${DOCKER_USERNAME}" ] || [ -z "${DOCKER_PASSWORD}" ]; then
     echo "DockerHub credentials not set. Skipping docker push"
     exit 0
 fi

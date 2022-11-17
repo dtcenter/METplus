@@ -7,7 +7,8 @@ import os
 from datetime import datetime
 
 from metplus.util import config_metplus
-
+from metplus.util.time_util import ti_calculate
+from metplus.util.config_validate import validate_config_variables
 
 @pytest.mark.util
 def test_get_default_config_list():
@@ -101,31 +102,6 @@ def test_find_indices_in_config_section(metplus_config, regex, index,
 
 
 @pytest.mark.parametrize(
-    'conf_items, met_tool, expected_result', [
-        ({'CUSTOM_LOOP_LIST': "one, two, three"}, '', ['one', 'two', 'three']),
-        ({'CUSTOM_LOOP_LIST': "one, two, three",
-          'GRID_STAT_CUSTOM_LOOP_LIST': "four, five",}, 'grid_stat', ['four', 'five']),
-        ({'CUSTOM_LOOP_LIST': "one, two, three",
-          'GRID_STAT_CUSTOM_LOOP_LIST': "four, five",}, 'point_stat', ['one', 'two', 'three']),
-        ({'CUSTOM_LOOP_LIST': "one, two, three",
-          'ASCII2NC_CUSTOM_LOOP_LIST': "four, five",}, 'ascii2nc', ['four', 'five']),
-        # fails to read custom loop list for point2grid because there are underscores in name
-        ({'CUSTOM_LOOP_LIST': "one, two, three",
-          'POINT_2_GRID_CUSTOM_LOOP_LIST': "four, five",}, 'point2grid', ['one', 'two', 'three']),
-        ({'CUSTOM_LOOP_LIST': "one, two, three",
-          'POINT2GRID_CUSTOM_LOOP_LIST': "four, five",}, 'point2grid', ['four', 'five']),
-    ]
-)
-@pytest.mark.util
-def test_get_custom_string_list(metplus_config, conf_items, met_tool, expected_result):
-    config = metplus_config
-    for conf_key, conf_value in conf_items.items():
-        config.set('config', conf_key, conf_value)
-
-    assert config_metplus.get_custom_string_list(config, met_tool) == expected_result
-
-
-@pytest.mark.parametrize(
     'config_var_name, expected_indices, set_met_tool', [
         ('FCST_GRID_STAT_VAR1_NAME', ['1'], True),
         ('FCST_GRID_STAT_VAR2_INPUT_FIELD_NAME', ['2'], True),
@@ -150,9 +126,9 @@ def test_find_var_indices_fcst(metplus_config,
     data_types = ['FCST']
     config.set('config', config_var_name, "NAME1")
     met_tool = 'grid_stat' if set_met_tool else None
-    var_name_indices = config_metplus.find_var_name_indices(config,
-                                                            data_types=data_types,
-                                                            met_tool=met_tool)
+    var_name_indices = config_metplus._find_var_name_indices(config,
+                                                             data_types=data_types,
+                                                             met_tool=met_tool)
 
     assert len(var_name_indices) == len(expected_indices)
     for actual_index in var_name_indices:
@@ -186,97 +162,6 @@ def test_find_var_indices_fcst(metplus_config,
 def test_get_field_search_prefixes(data_type, met_tool, expected_out):
     assert(config_metplus.get_field_search_prefixes(data_type,
                                                     met_tool) == expected_out)
-
-
-@pytest.mark.parametrize(
-    'item_list, extension, is_valid', [
-        (['FCST'], 'NAME', False),
-        (['OBS'], 'NAME', False),
-        (['FCST', 'OBS'], 'NAME', True),
-        (['BOTH'], 'NAME', True),
-        (['FCST', 'OBS', 'BOTH'], 'NAME', False),
-        (['FCST', 'ENS'], 'NAME', False),
-        (['OBS', 'ENS'], 'NAME', False),
-        (['FCST', 'OBS', 'ENS'], 'NAME', True),
-        (['BOTH', 'ENS'], 'NAME', True),
-        (['FCST', 'OBS', 'BOTH', 'ENS'], 'NAME', False),
-
-        (['FCST', 'OBS'], 'THRESH', True),
-        (['BOTH'], 'THRESH', True),
-        (['FCST', 'OBS', 'BOTH'], 'THRESH', False),
-        (['FCST', 'OBS', 'ENS'], 'THRESH', True),
-        (['BOTH', 'ENS'], 'THRESH', True),
-        (['FCST', 'OBS', 'BOTH', 'ENS'], 'THRESH', False),
-
-        (['FCST'], 'OPTIONS', True),
-        (['OBS'], 'OPTIONS', True),
-        (['FCST', 'OBS'], 'OPTIONS', True),
-        (['BOTH'], 'OPTIONS', True),
-        (['FCST', 'OBS', 'BOTH'], 'OPTIONS', False),
-        (['FCST', 'ENS'], 'OPTIONS', True),
-        (['OBS', 'ENS'], 'OPTIONS', True),
-        (['FCST', 'OBS', 'ENS'], 'OPTIONS', True),
-        (['BOTH', 'ENS'], 'OPTIONS', True),
-        (['FCST', 'OBS', 'BOTH', 'ENS'], 'OPTIONS', False),
-
-        (['FCST', 'OBS', 'BOTH'], 'LEVELS', False),
-        (['FCST', 'OBS'], 'LEVELS', True),
-        (['BOTH'], 'LEVELS', True),
-        (['FCST', 'OBS', 'ENS'], 'LEVELS', True),
-        (['BOTH', 'ENS'], 'LEVELS', True),
-
-    ]
-)
-@pytest.mark.util
-def test_is_var_item_valid(metplus_config, item_list, extension, is_valid):
-    conf = metplus_config
-    assert config_metplus.is_var_item_valid(item_list, '1', extension, conf)[0] == is_valid
-
-
-@pytest.mark.parametrize(
-    'item_list, configs_to_set, is_valid', [
-
-        (['FCST'], {'FCST_VAR1_LEVELS': 'A06',
-                    'OBS_VAR1_NAME': 'script_name.py something else'}, True),
-        (['FCST'], {'FCST_VAR1_LEVELS': 'A06',
-                    'OBS_VAR1_NAME': 'APCP'}, False),
-        (['OBS'], {'OBS_VAR1_LEVELS': '"(*,*)"',
-                    'FCST_VAR1_NAME': 'script_name.py something else'}, True),
-        (['OBS'], {'OBS_VAR1_LEVELS': '"(*,*)"',
-                    'FCST_VAR1_NAME': 'APCP'}, False),
-
-        (['FCST', 'ENS'], {'FCST_VAR1_LEVELS': 'A06',
-                    'OBS_VAR1_NAME': 'script_name.py something else'}, True),
-        (['FCST', 'ENS'], {'FCST_VAR1_LEVELS': 'A06',
-                    'OBS_VAR1_NAME': 'APCP'}, False),
-        (['OBS', 'ENS'], {'OBS_VAR1_LEVELS': '"(*,*)"',
-                   'FCST_VAR1_NAME': 'script_name.py something else'}, True),
-        (['OBS', 'ENS'], {'OBS_VAR1_LEVELS': '"(*,*)"',
-                   'FCST_VAR1_NAME': 'APCP'}, False),
-
-        (['FCST'], {'FCST_VAR1_LEVELS': 'A06, A12',
-                    'OBS_VAR1_NAME': 'script_name.py something else'}, False),
-        (['FCST'], {'FCST_VAR1_LEVELS': 'A06, A12',
-                    'OBS_VAR1_NAME': 'APCP'}, False),
-        (['OBS'], {'OBS_VAR1_LEVELS': '"(0,*,*)", "(1,*,*)"',
-                   'FCST_VAR1_NAME': 'script_name.py something else'}, False),
-
-        (['FCST', 'ENS'], {'FCST_VAR1_LEVELS': 'A06, A12',
-                    'OBS_VAR1_NAME': 'script_name.py something else'}, False),
-        (['FCST', 'ENS'], {'FCST_VAR1_LEVELS': 'A06, A12',
-                    'OBS_VAR1_NAME': 'APCP'}, False),
-        (['OBS', 'ENS'], {'OBS_VAR1_LEVELS': '"(0,*,*)", "(1,*,*)"',
-                   'FCST_VAR1_NAME': 'script_name.py something else'}, False),
-
-    ]
-)
-@pytest.mark.util
-def test_is_var_item_valid_levels(metplus_config, item_list, configs_to_set, is_valid):
-    conf = metplus_config
-    for key, value in configs_to_set.items():
-        conf.set('config', key, value)
-
-    assert config_metplus.is_var_item_valid(item_list, '1', 'LEVELS', conf)[0] == is_valid
 
 
 # search prefixes are valid prefixes to append to field info variables
@@ -418,21 +303,20 @@ def test_parse_var_list_fcst_only(metplus_config, data_type, list_created):
     conf.set('config', 'FCST_VAR2_LEVELS', "LEVELS21, LEVELS22")
 
     # this should not occur because OBS variables are missing
-    if config_metplus.validate_configuration_variables(conf, force_check=True)[1]:
-        assert False
+    assert not validate_config_variables(conf)[0]
 
     var_list = config_metplus.parse_var_list(conf, time_info=None, data_type=data_type)
 
     # list will be created if requesting just OBS, but it should not be created if
     # nothing was requested because FCST values are missing
     if list_created:
-        assert(var_list[0]['fcst_name'] == "NAME1" and \
-               var_list[1]['fcst_name'] == "NAME1" and \
-               var_list[2]['fcst_name'] == "NAME2" and \
-               var_list[3]['fcst_name'] == "NAME2" and \
-               var_list[0]['fcst_level'] == "LEVELS11" and \
-               var_list[1]['fcst_level'] == "LEVELS12" and \
-               var_list[2]['fcst_level'] == "LEVELS21" and \
+        assert(var_list[0]['fcst_name'] == "NAME1" and
+               var_list[1]['fcst_name'] == "NAME1" and
+               var_list[2]['fcst_name'] == "NAME2" and
+               var_list[3]['fcst_name'] == "NAME2" and
+               var_list[0]['fcst_level'] == "LEVELS11" and
+               var_list[1]['fcst_level'] == "LEVELS12" and
+               var_list[2]['fcst_level'] == "LEVELS21" and
                var_list[3]['fcst_level'] == "LEVELS22")
     else:
         assert not var_list
@@ -455,7 +339,7 @@ def test_parse_var_list_obs(metplus_config, data_type, list_created):
     conf.set('config', 'OBS_VAR2_LEVELS', "LEVELS21, LEVELS22")
 
     # this should not occur because FCST variables are missing
-    if config_metplus.validate_configuration_variables(conf, force_check=True)[1]:
+    if validate_config_variables(conf)[0]:
         assert False
 
     var_list = config_metplus.parse_var_list(conf, time_info=None, data_type=data_type)
@@ -492,7 +376,7 @@ def test_parse_var_list_both(metplus_config, data_type, list_created):
     conf.set('config', 'BOTH_VAR2_LEVELS', "LEVELS21, LEVELS22")
 
     # this should not occur because BOTH variables are used
-    if not config_metplus.validate_configuration_variables(conf, force_check=True)[1]:
+    if not validate_config_variables(conf)[0]:
         assert False
 
     var_list = config_metplus.parse_var_list(conf, time_info=None, data_type=data_type)
@@ -523,7 +407,7 @@ def test_parse_var_list_fcst_and_obs(metplus_config):
     conf.set('config', 'OBS_VAR2_LEVELS', "OLEVELS21, OLEVELS22")
 
     # this should not occur because FCST and OBS variables are found
-    if not config_metplus.validate_configuration_variables(conf, force_check=True)[1]:
+    if not validate_config_variables(conf)[0]:
         assert False
 
     var_list = config_metplus.parse_var_list(conf)
@@ -556,7 +440,7 @@ def test_parse_var_list_fcst_and_obs_alternate(metplus_config):
     conf.set('config', 'OBS_VAR2_LEVELS', "OLEVELS21, OLEVELS22")
 
     # configuration is invalid and parse var list should not give any results
-    assert(not config_metplus.validate_configuration_variables(conf, force_check=True)[1] and not config_metplus.parse_var_list(conf))
+    assert(not validate_config_variables(conf)[0] and not config_metplus.parse_var_list(conf))
 
 
 # VAR1 defined by OBS, VAR2 by FCST, VAR3 by both FCST AND OBS
@@ -580,7 +464,7 @@ def test_parse_var_list_fcst_and_obs_and_both(metplus_config, data_type, list_le
     conf.set('config', 'OBS_VAR3_LEVELS', "OLEVELS31, OLEVELS32")
 
     # configuration is invalid and parse var list should not give any results
-    if config_metplus.validate_configuration_variables(conf, force_check=True)[1]:
+    if validate_config_variables(conf)[0]:
         assert False
 
     var_list = config_metplus.parse_var_list(conf, time_info=None, data_type=data_type)
@@ -626,7 +510,7 @@ def test_parse_var_list_fcst_only_options(metplus_config, data_type, list_len):
     conf.set('config', 'OBS_VAR1_OPTIONS', "OOPTIONS11")
 
     # this should not occur because OBS variables are missing
-    if config_metplus.validate_configuration_variables(conf, force_check=True)[1]:
+    if validate_config_variables(conf)[0]:
         assert False
 
     var_list = config_metplus.parse_var_list(conf, time_info=None, data_type=data_type)
@@ -648,7 +532,7 @@ def test_find_var_indices_wrapper_specific(metplus_config, met_tool, indices):
     conf.set('config', f'{data_type}_VAR1_NAME', "NAME1")
     conf.set('config', f'{data_type}_GRID_STAT_VAR2_NAME', "GSNAME2")
 
-    var_name_indices = config_metplus.find_var_name_indices(conf, data_types=[data_type],
+    var_name_indices = config_metplus._find_var_name_indices(conf,data_types=[data_type],
                                                   met_tool=met_tool)
 
     assert var_name_indices == indices
@@ -963,80 +847,6 @@ def test_parse_var_list_py_embed_multi_levels(metplus_config, config_overrides,
         assert var_item['fcst_name'] == expected_result
 
 
-@pytest.mark.parametrize(
-    'input_list, expected_list', [
-        ('Point2Grid', ['Point2Grid']),
-        # MET documentation syntax (with dashes)
-        ('Pcp-Combine, Grid-Stat, Ensemble-Stat', ['PCPCombine',
-                                                   'GridStat',
-                                                   'EnsembleStat']),
-        ('Point-Stat', ['PointStat']),
-        ('Mode, MODE Time Domain', ['MODE',
-                                    'MTD']),
-        # actual tool name (lower case underscore)
-        ('point_stat, grid_stat, ensemble_stat', ['PointStat',
-                                                  'GridStat',
-                                                  'EnsembleStat']),
-        ('mode, mtd', ['MODE',
-                       'MTD']),
-        ('ascii2nc, pb2nc, regrid_data_plane', ['ASCII2NC',
-                                                'PB2NC',
-                                                'RegridDataPlane']),
-        ('pcp_combine, tc_pairs, tc_stat', ['PCPCombine',
-                                            'TCPairs',
-                                            'TCStat']),
-        ('gen_vx_mask, stat_analysis, series_analysis', ['GenVxMask',
-                                                         'StatAnalysis',
-                                                         'SeriesAnalysis']),
-        # old capitalization format
-        ('PcpCombine, Ascii2Nc, TcStat, TcPairs', ['PCPCombine',
-                                                   'ASCII2NC',
-                                                   'TCStat',
-                                                   'TCPairs']),
-    ]
-)
-@pytest.mark.util
-def test_get_process_list(metplus_config, input_list, expected_list):
-    conf = metplus_config
-    conf.set('config', 'PROCESS_LIST', input_list)
-    process_list = config_metplus.get_process_list(conf)
-    output_list = [item[0] for item in process_list]
-    assert output_list == expected_list
-
-
-@pytest.mark.parametrize(
-    'input_list, expected_list', [
-        # no instances
-        ('Point2Grid', [('Point2Grid', None)]),
-        # one with instance one without
-        ('PcpCombine, GridStat(my_instance)', [('PCPCombine', None),
-                                               ('GridStat', 'my_instance')]),
-        # duplicate process, one with instance one without
-        ('TCStat, ExtractTiles, TCStat(for_series), SeriesAnalysis', (
-                [('TCStat',None),
-                 ('ExtractTiles',None),
-                 ('TCStat', 'for_series'),
-                 ('SeriesAnalysis',None),])),
-        # two processes, both with instances
-        ('mode(uno), mtd(dos)', [('MODE', 'uno'),
-                                 ('MTD', 'dos')]),
-        # lower-case names, first with instance, second without
-        ('ascii2nc(some_name), pb2nc', [('ASCII2NC', 'some_name'),
-                                        ('PB2NC', None)]),
-        # duplicate process, both with different instances
-        ('tc_stat(one), tc_pairs, tc_stat(two)', [('TCStat', 'one'),
-                                                  ('TCPairs', None),
-                                                  ('TCStat', 'two')]),
-    ]
-)
-@pytest.mark.util
-def test_get_process_list_instances(metplus_config, input_list, expected_list):
-    conf = metplus_config
-    conf.set('config', 'PROCESS_LIST', input_list)
-    output_list = config_metplus.get_process_list(conf)
-    assert output_list == expected_list
-
-
 @pytest.mark.util
 def test_getraw_sub_and_nosub(metplus_config):
     raw_string = '{MODEL}_{CURRENT_FCST_NAME}'
@@ -1073,3 +883,33 @@ def test_getraw_instance_with_unset_var(metplus_config):
     )
     new_config.set('config', 'CURRENT_FCST_NAME', 'NAME')
     assert new_config.getraw('config', 'OUTPUT_PREFIX') == 'FCST_NAME'
+
+
+@pytest.mark.parametrize(
+    'config_value, expected_result', [
+        # 2 items semi-colon at end
+        ('GRIB_lvl_typ = 234;  desc = "HI_CLOUD";',
+         'GRIB_lvl_typ = 234; desc = "HI_CLOUD";'),
+        # 2 items no semi-colon at end
+        ('GRIB_lvl_typ = 234;  desc = "HI_CLOUD"',
+         'GRIB_lvl_typ = 234; desc = "HI_CLOUD";'),
+        # 1 item semi-colon at end
+        ('GRIB_lvl_typ = 234;',
+         'GRIB_lvl_typ = 234;'),
+        # 1 item no semi-colon at end
+        ('GRIB_lvl_typ = 234',
+         'GRIB_lvl_typ = 234;'),
+    ]
+)
+@pytest.mark.util
+def test_format_var_items_options_semicolon(config_value,
+                                            expected_result):
+    time_info = {}
+
+    field_configs = {'name': 'FNAME',
+                     'levels': 'FLEVEL',
+                     'options': config_value}
+
+    var_items = config_metplus._format_var_items(field_configs, time_info)
+    result = var_items.get('extra')
+    assert result == expected_result

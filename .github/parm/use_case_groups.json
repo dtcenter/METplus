@@ -56,7 +56,7 @@
   },
   {
     "category": "data_assimilation",
-    "index_list": "0",
+    "index_list": "0-1",
     "run": false
   },
   {
@@ -72,6 +72,11 @@
   {
     "category": "marine_and_cryosphere",
     "index_list": "6",
+    "run": false
+  },
+  {
+    "category": "marine_and_cryosphere",
+    "index_list": "7",
     "run": false
   },
   {
@@ -132,6 +137,11 @@
   {
     "category": "precipitation",
     "index_list": "8",
+    "run": false
+  },
+  {
+    "category": "precipitation",
+    "index_list": "9",
     "run": false
   },
   {
@@ -207,6 +217,11 @@
   {
     "category": "tc_and_extra_tc",
     "index_list": "3-5",
+    "run": false
+  },
+  {
+    "category": "unstructured_grids",
+    "index_list": "0",
     "run": false
   }
 ]

@@ -11,6 +11,9 @@ from metplus.wrappers.ensemble_stat_wrapper import EnsembleStatWrapper
 
 fcst_dir = '/some/path/fcst'
 obs_dir = '/some/path/obs'
+ens_mean_dir = '/some/path/ens_mean'
+ens_mean_template = 'the_ens_mean_file.nc'
+obs_point_template = 'point_obs.nc'
 fcst_name = 'APCP'
 fcst_level = 'A03'
 obs_name = 'APCP_03'
@@ -43,10 +46,10 @@ def set_minimum_config_settings(config, set_fields=True):
     config.set('config', 'ENSEMBLE_STAT_CONFIG_FILE',
                '{PARM_BASE}/met_config/EnsembleStatConfig_wrapped')
     config.set('config', 'FCST_ENSEMBLE_STAT_INPUT_DIR', fcst_dir)
-    config.set('config', 'OBS_ENSEMBLE_STAT_INPUT_DIR', obs_dir)
+    config.set('config', 'OBS_ENSEMBLE_STAT_GRID_INPUT_DIR', obs_dir)
     config.set('config', 'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE',
                '{init?fmt=%Y%m%d%H}/fcst_file_F{lead?fmt=%3H}')
-    config.set('config', 'OBS_ENSEMBLE_STAT_INPUT_TEMPLATE',
+    config.set('config', 'OBS_ENSEMBLE_STAT_GRID_INPUT_TEMPLATE',
                '{valid?fmt=%Y%m%d%H}/obs_file')
     config.set('config', 'ENSEMBLE_STAT_OUTPUT_DIR',
                '{OUTPUT_BASE}/EnsembleStat/output')
@@ -57,6 +60,49 @@ def set_minimum_config_settings(config, set_fields=True):
         config.set('config', 'FCST_VAR1_LEVELS', fcst_level)
         config.set('config', 'OBS_VAR1_NAME', obs_name)
         config.set('config', 'OBS_VAR1_LEVELS', obs_level)
+
+
+@pytest.mark.parametrize(
+    'config_overrides, expected_filename', [
+        # 0 - set forecast level
+        ({'FCST_VAR1_NAME': 'fcst_file',
+          'FCST_VAR1_LEVELS': 'A06',
+          'OBS_VAR1_NAME': 'obs_file',
+          'OBS_VAR1_LEVELS': 'A06',
+          'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE': '{fcst_name}_A{level?fmt=%3H}',
+          },
+         f'{fcst_dir}/fcst_file_A006'),
+        # 1 - don't set forecast level
+        ({'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE': 'fcst_file_A{level?fmt=%3H}'},
+         f'{fcst_dir}/fcst_file_A000'),
+    ]
+)
+@pytest.mark.wrapper_c
+def test_ensemble_stat_level_in_template(metplus_config, config_overrides,
+                                         expected_filename):
+
+    config = metplus_config
+
+    set_minimum_config_settings(config, set_fields=False)
+
+    # set config variable overrides
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    wrapper = EnsembleStatWrapper(config)
+    assert wrapper.isOK
+
+    file_list_dir = wrapper.config.getdir('FILE_LISTS_DIR')
+    file_list_file = f"{file_list_dir}/20050807000000_12_ensemble_stat.txt"
+    if os.path.exists(file_list_file):
+        os.remove(file_list_file)
+
+    wrapper.run_all_times()
+    assert os.path.exists(file_list_file)
+    with open(file_list_file, 'r') as file_handle:
+        filenames = file_handle.read().splitlines()[1:]
+    assert len(filenames) == 1
+    assert filenames[0] == expected_filename
 
 
 @pytest.mark.parametrize(
@@ -156,11 +202,11 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
         for old_env in old_env_vars:
             match = next((item for item in actual_env_vars if
                           item.startswith(old_env)), None)
-            assert(match is not None)
+            assert match is not None
             actual_value = match.split('=', 1)[1]
             expected_value = env_var_values.get(old_env, '')
             expected_value = expected_value.replace('YMDH', ymdh)
-            assert(expected_value == actual_value)
+            assert expected_value == actual_value
 
 
 @pytest.mark.parametrize(
@@ -558,6 +604,21 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
 
         ({'ENSEMBLE_STAT_OBS_THRESH': 'NA, 0.5', },
          {'METPLUS_OBS_THRESH': 'obs_thresh = [NA, 0.5];'}),
+
+        ({'ENSEMBLE_STAT_ENS_MEAN_INPUT_DIR': ens_mean_dir,
+          'ENSEMBLE_STAT_ENS_MEAN_INPUT_TEMPLATE': ens_mean_template},
+         {}),
+
+        ({'OBS_ENSEMBLE_STAT_POINT_INPUT_DIR': obs_dir,
+          'OBS_ENSEMBLE_STAT_POINT_INPUT_TEMPLATE': obs_point_template},
+         {}),
+
+        ({'ENSEMBLE_STAT_ENS_MEAN_INPUT_DIR': ens_mean_dir,
+          'ENSEMBLE_STAT_ENS_MEAN_INPUT_TEMPLATE': ens_mean_template,
+          'OBS_ENSEMBLE_STAT_POINT_INPUT_DIR': obs_dir,
+          'OBS_ENSEMBLE_STAT_POINT_INPUT_TEMPLATE': obs_point_template},
+         {}),
+
     ]
 )
 @pytest.mark.wrapper_c
@@ -577,42 +638,54 @@ def test_ensemble_stat_single_field(metplus_config, config_overrides,
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
-    file_list_dir = os.path.join(wrapper.config.getdir('STAGING_DIR'),
-                                 'file_lists')
+    file_list_dir = wrapper.config.getdir('FILE_LISTS_DIR')
     config_file = wrapper.c_dict.get('CONFIG_FILE')
     out_dir = wrapper.c_dict.get('OUTPUT_DIR')
+
+    point_obs = ' '
+    ens_mean = ' '
+    if 'OBS_ENSEMBLE_STAT_POINT_INPUT_TEMPLATE' in config_overrides:
+        point_obs = f' -point_obs "{obs_dir}/{obs_point_template}" '
+    if 'ENSEMBLE_STAT_ENS_MEAN_INPUT_TEMPLATE' in config_overrides:
+        ens_mean = f' -ens_mean {ens_mean_dir}/{ens_mean_template} '
+
     expected_cmds = [(f"{app_path} {verbosity} "
                       f"{file_list_dir}/20050807000000_12_ensemble_stat.txt "
-                      f"{config_file} -outdir {out_dir}/2005080712"),
+                      f"{config_file}{point_obs}"
+                      f'-grid_obs "{obs_dir}/2005080712/obs_file"{ens_mean}'
+                      f"-outdir {out_dir}/2005080712"),
                      (f"{app_path} {verbosity} "
                       f"{file_list_dir}/20050807120000_12_ensemble_stat.txt "
-                      f"{config_file} -outdir {out_dir}/2005080800"),
+                      f"{config_file}{point_obs}"
+                      f'-grid_obs "{obs_dir}/2005080800/obs_file"{ens_mean}'
+                      f"-outdir {out_dir}/2005080800"),
                      ]
 
     all_cmds = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_cmds}")
     assert len(all_cmds) == len(expected_cmds)
 
+    missing_env = [item for item in env_var_values
+                   if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
+    env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
+
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
-        assert(cmd == expected_cmd)
+        assert cmd == expected_cmd
 
         # check that environment variables were set properly
         # including deprecated env vars (not in wrapper env var keys)
-        env_var_keys = (wrapper.WRAPPER_ENV_VAR_KEYS +
-                        [name for name in env_var_values
-                         if name not in wrapper.WRAPPER_ENV_VAR_KEYS])
         for env_var_key in env_var_keys:
             match = next((item for item in env_vars if
                           item.startswith(env_var_key)), None)
             assert(match is not None)
             actual_value = match.split('=', 1)[1]
             if env_var_key == 'METPLUS_FCST_FIELD':
-                assert(actual_value == fcst_fmt)
+                assert actual_value == fcst_fmt
             elif env_var_key == 'METPLUS_OBS_FIELD':
-                assert (actual_value == obs_fmt)
+                assert actual_value == obs_fmt
             else:
-                assert(env_var_values.get(env_var_key, '') == actual_value)
+                assert env_var_values.get(env_var_key, '') == actual_value
 
 
 @pytest.mark.wrapper_c
@@ -655,8 +728,7 @@ def test_ensemble_stat_fill_missing(metplus_config, config_overrides,
 
     wrapper = EnsembleStatWrapper(config)
 
-    file_list_file = os.path.join(wrapper.config.getdir('STAGING_DIR'),
-                                  'file_lists',
+    file_list_file = os.path.join(wrapper.config.getdir('FILE_LISTS_DIR'),
                                   '20050807000000_12_ensemble_stat.txt')
     if os.path.exists(file_list_file):
         os.remove(file_list_file)

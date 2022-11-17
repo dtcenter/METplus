@@ -1,6 +1,6 @@
 # Docker Conda Environments
 
-Run the commands from this directory (scripts/docker/docker_env).
+Run the commands from this directory (internal/scripts/docker_env).
 Instructions include how to create Docker images in dtcenter/metplus-envs so
 environments are available for the automated tests. Instructions to create
 these Conda environments on a local machine are also provided.
@@ -305,6 +305,24 @@ Tracker and specific versions of the NetCDF-C and NetCDF-Fortran libraries
 needed to install the tools. It is not recommended to follow these instructions
 to install the GFDL Tracker using these steps. Please consult the documentation
 for the tool for installation instructions.
+
+## geovista.v5
+
+### Docker
+
+```
+docker build -t dtcenter/metplus-envs:geovista.v5 --build-arg ENV_NAME=geovista .
+docker push dtcenter/metplus-envs:geovista.v5
+```
+
+### Local
+
+```
+./scripts/geovista_env.sh
+
+cd /home/met_test/geovista
+/home/met_test/.conda/envs/geovista.v5/bin/pip3 install --no-deps --editable .
+```
 
 
 ## pytest.v5 (from metplus_base.v5)

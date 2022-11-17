@@ -6,7 +6,7 @@ import os
 import datetime
 
 from metplus.wrappers.command_builder import CommandBuilder
-from metplus.util import ti_calculate
+from metplus.util import ti_calculate, add_field_info_to_time_info
 
 
 def get_data_dir(config):
@@ -15,21 +15,25 @@ def get_data_dir(config):
 
 
 @pytest.mark.parametrize(
-    'data_type', [
-        ("FCST_"),
-        ("OBS_"),
-        (""),
-        ("MASK_"),
-        ]
+    'data_type,allow_multiple', [
+        ("FCST_", False),
+        ("OBS_", False),
+        ("", False),
+        ("MASK_", False),
+        ("FCST_", True),
+        ("OBS_", True),
+        ("", True),
+        ("MASK_", True),
+    ]
 )
 @pytest.mark.wrapper
-def test_find_data_no_dated(metplus_config, data_type):
+def test_find_data_no_dated(metplus_config, data_type, allow_multiple):
     config = metplus_config
 
     pcw = CommandBuilder(config)
-    v = {}
-    v['fcst_level'] = "6"
-    v['obs_level'] = "6"
+    var_info = {}
+    var_info['fcst_level'] = "6"
+    var_info['obs_level'] = "6"
     task_info = {}
     task_info['valid'] = datetime.datetime.strptime("201802010000",'%Y%m%d%H%M')
     task_info['lead'] = 0
@@ -39,7 +43,10 @@ def test_find_data_no_dated(metplus_config, data_type):
     pcw.c_dict[f'{data_type}FILE_WINDOW_END'] = 3600
     pcw.c_dict[f'{data_type}INPUT_DIR'] = get_data_dir(pcw.config)
     pcw.c_dict[f'{data_type}INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}"
-    obs_file = pcw.find_data(time_info, v, data_type)
+    pcw.c_dict[f'ALLOW_MULTIPLE_FILES'] = allow_multiple
+    add_field_info_to_time_info(time_info, var_info)
+    obs_file = pcw.find_data(time_info, data_type)
+    assert not isinstance(obs_file, list)
     assert obs_file == pcw.c_dict[f'{data_type}INPUT_DIR']+'/20180201_0045'
 
 
@@ -67,7 +74,7 @@ def test_find_data_not_a_path(metplus_config, data_type):
     pcw.c_dict[f'{data_type}FILE_WINDOW_END'] = 0
     pcw.c_dict[f'{data_type}INPUT_DIR'] = ''
     pcw.c_dict[f'{data_type}INPUT_TEMPLATE'] = 'G003'
-    obs_file = pcw.find_data(time_info, var_info=None, data_type=data_type)
+    obs_file = pcw.find_data(time_info, data_type=data_type)
     assert obs_file == 'G003'
 
 
@@ -76,8 +83,8 @@ def test_find_obs_no_dated(metplus_config):
     config = metplus_config
 
     pcw = CommandBuilder(config)
-    v = {}
-    v['obs_level'] = "6"
+    var_info = {}
+    var_info['obs_level'] = "6"
     task_info = {}
     task_info['valid'] = datetime.datetime.strptime("201802010000", '%Y%m%d%H%M')
     task_info['lead'] = 0
@@ -87,7 +94,8 @@ def test_find_obs_no_dated(metplus_config):
     pcw.c_dict['OBS_FILE_WINDOW_END'] = 3600
     pcw.c_dict['OBS_INPUT_DIR'] = get_data_dir(pcw.config)
     pcw.c_dict['OBS_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}"
-    obs_file = pcw.find_obs(time_info, v)
+    add_field_info_to_time_info(time_info, var_info)
+    obs_file = pcw.find_obs(time_info)
     assert obs_file == pcw.c_dict['OBS_INPUT_DIR'] + '/20180201_0045'
 
 
@@ -96,8 +104,8 @@ def test_find_obs_dated(metplus_config):
     config = metplus_config
     
     pcw = CommandBuilder(config)
-    v = {}
-    v['obs_level'] = "6"
+    var_info = {}
+    var_info['obs_level'] = "6"
     task_info = {}
     task_info['valid'] = datetime.datetime.strptime("201802010000", '%Y%m%d%H%M')
     task_info['lead'] = 0
@@ -107,7 +115,8 @@ def test_find_obs_dated(metplus_config):
     pcw.c_dict['OBS_FILE_WINDOW_END'] = 3600
     pcw.c_dict['OBS_INPUT_DIR'] = get_data_dir(pcw.config)
     pcw.c_dict['OBS_INPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d}/{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}'
-    obs_file = pcw.find_obs(time_info, v)
+    add_field_info_to_time_info(time_info, var_info)
+    obs_file = pcw.find_obs(time_info)
     assert obs_file == pcw.c_dict['OBS_INPUT_DIR']+'/20180201/20180201_0013'
 
 
@@ -126,8 +135,8 @@ def test_find_obs_offset(metplus_config, offsets, expected_file, offset_seconds)
     config = metplus_config
 
     pcw = CommandBuilder(config)
-    v = {}
-    v['obs_level'] = "6"
+    var_info = {}
+    var_info['obs_level'] = "6"
     task_info = {}
     task_info['valid'] = datetime.datetime.strptime("2020020112", '%Y%m%d%H')
     task_info['lead'] = 0
@@ -136,7 +145,8 @@ def test_find_obs_offset(metplus_config, offsets, expected_file, offset_seconds)
     pcw.c_dict['OFFSETS'] = offsets
     pcw.c_dict['OBS_INPUT_DIR'] = get_data_dir(pcw.config)
     pcw.c_dict['OBS_INPUT_TEMPLATE'] = "{da_init?fmt=%2H}z.prepbufr.tm{offset?fmt=%2H}.{da_init?fmt=%Y%m%d}"
-    obs_file, time_info = pcw.find_obs_offset(time_info, v)
+    add_field_info_to_time_info(time_info, var_info)
+    obs_file, time_info = pcw.find_obs_offset(time_info)
 
     print(f"OBSFILE: {obs_file}")
     print(f"EXPECTED FILE: {expected_file}")
@@ -153,8 +163,8 @@ def test_find_obs_dated_previous_day(metplus_config):
     config = metplus_config
     
     pcw = CommandBuilder(config)
-    v = {}
-    v['obs_level'] = "6"
+    var_info = {}
+    var_info['obs_level'] = "6"
     task_info = {}
     task_info['valid'] = datetime.datetime.strptime("201802010000", '%Y%m%d%H%M')
     task_info['lead'] = 0
@@ -164,7 +174,8 @@ def test_find_obs_dated_previous_day(metplus_config):
     pcw.c_dict['OBS_INPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d}/{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}'
     pcw.c_dict['OBS_FILE_WINDOW_BEGIN'] = -3600
     pcw.c_dict['OBS_FILE_WINDOW_END'] = 0
-    obs_file = pcw.find_obs(time_info, v)
+    add_field_info_to_time_info(time_info, var_info)
+    obs_file = pcw.find_obs(time_info)
     assert obs_file == pcw.c_dict['OBS_INPUT_DIR']+'/20180131/20180131_2345'
 
 
@@ -173,8 +184,9 @@ def test_find_obs_dated_next_day(metplus_config):
     config = metplus_config
     
     pcw = CommandBuilder(config)
-    v = {}
-    v['obs_level'] = "6"
+    var_info = {
+        'obs_level': "6"
+    }
     task_info = {}
     task_info['valid'] = datetime.datetime.strptime("201802012345", '%Y%m%d%H%M')
     task_info['lead'] = 0
@@ -184,7 +196,8 @@ def test_find_obs_dated_next_day(metplus_config):
     pcw.c_dict['OBS_INPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d}/{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}'
     pcw.c_dict['OBS_FILE_WINDOW_BEGIN'] = 0
     pcw.c_dict['OBS_FILE_WINDOW_END'] = 3600
-    obs_file = pcw.find_obs(time_info, v)
+    add_field_info_to_time_info(time_info, var_info)
+    obs_file = pcw.find_obs(time_info)
     assert obs_file == pcw.c_dict['OBS_INPUT_DIR']+'/20180202/20180202_0013'
 
 

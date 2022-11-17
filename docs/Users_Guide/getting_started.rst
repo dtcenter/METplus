@@ -327,7 +327,7 @@ user configuration file and
 
 The last line of the screen output should match this format::
 
-    05/04 09:42:52.277 metplus (met_util.py:212) INFO: METplus has successfully finished running.
+    05/04 09:42:52.277 metplus INFO: METplus has successfully finished running.
 
 If this log message is not shown, there is likely an issue with one or more
 of the default configuration variable overrides in the
@@ -339,7 +339,7 @@ how the :ref:`common_config_variables` control a use case run.
 If the run was successful, the line above the success message should contain
 the path to the METplus log file that was generated::
 
-    05/04 09:44:21.534 metplus (met_util.py:211) INFO: Check the log file for more information: /path/to/output/logs/metplus.log.20210504094421
+    05/04 09:44:21.534 metplus INFO: Check the log file for more information: /path/to/output/logs/metplus.log.20210504094421
 
 * Review the log file and compare it to the Example.conf use case
   configuration file to see how the settings correspond to the result.

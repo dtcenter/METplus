@@ -235,19 +235,19 @@ def test_plot_point_obs(metplus_config, config_overrides, env_var_values):
     out_dir = wrapper.c_dict.get('OUTPUT_DIR')
     expected_cmds = [
         (f"{app_path} {verbosity} "
-         f"{input_dir}/pb2nc/ndas.20120409.t12z.prepbufr.tm00.nc "
+         f'"{input_dir}/pb2nc/ndas.20120409.t12z.prepbufr.tm00.nc" '
          f"{out_dir}/nam_and_ndas.20120409.t12z.prepbufr_CONFIG.ps"),
         (f"{app_path} {verbosity} "
-         f"{input_dir}/pb2nc/ndas.20120410.t00z.prepbufr.tm00.nc "
+         f'"{input_dir}/pb2nc/ndas.20120410.t00z.prepbufr.tm00.nc" '
          f"{out_dir}/nam_and_ndas.20120410.t00z.prepbufr_CONFIG.ps"),
     ]
 
     # add -point_obs argument if template has 2 items
     if ('PLOT_POINT_OBS_INPUT_TEMPLATE' in config_overrides and
             len(config_overrides['PLOT_POINT_OBS_INPUT_TEMPLATE'].split(',')) > 1):
-        common_str = f' -point_obs {input_dir}/ascii2nc/trmm_'
-        expected_cmds[0] += f'{common_str}2012040912_3hr.nc'
-        expected_cmds[1] += f'{common_str}2012041000_3hr.nc'
+        common_str = f' -point_obs "{input_dir}/ascii2nc/trmm_'
+        expected_cmds[0] += f'{common_str}2012040912_3hr.nc"'
+        expected_cmds[1] += f'{common_str}2012041000_3hr.nc"'
 
     # add -plot_grid argument if provided
     if 'PLOT_POINT_OBS_GRID_INPUT_TEMPLATE' in config_overrides:
@@ -267,15 +267,16 @@ def test_plot_point_obs(metplus_config, config_overrides, env_var_values):
     assert len(all_cmds) == len(expected_cmds)
     assert not wrapper.errors
 
+    missing_env = [item for item in env_var_values
+                   if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
+    env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
+
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
         assert cmd == expected_cmd
 
         # check that environment variables were set properly
         # including deprecated env vars (not in wrapper env var keys)
-        env_var_keys = (wrapper.WRAPPER_ENV_VAR_KEYS +
-                        [name for name in env_var_values
-                         if name not in wrapper.WRAPPER_ENV_VAR_KEYS])
         for env_var_key in env_var_keys:
             match = next((item for item in env_vars if
                           item.startswith(env_var_key)), None)

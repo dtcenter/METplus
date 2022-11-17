@@ -13,6 +13,8 @@ import datetime
 from dateutil.relativedelta import relativedelta
 import re
 
+from .string_manip import split_level, format_thresh
+
 '''!@namespace TimeInfo
 @brief Utility to handle timing in METplus wrappers
 @code{.sh}
@@ -31,6 +33,18 @@ TIME_LETTER_TO_STRING = {
     'M': 'minute',
     'S': 'second',
 }
+
+
+def shift_time_seconds(time_str, shift):
+    """ Adjust time by shift seconds. Format is %Y%m%d%H%M%S
+        Args:
+            @param time_str: Start time in %Y%m%d%H%M%S
+            @param shift: Amount to adjust time in seconds
+        Returns:
+            New time in format %Y%m%d%H%M%S
+    """
+    return (datetime.datetime.strptime(time_str, "%Y%m%d%H%M%S") +
+            datetime.timedelta(seconds=shift)).strftime("%Y%m%d%H%M%S")
 
 
 def get_relativedelta(value, default_unit='S'):
@@ -320,20 +334,10 @@ def _format_time_list(string_value, get_met_format, sort_list=True):
 
 
 def ti_calculate(input_dict_preserve):
-    out_dict = {}
+    # copy input dictionary so valid or init can be removed to recalculate it
+    # without modifying the input to the function
     input_dict = input_dict_preserve.copy()
-
-    KEYS_TO_COPY = ['custom', 'instance']
-
-    # set output dictionary to input items
-    if 'now' in input_dict.keys():
-        out_dict['now'] = input_dict['now']
-        out_dict['today'] = out_dict['now'].strftime('%Y%m%d')
-
-    # copy over values of some keys if it is set in input dictionary
-    for key in KEYS_TO_COPY:
-        if key in input_dict.keys():
-            out_dict[key] = input_dict[key]
+    out_dict = input_dict
 
     # read in input dictionary items and compute missing items
     # valid inputs: valid, init, lead, offset
@@ -369,7 +373,6 @@ def ti_calculate(input_dict_preserve):
     else:
         out_dict['lead'] = relativedelta(seconds=0)
 
-
     # set offset to 0 if not specified
     if 'offset_hours' in input_dict.keys():
         out_dict['offset'] = datetime.timedelta(hours=input_dict['offset_hours'])
@@ -377,7 +380,6 @@ def ti_calculate(input_dict_preserve):
         out_dict['offset'] = datetime.timedelta(seconds=input_dict['offset'])
     else:
         out_dict['offset'] = datetime.timedelta(seconds=0)
-
 
     # if init and valid are set, check which was set first via loop_by
     # remove the other to recalculate
@@ -483,3 +485,39 @@ def ti_calculate(input_dict_preserve):
     out_dict['lead_seconds'] = total_seconds
 
     return out_dict
+
+
+def add_to_time_input(time_input, clock_time=None, instance=None, custom=None):
+    if clock_time:
+        clock_dt = datetime.datetime.strptime(clock_time, '%Y%m%d%H%M%S')
+        time_input['now'] = clock_dt
+
+    # if instance is set, use that value, otherwise use empty string
+    time_input['instance'] = instance if instance else ''
+
+    # if custom is specified, set it
+    # otherwise leave it unset so it can be set within the wrapper
+    if custom:
+        time_input['custom'] = custom
+
+
+def add_field_info_to_time_info(time_info, var_info):
+    """!Add field information from var_info to the time_info dictionary to use
+    in string template substitution. Sets new items in time_info.
+
+    @param time_info dictionary containing time information to substitute
+    filename template tags
+    @param var_info dictionary containing information for the fields to process
+    """
+    if var_info is None:
+        return
+
+    for key, value in var_info.items():
+        # skip index and extra field info
+        if key == 'index' or key.endswith('extra'):
+            continue
+
+        if key.endswith('thresh'):
+            value = format_thresh(value)
+
+        time_info[key] = value

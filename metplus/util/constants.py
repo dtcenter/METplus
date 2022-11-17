@@ -1,5 +1,10 @@
 # Constant variables used throughout the METplus wrappers source code
 
+UPGRADE_INSTRUCTIONS_URL = (
+    'https://metplus.readthedocs.io/en/develop/Users_Guide/'
+    'release-notes.html#metplus-wrappers-upgrade-instructions'
+)
+
 # dictionary used by get_wrapper_name function to easily convert wrapper
 # name in many formats to the correct name of the wrapper class
 LOWER_TO_WRAPPER_NAME = {
@@ -108,3 +113,53 @@ YMD = '%Y%m%d'
 
 # datetime year month day hour minute second (YYYYMMDD_HHMMSS) notation
 YMD_HMS = '%Y%m%d_%H%M%S'
+
+# missing data value used to check if integer values are not set
+# we often check for None if a variable is not set, but 0 and None
+# have the same result in a test. 0 may be a valid integer value
+MISSING_DATA_VALUE = -9999
+
+# Dictionary used to alert users that they are using deprecated config
+# variables and need to update the configs to run METplus
+# key is the name of the depreacted variable that is no longer allowed in any
+#   config files
+# value is a dictionary containing information about what to do with the
+#   deprecated config
+# 'alt' is the alternative name for the deprecated config. this can be a
+#   single variable name or text to describe multiple variables or how to
+#   handle it. Set to None to tell the user to just remove the variable.
+# 'copy' is an optional item (defaults to True). set this to False if one
+#   cannot simply replace the deprecated variable name with the value in 'alt'
+# 'upgrade' is an optional item where the value is a keyword that will output
+#   additional instructions for the user.
+#   Valid Values: 'ensemble'
+DEPRECATED_DICT = {
+    'ENSEMBLE_STAT_ENSEMBLE_FLAG_LATLON': {'upgrade': 'ensemble'},
+    'ENSEMBLE_STAT_ENSEMBLE_FLAG_MEAN': {'upgrade': 'ensemble'},
+    'ENSEMBLE_STAT_ENSEMBLE_FLAG_STDEV': {'upgrade': 'ensemble'},
+    'ENSEMBLE_STAT_ENSEMBLE_FLAG_MINUS': {'upgrade': 'ensemble'},
+    'ENSEMBLE_STAT_ENSEMBLE_FLAG_PLUS': {'upgrade': 'ensemble'},
+    'ENSEMBLE_STAT_ENSEMBLE_FLAG_MIN': {'upgrade': 'ensemble'},
+    'ENSEMBLE_STAT_ENSEMBLE_FLAG_MAX': {'upgrade': 'ensemble'},
+    'ENSEMBLE_STAT_ENSEMBLE_FLAG_RANGE': {'upgrade': 'ensemble'},
+    'ENSEMBLE_STAT_ENSEMBLE_FLAG_VLD_COUNT': {'upgrade': 'ensemble'},
+    'ENSEMBLE_STAT_ENSEMBLE_FLAG_FREQUENCY': {'upgrade': 'ensemble'},
+    'ENSEMBLE_STAT_ENSEMBLE_FLAG_NEP': {'upgrade': 'ensemble'},
+    'ENSEMBLE_STAT_ENSEMBLE_FLAG_NMEP': {'upgrade': 'ensemble'},
+    'ENSEMBLE_STAT_NBRHD_PROB_WIDTH': {'upgrade': 'ensemble'},
+    'ENSEMBLE_STAT_NBRHD_PROB_SHAPE': {'upgrade': 'ensemble'},
+    'ENSEMBLE_STAT_NBRHD_PROB_VLD_THRESH': {'upgrade': 'ensemble'},
+    'ENSEMBLE_STAT_NMEP_SMOOTH_VLD_THRESH': {'upgrade': 'ensemble'},
+    'ENSEMBLE_STAT_NMEP_SMOOTH_SHAPE': {'upgrade': 'ensemble'},
+    'ENSEMBLE_STAT_NMEP_SMOOTH_METHOD': {'upgrade': 'ensemble'},
+    'ENSEMBLE_STAT_NMEP_SMOOTH_WIDTH': {'upgrade': 'ensemble'},
+    'ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_DX': {'upgrade': 'ensemble'},
+    'ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_RADIUS': {'upgrade': 'ensemble'},
+}
+
+# List of variables in wrapped MET config files that are no longer set
+# All explicitly set wrapped MET config files found in a METplus config,
+# e.g. GRID_STAT_CONFIG_FILE, will be checked for these variables
+# If any of these items are found, then an error will be reported
+DEPRECATED_MET_LIST = [
+]

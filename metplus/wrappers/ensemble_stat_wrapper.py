@@ -13,10 +13,9 @@ Condition codes: 0 for success, 1 for failure
 import os
 import glob
 
-from ..util import met_util as util
+from ..util import sub_var_list
+from ..util import do_string_sub, parse_var_list, PYTHON_EMBEDDING_TYPES
 from . import CompareGriddedWrapper
-from ..util import do_string_sub
-from ..util import parse_var_list
 
 """!@namespace EnsembleStatWrapper
 @brief Wraps the MET tool ensemble_stat to compare ensemble datasets
@@ -136,8 +135,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         # check if more than 1 obs datatype is set to python embedding,
         # only one can be used
-        if (c_dict['OBS_POINT_INPUT_DATATYPE'] in util.PYTHON_EMBEDDING_TYPES and
-            c_dict['OBS_GRID_INPUT_DATATYPE'] in util.PYTHON_EMBEDDING_TYPES):
+        if (c_dict['OBS_POINT_INPUT_DATATYPE'] in PYTHON_EMBEDDING_TYPES and
+            c_dict['OBS_GRID_INPUT_DATATYPE'] in PYTHON_EMBEDDING_TYPES):
             self.log_error("Both OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE and "
                            "OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE"
                            " are set to Python Embedding types. "
@@ -145,9 +144,9 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         # if either are set, set OBS_INPUT_DATATYPE to that value so
         # it can be found by the check_for_python_embedding function
-        elif c_dict['OBS_POINT_INPUT_DATATYPE'] in util.PYTHON_EMBEDDING_TYPES:
+        elif c_dict['OBS_POINT_INPUT_DATATYPE'] in PYTHON_EMBEDDING_TYPES:
             c_dict['OBS_INPUT_DATATYPE'] = c_dict['OBS_POINT_INPUT_DATATYPE']
-        elif c_dict['OBS_GRID_INPUT_DATATYPE'] in util.PYTHON_EMBEDDING_TYPES:
+        elif c_dict['OBS_GRID_INPUT_DATATYPE'] in PYTHON_EMBEDDING_TYPES:
             c_dict['OBS_INPUT_DATATYPE'] = c_dict['OBS_GRID_INPUT_DATATYPE']
 
         c_dict['N_MEMBERS'] = (
@@ -196,6 +195,14 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                 not c_dict['FCST_INPUT_FILE_LIST']):
             self.log_error("Must set FCST_ENSEMBLE_STAT_INPUT_TEMPLATE or "
                            "FCST_ENSEMBLE_STAT_INPUT_FILE_LIST")
+
+        # optional -ens_mean argument path
+        c_dict['ENS_MEAN_INPUT_DIR'] = (
+          self.config.getdir('ENSEMBLE_STAT_ENS_MEAN_INPUT_DIR', ''))
+
+        c_dict['ENS_MEAN_INPUT_TEMPLATE'] = (
+            self.config.getraw('config',
+                               'ENSEMBLE_STAT_ENS_MEAN_INPUT_TEMPLATE'))
 
         c_dict['OUTPUT_DIR'] = (
             self.config.getdir('ENSEMBLE_STAT_OUTPUT_DIR', '')
@@ -381,35 +388,9 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
            @rtype string
            @return Returns a MET command with arguments that you can run
         """
-        cmd = '{} -v {} '.format(self.app_path, self.c_dict['VERBOSITY'])
-
-        for args in self.args:
-            cmd += args + " "
-
-        if not self.infiles:
-            self.log_error(self.app_name+": No input filenames specified")
-            return None
-
-        for infile in self.infiles:
-            cmd += infile + " "
-
-        if self.param != "":
-            cmd += self.param + " "
-
-        for obs_file in self.point_obs_files:
-            if obs_file.startswith('PYTHON'):
-                obs_file = f"'{obs_file}'"
-            cmd += "-point_obs " + obs_file + " "
-
-        for obs_file in self.grid_obs_files:
-            cmd += "-grid_obs " + obs_file + " "
-
-        if not self.outdir:
-            self.log_error(self.app_name+": No output directory specified")
-            return None
-
-        cmd += '-outdir {}'.format(self.outdir)
-        return cmd
+        return (f"{self.app_path} -v {self.c_dict['VERBOSITY']}"
+                f" {' '.join(self.infiles)} {self.param}"
+                f" {' '.join(self.args)} -outdir {self.outdir}")
 
     def run_at_time_all_fields(self, time_info):
         """! Runs the MET application for a given time and forecast lead combination
@@ -423,34 +404,37 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                               fill_missing=fill_missing):
             return
 
-        # parse optional var list for FCST and/or OBS fields
-        var_list = util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
-                                     time_info)
-
-        # if empty var list for FCST/OBS, use None as first var,
-        # else use first var in list
-        if not var_list:
-            first_var_info = None
-        else:
-            first_var_info = var_list[0]
-
         # get point observation file if requested
         if self.c_dict['OBS_POINT_INPUT_TEMPLATE']:
-            point_obs_path = self.find_data(time_info, first_var_info,
-                                            'OBS_POINT')
-            if point_obs_path is None:
+            point_obs_files = self.find_data(time_info, data_type='OBS_POINT',
+                                             return_list=True)
+            if point_obs_files is None:
                 return
 
-            self.point_obs_files.append(point_obs_path)
+            for point_obs_path in point_obs_files:
+                self.args.append(f'-point_obs "{point_obs_path}"')
 
         # get grid observation file if requested
         if self.c_dict['OBS_GRID_INPUT_TEMPLATE']:
-            grid_obs_path = self.find_data(time_info, first_var_info,
-                                           'OBS_GRID')
-            if grid_obs_path is None:
+            grid_obs_files = self.find_data(time_info, data_type='OBS_GRID',
+                                            return_list=True)
+            if grid_obs_files is None:
                 return
 
-            self.grid_obs_files.append(grid_obs_path)
+            for grid_obs_path in grid_obs_files:
+                self.args.append(f'-grid_obs "{grid_obs_path}"')
+
+        # get ens_mean file if requested
+        if self.c_dict['ENS_MEAN_INPUT_TEMPLATE']:
+            ens_mean_path = self.find_data(time_info, data_type='ENS_MEAN',
+                                           return_list=True)
+            if ens_mean_path is None:
+                return
+
+            self.args.append(f'-ens_mean {ens_mean_path[0]}')
+
+        # parse optional var list for FCST and/or OBS fields
+        var_list = sub_var_list(self.c_dict['VAR_LIST_TEMP'], time_info)
 
         # set field info
         fcst_field = self.get_all_field_info(var_list, 'FCST')
@@ -520,10 +504,3 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         # run the MET command
         self.build()
-
-    def clear(self):
-        """!Unset class variables to prepare for next run time
-        """
-        super().clear()
-        self.point_obs_files = []
-        self.grid_obs_files = []

@@ -1,8 +1,111 @@
 import pytest
 
+from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 from metplus.util.time_looping import *
+from metplus.util.time_util import ti_calculate, ti_get_hours_from_relativedelta
+
+
+@pytest.mark.parametrize(
+    'run_time, skip_times, expected_result', [
+        (datetime(2019, 12, 30), {'%d': ['30', '31']}, True),
+        (datetime(2019, 12, 30), {'%d': ['29', '31']}, False),
+        (datetime(2019, 2, 27), {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, False),
+        (datetime(2019, 3, 30), {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, True),
+        (datetime(2019, 3, 30), {'%d': ['30', '31'],
+                                          '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, True),
+        (datetime(2019, 3, 29), {'%d': ['30', '31'],
+                                          '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, True),
+        (datetime(2019, 1, 29), {'%d': ['30', '31'],
+                                          '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, False),
+        (datetime(2020, 10, 31), {'%Y%m%d': ['20201031']}, True),
+        (datetime(2020, 3, 31), {'%Y%m%d': ['20201031']}, False),
+        (datetime(2020, 10, 30), {'%Y%m%d': ['20201031']}, False),
+        (datetime(2019, 10, 31), {'%Y%m%d': ['20201031']}, False),
+        (datetime(2020, 10, 31), {'%Y%m%d': ['20201031'],
+                                          '%Y': ['2019']}, True),
+        (datetime(2019, 10, 31), {'%Y%m%d': ['20201031'],
+                                          '%Y': ['2019']}, True),
+        (datetime(2019, 1, 13), {'%Y%m%d': ['20201031'],
+                                          '%Y': ['2019']}, True),
+        (datetime(2018, 10, 31), {'%Y%m%d': ['20201031'],
+                                          '%Y': ['2019']}, False),
+        (datetime(2019, 12, 30, 12), {'%H': ['12', '18']}, True),
+        (datetime(2019, 12, 30, 13), {'%H': ['12', '18']}, False),
+    ]
+)
+@pytest.mark.util
+def test_get_skip_time(run_time, skip_times, expected_result):
+    time_info = ti_calculate({'valid': run_time})
+    assert skip_time(time_info, skip_times) == expected_result
+
+
+@pytest.mark.util
+def test_get_skip_time_no_valid():
+    input_dict ={'init': datetime(2019, 1, 29)}
+    assert skip_time(input_dict, {'%Y': ['2019']}) == False
+
+
+@pytest.mark.parametrize(
+    'skip_times_conf, expected_dict', [
+        ('"%d:30,31"', {'%d': ['30','31']}),
+        ('"%m:begin_end_incr(3,11,1)"', {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
+        ('"%d:30,31", "%m:begin_end_incr(3,11,1)"', {'%d': ['30','31'],
+                                                     '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
+        ('"%Y%m%d:20201031"', {'%Y%m%d': ['20201031']}),
+        ('"%Y%m%d:20201031", "%Y:2019"', {'%Y%m%d': ['20201031'],
+                                          '%Y': ['2019']}),
+    ]
+)
+@pytest.mark.util
+def test_get_skip_times(metplus_config, skip_times_conf, expected_dict):
+    conf = metplus_config
+    conf.set('config', 'SKIP_TIMES', skip_times_conf)
+
+    assert get_skip_times(conf) == expected_dict
+
+
+@pytest.mark.parametrize(
+    'skip_times_conf, expected_dict', [
+        ('"%d:30,31"', {'%d': ['30','31']}),
+        ('"%m:begin_end_incr(3,11,1)"', {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
+        ('"%d:30,31", "%m:begin_end_incr(3,11,1)"', {'%d': ['30','31'],
+                                                     '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
+        ('"%Y%m%d:20201031"', {'%Y%m%d': ['20201031']}),
+        ('"%Y%m%d:20201031", "%Y:2019"', {'%Y%m%d': ['20201031'],
+                                          '%Y': ['2019']}),
+    ]
+)
+@pytest.mark.util
+def test_get_skip_times_wrapper(metplus_config, skip_times_conf, expected_dict):
+    conf = metplus_config
+
+    # set wrapper specific skip times, then ensure it is found
+    conf.set('config', 'GRID_STAT_SKIP_TIMES', skip_times_conf)
+
+    assert get_skip_times(conf, 'grid_stat') == expected_dict
+
+
+@pytest.mark.parametrize(
+    'skip_times_conf, expected_dict', [
+        ('"%d:30,31"', {'%d': ['30','31']}),
+        ('"%m:begin_end_incr(3,11,1)"', {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
+        ('"%d:30,31", "%m:begin_end_incr(3,11,1)"', {'%d': ['30','31'],
+                                                     '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
+        ('"%Y%m%d:20201031"', {'%Y%m%d': ['20201031']}),
+        ('"%Y%m%d:20201031", "%Y:2019"', {'%Y%m%d': ['20201031'],
+                                          '%Y': ['2019']}),
+    ]
+)
+@pytest.mark.util
+def test_get_skip_times_wrapper_not_used(metplus_config, skip_times_conf, expected_dict):
+    conf = metplus_config
+
+    # set generic SKIP_TIMES, then request grid_stat to ensure it uses generic
+    conf.set('config', 'SKIP_TIMES', skip_times_conf)
+
+    assert get_skip_times(conf, 'grid_stat') == expected_dict
 
 
 @pytest.mark.util
@@ -204,3 +307,140 @@ def test_time_generator_error_check_beg_end(metplus_config, prefix):
     # _END time comes before _BEG time
     config.set('config', f'{prefix}_END', '2020112012')
     assert next(time_generator(config)) is None
+
+
+def test_get_lead_sequence_lead(metplus_config):
+    input_dict = {'valid': datetime(2019, 2, 1, 13)}
+    conf = metplus_config
+    conf.set('config', 'LEAD_SEQ', "3,6,9,12")
+    test_seq = get_lead_sequence(conf, input_dict)
+    hour_seq = []
+    for test in test_seq:
+        hour_seq.append(ti_get_hours_from_relativedelta(test))
+    lead_seq = [3, 6, 9, 12]
+    assert hour_seq == lead_seq
+
+
+@pytest.mark.parametrize(
+    'key, value', [
+        ('begin_end_incr(3,12,3)',  [ 3, 6, 9, 12]),
+        ('begin_end_incr( 3,12 , 3)',  [ 3, 6, 9, 12]),
+        ('begin_end_incr(0,10,2)',  [ 0, 2, 4, 6, 8, 10]),
+        ('begin_end_incr(10,0,-2)',  [ 10, 8, 6, 4, 2, 0]),
+        ('begin_end_incr(2,2,20)',  [ 2 ]),
+        ('begin_end_incr(72,72,6)',  [ 72 ]),
+        ('begin_end_incr(0,12,1), begin_end_incr(15,60,3)', [0,1,2,3,4,5,6,7,8,9,10,11,12,15,18,21,24,27,30,33,36,39,42,45,48,51,54,57,60]),
+        ('begin_end_incr(0,10,2), 12',  [ 0, 2, 4, 6, 8, 10, 12]),
+        ('begin_end_incr(0,10,2)H, 12',  [ 0, 2, 4, 6, 8, 10, 12]),
+        ('begin_end_incr(0,10800,3600)S, 4H',  [ 0, 1, 2, 3, 4]),
+    ]
+)
+@pytest.mark.util
+def test_get_lead_sequence_lead_list(metplus_config, key, value):
+    input_dict = { 'valid' : datetime(2019, 2, 1, 13) }
+    conf = metplus_config
+    conf.set('config', 'LEAD_SEQ', key)
+    test_seq = get_lead_sequence(conf, input_dict)
+    hour_seq = []
+
+    for test in test_seq:
+        hour_seq.append(ti_get_hours_from_relativedelta(test))
+    lead_seq = value
+    assert hour_seq == lead_seq
+
+
+@pytest.mark.parametrize(
+    'config_dict, expected_list', [
+        # 1 group
+        ({'LEAD_SEQ_1': "0, 1, 2, 3",
+          'LEAD_SEQ_1_LABEL': 'Day1',
+          },  [0, 1, 2, 3]),
+        # 2 groups, no overlap
+        ({'LEAD_SEQ_1': "0, 1, 2, 3",
+          'LEAD_SEQ_1_LABEL': 'Day1',
+          'LEAD_SEQ_2': "8, 9, 10, 11",
+          'LEAD_SEQ_2_LABEL': 'Day2',
+          },  [0, 1, 2, 3, 8, 9, 10, 11]),
+        # 2 groups, overlap
+        ({'LEAD_SEQ_1': "0, 1, 2, 3",
+          'LEAD_SEQ_1_LABEL': 'Day1',
+          'LEAD_SEQ_2': "3, 4, 5, 6",
+          'LEAD_SEQ_2_LABEL': 'Day2',
+          }, [0, 1, 2, 3, 4, 5, 6]),
+        # 2 groups, no overlap, out of order
+        ({'LEAD_SEQ_1': "8, 9, 10, 11",
+          'LEAD_SEQ_1_LABEL': 'Day2',
+          'LEAD_SEQ_2': "0, 1, 2, 3",
+          'LEAD_SEQ_2_LABEL': 'Day1',
+          },  [8, 9, 10, 11, 0, 1, 2, 3]),
+        # 2 groups, overlap, out of order
+        ({'LEAD_SEQ_1': "3, 4, 5, 6",
+          'LEAD_SEQ_1_LABEL': 'Day2',
+          'LEAD_SEQ_2': "0, 1, 2, 3",
+          'LEAD_SEQ_2_LABEL': 'Day1',
+          }, [3, 4, 5, 6, 0, 1, 2]),
+    ]
+)
+@pytest.mark.util
+def test_get_lead_sequence_groups(metplus_config, config_dict, expected_list):
+    config = metplus_config
+    for key, value in config_dict.items():
+        config.set('config', key, value)
+
+    output_list = get_lead_sequence(config)
+    hour_seq = []
+
+    for output in output_list:
+        hour_seq.append(ti_get_hours_from_relativedelta(output))
+
+    assert hour_seq == expected_list
+
+
+@pytest.mark.parametrize(
+    'current_hour, lead_seq', [
+        (0,  [0, 12, 24, 36]),
+        (1,  [1, 13, 25]),
+        (2,  [2, 14, 26]),
+        (3,  [3, 15, 27]),
+        (4,  [4, 16, 28]),
+        (5,  [5, 17, 29]),
+        (6,  [6, 18, 30]),
+        (7,  [7, 19, 31]),
+        (8,  [8, 20, 32]),
+        (9,  [9, 21, 33]),
+        (10, [10, 22, 34]),
+        (11, [11, 23, 35]),
+        (12, [0, 12, 24, 36]),
+        (13, [1, 13, 25]),
+        (14, [2, 14, 26]),
+        (15, [3, 15, 27]),
+        (16, [4, 16, 28]),
+        (17, [5, 17, 29]),
+        (18, [6, 18, 30]),
+        (19, [7, 19, 31]),
+        (20, [8, 20, 32]),
+        (21, [9, 21, 33]),
+        (22, [10, 22, 34]),
+        (23, [11, 23, 35])
+    ]
+)
+@pytest.mark.util
+def test_get_lead_sequence_init(metplus_config, current_hour, lead_seq):
+    input_dict = {'valid': datetime(2019, 2, 1, current_hour)}
+    conf = metplus_config
+    conf.set('config', 'INIT_SEQ', "0, 12")
+    conf.set('config', 'LEAD_SEQ_MAX', 36)
+    test_seq = get_lead_sequence(conf, input_dict)
+    assert test_seq == [relativedelta(hours=lead) for lead in lead_seq]
+
+
+@pytest.mark.util
+def test_get_lead_sequence_init_min_10(metplus_config):
+    input_dict = {'valid': datetime(2019, 2, 1, 12)}
+    conf = metplus_config
+    conf.set('config', 'INIT_SEQ', "0, 12")
+    conf.set('config', 'LEAD_SEQ_MAX', 24)
+    conf.set('config', 'LEAD_SEQ_MIN', 10)
+    test_seq = get_lead_sequence(conf, input_dict)
+    lead_seq = [12, 24]
+    assert test_seq == [relativedelta(hours=lead) for lead in lead_seq]

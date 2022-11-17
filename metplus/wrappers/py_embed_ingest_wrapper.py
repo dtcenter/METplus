@@ -13,11 +13,10 @@ Condition codes: 0 for success, 1 for failure
 import os
 import re
 
-from ..util import met_util as util
 from ..util import time_util
 from . import CommandBuilder
 from . import RegridDataPlaneWrapper
-from ..util import do_string_sub
+from ..util import do_string_sub, get_lead_sequence
 
 VALID_PYTHON_EMBED_TYPES = ['NUMPY', 'XARRAY', 'PANDAS']
 
@@ -132,7 +131,7 @@ class PyEmbedIngestWrapper(CommandBuilder):
                         generally contains 'now' (current) time and 'init' or 'valid' time
         """
         # get forecast leads to loop over
-        lead_seq = util.get_lead_sequence(self.config, input_dict)
+        lead_seq = get_lead_sequence(self.config, input_dict)
         for lead in lead_seq:
 
             # set forecast lead time in hours
