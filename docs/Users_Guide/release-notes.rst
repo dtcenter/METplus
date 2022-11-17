@@ -30,6 +30,35 @@ When applicable, release notes are followed by the `GitHub issue <https://github
 describes the bugfix, enhancement, or new feature.
 
 
+METplus Version 5.0.0 Beta 5 Release Notes (2022-11-18)
+-------------------------------------------------------
+
+* Enhancements:
+
+  * Add support in EnsembleStat wrapper for setting -ens_mean command line argument (`#1569 <https://github.com/dtcenter/METplus/issues/1569>`_)
+  * Enhance METplus to have better signal handling for shutdown events (`dtcenter/METplus-Internal#27 <https://github.com/dtcenter/METplus-Internal/issues/27>`_)
+  * TCPairs and TCStat - add support for new config options and command line arguments (`#1898 <https://github.com/dtcenter/METplus/issues/1898>`_)
+  * Enhance the GridStat and PointStat wrappers to handle the addition of SEEPS (`#1953 <https://github.com/dtcenter/METplus/issues/1953>`_)
+  * SeriesAnalysis - add support for setting mask dictionary (`#1926 <https://github.com/dtcenter/METplus/issues/1926>`_)
+
+* Bugfixes:
+
+  * Set level properly in filename template for EnsembleStat forecast input (`#1910 <https://github.com/dtcenter/METplus/issues/1910>`_)
+  * Prevent duplicate observation files using a file window if compressed equivalent files exist in same directory (`#1939 <https://github.com/dtcenter/METplus/issues/1939>`_)
+
+* New Wrappers: None
+
+* New Use Cases:
+
+  * StatAnalysis Python Embedding using IODA v2.0 (`#1453 <https://github.com/dtcenter/METplus/issues/1453>`_)
+  * StatAnalysis Python Embedding to read native grid (u-grid) (`#1561 <https://github.com/dtcenter/METplus/issues/1561>`_)
+
+* Documentation: None
+
+* Internal:
+
+  * Organize utility scripts used by multiple wrappers (`#344 <https://github.com/dtcenter/METplus/issues/344>`_)
+
 METplus Version 5.0.0 Beta 4 Release Notes (2022-10-26)
 -------------------------------------------------------
 
