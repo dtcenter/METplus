@@ -468,6 +468,8 @@ def test_met_dictionary_in_var_options(metplus_config):
          {'METPLUS_FCST_FILE_TYPE': 'file_type = NETCDF_PINT;'}),
         ({'POINT_STAT_FCST_FILE_TYPE': 'NETCDF_PINT', },
          {'METPLUS_FCST_FILE_TYPE': 'file_type = NETCDF_PINT;'}),
+        ({'POINT_STAT_SEEPS_P1_THRESH': 'ge0.1&&le0.85', },
+         {'METPLUS_SEEPS_P1_THRESH': 'seeps_p1_thresh = ge0.1&&le0.85;'}),
     ]
 )
 @pytest.mark.wrapper_a

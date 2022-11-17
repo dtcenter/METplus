@@ -297,19 +297,19 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_ECLV_POINTS`
 | :term:`FCST_ENSEMBLE_STAT_IS_PROB`
 | :term:`FCST_ENSEMBLE_STAT_PROB_IN_GRIB_PDS`
-| :term:`ENSEMBLE_STAT_VERIFICATION_MASK_TEMPLATE` (optional)
-| :term:`ENS_VAR<n>_NAME` (optional)
-| :term:`ENS_VAR<n>_LEVELS` (optional)
-| :term:`ENS_VAR<n>_THRESH` (optional)
-| :term:`ENS_VAR<n>_OPTIONS` (optional)
-| :term:`FCST_ENSEMBLE_STAT_VAR<n>_NAME` (optional)
-| :term:`FCST_ENSEMBLE_STAT_VAR<n>_LEVELS` (optional)
-| :term:`FCST_ENSEMBLE_STAT_VAR<n>_THRESH` (optional)
-| :term:`FCST_ENSEMBLE_STAT_VAR<n>_OPTIONS` (optional)
-| :term:`OBS_ENSEMBLE_STAT_VAR<n>_NAME` (optional)
-| :term:`OBS_ENSEMBLE_STAT_VAR<n>_LEVELS` (optional)
-| :term:`OBS_ENSEMBLE_STAT_VAR<n>_THRESH` (optional)
-| :term:`OBS_ENSEMBLE_STAT_VAR<n>_OPTIONS` (optional)
+| :term:`ENSEMBLE_STAT_VERIFICATION_MASK_TEMPLATE`
+| :term:`ENS_VAR<n>_NAME`
+| :term:`ENS_VAR<n>_LEVELS`
+| :term:`ENS_VAR<n>_THRESH`
+| :term:`ENS_VAR<n>_OPTIONS`
+| :term:`FCST_ENSEMBLE_STAT_VAR<n>_NAME`
+| :term:`FCST_ENSEMBLE_STAT_VAR<n>_LEVELS`
+| :term:`FCST_ENSEMBLE_STAT_VAR<n>_THRESH`
+| :term:`FCST_ENSEMBLE_STAT_VAR<n>_OPTIONS`
+| :term:`OBS_ENSEMBLE_STAT_VAR<n>_NAME`
+| :term:`OBS_ENSEMBLE_STAT_VAR<n>_LEVELS`
+| :term:`OBS_ENSEMBLE_STAT_VAR<n>_THRESH`
+| :term:`OBS_ENSEMBLE_STAT_VAR<n>_OPTIONS`
 |
 
 .. warning:: **DEPRECATED:**
@@ -2659,7 +2659,7 @@ METplus Configuration
 | :term:`GRID_DIAG_OUTPUT_DIR`
 | :term:`GRID_DIAG_INPUT_TEMPLATE`
 | :term:`GRID_DIAG_OUTPUT_TEMPLATE`
-| :term:`GRID_DIAG_VERIFICATION_MASK_TEMPLATE` (optional)
+| :term:`GRID_DIAG_VERIFICATION_MASK_TEMPLATE`
 | :term:`LOG_GRID_DIAG_VERBOSITY`
 | :term:`GRID_DIAG_CONFIG_FILE`
 | :term:`GRID_DIAG_CUSTOM_LOOP_LIST`
@@ -2811,7 +2811,7 @@ METplus Configuration
 | :term:`FCST_GRID_STAT_INPUT_TEMPLATE`
 | :term:`OBS_GRID_STAT_INPUT_TEMPLATE`
 | :term:`GRID_STAT_OUTPUT_TEMPLATE`
-| :term:`GRID_STAT_VERIFICATION_MASK_TEMPLATE` (optional)
+| :term:`GRID_STAT_VERIFICATION_MASK_TEMPLATE`
 | :term:`LOG_GRID_STAT_VERBOSITY`
 | :term:`GRID_STAT_OUTPUT_PREFIX`
 | :term:`GRID_STAT_CONFIG_FILE`
@@ -2851,6 +2851,7 @@ METplus Configuration
 | :term:`GRID_STAT_OUTPUT_FLAG_NBRCNT`
 | :term:`GRID_STAT_OUTPUT_FLAG_GRAD`
 | :term:`GRID_STAT_OUTPUT_FLAG_DMAP`
+| :term:`GRID_STAT_OUTPUT_FLAG_SEEPS`
 | :term:`GRID_STAT_NC_PAIRS_FLAG_LATLON`
 | :term:`GRID_STAT_NC_PAIRS_FLAG_RAW`
 | :term:`GRID_STAT_NC_PAIRS_FLAG_DIFF`
@@ -2862,6 +2863,7 @@ METplus Configuration
 | :term:`GRID_STAT_NC_PAIRS_FLAG_GRADIENT`
 | :term:`GRID_STAT_NC_PAIRS_FLAG_DISTANCE_MAP`
 | :term:`GRID_STAT_NC_PAIRS_FLAG_APPLY_MASK`
+| :term:`GRID_STAT_NC_PAIRS_FLAG_SEEPS`
 | :term:`GRID_STAT_INTERP_FIELD`
 | :term:`GRID_STAT_INTERP_VLD_THRESH`
 | :term:`GRID_STAT_INTERP_SHAPE`
@@ -2913,30 +2915,31 @@ METplus Configuration
 | :term:`GRID_STAT_CENSOR_VAL`
 | :term:`FCST_GRID_STAT_IS_PROB`
 | :term:`FCST_GRID_STAT_PROB_IN_GRIB_PDS`
-| :term:`GRID_STAT_MASK_GRID` (optional)
-| :term:`GRID_STAT_MASK_POLY` (optional)
+| :term:`GRID_STAT_MASK_GRID`
+| :term:`GRID_STAT_MASK_POLY`
 | :term:`GRID_STAT_MET_CONFIG_OVERRIDES`
-| :term:`FCST_GRID_STAT_PROB_THRESH` (optional)
-| :term:`OBS_GRID_STAT_PROB_THRESH` (optional)
-| :term:`GRID_STAT_NEIGHBORHOOD_WIDTH` (optional)
-| :term:`GRID_STAT_NEIGHBORHOOD_SHAPE` (optional)
-| :term:`GRID_STAT_NEIGHBORHOOD_COV_THRESH` (optional)
-| :term:`FCST_GRID_STAT_WINDOW_BEGIN` (optional)
-| :term:`FCST_GRID_STAT_WINDOW_END` (optional)
-| :term:`OBS_GRID_STAT_WINDOW_BEGIN` (optional)
-| :term:`OBS_GRID_STAT_WINDOW_END` (optional)
-| :term:`FCST_GRID_STAT_FILE_WINDOW_BEGIN` (optional)
-| :term:`FCST_GRID_STAT_FILE_WINDOW_END` (optional)
-| :term:`OBS_GRID_STAT_FILE_WINDOW_BEGIN` (optional)
-| :term:`OBS_GRID_STAT_FILE_WINDOW_END` (optional)
-| :term:`FCST_GRID_STAT_VAR<n>_NAME` (optional)
-| :term:`FCST_GRID_STAT_VAR<n>_LEVELS` (optional)
-| :term:`FCST_GRID_STAT_VAR<n>_THRESH` (optional)
-| :term:`FCST_GRID_STAT_VAR<n>_OPTIONS` (optional)
-| :term:`OBS_GRID_STAT_VAR<n>_NAME` (optional)
-| :term:`OBS_GRID_STAT_VAR<n>_LEVELS` (optional)
-| :term:`OBS_GRID_STAT_VAR<n>_THRESH` (optional)
-| :term:`OBS_GRID_STAT_VAR<n>_OPTIONS` (optional)
+| :term:`FCST_GRID_STAT_PROB_THRESH`
+| :term:`OBS_GRID_STAT_PROB_THRESH`
+| :term:`GRID_STAT_NEIGHBORHOOD_WIDTH`
+| :term:`GRID_STAT_NEIGHBORHOOD_SHAPE`
+| :term:`GRID_STAT_NEIGHBORHOOD_COV_THRESH`
+| :term:`FCST_GRID_STAT_WINDOW_BEGIN`
+| :term:`FCST_GRID_STAT_WINDOW_END`
+| :term:`OBS_GRID_STAT_WINDOW_BEGIN`
+| :term:`OBS_GRID_STAT_WINDOW_END`
+| :term:`FCST_GRID_STAT_FILE_WINDOW_BEGIN`
+| :term:`FCST_GRID_STAT_FILE_WINDOW_END`
+| :term:`OBS_GRID_STAT_FILE_WINDOW_BEGIN`
+| :term:`OBS_GRID_STAT_FILE_WINDOW_END`
+| :term:`FCST_GRID_STAT_VAR<n>_NAME`
+| :term:`FCST_GRID_STAT_VAR<n>_LEVELS`
+| :term:`FCST_GRID_STAT_VAR<n>_THRESH`
+| :term:`FCST_GRID_STAT_VAR<n>_OPTIONS`
+| :term:`OBS_GRID_STAT_VAR<n>_NAME`
+| :term:`OBS_GRID_STAT_VAR<n>_LEVELS`
+| :term:`OBS_GRID_STAT_VAR<n>_THRESH`
+| :term:`OBS_GRID_STAT_VAR<n>_OPTIONS`
+| :term:`GRID_STAT_SEEPS_P1_THRESH`
 |
 
 .. warning:: **DEPRECATED**
@@ -3278,6 +3281,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - output_flag.grad
    * - :term:`GRID_STAT_OUTPUT_FLAG_DMAP`
      - output_flag.dmap
+   * - :term:`GRID_STAT_OUTPUT_FLAG_SEEPS`
+     - output_flag.seeps
 
 **${METPLUS_NC_PAIRS_FLAG_DICT}**
 
@@ -3309,6 +3314,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - nc_pairs_flag.distance_map
    * - :term:`GRID_STAT_NC_PAIRS_FLAG_APPLY_MASK`
      - nc_pairs_flag.apply_mask
+   * - :term:`GRID_STAT_NC_PAIRS_FLAG_SEEPS`
+     - nc_pairs_flag.seeps
 
 **${METPLUS_INTERP_DICT}**
 
@@ -3415,6 +3422,17 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`GRID_STAT_CENSOR_VAL`
      - censor_val
+
+**${METPLUS_SEEPS_P1_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_SEEPS_P1_THRESH`
+     - seeps_p1_thresh
 
 
 .. _ioda2nc_wrapper:
@@ -3998,16 +4016,16 @@ METplus Configuration
 | :term:`FCST_MODE_IS_PROB`
 | :term:`FCST_MODE_PROB_IN_GRIB_PDS`
 | :term:`MODE_MULTIVAR_LOGIC`
-| :term:`FCST_MODE_VAR<n>_NAME` (optional)
-| :term:`FCST_MODE_VAR<n>_LEVELS` (optional)
-| :term:`FCST_MODE_VAR<n>_THRESH` (optional)
-| :term:`FCST_MODE_VAR<n>_OPTIONS` (optional)
-| :term:`MODE_FCST_FILE_TYPE` (optional)
-| :term:`OBS_MODE_VAR<n>_NAME` (optional)
-| :term:`OBS_MODE_VAR<n>_LEVELS` (optional)
-| :term:`OBS_MODE_VAR<n>_THRESH` (optional)
-| :term:`OBS_MODE_VAR<n>_OPTIONS` (optional)
-| :term:`MODE_OBS_FILE_TYPE` (optional)
+| :term:`FCST_MODE_VAR<n>_NAME`
+| :term:`FCST_MODE_VAR<n>_LEVELS`
+| :term:`FCST_MODE_VAR<n>_THRESH`
+| :term:`FCST_MODE_VAR<n>_OPTIONS`
+| :term:`MODE_FCST_FILE_TYPE`
+| :term:`OBS_MODE_VAR<n>_NAME`
+| :term:`OBS_MODE_VAR<n>_LEVELS`
+| :term:`OBS_MODE_VAR<n>_THRESH`
+| :term:`OBS_MODE_VAR<n>_OPTIONS`
+| :term:`MODE_OBS_FILE_TYPE`
 |
 
 .. warning:: **DEPRECATED:**
@@ -4624,14 +4642,14 @@ METplus Configuration
 | :term:`MTD_MET_CONFIG_OVERRIDES`
 | :term:`FCST_MTD_IS_PROB`
 | :term:`FCST_MTD_PROB_IN_GRIB_PDS`
-| :term:`FCST_MTD_VAR<n>_NAME` (optional)
-| :term:`FCST_MTD_VAR<n>_LEVELS` (optional)
-| :term:`FCST_MTD_VAR<n>_THRESH` (optional)
-| :term:`FCST_MTD_VAR<n>_OPTIONS` (optional)
-| :term:`OBS_MTD_VAR<n>_NAME` (optional)
-| :term:`OBS_MTD_VAR<n>_LEVELS` (optional)
-| :term:`OBS_MTD_VAR<n>_THRESH` (optional)
-| :term:`OBS_MTD_VAR<n>_OPTIONS` (optional)
+| :term:`FCST_MTD_VAR<n>_NAME`
+| :term:`FCST_MTD_VAR<n>_LEVELS`
+| :term:`FCST_MTD_VAR<n>_THRESH`
+| :term:`FCST_MTD_VAR<n>_OPTIONS`
+| :term:`OBS_MTD_VAR<n>_NAME`
+| :term:`OBS_MTD_VAR<n>_LEVELS`
+| :term:`OBS_MTD_VAR<n>_THRESH`
+| :term:`OBS_MTD_VAR<n>_OPTIONS`
 |
 
 .. warning:: **DEPRECATED:**
@@ -4872,11 +4890,11 @@ METplus Configuration
 | :term:`PB2NC_OFFSETS`
 | :term:`PB2NC_INPUT_DATATYPE`
 | :term:`PB2NC_CONFIG_FILE`
-| :term:`PB2NC_MESSAGE_TYPE` (optional)
-| :term:`PB2NC_STATION_ID` (optional)
-| :term:`PB2NC_GRID` (optional)
+| :term:`PB2NC_MESSAGE_TYPE`
+| :term:`PB2NC_STATION_ID`
+| :term:`PB2NC_GRID`
 | :term:`PB2NC_POLY`
-| :term:`PB2NC_OBS_BUFR_VAR_LIST` (optional)
+| :term:`PB2NC_OBS_BUFR_VAR_LIST`
 | :term:`PB2NC_TIME_SUMMARY_FLAG`
 | :term:`PB2NC_TIME_SUMMARY_BEG`
 | :term:`PB2NC_TIME_SUMMARY_END`
@@ -5149,16 +5167,16 @@ METplus Configuration
 | :term:`OBS_PCP_COMBINE_LOOKBACK`
 | :term:`FCST_PCP_COMBINE_USE_ZERO_ACCUM`
 | :term:`OBS_PCP_COMBINE_USE_ZERO_ACCUM`
-| :term:`FCST_PCP_COMBINE_EXTRA_NAMES` (optional)
-| :term:`FCST_PCP_COMBINE_EXTRA_LEVELS` (optional)
-| :term:`FCST_PCP_COMBINE_EXTRA_OUTPUT_NAMES` (optional)
-| :term:`OBS_PCP_COMBINE_EXTRA_NAMES` (optional)
-| :term:`OBS_PCP_COMBINE_EXTRA_LEVELS` (optional)
-| :term:`OBS_PCP_COMBINE_EXTRA_OUTPUT_NAMES` (optional)
-| :term:`FCST_PCP_COMBINE_OUTPUT_ACCUM` (optional)
-| :term:`FCST_PCP_COMBINE_OUTPUT_NAME` (optional)
-| :term:`OBS_PCP_COMBINE_OUTPUT_ACCUM` (optional)
-| :term:`OBS_PCP_COMBINE_OUTPUT_NAME` (optional)
+| :term:`FCST_PCP_COMBINE_EXTRA_NAMES`
+| :term:`FCST_PCP_COMBINE_EXTRA_LEVELS`
+| :term:`FCST_PCP_COMBINE_EXTRA_OUTPUT_NAMES`
+| :term:`OBS_PCP_COMBINE_EXTRA_NAMES`
+| :term:`OBS_PCP_COMBINE_EXTRA_LEVELS`
+| :term:`OBS_PCP_COMBINE_EXTRA_OUTPUT_NAMES`
+| :term:`FCST_PCP_COMBINE_OUTPUT_ACCUM`
+| :term:`FCST_PCP_COMBINE_OUTPUT_NAME`
+| :term:`OBS_PCP_COMBINE_OUTPUT_ACCUM`
+| :term:`OBS_PCP_COMBINE_OUTPUT_NAME`
 |
 
 .. warning:: **DEPRECATED:**
@@ -5640,7 +5658,7 @@ Configuration
 | :term:`POINT_STAT_OUTPUT_DIR`
 | :term:`FCST_POINT_STAT_INPUT_TEMPLATE`
 | :term:`OBS_POINT_STAT_INPUT_TEMPLATE`
-| :term:`POINT_STAT_VERIFICATION_MASK_TEMPLATE` (optional)
+| :term:`POINT_STAT_VERIFICATION_MASK_TEMPLATE`
 | :term:`POINT_STAT_OUTPUT_PREFIX`
 | :term:`LOG_POINT_STAT_VERBOSITY`
 | :term:`POINT_STAT_OFFSETS`
@@ -5734,22 +5752,23 @@ Configuration
 | :term:`POINT_STAT_MESSAGE_TYPE_GROUP_MAP`
 | :term:`FCST_POINT_STAT_IS_PROB`
 | :term:`FCST_POINT_STAT_PROB_IN_GRIB_PDS`
-| :term:`FCST_POINT_STAT_WINDOW_BEGIN` (optional)
-| :term:`FCST_POINT_STAT_WINDOW_END` (optional)
-| :term:`OBS_POINT_STAT_WINDOW_BEGIN` (optional)
-| :term:`OBS_POINT_STAT_WINDOW_END` (optional)
-| :term:`POINT_STAT_NEIGHBORHOOD_WIDTH` (optional)
-| :term:`POINT_STAT_NEIGHBORHOOD_SHAPE` (optional)
-| :term:`FCST_POINT_STAT_VAR<n>_NAME` (optional)
-| :term:`FCST_POINT_STAT_VAR<n>_LEVELS` (optional)
-| :term:`FCST_POINT_STAT_VAR<n>_THRESH` (optional)
-| :term:`FCST_POINT_STAT_VAR<n>_OPTIONS` (optional)
-| :term:`OBS_POINT_STAT_VAR<n>_NAME` (optional)
-| :term:`OBS_POINT_STAT_VAR<n>_LEVELS` (optional)
-| :term:`OBS_POINT_STAT_VAR<n>_THRESH` (optional)
-| :term:`OBS_POINT_STAT_VAR<n>_OPTIONS` (optional)
-| :term:`POINT_STAT_OBS_VALID_BEG` (optional)
-| :term:`POINT_STAT_OBS_VALID_END` (optional)
+| :term:`FCST_POINT_STAT_WINDOW_BEGIN`
+| :term:`FCST_POINT_STAT_WINDOW_END`
+| :term:`OBS_POINT_STAT_WINDOW_BEGIN`
+| :term:`OBS_POINT_STAT_WINDOW_END`
+| :term:`POINT_STAT_NEIGHBORHOOD_WIDTH`
+| :term:`POINT_STAT_NEIGHBORHOOD_SHAPE`
+| :term:`FCST_POINT_STAT_VAR<n>_NAME`
+| :term:`FCST_POINT_STAT_VAR<n>_LEVELS`
+| :term:`FCST_POINT_STAT_VAR<n>_THRESH`
+| :term:`FCST_POINT_STAT_VAR<n>_OPTIONS`
+| :term:`OBS_POINT_STAT_VAR<n>_NAME`
+| :term:`OBS_POINT_STAT_VAR<n>_LEVELS`
+| :term:`OBS_POINT_STAT_VAR<n>_THRESH`
+| :term:`OBS_POINT_STAT_VAR<n>_OPTIONS`
+| :term:`POINT_STAT_OBS_VALID_BEG`
+| :term:`POINT_STAT_OBS_VALID_END`
+| :term:`POINT_STAT_SEEPS_P1_THRESH`
 |
 
 .. warning:: **DEPRECATED:**
@@ -6197,6 +6216,18 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`POINT_STAT_MESSAGE_TYPE_GROUP_MAP`
      - message_type_group_map
 
+**${METPLUS_SEEPS_P1_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_SEEPS_P1_THRESH`
+     - seeps_p1_thresh
+
+
 .. _py_embed_ingest_wrapper:
 
 PyEmbedIngest
@@ -6262,12 +6293,12 @@ METplus Configuration
 | :term:`REGRID_DATA_PLANE_METHOD`
 | :term:`REGRID_DATA_PLANE_CUSTOM_LOOP_LIST`
 | :term:`REGRID_DATA_PLANE_ONCE_PER_FIELD`
-| :term:`FCST_REGRID_DATA_PLANE_VAR<n>_INPUT_FIELD_NAME` (optional)
-| :term:`FCST_REGRID_DATA_PLANE_VAR<n>_INPUT_LEVEL` (optional)
-| :term:`FCST_REGRID_DATA_PLANE_VAR<n>_OUTPUT_FIELD_NAME` (optional)
-| :term:`OBS_REGRID_DATA_PLANE_VAR<n>_INPUT_FIELD_NAME` (optional)
-| :term:`OBS_REGRID_DATA_PLANE_VAR<n>_INPUT_LEVEL` (optional)
-| :term:`OBS_REGRID_DATA_PLANE_VAR<n>_OUTPUT_FIELD_NAME` (optional)
+| :term:`FCST_REGRID_DATA_PLANE_VAR<n>_INPUT_FIELD_NAME`
+| :term:`FCST_REGRID_DATA_PLANE_VAR<n>_INPUT_LEVEL`
+| :term:`FCST_REGRID_DATA_PLANE_VAR<n>_OUTPUT_FIELD_NAME`
+| :term:`OBS_REGRID_DATA_PLANE_VAR<n>_INPUT_FIELD_NAME`
+| :term:`OBS_REGRID_DATA_PLANE_VAR<n>_INPUT_LEVEL`
+| :term:`OBS_REGRID_DATA_PLANE_VAR<n>_OUTPUT_FIELD_NAME`
 |
 
 .. warning:: **DEPRECATED:**
@@ -8871,7 +8902,7 @@ METplus Configuration
 
 | :term:`TC_STAT_LOOKIN_DIR`
 | :term:`TC_STAT_OUTPUT_DIR`
-| :term:`TC_STAT_OUTPUT_TEMPLATE` (optional)
+| :term:`TC_STAT_OUTPUT_TEMPLATE`
 | :term:`TC_STAT_CONFIG_FILE`
 | :term:`TC_STAT_JOB_ARGS`
 | :term:`TC_STAT_AMODEL`
@@ -9538,7 +9569,7 @@ METplus Configuration
 | :term:`USER_SCRIPT_COMMAND`
 | :term:`USER_SCRIPT_CUSTOM_LOOP_LIST`
 | :term:`USER_SCRIPT_SKIP_TIMES`
-| :term:`USER_SCRIPT_INPUT_DIR` (optional)
-| :term:`USER_SCRIPT_INPUT_TEMPLATE` (optional)
-| :term:`USER_SCRIPT_INPUT_TEMPLATE_LABELS` (optional)
+| :term:`USER_SCRIPT_INPUT_DIR`
+| :term:`USER_SCRIPT_INPUT_TEMPLATE`
+| :term:`USER_SCRIPT_INPUT_TEMPLATE_LABELS`
 |

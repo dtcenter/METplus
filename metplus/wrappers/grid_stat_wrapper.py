@@ -20,9 +20,9 @@ from . import CompareGriddedWrapper
 @endcode
 """
 
+
 class GridStatWrapper(CompareGriddedWrapper):
-    '''!Wraps the MET tool grid_stat to compare gridded datasets
-    '''
+    """!Wraps the MET tool grid_stat to compare gridded datasets"""
 
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_MODEL',
@@ -51,6 +51,7 @@ class GridStatWrapper(CompareGriddedWrapper):
         'METPLUS_FOURIER_DICT',
         'METPLUS_CENSOR_THRESH',
         'METPLUS_CENSOR_VAL',
+        'METPLUS_SEEPS_P1_THRESH',
     ]
 
     # handle deprecated env vars used pre v4.0.0
@@ -60,41 +61,45 @@ class GridStatWrapper(CompareGriddedWrapper):
         'VERIF_MASK',
     ]
 
-    OUTPUT_FLAGS = ['fho',
-                    'ctc',
-                    'cts',
-                    'mctc',
-                    'mcts',
-                    'cnt',
-                    'sl1l2',
-                    'sal1l2',
-                    'vl1l2',
-                    'val1l2',
-                    'vcnt',
-                    'pct',
-                    'pstd',
-                    'pjc',
-                    'prc',
-                    'eclv',
-                    'nbrctc',
-                    'nbrcts',
-                    'nbrcnt',
-                    'grad',
-                    'dmap',
-                    ]
+    OUTPUT_FLAGS = [
+        'fho',
+        'ctc',
+        'cts',
+        'mctc',
+        'mcts',
+        'cnt',
+        'sl1l2',
+        'sal1l2',
+        'vl1l2',
+        'val1l2',
+        'vcnt',
+        'pct',
+        'pstd',
+        'pjc',
+        'prc',
+        'eclv',
+        'nbrctc',
+        'nbrcts',
+        'nbrcnt',
+        'grad',
+        'dmap',
+        'seeps',
+    ]
 
-    NC_PAIRS_FLAGS = ['latlon',
-                      'raw',
-                      'diff',
-                      'climo',
-                      'climo_cdp',
-                      'weight',
-                      'nbrhd',
-                      'fourier',
-                      'gradient',
-                      'distance_map',
-                      'apply_mask',
-                    ]
+    NC_PAIRS_FLAGS = [
+        'latlon',
+        'raw',
+        'diff',
+        'climo',
+        'climo_cdp',
+        'weight',
+        'nbrhd',
+        'fourier',
+        'gradient',
+        'distance_map',
+        'apply_mask',
+        'seeps',
+    ]
 
     def __init__(self, config, instance=None):
         self.app_name = 'grid_stat'
@@ -268,6 +273,10 @@ class GridStatWrapper(CompareGriddedWrapper):
 
         self.add_met_config(name='censor_val',
                             data_type='list',
+                            extra_args={'remove_quotes': True})
+
+        self.add_met_config(name='seeps_p1_thresh',
+                            data_type='string',
                             extra_args={'remove_quotes': True})
 
         return c_dict
