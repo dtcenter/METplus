@@ -10094,6 +10094,16 @@ METplus Configuration Glossary
 
      | *Used by:* StatAnalysis
 
+   ENSEMBLE_STAT_ENS_MEAN_INPUT_DIR
+     Input directory for the optional -ens_mean file to use with the MET tool ensemble_stat.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_ENS_MEAN_INPUT_TEMPLATE
+     Template used to specify the optional -ens_mean file for the MET tool ensemble_stat.
+
+     | *Used by:*  EnsembleStat
+
    TC_PAIRS_DIAG_INFO_MAP<n>_DIAG_SOURCE
      Specify the value for the nth 'diag_info_map.diag_source' in the MET configuration file for TCPairs.
 
