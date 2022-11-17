@@ -701,7 +701,7 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
         ({'GRID_STAT_CENSOR_VAL': '12000, 5000', },
          {'METPLUS_CENSOR_VAL': 'censor_val = [12000, 5000];'}),
 
-        ({'GRID_STAT_SEEPS_P1_THRESH': 'gt4', },
+        ({'GRID_STAT_SEEPS_P1_THRESH': 'ge0.1&&le0.85', },
          {'METPLUS_SEEPS_P1_THRESH': 'seeps_p1_thresh = gt4;'}),
 
     ]
