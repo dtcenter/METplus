@@ -40,6 +40,7 @@ METplus Version 5.0.0 Beta 5 Release Notes (2022-11-18)
   * TCPairs and TCStat - add support for new config options and command line arguments (`#1898 <https://github.com/dtcenter/METplus/issues/1898>`_)
   * Enhance the GridStat and PointStat wrappers to handle the addition of SEEPS (`#1953 <https://github.com/dtcenter/METplus/issues/1953>`_)
   * SeriesAnalysis - add support for setting mask dictionary (`#1926 <https://github.com/dtcenter/METplus/issues/1926>`_)
+  * Update Python requirement to 3.8.6 (`#1566 <https://github.com/dtcenter/METplus/issues/1566>`_)
 
 * Bugfixes:
 
