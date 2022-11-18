@@ -760,10 +760,8 @@ then three times will be processed:
 2. Initialized on 2019-02-01 at 00Z / valid on 2019-02-01 at 06Z
 3. Initialized on 2019-02-01 at 00Z / valid on 2019-02-01 at 09Z
 
-The user can also define :term:`LEAD_SEQ` using a special notation for many
-forecast leads. The notation is **begin_end_incr(b,e,i)** where b = the
-first lead value, e = the last lead value (inclusive), and
-i = the increment between leads. For example::
+The user can also define :term:`LEAD_SEQ` using :ref:`begin_end_incr` for many
+forecast leads. For example::
 
   [config]
   LEAD_SEQ = begin_end_incr(0,12,3)
@@ -782,9 +780,8 @@ Any number of these groups can be defined by setting
 configuration variables LEAD_SEQ_1, LEAD_SEQ_2, ..., :term:`LEAD_SEQ_\<n\>`.
 The value can be defined with a
 comma-separated list of integers (currently only hours are supported here)
-or using the special begin_end_incr(b,e,i) notation described just
-above. Each :term:`LEAD_SEQ_\<n\>` must have a corresponding
-variable :term:`LEAD_SEQ_<n>_LABEL`. For example::
+or using :ref:`begin_end_incr`. Each :term:`LEAD_SEQ_\<n\>` must have a
+corresponding variable :term:`LEAD_SEQ_<n>_LABEL`. For example::
 
 
   [config]
@@ -891,8 +888,7 @@ Example 3::
 This will skip every 30th and 31st day **and** every 3rd month.
 
 
-**begin_end_incr(b,e,i)** syntax can be used to define a range of times to
-skip.
+:ref:`begin_end_incr` syntax can be used to define a range of times to skip.
 
 b = begin value, e = end value,
 
@@ -1980,6 +1976,41 @@ Template Used: I2020101912_F006_V\*
 Files Processed::
 
     I2020101912_F006_V18
+
+
+.. _config-utilities:
+
+Config Utilities
+----------------
+
+.. _begin_end_incr:
+
+Begin End Increment (begin_end_incr)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In configuration variables that can accept a list of values, the
+Begin End Increment syntax can be used to easily create a sequence of numbers
+without having to type out the entire list explicitly.
+This functionality is similar to the Python range() function except that it is
+inclusive, meaning that the end value is also included in the list.
+
+The notation is **begin_end_incr(b,e,i)** where b = the first lead value,
+e = the last lead value (inclusive), and i = the increment between values.
+
+begin_end_incr(0,6,2) will expand to a list of numbers from 0 to 6 by 2, or
+0, 2, 4, 6.
+
+An optional 4th argument can be provided to specify the zero padding.
+begin_end_incr(8,10,1,2) will expand to 08, 09, 10.
+
+If this syntax is found within a configuration variable, it will expand a
+string into a list with each number included. For example::
+
+    INPUT_TEMPLATE = ens01.nc, ens02.nc, ens03.nc, ens04.nc, ens05.nc, ens06.nc, ens07.nc, ens08.nc
+
+can be simplified as::
+
+    INPUT_TEMPLATE = ensbegin_end_incr(1,8,1,2).nc
 
 
 .. _metplus-control-met:
