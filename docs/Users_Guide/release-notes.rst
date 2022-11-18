@@ -33,6 +33,12 @@ describes the bugfix, enhancement, or new feature.
 METplus Version 5.0.0 Beta 5 Release Notes (2022-11-18)
 -------------------------------------------------------
 
+.. warning:: **MAJOR CHANGES**:
+
+  * The METplus Dockerfile was moved to internal/scripts/docker.
+    It was previously found in scripts/docker.
+
+
 * Enhancements:
 
   * Add support in EnsembleStat wrapper for setting -ens_mean command line argument (`#1569 <https://github.com/dtcenter/METplus/issues/1569>`_)
