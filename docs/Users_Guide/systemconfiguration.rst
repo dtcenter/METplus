@@ -1643,9 +1643,9 @@ Multiple Input Files
 If a tool supports reading multiple files for a given input, then there are
 a variety of ways to configure the METplus wrappers to read them.
 
-* :ref:`multiple-files-wildcard <Wildcards>`
-* :ref:`multiple-files-list <List of Templates>`
-* :ref:`multiple-files-window <File Windows>`
+* :ref:`Wildcards <multiple-files-wildcard>`
+* :ref:`List of Templates <multiple-files-list>`
+* :ref:`File Windows <multiple-files-window>`
 
 .. _multiple-files-wildcard:
 
@@ -1694,7 +1694,7 @@ The following configuration will look for files
     INPUT_DIR = /my/files
     INPUT_TEMPLATE = filename_AAA.nc, filename_BBB.nc
 
-Lists of templates can be used with :ref:`multiple-files-wildcard <wildcards>`.
+Lists of templates can be used with :ref:`wildcards <multiple-files-wildcard>`.
 The following configuration will find all 4 files in /my/files::
 
     INPUT_DIR = /my/files
