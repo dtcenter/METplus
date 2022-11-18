@@ -30,44 +30,8 @@ When applicable, release notes are followed by the `GitHub issue <https://github
 describes the bugfix, enhancement, or new feature.
 
 
-METplus Version 5.0.0 Beta 5 Release Notes (2022-11-18)
--------------------------------------------------------
-
-.. warning:: **MAJOR CHANGES**:
-
-  * The METplus Dockerfile was moved to internal/scripts/docker.
-    It was previously found in scripts/docker.
-
-
-* Enhancements:
-
-  * Add support in EnsembleStat wrapper for setting -ens_mean command line argument (`#1569 <https://github.com/dtcenter/METplus/issues/1569>`_)
-  * Enhance METplus to have better signal handling for shutdown events (`dtcenter/METplus-Internal#27 <https://github.com/dtcenter/METplus-Internal/issues/27>`_)
-  * TCPairs and TCStat - add support for new config options and command line arguments (`#1898 <https://github.com/dtcenter/METplus/issues/1898>`_)
-  * Enhance the GridStat and PointStat wrappers to handle the addition of SEEPS (`#1953 <https://github.com/dtcenter/METplus/issues/1953>`_)
-  * SeriesAnalysis - add support for setting mask dictionary (`#1926 <https://github.com/dtcenter/METplus/issues/1926>`_)
-  * Update Python requirement to 3.8.6 (`#1566 <https://github.com/dtcenter/METplus/issues/1566>`_)
-
-* Bugfixes:
-
-  * Set level properly in filename template for EnsembleStat forecast input (`#1910 <https://github.com/dtcenter/METplus/issues/1910>`_)
-  * Prevent duplicate observation files using a file window if compressed equivalent files exist in same directory (`#1939 <https://github.com/dtcenter/METplus/issues/1939>`_)
-
-* New Wrappers: None
-
-* New Use Cases:
-
-  * StatAnalysis Python Embedding using IODA v2.0 (`#1453 <https://github.com/dtcenter/METplus/issues/1453>`_)
-  * StatAnalysis Python Embedding to read native grid (u-grid) (`#1561 <https://github.com/dtcenter/METplus/issues/1561>`_)
-
-* Documentation: None
-
-* Internal:
-
-  * Organize utility scripts used by multiple wrappers (`#344 <https://github.com/dtcenter/METplus/issues/344>`_)
-
-METplus Version 5.0.0 Beta 4 Release Notes (2022-10-26)
--------------------------------------------------------
+METplus Version 5.0.0 Release Notes (2022-12-??)
+------------------------------------------------
 
 .. warning:: **MAJOR CHANGES**:
 
@@ -77,128 +41,59 @@ METplus Version 5.0.0 Beta 4 Release Notes (2022-10-26)
     the first item in the PROCESS_LIST, then all times are processed for the
     second item in the PROCESS_LIST, etc. This may change the order that
     commands are executed in a use case, but it should not change the results.
-
-
-* Enhancements:
-
-  * Remove LOOP_ORDER config variable (`#1687 <https://github.com/dtcenter/METplus/issues/1687>`_)
-
-  * Add unique identifier for each METplus run to configuration (`#1829 <https://github.com/dtcenter/METplus/issues/1829>`_)
-
-  * StatAnalysis - Support setting multiple jobs (`#1842 <https://github.com/dtcenter/METplus/issues/1842>`_)
-
-  * StatAnalysis - Set MET verbosity (`#1772 <https://github.com/dtcenter/METplus/issues/1772>`_)
-
-  * StatAnalysis - Support using both init/valid variables in string substitution (`#1861 <https://github.com/dtcenter/METplus/issues/1861>`_)
-
-  * StatAnalysis - Allow filename template tags in jobs (`#1862 <https://github.com/dtcenter/METplus/issues/1862>`_)
-
-  * StatAnalysis - Support looping over groups of list items (`#1870 <https://github.com/dtcenter/METplus/issues/1870>`_)
-
-  * StatAnalysis - Allow processing of time ranges other than daily (`#1871 <https://github.com/dtcenter/METplus/issues/1871>`_)
-
-  * StatAnalysis - Add support for using a custom loop list (`#1893 <https://github.com/dtcenter/METplus/issues/1893>`_)
-
-  * Remove MakePlots wrapper (`#1843 <https://github.com/dtcenter/METplus/issues/1843>`_)
-
-* Bugfixes:
-
-  * PCPCombine - custom loop list does not work for subtract method (`#1884 <https://github.com/dtcenter/METplus/issues/1884>`_)
-
-* New Wrappers: None
-
-* New Use Cases:
-
-  * Probability of Exceedence for 85th percentile temperatures (`#1808 <https://github.com/dtcenter/METplus/issues/1808>`_)
-
-  * FV3 Physics Tendency plotting via METplotpy (`#1852 <https://github.com/dtcenter/METplus/issues/1852>`_)
-
-* Documentation: None
-
-* Internal:
-
-  * Fix GitHub Actions warnings - update the version of actions and replace set-output (`#1863 <https://github.com/dtcenter/METplus/issues/1863>`_)
-
-  * Update diff logic to handle CSV files that have rounding differences (`#1865 <https://github.com/dtcenter/METplus/issues/1865>`_)
-
-  * Add unit tests for expected failure (`dtcenter/METplus-Internal#24 <https://github.com/dtcenter/METplus-Internal/issues/24>`_)
-
-METplus Version 5.0.0 Beta 3 Release Notes (2022-09-21)
--------------------------------------------------------
-
-.. warning:: **MAJOR CHANGES**:
-
-  * Use cases that include **EnsembleStat** wrapper will require config file updates. **NEW USER'S GUIDE SECTION OUTLINING REQUIRED CHANGES COMING SOON**
+  * The METplus Dockerfile was moved to internal/scripts/docker.
+    It was previously found in scripts/docker.
+  * Use cases that include **EnsembleStat** wrapper will require config file
+    updates. See :ref:`upgrade-instructions`.
   * The default value of :term:`SCRUB_STAGING_DIR` is now *True*.
-    This means some intermediate files that are auto-generated by METplus such as file lists and
-    uncompressed files will automatically be removed unless this option is set by the user.
+    This means some intermediate files that are auto-generated by METplus such
+    as file lists and uncompressed files will automatically be removed unless
+    this option is set by the user.
     These files are typically only used to debug unexpected issues.
-  * The default value of :term:`METPLUS_CONF` now includes the :term:`LOG_TIMESTAMP` so each METplus run
-    will generate a unique final config file, e.g. metplus_final.conf.20220921121733.
+  * The default value of :term:`METPLUS_CONF` now includes the
+    :term:`LOG_TIMESTAMP` so each METplus run will generate a unique final
+    config file, e.g. metplus_final.conf.20220921121733.
 
 
 * Enhancements:
 
+  * **Enhance MODE wrapper to support multi-variate MODE** (`#1585 <https://github.com/dtcenter/METplus/issues/1585>`_)
+  * **Allow FCST_IS_PROB variable setting specific to tool (FCST_<tool_name>_IS_PROB)** (`#1586 <https://github.com/dtcenter/METplus/issues/1586>`_)
+  * **Enhance climatology field settings to be consistent with fcst/obs field** (`#1599 <https://github.com/dtcenter/METplus/issues/1599>`_)
+  * Update Hovmoeller Use case to use updated Hovmoeller plotting (`#1650 <https://github.com/dtcenter/METplus/issues/1650>`_)
   * **Update the EnsembleStat wrapper and use case examples to remove ensemble post processing logic** (`#1816 <https://github.com/dtcenter/METplus/issues/1816>`_)
   * Enhance logic to consistently create directories (`#1657 <https://github.com/dtcenter/METplus/issues/1657>`_)
   * Create checksum for released code (`#262 <https://github.com/dtcenter/METplus/issues/262>`_)
   * Add the user ID to the log output at beginning and end of each METplus wrappers run (`dtcenter/METplus-Internal#20 <https://github.com/dtcenter/METplus-Internal/issues/20>`_)
   * Update logic to name final conf and intermediate files with a unique identifier (`dtcenter/METplus-Internal#32 <https://github.com/dtcenter/METplus-Internal/issues/32>`_)
   * Change default logging time information (`dtcenter/METplus-Internal#34 <https://github.com/dtcenter/METplus-Internal/issues/34>`_)
-
-* Bugfixes:
-
-  * Allow NA value for <TOOL-NAME>_CLIMO_[MEAN/STDEV]_HOUR_INTERVAL (`#1787 <https://github.com/dtcenter/METplus/issues/1787>`_)
-
-* New Wrappers: 
-
-  * PlotPointObs (`#1489 <https://github.com/dtcenter/METplus/issues/1489>`_)
-
-* New Use Cases: 
-
-  * PANDA-C use cases  (`#1686 <https://github.com/dtcenter/METplus/issues/1686>`_)
-  * MJO-ENSO diagnostics (`#1330 <https://github.com/dtcenter/METplus/issues/1330>`_)
-
-
-* Documentation: None
-
-* Internal:
-
-  * Add instructions in Release Guide for "Recreate an Existing Release" (`#1746 <https://github.com/dtcenter/METplus/issues/1746>`_)
-  * Add modulefiles used for installations on various machines (`#1749 <https://github.com/dtcenter/METplus/issues/1749>`_)
-
-
-
-METplus Version 5.0.0 Beta 2 Release Notes (2022-08-03)
--------------------------------------------------------
-
-* Enhancements:
-
+  * **Remove LOOP_ORDER config variable** (`#1687 <https://github.com/dtcenter/METplus/issues/1687>`_)
+  * **Add unique identifier for each METplus run to configuration** (`#1829 <https://github.com/dtcenter/METplus/issues/1829>`_)
+  * StatAnalysis - Support setting multiple jobs (`#1842 <https://github.com/dtcenter/METplus/issues/1842>`_)
+  * StatAnalysis - Set MET verbosity (`#1772 <https://github.com/dtcenter/METplus/issues/1772>`_)
+  * StatAnalysis - Support using both init/valid variables in string substitution (`#1861 <https://github.com/dtcenter/METplus/issues/1861>`_)
+  * StatAnalysis - Allow filename template tags in jobs (`#1862 <https://github.com/dtcenter/METplus/issues/1862>`_)
+  * StatAnalysis - Support looping over groups of list items (`#1870 <https://github.com/dtcenter/METplus/issues/1870>`_)
+  * StatAnalysis - Allow processing of time ranges other than daily (`#1871 <https://github.com/dtcenter/METplus/issues/1871>`_)
+  * StatAnalysis - Add support for using a custom loop list (`#1893 <https://github.com/dtcenter/METplus/issues/1893>`_)
+  * Remove MakePlots wrapper (`#1843 <https://github.com/dtcenter/METplus/issues/1843>`_)
+  * Add support in EnsembleStat wrapper for setting -ens_mean command line argument (`#1569 <https://github.com/dtcenter/METplus/issues/1569>`_)
+  * Enhance METplus to have better signal handling for shutdown events (`dtcenter/METplus-Internal#27 <https://github.com/dtcenter/METplus-Internal/issues/27>`_)
+  * TCPairs and TCStat - add support for new config options and command line arguments (`#1898 <https://github.com/dtcenter/METplus/issues/1898>`_)
+  * Enhance the GridStat and PointStat wrappers to handle the addition of SEEPS (`#1953 <https://github.com/dtcenter/METplus/issues/1953>`_)
+  * SeriesAnalysis - add support for setting mask dictionary (`#1926 <https://github.com/dtcenter/METplus/issues/1926>`_)
+  * Update Python requirement to 3.8.6 (`#1566 <https://github.com/dtcenter/METplus/issues/1566>`_)
   * Enhance StatAnalysis wrapper to support now and today (`#1669 <https://github.com/dtcenter/METplus/issues/1669>`_)
-
-  * Clean up and make more readable use case configuration files (`#1402 <https://github.com/dtcenter/METplus/issues/1402>`_)
-
+  * **Clean up use case configuration files** (`#1402 <https://github.com/dtcenter/METplus/issues/1402>`_)
   * Add support for creating multiple input datasets (`#1694 <https://github.com/dtcenter/METplus/issues/1694>`_)
 
 * Bugfixes:
 
-  * Make setting of METPLOTPY_BASE consistent for use cases (`#1713 <https://github.com/dtcenter/METplus/issues/1713>`_)
-
-
-METplus Version 5.0.0 Beta 1 Release Notes (2022-06-22)
--------------------------------------------------------
-
-* Enhancements:
-
-  * General:
-
-    * **Enhance MODE wrapper to support multi-variate MODE** (`#1585 <https://github.com/dtcenter/METplus/issues/1585>`_)
-    * **Allow FCST_IS_PROB variable setting specific to tool (FCST_<tool_name>_IS_PROB)** (`#1586 <https://github.com/dtcenter/METplus/issues/1586>`_)
-    * **Enhance climatology field settings to be consistent with fcst/obs field** (`#1599 <https://github.com/dtcenter/METplus/issues/1599>`_)
-    * Update Hovmoeller Use case to use updated Hovmoeller plotting (`#1650 <https://github.com/dtcenter/METplus/issues/1650>`_)
-
-* Bugfixes:
-
+  * PCPCombine - custom loop list does not work for subtract method (`#1884 <https://github.com/dtcenter/METplus/issues/1884>`_)
+  * Set level properly in filename template for EnsembleStat forecast input (`#1910 <https://github.com/dtcenter/METplus/issues/1910>`_)
+  * Prevent duplicate observation files using a file window if compressed equivalent files exist in same directory (`#1939 <https://github.com/dtcenter/METplus/issues/1939>`_)
+  * Allow NA value for <TOOL-NAME>_CLIMO_[MEAN/STDEV]_HOUR_INTERVAL (`#1787 <https://github.com/dtcenter/METplus/issues/1787>`_)
+  * Reconcile setting of METPLOTPY_BASE for use cases (`#1713 <https://github.com/dtcenter/METplus/issues/1713>`_)
   *  Add support for the {custom} loop string in the MODEL config variable (`#1382 <https://github.com/dtcenter/METplus/issues/1382>`_)
   *  Fix PCPCombine extra options removal of semi-colon (`#1534 <https://github.com/dtcenter/METplus/issues/1534>`_)
   *  Fix reset of arguments for some wrappers (i.e. GenEnsProd) after each run (`#1555 <https://github.com/dtcenter/METplus/issues/1555>`_)
@@ -206,9 +101,18 @@ METplus Version 5.0.0 Beta 1 Release Notes (2022-06-22)
   *  Add missing brackets around list variable values for StatAnalysis wrapper (`#1641 <https://github.com/dtcenter/METplus/issues/1641>`_)
   *  Allow NA value for <TOOL-NAME>_CLIMO_[MEAN/STDEV]_DAY_INTERVAL (`#1653 <https://github.com/dtcenter/METplus/issues/1653>`_)
 
-* New Wrappers: None
+* New Wrappers:
 
-* New Use Cases: None
+  * PlotPointObs (`#1489 <https://github.com/dtcenter/METplus/issues/1489>`_)
+
+* New Use Cases:
+
+  * PANDA-C use cases  (`#1686 <https://github.com/dtcenter/METplus/issues/1686>`_)
+  * MJO-ENSO diagnostics (`#1330 <https://github.com/dtcenter/METplus/issues/1330>`_)
+  * Probability of Exceedence for 85th percentile temperatures (`#1808 <https://github.com/dtcenter/METplus/issues/1808>`_)
+  * FV3 Physics Tendency plotting via METplotpy (`#1852 <https://github.com/dtcenter/METplus/issues/1852>`_)
+  * StatAnalysis Python Embedding using IODA v2.0 (`#1453 <https://github.com/dtcenter/METplus/issues/1453>`_)
+  * StatAnalysis Python Embedding to read native grid (u-grid) (`#1561 <https://github.com/dtcenter/METplus/issues/1561>`_)
 
 * Documentation:
 
@@ -216,9 +120,16 @@ METplus Version 5.0.0 Beta 1 Release Notes (2022-06-22)
 
 * Internal:
 
+  * Organize utility scripts used by multiple wrappers (`#344 <https://github.com/dtcenter/METplus/issues/344>`_)
+  * Fix GitHub Actions warnings - update the version of actions and replace set-output (`#1863 <https://github.com/dtcenter/METplus/issues/1863>`_)
+  * Update diff logic to handle CSV files that have rounding differences (`#1865 <https://github.com/dtcenter/METplus/issues/1865>`_)
+  * Add unit tests for expected failure (`dtcenter/METplus-Internal#24 <https://github.com/dtcenter/METplus-Internal/issues/24>`_)
+  * Add instructions in Release Guide for "Recreate an Existing Release" (`#1746 <https://github.com/dtcenter/METplus/issues/1746>`_)
+  * Add modulefiles used for installations on various machines (`#1749 <https://github.com/dtcenter/METplus/issues/1749>`_)
   * Document GitHub Discussions procedure for the Contributor's Guide (`#1159 <https://github.com/dtcenter/METplus/issues/1159>`_)
   * Create a METplus "Release Guide" describing how to build releases for the METplus components (`#673 <https://github.com/dtcenter/METplus/issues/673>`_)
   * Update documentation about viewing RTD URLs on branches (`#1512 <https://github.com/dtcenter/METplus/issues/1512>`_)
+
 
 .. _upgrade-instructions:
     
