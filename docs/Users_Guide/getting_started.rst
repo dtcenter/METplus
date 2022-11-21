@@ -393,7 +393,7 @@ To pull the latest official release, run::
 
 Tags for previous releases and development releases are also available.
 Refer to the list of
-`available tags<https://hub.docker.com/repository/docker/dtcenter/metplus/tags>`_
+`available tags <https://hub.docker.com/repository/docker/dtcenter/metplus/tags>`_
 on DockerHub.
 
 .. _docker-sample-input:
