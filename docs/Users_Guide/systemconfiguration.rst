@@ -1700,6 +1700,7 @@ The following configuration will find all 4 files in /my/files::
     INPUT_DIR = /my/files
     INPUT_TEMPLATE = filename.nc, filename_*.nc
 
+The :ref:`begin_end_incr` syntax can be used to generate lists of file paths.
 
 .. _multiple-files-window:
 
