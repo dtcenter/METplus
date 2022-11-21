@@ -70,7 +70,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/Ascii2NcConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/Ascii2NcConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/Ascii2NcConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/Ascii2NcConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -333,7 +333,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/EnsembleStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/EnsembleStatConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/EnsembleStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/EnsembleStatConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -1124,7 +1124,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/GenEnsProdConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/GenEnsProdConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/GenEnsProdConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/GenEnsProdConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -2686,7 +2686,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/GridDiagConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/GridDiagConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/GridDiagConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/GridDiagConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -2964,7 +2964,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/GridStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/GridStatConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/GridStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/GridStatConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -3501,7 +3501,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/IODA2NCConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/IODA2NCConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/IODA2NCConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/IODA2NCConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -4044,7 +4044,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/MODEConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/MODEConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/MODEConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/MODEConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -4669,7 +4669,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/MTDConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/MTDConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/MTDConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/MTDConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -4941,7 +4941,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/PB2NCConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/PB2NCConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/PB2NCConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/PB2NCConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -5367,7 +5367,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/PlotPointObsConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/PlotPointObsConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/PlotPointObsConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/PlotPointObsConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -5861,7 +5861,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/PointStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/PointStatConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/PointStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/PointStatConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -6496,7 +6496,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/SeriesAnalysisConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/SeriesAnalysisConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/SeriesAnalysisConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/SeriesAnalysisConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -7161,7 +7161,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/STATAnalysisConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/STATAnalysisConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/STATAnalysisConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/STATAnalysisConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -7661,7 +7661,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/TCGenConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/TCGenConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/TCGenConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/TCGenConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -8359,7 +8359,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/TCPairsConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/TCPairsConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/TCPairsConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/TCPairsConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -8700,7 +8700,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/TCRMWConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/TCRMWConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/TCRMWConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/TCRMWConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -9030,7 +9030,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/TCStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/TCStatConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/TCStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/TCStatConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
