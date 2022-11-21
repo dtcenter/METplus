@@ -393,7 +393,7 @@ To pull the latest official release, run::
 
 Tags for previous releases and development releases are also available.
 Refer to the list of
-:ref:`available tags <https://hub.docker.com/repository/docker/dtcenter/metplus/tags>`_
+`available tags<https://hub.docker.com/repository/docker/dtcenter/metplus/tags>`_
 on DockerHub.
 
 .. _docker-sample-input:
@@ -407,7 +407,7 @@ dtcenter/metplus-data DockerHub repository and are named with the X.Y version
 of the corresponding METplus release and the name of the use case category
 separated by a dash, e.g. 4.1-data_assimilation or 4.0-met_tool_wrapper.
 A list of
-:ref:`available tags for input data <https://hub.docker.com/repository/docker/dtcenter/metplus-data/tags>`_
+`available tags for input data <https://hub.docker.com/repository/docker/dtcenter/metplus-data/tags>`_
 can also be found on DockerHub.
 
 To make these data available in a METplus Docker container, first create a
