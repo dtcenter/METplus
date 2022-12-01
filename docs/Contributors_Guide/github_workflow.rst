@@ -89,7 +89,7 @@ are required to perform the following steps.
         **New** option by clicking the **X** to its right.
 
       - Select **Iteration** and modify the **Field name** to be **Cycle**.  Delete any existing cycles.
-        Under **More options** select a **Start on* date and set the default **Duration** as 6 weeks.
+        Under **More options** select a **Start on** date and set the default **Duration** as 6 weeks.
         Click the **Add** and **Add iteration** buttons to create 5 cycles, each with the default duration
         of 6 weeks. Modify the cycle names to be **Beta1**, **Beta2**, and so on. Click **Save changes**.
 
@@ -194,12 +194,12 @@ required to perform the following steps.
      and select **Settings**.  Modify these settings as follows.
 
       - Project name: The default project name is **@UserNames's feature**.  Rename it as
-        **METplus Version {X.Y} Support** (e.g. **METplus Version 5.0 Support**).
+        **METplus Version X.Y Support** (e.g. **METplus Version 5.0 Support**).
 
-      - Add a description: Add **Issues related to support for the METplus {X.Y}
+      - Add a description: Add **Issues related to support for the METplus X.Y
         coordinated release.**
 
-      - README: List the {X.Y} version number for each METplus component contained within
+      - README: List the X.Y version number for each METplus component contained within
         the coordinated release.
 
       - Scroll down to the **Danger zone** and change **Visibilty** from its default value
@@ -260,6 +260,13 @@ required to perform the following steps.
       - The blue dot on the down arrow for this tab indicates that there are unsaved changes.
         Select the **Save changes** option.
 
+   - Click on the down arrow and select **Duplicate View**.  Name/refine this views as follows.
+
+      - View name **Closed Issues** shows issues that have been closed across all bugfix
+        milestones.  Click on the 3 horizontal bars and define the filtering criteria as
+        **is:closed is:issue**.  Click on the 3 dots in the **Milestone** column and select
+        **Group by values**.  Click **Save Changes**.
+
    - Delete any other views created by default by clicking the down arrow next to the view
      name and selecting **Delete view**.
 
@@ -278,7 +285,6 @@ required to perform the following steps.
         `METdataio <https://github.com/dtcenter/METdataio/projects>`_
 
    - Click the **Link a project** button and find/select this newly created support project.
-
 
 Sequence of Events - Contributing Code
 --------------------------------------
