@@ -48,17 +48,17 @@ manage development toward a new official release.  Note that sufficient permissi
 are required to perform the following steps.
 
 
-1. Create a new project.
+1. Create a **new project**.
 
    - From the `DTCenter GitHub Projects <https://github.com/orgs/dtcenter/projects>`_
      page, select the **New project** button.
    - In the **Select a template** popup window, select the **Project templates: Feature**
      option, and click the **Create** button.
 
-2. Update the project settings.
+2. Update the project **settings**.
 
    - Click on the three dots to the right of the project name to see **More options**
-     and select **Settings**. Modify these settings as follows.
+     and select **Settings**.  Modify these settings as follows.
 
       - Project name: The default project name is **@UserNames's feature**.  Rename it as
         **{METplus Component}-{Target Version Number} Development** (e.g. **METplus-5.1.0 Development**).
@@ -95,7 +95,24 @@ are required to perform the following steps.
 
    - Click the backward arrow to return to the project page.
 
-3. Create project views.
+3. Update the project **workflows**.
+
+   - Click on the three dots to the right of the project name to see **More options**
+     and select **Workflows**.  Modify these settings as follows.
+
+      - Enable the **Item added to project** workflow and set the status to **Backlog**.
+
+      - Enable the **Item reopened** workflow and set the status to **In progress**.
+
+      - Enable the **Item closed** workflow and set the status to **Done**.
+
+      - Enable the **Pull request merged** workflow and set the status to **Done**.
+
+      - Leave all other workflows disabled.
+
+   - Click the backward arrow to return to the project page.
+
+4. Create project views.
 
    - Each **view** appears as a tab on the project page.  Create a new view as described below.
 
@@ -130,10 +147,10 @@ are required to perform the following steps.
    - Delete any other views created by default by clicking the downward arrow next to the view name and
      selecting **Delete view**.
 
-4. Refine the project settings, development cycle dates, and views, as needed, based on the preferences
+5. Refine the project settings, development cycle dates, and views, as needed, based on the preferences
    of the development team.
 
-5. Link the new project to each repository.
+6. Link the new project to each repository.
 
    - Navigate to the project page for each repository managed by this project
      (e.g. `METplus Projects <https://github.com/dtcenter/METviewer/projects>`_).
