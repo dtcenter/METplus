@@ -48,14 +48,14 @@ manage development toward a new official release.  Note that sufficient permissi
 are required to perform the following steps.
 
 
-1. Create a **new project**.
+1. Create a **New project**.
 
    - From the `DTCenter GitHub Projects <https://github.com/orgs/dtcenter/projects>`_
      page, select the **New project** button.
    - In the **Select a template** popup window, select the **Project templates: Feature**
      option, and click the **Create** button.
 
-2. Update the project **settings**.
+2. Update the project **Settings**.
 
    - Click on the three dots to the right of the project name to see **More options**
      and select **Settings**.  Modify these settings as follows.
@@ -95,7 +95,7 @@ are required to perform the following steps.
 
    - Click the backward arrow to return to the project page.
 
-3. Update the project **workflows**.
+3. Update the project **Workflows**.
 
    - Click on the three dots to the right of the project name to see **More options**
      and select **Workflows**.  Modify these settings as follows.
@@ -112,9 +112,9 @@ are required to perform the following steps.
 
    - Click the backward arrow to return to the project page.
 
-4. Create project views.
+4. Create project **Views**.
 
-   - Each **view** appears as a tab on the project page.  Create a new view as described below.
+   - Each view appears as a tab on the project page.  Create a new view as described below.
 
       - Select the **+ New view** option.
 
