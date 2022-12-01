@@ -136,7 +136,7 @@ are required to perform the following steps.
 5. Link the new project to each repository.
 
    - Navigate to the project page for each repository managed by this project
-     (e.g. `METplus Projects<https://github.com/dtcenter/METviewer/projects>`_).
+     (e.g. `METplus Projects <https://github.com/dtcenter/METviewer/projects>`_).
 
    - Click the **Link a project** button and find/select this newly created project.
 
