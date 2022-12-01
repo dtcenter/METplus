@@ -138,7 +138,7 @@ are required to perform the following steps.
    - Navigate to the project page for each repository managed by this project
      (e.g. `METplus Projects<https://github.com/dtcenter/METviewer/projects>`_).
 
-   - Click the **Link a project** button and find/select the newly created project.
+   - Click the **Link a project** button and find/select this newly created project.
 
 Sequence of Events - Contributing Code
 --------------------------------------
