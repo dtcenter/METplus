@@ -146,6 +146,12 @@ are required to perform the following steps.
         Click on the 3 horizontal bars and define the filtering criteria as **is:closed is:issue**.
         Click on the 3 dots in the **Cycle** column and select **Group by values**.  Click **Save Changes**.
 
+      - View name **High/Blocker Not Required** shows all items labelled as *HIGH* or *BLOCKER* priority but
+        not marked as required for the development or official release.
+        Click on the 3 horizontal bars and define the filtering criteria as
+        **is:open label:"priority: high","priority: blocker" -label:"required: FOR DEVELOPMENT RELEASE" -label:"required: FOR OFFICIAL RELEASE"**.
+        Click **Save Changes**.
+
    - Delete any other views created by default by clicking the down arrow next to the view name and
      selecting **Delete view**.
 
