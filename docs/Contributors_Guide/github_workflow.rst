@@ -22,6 +22,275 @@ develop branch.  When a release candidate for METplus has been determined,
 then the develop branch is used to create a main_vx.y release of METplus,
 which includes data tarballs for use in running use cases.
 
+.. _wo-development-project:
+
+GitHub Projects to manage development
+-------------------------------------
+
+Software development for official METplus releases is organized into development cycles.
+While the length a development cycle can vary widely, they are nominally 6 weeks long.
+GitHub issues and pull requests assigned to each cycle are either completed during the
+time window for that cycle or reassigned to a future development cycle.
+
+
+Each development cycle culminates in the creation of a software release. The
+:ref:`releaseCycleStages` section describes the various types of software releases
+(development, official, or bugfix).  Each development cycle culminates in a beta release,
+a release candidate, or the official release. Generally, a **beta** development cycle results
+in a **beta** development release while an **rc** development cycle results in an **rc**
+development release.
+
+
+The METplus team uses GitHub projects to manage these development cycles as well as the support
+of official releases.  In earlier versions, each development cycle was managed by an individual
+GitHub project but more recent versions use a single GitHub project to manage all of the
+development cycles.  Listed below are instructions for creating a single GitHub project to
+manage development toward a new official release.  Note that sufficient permissions in GitHub
+are required to perform the following steps.
+
+
+1. Create a **New project**.
+
+   - From the `DTCenter GitHub Projects <https://github.com/orgs/dtcenter/projects>`_
+     page, select the **New project** button.
+
+   - In the **Select a template** popup window, select the **Project templates: Feature**
+     option, and click the **Create** button.
+
+2. Update the project **Settings**.
+
+   - Click on the three dots to the right of the project name to see **More options**
+     and select **Settings**.  Modify these settings as follows.
+
+      - Project name: The default project name is **@UserNames's feature**.  Rename it as
+        **{METplus Component}-{Target Version Number} Development** (e.g. **METplus-5.1.0 Development**).
+
+      - Add a description: Add **Development toward {METplus Component} version {Target Version Number}.**
+
+      - README: Add additional details as needed to the **README** section.  Projects managing development
+        for multiple repositories, such as METplus-Analysis, should list the target version number for
+        each repository.
+
+      - Scroll down to the **Danger zone** and change **Visibilty** from its default value of **Private**
+        to **Public**.
+
+   - Select **Manage access** on the left hand navigation bar.
+
+      - By default, the project creator has **Admin** access.
+
+      - Add **Admin** access for any user with that level of access to any one
+        of the repositories managed by this project.
+
+      - Add **Write** access for the **METplus** group.
+
+   - Locate the **Custom fields** section in the left hand navigation bar
+
+      - Select **Status** and retain the default list of options, but delete the
+        **New** option by clicking the **X** to its right.
+
+      - Select **Iteration** and modify the **Field name** to be **Cycle**.  Delete any existing cycles.
+        Under **More options** select a **Start on** date and set the default **Duration** as 6 weeks.
+        Click the **Add** and **Add iteration** buttons to create 5 cycles, each with the default duration
+        of 6 weeks. Modify the cycle names to be **Beta1**, **Beta2**, and so on. Click **Save changes**.
+
+      - Select **Estimate** and click the three dots to the right and **Delete field**.
+
+   - Click the back arrow to return to the project page.
+
+3. Update the project **Workflows**.
+
+   - Click on the three dots to the right of the project name to see **More options**
+     and select **Workflows**.  Modify these settings as follows.
+
+      - Enable the **Item added to project** workflow and set the status to **Backlog**.
+
+      - Enable the **Item reopened** workflow and set the status to **In progress**.
+
+      - Enable the **Item closed** workflow and set the status to **Done**.
+
+      - Enable the **Pull request merged** workflow and set the status to **Done**.
+
+      - Leave all other workflows disabled.
+
+   - Click the back arrow to return to the project page.
+
+4. Create project **Views**.
+
+   - Each view appears as a tab on the project page.  Create a new view as described below.
+
+      - Select the **+ New view** option.
+
+      - Click on the view name to modify it, rename it as **All Cycles**, and hit **Enter**.
+
+      - Click on the down arrow and, under **Configuration**, select the **Fields** option. Enable
+        the options for **Title**, **Repository**, **Assignees**, **Cycle**, **Status**,
+        **Linked Pull Request**, and **Reviewers**. Drag and drop the items to reorder them as listed above.
+
+      - In the resulting view, click the three dots in the **Status** column. Select the **Sort descending**
+        and **Group by values** options.
+
+      - The blue dot on the down arrow for this tab indicates that there are unsaved changes.
+        Select the **Save changes** option.
+
+   - Click on the down arrow and select **Duplicate View**.  Do this 8 times and name/refine these views as follows.
+
+      - View name **All Required** shows all items labelled as *REQUIRED* for the development or official release.
+        Click on the 3 horizontal bars and define the filtering criteria as
+        **label:"required: FOR OFFICIAL RELEASE","required: FOR DEVELOPMENT RELEASE" is:open**.  Click **Save Changes**.
+
+      - View name **Beta1** to **Beta5** shows items for each individual development cycle.
+        Click on the 3 horizontal bars and define the filtering criteria as **cycle:Beta1**, **cycle:Beta2**,
+        and so on.  Click **Save Changes**.
+
+      - View name **Closed Issues** shows issues that have been closed across all development cycles.
+        Click on the 3 horizontal bars and define the filtering criteria as **is:closed is:issue**.
+        Click on the 3 dots in the **Cycle** column and select **Group by values**.  Click **Save Changes**.
+
+      - View name **High/Blocker Not Required** shows all items labelled as *HIGH* or *BLOCKER* priority but
+        not marked as required for the development or official release.
+        Click on the 3 horizontal bars and define the filtering criteria as
+        **is:open label:"priority: high","priority: blocker" -label:"required: FOR DEVELOPMENT RELEASE" -label:"required: FOR OFFICIAL RELEASE"**.
+        Click **Save Changes**.
+
+   - Delete any other views created by default by clicking the down arrow next to the view name and
+     selecting **Delete view**.
+
+5. Refine the project settings, development cycle dates, and views, as needed, based on the preferences
+   of the development team.
+
+6. Link the new project to each repository.
+
+   - Navigate to the project page for each repository managed by this project
+     (e.g. `METplus Projects <https://github.com/dtcenter/METplus/projects>`_).
+
+   - Click the **Link a project** button and find/select this newly created project.
+
+.. _wo-support-project:
+
+GitHub Projects to manage support
+---------------------------------
+
+Support for coordinated METplus releases is managed using a *single* GitHub project
+for all components.  Bugfix issues and the corresponding pull request fixes are added
+to that support project.  Each fix is assigned to the current bugfix milestone of
+the corresponding source code repository.
+
+
+The :ref:`releaseCycleStages` section describes the various types of software releases
+(development, official, or bugfix).  The GitHub support project contains issues and
+pull requests that apply only to bugfix releases.
+
+
+Listed below are instructions for creating a GitHub project to manage support after an
+official coordinated METplus release.  Note that sufficient permissions in GitHub are
+required to perform the following steps.
+
+
+1. Create a **New project**.
+
+   - From the `DTCenter GitHub Projects <https://github.com/orgs/dtcenter/projects>`_
+     page, select the **New project** button.
+
+   - In the **Select a template** popup window, select the **Project templates: Feature**
+     option, and click the **Create** button.
+
+2. Update the project **Settings**.
+
+   - Click on the three dots to the right of the project name to see **More options**
+     and select **Settings**.  Modify these settings as follows.
+
+      - Project name: The default project name is **@UserNames's feature**.  Rename it as
+        **METplus Version X.Y Support** (e.g. **METplus Version 5.0 Support**).
+
+      - Add a description: Add **Issues related to support for the METplus X.Y
+        coordinated release.**
+
+      - README: List the X.Y version number for each METplus component contained within
+        the coordinated release.
+
+      - Scroll down to the **Danger zone** and change **Visibilty** from its default value
+        of **Private** to **Public**.
+
+   - Select **Manage access** on the left hand navigation bar.
+
+      - By default, the project creator has **Admin** access.
+
+      - Add **Admin** access for at least 2 other users with that level of access on one
+        of the METplus component repositories.
+
+      - Add **Write** access for the **METplus** group.
+
+   - Locate the **Custom fields** section in the left hand navigation bar
+
+      - Select **Status** and retain the default list of options, but delete the
+        **New** option by clicking the **X** to its right.
+
+      - For **Iteration** and **Estimate**, click the 3 dots to the right of the
+        **Field name** and **Delete field**.
+
+   - Click the back arrow to return to the project page.
+
+3. Update the project **Workflows**.
+
+   - Click on the three dots to the right of the project name to see **More options**
+     and select **Workflows**.  Modify these settings as follows.
+
+      - Enable the **Item added to project** workflow and set the status to **Backlog**.
+
+      - Enable the **Item reopened** workflow and set the status to **In progress**.
+
+      - Enable the **Item closed** workflow and set the status to **Done**.
+
+      - Enable the **Pull request merged** workflow and set the status to **Done**.
+
+      - Leave all other workflows disabled.
+
+   - Click the back arrow to return to the project page.
+
+4. Create project **Views**.
+
+   - Each view appears as a tab on the project page.  Create a new view as described below.
+
+      - Select the **+ New view** option.
+
+      - Click on the view name to modify it, rename it as **All Milestones**, and hit **Enter**.
+
+      - Click on the down arrow and, under **Configuration**, select the **Fields** option. Enable
+        the options for **Title**, **Repository**, **Assignees**, **Milestone**, **Status**,
+        **Linked Pull Request**, and **Reviewers**. Drag and drop the items to reorder them
+        as listed above.
+
+      - In the resulting view, click the three dots in the **Milestone** column. Select the
+        **Sort descending** and **Group by values** options.
+
+      - The blue dot on the down arrow for this tab indicates that there are unsaved changes.
+        Select the **Save changes** option.
+
+   - Click on the down arrow and select **Duplicate View**.  Name/refine this views as follows.
+
+      - View name **Closed Issues** shows issues that have been closed across all bugfix
+        milestones.  Click on the 3 horizontal bars and define the filtering criteria as
+        **is:closed is:issue**.  Click on the 3 dots in the **Milestone** column and select
+        **Group by values**.  Click **Save Changes**.
+
+   - Delete any other views created by default by clicking the down arrow next to the view
+     name and selecting **Delete view**.
+
+5. Refine the project settings and views, as needed, based on the preferences of the support team.
+
+6. Link the new project to each repository.
+
+   - Navigate to the project page for each METplus component repository:
+
+      - `METplus <https://github.com/dtcenter/METplus/projects>`_,
+        `MET <https://github.com/dtcenter/MET/projects>`_,
+        `METviewer <https://github.com/dtcenter/METviewer/projects>`_,
+        `METexpress <https://github.com/dtcenter/METexpress/projects>`_,
+        `METplotpy <https://github.com/dtcenter/METplotpy/projects>`_,
+        `METcalcpy <https://github.com/dtcenter/METcalcpy/projects>`_,
+        `METdataio <https://github.com/dtcenter/METdataio/projects>`_
+
+   - Click the **Link a project** button and find/select this newly created support project.
 
 Sequence of Events - Contributing Code
 --------------------------------------
