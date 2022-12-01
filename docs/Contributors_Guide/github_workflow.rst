@@ -132,7 +132,7 @@ are required to perform the following steps.
       - The blue dot on the down arrow for this tab indicates that there are unsaved changes.
         Select the **Save changes** option.
 
-   - Click on the down arrow and select **Duplicate View**.  Do this 7 times and name/refine these views as follows.
+   - Click on the down arrow and select **Duplicate View**.  Do this 8 times and name/refine these views as follows.
 
       - View name **All Required** shows all items labelled as *REQUIRED* for the development or official release.
         Click on the 3 horizontal bars and define the filtering criteria as
