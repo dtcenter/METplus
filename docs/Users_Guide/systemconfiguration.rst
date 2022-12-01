@@ -1990,7 +1990,7 @@ Begin End Increment (begin_end_incr)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In configuration variables that can accept a list of values, the
-Begin End Increment syntax can be used to easily create a sequence of numbers
+Begin End Increment utility can be used to easily create a sequence of numbers
 without having to type out the entire list explicitly.
 This functionality is similar to the Python range() function except that it is
 inclusive, meaning that the end value is also included in the list.

@@ -5127,7 +5127,7 @@ PCPCombine wrapper can be configured to process forecast and/or observation
 data. Setting :term:`FCST_PCP_COMBINE_RUN` = True will process forecast data
 and setting :term:`OBS_PCP_COMBINE_RUN` = True will process observation data.
 
-PCPCombine wrapper can be configured to build a command for sum, add, subtract,
+PCPCombine wrapper can be configured to build a command for the sum, add, subtract,
 and derive methods using :term:`FCST_PCP_COMBINE_METHOD` and/or
 :term:`OBS_PCP_COMBINE_METHOD`. Each method executes logic to gather the
 desired input files to build the command based on specific examples.
@@ -5141,7 +5141,7 @@ The default units are hours unless otherwise specified.
 The output field name can be set explicitly using
 :term:`FCST_PCP_COMBINE_OUTPUT_NAME` or :term:`OBS_PCP_COMBINE_OUTPUT_NAME`.
 
-For ADD and DERIVE methods, the input accumulation(s) can be specified using
+For the ADD and DERIVE methods, the input accumulation(s) can be specified using
 :term:`FCST_PCP_COMBINE_INPUT_ACCUMS` or :term:`OBS_PCP_COMBINE_INPUT_ACCUMS`.
 The default units are hours unless otherwise specified.
 This can be a list of accumulation amounts in order of preference.
@@ -5157,7 +5157,7 @@ These lists must be the same length as
 Constant Initialization Time
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-For ADD and DERIVE methods, :term:`FCST_PCP_COMBINE_CONSTANT_INIT` or
+For the ADD and DERIVE methods, :term:`FCST_PCP_COMBINE_CONSTANT_INIT` or
 :term:`OBS_PCP_COMBINE_CONSTANT_INIT` can be set to **True** to gather input
 files that all contain the same initialization time.
 

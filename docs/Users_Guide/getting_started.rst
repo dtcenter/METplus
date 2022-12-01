@@ -404,7 +404,7 @@ Sample Input Data
 Sample input data for all of the use cases provided with the METplus wrappers
 are also available on DockerHub. These data are found in the
 dtcenter/metplus-data DockerHub repository and are named with the X.Y version
-of the corresponding METplus release and the name of the use case category
+of the corresponding METplus Coordinated Release and the name of the use case category
 separated by a dash, e.g. 4.1-data_assimilation or 4.0-met_tool_wrapper.
 A list of
 `available tags for input data <https://hub.docker.com/repository/docker/dtcenter/metplus-data/tags>`_
