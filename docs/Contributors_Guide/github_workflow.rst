@@ -30,7 +30,7 @@ GitHub Projects to manage development
 Software development for official METplus releases is organized into development cycles.
 While the length a development cycle can vary widely, they are nominally 6 weeks long.
 GitHub issues and pull requests assigned to each cycle are either completed during the
-time window for that cycle or re-assigned to a future development cycle.
+time window for that cycle or reassigned to a future development cycle.
 
 
 Each development cycle culminates in the creation of a software release. The
