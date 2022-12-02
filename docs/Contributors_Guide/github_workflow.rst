@@ -136,20 +136,24 @@ are required to perform the following steps.
 
       - View name **All Required** shows all items labelled as *REQUIRED* for the development or official release.
         Click on the 3 horizontal bars and define the filtering criteria as
-        **label:'required: FOR OFFICIAL RELEASE','required: FOR DEVELOPMENT RELEASE' is:open**.  Click **Save Changes**.
+        ``is:open label:'required: FOR OFFICIAL RELEASE','required: FOR DEVELOPMENT RELEASE'``.
+        Click **Save Changes**.
 
-      - View name **Beta1** to **Beta5** shows items for each individual development cycle.
-        Click on the 3 horizontal bars and define the filtering criteria as **cycle:Beta1**, **cycle:Beta2**,
-        and so on.  Click **Save Changes**.
+      - View names **Beta1** through **Beta5** show items for each individual development cycle.
+        Click on the 3 horizontal bars and define the filtering criteria as
+        ``cycle:Beta1``, ``cycle:Beta2``, and so on. Click **Save Changes**.
 
       - View name **Closed Issues** shows issues that have been closed across all development cycles.
-        Click on the 3 horizontal bars and define the filtering criteria as **is:closed is:issue**.
-        Click on the 3 dots in the **Cycle** column and select **Group by values**.  Click **Save Changes**.
-
-      - View name **High/Blocker Not Required** shows all items labelled as *HIGH* or *BLOCKER* priority but
-        not marked as required for the development or official release.
         Click on the 3 horizontal bars and define the filtering criteria as
-        **is:open label:'priority: high','priority: blocker' -label:'required: FOR DEVELOPMENT RELEASE' -label:'required: FOR OFFICIAL RELEASE'**.
+        ``is:closed is:issue``. Click on the 3 dots in the **Cycle** column and select
+        **Group by values**.  Click **Save Changes**.
+
+      - View name **High/Blocker Not Required** shows all items labelled as *HIGH* or *BLOCKER*
+        priority but not marked as required for the development or official release.
+        Click on the 3 horizontal bars and define the filtering criteria as
+        ``is:open label:'priority: high','priority: blocker'``
+        ``-label:'required: FOR DEVELOPMENT RELEASE'``
+        ``-label:'required: FOR OFFICIAL RELEASE'``.
         Click **Save Changes**.
 
    - Delete any other views created by default by clicking the down arrow next to the view name and
@@ -270,8 +274,8 @@ required to perform the following steps.
 
       - View name **Closed Issues** shows issues that have been closed across all bugfix
         milestones.  Click on the 3 horizontal bars and define the filtering criteria as
-        **is:closed is:issue**.  Click on the 3 dots in the **Milestone** column and select
-        **Group by values**.  Click **Save Changes**.
+        ``is:closed is:issue``. Click on the 3 dots in the **Milestone** column and
+        select **Group by values**. Click **Save Changes**.
 
    - Delete any other views created by default by clicking the down arrow next to the view
      name and selecting **Delete view**.
