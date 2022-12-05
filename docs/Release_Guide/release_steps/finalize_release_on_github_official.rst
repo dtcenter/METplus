@@ -19,9 +19,13 @@ Finalize Release on GitHub
 
 * Update projects:
 
-  * Confirm that all existing development projects for the current milestone are closed.
+  * Close the existing development project for the current milestone.
 
-  * If necessary, create development projects for the next milestone (e.g. |projectRepo|-X.Y.Z-beta1, beta2, beta3).
+  * If necessary, see :ref:`wo-support-project` to create a support project for the current
+    METplus coordinated release.
+
+  * If necessary, see :ref:`wo-development-project` to create a development project for the
+    next milestone.
 
 * Update branches:
 

@@ -7037,6 +7037,16 @@ METplus Configuration Glossary
 
      | *Used by:* PointStat
 
+   POINT_STAT_OUTPUT_FLAG_SEEPS
+     Specify the value for 'output_flag.seeps' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_SEEPS_MPR
+     Specify the value for 'output_flag.seeps_mpr' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
    POINT_STAT_INTERP_VLD_THRESH
      Specify the value for 'interp.vld_thresh' in the MET configuration file for PointStat.
 
