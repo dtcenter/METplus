@@ -377,3 +377,76 @@ the path to the METplus log file that was generated.
 * Review the :ref:`metplus_final.conf<metplus_final_conf>` file to see all
   of the settings that were used in the use case.
 
+
+.. _metplus-docker:
+
+METplus in Docker
+=================
+
+METplus is available on DockerHub. The METplus Docker image includes all of
+the MET executables from the corresponding METplus Coordinated Release and
+the METplus wrappers are pre-configured to use them.
+
+To pull the latest official release, run::
+
+    docker pull dtcenter/metplus:latest
+
+Tags for previous releases and development releases are also available.
+Refer to the list of
+`available tags <https://hub.docker.com/repository/docker/dtcenter/metplus/tags>`_
+on DockerHub.
+
+.. _docker-sample-input:
+
+Sample Input Data
+-----------------
+
+Sample input data for all of the use cases provided with the METplus wrappers
+are also available on DockerHub. These data are found in the
+dtcenter/metplus-data DockerHub repository and are named with the X.Y version
+of the corresponding METplus Coordinated Release and the name of the use case category
+separated by a dash, e.g. 4.1-data_assimilation or 4.0-met_tool_wrapper.
+A list of
+`available tags for input data <https://hub.docker.com/repository/docker/dtcenter/metplus-data/tags>`_
+can also be found on DockerHub.
+
+To make these data available in a METplus Docker container, first create a
+Docker data volume from the desired tag and give it a name with the *--name*
+argument::
+
+    docker create --name met_tool_wrapper dtcenter/metplus-data:4.1-met_tool_wrapper
+
+Then mount the data volume to the container using the *--volumes-from* argument
+to the *docker run* command::
+
+    docker run --rm -it --volumes-from met_tool_wrapper dtcenter/metplus:4.1.4 bash
+
+The input data will be available inside the container under
+/data/input/METplus_Data.
+
+Running METplus in Docker
+-------------------------
+
+The run_metplus.py script is in the user's path inside the container.
+The use case configuration files can be found under
+/metplus/METplus/parm/use_cases.
+The values for :ref:`sys_conf_met_install_dir`, :ref:`sys_conf_input_base`, and
+:ref:`sys_conf_output_base` are set to appropriate default values.
+A use case can be run by simply passing the use case configuration file to the
+run script::
+
+    run_metplus.py /metplus/METplus/parm/use_cases/met_tool_wrapper/Example/Example.conf
+
+Output from the use case will be written to /data/output by default.
+The value for :ref:`sys_conf_output_base` can be changed to write elsewhere::
+
+    run_metplus.py /metplus/METplus/parm/use_cases/met_tool_wrapper/Example/Example.conf config.OUTPUT_BASE=/data/output/my_data_dir
+
+If :ref:`docker-sample-input` is mounted to the container, then use cases from
+the corresponding category can be run::
+
+    run_metplus.py /metplus/METplus/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
+
+Please note that use cases that have additional Python package dependencies
+may not run successfully unless those packages are installed inside the
+container or obtained elsewhere.

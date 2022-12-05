@@ -70,7 +70,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/Ascii2NcConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/Ascii2NcConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/Ascii2NcConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/Ascii2NcConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -333,7 +333,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/EnsembleStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/EnsembleStatConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/EnsembleStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/EnsembleStatConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -1124,7 +1124,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/GenEnsProdConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/GenEnsProdConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/GenEnsProdConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/GenEnsProdConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -2686,7 +2686,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/GridDiagConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/GridDiagConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/GridDiagConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/GridDiagConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -2964,7 +2964,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/GridStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/GridStatConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/GridStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/GridStatConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -3501,7 +3501,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/IODA2NCConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/IODA2NCConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/IODA2NCConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/IODA2NCConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -4044,7 +4044,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/MODEConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/MODEConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/MODEConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/MODEConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -4669,7 +4669,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/MTDConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/MTDConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/MTDConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/MTDConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -4941,7 +4941,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/PB2NCConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/PB2NCConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/PB2NCConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/PB2NCConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -5122,6 +5122,61 @@ Description
 The PCPCombine wrapper is a Python script that encapsulates the MET
 PCPCombine tool. It provides the infrastructure to combine or extract
 from files to build desired accumulations.
+
+PCPCombine wrapper can be configured to process forecast and/or observation
+data. Setting :term:`FCST_PCP_COMBINE_RUN` = True will process forecast data
+and setting :term:`OBS_PCP_COMBINE_RUN` = True will process observation data.
+
+PCPCombine wrapper can be configured to build a command for the sum, add, subtract,
+and derive methods using :term:`FCST_PCP_COMBINE_METHOD` and/or
+:term:`OBS_PCP_COMBINE_METHOD`. Each method executes logic to gather the
+desired input files to build the command based on specific examples.
+
+Accumulations
+^^^^^^^^^^^^^
+
+The desired accumulation to build is defined using
+:term:`FCST_PCP_COMBINE_OUTPUT_ACCUM` or :term:`OBS_PCP_COMBINE_OUTPUT_ACCUM`.
+The default units are hours unless otherwise specified.
+The output field name can be set explicitly using
+:term:`FCST_PCP_COMBINE_OUTPUT_NAME` or :term:`OBS_PCP_COMBINE_OUTPUT_NAME`.
+
+For the ADD and DERIVE methods, the input accumulation(s) can be specified using
+:term:`FCST_PCP_COMBINE_INPUT_ACCUMS` or :term:`OBS_PCP_COMBINE_INPUT_ACCUMS`.
+The default units are hours unless otherwise specified.
+This can be a list of accumulation amounts in order of preference.
+If the remaining accumulation needed to build the desired accumulation is
+less than the first accumulation, then the next value in the list will be used.
+The name and level of the field to read for each input accumulation can be
+specified with
+:term:`FCST_PCP_COMBINE_INPUT_NAMES`/:term:`FCST_PCP_COMBINE_INPUT_LEVELS` or
+:term:`OBS_PCP_COMBINE_INPUT_NAMES`/:term:`OBS_PCP_COMBINE_INPUT_LEVELS`.
+These lists must be the same length as
+:term:`FCST_PCP_COMBINE_INPUT_ACCUMS` or :term:`OBS_PCP_COMBINE_INPUT_ACCUMS`.
+
+Constant Initialization Time
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For the ADD and DERIVE methods, :term:`FCST_PCP_COMBINE_CONSTANT_INIT` or
+:term:`OBS_PCP_COMBINE_CONSTANT_INIT` can be set to **True** to gather input
+files that all contain the same initialization time.
+
+
+User-Defined Commands
+^^^^^^^^^^^^^^^^^^^^^
+
+There are many ways to utilize PCPCombine that may not align with the logic
+used to gather files. If this is the case, then the method can be set to
+**USER_DEFINED** and the explicit command arguments can be specified using
+:term:`FCST_PCP_COMBINE_COMMAND` or :term:`OBS_PCP_COMBINE_COMMAND`.
+Other METplus configuration variables and filename template tags can be
+referenced in the explicit command. Note that the path to the pcp_combine
+executable and the output path should not be included in the command value.
+The output path is controlled by
+:term:`FCST_PCP_COMBINE_INPUT_TEMPLATE`/:term:`FCST_PCP_COMBINE_INPUT_DIR` or
+:term:`OBS_PCP_COMBINE_INPUT_TEMPLATE`/:term:`OBS_PCP_COMBINE_INPUT_DIR` and
+will automatically be added to the end of the command.
+
 
 METplus Configuration
 ---------------------
@@ -5312,7 +5367,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/PlotPointObsConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/PlotPointObsConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/PlotPointObsConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/PlotPointObsConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -5808,7 +5863,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/PointStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/PointStatConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/PointStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/PointStatConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -6447,7 +6502,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/SeriesAnalysisConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/SeriesAnalysisConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/SeriesAnalysisConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/SeriesAnalysisConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -7112,7 +7167,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/STATAnalysisConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/STATAnalysisConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/STATAnalysisConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/STATAnalysisConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -7612,7 +7667,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/TCGenConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/TCGenConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/TCGenConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/TCGenConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -8310,7 +8365,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/TCPairsConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/TCPairsConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/TCPairsConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/TCPairsConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -8651,7 +8706,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/TCRMWConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/TCRMWConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/TCRMWConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/TCRMWConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -8981,7 +9036,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/TCStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/TCStatConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/TCStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/TCStatConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used

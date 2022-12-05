@@ -44,7 +44,7 @@ The following software is required to run METplus Wrappers:
 
 -  Python 3.8.6 or above
 
--  MET version 10.0.0 or above - 
+-  MET version 11.0.0 or above -
    For information on installing MET please see the `Software Installation/Getting Started <https://met.readthedocs.io/en/latest/Users_Guide/installation.html>`_
    section of the MET User's Guide. 
 
