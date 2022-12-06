@@ -240,7 +240,7 @@ Rename the following variables:
 
 .. list-table: EnsembleStat_only
    :widths 50 50
-   : header-rows: 1
+   :header-rows: 1
 
    * - Old Name
      - New Name
