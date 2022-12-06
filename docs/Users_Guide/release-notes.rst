@@ -253,7 +253,7 @@ Rename the following variables:
    * - ENSEMBLE_STAT_OUTPUT_TEMPLATE
      - GEN_ENS_PROD_OUTPUT_TEMPLATE
    * - **and add full filename template for NetCDF output file to end of value**,
-   * - i.e. */gen_ens_prod_{valid?fmt=%Y%m%d_%H%M%S}V_ens.nc*
+     - i.e. */gen_ens_prod_{valid?fmt=%Y%m%d_%H%M%S}V_ens.nc*
    * - ENSEMBLE_STAT_N_MEMBERS
      - GEN_ENS_PROD_N_MEMBERS
    * - ENSEMBLE_STAT_ENS_THRESH
@@ -268,8 +268,8 @@ Rename the following variables:
      - GEN_ENS_PROD_ENSEMBLE_FLAG_STDEV
    * - ENSEMBLE_STAT_ENSEMBLE_FLAG_MINUS
      - GEN_ENS_PROD_ENSEMBLE_FLAG_MINUS
-   * - ENSEMBLE_STAT_ENSEMBLE_FLAG_PLUS-
-     GEN_ENS_PROD_ENSEMBLE_FLAG_PLUS
+   * - ENSEMBLE_STAT_ENSEMBLE_FLAG_PLUS
+     - GEN_ENS_PROD_ENSEMBLE_FLAG_PLUS
    * - ENSEMBLE_STAT_ENSEMBLE_FLAG_MIN
      - GEN_ENS_PROD_ENSEMBLE_FLAG_MIN
    * - ENSEMBLE_STAT_ENSEMBLE_FLAG_MAX
