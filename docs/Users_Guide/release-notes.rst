@@ -241,7 +241,7 @@ Rename the following variables:
 .. role:: raw-html(raw)
    :format: html
 
-.. list-table:: EnsembleStat_only
+.. list-table:: EnsembleStat, rename the following variables
    :widths: 50 50
    :header-rows: 1
 
