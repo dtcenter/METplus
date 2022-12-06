@@ -338,6 +338,7 @@ e.g.
    * - FCST_VAR2_LEVELS
      - ENS_VAR2_LEVELS
    * - ... etc
+     - 
 
      
 *  If FCST/OBS verification is being performed by another tool, then add
@@ -354,7 +355,8 @@ e.g.
 Remove the following variables:
 """""""""""""""""""""""""""""""
 
-| **Remove any remaining ENSEMBLE_STAT_\* variables that are no longer used. Some examples:**
+| **Remove any remaining ENSEMBLE_STAT_\* variables that are
+no longer used. Some examples:**
 
 .. list-table:: ENSEMBLE_STAT_\* variables
    :widths: 50
