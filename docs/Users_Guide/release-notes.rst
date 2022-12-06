@@ -328,7 +328,6 @@ e.g.
 
    * - Old Name
      - New Name
-
    * - FCST_VAR1_NAME
      - ENS_VAR1_NAME
    * - FCST_VAR1_LEVELS
@@ -346,10 +345,10 @@ e.g.
 
 e.g.
 
-ENS_VAR1_NAME = {FCST_VAR1_NAME}
-ENS_VAR1_LEVELS = {FCST_VAR1_LEVELS}
-ENS_VAR2_NAME = {FCST_VAR2_NAME}
-ENS_VAR2_LEVELS = {FCST_VAR2_LEVELS} ... etc
+| ENS_VAR1_NAME = {FCST_VAR1_NAME}
+| ENS_VAR1_LEVELS = {FCST_VAR1_LEVELS}
+| ENS_VAR2_NAME = {FCST_VAR2_NAME}
+| ENS_VAR2_LEVELS = {FCST_VAR2_LEVELS} ... etc
 
 Remove the following variables:
 """""""""""""""""""""""""""""""
@@ -493,10 +492,10 @@ otherwise use FCST_VAR<n>_*
 
 e.g.
 
-ENS_VAR1_NAME = {FCST_VAR1_NAME}
-ENS_VAR1_LEVELS = {FCST_VAR1_LEVELS}
-ENS_VAR2_NAME = {FCST_VAR2_NAME}
-ENS_VAR2_LEVELS = {FCST_VAR2_LEVELS}
+| ENS_VAR1_NAME = {FCST_VAR1_NAME}
+| ENS_VAR1_LEVELS = {FCST_VAR1_LEVELS}
+| ENS_VAR2_NAME = {FCST_VAR2_NAME}
+| ENS_VAR2_LEVELS = {FCST_VAR2_LEVELS}
 
 **If any of the following ENSEMBLE_STAT_\* variables are set in the
 configuration file, then rename them to the corresponding
