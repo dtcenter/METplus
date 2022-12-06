@@ -355,8 +355,8 @@ e.g.
 Remove the following variables:
 """""""""""""""""""""""""""""""
 
-| **Remove any remaining ENSEMBLE_STAT_\* variables that are
-no longer used. Some examples:**
+**Remove any remaining ENSEMBLE_STAT_\* variables that are no
+longer used. Some examples:**
 
 .. list-table:: ENSEMBLE_STAT_\* variables
    :widths: 50
