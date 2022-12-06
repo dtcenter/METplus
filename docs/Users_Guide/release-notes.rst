@@ -238,7 +238,7 @@ GenEnsProd instead.
 Rename the following variables:
 """""""""""""""""""""""""""""""
 
-.. list-table: EnsembleStat_only
+.. list-table:: EnsembleStat_only
    :widths 50 50
    :header-rows: 1
 
