@@ -238,6 +238,9 @@ GenEnsProd instead.
 Rename the following variables:
 """""""""""""""""""""""""""""""
 
+.. role:: raw-html(raw)
+   :format: html
+
 .. list-table:: EnsembleStat_only
    :widths: 50 50
    :header-rows: 1
@@ -251,9 +254,7 @@ Rename the following variables:
    * - ENSEMBLE_STAT_OUTPUT_DIR
      - GEN_ENS_PROD_OUTPUT_DIR
    * - ENSEMBLE_STAT_OUTPUT_TEMPLATE
-     - GEN_ENS_PROD_OUTPUT_TEMPLATE
-   * - **and add full filename template for NetCDF output file to end of value**,
-     - i.e. */gen_ens_prod_{valid?fmt=%Y%m%d_%H%M%S}V_ens.nc*
+     - GEN_ENS_PROD_OUTPUT_TEMPLATE :raw-html:`<br />` **and add full filename template** :raw-html:`<br />` **for NetCDF output file to end of value**, :raw-html:`<br />` i.e. */gen_ens_prod_{valid?fmt=%Y%m%d_%H%M%S}V_ens.nc*
    * - ENSEMBLE_STAT_N_MEMBERS
      - GEN_ENS_PROD_N_MEMBERS
    * - ENSEMBLE_STAT_ENS_THRESH
