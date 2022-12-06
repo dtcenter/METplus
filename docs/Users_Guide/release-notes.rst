@@ -242,7 +242,6 @@ Rename the following variables:
    :widths 50 50
    : header-rows: 1
 
-
    * - Old Name
      - New Name
    * - FCST_ENSEMBLE_STAT_INPUT_DIR
