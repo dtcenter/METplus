@@ -346,11 +346,11 @@ e.g.
 
 e.g.
 
-   * - ENS_VAR1_NAME = {FCST_VAR1_NAME}
-   * - ENS_VAR1_LEVELS = {FCST_VAR1_LEVELS}
-   * - ENS_VAR2_NAME = {FCST_VAR2_NAME}
-   * - ENS_VAR2_LEVELS = {FCST_VAR2_LEVELS}
-   * - ... etc
+ENS_VAR1_NAME = {FCST_VAR1_NAME}
+ENS_VAR1_LEVELS = {FCST_VAR1_LEVELS}
+ENS_VAR2_NAME = {FCST_VAR2_NAME}
+ENS_VAR2_LEVELS = {FCST_VAR2_LEVELS}
+... etc
 
 Remove the following variables:
 """""""""""""""""""""""""""""""
