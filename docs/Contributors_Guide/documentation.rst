@@ -210,7 +210,7 @@ Documentation for each METplus component can be found at the links below:
 * `METplus <https://metplus.readthedocs.io/>`_
 * `MET <https://met.readthedocs.io/>`_  
 * `METcalcpy <https://metcalcpy.readthedocs.io/>`_
-* `METdatadb <https://metdatadb.readthedocs.io/>`_
+* `METdataio <https://metdataio.readthedocs.io/>`_
 * `METexpress <https://metexpress.readthedocs.io/>`_
 * `METplotpy <https://metplotpy.readthedocs.io/>`_
 * `METviewer <https://metviewer.readthedocs.io/>`_

@@ -6355,7 +6355,7 @@ METplus Configuration Glossary
      | *Used by:*  GridDiag
 
    MET_DATA_DB_DIR
-     Set this the location of the dtcenter/METdatadb repository.
+     Set this the location of the dtcenter/METdataio repository.
 
      | *Used by:*  METdbLoad
 

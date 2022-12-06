@@ -3713,7 +3713,7 @@ METdbLoad
 Description
 -----------
 
-Used to call the met_db_load.py script from dtcenter/METdatadb to load MET
+Used to call the met_db_load.py script from dtcenter/METdataio to load MET
 output into a METviewer database.
 
 METplus Configuration

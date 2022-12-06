@@ -765,7 +765,7 @@ for more information on how to use Python Embedding.
   is used to run typical use cases has already installed the METplus Python
   package in its environment, so the package can be imported easily.
 
-* **metdatadb** - Used if the METdatadb repository is needed to run. Note that
+* **metdatadb** - Used if the METdataio repository is needed to run. Note that
   this is only needed if using a Conda environment other than metdatadb_env.
   The repository Python code will be installed in the Python environment.
 
@@ -819,7 +819,7 @@ build the environment locally.
 
 The scripts used to create the Python environment Docker images
 do not install any METplus components,
-such as METplotpy, METcalcpy, METdatadb, and METplus,
+such as METplotpy, METcalcpy, METdataio, and METplus,
 in the Python environment that may be needed for a use case.
 This is done because the automated tests
 will install and use the latest version (develop) of the packages to
@@ -1006,7 +1006,7 @@ Setup Use Case Commands
 Before **run_metplus.py** is called to run the use case,
 some other commands are run in the Docker container.
 For example, if another METplus Python component such as
-METcalcpy, METplotpy, or METdatadb are required for the use case,
+METcalcpy, METplotpy, or METdataio are required for the use case,
 the **develop** branch of those repositories are obtained the Python code
 is installed in the Python (Conda) environment that will be used to
 run the use case.

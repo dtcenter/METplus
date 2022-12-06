@@ -1,8 +1,8 @@
 These files are a use case to show how to compute meridial and zonal means
 
-You need METcalcpy and METdatadb in your python path or your conda environment
+You need METcalcpy and METdataio in your python path or your conda environment
 i.e.
-export PYTHONPATH=<path>/METdatadb:<path>/METcalcpy
+export PYTHONPATH=<path>/METdataio:<path>/METcalcpy
 
 The file SSWC_v1.0_varFull_ERAi_d20130106_s20121107_e20130307_c20160701.nc needs to be
 on disk somewhere on your computer and referenced correctly in the file
