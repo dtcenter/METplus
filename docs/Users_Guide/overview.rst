@@ -514,7 +514,8 @@ METplus Components Python Requirements
   * - pytest
     - >=5.2.1
     - METcalcpy, :raw-html:`<br />`
-      METplotpy
+      METplotpy, :raw-html:`<br />`
+      METdataio
     - https://github.com/pytest-dev/pytest/archive/5.2.1.tar.gz
     - a mature full-featured :raw-html:`<br />`
       Python testing tool that :raw-html:`<br />`
