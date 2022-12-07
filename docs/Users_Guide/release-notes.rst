@@ -320,7 +320,7 @@ If ENS_VAR<n>_ variables are not set:
 *  If no FCST/OBS verification is being performed in the use case using another
    wrapper, then rename the FCST_VAR<n> variables to ENS_VAR<n>.
 
-e.g.
+For example:
 
 .. list-table:: Rename the FCST_VAR<n> variables to ENS_VAR<n>
    :widths: 50 50
@@ -336,14 +336,12 @@ e.g.
      - ENS_VAR2_NAME
    * - FCST_VAR2_LEVELS
      - ENS_VAR2_LEVELS
-   * - ... etc
-     - 
 
      
 *  If FCST/OBS verification is being performed by another tool, then add
    ENS_VAR<n> variables using the corresponding FCST_VAR<n> values.
 
-e.g.
+For example:
 
 | ENS_VAR1_NAME = {FCST_VAR1_NAME}
 | ENS_VAR1_LEVELS = {FCST_VAR1_LEVELS}
@@ -490,7 +488,7 @@ corresponding FCST_ENSEMBLE_STAT_VAR<n> or FCST_VAR<n> values.
 **If FCST_ENSEMBLE_VAR<n>_\* variables are set,** then use only those values,
 otherwise use FCST_VAR<n>_*
 
-e.g.
+For example:
 
 | ENS_VAR1_NAME = {FCST_VAR1_NAME}
 | ENS_VAR1_LEVELS = {FCST_VAR1_LEVELS}
@@ -563,7 +561,7 @@ GEN_ENS_PROD_ENSEMBLE_FLAG_\* variables to the same value.**
    * - ENSEMBLE_STAT_ENSEMBLE_FLAG_NEP
    * - ENSEMBLE_STAT_ENSEMBLE_FLAG_NMEP
 
-e.g.
+For example:
 
 If ENSEMBLE_STAT_ENSEMBLE_FLAG_LATLON = TRUE
 | Add GEN_ENS_PROD_ENSEMBLE_FLAG_LATLON = TRUE
