@@ -392,10 +392,11 @@ METplus Components Python Requirements
       Fourier transforms, and more.
     - For using MET Python embedding functionality in use cases
   * - pandas
-    - >=1.0.5
+    - >=1.0.5, <=1.2.3 (METdataio)
     - METplus wrappers, :raw-html:`<br />`
       METcalcpy, :raw-html:`<br />`
-      METplotpy
+      METplotpy, :raw-html:`<br />`
+      METdataio 
     - https://pypi.org/project/pandas
     - a fast, powerful, :raw-html:`<br />`
       flexible and easy to use :raw-html:`<br />`
@@ -534,7 +535,8 @@ METplus Components Python Requirements
   * - pyyaml
     - >=5.3.1
     - METcalcpy, :raw-html:`<br />`
-      METplotpy
+      METplotpy, :raw-html:`<br />`
+      METdataio
     - https://github.com/yaml/pyyaml
     - a full-featured YAML :raw-html:`<br />`
       framework for the Python :raw-html:`<br />`
