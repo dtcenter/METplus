@@ -354,7 +354,9 @@ Remove the following variables:
 """""""""""""""""""""""""""""""
 
 **Remove any remaining ENSEMBLE_STAT_\* variables that are no
-longer used. Some examples:**
+longer used.**
+
+Some examples:
 
 .. list-table:: ENSEMBLE_STAT_* variables that are no longer used
    :widths: 50
@@ -479,7 +481,9 @@ or something similar.
 **If the EnsembleStat output template is not set,** then set GenEnsProd’s
 template to the desired NetCDF output filename. Here is an example:
 
-GEN_ENS_PROD_OUTPUT_TEMPLATE = gen_ens_prod_{valid?fmt=%Y%m%d_%H%M%S}V_ens.nc
+  .. code-block:: ini
+		  
+     GEN_ENS_PROD_OUTPUT_TEMPLATE = gen_ens_prod_{valid?fmt=%Y%m%d_%H%M%S}V_ens.nc
 
 **Ensure that any downstream wrappers in the PROCESS_LIST are configured
 to read the correct GenEnsProd output file instead of the _ens.nc file
