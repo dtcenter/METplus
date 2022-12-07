@@ -10,7 +10,7 @@ met_tool_wrapper/METdbLoad/METdbLoad.conf
 # --------------------
 #
 # Load MET data into a database using the met_db_load.py script
-# found in dtcenter/METdatadb
+# found in dtcenter/METdataio
 
 ##############################################################################
 # Datasets

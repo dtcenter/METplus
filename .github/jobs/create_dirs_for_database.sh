@@ -1,6 +1,6 @@
 #! /bin/bash
 
-# Create directories used for use case that uses METviewer and METdatadb
+# Create directories used for use case that uses METviewer and METdataio
 # Open up write permissions for these directories so that files can
 # be written by METviewer Docker container.
 # Called by .github/workflows/testing.yml
