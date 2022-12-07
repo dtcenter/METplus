@@ -238,7 +238,8 @@ METplus Components Python Requirements
   * - lxml
     -
     - METcalcpy, :raw-html:`<br />`
-      METplotpy
+      METplotpy, :raw-html:`<br />`
+      METdataio
     - https://pypi.org/project/lxml/
     - a Pythonic binding for :raw-html:`<br />`
       the C libraries :raw-html:`<br />`
@@ -382,7 +383,8 @@ METplus Components Python Requirements
     - >=1.19.2
     - METplus wrappers, :raw-html:`<br />`
       METcalcpy, :raw-html:`<br />`
-      METplotpy
+      METplotpy, :raw-html:`<br />`
+      METdataio
     - https://numpy.org/
     - NumPy offers :raw-html:`<br />`
       comprehensive :raw-html:`<br />`
@@ -467,7 +469,8 @@ METplus Components Python Requirements
   * - pymysql
     - 
     - METcalcpy, :raw-html:`<br />`
-      METplotpy
+      METplotpy, :raw-html:`<br />`
+      METdataio
     - https://pypi.org/project/psutil/
     - a pure-Python MySQL :raw-html:`<br />`
       client library, :raw-html:`<br />`
