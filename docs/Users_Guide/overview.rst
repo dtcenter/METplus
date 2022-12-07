@@ -637,20 +637,6 @@ METplus Components Python Requirements
       GFS and ERA RegridDataPlane, PcpCombine, and WeatherRegime python code
       (sklearn)
       <../generated/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.html>`_
-  * - statsmodels
-    - >=0.11.1
-    - METcalcpy, :raw-html:`<br />`
-      METplotpy
-    - https://www.statsmodels.org/
-    - provides classes and  :raw-html:`<br />`
-      functions for the :raw-html:`<br />`
-      estimation of many :raw-html:`<br />`
-      different statistical :raw-html:`<br />`
-      models, as well as for :raw-html:`<br />`
-      conducting statistical :raw-html:`<br />`
-      tests, and statistical :raw-html:`<br />`
-      data exploration
-    - 
   * - xarray
     - >=0.17.0
     - METplus wrappers, :raw-html:`<br />`
