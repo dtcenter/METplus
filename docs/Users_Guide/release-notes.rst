@@ -569,7 +569,7 @@ GEN_ENS_PROD_ENSEMBLE_FLAG_\* variables to the same value.**
 
 For example:
 
-If ENSEMBLE_STAT_ENSEMBLE_FLAG_LATLON = TRUE
+| If ENSEMBLE_STAT_ENSEMBLE_FLAG_LATLON = TRUE
 | Add GEN_ENS_PROD_ENSEMBLE_FLAG_LATLON = TRUE
 
 **If any of the following ENSEMBLE_STAT_ENSEMBLE_FLAG_\* variables are set
