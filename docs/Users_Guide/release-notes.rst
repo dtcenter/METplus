@@ -343,12 +343,12 @@ For example:
 
 For example:
 
-  ..code-block:: ini
+  .. code-block:: ini
 
-    ENS_VAR1_NAME = {FCST_VAR1_NAME}
-    ENS_VAR1_LEVELS = {FCST_VAR1_LEVELS}
-    ENS_VAR2_NAME = {FCST_VAR2_NAME}
-    ENS_VAR2_LEVELS = {FCST_VAR2_LEVELS}
+     ENS_VAR1_NAME = {FCST_VAR1_NAME}
+     ENS_VAR1_LEVELS = {FCST_VAR1_LEVELS}
+     ENS_VAR2_NAME = {FCST_VAR2_NAME}
+     ENS_VAR2_LEVELS = {FCST_VAR2_LEVELS}
 
 Remove the following variables:
 """""""""""""""""""""""""""""""
@@ -492,12 +492,12 @@ otherwise use FCST_VAR<n>_*
 
 For example:
  
-  ..code-block:: ini
+  .. code-block:: ini
 
-    ENS_VAR1_NAME = {FCST_VAR1_NAME}
-    ENS_VAR1_LEVELS = {FCST_VAR1_LEVELS}
-    ENS_VAR2_NAME = {FCST_VAR2_NAME}
-    ENS_VAR2_LEVELS = {FCST_VAR2_LEVELS}
+     ENS_VAR1_NAME = {FCST_VAR1_NAME}
+     ENS_VAR1_LEVELS = {FCST_VAR1_LEVELS}
+     ENS_VAR2_NAME = {FCST_VAR2_NAME}
+     ENS_VAR2_LEVELS = {FCST_VAR2_LEVELS}
 
 **If any of the following ENSEMBLE_STAT_\* variables are set in the
 configuration file, then rename them to the corresponding
@@ -534,15 +534,15 @@ GEN_ENS_PROD_\* variable:**
 configuration file, then set the corresponding GEN_ENS_PROD_\*
 variables to the same value or reference the ENSEMBLE_STAT_\* version.**
 
-  ..code-block:: ini
+  .. code-block:: ini
 
-    GEN_ENS_PROD_N_MEMBERS = {ENSEMBLE_STAT_N_MEMBERS}
-    GEN_ENS_PROD_ENS_THRESH = {ENSEMBLE_STAT_ENS_THRESH}
-    GEN_ENS_PROD_REGRID_TO_GRID = {ENSEMBLE_STAT_REGRID_TO_GRID}
-    GEN_ENS_PROD_REGRID_METHOD = {ENSEMBLE_STAT_REGRID_METHOD}
-    GEN_ENS_PROD_REGRID_WIDTH = {ENSEMBLE_STAT_REGRID_WIDTH}
-    GEN_ENS_PROD_VLD_THRESH = {ENSEMBLE_STAT_VLD_THRESH}
-    GEN_ENS_PROD_SHAPE = {ENSEMBLE_STAT_SHAPE}
+     GEN_ENS_PROD_N_MEMBERS = {ENSEMBLE_STAT_N_MEMBERS}
+     GEN_ENS_PROD_ENS_THRESH = {ENSEMBLE_STAT_ENS_THRESH}
+     GEN_ENS_PROD_REGRID_TO_GRID = {ENSEMBLE_STAT_REGRID_TO_GRID}
+     GEN_ENS_PROD_REGRID_METHOD = {ENSEMBLE_STAT_REGRID_METHOD}
+     GEN_ENS_PROD_REGRID_WIDTH = {ENSEMBLE_STAT_REGRID_WIDTH}
+     GEN_ENS_PROD_VLD_THRESH = {ENSEMBLE_STAT_VLD_THRESH}
+     GEN_ENS_PROD_SHAPE = {ENSEMBLE_STAT_SHAPE}
 
 **If any of the following ENSEMBLE_STAT_ENSEMBLE_FLAG_\* variables are set
 in the configuration file, then set the corresponding
