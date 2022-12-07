@@ -27,3 +27,5 @@ for each official release:
 
 * Review the list of authors in the citation and at the top level of the
   documentation and update as needed.
+  
+* Commit changes and push to GitHub
