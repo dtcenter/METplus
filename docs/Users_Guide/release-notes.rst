@@ -449,9 +449,9 @@ Case 3: EnsembleStat generating ensemble products and performing ensemble verifi
 GenEnsProd will need to be added to the PROCESS_LIST in addition to
 EnsembleStat to generate the ensemble verification output.
 
-::
+  .. code-block:: ini
 
-    PROCESS_LIST = ..., EnsembleStat, GenEnsProd, ...
+     PROCESS_LIST = ..., EnsembleStat, GenEnsProd, ...
 
 
 Set input variables:
@@ -461,11 +461,11 @@ Set the input dir and template variables for **GenEnsProd** to match
 the values set for FCST input to EnsembleStat.
 Also set the output dir to match EnsembleStat output dir.
 
-::
+  .. code-block:: ini
 
-    GEN_ENS_PROD_INPUT_DIR = {FCST_ENSEMBLE_STAT_INPUT_DIR}
-    GEN_ENS_PROD_INPUT_TEMPLATE = {FCST_ENSEMBLE_STAT_INPUT_TEMPLATE}
-    GEN_ENS_PROD_OUTPUT_DIR = {ENSEMBLE_STAT_OUTPUT_DIR}
+     GEN_ENS_PROD_INPUT_DIR = {FCST_ENSEMBLE_STAT_INPUT_DIR}
+     GEN_ENS_PROD_INPUT_TEMPLATE = {FCST_ENSEMBLE_STAT_INPUT_TEMPLATE}
+     GEN_ENS_PROD_OUTPUT_DIR = {ENSEMBLE_STAT_OUTPUT_DIR}
 
 **If the EnsembleStat output template is set**, then copy the value and add a
 template for the NetCDF output filename at the end following a forward slash
