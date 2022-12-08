@@ -425,15 +425,6 @@ METplus Components Python Requirements
     - makes interactive, :raw-html:`<br />`
       publication-quality graphs
     - 
-  * - psutil
-    - 5.7.2
-    - METcalcpy, :raw-html:`<br />`
-      METplotpy
-    - https://pypi.org/project/psutil/
-    - Cross-platform lib for :raw-html:`<br />`
-      process and system :raw-html:`<br />`
-      monitoring in Python
-    - 
   * - pygrib
     - 
     - METplus  wrappers
