@@ -116,7 +116,8 @@ METplus Components Python Requirements
     -
     - METplus wrappers, :raw-html:`<br />`
       METcalcpy, :raw-html:`<br />`
-      METplotpy
+      METplotpy,:raw-html:`<br />`
+      METdataio
     -
     -
     -
