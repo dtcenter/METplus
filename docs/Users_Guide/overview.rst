@@ -209,7 +209,7 @@ METplus Components Python Requirements
       <../generated/met_tool_wrapper/PCPCombine/PCPCombine_python_embedding.html>`_
   * - imutils
     - >=0.5.3
-    - METplotpy, :raw-html:`<br />`
+    - METplotpy :raw-html:`<br />`
     - https://pypi.org/project/imutils/
     - A series of convenience :raw-html:`<br />`
       functions to make basic :raw-html:`<br />`
