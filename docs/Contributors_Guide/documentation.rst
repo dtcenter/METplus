@@ -89,7 +89,7 @@ User's Guide:
   
   * **glossary.rst** (Glossary)
   * **references.rst** (Reference)
-  * **systemconfiguration.rst** (System Configuration)
+  * **configuration.rst** (Configuration)
   * **usecases.rst** (Use cases)
   * **wrappers.rst** (METplus wrappers)
 
