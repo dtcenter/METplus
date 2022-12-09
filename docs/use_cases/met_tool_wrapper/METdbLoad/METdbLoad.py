@@ -114,6 +114,19 @@ met_tool_wrapper/METdbLoad/METdbLoad.conf
 # .. note::
 #
 #   * METdbLoadUseCase
+#   * AirQualityAndCompAppUseCase
+#   * ClimateAppUseCase
+#   * ShortRangeAppUseCase
+#   * DataAssimilationAppUseCase
+#   * EnsembleAppUseCase
+#   * MarineAndCryosphereAppUseCase
+#   * MediumRangeAppUseCase
+#   * PrecipitationAppUseCase
+#   * SpaceWeatherAppUseCase
+#   * S2SAppUseCase
+#   * S2SMJOAppUseCase
+#   * S2SMidLatAppUseCase
+#   * TCandExtraTCAppUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
