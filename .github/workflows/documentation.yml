@@ -3,9 +3,9 @@ on:
   push:
     branches:
       - develop
-      - feature_*
-      - main_*
-      - bugfix_*
+      - feature_**
+      - main_**
+      - bugfix_**
     paths:
       - docs/**
   pull_request:
