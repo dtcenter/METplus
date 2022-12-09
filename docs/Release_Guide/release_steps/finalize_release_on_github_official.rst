@@ -38,4 +38,5 @@ Finalize Release on GitHub
      https://github.com/dtcenter/|projectRepo|
      -> Settings
      -> Branches (tab on left)
-     -> change the drop down to new branch
+     -> change the drop down to new branch (click on stacked arrows icon next to the edit icon)
+     -> update branch protection rules 
