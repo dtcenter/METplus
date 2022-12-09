@@ -339,7 +339,9 @@ Set GenEnsProd output template to include filename
   or something similar.
 
 * **If the EnsembleStat output template was not set,** then set GenEnsProd’s
-template to the desired NetCDF output filename. Here is an example:
+  template to the desired NetCDF output filename.
+
+  Example:
 
   .. code-block:: ini
 
