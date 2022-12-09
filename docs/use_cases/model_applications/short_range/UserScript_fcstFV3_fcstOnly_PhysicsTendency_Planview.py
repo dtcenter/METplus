@@ -164,6 +164,7 @@ UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
 #   * PhysicsTendency
 #   * ValidationUseCase
 #   * ShortRangeAppUseCase
+#   * S2SAppUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar
 #   use cases.

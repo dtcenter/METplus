@@ -143,7 +143,7 @@ Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
 # .. note::
 #
 #   * ASCII2NCToolUseCase
-#   * Point2GridUseCase
+#   * Point2GridToolUseCase
 #   * RegridDataPlaneToolUseCase 
 #   * RegriddingInToolUseCase 
 #   * NetCDFFileUseCase

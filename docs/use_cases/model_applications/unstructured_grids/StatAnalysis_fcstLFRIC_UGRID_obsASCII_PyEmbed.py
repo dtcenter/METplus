@@ -1,6 +1,6 @@
 """
-StatAnalysis: UGRID
-===========================================================================
+StatAnalysis: Met Office LFRic UGRID
+====================================
 
 model_applications/unstructured_grids/StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEmbed.conf
 

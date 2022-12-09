@@ -138,6 +138,7 @@ _obsCCPA_Grib.conf
 #   * MediumRangeAppUseCase
 #   * MaskingFeatureUseCase
 #   * RegriddingInToolUseCase
+#   * ClimatologyUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

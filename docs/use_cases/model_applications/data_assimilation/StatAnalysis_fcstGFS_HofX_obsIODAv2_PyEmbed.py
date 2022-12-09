@@ -147,7 +147,8 @@ model_applications/data_assimilation/StatAnalysis_fcstGFS_HofX_obsIODAv2_PyEmbed
 #
 #   * StatAnalysisToolUseCase 
 #   * PythonEmbeddingFileUseCase 
-#   * DataAssimilationUseCase 
+#   * DataAssimilationUseCase
+#   * IODA2NCToolUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
