@@ -255,7 +255,7 @@ Rename Variables
      - GEN_ENS_PROD_OUTPUT_DIR
    * - ENSEMBLE_STAT_OUTPUT_TEMPLATE
      - GEN_ENS_PROD_OUTPUT_TEMPLATE :raw-html:`<br />`
-       **and add filename (see :ref:`below<upgrade-ensemble-case1-filename>`)**
+       **and add filename (see** :ref:`below<upgrade-ensemble-case1-filename>`**)**
    * - ENSEMBLE_STAT_N_MEMBERS
      - GEN_ENS_PROD_N_MEMBERS
    * - ENSEMBLE_STAT_ENS_THRESH
@@ -695,4 +695,4 @@ Rename Variables
      - GEN_ENS_PROD_ENSEMBLE_FLAG_NMEP
 
 For further assistance, please navigate to the
-`METplus Discussions<https://github.com/dtcenter/METplus/discussions>`_ page.
+`METplus Discussions <https://github.com/dtcenter/METplus/discussions>`_ page.
