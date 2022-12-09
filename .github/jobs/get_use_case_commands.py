@@ -16,7 +16,7 @@ sys.path.insert(0, METPLUS_TOP_DIR)
 from internal.tests.use_cases.metplus_use_case_suite import METplusUseCaseSuite
 from metplus.util.string_manip import expand_int_string_to_list
 from docker_utils import VERSION_EXT
-
+from metplus import get_metplus_version
 
 # path to METplus install location in Docker
 METPLUS_DOCKER_LOC = '/metplus/METplus'
@@ -37,6 +37,7 @@ NOT_PYTHON_ENVS = [
     'gfdl-tracker',
     'gempak',
 ]
+
 
 def handle_automation_env(host_name, reqs, work_dir):
     # if no env is specified, use metplus base environment
@@ -74,13 +75,20 @@ def handle_automation_env(host_name, reqs, work_dir):
     else:
         py_embed_arg = ''
 
+    # get METplus version to determine Externals file to use
+    # to get METplotpy/METcalcpy/METdataio
+    # If stable release, get main branch, otherwise get develop
+    is_stable_release = len(get_metplus_version().split('-')) == 1
+    externals_ext = '_stable.cfg' if is_stable_release else '.cfg'
+
     # if any metplotpy/metcalcpy keywords are in requirements list,
     # add command to obtain and install METplotpy and METcalcpy
     if any([item for item in PLOTCALC_KEYWORDS if item in str(reqs).lower()]):
+        ce_file = os.path.join(work_dir, '.github', 'parm',
+                               f'Externals_metplotcalcpy{externals_ext}')
         setup_env += (
             f'cd {METPLUS_DOCKER_LOC};'
-            f'{work_dir}/manage_externals/checkout_externals'
-            f' -e {work_dir}/.github/parm/Externals_metplotcalcpy.cfg;'
+            f'{work_dir}/manage_externals/checkout_externals -e {ce_file};'
             f'{python_path} -m pip install {METPLUS_DOCKER_LOC}/../METplotpy;'
             f'{python_path} -m pip install {METPLUS_DOCKER_LOC}/../METcalcpy;'
             'cd -;'
@@ -88,10 +96,11 @@ def handle_automation_env(host_name, reqs, work_dir):
 
     # if metdataio is in requirements list, add command to obtain METdataio
     if 'metdataio' in str(reqs).lower():
+        ce_file = os.path.join(work_dir, '.github', 'parm',
+                               f'Externals_metdataio{externals_ext}')
         setup_env += (
             f'cd {METPLUS_DOCKER_LOC};'
-            f'{work_dir}/manage_externals/checkout_externals'
-            f' -e {work_dir}/.github/parm/Externals_metdataio.cfg;'
+            f'{work_dir}/manage_externals/checkout_externals -e {ce_file};'
             f'{python_path} -m pip install {METPLUS_DOCKER_LOC}/../METdataio;'
             'cd -;'
         )
@@ -116,6 +125,7 @@ def handle_automation_env(host_name, reqs, work_dir):
         )
 
     return setup_env, py_embed_arg
+
 
 def main(categories, subset_list, work_dir=None,
          host_name=os.environ.get('HOST_NAME')):
@@ -174,6 +184,7 @@ def main(categories, subset_list, work_dir=None,
 
     return all_commands
 
+
 def handle_command_line_args():
     # read command line arguments to determine which use cases to run
     if len(sys.argv) < 2:
@@ -200,6 +211,7 @@ def handle_command_line_args():
         do_comparison = False
 
     return categories, subset_list, do_comparison
+
 
 if __name__ == '__main__':
     categories, subset_list, _ = handle_command_line_args()
