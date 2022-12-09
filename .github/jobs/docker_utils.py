@@ -61,7 +61,7 @@ def get_branch_name():
     # get branch name from env var BRANCH_NAME
     branch_name = os.environ.get('BRANCH_NAME')
     if branch_name:
-        return branch_name
+        return branch_name.replace('/', '_')
 
     # if BRANCH_NAME not set, use GITHUB env vars
     github_event_name = os.environ.get('GITHUB_EVENT_NAME')
@@ -69,10 +69,13 @@ def get_branch_name():
         return None
 
     if github_event_name == 'pull_request':
-        return os.environ.get('GITHUB_HEAD_REF')
+        branch_name = os.environ.get('GITHUB_HEAD_REF')
+        if branch_name:
+            branch_name = branch_name.replace('/', '_')
+        return branch_name
 
     github_ref = os.environ.get('GITHUB_REF')
     if github_ref is None:
         return None
 
-    return github_ref.replace('refs/heads/', '')
+    return github_ref.replace('refs/heads/', '').replace('/', '_')
