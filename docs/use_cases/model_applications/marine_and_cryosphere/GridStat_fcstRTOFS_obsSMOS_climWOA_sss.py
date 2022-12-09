@@ -161,6 +161,7 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMOS_climWOA_sss.
 #   * GridStatToolUseCase
 #   * PythonEmbeddingFileUseCase
 #   * MarineAndCryosphereAppUseCase
+#   * ClimatologyUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

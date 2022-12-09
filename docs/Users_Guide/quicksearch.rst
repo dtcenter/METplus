@@ -133,6 +133,7 @@ Use Cases by METplus Feature:
 .. only:: html
 
    | `Introductory Example <../search.html?q=ExampleToolUseCase&check_keywords=yes&area=default>`_
+   | `Climatology <../search.html?q=ClimatologyUseCase&check_keywords=yes&area=default>`_
    | `Custom String Looping <../search.html?q=CustomStringLoopingUseCase&check_keywords=yes&area=default>`_
    | `Diagnostics <../search.html?q=DiagnosticsUseCase&check_keywords=yes&area=default>`_
    | `Feature Relative  <../search.html?q=FeatureRelativeUseCase&check_keywords=yes&area=default>`_
@@ -160,6 +161,7 @@ Use Cases by METplus Feature:
 .. only:: latex
 
    | **Introductory Example**: *ExampleToolUseCase*
+   | **Climatology**: *ClimatologyUseCase*
    | **Custom String Looping**: *CustomStringLoopingUseCase*
    | **Diagnostics**: *DiagnosticsUseCase*
    | **Feature Relative**: *FeatureRelativeUseCase*

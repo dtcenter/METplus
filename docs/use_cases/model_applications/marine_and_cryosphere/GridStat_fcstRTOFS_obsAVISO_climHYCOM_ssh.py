@@ -162,6 +162,7 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsAVISO_climHYCOM_s
 #   * GridStatToolUseCase
 #   * PythonEmbeddingFileUseCase
 #   * MarineAndCryosphereAppUseCase
+#   * ClimatologyUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
