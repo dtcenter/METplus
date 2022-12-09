@@ -4,10 +4,12 @@ Update the version numbers in the manage externals files
 There are a few .cfg files used by Manage Externals that should
 include the correct tag or branch that corresponds to the
 METplus Coordinated Release for each METplus component.
+
 **THIS MAY HAVE ALREADY BEEN DONE PRIOR TO THE RELEASE!**
 
 For a METplus X.Y.Z Coordinated Release,
 the version of the components are typically:
+
 * **MET:** X+6
 * **METviewer:** X
 * **METplotpy:** X-3
@@ -16,11 +18,21 @@ the version of the components are typically:
 
 Examples:
 
-For the METplus **4.1**.0 Coordinated Release,
-MET is **10.1**.0, METviewer is **4.1**.0, METplotpy is **1.1**.0, etc.
+For the METplus **4.1**.0 release:
 
-For the METplus **5.0**.0 Coordinated Release,
-MET is **11.0**.0, METviewer is **5.0**.0, METplotpy is **2.0**.0, etc.
+* MET is **10.1**.0
+* METviewer is **4.1**.0
+* METplotpy is **1.1**.0
+* METcalcpy is **1.1**.0
+* METdataio is **1.1**.0
+
+For the METplus **5.0**.0 release:
+
+* MET is **11.0**.0
+* METviewer is **5.0**.0
+* METplotpy is **2.0**.0
+* METcalcpy is **2.0**.0
+* METdataio is **2.0**.0
 
 **This may not always be the case.**
 When in doubt, check the components' repository or ask another developer.
