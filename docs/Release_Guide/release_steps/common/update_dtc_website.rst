@@ -40,7 +40,19 @@ Update DTC Website
       https://dtcenter.org/community-code/metplus/metplus-X-Y-existing-builds
       (If creating a new official release, be sure to add a new *Existing Builds
       and Docker* page, if one was not already created.)
-  
+
+      * When logged into the Drupal pages, select "Manage". Mouse over
+	"Content", then mouse over "Add Content". Select "Community Code Page".
+
+      * In a separate window, open the Existing Builds page for the current
+	release.  Click on "edit".
+
+      * Look at the options on the current Existing Builds page in order to
+	set up the new Existing Builds page.
+
+      * Save the page once it has been set up.
+
+
   * Inside the text box in the "Release Notes" section provide a direct link to
     the *release-notes.html* file in the User's Guide.
 
