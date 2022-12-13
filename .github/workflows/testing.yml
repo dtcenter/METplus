@@ -92,6 +92,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: job_control
     if: ${{ needs.job_control.outputs.run_get_input_data == 'true' }}
+    continue-on-error: true
     steps:
       - uses: dtcenter/metplus-action-data-update@v1
         with:
