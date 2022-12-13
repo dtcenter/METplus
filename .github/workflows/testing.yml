@@ -94,7 +94,7 @@ jobs:
     if: ${{ needs.job_control.outputs.run_get_input_data == 'true' }}
     continue-on-error: true
     steps:
-      - uses: dtcenter/metplus-action-data-update@v1
+      - uses: dtcenter/metplus-action-data-update@v2
         with:
           docker_name: ${{ secrets.DOCKER_USERNAME }}
           docker_pass: ${{ secrets.DOCKER_PASSWORD }}
@@ -105,6 +105,7 @@ jobs:
           data_repo_dev: metplus-data-dev
           data_repo_stable: metplus-data
           use_feature_data: true
+          tag_max_pages: 15
 
   use_case_tests:
     name: Use Case Tests
