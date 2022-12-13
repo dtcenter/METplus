@@ -12,6 +12,22 @@ Create Release Reference Branch
     git pull
     git checkout -b main_vX.Y-ref
 
+Create Release Input Test Data
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* The GitHub Actions automation creates version-specific input test data
+  volumes. It pulls input test data from the DTC website, creates a Docker
+  data volume, and pushes the result to DockerHub.
+
+* Check for `vX.Y` in https://dtcenter.ucar.edu/dfiles/code/METplus/MET/MET_unit_test
+
+* If it does not exist, create it on the DTC host.
+
+::
+
+    cd PATHTO/dfiles/code/METplus/MET/MET_unit_test
+    cp -r develop vX.Y
+
 Push Reference Branch to GitHub
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
