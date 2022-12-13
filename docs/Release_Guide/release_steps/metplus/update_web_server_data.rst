@@ -20,10 +20,21 @@ Pull the latest changes from the develop branch before running the script::
 Now run the script passing in the version of the next release, i.e.
 if creating the v4.1.0 release, pass in v5.0 as the argument::
 
-    /home/met_test/setup_next_release_data.py v5.0
+    new_version=v5.0
+    /home/met_test/setup_next_release_data.py ${new_version}
 
 See the comments in the script for more details.
 Ensure that the script runs without error and that the newly created
 directory contains links to all of the sample data tar files::
 
-    ls -lh /home/met_test/METplus_Data/v5.0
+    ls -lh /home/met_test/METplus_Data/${new_version}
+
+Untar each of the sample data tarfiles so the model_applications and
+met_test directories exist::
+
+    cd /home/met_test/METplus_Data/${new_version}
+    for f in sample_data*; do echo tar xzf $f;tar xzf $f; done
+
+Check if the met_test and model_applications directories now exist::
+
+    ls -lh /home/met_test/METplus_Data/${new_version}
