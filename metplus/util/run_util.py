@@ -31,7 +31,12 @@ def pre_run_setup(config_inputs):
     logger.info('Running METplus v%s%swith command: %s',
                 version_number, user_string, ' '.join(sys.argv))
 
-    logger.info(f"Log file: {config.getstr('config', 'LOG_METPLUS')}")
+    log_file = config.getstr('config', 'LOG_METPLUS', '')
+    if log_file:
+        logger.info(f"Log file: {log_file}")
+    else:
+        logger.info('LOG_METPLUS is unset. Logging to terminal only.')
+
     logger.info(f"METplus Base: {config.getdir('METPLUS_BASE')}")
     logger.info(f"Final Conf: {config.getstr('config', 'METPLUS_CONF')}")
     config_list = config.getstr('config', 'CONFIG_INPUT').split(',')

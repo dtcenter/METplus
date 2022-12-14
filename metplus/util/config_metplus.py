@@ -304,39 +304,22 @@ def _set_logvars(config, logger=None):
     logger.info('Adding LOG_TIMESTAMP=%s' % repr(log_filenametimestamp))
     config.set('config', 'LOG_TIMESTAMP', log_filenametimestamp)
 
-    log_dir = config.getdir('LOG_DIR')
+    metplus_log = config.strinterp(
+        'config',
+        '{LOG_METPLUS}',
+        LOG_TIMESTAMP_TEMPLATE=log_filenametimestamp
+    )
 
-    # NOTE: LOG_METPLUS or metpluslog is meant to include the absolute path
-    #       and the metpluslog_filename,
-    # so metpluslog = /path/to/metpluslog_filename
-
-    # if LOG_METPLUS =  unset in the conf file, means NO logging.
-    # Also, assUmes the user has included the intended path in LOG_METPLUS.
-    user_defined_log_file = None
-    metpluslog = ''
-    if config.has_option('config', 'LOG_METPLUS'):
-        user_defined_log_file = True
-        # strinterp will set metpluslog to '' if LOG_METPLUS =  is unset.
-        metpluslog = config.strinterp(
-            'config',
-            '{LOG_METPLUS}',
-            LOG_TIMESTAMP_TEMPLATE=log_filenametimestamp
-        )
-
-        # test if there is any path information, if there is,
-        # assume it is as intended, if there is not, than add log_dir.
-        if metpluslog:
-            if os.path.basename(metpluslog) == metpluslog:
-                metpluslog = os.path.join(log_dir, metpluslog)
-
-    # Setting LOG_METPLUS in the configuration object
-    # At this point LOG_METPLUS will have a value or '' the empty string.
-    if user_defined_log_file:
-        logger.info('Replace LOG_METPLUS with %s' % repr(metpluslog))
+    # add log directory to log file path if only filename was provided
+    if metplus_log:
+        if os.path.basename(metplus_log) == metplus_log:
+            metplus_log = os.path.join(config.getdir('LOG_DIR'), metplus_log)
+        logger.info('Logging to %s' % metplus_log)
     else:
-        logger.info('Adding LOG_METPLUS=%s' % repr(metpluslog))
-    # expand LOG_METPLUS to ensure it is available
-    config.set('config', 'LOG_METPLUS', metpluslog)
+        logger.info('Logging to terminal only')
+
+    # set LOG_METPLUS with timestamp substituted
+    config.set('config', 'LOG_METPLUS', metplus_log)
 
 
 def get_logger(config, sublog=None):
