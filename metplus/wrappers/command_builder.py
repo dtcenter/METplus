@@ -241,15 +241,8 @@ class CommandBuilder:
         # set user defined environment variables
         self.set_user_environment(time_info)
 
-        # send environment variables to logger
-        for msg in self.print_all_envs(print_each_item=True,
-                                       print_copyable=False):
-            self.logger.info(msg)
-
-        # log environment variables that can be copied into terminal
-        # to rerun application if debug logging is turned on
-        for msg in self.print_all_envs(print_each_item=False,
-                                       print_copyable=True):
+        # send environment variables and copyable commands to logger
+        for msg in self.print_all_envs():
             self.logger.debug(msg)
 
     def log_error(self, error_string):
