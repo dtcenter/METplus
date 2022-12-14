@@ -383,12 +383,8 @@ def get_logger(config, sublog=None):
         logger.setLevel(logging.getLevelName(log_level))
 
     metpluslog = config.getstr('config', 'LOG_METPLUS', '')
-
     if metpluslog:
-        # It is possible that more path, other than just LOG_DIR, was added
-        # to the metpluslog, by either a user defining more path in
-        # LOG_METPLUS or LOG_FILENAME_TEMPLATE definitions in their conf file.
-        # So lets check and make more directory if needed.
+        # create log directory if it does not already exist
         dir_name = os.path.dirname(metpluslog)
         if not os.path.exists(dir_name):
             mkdir_p(dir_name)
@@ -408,7 +404,6 @@ def get_logger(config, sublog=None):
         stream_handler = logging.StreamHandler()
         stream_handler.setFormatter(formatter)
         logger.addHandler(stream_handler)
-
 
     # set add the logger to the config
     config.logger = logger

@@ -1228,6 +1228,7 @@ class CommandBuilder:
         list of all commands run.
 
         @param cmd command to run
+        @param cmd_name optional command name to use in the log filename
         @returns True on success, False otherwise
         """
         # add command to list of all commands run
@@ -1243,20 +1244,19 @@ class CommandBuilder:
                                               env=self.env,
                                               log_name=log_name,
                                               copyable_env=self.get_env_copy())
-        if ret:
-            logfile_path = self.config.getstr('config', 'LOG_METPLUS')
-            # if MET output is written to its own logfile, get that filename
-            if not self.config.getbool('config', 'LOG_MET_OUTPUT_TO_METPLUS'):
-                logfile_path = logfile_path.replace('run_metplus',
-                                                    log_name)
+        if not ret:
+            return True
 
-            self.log_error("MET command returned a non-zero return code:"
-                           f"{cmd}")
-            self.logger.info("Check the logfile for more information on why "
-                             f"it failed: {logfile_path}")
-            return False
+        logfile_path = self.config.getstr('config', 'LOG_METPLUS')
+        # if MET output is written to its own logfile, get that filename
+        if not self.config.getbool('config', 'LOG_MET_OUTPUT_TO_METPLUS'):
+            logfile_path = logfile_path.replace('run_metplus', log_name)
 
-        return True
+        self.log_error("MET command returned a non-zero return code:"
+                       f"{cmd}")
+        self.logger.info("Check the logfile for more information on why "
+                         f"it failed: {logfile_path}")
+        return False
 
     def run_all_times(self, custom=None):
         """! Loop over time range specified in conf file and
