@@ -560,3 +560,14 @@ def find_indices_in_config_section(regex, config, sec='config',
             indices[index].append(identifier)
 
     return indices
+
+
+def get_logfile_info(config):
+    """!Get path to log file from LOG_METPLUS config variable or return a
+    useful message if it is not set to instruct users how to set it.
+
+    @param config METplusConfig object to read LOG_METPLUS from
+    @returns path to log file or message if unset
+    """
+    log_file = config.getstr('config', 'LOG_METPLUS', '')
+    return log_file if log_file else 'Set LOG_METPLUS to write logs to a file'

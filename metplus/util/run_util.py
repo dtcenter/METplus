@@ -5,6 +5,7 @@ from datetime import datetime
 from importlib import import_module
 
 from .constants import NO_COMMAND_WRAPPERS
+from .string_manip import get_logfile_info
 from .system_util import get_user_info, write_list_to_file
 from .config_util import get_process_list, handle_env_var_config
 from .config_util import handle_tmp_dir, write_final_conf, write_all_commands
@@ -31,12 +32,10 @@ def pre_run_setup(config_inputs):
     logger.info('Running METplus v%s%swith command: %s',
                 version_number, user_string, ' '.join(sys.argv))
 
-    log_file = config.getstr('config', 'LOG_METPLUS', '')
-    if log_file:
-        logger.info(f"Log file: {log_file}")
-    else:
-        logger.info('LOG_METPLUS is unset. Logging to terminal only.')
+    # if log file is not set, log message instructing user how to set it
+    log_file = get_logfile_info(config)
 
+    logger.info(f"Log file: {log_file}")
     logger.info(f"METplus Base: {config.getdir('METPLUS_BASE')}")
     logger.info(f"Final Conf: {config.getstr('config', 'METPLUS_CONF')}")
     config_list = config.getstr('config', 'CONFIG_INPUT').split(',')
@@ -60,7 +59,7 @@ def pre_run_setup(config_inputs):
 
         logger.error("Correct configuration variables and rerun. Exiting.")
         logger.info("Check the log file for more information: "
-                    f"{config.getstr('config', 'LOG_METPLUS')}")
+                    f"{get_logfile_info(config)}")
         sys.exit(1)
 
     if not config.getdir('MET_INSTALL_DIR', must_exist=True):
@@ -162,7 +161,7 @@ def run_metplus(config):
     except:
         logger.exception("Fatal error occurred")
         logger.info("Check the log file for more information: "
-                    f"{config.getstr('config', 'LOG_METPLUS')}")
+                    f"{get_logfile_info(config)}")
         return 1
 
 
@@ -179,7 +178,7 @@ def post_run_cleanup(config, app_name, total_errors):
 
     # save log file path and clock time before writing final conf file
     log_message = (f"Check the log file for more information: "
-                   f"{config.getstr('config', 'LOG_METPLUS')}")
+                   f"{get_logfile_info(config)}")
 
     start_clock_time = datetime.strptime(config.getstr('config', 'CLOCK_TIME'),
                                          '%Y%m%d%H%M%S')
