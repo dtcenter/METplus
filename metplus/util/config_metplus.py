@@ -85,29 +85,24 @@ OLD_BASE_CONFS = [
 logging.Formatter.converter = time.gmtime
 
 
-def setup(args, logger=None, base_confs=None):
-    """!The METplus setup function.
-        @param args list of configuration files or configuration
-        variable overrides. Reads all configuration inputs and returns
-        a configuration object.
+def setup(args, base_confs=None):
+    """!Setup the METplusConfig by reading in default configurations and any
+    arguments from the command line.
+
+    @param args list of configuration files or configuration
+     variable overrides. Reads all configuration inputs and returns
+     a configuration object
+    @param base_confs optional config files to read first
+    @returns METplusConfig object
     """
     if base_confs is None:
         base_confs = _get_default_config_list()
 
-    # Setup Task logger, Until a Conf object is created, Task logger is
-    # only logging to tty, not a file.
-    if logger is None:
-        logger = logging.getLogger('metplus')
-
-    logger.info('Starting METplus configuration setup.')
-
-    override_list = _parse_launch_args(args, logger)
+    override_list = _parse_launch_args(args)
 
     # add default config files to override list
     override_list = base_confs + override_list
     config = launch(override_list)
-
-    logger.debug('Completed METplus configuration setup.')
 
     return config
 
@@ -142,7 +137,7 @@ def _get_default_config_list(parm_base=None):
     return default_config_list
 
 
-def _parse_launch_args(args, logger):
+def _parse_launch_args(args):
     """! Parsed arguments to scripts that launch the METplus wrappers.
 
     Options:
@@ -150,7 +145,6 @@ def _parse_launch_args(args, logger):
     * /path/to/file.conf --- read this conf file after the default conf files
 
     @param args the script arguments, after script-specific ones are removed
-    @param logger a logging.Logger for log messages
     @returns tuple containing path to parm directory, list of config files and
      collections.defaultdict of explicit config overrides
     """
@@ -180,7 +174,7 @@ def _parse_launch_args(args, logger):
         filepath = arg
         # check if argument is a path to a file that exists
         if not os.path.exists(filepath):
-            logger.error(f'Invalid argument: {filepath}')
+            print(f'ERROR: Invalid argument: {filepath}')
             bad = True
             continue
 
@@ -189,13 +183,13 @@ def _parse_launch_args(args, logger):
 
         # path exists but is not a file
         if not os.path.isfile(filepath):
-            logger.error(f'Conf is not a file: {filepath}')
+            print(f'ERROR: Conf is not a file: {filepath}')
             bad = True
             continue
 
         # warn and skip if file is empty
         if os.stat(filepath).st_size == 0:
-            logger.warning(f'Conf file is empty: {filepath}. Skipping')
+            print(f'WARNING: Conf file is empty: {filepath}. Skipping')
             continue
 
         # add file path to override list
@@ -217,7 +211,6 @@ def launch(config_list):
     @param config_list list of configuration files to process
     """
     config = METplusConfig()
-    logger = config.log()
 
     # set config variable for current time
     config.set('config', 'CLOCK_TIME',
@@ -227,7 +220,7 @@ def launch(config_list):
     # Read in and parse all the conf files and overrides
     for config_item in config_list:
         if isinstance(config_item, str):
-            logger.info(f"Parsing config file: {config_item}")
+            print(f"Parsing config file: {config_item}")
             config.read(config_item)
             config_format_list.append(config_item)
         else:
@@ -236,7 +229,7 @@ def launch(config_list):
             if not config.has_section(section):
                 config.add_section(section)
 
-            logger.info(f"Parsing override: [{section}] {key} = {value}")
+            print(f"Parsing override: [{section}] {key} = {value}")
             config.set(section, key, value)
             config_format_list.append(f'{section}.{key}={value}')
 
@@ -274,20 +267,15 @@ def launch(config_list):
     return config
 
 
-def _set_logvars(config, logger=None):
+def _set_logvars(config):
     """!Sets and adds the LOG_METPLUS and LOG_TIMESTAMP
        to the config object. If LOG_METPLUS was already defined by the
        user in their conf file. It expands and rewrites it in the conf
        object and the final file.
        conf file.
-       Args:
+
            @param config:   the config instance
-           @param logger: the logger, optional
     """
-
-    if logger is None:
-        logger = config.log()
-
     log_timestamp_template = config.getstr('config', 'LOG_TIMESTAMP_TEMPLATE',
                                            '')
     if config.getbool('config', 'LOG_TIMESTAMP_USE_DATATIME', False):
@@ -300,8 +288,7 @@ def _set_logvars(config, logger=None):
 
     log_filenametimestamp = date_t.strftime(log_timestamp_template)
 
-    # Adding LOG_TIMESTAMP to the final configuration file.
-    logger.info('Adding LOG_TIMESTAMP=%s' % repr(log_filenametimestamp))
+    # add LOG_TIMESTAMP to the final configuration file
     config.set('config', 'LOG_TIMESTAMP', log_filenametimestamp)
 
     metplus_log = config.strinterp(
@@ -314,9 +301,9 @@ def _set_logvars(config, logger=None):
     if metplus_log:
         if os.path.basename(metplus_log) == metplus_log:
             metplus_log = os.path.join(config.getdir('LOG_DIR'), metplus_log)
-        logger.info('Logging to %s' % metplus_log)
+        print('Logging to %s' % metplus_log)
     else:
-        logger.info('Logging to terminal only')
+        print('Logging to terminal only')
 
     # set LOG_METPLUS with timestamp substituted
     config.set('config', 'LOG_METPLUS', metplus_log)
