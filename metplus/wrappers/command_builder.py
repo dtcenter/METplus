@@ -1247,13 +1247,16 @@ class CommandBuilder:
         if not ret:
             return True
 
+        self.log_error(f"Command returned a non-zero return code: {cmd}")
+
         logfile_path = self.config.getstr('config', 'LOG_METPLUS')
+        if not logfile_path:
+            return False
+
         # if MET output is written to its own logfile, get that filename
         if not self.config.getbool('config', 'LOG_MET_OUTPUT_TO_METPLUS'):
             logfile_path = logfile_path.replace('run_metplus', log_name)
 
-        self.log_error("MET command returned a non-zero return code:"
-                       f"{cmd}")
         self.logger.info("Check the logfile for more information on why "
                          f"it failed: {logfile_path}")
         return False
