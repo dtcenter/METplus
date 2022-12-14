@@ -309,51 +309,48 @@ def _set_logvars(config):
     config.set('config', 'LOG_METPLUS', metplus_log)
 
 
-def get_logger(config, sublog=None):
+def get_logger(config):
     """!This function will return a logger with a formatted file handler
     for writing to the LOG_METPLUS and it sets the LOG_LEVEL. If LOG_METPLUS is
     not defined, a logger is still returned without adding a file handler,
     but still setting the LOG_LEVEL.
-       Args:
-           @param config:   the config instance
-           @param sublog the logging subdomain, or None
-       Returns:
-           logger: the logger
+
+       @param config:   the config instance
+       @returns logger
     """
     _set_logvars(config)
 
     # Retrieve all logging related parameters from the param file
     log_dir = config.getdir('LOG_DIR')
     log_level = config.getstr('config', 'LOG_LEVEL')
+    log_level_terminal = config.getstr('config', 'LOG_LEVEL_TERMINAL')
 
     # Create the log directory if it does not exist
     mkdir_p(log_dir)
 
-    if sublog is not None:
-        logger = config.log(sublog)
-    else:
-        logger = config.log()
+    logger = config.log()
 
-    # Setting of the logger level from the config instance.
-    # Check for log_level by Integer or LevelName.
-    # Try to convert the string log_level to an integer and use that, if
-    # it can't convert then we assume it is a valid LevelName, which
-    # is what is should be anyway,  ie. DEBUG.
-    # Note:
-    # Earlier versions of python2 require setLevel(<int>), argument
-    # to be an int. Passing in the LevelName, 'DEBUG' will disable
-    # logging output. Later versions of python2 will accept 'DEBUG',
-    # not sure which version that changed with, but the logic below
-    # should work for all version. I know python 2.6.6 must be an int,
-    # and python 2.7.5 accepts the LevelName.
     try:
-        int_log_level = int(log_level)
-        logger.setLevel(int_log_level)
+        log_level_val = logging.getLevelName(log_level)
     except ValueError:
-        logger.setLevel(logging.getLevelName(log_level))
+        print(f'ERROR: Invalid value set for LOG_LEVEL: {log_level}')
+        sys.exit(1)
+
+    try:
+        log_level_terminal_val = logging.getLevelName(log_level_terminal)
+    except ValueError:
+        print('ERROR: Invalid value set for LOG_LEVEL_TERMINAL:'
+              f' {log_level_terminal}')
+        sys.exit(1)
 
     metpluslog = config.getstr('config', 'LOG_METPLUS', '')
-    if metpluslog:
+    if not metpluslog:
+        logger.setLevel(log_level_terminal_val)
+    else:
+        # set logger level to the minimum of the two log levels because
+        # setting level for each handler will not work otherwise
+        logger.setLevel(min(log_level_val, log_level_terminal_val))
+
         # create log directory if it does not already exist
         dir_name = os.path.dirname(metpluslog)
         if not os.path.exists(dir_name):
@@ -368,11 +365,13 @@ def get_logger(config, sublog=None):
         # set up the file logging
         file_handler = logging.FileHandler(metpluslog, mode='a')
         file_handler.setFormatter(formatter)
+        file_handler.setLevel(log_level_val)
         logger.addHandler(file_handler)
 
         # set up console logging
         stream_handler = logging.StreamHandler()
         stream_handler.setFormatter(formatter)
+        stream_handler.setLevel(log_level_terminal_val)
         logger.addHandler(stream_handler)
 
     # set add the logger to the config
