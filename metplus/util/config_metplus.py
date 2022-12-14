@@ -321,12 +321,11 @@ def get_logger(config):
     _set_logvars(config)
 
     # Retrieve all logging related parameters from the param file
-    log_dir = config.getdir('LOG_DIR')
     log_level = config.getstr('config', 'LOG_LEVEL')
     log_level_terminal = config.getstr('config', 'LOG_LEVEL_TERMINAL')
 
     # Create the log directory if it does not exist
-    mkdir_p(log_dir)
+    mkdir_p(config.getdir('LOG_DIR'))
 
     logger = config.log()
 
