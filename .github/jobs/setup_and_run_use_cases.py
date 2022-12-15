@@ -88,20 +88,11 @@ def main():
             f"--build-arg METPLUS_ENV_TAG={env_tag} "
             f"-f {dockerfile_dir}/{dockerfile_name} ."
         )
-        print(f"Building Docker environment/branch image...\n"
-              f"Running: {docker_build_cmd}")
-        start_time = time.time()
-        try:
-            subprocess.run(shlex.split(docker_build_cmd), check=True)
-        except subprocess.CalledProcessError as err:
-            print(f"ERROR: Docker Build failed: {docker_build_cmd} -- {err}")
+
+        print(f'Building Docker environment/branch image...')
+        if not run_docker_commands([docker_build_cmd]):
             isOK = False
             continue
-
-        end_time = time.time()
-        print("TIMING: Command took "
-              f"{time.strftime('%M:%S', time.gmtime(end_time - start_time))}"
-              f" (MM:SS): '{docker_build_cmd}')")
 
         all_commands = []
         all_commands.append('docker images')
