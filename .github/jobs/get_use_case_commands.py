@@ -66,7 +66,7 @@ def handle_automation_env(host_name, reqs, work_dir):
     python_dir = os.path.join('/usr', 'local', 'envs',
                               conda_env_w_ext, 'bin')
     python_path = os.path.join(python_dir, 'python3')
-    setup_env += f' echo "export PATH={python_dir}:$PATH;" >> /etc/bashrc'
+    setup_env += f' echo "export PATH={python_dir}:$PATH;" >> /etc/bashrc;'
 
     # if py_embed listed in requirements and using a Python
     # environment that differs from the MET env, set MET_PYTHON_EXE
