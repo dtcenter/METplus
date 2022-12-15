@@ -110,6 +110,7 @@ def main():
                 f'docker exec -e GITHUB_WORKSPACE {RUN_TAG} '
                 f'bash -cl "{use_case_command}"'
             )
+        all_commands.append('cat /etc/bashrc')
         all_commands.append(f'docker rm -f {RUN_TAG}')
         if not run_docker_commands(all_commands):
             isOK = False
