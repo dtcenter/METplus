@@ -30,6 +30,7 @@ gha_output_dir = os.path.join(runner_workspace, 'output')
 
 RUN_TAG = 'metplus-run-env'
 
+
 def main():
     categories, subset_list, _ = (
         get_use_case_commands.handle_command_line_args()
@@ -90,9 +91,12 @@ def main():
         )
 
         print(f'Building Docker environment/branch image...')
+        print("::group::Docker build test environment")
         if not run_docker_commands([docker_build_cmd]):
+            print("::endgroup::")
             isOK = False
             continue
+        print("::endgroup::")
 
         all_commands = []
         all_commands.append('docker images')

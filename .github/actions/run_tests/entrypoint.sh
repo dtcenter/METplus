@@ -21,7 +21,9 @@ fi
 
 # try to pull image from DockerHub
 DOCKERHUBTAG=dtcenter/metplus-dev:${branch_name}
+echo "::group::Docker pull"
 time_command docker pull $DOCKERHUBTAG
+echo "::endgroup::"
 
 # if unsuccessful (i.e. pull request from a fork)
 # then build image locally
