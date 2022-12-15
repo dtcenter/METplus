@@ -61,7 +61,7 @@ def handle_automation_env(host_name, reqs, work_dir):
 
     # start building commands to run before run_metplus.py in Docker
     setup_env = []
-    setup_env.append('source /etc/bashrc')
+    setup_env.append(_add_to_bashrc('# BELOW WAS ADDED BY TEST SCRIPT'))
 
     # add conda bin to beginning of PATH
     python_dir = os.path.join('/usr', 'local', 'envs',
