@@ -117,15 +117,15 @@ def main():
         all_commands = []
         all_commands.append('docker images')
         all_commands.append(
-            f"docker run -d -e GITHUB_WORKSPACE "
+            f"docker run -d --rm -it -e GITHUB_WORKSPACE "
             f"--name {run_tag} "
             f"{os.environ.get('NETWORK_ARG', '')} "
             f"{' '.join(volume_mounts)} "
             f"{volumes_from} --workdir {github_workspace} "
-            f'{run_tag} bash -c "{setup_commands}"'
+            f'{run_tag} bash'
         )
         all_commands.append('docker ps -a')
-        for use_case_command in use_case_commands:
+        for use_case_command in [setup_commands] + use_case_commands:
             all_commands.append(
                 'docker exec -e GITHUB_WORKSPACE -d '
                 f'{run_tag} bash -c "{use_case_command}"'
