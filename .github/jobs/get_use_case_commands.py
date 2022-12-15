@@ -151,10 +151,13 @@ def main(categories, subset_list, work_dir=None,
         for use_case_by_requirement in use_cases_by_req:
             reqs = use_case_by_requirement.requirements
 
-            setup_env, py_embed_arg = handle_automation_env(host_name, reqs, work_dir)
+            setup_env, py_embed_arg = handle_automation_env(host_name, reqs,
+                                                            work_dir)
 
             # use status variable to track if any use cases failed
-            use_case_cmds = ['status=0']
+            use_case_cmds = []
+            if host_name != 'docker':
+                use_case_cmds.append('status=0')
             for use_case in use_case_by_requirement.use_cases:
                 # add parm/use_cases path to config args if they are conf files
                 config_args = []
@@ -174,13 +177,14 @@ def main(categories, subset_list, work_dir=None,
                 use_case_cmds.append(use_case_cmd)
                 # check exit code from use case command and
                 # set status to non-zero value on error
-                use_case_cmds.append("if [ $? != 0 ]; then status=1; fi")
+                if host_name != 'docker':
+                    use_case_cmds.append("if [ $? != 0 ]; then status=1; fi")
 
             # if any use cases failed, force non-zero exit code with false
-            use_case_cmds.append("if [ $status != 0 ]; then false; fi")
+            if host_name != 'docker':
+                use_case_cmds.append("if [ $status != 0 ]; then false; fi")
             # add commands to set up environment before use case commands
-            group_commands = f"{setup_env}{';'.join(use_case_cmds)}"
-            all_commands.append((group_commands, reqs))
+            all_commands.append((setup_env, use_case_cmds, reqs))
 
     return all_commands
 
@@ -203,7 +207,6 @@ def handle_command_line_args():
     else:
         subset_list = None
 
-
     # check if comparison flag should be set
     if len(sys.argv) > 3:
         do_comparison = True
@@ -216,7 +219,10 @@ def handle_command_line_args():
 if __name__ == '__main__':
     categories, subset_list, _ = handle_command_line_args()
     all_commands = main(categories, subset_list)
-    for command, requirements in all_commands:
+    for setup_commands, use_case_commands, requirements in all_commands:
         print(f"REQUIREMENTS: {','.join(requirements)}")
-        command_format = ';\\\n'.join(command.split(';'))
-        print(f"COMMAND:\n{command_format}\n")
+        if setup_commands:
+            command_format = ';\\\n'.join(setup_commands.split(';'))
+            print(f"SETUP COMMANDS:\n{command_format}\n")
+        command_format = ';\\\n'.join(use_case_commands)
+        print(f"USE CASE COMMANDS:\n{command_format}\n")
