@@ -28,6 +28,7 @@ docker_data_dir = '/data'
 docker_output_dir = os.path.join(docker_data_dir, 'output')
 gha_output_dir = os.path.join(runner_workspace, 'output')
 
+
 def main():
     categories, subset_list, _ = (
         get_use_case_commands.handle_command_line_args()
@@ -61,7 +62,7 @@ def main():
     ]
 
     isOK = True
-    for cmd, requirements in all_commands:
+    for setup_commands, use_case_commands, requirements in all_commands:
 
         # get environment image tag
         use_env = [item for item in requirements if item.endswith('_env')]
@@ -110,16 +111,35 @@ def main():
                                 **cmd_args).stdout.strip()
         print(f"docker ps -a\n{output}")
 
-        full_cmd = (
+        all_commands = []
+        all_commands.append(
             f"docker run -e GITHUB_WORKSPACE "
             f"{os.environ.get('NETWORK_ARG', '')} "
             f"{' '.join(volume_mounts)} "
             f"{volumes_from} --workdir {github_workspace} "
-            f'{run_tag} bash -c "{cmd}"')
-        print(f"RUNNING: {full_cmd}")
+            f'{run_tag} bash -c "{setup_commands}"'
+        )
+        for use_case_command in use_case_commands:
+            all_commands.append(
+                'docker exec -e GITHUB_WORKSPACE -d '
+                f'{run_tag} bash -c "{use_case_command}"'
+            )
+        all_commands.append(f'docker stop {run_tag}')
+        if not run_docker_commands(all_commands):
+            isOK = False
+
+    if not isOK:
+        print("ERROR: Some commands failed.")
+        sys.exit(1)
+
+
+def run_docker_commands(docker_commands):
+    is_ok = True
+    for docker_command in docker_commands:
+        print(f"RUNNING: {docker_command}")
         start_time = time.time()
         try:
-            process = subprocess.Popen(shlex.split(full_cmd),
+            process = subprocess.Popen(shlex.split(docker_command),
                                        shell=False,
                                        encoding='utf-8',
                                        stdout=subprocess.PIPE,
@@ -133,20 +153,19 @@ def main():
                     print(output.strip())
             rc = process.poll()
             if rc:
-                raise subprocess.CalledProcessError(rc, full_cmd)
+                raise subprocess.CalledProcessError(rc, docker_command)
 
         except subprocess.CalledProcessError as err:
             print(f"ERROR: Command failed -- {err}")
-            isOK = False
+            is_ok = False
 
         end_time = time.time()
         print("TIMING: Command took "
               f"{time.strftime('%M:%S', time.gmtime(end_time - start_time))}"
-              f" (MM:SS): '{full_cmd}')")
+              f" (MM:SS): '{docker_command}')")
 
-    if not isOK:
-        print("ERROR: Some commands failed.")
-        sys.exit(1)
+    return is_ok
+
 
 if __name__ == '__main__':
     main()
