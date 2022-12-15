@@ -103,23 +103,28 @@ def main():
               f"{time.strftime('%M:%S', time.gmtime(end_time - start_time))}"
               f" (MM:SS): '{docker_build_cmd}')")
 
-        cmd_args = {'check': True,
-                    'encoding': 'utf-8',
-                    'capture_output': True,
-                    }
-        output = subprocess.run(shlex.split('docker ps -a'),
-                                **cmd_args).stdout.strip()
-        print(f"docker ps -a\n{output}")
+        # cmd_args = {'check': True,
+        #             'encoding': 'utf-8',
+        #             'capture_output': True,
+        #             }
+        # output = subprocess.run(shlex.split('docker ps -a'),
+        #                         **cmd_args).stdout.strip()
+        # print(f"docker ps -a\n{output}")
+        # output = subprocess.run(shlex.split('docker images'),
+        #                         **cmd_args).stdout.strip()
+        # print(f"docker images\n{output}")
 
         all_commands = []
+        all_commands.append('docker images')
         all_commands.append(
-            f"docker run -e GITHUB_WORKSPACE "
+            f"docker run -d -e GITHUB_WORKSPACE "
             f"--name {run_tag} "
             f"{os.environ.get('NETWORK_ARG', '')} "
             f"{' '.join(volume_mounts)} "
             f"{volumes_from} --workdir {github_workspace} "
             f'{run_tag} bash -c "{setup_commands}"'
         )
+        all_commands.append('docker ps -a')
         for use_case_command in use_case_commands:
             all_commands.append(
                 'docker exec -e GITHUB_WORKSPACE -d '
