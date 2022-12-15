@@ -189,7 +189,7 @@ def post_run_cleanup(config, app_name, total_errors):
     # compute time it took to run
     end_clock_time = datetime.now()
     total_run_time = end_clock_time - start_clock_time
-    logger.debug(f"{app_name} took {total_run_time} to run.")
+    logger.info(f"{app_name} took {total_run_time} to run.")
 
     user_info = get_user_info()
     user_string = f' as user {user_info}' if user_info else ''

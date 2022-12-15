@@ -144,8 +144,8 @@ class CommandRunner(object):
             # calculate time to run
             end_cmd_time = datetime.now()
             total_cmd_time = end_cmd_time - start_cmd_time
-            self.logger.debug(f'Finished running {the_exe} '
-                              f'in {total_cmd_time}')
+            self.logger.info(f'Finished running {the_exe} '
+                             f'- took {total_cmd_time}')
 
         return ret, cmd
 
