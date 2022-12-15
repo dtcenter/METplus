@@ -127,10 +127,10 @@ def main():
         all_commands.append('docker ps -a')
         for use_case_command in [setup_commands] + use_case_commands:
             all_commands.append(
-                'docker exec -e GITHUB_WORKSPACE -d '
-                f'{run_tag} bash -c "{use_case_command}"'
+                f'docker exec -e GITHUB_WORKSPACE {run_tag} '
+                f'bash -c "{use_case_command}"'
             )
-        all_commands.append(f'docker stop {run_tag}')
+        all_commands.append(f'docker rm {run_tag}')
         if not run_docker_commands(all_commands):
             isOK = False
 
