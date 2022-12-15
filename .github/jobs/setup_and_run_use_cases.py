@@ -114,6 +114,7 @@ def main():
         all_commands = []
         all_commands.append(
             f"docker run -e GITHUB_WORKSPACE "
+            f"--name {run_tag} "
             f"{os.environ.get('NETWORK_ARG', '')} "
             f"{' '.join(volume_mounts)} "
             f"{volumes_from} --workdir {github_workspace} "
