@@ -28,6 +28,7 @@ docker_data_dir = '/data'
 docker_output_dir = os.path.join(docker_data_dir, 'output')
 gha_output_dir = os.path.join(runner_workspace, 'output')
 
+RUN_TAG = 'metplus-run-env'
 
 def main():
     categories, subset_list, _ = (
@@ -49,7 +50,6 @@ def main():
     if os.environ.get('GITHUB_EVENT_NAME') == 'pull_request':
         branch_name = f"{branch_name}-pull_request"
 
-    run_tag = 'metplus-run-env'
     dockerfile_dir = os.path.join('.github', 'actions', 'run_tests')
 
     # use BuildKit to build image
@@ -83,7 +83,7 @@ def main():
             dockerfile_name = f'{dockerfile_name}_cartopy'
 
         docker_build_cmd = (
-            f"docker build -t {run_tag} "
+            f"docker build -t {RUN_TAG} "
             f"--build-arg METPLUS_IMG_TAG={branch_name} "
             f"--build-arg METPLUS_ENV_TAG={env_tag} "
             f"-f {dockerfile_dir}/{dockerfile_name} ."
@@ -103,34 +103,23 @@ def main():
               f"{time.strftime('%M:%S', time.gmtime(end_time - start_time))}"
               f" (MM:SS): '{docker_build_cmd}')")
 
-        # cmd_args = {'check': True,
-        #             'encoding': 'utf-8',
-        #             'capture_output': True,
-        #             }
-        # output = subprocess.run(shlex.split('docker ps -a'),
-        #                         **cmd_args).stdout.strip()
-        # print(f"docker ps -a\n{output}")
-        # output = subprocess.run(shlex.split('docker images'),
-        #                         **cmd_args).stdout.strip()
-        # print(f"docker images\n{output}")
-
         all_commands = []
         all_commands.append('docker images')
         all_commands.append(
             f"docker run -d --rm -it -e GITHUB_WORKSPACE "
-            f"--name {run_tag} "
+            f"--name {RUN_TAG} "
             f"{os.environ.get('NETWORK_ARG', '')} "
             f"{' '.join(volume_mounts)} "
             f"{volumes_from} --workdir {github_workspace} "
-            f'{run_tag} bash'
+            f'{RUN_TAG} bash'
         )
         all_commands.append('docker ps -a')
         for use_case_command in [setup_commands] + use_case_commands:
             all_commands.append(
-                f'docker exec -e GITHUB_WORKSPACE {run_tag} '
-                f'bash -c "{use_case_command}"'
+                f'docker exec -e GITHUB_WORKSPACE {RUN_TAG} '
+                f'bash -cl "{use_case_command}"'
             )
-        all_commands.append(f'docker rm {run_tag}')
+        all_commands.append(f'docker rm {RUN_TAG}')
         if not run_docker_commands(all_commands):
             isOK = False
 
