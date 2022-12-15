@@ -109,12 +109,11 @@ def main():
             f'{RUN_TAG} bash'
         )
         all_commands.append('docker ps -a')
-        for use_case_command in [setup_commands] + use_case_commands:
+        for use_case_command in [setup_commands] + use_case_commands + ['cat /etc/bashrc']:
             all_commands.append(
                 f'docker exec -e GITHUB_WORKSPACE {RUN_TAG} '
                 f'bash -cl "{use_case_command}"'
             )
-        all_commands.append('cat /etc/bashrc')
         all_commands.append(f'docker rm -f {RUN_TAG}')
         if not run_docker_commands(all_commands):
             isOK = False
@@ -148,10 +147,11 @@ def run_docker_commands(docker_commands):
                 raise subprocess.CalledProcessError(rc, docker_command)
 
         except subprocess.CalledProcessError as err:
+            print("::endgroup::")
             print(f"ERROR: Command failed -- {err}")
             is_ok = False
-
-        print("::endgroup::")
+        else:
+            print("::endgroup::")
 
         end_time = time.time()
         print("TIMING: Command took "
