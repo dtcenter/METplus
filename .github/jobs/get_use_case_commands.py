@@ -60,13 +60,14 @@ def handle_automation_env(host_name, reqs, work_dir):
     conda_env_w_ext = f'{conda_env}{VERSION_EXT}'
 
     # start building commands to run before run_metplus.py in Docker
-    setup_env = 'source /etc/bashrc;'
+    setup_env = []
+    setup_env.append('source /etc/bashrc')
 
     # add conda bin to beginning of PATH
     python_dir = os.path.join('/usr', 'local', 'envs',
                               conda_env_w_ext, 'bin')
     python_path = os.path.join(python_dir, 'python3')
-    setup_env += f" echo 'export PATH={python_dir}:$PATH;' >> /etc/bashrc;"
+    setup_env.append(_add_to_bashrc(f'export PATH={python_dir}:$PATH'))
 
     # if py_embed listed in requirements and using a Python
     # environment that differs from the MET env, set MET_PYTHON_EXE
@@ -86,49 +87,54 @@ def handle_automation_env(host_name, reqs, work_dir):
     if any([item for item in PLOTCALC_KEYWORDS if item in str(reqs).lower()]):
         ce_file = os.path.join(work_dir, '.github', 'parm',
                                f'Externals_metplotcalcpy{externals_ext}')
-        setup_env += (
-            f'cd {METPLUS_DOCKER_LOC};'
-            f'{work_dir}/manage_externals/checkout_externals -e {ce_file};'
-            f'{python_path} -m pip install {METPLUS_DOCKER_LOC}/../METplotpy;'
-            f'{python_path} -m pip install {METPLUS_DOCKER_LOC}/../METcalcpy;'
-            'cd -;'
-        )
+        setup_env.extend((
+            f'cd {METPLUS_DOCKER_LOC}',
+            f'{work_dir}/manage_externals/checkout_externals -e {ce_file}',
+            f'{python_path} -m pip install {METPLUS_DOCKER_LOC}/../METplotpy',
+            f'{python_path} -m pip install {METPLUS_DOCKER_LOC}/../METcalcpy',
+            'cd -',
+        ))
 
     # if metdataio is in requirements list, add command to obtain METdataio
     if 'metdataio' in str(reqs).lower():
         ce_file = os.path.join(work_dir, '.github', 'parm',
                                f'Externals_metdataio{externals_ext}')
-        setup_env += (
-            f'cd {METPLUS_DOCKER_LOC};'
-            f'{work_dir}/manage_externals/checkout_externals -e {ce_file};'
-            f'{python_path} -m pip install {METPLUS_DOCKER_LOC}/../METdataio;'
-            'cd -;'
-        )
+        setup_env.extend((
+            f'cd {METPLUS_DOCKER_LOC}',
+            f'{work_dir}/manage_externals/checkout_externals -e {ce_file}',
+            f'{python_path} -m pip install {METPLUS_DOCKER_LOC}/../METdataio',
+            'cd -',
+        ))
 
     # if gempak is in requirements list, add JRE bin to path for java
     if 'gempak' in str(reqs).lower():
-        setup_env += 'export PATH=$PATH:/usr/lib/jvm/jre/bin;'
+        setup_env.append(_add_to_bashrc(
+            'export PATH=$PATH:/usr/lib/jvm/jre/bin'
+        ))
 
     # if metplus is in requirements list,
     # add top of METplus repo to PYTHONPATH so metplus can be imported
     if 'metplus' in str(reqs).lower():
-        setup_env += f'export PYTHONPATH={METPLUS_DOCKER_LOC}:$PYTHONPATH;'
+        setup_env.append(_add_to_bashrc(
+            f'export PYTHONPATH={METPLUS_DOCKER_LOC}:$PYTHONPATH'
+        ))
 
     # list packages in python environment that will be used
     if conda_env not in NOT_PYTHON_ENVS:
-        setup_env += (
-            f'echo Using environment: dtcenter/metplus-envs:{conda_env_w_ext};'
-            f'echo cat /usr/local/envs/{conda_env_w_ext}/environments.yml;'
-            f'echo ----------------------------------------;'
-            f'cat /usr/local/envs/{conda_env_w_ext}/environments.yml;'
-            'echo ----------------------------------------;'
-        )
+        setup_env.extend((
+            f'echo Using environment: dtcenter/metplus-envs:{conda_env_w_ext}',
+            f'echo cat /usr/local/envs/{conda_env_w_ext}/environments.yml',
+            f'echo ----------------------------------------',
+            f'cat /usr/local/envs/{conda_env_w_ext}/environments.yml',
+            'echo ----------------------------------------',
+        ))
 
-    return setup_env, py_embed_arg
+    return ';'.join(setup_env), py_embed_arg
 
 
-#def _add_to_bashrc(command):
-#    return f"echo '{command.replace('$', '\\$')};' >> /etc/bashrc"
+def _add_to_bashrc(command):
+    return f"echo '{command};' >> /etc/bashrc"
+
 
 def main(categories, subset_list, work_dir=None,
          host_name=os.environ.get('HOST_NAME')):
