@@ -128,6 +128,7 @@ def run_docker_commands(docker_commands):
     is_ok = True
     for docker_command in docker_commands:
         print(f"RUNNING: {docker_command}")
+        print(f"::group::{docker_command}")
         start_time = time.time()
         try:
             process = subprocess.Popen(shlex.split(docker_command),
@@ -149,6 +150,8 @@ def run_docker_commands(docker_commands):
         except subprocess.CalledProcessError as err:
             print(f"ERROR: Command failed -- {err}")
             is_ok = False
+
+        print("::endgroup::")
 
         end_time = time.time()
         print("TIMING: Command took "
