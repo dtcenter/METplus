@@ -127,8 +127,8 @@ def handle_automation_env(host_name, reqs, work_dir):
     return setup_env, py_embed_arg
 
 
-def _add_to_bashrc(command):
-    return f"echo '{command.replace('$', '\\$')};' >> /etc/bashrc"
+#def _add_to_bashrc(command):
+#    return f"echo '{command.replace('$', '\\$')};' >> /etc/bashrc"
 
 def main(categories, subset_list, work_dir=None,
          host_name=os.environ.get('HOST_NAME')):
