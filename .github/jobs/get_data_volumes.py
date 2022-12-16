@@ -13,6 +13,7 @@ import shlex
 from docker_utils import docker_get_volumes_last_updated, get_branch_name
 from docker_utils import get_data_repo, DOCKERHUB_METPLUS_DATA_DEV
 
+
 def main(args):
     # get METplus version
     version_file = os.path.abspath(os.path.join(os.path.dirname(__file__),
@@ -94,7 +95,9 @@ def main(args):
         print(f"CREATING DATA VOLUME FROM: {full_volume_name}")
         cmd = (f'docker create --name {model_app_name} '
                f'{full_volume_name}')
+        print(f"::group::{cmd}")
         ret = subprocess.run(shlex.split(cmd))
+        print('::endgroup::')
 
         if ret.returncode:
             continue

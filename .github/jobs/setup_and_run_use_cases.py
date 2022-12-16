@@ -91,12 +91,9 @@ def main():
         )
 
         print(f'Building Docker environment/branch image...')
-        print("::group::Docker build test environment")
         if not run_docker_commands([docker_build_cmd]):
-            print("::endgroup::")
             isOK = False
             continue
-        print("::endgroup::")
 
         all_commands = []
         all_commands.append('docker images')
@@ -126,8 +123,7 @@ def main():
 def run_docker_commands(docker_commands):
     is_ok = True
     for docker_command in docker_commands:
-        print(f"RUNNING: {docker_command}")
-        print(f"::group::{docker_command}")
+        print(f"::group::RUNNING {docker_command}")
         start_time = time.time()
         try:
             process = subprocess.Popen(shlex.split(docker_command),
