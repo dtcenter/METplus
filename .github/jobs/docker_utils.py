@@ -1,5 +1,8 @@
 import os
 import re
+import subprocess
+import shlex
+import time
 
 # Utilities used by various CI jobs. Functionality includes:
 #  - Check if Docker data volumes need to be updated.
@@ -86,3 +89,56 @@ def get_branch_name():
         return None
 
     return github_ref.replace('refs/heads/', '').replace('/', '_')
+
+
+def run_commands(commands):
+    """!Run a list of commands via subprocess. Print the command and the length
+    of time it took to run. Includes ::group:: and ::endgroup:: syntax which
+    creates log groups in GitHub Actions log output.
+
+    @param commands list of commands to run or a single command string
+    @returns True if all commands ran successfully, False if any commands fail
+    """
+    # handle a single command string or list of command strings
+    if isinstance(commands, str):
+        command_list = [commands]
+    else:
+        command_list = commands
+
+    is_ok = True
+    for command in command_list:
+        error_message = None
+        print(f"::group::RUNNING {command}")
+        start_time = time.time()
+        try:
+            process = subprocess.Popen(shlex.split(command),
+                                       shell=False,
+                                       encoding='utf-8',
+                                       stdout=subprocess.PIPE,
+                                       stderr=subprocess.STDOUT)
+            # Poll process.stdout to show stdout live
+            while True:
+                output = process.stdout.readline()
+                if process.poll() is not None:
+                    break
+                if output:
+                    print(output.strip())
+            rc = process.poll()
+            if rc:
+                raise subprocess.CalledProcessError(rc, command)
+
+        except subprocess.CalledProcessError as err:
+            error_message = f"ERROR: Command failed -- {err}"
+            is_ok = False
+
+        end_time = time.time()
+        print("TIMING: Command took "
+              f"{time.strftime('%M:%S', time.gmtime(end_time - start_time))}"
+              f" (MM:SS): '{command}')")
+
+        print("::endgroup::")
+
+        if error_message:
+            print(error_message)
+
+    return is_ok
