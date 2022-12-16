@@ -15,6 +15,7 @@ DOCKERHUB_METPLUS_DATA_DEV = 'dtcenter/metplus-data-dev'
 # extension to add to conda environments
 VERSION_EXT = '.v5'
 
+
 def get_data_repo(branch_name):
     """! Branch names that start with main_v or contain only
        digits and dots with out without a prefix 'v' will return
@@ -26,9 +27,11 @@ def get_data_repo(branch_name):
         return DOCKERHUB_METPLUS_DATA
     return DOCKERHUB_METPLUS_DATA_DEV
 
+
 def get_dockerhub_url(branch_name):
     data_repo = get_data_repo(branch_name)
     return f'https://hub.docker.com/v2/repositories/{data_repo}/tags'
+
 
 def docker_get_volumes_last_updated(current_branch):
     import requests
@@ -59,6 +62,7 @@ def docker_get_volumes_last_updated(current_branch):
         attempts += 1
 
     return volumes_last_updated
+
 
 def get_branch_name():
     # get branch name from env var BRANCH_NAME
