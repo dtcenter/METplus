@@ -138,13 +138,15 @@ def _get_dockerfile_name(requirements):
     @param requirements list of use case requirements
     @returns string of Dockerfile to use to create test environment
     """
+    dockerfile_name = 'Dockerfile.run'
     if 'gempak' in str(requirements).lower():
         return f'{dockerfile_name}_gempak'
     if 'gfdl' in str(requirements).lower():
         return f'{dockerfile_name}_gfdl'
     if 'cartopy' in str(requirements).lower():
         return f'{dockerfile_name}_cartopy'
-    return 'Dockerfile.run'
+    return dockerfile_name
+
 
 if __name__ == '__main__':
     main()
