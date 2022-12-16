@@ -10,25 +10,30 @@
 
 import os
 import sys
-import subprocess
-import shlex
-import time
 
 import get_use_case_commands
 import get_data_volumes
-from docker_utils import get_branch_name, VERSION_EXT
+from docker_utils import get_branch_name, VERSION_EXT, run_commands
 
-runner_workspace = os.environ.get('RUNNER_WORKSPACE')
-github_workspace = os.environ.get('GITHUB_WORKSPACE')
+RUNNER_WORKSPACE = os.environ.get('RUNNER_WORKSPACE')
+GITHUB_WORKSPACE = os.environ.get('GITHUB_WORKSPACE')
 
-repo_name =os.path.basename(runner_workspace)
-ws_path = os.path.join(runner_workspace, repo_name)
+REPO_NAME = os.path.basename(RUNNER_WORKSPACE)
+WS_PATH = os.path.join(RUNNER_WORKSPACE, REPO_NAME)
 
-docker_data_dir = '/data'
-docker_output_dir = os.path.join(docker_data_dir, 'output')
-gha_output_dir = os.path.join(runner_workspace, 'output')
+DOCKER_DATA_DIR = '/data'
+DOCKER_OUTPUT_DIR = os.path.join(DOCKER_DATA_DIR, 'output')
+GHA_OUTPUT_DIR = os.path.join(RUNNER_WORKSPACE, 'output')
 
 RUN_TAG = 'metplus-run-env'
+
+VOLUME_MOUNTS = [
+    f"-v {RUNNER_WORKSPACE}/output/mysql:/var/lib/mysql",
+    f"-v {GHA_OUTPUT_DIR}:{DOCKER_OUTPUT_DIR}",
+    f"-v {WS_PATH}:{GITHUB_WORKSPACE}",
+]
+
+DOCKERFILE_DIR = os.path.join('.github', 'actions', 'run_tests')
 
 
 def main():
@@ -51,68 +56,53 @@ def main():
     if os.environ.get('GITHUB_EVENT_NAME') == 'pull_request':
         branch_name = f"{branch_name}-pull_request"
 
-    dockerfile_dir = os.path.join('.github', 'actions', 'run_tests')
-
     # use BuildKit to build image
     os.environ['DOCKER_BUILDKIT'] = '1'
 
-    volume_mounts = [
-        f"-v {runner_workspace}/output/mysql:/var/lib/mysql",
-        f"-v {gha_output_dir}:{docker_output_dir}",
-        f"-v {ws_path}:{github_workspace}",
-    ]
-
     isOK = True
     for setup_commands, use_case_commands, requirements in all_commands:
-
         # get environment image tag
-        use_env = [item for item in requirements if item.endswith('_env')]
-        if use_env:
-            env_tag = use_env[0].replace('_env', '')
-        else:
-            env_tag = 'metplus_base'
-
-        env_tag = f'{env_tag}{VERSION_EXT}'
+        env_tag = _get_metplus_env_tag(requirements)
 
         # get Dockerfile to use
-        dockerfile_name = 'Dockerfile.run'
-        if 'gempak' in str(requirements).lower():
-            dockerfile_name = f'{dockerfile_name}_gempak'
-        elif 'gfdl' in str(requirements).lower():
-            dockerfile_name = f'{dockerfile_name}_gfdl'
-        elif 'cartopy' in str(requirements).lower():
-            dockerfile_name = f'{dockerfile_name}_cartopy'
+        dockerfile_name = _get_dockerfile_name(requirements)
 
         docker_build_cmd = (
             f"docker build -t {RUN_TAG} "
             f"--build-arg METPLUS_IMG_TAG={branch_name} "
             f"--build-arg METPLUS_ENV_TAG={env_tag} "
-            f"-f {dockerfile_dir}/{dockerfile_name} ."
+            f"-f {DOCKERFILE_DIR}/{dockerfile_name} ."
         )
 
         print(f'Building Docker environment/branch image...')
-        if not run_docker_commands([docker_build_cmd]):
+        if not run_commands([docker_build_cmd]):
             isOK = False
             continue
 
-        all_commands = []
-        all_commands.append('docker images')
-        all_commands.append(
+        commands = []
+        commands.append('docker images')
+        # start interactive container in the background
+        commands.append(
             f"docker run -d --rm -it -e GITHUB_WORKSPACE "
             f"--name {RUN_TAG} "
             f"{os.environ.get('NETWORK_ARG', '')} "
-            f"{' '.join(volume_mounts)} "
-            f"{volumes_from} --workdir {github_workspace} "
+            f"{' '.join(VOLUME_MOUNTS)} "
+            f"{volumes_from} --workdir {GITHUB_WORKSPACE} "
             f'{RUN_TAG} bash'
         )
-        all_commands.append('docker ps -a')
-        for use_case_command in [setup_commands] + use_case_commands + ['cat /etc/bashrc']:
-            all_commands.append(
+        # list running containers
+        commands.append('docker ps -a')
+        # execute commands in running docker container
+        docker_commands = [setup_commands] + use_case_commands
+        docker_commands.append('cat /etc/bashrc')
+        for docker_command in docker_commands:
+            commands.append(
                 f'docker exec -e GITHUB_WORKSPACE {RUN_TAG} '
-                f'bash -cl "{use_case_command}"'
+                f'bash -cl "{docker_command}"'
             )
-        all_commands.append(f'docker rm -f {RUN_TAG}')
-        if not run_docker_commands(all_commands):
+        # force remove container to stop and remove it
+        commands.append(f'docker rm -f {RUN_TAG}')
+        if not run_commands(commands):
             isOK = False
 
     if not isOK:
@@ -120,45 +110,41 @@ def main():
         sys.exit(1)
 
 
-def run_docker_commands(docker_commands):
-    is_ok = True
-    for docker_command in docker_commands:
-        error_message = None
-        print(f"::group::RUNNING {docker_command}")
-        start_time = time.time()
-        try:
-            process = subprocess.Popen(shlex.split(docker_command),
-                                       shell=False,
-                                       encoding='utf-8',
-                                       stdout=subprocess.PIPE,
-                                       stderr=subprocess.STDOUT)
-            # Poll process.stdout to show stdout live
-            while True:
-                output = process.stdout.readline()
-                if process.poll() is not None:
-                    break
-                if output:
-                    print(output.strip())
-            rc = process.poll()
-            if rc:
-                raise subprocess.CalledProcessError(rc, docker_command)
+def _get_metplus_env_tag(requirements):
+    """!Parse use case requirements to get Docker tag to obtain conda
+     environment to use in tests. Append version extension e.g. .v5
 
-        except subprocess.CalledProcessError as err:
-            error_message = f"ERROR: Command failed -- {err}"
-            is_ok = False
+    @param requirements list of use case requirements
+    @returns string of Docker tag
+    """
+    use_env = [item for item in requirements if item.endswith('_env')]
+    if use_env:
+        env_tag = use_env[0].replace('_env', '')
+    else:
+        env_tag = 'metplus_base'
 
-        end_time = time.time()
-        print("TIMING: Command took "
-              f"{time.strftime('%M:%S', time.gmtime(end_time - start_time))}"
-              f" (MM:SS): '{docker_command}')")
+    return f'{env_tag}{VERSION_EXT}'
 
-        print("::endgroup::")
 
-        if error_message:
-            print(error_message)
+def _get_dockerfile_name(requirements):
+    """!Parse use case requirements to get name of Dockerfile to use to build
+     environment to use in tests. Dockerfile.run copies conda directories into
+     test image. Other Dockerfiles copy additional files needed to run certain
+     use cases. For example, cartopy uses shape files that occasionally cannot
+     be downloaded on the fly, so they are downloaded in advance and copied
+     into the test image. GEMPAK requires JavaRE. GFDL Tracker requires
+     NetCDF libraries and tracker executable.
 
-    return is_ok
-
+    @param requirements list of use case requirements
+    @returns string of Dockerfile to use to create test environment
+    """
+    if 'gempak' in str(requirements).lower():
+        return f'{dockerfile_name}_gempak'
+    if 'gfdl' in str(requirements).lower():
+        return f'{dockerfile_name}_gfdl'
+    if 'cartopy' in str(requirements).lower():
+        return f'{dockerfile_name}_cartopy'
+    return 'Dockerfile.run'
 
 if __name__ == '__main__':
     main()
