@@ -75,7 +75,7 @@ def main():
         )
 
         print(f'Building Docker environment/branch image...')
-        if not run_commands([docker_build_cmd]):
+        if not run_commands(docker_build_cmd):
             isOK = False
             continue
 
