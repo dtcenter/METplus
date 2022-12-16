@@ -123,6 +123,7 @@ def main():
 def run_docker_commands(docker_commands):
     is_ok = True
     for docker_command in docker_commands:
+        error_message = None
         print(f"::group::RUNNING {docker_command}")
         start_time = time.time()
         try:
@@ -143,16 +144,18 @@ def run_docker_commands(docker_commands):
                 raise subprocess.CalledProcessError(rc, docker_command)
 
         except subprocess.CalledProcessError as err:
-            print("::endgroup::")
-            print(f"ERROR: Command failed -- {err}")
+            error_message = f"ERROR: Command failed -- {err}"
             is_ok = False
-        else:
-            print("::endgroup::")
 
         end_time = time.time()
         print("TIMING: Command took "
               f"{time.strftime('%M:%S', time.gmtime(end_time - start_time))}"
               f" (MM:SS): '{docker_command}')")
+
+        print("::endgroup::")
+
+        if error_message:
+            print(error_message)
 
     return is_ok
 
