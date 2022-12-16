@@ -57,7 +57,7 @@
   {
     "category": "data_assimilation",
     "index_list": "0-1",
-    "run": true
+    "run": false
   },
   {
     "category": "marine_and_cryosphere",
