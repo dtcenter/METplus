@@ -11,7 +11,7 @@ ci_dir = os.path.join(os.environ.get('GITHUB_WORKSPACE'), '.github')
 sys.path.insert(0, ci_dir)
 
 from jobs import get_data_volumes
-from jobs.docker_util import run_commands
+from jobs.docker_utils import run_commands
 
 CI_JOBS_DIR = '.github/jobs'
 
