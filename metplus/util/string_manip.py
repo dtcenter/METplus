@@ -10,6 +10,7 @@ import re
 from csv import reader
 import random
 import string
+import logging
 
 try:
     from .constants import VALID_COMPARISONS, LOWER_TO_WRAPPER_NAME
@@ -571,3 +572,18 @@ def get_logfile_info(config):
     """
     log_file = config.getstr('config', 'LOG_METPLUS', '')
     return log_file if log_file else 'Set LOG_METPLUS to write logs to a file'
+
+
+def log_terminal_includes_info(config):
+    """!Check LOG_LEVEL_TERMINAL to see if it is set to a logging level that
+    includes INFO output. Check [runtime] section if not found in [config]
+    because the variable is moved at the end of the run.
+
+    @param config METplusConfig object to query
+    @returns True if log level is set to include INFO messages. False if not.
+    """
+    log_terminal_level = logging.getLevelName(
+        config.getstr('config', 'LOG_LEVEL_TERMINAL',
+                      config.getstr('runtime', 'LOG_LEVEL_TERMINAL'))
+    )
+    return log_terminal_level <= logging.INFO

@@ -1,11 +1,12 @@
 import sys
 import os
 import shutil
+import logging
 from datetime import datetime
 from importlib import import_module
 
 from .constants import NO_COMMAND_WRAPPERS
-from .string_manip import get_logfile_info
+from .string_manip import get_logfile_info, log_terminal_includes_info
 from .system_util import get_user_info, write_list_to_file
 from .config_util import get_process_list, handle_env_var_config
 from .config_util import handle_tmp_dir, write_final_conf, write_all_commands
@@ -29,8 +30,13 @@ def pre_run_setup(config_inputs):
     user_string = f' as user {user_info} ' if user_info else ' '
 
     config.set('config', 'METPLUS_VERSION', version_number)
-    logger.info('Running METplus v%s%swith command: %s',
-                version_number, user_string, ' '.join(sys.argv))
+    running_log = (f"Running METplus v{version_number}{user_string}with "
+                   f"command: {' '.join(sys.argv)}")
+    logger.info(running_log)
+
+    # print running message if terminal log does not include INFO
+    if not log_terminal_includes_info(config):
+        print(running_log)
 
     # if log file is not set, log message instructing user how to set it
     log_file = get_logfile_info(config)
@@ -195,8 +201,13 @@ def post_run_cleanup(config, app_name, total_errors):
     user_string = f' as user {user_info}' if user_info else ''
     if not total_errors:
         logger.info(log_message)
-        logger.info('%s has successfully finished running%s.',
-                    app_name, user_string)
+        success_log = (f'{app_name} has successfully '
+                       f'finished running{user_string}.')
+        logger.info(success_log)
+
+        # print success log message if terminal does not include INFO
+        if not log_terminal_includes_info(config):
+            print(success_log)
         return
 
     error_msg = (f'{app_name} has finished running{user_string} '
