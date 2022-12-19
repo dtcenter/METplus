@@ -31,7 +31,7 @@ When applicable, release notes are followed by the
 describes the bugfix, enhancement, or new feature.
 
 
-METplus Version 5.0.0 Release Notes (2022-12-??)
+METplus Version 5.0.0 Release Notes (2022-12-09)
 ------------------------------------------------
 
 .. warning:: **MAJOR CHANGES**:
