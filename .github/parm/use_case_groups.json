@@ -2,7 +2,7 @@
    {
     "category": "met_tool_wrapper",
     "index_list": "0-29,59-61",
-    "run": false
+    "run": true
   },
   {
     "category": "met_tool_wrapper",
