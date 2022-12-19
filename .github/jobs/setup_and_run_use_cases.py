@@ -60,6 +60,7 @@ def main():
     os.environ['DOCKER_BUILDKIT'] = '1'
 
     isOK = True
+    failed_use_cases = []
     for setup_commands, use_case_commands, requirements in all_commands:
         # get environment image tag
         env_tag = _get_metplus_env_tag(requirements)
@@ -80,7 +81,10 @@ def main():
             continue
 
         commands = []
+
+        # print list of existing docker images
         commands.append('docker images')
+
         # start interactive container in the background
         commands.append(
             f"docker run -d --rm -it -e GITHUB_WORKSPACE "
@@ -90,24 +94,56 @@ def main():
             f"{volumes_from} --workdir {GITHUB_WORKSPACE} "
             f'{RUN_TAG} bash'
         )
+
         # list running containers
         commands.append('docker ps -a')
-        # execute commands in running docker container
-        docker_commands = [setup_commands] + use_case_commands
-        docker_commands.append('cat /etc/bashrc')
-        for docker_command in docker_commands:
-            commands.append(
-                f'docker exec -e GITHUB_WORKSPACE {RUN_TAG} '
-                f'bash -cl "{docker_command}"'
-            )
-        # force remove container to stop and remove it
-        commands.append(f'docker rm -f {RUN_TAG}')
+
+        # execute setup commands in running docker container
+        commands.append(_format_docker_exec_command(setup_commands))
+
+        # run docker commands and skip running cases if something went wrong
         if not run_commands(commands):
             isOK = False
+
+            # force remove container if setup step fails
+            run_commands(f'docker rm -f {RUN_TAG}')
+
+            # add all use cases that couldn't run to list of failed cases
+            failed_use_cases.extend(use_case_commands)
+
+            continue
+
+        # execute use cases in running docker container
+        # save list of use cases that failed
+        for use_case_command in use_case_commands:
+            if not run_commands(_format_docker_exec_command(use_case_command)):
+                failed_use_cases.append(use_case_command)
+                isOK = False
+
+        # print bashrc file to see what was added by setup commands
+        # then force remove container to stop and remove it
+        if not run_commands([
+            _format_docker_exec_command('cat /etc/bashrc'),
+            f'docker rm -f {RUN_TAG}',
+        ]):
+            isOK = False
+
+    # print summary of use cases that failed
+    for failed_use_case in failed_use_cases:
+        print(f'ERROR: Use case failed: {failed_use_case}')
 
     if not isOK:
         print("ERROR: Some commands failed.")
         sys.exit(1)
+
+
+def _format_docker_exec_command(command):
+    """! Get docker exec command to call given command in a bash login shell
+
+    @param command string of command to run in docker
+    @returns string of docker exec command to run command
+    """
+    return f'docker exec -e GITHUB_WORKSPACE {RUN_TAG} bash -cl "{command}"'
 
 
 def _get_metplus_env_tag(requirements):
