@@ -1,10 +1,12 @@
 import sys
 import os
 import shutil
+import logging
 from datetime import datetime
 from importlib import import_module
 
 from .constants import NO_COMMAND_WRAPPERS
+from .string_manip import get_logfile_info, log_terminal_includes_info
 from .system_util import get_user_info, write_list_to_file
 from .config_util import get_process_list, handle_env_var_config
 from .config_util import handle_tmp_dir, write_final_conf, write_all_commands
@@ -28,10 +30,18 @@ def pre_run_setup(config_inputs):
     user_string = f' as user {user_info} ' if user_info else ' '
 
     config.set('config', 'METPLUS_VERSION', version_number)
-    logger.info('Running METplus v%s%swith command: %s',
-                version_number, user_string, ' '.join(sys.argv))
+    running_log = (f"Running METplus v{version_number}{user_string}with "
+                   f"command: {' '.join(sys.argv)}")
+    logger.info(running_log)
 
-    logger.info(f"Log file: {config.getstr('config', 'LOG_METPLUS')}")
+    # print running message if terminal log does not include INFO
+    if not log_terminal_includes_info(config):
+        print(running_log)
+
+    # if log file is not set, log message instructing user how to set it
+    log_file = get_logfile_info(config)
+
+    logger.info(f"Log file: {log_file}")
     logger.info(f"METplus Base: {config.getdir('METPLUS_BASE')}")
     logger.info(f"Final Conf: {config.getstr('config', 'METPLUS_CONF')}")
     config_list = config.getstr('config', 'CONFIG_INPUT').split(',')
@@ -55,7 +65,7 @@ def pre_run_setup(config_inputs):
 
         logger.error("Correct configuration variables and rerun. Exiting.")
         logger.info("Check the log file for more information: "
-                    f"{config.getstr('config', 'LOG_METPLUS')}")
+                    f"{get_logfile_info(config)}")
         sys.exit(1)
 
     if not config.getdir('MET_INSTALL_DIR', must_exist=True):
@@ -157,7 +167,7 @@ def run_metplus(config):
     except:
         logger.exception("Fatal error occurred")
         logger.info("Check the log file for more information: "
-                    f"{config.getstr('config', 'LOG_METPLUS')}")
+                    f"{get_logfile_info(config)}")
         return 1
 
 
@@ -174,7 +184,7 @@ def post_run_cleanup(config, app_name, total_errors):
 
     # save log file path and clock time before writing final conf file
     log_message = (f"Check the log file for more information: "
-                   f"{config.getstr('config', 'LOG_METPLUS')}")
+                   f"{get_logfile_info(config)}")
 
     start_clock_time = datetime.strptime(config.getstr('config', 'CLOCK_TIME'),
                                          '%Y%m%d%H%M%S')
@@ -185,14 +195,19 @@ def post_run_cleanup(config, app_name, total_errors):
     # compute time it took to run
     end_clock_time = datetime.now()
     total_run_time = end_clock_time - start_clock_time
-    logger.debug(f"{app_name} took {total_run_time} to run.")
+    logger.info(f"{app_name} took {total_run_time} to run.")
 
     user_info = get_user_info()
     user_string = f' as user {user_info}' if user_info else ''
     if not total_errors:
         logger.info(log_message)
-        logger.info('%s has successfully finished running%s.',
-                    app_name, user_string)
+        success_log = (f'{app_name} has successfully '
+                       f'finished running{user_string}.')
+        logger.info(success_log)
+
+        # print success log message if terminal does not include INFO
+        if not log_terminal_includes_info(config):
+            print(success_log)
         return
 
     error_msg = (f'{app_name} has finished running{user_string} '

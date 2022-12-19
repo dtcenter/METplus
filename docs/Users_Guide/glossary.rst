@@ -2361,15 +2361,20 @@ METplus Configuration Glossary
      | *Used by:*  All
 
    LOG_LEVEL
-     Specify the level of logging. Everything above this level is sent to standard output. To quiet the output to a comfortable level, set this to "ERROR"
+     Specify the level of logging for the METplus wrapper output to the
+     :term:`LOG_METPLUS` log file. Log level of the applications that are
+     called by the wrappers are controlled with :term:`LOG_MET_VERBOSITY`.
+     Default log level is INFO. Set to DEBUG to see additional log output.
+     Log level for screen output can be set with :term:`LOG_LEVEL_TERMINAL`.
 
-     Options (ordered MOST verbose to LEAST verbose):
-     | NOTSET
-     | DEBUG
-     | INFO
-     | WARNING
-     | ERROR
-     | CRITICAL
+     Options (ordered LEAST verbose to MOST verbose):
+     CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET
+
+     | *Used by:*  All
+
+   LOG_LEVEL_TERMINAL
+     Specify the level of logging for terminal screen output.
+     See :term:`LOG_LEVEL` for more information.
 
      | *Used by:*  All
 

@@ -266,6 +266,8 @@ Log File Information
 
 Where to write logs files
 
+.. _log_metplus:
+
 LOG_METPLUS
 """""""""""
 
@@ -348,9 +350,10 @@ How much information to log
 LOG_LEVEL
 """""""""
 
-This controls the level of logging output from the METplus wrappers. It does
-not control the logging level of the actual MET applications. The possible
-values to:
+This controls the level of logging output from the METplus wrappers that is
+written to the log file defined by :ref:`log_metplus`.
+It does not control the logging level of the actual MET applications.
+The possible values to:
 
 * CRITICAL
 * ERROR
@@ -370,6 +373,14 @@ If a use case is producing errors, then setting::
 
 will produce additional logging output that is helpful
 to discover the cause of the error.
+
+.. _log_level_terminal:
+
+LOG_LEVEL_TERMINAL
+""""""""""""""""""
+
+This controls the level of logging that is output to the screen.
+The valid values are the same as :ref:`log_level`.
 
 LOG_MET_VERBOSITY
 """""""""""""""""

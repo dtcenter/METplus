@@ -81,10 +81,6 @@ def get_config_inputs_from_command_line():
          invalid flag was provided, i.e. -a.
          @returns list of config inputs
     """
-
-    # output version that is run to screen
-    print('Running METplus %s' % metplus_version)
-
     # if not arguments were provided, print usage and exit
     if len(sys.argv) < 2:
         usage()

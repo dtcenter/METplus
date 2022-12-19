@@ -241,15 +241,8 @@ class CommandBuilder:
         # set user defined environment variables
         self.set_user_environment(time_info)
 
-        # send environment variables to logger
-        for msg in self.print_all_envs(print_each_item=True,
-                                       print_copyable=False):
-            self.logger.info(msg)
-
-        # log environment variables that can be copied into terminal
-        # to rerun application if debug logging is turned on
-        for msg in self.print_all_envs(print_each_item=False,
-                                       print_copyable=True):
+        # send environment variables and copyable commands to logger
+        for msg in self.print_all_envs():
             self.logger.debug(msg)
 
     def log_error(self, error_string):
@@ -1228,6 +1221,7 @@ class CommandBuilder:
         list of all commands run.
 
         @param cmd command to run
+        @param cmd_name optional command name to use in the log filename
         @returns True on success, False otherwise
         """
         # add command to list of all commands run
@@ -1243,20 +1237,22 @@ class CommandBuilder:
                                               env=self.env,
                                               log_name=log_name,
                                               copyable_env=self.get_env_copy())
-        if ret:
-            logfile_path = self.config.getstr('config', 'LOG_METPLUS')
-            # if MET output is written to its own logfile, get that filename
-            if not self.config.getbool('config', 'LOG_MET_OUTPUT_TO_METPLUS'):
-                logfile_path = logfile_path.replace('run_metplus',
-                                                    log_name)
+        if not ret:
+            return True
 
-            self.log_error("MET command returned a non-zero return code:"
-                           f"{cmd}")
-            self.logger.info("Check the logfile for more information on why "
-                             f"it failed: {logfile_path}")
+        self.log_error(f"Command returned a non-zero return code: {cmd}")
+
+        logfile_path = self.config.getstr('config', 'LOG_METPLUS')
+        if not logfile_path:
             return False
 
-        return True
+        # if MET output is written to its own logfile, get that filename
+        if not self.config.getbool('config', 'LOG_MET_OUTPUT_TO_METPLUS'):
+            logfile_path = logfile_path.replace('run_metplus', log_name)
+
+        self.logger.info("Check the logfile for more information on why "
+                         f"it failed: {logfile_path}")
+        return False
 
     def run_all_times(self, custom=None):
         """! Loop over time range specified in conf file and
