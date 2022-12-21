@@ -7,9 +7,11 @@ import datetime
 import netCDF4
 import numpy
 from numpy.ma import is_masked
-#import pandas as pd
 
 from met_point_obs import convert_point_data
+
+# set to true to output more info
+DEBUG = False
 
 # constant values that will be used for every observation
 MESSAGE_TYPE = 'ARGO'
@@ -45,8 +47,7 @@ def get_string_value(var):
     return var[:].tobytes().decode('utf-8').strip()
 
 
-def get_val_check_qc(nc_obj, field_name, idx_p, idx_l=None, error_max=None,
-                     debug=False):
+def get_val_check_qc(nc_obj, field_name, idx_p, idx_l=None, error_max=None):
     """!Get field value unless quality control checks do not pass.
     The conditions to skip data are as follows:
     1) If {field_name}_QC is masked.
@@ -62,8 +63,6 @@ def get_val_check_qc(nc_obj, field_name, idx_p, idx_l=None, error_max=None,
     None which assumes field is not 2D
     @param error_max (optional) value to compare to {field_name}_ERROR. Skip if
     error value is less than this value
-    @param debug (optional) If True, print message if data is skipped. Defaults
-    to False
     @returns numpy.float64 field value if all QC checks pass or None
     """
     if idx_l is None:
@@ -79,17 +78,17 @@ def get_val_check_qc(nc_obj, field_name, idx_p, idx_l=None, error_max=None,
     field_mask = is_masked(field)
 
     if qc_mask:
-        if debug:
+        if DEBUG:
             print(f"Skip {data_str} {field_name}_QC is masked")
         return None
 
     if field_mask:
-        if debug:
+        if DEBUG:
             print(f"Skip {data_str} {field_name} is masked")
         return None
 
     if int(qc) != 1:
-        if debug:
+        if DEBUG:
             print(f"Skip {data_str} {field_name}_QC value ({int(qc)}) != 1")
         return None
 
@@ -177,7 +176,8 @@ for index_p in range(0, num_profiles):
                 var_name, LEVEL, height, QC_STRING, observation_value,
             ]
             point_data.append(point)
-            #print(', '.join([str(val) for val in point]))
+            if DEBUG:
+                print(', '.join([str(val) for val in point]))
 
 print("     point_data: Data Length:\t" + repr(len(point_data)))
 print("     point_data: Data Type:\t" + repr(type(point_data)))
