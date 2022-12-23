@@ -129,60 +129,82 @@ def get_lat_lon(nc_obj, idx):
 
 
 if len(sys.argv) < 2:
-    print(f"ERROR: {__file__} - Must provide argument for input file")
+    print(f"ERROR: {__file__} - Must provide at least 1 input file argument")
     sys.exit(1)
 
-input_file = os.path.expandvars(sys.argv[1])
-print(f"Input File: {input_file}")
-
-if any(['debug' in arg for arg in sys.argv]):
-    print('Debugging output turned on')
-    DEBUG = True
-
-print('Reading file...')
-
-nc_in = netCDF4.Dataset(input_file, 'r')
-
-# get reference date time
-time_str = get_string_value(nc_in.variables['REFERENCE_DATE_TIME'])
-reference_date_time = datetime.datetime.strptime(time_str, '%Y%m%d%H%M%S')
-
-# get number of profiles and levels
-num_profiles = nc_in.dimensions['N_PROF'].size
-num_levels = nc_in.dimensions['N_LEVELS'].size
-
-point_data = []
-for index_p in range(0, num_profiles):
-    # check QC and mask of JULD to skip profiles with bad time info
-    if get_val_check_qc(nc_in, 'JULD', index_p) is None:
+is_ok = True
+input_files = []
+for arg in sys.argv[1:]:
+    if arg.endswith('debug'):
+        print('Debugging output turned on')
+        DEBUG = True
         continue
 
-    valid_time = get_valid_time(reference_date_time, nc_in, index_p)
-    station_id = get_string_value(nc_in.variables['PLATFORM_NUMBER'][index_p])
-    lat, lon = get_lat_lon(nc_in, index_p)
+    input_file = os.path.expandvars(arg)
+    if not os.path.exists(input_file):
+        print(f'ERROR: Input file does not exist: {input_file}')
+        is_ok = False
+        continue
 
-    # loop through levels
-    for index_l in range(0, num_levels):
-        # read pressure data to get height in meters of sea water (msw)
-        height = get_val_check_qc(nc_in, 'PRES_ADJUSTED', index_p, index_l,
-                                  error_max=MAX_PRESSURE_ERROR)
-        if height is None:
+    input_files.append(input_file)
+
+if not is_ok:
+    sys.exit(1)
+
+print(f'Number of input files: {len(input_files)}')
+
+point_data = []
+for input_file in input_files:
+    print(f'Processing file: {input_file}')
+
+    nc_in = netCDF4.Dataset(input_file, 'r')
+
+    # get reference date time
+    time_str = get_string_value(nc_in.variables['REFERENCE_DATE_TIME'])
+    reference_date_time = datetime.datetime.strptime(time_str, '%Y%m%d%H%M%S')
+
+    # get number of profiles and levels
+    num_profiles = nc_in.dimensions['N_PROF'].size
+    num_levels = nc_in.dimensions['N_LEVELS'].size
+
+    new_point_data = []
+    for index_p in range(0, num_profiles):
+        # check QC and mask of JULD to skip profiles with bad time info
+        if get_val_check_qc(nc_in, 'JULD', index_p) is None:
             continue
 
-        # get temperature and ocean salinity values
-        for var_name in ('TEMP', 'PSAL'):
-            observation_value = get_val_check_qc(nc_in, f'{var_name}_ADJUSTED',
-                                                 index_p, index_l)
-            if observation_value is None:
+        valid_time = get_valid_time(reference_date_time, nc_in, index_p)
+        station_id = get_string_value(
+            nc_in.variables['PLATFORM_NUMBER'][index_p]
+        )
+        lat, lon = get_lat_lon(nc_in, index_p)
+
+        # loop through levels
+        for index_l in range(0, num_levels):
+            # read pressure data to get height in meters of sea water (msw)
+            height = get_val_check_qc(nc_in, 'PRES_ADJUSTED', index_p, index_l,
+                                      error_max=MAX_PRESSURE_ERROR)
+            if height is None:
                 continue
 
-            point = [
-                MESSAGE_TYPE, station_id, valid_time, lat, lon, ELEVATION,
-                var_name, LEVEL, height, QC_STRING, observation_value,
-            ]
-            point_data.append(point)
-            if DEBUG:
-                print(', '.join([str(val) for val in point]))
+            # get temperature and ocean salinity values
+            for var_name in ('TEMP', 'PSAL'):
+                observation_value = get_val_check_qc(nc_in,
+                                                     f'{var_name}_ADJUSTED',
+                                                     index_p, index_l)
+                if observation_value is None:
+                    continue
+
+                point = [
+                    MESSAGE_TYPE, station_id, valid_time, lat, lon, ELEVATION,
+                    var_name, LEVEL, height, QC_STRING, observation_value,
+                ]
+                new_point_data.append(point)
+                if DEBUG:
+                    print(', '.join([str(val) for val in point]))
+
+    point_data.extend(new_point_data)
+    nc_in.close()
 
 print("     point_data: Data Length:\t" + repr(len(point_data)))
 print("     point_data: Data Type:\t" + repr(type(point_data)))
