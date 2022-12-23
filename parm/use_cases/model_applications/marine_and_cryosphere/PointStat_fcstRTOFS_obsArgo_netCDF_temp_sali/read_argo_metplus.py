@@ -128,12 +128,17 @@ def get_lat_lon(nc_obj, idx):
             numpy.float64(nc_obj.variables['LONGITUDE'][idx]))
 
 
-if len(sys.argv) != 2:
+if len(sys.argv) < 2:
     print(f"ERROR: {__file__} - Must provide argument for input file")
     sys.exit(1)
 
 input_file = os.path.expandvars(sys.argv[1])
 print(f"Input File: {input_file}")
+
+if any(['debug' in arg for arg in sys.argv]):
+    print('Debugging output turned on')
+    DEBUG = True
+
 print('Reading file...')
 
 nc_in = netCDF4.Dataset(input_file, 'r')
