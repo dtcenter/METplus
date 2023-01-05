@@ -81,7 +81,7 @@ is sponsored by NSF.
    release-notes
    getting_started
    installation
-   configuration
+   systemconfiguration
    wrappers
    usecases
    quicksearch
