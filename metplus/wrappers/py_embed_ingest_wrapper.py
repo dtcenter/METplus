@@ -184,7 +184,7 @@ class PyEmbedIngestWrapper(CommandBuilder):
 
             rdp.infiles.append(output_grid)
 
-            self.set_environment_variables(time_info)
+            rdp.set_environment_variables(time_info)
 
             self.logger.info(f'Running PyEmbed Ingester {index}')
 
