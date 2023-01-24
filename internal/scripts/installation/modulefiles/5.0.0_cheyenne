@@ -15,3 +15,4 @@ module load R
 
 setenv METPLUS_PATH /glade/p/ral/jntp/MET/METplus/METplus-5.0.0
 prepend-path PATH /glade/p/ral/jntp/MET/METplus/METplus-5.0.0/ush:/glade/p/ral/jntp/MET/METplus/miniconda/miniconda3/envs/metplus_v5.0_py3.8/bin
+
