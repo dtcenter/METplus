@@ -133,7 +133,7 @@ def handle_automation_env(host_name, reqs, work_dir):
 
 
 def _add_to_bashrc(command):
-    return f"echo '{command};' >> ~/.bashrc"
+    return f"echo '{command};' >> /root/.bashrc"
 
 
 def main(categories, subset_list, work_dir=None,

@@ -123,7 +123,7 @@ def main():
         # print bashrc file to see what was added by setup commands
         # then force remove container to stop and remove it
         if not run_commands([
-            _format_docker_exec_command('cat ~/.bashrc'),
+            _format_docker_exec_command('cat /root/.bashrc'),
             f'docker rm -f {RUN_TAG}',
         ]):
             isOK = False
