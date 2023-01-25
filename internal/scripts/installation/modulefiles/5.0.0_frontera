@@ -1,0 +1,22 @@
+#%Module######################################################################
+##
+##      METplus
+##
+proc ModulesHelp { } {
+  puts stderr "Sets up the paths and environment variables to use the METplus-5.0.0
+     *** For help see the official MET webpage at http://www.dtcenter.org/met/users ***"
+}
+
+module load intel/19.1.1
+module load nco/4.9.7
+module load Rstats/4.0.3
+module load met/11.0.0
+setenv METPLUS_PATH /work2/06612/tg859120/frontera/METplus/METplus-5.0.0
+
+# Path to wgrib
+prepend-path PATH /work2/08291/taosun/HPC-STACK/hpc-module/intel-18.0.2/grib_util/1.2.2/bin
+
+# Path to wgrib2
+prepend-path PATH /work2/08291/taosun/HPC-STACK/hpc-module/intel-18.0.2/wgrib2/2.0.8/bin
+
+prepend-path PATH /work2/06612/tg859120/frontera/METplus/METplus-5.0.0/ush:/work2/06612/tg859120/frontera/miniconda/miniconda3/envs/metplus_v5.0_py3.8/bin
