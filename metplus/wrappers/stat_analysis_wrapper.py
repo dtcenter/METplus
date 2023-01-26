@@ -146,13 +146,6 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
                                c_dict['VERBOSITY'])
         )
 
-        if not c_dict['RUNTIME_FREQ']:
-            c_dict['RUNTIME_FREQ'] = 'RUN_ONCE'
-
-        if c_dict['RUNTIME_FREQ'] != 'RUN_ONCE':
-            self.log_error('Only RUN_ONCE is currently supported for '
-                           'STAT_ANALYSIS_RUNTIME_FREQ')
-
         # skip RuntimeFreq wrapper logic to find files
         c_dict['FIND_FILES'] = False
 
@@ -182,6 +175,18 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         else:
             c_dict['DATE_BEG'] = start_dt
             c_dict['DATE_END'] = end_dt
+
+        if not c_dict['RUNTIME_FREQ']:
+            # if start and end times are not equal and
+            # LOOP_ORDER = times (legacy), set frequency to once per init/valid
+            if (start_dt != end_dt and
+                self.config.has_option('LOOP_ORDER') and
+                self.config.getraw('config', 'LOOP_ORDER') == 'times'):
+                self.logger.warning('LOOP_ORDER has been deprecated. Please '
+                                    'set STAT_ANALYSIS_RUNTIME_FREQ instead')
+                c_dict['RUNTIME_FREQ'] = 'RUN_ONCE_PER_INIT_OR_VALID'
+            else:
+                c_dict['RUNTIME_FREQ'] = 'RUN_ONCE'
 
         # read jobs from STAT_ANALYSIS_JOB<n> or legacy JOB_NAME/ARGS if unset
         c_dict['JOBS'] = self._read_jobs_from_config()
