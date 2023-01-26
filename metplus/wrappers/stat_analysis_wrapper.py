@@ -229,8 +229,8 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         # if both init and valid are set, valid is used
         for init_or_valid in ['init', 'valid']:
             if time_input.get(init_or_valid, '*') != '*':
-                c_dict['DATE_BEG'] = time_input[init_or_valid]
-                c_dict['DATE_END'] = time_input[init_or_valid]
+                self.c_dict['DATE_BEG'] = time_input[init_or_valid]
+                self.c_dict['DATE_END'] = time_input[init_or_valid]
 
         self._run_stat_analysis(time_input)
         return self.all_commands
