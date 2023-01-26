@@ -180,12 +180,14 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
             # if start and end times are not equal and
             # LOOP_ORDER = times (legacy), set frequency to once per init/valid
             if (start_dt != end_dt and
-                self.config.has_option('LOOP_ORDER') and
-                self.config.getraw('config', 'LOOP_ORDER') == 'times'):
+                    self.config.has_option('LOOP_ORDER') and
+                    self.config.getraw('config', 'LOOP_ORDER') == 'times'):
                 self.logger.warning('LOOP_ORDER has been deprecated. Please '
                                     'set STAT_ANALYSIS_RUNTIME_FREQ instead')
                 c_dict['RUNTIME_FREQ'] = 'RUN_ONCE_PER_INIT_OR_VALID'
             else:
+                self.logger.debug('Setting RUNTIME_FREQ to RUN_ONCE. Set '
+                                  'STAT_ANALYSIS_RUNTIME_FREQ to override.')
                 c_dict['RUNTIME_FREQ'] = 'RUN_ONCE'
 
         # read jobs from STAT_ANALYSIS_JOB<n> or legacy JOB_NAME/ARGS if unset
