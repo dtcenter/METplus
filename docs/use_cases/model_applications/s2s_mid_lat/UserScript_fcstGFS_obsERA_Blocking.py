@@ -180,9 +180,9 @@ UserScript_fcstGFS_obsERA_Blocking.py
 #
 # .. note::
 #
-#   * RegridDataPlaneUseCase
-#   * PCPCombineUseCase
-#   * StatAnalysisUseCase
+#   * RegridDataPlaneToolUseCase
+#   * PCPCombineToolUseCase
+#   * StatAnalysisToolUseCase
 #   * S2SAppUseCase
 #   * S2SMidLatAppUseCase
 #   * NetCDFFileUseCase

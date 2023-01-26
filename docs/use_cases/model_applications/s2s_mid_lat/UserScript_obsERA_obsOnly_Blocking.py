@@ -175,8 +175,8 @@ UserScript_obsERA_obsOnly_Blocking.py
 #
 # .. note::
 #
-#   * RegridDataPlaneUseCase
-#   * PCPCombineUseCase
+#   * RegridDataPlaneToolUseCase
+#   * PCPCombineToolUseCase
 #   * S2SAppUseCase
 #   * S2SMidLatAppUseCase
 #   * NetCDFFileUseCase
