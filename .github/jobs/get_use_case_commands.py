@@ -172,7 +172,7 @@ def main(categories, subset_list, work_dir=None,
 
                     config_args.append(config_arg)
 
-                output_base = os.path.join(output_top_dir, use_case.name)
+                output_base = os.path.join(output_top_dir, group_name, use_case.name)
                 use_case_cmd = (f"run_metplus.py"
                                 f" {' '.join(config_args)}"
                                 f" {py_embed_arg}{test_settings_conf}"
