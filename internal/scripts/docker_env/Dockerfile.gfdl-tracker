@@ -1,19 +1,39 @@
-FROM dtcenter/met:10.0.0
+FROM dtcenter/met-base:v2.0_debian10
 
 # Needed to install GFDL Tracker
-ENV LIB_Z_PATH /usr/lib64
-ENV LIB_JASPER_PATH /usr/lib64
-ENV LIB_PNG_PATH /usr/lib64
+ENV LIB_Z_PATH /met/external_libs/lib
+ENV LIB_JASPER_PATH /met/external_libs/lib
+ENV LIB_PNG_PATH /met/external_libs/lib
 
 # Needed to install NetCDF-Fortran
-ENV NCDIR /usr/local
+#ENV NCDIR /usr/local
+ENV NCDIR /met/external_libs
+
+# Install HDF5
+ENV HDF5_VER       1_10_6
+ENV HDF5_URL       https://github.com/HDFGroup/hdf5/archive/refs/tags/hdf5-${HDF5_VER}.zip
+
+RUN mkdir -p /met/external_libs/hdf5 \
+ && cd /met/external_libs/hdf5 \
+ && echo "Downloading HDF5 from ${HDF5_URL}" \
+ && wget ${HDF5_URL} \
+ && unzip hdf5-${HDF5_VER}.zip \
+ && cd hdf5-hdf5-${HDF5_VER} \
+ && LOG_FILE=/met/external_libs/hdf5/hdf5-hdf5-${HDF5_VER}_configure.log \
+ && echo "Configuring hdf5-hdf5-${HDF5_VER} and writing log file ${LOG_FILE}" \
+ && ./configure --prefix=/met/external_libs --enable-cxx --with-default-api-version=v18 > ${LOG_FILE} \
+ && LOG_FILE=/met/external_libs/hdf5/hdf5-hdf5-${HDF5_VER}_make_install.log \
+ && echo "Compiling hdf5-hdf5-${HDF5_VER} and writing log file ${LOG_FILE}" \
+ && make install > ${LOG_FILE} \
+ && cd /met/external_libs \
+ && rm -rf hdf5
 
 # Install NetCDF-C 4.8.0
 RUN cd / \
  && curl https://codeload.github.com/Unidata/netcdf-c/tar.gz/refs/tags/v4.8.0 --output v4.8.0.tar.gz \
  && tar zxf v4.8.0.tar.gz \
  && cd netcdf-c-4.8.0 \
- && ./configure --disable-dap \
+ && ./configure --prefix=/met/external_libs --disable-dap LDFLAGS=-L/met/external_libs/lib CFLAGS=-I/met/external_libs/include \
  && make check install
 
 # Install NetCDF-Fortran 4.5.3
@@ -21,7 +41,8 @@ RUN cd / \
  && wget https://github.com/Unidata/netcdf-fortran/archive/refs/tags/v4.5.3.tar.gz \
  && tar zxf v4.5.3.tar.gz \
  && cd netcdf-fortran-4.5.3 \
- && ./configure \
+ && export LD_LIBRARY_PATH=/met/external_libs/lib:$LD_LIBRARY_PATH \
+ && ./configure --prefix=/met/external_libs LDFLAGS=-L/met/external_libs/lib CFLAGS=-I/met/external_libs/include \
  && make check install
 
 RUN cd / \
@@ -29,7 +50,7 @@ RUN cd / \
  && tar zxf standalone_gfdl-vortextracker_v3.9a_gcc.tar.gz \
  && cd standalone_gfdl-vortextracker_v3.9a_gcc \
  && unset FC && unset CC \
- && ./configure \
+ && ./configure LDFLAGS=-L/met/external_libs/lib CFLAGS=-I/met/external_libs/include \
  && mv configure.trk-docker-gnu configure.trk \
  && ./compile 2>&1 | tee tracker.log
 

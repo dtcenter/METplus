@@ -1,14 +1,20 @@
 # Dockerfile to create conda environments used for use case tests
 
-ARG BASE_ENV=metplus_base.v5
+ARG METPLUS_ENV_VERSION=v5.1
+ARG BASE_ENV=metplus_base.${METPLUS_ENV_VERSION}
 FROM dtcenter/metplus-envs:${BASE_ENV}
+
+ENV PATH=$PATH:/usr/local/conda/bin
 
 ARG ENV_NAME
 WORKDIR /scripts
 COPY scripts/${ENV_NAME}_env.sh .
 
-ARG BASE_ENV=metplus_base.v5
-RUN conda update -y -n base -c defaults conda \
+ARG METPLUS_ENV_VERSION=v5.1
+ARG BASE_ENV=metplus_base.${METPLUS_ENV_VERSION}
+RUN conda update -y -n base -c conda-forge conda \
   && ./${ENV_NAME}_env.sh ${BASE_ENV}
 
-RUN conda list --name ${ENV_NAME}.v5 > /usr/local/envs/${ENV_NAME}.v5/environments.yml
+ARG METPLUS_ENV_VERSION=v5.1
+RUN conda list --name ${ENV_NAME}.${METPLUS_ENV_VERSION} > \
+    /usr/local/conda/envs/${ENV_NAME}.${METPLUS_ENV_VERSION}/environments.yml
