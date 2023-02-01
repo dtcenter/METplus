@@ -160,7 +160,7 @@ docker push dtcenter/metplus-envs:spacetime.v5.1
 ```
 
 
-## metplotpy.v5.1 (from metplus_base.v5.1)
+## metplotpy.v5 (from metplus_base.v5.1)
 
 ### Docker
 
@@ -199,7 +199,7 @@ exit
 ```
 
 
-## weatherregime.v5.1 (from metplotpy.v5.1)
+## weatherregime.v5 (from metplotpy.v5.1)
 
 ### Docker
 
@@ -306,13 +306,13 @@ needed to install the tools. It is not recommended to follow these instructions
 to install the GFDL Tracker using these steps. Please consult the documentation
 for the tool for installation instructions.
 
-## geovista.v5
+## geovista.v5.1
 
 ### Docker
 
 ```
-docker build -t dtcenter/metplus-envs:geovista.v5 --build-arg ENV_NAME=geovista .
-docker push dtcenter/metplus-envs:geovista.v5
+docker build -t dtcenter/metplus-envs:geovista.v5.1 --build-arg ENV_NAME=geovista .
+docker push dtcenter/metplus-envs:geovista.v5.1
 ```
 
 ### Local
@@ -321,11 +321,11 @@ docker push dtcenter/metplus-envs:geovista.v5
 ./scripts/geovista_env.sh
 
 cd /home/met_test/geovista
-/home/met_test/.conda/envs/geovista.v5/bin/pip3 install --no-deps --editable .
+/home/met_test/.conda/envs/geovista.v5.1/bin/pip3 install --no-deps --editable .
 ```
 
 
-## pytest.v5 (from metplus_base.v5)
+## pytest.v5.1 (from metplus_base.v5.1)
 
 This environment is used in automation to run the pytests. It requires all of the
 packages needed to run all of the METplus wrappers, the pytest package and the pytest
@@ -334,12 +334,12 @@ code coverage package.
 ### Docker
 
 ```
-docker build -t dtcenter/metplus-envs:pytest.v5 --build-arg ENV_NAME=pytest .
-docker push dtcenter/metplus-envs:pytest.v5
+docker build -t dtcenter/metplus-envs:pytest.v5.1 --build-arg ENV_NAME=pytest .
+docker push dtcenter/metplus-envs:pytest.v5.1
 ```
 
 
-## diff.v5 (from netcdf4.v5)
+## diff.v5.1 (from netcdf4.v5.1)
 
 This environment is used to run the difference tests to compare output data to output
 generated in previous runs to ensure that changes to the code base do not break or change
@@ -348,6 +348,6 @@ the results.
 ### Docker
 
 ```
-docker build -t dtcenter/metplus-envs:diff.v5 --build-arg BASE_ENV=netcdf4.v5 --build-arg ENV_NAME=diff .
-docker push dtcenter/metplus-envs:diff.v5
+docker build -t dtcenter/metplus-envs:diff.v5.1 --build-arg BASE_ENV=netcdf4.v5.1 --build-arg ENV_NAME=diff .
+docker push dtcenter/metplus-envs:diff.v5.1
 ```

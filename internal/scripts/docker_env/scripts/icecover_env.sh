@@ -1,8 +1,8 @@
 #! /bin/sh
 
 ################################################################################
-# Environment: icecover
-# Last Updated: 2022-07-08 (mccabe@ucar.edu)
+# Environment: icecover.v5.1
+# Last Updated: 2023-01-31 (mccabe@ucar.edu)
 # Notes: Adds Python packages required for ice cover use case
 # Python Packages:
 #   xarray==2022.3.0
@@ -14,10 +14,10 @@
 ################################################################################
 
 # Conda environment to create
-ENV_NAME=icecover.v5
+ENV_NAME=icecover.v5.1
 
 # Conda environment to use as base for new environment
-BASE_ENV=py_embed_base.v5
+BASE_ENV=py_embed_base.v5.1
 
 conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 conda install -y --name ${ENV_NAME} -c conda-forge xarray==2022.3.0
