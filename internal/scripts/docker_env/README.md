@@ -160,7 +160,7 @@ docker push dtcenter/metplus-envs:spacetime.v5.1
 ```
 
 
-## metplotpy.v5 (from metplus_base.v5.1)
+## metplotpy.v5.1 (from metplus_base.v5.1)
 
 ### Docker
 
@@ -173,8 +173,6 @@ docker push dtcenter/metplus-envs:metplotpy.v5.1
 
 ```
 ./scripts/metplotpy_env.sh
-/home/met_test/.conda/envs/metplotpy.v5.1/bin/python3 cartopy_feature_download.py cultural physical
-rm cartopy_feature_download.py
 ```
 
 #### To install METplotpy and METcalcpy packages in environment
@@ -199,7 +197,7 @@ exit
 ```
 
 
-## weatherregime.v5 (from metplotpy.v5.1)
+## weatherregime.v5.1 (from metplotpy.v5.1)
 
 ### Docker
 
@@ -212,8 +210,6 @@ docker push dtcenter/metplus-envs:weatherregime.v5.1
 
 ```
 ./scripts/weatherregime_env.sh
-/home/met_test/.conda/envs/weatherregime.v5.1/bin/python3 cartopy_feature_download.py cultural physical
-rm cartopy_feature_download.py
 ```
 
 #### To install METplotpy and METcalcpy packages in environment
