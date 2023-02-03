@@ -34,7 +34,7 @@ fi
 
 # running unit tests (pytests)
 if [[ "$INPUT_CATEGORIES" == pytests* ]]; then
-  export METPLUS_ENV_TAG="pytest"
+  export METPLUS_ENV_TAG="pytest.v5.1"
   export METPLUS_IMG_TAG=${branch_name}
   echo METPLUS_ENV_TAG=${METPLUS_ENV_TAG}
   echo METPLUS_IMG_TAG=${METPLUS_IMG_TAG}
