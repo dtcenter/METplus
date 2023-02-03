@@ -2,7 +2,7 @@
 
 ################################################################################
 # Environment: gempak.v5.1
-# Last Updated: 2023-01-31 (mccabe@ucar.edu)
+# Last Updated: 2023-02-03 (mccabe@ucar.edu)
 # Notes: Installs Java and obtains GempakToCF.jar to convert GEMPAK
 #   files to NetCDF format.
 # Python Packages: None
@@ -14,7 +14,11 @@
 
 apt update
 apt -y upgrade
-apt install -y openjdk-8-jdk
+apt install -y apt-transport-https ca-certificates wget dirmngr gnupg software-properties-common
+wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add -
+add-apt-repository --yes https://adoptopenjdk.jfrog.io/adoptopenjdk/deb/
+apt update
+apt install -y adoptopenjdk-8-hotspot
 apt install -y curl
 mkdir -p /data/input
 curl -L -o /data/input/GempakToCF.jar -O https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar
