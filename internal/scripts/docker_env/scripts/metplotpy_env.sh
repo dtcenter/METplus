@@ -44,8 +44,9 @@ conda install -y --name ${ENV_NAME} -c conda-forge scikit-image
 conda install -y --name ${ENV_NAME} -c conda-forge pint==0.20.1
 conda install -y --name ${ENV_NAME} -c conda-forge metpy
 
-#apt update
-#apt upgrade
-#apt install -y curl
-#curl https://raw.githubusercontent.com/SciTools/cartopy/master/tools/cartopy_feature_download.py > cartopy_feature_download.py
-#/usr/local/conda/envs/${ENV_NAME}/bin/python3 cartopy_feature_download.py cultural physical
+apt update
+apt upgrade
+apt install -y curl
+rm -f cartopy_feature_download.py
+curl https://raw.githubusercontent.com/SciTools/cartopy/master/tools/cartopy_feature_download.py > cartopy_feature_download.py
+/usr/local/conda/envs/${ENV_NAME}/bin/python3 cartopy_feature_download.py cultural physical
