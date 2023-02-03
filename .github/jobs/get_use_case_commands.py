@@ -64,7 +64,7 @@ def handle_automation_env(host_name, reqs, work_dir):
     setup_env.append(_add_to_bashrc('# BELOW WAS ADDED BY TEST SCRIPT'))
 
     # add conda bin to beginning of PATH
-    python_dir = os.path.join('/usr', 'local', 'envs',
+    python_dir = os.path.join('/usr', 'local', 'conda', 'envs',
                               conda_env_w_ext, 'bin')
     python_path = os.path.join(python_dir, 'python3')
     setup_env.append(_add_to_bashrc(f'export PATH={python_dir}:$PATH'))
@@ -123,9 +123,9 @@ def handle_automation_env(host_name, reqs, work_dir):
     if conda_env not in NOT_PYTHON_ENVS:
         setup_env.extend((
             f'echo Using environment: dtcenter/metplus-envs:{conda_env_w_ext}',
-            f'echo cat /usr/local/envs/{conda_env_w_ext}/environments.yml',
+            f'echo cat /usr/local/conda/envs/{conda_env_w_ext}/environments.yml',
             f'echo ----------------------------------------',
-            f'cat /usr/local/envs/{conda_env_w_ext}/environments.yml',
+            f'cat /usr/local/conda/envs/{conda_env_w_ext}/environments.yml',
             'echo ----------------------------------------',
         ))
 
