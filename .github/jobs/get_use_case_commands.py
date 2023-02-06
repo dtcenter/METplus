@@ -106,12 +106,6 @@ def handle_automation_env(host_name, reqs, work_dir):
             'cd -',
         ))
 
-    # if gempak is in requirements list, add JRE bin to path for java
-    if 'gempak' in str(reqs).lower():
-        setup_env.append(_add_to_bashrc(
-            'export PATH=$PATH:/usr/lib/jvm/adoptopenjdk-8-hotspot-amd64/bin'
-        ))
-
     # if metplus is in requirements list,
     # add top of METplus repo to PYTHONPATH so metplus can be imported
     if 'metplus' in str(reqs).lower():
