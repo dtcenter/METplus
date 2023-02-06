@@ -165,7 +165,7 @@ docker push dtcenter/metplus-envs:spacetime.v5.1
 ### Docker
 
 ```
-docker build -t dtcenter/metplus-envs:metplotpy.v5.1 --build-arg ENV_NAME=metplotpy .
+docker build -t dtcenter/metplus-envs:metplotpy.v5.1 --build-arg ENV_NAME=metplotpy -f Dockerfile.cartopy .
 docker push dtcenter/metplus-envs:metplotpy.v5.1
 ```
 
@@ -202,7 +202,7 @@ exit
 ### Docker
 
 ```
-docker build -t dtcenter/metplus-envs:weatherregime.v5.1 --build-arg BASE_ENV=metplotpy.v5.1 --build-arg ENV_NAME=weatherregime .
+docker build -t dtcenter/metplus-envs:weatherregime.v5.1 --build-arg BASE_ENV=metplotpy.v5.1 --build-arg ENV_NAME=weatherregime -f Dockerfile.cartopy .
 docker push dtcenter/metplus-envs:weatherregime.v5.1
 ```
 
@@ -239,7 +239,7 @@ exit
 ### Docker
 
 ```
-docker build -t dtcenter/metplus-envs:cycloneplotter.v5.1 --build-arg ENV_NAME=cycloneplotter .
+docker build -t dtcenter/metplus-envs:cycloneplotter.v5.1 --build-arg ENV_NAME=cycloneplotter -f Dockerfile.cartopy .
 docker push dtcenter/metplus-envs:cycloneplotter.v5.1
 ```
 

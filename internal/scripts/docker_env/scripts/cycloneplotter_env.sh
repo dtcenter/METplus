@@ -23,9 +23,3 @@ conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 conda install -y --name ${ENV_NAME} -c conda-forge cartopy==0.20.3
 conda install -y --name ${ENV_NAME} -c conda-forge matplotlib==3.5.2
 conda install -y --name ${ENV_NAME} -c conda-forge pandas==1.4.3
-
-apt update
-apt upgrade
-apt install -y curl
-curl https://raw.githubusercontent.com/SciTools/cartopy/master/tools/cartopy_feature_download.py > cartopy_feature_download.py
-/usr/local/conda/envs/${ENV_NAME}/bin/python3 cartopy_feature_download.py cultural physical

@@ -25,10 +25,3 @@ conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 conda install -y --name ${ENV_NAME} -c conda-forge scikit-learn==1.1.1
 conda install -y --name ${ENV_NAME} -c conda-forge eofs==1.4.0
 conda install -y --name ${ENV_NAME} -c conda-forge cmocean==2.0
-
-apt update
-apt upgrade
-apt install -y curl
-rm -f cartopy_feature_download.py
-curl https://raw.githubusercontent.com/SciTools/cartopy/master/tools/cartopy_feature_download.py > cartopy_feature_download.py
-/usr/local/conda/envs/${ENV_NAME}/bin/python3 cartopy_feature_download.py cultural physical
