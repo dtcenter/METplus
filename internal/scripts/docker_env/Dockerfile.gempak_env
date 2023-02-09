@@ -1,11 +1,13 @@
 # Dockerfile to create conda environments used for use case tests
 
+ARG METPLUS_ENV_VERSION
 ARG BASE_ENV=metplus_base
-FROM dtcenter/metplus-envs:${BASE_ENV}
+FROM dtcenter/metplus-envs:${BASE_ENV}.${METPLUS_ENV_VERSION}
 
 ARG ENV_NAME
 WORKDIR /scripts
 COPY scripts/${ENV_NAME}_env.sh .
 
-ARG BASE_ENV=metplus_base
-RUN ./${ENV_NAME}_env.sh ${BASE_ENV}
+ARG METPLUS_ENV_VERSION
+ARG ENV_NAME
+RUN ./${ENV_NAME}_env.sh ${METPLUS_ENV_VERSION}

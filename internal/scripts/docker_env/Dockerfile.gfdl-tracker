@@ -1,19 +1,72 @@
-FROM dtcenter/met:10.0.0
+ARG DEBIAN_VERSION=10
+FROM debian:${DEBIAN_VERSION}-slim
+MAINTAINER George McCabe <mccabe@ucar.edu>
+
+#
+# Define the compilers.
+#
+ENV CC  /usr/bin/gcc
+ENV CXX /usr/bin/g++
+ENV FC  /usr/bin/gfortran
+ENV F77 /usr/bin/gfortran
 
 # Needed to install GFDL Tracker
-ENV LIB_Z_PATH /usr/lib64
-ENV LIB_JASPER_PATH /usr/lib64
-ENV LIB_PNG_PATH /usr/lib64
+ENV LIB_Z_PATH /usr/local/lib
+ENV LIB_JASPER_PATH /usr/local/lib
+ENV LIB_PNG_PATH /usr/local/lib
 
 # Needed to install NetCDF-Fortran
 ENV NCDIR /usr/local
+
+# Install required system tools
+RUN apt update && apt -y upgrade \
+  && apt install -y build-essential gfortran wget unzip curl csh file m4
+
+# install jasper, png, and zlib from MET tar_files
+RUN cd / && wget https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.tgz \
+  && tar -zxf tar_files.tgz \
+  && unzip tar_files/jasper-1.900.1.zip \
+  && export CPPFLAGS="-I$/usr/local/include" \
+  && cd jasper-1.900.1 \
+  && ./configure > configure.log 2>&1 \
+  && make > make.log 2>&1 \
+  && make install > make_install.log 2>&1 \
+  && cd / \
+  && tar -xzf tar_files/zlib*.tar.gz \
+  && cd zlib* \
+  && ./configure > configure.log 2>&1 \
+  && make > make.log 2>&1 \
+  && make install > make_install.log 2>&1 \
+  && cd / \
+  && tar -xzf tar_files/libpng*.tar.gz \
+  && cd libpng* \
+  && ./configure > configure.log 2>&1 \
+  && make > make.log 2>&1 \
+  && make install > make_install.log 2>&1
+
+# Install HDF5
+ENV HDF5_VER       1_10_6
+ENV HDF5_URL       https://github.com/HDFGroup/hdf5/archive/refs/tags/hdf5-${HDF5_VER}.zip
+
+RUN mkdir -p /usr/local/hdf5 \
+ && cd /usr/local/hdf5 \
+ && echo "Downloading HDF5 from ${HDF5_URL}" \
+ && wget ${HDF5_URL} \
+ && unzip hdf5-${HDF5_VER}.zip \
+ && cd hdf5-hdf5-${HDF5_VER} \
+ && LOG_FILE=/usr/local/hdf5/hdf5-hdf5-${HDF5_VER}_configure.log \
+ && echo "Configuring hdf5-hdf5-${HDF5_VER} and writing log file ${LOG_FILE}" \
+ && ./configure --prefix=/usr/local --enable-cxx --enable-fortran --with-default-api-version=v18 > ${LOG_FILE} \
+ && LOG_FILE=/usr/local/hdf5/hdf5-hdf5-${HDF5_VER}_make_install.log \
+ && echo "Compiling hdf5-hdf5-${HDF5_VER} and writing log file ${LOG_FILE}" \
+ && make install > ${LOG_FILE}
 
 # Install NetCDF-C 4.8.0
 RUN cd / \
  && curl https://codeload.github.com/Unidata/netcdf-c/tar.gz/refs/tags/v4.8.0 --output v4.8.0.tar.gz \
  && tar zxf v4.8.0.tar.gz \
  && cd netcdf-c-4.8.0 \
- && ./configure --disable-dap \
+ && ./configure LDFLAGS="-L/usr/local/lib -Wl,-rpath,/usr/local/lib" CPPFLAGS=-I/usr/local/include --disable-dap \
  && make check install
 
 # Install NetCDF-Fortran 4.5.3
@@ -21,7 +74,7 @@ RUN cd / \
  && wget https://github.com/Unidata/netcdf-fortran/archive/refs/tags/v4.5.3.tar.gz \
  && tar zxf v4.5.3.tar.gz \
  && cd netcdf-fortran-4.5.3 \
- && ./configure \
+ && ./configure LDFLAGS="-L/usr/local/lib -Wl,-rpath,/usr/local/lib" CPPFLAGS=-I/usr/local/include \
  && make check install
 
 RUN cd / \
@@ -30,6 +83,5 @@ RUN cd / \
  && cd standalone_gfdl-vortextracker_v3.9a_gcc \
  && unset FC && unset CC \
  && ./configure \
- && mv configure.trk-docker-gnu configure.trk \
- && ./compile 2>&1 | tee tracker.log
-
+ && cp configure.trk-docker-gnu configure.trk \
+ && ./compile > tracker.log 2>&1
