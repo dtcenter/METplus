@@ -14,8 +14,11 @@
 # Other Content: None
 ################################################################################
 
+# version of METplus when the environment was updated, e.g. v5.1
+METPLUS_VERSION=$1
+
 # Conda environment to create
-ENV_NAME=cfgrib.v5.1
+ENV_NAME=cfgrib.${METPLUS_VERSION}
 
 conda create -y --name ${ENV_NAME} -c conda-forge python=3.10.4
 conda install -y --name ${ENV_NAME} -c conda-forge metpy==1.4.0

@@ -14,8 +14,11 @@
 # Other Content: None
 ################################################################################
 
+# version of METplus when the environment was updated, e.g. v5.1
+METPLUS_VERSION=$1
+
 # Conda environment to create
-ENV_NAME=geovista.v5.1
+ENV_NAME=geovista.${METPLUS_VERSION}
 
 # install libGL to prevent ImportError of libGL dynamic library in geovista
 apt install -y libgl1-mesa-glx

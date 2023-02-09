@@ -2,7 +2,7 @@
 # use cases that use python embedding but need additional
 # packages
 
-ARG METPLUS_ENV_VERSION=v5.1
+ARG METPLUS_ENV_VERSION
 FROM dtcenter/metplus-envs:conda.${METPLUS_ENV_VERSION}
 
 ENV PATH=$PATH:/usr/local/conda/bin
@@ -10,8 +10,9 @@ ENV PATH=$PATH:/usr/local/conda/bin
 WORKDIR /scripts
 COPY scripts/py_embed_base_env.sh .
 
+ARG METPLUS_ENV_VERSION
 RUN conda update -y -n base -c conda-forge conda \
- && ./py_embed_base_env.sh
+ && ./py_embed_base_env.sh ${METPLUS_ENV_VERSION}
 
-ARG METPLUS_ENV_VERSION=v5.1
+ARG METPLUS_ENV_VERSION
 RUN conda list --name py_embed_base.${METPLUS_ENV_VERSION} > /usr/local/conda/envs/py_embed_base.${METPLUS_ENV_VERSION}/environments.yml
