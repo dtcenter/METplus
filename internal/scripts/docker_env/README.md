@@ -42,7 +42,9 @@ This environment includes all python embedding requirements (xarray and netcdf).
 
 ```
 export METPLUS_ENV_VERSION=v5.1
-docker build -t dtcenter/metplus-envs:py_embed_base.${METPLUS_ENV_VERSION} -f Dockerfile.py_embed_base .
+docker build -t dtcenter/metplus-envs:py_embed_base.${METPLUS_ENV_VERSION} \
+    --build-arg METPLUS_ENV_VERSION \
+    -f Dockerfile.py_embed_base .
 docker push dtcenter/metplus-envs:py_embed_base.${METPLUS_ENV_VERSION}
 ```
 
