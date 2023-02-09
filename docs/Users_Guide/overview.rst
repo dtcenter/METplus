@@ -208,7 +208,7 @@ METplus Components Python Requirements
       (h5py)
       <../generated/met_tool_wrapper/PCPCombine/PCPCombine_python_embedding.html>`_
   * - imutils
-    - >=0.5.3
+    - >=0.5.4
     - METplotpy :raw-html:`<br />`
     - https://pypi.org/project/imutils/
     - A series of convenience :raw-html:`<br />`
@@ -223,7 +223,7 @@ METplus Components Python Requirements
       and much more easier
     -
   * - imageio
-    -
+    - >=2.19.3
     - METcalcpy, :raw-html:`<br />`
       METplotpy
     - https://pypi.org/project/imageio/
@@ -236,7 +236,7 @@ METplus Components Python Requirements
       and scientific formats
     -
   * - lxml
-    -
+    - >=4.9.1
     - METcalcpy, :raw-html:`<br />`
       METplotpy, :raw-html:`<br />`
       METdataio
@@ -246,7 +246,7 @@ METplus Components Python Requirements
       libxml2 and libxslt
     -         
   * - matplotlib
-    - >=3.3.4
+    - >=3.5.2
     - METplus wrappers, :raw-html:`<br />`
       METcalcpy, :raw-html:`<br />`
       METplotpy
@@ -349,7 +349,7 @@ METplus Components Python Requirements
       (metplotpy)
       <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_
   * - metpy
-    - 
+    - >=1.3.1
     - METplus wrappers
     - https://www.unidata.ucar.edu/software/metpy/
     - a collection of tools :raw-html:`<br />`
@@ -371,7 +371,7 @@ METplus Components Python Requirements
       \**REQUIRES Python 3.7 
     - 
   * - netCDF4
-    - >=1.5.4
+    - >=1.6.0
     - METplus wrappers, :raw-html:`<br />`
       METcalcpy, :raw-html:`<br />`
       METplotpy
@@ -380,7 +380,7 @@ METplus Components Python Requirements
       the netCDF C library
     - For using MET Python embedding functionality in use cases
   * - numpy
-    - >=1.19.2
+    - >=1.23.5
     - METplus wrappers, :raw-html:`<br />`
       METcalcpy, :raw-html:`<br />`
       METplotpy, :raw-html:`<br />`
@@ -394,7 +394,7 @@ METplus Components Python Requirements
       Fourier transforms, and more.
     - For using MET Python embedding functionality in use cases
   * - pandas
-    - >=1.0.5, <=1.2.3 (METdataio)
+    - >=1.5.1
     - METplus wrappers, :raw-html:`<br />`
       METcalcpy, :raw-html:`<br />`
       METplotpy, :raw-html:`<br />`
@@ -409,7 +409,7 @@ METplus Components Python Requirements
       language
     - For using MET Python embedding functionality in use cases
   * - pint
-    - >=0.18
+    - >=0.19.2
     - METcalcpy
     - https://github.com/hgrecco/pint
     - Python package to define, :raw-html:`<br />`
@@ -417,7 +417,7 @@ METplus Components Python Requirements
       physical quantities
     -
   * - plotly
-    - >=4.9.0
+    - >=5.9.0
     - METcalcpy, :raw-html:`<br />`
       METplotpy
     - https://github.com/plotly/plotly.py
@@ -458,7 +458,7 @@ METplus Components Python Requirements
       (pylab)
       <../generated/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.html>`_
   * - pymysql
-    - 
+    - >=1.0.2
     - METcalcpy, :raw-html:`<br />`
       METplotpy, :raw-html:`<br />`
       METdataio
@@ -506,7 +506,7 @@ METplus Components Python Requirements
       (pyresample)
       <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.html>`_
   * - pytest
-    - >=5.2.1
+    - >=7.2.0
     - METcalcpy, :raw-html:`<br />`
       METplotpy, :raw-html:`<br />`
       METdataio
@@ -528,7 +528,7 @@ METplus Components Python Requirements
       libraries like Plotly
     - 
   * - pyyaml
-    - >=5.3.1
+    - >=6.0
     - METcalcpy, :raw-html:`<br />`
       METplotpy, :raw-html:`<br />`
       METdataio
@@ -538,7 +538,7 @@ METplus Components Python Requirements
       programming language
     - 
   * - scikit-image
-    - >=0.16.2
+    - >=0.19.3
     - METcalcpy, :raw-html:`<br />`
       METplotpy
     - https://scikit-image.org
@@ -572,7 +572,7 @@ METplus Components Python Requirements
       (scikit-learn)
       <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.html>`_
   * - scipy
-    - >=1.5.1
+    - >=1.8.1
     - METplus wrappers, :raw-html:`<br />`
       METcalcpy, :raw-html:`<br />`
       METplotpy
@@ -635,7 +635,7 @@ METplus Components Python Requirements
       (sklearn)
       <../generated/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.html>`_
   * - xarray
-    - >=0.17.0
+    - >=2022.3.0
     - METplus wrappers, :raw-html:`<br />`
       METcalcpy, :raw-html:`<br />`
       METplotpy
