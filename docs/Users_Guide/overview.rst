@@ -371,7 +371,7 @@ METplus Components Python Requirements
       \**REQUIRES Python 3.7 
     - 
   * - netCDF4
-    - >=1.6.0
+    - >=1.6.2
     - METplus wrappers, :raw-html:`<br />`
       METcalcpy, :raw-html:`<br />`
       METplotpy
