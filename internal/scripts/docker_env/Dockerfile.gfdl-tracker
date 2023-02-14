@@ -82,6 +82,6 @@ RUN cd / \
  && tar zxf standalone_gfdl-vortextracker_v3.9a_gcc.tar.gz \
  && cd standalone_gfdl-vortextracker_v3.9a_gcc \
  && unset FC && unset CC \
- && ./configure \
+ && ./configure LDFLAGS="-L/usr/local/lib -Wl,-rpath,/usr/local/lib -L/usr/lib/x86_64-linux-gnu -Wl,-rpath,/usr/lib/x86_64-linux-gnu" \
  && cp configure.trk-docker-gnu configure.trk \
  && ./compile > tracker.log 2>&1
