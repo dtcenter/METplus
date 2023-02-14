@@ -34,7 +34,7 @@ BASE_ENV=metplus_base.${METPLUS_VERSION}
 conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 
 conda install -y --name ${ENV_NAME} -c conda-forge matplotlib==3.6.3
-conda install -y --name ${ENV_NAME} -c conda-forge scipy==1.10.0
+conda install -y --name ${ENV_NAME} -c conda-forge scipy==1.9.3
 conda install -y --name ${ENV_NAME} -c conda-forge plotly==5.13.0
 conda install -y --name ${ENV_NAME} -c conda-forge xarray==2023.1.0
 conda install -y --name ${ENV_NAME} -c conda-forge netcdf4==1.6.2
@@ -46,3 +46,4 @@ conda install -y --name ${ENV_NAME} -c conda-forge imutils==0.5.4
 conda install -y --name ${ENV_NAME} -c conda-forge scikit-image
 conda install -y --name ${ENV_NAME} -c conda-forge pint==0.20.1
 conda install -y --name ${ENV_NAME} -c conda-forge metpy
+conda install -y --name ${ENV_NAME} -c conda-forge cartopy==0.21.1
