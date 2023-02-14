@@ -6,6 +6,8 @@ FROM dtcenter/metplus-envs:${METPLUS_ENV_TAG} as env
 ARG METPLUS_IMG_TAG=develop
 FROM dtcenter/metplus-dev:${METPLUS_IMG_TAG}
 
+RUN echo "export LD_LIBRARY_PATH=\${LD_LIBRARY_PATH}:/usr/lib/x86_64-linux-gnu:/lib64;" >> /root/.bashrc
+
 COPY --from=env /lib64/libm* /lib64/
 COPY --from=env /usr/lib/x86_64-linux-gnu/libg* /usr/lib/x86_64-linux-gnu/
 COPY --from=env /usr/local/lib/libhdf5* /usr/local/lib/
