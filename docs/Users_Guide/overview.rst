@@ -662,14 +662,6 @@ METplus Components Python Requirements
       tripolar coordinate file
       (xesmf)
       <../generated/model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar.html>`_
-  * - yaml
-    - 
-    - METcalcpy, :raw-html:`<br />`
-      METplotpy
-    - https://pypi.org/project/PyYAML/
-    - to load, read, and write :raw-html:`<br />`
-      YAML files with PyYAML
-    - 
   
     
 Future development plans
