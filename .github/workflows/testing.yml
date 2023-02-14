@@ -85,8 +85,7 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           EXTERNAL_TRIGGER: ${{ needs.job_control.outputs.external_trigger }}
-          #MET_FORCE_TAG: 10.1.0 
-          MET_FORCE_TAG: feature_test_compile
+          #MET_FORCE_TAG: 11.0.0
 
   update_data_volumes:
     name: Docker Setup - Update Data Volumes
