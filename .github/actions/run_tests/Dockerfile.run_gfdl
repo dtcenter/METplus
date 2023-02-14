@@ -6,7 +6,7 @@ FROM dtcenter/metplus-envs:${METPLUS_ENV_TAG} as env
 ARG METPLUS_IMG_TAG=develop
 FROM dtcenter/metplus-dev:${METPLUS_IMG_TAG}
 
-COPY --from=env /usr/local/lib/libgf5* /usr/local/lib/
+COPY --from=env /usr/local/lib/libgf* /usr/local/lib/
 COPY --from=env /usr/local/lib/libhdf5* /usr/local/lib/
 COPY --from=env /usr/local/lib/libnetcdf.so.19* /usr/local/lib/
 COPY --from=env /usr/local/lib/libnetcdff* /usr/local/lib/
