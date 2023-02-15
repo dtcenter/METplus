@@ -189,9 +189,9 @@ UserScript_fcstGFS_obsERA_WeatherRegime.py
 #
 # .. note::
 #
-#   * RegridDataPlaneUseCase
-#   * PCPCombineUseCase
-#   * StatAnalysisUseCase
+#   * RegridDataPlaneToolUseCase
+#   * PCPCombineToolUseCase
+#   * StatAnalysisToolUseCase
 #   * S2SAppUseCase
 #   * S2SMidLatAppUseCase
 #   * NetCDFFileUseCase
