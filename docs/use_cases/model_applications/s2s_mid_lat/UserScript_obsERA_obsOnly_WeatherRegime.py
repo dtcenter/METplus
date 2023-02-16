@@ -188,9 +188,8 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 #
 # .. note::
 #
-#   * RegridDataPlaneUseCase
-#   * PCPCombineUseCase
-#   * StatAnalysisUseCase
+#   * RegridDataPlaneToolUseCase
+#   * PCPCombineToolUseCase
 #   * S2SAppUseCase
 #   * S2SMidLatAppUseCase
 #   * NetCDFFileUseCase
