@@ -84,4 +84,8 @@ RUN cd / \
  && unset FC && unset CC \
  && ./configure \
  && cp configure.trk-docker-gnu configure.trk \
+ && echo "\nLDFLAGS=-L/usr/local/lib -Wl,-rpath,/usr/local/lib -L/usr/lib/x86_64-linux-gnu -Wl,-rpath,/usr/lib/x86_64-linux-gnu" >> configure.trk \
  && ./compile > tracker.log 2>&1
+
+# check that all exes were created properly
+RUN [ $(ls /standalone_gfdl-vortextracker_v3.9a_gcc/trk_exec -1 | wc -l) -ge 5 ]

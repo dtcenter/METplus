@@ -10,12 +10,11 @@ import shutil
 
 def main(output_data_dir, error_logs_dir):
     """! Copy log output to error log directory if any use case failed """
-    for use_case_dir in os.listdir(output_data_dir):
-        log_dir = os.path.join(output_data_dir,
-                               use_case_dir,
-                               'logs')
-        if not os.path.isdir(log_dir):
+    for log_dir, _, log_files in os.walk(output_data_dir):
+        # skip non logs directories
+        if not log_dir.endswith('/logs'):
             continue
+        use_case_dir = log_dir.replace(f'{output_data_dir}/', '')[0:-5]
 
         # check if there are errors in the metplus.log file and
         # only copy directory if there are any errors
@@ -28,9 +27,7 @@ def main(output_data_dir, error_logs_dir):
         if not found_errors:
             continue
 
-        output_dir = os.path.join(error_logs_dir,
-                                  use_case_dir)
-        log_files = os.listdir(log_dir)
+        output_dir = os.path.join(error_logs_dir, use_case_dir)
         for log_file in log_files:
             log_path = os.path.join(log_dir, log_file)
             output_path = os.path.join(output_dir, log_file)

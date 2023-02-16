@@ -16,7 +16,7 @@ DOCKERHUB_METPLUS_DATA = 'dtcenter/metplus-data'
 DOCKERHUB_METPLUS_DATA_DEV = 'dtcenter/metplus-data-dev'
 
 # extension to add to conda environments
-VERSION_EXT = '.v5'
+VERSION_EXT = '.v5.1'
 
 
 def get_data_repo(branch_name):
