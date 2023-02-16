@@ -444,10 +444,16 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
          {'METPLUS_INTERP_DICT': 'interp = {shape = CIRCLE;}'}),
 
         ({'ENSEMBLE_STAT_INTERP_TYPE_METHOD': 'BILIN', },
-         {'METPLUS_INTERP_DICT': 'interp = {type = {method = BILIN;}}'}),
+         {'METPLUS_INTERP_DICT': 'interp = {type = {method = [BILIN];}}'}),
 
         ({'ENSEMBLE_STAT_INTERP_TYPE_WIDTH': '2', },
-         {'METPLUS_INTERP_DICT': 'interp = {type = {width = 2;}}'}),
+         {'METPLUS_INTERP_DICT': 'interp = {type = {width = [2];}}'}),
+        # multiple interp type methods
+        ({'ENSEMBLE_STAT_INTERP_TYPE_METHOD': 'BILIN, NEAREST', },
+         {'METPLUS_INTERP_DICT': 'interp = {type = {method = [BILIN, NEAREST];}}'}),
+        # multiple interp type methods
+        ({'ENSEMBLE_STAT_INTERP_TYPE_WIDTH': '2,3', },
+         {'METPLUS_INTERP_DICT': 'interp = {type = {width = [2, 3];}}'}),
 
         ({
              'ENSEMBLE_STAT_INTERP_VLD_THRESH': '0.8',
@@ -457,7 +463,7 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
          },
          {'METPLUS_INTERP_DICT': ('interp = {vld_thresh = 0.8;'
                                   'shape = CIRCLE;'
-                                  'type = {method = BILIN;width = 2;}}')}),
+                                  'type = {method = [BILIN];width = [2];}}')}),
 
         ({'ENSEMBLE_STAT_CLIMO_MEAN_FILE_NAME': '/some/climo_mean/file.txt', },
          {'METPLUS_CLIMO_MEAN_DICT': ('climo_mean = {file_name = '
