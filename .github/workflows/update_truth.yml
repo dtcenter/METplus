@@ -30,6 +30,7 @@ jobs:
         name: Checkout repository
         with:
           fetch-depth: 0
+          token: ${{ secrets.METPLUS_BOT_TOKEN }}
       - name: Resolve conflicts between branch and branch-ref
         run: |
           branch_name=${{ env.branch_name }}
