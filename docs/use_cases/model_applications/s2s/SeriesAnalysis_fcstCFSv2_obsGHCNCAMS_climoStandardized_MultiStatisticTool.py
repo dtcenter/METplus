@@ -154,6 +154,7 @@ model_applications/s2s/SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_Mu
 #   * ProbabilityVerificationUseCase
 #   * S2SAppUseCase
 #   * NETCDFFileUseCase
+#   * ClimatologyUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

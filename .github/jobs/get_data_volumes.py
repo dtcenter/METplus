@@ -12,6 +12,8 @@ import shlex
 
 from docker_utils import docker_get_volumes_last_updated, get_branch_name
 from docker_utils import get_data_repo, DOCKERHUB_METPLUS_DATA_DEV
+from docker_utils import run_commands
+
 
 def main(args):
     # get METplus version
@@ -94,9 +96,7 @@ def main(args):
         print(f"CREATING DATA VOLUME FROM: {full_volume_name}")
         cmd = (f'docker create --name {model_app_name} '
                f'{full_volume_name}')
-        ret = subprocess.run(shlex.split(cmd))
-
-        if ret.returncode:
+        if not run_commands(cmd):
             continue
 
         # add name to volumes from list to pass to docker build

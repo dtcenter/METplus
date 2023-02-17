@@ -1,0 +1,59 @@
+name: Update Truth Data
+
+on:
+  workflow_dispatch:
+    inputs:
+      pull_requests:
+        description: 'Pull request(s) that warranted update, e.g. "#123" or "#123 and dtcenter/MET#123"'
+        required: true
+      change_summary:
+        description: 'Summary of changes to truth data'
+        required: true
+
+jobs:
+  update_truth:
+    name: "Update or create truth reference branch"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if branch is develop or main_vX.Y
+        run: |
+          branch_name=${GITHUB_REF#refs/heads/}
+          echo "branch_name=$branch_name" >> $GITHUB_ENV
+          if [[ $branch_name == "develop" ]] || \
+             [[ $branch_name =~ ^main_v[0-9]+\.[0-9]+$ ]]; then
+            echo Branch is valid - $branch_name
+            exit 0
+          fi
+          echo ERROR: Branch is $branch_name - must be develop or match main_vX.Y
+          exit 1
+      - uses: actions/checkout@v3
+        name: Checkout repository
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.METPLUS_BOT_TOKEN }}
+      - name: Resolve conflicts between branch and branch-ref
+        run: |
+          branch_name=${{ env.branch_name }}
+          cd ${GITHUB_WORKSPACE}
+          if [[ -z "$(git ls-remote --heads origin ${branch_name}-ref)" ]]; then
+            echo ERROR: ${branch_name}-ref does not exist
+            exit 1
+          fi
+          
+          echo ${branch_name}-ref does exist -- update it
+          git config --global user.name "metplus-bot"
+          git config --global user.email "97135045+metplus-bot@users.noreply.github.com"
+          echo git checkout ${branch_name}
+          git checkout ${branch_name}
+          echo git merge -s ours origin/${branch_name}-ref
+          git merge -s ours origin/${branch_name}-ref
+          echo git push origin ${branch_name}
+          git push origin ${branch_name}
+
+      - name: Create Pull Request
+        run: gh pr create --base $BASE --body "$BODY" --title "$TITLE"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BASE: ${{ env.branch_name }}-ref
+          BODY: ${{ github.event.inputs.change_summary }}<br/>Created by @${{ github.actor}}
+          TITLE: Update ${{ env.branch_name }}-ref after ${{ github.event.inputs.pull_requests }}

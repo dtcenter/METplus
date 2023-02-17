@@ -131,6 +131,7 @@ _Sfc_MultiField.conf
 #   * MediumRangeAppUseCase
 #   * GRIBFileUseCase
 #   * NOAAEMCOrgUseCase
+#   * ClimatologyUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

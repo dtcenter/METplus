@@ -116,7 +116,8 @@ METplus Components Python Requirements
     -
     - METplus wrappers, :raw-html:`<br />`
       METcalcpy, :raw-html:`<br />`
-      METplotpy
+      METplotpy,:raw-html:`<br />`
+      METdataio
     -
     -
     -
@@ -207,9 +208,8 @@ METplus Components Python Requirements
       (h5py)
       <../generated/met_tool_wrapper/PCPCombine/PCPCombine_python_embedding.html>`_
   * - imutils
-    - 0.5.3
-    - METcalcpy, :raw-html:`<br />`
-      METplotpy
+    - >=0.5.3
+    - METplotpy :raw-html:`<br />`
     - https://pypi.org/project/imutils/
     - A series of convenience :raw-html:`<br />`
       functions to make basic :raw-html:`<br />`
@@ -238,7 +238,8 @@ METplus Components Python Requirements
   * - lxml
     -
     - METcalcpy, :raw-html:`<br />`
-      METplotpy
+      METplotpy, :raw-html:`<br />`
+      METdataio
     - https://pypi.org/project/lxml/
     - a Pythonic binding for :raw-html:`<br />`
       the C libraries :raw-html:`<br />`
@@ -382,7 +383,8 @@ METplus Components Python Requirements
     - >=1.19.2
     - METplus wrappers, :raw-html:`<br />`
       METcalcpy, :raw-html:`<br />`
-      METplotpy
+      METplotpy, :raw-html:`<br />`
+      METdataio
     - https://numpy.org/
     - NumPy offers :raw-html:`<br />`
       comprehensive :raw-html:`<br />`
@@ -392,10 +394,11 @@ METplus Components Python Requirements
       Fourier transforms, and more.
     - For using MET Python embedding functionality in use cases
   * - pandas
-    - >=1.0.5
+    - >=1.0.5, <=1.2.3 (METdataio)
     - METplus wrappers, :raw-html:`<br />`
       METcalcpy, :raw-html:`<br />`
-      METplotpy
+      METplotpy, :raw-html:`<br />`
+      METdataio 
     - https://pypi.org/project/pandas
     - a fast, powerful, :raw-html:`<br />`
       flexible and easy to use :raw-html:`<br />`
@@ -420,15 +423,6 @@ METplus Components Python Requirements
     - https://github.com/plotly/plotly.py
     - makes interactive, :raw-html:`<br />`
       publication-quality graphs
-    - 
-  * - psutil
-    - 5.7.2
-    - METcalcpy, :raw-html:`<br />`
-      METplotpy
-    - https://pypi.org/project/psutil/
-    - Cross-platform lib for :raw-html:`<br />`
-      process and system :raw-html:`<br />`
-      monitoring in Python
     - 
   * - pygrib
     - 
@@ -466,7 +460,8 @@ METplus Components Python Requirements
   * - pymysql
     - 
     - METcalcpy, :raw-html:`<br />`
-      METplotpy
+      METplotpy, :raw-html:`<br />`
+      METdataio
     - https://pypi.org/project/psutil/
     - a pure-Python MySQL :raw-html:`<br />`
       client library, :raw-html:`<br />`
@@ -513,7 +508,8 @@ METplus Components Python Requirements
   * - pytest
     - >=5.2.1
     - METcalcpy, :raw-html:`<br />`
-      METplotpy
+      METplotpy, :raw-html:`<br />`
+      METdataio
     - https://github.com/pytest-dev/pytest/archive/5.2.1.tar.gz
     - a mature full-featured :raw-html:`<br />`
       Python testing tool that :raw-html:`<br />`
@@ -534,7 +530,8 @@ METplus Components Python Requirements
   * - pyyaml
     - >=5.3.1
     - METcalcpy, :raw-html:`<br />`
-      METplotpy
+      METplotpy, :raw-html:`<br />`
+      METdataio
     - https://github.com/yaml/pyyaml
     - a full-featured YAML :raw-html:`<br />`
       framework for the Python :raw-html:`<br />`
@@ -637,20 +634,6 @@ METplus Components Python Requirements
       GFS and ERA RegridDataPlane, PcpCombine, and WeatherRegime python code
       (sklearn)
       <../generated/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.html>`_
-  * - statsmodels
-    - >=0.11.1
-    - METcalcpy, :raw-html:`<br />`
-      METplotpy
-    - https://www.statsmodels.org/
-    - provides classes and  :raw-html:`<br />`
-      functions for the :raw-html:`<br />`
-      estimation of many :raw-html:`<br />`
-      different statistical :raw-html:`<br />`
-      models, as well as for :raw-html:`<br />`
-      conducting statistical :raw-html:`<br />`
-      tests, and statistical :raw-html:`<br />`
-      data exploration
-    - 
   * - xarray
     - >=0.17.0
     - METplus wrappers, :raw-html:`<br />`

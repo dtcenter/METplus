@@ -148,6 +148,7 @@ _climoNCEP_MultiField.conf
 #   * GRIBFileUseCase
 #   * NOAAEMCOrgUseCase
 #   * RegriddinginTool
+#   * ClimatologyUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

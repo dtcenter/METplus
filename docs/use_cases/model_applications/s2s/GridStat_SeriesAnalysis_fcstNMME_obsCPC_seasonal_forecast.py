@@ -279,6 +279,7 @@ _seasonal_forecast.conf
 #   * LoopByMonthFeatureUseCase
 #   * NCAROrgUseCase
 #   * RuntimeFreqUseCase
+#   * ClimatologyUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

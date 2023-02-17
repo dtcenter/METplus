@@ -70,7 +70,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/Ascii2NcConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/Ascii2NcConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/Ascii2NcConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/Ascii2NcConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -193,6 +193,8 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_OUTPUT_TEMPLATE`
 | :term:`ENSEMBLE_STAT_CTRL_INPUT_DIR`
 | :term:`ENSEMBLE_STAT_CTRL_INPUT_TEMPLATE`
+| :term:`ENSEMBLE_STAT_ENS_MEAN_INPUT_TEMPLATE`
+| :term:`ENSEMBLE_STAT_ENS_MEAN_INPUT_DIR`
 | :term:`LOG_ENSEMBLE_STAT_VERBOSITY`
 | :term:`FCST_ENSEMBLE_STAT_INPUT_DATATYPE`
 | :term:`OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE`
@@ -295,19 +297,19 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_ECLV_POINTS`
 | :term:`FCST_ENSEMBLE_STAT_IS_PROB`
 | :term:`FCST_ENSEMBLE_STAT_PROB_IN_GRIB_PDS`
-| :term:`ENSEMBLE_STAT_VERIFICATION_MASK_TEMPLATE` (optional)
-| :term:`ENS_VAR<n>_NAME` (optional)
-| :term:`ENS_VAR<n>_LEVELS` (optional)
-| :term:`ENS_VAR<n>_THRESH` (optional)
-| :term:`ENS_VAR<n>_OPTIONS` (optional)
-| :term:`FCST_ENSEMBLE_STAT_VAR<n>_NAME` (optional)
-| :term:`FCST_ENSEMBLE_STAT_VAR<n>_LEVELS` (optional)
-| :term:`FCST_ENSEMBLE_STAT_VAR<n>_THRESH` (optional)
-| :term:`FCST_ENSEMBLE_STAT_VAR<n>_OPTIONS` (optional)
-| :term:`OBS_ENSEMBLE_STAT_VAR<n>_NAME` (optional)
-| :term:`OBS_ENSEMBLE_STAT_VAR<n>_LEVELS` (optional)
-| :term:`OBS_ENSEMBLE_STAT_VAR<n>_THRESH` (optional)
-| :term:`OBS_ENSEMBLE_STAT_VAR<n>_OPTIONS` (optional)
+| :term:`ENSEMBLE_STAT_VERIFICATION_MASK_TEMPLATE`
+| :term:`ENS_VAR<n>_NAME`
+| :term:`ENS_VAR<n>_LEVELS`
+| :term:`ENS_VAR<n>_THRESH`
+| :term:`ENS_VAR<n>_OPTIONS`
+| :term:`FCST_ENSEMBLE_STAT_VAR<n>_NAME`
+| :term:`FCST_ENSEMBLE_STAT_VAR<n>_LEVELS`
+| :term:`FCST_ENSEMBLE_STAT_VAR<n>_THRESH`
+| :term:`FCST_ENSEMBLE_STAT_VAR<n>_OPTIONS`
+| :term:`OBS_ENSEMBLE_STAT_VAR<n>_NAME`
+| :term:`OBS_ENSEMBLE_STAT_VAR<n>_LEVELS`
+| :term:`OBS_ENSEMBLE_STAT_VAR<n>_THRESH`
+| :term:`OBS_ENSEMBLE_STAT_VAR<n>_OPTIONS`
 |
 
 .. warning:: **DEPRECATED:**
@@ -331,7 +333,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/EnsembleStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/EnsembleStatConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/EnsembleStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/EnsembleStatConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -1122,7 +1124,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/GenEnsProdConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/GenEnsProdConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/GenEnsProdConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/GenEnsProdConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -2657,7 +2659,7 @@ METplus Configuration
 | :term:`GRID_DIAG_OUTPUT_DIR`
 | :term:`GRID_DIAG_INPUT_TEMPLATE`
 | :term:`GRID_DIAG_OUTPUT_TEMPLATE`
-| :term:`GRID_DIAG_VERIFICATION_MASK_TEMPLATE` (optional)
+| :term:`GRID_DIAG_VERIFICATION_MASK_TEMPLATE`
 | :term:`LOG_GRID_DIAG_VERBOSITY`
 | :term:`GRID_DIAG_CONFIG_FILE`
 | :term:`GRID_DIAG_CUSTOM_LOOP_LIST`
@@ -2684,7 +2686,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/GridDiagConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/GridDiagConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/GridDiagConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/GridDiagConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -2809,7 +2811,7 @@ METplus Configuration
 | :term:`FCST_GRID_STAT_INPUT_TEMPLATE`
 | :term:`OBS_GRID_STAT_INPUT_TEMPLATE`
 | :term:`GRID_STAT_OUTPUT_TEMPLATE`
-| :term:`GRID_STAT_VERIFICATION_MASK_TEMPLATE` (optional)
+| :term:`GRID_STAT_VERIFICATION_MASK_TEMPLATE`
 | :term:`LOG_GRID_STAT_VERBOSITY`
 | :term:`GRID_STAT_OUTPUT_PREFIX`
 | :term:`GRID_STAT_CONFIG_FILE`
@@ -2849,6 +2851,7 @@ METplus Configuration
 | :term:`GRID_STAT_OUTPUT_FLAG_NBRCNT`
 | :term:`GRID_STAT_OUTPUT_FLAG_GRAD`
 | :term:`GRID_STAT_OUTPUT_FLAG_DMAP`
+| :term:`GRID_STAT_OUTPUT_FLAG_SEEPS`
 | :term:`GRID_STAT_NC_PAIRS_FLAG_LATLON`
 | :term:`GRID_STAT_NC_PAIRS_FLAG_RAW`
 | :term:`GRID_STAT_NC_PAIRS_FLAG_DIFF`
@@ -2860,6 +2863,7 @@ METplus Configuration
 | :term:`GRID_STAT_NC_PAIRS_FLAG_GRADIENT`
 | :term:`GRID_STAT_NC_PAIRS_FLAG_DISTANCE_MAP`
 | :term:`GRID_STAT_NC_PAIRS_FLAG_APPLY_MASK`
+| :term:`GRID_STAT_NC_PAIRS_FLAG_SEEPS`
 | :term:`GRID_STAT_INTERP_FIELD`
 | :term:`GRID_STAT_INTERP_VLD_THRESH`
 | :term:`GRID_STAT_INTERP_SHAPE`
@@ -2911,30 +2915,31 @@ METplus Configuration
 | :term:`GRID_STAT_CENSOR_VAL`
 | :term:`FCST_GRID_STAT_IS_PROB`
 | :term:`FCST_GRID_STAT_PROB_IN_GRIB_PDS`
-| :term:`GRID_STAT_MASK_GRID` (optional)
-| :term:`GRID_STAT_MASK_POLY` (optional)
+| :term:`GRID_STAT_MASK_GRID`
+| :term:`GRID_STAT_MASK_POLY`
 | :term:`GRID_STAT_MET_CONFIG_OVERRIDES`
-| :term:`FCST_GRID_STAT_PROB_THRESH` (optional)
-| :term:`OBS_GRID_STAT_PROB_THRESH` (optional)
-| :term:`GRID_STAT_NEIGHBORHOOD_WIDTH` (optional)
-| :term:`GRID_STAT_NEIGHBORHOOD_SHAPE` (optional)
-| :term:`GRID_STAT_NEIGHBORHOOD_COV_THRESH` (optional)
-| :term:`FCST_GRID_STAT_WINDOW_BEGIN` (optional)
-| :term:`FCST_GRID_STAT_WINDOW_END` (optional)
-| :term:`OBS_GRID_STAT_WINDOW_BEGIN` (optional)
-| :term:`OBS_GRID_STAT_WINDOW_END` (optional)
-| :term:`FCST_GRID_STAT_FILE_WINDOW_BEGIN` (optional)
-| :term:`FCST_GRID_STAT_FILE_WINDOW_END` (optional)
-| :term:`OBS_GRID_STAT_FILE_WINDOW_BEGIN` (optional)
-| :term:`OBS_GRID_STAT_FILE_WINDOW_END` (optional)
-| :term:`FCST_GRID_STAT_VAR<n>_NAME` (optional)
-| :term:`FCST_GRID_STAT_VAR<n>_LEVELS` (optional)
-| :term:`FCST_GRID_STAT_VAR<n>_THRESH` (optional)
-| :term:`FCST_GRID_STAT_VAR<n>_OPTIONS` (optional)
-| :term:`OBS_GRID_STAT_VAR<n>_NAME` (optional)
-| :term:`OBS_GRID_STAT_VAR<n>_LEVELS` (optional)
-| :term:`OBS_GRID_STAT_VAR<n>_THRESH` (optional)
-| :term:`OBS_GRID_STAT_VAR<n>_OPTIONS` (optional)
+| :term:`FCST_GRID_STAT_PROB_THRESH`
+| :term:`OBS_GRID_STAT_PROB_THRESH`
+| :term:`GRID_STAT_NEIGHBORHOOD_WIDTH`
+| :term:`GRID_STAT_NEIGHBORHOOD_SHAPE`
+| :term:`GRID_STAT_NEIGHBORHOOD_COV_THRESH`
+| :term:`FCST_GRID_STAT_WINDOW_BEGIN`
+| :term:`FCST_GRID_STAT_WINDOW_END`
+| :term:`OBS_GRID_STAT_WINDOW_BEGIN`
+| :term:`OBS_GRID_STAT_WINDOW_END`
+| :term:`FCST_GRID_STAT_FILE_WINDOW_BEGIN`
+| :term:`FCST_GRID_STAT_FILE_WINDOW_END`
+| :term:`OBS_GRID_STAT_FILE_WINDOW_BEGIN`
+| :term:`OBS_GRID_STAT_FILE_WINDOW_END`
+| :term:`FCST_GRID_STAT_VAR<n>_NAME`
+| :term:`FCST_GRID_STAT_VAR<n>_LEVELS`
+| :term:`FCST_GRID_STAT_VAR<n>_THRESH`
+| :term:`FCST_GRID_STAT_VAR<n>_OPTIONS`
+| :term:`OBS_GRID_STAT_VAR<n>_NAME`
+| :term:`OBS_GRID_STAT_VAR<n>_LEVELS`
+| :term:`OBS_GRID_STAT_VAR<n>_THRESH`
+| :term:`OBS_GRID_STAT_VAR<n>_OPTIONS`
+| :term:`GRID_STAT_SEEPS_P1_THRESH`
 |
 
 .. warning:: **DEPRECATED**
@@ -2959,7 +2964,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/GridStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/GridStatConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/GridStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/GridStatConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -3276,6 +3281,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - output_flag.grad
    * - :term:`GRID_STAT_OUTPUT_FLAG_DMAP`
      - output_flag.dmap
+   * - :term:`GRID_STAT_OUTPUT_FLAG_SEEPS`
+     - output_flag.seeps
 
 **${METPLUS_NC_PAIRS_FLAG_DICT}**
 
@@ -3307,6 +3314,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - nc_pairs_flag.distance_map
    * - :term:`GRID_STAT_NC_PAIRS_FLAG_APPLY_MASK`
      - nc_pairs_flag.apply_mask
+   * - :term:`GRID_STAT_NC_PAIRS_FLAG_SEEPS`
+     - nc_pairs_flag.seeps
 
 **${METPLUS_INTERP_DICT}**
 
@@ -3414,6 +3423,17 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`GRID_STAT_CENSOR_VAL`
      - censor_val
 
+**${METPLUS_SEEPS_P1_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_SEEPS_P1_THRESH`
+     - seeps_p1_thresh
+
 
 .. _ioda2nc_wrapper:
 
@@ -3481,7 +3501,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/IODA2NCConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/IODA2NCConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/IODA2NCConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/IODA2NCConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -3693,7 +3713,7 @@ METdbLoad
 Description
 -----------
 
-Used to call the met_db_load.py script from dtcenter/METdatadb to load MET
+Used to call the met_db_load.py script from dtcenter/METdataio to load MET
 output into a METviewer database.
 
 METplus Configuration
@@ -3996,16 +4016,16 @@ METplus Configuration
 | :term:`FCST_MODE_IS_PROB`
 | :term:`FCST_MODE_PROB_IN_GRIB_PDS`
 | :term:`MODE_MULTIVAR_LOGIC`
-| :term:`FCST_MODE_VAR<n>_NAME` (optional)
-| :term:`FCST_MODE_VAR<n>_LEVELS` (optional)
-| :term:`FCST_MODE_VAR<n>_THRESH` (optional)
-| :term:`FCST_MODE_VAR<n>_OPTIONS` (optional)
-| :term:`MODE_FCST_FILE_TYPE` (optional)
-| :term:`OBS_MODE_VAR<n>_NAME` (optional)
-| :term:`OBS_MODE_VAR<n>_LEVELS` (optional)
-| :term:`OBS_MODE_VAR<n>_THRESH` (optional)
-| :term:`OBS_MODE_VAR<n>_OPTIONS` (optional)
-| :term:`MODE_OBS_FILE_TYPE` (optional)
+| :term:`FCST_MODE_VAR<n>_NAME`
+| :term:`FCST_MODE_VAR<n>_LEVELS`
+| :term:`FCST_MODE_VAR<n>_THRESH`
+| :term:`FCST_MODE_VAR<n>_OPTIONS`
+| :term:`MODE_FCST_FILE_TYPE`
+| :term:`OBS_MODE_VAR<n>_NAME`
+| :term:`OBS_MODE_VAR<n>_LEVELS`
+| :term:`OBS_MODE_VAR<n>_THRESH`
+| :term:`OBS_MODE_VAR<n>_OPTIONS`
+| :term:`MODE_OBS_FILE_TYPE`
 |
 
 .. warning:: **DEPRECATED:**
@@ -4024,7 +4044,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/MODEConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/MODEConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/MODEConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/MODEConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -4622,14 +4642,14 @@ METplus Configuration
 | :term:`MTD_MET_CONFIG_OVERRIDES`
 | :term:`FCST_MTD_IS_PROB`
 | :term:`FCST_MTD_PROB_IN_GRIB_PDS`
-| :term:`FCST_MTD_VAR<n>_NAME` (optional)
-| :term:`FCST_MTD_VAR<n>_LEVELS` (optional)
-| :term:`FCST_MTD_VAR<n>_THRESH` (optional)
-| :term:`FCST_MTD_VAR<n>_OPTIONS` (optional)
-| :term:`OBS_MTD_VAR<n>_NAME` (optional)
-| :term:`OBS_MTD_VAR<n>_LEVELS` (optional)
-| :term:`OBS_MTD_VAR<n>_THRESH` (optional)
-| :term:`OBS_MTD_VAR<n>_OPTIONS` (optional)
+| :term:`FCST_MTD_VAR<n>_NAME`
+| :term:`FCST_MTD_VAR<n>_LEVELS`
+| :term:`FCST_MTD_VAR<n>_THRESH`
+| :term:`FCST_MTD_VAR<n>_OPTIONS`
+| :term:`OBS_MTD_VAR<n>_NAME`
+| :term:`OBS_MTD_VAR<n>_LEVELS`
+| :term:`OBS_MTD_VAR<n>_THRESH`
+| :term:`OBS_MTD_VAR<n>_OPTIONS`
 |
 
 .. warning:: **DEPRECATED:**
@@ -4649,7 +4669,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/MTDConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/MTDConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/MTDConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/MTDConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -4870,11 +4890,11 @@ METplus Configuration
 | :term:`PB2NC_OFFSETS`
 | :term:`PB2NC_INPUT_DATATYPE`
 | :term:`PB2NC_CONFIG_FILE`
-| :term:`PB2NC_MESSAGE_TYPE` (optional)
-| :term:`PB2NC_STATION_ID` (optional)
-| :term:`PB2NC_GRID` (optional)
+| :term:`PB2NC_MESSAGE_TYPE`
+| :term:`PB2NC_STATION_ID`
+| :term:`PB2NC_GRID`
 | :term:`PB2NC_POLY`
-| :term:`PB2NC_OBS_BUFR_VAR_LIST` (optional)
+| :term:`PB2NC_OBS_BUFR_VAR_LIST`
 | :term:`PB2NC_TIME_SUMMARY_FLAG`
 | :term:`PB2NC_TIME_SUMMARY_BEG`
 | :term:`PB2NC_TIME_SUMMARY_END`
@@ -4921,7 +4941,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/PB2NCConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/PB2NCConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/PB2NCConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/PB2NCConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -5103,6 +5123,61 @@ The PCPCombine wrapper is a Python script that encapsulates the MET
 PCPCombine tool. It provides the infrastructure to combine or extract
 from files to build desired accumulations.
 
+PCPCombine wrapper can be configured to process forecast and/or observation
+data. Setting :term:`FCST_PCP_COMBINE_RUN` = True will process forecast data
+and setting :term:`OBS_PCP_COMBINE_RUN` = True will process observation data.
+
+PCPCombine wrapper can be configured to build a command for the sum, add, subtract,
+and derive methods using :term:`FCST_PCP_COMBINE_METHOD` and/or
+:term:`OBS_PCP_COMBINE_METHOD`. Each method executes logic to gather the
+desired input files to build the command based on specific examples.
+
+Accumulations
+^^^^^^^^^^^^^
+
+The desired accumulation to build is defined using
+:term:`FCST_PCP_COMBINE_OUTPUT_ACCUM` or :term:`OBS_PCP_COMBINE_OUTPUT_ACCUM`.
+The default units are hours unless otherwise specified.
+The output field name can be set explicitly using
+:term:`FCST_PCP_COMBINE_OUTPUT_NAME` or :term:`OBS_PCP_COMBINE_OUTPUT_NAME`.
+
+For the ADD and DERIVE methods, the input accumulation(s) can be specified using
+:term:`FCST_PCP_COMBINE_INPUT_ACCUMS` or :term:`OBS_PCP_COMBINE_INPUT_ACCUMS`.
+The default units are hours unless otherwise specified.
+This can be a list of accumulation amounts in order of preference.
+If the remaining accumulation needed to build the desired accumulation is
+less than the first accumulation, then the next value in the list will be used.
+The name and level of the field to read for each input accumulation can be
+specified with
+:term:`FCST_PCP_COMBINE_INPUT_NAMES`/:term:`FCST_PCP_COMBINE_INPUT_LEVELS` or
+:term:`OBS_PCP_COMBINE_INPUT_NAMES`/:term:`OBS_PCP_COMBINE_INPUT_LEVELS`.
+These lists must be the same length as
+:term:`FCST_PCP_COMBINE_INPUT_ACCUMS` or :term:`OBS_PCP_COMBINE_INPUT_ACCUMS`.
+
+Constant Initialization Time
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For the ADD and DERIVE methods, :term:`FCST_PCP_COMBINE_CONSTANT_INIT` or
+:term:`OBS_PCP_COMBINE_CONSTANT_INIT` can be set to **True** to gather input
+files that all contain the same initialization time.
+
+
+User-Defined Commands
+^^^^^^^^^^^^^^^^^^^^^
+
+There are many ways to utilize PCPCombine that may not align with the logic
+used to gather files. If this is the case, then the method can be set to
+**USER_DEFINED** and the explicit command arguments can be specified using
+:term:`FCST_PCP_COMBINE_COMMAND` or :term:`OBS_PCP_COMBINE_COMMAND`.
+Other METplus configuration variables and filename template tags can be
+referenced in the explicit command. Note that the path to the pcp_combine
+executable and the output path should not be included in the command value.
+The output path is controlled by
+:term:`FCST_PCP_COMBINE_INPUT_TEMPLATE`/:term:`FCST_PCP_COMBINE_INPUT_DIR` or
+:term:`OBS_PCP_COMBINE_INPUT_TEMPLATE`/:term:`OBS_PCP_COMBINE_INPUT_DIR` and
+will automatically be added to the end of the command.
+
+
 METplus Configuration
 ---------------------
 
@@ -5147,16 +5222,16 @@ METplus Configuration
 | :term:`OBS_PCP_COMBINE_LOOKBACK`
 | :term:`FCST_PCP_COMBINE_USE_ZERO_ACCUM`
 | :term:`OBS_PCP_COMBINE_USE_ZERO_ACCUM`
-| :term:`FCST_PCP_COMBINE_EXTRA_NAMES` (optional)
-| :term:`FCST_PCP_COMBINE_EXTRA_LEVELS` (optional)
-| :term:`FCST_PCP_COMBINE_EXTRA_OUTPUT_NAMES` (optional)
-| :term:`OBS_PCP_COMBINE_EXTRA_NAMES` (optional)
-| :term:`OBS_PCP_COMBINE_EXTRA_LEVELS` (optional)
-| :term:`OBS_PCP_COMBINE_EXTRA_OUTPUT_NAMES` (optional)
-| :term:`FCST_PCP_COMBINE_OUTPUT_ACCUM` (optional)
-| :term:`FCST_PCP_COMBINE_OUTPUT_NAME` (optional)
-| :term:`OBS_PCP_COMBINE_OUTPUT_ACCUM` (optional)
-| :term:`OBS_PCP_COMBINE_OUTPUT_NAME` (optional)
+| :term:`FCST_PCP_COMBINE_EXTRA_NAMES`
+| :term:`FCST_PCP_COMBINE_EXTRA_LEVELS`
+| :term:`FCST_PCP_COMBINE_EXTRA_OUTPUT_NAMES`
+| :term:`OBS_PCP_COMBINE_EXTRA_NAMES`
+| :term:`OBS_PCP_COMBINE_EXTRA_LEVELS`
+| :term:`OBS_PCP_COMBINE_EXTRA_OUTPUT_NAMES`
+| :term:`FCST_PCP_COMBINE_OUTPUT_ACCUM`
+| :term:`FCST_PCP_COMBINE_OUTPUT_NAME`
+| :term:`OBS_PCP_COMBINE_OUTPUT_ACCUM`
+| :term:`OBS_PCP_COMBINE_OUTPUT_NAME`
 |
 
 .. warning:: **DEPRECATED:**
@@ -5292,7 +5367,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/PlotPointObsConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/PlotPointObsConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/PlotPointObsConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/PlotPointObsConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -5638,7 +5713,7 @@ Configuration
 | :term:`POINT_STAT_OUTPUT_DIR`
 | :term:`FCST_POINT_STAT_INPUT_TEMPLATE`
 | :term:`OBS_POINT_STAT_INPUT_TEMPLATE`
-| :term:`POINT_STAT_VERIFICATION_MASK_TEMPLATE` (optional)
+| :term:`POINT_STAT_VERIFICATION_MASK_TEMPLATE`
 | :term:`POINT_STAT_OUTPUT_PREFIX`
 | :term:`LOG_POINT_STAT_VERBOSITY`
 | :term:`POINT_STAT_OFFSETS`
@@ -5688,6 +5763,8 @@ Configuration
 | :term:`POINT_STAT_OUTPUT_FLAG_RPS`
 | :term:`POINT_STAT_OUTPUT_FLAG_ECLV`
 | :term:`POINT_STAT_OUTPUT_FLAG_MPR`
+| :term:`POINT_STAT_OUTPUT_FLAG_SEEPS`
+| :term:`POINT_STAT_OUTPUT_FLAG_SEEPS_MPR`
 | :term:`POINT_STAT_INTERP_VLD_THRESH`
 | :term:`POINT_STAT_INTERP_SHAPE`
 | :term:`POINT_STAT_INTERP_TYPE_METHOD`
@@ -5732,22 +5809,23 @@ Configuration
 | :term:`POINT_STAT_MESSAGE_TYPE_GROUP_MAP`
 | :term:`FCST_POINT_STAT_IS_PROB`
 | :term:`FCST_POINT_STAT_PROB_IN_GRIB_PDS`
-| :term:`FCST_POINT_STAT_WINDOW_BEGIN` (optional)
-| :term:`FCST_POINT_STAT_WINDOW_END` (optional)
-| :term:`OBS_POINT_STAT_WINDOW_BEGIN` (optional)
-| :term:`OBS_POINT_STAT_WINDOW_END` (optional)
-| :term:`POINT_STAT_NEIGHBORHOOD_WIDTH` (optional)
-| :term:`POINT_STAT_NEIGHBORHOOD_SHAPE` (optional)
-| :term:`FCST_POINT_STAT_VAR<n>_NAME` (optional)
-| :term:`FCST_POINT_STAT_VAR<n>_LEVELS` (optional)
-| :term:`FCST_POINT_STAT_VAR<n>_THRESH` (optional)
-| :term:`FCST_POINT_STAT_VAR<n>_OPTIONS` (optional)
-| :term:`OBS_POINT_STAT_VAR<n>_NAME` (optional)
-| :term:`OBS_POINT_STAT_VAR<n>_LEVELS` (optional)
-| :term:`OBS_POINT_STAT_VAR<n>_THRESH` (optional)
-| :term:`OBS_POINT_STAT_VAR<n>_OPTIONS` (optional)
-| :term:`POINT_STAT_OBS_VALID_BEG` (optional)
-| :term:`POINT_STAT_OBS_VALID_END` (optional)
+| :term:`FCST_POINT_STAT_WINDOW_BEGIN`
+| :term:`FCST_POINT_STAT_WINDOW_END`
+| :term:`OBS_POINT_STAT_WINDOW_BEGIN`
+| :term:`OBS_POINT_STAT_WINDOW_END`
+| :term:`POINT_STAT_NEIGHBORHOOD_WIDTH`
+| :term:`POINT_STAT_NEIGHBORHOOD_SHAPE`
+| :term:`FCST_POINT_STAT_VAR<n>_NAME`
+| :term:`FCST_POINT_STAT_VAR<n>_LEVELS`
+| :term:`FCST_POINT_STAT_VAR<n>_THRESH`
+| :term:`FCST_POINT_STAT_VAR<n>_OPTIONS`
+| :term:`OBS_POINT_STAT_VAR<n>_NAME`
+| :term:`OBS_POINT_STAT_VAR<n>_LEVELS`
+| :term:`OBS_POINT_STAT_VAR<n>_THRESH`
+| :term:`OBS_POINT_STAT_VAR<n>_OPTIONS`
+| :term:`POINT_STAT_OBS_VALID_BEG`
+| :term:`POINT_STAT_OBS_VALID_END`
+| :term:`POINT_STAT_SEEPS_P1_THRESH`
 |
 
 .. warning:: **DEPRECATED:**
@@ -5785,7 +5863,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/PointStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/PointStatConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/PointStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/PointStatConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -6126,14 +6204,18 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - output_flag.prc
    * - :term:`POINT_STAT_OUTPUT_FLAG_ECNT`
      - output_flag.ecnt
+   * - :term:`POINT_STAT_OUTPUT_FLAG_ORANK`
+     - output_flag.orank
    * - :term:`POINT_STAT_OUTPUT_FLAG_RPS`
      - output_flag.rps
    * - :term:`POINT_STAT_OUTPUT_FLAG_ECLV`
      - output_flag.eclv
    * - :term:`POINT_STAT_OUTPUT_FLAG_MPR`
      - output_flag.mpr
-   * - :term:`POINT_STAT_OUTPUT_FLAG_ORANK`
-     - output_flag.orank
+   * - :term:`POINT_STAT_OUTPUT_FLAG_SEEPS`
+     - output_flag.seeps
+   * - :term:`POINT_STAT_OUTPUT_FLAG_SEEPS_MPR`
+     - output_flag.seeps_mpr
 
 **${METPLUS_INTERP_DICT}**
 
@@ -6194,6 +6276,18 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`POINT_STAT_MESSAGE_TYPE_GROUP_MAP`
      - message_type_group_map
+
+**${METPLUS_SEEPS_P1_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_SEEPS_P1_THRESH`
+     - seeps_p1_thresh
+
 
 .. _py_embed_ingest_wrapper:
 
@@ -6260,12 +6354,12 @@ METplus Configuration
 | :term:`REGRID_DATA_PLANE_METHOD`
 | :term:`REGRID_DATA_PLANE_CUSTOM_LOOP_LIST`
 | :term:`REGRID_DATA_PLANE_ONCE_PER_FIELD`
-| :term:`FCST_REGRID_DATA_PLANE_VAR<n>_INPUT_FIELD_NAME` (optional)
-| :term:`FCST_REGRID_DATA_PLANE_VAR<n>_INPUT_LEVEL` (optional)
-| :term:`FCST_REGRID_DATA_PLANE_VAR<n>_OUTPUT_FIELD_NAME` (optional)
-| :term:`OBS_REGRID_DATA_PLANE_VAR<n>_INPUT_FIELD_NAME` (optional)
-| :term:`OBS_REGRID_DATA_PLANE_VAR<n>_INPUT_LEVEL` (optional)
-| :term:`OBS_REGRID_DATA_PLANE_VAR<n>_OUTPUT_FIELD_NAME` (optional)
+| :term:`FCST_REGRID_DATA_PLANE_VAR<n>_INPUT_FIELD_NAME`
+| :term:`FCST_REGRID_DATA_PLANE_VAR<n>_INPUT_LEVEL`
+| :term:`FCST_REGRID_DATA_PLANE_VAR<n>_OUTPUT_FIELD_NAME`
+| :term:`OBS_REGRID_DATA_PLANE_VAR<n>_INPUT_FIELD_NAME`
+| :term:`OBS_REGRID_DATA_PLANE_VAR<n>_INPUT_LEVEL`
+| :term:`OBS_REGRID_DATA_PLANE_VAR<n>_OUTPUT_FIELD_NAME`
 |
 
 .. warning:: **DEPRECATED:**
@@ -6408,7 +6502,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/SeriesAnalysisConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/SeriesAnalysisConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/SeriesAnalysisConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/SeriesAnalysisConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -7073,7 +7167,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/STATAnalysisConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/STATAnalysisConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/STATAnalysisConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/STATAnalysisConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -7573,7 +7667,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/TCGenConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/TCGenConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/TCGenConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/TCGenConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -8271,7 +8365,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/TCPairsConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/TCPairsConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/TCPairsConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/TCPairsConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -8612,7 +8706,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/TCRMWConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/TCRMWConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/TCRMWConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/TCRMWConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -8869,7 +8963,7 @@ METplus Configuration
 
 | :term:`TC_STAT_LOOKIN_DIR`
 | :term:`TC_STAT_OUTPUT_DIR`
-| :term:`TC_STAT_OUTPUT_TEMPLATE` (optional)
+| :term:`TC_STAT_OUTPUT_TEMPLATE`
 | :term:`TC_STAT_CONFIG_FILE`
 | :term:`TC_STAT_JOB_ARGS`
 | :term:`TC_STAT_AMODEL`
@@ -8942,7 +9036,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/TCStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/TCStatConfig_default>`_
+`MET_INSTALL_DIR/share/met/config/TCStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/TCStatConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
@@ -9536,7 +9630,7 @@ METplus Configuration
 | :term:`USER_SCRIPT_COMMAND`
 | :term:`USER_SCRIPT_CUSTOM_LOOP_LIST`
 | :term:`USER_SCRIPT_SKIP_TIMES`
-| :term:`USER_SCRIPT_INPUT_DIR` (optional)
-| :term:`USER_SCRIPT_INPUT_TEMPLATE` (optional)
-| :term:`USER_SCRIPT_INPUT_TEMPLATE_LABELS` (optional)
+| :term:`USER_SCRIPT_INPUT_DIR`
+| :term:`USER_SCRIPT_INPUT_TEMPLATE`
+| :term:`USER_SCRIPT_INPUT_TEMPLATE_LABELS`
 |

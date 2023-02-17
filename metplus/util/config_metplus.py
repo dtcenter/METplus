@@ -85,29 +85,24 @@ OLD_BASE_CONFS = [
 logging.Formatter.converter = time.gmtime
 
 
-def setup(args, logger=None, base_confs=None):
-    """!The METplus setup function.
-        @param args list of configuration files or configuration
-        variable overrides. Reads all configuration inputs and returns
-        a configuration object.
+def setup(args, base_confs=None):
+    """!Setup the METplusConfig by reading in default configurations and any
+    arguments from the command line.
+
+    @param args list of configuration files or configuration
+     variable overrides. Reads all configuration inputs and returns
+     a configuration object
+    @param base_confs optional config files to read first
+    @returns METplusConfig object
     """
     if base_confs is None:
         base_confs = _get_default_config_list()
 
-    # Setup Task logger, Until a Conf object is created, Task logger is
-    # only logging to tty, not a file.
-    if logger is None:
-        logger = logging.getLogger('metplus')
-
-    logger.info('Starting METplus configuration setup.')
-
-    override_list = _parse_launch_args(args, logger)
+    override_list = _parse_launch_args(args)
 
     # add default config files to override list
     override_list = base_confs + override_list
     config = launch(override_list)
-
-    logger.debug('Completed METplus configuration setup.')
 
     return config
 
@@ -142,7 +137,7 @@ def _get_default_config_list(parm_base=None):
     return default_config_list
 
 
-def _parse_launch_args(args, logger):
+def _parse_launch_args(args):
     """! Parsed arguments to scripts that launch the METplus wrappers.
 
     Options:
@@ -150,7 +145,6 @@ def _parse_launch_args(args, logger):
     * /path/to/file.conf --- read this conf file after the default conf files
 
     @param args the script arguments, after script-specific ones are removed
-    @param logger a logging.Logger for log messages
     @returns tuple containing path to parm directory, list of config files and
      collections.defaultdict of explicit config overrides
     """
@@ -180,7 +174,7 @@ def _parse_launch_args(args, logger):
         filepath = arg
         # check if argument is a path to a file that exists
         if not os.path.exists(filepath):
-            logger.error(f'Invalid argument: {filepath}')
+            print(f'ERROR: Invalid argument: {filepath}')
             bad = True
             continue
 
@@ -189,13 +183,13 @@ def _parse_launch_args(args, logger):
 
         # path exists but is not a file
         if not os.path.isfile(filepath):
-            logger.error(f'Conf is not a file: {filepath}')
+            print(f'ERROR: Conf is not a file: {filepath}')
             bad = True
             continue
 
         # warn and skip if file is empty
         if os.stat(filepath).st_size == 0:
-            logger.warning(f'Conf file is empty: {filepath}. Skipping')
+            print(f'WARNING: Conf file is empty: {filepath}. Skipping')
             continue
 
         # add file path to override list
@@ -217,7 +211,6 @@ def launch(config_list):
     @param config_list list of configuration files to process
     """
     config = METplusConfig()
-    logger = config.log()
 
     # set config variable for current time
     config.set('config', 'CLOCK_TIME',
@@ -227,7 +220,7 @@ def launch(config_list):
     # Read in and parse all the conf files and overrides
     for config_item in config_list:
         if isinstance(config_item, str):
-            logger.info(f"Parsing config file: {config_item}")
+            print(f"Parsing config file: {config_item}")
             config.read(config_item)
             config_format_list.append(config_item)
         else:
@@ -236,7 +229,7 @@ def launch(config_list):
             if not config.has_section(section):
                 config.add_section(section)
 
-            logger.info(f"Parsing override: [{section}] {key} = {value}")
+            print(f"Parsing override: [{section}] {key} = {value}")
             config.set(section, key, value)
             config_format_list.append(f'{section}.{key}={value}')
 
@@ -274,20 +267,15 @@ def launch(config_list):
     return config
 
 
-def _set_logvars(config, logger=None):
+def _set_logvars(config):
     """!Sets and adds the LOG_METPLUS and LOG_TIMESTAMP
        to the config object. If LOG_METPLUS was already defined by the
        user in their conf file. It expands and rewrites it in the conf
        object and the final file.
        conf file.
-       Args:
+
            @param config:   the config instance
-           @param logger: the logger, optional
     """
-
-    if logger is None:
-        logger = config.log()
-
     log_timestamp_template = config.getstr('config', 'LOG_TIMESTAMP_TEMPLATE',
                                            '')
     if config.getbool('config', 'LOG_TIMESTAMP_USE_DATATIME', False):
@@ -300,95 +288,69 @@ def _set_logvars(config, logger=None):
 
     log_filenametimestamp = date_t.strftime(log_timestamp_template)
 
-    # Adding LOG_TIMESTAMP to the final configuration file.
-    logger.info('Adding LOG_TIMESTAMP=%s' % repr(log_filenametimestamp))
+    # add LOG_TIMESTAMP to the final configuration file
     config.set('config', 'LOG_TIMESTAMP', log_filenametimestamp)
 
-    log_dir = config.getdir('LOG_DIR')
+    metplus_log = config.strinterp(
+        'config',
+        '{LOG_METPLUS}',
+        LOG_TIMESTAMP_TEMPLATE=log_filenametimestamp
+    )
 
-    # NOTE: LOG_METPLUS or metpluslog is meant to include the absolute path
-    #       and the metpluslog_filename,
-    # so metpluslog = /path/to/metpluslog_filename
-
-    # if LOG_METPLUS =  unset in the conf file, means NO logging.
-    # Also, assUmes the user has included the intended path in LOG_METPLUS.
-    user_defined_log_file = None
-    metpluslog = ''
-    if config.has_option('config', 'LOG_METPLUS'):
-        user_defined_log_file = True
-        # strinterp will set metpluslog to '' if LOG_METPLUS =  is unset.
-        metpluslog = config.strinterp(
-            'config',
-            '{LOG_METPLUS}',
-            LOG_TIMESTAMP_TEMPLATE=log_filenametimestamp
-        )
-
-        # test if there is any path information, if there is,
-        # assume it is as intended, if there is not, than add log_dir.
-        if metpluslog:
-            if os.path.basename(metpluslog) == metpluslog:
-                metpluslog = os.path.join(log_dir, metpluslog)
-
-    # Setting LOG_METPLUS in the configuration object
-    # At this point LOG_METPLUS will have a value or '' the empty string.
-    if user_defined_log_file:
-        logger.info('Replace LOG_METPLUS with %s' % repr(metpluslog))
+    # add log directory to log file path if only filename was provided
+    if metplus_log:
+        if os.path.basename(metplus_log) == metplus_log:
+            metplus_log = os.path.join(config.getdir('LOG_DIR'), metplus_log)
+        print('Logging to %s' % metplus_log)
     else:
-        logger.info('Adding LOG_METPLUS=%s' % repr(metpluslog))
-    # expand LOG_METPLUS to ensure it is available
-    config.set('config', 'LOG_METPLUS', metpluslog)
+        print('Logging to terminal only')
+
+    # set LOG_METPLUS with timestamp substituted
+    config.set('config', 'LOG_METPLUS', metplus_log)
 
 
-def get_logger(config, sublog=None):
+def get_logger(config):
     """!This function will return a logger with a formatted file handler
     for writing to the LOG_METPLUS and it sets the LOG_LEVEL. If LOG_METPLUS is
     not defined, a logger is still returned without adding a file handler,
     but still setting the LOG_LEVEL.
-       Args:
-           @param config:   the config instance
-           @param sublog the logging subdomain, or None
-       Returns:
-           logger: the logger
+
+       @param config:   the config instance
+       @returns logger
     """
     _set_logvars(config)
 
     # Retrieve all logging related parameters from the param file
-    log_dir = config.getdir('LOG_DIR')
     log_level = config.getstr('config', 'LOG_LEVEL')
+    log_level_terminal = config.getstr('config', 'LOG_LEVEL_TERMINAL')
 
     # Create the log directory if it does not exist
-    mkdir_p(log_dir)
+    mkdir_p(config.getdir('LOG_DIR'))
 
-    if sublog is not None:
-        logger = config.log(sublog)
-    else:
-        logger = config.log()
+    logger = config.log()
 
-    # Setting of the logger level from the config instance.
-    # Check for log_level by Integer or LevelName.
-    # Try to convert the string log_level to an integer and use that, if
-    # it can't convert then we assume it is a valid LevelName, which
-    # is what is should be anyway,  ie. DEBUG.
-    # Note:
-    # Earlier versions of python2 require setLevel(<int>), argument
-    # to be an int. Passing in the LevelName, 'DEBUG' will disable
-    # logging output. Later versions of python2 will accept 'DEBUG',
-    # not sure which version that changed with, but the logic below
-    # should work for all version. I know python 2.6.6 must be an int,
-    # and python 2.7.5 accepts the LevelName.
     try:
-        int_log_level = int(log_level)
-        logger.setLevel(int_log_level)
+        log_level_val = logging.getLevelName(log_level)
     except ValueError:
-        logger.setLevel(logging.getLevelName(log_level))
+        print(f'ERROR: Invalid value set for LOG_LEVEL: {log_level}')
+        sys.exit(1)
+
+    try:
+        log_level_terminal_val = logging.getLevelName(log_level_terminal)
+    except ValueError:
+        print('ERROR: Invalid value set for LOG_LEVEL_TERMINAL:'
+              f' {log_level_terminal}')
+        sys.exit(1)
 
     metpluslog = config.getstr('config', 'LOG_METPLUS', '')
+    if not metpluslog:
+        logger.setLevel(log_level_terminal_val)
+    else:
+        # set logger level to the minimum of the two log levels because
+        # setting level for each handler will not work otherwise
+        logger.setLevel(min(log_level_val, log_level_terminal_val))
 
-    if metpluslog:
-        # It is possible that more path, other than just LOG_DIR, was added
-        # to the metpluslog, by either a user defining more path in
-        # LOG_METPLUS or LOG_FILENAME_TEMPLATE definitions in their conf file.
-        # So lets check and make more directory if needed.
+        # create log directory if it does not already exist
         dir_name = os.path.dirname(metpluslog)
         if not os.path.exists(dir_name):
             mkdir_p(dir_name)
@@ -402,13 +364,14 @@ def get_logger(config, sublog=None):
         # set up the file logging
         file_handler = logging.FileHandler(metpluslog, mode='a')
         file_handler.setFormatter(formatter)
+        file_handler.setLevel(log_level_val)
         logger.addHandler(file_handler)
 
         # set up console logging
         stream_handler = logging.StreamHandler()
         stream_handler.setFormatter(formatter)
+        stream_handler.setLevel(log_level_terminal_val)
         logger.addHandler(stream_handler)
-
 
     # set add the logger to the config
     config.logger = logger

@@ -7,38 +7,59 @@ import sys
 import os
 import re
 
-from .. import get_python_version
+from .. import get_python_version, get_python_version_min
 
-SUPPORTED_PY_VERSION = get_python_version()
 
-def metplus_check_python_version(user_py, supported_py):
-    """!Test that the user's version of python is equal of higher than the
-        the supported version of python. Imported in each wrapper and run_metplus
-        to avoid confusing failures if the user's version is not current. Note:
-        SyntaxError from using f-strings (available in 3.6+) in earlier versions of
-        Python are output before the output from this function can be displayed.
-        Args:
-          @param user_py user's python version number, i.e. 3.8.1
-          @param supported_py currently supported python version number, i.e. 3.6.3
-          @returns True if version is at least supported, False if not
+def metplus_check_python_version(user):
+    """!Test that the user's version of python is equal or higher than the
+     the supported version of python. Also check against the recommended
+     version of Python. This is used in the run_metplus.py script
+     to avoid confusing failures if the user's version is not current. Note:
+     SyntaxError from using f-strings (available in 3.6+) in earlier versions
+     of Python are output before the output from this function can be
+     displayed.
+
+     @param user version of Python that the user is running
+     @returns True if version is at least supported, False if not
     """
-    supported_list = supported_py.split('.')
-    user_list = user_py.split('.')
+    supported = get_python_version_min()
+    recommended = get_python_version()
 
-    for user, supported in zip(user_list, supported_list):
+    # check if user's Python version can run METplus wrappers
+    if not _python_version_is_sufficient(user, supported):
+        print("ERROR: Must be using Python {}".format(supported),
+              "or higher with the required packages installed."
+              " You are using {}.".format(user))
+        print("See the METplus documentation for more information.")
+        return False
+
+    # check if user's Python version is at least the recommended version
+    if not _python_version_is_sufficient(user, recommended):
+        print("WARNING: Python {}".format(recommended),
+              "or higher is recommended."
+              " You are using {}.".format(user))
+        print("See the METplus documentation for more information.")
+
+    return True
+
+
+def _python_version_is_sufficient(user_version, test_version):
+    """! Check if user's version of Python is above or equal to another.
+
+    @param user_version Python version of user, e.g. 3.7.3
+    @param test_version Python version to compare, e.g. 3.8.6
+    @returns True if user's version is sufficient, False otherwise
+    """
+    for user, test in zip(user_version.split('.'), test_version.split('.')):
         # if the same version is used, continue
-        if int(user) == int(supported):
+        if int(user) == int(test):
             continue
 
         # if a higher version is used, break out of the loop
-        if int(user) > int(supported):
+        if int(user) > int(test):
             break
 
-        # a lower version is used - report and exit
-        print("ERROR: Must be using Python {} or higher ".format(supported_py)+
-              "with the required packages installed.")
-        print("You are using {}.".format(user_py))
-        print("See the METplus documentation for more information.")
+        # a lower version is used, return False
         return False
 
     return True
@@ -53,6 +74,7 @@ def metplus_check_environment_variables(environ):
         return False
 
     return True
+
 
 def evaluates_to_true(value):
     """!Check if the value matches an expression that should be interpretted as False
@@ -69,6 +91,7 @@ def evaluates_to_true(value):
         return False
 
     return True
+
 
 def plot_wrappers_are_enabled(environ):
     """! Check METPLUS_[DISABLE/ENABLE]_PLOT_WRAPPERS. If both are set it should error
@@ -97,13 +120,12 @@ def plot_wrappers_are_enabled(environ):
     # default behavior is to enable plot wrappers
     return True
 
+
 # get user's python version and check that it is equal or
 # higher than the supported version
-USER_PY_VERSION = sys.version.split(' ')[0]
-compatible_python_version = metplus_check_python_version(USER_PY_VERSION,
-                                                         SUPPORTED_PY_VERSION)
+user_python_version = sys.version.split(' ')[0]
+compatible_python_version = metplus_check_python_version(user_python_version)
 
 compatible_environment = metplus_check_environment_variables(os.environ)
-
 if not compatible_python_version or not compatible_environment:
     sys.exit(1)

@@ -45,6 +45,7 @@ class PointStatWrapper(CompareGriddedWrapper):
         'METPLUS_MESSAGE_TYPE_GROUP_MAP',
         'METPLUS_FCST_FILE_TYPE',
         'METPLUS_OBS_FILE_TYPE',
+        'METPLUS_SEEPS_P1_THRESH',
     ]
 
     # handle deprecated env vars used pre v4.0.0
@@ -57,27 +58,30 @@ class PointStatWrapper(CompareGriddedWrapper):
         'POINT_STAT_MESSAGE_TYPE',
     ]
 
-    OUTPUT_FLAGS = ['fho',
-                    'ctc',
-                    'cts',
-                    'mctc',
-                    'mcts',
-                    'cnt',
-                    'sl1l2',
-                    'sal1l2',
-                    'vl1l2',
-                    'val1l2',
-                    'vcnt',
-                    'pct',
-                    'pstd',
-                    'pjc',
-                    'prc',
-                    'ecnt',
-                    'rps',
-                    'eclv',
-                    'mpr',
-                    'orank',
-                    ]
+    OUTPUT_FLAGS = [
+        'fho',
+        'ctc',
+        'cts',
+        'mctc',
+        'mcts',
+        'cnt',
+        'sl1l2',
+        'sal1l2',
+        'vl1l2',
+        'val1l2',
+        'vcnt',
+        'pct',
+        'pstd',
+        'pjc',
+        'prc',
+        'ecnt',
+        'orank',
+        'rps',
+        'eclv',
+        'mpr',
+        'seeps',
+        'seeps_mpr',
+    ]
 
     def __init__(self, config, instance=None):
         self.app_name = 'point_stat'
@@ -273,6 +277,10 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         self.add_met_config(name='message_type_group_map',
                             data_type='list',
+                            extra_args={'remove_quotes': True})
+
+        self.add_met_config(name='seeps_p1_thresh',
+                            data_type='string',
                             extra_args={'remove_quotes': True})
 
         if not c_dict['FCST_INPUT_TEMPLATE']:

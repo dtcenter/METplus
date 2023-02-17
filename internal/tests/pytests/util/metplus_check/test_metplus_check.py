@@ -10,19 +10,20 @@ from metplus.util import metplus_check
 #  a later version of python passes
 #  an earlier version of python fails
 @pytest.mark.parametrize(
-    'user, supported, torf', [
-        ('3.6.3', '3.6.3', True), # same
-        ('2.7',   '3.6.3', False), # earlier major
-        ('3.6.2', '3.6.3', False), # earlier bugfix
-        ('3.6.4', '3.6.3', True), # later bugfix
-        ('3.5.5', '3.6.3', False), # earlier minor, later bugfix
-        ('3.8.1', '3.6.3', True), # later minor, earlier bugfix
-        ('4.0.0', '3.6.3', True), # later major
+    'user, torf', [
+        ('3.6.3', True),  # same
+        ('2.7', False),  # earlier major
+        ('3.6.2', False),  # earlier bugfix
+        ('3.6.4', True),  # later bugfix
+        ('3.5.5', False),  # earlier minor, later bugfix
+        ('3.8.1', True),  # later minor, earlier bugfix
+        ('4.0.0', True),  # later major
     ]
 )
 @pytest.mark.util
-def test_metplus_check_python(user, supported, torf):
-    assert metplus_check.metplus_check_python_version(user, supported) == torf
+def test_metplus_check_python(user, torf):
+    # check that version is above minimum python requirement
+    assert metplus_check.metplus_check_python_version(user) == torf
 
 
 # checking METPLUS_DISABLE_PLOT_WRAPPERS and METPLUS_ENABLE_PLOT_WRAPPERS

@@ -71,6 +71,7 @@ def get_file_type(filepath):
 
 
 def compare_dir(dir_a, dir_b, debug=False, save_diff=False):
+    print('::group::Full diff results:')
     # if input are files and not directories, compare them 
     if os.path.isfile(dir_a):
         result = compare_files(dir_a, dir_b, debug=debug, save_diff=save_diff)
@@ -136,6 +137,7 @@ def compare_dir(dir_a, dir_b, debug=False, save_diff=False):
                 print(f"ERROR: File does not exist: {filepath_a}")
                 diff_files.append(('', filepath_b, 'file not found (new output)', ''))
 
+    print('::endgroup::')
     print("\n\n**************************************************\nSummary:\n")
     if diff_files:
         print("\nERROR: Some differences were found")

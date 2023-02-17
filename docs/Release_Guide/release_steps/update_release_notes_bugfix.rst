@@ -6,21 +6,13 @@ release. Open the following URL in a browser:
 
 .. parsed-literal::
 
-    https://github.com/orgs/dtcenter/projects?type=beta
+    https://github.com/orgs/dtcenter/projects
 
 * Click on the project that corresponds to support for the release, i.e.
   METplus Version X.Y Support
 
-* Navigate to the "Closed Issues" tab.
-  **If this tab does not exist**, follow these instructions to create it:
-
-  * Click on "+ New view" button on the far right side of the view tabs
-  * Click on "View <N>" (where <N> is an integer) and rename it to
-    "Closed Issues"
-  * Click on the down arrow next to the newly created view
-  * Click on "Search or filter this view"
-  * Enter the following info into the filter bar: **is:closed is:issue**
-  * Click on the down arrow next to the view and click "Save changes"
+* Navigate to the "Closed Issues" tab. If this tab does not exist,
+  see :ref:`wo-support-project` to create it.
 
 * Find the closed issues with dtcenter/|projectRepo| in the Repository column
   that have been added since the last bugfix release for |projectRepo|.

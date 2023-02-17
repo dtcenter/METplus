@@ -49,7 +49,8 @@ class CommandRunner(object):
         self.config = config
         self.verbose = verbose
         self.skip_run = skip_run
-        self.log_command_to_met_log = False
+        self.log_met_to_metplus = config.getbool('config',
+                                                 'LOG_MET_OUTPUT_TO_METPLUS')
 
     def run_cmd(self, cmd, env=None, log_name=None,
                 copyable_env=None, **kwargs):
@@ -69,7 +70,6 @@ class CommandRunner(object):
             being run.
             @param kwargs Other options sent to the produtil Run constructor
         """
-
         if cmd is None:
             return cmd
 
@@ -98,12 +98,12 @@ class CommandRunner(object):
                                 ' contructor: %s, ' % repr(self))
 
         # Determine where to send the output from the MET command.
-        log_dest = self.cmdlog_destination(cmdlog=log_name+'.log')
+        log_dest = self.get_log_path(log_filename=log_name+'.log')
 
         # determine if command must be run in a shell
         run_inshell = False
         if '*' in cmd or ';' in cmd or '<' in cmd or '>' in cmd:
-            run_inshell=True
+            run_inshell = True
 
         # KEEP This comment as a reference note.
         # Run the executable in a new process instead of through a shell.
@@ -119,8 +119,7 @@ class CommandRunner(object):
         the_exe = shlex.split(cmd)[0]
         the_args = shlex.split(cmd)[1:]
         if log_dest:
-            self.logger.debug("log_name is: %s, output sent to: %s" % (log_name, log_dest))
-
+            self.logger.debug("Logging command output to: %s" % log_dest)
             self.log_header_info(log_dest, copyable_env, cmd)
 
             if run_inshell:
@@ -145,16 +144,18 @@ class CommandRunner(object):
             # calculate time to run
             end_cmd_time = datetime.now()
             total_cmd_time = end_cmd_time - start_cmd_time
-            self.logger.debug(f'Finished running {the_exe} '
-                              f'in {total_cmd_time}')
+            self.logger.info(f'Finished running {the_exe} '
+                             f'- took {total_cmd_time}')
 
         return ret, cmd
 
     def log_header_info(self, log_dest, copyable_env, cmd):
         with open(log_dest, 'a+') as log_file_handle:
-            # if logging MET command to its own log file, add command that was run to that log
-            if self.log_command_to_met_log:
-                # if environment variables were set and available, write them to MET tool log
+            # if logging MET command to its own log file,
+            # add command that was run to that log
+            if not self.log_met_to_metplus:
+                # if environment variables were set and available,
+                # write them to MET tool log
                 if copyable_env:
                     log_file_handle.write(
                         "\nCOPYABLE ENVIRONMENT FOR NEXT COMMAND:\n")
@@ -167,93 +168,27 @@ class CommandRunner(object):
             # write line to designate where MET tool output starts
             log_file_handle.write("OUTPUT:\n")
 
-    # if cmdlog=None. The returned value is either the METplus log
-    # or None
-    def cmdlog_destination(self, cmdlog=None):
+    def get_log_path(self, log_filename):
         """!Returns the location of where the command output will be sent.
            The METplus log, the MET log, or tty.
-           Args:
-               @param cmdlog: The cmdlog is a filename, any path info is removed.
-                              It is joined with LOG_DIR. If cmdlog is None,
-                              output is sent to either the METplus log or TTY.
-               @returns log_dest: The destination of where to send the command output.
+
+        @param log_filename file name to use if logging to a separate file
+        @returns Log file path or None if logging to terminal
         """
+        # if LOG_METPLUS is unset or empty, log to terminal
+        metplus_log = self.config.getstr('config', 'LOG_METPLUS', '')
+        if not metplus_log:
+            return None
 
-        # Check the cmdlog argument.
-        # ie. if cmdlog = '', or '/', or trailing slash /path/blah.log/ etc...,
-        # os.path.basename returns '', and we can't write to '',
-        # so set cmdlog to None.
-        if cmdlog:
-            cmdlog = os.path.basename(cmdlog)
-            if not cmdlog: cmdlog = None
+        # return METplus log file if logging all output there
+        if self.log_met_to_metplus:
+            return metplus_log
 
-        # Set the default destination to None, which will be TTY
-        cmdlog_dest = None
+        log_path = os.path.join(self.config.getdir('LOG_DIR'), log_filename)
 
-        # metpluslog is the setting used to determine if output is sent to either
-        # a log file or tty.
-        # metpluslog includes /path/filename.
-        metpluslog = self.config.getstr('config', 'LOG_METPLUS', '')
+        # add log timestamp to log filename if set
+        log_timestamp = self.config.getstr('config', 'LOG_TIMESTAMP', '')
+        if log_timestamp:
+            log_path = f'{log_path}.{log_timestamp}'
 
-        self.log_command_to_met_log = False
-
-        # This block determines where to send the command output, cmdlog_dest.
-        # To the METplus log, a MET log, or tty.
-        # If no metpluslog, cmlog_dest is None, which should be interpreted as tty.
-        if metpluslog:
-            log_met_output_to_metplus = self.config.getbool('config',
-                                                     'LOG_MET_OUTPUT_TO_METPLUS')
-            # If cmdlog is None send output to metpluslog.
-            if log_met_output_to_metplus or not cmdlog:
-                cmdlog_dest = metpluslog
-            else:
-                self.log_command_to_met_log = True
-                log_timestamp = self.config.getstr('config', 'LOG_TIMESTAMP', '')
-                if log_timestamp:
-                    cmdlog_dest = os.path.join(self.config.getdir('LOG_DIR'),
-                                            cmdlog + '.' + log_timestamp)
-                else:
-                    cmdlog_dest = os.path.join(self.config.getdir('LOG_DIR'),cmdlog)
-
-
-        # If cmdlog_dest None we will not redirect output to a log file
-        # when building the Runner object, so it will end up going to tty.
-        return cmdlog_dest
-
-    # This method SHOULD ONLY BE USED by wrappers that build their cmd
-    # outside of the command_builder.py get_command() method
-    # ie. such as tc_pairs wrapper.  Objects that fully use the CommandBuilder
-    # already have the metverbosity set in the command.
-    def insert_metverbosity_opt(self,cmd=None):
-        """!Returns the cmd with the verbosity option inserted
-           and set after the first space found in the cmd string or
-           after the cmd string if there are no spaces.
-
-           There is NO CHECKING to see if the verbosity is already
-           inserted in the command. If cmd is None, None is returned.
-
-           Args:
-               @param cmd: One string, The cmd string to insert the -v option.
-               @returns cmd: The cmd string w/ -v <level:1-5> inserted
-                             after the first white space or end if no
-                             spaces. If cmd is None, None is returned.
-        """
-
-        if cmd:
-
-            verbose_opt = " -v "+str(self.verbose) + " "
-            # None splits on whitespace space, tab, newline, return, formfeed
-            cmd_split = cmd.split(None, 1)
-
-            # Handle two cases of splitting.
-            # /path/to/cmd
-            # /path/to/cmd blah blah blah ....
-            if len(cmd_split) == 1:
-                cmd = cmd_split[0] + verbose_opt
-            elif len(cmd_split) == 2:
-                cmd = cmd_split[0] + verbose_opt + cmd_split[1]
-            else:
-                self.logger.debug('Can not Insert MET verbosity option, '
-                                  'command unchanged, using: %s .' % repr(cmd))
-
-        return cmd
+        return log_path

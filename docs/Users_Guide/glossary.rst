@@ -2361,15 +2361,20 @@ METplus Configuration Glossary
      | *Used by:*  All
 
    LOG_LEVEL
-     Specify the level of logging. Everything above this level is sent to standard output. To quiet the output to a comfortable level, set this to "ERROR"
+     Specify the level of logging for the METplus wrapper output to the
+     :term:`LOG_METPLUS` log file. Log level of the applications that are
+     called by the wrappers are controlled with :term:`LOG_MET_VERBOSITY`.
+     Default log level is INFO. Set to DEBUG to see additional log output.
+     Log level for screen output can be set with :term:`LOG_LEVEL_TERMINAL`.
 
-     Options (ordered MOST verbose to LEAST verbose):
-     | NOTSET
-     | DEBUG
-     | INFO
-     | WARNING
-     | ERROR
-     | CRITICAL
+     Options (ordered LEAST verbose to MOST verbose):
+     CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET
+
+     | *Used by:*  All
+
+   LOG_LEVEL_TERMINAL
+     Specify the level of logging for terminal screen output.
+     See :term:`LOG_LEVEL` for more information.
 
      | *Used by:*  All
 
@@ -6355,7 +6360,7 @@ METplus Configuration Glossary
      | *Used by:*  GridDiag
 
    MET_DATA_DB_DIR
-     Set this the location of the dtcenter/METdatadb repository.
+     Set this the location of the dtcenter/METdataio repository.
 
      | *Used by:*  METdbLoad
 
@@ -6629,6 +6634,11 @@ METplus Configuration Glossary
 
      | *Used by:* GridStat
 
+   GRID_STAT_OUTPUT_FLAG_SEEPS
+     Specify the value for 'output_flag.seeps' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
    GRID_STAT_NC_PAIRS_FLAG_LATLON
      Specify the value for 'nc_pairs_flag.latlon' in the MET configuration file for GridStat.
 
@@ -6681,6 +6691,11 @@ METplus Configuration Glossary
 
    GRID_STAT_NC_PAIRS_FLAG_APPLY_MASK
      Specify the value for 'nc_pairs_flag.apply_mask' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_NC_PAIRS_FLAG_SEEPS
+     Specify the value for 'nc_pairs_flag.seeps' in the MET configuration file for GridStat.
 
      | *Used by:* GridStat
 
@@ -7024,6 +7039,16 @@ METplus Configuration Glossary
 
    POINT_STAT_OUTPUT_FLAG_ORANK
      Specify the value for 'output_flag.orank' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_SEEPS
+     Specify the value for 'output_flag.seeps' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_SEEPS_MPR
+     Specify the value for 'output_flag.seeps_mpr' in the MET configuration file for PointStat.
 
      | *Used by:* PointStat
 
@@ -10094,6 +10119,16 @@ METplus Configuration Glossary
 
      | *Used by:* StatAnalysis
 
+   ENSEMBLE_STAT_ENS_MEAN_INPUT_DIR
+     Input directory for the optional -ens_mean file to use with the MET tool ensemble_stat.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_ENS_MEAN_INPUT_TEMPLATE
+     Template used to specify the optional -ens_mean file for the MET tool ensemble_stat.
+
+     | *Used by:*  EnsembleStat
+
    TC_PAIRS_DIAG_INFO_MAP<n>_DIAG_SOURCE
      Specify the value for the nth 'diag_info_map.diag_source' in the MET configuration file for TCPairs.
 
@@ -10203,3 +10238,13 @@ METplus Configuration Glossary
      Specify the value for 'mask.poly' in the MET configuration file for SeriesAnalysis.
 
      | *Used by:* SeriesAnalysis
+
+   GRID_STAT_SEEPS_P1_THRESH
+     Specify the value for 'seeps_p1_thresh' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   POINT_STAT_SEEPS_P1_THRESH
+     Specify the value for 'seeps_p1_thresh' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat

@@ -21,19 +21,16 @@ if [ "${GITHUB_EVENT_NAME}" == "pull_request" ]; then
   if [ "${GITHUB_BASE_REF: -4}" != "-ref" ] && \
     ([ "${GITHUB_BASE_REF:0:7}" == "develop" ] || \
      [ "${GITHUB_BASE_REF:0:6}" == "main_v" ]); then
-    run_use_cases=true
     run_all_use_cases=true
     run_diff=true
   fi
 # run all use cases and diff logic for external workflow trigger
 elif [ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]; then
-    run_use_cases=true
     run_all_use_cases=true
     run_diff=true
     external_trigger=true
 # run all use cases and save truth data if -ref branch and not PR
 elif [ "${GITHUB_REF: -4}" == -ref ]; then
-  run_use_cases=true
   run_all_use_cases=true
   run_save_truth_data=true
 # if not pull request or -ref branch, apply commit messages overrides
@@ -44,8 +41,8 @@ else
   branch_name=`cut -d "/" -f3 <<< "${GITHUB_REF}"`
   if [ "$branch_name" == "develop" ] || \
 	 [ "${branch_name:0:6}" == "main_v" ]; then
-    run_use_cases=true
     run_all_use_cases=true
+    run_diff=true
   else
 
     # check commit messages for skip or force keywords
@@ -67,7 +64,6 @@ else
     fi
 
     if grep -q "ci-run-all-cases" <<< "$commit_msg"; then
-      run_use_cases=true
       run_all_use_cases=true
     fi
 
@@ -81,6 +77,11 @@ else
     fi
 
   fi
+fi
+
+# if running all use cases, set run_use_cases to true
+if [ "$run_all_use_cases" == "true" ]; then
+    run_use_cases=true
 fi
 
 echo "run_get_image=$run_get_image" >> $GITHUB_OUTPUT

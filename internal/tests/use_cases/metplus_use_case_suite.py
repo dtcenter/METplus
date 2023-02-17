@@ -395,10 +395,12 @@ def parse_all_use_cases_file():
             set_output = f'config.USE_CASE_NAME={name}'
             config_args.append(set_output)
 
-            use_case_dict = {'index': index,
-                             'name': name,
-                             'config_args': config_args,
-                             'requirements': requirements}
+            use_case_dict = {
+                'index': index,
+                'name': name,
+                'config_args': config_args,
+                'requirements': requirements,
+            }
             all_cases[category].append(use_case_dict)
             num_cases += 1
 
@@ -418,9 +420,13 @@ if __name__ == "__main__":
 
     all_use_cases.add_use_case_groups('climate')
 
-    all_use_cases.add_use_case_groups('cryosphere')
+    all_use_cases.add_use_case_groups('air_quality_and_comp')
+
+    all_use_cases.add_use_case_groups('climate')
 
     all_use_cases.add_use_case_groups('data_assimilation')
+
+    all_use_cases.add_use_case_groups('marine_and_cryosphere')
 
     # slice(5) == medium range 0-4
     all_use_cases.add_use_case_groups('medium_range',
@@ -434,9 +440,19 @@ if __name__ == "__main__":
 
     all_use_cases.add_use_case_groups('precipitation')
 
+    all_use_cases.add_use_case_groups('s2s')
+
+    all_use_cases.add_use_case_groups('s2s_mid_lat')
+
+    all_use_cases.add_use_case_groups('s2s_mjo')
+
     all_use_cases.add_use_case_groups('short_range')
 
-    all_use_cases.add_use_case_groups('s2s&space_weather&tc_and_extra_tc')
+    all_use_cases.add_use_case_groups('space_weather')
+
+    all_use_cases.add_use_case_groups('tc_and_extra_tc')
+
+    all_use_cases.add_use_case_groups('unstructured_grids')
 
     all_use_cases.print()
 

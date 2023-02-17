@@ -146,6 +146,7 @@ _MultiField_PrepBufr.conf
 #   * NOAAEMCOrgUseCase
 #   * RegriddinginToolUseCase
 #   * ObsTimeSummaryUseCase
+#   * ClimatologyUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

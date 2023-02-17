@@ -10,7 +10,7 @@ met_tool_wrapper/METdbLoad/METdbLoad.conf
 # --------------------
 #
 # Load MET data into a database using the met_db_load.py script
-# found in dtcenter/METdatadb
+# found in dtcenter/METdataio
 
 ##############################################################################
 # Datasets
@@ -114,6 +114,19 @@ met_tool_wrapper/METdbLoad/METdbLoad.conf
 # .. note::
 #
 #   * METdbLoadUseCase
+#   * AirQualityAndCompAppUseCase
+#   * ClimateAppUseCase
+#   * ShortRangeAppUseCase
+#   * DataAssimilationAppUseCase
+#   * EnsembleAppUseCase
+#   * MarineAndCryosphereAppUseCase
+#   * MediumRangeAppUseCase
+#   * PrecipitationAppUseCase
+#   * SpaceWeatherAppUseCase
+#   * S2SAppUseCase
+#   * S2SMJOAppUseCase
+#   * S2SMidLatAppUseCase
+#   * TCandExtraTCAppUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
