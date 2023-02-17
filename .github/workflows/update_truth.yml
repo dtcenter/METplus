@@ -30,7 +30,6 @@ jobs:
         name: Checkout repository
         with:
           fetch-depth: 0
-          token: ${{ github.token }}
       - name: Resolve conflicts between branch and branch-ref
         run: |
           branch_name=${{ env.branch_name }}
@@ -41,6 +40,8 @@ jobs:
           fi
           
           echo ${branch_name}-ref does exist -- update it
+          git config --global user.name "metplus-bot"
+          git config --global user.email "97135045+metplus-bot@users.noreply.github.com"
           echo git checkout ${branch_name}
           git checkout ${branch_name}
           echo git merge -s ours origin/${branch_name}-ref
