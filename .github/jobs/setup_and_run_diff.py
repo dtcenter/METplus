@@ -49,7 +49,7 @@ VOLUME_MOUNTS = [
 MOUNT_ARGS = ' '.join(VOLUME_MOUNTS)
 
 # command to run inside Docker
-diff_command = (f'/usr/local/envs/diff{VERSION_EXT}/bin/python3 '
+diff_command = (f'/usr/local/conda/envs/diff{VERSION_EXT}/bin/python3 '
                 f'{GITHUB_WORKSPACE}/{CI_JOBS_DIR}/run_diff_docker.py')
 
 # start detached interactive diff env container
