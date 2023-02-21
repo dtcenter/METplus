@@ -304,10 +304,16 @@ def test_met_dictionary_in_var_options(metplus_config):
          {'METPLUS_INTERP_DICT': 'interp = {shape = SQUARE;}'}),
 
         ({'POINT_STAT_INTERP_TYPE_METHOD': 'BILIN', },
-         {'METPLUS_INTERP_DICT': 'interp = {type = {method = BILIN;}}'}),
+         {'METPLUS_INTERP_DICT': 'interp = {type = {method = [BILIN];}}'}),
 
         ({'POINT_STAT_INTERP_TYPE_WIDTH': '2', },
-         {'METPLUS_INTERP_DICT': 'interp = {type = {width = 2;}}'}),
+         {'METPLUS_INTERP_DICT': 'interp = {type = {width = [2];}}'}),
+        # multiple interp type methods
+        ({'POINT_STAT_INTERP_TYPE_METHOD': 'BILIN, NEAREST', },
+         {'METPLUS_INTERP_DICT': 'interp = {type = {method = [BILIN, NEAREST];}}'}),
+        # multiple interp type methods
+        ({'POINT_STAT_INTERP_TYPE_WIDTH': '2,3', },
+         {'METPLUS_INTERP_DICT': 'interp = {type = {width = [2, 3];}}'}),
 
         ({
              'POINT_STAT_INTERP_VLD_THRESH': '0.5',
@@ -318,7 +324,7 @@ def test_met_dictionary_in_var_options(metplus_config):
          {
              'METPLUS_INTERP_DICT': ('interp = {'
                                      'vld_thresh = 0.5;shape = SQUARE;'
-                                     'type = {method = BILIN;width = 2;}}')}),
+                                     'type = {method = [BILIN];width = [2];}}')}),
 
         ({'POINT_STAT_CLIMO_MEAN_FILE_NAME': '/some/climo_mean/file.txt', },
          {'METPLUS_CLIMO_MEAN_DICT': ('climo_mean = {file_name = '
