@@ -150,7 +150,7 @@ def print_doc_text(tool_name, input_dict):
 
     print("---------------------------------------------")
     print('\n==================================================\n')
-    print(f"In internal/tests/pytests/{tool_name}/"
+    print(f"In internal/tests/pytests/wrappers/{tool_name}/"
           f"test_{tool_name}_wrapper.py"
           "\n\nAdd the following items to "
           "the tests to ensure the new items are set properly. Note: "

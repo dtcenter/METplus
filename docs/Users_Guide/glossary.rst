@@ -7613,6 +7613,11 @@ METplus Configuration Glossary
 
      | *Used by:* TCPairs
 
+   TC_PAIRS_CONSENSUS<n>_WRITE_MEMBERS
+     Specify the value for the nth 'consensus.write_members' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
+
    FCST_SERIES_ANALYSIS_PROB_THRESH
      Threshold values to be used for probabilistic data in series_analysis. The value can be a single item or a comma separated list of items that must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le).
 
