@@ -26,6 +26,8 @@ they will vary widely depending on the code base.
 New "type" labels should only be added to a repository when a corresponding
 GitHub issue template is also added.
 
+To add a new common label, manually update the common_labels.txt file.
+
 Sample commands for processing all METplus repos: 
 
 ```
