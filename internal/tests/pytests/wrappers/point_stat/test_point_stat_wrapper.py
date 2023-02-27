@@ -169,6 +169,18 @@ def test_met_dictionary_in_var_options(metplus_config):
           'OBS_WINDOW_BEGIN': '-2700',
           'OBS_WINDOW_END': '2700'
           }),
+        # test that {app}_OBS_WINDOW are preferred over
+        # OBS_{app}_WINDOW and generic OBS_WINDOW
+        ({'OBS_POINT_STAT_WINDOW_BEGIN': '-2700',
+          'OBS_POINT_STAT_WINDOW_END': '2700',
+          'POINT_STAT_OBS_WINDOW_BEGIN': '-1800',
+          'POINT_STAT_OBS_WINDOW_END': '1800',
+          'OBS_WINDOW_BEGIN': '-900',
+          'OBS_WINDOW_END': '900',
+          },
+         {'METPLUS_OBS_WINDOW_DICT':
+              'obs_window = {beg = -1800;end = 1800;}',
+          }),
 
         ({'POINT_STAT_CLIMO_CDF_CDF_BINS': '1', },
          {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {cdf_bins = 1.0;}'}),
