@@ -30,6 +30,19 @@ When applicable, release notes are followed by the
 `GitHub issue <https://github.com/dtcenter/METplus/issues>`__ number which
 describes the bugfix, enhancement, or new feature.
 
+METplus Version 5.0.1 Release Notes (2023-02-27)
+------------------------------------------------
+
+* Internal:
+
+  * Add modulefiles to the repository
+    (`#2015 <https://github.com/dtcenter/METplus/issues/2015>`_)
+
+* Documentation:
+
+  * Update the METplus Components Python Requirements Documentation
+    (`#2016 <https://github.com/dtcenter/METplus/issues/2016>`_)
+
 METplus Version 5.0.1 Release Notes (2023-02-21)
 ------------------------------------------------
 
