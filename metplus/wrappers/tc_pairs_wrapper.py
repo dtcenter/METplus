@@ -410,6 +410,7 @@ class TCPairsWrapper(CommandBuilder):
             'members': 'list',
             'required': ('list', 'remove_quotes'),
             'min_req': 'int',
+            'write_members': 'bool',
         }
         return_code = add_met_config_dict_list(config=self.config,
                                                app_name=self.app_name,

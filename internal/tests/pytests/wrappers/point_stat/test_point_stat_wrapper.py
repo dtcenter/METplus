@@ -169,6 +169,18 @@ def test_met_dictionary_in_var_options(metplus_config):
           'OBS_WINDOW_BEGIN': '-2700',
           'OBS_WINDOW_END': '2700'
           }),
+        # test that {app}_OBS_WINDOW are preferred over
+        # OBS_{app}_WINDOW and generic OBS_WINDOW
+        ({'OBS_POINT_STAT_WINDOW_BEGIN': '-2700',
+          'OBS_POINT_STAT_WINDOW_END': '2700',
+          'POINT_STAT_OBS_WINDOW_BEGIN': '-1800',
+          'POINT_STAT_OBS_WINDOW_END': '1800',
+          'OBS_WINDOW_BEGIN': '-900',
+          'OBS_WINDOW_END': '900',
+          },
+         {'METPLUS_OBS_WINDOW_DICT':
+              'obs_window = {beg = -1800;end = 1800;}',
+          }),
 
         ({'POINT_STAT_CLIMO_CDF_CDF_BINS': '1', },
          {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {cdf_bins = 1.0;}'}),
@@ -304,10 +316,16 @@ def test_met_dictionary_in_var_options(metplus_config):
          {'METPLUS_INTERP_DICT': 'interp = {shape = SQUARE;}'}),
 
         ({'POINT_STAT_INTERP_TYPE_METHOD': 'BILIN', },
-         {'METPLUS_INTERP_DICT': 'interp = {type = {method = BILIN;}}'}),
+         {'METPLUS_INTERP_DICT': 'interp = {type = {method = [BILIN];}}'}),
 
         ({'POINT_STAT_INTERP_TYPE_WIDTH': '2', },
-         {'METPLUS_INTERP_DICT': 'interp = {type = {width = 2;}}'}),
+         {'METPLUS_INTERP_DICT': 'interp = {type = {width = [2];}}'}),
+        # multiple interp type methods
+        ({'POINT_STAT_INTERP_TYPE_METHOD': 'BILIN, NEAREST', },
+         {'METPLUS_INTERP_DICT': 'interp = {type = {method = [BILIN, NEAREST];}}'}),
+        # multiple interp type methods
+        ({'POINT_STAT_INTERP_TYPE_WIDTH': '2,3', },
+         {'METPLUS_INTERP_DICT': 'interp = {type = {width = [2, 3];}}'}),
 
         ({
              'POINT_STAT_INTERP_VLD_THRESH': '0.5',
@@ -318,7 +336,7 @@ def test_met_dictionary_in_var_options(metplus_config):
          {
              'METPLUS_INTERP_DICT': ('interp = {'
                                      'vld_thresh = 0.5;shape = SQUARE;'
-                                     'type = {method = BILIN;width = 2;}}')}),
+                                     'type = {method = [BILIN];width = [2];}}')}),
 
         ({'POINT_STAT_CLIMO_MEAN_FILE_NAME': '/some/climo_mean/file.txt', },
          {'METPLUS_CLIMO_MEAN_DICT': ('climo_mean = {file_name = '

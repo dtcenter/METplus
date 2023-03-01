@@ -365,8 +365,8 @@ that reformat gridded data
             'vld_thresh': 'float',
             'shape': ('string', 'remove_quotes'),
             'type': ('dict', None, {
-                'method': ('string', 'remove_quotes'),
-                'width': 'int',
+                'method': ('list', 'remove_quotes'),
+                'width': ('list', 'remove_quotes'),
             }),
         }
         if uses_field:

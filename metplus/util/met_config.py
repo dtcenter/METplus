@@ -165,28 +165,32 @@ def add_met_config_dict(config, app_name, output_dict, dict_name, items):
 
         if 'dict' not in data_type:
             children = None
-            # handle legacy OBS_WINDOW variables that put OBS_ before app name
-            # i.e. OBS_GRID_STAT_WINDOW_[BEGIN/END]
-            if dict_name == 'obs_window':
-                suffix = 'BEGIN' if name == 'beg' else name.upper()
-
-                metplus_configs.append(
-                    f"OBS_{app_name}_WINDOW_{suffix}".upper()
-                )
-
-                # also add support for legacy PB2NC_WINDOW_[BEGIN/END]
-                metplus_configs.append(
-                    f"{app_name}_WINDOW_{suffix}".upper()
-                )
-
-                # also add OBS_WINDOW_[BEGIN/END]
-                metplus_configs.append(f"OBS_WINDOW_{suffix}")
+            metplus_configs.append(metplus_name)
 
             # if variable ends with _BEG, read _BEGIN first
             if metplus_name.endswith('BEG'):
                 metplus_configs.append(f'{metplus_name}IN')
 
-            metplus_configs.append(metplus_name)
+            if dict_name == 'obs_window':
+                suffix = 'BEGIN' if name == 'beg' else name.upper()
+
+                # handle legacy OBS_WINDOW variables that put OBS_ before
+                # app name i.e. OBS_GRID_STAT_WINDOW_[BEGIN/END]
+                metplus_configs.append(
+                    f"OBS_{app_name}_WINDOW_{suffix}".upper()
+                )
+
+                # also add support for legacy PB2NC_WINDOW_[BEGIN/END]
+                if app_name.lower() == 'pb2nc':
+                    metplus_configs.append(
+                        f"{app_name}_WINDOW_{suffix}".upper()
+                    )
+
+                # also add OBS_WINDOW_[BEGIN/END]
+                metplus_configs.append(f"{dict_name}_{name}".upper())
+                if name == 'beg':
+                    metplus_configs.append(f"{dict_name}_{name}IN".upper())
+
             # add other variable names to search if expected name is unset
             if nicknames:
                 for nickname in nicknames:

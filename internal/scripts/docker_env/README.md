@@ -73,7 +73,7 @@ docker push dtcenter/metplus-envs:h5py.${METPLUS_ENV_VERSION}
 
 ```
 export METPLUS_ENV_VERSION=v5.1
-./scripts/h5py_env.sh
+./scripts/h5py_env.sh ${METPLUS_ENV_VERSION}
 ```
 
 
