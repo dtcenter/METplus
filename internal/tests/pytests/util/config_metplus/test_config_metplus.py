@@ -103,18 +103,18 @@ def test_find_indices_in_config_section(metplus_config, regex, index,
 
 @pytest.mark.parametrize(
     'config_var_name, expected_indices, set_met_tool', [
-        ('FCST_GRID_STAT_VAR1_NAME', ['1'], True),
-        ('FCST_GRID_STAT_VAR2_INPUT_FIELD_NAME', ['2'], True),
-        ('FCST_GRID_STAT_VAR3_FIELD_NAME', ['3'], True),
-        ('BOTH_GRID_STAT_VAR4_NAME', ['4'], True),
-        ('BOTH_GRID_STAT_VAR5_INPUT_FIELD_NAME', ['5'], True),
-        ('BOTH_GRID_STAT_VAR6_FIELD_NAME', ['6'], True),
-        ('FCST_VAR7_NAME', ['7'], False),
-        ('FCST_VAR8_INPUT_FIELD_NAME', ['8'], False),
-        ('FCST_VAR9_FIELD_NAME', ['9'], False),
-        ('BOTH_VAR10_NAME', ['10'], False),
-        ('BOTH_VAR11_INPUT_FIELD_NAME', ['11'], False),
-        ('BOTH_VAR12_FIELD_NAME', ['12'], False),
+        ('FCST_GRID_STAT_VAR1_NAME', [1], True),
+        ('FCST_GRID_STAT_VAR2_INPUT_FIELD_NAME', [2], True),
+        ('FCST_GRID_STAT_VAR3_FIELD_NAME', [3], True),
+        ('BOTH_GRID_STAT_VAR4_NAME', [4], True),
+        ('BOTH_GRID_STAT_VAR5_INPUT_FIELD_NAME', [5], True),
+        ('BOTH_GRID_STAT_VAR6_FIELD_NAME', [6], True),
+        ('FCST_VAR7_NAME', [7], False),
+        ('FCST_VAR8_INPUT_FIELD_NAME', [8], False),
+        ('FCST_VAR9_FIELD_NAME', [9], False),
+        ('BOTH_VAR10_NAME', [10], False),
+        ('BOTH_VAR11_INPUT_FIELD_NAME', [11], False),
+        ('BOTH_VAR12_FIELD_NAME', [12], False),
     ]
 )
 @pytest.mark.util
@@ -126,12 +126,14 @@ def test_find_var_indices_fcst(metplus_config,
     data_types = ['FCST']
     config.set('config', config_var_name, "NAME1")
     met_tool = 'grid_stat' if set_met_tool else None
-    var_name_indices = config_metplus._find_var_name_indices(config,
-                                                             data_types=data_types,
-                                                             met_tool=met_tool)
+    actual_indices = (
+        config_metplus._find_var_name_indices(config,
+                                              data_types=data_types,
+                                              met_tool=met_tool)
+    )
 
-    assert len(var_name_indices) == len(expected_indices)
-    for actual_index in var_name_indices:
+    assert len(actual_indices) == len(expected_indices)
+    for actual_index in actual_indices:
         assert actual_index in expected_indices
 
 
@@ -520,22 +522,25 @@ def test_parse_var_list_fcst_only_options(metplus_config, data_type, list_len):
 
 @pytest.mark.parametrize(
     'met_tool, indices', [
-        (None, {'1': ['FCST']}),
-        ('GRID_STAT', {'2': ['FCST']}),
-        ('ENSEMBLE_STAT', {}),
+        (None, [1]),
+        ('GRID_STAT', [2]),
+        ('ENSEMBLE_STAT', []),
     ]
 )
 @pytest.mark.util
 def test_find_var_indices_wrapper_specific(metplus_config, met_tool, indices):
-    conf = metplus_config
+    config = metplus_config
     data_type = 'FCST'
-    conf.set('config', f'{data_type}_VAR1_NAME', "NAME1")
-    conf.set('config', f'{data_type}_GRID_STAT_VAR2_NAME', "GSNAME2")
+    config.set('config', f'{data_type}_VAR1_NAME', "NAME1")
+    config.set('config', f'{data_type}_GRID_STAT_VAR2_NAME', "GSNAME2")
 
-    var_name_indices = config_metplus._find_var_name_indices(conf,data_types=[data_type],
-                                                  met_tool=met_tool)
+    actual_indices = (
+        config_metplus._find_var_name_indices(config,
+                                              data_types=[data_type],
+                                              met_tool=met_tool)
+    )
 
-    assert var_name_indices == indices
+    assert actual_indices == indices
 
 
 # ensure that the field configuration used for
@@ -572,28 +577,28 @@ def test_parse_var_list_ensemble(metplus_config):
                                               'ens_phist_bin_size = 0.05;'))
     time_info = {}
 
-    expected_ens_list = [{'index': '1',
+    expected_ens_list = [{'index': 1,
                           'ens_name': 'APCP',
                           'ens_level': 'A24',
                           'ens_thresh': ['>0.0', '>=10.0']},
-                         {'index': '2',
+                         {'index': 2,
                           'ens_name': 'REFC',
                           'ens_level': 'L0',
                           'ens_thresh': ['>35.0']},
-                         {'index': '3',
+                         {'index': 3,
                           'ens_name': 'UGRD',
                           'ens_level': 'Z10',
                           'ens_thresh': ['>=5.0']},
-                         {'index': '4',
+                         {'index': 4,
                           'ens_name': 'VGRD',
                           'ens_level': 'Z10',
                           'ens_thresh': ['>=5.0']},
-                         {'index': '5',
+                         {'index': 5,
                           'ens_name': 'WIND',
                           'ens_level': 'Z10',
                           'ens_thresh': ['>=5.0']},
                         ]
-    expected_var_list = [{'index': '1',
+    expected_var_list = [{'index': 1,
                           'fcst_name': 'APCP',
                           'fcst_level': 'A24',
                           'fcst_thresh': ['>0.01', '>=10.0'],
@@ -646,7 +651,7 @@ def test_parse_var_list_series_by(metplus_config):
     config.set('config', 'BOTH_SERIES_ANALYSIS_VAR2_LEVELS', 'P700')
     time_info = {}
 
-    expected_et_list = [{'index': '1',
+    expected_et_list = [{'index': 1,
                          'fcst_name': 'RH',
                          'fcst_level': 'P850',
                          'fcst_output_name': 'RH_850mb',
@@ -654,7 +659,7 @@ def test_parse_var_list_series_by(metplus_config):
                          'obs_level': 'P850',
                          'obs_output_name': 'RH_850mb',
                          },
-                        {'index': '1',
+                        {'index': 1,
                          'fcst_name': 'RH',
                          'fcst_level': 'P700',
                          'fcst_output_name': 'RH_700mb',
@@ -663,13 +668,13 @@ def test_parse_var_list_series_by(metplus_config):
                          'obs_output_name': 'RH_700mb',
                          },
                         ]
-    expected_sa_list = [{'index': '1',
+    expected_sa_list = [{'index': 1,
                          'fcst_name': 'RH_850mb',
                          'fcst_level': 'P850',
                          'obs_name': 'RH_850mb',
                          'obs_level': 'P850',
                          },
-                        {'index': '2',
+                        {'index': 2,
                          'fcst_name': 'RH_700mb',
                          'fcst_level': 'P700',
                          'obs_name': 'RH_700mb',

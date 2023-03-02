@@ -536,7 +536,7 @@ def find_indices_in_config_section(regex, config, sec='config',
     @param id_index 1 based number that is the regex match index for the
      identifier. Defaults to None which does not extract an identifier
     @returns dictionary where keys are the index number and the value is a
-     list of identifiers (if noID=True) or a list containing None
+     list of identifiers (if id_index=None) or a list containing None
     """
     # regex expression must have 2 () items and the 2nd item must be the index
     all_conf = config.keys(sec)
