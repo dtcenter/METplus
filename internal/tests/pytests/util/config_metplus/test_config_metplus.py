@@ -347,13 +347,13 @@ def test_parse_var_list_obs(metplus_config, data_type, list_created):
     # list will be created if requesting just OBS, but it should not be created if
     # nothing was requested because FCST values are missing
     if list_created:
-        assert(var_list[0]['obs_name'] == "NAME1" and \
-               var_list[1]['obs_name'] == "NAME1" and \
-               var_list[2]['obs_name'] == "NAME2" and \
-               var_list[3]['obs_name'] == "NAME2" and \
-               var_list[0]['obs_level'] == "LEVELS11" and \
-               var_list[1]['obs_level'] == "LEVELS12" and \
-               var_list[2]['obs_level'] == "LEVELS21" and \
+        assert(var_list[0]['obs_name'] == "NAME1" and
+               var_list[1]['obs_name'] == "NAME1" and
+               var_list[2]['obs_name'] == "NAME2" and
+               var_list[3]['obs_name'] == "NAME2" and
+               var_list[0]['obs_level'] == "LEVELS11" and
+               var_list[1]['obs_level'] == "LEVELS12" and
+               var_list[2]['obs_level'] == "LEVELS21" and
                var_list[3]['obs_level'] == "LEVELS22")
     else:
         assert not var_list
@@ -382,15 +382,15 @@ def test_parse_var_list_both(metplus_config, data_type, list_created):
     var_list = config_metplus.parse_var_list(conf, time_info=None, data_type=data_type)
     print(f'var_list:{var_list}')
     for list_to_check in list_created.split(':'):
-        if not var_list[0][f'{list_to_check}_name']  == "NAME1" or \
-           not var_list[1][f'{list_to_check}_name']  == "NAME1" or \
-           not var_list[2][f'{list_to_check}_name']  == "NAME2" or \
-           not var_list[3][f'{list_to_check}_name']  == "NAME2" or \
-           not var_list[0][f'{list_to_check}_level'] == "LEVELS11" or \
-           not var_list[1][f'{list_to_check}_level'] == "LEVELS12" or \
-           not var_list[2][f'{list_to_check}_level'] == "LEVELS21" or \
-           not var_list[3][f'{list_to_check}_level'] == "LEVELS22":
-           assert False
+        if (not var_list[0][f'{list_to_check}_name'] == "NAME1" or
+                not var_list[1][f'{list_to_check}_name'] == "NAME1" or
+                not var_list[2][f'{list_to_check}_name'] == "NAME2" or
+                not var_list[3][f'{list_to_check}_name'] == "NAME2" or
+                not var_list[0][f'{list_to_check}_level'] == "LEVELS11" or
+                not var_list[1][f'{list_to_check}_level'] == "LEVELS12" or
+                not var_list[2][f'{list_to_check}_level'] == "LEVELS21" or
+                not var_list[3][f'{list_to_check}_level'] == "LEVELS22"):
+            assert False
 
 
 # field info defined in both FCST_* and OBS_* variables
@@ -412,21 +412,21 @@ def test_parse_var_list_fcst_and_obs(metplus_config):
 
     var_list = config_metplus.parse_var_list(conf)
 
-    assert(var_list[0]['fcst_name'] == "FNAME1" and \
-           var_list[0]['obs_name'] == "ONAME1" and \
-           var_list[1]['fcst_name'] == "FNAME1" and \
-           var_list[1]['obs_name'] == "ONAME1" and \
-           var_list[2]['fcst_name'] == "FNAME2" and \
-           var_list[2]['obs_name'] == "ONAME2" and \
-           var_list[3]['fcst_name'] == "FNAME2" and \
-           var_list[3]['obs_name'] == "ONAME2" and \
-           var_list[0]['fcst_level'] == "FLEVELS11" and \
-           var_list[0]['obs_level'] == "OLEVELS11" and \
-           var_list[1]['fcst_level'] == "FLEVELS12" and \
-           var_list[1]['obs_level'] == "OLEVELS12" and \
-           var_list[2]['fcst_level'] == "FLEVELS21" and \
-           var_list[2]['obs_level'] == "OLEVELS21" and \
-           var_list[3]['fcst_level'] == "FLEVELS22" and \
+    assert(var_list[0]['fcst_name'] == "FNAME1" and
+           var_list[0]['obs_name'] == "ONAME1" and
+           var_list[1]['fcst_name'] == "FNAME1" and
+           var_list[1]['obs_name'] == "ONAME1" and
+           var_list[2]['fcst_name'] == "FNAME2" and
+           var_list[2]['obs_name'] == "ONAME2" and
+           var_list[3]['fcst_name'] == "FNAME2" and
+           var_list[3]['obs_name'] == "ONAME2" and
+           var_list[0]['fcst_level'] == "FLEVELS11" and
+           var_list[0]['obs_level'] == "OLEVELS11" and
+           var_list[1]['fcst_level'] == "FLEVELS12" and
+           var_list[1]['obs_level'] == "OLEVELS12" and
+           var_list[2]['fcst_level'] == "FLEVELS21" and
+           var_list[2]['obs_level'] == "OLEVELS21" and
+           var_list[3]['fcst_level'] == "FLEVELS22" and
            var_list[3]['obs_level'] == "OLEVELS22")
 
 
@@ -913,3 +913,16 @@ def test_format_var_items_options_semicolon(config_value,
     var_items = config_metplus._format_var_items(field_configs, time_info)
     result = var_items.get('extra')
     assert result == expected_result
+
+
+@pytest.mark.util
+def test_parse_var_list_double_digit(metplus_config):
+    config = metplus_config
+    for n in range(1, 12, 1):
+        config.set('config', f'FCST_VAR{n}_NAME', f'fcst_name{n}')
+        config.set('config', f'OBS_VAR{n}_NAME', f'obs_name{n}')
+
+    var_list = config_metplus.parse_var_list(config)
+    for n, var_item in enumerate(var_list, start=1):
+        assert var_item['fcst_name'] == f'fcst_name{n}'
+        assert var_item['obs_name'] == f'obs_name{n}'
