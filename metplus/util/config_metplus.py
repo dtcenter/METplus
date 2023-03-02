@@ -1099,7 +1099,7 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None,
         if 'ens_output_name' in v.keys():
             config.logger.debug(" ens_output_name:"+v['ens_output_name'])
     '''
-    return sorted(var_list, key=lambda x: x['index'])
+    return sorted(var_list, key=lambda x: int(x['index']))
 
 def _find_var_name_indices(config, data_types, met_tool=None):
     data_type_regex = f"{'|'.join(data_types)}"

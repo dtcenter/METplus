@@ -913,3 +913,18 @@ def test_format_var_items_options_semicolon(config_value,
     var_items = config_metplus._format_var_items(field_configs, time_info)
     result = var_items.get('extra')
     assert result == expected_result
+
+@pytest.mark.util
+def test_parse_var_list_double_digit(metplus_config):
+    """!This test ensures that parse_var_list returns field info in
+    numeric order (1,2,...,9,10,11) instead of alphabetical (1,10,11,2,3,etc)
+    """
+    config = metplus_config
+    for n in range(1, 12, 1):
+        config.set('config', f'FCST_VAR{n}_NAME', f'fcst_name{n}')
+        config.set('config', f'OBS_VAR{n}_NAME', f'obs_name{n}')
+
+    var_list = config_metplus.parse_var_list(config)
+    for n, var_item in enumerate(var_list, start=1):
+        assert var_item['fcst_name'] == f'fcst_name{n}'
+        assert var_item['obs_name'] == f'obs_name{n}'
