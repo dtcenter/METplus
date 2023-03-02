@@ -917,6 +917,9 @@ def test_format_var_items_options_semicolon(config_value,
 
 @pytest.mark.util
 def test_parse_var_list_double_digit(metplus_config):
+    """!This test ensures that parse_var_list returns field info in
+    numeric order (1,2,...9,10,11) instead of alphabetical (1,10,11,2,3,etc)
+    """
     config = metplus_config
     for n in range(1, 12, 1):
         config.set('config', f'FCST_VAR{n}_NAME', f'fcst_name{n}')
