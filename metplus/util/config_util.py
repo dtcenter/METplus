@@ -212,6 +212,8 @@ def _sub_var_info(var_info, time_info):
                 out_value.append(do_string_sub(item,
                                                skip_missing_tags=True,
                                                **time_info))
+        elif isinstance(value, int):
+            out_value = value
         else:
             out_value = do_string_sub(value,
                                       skip_missing_tags=True,
