@@ -36,9 +36,8 @@ METplus Version 5.1.0-beta1 Release Notes (2023-02-28)
 
   .. dropdown:: Enhancements
   
-     * Add support for multiple interp widths
-     (`#2049 <https://github.com/dtcenter/METplus/issues/2049>`_)
-     * TCPairs - Add support for setting consensus.write_members
+     * Add support for multiple interp widths (`#2049 <https://github.com/dtcenter/METplus/issues/2049>`_)
+     * TCPairs - Add support for setting consensus.write_members 
      (`#2054 <https://github.com/dtcenter/METplus/issues/2054>`_)
 
 * Bugfix:
