@@ -34,12 +34,12 @@ describes the bugfix, enhancement, or new feature.
 METplus Version 5.1.0-beta1 Release Notes (2023-02-28)
 ------------------------------------------------------
 
-* Enhancements:
+  .. dropdown:: Enhancements
   
-  * Add support for multiple interp widths
-    (`#2049 <https://github.com/dtcenter/METplus/issues/2049>`_)
-  * TCPairs - Add support for setting consensus.write_members
-    (`#2054 <https://github.com/dtcenter/METplus/issues/2054>`_)
+     * Add support for multiple interp widths
+     (`#2049 <https://github.com/dtcenter/METplus/issues/2049>`_)
+     * TCPairs - Add support for setting consensus.write_members
+     (`#2054 <https://github.com/dtcenter/METplus/issues/2054>`_)
 
 * Bugfix:
 
