@@ -1,0 +1,22 @@
+#%Module######################################################################
+##
+##      METplus
+##
+proc ModulesHelp { } {
+  puts stderr "Sets up the paths and environment variables to use the METplus-5.0.1.
+     *** For help see the official MET webpage at http://www.dtcenter.org/met/users ***"
+}
+
+prereq intel
+module use -a /contrib/anaconda/modulefiles
+module load anaconda/latest
+prepend-path PATH /scratch1/BMC/dtc/miniconda/miniconda3/envs/metplus_v5.0_py3.8/bin
+
+module use -a /contrib/met/modulefiles
+module load met/11.0.1
+module load nco
+module load wgrib
+module load wgrib2
+module load R
+setenv METPLUS_PATH /contrib/METplus/METplus-5.0.1
+prepend-path PATH /contrib/METplus/METplus-5.0.1/ush
