@@ -158,7 +158,7 @@ METplus Version 5.0.0 Release Notes (2022-12-09)
      * Add support for creating multiple input datasets
        (`#1694 <https://github.com/dtcenter/METplus/issues/1694>`_)
 
-  .. dropdown:: Bugfixes
+ .. dropdown:: Bugfixes
 
      * PCPCombine - custom loop list does not work for subtract method
        (`#1884 <https://github.com/dtcenter/METplus/issues/1884>`_)
@@ -185,12 +185,12 @@ METplus Version 5.0.0 Release Notes (2022-12-09)
      *  Allow NA value for <TOOL-NAME>_CLIMO_[MEAN/STDEV]_DAY_INTERVAL
         (`#1653 <https://github.com/dtcenter/METplus/issues/1653>`_)
 
-  .. dropdown:: New Wrappers
+ .. dropdown:: New Wrappers
 
      * PlotPointObs
        (`#1489 <https://github.com/dtcenter/METplus/issues/1489>`_)
 
-  .. dropdown:: New Use Cases
+ .. dropdown:: New Use Cases
 
      * PANDA-C use cases
        (`#1686 <https://github.com/dtcenter/METplus/issues/1686>`_)
@@ -205,13 +205,13 @@ METplus Version 5.0.0 Release Notes (2022-12-09)
      * StatAnalysis Python Embedding to read native grid (u-grid)
        (`#1561 <https://github.com/dtcenter/METplus/issues/1561>`_)
 
-  .. dropdown:: Documentation
+ .. dropdown:: Documentation
 
       * Update documentation to include instructions
         to disable UserScript wrapper
         (`dtcenter/METplus-Internal#33 <https://github.com/dtcenter/METplus-Internal/issues/33>`_)
 
-  .. dropdown:: Internal
+ .. dropdown:: Internal
 
      * Organize utility scripts used by multiple wrappers
        (`#344 <https://github.com/dtcenter/METplus/issues/344>`_)
