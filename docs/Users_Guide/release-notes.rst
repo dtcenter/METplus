@@ -38,30 +38,30 @@ METplus Version 5.1.0-beta1 Release Notes (2023-02-28)
   
      * Add support for multiple interp widths (`#2049 <https://github.com/dtcenter/METplus/issues/2049>`_)
      * TCPairs - Add support for setting consensus.write_members 
-     (`#2054 <https://github.com/dtcenter/METplus/issues/2054>`_)
+       (`#2054 <https://github.com/dtcenter/METplus/issues/2054>`_)
 
-* Bugfix:
+  .. dropdown:: Bugfix
 
-  * StatAnalysis - allow run once for each valid time
-    (`#2026 <https://github.com/dtcenter/METplus/issues/2026>`_)
+     * StatAnalysis - allow run once for each valid time
+       (`#2026 <https://github.com/dtcenter/METplus/issues/2026>`_)
 
-* Documentation:
+  .. dropdown:: Documentation
   
-  * Update the METplus Components Python Requirements Documentation
-    (`#2016 <https://github.com/dtcenter/METplus/issues/2016>`_)
+     * Update the METplus Components Python Requirements Documentation
+       (`#2016 <https://github.com/dtcenter/METplus/issues/2016>`_)
 
-* Internal:
+  .. dropdown:: Internal
 
-  * Improve use case testing
-    (`#685 <https://github.com/dtcenter/METplus/issues/685>`_)
-  * Update conda environments to use 3.10 for automated use case tests
-    (`#2005 <https://github.com/dtcenter/METplus/issues/2005>`_)
-  * Add modulefiles to the repository
-    (`#2015 <https://github.com/dtcenter/METplus/issues/2015>`_)
-  * **Upgrade to using Python 3.10.4**
-    (`#2022 <https://github.com/dtcenter/METplus/issues/2022>`_)
-  * Add 'License.txt' to the METplus repo
-    (`#2058 <https://github.com/dtcenter/METplus/issues/2058>`_)
+     * Improve use case testing
+       (`#685 <https://github.com/dtcenter/METplus/issues/685>`_)
+     * Update conda environments to use 3.10 for automated use case tests
+       (`#2005 <https://github.com/dtcenter/METplus/issues/2005>`_)
+     * Add modulefiles to the repository
+       (`#2015 <https://github.com/dtcenter/METplus/issues/2015>`_)
+     * **Upgrade to using Python 3.10.4**
+       (`#2022 <https://github.com/dtcenter/METplus/issues/2022>`_)
+     * Add 'License.txt' to the METplus repo
+       (`#2058 <https://github.com/dtcenter/METplus/issues/2058>`_)
 
 
 METplus Version 5.0.0 Release Notes (2022-12-09)
