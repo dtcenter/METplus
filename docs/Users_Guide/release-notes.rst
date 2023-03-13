@@ -67,7 +67,7 @@ METplus Version 5.1.0-beta1 Release Notes (2023-02-28)
 METplus Version 5.0.0 Release Notes (2022-12-09)
 ------------------------------------------------
 
-  .. warning:: **MAJOR CHANGES**:
+ .. warning:: **MAJOR CHANGES**:
 
     * The LOOP_ORDER config variable was removed. The variable set in a user's
       config file will be ignored in favor of executing the logic that
