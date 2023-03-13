@@ -89,7 +89,7 @@ METplus Version 5.0.0 Release Notes (2022-12-09)
     config file, e.g. metplus_final.conf.20220921121733.
 
 
-  .. dropdown:: Enhancements
+ .. dropdown:: Enhancements
 
      * **Enhance MODE wrapper to support multi-variate MODE**
        (`#1585 <https://github.com/dtcenter/METplus/issues/1585>`_)
