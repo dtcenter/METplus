@@ -67,14 +67,14 @@ METplus Version 5.1.0-beta1 Release Notes (2023-02-28)
 METplus Version 5.0.0 Release Notes (2022-12-09)
 ------------------------------------------------
 
-.. warning:: **MAJOR CHANGES**:
+  .. warning:: **MAJOR CHANGES**:
 
-  * The LOOP_ORDER config variable was removed. The variable set in a user's
-    config file will be ignored in favor of executing the logic that
-    corresponds to *LOOP_ORDER = processes*, where all times are processed for
-    the first item in the PROCESS_LIST, then all times are processed for the
-    second item in the PROCESS_LIST, etc. This may change the order that
-    commands are executed in a use case, but it should not change the results.
+    * The LOOP_ORDER config variable was removed. The variable set in a user's
+      config file will be ignored in favor of executing the logic that
+      corresponds to *LOOP_ORDER = processes*, where all times are processed for
+      the first item in the PROCESS_LIST, then all times are processed for the
+      second item in the PROCESS_LIST, etc. This may change the order that
+      commands are executed in a use case, but it should not change the results.
   * The METplus Dockerfile was moved to internal/scripts/docker.
     It was previously found in scripts/docker.
   * Use cases that include **EnsembleStat** wrapper will require config file
