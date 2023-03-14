@@ -942,9 +942,9 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None,
     # get indices of VAR<n> items for data type and/or met tool
     indices = []
     if met_tool:
-        indices = _find_var_name_indices(config, data_types, met_tool).keys()
+        indices = _find_var_name_indices(config, data_types, met_tool)
     if not indices:
-        indices = _find_var_name_indices(config, data_types).keys()
+        indices = _find_var_name_indices(config, data_types)
 
     # get config name prefixes for each data type to find
     dt_search_prefixes = {}
@@ -979,7 +979,7 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None,
         # check if number of levels for each field type matches
         n_levels = len(field_info_list[0]['levels'])
         if len(data_types) > 1:
-            if (n_levels != len(field_info_list[1]['levels'])):
+            if n_levels != len(field_info_list[1]['levels']):
                 continue
 
         # if requested, put all field levels in a single item
@@ -1064,7 +1064,22 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None,
     '''
     return sorted(var_list, key=lambda x: x['index'])
 
+
 def _find_var_name_indices(config, data_types, met_tool=None):
+    """!Get list of indices used in _VAR<n>_ config variables. Data type
+    determines prefix of variable name to find. If FCST or OBS is included
+    in data type list, then BOTH keyword is also searched. If specified,
+    wrapper-specific variables are searched, e.g. FCST_GRID_STAT_VAR<n>_*.
+    Variables that end with NAME, INPUT_FIELD_NAME, or FIELD_NAME are used to
+    gather indices.
+
+    @param config METplusConfig object to read
+    @param data_types list of prefixes of config variables that describe the
+     type of data e.g. FCST or OBS.
+    @param met_tool (optional) name of wrapper to search for wrapper-specific
+    variables, e.g. *_GRID_STAT_VAR<n>_*.
+    @returns list of integers for all matching config variables
+    """
     data_type_regex = f"{'|'.join(data_types)}"
 
     # if data_types includes FCST or OBS, also search for BOTH
@@ -1080,10 +1095,11 @@ def _find_var_name_indices(config, data_types, met_tool=None):
     regex_string += r"_VAR(\d+)_(NAME|INPUT_FIELD_NAME|FIELD_NAME)"
 
     # find all <data_type>_VAR<n>_NAME keys in the conf files
-    return find_indices_in_config_section(regex_string,
-                                          config,
-                                          index_index=2,
-                                          id_index=1)
+    indices = find_indices_in_config_section(regex_string,
+                                             config,
+                                             index_index=2,
+                                             id_index=1).keys()
+    return [int(index) for index in indices]
 
 
 def _format_var_items(field_configs, time_info=None):
@@ -1210,7 +1226,7 @@ def get_field_config_variables(config, index, search_prefixes):
      in RegridDataPlane wrapper.
 
         @param config METplusConfig object to search
-        @param index of field (VAR<n>) to find
+        @param index integer <n> of field (VAR<n>) to find
         @param search_prefixes list of valid prefixes to search for variables
          in the config, i.e. FCST_VAR1_ or OBS_GRID_STAT_VAR2_
         @returns dictionary containing a config variable name to be used for
