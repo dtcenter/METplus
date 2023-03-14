@@ -143,8 +143,9 @@ MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 #
 # **mode/2021020100/f21**
 #
-# | (Multivariate output - first instance)
-# | Precipitation type = snow
+# Multivariate output - first instance
+#
+# Precipitation type = snow
 #
 # * 00/mode_210000L_20210201_210000V_000000A_cts.txt
 # * 00/mode_210000L_20210201_210000V_000000A_obj.nc
@@ -152,22 +153,26 @@ MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 # * 00/mode_210000L_20210201_210000V_000000A.ps
 #
 # Visibility
+#
 # * 01/mode_210000L_20210201_210000V_000000A_cts.txt
 # * 01/mode_210000L_20210201_210000V_000000A_obj.nc
 # * 01/mode_210000L_20210201_210000V_000000A_obj.txt
 # * 01/mode_210000L_20210201_210000V_000000A.ps
 #
 # 10-m Winds
+#
 # * 02/mode_210000L_20210201_210000V_000000A_cts.txt
 # * 02/mode_210000L_20210201_210000V_000000A_obj.nc
 # * 02/mode_210000L_20210201_210000V_000000A_obj.txt
 # * 02/mode_210000L_20210201_210000V_000000A.ps
 #
 # Super Objects
+#
 # * f_super.nc
 # * o_super.nc
 #
-# (MODE 10-m wind super object output - second instance)
+# MODE 10-m wind super object output - second instance
+#
 # * mode_HRRR_vs_ANALYSIS_WIND_super_Z10_210000L_20210201_210000V_000000A_cts.txt
 # * mode_HRRR_vs_ANALYSIS_WIND_super_Z10_210000L_20210201_210000V_000000A_obj.nc
 # * mode_HRRR_vs_ANALYSIS_WIND_super_Z10_210000L_20210201_210000V_000000A_obj.txt
