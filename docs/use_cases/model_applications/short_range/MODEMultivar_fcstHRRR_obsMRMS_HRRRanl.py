@@ -145,6 +145,7 @@ MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 #
 # | (Multivariate output - first instance)
 # | Precipitation type = snow
+#
 # * 00/mode_210000L_20210201_210000V_000000A_cts.txt
 # * 00/mode_210000L_20210201_210000V_000000A_obj.nc
 # * 00/mode_210000L_20210201_210000V_000000A_obj.txt
