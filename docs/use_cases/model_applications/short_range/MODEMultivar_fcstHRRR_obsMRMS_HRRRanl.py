@@ -13,11 +13,11 @@ MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 #
 # This use case demonstrates how to run Multivariate MODE to identify complex
 # objects from two or more fields, defined by a logical expression. This use
-# case identifies blizzard-like objects defined by the presence of snow
-# precipitation type, 10-m winds > 20 mph, and visibility < 1/2 mile. The use
-# of multivariate MODE is well-suited to assess the structure and placement of
-# complex high-impact events such as blizzard conditions and heavy snow bands.
-# Output from this use-case consists of the MODE forecast and observation
+# case identifies blizzard-like objects defined by: 1) the presence of snow
+# precipitation type, 2) 10-m winds > 20 mph, and  3) visibility < 1/2 mile.
+# The use of multivariate MODE is well-suited to assess the structure and
+# placement of complex high-impact events such as blizzard conditions and heavy
+# snow bands. Output from this use-case consists of the MODE forecast and observation
 # super objects and the MODE ASCII, NetCDF, and PostScript files.
 #
 
@@ -25,14 +25,14 @@ MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 # Datasets
 # --------
 #
-#  * Forecast dataset: 1-hour HRRR in grib2
-#  * Observation dataset: MRMS and HRRR analysis in grib2
+# | **Forecast dataset:** 1-hour HRRR in grib2
+# | **Observation dataset:** MRMS and HRRR analysis in grib2
 # 
-#  The forecast and observation fields are only a subset of the full domain in
-#  order for a faster run-time of Multivariate MODE. An example command using
-#  wgrib2 to create the HRRR subdomain is:
+# The forecast and observation fields are only a subset of the full domain in
+# order for a faster run-time of Multivariate MODE. An example command using
+# wgrib2 to create the HRRR subdomain is::
 #
-#  wgrib2 infile.grib2 -new_grid_winds earth -new_grid lambert:262.5:38.5:38.5:38.5 -83.0:400:3000 37.0:400:3000 outfile.grib2 
+#   wgrib2 infile.grib2 -new_grid_winds earth -new_grid lambert:262.5:38.5:38.5:38.5 -83.0:400:3000 37.0:400:3000 outfile.grib2 
 #
 
 ##############################################################################
@@ -47,7 +47,7 @@ MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 # time on the super-object-masked field(s) to output attribute statistics for
 # the field(s).
 #
-# Note: The second MODE run can also be run directly on the super objects if
+# **Note:** The second MODE run can also be run directly on the super objects if
 # field-specific statistics, such as intensity, is not desired.
 # 
 
@@ -69,7 +69,7 @@ MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 #
 # | **Initialization:** 2021020100
 # | **Forecast lead:** 21
-# |
+#
 
 ##############################################################################
 # METplus Configuration
@@ -143,39 +143,39 @@ MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 #
 # **mode/2021020100/f21**
 #
-# (Multivariate output - first instance)
-# Precipitation type = snow
-# 00/mode_210000L_20210201_210000V_000000A_cts.txt
-# 00/mode_210000L_20210201_210000V_000000A_obj.nc
-# 00/mode_210000L_20210201_210000V_000000A_obj.txt
-# 00/mode_210000L_20210201_210000V_000000A.ps
+# | (Multivariate output - first instance)
+# | Precipitation type = snow
+# * 00/mode_210000L_20210201_210000V_000000A_cts.txt
+# * 00/mode_210000L_20210201_210000V_000000A_obj.nc
+# * 00/mode_210000L_20210201_210000V_000000A_obj.txt
+# * 00/mode_210000L_20210201_210000V_000000A.ps
 #
 # Visibility
-# 01/mode_210000L_20210201_210000V_000000A_cts.txt
-# 01/mode_210000L_20210201_210000V_000000A_obj.nc
-# 01/mode_210000L_20210201_210000V_000000A_obj.txt
-# 01/mode_210000L_20210201_210000V_000000A.ps
+# * 01/mode_210000L_20210201_210000V_000000A_cts.txt
+# * 01/mode_210000L_20210201_210000V_000000A_obj.nc
+# * 01/mode_210000L_20210201_210000V_000000A_obj.txt
+# * 01/mode_210000L_20210201_210000V_000000A.ps
 #
 # 10-m Winds
-# 02/mode_210000L_20210201_210000V_000000A_cts.txt
-# 02/mode_210000L_20210201_210000V_000000A_obj.nc
-# 02/mode_210000L_20210201_210000V_000000A_obj.txt
-# 02/mode_210000L_20210201_210000V_000000A.ps
+# * 02/mode_210000L_20210201_210000V_000000A_cts.txt
+# * 02/mode_210000L_20210201_210000V_000000A_obj.nc
+# * 02/mode_210000L_20210201_210000V_000000A_obj.txt
+# * 02/mode_210000L_20210201_210000V_000000A.ps
 #
 # Super Objects
-# f_super.nc
-# o_super.nc
+# * f_super.nc
+# * o_super.nc
 #
 # (MODE 10-m wind super object output - second instance)
-# mode_HRRR_vs_ANALYSIS_WIND_super_Z10_210000L_20210201_210000V_000000A_cts.txt
-# mode_HRRR_vs_ANALYSIS_WIND_super_Z10_210000L_20210201_210000V_000000A_obj.nc
-# mode_HRRR_vs_ANALYSIS_WIND_super_Z10_210000L_20210201_210000V_000000A_obj.txt
-# mode_HRRR_vs_ANALYSIS_WIND_super_Z10_210000L_20210201_210000V_000000A.ps
+# * mode_HRRR_vs_ANALYSIS_WIND_super_Z10_210000L_20210201_210000V_000000A_cts.txt
+# * mode_HRRR_vs_ANALYSIS_WIND_super_Z10_210000L_20210201_210000V_000000A_obj.nc
+# * mode_HRRR_vs_ANALYSIS_WIND_super_Z10_210000L_20210201_210000V_000000A_obj.txt
+# * mode_HRRR_vs_ANALYSIS_WIND_super_Z10_210000L_20210201_210000V_000000A.ps
 #
 # **gen_vx_mask/2021020100**
 #
-# fcst_wind_super_2021020100_f21.nc
-# obs_wind_super_2021020121.nc
+# * fcst_wind_super_2021020100_f21.nc
+# * obs_wind_super_2021020121.nc
 
 ##############################################################################
 # Keywords
