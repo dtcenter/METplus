@@ -13,12 +13,14 @@ _SurrogateSevere.conf
 # --------------------
 #
 # Run PCPCombine, GenEnsProd, and RegridDataPlane tools to create surrogate severe probability
-# forecasts (SSPFs) for a given date. SSPFs are a severe weather forecasting tool and is a techniqu
-# used by the Storm Prediction Center (SPC) as well as others. SSPFs are based on updraft helicity 
-# (UH; UH = ∫z0 to zt (ω * ζ) dz) since certain thresholds of UH have been shown as good proxies for# severe weather. SSPFs can be thought of as the perfect model forecast. They are derived as follows:
+# forecasts (SSPFs) for a given date. SSPFs are a severe weather forecasting tool and is a technique
+# used by the Storm Prediction Center (SPC) as well as others. SSPFs are based on updraft helicity
+# (UH; :math:`\text{UH} = \int_{z_0}^{z_t} ( \omega * \zeta ) dz`) since certain thresholds of UH
+# have been shown as good proxies for severe weather. SSPFs can be thought of as the perfect model
+# forecast. They are derived as follows:
 #
 #    1. Regrid the maximum UH value over the 2-5km layer at each grid point to the NCEP 211 grid (dx = ~80km).
-#    2. Create a binary mask of points that meet a given threshold of UH)
+#    2. Create a binary mask of points that meet a given threshold of UH.
 #    3. Convert the binary mask into a probability field by applying a Gaussian filter.
 # 
 # For more information, please reference Sobash et al. 2011 (https://journals.ametsoc.org/doi/full/10.1175/WAF-D-10-05046.1).
