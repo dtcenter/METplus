@@ -613,7 +613,7 @@ class METplusConfig(ProdConfig):
         #  using a default value
         self.set(sec, name, default)
 
-    def getexe(self, exe_name):
+    def getexe(self, exe_name, default=None, morevars=None, taskvars=None):
         """! Wraps produtil exe with checks to see if option is set and if
             exe actually exists. Returns None if not found instead of exiting
         """
