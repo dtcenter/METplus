@@ -162,8 +162,8 @@ def test_find_var_indices_fcst(metplus_config,
 )
 @pytest.mark.util
 def test_get_field_search_prefixes(data_type, met_tool, expected_out):
-    assert(config_metplus.get_field_search_prefixes(data_type,
-                                                    met_tool) == expected_out)
+    assert(config_metplus._get_field_search_prefixes(data_type,
+                                                     met_tool) == expected_out)
 
 
 # search prefixes are valid prefixes to append to field info variables
