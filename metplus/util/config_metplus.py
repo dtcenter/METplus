@@ -640,24 +640,23 @@ class METplusConfig(ProdConfig):
         self.set('config', exe_name, full_exe_path)
         return full_exe_path
 
-    def getdir(self, dir_name, default=None, morevars=None,taskvars=None,
+    def getdir(self, name, default=None, morevars=None, taskvars=None,
                must_exist=False):
         """! Wraps produtil getdir and reports an error if
          it is set to /path/to
          """
         try:
-            dir_path = super().getstr('config', dir_name, default=None,
+            dir_path = super().getstr('config', name, default=None,
                                       morevars=morevars, taskvars=taskvars)
         except NoOptionError:
-            self.check_default('config', dir_name, default)
+            self.check_default('config', name, default)
             dir_path = default
 
         if '/path/to' in dir_path:
-            raise ValueError(f"{dir_name} cannot be set to "
-                             "or contain '/path/to'")
+            raise ValueError(f"{name} cannot be set to or contain '/path/to'")
 
         if '\n' in dir_path:
-            raise ValueError(f"Invalid value for [config] {dir_name} "
+            raise ValueError(f"Invalid value for [config] {name} "
                              f"({dir_path}). Hint: Check that next variable "
                              "in the config file does not start with a space")
 
