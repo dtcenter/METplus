@@ -21,7 +21,7 @@ from .command_runner import CommandRunner
 from ..util.constants import PYTHON_EMBEDDING_TYPES, COMPRESSION_EXTENSIONS
 from ..util import getlist, preprocess_file, loop_over_times_and_call
 from ..util import do_string_sub, ti_calculate, get_seconds_from_string
-from ..util import get_time_from_file, shift_time_seconds
+from ..util import get_time_from_file, shift_time_seconds, seconds_to_met_time
 from ..util import replace_config_from_section
 from ..util import METConfig
 from ..util import MISSING_DATA_VALUE
@@ -924,7 +924,7 @@ class CommandBuilder:
              template
             @param is_directory If True, check in output directory for
              any files that match the pattern
-             {app_name}_{output_prefix}*YYYYMMDD_HHMMSSV*
+             {app_name}_{output_prefix}_HHMMSSL_YYYYMMDD_HHMMSSV*
             @param output_path_template optional filename template to use
              If None, build output path template from c_dict's OUTPUT_DIR
               and OUTPUT_TEMPLATE. Default is None
@@ -962,13 +962,18 @@ class CommandBuilder:
         # get directory that the output file will exist
         if is_directory:
             parent_dir = output_path
-            if time_info and time_info['valid'] != '*':
-                valid_format = time_info['valid'].strftime('%Y%m%d_%H%M%S')
-            else:
-                valid_format = ''
+            valid = '*'
+            lead = '*'
+            if time_info:
+                if time_info['valid'] != '*':
+                    valid = time_info['valid'].strftime('%Y%m%d_%H%M%S')
+                if time_info['lead'] != '*':
+                    lead = seconds_to_met_time(time_info['lead_seconds'],
+                                               force_hms=True)
 
             prefix = self.get_output_prefix(time_info, set_env_vars=False)
-            search_string = f"{self.app_name}_{prefix}*{valid_format}V*"
+            prefix = f'{self.app_name}_{prefix}' if prefix else self.app_name
+            search_string = f'{prefix}_{lead}L_{valid}V*'
             search_path = os.path.join(output_path,
                                        search_string)
             if skip_if_output_exists:
