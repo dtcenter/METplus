@@ -521,6 +521,8 @@ def set_met_config_string(config, c_dict, mp_config, met_config_name,
               Default value is False
              @param default (Optional) if set, use this value as default
               if config is not set
+             @param add_x if True, add (x) to variable name, e.g. convert(x)
+              Default value is False
     """
     mp_config_name = config.get_mp_config_name(mp_config)
     conf_value = _get_config_or_default(
@@ -544,7 +546,10 @@ def set_met_config_string(config, c_dict, mp_config, met_config_name,
 
     c_key = c_dict_key if c_dict_key else met_config_name.upper()
     if met_config_name:
-        conf_value = f'{met_config_name} = {conf_value};'
+        config_name = met_config_name
+        if kwargs.get('add_x'):
+            config_name = f'{config_name}(x)'
+        conf_value = f'{config_name} = {conf_value};'
 
     c_dict[c_key] = conf_value
     return True
@@ -734,8 +739,8 @@ def _parse_item_info(item_info):
 
 def _parse_extra_args(extra):
     """! Check string for extra option keywords and set them to True in
-     dictionary if they are found. Supports 'remove_quotes', 'uppercase'
-     and 'allow_empty'
+     dictionary if they are found. Supports 'remove_quotes', 'uppercase',
+     'allow_empty', 'to_grid', 'default', and 'add_x'.
 
         @param extra string to parse for keywords
         @returns dictionary with extra args set if found in string
@@ -750,6 +755,7 @@ def _parse_extra_args(extra):
         'allow_empty',
         'to_grid',
         'default',
+        'add_x',
     )
     for extra_option in VALID_EXTRAS:
         if extra_option in extra:
