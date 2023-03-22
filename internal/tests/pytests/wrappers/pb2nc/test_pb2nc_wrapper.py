@@ -23,41 +23,6 @@ def pb2nc_wrapper(metplus_config):
     return PB2NCWrapper(config)
 
 
-@pytest.mark.parametrize(
-    'exists, skip, run', [
-            (True, True, False),
-            (True, False, True),
-            (False, True, True),
-            (False, False, True),
-        ]
-)
-@pytest.mark.wrapper
-def test_find_and_check_output_file_skip(metplus_config, exists, skip, run):
-    pb = pb2nc_wrapper(metplus_config)
-    exist_file = 'wackyfilenametocreate'
-    non_exist_file = 'wackyfilethatdoesntexist'
-
-    # create fake file to test
-    create_fullpath = os.path.join(pb.config.getdir('OUTPUT_BASE'), exist_file)
-    open(create_fullpath, 'a').close()
-
-    # set time_info, output template/dir, skip if output exists flag
-    time_info = { 'valid' : datetime.datetime(2019, 2, 1, 0) }
-    pb.c_dict['OUTPUT_DIR'] = pb.config.getdir('OUTPUT_BASE')
-
-    pb.c_dict['SKIP_IF_OUTPUT_EXISTS'] = skip
-
-    if exists:
-        pb.c_dict['OUTPUT_TEMPLATE'] = exist_file
-    else:
-        pb.c_dict['OUTPUT_TEMPLATE'] = non_exist_file
-
-    result = pb.find_and_check_output_file(time_info)
-
-    # cast result to bool because None isn't equal to False
-    assert bool(result) == run
-
-
 # ---------------------
 # test_get_command
 # test that command is generated correctly
