@@ -1307,6 +1307,9 @@ class CommandBuilder:
         dict_items['width'] = 'int'
         dict_items['vld_thresh'] = 'float'
         dict_items['shape'] = ('string', 'uppercase,remove_quotes')
+        dict_items['convert'] = ('string', 'remove_quotes,add_x')
+        dict_items['censor_thresh'] = ('list', 'remove_quotes')
+        dict_items['censor_val'] = ('list', 'remove_quotes')
         self.add_met_config_dict('regrid', dict_items)
 
     def handle_description(self, is_list=False):
