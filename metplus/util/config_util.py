@@ -163,8 +163,8 @@ def write_all_commands(all_commands, config):
     @returns False if no commands were provided, True otherwise
     """
     if not all_commands:
-        config.logger.error("No commands were run. "
-                            "Skip writing all_commands file")
+        config.logger.info("No commands were run. "
+                           "Skip writing all_commands file")
         return False
 
     log_timestamp = config.getstr('config', 'LOG_TIMESTAMP')
