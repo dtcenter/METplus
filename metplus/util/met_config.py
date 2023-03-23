@@ -640,7 +640,8 @@ def set_met_config_thresh(config, c_dict, mp_config, met_config_name,
             out_value = str(conf_value)
 
         c_dict[c_key] = out_value
-        return True
+
+    return True
 
 
 def set_met_config_bool(config, c_dict, mp_config, met_config_name,
