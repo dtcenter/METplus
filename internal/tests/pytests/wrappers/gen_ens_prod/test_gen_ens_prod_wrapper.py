@@ -87,74 +87,90 @@ def handle_input_dir(config):
           },
          {'METPLUS_REGRID_DICT': 'regrid = {shape = SQUARE;}'}),
         # 8
+        ({'GEN_ENS_PROD_REGRID_CONVERT': '2*x', },
+         {'METPLUS_REGRID_DICT': 'regrid = {convert(x) = 2*x;}'}),
+        # 9
+        ({'GEN_ENS_PROD_REGRID_CENSOR_THRESH': '>12000,<5000', },
+         {
+             'METPLUS_REGRID_DICT': 'regrid = {censor_thresh = [>12000, <5000];}'}),
+        # 10
+        ({'GEN_ENS_PROD_REGRID_CENSOR_VAL': '12000,5000', },
+         {'METPLUS_REGRID_DICT': 'regrid = {censor_val = [12000, 5000];}'}),
+        # 11
         ({'GEN_ENS_PROD_REGRID_TO_GRID': 'FCST',
           'GEN_ENS_PROD_REGRID_METHOD': 'NEAREST',
           'GEN_ENS_PROD_REGRID_WIDTH': '1',
           'GEN_ENS_PROD_REGRID_VLD_THRESH': '0.5',
           'GEN_ENS_PROD_REGRID_SHAPE': 'SQUARE',
+          'GEN_ENS_PROD_REGRID_CONVERT': '2*x',
+          'GEN_ENS_PROD_REGRID_CENSOR_THRESH': '>12000,<5000',
+          'GEN_ENS_PROD_REGRID_CENSOR_VAL': '12000,5000',
           },
          {'METPLUS_REGRID_DICT': ('regrid = {to_grid = FCST;method = NEAREST;'
-                                  'width = 1;vld_thresh = 0.5;shape = SQUARE;}'
+                                  'width = 1;vld_thresh = 0.5;shape = SQUARE;'
+                                  'convert(x) = 2*x;'
+                                  'censor_thresh = [>12000, <5000];'
+                                  'censor_val = [12000, 5000];}'
                                   )}),
-        # 9
+        # 12
         ({'GEN_ENS_PROD_CLIMO_MEAN_INPUT_TEMPLATE':
               '/some/path/climo/filename.nc',
           },
          {'METPLUS_CLIMO_MEAN_DICT':
               'climo_mean = {file_name = ["/some/path/climo/filename.nc"];}',
           }),
-        # 10
+        # 13
         ({'GEN_ENS_PROD_CLIMO_STDEV_INPUT_TEMPLATE':
               '/some/path/climo/stdfile.nc',
           },
          {'METPLUS_CLIMO_STDEV_DICT':
               'climo_stdev = {file_name = ["/some/path/climo/stdfile.nc"];}',
          }),
-        # 11 ensemble_flag
+        # 14 ensemble_flag
         ({'GEN_ENS_PROD_ENSEMBLE_FLAG_LATLON': 'FALSE', },
          {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {latlon = FALSE;}'}),
-        # 12
+        # 15
         ({'GEN_ENS_PROD_ENSEMBLE_FLAG_MEAN': 'FALSE', },
          {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {mean = FALSE;}'}),
-        # 13
+        # 16
         ({'GEN_ENS_PROD_ENSEMBLE_FLAG_STDEV': 'FALSE', },
          {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {stdev = FALSE;}'}),
-        # 14
+        # 17
         ({'GEN_ENS_PROD_ENSEMBLE_FLAG_MINUS': 'FALSE', },
          {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {minus = FALSE;}'}),
-        # 15
+        # 18
         ({'GEN_ENS_PROD_ENSEMBLE_FLAG_PLUS': 'FALSE', },
          {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {plus = FALSE;}'}),
-        # 16
+        # 19
         ({'GEN_ENS_PROD_ENSEMBLE_FLAG_MIN': 'FALSE', },
          {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {min = FALSE;}'}),
-        # 17
+        # 20
         ({'GEN_ENS_PROD_ENSEMBLE_FLAG_MAX': 'FALSE', },
          {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {max = FALSE;}'}),
-        # 18
+        # 21
         ({'GEN_ENS_PROD_ENSEMBLE_FLAG_RANGE': 'FALSE', },
          {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {range = FALSE;}'}),
-        # 19
+        # 22
         ({'GEN_ENS_PROD_ENSEMBLE_FLAG_VLD_COUNT': 'FALSE', },
          {
              'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {vld_count = FALSE;}'}),
-        # 20
+        # 23
         ({'GEN_ENS_PROD_ENSEMBLE_FLAG_FREQUENCY': 'FALSE', },
          {
              'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {frequency = FALSE;}'}),
-        # 21
+        # 24
         ({'GEN_ENS_PROD_ENSEMBLE_FLAG_NEP': 'FALSE', },
          {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {nep = FALSE;}'}),
-        # 22
+        # 25
         ({'GEN_ENS_PROD_ENSEMBLE_FLAG_NMEP': 'FALSE', },
          {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {nmep = FALSE;}'}),
-        # 23
+        # 26
         ({'GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO': 'FALSE', },
          {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {climo = FALSE;}'}),
-        # 24
+        # 27
         ({'GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO_CDP': 'FALSE', },
          {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {climo_cdp = FALSE;}'}),
-        # 25
+        # 28
         ({
              'GEN_ENS_PROD_ENSEMBLE_FLAG_LATLON': 'FALSE',
              'GEN_ENS_PROD_ENSEMBLE_FLAG_MEAN': 'FALSE',
@@ -180,40 +196,40 @@ def handle_input_dir(config):
                                             'frequency = FALSE;nep = FALSE;'
                                             'nmep = FALSE;climo = FALSE;'
                                             'climo_cdp = FALSE;}')}),
-        # 26
+        # 29
         ({'GEN_ENS_PROD_CLIMO_MEAN_FILE_NAME': '/some/climo_mean/file.txt', },
          {'METPLUS_CLIMO_MEAN_DICT': ('climo_mean = {file_name = '
                                       '["/some/climo_mean/file.txt"];}'),}),
-        # 27
+        # 30
         ({'GEN_ENS_PROD_CLIMO_MEAN_FIELD': '{name="CLM_NAME"; level="(0,0,*,*)";}', },
          {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {field = [{name="CLM_NAME"; level="(0,0,*,*)";}];}'}),
-        # 28
+        # 31
         ({'GEN_ENS_PROD_CLIMO_MEAN_REGRID_METHOD': 'NEAREST', },
          {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {method = NEAREST;}}'}),
-        # 29
+        # 32
         ({'GEN_ENS_PROD_CLIMO_MEAN_REGRID_WIDTH': '1', },
          {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {width = 1;}}'}),
-        # 30
+        # 33
         ({'GEN_ENS_PROD_CLIMO_MEAN_REGRID_VLD_THRESH': '0.5', },
          {
              'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {vld_thresh = 0.5;}}'}),
-        # 31
+        # 34
         ({'GEN_ENS_PROD_CLIMO_MEAN_REGRID_SHAPE': 'SQUARE', },
          {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {shape = SQUARE;}}'}),
-        # 32
+        # 35
         ({'GEN_ENS_PROD_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST', },
          {
              'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {time_interp_method = NEAREST;}'}),
-        # 33
+        # 36
         ({'GEN_ENS_PROD_CLIMO_MEAN_MATCH_MONTH': 'True', },
          {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {match_month = TRUE;}'}),
-        # 34
+        # 37
         ({'GEN_ENS_PROD_CLIMO_MEAN_DAY_INTERVAL': '30', },
          {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {day_interval = 30;}'}),
-        # 35
+        # 38
         ({'GEN_ENS_PROD_CLIMO_MEAN_HOUR_INTERVAL': '12', },
          {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {hour_interval = 12;}'}),
-        # 36
+        # 39
         ({
              'GEN_ENS_PROD_CLIMO_MEAN_FILE_NAME': '/some/climo_mean/file.txt',
              'GEN_ENS_PROD_CLIMO_MEAN_FIELD': '{name="CLM_NAME"; level="(0,0,*,*)";}',
@@ -234,42 +250,42 @@ def handle_input_dir(config):
                                       'time_interp_method = NEAREST;'
                                       'match_month = TRUE;day_interval = 30;'
                                       'hour_interval = 12;}')}),
-        # 37 climo stdev
+        # 40 climo stdev
         ({'GEN_ENS_PROD_CLIMO_STDEV_FILE_NAME': '/some/climo_stdev/file.txt', },
          {'METPLUS_CLIMO_STDEV_DICT': ('climo_stdev = {file_name = '
                                       '["/some/climo_stdev/file.txt"];}')}),
-        # 38
+        # 41
         ({'GEN_ENS_PROD_CLIMO_STDEV_FIELD': '{name="CLM_NAME"; level="(0,0,*,*)";}', },
          {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {field = [{name="CLM_NAME"; level="(0,0,*,*)";}];}'}),
-        # 39
+        # 42
         ({'GEN_ENS_PROD_CLIMO_STDEV_REGRID_METHOD': 'NEAREST', },
          {
              'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {method = NEAREST;}}'}),
-        # 40
+        # 43
         ({'GEN_ENS_PROD_CLIMO_STDEV_REGRID_WIDTH': '1', },
          {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {width = 1;}}'}),
-        # 41
+        # 44
         ({'GEN_ENS_PROD_CLIMO_STDEV_REGRID_VLD_THRESH': '0.5', },
          {
              'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {vld_thresh = 0.5;}}'}),
-        # 42
+        # 45
         ({'GEN_ENS_PROD_CLIMO_STDEV_REGRID_SHAPE': 'SQUARE', },
          {
              'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {shape = SQUARE;}}'}),
-        # 43
+        # 46
         ({'GEN_ENS_PROD_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST', },
          {
              'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {time_interp_method = NEAREST;}'}),
-        # 44
+        # 47
         ({'GEN_ENS_PROD_CLIMO_STDEV_MATCH_MONTH': 'True', },
          {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {match_month = TRUE;}'}),
-        # 45
+        # 48
         ({'GEN_ENS_PROD_CLIMO_STDEV_DAY_INTERVAL': '30', },
          {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {day_interval = 30;}'}),
-        # 46
+        # 49
         ({'GEN_ENS_PROD_CLIMO_STDEV_HOUR_INTERVAL': '12', },
          {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {hour_interval = 12;}'}),
-        # 47
+        # 50
         ({
              'GEN_ENS_PROD_CLIMO_STDEV_FILE_NAME': '/some/climo_stdev/file.txt',
              'GEN_ENS_PROD_CLIMO_STDEV_FIELD': '{name="CLM_NAME"; level="(0,0,*,*)";}',
@@ -290,16 +306,16 @@ def handle_input_dir(config):
                                       'time_interp_method = NEAREST;'
                                       'match_month = TRUE;day_interval = 30;'
                                       'hour_interval = 12;}')}),
-        # 48
+        # 51
         ({'GEN_ENS_PROD_NBRHD_PROB_WIDTH': '5', },
          {'METPLUS_NBRHD_PROB_DICT': 'nbrhd_prob = {width = [5];}'}),
-        # 49
+        # 52
         ({'GEN_ENS_PROD_NBRHD_PROB_SHAPE': 'circle', },
          {'METPLUS_NBRHD_PROB_DICT': 'nbrhd_prob = {shape = CIRCLE;}'}),
-        # 50
+        # 53
         ({'GEN_ENS_PROD_NBRHD_PROB_VLD_THRESH': '0.0', },
          {'METPLUS_NBRHD_PROB_DICT': 'nbrhd_prob = {vld_thresh = 0.0;}'}),
-        # 51
+        # 54
         ({
              'GEN_ENS_PROD_NBRHD_PROB_WIDTH': '5',
              'GEN_ENS_PROD_NBRHD_PROB_SHAPE': 'CIRCLE',
@@ -311,26 +327,26 @@ def handle_input_dir(config):
                      'vld_thresh = 0.0;}'
              )
          }),
-        # 52
+        # 55
         ({'GEN_ENS_PROD_NMEP_SMOOTH_VLD_THRESH': '0.0', },
          {'METPLUS_NMEP_SMOOTH_DICT': 'nmep_smooth = {vld_thresh = 0.0;}'}),
-        # 53
+        # 56
         ({'GEN_ENS_PROD_NMEP_SMOOTH_SHAPE': 'circle', },
          {'METPLUS_NMEP_SMOOTH_DICT': 'nmep_smooth = {shape = CIRCLE;}'}),
-        # 54
+        # 57
         ({'GEN_ENS_PROD_NMEP_SMOOTH_GAUSSIAN_DX': '81.27', },
          {'METPLUS_NMEP_SMOOTH_DICT': 'nmep_smooth = {gaussian_dx = 81.27;}'}),
-        # 55
+        # 58
         ({'GEN_ENS_PROD_NMEP_SMOOTH_GAUSSIAN_RADIUS': '120', },
          {
              'METPLUS_NMEP_SMOOTH_DICT': 'nmep_smooth = {gaussian_radius = 120;}'}),
-        # 56
+        # 59
         ({'GEN_ENS_PROD_NMEP_SMOOTH_TYPE_METHOD': 'GAUSSIAN', },
          {'METPLUS_NMEP_SMOOTH_DICT': 'nmep_smooth = {type = [{method = GAUSSIAN;}];}'}),
-        # 57
+        # 60
         ({'GEN_ENS_PROD_NMEP_SMOOTH_TYPE_WIDTH': '1', },
          {'METPLUS_NMEP_SMOOTH_DICT': 'nmep_smooth = {type = [{width = 1;}];}'}),
-        # 58
+        # 61
         ({
              'GEN_ENS_PROD_NMEP_SMOOTH_VLD_THRESH': '0.0',
              'GEN_ENS_PROD_NMEP_SMOOTH_SHAPE': 'circle',
@@ -346,13 +362,13 @@ def handle_input_dir(config):
                      'type = [{method = GAUSSIAN;width = 1;}];}'
              )
          }),
-        # 59
+        # 62
         ({'GEN_ENS_PROD_ENS_MEMBER_IDS': '1,2,3,4', },
          {'METPLUS_ENS_MEMBER_IDS': 'ens_member_ids = ["1", "2", "3", "4"];'}),
-        # 60
+        # 63
         ({'GEN_ENS_PROD_CONTROL_ID': '0', },
          {'METPLUS_CONTROL_ID': 'control_id = "0";'}),
-        # 61
+        # 64
         ({'GEN_ENS_PROD_NORMALIZE': 'CLIMO_STD_ANOM', },
          {'METPLUS_NORMALIZE': 'normalize = CLIMO_STD_ANOM;'}),
 
