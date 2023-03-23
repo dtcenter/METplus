@@ -32,7 +32,7 @@
   {
     "category": "short_range",
     "index_list": "2-6",
-    "run": true 
+    "run": false
   },
   {
     "category": "short_range",
