@@ -197,8 +197,7 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
          {'METPLUS_REGRID_DICT': 'regrid = {convert(x) = 2*x;}'}),
 
         ({'GRID_STAT_REGRID_CENSOR_THRESH': '>12000,<5000', },
-         {
-             'METPLUS_REGRID_DICT': 'regrid = {censor_thresh = [>12000, <5000];}'}),
+         {'METPLUS_REGRID_DICT': 'regrid = {censor_thresh = [>12000, <5000];}'}),
 
         ({'GRID_STAT_REGRID_CENSOR_VAL': '12000,5000', },
          {'METPLUS_REGRID_DICT': 'regrid = {censor_val = [12000, 5000];}'}),

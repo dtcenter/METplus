@@ -105,6 +105,9 @@ def set_minimum_config_settings(config):
 
 @pytest.mark.parametrize(
     'config_overrides, env_var_values', [
+        ({'SERIES_ANALYSIS_REGRID_TO_GRID': 'FCST', },
+         {'METPLUS_REGRID_DICT': 'regrid = {to_grid = FCST;}'}),
+
         ({'SERIES_ANALYSIS_REGRID_METHOD': 'NEAREST',},
          {'METPLUS_REGRID_DICT': 'regrid = {method = NEAREST;}'}),
 
@@ -126,7 +129,8 @@ def set_minimum_config_settings(config):
         ({'SERIES_ANALYSIS_REGRID_CENSOR_VAL': '12000,5000', },
          {'METPLUS_REGRID_DICT': 'regrid = {censor_val = [12000, 5000];}'}),
 
-        ({'SERIES_ANALYSIS_REGRID_METHOD': 'NEAREST',
+        ({'SERIES_ANALYSIS_REGRID_TO_GRID': 'FCST',
+          'SERIES_ANALYSIS_REGRID_METHOD': 'NEAREST',
           'SERIES_ANALYSIS_REGRID_WIDTH': '1',
           'SERIES_ANALYSIS_REGRID_VLD_THRESH': '0.5',
           'SERIES_ANALYSIS_REGRID_SHAPE': 'SQUARE',
@@ -134,7 +138,7 @@ def set_minimum_config_settings(config):
           'SERIES_ANALYSIS_REGRID_CENSOR_THRESH': '>12000,<5000',
           'SERIES_ANALYSIS_REGRID_CENSOR_VAL': '12000,5000',
           },
-         {'METPLUS_REGRID_DICT': ('regrid = {method = NEAREST;'
+         {'METPLUS_REGRID_DICT': ('regrid = {to_grid = FCST;method = NEAREST;'
                                   'width = 1;vld_thresh = 0.5;shape = SQUARE;'
                                   'convert(x) = 2*x;'
                                   'censor_thresh = [>12000, <5000];'
