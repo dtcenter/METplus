@@ -440,7 +440,7 @@ class TCPairsWrapper(CommandBuilder):
         dict_items = {
             'diag_source': 'string',
             'key': 'list',
-            'convert': ('string', 'remove_quotes'),
+            'convert': ('string', 'remove_quotes,add_x'),
         }
         return_code = add_met_config_dict_list(config=self.config,
                                                app_name=self.app_name,
@@ -450,11 +450,6 @@ class TCPairsWrapper(CommandBuilder):
         if not return_code:
             self.isOK = False
             return
-
-        # change "convert =" to "convert(x) ="
-        value = self.env_var_dict.get('METPLUS_DIAG_CONVERT_MAP_LIST', '')
-        value = value.replace('convert =', 'convert(x) =')
-        self.env_var_dict['METPLUS_DIAG_CONVERT_MAP_LIST'] = value
 
     def _handle_diag(self, c_dict):
         diag_indices = list(

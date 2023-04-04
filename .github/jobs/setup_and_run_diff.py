@@ -4,6 +4,7 @@ import os
 import sys
 import subprocess
 import shlex
+import re
 
 from docker_utils import VERSION_EXT, get_branch_name
 
@@ -33,8 +34,9 @@ if os.environ.get('GITHUB_EVENT_NAME') == "pull_request":
     output_data_branch = os.environ.get('GITHUB_BASE_REF')
 else:
     branch_name = get_branch_name()
-    if branch_name.startswith('main_v'):
-        output_data_branch = branch_name
+    match = re.match(r'.*(main_v\d+\.\d+).*', branch_name)
+    if match:
+        output_data_branch = match.group(1)
     else:
         output_data_branch = 'develop'
 

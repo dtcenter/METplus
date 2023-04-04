@@ -204,6 +204,9 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_REGRID_WIDTH`
 | :term:`ENSEMBLE_STAT_REGRID_VLD_THRESH`
 | :term:`ENSEMBLE_STAT_REGRID_SHAPE`
+| :term:`ENSEMBLE_STAT_REGRID_CONVERT`
+| :term:`ENSEMBLE_STAT_REGRID_CENSOR_THRESH`
+| :term:`ENSEMBLE_STAT_REGRID_CENSOR_VAL`
 | :term:`ENSEMBLE_STAT_CONFIG_FILE`
 | :term:`ENSEMBLE_STAT_MET_OBS_ERR_TABLE`
 | :term:`ENSEMBLE_STAT_N_MEMBERS`
@@ -394,6 +397,12 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - regrid.vld_thresh
    * - :term:`ENSEMBLE_STAT_REGRID_TO_GRID`
      - regrid.to_grid
+   * - :term:`ENSEMBLE_STAT_REGRID_CONVERT`
+     - regrid.convert
+   * - :term:`ENSEMBLE_STAT_REGRID_CENSOR_THRESH`
+     - regrid.censor_thresh
+   * - :term:`ENSEMBLE_STAT_REGRID_CENSOR_VAL`
+     - regrid.censor_val
 
 **${METPLUS_CENSOR_THRESH}**
 
@@ -1050,6 +1059,9 @@ METplus Configuration
 | :term:`GEN_ENS_PROD_REGRID_WIDTH`
 | :term:`GEN_ENS_PROD_REGRID_VLD_THRESH`
 | :term:`GEN_ENS_PROD_REGRID_SHAPE`
+| :term:`GEN_ENS_PROD_REGRID_CONVERT`
+| :term:`GEN_ENS_PROD_REGRID_CENSOR_THRESH`
+| :term:`GEN_ENS_PROD_REGRID_CENSOR_VAL`
 | :term:`GEN_ENS_PROD_CENSOR_THRESH`
 | :term:`GEN_ENS_PROD_CENSOR_VAL`
 | :term:`GEN_ENS_PROD_CAT_THRESH`
@@ -1174,6 +1186,12 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - regrid.vld_thresh
    * - :term:`GEN_ENS_PROD_REGRID_TO_GRID`
      - regrid.to_grid
+   * - :term:`GEN_ENS_PROD_REGRID_CONVERT`
+     - regrid.convert
+   * - :term:`GEN_ENS_PROD_REGRID_CENSOR_THRESH`
+     - regrid.censor_thresh
+   * - :term:`GEN_ENS_PROD_REGRID_CENSOR_VAL`
+     - regrid.censor_val
 
 **${METPLUS_CENSOR_THRESH}**
 
@@ -2669,6 +2687,9 @@ METplus Configuration
 | :term:`GRID_DIAG_REGRID_VLD_THRESH`
 | :term:`GRID_DIAG_REGRID_SHAPE`
 | :term:`GRID_DIAG_REGRID_TO_GRID`
+| :term:`GRID_DIAG_REGRID_CONVERT`
+| :term:`GRID_DIAG_REGRID_CENSOR_THRESH`
+| :term:`GRID_DIAG_REGRID_CENSOR_VAL`
 | :term:`GRID_DIAG_DESC`
 | :term:`GRID_DIAG_SKIP_IF_OUTPUT_EXISTS`
 | :term:`GRID_DIAG_RUNTIME_FREQ`
@@ -2725,6 +2746,12 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - regrid.vld_thresh
    * - :term:`GRID_DIAG_REGRID_TO_GRID`
      - regrid.to_grid
+   * - :term:`GRID_DIAG_REGRID_CONVERT`
+     - regrid.convert
+   * - :term:`GRID_DIAG_REGRID_CENSOR_THRESH`
+     - regrid.censor_thresh
+   * - :term:`GRID_DIAG_REGRID_CENSOR_VAL`
+     - regrid.censor_val
 
 **${METPLUS_CENSOR_THRESH}**
 
@@ -2826,6 +2853,9 @@ METplus Configuration
 | :term:`GRID_STAT_REGRID_WIDTH`
 | :term:`GRID_STAT_REGRID_VLD_THRESH`
 | :term:`GRID_STAT_REGRID_SHAPE`
+| :term:`GRID_STAT_REGRID_CONVERT`
+| :term:`GRID_STAT_REGRID_CENSOR_THRESH`
+| :term:`GRID_STAT_REGRID_CENSOR_VAL`
 | :term:`GRID_STAT_CLIMO_CDF_BINS`
 | :term:`GRID_STAT_CLIMO_CDF_CENTER_BINS`
 | :term:`GRID_STAT_CLIMO_CDF_WRITE_BINS`
@@ -3025,6 +3055,12 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - regrid.vld_thresh
    * - :term:`GRID_STAT_REGRID_TO_GRID`
      - regrid.to_grid
+   * - :term:`GRID_STAT_REGRID_CONVERT`
+     - regrid.convert
+   * - :term:`GRID_STAT_REGRID_CENSOR_THRESH`
+     - regrid.censor_thresh
+   * - :term:`GRID_STAT_REGRID_CENSOR_VAL`
+     - regrid.censor_val
 
 **${METPLUS_FCST_FIELD}**
 
@@ -3944,6 +3980,9 @@ METplus Configuration
 | :term:`MODE_REGRID_WIDTH`
 | :term:`MODE_REGRID_VLD_THRESH`
 | :term:`MODE_REGRID_SHAPE`
+| :term:`MODE_REGRID_CONVERT`
+| :term:`MODE_REGRID_CENSOR_THRESH`
+| :term:`MODE_REGRID_CENSOR_VAL`
 | :term:`MODE_CONFIG_FILE`
 | :term:`FCST_MODE_INPUT_DATATYPE`
 | :term:`OBS_MODE_INPUT_DATATYPE`
@@ -4105,6 +4144,12 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - regrid.vld_thresh
    * - :term:`MODE_REGRID_TO_GRID`
      - regrid.to_grid
+   * - :term:`MODE_REGRID_CONVERT`
+     - regrid.convert
+   * - :term:`MODE_REGRID_CENSOR_THRESH`
+     - regrid.censor_thresh
+   * - :term:`MODE_REGRID_CENSOR_VAL`
+     - regrid.censor_val
 
 **${METPLUS_GRID_RES}**
 
@@ -4639,6 +4684,9 @@ METplus Configuration
 | :term:`MTD_REGRID_WIDTH`
 | :term:`MTD_REGRID_VLD_THRESH`
 | :term:`MTD_REGRID_SHAPE`
+| :term:`MTD_REGRID_CONVERT`
+| :term:`MTD_REGRID_CENSOR_THRESH`
+| :term:`MTD_REGRID_CENSOR_VAL`
 | :term:`MTD_MET_CONFIG_OVERRIDES`
 | :term:`FCST_MTD_IS_PROB`
 | :term:`FCST_MTD_PROB_IN_GRIB_PDS`
@@ -4730,6 +4778,12 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - regrid.vld_thresh
    * - :term:`MTD_REGRID_TO_GRID`
      - regrid.to_grid
+   * - :term:`MTD_REGRID_CONVERT`
+     - regrid.convert
+   * - :term:`MTD_REGRID_CENSOR_THRESH`
+     - regrid.censor_thresh
+   * - :term:`MTD_REGRID_CENSOR_VAL`
+     - regrid.censor_val
 
 **${METPLUS_FCST_FILE_TYPE}**
 
@@ -5684,6 +5738,12 @@ METplus Configuration
 | :term:`POINT2GRID_QC_FLAGS`
 | :term:`POINT2GRID_ADP`
 | :term:`POINT2GRID_REGRID_METHOD`
+| :term:`POINT2GRID_REGRID_WIDTH`
+| :term:`POINT2GRID_REGRID_VLD_THRESH`
+| :term:`POINT2GRID_REGRID_SHAPE`
+| :term:`POINT2GRID_REGRID_CONVERT`
+| :term:`POINT2GRID_REGRID_CENSOR_THRESH`
+| :term:`POINT2GRID_REGRID_CENSOR_VAL`
 | :term:`POINT2GRID_GAUSSIAN_DX`
 | :term:`POINT2GRID_GAUSSIAN_RADIUS`
 | :term:`POINT2GRID_PROB_CAT_THRESH`
@@ -5728,6 +5788,9 @@ Configuration
 | :term:`POINT_STAT_REGRID_WIDTH`
 | :term:`POINT_STAT_REGRID_VLD_THRESH`
 | :term:`POINT_STAT_REGRID_SHAPE`
+| :term:`POINT_STAT_REGRID_CONVERT`
+| :term:`POINT_STAT_REGRID_CENSOR_THRESH`
+| :term:`POINT_STAT_REGRID_CENSOR_VAL`
 | :term:`POINT_STAT_MASK_GRID`
 | :term:`POINT_STAT_MASK_POLY`
 | :term:`POINT_STAT_MASK_SID`
@@ -5913,6 +5976,12 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - regrid.vld_thresh
    * - :term:`POINT_STAT_REGRID_TO_GRID`
      - regrid.to_grid
+   * - :term:`POINT_STAT_REGRID_CONVERT`
+     - regrid.convert
+   * - :term:`POINT_STAT_REGRID_CENSOR_THRESH`
+     - regrid.censor_thresh
+   * - :term:`POINT_STAT_REGRID_CENSOR_VAL`
+     - regrid.censor_val
 
 **${METPLUS_FCST_FIELD}**
 
@@ -6400,6 +6469,9 @@ METplus Configuration
 | :term:`SERIES_ANALYSIS_REGRID_WIDTH`
 | :term:`SERIES_ANALYSIS_REGRID_VLD_THRESH`
 | :term:`SERIES_ANALYSIS_REGRID_SHAPE`
+| :term:`SERIES_ANALYSIS_REGRID_CONVERT`
+| :term:`SERIES_ANALYSIS_REGRID_CENSOR_THRESH`
+| :term:`SERIES_ANALYSIS_REGRID_CENSOR_VAL`
 | :term:`SERIES_ANALYSIS_STAT_LIST`
 | :term:`SERIES_ANALYSIS_IS_PAIRED`
 | :term:`SERIES_ANALYSIS_CUSTOM_LOOP_LIST`
@@ -6563,6 +6635,12 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - regrid.vld_thresh
    * - :term:`SERIES_ANALYSIS_REGRID_TO_GRID`
      - regrid.to_grid
+   * - :term:`SERIES_ANALYSIS_REGRID_CONVERT`
+     - regrid.convert
+   * - :term:`SERIES_ANALYSIS_REGRID_CENSOR_THRESH`
+     - regrid.censor_thresh
+   * - :term:`SERIES_ANALYSIS_REGRID_CENSOR_VAL`
+     - regrid.censor_val
 
 **${METPLUS_CAT_THRESH}**
 
@@ -8678,6 +8756,9 @@ METplus Configuration
 | :term:`TC_RMW_REGRID_WIDTH`
 | :term:`TC_RMW_REGRID_VLD_THRESH`
 | :term:`TC_RMW_REGRID_SHAPE`
+| :term:`TC_RMW_REGRID_CONVERT`
+| :term:`TC_RMW_REGRID_CENSOR_THRESH`
+| :term:`TC_RMW_REGRID_CENSOR_VAL`
 | :term:`TC_RMW_N_RANGE`
 | :term:`TC_RMW_N_AZIMUTH`
 | :term:`TC_RMW_MAX_RANGE_KM`
@@ -8885,6 +8966,12 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - regrid.width
    * - :term:`TC_RMW_REGRID_VLD_THRESH`
      - regrid.vld_thresh
+   * - :term:`TC_RMW_REGRID_CONVERT`
+     - regrid.convert
+   * - :term:`TC_RMW_REGRID_CENSOR_THRESH`
+     - regrid.censor_thresh
+   * - :term:`TC_RMW_REGRID_CENSOR_VAL`
+     - regrid.censor_val
 
 **${METPLUS_N_RANGE}**
 
