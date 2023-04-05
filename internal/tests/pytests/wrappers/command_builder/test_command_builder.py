@@ -855,3 +855,60 @@ def test_get_field_info_extra(metplus_config, extra, expected_value):
         add_curly_braces=False
     )[0]
     assert actual_value == expected_value
+
+
+@pytest.mark.parametrize(
+    'exists, skip, is_dir, use_prefix, run', [
+            (True, True, False, True, False),
+            (True, False, False, True, True),
+            (False, True, False, True, True),
+            (False, False, False, True, True),
+            (True, True, True, True, False),
+            (True, False, True, True, True),
+            (False, True, True, True, True),
+            (False, False, True, True, True),
+            (True, True, False, False, False),
+            (True, False, False, False, True),
+            (False, True, False, False, True),
+            (False, False, False, False, True),
+            (True, True, True, False, False),
+            (True, False, True, False, True),
+            (False, True, True, False, True),
+            (False, False, True, False, True),
+        ]
+)
+@pytest.mark.wrapper
+def test_find_and_check_output_file_skip(metplus_config, exists, skip, is_dir,
+                                         use_prefix, run):
+    app_name = 'command_builder'
+    config = metplus_config
+    if use_prefix:
+        config.set('config', f'{app_name.upper()}_OUTPUT_PREFIX', 'prefix')
+    wrapper = CommandBuilder(config)
+    wrapper.app_name = app_name
+    prefix = f'{app_name}_prefix' if use_prefix else app_name
+    exist_file = f'{prefix}_120000L_20190201_000000V.stat'
+    non_exist_file = f'{prefix}_240000L_20190201_000000V.stat'
+
+    # create fake file to test
+    create_fullpath = os.path.join(config.getdir('OUTPUT_BASE'), exist_file)
+    open(create_fullpath, 'a').close()
+
+    # set time_info, output template/dir, skip if output exists flag
+    task_info = {'valid': datetime.datetime(2019, 2, 1, 0)}
+    if is_dir:
+        task_info['lead_hours'] = 12 if exists else 24
+
+    time_info = ti_calculate(task_info)
+    wrapper.c_dict['OUTPUT_DIR'] = wrapper.config.getdir('OUTPUT_BASE')
+
+    wrapper.c_dict['SKIP_IF_OUTPUT_EXISTS'] = skip
+    if is_dir:
+        wrapper.c_dict['OUTPUT_TEMPLATE'] = ''
+    else:
+        wrapper.c_dict['OUTPUT_TEMPLATE'] = exist_file if exists else non_exist_file
+
+    result = wrapper.find_and_check_output_file(time_info, is_directory=is_dir)
+
+    # cast result to bool because None isn't equal to False
+    assert bool(result) == run
