@@ -41,7 +41,7 @@ MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 # and download sample data for the appropriate release.
 #
 # This tarball should be unpacked into the directory that you will set the
-# value of INPUT_BASE. See 'Running METplus' section for more information.
+# value of INPUT_BASE. See :ref:`running-metplus` for more information.
 
 
 ##############################################################################
