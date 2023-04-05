@@ -25,8 +25,9 @@ MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 # Datasets
 # --------
 #
-# | **Forecast dataset:** 1-hour HRRR in grib2
-# | **Observation dataset:** MRMS and HRRR analysis in grib2
+# **Forecast dataset:** 1-hour HRRR in grib2
+#
+# **Observation dataset:** MRMS and HRRR analysis in grib2
 # 
 # The forecast and observation fields are only a subset of the full domain in
 # order for a faster run-time of Multivariate MODE. An example command using
@@ -34,6 +35,14 @@ MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 #
 #   wgrib2 infile.grib2 -new_grid_winds earth -new_grid lambert:262.5:38.5:38.5:38.5 -83.0:400:3000 37.0:400:3000 outfile.grib2 
 #
+# **Location:** All of the input data required for this use case can be found
+# in the *short_range* sample data tarball.
+# Navigate to `METplus Releases <https://github.com/dtcenter/METplus/releases>`_
+# and download sample data for the appropriate release.
+#
+# This tarball should be unpacked into the directory that you will set the
+# value of INPUT_BASE. See 'Running METplus' section for more information.
+
 
 ##############################################################################
 # METplus Components
@@ -57,7 +66,7 @@ MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 #
 # The following tools are used for each run time:
 #
-# MODE(mv), GenVxMask(fcst_super), GenVxMask(obs_super), MODE (super)
+# MODE(mv), GenVxMask(fcst_super), GenVxMask(obs_super), MODE(super)
 # 
 # Where the first instance of MODE runs over multiple variables to identify
 # super objects for the forecast and observation, GenVxMask masks the raw input
@@ -76,8 +85,8 @@ MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
+# then it loads any configuration files passed to METplus via the command line:
+# parm/use_cases/model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
@@ -103,31 +112,12 @@ MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 # Running METplus
 # ---------------
 #
-# This use case can be run two ways:
+# Pass the use case configuration file to the run_metplus.py script
+# along with any user-specific system configuration files if desired::
 #
-# 1) Passing in MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf then a user-specific system configuration file::
+#    run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf /path/to/user_system.conf
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf -c /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf::
-#
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
-#
-# **NOTE:** All of these items must be found under the [dir] section.
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output
