@@ -902,6 +902,8 @@ class MPIRank(MPIRanksBase):
             sio.write('.threads(%s)'%(repr(self.threads),))
         if self.turbomode:
             sio.write('.turbomode(%s)'%(repr(self.turbomode),))
+        if self.ranks_per_node:
+            sio.write('.rpn(%s)'%(repr(self.ranks_per_node),))
         ret=sio.getvalue()
         sio.close()
         return ret

@@ -62,7 +62,7 @@ class RocotoTask(object):
         resolving variables.
         @returns the resulting Rocoto XML code"""
         try:
-            test_size=self.__obj.resolve('test_size')
+            test_size=self.__obj.resolve('test_size').string_context(con)
         except KeyError:
             test_size='short'
         return self.__obj.defscopes[-1].resolve(

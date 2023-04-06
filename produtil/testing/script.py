@@ -197,6 +197,8 @@ class ProdutilRunner(produtil.testing.parsetree.Context):
         if MPI=='mpich':    MPI='impi'
         if MPI=='lsf_impi': MPI='impi'
         if MPI=='mvapich2': MPI='mpiexec'
+        if MPI=='srun':     MPI='srun_shell'
+        if MPI=='slurm':    MPI='srun_shell'
         if MPI=='moab':     MPI='moab_cray'        # alias for Rocoto moab
 
         self.mpiimpl=produtil.run.make_mpi(

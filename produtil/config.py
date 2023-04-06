@@ -545,9 +545,9 @@ class ProdConfig(object):
         self._time_formatter=ConfTimeFormatter(bool(quoted_literals))
         self._datastore=None
         self._tasknames=set()
-        # Added strict=False and inline_comment_prefixes for Python 3,
+        # Added strict=False and inline_comment_prefixes for Python 3, 
         # so everything works as it did before in Python 2.
-        # self._conf=ConfigParser(strict=False, inline_comment_prefixes=(';',)) if (conf is None) else conf
+        #self._conf=ConfigParser(strict=False, inline_comment_prefixes=(';',)) if (conf is None) else conf
         self._conf=ConfigParser(strict=strict, inline_comment_prefixes=inline_comment_prefixes) if (conf is None) else conf
         self._conf.optionxform=str
 

@@ -259,6 +259,15 @@ def register_implementations(logger=None):
         pass
 
     try:
+        import produtil.mpi_impl.pbs_cray_intel
+        add_implementation(produtil.mpi_impl.pbs_cray_intel.Implementation)
+    except ImportError as e:
+        # Some projects prefer to suppress this log message.
+        # Temp comment out until this can be addressed properly.
+        #logger.info('pbs_cray_intel: cannot import: %s'%(str(e),))
+        pass
+
+    try:
         import produtil.mpi_impl.lsf_cray_intel
         add_implementation(produtil.mpi_impl.lsf_cray_intel.Implementation)
     except ImportError as e: 
@@ -299,6 +308,15 @@ def register_implementations(logger=None):
         # Some projects prefer to suppress this log message.
         # Temp comment out until this can be addressed properly.
         #logger.info('mpiexec: cannot import: %s'%(str(e),))
+        pass
+
+    try:
+        import produtil.mpi_impl.srun_shell
+        add_implementation(produtil.mpi_impl.srun_shell.Implementation)
+    except ImportError as e: 
+        # Some projects prefer to suppress this log message.
+        # Temp comment out until this can be addressed properly.
+        #logger.info('srun_shell: cannot import: %s'%(str(e),))
         pass
 
 def get_mpi(mpi_name=NO_NAME,force=False,logger=None,**kwargs):

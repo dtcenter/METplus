@@ -121,7 +121,7 @@ class Implementation(ImplementationBase):
             available_nodes.append(node)
         return available_nodes
     
-    def mpirunner_impl(self,arg,allranks=False,rewrite_nodefile=True,**kwargs):
+    def mpirunner_impl(self,arg,allranks=False,rewrite_nodefile=True,label_io=False,**kwargs):
         """!This is the underlying implementation of mpirunner and should
         not be called directly."""
         assert(isinstance(arg,produtil.mpiprog.MPIRanksBase))
@@ -138,6 +138,9 @@ class Implementation(ImplementationBase):
 
 
         srun_args=[self.srun_path,'--export=ALL','--cpu_bind=core']
+
+        if label_io:
+            srun_args.append('--label')
     
         if arg.nranks()==1 and allranks:
             srun_args.append('--distribution=block:block')
@@ -173,7 +176,7 @@ class Implementation(ImplementationBase):
                 cmdfile.append('%d-%d %s'%(irank,irank+count-1,rank.to_shell()))
                 irank+=count
                 if rewrite_nodefile:
-                    rpn=max(min(node_size,rank.rpn()),1)
+                    rpn=max(min(node_size,rank.ranks_per_node),1)
                     need_nodes=max(1,(count+rpn-1)//rpn)
                     if need_nodes>len(remaining_nodes):
                         raise MPITooManyRanks('Request is too large for %d nodes of size %d: %s'%(
