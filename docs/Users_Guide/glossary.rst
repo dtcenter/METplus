@@ -2330,7 +2330,7 @@ METplus Configuration Glossary
      | *Used by:*  SeriesAnalysis
 
    LEAD_SEQ_<n>_LABEL
-     Required when SERIES_BY_LEAD_GROUP_FCSTS=True. Specify the label of the corresponding bin of series by lead results.
+     Required if :term:`LEAD_SEQ_\<n>` is set. Specify the label of the nth forecast lead group .
 
      | *Used by:*  SeriesAnalysis
 
@@ -3742,7 +3742,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`LEAD_SEQ_\<n>` and :term:`SERIES_ANALYSIS_RUNTIME_FREQ` instead.
 
    SERIES_BY_LEAD_GROUP_FCSTS
-     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_GROUP_FCSTS` instead.
+     .. warning:: **DEPRECATED:** Please use :term:`LEAD_SEQ_\<n>` and :term:`SERIES_ANALYSIS_RUNTIME_FREQ` instead.
 
    SERIES_CI
      .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_SERIES_CI` instead.
