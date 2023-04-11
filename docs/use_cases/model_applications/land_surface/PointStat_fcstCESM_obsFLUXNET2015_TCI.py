@@ -2,7 +2,7 @@
 PointStat: CESM and FLUXNET2015 Terrestrial Coupling Index (TCI) 
 ======================================================================
 
-model_applications/precipitation/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
+model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 
 """
 ##############################################################################
