@@ -15,6 +15,7 @@ import datetime
 import time
 import sys
 import os
+import netCDF4 as nc
 
 dataDir = '/d1/personal/biswas/feature_2011_TCI_from_CESM_FLUXNET2015/'
 
@@ -29,11 +30,12 @@ fileCLM = os.path.expandvars(sys.argv[1])
 fileCAM = os.path.expandvars(sys.argv[2]) 
 season = sys.argv[3] 
 
-print('Starting Satellite SMAP V&V file_flag:',season)
+print('Starting Terrestrial Coupling Index Calculation for: ',season)
 
 camDS_CLM45         = xr.open_dataset(fileCAM, decode_times=False)
 print('Finished reading in CAM file')
 clmDS_CLM45         = xr.open_dataset(fileCLM, decode_times=False)
+print('Finished reading in CLM file')
 
 if season=="DJF":
     ss = 0
@@ -75,7 +77,7 @@ ci_season=couplingIndex[ss,:,:]
 ci = np.where(np.isnan(ci_season), -9999, ci_season)
 
 met_data = ci[:,:]
-met_data = met_data[::-1]
+met_data = met_data[::-1].copy()
 
 #trim the lat/lon grids so they match the data fields
 lat_met = camDS_CLM45.lat
@@ -97,8 +99,8 @@ print(f"variables:"
 attrs = {
         'valid': v_str,
         'init': v_str,
-        'lead': "00",
-        'accum': "00",
+        'lead': "000000",
+        'accum': "000000",
         'name': 'TCI',
         'standard_name': 'terrestrial_coupling_index',
         'long_name': 'terrestrial_coupling_index',
