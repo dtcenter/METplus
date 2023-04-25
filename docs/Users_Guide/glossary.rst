@@ -995,7 +995,7 @@ METplus Configuration Glossary
      | *Used by:*  GridStat
 
    POINT2GRID_REGRID_TO_GRID
-     Used to set the regrid dictionary item 'to_grid' in the MET Point2Grid config file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Used to set the grid definition for point2grid.
 
      | *Used by:*  Point2Grid
 
@@ -10343,36 +10343,6 @@ METplus Configuration Glossary
      Specify the value for 'regrid.censor_val' in the MET configuration file for MTD.
 
      | *Used by:* MTD
-
-   POINT2GRID_REGRID_WIDTH
-     Specify the value for 'regrid.width' in the MET configuration file for Point2Grid.
-
-     | *Used by:* Point2Grid
-
-   POINT2GRID_REGRID_VLD_THRESH
-     Specify the value for 'regrid.vld_thresh' in the MET configuration file for Point2Grid.
-
-     | *Used by:* Point2Grid
-
-   POINT2GRID_REGRID_SHAPE
-     Specify the value for 'regrid.shape' in the MET configuration file for Point2Grid.
-
-     | *Used by:* Point2Grid
-
-   POINT2GRID_REGRID_CONVERT
-     Specify the value for 'regrid.convert' in the MET configuration file for Point2Grid.
-
-     | *Used by:* Point2Grid
-
-   POINT2GRID_REGRID_CENSOR_THRESH
-     Specify the value for 'regrid.censor_thresh' in the MET configuration file for Point2Grid.
-
-     | *Used by:* Point2Grid
-
-   POINT2GRID_REGRID_CENSOR_VAL
-     Specify the value for 'regrid.censor_val' in the MET configuration file for Point2Grid.
-
-     | *Used by:* Point2Grid
 
    POINT_STAT_REGRID_CONVERT
      Specify the value for 'regrid.convert' in the MET configuration file for PointStat.
