@@ -90,16 +90,7 @@ Using conda::
 **MET Python Embedding Requirements**
 
 If running use cases that use Python embedding, the **MET** executables
-must be installed with Python enabled
-and the following Python packages installed:
-
-- xarray (2022.3.0)
-
-- numpy (1.22.4)
-
-- pandas (1.4.2)
-
-- netCDF4 (1.5.8)
+must be installed with Python enabled.
 
 See `Appendix F Python Embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html>`_
 section in the MET User's Guide for more information.
