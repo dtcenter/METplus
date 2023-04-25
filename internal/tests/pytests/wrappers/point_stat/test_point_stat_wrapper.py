@@ -24,7 +24,6 @@ def set_minimum_config_settings(config):
     config.set('config', 'INIT_END', '2005080712')
     config.set('config', 'INIT_INCREMENT', '12H')
     config.set('config', 'LEAD_SEQ', '12H')
-    config.set('config', 'LOOP_ORDER', 'times')
 
     config.set('config', 'POINT_STAT_CONFIG_FILE',
                '{PARM_BASE}/met_config/PointStatConfig_wrapped')
