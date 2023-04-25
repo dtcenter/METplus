@@ -22,6 +22,7 @@ from metplus.util import metplus_check
 )
 @pytest.mark.util
 def test_metplus_check_python(user, torf):
+    # check that version is above minimum python requirement
     assert metplus_check.metplus_check_python_version(user) == torf
 
 

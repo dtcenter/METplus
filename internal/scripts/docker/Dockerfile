@@ -45,9 +45,9 @@ ONBUILD WORKDIR /metplus
 
 # use build alias based on OBTAIN_SOURCE_CODE value
 FROM build_${OBTAIN_SOURCE_CODE}
-MAINTAINER George McCabe <mccabe@ucar.edu>
+LABEL maintainer="George McCabe <mccabe@ucar.edu>" 
 
-RUN echo export PATH=$PATH:`pwd`/METplus/ush >> /etc/bashrc \
+RUN echo export PATH=$PATH:`pwd`/METplus/ush >> /root/.bashrc \
  && echo setenv PATH $PATH:`pwd`/METplus/ush >> /etc/csh.cshrc
 
 # if source code was retrieved, set default config variables and install package

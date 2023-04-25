@@ -1054,6 +1054,11 @@ This example will run GridStatWrapper only.
 
 This example will run PCPCombineWrapper then GridStatWrapper.
 
+.. _process_list_instance_names:
+
+Instance Names in Process List
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 Added in version 4.0.0 is the ability to specify an instance name for each
 process in the PROCESS_LIST. This allows multiple instances of the same
 wrapper to be specified in the PROCESS_LIST. Users can create a new section

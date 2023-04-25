@@ -34,7 +34,7 @@ fi
 
 # running unit tests (pytests)
 if [[ "$INPUT_CATEGORIES" == pytests* ]]; then
-  export METPLUS_ENV_TAG="pytest"
+  export METPLUS_ENV_TAG="pytest.v5.1"
   export METPLUS_IMG_TAG=${branch_name}
   echo METPLUS_ENV_TAG=${METPLUS_ENV_TAG}
   echo METPLUS_IMG_TAG=${METPLUS_IMG_TAG}
@@ -61,7 +61,7 @@ if [[ "$INPUT_CATEGORIES" == pytests* ]]; then
   for x in `cat $PYTESTS_GROUPS_FILEPATH`; do
     marker="${x//_or_/ or }"
     marker="${marker//not_/not }"
-    command+="/usr/local/envs/pytest/bin/pytest -vv --cov=../../../metplus -m \"$marker\""
+    command+="/usr/local/conda/envs/${METPLUS_ENV_TAG}/bin/pytest -vv --cov=../../../metplus -m \"$marker\""
     command+=";if [ \$? != 0 ]; then status=1; fi;"
   done
   command+="if [ \$status != 0 ]; then echo ERROR: Some pytests failed. Search for FAILED to review; false; fi"

@@ -5,7 +5,7 @@ import sys
 import subprocess
 import shlex
 
-from docker_utils import VERSION_EXT
+from docker_utils import VERSION_EXT, get_branch_name
 
 ci_dir = os.path.join(os.environ.get('GITHUB_WORKSPACE'), '.github')
 sys.path.insert(0, ci_dir)
@@ -32,7 +32,11 @@ print("Get Docker data volumes for output data")
 if os.environ.get('GITHUB_EVENT_NAME') == "pull_request":
     output_data_branch = os.environ.get('GITHUB_BASE_REF')
 else:
-    output_data_branch = 'develop'
+    branch_name = get_branch_name()
+    if branch_name.startswith('main_v'):
+        output_data_branch = branch_name
+    else:
+        output_data_branch = 'develop'
 
 output_category = f"output-{output_data_branch}-{artifact_name}"
 
@@ -49,7 +53,7 @@ VOLUME_MOUNTS = [
 MOUNT_ARGS = ' '.join(VOLUME_MOUNTS)
 
 # command to run inside Docker
-diff_command = (f'/usr/local/envs/diff{VERSION_EXT}/bin/python3 '
+diff_command = (f'/usr/local/conda/envs/diff{VERSION_EXT}/bin/python3 '
                 f'{GITHUB_WORKSPACE}/{CI_JOBS_DIR}/run_diff_docker.py')
 
 # start detached interactive diff env container

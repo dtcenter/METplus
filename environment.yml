@@ -2,6 +2,6 @@ name: metplus_base
 channels:
   - conda-forge
 dependencies:
-  - python=3.8.6
+  - python=3.10.4
   - python-dateutil
 prefix: /home/met_test/.conda/envs/metplus_base

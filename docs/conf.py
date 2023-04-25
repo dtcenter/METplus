@@ -113,6 +113,7 @@ master_doc = 'index'
 extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.intersphinx',
               'sphinx_gallery.gen_gallery',
+              'sphinx_design', 
              ]
 
 # settings for ReadTheDocs PDF creation

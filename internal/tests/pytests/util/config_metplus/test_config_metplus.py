@@ -103,18 +103,18 @@ def test_find_indices_in_config_section(metplus_config, regex, index,
 
 @pytest.mark.parametrize(
     'config_var_name, expected_indices, set_met_tool', [
-        ('FCST_GRID_STAT_VAR1_NAME', ['1'], True),
-        ('FCST_GRID_STAT_VAR2_INPUT_FIELD_NAME', ['2'], True),
-        ('FCST_GRID_STAT_VAR3_FIELD_NAME', ['3'], True),
-        ('BOTH_GRID_STAT_VAR4_NAME', ['4'], True),
-        ('BOTH_GRID_STAT_VAR5_INPUT_FIELD_NAME', ['5'], True),
-        ('BOTH_GRID_STAT_VAR6_FIELD_NAME', ['6'], True),
-        ('FCST_VAR7_NAME', ['7'], False),
-        ('FCST_VAR8_INPUT_FIELD_NAME', ['8'], False),
-        ('FCST_VAR9_FIELD_NAME', ['9'], False),
-        ('BOTH_VAR10_NAME', ['10'], False),
-        ('BOTH_VAR11_INPUT_FIELD_NAME', ['11'], False),
-        ('BOTH_VAR12_FIELD_NAME', ['12'], False),
+        ('FCST_GRID_STAT_VAR1_NAME', [1], True),
+        ('FCST_GRID_STAT_VAR2_INPUT_FIELD_NAME', [2], True),
+        ('FCST_GRID_STAT_VAR3_FIELD_NAME', [3], True),
+        ('BOTH_GRID_STAT_VAR4_NAME', [4], True),
+        ('BOTH_GRID_STAT_VAR5_INPUT_FIELD_NAME', [5], True),
+        ('BOTH_GRID_STAT_VAR6_FIELD_NAME', [6], True),
+        ('FCST_VAR7_NAME', [7], False),
+        ('FCST_VAR8_INPUT_FIELD_NAME', [8], False),
+        ('FCST_VAR9_FIELD_NAME', [9], False),
+        ('BOTH_VAR10_NAME', [10], False),
+        ('BOTH_VAR11_INPUT_FIELD_NAME', [11], False),
+        ('BOTH_VAR12_FIELD_NAME', [12], False),
     ]
 )
 @pytest.mark.util
@@ -126,12 +126,14 @@ def test_find_var_indices_fcst(metplus_config,
     data_types = ['FCST']
     config.set('config', config_var_name, "NAME1")
     met_tool = 'grid_stat' if set_met_tool else None
-    var_name_indices = config_metplus._find_var_name_indices(config,
-                                                             data_types=data_types,
-                                                             met_tool=met_tool)
+    actual_indices = (
+        config_metplus._find_var_name_indices(config,
+                                              data_types=data_types,
+                                              met_tool=met_tool)
+    )
 
-    assert len(var_name_indices) == len(expected_indices)
-    for actual_index in var_name_indices:
+    assert len(actual_indices) == len(expected_indices)
+    for actual_index in actual_indices:
         assert actual_index in expected_indices
 
 
@@ -347,13 +349,13 @@ def test_parse_var_list_obs(metplus_config, data_type, list_created):
     # list will be created if requesting just OBS, but it should not be created if
     # nothing was requested because FCST values are missing
     if list_created:
-        assert(var_list[0]['obs_name'] == "NAME1" and \
-               var_list[1]['obs_name'] == "NAME1" and \
-               var_list[2]['obs_name'] == "NAME2" and \
-               var_list[3]['obs_name'] == "NAME2" and \
-               var_list[0]['obs_level'] == "LEVELS11" and \
-               var_list[1]['obs_level'] == "LEVELS12" and \
-               var_list[2]['obs_level'] == "LEVELS21" and \
+        assert(var_list[0]['obs_name'] == "NAME1" and
+               var_list[1]['obs_name'] == "NAME1" and
+               var_list[2]['obs_name'] == "NAME2" and
+               var_list[3]['obs_name'] == "NAME2" and
+               var_list[0]['obs_level'] == "LEVELS11" and
+               var_list[1]['obs_level'] == "LEVELS12" and
+               var_list[2]['obs_level'] == "LEVELS21" and
                var_list[3]['obs_level'] == "LEVELS22")
     else:
         assert not var_list
@@ -382,15 +384,15 @@ def test_parse_var_list_both(metplus_config, data_type, list_created):
     var_list = config_metplus.parse_var_list(conf, time_info=None, data_type=data_type)
     print(f'var_list:{var_list}')
     for list_to_check in list_created.split(':'):
-        if not var_list[0][f'{list_to_check}_name']  == "NAME1" or \
-           not var_list[1][f'{list_to_check}_name']  == "NAME1" or \
-           not var_list[2][f'{list_to_check}_name']  == "NAME2" or \
-           not var_list[3][f'{list_to_check}_name']  == "NAME2" or \
-           not var_list[0][f'{list_to_check}_level'] == "LEVELS11" or \
-           not var_list[1][f'{list_to_check}_level'] == "LEVELS12" or \
-           not var_list[2][f'{list_to_check}_level'] == "LEVELS21" or \
-           not var_list[3][f'{list_to_check}_level'] == "LEVELS22":
-           assert False
+        if (not var_list[0][f'{list_to_check}_name'] == "NAME1" or
+                not var_list[1][f'{list_to_check}_name'] == "NAME1" or
+                not var_list[2][f'{list_to_check}_name'] == "NAME2" or
+                not var_list[3][f'{list_to_check}_name'] == "NAME2" or
+                not var_list[0][f'{list_to_check}_level'] == "LEVELS11" or
+                not var_list[1][f'{list_to_check}_level'] == "LEVELS12" or
+                not var_list[2][f'{list_to_check}_level'] == "LEVELS21" or
+                not var_list[3][f'{list_to_check}_level'] == "LEVELS22"):
+            assert False
 
 
 # field info defined in both FCST_* and OBS_* variables
@@ -412,21 +414,21 @@ def test_parse_var_list_fcst_and_obs(metplus_config):
 
     var_list = config_metplus.parse_var_list(conf)
 
-    assert(var_list[0]['fcst_name'] == "FNAME1" and \
-           var_list[0]['obs_name'] == "ONAME1" and \
-           var_list[1]['fcst_name'] == "FNAME1" and \
-           var_list[1]['obs_name'] == "ONAME1" and \
-           var_list[2]['fcst_name'] == "FNAME2" and \
-           var_list[2]['obs_name'] == "ONAME2" and \
-           var_list[3]['fcst_name'] == "FNAME2" and \
-           var_list[3]['obs_name'] == "ONAME2" and \
-           var_list[0]['fcst_level'] == "FLEVELS11" and \
-           var_list[0]['obs_level'] == "OLEVELS11" and \
-           var_list[1]['fcst_level'] == "FLEVELS12" and \
-           var_list[1]['obs_level'] == "OLEVELS12" and \
-           var_list[2]['fcst_level'] == "FLEVELS21" and \
-           var_list[2]['obs_level'] == "OLEVELS21" and \
-           var_list[3]['fcst_level'] == "FLEVELS22" and \
+    assert(var_list[0]['fcst_name'] == "FNAME1" and
+           var_list[0]['obs_name'] == "ONAME1" and
+           var_list[1]['fcst_name'] == "FNAME1" and
+           var_list[1]['obs_name'] == "ONAME1" and
+           var_list[2]['fcst_name'] == "FNAME2" and
+           var_list[2]['obs_name'] == "ONAME2" and
+           var_list[3]['fcst_name'] == "FNAME2" and
+           var_list[3]['obs_name'] == "ONAME2" and
+           var_list[0]['fcst_level'] == "FLEVELS11" and
+           var_list[0]['obs_level'] == "OLEVELS11" and
+           var_list[1]['fcst_level'] == "FLEVELS12" and
+           var_list[1]['obs_level'] == "OLEVELS12" and
+           var_list[2]['fcst_level'] == "FLEVELS21" and
+           var_list[2]['obs_level'] == "OLEVELS21" and
+           var_list[3]['fcst_level'] == "FLEVELS22" and
            var_list[3]['obs_level'] == "OLEVELS22")
 
 
@@ -520,22 +522,25 @@ def test_parse_var_list_fcst_only_options(metplus_config, data_type, list_len):
 
 @pytest.mark.parametrize(
     'met_tool, indices', [
-        (None, {'1': ['FCST']}),
-        ('GRID_STAT', {'2': ['FCST']}),
-        ('ENSEMBLE_STAT', {}),
+        (None, [1]),
+        ('GRID_STAT', [2]),
+        ('ENSEMBLE_STAT', []),
     ]
 )
 @pytest.mark.util
 def test_find_var_indices_wrapper_specific(metplus_config, met_tool, indices):
-    conf = metplus_config
+    config = metplus_config
     data_type = 'FCST'
-    conf.set('config', f'{data_type}_VAR1_NAME', "NAME1")
-    conf.set('config', f'{data_type}_GRID_STAT_VAR2_NAME', "GSNAME2")
+    config.set('config', f'{data_type}_VAR1_NAME', "NAME1")
+    config.set('config', f'{data_type}_GRID_STAT_VAR2_NAME', "GSNAME2")
 
-    var_name_indices = config_metplus._find_var_name_indices(conf,data_types=[data_type],
-                                                  met_tool=met_tool)
+    actual_indices = (
+        config_metplus._find_var_name_indices(config,
+                                              data_types=[data_type],
+                                              met_tool=met_tool)
+    )
 
-    assert var_name_indices == indices
+    assert actual_indices == indices
 
 
 # ensure that the field configuration used for
@@ -572,28 +577,28 @@ def test_parse_var_list_ensemble(metplus_config):
                                               'ens_phist_bin_size = 0.05;'))
     time_info = {}
 
-    expected_ens_list = [{'index': '1',
+    expected_ens_list = [{'index': 1,
                           'ens_name': 'APCP',
                           'ens_level': 'A24',
                           'ens_thresh': ['>0.0', '>=10.0']},
-                         {'index': '2',
+                         {'index': 2,
                           'ens_name': 'REFC',
                           'ens_level': 'L0',
                           'ens_thresh': ['>35.0']},
-                         {'index': '3',
+                         {'index': 3,
                           'ens_name': 'UGRD',
                           'ens_level': 'Z10',
                           'ens_thresh': ['>=5.0']},
-                         {'index': '4',
+                         {'index': 4,
                           'ens_name': 'VGRD',
                           'ens_level': 'Z10',
                           'ens_thresh': ['>=5.0']},
-                         {'index': '5',
+                         {'index': 5,
                           'ens_name': 'WIND',
                           'ens_level': 'Z10',
                           'ens_thresh': ['>=5.0']},
                         ]
-    expected_var_list = [{'index': '1',
+    expected_var_list = [{'index': 1,
                           'fcst_name': 'APCP',
                           'fcst_level': 'A24',
                           'fcst_thresh': ['>0.01', '>=10.0'],
@@ -646,7 +651,7 @@ def test_parse_var_list_series_by(metplus_config):
     config.set('config', 'BOTH_SERIES_ANALYSIS_VAR2_LEVELS', 'P700')
     time_info = {}
 
-    expected_et_list = [{'index': '1',
+    expected_et_list = [{'index': 1,
                          'fcst_name': 'RH',
                          'fcst_level': 'P850',
                          'fcst_output_name': 'RH_850mb',
@@ -654,7 +659,7 @@ def test_parse_var_list_series_by(metplus_config):
                          'obs_level': 'P850',
                          'obs_output_name': 'RH_850mb',
                          },
-                        {'index': '1',
+                        {'index': 1,
                          'fcst_name': 'RH',
                          'fcst_level': 'P700',
                          'fcst_output_name': 'RH_700mb',
@@ -663,13 +668,13 @@ def test_parse_var_list_series_by(metplus_config):
                          'obs_output_name': 'RH_700mb',
                          },
                         ]
-    expected_sa_list = [{'index': '1',
+    expected_sa_list = [{'index': 1,
                          'fcst_name': 'RH_850mb',
                          'fcst_level': 'P850',
                          'obs_name': 'RH_850mb',
                          'obs_level': 'P850',
                          },
-                        {'index': '2',
+                        {'index': 2,
                          'fcst_name': 'RH_700mb',
                          'fcst_level': 'P700',
                          'obs_name': 'RH_700mb',
@@ -913,3 +918,19 @@ def test_format_var_items_options_semicolon(config_value,
     var_items = config_metplus._format_var_items(field_configs, time_info)
     result = var_items.get('extra')
     assert result == expected_result
+
+
+@pytest.mark.util
+def test_parse_var_list_double_digit(metplus_config):
+    """!This test ensures that parse_var_list returns field info in
+    numeric order (1,2,...,9,10,11) instead of alphabetical (1,10,11,2,3,etc)
+    """
+    config = metplus_config
+    for n in range(1, 12, 1):
+        config.set('config', f'FCST_VAR{n}_NAME', f'fcst_name{n}')
+        config.set('config', f'OBS_VAR{n}_NAME', f'obs_name{n}')
+
+    var_list = config_metplus.parse_var_list(config)
+    for n, var_item in enumerate(var_list, start=1):
+        assert var_item['fcst_name'] == f'fcst_name{n}'
+        assert var_item['obs_name'] == f'obs_name{n}'
