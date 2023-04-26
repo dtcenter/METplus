@@ -125,13 +125,7 @@ class GenEnsProdWrapper(LoopTimesWrapper):
                             metplus_configs=['DESC', 'GEN_ENS_PROD_DESC'],
                             )
 
-        self.add_met_config_dict('regrid', {
-            'to_grid': ('string', 'to_grid'),
-            'method': ('string', 'uppercase,remove_quotes'),
-            'width': 'int',
-            'vld_thresh': 'float',
-            'shape': ('string', 'uppercase,remove_quotes'),
-        })
+        self.handle_regrid(c_dict)
 
         self.add_met_config(name='censor_thresh',
                             data_type='list',

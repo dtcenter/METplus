@@ -7,6 +7,19 @@ import datetime
 
 from metplus.wrappers.mtd_wrapper import MTDWrapper
 
+fcst_dir = '/some/path/fcst'
+obs_dir = '/some/path/obs'
+fcst_name = 'APCP'
+fcst_level = 'A03'
+fcst_thresh = 'gt12.7'
+obs_name = 'APCP_03'
+obs_level_no_quotes = '(*,*)'
+obs_level = f'"{obs_level_no_quotes}"'
+obs_thresh = 'gt12.7'
+fcst_fmt = f'field = {{ name="{fcst_name}"; level="{fcst_level}"; cat_thresh=[ gt12.7 ]; }};'
+obs_fmt = (f'field = {{ name="{obs_name}"; '
+           f'level="{obs_level_no_quotes}"; cat_thresh=[ gt12.7 ]; }};')
+
 
 def get_test_data_dir(config, subdir):
     return os.path.join(config.getdir('METPLUS_BASE'),
@@ -30,6 +43,167 @@ def mtd_wrapper(metplus_config, lead_seq=None):
         config.set('config', 'LEAD_SEQ', lead_seq)
 
     return MTDWrapper(config)
+
+
+def set_minimum_config_settings(config):
+    # set config variables to prevent command from running and bypass check
+    # if input files actually exist
+    config.set('config', 'DO_NOT_RUN_EXE', True)
+    config.set('config', 'INPUT_MUST_EXIST', False)
+
+    # set process and time config variables
+    config.set('config', 'PROCESS_LIST', 'MTD')
+    config.set('config', 'LOOP_BY', 'INIT')
+    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H')
+    config.set('config', 'INIT_BEG', '2005080700')
+    config.set('config', 'INIT_END', '2005080700')
+    config.set('config', 'INIT_INCREMENT', '12H')
+    config.set('config', 'LEAD_SEQ', '6H, 9H, 12H')
+    config.set('config', 'MTD_CONFIG_FILE',
+               '{PARM_BASE}/met_config/MTDConfig_wrapped')
+    config.set('config', 'FCST_MTD_INPUT_DIR', fcst_dir)
+    config.set('config', 'OBS_MTD_INPUT_DIR', obs_dir)
+    config.set('config', 'FCST_MTD_INPUT_TEMPLATE',
+               '{init?fmt=%Y%m%d%H}/fcst_file_F{lead?fmt=%3H}')
+    config.set('config', 'OBS_MTD_INPUT_TEMPLATE',
+               '{valid?fmt=%Y%m%d%H}/obs_file')
+    config.set('config', 'MTD_OUTPUT_DIR',
+               '{OUTPUT_BASE}/MTD/output')
+    config.set('config', 'MTD_OUTPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}')
+
+    config.set('config', 'FCST_VAR1_NAME', fcst_name)
+    config.set('config', 'FCST_VAR1_LEVELS', fcst_level)
+    config.set('config', 'FCST_VAR1_THRESH', fcst_thresh)
+    config.set('config', 'OBS_VAR1_NAME', obs_name)
+    config.set('config', 'OBS_VAR1_LEVELS', obs_level)
+    config.set('config', 'OBS_VAR1_THRESH', obs_thresh)
+
+
+@pytest.mark.parametrize(
+    'config_overrides, env_var_values', [
+        ({'MODEL': 'my_model'},
+         {'METPLUS_MODEL': 'model = "my_model";'}),
+
+        ({'MTD_DESC': 'my_desc'},
+         {'METPLUS_DESC': 'desc = "my_desc";'}),
+
+        ({'DESC': 'my_desc'},
+         {'METPLUS_DESC': 'desc = "my_desc";'}),
+
+        ({'OBTYPE': 'my_obtype'},
+         {'METPLUS_OBTYPE': 'obtype = "my_obtype";'}),
+
+        ({'MTD_REGRID_TO_GRID': 'FCST',},
+         {'METPLUS_REGRID_DICT': 'regrid = {to_grid = FCST;}'}),
+
+        ({'MTD_REGRID_METHOD': 'NEAREST',},
+         {'METPLUS_REGRID_DICT': 'regrid = {method = NEAREST;}'}),
+
+        ({'MTD_REGRID_WIDTH': '1',},
+         {'METPLUS_REGRID_DICT': 'regrid = {width = 1;}'}),
+
+        ({'MTD_REGRID_VLD_THRESH': '0.5',},
+         {'METPLUS_REGRID_DICT': 'regrid = {vld_thresh = 0.5;}'}),
+
+        ({'MTD_REGRID_SHAPE': 'SQUARE',},
+         {'METPLUS_REGRID_DICT': 'regrid = {shape = SQUARE;}'}),
+
+        ({'MTD_REGRID_CONVERT': '2*x', },
+         {'METPLUS_REGRID_DICT': 'regrid = {convert(x) = 2*x;}'}),
+
+        ({'MTD_REGRID_CENSOR_THRESH': '>12000,<5000', },
+         {'METPLUS_REGRID_DICT': 'regrid = {censor_thresh = [>12000, <5000];}'}),
+
+        ({'MTD_REGRID_CENSOR_VAL': '12000,5000', },
+         {'METPLUS_REGRID_DICT': 'regrid = {censor_val = [12000, 5000];}'}),
+
+        ({'MTD_REGRID_TO_GRID': 'FCST',
+          'MTD_REGRID_METHOD': 'NEAREST',
+          'MTD_REGRID_WIDTH': '1',
+          'MTD_REGRID_VLD_THRESH': '0.5',
+          'MTD_REGRID_SHAPE': 'SQUARE',
+          'MTD_REGRID_CONVERT': '2*x',
+          'MTD_REGRID_CENSOR_THRESH': '>12000,<5000',
+          'MTD_REGRID_CENSOR_VAL': '12000,5000',
+          },
+         {'METPLUS_REGRID_DICT': ('regrid = {to_grid = FCST;method = NEAREST;'
+                                  'width = 1;vld_thresh = 0.5;shape = SQUARE;'
+                                  'convert(x) = 2*x;'
+                                  'censor_thresh = [>12000, <5000];'
+                                  'censor_val = [12000, 5000];}'
+                                  )}),
+
+        ({'FCST_MTD_CONV_RADIUS': '40.0/grid_res'},
+         {'METPLUS_FCST_CONV_RADIUS': 'conv_radius = 40.0/grid_res;'}),
+
+        ({'OBS_MTD_CONV_RADIUS': '40.0/grid_res'},
+         {'METPLUS_OBS_CONV_RADIUS': 'conv_radius = 40.0/grid_res;'}),
+
+        ({'FCST_MTD_CONV_THRESH': '>=10.0'},
+         {'METPLUS_FCST_CONV_THRESH': 'conv_thresh = >=10.0;'}),
+
+        ({'OBS_MTD_CONV_THRESH': '>=10.0'},
+         {'METPLUS_OBS_CONV_THRESH': 'conv_thresh = >=10.0;'}),
+
+        ({'MTD_MIN_VOLUME': '1000'},
+         {'METPLUS_MIN_VOLUME': 'min_volume = 1000;'}),
+
+        ({'MTD_OUTPUT_PREFIX': 'my_output_prefix'},
+         {'METPLUS_OUTPUT_PREFIX': 'output_prefix = "my_output_prefix";'}),
+    ]
+)
+@pytest.mark.wrapper
+def test_mode_single_field(metplus_config, config_overrides, env_var_values):
+    config = metplus_config
+
+    # set config variables needed to run
+    set_minimum_config_settings(config)
+
+    # set config variable overrides
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    wrapper = MTDWrapper(config)
+    assert wrapper.isOK
+
+    app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
+    verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
+    file_list_dir = wrapper.config.getdir('FILE_LISTS_DIR')
+    config_file = wrapper.c_dict.get('CONFIG_FILE')
+    out_dir = wrapper.c_dict.get('OUTPUT_DIR')
+    expected_cmds = [(f"{app_path} {verbosity} "
+                      f"-fcst {file_list_dir}/"
+                      f"20050807060000_mtd_fcst_{fcst_name}.txt "
+                      f"-obs {file_list_dir}/"
+                      f"20050807060000_mtd_obs_{obs_name}.txt "
+                      f"-config {config_file} "
+                      f"-outdir {out_dir}/2005080706"),
+                     ]
+
+    all_cmds = wrapper.run_all_times()
+    print(f"ALL COMMANDS: {all_cmds}")
+
+    missing_env = [item for item in env_var_values
+                   if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
+    env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
+
+    for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
+        # ensure commands are generated as expected
+        assert cmd == expected_cmd
+
+        # check that environment variables were set properly
+        # including deprecated env vars (not in wrapper env var keys)
+        for env_var_key in env_var_keys:
+            match = next((item for item in env_vars if
+                          item.startswith(env_var_key)), None)
+            assert match is not None
+            value = match.split('=', 1)[1]
+            if env_var_key == 'METPLUS_FCST_FIELD':
+                assert value == fcst_fmt
+            elif env_var_key == 'METPLUS_OBS_FIELD':
+                assert value == obs_fmt
+            else:
+                assert env_var_values.get(env_var_key, '') == value
 
 
 @pytest.mark.wrapper
