@@ -67,28 +67,28 @@ class Point2GridWrapper(CommandBuilder):
                                  self.config.getseconds('config',
                                                         'OBS_FILE_WINDOW_END', 0))
 
-        c_dict['GRID'] = self.config.getstr('config',
-                                            'POINT2GRID_REGRID_TO_GRID',
-                                            '')
+        c_dict['GRID_TEMPLATE'] = (
+            self.config.getraw('config', 'POINT2GRID_REGRID_TO_GRID')
+        )
         # grid is required
-        if not c_dict['GRID']:
+        if not c_dict['GRID_TEMPLATE']:
             self.log_error('Must specify a grid name')
 
         # optional arguments
         c_dict['INPUT_FIELD'] = self.config.getraw('config',
                                                    'POINT2GRID_INPUT_FIELD',
                                                    '')
+        # input field is required
+        if not c_dict['INPUT_FIELD']:
+            self.log_error('Must specify a field with POINT2GRID_INPUT_FIELD')
 
         c_dict['INPUT_LEVEL'] = self.config.getraw('config',
                                                    'POINT2GRID_INPUT_LEVEL',
                                                    '')
 
-        c_dict['QC_FLAGS'] = self.config.getbool('config',
-                                                        'POINT2GRID_QC_FLAGS',
-                                                        '')
-        c_dict['ADP'] = self.config.getstr('config',
-                                                        'POINT2GRID_ADP',
-                                                        '')
+        c_dict['QC_FLAGS'] = self.config.getraw('config',
+                                                'POINT2GRID_QC_FLAGS')
+        c_dict['ADP'] = self.config.getraw('config', 'POINT2GRID_ADP')
 
         c_dict['REGRID_METHOD'] = self.config.getstr('config',
                                                    'POINT2GRID_REGRID_METHOD',
@@ -186,11 +186,6 @@ class Point2GridWrapper(CommandBuilder):
         self.set_environment_variables(time_info)
 
         # build command and run
-        cmd = self.get_command()
-        if cmd is None:
-            self.log_error("Could not generate command")
-            return
-
         self.build()
 
     def find_input_files(self, time_info):
@@ -207,6 +202,9 @@ class Point2GridWrapper(CommandBuilder):
 
         self.infiles.append(input_path)
 
+        self.c_dict['GRID'] = do_string_sub(self.c_dict['GRID_TEMPLATE'],
+                                            **time_info)
+
         return self.infiles
 
     def set_command_line_arguments(self, time_info):
@@ -216,18 +214,16 @@ class Point2GridWrapper(CommandBuilder):
 
         #input_field and input_level go hand in hand. If there is a field there needs to be a level
         #even if it is blank
+        input_field = do_string_sub(self.c_dict['INPUT_FIELD'], **time_info)
         input_level = ""
-        if self.c_dict['INPUT_FIELD']:
-            input_field = do_string_sub(self.c_dict['INPUT_FIELD'],
+        if self.c_dict['INPUT_LEVEL']:
+            input_level = do_string_sub(self.c_dict['INPUT_LEVEL'],
                                         **time_info)
-            if self.c_dict['INPUT_LEVEL']:
-                input_level = do_string_sub(self.c_dict['INPUT_LEVEL'],
-                                            **time_info)
-                self.logger.info(f"Processing level: {input_level}")
-            #Add either the specified level above or the defauilt blank one
-            self.args.append(f"-field 'name=\"{input_field}\"; level=\"{input_level}\";'")
+            self.logger.info(f"Processing level: {input_level}")
+        #Add either the specified level above or the defauilt blank one
+        self.args.append(f"-field 'name=\"{input_field}\"; level=\"{input_level}\";'")
 
-        if self.c_dict['QC_FLAGS']:
+        if self.c_dict['QC_FLAGS'] != '':
             self.args.append(f"-qc {self.c_dict['QC_FLAGS']}")
 
         if self.c_dict['ADP']:
@@ -247,3 +243,7 @@ class Point2GridWrapper(CommandBuilder):
 
         if self. c_dict['VLD_THRESH']:
             self.args.append(f"-vld_thresh {self.c_dict['VLD_THRESH']}")
+
+        # string sub all args
+        for index, value in enumerate(self.args):
+            self.args[index] = do_string_sub(value, **time_info)

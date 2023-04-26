@@ -137,10 +137,11 @@ class MTDWrapper(CompareGriddedWrapper):
         )
 
         self.add_met_config(name='conv_radius',
-                            data_type='int',
+                            data_type='string',
                             env_var_name=f'METPLUS_{write_type}_CONV_RADIUS',
                             metplus_configs=[f'{read_type}_MTD_CONV_RADIUS',
-                                             'MTD_CONV_RADIUS'])
+                                             'MTD_CONV_RADIUS'],
+                            extra_args={'remove_quotes': True})
 
         self.add_met_config(name='conv_thresh',
                             data_type='thresh',

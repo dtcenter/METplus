@@ -24,7 +24,6 @@ def set_minimum_config_settings(config):
     config.set('config', 'INIT_END', '2005080712')
     config.set('config', 'INIT_INCREMENT', '12H')
     config.set('config', 'LEAD_SEQ', '12H')
-    config.set('config', 'LOOP_ORDER', 'times')
 
     config.set('config', 'POINT_STAT_CONFIG_FILE',
                '{PARM_BASE}/met_config/PointStatConfig_wrapped')
@@ -87,14 +86,30 @@ def test_met_dictionary_in_var_options(metplus_config):
           },
          {'METPLUS_REGRID_DICT': 'regrid = {shape = SQUARE;}'}),
 
+        ({'POINT_STAT_REGRID_CONVERT': '2*x', },
+         {'METPLUS_REGRID_DICT': 'regrid = {convert(x) = 2*x;}'}),
+
+        ({'POINT_STAT_REGRID_CENSOR_THRESH': '>12000,<5000', },
+         {
+             'METPLUS_REGRID_DICT': 'regrid = {censor_thresh = [>12000, <5000];}'}),
+
+        ({'POINT_STAT_REGRID_CENSOR_VAL': '12000,5000', },
+         {'METPLUS_REGRID_DICT': 'regrid = {censor_val = [12000, 5000];}'}),
+
         ({'POINT_STAT_REGRID_TO_GRID': 'FCST',
           'POINT_STAT_REGRID_METHOD': 'NEAREST',
           'POINT_STAT_REGRID_WIDTH': '1',
           'POINT_STAT_REGRID_VLD_THRESH': '0.5',
           'POINT_STAT_REGRID_SHAPE': 'SQUARE',
+          'POINT_STAT_REGRID_CONVERT': '2*x',
+          'POINT_STAT_REGRID_CENSOR_THRESH': '>12000,<5000',
+          'POINT_STAT_REGRID_CENSOR_VAL': '12000,5000',
           },
          {'METPLUS_REGRID_DICT': ('regrid = {to_grid = FCST;method = NEAREST;'
-                                  'width = 1;vld_thresh = 0.5;shape = SQUARE;}'
+                                  'width = 1;vld_thresh = 0.5;shape = SQUARE;'
+                                  'convert(x) = 2*x;'
+                                  'censor_thresh = [>12000, <5000];'
+                                  'censor_val = [12000, 5000];}'
                                   ),
           'REGRID_TO_GRID': 'FCST'}),
 
