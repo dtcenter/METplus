@@ -13,10 +13,12 @@ obs_dir = '/some/path/obs'
 inits = ['2005080700', '2005080712']
 time_fmt = '%Y%m%d%H'
 lead_hour = 12
-valid_dts = []
+lead_hour_str = str(lead_hour).zfill(3)
+valids = []
 for init in inits:
     valid = datetime.strptime(init, time_fmt) + timedelta(hours=lead_hour)
-    valid_dts.append(valid)
+    valid = valid.strftime(time_fmt)
+    valids.append(valid)
 
 def set_minimum_config_settings(config):
     # set config variables to prevent command from running and bypass check
@@ -587,26 +589,26 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
     config_file = wrapper.c_dict.get('CONFIG_FILE')
     out_dir = wrapper.c_dict.get('OUTPUT_DIR')
-    extra_args = [' ', ' ']
+    extra_args = [' '] * len(inits)
     for beg_end in ('BEG', 'END'):
         if f'POINT_STAT_OBS_VALID_{beg_end}' in config_overrides:
-            for idx, _ in enumerate(extra_args):
+            for index in range(0, len(inits)):
+                valid_dt = datetime.strptime(valids[index], time_fmt)
                 if beg_end == 'BEG':
-                    value = valid_dts[idx] - timedelta(hours=6)
+                    value = valid_dt - timedelta(hours=6)
                 else:
-                    value = valid_dts[idx] + timedelta(hours=6)
+                    value = valid_dt + timedelta(hours=6)
                 value = value.strftime('%Y%m%d_%H')
-                extra_args[idx] += f'-obs_valid_{beg_end.lower()} {value} '
+                extra_args[index] += f'-obs_valid_{beg_end.lower()} {value} '
 
-    expected_cmds = [(f"{app_path} {verbosity}{extra_args[0]}"
-                      f"{fcst_dir}/2005080700/fcst_file_F012 "
-                      f"{obs_dir}/2005080712/obs_file "
-                      f"{config_file} -outdir {out_dir}/2005080712"),
-                     (f"{app_path} {verbosity}{extra_args[1]}"
-                      f"{fcst_dir}/2005080712/fcst_file_F012 "
-                      f"{obs_dir}/2005080800/obs_file "
-                      f"{config_file} -outdir {out_dir}/2005080800"),
-                     ]
+    expected_cmds = []
+    for index in range(0, len(inits)):
+        expected_cmds.append(
+            f"{app_path} {verbosity}{extra_args[index]}"
+            f"{fcst_dir}/{inits[index]}/fcst_file_F{lead_hour_str} "
+            f"{obs_dir}/{valids[index]}/obs_file "
+            f"{config_file} -outdir {out_dir}/{valids[index]}"
+        )
 
     all_cmds = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_cmds}")
@@ -618,6 +620,7 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
                    if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
     env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
 
+    assert len(all_cmds) == len(expected_cmds)
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
         assert cmd == expected_cmd
