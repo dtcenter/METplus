@@ -12,7 +12,9 @@ Create Release on GitHub
 * Add a link to the release notes from the |projectRepo| User's Guide, i.e.
   https://|projectRepo|.readthedocs.io/en/vX.Y.Z-betaN/Users_Guide/release-notes.html
   (Note: the URL will not be active until the release is created)
+  Refer to a previous release to easily copy and modify this information.
 
 * Add links to the HTML and PDF versions of the |projectRepo| User's Guide on ReadTheDocs.
   https://|projectRepo|.readthedocs.io/_/downloads/en/vX.Y.Z-betaN/pdf/
   (Note: the URL will not be active until the release is created)
+  Refer to a previous release to easily copy and modify this information.
