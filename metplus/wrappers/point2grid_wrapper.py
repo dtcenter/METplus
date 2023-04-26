@@ -223,7 +223,7 @@ class Point2GridWrapper(CommandBuilder):
         #Add either the specified level above or the defauilt blank one
         self.args.append(f"-field 'name=\"{input_field}\"; level=\"{input_level}\";'")
 
-        if self.c_dict['QC_FLAGS']:
+        if self.c_dict['QC_FLAGS'] != '':
             self.args.append(f"-qc {self.c_dict['QC_FLAGS']}")
 
         if self.c_dict['ADP']:
