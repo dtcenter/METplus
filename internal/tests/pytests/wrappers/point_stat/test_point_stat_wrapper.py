@@ -3,12 +3,22 @@
 import pytest
 
 import os
+from datetime import datetime, timedelta
 
 from metplus.wrappers.point_stat_wrapper import PointStatWrapper
 
 fcst_dir = '/some/path/fcst'
 obs_dir = '/some/path/obs'
 
+inits = ['2005080700', '2005080712']
+time_fmt = '%Y%m%d%H'
+lead_hour = 12
+lead_hour_str = str(lead_hour).zfill(3)
+valids = []
+for init in inits:
+    valid = datetime.strptime(init, time_fmt) + timedelta(hours=lead_hour)
+    valid = valid.strftime(time_fmt)
+    valids.append(valid)
 
 def set_minimum_config_settings(config):
     # set config variables to prevent command from running and bypass check
@@ -19,11 +29,11 @@ def set_minimum_config_settings(config):
     # set process and time config variables
     config.set('config', 'PROCESS_LIST', 'PointStat')
     config.set('config', 'LOOP_BY', 'INIT')
-    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H')
-    config.set('config', 'INIT_BEG', '2005080700')
-    config.set('config', 'INIT_END', '2005080712')
+    config.set('config', 'INIT_TIME_FMT', time_fmt)
+    config.set('config', 'INIT_BEG', inits[0])
+    config.set('config', 'INIT_END', inits[-1])
     config.set('config', 'INIT_INCREMENT', '12H')
-    config.set('config', 'LEAD_SEQ', '12H')
+    config.set('config', 'LEAD_SEQ', f'{lead_hour}H')
 
     config.set('config', 'POINT_STAT_CONFIG_FILE',
                '{PARM_BASE}/met_config/PointStatConfig_wrapped')
@@ -517,6 +527,10 @@ def test_met_dictionary_in_var_options(metplus_config):
          {'METPLUS_FCST_FILE_TYPE': 'file_type = NETCDF_PINT;'}),
         ({'POINT_STAT_SEEPS_P1_THRESH': 'ge0.1&&le0.85', },
          {'METPLUS_SEEPS_P1_THRESH': 'seeps_p1_thresh = ge0.1&&le0.85;'}),
+        ({'POINT_STAT_OBS_VALID_BEG': '{valid?fmt=%Y%m%d_%H?shift=-6H}', }, {}),
+        ({'POINT_STAT_OBS_VALID_END': '{valid?fmt=%Y%m%d_%H?shift=6H}', }, {}),
+        ({'POINT_STAT_OBS_VALID_BEG': '{valid?fmt=%Y%m%d_%H?shift=-6H}',
+          'POINT_STAT_OBS_VALID_END': '{valid?fmt=%Y%m%d_%H?shift=6H}'}, {}),
     ]
 )
 @pytest.mark.wrapper_a
@@ -590,15 +604,26 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
     config_file = wrapper.c_dict.get('CONFIG_FILE')
     out_dir = wrapper.c_dict.get('OUTPUT_DIR')
-    expected_cmds = [(f"{app_path} {verbosity} "
-                      f"{fcst_dir}/2005080700/fcst_file_F012 "
-                      f"{obs_dir}/2005080712/obs_file "
-                      f"{config_file} -outdir {out_dir}/2005080712"),
-                     (f"{app_path} {verbosity} "
-                      f"{fcst_dir}/2005080712/fcst_file_F012 "
-                      f"{obs_dir}/2005080800/obs_file "
-                      f"{config_file} -outdir {out_dir}/2005080800"),
-                     ]
+    extra_args = [' '] * len(inits)
+    for beg_end in ('BEG', 'END'):
+        if f'POINT_STAT_OBS_VALID_{beg_end}' in config_overrides:
+            for index in range(0, len(inits)):
+                valid_dt = datetime.strptime(valids[index], time_fmt)
+                if beg_end == 'BEG':
+                    value = valid_dt - timedelta(hours=6)
+                else:
+                    value = valid_dt + timedelta(hours=6)
+                value = value.strftime('%Y%m%d_%H')
+                extra_args[index] += f'-obs_valid_{beg_end.lower()} {value} '
+
+    expected_cmds = []
+    for index in range(0, len(inits)):
+        expected_cmds.append(
+            f"{app_path} {verbosity}{extra_args[index]}"
+            f"{fcst_dir}/{inits[index]}/fcst_file_F{lead_hour_str} "
+            f"{obs_dir}/{valids[index]}/obs_file "
+            f"{config_file} -outdir {out_dir}/{valids[index]}"
+        )
 
     all_cmds = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_cmds}")
@@ -610,6 +635,7 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
                    if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
     env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
 
+    assert len(all_cmds) == len(expected_cmds)
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
         assert cmd == expected_cmd

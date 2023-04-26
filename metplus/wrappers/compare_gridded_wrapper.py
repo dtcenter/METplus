@@ -304,11 +304,23 @@ that reformat gridded data
                                                is_directory=True):
             return
 
+        # set command line arguments
+        self.set_command_line_arguments(time_info)
+
         # set environment variables needed by MET config file
         self.set_environment_variables(time_info)
 
         # run the MET command
         self.build()
+
+    def set_command_line_arguments(self, time_info):
+        """!Set command line arguments in self.args to add to command to run.
+        Nothing is done for CompareGridded wrapper. This function can be
+        overwritten in subclasses.
+
+        @param time_info dictionary with time information
+        """
+        return
 
     def get_command(self):
         """! Builds the command to run the MET application
