@@ -9,53 +9,53 @@ model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_
 # Scientific Objective
 # --------------------
 #
-# This use case utilizes the ASCII2NC tool with python embedding to natively read in Argo 
-# netCDF files, a common source of ocean profile data for operational entities. These 
+# This use case utilizes the ASCII2NC tool with python embedding to natively read in Argo
+# netCDF files, a common source of ocean profile data for operational entities. These
 # values are then used the PointStat tool to verify RTOFS ocean temperature forecast at 50 m depth.
 
 ##############################################################################
 # Datasets
 # --------
 #
-# | **Forecast:** RTOFSv2.3 forecast data pre-processed into 0.1 degree lat-lon grid 
+# | **Forecast:** RTOFSv2.3 forecast data pre-processed into 0.1 degree lat-lon grid
 #
 # | **Observations:** three netCDF files from Argo
 #
-# | **Climatology:** two monthly climatology files from WOA23 
+# | **Climatology:** two monthly climatology files from WOA23
 #
-# | **Sea Ice Mask:** a mask file to exclude forecast grid points with sea ice concentration > 15% 
+# | **Sea Ice Mask:** a mask file to exclude forecast grid points with sea ice concentration > 15%
 #
-# | **Location:** All of the input data required for this use case can be found in the 
-#
-# met_test sample data tarball. Click here to the METplus releases page and download sample 
-# data for the appropriate release: https://github.com/dtcenter/METplus/releases 
-# This tarball should be unpacked into the directory that you will set the value of 
-# INPUT_BASE. See `Running METplus`_ section for more information.
+# | **Location:** All of the input data required for this use case can be found in the
+#   marine_and_cryosphere sample data tarball. Click here to the METplus releases page and download sample
+#   data for the appropriate release: https://github.com/dtcenter/METplus/releases
+#   This tarball should be unpacked into the directory that you will set the value of
+#   INPUT_BASE. See `Running METplus`_ section for more information.
 
 ##############################################################################
 # METplus Components
 # ------------------
 #
-# This use case calls ASCII2NC to read in Argo netCDF files and then PointStat for 
+# This use case calls ASCII2NC to read in Argo netCDF files and then PointStat for
 # verification against RTOFS model data.
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
-# ASCII2NC is the first tool called. It pulls in three Argo files for the Atlantic, 
-# Pacific, and Indian Oceans, respectively. These observations are converted into a netCDF 
-# file, which is then called by PointStat as the observation dataset. PointStat also pulls 
-# in a forecast from the RTOFS for ocean temperature at 50 m depth, which is included in 
-# the range of available observation times, and two monthly climatology files from the 
-# WOA23 to calculate daily climatology for the valid date. A 24-hour (18Z to 18Z) window is # allowed for the observational data, and a “UNIQUE” flag is set to only use the 
-# observational data closest to the forecast valid time at a given location. Temperature 
-# thresholds are set to correspond to operational usage, and the CTC, CTS, CNT, SL1L2, and 
-# SAL1L2 line types are requested. 
+# ASCII2NC is the first tool called. It pulls in three Argo files for the Atlantic,
+# Pacific, and Indian Oceans, respectively. These observations are converted into a netCDF
+# file, which is then called by PointStat as the observation dataset. PointStat also pulls
+# in a forecast from the RTOFS for ocean temperature at 50 m depth, which is included in
+# the range of available observation times, and two monthly climatology files from the
+# WOA23 to calculate daily climatology for the valid date. A 24-hour (18Z to 18Z) window is
+# allowed for the observational data, and a “UNIQUE” flag is set to only use the
+# observational data closest to the forecast valid time at a given location. Temperature
+# thresholds are set to correspond to operational usage, and the CTC, CTS, CNT, SL1L2, and
+# SAL1L2 line types are requested.
 # It processes the following run time:
 #
 # | **Valid:** 2023-03-18 00Z
-# 
+#
 # | **Forecast lead:** 24 hour
 #
 
@@ -72,8 +72,8 @@ model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_
 # MET Configuration
 # -----------------
 #
-# METplus sets environment variables based on user settings in the METplus configuration file. 
-# See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details. 
+# METplus sets environment variables based on user settings in the METplus configuration file.
+# See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details.
 #
 # **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!**
 #
@@ -103,26 +103,13 @@ model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_
 # Running METplus
 # ---------------
 #
-# This use case can be run two ways:
 #
-# 1) Passing in PointStat_fcstRTOFS_obsARGO_climoWOA23_temp.conf then a user-specific system configuration file::
+# Pass the use case configuration file to the run_metplus.py script
+# along with any user-specific system configuration files if desired::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_temp.conf -c /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_temp/metplus_user.conf
+#    run_metplus.py /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_temp.conf /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in PointStat_fcstRTOFS_obsARGO_climoWOA23_temp.conf::
-#
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_temp.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_temp/metplus_user.conf
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output
