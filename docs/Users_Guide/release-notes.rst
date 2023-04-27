@@ -31,6 +31,43 @@ When applicable, release notes are followed by the
 describes the bugfix, enhancement, or new feature.
 
 
+METplus Version 5.1.0-beta2 Release Notes (2023-04-26)
+------------------------------------------------------
+
+  .. dropdown:: Enhancements
+
+     * Update use cases to use new Python directory structure in MET
+       (`#2115 <https://github.com/dtcenter/METplus/issues/2115>`_)
+
+  .. dropdown:: Bugfix
+
+     * App specific OBS_WINDOW variables not taking precedence over generic
+       (`#2006 <https://github.com/dtcenter/METplus/issues/2006>`_)
+     * Skip-if-output-exists logic incorrectly skips files
+       (`#2096 <https://github.com/dtcenter/METplus/issues/2096>`_)
+     * PointStat -obs_valid_beg/end arguments not set properly
+       (`#2137 <https://github.com/dtcenter/METplus/issues/2137>`_)
+     * Allow setting of convert, censor_thresh, and censor_val in regrid dictionary
+       (`#2082 <https://github.com/dtcenter/METplus/issues/2082>`_)
+     * METplus run errors if no commands were run
+       (`#2098 <https://github.com/dtcenter/METplus/issues/2098>`_)
+     * Fix the documentation PDF build
+       (`#2087 <https://github.com/dtcenter/METplus/issues/2087>`_)
+
+  .. dropdown:: New Use Cases
+
+     * Multi-Variate MODE (`#1516 <https://github.com/dtcenter/METplus/issues/1516>`_)
+
+  .. dropdown:: Documentation
+
+     * Enhance the Release Notes by adding dropdown menus
+       (`#2076 <https://github.com/dtcenter/METplus/issues/2076>`_)
+
+  .. dropdown:: Internal
+
+     * Add 'LICENSE.md' to the METplus repo
+       (`#2058 <https://github.com/dtcenter/METplus/issues/2058>`_)
+
 METplus Version 5.1.0-beta1 Release Notes (2023-02-28)
 ------------------------------------------------------
 

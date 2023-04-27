@@ -244,14 +244,29 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
           },
          {'METPLUS_REGRID_DICT': 'regrid = {shape = SQUARE;}'}),
 
+        ({'ENSEMBLE_STAT_REGRID_CONVERT': '2*x', },
+         {'METPLUS_REGRID_DICT': 'regrid = {convert(x) = 2*x;}'}),
+
+        ({'ENSEMBLE_STAT_REGRID_CENSOR_THRESH': '>12000,<5000', },
+         {'METPLUS_REGRID_DICT': 'regrid = {censor_thresh = [>12000, <5000];}'}),
+
+        ({'ENSEMBLE_STAT_REGRID_CENSOR_VAL': '12000,5000', },
+         {'METPLUS_REGRID_DICT': 'regrid = {censor_val = [12000, 5000];}'}),
+
         ({'ENSEMBLE_STAT_REGRID_TO_GRID': 'FCST',
           'ENSEMBLE_STAT_REGRID_METHOD': 'NEAREST',
           'ENSEMBLE_STAT_REGRID_WIDTH': '1',
           'ENSEMBLE_STAT_REGRID_VLD_THRESH': '0.5',
           'ENSEMBLE_STAT_REGRID_SHAPE': 'SQUARE',
+          'ENSEMBLE_STAT_REGRID_CONVERT': '2*x',
+          'ENSEMBLE_STAT_REGRID_CENSOR_THRESH': '>12000,<5000',
+          'ENSEMBLE_STAT_REGRID_CENSOR_VAL': '12000,5000',
           },
          {'METPLUS_REGRID_DICT': ('regrid = {to_grid = FCST;method = NEAREST;'
-                                  'width = 1;vld_thresh = 0.5;shape = SQUARE;}'
+                                  'width = 1;vld_thresh = 0.5;shape = SQUARE;'
+                                  'convert(x) = 2*x;'
+                                  'censor_thresh = [>12000, <5000];'
+                                  'censor_val = [12000, 5000];}'
                                   ),
           'REGRID_TO_GRID': 'FCST'}),
 
