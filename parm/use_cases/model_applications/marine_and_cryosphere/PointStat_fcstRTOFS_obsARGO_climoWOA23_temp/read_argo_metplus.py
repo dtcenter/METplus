@@ -8,8 +8,6 @@ import netCDF4
 import numpy
 from numpy.ma import is_masked
 
-#from met_point_obs import convert_point_data
-
 # set to true to output more info
 DEBUG = False
 
@@ -208,5 +206,3 @@ for input_file in input_files:
 
 print("     point_data: Data Length:\t" + repr(len(point_data)))
 print("     point_data: Data Type:\t" + repr(type(point_data)))
-#met_point_data = convert_point_data(point_data)
-#print(" met_point_data: Data Type:\t" + repr(type(met_point_data)))
