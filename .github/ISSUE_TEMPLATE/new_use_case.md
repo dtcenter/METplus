@@ -2,7 +2,7 @@
 name: New use case
 about: Add a new use case
 title: 'New Use Case: '
-labels: 'alert: NEED ACCOUNT KEY, alert: NEED MORE DEFINITION, alert: NEED PROJECT ASSIGNMENT, type: new use case'
+labels: 'alert: NEED ACCOUNT KEY, alert: NEED MORE DEFINITION, alert: NEED CYCLE ASSIGNMENT, type: new use case'
 assignees: ''
 
 ---
@@ -51,7 +51,7 @@ Consider breaking the new feature down into sub-issues.
 - [ ] Select **privacy**
 
 ### Projects and Milestone ###
-- [ ] Select **Repository** and/or **Organization** level **Project(s)** or add **alert: NEED PROJECT ASSIGNMENT** label
+- [ ] Select **Repository** and/or **Organization** level **Project(s)** or add **alert: NEED CYCLE ASSIGNMENT** label
 - [ ] Select **Milestone** as the next official version or **Future Versions**
 
 ## Define Related Issue(s) ##

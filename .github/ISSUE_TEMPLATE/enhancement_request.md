@@ -2,7 +2,7 @@
 name: Enhancement request
 about: Improve something that it's currently doing
 title: ''
-labels: 'alert: NEED ACCOUNT KEY, alert: NEED MORE DEFINITION, alert: NEED PROJECT ASSIGNMENT, type: enhancement'
+labels: 'alert: NEED ACCOUNT KEY, alert: NEED MORE DEFINITION, alert: NEED CYCLE ASSIGNMENT, type: enhancement'
 assignees: ''
 
 ---
@@ -38,7 +38,7 @@ Consider breaking the enhancement down into sub-issues.
 - [ ] Select **requestor(s)**
 
 ### Projects and Milestone ###
-- [ ] Select **Repository** and/or **Organization** level **Project(s)** or add **alert: NEED PROJECT ASSIGNMENT** label
+- [ ] Select **Repository** and/or **Organization** level **Project(s)** or add **alert: NEED CYCLE ASSIGNMENT** label
 - [ ] Select **Milestone** as the next official version or **Future Versions**
 
 ## Define Related Issue(s) ##
