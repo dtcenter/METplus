@@ -165,28 +165,32 @@ def add_met_config_dict(config, app_name, output_dict, dict_name, items):
 
         if 'dict' not in data_type:
             children = None
-            # handle legacy OBS_WINDOW variables that put OBS_ before app name
-            # i.e. OBS_GRID_STAT_WINDOW_[BEGIN/END]
-            if dict_name == 'obs_window':
-                suffix = 'BEGIN' if name == 'beg' else name.upper()
-
-                metplus_configs.append(
-                    f"OBS_{app_name}_WINDOW_{suffix}".upper()
-                )
-
-                # also add support for legacy PB2NC_WINDOW_[BEGIN/END]
-                metplus_configs.append(
-                    f"{app_name}_WINDOW_{suffix}".upper()
-                )
-
-                # also add OBS_WINDOW_[BEGIN/END]
-                metplus_configs.append(f"OBS_WINDOW_{suffix}")
+            metplus_configs.append(metplus_name)
 
             # if variable ends with _BEG, read _BEGIN first
             if metplus_name.endswith('BEG'):
                 metplus_configs.append(f'{metplus_name}IN')
 
-            metplus_configs.append(metplus_name)
+            if dict_name == 'obs_window':
+                suffix = 'BEGIN' if name == 'beg' else name.upper()
+
+                # handle legacy OBS_WINDOW variables that put OBS_ before
+                # app name i.e. OBS_GRID_STAT_WINDOW_[BEGIN/END]
+                metplus_configs.append(
+                    f"OBS_{app_name}_WINDOW_{suffix}".upper()
+                )
+
+                # also add support for legacy PB2NC_WINDOW_[BEGIN/END]
+                if app_name.lower() == 'pb2nc':
+                    metplus_configs.append(
+                        f"{app_name}_WINDOW_{suffix}".upper()
+                    )
+
+                # also add OBS_WINDOW_[BEGIN/END]
+                metplus_configs.append(f"{dict_name}_{name}".upper())
+                if name == 'beg':
+                    metplus_configs.append(f"{dict_name}_{name}IN".upper())
+
             # add other variable names to search if expected name is unset
             if nicknames:
                 for nickname in nicknames:
@@ -521,6 +525,8 @@ def set_met_config_string(config, c_dict, mp_config, met_config_name,
               Default value is False
              @param default (Optional) if set, use this value as default
               if config is not set
+             @param add_x if True, add (x) to variable name, e.g. convert(x)
+              Default value is False
     """
     mp_config_name = config.get_mp_config_name(mp_config)
     conf_value = _get_config_or_default(
@@ -544,7 +550,10 @@ def set_met_config_string(config, c_dict, mp_config, met_config_name,
 
     c_key = c_dict_key if c_dict_key else met_config_name.upper()
     if met_config_name:
-        conf_value = f'{met_config_name} = {conf_value};'
+        config_name = met_config_name
+        if kwargs.get('add_x'):
+            config_name = f'{config_name}(x)'
+        conf_value = f'{config_name} = {conf_value};'
 
     c_dict[c_key] = conf_value
     return True
@@ -635,7 +644,8 @@ def set_met_config_thresh(config, c_dict, mp_config, met_config_name,
             out_value = str(conf_value)
 
         c_dict[c_key] = out_value
-        return True
+
+    return True
 
 
 def set_met_config_bool(config, c_dict, mp_config, met_config_name,
@@ -734,8 +744,8 @@ def _parse_item_info(item_info):
 
 def _parse_extra_args(extra):
     """! Check string for extra option keywords and set them to True in
-     dictionary if they are found. Supports 'remove_quotes', 'uppercase'
-     and 'allow_empty'
+     dictionary if they are found. Supports 'remove_quotes', 'uppercase',
+     'allow_empty', 'to_grid', 'default', and 'add_x'.
 
         @param extra string to parse for keywords
         @returns dictionary with extra args set if found in string
@@ -750,6 +760,7 @@ def _parse_extra_args(extra):
         'allow_empty',
         'to_grid',
         'default',
+        'add_x',
     )
     for extra_option in VALID_EXTRAS:
         if extra_option in extra:

@@ -1,6 +1,6 @@
 {"name": "alert: NEED ACCOUNT KEY","color": "ffff33","description": "Need to assign an account key to this issue"}
 {"name": "alert: NEED MORE DEFINITION","color": "ffff33","description": "Not yet actionable, additional definition required"}
-{"name": "alert: NEED PROJECT ASSIGNMENT","color": "ffff33","description": "Need to assign to a release development cycle"}
+{"name": "alert: NEED CYCLE ASSIGNMENT","color": "ffff33","description": "Need to assign to a release development cycle"}
 {"name": "component: CI/CD","color": "1d76db","description": "Continuous integration and deployment issues"}
 {"name": "component: build process","color": "1d76db","description": "Build process issue"}
 {"name": "component: code cleanup","color": "1d76db","description": "Code cleanup and maintenance issue"}
@@ -15,6 +15,7 @@
 {"name": "priority: high","color": "ed2939","description": "High Priority"}
 {"name": "priority: low","color": "cce88d","description": "Low Priority"}
 {"name": "priority: medium","color": "f8de7e","description": "Medium Priority"}
+{"name": "priority: bold for release notes","color": "ededed","description": "Issue should be bolded in release notes"}
 {"name": "reporting: DTC AF METplus","color": "fbca04","description": "Air Force METplus Project"}
 {"name": "reporting: DTC NCAR Base","color": "fbca04","description": "NCAR Base DTC Project"}
 {"name": "reporting: DTC NOAA OAR","color": "fbca04","description": "NOAA Office of Atmospheric Research DTC Project"}

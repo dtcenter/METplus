@@ -11,7 +11,7 @@ prevent potential issues with wget commands used to download the cartopy
 shapefiles. Without this, the wget commands may fail because the
 certificate trust store is out of date.
 
-## metplus_base.v5
+## metplus_base.v5.1
 
 This environment includes the minimum requirements to run the METplus wrappers.
 
@@ -19,161 +19,205 @@ This environment includes the minimum requirements to run the METplus wrappers.
 ### Docker
 
 ```
-docker build -t dtcenter/metplus-envs:metplus_base.v5 -f Dockerfile.metplus_base .
-docker push dtcenter/metplus-envs:metplus_base.v5
+export METPLUS_ENV_VERSION=v5.1
+docker build -t dtcenter/metplus-envs:metplus_base.${METPLUS_ENV_VERSION} \
+    --build-arg METPLUS_ENV_VERSION \
+    -f Dockerfile.metplus_base .
+docker push dtcenter/metplus-envs:metplus_base.${METPLUS_ENV_VERSION}
 ```
 
 ### Local
 
 ```
-./scripts/metplus_base_env.sh
+export METPLUS_ENV_VERSION=v5.1
+./scripts/metplus_base_env.sh ${METPLUS_ENV_VERSION}
 ```
 
 
-## py_embed_base.v5
+## py_embed_base.v5.1
 
 This environment includes all python embedding requirements (xarray and netcdf).
 
 ### Docker
 
 ```
-docker build -t dtcenter/metplus-envs:py_embed_base.v5 -f Dockerfile.py_embed_base .
-docker push dtcenter/metplus-envs:py_embed_base.v5
+export METPLUS_ENV_VERSION=v5.1
+docker build -t dtcenter/metplus-envs:py_embed_base.${METPLUS_ENV_VERSION} \
+    --build-arg METPLUS_ENV_VERSION \
+    -f Dockerfile.py_embed_base .
+docker push dtcenter/metplus-envs:py_embed_base.${METPLUS_ENV_VERSION}
 ```
 
 ### Local
 
 ```
-./scripts/py_embed_base_env.sh
+export METPLUS_ENV_VERSION=v5.1
+./scripts/py_embed_base_env.sh ${METPLUS_ENV_VERSION}
 ```
 
 
-## h5py.v5 (from py_embed_base.v5)
+## h5py.v5.1 (from py_embed_base.v5.1)
 
 ### Docker
 
 ```
-docker build -t dtcenter/metplus-envs:h5py.v5 --build-arg BASE_ENV=py_embed_base.v5 --build-arg ENV_NAME=h5py .
-docker push dtcenter/metplus-envs:h5py.v5
+export METPLUS_ENV_VERSION=v5.1
+docker build -t dtcenter/metplus-envs:h5py.${METPLUS_ENV_VERSION} \
+    --build-arg METPLUS_ENV_VERSION \
+    --build-arg BASE_ENV=py_embed_base \
+    --build-arg ENV_NAME=h5py .
+docker push dtcenter/metplus-envs:h5py.${METPLUS_ENV_VERSION}
 ```
 
 ### Local
 
 ```
-./scripts/h5py_env.sh
+export METPLUS_ENV_VERSION=v5.1
+./scripts/h5py_env.sh ${METPLUS_ENV_VERSION}
 ```
 
 
-## metdataio.v5 (from metplus_base.v5)
+## metdataio.v5.1 (from metplus_base.v5.1)
 
 ### Docker
 
 ```
-docker build -t dtcenter/metplus-envs:metdataio.v5 --build-arg ENV_NAME=metdataio .
-docker push dtcenter/metplus-envs:metdataio.v5
+export METPLUS_ENV_VERSION=v5.1
+docker build -t dtcenter/metplus-envs:metdataio.${METPLUS_ENV_VERSION} \
+    --build-arg METPLUS_ENV_VERSION \
+    --build-arg ENV_NAME=metdataio .
+docker push dtcenter/metplus-envs:metdataio.${METPLUS_ENV_VERSION}
 ```
 
 ### Local
 
 ```
-./scripts/metdataio_env.sh
+export METPLUS_ENV_VERSION=v5.1
+./scripts/metdataio_env.sh ${METPLUS_ENV_VERSION}
 ```
 
 
-## pygrib.v5 (from py_embed_base.v5)
+## pygrib.v5.1 (from py_embed_base.v5.1)
 
 ### Docker
 
 ```
-docker build -t dtcenter/metplus-envs:pygrib.v5 --build-arg BASE_ENV=py_embed_base.v5 --build-arg ENV_NAME=pygrib .
-docker push dtcenter/metplus-envs:pygrib.v5
+export METPLUS_ENV_VERSION=v5.1
+docker build -t dtcenter/metplus-envs:pygrib.${METPLUS_ENV_VERSION} \
+    --build-arg METPLUS_ENV_VERSION \
+    --build-arg BASE_ENV=py_embed_base \
+    --build-arg ENV_NAME=pygrib .
+docker push dtcenter/metplus-envs:pygrib.${METPLUS_ENV_VERSION}
 ```
 
 ### Local
 
 ```
-./scripts/pygrib_env.sh
+export METPLUS_ENV_VERSION=v5.1
+./scripts/pygrib_env.sh ${METPLUS_ENV_VERSION}
 ```
 
 
-## cfgrib.v5 (from fresh Python 3.8.6 environment)
+## cfgrib.v5.1 (from fresh Python 3.10.4 environment)
 
 ### Docker
 
 ```
-docker build -t dtcenter/metplus-envs:cfgrib.v5 --build-arg ENV_NAME=cfgrib .
-docker push dtcenter/metplus-envs:cfgrib.v5
+export METPLUS_ENV_VERSION=v5.1
+docker build -t dtcenter/metplus-envs:cfgrib.${METPLUS_ENV_VERSION} \
+    --build-arg METPLUS_ENV_VERSION \
+    --build-arg ENV_NAME=cfgrib .
+docker push dtcenter/metplus-envs:cfgrib.${METPLUS_ENV_VERSION}
 ```
 
 ### Local
 
 ```
-./scripts/cfgrib_env.sh
+export METPLUS_ENV_VERSION=v5.1
+./scripts/cfgrib_env.sh ${METPLUS_ENV_VERSION}
 ```
 
 
-## netcdf4.v5 (from metplus_base.v5)
+## netcdf4.v5.1 (from metplus_base.v5.1)
 
 ### Docker
 
 ```
-docker build -t dtcenter/metplus-envs:netcdf4.v5 --build-arg ENV_NAME=netcdf4 .
-docker push dtcenter/metplus-envs:netcdf4.v5
+export METPLUS_ENV_VERSION=v5.1
+docker build -t dtcenter/metplus-envs:netcdf4.${METPLUS_ENV_VERSION} \
+    --build-arg METPLUS_ENV_VERSION \
+    --build-arg ENV_NAME=netcdf4 .
+docker push dtcenter/metplus-envs:netcdf4.${METPLUS_ENV_VERSION}
 ```
 
 ### Local
 
 ```
-./scripts/netcdf4_env.sh
+export METPLUS_ENV_VERSION=v5.1
+./scripts/netcdf4_env.sh ${METPLUS_ENV_VERSION}
 ```
 
 
-## xesmf.v5 (from metplus_base.v5)
+## xesmf.v5.1 (from metplus_base.v5.1)
 
 ### Docker
 
 ```
-docker build -t dtcenter/metplus-envs:xesmf.v5 --build-arg ENV_NAME=xesmf .
-docker push dtcenter/metplus-envs:xesmf.v5
+export METPLUS_ENV_VERSION=v5.1
+docker build -t dtcenter/metplus-envs:xesmf.${METPLUS_ENV_VERSION} \
+    --build-arg METPLUS_ENV_VERSION \
+    --build-arg ENV_NAME=xesmf .
+docker push dtcenter/metplus-envs:xesmf.${METPLUS_ENV_VERSION}
 ```
 
 ### Local
 
 ```
-./scripts/xesmf_env.sh
+export METPLUS_ENV_VERSION=v5.1
+./scripts/xesmf_env.sh ${METPLUS_ENV_VERSION}
 ```
 
 
-## spacetime.v5
+## spacetime.v5.1
 
 ### Docker
 
 ```
-docker build -t dtcenter/metplus-envs:spacetime.v5 --build-arg ENV_NAME=spacetime .
-docker push dtcenter/metplus-envs:spacetime.v5
+export METPLUS_ENV_VERSION=v5.1
+docker build -t dtcenter/metplus-envs:spacetime.${METPLUS_ENV_VERSION} \
+    --build-arg METPLUS_ENV_VERSION \
+    --build-arg ENV_NAME=spacetime .
+docker push dtcenter/metplus-envs:spacetime.${METPLUS_ENV_VERSION}
 ```
 
 ### Local
 
 ```
-./scripts/spacetime_env.sh
+export METPLUS_ENV_VERSION=v5.1
+./scripts/spacetime_env.sh ${METPLUS_ENV_VERSION}
 ```
 
 
-## metplotpy.v5 (from metplus_base.v5)
+## metplotpy.v5.1 (from metplus_base.v5.1)
 
 ### Docker
 
 ```
-docker build -t dtcenter/metplus-envs:metplotpy.v5 --build-arg ENV_NAME=metplotpy .
-docker push dtcenter/metplus-envs:metplotpy.v5
+export METPLUS_ENV_VERSION=v5.1
+docker build -t dtcenter/metplus-envs:metplotpy.${METPLUS_ENV_VERSION} \
+    --build-arg METPLUS_ENV_VERSION \
+    --build-arg ENV_NAME=metplotpy \
+    -f Dockerfile.cartopy .
+docker push dtcenter/metplus-envs:metplotpy.${METPLUS_ENV_VERSION}
 ```
 
 ### Local
 
 ```
-./scripts/metplotpy_env.sh
-/home/met_test/.conda/envs/metplotpy.v5/bin/python3 cartopy_feature_download.py cultural physical
+export METPLUS_ENV_VERSION=v5.1
+./scripts/metplotpy_env.sh ${METPLUS_ENV_VERSION}
+wget https://raw.githubusercontent.com/SciTools/cartopy/master/tools/cartopy_feature_download.py
+/home/met_test/.conda/envs/metplotpy.${METPLUS_ENV_VERSION}/bin/python3 cartopy_feature_download.py cultural physical
 rm cartopy_feature_download.py
 ```
 
@@ -181,6 +225,9 @@ rm cartopy_feature_download.py
 
 ```
 runas met_test
+
+export METPLUS_ENV_VERSION=v5.1
+
 cd /home/met_test
 
 # git clone not necessary if repo is already available
@@ -189,30 +236,37 @@ git clone https://github.com/dtcenter/METcalcpy
 
 cd /home/met_test/METplotpy
 git checkout develop
-/home/met_test/.conda/envs/metplotpy.v5/bin/pip3 install .
+/home/met_test/.conda/envs/metplotpy.${METPLUS_ENV_VERSION}/bin/pip3 install .
 
 cd /home/met_test/METcalcpy
 git checkout develop
-/home/met_test/.conda/envs/metplotpy.v5/bin/pip3 install .
+/home/met_test/.conda/envs/metplotpy.${METPLUS_ENV_VERSION}/bin/pip3 install .
 
 exit
 ```
 
 
-## weatherregime.v5 (from metplotpy.v5)
+## weatherregime.v5.1 (from metplotpy.v5.1)
 
 ### Docker
 
 ```
-docker build -t dtcenter/metplus-envs:weatherregime.v5 --build-arg BASE_ENV=metplotpy.v5 --build-arg ENV_NAME=weatherregime .
-docker push dtcenter/metplus-envs:weatherregime.v5
+export METPLUS_ENV_VERSION=v5.1
+docker build -t dtcenter/metplus-envs:weatherregime.${METPLUS_ENV_VERSION} \
+    --build-arg METPLUS_ENV_VERSION \
+    --build-arg BASE_ENV=metplotpy \
+    --build-arg ENV_NAME=weatherregime \
+    -f Dockerfile.cartopy .
+docker push dtcenter/metplus-envs:weatherregime.${METPLUS_ENV_VERSION}
 ```
 
 ### Local
 
 ```
-./scripts/weatherregime_env.sh
-/home/met_test/.conda/envs/weatherregime.v5/bin/python3 cartopy_feature_download.py cultural physical
+export METPLUS_ENV_VERSION=v5.1
+./scripts/weatherregime_env.sh ${METPLUS_ENV_VERSION}
+wget https://raw.githubusercontent.com/SciTools/cartopy/master/tools/cartopy_feature_download.py
+/home/met_test/.conda/envs/weatherregime.${METPLUS_ENV_VERSION}/bin/python3 cartopy_feature_download.py cultural physical
 rm cartopy_feature_download.py
 ```
 
@@ -220,6 +274,9 @@ rm cartopy_feature_download.py
 
 ```
 runas met_test
+
+export METPLUS_ENV_VERSION=v5.1
+
 cd /home/met_test
 
 # git clone not necessary if repo is already available
@@ -228,57 +285,72 @@ git clone https://github.com/dtcenter/METcalcpy
 
 cd /home/met_test/METplotpy
 git checkout develop
-/home/met_test/.conda/envs/weatherregime.v5/bin/pip3 install .
+/home/met_test/.conda/envs/weatherregime.${METPLUS_ENV_VERSION}/bin/pip3 install .
 
 cd /home/met_test/METcalcpy
 git checkout develop
-/home/met_test/.conda/envs/weatherregime.v5/bin/pip3 install .
+/home/met_test/.conda/envs/weatherregime.${METPLUS_ENV_VERSION}/bin/pip3 install .
 
 exit
 ```
 
 
-## cycloneplotter.v5 (from metplus_base.v5)
+## cycloneplotter.v5.1 (from metplus_base.v5.1)
 
 ### Docker
 
 ```
-docker build -t dtcenter/metplus-envs:cycloneplotter.v5 --build-arg ENV_NAME=cycloneplotter .
-docker push dtcenter/metplus-envs:cycloneplotter.v5
+export METPLUS_ENV_VERSION=v5.1
+docker build -t dtcenter/metplus-envs:cycloneplotter.${METPLUS_ENV_VERSION} \
+    --build-arg METPLUS_ENV_VERSION \
+    --build-arg ENV_NAME=cycloneplotter \
+    -f Dockerfile.cartopy .
+docker push dtcenter/metplus-envs:cycloneplotter.${METPLUS_ENV_VERSION}
 ```
 
 ### Local
 
 ```
-./scripts/cycloneplotter_env.sh
-/home/met_test/.conda/envs/cycloneplotter.v5/bin/python3 cartopy_feature_download.py cultural physical
+export METPLUS_ENV_VERSION=v5.1
+./scripts/cycloneplotter_env.sh ${METPLUS_ENV_VERSION}
+wget https://raw.githubusercontent.com/SciTools/cartopy/master/tools/cartopy_feature_download.py
+/home/met_test/.conda/envs/cycloneplotter.${METPLUS_ENV_VERSION}/bin/python3 cartopy_feature_download.py cultural physical
 rm cartopy_feature_download.py
 ```
 
 
-## icecover.v5 (from py_embed_base.v5)
+## icecover.v5.1 (from py_embed_base.v5.1)
 
 ### Docker
 
 ```
-docker build -t dtcenter/metplus-envs:icecover.v5 --build-arg BASE_ENV=py_embed_base.v5 --build-arg ENV_NAME=icecover .
-docker push dtcenter/metplus-envs:icecover.v5
+export METPLUS_ENV_VERSION=v5.1
+docker build -t dtcenter/metplus-envs:icecover.${METPLUS_ENV_VERSION} \
+    --build-arg METPLUS_ENV_VERSION \
+    --build-arg BASE_ENV=py_embed_base \
+    --build-arg ENV_NAME=icecover .
+docker push dtcenter/metplus-envs:icecover.${METPLUS_ENV_VERSION}
 ```
 
 ### Local
 
 ```
-./scripts/icecover_env.sh
+export METPLUS_ENV_VERSION=v5.1
+./scripts/icecover_env.sh ${METPLUS_ENV_VERSION}
 ```
 
 
-## gempak.v5 (from metplus_base.v5 using Dockerfile.gempak_env)
+## gempak.v5.1 (from metplus_base.v5.1 using Dockerfile.gempak_env)
 
 ### Docker
 
 ```
-docker build -t dtcenter/metplus-envs:gempak.v5 --build-arg ENV_NAME=gempak -f ./Dockerfile.gempak_env .
-docker push dtcenter/metplus-envs:gempak.v5
+export METPLUS_ENV_VERSION=v5.1
+docker build -t dtcenter/metplus-envs:gempak.${METPLUS_ENV_VERSION} \
+    --build-arg METPLUS_ENV_VERSION \
+    --build-arg ENV_NAME=gempak \
+    -f ./Dockerfile.gempak_env .
+docker push dtcenter/metplus-envs:gempak.${METPLUS_ENV_VERSION}
 ```
 
 ### Local
@@ -289,13 +361,16 @@ this environment locally, Java should be available on the system you are running
 JAR file should be downloaded from the DTC website.
 
 
-## gfdl-tracker.v5 (using Dockerfile.gfdl-tracker)
+## gfdl-tracker.v5.1 (using Dockerfile.gfdl-tracker)
 
 ### Docker
 
 ```
-docker build -t dtcenter/metplus-envs:gfdl-tracker.v5 -f ./Dockerfile.gfdl-tracker .
-docker push dtcenter/metplus-envs:gfdl-tracker.v5
+export METPLUS_ENV_VERSION=v5.1
+docker build -t dtcenter/metplus-envs:gfdl-tracker.${METPLUS_ENV_VERSION} \
+    --build-arg METPLUS_ENV_VERSION \
+    -f ./Dockerfile.gfdl-tracker .
+docker push dtcenter/metplus-envs:gfdl-tracker.${METPLUS_ENV_VERSION}
 ```
 
 ### Local
@@ -306,26 +381,30 @@ needed to install the tools. It is not recommended to follow these instructions
 to install the GFDL Tracker using these steps. Please consult the documentation
 for the tool for installation instructions.
 
-## geovista.v5
+## geovista.v5.1
 
 ### Docker
 
 ```
-docker build -t dtcenter/metplus-envs:geovista.v5 --build-arg ENV_NAME=geovista .
-docker push dtcenter/metplus-envs:geovista.v5
+export METPLUS_ENV_VERSION=v5.1
+docker build -t dtcenter/metplus-envs:geovista.${METPLUS_ENV_VERSION} \
+    --build-arg METPLUS_ENV_VERSION \
+    --build-arg ENV_NAME=geovista .
+docker push dtcenter/metplus-envs:geovista.${METPLUS_ENV_VERSION}
 ```
 
 ### Local
 
 ```
-./scripts/geovista_env.sh
+export METPLUS_ENV_VERSION=v5.1
+./scripts/geovista_env.sh ${METPLUS_ENV_VERSION}
 
 cd /home/met_test/geovista
-/home/met_test/.conda/envs/geovista.v5/bin/pip3 install --no-deps --editable .
+/home/met_test/.conda/envs/geovista.${METPLUS_ENV_VERSION}/bin/pip3 install --no-deps --editable .
 ```
 
 
-## pytest.v5 (from metplus_base.v5)
+## pytest.v5.1 (from metplus_base.v5.1)
 
 This environment is used in automation to run the pytests. It requires all of the
 packages needed to run all of the METplus wrappers, the pytest package and the pytest
@@ -334,12 +413,15 @@ code coverage package.
 ### Docker
 
 ```
-docker build -t dtcenter/metplus-envs:pytest.v5 --build-arg ENV_NAME=pytest .
-docker push dtcenter/metplus-envs:pytest.v5
+export METPLUS_ENV_VERSION=v5.1
+docker build -t dtcenter/metplus-envs:pytest.${METPLUS_ENV_VERSION} \
+    --build-arg METPLUS_ENV_VERSION \
+    --build-arg ENV_NAME=pytest .
+docker push dtcenter/metplus-envs:pytest.${METPLUS_ENV_VERSION}
 ```
 
 
-## diff.v5 (from netcdf4.v5)
+## diff.v5.1 (from netcdf4.v5.1)
 
 This environment is used to run the difference tests to compare output data to output
 generated in previous runs to ensure that changes to the code base do not break or change
@@ -348,6 +430,10 @@ the results.
 ### Docker
 
 ```
-docker build -t dtcenter/metplus-envs:diff.v5 --build-arg BASE_ENV=netcdf4.v5 --build-arg ENV_NAME=diff .
-docker push dtcenter/metplus-envs:diff.v5
+export METPLUS_ENV_VERSION=v5.1
+docker build -t dtcenter/metplus-envs:diff.${METPLUS_ENV_VERSION} \
+    --build-arg METPLUS_ENV_VERSION \
+    --build-arg BASE_ENV=netcdf4 \
+    --build-arg ENV_NAME=diff .
+docker push dtcenter/metplus-envs:diff.${METPLUS_ENV_VERSION}
 ```

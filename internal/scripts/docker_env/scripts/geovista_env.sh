@@ -1,8 +1,8 @@
 #! /bin/sh
 
 ################################################################################
-# Environment: geovista
-# Last Updated: 2022-11-08 (mccabe@ucar.edu)
+# Environment: geovista.v5.1
+# Last Updated: 2023-01-31 (mccabe@ucar.edu)
 # Notes: Adds Python packages needed to run iris use case
 #   Requires development version of geovista package that is obtained
 #   from github.com/bjlittle/geovista
@@ -14,21 +14,24 @@
 # Other Content: None
 ################################################################################
 
+# version of METplus when the environment was updated, e.g. v5.1
+METPLUS_VERSION=$1
+
 # Conda environment to create
-ENV_NAME=geovista.v5
+ENV_NAME=geovista.${METPLUS_VERSION}
 
 # install libGL to prevent ImportError of libGL dynamic library in geovista
-yum -y install mesa-libGL
+apt install -y libgl1-mesa-glx
 
 # install git to clone geovista repo to get dev version of package
-yum -y install git
+apt install -y git
 git clone https://github.com/bjlittle/geovista.git
 cd geovista
 conda create -y -n ${ENV_NAME} --file requirements/locks/py310-lock-linux-64.txt
 
 # note: this command will not work on a local machine
 # it is specific to docker
-/usr/local/envs/${ENV_NAME}/bin/pip3 install --no-deps .
+/usr/local/conda/envs/${ENV_NAME}/bin/pip3 install --no-deps .
 cd -
 
 conda install -y --name ${ENV_NAME} -c conda-forge xarray==2022.11.0

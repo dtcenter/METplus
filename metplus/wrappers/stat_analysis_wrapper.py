@@ -146,13 +146,6 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
                                c_dict['VERBOSITY'])
         )
 
-        if not c_dict['RUNTIME_FREQ']:
-            c_dict['RUNTIME_FREQ'] = 'RUN_ONCE'
-
-        if c_dict['RUNTIME_FREQ'] != 'RUN_ONCE':
-            self.log_error('Only RUN_ONCE is currently supported for '
-                           'STAT_ANALYSIS_RUNTIME_FREQ')
-
         # skip RuntimeFreq wrapper logic to find files
         c_dict['FIND_FILES'] = False
 
@@ -182,6 +175,23 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         else:
             c_dict['DATE_BEG'] = start_dt
             c_dict['DATE_END'] = end_dt
+
+        if not c_dict['RUNTIME_FREQ']:
+            # if start and end times are not equal and
+            # LOOP_ORDER = times (legacy), set frequency to once per init/valid
+            if (start_dt != end_dt and
+                    self.config.has_option('config', 'LOOP_ORDER') and
+                    self.config.getraw('config', 'LOOP_ORDER') == 'times'):
+                self.logger.warning(
+                    'LOOP_ORDER has been deprecated. Please set '
+                    'STAT_ANALYSIS_RUNTIME_FREQ = RUN_ONCE_PER_INIT_OR_VALID '
+                    'instead.'
+                )
+                c_dict['RUNTIME_FREQ'] = 'RUN_ONCE_PER_INIT_OR_VALID'
+            else:
+                self.logger.debug('Setting RUNTIME_FREQ to RUN_ONCE. Set '
+                                  'STAT_ANALYSIS_RUNTIME_FREQ to override.')
+                c_dict['RUNTIME_FREQ'] = 'RUN_ONCE'
 
         # read jobs from STAT_ANALYSIS_JOB<n> or legacy JOB_NAME/ARGS if unset
         c_dict['JOBS'] = self._read_jobs_from_config()
@@ -217,6 +227,14 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
          @returns list of tuples containing all commands that were run and the
          environment variables that were set for each
         """
+        # if init or valid time is set in the time input, set DATE_BEG and
+        # DATE_END to that time to set fcst/obs_init/valid_beg/end values
+        # if both init and valid are set, valid is used
+        for init_or_valid in ['init', 'valid']:
+            if time_input.get(init_or_valid, '*') != '*':
+                self.c_dict['DATE_BEG'] = time_input[init_or_valid]
+                self.c_dict['DATE_END'] = time_input[init_or_valid]
+
         self._run_stat_analysis(time_input)
         return self.all_commands
 
@@ -248,11 +266,8 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         # Loop over run settings.
         formatted_runtime_settings_dict_list = []
         for runtime_settings in runtime_settings_dict_list:
-            # set custom, today, and now from time input
-            runtime_settings['custom'] = time_input.get('custom', '')
-            runtime_settings['today'] = time_input.get('today', '')
-            runtime_settings['now'] = time_input.get('now', '')
-
+            # add time input values to runtime settings
+            runtime_settings.update(time_input)
             stringsub_dict = self._build_stringsub_dict(runtime_settings)
 
             # Set up stat_analysis -lookin argument, model and obs information
@@ -567,11 +582,7 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         """
         date_type = self.c_dict['DATE_TYPE']
 
-        stringsub_dict = {
-            'now': config_dict.get('now'),
-            'today': config_dict.get('today'),
-            'custom': config_dict.get('custom'),
-        }
+        stringsub_dict = {}
 
         # add all loop list and group list items to string sub keys list
         for list_item in self.EXPECTED_CONFIG_LISTS:
@@ -581,6 +592,12 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         # create a dictionary of empty string values from the special keys
         for special_key in self.STRING_SUB_SPECIAL_KEYS:
             stringsub_dict[special_key] = ''
+
+        # set time info from current runtime
+        for item in ['now', 'today', 'custom', 'init', 'valid', 'lead']:
+            stringsub_dict[item] = config_dict.get(item, '')
+            if stringsub_dict[item] == '*':
+                stringsub_dict[item] = 'ALL'
 
         # Set string sub info from fcst/obs hour lists
         self._set_stringsub_hours(stringsub_dict,
