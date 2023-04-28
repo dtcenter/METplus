@@ -52,10 +52,10 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# i.e. -c parm/use_cases/model_applications/precipitation/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
+# i.e. -c parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #
 
 ##############################################################################
@@ -135,5 +135,5 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/precipitation-PointStat_fcstCESM_obsFLUXNET2015_TCI.png'
+# sphinx_gallery_thumbnail_path = '_static/land_surface-PointStat_fcstCESM_obsFLUXNET2015_TCI.png'
 
