@@ -11,7 +11,7 @@ model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_
 #
 # This use case utilizes the ASCII2NC tool with python embedding to natively read in Argo
 # netCDF files, a common source of ocean profile data for operational entities. These
-# values are then used the PointStat tool to verify RTOFS ocean temperature forecast at 50 m depth.
+# values are then used by the PointStat tool to verify RTOFS ocean temperature forecast at 50 m depth.
 
 ##############################################################################
 # Datasets
@@ -43,7 +43,7 @@ model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_
 # ----------------
 #
 # ASCII2NC is the first tool called. It pulls in three Argo files for the Atlantic,
-# Pacific, and Indian Oceans, respectively. These observations are converted into a netCDF
+# Pacific, and Indian Oceans, respectively using a Python script. These observations are converted into a netCDF
 # file, which is then called by PointStat as the observation dataset. PointStat also pulls
 # in a forecast from the RTOFS for ocean temperature at 50 m depth, which is included in
 # the range of available observation times, and two monthly climatology files from the
