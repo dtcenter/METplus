@@ -2,7 +2,7 @@
 name: Sub-Issue
 about: Break an issue down into smaller parts
 title: ''
-labels: 'alert: NEED ACCOUNT KEY, alert: NEED MORE DEFINITION, alert: NEED PROJECT ASSIGNMENT, type: sub-issue'
+labels: 'alert: NEED ACCOUNT KEY, alert: NEED MORE DEFINITION, alert: NEED CYCLE ASSIGNMENT, type: sub-issue'
 assignees: ''
 
 ---
@@ -28,5 +28,5 @@ This is a sub-issue of #*List the parent issue number here*.
 - [ ] Select **requestor(s)**
 
 ### Projects and Milestone ###
-- [ ] Select **Repository** and/or **Organization** level **Project(s)** or add **alert: NEED PROJECT ASSIGNMENT** label
+- [ ] Select **Repository** and/or **Organization** level **Project(s)** or add **alert: NEED CYCLE ASSIGNMENT** label
 - [ ] Select **Milestone** as the next official version or **Future Versions**
