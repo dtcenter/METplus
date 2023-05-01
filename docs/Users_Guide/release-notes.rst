@@ -33,6 +33,11 @@ describes the bugfix, enhancement, or new feature.
 METplus Version 5.0.1 Release Notes (2023-02-27)
 ------------------------------------------------
 
+* Bugfixes:
+
+  * StatAnalysis - allow run once for each valid time
+    (`#2026 <https://github.com/dtcenter/METplus/issues/2026>`_)
+
 * Internal:
 
   * Add modulefiles to the repository
@@ -43,13 +48,6 @@ METplus Version 5.0.1 Release Notes (2023-02-27)
   * Update the METplus Components Python Requirements Documentation
     (`#2016 <https://github.com/dtcenter/METplus/issues/2016>`_)
 
-METplus Version 5.0.1 Release Notes (2023-02-21)
-------------------------------------------------
-
-* Bugfixes:
-
-  * StatAnalysis - allow run once for each valid time
-    (`#2026 <https://github.com/dtcenter/METplus/issues/2026>`_)
 
 METplus Version 5.0.0 Release Notes (2022-12-09)
 ------------------------------------------------
