@@ -1085,7 +1085,12 @@ track where differences occurred.
 
 A GitHub Action workflow is available to handle this step.
 
-
+* Ensure that the develop data directory has been updated to include all of the
+  new input data.
+  Check with the reviewers of recent pull requests that add a new use case to
+  confirm that the steps under :ref:`update-the-develop-data-directory` have
+  been completed. If this step has not been completed, then the new use case(s)
+  will fail and the new output data will not be added to the truth data set.
 * Navigate to https://github.com/dtcenter/METplus/actions/workflows/update_truth.yml
   or from the METplus GitHub page, click on the Actions tab,
   then click on "Update Truth Data" under menu on the left.
