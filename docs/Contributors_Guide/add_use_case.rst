@@ -1123,6 +1123,9 @@ A GitHub Action workflow is available to handle this step.
 * Monitor the Testing automation run for the develop-ref branch and ensure that
   all of the use cases run successfully and the final step named
   "Create Output Docker Data Volumes" completed successfully.
+* If any use cases fail, check that the input data has been updated following
+  the instructions under :ref:`update-the-develop-data-directory` and rerun
+  all of the jobs of the -ref workflow.
 
 
 Clean Up DTC Web Server
