@@ -3,20 +3,23 @@ on:
   workflow_dispatch:
     inputs:
       branch:
-        description: 'Branch to update (default develop)'
+        description: 'Branch to update if not in above pull down list (e.g. PR coming from a fork)'
 
 jobs:
   update_data_volumes:
     name: Update Data Volumes
     runs-on: ubuntu-latest
     steps:
+      - run: |
+          branch_name=$(echo ${{ github.event.inputs.branch || github.ref }} | cut -d/ -f3)
+          echo "branch_name=$branch_name" >> "$GITHUB_ENV"
       - uses: dtcenter/metplus-action-data-update@v2
         with:
           docker_name: ${{ secrets.DOCKER_USERNAME }}
           docker_pass: ${{ secrets.DOCKER_PASSWORD }}
           repo_name: ${{ github.repository }}
           data_prefix: sample_data
-          branch_name: ${{ github.event.inputs.branch || 'develop' }}
+          branch_name: ${{ env.branch_name }}
           docker_data_dir: /data/input/METplus_Data
           data_repo_dev: metplus-data-dev
           data_repo_stable: metplus-data
