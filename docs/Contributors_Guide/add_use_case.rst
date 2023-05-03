@@ -882,8 +882,6 @@ chapter under
 Pull Request Reviewer Instructions
 ==================================
 
-.. _update-the-develop-data-directory:
-
 Update the develop data directory
 ---------------------------------
 
@@ -1073,9 +1071,8 @@ then combine the two list items into a single item::
 
     - "met_tool_wrapper:0-54"
 
-
-Update the Truth Data
----------------------
+Create a pull request from develop into develop-ref
+---------------------------------------------------
 
 The addition of a new use case results in new output data. When this happens,
 the reference branch needs to be updated so that future pull requests will
@@ -1085,48 +1082,45 @@ the destination branch. This is done so that the pull request number
 responsible for the changes in the truth data can be referenced to easily
 track where differences occurred.
 
-A GitHub Action workflow is available to handle this step.
+Merging develop into develop-ref often causes strange conflicts. It really is
+necessary and important to update develop-ref with the latest content of
+develop. Follow these command line instructions in the METplus repository to
+reconcile the conflicts before creating the pull request.
 
-* Ensure that the develop data directory has been updated to include all of the
-  new input data.
-  Check with the reviewers of recent pull requests that add a new use case to
-  confirm that the steps under :ref:`update-the-develop-data-directory` have
-  been completed. If this step has not been completed, then the new use case(s)
-  will fail and the new output data will not be added to the truth data set.
-* Navigate to https://github.com/dtcenter/METplus/actions/workflows/update_truth.yml
-  or from the METplus GitHub page, click on the Actions tab,
-  then click on "Update Truth Data" under menu on the left.
-* Click on the "Run workflow" button on the right.
-* Click on the Branch pull down and select "develop" unless you are updating
-  the truth data for a bugfix on a main_vX.Y branch.
-* Enter the pull request numbers that warranted the update.
-  Include the '#' symbol before the number to create a link to the PR.
-  PRs from a repository other than METplus should include
-  the repository name before '#' symbol.
-* Enter a brief summary of the changes.
-  Developers can navigate to the PRs for more information.
+* Reconcile conflicts between develop and develop-ref branches.
 
-.. figure:: figure/update_truth_data.png
+::
 
-* Click the "Run workflow" button.
-* A new workflow run should appear at the top of the list and complete quickly.
-* Click on the "Pull Requests" tab.
-  A new pull request should have been created with the information that
-  was entered. Click on the new pull request.
-* Verify that the information in this pull request is correct.
-  If the "develop" branch was selected in the "Run workflow" menu,
-  then the pull request should show **develop-ref <- develop**.
+    git checkout develop-ref
+    git pull
+    git checkout develop
+    git pull
+    git merge -s ours develop-ref
+    git push origin develop
+
+* Next click
+  `here <https://github.com/dtcenter/METplus/compare/develop-ref...develop>`_
+  and click the green "Create pull request" button to create the pull request.
+
+.. figure:: figure/develop_into_develop-ref.png
+
+* Set the name of the pull request to "Update develop-ref after #XXXX" where
+  XXXX is the pull request number that introduced the differences.
+
+* Delete the template content and add the pull request number (formatted #XXXX)
+  and a brief description of what has changed. The description is optional
+  because the link to the pull request should contain this information.
+
 * Add the appropriate project and milestone values on the right hand side.
-* Scroll to the bottom of the pull request and click "Squash and merge."
-* Click "Confirm squash and merge." It is not necessary to wait for the
+
+* Create the pull request.
+
+* Squash and merge the pull request. It is not necessary to wait for the
   automation checks to complete for this step.
+
 * Monitor the Testing automation run for the develop-ref branch and ensure that
   all of the use cases run successfully and the final step named
   "Create Output Docker Data Volumes" completed successfully.
-* If any use cases fail, check that the input data has been updated following
-  the instructions under :ref:`update-the-develop-data-directory` and rerun
-  all of the jobs of the -ref workflow.
-
 
 Clean Up DTC Web Server
 -----------------------
