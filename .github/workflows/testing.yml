@@ -53,7 +53,7 @@ on:
 jobs:
 
   event_info:
-    name: "Trigger: ${{ github.event_name != 'workflow_dispatch' && github.event_name || github.event.inputs.repository }} ${{ github.event_name != 'workflow_dispatch' && 'local' || github.event.inputs.actor }} ${{ github.event_name != 'workflow_dispatch' && 'event' || github.event.inputs.sha }}"
+    name: "Trigger: ${{ github.event_name != 'workflow_dispatch' && github.event_name || github.event.inputs.repository }} ${{ github.event_name != 'workflow_dispatch' && 'event' || github.event.inputs.sha }} ${{ github.event_name != 'workflow_dispatch' && 'local' || github.event.inputs.actor }} "
     runs-on: ubuntu-latest
     steps:
       - name: Print GitHub values for reference
