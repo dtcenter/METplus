@@ -231,14 +231,15 @@ def qparse(format_string):
                     m.group('format_spec'),
                     m.group('conversion') ) )
             literal_text=''
-        elif m.group('error'):
-            if m.group('error')=='{':
-                raise ValueError("Single '{' encountered in format string")
-            elif m.group('error')=='}':
-                raise ValueError("Single '}' encountered in format string")
-            else:
-                raise ValueError("Unexpected %s in format string"%(
-                        repr(m.group('error')),))
+        elif not m.group('error'):
+            continue
+        if m.group('error')=='{':
+            raise ValueError("Single '{' encountered in format string")
+        elif m.group('error')=='}':
+            raise ValueError("Single '}' encountered in format string")
+        else:
+            raise ValueError("Unexpected %s in format string"%(
+                    repr(m.group('error')),))
     if literal_text: 
         result.append( ( literal_text, None, None, None ) )
     return result
