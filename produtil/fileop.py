@@ -1080,7 +1080,7 @@ class FileWaiter:
             flogger=logger
         else:
             flogger=None
-        while True:
+        while None is None:
             if len(self._fset)<=0: 
                 if logger is not None:
                     logger.info('No files to check.')

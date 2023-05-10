@@ -115,8 +115,8 @@ class Implementation(ImplementationBase):
         status=p.poll()
         for line in nodelist.splitlines():
             node=line.strip()
-            if not node: continue
-            if node in nodeset: continue
+            if not node: next
+            if node in nodeset: next
             nodeset.add(node)
             available_nodes.append(node)
         return available_nodes
@@ -169,7 +169,7 @@ class Implementation(ImplementationBase):
                 remaining_nodes=list(available_nodes)
 
             for rank,count in arg.expand_iter(expand=False):
-                if count<1: continue
+                if count<1: next
                 cmdfile.append('%d-%d %s'%(irank,irank+count-1,rank.to_shell()))
                 irank+=count
                 if rewrite_nodefile:
