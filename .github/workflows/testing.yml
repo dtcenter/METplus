@@ -11,7 +11,14 @@ on:
       - 'bugfix_**'
     paths-ignore:
       - 'docs/**'
-
+      - '.github/pull_request_template.md'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/labels/**'
+      - 'build_components/**'
+      - 'manage_externals/**'
+      - '**/README.md'
+      - '**/LICENSE.md'
+      
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
@@ -19,7 +26,14 @@ on:
       - 'main_*'
     paths-ignore:
       - 'docs/**'
-
+      - '.github/pull_request_template.md'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/labels/**'
+      - 'build_components/**'
+      - 'manage_externals/**'
+      - '**/README.md'
+      - '**/LICENSE.md'
+      
   workflow_dispatch:
     inputs:
       repository:
@@ -39,7 +53,7 @@ on:
 jobs:
 
   event_info:
-    name: "Trigger: ${{ github.event_name != 'workflow_dispatch' && github.event_name || github.event.inputs.repository }} ${{ github.event_name != 'workflow_dispatch' && 'local' || github.event.inputs.actor }} ${{ github.event_name != 'workflow_dispatch' && 'event' || github.event.inputs.sha }}"
+    name: "Trigger: ${{ github.event_name != 'workflow_dispatch' && github.event_name || github.event.inputs.repository }} ${{ github.event_name != 'workflow_dispatch' && 'event' || github.event.inputs.sha }} ${{ github.event_name != 'workflow_dispatch' && 'local' || github.event.inputs.actor }} "
     runs-on: ubuntu-latest
     steps:
       - name: Print GitHub values for reference

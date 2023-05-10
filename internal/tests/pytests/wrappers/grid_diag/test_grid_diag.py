@@ -9,6 +9,54 @@ from dateutil.relativedelta import relativedelta
 
 from metplus.wrappers.grid_diag_wrapper import GridDiagWrapper
 
+time_fmt = '%Y%m%d%H'
+run_times = ['2016092900', '2016092906']
+data_dir = '/some/path/data'
+
+data_name_1 = 'APCP'
+data_level = 'L0'
+data_options_1 = 'n_bins = 55; range  = [0, 55];'
+data_name_2 = 'PWAT'
+data_options_2 = 'n_bins = 35; range  = [35, 70];'
+data_fmt = ('data = {field = [ '
+            f'{{ name="{data_name_1}"; level="{data_level}"; {data_options_1} }},'
+            f'{{ name="{data_name_2}"; level="{data_level}"; {data_options_2} }}'
+            ' ];}')
+
+
+def set_minimum_config_settings(config):
+    # set config variables to prevent command from running and bypass check
+    # if input files actually exist
+    config.set('config', 'DO_NOT_RUN_EXE', True)
+    config.set('config', 'INPUT_MUST_EXIST', False)
+
+    # set process and time config variables
+    config.set('config', 'PROCESS_LIST', 'GridDiag')
+    config.set('config', 'LOOP_BY', 'INIT')
+    config.set('config', 'INIT_TIME_FMT', time_fmt)
+    config.set('config', 'INIT_BEG', run_times[0])
+    config.set('config', 'INIT_END', run_times[-1])
+    config.set('config', 'INIT_INCREMENT', '6H')
+    config.set('config', 'LEAD_SEQ', '141, 144, 147')
+    config.set('config', 'GRID_DIAG_RUNTIME_FREQ',
+               'RUN_ONCE_PER_INIT_OR_VALID')
+    config.set('config', 'GRID_DIAG_CONFIG_FILE',
+               '{PARM_BASE}/met_config/GridDiagConfig_wrapped')
+    config.set('config', 'GRID_DIAG_INPUT_DIR', data_dir)
+    config.set('config', 'GRID_DIAG_INPUT_TEMPLATE',
+               ('gfs.subset.t00z.pgrb2.0p25.f{lead?fmt=%H}, '
+                'gfs.subset.t00z.pgrb2.0p25.f{lead?fmt=%H}'))
+    config.set('config', 'GRID_DIAG_OUTPUT_DIR',
+               '{OUTPUT_BASE}/grid_diag/output')
+    config.set('config', 'GRID_DIAG_OUTPUT_TEMPLATE',
+               'grid_diag.{valid?fmt=%Y%m%d%H}.nc')
+    config.set('config', 'BOTH_VAR1_NAME', data_name_1)
+    config.set('config', 'BOTH_VAR1_LEVELS', data_level)
+    config.set('config', 'BOTH_VAR1_OPTIONS', data_options_1)
+    config.set('config', 'BOTH_VAR2_NAME', data_name_2)
+    config.set('config', 'BOTH_VAR2_LEVELS', data_level)
+    config.set('config', 'BOTH_VAR2_OPTIONS', data_options_2)
+
 
 @pytest.mark.parametrize(
     'time_info, expected_subset', [
@@ -188,3 +236,122 @@ def test_get_config_file(metplus_config):
     config.set('config', 'GRID_DIAG_CONFIG_FILE', fake_config_name)
     wrapper = GridDiagWrapper(config)
     assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name
+
+
+@pytest.mark.parametrize(
+    'config_overrides, env_var_values', [
+        ({'GRID_DIAG_DESC': 'my_desc'},
+         {'METPLUS_DESC': 'desc = "my_desc";'}),
+
+        ({'GRID_DIAG_CENSOR_THRESH': '>12000,<5000', },
+         {'METPLUS_CENSOR_THRESH': 'censor_thresh = [>12000, <5000];'}),
+
+        ({'GRID_DIAG_CENSOR_VAL': '12000, 5000', },
+         {'METPLUS_CENSOR_VAL': 'censor_val = [12000, 5000];'}),
+
+        ({'GRID_DIAG_MASK_GRID': 'FULL', },
+         {'METPLUS_MASK_DICT': 'mask = {grid = "FULL";}'}),
+
+        ({'GRID_DIAG_MASK_POLY': 'MET_BASE/poly/EAST.poly', },
+         {'METPLUS_MASK_DICT': 'mask = {poly = "MET_BASE/poly/EAST.poly";}'}),
+
+        ({'GRID_DIAG_MASK_GRID': 'FULL',
+          'GRID_DIAG_MASK_POLY': 'MET_BASE/poly/EAST.poly',},
+         {'METPLUS_MASK_DICT': ('mask = {grid = "FULL";'
+                                'poly = "MET_BASE/poly/EAST.poly";}')}),
+
+        ({'GRID_DIAG_REGRID_TO_GRID': 'FCST',},
+         {'METPLUS_REGRID_DICT': 'regrid = {to_grid = FCST;}'}),
+
+        ({'GRID_DIAG_REGRID_METHOD': 'NEAREST',},
+         {'METPLUS_REGRID_DICT': 'regrid = {method = NEAREST;}'}),
+
+        ({'GRID_DIAG_REGRID_WIDTH': '1',},
+         {'METPLUS_REGRID_DICT': 'regrid = {width = 1;}'}),
+
+        ({'GRID_DIAG_REGRID_VLD_THRESH': '0.5',},
+         {'METPLUS_REGRID_DICT': 'regrid = {vld_thresh = 0.5;}'}),
+
+        ({'GRID_DIAG_REGRID_SHAPE': 'SQUARE',},
+         {'METPLUS_REGRID_DICT': 'regrid = {shape = SQUARE;}'}),
+
+        ({'GRID_DIAG_REGRID_CONVERT': '2*x', },
+         {'METPLUS_REGRID_DICT': 'regrid = {convert(x) = 2*x;}'}),
+
+        ({'GRID_DIAG_REGRID_CENSOR_THRESH': '>12000,<5000', },
+         {'METPLUS_REGRID_DICT': 'regrid = {censor_thresh = [>12000, <5000];}'}),
+
+        ({'GRID_DIAG_REGRID_CENSOR_VAL': '12000,5000', },
+         {'METPLUS_REGRID_DICT': 'regrid = {censor_val = [12000, 5000];}'}),
+
+        ({'GRID_DIAG_REGRID_TO_GRID': 'FCST',
+          'GRID_DIAG_REGRID_METHOD': 'NEAREST',
+          'GRID_DIAG_REGRID_WIDTH': '1',
+          'GRID_DIAG_REGRID_VLD_THRESH': '0.5',
+          'GRID_DIAG_REGRID_SHAPE': 'SQUARE',
+          'GRID_DIAG_REGRID_CONVERT': '2*x',
+          'GRID_DIAG_REGRID_CENSOR_THRESH': '>12000,<5000',
+          'GRID_DIAG_REGRID_CENSOR_VAL': '12000,5000',
+          },
+         {'METPLUS_REGRID_DICT': ('regrid = {to_grid = FCST;method = NEAREST;'
+                                  'width = 1;vld_thresh = 0.5;shape = SQUARE;'
+                                  'convert(x) = 2*x;'
+                                  'censor_thresh = [>12000, <5000];'
+                                  'censor_val = [12000, 5000];}'
+                                  )}),
+    ]
+)
+@pytest.mark.wrapper
+def test_grid_diag(metplus_config, config_overrides, env_var_values):
+    config = metplus_config
+    set_minimum_config_settings(config)
+
+    # set config variable overrides
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    wrapper = GridDiagWrapper(config)
+    assert wrapper.isOK
+
+    app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
+    verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
+    file_list_dir = wrapper.config.getdir('FILE_LISTS_DIR')
+    config_file = wrapper.c_dict.get('CONFIG_FILE')
+    out_dir = wrapper.c_dict.get('OUTPUT_DIR')
+
+    expected_cmds = [
+        (f"{app_path} -data {file_list_dir}/grid_diag_files_input0"
+         "_init_20160929000000_valid_ALL_lead_ALL.txt "
+         f"-data {file_list_dir}/grid_diag_files_input1"
+         "_init_20160929000000_valid_ALL_lead_ALL.txt "
+         f"-config {config_file} -out {out_dir}/grid_diag.all.nc {verbosity}"),
+        (f"{app_path} -data {file_list_dir}/grid_diag_files_input0"
+         "_init_20160929060000_valid_ALL_lead_ALL.txt "
+         f"-data {file_list_dir}/grid_diag_files_input1"
+         "_init_20160929060000_valid_ALL_lead_ALL.txt "
+         f"-config {config_file} -out {out_dir}/grid_diag.all.nc {verbosity}"),
+    ]
+
+    all_cmds = wrapper.run_all_times()
+    print(f"ALL COMMANDS: {all_cmds}")
+    assert len(all_cmds) == len(expected_cmds)
+
+    missing_env = [item for item in env_var_values
+                   if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
+    env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
+
+    for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
+        # ensure commands are generated as expected
+        assert cmd == expected_cmd
+
+        # check that environment variables were set properly
+        # including deprecated env vars (not in wrapper env var keys)
+        for env_var_key in env_var_keys:
+            match = next((item for item in env_vars if
+                          item.startswith(env_var_key)), None)
+            assert match is not None
+            actual_value = match.split('=', 1)[1]
+            if env_var_key == 'METPLUS_DATA_DICT':
+                assert actual_value == data_fmt
+            else:
+                assert env_var_values.get(env_var_key, '') == actual_value

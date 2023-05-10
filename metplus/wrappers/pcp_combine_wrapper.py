@@ -366,6 +366,9 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         if self.c_dict.get(f"{data_src}_LEVELS"):
             field_args['level'] = self.c_dict[f"{data_src}_LEVELS"][0]
 
+        if self.c_dict.get(f"{data_src}_OPTIONS"):
+            field_args['extra'] = self.c_dict[f"{data_src}_OPTIONS"][0]
+
         # if data is GRIB and second lead is 0, then
         # run PCPCombine in -add mode with just the first file
         if lead2 == 0 and not self.c_dict[f'{data_src}_USE_ZERO_ACCUM']:
