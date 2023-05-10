@@ -8,7 +8,8 @@ export METVIEWER_DOCKER_IMAGE=dtcenter/metviewer:develop
 
 # install docker-compose
 apk update
-apk add docker-compose
+apk --update add 'py-pip'
+pip install 'docker-compose==1.8.0'
 
 # download docker-compose.yml file from METviewer develop branch
 wget https://raw.githubusercontent.com/dtcenter/METviewer/develop/docker/docker-compose.yml
