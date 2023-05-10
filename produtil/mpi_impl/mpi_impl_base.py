@@ -96,7 +96,6 @@ class ImplementationBase(object):
     def synonyms():
         """!Iterates over alternative names for this MPI implementation, such
         as the names of other MPI implementations this class can handle."""
-        return
         yield 'xyz' # trick to ensure this is an iterator
 
     def getmpiserial_path(self):
