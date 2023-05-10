@@ -1225,6 +1225,18 @@ def _format_var_items(field_configs, time_info=None):
         extra_list = list(filter(None, extra_list))
         var_items['extra'] = f"{'; '.join(extra_list)};"
 
+    _get_output_names(field_configs, var_items, time_info)
+
+    if len(var_items['levels']) != len(var_items['output_names']):
+        return 'Number of levels does not match number of output names'
+
+    return var_items
+
+
+def _get_output_names(field_configs, var_items, time_info):
+    """!Read output names from field config and set in var_items. If output
+    names are not set, use input names.
+    """
     # get output names if they are set
     out_name_str = field_configs.get('output_names')
 
@@ -1232,17 +1244,13 @@ def _format_var_items(field_configs, time_info=None):
     if not out_name_str:
         for _ in var_items['levels']:
             var_items['output_names'].append(var_items['name'])
-    else:
-        for out_name in getlist(out_name_str):
-            if time_info:
-                out_name = do_string_sub(out_name,
-                                         **time_info)
-            var_items['output_names'].append(out_name)
+        return
 
-    if len(var_items['levels']) != len(var_items['output_names']):
-        return 'Number of levels does not match number of output names'
-
-    return var_items
+    for out_name in getlist(out_name_str):
+        if time_info:
+            out_name = do_string_sub(out_name,
+                                     **time_info)
+        var_items['output_names'].append(out_name)
 
 
 def _get_all_field_search_prefixes(data_types, met_tool):
