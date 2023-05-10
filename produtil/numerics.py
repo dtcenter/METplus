@@ -605,16 +605,13 @@ class TimeContainer(object):
         @param when the time of interest"""
         (then,index)=self.index_of(when)
         if epsilon is not None:
-            if abs(to_fraction(then-when,negok=True)) \
+            if not abs(to_fraction(then-when,negok=True)) \
                     <= to_fraction(epsilon):
-                return then
-            else:
                 raise NoNearbyValues(
                     '%s: nearest value not after is %s, which is not '
                     'within %s seconds.'%(str(when),str(then),
                                           str(to_fraction(epsilon))))
-        else:
-            return then
+        return then
     def get(self,when,default):
         """!Returns the item at the latest time that is not later than
         "when."  
