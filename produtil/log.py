@@ -280,7 +280,7 @@ def mpi_redirect(threadname,stderrfile,stdoutfile,
     if not isinstance(threadname,str):
         raise TypeError(
             "In mpiRedirect, the threadname must be a string, not a "
-            +type(threadname))
+            +type(threadname).__name__)
 
     global logthread
     logthread='['+str(threadname)+']'

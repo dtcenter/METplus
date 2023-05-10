@@ -269,7 +269,7 @@ class MPIRanksBase(object):
         logging.getLogger('mpiprog.py').info(
             "TURBO MODE IS %s"%(repr(self._turbomode)))
         return self
-    def delturbomode(self,tm):
+    def delturbomode(self):
         """!Removes the request for turbo mode to be on or off."""
         self._turbomode=None
     turbomode=property(getturbomode,setturbomode,delturbomode,
