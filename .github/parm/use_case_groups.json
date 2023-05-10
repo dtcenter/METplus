@@ -47,7 +47,7 @@
   {
     "category": "short_range",
     "index_list": "9",
-    "run": false
+    "run": true
   },
   {
     "category": "short_range",
