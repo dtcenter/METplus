@@ -7,6 +7,7 @@ export METVIEWER_DIR=$RUNNER_WORKSPACE/output/metviewer
 export METVIEWER_DOCKER_IMAGE=dtcenter/metviewer:develop
 
 # install docker-compose
+apk update
 apk add docker-compose
 
 # download docker-compose.yml file from METviewer develop branch
