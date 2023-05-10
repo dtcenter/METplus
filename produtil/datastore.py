@@ -1172,7 +1172,6 @@ class Task(Datum):
         class.  The default implementation returns immediately without
         doing anything.
         @param args,kwargs Implementation-defined, used by subclasses."""
-        return
         for x in []: yield x  # ensures this is an iterator
     def log(self):
         """!Returns the logger object for this task."""

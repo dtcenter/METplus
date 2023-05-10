@@ -259,23 +259,23 @@ class NOAAWCOSS(Cluster):
         file, so the runtime is likely several milliseconds when the
         cache times out."""
         now=int(time.time())
-        if self._production is None or \
-                now-self._lastprod>self._prod_cache_time:
-            prod=False
-            if os.path.exists('/lfs/h1/ops/prod/config/prodmachinefile'):
-                with open('/lfs/h1/ops/prod/config/prodmachinefile','rt') as f:
-                    for line in f:
-                        if re.match('[a-z]+',line):
-                            if line.strip().split(':')[0]=='primary':
-                                prod = line.strip().split(':')[1].strip()==self.name
-                                break
-            self._production=prod
-            self._lastprod=int(time.time())
-            return prod
-        else:
+        if (self._production is not None and
+                now-self._lastprod<=self._prod_cache_time):
             return self._production
 
-class WCOSS2(NOAAWCOSS):
+        prod=False
+        if os.path.exists('/etc/prod'):
+            with open('/etc/prod','rt') as f:
+                for line in f:
+                    if re.match('[a-z]+',line):
+                        prod = line.strip()==self.name
+                        break
+        self._production=prod
+        self._lastprod=int(time.time())
+        return prod
+
+
+class WCOSSCray(NOAAWCOSS):
     """!This subclass of NOAAWCOSS handles the new Cray portions of
     WCOSS: Luna and Surge."""
     def __init__(self,name=None):
