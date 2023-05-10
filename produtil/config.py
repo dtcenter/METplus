@@ -22,7 +22,6 @@ from configparser import ConfigParser
 from io import StringIO
 
 from produtil.datastore import Datastore,Task
-from produtil.fileop import *
 
 from produtil.numerics import to_datetime
 from string import Formatter
@@ -97,20 +96,21 @@ class ConfFormatter(Formatter):
                 self.parse(format_string):
             if literal_text:
                 out.write(literal_text)
-            if field_name:
-                (obj, used_key) = self.get_field(field_name,args,kwargs)
-                if obj is None and used_key:
-                    obj=self.get_value(used_key,args,kwargs)
-                value=obj
-                if conversion=='s':
-                    value=str(value)
-                elif conversion=='r':
-                    value=repr(value)
-                elif conversion:
-                    raise ValueError('Unknown conversion %s'%(repr(conversion),))
-                if format_spec:
-                    value=value.__format__(format_spec)
-                out.write(value)
+            if not field_name:
+                continue
+            (obj, used_key) = self.get_field(field_name,args,kwargs)
+            if obj is None and used_key:
+                obj=self.get_value(used_key,args,kwargs)
+            value=obj
+            if conversion=='s':
+                value=str(value)
+            elif conversion=='r':
+                value=repr(value)
+            elif conversion:
+                raise ValueError('Unknown conversion %s'%(repr(conversion),))
+            if format_spec:
+                value=value.__format__(format_spec)
+            out.write(value)
         ret=out.getvalue()
         out.close()
         assert(ret is not None)
@@ -133,49 +133,52 @@ class ConfFormatter(Formatter):
         try:
             if isinstance(key,int):
                 return args[key]
-            conf=kwargs.get('__conf',None)
-            if key in kwargs:
-                v=kwargs[key]
-            elif '__taskvars' in kwargs \
-                    and kwargs['__taskvars'] \
-                    and key in kwargs['__taskvars']:
-                v=kwargs['__taskvars'][key]
-            else:
-                isec=key.find('/')
-                if isec>=0:
-                    section=key[0:isec]
-                    nkey=key[(isec+1):]
-                    if not section:
-                        section=kwargs.get('__section',None)
-                    if nkey:
-                        key=nkey
-                else:
-                    section=kwargs.get('__section',None)
-                conf=kwargs.get('__conf',None)
-                v=NOTFOUND
-                if section is not None and conf is not None:
-                    if conf.has_option(section,key):
-                        v=conf.get(section,key,raw=True)
-                    elif conf.has_option(section,'@inc'):
-                        for osec in conf.get(section,'@inc').split(','):
-                            if conf.has_option(osec,key):
-                                v=conf.get(osec,key,raw=True)
-                    if v is NOTFOUND:
-                        if conf.has_option('config',key):
-                            v=conf.get('config',key,raw=True)
-                        elif conf.has_option('dir',key):
-                            v=conf.get('dir',key,raw=True)
-                    if v is NOTFOUND:
-                        raise KeyError(key)
-
-            if isinstance(v,str):
-                if v.find('{')>=0 or v.find('%')>=0:
-                    vnew=self.vformat(v,args,kwargs)
-                    assert(vnew is not None)
-                    return vnew
+            v = _get_v(key, kwargs)
+            if isinstance(v,str) and (v.find('{')>=0 or v.find('%')>=0):
+                vnew=self.vformat(v,args,kwargs)
+                assert(vnew is not None)
+                return vnew
             return v
         finally:
             kwargs['__depth']-=1
+
+
+def _get_v(key, kwargs):
+    if key in kwargs:
+        return kwargs[key]
+    if ('__taskvars' in kwargs and kwargs['__taskvars']
+            and key in kwargs['__taskvars']):
+        return kwargs['__taskvars'][key]
+
+    isec = key.find('/')
+    if isec >= 0:
+        section = key[0:isec]
+        nkey = key[(isec + 1):]
+        if not section:
+            section = kwargs.get('__section', None)
+        if nkey:
+            key = nkey
+    else:
+        section = kwargs.get('__section', None)
+    conf = kwargs.get('__conf', None)
+    v = NOTFOUND
+    if section is None or conf is None:
+        return v
+    if conf.has_option(section, key):
+        return conf.get(section, key, raw=True)
+    if conf.has_option(section, '@inc'):
+        for osec in conf.get(section, '@inc').split(','):
+            if conf.has_option(osec, key):
+                v = conf.get(osec, key, raw=True)
+    if v is not NOTFOUND:
+        return v
+
+    if conf.has_option('config', key):
+        return conf.get('config', key, raw=True)
+    if conf.has_option('dir', key):
+        return conf.get('dir', key, raw=True)
+    raise KeyError(key)
+
 
 def qparse(format_string):
     """!Replacement for Formatter.parse which can be added to Formatter objects
