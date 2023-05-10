@@ -8,7 +8,7 @@ export METVIEWER_DOCKER_IMAGE=dtcenter/metviewer:develop
 
 # install docker-compose
 apk update
-apk add docker docker-cli-compose
+apk add docker-cli-compose
 
 # download docker-compose.yml file from METviewer develop branch
 wget https://raw.githubusercontent.com/dtcenter/METviewer/develop/docker/docker-compose.yml
