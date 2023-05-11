@@ -222,35 +222,45 @@ def validate_field_info_configs(config):
         # get other data type
         for index, data_type_list in data_types_and_indices.items():
 
-            is_valid, err_msgs, sed_cmds = is_var_item_valid(data_type_list, index, ext, config)
+            is_valid, err_msgs, sed_cmds = is_var_item_valid(data_type_list,
+                                                             index, ext,
+                                                             config)
             if not is_valid:
-                for err_msg in err_msgs:
-                    config.logger.error(err_msg)
+                [config.logger.error(err_msg) for err_msg in err_msgs]
                 all_sed_cmds.extend(sed_cmds)
                 all_good = False
                 continue
 
-            # make sure FCST and OBS have the same number of levels if coming from separate variables
-            if ext != 'LEVELS' or not all(item in ['FCST', 'OBS'] for item in data_type_list):
-                continue
-
-            fcst_levels = getlist(config.getraw('config', f"FCST_VAR{index}_LEVELS", ''))
-
-            # add empty string if no levels are found because python embedding items do not need
-            # to include a level, but the other item may have a level and the numbers need to match
-            if not fcst_levels:
-                fcst_levels.append('')
-
-            obs_levels = getlist(config.getraw('config', f"OBS_VAR{index}_LEVELS", ''))
-            if not obs_levels:
-                obs_levels.append('')
-
-            if len(fcst_levels) != len(obs_levels):
-                config.logger.error(f"FCST_VAR{index}_LEVELS and OBS_VAR{index}_LEVELS do not have "
-                                    "the same number of elements")
+            if not _check_levels(config, index, ext, data_type_list):
                 all_good = False
 
     return all_good, all_sed_cmds
+
+
+def _check_levels(config, index, ext, data_type_list):
+    # make sure FCST/OBS have the same num levels if coming from separate vars
+    if ext != 'LEVELS' or not all(
+            item in ['FCST', 'OBS'] for item in data_type_list):
+        return True
+
+    fcst_levels = getlist(
+        config.getraw('config', f"FCST_VAR{index}_LEVELS", ''))
+
+    # add empty string if no levels are found because python embedding items do not need
+    # to include a level, but the other item may have a level and the numbers need to match
+    if not fcst_levels:
+        fcst_levels.append('')
+
+    obs_levels = getlist(config.getraw('config', f"OBS_VAR{index}_LEVELS", ''))
+    if not obs_levels:
+        obs_levels.append('')
+
+    if len(fcst_levels) != len(obs_levels):
+        config.logger.error(
+            f"FCST_VAR{index}_LEVELS and OBS_VAR{index}_LEVELS do not have "
+            "the same number of elements")
+        return False
+    return True
 
 
 def skip_field_info_validation(config):
