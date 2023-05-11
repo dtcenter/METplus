@@ -9,7 +9,7 @@ ways of automatically accessing configuration options."""
 
 ##@var __all__
 # decides what symbols are imported by "from produtil.config import *"
-__all__=['from_file','from-string','confwalker','ProdConfig','fordriver','ENVIRONMENT','ProdTask']
+__all__=['from_file','confwalker','ProdConfig','ENVIRONMENT','ProdTask']
 
 import collections,re,string,os,logging,threading
 import os.path,sys
