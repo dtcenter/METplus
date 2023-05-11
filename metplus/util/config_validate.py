@@ -131,8 +131,6 @@ def handle_deprecated(old, alt, depr_info, config, all_sed_cmds, e_list,
             all_sed_cmds.append(f"sed -i 's|^{old}|{alt}|g' {config_file}")
             all_sed_cmds.append(f"sed -i 's|{{{old}}}|{{{alt}}}|g' {config_file}")
 
-    return
-
 
 def check_for_deprecated_met_config(config):
     sed_cmds = []
