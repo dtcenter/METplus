@@ -104,28 +104,18 @@ def compare_dir(dir_a, dir_b, debug=False, save_diff=False):
     # loop through dir_b and report if any files are not found in dir_a
     for filepath_b in _get_files(dir_b):
         filepath_a = filepath_b.replace(dir_b, dir_a)
-        if not os.path.exists(filepath_a):
-            # check if missing file is actually diff file that was generated
-            diff_list = [item[3] for item in diff_files]
-            if filepath_b in diff_list:
-                continue
-            print(f"ERROR: File does not exist: {filepath_a}")
-            diff_files.append(('', filepath_b, 'file not found (new output)', ''))
+        if os.path.exists(filepath_a):
+            continue
+        # check if missing file is actually diff file that was generated
+        diff_list = [item[3] for item in diff_files]
+        if filepath_b in diff_list:
+            continue
+        print(f"ERROR: File does not exist: {filepath_a}")
+        diff_files.append(('', filepath_b, 'file not found (new output)', ''))
 
     print('::endgroup::')
-    print("\n\n**************************************************\nSummary:\n")
-    if diff_files:
-        print("\nERROR: Some differences were found")
-        for filepath_a, filepath_b, reason, diff_file in diff_files:
-            print(f"{reason}\n  A:{filepath_a}\n  B:{filepath_b}")
-            if diff_file:
-                print(f"Difference file: {diff_file}")
-            print()
-    else:
-        print("\nNo differences found in any files")
 
-    print("Finished comparing directories\n"
-          "**************************************************\n\n")
+    _print_dir_summary(diff_files)
     return diff_files
 
 
@@ -152,6 +142,22 @@ def _get_files(search_dir):
                 continue
 
             yield filepath
+
+
+def _print_dir_summary(diff_files):
+    print("\n\n**************************************************\nSummary:\n")
+    if diff_files:
+        print("\nERROR: Some differences were found")
+        for filepath_a, filepath_b, reason, diff_file in diff_files:
+            print(f"{reason}\n  A:{filepath_a}\n  B:{filepath_b}")
+            if diff_file:
+                print(f"Difference file: {diff_file}")
+            print()
+    else:
+        print("\nNo differences found in any files")
+
+    print("Finished comparing directories\n"
+          "**************************************************\n\n")
 
 
 def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
