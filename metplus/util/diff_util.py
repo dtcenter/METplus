@@ -82,61 +82,35 @@ def compare_dir(dir_a, dir_b, debug=False, save_diff=False):
         return [result]
 
     diff_files = []
-    for root, _, files in os.walk(dir_a):
-        # skip logs directories
-        if root.endswith('logs'):
+    for filepath_a in _get_files(dir_a):
+        filepath_b = filepath_a.replace(dir_a, dir_b)
+        print("\n# # # # # # # # # # # # # # # # # # # # # # # # # # "
+              "# # # #\n")
+        rel_path = filepath_a.replace(f'{dir_a}/', '')
+        print(f"COMPARING {rel_path}")
+        result = compare_files(filepath_a,
+                               filepath_b,
+                               debug=debug,
+                               dir_a=dir_a,
+                               dir_b=dir_b,
+                               save_diff=save_diff)
+
+        # no differences of skipped
+        if result is None or result is True:
             continue
 
-        for filename in files:
-            filepath_a = os.path.join(root, filename)
-
-            # skip directories
-            if not os.path.isfile(filepath_a):
-                continue
-
-            # skip final conf file
-            if 'metplus_final.conf' in os.path.basename(filepath_a):
-                continue
-
-            filepath_b = filepath_a.replace(dir_a, dir_b)
-            print("\n# # # # # # # # # # # # # # # # # # # # # # # # # # "
-                  "# # # #\n")
-            rel_path = filepath_a.replace(f'{dir_a}/', '')
-            print(f"COMPARING {rel_path}")
-            result = compare_files(filepath_a,
-                                   filepath_b,
-                                   debug=debug,
-                                   dir_a=dir_a,
-                                   dir_b=dir_b,
-                                   save_diff=save_diff)
-
-            # no differences of skipped
-            if result is None or result is True:
-                continue
-
-            diff_files.append(result)
+        diff_files.append(result)
 
     # loop through dir_b and report if any files are not found in dir_a
-    for root, _, files in os.walk(dir_b):
-        # skip logs directories
-        if root.endswith('logs'):
-            continue
-
-        for filename in files:
-            filepath_b = os.path.join(root, filename)
-
-            # skip final conf file
-            if 'metplus_final.conf' in os.path.basename(filepath_b):
+    for filepath_b in _get_files(dir_b):
+        filepath_a = filepath_b.replace(dir_b, dir_a)
+        if not os.path.exists(filepath_a):
+            # check if missing file is actually diff file that was generated
+            diff_list = [item[3] for item in diff_files]
+            if filepath_b in diff_list:
                 continue
-
-            filepath_a = filepath_b.replace(dir_b, dir_a)
-            if not os.path.exists(filepath_a):
-                # check if missing file is actually diff file that was generated
-                diff_list = [item[3] for item in diff_files]
-                if filepath_b in diff_list:
-                    continue
-                print(f"ERROR: File does not exist: {filepath_a}")
-                diff_files.append(('', filepath_b, 'file not found (new output)', ''))
+            print(f"ERROR: File does not exist: {filepath_a}")
+            diff_files.append(('', filepath_b, 'file not found (new output)', ''))
 
     print('::endgroup::')
     print("\n\n**************************************************\nSummary:\n")
@@ -153,6 +127,31 @@ def compare_dir(dir_a, dir_b, debug=False, save_diff=False):
     print("Finished comparing directories\n"
           "**************************************************\n\n")
     return diff_files
+
+
+def _get_files(search_dir):
+    """!Generator to get all files in a directory.
+    Skips directories that end with 'logs' and files named metplus_final.conf
+
+    @param search_dir directory to search recursively
+    """
+    for root, _, files in os.walk(search_dir):
+        # skip logs directories
+        if root.endswith('logs'):
+            continue
+
+        for filename in files:
+            filepath = os.path.join(root, filename)
+
+            # skip directories
+            if not os.path.isfile(filepath):
+                continue
+
+            # skip final conf file
+            if 'metplus_final.conf' in os.path.basename(filepath):
+                continue
+
+            yield filepath
 
 
 def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
