@@ -178,47 +178,16 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
         return filepath_a, filepath_b, file_type, ''
 
     if file_type == 'csv':
-        print('Comparing CSV')
-        if not compare_csv_files(filepath_a, filepath_b):
-            print(f'ERROR: CSV file differs: {filepath_b}')
-            return filepath_a, filepath_b, 'CSV diff', ''
-
-        print("No differences in CSV files")
-        return True
+        return _handle_csv_files(filepath_a, filepath_b)
 
     if file_type == 'netcdf':
-        print("Comparing NetCDF")
-        if not nc_is_equal(filepath_a, filepath_b):
-            return filepath_a, filepath_b, 'NetCDF diff', ''
-
-        print("No differences in NetCDF files")
-        return True
+        return _handle_netcdf_files(filepath_a, filepath_b)
 
     if file_type == 'pdf':
-        print("Comparing PDF as images")
-        diff_file = compare_pdf_as_images(filepath_a, filepath_b,
-                                          save_diff=save_diff)
-        if diff_file is True:
-            print("No differences in PDF files")
-            return True
-
-        if diff_file is False:
-            diff_file = ''
-
-        return filepath_a, filepath_b, 'PDF diff', diff_file
+        return _handle_pdf_files(filepath_a, filepath_b, save_diff)
 
     if file_type == 'image':
-        print("Comparing images")
-        diff_file = compare_image_files(filepath_a, filepath_b,
-                                        save_diff=save_diff)
-        if diff_file is True:
-            print("No differences in image files")
-            return True
-
-        if diff_file is False:
-            diff_file = ''
-
-        return filepath_a, filepath_b, 'Image diff', diff_file
+        return _handle_image_files(filepath_a, filepath_b, save_diff)
 
     # if not any of the above types, use diff to compare
     print("Comparing text files")
@@ -234,6 +203,53 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
         print("No differences in text files")
 
     return True
+
+
+def _handle_csv_files(filepath_a, filepath_b):
+    print('Comparing CSV')
+    if not compare_csv_files(filepath_a, filepath_b):
+        print(f'ERROR: CSV file differs: {filepath_b}')
+        return filepath_a, filepath_b, 'CSV diff', ''
+
+    print("No differences in CSV files")
+    return True
+
+
+def _handle_netcdf_files(filepath_a, filepath_b):
+    print("Comparing NetCDF")
+    if not nc_is_equal(filepath_a, filepath_b):
+        return filepath_a, filepath_b, 'NetCDF diff', ''
+
+    print("No differences in NetCDF files")
+    return True
+
+
+def _handle_pdf_files(filepath_a, filepath_b, save_diff):
+    print("Comparing PDF as images")
+    diff_file = compare_pdf_as_images(filepath_a, filepath_b,
+                                      save_diff=save_diff)
+    if diff_file is True:
+        print("No differences in PDF files")
+        return True
+
+    if diff_file is False:
+        diff_file = ''
+
+    return filepath_a, filepath_b, 'PDF diff', diff_file
+
+
+def _handle_image_files(filepath_a, filepath_b, save_diff):
+    print("Comparing images")
+    diff_file = compare_image_files(filepath_a, filepath_b,
+                                    save_diff=save_diff)
+    if diff_file is True:
+        print("No differences in image files")
+        return True
+
+    if diff_file is False:
+        diff_file = ''
+
+    return filepath_a, filepath_b, 'Image diff', diff_file
 
 
 def compare_pdf_as_images(filepath_a, filepath_b, save_diff=False):
@@ -307,15 +323,20 @@ def compare_csv_files(filepath_a, filepath_b):
     lines_b = []
 
     with open(filepath_a, 'r') as file_handle:
-        csv_read = csv.DictReader(file_handle, delimiter=',')
-        for row in csv_read:
-            lines_a.append(row)
+        lines_a.extend(csv.DictReader(file_handle, delimiter=','))
 
     with open(filepath_b, 'r') as file_handle:
-        csv_read = csv.DictReader(file_handle, delimiter=',')
-        for row in csv_read:
-            lines_b.append(row)
+        lines_b.extend(csv.DictReader(file_handle, delimiter=','))
 
+    # compare header values and number of lines
+    if not _compare_csv_lengths(lines_a, lines_b):
+        return False
+
+    # compare each CSV column
+    return _compare_csv_columns(lines_a, lines_b)
+
+
+def _compare_csv_lengths(lines_a, lines_b):
     keys_a = lines_a[0].keys()
     keys_b = lines_b[0].keys()
     # compare header columns and report error if they differ
@@ -337,7 +358,11 @@ def compare_csv_files(filepath_a, filepath_b):
               f'than in OUTPUT ({len(lines_b)})')
         return False
 
-    # compare each CSV column
+    return True
+
+
+def _compare_csv_columns(lines_a, lines_b):
+    keys_a = lines_a[0].keys()
     status = True
     for num, (line_a, line_b) in enumerate(zip(lines_a, lines_b), start=1):
         for key in keys_a:
@@ -349,7 +374,7 @@ def compare_csv_files(filepath_a, filepath_b):
             # ROUNDING_PRECISION decimal places
             # METplus issue #1873 addresses the real problem
             try:
-                if is_equal_rounded(val_a, val_b):
+                if _is_equal_rounded(val_a, val_b):
                     continue
                 print(f"ERROR: Line {num} - {key} differs by "
                       f"less than {ROUNDING_PRECISION} decimals: "
@@ -364,7 +389,7 @@ def compare_csv_files(filepath_a, filepath_b):
     return status
 
 
-def is_equal_rounded(value_a, value_b):
+def _is_equal_rounded(value_a, value_b):
     if _truncate_float(value_a) == _truncate_float(value_b):
         return True
     if _round_float(value_a) == _round_float(value_b):
@@ -475,22 +500,26 @@ def diff_text_lines(lines_a, lines_b,
             compare_b = compare_b.replace(dir_b, dir_a)
 
         # check for differences
-        if compare_a != compare_b:
-            # if the diff is in a stat file, ignore the version number
-            if is_stat_file:
-                cols_a = compare_a.split()[1:]
-                cols_b = compare_b.split()[1:]
-                for col_a, col_b, label in zip(cols_a, cols_b, header_a):
-                    if col_a != col_b:
-                        if print_error:
-                            print(f"ERROR: {label} differs:\n"
-                                  f" A: {col_a}\n B: {col_b}")
-                        all_good = False
-            else:
+        if compare_a == compare_b:
+            continue
+
+        # if the diff is in a stat file, ignore the version number
+        if is_stat_file:
+            cols_a = compare_a.split()[1:]
+            cols_b = compare_b.split()[1:]
+            for col_a, col_b, label in zip(cols_a, cols_b, header_a):
+                if col_a == col_b:
+                    continue
                 if print_error:
-                    print(f"ERROR: Line differs\n"
-                          f" A: {compare_a}\n B: {compare_b}")
+                    print(f"ERROR: {label} differs:\n"
+                          f" A: {col_a}\n B: {col_b}")
                 all_good = False
+            continue
+
+        if print_error:
+            print(f"ERROR: Line differs\n"
+                  f" A: {compare_a}\n B: {compare_b}")
+        all_good = False
 
     return all_good
 
@@ -508,10 +537,7 @@ def nc_is_equal(file_a, file_b, fields=None, debug=False):
 
     # if no fields are specified, get all of them
     if fields:
-        if not isinstance(fields, list):
-            field_list = [fields]
-        else:
-            field_list = fields
+        field_list = [fields] if not isinstance(fields, list) else fields
     else:
         a_fields = sorted(nc_a.variables.keys())
         b_fields = sorted(nc_b.variables.keys())
@@ -524,54 +550,57 @@ def nc_is_equal(file_a, file_b, fields=None, debug=False):
 
     # loop through fields, keeping track of any differences
     is_equal = True
-    try:
-        for field in field_list:
+    for field in field_list:
+        try:
             var_a = nc_a.variables[field]
             var_b = nc_b.variables[field]
+        except KeyError:
+            print(f"ERROR: Field {field} not found")
+            return False
 
-            if debug:
-                print(f"Field: {field}")
-                print(f"Var_A:{var_a}\nVar_B:{var_b}")
-                print(f"Instance type: {type(var_a[0])}")
+        if debug:
+            print(f"Field: {field}")
+            print(f"Var_A:{var_a}\nVar_B:{var_b}")
+            print(f"Instance type: {type(var_a[0])}")
+        try:
+            values_a = var_a[:]
+            values_b = var_b[:]
+            values_diff = values_a - values_b
+            if (numpy.isnan(values_diff.min()) and
+                    numpy.isnan(values_diff.max())):
+                print(f"WARNING: Variable {field} contains NaN values. "
+                      "Cannot perform comparison.")
+                continue
+            if values_diff.min() == 0.0 and values_diff.max() == 0.0:
+                continue
+
+            print(f"ERROR: Field ({field}) values differ\n"
+                  f"Min diff: {values_diff.min()}, "
+                  f"Max diff: {values_diff.max()}")
+            is_equal = False
+            if not debug:
+                continue
+            # print indices that are not zero and count of diffs
+            count = 0
+            values_list = [j for sub in values_diff.tolist()
+                           for j in sub]
+            for idx, val in enumerate(values_list):
+                if val != 0.0:
+                    print(f"{idx}: {val}")
+                    count += 1
+            print(f"{count} / {idx+1} points differ")
+
+        except:
+            # handle non-numeric fields
             try:
-                values_a = var_a[:]
-                values_b = var_b[:]
-                values_diff = values_a - values_b
-                if (numpy.isnan(values_diff.min()) and
-                        numpy.isnan(values_diff.max())):
-                    print(f"WARNING: Variable {field} contains NaN values. "
-                          "Cannot perform comparison.")
-                elif values_diff.min() != 0.0 or values_diff.max() != 0.0:
-                    print(f"ERROR: Field ({field}) values differ\n"
-                          f"Min diff: {values_diff.min()}, "
-                          f"Max diff: {values_diff.max()}")
+                if any(var_a[:].flatten() != var_b[:].flatten()):
+                    print(f"ERROR: Field ({field}) values (non-numeric) "
+                          "differ\n"
+                          f" File_A: {var_a[:]}\n File_B: {var_b[:]}")
                     is_equal = False
-                    # print indices that are not zero and count of diffs
-                    if debug:
-                        count = 0
-                        values_list = [j for sub in values_diff.tolist()
-                                       for j in sub]
-                        for idx, val in enumerate(values_list):
-                            if val != 0.0:
-                                print(f"{idx}: {val}")
-                                count += 1
-                        print(f"{count} / {idx+1} points differ")
-
             except:
-                # handle non-numeric fields
-                try:
-                    if any(var_a[:].flatten() != var_b[:].flatten()):
-                        print(f"ERROR: Field ({field}) values (non-numeric) "
-                              "differ\n"
-                              f" File_A: {var_a[:]}\n File_B: {var_b[:]}")
-                        is_equal = False
-                except:
-                    print("ERROR: Couldn't diff NetCDF files, need to update diff method")
-                    is_equal = False
-
-    except KeyError:
-        print(f"ERROR: Field {field} not found")
-        return False
+                print("ERROR: Couldn't diff NetCDF files, need to update diff method")
+                is_equal = False
 
     return is_equal
 
