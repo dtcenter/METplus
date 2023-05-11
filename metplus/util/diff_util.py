@@ -577,7 +577,7 @@ def nc_is_equal(file_a, file_b, fields=None, debug=False):
                 print(f"WARNING: Variable {field} contains NaN values. "
                       "Cannot perform comparison.")
                 continue
-            if values_diff.min() == 0.0 and values_diff.max() == 0.0:
+            if not values_diff.min() and not values_diff.max():
                 continue
 
             print(f"ERROR: Field ({field}) values differ\n"
