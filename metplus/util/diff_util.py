@@ -37,6 +37,7 @@ UNSUPPORTED_EXTENSIONS = [
 # Note: Completing METplus issue #1873 could allow this to be set to 6
 ROUNDING_PRECISION = 5
 
+
 def get_file_type(filepath):
     _, file_extension = os.path.splitext(filepath)
 
@@ -55,7 +56,7 @@ def get_file_type(filepath):
     try:
         netCDF4.Dataset(filepath)
         return 'netcdf'
-    except:
+    except OSError:
         pass
 
     if file_extension in SKIP_EXTENSIONS:
