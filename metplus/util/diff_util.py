@@ -598,7 +598,7 @@ def nc_is_equal(file_a, file_b, fields=None, debug=False):
             print(f"{count} / {idx+1} points differ")
 
         except Exception as err:
-            print(f'ERROR: exception was thrown: {err}')
+            print(f'ERROR: exception {type(err).__name__} was thrown: {err}')
             is_equal = False
             # handle non-numeric fields
             try:
@@ -608,7 +608,7 @@ def nc_is_equal(file_a, file_b, fields=None, debug=False):
                           f" File_A: {var_a[:]}\n File_B: {var_b[:]}")
                     is_equal = False
             except Exception as err2:
-                print(f'ERROR: exception2 was thrown: {err2}')
+                print(f'ERROR: exception2 {type(err2).__name__} was thrown: {err2}')
                 print("ERROR: Couldn't diff NetCDF files, need to update diff method")
                 is_equal = False
 

@@ -2,12 +2,12 @@
    {
     "category": "met_tool_wrapper",
     "index_list": "0-29,59-61",
-    "run": false
+    "run": true
   },
   {
     "category": "met_tool_wrapper",
     "index_list": "30-58",
-    "run": false
+    "run": true
   },
   {
     "category": "air_quality_and_comp",
@@ -17,32 +17,32 @@
   {
     "category": "climate",
     "index_list": "0-1",
-    "run": false
+    "run": true
   },
   {
     "category": "short_range",
     "index_list": "0",
-    "run": false
+    "run": true
   },
   {
     "category": "short_range",
     "index_list": "1",
-    "run": false
+    "run": true
   },
   {
     "category": "short_range",
     "index_list": "2-6",
-    "run": false
+    "run": true
   },
   {
     "category": "short_range",
     "index_list": "7",
-    "run": false
+    "run": true
   },
   {
     "category": "short_range",
     "index_list": "8",
-    "run": false
+    "run": true
   },
   {
     "category": "short_range",
@@ -57,7 +57,7 @@
   {
     "category": "short_range",
     "index_list": "13",
-    "run": false
+    "run": true
   },
   {
     "category": "data_assimilation",
@@ -67,12 +67,12 @@
   {
     "category": "marine_and_cryosphere",
     "index_list": "0-2",
-    "run": false
+    "run": true
   },
   {
     "category": "marine_and_cryosphere",
     "index_list": "3-5",
-    "run": false
+    "run": true
   },
   {
     "category": "marine_and_cryosphere",
@@ -82,17 +82,17 @@
   {
     "category": "marine_and_cryosphere",
     "index_list": "7",
-    "run": false
+    "run": true
   },
   {
     "category": "marine_and_cryosphere",
     "index_list": "8",
-    "run": false
+    "run": true
   },
   {
     "category": "medium_range",
     "index_list": "0",
-    "run": false
+    "run": true
   },
   {
     "category": "medium_range",
@@ -107,7 +107,7 @@
   {
     "category": "medium_range",
     "index_list": "6",
-    "run": false
+    "run": true
   },
   {
     "category": "medium_range",
@@ -132,7 +132,7 @@
   {
     "category": "precipitation",
     "index_list": "1",
-    "run": false
+    "run": true
   },
   {
     "category": "precipitation",
@@ -147,12 +147,12 @@
   {
     "category": "precipitation",
     "index_list": "8",
-    "run": false
+    "run": true
   },
   {
     "category": "precipitation",
     "index_list": "9",
-    "run": false
+    "run": true
   },
   {
     "category": "s2s",
@@ -222,7 +222,7 @@
   {
     "category": "tc_and_extra_tc",
     "index_list": "0-2",
-    "run": false
+    "run": true
   },
   {
     "category": "tc_and_extra_tc",
