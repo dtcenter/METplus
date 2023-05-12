@@ -576,6 +576,7 @@ def nc_is_equal(file_a, file_b, fields=None, debug=False):
                     numpy.isnan(values_diff.max())):
                 print(f"WARNING: Variable {field} contains NaN values. "
                       "Cannot perform comparison.")
+                is_equal = False
                 continue
             if not values_diff.min() and not values_diff.max():
                 continue
@@ -596,7 +597,9 @@ def nc_is_equal(file_a, file_b, fields=None, debug=False):
                     count += 1
             print(f"{count} / {idx+1} points differ")
 
-        except:
+        except Exception as err:
+            print(f'ERROR: exception was thrown: {err}')
+            is_equal = False
             # handle non-numeric fields
             try:
                 if any(var_a[:].flatten() != var_b[:].flatten()):
@@ -604,7 +607,8 @@ def nc_is_equal(file_a, file_b, fields=None, debug=False):
                           "differ\n"
                           f" File_A: {var_a[:]}\n File_B: {var_b[:]}")
                     is_equal = False
-            except:
+            except Exception as err2:
+                print(f'ERROR: exception2 was thrown: {err2}')
                 print("ERROR: Couldn't diff NetCDF files, need to update diff method")
                 is_equal = False
 
