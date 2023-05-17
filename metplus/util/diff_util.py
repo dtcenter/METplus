@@ -1,9 +1,11 @@
+import sys
 import os
 import netCDF4
 import filecmp
 import csv
 from PIL import Image, ImageChops
 import numpy
+from numpy.core._exceptions import UFuncTypeError
 
 IMAGE_EXTENSIONS = [
     '.jpg',
