@@ -571,7 +571,25 @@ def nc_is_equal(file_a, file_b, fields=None, debug=False):
         try:
             values_a = var_a[:]
             values_b = var_b[:]
-            values_diff = values_a - values_b
+            try:
+                values_diff = values_a - values_b
+            except (UFuncTypeError, TypeError):
+                # handle non-numeric fields or None values
+                try:
+                    if any(var_a[:].flatten() != var_b[:].flatten()):
+                        print(f"ERROR: Field ({field}) values (non-numeric) "
+                              "differ\n"
+                              f" File_A: {var_a[:]}\n File_B: {var_b[:]}")
+                        is_equal = False
+                except Exception as err2:
+                    print(
+                        f'ERROR: exception2 {type(err2).__name__} was thrown: {err2}')
+                    print(
+                        "ERROR: Couldn't diff NetCDF files, need to update diff method")
+                    is_equal = False
+
+                continue
+
             if (numpy.isnan(values_diff.min()) and
                     numpy.isnan(values_diff.max())):
                 print(f"WARNING: Variable {field} contains NaN values. "
@@ -600,17 +618,6 @@ def nc_is_equal(file_a, file_b, fields=None, debug=False):
         except Exception as err:
             print(f'ERROR: exception {type(err).__name__} was thrown: {err}')
             is_equal = False
-            # handle non-numeric fields
-            try:
-                if any(var_a[:].flatten() != var_b[:].flatten()):
-                    print(f"ERROR: Field ({field}) values (non-numeric) "
-                          "differ\n"
-                          f" File_A: {var_a[:]}\n File_B: {var_b[:]}")
-                    is_equal = False
-            except Exception as err2:
-                print(f'ERROR: exception2 {type(err2).__name__} was thrown: {err2}')
-                print("ERROR: Couldn't diff NetCDF files, need to update diff method")
-                is_equal = False
 
     return is_equal
 
