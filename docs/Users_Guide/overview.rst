@@ -236,7 +236,7 @@ METplus Components Python Requirements
       and scientific formats
     -
   * - lxml
-    - 4.9.1
+    - >=4.9.1
     - METcalcpy, :raw-html:`<br />`
       METplotpy, :raw-html:`<br />`
       METdataio
@@ -349,7 +349,7 @@ METplus Components Python Requirements
       (metplotpy)
       <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_
   * - metpy
-    - 1.4.0
+    - >=1.4.0
     - METplus wrappers
     - https://www.unidata.ucar.edu/software/metpy/
     - a collection of tools :raw-html:`<br />`
@@ -458,7 +458,7 @@ METplus Components Python Requirements
       (pylab)
       <../generated/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.html>`_
   * - pymysql
-    - 1.0.2
+    - >=1.0.2
     - METcalcpy, :raw-html:`<br />`
       METplotpy, :raw-html:`<br />`
       METdataio
@@ -468,7 +468,7 @@ METplus Components Python Requirements
       based on PEP 249
     - 
   * - pyproj
-    - 2.3.1
+    - >=2.3.1
     - METplus wrappers
     - https://github.com/pyproj4/pyproj/archive/v2.3.1rel.tar.gz
     - Python interface to PROJ :raw-html:`<br />`
@@ -547,7 +547,7 @@ METplus Components Python Requirements
       processing
     -
   * - scikit-learn
-    - 1.2.2
+    - >=1.2.2
     - METplus wrappers,  :raw-html:`<br />`
       METcalcpy, :raw-html:`<br />`
       METplotpy
