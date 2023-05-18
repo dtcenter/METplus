@@ -515,20 +515,36 @@ def diff_text_lines(lines_a, lines_b,
 
         # if the diff is in a stat file, ignore the version number
         if is_stat_file:
-            cols_a = compare_a.split()[1:]
-            cols_b = compare_b.split()[1:]
-            for col_a, col_b, label in zip(cols_a, cols_b, header_a):
-                if col_a == col_b:
-                    continue
-                if print_error:
-                    print(f"ERROR: {label} differs:\n"
-                          f" A: {col_a}\n B: {col_b}")
+            if not _diff_stat_line(compare_a, compare_b, header_a, print_error=print_error):
                 all_good = False
             continue
 
         if print_error:
             print(f"ERROR: Line differs\n"
                   f" A: {compare_a}\n B: {compare_b}")
+        all_good = False
+
+    return all_good
+
+
+def _diff_stat_line(compare_a, compare_b, header_a, print_error=False):
+    """Compare values in .stat file. Ignore first column which contains MET
+    version number
+
+    @param compare_a list of values in line A
+    @param compare_b list of values in line B
+    @param header_a list of header values in file A excluding MET version
+    @param print_error If True, print an error message if any value differs
+    """
+    cols_a = compare_a.split()[1:]
+    cols_b = compare_b.split()[1:]
+    all_good = True
+    for col_a, col_b, label in zip(cols_a, cols_b, header_a):
+        if col_a == col_b:
+            continue
+        if print_error:
+            print(f"ERROR: {label} differs:\n"
+                  f" A: {col_a}\n B: {col_b}")
         all_good = False
 
     return all_good
