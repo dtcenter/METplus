@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+
 import sys
 import os
 import netCDF4
@@ -534,14 +536,18 @@ def diff_text_lines(lines_a, lines_b,
 
 def nc_is_equal(file_a, file_b, fields=None, debug=False):
     """! Check if two NetCDF files have the same data
-         @param file_a first file to compare
-         @param file_b second file to compare
-         @param fields (Optional) list of fields to compare. If unset, compare
-          all fields
-         @returns True if all values in fields are equivalent, False if not
+
+    @param file_a first file to compare
+    @param file_b second file to compare
+    @param fields (Optional) list of fields to compare. If unset, compare all
+    @param debug (optional) boolean to output more information about diff
+    @returns True if all values in fields are equivalent, False if not
     """
     nc_a = netCDF4.Dataset(file_a)
     nc_b = netCDF4.Dataset(file_b)
+
+    # keep track of any differences that are found
+    is_equal = True
 
     # if no fields are specified, get all of them
     if fields:
@@ -549,84 +555,110 @@ def nc_is_equal(file_a, file_b, fields=None, debug=False):
     else:
         a_fields = sorted(nc_a.variables.keys())
         b_fields = sorted(nc_b.variables.keys())
+        # fail if any fields exist in 1 file and not the other
         if a_fields != b_fields:
             print("ERROR: Field list differs between files\n"
                   f" File_A: {a_fields}\n File_B:{b_fields}\n"
                   f"Using File_A fields.")
+            is_equal = False
 
         field_list = a_fields
 
     # loop through fields, keeping track of any differences
-    is_equal = True
     for field in field_list:
-        try:
-            var_a = nc_a.variables[field]
-            var_b = nc_b.variables[field]
-        except KeyError:
-            print(f"ERROR: Field {field} not found")
-            return False
-
-        if debug:
-            print(f"Field: {field}")
-            print(f"Var_A:{var_a}\nVar_B:{var_b}")
-            print(f"Instance type: {type(var_a[0])}")
-        try:
-            values_a = var_a[:]
-            values_b = var_b[:]
-            try:
-                values_diff = values_a - values_b
-            except (UFuncTypeError, TypeError):
-                # handle non-numeric fields or None values
-                try:
-                    if any(var_a[:].flatten() != var_b[:].flatten()):
-                        print(f"ERROR: Field ({field}) values (non-numeric) "
-                              "differ\n"
-                              f" File_A: {var_a[:]}\n File_B: {var_b[:]}")
-                        is_equal = False
-                except Exception as err2:
-                    print(
-                        f'ERROR: exception2 {type(err2).__name__} was thrown: {err2}')
-                    print(
-                        "ERROR: Couldn't diff NetCDF files, need to update diff method")
-                    is_equal = False
-
-                continue
-
-            if (numpy.isnan(values_diff.min()) and
-                    numpy.isnan(values_diff.max())):
-                print(f"WARNING: Variable {field} contains NaN values. "
-                      "Cannot perform comparison.")
-                is_equal = False
-                continue
-            if not values_diff.min() and not values_diff.max():
-                continue
-
-            print(f"ERROR: Field ({field}) values differ\n"
-                  f"Min diff: {values_diff.min()}, "
-                  f"Max diff: {values_diff.max()}")
-            is_equal = False
-            if not debug:
-                continue
-            # print indices that are not zero and count of diffs
-            count = 0
-            values_list = [j for sub in values_diff.tolist()
-                           for j in sub]
-            for idx, val in enumerate(values_list):
-                if val != 0.0:
-                    print(f"{idx}: {val}")
-                    count += 1
-            print(f"{count} / {idx+1} points differ")
-
-        except Exception as err:
-            print(f'ERROR: exception {type(err).__name__} was thrown: {err}')
+        if not _nc_fields_are_equal(field, nc_a, nc_b, debug=debug):
             is_equal = False
 
     return is_equal
 
 
+def _nc_fields_are_equal(field, nc_a, nc_b, debug=False):
+    """!Compare same field from 2 NetCDF files.
+
+    @param field name of field to compare
+    @param nc_a first netCDF4.Dataset
+    @param nc_b first netCDF4.Dataset
+    @param debug (optional) boolean to output more information about diff
+    @returns True is fields are equal, False if fields are not equal or if
+    field is not found in one of the files
+    """
+    try:
+        var_a = nc_a.variables[field]
+        var_b = nc_b.variables[field]
+    except KeyError:
+        print(f"ERROR: Field {field} not found")
+        return False
+
+    if debug:
+        print(f"Field: {field}")
+        print(f"Var_A:{var_a}\nVar_B:{var_b}")
+        print(f"Instance type: {type(var_a[0])}")
+
+    values_a = var_a[:]
+    values_b = var_b[:]
+    try:
+        values_diff = values_a - values_b
+    except (UFuncTypeError, TypeError):
+        # handle non-numeric fields
+        if not _all_values_are_equal(var_a, var_b):
+            print(f"ERROR: Field ({field}) values (non-numeric) "
+                  "differ\n"
+                  f" File_A: {var_a[:]}\n File_B: {var_b[:]}")
+            return False
+
+        return True
+
+    # if any NaN values in either data set, min and max of diff will be NaN
+    # compare each value
+    if numpy.isnan(values_diff.min()) and numpy.isnan(values_diff.max()):
+        print(f"Variable {field} contains NaN. Comparing each value...")
+        if not _all_values_are_equal(var_a, var_b):
+            print(f'ERROR: Some values differ in {field}')
+            return False
+        return True
+
+    # consider all values equal is min and max diff are 0
+    if not values_diff.min() and not values_diff.max():
+        return True
+
+    print(f"ERROR: Field ({field}) values differ\n"
+          f"Min diff: {values_diff.min()}, "
+          f"Max diff: {values_diff.max()}")
+    if debug:
+        # print indices that are not zero and count of diffs
+        count = 0
+        values_list = [j for sub in values_diff.tolist() for j in sub]
+        for idx, val in enumerate(values_list):
+            if val != 0.0:
+                print(f"{idx}: {val}")
+                count += 1
+        print(f"{count} / {idx + 1} points differ")
+
+    return False
+
+
+def _all_values_are_equal(var_a, var_b):
+    """!Compare each value to find differences. Handles case if both values
+    are NaN.
+
+    @param var_a Numpy array
+    @param var_b Numpy array
+    @returns True if all values are equal, False otherwise
+    """
+    for val_a, val_b in zip(var_a[:].flatten(), var_b[:].flatten()):
+        # continue to next value if both values are NaN
+        if numpy.isnan(val_a) and numpy.isnan(val_b):
+            continue
+        if val_a != val_b:
+            return False
+    return True
+
+
 if __name__ == '__main__':
+    if len(sys.argv) < 3:
+        print('ERROR: Must supply 2 directories to compare as arguments')
+        sys.exit(1)
     dir_a = sys.argv[1]
     dir_b = sys.argv[2]
-    if len(sys.argv) > 3:
-        save_diff = True
+    save_diff = len(sys.argv) > 3
     compare_dir(dir_a, dir_b, debug=True, save_diff=save_diff)
