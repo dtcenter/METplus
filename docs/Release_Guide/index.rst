@@ -61,7 +61,9 @@ specific needs of funding institutions. These exceptions may include dedicating
 resources, prioritizing bug fixes, or extending support beyond the standard
 policy for funding-related requirements. Such exceptions will be evaluated on
 a case-by-case basis, ensuring a mutually beneficial collaboration between our
-software team and the respective funding institutions.
+software team and the respective funding institutions. For further inquiries or
+to report any bugs, please contact our dedicated support team in the
+`METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_.
 
 Instructions Summary
 ====================
