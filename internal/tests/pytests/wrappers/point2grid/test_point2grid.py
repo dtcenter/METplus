@@ -2,148 +2,118 @@
 
 import pytest
 import datetime
+import os
 
 from metplus.wrappers.point2grid_wrapper import Point2GridWrapper
 from metplus.util import time_util
 
+input_dir = '/some/path/input'
+input_name = 'TMP'
 
-def p2g_wrapper(metplus_config):
-    """! Returns a default Point2Grid with /path/to entries in the
-         metplus_system.conf and metplus_runtime.conf configuration
-         files.  Subsequent tests can customize the final METplus configuration
-         to over-ride these /path/to values."""
+# grid to use if grid is not set with command line argument
+grid_dir = '/some/path/grid'
+grid_template = os.path.join(grid_dir, '{valid?fmt=%Y%m%d}.nc')
 
-    config = metplus_config
+
+def set_minimum_config_settings(config):
+    # set config variables to prevent command from running and bypass check
+    # if input files actually exist
     config.set('config', 'DO_NOT_RUN_EXE', True)
-    return Point2GridWrapper(config)
+    config.set('config', 'INPUT_MUST_EXIST', False)
+
+    # set process and time config variables
+    config.set('config', 'PROCESS_LIST', 'Point2Grid')
+    config.set('config', 'LOOP_BY', 'INIT')
+    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H')
+    config.set('config', 'INIT_BEG', '2017060100')
+    config.set('config', 'INIT_END', '2017060300')
+    config.set('config', 'INIT_INCREMENT', '24H')
+    config.set('config', 'LEAD_SEQ', '12H')
+
+    # required variables for input/output, to grid, and input field
+    config.set('config', 'POINT2GRID_INPUT_DIR', input_dir)
+    config.set('config', 'POINT2GRID_INPUT_TEMPLATE',
+               'input.{init?fmt=%Y%m%d%H}_f{lead?fmt=%2H}.nc')
+    config.set('config', 'POINT2GRID_OUTPUT_DIR', '{OUTPUT_BASE}/out')
+    config.set('config', 'POINT2GRID_OUTPUT_TEMPLATE',
+               'output.{valid?fmt=%Y%m%d%H}.nc')
+    config.set('config', 'POINT2GRID_REGRID_TO_GRID', grid_template)
+    config.set('config', 'POINT2GRID_INPUT_FIELD', input_name)
 
 
+@pytest.mark.parametrize(
+    'config_overrides, optional_args', [
+        ({}, {}),
+        ({'POINT2GRID_REGRID_METHOD': 'UW_MEAN'}, ['-method UW_MEAN']),
+        ({'POINT2GRID_REGRID_METHOD': 'UW_MEAN',
+          'POINT2GRID_GAUSSIAN_DX': '2',},
+         ['-method UW_MEAN', '-gaussian_dx 2']),
+        ({'POINT2GRID_GAUSSIAN_RADIUS': '81.231'},
+         ['-gaussian_radius 81.231']),
+        ({'POINT2GRID_PROB_CAT_THRESH': '1'}, ['-prob_cat_thresh 1']),
+        ({'POINT2GRID_VLD_THRESH': '0.5'}, ['-vld_thresh 0.5']),
+        ({'POINT2GRID_QC_FLAGS': '0,1'}, ['-qc 0,1']),
+        ({'POINT2GRID_ADP': '{valid?fmt=%Y%m}.nc'}, ['-adp 201706.nc']),
+        ({'POINT2GRID_REGRID_TO_GRID': 'G212'}, []),
+        ({'POINT2GRID_INPUT_LEVEL': '(*,*)'}, []),
+    ]
+)
 @pytest.mark.wrapper
-def test_set_command_line_arguments(metplus_config):
-    test_passed = True
-    wrap = p2g_wrapper(metplus_config)
+def test_point2grid_run(metplus_config, config_overrides, optional_args):
+    config = metplus_config
+    set_minimum_config_settings(config)
 
-    input_dict = {'valid': datetime.datetime.strptime("202003050000", '%Y%m%d%H%M'),
-                  'lead': 0}
-    time_info = time_util.ti_calculate(input_dict)
+    # set config variable overrides
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
 
+    wrapper = Point2GridWrapper(config)
+    assert wrapper.isOK
 
-    wrap.c_dict['REGRID_METHOD'] = 'UW_MEAN'
+    app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
+    verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
+    out_dir = wrapper.c_dict.get('OUTPUT_DIR')
+    input_files = (
+        f'{input_dir}/input.2017060100_f12.nc',
+        f'{input_dir}/input.2017060200_f12.nc',
+        f'{input_dir}/input.2017060300_f12.nc',
+    )
+    output_files = (
+        f'{out_dir}/output.2017060112.nc',
+        f'{out_dir}/output.2017060212.nc',
+        f'{out_dir}/output.2017060312.nc',
+    )
 
-    expected_args = ['-method UW_MEAN',]
+    if 'POINT2GRID_REGRID_TO_GRID' in config_overrides:
+        grids = (
+            config_overrides['POINT2GRID_REGRID_TO_GRID'],
+            config_overrides['POINT2GRID_REGRID_TO_GRID'],
+            config_overrides['POINT2GRID_REGRID_TO_GRID']
+        )
+    else:
+        grids = (
+            os.path.join(grid_dir, '20170601.nc'),
+            os.path.join(grid_dir, '20170602.nc'),
+            os.path.join(grid_dir, '20170603.nc')
+        )
 
-    wrap.set_command_line_arguments(time_info)
-    if wrap.args != expected_args:
-        test_passed = False
-        print("Test 0 failed")
-        print(f"ARGS: {wrap.args}")
-        print(f"EXP: {expected_args}")
+    if 'POINT2GRID_INPUT_LEVEL' in config_overrides:
+        level = config_overrides['POINT2GRID_INPUT_LEVEL']
+    else:
+        level = ''
 
-    wrap.args.clear()
+    extra_args = " ".join(optional_args) + " " if optional_args else ""
+    expected_cmds = []
+    for idx in range(0, 3):
+        expected_cmds.append(
+            f'{app_path} {input_files[idx]} "{grids[idx]}" {output_files[idx]}'
+            f' -field \'name="{input_name}"; level="{level}";\''
+            f' {extra_args}{verbosity}'
+        )
 
-    wrap.c_dict['GAUSSIAN_DX'] = 2
+    all_cmds = wrapper.run_all_times()
+    print(f"ALL COMMANDS: {all_cmds}")
 
-    expected_args = ['-method UW_MEAN',
-                     '-gaussian_dx 2',
-                     ]
-
-    wrap.set_command_line_arguments(time_info)
-    if wrap.args != expected_args:
-        test_passed = False
-        print("Test 1 failed")
-        print(f"ARGS: {wrap.args}")
-        print(f"EXP: {expected_args}")
-
-    wrap.args.clear()
-
-    wrap.c_dict['PROB_CAT_THRESH'] = 1
-
-    expected_args = ['-method UW_MEAN',
-                     '-gaussian_dx 2',
-                     '-prob_cat_thresh 1',
-                     ]
-
-    wrap.set_command_line_arguments(time_info)
-    if wrap.args != expected_args:
-        test_passed = False
-        print("Test 2 failed")
-        print(f"ARGS: {wrap.args}")
-        print(f"EXP: {expected_args}")
-
-    wrap.args.clear()
-
-    wrap.c_dict['GAUSSIAN_RADIUS'] = 3
-
-    expected_args = ['-method UW_MEAN',
-                     '-gaussian_dx 2',
-                     '-gaussian_radius 3',
-                     '-prob_cat_thresh 1',
-                     ]
-
-    wrap.set_command_line_arguments(time_info)
-    if wrap.args != expected_args:
-        test_passed = False
-        print("Test 3 failed")
-        print(f"ARGS: {wrap.args}")
-        print(f"EXP: {expected_args}")
-
-    wrap.args.clear()
-
-    wrap.c_dict['VLD_THRESH'] = .5
-
-    expected_args = ['-method UW_MEAN',
-                     '-gaussian_dx 2',
-                     '-gaussian_radius 3',
-                     '-prob_cat_thresh 1',
-                     '-vld_thresh 0.5',
-                     ]
-
-    wrap.set_command_line_arguments(time_info)
-    if wrap.args != expected_args:
-        test_passed = False
-        print("Test 4 failed")
-        print(f"ARGS: {wrap.args}")
-        print(f"EXP: {expected_args}")
-
-    wrap.args.clear()
-
-    wrap.c_dict['QC_FLAGS'] = 1
-
-    expected_args = ['-qc 1',
-                     '-method UW_MEAN',
-                     '-gaussian_dx 2',
-                     '-gaussian_radius 3',
-                     '-prob_cat_thresh 1',
-                     '-vld_thresh 0.5',
-                     ]
-
-    wrap.set_command_line_arguments(time_info)
-    if wrap.args != expected_args:
-        test_passed = False
-        print("Test 5 failed")
-        print(f"ARGS: {wrap.args}")
-        print(f"EXP: {expected_args}")
-
-    wrap.args.clear()
-
-    wrap.c_dict['ADP'] = 'test.nc'
-
-    expected_args = ['-qc 1',
-                     '-adp test.nc',
-                     '-method UW_MEAN',
-                     '-gaussian_dx 2',
-                     '-gaussian_radius 3',
-                     '-prob_cat_thresh 1',
-                     '-vld_thresh 0.5',
-                     ]
-
-    wrap.set_command_line_arguments(time_info)
-    if wrap.args != expected_args:
-        test_passed = False
-        print("Test 6 failed")
-        print(f"ARGS: {wrap.args}")
-        print(f"EXP: {expected_args}")
-
-    wrap.args.clear()
-
-    assert test_passed
+    for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
+        # ensure commands are generated as expected
+        assert cmd == expected_cmd

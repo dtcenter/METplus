@@ -1,6 +1,6 @@
 {"name": "alert: NEED ACCOUNT KEY","color": "ffff33","description": "Need to assign an account key to this issue"}
 {"name": "alert: NEED MORE DEFINITION","color": "ffff33","description": "Not yet actionable, additional definition required"}
-{"name": "alert: NEED PROJECT ASSIGNMENT","color": "ffff33","description": "Need to assign to a release development cycle"}
+{"name": "alert: NEED CYCLE ASSIGNMENT","color": "ffff33","description": "Need to assign to a release development cycle"}
 {"name": "component: CI/CD","color": "1d76db","description": "Continuous integration and deployment issues"}
 {"name": "component: build process","color": "1d76db","description": "Build process issue"}
 {"name": "component: code cleanup","color": "1d76db","description": "Code cleanup and maintenance issue"}

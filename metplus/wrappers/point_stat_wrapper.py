@@ -312,7 +312,13 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         return c_dict
 
-    def add_obs_valid_args(self, time_info):
+    def set_command_line_arguments(self, time_info):
+        """!Set command line arguments in self.args to add to command to run.
+        This function is overwritten from CompareGridded wrapper.
+
+        @param time_info dictionary with time information
+        """
+        # set optional obs_valid_beg and obs_valid_end arguments
         for ext in ['BEG', 'END']:
             if self.c_dict[f'OBS_VALID_{ext}']:
                 obs_valid = do_string_sub(self.c_dict[f'OBS_VALID_{ext}'],

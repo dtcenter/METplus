@@ -35,8 +35,7 @@ def test_getseconds(metplus_config, input_value, result):
         seconds = conf.getseconds('config', 'TEST_SECONDS')
         assert seconds == result
     except NoOptionError:
-        if result is None:
-            assert True
+        assert result is None
 
 
 # value = None -- config variable not set
@@ -64,8 +63,7 @@ def test_getstr(metplus_config, input_value, default, result):
     try:
         assert result == conf.getstr('config', 'TEST_GETSTR', default)
     except NoOptionError:
-        if default is None:
-            assert True
+        assert default is None
 
 
 # value = None -- config variable not set
@@ -87,13 +85,11 @@ def test_getdir(metplus_config, input_value, default, result):
 
     # catch NoOptionError exception and pass test if default is None
     try:
-        assert result == conf.getdir('TEST_GETSTR', default=default)
+        assert result == conf.getdir('TEST_GETDIR', default=default)
     except NoOptionError:
-        if result is 'NoOptionError':
-            assert True
+        assert result == 'NoOptionError'
     except ValueError:
-        if result is 'ValueError':
-            assert True
+        assert result == 'ValueError'
 
 
 # value = None -- config variable not set
@@ -151,8 +147,7 @@ def test_getbool(metplus_config, input_value, default, result):
     try:
         assert result == conf.getbool('config', 'TEST_GETBOOL', default)
     except NoOptionError:
-        if result is None:
-            assert True
+        assert result is None
 
 
 # value = None -- config variable not set
@@ -195,8 +190,7 @@ def test_getfloat(metplus_config, input_value, default, result):
     try:
         assert result == conf.getfloat('config', 'TEST_GETFLOAT', default)
     except ValueError:
-        if result is None:
-            assert True
+        assert result is None
 
 
 # value = None -- config variable not set
@@ -226,8 +220,7 @@ def test_getint(metplus_config, input_value, default, result):
     try:
         assert result == conf.getint('config', 'TEST_GETINT', default)
     except ValueError:
-        if result is None:
-            assert True
+        assert result is None
 
 
 @pytest.mark.parametrize(

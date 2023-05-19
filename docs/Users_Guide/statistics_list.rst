@@ -2295,7 +2295,7 @@ ____________________
       Use Case
     - n/a
   * - Spatial distance between :raw-html:`<br />`
-      (𝑥,𝑦)(x,y) coordinates of :raw-html:`<br />`
+      :math:`(x,y)` coordinates of :raw-html:`<br />`
       object spacetime centroid
     - SPACE :raw-html:`<br />`
       _CENTROID :raw-html:`<br />`

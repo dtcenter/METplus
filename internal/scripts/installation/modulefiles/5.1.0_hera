@@ -8,8 +8,6 @@ proc ModulesHelp { } {
 }
 
 prereq intel
-module use -a /contrib/anaconda/modulefiles
-module load anaconda/latest
 prepend-path PATH /scratch1/BMC/dtc/miniconda/miniconda3/envs/metplus_v5.1_py3.10/bin
 
 module use -a /contrib/met/modulefiles
