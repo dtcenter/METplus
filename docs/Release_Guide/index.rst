@@ -50,6 +50,19 @@ Bugfix Release
 A bugfix release introduces no new features, but fixes bugs in previous
 official releases and targets the most critical bugs affecting users. 
 
+Release Support Policy
+======================
+
+The METplus developers officially provide bug fix support for the latest
+official release and for the developmental releases as described above. This
+includes addressing critical bugs, security vulnerabilities, and functionality
+issues.  We acknowledge that certain exceptions may arise to cater to the
+specific needs of funding institutions. These exceptions may include dedicating
+resources, prioritizing bug fixes, or extending support beyond the standard
+policy for funding-related requirements. Such exceptions will be evaluated on
+a case-by-case basis, ensuring a mutually beneficial collaboration between our
+software team and the respective funding institutions.
+
 Instructions Summary
 ====================
 
