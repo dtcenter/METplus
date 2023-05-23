@@ -350,23 +350,20 @@ Find or Create a GitHub issue
   Before an issue is created, a "Project" can be created, but there is no
   option to select a cycle.
 
-  .. image:: figure/1Issue-before-created.png
-    :width: 400
+  .. figure:: figure/1Issue-before-created.png
 	     
   After the issue is created, more options appear under the "Project" section.
 
-  .. image:: figure/2Issue-after-created.png
-    :width: 450
+  .. figure:: figure/2Issue-after-created.png
 	     
   Click the "Status" drop down and select "Review".
 
-  .. image:: figure/3Issue-set-status.png
-    :width: 500
+  .. figure:: figure/3Issue-set-status.png
 	     
   Click on "+1 more" then under "Cycle", click "Choose an iteration" and
   select the current development cycle.
 
-  .. image:: figure/4Issue-plus-one-set-cycle.png
+  .. figure:: figure/4Issue-plus-one-set-cycle.png
 
   After selecting the appropriate "Cycle", be sure to remove the
   **alert: NEED CYCLE ASSIGNMENT** label, which is added by default.
