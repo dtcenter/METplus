@@ -672,6 +672,29 @@ Open a pull request
     * When everything looks satisfactory, click on the green 'Create pull
       request' button.
 
+    * Before a pull request is created, a "Project" can be created, but there
+      is no option to select a cycle.
+
+      .. figure:: figure/1PR-before-created.png
+
+      After the pull request is created, more options appear under the
+      "Project" section.
+
+      .. figure:: figure/2PR-after-created.png
+
+      Click the "Status" drop down and select "Review".
+
+      .. figure:: figure/3PR-set-status.png
+
+      Click on "+1 more" then under "Cycle", click "Choose an iteration" and
+      select the current development cycle.
+
+      .. figure:: figure/4PR-plus-one-set-cycle.png
+
+      To link the issue that correspondes to the pull request, click on the
+      gear next to "Development," type the issue number, then select the issue
+      that is displayed.
+
     * An authorized METplus developer will accept the pull request (if
       everything meets acceptance criteria) and merge the code into the remote
       repository's develop branch.
