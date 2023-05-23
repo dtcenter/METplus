@@ -335,42 +335,43 @@ Find or Create a GitHub issue
   If one cannot be found, create a
   `new Discussion <https://github.com/dtcenter/METplus/discussions/new>`_ on
   the METplus GitHub Discussions page to ask if an issue should be created.
+  If creating a new issue:
 
-* If creating a new issue, select the
-  `"New Issue" <https://github.com/dtcenter/METplus/issues/new/choose>`_ button
-  and review the categories of issues (e.g. Bug report, enhancement request,
-  New feature request, New use case, Sub-Issue, Task).  Find an appropriate
-  categories and click on "Get Started" next to the category.
+  *  Select the
+     `"New Issue" <https://github.com/dtcenter/METplus/issues/new/choose>`_ button
+     and review the categories of issues (e.g. Bug report, enhancement request,
+     New feature request, New use case, Sub-Issue, Task).  Find an appropriate
+     categories and click on "Get Started" next to the category.
 
-  Create a short, but descriptive title. In the 'write' window, follow the
-  directions and fill in the template.  Add any additional comments/details.
-  When filling in the template, be sure to "Define the PR metadata, as
-  permissions allow. Select: **Assignee(s), Project(s)**, and **Milestone**". 
+     Create a short, but descriptive title. In the 'write' window, follow the
+     directions and fill in the template.  Add any additional comments/details.
+     When filling in the template, be sure to "Define the PR metadata, as
+     permissions allow. Select: **Assignee(s), Project(s)**, and **Milestone**". 
 
-  Before an issue is created, a "Project" can be created, but there is no
-  option to select a cycle.
+     Before an issue is created, a "Project" can be created, but there is no
+     option to select a cycle.
 
-  .. figure:: figure/1Issue-before-created.png
+     .. figure:: figure/1Issue-before-created.png
 	     
-  After the issue is created, more options appear under the "Project" section.
+     After the issue is created, more options appear under the "Project" section.
 
-  .. figure:: figure/2Issue-after-created.png
+     .. figure:: figure/2Issue-after-created.png
 	     
-  Click the "Status" drop down and select "Review".
+     Click the "Status" drop down and select "Review".
 
-  .. figure:: figure/3Issue-set-status.png
+     .. figure:: figure/3Issue-set-status.png
 	     
-  Click on "+1 more" then under "Cycle", click "Choose an iteration" and
-  select the current development cycle.
+     Click on "+1 more" then under "Cycle", click "Choose an iteration" and
+     select the current development cycle.
 
-  .. figure:: figure/4Issue-plus-one-set-cycle.png
+     .. figure:: figure/4Issue-plus-one-set-cycle.png
 
-  After selecting the appropriate "Cycle", be sure to remove the
-  **alert: NEED CYCLE ASSIGNMENT** label, which is added by default.
+     After selecting the appropriate "Cycle", be sure to remove the
+     **alert: NEED CYCLE ASSIGNMENT** label, which is added by default.
 
-  If the description of the issue is clear and does not need further
-  definition, be sure to remove the **alert: NEED MORE DEFINITION**
-  label, which is added by default.
+     If the description of the issue is clear and does not need further
+     definition, be sure to remove the **alert: NEED MORE DEFINITION**
+     label, which is added by default.
 
 .. _wo-fork-repo:
 
