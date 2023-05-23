@@ -351,15 +351,18 @@ Find or Create a GitHub issue
   option to select a cycle.
 
   .. image:: figure/1Issue-before-created.png
-
+    :width: 400
+	     
   After the issue is created, more options appear under the "Project" section.
 
   .. image:: figure/2Issue-after-created.png
-
+    :width: 450
+	     
   Click the "Status" drop down and select "Review".
 
   .. image:: figure/3Issue-set-status.png
-
+    :width: 500
+	     
   Click on "+1 more" then under "Cycle", click "Choose an iteration" and
   select the current development cycle.
 
