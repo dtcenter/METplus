@@ -358,7 +358,7 @@ Find or Create a GitHub issue
   .. image:: figure/2Issue-after-created.png
     :width: 400
 	    
-  Click the "Status" drop down and select "Review".
+  Click the "Status" drop down and select "Todo".
 
   .. image:: figure/3Issue-set-status.png
     :width: 400
