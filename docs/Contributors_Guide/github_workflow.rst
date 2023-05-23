@@ -324,7 +324,7 @@ Detailed instructions for each item can be found below or by clicking the link.
 
 .. _wo-find-issue:
 
-Find or Create a GitHub issue
+Find or Create a GitHub Issue
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * Go to the `METplus repository <https://github.com/dtcenter/METplus>`_  and
