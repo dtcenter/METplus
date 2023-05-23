@@ -347,7 +347,7 @@ Find or Create a GitHub issue
   When filling in the template, be sure to "Define the PR metadata, as
   permissions allow. Select: **Assignee(s), Project(s)**, and **Milestone**". 
 
-  Before an issue is created, a "Project" can be created, but there is no
+  Before an issue is created, a "Project" can be selected, but there is no
   option to select a cycle.
 
   .. image:: figure/1Issue-before-created.png
