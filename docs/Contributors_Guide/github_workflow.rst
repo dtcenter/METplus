@@ -712,7 +712,7 @@ Open a pull request
     * When everything looks satisfactory, click on the green 'Create pull
       request' button.
 
-    * Before a pull request is created, a "Project" can be created, but there
+    * Before a pull request is created, a "Project" can be selected, but there
       is no option to select a cycle.
 
       .. figure:: figure/1PR-before-created.png
