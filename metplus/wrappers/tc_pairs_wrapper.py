@@ -662,6 +662,10 @@ class TCPairsWrapper(CommandBuilder):
             if current_basin is None or current_cyclone is None:
                 continue
 
+            time_storm_info = time_info.copy()
+            time_storm_info['basin'] = current_basin
+            time_storm_info['cyclone'] = current_cyclone
+
             # create lists for deck files, put bdeck in list so it can
             # be handled the same as a and e for reformatting even though
             # it will always be size 1
@@ -671,14 +675,10 @@ class TCPairsWrapper(CommandBuilder):
 
             # get adeck files
             if self.c_dict['GET_ADECK']:
-                adeck_list = self.find_a_or_e_deck_files('A', current_basin,
-                                                         current_cyclone,
-                                                         time_info)
+                adeck_list = self.find_a_or_e_deck_files('A', time_storm_info)
             # get edeck files
             if self.c_dict['GET_EDECK']:
-                edeck_list = self.find_a_or_e_deck_files('E', current_basin,
-                                                         current_cyclone,
-                                                         time_info)
+                edeck_list = self.find_a_or_e_deck_files('E', time_storm_info)
 
             if not adeck_list and not edeck_list:
                 self.log_error('Could not find any corresponding '
@@ -697,19 +697,15 @@ class TCPairsWrapper(CommandBuilder):
             if edeck_list:
                 self.args.append(f"-edeck {' '.join(edeck_list)}")
 
-            # change wildcard basin/cyclone to 'all' for output filename
-            if current_basin == self.WILDCARDS['basin']:
-                current_basin = 'all'
-            if current_cyclone == self.WILDCARDS['cyclone']:
-                current_cyclone = 'all'
-
-            time_storm_info = time_info.copy()
-            time_storm_info['basin'] = current_basin
-            time_storm_info['cyclone'] = current_cyclone
-
             # find -diag file if requested
             if not self._get_diag_file(time_storm_info):
                 return []
+
+            # change wildcard basin/cyclone to 'all' for output filename
+            if current_basin == self.WILDCARDS['basin']:
+                time_storm_info['basin'] = 'all'
+            if current_cyclone == self.WILDCARDS['cyclone']:
+                time_storm_info['cyclone'] = 'all'
 
             if not self.find_and_check_output_file(time_info=time_storm_info,
                                                    check_extension='.tcst'):
@@ -815,13 +811,11 @@ class TCPairsWrapper(CommandBuilder):
 
         return current_basin, current_cyclone
 
-    def find_a_or_e_deck_files(self, deck, basin, cyclone, time_info):
+    def find_a_or_e_deck_files(self, deck, time_info):
         """!Find ADECK or EDECK files that correspond to the BDECk file found
 
             @param deck type of deck (A or E)
-            @param basin region of storm from config
-            @param cyclone ID number of cyclone from config
-            @param time_info dictionary with timing info for current run
+            @param time_info dictionary with timing/storm info for current run
         """
         deck_list = []
         template = os.path.join(self.c_dict[deck+'DECK_DIR'],
@@ -829,8 +823,6 @@ class TCPairsWrapper(CommandBuilder):
 
         # get matching adeck wildcard expression for first model
         deck_expr = do_string_sub(template,
-                                  basin=basin,
-                                  cyclone=cyclone,
                                   model=self.c_dict['MODEL_LIST'][0],
                                   **time_info)
 
@@ -1011,15 +1003,25 @@ class TCPairsWrapper(CommandBuilder):
         if not self.c_dict.get('DIAG_INFO_LIST'):
             return True
 
+        time_info_copy = time_info.copy()
         for diag_info in self.c_dict.get('DIAG_INFO_LIST'):
             self.c_dict['DIAG_INPUT_TEMPLATE'] = diag_info['template']
-            filepaths = self.find_data(time_info, data_type='DIAG',
-                                       return_list=True)
-            if not filepaths:
+            all_files = []
+            for model in self.c_dict['MODEL_LIST']:
+                time_info_copy['model'] = model
+                filepaths = self.find_data(time_info_copy, data_type='DIAG',
+                                           return_list=True)
+                if filepaths:
+                    all_files.extend(filepaths)
+
+            if not all_files:
                 self.log_error('Could not get -diag files')
                 return False
 
-            arg = f"-diag {diag_info['source']} {' '.join(filepaths)}"
+            # remove duplicate files
+            all_files = list(set(all_files))
+
+            arg = f"-diag {diag_info['source']} {' '.join(all_files)}"
             self.args.append(arg)
 
         return True
