@@ -541,6 +541,23 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
                  'field_source = "GFS_0p50";match_to_track = ["OFCL"]'
                  ';diag_name = ["MY_NAME2"];}];'
          )}),
+        # -diag arguments with multiple models
+        ('VALID', {
+            'MODEL': 'MYNN, H19C',
+            'TC_PAIRS_DIAG_TEMPLATE1': '/some/path/{valid?fmt=%Y%m%d%H}_{model}.dat',
+            'TC_PAIRS_DIAG_SOURCE1': 'TCDIAG',
+            'TC_PAIRS_DIAG_TEMPLATE2': '/some/path/rt_{valid?fmt=%Y%m%d%H}.dat',
+            'TC_PAIRS_DIAG_SOURCE2': 'LSDIAG_RT',
+        },
+         {'DIAG_ARG': ('-diag TCDIAG /some/path/2014121318_MYNN.dat /some/path/2014121318_H19C.dat '
+                       '-diag LSDIAG_RT /some/path/rt_2014121318.dat'),
+          'METPLUS_MODEL': 'model = ["MYNN", "H19C"];'}),
+        # -diag arguments with wildcard model
+        ('VALID', {
+            'TC_PAIRS_DIAG_TEMPLATE1': 'bmlq2014123118.{model}.0104',
+            'TC_PAIRS_DIAG_SOURCE1': 'TCDIAG',
+        },
+         {'DIAG_ARG': '-diag TCDIAG <BDECK_DIR>/bmlq2014123118.gfso.0104',}),
     ]
 )
 @pytest.mark.wrapper
@@ -557,6 +574,8 @@ def test_tc_pairs_run(metplus_config, loop_by, config_overrides,
 
     config.set('config', 'TC_PAIRS_BDECK_INPUT_DIR', bdeck_dir)
     config.set('config', 'TC_PAIRS_ADECK_INPUT_DIR', adeck_dir)
+    if 'DIAG_ARG' in env_var_values and 'TC_PAIRS_DIAG_DIR1' not in config_overrides:
+        config.set('config', 'TC_PAIRS_DIAG_DIR1', bdeck_dir)
 
     # set config variable overrides
     for key, value in config_overrides.items():
@@ -590,6 +609,7 @@ def test_tc_pairs_run(metplus_config, loop_by, config_overrides,
     diag_arg = ''
     if 'DIAG_ARG' in env_var_values:
         diag_arg = f" {env_var_values['DIAG_ARG']}"
+        diag_arg = diag_arg.replace('<BDECK_DIR>', bdeck_dir)
 
     expected_cmds = [(f"{app_path} {verbosity} "
                       f"-bdeck {bdeck_dir}/bmlq2014123118.gfso.0104 "
