@@ -688,6 +688,9 @@ class CommandBuilder:
             self.log_error('Must set INPUT_DIR if looking for files within a time window')
             return None
 
+        # substitute any filename template tags that may be in _INPUT_DIR
+        data_dir = do_string_sub(data_dir, **time_info)
+
         # step through all files under input directory in sorted order
         for dirpath, _, all_files in os.walk(data_dir):
             for filename in sorted(all_files):
