@@ -642,8 +642,7 @@ class METplusConfig(ProdConfig):
         self.set('config', exe_name, full_exe_path)
         return full_exe_path
 
-    def getdir(self, dir_name, default=None, morevars=None,taskvars=None,
-               must_exist=False):
+    def getdir(self, dir_name, default=None, must_exist=False):
         """! Wraps produtil getdir and reports an error if
          it is set to /path/to
          """

@@ -903,16 +903,18 @@ class TCPairsWrapper(CommandBuilder):
                f" -out {output_path}")
         return cmd
 
-    def read_modify_write_file(self, in_csvfile, storm_month, missing_values,
+    @staticmethod
+    def read_modify_write_file(in_csvfile, storm_month, missing_values,
                                out_csvfile):
-        """! Reads, modifies and writes file
-              Args:
-                @param in_csvfile input csv file that is being parsed
-                @param storm_month The storm month
-                @param missing_values a tuple where (MISSING_VAL_TO_REPLACE,
-                                                     MISSING_VAL)
-                @param out_csvfile the output csv file
-                @param logger the log where logging is directed
+        """!Reads CSV file, reformat file by adding the month to the 2nd
+        column storm number, delete the 3rd column, replace missing values,
+        and write a new CSV file with the modified content.
+
+        @param in_csvfile input csv file that is being parsed
+        @param storm_month storm month to prepend to storm number
+        @param missing_values tuple containing a missing data value to find in
+        the columns and the value to replace it with, e.g. (-9, -9999)
+        @param out_csvfile the output csv file
         """
         # create output directory if it does not exist
         mkdir_p(os.path.dirname(out_csvfile))
@@ -947,7 +949,7 @@ class TCPairsWrapper(CommandBuilder):
                         continue
                     # Replace MISSING_VAL_TO_REPLACE=missing_values[0] with
                     # MISSING_VAL=missing_values[1]
-                    elif item.strip() == missing_values[0]:
+                    if item.strip() == missing_values[0]:
                         item = " " + missing_values[1]
                     # Create a new row to write
                     row_list.append(item)
@@ -955,7 +957,6 @@ class TCPairsWrapper(CommandBuilder):
                 # Write the modified file
                 writer.writerow(row_list)
 
-        csvfile.close()
         out_file.close()
 
     def _read_all_files(self, input_dict):
