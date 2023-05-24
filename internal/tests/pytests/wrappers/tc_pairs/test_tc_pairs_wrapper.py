@@ -78,6 +78,7 @@ def test_read_storm_info(metplus_config, config_overrides, isOK):
     wrapper = TCPairsWrapper(config)
     assert wrapper.isOK == isOK
 
+
 @pytest.mark.parametrize(
     'storm_id,basin,cyclone', [
         ('AL092011', 'al', '09'),
