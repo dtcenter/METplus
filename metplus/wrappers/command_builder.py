@@ -566,13 +566,11 @@ class CommandBuilder:
         input_must_exist = self.c_dict.get('INPUT_MUST_EXIST', True)
 
         for template in template_list:
-            # perform string substitution
-            filename = do_string_sub(template,
-                                     level=level,
-                                     **time_info)
-
-            # build full path with data directory and filename
-            full_path = os.path.join(data_dir, filename)
+            # perform string substitution on directory and template
+            full_template = os.path.join(data_dir, template)
+            full_path = do_string_sub(full_template,
+                                      level=level,
+                                      **time_info)
 
             if os.path.sep not in full_path:
                 self.logger.debug(f"{full_path} is not a file path. "
