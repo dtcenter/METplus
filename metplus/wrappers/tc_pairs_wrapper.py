@@ -474,6 +474,10 @@ class TCPairsWrapper(CommandBuilder):
             source = (
                 self.config.getraw('config', f'TC_PAIRS_DIAG_SOURCE{idx}')
             )
+            if not source:
+                self.log_error(f'TC_PAIRS_DIAG_SOURCE{idx} must be set if '
+                               f'TC_PAIRS_DIAG_TEMPLATE{idx} is set')
+                continue
             diag_info = {
                 'template': template,
                 'source': source,
@@ -1005,7 +1009,7 @@ class TCPairsWrapper(CommandBuilder):
         """
         if not self.c_dict.get('DIAG_INFO_LIST'):
             return True
-        self.log_error(self.c_dict.get('DIAG_INFO_LIST'))
+
         for diag_info in self.c_dict.get('DIAG_INFO_LIST'):
             self.c_dict['DIAG_INPUT_TEMPLATE'] = diag_info['template']
             filepaths = self.find_data(time_info, data_type='DIAG',
