@@ -2,7 +2,7 @@
 PointStat: CESM and FLUXNET2015 Terrestrial Coupling Index (TCI) 
 ======================================================================
 
-model_applications/land_surface/PyIngestPointStatPlotPointObs_fcstCESM_obsFLUXNET2015_TCI.conf
+model_applications/land_surface/PyEmbedIngestPointStatPlotPointObs_fcstCESM_obsFLUXNET2015_TCI.conf
 
 """
 ##############################################################################
@@ -11,6 +11,7 @@ model_applications/land_surface/PyIngestPointStatPlotPointObs_fcstCESM_obsFLUXNE
 # This use case ingests two CESM (CAM and CLM) files and a new FLUX2015 dataset (NETCDF) that Paul Dirmeyer, GMU prepared from FLUXNET2015 ASCII dataset.
 # The use case will calculate Terrestrial Coupling Index (TCI) from CESM datasets.
 # Utilizing Python embedding, this use case taps into a new vital observation dataset and compares it to CESM simulations TCI forecast. 
+# Finally, it will generate plots of model TCI and observed TCI.
 
 ##############################################################################
 # Datasets
@@ -30,21 +31,23 @@ model_applications/land_surface/PyIngestPointStatPlotPointObs_fcstCESM_obsFLUXNE
 # METplus Components
 # ------------------
 #
-# PointStat processes the forecast and observation fields, and outputs the requested line types.
-
+# This use case utilizes the METplus PyEmbedIngest to read the CESM files and calculate TCI using python embedding and a NETCDF file of the TCI is generated. 
+# The METplus PointStat processes the output of PyEmbedIngest and FLUXNET2015 dataset (using python embedding), and outputs the requested line types.
+# Then METplus PlotPointObs tool reads the output of PyEmbedIngest and FLUXNET2015 dataset and produce plots of TCI from CESM and point observations. 
+# A custom loop runs through all the pre-defined seasons (DJF, MAM, JJA, SON) and runs PyEmbedIngest, PointStat, and PlotPointObs.
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
-# 2 CESM files containing Soil Moisture and Sensible Heat Flux, each composed of daily forecasts from 1979 to 1983 is read by Python Embedding.
-# 1 FLUXNET2015 NETCDF files containing station observations of several variables including Coupling Index of Soil Moisture and Sensible Heat Flux is read by Python Embedding.
+# The PyEmbedIngest tool reads 2 CESM files containing Soil Moisture and Sensible Heat Flux, each composed of daily forecasts from
+# 1979 to 1983 and calculates TCI and generates a NETCDF file of the TCI. One FLUXNET2015 NETCDF file containing station observations 
+# of several variables including Coupling Index of Soil Moisture and Sensible Heat Flux is read by Python Embedding.
 #
 # | **Valid Beg:** 1979-01-01 at 00z
-# | **Valid End:** 2023-01-01 at 23z
+# | **Valid End:** 1979-01-01 at 00z
 # 
-# Finally, PointStat is used to compare the two new fields (TCI calculated from CESM dataset and FLUXNET2015).
-# The Valid Beg and End times are set to large range to incorporate any data available during the time frame.
-#
+# PointStat is used to compare the two new fields (TCI calculated from CESM dataset and FLUXNET2015).
+# Finally, PlotPointObs is run to plot the CESM TCI overlaying the FLUXNET2015 point observations. 
 
 ##############################################################################
 # METplus Configuration
@@ -52,10 +55,10 @@ model_applications/land_surface/PyIngestPointStatPlotPointObs_fcstCESM_obsFLUXNE
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# i.e. -c parm/use_cases/model_applications/land_surface/PyIngestPointStatPlotPointObs_fcstCESM_obsFLUXNET2015_TCI.conf
+# i.e. -c parm/use_cases/model_applications/land_surface/PyEmbedIngestPointStatPlotPointObs_fcstCESM_obsFLUXNET2015_TCI.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PyIngestPointStatPlotPointObs_fcstCESM_obsFLUXNET2015_TCI.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PyEmbedIngestPointStatPlotPointObs_fcstCESM_obsFLUXNET2015_TCI.conf
 #
 
 ##############################################################################
@@ -74,13 +77,13 @@ model_applications/land_surface/PyIngestPointStatPlotPointObs_fcstCESM_obsFLUXNE
 #
 # This use case can be run two ways:
 #
-# 1) Passing in PyIngestPointStatPlotPointObs_fcstCESM_obsFLUXNET2015_TCI.conf then a user-specific system configuration file::
+# 1) Passing in PyEmbedIngestPointStatPlotPointObs_fcstCESM_obsFLUXNET2015_TCI.conf then a user-specific system configuration file::
 #
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/land_surface/PyIngestPointStatPlotPointObs_fcstCESM_obsFLUXNET2015_TCI.conf /path/to/user_system.conf
+#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/land_surface/PyEmbedIngestPointStatPlotPointObs_fcstCESM_obsFLUXNET2015_TCI.conf /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in PyIngestPointStatPlotPointObs_fcstCESM_obsFLUXNET2015_TCI::
+# 2) Modifying the configurations in parm/metplus_config, then passing in PyEmbedIngestPointStatPlotPointObs_fcstCESM_obsFLUXNET2015_TCI::
 #
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/land_surface/PyIngestPointStatPlotPointObs_fcstCESM_obsFLUXNET2015_TCI.conf
+#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/land_surface/PyEmbedIngestPointStatPlotPointObs_fcstCESM_obsFLUXNET2015_TCI.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -109,31 +112,62 @@ model_applications/land_surface/PyIngestPointStatPlotPointObs_fcstCESM_obsFLUXNE
 # Output for the use case will be found in 3 folders(relative to **OUTPUT_BASE**).
 # Those folders are:
 #
+# * PyEmbedIngest
+#
+# The **OUTPUT_BASE** folder contains all of the TCI output calculated using CESM files in NETCDF format:
+#
+# * regrid_data_plane_DJF.nc
+# * regrid_data_plane_JJA.nc
+# * regrid_data_plane_MAM.nc
+# * regrid_data_plane_SON.nc
+#
 # * PointStat
 #
 # The final folder, PointStat, contains all of the following output from the PointStat call:
 #
-# * point_stat_000000L_20220914_230000V_cnt.txt
-# * point_stat_000000L_20220914_230000V_ctc.txt
-# * point_stat_000000L_20220914_230000V_cts.txt
-# * point_stat_000000L_20220914_230000V_mcts.txt
-# * point_stat_000000L_20220914_230000V.stat
+# * point_stat_DJF_000000L_19790101_000000V_cnt.txt
+# * point_stat_DJF_000000L_19790101_000000V_ctc.txt
+# * point_stat_DJF_000000L_19790101_000000V_mpr.txt
+# * point_stat_DJF_000000L_19790101_000000V.stat
+# * point_stat_JJA_000000L_19790101_000000V_cnt.txt
+# * point_stat_JJA_000000L_19790101_000000V_ctc.txt
+# * point_stat_JJA_000000L_19790101_000000V_mpr.txt
+# * point_stat_JJA_000000L_19790101_000000V.stat
+# * point_stat_MAM_000000L_19790101_000000V_cnt.txt
+# * point_stat_MAM_000000L_19790101_000000V_ctc.txt
+# * point_stat_MAM_000000L_19790101_000000V_mpr.txt
+# * point_stat_MAM_000000L_19790101_000000V.stat
+# * point_stat_SON_000000L_19790101_000000V_cnt.txt
+# * point_stat_SON_000000L_19790101_000000V_ctc.txt
+# * point_stat_SON_000000L_19790101_000000V_mpr.txt
+# * point_stat_SON_000000L_19790101_000000V.stat
 #
-
+# * PlotPointObs
+#
+# The final folder plot_point_obs, contains all of the plots from the PlotPointObs call:
+#
+# * cesm_fluxnet2015_DJF.ps
+# * cesm_fluxnet2015_JJA.ps
+# * cesm_fluxnet2015_MAM.ps
+# * cesm_fluxnet2015_SON.ps
+#
 ##############################################################################
 # Keywords
 # --------
 #
 # .. note::
 #
+#   * PyEmbedIngestToolUseCase
 #   * PointStatToolUseCase
+#   * PlotPointObsToolUseCase
 #   * PythonEmbeddingFileUseCase
 #   * LandSurfaceAppUseCase
 #   * NETCDFFileUseCase
+#   * FLUXNET2015FileUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/land_surface-PyIngestPointStatPlotPointObs_fcstCESM_obsFLUXNET2015_TCI.png'
+# sphinx_gallery_thumbnail_path = '_static/land_surface-PyEmbedIngestPointStatPlotPointObs_fcstCESM_obsFLUXNET2015_TCI.png'
 
