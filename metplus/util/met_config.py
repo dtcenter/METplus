@@ -105,10 +105,9 @@ class METConfig:
         if not children and 'dict' in self.data_type:
             raise TypeError("Must have children if data_type is dict.")
 
-        if children:
-            if 'dict' not in self.data_type:
-                raise TypeError("data_type must be dict to have "
-                                f"children. data_type is {self.data_type}")
+        if children and 'dict' not in self.data_type:
+            raise TypeError("data_type must be dict to have "
+                            f"children. data_type is {self.data_type}")
 
         self._children = children
 
@@ -560,7 +559,7 @@ def set_met_config_string(config, c_dict, mp_config, met_config_name,
 
 
 def set_met_config_number(config, c_dict, num_type, mp_config,
-                          met_config_name, c_dict_key=None, **kwargs):
+                          met_config_name, c_dict_key=None):
     """! Get integer from METplus configuration file and format it to be passed
           into a MET configuration file. Set c_dict item with formatted string.
 
@@ -604,25 +603,23 @@ def set_met_config_number(config, c_dict, num_type, mp_config,
 
 
 def set_met_config_int(config, c_dict, mp_config_name, met_config_name,
-                       c_dict_key=None, **kwargs):
+                       c_dict_key=None):
     return set_met_config_number(config, c_dict, 'int',
                                  mp_config_name,
                                  met_config_name,
-                                 c_dict_key=c_dict_key,
-                                 **kwargs)
+                                 c_dict_key=c_dict_key)
 
 
 def set_met_config_float(config, c_dict, mp_config_name,
-                         met_config_name, c_dict_key=None, **kwargs):
+                         met_config_name, c_dict_key=None):
     return set_met_config_number(config, c_dict, 'float',
                                  mp_config_name,
                                  met_config_name,
-                                 c_dict_key=c_dict_key,
-                                 **kwargs)
+                                 c_dict_key=c_dict_key)
 
 
 def set_met_config_thresh(config, c_dict, mp_config, met_config_name,
-                          c_dict_key=None, **kwargs):
+                          c_dict_key=None):
     mp_config_name = config.get_mp_config_name(mp_config)
     if mp_config_name is None:
         return True
