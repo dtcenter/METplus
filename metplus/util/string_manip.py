@@ -402,7 +402,14 @@ def generate_tmp_filename():
 
 
 def template_to_regex(template):
-    in_template = re.sub(r'\.', '\\.', template)
+    """!Convert path with filename template tags for regular expression by
+    escaping '.' character with a backslash and replacing any lead template
+    tags with a wildcard regular expression.
+
+    @param template string to convert
+    @returns formatted string
+    """
+    in_template = template.replace('.', r'\.')
     return re.sub(r'{lead.*?}', '.*', in_template)
 
 
