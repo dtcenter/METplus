@@ -348,7 +348,7 @@ def do_string_sub(tmpl,
     # find inner most tags between nested curly braces
     # match_list is a list with the contents being the data between the
     # curly braces
-    match_list = re.findall(r'\{([^}{]*)\}', tmpl)
+    match_list = re.findall(r'\{([^}{]*)}', tmpl)
 
     if len(match_list) == 0:
         return tmpl
