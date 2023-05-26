@@ -125,10 +125,8 @@ def run_metplus(config):
             if new_commands:
                 all_commands.extend(new_commands)
 
-        # if process list contains any wrapper that should run commands
-        if any(item[0] not in NO_COMMAND_WRAPPERS for item in process_list):
-            # write out all commands and environment variables to file
-            write_all_commands(all_commands, config)
+        # write out all commands and environment variables to file
+        write_all_commands(all_commands, config)
 
         # compute total number of errors that occurred and output results
         return _check_wrapper_run_errors(processes, config.logger)
