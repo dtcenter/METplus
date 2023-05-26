@@ -444,17 +444,3 @@ def get_filetype(filepath, logger=None):
         # ie. filepath references a file that does not exist
         # or filepath is a directory.
         return None
-
-    # Previous Logic
-    # ncdump_exe = config.getexe('NCDUMP')
-    #try:
-    #    result = subprocess.check_output([ncdump_exe, filepath])
-
-    #except subprocess.CalledProcessError:
-    #    return "GRIB"
-
-    #regex = re.search("netcdf", result)
-    #if regex is not None:
-    #    return "NETCDF"
-    #else:
-    #    return None
