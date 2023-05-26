@@ -7624,6 +7624,492 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - hss_ec_value
 
 
+.. _tc_diag_wrapper:
+
+TCDiag
+======
+
+Description
+-----------
+
+Used to configure the MET tool TC-Diag.
+
+METplus Configuration
+---------------------
+
+| :term:`TC_DIAG_INPUT_DIR`
+| :term:`TC_DIAG_DECK_INPUT_DIR`
+| :term:`TC_DIAG_OUTPUT_DIR`
+| :term:`TC_DIAG_DECK_TEMPLATE`
+| :term:`TC_DIAG_INPUT_TEMPLATE`
+| :term:`TC_DIAG_INPUT_FILE_LIST`
+| :term:`TC_DIAG_OUTPUT_TEMPLATE`
+| :term:`LOG_TC_DIAG_VERBOSITY`
+| :term:`TC_DIAG_CONFIG_FILE`
+| :term:`TC_DIAG_MODEL`
+| :term:`TC_DIAG_STORM_ID`
+| :term:`TC_DIAG_BASIN`
+| :term:`TC_DIAG_CYCLONE`
+| :term:`TC_DIAG_INIT_INCLUDE`
+| :term:`TC_DIAG_VALID_BEG`
+| :term:`TC_DIAG_VALID_END`
+| :term:`TC_DIAG_VALID_INCLUDE`
+| :term:`TC_DIAG_VALID_EXCLUDE`
+| :term:`TC_DIAG_VALID_HOUR`
+| :term:`TC_DIAG_LEAD`
+| :term:`TC_DIAG_DIAG_SCRIPT`
+| :term:`TC_DIAG_DOMAIN_INFO_DOMAIN`
+| :term:`TC_DIAG_DOMAIN_INFO<n>_N_RANGE`
+| :term:`TC_DIAG_DOMAIN_INFO<n>_N_AZIMUTH`
+| :term:`TC_DIAG_DOMAIN_INFO<n>_DELTA_RANGE_KM`
+| :term:`TC_DIAG_CENSOR_THRESH`
+| :term:`TC_DIAG_CENSOR_VAL`
+| :term:`TC_DIAG_CONVERT`
+| :term:`TC_DIAG_INPUT_DATATYPE`
+| :term:`TC_DIAG_DATA_DOMAIN`
+| :term:`TC_DIAG_DATA_LEVEL`
+| :term:`TC_DIAG_REGRID_METHOD`
+| :term:`TC_DIAG_REGRID_WIDTH`
+| :term:`TC_DIAG_REGRID_VLD_THRESH`
+| :term:`TC_DIAG_REGRID_SHAPE`
+| :term:`TC_DIAG_REGRID_CENSOR_THRESH`
+| :term:`TC_DIAG_REGRID_CENSOR_VAL`
+| :term:`TC_DIAG_REGRID_CONVERT`
+| :term:`TC_DIAG_COMPUTE_TANGENTIAL_AND_RADIAL_WINDS`
+| :term:`TC_DIAG_U_WIND_FIELD_NAME`
+| :term:`TC_DIAG_V_WIND_FIELD_NAME`
+| :term:`TC_DIAG_TANGENTIAL_VELOCITY_FIELD_NAME`
+| :term:`TC_DIAG_TANGENTIAL_VELOCITY_LONG_FIELD_NAME`
+| :term:`TC_DIAG_RADIAL_VELOCITY_FIELD_NAME`
+| :term:`TC_DIAG_RADIAL_VELOCITY_LONG_FIELD_NAME`
+| :term:`TC_DIAG_VORTEX_REMOVAL`
+| :term:`TC_DIAG_NC_RNG_AZI_FLAG`
+| :term:`TC_DIAG_NC_DIAG_FLAG`
+| :term:`TC_DIAG_CIRA_DIAG_FLAG`
+| :term:`TC_DIAG_OUTPUT_PREFIX`
+| :term:`TC_DIAG_SKIP_IF_OUTPUT_EXISTS`
+| :term:`TC_DIAG_MET_CONFIG_OVERRIDES`
+|
+
+.. _tc-diag-met-conf:
+
+MET Configuration
+-----------------
+
+Below is the wrapped MET configuration file used for this wrapper.
+Environment variables are used to control entries in this configuration file.
+The default value for each environment variable is obtained from
+(except where noted below):
+
+`MET_INSTALL_DIR/share/met/config/TCDiagConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/TCDiagConfig_default>`_
+
+Below the file contents are descriptions of each environment variable
+referenced in this file and the corresponding METplus configuration item used
+to set the value of the environment variable. For detailed examples showing
+how METplus sets the values of these environment variables,
+see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+
+.. literalinclude:: ../../parm/met_config/TCDiagConfig_wrapped
+
+**${METPLUS_MODEL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODEL`
+     - model
+
+**${METPLUS_STORM_ID}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_DIAG_STORM_ID`
+     - storm_id
+
+**${METPLUS_BASIN}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_DIAG_BASIN`
+     - basin
+
+**${METPLUS_CYCLONE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_DIAG_CYCLONE`
+     - cyclone
+
+**${METPLUS_INIT_INCLUDE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_DIAG_INIT_INC`
+     - init_inc
+
+**${METPLUS_VALID_BEG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_DIAG_VALID_BEG`
+     - valid_beg
+
+**${METPLUS_VALID_END}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_DIAG_VALID_END`
+     - valid_end
+
+**${METPLUS_VALID_INCLUDE_LIST}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_DIAG_VALID_INC`
+     - valid_inc
+
+**${METPLUS_VALID_EXCLUDE_LIST}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_DIAG_VALID_EXC`
+     - valid_exc
+
+**${METPLUS_VALID_HOUR_LIST}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_DIAG_VALID_HOUR`
+     - valid_hour
+
+**${METPLUS_LEAD_LIST}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`LEAD_SEQ`
+     - lead
+
+**${METPLUS_DIAG_SCRIPT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_DIAG_DIAG_SCRIPT`
+     - diag_script
+
+**${METPLUS_DOMAIN_INFO_LIST}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_DIAG_DOMAIN_INFO<n>_DOMAIN`
+     - domain_info.domain
+   * - :term:`TC_DIAG_DOMAIN_INFO<n>_N_RANGE`
+     - domain_info.n_range
+   * - :term:`TC_DIAG_DOMAIN_INFO<n>_N_AZIMUTH`
+     - domain_info.n_azimuth
+   * - :term:`TC_DIAG_DOMAIN_INFO<n>_DELTA_RANGE_KM`
+     - domain_info.delta_range_km
+
+**${METPLUS_CENSOR_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_DIAG_CENSOR_THRESH`
+     - censor_thresh
+
+**${METPLUS_CENSOR_VAL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_DIAG_CENSOR_VAL`
+     - censor_val
+
+**${METPLUS_CONVERT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_DIAG_CONVERT`
+     - convert
+
+**${METPLUS_DATA_FIELD}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`BOTH_VAR<n>_NAME`
+     - data.field.name
+   * - :term:`BOTH_VAR<n>_LEVELS`
+     - data.field.level
+   * - :term:`BOTH_VAR<n>_OPTIONS`
+     - n/a
+
+.. note:: For more information on controlling the field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
+
+**${METPLUS_DATA_FILE_TYPE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_DIAG_INPUT_DATATYPE`
+     - data.file_type
+
+**${METPLUS_DATA_DOMAIN}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_DIAG_DATA_DOMAIN`
+     - data.domain
+
+**${METPLUS_DATA_LEVEL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_DIAG_DATA_LEVEL`
+     - data.level
+
+**${METPLUS_REGRID_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_DIAG_REGRID_SHAPE`
+     - regrid.shape
+   * - :term:`TC_DIAG_REGRID_METHOD`
+     - regrid.method
+   * - :term:`TC_DIAG_REGRID_WIDTH`
+     - regrid.width
+   * - :term:`TC_DIAG_REGRID_VLD_THRESH`
+     - regrid.vld_thresh
+   * - :term:`TC_DIAG_REGRID_CONVERT`
+     - regrid.convert
+   * - :term:`TC_DIAG_REGRID_CENSOR_THRESH`
+     - regrid.censor_thresh
+   * - :term:`TC_DIAG_REGRID_CENSOR_VAL`
+     - regrid.censor_val
+
+**${METPLUS_COMPUTE_TANGENTIAL_AND_RADIAL_WINDS}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_DIAG_COMPUTE_TANGENTIAL_AND_RADIAL_WINDS`
+     - compute_tangential_and_radial_winds
+
+**${METPLUS_U_WIND_FIELD_NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_DIAG_U_WIND_FIELD_NAME`
+     - u_wind_field_name
+
+**${METPLUS_V_WIND_FIELD_NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_DIAG_V_WIND_FIELD_NAME`
+     - v_wind_field_name
+
+**${METPLUS_TANGENTIAL_VELOCITY_FIELD_NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_DIAG_TANGENTIAL_VELOCITY_FIELD_NAME`
+     - tangential_velocity_field_name
+
+**${METPLUS_TANGENTIAL_VELOCITY_LONG_FIELD_NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_DIAG_TANGENTIAL_VELOCITY_LONG_FIELD_NAME`
+     - tangential_velocity_long_field_name
+
+**${METPLUS_RADIAL_VELOCITY_FIELD_NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_DIAG_RADIAL_VELOCITY_FIELD_NAME`
+     - radial_velocity_field_name
+
+**${METPLUS_RADIAL_VELOCITY_LONG_FIELD_NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_DIAG_RADIAL_VELOCITY_LONG_FIELD_NAME`
+     - radial_velocity_long_field_name
+
+**${METPLUS_VORTEX_REMOVAL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_DIAG_VORTEX_REMOVAL`
+     - vortex_removal
+
+**${METPLUS_NC_RNG_AZI_FLAG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_DIAG_NC_RNG_AZI_FLAG`
+     - nc_rng_azi_flag
+
+**${METPLUS_NC_DIAG_FLAG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_DIAG_NC_DIAG_FLAG`
+     - nc_diag_flag
+
+**${METPLUS_CIRA_DIAG_FLAG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_DIAG_CIRA_DIAG_FLAG`
+     - cira_diag_flag
+
+**${METPLUS_OUTPUT_PREFIX}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_DIAG_OUTPUT_PREFIX`
+     - output_prefix
+
+**${METPLUS_MET_CONFIG_OVERRIDES}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_DIAG_MET_CONFIG_OVERRIDES`
+     - n/a
+
+
 .. _tc_gen_wrapper:
 
 TCGen

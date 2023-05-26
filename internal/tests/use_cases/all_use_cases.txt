@@ -61,6 +61,7 @@ Category: met_tool_wrapper
 59::IODA2NC::met_tool_wrapper/IODA2NC/IODA2NC.conf
 60::PointStat_python_embedding_obs:: met_tool_wrapper/PointStat/PointStat_python_embedding_obs.conf
 61::PlotPointObs:: met_tool_wrapper/PlotPointObs/PlotPointObs.conf
+#62::TCDiag:: met_tool_wrapper/TCDiag/TCDiag.conf
 
 Category: air_quality_and_comp
 0::EnsembleStat_fcstICAP_obsMODIS_aod::model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod.conf

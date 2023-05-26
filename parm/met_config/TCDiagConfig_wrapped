@@ -1,0 +1,189 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// TC-Diag configuration file.
+//
+// For additional information, please see the MET User's Guide.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Filter input track data lines.
+//
+
+//
+// Model
+//
+//model =
+${METPLUS_MODEL}
+
+
+//
+// Storm identifier
+//
+//storm_id =
+${METPLUS_STORM_ID}
+
+
+//
+// Basin
+//
+//basin =
+${METPLUS_BASIN}
+
+
+//
+// Cyclone number
+//
+//cyclone =
+${METPLUS_CYCLONE}
+
+
+//
+// Model initialization time
+//
+//init_inc =
+${METPLUS_INIT_INCLUDE}
+
+
+//
+// Subset by the valid time
+//
+//valid_beg =
+${METPLUS_VALID_BEG}
+//valid_end =
+${METPLUS_VALID_END}
+
+//valid_inc =
+${METPLUS_VALID_INCLUDE_LIST}
+
+//valid_exc =
+${METPLUS_VALID_EXCLUDE_LIST}
+
+
+//
+// Subset by the valid hour and lead time.
+//
+//valid_hour =
+${METPLUS_VALID_HOUR_LIST}
+
+//lead =
+${METPLUS_LEAD_LIST}
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Python diagnostic scripts to be run
+// May be set separately in each "domain_info" entry
+//
+//diag_script =
+${METPLUS_DIAG_SCRIPT}
+
+//
+// Domain-specific cylindrical coordinate transformation
+//
+//domain_info = {
+${METPLUS_DOMAIN_INFO_LIST}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Data censoring and conversion
+// May be set separately in each diag_data "field" entry
+//
+// censor_thresh = [];
+${METPLUS_CENSOR_THRESH}
+
+// censor_val    = [];
+${METPLUS_CENSOR_VAL}
+
+// convert(x)    = x;
+${METPLUS_CONVERT}
+
+
+//
+// Data fields
+//
+data = {
+
+   ${METPLUS_DATA_FILE_TYPE}
+
+   // If empty, the field is processed for all domains
+   //domain = [];
+   ${METPLUS_DATA_DOMAIN}
+
+   // Pressure levels to be used, unless overridden below
+   //level =
+   ${METPLUS_DATA_LEVEL}
+
+   //field = [
+   ${METPLUS_DATA_FIELD}
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Regridding options
+//
+//regrid = {
+${METPLUS_REGRID_DICT}
+
+//
+// Optionally convert u/v winds to tangential/radial winds
+//
+//compute_tangential_and_radial_winds =
+${METPLUS_COMPUTE_TANGENTIAL_AND_RADIAL_WINDS}
+
+//u_wind_field_name =
+${METPLUS_U_WIND_FIELD_NAME}
+
+//v_wind_field_name =
+${METPLUS_V_WIND_FIELD_NAME}
+
+//tangential_velocity_field_name =
+${METPLUS_TANGENTIAL_VELOCITY_FIELD_NAME}
+
+//tangential_velocity_long_field_name =
+${METPLUS_TANGENTIAL_VELOCITY_LONG_FIELD_NAME}
+
+//radial_velocity_field_name =
+${METPLUS_RADIAL_VELOCITY_FIELD_NAME}
+
+//radial_velocity_long_field_name =
+${METPLUS_RADIAL_VELOCITY_LONG_FIELD_NAME}
+
+
+//
+// Vortex removal flag
+//
+//vortex_removal =
+${METPLUS_VORTEX_REMOVAL}
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Flags to control output files
+//
+//nc_rng_azi_flag =
+${METPLUS_NC_RNG_AZI_FLAG}
+
+//nc_diag_flag =
+${METPLUS_NC_DIAG_FLAG}
+
+//cira_diag_flag =
+${METPLUS_CIRA_DIAG_FLAG}
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+tmp_dir = "${MET_TMP_DIR}";
+
+//output_prefix =
+${METPLUS_OUTPUT_PREFIX}
+
+//version       = "V11.0.0";
+
+////////////////////////////////////////////////////////////////////////////////
+
+${METPLUS_MET_CONFIG_OVERRIDES}
