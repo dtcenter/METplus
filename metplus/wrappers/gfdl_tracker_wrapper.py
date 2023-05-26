@@ -344,7 +344,7 @@ class GFDLTrackerWrapper(CommandBuilder):
                                  'tcvit_genesis_storms.txt')
         try:
             shutil.copyfile(src_path, dest_path)
-        except:
+        except (OSError, shutil.SameFileError):
             self.log_error(f"Copy failed: from {src_path} to {dest_path}")
             return False
 
@@ -361,7 +361,7 @@ class GFDLTrackerWrapper(CommandBuilder):
 
         try:
             shutil.copyfile(src_path, dest_path)
-        except:
+        except (OSError, shutil.SameFileError):
             self.log_error(f"Copy failed: from {src_path} to {dest_path}")
             return False
 

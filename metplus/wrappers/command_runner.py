@@ -138,7 +138,7 @@ class CommandRunner(object):
         # run command
         try:
             ret = run(cmd_exe, **kwargs)
-        except:
+        except Exception:
             ret = -1
         else:
             # calculate time to run
