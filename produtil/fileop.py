@@ -237,7 +237,7 @@ def makedirs(filename,numtries=10,logger=None):
                 if logger is not None:
                     logger.info(filename+': make directory and parents')
                 os.makedirs(filename)
-        except EnvironmentError as e:
+        except EnvironmentError:
             if os.path.isdir(filename):
                 return True
             elif os.path.exists(filename):
@@ -426,15 +426,14 @@ def deliver_file(infile,outfile,keep=True,verify=False,blocksize=1048576,
     outdir=None # parent directory of target file
     (oflstat,ofstat)=lstat_stat(actual_outfile) # stat on target file
     (odlstat,odstat)=(None,None) # stat on target file's parent directory
-    if ofstat is not None:
-        if stat.S_ISDIR(ofstat.st_mode):
-            outdir=actual_outfile
-            actual_outfile=os.path.join(outfile,inbase)
-            (odlstat,odstat)=(oflstat,ofstat)
-            if logger is not None:
-                logger.debug('%s: is a directory; file is %s'
-                             %(outfile,inbase))
-            (oflstat,ofstat)=lstat_stat(actual_outfile)
+    if ofstat is not None and stat.S_ISDIR(ofstat.st_mode):
+        outdir=actual_outfile
+        actual_outfile=os.path.join(outfile,inbase)
+        (odlstat,odstat)=(oflstat,ofstat)
+        if logger is not None:
+            logger.debug('%s: is a directory; file is %s'
+                         %(outfile,inbase))
+        (oflstat,ofstat)=lstat_stat(actual_outfile)
     if odlstat is None:
         outdir=os.path.dirname(outfile)
         if len(outdir)<1: outdir='.'
@@ -449,10 +448,9 @@ def deliver_file(infile,outfile,keep=True,verify=False,blocksize=1048576,
             raise DeliveryFailed('Target does not exist, and parent of '
                                  'target is not a directory.',infile,outfile)
 
-    if odstat is not None and not force:
-        if logger is  not None:
-            logger.debug('%s: exists and overwrite (force) is disabled.  '
-                         'Aborting delivery.'%(actual_outfile,))
+    if odstat is not None and not force and logger is not None:
+        logger.debug('%s: exists and overwrite (force) is disabled.  '
+                     'Aborting delivery.'%(actual_outfile,))
 
     # Handle a special case: the source and destination are the same
     # and the destination is not a symlink.  In that case, we have
@@ -555,7 +553,7 @@ def deliver_file(infile,outfile,keep=True,verify=False,blocksize=1048576,
                 temp.close()
             if removefailed and tempname is not None:
                 os.unlink(tempname)
-        except EnvironmentError as e:
+        except EnvironmentError:
             pass
 
 ########################################################################
@@ -690,7 +688,7 @@ def make_symlink(source,target,force=False,logger=None,max_tries=20):
         else:
             pass # symlink_read_test(target,logger=logger)
     except EnvironmentError as e:
-        if not e.errno==errno.EEXIST or not force:
+        if e.errno!=errno.EEXIST or not force:
             raise
         # The file already exists
         if logger is not None:
@@ -915,8 +913,6 @@ def check_last_lines(filename,searchstr,lastbytes=10000,logger=None):
         i=0
         for line in f:
             i+=1
-            #print '%s: search line "%s" for "%s"'%(
-            #               filename,line,searchstr)
             if line.find(searchstr)>=0:
                 return True
         if logger is not None:
@@ -953,24 +949,21 @@ def check_file(filename,min_size=None,min_mtime_age=None,
         if min_mtime_age is not None or min_atime_age is not None \
                 or min_ctime_age is not None:
             now=int(time.time())
-            if min_mtime_age is not None:
-                if not now-s.st_mtime>min_mtime_age: 
-                    if logger is not None:
-                        logger.info('%s: not old enough (modification time)'
-                                    %(filename,))
-                    return False
-            if min_atime_age is not None:
-                if not now-s.st_atime>min_atime_age: 
-                    if logger is not None:
-                        logger.info('%s: not old enough (access time)'
-                                    %(filename,))
-                    return False
-            if min_ctime_age is not None:
-                if not now-s.st_ctime>min_ctime_age: 
-                    if logger is not None:
-                        logger.info('%s: not old enough (inode change time)'
-                                    %(filename,))
-                    return False
+            if min_mtime_age is not None and now-s.st_mtime<=min_mtime_age:
+                if logger is not None:
+                    logger.info('%s: not old enough (modification time)'
+                                %(filename,))
+                return False
+            if min_atime_age is not None and now-s.st_atime<=min_atime_age:
+                if logger is not None:
+                    logger.info('%s: not old enough (access time)'
+                                %(filename,))
+                return False
+            if min_ctime_age is not None and now-s.st_ctime<=min_ctime_age:
+                if logger is not None:
+                    logger.info('%s: not old enough (inode change time)'
+                                %(filename,))
+                return False
         if logger is not None:
             logger.info('%s: file meets requirements'%(filename,))
         return True
@@ -1074,7 +1067,6 @@ class FileWaiter:
         @param log_each_file log messages about each file checked"""
         maxwait=int(maxwait)
         start=int(time.time())
-        now=start
         first=True
         if log_each_file:
             flogger=logger
@@ -1086,7 +1078,6 @@ class FileWaiter:
                     logger.info('No files to check.')
                 return True
 
-            left=len(self._fset)-len(self._found)
             now=int(time.time())
             nfiles=len(self._fset)
             nfound=len(self._found)

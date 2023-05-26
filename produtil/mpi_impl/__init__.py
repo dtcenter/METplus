@@ -232,10 +232,7 @@ def register_implementations(logger=None):
         # If we have srun, and we're in a pack group...
         import produtil.mpi_impl.srun_pack_groups
         add_implementation(produtil.mpi_impl.srun_pack_groups.Implementation)
-    except ImportError as e: 
-        # Some projects prefer to suppress this log message.
-        # Temp comment out until this can be addressed properly.
-        #logger.info('srun: cannot import: %s'%(str(e),))
+    except ImportError:
         pass
 
     try:
@@ -243,80 +240,55 @@ def register_implementations(logger=None):
         # If we have srun and SLURM resources...
         import produtil.mpi_impl.srun
         add_implementation(produtil.mpi_impl.srun.Implementation)
-    except ImportError as e: 
-        # Some projects prefer to suppress this log message.
-        # Temp comment out until this can be addressed properly.
-        #logger.info('srun: cannot import: %s'%(str(e),))
+    except ImportError:
         pass
 
     try:
         import produtil.mpi_impl.inside_aprun
         add_implementation(produtil.mpi_impl.inside_aprun.Implementation)
-    except ImportError as e: 
-        # Some projects prefer to suppress this log message.
-        # Temp comment out until this can be addressed properly.
-        #logger.info('inside_aprun: cannot import: %s'%(str(e),))
+    except ImportError:
         pass
 
     try:
         import produtil.mpi_impl.pbs_cray_intel
         add_implementation(produtil.mpi_impl.pbs_cray_intel.Implementation)
-    except ImportError as e:
-        # Some projects prefer to suppress this log message.
-        # Temp comment out until this can be addressed properly.
-        #logger.info('pbs_cray_intel: cannot import: %s'%(str(e),))
+    except ImportError:
         pass
 
     try:
         import produtil.mpi_impl.lsf_cray_intel
         add_implementation(produtil.mpi_impl.lsf_cray_intel.Implementation)
-    except ImportError as e: 
-        # Some projects prefer to suppress this log message.
-        # Temp comment out until this can be addressed properly.
-        #logger.info('lsf_cray_intel: cannot import: %s'%(str(e),))
+    except ImportError:
         pass
 
     try:
         import produtil.mpi_impl.impi
         add_implementation(produtil.mpi_impl.impi.Implementation)
-    except ImportError as e: 
-        # Some projects prefer to suppress this log message.
-        # Temp comment out until this can be addressed properly.
-        #logger.info('impi: cannot import: %s'%(str(e),))
+    except ImportError:
         pass
 
     try:
         import produtil.mpi_impl.mpirun_lsf
         add_implementation(produtil.mpi_impl.mpirun_lsf.Implementation)
-    except ImportError as e: 
-        #logger.info('mpirun_lsf: cannot import: %s'%(str(e),))
+    except ImportError:
         pass
 
     try:
         import produtil.mpi_impl.mpiexec_mpt
         add_implementation(produtil.mpi_impl.mpiexec_mpt.Implementation)
-    except ImportError as e: 
-        # Some projects prefer to suppress this log message.
-        # Temp comment out until this can be addressed properly.
-        #logger.info('mpiexec_mpt: cannot import: %s'%(str(e),))
+    except ImportError:
         pass
 
     try:
         import produtil.mpi_impl.mpiexec
         add_implementation(produtil.mpi_impl.mpiexec.Implementation)
-    except ImportError as e: 
-        # Some projects prefer to suppress this log message.
-        # Temp comment out until this can be addressed properly.
-        #logger.info('mpiexec: cannot import: %s'%(str(e),))
+    except ImportError:
         pass
 
     try:
         import produtil.mpi_impl.srun_shell
         add_implementation(produtil.mpi_impl.srun_shell.Implementation)
-    except ImportError as e: 
-        # Some projects prefer to suppress this log message.
-        # Temp comment out until this can be addressed properly.
-        #logger.info('srun_shell: cannot import: %s'%(str(e),))
+    except ImportError:
         pass
 
 def get_mpi(mpi_name=NO_NAME,force=False,logger=None,**kwargs):
@@ -380,16 +352,11 @@ def get_mpi(mpi_name=NO_NAME,force=False,logger=None,**kwargs):
                 force=force,logger=logger,**kwargs)
         except (Exception,
                 produtil.fileop.FileOpError,
-                produtil.prog.ExitStatusException) as ee:
+                produtil.prog.ExitStatusException):
             # Ignore exceptions related to an inability to detect the
             # MPI implementation.  We assume the issue has already
             # been logged, and we move on to the next implementation's
             # detection function.
-
-            # Some projects prefer to suppress this log message.
-            # Temp comment out until this can be addressed properly.
-            #logger.info('%s: not detected: %s'%(
-            #        name,str(ee)))
             pass
         if result:
             # Detection succeeded.

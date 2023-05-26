@@ -507,8 +507,8 @@ class GFDLTrackerWrapper(CommandBuilder):
 
         # if not, create a blank file
         self.logger.debug(f"Writing blank fort.14 file: {fort_14_path}")
-        with open(fort_14_path, 'w'):
-            pass
+        file_handle = open(fort_14_path, 'w')
+        file_handle.close()
 
     def create_fort_15_file(self, all_lead_minutes):
         # format must match index (starting with 1) taking up 4 characters

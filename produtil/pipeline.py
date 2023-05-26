@@ -662,11 +662,6 @@ class Pipeline(object):
         """!Sends SIGKILL to all children."""
         self.send_signal(signal.SIGKILL)
 
-    # def __repr__(self):
-    #     """Does not run the pipeline; simply returns <Pipeline at XX>
-    #     where XX is the id of this object."""
-    #     return '<Pipeline at 0x%x>'%(id(self),)
-
     def communicate(self,sleeptime=None):
         """!Writes to input, reads from output, waits for child
         processes, etc.  This is just a wrapper around the manage()

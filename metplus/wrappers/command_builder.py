@@ -519,8 +519,7 @@ class CommandBuilder:
         level = get_seconds_from_string(level, 'H')
 
         # arguments for find helper functions
-        arg_dict = {'level': level,
-                    'data_type': data_type_fmt,
+        arg_dict = {'data_type': data_type_fmt,
                     'mandatory': mandatory,
                     'time_info': time_info,
                     'return_list': return_list}
@@ -529,13 +528,14 @@ class CommandBuilder:
         if (self.c_dict.get(data_type_fmt + 'FILE_WINDOW_BEGIN', 0) == 0 and
                 self.c_dict.get(data_type_fmt + 'FILE_WINDOW_END', 0) == 0):
 
-            return self.find_exact_file(**arg_dict, allow_dir=allow_dir)
+            return self._find_exact_file(**arg_dict, allow_dir=allow_dir,
+                                         level=level)
 
         # if looking for a file within a time window:
-        return self.find_file_in_window(**arg_dict)
+        return self._find_file_in_window(**arg_dict)
 
-    def find_exact_file(self, level, data_type, time_info, mandatory=True,
-                        return_list=False, allow_dir=False):
+    def _find_exact_file(self, level, data_type, time_info, mandatory=True,
+                         return_list=False, allow_dir=False):
         input_template = self.c_dict.get(f'{data_type}INPUT_TEMPLATE', '')
         data_dir = self.c_dict.get(f'{data_type}INPUT_DIR', '')
 
@@ -662,8 +662,8 @@ class CommandBuilder:
 
         return found_file_list
 
-    def find_file_in_window(self, level, data_type, time_info, mandatory=True,
-                            return_list=False):
+    def _find_file_in_window(self, data_type, time_info, mandatory=True,
+                             return_list=False):
         template = self.c_dict[f'{data_type}INPUT_TEMPLATE']
         data_dir = self.c_dict[f'{data_type}INPUT_DIR']
 
@@ -742,7 +742,7 @@ class CommandBuilder:
             for ext in COMPRESSION_EXTENSIONS:
                 if filepath.endswith(ext) and filepath[0:-len(ext)] in closest_files:
                     duplicate_found = True
-                    continue
+                    break
 
             if not duplicate_found:
                 closest_files_fixed.append(filepath)
@@ -1009,12 +1009,12 @@ class CommandBuilder:
 
     def check_for_gempak(self):
         # check if we are processing Gempak data
-        processingGempak = False
+        processing_gempak = False
 
         # if any *_DATATYPE keys in c_dict have a value of GEMPAK, we are using Gempak data
         data_types = [value for key,value in self.c_dict.items() if key.endswith('DATATYPE')]
         if 'GEMPAK' in data_types:
-            processingGempak = True
+            processing_gempak = True
 
         # if any filename templates end with .grd, we are using Gempak data
         template_list = [value for key,value in self.c_dict.items() if key.endswith('TEMPLATE')]
@@ -1029,10 +1029,10 @@ class CommandBuilder:
                 templates.append(value)
 
         if [value for value in templates if value and value.endswith('.grd')]:
-            processingGempak = True
+            processing_gempak = True
 
         # If processing Gempak, make sure GempakToCF is found
-        if processingGempak:
+        if processing_gempak:
             gempaktocf_jar = self.config.getstr('exe', 'GEMPAKTOCF_JAR', '')
             self.check_gempaktocf(gempaktocf_jar)
 

@@ -60,8 +60,6 @@ class Implementation(ImplementationBase):
         if logger is None: logger=self.logger
         sync=produtil.prog.Runner(['/bin/sync'])
         p=produtil.pipeline.Pipeline(sync,capture=True,logger=logger)
-        version=p.to_string()
-        status=p.poll()
 
     def openmp(self,arg,threads):
         """!Adds OpenMP support to the provided object
@@ -112,7 +110,6 @@ class Implementation(ImplementationBase):
         p=produtil.pipeline.Pipeline(
             scontrol,capture=True,logger=self.logger)
         nodelist=p.to_string()
-        status=p.poll()
         for line in nodelist.splitlines():
             node=line.strip()
             if not node: continue

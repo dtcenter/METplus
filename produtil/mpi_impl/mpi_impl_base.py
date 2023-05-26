@@ -141,8 +141,6 @@ class ImplementationBase(object):
         if logger is None: logger=self.logger
         sync=produtil.prog.Runner(['/bin/sync'])
         p=produtil.pipeline.Pipeline(sync,capture=True,logger=logger)
-        version=p.to_string()
-        status=p.poll()
     def openmp(self,arg,threads):
         """!Does nothing.  This implementation does not support OpenMP.
     

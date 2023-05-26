@@ -340,7 +340,6 @@ def add_met_config_dict_list(config, app_name, output_dict, dict_name,
 
             if not add_met_config_item(config, item, met_config_items):
                 is_ok = False
-                continue
 
         dict_string = format_met_config('dict',
                                         met_config_items,

@@ -190,9 +190,6 @@ def qparse(format_string):
                 type(format_string).__name__,repr(format_string)))
     result=list()
     literal_text=''
-    field_name=None
-    format_spec=None
-    conversion=None
     for m in re.finditer(r'''(?xs) (
             \{ \' (?P<qescape>  (?: \' (?! \} ) | [^'] )* ) \' \}
           | \{ \" (?P<dqescape> (?: \" (?! \} ) | [^"] )* ) \" \}
@@ -200,7 +197,7 @@ def qparse(format_string):
                \{
                   (?P<field_name>
                      [^\}:!\['"\{] [^\}:!\[]*
-                     (?: \. [a-zA-Z_][a-zA-Z_0-9]+
+                     (?: \. [a-zA-Z_]\w+
                        | \[ [^\]]+ \] )*
                   )
                   (?: ! (?P<conversion>[rs]) )?
@@ -474,7 +471,7 @@ def confwalker(conf,start,selector,acceptor,recursevar):
             if key==recursevar:
                 for sec2 in reversed(val.split(',')):
                     trim=sec2.strip()
-                    if len(trim)>0 and not trim in touched:
+                    if len(trim)>0 and trim not in touched:
                         requested.append(trim)
 
 ########################################################################
@@ -543,7 +540,6 @@ class ProdConfig(object):
         section or option duplicates are not allowed in a single 
         configuration source."""
         self._logger=logging.getLogger('prodconfig')
-        logger=self._logger
         self._lock=threading.RLock()
         self._formatter=ConfFormatter(bool(quoted_literals))
         self._time_formatter=ConfTimeFormatter(bool(quoted_literals))
@@ -676,7 +672,7 @@ class ProdConfig(object):
                     'instead.'%(type(arg).__name__,repr(arg)))
             if verbose: logger.info(arg)
             m=re.match(r'''(?x)
-              (?P<section>[a-zA-Z][a-zA-Z0-9_]*)
+              (?P<section>[a-zA-Z]\w*)
                \.(?P<option>[^=]+)
                =(?P<value>.*)$''',arg)
             if m:
@@ -706,10 +702,9 @@ class ProdConfig(object):
             elif not os.path.isfile(path):
                 logger.error(path+': conf file is not a regular file.')
                 sys.exit(2)
-            elif not produtil.fileop.isnonempty(path):
-                if verbose:
-                    logger.warning(
-                        path+': conf file is empty.  Will continue anyway.')
+            elif not produtil.fileop.isnonempty(path) and verbose:
+                logger.warning(
+                    path+': conf file is empty.  Will continue anyway.')
             if verbose: logger.info('Conf input: '+repr(path))
             self.read(path)
 
@@ -1164,7 +1159,7 @@ class ProdConfig(object):
                                 got=self._conf.get(trim,opt,raw=True)
                                 gotted=True
                                 break
-                            except (KeyError,NoSectionError,NoOptionError) as e:
+                            except (KeyError,NoSectionError,NoOptionError):
                                 pass # var not in section; search elsewhere
                 if gotted: break
             else:
@@ -1172,7 +1167,7 @@ class ProdConfig(object):
                     got=self._conf.get(section,opt,raw=True)
                     gotted=True
                     break
-                except (KeyError,NoSectionError,NoOptionError) as e:
+                except (KeyError,NoSectionError,NoOptionError):
                     pass # var not in section; search elsewhere
 
         if not gotted:
@@ -1269,7 +1264,7 @@ class ProdConfig(object):
         with self:
             return self._get(sec,opt,str,default,badtypeok,morevars,taskvars=taskvars)
 
-    def get(self,sec,opt,default=None,badtypeok=False,morevars=None,taskvars=None):
+    def get(self,sec,opt,default=None,morevars=None,taskvars=None):
         """!get the value of an option from a section
 
         Gets option opt from section sec, expands it and converts
@@ -1284,8 +1279,6 @@ class ProdConfig(object):
         @param sec,opt the section and option
         @param default if specified and not None, then the default is
           returned if an option has no value or the section does not exist
-        @param badtypeok is True, and the conversion fails, and a
-          default is specified, the default will be returned.
         @param morevars,taskvars dicts of more variables for string expansion"""
         with self:
             try:
@@ -1342,7 +1335,7 @@ class ProdConfig(object):
         if re.match(r'(?i)\A(?:F|\.false\.|false|no|off|0)\Z',s): return False
         try:
             return int(s)==0
-        except ValueError as e: pass
+        except ValueError: pass
         if badtypeok and default is not None:
             return bool(default)
         raise ValueError('%s.%s: invalid value for conf file boolean: %s'
@@ -1400,13 +1393,9 @@ class ProdTask(produtil.datastore.Task):
                                           logger=conf.log(taskname),**kwargs)
             mworkdir=self.meta('workdir','')
             moutdir=self.meta('outdir','')
-            if mworkdir: 
-                workdir=mworkdir
-            else:
+            if not mworkdir:
                 self['workdir']=workdir
-            if moutdir: 
-                outdir=moutdir
-            else:
+            if not moutdir:
                 self['outdir']=outdir
 
     def get_workdir(self):

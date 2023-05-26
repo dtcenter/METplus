@@ -143,7 +143,7 @@ def prune_empty(output_dir, logger):
                 os.rmdir(full_dir)
 
 
-def get_files(filedir, filename_regex, logger=None):
+def get_files(filedir, filename_regex):
     """! Get all the files (with a particular naming format) by walking
         through the directories.
 
@@ -343,7 +343,7 @@ def is_met_netcdf(file_path):
     return True
 
 
-def get_filetype(filepath, logger=None):
+def get_filetype(filepath):
     """!This function determines if the filepath is a NETCDF or GRIB file
        based on the first eight bytes of the file.
        It returns the string GRIB, NETCDF, or a None object.
@@ -355,7 +355,6 @@ def get_filetype(filepath, logger=None):
        None is returned, without a system exit. (CURRENTLY NOT USED)
 
        @param filepath:  path/to/filename
-       @param logger the logger, optional
        @returns The string GRIB, NETCDF or a None object
     """
     # Developer Note

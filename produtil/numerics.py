@@ -604,13 +604,13 @@ class TimeContainer(object):
         value.
         @param when the time of interest"""
         (then,index)=self.index_of(when)
-        if epsilon is not None:
-            if not abs(to_fraction(then-when,negok=True)) \
-                    <= to_fraction(epsilon):
-                raise NoNearbyValues(
-                    '%s: nearest value not after is %s, which is not '
-                    'within %s seconds.'%(str(when),str(then),
-                                          str(to_fraction(epsilon))))
+        if (epsilon is not None and
+                not abs(to_fraction(then-when,negok=True))
+                <= to_fraction(epsilon)):
+            raise NoNearbyValues(
+                '%s: nearest value not after is %s, which is not '
+                'within %s seconds.'%(str(when),str(then),
+                                      str(to_fraction(epsilon))))
         return then
     def get(self,when,default):
         """!Returns the item at the latest time that is not later than
@@ -769,10 +769,6 @@ class TimeArray(TimeContainer):
                 ('%s: not in range [%s,%s]' % (when.ctime(),
                     self._start.ctime(),self._end.ctime()) )
         return (self._times[index],index)
-    # def __iter__(self):
-    #     """Iterates over all known times."""
-    #     for i in range(len(self._times)):
-    #         yield self._times[i]
 
 ########################################################################
 
@@ -832,7 +828,7 @@ class TimeMapping(TimeContainer):
             imiddle=(iearly+ilate)/2
             middle=self._times[imiddle]
             if when<middle:
-                (ilate,late)=(imiddle,middle)
+                (ilate,_)=(imiddle,middle)
             else:
-                (iearly,early)=(imiddle,middle)
+                (iearly,_)=(imiddle,middle)
         return ( self._times[iearly], iearly )

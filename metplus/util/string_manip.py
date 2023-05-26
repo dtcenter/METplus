@@ -397,7 +397,7 @@ def round_0p5(val):
 
 def generate_tmp_filename():
     random_string = ''.join(random.choice(string.ascii_letters)
-                            for i in range(10))
+                            for _ in range(10))
     return f"metplus_tmp_{random_string}"
 
 
@@ -464,9 +464,9 @@ def expand_int_string_to_list(int_string):
     # if string ends with +, remove it and add it back at the end
     if int_string.strip().endswith('+'):
         int_string = int_string.strip(' +')
-        hasPlus = True
+        has_plus = True
     else:
-        hasPlus = False
+        has_plus = False
 
     # separate into list by comma
     comma_list = int_string.split(',')
@@ -481,7 +481,7 @@ def expand_int_string_to_list(int_string):
         else:
             subset_list.append(int(comma_item.strip()))
 
-    if hasPlus:
+    if has_plus:
         subset_list.append('+')
 
     return subset_list

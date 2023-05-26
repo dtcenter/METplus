@@ -141,7 +141,7 @@ def stdout_is_stderr():
             return True
         if sys.stdout.isatty() and sys.stderr.isatty():
             return True
-    except Exception as e:
+    except Exception:
         pass
     return False
 
@@ -216,7 +216,7 @@ class JLogHandler(MasterLogHandler):
                 for x in range(10):
                     try:
                         os.makedirs(dirn)
-                    except EnvironmentError as e:
+                    except EnvironmentError:
                         if os.path.isdir(dirn): 
                             break
                         elif os.path.exists(dirn):
@@ -319,7 +319,7 @@ def mpi_redirect(threadname,stderrfile,stdoutfile,
         if masterlevel!=logging.NOTSET:
             mloghandler.setLevel(masterlevel)
         else:
-            raise BaseException('no master level')
+            raise Exception('no master level')
         logging.getLogger().addHandler(mloghandler)
     global masterlogger
     masterlogger=logging.getLogger(masterdomain)
@@ -377,7 +377,6 @@ def configureLogging(jlogfile=None,
         root.setLevel(level) # set global minimum logging level
 
     # Configure log formatting:
-    jlog=logging.getLogger('jlogfile')
     jobstr=os.environ.get('job',None)
     if jobstr is None:
         jobstr=produtil.batchsystem.jobname()

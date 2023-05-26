@@ -178,7 +178,7 @@ class Datastore(object):
         self._file_lock=produtil.locking.LockFile(
             lockfile,logger=logger,max_tries=300,sleep_time=0.1,first_warn=50)
         self._transtack=collections.defaultdict(list)
-        with self.transaction() as tx:
+        with self.transaction():
             self._createdb(self._connection())
     ##@var db 
     # The underlying sqlite3 database object
@@ -219,9 +219,6 @@ class Datastore(object):
         if not self._locking: return
         self._file_lock.release()
         self._db_lock.release()
-        #if self._logger is not None:
-        #        self._logger.info('db lock release: '+\
-        #          (''.join(traceback.format_list(traceback.extract_stack(limit=10)))))
     def transaction(self):
         """!Starts a transaction on the database in the current thread."""
         return Transaction(self)
@@ -334,15 +331,12 @@ class Transaction(object):
         prodtype=type(d).__name__
         av = d._meta['available'] if ('available' in d._meta) else 0
         loc = d._meta['location'] if ('location' in d._meta) else ''
-        #print 'INIT_DATUM with location=%s'%(repr(loc),)
         self.mutate('INSERT OR IGNORE INTO products VALUES (?,?,?,?)',(d.did,av,loc,prodtype))
         if loc is not None and loc!='':
             # Update the location if it is not set in the product
             # table, but is set in the initial values.
-            #print 'UPDATE LOCATION...'
             for (did,oloc) in \
                     self.query('SELECT id,location FROM products WHERE id = ?',(d.did,)):
-                #print 'LOCATION currently %s'%(oloc,)
                 if did==d.did and (oloc is None or oloc==''):
                     self.mutate('UPDATE products SET location=? WHERE id=?',
                                 (loc,d.did))
@@ -381,14 +375,12 @@ class Transaction(object):
             found=True
             meta['available']=av
             meta['location']=loc
-            #print 'refresh_meta update location=%s'%(repr(loc),)
             break
         if not found:
             if or_add:
                 self.init_datum(d,meta=False)
             meta['available']=0
             meta['location']=''
-            #print 'refresh_meta not found so location=""'
         for (did,k,v) in self.query('SELECT id, key, value FROM metadata WHERE id = ?',(d.did,)):
             meta[k]=v
         d._meta=meta
@@ -458,8 +450,6 @@ class Datum(object):
         @param cache Metadata cache lifetime in seconds.
         @param location The initial value for location, if it is not set already in the database.
         @param kwargs Ignored."""
-        #print 'INIT WITH location=%s prodname=%s category=%s'% \
-        #    (repr(location),repr(prodname),repr(category))
         (self._dstore,self._prodname,self._category) = (dstore,str(prodname),str(category))
         self._id=self._category+'::'+self._prodname
         self._cachetime=time.time()
@@ -599,11 +589,11 @@ class Datum(object):
     def __ge__(self,other):
         """!Compares two Datums' prodnames and categories.
         @param other the other datum to compare against"""
-        return not (self<other)
+        return self>=other
     def __le__(self,other):
         """!Compares two Datums' prodnames and categories.
         @param other the other datum to compare against"""
-        return not (self>other)
+        return self<=other
     def set_loc_avail(self,loc,avail):
         """!Sets the location and availability of this Datum in a
         single transaction.
@@ -624,13 +614,10 @@ class Datum(object):
         @param k The key of interest.
         @param force If True, forces a cache update even if the
           cache is not expired."""
-        logger=self.dstore._logger
-        did=self.did
         if not force:
             age=time.time()-self._cachetime
-            if age<self._cacheage:
-                if k is None or k in self._meta:
-                    return self._meta
+            if age<self._cacheage and (k is None or k in self._meta):
+                return self._meta
         with self.transaction() as t:
             t.refresh_meta(self)
             self._cachetime=time.time()
@@ -1049,7 +1036,6 @@ def wait_for_products(plist,logger,renamer=None,action=None,
     if action_args is None: action_args=list()
     logger.info('Waiting for %d products.'%(int(len(plist)),))
     while len(seen)<len(plist) and now<start+maxtime:
-        now=int(time.time())
         for p in plist:
             if p in seen: continue
             if not p.available: p.check()

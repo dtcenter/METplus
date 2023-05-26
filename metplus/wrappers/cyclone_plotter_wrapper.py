@@ -187,14 +187,13 @@ class CyclonePlotterWrapper(CommandBuilder):
 
         """
         self.logger.debug("Begin retrieving data...")
-        all_tracks_list = []
 
         # Store the data in the track list.
         if os.path.isdir(self.input_data):
             self.logger.debug("Get data from all files in the directory " +
                               self.input_data)
             # Get the list of all files (full file path) in this directory
-            all_input_files = get_files(self.input_data, ".*.tcst", self.logger)
+            all_input_files = get_files(self.input_data, ".*.tcst")
 
             # read each file into pandas then concatenate them together
             df_list = [pd.read_csv(file, delim_whitespace=True) for file in all_input_files]
@@ -208,7 +207,6 @@ class CyclonePlotterWrapper(CommandBuilder):
             # if there are any NaN values in the ALAT, ALON, STORM_ID, LEAD, INIT, AMODEL, or VALID column,
             # drop that row of data (axis=0).  We need all these columns to contain valid data in order
             # to create a meaningful plot.
-            combined_df = combined.copy(deep=True)
             combined_df = combined.dropna(axis=0, how='any',
                                           subset=self.columns_of_interest)
 
@@ -435,8 +433,6 @@ class CyclonePlotterWrapper(CommandBuilder):
 
         # to be consistent with the NOAA website, use red for annotations, markers, and lines.
         pt_color = 'red'
-        cross_marker_size = self.cross_marker_size
-        circle_marker_size = self.circle_marker_size
 
         # Get all the lat and lon (i.e. x and y) points for the '+' and 'o' marker types
         # to be used in generating the scatter plots (one for the 0/12 hr and one for the 6/18 hr lead
@@ -454,12 +450,10 @@ class CyclonePlotterWrapper(CommandBuilder):
                 cross_lons.append(pt.lon)
                 cross_lats.append(pt.lat)
                 cross_annotations.append(pt.annotation)
-                # cross_marker = pt.marker
             elif pt.marker == self.circle_marker:
                 circle_lons.append(pt.lon)
                 circle_lats.append(pt.lat)
                 circle_annotations.append(pt.annotation)
-                # circle_marker = pt.marker
 
         # Now generate the scatter plots for the lead group 0/12 hr ('+' marker) and the
         # lead group 6/18 hr ('.' marker).
@@ -644,9 +638,8 @@ class CyclonePlotterWrapper(CommandBuilder):
         treshold = 10
         for ix, ea in enumerate(lon_list):
             diff = oldval - ea
-            if (ix > 0):
-                if (diff > treshold):
-                    ea = ea + 360
+            if ix > 0 and diff > treshold:
+                ea = ea + 360
             oldval = ea
             new_list.append(ea)
 

@@ -532,18 +532,6 @@ class MPIRanksSPMD(MPIRanksBase):
         """!Returns "X*N" where X is the MPI program and N is the
         number of ranks."""
         return '%s*%d'%(repr(self._mpirank),int(self._count))
-        # sio=io.StringIO()
-        # sio.write(repr(self._mpirank))
-        # if self.haslocalopts():
-        #     sio.write('.setlocalopts(%s)'%(repr(self.localopts),))
-        # if self.threads:
-        #     sio.write('.threads(%s)'%(repr(self.threads),))
-        # if self.turbomode:
-        #     sio.write('.turbomode(%s)'%(repr(self.turbomode),))
-        # sio.write('*%d'%int(self._count))
-        # ret=sio.getvalue()
-        # sio.close()
-        # return ret
     def ngroups(self):
         """!Returns 1 or 0: 1 if there are ranks and 0 if there are none."""
         if self._count>0:
