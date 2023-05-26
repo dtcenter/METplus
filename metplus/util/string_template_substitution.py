@@ -18,7 +18,7 @@ import datetime
 from dateutil.relativedelta import relativedelta
 
 from . import time_util
-from .constants import *
+from .constants import COMPRESSION_EXTENSIONS
 
 TEMPLATE_IDENTIFIER_BEGIN = "{"
 TEMPLATE_IDENTIFIER_END = "}"
