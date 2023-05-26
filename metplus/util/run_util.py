@@ -91,52 +91,33 @@ def pre_run_setup(config_inputs):
 
 
 def run_metplus(config):
-    total_errors = 0
+    """!Load all wrapper instances, check for initialization errors, run all
+    wrappers, write list of commands to file if any were executed, check
+    for wrapper runtime errors.
 
+    @param config METplusConfig object to parse process list, pass to wrapper
+    constructors, and log any messages.
+    @returns integer number of errors that occurred
+    """
     # Use config object to get the list of processes to call
     process_list = get_process_list(config)
 
     try:
-        processes = []
-        for process, instance in process_list:
-            try:
-                logname = f"{process}.{instance}" if instance else process
-                logger = config.log(logname)
-                package_name = ('metplus.wrappers.'
-                                f'{camel_to_underscore(process)}_wrapper')
-                module = import_module(package_name)
-                command_builder = (
-                    getattr(module, f"{process}Wrapper")(config,
-                                                         instance=instance)
-                )
+        # if Usage is in process list, run it and exit
+        if 'Usage' in process_list:
+            wrapper = _get_wrapper_instance(config, 'Usage')
+            wrapper.run_all_times()
+            return 0
 
-                # if Usage specified in PROCESS_LIST, print usage and exit
-                if process == 'Usage':
-                    command_builder.run_all_times()
-                    return 0
-            except AttributeError:
-                logger.error("There was a problem loading "
-                             f"{process} wrapper.")
-                return 1
-            except ModuleNotFoundError:
-                logger.error(f"Could not load {process} wrapper. "
-                             "Wrapper may have been disabled.")
-                return 1
-
-            processes.append(command_builder)
+        # get all wrapper instances
+        processes = _load_all_wrappers(config, process_list)
+        if not processes:
+            return 1
 
         # check if all processes initialized correctly
-        allOK = True
-        for process in processes:
-            if not process.isOK:
-                allOK = False
-                class_name = process.__class__.__name__.replace('Wrapper', '')
-                logger.error("{} was not initialized properly".format(class_name))
-
-        # exit if any wrappers did not initialized properly
-        if not allOK:
-            logger.info("Refer to ERROR messages above to resolve issues.")
-            return 1
+        init_errors = _check_wrapper_init_errors(processes, config.logger)
+        if init_errors:
+            return init_errors
 
         all_commands = []
         for process in processes:
@@ -145,28 +126,113 @@ def run_metplus(config):
                 all_commands.extend(new_commands)
 
         # if process list contains any wrapper that should run commands
-        if any([item[0] not in NO_COMMAND_WRAPPERS for item in process_list]):
+        if any(item[0] not in NO_COMMAND_WRAPPERS for item in process_list):
             # write out all commands and environment variables to file
             write_all_commands(all_commands, config)
 
         # compute total number of errors that occurred and output results
-        for process in processes:
-            if not process.errors:
-                continue
-            process_name = process.__class__.__name__.replace('Wrapper', '')
-            error_msg = f'{process_name} had {process.errors} error'
-            if process.errors > 1:
-                error_msg += 's'
-            error_msg += '.'
-            logger.error(error_msg)
-            total_errors += process.errors
-
-        return total_errors
-    except:
-        logger.exception("Fatal error occurred")
-        logger.info("Check the log file for more information: "
-                    f"{get_logfile_info(config)}")
+        return _check_wrapper_run_errors(processes, config.logger)
+    except Exception:
+        config.logger.exception("Fatal error occurred")
+        config.logger.info("Check the log file for more information: "
+                           f"{get_logfile_info(config)}")
         return 1
+
+
+def _get_wrapper_instance(config, process, instance=None):
+    """!Initialize METplus wrapper instance.
+
+    @param config METplusConfig object to pass to wrapper constructor
+    @param process name of wrapper in camel case, e.g. GridStat
+    @param instance (optional) instance identifier for creating multiple
+    instances of a wrapper. Set to None (default) if no instance is specified
+    @returns CommandBuilder sub-class object or None if something went wrong
+    """
+    try:
+        package_name = ('metplus.wrappers.'
+                        f'{camel_to_underscore(process)}_wrapper')
+        module = import_module(package_name)
+        metplus_wrapper = (
+            getattr(module, f"{process}Wrapper")(config, instance=instance)
+        )
+    except AttributeError:
+        config.logger.error(f"There was a problem loading {process} wrapper.")
+        return None
+    except ModuleNotFoundError:
+        config.logger.error(f"Could not load {process} wrapper. "
+                            "Wrapper may have been disabled.")
+        return None
+
+    return metplus_wrapper
+
+
+def _load_all_wrappers(config, process_list):
+    """!Initialize all METplus wrapper instances in process list.
+
+    @param config METplusConfig object to pass to wrapper constructors
+    @param process_list list of tuple containing process name and instance
+    identifier if specified.
+    @returns list of wrapper instances if all were loaded properly, or None
+    if something went wrong.
+    """
+    processes = []
+    is_ok = True
+    for process, instance in process_list:
+        wrapper = _get_wrapper_instance(config, process, instance)
+        if not wrapper:
+            is_ok = False
+            continue
+        processes.append(wrapper)
+
+    return processes if is_ok else None
+
+
+def _check_wrapper_init_errors(processes, logger=None):
+    """!Check all wrappers for initialization errors.
+
+    @param processes list of wrapper to check
+    @param logger (optional) log object to write logs
+    @returns integer number of initialization errors from all wrappers
+    """
+    all_ok = True
+    errors = 0
+    for process in processes:
+        if process.isOK:
+            continue
+        all_ok = False
+        errors += process.errors
+        if logger:
+            class_name = process.__class__.__name__.replace('Wrapper', '')
+            logger.error("{} was not initialized properly".format(class_name))
+
+    # if any wrappers did not initialize properly
+    if not all_ok:
+        if logger:
+            logger.info("Refer to ERROR messages above to resolve issues.")
+        # set number of errors to 1 if no errors were set by wrapper
+        if not errors:
+            errors = 1
+
+    return errors
+
+
+def _check_wrapper_run_errors(processes, logger=None):
+    total_errors = 0
+    for process in processes:
+        if not process.errors:
+            continue
+        total_errors += process.errors
+
+        if not logger:
+            continue
+        process_name = process.__class__.__name__.replace('Wrapper', '')
+        error_msg = f'{process_name} had {process.errors} error'
+        if process.errors > 1:
+            error_msg += 's'
+        error_msg += '.'
+        logger.error(error_msg)
+
+    return total_errors
 
 
 def post_run_cleanup(config, app_name, total_errors):
