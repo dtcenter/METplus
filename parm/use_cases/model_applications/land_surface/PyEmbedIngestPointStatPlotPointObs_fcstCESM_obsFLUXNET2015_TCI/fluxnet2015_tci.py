@@ -8,7 +8,6 @@ import datetime
 from datetime import date, timedelta
 import pandas as pd 
 
-#dataDir = '/d1/personal/biswas/feature_2011_TCI_from_CESM_FLUXNET2015/'
 
 if len(sys.argv) < 2:
     print("Must specify the following elements: FLUXNET2015_file season")
@@ -28,7 +27,7 @@ elif season=="JJA":
 elif season=="SON":
     ss = 3
 else:
-    print('Unrecodnized season, please use DJF, MAM, JJA, SON')
+    print('Unrecognized season, please use DJF, MAM, JJA, SON')
     exit()
 
 start_year=f2015data['Start year'].values.tolist()
@@ -43,7 +42,7 @@ print("SID :",sid)
 
 lat=f2015data['Latitude'].values.tolist()
 lon=f2015data['Longitude'].values.tolist()
-obs=f2015data['CI Sfc_SM Sensible_Heat'].values.tolist()
+obs=f2015data['CI Sfc_SM Latent_Heat'].values.tolist()
 obs=np.array(obs)
 obs=obs[:,ss]
 

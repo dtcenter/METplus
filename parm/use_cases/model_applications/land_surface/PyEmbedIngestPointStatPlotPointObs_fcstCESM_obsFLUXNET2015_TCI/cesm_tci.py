@@ -2,7 +2,7 @@
 Code adapted from Meg Fowler,CGD,NCAR
 The code computes the Terrestrial Coupling Index (TCI)
 from Sensible Heat Flux and 10 cm Soil Moisture  
-Designed to read Sen Heat Flux (CAM) and Soil Temp (CLM)
+Designed to read Latent Heat Flux (from CAM) and Soil Temp (from CLM)
 from two  bove two CESM files 
 User needs to provide the season (DJF, MAM, JJA, or SON)
 """
@@ -18,9 +18,6 @@ import os
 import netCDF4 as nc
 
 dataDir = '/d1/personal/biswas/feature_2011_TCI_from_CESM_FLUXNET2015/'
-
-#fileCLM = dataDir+'f.e21.FHIST.f09_f09_mg17.CESM2-CLM45physics.002.clm2.h1.1979-83_SoilWater10cm.nc'
-#fileCAM = dataDir+'f.e21.FHIST.f09_f09_mg17.CESM2-CLM45physics.002.cam.h1.1979-83_CIvars.nc'
 
 if len(sys.argv) < 3:
     print("Must specify the following elements: sfc_flux_file soil_file season (DJF, MAM, JJA, or SON)")
@@ -62,7 +59,7 @@ ds = camDS_CLM45
 ds['SOILWATER_10CM'] = (('time','lat','lon'), clmDS_CLM45.SOILWATER_10CM.values)
 
 xname = 'SOILWATER_10CM'    # Controlling variable
-yname = 'SHFLX'             # Responding variable
+yname = 'LHFLX'             # Responding variable
 
 xday = ds[xname].groupby('time.season')
 yday = ds[yname].groupby('time.season')
@@ -105,7 +102,7 @@ attrs = {
         'standard_name': 'terrestrial_coupling_index',
         'long_name': 'terrestrial_coupling_index',
         'level': "10cm_soil_depth",
-        'units': "psu",
+        'units': "W/m2",
 
         'grid': {
             'type': "LatLon",
