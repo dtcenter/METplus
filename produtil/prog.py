@@ -43,6 +43,8 @@ import io,select,io,re,time,fcntl,os,logging,signal
 import produtil.mpi_impl
 from produtil.pipeline import launch, manage, PIPE, ERR2OUT
 
+ERR2OUT_FCT_STR = '.err2out()'
+
 class ProgSyntaxError(Exception): 
     """!Base class of exceptions raised when a Runner is given
     arguments that make no sense."""
@@ -337,12 +339,12 @@ class OutIsError(StreamGenerator):
         return (None,None,ERR2OUT,False)
     def repr_for_in(self):   
         """!This should never be called.  It returns ".err2out()"."""
-        return '.err2out()'
+        return ERR2OUT_FCT_STR
     def repr_for_out(self):  
         """!Part of the representation of Runner.__repr__.  Returns
         ".err2out()" which instructs a Runner to send stderr to
         stdout."""
-        return '.err2out()'
+        return ERR2OUT_FCT_STR
     def __eq__(self,other):  
         """!Is the other object an OutIsError?
         @param other the other object to analyze."""
@@ -568,7 +570,7 @@ class Runner(object):
             s+='.out(%s)'%(self._stdout.repr_for_out(),)
         if self._stderr is not None:
             if isinstance(self._stderr,OutIsError):
-                s+='.err2out()'
+                s+=ERR2OUT_FCT_STR
             else:
                 s+='.err(%s)'%(self._stderr.repr_for_err(),)
         if not self._copy_env:

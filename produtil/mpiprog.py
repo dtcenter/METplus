@@ -84,6 +84,12 @@ class MixedValuesError(MPIProgSyntaxError):
 # mpi ranks.
 MIXED_VALUES=MixedValues()
 
+# constant string to pass to turbomode property
+TURBO_MODE_STR = "Turbo mode setting for this group of MPI ranks."
+
+# constant string to pass to threads property
+NUM_THREADS_STR = 'The number of threads per rank.'
+
 ########################################################################
 
 class MPIRanksBase(object):
@@ -272,8 +278,7 @@ class MPIRanksBase(object):
     def delturbomode(self):
         """!Removes the request for turbo mode to be on or off."""
         self._turbomode=None
-    turbomode=property(getturbomode,setturbomode,delturbomode,
-                       "Turbo mode setting for this group of MPI ranks.")
+    turbomode=property(getturbomode,setturbomode,delturbomode,TURBO_MODE_STR)
 
     def turbo(self,flag=True):
         self.turbomode=flag
@@ -379,7 +384,7 @@ class MPIRanksBase(object):
         """!Removes the request for threads."""
         for r,c in self.groups():
             del r.threads
-    threads=property(getthreads,setthreads,delthreads,"""The number of threads per rank.""")
+    threads=property(getthreads,setthreads,delthreads, NUM_THREADS_STR)
 
     def __mul__(self,factor):
         """!Returns a new set of MPI ranks that consist of this group
@@ -506,8 +511,7 @@ class MPIRanksSPMD(MPIRanksBase):
         del self._mpirank.turbomode
         self._turbomode=None
         return None
-    turbomode=property(getturbomode,setturbomode,delturbomode,
-                       "Turbo mode setting for this group of MPI ranks.")
+    turbomode=property(getturbomode,setturbomode,delturbomode, TURBO_MODE_STR)
     def setlocalopts(self,localopts):
         self._localopts=[ x for x in localopts ]
         self._mpirank.setlocalopts(localopts)
@@ -658,8 +662,7 @@ class MPIRanksMPMD(MPIRanksBase):
             del r.turbomode
         self._turbomode=None
         return None
-    turbomode=property(getturbomode,setturbomode,delturbomode,
-                       "Turbo mode setting for this group of MPI ranks.")
+    turbomode=property(getturbomode,setturbomode,delturbomode, TURBO_MODE_STR)
 
     def setthreads(self,threads):
         for r in self._el:
@@ -674,7 +677,7 @@ class MPIRanksMPMD(MPIRanksBase):
     def delthreads(self):
         for r in self._el:
             del r.threads
-    threads=property(getthreads,setthreads,delthreads,"""The number of threads per rank.""")
+    threads=property(getthreads,setthreads,delthreads, NUM_THREADS_STR)
 
     def setranks_per_node(self,tm):
         t=bool(tm)
@@ -876,7 +879,7 @@ class MPIRank(MPIRanksBase):
     def delthreads(self):
         """!Removes the request for threads."""
         self._threads=1
-    threads=property(getthreads,setthreads,delthreads,"""The number of threads per rank.""")
+    threads=property(getthreads,setthreads,delthreads, NUM_THREADS_STR)
     def to_shell(self):
         """!Return a POSIX sh representation of this MPI rank, if
         possible."""
@@ -1040,7 +1043,7 @@ class MPISerial(MPIRank):
     @property
     def runner(self):
         return self._runner
-    def validate(self): 
+    def validate(self,more=None):
         """!Does nothing."""
     def __eq__(self,other):
         """!Returns True if other is an MPISerial with the same Runner,

@@ -26,7 +26,7 @@ module_logger=logging.getLogger('produtil.fileop')
 class FileOpError(Exception):
     """!This is the superclass of several exceptions relating to
     multi-file operations in produtil.fileop."""
-    def __init__(self,message,filename,more=[]):
+    def __init__(self,message,filename,more=None):
         """!FileOpError constructor
         @param message the error message
         @param filename the name of the problematic file
@@ -35,7 +35,7 @@ class FileOpError(Exception):
           description of the problem with that pair."""
         self.message=message
         self.filename=filename
-        self.more=more
+        self.more=more if more else []
     ##@var message
     # The error message
 
@@ -335,7 +335,7 @@ def isnonempty(filename):
     @param filename The file to test."""
     if filename is None:           return None
     sfile=str(filename)
-    if sfile is None or sfile=='': return None
+    if not sfile: return None
     (l,s) = lstat_stat(filename)
     ret=s is not None and s.st_size>0
     return ret
