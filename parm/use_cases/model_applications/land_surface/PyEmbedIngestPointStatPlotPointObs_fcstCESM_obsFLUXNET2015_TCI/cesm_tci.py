@@ -1,10 +1,11 @@
 """
 Code adapted from Meg Fowler,CGD,NCAR
 The code computes the Terrestrial Coupling Index (TCI)
-from Sensible Heat Flux and 10 cm Soil Moisture  
+from latent Heat Flux and 10 cm Soil Moisture  
 Designed to read Latent Heat Flux (from CAM) and Soil Temp (from CLM)
-from two  bove two CESM files 
+from two CESM files 
 User needs to provide the season (DJF, MAM, JJA, or SON)
+User can change the variables to compute TCI
 """
 
 
@@ -17,15 +18,14 @@ import sys
 import os
 import netCDF4 as nc
 
-dataDir = '/d1/personal/biswas/feature_2011_TCI_from_CESM_FLUXNET2015/'
-
-if len(sys.argv) < 3:
+if len(sys.argv) < 4:
     print("Must specify the following elements: sfc_flux_file soil_file season (DJF, MAM, JJA, or SON)")
     sys.exit(1)
 
 fileCLM = os.path.expandvars(sys.argv[1]) 
 fileCAM = os.path.expandvars(sys.argv[2]) 
 season = sys.argv[3] 
+var_y = sys.argv[4]
 
 print('Starting Terrestrial Coupling Index Calculation for: ',season)
 
@@ -59,7 +59,8 @@ ds = camDS_CLM45
 ds['SOILWATER_10CM'] = (('time','lat','lon'), clmDS_CLM45.SOILWATER_10CM.values)
 
 xname = 'SOILWATER_10CM'    # Controlling variable
-yname = 'LHFLX'             # Responding variable
+#yname = 'LHFLX'             # Responding variable
+yname=str(var_y)
 
 xday = ds[xname].groupby('time.season')
 yday = ds[yname].groupby('time.season')
@@ -82,7 +83,7 @@ lon_met = camDS_CLM45.lon
 print(" Model Data shape: "+repr(met_data.shape))
 v_str = vDate
 v_str = v_str + '_000000'
-print(" Valid date: "+v_str)
+#print(" Valid date: "+v_str)
 lat_ll = float(lat_met.min())
 lon_ll = float(lon_met.min())
 n_lat = lat_met.shape[0]

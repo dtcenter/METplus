@@ -1,3 +1,10 @@
+"""
+This python embedding code reads in the FLUXNET2015 NETCDF data
+and passed to point_data. User need to pass on the season. 
+User can change the verifying variable 
+"""
+
+
 import numpy
 import sys
 import os
@@ -42,6 +49,7 @@ print("SID :",sid)
 
 lat=f2015data['Latitude'].values.tolist()
 lon=f2015data['Longitude'].values.tolist()
+# User can change the name of the variable below
 obs=f2015data['CI Sfc_SM Latent_Heat'].values.tolist()
 obs=np.array(obs)
 obs=obs[:,ss]
