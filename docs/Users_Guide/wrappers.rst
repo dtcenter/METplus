@@ -7656,12 +7656,12 @@ METplus Configuration
 | :term:`TC_DIAG_VALID_INCLUDE`
 | :term:`TC_DIAG_VALID_EXCLUDE`
 | :term:`TC_DIAG_VALID_HOUR`
-| :term:`TC_DIAG_LEAD`
 | :term:`TC_DIAG_DIAG_SCRIPT`
-| :term:`TC_DIAG_DOMAIN_INFO_DOMAIN`
+| :term:`TC_DIAG_DOMAIN_INFO<n>_DOMAIN`
 | :term:`TC_DIAG_DOMAIN_INFO<n>_N_RANGE`
 | :term:`TC_DIAG_DOMAIN_INFO<n>_N_AZIMUTH`
 | :term:`TC_DIAG_DOMAIN_INFO<n>_DELTA_RANGE_KM`
+| :term:`TC_DIAG_DOMAIN_INFO<n>_DIAG_SCRIPT`
 | :term:`TC_DIAG_CENSOR_THRESH`
 | :term:`TC_DIAG_CENSOR_VAL`
 | :term:`TC_DIAG_CONVERT`
@@ -7755,7 +7755,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`TC_DIAG_CYCLONE`
      - cyclone
 
-**${METPLUS_INIT_INCLUDE}**
+**${METPLUS_INIT_INCLUDE_LIST}**
 
 .. list-table::
    :widths: 5 5
@@ -7763,7 +7763,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_DIAG_INIT_INC`
+   * - :term:`TC_DIAG_INIT_INCLUDE`
      - init_inc
 
 **${METPLUS_VALID_BEG}**
@@ -7796,7 +7796,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_DIAG_VALID_INC`
+   * - :term:`TC_DIAG_VALID_INCLUDE`
      - valid_inc
 
 **${METPLUS_VALID_EXCLUDE_LIST}**
@@ -7807,7 +7807,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_DIAG_VALID_EXC`
+   * - :term:`TC_DIAG_VALID_EXCLUDE`
      - valid_exc
 
 **${METPLUS_VALID_HOUR_LIST}**
@@ -7859,6 +7859,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - domain_info.n_azimuth
    * - :term:`TC_DIAG_DOMAIN_INFO<n>_DELTA_RANGE_KM`
      - domain_info.delta_range_km
+   * - :term:`TC_DIAG_DOMAIN_INFO<n>_DIAG_SCRIPT`
+     - domain_info.diag_script
 
 **${METPLUS_CENSOR_THRESH}**
 

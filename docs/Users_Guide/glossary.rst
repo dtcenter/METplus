@@ -4716,6 +4716,11 @@ METplus Configuration Glossary
 
      | *Used by:*  TCRMW
 
+   TC_DIAG_INPUT_DATATYPE
+     Specify the data type of the input directory for input files used with the MET tc_diag tool. Used to set the 'file_type' value of the data dictionary in the MET configuration file for TCDiag.
+
+     | *Used by:*  TCDiag
+
    TC_RMW_INPUT_DIR
      Directory containing input data to TCRMW. This variable is optional because you can specify the full path to the input files using :term:`TC_RMW_INPUT_TEMPLATE`.
 
@@ -10476,7 +10481,7 @@ METplus Configuration Glossary
 
      | *Used by:* TCDiag
 
-   TC_DIAG_INIT_INCLUDE_LIST
+   TC_DIAG_INIT_INCLUDE
      Specify the value for 'init_inc' in the MET configuration file for TCDiag.
 
      | *Used by:* TCDiag
@@ -10491,17 +10496,17 @@ METplus Configuration Glossary
 
      | *Used by:* TCDiag
 
-   TC_DIAG_VALID_INCLUDE_LIST
+   TC_DIAG_VALID_INCLUDE
      Specify the value for 'valid_inc' in the MET configuration file for TCDiag.
 
      | *Used by:* TCDiag
 
-   TC_DIAG_VALID_EXCLUDE_LIST
+   TC_DIAG_VALID_EXCLUDE
      Specify the value for 'valid_exc' in the MET configuration file for TCDiag.
 
      | *Used by:* TCDiag
 
-   TC_DIAG_VALID_HOUR_LIST
+   TC_DIAG_VALID_HOUR
      Specify the value for 'valid_hour' in the MET configuration file for TCDiag.
 
      | *Used by:* TCDiag
@@ -10528,6 +10533,11 @@ METplus Configuration Glossary
 
    TC_DIAG_DOMAIN_INFO<n>_DELTA_RANGE_KM
      Specify the value for the nth 'domain_info.delta_range_km' in the MET configuration file for TCDiag.
+
+     | *Used by:* TCDiag
+
+   TC_DIAG_DOMAIN_INFO<n>_DIAG_SCRIPT
+     Specify the value for the nth 'domain_info.diag_script' in the MET configuration file for TCDiag.
 
      | *Used by:* TCDiag
 
