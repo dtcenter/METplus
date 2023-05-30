@@ -337,7 +337,7 @@ class TCRMWWrapper(CommandBuilder):
                     )
                 lead_list.append(f'"{str(lead_hours).zfill(2)}"')
 
-            self.c_dict['LEAD_LIST'] = f"lead = [{', '.join(lead_list)}];"
+            self.env_var_dict['METPLUS_LEAD_LIST'] = f"lead = [{', '.join(lead_list)}];"
 
         return self.infiles
 
