@@ -58,6 +58,7 @@ class TCDiagWrapper(RuntimeFreqWrapper):
         'METPLUS_VORTEX_REMOVAL',
         'METPLUS_VORTEX_REMOVAL',
         'METPLUS_NC_DIAG_FLAG',
+        'METPLUS_NC_RNG_AZI_FLAG',
         'METPLUS_CIRA_DIAG_FLAG',
         'METPLUS_OUTPUT_PREFIX',
     ]
@@ -108,8 +109,8 @@ class TCDiagWrapper(RuntimeFreqWrapper):
         )
 
         self.add_met_config(name='model',
-                            data_type='string',
-                            metplus_configs=['MODEL'])
+                            data_type='list',
+                            metplus_configs=['TC_DIAG_MODEL', 'MODEL'])
 
         self.add_met_config(name='storm_id', data_type='string')
 
@@ -164,6 +165,7 @@ class TCDiagWrapper(RuntimeFreqWrapper):
             'n_range': 'int',
             'n_azimuth': 'int',
             'delta_range_km': 'float',
+            'diag_script': 'list',
         }
         if not add_met_config_dict_list(config=self.config,
                                         app_name=self.app_name,
@@ -190,13 +192,13 @@ class TCDiagWrapper(RuntimeFreqWrapper):
                                                  data_type='FCST',
                                                  met_tool=self.app_name)
 
-        self.add_met_config(name='domain',
+        self.add_met_config(name='domain', data_type='list',
                             env_var_name='METPLUS_DATA_DOMAIN',
-                            data_type='list')
+                            metplus_configs=['TC_DIAG_DATA_DOMAIN'])
 
-        self.add_met_config(name='level',
+        self.add_met_config(name='level', data_type='list',
                             env_var_name='METPLUS_DATA_LEVEL',
-                            data_type='list')
+                            metplus_configs=['TC_DIAG_DATA_LEVEL'])
 
         self.add_met_config(name='file_type',
                             data_type='string',
@@ -268,6 +270,9 @@ class TCDiagWrapper(RuntimeFreqWrapper):
         # get field information to set in MET config
         if not self.set_data_field(time_info):
             return
+
+        # set forecast lead list for MET config
+        self.set_lead_list(time_info)
 
         # get other configurations for command
         self.set_command_line_arguments(time_info)
@@ -361,23 +366,27 @@ class TCDiagWrapper(RuntimeFreqWrapper):
             list_file = self.write_list_file(list_file, all_input_files)
 
         self.infiles.append(list_file)
-
-        # set LEAD_LIST to list of forecast leads used
-        if lead_seq != [0]:
-            lead_list = []
-            for lead in lead_seq:
-                lead_hours = (
-                    time_util.ti_get_hours_from_relativedelta(lead,
-                                                              valid_time=time_info['valid'])
-                    )
-                lead_list.append(f'"{str(lead_hours).zfill(2)}"')
-
-            self.c_dict['LEAD_LIST'] = f"lead = [{', '.join(lead_list)}];"
-
         return self.infiles
 
-    def set_command_line_arguments(self, time_info):
+    def set_lead_list(self, time_info):
+        self.env_var_dict['METPLUS_LEAD_LIST'] = ''
 
+        lead_seq = get_lead_sequence(self.config, time_info)
+        # set LEAD_LIST to list of forecast leads used
+        if lead_seq == [0]:
+            return
+
+        lead_list = []
+        for lead in lead_seq:
+            lead_hours = (
+                time_util.ti_get_hours_from_relativedelta(lead,
+                                                          valid_time=time_info['valid'])
+                )
+            lead_list.append(f'"{str(lead_hours).zfill(2)}"')
+
+        self.env_var_dict['METPLUS_LEAD_LIST'] = f"lead = [{', '.join(lead_list)}];"
+
+    def set_command_line_arguments(self, time_info):
         # add config file - passing through do_string_sub to get custom string if set
         if self.c_dict['CONFIG_FILE']:
             config_file = do_string_sub(self.c_dict['CONFIG_FILE'],
