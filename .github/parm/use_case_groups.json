@@ -229,4 +229,9 @@
     "index_list": "0",
     "run": false
   }
+  {
+    "category": "land_surface",
+    "index_list": "0",
+    "run": true 
+  }
 ]
