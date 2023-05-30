@@ -4,7 +4,7 @@ The code computes the Terrestrial Coupling Index (TCI)
 from latent Heat Flux and 10 cm Soil Moisture  
 Designed to read Latent Heat Flux (from CAM) and Soil Temp (from CLM)
 from two CESM files 
-User needs to provide the season (DJF, MAM, JJA, or SON)
+User needs to provide the season (DJF, MAM, JJA, or SON) in the METplus conf file
 User can change the variables to compute TCI
 """
 
