@@ -35,6 +35,7 @@ model_applications/land_surface/PyEmbedIngestPointStatPlotPointObs_fcstCESM_obsF
 # The METplus PointStat processes the output of PyEmbedIngest and FLUXNET2015 dataset (using python embedding), and outputs the requested line types.
 # Then METplus PlotPointObs tool reads the output of PyEmbedIngest and FLUXNET2015 dataset and produce plots of TCI from CESM and point observations. 
 # A custom loop runs through all the pre-defined seasons (DJF, MAM, JJA, SON) and runs PyEmbedIngest, PointStat, and PlotPointObs.
+
 ##############################################################################
 # METplus Workflow
 # ----------------
@@ -151,6 +152,7 @@ model_applications/land_surface/PyEmbedIngestPointStatPlotPointObs_fcstCESM_obsF
 # * cesm_fluxnet2015_MAM.ps
 # * cesm_fluxnet2015_SON.ps
 #
+
 ##############################################################################
 # Keywords
 # --------
