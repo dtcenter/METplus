@@ -204,7 +204,8 @@ class TCDiagWrapper(RuntimeFreqWrapper):
                             data_type='string',
                             env_var_name='METPLUS_DATA_FILE_TYPE',
                             metplus_configs=['TC_DIAG_INPUT_DATATYPE',
-                                             'TC_DIAG_FILE_TYPE'])
+                                             'TC_DIAG_DATA_FILE_TYPE',
+                                             'TC_DIAG_FILE_TYPE',])
 
         self.handle_regrid(c_dict, set_to_grid=False)
 
