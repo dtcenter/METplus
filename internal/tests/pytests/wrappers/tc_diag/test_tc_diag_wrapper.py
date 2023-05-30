@@ -60,6 +60,145 @@ def set_minimum_config_settings(config):
 @pytest.mark.parametrize(
     'config_overrides, env_var_values', [
         ({}, {}),
+        ({'MODEL': 'GFSO,  OFCL'}, {'METPLUS_MODEL': 'model = ["GFSO", "OFCL"];'}),
+        ({'TC_DIAG_STORM_ID': 'AL092022'}, {'METPLUS_STORM_ID': 'storm_id = "AL092022";'}),
+        ({'TC_DIAG_BASIN': 'AL'}, {'METPLUS_BASIN': 'basin = "AL";'}),
+        ({'TC_DIAG_CYCLONE': '14'}, {'METPLUS_CYCLONE': 'cyclone = "14";'}),
+        ({'TC_DIAG_INIT_INC': '20220924_00', }, {'METPLUS_INIT_INCLUDE': 'init_inc = "20220924_00";'}),
+
+        ({'TC_DIAG_VALID_BEG': '20220924_00', }, {'METPLUS_VALID_BEG': 'valid_beg = "20220924_00";'}),
+
+        ({'TC_DIAG_VALID_END': '20220924_00', }, {'METPLUS_VALID_END': 'valid_end = "20220924_00";'}),
+
+        ({'TC_DIAG_VALID_INC': '20220924_00, 20220924_18', },
+         {'METPLUS_VALID_INCLUDE_LIST': 'valid_inc = ["20220924_00", "20220924_18"];'}),
+
+        ({'TC_DIAG_VALID_EXC': '20220924_00, 20220924_18', },
+         {'METPLUS_VALID_EXCLUDE_LIST': 'valid_exc = ["20220924_00", "20220924_18"];'}),
+
+        ({'TC_DIAG_VALID_HOUR': '12, 18', }, {'METPLUS_VALID_HOUR_LIST': 'valid_hour = ["12", "18"];'}),
+
+        ({'LEAD_SEQ': '0,6,12,18,24', }, {'METPLUS_LEAD_LIST': 'lead = ["00", "06", "12", "18", "24"];'}),
+
+        ({'TC_DIAG_DIAG_SCRIPT': 'MET_BASE/python/tc_diag/compute_tc_diagnostics.py', },
+         {'METPLUS_DIAG_SCRIPT': 'diag_script = ["MET_BASE/python/tc_diag/compute_tc_diagnostics.py"];'}),
+        # domain_info 1 dictionary in list
+        ({'TC_DIAG_DOMAIN_INFO1_DOMAIN': 'parent', },
+         {'METPLUS_DOMAIN_INFO_LIST': 'domain_info = [{domain = "parent";}];'}),
+
+        ({'TC_DIAG_DOMAIN_INFO1_N_RANGE': '150', },
+         {'METPLUS_DOMAIN_INFO_LIST': 'domain_info = [{n_range = 150;}];'}),
+
+        ({'TC_DIAG_DOMAIN_INFO1_N_AZIMUTH': '8', },
+         {'METPLUS_DOMAIN_INFO_LIST': 'domain_info = [{n_azimuth = 8;}];'}),
+
+        ({'TC_DIAG_DOMAIN_INFO1_DELTA_RANGE_KM': '10.0', },
+         {'METPLUS_DOMAIN_INFO_LIST': 'domain_info = [{delta_range_km = 10.0;}];'}),
+        ({'TC_DIAG_DOMAIN_INFO1_DIAG_SCRIPT': 'MET_BASE/python/tc_diag/compute_all_diagnostics.py,MET_BASE/python/tc_diag/compute_custom_diagnostics.py', },
+         {'METPLUS_DOMAIN_INFO_LIST': 'domain_info = [{diag_script = ["MET_BASE/python/tc_diag/compute_all_diagnostics.py", "MET_BASE/python/tc_diag/compute_custom_diagnostics.py"];}];'}),
+        ({'TC_DIAG_DOMAIN_INFO1_DOMAIN': 'parent',
+          'TC_DIAG_DOMAIN_INFO1_N_RANGE': '150',
+          'TC_DIAG_DOMAIN_INFO1_N_AZIMUTH': '8',
+          'TC_DIAG_DOMAIN_INFO1_DELTA_RANGE_KM': '10.0',
+          'TC_DIAG_DOMAIN_INFO1_DIAG_SCRIPT': 'MET_BASE/python/tc_diag/compute_all_diagnostics.py,MET_BASE/python/tc_diag/compute_custom_diagnostics.py',
+         },
+         {'METPLUS_DOMAIN_INFO_LIST': 'domain_info = [{domain = "parent";n_range = 150;n_azimuth = 8;delta_range_km = 10.0;diag_script = ["MET_BASE/python/tc_diag/compute_all_diagnostics.py", "MET_BASE/python/tc_diag/compute_custom_diagnostics.py"];}];'}),
+        # domain_info 2 dictionaries in list
+        ({'TC_DIAG_DOMAIN_INFO1_DOMAIN': 'parent',
+          'TC_DIAG_DOMAIN_INFO1_N_RANGE': '150',
+          'TC_DIAG_DOMAIN_INFO1_N_AZIMUTH': '8',
+          'TC_DIAG_DOMAIN_INFO1_DELTA_RANGE_KM': '10.0',
+          'TC_DIAG_DOMAIN_INFO1_DIAG_SCRIPT': 'MET_BASE/python/tc_diag/compute_all_diagnostics.py,MET_BASE/python/tc_diag/compute_custom_diagnostics.py',
+          'TC_DIAG_DOMAIN_INFO2_DOMAIN': 'nest',
+          'TC_DIAG_DOMAIN_INFO2_N_RANGE': '100',
+          'TC_DIAG_DOMAIN_INFO2_N_AZIMUTH': '7',
+          'TC_DIAG_DOMAIN_INFO2_DELTA_RANGE_KM': '12.0',
+          'TC_DIAG_DOMAIN_INFO2_DIAG_SCRIPT': 'MET_BASE/python/tc_diag/compute_sst_diagnostics.py',
+         },
+         {'METPLUS_DOMAIN_INFO_LIST': 'domain_info = [{domain = "parent";n_range = 150;n_azimuth = 8;delta_range_km = 10.0;diag_script = ["MET_BASE/python/tc_diag/compute_all_diagnostics.py", "MET_BASE/python/tc_diag/compute_custom_diagnostics.py"];},{domain = "nest";n_range = 100;n_azimuth = 7;delta_range_km = 12.0;diag_script = ["MET_BASE/python/tc_diag/compute_sst_diagnostics.py"];}];'}),
+
+        ({'TC_DIAG_CENSOR_THRESH': '>12000,<5000', },
+         {'METPLUS_CENSOR_THRESH': 'censor_thresh = [>12000, <5000];'}),
+
+        ({'TC_DIAG_CENSOR_VAL': '12000,5000', },
+         {'METPLUS_CENSOR_VAL': 'censor_val = [12000, 5000];'}),
+
+        ({'TC_DIAG_CONVERT': '2*x', },
+         {'METPLUS_CONVERT': 'convert(x) = 2*x;'}),
+
+        ({'TC_DIAG_DATA_DOMAIN': 'parent,nest', },
+         {'METPLUS_DATA_DOMAIN': 'domain = ["parent", "nest"];'}),
+
+        ({'TC_DIAG_DATA_LEVEL': 'P500,   P850', },
+         {'METPLUS_DATA_LEVEL': 'level = ["P500", "P850"];'}),
+
+        ({'TC_DIAG_REGRID_METHOD': 'NEAREST',},
+         {'METPLUS_REGRID_DICT': 'regrid = {method = NEAREST;}'}),
+
+        ({'TC_DIAG_REGRID_WIDTH': '1',},
+         {'METPLUS_REGRID_DICT': 'regrid = {width = 1;}'}),
+
+        ({'TC_DIAG_REGRID_VLD_THRESH': '0.5',},
+         {'METPLUS_REGRID_DICT': 'regrid = {vld_thresh = 0.5;}'}),
+
+        ({'TC_DIAG_REGRID_SHAPE': 'SQUARE',},
+         {'METPLUS_REGRID_DICT': 'regrid = {shape = SQUARE;}'}),
+
+        ({'TC_DIAG_REGRID_CONVERT': '2*x', },
+         {'METPLUS_REGRID_DICT': 'regrid = {convert(x) = 2*x;}'}),
+
+        ({'TC_DIAG_REGRID_CENSOR_THRESH': '>12000,<5000', },
+         {'METPLUS_REGRID_DICT': 'regrid = {censor_thresh = [>12000, <5000];}'}),
+
+        ({'TC_DIAG_REGRID_CENSOR_VAL': '12000,5000', },
+         {'METPLUS_REGRID_DICT': 'regrid = {censor_val = [12000, 5000];}'}),
+
+        ({'TC_DIAG_REGRID_METHOD': 'NEAREST',
+          'TC_DIAG_REGRID_WIDTH': '1',
+          'TC_DIAG_REGRID_VLD_THRESH': '0.5',
+          'TC_DIAG_REGRID_SHAPE': 'SQUARE',
+          'TC_DIAG_REGRID_CONVERT': '2*x',
+          'TC_DIAG_REGRID_CENSOR_THRESH': '>12000,<5000',
+          'TC_DIAG_REGRID_CENSOR_VAL': '12000,5000',
+          },
+         {'METPLUS_REGRID_DICT': ('regrid = {method = NEAREST;'
+                                  'width = 1;vld_thresh = 0.5;shape = SQUARE;'
+                                  'convert(x) = 2*x;'
+                                  'censor_thresh = [>12000, <5000];'
+                                  'censor_val = [12000, 5000];}'
+                                  )
+          }),
+
+        ({'TC_DIAG_COMPUTE_TANGENTIAL_AND_RADIAL_WINDS': 'true', },
+         {'METPLUS_COMPUTE_TANGENTIAL_AND_RADIAL_WINDS': 'compute_tangential_and_radial_winds = TRUE;'}),
+
+        ({'TC_DIAG_U_WIND_FIELD_NAME': 'UGRD', },
+         {'METPLUS_U_WIND_FIELD_NAME': 'u_wind_field_name = "UGRD";'}),
+
+        ({'TC_DIAG_V_WIND_FIELD_NAME': 'VGRD', },
+         {'METPLUS_V_WIND_FIELD_NAME': 'v_wind_field_name = "VGRD";'}),
+
+        ({'TC_DIAG_TANGENTIAL_VELOCITY_FIELD_NAME': 'VT', },
+         {'METPLUS_TANGENTIAL_VELOCITY_FIELD_NAME': 'tangential_velocity_field_name = "VT";'}),
+
+        ({'TC_DIAG_TANGENTIAL_VELOCITY_LONG_FIELD_NAME': 'Tangential Velocity', },
+         {'METPLUS_TANGENTIAL_VELOCITY_LONG_FIELD_NAME': 'tangential_velocity_long_field_name = "Tangential Velocity";'}),
+
+        ({'TC_DIAG_RADIAL_VELOCITY_FIELD_NAME': 'VR', },
+         {'METPLUS_RADIAL_VELOCITY_FIELD_NAME': 'radial_velocity_field_name = "VR";'}),
+
+        ({'TC_DIAG_RADIAL_VELOCITY_LONG_FIELD_NAME': 'Radial Velocity', },
+         {'METPLUS_RADIAL_VELOCITY_LONG_FIELD_NAME': 'radial_velocity_long_field_name = "Radial Velocity";'}),
+
+        ({'TC_DIAG_VORTEX_REMOVAL': 'False', }, {'METPLUS_VORTEX_REMOVAL': 'vortex_removal = FALSE;'}),
+
+        ({'TC_DIAG_NC_RNG_AZI_FLAG': 'true', }, {'METPLUS_NC_RNG_AZI_FLAG': 'nc_rng_azi_flag = TRUE;'}),
+
+        ({'TC_DIAG_NC_DIAG_FLAG': 'true', }, {'METPLUS_NC_DIAG_FLAG': 'nc_diag_flag = TRUE;'}),
+
+        ({'TC_DIAG_CIRA_DIAG_FLAG': 'True', }, {'METPLUS_CIRA_DIAG_FLAG': 'cira_diag_flag = TRUE;'}),
+
+        ({'TC_DIAG_OUTPUT_PREFIX': 'my_prefix', }, {'METPLUS_OUTPUT_PREFIX': 'output_prefix = "my_prefix";'}),
 
     ]
 )
