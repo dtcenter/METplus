@@ -2,7 +2,7 @@
 PointStat: CESM and FLUXNET2015 Terrestrial Coupling Index (TCI) 
 ======================================================================
 
-model_applications/land_surface/PyEmbedIngestPointStatPlotPointObs_fcstCESM_obsFLUXNET2015_TCI.conf
+model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 
 """
 ##############################################################################
@@ -56,10 +56,10 @@ model_applications/land_surface/PyEmbedIngestPointStatPlotPointObs_fcstCESM_obsF
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# i.e. -c parm/use_cases/model_applications/land_surface/PyEmbedIngestPointStatPlotPointObs_fcstCESM_obsFLUXNET2015_TCI.conf
+# i.e. -c parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PyEmbedIngestPointStatPlotPointObs_fcstCESM_obsFLUXNET2015_TCI.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #
 
 ##############################################################################
@@ -78,13 +78,13 @@ model_applications/land_surface/PyEmbedIngestPointStatPlotPointObs_fcstCESM_obsF
 #
 # This use case can be run two ways:
 #
-# 1) Passing in PyEmbedIngestPointStatPlotPointObs_fcstCESM_obsFLUXNET2015_TCI.conf then a user-specific system configuration file::
+# 1) Passing in PointStat_fcstCESM_obsFLUXNET2015_TCI.conf then a user-specific system configuration file::
 #
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/land_surface/PyEmbedIngestPointStatPlotPointObs_fcstCESM_obsFLUXNET2015_TCI.conf /path/to/user_system.conf
+#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in PyEmbedIngestPointStatPlotPointObs_fcstCESM_obsFLUXNET2015_TCI::
+# 2) Modifying the configurations in parm/metplus_config, then passing in PointStat_fcstCESM_obsFLUXNET2015_TCI::
 #
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/land_surface/PyEmbedIngestPointStatPlotPointObs_fcstCESM_obsFLUXNET2015_TCI.conf
+#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -171,5 +171,5 @@ model_applications/land_surface/PyEmbedIngestPointStatPlotPointObs_fcstCESM_obsF
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/land_surface-PyEmbedIngestPointStatPlotPointObs_fcstCESM_obsFLUXNET2015_TCI.png'
+# sphinx_gallery_thumbnail_path = '_static/land_surface-PointStat_fcstCESM_obsFLUXNET2015_TCI.png'
 
