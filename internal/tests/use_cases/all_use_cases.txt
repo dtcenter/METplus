@@ -172,3 +172,6 @@ Category: tc_and_extra_tc
 
 Category: unstructured_grids
 0::StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEmbed:: model_applications/unstructured_grids/StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEmbed.conf:: geovista_env, py_embed
+
+Category: land_surface
+0::PointStat_fcstCESM_obsFLUXNET2015_TCI:: model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf:: py_embed
