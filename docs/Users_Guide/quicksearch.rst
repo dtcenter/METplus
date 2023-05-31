@@ -83,6 +83,7 @@ Use Cases by Application:
    | `Subseasonal to Seasonal: Madden-Julian Oscillation <../search.html?q=S2SMJOAppUseCase&check_keywords=yes&area=default>`_
    | `Subseasonal to Seasonal: Mid-Latitude <../search.html?q=S2SMidLatAppUseCase&check_keywords=yes&area=default>`_
    | `Tropical Cyclone and Extra-Tropical Cyclone <../search.html?q=TCandExtraTCAppUseCase&check_keywords=yes&area=default>`_
+   | `Land Surface <../search.html?q=LandSurfaceAppUseCase&check_keywords=yes&area=default>`_
 
 .. only:: latex
 
