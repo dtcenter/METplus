@@ -164,6 +164,7 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #   * PlotPointObsToolUseCase
 #   * PythonEmbeddingFileUseCase
 #   * NETCDFFileUseCase
+#   * LandSurfaceAppUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
