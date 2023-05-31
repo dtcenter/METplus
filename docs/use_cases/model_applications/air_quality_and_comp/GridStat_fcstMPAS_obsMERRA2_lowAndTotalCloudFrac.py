@@ -2,7 +2,7 @@
 GridStat: Cloud Fractions with Neighborhood and Probabilities
 =============================================================
 
-model_applications/air_quality_and_comp/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.conf
+model_applications/air_quality_and_comp/GridStat_fcstMPAS_obsMERRA2_lowAndTotalCloudFrac.conf
 
 """
 ##############################################################################
@@ -19,7 +19,7 @@ model_applications/air_quality_and_comp/GridStat_fcstMPAS_obsSATCORPS_lowAndTota
 # --------
 #
 # | **Forecast:** Model for Prediction Across Scales (MPAS)
-# | **Observations:** Satellite ClOud and Radiation Property retrieval System (SatCORPS)
+# | **Observations:** Modern-Era Retrospective analysis for Research and Applications, Version 2 (MERRA2)
 # | **Grid:** GPP 17km masking region
 #
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
@@ -56,10 +56,10 @@ model_applications/air_quality_and_comp/GridStat_fcstMPAS_obsSATCORPS_lowAndTota
 #
 # METplus first loads the default configuration file found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line:
-# parm/use_cases/model_applications/air_quality_and_comp/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.conf
+# parm/use_cases/model_applications/air_quality_and_comp/GridStat_fcstMPAS_obsMERRA2_lowAndTotalCloudFrac.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/air_quality_and_comp/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/air_quality_and_comp/GridStat_fcstMPAS_obsMERRA2_lowAndTotalCloudFrac.conf
 
 ##############################################################################
 # MET Configuration
@@ -84,10 +84,10 @@ model_applications/air_quality_and_comp/GridStat_fcstMPAS_obsSATCORPS_lowAndTota
 #
 # This use case utilizes 1 Python script to read and process both forecast and
 # observation fields.
-# parm/use_cases/model_applications/air_quality_and_comp/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac/read_input_data.py
+# parm/use_cases/model_applications/air_quality_and_comp/GridStat_fcstMPAS_obsMERRA2_lowAndTotalCloudFrac/read_input_data.py
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/air_quality_and_comp/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac/read_input_data.py
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/air_quality_and_comp/GridStat_fcstMPAS_obsMERRA2_lowAndTotalCloudFrac/read_input_data.py
 
 ##############################################################################
 # Running METplus
@@ -96,7 +96,7 @@ model_applications/air_quality_and_comp/GridStat_fcstMPAS_obsSATCORPS_lowAndTota
 # Pass the use case configuration file to the run_metplus.py script
 # along with any user-specific system configuration files if desired::
 #
-#    run_metplus.py /path/to/METplus/parm/use_cases/model_applications/air_quality_and_comp/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.conf /path/to/user_system.conf
+#    run_metplus.py /path/to/METplus/parm/use_cases/model_applications/air_quality_and_comp/GridStat_fcstMPAS_obsMERRA2_lowAndTotalCloudFrac.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
 
@@ -113,12 +113,12 @@ model_applications/air_quality_and_comp/GridStat_fcstMPAS_obsSATCORPS_lowAndTota
 # (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
-# * grid_stat_MPAS_F36_CloudFracs_360000L_20200724_120000V_pairs.nc
-# * grid_stat_MPAS_F36_CloudFracs_360000L_20200724_120000V.stat
-# * grid_stat_MPAS_F36_CloudFracs_NBR_360000L_20200724_120000V_pairs.nc
-# * grid_stat_MPAS_F36_CloudFracs_NBR_360000L_20200724_120000V.stat
-# * grid_stat_MPAS_F36_CloudFracs_PROB_360000L_20200724_120000V_pairs.nc
-# * grid_stat_MPAS_F36_CloudFracs_PROB_360000L_20200724_120000V.stat
+# * grid_stat_MPAS_to_MERRA2_F36_CloudFracs_360000L_20200724_120000V_pairs.nc
+# * grid_stat_MPAS_to_MERRA2_F36_CloudFracs_360000L_20200724_120000V.stat
+# * grid_stat_MPAS_to_MERRA2_F36_CloudFracs_NBR_360000L_20200724_120000V_pairs.nc
+# * grid_stat_MPAS_to_MERRA2_F36_CloudFracs_NBR_360000L_20200724_120000V.stat
+# * grid_stat_MPAS_to_MERRA2_F36_CloudFracs_PROB_360000L_20200724_120000V_pairs.nc
+# * grid_stat_MPAS_to_MERRA2_F36_CloudFracs_PROB_360000L_20200724_120000V.stat
 
 ##############################################################################
 # Keywords
@@ -133,4 +133,4 @@ model_applications/air_quality_and_comp/GridStat_fcstMPAS_obsSATCORPS_lowAndTota
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
-# sphinx_gallery_thumbnail_path = '_static/air_quality_and_comp-GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.png'
+# sphinx_gallery_thumbnail_path = '_static/air_quality_and_comp-GridStat_fcstMPAS_obsMERRA2_lowAndTotalCloudFrac.png'
