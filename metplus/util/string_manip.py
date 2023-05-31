@@ -311,13 +311,11 @@ def camel_to_underscore(camel):
 def get_threshold_via_regex(thresh_string):
     """!Ensure thresh values start with >,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le and then a number
         Optionally can have multiple comparison/number pairs separated with && or ||.
-        Args:
-            @param thresh_string: String to examine, i.e. <=3.4
-        Returns:
-            None if string does not match any valid comparison operators or does
-              not contain a number afterwards
-            regex match object with comparison operator in group 1 and
-            number in group 2 if valid
+
+        @param thresh_string: String to examine, i.e. <=3.4
+        @returns None if string does not match any valid comparison operators
+         or does not contain a number afterwards. Regex match object with
+          comparison operator in group 1 and number in group 2 if valid
     """
 
     comparison_number_list = []
@@ -359,14 +357,14 @@ def get_threshold_via_regex(thresh_string):
     return comparison_number_list
 
 
-def validate_thresholds(thresh_list):
+def validate_thresholds(thresh_list, logger=None):
     """ Checks list of thresholds to ensure all of them have the correct format
         Should be a comparison operator with number pair combined with || or &&
         i.e. gt4 or >3&&<5 or gt3||lt1
-        Args:
-            @param thresh_list list of strings to check
-        Returns:
-            True if all items in the list are valid format, False if not
+
+        @param thresh_list list of strings to check
+        @param logger (optional) logging object to output error
+        @returns True if all items in the list are valid format, False if not
     """
     valid = True
     for thresh in thresh_list:
@@ -375,8 +373,12 @@ def validate_thresholds(thresh_list):
             valid = False
 
     if valid is False:
-        print("ERROR: Threshold values must use >,>=,==,!=,<,<=,gt,ge,eq,ne,lt, or le with a number, "
-              "optionally combined with && or ||")
+        err_str = ("Threshold values must use >,>=,==,!=,<,<=,gt,ge,eq,ne,lt, "
+                   "or le with a number, optionally combined with && or ||")
+        if logger:
+            logger.error(err_str)
+        else:
+            print(f'ERROR: {err_str}')
         return False
     return True
 
