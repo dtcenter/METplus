@@ -1128,16 +1128,14 @@ def _format_var_items(field_configs, time_info=None):
 
     # perform string substitution on name
     if time_info:
-        search_name = do_string_sub(search_name,
-                                    skip_missing_tags=True,
-                                    **time_info)
+        search_name = do_string_sub(search_name, **time_info,
+                                    skip_missing_tags=True)
     var_items['name'] = search_name
 
     # get levels, performing string substitution on each item of list
     for level in getlist(field_configs.get('levels')):
         if time_info:
-            level = do_string_sub(level,
-                                  **time_info)
+            level = do_string_sub(level, **time_info)
         var_items['levels'].append(level)
 
     # if no levels are found, add an empty string
