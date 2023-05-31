@@ -322,7 +322,7 @@ def get_threshold_via_regex(thresh_string):
     # split thresh string by || or &&
     thresh_split = re.split(r'\|\||&&', thresh_string)
     # check each threshold for validity
-    for thresh in thresh_split:
+    for thresh in [item.strip() for item in thresh_split]:
         found_match = False
         for comp in list(VALID_COMPARISONS)+list(VALID_COMPARISONS.values()):
             # if valid, add to list of tuples
