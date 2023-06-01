@@ -712,18 +712,10 @@ class CommandBuilder:
 
         # convert valid_time to unix time
         valid_time = time_info['valid_fmt']
-        valid_seconds = int(datetime.strptime(valid_time, "%Y%m%d%H%M%S").strftime("%s"))
-        # get time of each file, compare to valid time, save best within range
-        closest_files = []
-        closest_time = 9999999
 
         # get range of times that will be considered
         valid_range_lower = self.c_dict.get(data_type + 'FILE_WINDOW_BEGIN', 0)
         valid_range_upper = self.c_dict.get(data_type + 'FILE_WINDOW_END', 0)
-        lower_limit = int(datetime.strptime(shift_time_seconds(valid_time, valid_range_lower),
-                                            "%Y%m%d%H%M%S").strftime("%s"))
-        upper_limit = int(datetime.strptime(shift_time_seconds(valid_time, valid_range_upper),
-                                            "%Y%m%d%H%M%S").strftime("%s"))
 
         msg = f"Looking for {data_type}INPUT files under {data_dir} within range " +\
               f"[{valid_range_lower},{valid_range_upper}] using template {template}"
@@ -733,41 +725,9 @@ class CommandBuilder:
             self.log_error('Must set INPUT_DIR if looking for files within a time window')
             return None
 
-        # step through all files under input directory in sorted order
-        for dirpath, _, all_files in os.walk(data_dir):
-            for filename in sorted(all_files):
-                fullpath = os.path.join(dirpath, filename)
-
-                # remove input data directory to get relative path
-                rel_path = fullpath.replace(f'{data_dir}/', "")
-                # extract time information from relative path using template
-                file_time_info = get_time_from_file(rel_path, template, self.logger)
-                if file_time_info is None:
-                    continue
-
-                # get valid time and check if it is within the time range
-                file_valid_time = file_time_info['valid'].strftime("%Y%m%d%H%M%S")
-                # skip if could not extract valid time
-                if not file_valid_time:
-                    continue
-                file_valid_dt = datetime.strptime(file_valid_time, "%Y%m%d%H%M%S")
-                file_valid_seconds = int(file_valid_dt.strftime("%s"))
-                # skip if outside time range
-                if file_valid_seconds < lower_limit or file_valid_seconds > upper_limit:
-                    continue
-
-                # if only 1 file is allowed, check if file is
-                # closer to desired valid time than previous match
-                if not self.c_dict.get('ALLOW_MULTIPLE_FILES', False):
-                    diff = abs(valid_seconds - file_valid_seconds)
-                    if diff < closest_time:
-                        closest_time = diff
-                        del closest_files[:]
-                        closest_files.append(fullpath)
-                # if multiple files are allowed, get all files within range
-                else:
-                    closest_files.append(fullpath)
-
+        closest_files = self._get_closest_files(data_dir, template, valid_time,
+                                                valid_range_lower,
+                                                valid_range_upper)
         if not closest_files:
             msg = (f"Could not find {data_type}INPUT files under {data_dir} within range "
                    f"[{valid_range_lower},{valid_range_upper}] using template {template}")
@@ -806,6 +766,60 @@ class CommandBuilder:
             out.append(outfile)
 
         return out
+
+    def _get_closest_files(self, data_dir, template, valid_time,
+                           valid_range_lower, valid_range_upper):
+        closest_files = []
+
+        # get time of each file, compare to valid time, save best within range
+        closest_time = 9999999
+
+        valid_seconds = int(
+            datetime.strptime(valid_time, "%Y%m%d%H%M%S").strftime("%s")
+        )
+        lower_limit = int(datetime.strptime(shift_time_seconds(valid_time, valid_range_lower),
+                                            "%Y%m%d%H%M%S").strftime("%s"))
+        upper_limit = int(datetime.strptime(shift_time_seconds(valid_time, valid_range_upper),
+                                            "%Y%m%d%H%M%S").strftime("%s"))
+
+        # step through all files under input directory in sorted order
+        for dirpath, _, all_files in os.walk(data_dir):
+            for filename in sorted(all_files):
+                fullpath = os.path.join(dirpath, filename)
+
+                # remove input data directory to get relative path
+                rel_path = fullpath.replace(f'{data_dir}/', "")
+                # extract time information from relative path using template
+                file_time_info = get_time_from_file(rel_path, template,
+                                                    self.logger)
+                if file_time_info is None:
+                    continue
+
+                # get valid time and check if it is within the time range
+                file_valid_time = file_time_info['valid'].strftime("%Y%m%d%H%M%S")
+                # skip if could not extract valid time
+                if not file_valid_time:
+                    continue
+                file_valid_dt = datetime.strptime(file_valid_time, "%Y%m%d%H%M%S")
+                file_valid_seconds = int(file_valid_dt.strftime("%s"))
+                # skip if outside time range
+                if file_valid_seconds < lower_limit or file_valid_seconds > upper_limit:
+                    continue
+
+                # if multiple files are allowed, get all files within range
+                if self.c_dict.get('ALLOW_MULTIPLE_FILES', False):
+                    closest_files.append(fullpath)
+                    continue
+
+                # if only 1 file is allowed, check if file is
+                # closer to desired valid time than previous match
+                diff = abs(valid_seconds - file_valid_seconds)
+                if diff < closest_time:
+                    closest_time = diff
+                    del closest_files[:]
+                    closest_files.append(fullpath)
+
+        return closest_files
 
     def find_input_files_ensemble(self, time_info, fill_missing=True):
         """! Get a list of all input files and optional control file.
