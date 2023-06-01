@@ -544,7 +544,6 @@ class CommandBuilder:
                            "because no template was specified")
             return None
 
-        check_file_list = []
         found_file_list = []
 
         # check if there is a list of files provided in the template
@@ -563,40 +562,11 @@ class CommandBuilder:
         # then add it back after the string sub call
         saved_level = time_info.pop('level', None)
 
-        input_must_exist = self.c_dict.get('INPUT_MUST_EXIST', True)
+        input_must_exist = self._get_input_must_exist(template_list, data_dir)
 
-        for template in template_list:
-            # perform string substitution
-            filename = do_string_sub(template,
-                                     level=level,
-                                     **time_info)
-
-            # build full path with data directory and filename
-            full_path = os.path.join(data_dir, filename)
-
-            if os.path.sep not in full_path:
-                self.logger.debug(f"{full_path} is not a file path. "
-                                  "Returning that string.")
-                check_file_list.append(full_path)
-                input_must_exist = False
-                continue
-
-            self.logger.debug(f"Looking for {data_type}INPUT file {full_path}")
-
-            # if wildcard expression, get all files that match
-            if '?' in full_path or '*' in full_path:
-
-                wildcard_files = sorted(glob.glob(full_path))
-                self.logger.debug(f'Wildcard file pattern: {full_path}')
-                self.logger.debug(f'{str(len(wildcard_files))} files '
-                                  'match pattern')
-
-                # add files to list of files
-                for wildcard_file in wildcard_files:
-                    check_file_list.append(wildcard_file)
-            else:
-                # add single file to list
-                check_file_list.append(full_path)
+        check_file_list = self._get_files_to_check(template_list, level,
+                                                   time_info, data_dir,
+                                                   data_type)
 
         # if it was set, add level back to time_info
         if saved_level is not None:
@@ -616,6 +586,7 @@ class CommandBuilder:
         # return None if no files were found
         if not check_file_list:
             msg = f"Could not find any {data_type}INPUT files"
+            # warn instead of error if it is not mandatory to find files
             if not mandatory or not self.c_dict.get('MANDATORY', True):
                 self.logger.warning(msg)
             else:
@@ -623,14 +594,92 @@ class CommandBuilder:
 
             return None
 
-        for file_path in check_file_list:
-            # if file doesn't need to exist, skip check
-            if not input_must_exist:
-                found_file_list.append(file_path)
+        found_files = self._check_that_files_exist(check_file_list, data_type,
+                                                   allow_dir, mandatory,
+                                                   input_must_exist)
+        if found_files is None:
+            return None
+
+        # if only one item found and return_list is False, return single item
+        if len(found_files) == 1 and not return_list:
+            return found_files[0]
+
+        return found_files
+
+    def _get_input_must_exist(self, template_list, data_dir):
+        """!Check if input must exist. The config dict setting INPUT_MUST_EXIST
+        can force a False result to skip checks for files existing. Also, if
+        the "filename" in question is a keyword and not an actual path, then
+        the check for file existence will be skipped.
+
+        @param template_list list of filenames without substitution to check
+        @param data_dir string of the path to directory containing data
+        @returns True if input must exist or a failure will occur. False if
+        file existence checks can be skipped.
+        """
+        # if config variable explicitly overriding file existence check is set
+        if not self.c_dict.get('INPUT_MUST_EXIST', True):
+            return False
+
+        # if data directory is set to a path, then it is not a keyword
+        if os.path.sep in data_dir:
+            return True
+
+        # if the full path is set in the template (not in dir)
+        # but the template is not a path, then it is likely a keyword
+        # so skip file existence check
+        if any(os.path.sep not in template for template in template_list):
+            return False
+        return True
+
+    def _get_files_to_check(self, template_list, level, time_info, data_dir,
+                            data_type):
+        """!Get list of files to check if they exist.
+        @returns list of tuples containing file path and template used to build
+        that path -- template is used for error logging
+        """
+        check_file_list = []
+        for template in template_list:
+            # build full path with data directory and template
+            full_template = os.path.join(data_dir, template)
+
+            # perform string substitution on full path
+            full_path = do_string_sub(full_template, **time_info, level=level)
+
+            if os.path.sep not in full_path:
+                self.logger.debug(f"{full_path} is not a file path. "
+                                  "Returning that string.")
+                check_file_list.append((full_path, full_template))
                 continue
 
-            # check if file exists
-            input_data_type = self.c_dict.get(data_type + 'INPUT_DATATYPE', '')
+            self.logger.debug(f"Looking for {data_type}INPUT file {full_path}")
+
+            if '?' not in full_path and '*' not in full_path:
+                # add single file to list
+                check_file_list.append((full_path, full_template))
+                continue
+
+            # if wildcard expression, get all files that match
+            wildcard_files = sorted(glob.glob(full_path))
+            self.logger.debug(f'Wildcard file pattern: {full_path}')
+            self.logger.debug(f'{str(len(wildcard_files))} files '
+                              'match pattern')
+
+            # add files to list of files
+            for wildcard_file in wildcard_files:
+                check_file_list.append((wildcard_file, full_template))
+
+        return check_file_list
+
+    def _check_that_files_exist(self, check_file_list, data_type, allow_dir,
+                                mandatory, input_must_exist):
+        # if input doesn't need to exist, skip checks and return list of files
+        if not input_must_exist:
+            return [value for value, _ in check_file_list]
+
+        found_file_list = []
+        for file_path, template in check_file_list:
+            input_data_type = self.c_dict.get(f'{data_type}INPUT_DATATYPE', '')
             processed_path = preprocess_file(file_path,
                                              input_data_type,
                                              self.config,
@@ -655,10 +704,6 @@ class CommandBuilder:
             else:
                 self.logger.debug(f"Found file: {processed_path}")
             found_file_list.append(processed_path)
-
-        # if only one item found and return_list is False, return single item
-        if len(found_file_list) == 1 and not return_list:
-            return found_file_list[0]
 
         return found_file_list
 
