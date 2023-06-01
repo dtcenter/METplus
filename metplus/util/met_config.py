@@ -467,6 +467,7 @@ def set_met_config_list(config, c_dict, mp_config, met_config_name,
              @param default (Optional) if set, use this value as default
               if config is not set
     """
+    status = True
     mp_config_name = config.get_mp_config_name(mp_config)
     conf_value = _get_config_or_default(
         mp_config_name,
@@ -474,35 +475,36 @@ def set_met_config_list(config, c_dict, mp_config, met_config_name,
         default=kwargs.get('default')
     )
     if conf_value is None:
-        return True
+        return status
 
     # convert value from config to a list
     conf_values = getlist(conf_value)
-    if conf_values or kwargs.get('allow_empty', False):
-        out_values = []
-        for conf_value in conf_values:
-            remove_quotes = kwargs.get('remove_quotes', False)
-            # if not removing quotes, escape any quotes found in list items
-            if not remove_quotes:
-                conf_value = conf_value.replace('"', '\\"')
+    # if no values are found and the value cannot be set to an empty list
+    # e.g. the MET default is non-empty, return without setting anything
+    if not conf_values and not kwargs.get('allow_empty', False):
+        return status
 
-            conf_value = util_remove_quotes(conf_value)
-            if not remove_quotes:
-                conf_value = f'"{conf_value}"'
+    out_values = []
+    for conf_value in conf_values:
+        remove_quotes = kwargs.get('remove_quotes', False)
+        # if not removing quotes, escape any quotes found in list items
+        if not remove_quotes:
+            conf_value = conf_value.replace('"', '\\"')
 
-            out_values.append(conf_value)
-        out_value = f"[{', '.join(out_values)}]"
+        conf_value = util_remove_quotes(conf_value)
+        if not remove_quotes:
+            conf_value = f'"{conf_value}"'
 
-        if not c_dict_key:
-            c_key = met_config_name.upper()
-        else:
-            c_key = c_dict_key
+        out_values.append(conf_value)
+    out_value = f"[{', '.join(out_values)}]"
 
-        if met_config_name:
-            out_value = f'{met_config_name} = {out_value};'
-        c_dict[c_key] = out_value
+    if met_config_name:
+        out_value = f'{met_config_name} = {out_value};'
 
-    return True
+    c_key = c_dict_key if c_dict_key else met_config_name.upper()
+    c_dict[c_key] = out_value
+
+    return status
 
 
 def set_met_config_string(config, c_dict, mp_config, met_config_name,
@@ -526,6 +528,7 @@ def set_met_config_string(config, c_dict, mp_config, met_config_name,
              @param add_x if True, add (x) to variable name, e.g. convert(x)
               Default value is False
     """
+    status = True
     mp_config_name = config.get_mp_config_name(mp_config)
     conf_value = _get_config_or_default(
         mp_config_name,
@@ -533,7 +536,7 @@ def set_met_config_string(config, c_dict, mp_config, met_config_name,
         default=kwargs.get('default')
     )
     if not conf_value:
-        return True
+        return status
 
     conf_value = util_remove_quotes(conf_value)
     # add quotes back if remote quotes is False
@@ -546,15 +549,15 @@ def set_met_config_string(config, c_dict, mp_config, met_config_name,
     if kwargs.get('to_grid', False):
         conf_value = format_regrid_to_grid(conf_value)
 
-    c_key = c_dict_key if c_dict_key else met_config_name.upper()
     if met_config_name:
         config_name = met_config_name
         if kwargs.get('add_x'):
             config_name = f'{config_name}(x)'
         conf_value = f'{config_name} = {conf_value};'
 
+    c_key = c_dict_key if c_dict_key else met_config_name.upper()
     c_dict[c_key] = conf_value
-    return True
+    return status
 
 
 def set_met_config_number(config, c_dict, num_type, mp_config,
