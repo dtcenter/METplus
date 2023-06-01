@@ -225,7 +225,7 @@ class CMDFGen(object):
         if len(out)>0:
             out+='\n'
         self.cmdf_contents=out
-        return
+
     ##@var filename
     # command file's filename
 

@@ -160,7 +160,7 @@ def _parse_launch_args(args):
     bad = False
     for arg in args:
         m = re.match(r'''(?x)
-          (?P<section>[a-zA-Z][a-zA-Z0-9_]*)
+          (?P<section>[a-zA-Z]\w*)
            \.(?P<option>[^=]+)
            =(?P<value>.*)$''', arg)
         # check if argument is a explicit variable override

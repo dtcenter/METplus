@@ -412,7 +412,7 @@ def template_to_regex(template):
     @returns formatted string
     """
     in_template = template.replace('.', r'\.')
-    return re.sub(r'{lead.*?}', '.*', in_template)
+    return re.sub(r'{lead[^}]*}', '.*', in_template)
 
 
 def split_level(level):

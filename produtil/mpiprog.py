@@ -163,7 +163,7 @@ class MPIRanksBase(object):
         for rank,count in self.expand_iter(bool(expand)):
             assert(isinstance(rank,MPIRanksBase))
             assert(isinstance(count,int))
-            if not count>0:
+            if count<=0:
                 continue
             if first:
                 first=False
@@ -318,7 +318,7 @@ class MPIRanksBase(object):
         """!Sets the number of MPI ranks per node requsted by this
         MPI rank."""
         rpn=int(rpn)
-        if not rpn>=0:
+        if rpn<0:
             raise ValueError('Ranks per node must be >=0 not %d'%rpn)
         self._ranks_per_node=rpn
 
@@ -555,7 +555,7 @@ class MPIRanksSPMD(MPIRanksBase):
     def ranks(self):
         """!Iterates over MPI ranks within self."""
         if self._count>0:
-            for i in range(self._count):
+            for _ in range(self._count):
                 yield self._mpirank
     def nranks(self):
         """!Returns the number of ranks this program requests."""
@@ -587,7 +587,7 @@ class MPIRanksSPMD(MPIRanksBase):
            self.ranks_per_node==other.ranks_per_node:
             copy=True
             for mpirank,count in other.groups():
-                if not mpirank==self._mpirank:
+                if mpirank!=self._mpirank:
                     copy=False
                     break
         if copy:
@@ -1058,7 +1058,7 @@ class MPISerial(MPIRank):
 ########################################################################
 
 def collapse(runner):
-    SPMDs=list()
+    spmds=list()
     rc=list()
     for rank,count in runner.expand_iter(True):
         if not len(rc):
@@ -1070,11 +1070,11 @@ def collapse(runner):
             rc.append([rank,count])
             
     for rank,count in rc:
-        SPMDs.append(MPIRanksSPMD(rank,count))
+        spmds.append(MPIRanksSPMD(rank,count))
 
-    if len(SPMDs)>1:
-        result=MPIRanksMPMD(SPMDs)
+    if len(spmds)>1:
+        result=MPIRanksMPMD(spmds)
     else:
-        result=SPMDs[0]
+        result=spmds[0]
 
     return result

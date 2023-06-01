@@ -142,7 +142,7 @@ def shvarok(s):
     """!Returns True if the specified environment variable name is a
     valid POSIX sh variable name, and False otherwise.
     @param s an environment variable name"""
-    if re.search(r'\A[A-Za-z][A-Za-z0-9_]*\z',s):
+    if re.search(r'\A[A-Za-z]\w*\z',s):
         return True
     else:
         return False
@@ -798,7 +798,7 @@ class Runner(object):
                 s+=' '+shbackslash("%s=%s"%(key,self._env[key]))
             if not self._copy_env:
                 for key in ('PATH','USER','LOGNAME','HOME'):
-                    if not key in self._env:
+                    if key not in self._env:
                         s+=' "%s=$%s"'%(key,key)
             s+=' '
         s+=' '.join([shbackslash(x) for x in self._args])

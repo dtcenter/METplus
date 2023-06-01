@@ -120,7 +120,7 @@ def pclose(i):
     with plock:
         try:
             os.close(i)
-        except EnvironmentError as e: pass
+        except EnvironmentError: pass
         if i in pipes_to_close: 
             pipes_to_close.remove(i)
 
@@ -161,32 +161,32 @@ def launch(cmd, env=None, stdin=None, stdout=None, stderr=None,
         raise ValueError(
             "In produtil.pipeline.launch, cd must not be the empty string.")
 
-    stdinP=None    ;   stdinC=None
-    stdoutP=None   ;   stdoutC=None
-    stderrP=None   ;   stderrC=None
+    stdin_p=None    ;   stdin_c=None
+    stdout_p=None   ;   stdout_c=None
+    stderr_p=None   ;   stderr_c=None
     logger=logging.getLogger(cmd[0])
     global pipes_to_close
     if debug:
         logger.debug("Start %s"%(repr(cmd),))
 
     if stdin is PIPE:
-        (stdinC,stdinP)=pipe(logger)
+        (stdin_c,stdin_p)=pipe(logger)
         if debug: 
-            logger.debug("Pipe for stdin: %d<==%d"%(stdinC,stdinP))
+            logger.debug("Pipe for stdin: %d<==%d"%(stdin_c,stdin_p))
     else:
-        stdinC=stdin
+        stdin_c=stdin
     if stdout is PIPE:
-        (stdoutP,stdoutC)=pipe(logger)
+        (stdout_p,stdout_c)=pipe(logger)
         if debug: 
-            logger.debug("Pipe for stdout: %d<==%d"%(stdoutP,stdoutC))
+            logger.debug("Pipe for stdout: %d<==%d"%(stdout_p,stdout_c))
     else:
-        stdoutC=stdout
+        stdout_c=stdout
     if stderr is PIPE:
-        (stderrP,stderrC)=pipe(logger)
+        (stderr_p,stderr_c)=pipe(logger)
         if debug: 
-            logger.debug("Pipe for stderr: %d<==%d"%(stderrP,stderrC))
+            logger.debug("Pipe for stderr: %d<==%d"%(stderr_p,stderr_c))
     elif stderr is not ERR2OUT:
-        stderrC=stderr
+        stderr_c=stderr
 
     pid=os.fork()
     assert(pid>=0)
@@ -196,33 +196,33 @@ def launch(cmd, env=None, stdin=None, stdout=None, stderr=None,
             if debug:
                 logger.debug("Close stdin %d on parent."%stdin)
             pclose(stdin)
-        if stdin is PIPE and stdinC is not None:
+        if stdin is PIPE and stdin_c is not None:
             if debug:
-                logger.debug("Close stdinC %d on parent."%stdinC)
-            pclose(stdinC)
-            padd(stdinP)
+                logger.debug("Close stdin_c %d on parent."%stdin_c)
+            pclose(stdin_c)
+            padd(stdin_p)
         if stdout is not None and stdout is not PIPE:
             if debug:
                 logger.debug("Close stdout %d on parent."%stdout)
             pclose(stdout)
-        if stdout is PIPE and stdoutC is not None:
+        if stdout is PIPE and stdout_c is not None:
             if debug:
-                logger.debug("Close stdoutC %d on parent."%stdoutC)
-            pclose(stdoutC)
-            padd(stdoutP)
+                logger.debug("Close stdout_c %d on parent."%stdout_c)
+            pclose(stdout_c)
+            padd(stdout_p)
         if stderr is not None and stderr is not PIPE and stderr is not ERR2OUT:
             if debug:
                 logger.debug("Close stderr %d on parent."%stderr)
             pclose(stderr)
-        if stderr is PIPE and stderrC is not None:
+        if stderr is PIPE and stderr_c is not None:
             if debug:
-                logger.debug("Close stderrC %d on parent."%stderrC)
-            pclose(stderrC)
-            padd(stderrP)
+                logger.debug("Close stderr_c %d on parent."%stderr_c)
+            pclose(stderr_c)
+            padd(stderr_p)
         if debug:
             logger.debug("On parent, returning %s"%(
-                    repr((pid, stdinP,stdoutP,stderrP))))
-        return (pid, stdinP,stdoutP,stderrP)
+                    repr((pid, stdin_p,stdout_p,stderr_p))))
+        return (pid, stdin_p,stdout_p,stderr_p)
 
     if isinstance(cd,str):
         os.chdir(cd)
@@ -230,39 +230,39 @@ def launch(cmd, env=None, stdin=None, stdout=None, stderr=None,
     # We are in the child process
     pclose_all(i=stdin,o=stdout,e=stderr)
 
-    if stdinP is not None:
+    if stdin_p is not None:
         if debug:
-            logger.debug("Close stdinP %d on child."%stdinP)
-        pclose(stdinP)
-    if stdinC is not None:
+            logger.debug("Close stdin_p %d on child."%stdin_p)
+        pclose(stdin_p)
+    if stdin_c is not None:
         if debug:
-            logger.debug("Point stdin to stdinC %d on child and close original."%stdinC)
-        os.dup2(stdinC,0)
-        pclose(stdinC)
+            logger.debug("Point stdin to stdin_c %d on child and close original."%stdin_c)
+        os.dup2(stdin_c,0)
+        pclose(stdin_c)
 
-    if stdoutP is not None:
+    if stdout_p is not None:
         if debug:
-            logger.debug("Close stdoutP %d on child."%stdoutP)
-        pclose(stdoutP)
-    if stdoutC is not None:
+            logger.debug("Close stdout_p %d on child."%stdout_p)
+        pclose(stdout_p)
+    if stdout_c is not None:
         if debug:
-            logger.debug("Point stdout to stdoutC %d on child and close original."%stdoutC)
-        os.dup2(stdoutC,1)
-        pclose(stdoutC)
+            logger.debug("Point stdout to stdout_c %d on child and close original."%stdout_c)
+        os.dup2(stdout_c,1)
+        pclose(stdout_c)
 
     if stderr is ERR2OUT:
         if debug:
             logger.debug("Redirect stderr to stdout on child.")
         os.dup2(1,2)
-    if stderrP is not None:
+    if stderr_p is not None:
         if debug:
-            logger.debug("Close stderrP %d on child."%stderrP)
-        pclose(stderrP)
-    if stderrC is not None:
+            logger.debug("Close stderr_p %d on child."%stderr_p)
+        pclose(stderr_p)
+    if stderr_c is not None:
         if debug:
-            logger.debug("Point stderr to stderrC %d on child and close original."%stderrC)
-        os.dup2(stderrC,2)
-        pclose(stderrC)
+            logger.debug("Point stderr to stderr_c %d on child and close original."%stderr_c)
+        os.dup2(stderr_c,2)
+        pclose(stderr_c)
 
     if debug:
         logger.debug("Reset signal handlers on child.")
@@ -312,11 +312,11 @@ def kill_for_thread(th):
     for p in killme:
         try:
             os.kill(p,signal.SIGTERM)
-        except EnvironmentError as e:
+        except EnvironmentError:
             pass
         try:
             _manage_set[th].remove(killme)
-        except (ValueError,KeyError,TypeError) as e:
+        except (ValueError,KeyError,TypeError):
             pass
 
 def kill_all():
@@ -559,10 +559,10 @@ def manage(proclist,inf=None,outf=None,errf=None,instr=None,logger=None,
 
 def simple_run(cmd, env=None, stdin=None, stdout=None, stderr=None, 
                debug=False, cd=None, logger=None, binary=False):
-    (pid, stdinP, stdoutP, stderrP) = launch(
+    (pid, stdin_p, stdout_p, stderr_p) = launch(
         cmd,env,stdin,stdout,stderr,debug,cd)
     (outstder, errstr, done) = \
-      manage([pid], inf=stdinP, outf=stdoutP, errf=stderrP, logger=logger, 
+      manage([pid], inf=stdin_p, outf=stdout_p, errf=stderr_p, logger=logger,
              binary=binary )
     result=done[pid][1]
     if os.WIFEXITED(result):
@@ -653,7 +653,7 @@ class Pipeline(object):
         for p in self.__children:
             try:
                 os.kill(p,sig)
-            except EnvironmentError as e: pass
+            except EnvironmentError: pass
 
     def terminate(self):
         """!Sends SIGTERM to all children."""

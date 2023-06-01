@@ -600,7 +600,7 @@ def symlink_read_test(filename,readsize=40,logger=None):
             buf=f.read(readsize)
             if logger is not None:
                 logger.info('%s: read %s'%(filename,repr(buf)))
-    except EnvironmentError as e:
+    except EnvironmentError:
         pass # ignore I/O and OS errors
 
 def make_symlinks_in(sources,targetdir,force=False,renamer=None,logger=None,
