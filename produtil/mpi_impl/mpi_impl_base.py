@@ -140,7 +140,7 @@ class ImplementationBase(object):
         """!Runs the "sync" command as an exe()."""
         if logger is None: logger=self.logger
         sync=produtil.prog.Runner(['/bin/sync'])
-        p=produtil.pipeline.Pipeline(sync,capture=True,logger=logger)
+        produtil.pipeline.Pipeline(sync,capture=True,logger=logger)
     def openmp(self,arg,threads):
         """!Does nothing.  This implementation does not support OpenMP.
     
