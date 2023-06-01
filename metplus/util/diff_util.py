@@ -642,15 +642,25 @@ def _nc_fields_are_equal(field, nc_a, nc_b, debug=False):
           f"Max diff: {values_diff.max()}")
     if debug:
         # print indices that are not zero and count of diffs
-        count = 0
-        values_list = [j for sub in values_diff.tolist() for j in sub]
-        for idx, val in enumerate(values_list):
-            if val != 0.0:
-                print(f"{idx}: {val}")
-                count += 1
-        print(f"{count} / {idx + 1} points differ")
+        _print_nc_field_diff_summary(values_diff)
 
     return False
+
+
+def _print_nc_field_diff_summary(values_diff):
+    """!Print summary of NetCDF fields that differ. Prints the index of each
+    point that differs with the numeric difference between the points.
+    Also print number of points that differ and the total number of points.
+
+    @param values_diff numpy array (possibly 2D) of differences
+    """
+    count = 0
+    values_list = [j for sub in values_diff.tolist() for j in sub]
+    for idx, val in enumerate(values_list):
+        if val != 0.0:
+            print(f"{idx}: {val}")
+            count += 1
+    print(f"{count} / {idx + 1} points differ")
 
 
 def _all_values_are_equal(var_a, var_b):
