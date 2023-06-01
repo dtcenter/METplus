@@ -785,28 +785,30 @@ class TCPairsWrapper(CommandBuilder):
         bdeck_regex = bdeck_regex.replace('*', '(.*)').replace('?', '(.)')
         self.logger.debug(f'Regex to extract basin/cyclone: {bdeck_regex}')
 
+        match = re.match(bdeck_regex, bdeck_file)
+        if not match:
+            return basin, cyclone
+
         current_basin = basin
         current_cyclone = cyclone
 
-        match = re.match(bdeck_regex, bdeck_file)
-        if match:
-            matches = match.groups()
-            # get template tags and wildcards from template
-            tags = get_tags(bdeck_template)
-            if len(matches) != len(tags):
-                self.log_error("Number of regex match groups does not match "
-                               "number of tags found:\n"
-                               f"Regex pattern: {bdeck_template}\n"
-                               f"Matches: {matches}\nTags: {tags}")
-                return None, None
+        matches = match.groups()
+        # get template tags and wildcards from template
+        tags = get_tags(bdeck_template)
+        if len(matches) != len(tags):
+            self.log_error("Number of regex match groups does not match "
+                           "number of tags found:\n"
+                           f"Regex pattern: {bdeck_template}\n"
+                           f"Matches: {matches}\nTags: {tags}")
+            return None, None
 
-            for match, tag in zip(matches, tags):
-                # if basin/cyclone if found, get value
-                if tag == 'basin' and basin == self.WILDCARDS['basin']:
-                    current_basin = match
-                elif (tag == 'cyclone' and
-                      cyclone == self.WILDCARDS['cyclone']):
-                    current_cyclone = match
+        for match, tag in zip(matches, tags):
+            # if basin/cyclone if found, get value
+            if tag == 'basin' and basin == self.WILDCARDS['basin']:
+                current_basin = match
+            elif (tag == 'cyclone' and
+                  cyclone == self.WILDCARDS['cyclone']):
+                current_cyclone = match
 
         return current_basin, current_cyclone
 

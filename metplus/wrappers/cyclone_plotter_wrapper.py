@@ -129,41 +129,42 @@ class CyclonePlotterWrapper(CommandBuilder):
         # User-defined map extent, lons and lats
         if self.is_global_extent:
             self.logger.debug("Global extent")
+            return
+
+        self.logger.debug("Getting lons and lats that define the plot's extent")
+        west_lon = (self.config.getstr('config',
+                                       'CYCLONE_PLOTTER_WEST_LON', '')
+        )
+        east_lon = (self.config.getstr('config',
+                                       'CYCLONE_PLOTTER_EAST_LON', '')
+        )
+        north_lat = (self.config.getstr('config',
+                                        'CYCLONE_PLOTTER_NORTH_LAT', '')
+        )
+        south_lat = (self.config.getstr('config',
+                                        'CYCLONE_PLOTTER_SOUTH_LAT', '')
+        )
+
+        # Check for unconfigured lons and lats needed for defining the extent
+        if not west_lon:
+            self.log_error("Missing CYCLONE_PLOTTER_WEST_LON in config file. ")
         else:
-            self.logger.debug("Getting lons and lats that define the plot's extent")
-            west_lon = (self.config.getstr('config',
-                                           'CYCLONE_PLOTTER_WEST_LON', '')
-            )
-            east_lon = (self.config.getstr('config',
-                                           'CYCLONE_PLOTTER_EAST_LON', '')
-            )
-            north_lat = (self.config.getstr('config',
-                                            'CYCLONE_PLOTTER_NORTH_LAT', '')
-            )
-            south_lat = (self.config.getstr('config',
-                                            'CYCLONE_PLOTTER_SOUTH_LAT', '')
-            )
+            self.west_lon = (float(west_lon))
+        if not east_lon:
+            self.log_error("Missing CYCLONE_PLOTTER_EAST_LON in config file. ")
+        else:
+            self.east_lon = (float(east_lon))
+        if not south_lat:
+            self.log_error("Missing CYCLONE_PLOTTER_SOUTH_LAT in config file. ")
+        else:
+            self.south_lat = float(south_lat)
+        if not north_lat:
+            self.log_error("Missing CYCLONE_PLOTTER_NORTH_LAT in config file. ")
+        else:
+            self.north_lat = float(north_lat)
 
-            # Check for unconfigured lons and lats needed for defining the extent
-            if not west_lon:
-                self.log_error("Missing CYCLONE_PLOTTER_WEST_LON in config file. ")
-            else:
-                self.west_lon = (float(west_lon))
-            if not east_lon:
-                self.log_error("Missing CYCLONE_PLOTTER_EAST_LON in config file. ")
-            else:
-                self.east_lon = (float(east_lon))
-            if not south_lat:
-                self.log_error("Missing CYCLONE_PLOTTER_SOUTH_LAT in config file. ")
-            else:
-                self.south_lat = float(south_lat)
-            if not north_lat:
-                self.log_error("Missing CYCLONE_PLOTTER_NORTH_LAT in config file. ")
-            else:
-                self.north_lat = float(north_lat)
-
-            self.extent_region = [self.west_lon, self.east_lon, self.south_lat, self.north_lat]
-            self.logger.debug(f"extent region: {self.extent_region}")
+        self.extent_region = [self.west_lon, self.east_lon, self.south_lat, self.north_lat]
+        self.logger.debug(f"extent region: {self.extent_region}")
 
 
     def run_all_times(self):
