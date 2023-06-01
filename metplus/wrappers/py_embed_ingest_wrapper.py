@@ -62,7 +62,6 @@ class PyEmbedIngestWrapper(CommandBuilder):
                 self.log_error(f'Must set PY_EMBED_INGEST_{index}_OUTPUT_GRID')
 
 
-            # TODO: handle multiple scripts if they are defined
             ingest_script_search_text = f'PY_EMBED_INGEST_{index}_SCRIPT'
             regex = re.compile(ingest_script_search_text + r"(.*)")
             ingest_script_addons = []
@@ -171,8 +170,6 @@ class PyEmbedIngestWrapper(CommandBuilder):
 
             rdp.infiles.append(f"PYTHON_{ingester['input_type']}")
 
-            # TODO: loop over scripts and output_field_names and add each
-            # get call to python script
             for script_raw in ingester['scripts']:
                 script = do_string_sub(script_raw,
                                        **time_info)

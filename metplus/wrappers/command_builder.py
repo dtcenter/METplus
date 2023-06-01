@@ -396,7 +396,7 @@ class CommandBuilder:
         shell = self.c_dict.get('USER_SHELL', '').lower()
         for var in sorted(var_list):
             if shell == 'csh':
-                # TODO: Complex environment variables that have special characters
+                # NOTE: Complex environment variables that have special characters
                 # like { or } will not be copyable in csh until modifications are
                 # made to the formatting of the setenv calls
                 clean_env = self.env[var].replace('"', '"\\""')
