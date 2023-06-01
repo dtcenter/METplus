@@ -544,8 +544,6 @@ class CommandBuilder:
                            "because no template was specified")
             return None
 
-        found_file_list = []
-
         # check if there is a list of files provided in the template
         # process each template in the list (or single template)
         template_list = getlist(input_template)
