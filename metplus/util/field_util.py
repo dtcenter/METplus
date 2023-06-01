@@ -62,35 +62,13 @@ def get_field_info(c_dict, data_type='', v_name='', v_level='', v_thresh=None,
     fields = []
 
     for thresh in thresholds:
-        if (c_dict.get(f'{data_type}_PROB_IN_GRIB_PDS', False) and
-                not is_python_script(v_name)):
-            field = _handle_grib_pds_field_info(v_name, v_level, thresh)
-        else:
-            # add field name
-            field = f'name="{v_name}";'
+        field = _get_name_and_level(c_dict, data_type, v_name, v_level, thresh)
 
-            if v_level:
-                field += f' level="{remove_quotes(v_level)}";'
-
-            if c_dict.get(f'{data_type}_IS_PROB', False):
-                field += " prob=TRUE;"
-
-        # handle cat_thresh
-        cat_thresh = thresh
-        if c_dict.get(f'{data_type}_IS_PROB', False):
-            # add probabilistic cat thresh if different from default ==0.1
-            cat_thresh = c_dict.get(f'{data_type}_PROB_THRESH')
-
-        if cat_thresh:
-            field += f" cat_thresh=[ {cat_thresh} ];"
+        # handle cat_thresh if set
+        field += _get_thresh(c_dict, data_type, thresh)
 
         # handle extra options if set
-        if v_extra:
-            extra = v_extra.strip()
-            # if trailing semi-colon is not found, add it
-            if not extra.endswith(';'):
-                extra = f"{extra};"
-            field += f' {extra}'
+        field += _get_extra(v_extra)
 
         # add curly braces around field info if requested
         # otherwise add single quotes around field info
@@ -121,6 +99,71 @@ def _get_thresholds(c_dict, v_thresh, v_name, data_type):
         return 'No threshold was specified for probabilistic GRIB data'
 
     return [None]
+
+
+def _get_name_and_level(c_dict, data_type, name, level, thresh):
+    """!Format the name and level of a field to what the MET tools expect.
+
+    @param c_dict config dictionary to read values
+    @param data_type type of data to find i.e. FCST or OBS
+    @param name variable name
+    @param level variable level if set
+    @param thresh variable threshold if set
+    @returns string with the formatted name and level information
+    """
+    if (c_dict.get(f'{data_type}_PROB_IN_GRIB_PDS', False) and
+            not is_python_script(name)):
+        return _handle_grib_pds_field_info(name, level, thresh)
+
+    # add field name
+    field = f'name="{name}";'
+
+    # add level if set
+    if level:
+        field += f' level="{remove_quotes(level)}";'
+
+    # add probabilistic identifier if necessary
+    if c_dict.get(f'{data_type}_IS_PROB', False):
+        field += " prob=TRUE;"
+
+    return field
+
+
+def _get_thresh(c_dict, data_type, thresh):
+    """!Format the categorical threshold value to what MET tools expect if set.
+
+    @param c_dict config dictionary to read values
+    @param data_type type of data to find i.e. FCST or OBS
+    @param thresh variable threshold if set
+    @returns formatted threshold key/value or empty string if not set
+    """
+    cat_thresh = thresh
+    if c_dict.get(f'{data_type}_IS_PROB', False):
+        # add probabilistic cat thresh if different from default ==0.1
+        cat_thresh = c_dict.get(f'{data_type}_PROB_THRESH')
+
+    if not cat_thresh:
+        return ''
+
+    return f" cat_thresh=[ {cat_thresh} ];"
+
+
+def _get_extra(v_extra):
+    """!Format extra field options to what MET tools expect if set. Adds
+    trailing semicolon if not found.
+
+    @param v_extra string with extra variable config options
+    @returns string with a blank space followed by additional field options
+     if set or empty string if not.
+    """
+    if not v_extra:
+        return ''
+
+    extra = v_extra.strip()
+    # if trailing semi-colon is not found, add it
+    if not extra.endswith(';'):
+        extra = f"{extra};"
+    return f' {extra}'
 
 
 def format_field_info(c_dict, var_info, data_type, add_curly_braces=True):
