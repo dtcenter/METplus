@@ -439,9 +439,9 @@ class Runner(object):
         if 'env' in kwargs:                               self._env=dict(kwargs['env'])
 
         # Initialize input/output/error if requested:
-        #if 'in' in kwargs:           self<kwargs['in']
+        if 'in' in kwargs:           self<kwargs['in']
         if 'instr' in kwargs:        self<<str(kwargs['instr'])
-        #if 'out' in kwargs:          self>kwargs['out']
+        if 'out' in kwargs:          self>kwargs['out']
         if 'outa' in kwargs:         self>>kwargs['outa']
         if 'err2out' in kwargs:      self.err2out()
         if 'err' in kwargs:          self.err(kwargs['err'],append=False)
