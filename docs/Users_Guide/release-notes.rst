@@ -30,6 +30,23 @@ When applicable, release notes are followed by the
 `GitHub issue <https://github.com/dtcenter/METplus/issues>`__ number which
 describes the bugfix, enhancement, or new feature.
 
+METplus Version 5.0.2 Release Notes (2023-06-02)
+------------------------------------------------
+
+* Bugfixes:
+
+  * Define the order of the forecast variables numerically rather than alphabetically
+    (`#2070 <https://github.com/dtcenter/METplus/issues/2070>`_)
+  * Allow setting of convert, censor_thresh, and censor_val in regrid dictionary
+    (`#2082 <https://github.com/dtcenter/METplus/issues/2082>`_)
+  * Skip-if-output-exists logic incorrectly skips files
+    (`#2096 <https://github.com/dtcenter/METplus/issues/2096>`_)
+  * Prevent error if no commands were run because they were skipped
+    (`#2098 <https://github.com/dtcenter/METplus/issues/2098>`_)
+  * Allow spaces for complex categorical thresholds
+    (`#2189 <https://github.com/dtcenter/METplus/issues/2189>`_)
+
+
 METplus Version 5.0.1 Release Notes (2023-02-27)
 ------------------------------------------------
 
