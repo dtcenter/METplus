@@ -907,8 +907,7 @@ def test_getraw_instance_with_unset_var(metplus_config):
     ]
 )
 @pytest.mark.util
-def test_format_var_items_options_semicolon(config_value,
-                                            expected_result):
+def test_format_var_items_options_semicolon(config_value, expected_result):
     time_info = {}
 
     field_configs = {'name': 'FNAME',

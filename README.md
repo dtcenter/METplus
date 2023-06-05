@@ -25,3 +25,5 @@ information, please read
 This infrastructure utilizes the NCEP produtil package, which is a platform-independent
 weather and ocean forecasting utility package developed at the National Oceanic
 and Atmospheric Administration (NOAA).
+
+For information about the support provided for releases, see our [Release Support Policy](https://metplus.readthedocs.io/en/develop/Release_Guide/index.html#release-support-policy).

@@ -128,6 +128,8 @@ def test_threshold(key, value):
         ("goSFP90", None),
         ("NA", [('NA', '')]),
         ("<USP90(2.5)", [('<', 'USP90(2.5)')]),
+        ('gt4 && lt5', [('gt', 4), ('lt', 5)]),
+        (' gt4', [('gt', 4)]),
     ]
 )
 @pytest.mark.util

@@ -123,7 +123,7 @@ def test_get_relativedelta(key, value):
 )
 @pytest.mark.util
 def test_time_string_to_met_time(time_string, default_unit, met_time):
-  assert time_util.time_string_to_met_time(time_string, default_unit) == met_time
+    assert time_util.time_string_to_met_time(time_string, default_unit) == met_time
 
 
 @pytest.mark.parametrize(
@@ -146,3 +146,44 @@ def test_ti_calculate(input_dict, expected_time_info):
     for key, value in expected_time_info.items():
         assert time_info[key] == value
         assert time_info2[key] == value
+
+
+@pytest.mark.parametrize(
+    'lead, valid_time, expected_val', [
+        # returns None if lead is not a relativedelta object
+        (None, None, None),
+        (1, None, None),
+        ('1', None, None),
+        # leads that can be computed without a reference time
+        (relativedelta(seconds=3), None, 3),
+        (relativedelta(minutes=3), None, 180),
+        (relativedelta(hours=3), None, 10800),
+        (relativedelta(days=3), None, 259200),
+        (relativedelta(minutes=3, seconds=3), None, 183),
+        # leads that cannot be computed without a reference time
+        (relativedelta(months=3), None, None),
+        (relativedelta(years=3), None, None),
+        (relativedelta(months=3, years=3), None, None),
+        # valid time is string 'ALL' - should behave the same as no valid time
+        (relativedelta(seconds=3), 'ALL', 3),
+        (relativedelta(minutes=3), 'ALL', 180),
+        (relativedelta(hours=3), 'ALL', 10800),
+        (relativedelta(days=3), 'ALL', 259200),
+        (relativedelta(minutes=3, seconds=3), 'ALL', 183),
+        (relativedelta(months=3), 'ALL', None),
+        (relativedelta(years=3), 'ALL', None),
+        (relativedelta(months=3, years=3), 'ALL', None),
+        # valid time is datetime object - months and years should work
+        (relativedelta(seconds=3), datetime(2014, 10, 31, 12), 3),
+        (relativedelta(minutes=3), datetime(2014, 10, 31, 12), 180),
+        (relativedelta(hours=3), datetime(2014, 10, 31, 12), 10800),
+        (relativedelta(days=3), datetime(2014, 10, 31, 12), 259200),
+        (relativedelta(minutes=3, seconds=3), datetime(2014, 10, 31, 12), 183),
+        (relativedelta(months=1), datetime(2014, 10, 31, 12), 2678400),
+        (relativedelta(years=1), datetime(2014, 10, 31, 12), 31536000),
+        (relativedelta(months=1, years=1), datetime(2014, 10, 31, 12), 34214400),
+    ]
+)
+@pytest.mark.util
+def test_ti_get_seconds_from_relativedelta(lead, valid_time, expected_val):
+    assert time_util.ti_get_seconds_from_relativedelta(lead, valid_time) == expected_val
