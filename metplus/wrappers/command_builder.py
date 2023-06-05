@@ -566,13 +566,11 @@ class CommandBuilder:
         input_must_exist = self.c_dict.get('INPUT_MUST_EXIST', True)
 
         for template in template_list:
-            # perform string substitution
-            filename = do_string_sub(template,
-                                     level=level,
-                                     **time_info)
-
-            # build full path with data directory and filename
-            full_path = os.path.join(data_dir, filename)
+            # perform string substitution on directory and template
+            full_template = os.path.join(data_dir, template)
+            full_path = do_string_sub(full_template,
+                                      level=level,
+                                      **time_info)
 
             if os.path.sep not in full_path:
                 self.logger.debug(f"{full_path} is not a file path. "
@@ -689,6 +687,9 @@ class CommandBuilder:
         if not data_dir:
             self.log_error('Must set INPUT_DIR if looking for files within a time window')
             return None
+
+        # substitute any filename template tags that may be in _INPUT_DIR
+        data_dir = do_string_sub(data_dir, **time_info)
 
         # step through all files under input directory in sorted order
         for dirpath, _, all_files in os.walk(data_dir):
@@ -941,8 +942,7 @@ class CommandBuilder:
 
         # substitute time info if provided
         if time_info:
-            output_path = do_string_sub(output_path,
-                                        **time_info)
+            output_path = do_string_sub(output_path, **time_info)
 
         # replace wildcard character * with all
         output_path = output_path.replace('*', 'all')
