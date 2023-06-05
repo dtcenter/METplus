@@ -69,6 +69,7 @@ Category: air_quality_and_comp
 3::GridStat_fcstMPAS_obsMERRA2_lowAndTotalCloudFrac::model_applications/air_quality_and_comp/GridStat_fcstMPAS_obsMERRA2_lowAndTotalCloudFrac.conf:: pandac_env, py_embed
 4::GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac::model_applications/air_quality_and_comp/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac.conf:: pandac_env, py_embed
 5::GridStat_fcstMPAS_obsERA5_cloudBaseHgt::model_applications/air_quality_and_comp/GridStat_fcstMPAS_obsERA5_cloudBaseHgt.conf:: pandac_env, py_embed
+6::GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac::model_applications/air_quality_and_comp/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac.conf:: pandac_env, py_embed
 
 
 Category: climate

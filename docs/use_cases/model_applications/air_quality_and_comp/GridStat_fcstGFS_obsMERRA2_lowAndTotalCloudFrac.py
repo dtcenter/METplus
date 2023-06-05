@@ -110,7 +110,7 @@ model_applications/air_quality_and_comp/GridStat_fcstGFS_obsMERRA2_lowAndTotalCl
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in model_applications/air_quality_and_comp/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac
+# Output for this use case will be found in model_applications/air_quality_and_comp/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac
 # (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #

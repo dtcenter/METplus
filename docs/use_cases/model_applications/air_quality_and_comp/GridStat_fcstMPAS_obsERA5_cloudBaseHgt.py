@@ -109,14 +109,14 @@ model_applications/air_quality_and_comp/GridStat_fcstMPAS_obsERA5_cloudBaseHgt.c
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in model_applications/air_quality_and_comp/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac
+# Output for this use case will be found in model_applications/air_quality_and_comp/GridStat_fcstMPAS_obsERA5_cloudBaseHgt
 # (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
-# * grid_stat_MPAS_to_ERA5_F36_CloudFracs_360000L_20200724_120000V_pairs.nc
-# * grid_stat_MPAS_to_ERA5_F36_CloudFracs_360000L_20200724_120000V.stat
-# * grid_stat_MPAS_to_ERA5_F36_CloudFracs_NBR_360000L_20200724_120000V_pairs.nc
-# * grid_stat_MPAS_to_ERA5_F36_CloudFracs_NBR_360000L_20200724_120000V.stat
+# * grid_stat_MPAS_to_ERA5_F36_CloudBaseHgt_360000L_20200724_120000V_pairs.nc
+# * grid_stat_MPAS_to_ERA5_F36_CloudBaseHgt_360000L_20200724_120000V.stat
+# * grid_stat_MPAS_to_ERA5_F36_CloudBaseHgt_NBR_360000L_20200724_120000V_pairs.nc
+# * grid_stat_MPAS_to_ERA5_F36_CloudBaseHgt_NBR_360000L_20200724_120000V.stat
 
 ##############################################################################
 # Keywords
