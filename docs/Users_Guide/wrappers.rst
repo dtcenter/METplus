@@ -4055,16 +4055,21 @@ METplus Configuration
 | :term:`FCST_MODE_IS_PROB`
 | :term:`FCST_MODE_PROB_IN_GRIB_PDS`
 | :term:`MODE_MULTIVAR_LOGIC`
+| :term:`MODE_MULTIVAR_INTENSITY`
 | :term:`FCST_MODE_VAR<n>_NAME`
 | :term:`FCST_MODE_VAR<n>_LEVELS`
 | :term:`FCST_MODE_VAR<n>_THRESH`
 | :term:`FCST_MODE_VAR<n>_OPTIONS`
 | :term:`MODE_FCST_FILE_TYPE`
+| :term:`MODE_FCST_MULTIVAR_NAME`
+| :term:`MODE_FCST_MULTIVAR_UNITS`
 | :term:`OBS_MODE_VAR<n>_NAME`
 | :term:`OBS_MODE_VAR<n>_LEVELS`
 | :term:`OBS_MODE_VAR<n>_THRESH`
 | :term:`OBS_MODE_VAR<n>_OPTIONS`
 | :term:`MODE_OBS_FILE_TYPE`
+| :term:`MODE_OBS_MULTIVAR_NAME`
+| :term:`MODE_OBS_MULTIVAR_UNITS`
 |
 
 .. warning:: **DEPRECATED:**
@@ -4184,6 +4189,17 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`MODE_MULTIVAR_LOGIC`
      - multivar_logic
 
+**${METPLUS_MULTIVAR_INTENSITY}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_MULTIVAR_INTENSITY`
+     - multivar_intensity
+
 **${METPLUS_FCST_FIELD}**
 
 .. list-table::
@@ -4257,6 +4273,28 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`MODE_FCST_FILE_TYPE`
      - fcst.file_type
+
+**${METPLUS_FCST_MULTIVAR_NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_FCST_MULTIVAR_NAME`
+     - fcst.multivar_name
+
+**${METPLUS_FCST_MULTIVAR_UNITS}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_FCST_MULTIVAR_UNITS`
+     - fcst.multivar_units
 
 
 **${METPLUS_OBS_FIELD}**
@@ -4332,6 +4370,28 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`MODE_OBS_FILE_TYPE`
      - obs.file_type
+
+**${METPLUS_OBS_MULTIVAR_NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_OBS_MULTIVAR_NAME`
+     - obs.multivar_name
+
+**${METPLUS_OBS_MULTIVAR_UNITS}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_OBS_MULTIVAR_UNITS`
+     - obs.multivar_units
 
 **${METPLUS_MASK_POLY}**
 

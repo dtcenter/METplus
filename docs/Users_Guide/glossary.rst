@@ -10660,3 +10660,28 @@ METplus Configuration Glossary
      Specify the value for 'output_prefix' in the MET configuration file for TCDiag.
 
      | *Used by:* TCDiag
+
+   MODE_MULTIVAR_INTENSITY
+     Specify the value for 'multivar_intensity' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_FCST_MULTIVAR_NAME
+     Specify the value for 'fcst.multivar_name' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_FCST_MULTIVAR_UNITS
+     Specify the value for 'fcst.multivar_units' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_OBS_MULTIVAR_NAME
+     Specify the value for 'obs.multivar_name' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_OBS_MULTIVAR_UNITS
+     Specify the value for 'obs.multivar_units' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
