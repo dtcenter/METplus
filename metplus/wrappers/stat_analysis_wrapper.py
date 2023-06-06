@@ -248,7 +248,8 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
             self.log_error('Could not get runtime settings dict list')
             return False
 
-        self._run_stat_analysis_job(runtime_settings_dict_list)
+        for runtime_settings in runtime_settings_dict_list:
+            self._run_stat_analysis_job(runtime_settings)
 
         return True
 
@@ -308,55 +309,52 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
 
         return formatted_runtime_settings_dict_list
 
-    def _run_stat_analysis_job(self, runtime_settings_dict_list):
-        """! Sets environment variables need to run StatAnalysis jobs
-             and calls the tool for each job.
+    def _run_stat_analysis_job(self, runtime_settings):
+        """!Set environment variables to run StatAnalysis job and call it.
 
-             Args:
-                 @param runtime_settings_dict_list list of dictionaries
-                  containing information needed to run a StatAnalysis job
+        @param runtime_settings_dict_list list of dictionaries
+         containing information needed to run a StatAnalysis job
         """
-        for runtime_settings in runtime_settings_dict_list:
-            self.clear()
-            if not self._create_output_directories(runtime_settings):
+        self.clear()
+        if not self._create_output_directories(runtime_settings):
+            return
+
+        # set METPLUS_ env vars for MET config file to be consistent
+        # with other wrappers
+        for key in self.WRAPPER_ENV_VAR_KEYS:
+            item = key.replace('METPLUS_', '')
+            if not runtime_settings.get(item, ''):
                 continue
-
-            # set METPLUS_ env vars for MET config file to be consistent
-            # with other wrappers
-            for key in self.WRAPPER_ENV_VAR_KEYS:
-                item = key.replace('METPLUS_', '')
-                if not runtime_settings.get(item, ''):
-                    continue
-                value = runtime_settings.get(item, '')
-                if key.endswith('_JOBS'):
-                    value = '["' + '","'.join(value) + '"]'
-                elif key.endswith('_BEG') or key.endswith('_END'):
-                    value = f'"{value}"'
-                else:
-                    value = f'[{value}]'
-                value = f'{item.lower()} = {value};'
-                self.env_var_dict[key] = value
-
-            # send environment variables to logger
-            self.set_environment_variables(runtime_settings['string_sub'])
-
-            # set lookin dir to add to command
-            self.logger.debug("Setting -lookin dir to "
-                              f"{runtime_settings['LOOKIN_DIR']}")
-            self.c_dict['LOOKIN_DIR'] = runtime_settings['LOOKIN_DIR']
-
-            # set any command line arguments
-            if self.c_dict.get('CONFIG_FILE'):
-                self.args.append(f"-config {self.c_dict['CONFIG_FILE']}")
+            value = runtime_settings.get(item, '')
+            if key.endswith('_JOBS'):
+                value = '["' + '","'.join(value) + '"]'
+            elif key.endswith('_BEG') or key.endswith('_END'):
+                value = f'"{value}"'
             else:
-                self.args.append(runtime_settings['JOBS'][0])
+                value = f'[{value}]'
+            value = f'{item.lower()} = {value};'
+            self.env_var_dict[key] = value
 
-            # set -out file path if requested, value will be set to None if not
-            output_filename = runtime_settings.get('OUTPUT_FILENAME')
-            if output_filename:
-                self.args.append(f"-out {output_filename}")
+        # send environment variables to logger
+        self.set_environment_variables(runtime_settings['string_sub'])
 
-            self.build()
+        # set lookin dir to add to command
+        self.logger.debug("Setting -lookin dir to "
+                          f"{runtime_settings['LOOKIN_DIR']}")
+        self.c_dict['LOOKIN_DIR'] = runtime_settings['LOOKIN_DIR']
+
+        # set any command line arguments
+        if self.c_dict.get('CONFIG_FILE'):
+            self.args.append(f"-config {self.c_dict['CONFIG_FILE']}")
+        else:
+            self.args.append(runtime_settings['JOBS'][0])
+
+        # set -out file path if requested, value will be set to None if not
+        output_filename = runtime_settings.get('OUTPUT_FILENAME')
+        if output_filename:
+            self.args.append(f"-out {output_filename}")
+
+        self.build()
 
     def _read_jobs_from_config(self):
         """! Parse the jobs from the METplusConfig object

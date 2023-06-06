@@ -200,18 +200,7 @@ class GFDLTrackerWrapper(CommandBuilder):
         )
 
         # read config variables
-        for name, input_type in self.CONFIG_NAMES.items():
-            if input_type == 'int':
-                get_fct = self.config.getint
-            elif input_type == 'float':
-                get_fct = self.config.getfloat
-            elif input_type == 'bool':
-                get_fct = self.config.getbool
-            else:
-                get_fct = self.config.getraw
-
-            value = get_fct('config', f'GFDL_TRACKER_{name}', '')
-            c_dict[f'REPLACE_CONF_{name}'] = value
+        self._read_gfdl_config_variables(c_dict)
 
         c_dict['KEEP_INTERMEDIATE'] = (
             self.config.getbool('config',
@@ -237,6 +226,20 @@ class GFDLTrackerWrapper(CommandBuilder):
             self.log_error('GFDL_TRACKER_OUTPUT_DIR must be set')
 
         return c_dict
+
+    def _read_gfdl_config_variables(self, c_dict):
+        for name, input_type in self.CONFIG_NAMES.items():
+            if input_type == 'int':
+                get_fct = self.config.getint
+            elif input_type == 'float':
+                get_fct = self.config.getfloat
+            elif input_type == 'bool':
+                get_fct = self.config.getbool
+            else:
+                get_fct = self.config.getraw
+
+            value = get_fct('config', f'GFDL_TRACKER_{name}', '')
+            c_dict[f'REPLACE_CONF_{name}'] = value
 
     def run_at_time(self, input_dict):
         """! Do some processing for the current run time (init or valid)
@@ -344,7 +347,7 @@ class GFDLTrackerWrapper(CommandBuilder):
                                  'tcvit_genesis_storms.txt')
         try:
             shutil.copyfile(src_path, dest_path)
-        except:
+        except (OSError, shutil.SameFileError):
             self.log_error(f"Copy failed: from {src_path} to {dest_path}")
             return False
 
@@ -361,7 +364,7 @@ class GFDLTrackerWrapper(CommandBuilder):
 
         try:
             shutil.copyfile(src_path, dest_path)
-        except:
+        except (OSError, shutil.SameFileError):
             self.log_error(f"Copy failed: from {src_path} to {dest_path}")
             return False
 
@@ -507,8 +510,8 @@ class GFDLTrackerWrapper(CommandBuilder):
 
         # if not, create a blank file
         self.logger.debug(f"Writing blank fort.14 file: {fort_14_path}")
-        with open(fort_14_path, 'w'):
-            pass
+        file_handle = open(fort_14_path, 'w')
+        file_handle.close()
 
     def create_fort_15_file(self, all_lead_minutes):
         # format must match index (starting with 1) taking up 4 characters

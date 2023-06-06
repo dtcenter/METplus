@@ -84,6 +84,12 @@ class MixedValuesError(MPIProgSyntaxError):
 # mpi ranks.
 MIXED_VALUES=MixedValues()
 
+# constant string to pass to turbomode property
+TURBO_MODE_STR = "Turbo mode setting for this group of MPI ranks."
+
+# constant string to pass to threads property
+NUM_THREADS_STR = 'The number of threads per rank.'
+
 ########################################################################
 
 class MPIRanksBase(object):
@@ -157,7 +163,7 @@ class MPIRanksBase(object):
         for rank,count in self.expand_iter(bool(expand)):
             assert(isinstance(rank,MPIRanksBase))
             assert(isinstance(count,int))
-            if not count>0:
+            if count<=0:
                 continue
             if first:
                 first=False
@@ -269,11 +275,10 @@ class MPIRanksBase(object):
         logging.getLogger('mpiprog.py').info(
             "TURBO MODE IS %s"%(repr(self._turbomode)))
         return self
-    def delturbomode(self,tm):
+    def delturbomode(self):
         """!Removes the request for turbo mode to be on or off."""
         self._turbomode=None
-    turbomode=property(getturbomode,setturbomode,delturbomode,
-                       "Turbo mode setting for this group of MPI ranks.")
+    turbomode=property(getturbomode,setturbomode,delturbomode,TURBO_MODE_STR)
 
     def turbo(self,flag=True):
         self.turbomode=flag
@@ -313,7 +318,7 @@ class MPIRanksBase(object):
         """!Sets the number of MPI ranks per node requsted by this
         MPI rank."""
         rpn=int(rpn)
-        if not rpn>=0:
+        if rpn<0:
             raise ValueError('Ranks per node must be >=0 not %d'%rpn)
         self._ranks_per_node=rpn
 
@@ -379,7 +384,7 @@ class MPIRanksBase(object):
         """!Removes the request for threads."""
         for r,c in self.groups():
             del r.threads
-    threads=property(getthreads,setthreads,delthreads,"""The number of threads per rank.""")
+    threads=property(getthreads,setthreads,delthreads, NUM_THREADS_STR)
 
     def __mul__(self,factor):
         """!Returns a new set of MPI ranks that consist of this group
@@ -506,8 +511,7 @@ class MPIRanksSPMD(MPIRanksBase):
         del self._mpirank.turbomode
         self._turbomode=None
         return None
-    turbomode=property(getturbomode,setturbomode,delturbomode,
-                       "Turbo mode setting for this group of MPI ranks.")
+    turbomode=property(getturbomode,setturbomode,delturbomode, TURBO_MODE_STR)
     def setlocalopts(self,localopts):
         self._localopts=[ x for x in localopts ]
         self._mpirank.setlocalopts(localopts)
@@ -528,18 +532,6 @@ class MPIRanksSPMD(MPIRanksBase):
         """!Returns "X*N" where X is the MPI program and N is the
         number of ranks."""
         return '%s*%d'%(repr(self._mpirank),int(self._count))
-        # sio=io.StringIO()
-        # sio.write(repr(self._mpirank))
-        # if self.haslocalopts():
-        #     sio.write('.setlocalopts(%s)'%(repr(self.localopts),))
-        # if self.threads:
-        #     sio.write('.threads(%s)'%(repr(self.threads),))
-        # if self.turbomode:
-        #     sio.write('.turbomode(%s)'%(repr(self.turbomode),))
-        # sio.write('*%d'%int(self._count))
-        # ret=sio.getvalue()
-        # sio.close()
-        # return ret
     def ngroups(self):
         """!Returns 1 or 0: 1 if there are ranks and 0 if there are none."""
         if self._count>0:
@@ -563,7 +555,7 @@ class MPIRanksSPMD(MPIRanksBase):
     def ranks(self):
         """!Iterates over MPI ranks within self."""
         if self._count>0:
-            for i in range(self._count):
+            for _ in range(self._count):
                 yield self._mpirank
     def nranks(self):
         """!Returns the number of ranks this program requests."""
@@ -595,7 +587,7 @@ class MPIRanksSPMD(MPIRanksBase):
            self.ranks_per_node==other.ranks_per_node:
             copy=True
             for mpirank,count in other.groups():
-                if not mpirank==self._mpirank:
+                if mpirank!=self._mpirank:
                     copy=False
                     break
         if copy:
@@ -658,8 +650,7 @@ class MPIRanksMPMD(MPIRanksBase):
             del r.turbomode
         self._turbomode=None
         return None
-    turbomode=property(getturbomode,setturbomode,delturbomode,
-                       "Turbo mode setting for this group of MPI ranks.")
+    turbomode=property(getturbomode,setturbomode,delturbomode, TURBO_MODE_STR)
 
     def setthreads(self,threads):
         for r in self._el:
@@ -674,7 +665,7 @@ class MPIRanksMPMD(MPIRanksBase):
     def delthreads(self):
         for r in self._el:
             del r.threads
-    threads=property(getthreads,setthreads,delthreads,"""The number of threads per rank.""")
+    threads=property(getthreads,setthreads,delthreads, NUM_THREADS_STR)
 
     def setranks_per_node(self,tm):
         t=bool(tm)
@@ -876,7 +867,7 @@ class MPIRank(MPIRanksBase):
     def delthreads(self):
         """!Removes the request for threads."""
         self._threads=1
-    threads=property(getthreads,setthreads,delthreads,"""The number of threads per rank.""")
+    threads=property(getthreads,setthreads,delthreads, NUM_THREADS_STR)
     def to_shell(self):
         """!Return a POSIX sh representation of this MPI rank, if
         possible."""
@@ -902,6 +893,8 @@ class MPIRank(MPIRanksBase):
             sio.write('.threads(%s)'%(repr(self.threads),))
         if self.turbomode:
             sio.write('.turbomode(%s)'%(repr(self.turbomode),))
+        if self.ranks_per_node:
+            sio.write('.rpn(%s)'%(repr(self.ranks_per_node),))
         ret=sio.getvalue()
         sio.close()
         return ret
@@ -1038,7 +1031,7 @@ class MPISerial(MPIRank):
     @property
     def runner(self):
         return self._runner
-    def validate(self): 
+    def validate(self,more=None):
         """!Does nothing."""
     def __eq__(self,other):
         """!Returns True if other is an MPISerial with the same Runner,
@@ -1065,7 +1058,7 @@ class MPISerial(MPIRank):
 ########################################################################
 
 def collapse(runner):
-    SPMDs=list()
+    spmds=list()
     rc=list()
     for rank,count in runner.expand_iter(True):
         if not len(rc):
@@ -1077,11 +1070,11 @@ def collapse(runner):
             rc.append([rank,count])
             
     for rank,count in rc:
-        SPMDs.append(MPIRanksSPMD(rank,count))
+        spmds.append(MPIRanksSPMD(rank,count))
 
-    if len(SPMDs)>1:
-        result=MPIRanksMPMD(SPMDs)
+    if len(spmds)>1:
+        result=MPIRanksMPMD(spmds)
     else:
-        result=SPMDs[0]
+        result=spmds[0]
 
     return result

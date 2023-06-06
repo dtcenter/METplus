@@ -320,7 +320,7 @@ that reformat gridded data
 
         @param time_info dictionary with time information
         """
-        return
+        return None
 
     def get_command(self):
         """! Builds the command to run the MET application

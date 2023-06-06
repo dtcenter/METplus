@@ -38,6 +38,7 @@ from produtil.run import exe, run
 import shlex
 from datetime import datetime, timezone
 
+
 class CommandRunner(object):
     """! Class for Creating and Running External Programs
     """
@@ -74,8 +75,7 @@ class CommandRunner(object):
             return cmd
 
         # if env not set, use os.environ
-        if env is None:
-            env = os.environ
+        env = os.environ if env is None else env
 
         self.logger.info("COMMAND: %s" % cmd)
 
@@ -84,26 +84,13 @@ class CommandRunner(object):
             self.logger.info("Not running command (DO_NOT_RUN_EXE = True)")
             return 0, cmd
 
-        # self.log_name MUST be defined in the subclass' constructor,
-        # this code block is a safety net in case that was not done.
-        # self.log_name is used to generate the MET log output name,
-        # if output is directed there, based on the conf settings.
-        #
-        # cmd.split()[0] 'should' be the /path/to/<some_met_binary>
-        if not log_name:
-            log_name = os.path.basename(cmd.split()[0])
-            self.logger.warning('MISSING self.log_name, '
-                                'setting name to: %s' % repr(log_name))
-            self.logger.warning('Fix the code and edit the following objects'
-                                ' contructor: %s, ' % repr(self))
+        log_name = log_name if log_name else os.path.basename(cmd.split()[0])
 
         # Determine where to send the output from the MET command.
         log_dest = self.get_log_path(log_filename=log_name+'.log')
 
         # determine if command must be run in a shell
-        run_inshell = False
-        if '*' in cmd or ';' in cmd or '<' in cmd or '>' in cmd:
-            run_inshell = True
+        run_inshell = '*' in cmd or ';' in cmd or '<' in cmd or '>' in cmd
 
         # KEEP This comment as a reference note.
         # Run the executable in a new process instead of through a shell.
@@ -138,7 +125,7 @@ class CommandRunner(object):
         # run command
         try:
             ret = run(cmd_exe, **kwargs)
-        except:
+        except Exception:
             ret = -1
         else:
             # calculate time to run

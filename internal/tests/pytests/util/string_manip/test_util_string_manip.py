@@ -8,6 +8,18 @@ from csv import reader
 from metplus.util.string_manip import *
 from metplus.util.string_manip import _fix_list
 
+@pytest.mark.parametrize(
+    'template, expected_output', [
+        ('', ''),
+        ('{init?fmt=%Y%m%d}_i{init?fmt=%H%M}_m0_f*',
+         r'{init?fmt=%Y%m%d}_i{init?fmt=%H%M}_m0_f*'),
+        ('pgbf{lead?fmt=%HHH}.gfs.{init?fmt=%Y%m%d%H}',
+         r'pgbf.*\.gfs\.{init?fmt=%Y%m%d%H}'),
+    ]
+)
+@pytest.mark.util
+def test_template_to_regex(template, expected_output):
+    assert template_to_regex(template) == expected_output
 
 @pytest.mark.parametrize(
     'subset_definition, expected_result', [
