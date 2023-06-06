@@ -72,7 +72,7 @@ def test_getstr(metplus_config, input_value, default, result):
         ('/some/test/dir', None, '/some/test/dir'),
         ('/some//test/dir', None, '/some/test/dir'),
         ('/path/to', None, 'ValueError'),
-        (None, None, 'NoOptionError'),
+        (None, None, ''),
         (None, '/default/path', '/default/path'),
 
     ]
@@ -83,11 +83,9 @@ def test_getdir(metplus_config, input_value, default, result):
     if input_value is not None:
         conf.set('config', 'TEST_GETDIR', input_value)
 
-    # catch NoOptionError exception and pass test if default is None
+    # catch ValueError and pass test if value is invalid and no default
     try:
         assert result == conf.getdir('TEST_GETDIR', default=default)
-    except NoOptionError:
-        assert result == 'NoOptionError'
     except ValueError:
         assert result == 'ValueError'
 

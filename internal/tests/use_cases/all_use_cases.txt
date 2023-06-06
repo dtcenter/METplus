@@ -77,6 +77,10 @@ Category: data_assimilation
 0::StatAnalysis_fcstGFS_HofX_obsIODAv2_PyEmbed::model_applications/data_assimilation/StatAnalysis_fcstGFS_HofX_obsIODAv2_PyEmbed.conf:: py_embed
 
 
+Category: land_surface
+0::PointStat_fcstCESM_obsFLUXNET2015_TCI:: model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf:: py_embed
+
+
 Category: marine_and_cryosphere
 0::GridStat_MODE_fcstIMS_obsNCEP_sea_ice::model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf
 1::PlotDataPlane_obsHYCOM_coordTripolar::model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar.conf:: xesmf_env, py_embed
@@ -173,3 +177,4 @@ Category: tc_and_extra_tc
 
 Category: unstructured_grids
 0::StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEmbed:: model_applications/unstructured_grids/StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEmbed.conf:: geovista_env, py_embed
+

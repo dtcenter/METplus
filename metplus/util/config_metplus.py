@@ -530,10 +530,12 @@ class METplusConfig(ProdConfig):
             config, dir, and os environment)
             returns raw string, preserving {valid?fmt=%Y} blocks
 
-            @param sec: Section in the conf file to look for variable
-            @param opt: Variable to interpret
-            @param default: Default value to use if config is not set
-            @param count: Counter used to stop recursion to prevent infinite
+            @param sec Section in the conf file to look for variable
+            @param opt Variable to interpret
+            @param default Default value to use if config is not set
+            @param count Counter used to stop recursion to prevent infinite
+            @param sub_vars If False, skip string template substitution,
+             defaults to True
             @returns Raw string or empty string if function calls itself too
              many times
         """
@@ -640,17 +642,11 @@ class METplusConfig(ProdConfig):
         self.set('config', exe_name, full_exe_path)
         return full_exe_path
 
-    def getdir(self, dir_name, default=None, morevars=None,taskvars=None,
-               must_exist=False):
+    def getdir(self, dir_name, default=None, must_exist=False):
         """! Wraps produtil getdir and reports an error if
          it is set to /path/to
          """
-        try:
-            dir_path = super().getstr('config', dir_name, default=None,
-                                      morevars=morevars, taskvars=taskvars)
-        except NoOptionError:
-            self.check_default('config', dir_name, default)
-            dir_path = default
+        dir_path = self.getraw('config', dir_name, default=default)
 
         if '/path/to' in dir_path:
             raise ValueError(f"{dir_name} cannot be set to "
@@ -963,7 +959,8 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None,
                                                        index,
                                                        search_prefixes)
 
-            field_info = _format_var_items(field_configs, time_info)
+            field_info = _format_var_items(field_configs, time_info,
+                                           config.logger)
             if not isinstance(field_info, dict):
                 config.logger.error(f'Could not process {current_type}_'
                                     f'VAR{index} variables: {field_info}')
@@ -1102,11 +1099,12 @@ def _find_var_name_indices(config, data_types, met_tool=None):
     return [int(index) for index in indices]
 
 
-def _format_var_items(field_configs, time_info=None):
+def _format_var_items(field_configs, time_info=None, logger=None):
     """! Substitute time information into field information and format values.
 
         @param field_configs dictionary with config variable names to read
         @param time_info dictionary containing time info for current run
+        @param logger (optional) logging object
         @returns dictionary containing name, levels, and output_names, as
          well as thresholds and extra options if found. If not enough
          information was set in the METplusConfig object, an empty
@@ -1128,16 +1126,14 @@ def _format_var_items(field_configs, time_info=None):
 
     # perform string substitution on name
     if time_info:
-        search_name = do_string_sub(search_name,
-                                    skip_missing_tags=True,
-                                    **time_info)
+        search_name = do_string_sub(search_name, **time_info,
+                                    skip_missing_tags=True)
     var_items['name'] = search_name
 
     # get levels, performing string substitution on each item of list
     for level in getlist(field_configs.get('levels')):
         if time_info:
-            level = do_string_sub(level,
-                                  **time_info)
+            level = do_string_sub(level, **time_info)
         var_items['levels'].append(level)
 
     # if no levels are found, add an empty string
@@ -1149,7 +1145,7 @@ def _format_var_items(field_configs, time_info=None):
     search_thresh = field_configs.get('thresh')
     if search_thresh:
         thresh = getlist(search_thresh)
-        if not validate_thresholds(thresh):
+        if not validate_thresholds(thresh, logger):
             return 'Invalid threshold supplied'
 
         var_items['thresh'] = thresh
