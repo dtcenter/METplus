@@ -35,6 +35,9 @@ METplus Version 5.1.0-rc1 Release Notes (2023-06-07)
 
   .. dropdown:: Enhancements
 
+     * Add support for new multivariate MODE settings
+       (`#2197 <https://github.com/dtcenter/METplus/issues/2197>`_)
+
   .. dropdown:: Bugfix
 
      * Define the order of the forecast variables numerically rather than alphabetically
