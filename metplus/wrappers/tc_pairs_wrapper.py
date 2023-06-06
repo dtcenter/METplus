@@ -1021,7 +1021,7 @@ class TCPairsWrapper(CommandBuilder):
             # remove duplicate files
             all_files = list(set(all_files))
 
-            arg = f"-diag {diag_info['source']} {' '.join(all_files)}"
+            arg = f"-diag {diag_info['source']} {' '.join(sorted(all_files))}"
             self.args.append(arg)
 
         return True
