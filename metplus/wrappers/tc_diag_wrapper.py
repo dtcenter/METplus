@@ -1,7 +1,7 @@
-"""tc_rmw
-Program Name: tc_rmw_wrapper.py
+"""tc_diag
+Program Name: tc_diag_wrapper.py
 Contact(s): George McCabe
-Abstract: Builds command for and runs tc_rmw
+Abstract: Builds command for and runs tc_diag
 History Log:  Initial version
 Usage:
 Parameters: None
@@ -13,17 +13,18 @@ Condition codes: 0 for success, 1 for failure
 import os
 
 from ..util import time_util
-from . import CommandBuilder
+from . import RuntimeFreqWrapper
 from ..util import do_string_sub, skip_time, get_lead_sequence
 from ..util import parse_var_list, sub_var_list
+from ..util.met_config import add_met_config_dict_list
 
-'''!@namespace TCRMWWrapper
-@brief Wraps the TC-RMW tool
+'''!@namespace TCDiagWrapper
+@brief Wraps the TC-Diag tool
 @endcode
 '''
 
 
-class TCRMWWrapper(CommandBuilder):
+class TCDiagWrapper(RuntimeFreqWrapper):
 
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_MODEL',
@@ -37,18 +38,33 @@ class TCRMWWrapper(CommandBuilder):
         'METPLUS_VALID_EXCLUDE_LIST',
         'METPLUS_VALID_HOUR_LIST',
         'METPLUS_LEAD_LIST',
+        'METPLUS_DIAG_SCRIPT',
+        'METPLUS_DOMAIN_INFO_LIST',
+        'METPLUS_CENSOR_THRESH',
+        'METPLUS_CENSOR_VAL',
+        'METPLUS_CONVERT',
         'METPLUS_DATA_FILE_TYPE',
+        'METPLUS_DATA_DOMAIN',
+        'METPLUS_DATA_LEVEL',
         'METPLUS_DATA_FIELD',
         'METPLUS_REGRID_DICT',
-        'METPLUS_N_RANGE',
-        'METPLUS_N_AZIMUTH',
-        'METPLUS_MAX_RANGE_KM',
-        'METPLUS_DELTA_RANGE_KM',
-        'METPLUS_RMW_SCALE',
+        'METPLUS_COMPUTE_TANGENTIAL_AND_RADIAL_WINDS',
+        'METPLUS_U_WIND_FIELD_NAME',
+        'METPLUS_V_WIND_FIELD_NAME',
+        'METPLUS_TANGENTIAL_VELOCITY_FIELD_NAME',
+        'METPLUS_TANGENTIAL_VELOCITY_LONG_FIELD_NAME',
+        'METPLUS_RADIAL_VELOCITY_FIELD_NAME',
+        'METPLUS_RADIAL_VELOCITY_LONG_FIELD_NAME',
+        'METPLUS_VORTEX_REMOVAL',
+        'METPLUS_VORTEX_REMOVAL',
+        'METPLUS_NC_DIAG_FLAG',
+        'METPLUS_NC_RNG_AZI_FLAG',
+        'METPLUS_CIRA_DIAG_FLAG',
+        'METPLUS_OUTPUT_PREFIX',
     ]
 
     def __init__(self, config, instance=None):
-        self.app_name = "tc_rmw"
+        self.app_name = "tc_diag"
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR'),
                                      self.app_name)
         super().__init__(config, instance=instance)
@@ -56,129 +72,171 @@ class TCRMWWrapper(CommandBuilder):
     def create_c_dict(self):
         c_dict = super().create_c_dict()
         c_dict['VERBOSITY'] = self.config.getstr('config',
-                                                 'LOG_TC_RMW_VERBOSITY',
+                                                 'LOG_TC_DIAG_VERBOSITY',
                                                  c_dict['VERBOSITY'])
         c_dict['ALLOW_MULTIPLE_FILES'] = True
 
-        # get the MET config file path or use default
-        c_dict['CONFIG_FILE'] = self.get_config_file('TCRMWConfig_wrapped')
+        # skip RuntimeFreq wrapper logic to find files
+        c_dict['FIND_FILES'] = False
 
-        c_dict['INPUT_DIR'] = self.config.getdir('TC_RMW_INPUT_DIR', '')
+        if not c_dict['RUNTIME_FREQ']:
+            c_dict['RUNTIME_FREQ'] = 'RUN_ONCE_PER_INIT_OR_VALID'
+        if c_dict['RUNTIME_FREQ'] != 'RUN_ONCE_PER_INIT_OR_VALID':
+            self.log_error('Only RUN_ONCE_PER_INIT_OR_VALID is supported for '
+                           'TC_DIAG_RUNTIME_FREQ.')
+
+        # get the MET config file path or use default
+        c_dict['CONFIG_FILE'] = self.get_config_file('TCDiagConfig_wrapped')
+
+        c_dict['INPUT_DIR'] = self.config.getdir('TC_DIAG_INPUT_DIR', '')
         c_dict['INPUT_TEMPLATE'] = self.config.getraw('config',
-                                                      'TC_RMW_INPUT_TEMPLATE')
+                                                      'TC_DIAG_INPUT_TEMPLATE')
         c_dict['INPUT_FILE_LIST'] = self.config.getraw(
-            'config', 'TC_RMW_INPUT_FILE_LIST'
+            'config', 'TC_DIAG_INPUT_FILE_LIST'
         )
 
-        c_dict['OUTPUT_DIR'] = self.config.getdir('TC_RMW_OUTPUT_DIR', '')
+        c_dict['OUTPUT_DIR'] = self.config.getdir('TC_DIAG_OUTPUT_DIR', '')
         c_dict['OUTPUT_TEMPLATE'] = (
             self.config.getraw('config',
-                               'TC_RMW_OUTPUT_TEMPLATE')
+                               'TC_DIAG_OUTPUT_TEMPLATE')
         )
 
-        c_dict['DECK_INPUT_DIR'] = self.config.getdir('TC_RMW_DECK_INPUT_DIR',
+        c_dict['DECK_INPUT_DIR'] = self.config.getdir('TC_DIAG_DECK_INPUT_DIR',
                                                       '')
         c_dict['DECK_INPUT_TEMPLATE'] = (
             self.config.getraw('config',
-                               'TC_RMW_DECK_TEMPLATE')
+                               'TC_DIAG_DECK_TEMPLATE')
         )
 
-        self.add_met_config(name='file_type',
-                            data_type='string',
-                            env_var_name='METPLUS_DATA_FILE_TYPE',
-                            metplus_configs=['TC_RMW_INPUT_DATATYPE',
-                                             'TC_RMW_FILE_TYPE'])
-
         self.add_met_config(name='model',
-                            data_type='string',
-                            metplus_configs=['MODEL'])
+                            data_type='list',
+                            metplus_configs=['TC_DIAG_MODEL', 'MODEL'])
 
-        self.handle_regrid(c_dict, set_to_grid=False)
+        self.add_met_config(name='storm_id', data_type='string')
 
-        self.add_met_config(name='n_range',
-                            data_type='int')
+        self.add_met_config(name='basin', data_type='string')
 
-        self.add_met_config(name='n_azimuth',
-                            data_type='int')
-
-        self.add_met_config(name='max_range_km',
-                            data_type='float')
-
-        self.add_met_config(name='delta_range_km',
-                            data_type='float')
-
-        self.add_met_config(name='rmw_scale',
-                            data_type='float')
-
-        self.add_met_config(name='storm_id',
-                            data_type='string')
-
-        self.add_met_config(name='basin',
-                            data_type='string')
-
-        self.add_met_config(name='cyclone',
-                            data_type='string')
+        self.add_met_config(name='cyclone', data_type='string')
 
         self.add_met_config(name='init_inc',
                             data_type='string',
                             env_var_name='METPLUS_INIT_INCLUDE',
-                            metplus_configs=['TC_RMW_INIT_INC',
-                                             'TC_RMW_INIT_INCLUDE'])
+                            metplus_configs=['TC_DIAG_INIT_INC',
+                                             'TC_DIAG_INIT_INCLUDE'])
 
         self.add_met_config(name='valid_beg',
                             data_type='string',
-                            metplus_configs=['TC_RMW_VALID_BEG',
-                                             'TC_RMW_VALID_BEGIN'])
+                            metplus_configs=['TC_DIAG_VALID_BEG',
+                                             'TC_DIAG_VALID_BEGIN'])
 
         self.add_met_config(name='valid_end',
                             data_type='string',
-                            metplus_configs=['TC_RMW_VALID_END'])
+                            metplus_configs=['TC_DIAG_VALID_END'])
 
         self.add_met_config(name='valid_inc',
                             data_type='list',
                             env_var_name='METPLUS_VALID_INCLUDE_LIST',
-                            metplus_configs=['TC_RMW_VALID_INCLUDE_LIST',
-                                             'TC_RMW_VALID_INC_LIST',
-                                             'TC_RMW_VALID_INCLUDE',
-                                             'TC_RMW_VALID_INC',
+                            metplus_configs=['TC_DIAG_VALID_INCLUDE_LIST',
+                                             'TC_DIAG_VALID_INC_LIST',
+                                             'TC_DIAG_VALID_INCLUDE',
+                                             'TC_DIAG_VALID_INC',
                                              ])
 
         self.add_met_config(name='valid_exc',
                             data_type='list',
                             env_var_name='METPLUS_VALID_EXCLUDE_LIST',
-                            metplus_configs=['TC_RMW_VALID_EXCLUDE_LIST',
-                                             'TC_RMW_VALID_EXC_LIST',
-                                             'TC_RMW_VALID_EXCLUDE',
-                                             'TC_RMW_VALID_EXC',
+                            metplus_configs=['TC_DIAG_VALID_EXCLUDE_LIST',
+                                             'TC_DIAG_VALID_EXC_LIST',
+                                             'TC_DIAG_VALID_EXCLUDE',
+                                             'TC_DIAG_VALID_EXC',
                                              ])
 
         self.add_met_config(name='valid_hour',
                             data_type='list',
                             env_var_name='METPLUS_VALID_HOUR_LIST',
-                            metplus_configs=['TC_RMW_VALID_HOUR_LIST',
-                                             'TC_RMW_VALID_HOUR',
+                            metplus_configs=['TC_DIAG_VALID_HOUR_LIST',
+                                             'TC_DIAG_VALID_HOUR',
                                              ])
 
+        self.add_met_config(name='diag_script', data_type='list')
+
+        dict_items = {
+            'domain': 'string',
+            'n_range': 'int',
+            'n_azimuth': 'int',
+            'delta_range_km': 'float',
+            'diag_script': 'list',
+        }
+        if not add_met_config_dict_list(config=self.config,
+                                        app_name=self.app_name,
+                                        output_dict=self.env_var_dict,
+                                        dict_name='domain_info',
+                                        dict_items=dict_items):
+            self.isOK = False
+
+        self.add_met_config(name='censor_thresh',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
+
+        self.add_met_config(name='censor_val',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
+
+        self.add_met_config(name='convert',
+                            data_type='string',
+                            extra_args={'remove_quotes': True,
+                                        'add_x': True})
+
+        # handle data dictionary, including field, domain, level, and file_type
         c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
                                                  data_type='FCST',
                                                  met_tool=self.app_name)
+
+        self.add_met_config(name='domain', data_type='list',
+                            env_var_name='METPLUS_DATA_DOMAIN',
+                            metplus_configs=['TC_DIAG_DATA_DOMAIN'])
+
+        self.add_met_config(name='level', data_type='list',
+                            env_var_name='METPLUS_DATA_LEVEL',
+                            metplus_configs=['TC_DIAG_DATA_LEVEL'])
+
+        self.add_met_config(name='file_type',
+                            data_type='string',
+                            env_var_name='METPLUS_DATA_FILE_TYPE',
+                            metplus_configs=['TC_DIAG_INPUT_DATATYPE',
+                                             'TC_DIAG_DATA_FILE_TYPE',
+                                             'TC_DIAG_FILE_TYPE',])
+
+        self.handle_regrid(c_dict, set_to_grid=False)
+
+        self.add_met_config(name='compute_tangential_and_radial_winds',
+                            data_type='bool')
+        self.add_met_config(name='u_wind_field_name', data_type='string')
+        self.add_met_config(name='v_wind_field_name', data_type='string')
+        self.add_met_config(name='tangential_velocity_field_name',
+                            data_type='string')
+        self.add_met_config(name='tangential_velocity_long_field_name',
+                            data_type='string')
+        self.add_met_config(name='radial_velocity_field_name',
+                            data_type='string')
+        self.add_met_config(name='radial_velocity_long_field_name',
+                            data_type='string')
+
+        self.add_met_config(name='vortex_removal', data_type='bool')
+
+        self.add_met_config(name='nc_rng_azi_flag', data_type='bool')
+        self.add_met_config(name='nc_diag_flag', data_type='bool')
+        self.add_met_config(name='cira_diag_flag', data_type='bool')
+
+        self.add_met_config(name='output_prefix', data_type='string')
 
         return c_dict
 
     def get_command(self):
         cmd = self.app_path
 
-        # don't run if no input or output files were found
-        if not self.infiles:
-            self.log_error("No input files were found")
-            return
-
-        if not self.outfile:
-            self.log_error("No output file specified")
-            return
-
         # add deck
-        cmd += ' -adeck ' + self.c_dict['DECK_FILE']
+        cmd += ' -deck ' + self.c_dict['DECK_FILE']
 
         # add input files
         cmd += ' -data'
@@ -196,32 +254,12 @@ class TCRMWWrapper(CommandBuilder):
         cmd += ' -v ' + self.c_dict['VERBOSITY']
         return cmd
 
-    def run_at_time(self, input_dict):
-        """! Runs the MET application for a given run time. This function
-              loops over the list of forecast leads and runs the
-               application for each.
-              Args:
-                @param input_dict dictionary containing timing information
-        """
-        for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
-            if custom_string:
-                self.logger.info(f"Processing custom string: {custom_string}")
-
-            input_dict['custom'] = custom_string
-            time_info = time_util.ti_calculate(input_dict)
-
-            if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
-                self.logger.debug('Skipping run time')
-                continue
-
-            self.clear()
-            self.run_at_time_once(time_info)
-
     def run_at_time_once(self, time_info):
         """! Process runtime and try to build command to run ascii2nc
              Args:
                 @param time_info dictionary containing timing information
         """
+        time_info = time_util.ti_calculate(time_info)
         # get input files
         if self.find_input_files(time_info) is None:
             return
@@ -233,6 +271,9 @@ class TCRMWWrapper(CommandBuilder):
         # get field information to set in MET config
         if not self.set_data_field(time_info):
             return
+
+        # set forecast lead list for MET config
+        self.set_lead_list(time_info)
 
         # get other configurations for command
         self.set_command_line_arguments(time_info)
@@ -326,23 +367,27 @@ class TCRMWWrapper(CommandBuilder):
             list_file = self.write_list_file(list_file, all_input_files)
 
         self.infiles.append(list_file)
-
-        # set LEAD_LIST to list of forecast leads used
-        if lead_seq != [0]:
-            lead_list = []
-            for lead in lead_seq:
-                lead_hours = (
-                    time_util.ti_get_hours_from_relativedelta(lead,
-                                                              valid_time=time_info['valid'])
-                    )
-                lead_list.append(f'"{str(lead_hours).zfill(2)}"')
-
-            self.env_var_dict['METPLUS_LEAD_LIST'] = f"lead = [{', '.join(lead_list)}];"
-
         return self.infiles
 
-    def set_command_line_arguments(self, time_info):
+    def set_lead_list(self, time_info):
+        self.env_var_dict['METPLUS_LEAD_LIST'] = ''
 
+        lead_seq = get_lead_sequence(self.config, time_info)
+        # set LEAD_LIST to list of forecast leads used
+        if lead_seq == [0]:
+            return
+
+        lead_list = []
+        for lead in lead_seq:
+            lead_hours = (
+                time_util.ti_get_hours_from_relativedelta(lead,
+                                                          valid_time=time_info['valid'])
+                )
+            lead_list.append(f'"{str(lead_hours).zfill(2)}"')
+
+        self.env_var_dict['METPLUS_LEAD_LIST'] = f"lead = [{', '.join(lead_list)}];"
+
+    def set_command_line_arguments(self, time_info):
         # add config file - passing through do_string_sub to get custom string if set
         if self.c_dict['CONFIG_FILE']:
             config_file = do_string_sub(self.c_dict['CONFIG_FILE'],
