@@ -48,7 +48,7 @@ model_applications/air_quality_and_comp/GridStat_fcstGFS_obsERA5_lowAndTotalClou
 #
 # | **Init:** 2022-07-03 12Z
 # | **Forecast lead:** 36 hour
-# |
+#
 # Because instance names are used, GridStat will run 3 times for this 1 initalization time.
 
 ##############################################################################
