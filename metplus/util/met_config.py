@@ -501,6 +501,9 @@ def set_met_config_list(config, c_dict, mp_config, met_config_name,
         if not remove_quotes:
             conf_value = f'"{conf_value}"'
 
+        if kwargs.get('uppercase', False):
+            conf_value = conf_value.upper()
+
         out_values.append(conf_value)
     out_value = f"[{', '.join(out_values)}]"
 

@@ -54,6 +54,9 @@ ${METPLUS_QUILT}
 //multivar_logic =
 ${METPLUS_MULTIVAR_LOGIC}
 
+//multivar_intensity =
+${METPLUS_MULTIVAR_INTENSITY}
+
 //
 // Forecast and observation fields to be verified
 //
@@ -70,6 +73,8 @@ fcst = {
    ${METPLUS_FCST_MERGE_THRESH}
    ${METPLUS_FCST_MERGE_FLAG}
    ${METPLUS_FCST_FILE_TYPE}
+   ${METPLUS_FCST_MULTIVAR_NAME}
+   ${METPLUS_FCST_MULTIVAR_UNITS}
 }
 
 obs = {
@@ -85,6 +90,8 @@ obs = {
    ${METPLUS_OBS_MERGE_THRESH}
    ${METPLUS_OBS_MERGE_FLAG}
    ${METPLUS_OBS_FILE_TYPE}
+   ${METPLUS_OBS_MULTIVAR_NAME}
+   ${METPLUS_OBS_MULTIVAR_UNITS}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
