@@ -549,7 +549,7 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
             'TC_PAIRS_DIAG_TEMPLATE2': '/some/path/rt_{valid?fmt=%Y%m%d%H}.dat',
             'TC_PAIRS_DIAG_SOURCE2': 'LSDIAG_RT',
         },
-         {'DIAG_ARG': ('-diag TCDIAG /some/path/2014121318_MYNN.dat /some/path/2014121318_H19C.dat '
+         {'DIAG_ARG': ('-diag TCDIAG /some/path/2014121318_H19C.dat /some/path/2014121318_MYNN.dat '
                        '-diag LSDIAG_RT /some/path/rt_2014121318.dat'),
           'METPLUS_MODEL': 'model = ["MYNN", "H19C"];'}),
         # -diag arguments with wildcard model
