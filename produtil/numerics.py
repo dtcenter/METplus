@@ -138,7 +138,7 @@ def great_arc_dist(xlon1,ylat1, xlon2,ylat2):
     @param xlon2,ylat2 second point, degrees
     @returns distance in meters"""
     deg2rad=math.pi/180.0
-    Requator=6378137.0
+    r_equator=6378137.0
     flattening_inv=298.247
 
     rlat1=float(ylat1)*deg2rad
@@ -146,10 +146,10 @@ def great_arc_dist(xlon1,ylat1, xlon2,ylat2):
     rlat2=float(ylat2)*deg2rad
     rlon2=float(xlon2)*deg2rad
 
-    Rearth1=Requator*(1.0-math.sin(rlat1)**2.0/flattening_inv)
-    Rearth2=Requator*(1.0-math.sin(rlat2)**2.0/flattening_inv)
+    r_earth1=r_equator*(1.0-math.sin(rlat1)**2.0/flattening_inv)
+    r_earth2=r_equator*(1.0-math.sin(rlat2)**2.0/flattening_inv)
 
-    return (Rearth1+Rearth2)*math.asin(min(1.0,math.sqrt( \
+    return (r_earth1+r_earth2)*math.asin(min(1.0,math.sqrt( \
         math.sin((rlat1-rlat2)/2.0)**2.0 + \
         math.cos(rlat1)*math.cos(rlat2)*math.sin((rlon1-rlon2)/2.0)**2.0)))
 
@@ -187,12 +187,12 @@ def randint_zeromean(count,imax,randomizer=None):
         randint=random.randint
     else:
         randint=randomizer.randint
-    if imax!=0 and not ( -imax < imax):
+    if imax!=0 and -imax >= imax:
         # Integer overflow
         raise OverflowError(
             'In randint_zeromean, imax=%d cannot be negated and fit '
             'within a Python int.'%imax)
-    rand=[ randint(-imax,imax) for x in range(count) ]
+    rand=[ randint(-imax,imax) for _ in range(count) ]
     cen=sum(rand)
     while cen!=0:
         if cen>0:
@@ -417,31 +417,26 @@ def to_timedelta(a,b=None,negok=True):
     if isinstance(a,datetime.timedelta): return a
     if isinstance(a,str) and b is None:
         # 03:14 = three hours
-        try:
-            m=re.search(r'''(?ix) \A \s* (?P<negative>-)? 0* (?P<hours>\d+)
-                :0*(?P<minutes>\d+)
-                  (?: :0*(?P<seconds>\d+(?:\.\d*)?) )?
-                \s*''', a)
-            if m:
-                (hours,minutes,seconds)=(0.,0.,0.)
-                mdict=m.groupdict()
-                if 'hours' in mdict and mdict['hours'] is not None:
-                    hours=float(mdict['hours'])
-                if 'minutes' in mdict and mdict['minutes'] is not None:
-                    minutes=float(mdict['minutes'])
-                if 'seconds' in  mdict and mdict['seconds'] is not None:
-                    seconds=float(mdict['seconds'])
-                dt=datetime.timedelta(hours=hours,minutes=minutes,
-                                      seconds=seconds)
-                if 'negative' in mdict and mdict['negative'] is not None \
-                        and mdict['negative']=='-':
-                    return -dt
-                return dt
-        except(TypeError,ValueError,AttributeError) as e:
-            # Fall back to to_fraction
-            raise #FIXME: remove this line?  Why is this here?  It
-                  #conflicts with the description.
-            pass
+        m=re.search(r'''(?ix) \A \s* (?P<negative>-)? 0* (?P<hours>\d+)
+            :0*(?P<minutes>\d+)
+              (?: :0*(?P<seconds>\d+(?:\.\d*)?) )?
+            \s*''', a)
+        if m:
+            (hours,minutes,seconds)=(0.,0.,0.)
+            mdict=m.groupdict()
+            if 'hours' in mdict and mdict['hours'] is not None:
+                hours=float(mdict['hours'])
+            if 'minutes' in mdict and mdict['minutes'] is not None:
+                minutes=float(mdict['minutes'])
+            if 'seconds' in  mdict and mdict['seconds'] is not None:
+                seconds=float(mdict['seconds'])
+            dt=datetime.timedelta(hours=hours,minutes=minutes,
+                                  seconds=seconds)
+            if 'negative' in mdict and mdict['negative'] is not None \
+                    and mdict['negative']=='-':
+                return -dt
+            return dt
+
     f=to_fraction(a,b,negok=negok)
     (fpart,ipart)=math.modf(f)
     return datetime.timedelta(seconds=ipart,
@@ -562,7 +557,7 @@ class TimeContainer(object):
             self._data=[None]*N
         else:
             self._assigned=[True]*N
-            self._data=[init() for x in range(N)]
+            self._data=[init() for _ in range(N)]
     def at_index(self,index):
         """!Returns the data at the given index, or raises KeyError if
         no data exists.
@@ -604,17 +599,14 @@ class TimeContainer(object):
         value.
         @param when the time of interest"""
         (then,index)=self.index_of(when)
-        if epsilon is not None:
-            if abs(to_fraction(then-when,negok=True)) \
-                    <= to_fraction(epsilon):
-                return then
-            else:
-                raise NoNearbyValues(
-                    '%s: nearest value not after is %s, which is not '
-                    'within %s seconds.'%(str(when),str(then),
-                                          str(to_fraction(epsilon))))
-        else:
-            return then
+        if (epsilon is not None and
+                not abs(to_fraction(then-when,negok=True))
+                <= to_fraction(epsilon)):
+            raise NoNearbyValues(
+                '%s: nearest value not after is %s, which is not '
+                'within %s seconds.'%(str(when),str(then),
+                                      str(to_fraction(epsilon))))
+        return then
     def get(self,when,default):
         """!Returns the item at the latest time that is not later than
         "when."  
@@ -686,7 +678,7 @@ class TimeContainer(object):
         try:
             (iwhen,index)=self.index_of(when)
             return self._assigned[index]
-        except hwrf.exceptions.NotInTimespan as KeyError:
+        except hwrf.exceptions.NotInTimespan:
             return False
     def __len__(self):
         """!Returns the number of times that have data."""
@@ -772,10 +764,6 @@ class TimeArray(TimeContainer):
                 ('%s: not in range [%s,%s]' % (when.ctime(),
                     self._start.ctime(),self._end.ctime()) )
         return (self._times[index],index)
-    # def __iter__(self):
-    #     """Iterates over all known times."""
-    #     for i in range(len(self._times)):
-    #         yield self._times[i]
 
 ########################################################################
 
@@ -835,7 +823,7 @@ class TimeMapping(TimeContainer):
             imiddle=(iearly+ilate)/2
             middle=self._times[imiddle]
             if when<middle:
-                (ilate,late)=(imiddle,middle)
+                (ilate,_)=(imiddle,middle)
             else:
-                (iearly,early)=(imiddle,middle)
+                (iearly,_)=(imiddle,middle)
         return ( self._times[iearly], iearly )

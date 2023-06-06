@@ -464,9 +464,9 @@ def checkrun(arg,logger=None,**kwargs):
     list of acceptable exit statuses."""
     r=run(arg,logger=logger)
     if kwargs is not None and 'ret' in kwargs:
-        if not r in kwargs['ret']:
+        if r not in kwargs['ret']:
             raise ExitStatusException('%s: unexpected exit status'%(repr(arg),),r)
-    elif not r==0:
+    elif r!=0:
         raise ExitStatusException('%s: non-zero exit status'%(repr(arg),),r)
     return r
 
@@ -516,9 +516,9 @@ def runstr(arg,logger=None,**kwargs):
     s=p.to_string()
     r=p.poll()
     if kwargs is not None and 'ret' in kwargs:
-        if not r in kwargs['ret']:
+        if r not in kwargs['ret']:
             raise ExitStatusException('%s: unexpected exit status'%(repr(arg),),r)
-    elif not r==0:
+    elif r!=0:
         raise ExitStatusException('%s: non-zero exit status'%(repr(arg),),r)
     return s
 

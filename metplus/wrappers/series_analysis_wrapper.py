@@ -668,12 +668,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         time_info['storm_id'] = storm_id
 
         # get label and lead list if grouping by forecast leads
-        if lead_group:
-            label = lead_group[0]
-            leads = lead_group[1]
-        else:
-            label = ''
-            leads = None
+        label = '' if not lead_group else lead_group[0]
+        leads = None if not lead_group else lead_group[1]
 
         # if file list are explicitly specified,
         # return the file list file paths

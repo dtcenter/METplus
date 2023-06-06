@@ -40,7 +40,6 @@ class ReformatGriddedWrapper(CommandBuilder):
         """!To be implemented by child class"""
         self.log_error('ReformatGridded wrapper cannot be called directly.'
                        ' Please use child wrapper')
-        return
 
     def run_at_time(self, input_dict):
         """! Runs the MET application for a given run time. Processing forecast
