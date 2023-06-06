@@ -47,7 +47,7 @@ model_applications/air_quality_and_comp/GridStat_fcstMPAS_obsSATCORPS_lowAndTota
 #
 # | **Init:** 2020-07-23 00Z
 # | **Forecast lead:** 36 hour
-# |
+#
 # Because instance names are used, GridStat will run 3 times for this 1 initalization time.
 
 ##############################################################################
@@ -134,3 +134,4 @@ model_applications/air_quality_and_comp/GridStat_fcstMPAS_obsSATCORPS_lowAndTota
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 # sphinx_gallery_thumbnail_path = '_static/air_quality_and_comp-GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.png'
+#

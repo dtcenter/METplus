@@ -48,7 +48,7 @@ model_applications/air_quality_and_comp/GridStat_fcstGFS_obsSATCORPS_cloudTopPre
 #
 # | **Init:** 2022-07-03 12Z
 # | **Forecast lead:** 36 hour
-# |
+#
 # Because instance names are used, GridStat will run 2 times for this 1 initalization time.
 
 ##############################################################################
@@ -134,3 +134,4 @@ model_applications/air_quality_and_comp/GridStat_fcstGFS_obsSATCORPS_cloudTopPre
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 # sphinx_gallery_thumbnail_path = '_static/air_quality_and_comp-GridStat_fcstGFS_obsSATCORPS_cloudTopPressAndTemp.png'
+#

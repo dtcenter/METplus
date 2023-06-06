@@ -48,7 +48,7 @@ model_applications/air_quality_and_comp/GridStat_fcstGFS_obsMERRA2_lowAndTotalCl
 #
 # | **Init:** 2021-07-03 12Z
 # | **Forecast lead:** 36 hour
-# |
+# 
 # Because instance names are used, GridStat will run 3 times for this 1 initalization time.
 
 ##############################################################################
@@ -135,3 +135,4 @@ model_applications/air_quality_and_comp/GridStat_fcstGFS_obsMERRA2_lowAndTotalCl
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 # sphinx_gallery_thumbnail_path = '_static/air_quality_and_comp-GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac.png'
+#

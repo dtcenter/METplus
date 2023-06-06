@@ -135,3 +135,4 @@ model_applications/air_quality_and_comp/GridStat_fcstGFS_obsERA5_lowAndTotalClou
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 # sphinx_gallery_thumbnail_path = '_static/air_quality_and_comp-GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac.png'
+#
