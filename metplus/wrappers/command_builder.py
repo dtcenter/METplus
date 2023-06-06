@@ -998,8 +998,7 @@ class CommandBuilder:
 
         # substitute time info if provided
         if time_info:
-            output_path = do_string_sub(output_path,
-                                        **time_info)
+            output_path = do_string_sub(output_path, **time_info)
 
         # replace wildcard character * with all
         output_path = output_path.replace('*', 'all')

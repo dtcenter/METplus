@@ -530,10 +530,12 @@ class METplusConfig(ProdConfig):
             config, dir, and os environment)
             returns raw string, preserving {valid?fmt=%Y} blocks
 
-            @param sec: Section in the conf file to look for variable
-            @param opt: Variable to interpret
-            @param default: Default value to use if config is not set
-            @param count: Counter used to stop recursion to prevent infinite
+            @param sec Section in the conf file to look for variable
+            @param opt Variable to interpret
+            @param default Default value to use if config is not set
+            @param count Counter used to stop recursion to prevent infinite
+            @param sub_vars If False, skip string template substitution,
+             defaults to True
             @returns Raw string or empty string if function calls itself too
              many times
         """
@@ -640,18 +642,11 @@ class METplusConfig(ProdConfig):
         self.set('config', exe_name, full_exe_path)
         return full_exe_path
 
-    def getdir(self, name, default=None, morevars=None, taskvars=None,
-               must_exist=False):
+    def getdir(self, name, default=None, must_exist=False):
         """! Wraps produtil getdir and reports an error if
          it is set to /path/to
          """
-        try:
-            dir_path = super().getstr('config', name, default=None,
-                                      morevars=morevars, taskvars=taskvars)
-        except NoOptionError:
-            self.check_default('config', name, default)
-            dir_path = default
-
+        dir_path = self.getraw('config', dir_name, default=default)
         if '/path/to' in dir_path:
             raise ValueError(f"{name} cannot be set to or contain '/path/to'")
 
