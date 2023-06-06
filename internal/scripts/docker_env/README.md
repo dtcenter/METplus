@@ -403,7 +403,7 @@ cd /home/met_test/geovista
 /home/met_test/.conda/envs/geovista.${METPLUS_ENV_VERSION}/bin/pip3 install --no-deps --editable .
 ```
 
-## pandac.v5.1 (from py_embed_base.v5.1)
+## pandac.v5.1 (from metplotpy.v5.1)
 
 ### Docker
 
@@ -411,7 +411,7 @@ cd /home/met_test/geovista
 export METPLUS_ENV_VERSION=v5.1
 docker build -t dtcenter/metplus-envs:pandac.${METPLUS_ENV_VERSION} \
     --build-arg METPLUS_ENV_VERSION \
-    --build-arg BASE_ENV=py_embed_base \
+    --build-arg BASE_ENV=metplotpy \
     --build-arg ENV_NAME=pandac .
 docker push dtcenter/metplus-envs:pandac.${METPLUS_ENV_VERSION}
 ```
