@@ -55,6 +55,11 @@ METplus Version 5.1.0-rc1 Release Notes (2023-06-07)
      * StatAnalysis time shifting failure
        (`#2168 <https://github.com/dtcenter/METplus/issues/2168>`_)
 
+ .. dropdown:: New Wrappers
+
+     * TCDiag (beta)
+       (`#1626 <https://github.com/dtcenter/METplus/issues/1626>`_)
+
   .. dropdown:: New Use Cases
 
      * Read in Argo profile data netCDF files for use in METplus with python embedding
@@ -76,6 +81,8 @@ METplus Version 5.1.0-rc1 Release Notes (2023-06-07)
        (`#2147 <https://github.com/dtcenter/METplus/issues/2147>`_)
      * Update the development release guide instructions to remove references to a Coordinated release
        (`#2159 <https://github.com/dtcenter/METplus/issues/2159>`_)
+     * Refactored code to resolve many SonarQube items
+       (`#1610 <https://github.com/dtcenter/METplus/issues/1610>`_)
 
 METplus Version 5.1.0-beta2 Release Notes (2023-04-26)
 ------------------------------------------------------
