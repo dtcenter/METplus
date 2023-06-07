@@ -449,7 +449,6 @@ class TCPairsWrapper(CommandBuilder):
                                                dict_items=dict_items)
         if not return_code:
             self.isOK = False
-            return
 
     def _handle_diag(self, c_dict):
         diag_indices = list(
@@ -474,6 +473,10 @@ class TCPairsWrapper(CommandBuilder):
             source = (
                 self.config.getraw('config', f'TC_PAIRS_DIAG_SOURCE{idx}')
             )
+            if not source:
+                self.log_error(f'TC_PAIRS_DIAG_SOURCE{idx} must be set if '
+                               f'TC_PAIRS_DIAG_TEMPLATE{idx} is set')
+                continue
             diag_info = {
                 'template': template,
                 'source': source,
@@ -658,6 +661,10 @@ class TCPairsWrapper(CommandBuilder):
             if current_basin is None or current_cyclone is None:
                 continue
 
+            time_storm_info = time_info.copy()
+            time_storm_info['basin'] = current_basin
+            time_storm_info['cyclone'] = current_cyclone
+
             # create lists for deck files, put bdeck in list so it can
             # be handled the same as a and e for reformatting even though
             # it will always be size 1
@@ -667,14 +674,10 @@ class TCPairsWrapper(CommandBuilder):
 
             # get adeck files
             if self.c_dict['GET_ADECK']:
-                adeck_list = self.find_a_or_e_deck_files('A', current_basin,
-                                                         current_cyclone,
-                                                         time_info)
+                adeck_list = self.find_a_or_e_deck_files('A', time_storm_info)
             # get edeck files
             if self.c_dict['GET_EDECK']:
-                edeck_list = self.find_a_or_e_deck_files('E', current_basin,
-                                                         current_cyclone,
-                                                         time_info)
+                edeck_list = self.find_a_or_e_deck_files('E', time_storm_info)
 
             if not adeck_list and not edeck_list:
                 self.log_error('Could not find any corresponding '
@@ -693,19 +696,15 @@ class TCPairsWrapper(CommandBuilder):
             if edeck_list:
                 self.args.append(f"-edeck {' '.join(edeck_list)}")
 
-            # change wildcard basin/cyclone to 'all' for output filename
-            if current_basin == self.WILDCARDS['basin']:
-                current_basin = 'all'
-            if current_cyclone == self.WILDCARDS['cyclone']:
-                current_cyclone = 'all'
-
-            time_storm_info = time_info.copy()
-            time_storm_info['basin'] = current_basin
-            time_storm_info['cyclone'] = current_cyclone
-
             # find -diag file if requested
             if not self._get_diag_file(time_storm_info):
                 return []
+
+            # change wildcard basin/cyclone to 'all' for output filename
+            if current_basin == self.WILDCARDS['basin']:
+                time_storm_info['basin'] = 'all'
+            if current_cyclone == self.WILDCARDS['cyclone']:
+                time_storm_info['cyclone'] = 'all'
 
             if not self.find_and_check_output_file(time_info=time_storm_info,
                                                    check_extension='.tcst'):
@@ -786,38 +785,38 @@ class TCPairsWrapper(CommandBuilder):
         bdeck_regex = bdeck_regex.replace('*', '(.*)').replace('?', '(.)')
         self.logger.debug(f'Regex to extract basin/cyclone: {bdeck_regex}')
 
+        match = re.match(bdeck_regex, bdeck_file)
+        if not match:
+            return basin, cyclone
+
         current_basin = basin
         current_cyclone = cyclone
 
-        match = re.match(bdeck_regex, bdeck_file)
-        if match:
-            matches = match.groups()
-            # get template tags and wildcards from template
-            tags = get_tags(bdeck_template)
-            if len(matches) != len(tags):
-                self.log_error("Number of regex match groups does not match "
-                               "number of tags found:\n"
-                               f"Regex pattern: {bdeck_template}\n"
-                               f"Matches: {matches}\nTags: {tags}")
-                return None, None
+        matches = match.groups()
+        # get template tags and wildcards from template
+        tags = get_tags(bdeck_template)
+        if len(matches) != len(tags):
+            self.log_error("Number of regex match groups does not match "
+                           "number of tags found:\n"
+                           f"Regex pattern: {bdeck_template}\n"
+                           f"Matches: {matches}\nTags: {tags}")
+            return None, None
 
-            for match, tag in zip(matches, tags):
-                # if basin/cyclone if found, get value
-                if tag == 'basin' and basin == self.WILDCARDS['basin']:
-                    current_basin = match
-                elif (tag == 'cyclone' and
-                      cyclone == self.WILDCARDS['cyclone']):
-                    current_cyclone = match
+        for match, tag in zip(matches, tags):
+            # if basin/cyclone if found, get value
+            if tag == 'basin' and basin == self.WILDCARDS['basin']:
+                current_basin = match
+            elif (tag == 'cyclone' and
+                  cyclone == self.WILDCARDS['cyclone']):
+                current_cyclone = match
 
         return current_basin, current_cyclone
 
-    def find_a_or_e_deck_files(self, deck, basin, cyclone, time_info):
+    def find_a_or_e_deck_files(self, deck, time_info):
         """!Find ADECK or EDECK files that correspond to the BDECk file found
 
             @param deck type of deck (A or E)
-            @param basin region of storm from config
-            @param cyclone ID number of cyclone from config
-            @param time_info dictionary with timing info for current run
+            @param time_info dictionary with timing/storm info for current run
         """
         deck_list = []
         template = os.path.join(self.c_dict[deck+'DECK_DIR'],
@@ -825,8 +824,6 @@ class TCPairsWrapper(CommandBuilder):
 
         # get matching adeck wildcard expression for first model
         deck_expr = do_string_sub(template,
-                                  basin=basin,
-                                  cyclone=cyclone,
                                   model=self.c_dict['MODEL_LIST'][0],
                                   **time_info)
 
@@ -899,16 +896,18 @@ class TCPairsWrapper(CommandBuilder):
                f" -out {output_path}")
         return cmd
 
-    def read_modify_write_file(self, in_csvfile, storm_month, missing_values,
+    @staticmethod
+    def read_modify_write_file(in_csvfile, storm_month, missing_values,
                                out_csvfile):
-        """! Reads, modifies and writes file
-              Args:
-                @param in_csvfile input csv file that is being parsed
-                @param storm_month The storm month
-                @param missing_values a tuple where (MISSING_VAL_TO_REPLACE,
-                                                     MISSING_VAL)
-                @param out_csvfile the output csv file
-                @param logger the log where logging is directed
+        """!Reads CSV file, reformat file by adding the month to the 2nd
+        column storm number, delete the 3rd column, replace missing values,
+        and write a new CSV file with the modified content.
+
+        @param in_csvfile input csv file that is being parsed
+        @param storm_month storm month to prepend to storm number
+        @param missing_values tuple containing a missing data value to find in
+        the columns and the value to replace it with, e.g. (-9, -9999)
+        @param out_csvfile the output csv file
         """
         # create output directory if it does not exist
         mkdir_p(os.path.dirname(out_csvfile))
@@ -943,7 +942,7 @@ class TCPairsWrapper(CommandBuilder):
                         continue
                     # Replace MISSING_VAL_TO_REPLACE=missing_values[0] with
                     # MISSING_VAL=missing_values[1]
-                    elif item.strip() == missing_values[0]:
+                    if item.strip() == missing_values[0]:
                         item = " " + missing_values[1]
                     # Create a new row to write
                     row_list.append(item)
@@ -951,7 +950,6 @@ class TCPairsWrapper(CommandBuilder):
                 # Write the modified file
                 writer.writerow(row_list)
 
-        csvfile.close()
         out_file.close()
 
     def _read_all_files(self, input_dict):
@@ -1005,16 +1003,26 @@ class TCPairsWrapper(CommandBuilder):
         """
         if not self.c_dict.get('DIAG_INFO_LIST'):
             return True
-        self.log_error(self.c_dict.get('DIAG_INFO_LIST'))
+
+        time_info_copy = time_info.copy()
         for diag_info in self.c_dict.get('DIAG_INFO_LIST'):
             self.c_dict['DIAG_INPUT_TEMPLATE'] = diag_info['template']
-            filepaths = self.find_data(time_info, data_type='DIAG',
-                                       return_list=True)
-            if not filepaths:
+            all_files = []
+            for model in self.c_dict['MODEL_LIST']:
+                time_info_copy['model'] = model
+                filepaths = self.find_data(time_info_copy, data_type='DIAG',
+                                           return_list=True)
+                if filepaths:
+                    all_files.extend(filepaths)
+
+            if not all_files:
                 self.log_error('Could not get -diag files')
                 return False
 
-            arg = f"-diag {diag_info['source']} {' '.join(filepaths)}"
+            # remove duplicate files
+            all_files = sorted(list(set(all_files)))
+
+            arg = f"-diag {diag_info['source']} {' '.join(all_files)}"
             self.args.append(arg)
 
         return True

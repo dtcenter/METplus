@@ -96,7 +96,6 @@ class ImplementationBase(object):
     def synonyms():
         """!Iterates over alternative names for this MPI implementation, such
         as the names of other MPI implementations this class can handle."""
-        return
         yield 'xyz' # trick to ensure this is an iterator
 
     def getmpiserial_path(self):
@@ -141,9 +140,7 @@ class ImplementationBase(object):
         """!Runs the "sync" command as an exe()."""
         if logger is None: logger=self.logger
         sync=produtil.prog.Runner(['/bin/sync'])
-        p=produtil.pipeline.Pipeline(sync,capture=True,logger=logger)
-        version=p.to_string()
-        status=p.poll()
+        produtil.pipeline.Pipeline(sync,capture=True,logger=logger)
     def openmp(self,arg,threads):
         """!Does nothing.  This implementation does not support OpenMP.
     
@@ -228,7 +225,7 @@ class CMDFGen(object):
         if len(out)>0:
             out+='\n'
         self.cmdf_contents=out
-        return
+
     ##@var filename
     # command file's filename
 
@@ -281,9 +278,7 @@ class CMDFGen(object):
                 self.info('Write command file to %s'%(repr(filename),),logger)
             kw={self.cmd_envar: self.filename}
             self._add_more_vars(kw,logger)
-            if logger is not None:
-                for k,v in kw.items():
-                    self.info('Set %s=%s'%(k,repr(v)),logger)
+            self._log_kw(kw, logger)
             if self.filename_arg:
                 if filename_option:
                     runner=runner[self.filename_option]
@@ -299,9 +294,7 @@ class CMDFGen(object):
                 os.fchmod(t.fileno(),stat.S_IRUSR|stat.S_IRGRP|stat.S_IROTH)
                 kw={self.cmd_envar: t.name}
                 self._add_more_vars(kw,logger)
-                if logger is not None:
-                    for k,v in kw.items():
-                        self.info('Set %s=%s'%(k,repr(v)),logger)
+                self._log_kw(kw, logger)
                 runner.env(**kw)
                 if self.filename_arg:
                     if isinstance(self.filename_option,str):
@@ -310,6 +303,17 @@ class CMDFGen(object):
             result=runner
         if self.next_prerun is not None:
             return self.next_prerun(result)
+
+    def _log_kw(self, kw, logger):
+        """!Log key values of kw if logger is set.
+
+        @param kw dictionary to log
+        @param logger a logging.Logger for log messages or None if not set
+        """
+        if logger is None:
+            return
+        for k, v in kw.items():
+            self.info('Set %s=%s' % (k, repr(v)), logger)
 
     def to_shell(self,runner,logger=None):
         """!Adds the environment variables to @c runner and generates
@@ -351,9 +355,7 @@ class CMDFGen(object):
 
         kw={self.cmd_envar: filename}
         self._add_more_vars(kw,logger)
-        if logger is not None:
-            for k,v in kw.items():
-                self.info('Set %s=%s'%(k,repr(v)),logger)
+        self._log_kw(kw, logger)
         if self.filename_arg:
             runner=runner[filename]
         runner=runner.env(**kw)

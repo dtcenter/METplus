@@ -69,11 +69,9 @@ def check_for_deprecated_config(config):
 
         # check if <n> is found in old item, use regex to find vars if found
         if '<n>' not in old:
-            upgrade_note = handle_deprecated(old, depr_info.get('alt', ''),
-                                             depr_info, config, all_sed_cmds,
-                                             e_list)
-            if upgrade_note:
-                upgrade_notes.add(upgrade_note)
+            handle_deprecated(old, depr_info.get('alt', ''),
+                              depr_info, config, all_sed_cmds,
+                              e_list, upgrade_notes)
             continue
 
         old_regex = old.replace('<n>', r'(\d+)')
@@ -84,11 +82,9 @@ def check_for_deprecated_config(config):
             old_with_index = old.replace('<n>', index)
             alt_with_index = depr_info.get('alt', '').replace('<n>', index)
 
-            upgrade_note = handle_deprecated(old_with_index, alt_with_index,
-                                             depr_info, config, all_sed_cmds,
-                                             e_list)
-            if upgrade_note:
-                upgrade_notes.add(upgrade_note)
+            handle_deprecated(old_with_index, alt_with_index,
+                              depr_info, config, all_sed_cmds,
+                              e_list, upgrade_notes)
 
     if 'ensemble' in upgrade_notes:
         short_msg = ('Please navigate to the upgrade instructions: '
@@ -102,41 +98,38 @@ def check_for_deprecated_config(config):
         e_list.append(short_msg)
 
     # if any errors exist, report them and exit
-    if e_list:
-        logger.error('DEPRECATED CONFIG ITEMS WERE FOUND. PLEASE FOLLOW THE '
-                     'INSTRUCTIONS TO UPDATE THE CONFIG FILES')
-        for error_msg in e_list:
-            logger.error(error_msg)
-        return False, all_sed_cmds
+    if not e_list:
+        return True, []
 
-    return True, []
+    logger.error('DEPRECATED CONFIG ITEMS WERE FOUND. PLEASE FOLLOW THE '
+                 'INSTRUCTIONS TO UPDATE THE CONFIG FILES')
+    for error_msg in e_list:
+        logger.error(error_msg)
+    return False, all_sed_cmds
 
 
-def handle_deprecated(old, alt, depr_info, config, all_sed_cmds, e_list):
-    sec = 'config'
-    config_files = config.getstr('config', 'CONFIG_INPUT', '').split(',')
-
-    upgrade_note = None
-
+def handle_deprecated(old, alt, depr_info, config, all_sed_cmds, e_list,
+                      upgrade_notes):
     # if deprecated config item is found
-    if not config.has_option(sec, old):
-        return upgrade_note
+    if not config.has_option('config', old):
+        return
 
     upgrade_note = depr_info.get('upgrade')
+    if upgrade_note:
+        upgrade_notes.add(upgrade_note)
 
     # if it is required to remove, add to error list
     if not alt:
         e_list.append("{} should be removed".format(old))
-        return upgrade_note
+        return
 
     e_list.append("{} should be replaced with {}".format(old, alt))
 
+    config_files = config.getstr('config', 'CONFIG_INPUT', '').split(',')
     if 'copy' not in depr_info.keys() or depr_info['copy']:
         for config_file in config_files:
             all_sed_cmds.append(f"sed -i 's|^{old}|{alt}|g' {config_file}")
             all_sed_cmds.append(f"sed -i 's|{{{old}}}|{{{alt}}}|g' {config_file}")
-
-    return upgrade_note
 
 
 def check_for_deprecated_met_config(config):
@@ -227,32 +220,45 @@ def validate_field_info_configs(config):
         # get other data type
         for index, data_type_list in data_types_and_indices.items():
 
-            is_valid, err_msgs, sed_cmds = is_var_item_valid(data_type_list, index, ext, config)
+            is_valid, err_msgs, sed_cmds = is_var_item_valid(data_type_list,
+                                                             index, ext,
+                                                             config)
             if not is_valid:
-                for err_msg in err_msgs:
-                    config.logger.error(err_msg)
+                [config.logger.error(err_msg) for err_msg in err_msgs]
                 all_sed_cmds.extend(sed_cmds)
                 all_good = False
+                continue
 
-            # make sure FCST and OBS have the same number of levels if coming from separate variables
-            elif ext == 'LEVELS' and all(item in ['FCST', 'OBS'] for item in data_type_list):
-                fcst_levels = getlist(config.getraw('config', f"FCST_VAR{index}_LEVELS", ''))
-
-                # add empty string if no levels are found because python embedding items do not need
-                # to include a level, but the other item may have a level and the numbers need to match
-                if not fcst_levels:
-                    fcst_levels.append('')
-
-                obs_levels = getlist(config.getraw('config', f"OBS_VAR{index}_LEVELS", ''))
-                if not obs_levels:
-                    obs_levels.append('')
-
-                if len(fcst_levels) != len(obs_levels):
-                    config.logger.error(f"FCST_VAR{index}_LEVELS and OBS_VAR{index}_LEVELS do not have "
-                                        "the same number of elements")
-                    all_good = False
+            if not _check_levels(config, index, ext, data_type_list):
+                all_good = False
 
     return all_good, all_sed_cmds
+
+
+def _check_levels(config, index, ext, data_type_list):
+    # make sure FCST/OBS have the same num levels if coming from separate vars
+    if ext != 'LEVELS' or not all(
+            item in ['FCST', 'OBS'] for item in data_type_list):
+        return True
+
+    fcst_levels = getlist(
+        config.getraw('config', f"FCST_VAR{index}_LEVELS", ''))
+
+    # add empty string if no levels are found because python embedding items do not need
+    # to include a level, but the other item may have a level and the numbers need to match
+    if not fcst_levels:
+        fcst_levels.append('')
+
+    obs_levels = getlist(config.getraw('config', f"OBS_VAR{index}_LEVELS", ''))
+    if not obs_levels:
+        obs_levels.append('')
+
+    if len(fcst_levels) != len(obs_levels):
+        config.logger.error(
+            f"FCST_VAR{index}_LEVELS and OBS_VAR{index}_LEVELS do not have "
+            "the same number of elements")
+        return False
+    return True
 
 
 def skip_field_info_validation(config):
@@ -315,37 +321,38 @@ def is_var_item_valid(item_list, index, ext, config):
     elif 'FCST' in item_list and 'OBS' not in item_list:
         # if FCST level has 1 item and OBS name is a python embedding script,
         # don't report error
-        level_list = getlist(config.getraw('config',
-                                           f'FCST_VAR{index}_LEVELS',
-                                           ''))
-        other_name = config.getraw('config', f'OBS_VAR{index}_NAME', '')
-        skip_error_for_py_embed = ext == 'LEVELS' and is_python_script(other_name) and len(level_list) == 1
-        # do not report error for OPTIONS since it isn't required to be the same length
-        if ext not in ['OPTIONS'] and not skip_error_for_py_embed:
-            msg.append(f"If FCST{full_ext} is set, you must either set OBS{full_ext} or "
-                       f"change FCST{full_ext} to BOTH{full_ext}")
-
-            config_files = config.getstr('config', 'CONFIG_INPUT', '').split(',')
-            for config_file in config_files:
-                sed_cmds.append(f"sed -i 's|^FCST{full_ext}|BOTH{full_ext}|g' {config_file}")
-                sed_cmds.append(f"sed -i 's|{{FCST{full_ext}}}|{{BOTH{full_ext}}}|g' {config_file}")
+        _fcst_or_obs_missing('FCST', config, index, ext, sed_cmds, msg)
 
     elif 'OBS' in item_list and 'FCST' not in item_list:
         # if OBS level has 1 item and FCST name is a python embedding script,
         # don't report error
-        level_list = getlist(config.getraw('config',
-                                           f'OBS_VAR{index}_LEVELS',
-                                           ''))
-        other_name = config.getraw('config', f'FCST_VAR{index}_NAME', '')
-        skip_error_for_py_embed = ext == 'LEVELS' and is_python_script(other_name) and len(level_list) == 1
-
-        if ext not in ['OPTIONS'] and not skip_error_for_py_embed:
-            msg.append(f"If OBS{full_ext} is set, you must either set FCST{full_ext} or "
-                          f"change OBS{full_ext} to BOTH{full_ext}")
-
-            config_files = config.getstr('config', 'CONFIG_INPUT', '').split(',')
-            for config_file in config_files:
-                sed_cmds.append(f"sed -i 's|^OBS{full_ext}|BOTH{full_ext}|g' {config_file}")
-                sed_cmds.append(f"sed -i 's|{{OBS{full_ext}}}|{{BOTH{full_ext}}}|g' {config_file}")
+        _fcst_or_obs_missing('OBS', config, index, ext, sed_cmds, msg)
 
     return not bool(msg), msg, sed_cmds
+
+
+def _fcst_or_obs_missing(found_item, config, index, ext, sed_cmds, msg):
+    other_item = 'OBS' if found_item == 'FCST' else 'FCST'
+    full_ext = f"_VAR{index}_{ext}"
+    # if FCST level has 1 item and OBS name is a python embedding script,
+    # don't report error
+    level_list = getlist(config.getraw('config',
+                                       f'{found_item}_VAR{index}_LEVELS',
+                                       ''))
+    other_name = config.getraw('config', f'{other_item}_VAR{index}_NAME', '')
+    skip_error_for_py_embed = (ext == 'LEVELS' and is_python_script(other_name)
+                               and len(level_list) == 1)
+    # do not report error for OPTIONS since it isn't required to be same length
+    if ext in ['OPTIONS'] or skip_error_for_py_embed:
+        return
+
+    msg.append(
+        f"If {found_item}{full_ext} is set, you must either set {other_item}{full_ext} or "
+        f"change {found_item}{full_ext} to BOTH{full_ext}")
+
+    config_files = config.getstr('config', 'CONFIG_INPUT', '').split(',')
+    for config_file in config_files:
+        sed_cmds.append(
+            f"sed -i 's|^{found_item}{full_ext}|BOTH{full_ext}|g' {config_file}")
+        sed_cmds.append(
+            f"sed -i 's|{{{found_item}{full_ext}}}|{{BOTH{full_ext}}}|g' {config_file}")

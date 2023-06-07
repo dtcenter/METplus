@@ -396,7 +396,7 @@ class CommandBuilder:
         shell = self.c_dict.get('USER_SHELL', '').lower()
         for var in sorted(var_list):
             if shell == 'csh':
-                # TODO: Complex environment variables that have special characters
+                # NOTE: Complex environment variables that have special characters
                 # like { or } will not be copyable in csh until modifications are
                 # made to the formatting of the setenv calls
                 clean_env = self.env[var].replace('"', '"\\""')
@@ -519,8 +519,7 @@ class CommandBuilder:
         level = get_seconds_from_string(level, 'H')
 
         # arguments for find helper functions
-        arg_dict = {'level': level,
-                    'data_type': data_type_fmt,
+        arg_dict = {'data_type': data_type_fmt,
                     'mandatory': mandatory,
                     'time_info': time_info,
                     'return_list': return_list}
@@ -529,13 +528,14 @@ class CommandBuilder:
         if (self.c_dict.get(data_type_fmt + 'FILE_WINDOW_BEGIN', 0) == 0 and
                 self.c_dict.get(data_type_fmt + 'FILE_WINDOW_END', 0) == 0):
 
-            return self.find_exact_file(**arg_dict, allow_dir=allow_dir)
+            return self._find_exact_file(**arg_dict, allow_dir=allow_dir,
+                                         level=level)
 
         # if looking for a file within a time window:
-        return self.find_file_in_window(**arg_dict)
+        return self._find_file_in_window(**arg_dict)
 
-    def find_exact_file(self, level, data_type, time_info, mandatory=True,
-                        return_list=False, allow_dir=False):
+    def _find_exact_file(self, level, data_type, time_info, mandatory=True,
+                         return_list=False, allow_dir=False):
         input_template = self.c_dict.get(f'{data_type}INPUT_TEMPLATE', '')
         data_dir = self.c_dict.get(f'{data_type}INPUT_DIR', '')
 
@@ -543,9 +543,6 @@ class CommandBuilder:
             self.log_error(f"Could not find any {data_type}INPUT files "
                            "because no template was specified")
             return None
-
-        check_file_list = []
-        found_file_list = []
 
         # check if there is a list of files provided in the template
         # process each template in the list (or single template)
@@ -563,40 +560,11 @@ class CommandBuilder:
         # then add it back after the string sub call
         saved_level = time_info.pop('level', None)
 
-        input_must_exist = self.c_dict.get('INPUT_MUST_EXIST', True)
+        input_must_exist = self._get_input_must_exist(template_list, data_dir)
 
-        for template in template_list:
-            # perform string substitution
-            filename = do_string_sub(template,
-                                     level=level,
-                                     **time_info)
-
-            # build full path with data directory and filename
-            full_path = os.path.join(data_dir, filename)
-
-            if os.path.sep not in full_path:
-                self.logger.debug(f"{full_path} is not a file path. "
-                                  "Returning that string.")
-                check_file_list.append(full_path)
-                input_must_exist = False
-                continue
-
-            self.logger.debug(f"Looking for {data_type}INPUT file {full_path}")
-
-            # if wildcard expression, get all files that match
-            if '?' in full_path or '*' in full_path:
-
-                wildcard_files = sorted(glob.glob(full_path))
-                self.logger.debug(f'Wildcard file pattern: {full_path}')
-                self.logger.debug(f'{str(len(wildcard_files))} files '
-                                  'match pattern')
-
-                # add files to list of files
-                for wildcard_file in wildcard_files:
-                    check_file_list.append(wildcard_file)
-            else:
-                # add single file to list
-                check_file_list.append(full_path)
+        check_file_list = self._get_files_to_check(template_list, level,
+                                                   time_info, data_dir,
+                                                   data_type)
 
         # if it was set, add level back to time_info
         if saved_level is not None:
@@ -616,6 +584,7 @@ class CommandBuilder:
         # return None if no files were found
         if not check_file_list:
             msg = f"Could not find any {data_type}INPUT files"
+            # warn instead of error if it is not mandatory to find files
             if not mandatory or not self.c_dict.get('MANDATORY', True):
                 self.logger.warning(msg)
             else:
@@ -623,14 +592,92 @@ class CommandBuilder:
 
             return None
 
-        for file_path in check_file_list:
-            # if file doesn't need to exist, skip check
-            if not input_must_exist:
-                found_file_list.append(file_path)
+        found_files = self._check_that_files_exist(check_file_list, data_type,
+                                                   allow_dir, mandatory,
+                                                   input_must_exist)
+        if found_files is None:
+            return None
+
+        # if only one item found and return_list is False, return single item
+        if len(found_files) == 1 and not return_list:
+            return found_files[0]
+
+        return found_files
+
+    def _get_input_must_exist(self, template_list, data_dir):
+        """!Check if input must exist. The config dict setting INPUT_MUST_EXIST
+        can force a False result to skip checks for files existing. Also, if
+        the "filename" in question is a keyword and not an actual path, then
+        the check for file existence will be skipped.
+
+        @param template_list list of filenames without substitution to check
+        @param data_dir string of the path to directory containing data
+        @returns True if input must exist or a failure will occur. False if
+        file existence checks can be skipped.
+        """
+        # if config variable explicitly overriding file existence check is set
+        if not self.c_dict.get('INPUT_MUST_EXIST', True):
+            return False
+
+        # if data directory is set to a path, then it is not a keyword
+        if os.path.sep in data_dir:
+            return True
+
+        # if the full path is set in the template (not in dir)
+        # but the template is not a path, then it is likely a keyword
+        # so skip file existence check
+        if any(os.path.sep not in template for template in template_list):
+            return False
+        return True
+
+    def _get_files_to_check(self, template_list, level, time_info, data_dir,
+                            data_type):
+        """!Get list of files to check if they exist.
+        @returns list of tuples containing file path and template used to build
+        that path -- template is used for error logging
+        """
+        check_file_list = []
+        for template in template_list:
+            # build full path with data directory and template
+            full_template = os.path.join(data_dir, template)
+
+            # perform string substitution on full path
+            full_path = do_string_sub(full_template, **time_info, level=level)
+
+            if os.path.sep not in full_path:
+                self.logger.debug(f"{full_path} is not a file path. "
+                                  "Returning that string.")
+                check_file_list.append((full_path, full_template))
                 continue
 
-            # check if file exists
-            input_data_type = self.c_dict.get(data_type + 'INPUT_DATATYPE', '')
+            self.logger.debug(f"Looking for {data_type}INPUT file {full_path}")
+
+            if '?' not in full_path and '*' not in full_path:
+                # add single file to list
+                check_file_list.append((full_path, full_template))
+                continue
+
+            # if wildcard expression, get all files that match
+            wildcard_files = sorted(glob.glob(full_path))
+            self.logger.debug(f'Wildcard file pattern: {full_path}')
+            self.logger.debug(f'{str(len(wildcard_files))} files '
+                              'match pattern')
+
+            # add files to list of files
+            for wildcard_file in wildcard_files:
+                check_file_list.append((wildcard_file, full_template))
+
+        return check_file_list
+
+    def _check_that_files_exist(self, check_file_list, data_type, allow_dir,
+                                mandatory, input_must_exist):
+        # if input doesn't need to exist, skip checks and return list of files
+        if not input_must_exist:
+            return [value for value, _ in check_file_list]
+
+        found_file_list = []
+        for file_path, template in check_file_list:
+            input_data_type = self.c_dict.get(f'{data_type}INPUT_DATATYPE', '')
             processed_path = preprocess_file(file_path,
                                              input_data_type,
                                              self.config,
@@ -656,31 +703,19 @@ class CommandBuilder:
                 self.logger.debug(f"Found file: {processed_path}")
             found_file_list.append(processed_path)
 
-        # if only one item found and return_list is False, return single item
-        if len(found_file_list) == 1 and not return_list:
-            return found_file_list[0]
-
         return found_file_list
 
-    def find_file_in_window(self, level, data_type, time_info, mandatory=True,
-                            return_list=False):
+    def _find_file_in_window(self, data_type, time_info, mandatory=True,
+                             return_list=False):
         template = self.c_dict[f'{data_type}INPUT_TEMPLATE']
         data_dir = self.c_dict[f'{data_type}INPUT_DIR']
 
         # convert valid_time to unix time
         valid_time = time_info['valid_fmt']
-        valid_seconds = int(datetime.strptime(valid_time, "%Y%m%d%H%M%S").strftime("%s"))
-        # get time of each file, compare to valid time, save best within range
-        closest_files = []
-        closest_time = 9999999
 
         # get range of times that will be considered
         valid_range_lower = self.c_dict.get(data_type + 'FILE_WINDOW_BEGIN', 0)
         valid_range_upper = self.c_dict.get(data_type + 'FILE_WINDOW_END', 0)
-        lower_limit = int(datetime.strptime(shift_time_seconds(valid_time, valid_range_lower),
-                                            "%Y%m%d%H%M%S").strftime("%s"))
-        upper_limit = int(datetime.strptime(shift_time_seconds(valid_time, valid_range_upper),
-                                            "%Y%m%d%H%M%S").strftime("%s"))
 
         msg = f"Looking for {data_type}INPUT files under {data_dir} within range " +\
               f"[{valid_range_lower},{valid_range_upper}] using template {template}"
@@ -690,41 +725,9 @@ class CommandBuilder:
             self.log_error('Must set INPUT_DIR if looking for files within a time window')
             return None
 
-        # step through all files under input directory in sorted order
-        for dirpath, _, all_files in os.walk(data_dir):
-            for filename in sorted(all_files):
-                fullpath = os.path.join(dirpath, filename)
-
-                # remove input data directory to get relative path
-                rel_path = fullpath.replace(f'{data_dir}/', "")
-                # extract time information from relative path using template
-                file_time_info = get_time_from_file(rel_path, template, self.logger)
-                if file_time_info is None:
-                    continue
-
-                # get valid time and check if it is within the time range
-                file_valid_time = file_time_info['valid'].strftime("%Y%m%d%H%M%S")
-                # skip if could not extract valid time
-                if not file_valid_time:
-                    continue
-                file_valid_dt = datetime.strptime(file_valid_time, "%Y%m%d%H%M%S")
-                file_valid_seconds = int(file_valid_dt.strftime("%s"))
-                # skip if outside time range
-                if file_valid_seconds < lower_limit or file_valid_seconds > upper_limit:
-                    continue
-
-                # if only 1 file is allowed, check if file is
-                # closer to desired valid time than previous match
-                if not self.c_dict.get('ALLOW_MULTIPLE_FILES', False):
-                    diff = abs(valid_seconds - file_valid_seconds)
-                    if diff < closest_time:
-                        closest_time = diff
-                        del closest_files[:]
-                        closest_files.append(fullpath)
-                # if multiple files are allowed, get all files within range
-                else:
-                    closest_files.append(fullpath)
-
+        closest_files = self._get_closest_files(data_dir, template, valid_time,
+                                                valid_range_lower,
+                                                valid_range_upper)
         if not closest_files:
             msg = (f"Could not find {data_type}INPUT files under {data_dir} within range "
                    f"[{valid_range_lower},{valid_range_upper}] using template {template}")
@@ -742,7 +745,7 @@ class CommandBuilder:
             for ext in COMPRESSION_EXTENSIONS:
                 if filepath.endswith(ext) and filepath[0:-len(ext)] in closest_files:
                     duplicate_found = True
-                    continue
+                    break
 
             if not duplicate_found:
                 closest_files_fixed.append(filepath)
@@ -763,6 +766,60 @@ class CommandBuilder:
             out.append(outfile)
 
         return out
+
+    def _get_closest_files(self, data_dir, template, valid_time,
+                           valid_range_lower, valid_range_upper):
+        closest_files = []
+
+        # get time of each file, compare to valid time, save best within range
+        closest_time = 9999999
+
+        valid_seconds = int(
+            datetime.strptime(valid_time, "%Y%m%d%H%M%S").strftime("%s")
+        )
+        lower_limit = int(datetime.strptime(shift_time_seconds(valid_time, valid_range_lower),
+                                            "%Y%m%d%H%M%S").strftime("%s"))
+        upper_limit = int(datetime.strptime(shift_time_seconds(valid_time, valid_range_upper),
+                                            "%Y%m%d%H%M%S").strftime("%s"))
+
+        # step through all files under input directory in sorted order
+        for dirpath, _, all_files in os.walk(data_dir):
+            for filename in sorted(all_files):
+                fullpath = os.path.join(dirpath, filename)
+
+                # remove input data directory to get relative path
+                rel_path = fullpath.replace(f'{data_dir}/', "")
+                # extract time information from relative path using template
+                file_time_info = get_time_from_file(rel_path, template,
+                                                    self.logger)
+                if file_time_info is None:
+                    continue
+
+                # get valid time and check if it is within the time range
+                file_valid_time = file_time_info['valid'].strftime("%Y%m%d%H%M%S")
+                # skip if could not extract valid time
+                if not file_valid_time:
+                    continue
+                file_valid_dt = datetime.strptime(file_valid_time, "%Y%m%d%H%M%S")
+                file_valid_seconds = int(file_valid_dt.strftime("%s"))
+                # skip if outside time range
+                if file_valid_seconds < lower_limit or file_valid_seconds > upper_limit:
+                    continue
+
+                # if multiple files are allowed, get all files within range
+                if self.c_dict.get('ALLOW_MULTIPLE_FILES', False):
+                    closest_files.append(fullpath)
+                    continue
+
+                # if only 1 file is allowed, check if file is
+                # closer to desired valid time than previous match
+                diff = abs(valid_seconds - file_valid_seconds)
+                if diff < closest_time:
+                    closest_time = diff
+                    del closest_files[:]
+                    closest_files.append(fullpath)
+
+        return closest_files
 
     def find_input_files_ensemble(self, time_info, fill_missing=True):
         """! Get a list of all input files and optional control file.
@@ -941,8 +998,7 @@ class CommandBuilder:
 
         # substitute time info if provided
         if time_info:
-            output_path = do_string_sub(output_path,
-                                        **time_info)
+            output_path = do_string_sub(output_path, **time_info)
 
         # replace wildcard character * with all
         output_path = output_path.replace('*', 'all')
@@ -1009,12 +1065,12 @@ class CommandBuilder:
 
     def check_for_gempak(self):
         # check if we are processing Gempak data
-        processingGempak = False
+        processing_gempak = False
 
         # if any *_DATATYPE keys in c_dict have a value of GEMPAK, we are using Gempak data
         data_types = [value for key,value in self.c_dict.items() if key.endswith('DATATYPE')]
         if 'GEMPAK' in data_types:
-            processingGempak = True
+            processing_gempak = True
 
         # if any filename templates end with .grd, we are using Gempak data
         template_list = [value for key,value in self.c_dict.items() if key.endswith('TEMPLATE')]
@@ -1029,10 +1085,10 @@ class CommandBuilder:
                 templates.append(value)
 
         if [value for value in templates if value and value.endswith('.grd')]:
-            processingGempak = True
+            processing_gempak = True
 
         # If processing Gempak, make sure GempakToCF is found
-        if processingGempak:
+        if processing_gempak:
             gempaktocf_jar = self.config.getstr('exe', 'GEMPAKTOCF_JAR', '')
             self.check_gempaktocf(gempaktocf_jar)
 

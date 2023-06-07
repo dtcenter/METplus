@@ -129,41 +129,42 @@ class CyclonePlotterWrapper(CommandBuilder):
         # User-defined map extent, lons and lats
         if self.is_global_extent:
             self.logger.debug("Global extent")
+            return
+
+        self.logger.debug("Getting lons and lats that define the plot's extent")
+        west_lon = (self.config.getstr('config',
+                                       'CYCLONE_PLOTTER_WEST_LON', '')
+        )
+        east_lon = (self.config.getstr('config',
+                                       'CYCLONE_PLOTTER_EAST_LON', '')
+        )
+        north_lat = (self.config.getstr('config',
+                                        'CYCLONE_PLOTTER_NORTH_LAT', '')
+        )
+        south_lat = (self.config.getstr('config',
+                                        'CYCLONE_PLOTTER_SOUTH_LAT', '')
+        )
+
+        # Check for unconfigured lons and lats needed for defining the extent
+        if not west_lon:
+            self.log_error("Missing CYCLONE_PLOTTER_WEST_LON in config file. ")
         else:
-            self.logger.debug("Getting lons and lats that define the plot's extent")
-            west_lon = (self.config.getstr('config',
-                                           'CYCLONE_PLOTTER_WEST_LON', '')
-            )
-            east_lon = (self.config.getstr('config',
-                                           'CYCLONE_PLOTTER_EAST_LON', '')
-            )
-            north_lat = (self.config.getstr('config',
-                                            'CYCLONE_PLOTTER_NORTH_LAT', '')
-            )
-            south_lat = (self.config.getstr('config',
-                                            'CYCLONE_PLOTTER_SOUTH_LAT', '')
-            )
+            self.west_lon = (float(west_lon))
+        if not east_lon:
+            self.log_error("Missing CYCLONE_PLOTTER_EAST_LON in config file. ")
+        else:
+            self.east_lon = (float(east_lon))
+        if not south_lat:
+            self.log_error("Missing CYCLONE_PLOTTER_SOUTH_LAT in config file. ")
+        else:
+            self.south_lat = float(south_lat)
+        if not north_lat:
+            self.log_error("Missing CYCLONE_PLOTTER_NORTH_LAT in config file. ")
+        else:
+            self.north_lat = float(north_lat)
 
-            # Check for unconfigured lons and lats needed for defining the extent
-            if not west_lon:
-                self.log_error("Missing CYCLONE_PLOTTER_WEST_LON in config file. ")
-            else:
-                self.west_lon = (float(west_lon))
-            if not east_lon:
-                self.log_error("Missing CYCLONE_PLOTTER_EAST_LON in config file. ")
-            else:
-                self.east_lon = (float(east_lon))
-            if not south_lat:
-                self.log_error("Missing CYCLONE_PLOTTER_SOUTH_LAT in config file. ")
-            else:
-                self.south_lat = float(south_lat)
-            if not north_lat:
-                self.log_error("Missing CYCLONE_PLOTTER_NORTH_LAT in config file. ")
-            else:
-                self.north_lat = float(north_lat)
-
-            self.extent_region = [self.west_lon, self.east_lon, self.south_lat, self.north_lat]
-            self.logger.debug(f"extent region: {self.extent_region}")
+        self.extent_region = [self.west_lon, self.east_lon, self.south_lat, self.north_lat]
+        self.logger.debug(f"extent region: {self.extent_region}")
 
 
     def run_all_times(self):
@@ -187,14 +188,13 @@ class CyclonePlotterWrapper(CommandBuilder):
 
         """
         self.logger.debug("Begin retrieving data...")
-        all_tracks_list = []
 
         # Store the data in the track list.
         if os.path.isdir(self.input_data):
             self.logger.debug("Get data from all files in the directory " +
                               self.input_data)
             # Get the list of all files (full file path) in this directory
-            all_input_files = get_files(self.input_data, ".*.tcst", self.logger)
+            all_input_files = get_files(self.input_data, ".*.tcst")
 
             # read each file into pandas then concatenate them together
             df_list = [pd.read_csv(file, delim_whitespace=True) for file in all_input_files]
@@ -208,7 +208,6 @@ class CyclonePlotterWrapper(CommandBuilder):
             # if there are any NaN values in the ALAT, ALON, STORM_ID, LEAD, INIT, AMODEL, or VALID column,
             # drop that row of data (axis=0).  We need all these columns to contain valid data in order
             # to create a meaningful plot.
-            combined_df = combined.copy(deep=True)
             combined_df = combined.dropna(axis=0, how='any',
                                           subset=self.columns_of_interest)
 
@@ -435,8 +434,6 @@ class CyclonePlotterWrapper(CommandBuilder):
 
         # to be consistent with the NOAA website, use red for annotations, markers, and lines.
         pt_color = 'red'
-        cross_marker_size = self.cross_marker_size
-        circle_marker_size = self.circle_marker_size
 
         # Get all the lat and lon (i.e. x and y) points for the '+' and 'o' marker types
         # to be used in generating the scatter plots (one for the 0/12 hr and one for the 6/18 hr lead
@@ -454,12 +451,10 @@ class CyclonePlotterWrapper(CommandBuilder):
                 cross_lons.append(pt.lon)
                 cross_lats.append(pt.lat)
                 cross_annotations.append(pt.annotation)
-                # cross_marker = pt.marker
             elif pt.marker == self.circle_marker:
                 circle_lons.append(pt.lon)
                 circle_lats.append(pt.lat)
                 circle_annotations.append(pt.annotation)
-                # circle_marker = pt.marker
 
         # Now generate the scatter plots for the lead group 0/12 hr ('+' marker) and the
         # lead group 6/18 hr ('.' marker).
@@ -644,9 +639,8 @@ class CyclonePlotterWrapper(CommandBuilder):
         treshold = 10
         for ix, ea in enumerate(lon_list):
             diff = oldval - ea
-            if (ix > 0):
-                if (diff > treshold):
-                    ea = ea + 360
+            if ix > 0 and diff > treshold:
+                ea = ea + 360
             oldval = ea
             new_list.append(ea)
 

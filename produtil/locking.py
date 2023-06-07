@@ -50,7 +50,7 @@ def disable_locking():
     for lock in locks:
         try:
             lock.release_impl()
-        except (Exception,LockingDisabled) as l: pass
+        except (Exception,LockingDisabled): pass
 
 class LockHeld(Exception):
     """!This exception is raised when a LockFile cannot lock a file

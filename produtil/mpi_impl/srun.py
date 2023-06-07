@@ -59,9 +59,7 @@ class Implementation(ImplementationBase):
         """!Runs the "sync" command as an exe()."""
         if logger is None: logger=self.logger
         sync=produtil.prog.Runner(['/bin/sync'])
-        p=produtil.pipeline.Pipeline(sync,capture=True,logger=logger)
-        version=p.to_string()
-        status=p.poll()
+        produtil.pipeline.Pipeline(sync,capture=True,logger=logger)
 
     def openmp(self,arg,threads):
         """!Adds OpenMP support to the provided object
@@ -112,16 +110,15 @@ class Implementation(ImplementationBase):
         p=produtil.pipeline.Pipeline(
             scontrol,capture=True,logger=self.logger)
         nodelist=p.to_string()
-        status=p.poll()
         for line in nodelist.splitlines():
             node=line.strip()
-            if not node: next
-            if node in nodeset: next
+            if not node: continue
+            if node in nodeset: continue
             nodeset.add(node)
             available_nodes.append(node)
         return available_nodes
     
-    def mpirunner_impl(self,arg,allranks=False,rewrite_nodefile=True,**kwargs):
+    def mpirunner_impl(self,arg,allranks=False,rewrite_nodefile=True,label_io=False,**kwargs):
         """!This is the underlying implementation of mpirunner and should
         not be called directly."""
         assert(isinstance(arg,produtil.mpiprog.MPIRanksBase))
@@ -138,6 +135,9 @@ class Implementation(ImplementationBase):
 
 
         srun_args=[self.srun_path,'--export=ALL','--cpu_bind=core']
+
+        if label_io:
+            srun_args.append('--label')
     
         if arg.nranks()==1 and allranks:
             srun_args.append('--distribution=block:block')
@@ -169,11 +169,11 @@ class Implementation(ImplementationBase):
                 remaining_nodes=list(available_nodes)
 
             for rank,count in arg.expand_iter(expand=False):
-                if count<1: next
+                if count<1: continue
                 cmdfile.append('%d-%d %s'%(irank,irank+count-1,rank.to_shell()))
                 irank+=count
                 if rewrite_nodefile:
-                    rpn=max(min(node_size,rank.rpn()),1)
+                    rpn=max(min(node_size,rank.ranks_per_node),1)
                     need_nodes=max(1,(count+rpn-1)//rpn)
                     if need_nodes>len(remaining_nodes):
                         raise MPITooManyRanks('Request is too large for %d nodes of size %d: %s'%(

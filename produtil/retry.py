@@ -48,8 +48,7 @@ def retry_io(max_tries,sleep_time,operation,opargs=[],logger=None,
     if fail is not None:
         if failargs is None: failargs=opargs
         if giveup is None: giveup=fail
-    if giveup is not None:
-        if giveupargs is None: giveupargs=failargs
+    if giveup is not None and giveupargs is None: giveupargs=failargs
 
     if sleep_time is None:
         sleep_time=0.1
@@ -66,11 +65,10 @@ def retry_io(max_tries,sleep_time,operation,opargs=[],logger=None,
                 if logger is not None:
                     logger.debug('Failed but have not given up: %s'%(str(e),),
                                  exc_info=True)
-                if sleep_time is not None:
-                    if randsleep:
-                        sleepmax=min(sleep_time,0.05) * \
-                            min(max(1.0,backoff**ntry),50.0)
-                        sleepme=random.uniform(sleepmax/2.0,sleepmax)
+                if sleep_time is not None and randsleep:
+                    sleepmax=min(sleep_time,0.05) * \
+                        min(max(1.0,backoff**ntry),50.0)
+                    sleepme=random.uniform(sleepmax/2.0,sleepmax)
                 if isinstance(fail,str):
                     if logger is not None and ntry>=first_warn:
                         logger.info("%s (try %d/%d; sleep %.3f and retry): %s"%\

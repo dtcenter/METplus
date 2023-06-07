@@ -198,7 +198,7 @@ def test_valid_init_env_vars(metplus_config, config_overrides,
     runtime_settings_dict_list = wrapper._get_all_runtime_settings(time_input)
     assert runtime_settings_dict_list
 
-    first_runtime_only = [runtime_settings_dict_list[0]]
+    first_runtime_only = runtime_settings_dict_list[0]
     wrapper._run_stat_analysis_job(first_runtime_only)
     all_cmds = wrapper.all_commands
 

@@ -61,9 +61,16 @@ Category: met_tool_wrapper
 59::IODA2NC::met_tool_wrapper/IODA2NC/IODA2NC.conf
 60::PointStat_python_embedding_obs:: met_tool_wrapper/PointStat/PointStat_python_embedding_obs.conf
 61::PlotPointObs:: met_tool_wrapper/PlotPointObs/PlotPointObs.conf
+#62::TCDiag:: met_tool_wrapper/TCDiag/TCDiag.conf
 
 Category: air_quality_and_comp
 0::EnsembleStat_fcstICAP_obsMODIS_aod::model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod.conf
+1::GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac::model_applications/air_quality_and_comp/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.conf:: pandac_env, py_embed
+2::GridStat_fcstGFS_obsSATCORPS_cloudTopPressAndTemp::model_applications/air_quality_and_comp/GridStat_fcstGFS_obsSATCORPS_cloudTopPressAndTemp.conf:: pandac_env, py_embed
+3::GridStat_fcstMPAS_obsMERRA2_lowAndTotalCloudFrac::model_applications/air_quality_and_comp/GridStat_fcstMPAS_obsMERRA2_lowAndTotalCloudFrac.conf:: pandac_env, py_embed
+4::GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac::model_applications/air_quality_and_comp/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac.conf:: pandac_env, py_embed
+5::GridStat_fcstMPAS_obsERA5_cloudBaseHgt::model_applications/air_quality_and_comp/GridStat_fcstMPAS_obsERA5_cloudBaseHgt.conf:: pandac_env, py_embed
+6::GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac::model_applications/air_quality_and_comp/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac.conf:: pandac_env, py_embed
 
 
 Category: climate
