@@ -105,6 +105,9 @@ Category: medium_range
 9::GridStat_fcstGEFS_obsCADB_BinaryObsPOE:: model_applications/medium_range/GridStat_fcstGEFS_obsCADB_BinaryObsPOE.conf:: netcdf4_env
 
 
+Category: pbl
+0::PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed:: model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed.conf
+
 Category: precipitation
 0::GenEnsProd_fcstHRRRE_FcstOnly_NetCDF:: model_applications/precipitation/GenEnsProd_fcstHRRRE_FcstOnly_NetCDF.conf
 1::GridStat_fcstHREFmean_obsStgIV_Gempak:: model_applications/precipitation/GridStat_fcstHREFmean_obsStgIV_Gempak.conf:: gempak_env
