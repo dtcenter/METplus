@@ -119,7 +119,7 @@ Category: s2s
 1::TCGen_fcstGFSO_obsBDECKS_GDF_TDF:: model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf:: metplotpy_env,cartopy,metplus
 2::UserScript_obsPrecip_obsOnly_Hovmoeller:: model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.conf:: metplotpy_env,cartopy
 3:: UserScript_obsPrecip_obsOnly_CrossSpectraPlot:: model_applications/s2s/UserScript_obsPrecip_obsOnly_CrossSpectraPlot.conf:: spacetime_env
-4:: UserScript_obsERA_obsOnly_Stratosphere:: model_applications/s2s/UserScript_obsERA_obsOnly_Stratosphere.conf:: metplotpy_env,metdataio
+4:: UserScript_obsPrecip_obsOnly_CrossSpectraPlot:: model_applications/s2s/UserScript_obsPrecip_obsOnly_CrossSpectraPlot.conf:: metplotpy_env,metdataio
 5::SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_MultiStatisticTool:: model_applications/s2s/SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_MultiStatisticTool.conf:: netcdf4_env
 6::GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile:: model_applications/s2s/GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile.conf:: netcdf4_env
 
