@@ -143,7 +143,7 @@ model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed.conf
 #   * GenVxMaskToolUseCase 
 #   * PointStatToolUseCase 
 #   * PythonEmbeddingFileUseCase 
-#   * pblAppUseCase
+#   * PBLAppUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
