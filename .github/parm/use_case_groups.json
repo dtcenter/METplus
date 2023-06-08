@@ -127,7 +127,7 @@
   {
     "category": "pbl",
     "index_list": "0",
-    "run": false
+    "run": true
   },
   {
     "category": "precipitation",
