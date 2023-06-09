@@ -114,7 +114,7 @@ stp.plot_coherence(Coh2, Phs1, Phs2, symmetry, source, vars1, vars2, plotpath, f
 # check if output file exists since plotting function
 # doesn't return an error code on failure
 expected_file = os.path.join(plotpath,
-                             'SpaceTimeCoherence.png')
+                             'SpaceTimeCoherence_.png')
 if not os.path.exists(expected_file):
     print(f"ERROR: Could not create output file: {expected_file}")
     sys.exit(1)

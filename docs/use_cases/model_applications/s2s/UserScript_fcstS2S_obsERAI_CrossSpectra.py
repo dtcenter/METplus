@@ -23,6 +23,9 @@ UserScript_fcstS2S_obsERAI_CrossSpectra.py
 # Datasets
 # --------
 #
+#  * Forecast dataset: UFS Prototype 7
+#  * Observation dataset: ERAI
+#
 
 ##############################################################################
 # METplus Components
