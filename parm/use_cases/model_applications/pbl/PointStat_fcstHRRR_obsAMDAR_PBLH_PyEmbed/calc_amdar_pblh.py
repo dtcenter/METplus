@@ -9,7 +9,7 @@ import sys
 import pandas as pd
 import numpy as np
 import netCDF4 as nc
-from met_point_obs import convert_point_data
+#from met_point_obs import convert_point_data
 
 # silence this annoying warning about numpy bool being deprecated in favor of python bool
 from warnings import filterwarnings
