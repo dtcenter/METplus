@@ -346,7 +346,7 @@ class TCPairsWrapper(CommandBuilder):
 
                 if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
                     self.logger.debug('Skipping run time')
-                    return
+                    continue
 
                 self.run_at_time_loop_string(time_info)
 
