@@ -11,7 +11,7 @@
   },
   {
     "category": "air_quality_and_comp",
-    "index_list": "0-6",
+    "index_list": "0-1",
     "run": false
   },
   {
@@ -20,48 +20,13 @@
     "run": false
   },
   {
-    "category": "short_range",
-    "index_list": "0",
-    "run": false
-  },
-  {
-    "category": "short_range",
-    "index_list": "1",
-    "run": false
-  },
-  {
-    "category": "short_range",
-    "index_list": "2-6",
-    "run": false
-  },
-  {
-    "category": "short_range",
-    "index_list": "7",
-    "run": false
-  },
-  {
-    "category": "short_range",
-    "index_list": "8",
-    "run": false
-  },
-  {
-    "category": "short_range",
-    "index_list": "9",
-    "run": false
-  },
-  {
-    "category": "short_range",
-    "index_list": "10-12",
-    "run": false
-  },
-  {
-    "category": "short_range",
-    "index_list": "13",
-    "run": false
-  },
-  {
     "category": "data_assimilation",
     "index_list": "0-1",
+    "run": false
+  },
+  {
+    "category": "land_surface",
+    "index_list": "0",
     "run": false
   },
   {
@@ -215,6 +180,46 @@
     "run": false
   },
   {
+    "category": "short_range",
+    "index_list": "0",
+    "run": false
+  },
+  {
+    "category": "short_range",
+    "index_list": "1",
+    "run": false
+  },
+  {
+    "category": "short_range",
+    "index_list": "2-6",
+    "run": false
+  },
+  {
+    "category": "short_range",
+    "index_list": "7",
+    "run": false
+  },
+  {
+    "category": "short_range",
+    "index_list": "8",
+    "run": false
+  },
+  {
+    "category": "short_range",
+    "index_list": "9",
+    "run": false
+  },
+  {
+    "category": "short_range",
+    "index_list": "10-12",
+    "run": false
+  },
+  {
+    "category": "short_range",
+    "index_list": "13",
+    "run": false
+  },
+  {
     "category": "space_weather",
     "index_list": "0-1",
     "run": false
@@ -231,11 +236,6 @@
   },
   {
     "category": "unstructured_grids",
-    "index_list": "0",
-    "run": false
-  },
-  {
-    "category": "land_surface",
     "index_list": "0",
     "run": false
   }
