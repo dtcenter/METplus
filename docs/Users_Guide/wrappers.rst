@@ -4062,14 +4062,14 @@ METplus Configuration
 | :term:`FCST_MODE_VAR<n>_OPTIONS`
 | :term:`MODE_FCST_FILE_TYPE`
 | :term:`MODE_FCST_MULTIVAR_NAME`
-| :term:`MODE_FCST_MULTIVAR_UNITS`
+| :term:`MODE_FCST_MULTIVAR_LEVEL`
 | :term:`OBS_MODE_VAR<n>_NAME`
 | :term:`OBS_MODE_VAR<n>_LEVELS`
 | :term:`OBS_MODE_VAR<n>_THRESH`
 | :term:`OBS_MODE_VAR<n>_OPTIONS`
 | :term:`MODE_OBS_FILE_TYPE`
 | :term:`MODE_OBS_MULTIVAR_NAME`
-| :term:`MODE_OBS_MULTIVAR_UNITS`
+| :term:`MODE_OBS_MULTIVAR_LEVEL`
 |
 
 .. warning:: **DEPRECATED:**
@@ -4285,7 +4285,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`MODE_FCST_MULTIVAR_NAME`
      - fcst.multivar_name
 
-**${METPLUS_FCST_MULTIVAR_UNITS}**
+**${METPLUS_FCST_MULTIVAR_LEVEL}**
 
 .. list-table::
    :widths: 5 5
@@ -4293,8 +4293,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`MODE_FCST_MULTIVAR_UNITS`
-     - fcst.multivar_units
+   * - :term:`MODE_FCST_MULTIVAR_LEVEL`
+     - fcst.multivar_level
 
 
 **${METPLUS_OBS_FIELD}**
@@ -4382,7 +4382,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`MODE_OBS_MULTIVAR_NAME`
      - obs.multivar_name
 
-**${METPLUS_OBS_MULTIVAR_UNITS}**
+**${METPLUS_OBS_MULTIVAR_LEVEL}**
 
 .. list-table::
    :widths: 5 5
@@ -4390,8 +4390,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`MODE_OBS_MULTIVAR_UNITS`
-     - obs.multivar_units
+   * - :term:`MODE_OBS_MULTIVAR_LEVEL`
+     - obs.multivar_level
 
 **${METPLUS_MASK_POLY}**
 
