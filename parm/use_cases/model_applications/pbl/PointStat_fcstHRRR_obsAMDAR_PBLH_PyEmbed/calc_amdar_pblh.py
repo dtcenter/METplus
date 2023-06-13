@@ -206,7 +206,7 @@ try:
 
    point_data = pd.DataFrame({'typ':'ADPSFC', 'sid':loc_name, 'vld':val_time,
                                'lat':lat_avg, 'lon':lon_avg, 'elv':gnd0, 'var':'HPBL',
-                               'lvl':0, 'hgt':0, 'qc':'AMDAR', 'obs':pblh_o})
+                               'lvl':0, 'hgt':0, 'qc':'AMDAR', 'obs':pblh_o}).values.tolist()
      
    print(point_data)
    print("     point_data: Data Length:\t" + repr(len(point_data)))
