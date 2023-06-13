@@ -9,7 +9,6 @@ import sys
 import pandas as pd
 import numpy as np
 import netCDF4 as nc
-#from met_point_obs import convert_point_data
 
 # silence this annoying warning about numpy bool being deprecated in favor of python bool
 from warnings import filterwarnings
@@ -211,9 +210,6 @@ try:
    print(point_data)
    print("     point_data: Data Length:\t" + repr(len(point_data)))
    print("     point_data: Data Type:\t" + repr(type(point_data)))
-   #print(point_data.values.tolist())
-   #met_point_data = convert_point_data(point_data.values.tolist())
-   #print(" met_point_data: Data Type:\t" + repr(type(met_point_data)))
    
 except NameError:
     print("Can't find the input file")
