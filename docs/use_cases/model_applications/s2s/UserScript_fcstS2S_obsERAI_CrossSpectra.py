@@ -1,10 +1,10 @@
 """
-UserScript: Make a Cross Spectra plot 
+UserScript: Compue Cross Spectra and make a plot 
 ========================================================================
 
 model_applications/
 s2s/
-UserScript_obsPrecip_obsOnly_CrossSpectraPlot.py
+UserScript_fcstS2S_obsERAI_CrossSpectra.py
 
 """
 
@@ -12,35 +12,37 @@ UserScript_obsPrecip_obsOnly_CrossSpectraPlot.py
 # Scientific Objective
 # --------------------
 #
-# This use case calls the METplotpy space time plot to create a sample cross 
-# spectra diagram
-# using sample data created by METcalcpy cross spectra functions
+# This use case calls the METcalcpy cross spectra function and then the METplotpy 
+# space time plot to compute cross-spectra and create a sample cross spectra 
+# diagram using sample data.
 #
 # The space time plot and cross spectra calculations were created by Maria Gehne 
-# at the 
-# Physical Sciences Labratory in NOAA 
+# at the Physical Sciences Labratory in NOAA. 
 
 #################################################################################
 # Datasets
 # --------
+#
+#  * Forecast dataset: UFS Prototype 7
+#  * Observation dataset: ERAI
 #
 
 ##############################################################################
 # METplus Components
 # ------------------
 #
-# This use case runs the UserScript wrapper tool to run a user provided script,
-# in this case, cross_spectra_plot.py.
+# This use case runs the UserScript wrapper tool to run a user provided script, 
+# in this case, cross_spectra.py and cross_spectra_plot.py.
 #
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
-# This use case does not loop but plots the entire time period of data
-# 
-# UserScript
-#
+# This use case computes spectra and plots for the entire time period of data. 
+# The use case loops over two processes, computing and plotting the 
+# cross-spectra. The user is able to edit the process list to turn off the 
+# computation part if only plotting is desired, or vice versa.
 #
 
 ##############################################################################
@@ -49,10 +51,10 @@ UserScript_obsPrecip_obsOnly_CrossSpectraPlot.py
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/s2s/UserScript_obsPrecip_obsOnly_CrossSpectraPlot.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_obsPrecip_obsOnly_CrossSpectraPlot.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra.conf
 #
 
 #############################################################################
@@ -76,7 +78,7 @@ UserScript_obsPrecip_obsOnly_CrossSpectraPlot.py
 # This use case uses a Python script to perform plotting
 #
 # .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_obsPrecip_obsOnly_CrossSpectraPlot/cross_spectra_plot.py
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra/cross_spectra_plot.py
 #
 
 ##############################################################################
@@ -85,14 +87,14 @@ UserScript_obsPrecip_obsOnly_CrossSpectraPlot.py
 #
 # This use case can be run two ways:
 #
-# 1) Passing in UserScript_obsPrecip_obsOnly_CrossSpectraPlot.conf, 
+# 1) Passing in UserScript_fcstS2S_obsERAI_CrossSpectra.conf, 
 # then a user-specific system configuration file::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_obsPrecip_obsOnly_CrossSpectraPlot.conf -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_obsPrecip_obsOnly_CrossSpectraPlot.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_fcstS2S_obsERAI_CrossSpectra.conf::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_obsPrecip_obsOnly_CrossSpectraPlot.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -143,4 +145,4 @@ UserScript_obsPrecip_obsOnly_CrossSpectraPlot.py
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/UserScript_obsPrecip_obsOnly_CrossSpectraPlot.png'
+# sphinx_gallery_thumbnail_path = '_static/s2s-UserScript_fcstS2S_obsERAI_CrossSpectra.png'

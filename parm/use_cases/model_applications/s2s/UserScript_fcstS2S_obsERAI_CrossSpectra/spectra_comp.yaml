@@ -1,0 +1,12 @@
+pathout:
+- !ENV '${COMP_SPECTRA_SCRIPT_OUTPUT_DIR}' 
+
+model: 'ufs_p7'
+spd : 4
+nperseg : 15 # in days
+segOverLap : -5 # in days
+Symmetry : 'symm'
+latMin : -15.
+latMax : 15.
+datestrt : '2014-04-01T06:00:00'  # start date, format: yyyy-mm-ddTHH:MM:ss
+datelast : '2014-05-04T18:00:00'  # end date, format: yyyy-mm-ddTHH:MM:ss
