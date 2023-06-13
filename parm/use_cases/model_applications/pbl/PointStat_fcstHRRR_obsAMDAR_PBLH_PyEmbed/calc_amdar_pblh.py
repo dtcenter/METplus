@@ -211,7 +211,7 @@ try:
    print(point_data)
    print("     point_data: Data Length:\t" + repr(len(point_data)))
    print("     point_data: Data Type:\t" + repr(type(point_data)))
-   print(point_data.values.tolist())
+   #print(point_data.values.tolist())
    #met_point_data = convert_point_data(point_data.values.tolist())
    #print(" met_point_data: Data Type:\t" + repr(type(met_point_data)))
    
