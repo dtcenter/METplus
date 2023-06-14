@@ -627,7 +627,7 @@ def _nc_fields_are_equal(field, nc_a, nc_b, debug=False):
         return True
 
     # if any NaN values in either data set, min and max of diff will be NaN
-    # compare each value
+    # compare each value 
     if numpy.isnan(values_diff.min()) and numpy.isnan(values_diff.max()):
         print(f"Variable {field} contains NaN. Comparing each value...")
         if not _all_values_are_equal(var_a, var_b):
