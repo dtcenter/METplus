@@ -22,4 +22,4 @@ if [ "$( ls -A ${RUNNER_WORKSPACE}/diff)" ]; then
 fi
 
 echo "upload_diff=false" >> $GITHUB_OUTPUT
-return $ret
+exit $ret
