@@ -669,12 +669,16 @@ def _all_values_are_equal(var_a, var_b):
     @param var_b Numpy array
     @returns True if all values are equal, False otherwise
     """
-    for val_a, val_b in zip(var_a[:].flatten(), var_b[:].flatten()):
-        # continue to next value if both values are NaN
-        if numpy.isnan(val_a) and numpy.isnan(val_b):
-            continue
-        if val_a != val_b:
-            return False
+    try:
+        for val_a, val_b in zip(var_a[:].flatten(), var_b[:].flatten()):
+            # continue to next value if both values are NaN
+            if numpy.isnan(val_a) and numpy.isnan(val_b):
+                continue
+            if val_a != val_b:
+                return False
+    except Exception as err:
+        print(f'ERROR: Exception occurred: {err}')
+        return False
     return True
 
 
