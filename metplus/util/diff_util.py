@@ -673,6 +673,11 @@ def _all_values_are_equal(var_a, var_b):
     @param var_b Numpy array
     @returns True if all values are equal, False otherwise
     """
+    # if the values are stored as a string, compare them with ==
+    if isinstance(var_a[:], str) or isinstance(var_b[:], str):
+        return var_a[:] == var_b[:]
+
+    # flatten the numpy.ndarray and compare each value
     for val_a, val_b in zip(var_a[:].flatten(), var_b[:].flatten()):
         # continue to next value if both values are NaN
         if isnull(val_a) and isnull(val_b):
