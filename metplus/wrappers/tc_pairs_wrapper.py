@@ -293,6 +293,22 @@ class TCPairsWrapper(CommandBuilder):
                                 False)
         )
 
+        # check for settings that cause differences moving from v4.1 to v5.0
+        # warn and update run setting to preserve old behavior
+        if (self.config.has_option('config', 'LOOP_ORDER') and
+            self.config.getstr_nocheck('config', 'LOOP_ORDER') == 'times' and
+            not self.config.has_option('config', 'TC_PAIRS_RUN_ONCE')):
+            self.logger.warning(
+                'LOOP_ORDER has been deprecated. LOOP_ORDER has been set to '
+                '"times" and TC_PAIRS_RUN_ONCE is not set. '
+                'Forcing TC_PAIRS_RUN_ONCE=False to preserve behavior prior to '
+                'v5.0.0. Please remove LOOP_ORDER and set '
+                'TC_PAIRS_RUN_ONCE=False to preserve previous behavior and '
+                'remove this warning message.'
+            )
+            c_dict['RUN_ONCE'] = False
+            return c_dict
+
         # only run once if True
         c_dict['RUN_ONCE'] = self.config.getbool('config',
                                                  'TC_PAIRS_RUN_ONCE',
@@ -318,6 +334,8 @@ class TCPairsWrapper(CommandBuilder):
         if not self.c_dict['RUN_ONCE']:
             return super().run_all_times()
 
+        self.logger.debug('Only processing first run time. Set '
+                          'TC_PAIRS_RUN_ONCE=False to process all run times.')
         self.run_at_time(input_dict)
         return self.all_commands
 
