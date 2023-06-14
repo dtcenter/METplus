@@ -7,7 +7,7 @@
   {
     "category": "met_tool_wrapper",
     "index_list": "30-58",
-    "run": false
+    "run": true
   },
   {
     "category": "air_quality_and_comp",
@@ -227,7 +227,7 @@
   {
     "category": "tc_and_extra_tc",
     "index_list": "0-2",
-    "run": false
+    "run": true
   },
   {
     "category": "tc_and_extra_tc",
