@@ -382,8 +382,6 @@ def _compare_csv_columns(lines_a, lines_b):
         for key in keys_a:
             val_a = line_a[key]
             val_b = line_b[key]
-            if val_a == val_b:
-                continue
             # prevent error if values are diffs are less than
             # ROUNDING_PRECISION decimal places
             # METplus issue #1873 addresses the real problem
@@ -404,6 +402,8 @@ def _compare_csv_columns(lines_a, lines_b):
 
 
 def _is_equal_rounded(value_a, value_b):
+    if value_a == value_b:
+        return True
     if _truncate_float(value_a) == _truncate_float(value_b):
         return True
     if _round_float(value_a) == _round_float(value_b):
@@ -682,7 +682,8 @@ def _all_values_are_equal(var_a, var_b):
         # continue to next value if both values are NaN
         if isnull(val_a) and isnull(val_b):
             continue
-        if val_a != val_b:
+        if not _is_equal_rounded(val_a, val_b):
+            print(f'val_a: {val_a}, val_b: {val_b}')
             return False
     return True
 
