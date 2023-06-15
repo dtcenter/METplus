@@ -335,14 +335,14 @@ def set_minimum_config_settings(config):
         ({'MODE_FCST_MULTIVAR_NAME': 'Snow', },
          {'METPLUS_FCST_MULTIVAR_NAME': 'multivar_name = "Snow";'}),
 
-        ({'MODE_FCST_MULTIVAR_UNITS': 'L0', },
-         {'METPLUS_FCST_MULTIVAR_UNITS': 'multivar_units = "L0";'}),
+        ({'MODE_FCST_MULTIVAR_LEVEL': 'L0', },
+         {'METPLUS_FCST_MULTIVAR_LEVEL': 'multivar_level = "L0";'}),
 
         ({'MODE_OBS_MULTIVAR_NAME': 'Precip', },
          {'METPLUS_OBS_MULTIVAR_NAME': 'multivar_name = "Precip";'}),
 
-        ({'MODE_OBS_MULTIVAR_UNITS': 'Z10', },
-         {'METPLUS_OBS_MULTIVAR_UNITS': 'multivar_units = "Z10";'}),
+        ({'MODE_OBS_MULTIVAR_LEVEL': 'Z10', },
+         {'METPLUS_OBS_MULTIVAR_LEVEL': 'multivar_level = "Z10";'}),
 
     ]
 )

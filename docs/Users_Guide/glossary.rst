@@ -10671,8 +10671,8 @@ METplus Configuration Glossary
 
      | *Used by:* MODE
 
-   MODE_FCST_MULTIVAR_UNITS
-     Specify the value for 'fcst.multivar_units' in the MET configuration file for MODE.
+   MODE_FCST_MULTIVAR_LEVEL
+     Specify the value for 'fcst.multivar_level' in the MET configuration file for MODE.
 
      | *Used by:* MODE
 
@@ -10681,7 +10681,7 @@ METplus Configuration Glossary
 
      | *Used by:* MODE
 
-   MODE_OBS_MULTIVAR_UNITS
-     Specify the value for 'obs.multivar_units' in the MET configuration file for MODE.
+   MODE_OBS_MULTIVAR_LEVEL
+     Specify the value for 'obs.multivar_level' in the MET configuration file for MODE.
 
      | *Used by:* MODE
