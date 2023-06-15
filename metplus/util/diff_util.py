@@ -7,6 +7,7 @@ import filecmp
 import csv
 from PIL import Image, ImageChops
 from pandas import isnull
+from numpy.ma import is_masked
 from numpy.core._exceptions import UFuncTypeError
 
 IMAGE_EXTENSIONS = [
@@ -680,7 +681,7 @@ def _all_values_are_equal(var_a, var_b):
     # flatten the numpy.ndarray and compare each value
     for val_a, val_b in zip(var_a[:].flatten(), var_b[:].flatten()):
         # continue to next value if both values are NaN
-        if isnull(val_a) and isnull(val_b):
+        if (isnull(val_a) and isnull(val_b)) or (is_masked(val_a) and is_masked(val_b)):
             continue
         if not _is_equal_rounded(val_a, val_b):
             print(f'val_a: {val_a}, val_b: {val_b}')
