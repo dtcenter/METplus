@@ -192,7 +192,7 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
         print(f"Unsupported file type encountered: {file_type.split('.')[1]}")
         return filepath_a, filepath_b, file_type, ''
 
-    # try file diff first
+    # try file diff first as a quick check
     if filecmp.cmp(filepath_a, filepath_b):
         print("No differences from filecmp")
         return True
