@@ -44,6 +44,7 @@ one of the following:
 
 * air_quality_and_comp
 * climate
+* clouds
 * data_assimilation
 * extremes
 * land_surface

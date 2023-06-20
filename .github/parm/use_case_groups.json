@@ -15,39 +15,39 @@
     "run": false
   },
   {
-    "category": "air_quality_and_comp",
+    "category": "climate",
+    "index_list": "0-1",
+    "run": false
+  },
+  {
+    "category": "clouds",
+    "index_list": "0",
+    "run": true
+  },
+  {
+    "category": "clouds",
     "index_list": "1",
     "run": true
   },
   {
-    "category": "air_quality_and_comp",
+    "category": "clouds",
     "index_list": "2",
     "run": true
   },
   {
-    "category": "air_quality_and_comp",
+    "category": "clouds",
     "index_list": "3",
     "run": true
   },
   {
-    "category": "air_quality_and_comp",
+    "category": "clouds",
     "index_list": "4",
     "run": true
   },
   {
-    "category": "air_quality_and_comp",
+    "category": "clouds",
     "index_list": "5",
     "run": true
-  },
-  {
-    "category": "air_quality_and_comp",
-    "index_list": "6",
-    "run": true
-  },
-  {
-    "category": "climate",
-    "index_list": "0-1",
-    "run": false
   },
   {
     "category": "data_assimilation",
