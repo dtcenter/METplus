@@ -36,6 +36,7 @@ LOWER_TO_WRAPPER_NAME = {
     'regriddataplane': 'RegridDataPlane',
     'seriesanalysis': 'SeriesAnalysis',
     'statanalysis': 'StatAnalysis',
+    'tcdiag': 'TCDiag',
     'tcgen': 'TCGen',
     'tcpairs': 'TCPairs',
     'tcrmw': 'TCRMW',

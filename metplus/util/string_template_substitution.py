@@ -18,7 +18,7 @@ import datetime
 from dateutil.relativedelta import relativedelta
 
 from . import time_util
-from .constants import *
+from .constants import COMPRESSION_EXTENSIONS
 
 TEMPLATE_IDENTIFIER_BEGIN = "{"
 TEMPLATE_IDENTIFIER_END = "}"
@@ -348,7 +348,7 @@ def do_string_sub(tmpl,
     # find inner most tags between nested curly braces
     # match_list is a list with the contents being the data between the
     # curly braces
-    match_list = re.findall(r'\{([^}{]*)\}', tmpl)
+    match_list = re.findall(r'\{([^}{]*)}', tmpl)
 
     if len(match_list) == 0:
         return tmpl
@@ -486,8 +486,8 @@ def populate_match_dict(template, filepath, logger=None):
     all_tags = match.group(2)
 
     # check if text before and after tags matches template and strip off from file path
-    filepath = check_pre_text(filepath, match.group(1), logger)
-    filepath = check_post_text(filepath, match.group(3), logger)
+    filepath = _check_pre_text(filepath, match.group(1))
+    filepath = _check_post_text(filepath, match.group(3))
     if filepath is None:
         return None, None
 
@@ -535,13 +535,13 @@ def process_match_tags(all_tags, filepath, logger):
         filepath = filepath[fmt_len:]
 
         # check that any extra text matches the filepath
-        filepath = check_pre_text(filepath, extra_text, logger)
+        filepath = _check_pre_text(filepath, extra_text)
         if filepath is None:
             return None, None
 
     return match_dict, valid_shift
 
-def check_pre_text(filepath, pre_text, logger=None):
+def _check_pre_text(filepath, pre_text):
     """! Check if there is an text before all tags and if they match the template.
          Strip off text from filepath.
          @param filepath path to check
@@ -573,7 +573,7 @@ def check_pre_text(filepath, pre_text, logger=None):
 
     return filepath
 
-def check_post_text(filepath, post_text, logger=None):
+def _check_post_text(filepath, post_text):
     """! Check if there is an text after all tags and if they match the template.
          Strip off text from filepath.
          @param filepath path to check
@@ -586,9 +586,6 @@ def check_post_text(filepath, post_text, logger=None):
     # do the same for text at the end of all tags
     if post_text:
         if post_text != filepath[-len(post_text):]:
-            # too much logging output comes from this - if verbose is added, this is a good candidate
-#            if logger:
-#                logger.debug("Text at end of filepath does not match template")
             return None
 
         # strip off post text from file path

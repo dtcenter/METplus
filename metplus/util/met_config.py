@@ -105,10 +105,9 @@ class METConfig:
         if not children and 'dict' in self.data_type:
             raise TypeError("Must have children if data_type is dict.")
 
-        if children:
-            if 'dict' not in self.data_type:
-                raise TypeError("data_type must be dict to have "
-                                f"children. data_type is {self.data_type}")
+        if children and 'dict' not in self.data_type:
+            raise TypeError("data_type must be dict to have "
+                            f"children. data_type is {self.data_type}")
 
         self._children = children
 
@@ -341,7 +340,6 @@ def add_met_config_dict_list(config, app_name, output_dict, dict_name,
 
             if not add_met_config_item(config, item, met_config_items):
                 is_ok = False
-                continue
 
         dict_string = format_met_config('dict',
                                         met_config_items,
@@ -449,26 +447,32 @@ def _get_config_or_default(mp_config_name, get_function,
 
 def set_met_config_list(config, c_dict, mp_config, met_config_name,
                         c_dict_key=None, **kwargs):
-    """! Get list from METplus configuration file and format it to be passed
-          into a MET configuration file. Set c_dict item with formatted string.
-         Args:
-             @param c_dict configuration dictionary to set
-             @param mp_config_name METplus configuration variable name. Assumed to be
-              in the [config] section. Value can be a comma-separated list of items.
-             @param met_config name of MET configuration variable to set. Also used
-              to determine the key in c_dict to set (upper-case)
-             @param c_dict_key optional argument to specify c_dict key to store result. If
-              set to None (default) then use upper-case of met_config_name
-             @param allow_empty if True, if METplus config variable is set
-              but is an empty string, then set the c_dict value to an empty
-              list. If False, behavior is the same as when the variable is
-              not set at all, which is to not set anything for the c_dict
-              value
-             @param remove_quotes if True, output value without quotes.
-              Default value is False
-             @param default (Optional) if set, use this value as default
-              if config is not set
+    """!Get list from METplus configuration file and format it to be passed
+     into a MET configuration file. Set c_dict item with formatted string.
+
+    @param config METplusConfig to read values from
+    @param c_dict configuration dictionary to set
+    @param mp_config_name METplus configuration variable name. Assumed to be
+     in the [config] section. Value can be a comma-separated list of items.
+    @param met_config name of MET configuration variable to set. Also used
+     to determine the key in c_dict to set (upper-case)
+    @param c_dict_key optional argument to specify c_dict key to store result.
+     If set to None (default) then use upper-case of met_config_name
+    @param allow_empty if True, if METplus config variable is set
+     but is an empty string, then set the c_dict value to an empty
+     list. If False, behavior is the same as when the variable is
+     not set at all, which is to not set anything for the c_dict
+     value
+    @param remove_quotes if True, output value without quotes.
+     Default value is False
+    @param default (Optional) if set, use this value as default
+     if config is not set
+    @returns False if there was an error trying to read/set the value or True
+    if everything ran fine even if no value was set
     """
+    if c_dict is None:
+        return False
+
     mp_config_name = config.get_mp_config_name(mp_config)
     conf_value = _get_config_or_default(
         mp_config_name,
@@ -480,54 +484,64 @@ def set_met_config_list(config, c_dict, mp_config, met_config_name,
 
     # convert value from config to a list
     conf_values = getlist(conf_value)
-    if conf_values or kwargs.get('allow_empty', False):
-        out_values = []
-        for conf_value in conf_values:
-            remove_quotes = kwargs.get('remove_quotes', False)
-            # if not removing quotes, escape any quotes found in list items
-            if not remove_quotes:
-                conf_value = conf_value.replace('"', '\\"')
 
-            conf_value = util_remove_quotes(conf_value)
-            if not remove_quotes:
-                conf_value = f'"{conf_value}"'
+    # if no values are found and the value cannot be set to an empty list
+    # e.g. the MET default is non-empty, return without setting anything
+    if not conf_values and not kwargs.get('allow_empty', False):
+        return True
 
-            out_values.append(conf_value)
-        out_value = f"[{', '.join(out_values)}]"
+    out_values = []
+    for conf_value in conf_values:
+        remove_quotes = kwargs.get('remove_quotes', False)
+        # if not removing quotes, escape any quotes found in list items
+        if not remove_quotes:
+            conf_value = conf_value.replace('"', '\\"')
 
-        if not c_dict_key:
-            c_key = met_config_name.upper()
-        else:
-            c_key = c_dict_key
+        conf_value = util_remove_quotes(conf_value)
+        if not remove_quotes:
+            conf_value = f'"{conf_value}"'
 
-        if met_config_name:
-            out_value = f'{met_config_name} = {out_value};'
-        c_dict[c_key] = out_value
+        if kwargs.get('uppercase', False):
+            conf_value = conf_value.upper()
+
+        out_values.append(conf_value)
+    out_value = f"[{', '.join(out_values)}]"
+
+    if met_config_name:
+        out_value = f'{met_config_name} = {out_value};'
+
+    c_key = c_dict_key if c_dict_key else met_config_name.upper()
+    c_dict[c_key] = out_value
 
     return True
 
 
 def set_met_config_string(config, c_dict, mp_config, met_config_name,
                           c_dict_key=None, **kwargs):
-    """! Get string from METplus configuration file and format it to be passed
-          into a MET configuration file. Set c_dict item with formatted string.
+    """!Get string from METplus configuration file and format it to be passed
+     into a MET configuration file. Set c_dict item with formatted string.
 
-             @param c_dict configuration dictionary to set
-             @param mp_config METplus configuration variable name. Assumed to be
-              in the [config] section. Value can be a comma-separated list of items.
-             @param met_config_name name of MET configuration variable to set. Also used
-              to determine the key in c_dict to set (upper-case)
-             @param c_dict_key optional argument to specify c_dict key to store result. If
-              set to None (default) then use upper-case of met_config_name
-             @param remove_quotes if True, output value without quotes.
-              Default value is False
-             @param to_grid if True, format to_grid value
-              Default value is False
-             @param default (Optional) if set, use this value as default
-              if config is not set
-             @param add_x if True, add (x) to variable name, e.g. convert(x)
-              Default value is False
+    @param c_dict configuration dictionary to set
+    @param mp_config METplus configuration variable name. Assumed to be
+     in the [config] section. Value can be a comma-separated list of items.
+    @param met_config_name name of MET configuration variable to set. Also used
+     to determine the key in c_dict to set (upper-case)
+    @param c_dict_key optional argument to specify c_dict key to store result. If
+     set to None (default) then use upper-case of met_config_name
+    @param remove_quotes if True, output value without quotes.
+     Default value is False
+    @param to_grid if True, format to_grid value
+     Default value is False
+    @param default (Optional) if set, use this value as default
+     if config is not set
+    @param add_x if True, add (x) to variable name, e.g. convert(x)
+     Default value is False
+    @returns False if there was an error trying to read/set the value or True
+    if everything ran fine even if no value was set
     """
+    if c_dict is None:
+        return False
+
     mp_config_name = config.get_mp_config_name(mp_config)
     conf_value = _get_config_or_default(
         mp_config_name,
@@ -548,19 +562,20 @@ def set_met_config_string(config, c_dict, mp_config, met_config_name,
     if kwargs.get('to_grid', False):
         conf_value = format_regrid_to_grid(conf_value)
 
-    c_key = c_dict_key if c_dict_key else met_config_name.upper()
     if met_config_name:
         config_name = met_config_name
         if kwargs.get('add_x'):
             config_name = f'{config_name}(x)'
         conf_value = f'{config_name} = {conf_value};'
 
+    c_key = c_dict_key if c_dict_key else met_config_name.upper()
     c_dict[c_key] = conf_value
+
     return True
 
 
 def set_met_config_number(config, c_dict, num_type, mp_config,
-                          met_config_name, c_dict_key=None, **kwargs):
+                          met_config_name, c_dict_key=None):
     """! Get integer from METplus configuration file and format it to be passed
           into a MET configuration file. Set c_dict item with formatted string.
 
@@ -604,25 +619,23 @@ def set_met_config_number(config, c_dict, num_type, mp_config,
 
 
 def set_met_config_int(config, c_dict, mp_config_name, met_config_name,
-                       c_dict_key=None, **kwargs):
+                       c_dict_key=None):
     return set_met_config_number(config, c_dict, 'int',
                                  mp_config_name,
                                  met_config_name,
-                                 c_dict_key=c_dict_key,
-                                 **kwargs)
+                                 c_dict_key=c_dict_key)
 
 
 def set_met_config_float(config, c_dict, mp_config_name,
-                         met_config_name, c_dict_key=None, **kwargs):
+                         met_config_name, c_dict_key=None):
     return set_met_config_number(config, c_dict, 'float',
                                  mp_config_name,
                                  met_config_name,
-                                 c_dict_key=c_dict_key,
-                                 **kwargs)
+                                 c_dict_key=c_dict_key)
 
 
 def set_met_config_thresh(config, c_dict, mp_config, met_config_name,
-                          c_dict_key=None, **kwargs):
+                          c_dict_key=None):
     mp_config_name = config.get_mp_config_name(mp_config)
     if mp_config_name is None:
         return True

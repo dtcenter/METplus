@@ -1,9 +1,14 @@
+#! /usr/bin/env python3
+
+import sys
 import os
 import netCDF4
 import filecmp
 import csv
 from PIL import Image, ImageChops
-import numpy
+from pandas import isnull
+from numpy.ma import is_masked
+from numpy.core._exceptions import UFuncTypeError
 
 IMAGE_EXTENSIONS = [
     '.jpg',
@@ -37,6 +42,7 @@ UNSUPPORTED_EXTENSIONS = [
 # Note: Completing METplus issue #1873 could allow this to be set to 6
 ROUNDING_PRECISION = 5
 
+
 def get_file_type(filepath):
     _, file_extension = os.path.splitext(filepath)
 
@@ -55,7 +61,7 @@ def get_file_type(filepath):
     try:
         netCDF4.Dataset(filepath)
         return 'netcdf'
-    except:
+    except OSError:
         pass
 
     if file_extension in SKIP_EXTENSIONS:
@@ -81,63 +87,73 @@ def compare_dir(dir_a, dir_b, debug=False, save_diff=False):
         return [result]
 
     diff_files = []
-    for root, _, files in os.walk(dir_a):
-        # skip logs directories
-        if root.endswith('logs'):
-            continue
-
-        for filename in files:
-            filepath_a = os.path.join(root, filename)
-
-            # skip directories
-            if not os.path.isfile(filepath_a):
-                continue
-
-            # skip final conf file
-            if 'metplus_final.conf' in os.path.basename(filepath_a):
-                continue
-
-            filepath_b = filepath_a.replace(dir_a, dir_b)
-            print("\n# # # # # # # # # # # # # # # # # # # # # # # # # # "
-                  "# # # #\n")
-            rel_path = filepath_a.replace(f'{dir_a}/', '')
-            print(f"COMPARING {rel_path}")
+    for filepath_a in _get_files(dir_a):
+        filepath_b = filepath_a.replace(dir_a, dir_b)
+        print("\n# # # # # # # # # # # # # # # # # # # # # # # # # # "
+              "# # # #\n")
+        rel_path = filepath_a.replace(f'{dir_a}/', '')
+        print(f"COMPARING {rel_path}")
+        try:
             result = compare_files(filepath_a,
                                    filepath_b,
                                    debug=debug,
                                    dir_a=dir_a,
                                    dir_b=dir_b,
                                    save_diff=save_diff)
+        except Exception as err:
+            print(f"ERROR: Exception occurred in diff logic: {err}")
+            result = filepath_a, filepath_b, 'Exception in diff logic', ''
 
-            # no differences of skipped
-            if result is None or result is True:
-                continue
+        # no differences of skipped
+        if result is None or result is True:
+            continue
 
-            diff_files.append(result)
+        diff_files.append(result)
 
     # loop through dir_b and report if any files are not found in dir_a
-    for root, _, files in os.walk(dir_b):
+    for filepath_b in _get_files(dir_b):
+        filepath_a = filepath_b.replace(dir_b, dir_a)
+        if os.path.exists(filepath_a):
+            continue
+        # check if missing file is actually diff file that was generated
+        diff_list = [item[3] for item in diff_files]
+        if filepath_b in diff_list:
+            continue
+        print(f"ERROR: File does not exist: {filepath_a}")
+        diff_files.append(('', filepath_b, 'file not found (new output)', ''))
+
+    print('::endgroup::')
+
+    _print_dir_summary(diff_files)
+    return diff_files
+
+
+def _get_files(search_dir):
+    """!Generator to get all files in a directory.
+    Skips directories that end with 'logs' and files named metplus_final.conf
+
+    @param search_dir directory to search recursively
+    """
+    for root, _, files in os.walk(search_dir):
         # skip logs directories
         if root.endswith('logs'):
             continue
 
         for filename in files:
-            filepath_b = os.path.join(root, filename)
+            filepath = os.path.join(root, filename)
 
-            # skip final conf file
-            if 'metplus_final.conf' in os.path.basename(filepath_b):
+            # skip directories
+            if not os.path.isfile(filepath):
                 continue
 
-            filepath_a = filepath_b.replace(dir_b, dir_a)
-            if not os.path.exists(filepath_a):
-                # check if missing file is actually diff file that was generated
-                diff_list = [item[3] for item in diff_files]
-                if filepath_b in diff_list:
-                    continue
-                print(f"ERROR: File does not exist: {filepath_a}")
-                diff_files.append(('', filepath_b, 'file not found (new output)', ''))
+            # skip final conf file
+            if 'metplus_final.conf' in os.path.basename(filepath):
+                continue
 
-    print('::endgroup::')
+            yield filepath
+
+
+def _print_dir_summary(diff_files):
     print("\n\n**************************************************\nSummary:\n")
     if diff_files:
         print("\nERROR: Some differences were found")
@@ -151,7 +167,6 @@ def compare_dir(dir_a, dir_b, debug=False, save_diff=False):
 
     print("Finished comparing directories\n"
           "**************************************************\n\n")
-    return diff_files
 
 
 def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
@@ -178,47 +193,16 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
         return filepath_a, filepath_b, file_type, ''
 
     if file_type == 'csv':
-        print('Comparing CSV')
-        if not compare_csv_files(filepath_a, filepath_b):
-            print(f'ERROR: CSV file differs: {filepath_b}')
-            return filepath_a, filepath_b, 'CSV diff', ''
-
-        print("No differences in CSV files")
-        return True
+        return _handle_csv_files(filepath_a, filepath_b)
 
     if file_type == 'netcdf':
-        print("Comparing NetCDF")
-        if not nc_is_equal(filepath_a, filepath_b):
-            return filepath_a, filepath_b, 'NetCDF diff', ''
-
-        print("No differences in NetCDF files")
-        return True
+        return _handle_netcdf_files(filepath_a, filepath_b)
 
     if file_type == 'pdf':
-        print("Comparing PDF as images")
-        diff_file = compare_pdf_as_images(filepath_a, filepath_b,
-                                          save_diff=save_diff)
-        if diff_file is True:
-            print("No differences in PDF files")
-            return True
-
-        if diff_file is False:
-            diff_file = ''
-
-        return filepath_a, filepath_b, 'PDF diff', diff_file
+        return _handle_pdf_files(filepath_a, filepath_b, save_diff)
 
     if file_type == 'image':
-        print("Comparing images")
-        diff_file = compare_image_files(filepath_a, filepath_b,
-                                        save_diff=save_diff)
-        if diff_file is True:
-            print("No differences in image files")
-            return True
-
-        if diff_file is False:
-            diff_file = ''
-
-        return filepath_a, filepath_b, 'Image diff', diff_file
+        return _handle_image_files(filepath_a, filepath_b, save_diff)
 
     # if not any of the above types, use diff to compare
     print("Comparing text files")
@@ -234,6 +218,53 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
         print("No differences in text files")
 
     return True
+
+
+def _handle_csv_files(filepath_a, filepath_b):
+    print('Comparing CSV')
+    if not compare_csv_files(filepath_a, filepath_b):
+        print(f'ERROR: CSV file differs: {filepath_b}')
+        return filepath_a, filepath_b, 'CSV diff', ''
+
+    print("No differences in CSV files")
+    return True
+
+
+def _handle_netcdf_files(filepath_a, filepath_b):
+    print("Comparing NetCDF")
+    if not nc_is_equal(filepath_a, filepath_b):
+        return filepath_a, filepath_b, 'NetCDF diff', ''
+
+    print("No differences in NetCDF files")
+    return True
+
+
+def _handle_pdf_files(filepath_a, filepath_b, save_diff):
+    print("Comparing PDF as images")
+    diff_file = compare_pdf_as_images(filepath_a, filepath_b,
+                                      save_diff=save_diff)
+    if diff_file is True:
+        print("No differences in PDF files")
+        return True
+
+    if diff_file is False:
+        diff_file = ''
+
+    return filepath_a, filepath_b, 'PDF diff', diff_file
+
+
+def _handle_image_files(filepath_a, filepath_b, save_diff):
+    print("Comparing images")
+    diff_file = compare_image_files(filepath_a, filepath_b,
+                                    save_diff=save_diff)
+    if diff_file is True:
+        print("No differences in image files")
+        return True
+
+    if diff_file is False:
+        diff_file = ''
+
+    return filepath_a, filepath_b, 'Image diff', diff_file
 
 
 def compare_pdf_as_images(filepath_a, filepath_b, save_diff=False):
@@ -307,15 +338,20 @@ def compare_csv_files(filepath_a, filepath_b):
     lines_b = []
 
     with open(filepath_a, 'r') as file_handle:
-        csv_read = csv.DictReader(file_handle, delimiter=',')
-        for row in csv_read:
-            lines_a.append(row)
+        lines_a.extend(csv.DictReader(file_handle, delimiter=','))
 
     with open(filepath_b, 'r') as file_handle:
-        csv_read = csv.DictReader(file_handle, delimiter=',')
-        for row in csv_read:
-            lines_b.append(row)
+        lines_b.extend(csv.DictReader(file_handle, delimiter=','))
 
+    # compare header values and number of lines
+    if not _compare_csv_lengths(lines_a, lines_b):
+        return False
+
+    # compare each CSV column
+    return _compare_csv_columns(lines_a, lines_b)
+
+
+def _compare_csv_lengths(lines_a, lines_b):
     keys_a = lines_a[0].keys()
     keys_b = lines_b[0].keys()
     # compare header columns and report error if they differ
@@ -337,19 +373,21 @@ def compare_csv_files(filepath_a, filepath_b):
               f'than in OUTPUT ({len(lines_b)})')
         return False
 
-    # compare each CSV column
+    return True
+
+
+def _compare_csv_columns(lines_a, lines_b):
+    keys_a = lines_a[0].keys()
     status = True
     for num, (line_a, line_b) in enumerate(zip(lines_a, lines_b), start=1):
         for key in keys_a:
             val_a = line_a[key]
             val_b = line_b[key]
-            if val_a == val_b:
-                continue
             # prevent error if values are diffs are less than
             # ROUNDING_PRECISION decimal places
             # METplus issue #1873 addresses the real problem
             try:
-                if is_equal_rounded(val_a, val_b):
+                if _is_equal_rounded(val_a, val_b):
                     continue
                 print(f"ERROR: Line {num} - {key} differs by "
                       f"less than {ROUNDING_PRECISION} decimals: "
@@ -364,7 +402,9 @@ def compare_csv_files(filepath_a, filepath_b):
     return status
 
 
-def is_equal_rounded(value_a, value_b):
+def _is_equal_rounded(value_a, value_b):
+    if value_a == value_b:
+        return True
     if _truncate_float(value_a) == _truncate_float(value_b):
         return True
     if _round_float(value_a) == _round_float(value_b):
@@ -425,10 +465,8 @@ def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
     if is_stat_file:
         print("Comparing stat file")
         header_a = lines_a.pop(0).split()[1:]
-        header_b = lines_b.pop(0).split()[1:]
     else:
         header_a = None
-        header_b = None
 
     if len(lines_a) != len(lines_b):
         print(f"ERROR: Different number of lines in {filepath_b}")
@@ -475,110 +513,187 @@ def diff_text_lines(lines_a, lines_b,
             compare_b = compare_b.replace(dir_b, dir_a)
 
         # check for differences
-        if compare_a != compare_b:
-            # if the diff is in a stat file, ignore the version number
-            if is_stat_file:
-                cols_a = compare_a.split()[1:]
-                cols_b = compare_b.split()[1:]
-                for col_a, col_b, label in zip(cols_a, cols_b, header_a):
-                    if col_a != col_b:
-                        if print_error:
-                            print(f"ERROR: {label} differs:\n"
-                                  f" A: {col_a}\n B: {col_b}")
-                        all_good = False
-            else:
-                if print_error:
-                    print(f"ERROR: Line differs\n"
-                          f" A: {compare_a}\n B: {compare_b}")
+        if compare_a == compare_b:
+            continue
+
+        # if the diff is in a stat file, ignore the version number
+        if is_stat_file:
+            if not _diff_stat_line(compare_a, compare_b, header_a, print_error=print_error):
                 all_good = False
+            continue
+
+        if print_error:
+            print(f"ERROR: Line differs\n"
+                  f" A: {compare_a}\n B: {compare_b}")
+        all_good = False
+
+    return all_good
+
+
+def _diff_stat_line(compare_a, compare_b, header_a, print_error=False):
+    """Compare values in .stat file. Ignore first column which contains MET
+    version number
+
+    @param compare_a list of values in line A
+    @param compare_b list of values in line B
+    @param header_a list of header values in file A excluding MET version
+    @param print_error If True, print an error message if any value differs
+    """
+    cols_a = compare_a.split()[1:]
+    cols_b = compare_b.split()[1:]
+    all_good = True
+    for col_a, col_b, label in zip(cols_a, cols_b, header_a):
+        if col_a == col_b:
+            continue
+        if print_error:
+            print(f"ERROR: {label} differs:\n"
+                  f" A: {col_a}\n B: {col_b}")
+        all_good = False
 
     return all_good
 
 
 def nc_is_equal(file_a, file_b, fields=None, debug=False):
     """! Check if two NetCDF files have the same data
-         @param file_a first file to compare
-         @param file_b second file to compare
-         @param fields (Optional) list of fields to compare. If unset, compare
-          all fields
-         @returns True if all values in fields are equivalent, False if not
+
+    @param file_a first file to compare
+    @param file_b second file to compare
+    @param fields (Optional) list of fields to compare. If unset, compare all
+    @param debug (optional) boolean to output more information about diff
+    @returns True if all values in fields are equivalent, False if not
     """
     nc_a = netCDF4.Dataset(file_a)
     nc_b = netCDF4.Dataset(file_b)
 
+    # keep track of any differences that are found
+    is_equal = True
+
     # if no fields are specified, get all of them
     if fields:
-        if not isinstance(fields, list):
-            field_list = [fields]
-        else:
-            field_list = fields
+        field_list = [fields] if not isinstance(fields, list) else fields
     else:
         a_fields = sorted(nc_a.variables.keys())
         b_fields = sorted(nc_b.variables.keys())
+        # fail if any fields exist in 1 file and not the other
         if a_fields != b_fields:
             print("ERROR: Field list differs between files\n"
                   f" File_A: {a_fields}\n File_B:{b_fields}\n"
                   f"Using File_A fields.")
+            is_equal = False
 
         field_list = a_fields
 
     # loop through fields, keeping track of any differences
-    is_equal = True
-    try:
-        for field in field_list:
-            var_a = nc_a.variables[field]
-            var_b = nc_b.variables[field]
-
-            if debug:
-                print(f"Field: {field}")
-                print(f"Var_A:{var_a}\nVar_B:{var_b}")
-                print(f"Instance type: {type(var_a[0])}")
-            try:
-                values_a = var_a[:]
-                values_b = var_b[:]
-                values_diff = values_a - values_b
-                if (numpy.isnan(values_diff.min()) and
-                        numpy.isnan(values_diff.max())):
-                    print(f"WARNING: Variable {field} contains NaN values. "
-                          "Cannot perform comparison.")
-                elif values_diff.min() != 0.0 or values_diff.max() != 0.0:
-                    print(f"ERROR: Field ({field}) values differ\n"
-                          f"Min diff: {values_diff.min()}, "
-                          f"Max diff: {values_diff.max()}")
-                    is_equal = False
-                    # print indices that are not zero and count of diffs
-                    if debug:
-                        count = 0
-                        values_list = [j for sub in values_diff.tolist()
-                                       for j in sub]
-                        for idx, val in enumerate(values_list):
-                            if val != 0.0:
-                                print(f"{idx}: {val}")
-                                count += 1
-                        print(f"{count} / {idx+1} points differ")
-
-            except:
-                # handle non-numeric fields
-                try:
-                    if any(var_a[:].flatten() != var_b[:].flatten()):
-                        print(f"ERROR: Field ({field}) values (non-numeric) "
-                              "differ\n"
-                              f" File_A: {var_a[:]}\n File_B: {var_b[:]}")
-                        is_equal = False
-                except:
-                    print("ERROR: Couldn't diff NetCDF files, need to update diff method")
-                    is_equal = False
-
-    except KeyError:
-        print(f"ERROR: Field {field} not found")
-        return False
+    for field in field_list:
+        if not _nc_fields_are_equal(field, nc_a, nc_b, debug=debug):
+            is_equal = False
 
     return is_equal
 
 
+def _nc_fields_are_equal(field, nc_a, nc_b, debug=False):
+    """!Compare same field from 2 NetCDF files.
+
+    @param field name of field to compare
+    @param nc_a first netCDF4.Dataset
+    @param nc_b first netCDF4.Dataset
+    @param debug (optional) boolean to output more information about diff
+    @returns True is fields are equal, False if fields are not equal or if
+    field is not found in one of the files
+    """
+    try:
+        var_a = nc_a.variables[field]
+        var_b = nc_b.variables[field]
+    except KeyError:
+        print(f"ERROR: Field {field} not found")
+        return False
+
+    if debug:
+        print(f"Field: {field}")
+        print(f"Var_A:{var_a}\nVar_B:{var_b}")
+        print(f"Instance type: {type(var_a[0])}")
+
+    values_a = var_a[:]
+    values_b = var_b[:]
+    try:
+        values_diff = values_a - values_b
+    except (UFuncTypeError, TypeError):
+        # handle non-numeric fields
+        if not _all_values_are_equal(var_a, var_b):
+            print(f"ERROR: Field ({field}) values (non-numeric) "
+                  "differ\n"
+                  f" File_A: {var_a[:]}\n File_B: {var_b[:]}")
+            return False
+
+        return True
+
+    # if any NaN values in either data set, min and max of diff will be NaN
+    # compare each value
+    if isnull(values_diff.min()) and isnull(values_diff.max()):
+        print(f"Variable {field} contains NaN. Comparing each value...")
+        if not _all_values_are_equal(var_a, var_b):
+            print(f'ERROR: Some values differ in {field}')
+            return False
+        return True
+
+    # consider all values equal is min and max diff are 0
+    if not values_diff.min() and not values_diff.max():
+        return True
+
+    print(f"ERROR: Field ({field}) values differ\n"
+          f"Min diff: {values_diff.min()}, "
+          f"Max diff: {values_diff.max()}")
+    if debug:
+        # print indices that are not zero and count of diffs
+        _print_nc_field_diff_summary(values_diff)
+
+    return False
+
+
+def _print_nc_field_diff_summary(values_diff):
+    """!Print summary of NetCDF fields that differ. Prints the index of each
+    point that differs with the numeric difference between the points.
+    Also print number of points that differ and the total number of points.
+
+    @param values_diff numpy array (possibly 2D) of differences
+    """
+    count = 0
+    values_list = [j for sub in values_diff.tolist() for j in sub]
+    for idx, val in enumerate(values_list):
+        if val != 0.0:
+            print(f"{idx}: {val}")
+            count += 1
+    print(f"{count} / {idx + 1} points differ")
+
+
+def _all_values_are_equal(var_a, var_b):
+    """!Compare each value to find differences. Handles case if both values
+    are NaN.
+
+    @param var_a Numpy array
+    @param var_b Numpy array
+    @returns True if all values are equal, False otherwise
+    """
+    # if the values are stored as a string, compare them with ==
+    if isinstance(var_a[:], str) or isinstance(var_b[:], str):
+        return var_a[:] == var_b[:]
+
+    # flatten the numpy.ndarray and compare each value
+    for val_a, val_b in zip(var_a[:].flatten(), var_b[:].flatten()):
+        # continue to next value if both values are NaN
+        if (isnull(val_a) and isnull(val_b)) or (is_masked(val_a) and is_masked(val_b)):
+            continue
+        if not _is_equal_rounded(val_a, val_b):
+            print(f'val_a: {val_a}, val_b: {val_b}')
+            return False
+    return True
+
+
 if __name__ == '__main__':
+    if len(sys.argv) < 3:
+        print('ERROR: Must supply 2 directories to compare as arguments')
+        sys.exit(1)
     dir_a = sys.argv[1]
     dir_b = sys.argv[2]
-    if len(sys.argv) > 3:
-        save_diff = True
+    save_diff = len(sys.argv) > 3
     compare_dir(dir_a, dir_b, debug=True, save_diff=save_diff)

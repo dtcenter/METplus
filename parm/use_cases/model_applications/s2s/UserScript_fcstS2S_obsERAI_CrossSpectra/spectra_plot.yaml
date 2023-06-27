@@ -1,0 +1,5 @@
+plotpath: 
+- !ENV '${PLOT_SPECTRA_OUTPUT_DIR}'
+model: 'ufs_p7'
+var2: 'u850'
+var3: 'u200'

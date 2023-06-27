@@ -404,34 +404,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                               fill_missing=fill_missing):
             return
 
-        # get point observation file if requested
-        if self.c_dict['OBS_POINT_INPUT_TEMPLATE']:
-            point_obs_files = self.find_data(time_info, data_type='OBS_POINT',
-                                             return_list=True)
-            if point_obs_files is None:
-                return
-
-            for point_obs_path in point_obs_files:
-                self.args.append(f'-point_obs "{point_obs_path}"')
-
-        # get grid observation file if requested
-        if self.c_dict['OBS_GRID_INPUT_TEMPLATE']:
-            grid_obs_files = self.find_data(time_info, data_type='OBS_GRID',
-                                            return_list=True)
-            if grid_obs_files is None:
-                return
-
-            for grid_obs_path in grid_obs_files:
-                self.args.append(f'-grid_obs "{grid_obs_path}"')
-
-        # get ens_mean file if requested
-        if self.c_dict['ENS_MEAN_INPUT_TEMPLATE']:
-            ens_mean_path = self.find_data(time_info, data_type='ENS_MEAN',
-                                           return_list=True)
-            if ens_mean_path is None:
-                return
-
-            self.args.append(f'-ens_mean {ens_mean_path[0]}')
+        if not self.set_command_line_arguments(time_info):
+            return
 
         # parse optional var list for FCST and/or OBS fields
         var_list = sub_var_list(self.c_dict['VAR_LIST_TEMP'], time_info)
@@ -448,6 +422,43 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.format_field('OBS', obs_field)
 
         self.process_fields(time_info)
+
+    def set_command_line_arguments(self, time_info):
+        """! Set all arguments for plot_point_obs command.
+
+        @param time_info dictionary containing timing information
+        @returns False if files could not be found, True on success
+        """
+        # get point observation file if requested
+        if self.c_dict['OBS_POINT_INPUT_TEMPLATE']:
+            point_obs_files = self.find_data(time_info, data_type='OBS_POINT',
+                                             return_list=True)
+            if point_obs_files is None:
+                return False
+
+            for point_obs_path in point_obs_files:
+                self.args.append(f'-point_obs "{point_obs_path}"')
+
+        # get grid observation file if requested
+        if self.c_dict['OBS_GRID_INPUT_TEMPLATE']:
+            grid_obs_files = self.find_data(time_info, data_type='OBS_GRID',
+                                            return_list=True)
+            if grid_obs_files is None:
+                return False
+
+            for grid_obs_path in grid_obs_files:
+                self.args.append(f'-grid_obs "{grid_obs_path}"')
+
+        # get ens_mean file if requested
+        if self.c_dict['ENS_MEAN_INPUT_TEMPLATE']:
+            ens_mean_path = self.find_data(time_info, data_type='ENS_MEAN',
+                                           return_list=True)
+            if ens_mean_path is None:
+                return False
+
+            self.args.append(f'-ens_mean {ens_mean_path[0]}')
+
+        return True
 
     def get_all_field_info(self, var_list, data_type):
         """!Get field info based on data type"""

@@ -30,6 +30,59 @@ When applicable, release notes are followed by the
 `GitHub issue <https://github.com/dtcenter/METplus/issues>`__ number which
 describes the bugfix, enhancement, or new feature.
 
+METplus Version 5.1.0-rc1 Release Notes (2023-06-07)
+----------------------------------------------------
+
+  .. dropdown:: Enhancements
+
+     * Add support for new multivariate MODE settings
+       (`#2197 <https://github.com/dtcenter/METplus/issues/2197>`_)
+
+  .. dropdown:: Bugfix
+
+     * Define the order of the forecast variables numerically rather than alphabetically
+       (`#2070 <https://github.com/dtcenter/METplus/issues/2070>`_)
+     * Allow setting of convert, censor_thresh, and censor_val in regrid dictionary
+       (`#2082 <https://github.com/dtcenter/METplus/issues/2082>`_)
+     * Skip-if-output-exists logic incorrectly skips files
+       (`#2096 <https://github.com/dtcenter/METplus/issues/2096>`_)
+     * Prevent error if no commands were run because they were skipped
+       (`#2098 <https://github.com/dtcenter/METplus/issues/2098>`_)
+     * Allow spaces for complex categorical thresholds
+       (`#2189 <https://github.com/dtcenter/METplus/issues/2189>`_)
+     * PCPCombine - Extra field options not set in -subtract mode
+       (`#2161 <https://github.com/dtcenter/METplus/issues/2161>`_)
+     * StatAnalysis time shifting failure
+       (`#2168 <https://github.com/dtcenter/METplus/issues/2168>`_)
+
+ .. dropdown:: New Wrappers
+
+     * TCDiag (beta)
+       (`#1626 <https://github.com/dtcenter/METplus/issues/1626>`_)
+
+  .. dropdown:: New Use Cases
+
+     * Read in Argo profile data netCDF files for use in METplus with python embedding
+       (`#1977 <https://github.com/dtcenter/METplus/issues/1977>`_)
+
+  .. dropdown:: Documentation
+
+     * Update the METplus Components Python Requirements
+       (`#1978 <https://github.com/dtcenter/METplus/issues/1978>`_,
+       `#2016 <https://github.com/dtcenter/METplus/issues/2016>`_)
+     * Add documentation on support for releases to the Release Guide
+       (`#2106 <https://github.com/dtcenter/METplus/issues/2106>`_)
+
+  .. dropdown:: Internal
+
+     * Update Contributor's Guide to use GH Action to update truth data
+       (`#2068 <https://github.com/dtcenter/METplus/issues/2068>`_)
+     * Enhance GitHub Workflow documentation
+       (`#2147 <https://github.com/dtcenter/METplus/issues/2147>`_)
+     * Update the development release guide instructions to remove references to a Coordinated release
+       (`#2159 <https://github.com/dtcenter/METplus/issues/2159>`_)
+     * Refactored code to resolve many SonarQube items
+       (`#1610 <https://github.com/dtcenter/METplus/issues/1610>`_)
 
 METplus Version 5.1.0-beta2 Release Notes (2023-04-26)
 ------------------------------------------------------
@@ -51,8 +104,8 @@ METplus Version 5.1.0-beta2 Release Notes (2023-04-26)
        (`#2082 <https://github.com/dtcenter/METplus/issues/2082>`_)
      * METplus run errors if no commands were run
        (`#2098 <https://github.com/dtcenter/METplus/issues/2098>`_)
-     * Fix the documentation PDF build
-       (`#2087 <https://github.com/dtcenter/METplus/issues/2087>`_)
+     * TCPairs setting -diag option causes failure
+       (`#2179 <https://github.com/dtcenter/METplus/issues/2179>`_)
 
   .. dropdown:: New Use Cases
 

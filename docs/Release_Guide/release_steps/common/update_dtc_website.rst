@@ -16,7 +16,7 @@ Update DTC Website
   * For *Related Community Code* select both the METplus and the |projectName|
     options (For Macs, hold the Command key to select both).
 
-  * For *Version Label* type "|projectRepo| X.Y.Z betaN".
+  * For *Version Label* type "|projectRepo| X.Y.Z-betaN".
 
   * Select the release type (*Recommended* for official or bugfix releases or
     *Development* for development versions). 
@@ -48,8 +48,9 @@ Update DTC Website
 
   * Update the existing releases, as needed.
     
-    * For a development release, change any previous *Development*
-      versions to *Other*.
+    * For a development release, ensure the "Release Type" is set to
+      *Development* and change any previous *Development* versions to
+      *Other*.
       
     * For a bugfix or official release, change any previous
       *Recommended* versions to *Other*.
@@ -59,22 +60,14 @@ Update DTC Website
 
   * Create or edit the "Coordinated METplus Version X.Y" software release.
 
-    * For a beta1 development release, create the "Coordinated METplus
-      Version X.Y" release entry if it doesn't already exist.  Ensure the
-      "Release Type" is set to *Development*. Add links for the |projectRepo|
-      X.Y.Z beta1, the METplus "Documentation", the METplus "Existing Builds
-      and Docker" page, and the "Release Notes". Add to the Release Notes a link to the
-      |projectRepo| Release Notes.
+    * For an official release, create the "Coordinated METplus Version X.Y"
+      release entry if it doesn't already exist.  Ensure the "Release Type"
+      is set to *Recommended*. Consider changing the "Release Type" of
+      previous coordinated releases from *Recommended* to *Other*. Add
+      links for the |projectRepo| X.Y.Z, the METplus "Documentation",
+      the METplus "Existing Builds and Docker" page, and the "Release Notes".
+      Make the Release Notes a link to the |projectRepo| Release Notes.
       
-    * For a beta2 or beyond development release, update the existing link and text in
-      the "Coordinated METplus Version X.Y" release section with the updated
-      development release information.
-
-    * For an official release, update the existing link and text in
-      the "Coordinated METplus Version X.Y" release section with the X.Y.Z
-      information. Change the "Release Type" from *Development* to
-      *Recommended*. Consider changing the "Release Type" of previous coordinated releases from *Recommended* to *Other*.
-
     * For a bugfix release, update the existing link and text in
       the "Coordinated METplus Version X.Y" release section with the
       X.Y.Z+1 information.

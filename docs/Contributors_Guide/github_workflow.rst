@@ -324,8 +324,8 @@ Detailed instructions for each item can be found below or by clicking the link.
 
 .. _wo-find-issue:
 
-Find the GitHub issue
-^^^^^^^^^^^^^^^^^^^^^
+Find or Create a GitHub Issue
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * Go to the `METplus repository <https://github.com/dtcenter/METplus>`_  and
   click on the `Issues tab <https://github.com/dtcenter/METplus/issues>`_.
@@ -335,6 +335,46 @@ Find the GitHub issue
   If one cannot be found, create a
   `new Discussion <https://github.com/dtcenter/METplus/discussions/new>`_ on
   the METplus GitHub Discussions page to ask if an issue should be created.
+
+* If creating a new issue, select the
+  `"New Issue" <https://github.com/dtcenter/METplus/issues/new/choose>`_ button
+  and review the categories of issues (e.g. Bug report, enhancement request,
+  New feature request, New use case, Sub-Issue, Task).  Find an appropriate
+  categories and click on "Get Started" next to the category.
+
+  Create a short, but descriptive title. In the 'write' window, follow the
+  directions and fill in the template.  Add any additional comments/details.
+  When filling in the template, be sure to "Define the PR metadata, as
+  permissions allow. Select: **Assignee(s), Project(s)**, and **Milestone**". 
+
+  Before an issue is created, a "Project" can be selected, but there is no
+  option to select a cycle.
+
+  .. image:: figure/1Issue-before-created.png
+    :width: 400	     
+
+  After the issue is created, more options appear under the "Project" section.
+
+  .. image:: figure/2Issue-after-created.png
+    :width: 400
+	    
+  Click the "Status" drop down and select "Todo".
+
+  .. image:: figure/3Issue-set-status.png
+    :width: 400
+	     
+  Click on "+1 more" then under "Cycle", click "Choose an iteration" and
+  select the current development cycle.
+
+  .. image:: figure/4Issue-plus-one-set-cycle.png
+    :width: 400
+	     
+  After selecting the appropriate "Cycle", be sure to remove the
+  **alert: NEED CYCLE ASSIGNMENT** label, which is added by default.
+
+  If the description of the issue is clear and does not need further
+  definition, be sure to remove the **alert: NEED MORE DEFINITION**
+  label, which is added by default.
 
 .. _wo-fork-repo:
 
@@ -671,6 +711,29 @@ Open a pull request
       
     * When everything looks satisfactory, click on the green 'Create pull
       request' button.
+
+    * Before a pull request is created, a "Project" can be selected, but there
+      is no option to select a cycle.
+
+      .. figure:: figure/1PR-before-created.png
+
+      After the pull request is created, more options appear under the
+      "Project" section.
+
+      .. figure:: figure/2PR-after-created.png
+
+      Click the "Status" drop down and select "Review".
+
+      .. figure:: figure/3PR-set-status.png
+
+      Click on "+1 more" then under "Cycle", click "Choose an iteration" and
+      select the current development cycle.
+
+      .. figure:: figure/4PR-plus-one-set-cycle.png
+
+      To link the issue that correspondes to the pull request, click on the
+      gear next to "Development," type the issue number, then select the issue
+      that is displayed.
 
     * An authorized METplus developer will accept the pull request (if
       everything meets acceptance criteria) and merge the code into the remote

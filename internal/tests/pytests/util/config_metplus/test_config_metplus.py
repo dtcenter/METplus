@@ -162,8 +162,8 @@ def test_find_var_indices_fcst(metplus_config,
 )
 @pytest.mark.util
 def test_get_field_search_prefixes(data_type, met_tool, expected_out):
-    assert(config_metplus.get_field_search_prefixes(data_type,
-                                                    met_tool) == expected_out)
+    assert(config_metplus._get_field_search_prefixes(data_type,
+                                                     met_tool) == expected_out)
 
 
 # search prefixes are valid prefixes to append to field info variables
@@ -907,8 +907,7 @@ def test_getraw_instance_with_unset_var(metplus_config):
     ]
 )
 @pytest.mark.util
-def test_format_var_items_options_semicolon(config_value,
-                                            expected_result):
+def test_format_var_items_options_semicolon(config_value, expected_result):
     time_info = {}
 
     field_configs = {'name': 'FNAME',

@@ -32,6 +32,7 @@ Use Cases by MET Tool:
    | `RegridDataPlane <../search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_
    | `SeriesAnalysis <../search.html?q=SeriesAnalysisUseCase&check_keywords=yes&area=default>`_
    | `StatAnalysis <../search.html?q=StatAnalysisToolUseCase&check_keywords=yes&area=default>`_
+   | `TCDiag <../search.html?q=TCDiagToolUseCase&check_keywords=yes&area=default>`_
    | `TCMPRPlotter <../search.html?q=TCMPRPlotterUseCase&check_keywords=yes&area=default>`_
    | `TCGen <../search.html?q=TCGenToolUseCase&check_keywords=yes&area=default>`_
    | `TCPairs <../search.html?q=TCPairsToolUseCase&check_keywords=yes&area=default>`_
@@ -59,6 +60,7 @@ Use Cases by MET Tool:
    | **RegridDataPlane**: *RegridDataPlaneToolUseCase*
    | **SeriesAnalysis**: *SeriesAnalysisUseCase*
    | **StatAnalysis**: *StatAnalysisToolUseCase*
+   | **TCDiag**: *TCDiagToolUseCase*
    | **TCMPRPlotter**: *TCMPRPlotterUseCase*
    | **TCGen**: *TCGenToolUseCase*
    | **TCPairs**: *TCPairsToolUseCase*
@@ -75,6 +77,7 @@ Use Cases by Application:
    | `Short Range <../search.html?q=ShortRangeAppUseCase&check_keywords=yes&area=default>`_
    | `Data Assimilation  <../search.html?q=DataAssimilationAppUseCase&check_keywords=yes&area=default>`_
    | `Ensemble  <../search.html?q=EnsembleAppUseCase&check_keywords=yes&area=default>`_
+   | `Land Surface <../search.html?q=LandSurfaceAppUseCase&check_keywords=yes&area=default>`_
    | `Marine and Cryosphere <../search.html?q=MarineAndCryosphereAppUseCase&check_keywords=yes&area=default>`_
    | `Medium Range <../search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_
    | `Precipitation <../search.html?q=PrecipitationAppUseCase&check_keywords=yes&area=default>`_
@@ -91,6 +94,7 @@ Use Cases by Application:
    | **Short Range**: *ShortRangeAppUseCase*
    | **Data Assimilation**: *DataAssimilationAppUseCase*
    | **Ensemble**: *EnsembleAppUseCase*
+   | **LandSurface**: *LandSurfaceAppUseCase*
    | **Marine and Cryosphere**: *MarineAndCryosphereAppUseCase*
    | **Medium Range**: *MediumRangeAppUseCase*
    | **Precipitation**: *PrecipitationAppUseCase*

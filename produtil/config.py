@@ -9,7 +9,7 @@ ways of automatically accessing configuration options."""
 
 ##@var __all__
 # decides what symbols are imported by "from produtil.config import *"
-__all__=['from_file','from-string','confwalker','ProdConfig','fordriver','ENVIRONMENT','ProdTask']
+__all__=['from_file','confwalker','ProdConfig','ENVIRONMENT','ProdTask']
 
 import collections,re,string,os,logging,threading
 import os.path,sys
@@ -22,7 +22,6 @@ from configparser import ConfigParser
 from io import StringIO
 
 from produtil.datastore import Datastore,Task
-from produtil.fileop import *
 
 from produtil.numerics import to_datetime
 from string import Formatter
@@ -97,20 +96,21 @@ class ConfFormatter(Formatter):
                 self.parse(format_string):
             if literal_text:
                 out.write(literal_text)
-            if field_name:
-                (obj, used_key) = self.get_field(field_name,args,kwargs)
-                if obj is None and used_key:
-                    obj=self.get_value(used_key,args,kwargs)
-                value=obj
-                if conversion=='s':
-                    value=str(value)
-                elif conversion=='r':
-                    value=repr(value)
-                elif conversion:
-                    raise ValueError('Unknown conversion %s'%(repr(conversion),))
-                if format_spec:
-                    value=value.__format__(format_spec)
-                out.write(value)
+            if not field_name:
+                continue
+            (obj, used_key) = self.get_field(field_name,args,kwargs)
+            if obj is None and used_key:
+                obj=self.get_value(used_key,args,kwargs)
+            value=obj
+            if conversion=='s':
+                value=str(value)
+            elif conversion=='r':
+                value=repr(value)
+            elif conversion:
+                raise ValueError('Unknown conversion %s'%(repr(conversion),))
+            if format_spec:
+                value=value.__format__(format_spec)
+            out.write(value)
         ret=out.getvalue()
         out.close()
         assert(ret is not None)
@@ -133,49 +133,52 @@ class ConfFormatter(Formatter):
         try:
             if isinstance(key,int):
                 return args[key]
-            conf=kwargs.get('__conf',None)
-            if key in kwargs:
-                v=kwargs[key]
-            elif '__taskvars' in kwargs \
-                    and kwargs['__taskvars'] \
-                    and key in kwargs['__taskvars']:
-                v=kwargs['__taskvars'][key]
-            else:
-                isec=key.find('/')
-                if isec>=0:
-                    section=key[0:isec]
-                    nkey=key[(isec+1):]
-                    if not section:
-                        section=kwargs.get('__section',None)
-                    if nkey:
-                        key=nkey
-                else:
-                    section=kwargs.get('__section',None)
-                conf=kwargs.get('__conf',None)
-                v=NOTFOUND
-                if section is not None and conf is not None:
-                    if conf.has_option(section,key):
-                        v=conf.get(section,key,raw=True)
-                    elif conf.has_option(section,'@inc'):
-                        for osec in conf.get(section,'@inc').split(','):
-                            if conf.has_option(osec,key):
-                                v=conf.get(osec,key,raw=True)
-                    if v is NOTFOUND:
-                        if conf.has_option('config',key):
-                            v=conf.get('config',key,raw=True)
-                        elif conf.has_option('dir',key):
-                            v=conf.get('dir',key,raw=True)
-                    if v is NOTFOUND:
-                        raise KeyError(key)
-
-            if isinstance(v,str):
-                if v.find('{')>=0 or v.find('%')>=0:
-                    vnew=self.vformat(v,args,kwargs)
-                    assert(vnew is not None)
-                    return vnew
+            v = _get_v(key, kwargs)
+            if isinstance(v,str) and (v.find('{')>=0 or v.find('%')>=0):
+                vnew=self.vformat(v,args,kwargs)
+                assert(vnew is not None)
+                return vnew
             return v
         finally:
             kwargs['__depth']-=1
+
+
+def _get_v(key, kwargs):
+    if key in kwargs:
+        return kwargs[key]
+    if ('__taskvars' in kwargs and kwargs['__taskvars']
+            and key in kwargs['__taskvars']):
+        return kwargs['__taskvars'][key]
+
+    isec = key.find('/')
+    if isec >= 0:
+        section = key[0:isec]
+        nkey = key[(isec + 1):]
+        if not section:
+            section = kwargs.get('__section', None)
+        if nkey:
+            key = nkey
+    else:
+        section = kwargs.get('__section', None)
+    conf = kwargs.get('__conf', None)
+    v = NOTFOUND
+    if section is None or conf is None:
+        return v
+    if conf.has_option(section, key):
+        return conf.get(section, key, raw=True)
+    if conf.has_option(section, '@inc'):
+        for osec in conf.get(section, '@inc').split(','):
+            if conf.has_option(osec, key):
+                v = conf.get(osec, key, raw=True)
+    if v is not NOTFOUND:
+        return v
+
+    if conf.has_option('config', key):
+        return conf.get('config', key, raw=True)
+    if conf.has_option('dir', key):
+        return conf.get('dir', key, raw=True)
+    raise KeyError(key)
+
 
 def qparse(format_string):
     """!Replacement for Formatter.parse which can be added to Formatter objects
@@ -187,9 +190,6 @@ def qparse(format_string):
                 type(format_string).__name__,repr(format_string)))
     result=list()
     literal_text=''
-    field_name=None
-    format_spec=None
-    conversion=None
     for m in re.finditer(r'''(?xs) (
             \{ \' (?P<qescape>  (?: \' (?! \} ) | [^'] )* ) \' \}
           | \{ \" (?P<dqescape> (?: \" (?! \} ) | [^"] )* ) \" \}
@@ -197,7 +197,7 @@ def qparse(format_string):
                \{
                   (?P<field_name>
                      [^\}:!\['"\{] [^\}:!\[]*
-                     (?: \. [a-zA-Z_][a-zA-Z_0-9]+
+                     (?: \. [a-zA-Z_]\w+
                        | \[ [^\]]+ \] )*
                   )
                   (?: ! (?P<conversion>[rs]) )?
@@ -228,14 +228,15 @@ def qparse(format_string):
                     m.group('format_spec'),
                     m.group('conversion') ) )
             literal_text=''
-        elif m.group('error'):
-            if m.group('error')=='{':
-                raise ValueError("Single '{' encountered in format string")
-            elif m.group('error')=='}':
-                raise ValueError("Single '}' encountered in format string")
-            else:
-                raise ValueError("Unexpected %s in format string"%(
-                        repr(m.group('error')),))
+        elif not m.group('error'):
+            continue
+        if m.group('error')=='{':
+            raise ValueError("Single '{' encountered in format string")
+        elif m.group('error')=='}':
+            raise ValueError("Single '}' encountered in format string")
+        else:
+            raise ValueError("Unexpected %s in format string"%(
+                    repr(m.group('error')),))
     if literal_text: 
         result.append( ( literal_text, None, None, None ) )
     return result
@@ -470,7 +471,7 @@ def confwalker(conf,start,selector,acceptor,recursevar):
             if key==recursevar:
                 for sec2 in reversed(val.split(',')):
                     trim=sec2.strip()
-                    if len(trim)>0 and not trim in touched:
+                    if len(trim)>0 and trim not in touched:
                         requested.append(trim)
 
 ########################################################################
@@ -539,15 +540,14 @@ class ProdConfig(object):
         section or option duplicates are not allowed in a single 
         configuration source."""
         self._logger=logging.getLogger('prodconfig')
-        logger=self._logger
         self._lock=threading.RLock()
         self._formatter=ConfFormatter(bool(quoted_literals))
         self._time_formatter=ConfTimeFormatter(bool(quoted_literals))
         self._datastore=None
         self._tasknames=set()
-        # Added strict=False and inline_comment_prefixes for Python 3,
+        # Added strict=False and inline_comment_prefixes for Python 3, 
         # so everything works as it did before in Python 2.
-        # self._conf=ConfigParser(strict=False, inline_comment_prefixes=(';',)) if (conf is None) else conf
+        #self._conf=ConfigParser(strict=False, inline_comment_prefixes=(';',)) if (conf is None) else conf
         self._conf=ConfigParser(strict=strict, inline_comment_prefixes=inline_comment_prefixes) if (conf is None) else conf
         self._conf.optionxform=str
 
@@ -672,7 +672,7 @@ class ProdConfig(object):
                     'instead.'%(type(arg).__name__,repr(arg)))
             if verbose: logger.info(arg)
             m=re.match(r'''(?x)
-              (?P<section>[a-zA-Z][a-zA-Z0-9_]*)
+              (?P<section>[a-zA-Z]\w*)
                \.(?P<option>[^=]+)
                =(?P<value>.*)$''',arg)
             if m:
@@ -702,10 +702,9 @@ class ProdConfig(object):
             elif not os.path.isfile(path):
                 logger.error(path+': conf file is not a regular file.')
                 sys.exit(2)
-            elif not produtil.fileop.isnonempty(path):
-                if verbose:
-                    logger.warning(
-                        path+': conf file is empty.  Will continue anyway.')
+            elif not produtil.fileop.isnonempty(path) and verbose:
+                logger.warning(
+                    path+': conf file is empty.  Will continue anyway.')
             if verbose: logger.info('Conf input: '+repr(path))
             self.read(path)
 
@@ -1160,7 +1159,7 @@ class ProdConfig(object):
                                 got=self._conf.get(trim,opt,raw=True)
                                 gotted=True
                                 break
-                            except (KeyError,NoSectionError,NoOptionError) as e:
+                            except (KeyError,NoSectionError,NoOptionError):
                                 pass # var not in section; search elsewhere
                 if gotted: break
             else:
@@ -1168,7 +1167,7 @@ class ProdConfig(object):
                     got=self._conf.get(section,opt,raw=True)
                     gotted=True
                     break
-                except (KeyError,NoSectionError,NoOptionError) as e:
+                except (KeyError,NoSectionError,NoOptionError):
                     pass # var not in section; search elsewhere
 
         if not gotted:
@@ -1265,7 +1264,7 @@ class ProdConfig(object):
         with self:
             return self._get(sec,opt,str,default,badtypeok,morevars,taskvars=taskvars)
 
-    def get(self,sec,opt,default=None,badtypeok=False,morevars=None,taskvars=None):
+    def get(self,sec,opt,default=None,morevars=None,taskvars=None):
         """!get the value of an option from a section
 
         Gets option opt from section sec, expands it and converts
@@ -1280,8 +1279,6 @@ class ProdConfig(object):
         @param sec,opt the section and option
         @param default if specified and not None, then the default is
           returned if an option has no value or the section does not exist
-        @param badtypeok is True, and the conversion fails, and a
-          default is specified, the default will be returned.
         @param morevars,taskvars dicts of more variables for string expansion"""
         with self:
             try:
@@ -1338,7 +1335,7 @@ class ProdConfig(object):
         if re.match(r'(?i)\A(?:F|\.false\.|false|no|off|0)\Z',s): return False
         try:
             return int(s)==0
-        except ValueError as e: pass
+        except ValueError: pass
         if badtypeok and default is not None:
             return bool(default)
         raise ValueError('%s.%s: invalid value for conf file boolean: %s'
@@ -1396,13 +1393,9 @@ class ProdTask(produtil.datastore.Task):
                                           logger=conf.log(taskname),**kwargs)
             mworkdir=self.meta('workdir','')
             moutdir=self.meta('outdir','')
-            if mworkdir: 
-                workdir=mworkdir
-            else:
+            if not mworkdir:
                 self['workdir']=workdir
-            if moutdir: 
-                outdir=moutdir
-            else:
+            if not moutdir:
                 self['outdir']=outdir
 
     def get_workdir(self):

@@ -208,7 +208,6 @@ class TCRMWWrapper(CommandBuilder):
                 self.logger.info(f"Processing custom string: {custom_string}")
 
             input_dict['custom'] = custom_string
-
             time_info = time_util.ti_calculate(input_dict)
 
             if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
@@ -338,7 +337,7 @@ class TCRMWWrapper(CommandBuilder):
                     )
                 lead_list.append(f'"{str(lead_hours).zfill(2)}"')
 
-            self.c_dict['LEAD_LIST'] = f"lead = [{', '.join(lead_list)}];"
+            self.env_var_dict['METPLUS_LEAD_LIST'] = f"lead = [{', '.join(lead_list)}];"
 
         return self.infiles
 

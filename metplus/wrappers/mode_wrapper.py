@@ -61,6 +61,11 @@ class MODEWrapper(CompareGriddedWrapper):
         'METPLUS_FCST_FILE_TYPE',
         'METPLUS_OBS_FILE_TYPE',
         'METPLUS_MULTIVAR_LOGIC',
+        'METPLUS_MULTIVAR_INTENSITY',
+        'METPLUS_FCST_MULTIVAR_NAME',
+        'METPLUS_FCST_MULTIVAR_LEVEL',
+        'METPLUS_OBS_MULTIVAR_NAME',
+        'METPLUS_OBS_MULTIVAR_LEVEL',
     ]
 
     # handle deprecated env vars used pre v4.0.0
@@ -408,11 +413,29 @@ class MODEWrapper(CompareGriddedWrapper):
                             extra_args={'remove_quotes': True,
                                         'uppercase': True})
 
+        self.add_met_config(name='multivar_name', data_type='string',
+                            env_var_name='FCST_MULTIVAR_NAME',
+                            metplus_configs=[f'{tool}_FCST_MULTIVAR_NAME'])
+        self.add_met_config(name='multivar_level', data_type='string',
+                            env_var_name='FCST_MULTIVAR_LEVEL',
+                            metplus_configs=[f'{tool}_FCST_MULTIVAR_LEVEL'])
+
+        self.add_met_config(name='multivar_name', data_type='string',
+                            env_var_name='OBS_MULTIVAR_NAME',
+                            metplus_configs=[f'{tool}_OBS_MULTIVAR_NAME'])
+        self.add_met_config(name='multivar_level', data_type='string',
+                            env_var_name='OBS_MULTIVAR_LEVEL',
+                            metplus_configs=[f'{tool}_OBS_MULTIVAR_LEVEL'])
+
         c_dict['MERGE_CONFIG_FILE'] = (
             self.config.getraw('config', f'{tool}_MERGE_CONFIG_FILE', '')
             )
 
         self.handle_mask(single_value=True, get_flags=True)
+
+        self.add_met_config(name='multivar_intensity', data_type='list',
+                            extra_args={'remove_quotes': True,
+                                        'uppercase': True})
 
         # handle setting VERIF_MASK for old wrapped MET config files
         self.add_met_config(name='poly',
