@@ -274,8 +274,7 @@ class NOAAWCOSS(Cluster):
         self._lastprod=int(time.time())
         return prod
 
-
-class WCOSSCray(NOAAWCOSS):
+class WCOSS2(NOAAWCOSS):
     """!This subclass of NOAAWCOSS handles the new Cray portions of
     WCOSS: Luna and Surge."""
     def __init__(self,name=None):

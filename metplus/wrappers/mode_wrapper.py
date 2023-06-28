@@ -63,9 +63,9 @@ class MODEWrapper(CompareGriddedWrapper):
         'METPLUS_MULTIVAR_LOGIC',
         'METPLUS_MULTIVAR_INTENSITY',
         'METPLUS_FCST_MULTIVAR_NAME',
-        'METPLUS_FCST_MULTIVAR_UNITS',
+        'METPLUS_FCST_MULTIVAR_LEVEL',
         'METPLUS_OBS_MULTIVAR_NAME',
-        'METPLUS_OBS_MULTIVAR_UNITS',
+        'METPLUS_OBS_MULTIVAR_LEVEL',
     ]
 
     # handle deprecated env vars used pre v4.0.0
@@ -416,16 +416,16 @@ class MODEWrapper(CompareGriddedWrapper):
         self.add_met_config(name='multivar_name', data_type='string',
                             env_var_name='FCST_MULTIVAR_NAME',
                             metplus_configs=[f'{tool}_FCST_MULTIVAR_NAME'])
-        self.add_met_config(name='multivar_units', data_type='string',
-                            env_var_name='FCST_MULTIVAR_UNITS',
-                            metplus_configs=[f'{tool}_FCST_MULTIVAR_UNITS'])
+        self.add_met_config(name='multivar_level', data_type='string',
+                            env_var_name='FCST_MULTIVAR_LEVEL',
+                            metplus_configs=[f'{tool}_FCST_MULTIVAR_LEVEL'])
 
         self.add_met_config(name='multivar_name', data_type='string',
                             env_var_name='OBS_MULTIVAR_NAME',
                             metplus_configs=[f'{tool}_OBS_MULTIVAR_NAME'])
-        self.add_met_config(name='multivar_units', data_type='string',
-                            env_var_name='OBS_MULTIVAR_UNITS',
-                            metplus_configs=[f'{tool}_OBS_MULTIVAR_UNITS'])
+        self.add_met_config(name='multivar_level', data_type='string',
+                            env_var_name='OBS_MULTIVAR_LEVEL',
+                            metplus_configs=[f'{tool}_OBS_MULTIVAR_LEVEL'])
 
         c_dict['MERGE_CONFIG_FILE'] = (
             self.config.getraw('config', f'{tool}_MERGE_CONFIG_FILE', '')
