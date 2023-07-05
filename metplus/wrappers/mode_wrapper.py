@@ -61,7 +61,7 @@ class MODEWrapper(CompareGriddedWrapper):
         'METPLUS_FCST_FILE_TYPE',
         'METPLUS_OBS_FILE_TYPE',
         'METPLUS_MULTIVAR_LOGIC',
-        'METPLUS_MULTIVAR_INTENSITY',
+        'METPLUS_MULTIVAR_INTENSITY_FLAG',
         'METPLUS_FCST_MULTIVAR_NAME',
         'METPLUS_FCST_MULTIVAR_LEVEL',
         'METPLUS_OBS_MULTIVAR_NAME',
@@ -433,7 +433,7 @@ class MODEWrapper(CompareGriddedWrapper):
 
         self.handle_mask(single_value=True, get_flags=True)
 
-        self.add_met_config(name='multivar_intensity', data_type='list',
+        self.add_met_config(name='multivar_intensity_flag', data_type='list',
                             extra_args={'remove_quotes': True,
                                         'uppercase': True})
 

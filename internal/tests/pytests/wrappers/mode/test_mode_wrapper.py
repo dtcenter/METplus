@@ -329,8 +329,8 @@ def set_minimum_config_settings(config):
         ({'MODE_MASK_MISSING_FLAG': 'BOTH', },
          {'METPLUS_MASK_MISSING_FLAG': 'mask_missing_flag = BOTH;'}),
 
-        ({'MODE_MULTIVAR_INTENSITY': 'false, true,true', },
-         {'METPLUS_MULTIVAR_INTENSITY': 'multivar_intensity = [FALSE, TRUE, TRUE];'}),
+        ({'MODE_MULTIVAR_INTENSITY_FLAG': 'false, true,true', },
+         {'METPLUS_MULTIVAR_INTENSITY_FLAG': 'multivar_intensity_flag = [FALSE, TRUE, TRUE];'}),
 
         ({'MODE_FCST_MULTIVAR_NAME': 'Snow', },
          {'METPLUS_FCST_MULTIVAR_NAME': 'multivar_name = "Snow";'}),
