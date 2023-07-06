@@ -104,7 +104,7 @@ met_tool_wrapper/TCDiag/TCDiag.conf
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. note:: See the :ref:`TCDiag MET Configuration<tc-rmw-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# .. note:: See the :ref:`TCDiag MET Configuration<tc-diag-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/met_config/TCDiagConfig_wrapped
@@ -133,7 +133,8 @@ met_tool_wrapper/TCDiag/TCDiag.conf
 # Output for this use case will be found in met_tool_wrapper/TCDiag (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
-# * tc_diag_aal142016.nc
+# * tc_diag_AL142016_fv3_2016092900_cyl_grid_nest.nc
+# * tc_diag_AL142016_fv3_2016092900_cyl_grid_parent.nc
 #
 
 ##############################################################################
@@ -142,10 +143,10 @@ met_tool_wrapper/TCDiag/TCDiag.conf
 #
 # .. note::
 #
+#   * DiagnosticsUseCase
 #   * TCDiagToolUseCase
 #   * GRIB2FileUseCase
-#   * TCandExtraTCAppUseCase
-#   * FeatureRelativeUseCase
+#   * TCUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
