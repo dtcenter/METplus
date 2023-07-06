@@ -4055,7 +4055,7 @@ METplus Configuration
 | :term:`FCST_MODE_IS_PROB`
 | :term:`FCST_MODE_PROB_IN_GRIB_PDS`
 | :term:`MODE_MULTIVAR_LOGIC`
-| :term:`MODE_MULTIVAR_INTENSITY`
+| :term:`MODE_MULTIVAR_INTENSITY_FLAG`
 | :term:`FCST_MODE_VAR<n>_NAME`
 | :term:`FCST_MODE_VAR<n>_LEVELS`
 | :term:`FCST_MODE_VAR<n>_THRESH`
@@ -4189,7 +4189,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`MODE_MULTIVAR_LOGIC`
      - multivar_logic
 
-**${METPLUS_MULTIVAR_INTENSITY}**
+**${METPLUS_MULTIVAR_INTENSITY_FLAG}**
 
 .. list-table::
    :widths: 5 5
@@ -4197,8 +4197,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`MODE_MULTIVAR_INTENSITY`
-     - multivar_intensity
+   * - :term:`MODE_MULTIVAR_INTENSITY_FLAG`
+     - multivar_intensity_flag
 
 **${METPLUS_FCST_FIELD}**
 
