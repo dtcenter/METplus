@@ -157,6 +157,7 @@ _obsGFS_RPlotting.conf
 #   * MediumRangeAppUseCase
 #   * SBUOrgUseCase
 #   * DTCOrgUseCase
+#   * TropicalCycloneUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

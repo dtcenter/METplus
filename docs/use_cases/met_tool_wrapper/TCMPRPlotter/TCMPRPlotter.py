@@ -110,6 +110,7 @@ met_tool_wrapper/TCMPRPlotter/TCMPRPlotter.conf
 # .. note::
 #
 #   * TCMPRPlotterUseCase
+#   * TropicalCycloneUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

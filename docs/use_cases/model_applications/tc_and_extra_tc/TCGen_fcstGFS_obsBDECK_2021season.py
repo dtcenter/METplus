@@ -135,6 +135,7 @@ model_applications/tc_and_extra_tc/TCGen_fcstGFS_obsBDECK_2021season.conf
 # .. note::
 #
 #   * TCGenToolUseCase
+#   * TropicalCycloneUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

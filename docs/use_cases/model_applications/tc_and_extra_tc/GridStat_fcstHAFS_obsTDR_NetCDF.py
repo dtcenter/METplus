@@ -152,6 +152,7 @@ _NetCDF.conf
 #
 #   * TCandExtraTCAppUseCase
 #   * GridStatToolUseCase
+#   * TropicalCycloneUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

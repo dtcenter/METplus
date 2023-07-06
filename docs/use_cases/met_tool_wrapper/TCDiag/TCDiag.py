@@ -146,7 +146,7 @@ met_tool_wrapper/TCDiag/TCDiag.conf
 #   * DiagnosticsUseCase
 #   * TCDiagToolUseCase
 #   * GRIB2FileUseCase
-#   * TCUseCase
+#   * TropicalCycloneUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
