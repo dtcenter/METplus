@@ -164,13 +164,23 @@ def main(categories, subset_list, work_dir=None,
             for use_case in use_case_by_requirement.use_cases:
                 # add parm/use_cases path to config args if they are conf files
                 config_args = []
+                ci_overrides = None
                 for config_arg in use_case.config_args:
                     if config_arg.endswith('.conf'):
                         config_arg = os.path.join(work_dir, 'parm',
-                                                  'use_cases',
-                                                  config_arg)
+                                                  'use_cases', config_arg)
+
+                        # look for CI overrides conf file
+                        override_path = os.path.join(config_arg[0:-5],
+                                                     'ci_overrides.conf')
+                        if os.path.exists(override_path):
+                            ci_overrides = override_path
 
                     config_args.append(config_arg)
+
+                # add CI overrides config file if running in docker
+                if ci_overrides and host_name == 'docker':
+                    config_args.append(ci_overrides)
 
                 output_base = os.path.join(output_top_dir,
                                            group_name.split('-')[0],
