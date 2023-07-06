@@ -20,6 +20,36 @@
     "run": false
   },
   {
+    "category": "clouds",
+    "index_list": "0",
+    "run": false
+  },
+  {
+    "category": "clouds",
+    "index_list": "1",
+    "run": false
+  },
+  {
+    "category": "clouds",
+    "index_list": "2",
+    "run": false
+  },
+  {
+    "category": "clouds",
+    "index_list": "3",
+    "run": false
+  },
+  {
+    "category": "clouds",
+    "index_list": "4",
+    "run": false
+  },
+  {
+    "category": "clouds",
+    "index_list": "5",
+    "run": false
+  },
+  {
     "category": "data_assimilation",
     "index_list": "0-1",
     "run": false
