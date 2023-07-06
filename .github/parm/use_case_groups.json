@@ -22,32 +22,32 @@
   {
     "category": "clouds",
     "index_list": "0",
-    "run": true
+    "run": false
   },
   {
     "category": "clouds",
     "index_list": "1",
-    "run": true
+    "run": false
   },
   {
     "category": "clouds",
     "index_list": "2",
-    "run": true
+    "run": false
   },
   {
     "category": "clouds",
     "index_list": "3",
-    "run": true
+    "run": false
   },
   {
     "category": "clouds",
     "index_list": "4",
-    "run": true
+    "run": false
   },
   {
     "category": "clouds",
     "index_list": "5",
-    "run": true
+    "run": false
   },
   {
     "category": "data_assimilation",
