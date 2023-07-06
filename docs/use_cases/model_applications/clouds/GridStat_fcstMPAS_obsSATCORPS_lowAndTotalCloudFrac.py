@@ -2,7 +2,7 @@
 GridStat: Cloud Fractions with Neighborhood and Probabilities
 =============================================================
 
-model_applications/air_quality_and_comp/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac.conf
+model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.conf
 
 """
 ##############################################################################
@@ -18,8 +18,8 @@ model_applications/air_quality_and_comp/GridStat_fcstGFS_obsMERRA2_lowAndTotalCl
 # Datasets
 # --------
 #
-# | **Forecast:** Global Forecast System (GFS)
-# | **Observations:** Modern-Era Retrospective analysis for Research and Applications, Version 2 (MERRA2)
+# | **Forecast:** Model for Prediction Across Scales (MPAS)
+# | **Observations:** Satellite ClOud and Radiation Property retrieval System (SatCORPS)
 # | **Grid:** GPP 17km masking region
 #
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
@@ -31,9 +31,8 @@ model_applications/air_quality_and_comp/GridStat_fcstGFS_obsMERRA2_lowAndTotalCl
 # ------------------
 #
 # This use case utilizes Python Embedding, which is called using the PYTHON_NUMPY keyword 
-# in the observation input template settings. The same Python script processes both forecast and
-# observation datasets, but only the observation dataset is not set up for native ingest by MET. 
-# Two separate forecast fields are verified against two respective observation fields,
+# in the forecast and observation input template settings. The same Python script processes both forecast and
+# observation datasets. Two separate forecast fields are verified against two respective observation fields,
 # with the Python script being passed the input file, the model name, the variable name being analyzed,
 # the initialization and valid times, and a flag to indicate if the field passed is observation or forecast.
 # This process is repeated with 3 instance names to GridStat, each with a different setting for regridding,
@@ -46,9 +45,9 @@ model_applications/air_quality_and_comp/GridStat_fcstGFS_obsMERRA2_lowAndTotalCl
 # GridStat is the only MET tool called in this example.
 # It processes the following run time:
 #
-# | **Init:** 2021-07-03 12Z
+# | **Init:** 2020-07-23 00Z
 # | **Forecast lead:** 36 hour
-# 
+#
 # Because instance names are used, GridStat will run 3 times for this 1 initalization time.
 
 ##############################################################################
@@ -57,10 +56,10 @@ model_applications/air_quality_and_comp/GridStat_fcstGFS_obsMERRA2_lowAndTotalCl
 #
 # METplus first loads the default configuration file found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line:
-# parm/use_cases/model_applications/air_quality_and_comp/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac.conf
+# parm/use_cases/model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/air_quality_and_comp/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.conf
 
 ##############################################################################
 # MET Configuration
@@ -85,10 +84,10 @@ model_applications/air_quality_and_comp/GridStat_fcstGFS_obsMERRA2_lowAndTotalCl
 #
 # This use case utilizes 1 Python script to read and process both forecast and
 # observation fields.
-# parm/use_cases/model_applications/air_quality_and_comp/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac/read_input_data.py
+# parm/use_cases/model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac/read_input_data.py
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/air_quality_and_comp/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac/read_input_data.py
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac/read_input_data.py
 
 ##############################################################################
 # Running METplus
@@ -97,7 +96,7 @@ model_applications/air_quality_and_comp/GridStat_fcstGFS_obsMERRA2_lowAndTotalCl
 # Pass the use case configuration file to the run_metplus.py script
 # along with any user-specific system configuration files if desired::
 #
-#    run_metplus.py /path/to/METplus/parm/use_cases/model_applications/air_quality_and_comp/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac.conf /path/to/user_system.conf
+#    run_metplus.py /path/to/METplus/parm/use_cases/model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
 
@@ -110,16 +109,16 @@ model_applications/air_quality_and_comp/GridStat_fcstGFS_obsMERRA2_lowAndTotalCl
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in model_applications/air_quality_and_comp/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac
+# Output for this use case will be found in model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac
 # (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
-# * grid_stat_GFS_TO_MERRA2_F36_CloudFracs_360000L_20210705_000000V_pairs.nc
-# * grid_stat_GFS_to_MERRA2_F36_CloudFracs_360000L_20210705_000000V.stat
-# * grid_stat_GFS_to_MERRA2_F36_CloudFracs_NBR_360000L_20210705_000000V_pairs.nc
-# * grid_stat_GFS_to_MERRA2_F36_CloudFracs_NBR_360000L_20210705_000000V.stat
-# * grid_stat_GFS_to_MERRA2_F36_CloudFracs_PROB_360000L_20210705_000000V_pairs.nc
-# * grid_stat_GFS_to_MERRA2_F36_CloudFracs_PROB_360000L_20210705_000000V.stat
+# * grid_stat_MPAS_F36_CloudFracs_360000L_20200724_120000V_pairs.nc
+# * grid_stat_MPAS_F36_CloudFracs_360000L_20200724_120000V.stat
+# * grid_stat_MPAS_F36_CloudFracs_NBR_360000L_20200724_120000V_pairs.nc
+# * grid_stat_MPAS_F36_CloudFracs_NBR_360000L_20200724_120000V.stat
+# * grid_stat_MPAS_F36_CloudFracs_PROB_360000L_20200724_120000V_pairs.nc
+# * grid_stat_MPAS_F36_CloudFracs_PROB_360000L_20200724_120000V.stat
 
 ##############################################################################
 # Keywords
@@ -129,10 +128,10 @@ model_applications/air_quality_and_comp/GridStat_fcstGFS_obsMERRA2_lowAndTotalCl
 #
 #   * GridStatToolUseCase
 #   * NetCDFFileUseCase
-#   * AirQualityAndCompAppUseCase
+#   * CloudsAppUseCase
 #   * PythonEmbeddingFileUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
-# sphinx_gallery_thumbnail_path = '_static/air_quality_and_comp-GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac.png'
+# sphinx_gallery_thumbnail_path = '_static/clouds-GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.png'
 #

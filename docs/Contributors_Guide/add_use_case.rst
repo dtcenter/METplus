@@ -44,6 +44,7 @@ one of the following:
 
 * air_quality_and_comp
 * climate
+* clouds
 * data_assimilation
 * extremes
 * land_surface
@@ -835,6 +836,43 @@ new job for the new use case. See the :ref:`cg-ci-subset_category` section
 and the multiple medium_range jobs for an example.
 
 
+Overriding configuration for automated tests
+--------------------------------------------
+
+The automated tests have limited resources available to run the use cases.
+Use cases can be adjusted to reduce file size, run time length,
+memory usage, etc. but may still exceed the limits provided by GitHub Actions.
+We also want to avoid losing scientific significance of a use case to allow
+it to run in the automated testing environment.
+
+An additional METplus configuration file can be provided with a use case to
+override certain configuration settings for the automated testing of the case.
+This allows the use case configuration file to contain a useful example that
+can be run on other environments while still allowing a subset of the use case
+to be included in the automated use case tests.
+
+If needed, create a file named **ci_overrides.conf** in the use case directory,
+e.g. parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac/ci_overrides.conf.
+This configuration file will automatically be read **after** the use case
+configuration file when run in the automated testing environment.
+
+For example, if a use case processes many thresholds::
+
+    [config]
+    ...
+    FCST_VAR1_THRESH = gt0, lt10.0, ge10.0, ge20.0, ge30.0, ge40.0, ge50.0, ge60.0, ge70.0, ge80.0, ge90.0
+    ...
+    OBS_VAR1_THRESH = gt0, lt10.0, ge10.0, ge20.0, ge30.0, ge40.0, ge50.0, ge60.0, ge70.0, ge80.0, ge90.0
+    ...
+
+then one can override these variables so that fewer threshold values are
+processed in the automated tests. In **ci_overrides.conf**, set::
+
+    [config]
+    FCST_VAR1_THRESH = gt0, lt10.0
+    OBS_VAR1_THRESH = gt0, lt10.0
+
+
 .. _exceeded-Github-Actions:
 
 Use Cases That Exceed Memory Allocations of Github Actions
@@ -853,7 +891,7 @@ steps were unsuccessful in lowering memory usage, please take the following step
   Change the number in front of the new use case to an 'X', preceded 
   by the ‘#’ character::
 
-	#X::GridStat_fcstRTOFS_obsGHRSST_climWOA_sst::model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf, model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst/ci_overrides.conf:: icecover_env, py_embed
+	#X::GridStat_fcstRTOFS_obsGHRSST_climWOA_sst::model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf:: icecover_env, py_embed
 
 - In the *.github/parm/use_case_groups.json* file, remove the entry that 
   was added during the :ref:`add_new_category_to_test_runs` 

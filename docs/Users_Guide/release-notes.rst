@@ -30,6 +30,14 @@ When applicable, release notes are followed by the
 `GitHub issue <https://github.com/dtcenter/METplus/issues>`__ number which
 describes the bugfix, enhancement, or new feature.
 
+METplus Version 5.1.0-rc2 Release Notes (2023-06-29)
+----------------------------------------------------
+
+  .. dropdown:: Bugfix
+
+     * Fix produtil bug for WCOSS
+       (`#2227 <https://github.com/dtcenter/METplus/issues/2227>`_)
+
 METplus Version 5.1.0-rc1 Release Notes (2023-06-07)
 ----------------------------------------------------
 
