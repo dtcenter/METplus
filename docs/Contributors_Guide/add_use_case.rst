@@ -851,7 +851,7 @@ This allows the use case configuration file to contain a useful example that
 can be run on other environments while still allowing a subset of the use case
 to be included in the automated use case tests.
 
-If needed, create a file named ci_overrides.conf in the use case directory,
+If needed, create a file named **ci_overrides.conf** in the use case directory,
 e.g. parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac/ci_overrides.conf.
 This configuration file will automatically be read **after** the use case
 configuration file when run in the automated testing environment.
@@ -866,7 +866,7 @@ For example, if a use case processes many thresholds::
     ...
 
 then one can override these variables so that fewer threshold values are
-processed in the automated tests. In ci_overrides.conf, set::
+processed in the automated tests. In **ci_overrides.conf**, set::
 
     [config]
     FCST_VAR1_THRESH = gt0, lt10.0
