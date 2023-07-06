@@ -289,8 +289,6 @@ class TCGenWrapper(CommandBuilder):
     def handle_filter(self):
         """! find all TC_GEN_FILTER_<n> values in the config files
         """
-        filters = []
-
         all_config = self.config.keys('config')
         indices = []
         regex = re.compile(r"TC_GEN_FILTER_(\d+)")
@@ -299,10 +297,8 @@ class TCGenWrapper(CommandBuilder):
             if result is not None:
                 indices.append(result.group(1))
 
-        for index in indices:
-            filter = self.config.getraw('config', f'TC_GEN_FILTER_{index}')
-            filters.append(filter)
-
+        filters = [self.config.getraw('config', f'TC_GEN_FILTER_{index}')
+                   for index in indices]
         if filters:
             filter_string = 'filter = [{'
             filter_string += '}, {'.join(filters)

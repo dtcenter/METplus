@@ -179,7 +179,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         fill_num = (len(c_dict[f'{d_type}_EXTRA_NAMES']) -
                     len(c_dict[f'{d_type}_EXTRA_LEVELS']))
         if fill_num > 0:
-            for num in range(fill_num):
+            for _ in range(fill_num):
                 c_dict[f'{d_type}_EXTRA_LEVELS'].append(None)
 
         c_dict[f'{d_type}_EXTRA_OUTPUT_NAMES'] = getlist(
@@ -285,14 +285,13 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         # add -name argument
         output_name = self.c_dict.get(f'{data_src}_OUTPUT_NAME')
-        if not output_name:
-            if var_info:
-                output_name = var_info.get(f"{data_src.lower()}_name")
-                self.logger.warning(
-                    f'{data_src}_PCP_COMBINE_OUTPUT_NAME is '
-                    f'not set. Using {output_name} from '
-                    f'{data_src}_VAR{var_info.get("index")}_NAME.'
-                )
+        if not output_name and var_info:
+            output_name = var_info.get(f"{data_src.lower()}_name")
+            self.logger.warning(
+                f'{data_src}_PCP_COMBINE_OUTPUT_NAME is '
+                f'not set. Using {output_name} from '
+                f'{data_src}_VAR{var_info.get("index")}_NAME.'
+            )
 
         if output_name:
             self._handle_name_argument(output_name, data_src)

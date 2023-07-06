@@ -293,6 +293,22 @@ class TCPairsWrapper(CommandBuilder):
                                 False)
         )
 
+        # check for settings that cause differences moving from v4.1 to v5.0
+        # warn and update run setting to preserve old behavior
+        if (self.config.has_option('config', 'LOOP_ORDER') and
+            self.config.getstr_nocheck('config', 'LOOP_ORDER') == 'times' and
+            not self.config.has_option('config', 'TC_PAIRS_RUN_ONCE')):
+            self.logger.warning(
+                'LOOP_ORDER has been deprecated. LOOP_ORDER has been set to '
+                '"times" and TC_PAIRS_RUN_ONCE is not set. '
+                'Forcing TC_PAIRS_RUN_ONCE=False to preserve behavior prior to '
+                'v5.0.0. Please remove LOOP_ORDER and set '
+                'TC_PAIRS_RUN_ONCE=False to preserve previous behavior and '
+                'remove this warning message.'
+            )
+            c_dict['RUN_ONCE'] = False
+            return c_dict
+
         # only run once if True
         c_dict['RUN_ONCE'] = self.config.getbool('config',
                                                  'TC_PAIRS_RUN_ONCE',
@@ -318,6 +334,8 @@ class TCPairsWrapper(CommandBuilder):
         if not self.c_dict['RUN_ONCE']:
             return super().run_all_times()
 
+        self.logger.debug('Only processing first run time. Set '
+                          'TC_PAIRS_RUN_ONCE=False to process all run times.')
         self.run_at_time(input_dict)
         return self.all_commands
 
@@ -346,7 +364,7 @@ class TCPairsWrapper(CommandBuilder):
 
                 if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
                     self.logger.debug('Skipping run time')
-                    return
+                    continue
 
                 self.run_at_time_loop_string(time_info)
 
@@ -449,7 +467,6 @@ class TCPairsWrapper(CommandBuilder):
                                                dict_items=dict_items)
         if not return_code:
             self.isOK = False
-            return
 
     def _handle_diag(self, c_dict):
         diag_indices = list(
@@ -786,28 +803,30 @@ class TCPairsWrapper(CommandBuilder):
         bdeck_regex = bdeck_regex.replace('*', '(.*)').replace('?', '(.)')
         self.logger.debug(f'Regex to extract basin/cyclone: {bdeck_regex}')
 
+        match = re.match(bdeck_regex, bdeck_file)
+        if not match:
+            return basin, cyclone
+
         current_basin = basin
         current_cyclone = cyclone
 
-        match = re.match(bdeck_regex, bdeck_file)
-        if match:
-            matches = match.groups()
-            # get template tags and wildcards from template
-            tags = get_tags(bdeck_template)
-            if len(matches) != len(tags):
-                self.log_error("Number of regex match groups does not match "
-                               "number of tags found:\n"
-                               f"Regex pattern: {bdeck_template}\n"
-                               f"Matches: {matches}\nTags: {tags}")
-                return None, None
+        matches = match.groups()
+        # get template tags and wildcards from template
+        tags = get_tags(bdeck_template)
+        if len(matches) != len(tags):
+            self.log_error("Number of regex match groups does not match "
+                           "number of tags found:\n"
+                           f"Regex pattern: {bdeck_template}\n"
+                           f"Matches: {matches}\nTags: {tags}")
+            return None, None
 
-            for match, tag in zip(matches, tags):
-                # if basin/cyclone if found, get value
-                if tag == 'basin' and basin == self.WILDCARDS['basin']:
-                    current_basin = match
-                elif (tag == 'cyclone' and
-                      cyclone == self.WILDCARDS['cyclone']):
-                    current_cyclone = match
+        for match, tag in zip(matches, tags):
+            # if basin/cyclone if found, get value
+            if tag == 'basin' and basin == self.WILDCARDS['basin']:
+                current_basin = match
+            elif (tag == 'cyclone' and
+                  cyclone == self.WILDCARDS['cyclone']):
+                current_cyclone = match
 
         return current_basin, current_cyclone
 

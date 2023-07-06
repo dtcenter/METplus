@@ -399,13 +399,20 @@ def round_0p5(val):
 
 def generate_tmp_filename():
     random_string = ''.join(random.choice(string.ascii_letters)
-                            for i in range(10))
+                            for _ in range(10))
     return f"metplus_tmp_{random_string}"
 
 
 def template_to_regex(template):
-    in_template = re.sub(r'\.', '\\.', template)
-    return re.sub(r'{lead.*?}', '.*', in_template)
+    """!Convert path with filename template tags for regular expression by
+    escaping '.' character with a backslash and replacing any lead template
+    tags with a wildcard regular expression.
+
+    @param template string to convert
+    @returns formatted string
+    """
+    in_template = template.replace('.', r'\.')
+    return re.sub(r'{lead[^}]*}', '.*', in_template)
 
 
 def split_level(level):
@@ -459,9 +466,9 @@ def expand_int_string_to_list(int_string):
     # if string ends with +, remove it and add it back at the end
     if int_string.strip().endswith('+'):
         int_string = int_string.strip(' +')
-        hasPlus = True
+        has_plus = True
     else:
-        hasPlus = False
+        has_plus = False
 
     # separate into list by comma
     comma_list = int_string.split(',')
@@ -476,7 +483,7 @@ def expand_int_string_to_list(int_string):
         else:
             subset_list.append(int(comma_item.strip()))
 
-    if hasPlus:
+    if has_plus:
         subset_list.append('+')
 
     return subset_list
