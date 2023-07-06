@@ -202,7 +202,7 @@
   {
     "category": "short_range",
     "index_list": "7",
-    "run": false
+    "run": true
   },
   {
     "category": "short_range",
@@ -232,7 +232,7 @@
   {
     "category": "tc_and_extra_tc",
     "index_list": "0-2",
-    "run": false
+    "run": true
   },
   {
     "category": "tc_and_extra_tc",
