@@ -20,8 +20,8 @@ met_tool_wrapper/TCDiag/TCDiag.conf
 #
 # The diagnostics are computed on a range-azimuth grid that follows the
 # projected storm track. For inputs, it uses 0.25 deg gridded GRIB files from the
-# a retrospective reforecast of the Global Forecast System Finite Volume (GFS-FV3). For the track, it uses the
-# GFS-FV3's predicted track to ensure that the model's simulated storm doesn't
+# a retrospective reforecast of the Global Forecast System (GFS). For the track, it uses the
+# GFS's predicted track to ensure that the model's simulated storm doesn't
 # contaminate the diagnostics result as a result of the model's simulated
 # storm being mistaken for environmental factors. (Note:
 # a future version of the tc_diag tool will include removal of the model's vortex,
@@ -32,7 +32,7 @@ met_tool_wrapper/TCDiag/TCDiag.conf
 #
 # This is the first example use case to run the tc_diag tool.
 # Example of running for a single tropical cyclone forecast case from
-# Hurricane Matthew (2016) using GFS-FV3 data.
+# Tropical Storm Bret (2023) using GFS data.
 
 ##############################################################################
 # Scientific Objective
@@ -58,7 +58,7 @@ met_tool_wrapper/TCDiag/TCDiag.conf
 # This tarball should be unpacked into the directory that you will set the
 # value of INPUT_BASE. See `Running METplus`_ section for more information.
 #
-# **Data source:** Users may obtain real-time data from the deterministic GFS-FV3 runs from
+# **Data source:** Users may obtain real-time data from the deterministic GFS runs from
 # NOAA's NOMADS server:
 # https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.YYYYMMDD/ZZ/atmos/
 # where YYYYMMDD is the date (4-digit year, 2-digit month, 2-digit day),
