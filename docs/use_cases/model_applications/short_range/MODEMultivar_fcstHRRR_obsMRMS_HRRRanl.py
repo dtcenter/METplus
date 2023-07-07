@@ -12,14 +12,21 @@ MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 # --------------------
 #
 # This use case demonstrates how to run Multivariate MODE to identify complex
-# objects from two or more fields, defined by a logical expression. This use
-# case identifies blizzard-like objects defined by: 1) the presence of snow
-# precipitation type, 2) 10-m winds > 20 mph, and  3) visibility < 1/2 mile.
-# The use of multivariate MODE is well-suited to assess the structure and
+# objects from two or more fields defined by a logical expression. This use
+# case identifies blizzard-like objects defined by the intersection of : 1) the
+# presence of snow precipitation type, 2) 10-m winds > 20 mph, and  3) visibility
+# < 1/2 mile. The use of multivariate MODE is well-suited to assess the structure and
 # placement of complex high-impact events such as blizzard conditions and heavy
-# snow bands. Output from this use-case consists of the MODE forecast and observation
-# super objects and the MODE ASCII, NetCDF, and PostScript files.
+# snow bands. Output from this use-case consists of the MODE ASCII, NetCDF, and
+# PostScript files for the MODE forecast and observation super objects.
 #
+# In this case, MODE super object intensity statistics were ouput for both 10-m
+# wind and visibility. Using the the MODE_MULTIVAR_INTENSITY_FLAG, the user can
+# control for which variables super object intensity statistics will be output.
+# If all are set to False, then no intensity information will be output and only
+# statistics relative to the super-object geometry will be available. In the case
+# no requested intesities, the parameters MODE_FCST/OBS_MULTIVAR_NAME and/or
+# MODE_FCST/OBS_MULTIVAR_LEVEL may be used as identifiers for the super-object.
 
 ##############################################################################
 # Datasets
@@ -43,36 +50,20 @@ MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 # This tarball should be unpacked into the directory that you will set the
 # value of INPUT_BASE. See :ref:`running-metplus` for more information.
 
-
 ##############################################################################
 # METplus Components
 # ------------------
 #
-# This use case runs MODE using multiple variables to output the super objects
-# based on a user-defined logical expression. Currently, the initial multivariate
-# MODE run only outputs the super objects and additional steps are required to
-# produce the statistical output. GenVxMask is run on a field(s) of interest
-# using the super objects to mask the field(s). Finally, MODE is run a second
-# time on the super-object-masked field(s) to output attribute statistics for
-# the field(s).
-#
-# **Note:** The second MODE run can also be run directly on the super objects if
-# field-specific statistics, such as intensity, is not desired.
+# This use case utilizes the METplus MODE wrapper, ingesting multiple variables
+# to output complex super objects based on a user-defined logical expression. 
 # 
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
-# The following tools are used for each run time:
-#
-# MODE(mv), GenVxMask(fcst_super), GenVxMask(obs_super), MODE(super)
-# 
-# Where the first instance of MODE runs over multiple variables to identify
-# super objects for the forecast and observation, GenVxMask masks the raw input
-# field(s) using the super objects, and the second instance of MODE is run
-# traditionally to compare the masked forecast and observed super objects and
-# and provide statistics.
+# MODE is the only tool called and ingests multiple fields to create a complex
+# super object.
 #
 # This example runs a single forecast hour.
 #
@@ -128,50 +119,17 @@ MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in OUTPUT_BASE for the various MET tools
-# and will contain the following files:
+# Output for this use case will be found in OUTPUT_BASE and will contain the following
+# files in the directory mode/2021020100/f21:
 #
-# **mode/2021020100/f21**
-#
-# Multivariate output - first instance
-#
-# Precipitation type = snow
-#
-# * 00/mode_210000L_20210201_210000V_000000A_cts.txt
-# * 00/mode_210000L_20210201_210000V_000000A_obj.nc
-# * 00/mode_210000L_20210201_210000V_000000A_obj.txt
-# * 00/mode_210000L_20210201_210000V_000000A.ps
-#
-# Visibility
-#
-# * 01/mode_210000L_20210201_210000V_000000A_cts.txt
-# * 01/mode_210000L_20210201_210000V_000000A_obj.nc
-# * 01/mode_210000L_20210201_210000V_000000A_obj.txt
-# * 01/mode_210000L_20210201_210000V_000000A.ps
-#
-# 10-m Winds
-#
-# * 02/mode_210000L_20210201_210000V_000000A_cts.txt
-# * 02/mode_210000L_20210201_210000V_000000A_obj.nc
-# * 02/mode_210000L_20210201_210000V_000000A_obj.txt
-# * 02/mode_210000L_20210201_210000V_000000A.ps
-#
-# Super Objects
-#
-# * f_super.nc
-# * o_super.nc
-#
-# MODE 10-m wind super object output - second instance
-#
-# * mode_HRRR_vs_ANALYSIS_WIND_super_Z10_210000L_20210201_210000V_000000A_cts.txt
-# * mode_HRRR_vs_ANALYSIS_WIND_super_Z10_210000L_20210201_210000V_000000A_obj.nc
-# * mode_HRRR_vs_ANALYSIS_WIND_super_Z10_210000L_20210201_210000V_000000A_obj.txt
-# * mode_HRRR_vs_ANALYSIS_WIND_super_Z10_210000L_20210201_210000V_000000A.ps
-#
-# **gen_vx_mask/2021020100**
-#
-# * fcst_wind_super_2021020100_f21.nc
-# * obs_wind_super_2021020121.nc
+#  * mode_Fcst_VIS_L0_Obs_VIS_L0_HRRR_vs_ANALYSIS_210000L_20210201_210000V_000000A_cts.txt
+#  * mode_Fcst_VIS_L0_Obs_VIS_L0_HRRR_vs_ANALYSIS_210000L_20210201_210000V_000000A_obj.nc
+#  * mode_Fcst_VIS_L0_Obs_VIS_L0_HRRR_vs_ANALYSIS_210000L_20210201_210000V_000000A_obj.txt
+#  * mode_Fcst_VIS_L0_Obs_VIS_L0_HRRR_vs_ANALYSIS_210000L_20210201_210000V_000000A.ps
+#  * mode_Fcst_WIND_Z10_Obs_WIND_Z10_HRRR_vs_ANALYSIS_210000L_20210201_210000V_000000A_cts.txt
+#  * mode_Fcst_WIND_Z10_Obs_WIND_Z10_HRRR_vs_ANALYSIS_210000L_20210201_210000V_000000A_obj.nc
+#  * mode_Fcst_WIND_Z10_Obs_WIND_Z10_HRRR_vs_ANALYSIS_210000L_20210201_210000V_000000A_obj.txt
+#  * mode_Fcst_WIND_Z10_Obs_WIND_Z10_HRRR_vs_ANALYSIS_210000L_20210201_210000V_000000A.ps
 
 ##############################################################################
 # Keywords
@@ -180,14 +138,12 @@ MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 # .. note::
 #
 #   * MODEToolUseCase 
-#   * GenVxMaskToolUseCase 
 #   * ShortRangeAppUseCase
 #   * GRIB2FileUseCase 
 #   * RegriddingInToolUseCase 
 #   * NOAAWPCOrgUseCase
 #   * NCAROrgUseCase 
 #   * DiagnosticsUseCase
-#
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
