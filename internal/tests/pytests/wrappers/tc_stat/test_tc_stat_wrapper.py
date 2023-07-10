@@ -14,6 +14,7 @@ run_times = ['20150301', '20150301']
 config_init_beg = '20170705'
 config_init_end = '20170901'
 
+
 def get_config(metplus_config):
     # extra_configs = []
     # extra_configs.append(os.path.join(os.path.dirname(__file__),

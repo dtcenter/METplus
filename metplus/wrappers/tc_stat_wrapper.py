@@ -365,15 +365,9 @@ class TCStatWrapper(CommandBuilder):
             subbed_job = do_string_sub(job, **time_info) if time_info else job
             formatted_jobs.append(subbed_job.strip())
 
-            # check if -dump_row is used
-            # if it is, create parent directory of output file
-            split_job = subbed_job.split(' ')
-            if '-dump_row' in split_job:
-                index = split_job.index('-dump_row') + 1
-                filepath = split_job[index]
-                self.c_dict['OUTPUT_TEMPLATE'] = filepath
-
-                if not self.find_and_check_output_file(time_info):
+            # create parent directory of output file
+            for out in ('-dump_row', '-out_stat'):
+                if not self._create_job_out_dirs(out, subbed_job, time_info):
                     return None
 
         job_list_string = '","'.join(formatted_jobs)
@@ -383,6 +377,18 @@ class TCStatWrapper(CommandBuilder):
         self.env_var_dict['METPLUS_JOBS'] = job_list_string
 
         return job_list_string
+
+    def _create_job_out_dirs(self, out_type, job_args, time_info):
+        split_job = job_args.split(' ')
+        # return True if job arg that writes a file is not found in job args
+        if out_type not in split_job:
+            return True
+
+        # if job arg is found, create parent directory of output file
+        index = split_job.index(out_type) + 1
+        filepath = split_job[index]
+        self.c_dict['OUTPUT_TEMPLATE'] = filepath
+        return self.find_and_check_output_file(time_info)
 
     def handle_out_file(self, time_info):
         """! If output template is set,
