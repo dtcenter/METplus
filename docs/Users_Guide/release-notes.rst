@@ -75,7 +75,7 @@ METplus Version 5.1.0 Release Notes (2023-07-21)
      * StatAnalysis time shifting failure
        (`#2168 <https://github.com/dtcenter/METplus/issues/2168>`_)
 
- .. dropdown:: New Wrappers
+  .. dropdown:: New Wrappers
 
      * TCDiag (beta)
        (`#1626 <https://github.com/dtcenter/METplus/issues/1626>`_)
