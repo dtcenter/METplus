@@ -23,10 +23,12 @@ information about the local environment so that the tests can run.
 All unit tests must include one of the custom markers listed in the
 internal/tests/pytests/pytest.ini file. Some examples include:
 
+    * run_metplus
     * util
     * wrapper_a
     * wrapper_b
     * wrapper_c
+    * wrapper_d
     * wrapper
     * long
     * plotting
