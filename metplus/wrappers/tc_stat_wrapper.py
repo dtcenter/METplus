@@ -366,9 +366,8 @@ class TCStatWrapper(CommandBuilder):
             formatted_jobs.append(subbed_job.strip())
 
             # create parent directory of output file
-            for out in ('-dump_row', '-out_stat'):
-                if not self._create_job_out_dirs(out, subbed_job, time_info):
-                    return None
+            if not self._create_job_out_dirs(subbed_job, time_info):
+                return None
 
         job_list_string = '","'.join(formatted_jobs)
         job_list_string = f'jobs = ["{job_list_string}"];'
@@ -378,17 +377,30 @@ class TCStatWrapper(CommandBuilder):
 
         return job_list_string
 
-    def _create_job_out_dirs(self, out_type, job_args, time_info):
-        split_job = job_args.split(' ')
-        # return True if job arg that writes a file is not found in job args
-        if out_type not in split_job:
-            return True
+    def _create_job_out_dirs(self, job_args, time_info):
+        """!Create output directories for output files specified by job args
+        like -dump_row and -out_stat to prevent the command from failing.
 
-        # if job arg is found, create parent directory of output file
-        index = split_job.index(out_type) + 1
-        filepath = split_job[index]
-        self.c_dict['OUTPUT_TEMPLATE'] = filepath
-        return self.find_and_check_output_file(time_info)
+        @param job_args list of job arguments to parse
+        @param time_info time dictionary used to fill in filename
+          template tags if used
+        @returns False if something went wrong trying to create directories or
+        True if everything went smoothly.
+        """
+        split_job = job_args.split(' ')
+        for out_type in ('-dump_row', '-out_stat'):
+            # continue if job arg that writes a file is not found in job args
+            if out_type not in split_job:
+                continue
+
+            # if job arg is found, create parent directory of output file
+            index = split_job.index(out_type) + 1
+            filepath = split_job[index]
+            self.c_dict['OUTPUT_TEMPLATE'] = filepath
+            if not self.find_and_check_output_file(time_info):
+                return False
+
+        return True
 
     def handle_out_file(self, time_info):
         """! If output template is set,
