@@ -39,7 +39,7 @@ UNSUPPORTED_EXTENSIONS = [
 ]
 
 ###
-# rounding constants
+# Rounding Constants
 ###
 
 # number of decimal places to use for comparing floats by default
