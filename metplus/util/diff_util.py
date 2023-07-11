@@ -240,13 +240,11 @@ def set_rounding_precision(filepath):
     for keyword, precision in ROUNDING_OVERRIDES.items():
         if keyword not in filepath:
             continue
-        print(f'{"*" * 50}\n'
-              f'Using rounding precision {precision} for {keyword}'
-              f'\n{"*" * 50}\n')
+        print(f'Using rounding precision {precision} for {keyword}')
         rounding_precision = precision
         return
 
-    print(f'Using default precision ({DEFAULT_ROUNDING_PRECISION})\n')
+    print(f'Using default rounding precision {DEFAULT_ROUNDING_PRECISION}')
     rounding_precision = DEFAULT_ROUNDING_PRECISION
 
 def _handle_csv_files(filepath_a, filepath_b):
