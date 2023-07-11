@@ -45,17 +45,6 @@ def get_config(metplus_config):
     return config
 
 
-def tc_stat_wrapper(metplus_config):
-    """! Returns a default TCStatWrapper with /path/to entries in the
-         metplus_system.conf and metplus_runtime.conf configuration
-         files.  Subsequent tests can customize the final METplus configuration
-         to over-ride these /path/to values."""
-
-    # Default, empty TcStatWrapper with some configuration values set
-    # to /path/to:
-    config = get_config(metplus_config)
-    return TCStatWrapper(config)
-
 @pytest.mark.parametrize(
     'config_overrides, env_var_values', [
         # 0: no config overrides that set env vars
@@ -198,6 +187,9 @@ def tc_stat_wrapper(metplus_config):
         # 46 out_valid_mask
         ({'TC_STAT_OUT_VALID_MASK': 'MET_BASE/poly/EAST.poly', },
          {'METPLUS_OUT_VALID_MASK': 'out_valid_mask = "MET_BASE/poly/EAST.poly";'}),
+        # 47 output template
+        ({'TC_STAT_OUTPUT_TEMPLATE': 'tc_stat.out.nc', },
+         {}),
 
     ]
 )
@@ -233,7 +225,7 @@ def test_tc_stat_run(metplus_config, config_overrides, env_var_values):
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
     config_file = wrapper.c_dict.get('CONFIG_FILE')
     lookin_dir = wrapper.c_dict.get('LOOKIN_DIR')
-    out_temp = wrapper.c_dict.get('OUTPUT_TEMPLATE')
+    out_temp = wrapper.c_dict.get('JOB_OUTPUT_TEMPLATE')
     out_dir = wrapper.c_dict.get('OUTPUT_DIR')
     out_arg = f' -out {out_dir}/{out_temp}' if out_temp else ''
 
@@ -361,24 +353,23 @@ def test_override_config_in_c_dict(metplus_config, overrides, c_dict):
 @pytest.mark.parametrize(
     'jobs, init_dt, expected_output', [
         # single fake job
-            (['job1'],
-             None,
-             'jobs = ["job1"];'
-            ),
+        (['job1'],
+         None,
+         'jobs = ["job1"];'
+         ),
         # 2 jobs, no time info
-            (['-job filter -dump_row <output_dir>/filt.tcst',
-              '-job rirw -line_type TCMPR '],
-             None,
-             'jobs = ["-job filter -dump_row <output_dir>/filt.tcst",'
-             '"-job rirw -line_type TCMPR"];'
-            ),
-
+        (['-job filter -dump_row <output_dir>/filt.tcst',
+          '-job rirw -line_type TCMPR '],
+         None,
+         'jobs = ["-job filter -dump_row <output_dir>/filt.tcst",'
+         '"-job rirw -line_type TCMPR"];'
+         ),
         # 2 jobs, time info sub
         (['-job filter -dump_row <output_dir>/{init?fmt=%Y%m%d%H}.tcst',
           '-job rirw -line_type TCMPR '],
-         datetime.datetime(2019, 10, 31, 12),
-         'jobs = ["-job filter -dump_row <output_dir>/2019103112.tcst",'
-         '"-job rirw -line_type TCMPR"];'
+          datetime.datetime(2019, 10, 31, 12),
+          'jobs = ["-job filter -dump_row <output_dir>/2019103112.tcst",'
+          '"-job rirw -line_type TCMPR"];'
          ),
     ]
 )
@@ -389,7 +380,8 @@ def test_handle_jobs(metplus_config, jobs, init_dt, expected_output):
     else:
         time_info = None
 
-    wrapper = tc_stat_wrapper(metplus_config)
+    config = get_config(metplus_config)
+    wrapper = TCStatWrapper(config)
     output_base = wrapper.config.getdir('OUTPUT_BASE')
     output_dir = os.path.join(output_base, 'test_handle_jobs')
 
@@ -412,19 +404,19 @@ def cleanup_test_dirs(parent_dirs, output_dir):
 @pytest.mark.parametrize(
     'jobs, init_dt, expected_output, parent_dirs', [
         # single fake job, no parent dir
-            (['job1'],
-             None,
-             'jobs = ["job1"];',
-             None
-            ),
+        (['job1'],
+         None,
+         'jobs = ["job1"];',
+         None
+         ),
         # 2 jobs, no time info, 1 parent dir
-            (['-job filter -dump_row <output_dir>/filt.tcst',
-              '-job rirw -line_type TCMPR '],
-             None,
-             'jobs = ["-job filter -dump_row <output_dir>/filt.tcst",'
-             '"-job rirw -line_type TCMPR"];',
-             ['<output_dir>'],
-            ),
+        (['-job filter -dump_row <output_dir>/filt.tcst',
+          '-job rirw -line_type TCMPR '],
+         None,
+         'jobs = ["-job filter -dump_row <output_dir>/filt.tcst",'
+         '"-job rirw -line_type TCMPR"];',
+         ['<output_dir>'],
+         ),
 
         # 2 jobs, time info sub, 1 parent dir
         (['-job filter -dump_row <output_dir>/{init?fmt=%Y%m%d%H}.tcst',
@@ -453,7 +445,7 @@ def cleanup_test_dirs(parent_dirs, output_dir):
          'jobs = ["-job filter -dump_row <output_dir>/sub1/2019103112.tcst",'
          '"-job filter -dump_row <output_dir>/sub2/20191031.tcst"];',
          ['<output_dir>/sub1',
-          '<output_dir>/sub2',],
+          '<output_dir>/sub2', ],
          ),
     ]
 )
