@@ -237,6 +237,7 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
     return True
 
 def set_rounding_precision(filepath):
+    global rounding_precision
     for keyword, precision in ROUNDING_OVERRIDES.items():
         if keyword not in filepath:
             continue
