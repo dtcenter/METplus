@@ -46,6 +46,57 @@ def get_config(metplus_config):
 
 
 @pytest.mark.parametrize(
+    'config_overrides, expected_dirs, expected_job_string', [
+        # 0: dump_row and out_stat files
+        ({'TC_STAT_JOB_ARGS': ("-job summary -line_type TCMPR -column "
+                               "'ABS(AMAX_WIND-BMAX_WIND)' "
+                               "-dump_row dump_row/summary.tcst, "
+                               "-job summary -line_type TCMPR -column "
+                               "'ABS(AMAX_WIND-BMAX_WIND)' "
+                               "-out_stat out_stat/stat_summary.tcst")},
+         ['dump_row', 'out_stat'],
+         ('jobs = ["-job summary -line_type TCMPR -column \'ABS(AMAX_WIND-BMAX_WIND)\' -dump_row dump_row/summary.tcst",'
+          '"-job summary -line_type TCMPR -column \'ABS(AMAX_WIND-BMAX_WIND)\' -out_stat out_stat/stat_summary.tcst"];')),
+
+        # 1: dump_row file
+        ({'TC_STAT_JOB_ARGS': ("-job summary -line_type TCMPR -column "
+                               "'ABS(AMAX_WIND-BMAX_WIND)' "
+                               "-dump_row dump_row/summary.tcst")}, ['dump_row'], 'jobs = ["-job summary -line_type TCMPR -column \'ABS(AMAX_WIND-BMAX_WIND)\' -dump_row dump_row/summary.tcst"];'),
+        # 2: out_stat file
+        ({'TC_STAT_JOB_ARGS': ("-job summary -line_type TCMPR -column "
+                               "'ABS(AMAX_WIND-BMAX_WIND)' "
+                               "-out_stat out_stat/stat_summary.tcst")},
+         ['out_stat'],
+         'jobs = ["-job summary -line_type TCMPR -column \'ABS(AMAX_WIND-BMAX_WIND)\' -out_stat out_stat/stat_summary.tcst"];'),
+    ]
+)
+@pytest.mark.wrapper
+def test_tc_stat_handle_jobs(metplus_config, config_overrides, expected_dirs,
+                             expected_job_string):
+    config = get_config(metplus_config)
+
+    # turn off "do not run" setting so directories are created
+    config.set('config', 'DO_NOT_RUN_EXE', False)
+
+    # set config variable overrides
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    # initialize wrapper and ensure it was initialized properly
+    wrapper = TCStatWrapper(config)
+    assert wrapper.isOK
+
+    # ensure job string is formatted as expected
+    actual_job_string = wrapper.handle_jobs(time_info={})
+    assert actual_job_string == expected_job_string
+    assert wrapper.env_var_dict['METPLUS_JOBS'] == expected_job_string
+
+    # ensure output directories are created properly
+    for expected in expected_dirs:
+        expected_dir = os.path.join(wrapper.c_dict['OUTPUT_DIR'], expected)
+        assert os.path.exists(expected_dir) and os.path.isdir(expected_dir)
+
+@pytest.mark.parametrize(
     'config_overrides, env_var_values', [
         # 0: no config overrides that set env vars
         ({}, {}),
