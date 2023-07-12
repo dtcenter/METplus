@@ -560,7 +560,7 @@ def _diff_stat_line(compare_a, compare_b, header, print_error=False):
     """
     cols_a = compare_a.split()[1:]
     cols_b = compare_b.split()[1:]
-    all_good = True
+
     # error message to print if a diff is found
     message = f"ERROR: Stat line differs\n A: {compare_a}\n B: {compare_b}\n\n"
 
@@ -570,6 +570,7 @@ def _diff_stat_line(compare_a, compare_b, header, print_error=False):
             print(f'{message}Different number of columns')
         return False
 
+    all_good = True
     for index, (col_a, col_b) in enumerate(zip(cols_a, cols_b), 2):
         if col_a == col_b:
             continue
