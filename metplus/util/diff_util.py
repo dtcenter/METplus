@@ -38,9 +38,24 @@ CSV_EXTENSIONS = [
 UNSUPPORTED_EXTENSIONS = [
 ]
 
+###
+# Rounding Constants
+###
+
+# number of decimal places to use for comparing floats by default
+DEFAULT_ROUNDING_PRECISION = 6
+
+# dictionary where key is a keyword to search (e.g. use case name)
+# and the value is the rounding precision to use for files that
+# match the keyword
+ROUNDING_OVERRIDES = {
+    'UserScript_obsCFSR_obsOnly_MJO_ENSO': 5,
+    'UserScript_fcstS2S_obsERAI_CrossSpectra': 4,
+}
+
 # number of decision places to accept float differences
 # Note: Completing METplus issue #1873 could allow this to be set to 6
-ROUNDING_PRECISION = 5
+rounding_precision = DEFAULT_ROUNDING_PRECISION
 
 
 def get_file_type(filepath):
@@ -177,6 +192,8 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
     print(f"file_A: {filepath_a}")
     print(f"file_B: {filepath_b}\n")
 
+    set_rounding_precision(filepath_a)
+
     # if file does not exist in dir_b, report difference
     if not os.path.exists(filepath_b):
         if debug:
@@ -219,6 +236,17 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
 
     return True
 
+def set_rounding_precision(filepath):
+    global rounding_precision
+    for keyword, precision in ROUNDING_OVERRIDES.items():
+        if keyword not in filepath:
+            continue
+        print(f'Using rounding precision {precision} for {keyword}')
+        rounding_precision = precision
+        return
+
+    print(f'Using default rounding precision {DEFAULT_ROUNDING_PRECISION}')
+    rounding_precision = DEFAULT_ROUNDING_PRECISION
 
 def _handle_csv_files(filepath_a, filepath_b):
     print('Comparing CSV')
@@ -384,13 +412,13 @@ def _compare_csv_columns(lines_a, lines_b):
             val_a = line_a[key]
             val_b = line_b[key]
             # prevent error if values are diffs are less than
-            # ROUNDING_PRECISION decimal places
+            # rounding_precision decimal places
             # METplus issue #1873 addresses the real problem
             try:
                 if _is_equal_rounded(val_a, val_b):
                     continue
                 print(f"ERROR: Line {num} - {key} differs by "
-                      f"less than {ROUNDING_PRECISION} decimals: "
+                      f"less than {rounding_precision} decimals: "
                       f"TRUTH = {val_a}, OUTPUT = {val_b}")
                 status = False
             except ValueError:
@@ -413,12 +441,12 @@ def _is_equal_rounded(value_a, value_b):
 
 
 def _truncate_float(value):
-    factor = 1 / (10 ** ROUNDING_PRECISION)
+    factor = 1 / (10 ** rounding_precision)
     return float(value) // factor * factor
 
 
 def _round_float(value):
-    return round(float(value), ROUNDING_PRECISION)
+    return round(float(value), rounding_precision)
 
 
 def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
