@@ -575,11 +575,12 @@ def _diff_stat_line(compare_a, compare_b, header_a, print_error=False):
     cols_a = compare_a.split()[1:]
     cols_b = compare_b.split()[1:]
     all_good = True
-    for col_a, col_b, label in zip(cols_a, cols_b, header_a):
+#    for col_a, col_b, label in zip(cols_a, cols_b, header_a):
+    for col_a, col_b in zip(cols_a, cols_b):
         if col_a == col_b:
             continue
         if print_error:
-            print(f"ERROR: {label} differs:\n"
+            print(f"ERROR: value differs:\n"
                   f" A: {col_a}\n B: {col_b}")
         all_good = False
 
