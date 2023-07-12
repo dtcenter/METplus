@@ -490,51 +490,38 @@ def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
     is_stat_file = lines_a[0].startswith('VERSION')
 
     # if it is, save the header columns
+    header_a = None
     if is_stat_file:
-        print("Comparing stat file")
+        print("Comparing stat files")
+        # pull out header line and skip VERSION to prevent
+        # diffs from version number changes
         header_a = lines_a.pop(0).split()[1:]
         header_b = lines_b.pop(0).split()[1:]
         if len(header_a) != len(header_b):
             print('ERROR: Different number of header columns\n'
                   f' A: {header_a}\n B: {header_b}')
             return False
-    else:
-        header_a = None
 
     if len(lines_a) != len(lines_b):
         print(f"ERROR: Different number of lines in {filepath_b}")
         print(f" File_A: {len(lines_a)}\n File_B: {len(lines_b)}")
         return False
 
-    all_good = diff_text_lines(lines_a,
-                               lines_b,
-                               dir_a=dir_a,
-                               dir_b=dir_b,
-                               print_error=False,
-                               is_file_list=is_file_list,
-                               is_stat_file=is_stat_file,
-                               header_a=header_a)
+    if diff_text_lines(lines_a, lines_b, dir_a=dir_a, dir_b=dir_b,
+                       print_error=False, is_file_list=is_file_list,
+                       is_stat_file=is_stat_file, header_a=header_a):
+        return True
 
     # if differences found in text file, sort and try again
-    if not all_good:
-        lines_a.sort()
-        lines_b.sort()
-        all_good = diff_text_lines(lines_a,
-                                   lines_b,
-                                   dir_a=dir_a,
-                                   dir_b=dir_b,
-                                   print_error=True,
-                                   is_file_list=is_file_list,
-                                   is_stat_file=is_stat_file,
-                                   header_a=header_a)
-
-    return all_good
+    lines_a.sort()
+    lines_b.sort()
+    return diff_text_lines(lines_a, lines_b, dir_a=dir_a, dir_b=dir_b,
+                           print_error=True, is_file_list=is_file_list,
+                           is_stat_file=is_stat_file, header_a=header_a)
 
 
-def diff_text_lines(lines_a, lines_b,
-                    dir_a=None, dir_b=None,
-                    print_error=False,
-                    is_file_list=False, is_stat_file=False,
+def diff_text_lines(lines_a, lines_b, dir_a=None, dir_b=None,
+                    print_error=False, is_file_list=False, is_stat_file=False,
                     header_a=None):
     all_good = True
     for line_a, line_b in zip(lines_a, lines_b):
@@ -556,34 +543,45 @@ def diff_text_lines(lines_a, lines_b,
             continue
 
         if print_error:
-            print(f"ERROR: Line differs\n"
-                  f" A: {compare_a}\n B: {compare_b}")
+            print(f"ERROR: Line differs\n A: {compare_a}\n B: {compare_b}")
         all_good = False
 
     return all_good
 
 
-def _diff_stat_line(compare_a, compare_b, header_a, print_error=False):
+def _diff_stat_line(compare_a, compare_b, header, print_error=False):
     """Compare values in .stat file. Ignore first column which contains MET
     version number
 
     @param compare_a list of values in line A
     @param compare_b list of values in line B
-    @param header_a list of header values in file A excluding MET version
+    @param header list of header values in file A excluding MET version
     @param print_error If True, print an error message if any value differs
     """
     cols_a = compare_a.split()[1:]
     cols_b = compare_b.split()[1:]
     all_good = True
-#    for col_a, col_b, label in zip(cols_a, cols_b, header_a):
-    for col_a, col_b in zip(cols_a, cols_b):
+    # error message to print if a diff is found
+    message = f"ERROR: Stat line differs\n A: {compare_a}\n B: {compare_b}\n\n"
+
+    # error if different number of columns are found
+    if len(cols_a) != len(cols_b):
+        if print_error:
+            print(f'{message}Different number of columns')
+        return False
+
+    for index, (col_a, col_b) in enumerate(zip(cols_a, cols_b), 2):
         if col_a == col_b:
             continue
-        if print_error:
-            print(f"ERROR: value differs:\n"
-                  f" A: {col_a}\n B: {col_b}")
         all_good = False
+        if not print_error:
+            continue
 
+        label = f'column {index}' if index >= len(header) else header[index]
+        message += f"  Diff in {label}:\n    A: {col_a}\n    B: {col_b}\n"
+
+    if not all_good and print_error:
+        print(message)
     return all_good
 
 
