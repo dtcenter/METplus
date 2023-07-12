@@ -223,7 +223,7 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
 
     # if not any of the above types, use diff to compare
     print("Comparing text files")
-    if not filecmp.cmp(filepath_a, filepath_b):
+    if not filecmp.cmp(filepath_a, filepath_b, shallow=False):
         # if files differ, open files and handle expected diffs
         if not compare_txt_files(filepath_a, filepath_b, dir_a, dir_b):
             print(f"ERROR: File differs: {filepath_b}")
