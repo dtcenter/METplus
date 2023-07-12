@@ -493,6 +493,11 @@ def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
     if is_stat_file:
         print("Comparing stat file")
         header_a = lines_a.pop(0).split()[1:]
+        header_b = lines_b.pop(0).split()[1:]
+        if len(header_a) != len(header_b):
+            print('ERROR: Different number of header columns\n'
+                  f' A: {header_a}\n B: {header_b}')
+            return False
     else:
         header_a = None
 
