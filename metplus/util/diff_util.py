@@ -38,6 +38,13 @@ CSV_EXTENSIONS = [
 UNSUPPORTED_EXTENSIONS = [
 ]
 
+# keywords to search and skip diff tests if found in file path
+# PBL use case can be removed after dtcenter/METplus#2246 is completed
+SKIP_KEYWORDS = [
+    'PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed',
+]
+
+
 ###
 # Rounding Constants
 ###
@@ -191,6 +198,11 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
     # have different paths
     print(f"file_A: {filepath_a}")
     print(f"file_B: {filepath_b}\n")
+
+    for skip in SKIP_KEYWORDS:
+        if skip in filepath_a or skip in filepath_b:
+            print(f'WARNING: Skipping diff that contains keyword: {skip}')
+            return None
 
     set_rounding_precision(filepath_a)
 
