@@ -240,7 +240,7 @@ def launch(config_list):
     config.set('config', 'CONFIG_INPUT', ','.join(config_format_list))
 
     # save unique identifier for the METplus run
-    config.set('config', 'RUN_ID', str(uuid.uuid4())[0:8])
+    config.set('config', 'RUN_ID', config.run_id)
 
     # get OUTPUT_BASE to make sure it is set correctly so the first error
     # that is logged relates to OUTPUT_BASE, not LOG_DIR, which is likely
@@ -450,7 +450,8 @@ class METplusConfig(ProdConfig):
                             interpolation=None) if (conf is None) else conf
         super().__init__(conf)
         self._cycle = None
-        self._logger = logging.getLogger('metplus')
+        self.run_id = str(uuid.uuid4())[0:8]
+        self._logger = logging.getLogger(f'metplus.{self.run_id}')
         # config.logger is called in wrappers, so set this name
         # so the code doesn't break
         self.logger = self._logger
