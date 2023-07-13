@@ -229,10 +229,10 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
             print(f"ERROR: File differs: {filepath_b}")
             return filepath_a, filepath_b, 'Text diff', ''
 
-        print("No differences in text files")
+        print("No differences found from compare_txt_files")
         return True
     else:
-        print("No differences in text files")
+        print("No differences found from filecmp.cmp")
 
     return True
 
@@ -463,10 +463,9 @@ def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
         if not len(lines_a):
             print("Both text files are empty, so they are equal")
             return True
-        else:
-            print(f"Empty file: {filepath_b}\n"
-                  f"Not empty: {filepath_a}")
-            return False
+        print(f"Empty file: {filepath_b}\n"
+              f"Not empty: {filepath_a}")
+        return False
     # filepath_b is not empty but filepath_a is empty
     elif not len(lines_a):
         print(f"Empty file: {filepath_a}\n"
