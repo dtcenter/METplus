@@ -222,19 +222,8 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
         return _handle_image_files(filepath_a, filepath_b, save_diff)
 
     # if not any of the above types, use diff to compare
-    print("Comparing text files")
-    if not filecmp.cmp(filepath_a, filepath_b, shallow=False):
-        # if files differ, open files and handle expected diffs
-        if not compare_txt_files(filepath_a, filepath_b, dir_a, dir_b):
-            print(f"ERROR: File differs: {filepath_b}")
-            return filepath_a, filepath_b, 'Text diff', ''
+    return _handle_text_files(filepath_a, filepath_b, dir_a, dir_b)
 
-        print("No differences found from compare_txt_files")
-        return True
-    else:
-        print("No differences found from filecmp.cmp")
-
-    return True
 
 def set_rounding_precision(filepath):
     global rounding_precision
@@ -247,6 +236,7 @@ def set_rounding_precision(filepath):
 
     print(f'Using default rounding precision {DEFAULT_ROUNDING_PRECISION}')
     rounding_precision = DEFAULT_ROUNDING_PRECISION
+
 
 def _handle_csv_files(filepath_a, filepath_b):
     print('Comparing CSV')
@@ -293,6 +283,21 @@ def _handle_image_files(filepath_a, filepath_b, save_diff):
         diff_file = ''
 
     return filepath_a, filepath_b, 'Image diff', diff_file
+
+
+def _handle_text_files(filepath_a, filepath_b, dir_a, dir_b):
+    print("Comparing text files")
+    if filecmp.cmp(filepath_a, filepath_b, shallow=False):
+        print("No differences found from filecmp.cmp")
+        return True
+
+    # if files differ, open files and handle expected diffs
+    if not compare_txt_files(filepath_a, filepath_b, dir_a, dir_b):
+        print(f"ERROR: File differs: {filepath_b}")
+        return filepath_a, filepath_b, 'Text diff', ''
+
+    print("No differences found from compare_txt_files")
+    return True
 
 
 def compare_pdf_as_images(filepath_a, filepath_b, save_diff=False):
@@ -728,4 +733,6 @@ if __name__ == '__main__':
     dir_a = sys.argv[1]
     dir_b = sys.argv[2]
     save_diff = len(sys.argv) > 3
-    compare_dir(dir_a, dir_b, debug=True, save_diff=save_diff)
+    # if any files were flagged, exit non-zero
+    if compare_dir(dir_a, dir_b, debug=True, save_diff=save_diff):
+        sys.exit(2)
