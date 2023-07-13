@@ -98,6 +98,12 @@ def get_file_type(filepath):
     return 'unknown'
 
 
+def dirs_are_equal(dir_a, dir_b, debug=False, save_diff=False):
+    if compare_dir(dir_a, dir_b, debug=debug, save_diff=save_diff):
+        return False
+    return True
+
+
 def compare_dir(dir_a, dir_b, debug=False, save_diff=False):
     print('::group::Full diff results:')
     # if input are files and not directories, compare them 
