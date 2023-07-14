@@ -28,9 +28,9 @@ met_tool_wrapper/TCDiag/TCDiag.conf
 # allowing diagnostics to be computed along any arbitrarily defined track.)
 #
 # Novel aspects of this use case:
-# * This is the first example use case to run the tc_diag tool.
-# * Example of running for a single tropical cyclone forecast case from
-#   Tropical Storm Bret (2023) using GFS data.
+#    * This is the first example use case to run the tc_diag tool.
+#    * Example of running for a single tropical cyclone forecast case from
+#      Tropical Storm Bret (2023) using GFS data.
 
 ##############################################################################
 # Scientific Objective
