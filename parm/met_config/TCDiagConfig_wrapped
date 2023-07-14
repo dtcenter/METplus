@@ -182,7 +182,7 @@ tmp_dir = "${MET_TMP_DIR}";
 //output_prefix =
 ${METPLUS_OUTPUT_PREFIX}
 
-//version       = "V11.0.0";
+//version       = "V11.1.0";
 
 ////////////////////////////////////////////////////////////////////////////////
 
