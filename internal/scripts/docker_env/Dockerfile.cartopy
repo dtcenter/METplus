@@ -27,3 +27,8 @@ RUN apt update && apt -y upgrade \
   && rm -f cartopy_feature_download.py \
   && curl https://raw.githubusercontent.com/SciTools/cartopy/master/tools/cartopy_feature_download.py > cartopy_feature_download.py \
   && /usr/local/conda/envs/${ENV_NAME}.${METPLUS_ENV_VERSION}/bin/python3 cartopy_feature_download.py cultural physical
+
+# remove base environment to free up space
+ARG METPLUS_ENV_VERSION
+ARG BASE_ENV=metplus_base
+RUN conda env remove -y --name ${BASE_ENV}.${METPLUS_ENV_VERSION}
