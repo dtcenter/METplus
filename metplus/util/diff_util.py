@@ -456,11 +456,17 @@ def _compare_csv_columns(lines_a, lines_b):
 def _is_equal_rounded(value_a, value_b):
     if value_a == value_b:
         return True
+    if not _is_number(value_a) or not _is_number(value_b):
+        return False
     if _truncate_float(value_a) == _truncate_float(value_b):
         return True
     if _round_float(value_a) == _round_float(value_b):
         return True
     return False
+
+
+def _is_number(value):
+    return value.replace('.','1').replace('-', '1').isdigit()
 
 
 def _truncate_float(value):
