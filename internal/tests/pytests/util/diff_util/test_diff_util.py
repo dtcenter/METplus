@@ -4,7 +4,7 @@ import os
 import shutil
 import uuid
 
-from metplus.util.diff_util import dirs_are_equal
+from metplus.util.diff_util import dirs_are_equal, ROUNDING_OVERRIDES
 from metplus.util import mkdir_p
 
 test_output_dir = os.path.join(os.environ['METPLUS_TEST_OUTPUT_BASE'],
@@ -88,8 +88,82 @@ def test_diff_stat_header_columns():
     filename = 'filename.stat'
     a_content = [stat_header, mpr_line_1]
     b_content = [f'{stat_header} NEW_COLUMN', mpr_line_1]
-    a_files = {filename: [a_content]}
-    b_files = {filename: [b_content]}
+    a_files = {filename: a_content}
+    b_files = {filename: b_content}
     a_dir, b_dir = create_diff_files(a_files, b_files)
     assert not dirs_are_equal(a_dir, b_dir)
+    shutil.rmtree(os.path.dirname(a_dir))
+
+
+@pytest.mark.util
+def test_diff_stat_number_of_lines():
+    filename = 'filename.stat'
+    a_content = [stat_header, mpr_line_1]
+    b_content = [stat_header, mpr_line_1, mpr_line_2]
+    a_files = {filename: a_content}
+    b_files = {filename: b_content}
+    a_dir, b_dir = create_diff_files(a_files, b_files)
+    assert not dirs_are_equal(a_dir, b_dir)
+    shutil.rmtree(os.path.dirname(a_dir))
+
+
+@pytest.mark.util
+def test_diff_stat_number_of_columns():
+    filename = 'filename.stat'
+    a_content = [stat_header, mpr_line_1]
+    b_content = [stat_header, f'{mpr_line_1} extra_value']
+    a_files = {filename: a_content}
+    b_files = {filename: b_content}
+    a_dir, b_dir = create_diff_files(a_files, b_files)
+    assert not dirs_are_equal(a_dir, b_dir)
+    shutil.rmtree(os.path.dirname(a_dir))
+
+
+@pytest.mark.util
+def test_diff_stat_string():
+    filename = 'filename.stat'
+    a_content = [stat_header, mpr_line_1]
+    b_content = [stat_header, mpr_line_1.replace('L0', 'Z0')]
+    a_files = {filename: a_content}
+    b_files = {filename: b_content}
+    a_dir, b_dir = create_diff_files(a_files, b_files)
+    assert not dirs_are_equal(a_dir, b_dir)
+    shutil.rmtree(os.path.dirname(a_dir))
+
+
+@pytest.mark.util
+def test_diff_stat_float_default_precision():
+    filename = 'filename.stat'
+    a_content = [stat_header, mpr_line_1]
+    b_content = [stat_header, mpr_line_1.replace('39.78616', '39.78615')]
+    a_files = {filename: a_content}
+    b_files = {filename: b_content}
+    a_dir, b_dir = create_diff_files(a_files, b_files)
+    assert not dirs_are_equal(a_dir, b_dir)
+    shutil.rmtree(os.path.dirname(a_dir))
+
+
+@pytest.mark.util
+def test_diff_stat_float_override_precision():
+    filename = 'filename.stat'
+    ROUNDING_OVERRIDES[filename] = 4
+    a_content = [stat_header, mpr_line_1]
+    b_content = [stat_header, mpr_line_1.replace('39.78616', '39.78615')]
+    a_files = {filename: a_content}
+    b_files = {filename: b_content}
+    a_dir, b_dir = create_diff_files(a_files, b_files)
+    assert dirs_are_equal(a_dir, b_dir)
+    shutil.rmtree(os.path.dirname(a_dir))
+
+
+@pytest.mark.util
+def test_diff_stat_out_of_order():
+    filename = 'filename.stat'
+    ROUNDING_OVERRIDES[filename] = 4
+    a_content = [stat_header, mpr_line_1, mpr_line_2]
+    b_content = [stat_header, mpr_line_2, mpr_line_1]
+    a_files = {filename: a_content}
+    b_files = {filename: b_content}
+    a_dir, b_dir = create_diff_files(a_files, b_files)
+    assert dirs_are_equal(a_dir, b_dir)
     shutil.rmtree(os.path.dirname(a_dir))
