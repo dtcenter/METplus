@@ -27,7 +27,6 @@ met_tool_wrapper/TCDiag/TCDiag.conf
 # a future version of the tc_diag tool will include removal of the model's vortex,
 # allowing diagnostics to be computed along any arbitrarily defined track.)
 #
-
 # Novel aspects of this use case:
 #
 # This is the first example use case to run the tc_diag tool.
