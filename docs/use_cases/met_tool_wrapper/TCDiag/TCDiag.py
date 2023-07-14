@@ -79,8 +79,8 @@ met_tool_wrapper/TCDiag/TCDiag.conf
 # TCDiag is the only tool called in this example. It processes the following
 # run times:
 #
-# **Init:** 2016-09-29 0000Z
-# **Forecast lead:** 141, 144, and 147 hour
+# **Init:** 2023-06-20 0000Z
+# **Forecast lead:** 0, 6, and 12 hours
 #
 
 ##############################################################################
@@ -133,8 +133,8 @@ met_tool_wrapper/TCDiag/TCDiag.conf
 # Output for this use case will be found in met_tool_wrapper/TCDiag (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
-# * tc_diag_AL142016_fv3_2016092900_cyl_grid_nest.nc
-# * tc_diag_AL142016_fv3_2016092900_cyl_grid_parent.nc
+# * tc_diag_AL032023_GFSO_2023062012_cyl_grid_nest.nc
+# * tc_diag_AL032023_GFSO_2023062012_cyl_grid_parent.nc
 #
 
 ##############################################################################
