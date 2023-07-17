@@ -707,7 +707,7 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
          {'METPLUS_DISTANCE_MAP_DICT': ('distance_map = {baddeley_p = 1;'
                                         'baddeley_max_dist = 2.3;'
                                         'fom_alpha = 4.5;zhu_weight = 0.5;'
-                                        'beta_value(n) = n * n / 3.0;}')}),
+                                        'beta_value(n) = n * n / 3.0;}x')}),
         ({'GRID_STAT_FOURIER_WAVE_1D_BEG': '0,4,10', },
          {'METPLUS_FOURIER_DICT': 'fourier = {wave_1d_beg = [0, 4, 10];}'}),
 
