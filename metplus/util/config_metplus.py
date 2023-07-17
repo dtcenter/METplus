@@ -462,6 +462,12 @@ class METplusConfig(ProdConfig):
         # add section to hold environment variables defined by the user
         self.add_section('user_env_vars')
 
+    def __del__(self):
+        handlers = self.logger.handlers[:]
+        for handler in handlers:
+            self.logger.removeHandler(handler)
+            handler.close()
+
     def log(self, sublog=None):
         """! Overrides method in ProdConfig
         If the sublog argument is
