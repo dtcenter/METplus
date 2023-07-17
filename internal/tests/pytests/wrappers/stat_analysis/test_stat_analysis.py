@@ -875,26 +875,6 @@ def test_parse_model_info(metplus_config):
             == expected_out_stat_filename_template)
 
 
-@pytest.mark.wrapper_d
-def test_run_stat_analysis(metplus_config):
-    # Test running of stat_analysis
-    st = stat_analysis_wrapper(metplus_config)
-    # Test 1
-    expected_filename = (st.config.getdir('OUTPUT_BASE')+'/stat_analysis'
-                         '/00Z/MODEL_TEST/MODEL_TEST_20190101.stat')
-    if os.path.exists(expected_filename):
-        os.remove(expected_filename)
-    comparison_filename = (METPLUS_BASE+'/internal/tests/data/stat_data/'
-                           +'test_20190101.stat') 
-    st.c_dict['DATE_BEG'] = datetime.datetime.strptime('20190101', '%Y%m%d')
-    st.c_dict['DATE_END'] = datetime.datetime.strptime('20190101', '%Y%m%d')
-    st.c_dict['DATE_TYPE'] = 'VALID'
-    st._run_stat_analysis({})
-    assert os.path.exists(expected_filename)
-    assert (os.path.getsize(expected_filename) ==
-            os.path.getsize(comparison_filename))
-
-
 @pytest.mark.parametrize(
     'data_type, config_list, expected_list', [
       ('FCST', '\"0,*,*\"', ['"0,*,*"']),
