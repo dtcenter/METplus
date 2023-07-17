@@ -59,14 +59,6 @@ if [[ "$INPUT_CATEGORIES" == pytests* ]]; then
   command="export METPLUS_PYTEST_HOST=docker;"
   command+="/usr/local/conda/envs/${METPLUS_ENV_TAG}/bin/pytest internal/tests/pytests -vv --cov=metplus --cov-append --cov-report=term-missing;"
   command+="if [ \$? != 0 ]; then echo ERROR: Some pytests failed. Search for FAILED to review; false; fi"
-  #command+="status=0;"
-  #for x in `cat $PYTESTS_GROUPS_FILEPATH`; do
-  #  marker="${x//_or_/ or }"
-  #  marker="${marker//not_/not }"
-  #  command+="/usr/local/conda/envs/${METPLUS_ENV_TAG}/bin/pytest internal/tests/pytests -vv --cov=metplus --cov-append -m \"$marker\""
-  #  command+=";if [ \$? != 0 ]; then status=1; fi;"
-  #done
-  #command+="if [ \$status != 0 ]; then echo ERROR: Some pytests failed. Search for FAILED to review; false; fi"
   time_command docker run -v $WS_PATH:$GITHUB_WORKSPACE --workdir $GITHUB_WORKSPACE $RUN_TAG bash -c "$command"
   exit $?
 fi
