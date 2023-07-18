@@ -367,14 +367,25 @@ def compare_images(image_a, image_b):
     nx, ny = image_diff.size
     for x in range(0, int(nx)):
         for y in range(0, int(ny)):
-            pixel = image_diff.getpixel((x, y))
-            if pixel != 0 and pixel != (0, 0, 0, 0) and pixel != (0, 0, 0):
-                print(f"Difference pixel: {pixel}")
+            diff_pixel = image_diff.getpixel((x, y))
+            if not _is_zero_pixel(diff_pixel):
+                print(f"Difference pixel: {diff_pixel}")
                 diff_count += 1
     if diff_count:
         print(f"ERROR: Found {diff_count} differences between images")
         return image_diff
     return None
+
+
+def _is_zero_pixel(pixel):
+    """!Check if difference pixel is 0, which means no differences.
+
+    @param pixel pixel value or tuple if multi-layer image
+    @returns True if all values are 0 or False if any value is non-zero
+    """
+    if isinstance(pixel, tuple):
+        return all(val == 0 for val in pixel)
+    return pixel == 0
 
 
 def save_diff_file(image_diff, filepath_b):
