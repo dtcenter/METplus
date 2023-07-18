@@ -765,6 +765,7 @@ def test_grid_stat_single_field(metplus_config, config_overrides,
                    if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
     env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
 
+    assert len(all_cmds) == len(expected_cmds)
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
         assert cmd == expected_cmd

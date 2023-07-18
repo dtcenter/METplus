@@ -901,6 +901,7 @@ def test_get_output_dir(metplus_config, template, storm_id, label, expected_resu
 
 @pytest.mark.wrapper_a
 def test_get_netcdf_min_max(metplus_config):
+    pytest.skip('Rewrite this test to write a NetCDF file and check vals instead of using file in met install dir')
     expected_min = 0.0
     expected_max = 8.0
 

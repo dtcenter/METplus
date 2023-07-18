@@ -9,20 +9,67 @@ directory.
 Unit Tests
 ----------
 
-Unit tests are run with pytest. They are found in the *pytests* directory.
+Unit tests are run with pytest.
+They are found in the *internal/tests/pytests* directory under the *wrappers*
+and *util* directories.
 Each tool has its own subdirectory containing its test files.
 
-Unit tests can be run by running the 'pytest' command from the
-internal/tests/pytests directory of the repository.
-The 'pytest' Python package must be available.
-A report will be output showing which pytest categories failed.
-When running on a new computer, a **minimum_pytest.<HOST>.sh**
-file must be created to be able to run the script. This file contains
-information about the local environment so that the tests can run.
+Pytest Requirements
+^^^^^^^^^^^^^^^^^^^
 
-All unit tests must include one of the custom markers listed in the
+The following Python packages are required to run the tests.
+
+* **pytest**: Runs the tests
+* **python-dateutil**: Required to run METplus wrappers
+* **netCDF4**: Required for some METplus wrapper functionality
+* **pytest-cov** (optional): Only if generating code coverage stats
+* **pillow** (optional): Only used if running diff utility tests
+* **pdf2image** (optional): Only used if running diff utility tests
+
+Running
+^^^^^^^
+
+To run the unit tests, set the environment variable
+**METPLUS_TEST_OUTPUT_BASE** to a path where the user running has write
+permissions, nativate to the METplus directory, then call pytest::
+
+    export METPLUS_TEST_OUTPUT_BASE=/d1/personal/${USER}/pytest
+    cd METplus
+    pytest internal/tests/pytests
+
+A report will be output showing which pytest categories failed.
+To view verbose test output, add the **-vv** argument::
+
+    pytest internal/tests/pytests -vv
+
+Code Coverage
+^^^^^^^^^^^^^
+
+If the *pytest-cov* package is installed, the code coverage report can
+be generated from the tests by running::
+
+    pytest internal/tests/pytests --cov=metplus --cov-report=term-missing
+
+In addition to the pass/fail report, the code coverage information will be
+displayed including line numbers that are not covered by any test.
+
+Subsetting Tests by Directory
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A subset of the unit tests can be run by adjusting the path.
+Be sure to include the *--cov-append* argument so the results of the run
+are appended to the full code coverage results.
+To run only the GridStat unit tests::
+
+    pytest internal/tests/pytests/wrappers/grid_stat --cov=metplus --cov-report=term-missing --cov-append
+
+
+Subsetting Tests by Marker
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+Unit tests can include one of the custom markers listed in the
 internal/tests/pytests/pytest.ini file. Some examples include:
 
+    * diff
     * run_metplus
     * util
     * wrapper_a
@@ -44,47 +91,52 @@ New pytest markers should be added to the pytest.ini file with a brief
 description. If they are not added to the markers list, then a warning will
 be output when running the tests.
 
-There are many unit tests for METplus and false failures can occur if all of
-the are attempted to run at once.
 To run only tests with a given marker, run::
 
-    pytest -m <MARKER-NAME>
+    pytest internal/tests/pytests -m <MARKER-NAME>
 
 To run all tests that do not have a given marker, run::
 
-    pytest -m "not <MARKER-NAME>"
+    pytest internal/tests/pytests -m "not <MARKER-NAME>"
 
-Multiple marker groups can be run by using the 'or' keyword::
+For example, **if you are running on a system that does not have the additional
+dependencies required to run the diff utility tests**, you can run all of the
+tests except those by running::
 
-    pytest -m "<MARKER-NAME1> or <MARKER-NAME2>"
+    pytest internal/tests/pytests -m "not diff"
 
+Multiple marker groups can be run by using the *or* keyword::
 
-Use Case Tests
---------------
+    pytest internal/tests/pytests -m "<MARKER-NAME1> or <MARKER-NAME2>"
 
-Use case tests are run via a Python script called **test_use_cases.py**,
-found in the *use_cases* directory.
-Eventually the running of these tests will be automated using an external
-tool, such as GitHub Actions or Travis CI.
-The script contains a list of use cases that are found in the repository.
-For each computer that will run the use cases, a
-**metplus_test_env.<HOST>.sh** file must exist to set local configurations.
-All of the use cases can be run by executing the script
-**run_test_use_cases.sh**. The use case test script will output the results
-into a directory such as */d1/<USER>/test-use-case-b*, defined in the
-environment file.
-If */d1/<USER>/test-use-case-b* already exists, its content will be copied
-over to */d1/<USER>/test-use-case-a*. If data is found in
-the */d1/<USER>/test-use-case-b* directory  already exists, its content
-will be copied
-over to the */d1/<USER>/test-use-case-a* directory, the script will prompt
-the user to remove those files.
-Once the tests have finished running, the output found in the two
-directories can be compared to see what has changed. Suggested commands
-to run to compare the output will be shown on the screen after completion
-of the script.
+Writing Unit Tests
+^^^^^^^^^^^^^^^^^^
 
-To see which files and directories are only found in one run::
+metplus_config fixture
+""""""""""""""""""""""
 
-    diff -r /d1/mccabe/test-use-case-a /d1/mccabe/test-use-case-b | grep Only
+Many unit tests utilize a pytest fixture named **metplus_config**.
+This is defined in the **conftest.py** file in internal/tests/pytests.
+This is used to create a METplusConfig object that contains the minimum
+configurations needed to run METplus, like **OUTPUT_BASE**.
+Using this fixture in a pytest will initialize the METplusConfig object to use
+in the tests.
 
+This also creates a unique output directory for each test where
+logs and output files are written. This directory is created under
+**$METPLUS_TEST_OUTPUT_BASE**/test_output and is named with the run ID.
+If the test passes, then the output directory is automatically removed.
+If the test fails, the output directory will not be removed so the content
+can be reviewed to debug the issue.
+
+To use it, add **metplus_config** as an argument to the test function::
+
+    def test_something(metplus_config)
+
+then set a variable called **config** using the fixture name::
+
+    config = metplus_config
+
+Additional configuration variables can be set by using the set method::
+
+    config.set('config', key, value)

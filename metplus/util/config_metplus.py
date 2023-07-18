@@ -463,6 +463,7 @@ class METplusConfig(ProdConfig):
         self.add_section('user_env_vars')
 
     def __del__(self):
+        """!When object is deleted, close and remove all log handlers"""
         handlers = self.logger.handlers[:]
         for handler in handlers:
             self.logger.removeHandler(handler)
