@@ -444,8 +444,8 @@ def _compare_csv_columns(lines_a, lines_b):
     status = True
     for num, (line_a, line_b) in enumerate(zip(lines_a, lines_b), start=1):
         for key in keys_a:
-            val_a = line_a[key]
-            val_b = line_b[key]
+            val_a = line_a[key].strip()
+            val_b = line_b[key].strip()
             # prevent error if values are diffs are less than
             # rounding_precision decimal places
             # METplus issue #1873 addresses the real problem
@@ -478,7 +478,7 @@ def _is_equal_rounded(value_a, value_b):
 
 
 def _is_number(value):
-    return value.replace('.','1').replace('-', '1').isdigit()
+    return value.replace('.', '1').replace('-', '1').strip().isdigit()
 
 
 def _truncate_float(value):
