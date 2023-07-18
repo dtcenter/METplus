@@ -18,6 +18,7 @@ IMAGE_EXTENSIONS = [
 NETCDF_EXTENSIONS = [
     '.nc',
     '.cdf',
+    '.nc4',
 ]
 
 SKIP_EXTENSIONS = [
