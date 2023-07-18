@@ -20,6 +20,7 @@ csv_header = 'Last Name, First Name, Progress'
 csv_val_1 = 'Mackenzie, Stu, 0.9999'
 csv_val_2 = 'Kenny-Smith, Ambrose, 0.8977'
 
+
 def create_diff_files(files_a, files_b):
     unique_id = str(uuid.uuid4())[0:8]
     dir_a = os.path.join(test_output_dir, f'diff_{unique_id}', 'a')
@@ -135,7 +136,7 @@ def write_test_files(dirname, files):
          None, False),
     ]
 )
-@pytest.mark.util
+@pytest.mark.diff
 def test_diff_dir_text_files(a_files, b_files, rounding_override, expected_is_equal):
     if rounding_override:
         for filename in a_files:
