@@ -13,6 +13,7 @@ from numpy.core._exceptions import UFuncTypeError
 IMAGE_EXTENSIONS = [
     '.jpg',
     '.jpeg',
+    '.png',
 ]
 
 NETCDF_EXTENSIONS = [
@@ -23,7 +24,6 @@ NETCDF_EXTENSIONS = [
 
 SKIP_EXTENSIONS = [
     '.zip',
-    '.png',
     '.gif',
     '.ix',
 ]
