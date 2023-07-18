@@ -164,6 +164,7 @@ _NetCDF.conf
 #   * UserScriptUseCase
 #   * PointStatToolUseCase
 #   * ASCII2NCToolUseCase
+#   * TropicalCycloneUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

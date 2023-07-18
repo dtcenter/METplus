@@ -327,6 +327,12 @@ file.grib2, run the following command::
 
     wgrib2 file.grib2 | grep TMP | wgrib2 -i file.grib2 -grib_out subset.grib2
 
+The egrep command can be used for more complex subsetting of grib2 data.
+Example: To create a file called subset.grib2 from file.grib2 that contains
+PRMSL data and TMP data on 1000, 900, 800, 700, 500, and 100 mb levels::
+
+    wgrib2 file.grib2 -s | egrep '(:TMP:1000 mb:|:TMP:900 mb:|:TMP:800 mb:|:TMP:700 mb:|:TMP:500 mb:|:TMP:100 mb:|:PRMSL)' | wgrib2 -i file.grib2 -grib subset.grib2
+
 If the input data is in NetCDF format, the
 `ncks <http://nco.sourceforge.net/nco.html>`_ tool can be used to subset
 the file(s).

@@ -124,6 +124,7 @@ met_tool_wrapper/TCGen/TCGen.conf
 #
 #   * TCGenToolUseCase
 #   * DTCOrgUseCase
+#   * TropicalCycloneUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

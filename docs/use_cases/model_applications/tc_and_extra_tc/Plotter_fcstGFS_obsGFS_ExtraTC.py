@@ -139,6 +139,7 @@ _obsGFS_ExtraTC.conf
 #   * NOAAEMCOrgUseCase
 #   * SBUOrgUseCase
 #   * DTCOrgUseCase
+#   * TropicalCycloneUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
