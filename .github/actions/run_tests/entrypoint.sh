@@ -56,7 +56,7 @@ if [[ "$INPUT_CATEGORIES" == pytests* ]]; then
 	 .
 
   echo Running Pytests
-  command="export METPLUS_PYTEST_HOST=docker;"
+  command="export METPLUS_TEST_OUTPUT_BASE=/data/output;"
   command+="/usr/local/conda/envs/${METPLUS_ENV_TAG}/bin/pytest internal/tests/pytests -vv --cov=metplus --cov-append --cov-report=term-missing;"
   command+="if [ \$? != 0 ]; then echo ERROR: Some pytests failed. Search for FAILED to review; false; fi"
   time_command docker run -v $WS_PATH:$GITHUB_WORKSPACE --workdir $GITHUB_WORKSPACE $RUN_TAG bash -c "$command"
