@@ -36,6 +36,10 @@ permissions, nativate to the METplus directory, then call pytest::
     cd METplus
     pytest internal/tests/pytests
 
+To view verbose test output, add the **-vv** argument::
+
+    pytest internal/tests/pytests -vv
+
 Code Coverage
 ^^^^^^^^^^^^^
 
@@ -104,3 +108,34 @@ Multiple marker groups can be run by using the 'or' keyword::
 
     pytest internal/tests/pytests -m "<MARKER-NAME1> or <MARKER-NAME2>"
 
+Writing Unit Tests
+^^^^^^^^^^^^^^^^^^
+
+metplus_config fixture
+""""""""""""""""""""""
+
+Many unit tests utilize a pytest fixture named **metplus_config**.
+This is defined in the conftest.py file in internal/tests/pytests.
+This is used to create a METplusConfig object that contains the minimum
+configurations needed to run METplus, like **OUTPUT_BASE**.
+Using this fixture in a pytest will initialize the METplusConfig object to use
+in the tests.
+
+This also creates a unique output directory for each test where
+logs and output files are written. This directory is created under
+**$METPLUS_TEST_OUTPUT_BASE**/test_output and is named with the run ID.
+If the test passes, then the output directory is automatically removed.
+If the test fails, the output directory will not be removed so the content
+can be reviewed to debug the issue.
+
+To use it, add **metplus_config** as an argument to the test function::
+
+    def test_something(metplus_config)
+
+then set a variable called **config** using the fixture name::
+
+    config = metplus_config
+
+Additional configuration variables can be set by using the set method::
+
+    config.set('config', key, value)
