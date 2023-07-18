@@ -18,18 +18,18 @@ if not output_base:
     print('ERROR: METPLUS_TEST_OUTPUT_BASE must be set to a path to write')
     sys.exit(1)
 
-test_output_dir = os.path.join(output_base, 'test_output')
-if os.path.exists(test_output_dir):
-    print(f'Removing test output dir: {test_output_dir}')
-    shutil.rmtree(test_output_dir)
+try:
+    test_output_dir = os.path.join(output_base, 'test_output')
+    if os.path.exists(test_output_dir):
+        print(f'Removing test output dir: {test_output_dir}')
+        shutil.rmtree(test_output_dir)
 
-if not os.path.exists(test_output_dir):
-    print(f'Creating test output dir: {test_output_dir}')
-    try:
+    if not os.path.exists(test_output_dir):
+        print(f'Creating test output dir: {test_output_dir}')
         os.makedirs(test_output_dir)
-    except PermissionError:
-        print(f'ERROR: You cannot write to METPLUS_TEST_OUTPUT_BASE')
-        sys.exit(2)
+except PermissionError:
+    print(f'ERROR: Cannot write to $METPLUS_TEST_OUTPUT_BASE: {output_base}')
+    sys.exit(2)
 
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
