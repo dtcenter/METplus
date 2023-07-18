@@ -6,17 +6,47 @@ met_tool_wrapper/TCDiag/TCDiag.conf
 
 """
 ##############################################################################
+# Overview
+# --------------------
+#
+# This use case illustrates the use of tc_diag tool, which is currently
+# considered a beta-level release that lacks full functionality.
+# The use case illustrates running the
+# tc_diag tool for a tropical cyclone forecast case and generating
+# intermediate NetCDF output files of the input model's data transformed
+# onto an azimuth-range grid. When the full functionality of the
+# tc_diag tool is released in MET v12.0.0, this use case will be also
+# output environmental diagnostics computed from callable Python scripts.
+#
+# The diagnostics are computed on a range-azimuth grid that follows the
+# projected storm track. For inputs, it uses 0.25 deg gridded GRIB files from the
+# a retrospective reforecast of the Global Forecast System (GFS). For the track, it uses the
+# GFS's predicted track to ensure that the model's simulated storm doesn't
+# contaminate the diagnostics result as a result of the model's simulated
+# storm being mistaken for environmental factors. (Note:
+# a future version of the tc_diag tool will include removal of the model's vortex,
+# allowing diagnostics to be computed along any arbitrarily defined track.)
+#
+# Novel aspects of this use case:
+#    * This is the first example use case to run the tc_diag tool.
+#    * Example of running for a single tropical cyclone forecast case from
+#      Tropical Storm Bret (2023) using GFS data.
+
+##############################################################################
 # Scientific Objective
 # --------------------
 #
-# TODO: Add content here
+# Generate intermediate data files, in which the input model's data have been
+# transformed to a range-azimuth grid, in preparation for further diagnostic
+# calculations using Python-based routines.
 
 ##############################################################################
 # Datasets
 # --------
 #
-# **Forecast:** GFS FV3
-# **Track:** A Deck
+# **Forecast:** GFS grib files
+#
+# **Track:** a-deck file (Automated Tropical Cyclone Forecast System format)
 #
 # **Location:** All of the input data required for this use case can be found
 # in the met_test sample data tarball. Click here to the METplus releases page
@@ -26,6 +56,11 @@ met_tool_wrapper/TCDiag/TCDiag.conf
 # This tarball should be unpacked into the directory that you will set the
 # value of INPUT_BASE. See `Running METplus`_ section for more information.
 #
+# **Data source:** Users may obtain real-time data from the deterministic GFS runs from
+# NOAA's NOMADS server:
+# https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.YYYYMMDD/ZZ/atmos/
+# where YYYYMMDD is the date (4-digit year, 2-digit month, 2-digit day),
+# ZZ is the initialization hour of the desired model cycle (00, 06, 12, 18).
 
 ##############################################################################
 # METplus Components
@@ -42,8 +77,8 @@ met_tool_wrapper/TCDiag/TCDiag.conf
 # TCDiag is the only tool called in this example. It processes the following
 # run times:
 #
-# **Init:** 2016-09-29- 00Z
-# **Forecast lead:** 141, 143, and 147 hour
+# **Init:** 2023-06-20 0000Z
+# **Forecast lead:** 0, 6, and 12 hours
 #
 
 ##############################################################################
@@ -67,7 +102,7 @@ met_tool_wrapper/TCDiag/TCDiag.conf
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. note:: See the :ref:`TCDiag MET Configuration<tc-rmw-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# .. note:: See the :ref:`TCDiag MET Configuration<tc-diag-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/met_config/TCDiagConfig_wrapped
@@ -96,7 +131,8 @@ met_tool_wrapper/TCDiag/TCDiag.conf
 # Output for this use case will be found in met_tool_wrapper/TCDiag (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
-# * tc_diag_aal142016.nc
+# * tc_diag_AL032023_GFSO_2023062012_cyl_grid_nest.nc
+# * tc_diag_AL032023_GFSO_2023062012_cyl_grid_parent.nc
 #
 
 ##############################################################################
@@ -105,8 +141,10 @@ met_tool_wrapper/TCDiag/TCDiag.conf
 #
 # .. note::
 #
+#   * DiagnosticsUseCase
 #   * TCDiagToolUseCase
 #   * GRIB2FileUseCase
+#   * TropicalCycloneUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

@@ -120,6 +120,7 @@ met_tool_wrapper/TCStat/TCStat.conf
 # .. note::
 #
 #   * TCStatToolUseCase
+#   * TropicalCycloneUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

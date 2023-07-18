@@ -8,8 +8,6 @@ WS_PATH=$RUNNER_WORKSPACE/$REPO_NAME
 # set CI jobs directory variable to easily move it
 CI_JOBS_DIR=.github/jobs
 
-PYTESTS_GROUPS_FILEPATH=.github/parm/pytest_groups.txt
-
 source ${GITHUB_WORKSPACE}/${CI_JOBS_DIR}/bash_functions.sh
 
 # get branch name for push or pull request events
@@ -34,7 +32,7 @@ fi
 
 # running unit tests (pytests)
 if [[ "$INPUT_CATEGORIES" == pytests* ]]; then
-  export METPLUS_ENV_TAG="pytest.v5.1"
+  export METPLUS_ENV_TAG="test.v5.1"
   export METPLUS_IMG_TAG=${branch_name}
   echo METPLUS_ENV_TAG=${METPLUS_ENV_TAG}
   echo METPLUS_IMG_TAG=${METPLUS_IMG_TAG}
@@ -56,15 +54,9 @@ if [[ "$INPUT_CATEGORIES" == pytests* ]]; then
 	 .
 
   echo Running Pytests
-  command="export METPLUS_PYTEST_HOST=docker; cd internal/tests/pytests;"
-  command+="status=0;"
-  for x in `cat $PYTESTS_GROUPS_FILEPATH`; do
-    marker="${x//_or_/ or }"
-    marker="${marker//not_/not }"
-    command+="/usr/local/conda/envs/${METPLUS_ENV_TAG}/bin/pytest -vv --cov=../../../metplus --cov-append -m \"$marker\""
-    command+=";if [ \$? != 0 ]; then status=1; fi;"
-  done
-  command+="if [ \$status != 0 ]; then echo ERROR: Some pytests failed. Search for FAILED to review; false; fi"
+  command="export METPLUS_TEST_OUTPUT_BASE=/data/output;"
+  command+="/usr/local/conda/envs/${METPLUS_ENV_TAG}/bin/pytest internal/tests/pytests -vv --cov=metplus --cov-append --cov-report=term-missing;"
+  command+="if [ \$? != 0 ]; then echo ERROR: Some pytests failed. Search for FAILED to review; false; fi"
   time_command docker run -v $WS_PATH:$GITHUB_WORKSPACE --workdir $GITHUB_WORKSPACE $RUN_TAG bash -c "$command"
   exit $?
 fi

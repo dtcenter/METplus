@@ -85,7 +85,12 @@ class TCMPRPlotterWrapper(CommandBuilder):
 
         # check that R script can be found
         if not os.path.exists(c_dict['TCMPR_SCRIPT']):
-            self.log_error('plot_tcmpr.R script could not be found')
+            self.logger.error('plot_tcmpr.R script could not be found')
+
+            # if running script, set isOK to False
+            # this allows tests to run without needing MET_INSTALL_DIR
+            if not c_dict.get('DO_NOT_RUN_EXE', False):
+                self.isOK = False
 
         # get input data
         c_dict['INPUT_DATA'] = (

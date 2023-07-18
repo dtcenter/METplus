@@ -9,7 +9,7 @@ from metplus.wrappers.tc_diag_wrapper import TCDiagWrapper
 
 deck_template = 'aal14{date?fmt=%Y}_short.dat'
 input_template = 'gfs.subset.t00z.pgrb2.0p25.f*'
-output_template = 'tc_diag_aal14{date?fmt=%Y}.nc'
+output_template = '{date?fmt=%Y}'
 
 time_fmt = '%Y%m%d%H'
 run_times = ['2016092900']
@@ -23,6 +23,9 @@ data_fmt = (
     '{ name="TMP"; level="P500"; },'
     '{ name="TMP"; level="P100"; }];'
 )
+
+input_domain = 'parent'
+input_tech_id_list = 'GFSO'
 
 
 def get_data_dir(config):
@@ -46,9 +49,11 @@ def set_minimum_config_settings(config):
     config.set('config', 'TC_DIAG_CONFIG_FILE',
                '{PARM_BASE}/met_config/TCDiagConfig_wrapped')
     config.set('config', 'TC_DIAG_DECK_TEMPLATE', deck_template)
-    config.set('config', 'TC_DIAG_INPUT_TEMPLATE', input_template)
+    config.set('config', 'TC_DIAG_INPUT1_TEMPLATE', input_template)
+    config.set('config', 'TC_DIAG_INPUT1_DOMAIN', input_domain)
+    config.set('config', 'TC_DIAG_INPUT1_TECH_ID_LIST', input_tech_id_list)
     config.set('config', 'TC_DIAG_OUTPUT_DIR',
-               '{OUTPUT_BASE}/TCDiag/output')
+               '{OUTPUT_BASE}/tc_diag')
     config.set('config', 'TC_DIAG_OUTPUT_TEMPLATE', output_template)
 
     config.set('config', 'BOTH_VAR1_NAME', 'PRMSL')
@@ -231,13 +236,11 @@ def test_tc_diag_run(metplus_config, config_overrides,
     config_file = wrapper.c_dict.get('CONFIG_FILE')
     out_dir = wrapper.c_dict.get('OUTPUT_DIR')
 
-    expected_cmds = [(f"{app_path} "
-                      f"-deck {deck_dir}/aal142016_short.dat "
-                      f"-data {file_list_file} "
-                      f"-config {config_file} "
-                      f"-out {out_dir}/tc_diag_aal142016.nc "
-                      f"{verbosity}"),
-                     ]
+    expected_cmds = [
+        (f"{app_path} -deck {deck_dir}/aal142016_short.dat "
+         f"-data {input_domain} {input_tech_id_list} {file_list_file} "
+         f"-config {config_file} -outdir {out_dir}/2016/ {verbosity}"),
+    ]
 
     all_cmds = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_cmds}")

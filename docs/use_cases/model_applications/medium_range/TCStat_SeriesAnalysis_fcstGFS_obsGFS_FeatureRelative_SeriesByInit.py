@@ -252,6 +252,7 @@ _SeriesByInit.conf
 #   * SBUOrgUseCase
 #   * DiagnosticsUseCase
 #   * RuntimeFreqUseCase
+#   * TropicalCycloneUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

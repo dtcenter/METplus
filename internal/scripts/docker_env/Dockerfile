@@ -19,3 +19,8 @@ ARG METPLUS_ENV_VERSION
 ARG ENV_NAME
 RUN conda list --name ${ENV_NAME}.${METPLUS_ENV_VERSION} > \
     /usr/local/conda/envs/${ENV_NAME}.${METPLUS_ENV_VERSION}/environments.yml
+
+# remove base environment to free up space
+ARG METPLUS_ENV_VERSION
+ARG BASE_ENV=metplus_base
+RUN conda env remove -y --name ${BASE_ENV}.${METPLUS_ENV_VERSION}

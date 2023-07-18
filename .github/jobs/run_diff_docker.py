@@ -24,6 +24,7 @@ TRUTH_DIR = '/data/truth'
 OUTPUT_DIR = '/data/output'
 DIFF_DIR = '/data/diff'
 
+
 def copy_diff_output(diff_files):
     """!  Loop through difference output and copy files
     to directory so it can be made available for comparison.
@@ -44,6 +45,7 @@ def copy_diff_output(diff_files):
         if diff_file:
             copy_to_diff_dir(diff_file,
                              'diff')
+
 
 def copy_to_diff_dir(file_path, data_type):
     """! Generate output path based on input file path,
@@ -85,6 +87,7 @@ def copy_to_diff_dir(file_path, data_type):
 
     return True
 
+
 def main():
     print('******************************')
     print("Comparing output to truth data")
@@ -96,6 +99,7 @@ def main():
     # so it can be easily downloaded and compared
     if diff_files:
         copy_diff_output(diff_files)
+
 
 if __name__ == '__main__':
     main()
