@@ -22,8 +22,9 @@ The following Python packages are required to run the tests.
 * **pytest**: Runs the tests
 * **python-dateutil**: Required to run METplus wrappers
 * **netCDF4**: Required for some METplus wrapper functionality
-* **pillow**: Only used if running diff utility tests
-* **pdf2image**: Only used if running diff utility tests
+* **pytest-cov** (optional): Only if generating code coverage stats
+* **pillow** (optional): Only used if running diff utility tests
+* **pdf2image** (optional): Only used if running diff utility tests
 
 Running
 ^^^^^^^
@@ -36,6 +37,7 @@ permissions, nativate to the METplus directory, then call pytest::
     cd METplus
     pytest internal/tests/pytests
 
+A report will be output showing which pytest categories failed.
 To view verbose test output, add the **-vv** argument::
 
     pytest internal/tests/pytests -vv
@@ -43,12 +45,13 @@ To view verbose test output, add the **-vv** argument::
 Code Coverage
 ^^^^^^^^^^^^^
 
-If the *pytest-cov* Python package is installed, the code coverage report can
+If the *pytest-cov* package is installed, the code coverage report can
 be generated from the tests by running::
 
     pytest internal/tests/pytests --cov=metplus --cov-report=term-missing
 
-A report will be output showing which pytest categories failed.
+In addition to the pass/fail report, the code coverage information will be
+displayed including line numbers that are not covered by any test.
 
 Subsetting Tests by Directory
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -88,8 +91,6 @@ New pytest markers should be added to the pytest.ini file with a brief
 description. If they are not added to the markers list, then a warning will
 be output when running the tests.
 
-There are many unit tests for METplus and false failures can occur if all of
-the are attempted to run at once.
 To run only tests with a given marker, run::
 
     pytest internal/tests/pytests -m <MARKER-NAME>
@@ -98,13 +99,13 @@ To run all tests that do not have a given marker, run::
 
     pytest internal/tests/pytests -m "not <MARKER-NAME>"
 
-For example, if you are running on a system that does not have the additional
-dependencies required to run the diff utility tests, you can run all of the
+For example, **if you are running on a system that does not have the additional
+dependencies required to run the diff utility tests**, you can run all of the
 tests except those by running::
 
     pytest internal/tests/pytests -m "not diff"
 
-Multiple marker groups can be run by using the 'or' keyword::
+Multiple marker groups can be run by using the *or* keyword::
 
     pytest internal/tests/pytests -m "<MARKER-NAME1> or <MARKER-NAME2>"
 
@@ -115,7 +116,7 @@ metplus_config fixture
 """"""""""""""""""""""
 
 Many unit tests utilize a pytest fixture named **metplus_config**.
-This is defined in the conftest.py file in internal/tests/pytests.
+This is defined in the **conftest.py** file in internal/tests/pytests.
 This is used to create a METplusConfig object that contains the minimum
 configurations needed to run METplus, like **OUTPUT_BASE**.
 Using this fixture in a pytest will initialize the METplusConfig object to use
