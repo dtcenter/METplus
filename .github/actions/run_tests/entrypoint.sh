@@ -8,8 +8,6 @@ WS_PATH=$RUNNER_WORKSPACE/$REPO_NAME
 # set CI jobs directory variable to easily move it
 CI_JOBS_DIR=.github/jobs
 
-PYTESTS_GROUPS_FILEPATH=.github/parm/pytest_groups.txt
-
 source ${GITHUB_WORKSPACE}/${CI_JOBS_DIR}/bash_functions.sh
 
 # get branch name for push or pull request events
