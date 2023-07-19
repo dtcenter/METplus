@@ -5,6 +5,7 @@ import os
 import netCDF4
 import filecmp
 import csv
+from numbers import Number
 from PIL import Image, ImageChops
 from pandas import isnull
 from numpy.ma import is_masked
@@ -99,7 +100,7 @@ def get_file_type(filepath):
         return 'pdf'
 
     if file_extension in UNSUPPORTED_EXTENSIONS:
-        return f'unsupported{file_extension}'
+        return f'unsupported {file_extension}'
 
     return 'unknown'
 
@@ -483,6 +484,8 @@ def _is_equal_rounded(value_a, value_b):
 
 
 def _is_number(value):
+    if isinstance(value, Number):
+        return True
     return value.replace('.', '1').replace('-', '1').strip().isdigit()
 
 
