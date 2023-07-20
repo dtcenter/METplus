@@ -470,7 +470,7 @@ Create/Update METplus Docker Image
           env:
             DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
             DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-            #MET_FORCE_TAG: 10.0.0
+            #SET_MET_IMAGE: met:10.0.0
 
 This job calls the **docker_setup.sh** script.
 This script builds a METplus Docker image and pushes it to DockerHub.
@@ -496,14 +496,32 @@ development testing. If testing is done on a stable release, then the
 corresponding MET stable release will be used. However, there may be an
 instance where a change in MET breaks something in another METplus component,
 i.e. METplotpy or METviewer, until a corresponding change is made to that
-component. If this occurs then some of the METplus use cases may break. To
-allow the tests to run successfully in the meantime, an option was added to
-force the version of the MET tag that is used to build the METplus Docker image
-that is used for testing. In the **testing.yml** workflow file,
-there is a commented variable called
-MET_FORCE_TAG that can be uncommented and set to force the version of MET to
-use. This variable is found in the **get_image** job under the **env** section
+component. If this occurs then some of the METplus use cases may break.
+
+Another situation that may require a different MET Docker image is if there
+are changes in a MET feature or bugfix branch that are needed to test changes
+in METplus.
+
+To allow the tests to run successfully in these cases, an option was added to
+force a specific MET Docker image to be used to build the METplus Docker image
+that is used for testing.
+
+In the **testing.yml** workflow file, there is a commented variable called
+SET_MET_IMAGE that can be uncommented and set the MET Docker image to use.
+This variable is found in the **get_image** job under the **env** section
 for the step named "Get METplus Image."
+
+The format of the value is <REPO>:<TAG>
+where the DockerHub repo used is dtcenter/<REPO> and the tag used is <TAG>.
+
+Stable releases of MET are found in the dtcenter/met DockerHub repo and
+are named using the X.Y.Z version of the release,
+so setting **SET_MET_IMAGE=met:11.1.0** will use dtcenter/met:11.1.0.
+
+Development versions of MET are found in the dtcenter/met-dev DockerHub
+repo and are named using the branch name,
+so setting **SET_MET_IMAGE=met-dev:feature_XYZ_info** will use
+dtcenter/met-dev:feature_XYZ_info.
 
 
 .. _cg-ci-update-data-volumes:
