@@ -165,6 +165,7 @@ UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
 #   * ValidationUseCase
 #   * ShortRangeAppUseCase
 #   * S2SAppUseCase
+#   * METplotpyUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar
 #   use cases.

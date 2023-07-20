@@ -140,6 +140,8 @@ UserScript_fcstS2S_obsERAI_CrossSpectra.py
 #
 #   * UserScriptUseCase
 #   * S2SAppUseCase
+#   * METcalcpyUseCase
+#   * METplotpyUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
