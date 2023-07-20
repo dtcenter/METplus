@@ -44,9 +44,12 @@ elif [ "${EXTERNAL_TRIGGER}" == "true" ]; then
 fi
 
 # if MET_FORCE_TAG variable is set and not empty, use that version instead
+# format is <REPO>:<TAG> where the repo used is dtcenter/<REPO> and
+# the tag used is <TAG>, e.g. met:11.1.0 uses dtcenter/met:11.1.0
 if [ ! -z "$MET_FORCE_TAG" ]; then
-    MET_TAG=$MET_FORCE_TAG
-    MET_DOCKER_REPO=met
+    force_info=(${MET_FORCE_TAG//:/ })
+    MET_DOCKER_REPO=${force_info[0]}
+    MET_TAG=${force_info[1]}
 fi
 
 echo Using MET_DOCKER_REPO=$MET_DOCKER_REPO
