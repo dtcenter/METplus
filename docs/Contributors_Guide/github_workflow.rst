@@ -482,6 +482,7 @@ Create a feature branch
 
   .. code-block:: ini
 
+    git fetch upstream develop
     git checkout develop
 
 * Verify the current development branch is active by running:

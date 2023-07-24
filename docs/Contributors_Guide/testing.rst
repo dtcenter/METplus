@@ -37,12 +37,6 @@ permissions, navigate to the METplus directory, then call pytest::
     cd METplus
     pytest internal/tests/pytests
 
-Some of the tests use your default location for writing temporary files,
-typically `/tmp`. If you do not have write permissions this may cause an
-error. To override this behaviour you can specify the default directory::
-
-    pytest --basetemp=${METPLUS_TEST_OUTPUT_BASE}/tmp internal/tests/pytests
-
 A report will be output showing which pytest categories failed.
 To view verbose test output, add the **-vv** argument::
 
