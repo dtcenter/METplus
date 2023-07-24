@@ -212,7 +212,8 @@ model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
 #
 #   * TCGenToolUseCase 
 #   * S2SAppUseCase
-#   * UserScriptUseCase 
+#   * UserScriptUseCase
+#   * METplotpyUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

@@ -135,6 +135,8 @@ UserScript_fcstGFS_obsERA_OMI.py
 #   * S2SMJOAppUseCase
 #   * RegridDataPlaneUseCase
 #   * PCPCombineUseCase
+#   * METcalcpyUseCase
+#   * METplotpyUseCase
 #
 #   Navigate to :ref:`quick-search` to discover other similar use cases.
 #

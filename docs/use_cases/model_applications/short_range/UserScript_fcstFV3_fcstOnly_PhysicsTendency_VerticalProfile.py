@@ -167,6 +167,7 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 #   * ValidationUseCase
 #   * ShortRangeAppUseCase
 #   * S2SAppUseCase
+#   * METplotpyUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

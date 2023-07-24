@@ -686,27 +686,139 @@ on DockerHub in *dtcenter/metplus-envs* and are named with a tag that
 corresponds to the keyword without the **_env** suffix.
 The environments were created using Docker commands via scripts that are found
 in *internal/scripts/docker_env*.
-Existing keywords that set up Conda environments used for use cases are:
+Existing keywords that set up Conda environments used for use cases,
+with the versions of Python packages they contain are:
 
-* cfgrib_env
-* h5py_env
-* icecover_env
-* metdatadb_env
-* metplotpy_env
-* netcdf4_env
-* pygrib_env
-* spacetime_env
-* weatherregime_env
-* xesmf_env
+**py_embed_base_env**
+
+* Python 3.10.4
+* xarray 2022.3.0
+* netcdf4 1.5.8
+
+Note: Adding the py_embed_base_env keyword is not necessary if the *py_embed*
+keyword is used (see Other Keywords). A Python Embedding use case that only
+requires the minimum packages needed to run Python Embedding can use the
+version of Python that MET was installed with.
+The list of packages is only included here for reference, as other
+environments use this environment as a base.
+
+**cfgrib_env**
+
+* Python 3.10.4
+* metpy 1.4.0
+* netcdf4 1.5.8
+* cfgrib 0.9.10.1
+* pygrib 2.1.4
+
+**cycloneplotter_env**
+
+* Python 3.10.4
+* cartopy 0.20.3
+* matplotlib 3.5.2
+* pandas 1.4.3
+
+**geovista_env**
+
+* geovista
+* xarray 2022.11.0
+* iris 3.3.1
+
+**h5py_env**
+
+* All packages in py_embed_base_env
+* h5py 3.6.0
+
+**icecover_env**
+
+* All packages in py_embed_base_env
+* xarray 2022.3.0
+* pyresample 1.24.1
+* scikit-learn 1.1.1
+* pyproj 3.3.1
+
+**metdataio_env**
+
+* Python 3.10.4
+* lxml 4.9.1
+* pymysql 1.0.2
+* pandas 1.5.1
+
+**metplotpy_env**
+
+* Python 3.10.4
+* matplotlib 3.6.3
+* scipy 1.9.3
+* plotly 5.13.0
+* xarray 2023.1.0
+* netcdf4 1.6.2
+* pyyaml 6.0
+* python-kaleido 0.2.1
+* imageio 2.25.0
+* imutils 0.5.4
+* scikit-image
+* pint 0.20.1
+* metpy
+* cartopy 0.21.1
+
+**netcdf4_env**
+
+* Python 3.10.4
+* netcdf4 1.5.8
+
+**pandac_env**
+
+* All packages in metplotpy_env
+* pygrib 2.1.4
+
+**pygrib_env**
+
+* All packages in py_embed_base_env
+* pygrib 2.1.4
+* metpy 1.3.0
+
+**spacetime_env**
+
+* Python 3.10.4
+* netCDF4 1.5.8
+* xarray 2022.3.0
+* scipy 1.8.1
+* matplotlib 3.5.2
+* pyngl 1.6.1
+* pyyaml 6.0
+
+**swpc_metpy_env**
+
+* All packages in py_embed_base_env
+* metpy 1.4
+
+**weatherregime_env**
+
+* All packages in py_embed_base_env
+* scikit-learn 1.1.1
+* eofs 1.4.0
+* cmocean 2.0
+
+**xesmf_env**
+
+* Python 3.10.4
+* netcdf4 1.5.8
+* xarray 2022.3.0
+* xesmf 0.3.0
+
 
 Example::
 
     spacetime_env
 
 The above example uses the Conda environment
-in *dtcenter/metplus-envs*:**spacetime** to run a user script.
+in *dtcenter/metplus-envs*:**spacetime**.vX.Y to run a user script
+where X.Y is the version of METplus when the environment was lasted updated,
+e.g. 5.1.
 Note that only one dependency that contains the **_env** suffix can be supplied
 to a given use case.
+
+If a new use case requires packages that are not included in these environments,
+create a new discussion on the METplus Discussions board.
 
 Other Environments
 """"""""""""""""""
