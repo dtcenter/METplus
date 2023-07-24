@@ -1048,7 +1048,7 @@ version**, then simply remove the tarfile link::
 
 **OR**
 
-**CONDITION 3: IF the sample data tarfile for the category does not exist
+**CONDITION 3: IF the sample data tarfile for the category does not exist**
 (because it is a new use case category), continue to the next step.
 
 Remove old data (if applicable)
