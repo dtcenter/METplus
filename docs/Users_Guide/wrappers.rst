@@ -6181,7 +6181,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`OBS_WINDOW_END`
      - obs_window.end
 
-**${METPLUS_MASK_GRID}**
+**${METPLUS_MASK_DICT}**
 
 .. list-table::
    :widths: 5 5
@@ -6191,40 +6191,12 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`POINT_STAT_MASK_GRID`
      - mask.grid
-
-**${METPLUS_MASK_POLY}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
    * - :term:`POINT_STAT_MASK_POLY`
      - mask.poly
-
-**${METPLUS_MASK_SID}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
    * - :term:`POINT_STAT_MASK_SID`
      - mask.sid
-
-**${METPLUS_MASK_LLPNT}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
    * - :term:`POINT_STAT_MASK_LLPNT`
      - mask.llpnt
-
 
 **${METPLUS_OUTPUT_PREFIX}**
 

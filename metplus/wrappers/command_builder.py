@@ -1553,12 +1553,13 @@ class CommandBuilder:
                            [f'{app_upper}_TIME_SUMMARY_VALID_THRESH']),
         })
 
-    def handle_mask(self, single_value=False, get_flags=False):
+    def handle_mask(self, single_value=False, get_flags=False, get_point=False):
         """! Read mask dictionary values and set them into env_var_list
 
             @param single_value if True, only a single value for grid and poly
             are allowed. If False, they should be treated as as list
             @param get_flags if True, read grid_flag and poly_flag values
+            @param get_point if True, read sid and llpnt values
         """
         data_type = 'string' if single_value else 'list'
         app_upper = self.app_name.upper()
@@ -1573,6 +1574,10 @@ class CommandBuilder:
         if get_flags:
             items['grid_flag'] = ('string', 'remove_quotes,uppercase')
             items['poly_flag'] = ('string', 'remove_quotes,uppercase')
+
+        if get_point:
+            items['sid'] = 'list'
+            items['llpnt'] = ('list', 'remove_quotes')
 
         self.add_met_config_dict('mask', items)
 

@@ -113,13 +113,8 @@ ${METPLUS_OBS_WINDOW_DICT}
 //
 // Verification masking regions
 //
-mask = {
-   ${METPLUS_MASK_GRID}
-   ${METPLUS_MASK_POLY}
-   ${METPLUS_MASK_SID}
-   //llpnt =
-   ${METPLUS_MASK_LLPNT}
-}
+//mask = {
+${METPLUS_MASK_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
