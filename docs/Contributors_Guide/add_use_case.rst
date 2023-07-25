@@ -630,7 +630,7 @@ Add volume_mount_directories file
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Copy the volume_mount_directories file from the develop directory into the
-branch directory.
+branch directory::
 
     cp ${METPLUS_DATA_TARFILE_DIR}/develop/volume_mount_directories ${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
 
