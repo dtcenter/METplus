@@ -67,7 +67,7 @@ met_tool_wrapper/TCDiag/TCDiag.conf
 # ------------------
 #
 # This use case utilizes the METplus TCDiag wrapper to search for
-# the desired ADECK file and forecast files that are correspond to the track.
+# the desired ADECK file and forecast files that correspond to the track.
 # It generates a command to run tc_diag if all required files are found.
 
 ##############################################################################
