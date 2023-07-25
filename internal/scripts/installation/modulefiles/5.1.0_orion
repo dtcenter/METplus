@@ -1,0 +1,25 @@
+#%Module######################################################################
+##
+##      METplus
+##
+proc ModulesHelp { } {
+  puts stderr "Sets up the paths and environment variables to use the METplus-5.1.0
+     *** For help see the official MET webpage at http://www.dtcenter.org/met/users ***"
+}
+#%Module######################################################################
+##
+##      METplus
+##
+proc ModulesHelp { } {
+  puts stderr "Sets up the paths and environment variables to use the METplus-5.1.0
+     *** For help see the official MET webpage at http://www.dtcenter.org/met/users ***"
+}
+
+module load contrib
+module load intel/2020.2
+module load met/11.1.0
+module load nco/4.8.1
+module load wgrib/2.0.8
+prepend-path PATH /work/noaa/ovp/miniconda/miniconda3/envs/metplus_v5.1_py3.10/bin
+setenv METPLUS_PATH /apps/contrib/MET/METplus/METplus-5.1.0
+prepend-path PATH /apps/contrib/MET/METplus/METplus-5.1.0/ush
