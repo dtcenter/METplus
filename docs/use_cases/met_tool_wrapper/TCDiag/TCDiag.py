@@ -15,7 +15,7 @@ met_tool_wrapper/TCDiag/TCDiag.conf
 # tc_diag tool for a tropical cyclone forecast case and generating
 # intermediate NetCDF output files of the input model's data transformed
 # onto an azimuth-range grid. When the full functionality of the
-# tc_diag tool is released in MET v12.0.0, this use case will be also
+# tc_diag tool is released in MET v12.0.0, this use case will also
 # output environmental diagnostics computed from callable Python scripts.
 #
 # The diagnostics are computed on a range-azimuth grid that follows the
