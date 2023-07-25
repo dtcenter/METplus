@@ -630,13 +630,18 @@ Add volume_mount_directories file
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Copy the volume_mount_directories file from the develop directory into the
-branch directory. Update the entry for the new tarball if the mounting point
-has changed (unlikely) or add a new entry if adding a new sample data
-tarfile. The format of this file generally follows
-<category>:model_applications/<category>, i.e.
-climate:model_applications/climate::
+branch directory::
 
     cp ${METPLUS_DATA_TARFILE_DIR}/develop/volume_mount_directories ${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
+
+**IF YOU ARE ADDING A NEW USE CASE TO AN EXISTING CATEGORY, SKIP TO THE NEXT STEP.**
+
+If you are adding a new use case category, add a new entry to the volume mount
+directories file for the new category.
+Add the new entry in alphabetical order so it is easier for others to review.
+The format of this file follows
+**<category>**:model_applications/**<category>**, e.g.
+**climate**:model_applications/**climate**.
 
 Log out of DTC Web Server
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -983,7 +988,11 @@ copy the feature file into the upcoming METplus version directory and the develo
 Copy data from the feature directory into the next version directory
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Copy files
+""""""""""
+
 **Make sure the paths are correct before copying.**
+Paths may need to be adjusted.
 
 **ONLY RUN THE COMMAND THAT IS APPROPRIATE TO THE USE CASE. READ CAREFULLY!**
 
@@ -1013,6 +1022,9 @@ After verifying the directories are correct, copy the files::
 
     cp -r $from_directory $to_directory/
 
+Handle existing tarfile in vX.Y
+"""""""""""""""""""""""""""""""
+
 List the tarfile for the use case category in the next release version directory::
 
     cd ${METPLUS_DATA_TARFILE_DIR}/v${METPLUS_VERSION}
@@ -1033,14 +1045,21 @@ another METplus
 version**, then simply remove the tarfile link::
 
     unlink sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz
-    
-Remove old data (if applicable).
+
+**OR**
+
+**CONDITION 3: IF the sample data tarfile for the category does not exist**
+(because it is a new use case category), continue to the next step.
+
+Remove old data (if applicable)
+"""""""""""""""""""""""""""""""
 
 If the pull request notes mention an old directory path that should be removed,
 please remove that directory. Be careful not to remove any files that are
 still needed.
 
-Create the new sample data tarfile.
+Create the new sample data tarfile
+""""""""""""""""""""""""""""""""""
 
 **ONLY RUN THE COMMAND THAT IS APPROPRIATE TO THE USE CASE. READ CAREFULLY!**
 
