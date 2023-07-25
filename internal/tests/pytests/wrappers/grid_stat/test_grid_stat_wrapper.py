@@ -14,9 +14,10 @@ fcst_level = 'A03'
 obs_name = 'APCP_03'
 obs_level_no_quotes = '(*,*)'
 obs_level = f'"{obs_level_no_quotes}"'
-fcst_fmt = f'field = [{{ name="{fcst_name}"; level="{fcst_level}"; }}];'
+both_thresh = ' lt-0.5,gt-0.5 && lt0.5,gt0.5 '
+fcst_fmt = f'field = [{{ name="{fcst_name}"; level="{fcst_level}"; cat_thresh=[{both_thresh}]; }}];'
 obs_fmt = (f'field = [{{ name="{obs_name}"; '
-           f'level="{obs_level_no_quotes}"; }}];')
+           f'level="{obs_level_no_quotes}"; cat_thresh=[{both_thresh}]; }}];')
 time_fmt = '%Y%m%d%H'
 run_times = ['2005080700', '2005080712']
 
@@ -52,6 +53,7 @@ def set_minimum_config_settings(config):
     config.set('config', 'FCST_VAR1_LEVELS', fcst_level)
     config.set('config', 'OBS_VAR1_NAME', obs_name)
     config.set('config', 'OBS_VAR1_LEVELS', obs_level)
+    config.set('config', 'BOTH_VAR1_THRESH', both_thresh)
 
 
 @pytest.mark.parametrize(
@@ -193,14 +195,29 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
           },
          {'METPLUS_REGRID_DICT': 'regrid = {shape = SQUARE;}'}),
 
+        ({'GRID_STAT_REGRID_CONVERT': '2*x', },
+         {'METPLUS_REGRID_DICT': 'regrid = {convert(x) = 2*x;}'}),
+
+        ({'GRID_STAT_REGRID_CENSOR_THRESH': '>12000,<5000', },
+         {'METPLUS_REGRID_DICT': 'regrid = {censor_thresh = [>12000, <5000];}'}),
+
+        ({'GRID_STAT_REGRID_CENSOR_VAL': '12000,5000', },
+         {'METPLUS_REGRID_DICT': 'regrid = {censor_val = [12000, 5000];}'}),
+
         ({'GRID_STAT_REGRID_TO_GRID': 'FCST',
           'GRID_STAT_REGRID_METHOD': 'NEAREST',
           'GRID_STAT_REGRID_WIDTH': '1',
           'GRID_STAT_REGRID_VLD_THRESH': '0.5',
           'GRID_STAT_REGRID_SHAPE': 'SQUARE',
+          'GRID_STAT_REGRID_CONVERT': '2*x',
+          'GRID_STAT_REGRID_CENSOR_THRESH': '>12000,<5000',
+          'GRID_STAT_REGRID_CENSOR_VAL': '12000,5000',
           },
          {'METPLUS_REGRID_DICT': ('regrid = {to_grid = FCST;method = NEAREST;'
-                                  'width = 1;vld_thresh = 0.5;shape = SQUARE;}'
+                                  'width = 1;vld_thresh = 0.5;shape = SQUARE;'
+                                  'convert(x) = 2*x;'
+                                  'censor_thresh = [>12000, <5000];'
+                                  'censor_val = [12000, 5000];}'
                                   ),
           'REGRID_TO_GRID': 'FCST'}),
 
@@ -736,6 +753,7 @@ def test_grid_stat_single_field(metplus_config, config_overrides,
                      ]
 
     all_cmds = wrapper.run_all_times()
+    assert len(all_cmds) == len(expected_cmds)
     print(f"ALL COMMANDS: {all_cmds}")
 
     missing_env = [item for item in env_var_values

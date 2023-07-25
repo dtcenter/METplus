@@ -2,7 +2,7 @@
 name: Bug report
 about: Fix something that's not working
 title: 'Bugfix: '
-labels: 'alert: NEED ACCOUNT KEY, alert: NEED MORE DEFINITION, alert: NEED PROJECT ASSIGNMENT, type: bug'
+labels: 'alert: NEED ACCOUNT KEY, alert: NEED MORE DEFINITION, alert: NEED CYCLE ASSIGNMENT, type: bug'
 assignees: ''
 
 ---
@@ -49,7 +49,7 @@ Describe the steps to reproduce the behavior:
 
 ### Projects and Milestone ###
 - [ ] Select **Organization** level **Project** for support of the current coordinated release
-- [ ] Select **Repository** level **Project** for development toward the next official release or add **alert: NEED PROJECT ASSIGNMENT** label
+- [ ] Select **Repository** level **Project** for development toward the next official release or add **alert: NEED CYCLE ASSIGNMENT** label
 - [ ] Select **Milestone** as the next bugfix version
 
 ## Define Related Issue(s) ##

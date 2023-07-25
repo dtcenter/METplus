@@ -771,11 +771,8 @@ is equivalent to setting::
   [config]
   LEAD_SEQ = 0, 3, 6, 9, 12
 
-Grouping forecast leads is possible as well using a special version of
-the :term:`LEAD_SEQ` variable for the
-**SeriesByLead Wrapper Only**.
-If :term:`SERIES_BY_LEAD_GROUP_FCSTS` = True, then groups of
-forecast leads can be defined to be evaluated together.
+Groups of forecast leads can be defined to be evaluated together.
+**This applies to the SeriesAnalysis wrapper only**.
 Any number of these groups can be defined by setting
 configuration variables LEAD_SEQ_1, LEAD_SEQ_2, ..., :term:`LEAD_SEQ_\<n\>`.
 The value can be defined with a

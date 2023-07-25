@@ -995,7 +995,7 @@ METplus Configuration Glossary
      | *Used by:*  GridStat
 
    POINT2GRID_REGRID_TO_GRID
-     Used to set the regrid dictionary item 'to_grid' in the MET Point2Grid config file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Used to set the grid definition for point2grid.
 
      | *Used by:*  Point2Grid
 
@@ -2330,7 +2330,7 @@ METplus Configuration Glossary
      | *Used by:*  SeriesAnalysis
 
    LEAD_SEQ_<n>_LABEL
-     Required when SERIES_BY_LEAD_GROUP_FCSTS=True. Specify the label of the corresponding bin of series by lead results.
+     Required if :term:`LEAD_SEQ_\<n>` is set. Specify the label of the nth forecast lead group .
 
      | *Used by:*  SeriesAnalysis
 
@@ -3742,7 +3742,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`LEAD_SEQ_\<n>` and :term:`SERIES_ANALYSIS_RUNTIME_FREQ` instead.
 
    SERIES_BY_LEAD_GROUP_FCSTS
-     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_GROUP_FCSTS` instead.
+     .. warning:: **DEPRECATED:** Please use :term:`LEAD_SEQ_\<n>` and :term:`SERIES_ANALYSIS_RUNTIME_FREQ` instead.
 
    SERIES_CI
      .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_SERIES_CI` instead.
@@ -10243,3 +10243,138 @@ METplus Configuration Glossary
      Specify the value for 'seeps_p1_thresh' in the MET configuration file for PointStat.
 
      | *Used by:* PointStat
+
+   ENSEMBLE_STAT_REGRID_CONVERT
+     Specify the value for 'regrid.convert' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_REGRID_CENSOR_THRESH
+     Specify the value for 'regrid.censor_thresh' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_REGRID_CENSOR_VAL
+     Specify the value for 'regrid.censor_val' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   GEN_ENS_PROD_REGRID_CONVERT
+     Specify the value for 'regrid.convert' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_REGRID_CENSOR_THRESH
+     Specify the value for 'regrid.censor_thresh' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_REGRID_CENSOR_VAL
+     Specify the value for 'regrid.censor_val' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GRID_DIAG_REGRID_CONVERT
+     Specify the value for 'regrid.convert' in the MET configuration file for GridDiag.
+
+     | *Used by:* GridDiag
+
+   GRID_DIAG_REGRID_CENSOR_THRESH
+     Specify the value for 'regrid.censor_thresh' in the MET configuration file for GridDiag.
+
+     | *Used by:* GridDiag
+
+   GRID_DIAG_REGRID_CENSOR_VAL
+     Specify the value for 'regrid.censor_val' in the MET configuration file for GridDiag.
+
+     | *Used by:* GridDiag
+
+   GRID_STAT_REGRID_CONVERT
+     Specify the value for 'regrid.convert' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_REGRID_CENSOR_THRESH
+     Specify the value for 'regrid.censor_thresh' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_REGRID_CENSOR_VAL
+     Specify the value for 'regrid.censor_val' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   MODE_REGRID_CONVERT
+     Specify the value for 'regrid.convert' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_REGRID_CENSOR_THRESH
+     Specify the value for 'regrid.censor_thresh' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_REGRID_CENSOR_VAL
+     Specify the value for 'regrid.censor_val' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MTD_REGRID_CONVERT
+     Specify the value for 'regrid.convert' in the MET configuration file for MTD.
+
+     | *Used by:* MTD
+
+   MTD_REGRID_CENSOR_THRESH
+     Specify the value for 'regrid.censor_thresh' in the MET configuration file for MTD.
+
+     | *Used by:* MTD
+
+   MTD_REGRID_CENSOR_VAL
+     Specify the value for 'regrid.censor_val' in the MET configuration file for MTD.
+
+     | *Used by:* MTD
+
+   POINT_STAT_REGRID_CONVERT
+     Specify the value for 'regrid.convert' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_REGRID_CENSOR_THRESH
+     Specify the value for 'regrid.censor_thresh' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_REGRID_CENSOR_VAL
+     Specify the value for 'regrid.censor_val' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   SERIES_ANALYSIS_REGRID_CONVERT
+     Specify the value for 'regrid.convert' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_REGRID_CENSOR_THRESH
+     Specify the value for 'regrid.censor_thresh' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_REGRID_CENSOR_VAL
+     Specify the value for 'regrid.censor_val' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   TC_RMW_REGRID_CONVERT
+     Specify the value for 'regrid.convert' in the MET configuration file for TCRMW.
+
+     | *Used by:* TCRMW
+
+   TC_RMW_REGRID_CENSOR_THRESH
+     Specify the value for 'regrid.censor_thresh' in the MET configuration file for TCRMW.
+
+     | *Used by:* TCRMW
+
+   TC_RMW_REGRID_CENSOR_VAL
+     Specify the value for 'regrid.censor_val' in the MET configuration file for TCRMW.
+
+     | *Used by:* TCRMW
