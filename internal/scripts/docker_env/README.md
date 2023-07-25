@@ -426,9 +426,9 @@ export METPLUS_ENV_VERSION=v5.1
 
 
 
-## pytest.v5.1 (from metplus_base.v5.1)
+## test.v5.1 (from metplus_base.v5.1)
 
-This environment is used in automation to run the pytests. It requires all of the
+This environment is used in automation to run the pytests and diff tests. It requires all of the
 packages needed to run all of the METplus wrappers, the pytest package and the pytest
 code coverage package.
 
@@ -436,10 +436,10 @@ code coverage package.
 
 ```
 export METPLUS_ENV_VERSION=v5.1
-docker build -t dtcenter/metplus-envs:pytest.${METPLUS_ENV_VERSION} \
+docker build -t dtcenter/metplus-envs:test.${METPLUS_ENV_VERSION} \
     --build-arg METPLUS_ENV_VERSION \
-    --build-arg ENV_NAME=pytest .
-docker push dtcenter/metplus-envs:pytest.${METPLUS_ENV_VERSION}
+    --build-arg ENV_NAME=test .
+docker push dtcenter/metplus-envs:test.${METPLUS_ENV_VERSION}
 ```
 
 

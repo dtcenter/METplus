@@ -4055,7 +4055,7 @@ METplus Configuration
 | :term:`FCST_MODE_IS_PROB`
 | :term:`FCST_MODE_PROB_IN_GRIB_PDS`
 | :term:`MODE_MULTIVAR_LOGIC`
-| :term:`MODE_MULTIVAR_INTENSITY`
+| :term:`MODE_MULTIVAR_INTENSITY_FLAG`
 | :term:`FCST_MODE_VAR<n>_NAME`
 | :term:`FCST_MODE_VAR<n>_LEVELS`
 | :term:`FCST_MODE_VAR<n>_THRESH`
@@ -4189,7 +4189,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`MODE_MULTIVAR_LOGIC`
      - multivar_logic
 
-**${METPLUS_MULTIVAR_INTENSITY}**
+**${METPLUS_MULTIVAR_INTENSITY_FLAG}**
 
 .. list-table::
    :widths: 5 5
@@ -4197,8 +4197,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`MODE_MULTIVAR_INTENSITY`
-     - multivar_intensity
+   * - :term:`MODE_MULTIVAR_INTENSITY_FLAG`
+     - multivar_intensity_flag
 
 **${METPLUS_FCST_FIELD}**
 
@@ -7692,7 +7692,7 @@ TCDiag
 Description
 -----------
 
-Used to configure the MET tool TC-Diag.
+The TC-Diag wrapper encapsulates the behavior of the MET `tc_diag <https://met.readthedocs.io/en/develop/Users_Guide/tc-diag.html>`_ tool. It provides the infrastructure to compute diagnostics from model fields and tracks. It can be configured to run over a single intialization time, all of the initialization times for a given storm, or over many storms. Configuration also allows a user to select which domain(s) of the input model data to use in the diagnostics calculations, set which levels and variables will be used as well as details about the azimuth-range grid used for the calculations, and to control which output files are generated. Future functionality of the tc_diag tool, such as vortex removal, will also be configurable from this wrapper.
 
 METplus Configuration
 ---------------------

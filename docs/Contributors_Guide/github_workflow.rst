@@ -482,6 +482,7 @@ Create a feature branch
 
   .. code-block:: ini
 
+    git fetch upstream develop
     git checkout develop
 
 * Verify the current development branch is active by running:
@@ -674,70 +675,75 @@ Open a pull request
   then merge the files into the repository's develop branch.
   The develop branch will be used to create a future METplus release.
 
-* In the browser, navigate to https://github.com/<your-github-user>/METplus
-  replacing
-  <your-github-user> with the user's GitHub username and no angle brackets <>.
+* If working from a fork, navigate to
+  https://github.com/<github-user>/METplus where *<github-user>* is
+  the user's GitHub username. If working from a branch in the dtcenter
+  organization, navigate to https://github.com/dtcenter/METplus
 
-* Click on the green 'Compare & pull request' button.
+* Click the 'Pull Requests' tab and click the green "New pull request" button.
 
-  * A web page with four grey buttons should appear:
+* If working from a fork, a web page with four grey buttons should appear:
 
-    * On the left-most button (for setting the base repository),
-      make sure the
-      'base repository:dtcenter/METplus' is selected.
+  * On the left-most button (for setting the base repository),
+    make sure the 'base repository:dtcenter/METplus' is selected.
 
-    * For the base button, make sure to select 'base:develop'.
+  * For the base button, make sure to select 'base:develop'.
 
-    * For the head repository button, make sure to select
-      'head repository:<your-github-user>/METplus'
-      with the appropriate replacement for
-      <your-github-user>.
+  * For the head repository button, make sure to select
+    'head repository:<your-github-user>/METplus'
+    with the appropriate replacement for
+    <your-github-user>.
 
-    * For the compare button, make sure to select
-      'compare:<your_feature_branch>'
-      where <your_feature_branch> corresponds to the feature branch
-      where the changes have been made (e.g. feature_777_wrapper_xyz).
+  * For the compare button, make sure to select
+    'compare:<your_feature_branch>'
+    where <your_feature_branch> corresponds to the feature branch
+    where the changes have been made (e.g. feature_777_wrapper_xyz).
 
-    * In the 'write' window, follow the directions and fill in the template.
-      Add any additional comments/details.  When filling in the template,
-      be sure to "Define the PR metadata, as permissions allow.
-      Select: **Reviewer(s), Project(s)**, and **Milestone**". When selecting a
-      reviewer, internal contributors submitting pull requests should select
-      the appropriate reviewer(s) and let the reviewer know that the pull
-      request has been assigned to them. If external contributors are unsure
-      who to assign as a reviewer, create a post in the
-      `METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_
-      asking for help with the assignment of a reviewer.
+* If working from a branch in the dtcenter organization, there should be
+  two grey buttons.
+
+  * For the **base** button, select *develop*.
+  * For the **compare** button, select the feature or bugfix branch.
+
+* In the 'write' window, follow the directions and fill in the template.
+  Add any additional comments/details.  When filling in the template,
+  be sure to "Define the PR metadata, as permissions allow.
+  Select: **Reviewer(s), Project(s)**, and **Milestone**". When selecting a
+  reviewer, internal contributors submitting pull requests should select
+  the appropriate reviewer(s) and let the reviewer know that the pull
+  request has been assigned to them. If external contributors are unsure
+  who to assign as a reviewer, create a post in the
+  `METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_
+  asking for help with the assignment of a reviewer.
       
-    * When everything looks satisfactory, click on the green 'Create pull
-      request' button.
+* When everything looks satisfactory, click on the green 'Create pull
+  request' button.
 
-    * Before a pull request is created, a "Project" can be selected, but there
-      is no option to select a cycle.
+* Before a pull request is created, a "Project" can be selected, but there
+  is no option to select a cycle.
 
-      .. figure:: figure/1PR-before-created.png
+  .. figure:: figure/1PR-before-created.png
 
-      After the pull request is created, more options appear under the
-      "Project" section.
+  After the pull request is created, more options appear under the "Project" section.
 
-      .. figure:: figure/2PR-after-created.png
+  .. figure:: figure/2PR-after-created.png
 
-      Click the "Status" drop down and select "Review".
+  Click the "Status" drop down and select "Review".
 
-      .. figure:: figure/3PR-set-status.png
+  .. figure:: figure/3PR-set-status.png
 
-      Click on "+1 more" then under "Cycle", click "Choose an iteration" and
-      select the current development cycle.
+  Click on "+1 more" then under "Cycle", click "Choose an iteration" and
+  select the current development cycle.
 
-      .. figure:: figure/4PR-plus-one-set-cycle.png
+  .. figure:: figure/4PR-plus-one-set-cycle.png
 
-      To link the issue that correspondes to the pull request, click on the
-      gear next to "Development," type the issue number, then select the issue
-      that is displayed.
+  To link the issue that corresponds to the pull request, click on the
+  gear next to "Development," type the issue number, then select the issue
+  that is displayed.
 
-    * An authorized METplus developer will accept the pull request (if
-      everything meets acceptance criteria) and merge the code into the remote
-      repository's develop branch.
+* An authorized METplus developer will accept the pull request (if
+  everything meets acceptance criteria) and merge the code into the remote
+  repository's develop branch.
 
 Approve a pull request using a browser
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -755,8 +761,8 @@ sub-tasks to be complete, then it may be best to wait to create a pull request
 until the other sub-tasks are also complete.
 
 
-Creating a pull request
-^^^^^^^^^^^^^^^^^^^^^^^
+Reviewing a pull request
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 1.  Click on the “Pull requests” tab in the GitHub repository and
     click on the assigned pull request.

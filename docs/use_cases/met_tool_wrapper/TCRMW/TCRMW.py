@@ -122,6 +122,7 @@ met_tool_wrapper/TCRMW/TCRMW.conf
 #
 #   * TCRMWToolUseCase
 #   * GRIB2FileUseCase
+#   * TropicalCycloneUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

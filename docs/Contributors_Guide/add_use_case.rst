@@ -44,6 +44,7 @@ one of the following:
 
 * air_quality_and_comp
 * climate
+* clouds
 * data_assimilation
 * extremes
 * land_surface
@@ -325,6 +326,12 @@ Example: To create a file called subset.grib2 that only contains TMP data from
 file.grib2, run the following command::
 
     wgrib2 file.grib2 | grep TMP | wgrib2 -i file.grib2 -grib_out subset.grib2
+
+The egrep command can be used for more complex subsetting of grib2 data.
+Example: To create a file called subset.grib2 from file.grib2 that contains
+PRMSL data and TMP data on 1000, 900, 800, 700, 500, and 100 mb levels::
+
+    wgrib2 file.grib2 -s | egrep '(:TMP:1000 mb:|:TMP:900 mb:|:TMP:800 mb:|:TMP:700 mb:|:TMP:500 mb:|:TMP:100 mb:|:PRMSL)' | wgrib2 -i file.grib2 -grib subset.grib2
 
 If the input data is in NetCDF format, the
 `ncks <http://nco.sourceforge.net/nco.html>`_ tool can be used to subset
@@ -623,13 +630,18 @@ Add volume_mount_directories file
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Copy the volume_mount_directories file from the develop directory into the
-branch directory. Update the entry for the new tarball if the mounting point
-has changed (unlikely) or add a new entry if adding a new sample data
-tarfile. The format of this file generally follows
-<category>:model_applications/<category>, i.e.
-climate:model_applications/climate::
+branch directory::
 
     cp ${METPLUS_DATA_TARFILE_DIR}/develop/volume_mount_directories ${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
+
+**IF YOU ARE ADDING A NEW USE CASE TO AN EXISTING CATEGORY, SKIP TO THE NEXT STEP.**
+
+If you are adding a new use case category, add a new entry to the volume mount
+directories file for the new category.
+Add the new entry in alphabetical order so it is easier for others to review.
+The format of this file follows
+**<category>**:model_applications/**<category>**, e.g.
+**climate**:model_applications/**climate**.
 
 Log out of DTC Web Server
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -835,6 +847,43 @@ new job for the new use case. See the :ref:`cg-ci-subset_category` section
 and the multiple medium_range jobs for an example.
 
 
+Overriding configuration for automated tests
+--------------------------------------------
+
+The automated tests have limited resources available to run the use cases.
+Use cases can be adjusted to reduce file size, run time length,
+memory usage, etc. but may still exceed the limits provided by GitHub Actions.
+We also want to avoid losing scientific significance of a use case to allow
+it to run in the automated testing environment.
+
+An additional METplus configuration file can be provided with a use case to
+override certain configuration settings for the automated testing of the case.
+This allows the use case configuration file to contain a useful example that
+can be run on other environments while still allowing a subset of the use case
+to be included in the automated use case tests.
+
+If needed, create a file named **ci_overrides.conf** in the use case directory,
+e.g. parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac/ci_overrides.conf.
+This configuration file will automatically be read **after** the use case
+configuration file when run in the automated testing environment.
+
+For example, if a use case processes many thresholds::
+
+    [config]
+    ...
+    FCST_VAR1_THRESH = gt0, lt10.0, ge10.0, ge20.0, ge30.0, ge40.0, ge50.0, ge60.0, ge70.0, ge80.0, ge90.0
+    ...
+    OBS_VAR1_THRESH = gt0, lt10.0, ge10.0, ge20.0, ge30.0, ge40.0, ge50.0, ge60.0, ge70.0, ge80.0, ge90.0
+    ...
+
+then one can override these variables so that fewer threshold values are
+processed in the automated tests. In **ci_overrides.conf**, set::
+
+    [config]
+    FCST_VAR1_THRESH = gt0, lt10.0
+    OBS_VAR1_THRESH = gt0, lt10.0
+
+
 .. _exceeded-Github-Actions:
 
 Use Cases That Exceed Memory Allocations of Github Actions
@@ -853,7 +902,7 @@ steps were unsuccessful in lowering memory usage, please take the following step
   Change the number in front of the new use case to an 'X', preceded 
   by the ‘#’ character::
 
-	#X::GridStat_fcstRTOFS_obsGHRSST_climWOA_sst::model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf, model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst/ci_overrides.conf:: icecover_env, py_embed
+	#X::GridStat_fcstRTOFS_obsGHRSST_climWOA_sst::model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf:: icecover_env, py_embed
 
 - In the *.github/parm/use_case_groups.json* file, remove the entry that 
   was added during the :ref:`add_new_category_to_test_runs` 
@@ -939,7 +988,11 @@ copy the feature file into the upcoming METplus version directory and the develo
 Copy data from the feature directory into the next version directory
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Copy files
+""""""""""
+
 **Make sure the paths are correct before copying.**
+Paths may need to be adjusted.
 
 **ONLY RUN THE COMMAND THAT IS APPROPRIATE TO THE USE CASE. READ CAREFULLY!**
 
@@ -969,6 +1022,9 @@ After verifying the directories are correct, copy the files::
 
     cp -r $from_directory $to_directory/
 
+Handle existing tarfile in vX.Y
+"""""""""""""""""""""""""""""""
+
 List the tarfile for the use case category in the next release version directory::
 
     cd ${METPLUS_DATA_TARFILE_DIR}/v${METPLUS_VERSION}
@@ -989,14 +1045,21 @@ another METplus
 version**, then simply remove the tarfile link::
 
     unlink sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz
-    
-Remove old data (if applicable).
+
+**OR**
+
+**CONDITION 3: IF the sample data tarfile for the category does not exist**
+(because it is a new use case category), continue to the next step.
+
+Remove old data (if applicable)
+"""""""""""""""""""""""""""""""
 
 If the pull request notes mention an old directory path that should be removed,
 please remove that directory. Be careful not to remove any files that are
 still needed.
 
-Create the new sample data tarfile.
+Create the new sample data tarfile
+""""""""""""""""""""""""""""""""""
 
 **ONLY RUN THE COMMAND THAT IS APPROPRIATE TO THE USE CASE. READ CAREFULLY!**
 

@@ -30,16 +30,36 @@ When applicable, release notes are followed by the
 `GitHub issue <https://github.com/dtcenter/METplus/issues>`__ number which
 describes the bugfix, enhancement, or new feature.
 
-METplus Version 5.1.0-rc1 Release Notes (2023-06-07)
-----------------------------------------------------
+METplus Version 5.1.0 Release Notes (2023-07-21)
+------------------------------------------------
 
   .. dropdown:: Enhancements
 
+     * Add support for multiple interp widths
+       (`#2049 <https://github.com/dtcenter/METplus/issues/2049>`_)
+     * TCPairs - Add support for setting consensus.write_members
+       (`#2054 <https://github.com/dtcenter/METplus/issues/2054>`_)
+     * Update use cases to use new Python directory structure in MET
+       (`#2115 <https://github.com/dtcenter/METplus/issues/2115>`_)
      * Add support for new multivariate MODE settings
        (`#2197 <https://github.com/dtcenter/METplus/issues/2197>`_)
 
   .. dropdown:: Bugfix
 
+     * StatAnalysis - allow run once for each valid time
+       (`#2026 <https://github.com/dtcenter/METplus/issues/2026>`_)
+     * App specific OBS_WINDOW variables not taking precedence over generic
+       (`#2006 <https://github.com/dtcenter/METplus/issues/2006>`_)
+     * Skip-if-output-exists logic incorrectly skips files
+       (`#2096 <https://github.com/dtcenter/METplus/issues/2096>`_)
+     * PointStat -obs_valid_beg/end arguments not set properly
+       (`#2137 <https://github.com/dtcenter/METplus/issues/2137>`_)
+     * Allow setting of convert, censor_thresh, and censor_val in regrid dictionary
+       (`#2082 <https://github.com/dtcenter/METplus/issues/2082>`_)
+     * METplus run errors if no commands were run
+       (`#2098 <https://github.com/dtcenter/METplus/issues/2098>`_)
+     * TCPairs setting -diag option causes failure
+       (`#2179 <https://github.com/dtcenter/METplus/issues/2179>`_)
      * Define the order of the forecast variables numerically rather than alphabetically
        (`#2070 <https://github.com/dtcenter/METplus/issues/2070>`_)
      * Allow setting of convert, censor_thresh, and censor_val in regrid dictionary
@@ -55,90 +75,28 @@ METplus Version 5.1.0-rc1 Release Notes (2023-06-07)
      * StatAnalysis time shifting failure
        (`#2168 <https://github.com/dtcenter/METplus/issues/2168>`_)
 
- .. dropdown:: New Wrappers
+  .. dropdown:: New Wrappers
 
      * TCDiag (beta)
        (`#1626 <https://github.com/dtcenter/METplus/issues/1626>`_)
 
   .. dropdown:: New Use Cases
 
+     * Multi-Variate MODE (`#1516 <https://github.com/dtcenter/METplus/issues/1516>`_)
      * Read in Argo profile data netCDF files for use in METplus with python embedding
        (`#1977 <https://github.com/dtcenter/METplus/issues/1977>`_)
 
   .. dropdown:: Documentation
 
+     * Update the METplus Components Python Requirements Documentation
+       (`#2016 <https://github.com/dtcenter/METplus/issues/2016>`_)
+     * Enhance the Release Notes by adding dropdown menus
+       (`#2076 <https://github.com/dtcenter/METplus/issues/2076>`_)
      * Update the METplus Components Python Requirements
        (`#1978 <https://github.com/dtcenter/METplus/issues/1978>`_,
        `#2016 <https://github.com/dtcenter/METplus/issues/2016>`_)
      * Add documentation on support for releases to the Release Guide
        (`#2106 <https://github.com/dtcenter/METplus/issues/2106>`_)
-
-  .. dropdown:: Internal
-
-     * Update Contributor's Guide to use GH Action to update truth data
-       (`#2068 <https://github.com/dtcenter/METplus/issues/2068>`_)
-     * Enhance GitHub Workflow documentation
-       (`#2147 <https://github.com/dtcenter/METplus/issues/2147>`_)
-     * Update the development release guide instructions to remove references to a Coordinated release
-       (`#2159 <https://github.com/dtcenter/METplus/issues/2159>`_)
-     * Refactored code to resolve many SonarQube items
-       (`#1610 <https://github.com/dtcenter/METplus/issues/1610>`_)
-
-METplus Version 5.1.0-beta2 Release Notes (2023-04-26)
-------------------------------------------------------
-
-  .. dropdown:: Enhancements
-
-     * Update use cases to use new Python directory structure in MET
-       (`#2115 <https://github.com/dtcenter/METplus/issues/2115>`_)
-
-  .. dropdown:: Bugfix
-
-     * App specific OBS_WINDOW variables not taking precedence over generic
-       (`#2006 <https://github.com/dtcenter/METplus/issues/2006>`_)
-     * Skip-if-output-exists logic incorrectly skips files
-       (`#2096 <https://github.com/dtcenter/METplus/issues/2096>`_)
-     * PointStat -obs_valid_beg/end arguments not set properly
-       (`#2137 <https://github.com/dtcenter/METplus/issues/2137>`_)
-     * Allow setting of convert, censor_thresh, and censor_val in regrid dictionary
-       (`#2082 <https://github.com/dtcenter/METplus/issues/2082>`_)
-     * METplus run errors if no commands were run
-       (`#2098 <https://github.com/dtcenter/METplus/issues/2098>`_)
-     * TCPairs setting -diag option causes failure
-       (`#2179 <https://github.com/dtcenter/METplus/issues/2179>`_)
-
-  .. dropdown:: New Use Cases
-
-     * Multi-Variate MODE (`#1516 <https://github.com/dtcenter/METplus/issues/1516>`_)
-
-  .. dropdown:: Documentation
-
-     * Enhance the Release Notes by adding dropdown menus
-       (`#2076 <https://github.com/dtcenter/METplus/issues/2076>`_)
-
-  .. dropdown:: Internal
-
-     * Add 'LICENSE.md' to the METplus repo
-       (`#2058 <https://github.com/dtcenter/METplus/issues/2058>`_)
-
-METplus Version 5.1.0-beta1 Release Notes (2023-02-28)
-------------------------------------------------------
-
-  .. dropdown:: Enhancements
-  
-     * Add support for multiple interp widths (`#2049 <https://github.com/dtcenter/METplus/issues/2049>`_)
-     * TCPairs - Add support for setting consensus.write_members 
-       (`#2054 <https://github.com/dtcenter/METplus/issues/2054>`_)
-
-  .. dropdown:: Bugfix
-
-     * StatAnalysis - allow run once for each valid time
-       (`#2026 <https://github.com/dtcenter/METplus/issues/2026>`_)
-
-  .. dropdown:: Documentation
-  
-     * Update the METplus Components Python Requirements Documentation
-       (`#2016 <https://github.com/dtcenter/METplus/issues/2016>`_)
 
   .. dropdown:: Internal
 
@@ -152,6 +110,16 @@ METplus Version 5.1.0-beta1 Release Notes (2023-02-28)
        (`#2022 <https://github.com/dtcenter/METplus/issues/2022>`_)
      * Add 'License.txt' to the METplus repo
        (`#2058 <https://github.com/dtcenter/METplus/issues/2058>`_)
+     * Add 'LICENSE.md' to the METplus repo
+       (`#2058 <https://github.com/dtcenter/METplus/issues/2058>`_)
+     * Update Contributor's Guide to use GH Action to update truth data
+       (`#2068 <https://github.com/dtcenter/METplus/issues/2068>`_)
+     * Enhance GitHub Workflow documentation
+       (`#2147 <https://github.com/dtcenter/METplus/issues/2147>`_)
+     * Update the development release guide instructions to remove references to a Coordinated release
+       (`#2159 <https://github.com/dtcenter/METplus/issues/2159>`_)
+     * Refactored code to resolve many SonarQube items
+       (`#1610 <https://github.com/dtcenter/METplus/issues/1610>`_)
 
 
 METplus Version 5.0.0 Release Notes (2022-12-09)

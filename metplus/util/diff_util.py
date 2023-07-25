@@ -5,6 +5,7 @@ import os
 import netCDF4
 import filecmp
 import csv
+from numbers import Number
 from PIL import Image, ImageChops
 from pandas import isnull
 from numpy.ma import is_masked
@@ -13,16 +14,17 @@ from numpy.core._exceptions import UFuncTypeError
 IMAGE_EXTENSIONS = [
     '.jpg',
     '.jpeg',
+    '.png',
 ]
 
 NETCDF_EXTENSIONS = [
     '.nc',
     '.cdf',
+    '.nc4',
 ]
 
 SKIP_EXTENSIONS = [
     '.zip',
-    '.png',
     '.gif',
     '.ix',
 ]
@@ -38,9 +40,36 @@ CSV_EXTENSIONS = [
 UNSUPPORTED_EXTENSIONS = [
 ]
 
+# keywords to search and skip diff tests if found in file path
+# PBL use case can be removed after dtcenter/METplus#2246 is completed
+SKIP_KEYWORDS = [
+    'PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed',
+    'CyclonePlotter/cyclone/20150301.png',
+    'plots/obs_elbow.png',
+    'plots/fcst_elbow.png',
+    'CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC/cyclone/20201007',
+    'plots/MAKE_MAKI_timeseries',
+]
+
+
+###
+# Rounding Constants
+###
+
+# number of decimal places to use for comparing floats by default
+DEFAULT_ROUNDING_PRECISION = 6
+
+# dictionary where key is a keyword to search (e.g. use case name)
+# and the value is the rounding precision to use for files that
+# match the keyword
+ROUNDING_OVERRIDES = {
+    'UserScript_obsCFSR_obsOnly_MJO_ENSO': 5,
+    'UserScript_fcstS2S_obsERAI_CrossSpectra': 4,
+}
+
 # number of decision places to accept float differences
 # Note: Completing METplus issue #1873 could allow this to be set to 6
-ROUNDING_PRECISION = 5
+rounding_precision = DEFAULT_ROUNDING_PRECISION
 
 
 def get_file_type(filepath):
@@ -71,9 +100,15 @@ def get_file_type(filepath):
         return 'pdf'
 
     if file_extension in UNSUPPORTED_EXTENSIONS:
-        return f'unsupported{file_extension}'
+        return f'unsupported {file_extension}'
 
     return 'unknown'
+
+
+def dirs_are_equal(dir_a, dir_b, debug=False, save_diff=False):
+    if compare_dir(dir_a, dir_b, debug=debug, save_diff=save_diff):
+        return False
+    return True
 
 
 def compare_dir(dir_a, dir_b, debug=False, save_diff=False):
@@ -177,6 +212,13 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
     print(f"file_A: {filepath_a}")
     print(f"file_B: {filepath_b}\n")
 
+    for skip in SKIP_KEYWORDS:
+        if skip in filepath_a or skip in filepath_b:
+            print(f'WARNING: Skipping diff that contains keyword: {skip}')
+            return None
+
+    set_rounding_precision(filepath_a)
+
     # if file does not exist in dir_b, report difference
     if not os.path.exists(filepath_b):
         if debug:
@@ -205,19 +247,20 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
         return _handle_image_files(filepath_a, filepath_b, save_diff)
 
     # if not any of the above types, use diff to compare
-    print("Comparing text files")
-    if not filecmp.cmp(filepath_a, filepath_b):
-        # if files differ, open files and handle expected diffs
-        if not compare_txt_files(filepath_a, filepath_b, dir_a, dir_b):
-            print(f"ERROR: File differs: {filepath_b}")
-            return filepath_a, filepath_b, 'Text diff', ''
+    return _handle_text_files(filepath_a, filepath_b, dir_a, dir_b)
 
-        print("No differences in text files")
-        return True
-    else:
-        print("No differences in text files")
 
-    return True
+def set_rounding_precision(filepath):
+    global rounding_precision
+    for keyword, precision in ROUNDING_OVERRIDES.items():
+        if keyword not in filepath:
+            continue
+        print(f'Using rounding precision {precision} for {keyword}')
+        rounding_precision = precision
+        return
+
+    print(f'Using default rounding precision {DEFAULT_ROUNDING_PRECISION}')
+    rounding_precision = DEFAULT_ROUNDING_PRECISION
 
 
 def _handle_csv_files(filepath_a, filepath_b):
@@ -265,6 +308,21 @@ def _handle_image_files(filepath_a, filepath_b, save_diff):
         diff_file = ''
 
     return filepath_a, filepath_b, 'Image diff', diff_file
+
+
+def _handle_text_files(filepath_a, filepath_b, dir_a, dir_b):
+    print("Comparing text files")
+    if filecmp.cmp(filepath_a, filepath_b, shallow=False):
+        print("No differences found from filecmp.cmp")
+        return True
+
+    # if files differ, open files and handle expected diffs
+    if not compare_txt_files(filepath_a, filepath_b, dir_a, dir_b):
+        print(f"ERROR: File differs: {filepath_b}")
+        return filepath_a, filepath_b, 'Text diff', ''
+
+    print("No differences found from compare_txt_files")
+    return True
 
 
 def compare_pdf_as_images(filepath_a, filepath_b, save_diff=False):
@@ -315,14 +373,25 @@ def compare_images(image_a, image_b):
     nx, ny = image_diff.size
     for x in range(0, int(nx)):
         for y in range(0, int(ny)):
-            pixel = image_diff.getpixel((x, y))
-            if pixel != 0 and pixel != (0, 0, 0, 0) and pixel != (0, 0, 0):
-                print(f"Difference pixel: {pixel}")
+            diff_pixel = image_diff.getpixel((x, y))
+            if not _is_zero_pixel(diff_pixel):
+                print(f"Difference pixel: {diff_pixel}")
                 diff_count += 1
     if diff_count:
         print(f"ERROR: Found {diff_count} differences between images")
         return image_diff
     return None
+
+
+def _is_zero_pixel(pixel):
+    """!Check if difference pixel is 0, which means no differences.
+
+    @param pixel pixel value or tuple if multi-layer image
+    @returns True if all values are 0 or False if any value is non-zero
+    """
+    if isinstance(pixel, tuple):
+        return all(val == 0 for val in pixel)
+    return pixel == 0
 
 
 def save_diff_file(image_diff, filepath_b):
@@ -381,16 +450,16 @@ def _compare_csv_columns(lines_a, lines_b):
     status = True
     for num, (line_a, line_b) in enumerate(zip(lines_a, lines_b), start=1):
         for key in keys_a:
-            val_a = line_a[key]
-            val_b = line_b[key]
+            val_a = line_a[key].strip()
+            val_b = line_b[key].strip()
             # prevent error if values are diffs are less than
-            # ROUNDING_PRECISION decimal places
+            # rounding_precision decimal places
             # METplus issue #1873 addresses the real problem
             try:
                 if _is_equal_rounded(val_a, val_b):
                     continue
                 print(f"ERROR: Line {num} - {key} differs by "
-                      f"less than {ROUNDING_PRECISION} decimals: "
+                      f"less than {rounding_precision} decimals: "
                       f"TRUTH = {val_a}, OUTPUT = {val_b}")
                 status = False
             except ValueError:
@@ -405,6 +474,8 @@ def _compare_csv_columns(lines_a, lines_b):
 def _is_equal_rounded(value_a, value_b):
     if value_a == value_b:
         return True
+    if not _is_number(value_a) or not _is_number(value_b):
+        return False
     if _truncate_float(value_a) == _truncate_float(value_b):
         return True
     if _round_float(value_a) == _round_float(value_b):
@@ -412,13 +483,19 @@ def _is_equal_rounded(value_a, value_b):
     return False
 
 
+def _is_number(value):
+    if isinstance(value, Number):
+        return True
+    return value.replace('.', '1').replace('-', '1').strip().isdigit()
+
+
 def _truncate_float(value):
-    factor = 1 / (10 ** ROUNDING_PRECISION)
+    factor = 1 / (10 ** rounding_precision)
     return float(value) // factor * factor
 
 
 def _round_float(value):
-    return round(float(value), ROUNDING_PRECISION)
+    return round(float(value), rounding_precision)
 
 
 def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
@@ -435,10 +512,9 @@ def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
         if not len(lines_a):
             print("Both text files are empty, so they are equal")
             return True
-        else:
-            print(f"Empty file: {filepath_b}\n"
-                  f"Not empty: {filepath_a}")
-            return False
+        print(f"Empty file: {filepath_b}\n"
+              f"Not empty: {filepath_a}")
+        return False
     # filepath_b is not empty but filepath_a is empty
     elif not len(lines_a):
         print(f"Empty file: {filepath_a}\n"
@@ -462,46 +538,38 @@ def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
     is_stat_file = lines_a[0].startswith('VERSION')
 
     # if it is, save the header columns
+    header_a = None
     if is_stat_file:
-        print("Comparing stat file")
+        print("Comparing stat files")
+        # pull out header line and skip VERSION to prevent
+        # diffs from version number changes
         header_a = lines_a.pop(0).split()[1:]
-    else:
-        header_a = None
+        header_b = lines_b.pop(0).split()[1:]
+        if len(header_a) != len(header_b):
+            print('ERROR: Different number of header columns\n'
+                  f' A: {header_a}\n B: {header_b}')
+            return False
 
     if len(lines_a) != len(lines_b):
         print(f"ERROR: Different number of lines in {filepath_b}")
         print(f" File_A: {len(lines_a)}\n File_B: {len(lines_b)}")
         return False
 
-    all_good = diff_text_lines(lines_a,
-                               lines_b,
-                               dir_a=dir_a,
-                               dir_b=dir_b,
-                               print_error=False,
-                               is_file_list=is_file_list,
-                               is_stat_file=is_stat_file,
-                               header_a=header_a)
+    if diff_text_lines(lines_a, lines_b, dir_a=dir_a, dir_b=dir_b,
+                       print_error=False, is_file_list=is_file_list,
+                       is_stat_file=is_stat_file, header_a=header_a):
+        return True
 
     # if differences found in text file, sort and try again
-    if not all_good:
-        lines_a.sort()
-        lines_b.sort()
-        all_good = diff_text_lines(lines_a,
-                                   lines_b,
-                                   dir_a=dir_a,
-                                   dir_b=dir_b,
-                                   print_error=True,
-                                   is_file_list=is_file_list,
-                                   is_stat_file=is_stat_file,
-                                   header_a=header_a)
-
-    return all_good
+    lines_a.sort()
+    lines_b.sort()
+    return diff_text_lines(lines_a, lines_b, dir_a=dir_a, dir_b=dir_b,
+                           print_error=True, is_file_list=is_file_list,
+                           is_stat_file=is_stat_file, header_a=header_a)
 
 
-def diff_text_lines(lines_a, lines_b,
-                    dir_a=None, dir_b=None,
-                    print_error=False,
-                    is_file_list=False, is_stat_file=False,
+def diff_text_lines(lines_a, lines_b, dir_a=None, dir_b=None,
+                    print_error=False, is_file_list=False, is_stat_file=False,
                     header_a=None):
     all_good = True
     for line_a, line_b in zip(lines_a, lines_b):
@@ -523,33 +591,46 @@ def diff_text_lines(lines_a, lines_b,
             continue
 
         if print_error:
-            print(f"ERROR: Line differs\n"
-                  f" A: {compare_a}\n B: {compare_b}")
+            print(f"ERROR: Line differs\n A: {compare_a}\n B: {compare_b}")
         all_good = False
 
     return all_good
 
 
-def _diff_stat_line(compare_a, compare_b, header_a, print_error=False):
+def _diff_stat_line(compare_a, compare_b, header, print_error=False):
     """Compare values in .stat file. Ignore first column which contains MET
     version number
 
     @param compare_a list of values in line A
     @param compare_b list of values in line B
-    @param header_a list of header values in file A excluding MET version
+    @param header list of header values in file A excluding MET version
     @param print_error If True, print an error message if any value differs
     """
     cols_a = compare_a.split()[1:]
     cols_b = compare_b.split()[1:]
-    all_good = True
-    for col_a, col_b, label in zip(cols_a, cols_b, header_a):
-        if col_a == col_b:
-            continue
-        if print_error:
-            print(f"ERROR: {label} differs:\n"
-                  f" A: {col_a}\n B: {col_b}")
-        all_good = False
 
+    # error message to print if a diff is found
+    message = f"ERROR: Stat line differs\n A: {compare_a}\n B: {compare_b}\n\n"
+
+    # error if different number of columns are found
+    if len(cols_a) != len(cols_b):
+        if print_error:
+            print(f'{message}Different number of columns')
+        return False
+
+    all_good = True
+    for index, (col_a, col_b) in enumerate(zip(cols_a, cols_b), 2):
+        if _is_equal_rounded(col_a, col_b):
+            continue
+        all_good = False
+        if not print_error:
+            continue
+
+        label = f'column {index}' if index >= len(header) else header[index]
+        message += f"  Diff in {label}:\n    A: {col_a}\n    B: {col_b}\n"
+
+    if not all_good and print_error:
+        print(message)
     return all_good
 
 
@@ -696,4 +777,6 @@ if __name__ == '__main__':
     dir_a = sys.argv[1]
     dir_b = sys.argv[2]
     save_diff = len(sys.argv) > 3
-    compare_dir(dir_a, dir_b, debug=True, save_diff=save_diff)
+    # if any files were flagged, exit non-zero
+    if compare_dir(dir_a, dir_b, debug=True, save_diff=save_diff):
+        sys.exit(2)

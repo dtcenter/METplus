@@ -128,6 +128,7 @@ met_tool_wrapper/TCPairs/TCPairs_tropical.conf
 #
 #   * TCPairsToolUseCase
 #   * DTCOrgUseCase
+#   * TropicalCycloneUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

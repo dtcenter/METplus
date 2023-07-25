@@ -185,6 +185,8 @@ _Difficulty_Index.conf
 #   * UserScriptUseCase
 #   * MediumRangeAppUseCase
 #   * NRLOrgUseCase
+#   * METcalcpyUseCase
+#   * METplotpyUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

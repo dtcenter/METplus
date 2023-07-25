@@ -15,7 +15,8 @@ import os
 from ..util import time_util
 from . import RuntimeFreqWrapper
 from ..util import do_string_sub, skip_time, get_lead_sequence
-from ..util import parse_var_list, sub_var_list
+from ..util import parse_var_list, sub_var_list, getlist
+from ..util import find_indices_in_config_section
 from ..util.met_config import add_met_config_dict_list
 
 '''!@namespace TCDiagWrapper
@@ -85,22 +86,10 @@ class TCDiagWrapper(RuntimeFreqWrapper):
             self.log_error('Only RUN_ONCE_PER_INIT_OR_VALID is supported for '
                            'TC_DIAG_RUNTIME_FREQ.')
 
-        # get the MET config file path or use default
-        c_dict['CONFIG_FILE'] = self.get_config_file('TCDiagConfig_wrapped')
+        # get command line arguments domain and tech id list for -data
+        self._read_data_inputs(c_dict)
 
-        c_dict['INPUT_DIR'] = self.config.getdir('TC_DIAG_INPUT_DIR', '')
-        c_dict['INPUT_TEMPLATE'] = self.config.getraw('config',
-                                                      'TC_DIAG_INPUT_TEMPLATE')
-        c_dict['INPUT_FILE_LIST'] = self.config.getraw(
-            'config', 'TC_DIAG_INPUT_FILE_LIST'
-        )
-
-        c_dict['OUTPUT_DIR'] = self.config.getdir('TC_DIAG_OUTPUT_DIR', '')
-        c_dict['OUTPUT_TEMPLATE'] = (
-            self.config.getraw('config',
-                               'TC_DIAG_OUTPUT_TEMPLATE')
-        )
-
+        # get -deck argument dir/template
         c_dict['DECK_INPUT_DIR'] = self.config.getdir('TC_DIAG_DECK_INPUT_DIR',
                                                       '')
         c_dict['DECK_INPUT_TEMPLATE'] = (
@@ -108,6 +97,17 @@ class TCDiagWrapper(RuntimeFreqWrapper):
                                'TC_DIAG_DECK_TEMPLATE')
         )
 
+        # get output dir/template
+        c_dict['OUTPUT_DIR'] = self.config.getdir('TC_DIAG_OUTPUT_DIR', '')
+        c_dict['OUTPUT_TEMPLATE'] = (
+            self.config.getraw('config',
+                               'TC_DIAG_OUTPUT_TEMPLATE')
+        )
+
+        # get the MET config file path or use default
+        c_dict['CONFIG_FILE'] = self.get_config_file('TCDiagConfig_wrapped')
+
+        # get variables to set in wrapped MET config file
         self.add_met_config(name='model',
                             data_type='list',
                             metplus_configs=['TC_DIAG_MODEL', 'MODEL'])
@@ -232,23 +232,78 @@ class TCDiagWrapper(RuntimeFreqWrapper):
 
         return c_dict
 
+    def _read_data_inputs(self, c_dict):
+        """! Parse the -data arguments from the METplusConfig object.
+        Sets c_dict DATA_INPUTS key with a list of dictionaries.
+        Each input should include domain, tech_id_list, and dir/template.
+        Logs error if any required variables are not set.
+
+        @param c_dict dictionary to save values into
+        """
+        # get template indices
+        indices = list(
+            find_indices_in_config_section(r'TC_DIAG_INPUT(\d+)_TEMPLATE$',
+                                           self.config,
+                                           index_index=1).keys()
+        )
+
+        # if no template indices were found, look for file list indices
+        if not indices:
+            indices = list(
+                find_indices_in_config_section(r'TC_DIAG_INPUT(\d+)_FILE_LIST$',
+                                               self.config,
+                                               index_index=1).keys()
+            )
+            # error if no file list or template indices were found
+            if not indices:
+                self.log_error(
+                    'Must set TC_DIAG_INPUT<n>_TEMPLATE/DOMAIN/TECH_ID_LIST'
+                )
+                return
+
+        c_dict['DATA_INPUTS'] = []
+        for index in indices:
+            prefix = f'TC_DIAG_INPUT{index}_'
+            directory = self.config.getdir(f'{prefix}DIR')
+            template = self.config.getraw('config', f'{prefix}TEMPLATE')
+
+            # get file list if template is not set
+            if template:
+                file_list = None
+            else:
+                file_list = self.config.getraw('config', f'{prefix}FILE_LIST')
+
+            domain = self.config.getraw('config', f'{prefix}DOMAIN')
+            if not domain:
+                self.log_error(f'Must set {prefix}DOMAIN')
+
+            tech_id_list = getlist(
+                self.config.getraw('config', f'{prefix}TECH_ID_LIST')
+            )
+            if not tech_id_list:
+                self.log_error(f'Must set {prefix}TECH_ID_LIST')
+
+            data_dict = {
+                'template': template,
+                'directory': directory,
+                'file_list': file_list,
+                'domain': domain,
+                'tech_id_list': tech_id_list,
+            }
+            c_dict['DATA_INPUTS'].append(data_dict)
+
     def get_command(self):
         cmd = self.app_path
 
         # add deck
         cmd += ' -deck ' + self.c_dict['DECK_FILE']
 
-        # add input files
-        cmd += ' -data'
-        for infile in self.infiles:
-            cmd += ' ' + infile
-
         # add arguments
         cmd += ' ' + ' '.join(self.args)
 
         # add output path
         out_path = self.get_output_path()
-        cmd += ' -out ' + out_path
+        cmd += ' -outdir ' + out_path
 
         # add verbosity
         cmd += ' -v ' + self.c_dict['VERBOSITY']
@@ -259,13 +314,15 @@ class TCDiagWrapper(RuntimeFreqWrapper):
              Args:
                 @param time_info dictionary containing timing information
         """
+        self.clear()
         time_info = time_util.ti_calculate(time_info)
+
         # get input files
-        if self.find_input_files(time_info) is None:
+        if not self.find_input_files(time_info):
             return
 
         # get output path
-        if not self.find_and_check_output_file(time_info):
+        if not self.find_and_check_output_file(time_info, is_directory=True):
             return
 
         # get field information to set in MET config
@@ -280,12 +337,6 @@ class TCDiagWrapper(RuntimeFreqWrapper):
 
         # set environment variables if using config file
         self.set_environment_variables(time_info)
-
-        # build command and run
-        cmd = self.get_command()
-        if cmd is None:
-            self.log_error("Could not generate command")
-            return
 
         self.build()
 
@@ -327,47 +378,57 @@ class TCDiagWrapper(RuntimeFreqWrapper):
         # get deck file
         deck_file = self.find_data(time_info, data_type='DECK')
         if not deck_file:
-            return None
-
+            return False
         self.c_dict['DECK_FILE'] = deck_file
 
+        # get files and values for -data arguments
         lead_seq = get_lead_sequence(self.config, time_info)
+        for data_dict in self.c_dict['DATA_INPUTS']:
+            if not self._find_data_inputs(data_dict, lead_seq, time_info,
+                                          deck_file):
+                return False
+        return True
 
-        # get input files
-        if self.c_dict['INPUT_FILE_LIST']:
-            self.logger.debug("Explicit file list file: "
-                              f"{self.c_dict['INPUT_FILE_LIST']}")
-            list_file = do_string_sub(self.c_dict['INPUT_FILE_LIST'],
-                                      **time_info)
+    def _find_data_inputs(self, data_dict, lead_seq, time_info, deck_file):
+        # check if file list file is set and use that instead of template/dir
+        input_file_list = data_dict['file_list']
+        if input_file_list:
+            self.logger.debug(f"Explicit file list file: {input_file_list}")
+            list_file = do_string_sub(input_file_list, **time_info)
             if not os.path.exists(list_file):
                 self.log_error(f'Could not find file list: {list_file}')
-                return None
+                return False
         else:
+            # set c_dict variables that are used in find_data function
+            self.c_dict['INPUT_DIR'] = data_dict['directory']
+            self.c_dict['INPUT_TEMPLATE'] = data_dict['template']
+
             all_input_files = []
-
             for lead in lead_seq:
-                self.clear()
-                time_info['lead'] = lead
-
-                time_info = time_util.ti_calculate(time_info)
+                time_info_lead = time_info.copy()
+                time_info_lead['lead'] = lead
+                time_info_lead = time_util.ti_calculate(time_info_lead)
 
                 # get a list of the input data files,
                 # write to an ascii file if there are more than one
-                input_files = self.find_data(time_info, return_list=True)
+                input_files = self.find_data(time_info_lead, return_list=True)
                 if not input_files:
                     continue
 
                 all_input_files.extend(input_files)
 
             if not all_input_files:
-                return None
+                return False
 
             # create an ascii file with a list of the input files
             list_file = f"{os.path.basename(deck_file)}_data_files.txt"
             list_file = self.write_list_file(list_file, all_input_files)
 
-        self.infiles.append(list_file)
-        return self.infiles
+        # build argument with file list file, domain, and tech id list
+        domain = data_dict['domain']
+        tech_ids = ','.join(data_dict['tech_id_list'])
+        self.args.append(f'-data {domain} {tech_ids} {list_file}')
+        return True
 
     def set_lead_list(self, time_info):
         self.env_var_dict['METPLUS_LEAD_LIST'] = ''

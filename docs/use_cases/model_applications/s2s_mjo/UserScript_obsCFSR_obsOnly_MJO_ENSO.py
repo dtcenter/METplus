@@ -138,6 +138,8 @@ UserScript_obsCFSR_obsOnly_MJO_ENSO.py
 #   * NetCDFFileUseCase
 #   * RegridDataPlaneUseCase
 #   * PCPCombineUseCase
+#   * METcalcpyUseCase
+#   * METplotpyUseCase
 #
 #   Navigate to :ref:`quick-search` to discover other similar use cases.
 #

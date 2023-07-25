@@ -10661,8 +10661,8 @@ METplus Configuration Glossary
 
      | *Used by:* TCDiag
 
-   MODE_MULTIVAR_INTENSITY
-     Specify the value for 'multivar_intensity' in the MET configuration file for MODE.
+   MODE_MULTIVAR_INTENSITY_FLAG
+     Specify the value for 'multivar_intensity_flag' in the MET configuration file for MODE.
 
      | *Used by:* MODE
 

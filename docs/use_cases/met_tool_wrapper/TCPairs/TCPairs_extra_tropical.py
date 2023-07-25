@@ -124,6 +124,7 @@ met_tool_wrapper/TCPairs/TCPairs_extra_tropical.conf
 #
 #   * TCPairsToolUseCase
 #   * SBUOrgUseCase
+#   * TropicalCycloneUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
