@@ -3,14 +3,12 @@ import pytest
 from netCDF4 import Dataset
 import os
 import shutil
-import uuid
 from unittest import mock
+from PIL import Image
 
 from metplus.util import diff_util as du
 from metplus.util import mkdir_p
 
-test_output_dir = os.path.join(os.environ['METPLUS_TEST_OUTPUT_BASE'],
-                               'test_output')
 
 stat_header = 'VERSION MODEL DESC     FCST_LEAD FCST_VALID_BEG  FCST_VALID_END  OBS_LEAD OBS_VALID_BEG   OBS_VALID_END   FCST_VAR FCST_UNITS FCST_LEV OBS_VAR OBS_UNITS OBS_LEV OBTYPE VX_MASK INTERP_MTHD INTERP_PNTS FCST_THRESH OBS_THRESH COV_THRESH ALPHA LINE_TYPE'
 mpr_line_1 = 'V11.1.0 HRRR  ALL_1.25 120000    20220701_200000 20220701_200000 000000   20220701_200000 20220701_200000 HPBL     m          L0       HPBL    m         L0      ADPSFC DENVER  BILIN       4           NA          NA         NA         NA    MPR       5    4       DENVER            39.78616    -104.41425       0         0       2160.80324 1498.06763 AMDAR NA NA NA'
@@ -34,6 +32,7 @@ DEFAULT_NC = [
     ],
     "Temp",  # variable
 ]
+
 
 @pytest.fixture(scope="module")
 def dummy_nc1(tmp_path_factory):
@@ -59,10 +58,10 @@ def make_nc(tmp_path, lon, lat, z, data, variable="Temp"):
     # Make a dummy netCDF file. We can do this with a lot less
     # code if xarray is available.
 
-    # Note: "nc4" is not included in NETCDF_EXTENSIONS, hence
+    # Note: 'nc5' is not included in NETCDF_EXTENSIONS, hence
     # we use it here to specifically trigger the call to
     # netCDF.Dataset in get_file_type.
-    file_name = tmp_path / "fake.nc4"
+    file_name = tmp_path / 'fake.nc5'
     with Dataset(file_name, "w", format="NETCDF4") as rootgrp:
         # diff_util can't deal with groups, so attach dimensions
         # and variables to the root group.
@@ -84,14 +83,12 @@ def make_nc(tmp_path, lon, lat, z, data, variable="Temp"):
         temp[0, :, :, :] = data
 
     return file_name
-        
-        
-def create_diff_files(files_a, files_b):
-    unique_id = str(uuid.uuid4())[0:8]
-    dir_a = os.path.join(test_output_dir, f'diff_{unique_id}', 'a')
-    dir_b = os.path.join(test_output_dir, f'diff_{unique_id}', 'b')
-    mkdir_p(dir_a)
-    mkdir_p(dir_b)
+
+
+def create_diff_files(tmp_path_factory, files_a, files_b):
+    dir_a = tmp_path_factory.mktemp('dir_a')
+    dir_b = tmp_path_factory.mktemp('dir_b')
+
     write_test_files(dir_a, files_a)
     write_test_files(dir_b, files_b)
     return dir_a, dir_b
@@ -199,16 +196,20 @@ def write_test_files(dirname, files):
         ({'file_list.csv': [csv_header, csv_val_1, csv_val_2]},
          {'file_list.csv': [csv_header, csv_val_1.replace('Mackenzie', 'Art'), csv_val_2]},
          None, False),
-    ]
+        # csv diff trunc not equal round
+        ({'file_list.csv': [csv_header, csv_val_1, csv_val_2]},
+         {'file_list.csv': [csv_header, csv_val_1.replace('0.9999', '1.0001'), csv_val_2,]},
+         3, True),
+    ],
 )
 @pytest.mark.diff
-def test_diff_dir_text_files(a_files, b_files, rounding_override, expected_is_equal):
+def test_diff_dir_text_files(tmp_path_factory, a_files, b_files, rounding_override, expected_is_equal):
     if rounding_override:
         for filename in a_files:
             du.ROUNDING_OVERRIDES[filename] = rounding_override
 
-    a_dir, b_dir = create_diff_files(a_files, b_files)
-    assert du.dirs_are_equal(a_dir, b_dir) == expected_is_equal
+    a_dir, b_dir = create_diff_files(tmp_path_factory, a_files, b_files)
+    assert du.dirs_are_equal(str(a_dir), str(b_dir)) == expected_is_equal
 
     # pass individual files instead of entire directory
     for filename in a_files:
@@ -217,8 +218,6 @@ def test_diff_dir_text_files(a_files, b_files, rounding_override, expected_is_eq
             b_path = os.path.join(b_dir, filename)
             assert du.dirs_are_equal(a_path, b_path) == expected_is_equal
 
-    shutil.rmtree(os.path.dirname(a_dir))
-        
 
 @pytest.mark.parametrize(
     "path,expected",
@@ -238,6 +237,12 @@ def test_diff_dir_text_files(a_files, b_files, rounding_override, expected_is_eq
 def test_get_file_type(path, expected):
     actual = du.get_file_type(path)
     assert actual == expected
+
+
+@pytest.mark.util
+def test_get_file_type_netCDF4(dummy_nc1):
+    actual = du.get_file_type(dummy_nc1)
+    assert actual == 'netcdf'
 
 
 @mock.patch.object(du, "UNSUPPORTED_EXTENSIONS", [".foo"])
@@ -261,7 +266,7 @@ def test_get_file_type_extensions():
     ]
     flat_list = [ext for x in extensions for ext in x]
     assert len(set(flat_list)) == len(flat_list)
-    
+
 
 @pytest.mark.parametrize(
     "nc_data,fields,expected,check_print",
@@ -364,7 +369,7 @@ def test_nc_is_equal(
     # Add (numpy.float32(44.54), True) if numpy available as this
     # is what is actually tested when comparing netCDF4.Dataset
     (-0.15, True),
-    ("-123,456.5409", False), # Check this is intended ?!
+    ("-123,456.5409", False),
     ("2345j", False),
     ("-12345.244", True),
     ("foo", False)
@@ -373,3 +378,146 @@ def test_nc_is_equal(
 @pytest.mark.util
 def test__is_number(val, expected):
     assert du._is_number(val) == expected
+
+
+@pytest.mark.parametrize(
+    'func, args, patch_func, patch_return, expected',
+    [
+        (
+            du._handle_csv_files,
+            ['path/file1.csv', 'path/file2.csv'],
+            'compare_csv_files',
+            True,
+            True,
+        ),
+        (
+            du._handle_csv_files,
+            ['path/file1.csv', 'path/file2.csv'],
+            'compare_csv_files',
+            False,
+            ('path/file1.csv', 'path/file2.csv', 'CSV diff', ''),
+        ),
+        (
+            du._handle_netcdf_files,
+            ['path/file1.nc', 'path/file2.nc'],
+            'nc_is_equal',
+            True,
+            True,
+        ),
+        (
+            du._handle_netcdf_files,
+            ['path/file1.nc', 'path/file2.nc'],
+            'nc_is_equal',
+            False,
+            ('path/file1.nc', 'path/file2.nc', 'NetCDF diff', ''),
+        ),
+        (
+            du._handle_pdf_files,
+            ['path/file1.pdf', 'path/file2.pdf', True],
+            'compare_pdf_as_images',
+            True,
+            True,
+        ),
+        (
+            du._handle_pdf_files,
+            ['path/file1.pdf', 'path/file2.pdf', True],
+            'compare_pdf_as_images',
+            False,
+            ('path/file1.pdf', 'path/file2.pdf', 'PDF diff', ''),
+        ),
+        (
+            du._handle_image_files,
+            ['path/file1.png', 'path/file2.png', True],
+            'compare_image_files',
+            True,
+            True,
+        ),
+        (
+            du._handle_image_files,
+            ['path/file1.png', 'path/file2.png', True],
+            'compare_image_files',
+            False,
+            ('path/file1.png', 'path/file2.png', 'Image diff', ''),
+        ),
+    ],
+)
+@pytest.mark.util
+def test__handle_funcs(func, args, patch_func, patch_return, expected):
+    with mock.patch.object(du, patch_func, return_value=patch_return):
+        actual = func(*args)
+        assert actual == expected
+
+
+@pytest.mark.parametrize(
+    'cmp_return, comp_txt_return, expected',
+    [
+        (True, True, True),
+        (False, True, True),
+        (False, False, ('file1.txt', 'file2.txt', 'Text diff', '')),
+    ],
+)
+@pytest.mark.util
+def test__handle_text_files(cmp_return, comp_txt_return, expected):
+    with mock.patch.object(du.filecmp, 'cmp', return_value=cmp_return):
+        with mock.patch.object(du, 'compare_txt_files', return_value=comp_txt_return):
+            actual = du._handle_text_files(
+                'file1.txt', 'file2.txt', '/dir_a/', '/dir_b/'
+            )
+            assert actual == expected
+
+
+@pytest.mark.parametrize(
+    'colour_A, colour_B, save_diff, expected, check_print',
+    [
+        (
+            255,
+            255,
+            False,
+            True,
+            None
+         ),
+        (
+            255,
+            253,
+            False,
+            False,
+            ['Difference pixel: (1, 1, 0)'],
+        ),
+        (
+            255,
+            0,
+            True,
+            False,
+            ['Difference pixel: (254, 0, 0)'],
+        ),
+    ],
+)
+@pytest.mark.util
+def test_compare_image_files(
+    capfd, tmp_path_factory, colour_A, colour_B, save_diff, expected, check_print
+):
+    image_dir = tmp_path_factory.mktemp('images')
+    image1 = image_dir / 'img1.jpg'
+    image2 = image_dir / 'img2.jpg'
+
+    expected_diff = os.path.join(image_dir, 'img2_diff.png')
+
+    def _make_test_img(file_path, col):
+        im = Image.new('RGB', [1, 1], col)
+        im.save(file_path)
+        im.close()
+
+    _make_test_img(image1, colour_A)
+    _make_test_img(image2, colour_B)
+
+    actual = du.compare_image_files(image1, image2, save_diff)
+
+    if save_diff:
+        assert actual == expected_diff
+        assert os.path.exists(actual)
+    else:
+        assert actual == expected
+
+    # Just to check the diffs are correctly output
+    if check_print:
+        _statment_in_capfd(capfd, check_print)
