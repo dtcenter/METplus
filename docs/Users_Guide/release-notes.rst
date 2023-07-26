@@ -59,14 +59,10 @@ METplus Version 5.1.0 Release Notes (2023-07-21)
        (`#2137 <https://github.com/dtcenter/METplus/issues/2137>`_)
      * Allow setting of convert, censor_thresh, and censor_val in regrid dictionary
        (`#2082 <https://github.com/dtcenter/METplus/issues/2082>`_)
-     * METplus run errors if no commands were run
-       (`#2098 <https://github.com/dtcenter/METplus/issues/2098>`_)
      * TCPairs setting -diag option causes failure
        (`#2179 <https://github.com/dtcenter/METplus/issues/2179>`_)
      * Define the order of the forecast variables numerically rather than alphabetically
        (`#2070 <https://github.com/dtcenter/METplus/issues/2070>`_)
-     * Allow setting of convert, censor_thresh, and censor_val in regrid dictionary
-       (`#2082 <https://github.com/dtcenter/METplus/issues/2082>`_)
      * Prevent error if no commands were run because they were skipped
        (`#2098 <https://github.com/dtcenter/METplus/issues/2098>`_)
      * Allow spaces for complex categorical thresholds
@@ -111,8 +107,6 @@ METplus Version 5.1.0 Release Notes (2023-07-21)
 
   .. dropdown:: Documentation
 
-     * Update the METplus Components Python Requirements Documentation
-       (`#2016 <https://github.com/dtcenter/METplus/issues/2016>`_)
      * Enhance the Release Notes by adding dropdown menus
        (`#2076 <https://github.com/dtcenter/METplus/issues/2076>`_)
      * Update the METplus Components Python Requirements
