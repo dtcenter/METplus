@@ -1,0 +1,48 @@
+These instructions are for a debian install but in general as long as you install all of these packages, you should be fine
+
+
+sudo apt install ant
+sudo apt install apache2
+sudo apt install awscli
+sudo apt install bzip2
+sudo apt install ca-certificates
+sudo apt install cpio
+sudo apt install curl
+sudo apt install g++
+sudo apt install gcc
+sudo apt install gfortran
+sudo apt install ghostscript
+sudo apt install git
+sudo apt install gnupg
+sudo apt install gzip
+sudo apt install hdf5-helpers
+sudo apt install gv
+sudo apt install python3
+sudo apt install unzip
+sudo apt install wget
+sudo apt install 
+
+sudo groupadd tomcat
+sudo useradd -s /bin/false -g tomcat -d /opt/tomcat tomcat
+curl -O https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.56/bin/apache-tomcat-9.0.56.tar.gz
+Install Tomcat in /opt with these instructions https://phoenixnap.com/kb/install-tomcat-ubuntu
+
+wget        http://www.ftp.cpc.ncep.noaa.gov/wd51we/wgrib2/wgrib2.tgz
+make install and put in /opt/bin using these instructions https://www.ftp.cpc.ncep.noaa.gov/wd51we/wgrib2/INSTALLING
+
+go to https://docs.conda.io/en/latest/miniconda.html#linux-installers
+download the miniconda install you want
+install miniconda
+
+Install goofys to mount an s3 bitbucket 
+http://www.whiteboardcoder.com/2017/12/install-and-set-up-goofys-in-ubuntu.html
+sudo curl -O https://storage.googleapis.com/golang/go1.8.linux-amd64.tar.gz
+   > sudo tar -xvf go1.8.linux-amd64.tar.gz
+   > sudo mv go /usr/local
+   > sudo ln -s /usr/local/go/bin/go /usr/bin/go
+export GOPATH=$HOME/work
+   > go get github.com/kahing/goofys
+   > go install github.com/kahing/goofys
+   > sudo cp work/bin/goofys /usr/bin/
+
+
