@@ -5,6 +5,7 @@ import os
 import shutil
 from unittest import mock
 from PIL import Image
+import numpy as np
 
 from metplus.util import diff_util as du
 from metplus.util import mkdir_p
@@ -337,6 +338,23 @@ def test_get_file_type_extensions():
             True,
             None,
         ),
+        # Contains nan difference
+        (
+            [
+                DEFAULT_NC[0],
+                DEFAULT_NC[1],
+                DEFAULT_NC[2],
+                [
+                    [[1, 2], [3, 4], [5, 6]],
+                    [[2, 3], [4, 5], [6, 7]],
+                    [[30, 31], [33, 32], [34, np.nan]],
+                ],
+                DEFAULT_NC[4],
+            ],
+            None,
+            False,
+            ["Variable Temp contains NaN. Comparing each value"],
+        ),
         # Field doesn't exist
         (
             [
@@ -363,11 +381,41 @@ def test_nc_is_equal(
     if check_print:
         _statment_in_capfd(capfd, check_print)
 
+@pytest.mark.parametrize(
+    "nc_data,fields,expected,check_print",
+    [
+        (
+            [
+                DEFAULT_NC[0],
+                DEFAULT_NC[1],
+                DEFAULT_NC[2],
+                [
+                    [[1, 2], [3, 4], [5, 6]],
+                    [[2, 3], [4, 5], [6, 7]],
+                    [[30, 31], [33, 32], [34, np.nan]],
+                ],
+                DEFAULT_NC[4],
+            ],
+            None,
+            True,
+            ["Variable Temp contains NaN. Comparing each value"],
+        ),
+    ]
+)
+@pytest.mark.util
+def test_nc_is_equal_both_nan(
+    capfd, tmp_path_factory, nc_data, fields, expected, check_print
+):
+    dummy_nc = make_nc(tmp_path_factory.mktemp("data2"), *nc_data)
+    assert du.nc_is_equal(dummy_nc, dummy_nc, fields=fields, debug=True) == expected
+
+    if check_print:
+        _statment_in_capfd(capfd, check_print)
+
 
 @pytest.mark.parametrize(
     "val,expected",[
-    # Add (numpy.float32(44.54), True) if numpy available as this
-    # is what is actually tested when comparing netCDF4.Dataset
+    (np.float32(44.54), True),
     (-0.15, True),
     ("-123,456.5409", False),
     ("2345j", False),
@@ -519,5 +567,47 @@ def test_compare_image_files(
         assert actual == expected
 
     # Just to check the diffs are correctly output
+    if check_print:
+        _statment_in_capfd(capfd, check_print)
+
+
+@pytest.mark.parametrize(
+    'array_a, array_b, expected, check_print',
+    [
+        # basic test
+        (
+            np.array([1, 2, 3.9]),
+            np.array([1, 2, 3.9]),
+            True,
+            None,
+        ),
+        # diff test
+        (
+            np.array([1, 2, 3.9]),
+            np.array([1, 2, 4]),
+            False,
+            ["val_a: 3.9, val_b: 4"],
+        ),
+        # stored as strings
+        (
+            '[1, 2, 3.9]',
+            '[1, 2, 3.9]',
+            True,
+            None,
+        ),
+        # multi dimentional with nan
+        (
+            np.array([[1, 2, 3.9],[np.nan, 5, 6]]),
+            np.array([[1, 2, 3.9],[np.nan, 5, 6]]),
+            True,
+            None,
+        ),
+    ],
+)
+@pytest.mark.util
+def test__all_values_are_equal(capfd, array_a, array_b, expected, check_print):
+    
+    actual = du._all_values_are_equal(array_a, array_b)
+    assert actual == expected
     if check_print:
         _statment_in_capfd(capfd, check_print)
