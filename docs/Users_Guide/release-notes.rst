@@ -30,7 +30,7 @@ When applicable, release notes are followed by the
 `GitHub issue <https://github.com/dtcenter/METplus/issues>`__ number which
 describes the bugfix, enhancement, or new feature.
 
-METplus Version 5.1.0 Release Notes (2023-07-21)
+METplus Version 5.1.0 Release Notes (2023-07-31)
 ------------------------------------------------
 
   .. dropdown:: Enhancements
