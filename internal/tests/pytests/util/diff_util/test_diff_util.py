@@ -35,16 +35,20 @@ DEFAULT_NC = [
 ]
 
 
-@pytest.fixture(scope="module")
-def dummy_nc1(tmp_path_factory):
+@pytest.fixture()
+def dummy_nc1(tmp_path_factory, make_dummy_nc):
     # Construct a temporary netCDF file
-    return make_nc(
+    return make_dummy_nc(
         tmp_path_factory.mktemp("data1"),
         DEFAULT_NC[0],
         DEFAULT_NC[1],
         DEFAULT_NC[2],
         DEFAULT_NC[3],
         DEFAULT_NC[4],
+        # Note: "nc5" is not included in NETCDF_EXTENSIONS, hence
+        # we use it here to specifically trigger the call to
+        # netCDF.Dataset in get_file_type.
+        file_name= "fake.nc5"
     )
 
 
@@ -53,37 +57,6 @@ def _statment_in_capfd(capfd, check_print):
     print("out: ", out)
     for statement in check_print:
         assert statement in out
-
-
-def make_nc(tmp_path, lon, lat, z, data, variable="Temp"):
-    # Make a dummy netCDF file. We can do this with a lot less
-    # code if xarray is available.
-
-    # Note: 'nc5' is not included in NETCDF_EXTENSIONS, hence
-    # we use it here to specifically trigger the call to
-    # netCDF.Dataset in get_file_type.
-    file_name = tmp_path / 'fake.nc5'
-    with Dataset(file_name, "w", format="NETCDF4") as rootgrp:
-        # diff_util can't deal with groups, so attach dimensions
-        # and variables to the root group.
-        rootgrp.createDimension("lon", len(lon))
-        rootgrp.createDimension("lat", len(lat))
-        rootgrp.createDimension("z", len(z))
-        rootgrp.createDimension("time", None)
-
-        # create variables
-        longitude = rootgrp.createVariable("Longitude", "f4", "lon")
-        latitude = rootgrp.createVariable("Latitude", "f4", "lat")
-        levels = rootgrp.createVariable("Levels", "i4", "z")
-        temp = rootgrp.createVariable(variable, "f4", ("time", "lon", "lat", "z"))
-        time = rootgrp.createVariable("Time", "i4", "time")
-
-        longitude[:] = lon
-        latitude[:] = lat
-        levels[:] = z
-        temp[0, :, :, :] = data
-
-    return file_name
 
 
 def create_diff_files(tmp_path_factory, files_a, files_b):
@@ -372,10 +345,10 @@ def test_get_file_type_extensions():
 )
 @pytest.mark.util
 def test_nc_is_equal(
-    capfd, tmp_path_factory, dummy_nc1, nc_data, fields, expected, check_print
+    capfd, tmp_path_factory, make_dummy_nc, dummy_nc1, nc_data, fields, expected, check_print
 ):
     # make a dummy second file to compare to dummy_nc1
-    dummy_nc2 = make_nc(tmp_path_factory.mktemp("data2"), *nc_data)
+    dummy_nc2 = make_dummy_nc(tmp_path_factory.mktemp("data2"), *nc_data)
     assert du.nc_is_equal(dummy_nc1, dummy_nc2, fields=fields, debug=True) == expected
 
     if check_print:
@@ -404,9 +377,9 @@ def test_nc_is_equal(
 )
 @pytest.mark.util
 def test_nc_is_equal_both_nan(
-    capfd, tmp_path_factory, nc_data, fields, expected, check_print
+    capfd, tmp_path_factory, make_dummy_nc, nc_data, fields, expected, check_print
 ):
-    dummy_nc = make_nc(tmp_path_factory.mktemp("data2"), *nc_data)
+    dummy_nc = make_dummy_nc(tmp_path_factory.mktemp("data2"), *nc_data)
     assert du.nc_is_equal(dummy_nc, dummy_nc, fields=fields, debug=True) == expected
 
     if check_print:

@@ -6,6 +6,7 @@ import pytest
 import getpass
 import shutil
 from pathlib import Path
+from netCDF4 import Dataset
 
 # add METplus directory to path so the wrappers and utilities can be found
 metplus_dir = str(Path(__file__).parents[3])
@@ -113,3 +114,45 @@ def metplus_config_files():
         return config
 
     return read_configs
+
+@pytest.fixture(scope="module")
+def make_dummy_nc():
+    return make_nc
+
+
+def make_nc(tmp_path, lon, lat, z, data, variable='Temp', file_name='fake.nc'):
+    """! Make a dummy netCDF file for use in tests. Populates a generic single
+    variable netcdf is dimension, lat, lon, z.
+
+    @param tmp_path directory to write this netCDF to.
+    @param lon list of longitude values.
+    @param lat list of latitude values.
+    @param z list of pressure levels.
+    @param data array of values with dimesions (lat, lon, z) 
+    @param variable (optional) string name of variable, defualt 'Temp'
+    @param file_name (optional) string name of file, defualt 'fake.nc'
+    
+    @returns path to netCDF file
+    """
+    file_name = tmp_path / file_name
+    with Dataset(file_name, "w", format="NETCDF4") as rootgrp:
+        # Some tools (i.e. diff_util) can't deal with groups,
+        # so attach dimensions and variables to the root group.
+        rootgrp.createDimension("lon", len(lon))
+        rootgrp.createDimension("lat", len(lat))
+        rootgrp.createDimension("z", len(z))
+        rootgrp.createDimension("time", None)
+
+        # create variables
+        longitude = rootgrp.createVariable("Longitude", "f4", "lon")
+        latitude = rootgrp.createVariable("Latitude", "f4", "lat")
+        levels = rootgrp.createVariable("Levels", "i4", "z")
+        temp = rootgrp.createVariable(variable, "f4", ("time", "lon", "lat", "z"))
+        time = rootgrp.createVariable("Time", "i4", "time")
+
+        longitude[:] = lon
+        latitude[:] = lat
+        levels[:] = z
+        temp[0, :, :, :] = data
+
+    return file_name
