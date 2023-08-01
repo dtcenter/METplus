@@ -104,6 +104,8 @@ METplus Version 5.1.0 Release Notes (2023-07-31)
        (`#2188 <https://github.com/dtcenter/METplus/issues/2188>`_)
      * PointStat AMDAR PBLH with python embedding
        (`#2198 <https://github.com/dtcenter/METplus/issues/2198>`_)
+     * Space-time cross-spectra for S2S forecasts
+       (`#2136 <https://github.com/dtcenter/METplus/issues/2136>`_)
 
   .. dropdown:: Documentation
 
