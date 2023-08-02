@@ -4,18 +4,20 @@ Release Guide
 
 This METplus Release Guide provides detailed instructions for METplus
 developers for creating software releases for the METplus component
-repositories.  **This Release Guide is intended for developers creating
-releases and is not intended for users of the software.**
+repositories.
 
-.. _releaseCycleStages:
+.. note:: This Release Guide is intended for developers creating
+          releases and is not intended for users of the software.
 
-Stages of the METplus Release Cycle
-===================================
+.. _releaseTypes:
+
+Release Types
+=============
 
 Coordinated Release
 -------------------
 
-A coordinated release is a group of official or bugfix releases for each
+A METplus coordinated release is a group of official or bugfix releases for each
 of the METplus components that have been developed and tested in parallel.
 Coordinated release announcements on the
 `DTC METplus Downloads <https://dtcenter.org/community-code/metplus/download>`_
@@ -27,16 +29,17 @@ version.
 Official Release
 ----------------
 
-An official release is a stable release and is basically the release
-candidate, which has passed all tests.  It is the version of the code that
-has been tested as thoroughly as possible and is reliable enough to be
+An official release is a stable release of a METplus component and is basically
+the release candidate, which has passed all tests.  It is the version of the
+code that has been tested as thoroughly as possible and is reliable enough to be
 used in production.
 
 Bugfix Release
 --------------
 
-A bugfix release introduces no new features, but fixes bugs in previous
-official releases and targets the most critical bugs affecting users.
+A bugfix release for a METplus component introduces no new features, but fixes
+bugs in previous official releases and targets the most critical bugs affecting
+users.
 
 Development Release
 -------------------
@@ -44,9 +47,9 @@ Development Release
 Beta
 ^^^^
 
-Beta releases are a pre-release of the software to give a larger group of
-users the opportunity to test the recently incorporated new features,
-enhancements, and bug fixes.  Beta releases allow for continued
+Beta releases are a pre-release of a METplus software component to give a
+larger group of users the opportunity to test the recently incorporated new
+features, enhancements, and bug fixes.  Beta releases allow for continued
 development and bug fixes before an official release.  There are many
 possible configurations of hardware and software that exist and installation
 of beta releases allow for testing of potential conflicts.
@@ -54,9 +57,9 @@ of beta releases allow for testing of potential conflicts.
 Release Candidate (rc)
 ^^^^^^^^^^^^^^^^^^^^^^
 
-A release candidate is a version of the software that is nearly ready for
-official release but may still have a few bugs.  At this stage, all product
-features have been designed, coded, and tested through one or more beta
+A release candidate is a version of a METplus software component that is nearly
+ready for official release but may still have a few bugs.  At this stage, all
+product features have been designed, coded, and tested through one or more beta
 cycles with no known bugs.  It is code complete, meaning that no entirely
 new source code will be added to this release.  There may still be source
 code changes to fix bugs, changes to documentation, and changes to test
