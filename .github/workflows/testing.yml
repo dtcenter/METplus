@@ -145,6 +145,7 @@ jobs:
         uses: AndreMiras/coveralls-python-action@v20201129
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          debug: true
 
   use_case_tests:
     name: Use Case Tests
