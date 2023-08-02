@@ -89,7 +89,7 @@ def set_minimum_config_settings(config):
 )
 @pytest.mark.wrapper_b
 def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
-
+    assert False
     config = metplus_config
 
     set_minimum_config_settings(config)
