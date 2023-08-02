@@ -12,7 +12,7 @@ source ${GITHUB_WORKSPACE}/${CI_JOBS_DIR}/bash_functions.sh
 
 # get branch name for push or pull request events
 # add -pull_request if pull request event to keep separated
-branch_name=`${GITHUB_WORKSPACE}/${CI_JOBS_DIR}/print_branch_name.py`
+branch_name=$(${GITHUB_WORKSPACE}/${CI_JOBS_DIR}/print_branch_name.py)
 if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
   branch_name=${branch_name}-pull_request
 fi
@@ -23,8 +23,7 @@ time_command docker pull $DOCKERHUBTAG
 
 # if unsuccessful (i.e. pull request from a fork)
 # then build image locally
-docker inspect --type=image $DOCKERHUBTAG > /dev/null
-if [ $? != 0 ]; then
+if ! docker inspect --type=image $DOCKERHUBTAG > /dev/null; then
    # if docker pull fails, build locally
    echo docker pull failed. Building Docker image locally...
    ${GITHUB_WORKSPACE}/${CI_JOBS_DIR}/docker_setup.sh
@@ -33,8 +32,8 @@ fi
 # running use case tests
 
 # split apart use case category and subset list from input
-CATEGORIES=`echo $INPUT_CATEGORIES | awk -F: '{print $1}'`
-SUBSETLIST=`echo $INPUT_CATEGORIES | awk -F: '{print $2}'`
+CATEGORIES=$(echo $INPUT_CATEGORIES | awk -F: '{print $1}')
+SUBSETLIST=$(echo $INPUT_CATEGORIES | awk -F: '{print $2}')
 
 # run all cases if no subset list specified
 if [ -z "${SUBSETLIST}" ]; then
@@ -42,7 +41,7 @@ if [ -z "${SUBSETLIST}" ]; then
 fi
 
 # get METviewer if used in any use cases
-all_requirements=`./${CI_JOBS_DIR}/get_requirements.py ${CATEGORIES} ${SUBSETLIST}`
+all_requirements=$(./${CI_JOBS_DIR}/get_requirements.py ${CATEGORIES} ${SUBSETLIST})
 echo All requirements: $all_requirements
 NETWORK_ARG=""
 if [[ "$all_requirements" =~ .*"metviewer".* ]]; then
