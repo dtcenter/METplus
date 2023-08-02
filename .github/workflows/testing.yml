@@ -143,6 +143,8 @@ jobs:
           METPLUS_TEST_OUTPUT_BASE: ${{ runner.workspace }}/pytest_output
       - name: Run Coveralls
         uses: AndreMiras/coveralls-python-action@v20201129
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
   use_case_tests:
     name: Use Case Tests
