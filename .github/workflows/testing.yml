@@ -138,16 +138,15 @@ jobs:
           python3 -m pip install --upgrade pip
           python3 -m pip install -r internal/tests/pytests/requirements.txt
       - name: Run Pytests
-        run: |
-          coverage run -m pytest internal/tests/pytests
-          coverage report -m
+        run: coverage run -m pytest internal/tests/pytests
         env:
           METPLUS_TEST_OUTPUT_BASE: ${{ runner.workspace }}/pytest_output
+      - name: Generate coverage report
+        run: coverage report -m
       - name: Run Coveralls
         uses: AndreMiras/coveralls-python-action@develop
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          debug: true
 
   use_case_tests:
     name: Use Case Tests
