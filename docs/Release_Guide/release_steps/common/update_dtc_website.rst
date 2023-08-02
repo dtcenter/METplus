@@ -6,24 +6,24 @@ Update DTC Website
 * Navigate to the downloads page for the |projectRepo| repository at
   https://dtcenter.org/community-code/metplus/download
 
-* Click on the *Edit* button to edit the Downloads page.
+* Click on the **Edit** button to edit the Downloads page.
 
-* Create a new *Software Release* for the newly released version by clicking
-  on *Add New Release*.
+* Create a new **Software Release** for the newly released version by clicking
+  on **Add New Release**.
 
-  * For *Full Title of Release* type "|projectRepo| Version X.Y.Z".
+  * For **Full Title of Release** type "|projectRepo| Version X.Y.Z".
 
-  * For *Related Community Code* select both the "METplus" and the "|projectName|"
+  * For **Related Community Code** select both the "METplus" and the "|projectName|"
     options (For Macs, hold the Command key to select both).
 
-  * For *Version Label* type "|projectRepo| X.Y.Z-betaN".
+  * For **Version Label** type "|projectRepo| X.Y.Z-betaN".
 
-  * Select the *Release Type* ("Recommended" for official or bugfix releases or
+  * Select the **Release Type** ("Recommended" for official or bugfix releases or
     "Development" for development versions).
 
-  * Enter the *Release Date*.
+  * Enter the **Release Date**.
 
-  * Click on *Add Code Download* then click *Add Link* to add links for each of the following:
+  * Click on **Add Code Download** then click **Add Link** to add links for each of the following:
 
     * Add Link: |addTarfileStep|
 
@@ -41,19 +41,19 @@ Update DTC Website
       (If creating a new official release, be sure to add a new *Existing Builds
       and Docker* page, if one was not already created.)
   
-  * Inside the text box in the "Release Notes" section provide a direct link to
-    the *release-notes.html* file in the User's Guide.
+  * In the **Release Notes** text box provide a direct link to the
+    *release-notes.html* file in the User's Guide.
 
-  * Click on "Create Release".
+  * Click on **Create Release**.
 
   * Update the existing releases, as needed.
     
     * For a development release, ensure the "Release Type" is set to
-      *Development* and change any previous *Development* versions to
-      *Other*.
+      **Development** and change any previous **Development** versions to
+      **Other**.
       
     * For a bugfix or official release, change any previous
-      *Recommended* versions to *Other*.
+      **Recommended** versions to **Other**.
       
     * For an official release, remove the corresponding development
       releases.
