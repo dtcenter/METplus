@@ -138,7 +138,7 @@ jobs:
           python3 -m pip install --upgrade pip
           python3 -m pip install -r internal/tests/pytests/requirements.txt
       - name: Run Pytests
-        run: coverage run -m pytest internal/tests/pytests --cov=metplus --cov-report=term-missing --cov-config=.coveragerc --cov-report lcov
+        run: coverage run -m pytest internal/tests/pytests --cov=metplus --cov-report=term-missing
         env:
           METPLUS_TEST_OUTPUT_BASE: ${{ runner.workspace }}/pytest_output
       - name: Run Coveralls
