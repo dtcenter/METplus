@@ -66,5 +66,5 @@ Update DTC Website
 
   * |otherWebsiteUpdates|
 
-  * Click on "Save".
+  * Click on **Save** at the bottom of the page.
 
