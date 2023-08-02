@@ -30,37 +30,6 @@ if [ $? != 0 ]; then
    ${GITHUB_WORKSPACE}/${CI_JOBS_DIR}/docker_setup.sh
 fi
 
-# running unit tests (pytests)
-if [[ "$INPUT_CATEGORIES" == pytests* ]]; then
-  export METPLUS_ENV_TAG="test.v5.1"
-  export METPLUS_IMG_TAG=${branch_name}
-  echo METPLUS_ENV_TAG=${METPLUS_ENV_TAG}
-  echo METPLUS_IMG_TAG=${METPLUS_IMG_TAG}
-
-  export RUN_TAG=metplus-run-env
-
-  # use BuildKit to build image
-  export DOCKER_BUILDKIT=1
-
-  start_seconds=$SECONDS
-
-  # build an image with the pytest conda env and the METplus branch image
-  # Note: adding --build-arg <arg-name> without any value tells docker to
-  #  use value from local environment (export METPLUS_IMG_TAG)
-  time_command docker build -t $RUN_TAG \
-	 --build-arg METPLUS_IMG_TAG \
-	 --build-arg METPLUS_ENV_TAG \
-	 -f .github/actions/run_tests/Dockerfile.run \
-	 .
-
-  echo Running Pytests
-  command="export METPLUS_TEST_OUTPUT_BASE=/data/output;"
-  command+="/usr/local/conda/envs/${METPLUS_ENV_TAG}/bin/pytest internal/tests/pytests -vv --cov=metplus --cov-append --cov-report=term-missing;"
-  command+="if [ \$? != 0 ]; then echo ERROR: Some pytests failed. Search for FAILED to review; false; fi"
-  time_command docker run -v $WS_PATH:$GITHUB_WORKSPACE --workdir $GITHUB_WORKSPACE $RUN_TAG bash -c "$command"
-  exit $?
-fi
-
 # running use case tests
 
 # split apart use case category and subset list from input
