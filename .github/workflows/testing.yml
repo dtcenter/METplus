@@ -143,8 +143,10 @@ jobs:
           METPLUS_TEST_OUTPUT_BASE: ${{ runner.workspace }}/pytest_output
       - name: Generate coverage report
         run: coverage report -m
+        if: always()
       - name: Run Coveralls
         uses: AndreMiras/coveralls-python-action@develop
+        if: always()
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
