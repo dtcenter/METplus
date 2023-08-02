@@ -11,10 +11,13 @@ import sys
 import os
 
 try:
-    from .string_manip import get_wrapper_name
+    from metplus.util.string_manip import get_wrapper_name
 except ImportError:
-    sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
-    from string_manip import get_wrapper_name
+    # if metplus package is not installed, find util relative to this script
+    metplus_home = os.path.join(os.path.dirname(__file__),
+                                os.pardir, os.pardir, os.pardir)
+    sys.path.insert(0, os.path.abspath(metplus_home))
+    from metplus.util.string_manip import get_wrapper_name
 
 SCRIPT_INFO_TEXT = (
     'This script is intended to help developers add support for setting '
