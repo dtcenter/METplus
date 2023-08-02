@@ -12,6 +12,32 @@ releases and is not intended for users of the software.**
 Stages of the METplus Release Cycle
 ===================================
 
+Coordinated Release
+-------------------
+
+A coordinated release is a group of official or bugfix releases for each
+of the METplus components that have been developed and tested in parallel.
+Coordinated release announcements on the
+`DTC METplus Downloads <https://dtcenter.org/community-code/metplus/download>`_
+page link to the component releases that comprise the coordinated release.
+When bugfix releases are issued for any METplus component, the corresponding
+coordinated release announcement is updated to link to the most recent bugfix
+version.
+
+Official Release
+----------------
+
+An official release is a stable release and is basically the release
+candidate, which has passed all tests.  It is the version of the code that
+has been tested as thoroughly as possible and is reliable enough to be
+used in production.
+
+Bugfix Release
+--------------
+
+A bugfix release introduces no new features, but fixes bugs in previous
+official releases and targets the most critical bugs affecting users.
+
 Development Release
 -------------------
 
@@ -36,20 +62,6 @@ new source code will be added to this release.  There may still be source
 code changes to fix bugs, changes to documentation, and changes to test
 cases or utilities.
 
-Official Release
-----------------
-
-An official release is a stable release and is basically the release
-candidate, which has passed all tests.  It is the version of the code that
-has been tested as thoroughly as possible and is reliable enough to be
-used in production.
-
-Bugfix Release
---------------
-
-A bugfix release introduces no new features, but fixes bugs in previous
-official releases and targets the most critical bugs affecting users. 
-
 Release Support Policy
 ======================
 
@@ -68,7 +80,9 @@ to report any bugs, please contact our dedicated support team in the
 Instructions Summary
 ====================
 
-Instructions are provided for three types of software releases:
+Instructions are provided for the following types of software releases:
+
+#. **Coordinated Release** consisting of a group of software component releases
 
 #. **Official Release** (e.g. vX.Y.Z) from the develop branch (becomes the new main_vX.Y branch)
 
@@ -76,16 +90,18 @@ Instructions are provided for three types of software releases:
 
 #. **Development Release** (e.g. vX.Y.Z-betaN or vX.Y.Z-rcN) from the develop branch
 
-The instructions that are common to all components are documented only once and then included in the release steps for all components.
-However some instructions are specific to individual repositories and documented separately.
+The instructions that are common to all components are documented only once and then included
+in the release steps for all components.  However some instructions are specific to individual
+repositories and documented separately.
 
-Release instructions for each of the METplus components are described in the following chapters.
+Release instructions are described in the following chapters.
 
 .. toctree::
    :titlesonly:
    :maxdepth: 1
    :numbered: 4
 
+   coordinated
    metplus
    met
    metdataio
@@ -94,11 +110,3 @@ Release instructions for each of the METplus components are described in the fol
    metviewer
    metexpress
    recreate_release
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
