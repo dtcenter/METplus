@@ -21,9 +21,6 @@ Finalize Release on GitHub
 
   * Close the existing development project for the current milestone.
 
-  * If necessary, see :ref:`wo-support-project` to create a support project for the current
-    METplus coordinated release.
-
   * If necessary, see :ref:`wo-development-project` to create a development project for the
     next milestone.
 

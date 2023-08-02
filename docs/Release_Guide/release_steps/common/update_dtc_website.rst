@@ -6,22 +6,22 @@ Update DTC Website
 * Navigate to the downloads page for the |projectRepo| repository at
   https://dtcenter.org/community-code/metplus/download
 
-* Click on the Edit button to edit the Downloads page.
+* Click on the *Edit* button to edit the Downloads page.
 
 * Create a new *Software Release* for the newly released version by clicking
   on *Add New Release*.
 
   * For *Full Title of Release* type "|projectRepo| Version X.Y.Z".
 
-  * For *Related Community Code* select both the METplus and the |projectName|
+  * For *Related Community Code* select both the "METplus" and the "|projectName|"
     options (For Macs, hold the Command key to select both).
 
   * For *Version Label* type "|projectRepo| X.Y.Z-betaN".
 
-  * Select the release type (*Recommended* for official or bugfix releases or
-    *Development* for development versions). 
+  * Select the *Release Type* ("Recommended" for official or bugfix releases or
+    "Development" for development versions).
 
-  * Enter the release date.
+  * Enter the *Release Date*.
 
   * Click on *Add Code Download* then click *Add Link* to add links for each of the following:
 
@@ -58,18 +58,10 @@ Update DTC Website
     * For an official release, remove the corresponding development
       releases.
 
-  * Create or edit the "Coordinated METplus Version X.Y" software release.
-
-    * For an official release, create the "Coordinated METplus Version X.Y"
-      release entry if it doesn't already exist.  Ensure the "Release Type"
-      is set to *Recommended*. Consider changing the "Release Type" of
-      previous coordinated releases from *Recommended* to *Other*. Add
-      links for the |projectRepo| X.Y.Z, the METplus "Documentation",
-      the METplus "Existing Builds and Docker" page, and the "Release Notes".
-      Make the Release Notes a link to the |projectRepo| Release Notes.
+  * Edit the "Coordinated METplus Version X.Y" software release.
       
     * For a bugfix release, update the existing link and text in
-      the "Coordinated METplus Version X.Y" release section with the
+      the "Coordinated METplus-X.Y" release section with the
       X.Y.Z+1 information.
 
   * |otherWebsiteUpdates|
