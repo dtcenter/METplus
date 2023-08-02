@@ -23,6 +23,6 @@ See the [METplus Workflow](https://metplus.readthedocs.io/en/latest/Contributors
 Select: **Reviewer(s)**
 Select: **Organization** level software support **Project** or **Repository** level development cycle **Project**
 Select: **Milestone** as the version that will include these changes
-- [ ] fter submitting the PR, select the :gear: icon in the **Development** section of the right hand sidebar. Search for the issue that this PR will close and select it, if it is not already selected.
+- [ ] After submitting the PR, select the :gear: icon in the **Development** section of the right hand sidebar. Search for the issue that this PR will close and select it, if it is not already selected.
 - [ ] After the PR is approved, merge your changes. If permissions do not allow this, request that the reviewer do the merge.
 - [ ] Close the linked issue and delete your feature or bugfix branch from GitHub.
