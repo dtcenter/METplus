@@ -1,0 +1,22 @@
+#%Module######################################################################
+##
+##      METplus
+##
+proc ModulesHelp { } {
+  puts stderr "Sets up the paths and environment variables to use the METplus-5.1.0
+     *** For help see the official MET webpage at http://www.dtcenter.org/met/users ***"
+}
+
+module load intel python/3.10.4 
+module use /apps/dev/modulefiles/
+module load ve/evs/1.0
+
+module use /apps/sw_review/emc/MET/modulefiles
+module load met/11.1.0
+module load nco
+module load libjpeg
+module load grib_util
+module load wgrib2
+
+setenv METPLUS_PATH /apps/sw_review/emc/METplus/METplus-5.1.0
+prepend-path PATH /apps/sw_review/emc/METplus/METplus-5.1.0/ush

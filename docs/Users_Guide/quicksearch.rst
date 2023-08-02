@@ -151,7 +151,9 @@ Use Cases by METplus Feature:
    | `Looping by Month or Year <../search.html?q=LoopByMonthFeatureUseCase&check_keywords=yes&area=default>`_
    | `List Expansion (using begin_end_incr syntax) <../search.html?q=ListExpansionFeatureUseCase&check_keywords=yes&area=default>`_
    | `Masking for Regions of Interest <../search.html?q=MaskingFeatureUseCase&check_keywords=yes&area=default>`_
+   | `METcalcpy <../search.html?q=METcalcpyUseCase&check_keywords=yes&area=default>`_
    | `METdbLoad <../search.html?q=METdbLoadUseCase&check_keywords=yes&area=default>`_
+   | `METplotpy <../search.html?q=METplotpyUseCase&check_keywords=yes&area=default>`_
    | `MET_PYTHON_EXE Environment Variable  <../search.html?q=MET_PYTHON_EXEUseCase&check_keywords=yes&area=default>`_
    | `Multiple Conf File Use <../search.html?q=MultiConfUseCase&check_keywords=yes&area=default>`_
    | `Observation Time Summary <../search.html?q=ObsTimeSummaryUseCase&check_keywords=yes&area=default>`_
@@ -180,7 +182,9 @@ Use Cases by METplus Feature:
    | **Looping by Month or Year**: *LoopByMonthFeatureUseCase*
    | **List Expansion (using begin_end_incr syntax)**: *ListExpansionFeatureUseCase*
    | **Masking for Regions of Interest**: *MaskingFeatureUseCase*
+   | **METcalcpy**: *METcalcpyUseCase*
    | **METdbLoad**: *METdbLoadUseCase*
+   | **METplotpy**: *METplotpyUseCase*
    | **MET_PYTHON_EXE Environment Variable**: *MET_PYTHON_EXEUseCase*
    | **Multiple Conf File Use**: *MultiConfUseCase*
    | **Observation Time Summary**: *ObsTimeSummaryUseCase*

@@ -356,7 +356,28 @@ def set_minimum_config_settings(config):
              'SERIES_ANALYSIS_MASK_POLY': 'MET_BASE/poly/EAST.poly',
          },
          {'METPLUS_MASK_DICT': 'mask = {grid = "FULL";poly = "MET_BASE/poly/EAST.poly";}'}),
-
+        # check tags are resolved and animation config works
+        ({
+             'FCST_VAR1_LEVELS': 'A0{init?fmt=3}',
+             'SERIES_ANALYSIS_GENERATE_PLOTS': 'True',
+             'SERIES_ANALYSIS_GENERATE_ANIMATIONS': 'True',
+             'CONVERT_EXE': 'animation_exe'
+         },
+         {},),
+        # check 'BOTH_*' and '*INPUT_FILE_LIST' config 
+        ({'SERIES_ANALYSIS_REGRID_TO_GRID': 'FCST',
+          'BOTH_SERIES_ANALYSIS_INPUT_TEMPLATE': 'True',
+          },
+         {'METPLUS_REGRID_DICT': 'regrid = {to_grid = FCST;}'}),
+        ({'SERIES_ANALYSIS_REGRID_TO_GRID': 'FCST',
+          'BOTH_SERIES_ANALYSIS_INPUT_FILE_LIST': 'True',
+          },
+         {'METPLUS_REGRID_DICT': 'regrid = {to_grid = FCST;}'}),
+        ({'SERIES_ANALYSIS_REGRID_TO_GRID': 'FCST',
+          'FCST_SERIES_ANALYSIS_INPUT_FILE_LIST': 'True',
+          'OBS_SERIES_ANALYSIS_INPUT_FILE_LIST': 'True',
+          },
+         {'METPLUS_REGRID_DICT': 'regrid = {to_grid = FCST;}'}),
     ]
 )
 @pytest.mark.wrapper_a
@@ -374,6 +395,8 @@ def test_series_analysis_single_field(metplus_config, config_overrides,
     wrapper = SeriesAnalysisWrapper(config)
     assert wrapper.isOK
 
+    is_both = wrapper.c_dict.get('USING_BOTH')
+    
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
 
@@ -383,13 +406,20 @@ def test_series_analysis_single_field(metplus_config, config_overrides,
     suffix = '_init_20050807000000_valid_ALL_lead_ALL.txt'
     fcst_file = f'{prefix}fcst{suffix}'
     obs_file = f'{prefix}obs{suffix}'
-    expected_cmds = [(f"{app_path} "
+    
+    if is_both:
+        expected_cmds = [(f"{app_path} "
+                      f"-both {out_dir}/{fcst_file} "
+                      f"-out {out_dir}/2005080700 "
+                      f"-config {config_file} {verbosity}"),
+                     ]
+    else:
+        expected_cmds = [(f"{app_path} "
                       f"-fcst {out_dir}/{fcst_file} "
                       f"-obs {out_dir}/{obs_file} "
                       f"-out {out_dir}/2005080700 "
                       f"-config {config_file} {verbosity}"),
                      ]
-
 
     all_cmds = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_cmds}")
@@ -899,20 +929,56 @@ def test_get_output_dir(metplus_config, template, storm_id, label, expected_resu
     assert(actual_result == os.path.join(output_dir, expected_result))
 
 
+@pytest.mark.parametrize(
+    'data,expected_min,expected_max,variable_name', [
+        (   [ 
+            [[1, 2], [3, 4], [5, 6]],
+            [[2, 3], [4, 5], [6, 7]],
+            [[30, 31], [33, 32], [34, 39]],
+            ],
+            1,
+            39,
+            'Temp'
+         ),
+        (
+            [ 
+            [[1, 1], [1, 1], [1, 1]]
+            ],
+            1,
+            1,
+            'Temp'
+         ),
+            (
+            [ 
+            [[1, 1], [1, 1], [1, 1]]
+            ],
+            None,
+            None,
+            'Foo'
+         ),            
+    ]
+    
+)
 @pytest.mark.wrapper_a
-def test_get_netcdf_min_max(metplus_config):
-    pytest.skip('Rewrite this test to write a NetCDF file and check vals instead of using file in met install dir')
-    expected_min = 0.0
-    expected_max = 8.0
+def test_get_netcdf_min_max(tmp_path_factory,
+                            metplus_config,
+                            make_dummy_nc,
+                            data,
+                            expected_min,
+                            expected_max,
+                            variable_name):
 
+    filepath = make_dummy_nc(
+        tmp_path_factory.mktemp("data1"),
+        [359, 0, 1],
+        [-1, 0, 1],
+        [0, 1],
+        data,
+        "Temp"
+    )
+     
     wrapper = series_analysis_wrapper(metplus_config)
-    met_install_dir = wrapper.config.getdir('MET_INSTALL_DIR')
-    filepath = os.path.join(met_install_dir,
-                            'share',
-                            'met',
-                            'tc_data',
-                            'basin_global_tenth_degree.nc')
-    variable_name = 'basin'
+
     min, max = wrapper._get_netcdf_min_max(filepath, variable_name)
     assert min == expected_min
     assert max == expected_max

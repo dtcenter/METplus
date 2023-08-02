@@ -31,7 +31,7 @@ Running
 
 To run the unit tests, set the environment variable
 **METPLUS_TEST_OUTPUT_BASE** to a path where the user running has write
-permissions, nativate to the METplus directory, then call pytest::
+permissions, navigate to the METplus directory, then call pytest::
 
     export METPLUS_TEST_OUTPUT_BASE=/d1/personal/${USER}/pytest
     cd METplus
@@ -66,30 +66,46 @@ To run only the GridStat unit tests::
 
 Subsetting Tests by Marker
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
-Unit tests can include one of the custom markers listed in the
-internal/tests/pytests/pytest.ini file. Some examples include:
 
-    * diff
-    * run_metplus
-    * util
-    * wrapper_a
-    * wrapper_b
-    * wrapper_c
-    * wrapper_d
-    * wrapper
-    * long
-    * plotting
+Pytest allows contributors to use markers on test functions. Markers are used
+to set various features/attributes to test functions so that users can easily
+exclude or include some tests from the test execution. Pytest provides many
+inbuilt markers such as xfail, skip and parametrize. Apart from the inbuilt
+marker names, users can create their own custom marker names.
 
-To apply a marker to a unit test function, add the following on the line before
-the function definition::
+**Creating Pytest Markers**
 
+The METplus team has defined various custom marker names for the unit tests
+and contributors can add to these markers.  These custom markers are listed
+with a brief description, in the *internal/tests/pytests/pytest.ini* file.
+Some examples include:
+
+    * diff (custom marker for diff util tests that require additional packages)
+    * run_metplus (custom marker for testing run_metplus.py script)
+    * util (custom marker for testing metplus/util logic)
+    * long (custom marker for tests that take a long time to run)
+    * plotting (custom marker for tests that involve plotting)
+
+To set up unit test functions so that they can be easily excluded or included
+from text execution, contributors can add the following on the line before
+the function definition in the Python test file::
+      
     @pytest.mark.<MARKER-NAME>
 
-where <MARKER-NAME> is one of the custom marker strings listed in pytest.ini.
+where <MARKER-NAME> is one of the custom marker strings listed in the
+*internal/tests/pytests/pytest.ini* file.
 
-New pytest markers should be added to the pytest.ini file with a brief
-description. If they are not added to the markers list, then a warning will
-be output when running the tests.
+To see an example of the “util” custom marker (@pytest.mark.util),
+look in the file *internal/tests/pytests/util/time_util/test_time_util.py*.
+
+New pytest markers should be added to the *internal/tests/pytests/pytest.ini*
+file with a brief description. If they are not added to the markers list,
+then a warning will be output when running the tests.
+
+**Using Pytest Markers**
+
+The tests that have associated marker names can be now run to include
+or exclude tests based on the given name.
 
 To run only tests with a given marker, run::
 

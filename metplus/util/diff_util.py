@@ -5,6 +5,7 @@ import os
 import netCDF4
 import filecmp
 import csv
+from numbers import Number
 from PIL import Image, ImageChops
 from pandas import isnull
 from numpy.ma import is_masked
@@ -43,6 +44,11 @@ UNSUPPORTED_EXTENSIONS = [
 # PBL use case can be removed after dtcenter/METplus#2246 is completed
 SKIP_KEYWORDS = [
     'PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed',
+    'CyclonePlotter/cyclone/20150301.png',
+    'plots/obs_elbow.png',
+    'plots/fcst_elbow.png',
+    'CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC/cyclone/20201007',
+    'plots/MAKE_MAKI_timeseries',
 ]
 
 
@@ -94,7 +100,7 @@ def get_file_type(filepath):
         return 'pdf'
 
     if file_extension in UNSUPPORTED_EXTENSIONS:
-        return f'unsupported{file_extension}'
+        return f'unsupported {file_extension}'
 
     return 'unknown'
 
@@ -478,6 +484,8 @@ def _is_equal_rounded(value_a, value_b):
 
 
 def _is_number(value):
+    if isinstance(value, Number):
+        return True
     return value.replace('.', '1').replace('-', '1').strip().isdigit()
 
 

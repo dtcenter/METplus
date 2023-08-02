@@ -28,10 +28,7 @@ class PointStatWrapper(CompareGriddedWrapper):
         'METPLUS_OBS_FIELD',
         'METPLUS_MESSAGE_TYPE',
         'METPLUS_OBS_WINDOW_DICT',
-        'METPLUS_MASK_GRID',
-        'METPLUS_MASK_POLY',
-        'METPLUS_MASK_SID',
-        'METPLUS_MASK_LLPNT',
+        'METPLUS_MASK_DICT',
         'METPLUS_OUTPUT_PREFIX',
         'METPLUS_CLIMO_CDF_DICT',
         'METPLUS_OBS_QUALITY_INC',
@@ -56,6 +53,10 @@ class PointStatWrapper(CompareGriddedWrapper):
         'POINT_STAT_GRID',
         'POINT_STAT_STATION_ID',
         'POINT_STAT_MESSAGE_TYPE',
+        'METPLUS_MASK_GRID',  # deprecated in v5.1.0
+        'METPLUS_MASK_POLY',  # deprecated in v5.1.0
+        'METPLUS_MASK_SID',  # deprecated in v5.1.0
+        'METPLUS_MASK_LLPNT',  # deprecated in v5.1.0
     ]
 
     OUTPUT_FLAGS = [
@@ -154,6 +155,9 @@ class PointStatWrapper(CompareGriddedWrapper):
         self.add_met_config_window('obs_window')
         self.handle_obs_window_legacy(c_dict)
 
+        self.handle_mask(get_point=True)
+
+        # handle legacy mask dictionary variables
         self.add_met_config(name='grid',
                             data_type='list',
                             env_var_name='METPLUS_MASK_GRID',
@@ -183,6 +187,7 @@ class PointStatWrapper(CompareGriddedWrapper):
                             metplus_configs=['POINT_STAT_MASK_LLPNT'],
                             extra_args={'allow_empty': True,
                                         'remove_quotes': True})
+        # end of handling legacy mask dictionary variables
 
         self.add_met_config(name='message_type',
                             data_type='list')

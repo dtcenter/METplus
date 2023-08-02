@@ -30,7 +30,7 @@ When applicable, release notes are followed by the
 `GitHub issue <https://github.com/dtcenter/METplus/issues>`__ number which
 describes the bugfix, enhancement, or new feature.
 
-METplus Version 5.1.0 Release Notes (2023-07-21)
+METplus Version 5.1.0 Release Notes (2023-07-31)
 ------------------------------------------------
 
   .. dropdown:: Enhancements
@@ -42,7 +42,10 @@ METplus Version 5.1.0 Release Notes (2023-07-21)
      * Update use cases to use new Python directory structure in MET
        (`#2115 <https://github.com/dtcenter/METplus/issues/2115>`_)
      * Add support for new multivariate MODE settings
-       (`#2197 <https://github.com/dtcenter/METplus/issues/2197>`_)
+       (`#2197 <https://github.com/dtcenter/METplus/issues/2197>`_,
+       `#2210 <https://github.com/dtcenter/METplus/issues/2210>`_,
+       `#2230 <https://github.com/dtcenter/METplus/issues/2230>`_,
+       `#2235 <https://github.com/dtcenter/METplus/issues/2235>`_)
 
   .. dropdown:: Bugfix
 
@@ -56,16 +59,10 @@ METplus Version 5.1.0 Release Notes (2023-07-21)
        (`#2137 <https://github.com/dtcenter/METplus/issues/2137>`_)
      * Allow setting of convert, censor_thresh, and censor_val in regrid dictionary
        (`#2082 <https://github.com/dtcenter/METplus/issues/2082>`_)
-     * METplus run errors if no commands were run
-       (`#2098 <https://github.com/dtcenter/METplus/issues/2098>`_)
      * TCPairs setting -diag option causes failure
        (`#2179 <https://github.com/dtcenter/METplus/issues/2179>`_)
      * Define the order of the forecast variables numerically rather than alphabetically
        (`#2070 <https://github.com/dtcenter/METplus/issues/2070>`_)
-     * Allow setting of convert, censor_thresh, and censor_val in regrid dictionary
-       (`#2082 <https://github.com/dtcenter/METplus/issues/2082>`_)
-     * Skip-if-output-exists logic incorrectly skips files
-       (`#2096 <https://github.com/dtcenter/METplus/issues/2096>`_)
      * Prevent error if no commands were run because they were skipped
        (`#2098 <https://github.com/dtcenter/METplus/issues/2098>`_)
      * Allow spaces for complex categorical thresholds
@@ -74,6 +71,14 @@ METplus Version 5.1.0 Release Notes (2023-07-21)
        (`#2161 <https://github.com/dtcenter/METplus/issues/2161>`_)
      * StatAnalysis time shifting failure
        (`#2168 <https://github.com/dtcenter/METplus/issues/2168>`_)
+     * TCPairs: skip times logic incorrectly skips additional times
+       (`#2212 <https://github.com/dtcenter/METplus/issues/2212>`_)
+     * TCStat fails if -out_stat directory does not exist
+       (`#2241 <https://github.com/dtcenter/METplus/issues/2241>`_)
+     * Ensure log instances for concurrent runs are unique
+       (`#2245 <https://github.com/dtcenter/METplus/issues/2245>`_)
+     * PointStat - Support running with no MASK provided
+       (`#1853 <https://github.com/dtcenter/METplus/issues/1853>`_)
 
   .. dropdown:: New Wrappers
 
@@ -85,11 +90,25 @@ METplus Version 5.1.0 Release Notes (2023-07-21)
      * Multi-Variate MODE (`#1516 <https://github.com/dtcenter/METplus/issues/1516>`_)
      * Read in Argo profile data netCDF files for use in METplus with python embedding
        (`#1977 <https://github.com/dtcenter/METplus/issues/1977>`_)
+     * PANDA-C: MPAS to SATCORPS
+       (`#2188 <https://github.com/dtcenter/METplus/issues/2188>`_)
+     * PANDA-C: MPAS to MERRA2
+       (`#2188 <https://github.com/dtcenter/METplus/issues/2188>`_)
+     * PANDA-C: MPAS to ERA5
+       (`#2188 <https://github.com/dtcenter/METplus/issues/2188>`_)
+     * PANDA-C: GFS to SATCORPS
+       (`#2188 <https://github.com/dtcenter/METplus/issues/2188>`_)
+     * PANDA-C: GFS to MERRA2
+       (`#2188 <https://github.com/dtcenter/METplus/issues/2188>`_)
+     * PANDA-C: GFS to ERA5
+       (`#2188 <https://github.com/dtcenter/METplus/issues/2188>`_)
+     * PointStat AMDAR PBLH with python embedding
+       (`#2198 <https://github.com/dtcenter/METplus/issues/2198>`_)
+     * Space-time cross-spectra for S2S forecasts
+       (`#2136 <https://github.com/dtcenter/METplus/issues/2136>`_)
 
   .. dropdown:: Documentation
 
-     * Update the METplus Components Python Requirements Documentation
-       (`#2016 <https://github.com/dtcenter/METplus/issues/2016>`_)
      * Enhance the Release Notes by adding dropdown menus
        (`#2076 <https://github.com/dtcenter/METplus/issues/2076>`_)
      * Update the METplus Components Python Requirements
@@ -97,6 +116,8 @@ METplus Version 5.1.0 Release Notes (2023-07-21)
        `#2016 <https://github.com/dtcenter/METplus/issues/2016>`_)
      * Add documentation on support for releases to the Release Guide
        (`#2106 <https://github.com/dtcenter/METplus/issues/2106>`_)
+     * Add use case quick search keywords for METplotpy and METcalcpy
+       (`#2151 <https://github.com/dtcenter/METplus/issues/2151>`_)
 
   .. dropdown:: Internal
 
@@ -108,8 +129,6 @@ METplus Version 5.1.0 Release Notes (2023-07-21)
        (`#2015 <https://github.com/dtcenter/METplus/issues/2015>`_)
      * **Upgrade to using Python 3.10.4**
        (`#2022 <https://github.com/dtcenter/METplus/issues/2022>`_)
-     * Add 'License.txt' to the METplus repo
-       (`#2058 <https://github.com/dtcenter/METplus/issues/2058>`_)
      * Add 'LICENSE.md' to the METplus repo
        (`#2058 <https://github.com/dtcenter/METplus/issues/2058>`_)
      * Update Contributor's Guide to use GH Action to update truth data
@@ -120,6 +139,15 @@ METplus Version 5.1.0 Release Notes (2023-07-21)
        (`#2159 <https://github.com/dtcenter/METplus/issues/2159>`_)
      * Refactored code to resolve many SonarQube items
        (`#1610 <https://github.com/dtcenter/METplus/issues/1610>`_)
+     * Improve Contributor's Guide
+       (`#2138 <https://github.com/dtcenter/METplus/issues/2138>`_,
+       `#2207 <https://github.com/dtcenter/METplus/issues/2207>`_)
+     * Bugfix: Fix difference test logic
+       (`#2244 <https://github.com/dtcenter/METplus/issues/2244>`_)
+     * Remove base environment from Docker Conda images
+       (`#2249 <https://github.com/dtcenter/METplus/issues/2249>`_)
+     * PR Templates (all METplus component repos): Improve language about linking relevant issue(s)
+       (`#2257 <https://github.com/dtcenter/METplus/issues/2257>`_)
 
 
 METplus Version 5.0.0 Release Notes (2022-12-09)

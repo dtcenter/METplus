@@ -194,6 +194,8 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 #   * S2SMidLatAppUseCase
 #   * NetCDFFileUseCase
 #   * GRIB2FileUseCase
+#   * METcalcpyUseCase
+#   * METplotpyUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

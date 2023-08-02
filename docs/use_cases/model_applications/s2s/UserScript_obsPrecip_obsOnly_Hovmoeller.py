@@ -139,6 +139,7 @@ UserScript_obsPrecip_obsOnly_Hovmoeller.py
 #
 #   * UserScriptUseCase
 #   * S2SAppUseCase
+#   * METplotpyUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

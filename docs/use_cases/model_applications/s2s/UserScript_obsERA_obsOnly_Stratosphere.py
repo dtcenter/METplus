@@ -126,6 +126,7 @@ UserScript_obsERA_obsOnly_Stratosphere.py
 #
 #   * UserScriptUseCase
 #   * S2SAppUseCase
+#   * METcalcpyUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

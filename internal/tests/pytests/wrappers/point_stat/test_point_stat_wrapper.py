@@ -20,6 +20,7 @@ for init in inits:
     valid = valid.strftime(time_fmt)
     valids.append(valid)
 
+
 def set_minimum_config_settings(config):
     # set config variables to prevent command from running and bypass check
     # if input files actually exist
@@ -129,6 +130,7 @@ def test_met_dictionary_in_var_options(metplus_config):
           },
          {'METPLUS_MASK_GRID': 'grid = ["FULL"];',
           'METPLUS_MASK_POLY': 'poly = ["one", "two"];',
+          'METPLUS_MASK_DICT': 'mask = {grid = ["FULL"];poly = ["one", "two"];}',
           }),
         # mask grid and poly (new config var)
         ({'POINT_STAT_MASK_GRID': 'FULL',
@@ -136,12 +138,12 @@ def test_met_dictionary_in_var_options(metplus_config):
           },
          {'METPLUS_MASK_GRID': 'grid = ["FULL"];',
           'METPLUS_MASK_POLY': 'poly = ["one", "two"];',
+          'METPLUS_MASK_DICT': 'mask = {grid = ["FULL"];poly = ["one", "two"];}',
           }),
         # mask grid value
-        ({'POINT_STAT_MASK_GRID': 'FULL',
-          },
-         {'METPLUS_MASK_GRID':
-              'grid = ["FULL"];',
+        ({'POINT_STAT_MASK_GRID': 'FULL', },
+         {'METPLUS_MASK_GRID': 'grid = ["FULL"];',
+          'METPLUS_MASK_DICT': 'mask = {grid = ["FULL"];}',
           }),
         # mask.poly complex example
         ({'POINT_STAT_MASK_POLY': ('["{ENV[MET_BUILD_BASE]}/share/met/poly/CAR.poly", '
@@ -154,30 +156,31 @@ def test_met_dictionary_in_var_options(metplus_config):
               '"{ENV[MET_BUILD_BASE]}/share/met/poly/GLF.poly", '
               '"{ENV[MET_BUILD_BASE]}/share/met/poly/NAO.poly", '
               '"{ENV[MET_BUILD_BASE]}/share/met/poly/SAO.poly"];',
+          'METPLUS_MASK_DICT':
+              'mask = {poly = ["{ENV[MET_BUILD_BASE]}/share/met/poly/CAR.poly", '
+              '"{ENV[MET_BUILD_BASE]}/share/met/poly/GLF.poly", '
+              '"{ENV[MET_BUILD_BASE]}/share/met/poly/NAO.poly", '
+              '"{ENV[MET_BUILD_BASE]}/share/met/poly/SAO.poly"];}',
           }),
         # mask grid empty string (should create empty list)
-        ({'POINT_STAT_MASK_GRID': '',
-          },
-         {'METPLUS_MASK_GRID':
-              'grid = [];',
+        ({'POINT_STAT_MASK_GRID': '', },
+         {'METPLUS_MASK_GRID': 'grid = [];',
+          'METPLUS_MASK_DICT': 'mask = {grid = [];}',
           }),
         # mask poly (old config var)
-        ({'POINT_STAT_VERIFICATION_MASK_TEMPLATE': 'one, two',
-          },
-         {'METPLUS_MASK_POLY':
-              'poly = ["one", "two"];',
+        ({'POINT_STAT_VERIFICATION_MASK_TEMPLATE': 'one, two', },
+         {'METPLUS_MASK_POLY': 'poly = ["one", "two"];',
+          'METPLUS_MASK_DICT': 'mask = {poly = ["one", "two"];}',
           }),
         # mask poly (new config var)
-        ({'POINT_STAT_MASK_POLY': 'one, two',
-          },
-         {'METPLUS_MASK_POLY':
-              'poly = ["one", "two"];',
+        ({'POINT_STAT_MASK_POLY': 'one, two', },
+         {'METPLUS_MASK_POLY': 'poly = ["one", "two"];',
+          'METPLUS_MASK_DICT': 'mask = {poly = ["one", "two"];}',
           }),
 
-        ({'POINT_STAT_MASK_SID': 'one, two',
-          },
-         {'METPLUS_MASK_SID':
-              'sid = ["one", "two"];',
+        ({'POINT_STAT_MASK_SID': 'one, two', },
+         {'METPLUS_MASK_SID': 'sid = ["one", "two"];',
+          'METPLUS_MASK_DICT': 'mask = {sid = ["one", "two"];}',
           }),
 
         ({'POINT_STAT_OUTPUT_PREFIX': 'my_output_prefix'},
@@ -189,10 +192,8 @@ def test_met_dictionary_in_var_options(metplus_config):
         ({'OBS_POINT_STAT_WINDOW_BEGIN': '-2700',
           'OBS_POINT_STAT_WINDOW_END': '2700',
           },
-         {'METPLUS_OBS_WINDOW_DICT':
-              'obs_window = {beg = -2700;end = 2700;}',
-          'OBS_WINDOW_BEGIN': '-2700',
-          'OBS_WINDOW_END': '2700'
+         {'METPLUS_OBS_WINDOW_DICT': 'obs_window = {beg = -2700;end = 2700;}',
+          'OBS_WINDOW_BEGIN': '-2700', 'OBS_WINDOW_END': '2700'
           }),
         # test that {app}_OBS_WINDOW are preferred over
         # OBS_{app}_WINDOW and generic OBS_WINDOW
@@ -203,8 +204,7 @@ def test_met_dictionary_in_var_options(metplus_config):
           'OBS_WINDOW_BEGIN': '-900',
           'OBS_WINDOW_END': '900',
           },
-         {'METPLUS_OBS_WINDOW_DICT':
-              'obs_window = {beg = -1800;end = 1800;}',
+         {'METPLUS_OBS_WINDOW_DICT': 'obs_window = {beg = -1800;end = 1800;}',
           }),
 
         ({'POINT_STAT_CLIMO_CDF_CDF_BINS': '1', },
@@ -485,7 +485,8 @@ def test_met_dictionary_in_var_options(metplus_config):
          {'METPLUS_HSS_EC_VALUE': 'hss_ec_value = 0.5;'}),
         ({'POINT_STAT_MASK_LLPNT': ('{ name = "LAT30TO40"; lat_thresh = >=30&&<=40; lon_thresh = NA; },'
                                     '{ name = "BOX"; lat_thresh = >=20&&<=40; lon_thresh = >=-110&&<=-90; }')},
-         {'METPLUS_MASK_LLPNT': 'llpnt = [{ name = "LAT30TO40"; lat_thresh = >=30&&<=40; lon_thresh = NA; }, { name = "BOX"; lat_thresh = >=20&&<=40; lon_thresh = >=-110&&<=-90; }];'}),
+         {'METPLUS_MASK_LLPNT': 'llpnt = [{ name = "LAT30TO40"; lat_thresh = >=30&&<=40; lon_thresh = NA; }, { name = "BOX"; lat_thresh = >=20&&<=40; lon_thresh = >=-110&&<=-90; }];',
+          'METPLUS_MASK_DICT': 'mask = {llpnt = [{ name = "LAT30TO40"; lat_thresh = >=30&&<=40; lon_thresh = NA; }, { name = "BOX"; lat_thresh = >=20&&<=40; lon_thresh = >=-110&&<=-90; }];}'}),
 
         ({'POINT_STAT_HIRA_FLAG': 'False', },
          {'METPLUS_HIRA_DICT': 'hira = {flag = FALSE;}'}),
@@ -531,6 +532,64 @@ def test_met_dictionary_in_var_options(metplus_config):
         ({'POINT_STAT_OBS_VALID_END': '{valid?fmt=%Y%m%d_%H?shift=6H}', }, {}),
         ({'POINT_STAT_OBS_VALID_BEG': '{valid?fmt=%Y%m%d_%H?shift=-6H}',
           'POINT_STAT_OBS_VALID_END': '{valid?fmt=%Y%m%d_%H?shift=6H}'}, {}),
+        # complex mask example
+        ({'POINT_STAT_MASK_GRID': 'FULL',
+          'POINT_STAT_MASK_POLY': ('["{ENV[MET_BUILD_BASE]}/share/met/poly/CAR.poly", '
+                                   '"{ENV[MET_BUILD_BASE]}/share/met/poly/GLF.poly", '
+                                   '"{ENV[MET_BUILD_BASE]}/share/met/poly/NAO.poly", '
+                                   '"{ENV[MET_BUILD_BASE]}/share/met/poly/SAO.poly" ];'),
+          'POINT_STAT_MASK_SID': 'one, two',
+          'POINT_STAT_MASK_LLPNT': (
+         '{ name = "LAT30TO40"; lat_thresh = >=30&&<=40; lon_thresh = NA; },'
+         '{ name = "BOX"; lat_thresh = >=20&&<=40; lon_thresh = >=-110&&<=-90; }')},
+         {'METPLUS_MASK_DICT': (
+             'mask = {grid = ["FULL"];'
+             'poly = ["{ENV[MET_BUILD_BASE]}/share/met/poly/CAR.poly", '
+             '"{ENV[MET_BUILD_BASE]}/share/met/poly/GLF.poly", '
+             '"{ENV[MET_BUILD_BASE]}/share/met/poly/NAO.poly", '
+             '"{ENV[MET_BUILD_BASE]}/share/met/poly/SAO.poly"];'
+             'sid = ["one", "two"];'
+             'llpnt = [{ name = "LAT30TO40"; lat_thresh = >=30&&<=40; lon_thresh = NA; }, { name = "BOX"; lat_thresh = >=20&&<=40; lon_thresh = >=-110&&<=-90; }];}'
+          ),
+          'METPLUS_MASK_LLPNT': 'llpnt = [{ name = "LAT30TO40"; lat_thresh = >=30&&<=40; lon_thresh = NA; }, { name = "BOX"; lat_thresh = >=20&&<=40; lon_thresh = >=-110&&<=-90; }];',
+          'METPLUS_MASK_POLY':
+              'poly = ["{ENV[MET_BUILD_BASE]}/share/met/poly/CAR.poly", '
+              '"{ENV[MET_BUILD_BASE]}/share/met/poly/GLF.poly", '
+              '"{ENV[MET_BUILD_BASE]}/share/met/poly/NAO.poly", '
+              '"{ENV[MET_BUILD_BASE]}/share/met/poly/SAO.poly"];',
+          'METPLUS_MASK_GRID': 'grid = ["FULL"];',
+          'METPLUS_MASK_SID': 'sid = ["one", "two"];',
+          }),
+        # complex mask example, empty grid value
+        ({'POINT_STAT_MASK_GRID': '',
+          'POINT_STAT_MASK_POLY': (
+          '["{ENV[MET_BUILD_BASE]}/share/met/poly/CAR.poly", '
+          '"{ENV[MET_BUILD_BASE]}/share/met/poly/GLF.poly", '
+          '"{ENV[MET_BUILD_BASE]}/share/met/poly/NAO.poly", '
+          '"{ENV[MET_BUILD_BASE]}/share/met/poly/SAO.poly" ];'),
+          'POINT_STAT_MASK_SID': 'one, two',
+          'POINT_STAT_MASK_LLPNT': (
+                  '{ name = "LAT30TO40"; lat_thresh = >=30&&<=40; lon_thresh = NA; },'
+                  '{ name = "BOX"; lat_thresh = >=20&&<=40; lon_thresh = >=-110&&<=-90; }')},
+         {'METPLUS_MASK_DICT': (
+                 'mask = {grid = [];'
+                 'poly = ["{ENV[MET_BUILD_BASE]}/share/met/poly/CAR.poly", '
+                 '"{ENV[MET_BUILD_BASE]}/share/met/poly/GLF.poly", '
+                 '"{ENV[MET_BUILD_BASE]}/share/met/poly/NAO.poly", '
+                 '"{ENV[MET_BUILD_BASE]}/share/met/poly/SAO.poly"];'
+                 'sid = ["one", "two"];'
+                 'llpnt = [{ name = "LAT30TO40"; lat_thresh = >=30&&<=40; lon_thresh = NA; }, { name = "BOX"; lat_thresh = >=20&&<=40; lon_thresh = >=-110&&<=-90; }];}'
+         ),
+             'METPLUS_MASK_LLPNT': 'llpnt = [{ name = "LAT30TO40"; lat_thresh = >=30&&<=40; lon_thresh = NA; }, { name = "BOX"; lat_thresh = >=20&&<=40; lon_thresh = >=-110&&<=-90; }];',
+             'METPLUS_MASK_POLY':
+                 'poly = ["{ENV[MET_BUILD_BASE]}/share/met/poly/CAR.poly", '
+                 '"{ENV[MET_BUILD_BASE]}/share/met/poly/GLF.poly", '
+                 '"{ENV[MET_BUILD_BASE]}/share/met/poly/NAO.poly", '
+                 '"{ENV[MET_BUILD_BASE]}/share/met/poly/SAO.poly"];',
+             'METPLUS_MASK_GRID': 'grid = [];',
+             'METPLUS_MASK_SID': 'sid = ["one", "two"];',
+         }),
+
     ]
 )
 @pytest.mark.wrapper_a
