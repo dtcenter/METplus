@@ -87,7 +87,7 @@ Instructions are provided for the following types of software releases:
 
 #. **Coordinated Release** consisting of a group of software component releases
 
-#. **Official Release** (e.g. vX.Y.Z) from the develop branch (becomes the new main_vX.Y branch)
+#. **Official Release** (e.g. vX.Y.0) from the develop branch (becomes the new main_vX.Y branch)
 
 #. **Bugfix Release** (e.g. vX.Y.Z) from the corresponding main_vX.Y branch
 
