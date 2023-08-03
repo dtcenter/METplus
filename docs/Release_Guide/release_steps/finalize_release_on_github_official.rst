@@ -34,6 +34,7 @@ Finalize Release on GitHub
 
      https://github.com/dtcenter/|projectRepo|
      -> Settings
-     -> Branches (tab on left)
-     -> change the drop down to new branch (click on stacked arrows icon next to the edit icon)
-     -> update branch protection rules 
+     -> Scroll down to the *Default branch* section
+     -> Click the stacked arrows button next to default branch name
+     -> Select the new default branch from the dropdown list
+     -> Click the *Update* button
