@@ -12,7 +12,7 @@ source ${GITHUB_WORKSPACE}/${CI_JOBS_DIR}/bash_functions.sh
 
 # get branch name for push or pull request events
 # add -pull_request if pull request event to keep separated
-branch_name=`${GITHUB_WORKSPACE}/${CI_JOBS_DIR}/print_branch_name.py`
+branch_name=$(${GITHUB_WORKSPACE}/${CI_JOBS_DIR}/print_branch_name.py)
 if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
   branch_name=${branch_name}-pull_request
 fi
@@ -23,49 +23,17 @@ time_command docker pull $DOCKERHUBTAG
 
 # if unsuccessful (i.e. pull request from a fork)
 # then build image locally
-docker inspect --type=image $DOCKERHUBTAG > /dev/null
-if [ $? != 0 ]; then
+if ! docker inspect --type=image $DOCKERHUBTAG > /dev/null; then
    # if docker pull fails, build locally
    echo docker pull failed. Building Docker image locally...
    ${GITHUB_WORKSPACE}/${CI_JOBS_DIR}/docker_setup.sh
 fi
 
-# running unit tests (pytests)
-if [[ "$INPUT_CATEGORIES" == pytests* ]]; then
-  export METPLUS_ENV_TAG="test.v5.1"
-  export METPLUS_IMG_TAG=${branch_name}
-  echo METPLUS_ENV_TAG=${METPLUS_ENV_TAG}
-  echo METPLUS_IMG_TAG=${METPLUS_IMG_TAG}
-
-  export RUN_TAG=metplus-run-env
-
-  # use BuildKit to build image
-  export DOCKER_BUILDKIT=1
-
-  start_seconds=$SECONDS
-
-  # build an image with the pytest conda env and the METplus branch image
-  # Note: adding --build-arg <arg-name> without any value tells docker to
-  #  use value from local environment (export METPLUS_IMG_TAG)
-  time_command docker build -t $RUN_TAG \
-	 --build-arg METPLUS_IMG_TAG \
-	 --build-arg METPLUS_ENV_TAG \
-	 -f .github/actions/run_tests/Dockerfile.run \
-	 .
-
-  echo Running Pytests
-  command="export METPLUS_TEST_OUTPUT_BASE=/data/output;"
-  command+="/usr/local/conda/envs/${METPLUS_ENV_TAG}/bin/pytest internal/tests/pytests -vv --cov=metplus --cov-append --cov-report=term-missing;"
-  command+="if [ \$? != 0 ]; then echo ERROR: Some pytests failed. Search for FAILED to review; false; fi"
-  time_command docker run -v $WS_PATH:$GITHUB_WORKSPACE --workdir $GITHUB_WORKSPACE $RUN_TAG bash -c "$command"
-  exit $?
-fi
-
 # running use case tests
 
 # split apart use case category and subset list from input
-CATEGORIES=`echo $INPUT_CATEGORIES | awk -F: '{print $1}'`
-SUBSETLIST=`echo $INPUT_CATEGORIES | awk -F: '{print $2}'`
+CATEGORIES=$(echo $INPUT_CATEGORIES | awk -F: '{print $1}')
+SUBSETLIST=$(echo $INPUT_CATEGORIES | awk -F: '{print $2}')
 
 # run all cases if no subset list specified
 if [ -z "${SUBSETLIST}" ]; then
@@ -73,7 +41,7 @@ if [ -z "${SUBSETLIST}" ]; then
 fi
 
 # get METviewer if used in any use cases
-all_requirements=`./${CI_JOBS_DIR}/get_requirements.py ${CATEGORIES} ${SUBSETLIST}`
+all_requirements=$(./${CI_JOBS_DIR}/get_requirements.py ${CATEGORIES} ${SUBSETLIST})
 echo All requirements: $all_requirements
 NETWORK_ARG=""
 if [[ "$all_requirements" =~ .*"metviewer".* ]]; then

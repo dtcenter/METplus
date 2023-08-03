@@ -252,13 +252,13 @@ used to easily add support for overriding MET configuration variables that
 were not previously supported in METplus configuration files.
 
 There is a utility that can be used to easily see what changes are needed to
-add support for a new variable. The doc_util.py script can be run from the
+add support for a new variable. The add_met_config_helper.py script can be run from the
 command line to output a list of instructions to add new support. It can
 be run from the top level of the METplus repository. The script can be called
 to add a single MET configuration variable by supplying the MET tool name and
 the variable name::
 
-    ./metplus/util/doc_util.py point_stat sid_exc
+    ./internal/scripts/dev_tools/add_met_config_helper.py point_stat sid_exc
 
 This command will provide guidance for adding support for the sid_exc variable
 found in the PointStatConfig file.
@@ -266,7 +266,7 @@ found in the PointStatConfig file.
 The script can also be called with the name of a dictionary and the names of
 each dictionary variable::
 
-    ./metplus/util/doc_util.py grid_stat distance_map baddeley_p baddeley_max_dist fom_alpha zhu_weight beta_value_n
+    ./internal/scripts/dev_tools/add_met_config_helper.py grid_stat distance_map baddeley_p baddeley_max_dist fom_alpha zhu_weight beta_value_n
 
 This command will provide guidance for adding support for the distance_map
 dictionary found in the GridStatConfig file. The list of variables found inside
