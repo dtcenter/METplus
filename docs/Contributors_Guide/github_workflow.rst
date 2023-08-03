@@ -63,7 +63,7 @@ are required to perform the following steps.
      and select **Settings**.  Modify these settings as follows.
 
       - Project name: The default project name is **@UserNames's feature**.  Rename it as
-        **{METplus Component}-{Target Version Number} Development** (e.g. **METplus-5.1.0 Development**).
+        **{METplus Component}-{Target Version Number} Development** (e.g. **METplus-Wrappers-5.1.0 Development**).
 
       - Add a description: Add **Development toward {METplus Component} version {Target Version Number}.**
 
