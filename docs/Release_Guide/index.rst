@@ -29,7 +29,7 @@ version.
 Official Release
 ----------------
 
-An official release is a stable release of a METplus component and is basically
+An official release is a stable release of a METplus component and typically matches
 the release candidate, which has passed all tests.  It is the version of the
 code that has been tested as thoroughly as possible and is reliable enough to be
 used in production.
