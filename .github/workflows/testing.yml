@@ -109,7 +109,7 @@ jobs:
     if: ${{ needs.job_control.outputs.run_get_input_data == 'true' && needs.job_control.outputs.run_some_tests == 'true' }}
     continue-on-error: true
     steps:
-      - uses: dtcenter/metplus-action-data-update@v2
+      - uses: dtcenter/metplus-action-data-update@v3
         with:
           docker_name: ${{ secrets.DOCKER_USERNAME }}
           docker_pass: ${{ secrets.DOCKER_PASSWORD }}
@@ -145,7 +145,7 @@ jobs:
         run: coverage report -m
         if: always()
       - name: Run Coveralls
-        uses: AndreMiras/coveralls-python-action@develop
+        uses: AndreMiras/coveralls-python-action@8799c9f4443ac4201d2e2f2c725d577174683b99
         if: always()
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
