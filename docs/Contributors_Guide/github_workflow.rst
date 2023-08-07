@@ -34,7 +34,7 @@ time window for that cycle or reassigned to a future development cycle.
 
 
 Each development cycle culminates in the creation of a software release. The
-:ref:`releaseCycleStages` section describes the various types of software releases
+:ref:`releaseTypes` section describes the various types of software releases
 (development, official, or bugfix).  Each development cycle culminates in a beta release,
 a release candidate, or the official release. Generally, a **beta** development cycle results
 in a **beta** development release while an **rc** development cycle results in an **rc**
@@ -63,7 +63,7 @@ are required to perform the following steps.
      and select **Settings**.  Modify these settings as follows.
 
       - Project name: The default project name is **@UserNames's feature**.  Rename it as
-        **{METplus Component}-{Target Version Number} Development** (e.g. **METplus-5.1.0 Development**).
+        **{METplus Component}-{Target Version Number} Development** (e.g. **METplus-Wrappers-5.1.0 Development**).
 
       - Add a description: Add **Development toward {METplus Component} version {Target Version Number}.**
 
@@ -180,7 +180,7 @@ to that support project.  Each fix is assigned to the current bugfix milestone o
 the corresponding source code repository.
 
 
-The :ref:`releaseCycleStages` section describes the various types of software releases
+The :ref:`releaseTypes` section describes the various types of software releases
 (development, official, or bugfix).  The GitHub support project contains issues and
 pull requests that apply only to bugfix releases.
 
@@ -204,7 +204,7 @@ required to perform the following steps.
      and select **Settings**.  Modify these settings as follows.
 
       - Project name: The default project name is **@UserNames's feature**.  Rename it as
-        **METplus Version X.Y Support** (e.g. **METplus Version 5.0 Support**).
+        **Coorindated METplus-X.Y Support** (e.g. **Coordinated METplus-5.0 Support**).
 
       - Add a description: Add **Issues related to support for the METplus X.Y
         coordinated release.**
