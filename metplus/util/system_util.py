@@ -145,7 +145,8 @@ def prune_empty(output_dir, logger):
 
 def get_files(filedir, filename_regex):
     """! Get all the files (with a particular naming format) by walking
-        through the directories.
+        through the directories. Note this uses re.match and will only
+        find matches at the beginning of the file name.
 
       @param filedir The topmost directory from which the search begins.
       @param filename_regex The regular expression that defines the naming
@@ -174,7 +175,10 @@ def preprocess_file(filename, data_type, config, allow_dir=False):
     """ Decompress gzip, bzip, or zip files or convert Gempak files to NetCDF
         Args:
             @param filename: Path to file without zip extensions
+            @param data_type: str of data_type for filename
             @param config: Config object
+            @param allow_dir (optional): bool to allow 'filename' to be a
+              directory. Default is False.
         Returns:
             Path to staged unzipped file or original file if already unzipped
     """
