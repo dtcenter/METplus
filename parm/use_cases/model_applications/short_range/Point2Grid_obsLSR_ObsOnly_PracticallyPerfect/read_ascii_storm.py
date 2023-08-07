@@ -46,6 +46,9 @@ temp_data = pd.read_csv(input_file,names=['Time', 'Fscale', 'Location', 'County'
 #Allows for concatenating storm reports together
 temp_data = temp_data[temp_data["Time"] != "Time"]
 
+# strip out any rows that have any null/NaN values
+temp_data = temp_data[~temp_data.isnull().any(axis=1)]
+
 #Change some columns to floats and ints
 temp_data[["Lat","Lon"]] = temp_data[["Lat","Lon"]].apply(pd.to_numeric)
 
