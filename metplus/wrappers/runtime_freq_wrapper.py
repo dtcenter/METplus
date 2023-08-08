@@ -250,14 +250,8 @@ class RuntimeFreqWrapper(CommandBuilder):
 
             # since run_all_times was not called (LOOP_BY=times) then
             # get files for current run time
-            file_dict = self.get_files_from_time(time_info)
             all_files = []
-            if file_dict:
-                if isinstance(file_dict, list):
-                    all_files = file_dict
-                else:
-                    all_files = [file_dict]
-
+            self._update_list_with_new_files(time_info, all_files)
             self.c_dict['ALL_FILES'] = all_files
 
             # Run for given init/valid time and forecast lead combination
@@ -318,12 +312,7 @@ class RuntimeFreqWrapper(CommandBuilder):
             if skip_time(time_info, self.c_dict.get('SKIP_TIMES')):
                 continue
 
-            file_dict = self.get_files_from_time(time_info)
-            if file_dict:
-                if isinstance(file_dict, list):
-                    lead_files.extend(file_dict)
-                else:
-                    lead_files.append(file_dict)
+            self._update_list_with_new_files(time_info, lead_files)
 
         return lead_files
 
@@ -346,12 +335,8 @@ class RuntimeFreqWrapper(CommandBuilder):
             time_info = time_util.ti_calculate(current_time_input)
             if skip_time(time_info, self.c_dict.get('SKIP_TIMES')):
                 continue
-            file_dict = self.get_files_from_time(time_info)
-            if file_dict:
-                if isinstance(file_dict, list):
-                    new_files.extend(file_dict)
-                else:
-                    new_files.append(file_dict)
+
+            self._update_list_with_new_files(time_info, new_files)
 
         return new_files
 
@@ -360,12 +345,19 @@ class RuntimeFreqWrapper(CommandBuilder):
         """! Create dictionary containing time information (key time_info) and
              any relevant files for that runtime.
              @param time_info dictionary containing time information
-             @returns dictionary containing time_info dict and any relevant
+             @returns list of dict containing time_info dict and any relevant
              files with a key representing a description of that file
         """
-        file_dict = {}
-        file_dict['time_info'] = time_info.copy()
-        return file_dict
+        return {'time_info': time_info.copy()}
+
+    def _update_list_with_new_files(self, time_info, list_to_update):
+        new_files = self.get_files_from_time(time_info)
+        if not new_files:
+            return
+        if isinstance(new_files, list):
+            list_to_update.extend(new_files)
+        else:
+            list_to_update.append(file_dict)
 
     @staticmethod
     def compare_time_info(runtime, filetime):
