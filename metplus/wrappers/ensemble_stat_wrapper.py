@@ -22,6 +22,7 @@ from . import CompareGriddedWrapper
 @endcode
 """
 
+
 class EnsembleStatWrapper(CompareGriddedWrapper):
     """!Wraps the MET tool ensemble_stat to compare ensemble datasets
     """

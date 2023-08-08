@@ -14,7 +14,7 @@ import os
 
 from ..util import do_string_sub, skip_time, get_lead_sequence
 from ..util import time_util
-from . import CommandBuilder
+from . import LoopTimesWrapper
 
 '''!@namespace GempakToCFWrapper
 @brief Wraps the GempakToCF tool to reformat Gempak format to NetCDF Format
@@ -22,7 +22,7 @@ from . import CommandBuilder
 '''
 
 
-class GempakToCFWrapper(CommandBuilder):
+class GempakToCFWrapper(LoopTimesWrapper):
     def __init__(self, config, instance=None):
         self.app_name = "GempakToCF"
         self.app_path = config.getstr('exe', 'GEMPAKTOCF_JAR', '')
@@ -65,32 +65,6 @@ class GempakToCFWrapper(CommandBuilder):
 
         cmd += " " + self.get_output_path()
         return cmd
-
-    def run_at_time(self, input_dict):
-        """! Runs the MET application for a given run time. Processing forecast
-              or observation data is determined by conf variables. This function
-              loops over the list of forecast leads and runs the application for
-              each.
-              Args:
-                @param input_dict dictionary containing timing information
-        """
-        lead_seq = get_lead_sequence(self.config, input_dict)
-        for lead in lead_seq:
-            self.clear()
-            input_dict['lead'] = lead
-            for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
-                if custom_string:
-                    self.logger.info(f"Processing custom string: {custom_string}")
-
-                input_dict['custom'] = custom_string
-
-                time_info = time_util.ti_calculate(input_dict)
-
-                if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
-                    self.logger.debug('Skipping run time')
-                    continue
-
-                self.run_at_time_once(time_info)
 
     def run_at_time_once(self, time_info):
         """! Runs the MET application for a given time and forecast lead combination

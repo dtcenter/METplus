@@ -113,6 +113,13 @@ class GridStatWrapper(CompareGriddedWrapper):
                                                  'LOG_GRID_STAT_VERBOSITY',
                                                  c_dict['VERBOSITY'])
 
+        if c_dict['RUNTIME_FREQ'] != 'RUN_ONCE_FOR_EACH':
+            self.logger.warning(
+                f"GRID_STAT_RUNTIME_FREQ={c_dict['RUNTIME_FREQ']} not "
+                "supported. Using RUN_ONCE_FOR_EACH"
+            )
+            c_dict['RUNTIME_FREQ'] = 'RUN_ONCE_FOR_EACH'
+
         # get the MET config file path or use default
         c_dict['CONFIG_FILE'] = self.get_config_file('GridStatConfig_wrapped')
 

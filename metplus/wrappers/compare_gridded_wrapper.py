@@ -16,7 +16,7 @@ from ..util import do_string_sub, ti_calculate
 from ..util import parse_var_list
 from ..util import get_lead_sequence, skip_time, sub_var_list
 from ..util import field_read_prob_info, add_field_info_to_time_info
-from . import CommandBuilder
+from . import LoopTimesWrapper
 
 '''!@namespace CompareGriddedWrapper
 @brief Common functionality to wrap similar MET applications
@@ -27,7 +27,8 @@ Cannot be called directly. Must use child classes.
 @endcode
 '''
 
-class CompareGriddedWrapper(CommandBuilder):
+
+class CompareGriddedWrapper(LoopTimesWrapper):
     """!Common functionality to wrap similar MET applications
 that reformat gridded data
     """

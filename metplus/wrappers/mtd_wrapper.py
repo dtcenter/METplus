@@ -18,6 +18,7 @@ from ..util import do_string_sub, skip_time
 from ..util import parse_var_list, add_field_info_to_time_info
 from . import CompareGriddedWrapper
 
+
 class MTDWrapper(CompareGriddedWrapper):
 
     WRAPPER_ENV_VAR_KEYS = [
@@ -53,6 +54,9 @@ class MTDWrapper(CompareGriddedWrapper):
         # set to prevent find_obs from getting multiple files within
         #  a time window. Does not refer to time series of files
         c_dict['ALLOW_MULTIPLE_FILES'] = False
+
+        c_dict['RUNTIME_FREQ'] = 'RUN_ONCE_PER_INIT_OR_VALID'
+        c_dict['FIND_FILES'] = False
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('MTD_OUTPUT_DIR',
                                            self.config.getdir('OUTPUT_BASE'))
@@ -172,26 +176,7 @@ class MTDWrapper(CompareGriddedWrapper):
         if c_dict['SINGLE_RUN']:
             c_dict['OBS_CONV_THRESH'] = conf_value
 
-    def run_at_time(self, input_dict):
-        """! Runs the MET application for a given run time. This function loops
-              over the list of user-defined strings and runs the application
-               for each. Overrides run_at_time in compare_gridded_wrapper.py
-              Args:
-                @param input_dict dictionary containing timing information
-        """
-
-        if skip_time(input_dict, self.c_dict.get('SKIP_TIMES', {})):
-            self.logger.debug('Skipping run time')
-            return
-
-        for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
-            if custom_string:
-                self.logger.info(f"Processing custom string: {custom_string}")
-
-            input_dict['custom'] = custom_string
-            self.run_at_time_loop_string(input_dict)
-
-    def run_at_time_loop_string(self, input_dict):
+    def run_at_time_once(self, input_dict):
         """! Runs the MET application for a given run time. This function loops
              over the list of forecast leads and runs the application for each.
               Overrides run_at_time in compare_gridded_wrapper.py
@@ -305,7 +290,6 @@ class MTDWrapper(CompareGriddedWrapper):
                         'model_path': model_list_path}
 
             self.process_fields_one_thresh(time_info, var_info, **arg_dict)
-
 
     def run_single_mode(self, input_dict, var_info):
         single_list = []
@@ -445,7 +429,6 @@ class MTDWrapper(CompareGriddedWrapper):
             # if OBS is not set, set it to the FCST field list so
             # the lists are the same length
             obs_field_list = fcst_field_list
-
 
         # loop through fields and call MTD
         for fcst_field, obs_field in zip(fcst_field_list, obs_field_list):

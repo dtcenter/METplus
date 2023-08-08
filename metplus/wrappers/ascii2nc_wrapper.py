@@ -13,7 +13,7 @@ Condition codes: 0 for success, 1 for failure
 import os
 
 from ..util import time_util
-from . import CommandBuilder
+from . import LoopTimesWrapper
 from ..util import do_string_sub, skip_time, get_lead_sequence
 
 '''!@namespace ASCII2NCWrapper
@@ -22,7 +22,7 @@ from ..util import do_string_sub, skip_time, get_lead_sequence
 '''
 
 
-class ASCII2NCWrapper(CommandBuilder):
+class ASCII2NCWrapper(LoopTimesWrapper):
 
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_TIME_SUMMARY_DICT',
@@ -233,59 +233,6 @@ class ASCII2NCWrapper(CommandBuilder):
         # add verbosity
         cmd += ' -v ' + self.c_dict['VERBOSITY']
         return cmd
-
-    def run_at_time(self, input_dict):
-        """! Runs the MET application for a given run time. This function
-              loops over the list of forecast leads and runs the application for
-              each.
-              Args:
-                @param input_dict dictionary containing timing information
-        """
-        lead_seq = get_lead_sequence(self.config, input_dict)
-        for lead in lead_seq:
-            self.clear()
-            input_dict['lead'] = lead
-
-            time_info = time_util.ti_calculate(input_dict)
-
-            if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
-                self.logger.debug('Skipping run time')
-                continue
-
-            for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
-                if custom_string:
-                    self.logger.info(f"Processing custom string: {custom_string}")
-
-                time_info['custom'] = custom_string
-
-                self.run_at_time_once(time_info)
-
-    def run_at_time_once(self, time_info):
-        """! Process runtime and try to build command to run ascii2nc
-             Args:
-                @param time_info dictionary containing timing information
-        """
-        # get input files
-        if self.find_input_files(time_info) is None:
-            return
-
-        # get output path
-        if not self.find_and_check_output_file(time_info):
-            return
-
-        # get other configurations for command
-        self.set_command_line_arguments(time_info)
-
-        # set environment variables if using config file
-        self.set_environment_variables(time_info)
-
-        # build command and run
-        cmd = self.get_command()
-        if cmd is None:
-            self.log_error("Could not generate command")
-            return
-
-        self.build()
 
     def find_input_files(self, time_info):
         # if using python embedding input, don't check if file exists,

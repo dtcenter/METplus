@@ -261,6 +261,33 @@ class RuntimeFreqWrapper(CommandBuilder):
 
         return success
 
+    def run_at_time_once(self, time_info):
+        """! Process runtime and try to build command to run. Most wrappers
+        should be able to call this function to perform all of the actions
+        needed to build the commands using this template. This function can
+        be overridden if necessary.
+
+        @param time_info dictionary containing timing information
+        @returns True if command was built/run successfully or
+         False if something went wrong
+        """
+        # get input files
+        if not self.find_input_files(time_info):
+            return False
+
+        # get output path
+        if not self.find_and_check_output_file(time_info):
+            return False
+
+        # get other configurations for command
+        self.set_command_line_arguments(time_info)
+
+        # set environment variables if using config file
+        self.set_environment_variables(time_info)
+
+        # build command and run
+        return self.build()
+
     def get_all_files(self, custom=None):
         """! Get all files that can be processed with the app.
         @returns A dictionary where the key is the type of data that was found,
