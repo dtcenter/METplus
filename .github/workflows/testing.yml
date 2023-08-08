@@ -147,6 +147,7 @@ jobs:
       - name: Run Coveralls
         uses: AndreMiras/coveralls-python-action@8799c9f4443ac4201d2e2f2c725d577174683b99
         if: always()
+        continue-on-error: true
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
