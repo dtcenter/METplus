@@ -357,7 +357,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         if isinstance(new_files, list):
             list_to_update.extend(new_files)
         else:
-            list_to_update.append(file_dict)
+            list_to_update.append(new_files)
 
     @staticmethod
     def compare_time_info(runtime, filetime):
