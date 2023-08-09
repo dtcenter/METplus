@@ -14,13 +14,14 @@ import os
 import re
 
 from ..util import time_util
-from . import CommandBuilder
-from . import RegridDataPlaneWrapper
 from ..util import do_string_sub, get_lead_sequence
+from . import LoopTimesWrapper
+from . import RegridDataPlaneWrapper
 
 VALID_PYTHON_EMBED_TYPES = ['NUMPY', 'XARRAY', 'PANDAS']
 
-class PyEmbedIngestWrapper(CommandBuilder):
+
+class PyEmbedIngestWrapper(LoopTimesWrapper):
     """!Wrapper to utilize Python Embedding in the MET tools to read in
     data using a python script"""
     def __init__(self, config, instance=None):
@@ -123,34 +124,7 @@ class PyEmbedIngestWrapper(CommandBuilder):
 
         return ingest_items
 
-    def run_at_time(self, input_dict):
-        """! Do some processing for the current run time (init or valid)
-              Args:
-                @param input_dict dictionary containing time information of current run
-                        generally contains 'now' (current) time and 'init' or 'valid' time
-        """
-        # get forecast leads to loop over
-        lead_seq = get_lead_sequence(self.config, input_dict)
-        for lead in lead_seq:
-
-            # set forecast lead time in hours
-            input_dict['lead'] = lead
-
-            # recalculate time info items
-            time_info = time_util.ti_calculate(input_dict)
-
-            for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
-                if custom_string:
-                    self.logger.info(f"Processing loop string: {custom_string}")
-
-                time_info['custom'] = custom_string
-
-                if not self.run_at_time_lead(time_info):
-                    return False
-
-        return True
-
-    def run_at_time_lead(self, time_info):
+    def run_at_time_once(self, time_info):
         rdp = self.c_dict['regrid_data_plane']
 
         # run each ingester specified

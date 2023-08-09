@@ -16,7 +16,7 @@ from ..util import get_lead_sequence
 from ..util import ti_calculate
 from ..util import do_string_sub
 from ..util import remove_quotes
-from . import CommandBuilder
+from . import LoopTimesWrapper
 
 '''!@namespace Point2GridWrapper
 @brief Wraps the Point2Grid tool to reformat ascii format to NetCDF
@@ -24,7 +24,7 @@ from . import CommandBuilder
 '''
 
 
-class Point2GridWrapper(CommandBuilder):
+class Point2GridWrapper(LoopTimesWrapper):
 
     def __init__(self, config, instance=None):
         self.app_name = "point2grid"
@@ -144,27 +144,6 @@ class Point2GridWrapper(CommandBuilder):
         # add verbosity
         cmd += ' -v ' + self.c_dict['VERBOSITY']
         return cmd
-
-    def run_at_time(self, input_dict):
-        """! Runs the MET application for a given run time. This function
-              loops over the list of forecast leads and runs the application for
-              each.
-              Args:
-                @param input_dict dictionary containing timing information
-        """
-        lead_seq = get_lead_sequence(self.config, input_dict)
-        for lead in lead_seq:
-            self.clear()
-            input_dict['lead'] = lead
-
-            time_info = ti_calculate(input_dict)
-            for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
-                if custom_string:
-                    self.logger.info(f"Processing custom string: {custom_string}")
-
-                time_info['custom'] = custom_string
-
-                self.run_at_time_once(time_info)
 
     def run_at_time_once(self, time_info):
         """! Process runtime and try to build command to run point2grid

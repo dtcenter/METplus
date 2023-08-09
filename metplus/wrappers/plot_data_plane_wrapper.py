@@ -13,8 +13,8 @@ Condition codes: 0 for success, 1 for failure
 import os
 
 from ..util import time_util
-from . import CommandBuilder
 from ..util import do_string_sub, remove_quotes, skip_time, get_lead_sequence
+from . import LoopTimesWrapper
 
 '''!@namespace PlotDataPlaneWrapper
 @brief Wraps the PlotDataPlane tool to plot data
@@ -22,7 +22,7 @@ from ..util import do_string_sub, remove_quotes, skip_time, get_lead_sequence
 '''
 
 
-class PlotDataPlaneWrapper(CommandBuilder):
+class PlotDataPlaneWrapper(LoopTimesWrapper):
     def __init__(self, config, instance=None):
         self.app_name = "plot_data_plane"
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
@@ -106,33 +106,6 @@ class PlotDataPlaneWrapper(CommandBuilder):
         # add verbosity
         cmd += f" -v {self.c_dict['VERBOSITY']}"
         return cmd
-
-    def run_at_time(self, input_dict):
-        """! Runs the MET application for a given run time. This function
-              loops over the list of forecast leads and runs the application for
-              each.
-              Args:
-                @param input_dict dictionary containing timing information
-        """
-        lead_seq = get_lead_sequence(self.config, input_dict)
-        for lead in lead_seq:
-            self.clear()
-            input_dict['lead'] = lead
-
-            time_info = time_util.ti_calculate(input_dict)
-
-            if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
-                self.logger.debug('Skipping run time')
-                continue
-
-            for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
-                if custom_string:
-                    self.logger.info("Processing custom string: "
-                                     f"{custom_string}")
-
-                time_info['custom'] = custom_string
-
-                self.run_at_time_once(time_info)
 
     def run_at_time_once(self, time_info):
         """! Process runtime and try to build command to run ascii2nc
