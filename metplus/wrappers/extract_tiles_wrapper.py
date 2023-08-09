@@ -350,6 +350,7 @@ class ExtractTilesWrapper(LoopTimesWrapper):
     def call_regrid_data_plane(self, time_info, track_data, input_type):
         # set var list from config using time info
         var_list = sub_var_list(self.c_dict['VAR_LIST_TEMP'], time_info)
+        self.regrid_data_plane.c_dict['VAR_LIST'] = var_list
 
         for data_type in ['FCST', 'OBS']:
             grid = self.get_grid(data_type, track_data[data_type],
@@ -358,9 +359,8 @@ class ExtractTilesWrapper(LoopTimesWrapper):
             self.regrid_data_plane.c_dict['VERIFICATION_GRID'] = grid
 
             # run RegridDataPlane wrapper
-            ret = self.regrid_data_plane.run_at_time_once(time_info,
-                                                          var_list,
-                                                          data_type=data_type)
+            self.regrid_data_plane.c_dict['DATA_SRC'] = data_type
+            ret = self.regrid_data_plane.run_at_time_once(time_info)
             self.all_commands.extend(self.regrid_data_plane.all_commands)
             self.regrid_data_plane.all_commands.clear()
             if not ret:
