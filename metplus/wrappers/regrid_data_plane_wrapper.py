@@ -111,7 +111,6 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 met_tool=self.app_name
             )
 
-
         if self.config.getbool('config', 'OBS_REGRID_DATA_PLANE_RUN', False):
             window_types.append('OBS')
             c_dict['OBS_INPUT_DIR'] = \

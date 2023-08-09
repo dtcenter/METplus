@@ -24,6 +24,7 @@ from . import CommandBuilder
 @endcode
 '''
 
+
 class TCGenWrapper(CommandBuilder):
 
     WRAPPER_ENV_VAR_KEYS = [
@@ -91,7 +92,6 @@ class TCGenWrapper(CommandBuilder):
         'best_fy_oy',
         'best_fn_oy',
     ]
-
 
     def __init__(self, config, instance=None):
         self.app_name = "tc_gen"
@@ -327,12 +327,7 @@ class TCGenWrapper(CommandBuilder):
         return cmd
 
     def run_all_times(self):
-        """! Runs the MET application for a given run time. This function
-              loops over the list of forecast leads and runs the
-               application for each.
-
-             @param input_dict dictionary containing timing information
-        """
+        """!Runs tc_gen for the first run time"""
         # run using input time dictionary
         self.run_at_time(self.c_dict['INPUT_TIME_DICT'])
         return self.all_commands
