@@ -65,6 +65,11 @@ class CommandBuilder:
         self.param = ""
         self.all_commands = []
 
+        # set app name to empty string if not set by wrapper
+        # needed to create instance of parent wrapper for unit tests
+        if not hasattr(self, 'app_name'):
+            self.app_name = ''
+
         # store values to set in environment variables for each command
         self.env_var_dict = {}
 

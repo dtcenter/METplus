@@ -34,10 +34,6 @@ that reformat gridded data
     """
 
     def __init__(self, config, instance=None):
-        # set app_name if not set by child class for unit tests
-        if not hasattr(self, 'app_name'):
-            self.app_name = 'compare_gridded'
-
         super().__init__(config, instance=instance)
 
     def create_c_dict(self):
