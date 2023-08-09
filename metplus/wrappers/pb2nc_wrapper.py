@@ -262,10 +262,6 @@ class PB2NCWrapper(LoopTimesWrapper):
         if time_info is None:
             return
 
-        if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
-            self.logger.debug('Skipping run time')
-            return
-
         # look for output file path and skip running pb2nc if necessary
         if not self.find_and_check_output_file(time_info):
             return
@@ -279,11 +275,7 @@ class PB2NCWrapper(LoopTimesWrapper):
         self.c_dict['CONFIG_FILE'] = do_string_sub(self.c_dict['CONFIG_FILE'],
                                                    **time_info)
 
-        # build command and run if successful
-        cmd = self.get_command()
-        if cmd is None:
-            self.log_error("Could not generate command")
-            return
+        # build and run command
         self.build()
 
     def get_command(self):
