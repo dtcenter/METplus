@@ -342,8 +342,6 @@ class TCRMWWrapper(CommandBuilder):
         return self.infiles
 
     def set_command_line_arguments(self, time_info):
-
-        # add config file - passing through do_string_sub to get custom string if set
         if self.c_dict['CONFIG_FILE']:
             config_file = do_string_sub(self.c_dict['CONFIG_FILE'],
                                         **time_info)

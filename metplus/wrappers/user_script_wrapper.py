@@ -22,6 +22,7 @@ from ..util import do_string_sub
 @endcode
 '''
 
+
 class UserScriptWrapper(RuntimeFreqWrapper):
     def __init__(self, config, instance=None):
         self.app_name = "user_script"
