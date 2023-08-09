@@ -13,7 +13,7 @@ Condition codes: 0 for success, 1 for failure
 import os
 
 from ..util import time_util
-from . import CommandBuilder
+from . import RuntimeFreqWrapper
 from ..util import do_string_sub, skip_time, get_lead_sequence
 from ..util import parse_var_list, sub_var_list
 
@@ -23,7 +23,7 @@ from ..util import parse_var_list, sub_var_list
 '''
 
 
-class TCRMWWrapper(CommandBuilder):
+class TCRMWWrapper(RuntimeFreqWrapper):
 
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_MODEL',
@@ -59,6 +59,8 @@ class TCRMWWrapper(CommandBuilder):
                                                  'LOG_TC_RMW_VERBOSITY',
                                                  c_dict['VERBOSITY'])
         c_dict['ALLOW_MULTIPLE_FILES'] = True
+
+        c_dict['RUNTIME_FREQ'] = 'RUN_ONCE_PER_INIT_OR_VALID'
 
         # get the MET config file path or use default
         c_dict['CONFIG_FILE'] = self.get_config_file('TCRMWConfig_wrapped')

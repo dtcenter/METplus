@@ -17,7 +17,7 @@ import sys
 from datetime import datetime
 
 from ..util import getlist, mkdir_p, do_string_sub, ti_calculate
-from . import CommandBuilder
+from . import RuntimeFreqWrapper
 
 ## @namespace TCStatWrapper
 #  @brief Wrapper to the MET tool tc_stat, which is used for filtering tropical
@@ -29,7 +29,7 @@ from . import CommandBuilder
 # attribute data.
 
 
-class TCStatWrapper(CommandBuilder):
+class TCStatWrapper(RuntimeFreqWrapper):
     """! Wrapper for the MET tool, tc_stat, which is used to filter tropical
          cyclone pair data.
     """
@@ -110,6 +110,8 @@ class TCStatWrapper(CommandBuilder):
         c_dict['VERBOSITY'] = self.config.getstr('config',
                                                  'LOG_TC_STAT_VERBOSITY',
                                                  c_dict['VERBOSITY'])
+
+        c_dict['RUNTIME_FREQ'] = 'RUN_ONCE_PER_INIT_OR_VALID'
 
         c_dict['LOOKIN_DIR'] = self.config.getdir('TC_STAT_LOOKIN_DIR', '')
 
@@ -245,7 +247,7 @@ class TCStatWrapper(CommandBuilder):
                                              'TC_STAT_INIT_STR_EXCLUDE_VAL',
                                              ])
 
-    def run_at_time(self, input_dict=None):
+    def run_at_time_once(self, input_dict=None):
         """! Builds the call to the MET tool TC-STAT for all requested
              initialization times (init or valid).  Called from run_metplus
         """

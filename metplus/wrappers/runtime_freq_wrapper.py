@@ -232,8 +232,13 @@ class RuntimeFreqWrapper(CommandBuilder):
 
     def run_at_time(self, input_dict):
         success = True
+
         # loop of forecast leads and process each
-        lead_seq = get_lead_sequence(self.config, input_dict)
+        if self.c_dict.get('SKIP_LEAD_SEQ', False):
+            lead_seq = [0]
+        else:
+            lead_seq = get_lead_sequence(self.config, input_dict)
+
         for lead in lead_seq:
             input_dict['lead'] = lead
 

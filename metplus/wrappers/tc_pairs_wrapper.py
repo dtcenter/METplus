@@ -26,7 +26,7 @@ from ..util import do_string_sub
 from ..util import get_tags, find_indices_in_config_section
 from ..util.met_config import add_met_config_dict_list
 from ..util import time_generator, log_runtime_banner, add_to_time_input
-from . import CommandBuilder
+from . import RuntimeFreqWrapper
 
 '''!@namespace TCPairsWrapper
 @brief Wraps the MET tool tc_pairs to parse ADeck and BDeck ATCF_by_pairs
@@ -37,7 +37,8 @@ tc_pairs_wrapper.py [-c /path/to/user.template.conf]
 @endcode
 '''
 
-class TCPairsWrapper(CommandBuilder):
+
+class TCPairsWrapper(RuntimeFreqWrapper):
     """!Wraps the MET tool, tc_pairs to parse and match ATCF_by_pairs adeck and
        bdeck files.  Pre-processes extra tropical cyclone data.
     """
@@ -339,36 +340,7 @@ class TCPairsWrapper(CommandBuilder):
         self.run_at_time(input_dict)
         return self.all_commands
 
-    def run_at_time(self, input_dict):
-        """! Create the arguments to run MET tc_pairs
-             Args:
-                 input_dict dictionary containing init or valid time
-             Returns:
-        """
-        input_dict['instance'] = self.instance if self.instance else ''
-        for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
-            if custom_string:
-                self.logger.info(f"Processing custom string: {custom_string}")
-
-            input_dict['custom'] = custom_string
-
-            # if skipping lead sequence, only run once per init/valid time
-            if self.c_dict['SKIP_LEAD_SEQ']:
-                lead_seq = [0]
-            else:
-                lead_seq = get_lead_sequence(self.config, input_dict)
-
-            for lead in lead_seq:
-                input_dict['lead'] = lead
-                time_info = ti_calculate(input_dict)
-
-                if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
-                    self.logger.debug('Skipping run time')
-                    continue
-
-                self.run_at_time_loop_string(time_info)
-
-    def run_at_time_loop_string(self, time_info):
+    def run_at_time_once(self, time_info):
         """! Create the arguments to run MET tc_pairs
 
          @param time_info dictionary containing time information
