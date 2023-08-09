@@ -7,6 +7,7 @@ import datetime
 
 from metplus.wrappers.compare_gridded_wrapper import CompareGriddedWrapper
 
+
 def compare_gridded_wrapper(metplus_config):
     """! Returns a default GridStatWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration

@@ -156,7 +156,9 @@ def test_run_rdp_once_per_field(metplus_config):
     wrap.c_dict['FCST_OUTPUT_DIR'] = os.path.join(wrap.config.getdir('OUTPUT_BASE'),
                                                   'RDP_test')
 
-    wrap.run_at_time_once(time_info, var_list, data_type)
+    wrap.c_dict['VAR_LIST'] = var_list
+    wrap.c_dict['DATA_SRC'] = data_type
+    wrap.run_at_time_once(time_info)
 
     expected_cmds = [f"{wrap.app_path} -v 2 -method BUDGET -width 2 -field 'name=\"FNAME1\"; "
                      "level=\"A06\";' -name FNAME1 2018020100_ZENITH \"VERIF_GRID\" "
@@ -205,8 +207,9 @@ def test_run_rdp_all_fields(metplus_config):
     wrap.c_dict['VERIFICATION_GRID'] = 'VERIF_GRID'
     wrap.c_dict['FCST_OUTPUT_DIR'] = os.path.join(wrap.config.getdir('OUTPUT_BASE'),
                                                   'RDP_test')
-
-    wrap.run_at_time_once(time_info, var_list, data_type)
+    wrap.c_dict['VAR_LIST'] = var_list
+    wrap.c_dict['DATA_SRC'] = data_type
+    wrap.run_at_time_once(time_info)
 
     expected_cmds = [f"{wrap.app_path} -v 2 -method BUDGET -width 2 -field 'name=\"FNAME1\"; "
                      "level=\"A06\";' -field 'name=\"FNAME2\"; level=\"A03\";' "

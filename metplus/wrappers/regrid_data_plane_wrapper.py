@@ -14,7 +14,7 @@ import os
 
 from ..util import get_seconds_from_string, do_string_sub
 from ..util import parse_var_list, get_process_list
-from ..util import add_field_info_to_time_info
+from ..util import add_field_info_to_time_info, sub_var_list
 from ..util import remove_quotes, split_level, format_level
 from . import ReformatGriddedWrapper
 
@@ -292,14 +292,14 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         # build and run commands
         return self.build()
 
-    def run_at_time_once(self, time_info, var_list, data_type):
+    def run_at_time_once(self, time_info):
         """!Build command or commands to run at the given run time
-            Args:
-                @param time_info time dictionary used for string substitution
-                @param var_list list of field dictionaries to process
-                @param data_type type of data to process, i.e. FCST or OBS
+
+            @param time_info time dictionary used for string substitution
         """
         self.clear()
+        var_list = sub_var_list(self.c_dict['VAR_LIST'], time_info)
+        data_type = self.c_dict['DATA_SRC']
 
         # set output dir and template to current data type's values
         self.c_dict['OUTPUT_DIR'] = self.c_dict.get(f'{data_type}_OUTPUT_DIR')
