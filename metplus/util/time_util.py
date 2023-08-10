@@ -345,11 +345,10 @@ def ti_calculate(input_dict_preserve):
     # look for forecast lead information in input
     # set forecast lead to 0 if not specified
     if 'lead' in input_dict.keys():
-        # if lead is relativedelta, pass it through
-        # if lead is not, treat it as seconds
-        if isinstance(input_dict['lead'], relativedelta):
-            out_dict['lead'] = input_dict['lead']
-        elif input_dict['lead'] == '*':
+        # if lead is relativedelta or wildcard, pass it through
+        # if not, treat it as seconds
+        if (isinstance(input_dict['lead'], relativedelta) or
+                input_dict['lead'] == '*'):
             out_dict['lead'] = input_dict['lead']
         else:
             out_dict['lead'] = relativedelta(seconds=input_dict['lead'])
@@ -377,13 +376,20 @@ def ti_calculate(input_dict_preserve):
     if 'offset_hours' in input_dict.keys():
         out_dict['offset'] = datetime.timedelta(hours=input_dict['offset_hours'])
     elif 'offset' in input_dict.keys():
-        out_dict['offset'] = datetime.timedelta(seconds=input_dict['offset'])
+        if not isinstance(input_dict['offset'], datetime.timedelta):
+            out_dict['offset'] = datetime.timedelta(seconds=input_dict['offset'])
     else:
         out_dict['offset'] = datetime.timedelta(seconds=0)
+
+    if input_dict.get('valid') == '*' or input_dict.get('init') == '*' or input_dict.get('lead') == '*':
+        if 'date' not in out_dict:
+            out_dict['date'] = out_dict['init']
+        return out_dict
 
     # if init and valid are set, check which was set first via loop_by
     # remove the other to recalculate
     if 'init' in input_dict.keys() and 'valid' in input_dict.keys():
+
         if 'loop_by' in input_dict.keys():
             if input_dict['loop_by'] == 'init':
                 del input_dict['valid']
@@ -394,11 +400,13 @@ def ti_calculate(input_dict_preserve):
         out_dict['init'] = input_dict['init']
 
         if 'valid' in input_dict.keys():
-            print("ERROR: Cannot specify both valid and init to time utility")
+            #if input_dict['valid'] != '*' and input_dict['init'] != '*':
+            print("ERROR: Cannot specify both valid and init "
+                  f"non-wildcard to time utility: {input_dict}")
             return None
 
         # compute valid from init and lead if lead is not wildcard
-        if out_dict['lead'] == '*':
+        elif out_dict['lead'] == '*':
             out_dict['valid'] = '*'
         else:
             out_dict['valid'] = out_dict['init'] + out_dict['lead']
@@ -424,7 +432,8 @@ def ti_calculate(input_dict_preserve):
         out_dict['da_init'] = input_dict['da_init']
 
         if 'valid' in input_dict.keys():
-            print("ERROR: Cannot specify both valid and da_init to time utility")
+            print("ERROR: Cannot specify both valid and da_init "
+                  f"to time utility: {input_dict}")
             return None
 
         # compute valid from da_init and offset
@@ -436,7 +445,8 @@ def ti_calculate(input_dict_preserve):
         else:
             out_dict['init'] = out_dict['valid'] - out_dict['lead']
     else:
-        print("ERROR: Need to specify valid, init, or da_init to time utility")
+        print("ERROR: Need to specify valid, init, or da_init "
+              f"to time utility: {input_dict}")
         return None
 
     # calculate da_init from valid and offset

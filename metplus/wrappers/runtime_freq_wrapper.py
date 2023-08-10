@@ -146,11 +146,13 @@ class RuntimeFreqWrapper(CommandBuilder):
         time_input['valid'] = '*'
         time_input['lead'] = '*'
 
+        time_info = time_util.ti_calculate(time_input)
+
         if not self.get_all_files(custom):
             self.log_error("A problem occurred trying to obtain input files")
             return None
 
-        return self.run_at_time_once(time_input)
+        return self.run_at_time_once(time_info)
 
     def run_once_per_init_or_valid(self, custom):
         self.logger.debug(f"Running once for each init/valid time")
@@ -172,11 +174,12 @@ class RuntimeFreqWrapper(CommandBuilder):
                 time_input['init'] = '*'
 
             time_input['lead'] = '*'
+            time_info = time_util.ti_calculate(time_input)
 
-            self.c_dict['ALL_FILES'] = self.get_all_files_from_leads(time_input)
+            self.c_dict['ALL_FILES'] = self.get_all_files_from_leads(time_info)
 
             self.clear()
-            if not self.run_at_time_once(time_input):
+            if not self.run_at_time_once(time_info):
                 success = False
 
         return success
@@ -202,10 +205,12 @@ class RuntimeFreqWrapper(CommandBuilder):
             time_input['init'] = '*'
             time_input['valid'] = '*'
 
-            self.c_dict['ALL_FILES'] = self.get_all_files_for_lead(time_input)
+            time_info = time_util.ti_calculate(time_input)
+
+            self.c_dict['ALL_FILES'] = self.get_all_files_for_lead(time_info)
 
             self.clear()
-            if not self.run_at_time_once(time_input):
+            if not self.run_at_time_once(time_info):
                 success = False
 
         return success
