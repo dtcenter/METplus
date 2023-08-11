@@ -324,9 +324,7 @@ class TCPairsWrapper(RuntimeFreqWrapper):
         if not input_dict:
             return self.all_commands
 
-        add_to_time_input(input_dict,
-                          instance=self.instance)
-        log_runtime_banner(self.config, input_dict, self)
+        add_to_time_input(input_dict, instance=self.instance)
 
         # if running in READ_ALL_FILES mode, call tc_pairs once and exit
         if self.c_dict['READ_ALL_FILES']:
@@ -337,6 +335,7 @@ class TCPairsWrapper(RuntimeFreqWrapper):
 
         self.logger.debug('Only processing first run time. Set '
                           'TC_PAIRS_RUN_ONCE=False to process all run times.')
+        log_runtime_banner(self.config, input_dict, self)
         self.run_at_time(input_dict)
         return self.all_commands
 
