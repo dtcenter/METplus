@@ -429,7 +429,7 @@ class RuntimeFreqWrapper(CommandBuilder):
 
         return runtime_lead == filetime_lead
 
-    def find_input_files(self, time_info, fill_missing=False):
+    def get_input_files(self, time_info, fill_missing=False):
         """! Loop over list of input templates and find files for each
 
              @param time_info time dictionary to use for string substitution
