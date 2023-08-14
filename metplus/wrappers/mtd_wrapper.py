@@ -58,32 +58,29 @@ class MTDWrapper(CompareGriddedWrapper):
         c_dict['RUNTIME_FREQ'] = 'RUN_ONCE_PER_INIT_OR_VALID'
         c_dict['FIND_FILES'] = False
 
-        c_dict['OUTPUT_DIR'] = self.config.getdir('MTD_OUTPUT_DIR',
-                                           self.config.getdir('OUTPUT_BASE'))
+        c_dict['OUTPUT_DIR'] = (
+            self.config.getdir('MTD_OUTPUT_DIR',
+                               self.config.getdir('OUTPUT_BASE'))
+        )
         c_dict['OUTPUT_TEMPLATE'] = (
-            self.config.getraw('config',
-                               'MTD_OUTPUT_TEMPLATE')
+            self.config.getraw('config', 'MTD_OUTPUT_TEMPLATE')
         )
 
         # get the MET config file path or use default
         c_dict['CONFIG_FILE'] = self.get_config_file('MTDConfig_wrapped')
 
         # new method of reading/setting MET config values
-        self.add_met_config(name='min_volume',
-                            data_type='int')
+        self.add_met_config(name='min_volume', data_type='int')
 
         # old approach to reading/setting MET config values
-        c_dict['MIN_VOLUME'] = self.config.getstr('config',
-                                                  'MTD_MIN_VOLUME', '2000')
+        c_dict['MIN_VOLUME'] = self.config.getstr('config', 'MTD_MIN_VOLUME', '2000')
 
-        c_dict['SINGLE_RUN'] = self.config.getbool('config',
-                                                   'MTD_SINGLE_RUN',
-                                                   False)
+        c_dict['SINGLE_RUN'] = (
+            self.config.getbool('config', 'MTD_SINGLE_RUN', False)
+        )
         if c_dict['SINGLE_RUN']:
             c_dict['SINGLE_DATA_SRC'] = (
-                self.config.getstr('config',
-                                   'MTD_SINGLE_DATA_SRC',
-                                   '')
+                self.config.getstr('config', 'MTD_SINGLE_DATA_SRC', '')
             )
             if not c_dict['SINGLE_DATA_SRC']:
                 self.log_error('Must set MTD_SINGLE_DATA_SRC if '
@@ -378,7 +375,7 @@ class MTDWrapper(CompareGriddedWrapper):
             if not fcst_thresh_list:
                 fcst_thresh_list = [""]
 
-           # loop over thresholds and build field list with one thresh per item
+            # loop over thresholds and build field list with one thresh per item
             for fcst_thresh in fcst_thresh_list:
                 fcst_field = (
                     self.get_field_info(v_name=var_info['fcst_name'],
