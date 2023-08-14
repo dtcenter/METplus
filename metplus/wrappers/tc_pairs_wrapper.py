@@ -294,6 +294,9 @@ class TCPairsWrapper(RuntimeFreqWrapper):
                                 False)
         )
 
+        if c_dict['RUNTIME_FREQ'] == '':
+            c_dict['RUNTIME_FREQ'] = 'RUN_ONCE'
+
         # check for settings that cause differences moving from v4.1 to v5.0
         # warn and update run setting to preserve old behavior
         if (self.config.has_option('config', 'LOOP_ORDER') and
