@@ -333,139 +333,35 @@ def _format_time_list(string_value, get_met_format, sort_list=True):
     return out_list
 
 
-def ti_calculate(input_dict_preserve):
-    # copy input dictionary so valid or init can be removed to recalculate it
-    # without modifying the input to the function
-    input_dict = input_dict_preserve.copy()
-    out_dict = input_dict
+def ti_calculate(input_dict):
+    """!Read in input dictionary items and compute missing items. Output from
+    this function can be passed back into it to re-compute items that have
+    changed.
+    Required inputs: init, valid
 
-    # read in input dictionary items and compute missing items
-    # valid inputs: valid, init, lead, offset
+    @param input_dict dictionary containing time info to use in computations
+    @returns dictionary with updated items/values
+    """
+    # copy input dictionary to prevent modifying input dictionary
+    out_dict = input_dict.copy()
+
+    _set_loop_by(out_dict)
 
     # look for forecast lead information in input
     # set forecast lead to 0 if not specified
-    if 'lead' in input_dict.keys():
-        # if lead is relativedelta or wildcard, pass it through
-        # if not, treat it as seconds
-        if (isinstance(input_dict['lead'], relativedelta) or
-                input_dict['lead'] == '*'):
-            out_dict['lead'] = input_dict['lead']
-        else:
-            out_dict['lead'] = relativedelta(seconds=input_dict['lead'])
-
-    elif 'lead_seconds' in input_dict.keys():
-        out_dict['lead'] = relativedelta(seconds=input_dict['lead_seconds'])
-
-    elif 'lead_minutes' in input_dict.keys():
-        out_dict['lead'] = relativedelta(minutes=input_dict['lead_minutes'])
-
-    elif 'lead_hours' in input_dict.keys():
-        lead_hours = int(input_dict['lead_hours'])
-        lead_days = 0
-        # if hours is more than a day, pull out days and relative hours
-        if lead_hours > 23:
-            lead_days = lead_hours // 24
-            lead_hours = lead_hours % 24
-
-        out_dict['lead'] = relativedelta(hours=lead_hours, days=lead_days)
-
-    else:
-        out_dict['lead'] = relativedelta(seconds=0)
+    _set_lead(out_dict)
 
     # set offset to 0 if not specified
-    if 'offset_hours' in input_dict.keys():
-        out_dict['offset'] = datetime.timedelta(hours=input_dict['offset_hours'])
-    elif 'offset' in input_dict.keys():
-        if not isinstance(input_dict['offset'], datetime.timedelta):
-            out_dict['offset'] = datetime.timedelta(seconds=input_dict['offset'])
-    else:
-        out_dict['offset'] = datetime.timedelta(seconds=0)
+    _set_offset(out_dict)
 
-    if input_dict.get('valid') == '*' or input_dict.get('init') == '*' or input_dict.get('lead') == '*':
-        if 'date' not in out_dict:
-            out_dict['date'] = out_dict['init']
-        return out_dict
-
-    # if init and valid are set, check which was set first via loop_by
-    # remove the other to recalculate
-    if 'init' in input_dict.keys() and 'valid' in input_dict.keys():
-
-        if 'loop_by' in input_dict.keys():
-            if input_dict['loop_by'] == 'init':
-                del input_dict['valid']
-            elif input_dict['loop_by'] == 'valid':
-                del input_dict['init']
-
-    if 'init' in input_dict.keys():
-        out_dict['init'] = input_dict['init']
-
-        if 'valid' in input_dict.keys():
-            #if input_dict['valid'] != '*' and input_dict['init'] != '*':
-            print("ERROR: Cannot specify both valid and init "
-                  f"non-wildcard to time utility: {input_dict}")
-            return None
-
-        # compute valid from init and lead if lead is not wildcard
-        elif out_dict['lead'] == '*':
-            out_dict['valid'] = '*'
-        else:
-            out_dict['valid'] = out_dict['init'] + out_dict['lead']
-
-        # set loop_by to init or valid to be able to see what was set first
-        out_dict['loop_by'] = 'init'
-
-    # if valid is provided, compute init and da_init
-    elif 'valid' in input_dict:
-        out_dict['valid'] = input_dict['valid']
-
-        # compute init from valid and lead if lead is not wildcard
-        if out_dict['lead'] == '*':
-            out_dict['init'] = '*'
-        else:
-            out_dict['init'] = out_dict['valid'] - out_dict['lead']
-
-        # set loop_by to init or valid to be able to see what was set first
-        out_dict['loop_by'] = 'valid'
-
-    # if da_init is provided, compute init and valid
-    elif 'da_init' in input_dict.keys():
-        out_dict['da_init'] = input_dict['da_init']
-
-        if 'valid' in input_dict.keys():
-            print("ERROR: Cannot specify both valid and da_init "
-                  f"to time utility: {input_dict}")
-            return None
-
-        # compute valid from da_init and offset
-        out_dict['valid'] = out_dict['da_init'] - out_dict['offset']
-
-        # compute init from valid and lead if lead is not wildcard
-        if out_dict['lead'] == '*':
-            out_dict['init'] = '*'
-        else:
-            out_dict['init'] = out_dict['valid'] - out_dict['lead']
-    else:
-        print("ERROR: Need to specify valid, init, or da_init "
-              f"to time utility: {input_dict}")
-        return None
+    _set_init_valid_lead(out_dict)
 
     # calculate da_init from valid and offset
     if out_dict['valid'] != '*':
         out_dict['da_init'] = out_dict['valid'] + out_dict['offset']
-
-        # add common formatted items
         out_dict['da_init_fmt'] = out_dict['da_init'].strftime('%Y%m%d%H%M%S')
-        out_dict['valid_fmt'] = out_dict['valid'].strftime('%Y%m%d%H%M%S')
 
-    if out_dict['init'] != '*':
-        out_dict['init_fmt'] = out_dict['init'].strftime('%Y%m%d%H%M%S')
-
-    # get string representation of forecast lead
-    if out_dict['lead'] == '*':
-        out_dict['lead_string'] = 'ALL'
-    else:
-        out_dict['lead_string'] = ti_get_lead_string(out_dict['lead'])
-
+    # convert offset to seconds and compute offset hours
     out_dict['offset'] = int(out_dict['offset'].total_seconds())
     out_dict['offset_hours'] = int(out_dict['offset'] // 3600)
 
@@ -476,8 +372,8 @@ def ti_calculate(input_dict_preserve):
     else:
         out_dict['date'] = out_dict['init']
 
-    # if lead is wildcard, skip updating other lead values
-    if out_dict['lead'] == '*':
+    # if any init/valid/lead are wildcard, skip updating other lead values
+    if out_dict['lead'] == '*' or out_dict['valid'] == '*' or out_dict['init'] == '*':
         return out_dict
 
     # get difference between valid and init to get total seconds since relativedelta
@@ -488,16 +384,112 @@ def ti_calculate(input_dict_preserve):
     # if they are, keep lead as a relativedelta object to be handled differently
     if out_dict['lead'].months == 0 and out_dict['lead'].years == 0:
         out_dict['lead'] = total_seconds
-
-    # add common uses for relative times
-    # Specifying integer division // Python 3,
-    # assuming that was the intent in Python 2.
-    out_dict['lead_hours'] = int(total_seconds // 3600)
-    out_dict['lead_minutes'] = int(total_seconds // 60)
-    out_dict['lead_seconds'] = total_seconds
+        out_dict['lead_hours'] = int(total_seconds // 3600)
+        out_dict['lead_minutes'] = int(total_seconds // 60)
+        out_dict['lead_seconds'] = total_seconds
 
     return out_dict
 
+
+def _set_lead(the_dict):
+    if 'lead' in the_dict.keys():
+        # if lead is relativedelta or wildcard, pass it through
+        # if not, treat it as seconds
+        if (not isinstance(the_dict['lead'], relativedelta) and
+                the_dict['lead'] != '*'):
+            the_dict['lead'] = relativedelta(seconds=the_dict['lead'])
+
+    elif 'lead_seconds' in the_dict.keys():
+        the_dict['lead'] = relativedelta(seconds=the_dict['lead_seconds'])
+
+    elif 'lead_minutes' in the_dict.keys():
+        the_dict['lead'] = relativedelta(minutes=the_dict['lead_minutes'])
+
+    elif 'lead_hours' in the_dict.keys():
+        lead_hours = int(the_dict['lead_hours'])
+        lead_days = 0
+        # if hours is more than a day, pull out days and relative hours
+        if lead_hours > 23:
+            lead_days = lead_hours // 24
+            lead_hours = lead_hours % 24
+
+        the_dict['lead'] = relativedelta(hours=lead_hours, days=lead_days)
+    else:
+        # set lead to 0 if it was no specified
+        the_dict['lead'] = relativedelta(seconds=0)
+
+    # get string representation of forecast lead
+    if the_dict['lead'] == '*':
+        the_dict['lead_string'] = 'ALL'
+    else:
+        the_dict['lead_string'] = ti_get_lead_string(the_dict['lead'])
+
+
+def _set_offset(the_dict):
+    if 'offset_hours' in the_dict.keys():
+        the_dict['offset'] = datetime.timedelta(hours=the_dict['offset_hours'])
+        return
+
+    if 'offset' in the_dict.keys():
+        if not isinstance(the_dict['offset'], datetime.timedelta):
+            the_dict['offset'] = datetime.timedelta(seconds=the_dict['offset'])
+        return
+
+    the_dict['offset'] = datetime.timedelta(seconds=0)
+
+
+def _set_loop_by(the_dict):
+    # loop_by is already set
+    if the_dict.get('loop_by'):
+        return
+
+    init = the_dict.get('init')
+    valid = the_dict.get('valid')
+    # if init and valid are both set, don't set loop_by
+    if init and valid:
+        return
+
+    # set loop_by to which init or valid is set
+    if init:
+        the_dict['loop_by'] = 'init'
+    elif valid:
+        the_dict['loop_by'] = 'valid'
+
+
+def _set_init_valid_lead(the_dict):
+    wildcard_items = [item for item in ('init', 'lead', 'valid')
+                      if the_dict.get(item) == '*']
+    # if 2 or more are wildcards, cannot compute init/valid/lead, so return
+    if len(wildcard_items) >= 2:
+        return
+
+    # assumed that 1 or fewer items are wildcard or unset
+    init = the_dict.get('init')
+    valid = the_dict.get('valid')
+    lead = the_dict.get('lead')
+    loop_by = the_dict.get('loop_by')
+
+    # if init and valid are both set and not wildcard, compute based on loop_by
+    if init and valid and init != '*' and valid != '*':
+        if loop_by == 'init':
+            the_dict['valid'] = init + lead
+        elif loop_by == 'valid':
+            the_dict['init'] = valid - lead
+    elif init and init != '*':
+        the_dict['valid'] = init + lead
+        if not loop_by:
+            the_dict['loop_by'] = 'init'
+    elif valid and valid != '*':
+        the_dict['init'] = valid - lead
+        if not loop_by:
+            the_dict['loop_by'] = 'valid'
+
+    # set valid_fmt and init_fmt if they are not wildcard
+    if the_dict['valid'] != '*':
+        the_dict['valid_fmt'] = the_dict['valid'].strftime('%Y%m%d%H%M%S')
+
+    if the_dict['init'] != '*':
+        the_dict['init_fmt'] = the_dict['init'].strftime('%Y%m%d%H%M%S')
 
 def add_to_time_input(time_input, clock_time=None, instance=None, custom=None):
     if clock_time:
