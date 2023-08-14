@@ -151,6 +151,8 @@ def test_time_string_to_met_time(time_string, default_unit, met_time):
         # RUN_ONCE_PER_LEAD: lead is time interval, init/valid are wildcards
         ({'init': '*', 'valid': '*', 'lead': relativedelta(hours=3)},
          {'init': '*', 'valid': '*', 'lead': relativedelta(hours=3), 'date': '*'}),
+        ({'init': datetime(2021, 7, 13, 0, 0), 'lead': 21600, 'offset_hours': 0},
+         {'init': datetime(2021, 7, 13, 0, 0), 'lead': 21600, 'valid': datetime(2021, 7, 13, 6, 0), 'offset': 0}),
         ]
 )
 @pytest.mark.util
