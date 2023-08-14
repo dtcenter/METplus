@@ -337,7 +337,7 @@ class MTDWrapper(CompareGriddedWrapper):
            @rtype string
            @return Returns a MET command with arguments that you can run
         """
-        cmd = '{} -v {} '.format(self.app_path, self.c_dict['VERBOSITY'])
+        cmd = f"{self.app_path} -v {self.c_dict['VERBOSITY']} "
 
         for a in self.args:
             cmd += a + " "
