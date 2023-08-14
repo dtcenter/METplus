@@ -443,10 +443,16 @@ class RuntimeFreqWrapper(CommandBuilder):
             return None
 
         for label, input_template in self.c_dict['TEMPLATE_DICT'].items():
-            self.c_dict['INPUT_TEMPLATE'] = input_template
+            data_type = ''
+            template_key = 'INPUT_TEMPLATE'
+            if label in ('FCST', 'OBS'):
+                data_type = label
+                template_key = f'{label}_{template_key}'
+
+            self.c_dict[template_key] = input_template
             # if fill missing is true, data is not mandatory to find
             mandatory = not fill_missing
-            input_files = self.find_data(time_info,
+            input_files = self.find_data(time_info, data_type=data_type,
                                          return_list=True,
                                          mandatory=mandatory)
             if not input_files:
