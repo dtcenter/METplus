@@ -356,6 +356,13 @@ def ti_calculate(input_dict):
 
     _set_init_valid_lead(out_dict)
 
+    # set valid_fmt and init_fmt if they are not wildcard
+    if out_dict['valid'] != '*':
+        out_dict['valid_fmt'] = out_dict['valid'].strftime('%Y%m%d%H%M%S')
+
+    if out_dict['init'] != '*':
+        out_dict['init_fmt'] = out_dict['init'].strftime('%Y%m%d%H%M%S')
+
     # calculate da_init from valid and offset
     if out_dict['valid'] != '*':
         out_dict['da_init'] = out_dict['valid'] + out_dict['offset']
@@ -484,12 +491,6 @@ def _set_init_valid_lead(the_dict):
         if not loop_by:
             the_dict['loop_by'] = 'valid'
 
-    # set valid_fmt and init_fmt if they are not wildcard
-    if the_dict['valid'] != '*':
-        the_dict['valid_fmt'] = the_dict['valid'].strftime('%Y%m%d%H%M%S')
-
-    if the_dict['init'] != '*':
-        the_dict['init_fmt'] = the_dict['init'].strftime('%Y%m%d%H%M%S')
 
 def add_to_time_input(time_input, clock_time=None, instance=None, custom=None):
     if clock_time:
