@@ -334,8 +334,7 @@ class RuntimeFreqWrapper(CommandBuilder):
 
         lead_files = []
         # loop over all forecast leads
-        wildcard_if_empty = self.c_dict.get('WILDCARD_LEAD_IF_EMPTY',
-                                            False)
+        wildcard_if_empty = self.c_dict.get('WILDCARD_LEAD_IF_EMPTY', False)
         lead_seq = get_lead_sequence(self.config,
                                      time_input,
                                      wildcard_if_empty=wildcard_if_empty)
