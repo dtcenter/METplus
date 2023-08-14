@@ -357,16 +357,14 @@ def ti_calculate(input_dict):
     _set_init_valid_lead(out_dict)
 
     # set valid_fmt and init_fmt if they are not wildcard
-    if out_dict['valid'] != '*':
+    if out_dict.get('valid', '*') != '*':
         out_dict['valid_fmt'] = out_dict['valid'].strftime('%Y%m%d%H%M%S')
-
-    if out_dict['init'] != '*':
-        out_dict['init_fmt'] = out_dict['init'].strftime('%Y%m%d%H%M%S')
-
-    # calculate da_init from valid and offset
-    if out_dict['valid'] != '*':
+        # calculate da_init from valid and offset
         out_dict['da_init'] = out_dict['valid'] + out_dict['offset']
         out_dict['da_init_fmt'] = out_dict['da_init'].strftime('%Y%m%d%H%M%S')
+
+    if out_dict.get('init', '*') != '*':
+        out_dict['init_fmt'] = out_dict['init'].strftime('%Y%m%d%H%M%S')
 
     # convert offset to seconds and compute offset hours
     out_dict['offset'] = int(out_dict['offset'].total_seconds())
@@ -379,8 +377,11 @@ def ti_calculate(input_dict):
     else:
         out_dict['date'] = out_dict['init']
 
-    # if any init/valid/lead are wildcard, skip updating other lead values
-    if out_dict['lead'] == '*' or out_dict['valid'] == '*' or out_dict['init'] == '*':
+    # if any init/valid/lead are unset or wildcard,
+    # skip converting lead to total seconds and computing lead hour, min, sec
+    if (isinstance(out_dict.get('lead', '*'), str) or
+            out_dict.get('valid', '*') == '*' or
+            out_dict.get('init', '*') == '*'):
         return out_dict
 
     # get difference between valid and init to get total seconds since relativedelta
@@ -466,6 +467,7 @@ def _set_loop_by(the_dict):
 def _set_init_valid_lead(the_dict):
     wildcard_items = [item for item in ('init', 'lead', 'valid')
                       if the_dict.get(item) == '*']
+
     # if 2 or more are wildcards, cannot compute init/valid/lead, so return
     if len(wildcard_items) >= 2:
         return
@@ -477,16 +479,18 @@ def _set_init_valid_lead(the_dict):
     loop_by = the_dict.get('loop_by')
 
     # if init and valid are both set and not wildcard, compute based on loop_by
+    # note: relativedelta == '*' and != '*' will always return False, so
+    # check if lead value is a string which implies it is '*'
     if init and valid and init != '*' and valid != '*':
         if loop_by == 'init':
             the_dict['valid'] = init + lead
         elif loop_by == 'valid':
             the_dict['init'] = valid - lead
-    elif init and init != '*':
+    elif init and init != '*' and not isinstance(lead, str):
         the_dict['valid'] = init + lead
         if not loop_by:
             the_dict['loop_by'] = 'init'
-    elif valid and valid != '*':
+    elif valid and valid != '*' and not isinstance(lead, str):
         the_dict['init'] = valid - lead
         if not loop_by:
             the_dict['loop_by'] = 'valid'
