@@ -217,7 +217,7 @@ class CommandBuilder:
         self.env_list.clear()
 
     def set_environment_variables(self, time_info=None):
-        """!Set environment variables that will be read set when running this tool.
+        """!Set environment variables that will be read when running this tool.
             This tool does not have a config file, but environment variables may still
             need to be set, such as MET_TMP_DIR and MET_PYTHON_EXE.
             Reformat as needed. Print list of variables that were set and their values.
