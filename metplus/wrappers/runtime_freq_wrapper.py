@@ -159,6 +159,7 @@ class RuntimeFreqWrapper(CommandBuilder):
             self.log_error("A problem occurred trying to obtain input files")
             return None
 
+        self.clear()
         return self.run_at_time_once(time_info)
 
     def run_once_per_init_or_valid(self, custom):
