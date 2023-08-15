@@ -2,12 +2,12 @@
    {
     "category": "met_tool_wrapper",
     "index_list": "0-29,59-62",
-    "run": true
+    "run": false
   },
   {
     "category": "met_tool_wrapper",
     "index_list": "30-58",
-    "run": true
+    "run": false
   },
   {
     "category": "air_quality_and_comp",
@@ -112,7 +112,7 @@
   {
     "category": "medium_range",
     "index_list": "8",
-    "run": true
+    "run": false
   },
   {
     "category": "medium_range",
