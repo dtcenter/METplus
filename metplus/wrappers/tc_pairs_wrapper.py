@@ -774,6 +774,7 @@ class TCPairsWrapper(RuntimeFreqWrapper):
 
         # capture wildcard values in template - must replace ? wildcard
         # character after substitution because ? is used in template tags
+        bdeck_regex = bdeck_regex.replace('(*)', '*')
         bdeck_regex = bdeck_regex.replace('*', '(.*)').replace('?', '(.)')
         self.logger.debug(f'Regex to extract basin/cyclone: {bdeck_regex}')
 
