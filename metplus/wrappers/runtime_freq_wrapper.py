@@ -146,6 +146,13 @@ class RuntimeFreqWrapper(CommandBuilder):
         time_input['valid'] = '*'
         time_input['lead'] = '*'
 
+        # set init or valid to time if _BEG is equal to _END
+        start_dt, end_dt = get_start_and_end_times(self.config)
+        if start_dt == end_dt:
+            loop_by = get_time_prefix(self.config)
+            if loop_by:
+                time_input[loop_by.lower()] = start_dt
+
         time_info = time_util.ti_calculate(time_input)
 
         if not self.get_all_files(custom):
