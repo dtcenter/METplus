@@ -71,7 +71,7 @@ def set_minimum_config_settings(config):
                '{valid?fmt=%Y%m%d%H}/obs_file')
     config.set('config', 'MTD_OUTPUT_DIR',
                '{OUTPUT_BASE}/MTD/output')
-    config.set('config', 'MTD_OUTPUT_TEMPLATE', '{init?fmt=%Y%m%d%H}')
+    config.set('config', 'MTD_OUTPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}')
 
     config.set('config', 'FCST_VAR1_NAME', fcst_name)
     config.set('config', 'FCST_VAR1_LEVELS', fcst_level)
@@ -175,11 +175,11 @@ def test_mode_single_field(metplus_config, config_overrides, env_var_values):
     out_dir = wrapper.c_dict.get('OUTPUT_DIR')
     expected_cmds = [(f"{app_path} {verbosity} "
                       f"-fcst {file_list_dir}/"
-                      f"init20050807000000_mtd_fcst_{fcst_name}.txt "
+                      f"20050807060000_mtd_fcst_{fcst_name}.txt "
                       f"-obs {file_list_dir}/"
-                      f"init20050807000000_mtd_obs_{obs_name}.txt "
+                      f"20050807060000_mtd_obs_{obs_name}.txt "
                       f"-config {config_file} "
-                      f"-outdir {out_dir}/2005080700"),
+                      f"-outdir {out_dir}/2005080706"),
                      ]
 
     all_cmds = wrapper.run_all_times()
@@ -224,8 +224,8 @@ def test_mtd_by_init_all_found(metplus_config):
     }
     mw = mtd_wrapper(metplus_config, overrides)
     mw.run_all_times()
-    fcst_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', 'init20170510030000_mtd_fcst_APCP.txt')
-    obs_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', 'init20170510030000_mtd_obs_APCP.txt')
+    fcst_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '20170510040000_mtd_fcst_APCP.txt')
+    obs_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '20170510040000_mtd_obs_APCP.txt')
     with open(fcst_list_file) as f:
         fcst_list = f.readlines()
     fcst_list = [x.strip() for x in fcst_list]
@@ -262,8 +262,8 @@ def test_mtd_by_valid_all_found(metplus_config):
     }
     mw = mtd_wrapper(metplus_config, overrides)
     mw.run_all_times()
-    fcst_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', 'valid20170510030000_mtd_fcst_APCP.txt')
-    obs_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', 'valid20170510030000_mtd_obs_APCP.txt')
+    fcst_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '20170510030000_mtd_fcst_APCP.txt')
+    obs_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '20170510030000_mtd_obs_APCP.txt')
     with open(fcst_list_file) as f:
         fcst_list = f.readlines()
     fcst_list = [x.strip() for x in fcst_list]
@@ -300,8 +300,8 @@ def test_mtd_by_init_miss_fcst(metplus_config):
     }
     mw = mtd_wrapper(metplus_config, overrides)
     mw.run_all_times()
-    fcst_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', 'init20170510030000_mtd_fcst_APCP.txt')
-    obs_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', 'init20170510030000_mtd_obs_APCP.txt')
+    fcst_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '20170510060000_mtd_fcst_APCP.txt')
+    obs_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '20170510060000_mtd_obs_APCP.txt')
     with open(fcst_list_file) as f:
         fcst_list = f.readlines()
     fcst_list = [x.strip() for x in fcst_list]
@@ -338,8 +338,8 @@ def test_mtd_by_init_miss_both(metplus_config):
     }
     mw = mtd_wrapper(metplus_config, overrides)
     mw.run_all_times()
-    fcst_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', 'init20170510030000_mtd_fcst_APCP.txt')
-    obs_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', 'init20170510030000_mtd_obs_APCP.txt')
+    fcst_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '20170510090000_mtd_fcst_APCP.txt')
+    obs_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '20170510090000_mtd_obs_APCP.txt')
     with open(fcst_list_file) as f:
         fcst_list = f.readlines()
     fcst_list = [x.strip() for x in fcst_list]
@@ -373,7 +373,7 @@ def test_mtd_single(metplus_config):
     }
     mw = mtd_wrapper(metplus_config, overrides)
     mw.run_all_times()
-    single_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', 'init20170510030000_mtd_fcst_APCP.txt')
+    single_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '20170510040000_mtd_fcst_APCP.txt')
     with open(single_list_file) as f:
         single_list = f.readlines()
     single_list = [x.strip() for x in single_list]

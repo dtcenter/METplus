@@ -153,13 +153,17 @@ class MTDWrapper(CompareGriddedWrapper):
             c_dict['OBS_CONV_THRESH'] = conf_value
 
     def run_at_time_once(self, time_info):
+        # calculate valid based on first forecast lead
+        lead_seq = get_lead_sequence(self.config, time_info)
+        if not lead_seq:
+            self.log_error('Could not get forecast lead list')
+            return
+        first_lead = lead_seq[0]
+        time_info['lead'] = first_lead
+        first_valid_time_info = ti_calculate(time_info)
+
         # get formatted time to use to name file list files
-        if 'valid_fmt' in time_info:
-            time_fmt = f"valid{time_info['valid_fmt']}"
-        elif 'init_fmt' in time_info:
-            time_fmt = f"init{time_info['init_fmt']}"
-        else:
-            time_fmt = 'all'
+        time_fmt = f"{first_valid_time_info['valid_fmt']}"
 
         # loop through the files found for each field (var_info)
         for file_dict in self.c_dict['ALL_FILES']:
@@ -194,13 +198,14 @@ class MTDWrapper(CompareGriddedWrapper):
                 'obs_path': inputs.get('OBS'),
                 'model_path': inputs.get('FCST'),
             }
-            self.process_fields_one_thresh(time_info, var_info, **arg_dict)
+            self.process_fields_one_thresh(first_valid_time_info, var_info,
+                                           **arg_dict)
 
-    def process_fields_one_thresh(self, time_info, var_info, model_path,
-                                  obs_path):
+    def process_fields_one_thresh(self, first_valid_time_info, var_info,
+                                  model_path, obs_path):
         """! For each threshold, set up environment variables and run mode
               Args:
-                @param time_info dictionary containing timing information
+                @param first_valid_time_info dictionary containing timing information
                 @param var_info object containing variable information
                 @param model_path forecast file list path
                 @param obs_path observation file list path
@@ -276,20 +281,16 @@ class MTDWrapper(CompareGriddedWrapper):
 
         # loop through fields and call MTD
         for fcst_field, obs_field in zip(fcst_field_list, obs_field_list):
-            self.format_field('FCST',
-                              fcst_field,
-                              is_list=False)
-            self.format_field('OBS',
-                              obs_field,
-                              is_list=False)
+            self.format_field('FCST', fcst_field, is_list=False)
+            self.format_field('OBS',  obs_field,  is_list=False)
 
             self.param = do_string_sub(self.c_dict['CONFIG_FILE'],
-                                       **time_info)
+                                       **first_valid_time_info)
 
             self.set_current_field_config(var_info)
-            self.set_environment_variables(time_info)
+            self.set_environment_variables(first_valid_time_info)
 
-            if not self.find_and_check_output_file(time_info,
+            if not self.find_and_check_output_file(first_valid_time_info,
                                                    is_directory=True):
                 return
 
