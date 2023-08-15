@@ -185,7 +185,8 @@ class MTDWrapper(CompareGriddedWrapper):
                 if not file_ext:
                     continue
 
-                outfile = f"{time_fmt}_mtd_{data_type.lower()}_{file_ext}.txt"
+                dt = 'single' if self.c_dict['SINGLE_RUN'] else data_type
+                outfile = f"{time_fmt}_mtd_{dt.lower()}_{file_ext}.txt"
                 inputs[data_type] = self.write_list_file(outfile, file_list)
 
             if not inputs:

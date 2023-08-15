@@ -373,7 +373,7 @@ def test_mtd_single(metplus_config):
     }
     mw = mtd_wrapper(metplus_config, overrides)
     mw.run_all_times()
-    single_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '20170510040000_mtd_fcst_APCP.txt')
+    single_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '20170510040000_mtd_single_APCP.txt')
     with open(single_list_file) as f:
         single_list = f.readlines()
     single_list = [x.strip() for x in single_list]
