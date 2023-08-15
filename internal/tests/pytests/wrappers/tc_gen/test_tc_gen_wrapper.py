@@ -319,7 +319,6 @@ def test_tc_gen(metplus_config, config_overrides, env_var_values):
     config.set('config', 'LOOP_BY', 'INIT')
     config.set('config', 'INIT_TIME_FMT', '%Y')
     config.set('config', 'INIT_BEG', '2016')
-    config.set('config', 'LOOP_ORDER', 'processes')
 
     config.set('config', 'TC_GEN_TRACK_INPUT_DIR', track_dir)
     config.set('config', 'TC_GEN_TRACK_INPUT_TEMPLATE', track_template)
