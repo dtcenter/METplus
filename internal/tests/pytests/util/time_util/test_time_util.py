@@ -151,8 +151,13 @@ def test_time_string_to_met_time(time_string, default_unit, met_time):
         # RUN_ONCE_PER_LEAD: lead is time interval, init/valid are wildcards
         ({'init': '*', 'valid': '*', 'lead': relativedelta(hours=3)},
          {'init': '*', 'valid': '*', 'lead': relativedelta(hours=3), 'date': '*'}),
+        # case that failed in GFDLTracker wrapper
         ({'init': datetime(2021, 7, 13, 0, 0), 'lead': 21600, 'offset_hours': 0},
          {'init': datetime(2021, 7, 13, 0, 0), 'lead': 21600, 'valid': datetime(2021, 7, 13, 6, 0), 'offset': 0}),
+        # lead is months or years (relativedelta)
+        # allows lead to remain relativedelta in case init/valid change but still computes lead hours
+        ({'init': datetime(2021, 7, 13, 0, 0), 'lead': relativedelta(months=1)},
+         {'init': datetime(2021, 7, 13, 0, 0), 'lead': relativedelta(months=1), 'valid': datetime(2021, 8, 13, 0, 0), 'lead_hours': 744}),
         ]
 )
 @pytest.mark.util

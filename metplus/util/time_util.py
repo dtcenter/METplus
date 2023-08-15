@@ -392,9 +392,10 @@ def ti_calculate(input_dict):
     # if they are, keep lead as a relativedelta object to be handled differently
     if out_dict['lead'].months == 0 and out_dict['lead'].years == 0:
         out_dict['lead'] = total_seconds
-        out_dict['lead_hours'] = int(total_seconds // 3600)
-        out_dict['lead_minutes'] = int(total_seconds // 60)
-        out_dict['lead_seconds'] = total_seconds
+
+    out_dict['lead_hours'] = int(total_seconds // 3600)
+    out_dict['lead_minutes'] = int(total_seconds // 60)
+    out_dict['lead_seconds'] = total_seconds
 
     return out_dict
 
