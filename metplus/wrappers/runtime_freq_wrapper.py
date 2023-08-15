@@ -183,11 +183,7 @@ class RuntimeFreqWrapper(CommandBuilder):
 
         # set init or valid to time if _BEG is equal to _END
         start_dt, end_dt = get_start_and_end_times(self.config)
-        if not start_dt:
-            self.log_error('Could not read begin and end times')
-            return None
-
-        if start_dt == end_dt:
+        if start_dt and start_dt == end_dt:
             loop_by = get_time_prefix(self.config)
             if loop_by:
                 time_input[loop_by.lower()] = start_dt
