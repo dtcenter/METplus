@@ -17,7 +17,7 @@ import re
 from ..util import time_util
 from ..util import do_string_sub, skip_time, get_lead_sequence
 from ..util import time_generator
-from . import CommandBuilder
+from . import RuntimeFreqWrapper
 
 '''!@namespace TCGenWrapper
 @brief Wraps the TC-Gen tool
@@ -25,7 +25,7 @@ from . import CommandBuilder
 '''
 
 
-class TCGenWrapper(CommandBuilder):
+class TCGenWrapper(RuntimeFreqWrapper):
 
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_INIT_FREQ',
@@ -109,6 +109,7 @@ class TCGenWrapper(CommandBuilder):
                                c_dict['VERBOSITY'])
         )
         c_dict['ALLOW_MULTIPLE_FILES'] = True
+        c_dict['RUNTIME_FREQ'] = 'RUN_ONCE'
 
         # get the MET config file path or use default
         c_dict['CONFIG_FILE'] = self.get_config_file('TCGenConfig_wrapped')
@@ -279,11 +280,6 @@ class TCGenWrapper(CommandBuilder):
         )
         self.add_met_config_window('genesis_match_window')
 
-        # get INPUT_TIME_DICT values since wrapper doesn't loop over time
-        c_dict['INPUT_TIME_DICT'] = next(time_generator(self.config))
-        if not c_dict['INPUT_TIME_DICT']:
-            self.isOK = False
-
         return c_dict
 
     def handle_filter(self):
@@ -325,32 +321,6 @@ class TCGenWrapper(CommandBuilder):
         cmd += ' -out ' + out_path
 
         return cmd
-
-    def run_all_times(self):
-        """!Runs tc_gen for the first run time"""
-        # run using input time dictionary
-        self.run_at_time(self.c_dict['INPUT_TIME_DICT'])
-        return self.all_commands
-
-    def run_at_time(self, input_dict):
-        """! Process runtime and try to build command to run ascii2nc
-             Args:
-                @param input_dict dictionary containing timing information
-        """
-        input_dict['instance'] = self.instance if self.instance else ''
-        for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
-            if custom_string:
-                self.logger.info(f"Processing custom string: {custom_string}")
-
-            input_dict['custom'] = custom_string
-            time_info = time_util.ti_calculate(input_dict)
-
-            if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
-                self.logger.debug('Skipping run time')
-                continue
-
-            self.clear()
-            self.run_at_time_once(time_info)
 
     def run_at_time_once(self, time_info):
         """! Process runtime and try to build command to run ascii2nc
