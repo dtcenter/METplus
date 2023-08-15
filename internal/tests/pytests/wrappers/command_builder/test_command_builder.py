@@ -912,3 +912,93 @@ def test_find_and_check_output_file_skip(metplus_config, exists, skip, is_dir,
 
     # cast result to bool because None isn't equal to False
     assert bool(result) == run
+
+
+@pytest.mark.wrapper
+def test_set_met_config_obs_window(metplus_config):
+    config = metplus_config
+    cb = CommandBuilder(config)
+    cb.c_dict['OBS_WINDOW_BEGIN'] = '20230808'
+    cb.c_dict['OBS_WINDOW_END'] = None
+    cb.set_met_config_obs_window(cb.c_dict)
+
+    assert cb.env_var_dict['METPLUS_OBS_WINDOW_BEGIN'] == 'begin = 20230808;'
+    assert cb.env_var_dict['METPLUS_OBS_WINDOW_END'] == ''
+    
+
+@pytest.mark.parametrize(
+    'time_info, user_envs, expected_env, expected_user_env', [
+        (
+            {'init':'20230810104356', 'now': '2023081011'},
+            True,
+            'Foo = 20230810104356',
+            'My now = 2023081011',
+         ),
+        (
+            {'init':'20230810104356', 'now': '2023081011'},
+            False,
+            'Foo = 20230810104356',
+            None,
+         ),
+        (
+            None,
+            True,
+            'Foo = {init?fmt=%Y%m%d%H%M%S}',
+            None,
+        ),
+
+    ]
+)
+@pytest.mark.wrapper
+def test_set_environment_variables(metplus_config,
+                                   time_info,
+                                   user_envs,
+                                   expected_env,
+                                   expected_user_env):
+    
+    config = metplus_config
+    
+    if user_envs:
+        config.set('user_env_vars',
+                   'CMD_BUILD_USER_TEST',
+                   'My now = {now?fmt=%Y%m%d%H}'
+                   )
+    
+    cb = CommandBuilder(config)
+    cb.env_var_dict['CMD_BUILD_TEST'] = 'Foo = {init?fmt=%Y%m%d%H%M%S}'
+    cb.env_var_keys.append('CMD_BUILD_TEST')
+    cb.set_environment_variables(time_info=time_info)
+    
+    assert cb.env['CMD_BUILD_TEST'] == expected_env
+    if user_envs and not time_info:
+        ct = cb.config.getstr('config', 'CLOCK_TIME')
+        ct = datetime.datetime.strptime(ct, "%Y%m%d%H%M%S").strftime("%Y%m%d%H")
+        assert cb.env['CMD_BUILD_USER_TEST'] == f'My now = {ct}'
+    elif user_envs:
+        assert cb.env['CMD_BUILD_USER_TEST'] == expected_user_env
+    else:
+        assert cb.config['user_env_vars'] == {}
+
+
+@pytest.mark.parametrize(
+    'shell, expected', [
+        ('bash', 'export CMD_BUILD_USER_TEST="User \\"var\\"!";'),
+        ('csh', 'setenv CMD_BUILD_USER_TEST "User "\\""var"\\""!";'),
+    ]
+)    
+@pytest.mark.wrapper
+def test_get_env_copy(metplus_config, shell, expected):
+    config = metplus_config
+    config.set('user_env_vars',
+            'CMD_BUILD_USER_TEST',
+            "User \"var\"!"
+            )
+
+    cb = CommandBuilder(config)
+    cb.c_dict['USER_SHELL']= shell
+    
+    cb.set_environment_variables()
+    actual = cb.get_env_copy({'MET_TMP_DIR', 'OMP_NUM_THREADS'})
+ 
+    assert expected in actual
+    
