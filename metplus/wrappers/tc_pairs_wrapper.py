@@ -97,6 +97,8 @@ class TCPairsWrapper(RuntimeFreqWrapper):
                                                  c_dict['VERBOSITY'])
         c_dict['ALLOW_MULTIPLE_FILES'] = True
 
+        self._handle_time_looping(c_dict)
+
         c_dict['MISSING_VAL_TO_REPLACE'] = (
             self.config.getstr('config',
                                'TC_PAIRS_MISSING_VAL_TO_REPLACE', '-99')
@@ -207,12 +209,6 @@ class TCPairsWrapper(RuntimeFreqWrapper):
         if not c_dict['OUTPUT_DIR']:
             self.log_error('TC_PAIRS_OUTPUT_DIR must be set')
 
-        c_dict['READ_ALL_FILES'] = (
-            self.config.getbool('config',
-                                'TC_PAIRS_READ_ALL_FILES',
-                                False)
-        )
-
         # get list of models to process
         c_dict['MODEL_LIST'] = getlist(
             self.config.getraw('config', 'MODEL', '')
@@ -288,65 +284,81 @@ class TCPairsWrapper(RuntimeFreqWrapper):
 
         self.handle_description()
 
-        c_dict['SKIP_LEAD_SEQ'] = (
-            self.config.getbool('config',
-                                'TC_PAIRS_SKIP_LEAD_SEQ',
-                                False)
-        )
+        return c_dict
 
-        if c_dict['RUNTIME_FREQ'] == '':
-            c_dict['RUNTIME_FREQ'] = 'RUN_ONCE'
+    def _handle_time_looping(self, c_dict):
+        """!Figure out time looping configuration based on legacy config
+         variables.
+         READ_ALL_FILES: Only pass directories to tc_pairs and
+         let the app handle all filtering. Force RUN_ONCE if set.
+         To preserve behavior when deprecated LOOP_ORDER=times and
+         TC_PAIRS_RUN_ONCE is not set,
+
+        @param c_dict dictionary to populate with values from METplusConfig
+        """
+        c_dict['READ_ALL_FILES'] = (
+            self.config.getbool('config', 'TC_PAIRS_READ_ALL_FILES', False)
+        )
+        if c_dict['READ_ALL_FILES']:
+            if c_dict['RUNTIME_FREQ'] != 'RUN_ONCE':
+                self.logger.debug('TC_PAIRS_READ_ALL_FILES=True. '
+                                  'Forcing TC_PAIRS_RUNTIME_FREQ=RUN_ONCE')
+                c_dict['RUNTIME_FREQ'] = 'RUN_ONCE'
+            return
 
         # check for settings that cause differences moving from v4.1 to v5.0
         # warn and update run setting to preserve old behavior
         if (self.config.has_option('config', 'LOOP_ORDER') and
             self.config.getstr_nocheck('config', 'LOOP_ORDER') == 'times' and
-            not self.config.has_option('config', 'TC_PAIRS_RUN_ONCE')):
+            not (self.config.has_option('config', 'TC_PAIRS_RUN_ONCE') or
+                 self.config.has_option('config', 'TC_PAIRS_RUNTIME_FREQ'))):
             self.logger.warning(
                 'LOOP_ORDER has been deprecated. LOOP_ORDER has been set to '
-                '"times" and TC_PAIRS_RUN_ONCE is not set. '
-                'Forcing TC_PAIRS_RUN_ONCE=False to preserve behavior prior to '
-                'v5.0.0. Please remove LOOP_ORDER and set '
-                'TC_PAIRS_RUN_ONCE=False to preserve previous behavior and '
-                'remove this warning message.'
+                '"times" and TC_PAIRS_RUNTIME_FREQ is not set. '
+                'Forcing TC_PAIRS_RUNTIME_FREQ=RUN_ONCE_FOR_EACH to '
+                'preserve behavior prior to v5.0.0. Please remove LOOP_ORDER '
+                'and set TC_PAIRS_RUNTIME_FREQ=RUN_ONCE_FOR_EACH to preserve '
+                'previous behavior and remove this warning message.'
             )
-            c_dict['RUN_ONCE'] = False
-            return c_dict
+            c_dict['RUNTIME_FREQ'] = 'RUN_ONCE_FOR_EACH'
 
-        # only run once if True
-        c_dict['RUN_ONCE'] = self.config.getbool('config',
-                                                 'TC_PAIRS_RUN_ONCE',
-                                                 True)
-        return c_dict
+        # check deprecated TC_PAIRS_RUN_ONCE, warn and handle if set
+        elif self.config.has_option('config', 'TC_PAIRS_RUN_ONCE'):
+            self.logger.warning('TC_PAIRS_RUN_ONCE is deprecated.')
+            run_once = self.config.getbool('config', 'TC_PAIRS_RUN_ONCE', True)
+            if run_once:
+                self.logger.warning('Setting TC_PAIRS_RUNTIME_FREQ=RUN_ONCE.'
+                                    'Please remove TC_PAIRS_RUN_ONCE and '
+                                    'set TC_PAIRS_RUNTIME_FREQ=RUN_ONCE '
+                                    'to remove this warning')
+                c_dict['RUNTIME_FREQ'] = 'RUN_ONCE'
+                return
 
-    def run_all_times(self):
-        """! Build up the command to invoke the MET tool tc_pairs.
-        """
-        # use first run time
-        input_dict = next(time_generator(self.config))
-        if not input_dict:
-            return self.all_commands
+            self.logger.warning('Setting TC_PAIRS_RUNTIME_FREQ=RUN_ONCE_FOR_EACH.'
+                                'Please remove TC_PAIRS_RUN_ONCE and '
+                                'set TC_PAIRS_RUNTIME_FREQ=RUN_ONCE_FOR_EACH '
+                                'to remove this warning')
+            c_dict['RUNTIME_FREQ'] = 'RUN_ONCE_FOR_EACH'
 
-        add_to_time_input(input_dict, instance=self.instance)
+        # set runtime frequency to RUN_ONCE if unset
+        if not c_dict['RUNTIME_FREQ']:
+            c_dict['RUNTIME_FREQ'] = 'RUN_ONCE'
 
-        # if running in READ_ALL_FILES mode, call tc_pairs once and exit
-        if self.c_dict['READ_ALL_FILES']:
-            return self._read_all_files(input_dict)
-
-        if not self.c_dict['RUN_ONCE']:
-            return super().run_all_times()
-
-        self.logger.debug('Only processing first run time. Set '
-                          'TC_PAIRS_RUN_ONCE=False to process all run times.')
-        log_runtime_banner(self.config, input_dict, self)
-        self.run_at_time(input_dict)
-        return self.all_commands
+        # if runtime frequency set to run once for each time, check skip lead
+        if c_dict['RUNTIME_FREQ'] == 'RUN_ONCE_FOR_EACH':
+            c_dict['SKIP_LEAD_SEQ'] = (
+                self.config.getbool('config', 'TC_PAIRS_SKIP_LEAD_SEQ', False)
+            )
 
     def run_at_time_once(self, time_info):
         """! Create the arguments to run MET tc_pairs
 
          @param time_info dictionary containing time information
         """
+        # if running in READ_ALL_FILES mode, call tc_pairs once and exit
+        if self.c_dict['READ_ALL_FILES']:
+            return self._read_all_files(time_info)
+
         # set output dir
         self.outdir = self.c_dict['OUTPUT_DIR']
 
