@@ -24,6 +24,9 @@ from . import CompareGriddedWrapper
 class GridStatWrapper(CompareGriddedWrapper):
     """!Wraps the MET tool grid_stat to compare gridded datasets"""
 
+    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
+    RUNTIME_FREQ_SUPPORTED = ['RUN_ONCE_FOR_EACH']
+
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_MODEL',
         'METPLUS_DESC',
@@ -112,13 +115,6 @@ class GridStatWrapper(CompareGriddedWrapper):
         c_dict['VERBOSITY'] = self.config.getstr('config',
                                                  'LOG_GRID_STAT_VERBOSITY',
                                                  c_dict['VERBOSITY'])
-
-        if c_dict['RUNTIME_FREQ'] != 'RUN_ONCE_FOR_EACH':
-            self.logger.warning(
-                f"GRID_STAT_RUNTIME_FREQ={c_dict['RUNTIME_FREQ']} not "
-                "supported. Using RUN_ONCE_FOR_EACH"
-            )
-            c_dict['RUNTIME_FREQ'] = 'RUN_ONCE_FOR_EACH'
 
         # get the MET config file path or use default
         c_dict['CONFIG_FILE'] = self.get_config_file('GridStatConfig_wrapped')

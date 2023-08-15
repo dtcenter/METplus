@@ -33,6 +33,8 @@ class TCStatWrapper(RuntimeFreqWrapper):
     """! Wrapper for the MET tool, tc_stat, which is used to filter tropical
          cyclone pair data.
     """
+    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_PER_INIT_OR_VALID'
+    RUNTIME_FREQ_SUPPORTED = ['RUN_ONCE_PER_INIT_OR_VALID']
 
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_AMODEL',
@@ -110,8 +112,6 @@ class TCStatWrapper(RuntimeFreqWrapper):
         c_dict['VERBOSITY'] = self.config.getstr('config',
                                                  'LOG_TC_STAT_VERBOSITY',
                                                  c_dict['VERBOSITY'])
-
-        c_dict['RUNTIME_FREQ'] = 'RUN_ONCE_PER_INIT_OR_VALID'
 
         c_dict['LOOKIN_DIR'] = self.config.getdir('TC_STAT_LOOKIN_DIR', '')
 

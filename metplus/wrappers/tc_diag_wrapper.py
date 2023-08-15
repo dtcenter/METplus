@@ -26,6 +26,8 @@ from ..util.met_config import add_met_config_dict_list
 
 
 class TCDiagWrapper(RuntimeFreqWrapper):
+    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_PER_INIT_OR_VALID'
+    RUNTIME_FREQ_SUPPORTED = ['RUN_ONCE_PER_INIT_OR_VALID']
 
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_MODEL',
@@ -79,12 +81,6 @@ class TCDiagWrapper(RuntimeFreqWrapper):
 
         # skip RuntimeFreq wrapper logic to find files
         c_dict['FIND_FILES'] = False
-
-        if not c_dict['RUNTIME_FREQ']:
-            c_dict['RUNTIME_FREQ'] = 'RUN_ONCE_PER_INIT_OR_VALID'
-        if c_dict['RUNTIME_FREQ'] != 'RUN_ONCE_PER_INIT_OR_VALID':
-            self.log_error('Only RUN_ONCE_PER_INIT_OR_VALID is supported for '
-                           'TC_DIAG_RUNTIME_FREQ.')
 
         # get command line arguments domain and tech id list for -data
         self._read_data_inputs(c_dict)

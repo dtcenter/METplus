@@ -24,6 +24,9 @@ VALID_PYTHON_EMBED_TYPES = ['NUMPY', 'XARRAY', 'PANDAS']
 class PyEmbedIngestWrapper(LoopTimesWrapper):
     """!Wrapper to utilize Python Embedding in the MET tools to read in
     data using a python script"""
+    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
+    RUNTIME_FREQ_SUPPORTED = ['RUN_ONCE_FOR_EACH']
+
     def __init__(self, config, instance=None):
         self.app_name = 'py_embed_ingest'
         super().__init__(config, instance=instance)

@@ -19,6 +19,9 @@ from ..util import do_string_sub
 class MODEWrapper(CompareGriddedWrapper):
     """!Wrapper for the mode MET tool"""
 
+    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
+    RUNTIME_FREQ_SUPPORTED = ['RUN_ONCE_FOR_EACH']
+
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_MODEL',
         'METPLUS_DESC',

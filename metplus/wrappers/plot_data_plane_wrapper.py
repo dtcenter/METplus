@@ -23,6 +23,9 @@ from . import LoopTimesWrapper
 
 
 class PlotDataPlaneWrapper(LoopTimesWrapper):
+    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
+    RUNTIME_FREQ_SUPPORTED = ['RUN_ONCE_FOR_EACH']
+
     def __init__(self, config, instance=None):
         self.app_name = "plot_data_plane"
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),

@@ -167,8 +167,6 @@ class CommandBuilder:
         c_dict['VERBOSITY'] = self.config.getstr('config',
                                                  'LOG_MET_VERBOSITY',
                                                  '2')
-        c_dict['ALLOW_MULTIPLE_FILES'] = False
-
         app_name = ''
         if hasattr(self, 'app_name'):
             app_name = self.app_name

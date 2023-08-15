@@ -23,6 +23,10 @@ from . import LoopTimesWrapper
 
 
 class GempakToCFWrapper(LoopTimesWrapper):
+
+    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
+    RUNTIME_FREQ_SUPPORTED = 'ALL'
+
     def __init__(self, config, instance=None):
         self.app_name = "GempakToCF"
         self.app_path = config.getstr('exe', 'GEMPAKTOCF_JAR', '')

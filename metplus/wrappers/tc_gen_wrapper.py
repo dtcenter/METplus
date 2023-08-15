@@ -26,6 +26,8 @@ from . import RuntimeFreqWrapper
 
 
 class TCGenWrapper(RuntimeFreqWrapper):
+    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE'
+    RUNTIME_FREQ_SUPPORTED = ['RUN_ONCE']
 
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_INIT_FREQ',
@@ -109,7 +111,6 @@ class TCGenWrapper(RuntimeFreqWrapper):
                                c_dict['VERBOSITY'])
         )
         c_dict['ALLOW_MULTIPLE_FILES'] = True
-        c_dict['RUNTIME_FREQ'] = 'RUN_ONCE'
 
         # get the MET config file path or use default
         c_dict['CONFIG_FILE'] = self.get_config_file('TCGenConfig_wrapped')

@@ -21,6 +21,9 @@ from . import CompareGriddedWrapper
 
 class MTDWrapper(CompareGriddedWrapper):
 
+    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_PER_INIT_OR_VALID'
+    RUNTIME_FREQ_SUPPORTED = 'ALL'
+
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_MODEL',
         'METPLUS_DESC',
@@ -54,8 +57,6 @@ class MTDWrapper(CompareGriddedWrapper):
         # set to prevent find_obs from getting multiple files within
         #  a time window. Does not refer to time series of files
         c_dict['ALLOW_MULTIPLE_FILES'] = False
-
-        c_dict['RUNTIME_FREQ'] = 'RUN_ONCE_PER_INIT_OR_VALID'
         c_dict['ONCE_PER_FIELD'] = True
 
         c_dict['OUTPUT_DIR'] = (
@@ -156,8 +157,7 @@ class MTDWrapper(CompareGriddedWrapper):
         # calculate valid based on first forecast lead
         lead_seq = get_lead_sequence(self.config, time_info)
         if not lead_seq:
-            self.log_error('Could not get forecast lead list')
-            return
+            lead_seq = [0]
         first_lead = lead_seq[0]
         time_info['lead'] = first_lead
         first_valid_time_info = ti_calculate(time_info)

@@ -25,6 +25,9 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
     """! Wraps the MET tool pcp_combine to combine or divide
          precipitation accumulations """
 
+    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
+    RUNTIME_FREQ_SUPPORTED = ['RUN_ONCE_FOR_EACH']
+
     # valid values for [FCST/OBS]_PCP_COMBINE_METHOD
     valid_run_methods = ['ADD', 'SUM', 'SUBTRACT', 'DERIVE', 'USER_DEFINED']
 

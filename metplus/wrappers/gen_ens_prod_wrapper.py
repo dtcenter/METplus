@@ -14,6 +14,9 @@ from . import LoopTimesWrapper
 class GenEnsProdWrapper(LoopTimesWrapper):
     """! Wrapper for gen_ens_prod MET application """
 
+    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
+    RUNTIME_FREQ_SUPPORTED = ['RUN_ONCE_FOR_EACH']
+
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_MODEL',
         'METPLUS_DESC',

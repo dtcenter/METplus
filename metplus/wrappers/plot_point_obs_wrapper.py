@@ -19,6 +19,8 @@ from . import LoopTimesWrapper
 
 class PlotPointObsWrapper(LoopTimesWrapper):
     """! Wrapper used to build commands to call plot_point_obs """
+    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
+    RUNTIME_FREQ_SUPPORTED = 'ALL'
 
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_GRID_DATA_DICT',

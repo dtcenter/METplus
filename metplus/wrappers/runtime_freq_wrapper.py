@@ -57,8 +57,51 @@ class RuntimeFreqWrapper(CommandBuilder):
                                        f'{app_name_upper}_RUNTIME_FREQ',
                                        '').upper()
         )
+        self.validate_runtime_freq(c_dict)
 
         return c_dict
+
+    def validate_runtime_freq(self, c_dict):
+        """!Check and update RUNTIME_FREQ. If RUNTIME_FREQ is unset and a
+        default value is set by the wrapper, use that value. If
+        """
+        if not c_dict['RUNTIME_FREQ']:
+            # use default if there is one
+            if (hasattr(self, 'RUNTIME_FREQ_DEFAULT') and
+                    self.RUNTIME_FREQ_DEFAULT is not None):
+                c_dict['RUNTIME_FREQ'] = self.RUNTIME_FREQ_DEFAULT
+                return
+
+            # otherwise error
+            self.log_error(f'Must set {self.app_name.upper()}_RUNTIME_FREQ')
+            return
+
+        # error if invalid value is set
+        if c_dict['RUNTIME_FREQ'] not in self.FREQ_OPTIONS:
+            self.log_error(f"Invalid value for "
+                           f"{self.app_name.upper()}_RUNTIME_FREQ: "
+                           f"({c_dict['RUNTIME_FREQ']}) "
+                           f"Valid options include:"
+                           f" {', '.join(self.FREQ_OPTIONS)}")
+            return
+
+        # if list of supported frequencies are set by wrapper,
+        # warn and use default if frequency is not supported
+        if hasattr(self, 'RUNTIME_FREQ_SUPPORTED'):
+            if self.RUNTIME_FREQ_SUPPORTED == 'ALL':
+                return
+
+            if c_dict['RUNTIME_FREQ'] not in self.RUNTIME_FREQ_SUPPORTED:
+                err_msg = (f"{self.app_name.upper()}_RUNTIME_FREQ="
+                           f"{c_dict['RUNTIME_FREQ']} not supported.")
+                if hasattr(self, 'RUNTIME_FREQ_DEFAULT'):
+                    self.logger.warning(
+                        f"{err_msg} Using {self.RUNTIME_FREQ_DEFAULT}"
+                    )
+                    c_dict['RUNTIME_FREQ'] = self.RUNTIME_FREQ_DEFAULT
+                else:
+                    self.log_error(err_msg)
+                    return
 
     def get_input_templates(self, c_dict):
         app_upper = self.app_name.upper()
@@ -94,14 +137,6 @@ class RuntimeFreqWrapper(CommandBuilder):
         c_dict['TEMPLATE_DICT'] = template_dict
 
     def run_all_times(self):
-        if self.c_dict['RUNTIME_FREQ'] not in self.FREQ_OPTIONS:
-            self.log_error(f"Invalid value for "
-                           f"{self.app_name.upper()}_RUNTIME_FREQ: "
-                           f"({self.c_dict['RUNTIME_FREQ']}) "
-                           f"Valid options include:"
-                           f" {', '.join(self.FREQ_OPTIONS)}")
-            return None
-
         wrapper_instance_name = self.get_wrapper_instance_name()
         self.logger.info(f'Running wrapper: {wrapper_instance_name}')
 

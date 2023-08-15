@@ -23,6 +23,8 @@ class PB2NCWrapper(LoopTimesWrapper):
     """! Wrapper to the MET tool pb2nc which converts prepbufr files
          to NetCDF for MET's point_stat tool can recognize.
     """
+    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
+    RUNTIME_FREQ_SUPPORTED = 'ALL'
 
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_MESSAGE_TYPE',

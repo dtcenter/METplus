@@ -17,6 +17,9 @@ from . import LoopTimesWrapper
 
 class IODA2NCWrapper(LoopTimesWrapper):
 
+    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
+    RUNTIME_FREQ_SUPPORTED = 'ALL'
+
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_MESSAGE_TYPE',
         'METPLUS_MESSAGE_TYPE_GROUP_MAP',

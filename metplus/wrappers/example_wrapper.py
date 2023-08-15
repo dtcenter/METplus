@@ -18,6 +18,10 @@ from . import LoopTimesWrapper
 
 
 class ExampleWrapper(LoopTimesWrapper):
+
+    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
+    RUNTIME_FREQ_SUPPORTED = 'ALL'
+
     """!Wrapper can be used as a base to develop a new wrapper"""
     def __init__(self, config, instance=None):
         self.app_name = 'example'

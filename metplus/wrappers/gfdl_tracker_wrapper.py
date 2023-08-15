@@ -17,10 +17,14 @@ from dateutil.relativedelta import relativedelta
 
 from ..util import do_string_sub, ti_calculate, get_lead_sequence
 from ..util import remove_quotes, parse_template
-from . import CommandBuilder
+from . import RuntimeFreqWrapper
 
-class GFDLTrackerWrapper(CommandBuilder):
+
+class GFDLTrackerWrapper(RuntimeFreqWrapper):
     """!Configures and runs GFDL Tracker"""
+
+    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE'
+    RUNTIME_FREQ_SUPPORTED = ['RUN_ONCE', 'RUN_ONCE_PER_INIT_OR_VALID']
 
     CONFIG_NAMES = {
         "DATEIN_INP_MODEL": "int",
@@ -240,20 +244,6 @@ class GFDLTrackerWrapper(CommandBuilder):
 
             value = get_fct('config', f'GFDL_TRACKER_{name}', '')
             c_dict[f'REPLACE_CONF_{name}'] = value
-
-    def run_at_time(self, input_dict):
-        """! Do some processing for the current run time (init or valid)
-
-        @param input_dict dictionary containing time information of current run
-        """
-        for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
-            if custom_string:
-                self.logger.info(f"Processing custom string: {custom_string}")
-
-            input_dict['custom'] = custom_string
-            self.run_at_time_once(input_dict)
-
-        self.c_dict['FIRST_RUN'] = False
 
     def run_at_time_once(self, input_dict):
         """! Do some processing for the current run time (init or valid)
@@ -547,8 +537,9 @@ class GFDLTrackerWrapper(CommandBuilder):
 
         # only fill out sgv template file if template is specified
         # and on a 0Z run that is not the first run time
-        if (not self.c_dict['SGV_TEMPLATE_FILE'] or
-                self.c_dict['FIRST_RUN'] or
+        first_run = self.c_dict['FIRST_RUN']
+        self.c_dict['FIRST_RUN'] = False
+        if (not self.c_dict['SGV_TEMPLATE_FILE'] or first_run or
                 input_dict['init'].strftime('%H') != '00'):
             return output_path
 
@@ -577,7 +568,6 @@ class GFDLTrackerWrapper(CommandBuilder):
         with open(output_path, 'w') as file_handle:
             for line in output_lines:
                 file_handle.write(f'{line}\n')
-
 
     def populate_sub_dict(self, time_info):
         sub_dict = {}

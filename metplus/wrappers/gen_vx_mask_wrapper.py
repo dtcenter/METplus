@@ -24,6 +24,9 @@ from ..util import do_string_sub
 
 class GenVxMaskWrapper(LoopTimesWrapper):
 
+    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
+    RUNTIME_FREQ_SUPPORTED = 'ALL'
+
     def __init__(self, config, instance=None):
         self.app_name = "gen_vx_mask"
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
@@ -40,12 +43,12 @@ class GenVxMaskWrapper(LoopTimesWrapper):
         # input and output files
         c_dict['INPUT_DIR'] = self.config.getdir('GEN_VX_MASK_INPUT_DIR',
                                                  '')
-        c_dict['INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
+        c_dict['INPUT_TEMPLATE'] = self.config.getraw('config',
                                                       'GEN_VX_MASK_INPUT_TEMPLATE')
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('GEN_VX_MASK_OUTPUT_DIR',
                                                   '')
-        c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
+        c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('config',
                                                        'GEN_VX_MASK_OUTPUT_TEMPLATE')
 
         c_dict['MASK_INPUT_DIR'] = self.config.getdir('GEN_VX_MASK_INPUT_MASK_DIR',

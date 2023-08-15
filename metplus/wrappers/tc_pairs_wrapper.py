@@ -42,6 +42,8 @@ class TCPairsWrapper(RuntimeFreqWrapper):
     """!Wraps the MET tool, tc_pairs to parse and match ATCF_by_pairs adeck and
        bdeck files.  Pre-processes extra tropical cyclone data.
     """
+    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE'
+    RUNTIME_FREQ_SUPPORTED = 'ALL'
 
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_MODEL',
@@ -96,8 +98,6 @@ class TCPairsWrapper(RuntimeFreqWrapper):
                                                  'LOG_TC_PAIRS_VERBOSITY',
                                                  c_dict['VERBOSITY'])
         c_dict['ALLOW_MULTIPLE_FILES'] = True
-
-        self._handle_time_looping(c_dict)
 
         c_dict['MISSING_VAL_TO_REPLACE'] = (
             self.config.getstr('config',
@@ -286,7 +286,7 @@ class TCPairsWrapper(RuntimeFreqWrapper):
 
         return c_dict
 
-    def _handle_time_looping(self, c_dict):
+    def validate_runtime_freq(self, c_dict):
         """!Figure out time looping configuration based on legacy config
          variables.
          READ_ALL_FILES: Only pass directories to tc_pairs and
@@ -304,14 +304,13 @@ class TCPairsWrapper(RuntimeFreqWrapper):
                 self.logger.debug('TC_PAIRS_READ_ALL_FILES=True. '
                                   'Forcing TC_PAIRS_RUNTIME_FREQ=RUN_ONCE')
                 c_dict['RUNTIME_FREQ'] = 'RUN_ONCE'
-            return
 
         # check for settings that cause differences moving from v4.1 to v5.0
         # warn and update run setting to preserve old behavior
-        if (self.config.has_option('config', 'LOOP_ORDER') and
-            self.config.getstr_nocheck('config', 'LOOP_ORDER') == 'times' and
-            not (self.config.has_option('config', 'TC_PAIRS_RUN_ONCE') or
-                 self.config.has_option('config', 'TC_PAIRS_RUNTIME_FREQ'))):
+        elif (self.config.has_option('config', 'LOOP_ORDER') and
+              self.config.getstr_nocheck('config', 'LOOP_ORDER') == 'times' and
+              not (self.config.has_option('config', 'TC_PAIRS_RUN_ONCE') or
+                   self.config.has_option('config', 'TC_PAIRS_RUNTIME_FREQ'))):
             self.logger.warning(
                 'LOOP_ORDER has been deprecated. LOOP_ORDER has been set to '
                 '"times" and TC_PAIRS_RUNTIME_FREQ is not set. '
@@ -332,23 +331,20 @@ class TCPairsWrapper(RuntimeFreqWrapper):
                                     'set TC_PAIRS_RUNTIME_FREQ=RUN_ONCE '
                                     'to remove this warning')
                 c_dict['RUNTIME_FREQ'] = 'RUN_ONCE'
-                return
-
-            self.logger.warning('Setting TC_PAIRS_RUNTIME_FREQ=RUN_ONCE_FOR_EACH.'
-                                'Please remove TC_PAIRS_RUN_ONCE and '
-                                'set TC_PAIRS_RUNTIME_FREQ=RUN_ONCE_FOR_EACH '
-                                'to remove this warning')
-            c_dict['RUNTIME_FREQ'] = 'RUN_ONCE_FOR_EACH'
-
-        # set runtime frequency to RUN_ONCE if unset
-        if not c_dict['RUNTIME_FREQ']:
-            c_dict['RUNTIME_FREQ'] = 'RUN_ONCE'
+            else:
+                self.logger.warning('Setting TC_PAIRS_RUNTIME_FREQ=RUN_ONCE_FOR_EACH.'
+                                    'Please remove TC_PAIRS_RUN_ONCE and '
+                                    'set TC_PAIRS_RUNTIME_FREQ=RUN_ONCE_FOR_EACH '
+                                    'to remove this warning')
+                c_dict['RUNTIME_FREQ'] = 'RUN_ONCE_FOR_EACH'
 
         # if runtime frequency set to run once for each time, check skip lead
         if c_dict['RUNTIME_FREQ'] == 'RUN_ONCE_FOR_EACH':
             c_dict['SKIP_LEAD_SEQ'] = (
                 self.config.getbool('config', 'TC_PAIRS_SKIP_LEAD_SEQ', False)
             )
+
+        super().validate_runtime_freq(c_dict)
 
     def run_at_time_once(self, time_info):
         """! Create the arguments to run MET tc_pairs
