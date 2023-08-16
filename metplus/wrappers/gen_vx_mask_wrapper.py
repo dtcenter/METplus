@@ -25,7 +25,7 @@ from ..util import do_string_sub
 class GenVxMaskWrapper(LoopTimesWrapper):
 
     RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
-    RUNTIME_FREQ_SUPPORTED = 'ALL'
+    RUNTIME_FREQ_SUPPORTED = ['RUN_ONCE_FOR_EACH']
 
     def __init__(self, config, instance=None):
         self.app_name = "gen_vx_mask"

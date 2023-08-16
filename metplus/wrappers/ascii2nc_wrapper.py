@@ -25,7 +25,7 @@ from ..util import do_string_sub, skip_time, get_lead_sequence
 class ASCII2NCWrapper(LoopTimesWrapper):
 
     RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
-    RUNTIME_FREQ_SUPPORTED = 'ALL'
+    RUNTIME_FREQ_SUPPORTED = ['RUN_ONCE_FOR_EACH']
 
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_TIME_SUMMARY_DICT',
