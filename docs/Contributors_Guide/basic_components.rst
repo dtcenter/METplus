@@ -4,21 +4,118 @@
 Basic Components of METplus Python Wrappers
 *******************************************
 
-CommandBuilder
-==============
+.. _bc_class_hierarchy:
 
-CommandBuilder is the parent class of all METplus wrappers.
-Every wrapper is a subclass of CommandBuilder or
-another subclass of CommandBuilder.
-For example, GridStatWrapper, PointStatWrapper, EnsembleStatWrapper,
-and MODEWrapper are all subclasses of CompareGriddedWrapper.
-CompareGriddedWrapper is a subclass of CommandBuilder.
+Class Hierarchy
+===============
+
+**CommandBuilder** is the parent class of all METplus wrappers.
+Every wrapper is a subclass of CommandBuilder or a subclass of CommandBuilder.
 CommandBuilder contains instance variables that are common to every wrapper,
 such as config (METplusConfig object), errors (a counter of the number of
 errors that have occurred in the wrapper), and
 c_dict (a dictionary containing common information).
 CommandBuilder also contains use class functions that can be called within
 each wrapper, such as create_c_dict, clear, and find_data.
+
+**RuntimeFreqWrapper** is a subclass of **CommandBuilder** that contains all
+of the logic to handle time looping.
+See :ref:`Runtime_Freq` for more information on time looping.
+Unless a wrapper is very basic and does not need to loop over time, then
+the wrapper should inherit directly or indirectly from **RuntimeFreqWrapper**.
+
+**LoopTimesWrapper** is a subclass of **RuntimeFreqWrapper**.
+This wrapper simply sets the default runtime frequency to **RUN_ONCE_FOR_EACH**
+for its subclasses.
+
+**CompareGriddedWrapper** is a subclass of **LoopTimesWrapper** that contains
+functions that are common to multiple wrappers that compare forecast (FCST)
+and observation (OBS) data. Subclasses of this wrapper include
+**GridStatWrapper**, **PointStatWrapper**, **EnsembleStatWrapper**,
+**MODEWrapper**, and **MTDWrapper**.
+
+**MTDWrapper** in an exception from the rest of the **CompareGriddeWrapper**
+subclasses because it typically runs once for each init or valid time and
+reads and processes all forecast leads at once. This wrapper inherits from
+**CompareGriddedWrapper** because it still uses many of its functions.
+
+
+.. _bc_class_vars:
+
+Class Variables
+===============
+
+RUNTIME_FREQ_DEFAULT
+--------------------
+
+Wrappers that inherit from **RuntimeFreqWrapper** should include a class
+variable called **RUNTIME_FREQ_DEFAULT** that lists the default runtime
+frequency that should be used if it is not explicitly defined in the METplus
+configuration.
+
+Example::
+
+    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
+
+If no clear default value exists, then *None* can be set in place of a string.
+The **UserScriptWrapper** wrapper is an example::
+
+    RUNTIME_FREQ_DEFAULT = None
+
+
+RUNTIME_FREQ_SUPPORTED
+----------------------
+
+Wrappers that inherit from **RuntimeFreqWrapper** should include a class
+variable called **RUNTIME_FREQ_SUPPORTED**  that defines the a list of the
+runtime frequency settings that are supported by the wrapper. Example::
+
+    RUNTIME_FREQ_SUPPORTED = ['RUN_ONCE_PER_INIT_OR_VALID']
+
+If all runtime frequency values are supported by the wrapper, then the string
+*'ALL'* can be set instead of a list of strings::
+
+    RUNTIME_FREQ_SUPPORTED = 'ALL'
+
+
+WRAPPER_ENV_VAR_KEYS
+--------------------
+
+This class variable lists all of the environment variables that are set by
+the wrapper. These variables are typically referenced in the wrapped MET
+config file for the tool and are named with a *METPLUS\_* prefix.
+All of the variables that are referenced in the wrapped MET config file must
+be listed here so that they will always be set to prevent an error when MET
+reads the config file. An empty string will be set if they are not set to
+another value by the wrapper.
+
+DEPRECATED_WRAPPER_ENV_VAR_KEYS
+--------------------------------
+
+(Optional)
+This class variable lists any environment variables that were
+previously set by the wrapper and referenced in an old version of the
+wrapped MET config file.
+This list serves as a developer reference of the variables that were
+previously used but are now deprecated. When support for setting these
+variables are eventually removed, then the values in this list should also
+be removed.
+
+Flags
+-----
+
+(Optional)
+For wrappers that set a dictionary of flags in the wrapped MET config file,
+class variables that contain a list of variable names can be defined.
+This makes it easier to add/change these variables.
+
+The list is read by the **self.handle_flags** function.
+The name of the variable corresponds to the argument passed to the function.
+For example, **EnsembleStatWrapper** includes **OUTPUT_FLAGS** and a call
+to **self.handle_flags('OUTPUT')**.
+
+Existing \*_FLAG class variables include **OUTPUT_FLAGS**, **NC_PAIRS_FLAGS**, **NC_ORANK_FLAGS**, and **ENSEMBLE_FLAGS**.
+
 
 .. _bc_init_function:
 
@@ -116,45 +213,62 @@ wrappers in the process list are initialized correctly.
 
 See MODEWrapper (ush/mode_wrapper.py) for other examples.
 
+.. _bc_run_at_time_once:
 
-run_at_time function
-====================
+run_at_time_once function
+=========================
 
-run_at_time runs a process for one specific time.
-This is defined in CommandBuilder.
+**run_at_time_once** runs a process for one specific time. The time depends
+on the value of {APP_NAME}_RUNTIME_FREQ. Most wrappers run once per each
+init or valid and forecast lead time. This function is often defined in each
+wrapper to handle command setup specific to the wrapper. There is a generic
+version of the function in **runtime_freq_wrapper.py** that can be used by
+other wrappers:
 
 .. code-block:: python
 
-    def run_at_time(self, input_dict):
-        """! Loop over each forecast lead and build pb2nc command """
-         # loop of forecast leads and process each
-        lead_seq = util.get_lead_sequence(self.config, input_dict)
-        for lead in lead_seq:
-            input_dict['lead'] = lead
+    def run_at_time_once(self, time_info):
+        """! Process runtime and try to build command to run. Most wrappers
+        should be able to call this function to perform all of the actions
+        needed to build the commands using this template. This function can
+        be overridden if necessary.
 
-            lead_string = time_util.ti_calculate(input_dict)['lead_string']
-            self.logger.info("Processing forecast lead {}".format(lead_string))
+        @param time_info dictionary containing timing information
+        @returns True if command was built/run successfully or
+         False if something went wrong
+        """
+        # get input files
+        if not self.find_input_files(time_info):
+            return False
 
-            # Run for given init/valid time and forecast lead combination
-            self.run_at_time_once(input_dict)
+        # get output path
+        if not self.find_and_check_output_file(time_info):
+            return False
 
-See ush/pb2nc_wrapper.py for an example.
+        # get other configurations for command
+        self.set_command_line_arguments(time_info)
+
+        # set environment variables if using config file
+        self.set_environment_variables(time_info)
+
+        # build command and run
+        return self.build()
+
+Typically the **find_input_files** and **set_command_line_arguments**
+functions need to be implemented in the wrapper to handle the wrapper-specific
+functionality.
 
 run_all_times function
 ======================
 
-run_all_times loops over a series of times calling run_at_time for one
-process for each time. Defined in CommandBuilder but overridden in
-wrappers that process all of the data from every run time at once.
-
-See SeriesByLeadWrapper (ush/series_by_lead_wrapper.py) for an example of
-overriding the function.
+If a wrapper is not inheriting from RuntimeFreqWrapper or one of its child
+classes, then the **run_all_times** function can be implemented in the wrapper.
+This function is called when the wrapper is called.
 
 get_command function
 ====================
 
-get_command assembles a MET command with arguments that can be run via the
-shell or the wrapper.
+**get_command** assembles the command that will be run.
 It is defined in CommandBuilder but is overridden in most wrappers because
 the command line arguments differ for each MET tool.
 
