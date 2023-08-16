@@ -4927,7 +4927,20 @@ METplus Configuration Glossary
      Result:
      Skip even hours: 0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22
 
-     | *Used by:*  GridStat, SeriesAnalysis
+     Value:
+     SKIP_TIMES = "%a:Mon,Wed,Fri"
+
+     Result:
+     Skip days that fall on Monday, Wednesday, or Friday
+
+     | *Used by:*  All
+
+   INCLUDE_TIMES
+     List of valid times to process. All times that do not match the include
+     rules will be skipped. Can be used in addition to or in place of
+     :term:`SKIP_TIMES`. See :term:`SKIP_TIMES` for formatting information.
+
+     | *Used by:*  All
 
    TC_GEN_TRACK_INPUT_DIR
      Directory containing the track data used by TCGen. This variable is optional because you can specify the full path to track data using :term:`TC_GEN_TRACK_INPUT_TEMPLATE`.

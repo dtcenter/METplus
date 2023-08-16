@@ -940,6 +940,40 @@ All other wrappers in the
 :term:`PROCESS_LIST` will skip the 31st day of each month. Note that the
 SKIP_TIMES values are not applied to GridStat in this case.
 
+Support for skipping times by the day of the week was added in v6.0.0.
+
+Example 7::
+
+    [config]
+    SKIP_TIMES = "%a:Sun,Tue,Thu,Sat"
+
+This will skip all days of the week except for Monday, Wednesday, and Friday.
+
+Also added in v6.0.0 is the ability to specify times to include with
+:term:`INCLUDE_TIMES`. If this is set, then any times that do not match the
+include rules will be skipped.
+
+Example 8::
+
+    [config]
+    INCLUDE_TIMES = "%a:Mon,Wed,Fri"
+
+This will skip all days of the week except for Monday, Wednesday, and Friday.
+
+:term:`INCLUDE_TIMES` also supported wrapper-specific versions, e.g.
+GRID_STAT_INCLUDE_TIMES.
+
+INCLUDE_TIMES and SKIP_TIMES can be used together.
+
+Example 9::
+
+    [config]
+    INCLUDE_TIMES = "%a:Mon,Wed,Fri"
+    SKIP_TIMES = "%d:1"
+
+This will only process times that land on Monday, Wednesday, and Friday
+except the 1st of the month.
+
 Realtime Looping
 ^^^^^^^^^^^^^^^^
 
