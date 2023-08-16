@@ -58,6 +58,8 @@ Example::
     RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
 
 If no clear default value exists, then *None* can be set in place of a string.
+This means that a use case will report an error if the frequency is not
+defined in the METplus configuration file.
 The **UserScriptWrapper** wrapper is an example::
 
     RUNTIME_FREQ_DEFAULT = None
@@ -161,16 +163,17 @@ create_c_dict (ExampleWrapper)::
     def create_c_dict(self):
         c_dict = super().create_c_dict()
         # get values from config object and set them to be accessed by wrapper
-        c_dict['INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
-                                                      'EXAMPLE_INPUT_TEMPLATE', '')
+        c_dict['INPUT_TEMPLATE'] = self.config.getraw('config',
+                                                      'EXAMPLE_INPUT_TEMPLATE')
         c_dict['INPUT_DIR'] = self.config.getdir('EXAMPLE_INPUT_DIR', '')
 
-        if c_dict['INPUT_TEMPLATE'] == '':
-            self.logger.info('[filename_templates] EXAMPLE_INPUT_TEMPLATE was not set. '
-                             'You should set this variable to see how the runtime is '
-                             'substituted. For example: {valid?fmt=%Y%m%d%H}.ext')
+        if not c_dict['INPUT_TEMPLATE']:
+            self.logger.info('EXAMPLE_INPUT_TEMPLATE was not set. '
+                             'You should set this variable to see how the '
+                             'runtime is substituted. '
+                             'For example: {valid?fmt=%Y%m%d%H}.ext')
 
-        if c_dict['INPUT_DIR'] == '':
+        if not c_dict['INPUT_DIR']:
             self.logger.debug('EXAMPLE_INPUT_DIR was not set')
 
         return c_dict
@@ -192,7 +195,7 @@ create_c_dict (CommandBuilder)::
 isOK class variable
 ===================
 
-isOK is defined in CommandBuilder (ush/command_builder.py).
+isOK is defined in CommandBuilder (metplus/wrappers/command_builder.py).
 
 Its function is to note a failed process while not stopping a parent process.
 Instead of instantly exiting a larger wrapper script once one subprocess has
@@ -203,15 +206,17 @@ At the end of the wrapper initialization step, all isOK=false will be
 collected and reported. Execution of the wrappers will not occur unless all
 wrappers in the process list are initialized correctly.
 
+The **self.log_error** function logs an error and sets self.isOK to False, so
+it is not necessary to set *self.isOK = False* if this function is called.
+
 .. code-block:: python
 
     c_dict['CONFIG_FILE'] = self.config.getstr('config', 'MODE_CONFIG_FILE', '')
     if not c_dict['CONFIG_FILE']:
         self.log_error('MODE_CONFIG_FILE must be set')
+    if something_else_goes_wrong:
         self.isOK = False
 
-
-See MODEWrapper (ush/mode_wrapper.py) for other examples.
 
 .. _bc_run_at_time_once:
 
