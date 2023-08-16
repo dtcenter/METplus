@@ -8,43 +8,49 @@ from metplus.util.time_util import ti_calculate, ti_get_hours_from_relativedelta
 
 
 @pytest.mark.parametrize(
-    'run_time, skip_times, expected_result', [
-        (datetime(2019, 12, 30), {'%d': ['30', '31']}, True),
-        (datetime(2019, 12, 30), {'%d': ['29', '31']}, False),
-        (datetime(2019, 2, 27), {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, False),
-        (datetime(2019, 3, 30), {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, True),
-        (datetime(2019, 3, 30), {'%d': ['30', '31'],
-                                          '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, True),
-        (datetime(2019, 3, 29), {'%d': ['30', '31'],
-                                          '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, True),
-        (datetime(2019, 1, 29), {'%d': ['30', '31'],
-                                          '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, False),
-        (datetime(2020, 10, 31), {'%Y%m%d': ['20201031']}, True),
-        (datetime(2020, 3, 31), {'%Y%m%d': ['20201031']}, False),
-        (datetime(2020, 10, 30), {'%Y%m%d': ['20201031']}, False),
-        (datetime(2019, 10, 31), {'%Y%m%d': ['20201031']}, False),
-        (datetime(2020, 10, 31), {'%Y%m%d': ['20201031'],
-                                          '%Y': ['2019']}, True),
-        (datetime(2019, 10, 31), {'%Y%m%d': ['20201031'],
-                                          '%Y': ['2019']}, True),
-        (datetime(2019, 1, 13), {'%Y%m%d': ['20201031'],
-                                          '%Y': ['2019']}, True),
-        (datetime(2018, 10, 31), {'%Y%m%d': ['20201031'],
-                                          '%Y': ['2019']}, False),
-        (datetime(2019, 12, 30, 12), {'%H': ['12', '18']}, True),
-        (datetime(2019, 12, 30, 13), {'%H': ['12', '18']}, False),
+    'run_time, skip_times, inc_times, expected_result', [
+        (datetime(2019, 12, 30), {'%d': ['30', '31']}, None, True),
+        (datetime(2019, 12, 30), {'%d': ['29', '31']}, None, False),
+        (datetime(2019, 2, 27), {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, None, False),
+        (datetime(2019, 3, 30), {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, None, True),
+        (datetime(2019, 3, 30), {'%d': ['30', '31'], '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, None, True),
+        (datetime(2019, 3, 29), {'%d': ['30', '31'], '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, None, True),
+        (datetime(2019, 1, 29), {'%d': ['30', '31'], '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, None, False),
+        (datetime(2020, 10, 31), {'%Y%m%d': ['20201031']}, None, True),
+        (datetime(2020, 3, 31), {'%Y%m%d': ['20201031']}, None, False),
+        (datetime(2020, 10, 30), {'%Y%m%d': ['20201031']}, None, False),
+        (datetime(2019, 10, 31), {'%Y%m%d': ['20201031']}, None, False),
+        (datetime(2020, 10, 31), {'%Y%m%d': ['20201031'], '%Y': ['2019']}, None, True),
+        (datetime(2019, 10, 31), {'%Y%m%d': ['20201031'], '%Y': ['2019']}, None, True),
+        (datetime(2019, 1, 13), {'%Y%m%d': ['20201031'], '%Y': ['2019']}, None, True),
+        (datetime(2018, 10, 31), {'%Y%m%d': ['20201031'], '%Y': ['2019']}, None, False),
+        (datetime(2019, 12, 30, 12), {'%H': ['12', '18']}, None, True),
+        (datetime(2019, 12, 30, 13), {'%H': ['12', '18']}, None, False),
+        # skip days of the week
+        (datetime(2023, 8, 16), {'%a': ['Wed']}, None, True),
+        (datetime(2023, 8, 16), {'%a': ['Tue', 'Thu']}, None, False),
+        (datetime(2023, 8, 16), {'%A': ['Wednesday']}, None, True),
+        (datetime(2023, 8, 16), {'%A': ['Tuesday', 'Thursday']}, None, False),
+        # include days of the week
+        (datetime(2023, 8, 16), None, {'%a': ['Tue', 'Thu']}, True),
+        (datetime(2023, 8, 16), None, {'%a': ['Wed']}, False),
+        # include and skip
+        (datetime(2023, 8, 16), {'%a': ['Wed']}, {'%a': ['Tue', 'Wed', 'Thu']}, True),
+        (datetime(2023, 8, 16), {'%a': ['Thu']}, {'%a': ['Tue', 'Wed', 'Thu']}, False),
     ]
 )
 @pytest.mark.util
-def test_get_skip_time(run_time, skip_times, expected_result):
+def test_skip_time(run_time, skip_times, inc_times, expected_result):
     time_info = ti_calculate({'valid': run_time})
-    assert skip_time(time_info, skip_times) == expected_result
+    c_dict = {'SKIP_TIMES': skip_times, 'INC_TIMES': inc_times}
+    print(time_info)
+    assert skip_time(time_info, c_dict) == expected_result
 
 
 @pytest.mark.util
-def test_get_skip_time_no_valid():
+def test_skip_time_no_valid():
     input_dict ={'init': datetime(2019, 1, 29)}
-    assert skip_time(input_dict, {'%Y': ['2019']}) == False
+    assert skip_time(input_dict, {'SKIP_TIMES': {'%Y': ['2019']}}) == False
 
 
 @pytest.mark.parametrize(

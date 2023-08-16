@@ -31,7 +31,7 @@ from ..util import remove_quotes, split_level
 from ..util import get_field_info, format_field_info
 from ..util import get_wrapper_name, is_python_script
 from ..util.met_config import add_met_config_dict, handle_climo_dict
-from ..util import mkdir_p, get_skip_times
+from ..util import mkdir_p, get_skip_times, get_include_times
 
 # pylint:disable=pointless-string-statement
 '''!@namespace CommandBuilder
@@ -175,6 +175,7 @@ class CommandBuilder:
                                                             app_name)
 
         c_dict['SKIP_TIMES'] = get_skip_times(self.config, app_name)
+        c_dict['INC_TIMES'] = get_include_times(self.config, app_name)
 
         c_dict['MANDATORY'] = (
             self.config.getbool('config',

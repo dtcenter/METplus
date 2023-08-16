@@ -251,82 +251,113 @@ def _get_current_dt(time_string, time_format, clock_dt, logger):
     return current_dt
 
 
-def get_skip_times(config, wrapper_name=None):
-    """! Read SKIP_TIMES config variable and populate dictionary of times that should be skipped.
-         SKIP_TIMES should be in the format: "%m:begin_end_incr(3,11,1)", "%d:30,31", "%Y%m%d:20201031"
-         where each item inside quotes is a datetime format, colon, then a list of times in that format
-         to skip.
-         Args:
-             @param config configuration object to pull SKIP_TIMES
-             @param wrapper_name name of wrapper if supporting
-               skipping times only for certain wrappers, i.e. grid_stat
-             @returns dictionary containing times to skip
+def get_skip_or_inc_times(config, skip_or_inc, wrapper_name=None):
+    """!Read skip or include times config variable and populate dictionary
+     of times that should be skipped. Config values should be in the format:
+     "%m:begin_end_incr(3,11,1)", "%d:30,31", "%Y%m%d:20201031"
+     where each item inside quotes is a datetime format, colon, then a list
+     of times in that format to skip or include.
+
+     @param config configuration object to pull SKIP_TIMES
+     @param skip_or_inc string with either 'SKIP' or 'INCLUDE'
+     @param wrapper_name name of wrapper if supporting
+       skipping times only for certain wrappers, i.e. grid_stat
+     @returns dictionary containing times to skip
     """
-    skip_times_dict = {}
-    skip_times_string = None
+    times_dict = {}
+    times_string = None
 
-    # if wrapper name is set, look for wrapper-specific _SKIP_TIMES variable
+    # if wrapper name is set, look for wrapper-specific variable
     if wrapper_name:
-        skip_times_string = config.getstr('config',
-                                          f'{wrapper_name.upper()}_SKIP_TIMES', '')
+        config_name = f'{wrapper_name.upper()}_{skip_or_inc}_TIMES'
+        times_string = config.getstr('config', config_name, '')
 
-    # if skip times string has not been found, check for generic SKIP_TIMES
-    if not skip_times_string:
-        skip_times_string = config.getstr('config', 'SKIP_TIMES', '')
+    # if wrapper variable not set, check for generic SKIP/INCLUDE_TIMES
+    if not times_string:
+        times_string = config.getstr('config', f'{skip_or_inc}_TIMES', '')
 
-        # if no generic SKIP_TIMES, return empty dictionary
-        if not skip_times_string:
+        # if no generic SKIP/INCLUDE_TIMES, return empty dictionary
+        if not times_string:
             return {}
 
     # get list of skip items, but don't expand begin_end_incr yet
-    skip_list = getlist(skip_times_string, expand_begin_end_incr=False)
+    item_list = getlist(times_string, expand_begin_end_incr=False)
 
-    for skip_item in skip_list:
+    for item in item_list:
         try:
-            time_format, skip_times = skip_item.split(':')
+            time_format, times = item.split(':')
 
-            # get list of skip times for the time format, expanding begin_end_incr
-            skip_times_list = getlist(skip_times)
+            # get list of times for the time format, expand begin_end_incr
+            times_list = getlist(times)
 
-            # if time format is already in skip times dictionary, extend list
-            if time_format in skip_times_dict:
-                skip_times_dict[time_format].extend(skip_times_list)
+            # if time format is already in times dictionary, extend list
+            if time_format in times_dict:
+                times_dict[time_format].extend(times_list)
             else:
-                skip_times_dict[time_format] = skip_times_list
+                times_dict[time_format] = times_list
 
         except ValueError:
-            config.logger.error(f"SKIP_TIMES item does not match format: {skip_item}")
+            config.logger.error(f"{skip_or_inc}_TIMES item does not "
+                                f"match format: {item}")
             return None
 
-    return skip_times_dict
+    return times_dict
 
 
-def skip_time(time_info, skip_times):
+def get_skip_times(config, wrapper_name=None):
+    return get_skip_or_inc_times(config, 'SKIP', wrapper_name)
+
+
+def get_include_times(config, wrapper_name=None):
+    return get_skip_or_inc_times(config, 'INCLUDE', wrapper_name)
+
+
+def skip_time(time_info, c_dict):
     """!Used to check the valid time of the current run time against list of times to skip.
-        Args:
-            @param time_info dictionary with time information to check
-            @param skip_times dictionary of times to skip, i.e. {'%d': [31]} means skip 31st day
-            @returns True if run time should be skipped, False if not
+
+    @param time_info dictionary with time information to check
+    @param c_dict dictionary to read SKIP_TIMES and INC_TIMES which contain a
+    dictionary of times to skip, i.e. {'%d': [31]} means skip 31st day
+    @returns True if run time should be skipped, False if not
     """
-    if not skip_times:
+    skip_times = c_dict.get('SKIP_TIMES')
+    inc_times = c_dict.get('INC_TIMES')
+
+    # if no skip or include times were set, return False to not skip the time
+    if not skip_times and not inc_times:
         return False
 
-    for time_format, skip_time_list in skip_times.items():
-        # extract time information from valid time based on skip time format
-        run_time_value = time_info.get('valid')
-        if not run_time_value:
-            return False
+    # if any include times are listed, skip if the time doesn't match
+    if inc_times and not _found_time_match(time_info, inc_times):
+        return True
 
-        run_time_value = run_time_value.strftime(time_format)
-
-        # loop over times to skip for this format and check if it matches
-        for skip_time in skip_time_list:
-            if int(run_time_value) == int(skip_time):
-                return True
+    # skip if the time matches a skip time
+    if skip_times and _found_time_match(time_info, skip_times):
+        return True
 
     # if skip time never matches, return False
     return False
 
+
+def _found_time_match(time_info, time_dict):
+    run_time_dt = time_info.get('valid')
+    if not run_time_dt:
+        return False
+
+    for time_format, time_list in time_dict.items():
+        # extract time information from valid time based on skip time format
+        run_time_value = run_time_dt.strftime(time_format)
+
+        # loop over times to skip for this format and check if it matches
+        for time_item in time_list:
+            try:
+                if int(run_time_value) == int(time_item):
+                    return True
+            except ValueError:
+                if str(run_time_value) == str(time_item):
+                    return True
+
+    return False
 
 def get_lead_sequence(config, input_dict=None, wildcard_if_empty=False):
     """!Get forecast lead list from LEAD_SEQ or compute it from INIT_SEQ.
