@@ -44,7 +44,7 @@ while read -r line; do
   # Parse the label name
   name=`echo $line | sed -r 's/,/\n/g' | grep '"name":' | cut -d':' -f2-10 | cut -d'"' -f2`
 
-  # Check if it appears in the list of common lables
+  # Check if it appears in the list of common labels
   is_common=`egrep -i "\"${name}\"" ${COMMON_LABELS} | wc -l`
 
   # Check if its a custom label that beginning with component, type, or repository name
