@@ -7,6 +7,7 @@
 {"name": "component: documentation","color": "1d76db","description": "Documentation issue"}
 {"name": "component: external dependency","color": "1d76db","description": "External dependency issue"}
 {"name": "component: code optimization","color": "1d76db","description": "Code optimization issue"}
+{"name": "component: input data","color": "1d76db","description": "Input data issue"}
 {"name": "component: release engineering","color": "1d76db","description": "Release engineering issue"}
 {"name": "component: repository maintenance","color": "1d76db","description": "Repository maintenance issue"}
 {"name": "component: testing","color": "1d76db","description": "Software testing issue"}

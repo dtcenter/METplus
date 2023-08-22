@@ -19,14 +19,21 @@ SCRIPT_DIR=`dirname $0`
 REPO_LIST="metplus met metplotpy metcalcpy metdataio metviewer \
            metexpress metplus-training";
 
-# Build commands to add/update common labels
+# Process each repository
 for REPO in ${REPO_LIST}; do
-  echo $REPO
-  ${SCRIPT_DIR}/post_patch_labels.sh $USER $AUTH $REPO ${SCRIPT_DIR}/common_labels.txt
-done
 
-# Build commands to delete extra labels
-for REPO in ${REPO_LIST}; do
-  echo $REPO;
-  ${SCRIPT_DIR}/delete_labels.sh $USER $AUTH $REPO
+  echo
+  echo "Processing repository: ${REPO}"
+  echo
+
+  # Build commands to add/update common labels
+  CMD="${SCRIPT_DIR}/post_patch_labels.sh $USER $AUTH $REPO ${SCRIPT_DIR}/common_labels.txt"
+  echo "CALLING: ${CMD}"
+  ${CMD}
+
+  # Build commands to delete extra labels
+  CMD="${SCRIPT_DIR}/delete_labels.sh $USER $AUTH $REPO"
+  echo "CALLING: ${CMD}"
+  ${CMD}
+
 done
