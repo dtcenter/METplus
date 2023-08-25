@@ -108,13 +108,12 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWin
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
-# * point_stat_030000L_20221016_090000V_ctc.txt
-# * point_stat_030000L_20221016_090000V_cts.txt
-# * point_stat_030000L_20221016_090000V.stat
-# * buoy_2022101609.nc 
+# * point_stat_060000L_20230706_060000V_mctc.txt
+# * point_stat_060000L_20230706_060000V_mcts.txt
+# * point_stat_060000L_20230706_060000V.stat
 
 ##############################################################################
 # Keywords
