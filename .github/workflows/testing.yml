@@ -60,6 +60,9 @@ jobs:
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
+      - name: Build URL for commit that triggered workflow
+        if: github.event_name == 'workflow_dispatch'
+        run: echo https://github.com/${{ github.event.inputs.repository }}/commit/${{ github.event.inputs.sha }}
 
   job_control:
     name: Determine which jobs to run
