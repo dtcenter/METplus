@@ -6,6 +6,7 @@
 from . import CommandBuilder
 from ..util import LOWER_TO_WRAPPER_NAME
 
+
 class UsageWrapper(CommandBuilder):
     """! A default process, prints out usage when nothing is defined in
          the PROCESS_LIST

@@ -128,20 +128,46 @@ def test_time_string_to_met_time(time_string, default_unit, met_time):
 
 @pytest.mark.parametrize(
     'input_dict, expected_time_info', [
-        ({'init': datetime(2014, 10, 31, 12),
-          'lead': relativedelta(hours=3)},
-          {'init': datetime(2014, 10, 31, 12),
-           'lead': 10800,
-           'valid':  datetime(2014, 10, 31, 15)}
-         ),
+        # init and lead input
+        ({'init': datetime(2014, 10, 31, 12), 'lead': relativedelta(hours=3)},
+         {'init': datetime(2014, 10, 31, 12), 'lead': 10800, 'valid':  datetime(2014, 10, 31, 15)}),
+        # valid and lead input
+        ({'valid': datetime(2014, 10, 31, 12), 'lead': relativedelta(hours=3)},
+         {'valid': datetime(2014, 10, 31, 12), 'lead': 10800, 'init':  datetime(2014, 10, 31, 9)}),
+        # init/valid/lead input, loop_by init
+        ({'init': datetime(2014, 10, 31, 12), 'lead': relativedelta(hours=6), 'valid': datetime(2014, 10, 31, 15), 'loop_by': 'init'},
+         {'init': datetime(2014, 10, 31, 12), 'lead': 21600, 'valid':  datetime(2014, 10, 31, 18)}),
+        # init/valid/lead input, loop_by valid
+        ({'valid': datetime(2014, 10, 31, 12), 'lead': relativedelta(hours=6), 'init':  datetime(2014, 10, 31, 9), 'loop_by': 'valid'},
+         {'valid': datetime(2014, 10, 31, 12), 'lead': 21600, 'init':  datetime(2014, 10, 31, 6)}),
+        # RUN_ONCE: init/valid/lead all wildcards
+        ({'init': '*', 'valid': '*', 'lead': '*'},
+         {'init': '*', 'valid': '*', 'lead': '*', 'date': '*'}),
+        # RUN_ONCE_PER_INIT_OR_VALID: init/valid is time, wildcard lead/opposite
+        ({'init': datetime(2014, 10, 31, 12), 'valid': '*', 'lead': '*'},
+         {'init': datetime(2014, 10, 31, 12), 'valid': '*', 'lead': '*', 'date': datetime(2014, 10, 31, 12)}),
+        ({'init': '*', 'valid': datetime(2014, 10, 31, 12), 'lead': '*'},
+         {'init': '*', 'valid': datetime(2014, 10, 31, 12), 'lead': '*', 'date': datetime(2014, 10, 31, 12)}),
+        # RUN_ONCE_PER_LEAD: lead is time interval, init/valid are wildcards
+        ({'init': '*', 'valid': '*', 'lead': relativedelta(hours=3)},
+         {'init': '*', 'valid': '*', 'lead': relativedelta(hours=3), 'date': '*'}),
+        # case that failed in GFDLTracker wrapper
+        ({'init': datetime(2021, 7, 13, 0, 0), 'lead': 21600, 'offset_hours': 0},
+         {'init': datetime(2021, 7, 13, 0, 0), 'lead': 21600, 'valid': datetime(2021, 7, 13, 6, 0), 'offset': 0}),
+        # lead is months or years (relativedelta)
+        # allows lead to remain relativedelta in case init/valid change but still computes lead hours
+        ({'init': datetime(2021, 7, 13, 0, 0), 'lead': relativedelta(months=1)},
+         {'init': datetime(2021, 7, 13, 0, 0), 'lead': relativedelta(months=1), 'valid': datetime(2021, 8, 13, 0, 0), 'lead_hours': 744}),
         ]
 )
 @pytest.mark.util
 def test_ti_calculate(input_dict, expected_time_info):
+    # pass input_dict into ti_calculate and check that expected values are set
     time_info = time_util.ti_calculate(input_dict)
     for key, value in expected_time_info.items():
         assert time_info[key] == value
 
+    # pass output of ti_calculate back into ti_calculate and check values
     time_info2 = time_util.ti_calculate(time_info)
     for key, value in expected_time_info.items():
         assert time_info[key] == value

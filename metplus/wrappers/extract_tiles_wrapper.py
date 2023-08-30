@@ -17,12 +17,16 @@ from ..util import do_string_sub, ti_calculate, skip_time
 from ..util import get_lead_sequence, sub_var_list
 from ..util import parse_var_list, round_0p5, get_storms, prune_empty
 from .regrid_data_plane_wrapper import RegridDataPlaneWrapper
-from . import CommandBuilder
+from . import LoopTimesWrapper
 
-class ExtractTilesWrapper(CommandBuilder):
+
+class ExtractTilesWrapper(LoopTimesWrapper):
     """! Takes tc-pairs data and regrids paired data to an n x m grid as
          specified in the config file.
     """
+    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
+    RUNTIME_FREQ_SUPPORTED = ['RUN_ONCE_FOR_EACH']
+
     COLUMNS_OF_INTEREST = {
         'TC_STAT': [
             'INIT',
@@ -163,8 +167,7 @@ class ExtractTilesWrapper(CommandBuilder):
         """
         rdp = 'REGRID_DATA_PLANE'
 
-        overrides = {}
-        overrides[f'{rdp}_METHOD'] = 'NEAREST'
+        overrides = {f'{rdp}_METHOD': 'NEAREST'}
         for data_type in ['FCST', 'OBS']:
             overrides[f'{data_type}_{rdp}_RUN'] = True
 
@@ -198,41 +201,7 @@ class ExtractTilesWrapper(CommandBuilder):
         rdp_wrapper.c_dict['SHOW_WARNINGS'] = False
         return rdp_wrapper
 
-    def run_at_time(self, input_dict):
-        """!Loops over loop strings and calls run_at_time_loop_string() to
-            process data
-
-            @param input_dict dictionary containing initialization time
-        """
-
-        # loop of forecast leads and process each
-        lead_seq = get_lead_sequence(self.config, input_dict)
-        for lead in lead_seq:
-            input_dict['lead'] = lead
-
-            # set current lead time config and environment variables
-            time_info = ti_calculate(input_dict)
-
-            self.logger.info(
-                f"Processing forecast lead {time_info['lead_string']}"
-            )
-
-            if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
-                self.logger.debug('Skipping run time')
-                continue
-
-            # loop over custom loop list. If not defined,
-            # it will run once with an empty string as the custom string
-            for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
-                if custom_string:
-                    self.logger.info(
-                        f"Processing custom string: {custom_string}"
-                    )
-
-                time_info['custom'] = custom_string
-                self.run_at_time_loop_string(time_info)
-
-    def run_at_time_loop_string(self, time_info):
+    def run_at_time_once(self, time_info):
         """!Read TCPairs track data into TCStat to filter the data. Using the
             resulting track data, run RegridDataPlane on the model data to
             create tiles centered on the storm.
@@ -384,6 +353,7 @@ class ExtractTilesWrapper(CommandBuilder):
     def call_regrid_data_plane(self, time_info, track_data, input_type):
         # set var list from config using time info
         var_list = sub_var_list(self.c_dict['VAR_LIST_TEMP'], time_info)
+        self.regrid_data_plane.c_dict['VAR_LIST'] = var_list
 
         for data_type in ['FCST', 'OBS']:
             grid = self.get_grid(data_type, track_data[data_type],
@@ -392,9 +362,8 @@ class ExtractTilesWrapper(CommandBuilder):
             self.regrid_data_plane.c_dict['VERIFICATION_GRID'] = grid
 
             # run RegridDataPlane wrapper
-            ret = self.regrid_data_plane.run_at_time_once(time_info,
-                                                          var_list,
-                                                          data_type=data_type)
+            self.regrid_data_plane.c_dict['DATA_SRC'] = data_type
+            ret = self.regrid_data_plane.run_at_time_once(time_info)
             self.all_commands.extend(self.regrid_data_plane.all_commands)
             self.regrid_data_plane.all_commands.clear()
             if not ret:

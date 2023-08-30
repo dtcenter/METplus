@@ -114,7 +114,7 @@ def test_get_lowest_forecast_file_dated_subdir(metplus_config):
     valid_time = datetime.strptime("201802012100", '%Y%m%d%H%M')
     pcw.c_dict[f'{data_src}_INPUT_DIR'] = input_dir
     pcw._build_input_accum_list(data_src, {'valid': valid_time})
-    out_file, fcst = pcw.get_lowest_fcst_file(valid_time, data_src)
+    out_file, fcst = pcw.get_lowest_fcst_file(valid_time, data_src, custom='')
     assert(out_file == input_dir+"/20180201/file.2018020118f003.nc" and
            fcst == 10800)
 
@@ -128,7 +128,7 @@ def test_forecast_constant_init(metplus_config):
     init_time = datetime.strptime("2018020112", '%Y%m%d%H')
     valid_time = datetime.strptime("2018020121", '%Y%m%d%H')
     pcw.c_dict[f'{data_src}_INPUT_DIR'] = input_dir
-    out_file, fcst = pcw.find_input_file(init_time, valid_time, 0, data_src)
+    out_file, fcst = pcw.find_input_file(init_time, valid_time, 0, data_src, custom='')
     assert(out_file == input_dir+"/20180201/file.2018020112f009.nc" and
            fcst == 32400)
 
@@ -143,7 +143,7 @@ def test_forecast_not_constant_init(metplus_config):
     valid_time = datetime.strptime("2018020121", '%Y%m%d%H')
     pcw.c_dict[f'{data_src}_INPUT_DIR'] = input_dir
     pcw._build_input_accum_list(data_src, {'valid': valid_time})
-    out_file, fcst = pcw.find_input_file(init_time, valid_time, 0, data_src)
+    out_file, fcst = pcw.find_input_file(init_time, valid_time, 0, data_src, custom='')
     assert(out_file == input_dir+"/20180201/file.2018020118f003.nc" and
            fcst == 10800)
 
@@ -158,7 +158,7 @@ def test_get_lowest_forecast_file_no_subdir(metplus_config):
     pcw.c_dict[f'{data_src}_INPUT_TEMPLATE'] = template
     pcw.c_dict[f'{data_src}_INPUT_DIR'] = input_dir
     pcw._build_input_accum_list(data_src, {'valid': valid_time})
-    out_file, fcst = pcw.get_lowest_fcst_file(valid_time, data_src)
+    out_file, fcst = pcw.get_lowest_fcst_file(valid_time, data_src, custom='')
     assert(out_file == input_dir+"/file.2018020118f003.nc" and fcst == 10800)
 
 
@@ -172,7 +172,7 @@ def test_get_lowest_forecast_file_yesterday(metplus_config):
     pcw.c_dict[f'{data_src}_INPUT_TEMPLATE'] = template
     pcw.c_dict[f'{data_src}_INPUT_DIR'] = input_dir
     pcw._build_input_accum_list(data_src, {'valid': valid_time})
-    out_file, fcst = pcw.get_lowest_fcst_file(valid_time, data_src)
+    out_file, fcst = pcw.get_lowest_fcst_file(valid_time, data_src, custom='')
     assert(out_file == input_dir+"/file.2018013118f012.nc" and fcst == 43200)
 
 

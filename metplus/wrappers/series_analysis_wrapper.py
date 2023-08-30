@@ -34,9 +34,12 @@ from ..util import field_read_prob_info, add_field_info_to_time_info
 from .plot_data_plane_wrapper import PlotDataPlaneWrapper
 from . import RuntimeFreqWrapper
 
+
 class SeriesAnalysisWrapper(RuntimeFreqWrapper):
     """!  Performs series analysis with filtering options
     """
+    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_PER_INIT_OR_VALID'
+    RUNTIME_FREQ_SUPPORTED = 'ALL'
 
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_MODEL',

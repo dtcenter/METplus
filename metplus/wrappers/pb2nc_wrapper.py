@@ -16,12 +16,15 @@ import re
 from ..util import getlistint, skip_time, get_lead_sequence
 from ..util import ti_calculate
 from ..util import do_string_sub
-from . import CommandBuilder
+from . import LoopTimesWrapper
 
-class PB2NCWrapper(CommandBuilder):
+
+class PB2NCWrapper(LoopTimesWrapper):
     """! Wrapper to the MET tool pb2nc which converts prepbufr files
          to NetCDF for MET's point_stat tool can recognize.
     """
+    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
+    RUNTIME_FREQ_SUPPORTED = 'ALL'
 
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_MESSAGE_TYPE',
@@ -252,30 +255,6 @@ class PB2NCWrapper(CommandBuilder):
                 do_string_sub(end_template,
                               **time_info)
 
-
-    def run_at_time(self, input_dict):
-        """! Loop over each forecast lead and build pb2nc command """
-         # loop of forecast leads and process each
-        lead_seq = get_lead_sequence(self.config, input_dict)
-        for lead in lead_seq:
-            input_dict['lead'] = lead
-
-            lead_string = ti_calculate(input_dict)['lead_string']
-            self.logger.info("Processing forecast lead {}".format(lead_string))
-
-            for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
-                if custom_string:
-                    self.logger.info(
-                        f"Processing custom string: {custom_string}"
-                    )
-
-                input_dict['custom'] = custom_string
-
-                # Run for given init/valid time and forecast lead combination
-                self.clear()
-                self.run_at_time_once(input_dict)
-
-
     def run_at_time_once(self, input_dict):
         """!Find files needed to run pb2nc and run if found"""
         # look for input files to process
@@ -283,10 +262,6 @@ class PB2NCWrapper(CommandBuilder):
 
         # if no files were found, don't run pb2nc
         if time_info is None:
-            return
-
-        if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
-            self.logger.debug('Skipping run time')
             return
 
         # look for output file path and skip running pb2nc if necessary
@@ -302,11 +277,7 @@ class PB2NCWrapper(CommandBuilder):
         self.c_dict['CONFIG_FILE'] = do_string_sub(self.c_dict['CONFIG_FILE'],
                                                    **time_info)
 
-        # build command and run if successful
-        cmd = self.get_command()
-        if cmd is None:
-            self.log_error("Could not generate command")
-            return
+        # build and run command
         self.build()
 
     def get_command(self):

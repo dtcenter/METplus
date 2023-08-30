@@ -19,6 +19,8 @@ from . import LoopTimesWrapper
 
 class PlotPointObsWrapper(LoopTimesWrapper):
     """! Wrapper used to build commands to call plot_point_obs """
+    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
+    RUNTIME_FREQ_SUPPORTED = 'ALL'
 
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_GRID_DATA_DICT',
@@ -179,30 +181,6 @@ class PlotPointObsWrapper(LoopTimesWrapper):
         return (f"{self.app_path} -v {self.c_dict['VERBOSITY']}"
                 f' "{self.infiles[0]}" {self.get_output_path()}'
                 f" {' '.join(self.args)}")
-
-    def run_at_time_once(self, time_info):
-        """! Process runtime and try to build command to run plot_point_obs.
-
-        @param time_info dictionary containing timing information
-        @returns True if command was built/run successfully or
-         False if something went wrong
-        """
-        # get input files
-        if not self.find_input_files(time_info):
-            return False
-
-        # get output path
-        if not self.find_and_check_output_file(time_info):
-            return False
-
-        # get other configurations for command
-        self.set_command_line_arguments(time_info)
-
-        # set environment variables if using config file
-        self.set_environment_variables(time_info)
-
-        # build command and run
-        return self.build()
 
     def find_input_files(self, time_info):
         """! Get all input files for plot_point_obs. Sets self.infiles list.

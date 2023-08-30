@@ -26,60 +26,53 @@ wrong variable and it is using WGRIB2 = wgrib2.
 
 check_for_deprecated_config()
 -----------------------------
-In **metplus/util/config_metplus.py** there is a function called
-check_for_deprecated_config. It contains a dictionary of dictionaries
-called deprecated_dict that specifies the old config name, the section
-it was found in, and a suggested alternative (None if no alternative
-exists).
+In **metplus/util/constants.py** there is a dictionary called
+DEPRECATED_DICT that specifies the old config name as the key.
+The value is a dictionary of info that is used to help users update their
+config files.
 
-**Example 1**
-::
-
-'WGRIB2_EXE' : {'sec' : 'exe', 'alt' : 'WGRIB2'}
-
-This says that WGRIB2_EXE was found in the [exe] section and should
-be replaced with WGRIB2.
-
-**Example 2**
-::
-
-'PREPBUFR_DIR_REGEX' : {'sec' : 'regex_pattern', 'alt' : None}
-
-This says that [regex_pattern] PREPBUFR_DIR_REGEX is no longer used
-and there is no alternative (because the wrapper uses filename
-templates instead of regex now).
-
+* **alt**: optional suggested alternative name for the deprecated config.
+  This can be a single variable name or text to describe multiple variables
+  or how to handle it.
+  Set to None or leave unset to tell the user to just remove the variable.
+* **copy**: optional item (defaults to True). Set this to False if one
+  cannot simply replace the deprecated variable name with the value in *alt*.
+  If True, easy-to-run sed commands are generated to help replace variables.
+* **upgrade**: optional item where the value is a keyword that will output
+  additional instructions for the user, e.g. *ensemble*.
 
 If any of these old variables are found in any config file passed to
 METplus by the user, an error report will be displayed with the old
 variables and suggested new ones if applicable.
 
-If support for an old config variable is temporarily needed, the
-user should be warned to update their config file because the
-variable will be phased out in the future. In this case, add the
-‘req’ item to the dictionary and set it to False.  This will provide
-a warning to the user but will not stop the execution of the code.
-If this is done, be sure to modify the code to check for the new
-config variable, and if it is not set, check the old config variable
-to see if it is set. 
-
-**Example**
+**Example 1**
 ::
 
-'LOOP_METHOD' : {'sec' : 'config', 'alt' : 'LOOP_ORDER', 'req' : False}
+'WGRIB2_EXE' : {'alt' : 'WGRIB2'}
 
-This says that [config] LOOP_METHOD is deprecated and the user
-should use LOOP_ORDER, but it is not required to change
-immediately. If this is done, it is important to
-check for LOOP_ORDER and then
-check for LOOP_METHOD if it is not set.
+This means WGRIB2_EXE was found in the config and should be replaced with WGRIB2.
 
-In run_metplus.py:
-
+**Example 2**
 ::
 
-    loop_order = config.getstr('config', 'LOOP_ORDER', '')
-    if loop_order == '':
-        loop_order = config.getstr('config', 'LOOP_METHOD')
+'PREPBUFR_DIR_REGEX' : {'alt' : None}
 
+This means PREPBUFR_DIR_REGEX is no longer used and there is no alternative.
+The variable can simply be removed from the config file.
 
+**Example 3**
+::
+
+'SOME_VAR' : {'alt': 'OTHER_VAR', 'copy' : None}
+
+This means SOME_VAR is no longer used. OTHER_VAR is the variable that should
+be set instead, but the value must change slightly.
+The variable name SOME_VAR cannot simply be replaced with OTHER_VAR.
+
+**Example 4**
+::
+
+'ENSEMBLE_STAT_ENSEMBLE_FLAG_LATLON': {'upgrade': 'ensemble'},
+
+This means that ENSEMBLE_STAT_ENSEMBLE_FLAG_LATLON is no longer used and can
+be removed. Additional text will be output to describe how to upgrade.

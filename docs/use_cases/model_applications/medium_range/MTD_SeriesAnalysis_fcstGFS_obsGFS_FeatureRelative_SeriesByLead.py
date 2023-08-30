@@ -190,7 +190,6 @@ _SeriesByLead.conf
 # .. note::
 #
 #   * MediumRangeAppUseCase
-#   * TCPairsToolUseCase
 #   * SeriesByLeadUseCase
 #   * MTDToolUseCase
 #   * RegridDataPlaneToolUseCase

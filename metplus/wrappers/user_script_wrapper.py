@@ -22,7 +22,11 @@ from ..util import do_string_sub
 @endcode
 '''
 
+
 class UserScriptWrapper(RuntimeFreqWrapper):
+    RUNTIME_FREQ_DEFAULT = None
+    RUNTIME_FREQ_SUPPORTED = 'ALL'
+
     def __init__(self, config, instance=None):
         self.app_name = "user_script"
         super().__init__(config, instance=instance)
@@ -95,7 +99,7 @@ class UserScriptWrapper(RuntimeFreqWrapper):
         """
         file_dict = super().get_files_from_time(time_info)
 
-        input_files = self.find_input_files(time_info, fill_missing=True)
+        input_files = self.get_input_files(time_info, fill_missing=True)
         if input_files is None:
             return file_dict
 

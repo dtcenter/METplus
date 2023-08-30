@@ -27,6 +27,9 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
          ensemble_stat, and wavelet_stat
     """
 
+    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE'
+    RUNTIME_FREQ_SUPPORTED = 'ALL'
+
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_MODEL',
         'METPLUS_OBTYPE',
@@ -176,23 +179,6 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
             c_dict['DATE_BEG'] = start_dt
             c_dict['DATE_END'] = end_dt
 
-        if not c_dict['RUNTIME_FREQ']:
-            # if start and end times are not equal and
-            # LOOP_ORDER = times (legacy), set frequency to once per init/valid
-            if (start_dt != end_dt and
-                    self.config.has_option('config', 'LOOP_ORDER') and
-                    self.config.getraw('config', 'LOOP_ORDER') == 'times'):
-                self.logger.warning(
-                    'LOOP_ORDER has been deprecated. Please set '
-                    'STAT_ANALYSIS_RUNTIME_FREQ = RUN_ONCE_PER_INIT_OR_VALID '
-                    'instead.'
-                )
-                c_dict['RUNTIME_FREQ'] = 'RUN_ONCE_PER_INIT_OR_VALID'
-            else:
-                self.logger.debug('Setting RUNTIME_FREQ to RUN_ONCE. Set '
-                                  'STAT_ANALYSIS_RUNTIME_FREQ to override.')
-                c_dict['RUNTIME_FREQ'] = 'RUN_ONCE'
-
         # read jobs from STAT_ANALYSIS_JOB<n> or legacy JOB_NAME/ARGS if unset
         c_dict['JOBS'] = self._read_jobs_from_config()
 
@@ -218,6 +204,27 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
                             metplus_configs=['STAT_ANALYSIS_HSS_EC_VALUE'])
 
         return self._c_dict_error_check(c_dict, all_field_lists_empty)
+
+    def validate_runtime_freq(self, c_dict):
+        """!Check and update RUNTIME_FREQ. Performs additional checks for
+        deprecated LOOP_ORDER=times setting before calling parent class
+        version of function. This function will eventually be removed.
+        """
+        if not c_dict['RUNTIME_FREQ']:
+            # if start and end times are not equal and
+            # LOOP_ORDER = times (legacy), set frequency to once per init/valid
+            start_dt, end_dt = get_start_and_end_times(self.config)
+            if (start_dt != end_dt and
+                    self.config.has_option('config', 'LOOP_ORDER') and
+                    self.config.getraw('config', 'LOOP_ORDER') == 'times'):
+                self.logger.warning(
+                    'LOOP_ORDER has been deprecated. Please set '
+                    'STAT_ANALYSIS_RUNTIME_FREQ = RUN_ONCE_PER_INIT_OR_VALID '
+                    'instead.'
+                )
+                c_dict['RUNTIME_FREQ'] = 'RUN_ONCE_PER_INIT_OR_VALID'
+
+        super().validate_runtime_freq(c_dict)
 
     def run_at_time_once(self, time_input):
         """! Function called when processing all times.
