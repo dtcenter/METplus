@@ -22,11 +22,16 @@ from ..util import do_string_sub, getlist, generate_tmp_filename
 @endcode
 '''
 
+
 class METDbLoadWrapper(RuntimeFreqWrapper):
     """! Config variable names - All names are prepended with MET_DB_LOAD_MV_
          and all c_dict values are prepended with MV_.
          The name is the key and string specifying the type is the value.
     """
+
+    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE'
+    RUNTIME_FREQ_SUPPORTED = 'ALL'
+
     CONFIG_NAMES = {
         'HOST': 'string',
         'DATABASE': 'string',

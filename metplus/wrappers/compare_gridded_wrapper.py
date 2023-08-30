@@ -16,7 +16,7 @@ from ..util import do_string_sub, ti_calculate
 from ..util import parse_var_list
 from ..util import get_lead_sequence, skip_time, sub_var_list
 from ..util import field_read_prob_info, add_field_info_to_time_info
-from . import CommandBuilder
+from . import LoopTimesWrapper
 
 '''!@namespace CompareGriddedWrapper
 @brief Common functionality to wrap similar MET applications
@@ -27,16 +27,13 @@ Cannot be called directly. Must use child classes.
 @endcode
 '''
 
-class CompareGriddedWrapper(CommandBuilder):
+
+class CompareGriddedWrapper(LoopTimesWrapper):
     """!Common functionality to wrap similar MET applications
 that reformat gridded data
     """
 
     def __init__(self, config, instance=None):
-        # set app_name if not set by child class for unit tests
-        if not hasattr(self, 'app_name'):
-            self.app_name = 'compare_gridded'
-
         super().__init__(config, instance=instance)
 
     def create_c_dict(self):
@@ -108,38 +105,6 @@ that reformat gridded data
                          self.c_dict.get('REGRID_TO_GRID', 'NONE'))
 
         super().set_environment_variables(time_info)
-
-    def run_at_time(self, input_dict):
-        """! Runs the MET application for a given run time. This function loops
-             over the list of forecast leads and runs the application for each.
-
-             @param input_dict dictionary containing time information
-        """
-
-        # loop of forecast leads and process each
-        lead_seq = get_lead_sequence(self.config, input_dict)
-        for lead in lead_seq:
-            input_dict['lead'] = lead
-
-            # set current lead time config and environment variables
-            time_info = ti_calculate(input_dict)
-
-            self.logger.info("Processing forecast lead "
-                             f"{time_info['lead_string']}")
-
-            if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
-                self.logger.debug('Skipping run time')
-                continue
-
-            for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
-                if custom_string:
-                    self.logger.info("Processing custom string: "
-                                     f"{custom_string}")
-
-                time_info['custom'] = custom_string
-
-                # Run for given init/valid time and forecast lead combination
-                self.run_at_time_once(time_info)
 
     def run_at_time_once(self, time_info):
         """! Build MET command for a given init/valid time and

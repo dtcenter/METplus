@@ -7,7 +7,7 @@ Naming
 File Name
 ^^^^^^^^^
 
-Create the new wrapper in the *METplus/metplus/wrappers* directory and
+Create the new wrapper in the *metplus/wrappers* directory and
 name it to reflect the wrapper's function, e.g.: new_tool_wrapper.py is
 a wrapper around an application named "new_tool."
 Copy the **example_wrapper.py** to start the process.
@@ -65,12 +65,12 @@ Naming
 ^^^^^^
 
 Rename the class to match the wrapper's class from the above sections.
-Most wrappers should be a subclass of the CommandBuilder wrapper::
+Most wrappers should be a subclass of the RuntimeFreqWrapper::
 
-    class NewToolWrapper(CommandBuilder)
+    class NewToolWrapper(RuntimeFreqWrapper)
 
-The text 'CommandBuilder' in parenthesis makes NewToolWrapper a subclass
-of CommandBuilder.
+The text *RuntimeFreqWrapper* in parenthesis makes NewToolWrapper a subclass
+of RuntimeFreqWrapper.
 
 Find and replace can be used to rename all instances of the wrapper name in
 the file. For example, to create IODA2NC wrapper from ASCII2NC, replace
@@ -85,7 +85,18 @@ Parent Class
 If the new tool falls under one of the existing tool categories,
 then make the tool a subclass of one of the existing classes.
 This should only be done if the functions in the parent class are needed
-by the new wrapper. When in doubt, use the CommandBuilder.
+by the new wrapper. When in doubt, use the **RuntimeFreqWrapper**.
+
+See :ref:`bc_class_hierarchy` for more information on existing classes to
+determine which class to use as the parent class.
+
+Class Variables for Runtime Frequency
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+**RUNTIME_FREQ_DEFAULT** and **RUNTIME_FREQ_SUPPORTED** should be set for all
+wrappers that inherit from **RuntimeFreqWrapper**.
+
+See :ref:`bc_class_vars` for more information.
 
 Init Function
 ^^^^^^^^^^^^^
@@ -142,69 +153,20 @@ then the wrapper will produce an error and not build the command.
 Run Functions
 ^^^^^^^^^^^^^
 
-* Override the run_at_time method if the wrapper will be called once for each
-  valid or init time specified in the configuration file.
-  If the wrapper will loop over each forecast lead
-  (LEAD_SEQ in the METplus config file) and process once for each, then
-  override run_at_time with the following method and put the logic to build
-  the MET command for each run in a run_at_time_once method::
+* The **run_at_time_once** function or some the functions that it calls will
+  need to be overridden in the wrapper.
+  See :ref:`bc_run_at_time_once` for more information.
 
-    def run_at_time(self, input_dict):
-        """! Runs the MET application for a given run time. This function
-        loops over the list of forecast leads and runs the application for
-        each.
-          @param input_dict dictionary containing timing information
-          @returns None
-          """
-        lead_seq = util.get_lead_sequence(self.config, input_dict)
-            for lead in lead_seq:
-            self.clear()
-            input_dict['lead'] = lead
-
-            time_info = time_util.ti_calculate(input_dict)
-            for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
-                if custom_string:
-                    self.logger.info(f"Processing custom string: {custom_string}")
-
-                time_info['custom'] = custom_string
-
-                self.run_at_time_once(time_info)
-
-    def run_at_time_once(self, time_info):
-        """! Process runtime and try to build command to run ascii2nc
-                @param time_info dictionary containing timing information
-        """
-        # get input files
-        if self.find_input_files(time_info) is None:
-            return
-
-        # get output path
-        if not self.find_and_check_output_file(time_info):
-            return
-
-        # get other configurations for command
-        self.set_command_line_arguments(time_info)
-
-        # set environment variables if using config file
-        self.set_environment_variables(time_info)
-
-        # build command and run
-        self.build_and_run_command()
-
-
-If the wrapper will not loop and process for each forecast lead,
-put the logic to build the command in the run_at_time method.
-
-* It is recommended to divide up the logic into components, as illustrated
-  above, to make the code more readable and easier to test.
+* It is recommended to divide up the logic into small functions to make
+  the code more readable and easier to test.
 
 * The function self.set_environment_variables should be called by all
-  wrappers even if the MET tool does not have a config file. This is done
-  to set environment variables that MET expects to be set when running, such
-  as MET_TMP_DIR and MET_PYTHON_EXE. If no environment variables need to be
-  set specific to the wrapper, then no
-  implementation of the function in the wrapper needs to be written.
-  Call the
+  wrappers even if the MET tool does not have a config file.
+  This function is typically called from the run_at_time_once function.
+  This is done to set environment variables that MET expects to be set when
+  running, such as MET_TMP_DIR and MET_PYTHON_EXE.
+  If no environment variables need to be set specific to the wrapper, then no
+  implementation of the function in the wrapper needs to be written. Call the
   implementation of the function from CommandBuilder, which sets the
   environment variables defined in the [user_env_vars] section of the
   configuration file and outputs DEBUG logs for each environment variable
@@ -212,7 +174,7 @@ put the logic to build the command in the run_at_time method.
   each wrapper.
 
 * Once all the necessary information has been provided to create the MET
-  command, call self.build_and_run_command(). This calls self.get_command()
+  command, call self.build(). This calls self.get_command()
   to assemble the command and verify that the command wrapper generated
   contains all of the required arguments. The get_command() in the wrapper
   may need to be overridden if the MET application is different from
@@ -224,7 +186,9 @@ put the logic to build the command in the run_at_time method.
 
 * Call self.clear() at the beginning of each loop iteration that tries to
   build/run a MET command to prevent inadvertently reusing/re-running
-  commands that were previously created.
+  commands that were previously created. This is called in the RuntimeFreq
+  wrapper before each call to run_at_time_once, but an additional call may be
+  needed if multiple commands are built and run in this function.
 
 * To allow the use case to use the specific wrapper, assign the wrapper name to
   PROCESS_LIST::
@@ -262,12 +226,12 @@ put the logic to build the command in the run_at_time method.
   documentation for that use case and a README file to create a header for
   the documentation page.
 
-This new uuse case/example configuration file is located in a directory structure
+This new use case/example configuration file is located in a directory structure
 like the following::
 
-    METplus/parm/use_cases/met_tool_wrapper/NewTool/NewTool.conf
-    METplus/docs/use_cases/met_tool_wrapper/NewTool/NewTool.py
-    METplus/docs/use_cases/met_tool_wrapper/NewTool/README.md
+    parm/use_cases/met_tool_wrapper/NewTool/NewTool.conf
+    docs/use_cases/met_tool_wrapper/NewTool/NewTool.py
+    docs/use_cases/met_tool_wrapper/NewTool/README.rst
 
 Note the documentation file is in METplus/docs while the use case conf file
 is in METplus/parm.

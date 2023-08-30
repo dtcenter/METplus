@@ -24,6 +24,9 @@ from . import CompareGriddedWrapper
 class GridStatWrapper(CompareGriddedWrapper):
     """!Wraps the MET tool grid_stat to compare gridded datasets"""
 
+    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
+    RUNTIME_FREQ_SUPPORTED = ['RUN_ONCE_FOR_EACH']
+
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_MODEL',
         'METPLUS_DESC',

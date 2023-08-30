@@ -13,7 +13,7 @@ Condition codes: 0 for success, 1 for failure
 import os
 
 from ..util import getlist, get_lead_sequence, skip_time, ti_calculate, mkdir_p
-from . import CommandBuilder
+from . import LoopTimesWrapper
 from ..util import do_string_sub
 
 '''!@namespace GenVxMaskWrapper
@@ -22,7 +22,10 @@ from ..util import do_string_sub
 '''
 
 
-class GenVxMaskWrapper(CommandBuilder):
+class GenVxMaskWrapper(LoopTimesWrapper):
+
+    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
+    RUNTIME_FREQ_SUPPORTED = ['RUN_ONCE_FOR_EACH']
 
     def __init__(self, config, instance=None):
         self.app_name = "gen_vx_mask"
@@ -40,12 +43,12 @@ class GenVxMaskWrapper(CommandBuilder):
         # input and output files
         c_dict['INPUT_DIR'] = self.config.getdir('GEN_VX_MASK_INPUT_DIR',
                                                  '')
-        c_dict['INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
+        c_dict['INPUT_TEMPLATE'] = self.config.getraw('config',
                                                       'GEN_VX_MASK_INPUT_TEMPLATE')
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('GEN_VX_MASK_OUTPUT_DIR',
                                                   '')
-        c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
+        c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('config',
                                                        'GEN_VX_MASK_OUTPUT_TEMPLATE')
 
         c_dict['MASK_INPUT_DIR'] = self.config.getdir('GEN_VX_MASK_INPUT_MASK_DIR',
@@ -122,34 +125,7 @@ class GenVxMaskWrapper(CommandBuilder):
         cmd += ' -v ' + self.c_dict['VERBOSITY']
         return cmd
 
-    def run_at_time(self, input_dict):
-        """! Runs the MET application for a given run time. This function
-              loops over the list of forecast leads and runs the application for
-              each.
-              Args:
-                @param input_dict dictionary containing timing information
-                @returns None
-        """
-        lead_seq = get_lead_sequence(self.config, input_dict)
-        for lead in lead_seq:
-            self.clear()
-            input_dict['lead'] = lead
-
-            time_info = ti_calculate(input_dict)
-
-            if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
-                self.logger.debug('Skipping run time')
-                continue
-
-            for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
-                if custom_string:
-                    self.logger.info(f"Processing custom string: {custom_string}")
-
-                time_info['custom'] = custom_string
-
-                self.run_at_time_all(time_info)
-
-    def run_at_time_all(self, time_info):
+    def run_at_time_once(self, time_info):
         """!Loop over list of mask templates and call GenVxMask for each, adding the
             corresponding command line arguments for each call
             Args:

@@ -166,7 +166,6 @@ class CyclonePlotterWrapper(CommandBuilder):
         self.extent_region = [self.west_lon, self.east_lon, self.south_lat, self.north_lat]
         self.logger.debug(f"extent region: {self.extent_region}")
 
-
     def run_all_times(self):
         """! Calls the defs needed to create the cyclone plots
              run_all_times() is required by CommandBuilder.
@@ -176,7 +175,6 @@ class CyclonePlotterWrapper(CommandBuilder):
         if self.sanitized_df is None:
             return None
         self.create_plot()
-
 
     def retrieve_data(self):
         """! Retrieve data from track files.
@@ -358,7 +356,6 @@ class CyclonePlotterWrapper(CommandBuilder):
 
         return final_sorted_df
 
-
     def create_plot(self):
         """
          Create the plot, using Cartopy
@@ -514,7 +511,6 @@ class CyclonePlotterWrapper(CommandBuilder):
             # use Matplotlib's default if no resolution is set in config file
             plt.savefig(plot_filename)
 
-
     def get_plot_points(self):
         """
            Get the lon and lat points to be plotted, along with any other plotting-relevant
@@ -552,7 +548,6 @@ class CyclonePlotterWrapper(CommandBuilder):
 
         return points_list
 
-
     def get_points_by_track(self):
         """
             Get all the lats and lons for each storm track. Used to generate the line
@@ -582,7 +577,6 @@ class CyclonePlotterWrapper(CommandBuilder):
             track_dict[cur_unique] = sanitized_lons_and_lats
 
         return track_dict
-
 
     def subset_by_region(self, sanitized_df):
         """
@@ -617,7 +611,6 @@ class CyclonePlotterWrapper(CommandBuilder):
             sys.exit("No data in region specified, please check your lon and lat values in the config file.")
 
         return masked
-
 
     @staticmethod
     def sanitize_lonlist(lon_list):

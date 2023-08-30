@@ -24,6 +24,9 @@ from ..util import do_string_sub, parse_var_list, sub_var_list
 
 class GridDiagWrapper(RuntimeFreqWrapper):
 
+    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_PER_INIT_OR_VALID'
+    RUNTIME_FREQ_SUPPORTED = 'ALL'
+
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_DESC',
         'METPLUS_REGRID_DICT',
@@ -150,8 +153,6 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         return cmd
 
     def run_at_time_once(self, time_info):
-        self.clear()
-
         # subset input files as appropriate
         input_list_dict = self.subset_input_files(time_info)
         if not input_list_dict:
@@ -231,7 +232,7 @@ class GridDiagWrapper(RuntimeFreqWrapper):
              files with a key representing a description of that file
         """
         file_dict = super().get_files_from_time(time_info)
-        input_files = self.find_input_files(time_info)
+        input_files = self.get_input_files(time_info)
         if input_files is None:
             return None
 

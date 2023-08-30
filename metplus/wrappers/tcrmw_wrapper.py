@@ -12,10 +12,10 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import time_util
-from . import CommandBuilder
+from ..util import ti_calculate, ti_get_hours_from_relativedelta
 from ..util import do_string_sub, skip_time, get_lead_sequence
 from ..util import parse_var_list, sub_var_list
+from . import RuntimeFreqWrapper
 
 '''!@namespace TCRMWWrapper
 @brief Wraps the TC-RMW tool
@@ -23,7 +23,9 @@ from ..util import parse_var_list, sub_var_list
 '''
 
 
-class TCRMWWrapper(CommandBuilder):
+class TCRMWWrapper(RuntimeFreqWrapper):
+    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_PER_INIT_OR_VALID'
+    RUNTIME_FREQ_SUPPORTED = ['RUN_ONCE_PER_INIT_OR_VALID']
 
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_MODEL',
@@ -162,6 +164,8 @@ class TCRMWWrapper(CommandBuilder):
         c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
                                                  data_type='FCST',
                                                  met_tool=self.app_name)
+        if not c_dict['VAR_LIST_TEMP']:
+            self.log_error("Could not get field information from config.")
 
         return c_dict
 
@@ -196,87 +200,6 @@ class TCRMWWrapper(CommandBuilder):
         cmd += ' -v ' + self.c_dict['VERBOSITY']
         return cmd
 
-    def run_at_time(self, input_dict):
-        """! Runs the MET application for a given run time. This function
-              loops over the list of forecast leads and runs the
-               application for each.
-              Args:
-                @param input_dict dictionary containing timing information
-        """
-        for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
-            if custom_string:
-                self.logger.info(f"Processing custom string: {custom_string}")
-
-            input_dict['custom'] = custom_string
-            time_info = time_util.ti_calculate(input_dict)
-
-            if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
-                self.logger.debug('Skipping run time')
-                continue
-
-            self.clear()
-            self.run_at_time_once(time_info)
-
-    def run_at_time_once(self, time_info):
-        """! Process runtime and try to build command to run ascii2nc
-             Args:
-                @param time_info dictionary containing timing information
-        """
-        # get input files
-        if self.find_input_files(time_info) is None:
-            return
-
-        # get output path
-        if not self.find_and_check_output_file(time_info):
-            return
-
-        # get field information to set in MET config
-        if not self.set_data_field(time_info):
-            return
-
-        # get other configurations for command
-        self.set_command_line_arguments(time_info)
-
-        # set environment variables if using config file
-        self.set_environment_variables(time_info)
-
-        # build command and run
-        cmd = self.get_command()
-        if cmd is None:
-            self.log_error("Could not generate command")
-            return
-
-        self.build()
-
-    def set_data_field(self, time_info):
-        """!Get list of fields from config to process. Build list of field info
-            that are formatted to be read by the MET config file. Set DATA_FIELD
-            item of c_dict with the formatted list of fields.
-            Args:
-                @param time_info time dictionary to use for string substitution
-                @returns True if field list could be built, False if not.
-        """
-        field_list = sub_var_list(self.c_dict['VAR_LIST_TEMP'], time_info)
-        if not field_list:
-            self.log_error("Could not get field information from config.")
-            return False
-
-        all_fields = []
-        for field in field_list:
-            field_list = self.get_field_info(d_type='FCST',
-                                             v_name=field['fcst_name'],
-                                             v_level=field['fcst_level'],
-                                             )
-            if field_list is None:
-                return False
-
-            all_fields.extend(field_list)
-
-        data_field = ','.join(all_fields)
-        self.env_var_dict['METPLUS_DATA_FIELD'] = f'field = [{data_field}];'
-
-        return True
-
     def find_input_files(self, time_info):
         """!Get DECK file and list of input data files and set c_dict items.
             Args:
@@ -308,7 +231,7 @@ class TCRMWWrapper(CommandBuilder):
                 self.clear()
                 time_info['lead'] = lead
 
-                time_info = time_util.ti_calculate(time_info)
+                time_info = ti_calculate(time_info)
 
                 # get a list of the input data files,
                 # write to an ascii file if there are more than one
@@ -327,23 +250,58 @@ class TCRMWWrapper(CommandBuilder):
 
         self.infiles.append(list_file)
 
-        # set LEAD_LIST to list of forecast leads used
-        if lead_seq != [0]:
-            lead_list = []
-            for lead in lead_seq:
-                lead_hours = (
-                    time_util.ti_get_hours_from_relativedelta(lead,
-                                                              valid_time=time_info['valid'])
-                    )
-                lead_list.append(f'"{str(lead_hours).zfill(2)}"')
+        if not self._set_data_field(time_info):
+            return None
 
-            self.env_var_dict['METPLUS_LEAD_LIST'] = f"lead = [{', '.join(lead_list)}];"
+        self._set_lead_list(time_info, lead_seq)
 
         return self.infiles
 
-    def set_command_line_arguments(self, time_info):
+    def _set_data_field(self, time_info):
+        """!Get list of fields from config to process. Build list of field info
+            that are formatted to be read by the MET config file. Set DATA_FIELD
+            item of c_dict with the formatted list of fields.
+            Args:
+                @param time_info time dictionary to use for string substitution
+                @returns True if field list could be built, False if not.
+        """
+        field_list = sub_var_list(self.c_dict['VAR_LIST_TEMP'], time_info)
+        if not field_list:
+            self.log_error("Could not get field information from config.")
+            return False
 
-        # add config file - passing through do_string_sub to get custom string if set
+        all_fields = []
+        for field in field_list:
+            field_list = self.get_field_info(d_type='FCST',
+                                             v_name=field['fcst_name'],
+                                             v_level=field['fcst_level'],
+                                             )
+            if field_list is None:
+                self.log_error(f'Could not get field info from {field}')
+                return False
+
+            all_fields.extend(field_list)
+
+        data_field = ','.join(all_fields)
+        self.env_var_dict['METPLUS_DATA_FIELD'] = f'field = [{data_field}];'
+        return True
+
+    def _set_lead_list(self, time_info, lead_seq):
+        # set LEAD_LIST to list of forecast leads used
+        if lead_seq == [0]:
+            return
+
+        lead_list = []
+        for lead in lead_seq:
+            lead_hours = (
+                ti_get_hours_from_relativedelta(lead,
+                                                valid_time=time_info['valid'])
+            )
+            lead_list.append(f'"{str(lead_hours).zfill(2)}"')
+
+        self.env_var_dict['METPLUS_LEAD_LIST'] = f"lead = [{', '.join(lead_list)}];"
+
+    def set_command_line_arguments(self, time_info):
         if self.c_dict['CONFIG_FILE']:
             config_file = do_string_sub(self.c_dict['CONFIG_FILE'],
                                         **time_info)

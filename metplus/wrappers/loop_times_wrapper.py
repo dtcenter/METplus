@@ -16,10 +16,6 @@ and forecast lead times
 class LoopTimesWrapper(RuntimeFreqWrapper):
 
     def __init__(self, config, instance=None):
-        # set app_name if not set by child class to allow tests to run
-        if not hasattr(self, 'app_name'):
-            self.app_name = 'loop_times'
-
         super().__init__(config, instance=instance)
 
     def create_c_dict(self):

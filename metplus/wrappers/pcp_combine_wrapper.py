@@ -12,16 +12,21 @@ from ..util import get_seconds_from_string, ti_get_lead_string, ti_calculate
 from ..util import get_relativedelta, ti_get_seconds_from_relativedelta
 from ..util import time_string_to_met_time, seconds_to_met_time
 from ..util import parse_var_list, template_to_regex, split_level
-from ..util import add_field_info_to_time_info
+from ..util import add_field_info_to_time_info, sub_var_list
 from . import ReformatGriddedWrapper
 
 '''!@namespace PCPCombineWrapper
 @brief Wraps the MET tool pcp_combine to combine/divide
 precipitation accumulations or derive additional fields
 '''
+
+
 class PCPCombineWrapper(ReformatGriddedWrapper):
     """! Wraps the MET tool pcp_combine to combine or divide
          precipitation accumulations """
+
+    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
+    RUNTIME_FREQ_SUPPORTED = ['RUN_ONCE_FOR_EACH']
 
     # valid values for [FCST/OBS]_PCP_COMBINE_METHOD
     valid_run_methods = ['ADD', 'SUM', 'SUBTRACT', 'DERIVE', 'USER_DEFINED']
@@ -226,7 +231,9 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         return c_dict
 
-    def run_at_time_once(self, time_info, var_list, data_src):
+    def run_at_time_once(self, time_info):
+        var_list = sub_var_list(self.c_dict['VAR_LIST'], time_info)
+        data_src = self.c_dict['DATA_SRC']
 
         if not var_list:
             var_list = [None]
@@ -635,6 +642,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
           @return True if full set of files to build accumulation is found
         """
         search_time = time_info['valid']
+        custom = time_info.get('custom', '')
         # last time to search is the output accumulation subtracted from the
         # valid time, then add back the smallest accumulation that is available
         # in the input. This is done because data contains an accumulation from
@@ -687,7 +695,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                 search_file, lead = self.find_input_file(time_info['init'],
                                                          search_time,
                                                          accum_dict['amount'],
-                                                         data_src)
+                                                         data_src,
+                                                         custom)
 
                 if not search_file:
                     continue
@@ -699,7 +708,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                     accum_amount = self.get_template_accum(accum_dict,
                                                            search_time,
                                                            lead,
-                                                           data_src)
+                                                           data_src,
+                                                           custom)
                     if accum_amount > total_accum:
                         self.logger.debug("Accumulation amount is bigger "
                                           "than remaining accumulation.")
@@ -746,11 +756,12 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         return files_found
 
-    def get_lowest_fcst_file(self, valid_time, data_src):
+    def get_lowest_fcst_file(self, valid_time, data_src, custom):
         """! Find the lowest forecast hour that corresponds to the valid time
 
           @param valid_time valid time to search
           @param data_src data type (FCST or OBS) to get filename template
+          @param custom string from custom loop list to use in template sub
           @rtype string
           @return Path to file with the lowest forecast hour
     """
@@ -786,7 +797,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                 'lead_seconds': forecast_lead
             }
             time_info = ti_calculate(input_dict)
-            time_info['custom'] = self.c_dict.get('CUSTOM_STRING', '')
+            time_info['custom'] = custom
             search_file = os.path.join(self.c_dict[f'{data_src}_INPUT_DIR'],
                                        self.c_dict[data_src+'_INPUT_TEMPLATE'])
             search_file = do_string_sub(search_file, **time_info)
@@ -821,7 +832,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             field_info = do_string_sub(field_info, **time_info)
         return field_info
 
-    def find_input_file(self, init_time, valid_time, search_accum, data_src):
+    def find_input_file(self, init_time, valid_time, search_accum, data_src,
+                        custom):
         lead = 0
 
         in_template = self.c_dict[data_src+'_INPUT_TEMPLATE']
@@ -829,7 +841,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         if ('{lead?' in in_template or
                 ('{init?' in in_template and '{valid?' in in_template)):
             if not self.c_dict[f'{data_src}_CONSTANT_INIT']:
-                return self.get_lowest_fcst_file(valid_time, data_src)
+                return self.get_lowest_fcst_file(valid_time, data_src, custom)
 
             # set init time and lead in time dict if init should be constant
             # ti_calculate cannot currently handle both init and valid
@@ -842,7 +854,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                 input_dict = {'valid': valid_time}
 
         time_info = ti_calculate(input_dict)
-        time_info['custom'] = self.c_dict.get('CUSTOM_STRING', '')
+        time_info['custom'] = custom
         time_info['level'] = int(search_accum)
         input_path = os.path.join(self.c_dict[f'{data_src}_INPUT_DIR'],
                                   in_template)
@@ -852,11 +864,12 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                                self.c_dict[f'{data_src}_INPUT_DATATYPE'],
                                self.config), lead
 
-    def get_template_accum(self, accum_dict, search_time, lead, data_src):
+    def get_template_accum(self, accum_dict, search_time, lead, data_src,
+                           custom):
         # apply string substitution to accum amount
         search_time_dict = {'valid': search_time, 'lead_seconds': lead}
         search_time_info = ti_calculate(search_time_dict)
-        search_time_info['custom'] = self.c_dict.get('CUSTOM_STRING', '')
+        search_time_info['custom'] = custom
         amount = do_string_sub(accum_dict['template'],
                                **search_time_info)
         amount = get_seconds_from_string(amount, default_unit='S',

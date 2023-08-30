@@ -153,8 +153,8 @@ def _get_wrapper_instance(config, process, instance=None):
         metplus_wrapper = (
             getattr(module, f"{process}Wrapper")(config, instance=instance)
         )
-    except AttributeError:
-        config.logger.error(f"There was a problem loading {process} wrapper.")
+    except AttributeError as err:
+        config.logger.error(f"There was a problem loading {process} wrapper: {err}")
         return None
     except ModuleNotFoundError:
         config.logger.error(f"Could not load {process} wrapper. "

@@ -65,6 +65,11 @@ class CommandBuilder:
         self.param = ""
         self.all_commands = []
 
+        # set app name to empty string if not set by wrapper
+        # needed to create instance of parent wrapper for unit tests
+        if not hasattr(self, 'app_name'):
+            self.app_name = ''
+
         # store values to set in environment variables for each command
         self.env_var_dict = {}
 
@@ -162,8 +167,6 @@ class CommandBuilder:
         c_dict['VERBOSITY'] = self.config.getstr('config',
                                                  'LOG_MET_VERBOSITY',
                                                  '2')
-        c_dict['ALLOW_MULTIPLE_FILES'] = False
-
         app_name = ''
         if hasattr(self, 'app_name'):
             app_name = self.app_name
@@ -212,7 +215,7 @@ class CommandBuilder:
         self.env_list.clear()
 
     def set_environment_variables(self, time_info=None):
-        """!Set environment variables that will be read set when running this tool.
+        """!Set environment variables that will be read when running this tool.
             This tool does not have a config file, but environment variables may still
             need to be set, such as MET_TMP_DIR and MET_PYTHON_EXE.
             Reformat as needed. Print list of variables that were set and their values.
