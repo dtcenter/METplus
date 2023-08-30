@@ -76,6 +76,106 @@ at the bottom of the workflow summary page when the workflow has completed.
 
 .. figure:: figure/ci-doc-artifacts.png
 
+.. _cg-ci-update-truth-data:
+
+Update Truth Data (update_truth.yml)
+------------------------------------
+
+The METplus use case test truth data includes output from use cases that is
+used to compare with new use case test results to flag any differences.
+Differences can occur due to changes to the METplus wrappers
+source code/configuration files or changes to any of its dependent
+METplus components such as MET, METplotpy, METcalcpy, and METdataio.
+Differences can also occur when a new use case is added, as the new use case
+creates output that does not yet exist in the truth dataset.
+
+Once all differences are confirmed to be expected,
+the reference branch, e.g. develop-ref, needs to be updated. This triggers a
+:ref:`cg-ci-testing-workflow` that runs all of the use cases, then creates
+Docker images that contain the new truth data and are pushed to DockerHub.
+This is done so that future pull requests will
+compare their results to the updated truth dataset.
+
+This process involves creating a pull request with "develop" as the source
+branch and "develop-ref" as the destination branch.
+This is done so that the pull request responsible for the changes in the
+truth data can be referenced to easily track where differences occurred.
+
+The **Update Truth Data** workflow is available to handle this step.
+
+* Ensure that the develop data directory has been updated to include all of the
+  new input data.
+  Check with the reviewers of recent pull requests that add a new use case to
+  confirm that the steps under :ref:`update-the-develop-data-directory` have
+  been completed. If this step has not been completed, then the new use case(s)
+  will fail and the new output data will not be added to the truth data set.
+* Navigate to https://github.com/dtcenter/METplus/actions/workflows/update_truth.yml
+  or from the METplus GitHub page, click on the Actions tab,
+  then click on "Update Truth Data" under menu on the left.
+* Click on the "Run workflow" button on the right.
+* Click on the Branch pull down and select "develop" unless you are updating
+  the truth data for a bugfix on a main_vX.Y branch.
+* Enter the pull request numbers that warranted the update.
+  Include the '#' symbol before the number to create a link to the PR.
+  PRs from a repository other than METplus should include
+  the repository name before '#' symbol.
+* Enter a brief summary of the changes.
+  Developers can navigate to the PRs for more information.
+
+.. figure:: figure/update_truth_data.png
+
+* Click the "Run workflow" button.
+* A new workflow run should appear at the top of the list and complete quickly.
+* Click on the "Pull Requests" tab.
+  A new pull request should have been created with the information that
+  was entered. Click on the new pull request.
+* Verify that the information in this pull request is correct.
+  If the "develop" branch was selected in the "Run workflow" menu,
+  then the pull request should show **develop-ref <- develop**.
+* Add the appropriate project and milestone values on the right hand side.
+* If a GitHub issue exists to track the review of the differences, click on
+  the gear icon next to *Development* on the right side menu and add the issue.
+* Scroll to the bottom of the pull request and click "Squash and merge."
+* Click "Confirm squash and merge." It is not necessary to wait for the
+  automation checks to complete for this step.
+* Monitor the Testing automation run for the develop-ref branch and ensure that
+  all of the use cases run successfully and the final step named
+  "Create Output Docker Data Volumes" completed successfully.
+* If any use cases fail, check that the input data has been updated following
+  the instructions under :ref:`update-the-develop-data-directory` and rerun
+  all of the jobs of the -ref workflow.
+
+.. _cg-ci-update-input-test-data:
+
+Update Input Test Data (update_input_data.yml)
+----------------------------------------------
+
+New/updated input data for a METplus use case is read from the
+DTC web server as described in the :ref:`use_case_input_data` section of the
+**Adding Use Cases** chapter of the METplus Contributor's Guide.
+This automatically happens as part of the :ref:`cg-ci-testing-workflow` when
+a push event occurs on a dtcenter/METplus branch.
+This step can be forced by using the **Update Input Test Data** workflow.
+
+This is workflow is typically used when a new use case is being provided by
+an external contributor and their pull request is coming from a forked
+repository.
+Only dtcenter/METplus workflows have permission to update the input test data.
+
+To force the ingest of this input data, navigate to
+https://github.com/dtcenter/METplus/actions/workflows/update_input_data.yml .
+Click on the **Run workflow** pull-down, type the name of the branch that
+matches the directory that contains the new data on the DTC web server,
+and click the **Run workflow** button.
+
+The value in the branch pull-down under the text that says
+**Use workflow from** is ignored if there is a value typed for the branch name.
+If the branch name exists in the dtcenter/METplus repository, leave the
+branch name text box blank and select the branch name from the pull-down menu.
+
+Verify that the workflow ran successfully and properly obtained the new data
+by reviewing the log output from the workflow run.
+
 
 Release Published (release_published.yml) - DEPRECATED
 ------------------------------------------------------

@@ -38,5 +38,23 @@ assignees: ''
 - [ ] Review the GitHub Actions workflow that was triggered by the PR merge
   - If no differences were found, note this in a comment.
   - If all of the differences are expected, note this in a comment.
+    Include any details of how the review was performed.
   - If unexpected differences are found, revert the PR and re-open the issue.
+    Iterate until one of the above conditions apply.
+- [ ] Confirm that the truth data can be updated
+  - Confirm with the METplus wrappers lead engineer (@georgemccabe) or
+    backup lead (@jprestop) that the truth data can be updated.
+  - If the engineers are unavailable, follow these instructions to confirm
+    that the update can be performed:
+    - Search for other open issues that have the label `type: update truth`
+      applied by clicking on the label on this issue. Coordinate with the
+      author of these issues to ensure all diffs are properly reviewed.
+    - Check if any additional GitHub Actions testing workflows have been
+      triggered since the workflow that corresponds to this issue was run.
+      Review the latest run to ensure that there are no diffs that are
+      unrelated to this issue.
+- [ ] Update the truth data.
+      This may be handled by a METplus wrappers engineer.
+      See the (instructions to update the truth data)[https://metplus.readthedocs.io/en/develop/Contributors_Guide/continuous_integration.html#update-truth-data-update-truth-data-yml]
+      for more info.
 - [ ] Close this issue.
