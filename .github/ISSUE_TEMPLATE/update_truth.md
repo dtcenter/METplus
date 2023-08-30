@@ -25,11 +25,6 @@ assignees: ''
 - [ ] Select **engineer(s)** or **no engineer** required
 - [ ] Select **scientist(s)** or **no scientist** required
 
-### Labels ###
-- [ ] Select **component(s)**
-- [ ] Select **priority**
-- [ ] Select **requestor(s)**
-
 ### Projects and Milestone ###
 - [ ] Select **Repository** and/or **Organization** level **Project(s)** or add **alert: NEED CYCLE ASSIGNMENT** label
 - [ ] Select **Milestone** as the next official version or **Future Versions**
