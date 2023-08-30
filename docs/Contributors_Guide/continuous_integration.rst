@@ -92,7 +92,7 @@ creates output that does not yet exist in the truth dataset.
 Once all differences are confirmed to be expected,
 the reference branch, e.g. develop-ref, needs to be updated. This triggers a
 :ref:`cg-ci-testing-workflow` that runs all of the use cases, then creates
-Docker images that contain the new truth data and are pushed to DockerHub.
+Docker images with the new truth data, and pushes them to DockerHub.
 This is done so that future pull requests will
 compare their results to the updated truth dataset.
 
