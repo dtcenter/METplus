@@ -656,36 +656,11 @@ Trigger Input Data Ingest
 
 If working in a forked METplus repository, the newly added input data will not
 become available for the tests unless it is triggered from the dtcenter
-repository. A METplus developer will need to run the following steps. Please
-provide them with the name of the forked repository and the branch that will
-be used to create the pull request with the new use case. In this example,
-the branch feature_XYZ exists in the *my_fake_user/METplus* repository. First,
-clone the *dtcenter/METplus* repository, the run the following::
+repository. A METplus developer will need to run the
+:ref:`cg-ci-update-input-test-data` GitHub Actions workflow to trigger it.
+Please provide them with the name of the branch that will
+be used to create the pull request with the new use case.
 
-    git remote add my_fake_user https://github.com/my_fake_user/METplus
-    git checkout develop
-    git checkout -b feature_XYZ
-    git pull my_fake_user feature_XYZ
-    git push origin feature_XYZ
-    git remote remove my_fake_user
-
-These commands will add a new remote to the forked repository, create a branch
-off of the develop branch with the same name as the branch on the fork, pull
-in the changes from the forked branch, then push the new branch up to
-*dtcenter/METplus* on GitHub. Finally, the remote is removed to avoid clutter.
-
-Once these steps have been completed, go to *dtcenter/METplus* on GitHub
-in a web browser and navigate to the
-`Actions tab <https://github.com/dtcenter/METplus/actions>`_.
-Click on the job named
-"Docker Setup - Update Data Volumes" then click on "Update Data Volumes" and
-verify that the new data tarfile was found on the DTC web server and the new
-Docker data volume was created successfully. See
-:ref:`verify-new-input-data-was-found`. If the input data was ingested
-properly, then delete the feature branch from *dtcenter/METplus*.
-This will avoid
-confusion if this branch diverges from the branch on the forked repository that
-will be used in the final pull request.
 
 .. _add_use_case_to_test_suite:
 
@@ -1143,52 +1118,9 @@ Update the Truth Data
 The addition of a new use case results in new output data. When this happens,
 the reference branch needs to be updated so that future pull requests will
 compare their results to a "truth" data set that contains the new files.
-Create a pull request with "develop" as the source branch and "develop-ref" as
-the destination branch. This is done so that the pull request number
-responsible for the changes in the truth data can be referenced to easily
-track where differences occurred.
 
-A GitHub Action workflow is available to handle this step.
-
-* Ensure that the develop data directory has been updated to include all of the
-  new input data.
-  Check with the reviewers of recent pull requests that add a new use case to
-  confirm that the steps under :ref:`update-the-develop-data-directory` have
-  been completed. If this step has not been completed, then the new use case(s)
-  will fail and the new output data will not be added to the truth data set.
-* Navigate to https://github.com/dtcenter/METplus/actions/workflows/update_truth.yml
-  or from the METplus GitHub page, click on the Actions tab,
-  then click on "Update Truth Data" under menu on the left.
-* Click on the "Run workflow" button on the right.
-* Click on the Branch pull down and select "develop" unless you are updating
-  the truth data for a bugfix on a main_vX.Y branch.
-* Enter the pull request numbers that warranted the update.
-  Include the '#' symbol before the number to create a link to the PR.
-  PRs from a repository other than METplus should include
-  the repository name before '#' symbol.
-* Enter a brief summary of the changes.
-  Developers can navigate to the PRs for more information.
-
-.. figure:: figure/update_truth_data.png
-
-* Click the "Run workflow" button.
-* A new workflow run should appear at the top of the list and complete quickly.
-* Click on the "Pull Requests" tab.
-  A new pull request should have been created with the information that
-  was entered. Click on the new pull request.
-* Verify that the information in this pull request is correct.
-  If the "develop" branch was selected in the "Run workflow" menu,
-  then the pull request should show **develop-ref <- develop**.
-* Add the appropriate project and milestone values on the right hand side.
-* Scroll to the bottom of the pull request and click "Squash and merge."
-* Click "Confirm squash and merge." It is not necessary to wait for the
-  automation checks to complete for this step.
-* Monitor the Testing automation run for the develop-ref branch and ensure that
-  all of the use cases run successfully and the final step named
-  "Create Output Docker Data Volumes" completed successfully.
-* If any use cases fail, check that the input data has been updated following
-  the instructions under :ref:`update-the-develop-data-directory` and rerun
-  all of the jobs of the -ref workflow.
+Follow the instructions for using the :ref:`cg-ci-update-truth-data` GitHub
+Actions workflow to perform this step.
 
 
 Clean Up DTC Web Server
