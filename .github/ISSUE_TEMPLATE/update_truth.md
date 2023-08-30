@@ -2,7 +2,7 @@
 name: Update Truth
 about: Review use case differences that are caused by changes in an external repository and update truth dataset if necessary.
 title: 'Update Truth: '
-labels: 'alert: NEED ACCOUNT KEY, alert: NEED MORE DEFINITION, alert: NEED CYCLE ASSIGNMENT, type: update truth, priority: blocker, component: CI/CD'
+labels: 'alert: NEED ACCOUNT KEY, alert: NEED MORE DEFINITION, alert: NEED CYCLE ASSIGNMENT, type: update truth, priority: blocker, component: CI/CD, requestor: METplus Team'
 assignees: ''
 
 ---
