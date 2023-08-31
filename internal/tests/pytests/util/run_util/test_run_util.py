@@ -71,7 +71,7 @@ def test_pre_run_setup():
     # spot check a few specific items
     expected_stage = os.path.join(actual.get('config', 'OUTPUT_BASE'), 'stage')
     assert actual.get('config', 'STAGING_DIR') == expected_stage
-    assert actual.get('user_env_vars', 'GODS_OF_WEATHER', 'Indra_Thor_Zeus')
+    assert actual.get('user_env_vars', 'GODS_OF_WEATHER') == 'Indra_Thor_Zeus'
 
 
 @pytest.mark.util
@@ -207,7 +207,7 @@ def test_run_metplus(capfd, config_dict, expected, check_err):
     "side_effect,return_value,check_err",
     [
         (Exception, None, "Fatal error occurred"),
-        (None, [], None),
+        (None, [], ''),
     ],
 )
 @pytest.mark.util
@@ -219,11 +219,11 @@ def test_run_metplus_errors(capfd, side_effect, return_value, check_err):
         config.set('config', 'PROCESS_LIST', 'GridStat')
         actual = ru.run_metplus(config)
         assert actual == 1
+        out, err = capfd.readouterr()
         if check_err:
-            out, err = capfd.readouterr()
             assert "Fatal error occurred" in err
         else:
-            err = ''
+            assert err == check_err 
 
 
 @pytest.mark.util
