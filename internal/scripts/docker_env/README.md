@@ -11,6 +11,24 @@ prevent potential issues with wget commands used to download the cartopy
 shapefiles. Without this, the wget commands may fail because the
 certificate trust store is out of date.
 
+## conda.v5.1
+
+This environment includes Conda which is needed to create all of the Conda environments. NOTE: The OS used as the base image in Dockerfile.conda must match the OS of the MET base image (dtcenter/METbaseimage). Changes to that OS warrant a rebuild of ALL of the Docker images that hold Conda environments.
+
+
+### Docker
+
+```
+export METPLUS_ENV_VERSION=v5.1
+docker build -t dtcenter/metplus-envs:conda.${METPLUS_ENV_VERSION} \
+    -f Dockerfile.conda .
+docker push dtcenter/metplus-envs:conda.${METPLUS_ENV_VERSION}
+```
+
+### Local
+
+This environment is not needed locally because it is assumed that `conda` is available on the machine running the local commands.
+
 ## metplus_base.v5.1
 
 This environment includes the minimum requirements to run the METplus wrappers.
