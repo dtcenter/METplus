@@ -25,7 +25,7 @@ apt install -y libgl1-mesa-glx
 
 # install git to clone geovista repo to get dev version of package
 apt install -y git
-git clone https://github.com/bjlittle/geovista.git
+git clone --depth=1 https://github.com/bjlittle/geovista.git
 cd geovista
 conda create -y -n ${ENV_NAME} --file requirements/locks/py310-lock-linux-64.txt
 
