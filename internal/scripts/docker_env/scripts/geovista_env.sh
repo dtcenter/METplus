@@ -22,6 +22,8 @@ ENV_NAME=geovista.${METPLUS_VERSION}
 
 conda create -y --name ${ENV_NAME} -c conda-forge python=3.10.4
 conda install -y --name ${ENV_NAME} -c conda-forge geovista
+conda install -y --name ${ENV_NAME} -c conda-forge xarray
+conda install -y --name ${ENV_NAME} -c conda-forge iris
 
 exit 0
 
