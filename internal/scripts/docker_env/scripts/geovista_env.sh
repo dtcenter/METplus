@@ -20,6 +20,11 @@ METPLUS_VERSION=$1
 # Conda environment to create
 ENV_NAME=geovista.${METPLUS_VERSION}
 
+conda create -y --name ${ENV_NAME} -c conda-forge python=3.10.4
+conda install -y --name ${ENV_NAME} -c conda-forge geovista
+
+exit 0
+
 # install libGL to prevent ImportError of libGL dynamic library in geovista
 apt install -y libgl1-mesa-glx
 
