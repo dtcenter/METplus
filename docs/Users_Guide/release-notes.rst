@@ -326,13 +326,14 @@ METplus Version 5.0.0 Release Notes (2022-12-09)
 METplus Wrappers Upgrade Instructions
 =====================================
 
-EnsembleStat/GenEnsProd
------------------------
+EnsembleStat/GenEnsProd (v5.0.0)
+--------------------------------
 
 .. note::
 
     If :ref:`ensemble_stat_wrapper` is not found in the :term:`PROCESS_LIST`
     for any use cases, then this section is not relevant.
+    If upgrading from v5.0.X to v5.1.0, then this section is not relevant.
 
 The METplus v5.0.0 coordinated release includes changes that remove ensemble
 product generation from EnsembleStat. GenEnsProd is now required to generate
