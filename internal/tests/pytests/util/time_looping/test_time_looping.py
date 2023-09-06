@@ -46,6 +46,64 @@ def test_skip_time(run_time, skip_times, inc_times, expected_result):
     print(time_info)
     assert tl.skip_time(time_info, c_dict) == expected_result
 
+@pytest.mark.parametrize(
+    'inc_init_times, skip_init_times, inc_valid_times, skip_valid_times, expected_result', [
+        # nothing set
+        (None, None, None, None, False),
+        # inc init only
+        ({'%d': ['29', '30']}, None, None, None, False),
+        ({'%d': ['29', '31']}, None, None, None, True),
+        # inc valid only
+        (None, None, {'%d': ['29', '31']}, None, False),
+        (None, None, {'%d': ['29', '30']}, None, True),
+        # skip init only
+        (None, {'%d': ['29', '30']}, None, None, True),
+        (None, {'%d': ['29', '31']}, None, None, False),
+        # skip valid only
+        (None, None, None, {'%d': ['29', '31']}, True),
+        (None, None, None, {'%d': ['29', '30']}, False),
+        # include/skip init
+        ({'%m': ['12']}, {'%d': ['29', '30']}, None, None, True),
+        ({'%m': ['12']}, {'%d': ['29', '31']}, None, None, False),
+        ({'%m': ['11']}, {'%d': ['29', '31']}, None, None, True),
+        ({'%m': ['11']}, {'%d': ['29', '30']}, None, None, True),
+        # include/skip valid
+        (None, None, {'%m': ['12']}, {'%d': ['29', '30']}, False),
+        (None, None, {'%m': ['12']}, {'%d': ['29', '31']}, True),
+        (None, None, {'%m': ['11']}, {'%d': ['29', '31']}, True),
+        (None, None, {'%m': ['11']}, {'%d': ['29', '30']}, True),
+        # include init, skip valid
+        ({'%m': ['12']}, None, None, {'%d': ['29', '30']}, False),
+        ({'%m': ['12']}, None, None, {'%d': ['29', '31']}, True),
+        ({'%m': ['11']}, None, None, {'%d': ['29', '30']}, True),
+        # include init, include valid
+        ({'%m': ['12']}, None, {'%d': ['29', '31']}, None, False),
+        ({'%m': ['12']}, None, {'%d': ['29', '30']}, None, True),
+        ({'%m': ['11']}, None, {'%d': ['29', '31']}, None, True),
+        # skip init, include valid
+        (None, {'%m': ['11']}, {'%d': ['29', '31']}, None, False),
+        (None, {'%m': ['11']}, {'%d': ['29', '30']}, None, True),
+        (None, {'%m': ['12']}, {'%d': ['29', '31']}, None, True),
+        # skip init, skip valid
+        (None, {'%m': ['11']}, None, {'%d': ['29', '30']}, False),
+        (None, {'%m': ['11']}, None, {'%d': ['29', '31']}, True),
+        (None, {'%m': ['12']}, None, {'%d': ['29', '30']}, True),
+        # include/skip init/valid
+        ({'%m': ['12']}, {'%d': ['29', '31']}, {'%m': ['11', '12']}, {'%d': ['29', '30']}, False),
+        ({'%m': ['10,' '11']}, {'%d': ['29', '31']}, {'%m': ['11', '12']}, {'%d': ['29', '30']}, True),
+        ({'%m': ['12']}, {'%d': ['29', '30']}, {'%m': ['11', '12']}, {'%d': ['29', '30']}, True),
+        ({'%m': ['12']}, {'%d': ['29', '31']}, {'%m': ['10', '11']}, {'%d': ['29', '30']}, True),
+        ({'%m': ['12']}, {'%d': ['29', '31']}, {'%m': ['11', '12']}, {'%d': ['29', '31']}, True),
+    ]
+)
+@pytest.mark.util
+def test_skip_time_init_and_valid(inc_init_times, skip_init_times, inc_valid_times, skip_valid_times, expected_result):
+    time_info = {'init': datetime(2019, 12, 30, 12), 'valid': datetime(2019, 12, 31, 18)}
+    c_dict = {'SKIP_INIT_TIMES': skip_init_times, 'INC_INIT_TIMES': inc_init_times,
+              'SKIP_VALID_TIMES': skip_valid_times, 'INC_VALID_TIMES': inc_valid_times}
+    print(time_info)
+    assert tl.skip_time(time_info, c_dict) == expected_result
+
 
 @pytest.mark.util
 def test_skip_time_no_valid():
@@ -62,6 +120,7 @@ def test_skip_time_no_valid():
         ('"%Y%m%d:20201031"', {'%Y%m%d': ['20201031']}),
         ('"%Y%m%d:20201031", "%Y:2019"', {'%Y%m%d': ['20201031'],
                                           '%Y': ['2019']}),
+        ('"%Y%m%d:20201031", "%Y%m%d:20201102"', {'%Y%m%d': ['20201031', '20201102']}),
     ]
 )
 @pytest.mark.util
