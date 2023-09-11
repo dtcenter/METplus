@@ -442,25 +442,6 @@ export METPLUS_ENV_VERSION=v6.0
 ```
 
 
-
-
-## test.v6.0 (from metplus_base.v6.0)
-
-This environment is used in automation to run the pytests and diff tests. It requires all of the
-packages needed to run all of the METplus wrappers, the pytest package and the pytest
-code coverage package.
-
-### Docker
-
-```
-export METPLUS_ENV_VERSION=v6.0
-docker build -t dtcenter/metplus-envs:test.${METPLUS_ENV_VERSION} \
-    --build-arg METPLUS_ENV_VERSION \
-    --build-arg ENV_NAME=test .
-docker push dtcenter/metplus-envs:test.${METPLUS_ENV_VERSION}
-```
-
-
 ## diff.v6.0 (from netcdf4.v6.0)
 
 This environment is used to run the difference tests to compare output data to output
