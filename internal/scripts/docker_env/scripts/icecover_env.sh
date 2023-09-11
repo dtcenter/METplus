@@ -5,10 +5,10 @@
 # Last Updated: 2023-01-31 (mccabe@ucar.edu)
 # Notes: Adds Python packages required for ice cover use case
 # Python Packages:
-#   xarray==2022.3.0
-#   pyresample==1.24.1
-#   scikit-learn==1.1.1
-#   pyproj==3.3.1
+#   xarray==
+#   pyresample==
+#   scikit-learn==
+#   pyproj==
 #
 # Other Content: None
 ################################################################################
@@ -23,7 +23,7 @@ ENV_NAME=icecover.${METPLUS_VERSION}
 BASE_ENV=py_embed_base.${METPLUS_VERSION}
 
 conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
-conda install -y --name ${ENV_NAME} -c conda-forge xarray==2022.3.0
-conda install -y --name ${ENV_NAME} -c conda-forge pyresample==1.24.1
-conda install -y --name ${ENV_NAME} -c conda-forge scikit-learn==1.1.1
-conda install -y --name ${ENV_NAME} -c conda-forge pyproj==3.3.1
+conda install -y --name ${ENV_NAME} -c conda-forge xarray
+conda install -y --name ${ENV_NAME} -c conda-forge pyresample
+conda install -y --name ${ENV_NAME} -c conda-forge scikit-learn
+conda install -y --name ${ENV_NAME} -c conda-forge pyproj
