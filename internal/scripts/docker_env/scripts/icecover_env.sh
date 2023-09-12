@@ -1,14 +1,14 @@
 #! /bin/sh
 
 ################################################################################
-# Environment: icecover.v5.1
-# Last Updated: 2023-01-31 (mccabe@ucar.edu)
+# Environment: icecover.v6.0
+# Last Updated: 2023-09-12 (mccabe@ucar.edu)
 # Notes: Adds Python packages required for ice cover use case
 # Python Packages:
-#   xarray==
-#   pyresample==
-#   scikit-learn==
-#   pyproj==
+#   xarray==2023.5.0
+#   pyresample==1.27.1
+#   scikit-learn==1.3.0
+#   pyproj==3.6.0
 #
 # Other Content: None
 ################################################################################
@@ -23,7 +23,7 @@ ENV_NAME=icecover.${METPLUS_VERSION}
 BASE_ENV=py_embed_base.${METPLUS_VERSION}
 
 conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
-conda install -y --name ${ENV_NAME} -c conda-forge xarray
-conda install -y --name ${ENV_NAME} -c conda-forge pyresample
-conda install -y --name ${ENV_NAME} -c conda-forge scikit-learn
-conda install -y --name ${ENV_NAME} -c conda-forge pyproj
+conda install -y --name ${ENV_NAME} -c conda-forge xarray==2023.5.0
+conda install -y --name ${ENV_NAME} -c conda-forge pyresample==1.27.1
+conda install -y --name ${ENV_NAME} -c conda-forge scikit-learn==1.3.0
+conda install -y --name ${ENV_NAME} -c conda-forge pyproj==3.6.0
