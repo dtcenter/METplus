@@ -1,5 +1,6 @@
 # Dockerfile to install conda
 
+# Should match the OS used in https://github.com/dtcenter/METbaseimage
 ARG DEBIAN_VERSION=12
 FROM debian:${DEBIAN_VERSION}-slim
 
