@@ -6,8 +6,8 @@ FROM dtcenter/metplus-envs:${METPLUS_ENV_TAG} as env
 ARG METPLUS_IMG_TAG=develop
 FROM dtcenter/metplus-dev:${METPLUS_IMG_TAG}
 
-COPY --from=env /usr/lib/jvm/adoptopenjdk-8-hotspot-amd64 /usr/lib/jvm/adoptopenjdk-8-hotspot-amd64/
+COPY --from=env /usr/lib/jvm/java-17-openjdk-amd64 /usr/lib/jvm/java-17-openjdk-amd64/
 COPY --from=env /data/input/GempakToCF.jar /data/input/GempakToCF.jar
 
 # add java executable to path
-RUN echo "export PATH=/usr/lib/jvm/adoptopenjdk-8-hotspot-amd64/bin:\$PATH;" >> /root/.bashrc
+RUN echo "export PATH=/usr/lib/jvm/java-17-openjdk-amd64/bin:\$PATH;" >> /root/.bashrc
