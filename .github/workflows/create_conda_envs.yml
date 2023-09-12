@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       subset:
-        description: 'Comma-separated list of environments to skip. Leave blank to build all.'
+        description: 'Comma-separated list of environments to build. Leave blank to build all.'
         required: false
         default: ''
 
