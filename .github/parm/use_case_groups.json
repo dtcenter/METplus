@@ -132,7 +132,7 @@
   {
     "category": "precipitation",
     "index_list": "1",
-    "run": false
+    "run": true
   },
   {
     "category": "precipitation",
@@ -272,6 +272,6 @@
   {
     "category": "unstructured_grids",
     "index_list": "0",
-    "run": true
+    "run": false
   }
 ]
