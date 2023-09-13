@@ -13,7 +13,7 @@ from iris.experimental.ugrid import PARSE_UGRID_ON_LOAD
 #geovista from https://github.com/bjlittle/geovista/
 import geovista as gv
 import geovista.theme
-from geovista.common import to_xyz
+from geovista.common import to_cartesian
 import netCDF4
 import pyvista as pv
 from pykdtree.kdtree import KDTree
@@ -75,7 +75,7 @@ def info(mesh: pv.PolyData) -> None:
 
 def find_nearest(tree, points, poi, k):
     # lat/lon to xyz
-    xyz = to_xyz(*poi)
+    xyz = to_cartesian(*poi)
     
     # find the k nearest euclidean neighbours
     dist, idxs = tree.query(xyz, k=k)

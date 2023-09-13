@@ -101,44 +101,44 @@ for filename in sorted(os.listdir(input_dir)):
        # Name variable using GRIB conventions:
        #   https://www.nco.ncep.noaa.gov/pmb/docs/on388/table2.html
        if temp != -999.0:
-          my_data = my_data.append(pd.DataFrame(np.array(
-            [["ADPUPA", str(sonde), t_vld, lat, lon, elv, \
-              "TMP", pres, geop, qc, temp]])))
+          my_data = pd.concat([my_data, pd.DataFrame(np.array(
+            [["ADPUPA", str(sonde), t_vld, lat, lon, elv,
+              "TMP", pres, geop, qc, temp]]))])
 
        if relh != -999.0:
-          my_data = my_data.append(pd.DataFrame(np.array(
-            [["ADPUPA", str(sonde), t_vld, lat, lon, elv, \
-              "RH", pres, geop, qc, relh]])))
+          my_data = pd.concat([my_data, pd.DataFrame(np.array(
+            [["ADPUPA", str(sonde), t_vld, lat, lon, elv,
+              "RH", pres, geop, qc, relh]]))])
 
        if geop != -999.0 and pres != -999.0:
-          my_data = my_data.append(pd.DataFrame(np.array(
-            [["ADPUPA", str(sonde), t_vld, lat, lon, elv, \
-              "HGT", pres, geop, qc, geop]])))
+          my_data = pd.concat([my_data, pd.DataFrame(np.array(
+            [["ADPUPA", str(sonde), t_vld, lat, lon, elv,
+              "HGT", pres, geop, qc, geop]]))])
 
        if wind_dir != -999.0:
-          my_data = my_data.append(pd.DataFrame(np.array(
-            [["ADPUPA", str(sonde), t_vld, lat, lon, elv, \
-              "WDIR", pres, zw, qc, wind_dir]])))
+          my_data = pd.concat([my_data, pd.DataFrame(np.array(
+            [["ADPUPA", str(sonde), t_vld, lat, lon, elv,
+              "WDIR", pres, zw, qc, wind_dir]]))])
 
        if wind_spd != -999.0:
-          my_data = my_data.append(pd.DataFrame(np.array(
-            [["ADPUPA", str(sonde), t_vld, lat, lon, elv, \
-              "WIND", pres, zw, qc, wind_spd]])))
+          my_data = pd.concat([my_data, pd.DataFrame(np.array(
+            [["ADPUPA", str(sonde), t_vld, lat, lon, elv,
+              "WIND", pres, zw, qc, wind_spd]]))])
 
        if wind_z != -999.0:
-          my_data = my_data.append(pd.DataFrame(np.array(
-            [["ADPUPA", str(sonde), t_vld, lat, lon, elv, \
-              "UGRD", pres, zw, qc, wind_z]])))
+          my_data = pd.concat([my_data, pd.DataFrame(np.array(
+            [["ADPUPA", str(sonde), t_vld, lat, lon, elv,
+              "UGRD", pres, zw, qc, wind_z]]))])
 
        if wind_m != -999.0:
-          my_data = my_data.append(pd.DataFrame(np.array(
-            [["ADPUPA", str(sonde), t_vld, lat, lon, elv, \
-              "VGRD", pres, zw, qc, wind_m]])))
+          my_data = pd.concat([my_data, pd.DataFrame(np.array(
+            [["ADPUPA", str(sonde), t_vld, lat, lon, elv,
+              "VGRD", pres, zw, qc, wind_m]]))])
 
        if wind_w != -999.0:
-          my_data = my_data.append(pd.DataFrame(np.array(
-            [["ADPUPA", str(sonde), t_vld, lat, lon, elv, \
-              "DZDT", pres, zw, qc, wind_w]])))
+          my_data = pd.concat([my_data, pd.DataFrame(np.array(
+            [["ADPUPA", str(sonde), t_vld, lat, lon, elv,
+              "DZDT", pres, zw, qc, wind_w]]))])
 
 # Prepare point_data object for ascii2nc
 point_data = my_data.values.tolist()
