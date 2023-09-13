@@ -4966,7 +4966,7 @@ METplus Configuration Glossary
    INC_INIT_TIMES
      List of initialization times to process.
      All times that do not match the include rules will be skipped.
-     Can be used in addition to or in place of :term:`SKIP_INC_TIMES`.
+     Can be used in addition to or in place of :term:`SKIP_INIT_TIMES`.
      See :term:`SKIP_VALID_TIMES` for formatting information.
      Values can be set for a specific wrapper by using the appropriate
      wrapper-specific variable, e.g. :term:`GRID_STAT_INC_INIT_TIMES`.
