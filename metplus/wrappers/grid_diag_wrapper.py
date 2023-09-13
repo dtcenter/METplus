@@ -121,17 +121,6 @@ class GridDiagWrapper(RuntimeFreqWrapper):
                                                 ['DATA_FILE_TYPE',
                                                  'DATA_FIELD_FMT'])
         self.env_var_dict['METPLUS_DATA_DICT'] = data_dict
-
-        # support old method of setting MET config variables
-        self.add_env_var('DATA_FILE_TYPE',
-                         self.c_dict.get('DATA_FILE_TYPE', ''))
-
-        self.add_env_var('DATA_FIELD',
-                         self.c_dict.get('DATA_FIELD', ''))
-
-        self.add_env_var('DESC',
-                         self.env_var_dict.get('METPLUS_DESC', ''))
-
         super().set_environment_variables(time_info)
 
     def get_command(self):

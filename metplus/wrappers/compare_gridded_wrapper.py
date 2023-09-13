@@ -51,15 +51,6 @@ that reformat gridded data
                             data_type='string',
                             metplus_configs=['OBTYPE'])
 
-        # set old MET config items for backwards compatibility
-        c_dict['MODEL_OLD'] = self.config.getraw('config', 'MODEL', 'FCST')
-        c_dict['OBTYPE_OLD'] = self.config.getraw('config', 'OBTYPE', 'OBS')
-
-        # INPUT_BASE is not required unless it is referenced in a config file
-        # it is used in the use case config files. Don't error if it is not set
-        # to a value that contains /path/to
-        c_dict['INPUT_BASE'] = self.config.getdir_nocheck('INPUT_BASE', '')
-
         # read probabilistic variables for FCST and OBS fields
         field_read_prob_info(config=self.config,
                              c_dict=c_dict,
@@ -80,31 +71,12 @@ that reformat gridded data
         # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
         self.handle_file_window_variables(c_dict)
 
-        self.add_met_config(name='output_prefix',
-                            data_type='string')
+        self.add_met_config(name='output_prefix', data_type='string')
 
         c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
                                                  met_tool=self.app_name)
 
         return c_dict
-
-    def set_environment_variables(self, time_info):
-        """! Set environment variables that will be set when running this tool.
-            Wrappers can override this function to set wrapper-specific values,
-            then call this (super) version to handle user configs and printing
-
-            @param time_info dictionary containing timing info from current run
-        """
-
-        self.get_output_prefix(time_info)
-
-        # set old environment variable values for backwards compatibility
-        self.add_env_var('MODEL', self.c_dict.get('MODEL_OLD', ''))
-        self.add_env_var('OBTYPE', self.c_dict.get('OBTYPE_OLD', ''))
-        self.add_env_var('REGRID_TO_GRID',
-                         self.c_dict.get('REGRID_TO_GRID', 'NONE'))
-
-        super().set_environment_variables(time_info)
 
     def run_at_time_once(self, time_info):
         """! Build MET command for a given init/valid time and

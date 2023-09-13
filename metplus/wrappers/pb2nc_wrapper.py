@@ -93,14 +93,11 @@ class PB2NCWrapper(LoopTimesWrapper):
         # get the MET config file path or use default
         c_dict['CONFIG_FILE'] = self.get_config_file('PB2NCConfig_wrapped')
 
-        self.add_met_config(name='message_type',
-                            data_type='list')
+        self.add_met_config(name='message_type', data_type='list')
 
-        self.add_met_config(name='station_id',
-                            data_type='list')
+        self.add_met_config(name='station_id', data_type='list')
 
         self.add_met_config_window('obs_window')
-        self.handle_obs_window_legacy(c_dict)
 
         self.handle_mask(single_value=True)
 
@@ -110,38 +107,7 @@ class PB2NCWrapper(LoopTimesWrapper):
                                              'PB2NC_OBS_BUFR_VAR'],
                             extra_args={'allow_empty': True})
 
-        #self.handle_time_summary_legacy(c_dict)
         self.handle_time_summary_dict()
-
-        # handle legacy time summary variables
-        self.add_met_config(name='',
-                            data_type='bool',
-                            env_var_name='TIME_SUMMARY_FLAG',
-                            metplus_configs=['PB2NC_TIME_SUMMARY_FLAG'])
-
-        self.add_met_config(name='',
-                            data_type='string',
-                            env_var_name='TIME_SUMMARY_BEG',
-                            metplus_configs=['PB2NC_TIME_SUMMARY_BEG'])
-
-        self.add_met_config(name='',
-                            data_type='string',
-                            env_var_name='TIME_SUMMARY_END',
-                            metplus_configs=['PB2NC_TIME_SUMMARY_END'])
-
-        self.add_met_config(name='',
-                            data_type='list',
-                            env_var_name='TIME_SUMMARY_VAR_NAMES',
-                            metplus_configs=['PB2NC_TIME_SUMMARY_OBS_VAR',
-                                             'PB2NC_TIME_SUMMARY_VAR_NAMES'],
-                            extra_args={'allow_empty': True})
-
-        self.add_met_config(name='',
-                            data_type='list',
-                            env_var_name='TIME_SUMMARY_TYPES',
-                            metplus_configs=['PB2NC_TIME_SUMMARY_TYPE',
-                                             'PB2NC_TIME_SUMMARY_TYPES'],
-                            extra_args={'allow_empty': True})
 
         self.handle_file_window_variables(c_dict, data_types=['OBS'])
 
@@ -152,24 +118,6 @@ class PB2NCWrapper(LoopTimesWrapper):
           self.config.getraw('config', 'PB2NC_VALID_END', '')
 
         c_dict['ALLOW_MULTIPLE_FILES'] = True
-
-        # set c_dict values to handle old method of setting env vars
-        message_type = self.get_env_var_value('METPLUS_MESSAGE_TYPE')
-        if not message_type:
-            message_type = '[]'
-        c_dict['MESSAGE_TYPE'] = message_type
-
-        station_id = self.get_env_var_value('METPLUS_STATION_ID')
-        if not station_id:
-            station_id = '[]'
-        c_dict['STATION_ID'] = station_id
-
-        c_dict['GRID'] = self.config.getstr('config', 'PB2NC_GRID', '')
-        c_dict['POLY'] = self.config.getstr('config', 'PB2NC_POLY', '')
-
-        c_dict['BUFR_VAR_LIST'] = (
-            self.get_env_var_value('METPLUS_OBS_BUFR_VAR')
-        )
 
         self.add_met_config(name='pb_report_type',
                             data_type='list',
@@ -193,33 +141,6 @@ class PB2NCWrapper(LoopTimesWrapper):
                             extra_args={'remove_quotes': True})
 
         return c_dict
-
-    def set_environment_variables(self, time_info):
-        """!Set environment variables that will be read by the MET config file.
-             Reformat as needed. Print list of variables that were set and
-             their values.
-
-            @param time_info dictionary containing timing info from current run
-        """
-        # set old method of setting env vars needed for MET config file
-        self.add_env_var("PB2NC_MESSAGE_TYPE", self.c_dict.get('MESSAGE_TYPE', ''))
-        self.add_env_var("PB2NC_STATION_ID", self.c_dict.get('STATION_ID', ''))
-        self.add_env_var("OBS_WINDOW_BEGIN",
-                         str(self.c_dict.get('OBS_WINDOW_BEGIN', '')))
-        self.add_env_var("OBS_WINDOW_END",
-                         str(self.c_dict.get('OBS_WINDOW_END', '')))
-        self.add_env_var("PB2NC_GRID", self.c_dict.get('GRID', ''))
-        self.add_env_var("PB2NC_POLY", self.c_dict.get('POLY', ''))
-
-        self.add_env_var("OBS_BUFR_VAR_LIST", self.c_dict.get('BUFR_VAR_LIST',
-                                                              ''))
-
-        for item in ['FLAG', 'BEG', 'END', 'VAR_NAMES', 'TYPES']:
-            ts_item = f'TIME_SUMMARY_{item}'
-            self.add_env_var(f'{ts_item}',
-                             self.env_var_dict.get(f'METPLUS_{ts_item}', ''))
-
-        super().set_environment_variables(time_info)
 
     def find_input_files(self, input_dict):
         """!Find prepbufr data to convert.

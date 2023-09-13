@@ -81,9 +81,6 @@ class CommandBuilder:
         if hasattr(self, 'WRAPPER_ENV_VAR_KEYS'):
             self.env_var_keys.extend(self.WRAPPER_ENV_VAR_KEYS)
 
-        if hasattr(self, 'DEPRECATED_WRAPPER_ENV_VAR_KEYS'):
-            self.env_var_keys.extend(self.DEPRECATED_WRAPPER_ENV_VAR_KEYS)
-
         # if instance is set, check for a section with the same name in the
         # METplusConfig object. If found, copy all values into the config
         if instance:

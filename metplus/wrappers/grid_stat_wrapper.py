@@ -205,19 +205,6 @@ class GridStatWrapper(CompareGriddedWrapper):
 
         self.handle_mask(single_value=False)
 
-        # handle setting VERIF_MASK for old wrapped MET config files
-        self.add_met_config(name='poly',
-                            data_type='list',
-                            env_var_name='METPLUS_MASK_POLY',
-                            metplus_configs=['GRID_STAT_MASK_POLY',
-                                             'GRID_STAT_POLY',
-                                             ('GRID_STAT_'
-                                              'VERIFICATION_MASK_TEMPLATE')],
-                            extra_args={'allow_empty': True})
-        self.env_var_dict['VERIF_MASK'] = (
-            self.get_env_var_value('METPLUS_MASK_POLY', item_type='list')
-        )
-
         self.handle_climo_cdf_dict()
 
         self.handle_flags('output')
@@ -283,29 +270,3 @@ class GridStatWrapper(CompareGriddedWrapper):
                             extra_args={'remove_quotes': True})
 
         return c_dict
-
-    def set_environment_variables(self, time_info):
-        """!Set environment variables that are referenced by the
-            MET config file"""
-        # set environment variables needed for MET application
-
-        # add old method of setting env vars
-        self.add_env_var("FCST_FIELD",
-                         self.c_dict.get('FCST_FIELD', ''))
-        self.add_env_var("OBS_FIELD",
-                         self.c_dict.get('OBS_FIELD', ''))
-
-        self.add_env_var("FCST_TIME", str(time_info['lead_hours']).zfill(3))
-        self.add_env_var("INPUT_BASE", self.c_dict["INPUT_BASE"])
-
-        self.add_env_var('NEIGHBORHOOD_WIDTH',
-                         self.c_dict['NEIGHBORHOOD_WIDTH'])
-
-        self.add_env_var('NEIGHBORHOOD_SHAPE',
-                         self.c_dict['NEIGHBORHOOD_SHAPE'])
-
-        cov_thresh = self.get_env_var_value('METPLUS_NBRHD_COV_THRESH')
-        self.add_env_var('NEIGHBORHOOD_COV_THRESH',
-                         cov_thresh)
-
-        super().set_environment_variables(time_info)

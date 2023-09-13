@@ -189,11 +189,9 @@ class MODEWrapper(CompareGriddedWrapper):
             self.config.getraw('config', f'{tool}_OUTPUT_TEMPLATE')
         )
 
-        self.add_met_config(name='quilt',
-                            data_type='bool')
+        self.add_met_config(name='quilt', data_type='bool')
 
-        self.add_met_config(name='grid_res',
-                            data_type='float')
+        self.add_met_config(name='grid_res', data_type='float')
 
         # if MODE_GRID_RES is not set, then unset the default values
         defaults = self.DEFAULT_VALUES.copy()
@@ -322,14 +320,6 @@ class MODEWrapper(CompareGriddedWrapper):
                                  ],
             )
 
-            # set c_dict values for old method of setting env vars
-            for name in ['CONV_RADIUS',
-                         'CONV_THRESH',
-                         'MERGE_THRESH',
-                         'MERGE_FLAG']:
-                value = self.get_env_var_value(f'METPLUS_{data_type}_{name}')
-                c_dict[f'{data_type}_{name}'] = value
-
         self.add_met_config(
             name='mask_missing_flag',
             data_type='string',
@@ -396,7 +386,6 @@ class MODEWrapper(CompareGriddedWrapper):
         )
 
         self.add_met_config(name='ps_plot_flag', data_type='bool')
-
         self.add_met_config(name='ct_stats_flag', data_type='bool')
 
         self.add_met_config(name='file_type',
@@ -441,49 +430,7 @@ class MODEWrapper(CompareGriddedWrapper):
                             extra_args={'remove_quotes': True,
                                         'uppercase': True})
 
-        # handle setting VERIF_MASK for old wrapped MET config files
-        self.add_met_config(name='poly',
-                            data_type='list',
-                            env_var_name='METPLUS_VERIF_MASK',
-                            metplus_configs=[f'{tool}_MASK_POLY',
-                                             f'{tool}_POLY',
-                                             (f'{tool}_'
-                                              'VERIFICATION_MASK_TEMPLATE')],
-                            extra_args={'allow_empty': True})
-        self.env_var_dict['VERIF_MASK'] = (
-            self.get_env_var_value('METPLUS_VERIF_MASK').strip('[]')
-        )
-
         return c_dict
-
-    def set_environment_variables(self, time_info):
-        """!Set environment variables that will be read set when running this
-          tool.
-
-            @param time_info dictionary containing timing info for current run
-        """
-
-        # support old method of setting env vars in MET config files
-        self.add_env_var("FCST_FIELD",
-                         self.c_dict.get('FCST_FIELD', ''))
-        self.add_env_var("OBS_FIELD",
-                         self.c_dict.get('OBS_FIELD', ''))
-
-        quilt = self.get_env_var_value('METPLUS_QUILT')
-        if not quilt:
-            quilt = 'FALSE'
-
-        self.add_env_var("QUILT", quilt)
-        self.add_env_var("FCST_CONV_RADIUS", self.c_dict["FCST_CONV_RADIUS"])
-        self.add_env_var("OBS_CONV_RADIUS", self.c_dict["OBS_CONV_RADIUS"])
-        self.add_env_var("FCST_CONV_THRESH", self.c_dict["FCST_CONV_THRESH"])
-        self.add_env_var("OBS_CONV_THRESH", self.c_dict["OBS_CONV_THRESH"])
-        self.add_env_var("FCST_MERGE_THRESH", self.c_dict["FCST_MERGE_THRESH"])
-        self.add_env_var("OBS_MERGE_THRESH", self.c_dict["OBS_MERGE_THRESH"])
-        self.add_env_var("FCST_MERGE_FLAG", self.c_dict["FCST_MERGE_FLAG"])
-        self.add_env_var("OBS_MERGE_FLAG", self.c_dict["OBS_MERGE_FLAG"])
-
-        super().set_environment_variables(time_info)
 
     def run_at_time_one_field(self, time_info, var_info):
         """! Runs mode instances for a given time and forecast lead combination
