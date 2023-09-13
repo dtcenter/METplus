@@ -1,0 +1,298 @@
+name: Create Conda Environments in Docker
+
+on:
+  workflow_dispatch:
+    inputs:
+      subset:
+        description: 'Comma-separated list of environments to build. Leave blank to build all.'
+        required: false
+        default: ''
+
+env:
+  METPLUS_ENV_VERSION: v6.0
+  DOCKERFILE: Dockerfile
+  BASE_ENV: metplus_base
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+jobs:
+  check:
+    name: Check inputs to determine what to run
+    runs-on: ubuntu-latest
+    steps:
+      - id: parse_list
+        run: |
+          run_str="${{ github.event.inputs.subset }}"
+          if [ "$run_str" == "" ]; then echo "no_skip=true" >> $GITHUB_OUTPUT; exit 0; fi
+          echo "no_skip=false" >> $GITHUB_OUTPUT
+          IFS=', ' read -r -a arr <<< "$run_str"
+          JSON="["
+          for item in ${arr[@]}; do JSON="$JSON\"$item\","; done
+          if [[ $JSON == *, ]]; then JSON="${JSON%?}"; fi
+          JSON="$JSON]"
+          echo "run_list=$( echo "$JSON" )" >> $GITHUB_OUTPUT
+          echo $JSON
+    outputs:
+      no_skip: ${{ steps.parse_list.outputs.no_skip }}
+      run_list: ${{ steps.parse_list.outputs.run_list }}
+
+  conda:
+    if: |
+      always() && (needs.check.outputs.no_skip == 'true' ||
+      contains(fromJSON(needs.check.outputs.run_list), 'conda'))
+    runs-on: ubuntu-latest
+    needs: [check]
+    env:
+      ENV_NAME: ${{ github.job }}
+      DOCKERFILE: Dockerfile.conda
+    steps:
+      - uses: actions/checkout@v4
+      - run: .github/jobs/build_conda_image.sh
+      - run: .github/jobs/push_conda_image.sh
+
+  metplus_base:
+    if: |
+      always() && (needs.check.outputs.no_skip == 'true' ||
+      contains(fromJSON(needs.check.outputs.run_list), 'metplus_base'))
+    runs-on: ubuntu-latest
+    needs: [check,conda]
+    env:
+      ENV_NAME: ${{ github.job }}
+      DOCKERFILE: Dockerfile.metplus_base
+    steps:
+      - uses: actions/checkout@v4
+      - run: .github/jobs/build_conda_image.sh
+      - run: .github/jobs/push_conda_image.sh
+
+  py_embed_base:
+    if: |
+      always() && (needs.check.outputs.no_skip == 'true' ||
+      contains(fromJSON(needs.check.outputs.run_list), 'py_embed_base'))
+    runs-on: ubuntu-latest
+    needs: [check,metplus_base]
+    env:
+      ENV_NAME: ${{ github.job }}
+      DOCKERFILE: Dockerfile.py_embed_base
+    steps:
+      - uses: actions/checkout@v4
+      - run: .github/jobs/build_conda_image.sh
+      - run: .github/jobs/push_conda_image.sh
+
+  h5py:
+    if: |
+      always() && (needs.check.outputs.no_skip == 'true' ||
+      contains(fromJSON(needs.check.outputs.run_list), 'h5py'))
+    runs-on: ubuntu-latest
+    needs: [check,py_embed_base]
+    env:
+      ENV_NAME: ${{ github.job }}
+      BASE_ENV: py_embed_base
+    steps:
+      - uses: actions/checkout@v4
+      - run: .github/jobs/build_conda_image.sh
+      - run: .github/jobs/push_conda_image.sh
+
+  metdataio:
+    if: |
+      always() && (needs.check.outputs.no_skip == 'true' ||
+      contains(fromJSON(needs.check.outputs.run_list), 'metdataio'))
+    runs-on: ubuntu-latest
+    needs: [check,metplus_base]
+    env:
+      ENV_NAME: ${{ github.job }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: .github/jobs/build_conda_image.sh
+      - run: .github/jobs/push_conda_image.sh
+
+  pygrib:
+    if: |
+      always() && (needs.check.outputs.no_skip == 'true' ||
+      contains(fromJSON(needs.check.outputs.run_list), 'pygrib'))
+    runs-on: ubuntu-latest
+    needs: [check,py_embed_base]
+    env:
+      ENV_NAME: ${{ github.job }}
+      BASE_ENV: py_embed_base
+    steps:
+      - uses: actions/checkout@v4
+      - run: .github/jobs/build_conda_image.sh
+      - run: .github/jobs/push_conda_image.sh
+
+  cfgrib:
+    if: |
+      always() && (needs.check.outputs.no_skip == 'true' ||
+      contains(fromJSON(needs.check.outputs.run_list), 'cfgrib'))
+    runs-on: ubuntu-latest
+    needs: [check,metplus_base]
+    env:
+      ENV_NAME: ${{ github.job }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: .github/jobs/build_conda_image.sh
+      - run: .github/jobs/push_conda_image.sh
+
+  netcdf4:
+    if: |
+      always() && (needs.check.outputs.no_skip == 'true' ||
+      contains(fromJSON(needs.check.outputs.run_list), 'netcdf4'))
+    runs-on: ubuntu-latest
+    needs: [check,metplus_base]
+    env:
+      ENV_NAME: ${{ github.job }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: .github/jobs/build_conda_image.sh
+      - run: .github/jobs/push_conda_image.sh
+
+  xesmf:
+    if: |
+      always() && (needs.check.outputs.no_skip == 'true' ||
+      contains(fromJSON(needs.check.outputs.run_list), 'xesmf'))
+    runs-on: ubuntu-latest
+    needs: [check,metplus_base]
+    env:
+      ENV_NAME: ${{ github.job }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: .github/jobs/build_conda_image.sh
+      - run: .github/jobs/push_conda_image.sh
+
+  spacetime:
+    if: |
+      always() && (needs.check.outputs.no_skip == 'true' ||
+      contains(fromJSON(needs.check.outputs.run_list), 'spacetime'))
+    runs-on: ubuntu-latest
+    needs: [check,metplus_base]
+    env:
+      ENV_NAME: ${{ github.job }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: .github/jobs/build_conda_image.sh
+      - run: .github/jobs/push_conda_image.sh
+
+  metplotpy:
+    if: |
+      always() && (needs.check.outputs.no_skip == 'true' ||
+      contains(fromJSON(needs.check.outputs.run_list), 'metplotpy'))
+    runs-on: ubuntu-latest
+    needs: [check,metplus_base]
+    env:
+      ENV_NAME: ${{ github.job }}
+      DOCKERFILE: Dockerfile.cartopy
+    steps:
+      - uses: actions/checkout@v4
+      - run: .github/jobs/build_conda_image.sh
+      - run: .github/jobs/push_conda_image.sh
+
+  weatherregime:
+    if: |
+      always() && (needs.check.outputs.no_skip == 'true' ||
+      contains(fromJSON(needs.check.outputs.run_list), 'weatherregime'))
+    runs-on: ubuntu-latest
+    needs: [check,metplotpy]
+    env:
+      ENV_NAME: ${{ github.job }}
+      BASE_ENV: metplotpy
+      DOCKERFILE: Dockerfile.cartopy
+    steps:
+      - uses: actions/checkout@v4
+      - run: .github/jobs/build_conda_image.sh
+      - run: .github/jobs/push_conda_image.sh
+
+  cycloneplotter:
+    if: |
+      always() && (needs.check.outputs.no_skip == 'true' ||
+      contains(fromJSON(needs.check.outputs.run_list), 'cycloneplotter'))
+    runs-on: ubuntu-latest
+    needs: [check,metplus_base]
+    env:
+      ENV_NAME: ${{ github.job }}
+      DOCKERFILE: Dockerfile.cartopy
+    steps:
+      - uses: actions/checkout@v4
+      - run: .github/jobs/build_conda_image.sh
+      - run: .github/jobs/push_conda_image.sh
+
+  icecover:
+    if: |
+      always() && (needs.check.outputs.no_skip == 'true' ||
+      contains(fromJSON(needs.check.outputs.run_list), 'icecover'))
+    runs-on: ubuntu-latest
+    needs: [check,py_embed_base]
+    env:
+      ENV_NAME: ${{ github.job }}
+      BASE_ENV: py_embed_base
+    steps:
+      - uses: actions/checkout@v4
+      - run: .github/jobs/build_conda_image.sh
+      - run: .github/jobs/push_conda_image.sh
+
+  gempak:
+    if: |
+      always() && (needs.check.outputs.no_skip == 'true' ||
+      contains(fromJSON(needs.check.outputs.run_list), 'gempak'))
+    runs-on: ubuntu-latest
+    needs: [check,metplus_base]
+    env:
+      ENV_NAME: ${{ github.job }}
+      DOCKERFILE: Dockerfile.gempak_env
+    steps:
+      - uses: actions/checkout@v4
+      - run: .github/jobs/build_conda_image.sh
+      - run: .github/jobs/push_conda_image.sh
+
+  gfdl-tracker:
+    if: |
+      always() && (needs.check.outputs.no_skip == 'true' ||
+      contains(fromJSON(needs.check.outputs.run_list), 'gfdl-tracker'))
+    runs-on: ubuntu-latest
+    needs: [check,metplus_base]
+    env:
+      ENV_NAME: ${{ github.job }}
+      DOCKERFILE: Dockerfile.gfdl-tracker
+    steps:
+      - uses: actions/checkout@v4
+      - run: .github/jobs/build_conda_image.sh
+      - run: .github/jobs/push_conda_image.sh
+
+  geovista:
+    if: |
+      always() && (needs.check.outputs.no_skip == 'true' ||
+      contains(fromJSON(needs.check.outputs.run_list), 'geovista'))
+    runs-on: ubuntu-latest
+    needs: [check,metplus_base]
+    env:
+      ENV_NAME: ${{ github.job }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: .github/jobs/build_conda_image.sh
+      - run: .github/jobs/push_conda_image.sh
+
+  pandac:
+    if: |
+      always() && (needs.check.outputs.no_skip == 'true' ||
+      contains(fromJSON(needs.check.outputs.run_list), 'pandac'))
+    runs-on: ubuntu-latest
+    needs: [check,metplotpy]
+    env:
+      ENV_NAME: ${{ github.job }}
+      BASE_ENV: metplotpy
+    steps:
+      - uses: actions/checkout@v4
+      - run: .github/jobs/build_conda_image.sh
+      - run: .github/jobs/push_conda_image.sh
+
+  diff:
+    if: |
+      always() && (needs.check.outputs.no_skip == 'true' ||
+      contains(fromJSON(needs.check.outputs.run_list), 'diff'))
+    runs-on: ubuntu-latest
+    needs: [check,netcdf4]
+    env:
+      ENV_NAME: ${{ github.job }}
+      BASE_ENV: netcdf4
+    steps:
+      - uses: actions/checkout@v4
+      - run: .github/jobs/build_conda_image.sh
+      - run: .github/jobs/push_conda_image.sh

@@ -104,7 +104,7 @@ def run_metplus(config):
 
     try:
         # if Usage is in process list, run it and exit
-        if 'Usage' in process_list:
+        if 'Usage' in [p[0] for p in process_list]:
             wrapper = _get_wrapper_instance(config, 'Usage')
             wrapper.run_all_times()
             return 0
