@@ -69,7 +69,7 @@ RUNTIME_FREQ_SUPPORTED
 ----------------------
 
 Wrappers that inherit from **RuntimeFreqWrapper** should include a class
-variable called **RUNTIME_FREQ_SUPPORTED**  that defines the a list of the
+variable called **RUNTIME_FREQ_SUPPORTED** that defines a list of the
 runtime frequency settings that are supported by the wrapper. Example::
 
     RUNTIME_FREQ_SUPPORTED = ['RUN_ONCE_PER_INIT_OR_VALID']
