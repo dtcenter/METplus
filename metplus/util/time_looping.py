@@ -258,7 +258,7 @@ def get_skip_times(config, skip_or_inc, init_or_valid, wrapper):
      where each item inside quotes is a datetime format, colon, then a list
      of times in that format to skip or include.
 
-     @param config configuration object to pull SKIP_TIMES
+     @param config configuration object to read values
      @param skip_or_inc string with either 'SKIP' or 'INCLUDE'
      @param init_or_valid string with either 'INIT' or 'VALID'
      @param wrapper name of wrapper if supporting
@@ -331,8 +331,8 @@ def skip_time(time_info, c_dict):
      a list of times to skip.
 
     @param time_info dictionary with time information to check
-    @param c_dict dictionary to read SKIP_TIMES and INC_TIMES which contain a
-    dictionary of times to skip, i.e. {'%d': [31]} means skip 31st day
+    @param c_dict dictionary to read [SKIP/INC]_[VALID/INIT]_TIMES which
+    contain a dictionary of times to skip: {'%d': [31]} means skip 31st day
     @returns True if run time should be skipped, False if not
     """
     for init_valid in ('init', 'valid'):
