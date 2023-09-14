@@ -78,6 +78,15 @@ that reformat gridded data
 
         return c_dict
 
+    def set_environment_variables(self, time_info):
+        """! Set environment variables that will be set when running this tool.
+            Wrappers can override this function to set wrapper-specific values,
+            then call this (super) version to handle user configs and printing
+            @param time_info dictionary containing timing info from current run
+        """
+        self.get_output_prefix(time_info)
+        super().set_environment_variables(time_info)
+
     def run_at_time_once(self, time_info):
         """! Build MET command for a given init/valid time and
          forecast lead combination.
