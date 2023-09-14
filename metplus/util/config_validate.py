@@ -3,10 +3,10 @@ import os
 from .constants import DEPRECATED_DICT, DEPRECATED_MET_LIST
 from .constants import UPGRADE_INSTRUCTIONS_URL
 from .string_manip import find_indices_in_config_section, getlist
-from .string_manip import is_python_script
+from .string_manip import is_python_script, get_wrapper_name
 from .string_template_substitution import do_string_sub
 from .config_util import get_process_list, get_custom_string_list
-
+from .wrapper_init import get_wrapper_instance
 
 def validate_config_variables(config):
 
@@ -154,23 +154,23 @@ def check_for_deprecated_met_config(config):
                 continue
 
             met_config_file = do_string_sub(met_config, custom=custom_string)
-
             if not check_for_deprecated_met_config_file(config,
-                                                        met_config_file):
+                                                        met_config_file,
+                                                        met_tool):
                 all_good = False
 
     return all_good, sed_cmds
 
 
-def check_for_deprecated_met_config_file(config, met_config):
+def check_for_deprecated_met_config_file(config, met_config, met_tool):
 
     all_good = True
     if not os.path.exists(met_config):
         config.logger.error(f"Config file does not exist: {met_config}")
         return False
 
-    # skip check if no deprecated variables are set
-    if not DEPRECATED_MET_LIST:
+    deprecated_met_list = _get_deprecated_met_list(config, met_tool)
+    if not deprecated_met_list:
         return all_good
 
     config.logger.debug("Checking for deprecated environment "
@@ -180,15 +180,33 @@ def check_for_deprecated_met_config_file(config, met_config):
         lines = file_handle.read().splitlines()
 
     for line in lines:
-        for deprecated_item in DEPRECATED_MET_LIST:
+        for deprecated_item in deprecated_met_list:
             if '${' + deprecated_item + '}' not in line:
                 continue
             all_good = False
-            config.logger.error("Please remove deprecated environment variable"
+            config.logger.error("Deprecated environment variable"
                                 f" ${{{deprecated_item}}} found in MET config "
-                                f"file: {met_config}")
+                                f"file: {met_config}. Please unset "
+                                f"{met_tool}_CONFIG_FILE to use the wrapped "
+                                "MET config that is provided with the "
+                                "METplus wrappers.")
 
     return all_good
+
+
+def _get_deprecated_met_list(config, met_tool):
+    wrapper_name = get_wrapper_name(met_tool)
+    if not wrapper_name:
+        return None
+
+    wrapper = get_wrapper_instance(config, wrapper_name)
+    if not wrapper:
+        return None
+
+    if not hasattr(wrapper, 'DEPRECATED_WRAPPER_ENV_VAR_KEYS'):
+        return None
+
+    return wrapper.DEPRECATED_WRAPPER_ENV_VAR_KEYS
 
 
 def validate_field_info_configs(config):
