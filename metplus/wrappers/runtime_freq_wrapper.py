@@ -297,7 +297,7 @@ class RuntimeFreqWrapper(CommandBuilder):
                 f"Processing forecast lead {time_info['lead_string']}"
             )
 
-            if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+            if skip_time(time_info, self.c_dict):
                 self.logger.debug('Skipping run time')
                 continue
 
@@ -388,7 +388,7 @@ class RuntimeFreqWrapper(CommandBuilder):
             # set current lead time config and environment variables
             time_info = time_util.ti_calculate(current_time_input)
 
-            if skip_time(time_info, self.c_dict.get('SKIP_TIMES')):
+            if skip_time(time_info, self.c_dict):
                 continue
 
             self._update_list_with_new_files(time_info, lead_files)
@@ -412,7 +412,7 @@ class RuntimeFreqWrapper(CommandBuilder):
                 current_time_input['init'] = run_time['init']
                 del current_time_input['valid']
             time_info = time_util.ti_calculate(current_time_input)
-            if skip_time(time_info, self.c_dict.get('SKIP_TIMES')):
+            if skip_time(time_info, self.c_dict):
                 continue
 
             self._update_list_with_new_files(time_info, new_files)

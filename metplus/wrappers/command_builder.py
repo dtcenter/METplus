@@ -174,7 +174,12 @@ class CommandBuilder:
         c_dict['CUSTOM_LOOP_LIST'] = get_custom_string_list(self.config,
                                                             app_name)
 
-        c_dict['SKIP_TIMES'] = get_skip_times(self.config, app_name)
+        # set [SKIP/INC]_[INIT/VALID]_TIMES used to skip run times
+        for skip_inc in ('SKIP', 'INC'):
+            for init_valid in ('INIT', 'VALID'):
+                c_dict[f'{skip_inc}_{init_valid}_TIMES'] = (
+                    get_skip_times(self.config, skip_inc, init_valid, app_name)
+                )
 
         c_dict['MANDATORY'] = (
             self.config.getbool('config',

@@ -251,80 +251,128 @@ def _get_current_dt(time_string, time_format, clock_dt, logger):
     return current_dt
 
 
-def get_skip_times(config, wrapper_name=None):
-    """! Read SKIP_TIMES config variable and populate dictionary of times that should be skipped.
-         SKIP_TIMES should be in the format: "%m:begin_end_incr(3,11,1)", "%d:30,31", "%Y%m%d:20201031"
-         where each item inside quotes is a datetime format, colon, then a list of times in that format
-         to skip.
-         Args:
-             @param config configuration object to pull SKIP_TIMES
-             @param wrapper_name name of wrapper if supporting
-               skipping times only for certain wrappers, i.e. grid_stat
-             @returns dictionary containing times to skip
+def get_skip_times(config, skip_or_inc, init_or_valid, wrapper):
+    """!Read skip or include times config variable and populate dictionary
+     of times that should be skipped. Config values should be in the format:
+     "%m:begin_end_incr(3,11,1)", "%d:30,31", "%Y%m%d:20201031"
+     where each item inside quotes is a datetime format, colon, then a list
+     of times in that format to skip or include.
+
+     @param config configuration object to read values
+     @param skip_or_inc string with either 'SKIP' or 'INCLUDE'
+     @param init_or_valid string with either 'INIT' or 'VALID'
+     @param wrapper name of wrapper if supporting
+       skipping times only for certain wrappers, i.e. grid_stat
+     @returns dictionary containing times to skip
     """
-    skip_times_dict = {}
-    skip_times_string = None
+    times_dict = {}
 
-    # if wrapper name is set, look for wrapper-specific _SKIP_TIMES variable
-    if wrapper_name:
-        skip_times_string = config.getstr('config',
-                                          f'{wrapper_name.upper()}_SKIP_TIMES', '')
+    # get possible config variable names. If reading VALID, also check
+    # deprecated generic variable that doesn't include VALID
+    config_names = []
+    if wrapper:
+        config_names.append(
+            f'{wrapper.upper()}_{skip_or_inc}_{init_or_valid}_TIMES'
+        )
 
-    # if skip times string has not been found, check for generic SKIP_TIMES
-    if not skip_times_string:
-        skip_times_string = config.getstr('config', 'SKIP_TIMES', '')
+        # handle old naming that doesn't specify VALID
+        if init_or_valid == 'VALID':
+            config_names.append(f'{wrapper.upper()}_{skip_or_inc}_TIMES')
 
-        # if no generic SKIP_TIMES, return empty dictionary
-        if not skip_times_string:
-            return {}
+    config_names.append(f'{skip_or_inc}_{init_or_valid}_TIMES')
+
+    # handle old naming that doesn't specify VALID
+    if init_or_valid == 'VALID':
+        config_names.append(f'{skip_or_inc}_TIMES')
+
+    # find first config variable name that is set
+    config_name = config.get_mp_config_name(config_names)
+
+    # return empty dictionary if none of the config variables are set
+    if not config_name:
+        return {}
+
+    # warn if deprecated name without _VALID is used
+    if init_or_valid == 'VALID' and 'VALID' not in config_name:
+        config.logger.warning(
+            f"{config_name} is deprecated. "
+            f"Please use {config_name.replace('_TIMES', '_VALID_TIMES')}"
+        )
+
+    times_string = config.getstr('config', config_name, '')
+    if not times_string:
+        return {}
 
     # get list of skip items, but don't expand begin_end_incr yet
-    skip_list = getlist(skip_times_string, expand_begin_end_incr=False)
-
-    for skip_item in skip_list:
+    item_list = getlist(times_string, expand_begin_end_incr=False)
+    for item in item_list:
         try:
-            time_format, skip_times = skip_item.split(':')
+            time_format, times = item.split(':')
 
-            # get list of skip times for the time format, expanding begin_end_incr
-            skip_times_list = getlist(skip_times)
+            # get list of times for the time format, expand begin_end_incr
+            times_list = getlist(times)
 
-            # if time format is already in skip times dictionary, extend list
-            if time_format in skip_times_dict:
-                skip_times_dict[time_format].extend(skip_times_list)
+            # if time format is already in times dictionary, extend list
+            if time_format in times_dict:
+                times_dict[time_format].extend(times_list)
             else:
-                skip_times_dict[time_format] = skip_times_list
+                times_dict[time_format] = times_list
 
         except ValueError:
-            config.logger.error(f"SKIP_TIMES item does not match format: {skip_item}")
+            config.logger.error(f"{skip_or_inc}_{init_or_valid}_TIMES item "
+                                f"does not match format: {item}")
             return None
 
-    return skip_times_dict
+    return times_dict
 
 
-def skip_time(time_info, skip_times):
-    """!Used to check the valid time of the current run time against list of times to skip.
-        Args:
-            @param time_info dictionary with time information to check
-            @param skip_times dictionary of times to skip, i.e. {'%d': [31]} means skip 31st day
-            @returns True if run time should be skipped, False if not
+def skip_time(time_info, c_dict):
+    """!Used to check the valid and init time of the current run time against
+     a list of times to skip.
+
+    @param time_info dictionary with time information to check
+    @param c_dict dictionary to read [SKIP/INC]_[VALID/INIT]_TIMES which
+    contain a dictionary of times to skip: {'%d': [31]} means skip 31st day
+    @returns True if run time should be skipped, False if not
     """
-    if not skip_times:
+    for init_valid in ('init', 'valid'):
+        skip_list = c_dict.get(f'SKIP_{init_valid.upper()}_TIMES')
+        inc_list = c_dict.get(f'INC_{init_valid.upper()}_TIMES')
+
+        # if no skip or include times were set, continue to not skip
+        if not skip_list and not inc_list:
+            continue
+
+        # if any include times are listed, skip if the time doesn't match
+        if inc_list and not _found_time_match(time_info, inc_list, init_valid):
+            return True
+
+        # skip if the time matches a skip time
+        if skip_list and _found_time_match(time_info, skip_list, init_valid):
+            return True
+
+    # if time never matches, return False, meaning run for the given time
+    return False
+
+
+def _found_time_match(time_info, time_dict, init_or_valid):
+    run_time_dt = time_info.get(init_or_valid)
+    if not run_time_dt:
         return False
 
-    for time_format, skip_time_list in skip_times.items():
+    for time_format, time_list in time_dict.items():
         # extract time information from valid time based on skip time format
-        run_time_value = time_info.get('valid')
-        if not run_time_value:
-            return False
-
-        run_time_value = run_time_value.strftime(time_format)
+        run_time_value = run_time_dt.strftime(time_format)
 
         # loop over times to skip for this format and check if it matches
-        for skip_time in skip_time_list:
-            if int(run_time_value) == int(skip_time):
-                return True
+        for time_item in time_list:
+            try:
+                if int(run_time_value) == int(time_item):
+                    return True
+            except ValueError:
+                if str(run_time_value) == str(time_item):
+                    return True
 
-    # if skip time never matches, return False
     return False
 
 
