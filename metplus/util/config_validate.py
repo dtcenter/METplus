@@ -8,8 +8,8 @@ from .string_template_substitution import do_string_sub
 from .config_util import get_process_list, get_custom_string_list
 from .wrapper_init import get_wrapper_instance
 
-def validate_config_variables(config):
 
+def validate_config_variables(config):
     all_sed_cmds = []
     # check for deprecated config items and warn user to remove/replace them
     deprecated_is_ok, sed_cmds = check_for_deprecated_config(config)
@@ -163,7 +163,6 @@ def check_for_deprecated_met_config(config):
 
 
 def check_for_deprecated_met_config_file(config, met_config, met_tool):
-
     all_good = True
     if not os.path.exists(met_config):
         config.logger.error(f"Config file does not exist: {met_config}")
@@ -189,7 +188,8 @@ def check_for_deprecated_met_config_file(config, met_config, met_tool):
                                 f"file: {met_config}. Please unset "
                                 f"{met_tool}_CONFIG_FILE to use the wrapped "
                                 "MET config that is provided with the "
-                                "METplus wrappers.")
+                                "METplus wrappers and set values that differ "
+                                "from the defaults in a METplus config file.")
 
     return all_good
 

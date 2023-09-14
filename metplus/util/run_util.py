@@ -3,7 +3,6 @@ import os
 import shutil
 import logging
 from datetime import datetime
-from importlib import import_module
 
 from .constants import NO_COMMAND_WRAPPERS
 from .string_manip import get_logfile_info, log_terminal_includes_info
