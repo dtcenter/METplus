@@ -5,6 +5,7 @@ import subprocess
 import pytest
 import getpass
 import shutil
+from unittest import mock
 from pathlib import Path
 from netCDF4 import Dataset
 
@@ -80,12 +81,30 @@ def metplus_config(request):
     the failed tests. To use this fixture, add metplus_config to the test
     function arguments and set a variable called config to metplus_config, e.g.
     config = metplus_config.
+
+    This fixture also replaces config.logger with a MagicMock object. This
+    allows tests to assert the logger was called with a specific message.
+
+    e.g.
+    def test_example(metplus_config):
+        config = metplus_config
+        some_function(config)
+        config.logger.info.assert_called_once_with("Info message")
+        config.logger.error.assert_not_called()
+
+    See documentation for unittest.mock for full functionality.
     """
     script_dir = os.path.dirname(__file__)
     args = [os.path.join(script_dir, "minimum_pytest.conf")]
     config = config_metplus.setup(args)
+
+    # Set mock logger
+    old_logger = config.logger
+    config.logger = mock.MagicMock()
+
     yield config
 
+    config.logger = old_logger
     # don't remove output base if test fails
     if request.node.rep_call.failed:
         return
@@ -114,6 +133,7 @@ def metplus_config_files():
         return config
 
     return read_configs
+
 
 @pytest.fixture(scope="module")
 def make_dummy_nc():
