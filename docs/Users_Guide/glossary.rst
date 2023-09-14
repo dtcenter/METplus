@@ -136,16 +136,6 @@ METplus Configuration Glossary
 
      | *Used by:* CyclonePlotter
 
-   TCMPR_PLOTTER_PREFIX
-     Prefix used in TCMPRPlotter.
-
-     | *Used by:* TCMPRPlotter
-
-   TCMPR_PLOTTER_CONFIG_FILE
-     Configuration file used by TCMPRPlotter.
-
-     | *Used by:* TCMPRPlotter
-
    ASCII2NC_WINDOW_BEGIN
      Passed to the ASCII2NC MET config file to determine the range of data within a file that should be used for processing. Units are seconds. If the variable is not set, ASCII2NC will use :term:`OBS_WINDOW_BEGIN`.
 
@@ -775,11 +765,6 @@ METplus Configuration Glossary
 
      | *Used by:*  EnsembleStat, GridStat, MODE, StatAnalysis
 
-   CONFIG_FILE
-     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_CONFIG_FILE`.
-
-     | *Used by:*  TCMPRPlotter
-
    CONVERT
      Path to the ImageMagick convert executable.
 
@@ -848,47 +833,6 @@ METplus Configuration Glossary
      Title string for the cyclone plotter.
 
      | *Used by:*  CyclonePlotter
-
-   DEMO_YR
-     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_DEMO_YR` instead.
-
-   TCMPR_PLOTTER_DEMO_YR
-     The demo year. This is an optional value used by the plot_TCMPR.R script, (which is wrapped by TCMPRPlotter). Please refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more details.
-
-     | *Used by:*  TCMPRPlotter
-
-   DEP_VARS
-     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_DEP_VARS` instead.
-
-   TCMPR_PLOTTER_DEP_VARS
-     Corresponds to the optional flag -dep in the plot_TCMPR.R script, which is
-     wrapped by TCMPRPlotter. The value to this flag is a comma-separated list
-     (no whitespace) of dependent variable columns to plot ( e.g. AMSLP-BMSLP,
-     AMAX_WIND-BMAX_WIND, TK_ERR). If this is undefined, then the default plot
-     for TK_ERR (track error) is generated. The values in this list are looped
-     over to run once for each and can be referenced in other variables using
-     the {dep} tag. Note, if you want the track error
-     plot generated, in addition to other plots, then you need to explicitly
-     list this with the other variables. Please refer to the
-     `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_
-     for more details.
-
-     | *Used by:*  TCMPRPlotter
-
-   TCMPR_PLOTTER_DEP_LABELS
-     List of strings that correspond to the values in
-     :term:`TCMPR_PLOTTER_DEP_VARS` that can be referenced in other variables
-     to set the plot title, axis labels, etc. with the {dep_label} tag.
-
-     | *Used by:*  TCMPRPlotter
-
-
-   TCMPR_PLOTTER_PLOT_LABELS
-     List of strings that correspond to the values in
-     :term:`TCMPR_PLOTTER_PLOT_TYPES` that can be referenced in other variables
-     to set the plot title, axis labels, etc. with the {plot_label} tag.
-
-     | *Used by:*  TCMPRPlotter
 
    DESC_LIST
      A single value or list of values used in the stat_analysis data
@@ -1975,30 +1919,6 @@ METplus Configuration Glossary
    FHR_INC
      .. warning:: **DEPRECATED:** Please use :term:`LEAD_SEQ` instead.
 
-   FILTER
-     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_FILTER` instead.
-
-   TCMPR_PLOTTER_FILTER
-     Corresponds to the optional -filter argument to the plot_TCMPR.R script which is wrapped by TCMPRPlotter. This is a list of filtering options for the tc_stat tool.
-
-     | *Used by:*  TCMPRPlotter
-
-   FILTERED_TCST_DATA_FILE
-     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_FILTERED_TCST_DATA_FILE` instead.
-
-   TCMPR_PLOTTER_FILTERED_TCST_DATA_FILE
-     Corresponds to the optional -tcst argument to the plot_TCMPR.R script which is wrapped by TCMPRPlotter. This is a tcst data file to be used instead of running the tc_stat tool. Indicate a full path to the data file.
-
-     | *Used by:*  TCMPRPlotter
-
-   FOOTNOTE_FLAG
-     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_FOOTNOTE_FLAG` instead.
-
-   TCMPR_PLOTTER_FOOTNOTE_FLAG
-     This corresponds to the optional -footnote flag in the plot_TCMPR.R script which is wrapped by TCMPRPlotter. According to the plot_TCMPR.R usage, this flag is used to disable footnote (date).
-
-     | *Used by:*  TCMPRPlotter
-
    FORECAST_TMPL
      .. warning:: **DEPRECATED:** Please use :term:`TC_PAIRS_ADECK_TEMPLATE`.
 
@@ -2149,14 +2069,6 @@ METplus Configuration Glossary
 
      | *Used by:*  EnsembleStat
 
-   HFIP_BASELINE
-     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_HFIP_BASELINE` instead.
-
-   TCMPR_PLOTTER_HFIP_BASELINE
-     Corresponds to the optional -hfip_bsln flag in the plot_TCMPR.R script which is wrapped by TCMPRPlotter. This is a string that indicates whether to add the HFIP baseline, and indicates the version (no, 0, 5, 10 year goal).
-
-     | *Used by:*  TCMPRPlotter
-
    INIT_BEG
      Specify the beginning initialization time to be used in the analysis. Format can be controlled by :term:`INIT_TIME_FMT`. See :ref:`Looping_by_Initialization_Time` for more information.
 
@@ -2290,14 +2202,6 @@ METplus Configuration Glossary
    LAT_ADJ
      .. warning:: **DEPRECATED:** Please use :term:`EXTRACT_TILES_LAT_ADJ` instead.
 
-   LEAD
-     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_LEAD` instead.
-
-   TCMPR_PLOTTER_LEAD
-     For CyclonePlotter, this refers to the column of interest in the input ASCII cyclone file.In the TCMPRPlotter, this corresponds to the optional -lead argument in the plot_TCMPR.R script (which is wrapped by TCMPRPlotter). This argument is set to a comma-separted list of lead times (h) to be plotted.In TCStat, this corresponds to the name of the column of interest in the input ASCII data file.
-
-     | *Used by:*  TCMPRPlotter
-
    LEAD_LIST
      .. warning:: **DEPRECATED:** Please use :term:`FCST_LEAD_LIST` instead.
 
@@ -2345,17 +2249,8 @@ METplus Configuration Glossary
 
      | *Used by:*  SeriesAnalysis
 
-   LEGEND
-     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_LEGEND` instead.
-
-   TCMPR_PLOTTER_LEGEND
-     The text to be included in the legend of your plot.
-
-     | *Used by:*  TCMPRPlotter
-
    LINE_TYPE
      .. warning:: **DEPRECATED:** Please use :term:`LINE_TYPE_LIST` instead.
-
 
    LINE_TYPE_LIST
      Specify the MET STAT line types to be considered.
@@ -2364,7 +2259,7 @@ METplus Configuration Glossary
      adding LINE_TYPE_LIST to :term:`LOOP_LIST_ITEMS`.
      See :ref:`stat-analysis-looping-groups` for more information.
 
-     | *Used by:*  StatAnalysis, TCMPRPlotter
+     | *Used by:*  StatAnalysis
 
    LOG_DIR
      Specify the directory where log files from MET and METplus should be written.
@@ -2466,11 +2361,6 @@ METplus Configuration Glossary
 
    MET_BIN
      .. warning:: **DEPRECATED:** Please use :term:`MET_INSTALL_DIR` instead.
-
-   MET_BUILD_BASE
-     The base directory of the MET install. Only needed if using MET version 6.0
-
-     | *Used by:*  TCMPRPlotter
 
    MET_INSTALL_DIR
      The base directory of the MET install. To be defined when using MET version 6.1 and beyond. Used to get the full path of the MET executable and the share directory when calling from METplus Wrappers.
@@ -2778,22 +2668,6 @@ METplus Configuration Glossary
 
    NLON
      .. warning:: **DEPRECATED:** Please use :term:`EXTRACT_TILES_NLON` instead.
-
-   NO_EE
-     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_NO_EE` instead.
-
-   TCMPR_PLOTTER_NO_EE
-     Set the :term:`NO_EE` flag for the TC Matched Pairs plotting utility.Acceptable values: yes/no
-
-     | *Used by:*  TCMPRPlotter
-
-   NO_LOG
-     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_NO_LOG` instead.
-
-   TCMPR_PLOTTER_NO_LOG
-     Set the NO_LOG flag for the TC Matched Pairs plotting utility.Acceptable values: yes/no
-
-     | *Used by:*  TCMPRPlotter
 
    OBS_<n>_FIELD_NAME
      .. warning:: **DEPRECATED:** Please use :term:`OBS_PCP_COMBINE_<n>_FIELD_NAME` instead.
@@ -3500,14 +3374,6 @@ METplus Configuration Glossary
 
      | *Used by:*  PCPCombine
 
-   PLOT_CONFIG_OPTS
-     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_PLOT_CONFIG_OPTS` instead.
-
-   TCMPR_PLOTTER_PLOT_CONFIG_OPTS
-     Specify plot configuration options for the TC Matched Pairs plotting tool.
-
-     | *Used by:*  TCMPRPlotter
-
    PLOT_TIME
      .. warning:: **DEPRECATED:** Please use :term:`DATE_TYPE` instead.
 
@@ -3515,22 +3381,6 @@ METplus Configuration Glossary
      In StatAnalysis, this specifies the way to treat the date information, where valid options are VALID and INIT.
 
      | *Used by:*  StatAnalysis
-
-   PLOT_TYPES
-     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_PLOT_TYPES` instead.
-
-   TCMPR_PLOTTER_PLOT_TYPES
-     Specify what plot types are desired for the TC Matched Pairs plotting
-     tool. By default, a boxplot is generated if this is undefined in the
-     configuration file. If other plots are requested and a boxplot is also
-     desired, you must explicitly list boxplot in your list of plot types.
-     Supported plot types: BOXPLOT, POINT, MEAN, MEDIAN, RELPERF
-     (relative performance), RANK (time series of ranks for the first model),
-     SCATTER, SKILL_MN (mean skill scores) and SKILL_MD (median skill scores).
-     The values in this list are looped over to run once for each and can be
-     referenced in other variables using the {plot} tag.
-
-     | *Used by:*  TCMPRPlotter
 
    POINT_STAT_CONFIG_FILE
      Path to configuration file read by point_stat.
@@ -3587,11 +3437,6 @@ METplus Configuration Glossary
 
    PB2NC_VERTICAL_LEVEL
      .. warning:: **DEPRECATED:** No longer used.
-
-   PREFIX
-     This corresponds to the optional -prefix flag of the plot_TCMPR.R script (which is wrapped by TCMPRPlotter). This is the output file name prefix.
-
-     | *Used by:*  TCMPRPlotter
 
    PREPBUFR_DIR_REGEX
      .. warning:: **DEPRECATED:** No longer used. Regular expression to use when searching for PREPBUFR data.
@@ -3665,60 +3510,12 @@ METplus Configuration Glossary
    RM_EXE
      .. warning:: **DEPRECATED:** Do not use.
 
-   RP_DIFF
-     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_RP_DIFF` instead.
-
-   TCMPR_PLOTTER_RP_DIFF
-     This corresponds to the optional -rp_diff flag of the plot_TCMPR.R script (which is wrapped by TCMPRPlotter). This a comma-separated list of thresholds to specify meaningful differences for the relative performance plot.
-
-     | *Used by:*  TCMPRPlotter
-
-   SAVE
-     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_SAVE` instead.
-
-   TCMPR_PLOTTER_SAVE
-     Corresponds to the optional -save flag in plot_TCMPR.R (which is wrapped by TCMPRPlotter). This is a yes/no value to indicate whether to save the image (yes).
-
-     | *Used by:*  TCMPRPlotter
-
-   SAVE_DATA
-     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_SAVE_DATA` instead.
-
-   TCMPR_PLOTTER_SAVE_DATA
-     Corresponds to the optional -save_data flag in plot_TCMPR.R (which is wrapped by TCMPRPlotter). Indicates whether to save the filtered track data to a file instead of deleting it.
-
-     | *Used by:*  TCMPRPlotter
-
-   SCATTER_X
-     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_SCATTER_X` instead.
-
-   TCMPR_PLOTTER_SCATTER_X
-     Corresponds to the optional -scatter_x flag in plot_TCMPR.R (which is wrapped by TCMPRPlotter). This is a comma-separated list of x-axis variable columns to plot.
-
-     | *Used by:*  TCMPRPlotter
-
-   SCATTER_Y
-     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_SCATTER_Y` instead.
-
-   TCMPR_PLOTTER_SCATTER_Y
-     Corresponds to the optional -scatter_y flag in plot_TCMPR.R (which is wrapped by TCMPRPlotter). This is a comma-separated list of y-axis variable columns to plot.
-
-     | *Used by:*  TCMPRPlotter
-
    SCRUB_STAGING_DIR
      If True, remove staging directory after METplus has completed running.
      Set to False to preserve data for subsequent runs or debugging purposes.
      Defaults to True.
 
      | *Used by:* All
-
-   SERIES
-     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_SERIES` instead.
-
-   TCMPR_PLOTTER_SERIES
-     Corresponds to the optional -series flag in plot_TCMPR.R (which is wrapped by TCMPRPlotter). This is the column whose unique values define the series on the plot, optionally followed by a comma-separated list of values, including: ALL, OTHER, and colon-separated groups.
-
-     | *Used by:*  TCMPRPlotter
 
    SERIES_ANALYSIS_CONFIG_FILE
      Path to configuration file read by series_analysis.
@@ -3759,14 +3556,6 @@ METplus Configuration Glossary
 
    SERIES_BY_LEAD_GROUP_FCSTS
      .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_GROUP_FCSTS` instead.
-
-   SERIES_CI
-     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_SERIES_CI` instead.
-
-   TCMPR_PLOTTER_SERIES_CI
-     Corresponds to the optional -series_ci flag in plot_TCMPR.R (which is wrapped by TCMPRPlotter). This is a list of true/false for confidence intervals. This list can be optionally followed by a comma-separated list of values, including ALL, OTHER, and colon-separated groups.
-
-     | *Used by:*  TCMPRPlotter
 
    SERIES_INIT_FILTERED_OUT_DIR
      .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_FILTERED_OUTPUT_DIR` instead.
@@ -3833,14 +3622,6 @@ METplus Configuration Glossary
 
    SERIES_BY_LEAD_OUTPUT_DIR
      .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_OUTPUT_DIR` instead.
-
-   SKILL_REF
-     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_SKILL_REF` instead.
-
-   TCMPR_PLOTTER_SKILL_REF
-     This corresponds to the optional -skill_ref flag in plot_TCMPR.R (which is wrapped by TCMPRPlotter). This is the identifier for the skill score reference.
-
-     | *Used by:*  TCMPRPlotter
 
    START_DATE
      .. warning:: **DEPRECATED:** Please use :term:`INIT_BEG` or :term:`VALID_BEG` instead.
@@ -3921,30 +3702,6 @@ METplus Configuration Glossary
 
    STORM_NAME
      .. warning:: **DEPRECATED:** Please use :term:`TC_PAIRS_STORM_NAME`.
-
-   SUBTITLE
-     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_SUBTITLE`.
-
-   TCMPR_PLOTTER_SUBTITLE
-     The subtitle of the plot.
-
-     | *Used by:*  TCMPRPlotter
-
-   TCMPR_DATA_DIR
-     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_TCMPR_DATA_DIR`.
-
-   TCMPR_PLOTTER_TCMPR_DATA_DIR
-     Provide the input directory for the track data for the TC Matched Pairs plotting tool.
-
-     | *Used by:*  TCMPRPlotter
-
-   TCMPR_PLOT_OUT_DIR
-     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_PLOT_OUTPUT_DIR`.
-
-   TCMPR_PLOTTER_PLOT_OUTPUT_DIR
-     Provide the output directory where the TC Matched Pairs plotting tool will create files.
-
-     | *Used by:*  TCMPRPlotter
 
    TC_PAIRS_ADECK_INPUT_DIR
      Directory that contains the ADECK files.
@@ -4321,14 +4078,6 @@ METplus Configuration Glossary
    TIME_SUMMARY_FLAG
      .. warning:: **DEPRECATED:** Please use :term:`PB2NC_TIME_SUMMARY_FLAG` instead.
 
-   TITLE
-     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_TITLE` instead.
-
-   TCMPR_PLOTTER_TITLE
-     Specify a title string for the TC Matched Pairs plotting tool.
-
-     | *Used by:*  TCMPRPlotter
-
    TMP_DIR
      Specify the path to a temporary directory where the user has write permissions.
 
@@ -4430,38 +4179,6 @@ METplus Configuration Glossary
 
    VERTICAL_LOCATION
      .. warning:: **DEPRECATED:** Specify the vertical location desired when using the MET pb2nc tool.
-
-   XLAB
-     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_XLAB` instead.
-
-   TCMPR_PLOTTER_XLAB
-     Specify the x-axis label when using the TC Matched Pairs plotting tool.
-
-     | *Used by:*  TCMPRPlotter
-
-   XLIM
-     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_XLIM` instead.
-
-   TCMPR_PLOTTER_XLIM
-     Specify the x-axis limit when using the TC Matched Pairs plotting tool.
-
-     | *Used by:*  TCMPRPlotter
-
-   YLAB
-     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_YLAB` instead.
-
-   TCMPR_PLOTTER_YLAB
-     Specify the y-axis label when using the TC Matched Pairs plotting tool.
-
-     | *Used by:*  TCMPRPlotter
-
-   YLIM
-     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_YLIM` instead.
-
-   TCMPR_PLOTTER_YLIM
-     Specify the y-axis limit when using the TC Matched Pairs plotting tool.
-
-     | *Used by:*  TCMPRPlotter
 
    FCST_PCP_COMBINE_INPUT_ACCUMS
      Specify what accumulation levels should be used from the forecast data for the analysis. This is a list of input accumulations in the order of preference to use to build the desired accumulation. If an accumulation cannot be used (i.e. it is larger than the remaining accumulation that needs to be built) then the next value in the list is tried. Units are assumed to be hours unless a time identifier such as Y, m, d, H, M, S is specifed at the end of the value, i.e. 30M or 1m.
@@ -8374,13 +8091,6 @@ METplus Configuration Glossary
      for debugging issues.
 
      | *Used by:* GFDLTracker
-
-   TCMPR_PLOTTER_READ_ALL_FILES
-     If True, pass in input directory set by :term:`TCMPR_PLOTTER_TCMPR_DATA_DIR`
-     to the script. If False, a list of all files that end with .tcst in the input
-     directory is gathered and passed into the script. Defaults to False.
-
-     | *Used by:* TCMPRPlotter
 
    TC_PAIRS_VALID_INCLUDE
      Specify the value for 'valid_inc' in the MET configuration file for TCPairs.

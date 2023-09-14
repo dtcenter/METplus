@@ -7,7 +7,6 @@ from ..util.metplus_check import plot_wrappers_are_enabled
 
 # these wrappers should not be imported if plotting is disabled
 plotting_wrappers = [
-    'tcmpr_plotter_wrapper',
     'cyclone_plotter_wrapper',
 ]
 

@@ -50,10 +50,6 @@ The following software is required to run METplus Wrappers:
 
 **Wrapper Specific Requirements**
 
-- TCMPRPlotter wrapper
-
-    - R version 3.2.5
-
 -  SeriesAnalysis wrapper
 
     - convert (ImageMagick) utility -

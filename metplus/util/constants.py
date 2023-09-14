@@ -41,7 +41,6 @@ LOWER_TO_WRAPPER_NAME = {
     'tcpairs': 'TCPairs',
     'tcrmw': 'TCRMW',
     'tcstat': 'TCStat',
-    'tcmprplotter': 'TCMPRPlotter',
     'usage': 'Usage',
     'userscript': 'UserScript',
 }
