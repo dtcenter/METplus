@@ -88,6 +88,46 @@ class TCStatWrapper(RuntimeFreqWrapper):
         'METPLUS_OUT_VALID_MASK',
     ]
 
+    # deprecated env vars that are no longer supported in the wrapped MET conf
+    DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
+        'AMODEL',
+        'BMODEL',
+        'DESC',
+        'STORM_ID',
+        'BASIN',
+        'CYCLONE',
+        'STORM_NAME',
+        'INIT_INCLUDE',
+        'INIT_EXCLUDE',
+        'VALID_INCLUDE',
+        'VALID_EXCLUDE',
+        'INIT_HOUR',
+        'VALID_HOUR',
+        'LEAD',
+        'LEAD_REQ',
+        'INIT_MASK',
+        'VALID_MASK',
+        'TRACK_WATCH_WARN',
+        'COLUMN_THRESH_NAME',
+        'COLUMN_THRESH_VAL',
+        'COLUMN_STR_NAME',
+        'COLUMN_STR_VAL',
+        'INIT_THRESH_NAME',
+        'INIT_THRESH_VAL',
+        'INIT_STR_NAME',
+        'INIT_STR_VAL',
+        'JOBS',
+        'INIT_BEG',
+        'INIT_END',
+        'VALID_BEG',
+        'VALID_END',
+        'LANDFALL_BEG',
+        'LANDFALL_END',
+        'WATER_ONLY',
+        'LANDFALL',
+        'MATCH_POINTS',
+    ]
+
     def __init__(self, config, instance=None):
         self.app_name = 'tc_stat'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),

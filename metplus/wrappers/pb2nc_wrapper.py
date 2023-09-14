@@ -40,6 +40,22 @@ class PB2NCWrapper(LoopTimesWrapper):
         'METPLUS_OBS_BUFR_MAP',
     ]
 
+    # deprecated env vars that are no longer supported in the wrapped MET conf
+    DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
+        'PB2NC_MESSAGE_TYPE',
+        'PB2NC_STATION_ID',
+        'OBS_WINDOW_BEGIN',
+        'OBS_WINDOW_END',
+        'PB2NC_GRID',
+        'PB2NC_POLY',
+        'OBS_BUFR_VAR_LIST',
+        'TIME_SUMMARY_FLAG',
+        'TIME_SUMMARY_BEG',
+        'TIME_SUMMARY_END',
+        'TIME_SUMMARY_VAR_NAMES',
+        'TIME_SUMMARY_TYPES',
+    ]
+
     def __init__(self, config, instance=None):
         self.app_name = 'pb2nc'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),

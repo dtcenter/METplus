@@ -41,6 +41,22 @@ class MTDWrapper(CompareGriddedWrapper):
         'METPLUS_OUTPUT_PREFIX',
     ]
 
+    # deprecated env vars that are no longer supported in the wrapped MET conf
+    DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
+        'MODEL',
+        'OBTYPE',
+        'REGRID_TO_GRID',
+        'FCST_FIELD',
+        'OBS_FIELD',
+        'FCST_CONV_RADIUS',
+        'OBS_CONV_RADIUS',
+        'FCST_CONV_THRESH',
+        'OBS_CONV_THRESH',
+        'MIN_VOLUME',
+        'FCST_FILE_TYPE',
+        'OBS_FILE_TYPE',
+    ]
+
     def __init__(self, config, instance=None):
         self.app_name = 'mtd'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),

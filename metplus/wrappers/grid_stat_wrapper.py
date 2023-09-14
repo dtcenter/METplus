@@ -57,11 +57,21 @@ class GridStatWrapper(CompareGriddedWrapper):
         'METPLUS_SEEPS_P1_THRESH',
     ]
 
-    # handle deprecated env vars used pre v4.0.0
+    # deprecated env vars that are no longer supported in the wrapped MET conf
     DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
+        'MODEL',
+        'OBTYPE',
+        'REGRID_TO_GRID',
         'CLIMO_MEAN_FILE',
         'CLIMO_STDEV_FILE',
         'VERIF_MASK',
+        'FCST_FIELD',
+        'OBS_FIELD',
+        'FCST_TIME',
+        'INPUT_BASE',
+        'NEIGHBORHOOD_WIDTH',
+        'NEIGHBORHOOD_SHAPE',
+        'NEIGHBORHOOD_COV_THRESH',
     ]
 
     OUTPUT_FLAGS = [

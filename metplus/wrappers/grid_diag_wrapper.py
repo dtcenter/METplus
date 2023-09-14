@@ -36,7 +36,7 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         'METPLUS_MASK_DICT',
     ]
 
-    # handle deprecated env vars used pre v4.0.0
+    # deprecated env vars that are no longer supported in the wrapped MET conf
     DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
         'DESC',
         'DATA_FIELD',

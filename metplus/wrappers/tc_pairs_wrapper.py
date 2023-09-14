@@ -70,6 +70,22 @@ class TCPairsWrapper(RuntimeFreqWrapper):
         'METPLUS_DIAG_CONVERT_MAP_LIST',
     ]
 
+    # deprecated env vars that are no longer supported in the wrapped MET conf
+    DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
+        'INIT_BEG',
+        'INIT_END',
+        'VALID_BEG',
+        'VALID_END',
+        'INIT_INCLUDE',
+        'INIT_EXCLUDE',
+        'MODEL',
+        'STORM_ID',
+        'BASIN',
+        'CYCLONE',
+        'STORM_NAME',
+        'DLAND_FILE',
+    ]
+
     WILDCARDS = {
         'basin': '??',
         'cyclone': '*',

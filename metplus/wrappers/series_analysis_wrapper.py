@@ -63,12 +63,20 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         'METPLUS_MASK_DICT',
     ]
 
-    # handle deprecated env vars used pre v4.0.0
+    # deprecated env vars that are no longer supported in the wrapped MET conf
     DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
+        'MODEL',
+        'OBTYPE',
+        'REGRID_TO_GRID',
         'CLIMO_MEAN_FILE',
         'CLIMO_STDEV_FILE',
         'METPLUS_CTS_LIST',
         'METPLUS_STAT_LIST',
+        'FCST_FILE_TYPE',
+        'OBS_FILE_TYPE',
+        'FCST_FIELD',
+        'OBS_FIELD',
+        'STAT_LIST',
     ]
 
     # variable names of output_stats dictionary

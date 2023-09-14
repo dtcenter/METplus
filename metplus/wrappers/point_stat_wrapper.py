@@ -48,10 +48,17 @@ class PointStatWrapper(CompareGriddedWrapper):
         'METPLUS_SEEPS_P1_THRESH',
     ]
 
-    # handle deprecated env vars used pre v4.0.0
+    # deprecated env vars that are no longer supported in the wrapped MET conf
     DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
+        'MODEL',
+        'OBTYPE',
+        'REGRID_TO_GRID',
         'CLIMO_MEAN_FILE',
         'CLIMO_STDEV_FILE',
+        'FCST_FIELD',
+        'OBS_FIELD',
+        'OBS_WINDOW_BEGIN',
+        'OBS_WINDOW_END',
         'POINT_STAT_POLY',
         'POINT_STAT_GRID',
         'POINT_STAT_STATION_ID',

@@ -72,9 +72,23 @@ class MODEWrapper(CompareGriddedWrapper):
         'METPLUS_OBS_MULTIVAR_LEVEL',
     ]
 
-    # handle deprecated env vars used pre v4.0.0
+    # deprecated env vars that are no longer supported in the wrapped MET conf
     DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
+        'MODEL',
+        'OBTYPE',
+        'REGRID_TO_GRID',
         'VERIF_MASK',
+        'FCST_FIELD',
+        'OBS_FIELD',
+        'QUILT',
+        'FCST_CONV_RADIUS',
+        'OBS_CONV_RADIUS',
+        'FCST_CONV_THRESH',
+        'OBS_CONV_THRESH',
+        'FCST_MERGE_THRESH',
+        'OBS_MERGE_THRESH',
+        'FCST_MERGE_FLAG',
+        'OBS_MERGE_FLAG',
     ]
 
     WEIGHTS = {

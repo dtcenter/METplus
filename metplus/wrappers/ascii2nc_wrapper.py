@@ -31,6 +31,21 @@ class ASCII2NCWrapper(LoopTimesWrapper):
         'METPLUS_TIME_SUMMARY_DICT',
     ]
 
+    # deprecated env vars that are no longer supported in the wrapped MET conf
+    DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
+        'TIME_SUMMARY_FLAG',
+        'TIME_SUMMARY_RAW_DATA',
+        'TIME_SUMMARY_BEG',
+        'TIME_SUMMARY_END',
+        'TIME_SUMMARY_STEP',
+        'TIME_SUMMARY_WIDTH',
+        'TIME_SUMMARY_GRIB_CODES',
+        'TIME_SUMMARY_VAR_NAMES',
+        'TIME_SUMMARY_TYPES',
+        'TIME_SUMMARY_VALID_FREQ',
+        'TIME_SUMMARY_VALID_THRESH',
+    ]
+
     def __init__(self, config, instance=None):
         self.app_name = "ascii2nc"
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
