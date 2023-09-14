@@ -163,14 +163,13 @@ def check_for_deprecated_met_config(config):
 
 
 def check_for_deprecated_met_config_file(config, met_config, met_tool):
-    all_good = True
     if not os.path.exists(met_config):
         config.logger.error(f"Config file does not exist: {met_config}")
         return False
 
     deprecated_met_list = _get_deprecated_met_list(config, met_tool)
     if not deprecated_met_list:
-        return all_good
+        return True
 
     config.logger.debug("Checking for deprecated environment "
                         f"variables in: {met_config}")
@@ -178,6 +177,7 @@ def check_for_deprecated_met_config_file(config, met_config, met_tool):
     with open(met_config, 'r') as file_handle:
         lines = file_handle.read().splitlines()
 
+    all_good = True
     for line in lines:
         for deprecated_item in deprecated_met_list:
             if '${' + deprecated_item + '}' not in line:
@@ -200,9 +200,6 @@ def _get_deprecated_met_list(config, met_tool):
         return None
 
     wrapper = get_wrapper_instance(config, wrapper_name)
-    if not wrapper:
-        return None
-
     if not hasattr(wrapper, 'DEPRECATED_WRAPPER_ENV_VAR_KEYS'):
         return None
 

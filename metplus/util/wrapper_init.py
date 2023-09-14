@@ -12,9 +12,8 @@ def get_wrapper_instance(config, process, instance=None):
     instances of a wrapper. Set to None (default) if no instance is specified
     @returns CommandBuilder sub-class object or None if something went wrong
     """
+    package_name = (f'metplus.wrappers.{camel_to_underscore(process)}_wrapper')
     try:
-        package_name = ('metplus.wrappers.'
-                        f'{camel_to_underscore(process)}_wrapper')
         module = import_module(package_name)
         metplus_wrapper = (
             getattr(module, f"{process}Wrapper")(config, instance=instance)
