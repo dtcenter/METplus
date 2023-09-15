@@ -78,8 +78,7 @@ def test_met_dictionary_in_var_options(metplus_config):
 
         ({'POINT_STAT_REGRID_TO_GRID': 'FCST',
           },
-         {'METPLUS_REGRID_DICT': 'regrid = {to_grid = FCST;}',
-          'REGRID_TO_GRID': 'FCST'}),
+         {'METPLUS_REGRID_DICT': 'regrid = {to_grid = FCST;}'}),
 
         ({'POINT_STAT_REGRID_METHOD': 'NEAREST',
           },
@@ -121,29 +120,23 @@ def test_met_dictionary_in_var_options(metplus_config):
                                   'convert(x) = 2*x;'
                                   'censor_thresh = [>12000, <5000];'
                                   'censor_val = [12000, 5000];}'
-                                  ),
-          'REGRID_TO_GRID': 'FCST'}),
+                                  )}),
 
         # mask grid and poly (old config var)
         ({'POINT_STAT_MASK_GRID': 'FULL',
           'POINT_STAT_VERIFICATION_MASK_TEMPLATE': 'one, two',
           },
-         {'METPLUS_MASK_GRID': 'grid = ["FULL"];',
-          'METPLUS_MASK_POLY': 'poly = ["one", "two"];',
-          'METPLUS_MASK_DICT': 'mask = {grid = ["FULL"];poly = ["one", "two"];}',
+         {'METPLUS_MASK_DICT': 'mask = {grid = ["FULL"];poly = ["one", "two"];}',
           }),
         # mask grid and poly (new config var)
         ({'POINT_STAT_MASK_GRID': 'FULL',
           'POINT_STAT_MASK_POLY': 'one, two',
           },
-         {'METPLUS_MASK_GRID': 'grid = ["FULL"];',
-          'METPLUS_MASK_POLY': 'poly = ["one", "two"];',
-          'METPLUS_MASK_DICT': 'mask = {grid = ["FULL"];poly = ["one", "two"];}',
+         {'METPLUS_MASK_DICT': 'mask = {grid = ["FULL"];poly = ["one", "two"];}',
           }),
         # mask grid value
         ({'POINT_STAT_MASK_GRID': 'FULL', },
-         {'METPLUS_MASK_GRID': 'grid = ["FULL"];',
-          'METPLUS_MASK_DICT': 'mask = {grid = ["FULL"];}',
+         {'METPLUS_MASK_DICT': 'mask = {grid = ["FULL"];}',
           }),
         # mask.poly complex example
         ({'POINT_STAT_MASK_POLY': ('["{ENV[MET_BUILD_BASE]}/share/met/poly/CAR.poly", '
@@ -151,12 +144,7 @@ def test_met_dictionary_in_var_options(metplus_config):
                                    '"{ENV[MET_BUILD_BASE]}/share/met/poly/NAO.poly", '
                                    '"{ENV[MET_BUILD_BASE]}/share/met/poly/SAO.poly" ];'),
           },
-         {'METPLUS_MASK_POLY':
-              'poly = ["{ENV[MET_BUILD_BASE]}/share/met/poly/CAR.poly", '
-              '"{ENV[MET_BUILD_BASE]}/share/met/poly/GLF.poly", '
-              '"{ENV[MET_BUILD_BASE]}/share/met/poly/NAO.poly", '
-              '"{ENV[MET_BUILD_BASE]}/share/met/poly/SAO.poly"];',
-          'METPLUS_MASK_DICT':
+         {'METPLUS_MASK_DICT':
               'mask = {poly = ["{ENV[MET_BUILD_BASE]}/share/met/poly/CAR.poly", '
               '"{ENV[MET_BUILD_BASE]}/share/met/poly/GLF.poly", '
               '"{ENV[MET_BUILD_BASE]}/share/met/poly/NAO.poly", '
@@ -164,24 +152,16 @@ def test_met_dictionary_in_var_options(metplus_config):
           }),
         # mask grid empty string (should create empty list)
         ({'POINT_STAT_MASK_GRID': '', },
-         {'METPLUS_MASK_GRID': 'grid = [];',
-          'METPLUS_MASK_DICT': 'mask = {grid = [];}',
-          }),
+         {'METPLUS_MASK_DICT': 'mask = {grid = [];}'}),
         # mask poly (old config var)
         ({'POINT_STAT_VERIFICATION_MASK_TEMPLATE': 'one, two', },
-         {'METPLUS_MASK_POLY': 'poly = ["one", "two"];',
-          'METPLUS_MASK_DICT': 'mask = {poly = ["one", "two"];}',
-          }),
+         {'METPLUS_MASK_DICT': 'mask = {poly = ["one", "two"];}'}),
         # mask poly (new config var)
         ({'POINT_STAT_MASK_POLY': 'one, two', },
-         {'METPLUS_MASK_POLY': 'poly = ["one", "two"];',
-          'METPLUS_MASK_DICT': 'mask = {poly = ["one", "two"];}',
-          }),
+         {'METPLUS_MASK_DICT': 'mask = {poly = ["one", "two"];}'}),
 
         ({'POINT_STAT_MASK_SID': 'one, two', },
-         {'METPLUS_MASK_SID': 'sid = ["one", "two"];',
-          'METPLUS_MASK_DICT': 'mask = {sid = ["one", "two"];}',
-          }),
+         {'METPLUS_MASK_DICT': 'mask = {sid = ["one", "two"];}'}),
 
         ({'POINT_STAT_OUTPUT_PREFIX': 'my_output_prefix'},
          {'METPLUS_OUTPUT_PREFIX': 'output_prefix = "my_output_prefix";'}),
@@ -192,9 +172,7 @@ def test_met_dictionary_in_var_options(metplus_config):
         ({'OBS_POINT_STAT_WINDOW_BEGIN': '-2700',
           'OBS_POINT_STAT_WINDOW_END': '2700',
           },
-         {'METPLUS_OBS_WINDOW_DICT': 'obs_window = {beg = -2700;end = 2700;}',
-          'OBS_WINDOW_BEGIN': '-2700', 'OBS_WINDOW_END': '2700'
-          }),
+         {'METPLUS_OBS_WINDOW_DICT': 'obs_window = {beg = -2700;end = 2700;}'}),
         # test that {app}_OBS_WINDOW are preferred over
         # OBS_{app}_WINDOW and generic OBS_WINDOW
         ({'OBS_POINT_STAT_WINDOW_BEGIN': '-2700',
@@ -365,8 +343,7 @@ def test_met_dictionary_in_var_options(metplus_config):
 
         ({'POINT_STAT_CLIMO_MEAN_FILE_NAME': '/some/climo_mean/file.txt', },
          {'METPLUS_CLIMO_MEAN_DICT': ('climo_mean = {file_name = '
-                                      '["/some/climo_mean/file.txt"];}'),
-          'CLIMO_MEAN_FILE': '"/some/climo_mean/file.txt"'}),
+                                      '["/some/climo_mean/file.txt"];}')}),
 
         ({'POINT_STAT_CLIMO_MEAN_FIELD': '{name="CLM_NAME"; level="(0,0,*,*)";}', },
          {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {field = [{name="CLM_NAME"; level="(0,0,*,*)";}];}'}),
@@ -418,14 +395,12 @@ def test_met_dictionary_in_var_options(metplus_config):
                                       'vld_thresh = 0.5;shape = SQUARE;}'
                                       'time_interp_method = NEAREST;'
                                       'match_month = TRUE;day_interval = 30;'
-                                      'hour_interval = 12;}'),
-          'CLIMO_MEAN_FILE': '"/some/climo_mean/file.txt"'}),
+                                      'hour_interval = 12;}')}),
 
         # climo stdev
         ({'POINT_STAT_CLIMO_STDEV_FILE_NAME': '/some/climo_stdev/file.txt', },
          {'METPLUS_CLIMO_STDEV_DICT': ('climo_stdev = {file_name = '
-                                       '["/some/climo_stdev/file.txt"];}'),
-          'CLIMO_STDEV_FILE': '"/some/climo_stdev/file.txt"'}),
+                                       '["/some/climo_stdev/file.txt"];}')}),
 
         ({'POINT_STAT_CLIMO_STDEV_FIELD': '{name="CLM_NAME"; level="(0,0,*,*)";}', },
          {
@@ -479,14 +454,12 @@ def test_met_dictionary_in_var_options(metplus_config):
                                        'vld_thresh = 0.5;shape = SQUARE;}'
                                        'time_interp_method = NEAREST;'
                                        'match_month = TRUE;day_interval = 30;'
-                                       'hour_interval = 12;}'),
-          'CLIMO_STDEV_FILE': '"/some/climo_stdev/file.txt"'}),
+                                       'hour_interval = 12;}')}),
         ({'POINT_STAT_HSS_EC_VALUE': '0.5', },
          {'METPLUS_HSS_EC_VALUE': 'hss_ec_value = 0.5;'}),
         ({'POINT_STAT_MASK_LLPNT': ('{ name = "LAT30TO40"; lat_thresh = >=30&&<=40; lon_thresh = NA; },'
                                     '{ name = "BOX"; lat_thresh = >=20&&<=40; lon_thresh = >=-110&&<=-90; }')},
-         {'METPLUS_MASK_LLPNT': 'llpnt = [{ name = "LAT30TO40"; lat_thresh = >=30&&<=40; lon_thresh = NA; }, { name = "BOX"; lat_thresh = >=20&&<=40; lon_thresh = >=-110&&<=-90; }];',
-          'METPLUS_MASK_DICT': 'mask = {llpnt = [{ name = "LAT30TO40"; lat_thresh = >=30&&<=40; lon_thresh = NA; }, { name = "BOX"; lat_thresh = >=20&&<=40; lon_thresh = >=-110&&<=-90; }];}'}),
+         {'METPLUS_MASK_DICT': 'mask = {llpnt = [{ name = "LAT30TO40"; lat_thresh = >=30&&<=40; lon_thresh = NA; }, { name = "BOX"; lat_thresh = >=20&&<=40; lon_thresh = >=-110&&<=-90; }];}'}),
 
         ({'POINT_STAT_HIRA_FLAG': 'False', },
          {'METPLUS_HIRA_DICT': 'hira = {flag = FALSE;}'}),
@@ -550,16 +523,7 @@ def test_met_dictionary_in_var_options(metplus_config):
              '"{ENV[MET_BUILD_BASE]}/share/met/poly/SAO.poly"];'
              'sid = ["one", "two"];'
              'llpnt = [{ name = "LAT30TO40"; lat_thresh = >=30&&<=40; lon_thresh = NA; }, { name = "BOX"; lat_thresh = >=20&&<=40; lon_thresh = >=-110&&<=-90; }];}'
-          ),
-          'METPLUS_MASK_LLPNT': 'llpnt = [{ name = "LAT30TO40"; lat_thresh = >=30&&<=40; lon_thresh = NA; }, { name = "BOX"; lat_thresh = >=20&&<=40; lon_thresh = >=-110&&<=-90; }];',
-          'METPLUS_MASK_POLY':
-              'poly = ["{ENV[MET_BUILD_BASE]}/share/met/poly/CAR.poly", '
-              '"{ENV[MET_BUILD_BASE]}/share/met/poly/GLF.poly", '
-              '"{ENV[MET_BUILD_BASE]}/share/met/poly/NAO.poly", '
-              '"{ENV[MET_BUILD_BASE]}/share/met/poly/SAO.poly"];',
-          'METPLUS_MASK_GRID': 'grid = ["FULL"];',
-          'METPLUS_MASK_SID': 'sid = ["one", "two"];',
-          }),
+          )}),
         # complex mask example, empty grid value
         ({'POINT_STAT_MASK_GRID': '',
           'POINT_STAT_MASK_POLY': (
@@ -579,16 +543,7 @@ def test_met_dictionary_in_var_options(metplus_config):
                  '"{ENV[MET_BUILD_BASE]}/share/met/poly/SAO.poly"];'
                  'sid = ["one", "two"];'
                  'llpnt = [{ name = "LAT30TO40"; lat_thresh = >=30&&<=40; lon_thresh = NA; }, { name = "BOX"; lat_thresh = >=20&&<=40; lon_thresh = >=-110&&<=-90; }];}'
-         ),
-             'METPLUS_MASK_LLPNT': 'llpnt = [{ name = "LAT30TO40"; lat_thresh = >=30&&<=40; lon_thresh = NA; }, { name = "BOX"; lat_thresh = >=20&&<=40; lon_thresh = >=-110&&<=-90; }];',
-             'METPLUS_MASK_POLY':
-                 'poly = ["{ENV[MET_BUILD_BASE]}/share/met/poly/CAR.poly", '
-                 '"{ENV[MET_BUILD_BASE]}/share/met/poly/GLF.poly", '
-                 '"{ENV[MET_BUILD_BASE]}/share/met/poly/NAO.poly", '
-                 '"{ENV[MET_BUILD_BASE]}/share/met/poly/SAO.poly"];',
-             'METPLUS_MASK_GRID': 'grid = [];',
-             'METPLUS_MASK_SID': 'sid = ["one", "two"];',
-         }),
+         )}),
 
     ]
 )
@@ -702,6 +657,7 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
         # check that environment variables were set properly
         # including deprecated env vars (not in wrapper env var keys)
         for env_var_key in env_var_keys:
+            print(f"ENV VAR: {env_var_key}")
             match = next((item for item in env_vars if
                           item.startswith(env_var_key)), None)
             assert match is not None

@@ -70,6 +70,22 @@ class TCPairsWrapper(RuntimeFreqWrapper):
         'METPLUS_DIAG_CONVERT_MAP_LIST',
     ]
 
+    # deprecated env vars that are no longer supported in the wrapped MET conf
+    DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
+        'INIT_BEG',
+        'INIT_END',
+        'VALID_BEG',
+        'VALID_END',
+        'INIT_INCLUDE',
+        'INIT_EXCLUDE',
+        'MODEL',
+        'STORM_ID',
+        'BASIN',
+        'CYCLONE',
+        'STORM_NAME',
+        'DLAND_FILE',
+    ]
+
     WILDCARDS = {
         'basin': '??',
         'cyclone': '*',
@@ -110,74 +126,60 @@ class TCPairsWrapper(RuntimeFreqWrapper):
         # get the MET config file path or use default
         c_dict['CONFIG_FILE'] = self.get_config_file('TCPairsConfig_wrapped')
 
-        self.add_met_config(name='init_beg',
-                            data_type='string',
+        self.add_met_config(name='init_beg', data_type='string',
                             metplus_configs=['TC_PAIRS_INIT_BEG',
                                              'INIT_BEG'])
 
-        self.add_met_config(name='init_end',
-                            data_type='string',
+        self.add_met_config(name='init_end', data_type='string',
                             metplus_configs=['TC_PAIRS_INIT_END',
                                              'INIT_END'])
 
-        self.add_met_config(name='init_inc',
-                            data_type='list',
+        self.add_met_config(name='init_inc', data_type='list',
                             metplus_configs=['TC_PAIRS_INIT_INCLUDE',
                                              'TC_PAIRS_INIT_INC',
                                              'INIT_INCLUDE'])
 
-        self.add_met_config(name='init_exc',
-                            data_type='list',
+        self.add_met_config(name='init_exc', data_type='list',
                             metplus_configs=['TC_PAIRS_INIT_EXCLUDE',
                                              'TC_PAIRS_INIT_EXC',
                                              'INIT_EXCLUDE'])
 
-        self.add_met_config(name='valid_inc',
-                            data_type='list',
+        self.add_met_config(name='valid_inc', data_type='list',
                             metplus_configs=['TC_PAIRS_VALID_INCLUDE',
                                              'TC_PAIRS_VALID_INC',
                                              'VALID_INCLUDE'])
 
-        self.add_met_config(name='valid_exc',
-                            data_type='list',
+        self.add_met_config(name='valid_exc', data_type='list',
                             metplus_configs=['TC_PAIRS_VALID_EXCLUDE',
                                              'TC_PAIRS_VALID_EXC',
                                              'VALID_EXCLUDE'])
 
-        self.add_met_config(name='write_valid',
-                            data_type='list',
+        self.add_met_config(name='write_valid', data_type='list',
                             metplus_configs=['TC_PAIRS_WRITE_VALID'])
 
-        self.add_met_config(name='valid_beg',
-                            data_type='string',
+        self.add_met_config(name='valid_beg', data_type='string',
                             metplus_configs=['TC_PAIRS_VALID_BEG',
                                              'VALID_BEG'])
 
-        self.add_met_config(name='valid_end',
-                            data_type='string',
+        self.add_met_config(name='valid_end', data_type='string',
                             metplus_configs=['TC_PAIRS_VALID_END',
                                              'VALID_END'])
 
-        self.add_met_config(name='dland_file',
-                            data_type='string',
+        self.add_met_config(name='dland_file', data_type='string',
                             metplus_configs=['TC_PAIRS_DLAND_FILE'])
 
-        self.add_met_config(name='model',
-                            data_type='list',
+        self.add_met_config(name='model', data_type='list',
                             metplus_configs=['TC_PAIRS_MODEL',
                                              'MODEL'])
 
-        self.add_met_config(name='storm_name',
-                            data_type='list',
+        self.add_met_config(name='storm_name', data_type='list',
                             metplus_configs=['TC_PAIRS_STORM_NAME'])
 
         self._handle_consensus()
 
-        self.add_met_config(name='check_dup',
-                            data_type='bool')
+        self.add_met_config(name='check_dup', data_type='bool')
 
-        self.add_met_config(name='interp12',
-                            data_type='string',
+        self.add_met_config(name='interp12', data_type='string',
                             extra_args={'remove_quotes': True,
                                         'uppercase': True})
 
@@ -560,31 +562,6 @@ class TCPairsWrapper(RuntimeFreqWrapper):
              Returns:
                  nothing - sets the environment variables
         """
-        # handle old method for setting env vars in MET config files
-        init_beg = self.get_env_var_value('METPLUS_INIT_BEG').strip('"')
-        self.add_env_var('INIT_BEG', init_beg)
-
-        init_end = self.get_env_var_value('METPLUS_INIT_END').strip('"')
-        self.add_env_var('INIT_END', init_end)
-
-        valid_beg = self.get_env_var_value('METPLUS_VALID_BEG').strip('"')
-        self.add_env_var('VALID_BEG', valid_beg)
-
-        valid_end = self.get_env_var_value('METPLUS_VALID_END').strip('"')
-        self.add_env_var('VALID_END', valid_end)
-
-        init_inc = self.get_env_var_value('METPLUS_INIT_INCLUDE',
-                                          item_type='list')
-        self.add_env_var('INIT_INCLUDE', init_inc)
-
-        init_exc = self.get_env_var_value('METPLUS_INIT_EXCLUDE',
-                                          item_type='list')
-        self.add_env_var('INIT_EXCLUDE', init_exc)
-
-        model = self.get_env_var_value('METPLUS_MODEL',
-                                       item_type='list')
-        self.add_env_var('MODEL', model)
-
         # STORM_ID
         storm_id = '[]'
         if self.c_dict.get('STORM_ID'):
@@ -593,8 +570,6 @@ class TCPairsWrapper(RuntimeFreqWrapper):
             storm_id_fmt = f"storm_id = {storm_id};"
             self.env_var_dict['METPLUS_STORM_ID'] = storm_id_fmt
 
-        self.add_env_var('STORM_ID', storm_id)
-
         # BASIN
         basin = '[]'
         if self.c_dict.get('BASIN'):
@@ -602,8 +577,6 @@ class TCPairsWrapper(RuntimeFreqWrapper):
 
             basin_fmt = f"basin = {basin};"
             self.env_var_dict['METPLUS_BASIN'] = basin_fmt
-
-        self.add_env_var('BASIN', basin)
 
         # CYCLONE
         cyclone = '[]'
@@ -620,8 +593,6 @@ class TCPairsWrapper(RuntimeFreqWrapper):
             cyclone_fmt = f"cyclone = {cyclone};"
             self.env_var_dict['METPLUS_CYCLONE'] = cyclone_fmt
 
-        self.add_env_var('CYCLONE', cyclone)
-
         # STORM_NAME
         storm_name = '[]'
         if self.c_dict.get('STORM_NAME'):
@@ -629,11 +600,6 @@ class TCPairsWrapper(RuntimeFreqWrapper):
 
             storm_name_fmt = f"storm_name = {storm_name};"
             self.env_var_dict['METPLUS_STORM_NAME'] = storm_name_fmt
-
-        self.add_env_var('STORM_NAME', storm_name)
-
-        # DLAND_FILE
-        self.add_env_var('DLAND_FILE', self.c_dict['DLAND_FILE'])
 
         super().set_environment_variables(time_info)
 

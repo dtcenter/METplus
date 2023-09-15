@@ -102,22 +102,21 @@ def test_is_var_item_valid_levels(metplus_config, item_list, configs_to_set, is_
 
 
 @pytest.mark.parametrize(
-    'deprecated_list, expected',
+    'met_config_file, expected',
     [
-        ([], (True, [])),
-        (['METPLUS_FCST_FILE_TYPE'], (False, [])),
-        (['SOME_OTHER_CONFIG_ITEM'], (True, [])),
+        ('GridStatConfig_good', (True, [])),
+        ('GridStatConfig_bad', (False, [])),
+        ('GridStatConfig_fake', (False, [])),
     ]
 )
 @pytest.mark.util
-def test_check_for_deprecated_met_config(metplus_config, deprecated_list, expected):
+def test_check_for_deprecated_met_config(metplus_config, met_config_file, expected):
     script_dir = os.path.dirname(__file__)
-    met_config = os.path.join(script_dir, 'met_config_validate.conf')
+    met_config = os.path.join(script_dir, met_config_file)
 
-    metplus_config.set('config', 'TEST_CONFIG_FILE', met_config)
+    metplus_config.set('config', 'GRID_STAT_CONFIG_FILE', met_config)
 
-    with mock.patch.object(cv, 'DEPRECATED_MET_LIST', deprecated_list):
-        actual = cv.check_for_deprecated_met_config(metplus_config)
+    actual = cv.check_for_deprecated_met_config(metplus_config)
     assert actual == expected
 
 

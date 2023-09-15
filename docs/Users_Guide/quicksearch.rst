@@ -34,7 +34,6 @@ Use Cases by MET Tool:
    | `SeriesAnalysis <../search.html?q=SeriesAnalysisUseCase&check_keywords=yes&area=default>`_
    | `StatAnalysis <../search.html?q=StatAnalysisToolUseCase&check_keywords=yes&area=default>`_
    | `TCDiag <../search.html?q=TCDiagToolUseCase&check_keywords=yes&area=default>`_
-   | `TCMPRPlotter <../search.html?q=TCMPRPlotterUseCase&check_keywords=yes&area=default>`_
    | `TCGen <../search.html?q=TCGenToolUseCase&check_keywords=yes&area=default>`_
    | `TCPairs <../search.html?q=TCPairsToolUseCase&check_keywords=yes&area=default>`_
    | `TCRMW <../search.html?q=TCRMWToolUseCase&check_keywords=yes&area=default>`_
@@ -62,7 +61,6 @@ Use Cases by MET Tool:
    | **SeriesAnalysis**: *SeriesAnalysisUseCase*
    | **StatAnalysis**: *StatAnalysisToolUseCase*
    | **TCDiag**: *TCDiagToolUseCase*
-   | **TCMPRPlotter**: *TCMPRPlotterUseCase*
    | **TCGen**: *TCGenToolUseCase*
    | **TCPairs**: *TCPairsToolUseCase*
    | **TCRMW**: *TCRMWToolUseCase*

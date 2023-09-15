@@ -74,8 +74,7 @@ def set_minimum_config_settings(config):
 
         ({'MODE_REGRID_TO_GRID': 'FCST',
           },
-         {'METPLUS_REGRID_DICT': 'regrid = {to_grid = FCST;}',
-          'REGRID_TO_GRID': 'FCST'}),
+         {'METPLUS_REGRID_DICT': 'regrid = {to_grid = FCST;}'}),
 
         ({'MODE_REGRID_METHOD': 'NEAREST',
           },
@@ -117,8 +116,7 @@ def set_minimum_config_settings(config):
                                   'convert(x) = 2*x;'
                                   'censor_thresh = [>12000, <5000];'
                                   'censor_val = [12000, 5000];}'
-                                  ),
-          'REGRID_TO_GRID': 'FCST'}),
+                                  )}),
 
         ({'MODE_QUILT': 'True'},
          {'METPLUS_QUILT': 'quilt = TRUE;'}),
@@ -410,6 +408,7 @@ def test_mode_single_field(metplus_config, config_overrides, env_var_values):
         # check that environment variables were set properly
         # including deprecated env vars (not in wrapper env var keys)
         for env_var_key in env_var_keys:
+            print(f"ENV VAR: {env_var_key}")
             match = next((item for item in env_vars if
                           item.startswith(env_var_key)), None)
             assert match is not None

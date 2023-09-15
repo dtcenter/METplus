@@ -105,62 +105,6 @@ def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
 
 @pytest.mark.parametrize(
     'config_overrides, env_var_values', [
-        # 0 no climo settings
-        ({}, {}),
-        # 1 mean template only
-        ({'GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE': 'gs_mean_{init?fmt=%Y%m%d%H}.tmpl'},
-         {'CLIMO_MEAN_FILE': '"gs_mean_YMDH.tmpl"',
-          'CLIMO_STDEV_FILE': '', }),
-        # 2 mean template and dir
-        ({'GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE': 'gs_mean_{init?fmt=%Y%m%d%H}.tmpl',
-          'GRID_STAT_CLIMO_MEAN_INPUT_DIR': '/climo/mean/dir'},
-         {'CLIMO_MEAN_FILE': '"/climo/mean/dir/gs_mean_YMDH.tmpl"',
-          'CLIMO_STDEV_FILE': '', }),
-        # 3 stdev template only
-        ({'GRID_STAT_CLIMO_STDEV_INPUT_TEMPLATE': 'gs_stdev_{init?fmt=%Y%m%d%H}.tmpl'},
-         {'CLIMO_STDEV_FILE': '"gs_stdev_YMDH.tmpl"', }),
-        # 4 stdev template and dir
-        ({'GRID_STAT_CLIMO_STDEV_INPUT_TEMPLATE': 'gs_stdev_{init?fmt=%Y%m%d%H}.tmpl',
-          'GRID_STAT_CLIMO_STDEV_INPUT_DIR': '/climo/stdev/dir'},
-         {'CLIMO_STDEV_FILE': '"/climo/stdev/dir/gs_stdev_YMDH.tmpl"', }),
-    ]
-)
-@pytest.mark.wrapper_b
-def test_handle_climo_file_variables(metplus_config, config_overrides,
-                                     env_var_values):
-    """! Ensure that old and new variables for setting climo_mean and
-     climo_stdev are set to the correct values
-    """
-    old_env_vars = ['CLIMO_MEAN_FILE',
-                    'CLIMO_STDEV_FILE']
-    config = metplus_config
-
-    set_minimum_config_settings(config)
-
-    # set config variable overrides
-    for key, value in config_overrides.items():
-        config.set('config', key, value)
-
-    wrapper = GridStatWrapper(config)
-    assert wrapper.isOK
-
-    all_cmds = wrapper.run_all_times()
-    for (_, actual_env_vars), run_time in zip(all_cmds, run_times):
-        run_dt = datetime.strptime(run_time, time_fmt)
-        ymdh = run_dt.strftime('%Y%m%d%H')
-        print(f"ACTUAL ENV VARS: {actual_env_vars}")
-        for old_env in old_env_vars:
-            match = next((item for item in actual_env_vars if
-                          item.startswith(old_env)), None)
-            assert match is not None
-            actual_value = match.split('=', 1)[1]
-            expected_value = env_var_values.get(old_env, '')
-            expected_value = expected_value.replace('YMDH', ymdh)
-            assert expected_value == actual_value
-
-
-@pytest.mark.parametrize(
-    'config_overrides, env_var_values', [
         ({'MODEL': 'my_model'},
          {'METPLUS_MODEL': 'model = "my_model";'}),
 
@@ -175,8 +119,7 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
 
         ({'GRID_STAT_REGRID_TO_GRID': 'FCST',
           },
-         {'METPLUS_REGRID_DICT': 'regrid = {to_grid = FCST;}',
-          'REGRID_TO_GRID': 'FCST'}),
+         {'METPLUS_REGRID_DICT': 'regrid = {to_grid = FCST;}'}),
 
         ({'GRID_STAT_REGRID_METHOD': 'NEAREST',
           },
@@ -217,25 +160,18 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
                                   'convert(x) = 2*x;'
                                   'censor_thresh = [>12000, <5000];'
                                   'censor_val = [12000, 5000];}'
-                                  ),
-          'REGRID_TO_GRID': 'FCST'}),
+                                  )}),
 
         ({'GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE':
               '/some/path/climo/filename.nc',
           },
          {'METPLUS_CLIMO_MEAN_DICT':
-              'climo_mean = {file_name = ["/some/path/climo/filename.nc"];}',
-          'CLIMO_MEAN_FILE':
-              '"/some/path/climo/filename.nc"',
-          }),
+              'climo_mean = {file_name = ["/some/path/climo/filename.nc"];}'}),
         ({'GRID_STAT_CLIMO_STDEV_INPUT_TEMPLATE':
               '/some/path/climo/stdfile.nc',
           },
          {'METPLUS_CLIMO_STDEV_DICT':
-              'climo_stdev = {file_name = ["/some/path/climo/stdfile.nc"];}',
-          'CLIMO_STDEV_FILE':
-              '"/some/path/climo/stdfile.nc"',
-         }),
+              'climo_stdev = {file_name = ["/some/path/climo/stdfile.nc"];}'}),
         # mask grid and poly (old config var)
         ({'GRID_STAT_MASK_GRID': 'FULL',
           'GRID_STAT_VERIFICATION_MASK_TEMPLATE': 'one, two',
@@ -503,8 +439,7 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
 
         ({'GRID_STAT_CLIMO_MEAN_FILE_NAME': '/some/climo_mean/file.txt', },
          {'METPLUS_CLIMO_MEAN_DICT': ('climo_mean = {file_name = '
-                                      '["/some/climo_mean/file.txt"];}'),
-          'CLIMO_MEAN_FILE': '"/some/climo_mean/file.txt"'}),
+                                      '["/some/climo_mean/file.txt"];}')}),
 
         ({'GRID_STAT_CLIMO_MEAN_FIELD': '{name="UGRD"; level=["P850","P500","P250"];}', },
          {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {field = [{name="UGRD"; level=["P850","P500","P250"];}];}'}),
@@ -585,14 +520,12 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
                                       'vld_thresh = 0.5;shape = SQUARE;}'
                                       'time_interp_method = NEAREST;'
                                       'match_month = TRUE;day_interval = 30;'
-                                      'hour_interval = 12;}'),
-          'CLIMO_MEAN_FILE': '"/some/climo_mean/file.txt"'}),
+                                      'hour_interval = 12;}')}),
 
         # climo stdev
         ({'GRID_STAT_CLIMO_STDEV_FILE_NAME': '/some/climo_stdev/file.txt', },
          {'METPLUS_CLIMO_STDEV_DICT': ('climo_stdev = {file_name = '
-                                      '["/some/climo_stdev/file.txt"];}'),
-          'CLIMO_STDEV_FILE': '"/some/climo_stdev/file.txt"'}),
+                                      '["/some/climo_stdev/file.txt"];}')}),
 
         ({'GRID_STAT_CLIMO_STDEV_FIELD': '{name="CLM_NAME"; level="(0,0,*,*)";}', },
          {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {field = [{name="CLM_NAME"; level="(0,0,*,*)";}];}'}),
@@ -644,8 +577,7 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
                                       'vld_thresh = 0.5;shape = SQUARE;}'
                                       'time_interp_method = NEAREST;'
                                       'match_month = TRUE;day_interval = 30;'
-                                      'hour_interval = 12;}'),
-          'CLIMO_STDEV_FILE': '"/some/climo_stdev/file.txt"'}),
+                                      'hour_interval = 12;}')}),
         # ignore USE_FCST because FIELD is set
         (
         {'GRID_STAT_CLIMO_STDEV_FIELD': '{name="CLM_NAME"; level="(0,0,*,*)";}',
@@ -772,11 +704,11 @@ def test_grid_stat_single_field(metplus_config, config_overrides,
         # check that environment variables were set properly
         # including deprecated env vars (not in wrapper env var keys)
         for env_var_key in env_var_keys:
+            print(f"ENV VAR: {env_var_key}")
             match = next((item for item in env_vars if
                           item.startswith(env_var_key)), None)
             assert match is not None
             actual_value = match.split('=', 1)[1]
-            print(f"ENV VAR: {env_var_key}")
             if env_var_key == 'METPLUS_FCST_FIELD':
                 assert actual_value == fcst_fmt
             elif env_var_key == 'METPLUS_OBS_FIELD':
