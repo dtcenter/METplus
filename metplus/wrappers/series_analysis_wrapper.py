@@ -63,12 +63,20 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         'METPLUS_MASK_DICT',
     ]
 
-    # handle deprecated env vars used pre v4.0.0
+    # deprecated env vars that are no longer supported in the wrapped MET conf
     DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
+        'MODEL',
+        'OBTYPE',
+        'REGRID_TO_GRID',
         'CLIMO_MEAN_FILE',
         'CLIMO_STDEV_FILE',
         'METPLUS_CTS_LIST',
         'METPLUS_STAT_LIST',
+        'FCST_FILE_TYPE',
+        'OBS_FILE_TYPE',
+        'FCST_FIELD',
+        'OBS_FIELD',
+        'STAT_LIST',
     ]
 
     # variable names of output_stats dictionary
@@ -112,33 +120,24 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                c_dict['VERBOSITY'])
         )
 
-        self.add_met_config(name='model',
-                            data_type='string',
+        self.add_met_config(name='model', data_type='string',
                             metplus_configs=['MODEL'])
 
-        self.add_met_config(name='obtype',
-                            data_type='string',
+        self.add_met_config(name='obtype', data_type='string',
                             metplus_configs=['OBTYPE'])
-
-        # handle old format of MODEL and OBTYPE
-        c_dict['MODEL'] = self.config.getstr('config', 'MODEL', 'WRF')
-        c_dict['OBTYPE'] = self.config.getstr('config', 'OBTYPE', 'ANALYS')
 
         self.handle_description()
 
         self.handle_regrid(c_dict)
 
-        self.add_met_config(name='cat_thresh',
-                            data_type='list',
+        self.add_met_config(name='cat_thresh', data_type='list',
                             extra_args={'remove_quotes': True})
 
-        self.add_met_config(name='vld_thresh',
-                            data_type='float',
+        self.add_met_config(name='vld_thresh', data_type='float',
                             metplus_configs=['SERIES_ANALYSIS_VLD_THRESH',
                                              'SERIES_ANALYSIS_VALID_THRESH',])
 
-        self.add_met_config(name='block_size',
-                            data_type='string',
+        self.add_met_config(name='block_size', data_type='string',
                             extra_args={'remove_quotes': True})
 
         # handle all output_stats dictionary values
@@ -163,21 +162,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
             value = ('list', None, None, nicknames)
             output_stats_dict[key] = value
+
         self.add_met_config_dict('output_stats', output_stats_dict)
-
-        # set legacy stat list to set output_stats.cnt in MET config file
-        self.add_met_config(name='cnt',
-                            data_type='list',
-                            env_var_name='METPLUS_STAT_LIST',
-                            metplus_configs=['SERIES_ANALYSIS_STAT_LIST',
-                                             'SERIES_ANALYSIS_CNT'])
-
-        # set legacy cts list to set output_stats.cts in MET config file
-        self.add_met_config(name='cts',
-                            data_type='list',
-                            env_var_name='METPLUS_CTS_LIST',
-                            metplus_configs=['SERIES_ANALYSIS_CTS_LIST',
-                                             'SERIES_ANALYSIS_CTS'])
 
         self.handle_mask(single_value=True)
 
@@ -372,8 +358,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         # get climo_cdf dictionary
         self.handle_climo_cdf_dict(write_bins=False)
 
-        self.add_met_config(name='hss_ec_value',
-                            data_type='float',
+        self.add_met_config(name='hss_ec_value', data_type='float',
                             metplus_configs=['SERIES_ANALYSIS_HSS_EC_VALUE'])
 
         # if no forecast lead sequence is specified,
@@ -827,44 +812,6 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             self.clear()
 
         return success
-
-    def set_environment_variables(self, time_info):
-        """! Set the env variables based on settings in the METplus config
-             files.
-
-             @param time_info dictionary containing time information
-             @param fcst_field formatted forecast field information
-             @param obs_field formatted observation field information
-        """
-        self.logger.info('Setting env variables from config file...')
-
-        # Set all the environment variables referenced in the MET config file
-        self.add_env_var("FCST_FILE_TYPE", self.c_dict.get('FCST_FILE_TYPE',
-                                                           ''))
-        self.add_env_var("OBS_FILE_TYPE", self.c_dict.get('OBS_FILE_TYPE',
-                                                          ''))
-
-        self.add_env_var("FCST_FIELD",
-                         self.c_dict.get('FCST_FIELD', ''))
-        self.add_env_var("OBS_FIELD",
-                         self.c_dict.get('OBS_FIELD', ''))
-
-        # set old env var settings for backwards compatibility
-        self.add_env_var('MODEL', self.c_dict.get('MODEL', ''))
-        self.add_env_var("OBTYPE", self.c_dict.get('OBTYPE', ''))
-        self.add_env_var('REGRID_TO_GRID',
-                         self.c_dict.get('REGRID_TO_GRID', ''))
-
-        # format old stat list
-        stat_list = self.c_dict.get('STAT_LIST')
-        if not stat_list:
-            stat_list = "[]"
-        else:
-            stat_list = '","'.join(stat_list)
-            stat_list = f'["{stat_list}"]'
-        self.add_env_var('STAT_LIST', stat_list)
-
-        super().set_environment_variables(time_info)
 
     def set_command_line_arguments(self, time_info):
         """! Set arguments that will be passed into the MET command

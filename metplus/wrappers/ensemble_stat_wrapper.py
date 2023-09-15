@@ -71,10 +71,13 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'METPLUS_ECLV_POINTS',
     ]
 
-    # handle deprecated env vars used pre v4.0.0
+    # deprecated env vars that are no longer supported in the wrapped MET conf
     DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
         'CLIMO_MEAN_FILE',
         'CLIMO_STDEV_FILE',
+        'MODEL',
+        'OBTYPE',
+        'REGRID_TO_GRID',
     ]
 
     OUTPUT_FLAGS = [
@@ -266,11 +269,9 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                             extra_args={'remove_quotes': True,
                                         'allow_empty': True})
 
-        self.add_met_config(name='ens_ssvar_bin_size',
-                            data_type='float')
+        self.add_met_config(name='ens_ssvar_bin_size', data_type='float')
 
-        self.add_met_config(name='ens_phist_bin_size',
-                            data_type='float')
+        self.add_met_config(name='ens_phist_bin_size', data_type='float')
 
         self.add_met_config(name='ens_thresh',
                             data_type='float',
@@ -282,8 +283,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                             data_type='string',
                             extra_args={'remove_quotes': True})
 
-        self.add_met_config(name='skip_const',
-                            data_type='bool')
+        self.add_met_config(name='skip_const', data_type='bool')
 
         # set climo_cdf dictionary variables
         self.handle_climo_cdf_dict()
@@ -331,7 +331,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                             extra_args={'allow_empty': True})
 
         self.add_met_config_window('obs_window')
-        self.handle_obs_window_legacy(c_dict)
 
         self.add_met_config(
             name='obs_quality_inc',

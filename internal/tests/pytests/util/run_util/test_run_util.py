@@ -2,6 +2,7 @@ import os
 import pytest
 from unittest import mock
 import metplus.util.run_util as ru
+import metplus.util.wrapper_init as wi
 from metplus.wrappers.ensemble_stat_wrapper import EnsembleStatWrapper
 from metplus.wrappers.grid_stat_wrapper import GridStatWrapper
 
@@ -227,8 +228,8 @@ def test_run_metplus_errors(capfd, side_effect, return_value, check_err):
 
 
 @pytest.mark.util
-def test__get_wrapper_instance(metplus_config):
-    actual = ru._get_wrapper_instance(metplus_config, 'EnsembleStat', instance=2)
+def test_get_wrapper_instance(metplus_config):
+    actual = wi.get_wrapper_instance(metplus_config, 'EnsembleStat', instance=2)
     assert isinstance(actual, EnsembleStatWrapper)
     assert actual.instance == 2
 
@@ -241,10 +242,10 @@ def test__get_wrapper_instance(metplus_config):
     ],
 )
 @pytest.mark.util
-def test__get_wrapper_instance_raises(capfd, side_effect, check_err):
+def test_get_wrapper_instance_raises(capfd, side_effect, check_err):
     config = get_config_from_file()
-    with mock.patch.object(ru, 'import_module', side_effect=side_effect):
-        actual = ru._get_wrapper_instance(config, 'EnsembleStat')
+    with mock.patch.object(wi, 'import_module', side_effect=side_effect):
+        actual = wi.get_wrapper_instance(config, 'EnsembleStat')
     assert actual == None
     out, err = capfd.readouterr()
     assert check_err in err

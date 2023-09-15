@@ -1169,9 +1169,9 @@ configuration files to change input/output file paths, configuration file
 paths, and more. The value of each list item can be referenced in the
 METplus configuration variables by using {custom?fmt=%s}. The variable
 CUSTOM_LOOP_LIST will apply the values to each wrapper in the PROCESS_LIST
-unless the wrapper does not support this functionality. CyclonePlotter,
-StatAnalysis, TCStat, and
-TCMPRPlotter wrappers are not supported. If the variable is not set or set
+unless the wrapper does not support this functionality.
+CyclonePlotter, StatAnalysis, and TCStat wrappers are not supported.
+If the variable is not set or set
 to an empty string, the wrapper will execute as normal without additional
 runs. The name of the wrapper-specific variables contain the name of the
 wrapper, i.e. SERIES_ANALYSIS_CUSTOM_LOOP_LIST,

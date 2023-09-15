@@ -3,7 +3,6 @@ import os
 import shutil
 import logging
 from datetime import datetime
-from importlib import import_module
 
 from .constants import NO_COMMAND_WRAPPERS
 from .string_manip import get_logfile_info, log_terminal_includes_info
@@ -13,7 +12,7 @@ from .config_util import handle_tmp_dir, write_final_conf, write_all_commands
 from .config_validate import validate_config_variables
 from .. import get_metplus_version
 from .config_metplus import setup
-from . import camel_to_underscore
+from . import camel_to_underscore, get_wrapper_instance
 
 
 def pre_run_setup(config_inputs):
@@ -105,7 +104,7 @@ def run_metplus(config):
     try:
         # if Usage is in process list, run it and exit
         if 'Usage' in [p[0] for p in process_list]:
-            wrapper = _get_wrapper_instance(config, 'Usage')
+            wrapper = get_wrapper_instance(config, 'Usage')
             wrapper.run_all_times()
             return 0
 
@@ -137,33 +136,6 @@ def run_metplus(config):
         return 1
 
 
-def _get_wrapper_instance(config, process, instance=None):
-    """!Initialize METplus wrapper instance.
-
-    @param config METplusConfig object to pass to wrapper constructor
-    @param process name of wrapper in camel case, e.g. GridStat
-    @param instance (optional) instance identifier for creating multiple
-    instances of a wrapper. Set to None (default) if no instance is specified
-    @returns CommandBuilder sub-class object or None if something went wrong
-    """
-    try:
-        package_name = ('metplus.wrappers.'
-                        f'{camel_to_underscore(process)}_wrapper')
-        module = import_module(package_name)
-        metplus_wrapper = (
-            getattr(module, f"{process}Wrapper")(config, instance=instance)
-        )
-    except AttributeError as err:
-        config.logger.error(f"There was a problem loading {process} wrapper: {err}")
-        return None
-    except ModuleNotFoundError:
-        config.logger.error(f"Could not load {process} wrapper. "
-                            "Wrapper may have been disabled.")
-        return None
-
-    return metplus_wrapper
-
-
 def _load_all_wrappers(config, process_list):
     """!Initialize all METplus wrapper instances in process list.
 
@@ -176,7 +148,7 @@ def _load_all_wrappers(config, process_list):
     processes = []
     is_ok = True
     for process, instance in process_list:
-        wrapper = _get_wrapper_instance(config, process, instance)
+        wrapper = get_wrapper_instance(config, process, instance)
         if not wrapper:
             is_ok = False
             continue
