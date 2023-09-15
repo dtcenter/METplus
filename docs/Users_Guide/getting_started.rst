@@ -387,9 +387,10 @@ METplus is available on DockerHub. The METplus Docker image includes all of
 the MET executables from the corresponding METplus Coordinated Release and
 the METplus wrappers are pre-configured to use them.
 
-To pull the latest official release, run::
+To pull the latest official release, use the X.Y-latest tag where X.Y is the
+version, e.g.::
 
-    docker pull dtcenter/metplus:latest
+    docker pull dtcenter/metplus:5.1-latest
 
 Tags for previous releases and development releases are also available.
 Refer to the list of
@@ -414,12 +415,12 @@ To make these data available in a METplus Docker container, first create a
 Docker data volume from the desired tag and give it a name with the *--name*
 argument::
 
-    docker create --name met_tool_wrapper dtcenter/metplus-data:4.1-met_tool_wrapper
+    docker create --name met_tool_wrapper dtcenter/metplus-data:5.1-met_tool_wrapper
 
 Then mount the data volume to the container using the *--volumes-from* argument
 to the *docker run* command::
 
-    docker run --rm -it --volumes-from met_tool_wrapper dtcenter/metplus:4.1.4 bash
+    docker run --rm -it --volumes-from met_tool_wrapper dtcenter/metplus:5.1-latest bash
 
 The input data will be available inside the container under
 /data/input/METplus_Data.
