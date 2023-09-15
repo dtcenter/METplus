@@ -58,6 +58,10 @@ METplus Configuration
 | :term:`ASCII2NC_TIME_SUMMARY_VALID_THRESH`
 | :term:`ASCII2NC_CUSTOM_LOOP_LIST`
 | :term:`ASCII2NC_MET_CONFIG_OVERRIDES`
+| :term:`ASCII2NC_SKIP_VALID_TIMES`
+| :term:`ASCII2NC_INC_VALID_TIMES`
+| :term:`ASCII2NC_SKIP_INIT_TIMES`
+| :term:`ASCII2NC_INC_INIT_TIMES`
 |
 
 .. _ascii2nc-met-conf:
@@ -313,6 +317,10 @@ METplus Configuration
 | :term:`OBS_ENSEMBLE_STAT_VAR<n>_LEVELS`
 | :term:`OBS_ENSEMBLE_STAT_VAR<n>_THRESH`
 | :term:`OBS_ENSEMBLE_STAT_VAR<n>_OPTIONS`
+| :term:`ENSEMBLE_STAT_SKIP_VALID_TIMES`
+| :term:`ENSEMBLE_STAT_INC_VALID_TIMES`
+| :term:`ENSEMBLE_STAT_SKIP_INIT_TIMES`
+| :term:`ENSEMBLE_STAT_INC_INIT_TIMES`
 |
 
 .. warning:: **DEPRECATED:**
@@ -938,6 +946,10 @@ Configuration
 | :term:`EXAMPLE_INPUT_DIR`
 | :term:`EXAMPLE_INPUT_TEMPLATE`
 | :term:`EXAMPLE_CUSTOM_LOOP_LIST`
+| :term:`EXAMPLE_SKIP_VALID_TIMES`
+| :term:`EXAMPLE_INC_VALID_TIMES`
+| :term:`EXAMPLE_SKIP_INIT_TIMES`
+| :term:`EXAMPLE_INC_INIT_TIMES`
 |
 
 .. _extract_tiles_wrapper:
@@ -1125,6 +1137,10 @@ METplus Configuration
 | :term:`GEN_ENS_PROD_ENS_MEMBER_IDS`
 | :term:`GEN_ENS_PROD_CONTROL_ID`
 | :term:`GEN_ENS_PROD_MET_CONFIG_OVERRIDES`
+| :term:`GEN_ENS_PROD_SKIP_VALID_TIMES`
+| :term:`GEN_ENS_PROD_INC_VALID_TIMES`
+| :term:`GEN_ENS_PROD_SKIP_INIT_TIMES`
+| :term:`GEN_ENS_PROD_INC_INIT_TIMES`
 
 .. _gen-ens-prod-met-conf:
 
@@ -1490,6 +1506,10 @@ Configuration
 | :term:`GEN_VX_MASK_CUSTOM_LOOP_LIST`
 | :term:`GEN_VX_MASK_FILE_WINDOW_BEGIN`
 | :term:`GEN_VX_MASK_FILE_WINDOW_END`
+| :term:`GEN_VX_MASK_SKIP_VALID_TIMES`
+| :term:`GEN_VX_MASK_INC_VALID_TIMES`
+| :term:`GEN_VX_MASK_SKIP_INIT_TIMES`
+| :term:`GEN_VX_MASK_INC_INIT_TIMES`
 |
 
 .. _gfdl_tracker_wrapper:
@@ -2695,6 +2715,10 @@ METplus Configuration
 | :term:`GRID_DIAG_RUNTIME_FREQ`
 | :term:`GRID_DIAG_DESC`
 | :term:`GRID_DIAG_MET_CONFIG_OVERRIDES`
+| :term:`GRID_DIAG_SKIP_VALID_TIMES`
+| :term:`GRID_DIAG_INC_VALID_TIMES`
+| :term:`GRID_DIAG_SKIP_INIT_TIMES`
+| :term:`GRID_DIAG_INC_INIT_TIMES`
 |
 
 .. _grid-diag-met-conf:
@@ -2970,6 +2994,10 @@ METplus Configuration
 | :term:`OBS_GRID_STAT_VAR<n>_THRESH`
 | :term:`OBS_GRID_STAT_VAR<n>_OPTIONS`
 | :term:`GRID_STAT_SEEPS_P1_THRESH`
+| :term:`GRID_STAT_SKIP_VALID_TIMES`
+| :term:`GRID_STAT_INC_VALID_TIMES`
+| :term:`GRID_STAT_SKIP_INIT_TIMES`
+| :term:`GRID_STAT_INC_INIT_TIMES`
 |
 
 .. warning:: **DEPRECATED**
@@ -3526,6 +3554,10 @@ METplus Configuration
 | :term:`IODA2NC_TIME_SUMMARY_VLD_THRESH`
 | :term:`IODA2NC_CUSTOM_LOOP_LIST`
 | :term:`IODA2NC_MET_CONFIG_OVERRIDES`
+| :term:`IODA2NC_SKIP_VALID_TIMES`
+| :term:`IODA2NC_INC_VALID_TIMES`
+| :term:`IODA2NC_SKIP_INIT_TIMES`
+| :term:`IODA2NC_INC_INIT_TIMES`
 
 .. _ioda2nc-met-conf:
 
@@ -4070,6 +4102,10 @@ METplus Configuration
 | :term:`MODE_OBS_FILE_TYPE`
 | :term:`MODE_OBS_MULTIVAR_NAME`
 | :term:`MODE_OBS_MULTIVAR_LEVEL`
+| :term:`MODE_SKIP_VALID_TIMES`
+| :term:`MODE_INC_VALID_TIMES`
+| :term:`MODE_SKIP_INIT_TIMES`
+| :term:`MODE_INC_INIT_TIMES`
 |
 
 .. warning:: **DEPRECATED:**
@@ -4758,6 +4794,10 @@ METplus Configuration
 | :term:`OBS_MTD_VAR<n>_LEVELS`
 | :term:`OBS_MTD_VAR<n>_THRESH`
 | :term:`OBS_MTD_VAR<n>_OPTIONS`
+| :term:`MTD_SKIP_VALID_TIMES`
+| :term:`MTD_INC_VALID_TIMES`
+| :term:`MTD_SKIP_INIT_TIMES`
+| :term:`MTD_INC_INIT_TIMES`
 |
 
 .. warning:: **DEPRECATED:**
@@ -5026,6 +5066,10 @@ METplus Configuration
 | :term:`PB2NC_LEVEL_CATEGORY`
 | :term:`PB2NC_QUALITY_MARK_THRESH`
 | :term:`PB2NC_OBS_BUFR_MAP`
+| :term:`PB2NC_SKIP_VALID_TIMES`
+| :term:`PB2NC_INC_VALID_TIMES`
+| :term:`PB2NC_SKIP_INIT_TIMES`
+| :term:`PB2NC_INC_INIT_TIMES`
 
 .. warning:: **DEPRECATED:**
 
@@ -5346,6 +5390,10 @@ METplus Configuration
 | :term:`FCST_PCP_COMBINE_OUTPUT_NAME`
 | :term:`OBS_PCP_COMBINE_OUTPUT_ACCUM`
 | :term:`OBS_PCP_COMBINE_OUTPUT_NAME`
+| :term:`PCP_COMBINE_SKIP_VALID_TIMES`
+| :term:`PCP_COMBINE_INC_VALID_TIMES`
+| :term:`PCP_COMBINE_SKIP_INIT_TIMES`
+| :term:`PCP_COMBINE_INC_INIT_TIMES`
 |
 
 .. warning:: **DEPRECATED:**
@@ -5406,6 +5454,10 @@ Configuration
 | :term:`PLOT_DATA_PLANE_RANGE_MIN_MAX`
 | :term:`PLOT_DATA_PLANE_CONVERT_TO_IMAGE`
 | :term:`PLOT_DATA_PLANE_SKIP_IF_OUTPUT_EXISTS`
+| :term:`PLOT_DATA_PLANE_SKIP_VALID_TIMES`
+| :term:`PLOT_DATA_PLANE_INC_VALID_TIMES`
+| :term:`PLOT_DATA_PLANE_SKIP_INIT_TIMES`
+| :term:`PLOT_DATA_PLANE_INC_INIT_TIMES`
 
 .. _plot_point_obs_wrapper:
 
@@ -5469,6 +5521,10 @@ Configuration
 | :term:`PLOT_POINT_OBS_FILL_PLOT_INFO_COLORBAR_FLAG`
 | :term:`PLOT_POINT_OBS_POINT_DATA`
 | :term:`PLOT_POINT_OBS_MET_CONFIG_OVERRIDES`
+| :term:`PLOT_POINT_OBS_SKIP_VALID_TIMES`
+| :term:`PLOT_POINT_OBS_INC_VALID_TIMES`
+| :term:`PLOT_POINT_OBS_SKIP_INIT_TIMES`
+| :term:`PLOT_POINT_OBS_INC_INIT_TIMES`
 
 
 .. _plot-point-obs-met-conf:
@@ -5804,6 +5860,10 @@ METplus Configuration
 | :term:`POINT2GRID_VLD_THRESH`
 | :term:`POINT2GRID_CUSTOM_LOOP_LIST`
 | :term:`POINT2GRID_SKIP_IF_OUTPUT_EXISTS`
+| :term:`POINT2GRID_SKIP_VALID_TIMES`
+| :term:`POINT2GRID_INC_VALID_TIMES`
+| :term:`POINT2GRID_SKIP_INIT_TIMES`
+| :term:`POINT2GRID_INC_INIT_TIMES`
 |
 
 .. _point_stat_wrapper:
@@ -5943,6 +6003,10 @@ Configuration
 | :term:`POINT_STAT_OBS_VALID_BEG`
 | :term:`POINT_STAT_OBS_VALID_END`
 | :term:`POINT_STAT_SEEPS_P1_THRESH`
+| :term:`POINT_STAT_SKIP_VALID_TIMES`
+| :term:`POINT_STAT_INC_VALID_TIMES`
+| :term:`POINT_STAT_SKIP_INIT_TIMES`
+| :term:`POINT_STAT_INC_INIT_TIMES`
 |
 
 .. warning:: **DEPRECATED:**
@@ -6455,6 +6519,10 @@ METplus Configuration
 | :term:`OBS_REGRID_DATA_PLANE_VAR<n>_INPUT_FIELD_NAME`
 | :term:`OBS_REGRID_DATA_PLANE_VAR<n>_INPUT_LEVEL`
 | :term:`OBS_REGRID_DATA_PLANE_VAR<n>_OUTPUT_FIELD_NAME`
+| :term:`REGRID_DATA_PLANE_SKIP_VALID_TIMES`
+| :term:`REGRID_DATA_PLANE_INC_VALID_TIMES`
+| :term:`REGRID_DATA_PLANE_SKIP_INIT_TIMES`
+| :term:`REGRID_DATA_PLANE_INC_INIT_TIMES`
 |
 
 .. warning:: **DEPRECATED:**
@@ -6581,6 +6649,10 @@ METplus Configuration
 | :term:`FCST_SERIES_ANALYSIS_PROB_IN_GRIB_PDS`
 | :term:`SERIES_ANALYSIS_MASK_GRID`
 | :term:`SERIES_ANALYSIS_MASK_POLY`
+| :term:`SERIES_ANALYSIS_SKIP_VALID_TIMES`
+| :term:`SERIES_ANALYSIS_INC_VALID_TIMES`
+| :term:`SERIES_ANALYSIS_SKIP_INIT_TIMES`
+| :term:`SERIES_ANALYSIS_INC_INIT_TIMES`
 |
 
 .. warning:: **DEPRECATED:**
@@ -7220,6 +7292,10 @@ The following values are optional in the METplus configuration file:
 | :term:`STAT_ANALYSIS_OBS_VALID_BEG`
 | :term:`STAT_ANALYSIS_OBS_VALID_END`
 | :term:`STAT_ANALYSIS_MET_CONFIG_OVERRIDES`
+| :term:`STAT_ANALYSIS_SKIP_VALID_TIMES`
+| :term:`STAT_ANALYSIS_INC_VALID_TIMES`
+| :term:`STAT_ANALYSIS_SKIP_INIT_TIMES`
+| :term:`STAT_ANALYSIS_INC_INIT_TIMES`
 
 .. warning:: **DEPRECATED:**
 
@@ -7721,6 +7797,10 @@ METplus Configuration
 | :term:`TC_DIAG_OUTPUT_PREFIX`
 | :term:`TC_DIAG_SKIP_IF_OUTPUT_EXISTS`
 | :term:`TC_DIAG_MET_CONFIG_OVERRIDES`
+| :term:`TC_DIAG_SKIP_VALID_TIMES`
+| :term:`TC_DIAG_INC_VALID_TIMES`
+| :term:`TC_DIAG_SKIP_INIT_TIMES`
+| :term:`TC_DIAG_INC_INIT_TIMES`
 |
 
 .. _tc-diag-met-conf:
@@ -8773,85 +8853,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 TCMPRPlotter
 ============
 
-Description
------------
-
-The TCMPRPlotter wrapper is a Python script that wraps the R script
-plot_tcmpr.R. This script is useful for plotting the calculated
-statistics for the output from the MET-TC tools. This script, and other
-R scripts are included in the MET installation. Please refer to
-the MET User's Guide for usage information.
-
-METplus Configuration
----------------------
-
-| :term:`TCMPR_PLOTTER_TCMPR_DATA_DIR`
-| :term:`TCMPR_PLOTTER_PLOT_OUTPUT_DIR`
-| :term:`TCMPR_PLOTTER_CONFIG_FILE`
-| :term:`TCMPR_PLOTTER_PREFIX`
-| :term:`TCMPR_PLOTTER_TITLE`
-| :term:`TCMPR_PLOTTER_SUBTITLE`
-| :term:`TCMPR_PLOTTER_XLAB`
-| :term:`TCMPR_PLOTTER_YLAB`
-| :term:`TCMPR_PLOTTER_XLIM`
-| :term:`TCMPR_PLOTTER_YLIM`
-| :term:`TCMPR_PLOTTER_FILTER`
-| :term:`TCMPR_PLOTTER_FILTERED_TCST_DATA_FILE`
-| :term:`TCMPR_PLOTTER_DEP_VARS`
-| :term:`TCMPR_PLOTTER_SCATTER_X`
-| :term:`TCMPR_PLOTTER_SCATTER_Y`
-| :term:`TCMPR_PLOTTER_SKILL_REF`
-| :term:`TCMPR_PLOTTER_SERIES`
-| :term:`TCMPR_PLOTTER_SERIES_CI`
-| :term:`TCMPR_PLOTTER_LEGEND`
-| :term:`TCMPR_PLOTTER_LEAD`
-| :term:`TCMPR_PLOTTER_PLOT_TYPES`
-| :term:`TCMPR_PLOTTER_RP_DIFF`
-| :term:`TCMPR_PLOTTER_DEMO_YR`
-| :term:`TCMPR_PLOTTER_HFIP_BASELINE`
-| :term:`TCMPR_PLOTTER_FOOTNOTE_FLAG`
-| :term:`TCMPR_PLOTTER_PLOT_CONFIG_OPTS`
-| :term:`TCMPR_PLOTTER_SAVE_DATA`
-| :term:`TCMPR_PLOTTER_DEP_LABELS`
-| :term:`TCMPR_PLOTTER_PLOT_LABELS`
-| :term:`TCMPR_PLOTTER_READ_ALL_FILES`
-|
-
-The following are TCMPR flags, if set to 'no', then don't set flag, if
-set to 'yes', then set the flag
-
-| :term:`TCMPR_PLOTTER_NO_EE`
-| :term:`TCMPR_PLOTTER_NO_LOG`
-| :term:`TCMPR_PLOTTER_SAVE`
-|
-
-.. warning:: **DEPRECATED:**
-
-   | :term:`TCMPR_PLOT_OUT_DIR`
-   | :term:`TITLE`
-   | :term:`SUBTITLE`
-   | :term:`XLAB`
-   | :term:`YLAB`
-   | :term:`XLIM`
-   | :term:`YLIM`
-   | :term:`FILTER`
-   | :term:`FILTERED_TCST_DATA_FILE`
-   | :term:`DEP_VARS`
-   | :term:`SCATTER_X`
-   | :term:`SCATTER_Y`
-   | :term:`SKILL_REF`
-   | :term:`SERIES`
-   | :term:`SERIES_CI`
-   | :term:`LEGEND`
-   | :term:`LEAD`
-   | :term:`PLOT_TYPES`
-   | :term:`RP_DIFF`
-   | :term:`DEMO_YR`
-   | :term:`HFIP_BASELINE`
-   | :term:`FOOTNOTE_FLAG`
-   | :term:`PLOT_CONFIG_OPTS`
-   | :term:`SAVE_DATA`
-   |
+.. warning:: This wrapper was removed in v6.0.0
 
 .. _tc_pairs_wrapper:
 
@@ -8923,6 +8925,10 @@ METplus Configuration
 | :term:`TC_PAIRS_DIAG_SOURCE\<n\>`
 | :term:`TC_PAIRS_DIAG_TEMPLATE\<n\>`
 | :term:`TC_PAIRS_DIAG_DIR\<n\>`
+| :term:`TC_PAIRS_SKIP_VALID_TIMES`
+| :term:`TC_PAIRS_INC_VALID_TIMES`
+| :term:`TC_PAIRS_SKIP_INIT_TIMES`
+| :term:`TC_PAIRS_INC_INIT_TIMES`
 |
 
 .. warning:: **DEPRECATED:**
@@ -9293,6 +9299,10 @@ METplus Configuration
 | :term:`MODEL`
 | :term:`LEAD_SEQ`
 | :term:`TC_RMW_MET_CONFIG_OVERRIDES`
+| :term:`TC_RMW_SKIP_VALID_TIMES`
+| :term:`TC_RMW_INC_VALID_TIMES`
+| :term:`TC_RMW_SKIP_INIT_TIMES`
+| :term:`TC_RMW_INC_INIT_TIMES`
 |
 
 .. _tc-rmw-met-conf:
@@ -9621,6 +9631,10 @@ METplus Configuration
 | :term:`TC_STAT_EVENT_EQUAL_LEAD`
 | :term:`TC_STAT_OUT_INIT_MASK`
 | :term:`TC_STAT_OUT_VALID_MASK`
+| :term:`TC_STAT_SKIP_VALID_TIMES`
+| :term:`TC_STAT_INC_VALID_TIMES`
+| :term:`TC_STAT_SKIP_INIT_TIMES`
+| :term:`TC_STAT_INC_INIT_TIMES`
 |
 
 .. warning:: **DEPRECATED:**
@@ -10234,8 +10248,11 @@ METplus Configuration
 | :term:`USER_SCRIPT_RUNTIME_FREQ`
 | :term:`USER_SCRIPT_COMMAND`
 | :term:`USER_SCRIPT_CUSTOM_LOOP_LIST`
-| :term:`USER_SCRIPT_SKIP_TIMES`
 | :term:`USER_SCRIPT_INPUT_DIR`
 | :term:`USER_SCRIPT_INPUT_TEMPLATE`
 | :term:`USER_SCRIPT_INPUT_TEMPLATE_LABELS`
+| :term:`USER_SCRIPT_SKIP_VALID_TIMES`
+| :term:`USER_SCRIPT_INC_VALID_TIMES`
+| :term:`USER_SCRIPT_SKIP_INIT_TIMES`
+| :term:`USER_SCRIPT_INC_INIT_TIMES`
 |

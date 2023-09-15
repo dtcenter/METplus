@@ -619,14 +619,14 @@ def _diff_stat_line(compare_a, compare_b, header, print_error=False):
         return False
 
     all_good = True
-    for index, (col_a, col_b) in enumerate(zip(cols_a, cols_b), 2):
+    for index, (col_a, col_b) in enumerate(zip(cols_a, cols_b)):
         if _is_equal_rounded(col_a, col_b):
             continue
         all_good = False
         if not print_error:
             continue
 
-        label = f'column {index}' if index >= len(header) else header[index]
+        label = f'column {index+2}' if index >= len(header) else header[index]
         message += f"  Diff in {label}:\n    A: {col_a}\n    B: {col_b}\n"
 
     if not all_good and print_error:

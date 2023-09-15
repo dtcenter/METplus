@@ -131,12 +131,12 @@ def run_commands(commands):
             error_message = f"ERROR: Command failed -- {err}"
             is_ok = False
 
+        print("::endgroup::")
+
         end_time = time.time()
         print("TIMING: Command took "
               f"{time.strftime('%M:%S', time.gmtime(end_time - start_time))}"
               f" (MM:SS): '{command}')")
-
-        print("::endgroup::")
 
         if error_message:
             print(error_message)

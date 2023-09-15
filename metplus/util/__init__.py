@@ -6,6 +6,7 @@ from .time_util import *
 from .string_template_substitution import *
 from .config_util import *
 from .config_metplus import *
+from .wrapper_init import *
 from .config_validate import *
 from .run_util import *
 from .met_config import *

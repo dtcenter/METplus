@@ -41,6 +41,22 @@ class MTDWrapper(CompareGriddedWrapper):
         'METPLUS_OUTPUT_PREFIX',
     ]
 
+    # deprecated env vars that are no longer supported in the wrapped MET conf
+    DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
+        'MODEL',
+        'OBTYPE',
+        'REGRID_TO_GRID',
+        'FCST_FIELD',
+        'OBS_FIELD',
+        'FCST_CONV_RADIUS',
+        'OBS_CONV_RADIUS',
+        'FCST_CONV_THRESH',
+        'OBS_CONV_THRESH',
+        'MIN_VOLUME',
+        'FCST_FILE_TYPE',
+        'OBS_FILE_TYPE',
+    ]
+
     def __init__(self, config, instance=None):
         self.app_name = 'mtd'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
@@ -72,9 +88,6 @@ class MTDWrapper(CompareGriddedWrapper):
 
         # new method of reading/setting MET config values
         self.add_met_config(name='min_volume', data_type='int')
-
-        # old approach to reading/setting MET config values
-        c_dict['MIN_VOLUME'] = self.config.getstr('config', 'MTD_MIN_VOLUME', '2000')
 
         c_dict['SINGLE_RUN'] = (
             self.config.getbool('config', 'MTD_SINGLE_RUN', False)
@@ -129,29 +142,6 @@ class MTDWrapper(CompareGriddedWrapper):
                             env_var_name=f'METPLUS_{write_type}_CONV_THRESH',
                             metplus_configs=[f'{read_type}_MTD_CONV_THRESH',
                                              'MTD_CONV_THRESH'])
-
-        # support old method of setting env vars
-        conf_value = (
-            self.config.getstr('config', f'{read_type}_MTD_CONV_RADIUS', '')
-        )
-        if not conf_value:
-            conf_value = self.config.getstr('config', 'MTD_CONV_RADIUS', '')
-        c_dict[f'{write_type}_CONV_RADIUS'] = conf_value
-
-        # set OBS values if single run to support old method
-        if c_dict['SINGLE_RUN']:
-            c_dict['OBS_CONV_RADIUS'] = conf_value
-
-        conf_value = (
-            self.config.getstr('config', f'{read_type}_MTD_CONV_THRESH', '')
-        )
-        if not conf_value:
-            conf_value = self.config.getstr('config', 'MTD_CONV_THRESH', '')
-        c_dict[f'{write_type}_CONV_THRESH'] = conf_value
-
-        # set OBS values if single run to support old method
-        if c_dict['SINGLE_RUN']:
-            c_dict['OBS_CONV_THRESH'] = conf_value
 
     def run_at_time_once(self, time_info):
         # calculate valid based on first forecast lead
@@ -309,30 +299,6 @@ class MTDWrapper(CompareGriddedWrapper):
         super().clear()
         self.fcst_file = None
         self.obs_file = None
-
-    def set_environment_variables(self, time_info):
-        # old method of setting MET config variables
-        self.add_env_var("FCST_FIELD",
-                         self.c_dict.get('FCST_FIELD', ''))
-        self.add_env_var("OBS_FIELD",
-                         self.c_dict.get('OBS_FIELD', ''))
-        self.add_env_var("OBS_CONV_RADIUS",
-                         self.c_dict.get('OBS_CONV_RADIUS', ''))
-        self.add_env_var("FCST_CONV_RADIUS",
-                         self.c_dict.get('FCST_CONV_RADIUS', ''))
-        self.add_env_var("OBS_CONV_THRESH",
-                         self.c_dict.get('OBS_CONV_THRESH', ''))
-        self.add_env_var("FCST_CONV_THRESH",
-                         self.c_dict.get('FCST_CONV_THRESH', ''))
-
-        self.add_env_var("MIN_VOLUME", self.c_dict["MIN_VOLUME"])
-
-        self.add_env_var("FCST_FILE_TYPE",
-                         self.c_dict.get('FCST_FILE_TYPE', ''))
-        self.add_env_var("OBS_FILE_TYPE",
-                         self.c_dict.get('OBS_FILE_TYPE', ''))
-
-        super().set_environment_variables(time_info)
 
     def get_command(self):
         """! Builds the command to run the MET application

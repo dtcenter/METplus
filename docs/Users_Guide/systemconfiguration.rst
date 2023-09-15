@@ -869,32 +869,40 @@ Skipping Times
 ^^^^^^^^^^^^^^
 
 Version 3.1 added the ability to skip certain valid times. The configuration
-variable :term:`SKIP_TIMES` can be used to
+variable :term:`SKIP_VALID_TIMES` (formerly SKIP_TIMES) can be used to
 provide a list of time formats each with a list of times to not process.
+Version 6.0.0 added support for skipping initialization times
+using :term:`SKIP_INIT_TIMES` and including specific valid and/or
+initialization times using :term:`INC_VALID_TIMES` and :term:`INC_INIT_TIMES`.
+
 The format and time list are separated by
 a colon. Any numeric python strftime formatting directive can be used as
 the time format (see
 https://strftime.org). Each item in the list must be surrounded by
-quotation marks. Here are a few examples.
+quotation marks.
+
+The following examples involve skipping and/or including valid times, but the
+same formatting and rules apply to the corresponding initialization time
+variables.
 
 Example 1::
 
     [config]
-    SKIP_TIMES = "%m:3"
+    SKIP_VALID_TIMES = "%m:3"
 
 This will skip the 3rd month, March.
 
 Example 2::
 
     [config]
-    SKIP_TIMES = "%d:30,31"
+    SKIP_VALID_TIMES = "%d:30,31"
 
 This will skip every 30th and 31st day.
 
 Example 3::
 
     [config]
-    SKIP_TIMES = "%d:30,31", "%m:3"
+    SKIP_VALID_TIMES = "%d:30,31", "%m:3"
 
 This will skip every 30th and 31st day **and** every 3rd month.
 
@@ -908,37 +916,71 @@ i = increment between each value
 Example 4::
 
     [config]
-    SKIP_TIMES = "%H:begin_end_incr(0,22,2)"
+    SKIP_VALID_TIMES = "%H:begin_end_incr(0,22,2)"
 
 This will skip every even hour (starting from 0, ending on 22, by 2).
 This is equivalent to::
 
     [config]
-    SKIP_TIMES = "%H:0,2,4,6,8,10,12,14,16,18,20,22"
+    SKIP_VALID_TIMES = "%H:0,2,4,6,8,10,12,14,16,18,20,22"
 
 Multiple strftime directives can be specified in a single time format.
 
 Example 5::
 
     [config]
-    SKIP_TIMES = "%Y%m%d:19991231, 20141031"
+    SKIP_VALID_TIMES = "%Y%m%d:19991231, 20141031"
 
 This will skip the dates Dec. 31, 1999 and Oct. 31, 2014.
 
 To only skip certain times for a single wrapper, use a wrapper-specific
 variable.
-Using a wrapper-specific variable will ignore the generic SKIP_TIMES values.
+Using a wrapper-specific variable will ignore the generic SKIP_VALID_TIMES values.
 
 Example 6::
 
     [config]
-    GRID_STAT_SKIP_TIMES = "%m:3,4,5,6,7,8,9,10,11"
-    SKIP_TIMES = "%d:31"
+    GRID_STAT_SKIP_VALID_TIMES = "%m:3,4,5,6,7,8,9,10,11"
+    SKIP_VALID_TIMES = "%d:31"
 
 This will skip the months March through November for GridStat wrapper only.
 All other wrappers in the
 :term:`PROCESS_LIST` will skip the 31st day of each month. Note that the
-SKIP_TIMES values are not applied to GridStat in this case.
+SKIP_VALID_TIMES values are not applied to GridStat in this case.
+
+Support for skipping times by the day of the week was added in v6.0.0.
+
+Example 7::
+
+    [config]
+    SKIP_VALID_TIMES = "%a:Sun,Tue,Thu,Sat"
+
+This will skip all days of the week except for Monday, Wednesday, and Friday.
+
+Also added in v6.0.0 is the ability to specify times to include with
+:term:`INC_VALID_TIMES`. If this is set, then any times that do not match the
+include rules will be skipped.
+
+Example 8::
+
+    [config]
+    INC_VALID_TIMES = "%a:Mon,Wed,Fri"
+
+This will skip all days of the week except for Monday, Wednesday, and Friday.
+
+:term:`INC_VALID_TIMES` also supported wrapper-specific versions, e.g.
+GRID_STAT_INC_VALID_TIMES.
+
+INC_VALID_TIMES and SKIP_VALID_TIMES can be used together.
+
+Example 9::
+
+    [config]
+    INC_VALID_TIMES = "%a:Mon,Wed,Fri"
+    SKIP_VALID_TIMES = "%d:1"
+
+This will only process times that land on Monday, Wednesday, and Friday
+except the 1st of the month.
 
 Realtime Looping
 ^^^^^^^^^^^^^^^^
@@ -1127,9 +1169,9 @@ configuration files to change input/output file paths, configuration file
 paths, and more. The value of each list item can be referenced in the
 METplus configuration variables by using {custom?fmt=%s}. The variable
 CUSTOM_LOOP_LIST will apply the values to each wrapper in the PROCESS_LIST
-unless the wrapper does not support this functionality. CyclonePlotter,
-StatAnalysis, TCStat, and
-TCMPRPlotter wrappers are not supported. If the variable is not set or set
+unless the wrapper does not support this functionality.
+CyclonePlotter, StatAnalysis, and TCStat wrappers are not supported.
+If the variable is not set or set
 to an empty string, the wrapper will execute as normal without additional
 runs. The name of the wrapper-specific variables contain the name of the
 wrapper, i.e. SERIES_ANALYSIS_CUSTOM_LOOP_LIST,

@@ -1,2 +1,0 @@
-# set to 72 to reduce the plot from full window size to smaller window
-img_res = 72;

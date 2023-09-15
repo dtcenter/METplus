@@ -169,7 +169,6 @@ def test_get_threshold_via_regex(key, value):
         ('RegridDataPlaneWrapper', 'regrid_data_plane_wrapper'),
         ('SeriesAnalysisWrapper', 'series_analysis_wrapper'),
         ('StatAnalysisWrapper', 'stat_analysis_wrapper'),
-        ('TCMPRPlotterWrapper', 'tcmpr_plotter_wrapper'),
         ('TCPairsWrapper', 'tc_pairs_wrapper'),
         ('TCStatWrapper', 'tc_stat_wrapper'),
     ]

@@ -81,9 +81,6 @@ class CommandBuilder:
         if hasattr(self, 'WRAPPER_ENV_VAR_KEYS'):
             self.env_var_keys.extend(self.WRAPPER_ENV_VAR_KEYS)
 
-        if hasattr(self, 'DEPRECATED_WRAPPER_ENV_VAR_KEYS'):
-            self.env_var_keys.extend(self.DEPRECATED_WRAPPER_ENV_VAR_KEYS)
-
         # if instance is set, check for a section with the same name in the
         # METplusConfig object. If found, copy all values into the config
         if instance:
@@ -174,7 +171,12 @@ class CommandBuilder:
         c_dict['CUSTOM_LOOP_LIST'] = get_custom_string_list(self.config,
                                                             app_name)
 
-        c_dict['SKIP_TIMES'] = get_skip_times(self.config, app_name)
+        # set [SKIP/INC]_[INIT/VALID]_TIMES used to skip run times
+        for skip_inc in ('SKIP', 'INC'):
+            for init_valid in ('INIT', 'VALID'):
+                c_dict[f'{skip_inc}_{init_valid}_TIMES'] = (
+                    get_skip_times(self.config, skip_inc, init_valid, app_name)
+                )
 
         c_dict['MANDATORY'] = (
             self.config.getbool('config',
@@ -302,30 +304,6 @@ class CommandBuilder:
                 return self.config.getseconds('config', input_key)
 
         return default_val
-
-    def handle_obs_window_legacy(self, c_dict):
-        """! Handle obs window config variables like
-        OBS_<app_name>_WINDOW_[BEGIN/END]. Set c_dict values for begin and end
-        to handle old method of setting env vars in MET config files, i.e.
-        OBS_WINDOW_[BEGIN/END]. Set env_var_dict value if any of the values
-        are set
-
-             @param c_dict dictionary to read items from
-        """
-        edges = [('BEGIN', -5400),
-                 ('END', 5400)]
-        app = self.app_name.upper()
-
-        # check {app}_WINDOW_{edge} to support PB2NC_WINDOW_[BEGIN/END]
-        for edge, default_val in edges:
-            input_list = [f'OBS_{app}_WINDOW_{edge}',
-                          f'{app}_OBS_WINDOW_{edge}',
-                          f'{app}_WINDOW_{edge}',
-                          f'OBS_WINDOW_{edge}',
-                         ]
-            output_key = f'OBS_WINDOW_{edge}'
-            value = self._handle_window_once(input_list, default_val)
-            c_dict[output_key] = value
 
     def handle_file_window_variables(self, c_dict, data_types=None):
         """! Handle all window config variables like

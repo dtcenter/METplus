@@ -48,10 +48,17 @@ class PointStatWrapper(CompareGriddedWrapper):
         'METPLUS_SEEPS_P1_THRESH',
     ]
 
-    # handle deprecated env vars used pre v4.0.0
+    # deprecated env vars that are no longer supported in the wrapped MET conf
     DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
+        'MODEL',
+        'OBTYPE',
+        'REGRID_TO_GRID',
         'CLIMO_MEAN_FILE',
         'CLIMO_STDEV_FILE',
+        'FCST_FIELD',
+        'OBS_FIELD',
+        'OBS_WINDOW_BEGIN',
+        'OBS_WINDOW_END',
         'POINT_STAT_POLY',
         'POINT_STAT_GRID',
         'POINT_STAT_STATION_ID',
@@ -156,44 +163,10 @@ class PointStatWrapper(CompareGriddedWrapper):
         c_dict['CONFIG_FILE'] = self.get_config_file('PointStatConfig_wrapped')
 
         self.add_met_config_window('obs_window')
-        self.handle_obs_window_legacy(c_dict)
 
         self.handle_mask(get_point=True)
 
-        # handle legacy mask dictionary variables
-        self.add_met_config(name='grid',
-                            data_type='list',
-                            env_var_name='METPLUS_MASK_GRID',
-                            metplus_configs=['POINT_STAT_MASK_GRID',
-                                             'POINT_STAT_GRID'],
-                            extra_args={'allow_empty': True})
-
-        self.add_met_config(name='poly',
-                            data_type='list',
-                            env_var_name='METPLUS_MASK_POLY',
-                            metplus_configs=['POINT_STAT_MASK_POLY',
-                                             'POINT_STAT_POLY',
-                                             ('POINT_STAT_'
-                                              'VERIFICATION_MASK_TEMPLATE')],
-                            extra_args={'allow_empty': True})
-
-        self.add_met_config(name='sid',
-                            data_type='list',
-                            env_var_name='METPLUS_MASK_SID',
-                            metplus_configs=['POINT_STAT_MASK_SID',
-                                             'POINT_STAT_STATION_ID'],
-                            extra_args={'allow_empty': True})
-
-        self.add_met_config(name='llpnt',
-                            data_type='list',
-                            env_var_name='METPLUS_MASK_LLPNT',
-                            metplus_configs=['POINT_STAT_MASK_LLPNT'],
-                            extra_args={'allow_empty': True,
-                                        'remove_quotes': True})
-        # end of handling legacy mask dictionary variables
-
-        self.add_met_config(name='message_type',
-                            data_type='list')
+        self.add_met_config(name='message_type', data_type='list')
 
         self.add_met_config(name='file_type',
                             data_type='string',
@@ -302,22 +275,6 @@ class PointStatWrapper(CompareGriddedWrapper):
         if not c_dict['OUTPUT_DIR']:
             self.log_error('Must set POINT_STAT_OUTPUT_DIR in config file')
 
-        # handle old method of setting env vars in MET config files
-        # pull out value after equals sign before the last semi-colon of
-        # each value. If not set, then set the value to an empty string
-        self.env_var_dict['POINT_STAT_POLY'] = (
-            self.get_env_var_value('METPLUS_MASK_POLY', item_type='list')
-        )
-        self.env_var_dict['POINT_STAT_GRID'] = (
-            self.get_env_var_value('METPLUS_MASK_GRID', item_type='list')
-        )
-        self.env_var_dict['POINT_STAT_STATION_ID'] = (
-            self.get_env_var_value('METPLUS_MASK_SID', item_type='list')
-        )
-        self.env_var_dict['POINT_STAT_MESSAGE_TYPE'] = (
-            self.get_env_var_value('METPLUS_MESSAGE_TYPE', item_type='list')
-        )
-
         return c_dict
 
     def set_command_line_arguments(self, time_info):
@@ -332,27 +289,3 @@ class PointStatWrapper(CompareGriddedWrapper):
                 obs_valid = do_string_sub(self.c_dict[f'OBS_VALID_{ext}'],
                                           **time_info)
                 self.args.append(f"-obs_valid_{ext.lower()} {obs_valid}")
-
-    def set_environment_variables(self, time_info=None):
-        """! Set all the environment variables in the MET config
-             file to the corresponding values in the METplus config file.
-
-             Args:
-
-             Returns: None - invokes parent class, CommandBuilder add_env_var
-                             to add each environment variable to run the
-
-        """
-        # add old method of setting env vars
-        self.add_env_var("FCST_FIELD",
-                         self.c_dict.get('FCST_FIELD', ''))
-        self.add_env_var("OBS_FIELD",
-                         self.c_dict.get('OBS_FIELD', ''))
-
-        # Set the environment variables corresponding to the obs_window
-        # dictionary.
-        self.add_env_var('OBS_WINDOW_BEGIN',
-                         str(self.c_dict['OBS_WINDOW_BEGIN']))
-        self.add_env_var('OBS_WINDOW_END', str(self.c_dict['OBS_WINDOW_END']))
-
-        super().set_environment_variables(time_info)
