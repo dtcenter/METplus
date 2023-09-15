@@ -52,7 +52,7 @@ METplus Version 6.0.0 Beta 1 Release Notes (2023-09-15)
 
   .. dropdown:: New Wrappers
 
-NONE
+     NONE
 
   .. dropdown:: New Use Cases
 
@@ -61,7 +61,7 @@ NONE
 
   .. dropdown:: Documentation
 
-NONE
+     NONE
 
   .. dropdown:: Internal
 
