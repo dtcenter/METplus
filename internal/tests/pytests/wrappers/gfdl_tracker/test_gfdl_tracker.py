@@ -19,7 +19,7 @@ def set_minimum_config_settings(config):
     config.set("config", "INPUT_MUST_EXIST", False)
 
     # set process and time config variables
-    config.set("config", "PROCESS_LIST", "GridStat")
+    config.set("config", "PROCESS_LIST", "GFDLTracker")
     config.set("config", "LOOP_BY", "INIT")
     config.set("config", "INIT_TIME_FMT", time_fmt)
     config.set("config", "INIT_BEG", run_times[0])
