@@ -1,40 +1,43 @@
 Finalize Release on GitHub
 --------------------------
 
-* Update milestones:
+Return to GitHub to finalize the details of this release.
 
-  * Edit the milestone for the current release by updating the *Due date* with the actual release date.
+.. dropdown:: Instructions
 
-  * Close the current milestone.
+  * Update milestones:
 
-  * Create a new milestone for the first bugfix release (e.g. first vX.Y.1 (bugfix) release).
+    * Edit the milestone for the current release by updating the *Due date* with the actual release date.
 
-  * If necessary, create a new milestone for the next official release (e.g. next vX.Y.Z release).
+    * Close the current milestone.
 
-* Update issues:
+    * Create a new milestone for the first bugfix release (e.g. first vX.Y.1 (bugfix) release).
 
-  * Close the GitHub issue for creating this official release.
+    * If necessary, create a new milestone for the next official release (e.g. next vX.Y.Z release).
 
-  * If necessary, reassign any remaining issues for the current milestone to other milestones.
+  * Update issues:
 
-* Update projects:
+    * Close the GitHub issue for creating this official release.
 
-  * Close the existing development project for the current milestone.
+    * If necessary, reassign any remaining issues for the current milestone to other milestones.
 
-  * If necessary, see :ref:`wo-development-project` to create a development project for the
-    next milestone.
+  * Update projects:
 
-* Update branches:
+    * Close the existing development project for the current milestone.
 
-  * Remove any remaining stale development branches from the new release.
+    * If necessary, see :ref:`wo-development-project` to create a development project for the next milestone.
 
-  * Update the repository settings by resetting the *Default branch* to the new main_vX.Y branch:
+  * Update branches:
 
-.. parsed-literal::
+    * Remove any remaining stale development branches from the new release.
 
-     https://github.com/dtcenter/|projectRepo|
-     -> Settings
-     -> Scroll down to the *Default branch* section
-     -> Click the stacked arrows button next to default branch name
-     -> Select the new default branch from the dropdown list
-     -> Click the *Update* button
+    * Update the repository settings by resetting the *Default branch* to the new main_vX.Y branch:
+
+    .. parsed-literal::
+
+       https://github.com/dtcenter/|projectRepo|
+       -> Settings
+       -> Scroll down to the *Default branch* section
+       -> Click the stacked arrows button next to default branch name
+       -> Select the new default branch from the dropdown list
+       -> Click the *Update* button
