@@ -18,5 +18,5 @@ module load libjpeg
 module load grib_util
 module load wgrib2
 
-setenv METPLUS_PATH /apps/sw_review/emc/METplus/METplus-6.0.0
-prepend-path PATH /apps/sw_review/emc/METplus/METplus-6.0.0/ush
+setenv METPLUS_PATH /apps/sw_review/emc/METplus/6.0.0
+prepend-path PATH /apps/sw_review/emc/METplus/6.0.0/ush
