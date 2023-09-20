@@ -181,6 +181,8 @@ def _get_dockerfile_name(requirements):
         return f'{dockerfile_name}_gfdl'
     if 'cartopy' in str(requirements).lower():
         return f'{dockerfile_name}_cartopy'
+    if 'geovista' in str(requirements).lower():
+        return f'{dockerfile_name}_geovista'
     return dockerfile_name
 
 

@@ -1,0 +1,15 @@
+ARG METPLUS_ENV_TAG=metplus_base.v5
+ARG METPLUS_IMG_TAG=develop
+
+FROM dtcenter/metplus-envs:${METPLUS_ENV_TAG} as env
+
+ARG METPLUS_IMG_TAG=develop
+FROM dtcenter/metplus-dev:${METPLUS_IMG_TAG}
+
+RUN mkdir -p /usr/local/conda/envs && mkdir -p /usr/local/conda/bin
+COPY --from=env /usr/local/conda/envs /usr/local/conda/envs/
+COPY --from=env /usr/local/conda/bin/conda /usr/local/conda/bin/conda
+
+# copy libGL and libEGL libraries to prevent dynamic lib errors
+COPY --from=env /lib/x86_64-linux-gnu/libEGL* /lib/x86_64-linux-gnu/
+COPY --from=env /lib/x86_64-linux-gnu/libGL* /lib/x86_64-linux-gnu/
