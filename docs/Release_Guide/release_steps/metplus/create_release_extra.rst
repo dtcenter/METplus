@@ -4,6 +4,6 @@
   Refer to a previous release to easily copy and modify this information.
 
 * If this is a development release, check the box that says "This is a pre-release"
-  and uncheck "Set as latest release"
+  and uncheck "Set as latest release".
 
 * Click on "Publish release".
