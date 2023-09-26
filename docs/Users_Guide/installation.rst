@@ -20,6 +20,7 @@ The METplus team supports the installation of the METplus components on
 several operational and research high performance computing platforms,
 including those at NCAR, NOAA, and other community machines.
 Pre-built METplus images on DockerHub are also provided.
+See :ref:`metplus-docker` for information on running METplus using Docker.
 
 Programming/scripting languages
 ===============================
