@@ -577,7 +577,7 @@ class TCPairsWrapper(RuntimeFreqWrapper):
 
             basin_fmt = f"basin = {basin};"
             self.env_var_dict['METPLUS_BASIN'] = basin_fmt
-
+        
         # CYCLONE
         cyclone = '[]'
         if self.c_dict.get('CYCLONE'):
@@ -592,14 +592,6 @@ class TCPairsWrapper(RuntimeFreqWrapper):
 
             cyclone_fmt = f"cyclone = {cyclone};"
             self.env_var_dict['METPLUS_CYCLONE'] = cyclone_fmt
-
-        # STORM_NAME
-        storm_name = '[]'
-        if self.c_dict.get('STORM_NAME'):
-            storm_name = str(self.c_dict['STORM_NAME']).replace("'", '"')
-
-            storm_name_fmt = f"storm_name = {storm_name};"
-            self.env_var_dict['METPLUS_STORM_NAME'] = storm_name_fmt
 
         super().set_environment_variables(time_info)
 
