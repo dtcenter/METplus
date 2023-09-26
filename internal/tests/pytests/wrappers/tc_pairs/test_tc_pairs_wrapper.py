@@ -786,7 +786,6 @@ def test_get_config_file(metplus_config):
     assert 'Must set TC_PAIRS_REFORMAT_DIR if TC_PAIRS_REFORMAT_DECK is True' in last_err
 
 
-
 @pytest.mark.wrapper
 def test_validate_runtime_freq_loop_order(metplus_config):
     config = metplus_config
@@ -839,6 +838,4 @@ def test_bad_add_config(metplus_config):
         wrapper.isOK = True
         wrapper._handle_diag_convert_map()
         assert not wrapper.isOK
-
-
 

@@ -577,7 +577,7 @@ class TCPairsWrapper(RuntimeFreqWrapper):
 
             basin_fmt = f"basin = {basin};"
             self.env_var_dict['METPLUS_BASIN'] = basin_fmt
-        
+
         # CYCLONE
         cyclone = '[]'
         if self.c_dict.get('CYCLONE'):
