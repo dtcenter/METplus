@@ -281,7 +281,7 @@ def test_get_location_input_file(metplus_config):
     # Check error on missing file
     path = wrapper.get_location_input_file(time_info, 'TC_STAT')
     last_err = wrapper.logger.error.call_args_list[-1][0][0]
-    assert 'Could not find TC_STAT file: /input/base/filter_201412' in last_err
+    assert 'Could not find TC_STAT file: /input/base/filter_20141214.tcst' in last_err
     assert path == None
 
     with mock.patch.object(os.path, "exists", return_value=True):
