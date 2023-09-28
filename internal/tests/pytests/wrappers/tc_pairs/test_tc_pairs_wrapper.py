@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
 import pytest
-
+from unittest import mock
 import os
 from datetime import datetime
 
 from metplus.wrappers.tc_pairs_wrapper import TCPairsWrapper
+import metplus.wrappers.tc_pairs_wrapper as tcp
 
 bdeck_template = 'b{basin?fmt=%s}q{date?fmt=%Y%m}*.gfso.{cyclone?fmt=%s}'
 adeck_template = 'a{basin?fmt=%s}q{date?fmt=%Y%m}*.gfso.{cyclone?fmt=%s}'
@@ -223,29 +224,32 @@ def test_get_basin_cyclone_from_bdeck(metplus_config, template, filename,
 
 
 @pytest.mark.parametrize(
-    'config_overrides, storm_type, values_to_check', [
+    'config_overrides, storm_type, values_to_check, reformat', [
         # 0: storm_id
         ({'TC_PAIRS_STORM_ID': 'AL092019, ML102019'},
-         'storm_id', ['AL092019', 'ML102019']),
+         'storm_id', ['AL092019', 'ML102019'], False),
         # 1: basin
         ({'TC_PAIRS_BASIN': 'AL, ML'},
-         'basin', ['AL', 'AL', 'ML', 'ML']),
+         'basin', ['AL', 'AL', 'ML', 'ML'], False),
         # 2: cyclone
         ({'TC_PAIRS_CYCLONE': '09, 10'},
-         'cyclone', ['09', '09', '10', '10']),
+         'cyclone', ['09', '09', '10', '10'], False),
         # 3: both, check basin
         ({'TC_PAIRS_BASIN': 'AL, ML',
           'TC_PAIRS_CYCLONE': '09, 10'},
-         'basin', ['AL', 'AL', 'ML', 'ML']),
+         'basin', ['AL', 'AL', 'ML', 'ML'], False),
         # 4: both, check cyclone - basin is outer loop, so alternate cyclones
         ({'TC_PAIRS_BASIN': 'AL, ML',
           'TC_PAIRS_CYCLONE': '09, 10'},
-         'cyclone', ['09', '10', '09', '10']),
+         'cyclone', ['09', '10', '09', '10'], False),
+        # 5: cyclone with reformat
+        ({'TC_PAIRS_CYCLONE': '09, 10'},
+         'cyclone', ['0109', '0109', '0110', '0110'], True),
     ]
 )
 @pytest.mark.wrapper
 def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
-                                 storm_type, values_to_check):
+                                 storm_type, values_to_check, reformat):
     config = metplus_config
 
     set_minimum_config_settings(config)
@@ -270,6 +274,11 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
     for key, value in config_overrides.items():
         config.set('config', key, value)
 
+    if reformat:
+        config.set('config', 'TC_PAIRS_REFORMAT_DECK', True)
+        config.set('config', 'TC_PAIRS_REFORMAT_DECK_TYPE', 'SBU')
+        config.set('config', 'TC_PAIRS_REFORMAT_DIR', '{OUTPUT_DIR}')
+        
     wrapper = TCPairsWrapper(config)
     assert wrapper.isOK
 
@@ -465,16 +474,16 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
         # 40: interp12
         ('VALID', {'TC_PAIRS_INTERP12': 'replace', },
          {'METPLUS_INTERP12': 'interp12 = REPLACE;'}),
-        # 41 match_points
+        # 41: match_points
         ('VALID', {'TC_PAIRS_MATCH_POINTS': 'False', },
          {'METPLUS_MATCH_POINTS': 'match_points = FALSE;'}),
-        # 42 -diag argument
+        # 42: -diag argument
         ('VALID', {
             'TC_PAIRS_DIAG_TEMPLATE1': '/some/path/{valid?fmt=%Y%m%d%H}.dat',
             'TC_PAIRS_DIAG_SOURCE1': 'TCDIAG',
          },
          {'DIAG_ARG': '-diag TCDIAG /some/path/2014121318.dat'}),
-        # 43 2 -diag arguments
+        # 43: 2 -diag arguments
         ('VALID', {
             'TC_PAIRS_DIAG_TEMPLATE1': '/some/path/{valid?fmt=%Y%m%d%H}.dat',
             'TC_PAIRS_DIAG_SOURCE1': 'TCDIAG',
@@ -483,7 +492,7 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
          },
          {'DIAG_ARG': ('-diag TCDIAG /some/path/2014121318.dat '
                        '-diag LSDIAG_RT /some/path/rt_2014121318.dat')}),
-        # 44 diag_convert_map 1 dictionary in list
+        # 44: diag_convert_map 1 dictionary in list
         ('VALID', {
              'TC_PAIRS_DIAG_CONVERT_MAP1_DIAG_SOURCE': 'CIRA_DIAG',
              'TC_PAIRS_DIAG_CONVERT_MAP1_KEY': '(10C),(10KT),(10M/S)',
@@ -493,7 +502,7 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
                  'diag_convert_map = [{diag_source = "CIRA_DIAG";'
                  'key = ["(10C)", "(10KT)", "(10M/S)"];convert(x) = x/10;}];'
          )}),
-        # 45 diag_convert_map 2 dictionaries in list
+        # 45: diag_convert_map 2 dictionaries in list
         ('VALID', {
             'TC_PAIRS_DIAG_CONVERT_MAP1_DIAG_SOURCE': 'CIRA_DIAG',
             'TC_PAIRS_DIAG_CONVERT_MAP1_KEY': '(10C),(10KT),(10M/S)',
@@ -508,7 +517,7 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
                  '{diag_source = "SHIPS_DIAG";key = ["LAT", "LON", "CSST", '
                  '"RSST", "DSST", "DSTA"];convert(x) = x/100;}];'
          )}),
-        # 46 diag_info_map 1 dictionary in list
+        # 46: diag_info_map 1 dictionary in list
         ('VALID', {
             'TC_PAIRS_DIAG_INFO_MAP1_DIAG_SOURCE': 'CIRA_DIAG_RT',
             'TC_PAIRS_DIAG_INFO_MAP1_TRACK_SOURCE': 'GFS',
@@ -520,7 +529,7 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
                  'diag_info_map = [{diag_source = "CIRA_DIAG_RT";'
                  'track_source = "GFS";field_source = "GFS_0p50";'
                  'match_to_track = ["GFS"];diag_name = ["MY_NAME"];}];')}),
-        # 47 diag_info_map 2 dictionaries in list
+        # 47: diag_info_map 2 dictionaries in list
         ('VALID', {
             'TC_PAIRS_DIAG_INFO_MAP1_DIAG_SOURCE': 'CIRA_DIAG_RT',
             'TC_PAIRS_DIAG_INFO_MAP1_TRACK_SOURCE': 'GFS',
@@ -768,3 +777,65 @@ def test_get_config_file(metplus_config):
     config.set('config', 'TC_PAIRS_CONFIG_FILE', fake_config_name)
     wrapper = TCPairsWrapper(config)
     assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name
+
+    # Check correct error raised
+    config.set('config', 'TC_PAIRS_REFORMAT_DECK', True)
+    wrapper = TCPairsWrapper(config)
+    wrapper.create_c_dict()
+    last_err = wrapper.logger.error.call_args_list[-1][0][0]
+    assert 'Must set TC_PAIRS_REFORMAT_DIR if TC_PAIRS_REFORMAT_DECK is True' in last_err
+
+
+@pytest.mark.wrapper
+def test_validate_runtime_freq_loop_order(metplus_config):
+    config = metplus_config
+    config.set('config','LOOP_ORDER','times')
+    wrapper = TCPairsWrapper(config)
+    
+    # Check warning message when LOOP_ORDER set
+    warn_msg = wrapper.logger.warning.call_args_list[-1][0][0]
+    assert 'LOOP_ORDER has been deprecated.' in warn_msg
+    assert wrapper.c_dict['RUNTIME_FREQ'] == 'RUN_ONCE_FOR_EACH'
+
+
+@pytest.mark.parametrize(
+    'bool_value, expected_config',
+       [
+         (True, 'RUN_ONCE'),
+         (False, 'RUN_ONCE_FOR_EACH'),
+       ]
+)
+@pytest.mark.wrapper
+def test_validate_runtime_freq_tc_pairs(metplus_config,
+                                        bool_value,
+                                        expected_config):
+    config = metplus_config
+    config.set('config','TC_PAIRS_RUN_ONCE', bool_value)
+    wrapper = TCPairsWrapper(config)
+    
+    # Check warn and handle deprecated TC_PAIRS_RUN_ONCE
+    warn_msg = wrapper.logger.warning.call_args_list[-1][0][0]
+    assert f'Setting TC_PAIRS_RUNTIME_FREQ={expected_config}.' in warn_msg
+    assert f'Please remove TC_PAIRS_RUN_ONCE' in warn_msg
+    assert wrapper.c_dict['RUNTIME_FREQ'] == expected_config
+
+
+@pytest.mark.wrapper
+def test_bad_add_config(metplus_config):
+    config = metplus_config
+    wrapper = TCPairsWrapper(config)
+    with mock.patch.object(tcp,
+                           "add_met_config_dict_list",
+                           return_value=False):
+        wrapper.isOK = True
+        wrapper._handle_consensus()
+        assert not wrapper.isOK
+
+        wrapper.isOK = True
+        wrapper._handle_diag_info_map()
+        assert not wrapper.isOK
+        
+        wrapper.isOK = True
+        wrapper._handle_diag_convert_map()
+        assert not wrapper.isOK
+
