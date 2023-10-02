@@ -895,9 +895,9 @@ class TCPairsWrapper(RuntimeFreqWrapper):
                 row[1] = " " + storm_month + (row[1]).strip()
 
                 # Iterate over the items, deleting or modifying the columns
-                for item in row:
+                for index, item in enumerate(row):
                     # Delete the third column
-                    if item == row[2]:
+                    if index == 2:
                         continue
                     # Replace MISSING_VAL_TO_REPLACE=missing_values[0] with
                     # MISSING_VAL=missing_values[1]
