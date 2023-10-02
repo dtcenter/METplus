@@ -223,6 +223,29 @@ def test_get_basin_cyclone_from_bdeck(metplus_config, template, filename,
         assert actual_cyclone == expected_cyclone
 
 
+@pytest.mark.wrapper
+def test_get_basin_cyclone_from_bdeck_error(metplus_config):
+    full_filename = os.path.join('/fake/dir', '20141009bal.dat')
+    #expected_basin = 'al'
+    #expected_cyclone = '1009'
+    time_info = {'date': datetime(2014, 12, 31, 18)}
+    config = metplus_config
+
+    set_minimum_config_settings(config)
+    wrapper = TCPairsWrapper(config)
+    wrapper.c_dict['BDECK_DIR'] = '/fake/dir'
+    wrapper.c_dict['BDECK_TEMPLATE'] = '{date?fmt=%Y}{cyclone?fmt=%s}b{basin?fmt=%s}.dat'
+    with mock.patch.object(tcp, 'get_tags', return_value = 50 * [0]):
+        actual = wrapper._get_basin_cyclone_from_bdeck(full_filename,
+                                          True,
+                                          'al',
+                                          '1009',
+                                          time_info)
+    assert actual == (None, None)
+    last_err = wrapper.logger.error.call_args_list[0][0][0]
+    assert "Number of regex match groups does not match" in last_err
+
+
 @pytest.mark.parametrize(
     'config_overrides, storm_type, values_to_check, reformat', [
         # 0: storm_id
