@@ -196,7 +196,7 @@ jobs:
 
       # cleanup Docker images to avoid running out of disk space
       - name: Prune Docker images
-        run: echo BEFORE:; docker images; docker image prune -f; docker system prune -f; echo AFTER:; docker images
+        run: echo BEFORE:; docker images; docker image prune -af; docker system prune -af; echo AFTER:; docker images
       # run difference testing
       - name: Run difference tests
         id: run-diff
