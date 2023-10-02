@@ -277,7 +277,7 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
     if reformat:
         config.set('config', 'TC_PAIRS_REFORMAT_DECK', True)
         config.set('config', 'TC_PAIRS_REFORMAT_DECK_TYPE', 'SBU')
-        config.set('config', 'TC_PAIRS_REFORMAT_DIR', '{OUTPUT_DIR}')
+        config.set('config', 'TC_PAIRS_REFORMAT_DIR', '{OUTPUT_BASE}')
         
     wrapper = TCPairsWrapper(config)
     assert wrapper.isOK
@@ -838,4 +838,60 @@ def test_bad_add_config(metplus_config):
         wrapper.isOK = True
         wrapper._handle_diag_convert_map()
         assert not wrapper.isOK
+
+
+# Test data for test_read_modify_write_file
+csv_in1 = '''STM, 0006, del this, -9.1, 100, 143.3, -37.987
+STM, 0005, del this, -9, 100, 145.0, foo\r\n'''
+csv_out1 = '''STM, 050006, -9.1, 100, 143.3, -37.987
+STM, 050005, -9999, 100, 145.0, foo\n'''
+
+csv_in2 = '''STM, 0006, -9, -9.1
+STM, 0005, ??, -9
+STM1, -9, -9999, -9\n'''
+csv_out2 = '''STM, 050006, -9.1
+STM, 050005, -9999
+STM1, 05-9, -9999\n'''
+
+
+csv_in3 = '''STM, 0006, -9, -9.1
+STM2, 0005, -9, -9
+STM1, -9, -9999, -9\r'''
+csv_out3 = '''STM, 050006, -9.1
+STM, 050005, -9999
+STM1, 05-9, -9999\n'''
+
+@pytest.mark.parametrize(
+    'replace_tuple, content, expected',
+       [
+         # 1: Basic test
+         (('d','x'),'a, b, c, d\r\n', 'a, 05b, x\n'),
+         # 2: Multi row
+         (('-9','-9999'), csv_in1, csv_out1 ),
+         # 3: Multi row with multi replacement
+         (('-9','-9999'),csv_in2, csv_out2),
+         # 4: Repeated values and \r
+         (('-9','-9999'),csv_in2, csv_out2),
+         #5: empty file
+         (('foo', 'bar'),'',''),
+       ]
+)
+def test_read_modify_write_file(tmp_path_factory,
+                                metplus_config,
+                                replace_tuple,
+                                content,
+                                expected):
+    config = metplus_config
+    wrapper = TCPairsWrapper(config)
+    tmp_file = os.path.join(tmp_path_factory.mktemp('tc_pairs'), 'tc_test.csv')
+    out_file = os.path.join(tmp_path_factory.mktemp('tc_pairs'), 'tc_out.csv')
+
+    with open(tmp_file, 'w') as f:
+        f.write(content)
+
+    wrapper.read_modify_write_file(tmp_file,'05', replace_tuple,out_file)
+
+    with open(out_file, 'r') as f:
+        actual = f.read()
+    assert actual == expected
 
