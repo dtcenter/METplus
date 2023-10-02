@@ -194,6 +194,9 @@ jobs:
         if: ${{ always() && steps.run_tests.conclusion == 'failure' }}
         run: .github/jobs/save_error_logs.sh
 
+      # cleanup Docker images to avoid running out of disk space
+      - name: Prune Docker images
+        run: echo BEFORE:; docker images; docker image prune; echo AFTER:; docker images
       # run difference testing
       - name: Run difference tests
         id: run-diff
