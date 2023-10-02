@@ -226,11 +226,7 @@ def test_get_basin_cyclone_from_bdeck(metplus_config, template, filename,
 @pytest.mark.wrapper
 def test_get_basin_cyclone_from_bdeck_error(metplus_config):
     full_filename = os.path.join('/fake/dir', '20141009bal.dat')
-    #expected_basin = 'al'
-    #expected_cyclone = '1009'
-    time_info = {'date': datetime(2014, 12, 31, 18)}
     config = metplus_config
-
     set_minimum_config_settings(config)
     wrapper = TCPairsWrapper(config)
     wrapper.c_dict['BDECK_DIR'] = '/fake/dir'
@@ -240,7 +236,8 @@ def test_get_basin_cyclone_from_bdeck_error(metplus_config):
                                           True,
                                           'al',
                                           '1009',
-                                          time_info)
+                                          {'date': datetime(2014, 12, 31, 18)},
+                                          )
     assert actual == (None, None)
     last_err = wrapper.logger.error.call_args_list[0][0][0]
     assert "Number of regex match groups does not match" in last_err
@@ -875,7 +872,6 @@ STM1, -9, -9999, -9\n'''
 csv_out2 = '''STM, 050006, -9.1
 STM, 050005, -9999
 STM1, 05-9, -9999\n'''
-
 
 csv_in3 = '''STM, 0006, -9, -9.1
 STM2, 0005, -9, -9
