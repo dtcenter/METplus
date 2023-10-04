@@ -162,6 +162,9 @@ ${METPLUS_VORTEX_REMOVAL}
 
 ////////////////////////////////////////////////////////////////////////////////
 
+//one_time_per_file_flag =
+${METPLUS_ONE_TIME_PER_FILE_FLAG}
+
 //
 // Flags to control output files
 //

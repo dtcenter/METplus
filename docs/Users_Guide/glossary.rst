@@ -10392,6 +10392,11 @@ METplus Configuration Glossary
 
      | *Used by:* TCDiag
 
+   TC_DIAG_ONE_TIME_PER_FILE_FLAG
+     Specify the value for 'one_time_per_file_flag' in the MET configuration file for TCDiag.
+
+     | *Used by:* TCDiag
+
    TC_DIAG_NC_RNG_AZI_FLAG
      Specify the value for 'nc_rng_azi_flag' in the MET configuration file for TCDiag.
 

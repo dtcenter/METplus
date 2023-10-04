@@ -204,7 +204,8 @@ def set_minimum_config_settings(config):
         ({'TC_DIAG_CIRA_DIAG_FLAG': 'True', }, {'METPLUS_CIRA_DIAG_FLAG': 'cira_diag_flag = TRUE;'}),
 
         ({'TC_DIAG_OUTPUT_PREFIX': 'my_prefix', }, {'METPLUS_OUTPUT_PREFIX': 'output_prefix = "my_prefix";'}),
-
+        ({'TC_DIAG_ONE_TIME_PER_FILE_FLAG': 'false', },
+         {'METPLUS_ONE_TIME_PER_FILE_FLAG': 'one_time_per_file_flag = FALSE;'}),
     ]
 )
 @pytest.mark.wrapper

@@ -7791,6 +7791,7 @@ METplus Configuration
 | :term:`TC_DIAG_RADIAL_VELOCITY_FIELD_NAME`
 | :term:`TC_DIAG_RADIAL_VELOCITY_LONG_FIELD_NAME`
 | :term:`TC_DIAG_VORTEX_REMOVAL`
+| :term:`TC_DIAG_ONE_TIME_PER_FILE_FLAG`
 | :term:`TC_DIAG_NC_RNG_AZI_FLAG`
 | :term:`TC_DIAG_NC_DIAG_FLAG`
 | :term:`TC_DIAG_CIRA_DIAG_FLAG`
@@ -8167,6 +8168,17 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`TC_DIAG_VORTEX_REMOVAL`
      - vortex_removal
+
+**${METPLUS_ONE_TIME_PER_FILE_FLAG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_DIAG_ONE_TIME_PER_FILE_FLAG`
+     - one_time_per_file_flag
 
 **${METPLUS_NC_RNG_AZI_FLAG}**
 
