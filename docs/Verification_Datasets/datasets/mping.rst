@@ -1,7 +1,7 @@
 .. _vx-data-mping:
 
 mPING
------
+=====
 
 Description
   Meteorological Phenomena Identification Near the Ground (mPING) is a crowd-sourced weather observing network developed through partnership between the National Severe Storms Laboratory, The University of Oklahoma, and the Cooperative Institute for Mesoscale Meteorological Studies.

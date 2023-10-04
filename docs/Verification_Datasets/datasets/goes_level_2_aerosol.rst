@@ -1,7 +1,7 @@
 .. _vx-data-goes-level-2-aerosol.rst:
 
 GOES ABI L2 Aerosol
--------------------
+===================
 
 Description
   Geostationary Operational Environmental Satellite (GOES-16/17) Advanced Baseline Imagers (ABIs) Data - Level 2 Aerosol Products

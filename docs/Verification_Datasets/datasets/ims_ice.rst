@@ -1,7 +1,7 @@
 .. _vx-data-ims-ice:
 
 IMS
----
+===
 
 Description
 IMS stands for the Interactive Multisensor Snow and Ice Mapping System. 

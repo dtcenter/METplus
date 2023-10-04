@@ -1,7 +1,7 @@
 .. _vx-data-gpm-imerg:
 
 GPM IMERG
----------
+=========
 
 Description
   Global Precipitation Measurement (GPM) Integrated Multi-satellitE Retrievals for GPM (IMERG)

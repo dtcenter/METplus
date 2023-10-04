@@ -1,7 +1,7 @@
 .. _vx-data-aeronet:
 
 AERONET
--------
+=======
 
 Description
   AErosol RObotic NETwork (AERONET) - This is data from a group of ground-based remote sensing aerosol networks, providing globally distributed observations of aerosol optical depth (AOD) and related fields. This application focuses on AOD, specifically.
