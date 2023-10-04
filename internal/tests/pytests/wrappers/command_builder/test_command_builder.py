@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 
 import pytest
+from unittest import mock
 
 import os
 import datetime
-
+import metplus.wrappers.command_builder as cb_wrapper
 from metplus.wrappers.command_builder import CommandBuilder
 from metplus.util import ti_calculate, add_field_info_to_time_info
 
@@ -1001,4 +1002,200 @@ def test_get_env_copy(metplus_config, shell, expected):
     actual = cb.get_env_copy({'MET_TMP_DIR', 'OMP_NUM_THREADS'})
  
     assert expected in actual
+
+
+def _in_last_err(msg, mock_logger):
+    last_msg = mock_logger.error.call_args_list[-1][0][0]
+    return msg in last_msg
+
+@pytest.mark.wrapper
+def test_get_command(metplus_config):
+    config = metplus_config
+    #config.set('user_env_vars','CMD_BUILD_USER_TEST', )
+
+    cb = CommandBuilder(config)
+    cb.app_path = '/jabberwocky/'
+    cb.infiles = ['O','frabjous','day']
+    cb.outfile = 'callooh'
+    cb.param = 'callay'
+
+    with mock.patch.object(os.path, 'dirname', return_value='callooh'): 
+        with mock.patch.object(cb_wrapper, 'mkdir_p'):
+            actual = cb.get_command()
+    assert actual == '/jabberwocky/ -v 2 O frabjous day callooh callay'
+
+    with mock.patch.object(os.path, 'dirname', return_value=None): 
+        actual = cb.get_command()
+    assert actual is None
+    assert _in_last_err('Must specify path to output file', cb.logger)
+
+    cb.outfile = None
+    actual = cb.get_command()
+    assert actual is None
+    assert _in_last_err('No output filename specified', cb.logger)
+
+    cb.infiles = None
+    actual = cb.get_command()
+    assert actual is None
+
+
+    assert _in_last_err('No input filenames specified', cb.logger)
+
+    cb.app_path = None
+    actual = cb.get_command()
+    assert actual is None
+    assert _in_last_err('No app path specified.', cb.logger)
+
+
+@pytest.mark.parametrize(
+    'd_type, curly, values, expected', [
+        ('fcst',
+         True,
+         [['0.2','1.0'],'A24','Z0','extra'],
+         ['{ name="A24"; level="Z0"; cat_thresh=[ 0.2,1.0 ]; extra; }']
+        ),
+        ('fcst',
+         False,
+         [['20'],'apcp','3000',None],
+         ['\'name="apcp"; level="3000"; cat_thresh=[ 20 ];\'']
+        ),
+        ('obs',
+         True,
+         [['0.2','1.0'],'A24','Z0',None],
+         ['{ name="A24"; level="Z0"; cat_thresh=[ 0.2,1.0 ]; }']
+        ),
+    ]
+)    
+@pytest.mark.wrapper
+def test_format_field_info(metplus_config,
+                           d_type,
+                           curly,
+                           values,
+                           expected):
+    var_keys = [
+                f'{d_type}_thresh',
+                f'{d_type}_name',
+                f'{d_type}_level',
+                f'{d_type}_extra',
+               ]
+    var_info = dict(zip(var_keys, values))
+
+    cb = CommandBuilder(metplus_config)
+    actual = cb.format_field_info(var_info, d_type, curly)
+    assert actual == expected
+
+
+@pytest.mark.wrapper
+def test_format_field_info_error(metplus_config):
+    cb = CommandBuilder(metplus_config)
+    with mock.patch.object(cb_wrapper, 'format_field_info', return_value='bar'): 
+        actual = cb.format_field_info({},'foo')
+
+    assert actual is None
+    assert _in_last_err('bar', cb.logger)
+
+ 
+@pytest.mark.wrapper
+def test_get_field_info_error(metplus_config):
+    cb = CommandBuilder(metplus_config)
+    with mock.patch.object(cb_wrapper, 'get_field_info', return_value='bar'): 
+        actual = cb.get_field_info({},'foo')
+
+    assert actual is None
+    assert _in_last_err('bar', cb.logger)
+
+ 
+@pytest.mark.parametrize(
+    'log_metplus', [
+        (True),(False)
+    ]
+)
+@pytest.mark.wrapper
+def test_run_command_error(metplus_config, log_metplus):
+    config = metplus_config
+    if log_metplus:
+        config.set('config', 'LOG_METPLUS', '/fake/file.log')
+    else:
+        config.set('config', 'LOG_METPLUS', '') 
+
+    cb = CommandBuilder(metplus_config)
+    with mock.patch.object(cb.cmdrunner, 'run_cmd', return_value=('ERR',None)): 
+        actual = cb.run_command('foo')
+    assert not actual 
+    assert _in_last_err('Command returned a non-zero return code: foo', cb.logger)
+
+
+ 
+@pytest.mark.wrapper
+def test_errors_and_defaults(metplus_config):
+    """A test to check various errors and default return"""
+    config = metplus_config
+    app_name = 'command_builder'
+    config.set('config', f'{app_name.upper()}_OUTPUT_PREFIX', 'prefix')
+    cb = CommandBuilder(metplus_config)
+    cb.app_name = app_name
+
+    # smoke test run_all_times
+    cb.run_all_times()
+    assert cb.isOK
+
+    # test get_output_prefix without time_info
+    actual = cb.get_output_prefix(time_info=None)
+    assert actual == 'prefix'
+
+    # test handle_climo_dict errors counted correctly
+    starting_errs = cb.errors
+    with mock.patch.object(cb_wrapper, 'handle_climo_dict', return_value=False):
+        for x in range(2):
+            cb.handle_climo_dict()
+    assert starting_errs + 2 == cb.errors
+
+    # test missing FLAGS returns none
+    actual = cb.handle_flags('foo')
+    assert actual is None
+
+    # test get_env_var_value empty and list
+    actual = cb.get_env_var_value('foo',{'foo':''},'list')
+    assert actual == '[]'
+
+    # test add_met_config_dict not OK
+    assert cb.isOK
+    with mock.patch.object(cb_wrapper, 'add_met_config_dict', return_value=False):
+        actual = cb.add_met_config_dict('foo', 'bar')
+    assert actual is False
+    assert not cb.isOK
+
+    # test build when no cmd
+    with mock.patch.object(cb, 'get_command', return_value=None):
+        actual = cb.build()
+    assert actual == False
+    assert _in_last_err('Could not generate command', cb.logger)
+
+    # test python embedding error
+    with mock.patch.object(cb_wrapper, 'is_python_script', return_value=True):
+        actual = cb.check_for_python_embedding('FCST',{'fcst_name':'pyEmbed'})
+    assert actual == None
+    assert _in_last_err('must be set to a valid Python Embedding type', cb.logger)
+
+    cb.c_dict['FCST_INPUT_DATATYPE'] = 'PYTHON_XARRAY'
+    with mock.patch.object(cb_wrapper, 'is_python_script', return_value=True):
+        actual = cb.check_for_python_embedding('FCST',{'fcst_name':'pyEmbed'})
+    assert actual == 'python_embedding'
+
+    # test field_info not set
+    cb.c_dict['CURRENT_VAR_INFO'] = None
+    actual = cb.set_current_field_config()
+    assert actual is None
+
+    # test check_gempaktocf
+    cb.isOK = True
+    cb.check_gempaktocf(False)
+    assert cb.isOK == False
+    assert _in_last_err('[exe] GEMPAKTOCF_JAR was not set in configuration file.', cb.logger)
+
+    # test expected ensemble mismatch
+    cb.c_dict['N_MEMBERS'] = 1
+    actual = cb._check_expected_ensembles(['file1', 'file2'])
+    assert actual is False
+    assert _in_last_err('Found more files than expected!', cb.logger)
     
