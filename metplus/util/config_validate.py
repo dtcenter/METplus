@@ -183,13 +183,25 @@ def check_for_deprecated_met_config_file(config, met_config, met_tool):
             if '${' + deprecated_item + '}' not in line:
                 continue
             all_good = False
-            config.logger.error("Deprecated environment variable"
-                                f" ${{{deprecated_item}}} found in MET config "
-                                f"file: {met_config}. Please unset "
-                                f"{met_tool}_CONFIG_FILE to use the wrapped "
-                                "MET config that is provided with the "
-                                "METplus wrappers and set values that differ "
-                                "from the defaults in a METplus config file.")
+            config.logger.error(
+                f"Deprecated environment variable ${{{deprecated_item}}} found "
+                f"in MET config file: {met_config}"
+            )
+
+    if not all_good:
+        met_install_dir = config.getdir('MET_INSTALL_DIR')
+        config_dir = os.path.join(met_install_dir, 'share', 'met', 'config')
+        default_config = f"{get_wrapper_name(met_tool)}Config_default"
+        default_path = os.path.join(config_dir, default_config)
+        config.logger.error(
+            "Please set values that differ from the defaults in a METplus "
+            f"config file and unset {met_tool}_CONFIG_FILE to use the "
+            "wrapped MET config that is provided with the METplus wrappers."
+            f" Compare values set in {met_config} to {default_path}. "
+            "See https://metplus.readthedocs.io/en/latest/Users_Guide/"
+            "release-notes.html#metplus-wrappers-upgrade-instructions"
+            " for more information."
+        )
 
     return all_good
 
