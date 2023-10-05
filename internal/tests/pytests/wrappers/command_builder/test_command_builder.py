@@ -1008,10 +1008,10 @@ def _in_last_err(msg, mock_logger):
     last_msg = mock_logger.error.call_args_list[-1][0][0]
     return msg in last_msg
 
+
 @pytest.mark.wrapper
 def test_get_command(metplus_config):
     config = metplus_config
-    #config.set('user_env_vars','CMD_BUILD_USER_TEST', )
 
     cb = CommandBuilder(config)
     cb.app_path = '/jabberwocky/'
@@ -1037,8 +1037,6 @@ def test_get_command(metplus_config):
     cb.infiles = None
     actual = cb.get_command()
     assert actual is None
-
-
     assert _in_last_err('No input filenames specified', cb.logger)
 
     cb.app_path = None
@@ -1090,7 +1088,6 @@ def test_format_field_info_error(metplus_config):
     cb = CommandBuilder(metplus_config)
     with mock.patch.object(cb_wrapper, 'format_field_info', return_value='bar'): 
         actual = cb.format_field_info({},'foo')
-
     assert actual is None
     assert _in_last_err('bar', cb.logger)
 
@@ -1100,7 +1097,6 @@ def test_get_field_info_error(metplus_config):
     cb = CommandBuilder(metplus_config)
     with mock.patch.object(cb_wrapper, 'get_field_info', return_value='bar'): 
         actual = cb.get_field_info({},'foo')
-
     assert actual is None
     assert _in_last_err('bar', cb.logger)
 
@@ -1123,7 +1119,6 @@ def test_run_command_error(metplus_config, log_metplus):
         actual = cb.run_command('foo')
     assert not actual 
     assert _in_last_err('Command returned a non-zero return code: foo', cb.logger)
-
 
  
 @pytest.mark.wrapper
@@ -1172,9 +1167,13 @@ def test_find_input_files_ensemble(metplus_config):
         actual = cb.find_input_files_ensemble(time_info)
     assert actual is False
 
+
 @pytest.mark.wrapper
 def test_errors_and_defaults(metplus_config):
-    """A test to check various errors and default return"""
+    """
+    A test to check various functions produce expected log messages
+    and return values on error or unexpected input.
+    """
     config = metplus_config
     app_name = 'command_builder'
     config.set('config', f'{app_name.upper()}_OUTPUT_PREFIX', 'prefix')
