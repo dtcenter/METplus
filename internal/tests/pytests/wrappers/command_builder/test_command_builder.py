@@ -1127,6 +1127,52 @@ def test_run_command_error(metplus_config, log_metplus):
 
  
 @pytest.mark.wrapper
+def test_find_input_files_ensemble(metplus_config):
+    config = metplus_config
+    cb = CommandBuilder(metplus_config)
+
+    time_info =  ti_calculate({
+        'valid': datetime.datetime.strptime("201802010000", '%Y%m%d%H%M'),
+        'lead':  0,
+        })
+
+    # can't write file list
+    with mock.patch.object(cb, 'write_list_file', return_value=None):
+        with mock.patch.object(cb, 'find_model', return_value=['file']):
+            actual = cb.find_input_files_ensemble(time_info, False)
+    assert actual is False
+    assert _in_last_err('Could not write filelist file', cb.logger)
+
+    # not _check_expected_ensembles
+    with mock.patch.object(cb, '_check_expected_ensembles', return_value=None):
+        with mock.patch.object(cb, 'find_model', return_value=['file']):
+            actual = cb.find_input_files_ensemble(time_info)
+    assert actual is False
+
+    # no input files
+    with mock.patch.object(cb, 'find_model', return_value=[]):
+        actual = cb.find_input_files_ensemble(time_info)
+    assert actual is False
+    assert _in_last_err('Could not find any input files', cb.logger)
+    
+    # file list does/doesn't exist
+    cb.c_dict['FCST_INPUT_FILE_LIST'] = 'fcst_file_list'
+    actual = cb.find_input_files_ensemble(time_info)
+    assert actual is False
+    assert _in_last_err('Could not find file list file', cb.logger)
+    
+    with mock.patch.object(cb_wrapper.os.path, 'exists', return_value=True):
+        actual = cb.find_input_files_ensemble(time_info)
+    assert actual is True
+    assert cb.infiles[-1] == 'fcst_file_list'
+
+    # ctrl file not found
+    cb.c_dict['CTRL_INPUT_TEMPLATE'] = 'ctrl_file'
+    with mock.patch.object(cb, 'find_data', return_value=None):
+        actual = cb.find_input_files_ensemble(time_info)
+    assert actual is False
+
+@pytest.mark.wrapper
 def test_errors_and_defaults(metplus_config):
     """A test to check various errors and default return"""
     config = metplus_config
