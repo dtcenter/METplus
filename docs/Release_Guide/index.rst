@@ -1,6 +1,6 @@
-=============
+#############
 Release Guide
-=============
+#############
 
 This METplus Release Guide provides detailed instructions for METplus
 developers for creating software releases for the METplus component
