@@ -1082,8 +1082,6 @@ def test_format_field_info(metplus_config,
     actual = cb.format_field_info(var_info, d_type, curly)
     assert actual == expected
 
-
-
  
 @pytest.mark.parametrize(
     'log_metplus', [
