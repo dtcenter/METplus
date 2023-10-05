@@ -1083,22 +1083,6 @@ def test_format_field_info(metplus_config,
     assert actual == expected
 
 
-@pytest.mark.wrapper
-def test_format_field_info_error(metplus_config):
-    cb = CommandBuilder(metplus_config)
-    with mock.patch.object(cb_wrapper, 'format_field_info', return_value='bar'): 
-        actual = cb.format_field_info({},'foo')
-    assert actual is None
-    assert _in_last_err('bar', cb.logger)
-
- 
-@pytest.mark.wrapper
-def test_get_field_info_error(metplus_config):
-    cb = CommandBuilder(metplus_config)
-    with mock.patch.object(cb_wrapper, 'get_field_info', return_value='bar'): 
-        actual = cb.get_field_info({},'foo')
-    assert actual is None
-    assert _in_last_err('bar', cb.logger)
 
  
 @pytest.mark.parametrize(
@@ -1243,4 +1227,16 @@ def test_errors_and_defaults(metplus_config):
     actual = cb._check_expected_ensembles(['file1', 'file2'])
     assert actual is False
     assert _in_last_err('Found more files than expected!', cb.logger)
-    
+
+    # format field info
+    with mock.patch.object(cb_wrapper, 'format_field_info', return_value='bar'): 
+        actual = cb.format_field_info({},'foo')
+    assert actual is None
+    assert _in_last_err('bar', cb.logger)
+
+    # check get_field_info 
+    with mock.patch.object(cb_wrapper, 'get_field_info', return_value='bar'): 
+        actual = cb.get_field_info({},'foo')
+    assert actual is None
+    assert _in_last_err('bar', cb.logger)
+
