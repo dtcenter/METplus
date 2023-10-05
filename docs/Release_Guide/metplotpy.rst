@@ -1,6 +1,5 @@
-*****************
 METplotpy Release
-*****************
+=================
 
 .. toctree::
    :titlesonly:

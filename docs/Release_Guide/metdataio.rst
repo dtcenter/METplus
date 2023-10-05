@@ -1,6 +1,5 @@
-*****************
 METdataio Release
-*****************
+=================
 
 .. toctree::
    :titlesonly:

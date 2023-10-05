@@ -11,11 +11,12 @@ repositories.
 
 .. _releaseTypes:
 
+*************
 Release Types
-=============
+*************
 
 Coordinated Release
--------------------
+===================
 
 A METplus coordinated release is a group of official or bugfix releases for each
 of the METplus components that have been developed and tested in parallel.
@@ -27,7 +28,7 @@ coordinated release announcement is updated to link to the most recent bugfix
 version.
 
 Official Release
-----------------
+================
 
 An official release is a stable release of a METplus component and typically matches
 the release candidate, which has passed all tests.  It is the version of the
@@ -35,17 +36,17 @@ code that has been tested as thoroughly as possible and is reliable enough to be
 used in production.
 
 Bugfix Release
---------------
+==============
 
 A bugfix release for a METplus component introduces no new features, but fixes
 bugs in previous official releases and targets the most critical bugs affecting
 users.
 
 Development Release
--------------------
+===================
 
 Beta
-^^^^
+----
 
 Beta releases are a pre-release of a METplus software component to give a
 larger group of users the opportunity to test the recently incorporated new
@@ -55,7 +56,7 @@ possible configurations of hardware and software that exist and installation
 of beta releases allow for testing of potential conflicts.
 
 Release Candidate (rc)
-^^^^^^^^^^^^^^^^^^^^^^
+----------------------
 
 A release candidate is a version of a METplus software component that is nearly
 ready for official release but may still have a few bugs.  At this stage, all
@@ -65,8 +66,9 @@ new source code will be added to this release.  There may still be source
 code changes to fix bugs, changes to documentation, and changes to test
 cases or utilities.
 
+**********************
 Release Support Policy
-======================
+**********************
 
 The METplus developers officially provide bug fix support for the latest
 official release and for the developmental releases as described above. This
@@ -80,8 +82,9 @@ software team and the respective funding institutions. For further inquiries or
 to report any bugs, please contact our dedicated support team in the
 `METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_.
 
+********************
 Instructions Summary
-====================
+********************
 
 Instructions are provided for the following types of software releases:
 
@@ -97,7 +100,7 @@ The instructions that are common to all components are documented only once and 
 in the release steps for all components.  However some instructions are specific to individual
 repositories and documented separately.
 
-Release instructions are described in the following chapters.
+Release instructions are described in the following sections.
 
 .. toctree::
    :titlesonly:
