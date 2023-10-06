@@ -1,0 +1,18 @@
+#%Module######################################################################
+##
+##      Model Evaluation Tools
+##
+proc ModulesHelp { } {
+  puts stderr "Sets up the paths and environment variables to use the METplus v6.0.0
+   *** For help see the official MET webpage at http://www.dtcenter.org/met/users ***"
+}
+
+prereq intel
+prereq nco/4.9.1
+prereq wgrib/1.8.1.0b
+prereq wgrib2/2.0.8
+prereq R/4.0.2
+prereq met/12.0.0-beta1
+
+setenv METPLUS_PATH /contrib/met/METplus/METplus-12.0.0-beta1
+prepend-path PATH /contrib/met/METplus/METplus-12.0.0-beta1/ush:/mnt/lfs1/HFIP/dtc-hurr/METplus/miniconda/miniconda3/envs/metplus_v5.1_py3.10/bin
