@@ -1,8 +1,8 @@
 Update DTC Web Server Data
---------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Create Directory for This Release
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""""""""""""""
 
 On the DTC web server where the sample input data for unit tests is hosted,
 create a new directory for this official major/minor release.

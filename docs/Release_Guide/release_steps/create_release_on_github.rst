@@ -1,5 +1,5 @@
 Create Release on GitHub
-------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 * Go to Releases on GitHub and click 'Draft a new release'
 

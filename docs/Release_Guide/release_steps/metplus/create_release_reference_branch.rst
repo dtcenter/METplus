@@ -1,5 +1,5 @@
 Create Release Reference Branch
--------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * For METplus, the corresponding MET release must be created before starting
   this step. Specifically, a DockerHub tag on dtcenter/met that is named
@@ -20,7 +20,7 @@ Create Release Reference Branch
     git checkout -b main_vX.Y-ref
 
 Update the version number
-^^^^^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""""""
 
 Update the content that should go into the release version but remain unchanged
 in the develop branch.
@@ -39,7 +39,7 @@ Remove **-dev** from the version number:
 Commit these changes.
 
 Push Reference Branch to GitHub
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""""""""""""
 
 ::
 
@@ -51,7 +51,7 @@ data. These data will be used to verify that any bugfixes applied to the
 main_vX.Y branch does not break any of existing logic.
 
 Monitor GitHub Actions Workflow
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""""""""""""
 
 Navigate to https://github.com/dtcenter/METplus/actions and verify that a
 *Testing* workflow was triggered on the *main_vX.Y-ref* branch.
@@ -64,7 +64,7 @@ Navigate to https://github.com/dtcenter/METplus/actions and verify that a
   of these volumes start with *output-*.
 
 Create main branch and push to GitHub
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""""""""""""""""""
 
 * After the truth data volumes have been generated, create the main_vX.Y
   branch off of the -ref branch.

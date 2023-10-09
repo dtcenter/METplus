@@ -1,5 +1,5 @@
 Update the version numbers in the manage externals files
---------------------------------------------------------
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 There are a few .cfg files used by Manage Externals that should
 include the correct tag or branch that corresponds to the
@@ -38,7 +38,7 @@ For the METplus **5.0**.0 release:
 When in doubt, check the components' repository or ask another developer.
 
 Update build_components/Externals_stable.cfg
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""""""""""""""""""""""""""
 
 Ensure the *tag* for each component is correct. It should match the format
 **vX.Y.Z** where X.Y.Z is the version of that component.
@@ -46,14 +46,14 @@ For example, MET should be **v11.0.0** for METplus 5.0.0.
 
 
 Update .github/parm/Externals_metdataio_stable.cfg
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""""""""""""""""""""""""""""""""
 
 Ensure the *branch* value is correct. It should match the format
 **main_vX.Y** where X.Y is the version of that component.
 For example, METdataio should be **main_v2.0** for METplus 5.0.0.
 
 Update .github/parm/Externals_metplotcalcpy_stable.cfg
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 Ensure the *branch* for each component is correct. It should match the format
 **main_vX.Y** where X.Y is the version of that component.

@@ -1,5 +1,5 @@
 Create Release Reference Branch
--------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * Create a branch from the develop branch for the reference branch for the
   new official release and push it to GitHub. The branch name should match
@@ -13,7 +13,7 @@ Create Release Reference Branch
     git checkout -b main_vX.Y-ref
 
 Push Reference Branch to GitHub
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""""""""""""
 
 ::
 
@@ -25,7 +25,7 @@ data. These data will be used to verify that any bugfixes applied to the
 main_vX.Y branch does not break any of existing logic.
 
 Monitor GitHub Actions Workflow
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""""""""""""
 
 Navigate to https://github.com/dtcenter/MET/actions and verify that a
 *Testing* workflow was triggered on the *main_vX.Y-ref* branch.

@@ -1,5 +1,5 @@
 MET Development Release
-=======================
+-----------------------
 
 .. |projectRepo| replace:: MET
 

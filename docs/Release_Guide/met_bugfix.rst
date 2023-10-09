@@ -1,5 +1,5 @@
 MET Bugfix Release
-==================
+------------------
 
 .. |projectRepo| replace:: MET
 

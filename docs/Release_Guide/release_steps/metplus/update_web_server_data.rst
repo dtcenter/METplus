@@ -1,8 +1,8 @@
 Update DTC Web Server Data
---------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Create Directory for Next Release
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""""""""""""""
 
 On the DTC web server where the sample input data for use cases is hosted,
 run the setup_next_release_data.py script for the next upcoming release
