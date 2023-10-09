@@ -1,5 +1,5 @@
 Update Release Notes
---------------------
+^^^^^^^^^^^^^^^^^^^^
 
 You can refer to the GitHub Project board to see what has changed for this
 release. Open the following URL in a browser:

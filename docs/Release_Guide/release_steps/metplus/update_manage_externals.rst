@@ -1,5 +1,5 @@
 Update the version numbers in the manage externals files
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 There are a few .cfg files used by Manage Externals that should
 include the correct tag or branch that corresponds to the
