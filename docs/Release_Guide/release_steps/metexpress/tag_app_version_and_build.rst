@@ -1,5 +1,5 @@
 Tag App Version and Build
----------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * METexpress apps are versioned as major.minor.patch. To trigger the build of a specific version, you will need to tag the current main branch in all the repositories with the version number.
 
