@@ -1005,7 +1005,6 @@ def test_get_config_file(metplus_config):
     assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name
 
 
-
 @pytest.mark.wrapper_a
 def test_run_once_per_lead(metplus_config):
     config = metplus_config
@@ -1042,8 +1041,8 @@ def test_get_fcst_obs_not_embedding(metplus_config):
     'lead_group, use_both, mock_exists, expected', [
         (('Group1', [0, 21600]), True, True, ('both_path', 'both_path')),
         (('F012', [relativedelta(hours=12)]), True, False, (None, None)),
-        (('Group1', [0, 200]), False, True, ('fcst_path', 'obs_path')),
-        (('Group1', [0, 200]), False, False, (None, None)),
+        (('Group2', [0, 200]), False, True, ('fcst_path', 'obs_path')),
+        ((None, [0, 200]), False, False, (None, None)),
     ]
 )
 @pytest.mark.wrapper_a
