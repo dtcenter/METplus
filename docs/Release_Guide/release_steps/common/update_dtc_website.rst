@@ -1,5 +1,5 @@
 Update DTC Website
-------------------
+^^^^^^^^^^^^^^^^^^
 
 METplus software releases are announced on the `DTC website <https://dtcenter.org>`_.
 Add or update information about software releases on the website.
