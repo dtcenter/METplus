@@ -645,7 +645,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
              @param time_info dictionary containing time information
              @param storm_id storm ID to process
-             @param lead_group dictionary where key is label and value is a
+             @param lead_group tuple where first value is label and second is a
               list of forecast leads to process. If no label was defined, the
               key will match the format "NoLabel_<n>" and if no lead groups
               are defined, the dictionary should be replaced with None
