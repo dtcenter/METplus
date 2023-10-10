@@ -1,5 +1,5 @@
 METviewer Development Release
-=============================
+-----------------------------
 
 .. |projectRepo| replace:: METviewer
 

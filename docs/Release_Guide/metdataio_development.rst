@@ -1,5 +1,5 @@
 METdataio Development Release
-=============================
+-----------------------------
 
 .. |projectRepo| replace:: METdataio
 .. |projectName| replace:: |projectRepo|

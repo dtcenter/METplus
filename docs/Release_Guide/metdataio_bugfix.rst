@@ -1,5 +1,5 @@
 METdataio Bugfix Release
-========================
+------------------------
 
 .. |projectRepo| replace:: METdataio
 .. |projectName| replace:: |projectRepo|
