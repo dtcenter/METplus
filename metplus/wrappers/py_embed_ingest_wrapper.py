@@ -12,7 +12,6 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 import re
-import pandas
 
 from ..util import time_util
 from ..util import do_string_sub, get_lead_sequence
