@@ -34,3 +34,4 @@ ${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge pytest-
 ${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge numpy==1.24.2
 ${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge libstdcxx-ng==12.1.0
 ${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge opencv-python==4.7.0
+${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge libssh
