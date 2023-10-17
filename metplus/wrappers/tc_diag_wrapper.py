@@ -64,6 +64,7 @@ class TCDiagWrapper(RuntimeFreqWrapper):
         'METPLUS_NC_RNG_AZI_FLAG',
         'METPLUS_CIRA_DIAG_FLAG',
         'METPLUS_OUTPUT_PREFIX',
+        'METPLUS_ONE_TIME_PER_FILE_FLAG',
     ]
 
     def __init__(self, config, instance=None):
@@ -219,6 +220,8 @@ class TCDiagWrapper(RuntimeFreqWrapper):
                             data_type='string')
 
         self.add_met_config(name='vortex_removal', data_type='bool')
+
+        self.add_met_config(name='one_time_per_file_flag', data_type='bool')
 
         self.add_met_config(name='nc_rng_azi_flag', data_type='bool')
         self.add_met_config(name='nc_diag_flag', data_type='bool')

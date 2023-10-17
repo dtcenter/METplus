@@ -1,9 +1,5 @@
-pillow
-mock==1.0.1
-alabaster>=0.7,<0.8,!=0.7.5
-commonmark==0.9.1
-recommonmark==0.5.0
-sphinx-gallery==0.11.1
 sphinx==5.3.0
-sphinx-rtd-theme==1.2.0
+pillow==10.0.1
+sphinx-gallery==0.14.0
+sphinx-rtd-theme==1.3.0
 sphinx-design==0.3.0
