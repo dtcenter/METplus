@@ -177,18 +177,18 @@ def check_for_deprecated_met_config_file(config, met_config, met_tool):
     with open(met_config, 'r') as file_handle:
         lines = file_handle.read().splitlines()
 
-    all_good = True
+    error_logs = []
     for line in lines:
         for deprecated_item in deprecated_met_list:
             if '${' + deprecated_item + '}' not in line:
                 continue
-            all_good = False
-            config.logger.error(
-                f"Deprecated environment variable ${{{deprecated_item}}} found "
-                f"in MET config file: {met_config}"
-            )
+            error_logs.append(f"Deprecated environment variable ${{{deprecated_item}}} found")
 
-    if not all_good:
+    if error_logs:
+        config.logger.error(f"Deprecated environment variables found in MET config file: {met_config}")
+        for error_log in error_logs:
+            config.logger.error(error_log)
+
         met_install_dir = config.getdir('MET_INSTALL_DIR')
         config_dir = os.path.join(met_install_dir, 'share', 'met', 'config')
         default_config = f"{get_wrapper_name(met_tool)}Config_default"
@@ -202,8 +202,9 @@ def check_for_deprecated_met_config_file(config, met_config, met_tool):
             "release-notes.html#metplus-wrappers-upgrade-instructions"
             " for more information."
         )
+        return False
 
-    return all_good
+    return True
 
 
 def _get_deprecated_met_list(config, met_tool):
