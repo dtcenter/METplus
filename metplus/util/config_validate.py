@@ -1,6 +1,6 @@
 import os
 
-from .constants import DEPRECATED_DICT, DEPRECATED_MET_LIST
+from .constants import DEPRECATED_DICT
 from .constants import UPGRADE_INSTRUCTIONS_URL
 from .string_manip import find_indices_in_config_section, getlist
 from .string_manip import is_python_script, get_wrapper_name
@@ -29,11 +29,11 @@ def validate_config_variables(config):
     input_real_path = os.path.realpath(config.getdir_nocheck('INPUT_BASE', ''))
     output_real_path = os.path.realpath(config.getdir('OUTPUT_BASE'))
     if input_real_path == output_real_path:
-      config.logger.error("INPUT_BASE AND OUTPUT_BASE are set to the "
-                          f"exact same path: {input_real_path}")
-      config.logger.error("Please change one of these paths to avoid risk "
-                          "of losing input data")
-      inoutbase_is_ok = False
+        config.logger.error("INPUT_BASE AND OUTPUT_BASE are set to the "
+                            f"exact same path: {input_real_path}")
+        config.logger.error("Please change one of these paths to avoid risk "
+                            "of losing input data")
+        inoutbase_is_ok = False
 
     check_user_environment(config)
 
@@ -120,10 +120,10 @@ def handle_deprecated(old, alt, depr_info, config, all_sed_cmds, e_list,
 
     # if it is required to remove, add to error list
     if not alt:
-        e_list.append("{} should be removed".format(old))
+        e_list.append(f"{old} should be removed")
         return
 
-    e_list.append("{} should be replaced with {}".format(old, alt))
+    e_list.append(f"{old} should be replaced with {alt}")
 
     config_files = config.getstr('config', 'CONFIG_INPUT', '').split(',')
     if 'copy' not in depr_info.keys() or depr_info['copy']:
@@ -316,9 +316,9 @@ def check_user_environment(config):
 
     for env_var in config.keys('user_env_vars'):
         if env_var in os.environ:
-            msg = '{} is already set in the environment. '.format(env_var) +\
-                  'Overwriting from conf file'
-            config.logger.warning(msg)
+            config.logger.warning(
+                f'{env_var} is already set in the environment. Overwriting from conf file'
+            )
 
 
 def is_var_item_valid(item_list, index, ext, config):
