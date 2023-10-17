@@ -104,4 +104,27 @@ See :ref:`met-config-overrides` for more information.
 How to tell if upgrade is needed
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Prior to v6.0.0, a use case that uses a wrapped MET config file that is
+out-of-date from the version provided with the METplus wrappers will report a
+warning in the log output alerting the user that an expected environment
+variable is not found::
+
+    WARNING: Environment variable ${METPLUS_MODEL} is not utilized in MET config file: /path/to/GridStatConfig_trey
+
+This is often an indicator that the wrapped MET config file needs to be updated.
+The deprecated environment variables, e.g. ${MODEL}, were still set by the
+wrappers, so the use case still ran without any issues.
+
+Starting in v6.0.0, the deprecated environment variables are no longer set and
+an error message will be displayed for each deprecated variable that was found::
+
+    ERROR: Deprecated environment variables found in MET config file: /path/to/GridStatConfig_trey
+    ERROR: Deprecated environment variable ${MODEL} found
+    ERROR: Deprecated environment variable ${OBTYPE} found
+    ERROR: Deprecated environment variable ${REGRID_TO_GRID} found
+
+The use case will not run until the METplus configuration file has been updated.
+
+How to upgrade
+^^^^^^^^^^^^^^
 
