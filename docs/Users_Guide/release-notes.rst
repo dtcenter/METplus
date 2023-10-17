@@ -76,6 +76,32 @@ METplus Version 6.0.0 Beta 1 Release Notes (2023-09-15)
 METplus Wrappers Upgrade Instructions
 =====================================
 
-No upgrade instructions are needed for this release.
+Deprecated Wrapped MET Configuration Files
+------------------------------------------
 
-**TODO: Add info about switching to using provided wrapped MET config file instead of user-defined.**
+Background
+^^^^^^^^^^
+
+The METplus wrappers utilize *wrapped* MET configuration files that reference
+environment variables that are set by the wrappers to override MET settings.
+METplus v4.0.0 introduced a more efficient approach to overriding values in
+MET configuration files through the METplus wrappers.
+Prior to this release, if users needed to override MET settings that were
+not yet supported by METplus configuration variables, they had to copy an
+existing *wrapped* MET configuration file, make the desired modifications,
+then update their METplus configuration file to use the user-defined MET
+configuration file.
+The new approach removes the need to maintain multiple *wrapped* MET
+configuration files by using the *wrapped* MET configuration files that
+are provided with the METplus wrappers.
+This allows any new METplus configuration variables that set MET variables
+to automatically be supported when moving to a new version of METplus.
+Any MET configuration settings that are not yet controlled by a corresponding
+METplus configuration variable can easily be set in a METplus configuration
+file by using the MET config overrides variables.
+See :ref:`met-config-overrides` for more information.
+
+How to tell if upgrade is needed
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
