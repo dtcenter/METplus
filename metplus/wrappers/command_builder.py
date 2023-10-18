@@ -1075,7 +1075,7 @@ class CommandBuilder:
 
     def check_gempaktocf(self, gempaktocf_jar):
         if not gempaktocf_jar:
-            self.log_error("[exe] GEMPAKTOCF_JAR was not set if configuration file. "
+            self.log_error("[exe] GEMPAKTOCF_JAR was not set in configuration file. "
                            "This is required to process Gempak data.")
             self.logger.info("Refer to the GempakToCF use case documentation for information "
                              "on how to obtain the tool: parm/use_cases/met_tool_wrapper/GempakToCF/GempakToCF.py")
