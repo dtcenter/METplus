@@ -13,30 +13,33 @@ _Difficulty_Index.conf
 # --------------------
 #
 # This use case calls the UserScript wrapper to run a user provided script that calculates 
-# the difficulty index for windspeed. This use case allows for the user to change a variety 
-# of variables needed to run the difficulty index (i.e. threshold start and units) so that
+# the difficulty index for wind speed. This use case allows for the user to change a variety 
+# of variables needed to run the difficulty index (i.e. threshold start and units) so that the
 # user can run the script at different thresholds without needing to alter the code. This 
 # script run by the use case uses METcalcpy to provide the difficulty index calculation and
 # METplotpy to provide the plotting capability. 
 #
 # The difficulty index was developed by the Naval Research Lab (NRL). The overall aim of the
 # difficulty index is to graphically represent the expected difficulty of a decision based on 
-# a set of forecasts (ensemble) of, e.g., significant wave height as a function of space and 
+# a set of forecasts (ensemble) of, e.g., wind speed as a function of space and 
 # time. There are two basic factors that can make a decision difficult. The first factor is the 
-# proximity of the ensemble mean forecast to a decision threshold, e.g. 12 ft seas. If the 
+# proximity of the ensemble mean forecast to a decision threshold, e.g. 34 knot winds. If the 
 # ensemble mean is either much lower or much higher than the threshold, the decision is easier; 
 # if it is closer to the threshold, the decision is harder. The second factor is the forecast 
 # precision, or ensemble spread. The greater the spread around the ensemble mean, the more likely 
 # it is that there will be ensemble members both above and below the decision threshold, making 
 # the decision harder. (A third factor that we will not address here is undiagnosed systematic 
 # error, which adds uncertainty in a similar way to ensemble spread.) The challenge is combining 
-# these factors into a continuous function that allows the user to assess relative risk. 
+# these factors into a continuous function that allows the user to assess relative risk.
+#
+# Additional details on the computation of the Difficulty Index can be found in the Python
+# Embedding section.
 
 ##############################################################################
 # Datasets
 # --------
 #
-# This use case calculates the difficulty index for windspeed using NCEP 
+# This use case calculates the difficulty index for wind speed using NCEP 
 # GEFS ensemble data. The data is composed of 30 ensemble members that 
 # have been compiled and compressed into one .npz file. 
 # 
@@ -112,6 +115,32 @@ _Difficulty_Index.conf
 # .. highlight:: python
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index/wind_difficulty_index.py
 #
+# Consider the following formulation of a forecast decision difficulty index:
+#
+# .. math :: \text{d_{i,j}} = \frac{A(\bar{x}_{i,j})}{2}(\frac{(sigma/\bar{x})_{i,j}{(sigma/\bar{x})_{ref}}}+[1-\frac{1}{2}|P(x_{i,j}\geq\text{thresh})-P(x_{i,j}<thresh)|])
+#
+# where :math:`\sigma` is the ensemble standard deviation, :math:`\bar{x}` is the ensemble mean, 
+# :math:`P(x_{i,j}\geq thresh)` is the ensemble (sample) probability of being greater than or equal 
+# to the threshold, and  :math:`P(x_{i,j}<thresh)` is the ensemble probability of being less than 
+# the threshold. The :math:`(\sigma/\bar{x})` expression is a measure of spread normalized by the 
+# mean, and it allows one to identify situations of truly significant uncertainty. Because the 
+# difficulty index is defined only for positive definite quantities such as significant wave height, 
+# division by zero is avoided. :math:`(\sigma/\bar{x})_{ref}` is a (scalar) reference value, for 
+# example the maximum value of :math:`(\sigma/\bar{x})` obtained over the last 5 days as a function 
+# of geographic region.
+#
+# The first term in the outer brackets is large when the uncertainty in the current forecast is 
+# large relative to a reference. The second term is minimum when all the probability is either 
+# above or below the threshold, and maximum when the probability is evenly distributed about the 
+# threshold. So it penalizes the split case, where the ensemble members are close to evenly split on 
+# either side of the threshold. The A term outside the brackets is a weighting to account for 
+# heuristic forecast difficulty situations. Its values for winds are given below.
+#
+# .. math :: A = 0 if \bar{x} is above 50kt
+# .. math :: A = 0 if \bar{x} is below 5kt
+# .. math :: A = 1.5 if \bar{x} is between 28kt and 34kt
+# .. math :: \text{A} = 1.5 - 1.5[\frac{\bar{x}(kt)-34kt}{16kt}] for 34kt\leq\bar{x}\leq 50kt
+# .. math :: \text{A} = 1.5[\frac{\bar{x}(kt)-5kt}{23kt}] for 5kt\leq\bar{x}\leq 28kt
 
 ##############################################################################
 # Running METplus
@@ -172,7 +201,7 @@ _Difficulty_Index.conf
 #
 # wndspd_GEFS_NorthPac_5dy_30mem_difficulty_indexTHRESH_00_kn.png
 # 
-# Where THRESH isa number between DIFF_INDEX_SAVE_THRESH_START and 
+# Where THRESH is a number between DIFF_INDEX_SAVE_THRESH_START and 
 # DIFF_INDEX_SAVE_THRESH_STOP which are defined in UserScript_fcstGEFS_Difficulty_Index.conf.
 # 
 
