@@ -55,6 +55,7 @@ class GridStatWrapper(CompareGriddedWrapper):
         'METPLUS_CENSOR_THRESH',
         'METPLUS_CENSOR_VAL',
         'METPLUS_SEEPS_P1_THRESH',
+        'METPLUS_CAT_THRESH',
     ]
 
     # deprecated env vars that are no longer supported in the wrapped MET conf
@@ -275,8 +276,10 @@ class GridStatWrapper(CompareGriddedWrapper):
                             data_type='list',
                             extra_args={'remove_quotes': True})
 
-        self.add_met_config(name='seeps_p1_thresh',
-                            data_type='string',
+        self.add_met_config(name='cat_thresh', data_type='list',
+                            extra_args={'remove_quotes': True})
+
+        self.add_met_config(name='seeps_p1_thresh', data_type='string',
                             extra_args={'remove_quotes': True})
 
         return c_dict

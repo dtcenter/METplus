@@ -657,6 +657,8 @@ def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
 
         ({'GRID_STAT_SEEPS_P1_THRESH': 'ge0.1&&le0.85', },
          {'METPLUS_SEEPS_P1_THRESH': 'seeps_p1_thresh = ge0.1&&le0.85;'}),
+        ({'GRID_STAT_CAT_THRESH': 'NA', },
+         {'METPLUS_CAT_THRESH': 'cat_thresh = [NA];'}),
 
     ]
 )

@@ -2967,6 +2967,7 @@ METplus Configuration
 | :term:`GRID_STAT_FOURIER_WAVE_1D_END`
 | :term:`GRID_STAT_CENSOR_THRESH`
 | :term:`GRID_STAT_CENSOR_VAL`
+| :term:`GRID_STAT_CAT_THRESH`
 | :term:`FCST_GRID_STAT_IS_PROB`
 | :term:`FCST_GRID_STAT_PROB_IN_GRIB_PDS`
 | :term:`GRID_STAT_MASK_GRID`
@@ -3486,6 +3487,17 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`GRID_STAT_CENSOR_VAL`
      - censor_val
+
+**${METPLUS_CAT_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_CAT_THRESH`
+     - cat_thresh
 
 **${METPLUS_SEEPS_P1_THRESH}**
 
