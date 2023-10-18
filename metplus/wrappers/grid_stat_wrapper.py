@@ -180,24 +180,21 @@ class GridStatWrapper(CompareGriddedWrapper):
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False
 
-        self.add_met_config(name='cov_thresh',
-                            data_type='list',
+        self.add_met_config(name='cov_thresh', data_type='list',
                             env_var_name='METPLUS_NBRHD_COV_THRESH',
                             metplus_configs=[
                                 'GRID_STAT_NEIGHBORHOOD_COV_THRESH'
                             ],
                             extra_args={'remove_quotes': True})
 
-        self.add_met_config(name='width',
-                            data_type='list',
+        self.add_met_config(name='width', data_type='list',
                             env_var_name='METPLUS_NBRHD_WIDTH',
                             metplus_configs=[
                                 'GRID_STAT_NEIGHBORHOOD_WIDTH'
                             ],
                             extra_args={'remove_quotes': True})
 
-        self.add_met_config(name='shape',
-                            data_type='string',
+        self.add_met_config(name='shape', data_type='string',
                             env_var_name='METPLUS_NBRHD_SHAPE',
                             metplus_configs=[
                                 'GRID_STAT_NEIGHBORHOOD_SHAPE'
@@ -223,18 +220,15 @@ class GridStatWrapper(CompareGriddedWrapper):
 
         self.handle_interp_dict(uses_field=True)
 
-        self.add_met_config(name='nc_pairs_var_name',
-                            data_type='string',
+        self.add_met_config(name='nc_pairs_var_name', data_type='string',
                             metplus_configs=['GRID_STAT_NC_PAIRS_VAR_NAME'])
 
-        self.add_met_config(name='grid_weight_flag',
-                            data_type='string',
+        self.add_met_config(name='grid_weight_flag', data_type='string',
                             metplus_configs=['GRID_STAT_GRID_WEIGHT_FLAG'],
                             extra_args={'remove_quotes': True,
                                         'uppercase': True})
 
-        self.add_met_config(name='file_type',
-                            data_type='string',
+        self.add_met_config(name='file_type', data_type='string',
                             env_var_name='FCST_FILE_TYPE',
                             metplus_configs=['GRID_STAT_FCST_FILE_TYPE',
                                              'FCST_GRID_STAT_FILE_TYPE',
@@ -242,8 +236,7 @@ class GridStatWrapper(CompareGriddedWrapper):
                             extra_args={'remove_quotes': True,
                                         'uppercase': True})
 
-        self.add_met_config(name='file_type',
-                            data_type='string',
+        self.add_met_config(name='file_type', data_type='string',
                             env_var_name='OBS_FILE_TYPE',
                             metplus_configs=['GRID_STAT_OBS_FILE_TYPE',
                                              'OBS_GRID_STAT_FILE_TYPE',
@@ -251,8 +244,7 @@ class GridStatWrapper(CompareGriddedWrapper):
                             extra_args={'remove_quotes': True,
                                         'uppercase': True})
 
-        self.add_met_config(name='hss_ec_value',
-                            data_type='float',
+        self.add_met_config(name='hss_ec_value', data_type='float',
                             metplus_configs=['GRID_STAT_HSS_EC_VALUE'])
 
         self.add_met_config_dict('distance_map', {
@@ -268,12 +260,10 @@ class GridStatWrapper(CompareGriddedWrapper):
             'wave_1d_end': ('list', 'remove_quotes'),
         })
 
-        self.add_met_config(name='censor_thresh',
-                            data_type='list',
+        self.add_met_config(name='censor_thresh', data_type='list',
                             extra_args={'remove_quotes': True})
 
-        self.add_met_config(name='censor_val',
-                            data_type='list',
+        self.add_met_config(name='censor_val', data_type='list',
                             extra_args={'remove_quotes': True})
 
         self.add_met_config(name='cat_thresh', data_type='list',
