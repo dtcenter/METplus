@@ -123,7 +123,8 @@ an error message will be displayed for each deprecated variable that was found::
     ERROR: Deprecated environment variable ${OBTYPE} found
     ERROR: Deprecated environment variable ${REGRID_TO_GRID} found
 
-The use case will not run until the METplus configuration file has been updated.
+If these error occur,
+the use case will not run until the METplus configuration file has been updated.
 
 How to upgrade
 ^^^^^^^^^^^^^^
