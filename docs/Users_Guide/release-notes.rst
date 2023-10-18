@@ -224,6 +224,24 @@ wrappers. The same METplus configuration variable that set the deprecated
 environment variable will set the new environment variable, so no changes
 are needed to the METplus configuration file to handle this update.
 
+fcst and obs dictionaries
+"""""""""""""""""""""""""
+
+::
+
+    fcst = {                              fcst = {
+       field = [ ${FCST_FIELD} ];     |
+    }                                 |	   field = [
+    obs = {                           |	      {
+       field = [ ${OBS_FIELD} ];      |         name       = "APCP";
+                                      >         level      = [ "A03" ];
+                                      >	        cat_thresh = [ >0.0, >=5.0 ];
+                                      >	      }
+                                      >	   ];
+                                      >
+    }                                   }
+                                      >	obs = fcst;
+
 Variables that contain different values
 """""""""""""""""""""""""""""""""""""""
 
