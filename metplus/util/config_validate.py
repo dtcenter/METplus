@@ -197,13 +197,17 @@ def check_for_deprecated_met_config_file(config, met_config, met_tool):
             "Please set values that differ from the defaults in a METplus "
             f"config file and unset {met_tool}_CONFIG_FILE to use the "
             "wrapped MET config that is provided with the METplus wrappers."
-            f" Compare values set in {met_config} to {default_path}. "
+        )
+        config.logger.error(
+            f"Compare values set in {met_config} to {default_path}"
+        )
+        config.logger.error(
             "See https://metplus.readthedocs.io/en/latest/Users_Guide/"
             "release-notes.html#metplus-wrappers-upgrade-instructions"
             " for more information."
         )
         return False
-
+################################################################################
     return True
 
 
