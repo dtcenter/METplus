@@ -3418,12 +3418,12 @@ METplus Configuration Glossary
    POINT_STAT_POLY
      Specify a polygon to use with the MET PointStat tool.
 
-     .. note:: please use :term:`POINT_STAT_MASK_POLY`
+     .. note:: Please use :term:`POINT_STAT_MASK_POLY`
 
      | *Used by:*  PointStat
 
    PB2NC_POLY
-     .. note:: please use :term:`PB2NC_MASK_POLY`
+     .. note:: Please use :term:`PB2NC_MASK_POLY`
 
      | *Used by:*  PB2NC
 
