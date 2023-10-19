@@ -719,7 +719,7 @@ The following is a configuration that will process initialization time 2019-02-0
   INIT_INCREMENT = 6H
 
 .. note::
-    Substituting VALID_INCREMENT = 21600 will generate the same result.
+    Substituting INIT_INCREMENT = 21600 will generate the same result.
 
 This will process data initialized on 2019-02-01 at 00Z, 06Z, 12Z, and 18Z as well as 2019-02-02 at 00Z. For each of these initialization times, METplus Wrappers can also loop over a set of forecast leads that are all initialized at the current run time. See :ref:`looping_over_forecast_leads` for more information.
 
