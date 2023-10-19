@@ -2347,7 +2347,7 @@ cat_thresh
 +------------------+---------------------------------------------------------------+
 | New (Correct):   | cat_thresh = [];                                              |
 +------------------+---------------------------------------------------------------+
-| METplus Config:  | :term:`GRID_STAT_MET_CONFIG_OVERRIDES` = cat_thresh = [ NA ]; |
+| METplus Config:  | :term:`GRID_STAT_CAT_THRESH` = NA;                            |
 +------------------+---------------------------------------------------------------+
 
 output_flag (multiple items)
