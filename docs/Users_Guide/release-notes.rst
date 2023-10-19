@@ -324,7 +324,7 @@ is necessary in this case to see which dictionary the variable belongs to::
        center_bins = FALSE;                    center_bins = FALSE;
        write_bins  = TRUE;                     write_bins  = TRUE;
                                        >       direct_prob = FALSE;
-}                                           }
+    }                                           }
 
 The :ref:`GridStat - MET Configuration<grid-stat-met-conf>` section of the
 Python Wrappers chapter shows that :term:`GRID_STAT_CLIMO_CDF_BINS` is the
