@@ -129,8 +129,8 @@ the use case will not run until the METplus configuration file has been updated.
 How to upgrade
 ^^^^^^^^^^^^^^
 
-Removing the **<WRAPPER_NAME>_CONFIG_FILE** (e.g. GRID_STAT_CONFIG_FILE)
-variable from the METplus config file will prevent the errors and
+Removing **<WRAPPER_NAME>_CONFIG_FILE**, e.g. :term:`GRID_STAT_CONFIG_FILE`,
+from the METplus config file will prevent the errors and
 allow the use case to run.
 However, this alone may result in changes to the output because the settings
 in the user-defined wrapped MET config file may no longer be set.
@@ -143,7 +143,7 @@ that is found in the MET installation location.
 The paths to the files to compare are listed in the *ERROR* log that follows
 the *ERROR* logs that list the deprecated environment values that were found.
 The errors also note the METplus config variable that will be removed,
-e.g. GRID_STAT_CONFIG_FILE.
+e.g. :term:`GRID_STAT_CONFIG_FILE`.
 
 ::
 
@@ -157,11 +157,11 @@ e.g. GRID_STAT_CONFIG_FILE.
 The easiest approach for investigating differences between two files is to use
 a visual diff tool that displays the files side-by-side and highlights any
 differences.
-
-The **diff** command is available on most Linux systems and can be used to
-quickly view line-by-line differences. However, viewing the actual files
-directly may still be necessary to see the context of the differences within the
-files. The **-y** argument can be provided to **diff** to view the differences
+Alternatively, the **diff** command is available on most Linux systems and can
+be used to quickly view line-by-line differences.
+However, viewing the actual files directly may still be necessary
+to see the context of the differences within the files.
+The **-y** argument can be provided to **diff** to view the differences
 side-by-side in two columns.
 
 Please create a METplus GitHub Discussion for any questions or clarification.
@@ -213,25 +213,28 @@ previously set by METplus but has since been deprecated do not require updates.
     ---
     > model = "WRF";
 
-We know that the environment variable ${MODEL} was deprecated because it was
+We know that the environment variable **${MODEL}** was deprecated because it was
 mentioned in the error log::
 
     ERROR: Deprecated environment variable ${MODEL} found in MET config file
 
-There is a new environment variable, ${METPLUS_MODEL}, that will set the value
-of *model* in the wrapped MET config file that is provided with the METplus
-wrappers. The same METplus configuration variable that set the deprecated
+There is a new environment variable, **${METPLUS_MODEL}**, that will set the
+value of *model* in the wrapped MET config file that is provided with the
+METplus wrappers.
+The same METplus configuration variable that set the deprecated
 environment variable will set the new environment variable, so no changes
 are needed to the METplus configuration file to handle this update.
 
 fcst and obs dictionaries
 """""""""""""""""""""""""
 
-Deprecated environment variables ${FCST_FIELD} and ${OBS_FIELD} can be ignored
-because they have been replaced by ${METPLUS_FCST_FIELD} and
-${METPLUS_OBS_FIELD}. The same METplus configuration variables that set these
-variables will also set the new corresponding environment variables.
+Deprecated environment variables **${FCST_FIELD}** and **${OBS_FIELD}** can be
+ignored because they have been replaced by **${METPLUS_FCST_FIELD}** and
+**${METPLUS_OBS_FIELD}**.
+The same METplus configuration variables that set these variables
+will also set the new corresponding environment variables.
 
+User-defined wrapped MET config       |   Default MET config
 ::
 
     fcst = {                              fcst = {
@@ -249,23 +252,26 @@ variables will also set the new corresponding environment variables.
 
 Field information (name/level/etc) that has been defined explicitly in the
 user-defined wrapped MET config variable will need to be set using the
-appropriate METplus configuration variables,
-e.g. FCST_VAR1_NAME, FCST_VAR1_LEVELS, OBS_VAR1_NAME, OBS_VAR1_LEVELS.
+appropriate METplus configuration variables, e.g. **FCST_VAR1_NAME**,
+**FCST_VAR1_LEVELS**, **OBS_VAR1_NAME**, **OBS_VAR1_LEVELS**.
 See :ref:`Field_Info` for more information.
 
 Variables that contain different values
 """""""""""""""""""""""""""""""""""""""
 
 Values that differ will need to be set in the METplus configuration file.
-Many of the MET variables are configurable using METplus config variables.
+Many of the MET variables are set using METplus config variables.
 The name of the corresponding METplus config variable typically matches the
-format <WRAPPER_NAME>_<VAR_NAME>.
-For example, the cat_thresh variable for GridStat in MET is controlled by the
-GRID_STAT_CAT_THRESH METplus config variable (as of v6.0.0).
-MET config dictionary variables are typically controlled by METplus config
-variables that match the format <WRAPPER_NAME>_<DICTIONARY_NAME>_<VAR_NAME>.
+format **<WRAPPER_NAME>_<VAR_NAME>**.
+
+For example, the **cat_thresh** variable for GridStat is controlled by the
+:term:`GRID_STAT_CAT_THRESH` METplus config variable (as of v6.0.0).
+
+MET config dictionary variables are typically set by METplus config
+variables that match the format **<WRAPPER_NAME>_<DICTIONARY_NAME>_<VAR_NAME>**.
+
 For example, the **to_grid** variable inside the **regrid** dictionary is
-controlled by the **GRID_STAT_REGRID_TO_GRID** METplus config variable.
+controlled by the :term:`GRID_STAT_REGRID_TO_GRID` METplus config variable.
 
 The Python Wrappers chapter of the METplus User's Guide contains sections for
 each MET tool. Each MET tool that uses a MET configuration file will include a
@@ -275,8 +281,14 @@ tables that show how the MET settings correspond to the METplus variables.
 
 In the wrapped MET config file,
 MET variables that are controlled by METplus config variables will be commented
-out (using *//*) and followed by an environment variable (starting
-with *METPLUS_*). A corresponding table entry will exist below.
+out (using *//*) and followed by an environment variable
+(starting with *METPLUS_*)::
+
+    // cat_thresh =
+    ${METPLUS_CAT_THRESH}
+
+A corresponding table entry will exist listing the METplus config variable that
+is used to set the value.
 
 MET variables that are NOT controlled by METplus config variables will likely be
 set to a value in the wrapped config file (unless they were newly added) and an
