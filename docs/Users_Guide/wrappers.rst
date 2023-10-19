@@ -82,7 +82,9 @@ to set the value of the environment variable. For detailed examples showing
 how METplus sets the values of these environment variables,
 see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
-.. literalinclude:: ../../parm/met_config/Ascii2NcConfig_wrapped
+.. dropdown:: parm/met_config/Ascii2NcConfig_wrapped
+
+   .. literalinclude:: ../../parm/met_config/Ascii2NcConfig_wrapped
 
 **${METPLUS_TIME_SUMMARY_DICT}**
 
