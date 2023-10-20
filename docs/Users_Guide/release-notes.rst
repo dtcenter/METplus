@@ -86,11 +86,14 @@ The METplus wrappers utilize *wrapped* MET configuration files that reference
 environment variables that are set by the wrappers to override MET settings.
 METplus v4.0.0 introduced a more efficient approach to overriding values in
 MET configuration files through the METplus wrappers.
-Prior to this release, if users needed to override MET settings that were
-not yet supported by METplus configuration variables, they had to copy an
-existing *wrapped* MET configuration file, make the desired modifications,
-then update their METplus configuration file to use the user-defined MET
+See :ref:`metplus-control-met` for more information.
+
+Prior to the v4.0.0 release, overriding MET settings that were not yet
+supported by METplus configuration variables required users to copy an
+existing *wrapped* MET config file, make the desired modifications,
+then update their METplus config file to use the user-defined MET
 configuration file.
+
 The new approach removes the need to maintain multiple *wrapped* MET
 configuration files by using the *wrapped* MET configuration files that
 are provided with the METplus wrappers.
@@ -111,8 +114,8 @@ variable is not found::
 
     WARNING: Environment variable ${METPLUS_MODEL} is not utilized in MET config file: /path/to/GridStatConfig_trey
 
-This is often an indicator that the wrapped MET config file needs to be updated.
-The deprecated environment variables, e.g. ${MODEL}, were still set by the
+This is often an indicator that the use case will need to be updated.
+The deprecated environment variables, e.g. **${MODEL}**, were still set by the
 wrappers, so the use case still ran without any issues.
 
 Starting in v6.0.0, the deprecated environment variables are no longer set and
@@ -123,7 +126,7 @@ an error message will be displayed for each deprecated variable that was found::
     ERROR: Deprecated environment variable ${OBTYPE} found
     ERROR: Deprecated environment variable ${REGRID_TO_GRID} found
 
-If these error occur,
+If these errors occur,
 the use case will not run until the METplus configuration file has been updated.
 
 How to upgrade
@@ -138,8 +141,9 @@ in the user-defined wrapped MET config file may no longer be set.
 **It is important to carefully review the settings and set the appropriate
 METplus configuration variables to preserve the original configuration!**
 
-Compare the user-defined wrapped MET config file with the default config file
-that is found in the MET installation location.
+Compare the user-defined wrapped MET config file (:term:`GRID_STAT_CONFIG_FILE`)
+with the default config file that is found in the MET installation location,
+e.g. share/met/GridStatConfig_default.
 The paths to the files to compare are listed in the *ERROR* log that follows
 the *ERROR* logs that list the deprecated environment values that were found.
 The errors also note the METplus config variable that will be removed,
@@ -161,10 +165,12 @@ Alternatively, the **diff** command is available on most Linux systems and can
 be used to quickly view line-by-line differences.
 However, viewing the actual files directly may still be necessary
 to see the context of the differences within the files.
-The **-y** argument can be provided to **diff** to view the differences
-side-by-side in two columns.
+The **-y** argument can be provided to **diff** to view the differences in the
+terminal side-by-side in two columns.
 
-Please create a METplus GitHub Discussion for any questions or clarification.
+Please create a
+`METplus GitHub Discussions<https://github.com/dtcenter/METplus/discussions>`_
+post for any questions or clarification.
 
 The following examples of differences are shown using the format that is output
 by the **diff** utility.
@@ -193,7 +199,8 @@ They are not read by the configuration file parser and can be ignored.
 Variables only in default config
 """"""""""""""""""""""""""""""""
 
-Differences that are only found in the default config file (preceded by **>**)
+Differences that are only found in the default config file
+(preceded by **>** with no corresponding **<** line)
 can be ignored. These are likely new config variables that were added since
 the user-defined wrapped MET config file was created.
 
@@ -216,7 +223,7 @@ previously set by METplus but has since been deprecated do not require updates.
 We know that the environment variable **${MODEL}** was deprecated because it was
 mentioned in the error log::
 
-    ERROR: Deprecated environment variable ${MODEL} found in MET config file
+    ERROR: Deprecated environment variable ${MODEL} found
 
 There is a new environment variable, **${METPLUS_MODEL}**, that will set the
 value of *model* in the wrapped MET config file that is provided with the
@@ -234,7 +241,7 @@ ignored because they have been replaced by **${METPLUS_FCST_FIELD}** and
 The same METplus configuration variables that set these variables
 will also set the new corresponding environment variables.
 
-User-defined wrapped MET config       |   Default MET config
+User-defined wrapped MET config vs. default MET config
 ::
 
     fcst = {                              fcst = {
@@ -253,7 +260,7 @@ User-defined wrapped MET config       |   Default MET config
 Field information (name/level/etc) that has been defined explicitly in the
 user-defined wrapped MET config variable will need to be set using the
 appropriate METplus configuration variables, e.g. **FCST_VAR1_NAME**,
-**FCST_VAR1_LEVELS**, **OBS_VAR1_NAME**, **OBS_VAR1_LEVELS**.
+**FCST_VAR1_LEVELS**, **OBS_VAR1_NAME**, **OBS_VAR1_LEVELS**, etc.
 See :ref:`Field_Info` for more information.
 
 Variables that contain different values
@@ -275,7 +282,7 @@ controlled by the :term:`GRID_STAT_REGRID_TO_GRID` METplus config variable.
 
 The Python Wrappers chapter of the METplus User's Guide contains sections for
 each MET tool. Each MET tool that uses a MET configuration file will include a
-*MET Configuration* section for that tool that contains the contents of the
+*MET Configuration* section that contains the contents of the
 wrapped MET config file that is provided with the METplus wrappers, followed by
 tables that show how the MET settings correspond to the METplus variables.
 
@@ -288,14 +295,25 @@ out (using *//*) and followed by an environment variable
     ${METPLUS_CAT_THRESH}
 
 A corresponding table entry will exist listing the METplus config variable that
-is used to set the value.
+is used to set the value. See :ref:`grid-stat-met-conf-cat-thresh`.
+
+**${METPLUS_CAT_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_CAT_THRESH`
+     - cat_thresh
 
 MET variables that are NOT controlled by METplus config variables will likely be
 set to a value in the wrapped config file (unless they were newly added) and an
 entry in the tables will not be found.
 In this case, its value can still be overridden through a METplus config file
 by using the MET config overrides variables.
-See *Unsupported Variable Example* below for more information.
+See the *Unsupported Variable Example* below for more information.
 
 **Supported Variable Example:**
 
@@ -305,10 +323,11 @@ See *Unsupported Variable Example* below for more information.
     ---
     > cat_thresh          = [];
 
-The :ref:`GridStat - MET Configuration<grid-stat-met-conf>` section of the
-Python Wrappers chapter shows that **GRID_STAT_CAT_THRESH** is the
-METplus configuration variable that sets cat_thresh in the GridStat wrapped MET
-config file. To set the variable found in the user-defined wrapped MET config
+The :ref:`GridStat - MET Configuration<grid-stat-met-conf-cat-thresh>` section
+of the Python Wrappers chapter shows that :term:`GRID_STAT_CAT_THRESH` is the
+METplus config variable that sets **cat_thresh** in the wrapped GridStat
+MET config file.
+To set the variable found in the user-defined wrapped MET config
 file, set the following in the METplus config file::
 
     GRID_STAT_CAT_THRESH = NA
@@ -325,8 +344,8 @@ for more information.
     ---
     >    cdf_bins    = 1;
 
-It is difficult to tell the cdf_bins variable is a member of the climo_cdf
-dictionary from the *diff* output.
+It is difficult to tell the **cdf_bins** variable is a member of the
+**climo_cdf** dictionary from the *diff* output.
 Viewing the two files side-by-side, either by opening both files or
 using the *-y* argument to *diff*,
 is necessary in this case to see which dictionary the variable belongs to::
@@ -335,13 +354,12 @@ is necessary in this case to see which dictionary the variable belongs to::
        cdf_bins    = 2;                |       cdf_bins    = 1;
        center_bins = FALSE;                    center_bins = FALSE;
        write_bins  = TRUE;                     write_bins  = TRUE;
-                                       >       direct_prob = FALSE;
-    }                                           }
+    }                                       }
 
-The :ref:`GridStat - MET Configuration<grid-stat-met-conf>` section of the
-Python Wrappers chapter shows that :term:`GRID_STAT_CLIMO_CDF_BINS` is the
-METplus configuration variable that sets the cdf_bins variable that is found
-under the climo_cdf dictionary in the GridStat wrapped MET config file.
+The :ref:`GridStat - MET Configuration<grid-stat-met-conf-climo-cdf>` section of
+the Python Wrappers chapter shows that :term:`GRID_STAT_CLIMO_CDF_BINS` is the
+METplus config variable that sets the **climo_cdf.cdf_bins** variable
+in the GridStat wrapped MET config file.
 Note that slightly redundant :term:`GRID_STAT_CLIMO_CDF_CDF_BINS` is also
 supported to match the naming convention <WRAPPER_NAME>_<DICT_NAME>_<VAR_NAME>.
 
@@ -379,3 +397,29 @@ error logs listing deprecated environment variables and does not start with
 **METPLUS_** was likely defined by the user. These variables will no longer
 be supported, so the variables that reference them should be set using METplus
 configuration variables instead.
+
+Verify results
+^^^^^^^^^^^^^^
+
+Once all of the changes are made, it is recommended to confirm that the use case
+produces the same results. A good way to confirm this is to run the use case
+using the version of METplus that was previously used, run the use case with the
+new version with use case updates, then compare the output.
+
+A diff utility is provided with the METplus wrappers that can be used to compare
+two directories that contain METplus output while filtering out differences that
+are not relevant, such as skipping log files that contain different timestamps
+and ignoring version number differences in stat output files. The diff utility
+can be found in the METplus installation location at
+**metplus/util/diff_util.py**. Call the script on the command line passing in
+the two directory (or file) paths to compare::
+
+    ./metplus/util/diff_util.py /path/to/output_one /path/to/output_two
+
+Users can also review the environment variables that were set by METplus by
+running the use case with :ref:`LOG_LEVEL` **= DEBUG**. The list of environment
+variables set will be logged directly before the call to the MET application.
+
+Please submit a
+`METplus GitHub Discussions<https://github.com/dtcenter/METplus/discussions>`_
+post for assistance with updating use cases or verifying results.
