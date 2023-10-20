@@ -356,7 +356,9 @@ to set the value of the environment variable. For detailed examples showing
 how METplus sets the values of these environment variables,
 see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
-.. literalinclude:: ../../parm/met_config/EnsembleStatConfig_wrapped
+.. dropdown:: Click to view parm/met_config/EnsembleStatConfig_wrapped
+
+   .. literalinclude:: ../../parm/met_config/EnsembleStatConfig_wrapped
 
 ${METPLUS_MODEL}
 ^^^^^^^^^^^^^^^^
@@ -1205,7 +1207,9 @@ to set the value of the environment variable. For detailed examples showing
 how METplus sets the values of these environment variables,
 see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
-.. literalinclude:: ../../parm/met_config/GenEnsProdConfig_wrapped
+.. dropdown:: Click to view parm/met_config/GenEnsProdConfig_wrapped
+
+   .. literalinclude:: ../../parm/met_config/GenEnsProdConfig_wrapped
 
 ${METPLUS_MODEL}
 ^^^^^^^^^^^^^^^^
@@ -1708,7 +1712,9 @@ file. While it may appear that environment variables are used in the NML
 template file, they are not actually environment variables. The wrapper
 searches for these strings and substitutes the values as appropriate.
 
-.. literalinclude:: ../../parm/use_cases/met_tool_wrapper/GFDLTracker/template.nml
+.. dropdown:: Click to view parm/use_cases/met_tool_wrapper/GFDLTracker/template.nml
+
+   .. literalinclude:: ../../parm/use_cases/met_tool_wrapper/GFDLTracker/template.nml
 
 ${METPLUS_DATEIN_INP_BCC}
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -2898,7 +2904,9 @@ to set the value of the environment variable. For detailed examples showing
 how METplus sets the values of these environment variables,
 see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
-.. literalinclude:: ../../parm/met_config/GridDiagConfig_wrapped
+.. dropdown:: Click to view parm/met_config/GridDiagConfig_wrapped
+
+   .. literalinclude:: ../../parm/met_config/GridDiagConfig_wrapped
 
 ${METPLUS_DESC}
 ^^^^^^^^^^^^^^^
@@ -3197,7 +3205,9 @@ to set the value of the environment variable. For detailed examples showing
 how METplus sets the values of these environment variables,
 see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
-.. literalinclude:: ../../parm/met_config/GridStatConfig_wrapped
+.. dropdown:: Click to view parm/met_config/GridStatConfig_wrapped
+
+   .. literalinclude:: ../../parm/met_config/GridStatConfig_wrapped
 
 ${METPLUS_MODEL}
 ^^^^^^^^^^^^^^^^
@@ -3784,7 +3794,9 @@ to set the value of the environment variable. For detailed examples showing
 how METplus sets the values of these environment variables,
 see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
-.. literalinclude:: ../../parm/met_config/IODA2NCConfig_wrapped
+.. dropdown:: Click to view parm/met_config/IODA2NCConfig_wrapped
+
+   .. literalinclude:: ../../parm/met_config/IODA2NCConfig_wrapped
 
 ${METPLUS_MESSAGE_TYPE}
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -4040,7 +4052,9 @@ file. While it may appear that environment variables are used in the XML
 template file, they are not actually environment variables. The wrapper
 searches for these strings and substitutes the values as appropriate.
 
-.. literalinclude:: ../../parm/use_cases/met_tool_wrapper/METdbLoad/METdbLoadConfig.xml
+.. dropdown:: Click to view parm/use_cases/met_tool_wrapper/METdbLoad/METdbLoadConfig.xml
+
+   .. literalinclude:: ../../parm/use_cases/met_tool_wrapper/METdbLoad/METdbLoadConfig.xml
 
 ${METPLUS_MV_HOST}
 ^^^^^^^^^^^^^^^^^^
@@ -4369,7 +4383,9 @@ to set the value of the environment variable. For detailed examples showing
 how METplus sets the values of these environment variables,
 see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
-.. literalinclude:: ../../parm/met_config/MODEConfig_wrapped
+.. dropdown:: Click to view parm/met_config/MODEConfig_wrapped
+
+   .. literalinclude:: ../../parm/met_config/MODEConfig_wrapped
 
 ${METPLUS_MODEL}
 ^^^^^^^^^^^^^^^^
@@ -5111,7 +5127,9 @@ to set the value of the environment variable. For detailed examples showing
 how METplus sets the values of these environment variables,
 see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
-.. literalinclude:: ../../parm/met_config/MTDConfig_wrapped
+.. dropdown:: Click to view parm/met_config/MTDConfig_wrapped
+
+   .. literalinclude:: ../../parm/met_config/MTDConfig_wrapped
 
 ${METPLUS_MODEL}
 ^^^^^^^^^^^^^^^^
@@ -5408,7 +5426,9 @@ to set the value of the environment variable. For detailed examples showing
 how METplus sets the values of these environment variables,
 see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
-.. literalinclude:: ../../parm/met_config/PB2NCConfig_wrapped
+.. dropdown:: Click to view parm/met_config/PB2NCConfig_wrapped
+
+   .. literalinclude:: ../../parm/met_config/PB2NCConfig_wrapped
 
 ${METPLUS_MESSAGE_TYPE}
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -5858,7 +5878,9 @@ to set the value of the environment variable. For detailed examples showing
 how METplus sets the values of these environment variables,
 see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
-.. literalinclude:: ../../parm/met_config/PlotPointObsConfig_wrapped
+.. dropdown:: Click to view parm/met_config/PlotPointObsConfig_wrapped
+
+   .. literalinclude:: ../../parm/met_config/PlotPointObsConfig_wrapped
 
 ${METPLUS_GRID_DATA_DICT}
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -6388,7 +6410,9 @@ to set the value of the environment variable. For detailed examples showing
 how METplus sets the values of these environment variables,
 see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
-.. literalinclude:: ../../parm/met_config/PointStatConfig_wrapped
+.. dropdown:: Click to view parm/met_config/PointStatConfig_wrapped
+
+   .. literalinclude:: ../../parm/met_config/PointStatConfig_wrapped
 
 ${METPLUS_MODEL}
 ^^^^^^^^^^^^^^^^
@@ -7039,7 +7063,9 @@ to set the value of the environment variable. For detailed examples showing
 how METplus sets the values of these environment variables,
 see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
-.. literalinclude:: ../../parm/met_config/SeriesAnalysisConfig_wrapped
+.. dropdown:: Click to view parm/met_config/SeriesAnalysisConfig_wrapped
+
+   .. literalinclude:: ../../parm/met_config/SeriesAnalysisConfig_wrapped
 
 ${METPLUS_MODEL}
 ^^^^^^^^^^^^^^^^
@@ -7734,7 +7760,9 @@ to set the value of the environment variable. For detailed examples showing
 how METplus sets the values of these environment variables,
 see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
-.. literalinclude:: ../../parm/met_config/STATAnalysisConfig_wrapped
+.. dropdown:: Click to view parm/met_config/STATAnalysisConfig_wrapped
+
+   .. literalinclude:: ../../parm/met_config/STATAnalysisConfig_wrapped
 
 ${METPLUS_MODEL}
 ^^^^^^^^^^^^^^^^
@@ -8235,7 +8263,9 @@ to set the value of the environment variable. For detailed examples showing
 how METplus sets the values of these environment variables,
 see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
-.. literalinclude:: ../../parm/met_config/TCDiagConfig_wrapped
+.. dropdown:: Click to view parm/met_config/TCDiagConfig_wrapped
+
+   .. literalinclude:: ../../parm/met_config/TCDiagConfig_wrapped
 
 ${METPLUS_MODEL}
 ^^^^^^^^^^^^^^^^
@@ -8808,7 +8838,9 @@ how METplus sets the values of these environment variables,
 see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 
-.. literalinclude:: ../../parm/met_config/TCGenConfig_wrapped
+.. dropdown:: Click to view parm/met_config/TCGenConfig_wrapped
+
+   .. literalinclude:: ../../parm/met_config/TCGenConfig_wrapped
 
 ${METPLUS_INIT_FREQ}
 ^^^^^^^^^^^^^^^^^^^^
@@ -9473,7 +9505,9 @@ to set the value of the environment variable. For detailed examples showing
 how METplus sets the values of these environment variables,
 see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
-.. literalinclude:: ../../parm/met_config/TCPairsConfig_wrapped
+.. dropdown:: Click to view parm/met_config/TCPairsConfig_wrapped
+
+   .. literalinclude:: ../../parm/met_config/TCPairsConfig_wrapped
 
 ${METPLUS_MODEL}
 ^^^^^^^^^^^^^^^^
@@ -9847,7 +9881,9 @@ to set the value of the environment variable. For detailed examples showing
 how METplus sets the values of these environment variables,
 see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
-.. literalinclude:: ../../parm/met_config/TCRMWConfig_wrapped
+.. dropdown:: Click to view parm/met_config/TCRMWConfig_wrapped
+
+   .. literalinclude:: ../../parm/met_config/TCRMWConfig_wrapped
 
 ${METPLUS_MODEL}
 ^^^^^^^^^^^^^^^^
@@ -10207,7 +10243,9 @@ to set the value of the environment variable. For detailed examples showing
 how METplus sets the values of these environment variables,
 see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
-.. literalinclude:: ../../parm/met_config/TCStatConfig_wrapped
+.. dropdown:: Click to view parm/met_config/TCStatConfig_wrapped
+
+   .. literalinclude:: ../../parm/met_config/TCStatConfig_wrapped
 
 ${METPLUS_AMODEL}
 ^^^^^^^^^^^^^^^^^
