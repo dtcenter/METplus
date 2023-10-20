@@ -169,7 +169,7 @@ The **-y** argument can be provided to **diff** to view the differences in the
 terminal side-by-side in two columns.
 
 Please create a
-`METplus GitHub Discussions<https://github.com/dtcenter/METplus/discussions>`_
+`METplus GitHub Discussions <https://github.com/dtcenter/METplus/discussions>`_
 post for any questions or clarification.
 
 The following examples of differences are shown using the format that is output
@@ -421,5 +421,5 @@ running the use case with :ref:`LOG_LEVEL` **= DEBUG**. The list of environment
 variables set will be logged directly before the call to the MET application.
 
 Please submit a
-`METplus GitHub Discussions<https://github.com/dtcenter/METplus/discussions>`_
+`METplus GitHub Discussions <https://github.com/dtcenter/METplus/discussions>`_
 post for assistance with updating use cases or verifying results.
