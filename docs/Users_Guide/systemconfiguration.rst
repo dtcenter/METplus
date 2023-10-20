@@ -2188,11 +2188,11 @@ Instead of a single METplus configuration variable to control the value of this
 environment variable, there are multiple variables -- one for each item of the
 dictionary:
 
-* GRID_STAT_REGRID_\ **TO_GRID**
-* GRID_STAT_REGRID_\ **METHOD**
-* GRID_STAT_REGRID_\ **WIDTH**
-* GRID_STAT_REGRID_\ **VLD_THRESH**
-* GRID_STAT_REGRID_\ **SHAPE**
+* GRID_STAT_REGRID\_\ **TO_GRID**
+* GRID_STAT_REGRID\_\ **METHOD**
+* GRID_STAT_REGRID\_\ **WIDTH**
+* GRID_STAT_REGRID\_\ **VLD_THRESH**
+* GRID_STAT_REGRID\_\ **SHAPE**
 
 If all of these variables are unset, then the value of ${METPLUS_REGRID_DICT}
 will be an empty string. If one or more of these variables are set, then each
