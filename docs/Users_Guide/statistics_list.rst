@@ -1688,7 +1688,6 @@ __________________
 .. list-table:: Diagnostics List F
   :widths: auto
   :header-rows: 1
-  :class: longtable
 		
   * - Statistics  :raw-html:`<br />`
       Long Name
