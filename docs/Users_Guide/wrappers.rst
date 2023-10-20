@@ -696,7 +696,7 @@ ${METPLUS_CLIMO_MEAN_DICT}
 """"""""""""""""""""""""""
 
 .. list-table::
-   :widths: auto
+   :widths: 5 5
    :header-rows: 0
 
    * - METplus Config(s)
