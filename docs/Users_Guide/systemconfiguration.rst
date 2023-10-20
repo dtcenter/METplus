@@ -2106,11 +2106,11 @@ Notice that this file is similar to the default GridStat MET config file,
 but some of the variables in the wrapped configuration file have been replaced
 with environment variables.
 
-GridStatConfig\_**default**::
+GridStatConfig\_\ **default**::
 
     desc = "NA";
 
-GridStatConfig\_**wrapped**::
+GridStatConfig\_\ **wrapped**::
 
     // desc =
     ${METPLUS_DESC}
@@ -2119,7 +2119,7 @@ When GridStat is run, the tool first reads its default configuration file
 (GridStatConfig\_**default**) and sets all of the default values. Then it reads
 the configuration file that is passed into the tool on the command line, which
 is *typically* the wrapped GridStat config file
-(parm/met_config/GridStatConfig\_**wrapped**).
+(parm/met_config/GridStatConfig\_\ **wrapped**).
 
 If the user sets the following in their METplus config file::
 
