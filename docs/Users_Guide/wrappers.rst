@@ -3489,6 +3489,8 @@ ${METPLUS_MET_CONFIG_OVERRIDES}
    * - :term:`GRID_STAT_MET_CONFIG_OVERRIDES`
      - n/a
 
+.. _grid-stat-met-conf-climo-cdf:
+
 ${METPLUS_CLIMO_CDF_DICT}
 """""""""""""""""""""""""
 
@@ -3708,6 +3710,8 @@ ${METPLUS_CENSOR_VAL}
      - MET Config File
    * - :term:`GRID_STAT_CENSOR_VAL`
      - censor_val
+
+.. _grid-stat-met-conf-cat-thresh:
 
 ${METPLUS_CAT_THRESH}
 """""""""""""""""""""
