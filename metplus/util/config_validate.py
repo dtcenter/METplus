@@ -207,7 +207,7 @@ def check_for_deprecated_met_config_file(config, met_config, met_tool):
             " for more information."
         )
         return False
-################################################################################
+
     return True
 
 
