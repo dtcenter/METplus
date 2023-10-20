@@ -2116,7 +2116,7 @@ GridStatConfig\_\ **wrapped**::
     ${METPLUS_DESC}
 
 When GridStat is run, the tool first reads its default configuration file
-(GridStatConfig\_**default**) and sets all of the default values. Then it reads
+(GridStatConfig\_\ **default**) and sets all of the default values. Then it reads
 the configuration file that is passed into the tool on the command line, which
 is *typically* the wrapped GridStat config file
 (parm/met_config/GridStatConfig\_\ **wrapped**).
@@ -2142,8 +2142,8 @@ the names of the METplus config variable, environment variable, and
 MET config variable are closely related, i.e.
 
 *           **desc**: MET config name
-* GRID_STAT\_**DESC**: METplus config name
-*  $METPLUS\_**DESC**: Environment variable name
+* GRID_STAT\_\ **DESC**: METplus config name
+*  $METPLUS\_\ **DESC**: Environment variable name
 
 However, this is not always the case. Refer to the 'MET Configuration' section
 for each wrapper in the:doc:`wrappers` chapter to see the full list of
@@ -2188,11 +2188,11 @@ Instead of a single METplus configuration variable to control the value of this
 environment variable, there are multiple variables -- one for each item of the
 dictionary:
 
-* GRID_STAT_REGRID_**TO_GRID**
-* GRID_STAT_REGRID_**METHOD**
-* GRID_STAT_REGRID_**WIDTH**
-* GRID_STAT_REGRID_**VLD_THRESH**
-* GRID_STAT_REGRID_**SHAPE**
+* GRID_STAT_REGRID_\ **TO_GRID**
+* GRID_STAT_REGRID_\ **METHOD**
+* GRID_STAT_REGRID_\ **WIDTH**
+* GRID_STAT_REGRID_\ **VLD_THRESH**
+* GRID_STAT_REGRID_\ **SHAPE**
 
 If all of these variables are unset, then the value of ${METPLUS_REGRID_DICT}
 will be an empty string. If one or more of these variables are set, then each
