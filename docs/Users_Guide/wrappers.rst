@@ -86,6 +86,9 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    .. literalinclude:: ../../parm/met_config/Ascii2NcConfig_wrapped
 
+Environment variables in wrapped MET config
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 ${METPLUS_TIME_SUMMARY_DICT}
 """"""""""""""""""""""""""""
 
@@ -359,6 +362,9 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 .. dropdown:: Click to view parm/met_config/EnsembleStatConfig_wrapped
 
    .. literalinclude:: ../../parm/met_config/EnsembleStatConfig_wrapped
+
+Environment variables in wrapped MET config
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ${METPLUS_MODEL}
 """"""""""""""""
@@ -1211,6 +1217,9 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    .. literalinclude:: ../../parm/met_config/GenEnsProdConfig_wrapped
 
+Environment variables in wrapped MET config
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 ${METPLUS_MODEL}
 """"""""""""""""
 
@@ -1715,6 +1724,9 @@ searches for these strings and substitutes the values as appropriate.
 .. dropdown:: Click to view parm/use_cases/met_tool_wrapper/GFDLTracker/template.nml
 
    .. literalinclude:: ../../parm/use_cases/met_tool_wrapper/GFDLTracker/template.nml
+
+Environment variables in template
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ${METPLUS_DATEIN_INP_BCC}
 """""""""""""""""""""""""
@@ -2908,6 +2920,9 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    .. literalinclude:: ../../parm/met_config/GridDiagConfig_wrapped
 
+Environment variables in wrapped MET config
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 ${METPLUS_DESC}
 """""""""""""""
 
@@ -3208,6 +3223,9 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 .. dropdown:: Click to view parm/met_config/GridStatConfig_wrapped
 
    .. literalinclude:: ../../parm/met_config/GridStatConfig_wrapped
+
+Environment variables in wrapped MET config
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ${METPLUS_MODEL}
 """"""""""""""""
@@ -3798,6 +3816,9 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    .. literalinclude:: ../../parm/met_config/IODA2NCConfig_wrapped
 
+Environment variables in wrapped MET config
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 ${METPLUS_MESSAGE_TYPE}
 """""""""""""""""""""""
 
@@ -4055,6 +4076,9 @@ searches for these strings and substitutes the values as appropriate.
 .. dropdown:: Click to view parm/use_cases/met_tool_wrapper/METdbLoad/METdbLoadConfig.xml
 
    .. literalinclude:: ../../parm/use_cases/met_tool_wrapper/METdbLoad/METdbLoadConfig.xml
+
+Environment variables in XML config
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ${METPLUS_MV_HOST}
 """"""""""""""""""
@@ -4386,6 +4410,9 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 .. dropdown:: Click to view parm/met_config/MODEConfig_wrapped
 
    .. literalinclude:: ../../parm/met_config/MODEConfig_wrapped
+
+Environment variables in wrapped MET config
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ${METPLUS_MODEL}
 """"""""""""""""
@@ -5131,6 +5158,9 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    .. literalinclude:: ../../parm/met_config/MTDConfig_wrapped
 
+Environment variables in wrapped MET config
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 ${METPLUS_MODEL}
 """"""""""""""""
 
@@ -5429,6 +5459,9 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 .. dropdown:: Click to view parm/met_config/PB2NCConfig_wrapped
 
    .. literalinclude:: ../../parm/met_config/PB2NCConfig_wrapped
+
+Environment variables in wrapped MET config
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ${METPLUS_MESSAGE_TYPE}
 """""""""""""""""""""""
@@ -5881,6 +5914,9 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 .. dropdown:: Click to view parm/met_config/PlotPointObsConfig_wrapped
 
    .. literalinclude:: ../../parm/met_config/PlotPointObsConfig_wrapped
+
+Environment variables in wrapped MET config
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ${METPLUS_GRID_DATA_DICT}
 """""""""""""""""""""""""
@@ -6413,6 +6449,9 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 .. dropdown:: Click to view parm/met_config/PointStatConfig_wrapped
 
    .. literalinclude:: ../../parm/met_config/PointStatConfig_wrapped
+
+Environment variables in wrapped MET config
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ${METPLUS_MODEL}
 """"""""""""""""
@@ -7066,6 +7105,9 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 .. dropdown:: Click to view parm/met_config/SeriesAnalysisConfig_wrapped
 
    .. literalinclude:: ../../parm/met_config/SeriesAnalysisConfig_wrapped
+
+Environment variables in wrapped MET config
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ${METPLUS_MODEL}
 """"""""""""""""
@@ -7764,6 +7806,9 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    .. literalinclude:: ../../parm/met_config/STATAnalysisConfig_wrapped
 
+Environment variables in wrapped MET config
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 ${METPLUS_MODEL}
 """"""""""""""""
 
@@ -8266,6 +8311,9 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 .. dropdown:: Click to view parm/met_config/TCDiagConfig_wrapped
 
    .. literalinclude:: ../../parm/met_config/TCDiagConfig_wrapped
+
+Environment variables in wrapped MET config
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ${METPLUS_MODEL}
 """"""""""""""""
@@ -8841,6 +8889,9 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 .. dropdown:: Click to view parm/met_config/TCGenConfig_wrapped
 
    .. literalinclude:: ../../parm/met_config/TCGenConfig_wrapped
+
+Environment variables in wrapped MET config
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ${METPLUS_INIT_FREQ}
 """"""""""""""""""""
@@ -9509,6 +9560,9 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    .. literalinclude:: ../../parm/met_config/TCPairsConfig_wrapped
 
+Environment variables in wrapped MET config
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 ${METPLUS_MODEL}
 """"""""""""""""
 
@@ -9885,6 +9939,9 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    .. literalinclude:: ../../parm/met_config/TCRMWConfig_wrapped
 
+Environment variables in wrapped MET config
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 ${METPLUS_MODEL}
 """"""""""""""""
 
@@ -10246,6 +10303,9 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 .. dropdown:: Click to view parm/met_config/TCStatConfig_wrapped
 
    .. literalinclude:: ../../parm/met_config/TCStatConfig_wrapped
+
+Environment variables in wrapped MET config
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ${METPLUS_AMODEL}
 """""""""""""""""
