@@ -183,7 +183,7 @@ Inside this file add the following each on a single line:
 * A short description of the category
 
 For example,
-*docs/use_cases/model_applications*/**air_quality_and_comp/README.rst**
+*docs/use_cases/model_applications*/air_quality_and_comp/README.rst*
 would look something like this::
 
     Air Quality and Composition
