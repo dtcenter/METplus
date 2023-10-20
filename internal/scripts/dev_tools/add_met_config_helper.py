@@ -271,7 +271,7 @@ def _print_met_config_table(var):
     env_var_name = var['env_var_name']
     metplus_names = var['metplus_config_names']
     met_names = var['met_config_names']
-    var_header = (f"**${{{env_var_name}}}**")
+    var_header = f"${{{env_var_name}}}\n{'^' * (len(env_var_name)+3)}"
     list_table_text = (f"{var_header}\n\n"
                        ".. list-table::\n"
                        "   :widths: 5 5\n"
