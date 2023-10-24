@@ -1,10 +1,11 @@
 import pytest
-
+from unittest import mock
 import os
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 from metplus.wrappers.series_analysis_wrapper import SeriesAnalysisWrapper
+from metplus.wrappers import series_analysis_wrapper as saw
 
 fcst_dir = '/some/fcst/dir'
 obs_dir = '/some/obs/dir'
@@ -1002,3 +1003,76 @@ def test_get_config_file(metplus_config):
     config.set('config', 'SERIES_ANALYSIS_CONFIG_FILE', fake_config_name)
     wrapper = SeriesAnalysisWrapper(config)
     assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name
+
+
+@pytest.mark.wrapper_a
+def test_run_once_per_lead(metplus_config):
+    config = metplus_config
+    set_minimum_config_settings(config)
+    wrapper = SeriesAnalysisWrapper(config)
+
+    # basic test
+    actual = wrapper.run_once_per_lead(None)
+    assert wrapper.isOK
+    assert actual is True
+
+    # lead_hours = None
+    with mock.patch.object(saw, 'ti_get_hours_from_lead', return_value=None):
+        actual = wrapper.run_once_per_lead(None)
+    assert actual is True
+
+    # run_at_time_once returns a failure
+    with mock.patch.object(wrapper, 'run_at_time_once', return_value=None):
+        actual = wrapper.run_once_per_lead(None)
+    assert actual is False
+
+
+@pytest.mark.wrapper_a
+def test_get_fcst_obs_not_embedding(metplus_config):
+    config = metplus_config
+    set_minimum_config_settings(config)
+    wrapper = SeriesAnalysisWrapper(config)
+    with mock.patch.object(wrapper, "_check_python_embedding", return_value=False):
+        actual = wrapper._get_fcst_and_obs_path({}, '*', None) 
+    assert actual == (None, None)
+
+
+@pytest.mark.parametrize(
+    'lead_group, use_both, mock_exists, expected', [
+        (('Group1', [0, 21600]), True, True, ('both_path', 'both_path')),
+        (('F012', [relativedelta(hours=12)]), True, False, (None, None)),
+        (('Group2', [0, 200]), False, True, ('fcst_path', 'obs_path')),
+        ((None, [0, 200]), False, False, (None, None)),
+    ]
+)
+@pytest.mark.wrapper_a
+def test_get_fcst_and_obs_path(metplus_config,
+                           lead_group,
+                           use_both,
+                           mock_exists,
+                           expected):
+    config = metplus_config
+    set_minimum_config_settings(config)
+    wrapper = SeriesAnalysisWrapper(config)
+    wrapper.c_dict['EXPLICIT_FILE_LIST'] = True
+    wrapper.c_dict['FCST_INPUT_FILE_LIST'] = 'fcst_path'
+    wrapper.c_dict['OBS_INPUT_FILE_LIST'] = 'obs_path'
+    wrapper.c_dict['BOTH_INPUT_FILE_LIST'] = 'both_path'
+    wrapper.c_dict['USING_BOTH'] = use_both
+
+    time_info = {'loop_by': 'init',
+                 'init': datetime(2005, 8, 7, 0, 0),
+                 'instance': '',
+                 'valid': '*',
+                 'lead': '*',
+                 'lead_string':'ALL',
+                 'date': datetime(2005, 8, 7, 0, 0),
+                 'storm_id': '*'}
+
+    if mock_exists:
+        with mock.patch.object(os.path, "exists", return_value=True):
+            actual = wrapper._get_fcst_and_obs_path(time_info, '*', lead_group) 
+    else:
+        actual = wrapper._get_fcst_and_obs_path(time_info, '*', lead_group) 
+    assert actual == expected
+
