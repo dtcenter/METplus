@@ -127,12 +127,17 @@ To cite this documentation in publications, please refer to the METplus User's G
 
 .. toctree::
    :hidden:
-   :caption: METplus Wrappers Guides
+   :caption: FOR USERS
 
    Users_Guide/index
+   Verification_Datasets/index
+
+.. toctree::
+   :hidden:
+   :caption: FOR CONTRIBUTORS
+
    Contributors_Guide/index
    Release_Guide/index
-   Verification_Datasets/index
 
 
 Index
