@@ -277,7 +277,7 @@ GFDL Tracker (Optional)
     -  Instructions on how to configure and use the GFDL tracker are found here
        https://dtcenter.org/sites/default/files/community-code/gfdl/standalone_tracker_UG_v3.9a.pdf
 
-Disable UserScript Wrapper ()ptional)
+Disable UserScript Wrapper (Optional)
 =====================================
 
 The UserScript wrapper allows any shell command or script to be run as part
