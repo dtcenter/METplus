@@ -144,10 +144,11 @@ METplus configuration variables to preserve the original configuration!**
 Compare the user-defined wrapped MET config file (:term:`GRID_STAT_CONFIG_FILE`)
 with the default config file that is found in the MET installation location,
 e.g. share/met/GridStatConfig_default.
-The paths to the files to compare are listed in the *ERROR* log that follows
-the *ERROR* logs that list the deprecated environment values that were found.
-The errors also note the METplus config variable that will be removed,
-e.g. :term:`GRID_STAT_CONFIG_FILE`.
+After the error log messages that list the deprecated environment variables
+that were found, users can find the path to the files to compare in the final
+error log message.
+The error log messages also note the METplus config variable that will be
+removed, e.g. :term:`GRID_STAT_CONFIG_FILE`.
 
 ::
 
@@ -159,7 +160,7 @@ e.g. :term:`GRID_STAT_CONFIG_FILE`.
     ERROR: Compare values set in /path/to/GridStatConfig_trey to /path/to/met/share/met/config/GridStatConfig_default
 
 The easiest approach for investigating differences between two files is to use
-a visual diff tool that displays the files side-by-side and highlights any
+a visual difference tool that displays the files side-by-side and highlights any
 differences.
 Alternatively, the **diff** command is available on most Linux systems and can
 be used to quickly view line-by-line differences.
@@ -174,11 +175,11 @@ post for any questions or clarification.
 
 The following examples of differences are shown using the format that is output
 by the **diff** utility.
-Lines that begin with the **<** character are from the first file passed
-to **diff** or the user-defined wrapped MET config file in this case.
-Lines that begin with the **>** character are from the second file passed
-to **diff** or the default MET config file in this case.
-Lines that contain three dashes (**---**) separate the lines from each file.
+Lines that begin with the `<` character are from the first file passed
+to **diff** (i.e. the user-defined wrapped MET config file).
+Lines that begin with the `>` character are from the second file passed
+to **diff** (i.e. the default MET config file).
+Lines that contain three dashes (`---`) separate the lines from each file.
 
 ::
 
@@ -280,9 +281,9 @@ variables that match the format **<WRAPPER_NAME>_<DICTIONARY_NAME>_<VAR_NAME>**.
 For example, the **to_grid** variable inside the **regrid** dictionary is
 controlled by the :term:`GRID_STAT_REGRID_TO_GRID` METplus config variable.
 
-The Python Wrappers chapter of the METplus User's Guide contains sections for
-each MET tool. Each MET tool that uses a MET configuration file will include a
-*MET Configuration* section that contains the contents of the
+The :ref:`python_wrappers` chapter of the METplus User's Guide contains sections
+for each MET tool. Each MET tool that uses a MET configuration file will include
+a *MET Configuration* section that contains the contents of the
 wrapped MET config file that is provided with the METplus wrappers, followed by
 tables that show how the MET settings correspond to the METplus variables.
 

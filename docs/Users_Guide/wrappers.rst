@@ -1,3 +1,5 @@
+.. _python_wrappers:
+
 ***************
 Python Wrappers
 ***************
