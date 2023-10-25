@@ -175,11 +175,11 @@ post for any questions or clarification.
 
 The following examples of differences are shown using the format that is output
 by the **diff** utility.
-Lines that begin with the `<` character are from the first file passed
+Lines that begin with the **<** character are from the first file passed
 to **diff** (i.e. the user-defined wrapped MET config file).
-Lines that begin with the `>` character are from the second file passed
+Lines that begin with the **>** character are from the second file passed
 to **diff** (i.e. the default MET config file).
-Lines that contain three dashes (`---`) separate the lines from each file.
+Lines that contain three dashes (*\-\-\-*) separate the lines from each file.
 
 ::
 
