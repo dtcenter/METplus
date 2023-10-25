@@ -5,7 +5,7 @@
   Define a vx-data name above and add it to the alphabetical list in datasets.rst.
 
 *Insert Dataset Name Here*
---------------------------
+==========================
 
 Description
   *Insert description here*

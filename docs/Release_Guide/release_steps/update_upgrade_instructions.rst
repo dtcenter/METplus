@@ -1,5 +1,5 @@
 Update Upgrade Instructions
----------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Occasionally, changes will be made to software that will require users to make
 changes to their configuration files in order to use the latest release. For

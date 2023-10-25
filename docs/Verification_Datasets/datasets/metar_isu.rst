@@ -1,7 +1,7 @@
 .. _vx-data-metar-isu:
 
 METAR Data
-----------
+==========
 
 Description
   Meteorological Aviation Routine Weather Report (METAR) is a format for observational weather data, which typically comes from airports or permanent observing stations around the world.

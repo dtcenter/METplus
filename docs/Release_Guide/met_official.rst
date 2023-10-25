@@ -1,5 +1,5 @@
 MET Official Release
-====================
+--------------------
 
 .. |projectRepo| replace:: MET
 

@@ -1,10 +1,11 @@
 .. _conda_env:
 
+**************************************
 Instructions for the Conda Environment
-======================================
+**************************************
 
-Overview:  Replicating the Python 3.6.3 environment for running METplus
-_______________________________________________________________________
+Overview:  Replicating the Python 3.6.3 environment for Running METplus
+=======================================================================
 
 If the host (i.e. the computer on which the METplus and MET tools are
 running) doesn't already have all the necessary packages installed, it is
@@ -19,8 +20,8 @@ METplus source code:
 
    *METplus/environment.yml*
 
-Pre-condition- installing the conda package manager if it doesn't exist
-_______________________________________________________________________
+Pre-condition- Installing the Conda Package Manager If It Doesn't Exist
+=======================================================================
 
 **These instructions only need to be followed once.**
 
@@ -72,7 +73,7 @@ _______________________________________________________________________
 
 
 Creating the METplus conda env
-______________________________
+==============================
 
 **These instructions only need to be implemented once.**
 
@@ -127,8 +128,8 @@ to end the application.
 
        conda deactivate
 
-Activating and deactivating the METplus conda env
-_________________________________________________
+Activating and Deactivating the METplus conda env
+=================================================
 
 Once the user has followed the instructions under the "Creating the METplus
 conda env", follow these instructions to start running METplus :
@@ -163,8 +164,8 @@ conda env", follow these instructions to start running METplus :
 
 
 
-Optional: Checking for missing packages and mismatched version
-______________________________________________________________
+Optional: Checking for Missing Packages and Mismatched Version
+==============================================================
 
 To check for missing and mismatched packages run the **check_python.py**
 script in the METplus directory:
@@ -192,7 +193,7 @@ The results are sent to stdout (screen) and three files are created:
 
 
 Link Conda Directory to Data Disk (RAL Linux Machines)
-______________________________________________________
+======================================================
 
 By default, Conda environments are stored in a directory called ".conda" that is found in the user's home directory, i.e. /home/user/.conda (Note that the dot at the beginning of the directory name is a hidden directory that does not always show up in a directory listing). Conda environments can take up a lot of disk space which can quickly fill up the /home disk. It is recommended that you create a directory on a data disk that has more disk space and create a symbolic link from the .conda directory so the environments will be stored on the data disk. Keep in mind that deleting the directory on the data disk will delete all of your conda environments and they cannot be easily recovered.
 

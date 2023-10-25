@@ -1,5 +1,5 @@
 Clone the Project Repository
-------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * Create and work in a new directory to ensure a fresh environment:
 

@@ -1,6 +1,5 @@
-*****************
 METcalcpy Release
-*****************
+=================
 
 .. toctree::
    :titlesonly:

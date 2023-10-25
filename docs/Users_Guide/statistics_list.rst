@@ -15,7 +15,7 @@ Statistics Database
 
 
 Statistics List A-B
-___________________
+-------------------
 
 .. role:: raw-html(raw)
    :format: html	  
@@ -137,7 +137,7 @@ ___________________
     - PSTD
 
 Statistics List C-E
-___________________
+-------------------
       
 .. role:: raw-html(raw)
    :format: html	  
@@ -307,7 +307,7 @@ ___________________
       SSVAR
 
 Statistics List F
-_________________
+-----------------
       
 .. list-table:: Statistics List F
   :widths: auto
@@ -528,8 +528,8 @@ _________________
       NBRCTC
 
 Statistics List G-M
-___________________
-      
+-------------------
+
 .. role:: raw-html(raw)
    :format: html	  
 
@@ -734,7 +734,7 @@ ___________________
     - VCNT
 
 Statistics List N-O
-___________________
+-------------------
       
 .. role:: raw-html(raw)
    :format: html	  
@@ -909,7 +909,7 @@ ___________________
 
 
 Statistics List P-R
-___________________
+-------------------
 
 
 .. role:: raw-html(raw)
@@ -1130,7 +1130,7 @@ ___________________
 
 
 Statistics List S-T
-___________________
+-------------------
 
 
 .. role:: raw-html(raw)
@@ -1246,7 +1246,7 @@ ___________________
       
 
 Statistics List U-Z
-___________________
+-------------------
       
 .. role:: raw-html(raw)
    :format: html	  
@@ -1433,7 +1433,7 @@ Diagnostics Database
    METplus Line Type - currently unlimited (approx 33 characters)
 
 Diagnostics List A-B
-____________________
+--------------------
 
 .. role:: raw-html(raw)
    :format: html	  
@@ -1514,7 +1514,7 @@ ____________________
     - MODE obj
 
 Diagnostics List C-E
-____________________
+--------------------
 
 .. role:: raw-html(raw)
    :format: html	  
@@ -1680,7 +1680,7 @@ ____________________
     - MTD 3D obj
       
 Diagnostics List F
-__________________
+------------------
 
 .. role:: raw-html(raw)
    :format: html	  
@@ -1936,7 +1936,7 @@ __________________
 
 
 Diagnostics List G-L
-____________________
+--------------------
 
 .. role:: raw-html(raw)
    :format: html	  
@@ -2078,7 +2078,7 @@ ____________________
 
 
 Diagnostics List M-O
-____________________
+--------------------
 
 .. role:: raw-html(raw)
    :format: html	  
@@ -2253,7 +2253,7 @@ ____________________
 
 
 Diagnostics List P-Z
-____________________
+--------------------
 
 .. role:: raw-html(raw)
    :format: html	  

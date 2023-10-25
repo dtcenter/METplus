@@ -1,10 +1,11 @@
 .. _github-workflow:
 
+***************
 GitHub Workflow
-===============
+***************
 
-How METplus releases are created
---------------------------------
+How METplus Releases are Created
+================================
 
 The branching model employed by the METplus GitHub repository is similar to
 that described in
@@ -24,8 +25,8 @@ which includes data tarballs for use in running use cases.
 
 .. _wo-development-project:
 
-GitHub Projects to manage development
--------------------------------------
+GitHub Projects to Manage Development
+=====================================
 
 Software development for official METplus releases is organized into development cycles.
 While the length a development cycle can vary widely, they are nominally 6 weeks long.
@@ -171,8 +172,8 @@ are required to perform the following steps.
 
 .. _wo-support-project:
 
-GitHub Projects to manage support
----------------------------------
+GitHub Projects to Manage Support
+=================================
 
 Support for coordinated METplus releases is managed using a *single* GitHub project
 for all components.  Bugfix issues and the corresponding pull request fixes are added
@@ -297,7 +298,7 @@ required to perform the following steps.
    - Click the **Link a project** button and find/select this newly created support project.
 
 Sequence of Events - Contributing Code
---------------------------------------
+======================================
 
 *Prerequisite:*
 
@@ -308,7 +309,7 @@ to the GitHub Documentation on
 
 
 Workflow Overview
-~~~~~~~~~~~~~~~~~
+-----------------
 
 Contributors will follow these instructions for new development.
 Detailed instructions for each item can be found below or by clicking the link.
@@ -378,7 +379,7 @@ Find or Create a GitHub Issue
 
 .. _wo-fork-repo:
 
-Fork the dtcenter/METplus repository
+Fork the dtcenter/METplus Repository
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * **If the contributor has write access to the dtcenter/METplus repository,
@@ -409,7 +410,7 @@ Fork the dtcenter/METplus repository
 
 .. _wo-clone-repo:
 
-Clone the repository locally
+Clone the Repository Locally
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * Change directories to a working directory. From the command line,
@@ -432,7 +433,7 @@ Clone the repository locally
 
 .. _wo-set-upstream:
 
-Set upstream remote
+Set Upstream Remote
 ^^^^^^^^^^^^^^^^^^^
 
 * **If working from the dtcenter/METplus repository, skip this step.**
@@ -464,7 +465,7 @@ Set upstream remote
 
 .. _wo-feature-branch:
 
-Create a feature branch
+Create a Feature Branch
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 * Generate a feature branch from the *develop* branch for new development
@@ -534,7 +535,7 @@ Create a feature branch
 
 .. _wo-make-changes:
 
-Make changes to code in the feature branch
+Make Changes to Code in the Feature Branch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Users should make changes to their feature branch and commit changes to their
@@ -589,7 +590,7 @@ local repository.
 
 .. _wo-commit-changes:
 
-Commit changes to feature branch
+Commit Changes to Feature Branch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * View all files that have changed since the last commit:
@@ -647,7 +648,7 @@ Commit changes to feature branch
 
 .. _wo-push-changes:
 
-Push the feature branch to GitHub
+Push the Feature Branch to GitHub
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Pushing changes up to GitHub periodically is recommended to avoid losing
@@ -664,7 +665,7 @@ progress by relying on the local copy of the changes.
 
 .. _pull-request-browser:
   
-Open a pull request
+Open a Pull Request
 ^^^^^^^^^^^^^^^^^^^
 
 * To request to have the changes be incorporated into the remote repository
@@ -745,8 +746,8 @@ Open a pull request
   everything meets acceptance criteria) and merge the code into the remote
   repository's develop branch.
 
-Approve a pull request using a browser
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Approve a Pull Request Using a Browser
+--------------------------------------
 
 Submitting a pull request allows a user to propose changes, request a
 review of the contributions and have the proposed changes merged into a
@@ -761,7 +762,7 @@ sub-tasks to be complete, then it may be best to wait to create a pull request
 until the other sub-tasks are also complete.
 
 
-Reviewing a pull request
+Reviewing a Pull Request
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 1.  Click on the “Pull requests” tab in the GitHub repository and
@@ -838,7 +839,7 @@ Reviewing a pull request
     been made, approve the request.
 
 
-Merging pull requests
+Merging Pull Requests
 ^^^^^^^^^^^^^^^^^^^^^
 Once the pull request has been approved it is ready to be merged.  **As
 permissions allow, the requestor is responsible for merging the pull request
@@ -860,7 +861,7 @@ If the requestor wishes to delete the “compare” branch, the “Delete branch
 button should be selected and the corresponding GitHub issue should be closed.
 
 
-Clean up after a successfully merged pull request
+Clean Up After a Successfully Merged Pull Request
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * After an authorized METplus developer has accepted the changes and merged
@@ -904,17 +905,3 @@ Clean up after a successfully merged pull request
   replacing <your-github-user> appropriately. Under the 'Branch'
   pulldown menu, the feature branch name should no longer be seen
   as an option.
-
-
-
-
-
-
-
-
-
-
-
-
-
-

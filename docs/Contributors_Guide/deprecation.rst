@@ -1,12 +1,14 @@
+**********************************
 Deprecating an Old Config Variable
-==================================
+**********************************
 
 If a config variable changes names, an alert is needed to let
 the user know that they need to update the config files if they
 are using a deprecated variable.
 
 Example
--------
+=======
+
 ::
 
     [exe]
@@ -25,7 +27,8 @@ read and the user will have no way to know that they are setting the
 wrong variable and it is using WGRIB2 = wgrib2.
 
 check_for_deprecated_config()
------------------------------
+=============================
+
 In **metplus/util/constants.py** there is a dictionary called
 DEPRECATED_DICT that specifies the old config name as the key.
 The value is a dictionary of info that is used to help users update their

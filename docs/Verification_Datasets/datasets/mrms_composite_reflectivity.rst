@@ -1,7 +1,7 @@
 .. _vx-data-mrms-composite-reflectivity:
 
 MRMS Composite Reflectivity
----------------------------
+===========================
 
 Description
   Multi-radar/multi-sensor (MRMS) composite reflectivity

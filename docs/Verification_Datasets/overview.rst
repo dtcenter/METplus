@@ -1,5 +1,6 @@
-﻿Overview
-========
+﻿********
+Overview
+********
 
 One of biggest challenges in verification is identifying appropriate and available datasets. While countless observations and analyses exist for both standard (e.g., temperature, pressure, wind, and precipitation) and non-state (e.g., aerosol optical depth, composite reflectivity, and turbulence) variables, it is often difficult to identify, procure, and apply the necessary datasets needed for a robust model evaluation. To address the need for a centralized catalogue of verification datasets, the DTC has assembled an initial version of the Verification Datasets Guide to provide the model verification community with relevant “truth” datasets, including data from satellite platforms (geostationary and polar orbiting), gridded analyses (global and regional), station or point-based datasets (global and regional), and radar networks.
 

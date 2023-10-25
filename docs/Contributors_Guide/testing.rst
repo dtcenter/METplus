@@ -1,5 +1,6 @@
+*******
 Testing
-=======
+*******
 
 Test scripts are found in the GitHub repository in the internal/tests
 directory.
@@ -7,7 +8,7 @@ directory.
 .. _cg-unit-tests:
 
 Unit Tests
-----------
+==========
 
 Unit tests are run with pytest.
 They are found in the *internal/tests/pytests* directory under the *wrappers*
@@ -15,7 +16,7 @@ and *util* directories.
 Each tool has its own subdirectory containing its test files.
 
 Pytest Requirements
-^^^^^^^^^^^^^^^^^^^
+-------------------
 
 The following Python packages are required to run the tests.
 
@@ -27,7 +28,7 @@ The following Python packages are required to run the tests.
 * **pdf2image** (optional): Only used if running diff utility tests
 
 Running
-^^^^^^^
+-------
 
 To run the unit tests, set the environment variable
 **METPLUS_TEST_OUTPUT_BASE** to a path where the user running has write
@@ -43,7 +44,7 @@ To view verbose test output, add the **-vv** argument::
     pytest internal/tests/pytests -vv
 
 Code Coverage
-^^^^^^^^^^^^^
+-------------
 
 If the *pytest-cov* package is installed, the code coverage report can
 be generated from the tests by running::
@@ -54,7 +55,7 @@ In addition to the pass/fail report, the code coverage information will be
 displayed including line numbers that are not covered by any test.
 
 Subsetting Tests by Directory
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------------
 
 A subset of the unit tests can be run by adjusting the path.
 Be sure to include the *--cov-append* argument so the results of the run
@@ -65,7 +66,7 @@ To run only the GridStat unit tests::
 
 
 Subsetting Tests by Marker
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------
 
 Pytest allows contributors to use markers on test functions. Markers are used
 to set various features/attributes to test functions so that users can easily
@@ -126,10 +127,10 @@ Multiple marker groups can be run by using the *or* keyword::
     pytest internal/tests/pytests -m "<MARKER-NAME1> or <MARKER-NAME2>"
 
 Writing Unit Tests
-^^^^^^^^^^^^^^^^^^
+------------------
 
 metplus_config fixture
-""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^
 
 Many unit tests utilize a pytest fixture named **metplus_config**.
 This is defined in the **conftest.py** file in internal/tests/pytests.

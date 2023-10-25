@@ -1,5 +1,5 @@
 Finalize Release on GitHub
-----------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Return to GitHub to finalize the details of this release.
 
