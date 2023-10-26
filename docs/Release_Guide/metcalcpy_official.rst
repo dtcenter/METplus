@@ -1,5 +1,5 @@
 METcalcpy Official Release
-==========================
+--------------------------
 
 .. |projectRepo| replace:: METcalcpy
 

@@ -1,5 +1,5 @@
 Deploy Beta Apps
------------------
+^^^^^^^^^^^^^^^^
 
 * After the apps build, which usually takes about 20 minutes, they should be installed on the dedicated beta server (mats-docker-int) for third party testing.
 

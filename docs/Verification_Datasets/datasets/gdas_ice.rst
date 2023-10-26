@@ -1,7 +1,7 @@
 .. _vx-data-gdas-ice:
 
 GDAS: Ice
----------
+=========
 
 Description
   "The Global Data Assimilation System (GDAS) is the system used by the National Center for Environmental Prediction (NCEP) Global Forecast System (GFS) model to place observations into a gridded model space for the purpose of starting, or initializing, weather forecasts with observed data." from NOAA NCEI
@@ -13,10 +13,10 @@ Sample image
    :width: 600
 
 Recommended use
-"Place observations into a gridded model space for the purpose of starting, or initializing, weather forecasts with observed data” from NOAA NCEI
+  "Place observations into a gridded model space for the purpose of starting, or initializing, weather forecasts with observed data” from NOAA NCEI
 
 File format
-* Grib2
+  * Grib2
 
 Location of data
   NCDC/NCEI: https://www.ncdc.noaa.gov/data-access/model-data/model-datasets/global-data-assimilation-system-gdas

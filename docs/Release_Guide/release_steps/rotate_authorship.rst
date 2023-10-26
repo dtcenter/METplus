@@ -1,5 +1,5 @@
 Rotate Authorship
------------------
+^^^^^^^^^^^^^^^^^
 
 The METplus team rotates the list of authors in the citation instructions
 for each official release:

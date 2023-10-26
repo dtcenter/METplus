@@ -1,7 +1,7 @@
 .. _vx-data-madis:
 
 MADIS Data
-----------
+==========
 
 Description
   Meteorological Assimilation Data Ingest System (MADIS) consists of NOAA and non-NOAA data providers and provides observational data in a common format, with quality checks. This information is focused on METAR data.

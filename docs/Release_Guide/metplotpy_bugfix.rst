@@ -1,5 +1,5 @@
 METplotpy Bugfix Release
-========================
+------------------------
 
 .. |projectRepo| replace:: METplotpy
 

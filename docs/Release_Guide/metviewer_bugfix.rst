@@ -1,5 +1,5 @@
 METviewer Bugfix Release
-========================
+------------------------
 
 .. |projectRepo| replace:: METviewer
 

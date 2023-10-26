@@ -1,5 +1,5 @@
 METexpress Development Release
-==============================
+------------------------------
 
 .. |projectRepo| replace:: METexpress
 

@@ -1,6 +1,5 @@
-******************
 METexpress Release
-******************
+==================
 
 .. toctree::
    :titlesonly:

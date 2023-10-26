@@ -1,7 +1,7 @@
  .. _vx-data-nexrad-level-3:
 
 NEXRAD Level 3
---------------
+==============
 
 Description
   Next-Generation Radar (NEXRAD) Level 3, gridded radial

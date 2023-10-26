@@ -1,5 +1,5 @@
 Set up Reminder to Delete Beta/RC Tags and Releases
----------------------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Help keep the GitHub repositories and DockerHub clean by removing
 beta/rc tags and releases.

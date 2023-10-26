@@ -1,6 +1,5 @@
-*******************
 Coordinated Release
-*******************
+===================
 
 .. |projectRepo| replace:: Coordinated
 

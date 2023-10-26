@@ -1,11 +1,12 @@
+***************************
 How to Create a New Wrapper
-===========================
+***************************
 
 Naming
-------
+======
 
 File Name
-^^^^^^^^^
+---------
 
 Create the new wrapper in the *metplus/wrappers* directory and
 name it to reflect the wrapper's function, e.g.: new_tool_wrapper.py is
@@ -13,14 +14,14 @@ a wrapper around an application named "new_tool."
 Copy the **example_wrapper.py** to start the process.
 
 Class Name
-^^^^^^^^^^
+----------
 
 The name of the class should match the wrapper's function without underscores
 and with the first letter of each word capitalized followed by "Wrapper."
 For example, the new_tool wrapper would be named **NewToolWrapper**.
 
 Add Entry to LOWER_TO_WRAPPER_NAME Dictionary
----------------------------------------------
+=============================================
 
 In *metplus/util/constants.py*, add entries to the LOWER_TO_WRAPPER_NAME
 dictionary so that the wrapper can be found in the PROCESS_LIST even if
@@ -57,12 +58,12 @@ More than one entry is rarely needed, but
 they will not hurt anything as long as they do not cause any conflicts.
 
 Wrapper Components
-------------------
+==================
 
 Open the wrapper file for editing the new class.
 
 Naming
-^^^^^^
+------
 
 Rename the class to match the wrapper's class from the above sections.
 Most wrappers should be a subclass of the RuntimeFreqWrapper::
@@ -80,7 +81,7 @@ To create EnsembleStat wrapper from GridStat, replace
 **GridStat** with **EnsembleStat**.
 
 Parent Class
-^^^^^^^^^^^^
+------------
 
 If the new tool falls under one of the existing tool categories,
 then make the tool a subclass of one of the existing classes.
@@ -91,7 +92,7 @@ See :ref:`bc_class_hierarchy` for more information on existing classes to
 determine which class to use as the parent class.
 
 Class Variables for Runtime Frequency
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------------------
 
 **RUNTIME_FREQ_DEFAULT** and **RUNTIME_FREQ_SUPPORTED** should be set for all
 wrappers that inherit from **RuntimeFreqWrapper**.
@@ -99,7 +100,7 @@ wrappers that inherit from **RuntimeFreqWrapper**.
 See :ref:`bc_class_vars` for more information.
 
 Init Function
-^^^^^^^^^^^^^
+-------------
 
 Modify the init function to initialize NewTool from its base class
 to set the self.app_name variable to the name of the application.
@@ -114,7 +115,7 @@ See the Basic Components :ref:`bc_init_function` section for more information::
         super().__init__(config, instance=instance)
 
 Read Configuration Variables
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------
 
 The create_c_dict function is called during the initialization step of each
 wrapper. It is where values from the self.config object are read.
@@ -132,13 +133,13 @@ The function should also always return the c_dict variable::
     return c_dict
 
 File Input/Output
-"""""""""""""""""
+^^^^^^^^^^^^^^^^^
 
 METplus configuration variables that end with _DIR and _TEMPLATE are used
 to define the criteria to search for input files.
 
 Allow Multiple Files
-""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^
 
 If the application can take more than one file as input for a given category
 (i.e. FCST, OBS, ENS, etc.) then ALLOW_MULTIPLE_FILES must be set to True::
@@ -151,7 +152,7 @@ If it is set to False and a list of files are found for an input
 then the wrapper will produce an error and not build the command.
 
 Run Functions
-^^^^^^^^^^^^^
+-------------
 
 * The **run_at_time_once** function or some the functions that it calls will
   need to be overridden in the wrapper.
@@ -240,7 +241,7 @@ Refer to the :ref:`basic_components_of_wrappers` section of the Contributor's
 Guide for more information on what should be added.
 
 Documentation
--------------
+=============
 
 * Add a section for the new wrapper in the 'Python Wrappers' section of the
   User's Guide. This includes a list of all configuration variables specific

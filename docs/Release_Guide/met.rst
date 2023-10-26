@@ -1,6 +1,5 @@
-***********
 MET Release
-***********
+===========
 
 .. toctree::
    :titlesonly:

@@ -1,5 +1,5 @@
 METplus Bugfix Release
-======================
+----------------------
 
 .. |projectRepo| replace:: METplus
 

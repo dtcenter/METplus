@@ -1,5 +1,5 @@
 Create Release Branch
----------------------
+^^^^^^^^^^^^^^^^^^^^^
 
 * Create a branch from the develop branch for the new official release and push it to GitHub.
 

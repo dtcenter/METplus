@@ -1,5 +1,5 @@
 METplus Development Release
-===========================
+---------------------------
 
 .. |projectRepo| replace:: METplus
 

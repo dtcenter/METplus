@@ -1,6 +1,5 @@
-***************
 METplus Release
-***************
+===============
 
 .. toctree::
    :titlesonly:

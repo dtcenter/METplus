@@ -1,5 +1,5 @@
 METplotpy Official Release
-==========================
+--------------------------
 
 .. |projectRepo| replace:: METplotpy
 

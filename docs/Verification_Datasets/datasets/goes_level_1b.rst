@@ -1,7 +1,7 @@
 .. _vx-data-goes-level-1b.rst:
 
 GOES ABI L1b Radiances
-----------------------
+======================
 
 Description
   Geostationary Operational Environmental Satellite (GOES-16/17) Advanced Baseline Imagers (ABIs) Data - Level 1b Radiances
