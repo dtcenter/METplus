@@ -33,7 +33,7 @@ _Difficulty_Index.conf
 # these factors into a continuous function that allows the user to assess relative risk.
 #
 # Additional details on the computation of the Difficulty Index can be found in the `METcalcpy 
-# documentation<https://metcalcpy.readthedocs.io/en/latest/Users_Guide/difficulty_index.html>`_ 
+# documentation <https://metcalcpy.readthedocs.io/en/latest/Users_Guide/difficulty_index.html>`_ 
 # and more information on plotting difficulty index can be found in the `METplotpy documentation
 # <https://metplotpy.readthedocs.io/en/latest/Users_Guide/difficulty_index.html>`_.
 
