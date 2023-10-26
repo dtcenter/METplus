@@ -39,7 +39,8 @@ ${METPLUS_REGRID_DICT}
 ${METPLUS_CENSOR_THRESH}
 //censor_val =
 ${METPLUS_CENSOR_VAL}
-cat_thresh  	 = [];
+//cat_thresh =
+${METPLUS_CAT_THRESH}
 cnt_thresh  	 = [ NA ];
 cnt_logic   	 = UNION;
 wind_thresh 	 = [ NA ];

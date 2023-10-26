@@ -11113,3 +11113,8 @@ METplus Configuration Glossary
      See :term:`SKIP_VALID_TIMES` for formatting information.
 
      | *Used by:* UserScript
+
+   GRID_STAT_CAT_THRESH
+     Specify the value for 'cat_thresh' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat

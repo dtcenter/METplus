@@ -719,7 +719,7 @@ The following is a configuration that will process initialization time 2019-02-0
   INIT_INCREMENT = 6H
 
 .. note::
-    Substituting VALID_INCREMENT = 21600 will generate the same result.
+    Substituting INIT_INCREMENT = 21600 will generate the same result.
 
 This will process data initialized on 2019-02-01 at 00Z, 06Z, 12Z, and 18Z as well as 2019-02-02 at 00Z. For each of these initialization times, METplus Wrappers can also loop over a set of forecast leads that are all initialized at the current run time. See :ref:`looping_over_forecast_leads` for more information.
 
@@ -2106,20 +2106,20 @@ Notice that this file is similar to the default GridStat MET config file,
 but some of the variables in the wrapped configuration file have been replaced
 with environment variables.
 
-GridStatConfig\_**default**::
+GridStatConfig\_\ **default**::
 
     desc = "NA";
 
-GridStatConfig\_**wrapped**::
+GridStatConfig\_\ **wrapped**::
 
     // desc =
     ${METPLUS_DESC}
 
 When GridStat is run, the tool first reads its default configuration file
-(GridStatConfig\_**default**) and sets all of the default values. Then it reads
+(GridStatConfig\_\ **default**) and sets all of the default values. Then it reads
 the configuration file that is passed into the tool on the command line, which
 is *typically* the wrapped GridStat config file
-(parm/met_config/GridStatConfig\_**wrapped**).
+(parm/met_config/GridStatConfig\_\ **wrapped**).
 
 If the user sets the following in their METplus config file::
 
@@ -2142,8 +2142,8 @@ the names of the METplus config variable, environment variable, and
 MET config variable are closely related, i.e.
 
 *           **desc**: MET config name
-* GRID_STAT\_**DESC**: METplus config name
-*  $METPLUS\_**DESC**: Environment variable name
+* GRID_STAT\_\ **DESC**: METplus config name
+*  $METPLUS\_\ **DESC**: Environment variable name
 
 However, this is not always the case. Refer to the 'MET Configuration' section
 for each wrapper in the:doc:`wrappers` chapter to see the full list of
@@ -2188,11 +2188,11 @@ Instead of a single METplus configuration variable to control the value of this
 environment variable, there are multiple variables -- one for each item of the
 dictionary:
 
-* GRID_STAT_REGRID_**TO_GRID**
-* GRID_STAT_REGRID_**METHOD**
-* GRID_STAT_REGRID_**WIDTH**
-* GRID_STAT_REGRID_**VLD_THRESH**
-* GRID_STAT_REGRID_**SHAPE**
+* GRID_STAT_REGRID\_\ **TO_GRID**
+* GRID_STAT_REGRID\_\ **METHOD**
+* GRID_STAT_REGRID\_\ **WIDTH**
+* GRID_STAT_REGRID\_\ **VLD_THRESH**
+* GRID_STAT_REGRID\_\ **SHAPE**
 
 If all of these variables are unset, then the value of ${METPLUS_REGRID_DICT}
 will be an empty string. If one or more of these variables are set, then each
@@ -2347,7 +2347,7 @@ cat_thresh
 +------------------+---------------------------------------------------------------+
 | New (Correct):   | cat_thresh = [];                                              |
 +------------------+---------------------------------------------------------------+
-| METplus Config:  | :term:`GRID_STAT_MET_CONFIG_OVERRIDES` = cat_thresh = [ NA ]; |
+| METplus Config:  | :term:`GRID_STAT_CAT_THRESH` = NA;                            |
 +------------------+---------------------------------------------------------------+
 
 output_flag (multiple items)

@@ -1,6 +1,6 @@
 import os
 
-from .constants import DEPRECATED_DICT, DEPRECATED_MET_LIST
+from .constants import DEPRECATED_DICT
 from .constants import UPGRADE_INSTRUCTIONS_URL
 from .string_manip import find_indices_in_config_section, getlist
 from .string_manip import is_python_script, get_wrapper_name
@@ -29,11 +29,11 @@ def validate_config_variables(config):
     input_real_path = os.path.realpath(config.getdir_nocheck('INPUT_BASE', ''))
     output_real_path = os.path.realpath(config.getdir('OUTPUT_BASE'))
     if input_real_path == output_real_path:
-      config.logger.error("INPUT_BASE AND OUTPUT_BASE are set to the "
-                          f"exact same path: {input_real_path}")
-      config.logger.error("Please change one of these paths to avoid risk "
-                          "of losing input data")
-      inoutbase_is_ok = False
+        config.logger.error("INPUT_BASE AND OUTPUT_BASE are set to the "
+                            f"exact same path: {input_real_path}")
+        config.logger.error("Please change one of these paths to avoid risk "
+                            "of losing input data")
+        inoutbase_is_ok = False
 
     check_user_environment(config)
 
@@ -120,10 +120,10 @@ def handle_deprecated(old, alt, depr_info, config, all_sed_cmds, e_list,
 
     # if it is required to remove, add to error list
     if not alt:
-        e_list.append("{} should be removed".format(old))
+        e_list.append(f"{old} should be removed")
         return
 
-    e_list.append("{} should be replaced with {}".format(old, alt))
+    e_list.append(f"{old} should be replaced with {alt}")
 
     config_files = config.getstr('config', 'CONFIG_INPUT', '').split(',')
     if 'copy' not in depr_info.keys() or depr_info['copy']:
@@ -177,21 +177,38 @@ def check_for_deprecated_met_config_file(config, met_config, met_tool):
     with open(met_config, 'r') as file_handle:
         lines = file_handle.read().splitlines()
 
-    all_good = True
+    error_logs = []
     for line in lines:
         for deprecated_item in deprecated_met_list:
             if '${' + deprecated_item + '}' not in line:
                 continue
-            all_good = False
-            config.logger.error("Deprecated environment variable"
-                                f" ${{{deprecated_item}}} found in MET config "
-                                f"file: {met_config}. Please unset "
-                                f"{met_tool}_CONFIG_FILE to use the wrapped "
-                                "MET config that is provided with the "
-                                "METplus wrappers and set values that differ "
-                                "from the defaults in a METplus config file.")
+            error_logs.append(f"Deprecated environment variable ${{{deprecated_item}}} found")
 
-    return all_good
+    if error_logs:
+        config.logger.error(f"Deprecated environment variables found in MET config file: {met_config}")
+        for error_log in error_logs:
+            config.logger.error(error_log)
+
+        met_install_dir = config.getdir('MET_INSTALL_DIR')
+        config_dir = os.path.join(met_install_dir, 'share', 'met', 'config')
+        default_config = f"{get_wrapper_name(met_tool)}Config_default"
+        default_path = os.path.join(config_dir, default_config)
+        config.logger.error(
+            "Please set values that differ from the defaults in a METplus "
+            f"config file and unset {met_tool}_CONFIG_FILE to use the "
+            "wrapped MET config that is provided with the METplus wrappers."
+        )
+        config.logger.error(
+            f"Compare values set in {met_config} to {default_path}"
+        )
+        config.logger.error(
+            "See https://metplus.readthedocs.io/en/latest/Users_Guide/"
+            "release-notes.html#metplus-wrappers-upgrade-instructions"
+            " for more information."
+        )
+        return False
+
+    return True
 
 
 def _get_deprecated_met_list(config, met_tool):
@@ -304,9 +321,9 @@ def check_user_environment(config):
 
     for env_var in config.keys('user_env_vars'):
         if env_var in os.environ:
-            msg = '{} is already set in the environment. '.format(env_var) +\
-                  'Overwriting from conf file'
-            config.logger.warning(msg)
+            config.logger.warning(
+                f'{env_var} is already set in the environment. Overwriting from conf file'
+            )
 
 
 def is_var_item_valid(item_list, index, ext, config):
