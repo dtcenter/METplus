@@ -143,7 +143,7 @@ METplus configuration variables to preserve the original configuration!**
 
 Compare the user-defined wrapped MET config file (:term:`GRID_STAT_CONFIG_FILE`)
 with the default config file that is found in the MET installation location,
-e.g. share/met/GridStatConfig_default.
+e.g. /path/to/met-X.Y.Z/share/met/GridStatConfig_default.
 After the error log messages that list the deprecated environment variables
 that were found, users can find the path to the files to compare in the final
 error log message.
@@ -415,7 +415,7 @@ can be found in the METplus installation location at
 **metplus/util/diff_util.py**. Call the script on the command line passing in
 the two directory (or file) paths to compare::
 
-    ./metplus/util/diff_util.py /path/to/output_one /path/to/output_two
+    /path/to/METplus-X.Y.Z/metplus/util/diff_util.py /path/to/output_one /path/to/output_two
 
 Users can also review the environment variables that were set by METplus by
 running the use case with :ref:`LOG_LEVEL` **= DEBUG**. The list of environment
