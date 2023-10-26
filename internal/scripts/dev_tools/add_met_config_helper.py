@@ -275,7 +275,7 @@ def _print_met_config_table(var):
     list_table_text = (f"{var_header}\n\n"
                        ".. list-table::\n"
                        "   :widths: 5 5\n"
-                       "   :header-rows: 0\n\n"
+                       "   :header-rows: 1\n\n"
                        "   * - METplus Config(s)\n"
                        "     - MET Config File\n"
                        )
