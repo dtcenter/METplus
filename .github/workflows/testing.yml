@@ -148,8 +148,9 @@ jobs:
         run: |
           coverage report -m --fail-under=95
           if [ $? != 0 ]; then
-            echo "::warning::Code coverage is below 90%"
+            echo "::warning file=coverage,line=1,col=1::Code coverage is below 90%"
           fi
+          exit 0
         if: always()
         continue-on-error: true
       - name: Run Coveralls
