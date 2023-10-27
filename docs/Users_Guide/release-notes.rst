@@ -121,7 +121,7 @@ wrappers, so the use case still ran without any issues.
 Starting in v6.0.0, the deprecated environment variables are no longer set and
 an error message will be displayed for each deprecated variable that was found::
 
-    ERROR: Deprecated environment variables found in MET config file: /path/to/GridStatConfig_trey
+    ERROR: Deprecated environment variables found in GRID_STAT_CONFIG_FILE: /path/to/GridStatConfig_trey
     ERROR: Deprecated environment variable ${MODEL} found
     ERROR: Deprecated environment variable ${OBTYPE} found
     ERROR: Deprecated environment variable ${REGRID_TO_GRID} found
@@ -152,7 +152,7 @@ removed, e.g. :term:`GRID_STAT_CONFIG_FILE`.
 
 ::
 
-    ERROR: Deprecated environment variables found in MET config file: /path/to/GridStatConfig_trey
+    ERROR: Deprecated environment variables found in GRID_STAT_CONFIG_FILE: /path/to/GridStatConfig_trey
     ERROR: Deprecated environment variable ${MODEL} found
     ...
     ERROR: Deprecated environment variable ${NEIGHBORHOOD_WIDTH} found

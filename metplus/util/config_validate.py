@@ -185,7 +185,7 @@ def check_for_deprecated_met_config_file(config, met_config, met_tool):
             error_logs.append(f"Deprecated environment variable ${{{deprecated_item}}} found")
 
     if error_logs:
-        config.logger.error(f"Deprecated environment variables found in MET config file: {met_config}")
+        config.logger.error(f"Deprecated environment variables found in {met_tool}_CONFIG_FILE: {met_config}")
         for error_log in error_logs:
             config.logger.error(error_log)
 
