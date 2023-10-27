@@ -468,7 +468,9 @@ formatted in the following way:
 so that it can be referenced in a different section.
 
 To reference the section with the label name in a different section, use
-the `:ref:` role.  For example: `:ref:\`label-name\``
+the `:ref:` role.  For example::
+
+  :ref:`label-name`
 
 For example, in the :ref:`running-metplus` section of the METplus User's Guide
 under "Example Wrapper Use Case" it states:
@@ -476,9 +478,9 @@ under "Example Wrapper Use Case" it states:
 * Create a :ref:`user_configuration_file` (named user_system.conf in this example).
 
 The link to "User Configuration File" is an internal link referenced in the
-following way in the .rst file:
+following way in the .rst file::
 
-  | * Create a `:ref:\`user_configuration_file\`` (named user_system.conf in this example).
+  * Create a :ref:`user_configuration_file` (named user_system.conf in this example).
 
 The syntax for the label name can be seen in the
 `systemconfiguration.rst <https://raw.githubusercontent.com/dtcenter/METplus/develop/docs/Users_Guide/systemconfiguration.rst>`_
