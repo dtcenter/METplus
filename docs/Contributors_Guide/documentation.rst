@@ -1,38 +1,938 @@
-*************
-Documentation
-*************
+**************************************
+Documentation Overview and Conventions
+**************************************
 
-Viewing METplus documentation
-=============================
+Overview
+========
 
 The METplus documentation (beginning with version 3.0) is available
-`online <https://metplus.readthedocs.io/>`_.
+`online <https://metplus.readthedocs.io/>`_. The majority of the documentation 
+is created using the Sphinx documentation generator tool, which was originally 
+created for Python documentation. The METplus documentation is created using 
+`reStructuredText (RST) <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html>`_. 
+This link provides a brief introduction to RST concepts and syntax, intended 
+to give authors enough information to create and modify the documents productively. 
+
+Conventions
+===========
+
+We follow the conventions outlined in the 
+`reStructuredText Primer <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html>`_, 
+along with some additional METplus component specific conventions.
+
+.. _create-chapters:
+
+Defining Chapters and Sections
+------------------------------
+
+The METplus documentation uses the
+`reStructured Text Primer <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#sections>`_
+documentation for defining section formatting::
+
+  # with overline, for parts (e.g. the RTD documentation for the component
+  (i.e. docs/index.rst), each guide (e.g. User's Guide, Contributor's Guide)
+  (i.e. docs/Users_Guide/index.rst, docs/Contributors_Guide/index.rst))
+  * with overline, for chapters
+  = for sections
+  - for subsections (this is a dash, not an underline)
+  ^ for subsubsections
+  " for paragraphs (as of yet, this isn't used in the METplus documentation)
+
+Part (e.g. User's Guide, Contributor's Guide) and chapter (e.g. Overview,
+Coding Standards) headers are created by underlining and overlining the
+header name using the appropriate character as described above. When using
+the underline and overline formatting, their lengths must be identical and
+should be the same length as the header text. If the overline and
+underline are not the same length there will be a error
+message::
+
+  CRITICAL: Title overline & underline mismatch
+
+When formatting headers, the length of the underline must be at least as
+long as the title itself or there will be a warning message::
+
+  WARNING: Title underline too short
+  
+Here is an example of a chapter title::
+  
+  *************
+  Chapter Title
+  *************
+  
+Include one line of whitespace below the last line of asterisks or it won't be
+formatted properly.
 
 
-Doxygen Source Code Documentation
-=================================
+Updating index.rst for Numbering Chapters and Sections
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The source code documentation is coming soon.
+Add ":numbered:" in the **index.rst** file under the "toctree" directive
+in order to add numbers to the chapters and sections.  
+":numbered:" needs to be added at the index level to keep the numbers 
+from restarting for each chapter.  Example::
+
+  .. toctree::
+     :hidden:
+     :caption: Table of Contents
+     :numbered:
+
+Remember to delineate chapters and sections using the formatting in 
+:ref:`create-chapters`.
+
+To limit the number of sections visible in the table of
+contents to four::
+
+  :numbered: 4
+
+The METplus team has decided to allow four levels of depth in the
+table of contents, but the number can be changed to get the desired
+number of visible levels.
 
 
-Documentation Overview
-======================
+See
+`Sphinx table of contents <https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-toctree>`_
+for more information on the toctree directive.
 
-The majority of the documentation is created using the Sphinx documentation
-generator tool, which was originally created for Python documentation.
-The documentation is created using
-`reStructuredText (rst) <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html>`_.
+Numbered and Bulleted Lists
+---------------------------
+
+It is possible to use actual numbers or "#." to
+create a numbered list. Here are some examples::
+
+  1.
+  Start the text section below for no indentation.
+
+  #. This text block will be indented.
+
+resulting in the following displayed text:
+
+1.
+Start the text section below for no indentation.
+
+#. This text block will be indented.
+
+
+Use asterisks for bullets. If a subsection is needed, 
+include a blank line and indents.  Example::
+
+  * Item 1
+  * Item 2
+
+    * First nested item
+    * Second nested item
+
+  * Item 3
+
+resulting in the following displayed text:
+
+* Item 1  
+* Item 2
+
+  * First nested item
+  * Second nested item
+
+* Item 3
+
+Please note, if there are extra spaces before or after the asterisk, 
+it will change how the list looks.  Be careful.
+
+See
+`Sphinx bulleted and numbered sections <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#lists-and-quote-like-blocks>`_
+for more information.
+
+Code Blocks
+-----------
+
+Code blocks are a quick and easy way to bring attention to code snippets.
+Start the code snippet below the code-block directive and indent two
+spaces for the actual code. The blank lines above and below are necessary
+or it won't be formatted correctly.
+Example::
+
+  (blank line above)
+  .. code-block:: ini
+
+    cd example
+    ./run_something.py
+    (blank line below)
+
+resulting in the following:
+
+  .. code-block:: ini
+
+    cd example
+    ./run_something.py
+    
+In the example above, “ini” is used as the language specified for the code
+block.  Other examples of languages that can be used are, for example,
+“yaml”, “javascript”, “html”, “shell”, “xml”, and “none”.
+
+See
+`Sphinx code blocks <https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-code-block>`_
+for more information.
+
+Bold
+----
+
+**How to bold:**
+
+To make text bold use two asterisks before and after the text. Example::  
+    
+      **Bolded text** 
+      
+Results in the following displayed text:  **Bolded text**
+
+Note that if an asterisk is needed within a bolded section, 
+use a backslash (\) to escape the asterisk.
+Example::
+
+  **Name_everything\*.txt**
+  
+Results in the following displayed text: **Name_everything\*.txt**
+
+See
+`Sphinx documentation for bolding and inline text <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#inline-markup>`_
+for more information.
+
+**What to bold:**
+
+  * Variables (e.g. **MET_INSTALL_DIR, INPUT_BASE, METCALCPY_HOME**, etc.)
+  * Filenames (**line_defaults.yaml, contour_defaults.yaml, defaults.conf**, etc.)
+
+Italics
+-------
+
+**How to italicize:**
+
+To italicize text use an asterisk before and after the text. Example::
+      
+      *Italicized text* 
+      
+Results in the following displayed text: *Italicized text*
+
+See
+`Sphinx documentation for italicizing and inline text <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#inline-markup>`_.
+for more information.
+
+**What to italicize:**
+
+  * Paths and directories are italicized.
+  * If the path includes a file name, use italics. 
+    This was used a lot in METplotpy, 
+    Example: *$METPLOTPY_SOURCE/METplotpy/test/ens_ss/ens_ss.data* 
+
+
+Underline
+---------
+
+The use of underlines in not recommended.  Underlining is not part of
+Sphinx's reStructuredText specifications.  Underlines can be used as
+transition markers.  See the :ref:`transition_marker` section.
+
+.. _transition_marker:
+
+Transition Markers
+------------------
+
+The syntax for a transition marker is a horizontal line of four or more
+repeated punctuation characters. The syntax is the same as section title
+underlines without title text. Transition markers require blank lines
+before and after::
+
+  ___________________
+
+resulting in the following:
+
+_________________
+
+
+Footnotes
+---------
+
+*Footnote references* consist of a set of square-brackets followed by a trailing
+underscore.
+
+Each *footnote* consists of an explicit markup start (".. "), a left square
+bracket, the footnote label, a right square bracket, and whitespace,
+followed by indented body elements.
+
+Footnote labels are one of:
+
+  #. one of more digits (i.e. a number),
+  #. a single "#" (denoting auto-numbered footnotes),
+  #. a "#" followed by a simple reference name, or
+  #. a single "*" (denoting auto-symbol footnotes)
+
+METplus has typically used only the third instance described above.
+
+An example of the "#" followed by a simple reference name footnote label is::
+
+  * PersonA [#NCAR]_
+  * PersonB [#UCAR]_
+  * PersonC [#NCAR]_
+
+  .. [#NCAR] National Center for Atmospheric Research
+  .. [#UCAR] University Center for Atmospheric Research
+
+resulting in the following displayed text:
+
+  * PersonA [#NCAR]_
+  * PersonB [#UCAR]_
+  * PersonC [#NCAR]_
+
+  .. [#NCAR] National Center for Atmospheric Research
+  .. [#UCAR] University Center for Atmospheric Research
+
+An example of the usage of footnotes in reStructured text can be seen in the
+`METplus docs/index.rst file <https://raw.githubusercontent.com/dtcenter/METplus/develop/docs/index.rst>`_
+and displayed in ReadTheDocs `here <https://metplus.readthedocs.io/en/develop/index.html>`_.
+     
+See
+`Sphinx footnotes <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#footnotes>`_
+for more information.
+
+
+Comments
+--------
+
+If comments need to be made within RST, use a blank line above and a ".. " to
+comment out text.
+Example::
+
+  add blank line here
+  .. Text you’d like commented out.
+
+See
+`Sphinx comments <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#comments>`_
+for more information.
+
+Math Equations
+--------------
+
+To create math equations with an option to bold use ":math:\mathbf". Then put
+what is to be bolded in between 2 sets of asterisks"\*\*".
+Example::  
+    
+      :math:\mathbf **1, 2, 3, 4, ...** :math:`mathbf{2^{n-1}}` 
+      
+resulting in the following displayed text: **1, 2, 3, 4, ...** :math:`mathbf{2^{n-1}}`
+
+Support is provided for
+`mathematical content <https://docutils.sourceforge.io/docs/ref/rst/mathematics.html#math-syntax>`_
+with the input format being LaTeX math syntax with support for Unicode symbols.
+
+See
+`Sphinx documentation for referencing math equations <https://www.sphinx-doc.org/en/master/usage/restructuredtext/domains.html#role-math-numref>`_
+for more information.
+
+There are quite a few examples in
+`MET Appendix C <https://met.readthedocs.io/en/develop/Users_Guide/appendixC.html#appendix-c-verification-measures>`_.
+
+Matrices
+--------
+
+Matrices are not frequently used in the METplus documentation, however there
+is an example in the
+`MET documentation for Stable Equitable Error in Probability Space (SEEPS)
+<https://met.readthedocs.io/en/develop/Users_Guide/appendixC.html#stable-equitable-error-in-probability-space-seeps>`_.
+Example::
+
+  .. math:: \{S^{S}_{vf}\} = \frac{1}{2}
+            \begin{Bmatrix}
+               0 & \frac{1}{1-p_1} & \frac{1}{p_3} + \frac{1}{1-p_1}\\
+               \frac{1}{p_1} & 0 & \frac{1}{p_3}\\
+               \frac{1}{p_1} + \frac{1}{1-p_3} & \frac{1}{1-p_3} & 0
+            \end{Bmatrix}
+
+resulting in the following displayed text:
+
+.. math:: \{S^{S}_{vf}\} = \frac{1}{2}
+          \begin{Bmatrix}
+             0 & \frac{1}{1-p_1} & \frac{1}{p_3} + \frac{1}{1-p_1}\\
+             \frac{1}{p_1} & 0 & \frac{1}{p_3}\\
+             \frac{1}{p_1} + \frac{1}{1-p_3} & \frac{1}{1-p_3} & 0
+          \end{Bmatrix}
+
+See `Overleaf's Guide - Matrices <https://www.overleaf.com/learn/latex/Matrices>`_ for more information.
+
+Symbols
+-------
+
+The below will create a Delta triangle symbol.
+Example:: 
+    
+  :math:`Delta` 
+      
+resulting in the following: :math:`\Delta`
+
+Literal Blocks
+--------------
+
+Literal blocks are usually used for showing command line syntax and are
+typically rendered in a monospaced font. Literal blocks are introduced
+by ending a paragraph with the special marker::
+
+  ::
+     
+The literal block must be indented and separated by the surrounding text
+with a blank line above and below the text.  Example::
+
+  Some text::
+
+    Write my command here
+    (blank line below)
+    
+    
+resulting in the following displayed text, noting that one of the two
+colons has been removed:
+
+  Some text::
+  
+    Write my command here
+
+See
+`Sphinx literal blocks <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#rst-literal-blocks>`_
+and
+`literal blocks <https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#literal-blocks>`_
+for more information.
+
+Line Blocks
+-----------
+
+Line blocks are needed where the structure of lines is significant.
+
+Having text on separate lines may be desired.  For example:
+
+  | This text will
+  | Be
+  | Rendered
+  | All on a single
+  | Line like this
+
+but if typed on separate lines in a .rst file, the resulting displayed
+text would be:
+
+This text will Be Rendered All on a single Line like this
+
+Note that the text is not formatted in the desired manner.
+
+To keep the text on separate lines, use the verical bar "| " prefix.  Each
+vertical bar prefix with a space indicates a new line, so line breaks are
+preserved. Include one line of blank space above and below text.
+Example::
+
+  blank line above
+  | This text will
+  | Be
+  | Rendered
+  | On separate lines
+  | Like this
+  blank line below
+
+resulting in the following displayed text:
+
+  | This text will
+  | Be
+  | Rendered
+  | On separate lines
+  | Like this
+
+See
+`Sphinx line blocks <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#lists-and-quote-like-blocks>`_
+and `line blocks <http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.html#line-blocks>`_
+for more information.
+
+Links
+-----
+
+Internal Links
+^^^^^^^^^^^^^^
+
+To support cross-referencing to locations within the same set of documentation,
+standard RST labels are used.  For this to work properly, label names
+**must be unique** throughout the entire document.
+
+To link to a section, the section being linked to will need a label name
+formatted in the following way:
+
+| .. _label-name:
+
+so it can be referenced in a different section.
+
+To reference the section with the label name in a different section, use
+the :ref: role.  For example:
+
+.. code-block::
+
+   \:ref:\`label-name`
+
+For example, in the :ref:`running-metplus` section of the METplus User's Guide
+under "Example Wrapper Use Case" it states:
+
+* Create a :ref:`user_configuration_file` (named user_system.conf in this example).
+
+The link to "User Configuration File" is an internal link referenced in the
+following way in the .rst file:
+
+.. code-block::
+   
+  \* Create a \:ref:\`user_configuration_file` (named user_system.conf in this example).
+
+The syntax for the label name can be seen in the
+`systemconfiguration.rst <https://raw.githubusercontent.com/dtcenter/METplus/develop/docs/Users_Guide/systemconfiguration.rst>`_
+and looks like this::
+
+  .. _user_configuration_file:
+         
+  User Configuration File 
+  =======================
+         
+
+Linking Using Reference Numbers
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+To have a number used for sections, tables, figures etc. 
+instead of the title use "numref".
+Example::
+
+  Please refer to section :numref:`user_configuration_file`
+
+resulting in the following displayed text, which shows the 
+numbered section, not the name:  
+
+Please refer to section :numref:`user_configuration_file`
+
+Here is some more information on 
+`Links <https://sublime-and-sphinx-guide.readthedocs.io/en/latest/references.html>`_.
+
+If the link is in another chapter or document, and a different name
+or title would be more appropriate, use the example below.
+Please note, there is no space between text and the less than symbol "<".
+Example::
+
+  :ref:`<Text to show up<user_configuration_file>`
+
+resulting in the following displayed text: :ref:`Text to show up<user_configuration_file>`
+
+
+Linking to METplus Use Cases (Python code)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Linking to METplus Use Cases must be done with a web link.  
+Since the generated html file is from a python script, 
+the “\:ref:” command in sphinx can’t be used. 
+This example will use this METplus Use Case:
+https://metplus.readthedocs.io/en/latest/generated/met_tool_wrapper/StatAnalysis/StatAnalysis.html#sphx-glr-generated-met-tool-wrapper-statanalysis-statanalysis-py.  
+The full web address is being shown above so it can be edited below.
+To make sure the web address is correct:
+
+  * This example will be called "TCStat: Basic Use Case".
+  * Remove this front portion from the web address before 
+    “generated”: https://metplus.readthedocs.io/en/latest
+  * Put a “../” in front of “generated”
+  * Also remove anything after “#”.  In this case:  
+    #sphx-glr-generated-met-tool-wrapper-statanalysis-statanalysis-py
+  * The web link should look like this example::
+
+    `TCStat: Basic Use Case <../generated/met_tool_wrapper/StatAnalysis/StatAnalysis.html>`_.
+
+  *  resulting in the following displayed text:
+
+    `TCStat: Basic Use Case <../generated/met_tool_wrapper/StatAnalysis/StatAnalysis.html>`_.
+
+Examples of the links can be seen in this 
+`table <https://metplus.readthedocs.io/en/latest/Users_Guide/overview.html#metplus-components-python-requirements>`_ 
+in the far right column.  Please note, it may be necessary
+to scroll down to the bottom of the table and use the
+horizontal scroll bar to see the far right column.
+
+
+Linking to a Table
+^^^^^^^^^^^^^^^^^^
+
+This is similar to linking to another section.
+Example::
+
+  .. _practice_table:
+         
+  .. list-table:: table name one
+
+Then to reference this table::
+
+  :ref:`practice_table`
+  
+This will link to the table.
+
+The web link should look like this: 
+
+:ref:`practice_table`
+
+Linking to a Variable in the Glossary
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In this case, "\:term:" is used. This lets Sphinx know
+to look for the link in the glossary. In this example
+we will use the variable name,   "USER_SCRIPT_COMMAND"::
+
+  :term:`USER_SCRIPT_COMMAND`
+
+resulting in the following displayed text: :term:`USER_SCRIPT_COMMAND`
+
+This will link directly to the glossary. Here is some more information on 
+`links to a glossary <https://sublime-and-sphinx-guide.readthedocs.io/en/latest/glossary.html#link-a-term-to-its-a-glossary-entry>`_.
+
+Links to External Web Pages
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+To link to an external web page, use the following syntax:
+\`Link text <link_URL>`_  The below uses the DTD website as an
+example::
+
+  `DTC <https://dtcenter.org/>`_.
+
+resulting in the following displayed text: `DTC <https://dtcenter.org/>`_.
+
+The link can also be separated from the target definition. 
+Example::
+
+  Get the latest news at `DTC`_.
+  .. _DTC: https://dtcenter.org
+
+resulting in the following displayed text:
+Get the latest news at `DTC`_.
+
+Images
+------
+
+To add an image we will use the,
+**doc_image_example.png**, image 
+located in the *figure* directory.
+Example::
+
+  .. image:: figure/doc_image_example.png
+
+resulting in the following displayed image:
+
+.. image:: figure/doc_image_example.png
+   :width: 400
+
+Please note,
+all of the images are stored in  
+their own directory. In this case it would be,
+*METplus/docs/Contributors_Guide/figure/*.
+In the Contributor's Guide, the beginning of the
+file name refers to the section where the image
+will be located.
+
+Here is some more information on 
+`images <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#images>`_.
+
+Here is some extra information on 
+`images and figures <https://lpn-doc-sphinx-primer-devel.readthedocs.io/concepts/images.html>`_.
+
+Figures
+-------
+
+To add a figure, use the following syntax::
+
+  .. figure:: figure/1Issue-before-created.png
+
+Please note,
+the figures are stored in a separate directory
+from the RST files. In this case it would be,
+*METplus/docs/Contributors_Guide/figure/*.
+This is also where the images are stored.
+We will use the image **1Issue-before-created.png**, 
+located in the figure directory. This is an example
+from the 
+`GitHub Workflow Chapter <https://metplus.readthedocs.io/en/latest/Contributors_Guide/github_workflow.html#github-workflow>`_.
+Below is an example::
+
+  .. figure:: figure/1Issue-before-created.png
+
+   	(Return and tab over). Comments for the figure.
+
+resulting in the following displayed text and image:
+
+.. figure:: figure/1Issue-before-created.png
+
+	Comments for the figure.
+
+Here is some information on 
+`Sphinx figures <https://docutils.sourceforge.io/docs/ref/rst/directives.html#figure>`_.
+
+Here is some extra information on 
+`figures <https://lpn-doc-sphinx-primer-devel.readthedocs.io/concepts/images.html>`_. 
+
+Automatically Number Figures
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+To get the figures to automatically number, this needs 
+to be added to the **config.py** file::
+
+  # -- Intersphinx control -----------------------------------------------------
+  intersphinx_mapping = {'numpy':("https://docs.scipy.org/doc/numpy/", None)}
+  
+  numfig = True
+  
+  numfig_format = {
+      'figure': 'Figure %s',
+  }
+
+Please note, the automatic numbering of figures 
+is NOT set up in the Contributor's Guide, but it is set up in
+the User's Guide **config.py** file.
+
+.. _creating-tables:
+
+Tables
+------
+
+Here is an example::
+
+  .. list-table:: Title # Adding a title is optional.
+     :widths: 25 25     # Adding the widths is optional.
+     :header-rows: 1    # Adding a header row is also optional.
+
+     * - Heading row 1, column 1
+       - Heading row 1, column 2
+     * - Row 1, column 1
+       -
+     * - Row 2, column 1
+       - Row 2, column 2
+
+Please note that Row 1, column 2 is blank.  A blank
+cell must be accounted for.
+
+The table will be displayed in the following way:
+
+.. list-table:: Title
+   :widths: 25 25
+   :header-rows: 1 
+
+   * - Heading row 1, column 1
+     - Heading row 1, column 2
+   * - Row 1, column 1
+     -
+   * - Row 2, column 1
+     - Row 2, column 2
+
+To add a table see this 
+`page <https://docutils.sourceforge.io/docs/ref/rst/directives.html#list-table>`_
+which has information on list tables.
+
+Converting tables into Sphinx format list
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+If a table has already been created outside of Sphinx,
+copy the table into google sheets. Copy the first row
+and column into cell A1.  In the below example,
+we will create the new Sphinx table in column G.
+We will use column F to create the old table, into
+the new Sphinx list.  In this example, click on
+cell F5 and use the below formula to turn the old
+table into a new list.  
+This example is for a 3 column table.  
+(for 4 columns change the ‘C’ to a ‘D’.)::
+
+  =ArrayFormula(transpose(split(concatenate(A1:C&char(9)),char(9))))
+
+Here is a visual example:
+
+.. image:: figure/practice_table.png
+
+In column G we will create the nomenclature for the Sphinx table.
+In cells G1 through G3 add the list-table, width,header-rows
+information and a blank line after this information to match
+the table format that will be needed for Sphinx.
+
+Next the nomenclature for the Sphinx list needs to be created.
+The asterisk denotes the start of a row. 
+Remember the asterisks need to be lined up under the colon 
+from the width and header rows from the :ref:`creating-tables` section.
+Use the created information from the ArrayFormula in column F to
+complete the new list.
+Enter the below information in G5 to capture the first
+header row.  The spaces are need to correctly allign the
+asterics and dashes.  (2 spaces before the asterics)::
+
+  ="  * - "&F5
+
+For the next two cells, G6 and G7 enter the below information.  Again,
+the spaces are to correctly align the new list.  (In this case,
+there are 4 spaces before the dash.)::
+  
+  ="    - "&F6
+  ="    - "&F7
+  
+Drag and drop G5 through G7 into the remaining cells below.  
+This will create the correct formatting for a Sphinx table.
+Copy the list created in column G.
+In this case, column G1 through G19
+will be copied into the RST documentation. 
+
+Here is the table:
+
+.. _practice_table:
+
+.. list-table:: Practice Table 
+  :widths: auto
+  :header-rows: 1
+
+  * - Header 1
+    - Header 2
+    - Header 3
+  * - column 1, row 1
+    - column 2, row 1
+    - column 3, row 1
+  * - column 1, row 2
+    - column 2, row 2
+    - column 3, row 2
+  * - column 1, row 3
+    - column 2, row 3
+    - column 3, row 3
+  * - column 1, row 4
+    - column 2, row 4
+    - column 3, row 4
+
+Dropdown Menus, Accordions or Collapsable Lists
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Dropdown menus are used extensively in the :ref:`release-notes`
+to streamline the documentation and make it easier to read.
+Example::
+
+  .. dropdown:: title
+
+     Text in the dropdown box.
+
+resulting in the following display:
+
+.. dropdown:: title
+
+   Text in the dropdown box.
+
+Please see the 
+`getting started <https://sphinx-design.readthedocs.io/en/latest/get_started.html>`_ 
+page.  Changes need to be made to the **config.py** and the 
+**requirements.rst** file.  (sphinx_design with an underscore needs to be added to 
+the **config.py** file. And sphinx-design with a dash needs to be added to the 
+**requirements.rst** file.  See the MET files for examples if needed.)
+
+This `Sphinx page <https://sphinx-design.readthedocs.io/en/latest/dropdowns.html>`_ 
+lists different ways to create dropdown menus.  This allows a search to work even when 
+the dropdown data isn’t visible, it will show find the information.  
+
+Make Pretty Table with Python
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+There is a program called `prettytable <https://pypi.org/project/prettytable/>`_.
+This is not commonly used, but it has been used to create tables within the
+User's Guide `Configuration Chapter
+<https://metplus.readthedocs.io/en/develop/Users_Guide/systemconfiguration.html#message-type>`_ 
+.  The program creates the table that will look like this in sphinx:
+
+  +------------------+---------------------------------------------+
+  | Old (Incorrect): |           message_type = [ "ADPSFC" ];      |
+  +------------------+---------------------------------------------+
+  |  New (Correct):  |           message_type = [ "ADPUPA" ];      |
+  +------------------+---------------------------------------------+
+  | METplus Config:  | :term:`ENSEMBLE_STAT_MESSAGE_TYPE` = ADPSFC |
+  +------------------+---------------------------------------------+
+
+And like this on the ReadTheDocs web page:
+
++------------------+---------------------------------------------+
+| Old (Incorrect): |           message_type = [ "ADPSFC" ];      |
++------------------+---------------------------------------------+
+|  New (Correct):  |           message_type = [ "ADPUPA" ];      |
++------------------+---------------------------------------------+
+| METplus Config:  | :term:`ENSEMBLE_STAT_MESSAGE_TYPE` = ADPSFC |
++------------------+---------------------------------------------+
+
+Creating Warning Messages
+-------------------------
+
+This was used in the :ref:`METplus_glossary`.
+Example::
+
+  ADECK_FILE_PREFIX
+       .. warning:: **DEPRECATED:** Please use TC_PAIRS_ADECK_TEMPLATE.
+
+resulting in the following displayed text:
+
+ADECK_FILE_PREFIX
+     .. warning:: **DEPRECATED:** Please use TC_PAIRS_ADECK_TEMPLATE.
+
+Here is some more information on 
+`Sphinx directives <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#directives>`_.
+
+Troubleshooting
+---------------
+
+Testing Sphinx Nomenclature on a Web Page
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+It can be time consuming to wait for ReadTheDocs to build.
+To quickly test how something will look in Sphinx, use this
+`web page <http://seneca.rap.ucar.edu:5000/>`_.
+Please note users must have access to the machine, "seneca", 
+and the VPN.  This is not a secure website. 
+(It is an http, not https site.)
+The user must be logged into the VPN for this to work.
+Chrome browsers won’t open the site but Firefox will open it. 
+To use this on another machine, here is a link to the 
+`software <https://github.com/faust93/livesphinx>`_.
+
+Double Dashes
+^^^^^^^^^^^^^
+
+This is helpful for python commands.
+Use two back slashes between the dashes 
+Example::
+
+  -\\-command
+
+It will look like this on the web: -\\-command
+
+Backslash
+^^^^^^^^^
+
+Using a backslash "\\" is handy when using
+asterisks "\*", double dashes "-\\-", and
+other characters that aren't formatting correctly.
+Example::
+
+  \*
+
+This will format as just an asterisk without turning
+into an unwanted bullet point. 
+It will look like this on the web: \*
+
+Here is some more information on 
+`Sphinx and backslashes <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#inline-markup>`_.
+
+Underscores
+^^^^^^^^^^^
+
+Some of the names include an underscore, for instance, "FNNN\_".
+This will show up as a broken link in the documentation.
+To keep this from happening put a backwards slash in 
+front of the underscore.  “FNN\\_”
+
+Sphinx modules
+--------------
 
 The following Sphinx modules are required to generate the necessary
 documentation:
 
-  * sphinx-2.2.0
-  * sphinx-gallery-0.7
-  * sphinx_rtd_theme-0.4.3
+  * sphinx-gallery==0.11.1
+  * sphinx==5.3.0
+  * sphinx-rtd-theme==1.2.0
+  * sphinx-design==0.3.0
 
 Which versions are being used by the current METplus release can be viewed
-by looking at either **environment.yml** or **requirements.txt**, both of which
-are found in the *METplus/* directory.  If the desire is to replicate all the
+by looking at either *METplus/environment.yml* or *METplus/docs/requirements.txt*.
+If the desire is to replicate all the
 packages employed by METplus, please refer to :numref:`conda_env` of the
 Contributor's Guide.
 
@@ -247,7 +1147,7 @@ This script does the following:
 * Removes unwanted text from use case documentation
 * Copies doxygen files into* _build/html* for easy deployment
 * Creates symbolic links under Users_Guide to the directories under
-  'generated' to preserve old URL paths
+  "generated" to preserve old URL paths
 
 The html files that are created can be found in the *METplus/docs/_build/html*
 directory.  The web browser can point to this directory by entering
