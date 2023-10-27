@@ -447,10 +447,10 @@ resulting in the following displayed text:
   | On separate lines
   | Like this
 
-See
-`Sphinx line blocks <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#lists-and-quote-like-blocks>`_
+See line blocks under 
+`Lists and Quote-like blocks <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#lists-and-quote-like-blocks>`_
 and `line blocks <http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.html#line-blocks>`_
-for more information.
+section from the reStructuredText Markup Specification for more information.
 
 Links
 -----
@@ -495,7 +495,7 @@ and looks like this::
 
 If the link exists in another chapter or document, and a different name
 or title would be more appropriate, use the example below.
-Please note, there is no space between text and the less than symbol "<".
+Please note, there is no space between text and the less than symbol `<`.
 Example::
 
   :ref:`Text to show up <user_configuration_file>`
@@ -509,6 +509,34 @@ See the
 and
 `Cross-referencing arbitrary locations <https://www.sphinx-doc.org/en/master/usage/referencing.html#cross-referencing-arbitrary-locations>`_
 for more information.  
+
+External Links
+^^^^^^^^^^^^^^
+
+To link to an external web page, use the following syntax::
+
+  `Link text <link_URL>`_
+
+The example below uses the DTC website::
+
+    `DTC <https://dtcenter.org/>`_
+
+resulting in the following displayed text:
+
+`DTC <https://dtcenter.org/>`_
+
+The link can also be separated from the target definition.
+Example::
+
+  Get the latest news at `DTC`_.
+  .. _DTC: https://dtcenter.org
+
+resulting in the following displayed text:
+Get the latest news at `DTC`_.
+
+See the
+`External links documentation <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#external-links>`_
+for more information.
 
 Linking Using Reference Numbers
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -539,89 +567,73 @@ HTML file is generated from a Python script, the `:ref:` role can’t be used.
 The example below will use the METplus Use Case which has the following URL:
 https://metplus.readthedocs.io/en/latest/generated/met_tool_wrapper/StatAnalysis/StatAnalysis.html#sphx-glr-generated-met-tool-wrapper-statanalysis-statanalysis-\py
 
-The full URL is being shown above so it can be edited below.
+The full URL is being shown above so it can be edited below.  This example will
+be called "StatAnalysis: Basic Use Case".
 To make sure the web address is correct:
 
-  * This example will be called "StatAnalysis: Basic Use Case".
-  * Remove the everything from beginning of the URL before the text “generated”.
-    In this example, `https://metplus.readthedocs.io/en/latest`
+  * Remove the everything in the URL above, before the text “generated”.
+    In this example, remove: `https://metplus.readthedocs.io/en/latest`
   * Put a `../` in front of “generated”
   * Also remove anything after `#`.  In this example:  
     `#sphx-glr-generated-met-tool-wrapper-statanalysis-statanalysis-py`
   * The web link should look like this example::
 
-    `StatAnalysis: Basic Use Case <../generated/met_tool_wrapper/StatAnalysis/StatAnalysis.html>`_.
+    `StatAnalysis: Basic Use Case <../generated/met_tool_wrapper/StatAnalysis/StatAnalysis.html>`_
 
   *  resulting in the following displayed text:
 
-    `StatAnalysis: Basic Use Case <../generated/met_tool_wrapper/StatAnalysis/StatAnalysis.html>`_.
+    `StatAnalysis: Basic Use Case <../generated/met_tool_wrapper/StatAnalysis/StatAnalysis.html>`_
 
 Examples of the links can be seen in this 
 `table <https://metplus.readthedocs.io/en/latest/Users_Guide/overview.html#metplus-components-python-requirements>`_ 
 in the far right column.  Please note, it may be necessary to scroll down to
-use the horizontal scroll bar to see the far right "Use Cases" column.
+use the horizontal scroll bar to see the far right **Use Cases** column.
 
 
 Linking to a Table
 ^^^^^^^^^^^^^^^^^^
 
 Linking to a table is similar to linking to an internal link.
-Example::
+See the example below::
 
   .. _practice_table:
          
-  .. list-table:: table name one
+  .. list-table:: example table
 
-Then to reference this table::
+To link to this "example table" use the following syntax::
 
   :ref:`practice_table`
   
-This will link to the table.
-
-The web link should look like this: 
+which will result in the following displayed text: 
 
 :ref:`practice_table`
 
 Linking to a Variable in the Glossary
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In this case, "\:term:" is used. This lets Sphinx know
-to look for the link in the glossary. In this example
-we will use the variable name,   "USER_SCRIPT_COMMAND"::
+To references a variable in the :ref:`METplus_glossary`, use the term
+role `:term:`. In the example below the variable name, USER_SCRIPT_COMMAND
+will be used::
 
   :term:`USER_SCRIPT_COMMAND`
 
-resulting in the following displayed text: :term:`USER_SCRIPT_COMMAND`
+resulting in the following displayed text and link to the USER_SCRIPT_COMMAND
+variable:
 
-This will link directly to the glossary. Here is some more information on 
-`links to a glossary <https://sublime-and-sphinx-guide.readthedocs.io/en/latest/glossary.html#link-a-term-to-its-a-glossary-entry>`_.
+:term:`USER_SCRIPT_COMMAND`
 
-Links to External Web Pages
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+See the documentation on the
+`term role <https://www.sphinx-doc.org/en/master/usage/referencing.html#role-term>`_
+for more information.
 
-To link to an external web page, use the following syntax:
-\`Link text <link_URL>`_  The below uses the DTD website as an
-example::
-
-  `DTC <https://dtcenter.org/>`_.
-
-resulting in the following displayed text: `DTC <https://dtcenter.org/>`_.
-
-The link can also be separated from the target definition. 
-Example::
-
-  Get the latest news at `DTC`_.
-  .. _DTC: https://dtcenter.org
-
-resulting in the following displayed text:
-Get the latest news at `DTC`_.
 
 Images
 ------
 
-To add an image we will use the,
-**doc_image_example.png**, image 
-located in the *figure* directory.
+To add an image use the
+`image directive <https://docutils.sourceforge.io/docs/ref/rst/directives.html#image>`_:
+`.. image::`. In the example below, an image called **doc_image_example.png**
+will be added, which is located in the *figure* directory.
 Example::
 
   .. image:: figure/doc_image_example.png
@@ -631,32 +643,31 @@ resulting in the following displayed image:
 .. image:: figure/doc_image_example.png
    :width: 400
 
-Please note,
-all of the images are stored in  
-their own directory. In this case it would be,
+Please note, all of the images are stored in a *figure* directory, separate
+from the RST files. In this case, in the *figure* directory located at 
 *METplus/docs/Contributors_Guide/figure/*.
-In the Contributor's Guide, the beginning of the
-file name refers to the section where the image
-will be located.
 
-Here is some more information on 
-`images <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#images>`_.
-
-Here is some extra information on 
-`images and figures <https://lpn-doc-sphinx-primer-devel.readthedocs.io/concepts/images.html>`_.
+See
+`images <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#images>`_
+and
+`Images and Figures <https://lpn-doc-sphinx-primer-devel.readthedocs.io/concepts/images.html>`_
+for more information.
 
 Figures
 -------
 
-To add a figure, use the following syntax::
+A figure is an image with caption and optional legend. To add a figure, use the
+`figure directive <https://docutils.sourceforge.io/docs/ref/rst/directives.html#figure>`_:
+`.. figure::`. In the example below a figure called
+**1Issue-before-created.png** will be added, which is located in the *figure* directory.
+Example::
 
   .. figure:: figure/1Issue-before-created.png
 
-Please note,
-the figures are stored in a separate directory
-from the RST files. In this case it would be,
+Please note, the figures are stored in a separate directory from the RST files.
+In this case, in the *figure* directory located at
 *METplus/docs/Contributors_Guide/figure/*.
-This is also where the images are stored.
+
 We will use the image **1Issue-before-created.png**, 
 located in the figure directory. This is an example
 from the 
@@ -665,25 +676,24 @@ Below is an example::
 
   .. figure:: figure/1Issue-before-created.png
 
-   	(Return and tab over). Comments for the figure.
+   	(Return and tab over). This is the caption for the figure.
 
 resulting in the following displayed text and image:
 
 .. figure:: figure/1Issue-before-created.png
 
-	Comments for the figure.
+	This is the caption for the figure.
 
-Here is some information on 
-`Sphinx figures <https://docutils.sourceforge.io/docs/ref/rst/directives.html#figure>`_.
+See 
+`Images and Figures <https://lpn-doc-sphinx-primer-devel.readthedocs.io/concepts/images.html>`_
+for more information.
 
-Here is some extra information on 
-`figures <https://lpn-doc-sphinx-primer-devel.readthedocs.io/concepts/images.html>`_. 
 
 Automatically Number Figures
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-To get the figures to automatically number, this needs 
-to be added to the **config.py** file::
+To automatically number figures, the following needs to be added to the
+**conf.py** file in the *docs* subdirectory::
 
   # -- Intersphinx control -----------------------------------------------------
   intersphinx_mapping = {'numpy':("https://docs.scipy.org/doc/numpy/", None)}
@@ -694,16 +704,23 @@ to be added to the **config.py** file::
       'figure': 'Figure %s',
   }
 
-Please note, the automatic numbering of figures 
-is NOT set up in the Contributor's Guide, but it is set up in
-the User's Guide **config.py** file.
+Please note, the automatic numbering of figures is NOT set up in the METplus
+**docs/conf.py** file, but it is set up in the MET **docs/conf.py** file.
 
 .. _creating-tables:
 
 Tables
 ------
 
-Here is an example::
+There are a variety of
+`table formats <https://docutils.sourceforge.io/docs/ref/rst/directives.html#tables>`_.
+The METplus components frequent use
+`list tables <https://docutils.sourceforge.io/docs/ref/rst/directives.html#list-table>`_.
+
+List Tables
+^^^^^^^^^^^
+
+Below is an example of list table formatting::
 
   .. list-table:: Title # Adding a title is optional.
      :widths: 25 25     # Adding the widths is optional.
@@ -716,8 +733,8 @@ Here is an example::
      * - Row 2, column 1
        - Row 2, column 2
 
-Please note that Row 1, column 2 is blank.  A blank
-cell must be accounted for.
+Please note that Row 1, column 2 is blank.  A blank cell must still be
+accounted for in the formaatting of the table.
 
 The table will be displayed in the following way:
 
@@ -732,18 +749,18 @@ The table will be displayed in the following way:
    * - Row 2, column 1
      - Row 2, column 2
 
-To add a table see this 
-`page <https://docutils.sourceforge.io/docs/ref/rst/directives.html#list-table>`_
-which has information on list tables.
 
-Converting tables into Sphinx format list
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-If a table has already been created outside of Sphinx,
-copy the table into google sheets. Copy the first row
-and column into cell A1.  In the below example,
-we will create the new Sphinx table in column G.
-We will use column F to create the old table, into
-the new Sphinx list.  In this example, click on
+Converting an Existing Table into a List Table
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+If a table already exists it can be converted into a Sphinx list table by
+copying the table into a Google Sheet. An example of how to do this is
+described below.
+
+** JP REVIEW THIS SECTION**
+
+Copy the first row and column into cell A1.  In the example below, the new
+list table will be created in column G. Use column F to create the old table, into
+the new list table.  In this example, click on
 cell F5 and use the below formula to turn the old
 table into a new list.  
 This example is for a 3 column table.  
@@ -809,42 +826,17 @@ Here is the table:
     - column 2, row 4
     - column 3, row 4
 
-Dropdown Menus, Accordions or Collapsable Lists
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Pretty Table
+^^^^^^^^^^^^
 
-Dropdown menus are used extensively in the :ref:`release-notes`
-to streamline the documentation and make it easier to read.
-Example::
+`PrettyTable <https://pypi.org/project/prettytable/>`_ is a simple Python
+library for easily displaying tabular data in a visually appealing ASCII
+table format. PrettyTable lets you format tables in an attractive ASCII
+form.
 
-  .. dropdown:: title
-
-     Text in the dropdown box.
-
-resulting in the following display:
-
-.. dropdown:: title
-
-   Text in the dropdown box.
-
-Please see the 
-`getting started <https://sphinx-design.readthedocs.io/en/latest/get_started.html>`_ 
-page.  Changes need to be made to the **config.py** and the 
-**requirements.rst** file.  (sphinx_design with an underscore needs to be added to 
-the **config.py** file. And sphinx-design with a dash needs to be added to the 
-**requirements.rst** file.  See the MET files for examples if needed.)
-
-This `Sphinx page <https://sphinx-design.readthedocs.io/en/latest/dropdowns.html>`_ 
-lists different ways to create dropdown menus.  This allows a search to work even when 
-the dropdown data isn’t visible, it will show find the information.  
-
-Make Pretty Table with Python
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-There is a program called `prettytable <https://pypi.org/project/prettytable/>`_.
-This is not commonly used, but it has been used to create tables within the
-User's Guide `Configuration Chapter
-<https://metplus.readthedocs.io/en/develop/Users_Guide/systemconfiguration.html#message-type>`_ 
-.  The program creates the table that will look like this in sphinx:
+A PrettyTable was used to create this
+`message_type <https://metplus.readthedocs.io/en/develop/Users_Guide/systemconfiguration.html#message-type>`_
+table. The formatting for this table looks like::
 
   +------------------+---------------------------------------------+
   | Old (Incorrect): |           message_type = [ "ADPSFC" ];      |
@@ -854,7 +846,7 @@ User's Guide `Configuration Chapter
   | METplus Config:  | :term:`ENSEMBLE_STAT_MESSAGE_TYPE` = ADPSFC |
   +------------------+---------------------------------------------+
 
-And like this on the ReadTheDocs web page:
+resulting in the following displayed table:
 
 +------------------+---------------------------------------------+
 | Old (Incorrect): |           message_type = [ "ADPSFC" ];      |
@@ -864,10 +856,103 @@ And like this on the ReadTheDocs web page:
 | METplus Config:  | :term:`ENSEMBLE_STAT_MESSAGE_TYPE` = ADPSFC |
 +------------------+---------------------------------------------+
 
-Creating Warning Messages
--------------------------
+      
+Dropdown Menus
+--------------
 
-This was used in the :ref:`METplus_glossary`.
+Dropdown menus, also known as accordions or collapsable lists are used
+extensively in the :ref:`release-notes` to make the Release Notes easier
+to read.  An example of how to use a dropdown menu is shown below.
+
+Example::
+
+  .. dropdown:: Title for the Dropdown Box
+
+     Text in the dropdown box
+
+resulting in the following display:
+
+.. dropdown:: Title for the Dropdown Box
+
+   Text in the dropdown box
+
+See
+`Dropdowns <https://sphinx-design.readthedocs.io/en/latest/dropdowns.html>`_ 
+documentation page for more information
+
+In order to use this functionality, the changes need to be made to add the
+sphinx-design extension.  These changes are described on the sphinx-design
+`Getting Started <https://sphinx-design.readthedocs.io/en/latest/get_started.html>`_
+page.
+
+"sphinx_design" needs to be added to the **extension** list in the **docs/conf.py**
+file and "sphinx-design" needs to be added to the **docs/requirements.txt** file.
+
+Please note that a search for a word will work even when the dropdown text isn’t
+expanded.  
+
+
+Notes and Warnings
+------------------
+
+Use notes and warnings to make a sentence stand out visually.
+
+Notes
+^^^^^
+
+Use a note for information you want the user to pay particular attention to.
+
+Below is an example of formatting for a note::
+
+  .. note::
+   This is note text. Use a note for information you want the user to
+   pay particular attention to.
+
+   If note text runs over a line, make sure the lines wrap and are indented to
+   the same level as the note tag. If formatting is incorrect, part of the note
+   might not render in the HTML output.
+
+   Notes can have more than one paragraph. Successive paragraphs must
+   indent to the same level as the rest of the note.
+
+resulting in the following displayed text:
+
+.. note::
+   This is note text. Use a note for information you want the user to
+   pay particular attention to.
+
+   If note text runs over a line, make sure the lines wrap and are indented to
+   the same level as the note tag. If formatting is incorrect, part of the note
+   might not render in the HTML output.
+
+   Notes can have more than one paragraph. Successive paragraphs must
+   indent to the same level as the rest of the note.
+
+Warnings
+^^^^^^^^
+
+Use a warning for information the user must understand to avoid negative consequences.
+
+Below is an example of formatting for a warning::
+
+  .. warning::
+    This is warning text. Use a warning for information the user must
+    understand to avoid negative consequences.
+
+    Warnings are formatted in the same way as notes. In the same way,
+    lines must be broken and indented under the warning tag.
+
+resulting in the following displayed text:
+
+.. warning::
+    This is warning text. Use a warning for information the user must
+    understand to avoid negative consequences.
+
+    Warnings are formatted in the same way as notes. In the same way,
+    lines must be broken and indented under the warning tag.
+
+
+Below is an example from the :ref:`METplus_glossary`.
 Example::
 
   ADECK_FILE_PREFIX
@@ -878,78 +963,104 @@ resulting in the following displayed text:
 ADECK_FILE_PREFIX
      .. warning:: **DEPRECATED:** Please use TC_PAIRS_ADECK_TEMPLATE.
 
-Here is some more information on 
-`Sphinx directives <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#directives>`_.
 
 Troubleshooting
 ---------------
 
-Testing Sphinx Nomenclature on a Web Page
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Testing RST Formatting in an Online Editor
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-It can be time consuming to wait for ReadTheDocs to build.
-To quickly test how something will look in Sphinx, use this
-`web page <http://seneca.rap.ucar.edu:5000/>`_.
-Please note users must have access to the machine, "seneca", 
-and the VPN.  This is not a secure website. 
-(It is an http, not https site.)
-The user must be logged into the VPN for this to work.
-Chrome browsers won’t open the site but Firefox will open it. 
-To use this on another machine, here is a link to the 
-`software <https://github.com/faust93/livesphinx>`_.
+It can be time consuming to wait for ReadTheDocs to build. To quickly test how
+something will display formatting, this
+`Online Sphinx Editor <http://seneca.rap.ucar.edu:5000/>`_
+can be used. Please note that in order to use this editor, users must have
+access to the machine **seneca** and the UCAR VPN.  This is not a secure
+website (note that it begins with "http" and not "https"). A user must be
+logged into the UCAR VPN to use this editor.
 
-Double Dashes
-^^^^^^^^^^^^^
+Thank you to 
+`livesphinx <https://github.com/faust93/livesphinx>`_
+for providing our team with the code to run this Online Sphinx Editor.
 
-This is helpful for python commands.
-Use two back slashes between the dashes 
+Escape Characters
+^^^^^^^^^^^^^^^^^
+
+Some characters have special meanings in RST.  This requires an escaping
+mechanism to override the default meaning of the desired character. In
+reStructuredText the backslash is used as the escape mechanism and is
+commonly used as an escaping character in other domains.
+
+See
+`Escaping Mechanism <https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#escaping-mechanism>`_
+for further information.
+
+Dashes
+""""""
+
+At times it is necessary to display more than one dash.  For example,
+in displaying options to Python commands.  In order to display more
+than one dash, the dash must be escaped with a backslash character.
+
 Example::
 
-  -\\-command
+  run_program.py \-\-help
 
-It will look like this on the web: -\\-command
+resulting in the following displayed test:
 
-Backslash
-^^^^^^^^^
+run_program.py \-\-help 
 
-Using a backslash "\\" is handy when using
-asterisks "\*", double dashes "-\\-", and
-other characters that aren't formatting correctly.
-Example::
+
+Underscores
+"""""""""""
+
+Variable names often include an underscore. For instance, "FNNN\_".
+The following formatting::
+
+  FNNN_
+
+results in a warning in the documentation. To correctly format the
+underscored variable name, it is necessary to escape the underscore
+with the backslash character as shown below::
+
+  FNNN\_
+
+resulting in the following displayed text:
+
+FNNN\_
+
+
+Asterisks
+"""""""""
+
+As asterisk are used for italicizing and bolding and are used in
+bulleted lists.
+
+If asterisks appear in running text and could be confused with a
+special function, so they have to be escaped with a backslash.
+
+For example::
 
   \*
 
-This will format as just an asterisk without turning
-into an unwanted bullet point. 
-It will look like this on the web: \*
+results in the displayed asterisk, as expected:
 
-Here is some more information on 
-`Sphinx and backslashes <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#inline-markup>`_.
+\*
 
-Underscores
-^^^^^^^^^^^
 
-Some of the names include an underscore, for instance, "FNNN\_".
-This will show up as a broken link in the documentation.
-To keep this from happening put a backwards slash in 
-front of the underscore.  “FNN\\_”
-
-Sphinx modules
+Sphinx Modules
 --------------
 
-The following Sphinx modules are required to generate the necessary
+The following Sphinx modules are required to generate the described
 documentation:
 
-  * sphinx-gallery==0.11.1
-  * sphinx==5.3.0
-  * sphinx-rtd-theme==1.2.0
-  * sphinx-design==0.3.0
+  * sphinx-gallery
+  * sphinx
+  * sphinx-rtd-theme
+  * sphinx-design
 
-Which versions are being used by the current METplus release can be viewed
-by looking at either *METplus/environment.yml* or *METplus/docs/requirements.txt*.
-If the desire is to replicate all the
-packages employed by METplus, please refer to :numref:`conda_env` of the
-Contributor's Guide.
+The versions being used by the current METplus release can be viewed
+in the **docs/requirements.txt** file in the
+`METplus GitHub Respository <https://github.com/dtcenter/METplus/>`_
 
 
 Description of Documentation Directories
