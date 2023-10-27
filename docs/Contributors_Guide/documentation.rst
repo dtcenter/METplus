@@ -180,10 +180,12 @@ To make text bold use two asterisks before and after the text. Example::
     
       **Bolded text** 
       
-Results in the following displayed text:  **Bolded text**
+Results in the following displayed text:
+
+**Bolded text**
 
 Note that if an asterisk is needed within a bolded section, use a backslash
-(`\`) to escape the asterisk.
+to escape the asterisk. 
 Example::
 
   **Name_everything\*.txt**
