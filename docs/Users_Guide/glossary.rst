@@ -1,3 +1,5 @@
+.. _METplus_glossary:
+
 ******************************
 METplus Configuration Glossary
 ******************************
