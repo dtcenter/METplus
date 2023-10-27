@@ -10,7 +10,6 @@ Output Files: N/A
 """
 
 import os
-import sys
 import glob
 from datetime import datetime
 from abc import ABCMeta
@@ -31,7 +30,7 @@ from ..util import remove_quotes, split_level
 from ..util import get_field_info, format_field_info
 from ..util import get_wrapper_name, is_python_script
 from ..util.met_config import add_met_config_dict, handle_climo_dict
-from ..util import mkdir_p, get_skip_times
+from ..util import mkdir_p, get_skip_times, get_log_path
 
 # pylint:disable=pointless-string-statement
 '''!@namespace CommandBuilder
@@ -1275,25 +1274,25 @@ class CommandBuilder:
         if self.instance:
             log_name = f"{log_name}.{self.instance}"
 
+        log_name = log_name if log_name else os.path.basename(cmd.split()[0])
+
+        # Determine where to send the output from the MET command.
+        log_path = get_log_path(self.config, logfile=log_name+'.log')
+
         ret, out_cmd = self.cmdrunner.run_cmd(cmd,
                                               env=self.env,
-                                              log_name=log_name,
+                                              log_path=log_path,
                                               copyable_env=self.get_env_copy())
         if not ret:
             return True
 
         self.log_error(f"Command returned a non-zero return code: {cmd}")
 
-        logfile_path = self.config.getstr('config', 'LOG_METPLUS')
-        if not logfile_path:
+        if log_path is None:
             return False
 
-        # if MET output is written to its own logfile, get that filename
-        if not self.config.getbool('config', 'LOG_MET_OUTPUT_TO_METPLUS'):
-            logfile_path = logfile_path.replace('run_metplus', log_name)
-
         self.logger.info("Check the logfile for more information on why "
-                         f"it failed: {logfile_path}")
+                         f"it failed: {log_path}")
         return False
 
     def run_all_times(self, custom=None):

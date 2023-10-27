@@ -1,10 +1,8 @@
 import sys
 import os
 import shutil
-import logging
 from datetime import datetime
 
-from .constants import NO_COMMAND_WRAPPERS
 from .string_manip import get_logfile_info, log_terminal_includes_info
 from .system_util import get_user_info, write_list_to_file
 from .config_util import get_process_list, handle_env_var_config
@@ -12,7 +10,7 @@ from .config_util import handle_tmp_dir, write_final_conf, write_all_commands
 from .config_validate import validate_config_variables
 from .. import get_metplus_version
 from .config_metplus import setup
-from . import camel_to_underscore, get_wrapper_instance
+from . import get_wrapper_instance
 
 
 def pre_run_setup(config_inputs):
@@ -63,8 +61,7 @@ def pre_run_setup(config_inputs):
                                 f"generated in {sed_file}")
 
         logger.error("Correct configuration variables and rerun. Exiting.")
-        logger.info("Check the log file for more information: "
-                    f"{get_logfile_info(config)}")
+        logger.info(f"Check the log file for more information: {log_file}")
         sys.exit(1)
 
     if not config.getdir('MET_INSTALL_DIR', must_exist=True):

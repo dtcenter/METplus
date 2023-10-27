@@ -291,19 +291,23 @@ def _set_logvars(config):
     # add LOG_TIMESTAMP to the final configuration file
     config.set('config', 'LOG_TIMESTAMP', log_filenametimestamp)
 
-    metplus_log = config.strinterp(
-        'config',
-        '{LOG_METPLUS}',
-        LOG_TIMESTAMP_TEMPLATE=log_filenametimestamp
-    )
-
-    # add log directory to log file path if only filename was provided
-    if metplus_log:
-        if os.path.basename(metplus_log) == metplus_log:
-            metplus_log = os.path.join(config.getdir('LOG_DIR'), metplus_log)
-        print('Logging to %s' % metplus_log)
+    if config.getbool('config', 'LOG_TO_TERMINAL_ONLY'):
+        metplus_log = ''
     else:
+        metplus_log = config.strinterp(
+            'config',
+            '{LOG_METPLUS}',
+            LOG_TIMESTAMP_TEMPLATE=log_filenametimestamp
+        )
+
+        # add log directory to log file path if only filename was provided
+        if metplus_log and os.path.basename(metplus_log) == metplus_log:
+            metplus_log = os.path.join(config.getdir('LOG_DIR'), metplus_log)
+
+    if not metplus_log:
         print('Logging to terminal only')
+    else:
+        print('Logging to %s' % metplus_log)
 
     # set LOG_METPLUS with timestamp substituted
     config.set('config', 'LOG_METPLUS', metplus_log)

@@ -36,7 +36,7 @@ Output Files: N/A
 import os
 from produtil.run import exe, run
 import shlex
-from datetime import datetime, timezone
+from datetime import datetime
 
 
 class CommandRunner(object):
@@ -53,8 +53,7 @@ class CommandRunner(object):
         self.log_met_to_metplus = config.getbool('config',
                                                  'LOG_MET_OUTPUT_TO_METPLUS')
 
-    def run_cmd(self, cmd, env=None, log_name=None,
-                copyable_env=None, **kwargs):
+    def run_cmd(self, cmd, env=None, log_path=None, copyable_env=None, **kwargs):
         """!The command cmd is a string which is converted to a produtil
         exe Runner object and than run. Output of the command may also
         be redirected to either METplus log, MET log, or TTY.
@@ -63,13 +62,13 @@ class CommandRunner(object):
         non MET commands ie. convert, in addition to MET binary commands,
         ie. regrid_data_plane.
 
-        Args:
-            @param cmd: A string, Command used in the produtil exe Runner object.
-            @param env: Default None, environment for run to pass in, uses
-            os.environ if not set.
-            @param log_name: Used only when ismetcmd=True, The name of the exectable
-            being run.
-            @param kwargs Other options sent to the produtil Run constructor
+        @param cmd: A string, Command used in the produtil exe Runner object.
+        @param env: Default None, environment for run to pass in, uses
+         os.environ if not set.
+        @param log_path: Path to log file or None if logging to terminal
+        @param copyable_env string of commands that set environment variables
+        that can be copy/pasted by the user or None
+        @param kwargs Other options sent to the produtil Run constructor
         """
         if cmd is None:
             return cmd
@@ -83,11 +82,6 @@ class CommandRunner(object):
         if self.skip_run:
             self.logger.info("Not running command (DO_NOT_RUN_EXE = True)")
             return 0, cmd
-
-        log_name = log_name if log_name else os.path.basename(cmd.split()[0])
-
-        # Determine where to send the output from the MET command.
-        log_dest = self.get_log_path(log_filename=log_name+'.log')
 
         # determine if command must be run in a shell
         run_inshell = '*' in cmd or ';' in cmd or '<' in cmd or '>' in cmd
@@ -105,14 +99,14 @@ class CommandRunner(object):
         # Split the command in to a sequence using shell syntax.
         the_exe = shlex.split(cmd)[0]
         the_args = shlex.split(cmd)[1:]
-        if log_dest:
-            self.logger.debug("Logging command output to: %s" % log_dest)
-            self.log_header_info(log_dest, copyable_env, cmd)
+        if log_path:
+            self.logger.debug("Logging command output to: %s" % log_path)
+            self.log_header_info(log_path, copyable_env, cmd)
 
             if run_inshell:
-                cmd_exe = exe('sh')['-c', cmd].env(**env).err2out() >> log_dest
+                cmd_exe = exe('sh')['-c', cmd].env(**env).err2out() >> log_path
             else:
-                cmd_exe = exe(the_exe)[the_args].env(**env).err2out() >> log_dest
+                cmd_exe = exe(the_exe)[the_args].env(**env).err2out() >> log_path
         else:
             if run_inshell:
                 cmd_exe = exe('sh')['-c', cmd].env(**env)
@@ -136,8 +130,8 @@ class CommandRunner(object):
 
         return ret, cmd
 
-    def log_header_info(self, log_dest, copyable_env, cmd):
-        with open(log_dest, 'a+') as log_file_handle:
+    def log_header_info(self, log_path, copyable_env, cmd):
+        with open(log_path, 'a+') as log_file_handle:
             # if logging MET command to its own log file,
             # add command that was run to that log
             if not self.log_met_to_metplus:
@@ -154,28 +148,3 @@ class CommandRunner(object):
 
             # write line to designate where MET tool output starts
             log_file_handle.write("OUTPUT:\n")
-
-    def get_log_path(self, log_filename):
-        """!Returns the location of where the command output will be sent.
-           The METplus log, the MET log, or tty.
-
-        @param log_filename file name to use if logging to a separate file
-        @returns Log file path or None if logging to terminal
-        """
-        # if LOG_METPLUS is unset or empty, log to terminal
-        metplus_log = self.config.getstr('config', 'LOG_METPLUS', '')
-        if not metplus_log:
-            return None
-
-        # return METplus log file if logging all output there
-        if self.log_met_to_metplus:
-            return metplus_log
-
-        log_path = os.path.join(self.config.getdir('LOG_DIR'), log_filename)
-
-        # add log timestamp to log filename if set
-        log_timestamp = self.config.getstr('config', 'LOG_TIMESTAMP', '')
-        if log_timestamp:
-            log_path = f'{log_path}.{log_timestamp}'
-
-        return log_path
