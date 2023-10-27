@@ -182,8 +182,8 @@ To make text bold use two asterisks before and after the text. Example::
       
 Results in the following displayed text:  **Bolded text**
 
-Note that if an asterisk is needed within a bolded section, 
-use a backslash (`\`) to escape the asterisk.
+Note that if an asterisk is needed within a bolded section, use a backslash
+(`\`) to escape the asterisk.
 Example::
 
   **Name_everything\*.txt**
@@ -496,8 +496,11 @@ or title would be more appropriate, use the example below.
 Please note, there is no space between text and the less than symbol "<".
 Example::
 
-  :ref:`Text to show up <user_configuration_file>`                                                                                                                
-resulting in the following displayed text: :ref:`Text to show up <user_configuration_file>`
+  :ref:`Text to show up <user_configuration_file>`
+
+resulting in the following displayed text:
+
+:ref:`Text to show up <user_configuration_file>`
   
 See the
 `Internal links documentation <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#internal-links>`_
@@ -531,9 +534,7 @@ Linking to METplus Use Case
 Linking to METplus Use Cases must be done with an external web link. Since the
 HTML file is generated from a Python script, the `:ref:` role can’t be used. 
 
-The example below will use the METplus Use Case:
-`StatAnalysis: Basic Use Case <https://metplus.readthedocs.io/en/latest/generated/met_tool_wrapper/StatAnalysis/StatAnalysis.html#sphx-glr-generated-met-tool-wrapper-statanalysis-statanalysis-\py>`_
-which has the following URL:
+The example below will use the METplus Use Case which has the following URL:
 https://metplus.readthedocs.io/en/latest/generated/met_tool_wrapper/StatAnalysis/StatAnalysis.html#sphx-glr-generated-met-tool-wrapper-statanalysis-statanalysis-\py
 
 The full URL is being shown above so it can be edited below.
