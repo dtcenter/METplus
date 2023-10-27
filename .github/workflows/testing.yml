@@ -145,8 +145,9 @@ jobs:
         env:
           METPLUS_TEST_OUTPUT_BASE: ${{ runner.workspace }}/pytest_output
       - name: Generate coverage report
-        run: coverage report -m
+        run: coverage report -m --fail-under=95
         if: always()
+        continue-on-error: true
       - name: Run Coveralls
         uses: AndreMiras/coveralls-python-action@8799c9f4443ac4201d2e2f2c725d577174683b99
         if: always()
