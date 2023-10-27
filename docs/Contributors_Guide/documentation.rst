@@ -66,9 +66,9 @@ formatted properly.
 Updating index.rst for Numbering Chapters and Sections
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Add ":numbered:" in the **index.rst** file under the "toctree" directive
-in order to add numbers to the chapters and sections.  
-":numbered:" needs to be added at the index level to keep the numbers 
+Use the `:numbered:` option in the **index.rst** file under the "toctree"
+directive in order to add numbers to the chapters and sections.  
+`:numbered:` needs to be added at the index level to keep the numbers 
 from restarting for each chapter.  Example::
 
   .. toctree::
@@ -96,8 +96,8 @@ for more information on the toctree directive.
 Numbered and Bulleted Lists
 ---------------------------
 
-It is possible to use actual numbers or "#." to
-create a numbered list. Here are some examples::
+It is possible to use actual numbers or `#.` to create a numbered list.
+Here are some examples::
 
   1.
   Start the text section below for no indentation.
@@ -163,9 +163,9 @@ resulting in the following:
     cd example
     ./run_something.py
     
-In the example above, “ini” is used as the language specified for the code
+In the example above, `ini` is used as the language specified for the code
 block.  Other examples of languages that can be used are, for example,
-“yaml”, “javascript”, “html”, “shell”, “xml”, and “none”.
+`yaml`, `javascript`, `html`, `shell`, `xml`, and `none`.
 
 See
 `Sphinx code blocks <https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-code-block>`_
@@ -183,7 +183,7 @@ To make text bold use two asterisks before and after the text. Example::
 Results in the following displayed text:  **Bolded text**
 
 Note that if an asterisk is needed within a bolded section, 
-use a backslash (\) to escape the asterisk.
+use a backslash (`\`) to escape the asterisk.
 Example::
 
   **Name_everything\*.txt**
@@ -265,7 +265,7 @@ Footnote labels are one of:
 
 METplus has typically used only the third instance described above.
 
-An example of the "#" followed by a simple reference name footnote label is::
+An example of the `#` followed by a simple reference name footnote label is::
 
   * PersonA [#NCAR]_
   * PersonB [#UCAR]_
@@ -306,10 +306,29 @@ See
 `Sphinx comments <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#comments>`_
 for more information.
 
-Math Equations
---------------
+Math Equations, Symbols, and Matrices
+-------------------------------------
 
-To create math equations with an option to bold use ":math:\mathbf". Then put
+Support for math equations, symbols, and matrices is provided by the math
+role: `:math:`.
+
+Support is provided for
+`mathematical content <https://docutils.sourceforge.io/docs/ref/rst/mathematics.html#math-syntax>`_
+with the input format being LaTeX math syntax with support for Unicode symbols.
+
+See the
+`Sphinx math directive documentation <https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-math>`_
+and
+`Math support in Sphinx <https://sphinx-rtd-trial.readthedocs.io/en/latest/ext/math.html>`_ for additional information.
+
+There are quite a few examples in
+`MET Appendix C <https://met.readthedocs.io/en/develop/Users_Guide/appendixC.html#appendix-c-verification-measures>`_.
+
+
+Equations
+^^^^^^^^^
+
+To create math equations with an option to bold use `:math:\mathbf`. Then put
 what is to be bolded in between 2 sets of asterisks"\*\*".
 Example::  
     
@@ -317,19 +336,18 @@ Example::
       
 resulting in the following displayed text: **1, 2, 3, 4, ...** :math:`mathbf{2^{n-1}}`
 
-Support is provided for
-`mathematical content <https://docutils.sourceforge.io/docs/ref/rst/mathematics.html#math-syntax>`_
-with the input format being LaTeX math syntax with support for Unicode symbols.
+Symbols
+^^^^^^^
 
-See
-`Sphinx documentation for referencing math equations <https://www.sphinx-doc.org/en/master/usage/restructuredtext/domains.html#role-math-numref>`_
-for more information.
+To create a math symbol, in this example the Delta symbol, use the following
+notation:
 
-There are quite a few examples in
-`MET Appendix C <https://met.readthedocs.io/en/develop/Users_Guide/appendixC.html#appendix-c-verification-measures>`_.
+  :math:`Delta`
+
+resulting in the following displayed symbol: :math:`\Delta`
 
 Matrices
---------
+^^^^^^^^
 
 Matrices are not frequently used in the METplus documentation, however there
 is an example in the
@@ -355,24 +373,13 @@ resulting in the following displayed text:
 
 See `Overleaf's Guide - Matrices <https://www.overleaf.com/learn/latex/Matrices>`_ for more information.
 
-Symbols
--------
-
-The below will create a Delta triangle symbol.
-Example:: 
-    
-  :math:`Delta` 
-      
-resulting in the following: :math:`\Delta`
 
 Literal Blocks
 --------------
 
 Literal blocks are usually used for showing command line syntax and are
 typically rendered in a monospaced font. Literal blocks are introduced
-by ending a paragraph with the special marker::
-
-  ::
+by ending a paragraph with the special marker `::`.
      
 The literal block must be indented and separated by the surrounding text
 with a blank line above and below the text.  Example::
@@ -399,7 +406,8 @@ for more information.
 Line Blocks
 -----------
 
-Line blocks are needed where the structure of lines is significant.
+Line blocks can be used where the structure of lines is significant. For
+example, as a way of perserving line breaks or to preserve indents.
 
 Having text on separate lines may be desired.  For example:
 
@@ -409,7 +417,7 @@ Having text on separate lines may be desired.  For example:
   | All on a single
   | Line like this
 
-but if typed on separate lines in a .rst file, the resulting displayed
+but if typed on separate lines in a RST file, the resulting displayed
 text would be:
 
 This text will Be Rendered All on a single Line like this
@@ -417,7 +425,7 @@ This text will Be Rendered All on a single Line like this
 Note that the text is not formatted in the desired manner.
 
 To keep the text on separate lines, use the verical bar "| " prefix.  Each
-vertical bar prefix with a space indicates a new line, so line breaks are
+vertical bar prefix with a space after, indicates a new line, so line breaks are
 preserved. Include one line of blank space above and below text.
 Example::
 
@@ -457,14 +465,10 @@ formatted in the following way:
 
 | .. _label-name:
 
-so it can be referenced in a different section.
+so that it can be referenced in a different section.
 
 To reference the section with the label name in a different section, use
-the :ref: role.  For example:
-
-.. code-block::
-
-   \:ref:\`label-name`
+the `:ref:` role.  For example: `:ref:\`label-name\``
 
 For example, in the :ref:`running-metplus` section of the METplus User's Guide
 under "Example Wrapper Use Case" it states:
@@ -474,9 +478,7 @@ under "Example Wrapper Use Case" it states:
 The link to "User Configuration File" is an internal link referenced in the
 following way in the .rst file:
 
-.. code-block::
-   
-  \* Create a \:ref:\`user_configuration_file` (named user_system.conf in this example).
+  | * Create a `:ref:\`user_configuration_file\`` (named user_system.conf in this example).
 
 The syntax for the label name can be seen in the
 `systemconfiguration.rst <https://raw.githubusercontent.com/dtcenter/METplus/develop/docs/Users_Guide/systemconfiguration.rst>`_
@@ -486,71 +488,79 @@ and looks like this::
          
   User Configuration File 
   =======================
-         
 
-Linking Using Reference Numbers
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-To have a number used for sections, tables, figures etc. 
-instead of the title use "numref".
-Example::
-
-  Please refer to section :numref:`user_configuration_file`
-
-resulting in the following displayed text, which shows the 
-numbered section, not the name:  
-
-Please refer to section :numref:`user_configuration_file`
-
-Here is some more information on 
-`Links <https://sublime-and-sphinx-guide.readthedocs.io/en/latest/references.html>`_.
-
-If the link is in another chapter or document, and a different name
+If the link exists in another chapter or document, and a different name
 or title would be more appropriate, use the example below.
 Please note, there is no space between text and the less than symbol "<".
 Example::
 
-  :ref:`<Text to show up<user_configuration_file>`
+  :ref:`Text to show up <user_configuration_file>`                                                                                                                
+resulting in the following displayed text: :ref:`Text to show up <user_configuration_file>`
+  
+See the
+`Internal links documentation <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#internal-links>`_
+and
+`Cross-referencing arbitrary locations <https://www.sphinx-doc.org/en/master/usage/referencing.html#cross-referencing-arbitrary-locations>`_
+for more information.  
 
-resulting in the following displayed text: :ref:`Text to show up<user_configuration_file>`
+Linking Using Reference Numbers
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+To use a number for sections, tables, figures etc. instead of the title
+use the `:numref:` role.
+
+Example::
+
+  Please refer to section :numref:`user_configuration_file`.
+
+resulting in the following displayed text, which shows the 
+numbered section, not the name:  
+
+Please refer to section :numref:`user_configuration_file`.
+
+See 
+`Cross-referencing figures by figure number <https://www.sphinx-doc.org/en/master/usage/referencing.html#cross-referencing-figures-by-figure-number>`_
+for more information.
 
 
-Linking to METplus Use Cases (Python code)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Linking to METplus Use Case
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Linking to METplus Use Cases must be done with a web link.  
-Since the generated html file is from a python script, 
-the “\:ref:” command in sphinx can’t be used. 
-This example will use this METplus Use Case:
-https://metplus.readthedocs.io/en/latest/generated/met_tool_wrapper/StatAnalysis/StatAnalysis.html#sphx-glr-generated-met-tool-wrapper-statanalysis-statanalysis-py.  
-The full web address is being shown above so it can be edited below.
+Linking to METplus Use Cases must be done with an external web link. Since the
+HTML file is generated from a Python script, the `:ref:` role can’t be used. 
+
+The example below will use the METplus Use Case:
+`StatAnalysis: Basic Use Case <https://metplus.readthedocs.io/en/latest/generated/met_tool_wrapper/StatAnalysis/StatAnalysis.html#sphx-glr-generated-met-tool-wrapper-statanalysis-statanalysis-\py>`_
+which has the following URL:
+https://metplus.readthedocs.io/en/latest/generated/met_tool_wrapper/StatAnalysis/StatAnalysis.html#sphx-glr-generated-met-tool-wrapper-statanalysis-statanalysis-\py
+
+The full URL is being shown above so it can be edited below.
 To make sure the web address is correct:
 
-  * This example will be called "TCStat: Basic Use Case".
-  * Remove this front portion from the web address before 
-    “generated”: https://metplus.readthedocs.io/en/latest
-  * Put a “../” in front of “generated”
-  * Also remove anything after “#”.  In this case:  
-    #sphx-glr-generated-met-tool-wrapper-statanalysis-statanalysis-py
+  * This example will be called "StatAnalysis: Basic Use Case".
+  * Remove the everything from beginning of the URL before the text “generated”.
+    In this example, `https://metplus.readthedocs.io/en/latest`
+  * Put a `../` in front of “generated”
+  * Also remove anything after `#`.  In this example:  
+    `#sphx-glr-generated-met-tool-wrapper-statanalysis-statanalysis-py`
   * The web link should look like this example::
 
-    `TCStat: Basic Use Case <../generated/met_tool_wrapper/StatAnalysis/StatAnalysis.html>`_.
+    `StatAnalysis: Basic Use Case <../generated/met_tool_wrapper/StatAnalysis/StatAnalysis.html>`_.
 
   *  resulting in the following displayed text:
 
-    `TCStat: Basic Use Case <../generated/met_tool_wrapper/StatAnalysis/StatAnalysis.html>`_.
+    `StatAnalysis: Basic Use Case <../generated/met_tool_wrapper/StatAnalysis/StatAnalysis.html>`_.
 
 Examples of the links can be seen in this 
 `table <https://metplus.readthedocs.io/en/latest/Users_Guide/overview.html#metplus-components-python-requirements>`_ 
-in the far right column.  Please note, it may be necessary
-to scroll down to the bottom of the table and use the
-horizontal scroll bar to see the far right column.
+in the far right column.  Please note, it may be necessary to scroll down to
+use the horizontal scroll bar to see the far right "Use Cases" column.
 
 
 Linking to a Table
 ^^^^^^^^^^^^^^^^^^
 
-This is similar to linking to another section.
+Linking to a table is similar to linking to an internal link.
 Example::
 
   .. _practice_table:
