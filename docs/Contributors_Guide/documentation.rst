@@ -1059,7 +1059,7 @@ documentation:
 
 The versions being used by the current METplus release can be viewed
 in the **docs/requirements.txt** file in the
-`METplus GitHub Respository <https://github.com/dtcenter/METplus/>`_
+`METplus GitHub Respository <https://github.com/dtcenter/METplus/>`_.
 
 
 Description of Documentation Directories
