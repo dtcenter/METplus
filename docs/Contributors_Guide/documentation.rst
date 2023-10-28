@@ -826,8 +826,8 @@ Here is the table:
     - column 2, row 4
     - column 3, row 4
 
-Pretty Table
-^^^^^^^^^^^^
+PrettyTable
+^^^^^^^^^^^
 
 `PrettyTable <https://pypi.org/project/prettytable/>`_ is a simple Python
 library for easily displaying tabular data in a visually appealing ASCII
