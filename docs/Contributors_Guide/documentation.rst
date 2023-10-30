@@ -845,7 +845,6 @@ example, from column F)::
      :widths: auto
      :header-rows: 1
 
-
      * - Subject
        - Professor
        - Number of Students
@@ -866,30 +865,29 @@ ensuring that the data is properly aligned as shown in this
 `List Table  <https://docutils.sourceforge.io/docs/ref/rst/directives.html#list-table>`_
 example.  If it is not properly aligned, it will need to be realigned.
 
-.. _example_table:
-
 Below is the resulting displayed table:
+
+.. _example_table:
 
 .. list-table:: Example Table
    :widths: auto
    :header-rows: 1
 
-
-  * - Subject
-    - Professor
-    - Number of Students
-  * - Math
-    - Patel
-    - 16
-  * - English
-    - Smith
-    - 18
-  * - Science
-    - Zhou
-    - 17
-  * - History
-    - Hayashi
-    - 19
+   * - Subject
+     - Professor
+     - Number of Students
+   * - Math
+     - Patel
+     - 16
+   * - English
+     - Smith
+     - 18
+   * - Science
+     - Zhou
+     - 17
+   * - History
+     - Hayashi
+     - 19
 
 
 PrettyTable
