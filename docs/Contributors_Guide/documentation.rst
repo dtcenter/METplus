@@ -410,7 +410,7 @@ Line Blocks
 -----------
 
 Line blocks can be used where the structure of lines is significant. For
-example, as a way of perserving line breaks or to preserve indents.
+example, as a way of preserving line breaks or to preserve indents.
 
 Having text on separate lines may be desired.  For example:
 
@@ -427,7 +427,7 @@ This text will Be Rendered All on a single Line like this
 
 Note that the text is not formatted in the desired manner.
 
-To keep the text on separate lines, use the verical bar "| " prefix.  Each
+To keep the text on separate lines, use the vertical bar "| " prefix.  Each
 vertical bar prefix with a space after, indicates a new line, so line breaks are
 preserved. Include one line of blank space above and below text.
 Example::
