@@ -145,7 +145,7 @@ def test_find_obs_offset(metplus_config, offsets, expected_file, offset_seconds)
 
     pcw.c_dict['OFFSETS'] = offsets
     pcw.c_dict['OBS_INPUT_DIR'] = get_data_dir(pcw.config)
-    pcw.c_dict['OBS_INPUT_TEMPLATE'] = "{da_init?fmt=%2H}z.prepbufr.tm{offset?fmt=%2H}.{da_init?fmt=%Y%m%d}"
+    pcw.c_dict['OBS_INPUT_TEMPLATE'] = "{da_init?fmt=%H}z.prepbufr.tm{offset?fmt=%2H}.{da_init?fmt=%Y%m%d}"
     add_field_info_to_time_info(time_info, var_info)
     obs_file, time_info = pcw.find_obs_offset(time_info)
 
