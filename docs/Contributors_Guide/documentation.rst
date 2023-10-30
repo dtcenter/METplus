@@ -612,7 +612,7 @@ which will result in the following displayed text:
 Linking to a Variable in the Glossary
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-To references a variable in the :ref:`METplus_glossary`, use the term
+To reference a variable in the :ref:`METplus_glossary`, use the term
 role `:term:`. In the example below the variable name, USER_SCRIPT_COMMAND
 will be used::
 
