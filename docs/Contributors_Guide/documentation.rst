@@ -596,17 +596,17 @@ Linking to a Table
 Linking to a table is similar to linking to an internal link.
 See the example below::
 
-  .. _practice_table:
+  .. _example_table:
          
   .. list-table:: example table
 
 To link to this "example table" use the following syntax::
 
-  :ref:`practice_table`
+  :ref:`example_table`
   
 which will result in the following displayed text: 
 
-:ref:`practice_table`
+:ref:`example_table`
 
 Linking to a Variable in the Glossary
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -770,7 +770,7 @@ could be used), paste in the formula below to reformat the existing table::
 
   =ArrayFormula(transpose(split(concatenate(A1:C&char(9)),char(9))))
 
-.. _note::
+.. note::
 
   In the formula above "C" is used.  The "C" represents the last
   column used by the table and should be modified if a column
@@ -779,20 +779,20 @@ could be used), paste in the formula below to reformat the existing table::
 In the formula above, the following functions are used and documentation
 describing each function is linked below:
 
-  * `char <https://https://support.google.com/docs/answer/3094120?hl=en&ref_topic=3105625&sjid=11023572608666589922-NA>`_
-    - Converts a number into a character according to the current Unicode table.
+  * `char <https://https://support.google.com/docs/answer/3094120?hl=en&ref_topic=3105625&sjid=11023572608666589922-NA>`_ -
+    Converts a number into a character according to the current Unicode table.
 
-  * `split <https://support.google.com/docs/answer/3094136?sjid=11023572608666589922-NA>`_
-    - Divides text around a specified character or string and puts each
-      fragment into a separate cell in the row.
+  * `split <https://support.google.com/docs/answer/3094136?sjid=11023572608666589922-NA>`_ -
+    Divides text around a specified character or string and puts each
+    fragment into a separate cell in the row.
 
-  * `transpose <https://support.google.com/docs/answer/3094262?sjid=11023572608666589922-NA>`_
-    - Transposes the rows and columns of an array or range of cells.
+  * `transpose <https://support.google.com/docs/answer/3094262?sjid=11023572608666589922-NA>`_ -
+    Transposes the rows and columns of an array or range of cells.
 
-  * `ArrayFormula <https://support.google.com/docs/answer/3093275?sjid=11023572608666589922-NA>`_
-    - Enables the display of values returned from an array formula into
-      multiple rows and/or columns and the use of non-array functions with
-      arrays.
+  * `ArrayFormula <https://support.google.com/docs/answer/3093275?sjid=11023572608666589922-NA>`_ -
+    Enables the display of values returned from an array formula into
+    multiple rows and/or columns and the use of non-array functions with
+    arrays.
 
 In this example, the formula lives in cell E6 and the resulting reformatted
 data is in column E. This reformatted data will be used to create the
@@ -866,6 +866,8 @@ ensuring that the data is properly aligned as shown in this
 `List Table  <https://docutils.sourceforge.io/docs/ref/rst/directives.html#list-table>`_
 example.  If it is not properly aligned, it will need to be realigned.
 Below is the resulting displayed table:
+
+.. _example_table:
 
 .. list-table:: Example Table
    :widths: auto
