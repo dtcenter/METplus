@@ -645,8 +645,8 @@ resulting in the following displayed image:
    :width: 400
 
 Please note, all of the images are stored in a *figure* directory, separate
-from the RST files. In this case, in the *figure* directory located at 
-*METplus/docs/Contributors_Guide/figure/*.
+from the RST files. For this Contributor's Guide, the *figure* directory is
+located at *METplus/docs/Contributors_Guide/figure/*.
 
 See
 `images <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#images>`_
@@ -735,7 +735,7 @@ Below is an example of list table formatting::
        - Row 2, column 2
 
 Please note that Row 1, column 2 is blank.  A blank cell must still be
-accounted for in the formaatting of the table.
+accounted for in the formatting of the table.
 
 The table will be displayed in the following way:
 
@@ -970,7 +970,7 @@ Use a note for information you want the user to pay particular attention to.
 Below is an example of formatting for a note::
 
   .. note::
-   This is note.
+   This is a note.
    
    If note text is long, ensure the lines are indented at the same level as
    the note tag. If the formatting is incorrect, the note will not be
@@ -982,7 +982,7 @@ Below is an example of formatting for a note::
 resulting in the following displayed text:
 
 .. note::
-   This is note.
+   This is a note.
 
    If note text is long, ensure the lines are indented at the same level as
    the note tag. If the formatting is incorrect, the note will not be
@@ -1125,7 +1125,7 @@ documentation:
 
 The versions being used by the current METplus release can be viewed
 in the **docs/requirements.txt** file in the
-`METplus GitHub Respository <https://github.com/dtcenter/METplus/>`_.
+`METplus GitHub Repository <https://github.com/dtcenter/METplus/>`_.
 
 
 Description of Documentation Directories
