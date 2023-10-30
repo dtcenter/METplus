@@ -865,9 +865,10 @@ example, from column F)::
 ensuring that the data is properly aligned as shown in this
 `List Table  <https://docutils.sourceforge.io/docs/ref/rst/directives.html#list-table>`_
 example.  If it is not properly aligned, it will need to be realigned.
-Below is the resulting displayed table:
 
 .. _example_table:
+
+Below is the resulting displayed table:
 
 .. list-table:: Example Table
    :widths: auto
