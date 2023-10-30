@@ -342,7 +342,7 @@ Symbols
 ^^^^^^^
 
 To create a math symbol, in this example the Delta symbol, use the following
-notation:
+notation::
 
   :math:`Delta`
 
@@ -602,11 +602,11 @@ See the example below::
 
 To link to this "example table" use the following syntax::
 
-  :ref:`example_table`
+  :ref:`Example Table <example_table>`
   
 which will result in the following displayed text: 
 
-:ref:`example_table`
+:ref:`Example Table <example_table>`
 
 Linking to a Variable in the Glossary
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
