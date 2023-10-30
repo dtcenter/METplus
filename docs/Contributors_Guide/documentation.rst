@@ -10,8 +10,9 @@ The METplus documentation (beginning with version 3.0) is available
 is created using the Sphinx documentation generator tool, which was originally 
 created for Python documentation. The METplus documentation is created using 
 `reStructuredText (RST) <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html>`_. 
-This link provides a brief introduction to RST concepts and syntax, intended 
-to give authors enough information to create and modify the documents productively. 
+This link provides a brief introduction to RST concepts and syntax. It is
+intended to give authors enough information to create and modify the documents
+productively. 
 
 Conventions
 ===========
@@ -36,7 +37,7 @@ documentation for defining section formatting::
   = for sections
   - for subsections (this is a dash, not an underline)
   ^ for subsubsections
-  " for paragraphs (as of yet, this isn't used in the METplus documentation)
+  " for paragraphs 
 
 Part (e.g. User's Guide, Contributor's Guide) and chapter (e.g. Overview,
 Coding Standards) headers are created by underlining and overlining the
@@ -137,7 +138,7 @@ Please note, if there are extra spaces before or after the asterisk,
 it will change how the list looks.  Be careful.
 
 See
-`Sphinx bulleted and numbered sections <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#lists-and-quote-like-blocks>`_
+`Lists and Quote-Like blocks <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#lists-and-quote-like-blocks>`_
 for more information.
 
 Code Blocks
