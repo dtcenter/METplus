@@ -753,78 +753,141 @@ The table will be displayed in the following way:
 Converting an Existing Table into a List Table
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 If a table already exists it can be converted into a Sphinx list table by
-copying the table into a Google Sheet. An example of how to do this is
-described below.
+copying the existing table into a Google Sheet and using formulas to
+restructure it into a list table format. An example of how to do this is
+described below. This
+`spreadsheet <https://docs.google.com/spreadsheets/d/1splypR5JLRLgokFwUcAXqkWGJvQkJ4IYX9IoD8niyyY/>`_
+is used as an example.
 
-** JP REVIEW THIS SECTION**
+The first step is to copy the table into the first cell (A1) of the
+spreadsheet.
 
-Copy the first row and column into cell A1.  In the example below, the new
-list table will be created in column G. Use column F to create the old table, into
-the new list table.  In this example, click on
-cell F5 and use the below formula to turn the old
-table into a new list.  
-This example is for a 3 column table.  
-(for 4 columns change the ‘C’ to a ‘D’.)::
+.. image:: figure/example_table_1.png
+
+Next, using a cell in a column that is not used by the
+existing table (in this example column D or a column further to the right
+could be used), paste in the formula below to reformat the existing table::
 
   =ArrayFormula(transpose(split(concatenate(A1:C&char(9)),char(9))))
 
-Here is a visual example:
+.. _note::
 
-.. image:: figure/practice_table.png
+  In the formula above "C" is used.  The "C" represents the last
+  column used by the table and should be modified if a column
+  past "C" is used.
 
-In column G we will create the nomenclature for the Sphinx table.
-In cells G1 through G3 add the list-table, width,header-rows
-information and a blank line after this information to match
-the table format that will be needed for Sphinx.
+In the formula above, the following functions are used and documentation
+describing each function is linked below:
 
-Next the nomenclature for the Sphinx list needs to be created.
-The asterisk denotes the start of a row. 
-Remember the asterisks need to be lined up under the colon 
-from the width and header rows from the :ref:`creating-tables` section.
-Use the created information from the ArrayFormula in column F to
-complete the new list.
-Enter the below information in G5 to capture the first
-header row.  The spaces are need to correctly allign the
-asterics and dashes.  (2 spaces before the asterics)::
+  * `char <https://https://support.google.com/docs/answer/3094120?hl=en&ref_topic=3105625&sjid=11023572608666589922-NA>`_
+    - Converts a number into a character according to the current Unicode table.
 
-  ="  * - "&F5
+  * `split <https://support.google.com/docs/answer/3094136?sjid=11023572608666589922-NA>`_
+    - Divides text around a specified character or string and puts each
+      fragment into a separate cell in the row.
 
-For the next two cells, G6 and G7 enter the below information.  Again,
-the spaces are to correctly align the new list.  (In this case,
-there are 4 spaces before the dash.)::
-  
-  ="    - "&F6
-  ="    - "&F7
-  
-Drag and drop G5 through G7 into the remaining cells below.  
-This will create the correct formatting for a Sphinx table.
-Copy the list created in column G.
-In this case, column G1 through G19
-will be copied into the RST documentation. 
+  * `transpose <https://support.google.com/docs/answer/3094262?sjid=11023572608666589922-NA>`_
+    - Transposes the rows and columns of an array or range of cells.
 
-Here is the table:
+  * `ArrayFormula <https://support.google.com/docs/answer/3093275?sjid=11023572608666589922-NA>`_
+    - Enables the display of values returned from an array formula into
+      multiple rows and/or columns and the use of non-array functions with
+      arrays.
 
-.. _practice_table:
+In this example, the formula lives in cell E6 and the resulting reformatted
+data is in column E. This reformatted data will be used to create the
+formatting for a list table in an adjacent column.
 
-.. list-table:: Practice Table 
-  :widths: auto
-  :header-rows: 1
+.. image:: figure/example_table_2.png
 
-  * - Header 1
-    - Header 2
-    - Header 3
-  * - column 1, row 1
-    - column 2, row 1
-    - column 3, row 1
-  * - column 1, row 2
-    - column 2, row 2
-    - column 3, row 2
-  * - column 1, row 3
-    - column 2, row 3
-    - column 3, row 3
-  * - column 1, row 4
-    - column 2, row 4
-    - column 3, row 4
+Next, the metadata information for the table will be listed in cells F1 - F4::
+
+  .. list-table:: Example Table
+     :widths: auto
+     :header-rows: 1
+     (leave a blank line below)
+
+to match the format that is needed for RST.
+
+.. image:: figure/example_table_3.png
+
+Now, the necessary formatting for a list-table will be added, in a new column,
+to the reformatted data in column E.  As asterisk represents the start of a
+row.  It is important that the asterisk be lined up with the first colon
+under the metadata information described above (e.g. the first colon in
+":width:" and ":header-rows:"). Note that in the example below, there are three
+spaces before the asterisk. Starting with the adjacent cell to the
+first cell of the reformatted data (in this case cell F6), add the following
+formula to the cell, updating the cell number E6 if necessary::
+
+  ="   * - "&E6 
+
+In the two cells below (in this case, cells F7 and F8), add the following
+formulas, updating the cell numbers E7 and E8, if necessary::
+
+  ="     - "&E7 
+  ="     - "&E8
+
+Note that in the example above there are five spaces before the dash for proper
+alignment.
+
+To copy this formatting to the other cells, simply highlight the cells with
+the newly added formulas, click and hold your mouse on the blue dot in the
+lower right corner, and drag down to the last cell in the reformatted data
+(Column E, in this example).
+
+.. image:: figure/example_table_4.png
+
+Now, copy and paste the contents of the latest reformatted column (in this
+example, from column F)::
+
+  .. list-table:: Example Table
+     :widths: auto
+     :header-rows: 1
+
+
+     * - Subject
+       - Professor
+       - Number of Students
+     * - Math
+       - Patel
+       - 16
+     * - English
+       - Smith
+       - 18
+     * - Science
+       - Zhou
+       - 17
+     * - History
+       - Hayashi
+       - 19
+
+ensuring that the data is properly aligned as shown in this
+`List Table  <https://docutils.sourceforge.io/docs/ref/rst/directives.html#list-table>`_
+example.  If it is not properly aligned, it will need to be realigned.
+Below is the resulting displayed table:
+
+.. list-table:: Example Table
+   :widths: auto
+   :header-rows: 1
+
+
+  * - Subject
+    - Professor
+    - Number of Students
+  * - Math
+    - Patel
+    - 16
+  * - English
+    - Smith
+    - 18
+  * - Science
+    - Zhou
+    - 17
+  * - History
+    - Hayashi
+    - 19
+
 
 PrettyTable
 ^^^^^^^^^^^
@@ -975,7 +1038,8 @@ something will display formatting, this
 can be used. Please note that in order to use this editor, users must have
 access to the machine **seneca** and the UCAR VPN.  This is not a secure
 website (note that it begins with "http" and not "https"). A user must be
-logged into the UCAR VPN to use this editor.
+logged into the UCAR VPN to use this editor. If the editor is not displayed,
+please try using a different browser.
 
 Thank you to 
 `livesphinx <https://github.com/faust93/livesphinx>`_
