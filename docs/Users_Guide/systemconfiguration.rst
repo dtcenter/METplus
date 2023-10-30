@@ -340,6 +340,19 @@ to the METplus log file::
 If set to false/no, the output is written to a separate
 file in the log directory named after the application.
 
+
+.. _log_to_terminal_only:
+
+LOG_TO_TERMINAL_ONLY
+""""""""""""""""""""
+
+If set to True, all log output is written to the screen only.
+This includes output from commands that are run, e.g. MET commands.
+No log files will be created and :ref:`log_metplus` will be set to an empty
+string. ::
+
+    LOG_TO_TERMINAL_ONLY = True
+
 Log Level Information
 ^^^^^^^^^^^^^^^^^^^^^
 
