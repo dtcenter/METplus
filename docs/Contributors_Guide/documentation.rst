@@ -37,7 +37,7 @@ documentation for defining section formatting::
   = for sections
   - for subsections (this is a dash, not an underline)
   ^ for subsubsections
-  " for paragraphs for the final level of headers
+  " for the final level of headers
 
 Part (e.g. User's Guide, Contributor's Guide) and chapter (e.g. Overview,
 Coding Standards) headers are created by underlining and overlining the
