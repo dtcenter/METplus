@@ -37,7 +37,7 @@ documentation for defining section formatting::
   = for sections
   - for subsections (this is a dash, not an underline)
   ^ for subsubsections
-  " for paragraphs 
+  " for paragraphs for the final level of headers
 
 Part (e.g. User's Guide, Contributor's Guide) and chapter (e.g. Overview,
 Coding Standards) headers are created by underlining and overlining the
@@ -228,7 +228,7 @@ for more information.
 Underline
 ---------
 
-The use of underlines in not recommended.  Underlining is not part of
+The use of underlines is not recommended.  Underlining is not part of
 Sphinx's reStructuredText specifications.  Underlines can be used as
 transition markers.  See the :ref:`transition_marker` section.
 
@@ -450,7 +450,7 @@ resulting in the following displayed text:
 
 See line blocks under 
 `Lists and Quote-like blocks <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#lists-and-quote-like-blocks>`_
-and `line blocks <http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.html#line-blocks>`_
+and the `line blocks <http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.html#line-blocks>`_
 section from the reStructuredText Markup Specification for more information.
 
 Links
@@ -547,12 +547,12 @@ use the `:numref:` role.
 
 Example::
 
-  Please refer to section :numref:`user_configuration_file`.
+  Please refer to :numref:`user_configuration_file`.
 
 resulting in the following displayed text, which shows the 
 numbered section, not the name:  
 
-Please refer to section :numref:`user_configuration_file`.
+Please refer to :numref:`user_configuration_file`.
 
 See 
 `Cross-referencing figures by figure number <https://www.sphinx-doc.org/en/master/usage/referencing.html#cross-referencing-figures-by-figure-number>`_
@@ -572,7 +572,7 @@ The full URL is being shown above so it can be edited below.  This example will
 be called "StatAnalysis: Basic Use Case".
 To make sure the web address is correct:
 
-  * Remove the everything in the URL above, before the text “generated”.
+  * Remove everything in the URL above, before the text “generated”.
     In this example, remove: `https://metplus.readthedocs.io/en/latest`
   * Put a `../` in front of “generated”
   * Also remove anything after `#`.  In this example:  
@@ -715,7 +715,7 @@ Tables
 
 There are a variety of
 `table formats <https://docutils.sourceforge.io/docs/ref/rst/directives.html#tables>`_.
-The METplus components frequent use
+The METplus components frequently use
 `list tables <https://docutils.sourceforge.io/docs/ref/rst/directives.html#list-table>`_.
 
 List Tables
@@ -813,7 +813,7 @@ to match the format that is needed for RST.
 .. image:: figure/example_table_3.png
 
 Now, the necessary formatting for a list-table will be added, in a new column,
-to the reformatted data in column E.  As asterisk represents the start of a
+to the reformatted data in column E.  An asterisk represents the start of a
 row.  It is important that the asterisk be lined up with the first colon
 under the metadata information described above (e.g. the first colon in
 ":width:" and ":header-rows:"). Note that in the example below, there are three
@@ -896,8 +896,7 @@ PrettyTable
 
 `PrettyTable <https://pypi.org/project/prettytable/>`_ is a simple Python
 library for easily displaying tabular data in a visually appealing ASCII
-table format. PrettyTable lets you format tables in an attractive ASCII
-form.
+table format. PrettyTable formats tables in an attractive ASCII form.
 
 A PrettyTable was used to create this
 `message_type <https://metplus.readthedocs.io/en/develop/Users_Guide/systemconfiguration.html#message-type>`_
@@ -943,9 +942,9 @@ resulting in the following display:
 
 See
 `Dropdowns <https://sphinx-design.readthedocs.io/en/latest/dropdowns.html>`_ 
-documentation page for more information
+documentation page for more information.
 
-In order to use this functionality, the changes need to be made to add the
+In order to use this functionality, changes need to be made to add the
 sphinx-design extension.  These changes are described on the sphinx-design
 `Getting Started <https://sphinx-design.readthedocs.io/en/latest/get_started.html>`_
 page.
@@ -1097,11 +1096,12 @@ FNNN\_
 Asterisks
 """""""""
 
-As asterisk are used for italicizing and bolding and are used in
+Asterisks are used for italicizing and bolding and are used in
 bulleted lists.
 
 If asterisks appear in running text and could be confused with a
-special function, so they have to be escaped with a backslash.
+special function, it is necessary to use a backslash to escape the
+asterisk.
 
 For example::
 
