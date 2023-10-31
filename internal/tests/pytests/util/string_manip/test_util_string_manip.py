@@ -3,10 +3,9 @@
 import pytest
 
 import pprint
-from csv import reader
 
 from metplus.util.string_manip import *
-from metplus.util.string_manip import _fix_list
+
 
 @pytest.mark.parametrize(
     'template, expected_output', [
@@ -20,6 +19,7 @@ from metplus.util.string_manip import _fix_list
 @pytest.mark.util
 def test_template_to_regex(template, expected_output):
     assert template_to_regex(template) == expected_output
+
 
 @pytest.mark.parametrize(
     'subset_definition, expected_result', [
