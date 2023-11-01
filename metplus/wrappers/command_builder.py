@@ -28,8 +28,8 @@ from ..util import remove_quotes, split_level
 from ..util import get_field_info, format_field_info
 from ..util import get_wrapper_name, is_python_script
 from ..util.met_config import add_met_config_dict, handle_climo_dict
-from ..util import mkdir_p, get_skip_times, get_log_path
-from ..util import RunArgs, run_cmd
+from ..util import mkdir_p, get_skip_times
+from ..util import get_log_path, RunArgs, run_cmd
 
 
 # pylint:disable=pointless-string-statement
