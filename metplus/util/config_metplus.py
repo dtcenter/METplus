@@ -352,6 +352,7 @@ def get_logger(config):
     # do not send logs up to root logger handlers
     logger.propagate = False
 
+    # set up logging file handler if logging to a file
     metpluslog = config.getstr('config', 'LOG_METPLUS', '')
     if not metpluslog:
         logger.setLevel(log_level_terminal_val)
