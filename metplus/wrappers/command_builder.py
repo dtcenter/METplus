@@ -15,8 +15,6 @@ from datetime import datetime
 from abc import ABCMeta
 from inspect import getframeinfo, stack
 
-from .command_runner import CommandRunner
-
 from ..util.constants import PYTHON_EMBEDDING_TYPES, COMPRESSION_EXTENSIONS
 from ..util import getlist, preprocess_file, loop_over_times_and_call
 from ..util import do_string_sub, ti_calculate, get_seconds_from_string
@@ -31,6 +29,8 @@ from ..util import get_field_info, format_field_info
 from ..util import get_wrapper_name, is_python_script
 from ..util.met_config import add_met_config_dict, handle_climo_dict
 from ..util import mkdir_p, get_skip_times, get_log_path
+from ..util import RunArgs, run_cmd
+
 
 # pylint:disable=pointless-string-statement
 '''!@namespace CommandBuilder
@@ -117,12 +117,6 @@ class CommandBuilder:
         )
 
         self.check_for_externals()
-
-        self.cmdrunner = CommandRunner(
-            self.config, logger=self.logger,
-            verbose=self.c_dict['VERBOSITY'],
-            skip_run=self.c_dict.get('DO_NOT_RUN_EXE', False),
-        )
 
         # set log name to app name by default
         # any wrappers with a name different than the primary app that is run
@@ -1279,10 +1273,15 @@ class CommandBuilder:
         # Determine where to send the output from the MET command.
         log_path = get_log_path(self.config, logfile=log_name+'.log')
 
-        ret, out_cmd = self.cmdrunner.run_cmd(cmd,
-                                              env=self.env,
-                                              log_path=log_path,
-                                              copyable_env=self.get_env_copy())
+        run_arguments = RunArgs(
+            logger=self.logger,
+            log_path=log_path,
+            skip_run=self.c_dict.get('DO_NOT_RUN_EXE', False),
+            log_met_to_metplus=self.config.getbool('config', 'LOG_MET_OUTPUT_TO_METPLUS'),
+            env=self.env,
+            copyable_env=self.get_env_copy(),
+        )
+        ret = self.run_cmd(cmd, run_arguments)
         if not ret:
             return True
 
@@ -1294,6 +1293,9 @@ class CommandBuilder:
         self.logger.info("Check the logfile for more information on why "
                          f"it failed: {log_path}")
         return False
+
+    def run_cmd(self, cmd, run_args):
+        return run_cmd(cmd, run_args)
 
     def run_all_times(self, custom=None):
         """! Loop over time range specified in conf file and

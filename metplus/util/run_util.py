@@ -2,6 +2,11 @@ import sys
 import os
 import shutil
 from datetime import datetime
+from typing import NamedTuple, Union
+from logging import Logger
+import shlex
+
+from produtil.run import exe, run
 
 from .string_manip import get_logfile_info, log_terminal_includes_info
 from .system_util import get_user_info, write_list_to_file
@@ -11,6 +16,102 @@ from .config_validate import validate_config_variables
 from .. import get_metplus_version
 from .config_metplus import setup
 from . import get_wrapper_instance
+
+
+class RunArgs(NamedTuple):
+    logger: Union[Logger, None] = None
+    log_path: Union[str, None] = None
+    skip_run: bool = False
+    log_met_to_metplus: bool = True
+    env: os._Environ = os.environ
+    copyable_env: str = ''
+
+
+class PrintLogger(object):
+    def __init__(self):
+        self.info = print
+        self.debug = print
+        self.error = print
+        self.warning = print
+
+
+def run_cmd(cmd, run_args):
+    if not cmd:
+        return 0
+
+    # if env not set, use os.environ
+    env = os.environ if run_args.env is None else run_args.env
+    if run_args.logger is not None:
+        logger = run_args.logger
+    else:
+        logger = PrintLogger()
+
+    logger.info("COMMAND: %s" % cmd)
+
+    # don't run app if DO_NOT_RUN_EXE is set to True
+    if run_args.skip_run:
+        logger.info("Not running command (DO_NOT_RUN_EXE = True)")
+        return 0
+
+    log_path = run_args.log_path
+
+    # determine if command must be run in a shell
+    run_in_shell = '*' in cmd or ';' in cmd or '<' in cmd or '>' in cmd
+
+    # Run the executable and pass the arguments as a sequence.
+    # Split the command in to a sequence using shell syntax.
+    the_exe = shlex.split(cmd)[0]
+    the_args = shlex.split(cmd)[1:]
+    if log_path:
+        logger.debug("Logging command output to: %s" % log_path)
+        _log_header_info(log_path, run_args.copyable_env, cmd, run_args.log_met_to_metplus)
+
+        if run_in_shell:
+            cmd_exe = exe('sh')['-c', cmd].env(**env).err2out() >> log_path
+        else:
+            cmd_exe = exe(the_exe)[the_args].env(**env).err2out() >> log_path
+    else:
+        if run_in_shell:
+            cmd_exe = exe('sh')['-c', cmd].env(**env)
+        else:
+            cmd_exe = exe(the_exe)[the_args].env(**env).err2out()
+
+    # get current time to calculate total time to run command
+    start_cmd_time = datetime.now()
+
+    # run command
+    try:
+        ret = run(cmd_exe)
+    except Exception as err:
+        logger.error(f'Exception occurred: {err}')
+        ret = -1
+    else:
+        # calculate time to run
+        end_cmd_time = datetime.now()
+        total_cmd_time = end_cmd_time - start_cmd_time
+        logger.info(f'Finished running {the_exe} - took {total_cmd_time}')
+
+    return ret
+
+
+def _log_header_info(log_path, copyable_env, cmd, log_met_to_metplus):
+    with open(log_path, 'a+') as log_file_handle:
+        # if logging MET command to its own log file,
+        # add command that was run to that log
+        if not log_met_to_metplus:
+            # if environment variables were set and available,
+            # write them to MET tool log
+            if copyable_env:
+                log_file_handle.write(
+                    "\nCOPYABLE ENVIRONMENT FOR NEXT COMMAND:\n")
+                log_file_handle.write(f"{copyable_env}\n\n")
+            else:
+                log_file_handle.write('\n')
+
+            log_file_handle.write(f"COMMAND:\n{cmd}\n\n")
+
+        # write line to designate where MET tool output starts
+        log_file_handle.write("OUTPUT:\n")
 
 
 def pre_run_setup(config_inputs):
@@ -67,11 +168,6 @@ def pre_run_setup(config_inputs):
     if not config.getdir('MET_INSTALL_DIR', must_exist=True):
         logger.error('MET_INSTALL_DIR must be set correctly to run METplus')
         sys.exit(1)
-
-    # set staging dir to OUTPUT_BASE/stage if not set
-    if not config.has_option('config', 'STAGING_DIR'):
-        config.set('config', 'STAGING_DIR',
-                   os.path.join(config.getdir('OUTPUT_BASE'), "stage"))
 
     # handle dir to write temporary files
     handle_tmp_dir(config)
