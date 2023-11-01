@@ -1,8 +1,8 @@
+.. _release-notes:
+
 ***************************
 METplus Release Information
 ***************************
-
-.. _release-notes:
 
 Users can view the :ref:`releaseTypes` section of
 the Release Guide for descriptions of the development releases (including
