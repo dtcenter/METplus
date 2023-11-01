@@ -346,6 +346,12 @@ def get_logger(config):
               f' {log_level_terminal}')
         sys.exit(1)
 
+    # create log formatter from config settings
+    formatter = METplusLogFormatter(config)
+
+    # do not send logs up to root logger handlers
+    logger.propagate = False
+
     metpluslog = config.getstr('config', 'LOG_METPLUS', '')
     if not metpluslog:
         logger.setLevel(log_level_terminal_val)
@@ -359,23 +365,17 @@ def get_logger(config):
         if not os.path.exists(dir_name):
             mkdir_p(dir_name)
 
-        # do not send logs up to root logger handlers
-        logger.propagate = False
-
-        # create log formatter from config settings
-        formatter = METplusLogFormatter(config)
-
         # set up the file logging
         file_handler = logging.FileHandler(metpluslog, mode='a')
         file_handler.setFormatter(formatter)
         file_handler.setLevel(log_level_val)
         logger.addHandler(file_handler)
 
-        # set up console logging
-        stream_handler = logging.StreamHandler()
-        stream_handler.setFormatter(formatter)
-        stream_handler.setLevel(log_level_terminal_val)
-        logger.addHandler(stream_handler)
+    # set up console logging
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(formatter)
+    stream_handler.setLevel(log_level_terminal_val)
+    logger.addHandler(stream_handler)
 
     # set add the logger to the config
     config.logger = logger
