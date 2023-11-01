@@ -7,6 +7,7 @@ import os
 import datetime
 import metplus.wrappers.command_builder as cb_wrapper
 from metplus.wrappers.command_builder import CommandBuilder
+import metplus.util.run_util
 from metplus.util import ti_calculate, add_field_info_to_time_info
 
 
@@ -1097,7 +1098,7 @@ def test_run_command_error(metplus_config, log_metplus):
         config.set('config', 'LOG_METPLUS', '') 
 
     cb = CommandBuilder(metplus_config)
-    with mock.patch.object(cb.cmdrunner, 'run_cmd', return_value=('ERR',None)): 
+    with mock.patch.object(cb, 'run_cmd', return_value=-1):
         actual = cb.run_command('foo')
     assert not actual 
     assert _in_last_err('Command returned a non-zero return code: foo', cb.logger)

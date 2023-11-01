@@ -7,8 +7,33 @@ import os
 from datetime import datetime
 
 from metplus.util import config_metplus
-from metplus.util.time_util import ti_calculate
 from metplus.util.config_validate import validate_config_variables
+
+
+@pytest.mark.parametrize(
+    'config_overrides,expected_logfile', [
+        (['config.LOG_METPLUS={LOG_DIR}/metplus.log'], '<LOG_DIR>/metplus.log'),
+        (['config.LOG_METPLUS='], ''),
+        (['config.LOG_METPLUS={LOG_DIR}/metplus.log.{LOG_TIMESTAMP}',
+          'config.LOG_TIMESTAMP_TEMPLATE=%Y'], '<LOG_DIR>/metplus.log.<YYYY>'),
+        (['config.LOG_METPLUS={LOG_DIR}/metplus.log.{LOG_TIMESTAMP}',
+          'config.LOG_TIMESTAMP_USE_DATATIME=True', 'config.LOOP_BY=INIT',
+          'config.INIT_TIME_FMT=%Y', 'config.INIT_BEG=1987',
+          'config.LOG_TIMESTAMP_TEMPLATE=%Y'], '<LOG_DIR>/metplus.log.1987'),
+        (['config.LOG_METPLUS={LOG_DIR}/metplus.log',
+          'config.LOG_TO_TERMINAL_ONLY=True'], ''),
+        (['config.LOG_TO_TERMINAL_ONLY=True'], ''),
+        (['config.LOG_METPLUS=metplus.log'], '<LOG_DIR>/metplus.log'),
+    ]
+)
+@pytest.mark.util
+def test_set_logvars(metplus_config_files, config_overrides, expected_logfile):
+    config = metplus_config_files(config_overrides)
+    log_dir = config.getdir('LOG_DIR')
+    expected = expected_logfile.replace('<LOG_DIR>', log_dir)
+    expected = expected.replace('<YYYY>', datetime.now().strftime('%Y'))
+    assert config.getstr('config', 'LOG_METPLUS') == expected
+
 
 @pytest.mark.util
 def test_get_default_config_list():
