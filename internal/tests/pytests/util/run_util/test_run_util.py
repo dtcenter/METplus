@@ -91,20 +91,20 @@ def test_log_header_info(tmp_path_factory, log_met_to_metplus, copyable_env):
 
 
 @pytest.mark.parametrize(
-    "cmd,skip_run,use_log_path,expected",
+    "cmd,skip_run,use_log_path,expected_to_fail",
     [
-        (None, False, True, 0),  # no command
-        ('/my/cmd some args', True, True, 0),  # skip run
-        ('echo hello', False, True, 0),  # simple command with log
-        ('echo hello', False, False, 0),  # simple command no log
-        ('echo hello; echo hi', False, True, 0),  # complex 2 commands with log
-        ('echo hello; echo hi', False, False, 0),  # complex 2 commands no log
-        ('ls *', False, False, 0),  # complex command with wildcard *
-        ('ls fake_dir', False, False, 1),  # failed command
+        (None, False, True, False),  # no command
+        ('/my/cmd some args', True, True, False),  # skip run
+        ('echo hello', False, True, False),  # simple command with log
+        ('echo hello', False, False, False),  # simple command no log
+        ('echo hello; echo hi', False, True, False),  # complex 2 commands with log
+        ('echo hello; echo hi', False, False, False),  # complex 2 commands no log
+        ('ls *', False, False, False),  # complex command with wildcard *
+        ('ls fake_dir', False, False, True),  # failed command
     ],
 )
 @pytest.mark.util
-def test_run_cmd(tmp_path_factory, cmd, skip_run, use_log_path, expected):
+def test_run_cmd(tmp_path_factory, cmd, skip_run, use_log_path, expected_to_fail):
     log_path = str(tmp_path_factory.mktemp("data") / 'fake_run_cmd.log') if use_log_path else None
     run_arguments = ru.RunArgs(
         logger=None,
@@ -115,7 +115,7 @@ def test_run_cmd(tmp_path_factory, cmd, skip_run, use_log_path, expected):
         copyable_env='some text',
     )
     actual = ru.run_cmd(cmd, run_arguments)
-    assert actual == expected
+    assert bool(actual) == expected_to_fail
 
 @pytest.mark.util
 def test_pre_run_setup():
