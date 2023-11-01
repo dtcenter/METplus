@@ -255,7 +255,7 @@ def test_pb2nc_all_fields(metplus_config, config_overrides,
                '{PARM_BASE}/met_config/PB2NCConfig_wrapped')
     config.set('config', 'PB2NC_INPUT_DIR', input_dir)
     config.set('config', 'PB2NC_INPUT_TEMPLATE',
-               'ndas.t{da_init?fmt=%2H}z.prepbufr.tm{offset?fmt=%2H}.{da_init?fmt=%Y%m%d}.nr')
+               'ndas.t{da_init?fmt=%H}z.prepbufr.tm{offset?fmt=%2H}.{da_init?fmt=%Y%m%d}.nr')
     config.set('config', 'PB2NC_OUTPUT_DIR',
                '{OUTPUT_BASE}/PB2NC/output')
     config.set('config', 'PB2NC_OUTPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}.nc')

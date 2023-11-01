@@ -136,7 +136,7 @@ def metplus_config_files():
         script_dir = os.path.dirname(__file__)
         minimum_conf = os.path.join(script_dir, "minimum_pytest.conf")
         args = extra_configs.copy()
-        args.append(minimum_conf)
+        args.insert(0, minimum_conf)
         config = config_metplus.setup(args)
         return config
 

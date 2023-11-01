@@ -3,10 +3,61 @@
 import pytest
 
 import pprint
-from csv import reader
+from datetime import datetime
 
 from metplus.util.string_manip import *
-from metplus.util.string_manip import _fix_list
+
+
+@pytest.mark.parametrize(
+    'config_overrides,logfile_arg,expected_logfile', [
+        ({'LOG_METPLUS': ''}, None, None),
+        ({'LOG_METPLUS': '{LOG_DIR}/metplus.log'}, None, '<LOG_DIR>/metplus.log'),
+        ({'LOG_METPLUS': '{LOG_DIR}/metplus.log',
+          'LOG_MET_OUTPUT_TO_METPLUS': True}, 'app.log', '<LOG_DIR>/metplus.log'),
+        ({'LOG_METPLUS': '{LOG_DIR}/metplus.log',
+          'LOG_MET_OUTPUT_TO_METPLUS': False,
+          'LOG_TIMESTAMP': ''}, 'app.log', '<LOG_DIR>/app.log'),
+        ({'LOG_METPLUS': '{LOG_DIR}/metplus.log',
+          'LOG_MET_OUTPUT_TO_METPLUS': False,
+          'LOG_TIMESTAMP': '2020'}, 'app.log', '<LOG_DIR>/app.log.2020'),
+    ]
+)
+@pytest.mark.util
+def test_set_logvars(metplus_config, config_overrides, logfile_arg, expected_logfile):
+    config = metplus_config
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    log_dir = config.getdir('LOG_DIR')
+    if expected_logfile is None:
+        expected = expected_logfile
+    else:
+        expected = expected_logfile.replace('<LOG_DIR>', log_dir)
+        expected = expected.replace('<YYYY>', datetime.now().strftime('%Y'))
+    assert get_log_path(config, logfile=logfile_arg) == expected
+
+
+@pytest.mark.parametrize(
+    'config_overrides,expected_logfile', [
+        ({'LOG_TO_TERMINAL_ONLY': True},
+         'Set LOG_TO_TERMINAL_ONLY=False to write logs to a file'),
+        ({'LOG_TO_TERMINAL_ONLY': False,
+          'LOG_METPLUS': '{LOG_DIR}/metplus.log'},
+         '<LOG_DIR>/metplus.log'),
+        ({'LOG_TO_TERMINAL_ONLY': False,
+          'LOG_METPLUS': ''},
+         'Set LOG_METPLUS to write logs to a file'),
+    ]
+)
+@pytest.mark.util
+def test_get_logfile_info(metplus_config, config_overrides, expected_logfile):
+    config = metplus_config
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+    log_dir = config.getdir('LOG_DIR')
+    expected = expected_logfile.replace('<LOG_DIR>', log_dir)
+    assert get_logfile_info(config) == expected
+
 
 @pytest.mark.parametrize(
     'template, expected_output', [
@@ -20,6 +71,7 @@ from metplus.util.string_manip import _fix_list
 @pytest.mark.util
 def test_template_to_regex(template, expected_output):
     assert template_to_regex(template) == expected_output
+
 
 @pytest.mark.parametrize(
     'subset_definition, expected_result', [

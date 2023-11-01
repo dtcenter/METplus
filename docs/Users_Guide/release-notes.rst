@@ -107,6 +107,20 @@ See :ref:`met-config-overrides` for more information.
 How to tell if upgrade is needed
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+If the wrapped MET config file used by a use case is the version provided
+with the METplus wrappers, then no changes to the use case are needed.
+The wrapped MET config files provided with the wrappers are found in the
+parm/met_config directory.
+
+Search for variables that end with **_CONFIG_FILE** in the use case
+configuration file.
+
+If the value looks like this::
+
+    GRID_STAT_CONFIG_FILE = {PARM_BASE}/met_config/GridStatConfig_wrapped
+
+or the variable it not found, then no changes are needed.
+
 Prior to v6.0.0, a use case that uses a wrapped MET config file that is
 out-of-date from the version provided with the METplus wrappers will report a
 warning in the log output alerting the user that an expected environment

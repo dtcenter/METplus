@@ -2289,7 +2289,15 @@ METplus Configuration Glossary
    LOG_METPLUS
      Path to the METplus log file. Control the timestamp appended to the
      filename with :term:`LOG_TIMESTAMP_TEMPLATE`.
-     Set this variable to an empty string to turn off all logging.
+     Set this variable to an empty string or set :term:`LOG_TO_TERMINAL_ONLY`
+     = True to turn off all file logging and write all logs to the screen.
+
+     | *Used by:*  All
+
+   LOG_TO_TERMINAL_ONLY
+     Set to True to skip writing any log files and instead send all log output
+     to the screen. Sets :term:`LOG_METPLUS` to an empty string if True.
+     Defaults to False.
 
      | *Used by:*  All
 
