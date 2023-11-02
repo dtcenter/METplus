@@ -12,7 +12,7 @@
   {
     "category": "air_quality_and_comp",
     "index_list": "0",
-    "run": true
+    "run": false
   },
   {
     "category": "climate",
