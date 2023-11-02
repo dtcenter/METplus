@@ -40,7 +40,7 @@ def main(args):
     branch_name = get_branch_name()
     if not branch_name:
         print("Could not get current branch. Exiting.")
-        sys.exit(1)
+        return None
 
     # remove -ref from end of branch name if found
     if branch_name.endswith('-ref'):
@@ -88,7 +88,7 @@ def main(args):
         # use it, otherwise use develop version of data volume
         elif (metplus_version == 'develop' and
               f'{branch_name}-{model_app_name}' in available_volumes):
-                volume_name = f'{branch_name}-{model_app_name}'
+            volume_name = f'{branch_name}-{model_app_name}'
         else:
             volume_name = f'{metplus_version}-{model_app_name}'
 
@@ -97,12 +97,14 @@ def main(args):
         cmd = (f'docker create --name {model_app_name} '
                f'{full_volume_name}')
         if not run_commands(cmd):
-            continue
+            print(f'ERROR: Could not create data volume for {full_volume_name}')
+            return None
 
         # add name to volumes from list to pass to docker build
         volume_list.append(f'--volumes-from {model_app_name}')
 
     return ' '.join(volume_list)
+
 
 if __name__ == "__main__":
     # split up command line args that have commas before passing into main
@@ -111,4 +113,7 @@ if __name__ == "__main__":
     for arg in sys.argv[1:]:
         args.extend(arg.split(','))
     out = main(args)
+    if out is None:
+        print("ERROR: Something went wrong")
+        sys.exit(1)
     print(out)
