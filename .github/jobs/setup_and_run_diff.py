@@ -43,6 +43,9 @@ else:
 output_category = f"output-{output_data_branch}-{artifact_name}"
 
 VOLUMES_FROM = get_data_volumes.main([output_category])
+if VOLUMES_FROM is None:
+    print("ERROR: Could not get truth data to run diff")
+    sys.exit(1)
 
 print(f"Output Volumes: {VOLUMES_FROM}")
 

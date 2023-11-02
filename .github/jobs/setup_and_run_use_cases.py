@@ -49,6 +49,10 @@ def main():
     )
     # get input data volumes
     volumes_from = get_data_volumes.main(categories_list)
+    if volumes_from is None:
+        print('ERROR: Could not get input data to run use cases')
+        sys.exit(1)
+
     print(f"Input Volumes: {volumes_from}")
 
     # build Docker image with conda environment and METplus branch image
