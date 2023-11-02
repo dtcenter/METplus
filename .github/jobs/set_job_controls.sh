@@ -33,7 +33,6 @@ elif [ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]; then
 elif [ "${GITHUB_REF: -4}" == -ref ]; then
   run_all_use_cases=true
   run_save_truth_data=true
-  run_diff=true
 # if not pull request or -ref branch, apply commit messages overrides
 else
 
