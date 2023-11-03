@@ -1,21 +1,25 @@
 .. _quicksearch:
 
+*************************
 Quick Search for Datasets
-=========================
+*************************
   
 Dataset Types
--------------
+=============
+
 | `Point Data <../search.html?q=DataTypePoint&check_keywords=yes&area=default>`_
 | `Gridded Data <../search.html?q=DataTypeGridded&check_keywords=yes&area=default>`_
 
-Dataset Levels 
---------------
+Dataset Levels
+==============
+
 | `Surface Data <../search.html?q=DataLevelSurface&check_keywords=yes&area=default>`_
 | `Upper-Air Data <../search.html?q=DataLevelUpperAir&check_keywords=yes&area=default>`_
 | `Satellite Data <../search.html?q=DataLevelSatellite&check_keywords=yes&area=default>`_
 
-Dataset Providers 
------------------
+Dataset Providers
+=================
+
 | `EUMETNET <../search.html?q=DataProviderEUMETNET&check_keywords=yes&area=default>`_
 | `ISU <../search.html?q=DataProviderISU&check_keywords=yes&area=default>`_
 | `NOAA <../search.html?q=DataProviderNOAA&check_keywords=yes&area=default>`_
@@ -25,7 +29,8 @@ Dataset Providers
 | `NSIDC <../search.html?q=DataProviderNSIDC&check_keywords=yes&area=default>`_
 
 Dataset Applications
---------------------
+====================
+
 | `Climate <../search.html?q=DataApplicationClimate&check_keywords=yes&area=default>`_
 | `Ensemble  <../search.html?q=DataApplicationEnsemble&check_keywords=yes&area=default>`_
 | `Marine and Cryosphere <../search.html?q=DataApplicationMarineAndCryo&check_keywords=yes&area=default>`_

@@ -1,5 +1,5 @@
 Recreate an Existing Release
-----------------------------
+============================
 
 To recreate an existing development, bugfix, or official release:
 

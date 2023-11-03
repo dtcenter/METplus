@@ -1,7 +1,7 @@
 .. _vx-data-viirs:
 
 VIIRS
------
+=====
 
 Description
   Visible Infrared Imaging Radiometer Suite (VIIRS)

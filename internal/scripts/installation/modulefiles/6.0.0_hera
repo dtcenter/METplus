@@ -3,7 +3,7 @@
 ##      METplus
 ##
 proc ModulesHelp { } {
-  puts stderr "Sets up the paths and environment variables to use the METplus-5.1.0.
+  puts stderr "Sets up the paths and environment variables to use the METplus-6.0.0.
      *** For help see the official MET webpage at http://www.dtcenter.org/met/users ***"
 }
 
@@ -11,10 +11,10 @@ prereq intel
 prepend-path PATH /scratch1/BMC/dtc/miniconda/miniconda3/envs/metplus_v5.1_py3.10/bin
 
 module use -a /contrib/met/modulefiles
-module load met/11.1.0
+module load met/12.0.0
 module load nco
 module load wgrib
 module load wgrib2
 module load R
-setenv METPLUS_PATH /contrib/METplus/METplus-5.1.0
-prepend-path PATH /contrib/METplus/METplus-5.1.0/ush
+setenv METPLUS_PATH /contrib/METplus/METplus-6.0.0
+prepend-path PATH /contrib/METplus/METplus-6.0.0/ush

@@ -103,7 +103,15 @@ def metplus_config(request):
     config.logger = mock.MagicMock()
 
     yield config
-
+    
+    if config.logger.error.call_args_list:
+        err_msgs = [
+                str(msg.args[0]) 
+                for msg 
+                in config.logger.error.call_args_list
+                if len(msg.args) != 0]
+        print("Tests raised the following errors:")
+        print("\n".join(err_msgs))
     config.logger = old_logger
     # don't remove output base if test fails
     if request.node.rep_call.failed:
@@ -128,7 +136,7 @@ def metplus_config_files():
         script_dir = os.path.dirname(__file__)
         minimum_conf = os.path.join(script_dir, "minimum_pytest.conf")
         args = extra_configs.copy()
-        args.append(minimum_conf)
+        args.insert(0, minimum_conf)
         config = config_metplus.setup(args)
         return config
 

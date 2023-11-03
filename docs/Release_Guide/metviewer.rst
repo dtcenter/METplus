@@ -1,6 +1,5 @@
-*****************
 METviewer Release
-*****************
+=================
 
 .. toctree::
    :titlesonly:

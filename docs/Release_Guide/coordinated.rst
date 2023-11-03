@@ -1,6 +1,5 @@
-*******************
 Coordinated Release
-*******************
+===================
 
 .. |projectRepo| replace:: Coordinated
 
@@ -19,5 +18,6 @@ component releases.
 
 .. include:: release_steps/coordinated/update_dtc_website.rst
 .. include:: release_steps/coordinated/finalize_release_on_github.rst
+.. include:: release_steps/coordinated/release_acceptance_testing.rst
 .. include:: release_steps/coordinated/update_zenodo.rst
 .. include:: release_steps/coordinated/announce_release.rst

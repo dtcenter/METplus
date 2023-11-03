@@ -1,6 +1,5 @@
-==========================
- METcalcpy Bugfix Release
-==========================
+METcalcpy Bugfix Release
+------------------------
 
 .. |projectRepo| replace:: METcalcpy
 

@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
 import pytest
-
+from unittest import mock
 import os
 from datetime import datetime
 
 from metplus.wrappers.tc_pairs_wrapper import TCPairsWrapper
+import metplus.wrappers.tc_pairs_wrapper as tcp
 
 bdeck_template = 'b{basin?fmt=%s}q{date?fmt=%Y%m}*.gfso.{cyclone?fmt=%s}'
 adeck_template = 'a{basin?fmt=%s}q{date?fmt=%Y%m}*.gfso.{cyclone?fmt=%s}'
@@ -222,30 +223,53 @@ def test_get_basin_cyclone_from_bdeck(metplus_config, template, filename,
         assert actual_cyclone == expected_cyclone
 
 
+@pytest.mark.wrapper
+def test_get_basin_cyclone_from_bdeck_error(metplus_config):
+    full_filename = os.path.join('/fake/dir', '20141009bal.dat')
+    config = metplus_config
+    set_minimum_config_settings(config)
+    wrapper = TCPairsWrapper(config)
+    wrapper.c_dict['BDECK_DIR'] = '/fake/dir'
+    wrapper.c_dict['BDECK_TEMPLATE'] = '{date?fmt=%Y}{cyclone?fmt=%s}b{basin?fmt=%s}.dat'
+    with mock.patch.object(tcp, 'get_tags', return_value = 50 * [0]):
+        actual = wrapper._get_basin_cyclone_from_bdeck(full_filename,
+                                          True,
+                                          'al',
+                                          '1009',
+                                          {'date': datetime(2014, 12, 31, 18)},
+                                          )
+    assert actual == (None, None)
+    last_err = wrapper.logger.error.call_args_list[0][0][0]
+    assert "Number of regex match groups does not match" in last_err
+
+
 @pytest.mark.parametrize(
-    'config_overrides, storm_type, values_to_check', [
+    'config_overrides, storm_type, values_to_check, reformat', [
         # 0: storm_id
         ({'TC_PAIRS_STORM_ID': 'AL092019, ML102019'},
-         'storm_id', ['AL092019', 'ML102019']),
+         'storm_id', ['AL092019', 'ML102019'], False),
         # 1: basin
         ({'TC_PAIRS_BASIN': 'AL, ML'},
-         'basin', ['AL', 'AL', 'ML', 'ML']),
+         'basin', ['AL', 'AL', 'ML', 'ML'], False),
         # 2: cyclone
         ({'TC_PAIRS_CYCLONE': '09, 10'},
-         'cyclone', ['09', '09', '10', '10']),
+         'cyclone', ['09', '09', '10', '10'], False),
         # 3: both, check basin
         ({'TC_PAIRS_BASIN': 'AL, ML',
           'TC_PAIRS_CYCLONE': '09, 10'},
-         'basin', ['AL', 'AL', 'ML', 'ML']),
+         'basin', ['AL', 'AL', 'ML', 'ML'], False),
         # 4: both, check cyclone - basin is outer loop, so alternate cyclones
         ({'TC_PAIRS_BASIN': 'AL, ML',
           'TC_PAIRS_CYCLONE': '09, 10'},
-         'cyclone', ['09', '10', '09', '10']),
+         'cyclone', ['09', '10', '09', '10'], False),
+        # 5: cyclone with reformat
+        ({'TC_PAIRS_CYCLONE': '09, 10'},
+         'cyclone', ['0109', '0109', '0110', '0110'], True),
     ]
 )
 @pytest.mark.wrapper
 def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
-                                 storm_type, values_to_check):
+                                 storm_type, values_to_check, reformat):
     config = metplus_config
 
     set_minimum_config_settings(config)
@@ -270,6 +294,11 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
     for key, value in config_overrides.items():
         config.set('config', key, value)
 
+    if reformat:
+        config.set('config', 'TC_PAIRS_REFORMAT_DECK', True)
+        config.set('config', 'TC_PAIRS_REFORMAT_DECK_TYPE', 'SBU')
+        config.set('config', 'TC_PAIRS_REFORMAT_DIR', '{OUTPUT_BASE}')
+        
     wrapper = TCPairsWrapper(config)
     assert wrapper.isOK
 
@@ -465,16 +494,16 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
         # 40: interp12
         ('VALID', {'TC_PAIRS_INTERP12': 'replace', },
          {'METPLUS_INTERP12': 'interp12 = REPLACE;'}),
-        # 41 match_points
+        # 41: match_points
         ('VALID', {'TC_PAIRS_MATCH_POINTS': 'False', },
          {'METPLUS_MATCH_POINTS': 'match_points = FALSE;'}),
-        # 42 -diag argument
+        # 42: -diag argument
         ('VALID', {
             'TC_PAIRS_DIAG_TEMPLATE1': '/some/path/{valid?fmt=%Y%m%d%H}.dat',
             'TC_PAIRS_DIAG_SOURCE1': 'TCDIAG',
          },
          {'DIAG_ARG': '-diag TCDIAG /some/path/2014121318.dat'}),
-        # 43 2 -diag arguments
+        # 43: 2 -diag arguments
         ('VALID', {
             'TC_PAIRS_DIAG_TEMPLATE1': '/some/path/{valid?fmt=%Y%m%d%H}.dat',
             'TC_PAIRS_DIAG_SOURCE1': 'TCDIAG',
@@ -483,7 +512,7 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
          },
          {'DIAG_ARG': ('-diag TCDIAG /some/path/2014121318.dat '
                        '-diag LSDIAG_RT /some/path/rt_2014121318.dat')}),
-        # 44 diag_convert_map 1 dictionary in list
+        # 44: diag_convert_map 1 dictionary in list
         ('VALID', {
              'TC_PAIRS_DIAG_CONVERT_MAP1_DIAG_SOURCE': 'CIRA_DIAG',
              'TC_PAIRS_DIAG_CONVERT_MAP1_KEY': '(10C),(10KT),(10M/S)',
@@ -493,7 +522,7 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
                  'diag_convert_map = [{diag_source = "CIRA_DIAG";'
                  'key = ["(10C)", "(10KT)", "(10M/S)"];convert(x) = x/10;}];'
          )}),
-        # 45 diag_convert_map 2 dictionaries in list
+        # 45: diag_convert_map 2 dictionaries in list
         ('VALID', {
             'TC_PAIRS_DIAG_CONVERT_MAP1_DIAG_SOURCE': 'CIRA_DIAG',
             'TC_PAIRS_DIAG_CONVERT_MAP1_KEY': '(10C),(10KT),(10M/S)',
@@ -508,7 +537,7 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
                  '{diag_source = "SHIPS_DIAG";key = ["LAT", "LON", "CSST", '
                  '"RSST", "DSST", "DSTA"];convert(x) = x/100;}];'
          )}),
-        # 46 diag_info_map 1 dictionary in list
+        # 46: diag_info_map 1 dictionary in list
         ('VALID', {
             'TC_PAIRS_DIAG_INFO_MAP1_DIAG_SOURCE': 'CIRA_DIAG_RT',
             'TC_PAIRS_DIAG_INFO_MAP1_TRACK_SOURCE': 'GFS',
@@ -520,7 +549,7 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
                  'diag_info_map = [{diag_source = "CIRA_DIAG_RT";'
                  'track_source = "GFS";field_source = "GFS_0p50";'
                  'match_to_track = ["GFS"];diag_name = ["MY_NAME"];}];')}),
-        # 47 diag_info_map 2 dictionaries in list
+        # 47: diag_info_map 2 dictionaries in list
         ('VALID', {
             'TC_PAIRS_DIAG_INFO_MAP1_DIAG_SOURCE': 'CIRA_DIAG_RT',
             'TC_PAIRS_DIAG_INFO_MAP1_TRACK_SOURCE': 'GFS',
@@ -768,3 +797,120 @@ def test_get_config_file(metplus_config):
     config.set('config', 'TC_PAIRS_CONFIG_FILE', fake_config_name)
     wrapper = TCPairsWrapper(config)
     assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name
+
+    # Check correct error raised
+    config.set('config', 'TC_PAIRS_REFORMAT_DECK', True)
+    wrapper = TCPairsWrapper(config)
+    wrapper.create_c_dict()
+    last_err = wrapper.logger.error.call_args_list[-1][0][0]
+    assert 'Must set TC_PAIRS_REFORMAT_DIR if TC_PAIRS_REFORMAT_DECK is True' in last_err
+
+
+@pytest.mark.wrapper
+def test_validate_runtime_freq_loop_order(metplus_config):
+    config = metplus_config
+    config.set('config','LOOP_ORDER','times')
+    wrapper = TCPairsWrapper(config)
+    
+    # Check warning message when LOOP_ORDER set
+    warn_msg = wrapper.logger.warning.call_args_list[-1][0][0]
+    assert 'LOOP_ORDER has been deprecated.' in warn_msg
+    assert wrapper.c_dict['RUNTIME_FREQ'] == 'RUN_ONCE_FOR_EACH'
+
+
+@pytest.mark.parametrize(
+    'bool_value, expected_config',
+       [
+         (True, 'RUN_ONCE'),
+         (False, 'RUN_ONCE_FOR_EACH'),
+       ]
+)
+@pytest.mark.wrapper
+def test_validate_runtime_freq_tc_pairs(metplus_config,
+                                        bool_value,
+                                        expected_config):
+    config = metplus_config
+    config.set('config','TC_PAIRS_RUN_ONCE', bool_value)
+    wrapper = TCPairsWrapper(config)
+    
+    # Check warn and handle deprecated TC_PAIRS_RUN_ONCE
+    warn_msg = wrapper.logger.warning.call_args_list[-1][0][0]
+    assert f'Setting TC_PAIRS_RUNTIME_FREQ={expected_config}.' in warn_msg
+    assert f'Please remove TC_PAIRS_RUN_ONCE' in warn_msg
+    assert wrapper.c_dict['RUNTIME_FREQ'] == expected_config
+
+
+@pytest.mark.wrapper
+def test_bad_add_config(metplus_config):
+    config = metplus_config
+    wrapper = TCPairsWrapper(config)
+    with mock.patch.object(tcp,
+                           "add_met_config_dict_list",
+                           return_value=False):
+        wrapper.isOK = True
+        wrapper._handle_consensus()
+        assert not wrapper.isOK
+
+        wrapper.isOK = True
+        wrapper._handle_diag_info_map()
+        assert not wrapper.isOK
+        
+        wrapper.isOK = True
+        wrapper._handle_diag_convert_map()
+        assert not wrapper.isOK
+
+
+# Test data for test_read_modify_write_file
+csv_in1 = '''STM, 0006, del this, -9.1, 100, 143.3, -37.987
+STM, 0005, del this, -9, 100, 145.0, foo\r\n'''
+csv_out1 = '''STM, 050006, -9.1, 100, 143.3, -37.987
+STM, 050005, -9999, 100, 145.0, foo\n'''
+
+csv_in2 = '''STM, 0006, -9, -9.1
+STM, 0005, ??, -9
+STM1, -9, -9999, -9\n'''
+csv_out2 = '''STM, 050006, -9.1
+STM, 050005, -9999
+STM1, 05-9, -9999\n'''
+
+csv_in3 = '''STM, 0006, -9, -9.1
+STM2, 0005, -9, -9
+STM1, -9, -9999, -9\r'''
+csv_out3 = '''STM, 050006, -9.1
+STM, 050005, -9999
+STM1, 05-9, -9999\n'''
+
+@pytest.mark.parametrize(
+    'replace_tuple, content, expected',
+       [
+         # 1: Basic test
+         (('d','x'),'a, b, c, d\r\n', 'a, 05b, x\n'),
+         # 2: Multi row
+         (('-9','-9999'), csv_in1, csv_out1 ),
+         # 3: Multi row with multi replacement
+         (('-9','-9999'),csv_in2, csv_out2),
+         # 4: Repeated values and \r
+         (('-9','-9999'),csv_in2, csv_out2),
+         #5: empty file
+         (('foo', 'bar'),'',''),
+       ]
+)
+def test_read_modify_write_file(tmp_path_factory,
+                                metplus_config,
+                                replace_tuple,
+                                content,
+                                expected):
+    config = metplus_config
+    wrapper = TCPairsWrapper(config)
+    tmp_file = os.path.join(tmp_path_factory.mktemp('tc_pairs'), 'tc_test.csv')
+    out_file = os.path.join(tmp_path_factory.mktemp('tc_pairs'), 'tc_out.csv')
+
+    with open(tmp_file, 'w') as f:
+        f.write(content)
+
+    wrapper.read_modify_write_file(tmp_file,'05', replace_tuple,out_file)
+
+    with open(out_file, 'r') as f:
+        actual = f.read()
+    assert actual == expected
+

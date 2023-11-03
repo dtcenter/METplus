@@ -9,7 +9,7 @@ Introduction
 
 This chapter describes how to download and set up METplus Wrappers.
 
-Supported architectures
+Supported Architectures
 =======================
 
 METplus Wrappers was developed on Debian Linux and is supported on this
@@ -20,8 +20,9 @@ The METplus team supports the installation of the METplus components on
 several operational and research high performance computing platforms,
 including those at NCAR, NOAA, and other community machines.
 Pre-built METplus images on DockerHub are also provided.
+See :ref:`metplus-docker` for information on running METplus using Docker.
 
-Programming/scripting languages
+Programming/Scripting Languages
 ===============================
 
 METplus Wrappers is written in Python. It is intended to be a tool
@@ -109,14 +110,14 @@ Cartopy, one of the dependencies of CyclonePlotter, attempts to download shapefi
 
 .. _getcode:
 
-Getting the METplus Wrappers source code
+Getting the METplus Wrappers Source Code
 ========================================
 
 The METplus Wrappers source code is available for download from the public
 GitHub repository. The source code can be retrieved either through a web
 browser or the command line.
 
-Get the source code via Web Browser
+Get the Source Code via Web Browser
 -----------------------------------
 
 -  Create a directory where the METplus Wrappers will be installed
@@ -155,7 +156,7 @@ Tar File::
 -  Uncompress the source code (on Linux/Unix\ *: gunzip* for zip file or
    *tar xvfz* for the tar.gz file)
 
-Get the source code via Command Line
+Get the Source Code via Command Line
 ------------------------------------
 
 - Open a shell terminal
@@ -172,7 +173,7 @@ HTTPS::
 
 .. _obtain_sample_input_data:
 
-Obtain sample input data
+Obtain Sample Input Data
 ========================
 
 The use cases provided with the METplus release have sample input data
@@ -200,7 +201,7 @@ the example use cases, which illustrate how the wrappers work.
     have already been obtained with a previous release.
 
 
-METplus Wrappers directory structure
+METplus Wrappers Directory Structure
 ====================================
 
 The METplus Wrappers source code contains the following directory structure::
@@ -254,7 +255,7 @@ External Components
 
 .. _external-components-gfdl-tracker:
 
-GFDL Tracker (optional)
+GFDL Tracker (Optional)
 -----------------------
 
 - The standalone Geophysical Fluid Dynamics Laboratory (GFDL) vortex tracker
@@ -276,7 +277,7 @@ GFDL Tracker (optional)
     -  Instructions on how to configure and use the GFDL tracker are found here
        https://dtcenter.org/sites/default/files/community-code/gfdl/standalone_tracker_UG_v3.9a.pdf
 
-Disable UserScript wrapper (optional)
+Disable UserScript Wrapper (Optional)
 =====================================
 
 The UserScript wrapper allows any shell command or script to be run as part
@@ -293,7 +294,7 @@ Please note that use cases provided with the METplus repository that utilize
 the UserScript wrapper will fail if attempted to run after it has been
 disabled.
 
-Add ush directory to shell path (optional)
+Add ush Directory to Shell Path (Optional)
 ==========================================
 
 To call the run_metplus.py script from any directory, add the ush directory

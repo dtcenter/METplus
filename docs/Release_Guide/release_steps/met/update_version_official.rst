@@ -1,6 +1,7 @@
-Update Version Number
----------------------
 .. _update_version_official:
+
+Update Version Number
+^^^^^^^^^^^^^^^^^^^^^
   
 * Update the version in the code and documentation:
   

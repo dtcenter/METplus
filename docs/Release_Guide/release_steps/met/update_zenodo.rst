@@ -1,5 +1,5 @@
 Update Zenodo
--------------
+^^^^^^^^^^^^^
 
 In the `MET GitHub repository <https://github.com/dtcenter/MET>`_
 scroll down to the README file and check the

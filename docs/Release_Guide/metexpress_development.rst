@@ -1,5 +1,5 @@
 METexpress Development Release
-==============================
+------------------------------
 
 .. |projectRepo| replace:: METexpress
 
@@ -11,3 +11,4 @@ Create a new vX.Y.Z-betaN or vX.Y.Z-rcN development release from the develop bra
 .. include:: release_steps/metexpress/merge_feature_branch.rst
 .. include:: release_steps/metexpress/update_dtc_website.rst
 .. include:: release_steps/metexpress/finalize_release_on_github_development.rst
+.. include:: release_steps/release_acceptance_testing.rst

@@ -1,3 +1,5 @@
+.. _METplus_glossary:
+
 ******************************
 METplus Configuration Glossary
 ******************************
@@ -2287,7 +2289,15 @@ METplus Configuration Glossary
    LOG_METPLUS
      Path to the METplus log file. Control the timestamp appended to the
      filename with :term:`LOG_TIMESTAMP_TEMPLATE`.
-     Set this variable to an empty string to turn off all logging.
+     Set this variable to an empty string or set :term:`LOG_TO_TERMINAL_ONLY`
+     = True to turn off all file logging and write all logs to the screen.
+
+     | *Used by:*  All
+
+   LOG_TO_TERMINAL_ONLY
+     Set to True to skip writing any log files and instead send all log output
+     to the screen. Sets :term:`LOG_METPLUS` to an empty string if True.
+     Defaults to False.
 
      | *Used by:*  All
 
@@ -3391,7 +3401,7 @@ METplus Configuration Glossary
    POINT_STAT_GRID
      Specify the grid to use with the MET point_stat tool.
 
-     .. note:: please use :term:`POINT_STAT_MASK_GRID`
+     .. warning:: **DEPRECATED:** please use :term:`POINT_STAT_MASK_GRID`
 
      | *Used by:*  PointStat
 
@@ -3418,12 +3428,12 @@ METplus Configuration Glossary
    POINT_STAT_POLY
      Specify a polygon to use with the MET PointStat tool.
 
-     .. note:: please use :term:`POINT_STAT_MASK_POLY`
+     .. warning:: **DEPRECATED:** Please use :term:`POINT_STAT_MASK_POLY`
 
      | *Used by:*  PointStat
 
    PB2NC_POLY
-     .. note:: please use :term:`PB2NC_MASK_POLY`
+     .. warning:: **DEPRECATED:** Please use :term:`PB2NC_MASK_POLY`
 
      | *Used by:*  PB2NC
 
@@ -10392,6 +10402,11 @@ METplus Configuration Glossary
 
      | *Used by:* TCDiag
 
+   TC_DIAG_ONE_TIME_PER_FILE_FLAG
+     Specify the value for 'one_time_per_file_flag' in the MET configuration file for TCDiag.
+
+     | *Used by:* TCDiag
+
    TC_DIAG_NC_RNG_AZI_FLAG
      Specify the value for 'nc_rng_azi_flag' in the MET configuration file for TCDiag.
 
@@ -11108,3 +11123,8 @@ METplus Configuration Glossary
      See :term:`SKIP_VALID_TIMES` for formatting information.
 
      | *Used by:* UserScript
+
+   GRID_STAT_CAT_THRESH
+     Specify the value for 'cat_thresh' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat

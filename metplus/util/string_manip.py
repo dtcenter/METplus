@@ -570,6 +570,33 @@ def find_indices_in_config_section(regex, config, sec='config',
     return indices
 
 
+def get_log_path(config, logfile=None):
+    """!Returns the location of where the command output will be sent.
+       The METplus log, the MET log, or tty.
+
+    @param config METplusConfig object to read
+    @param logfile file name to use if logging to a separate file
+    @returns Log file path or None if logging to terminal
+    """
+    # if LOG_METPLUS is unset or empty, log to terminal
+    metplus_log = config.getstr('config', 'LOG_METPLUS', '')
+    if not metplus_log:
+        return None
+
+    # return METplus log file if logging all output there
+    if config.getbool('config', 'LOG_MET_OUTPUT_TO_METPLUS') or logfile is None:
+        return metplus_log
+
+    log_path = os.path.join(config.getdir('LOG_DIR'), logfile)
+
+    # add log timestamp to log filename if set
+    log_timestamp = config.getstr('config', 'LOG_TIMESTAMP', '')
+    if log_timestamp:
+        log_path = f'{log_path}.{log_timestamp}'
+
+    return log_path
+
+
 def get_logfile_info(config):
     """!Get path to log file from LOG_METPLUS config variable or return a
     useful message if it is not set to instruct users how to set it.
@@ -577,6 +604,8 @@ def get_logfile_info(config):
     @param config METplusConfig object to read LOG_METPLUS from
     @returns path to log file or message if unset
     """
+    if config.getbool('config', 'LOG_TO_TERMINAL_ONLY'):
+        return 'Set LOG_TO_TERMINAL_ONLY=False to write logs to a file'
     log_file = config.getstr('config', 'LOG_METPLUS', '')
     return log_file if log_file else 'Set LOG_METPLUS to write logs to a file'
 

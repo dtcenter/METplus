@@ -291,19 +291,23 @@ def _set_logvars(config):
     # add LOG_TIMESTAMP to the final configuration file
     config.set('config', 'LOG_TIMESTAMP', log_filenametimestamp)
 
-    metplus_log = config.strinterp(
-        'config',
-        '{LOG_METPLUS}',
-        LOG_TIMESTAMP_TEMPLATE=log_filenametimestamp
-    )
-
-    # add log directory to log file path if only filename was provided
-    if metplus_log:
-        if os.path.basename(metplus_log) == metplus_log:
-            metplus_log = os.path.join(config.getdir('LOG_DIR'), metplus_log)
-        print('Logging to %s' % metplus_log)
+    if config.getbool('config', 'LOG_TO_TERMINAL_ONLY'):
+        metplus_log = ''
     else:
+        metplus_log = config.strinterp(
+            'config',
+            '{LOG_METPLUS}',
+            LOG_TIMESTAMP_TEMPLATE=log_filenametimestamp
+        )
+
+        # add log directory to log file path if only filename was provided
+        if metplus_log and os.path.basename(metplus_log) == metplus_log:
+            metplus_log = os.path.join(config.getdir('LOG_DIR'), metplus_log)
+
+    if not metplus_log:
         print('Logging to terminal only')
+    else:
+        print('Logging to %s' % metplus_log)
 
     # set LOG_METPLUS with timestamp substituted
     config.set('config', 'LOG_METPLUS', metplus_log)
@@ -342,6 +346,13 @@ def get_logger(config):
               f' {log_level_terminal}')
         sys.exit(1)
 
+    # create log formatter from config settings
+    formatter = METplusLogFormatter(config)
+
+    # do not send logs up to root logger handlers
+    logger.propagate = False
+
+    # set up logging file handler if logging to a file
     metpluslog = config.getstr('config', 'LOG_METPLUS', '')
     if not metpluslog:
         logger.setLevel(log_level_terminal_val)
@@ -355,23 +366,17 @@ def get_logger(config):
         if not os.path.exists(dir_name):
             mkdir_p(dir_name)
 
-        # do not send logs up to root logger handlers
-        logger.propagate = False
-
-        # create log formatter from config settings
-        formatter = METplusLogFormatter(config)
-
         # set up the file logging
         file_handler = logging.FileHandler(metpluslog, mode='a')
         file_handler.setFormatter(formatter)
         file_handler.setLevel(log_level_val)
         logger.addHandler(file_handler)
 
-        # set up console logging
-        stream_handler = logging.StreamHandler()
-        stream_handler.setFormatter(formatter)
-        stream_handler.setLevel(log_level_terminal_val)
-        logger.addHandler(stream_handler)
+    # set up console logging
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(formatter)
+    stream_handler.setLevel(log_level_terminal_val)
+    logger.addHandler(stream_handler)
 
     # set add the logger to the config
     config.logger = logger

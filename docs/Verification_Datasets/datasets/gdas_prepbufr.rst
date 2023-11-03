@@ -1,7 +1,7 @@
 .. _vx-data-gdas-prepbufr:
 
 GDAS Prepbufr Data
-------------------
+==================
 
 Description
   Global Data Assimilation System (GDAS) prepbufr files contain a variety of upper-air and surface weather observations from around the globe, including radiosonde, profiler and US radar derived winds, land and marine surface reports, aircraft reports, and more.

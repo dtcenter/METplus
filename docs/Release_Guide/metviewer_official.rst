@@ -1,5 +1,5 @@
 METviewer Official Release
-==========================
+--------------------------
 
 .. |projectRepo| replace:: METviewer
 

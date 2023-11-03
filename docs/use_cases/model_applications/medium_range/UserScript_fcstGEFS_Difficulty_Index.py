@@ -13,30 +13,35 @@ _Difficulty_Index.conf
 # --------------------
 #
 # This use case calls the UserScript wrapper to run a user provided script that calculates 
-# the difficulty index for windspeed. This use case allows for the user to change a variety 
-# of variables needed to run the difficulty index (i.e. threshold start and units) so that
+# the difficulty index for wind speed. This use case allows for the user to change a variety 
+# of variables needed to run the difficulty index (i.e. threshold start and units) so that the
 # user can run the script at different thresholds without needing to alter the code. This 
 # script run by the use case uses METcalcpy to provide the difficulty index calculation and
 # METplotpy to provide the plotting capability. 
 #
 # The difficulty index was developed by the Naval Research Lab (NRL). The overall aim of the
 # difficulty index is to graphically represent the expected difficulty of a decision based on 
-# a set of forecasts (ensemble) of, e.g., significant wave height as a function of space and 
+# a set of forecasts (ensemble) of, e.g., wind speed as a function of space and 
 # time. There are two basic factors that can make a decision difficult. The first factor is the 
-# proximity of the ensemble mean forecast to a decision threshold, e.g. 12 ft seas. If the 
+# proximity of the ensemble mean forecast to a decision threshold, e.g. 34 knot winds. If the 
 # ensemble mean is either much lower or much higher than the threshold, the decision is easier; 
 # if it is closer to the threshold, the decision is harder. The second factor is the forecast 
 # precision, or ensemble spread. The greater the spread around the ensemble mean, the more likely 
 # it is that there will be ensemble members both above and below the decision threshold, making 
 # the decision harder. (A third factor that we will not address here is undiagnosed systematic 
 # error, which adds uncertainty in a similar way to ensemble spread.) The challenge is combining 
-# these factors into a continuous function that allows the user to assess relative risk. 
+# these factors into a continuous function that allows the user to assess relative risk.
+#
+# Additional details on the computation of the Difficulty Index can be found in the `METcalcpy 
+# documentation <https://metcalcpy.readthedocs.io/en/latest/Users_Guide/difficulty_index.html>`_ 
+# and more information on plotting difficulty index can be found in the `METplotpy documentation
+# <https://metplotpy.readthedocs.io/en/latest/Users_Guide/difficulty_index.html>`_.
 
 ##############################################################################
 # Datasets
 # --------
 #
-# This use case calculates the difficulty index for windspeed using NCEP 
+# This use case calculates the difficulty index for wind speed using NCEP 
 # GEFS ensemble data. The data is composed of 30 ensemble members that 
 # have been compiled and compressed into one .npz file. 
 # 
@@ -172,7 +177,7 @@ _Difficulty_Index.conf
 #
 # wndspd_GEFS_NorthPac_5dy_30mem_difficulty_indexTHRESH_00_kn.png
 # 
-# Where THRESH isa number between DIFF_INDEX_SAVE_THRESH_START and 
+# Where THRESH is a number between DIFF_INDEX_SAVE_THRESH_START and 
 # DIFF_INDEX_SAVE_THRESH_STOP which are defined in UserScript_fcstGEFS_Difficulty_Index.conf.
 # 
 
