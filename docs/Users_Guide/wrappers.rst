@@ -3291,6 +3291,80 @@ ${METPLUS_REGRID_DICT}
    * - :term:`GRID_STAT_REGRID_CENSOR_VAL`
      - regrid.censor_val
 
+${METPLUS_CENSOR_THRESH}
+""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_CENSOR_THRESH`
+     - censor_thresh
+
+${METPLUS_CENSOR_VAL}
+"""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_CENSOR_VAL`
+     - censor_val
+
+.. _grid-stat-met-conf-cat-thresh:
+
+${METPLUS_CAT_THRESH}
+"""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_CAT_THRESH`
+     - cat_thresh
+
+${METPLUS_NC_PAIRS_VAR_NAME}
+""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_NC_PAIRS_VAR_NAME`
+     - nc_pairs_var_name
+
+${METPLUS_HSS_EC_VALUE}
+"""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_HSS_EC_VALUE`
+     - hss_ec_value
+
+${METPLUS_FCST_FILE_TYPE}
+"""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`FCST_GRID_STAT_FILE_TYPE`
+     - fcst.file_type
+
 ${METPLUS_FCST_FIELD}
 """""""""""""""""""""
 
@@ -3311,8 +3385,8 @@ ${METPLUS_FCST_FIELD}
 
 .. note:: For more information on controlling the forecast field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
 
-${METPLUS_FCST_FILE_TYPE}
-"""""""""""""""""""""""""
+${METPLUS_OBS_FILE_TYPE}
+""""""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -3320,8 +3394,8 @@ ${METPLUS_FCST_FILE_TYPE}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`FCST_GRID_STAT_FILE_TYPE`
-     - fcst.file_type
+   * - :term:`OBS_GRID_STAT_FILE_TYPE`
+     - obs.file_type
 
 ${METPLUS_OBS_FIELD}
 """"""""""""""""""""
@@ -3342,18 +3416,6 @@ ${METPLUS_OBS_FIELD}
      - n/a
 
 .. note:: For more information on controlling the observation field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
-
-${METPLUS_OBS_FILE_TYPE}
-""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`OBS_GRID_STAT_FILE_TYPE`
-     - obs.file_type
 
 ${METPLUS_CLIMO_MEAN_DICT}
 """"""""""""""""""""""""""
@@ -3415,6 +3477,26 @@ ${METPLUS_CLIMO_STDEV_DICT}
    * - :term:`GRID_STAT_CLIMO_STDEV_HOUR_INTERVAL`
      - climo_stdev.hour_interval
 
+.. _grid-stat-met-conf-climo-cdf:
+
+${METPLUS_CLIMO_CDF_DICT}
+"""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_CLIMO_CDF_BINS`
+     - climo_cdf.cdf_bins
+   * - :term:`GRID_STAT_CLIMO_CDF_CENTER_BINS`
+     - climo_cdf.center_bins
+   * - :term:`GRID_STAT_CLIMO_CDF_WRITE_BINS`
+     - climo_cdf.write_bins
+   * - :term:`GRID_STAT_CLIMO_CDF_DIRECT_PROB`
+     - climo_cdf.direct_prob
+
 ${METPLUS_MASK_DICT}
 """"""""""""""""""""
 
@@ -3430,6 +3512,26 @@ ${METPLUS_MASK_DICT}
      - mask.poly
 
 .. note:: Since the default value in the MET config file for 'grid' is grid = [ "FULL" ];, setting GRID_STAT_MASK_GRID to an empty string will result in a value of grid = []; in the MET config file.
+
+${METPLUS_INTERP_DICT}
+""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_INTERP_FIELD`
+     - interp.field
+   * - :term:`GRID_STAT_INTERP_VLD_THRESH`
+     - interp.vld_thresh
+   * - :term:`GRID_STAT_INTERP_SHAPE`
+     - interp.shape
+   * - :term:`GRID_STAT_INTERP_TYPE_METHOD`
+     - interp.type.method
+   * - :term:`GRID_STAT_INTERP_TYPE_WIDTH`
+     - interp.type.width
 
 ${METPLUS_NBRHD_SHAPE}
 """"""""""""""""""""""
@@ -3467,8 +3569,8 @@ ${METPLUS_NBRHD_COV_THRESH}
    * - :term:`GRID_STAT_NEIGHBORHOOD_COV_THRESH`
      - nbrhd.cov_thresh
 
-${METPLUS_OUTPUT_PREFIX}
-""""""""""""""""""""""""
+${METPLUS_FOURIER_DICT}
+"""""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -3476,25 +3578,13 @@ ${METPLUS_OUTPUT_PREFIX}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`GRID_STAT_OUTPUT_PREFIX`
-     - output_prefix
+   * - :term:`GRID_STAT_FOURIER_WAVE_1D_BEG`
+     - fourier.wave_1d_beg
+   * - :term:`GRID_STAT_FOURIER_WAVE_1D_END`
+     - fourier.wave_1d_end
 
-${METPLUS_MET_CONFIG_OVERRIDES}
-"""""""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`GRID_STAT_MET_CONFIG_OVERRIDES`
-     - n/a
-
-.. _grid-stat-met-conf-climo-cdf:
-
-${METPLUS_CLIMO_CDF_DICT}
-"""""""""""""""""""""""""
+${METPLUS_DISTANCE_MAP_DICT}
+""""""""""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -3502,14 +3592,16 @@ ${METPLUS_CLIMO_CDF_DICT}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`GRID_STAT_CLIMO_CDF_BINS`
-     - climo_cdf.cdf_bins
-   * - :term:`GRID_STAT_CLIMO_CDF_CENTER_BINS`
-     - climo_cdf.center_bins
-   * - :term:`GRID_STAT_CLIMO_CDF_WRITE_BINS`
-     - climo_cdf.write_bins
-   * - :term:`GRID_STAT_CLIMO_CDF_DIRECT_PROB`
-     - climo_cdf.direct_prob
+   * - :term:`GRID_STAT_DISTANCE_MAP_BADDELEY_P`
+     - distance_map.baddeley_p
+   * - :term:`GRID_STAT_DISTANCE_MAP_BADDELEY_MAX_DIST`
+     - distance_map.baddeley_max_dist
+   * - :term:`GRID_STAT_DISTANCE_MAP_FOM_ALPHA`
+     - distance_map.fom_alpha
+   * - :term:`GRID_STAT_DISTANCE_MAP_ZHU_WEIGHT`
+     - distance_map.zhu_weight
+   * - :term:`GRID_STAT_DISTANCE_MAP_BETA_VALUE_N`
+     - distance_map.beta_value(n)
 
 ${METPLUS_OUTPUT_FLAG_DICT}
 """""""""""""""""""""""""""
@@ -3599,8 +3691,8 @@ ${METPLUS_NC_PAIRS_FLAG_DICT}
    * - :term:`GRID_STAT_NC_PAIRS_FLAG_SEEPS`
      - nc_pairs_flag.seeps
 
-${METPLUS_INTERP_DICT}
-""""""""""""""""""""""
+${METPLUS_SEEPS_P1_THRESH}
+""""""""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -3608,28 +3700,8 @@ ${METPLUS_INTERP_DICT}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`GRID_STAT_INTERP_FIELD`
-     - interp.field
-   * - :term:`GRID_STAT_INTERP_VLD_THRESH`
-     - interp.vld_thresh
-   * - :term:`GRID_STAT_INTERP_SHAPE`
-     - interp.shape
-   * - :term:`GRID_STAT_INTERP_TYPE_METHOD`
-     - interp.type.method
-   * - :term:`GRID_STAT_INTERP_TYPE_WIDTH`
-     - interp.type.width
-
-${METPLUS_NC_PAIRS_VAR_NAME}
-""""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`GRID_STAT_NC_PAIRS_VAR_NAME`
-     - nc_pairs_var_name
+   * - :term:`GRID_STAT_SEEPS_P1_THRESH`
+     - seeps_p1_thresh
 
 ${METPLUS_GRID_WEIGHT_FLAG}
 """""""""""""""""""""""""""
@@ -3643,53 +3715,7 @@ ${METPLUS_GRID_WEIGHT_FLAG}
    * - :term:`GRID_STAT_GRID_WEIGHT_FLAG`
      - grid_weight_flag
 
-${METPLUS_HSS_EC_VALUE}
-"""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`GRID_STAT_HSS_EC_VALUE`
-     - hss_ec_value
-
-${METPLUS_DISTANCE_MAP_DICT}
-""""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`GRID_STAT_DISTANCE_MAP_BADDELEY_P`
-     - distance_map.baddeley_p
-   * - :term:`GRID_STAT_DISTANCE_MAP_BADDELEY_MAX_DIST`
-     - distance_map.baddeley_max_dist
-   * - :term:`GRID_STAT_DISTANCE_MAP_FOM_ALPHA`
-     - distance_map.fom_alpha
-   * - :term:`GRID_STAT_DISTANCE_MAP_ZHU_WEIGHT`
-     - distance_map.zhu_weight
-   * - :term:`GRID_STAT_DISTANCE_MAP_BETA_VALUE_N`
-     - distance_map.beta_value(n)
-
-${METPLUS_FOURIER_DICT}
-"""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`GRID_STAT_FOURIER_WAVE_1D_BEG`
-     - fourier.wave_1d_beg
-   * - :term:`GRID_STAT_FOURIER_WAVE_1D_END`
-     - fourier.wave_1d_end
-
-${METPLUS_CENSOR_THRESH}
+${METPLUS_OUTPUT_PREFIX}
 """"""""""""""""""""""""
 
 .. list-table::
@@ -3698,25 +3724,11 @@ ${METPLUS_CENSOR_THRESH}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`GRID_STAT_CENSOR_THRESH`
-     - censor_thresh
+   * - :term:`GRID_STAT_OUTPUT_PREFIX`
+     - output_prefix
 
-${METPLUS_CENSOR_VAL}
-"""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`GRID_STAT_CENSOR_VAL`
-     - censor_val
-
-.. _grid-stat-met-conf-cat-thresh:
-
-${METPLUS_CAT_THRESH}
-"""""""""""""""""""""
+${METPLUS_MET_CONFIG_OVERRIDES}
+"""""""""""""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -3724,20 +3736,8 @@ ${METPLUS_CAT_THRESH}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`GRID_STAT_CAT_THRESH`
-     - cat_thresh
-
-${METPLUS_SEEPS_P1_THRESH}
-""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`GRID_STAT_SEEPS_P1_THRESH`
-     - seeps_p1_thresh
+   * - :term:`GRID_STAT_MET_CONFIG_OVERRIDES`
+     - n/a
 
 
 .. _ioda2nc_wrapper:
