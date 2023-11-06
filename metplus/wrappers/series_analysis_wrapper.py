@@ -978,8 +978,11 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         num = str(len(files_of_interest))
 
         data_type = 'BOTH' if self.c_dict['USING_BOTH'] else 'FCST'
-        template = os.path.join(self.c_dict[f'{data_type}_INPUT_DIR'],
-                                self.c_dict[f'{data_type}_INPUT_TEMPLATE'])
+
+        # handle multiple templates
+        templates = []
+        for template in self.c_dict[f'{data_type}_INPUT_TEMPLATE'].split(','):
+            templates.append(os.path.join(self.c_dict[f'{data_type}_INPUT_DIR'], template.strip()))
 
         smallest_fcst = 99999999
         largest_fcst = -99999999
@@ -987,11 +990,16 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         end = None
         for filepath in files_of_interest:
             filepath = filepath.strip()
-            file_time_info = parse_template(template,
-                                            filepath,
-                                            self.logger)
-            if not file_time_info:
+            found = False
+            for template in templates:
+                file_time_info = parse_template(template, filepath, self.logger)
+                if file_time_info:
+                    found = True
+                    break
+
+            if not found:
                 continue
+
             lead = ti_get_seconds_from_lead(file_time_info.get('lead'),
                                             file_time_info.get('valid'))
             if lead < smallest_fcst:
@@ -1058,11 +1066,15 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         field_list = []
         # loop through fcst and obs files to extract time info
-        template = os.path.join(self.c_dict[f'{other}_INPUT_DIR'],
-                                self.c_dict[f'{other}_INPUT_TEMPLATE'])
+
+        # handle multiple templates
+        templates = []
+        for template in self.c_dict[f'{other}_INPUT_TEMPLATE'].split(','):
+            templates.append(os.path.join(self.c_dict[f'{other}_INPUT_DIR'], template.strip()))
+
         # for each file apply time info to field info and add to list
         for file_time_info in self._get_times_from_file_list(file_list_path,
-                                                             template):
+                                                             templates):
             level = do_string_sub(var_info[f'{data_type}_level'],
                                   **file_time_info)
             field = self.get_field_info(
@@ -1083,12 +1095,17 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                    for item in get_tags(level))
 
     @staticmethod
-    def _get_times_from_file_list(file_path, template):
+    def _get_times_from_file_list(file_path, templates):
         with open(file_path, 'r') as file_handle:
             file_list = file_handle.read().splitlines()[1:]
 
         for file_name in file_list:
-            file_time_info = parse_template(template, file_name)
-            if not file_time_info:
+            found = False
+            for template in templates:
+                file_time_info = parse_template(template, file_name)
+                if file_time_info:
+                    found = True
+                    break
+            if not found:
                 continue
             yield file_time_info
