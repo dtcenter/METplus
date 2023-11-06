@@ -936,30 +936,6 @@ ${METPLUS_OBS_QUALITY_EXC}
    * - :term:`ENSEMBLE_STAT_OBS_QUALITY_EXC`
      - obs_quality_exc
 
-${METPLUS_ENS_MEMBER_IDS}
-"""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`ENSEMBLE_STAT_ENS_MEMBER_IDS`
-     - ens_member_ids
-
-${METPLUS_CONTROL_ID}
-"""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`ENSEMBLE_STAT_CONTROL_ID`
-     - control_id
-
 ${METPLUS_MET_CONFIG_OVERRIDES}
 """""""""""""""""""""""""""""""
 
@@ -1388,6 +1364,30 @@ ${METPLUS_ENS_FIELD}
 
 .. note:: For more information on controlling the forecast field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
 
+${METPLUS_ENS_MEMBER_IDS}
+"""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_ENS_MEMBER_IDS`
+     - ens_member_ids
+
+${METPLUS_CONTROL_ID}
+"""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_CONTROL_ID`
+     - control_id
+
 ${METPLUS_NBRHD_PROB_DICT}
 """"""""""""""""""""""""""
 
@@ -1524,6 +1524,19 @@ ${METPLUS_ENSEMBLE_FLAG_DICT}
    * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO_CDP`
      - ensemble_flag.climo_cdp
 
+${METPLUS_MET_CONFIG_OVERRIDES}
+"""""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_MET_CONFIG_OVERRIDES`
+     - n/a
+
+
 ${METPLUS_ENS_MEMBER_IDS}
 """""""""""""""""""""""""
 
@@ -1547,19 +1560,6 @@ ${METPLUS_CONTROL_ID}
      - MET Config File
    * - :term:`GEN_ENS_PROD_CONTROL_ID`
      - control_id
-
-${METPLUS_MET_CONFIG_OVERRIDES}
-"""""""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`GEN_ENS_PROD_MET_CONFIG_OVERRIDES`
-     - n/a
-
 
 .. _gen_vx_mask_wrapper:
 
