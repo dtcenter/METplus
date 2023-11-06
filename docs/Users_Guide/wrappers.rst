@@ -1320,8 +1320,8 @@ ${METPLUS_ENS_FILE_TYPE}
    * - :term:`GEN_ENS_PROD_ENS_FILE_TYPE`
      - ens.file_type
 
-${METPLUS_ENS_ENS_THRESH}
-"""""""""""""""""""""""""
+${METPLUS_ENS_THRESH}
+"""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -1332,8 +1332,8 @@ ${METPLUS_ENS_ENS_THRESH}
    * - :term:`GEN_ENS_PROD_ENS_THRESH`
      - ens.ens_thresh
 
-${METPLUS_ENS_VLD_THRESH}
-"""""""""""""""""""""""""
+${METPLUS_ENS_THRESH}
+"""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -1373,7 +1373,7 @@ ${METPLUS_ENS_MEMBER_IDS}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`ENSEMBLE_STAT_ENS_MEMBER_IDS`
+   * - :term:`GEN_ENS_PROD_ENS_MEMBER_IDS`
      - ens_member_ids
 
 ${METPLUS_CONTROL_ID}
@@ -1385,7 +1385,7 @@ ${METPLUS_CONTROL_ID}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`ENSEMBLE_STAT_CONTROL_ID`
+   * - :term:`GEN_ENS_PROD_CONTROL_ID`
      - control_id
 
 ${METPLUS_NBRHD_PROB_DICT}
@@ -1535,31 +1535,6 @@ ${METPLUS_MET_CONFIG_OVERRIDES}
      - MET Config File
    * - :term:`GEN_ENS_PROD_MET_CONFIG_OVERRIDES`
      - n/a
-
-
-${METPLUS_ENS_MEMBER_IDS}
-"""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`GEN_ENS_PROD_ENS_MEMBER_IDS`
-     - ens_member_ids
-
-${METPLUS_CONTROL_ID}
-"""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`GEN_ENS_PROD_CONTROL_ID`
-     - control_id
 
 .. _gen_vx_mask_wrapper:
 
