@@ -627,8 +627,8 @@ ${METPLUS_OBS_THRESH}
    * - :term:`ENSEMBLE_STAT_OBS_THRESH`
      - obs_thresh
 
- ${METPLUS_OBS_QUALITY_INC}
-"""""""""""""""""""""""""""
+${METPLUS_OBS_QUALITY_INC}
+""""""""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
