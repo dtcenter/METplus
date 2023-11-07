@@ -1061,6 +1061,21 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         return fcst_fields, obs_fields
 
     def _get_field_list(self, data_type, var_info, time_info, file_list_path):
+        """!Get formatted field information in a list.
+        If no time (init/valid/lead) filename template tags were found in the
+        level value or if the time info contains all init/valid/lead values
+        (none are wildcards), then return a single formatted field item.
+        Otherwise, loop through the file list files and use the input template
+        to extract time information to use for each field entry.
+        The latter is done when processing one data type that has individual
+        files for each time and one data type has a single file with all times.
+
+        @param data_type type of data to process, e.g. fcst or obs
+        @param var_info dictionary containing info to format
+        @param time_info dictionary containing time information
+        @param file_list_path path to file list file to parse
+        @returns list containing formatted field info to pass to MET config
+        """
         other = 'OBS' if data_type == 'fcst' else 'FCST'
         # if there are no time tags (init/valid/lead) in the field level
         # or if init, valid, and lead have values in time_info,
@@ -1070,13 +1085,13 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             return self._get_field_sub_level(data_type, var_info, time_info)
 
         field_list = []
-        # loop through fcst and obs files to extract time info
 
         # handle multiple templates
         templates = []
         for template in self.c_dict[f'{other}_INPUT_TEMPLATE'].split(','):
             templates.append(os.path.join(self.c_dict[f'{other}_INPUT_DIR'], template.strip()))
 
+        # loop through fcst/obs files to extract time info
         # for each file apply time info to field info and add to list
         for file_time_info in self._get_times_from_file_list(file_list_path,
                                                              templates):
@@ -1087,17 +1102,25 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         return field_list
 
     @staticmethod
-    def _has_time_tag(level):
+    def _has_time_tag(string_to_parse):
+        """!Get all filename template tags from raw string and check if any of
+        the time info tags (init/valid/lead) were found.
+
+        @param string_to_parse string to search for filename template tags
+        @returns True if init, valid, or lead tags, e.g. {lead?fmt=%H},
+         were found in string. False if none of them were found.
+        """
         return any(item in ['init', 'valid', 'lead']
-                   for item in get_tags(level))
+                   for item in get_tags(string_to_parse))
 
     def _get_field_sub_level(self, data_type, var_info, time_dict):
         """!Get formatted field information for data type, substituting time
         information into level value.
 
-        @param data_type  type of data to find, e.g. fcst or obs
+        @param data_type type of data to find, e.g. fcst or obs
         @param var_info dictionary containing info to format
         @param time_dict dictionary containing time information
+        @returns string with formatted field info or None
         """
         level = do_string_sub(var_info[f'{data_type}_level'], **time_dict)
         return self.get_field_info(
@@ -1110,6 +1133,14 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
     @staticmethod
     def _get_times_from_file_list(file_path, templates):
+        """!Generator that yields time info dictionaries.
+        Loops through file paths found in text file and use list of filename
+        templates to parse time information from each file.
+
+        @param file_path path to file list file to parse
+        @param templates list of filename templates to use to parse time info
+        out of file paths found in file_path file
+        """
         with open(file_path, 'r') as file_handle:
             file_list = file_handle.read().splitlines()[1:]
 
