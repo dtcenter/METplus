@@ -1043,13 +1043,6 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         fcst_field_list = self._get_field_list('fcst', var_info, obs_path)
         obs_field_list = self._get_field_list('obs', var_info, fcst_path)
 
-        # if the field lists could not be built by using the opposite (fcst/obs) file list,
-        # then try to build them using its own file list
-        if not fcst_field_list:
-            fcst_field_list = self._get_field_list('fcst', var_info, fcst_path, other='FCST')
-        if not obs_field_list:
-            obs_field_list = self._get_field_list('obs', var_info, obs_path, other='OBS')
-
         if not fcst_field_list or not obs_field_list:
             return None, None
 
@@ -1058,10 +1051,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         return fcst_fields, obs_fields
 
-    def _get_field_list(self, data_type, var_info, file_list_path, other=None):
-        if other is None:
-            other = 'OBS' if data_type == 'fcst' else 'FCST'
-
+    def _get_field_list(self, data_type, var_info, file_list_path):
+        other = 'OBS' if data_type == 'fcst' else 'FCST'
         # check if time filename template tags are used in field level
         if not self._has_time_tag(var_info[f'{data_type}_level']):
             # get field info for a single field to pass to the MET config file
