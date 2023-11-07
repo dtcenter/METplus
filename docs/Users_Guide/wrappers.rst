@@ -4567,7 +4567,7 @@ ${METPLUS_FCST_CONV_THRESH}
    * - :term:`MODE_FCST_CONV_THRESH`
      - fcst.conv_thresh
 
- ${METPLUS_FCST_VLD_THRESH}
+${METPLUS_FCST_VLD_THRESH}
 """"""""""""""""""""""""""
 
 .. list-table::
@@ -4732,7 +4732,7 @@ ${METPLUS_OBS_CONV_THRESH}
    * - :term:`OBS_MODE_CONV_THRESH`
      - obs.conv_thresh
 
- ${METPLUS_OBS_VLD_THRESH}
+${METPLUS_OBS_VLD_THRESH}
 """""""""""""""""""""""""
 
 .. list-table::
@@ -4852,7 +4852,7 @@ ${METPLUS_MATCH_FLAG}
    * - :term:`MODE_MATCH_FLAG`
      - match_flag
 
- ${METPLUS_MAX_CENTROID_DIST}
+${METPLUS_MAX_CENTROID_DIST}
 """"""""""""""""""""""""""""
 
 .. list-table::
@@ -4864,7 +4864,7 @@ ${METPLUS_MATCH_FLAG}
    * - :term:`MODE_MAX_CENTROID_DIST`
      - max_centroid_dist
 
- ${METPLUS_MASK_DICT}
+${METPLUS_MASK_DICT}
 """"""""""""""""""""
 
 .. list-table::
@@ -4882,7 +4882,7 @@ ${METPLUS_MATCH_FLAG}
    * - :term:`MODE_MASK_POLY_FLAG`
      - mask.poly_flag
 
- ${METPLUS_WEIGHT_DICT}
+${METPLUS_WEIGHT_DICT}
 """"""""""""""""""""""
 
 .. list-table::
