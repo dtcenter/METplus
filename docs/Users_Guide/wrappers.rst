@@ -3805,18 +3805,6 @@ ${METPLUS_MESSAGE_TYPE}
    * - :term:`IODA2NC_MESSAGE_TYPE`
      - message_type
 
-${METPLUS_MESSAGE_TYPE_MAP}
-"""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`IODA2NC_MESSAGE_TYPE_MAP`
-     - message_type_map
-
 ${METPLUS_MESSAGE_TYPE_GROUP_MAP}
 """""""""""""""""""""""""""""""""
 
@@ -3828,6 +3816,18 @@ ${METPLUS_MESSAGE_TYPE_GROUP_MAP}
      - MET Config File
    * - :term:`IODA2NC_MESSAGE_TYPE_GROUP_MAP`
      - message_type_group_map
+
+${METPLUS_MESSAGE_TYPE_MAP}
+"""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`IODA2NC_MESSAGE_TYPE_MAP`
+     - message_type_map
 
 ${METPLUS_STATION_ID}
 """""""""""""""""""""
