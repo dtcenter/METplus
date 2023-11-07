@@ -627,7 +627,6 @@ ${METPLUS_OBS_THRESH}
    * - :term:`ENSEMBLE_STAT_OBS_THRESH`
      - obs_thresh
 
-       
  ${METPLUS_OBS_QUALITY_INC}
 """"""""""""""""""""""""""
 
@@ -640,6 +639,7 @@ ${METPLUS_OBS_THRESH}
    * - :term:`ENSEMBLE_STAT_OBS_QUALITY_INC`
      - obs_quality_inc
 
+       
 ${METPLUS_OBS_QUALITY_EXC}
 """"""""""""""""""""""""""
 
@@ -651,7 +651,6 @@ ${METPLUS_OBS_QUALITY_EXC}
      - MET Config File
    * - :term:`ENSEMBLE_STAT_OBS_QUALITY_EXC`
      - obs_quality_exc
-
 
 ${METPLUS_DUPLICATE_FLAG}
 """""""""""""""""""""""""
