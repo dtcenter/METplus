@@ -549,6 +549,7 @@ ${METPLUS_VLD_THRESH}
      - MET Config File
    * - :term:`ENSEMBLE_STAT_VLD_THRESH`
      - fcst.vld_thresh
+
 ${METPLUS_FCST_FIELD}
 """""""""""""""""""""
 
@@ -601,6 +602,7 @@ ${METPLUS_OBS_FIELD}
 
 .. note:: For more information on controlling the observation field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
 
+	  
 ${METPLUS_MESSAGE_TYPE}
 """""""""""""""""""""""
 
@@ -625,6 +627,7 @@ ${METPLUS_OBS_THRESH}
    * - :term:`ENSEMBLE_STAT_OBS_THRESH`
      - obs_thresh
 
+       
  ${METPLUS_OBS_QUALITY_INC}
 """"""""""""""""""""""""""
 
