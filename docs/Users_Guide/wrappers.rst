@@ -10382,8 +10382,8 @@ ${METPLUS_INIT_END}
    * - :term:`TC_STAT_INIT_END`
      - init_end
 
-${METPLUS_INIT_INCLUDE}
-"""""""""""""""""""""""
+${METPLUS_INIT_INC}
+"""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -10391,11 +10391,11 @@ ${METPLUS_INIT_INCLUDE}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_STAT_INIT_INCLUDE`
+   * - :term:`TC_STAT_INIT_INC`
      - init_inc
 
-${METPLUS_INIT_EXCLUDE}
-"""""""""""""""""""""""
+${METPLUS_INIT_EXC}
+"""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -10403,7 +10403,7 @@ ${METPLUS_INIT_EXCLUDE}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_STAT_INIT_EXCLUDE`
+   * - :term:`TC_STAT_INIT_EXC`
      - init_exc
 
 ${METPLUS_VALID_BEG}
@@ -10802,30 +10802,6 @@ ${METPLUS_MATCH_POINTS}
    * - :term:`TC_STAT_MATCH_POINTS`
      - match_points
 
-${METPLUS_JOBS}
-"""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`TC_STAT_JOBS_LIST`
-     - jobs
-
-${METPLUS_MET_CONFIG_OVERRIDES}
-"""""""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`TC_STAT_MET_CONFIG_OVERRIDES`
-     - n/a
-
 ${METPLUS_EVENT_EQUAL}
 """"""""""""""""""""""
 
@@ -10873,7 +10849,30 @@ ${METPLUS_OUT_VALID_MASK}
      - MET Config File
    * - :term:`TC_STAT_OUT_VALID_MASK`
      - out_valid_mask
+       
+${METPLUS_JOBS}
+"""""""""""""""
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_JOBS_LIST`
+     - jobs
+
+${METPLUS_MET_CONFIG_OVERRIDES}
+"""""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_MET_CONFIG_OVERRIDES`
+     - n/a
 
 .. _user_script_wrapper:
 
