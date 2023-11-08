@@ -24,7 +24,7 @@ ENV_NAME=weatherregime.${METPLUS_VERSION}
 BASE_ENV=metplotpy.${METPLUS_VERSION}
 
 
-conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
-conda install -y --name ${ENV_NAME} -c conda-forge scikit-learn==1.1.1
-conda install -y --name ${ENV_NAME} -c conda-forge eofs==1.4.0
-conda install -y --name ${ENV_NAME} -c conda-forge cmocean==2.0
+mamba create -y --clone ${BASE_ENV} --name ${ENV_NAME}
+mamba install -y --name ${ENV_NAME} -c conda-forge scikit-learn==1.1.1
+mamba install -y --name ${ENV_NAME} -c conda-forge eofs==1.4.0
+mamba install -y --name ${ENV_NAME} -c conda-forge cmocean==2.0

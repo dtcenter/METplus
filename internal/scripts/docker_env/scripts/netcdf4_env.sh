@@ -5,7 +5,7 @@
 # Last Updated: 2023-01-27 (mccabe@ucar.edu)
 # Notes: Adds NetCDF4 Python package
 # Python Packages:
-#   netcdf4==1.5.8
+#   netcdf4==1.6.2
 #
 # Other Content: None
 ################################################################################
@@ -19,5 +19,5 @@ ENV_NAME=netcdf4.${METPLUS_VERSION}
 # Conda environment to use as base for new environment
 BASE_ENV=metplus_base.${METPLUS_VERSION}
 
-conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
-conda install -y --name ${ENV_NAME} -c conda-forge netcdf4==1.5.8
+mamba create -y --clone ${BASE_ENV} --name ${ENV_NAME}
+mamba install -y --name ${ENV_NAME} -c conda-forge netcdf4==1.6.2

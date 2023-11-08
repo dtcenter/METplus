@@ -23,20 +23,20 @@ ENV_NAME=pandac.${METPLUS_VERSION}
 BASE_ENV=metplotpy.${METPLUS_VERSION}
 
 
-conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
+mamba create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 
-#conda install -y --name ${ENV_NAME} -c conda-forge scipy==1.10.1
+#mamba install -y --name ${ENV_NAME} -c conda-forge scipy==1.10.1
 #if [ $? != 0 ]; then
 #    echo install of scipy==1.10.1 failed
 #    exit 1
 #fi
 
-conda install -y --name ${ENV_NAME} -c conda-forge pygrib==2.1.4
+mamba install -y --name ${ENV_NAME} -c conda-forge pygrib==2.1.4
 if [ $? != 0 ]; then
     echo install of pygrib==2.1.4 failed
     exit 1
 fi
-#conda install -y --name ${ENV_NAME} -c conda-forge matplotlib==3.6.3
+#mamba install -y --name ${ENV_NAME} -c conda-forge matplotlib==3.6.3
 #if [ $? != 0 ]; then
 #    echo install of matplotlib==3.6.3 failed
 #    exit 1
