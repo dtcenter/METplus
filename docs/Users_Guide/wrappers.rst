@@ -9712,63 +9712,6 @@ ${METPLUS_VALID_END}
    * - :term:`TC_PAIRS_VALID_END`
      - valid_end
 
-${METPLUS_MATCH_POINTS}
-"""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`TC_PAIRS_MATCH_POINTS`
-     - match_points
-
-${METPLUS_DLAND_FILE}
-"""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`TC_PAIRS_DLAND_FILE`
-     - dland_file
-
-${METPLUS_MET_CONFIG_OVERRIDES}
-"""""""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`TC_PAIRS_MET_CONFIG_OVERRIDES`
-     - n/a
-
-${METPLUS_CONSENSUS_LIST}
-"""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`TC_PAIRS_CONSENSUS<n>_NAME`
-     - consensus.name
-   * - :term:`TC_PAIRS_CONSENSUS<n>_MEMBERS`
-     - consensus.members
-   * - :term:`TC_PAIRS_CONSENSUS<n>_REQUIRED`
-     - consensus.required
-   * - :term:`TC_PAIRS_CONSENSUS<n>_MIN_REQ`
-     - consensus.min_req
-   * - :term:`TC_PAIRS_CONSENSUS<n>_WRITE_MEMBERS`
-     - consensus.write_members
-
-
 ${METPLUS_CHECK_DUP}
 """"""""""""""""""""
 
@@ -9793,6 +9736,50 @@ ${METPLUS_INTERP12}
    * - :term:`TC_PAIRS_INTERP12`
      - interp12
 
+${METPLUS_CONSENSUS_LIST}
+"""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_PAIRS_CONSENSUS<n>_NAME`
+     - consensus.name
+   * - :term:`TC_PAIRS_CONSENSUS<n>_MEMBERS`
+     - consensus.members
+   * - :term:`TC_PAIRS_CONSENSUS<n>_REQUIRED`
+     - consensus.required
+   * - :term:`TC_PAIRS_CONSENSUS<n>_MIN_REQ`
+     - consensus.min_req
+   * - :term:`TC_PAIRS_CONSENSUS<n>_WRITE_MEMBERS`
+     - consensus.write_members
+
+${METPLUS_MATCH_POINTS}
+"""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_PAIRS_MATCH_POINTS`
+     - match_points
+
+${METPLUS_DLAND_FILE}
+"""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_PAIRS_DLAND_FILE`
+     - dland_file
+ 
 ${METPLUS_DIAG_INFO_MAP_LIST}
 """""""""""""""""""""""""""""
 
@@ -9829,7 +9816,18 @@ ${METPLUS_DIAG_CONVERT_MAP_LIST}
    * - :term:`TC_PAIRS_DIAG_CONVERT_MAP<n>_CONVERT`
      - diag_convert_map.convert
 
+${METPLUS_MET_CONFIG_OVERRIDES}
+"""""""""""""""""""""""""""""""
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_PAIRS_MET_CONFIG_OVERRIDES`
+     - n/a
+       
 .. _tcrmw_wrapper:
 
 TCRMW
