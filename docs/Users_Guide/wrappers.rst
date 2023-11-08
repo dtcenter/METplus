@@ -10430,8 +10430,8 @@ ${METPLUS_VALID_END}
    * - :term:`TC_STAT_VALID_END`
      - valid_end
 
-${METPLUS_VALID_INCLUDE}
-""""""""""""""""""""""""
+${METPLUS_VALID_INC}
+""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -10442,8 +10442,8 @@ ${METPLUS_VALID_INCLUDE}
    * - :term:`TC_STAT_VALID_INCLUDE`
      - valid_inc
 
-${METPLUS_VALID_EXCLUDE}
-""""""""""""""""""""""""
+${METPLUS_VALID_EXC}
+""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
