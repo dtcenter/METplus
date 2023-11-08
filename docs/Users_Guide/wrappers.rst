@@ -5480,6 +5480,44 @@ ${METPLUS_MASK_DICT}
 
 .. note:: Since the default value in the MET config file for 'grid' is grid = [ "FULL" ];, setting GRID_STAT_MASK_GRID to an empty string will result in a value of grid = []; in the MET config file.
 
+${METPLUS_PB_REPORT_TYPE}
+"""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PB2NC_PB_REPORT_TYPE`
+     - pb_report_type
+
+${METPLUS_LEVEL_RANGE_DICT}
+"""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PB2NC_LEVEL_RANGE_BEG`
+     - level_range.beg
+   * - :term:`PB2NC_LEVEL_RANGE_END`
+     - level_range.end
+
+${METPLUS_LEVEL_CATEGORY}
+"""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PB2NC_LEVEL_CATEGORY`
+     - level_category
+
 ${METPLUS_OBS_BUFR_VAR}
 """""""""""""""""""""""
 
@@ -5491,6 +5529,30 @@ ${METPLUS_OBS_BUFR_VAR}
      - MET Config File
    * - :term:`PB2NC_OBS_BUFR_VAR_LIST`
      - obs_bufr_var
+
+${METPLUS_OBS_BUFR_MAP}
+"""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PB2NC_OBS_BUFR_MAP`
+     - obs_bufr_map
+
+${METPLUS_QUALITY_MARK_THRESH}
+""""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PB2NC_QUALITY_MARK_THRESH`
+     - quality_mark_thresh
 
 ${METPLUS_TIME_SUMMARY_DICT}
 """"""""""""""""""""""""""""
@@ -5535,69 +5597,7 @@ ${METPLUS_MET_CONFIG_OVERRIDES}
      - MET Config File
    * - :term:`PB2NC_MET_CONFIG_OVERRIDES`
      - n/a
-
-${METPLUS_PB_REPORT_TYPE}
-"""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`PB2NC_PB_REPORT_TYPE`
-     - pb_report_type
-
-${METPLUS_LEVEL_RANGE_DICT}
-"""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`PB2NC_LEVEL_RANGE_BEG`
-     - level_range.beg
-   * - :term:`PB2NC_LEVEL_RANGE_END`
-     - level_range.end
-
-${METPLUS_LEVEL_CATEGORY}
-"""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`PB2NC_LEVEL_CATEGORY`
-     - level_category
-
-${METPLUS_QUALITY_MARK_THRESH}
-""""""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`PB2NC_QUALITY_MARK_THRESH`
-     - quality_mark_thresh
-
-${METPLUS_OBS_BUFR_MAP}
-"""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`PB2NC_OBS_BUFR_MAP`
-     - obs_bufr_map
-
+       
 .. _pcp_combine_wrapper:
 
 PCPCombine
