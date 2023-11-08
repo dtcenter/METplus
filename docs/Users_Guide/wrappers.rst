@@ -8152,6 +8152,18 @@ ${METPLUS_JOBS}
    * - :term:`STAT_ANALYSIS_JOB_NAME`
      - jobs
 
+${METPLUS_HSS_EC_VALUE}
+"""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`STAT_ANALYSIS_HSS_EC_VALUE`
+     - hss_ec_value       
+
 ${METPLUS_MET_CONFIG_OVERRIDES}
 """""""""""""""""""""""""""""""
 
@@ -8163,19 +8175,6 @@ ${METPLUS_MET_CONFIG_OVERRIDES}
      - MET Config File
    * - :term:`STAT_ANALYSIS_MET_CONFIG_OVERRIDES`
      - n/a
-
-${METPLUS_HSS_EC_VALUE}
-"""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`STAT_ANALYSIS_HSS_EC_VALUE`
-     - hss_ec_value
-
 
 .. _tc_diag_wrapper:
 
