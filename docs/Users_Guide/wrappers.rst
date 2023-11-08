@@ -6183,6 +6183,17 @@ ${METPLUS_POINT_DATA}
    * - :term:`PLOT_POINT_OBS_POINT_DATA`
      - point_data
 
+${METPLUS_MET_CONFIG_OVERRIDES}
+"""""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PLOT_POINT_OBS_MET_CONFIG_OVERRIDES`
+     - obs.cat_thresh
 
 .. _point2grid_wrapper:
 
@@ -8321,8 +8332,8 @@ ${METPLUS_CYCLONE}
    * - :term:`TC_DIAG_CYCLONE`
      - cyclone
 
-${METPLUS_INIT_INCLUDE_LIST}
-""""""""""""""""""""""""""""
+${METPLUS_INIT_INCLUDE}
+"""""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -8473,24 +8484,6 @@ ${METPLUS_CONVERT}
    * - :term:`TC_DIAG_CONVERT`
      - convert
 
-${METPLUS_DATA_FIELD}
-"""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`BOTH_VAR<n>_NAME`
-     - data.field.name
-   * - :term:`BOTH_VAR<n>_LEVELS`
-     - data.field.level
-   * - :term:`BOTH_VAR<n>_OPTIONS`
-     - n/a
-
-.. note:: For more information on controlling the field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
-
 ${METPLUS_DATA_FILE_TYPE}
 """""""""""""""""""""""""
 
@@ -8526,6 +8519,24 @@ ${METPLUS_DATA_LEVEL}
      - MET Config File
    * - :term:`TC_DIAG_DATA_LEVEL`
      - data.level
+
+${METPLUS_DATA_FIELD}
+"""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`BOTH_VAR<n>_NAME`
+     - data.field.name
+   * - :term:`BOTH_VAR<n>_LEVELS`
+     - data.field.level
+   * - :term:`BOTH_VAR<n>_OPTIONS`
+     - n/a
+
+.. note:: For more information on controlling the field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
 
 ${METPLUS_REGRID_DICT}
 """"""""""""""""""""""
@@ -9138,8 +9149,8 @@ ${METPLUS_DLAND_THRESH}
    * - :term:`TC_GEN_DLAND_THRESH`
      - dland_thresh
 
-${METPLUS_DEV_HIT_WINDOW_DICT}
-""""""""""""""""""""""""""""""
+${METPLUS_GENESIS_MATCH_POINT_TO_TRACK}
+"""""""""""""""""""""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -9147,10 +9158,8 @@ ${METPLUS_DEV_HIT_WINDOW_DICT}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_GEN_DEV_HIT_WINDOW_BEGIN`
-     - dev_hit_window.beg
-   * - :term:`TC_GEN_DEV_HIT_WINDOW_END`
-     - dev_hit_window.end
+   * - :term:`TC_GEN_GENESIS_MATCH_POINT_TO_TRACK`
+     - genesis_match_point_to_track
 
 ${METPLUS_GENESIS_MATCH_RADIUS}
 """""""""""""""""""""""""""""""
@@ -9163,18 +9172,6 @@ ${METPLUS_GENESIS_MATCH_RADIUS}
      - MET Config File
    * - :term:`TC_GEN_GENESIS_MATCH_RADIUS`
      - genesis_match_radius
-
-${METPLUS_GENESIS_MATCH_POINT_TO_TRACK}
-"""""""""""""""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`TC_GEN_GENESIS_MATCH_POINT_TO_TRACK`
-     - genesis_match_point_to_track
 
 ${METPLUS_GENESIS_MATCH_WINDOW_DICT}
 """"""""""""""""""""""""""""""""""""
@@ -9201,6 +9198,20 @@ ${METPLUS_DEV_HIT_RADIUS}
      - MET Config File
    * - :term:`TC_GEN_DEV_HIT_RADIUS`
      - dev_hit_radius
+
+${METPLUS_DEV_HIT_WINDOW_DICT}
+""""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_DEV_HIT_WINDOW_BEGIN`
+     - dev_hit_window.beg
+   * - :term:`TC_GEN_DEV_HIT_WINDOW_END`
+     - dev_hit_window.end
 
 ${METPLUS_OPS_HIT_WINDOW_DICT}
 """"""""""""""""""""""""""""""
