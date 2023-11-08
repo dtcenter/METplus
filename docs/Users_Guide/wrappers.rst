@@ -7155,6 +7155,18 @@ ${METPLUS_FCST_FILE_TYPE}
    * - :term:`FCST_SERIES_ANALYSIS_INPUT_DATATYPE`
      - fcst.file_type
 
+${METPLUS_FCST_CAT_THRESH}
+""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`FCST_SERIES_ANALYSIS_CAT_THRESH`
+     - fcst.cat_thresh
+
 ${METPLUS_FCST_FIELD}
 """""""""""""""""""""
 
@@ -7188,6 +7200,18 @@ ${METPLUS_OBS_FILE_TYPE}
      - MET Config File
    * - :term:`OBS_SERIES_ANALYSIS_INPUT_DATATYPE`
      - obs.file_type
+
+${METPLUS_OBS_CAT_THRESH}
+"""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`OBS_SERIES_ANALYSIS_CAT_THRESH`
+     - obs.cat_thresh
 
 ${METPLUS_OBS_FIELD}
 """"""""""""""""""""
@@ -7327,30 +7351,6 @@ ${METPLUS_VLD_THRESH}
    * - :term:`SERIES_ANALYSIS_VLD_THRESH`
      - vld_thresh
 
-${METPLUS_MET_CONFIG_OVERRIDES}
-"""""""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`SERIES_ANALYSIS_MET_CONFIG_OVERRIDES`
-     - n/a
-
-${METPLUS_HSS_EC_VALUE}
-"""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`SERIES_ANALYSIS_HSS_EC_VALUE`
-     - hss_ec_value
-
 ${METPLUS_OUTPUT_STATS_DICT}
 """"""""""""""""""""""""""""
 
@@ -7385,8 +7385,8 @@ ${METPLUS_OUTPUT_STATS_DICT}
    * - :term:`SERIES_ANALYSIS_OUTPUT_STATS_PRC`
      - output_stats.prc
 
-${METPLUS_FCST_CAT_THRESH}
-""""""""""""""""""""""""""
+${METPLUS_HSS_EC_VALUE}
+"""""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -7394,11 +7394,11 @@ ${METPLUS_FCST_CAT_THRESH}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`FCST_SERIES_ANALYSIS_CAT_THRESH`
-     - fcst.cat_thresh
-
-${METPLUS_OBS_CAT_THRESH}
-"""""""""""""""""""""""""
+   * - :term:`SERIES_ANALYSIS_HSS_EC_VALUE`
+     - hss_ec_value2a
+       
+${METPLUS_MET_CONFIG_OVERRIDES}
+"""""""""""""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -7406,9 +7406,8 @@ ${METPLUS_OBS_CAT_THRESH}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`OBS_SERIES_ANALYSIS_CAT_THRESH`
-     - obs.cat_thresh
-
+   * - :term:`SERIES_ANALYSIS_MET_CONFIG_OVERRIDES`
+     - n/a 
 
 SeriesByInit
 ============
