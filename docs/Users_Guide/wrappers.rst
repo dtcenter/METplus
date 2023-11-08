@@ -10391,7 +10391,7 @@ ${METPLUS_INIT_INC}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_STAT_INIT_INC`
+   * - :term:`TC_STAT_INIT_INCLUDE`
      - init_inc
 
 ${METPLUS_INIT_EXC}
@@ -10403,7 +10403,7 @@ ${METPLUS_INIT_EXC}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_STAT_INIT_EXC`
+   * - :term:`TC_STAT_INIT_EXCLUDE`
      - init_exc
 
 ${METPLUS_VALID_BEG}
