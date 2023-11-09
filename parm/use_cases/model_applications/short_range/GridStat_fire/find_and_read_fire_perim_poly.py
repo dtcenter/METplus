@@ -33,21 +33,32 @@ output_path = os.path.join(output_dir, output_file)
 os.makedirs(output_dir, exist_ok=True)
 
 # find input file
+input_file = None
 input_glob = os.path.join(input_dir, valid_time.strftime(KML_TEMPLATE))
 found_files =  glob(input_glob)
+
+# if no files were found, search one hour ago
 if not found_files:
     input_glob = os.path.join(input_dir, valid_one_hour_ago.strftime(KML_TEMPLATE))
     found_files =  glob(input_glob)
 
-if not found_files:
-    print(f"ERROR: Could not find any files for {valid_time} in {input_dir}")
-    sys.exit(1)
+    if not found_files:
+        print(f"ERROR: Could not find any files for {valid_time} in {input_dir}")
+        sys.exit(1)
 
-if len(found_files) > 1:
+    # if multiple files are found for previous hour, use last file
+    if len(found_files) > 1:
+        print(f"WARNING: Found multiple files: {found_files}")
+        print(f"Processing the LAST file")
+        input_file = found_files[-1]
+
+elif len(found_files) > 1:
     print(f"WARNING: Found multiple files: {found_files}")
-    print(f"Processing the first file")
+    print(f"Processing the FIRST file")
 
-input_file = found_files[0]
+if not input_file:
+    input_file = found_files[0]
+
 print(f"Parsing file: {input_file}")
 
 tree = ET.parse(input_file)
