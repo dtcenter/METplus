@@ -39,7 +39,7 @@ def test_run_gen_vx_mask_once(metplus_config):
 
     wrap.run_at_time_once(time_info)
 
-    expected_cmd = f"{wrap.app_path} 2018020100_ZENITH LAT {wrap.config.getdir('OUTPUT_BASE')}/GenVxMask_test/2018020100_ZENITH_LAT_MASK.nc -type lat -thresh 'ge30&&le50' -v 2"
+    expected_cmd = f"{wrap.app_path} \"2018020100_ZENITH\" LAT {wrap.config.getdir('OUTPUT_BASE')}/GenVxMask_test/2018020100_ZENITH_LAT_MASK.nc -type lat -thresh 'ge30&&le50' -v 2"
 
     for cmd, _ in wrap.all_commands:
         print(f"COMMAND:{cmd}")
@@ -64,8 +64,8 @@ def test_run_gen_vx_mask_twice(metplus_config):
 
     wrap.run_at_time_once(time_info)
 
-    expected_cmds = [f"{wrap.app_path} 2018020100_ZENITH LAT {wrap.config.getdir('OUTPUT_BASE')}/stage/gen_vx_mask/temp_0.nc {cmd_args[0]} -v 2",
-                     f"{wrap.app_path} {wrap.config.getdir('OUTPUT_BASE')}/stage/gen_vx_mask/temp_0.nc LON {wrap.config.getdir('OUTPUT_BASE')}/GenVxMask_test/2018020100_ZENITH_LAT_LON_MASK.nc {cmd_args[1]} -v 2"]
+    expected_cmds = [f"{wrap.app_path} \"2018020100_ZENITH\" LAT {wrap.config.getdir('OUTPUT_BASE')}/stage/gen_vx_mask/temp_0.nc {cmd_args[0]} -v 2",
+                     f"{wrap.app_path} \"{wrap.config.getdir('OUTPUT_BASE')}/stage/gen_vx_mask/temp_0.nc\" LON {wrap.config.getdir('OUTPUT_BASE')}/GenVxMask_test/2018020100_ZENITH_LAT_LON_MASK.nc {cmd_args[1]} -v 2"]
 
     test_passed = True
 
