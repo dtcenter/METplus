@@ -531,3 +531,23 @@ def add_field_info_to_time_info(time_info, var_info):
             value = format_thresh(value)
 
         time_info[key] = value
+
+
+def is_single_run_time(time_info):
+    """!Determine if a specific run time (init or valid + lead) is being
+     processed or if a range of run times are being processed. If a wildcard
+     character is set for any of init/valid/lead or if any of them are unset,
+     then it is assumed that a range of these values are being processed.
+     This should be true if the runtime frequency is set to RUN_ONCE_FOR_EACH.
+
+     Note that even if a missing time value can be calculated, e.g. init and
+     lead can be used to compute valid, then this function will still return
+     False. Input to this function should be run through time_util.ti_calculate
+     first to compute the missing time values.
+
+    @param time_info dictionary containing time information to read
+    @returns True if init, valid, or lead has a wildcard character
+    """
+    return all(
+        [str(time_info.get(key, '*')) != '*' for key in ('init', 'valid', 'lead')]
+    )
