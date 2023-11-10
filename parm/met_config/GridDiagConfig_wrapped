@@ -9,6 +9,7 @@
 //
 // Description
 //
+//desc =
 ${METPLUS_DESC}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -16,6 +17,7 @@ ${METPLUS_DESC}
 //
 // Output grid
 //
+//regrid = {
 ${METPLUS_REGRID_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -23,14 +25,18 @@ ${METPLUS_REGRID_DICT}
 //
 // May be set separately in each "field" entry
 //
+//censor_thresh =
 ${METPLUS_CENSOR_THRESH}
+//censor_val =
 ${METPLUS_CENSOR_VAL}
 
 //
 // Data fields
 //
+//data = {
 ${METPLUS_DATA_DICT}
 
+//mask = {
 ${METPLUS_MASK_DICT}
 
 tmp_dir = "${MET_TMP_DIR}";

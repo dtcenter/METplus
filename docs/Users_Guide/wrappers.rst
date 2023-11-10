@@ -1325,7 +1325,7 @@ ${METPLUS_ENS_THRESH}
    * - :term:`GEN_ENS_PROD_ENS_THRESH`
      - ens.ens_thresh
 
-${METPLUS_ENS_THRESH}
+${METPLUS_VLD_THRESH}
 """""""""""""""""""""
 
 .. list-table::
@@ -8160,7 +8160,7 @@ ${METPLUS_JOBS}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`STAT_ANALYSIS_JOB_NAME`
+   * - :term:`STAT_ANALYSIS_JOB\<n\>`
      - jobs
 
 ${METPLUS_HSS_EC_VALUE}
@@ -9652,6 +9652,30 @@ ${METPLUS_INIT_EXC}
    * - :term:`TC_PAIRS_INIT_EXCLUDE`
      - init_exc
 
+${METPLUS_VALID_BEG}
+""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_PAIRS_VALID_BEG`
+     - valid_beg
+
+${METPLUS_VALID_END}
+""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_PAIRS_VALID_END`
+     - valid_end
+
 ${METPLUS_VALID_INC}
 """"""""""""""""""""
 
@@ -9687,30 +9711,6 @@ ${METPLUS_WRITE_VALID}
      - MET Config File
    * - :term:`TC_PAIRS_WRITE_VALID`
      - write_valid
-
-${METPLUS_VALID_BEG}
-""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`TC_PAIRS_VALID_BEG`
-     - valid_beg
-
-${METPLUS_VALID_END}
-""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`TC_PAIRS_VALID_END`
-     - valid_end
 
 ${METPLUS_CHECK_DUP}
 """"""""""""""""""""

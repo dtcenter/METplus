@@ -12,56 +12,65 @@
 //
 // Models
 //
+//model = [
 ${METPLUS_MODEL}
 
 //
 // Description
 //
+//desc =
 ${METPLUS_DESC}
 
 //
 // Storm identifiers
 //
+//storm_id = [
 ${METPLUS_STORM_ID}
 
 //
 // Basins
 //
+//basin = [
 ${METPLUS_BASIN}
 
 //
 // Cyclone numbers
 //
+//cyclone = [
 ${METPLUS_CYCLONE}
 
 //
 // Storm names
 //
+//storm_name = [
 ${METPLUS_STORM_NAME}
 
 //
 // Model initialization time windows to include or exclude
 //
+//init_beg =
 ${METPLUS_INIT_BEG}
+//init_end =
 ${METPLUS_INIT_END}
-// init_inc =
+// init_inc = [
 ${METPLUS_INIT_INC}
-// init_exc =
+// init_exc = [
 ${METPLUS_INIT_EXC}
 
-// valid_inc =
+//
+// Valid model time windows to include or exclude
+//
+//valid_beg =
+${METPLUS_VALID_BEG}
+//valid_end =
+${METPLUS_VALID_END}
+// valid_inc = [
 ${METPLUS_VALID_INC}
-// valid_exc =
+// valid_exc = [
 ${METPLUS_VALID_EXC}
 
 // write_valid =
 ${METPLUS_WRITE_VALID}
-
-//
-// Valid model time window
-//
-${METPLUS_VALID_BEG}
-${METPLUS_VALID_END}
 
 //
 // Model initialization hours
@@ -131,6 +140,7 @@ ${METPLUS_MATCH_POINTS}
 // Specify the NetCDF output of the gen_dland tool containing a gridded
 // representation of the minimum distance to land.
 //
+//dland_file =
 ${METPLUS_DLAND_FILE}
 
 //

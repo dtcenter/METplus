@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 //
 // Ensemble-Stat configuration file.
 //
@@ -86,9 +86,10 @@ obs = {
 // May be set separately in each "obs.field" entry
 //
 
+//message_type =
 ${METPLUS_MESSAGE_TYPE}
 sid_exc        = [];
-//obs_thresh     = [ NA ];
+//obs_thresh     =
 ${METPLUS_OBS_THRESH}
 
 //obs_quality_inc =
@@ -97,9 +98,11 @@ ${METPLUS_OBS_QUALITY_INC}
 //obs_quality_exc =
 ${METPLUS_OBS_QUALITY_EXC}
 
+//duplicate_flag =
 ${METPLUS_DUPLICATE_FLAG}
 obs_summary    = NONE;
 obs_perc_value = 50;
+//skip_const =
 ${METPLUS_SKIP_CONST}
 
 //
@@ -108,6 +111,7 @@ ${METPLUS_SKIP_CONST}
 // May be set separately in each "obs.field" entry
 //
 obs_error = {
+   //flag =
    ${METPLUS_OBS_ERROR_FLAG}
    dist_type        = NONE;
    dist_parm        = [];
@@ -131,7 +135,9 @@ message_type_group_map = [
 // Ensemble bin sizes
 // May be set separately in each "obs.field" entry
 //
+//ens_ssvar_bin_size =
 ${METPLUS_ENS_SSVAR_BIN_SIZE}
+//ens_phist_bin_size =
 ${METPLUS_ENS_PHIST_BIN_SIZE}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -151,6 +157,7 @@ ${METPLUS_CLIMO_STDEV_DICT}
 //
 // May be set separately in each "obs.field" entry
 //
+//climo_cdf = {
 ${METPLUS_CLIMO_CDF_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -158,6 +165,7 @@ ${METPLUS_CLIMO_CDF_DICT}
 //
 // Point observation time window
 //
+//obs_window = {
 ${METPLUS_OBS_WINDOW_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -166,7 +174,9 @@ ${METPLUS_OBS_WINDOW_DICT}
 // Verification masking regions
 //
 mask = {
+   //grid =
    ${METPLUS_MASK_GRID}
+   //poly =
    ${METPLUS_MASK_POLY}
    sid   = [];
    llpnt = [];
@@ -177,6 +187,7 @@ mask = {
 //
 // Confidence interval settings
 //
+//ci_alpha =
 ${METPLUS_CI_ALPHA}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -184,6 +195,7 @@ ${METPLUS_CI_ALPHA}
 //
 // Interpolation methods
 //
+//interp = {
 ${METPLUS_INTERP_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -191,6 +203,7 @@ ${METPLUS_INTERP_DICT}
 //
 // Statistical output types
 //
+//output_flag = {
 ${METPLUS_OUTPUT_FLAG_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -199,6 +212,7 @@ ${METPLUS_OUTPUT_FLAG_DICT}
 // Gridded verification output types
 // May be set separately in each "obs.field" entry
 //
+//nc_orank_flag = {
 ${METPLUS_NC_ORANK_FLAG_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -215,7 +229,7 @@ rng = {
 
 //grid_weight_flag =
 ${METPLUS_GRID_WEIGHT_FLAG}
-
+//output_prefix =
 ${METPLUS_OUTPUT_PREFIX}
 //version          = "V9.0";
 
