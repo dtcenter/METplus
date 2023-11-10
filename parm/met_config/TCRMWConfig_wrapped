@@ -11,19 +11,33 @@
 // and empty string, which will cause MET to use the value defined in the
 // default configuration file.
 
+//model =
 ${METPLUS_MODEL}
 
+//storm_id =
 ${METPLUS_STORM_ID}
+
+//basin =
 ${METPLUS_BASIN}
+
+//cyclone =
 ${METPLUS_CYCLONE}
+
+//init_inc =
 ${METPLUS_INIT_INCLUDE}
 
+//valid_beg =
 ${METPLUS_VALID_BEG}
+//valid_end =
 ${METPLUS_VALID_END}
+//valid_inc = [
 ${METPLUS_VALID_INCLUDE_LIST}
+//valid_exc = [
 ${METPLUS_VALID_EXCLUDE_LIST}
 
+//valid_hour = [
 ${METPLUS_VALID_HOUR_LIST}
+//lead = [
 ${METPLUS_LEAD_LIST}
 
 //
@@ -38,6 +52,7 @@ censor_val    = [];
 data = {
    ${METPLUS_DATA_FILE_TYPE}
 
+   //field = [
    ${METPLUS_DATA_FIELD}
 }
 
@@ -46,6 +61,7 @@ data = {
 //
 // Regridding options
 //
+//regrid = {
 ${METPLUS_REGRID_DICT}
 
 //
@@ -56,10 +72,15 @@ ${METPLUS_REGRID_DICT}
 // and empty string, which will cause MET to use the value defined in the
 // default configuration file.
 
+//n_range        =
 ${METPLUS_N_RANGE}
+//n_azimuth      =
 ${METPLUS_N_AZIMUTH}
+//max_range_km   =
 ${METPLUS_MAX_RANGE_KM}
+//delta_range_km =
 ${METPLUS_DELTA_RANGE_KM}
+//rmw_scale      =
 ${METPLUS_RMW_SCALE}
 
 ////////////////////////////////////////////////////////////////////////////////

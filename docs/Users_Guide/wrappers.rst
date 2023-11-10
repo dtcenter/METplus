@@ -454,8 +454,8 @@ ${METPLUS_CENSOR_VAL}
    * - :term:`ENSEMBLE_STAT_CENSOR_VAL`
      - censor_val
 
-${METPLUS_ENS_FILE_TYPE}
-""""""""""""""""""""""""
+${METPLUS_ENS_MEMBER_IDS}
+"""""""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -463,10 +463,10 @@ ${METPLUS_ENS_FILE_TYPE}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`ENS_ENSEMBLE_STAT_INPUT_DATATYPE`
-     - ens.file_type
+   * - :term:`ENSEMBLE_STAT_ENS_MEMBER_IDS`
+     - ens_member_ids
 
-${METPLUS_ENS_THRESH}
+${METPLUS_CONTROL_ID}
 """""""""""""""""""""
 
 .. list-table::
@@ -475,52 +475,8 @@ ${METPLUS_ENS_THRESH}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`ENSEMBLE_STAT_ENS_THRESH`
-     - fcst.ens_thresh
-
-${METPLUS_VLD_THRESH}
-"""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`ENSEMBLE_STAT_VLD_THRESH`
-     - fcst.vld_thresh
-
-${METPLUS_OBS_THRESH}
-"""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`ENSEMBLE_STAT_OBS_THRESH`
-     - obs_thresh
-
-${METPLUS_ENS_FIELD}
-""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`ENS_VAR<n>_NAME`
-     - ens.field.name
-   * - :term:`ENS_VAR<n>_LEVELS`
-     - ens.field.level
-   * - :term:`ENS_VAR<n>_THRESH`
-     - ens.field.cat_thresh
-   * - :term:`ENS_VAR<n>_OPTIONS`
-     - n/a
-
-.. note:: For more information on controlling the forecast field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
+   * - :term:`ENSEMBLE_STAT_CONTROL_ID`
+     - control_id
 
 ${METPLUS_PROB_CAT_THRESH}
 """"""""""""""""""""""""""
@@ -569,6 +525,30 @@ ${METPLUS_FCST_FILE_TYPE}
      - MET Config File
    * - :term:`FCST_ENSEMBLE_STAT_INPUT_DATATYPE`
      - fcst.file_type
+
+${METPLUS_ENS_THRESH}
+"""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_ENS_THRESH`
+     - fcst.ens_thresh
+
+${METPLUS_VLD_THRESH}
+"""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_VLD_THRESH`
+     - fcst.vld_thresh
 
 ${METPLUS_FCST_FIELD}
 """""""""""""""""""""
@@ -622,6 +602,7 @@ ${METPLUS_OBS_FIELD}
 
 .. note:: For more information on controlling the observation field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
 
+	  
 ${METPLUS_MESSAGE_TYPE}
 """""""""""""""""""""""
 
@@ -633,6 +614,43 @@ ${METPLUS_MESSAGE_TYPE}
      - MET Config File
    * - :term:`ENSEMBLE_STAT_MESSAGE_TYPE`
      - message_type
+
+${METPLUS_OBS_THRESH}
+"""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_OBS_THRESH`
+     - obs_thresh
+
+${METPLUS_OBS_QUALITY_INC}
+""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_OBS_QUALITY_INC`
+     - obs_quality_inc
+
+       
+${METPLUS_OBS_QUALITY_EXC}
+""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_OBS_QUALITY_EXC`
+     - obs_quality_exc
 
 ${METPLUS_DUPLICATE_FLAG}
 """""""""""""""""""""""""
@@ -900,78 +918,6 @@ ${METPLUS_NC_ORANK_FLAG_DICT}
    * - :term:`ENSEMBLE_STAT_NC_ORANK_FLAG_WEIGHT`
      - nc_orank_flag.weight
 
-${METPLUS_OUTPUT_PREFIX}
-""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`ENSEMBLE_STAT_OUTPUT_PREFIX`
-     - output_prefix
-
-${METPLUS_OBS_QUALITY_INC}
-""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`ENSEMBLE_STAT_OBS_QUALITY_INC`
-     - obs_quality_inc
-
-${METPLUS_OBS_QUALITY_EXC}
-""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`ENSEMBLE_STAT_OBS_QUALITY_EXC`
-     - obs_quality_exc
-
-${METPLUS_ENS_MEMBER_IDS}
-"""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`ENSEMBLE_STAT_ENS_MEMBER_IDS`
-     - ens_member_ids
-
-${METPLUS_CONTROL_ID}
-"""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`ENSEMBLE_STAT_CONTROL_ID`
-     - control_id
-
-${METPLUS_MET_CONFIG_OVERRIDES}
-"""""""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`ENSEMBLE_STAT_MET_CONFIG_OVERRIDES`
-     - n/a
-
 ${METPLUS_GRID_WEIGHT_FLAG}
 """""""""""""""""""""""""""
 
@@ -984,6 +930,29 @@ ${METPLUS_GRID_WEIGHT_FLAG}
    * - :term:`ENSEMBLE_STAT_GRID_WEIGHT_FLAG`
      - grid_weight_flag
 
+${METPLUS_OUTPUT_PREFIX}
+""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_OUTPUT_PREFIX`
+     - output_prefix
+
+${METPLUS_MET_CONFIG_OVERRIDES}
+"""""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_MET_CONFIG_OVERRIDES`
+     - n/a
 
 .. _example_wrapper:
 
@@ -1344,8 +1313,8 @@ ${METPLUS_ENS_FILE_TYPE}
    * - :term:`GEN_ENS_PROD_ENS_FILE_TYPE`
      - ens.file_type
 
-${METPLUS_ENS_ENS_THRESH}
-"""""""""""""""""""""""""
+${METPLUS_ENS_THRESH}
+"""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -1356,8 +1325,8 @@ ${METPLUS_ENS_ENS_THRESH}
    * - :term:`GEN_ENS_PROD_ENS_THRESH`
      - ens.ens_thresh
 
-${METPLUS_ENS_VLD_THRESH}
-"""""""""""""""""""""""""
+${METPLUS_VLD_THRESH}
+"""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -1387,6 +1356,30 @@ ${METPLUS_ENS_FIELD}
      - n/a
 
 .. note:: For more information on controlling the forecast field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
+
+${METPLUS_ENS_MEMBER_IDS}
+"""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_ENS_MEMBER_IDS`
+     - ens_member_ids
+
+${METPLUS_CONTROL_ID}
+"""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_CONTROL_ID`
+     - control_id
 
 ${METPLUS_NBRHD_PROB_DICT}
 """"""""""""""""""""""""""
@@ -1524,30 +1517,6 @@ ${METPLUS_ENSEMBLE_FLAG_DICT}
    * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO_CDP`
      - ensemble_flag.climo_cdp
 
-${METPLUS_ENS_MEMBER_IDS}
-"""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`GEN_ENS_PROD_ENS_MEMBER_IDS`
-     - ens_member_ids
-
-${METPLUS_CONTROL_ID}
-"""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`GEN_ENS_PROD_CONTROL_ID`
-     - control_id
-
 ${METPLUS_MET_CONFIG_OVERRIDES}
 """""""""""""""""""""""""""""""
 
@@ -1559,7 +1528,6 @@ ${METPLUS_MET_CONFIG_OVERRIDES}
      - MET Config File
    * - :term:`GEN_ENS_PROD_MET_CONFIG_OVERRIDES`
      - n/a
-
 
 .. _gen_vx_mask_wrapper:
 
@@ -3837,18 +3805,6 @@ ${METPLUS_MESSAGE_TYPE}
    * - :term:`IODA2NC_MESSAGE_TYPE`
      - message_type
 
-${METPLUS_MESSAGE_TYPE_MAP}
-"""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`IODA2NC_MESSAGE_TYPE_MAP`
-     - message_type_map
-
 ${METPLUS_MESSAGE_TYPE_GROUP_MAP}
 """""""""""""""""""""""""""""""""
 
@@ -3860,6 +3816,18 @@ ${METPLUS_MESSAGE_TYPE_GROUP_MAP}
      - MET Config File
    * - :term:`IODA2NC_MESSAGE_TYPE_GROUP_MAP`
      - message_type_group_map
+
+${METPLUS_MESSAGE_TYPE_MAP}
+"""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`IODA2NC_MESSAGE_TYPE_MAP`
+     - message_type_map
 
 ${METPLUS_STATION_ID}
 """""""""""""""""""""
@@ -4550,6 +4518,31 @@ ${METPLUS_FCST_FIELD}
 
 .. note:: For more information on controlling the forecast field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
 
+${METPLUS_FCST_CENSOR_THRESH}
+"""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_FCST_CENSOR_THRESH`
+     - fcst.censor_thresh
+
+${METPLUS_FCST_CENSOR_VAL}
+""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_FCST_CENSOR_VAL`
+     - fcst.censor_val
+
+
 ${METPLUS_FCST_CONV_RADIUS}
 """""""""""""""""""""""""""
 
@@ -4561,7 +4554,7 @@ ${METPLUS_FCST_CONV_RADIUS}
      - MET Config File
    * - :term:`MODE_FCST_CONV_RADIUS`
      - fcst.conv_radius
-
+       
 ${METPLUS_FCST_CONV_THRESH}
 """""""""""""""""""""""""""
 
@@ -4573,6 +4566,42 @@ ${METPLUS_FCST_CONV_THRESH}
      - MET Config File
    * - :term:`MODE_FCST_CONV_THRESH`
      - fcst.conv_thresh
+
+${METPLUS_FCST_VLD_THRESH}
+""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_FCST_VLD_THRESH`
+     - fcst.vld_thresh
+
+${METPLUS_FCST_FILTER_ATTR_NAME}
+""""""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_FCST_FILTER_ATTR_NAME`
+     - fcst.filter_attr_name
+
+${METPLUS_FCST_FILTER_ATTR_THRESH}
+""""""""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_FCST_FILTER_ATTR_THRESH`
+     - fcst.filter_attr_thresh
 
 ${METPLUS_FCST_MERGE_THRESH}
 """"""""""""""""""""""""""""
@@ -4655,6 +4684,30 @@ ${METPLUS_OBS_FIELD}
 
 .. note:: For more information on controlling the observation field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
 
+${METPLUS_OBS_CENSOR_THRESH}
+""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_OBS_CENSOR_THRESH`
+     - obs.censor_thresh
+
+${METPLUS_OBS_CENSOR_VAL}
+"""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_OBS_CENSOR_VAL`
+     - obs.censor_val
+	  
 ${METPLUS_OBS_CONV_RADIUS}
 """"""""""""""""""""""""""
 
@@ -4678,6 +4731,42 @@ ${METPLUS_OBS_CONV_THRESH}
      - MET Config File
    * - :term:`OBS_MODE_CONV_THRESH`
      - obs.conv_thresh
+
+${METPLUS_OBS_VLD_THRESH}
+"""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_OBS_VLD_THRESH`
+     - obs.vld_thresh
+
+${METPLUS_OBS_FILTER_ATTR_NAME}
+"""""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_OBS_FILTER_ATTR_NAME`
+     - obs.filter_attr_name
+
+${METPLUS_OBS_FILTER_ATTR_THRESH}
+"""""""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_OBS_FILTER_ATTR_THRESH`
+     - obs.filter_attr_thresh
 
 ${METPLUS_OBS_MERGE_THRESH}
 """""""""""""""""""""""""""
@@ -4739,180 +4828,6 @@ ${METPLUS_OBS_MULTIVAR_LEVEL}
    * - :term:`MODE_OBS_MULTIVAR_LEVEL`
      - obs.multivar_level
 
-${METPLUS_MASK_POLY}
-""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_MASK_POLY`
-     - mask.poly
-
-${METPLUS_OUTPUT_PREFIX}
-""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_OUTPUT_PREFIX`
-     - output_prefix
-
-${METPLUS_MET_CONFIG_OVERRIDES}
-"""""""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_MET_CONFIG_OVERRIDES`
-     - n/a
-
-${METPLUS_FCST_FILTER_ATTR_NAME}
-""""""""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_FCST_FILTER_ATTR_NAME`
-     - fcst.filter_attr_name
-
-${METPLUS_FCST_FILTER_ATTR_THRESH}
-""""""""""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_FCST_FILTER_ATTR_THRESH`
-     - fcst.filter_attr_thresh
-
-${METPLUS_FCST_CENSOR_THRESH}
-"""""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_FCST_CENSOR_THRESH`
-     - fcst.censor_thresh
-
-${METPLUS_FCST_CENSOR_VAL}
-""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_FCST_CENSOR_VAL`
-     - fcst.censor_val
-
-${METPLUS_FCST_VLD_THRESH}
-""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_FCST_VLD_THRESH`
-     - fcst.vld_thresh
-
-${METPLUS_OBS_FILTER_ATTR_NAME}
-"""""""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_OBS_FILTER_ATTR_NAME`
-     - obs.filter_attr_name
-
-${METPLUS_OBS_FILTER_ATTR_THRESH}
-"""""""""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_OBS_FILTER_ATTR_THRESH`
-     - obs.filter_attr_thresh
-
-${METPLUS_OBS_CENSOR_THRESH}
-""""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_OBS_CENSOR_THRESH`
-     - obs.censor_thresh
-
-${METPLUS_OBS_CENSOR_VAL}
-"""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_OBS_CENSOR_VAL`
-     - obs.censor_val
-
-${METPLUS_OBS_VLD_THRESH}
-"""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_OBS_VLD_THRESH`
-     - obs.vld_thresh
-
-${METPLUS_MASK_DICT}
-""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_MASK_GRID`
-     - mask.grid
-   * - :term:`MODE_MASK_GRID_FLAG`
-     - mask.grid_flag
-   * - :term:`MODE_MASK_POLY`
-     - mask.poly
-   * - :term:`MODE_MASK_POLY_FLAG`
-     - mask.poly_flag
-
 ${METPLUS_MASK_MISSING_FLAG}
 """"""""""""""""""""""""""""
 
@@ -4936,6 +4851,36 @@ ${METPLUS_MATCH_FLAG}
      - MET Config File
    * - :term:`MODE_MATCH_FLAG`
      - match_flag
+
+${METPLUS_MAX_CENTROID_DIST}
+""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_MAX_CENTROID_DIST`
+     - max_centroid_dist
+
+${METPLUS_MASK_DICT}
+""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_MASK_GRID`
+     - mask.grid
+   * - :term:`MODE_MASK_GRID_FLAG`
+     - mask.grid_flag
+   * - :term:`MODE_MASK_POLY`
+     - mask.poly
+   * - :term:`MODE_MASK_POLY_FLAG`
+     - mask.poly_flag
 
 ${METPLUS_WEIGHT_DICT}
 """"""""""""""""""""""
@@ -4969,39 +4914,6 @@ ${METPLUS_WEIGHT_DICT}
    * - :term:`MODE_WEIGHT_INTEN_PERC_VALUE`
      - weight.inten_perc_value
 
-${METPLUS_NC_PAIRS_FLAG_DICT}
-"""""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_NC_PAIRS_FLAG_LATLON`
-     - nc_pairs_flag.latlon
-   * - :term:`MODE_NC_PAIRS_FLAG_RAW`
-     - nc_pairs_flag.raw
-   * - :term:`MODE_NC_PAIRS_FLAG_OBJECT_RAW`
-     - nc_pairs_flag.object_raw
-   * - :term:`MODE_NC_PAIRS_FLAG_OBJECT_ID`
-     - nc_pairs_flag.object_id
-   * - :term:`MODE_NC_PAIRS_FLAG_CLUSTER_ID`
-     - nc_pairs_flag.cluster_id
-   * - :term:`MODE_NC_PAIRS_FLAG_POLYLINES`
-     - nc_pairs_flag.polylines
-
-${METPLUS_MAX_CENTROID_DIST}
-""""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_MAX_CENTROID_DIST`
-     - max_centroid_dist
 
 ${METPLUS_INTEREST_FUNCTION_CENTROID_DIST}
 """"""""""""""""""""""""""""""""""""""""""
@@ -5062,6 +4974,28 @@ ${METPLUS_PS_PLOT_FLAG}
      - MET Config File
    * - :term:`MODE_PS_PLOT_FLAG`
      - ps_plot_flag
+       
+${METPLUS_NC_PAIRS_FLAG_DICT}
+"""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_NC_PAIRS_FLAG_LATLON`
+     - nc_pairs_flag.latlon
+   * - :term:`MODE_NC_PAIRS_FLAG_RAW`
+     - nc_pairs_flag.raw
+   * - :term:`MODE_NC_PAIRS_FLAG_OBJECT_RAW`
+     - nc_pairs_flag.object_raw
+   * - :term:`MODE_NC_PAIRS_FLAG_OBJECT_ID`
+     - nc_pairs_flag.object_id
+   * - :term:`MODE_NC_PAIRS_FLAG_CLUSTER_ID`
+     - nc_pairs_flag.cluster_id
+   * - :term:`MODE_NC_PAIRS_FLAG_POLYLINES`
+     - nc_pairs_flag.polylines
 
 ${METPLUS_CT_STATS_FLAG}
 """"""""""""""""""""""""
@@ -5075,6 +5009,29 @@ ${METPLUS_CT_STATS_FLAG}
    * - :term:`MODE_CT_STATS_FLAG`
      - ct_stats_flag
 
+${METPLUS_OUTPUT_PREFIX}
+""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_OUTPUT_PREFIX`
+     - output_prefix
+
+${METPLUS_MET_CONFIG_OVERRIDES}
+"""""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_MET_CONFIG_OVERRIDES`
+     - n/a
 
 .. _mtd_wrapper:
 
@@ -5523,6 +5480,44 @@ ${METPLUS_MASK_DICT}
 
 .. note:: Since the default value in the MET config file for 'grid' is grid = [ "FULL" ];, setting GRID_STAT_MASK_GRID to an empty string will result in a value of grid = []; in the MET config file.
 
+${METPLUS_PB_REPORT_TYPE}
+"""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PB2NC_PB_REPORT_TYPE`
+     - pb_report_type
+
+${METPLUS_LEVEL_RANGE_DICT}
+"""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PB2NC_LEVEL_RANGE_BEG`
+     - level_range.beg
+   * - :term:`PB2NC_LEVEL_RANGE_END`
+     - level_range.end
+
+${METPLUS_LEVEL_CATEGORY}
+"""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PB2NC_LEVEL_CATEGORY`
+     - level_category
+
 ${METPLUS_OBS_BUFR_VAR}
 """""""""""""""""""""""
 
@@ -5534,6 +5529,30 @@ ${METPLUS_OBS_BUFR_VAR}
      - MET Config File
    * - :term:`PB2NC_OBS_BUFR_VAR_LIST`
      - obs_bufr_var
+
+${METPLUS_OBS_BUFR_MAP}
+"""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PB2NC_OBS_BUFR_MAP`
+     - obs_bufr_map
+
+${METPLUS_QUALITY_MARK_THRESH}
+""""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PB2NC_QUALITY_MARK_THRESH`
+     - quality_mark_thresh
 
 ${METPLUS_TIME_SUMMARY_DICT}
 """"""""""""""""""""""""""""
@@ -5578,68 +5597,6 @@ ${METPLUS_MET_CONFIG_OVERRIDES}
      - MET Config File
    * - :term:`PB2NC_MET_CONFIG_OVERRIDES`
      - n/a
-
-${METPLUS_PB_REPORT_TYPE}
-"""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`PB2NC_PB_REPORT_TYPE`
-     - pb_report_type
-
-${METPLUS_LEVEL_RANGE_DICT}
-"""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`PB2NC_LEVEL_RANGE_BEG`
-     - level_range.beg
-   * - :term:`PB2NC_LEVEL_RANGE_END`
-     - level_range.end
-
-${METPLUS_LEVEL_CATEGORY}
-"""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`PB2NC_LEVEL_CATEGORY`
-     - level_category
-
-${METPLUS_QUALITY_MARK_THRESH}
-""""""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`PB2NC_QUALITY_MARK_THRESH`
-     - quality_mark_thresh
-
-${METPLUS_OBS_BUFR_MAP}
-"""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`PB2NC_OBS_BUFR_MAP`
-     - obs_bufr_map
 
 .. _pcp_combine_wrapper:
 
@@ -6226,6 +6183,17 @@ ${METPLUS_POINT_DATA}
    * - :term:`PLOT_POINT_OBS_POINT_DATA`
      - point_data
 
+${METPLUS_MET_CONFIG_OVERRIDES}
+"""""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PLOT_POINT_OBS_MET_CONFIG_OVERRIDES`
+     - obs.cat_thresh
 
 .. _point2grid_wrapper:
 
@@ -6509,6 +6477,30 @@ ${METPLUS_REGRID_DICT}
    * - :term:`POINT_STAT_REGRID_CENSOR_VAL`
      - regrid.censor_val
 
+${METPLUS_HSS_EC_VALUE}
+"""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_HSS_EC_VALUE`
+     - hss_ec_value
+       
+${METPLUS_FCST_FILE_TYPE}
+"""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_FCST_FILE_TYPE`
+     - fcst.file_type
+       
 ${METPLUS_FCST_FIELD}
 """""""""""""""""""""
 
@@ -6529,8 +6521,8 @@ ${METPLUS_FCST_FIELD}
 
 .. note:: For more information on controlling the forecast field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
 
-${METPLUS_FCST_FILE_TYPE}
-"""""""""""""""""""""""""
+${METPLUS_OBS_FILE_TYPE}
+""""""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -6538,8 +6530,8 @@ ${METPLUS_FCST_FILE_TYPE}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`POINT_STAT_FCST_FILE_TYPE`
-     - fcst.file_type
+   * - :term:`POINT_STAT_OBS_FILE_TYPE`
+     - obs.file_type
 
 ${METPLUS_OBS_FIELD}
 """"""""""""""""""""
@@ -6561,18 +6553,6 @@ ${METPLUS_OBS_FIELD}
 
 .. note:: For more information on controlling the observation field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
 
-${METPLUS_OBS_FILE_TYPE}
-""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`POINT_STAT_OBS_FILE_TYPE`
-     - obs.file_type
-
 ${METPLUS_MESSAGE_TYPE}
 """""""""""""""""""""""
 
@@ -6585,7 +6565,42 @@ ${METPLUS_MESSAGE_TYPE}
    * - :term:`POINT_STAT_MESSAGE_TYPE`
      - message_type
 
+${METPLUS_OBS_QUALITY_INC}
+""""""""""""""""""""""""""
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_OBS_QUALITY_INC`
+     - obs_quality_inc
+
+${METPLUS_OBS_QUALITY_EXC}
+""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_OBS_QUALITY_EXC`
+     - obs_quality_exc
+
+${METPLUS_MESSAGE_TYPE_GROUP_MAP}
+"""""""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_MESSAGE_TYPE_GROUP_MAP`
+     - message_type_group_map
+       
 ${METPLUS_CLIMO_MEAN_DICT}
 """"""""""""""""""""""""""
 
@@ -6646,6 +6661,23 @@ ${METPLUS_CLIMO_STDEV_DICT}
    * - :term:`POINT_STAT_CLIMO_STDEV_HOUR_INTERVAL`
      - climo_stdev.hour_interval
 
+${METPLUS_CLIMO_CDF_DICT}
+"""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_CLIMO_CDF_BINS`
+     - climo_cdf.cdf_bins
+   * - :term:`POINT_STAT_CLIMO_CDF_CENTER_BINS`
+     - climo_cdf.center_bins
+   * - :term:`POINT_STAT_CLIMO_CDF_WRITE_BINS`
+     - climo_cdf.write_bins
+   * - :term:`POINT_STAT_CLIMO_CDF_DIRECT_PROB`
+     - climo_cdf.direct_prob
 
 ${METPLUS_OBS_WINDOW_DICT}
 """"""""""""""""""""""""""
@@ -6679,8 +6711,8 @@ ${METPLUS_MASK_DICT}
    * - :term:`POINT_STAT_MASK_LLPNT`
      - mask.llpnt
 
-${METPLUS_OUTPUT_PREFIX}
-""""""""""""""""""""""""
+${METPLUS_INTERP_DICT}
+""""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -6688,23 +6720,17 @@ ${METPLUS_OUTPUT_PREFIX}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`POINT_STAT_OUTPUT_PREFIX`
-     - output_prefix
+   * - :term:`POINT_STAT_INTERP_VLD_THRESH`
+     - interp.vld_thresh
+   * - :term:`POINT_STAT_INTERP_SHAPE`
+     - interp.shape
+   * - :term:`POINT_STAT_INTERP_TYPE_METHOD`
+     - interp.type.method
+   * - :term:`POINT_STAT_INTERP_TYPE_WIDTH`
+     - interp.type.width
 
-${METPLUS_MET_CONFIG_OVERRIDES}
-"""""""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`POINT_STAT_MET_CONFIG_OVERRIDES`
-     - n/a
-
-${METPLUS_CLIMO_CDF_DICT}
-"""""""""""""""""""""""""
+${METPLUS_HIRA_DICT}
+""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -6712,38 +6738,18 @@ ${METPLUS_CLIMO_CDF_DICT}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`POINT_STAT_CLIMO_CDF_BINS`
-     - climo_cdf.cdf_bins
-   * - :term:`POINT_STAT_CLIMO_CDF_CENTER_BINS`
-     - climo_cdf.center_bins
-   * - :term:`POINT_STAT_CLIMO_CDF_WRITE_BINS`
-     - climo_cdf.write_bins
-   * - :term:`POINT_STAT_CLIMO_CDF_DIRECT_PROB`
-     - climo_cdf.direct_prob
-
-${METPLUS_OBS_QUALITY_INC}
-""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`POINT_STAT_OBS_QUALITY_INC`
-     - obs_quality_inc
-
-${METPLUS_OBS_QUALITY_EXC}
-""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`POINT_STAT_OBS_QUALITY_EXC`
-     - obs_quality_exc
+   * - :term:`POINT_STAT_HIRA_FLAG`
+     - hira.flag
+   * - :term:`POINT_STAT_HIRA_WIDTH`
+     - hira.width
+   * - :term:`POINT_STAT_HIRA_VLD_THRESH`
+     - hira.vld_thresh
+   * - :term:`POINT_STAT_HIRA_COV_THRESH`
+     - hira.cov_thresh
+   * - :term:`POINT_STAT_HIRA_SHAPE`
+     - hira.shape
+   * - :term:`POINT_STAT_HIRA_PROB_CAT_THRESH`
+     - hira.prob_cat_thresh
 
 ${METPLUS_OUTPUT_FLAG_DICT}
 """""""""""""""""""""""""""
@@ -6799,70 +6805,6 @@ ${METPLUS_OUTPUT_FLAG_DICT}
    * - :term:`POINT_STAT_OUTPUT_FLAG_SEEPS_MPR`
      - output_flag.seeps_mpr
 
-${METPLUS_INTERP_DICT}
-""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`POINT_STAT_INTERP_VLD_THRESH`
-     - interp.vld_thresh
-   * - :term:`POINT_STAT_INTERP_SHAPE`
-     - interp.shape
-   * - :term:`POINT_STAT_INTERP_TYPE_METHOD`
-     - interp.type.method
-   * - :term:`POINT_STAT_INTERP_TYPE_WIDTH`
-     - interp.type.width
-
-${METPLUS_HSS_EC_VALUE}
-"""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`POINT_STAT_HSS_EC_VALUE`
-     - hss_ec_value
-
-${METPLUS_HIRA_DICT}
-""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`POINT_STAT_HIRA_FLAG`
-     - hira.flag
-   * - :term:`POINT_STAT_HIRA_WIDTH`
-     - hira.width
-   * - :term:`POINT_STAT_HIRA_VLD_THRESH`
-     - hira.vld_thresh
-   * - :term:`POINT_STAT_HIRA_COV_THRESH`
-     - hira.cov_thresh
-   * - :term:`POINT_STAT_HIRA_SHAPE`
-     - hira.shape
-   * - :term:`POINT_STAT_HIRA_PROB_CAT_THRESH`
-     - hira.prob_cat_thresh
-
-${METPLUS_MESSAGE_TYPE_GROUP_MAP}
-"""""""""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`POINT_STAT_MESSAGE_TYPE_GROUP_MAP`
-     - message_type_group_map
-
 ${METPLUS_SEEPS_P1_THRESH}
 """"""""""""""""""""""""""
 
@@ -6874,7 +6816,30 @@ ${METPLUS_SEEPS_P1_THRESH}
      - MET Config File
    * - :term:`POINT_STAT_SEEPS_P1_THRESH`
      - seeps_p1_thresh
+       
+${METPLUS_OUTPUT_PREFIX}
+""""""""""""""""""""""""
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_OUTPUT_PREFIX`
+     - output_prefix
+
+${METPLUS_MET_CONFIG_OVERRIDES}
+"""""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_MET_CONFIG_OVERRIDES`
+     - n/a
 
 .. _py_embed_ingest_wrapper:
 
@@ -7201,6 +7166,18 @@ ${METPLUS_FCST_FILE_TYPE}
    * - :term:`FCST_SERIES_ANALYSIS_INPUT_DATATYPE`
      - fcst.file_type
 
+${METPLUS_FCST_CAT_THRESH}
+""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`FCST_SERIES_ANALYSIS_CAT_THRESH`
+     - fcst.cat_thresh
+
 ${METPLUS_FCST_FIELD}
 """""""""""""""""""""
 
@@ -7234,6 +7211,18 @@ ${METPLUS_OBS_FILE_TYPE}
      - MET Config File
    * - :term:`OBS_SERIES_ANALYSIS_INPUT_DATATYPE`
      - obs.file_type
+
+${METPLUS_OBS_CAT_THRESH}
+"""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`OBS_SERIES_ANALYSIS_CAT_THRESH`
+     - obs.cat_thresh
 
 ${METPLUS_OBS_FIELD}
 """"""""""""""""""""
@@ -7373,30 +7362,6 @@ ${METPLUS_VLD_THRESH}
    * - :term:`SERIES_ANALYSIS_VLD_THRESH`
      - vld_thresh
 
-${METPLUS_MET_CONFIG_OVERRIDES}
-"""""""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`SERIES_ANALYSIS_MET_CONFIG_OVERRIDES`
-     - n/a
-
-${METPLUS_HSS_EC_VALUE}
-"""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`SERIES_ANALYSIS_HSS_EC_VALUE`
-     - hss_ec_value
-
 ${METPLUS_OUTPUT_STATS_DICT}
 """"""""""""""""""""""""""""
 
@@ -7431,8 +7396,8 @@ ${METPLUS_OUTPUT_STATS_DICT}
    * - :term:`SERIES_ANALYSIS_OUTPUT_STATS_PRC`
      - output_stats.prc
 
-${METPLUS_FCST_CAT_THRESH}
-""""""""""""""""""""""""""
+${METPLUS_HSS_EC_VALUE}
+"""""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -7440,11 +7405,11 @@ ${METPLUS_FCST_CAT_THRESH}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`FCST_SERIES_ANALYSIS_CAT_THRESH`
-     - fcst.cat_thresh
+   * - :term:`SERIES_ANALYSIS_HSS_EC_VALUE`
+     - hss_ec_value
 
-${METPLUS_OBS_CAT_THRESH}
-"""""""""""""""""""""""""
+${METPLUS_MET_CONFIG_OVERRIDES}
+"""""""""""""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -7452,9 +7417,8 @@ ${METPLUS_OBS_CAT_THRESH}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`OBS_SERIES_ANALYSIS_CAT_THRESH`
-     - obs.cat_thresh
-
+   * - :term:`SERIES_ANALYSIS_MET_CONFIG_OVERRIDES`
+     - n/a 
 
 SeriesByInit
 ============
@@ -8196,20 +8160,8 @@ ${METPLUS_JOBS}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`STAT_ANALYSIS_JOB_NAME`
+   * - :term:`STAT_ANALYSIS_JOB\<n\>`
      - jobs
-
-${METPLUS_MET_CONFIG_OVERRIDES}
-"""""""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`STAT_ANALYSIS_MET_CONFIG_OVERRIDES`
-     - n/a
 
 ${METPLUS_HSS_EC_VALUE}
 """""""""""""""""""""""
@@ -8223,6 +8175,17 @@ ${METPLUS_HSS_EC_VALUE}
    * - :term:`STAT_ANALYSIS_HSS_EC_VALUE`
      - hss_ec_value
 
+${METPLUS_MET_CONFIG_OVERRIDES}
+"""""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`STAT_ANALYSIS_MET_CONFIG_OVERRIDES`
+     - n/a
 
 .. _tc_diag_wrapper:
 
@@ -8369,8 +8332,8 @@ ${METPLUS_CYCLONE}
    * - :term:`TC_DIAG_CYCLONE`
      - cyclone
 
-${METPLUS_INIT_INCLUDE_LIST}
-""""""""""""""""""""""""""""
+${METPLUS_INIT_INCLUDE}
+"""""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -8521,24 +8484,6 @@ ${METPLUS_CONVERT}
    * - :term:`TC_DIAG_CONVERT`
      - convert
 
-${METPLUS_DATA_FIELD}
-"""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`BOTH_VAR<n>_NAME`
-     - data.field.name
-   * - :term:`BOTH_VAR<n>_LEVELS`
-     - data.field.level
-   * - :term:`BOTH_VAR<n>_OPTIONS`
-     - n/a
-
-.. note:: For more information on controlling the field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
-
 ${METPLUS_DATA_FILE_TYPE}
 """""""""""""""""""""""""
 
@@ -8574,6 +8519,24 @@ ${METPLUS_DATA_LEVEL}
      - MET Config File
    * - :term:`TC_DIAG_DATA_LEVEL`
      - data.level
+
+${METPLUS_DATA_FIELD}
+"""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`BOTH_VAR<n>_NAME`
+     - data.field.name
+   * - :term:`BOTH_VAR<n>_LEVELS`
+     - data.field.level
+   * - :term:`BOTH_VAR<n>_OPTIONS`
+     - n/a
+
+.. note:: For more information on controlling the field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
 
 ${METPLUS_REGRID_DICT}
 """"""""""""""""""""""
@@ -9186,8 +9149,8 @@ ${METPLUS_DLAND_THRESH}
    * - :term:`TC_GEN_DLAND_THRESH`
      - dland_thresh
 
-${METPLUS_DEV_HIT_WINDOW_DICT}
-""""""""""""""""""""""""""""""
+${METPLUS_GENESIS_MATCH_POINT_TO_TRACK}
+"""""""""""""""""""""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -9195,10 +9158,8 @@ ${METPLUS_DEV_HIT_WINDOW_DICT}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_GEN_DEV_HIT_WINDOW_BEGIN`
-     - dev_hit_window.beg
-   * - :term:`TC_GEN_DEV_HIT_WINDOW_END`
-     - dev_hit_window.end
+   * - :term:`TC_GEN_GENESIS_MATCH_POINT_TO_TRACK`
+     - genesis_match_point_to_track
 
 ${METPLUS_GENESIS_MATCH_RADIUS}
 """""""""""""""""""""""""""""""
@@ -9211,18 +9172,6 @@ ${METPLUS_GENESIS_MATCH_RADIUS}
      - MET Config File
    * - :term:`TC_GEN_GENESIS_MATCH_RADIUS`
      - genesis_match_radius
-
-${METPLUS_GENESIS_MATCH_POINT_TO_TRACK}
-"""""""""""""""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`TC_GEN_GENESIS_MATCH_POINT_TO_TRACK`
-     - genesis_match_point_to_track
 
 ${METPLUS_GENESIS_MATCH_WINDOW_DICT}
 """"""""""""""""""""""""""""""""""""
@@ -9249,6 +9198,20 @@ ${METPLUS_DEV_HIT_RADIUS}
      - MET Config File
    * - :term:`TC_GEN_DEV_HIT_RADIUS`
      - dev_hit_radius
+
+${METPLUS_DEV_HIT_WINDOW_DICT}
+""""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_DEV_HIT_WINDOW_BEGIN`
+     - dev_hit_window.beg
+   * - :term:`TC_GEN_DEV_HIT_WINDOW_END`
+     - dev_hit_window.end
 
 ${METPLUS_OPS_HIT_WINDOW_DICT}
 """"""""""""""""""""""""""""""
@@ -9689,6 +9652,30 @@ ${METPLUS_INIT_EXC}
    * - :term:`TC_PAIRS_INIT_EXCLUDE`
      - init_exc
 
+${METPLUS_VALID_BEG}
+""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_PAIRS_VALID_BEG`
+     - valid_beg
+
+${METPLUS_VALID_END}
+""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_PAIRS_VALID_END`
+     - valid_end
+
 ${METPLUS_VALID_INC}
 """"""""""""""""""""
 
@@ -9725,7 +9712,7 @@ ${METPLUS_WRITE_VALID}
    * - :term:`TC_PAIRS_WRITE_VALID`
      - write_valid
 
-${METPLUS_VALID_BEG}
+${METPLUS_CHECK_DUP}
 """"""""""""""""""""
 
 .. list-table::
@@ -9734,11 +9721,11 @@ ${METPLUS_VALID_BEG}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_PAIRS_VALID_BEG`
-     - valid_beg
+   * - :term:`TC_PAIRS_CHECK_DUP`
+     - check_dup
 
-${METPLUS_VALID_END}
-""""""""""""""""""""
+${METPLUS_INTERP12}
+"""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -9746,8 +9733,28 @@ ${METPLUS_VALID_END}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_PAIRS_VALID_END`
-     - valid_end
+   * - :term:`TC_PAIRS_INTERP12`
+     - interp12
+
+${METPLUS_CONSENSUS_LIST}
+"""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_PAIRS_CONSENSUS<n>_NAME`
+     - consensus.name
+   * - :term:`TC_PAIRS_CONSENSUS<n>_MEMBERS`
+     - consensus.members
+   * - :term:`TC_PAIRS_CONSENSUS<n>_REQUIRED`
+     - consensus.required
+   * - :term:`TC_PAIRS_CONSENSUS<n>_MIN_REQ`
+     - consensus.min_req
+   * - :term:`TC_PAIRS_CONSENSUS<n>_WRITE_MEMBERS`
+     - consensus.write_members
 
 ${METPLUS_MATCH_POINTS}
 """""""""""""""""""""""
@@ -9772,63 +9779,6 @@ ${METPLUS_DLAND_FILE}
      - MET Config File
    * - :term:`TC_PAIRS_DLAND_FILE`
      - dland_file
-
-${METPLUS_MET_CONFIG_OVERRIDES}
-"""""""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`TC_PAIRS_MET_CONFIG_OVERRIDES`
-     - n/a
-
-${METPLUS_CONSENSUS_LIST}
-"""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`TC_PAIRS_CONSENSUS<n>_NAME`
-     - consensus.name
-   * - :term:`TC_PAIRS_CONSENSUS<n>_MEMBERS`
-     - consensus.members
-   * - :term:`TC_PAIRS_CONSENSUS<n>_REQUIRED`
-     - consensus.required
-   * - :term:`TC_PAIRS_CONSENSUS<n>_MIN_REQ`
-     - consensus.min_req
-   * - :term:`TC_PAIRS_CONSENSUS<n>_WRITE_MEMBERS`
-     - consensus.write_members
-
-
-${METPLUS_CHECK_DUP}
-""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`TC_PAIRS_CHECK_DUP`
-     - check_dup
-
-${METPLUS_INTERP12}
-"""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`TC_PAIRS_INTERP12`
-     - interp12
 
 ${METPLUS_DIAG_INFO_MAP_LIST}
 """""""""""""""""""""""""""""
@@ -9866,7 +9816,18 @@ ${METPLUS_DIAG_CONVERT_MAP_LIST}
    * - :term:`TC_PAIRS_DIAG_CONVERT_MAP<n>_CONVERT`
      - diag_convert_map.convert
 
+${METPLUS_MET_CONFIG_OVERRIDES}
+"""""""""""""""""""""""""""""""
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_PAIRS_MET_CONFIG_OVERRIDES`
+     - n/a
+       
 .. _tcrmw_wrapper:
 
 TCRMW
@@ -10421,8 +10382,8 @@ ${METPLUS_INIT_END}
    * - :term:`TC_STAT_INIT_END`
      - init_end
 
-${METPLUS_INIT_INCLUDE}
-"""""""""""""""""""""""
+${METPLUS_INIT_INC}
+"""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -10433,8 +10394,8 @@ ${METPLUS_INIT_INCLUDE}
    * - :term:`TC_STAT_INIT_INCLUDE`
      - init_inc
 
-${METPLUS_INIT_EXCLUDE}
-"""""""""""""""""""""""
+${METPLUS_INIT_EXC}
+"""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -10469,8 +10430,8 @@ ${METPLUS_VALID_END}
    * - :term:`TC_STAT_VALID_END`
      - valid_end
 
-${METPLUS_VALID_INCLUDE}
-""""""""""""""""""""""""
+${METPLUS_VALID_INC}
+""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -10481,8 +10442,8 @@ ${METPLUS_VALID_INCLUDE}
    * - :term:`TC_STAT_VALID_INCLUDE`
      - valid_inc
 
-${METPLUS_VALID_EXCLUDE}
-""""""""""""""""""""""""
+${METPLUS_VALID_EXC}
+""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -10841,30 +10802,6 @@ ${METPLUS_MATCH_POINTS}
    * - :term:`TC_STAT_MATCH_POINTS`
      - match_points
 
-${METPLUS_JOBS}
-"""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`TC_STAT_JOBS_LIST`
-     - jobs
-
-${METPLUS_MET_CONFIG_OVERRIDES}
-"""""""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`TC_STAT_MET_CONFIG_OVERRIDES`
-     - n/a
-
 ${METPLUS_EVENT_EQUAL}
 """"""""""""""""""""""
 
@@ -10912,7 +10849,30 @@ ${METPLUS_OUT_VALID_MASK}
      - MET Config File
    * - :term:`TC_STAT_OUT_VALID_MASK`
      - out_valid_mask
+       
+${METPLUS_JOBS}
+"""""""""""""""
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_JOBS_LIST`
+     - jobs
+
+${METPLUS_MET_CONFIG_OVERRIDES}
+"""""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_MET_CONFIG_OVERRIDES`
+     - n/a
 
 .. _user_script_wrapper:
 

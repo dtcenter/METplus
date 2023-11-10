@@ -49,11 +49,13 @@ rank_corr_flag = FALSE;
 //
 fcst = {
   ${METPLUS_FCST_FILE_TYPE}
+  //field = [
   ${METPLUS_FCST_FIELD}
 }
 
 obs = {
   ${METPLUS_OBS_FILE_TYPE}
+  //field = [
   ${METPLUS_OBS_FIELD}
 }
 ////////////////////////////////////////////////////////////////////////////////

@@ -9,51 +9,108 @@
 //
 // Filtering input STAT lines by the contents of each column
 //
+//model = [
 ${METPLUS_MODEL}
+
+//desc  = [
 ${METPLUS_DESC}
 
+//fcst_lead = [
 ${METPLUS_FCST_LEAD}
+
+//obs_lead  = [
 ${METPLUS_OBS_LEAD}
 
+//fcst_valid_beg  =
 ${METPLUS_FCST_VALID_BEG}
+
+//fcst_valid_end  =
 ${METPLUS_FCST_VALID_END}
+
+fcst_valid_inc  = [];
+fcst_valid_exc  = [];
+
+//fcst_valid_hour = [
 ${METPLUS_FCST_VALID_HOUR}
 
+
+//obs_valid_beg   =
 ${METPLUS_OBS_VALID_BEG}
+
+//obs_valid_end   =
 ${METPLUS_OBS_VALID_END}
+
+obs_valid_inc   = [];
+obs_valid_exc   = [];
+
+//obs_valid_hour  = [
 ${METPLUS_OBS_VALID_HOUR}
 
+
+//fcst_init_beg   =
 ${METPLUS_FCST_INIT_BEG}
+
+//fcst_init_end   =
 ${METPLUS_FCST_INIT_END}
+
+fcst_init_inc   = [];
+fcst_init_exc   = [];
+
+//fcst_init_hour  = [
 ${METPLUS_FCST_INIT_HOUR}
 
+
+//obs_init_beg    =
 ${METPLUS_OBS_INIT_BEG}
+
+//obs_init_end    =
 ${METPLUS_OBS_INIT_END}
+
+obs_init_inc    = [];
+obs_init_exc    = [];
+
+//obs_init_hour   = [
 ${METPLUS_OBS_INIT_HOUR}
 
+
+//fcst_var = [
 ${METPLUS_FCST_VAR}
+//obs_var  = [
 ${METPLUS_OBS_VAR}
 
+//fcst_units = [
 ${METPLUS_FCST_UNITS}
+//obs_units  = [
 ${METPLUS_OBS_UNITS}
 
+//fcst_lev = [
 ${METPLUS_FCST_LEVEL}
+//obs_lev  = [
 ${METPLUS_OBS_LEVEL}
 
+//obtype = [
 ${METPLUS_OBTYPE}
 
+//vx_mask = [
 ${METPLUS_VX_MASK}
 
+//interp_mthd = [
 ${METPLUS_INTERP_MTHD}
 
+//interp_pnts = [
 ${METPLUS_INTERP_PNTS}
 
+//fcst_thresh = [
 ${METPLUS_FCST_THRESH}
+//obs_thresh = [
 ${METPLUS_OBS_THRESH}
+//cov_thresh = [
 ${METPLUS_COV_THRESH}
 
+//alpha = [
 ${METPLUS_ALPHA}
 
+//line_type = [
 ${METPLUS_LINE_TYPE}
 
 column = [];
@@ -65,6 +122,7 @@ weight = [];
 //
 // Array of STAT-Analysis jobs to be performed on the filtered data
 //
+//jobs = [
 ${METPLUS_JOBS}
 
 ////////////////////////////////////////////////////////////////////////////////
