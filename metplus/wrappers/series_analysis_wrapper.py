@@ -26,10 +26,9 @@ from ..util import getlist, get_storms, mkdir_p
 from ..util import do_string_sub, parse_template, get_tags
 from ..util import get_lead_sequence, get_lead_sequence_groups
 from ..util import ti_get_hours_from_lead, ti_get_seconds_from_lead
-from ..util import ti_get_lead_string, ti_calculate
-from ..util import ti_get_seconds_from_relativedelta
+from ..util import ti_get_lead_string
 from ..util import parse_var_list
-from ..util import add_to_time_input
+from ..util import add_to_time_input, is_single_run_time
 from ..util import field_read_prob_info, add_field_info_to_time_info
 from .plot_data_plane_wrapper import PlotDataPlaneWrapper
 from . import RuntimeFreqWrapper
@@ -793,9 +792,11 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             add_field_info_to_time_info(time_info, var_info)
 
             # get formatted field dictionary to pass into the MET config file
-            fcst_field, obs_field = self.get_formatted_fields(var_info,
-                                                              fcst_path,
-                                                              obs_path)
+            fcst_field, obs_field = (
+                self.get_formatted_fields(var_info, time_info, fcst_path, obs_path)
+            )
+            if fcst_field is None:
+                continue
 
             self.format_field('FCST', fcst_field)
             self.format_field('OBS', obs_field)
@@ -978,8 +979,11 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         num = str(len(files_of_interest))
 
         data_type = 'BOTH' if self.c_dict['USING_BOTH'] else 'FCST'
-        template = os.path.join(self.c_dict[f'{data_type}_INPUT_DIR'],
-                                self.c_dict[f'{data_type}_INPUT_TEMPLATE'])
+
+        # handle multiple templates
+        templates = []
+        for template in self.c_dict[f'{data_type}_INPUT_TEMPLATE'].split(','):
+            templates.append(os.path.join(self.c_dict[f'{data_type}_INPUT_DIR'], template.strip()))
 
         smallest_fcst = 99999999
         largest_fcst = -99999999
@@ -987,11 +991,16 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         end = None
         for filepath in files_of_interest:
             filepath = filepath.strip()
-            file_time_info = parse_template(template,
-                                            filepath,
-                                            self.logger)
-            if not file_time_info:
+            found = False
+            for template in templates:
+                file_time_info = parse_template(template, filepath, self.logger)
+                if file_time_info:
+                    found = True
+                    break
+
+            if not found:
                 continue
+
             lead = ti_get_seconds_from_lead(file_time_info.get('lead'),
                                             file_time_info.get('valid'))
             if lead < smallest_fcst:
@@ -1024,18 +1033,26 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         except (FileNotFoundError, KeyError):
             return None, None
 
-    def get_formatted_fields(self, var_info, fcst_path, obs_path):
+    def get_formatted_fields(self, var_info, time_info, fcst_path, obs_path):
         """! Get forecast and observation field information for var_info and
             format it so it can be passed into the MET config file
 
             @param var_info dictionary containing info to format
+            @param time_info dictionary containing time information
+            @param fcst_path path to file list file for forecast data
+            @param obs_path path to file list file for observation data
             @returns tuple containing strings of the formatted forecast and
-            observation information or None, None if something went wrong
+            observation information or (None, None) if something went wrong
         """
-        fcst_field_list = self._get_field_list('fcst', var_info, obs_path)
-        obs_field_list = self._get_field_list('obs', var_info, fcst_path)
+        fcst_field_list = (
+            self._get_field_list('fcst', var_info, time_info, obs_path)
+        )
+        obs_field_list = (
+            self._get_field_list('obs', var_info, time_info, fcst_path)
+        )
 
         if not fcst_field_list or not obs_field_list:
+            self.log_error('Could not build formatted fcst and obs field lists')
             return None, None
 
         fcst_fields = ','.join(fcst_field_list)
@@ -1043,52 +1060,97 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         return fcst_fields, obs_fields
 
-    def _get_field_list(self, data_type, var_info, file_list_path):
+    def _get_field_list(self, data_type, var_info, time_info, file_list_path):
+        """!Get formatted field information in a list.
+        If no time (init/valid/lead) filename template tags were found in the
+        level value or if the time info contains all init/valid/lead values
+        (none are wildcards), then return a single formatted field item.
+        Otherwise, loop through the file list files and use the input template
+        to extract time information to use for each field entry.
+        The latter is done when processing one data type that has individual
+        files for each time and one data type has a single file with all times.
+
+        @param data_type type of data to process, e.g. fcst or obs
+        @param var_info dictionary containing info to format
+        @param time_info dictionary containing time information
+        @param file_list_path path to file list file to parse
+        @returns list containing formatted field info to pass to MET config
+        """
         other = 'OBS' if data_type == 'fcst' else 'FCST'
-        # check if time filename template tags are used in field level
-        if not self._has_time_tag(var_info[f'{data_type}_level']):
-            # get field info for a single field to pass to the MET config file
-            return self.get_field_info(
-                v_level=var_info[f'{data_type}_level'],
-                v_thresh=var_info[f'{data_type}_thresh'],
-                v_name=var_info[f'{data_type}_name'],
-                v_extra=var_info[f'{data_type}_extra'],
-                d_type=data_type.upper()
-            )
+        # if there are no time tags (init/valid/lead) in the field level
+        # or if init, valid, and lead have values in time_info,
+        # get field info for a single field to pass to the MET config file
+        if (not self._has_time_tag(var_info[f'{data_type}_level']) or
+                is_single_run_time(time_info)):
+            return self._get_field_sub_level(data_type, var_info, time_info)
 
         field_list = []
-        # loop through fcst and obs files to extract time info
-        template = os.path.join(self.c_dict[f'{other}_INPUT_DIR'],
-                                self.c_dict[f'{other}_INPUT_TEMPLATE'])
+
+        # handle multiple templates
+        templates = []
+        for template in self.c_dict[f'{other}_INPUT_TEMPLATE'].split(','):
+            templates.append(os.path.join(self.c_dict[f'{other}_INPUT_DIR'], template.strip()))
+
+        # loop through fcst/obs files to extract time info
         # for each file apply time info to field info and add to list
         for file_time_info in self._get_times_from_file_list(file_list_path,
-                                                             template):
-            level = do_string_sub(var_info[f'{data_type}_level'],
-                                  **file_time_info)
-            field = self.get_field_info(
-                v_level=level,
-                v_thresh=var_info[f'{data_type}_thresh'],
-                v_name=var_info[f'{data_type}_name'],
-                v_extra=var_info[f'{data_type}_extra'],
-                d_type=data_type.upper()
-            )
+                                                             templates):
+            field = self._get_field_sub_level(data_type, var_info, file_time_info)
             if field:
                 field_list.extend(field)
 
         return field_list
 
     @staticmethod
-    def _has_time_tag(level):
+    def _has_time_tag(string_to_parse):
+        """!Get all filename template tags from raw string and check if any of
+        the time info tags (init/valid/lead) were found.
+
+        @param string_to_parse string to search for filename template tags
+        @returns True if init, valid, or lead tags, e.g. {lead?fmt=%H},
+         were found in string. False if none of them were found.
+        """
         return any(item in ['init', 'valid', 'lead']
-                   for item in get_tags(level))
+                   for item in get_tags(string_to_parse))
+
+    def _get_field_sub_level(self, data_type, var_info, time_dict):
+        """!Get formatted field information for data type, substituting time
+        information into level value.
+
+        @param data_type type of data to find, e.g. fcst or obs
+        @param var_info dictionary containing info to format
+        @param time_dict dictionary containing time information
+        @returns string with formatted field info or None
+        """
+        level = do_string_sub(var_info[f'{data_type}_level'], **time_dict)
+        return self.get_field_info(
+            v_level=level,
+            v_thresh=var_info[f'{data_type}_thresh'],
+            v_name=var_info[f'{data_type}_name'],
+            v_extra=var_info[f'{data_type}_extra'],
+            d_type=data_type.upper()
+        )
 
     @staticmethod
-    def _get_times_from_file_list(file_path, template):
+    def _get_times_from_file_list(file_path, templates):
+        """!Generator that yields time info dictionaries.
+        Loops through file paths found in text file and use list of filename
+        templates to parse time information from each file.
+
+        @param file_path path to file list file to parse
+        @param templates list of filename templates to use to parse time info
+        out of file paths found in file_path file
+        """
         with open(file_path, 'r') as file_handle:
             file_list = file_handle.read().splitlines()[1:]
 
         for file_name in file_list:
-            file_time_info = parse_template(template, file_name)
-            if not file_time_info:
+            found = False
+            for template in templates:
+                file_time_info = parse_template(template, file_name)
+                if file_time_info:
+                    found = True
+                    break
+            if not found:
                 continue
             yield file_time_info

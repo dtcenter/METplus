@@ -17,5 +17,5 @@ METPLUS_VERSION=$1
 # Conda environment to create
 ENV_NAME=metplus_base.${METPLUS_VERSION}
 
-conda create -y --name ${ENV_NAME} -c conda-forge python=3.10.4
-conda install -y --name ${ENV_NAME} -c conda-forge python-dateutil==2.8.2
+mamba create -y --name ${ENV_NAME} -c conda-forge python=3.10.4
+mamba install -y --name ${ENV_NAME} -c conda-forge python-dateutil==2.8.2
