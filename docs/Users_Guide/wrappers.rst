@@ -5597,7 +5597,7 @@ ${METPLUS_MET_CONFIG_OVERRIDES}
      - MET Config File
    * - :term:`PB2NC_MET_CONFIG_OVERRIDES`
      - n/a
-       
+
 .. _pcp_combine_wrapper:
 
 PCPCombine
@@ -6532,7 +6532,7 @@ ${METPLUS_OBS_FILE_TYPE}
      - MET Config File
    * - :term:`POINT_STAT_OBS_FILE_TYPE`
      - obs.file_type
-   
+
 ${METPLUS_OBS_FIELD}
 """"""""""""""""""""
 
@@ -7406,8 +7406,8 @@ ${METPLUS_HSS_EC_VALUE}
    * - METplus Config(s)
      - MET Config File
    * - :term:`SERIES_ANALYSIS_HSS_EC_VALUE`
-     - hss_ec_value2a
-       
+     - hss_ec_value
+
 ${METPLUS_MET_CONFIG_OVERRIDES}
 """""""""""""""""""""""""""""""
 
@@ -8173,7 +8173,7 @@ ${METPLUS_HSS_EC_VALUE}
    * - METplus Config(s)
      - MET Config File
    * - :term:`STAT_ANALYSIS_HSS_EC_VALUE`
-     - hss_ec_value       
+     - hss_ec_value
 
 ${METPLUS_MET_CONFIG_OVERRIDES}
 """""""""""""""""""""""""""""""
@@ -9779,7 +9779,7 @@ ${METPLUS_DLAND_FILE}
      - MET Config File
    * - :term:`TC_PAIRS_DLAND_FILE`
      - dland_file
- 
+
 ${METPLUS_DIAG_INFO_MAP_LIST}
 """""""""""""""""""""""""""""
 
