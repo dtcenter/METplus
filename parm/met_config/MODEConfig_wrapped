@@ -61,34 +61,56 @@ ${METPLUS_MULTIVAR_INTENSITY_FLAG}
 // Forecast and observation fields to be verified
 //
 fcst = {
+   //field = {
    ${METPLUS_FCST_FIELD}
 
+   //censor_thresh      = [
    ${METPLUS_FCST_CENSOR_THRESH}
+   //censor_val         = [
    ${METPLUS_FCST_CENSOR_VAL}
+   //conv_radius        =
    ${METPLUS_FCST_CONV_RADIUS}
+   //conv_thresh        =
    ${METPLUS_FCST_CONV_THRESH}
+   //vld_thresh         =
    ${METPLUS_FCST_VLD_THRESH}
+   //filter_attr_name   = [
    ${METPLUS_FCST_FILTER_ATTR_NAME}
+   //filter_attr_thresh = [
    ${METPLUS_FCST_FILTER_ATTR_THRESH}
+   //merge_thresh       =
    ${METPLUS_FCST_MERGE_THRESH}
+   //merge_flag         =
    ${METPLUS_FCST_MERGE_FLAG}
+
    ${METPLUS_FCST_FILE_TYPE}
    ${METPLUS_FCST_MULTIVAR_NAME}
    ${METPLUS_FCST_MULTIVAR_LEVEL}
 }
 
 obs = {
+   //field = {
    ${METPLUS_OBS_FIELD}
 
+   //censor_thresh      = [
    ${METPLUS_OBS_CENSOR_THRESH}
+   //censor_val         = [
    ${METPLUS_OBS_CENSOR_VAL}
+   //conv_radius        =
    ${METPLUS_OBS_CONV_RADIUS}
+   //conv_thresh        =
    ${METPLUS_OBS_CONV_THRESH}
+   //vld_thresh         =
    ${METPLUS_OBS_VLD_THRESH}
+   //filter_attr_name   = [
    ${METPLUS_OBS_FILTER_ATTR_NAME}
+   //filter_attr_thresh = [
    ${METPLUS_OBS_FILTER_ATTR_THRESH}
+   //merge_thresh       =
    ${METPLUS_OBS_MERGE_THRESH}
+   //merge_flag         =
    ${METPLUS_OBS_MERGE_FLAG}
+
    ${METPLUS_OBS_FILE_TYPE}
    ${METPLUS_OBS_MULTIVAR_NAME}
    ${METPLUS_OBS_MULTIVAR_LEVEL}
@@ -137,10 +159,13 @@ ${METPLUS_WEIGHT_DICT}
 //
 interest_function = {
 
+   //centroid_dist = (
    ${METPLUS_INTEREST_FUNCTION_CENTROID_DIST}
 
+   //boundary_dist = (
    ${METPLUS_INTEREST_FUNCTION_BOUNDARY_DIST}
 
+   //convex_hull_dist = (
    ${METPLUS_INTEREST_FUNCTION_CONVEX_HULL_DIST}
 
    angle_diff = (

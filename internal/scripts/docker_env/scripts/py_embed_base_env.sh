@@ -7,7 +7,7 @@
 #   on a local machine to create the environment
 # Python Packages:
 #   xarray==2022.3.0
-#   netcdf4==1.5.8
+#   netcdf4==1.6.2
 #
 # Other Content: None
 ################################################################################
@@ -18,6 +18,6 @@ METPLUS_VERSION=$1
 # Conda environment to create
 ENV_NAME=py_embed_base.${METPLUS_VERSION}
 
-conda create -y --name ${ENV_NAME} -c conda-forge python=3.10.4
-conda install -y --name ${ENV_NAME} -c conda-forge xarray==2022.3.0
-conda install -y --name ${ENV_NAME} -c conda-forge netcdf4==1.5.8
+mamba create -y --name ${ENV_NAME} -c conda-forge python=3.10.4
+mamba install -y --name ${ENV_NAME} -c conda-forge xarray==2022.3.0
+mamba install -y --name ${ENV_NAME} -c conda-forge netcdf4==1.6.2

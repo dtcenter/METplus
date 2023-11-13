@@ -48,11 +48,13 @@ cnt_logic     = UNION;
 fcst = {
    ${METPLUS_FCST_FILE_TYPE}
    ${METPLUS_FCST_CAT_THRESH}
+   //field = [
    ${METPLUS_FCST_FIELD}
 }
 obs = {
    ${METPLUS_OBS_FILE_TYPE}
    ${METPLUS_OBS_CAT_THRESH}
+   //field = [
    ${METPLUS_OBS_FIELD}
 }
 

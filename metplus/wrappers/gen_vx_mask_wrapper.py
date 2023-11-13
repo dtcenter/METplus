@@ -14,7 +14,7 @@ import os
 
 from ..util import getlist, get_lead_sequence, skip_time, ti_calculate, mkdir_p
 from . import LoopTimesWrapper
-from ..util import do_string_sub
+from ..util import do_string_sub, remove_quotes
 
 '''!@namespace GenVxMaskWrapper
 @brief Wraps the GenVxMask tool to reformat ascii format to NetCDF
@@ -201,7 +201,7 @@ class GenVxMaskWrapper(LoopTimesWrapper):
             return False
 
         # add input and mask file to input file list
-        self.infiles.append(input_path)
+        self.infiles.append(f'"{remove_quotes(input_path)}"')
         self.infiles.append(mask_file)
 
         return True
