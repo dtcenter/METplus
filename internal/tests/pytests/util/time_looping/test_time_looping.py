@@ -366,6 +366,11 @@ def test_time_generator_error_check_beg_end(metplus_config, prefix):
     # _INCREMENT is less than 60 seconds
     config.set('config', f'{prefix}_INCREMENT', '10S')
     assert next(tl.time_generator(config)) is None
+
+    # _INCREMENT is empty string
+    config.set('config', f'{prefix}_INCREMENT', '')
+    assert next(tl.time_generator(config)) is not None
+
     config.set('config', f'{prefix}_INCREMENT', '1d')
 
     # _END time comes before _BEG time
