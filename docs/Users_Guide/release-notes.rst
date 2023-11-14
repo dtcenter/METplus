@@ -30,6 +30,53 @@ When applicable, release notes are followed by the
 `GitHub issue <https://github.com/dtcenter/METplus/issues>`__ number which
 describes the bugfix, enhancement, or new feature.
 
+METplus Version 6.0.0 Beta 2 Release Notes (2023-11-14)
+-------------------------------------------------------
+
+  .. dropdown:: Enhancements
+
+     * Improve SeriesAnalysis ingest of multiple input files
+       (`#2219 <https://github.com/dtcenter/METplus/issues/2219>`_)
+     * Update the TC-Diag wrapper to support updates for MET version 12.0.0
+       (`#2340 <https://github.com/dtcenter/METplus/issues/2340>`_)
+     * Add config option to write MET log output to terminal
+       (`#2377 <https://github.com/dtcenter/METplus/issues/2377>`_)
+     * GenVxMask - support specification strings to define output grid
+       (`#2412 <https://github.com/dtcenter/METplus/issues/2412>`_)
+
+  .. dropdown:: Bugfix
+
+     * Prevent crash when empty string set for INIT_INCREMENT or VALID_INCREMENT
+       (`#2420 <https://github.com/dtcenter/METplus/issues/2420>`_)
+
+  .. dropdown:: New Wrappers
+
+     NONE
+
+  .. dropdown:: New Use Cases
+
+     NONE
+
+  .. dropdown:: Documentation
+
+     * **Add upgrade instructions for removing user wrapped MET config files**
+       (`#2349 <https://github.com/dtcenter/METplus/issues/2349>`_)
+     * Reorder Python Wrappers - MET Configuration tables to match order in wrapped MET config file
+       (`#2405 <https://github.com/dtcenter/METplus/issues/2405>`_)
+     * Enhancement to Difficulty Index use-case documentation
+       (`#2123 <https://github.com/dtcenter/METplus/issues/2123>`_)
+     * Modify the Documentation Overview section in the Contributor's Guide to add Conventions
+       (`#1667 <https://github.com/dtcenter/METplus/issues/1667>`_)
+     * Specify available tags on DockerHub
+       (`#2329 <https://github.com/dtcenter/METplus/issues/2329>`_)
+
+  .. dropdown:: Internal
+
+     * Improve METplus test coverage
+       (`#2253 <https://github.com/dtcenter/METplus/issues/2253>`_)
+     * Documentation: Make Headers Consistent in METplus components User's Guides
+       (`#898 <https://github.com/dtcenter/METplus/issues/898>`_)
+
 METplus Version 6.0.0 Beta 1 Release Notes (2023-09-15)
 -------------------------------------------------------
 
