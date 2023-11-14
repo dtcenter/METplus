@@ -43,6 +43,8 @@ METplus Version 6.0.0 Beta 2 Release Notes (2023-11-14)
        (`#2377 <https://github.com/dtcenter/METplus/issues/2377>`_)
      * GenVxMask - support specification strings to define output grid
        (`#2412 <https://github.com/dtcenter/METplus/issues/2412>`_)
+     * Follow symbolic links when searching for files within a time window
+       (`#2423 <https://github.com/dtcenter/METplus/issues/2423>`_)
 
   .. dropdown:: Bugfix
 
