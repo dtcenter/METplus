@@ -757,7 +757,7 @@ class CommandBuilder:
                                             "%Y%m%d%H%M%S").strftime("%s"))
 
         # step through all files under input directory in sorted order
-        for dirpath, _, all_files in os.walk(data_dir):
+        for dirpath, _, all_files in os.walk(data_dir, followlinks=True):
             for filename in sorted(all_files):
                 fullpath = os.path.join(dirpath, filename)
 
