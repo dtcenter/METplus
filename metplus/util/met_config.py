@@ -307,7 +307,7 @@ def add_met_config_dict_list(config, app_name, output_dict, dict_name,
      function for more information)
     """
     search_string = f'{app_name}_{dict_name}'.upper()
-    regex = r'^' + search_string + r'(\d+)_(\w+)$'
+    regex = r'^' + search_string + r'(\d*)_(\w+)$'
     indices = find_indices_in_config_section(regex, config,
                                              index_index=1,
                                              id_index=2)
