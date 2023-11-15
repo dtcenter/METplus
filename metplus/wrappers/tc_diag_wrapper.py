@@ -14,7 +14,7 @@ import os
 
 from ..util import time_util
 from . import RuntimeFreqWrapper
-from ..util import do_string_sub, skip_time, get_lead_sequence
+from ..util import do_string_sub, get_lead_sequence
 from ..util import parse_var_list, sub_var_list, getlist
 from ..util import find_indices_in_config_section
 from ..util.met_config import add_met_config_dict_list
