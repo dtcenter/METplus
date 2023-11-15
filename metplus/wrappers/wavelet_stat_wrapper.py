@@ -158,7 +158,23 @@ class WaveletStatWrapper(CompareGriddedWrapper):
 
         self.add_met_config_dict('title', {
             'width': 'int',
-            'location': 'float', # TODO: create dict list for location
+            'location': ('dictlist', '', {'x_ll': 'int', 'y_ll': 'int'})
         })
+
+        self.add_met_config_dict('wavelet', {
+            'type': ('string', 'remove_quotes,uppercase'),
+            'member': 'int'
+        })
+
+        self.add_met_config(name='ps_plot_flag', data_type='bool')
+
+        for config_name in ('fcst_raw_plot', 'obs_raw_plot', 'wvlt_plot'):
+            self.add_met_config_dict(config_name, {
+                'color_table': 'string',
+                'plot_min': 'float',
+                'plot_max': 'float',
+            })
+
+        self.add_met_config(name='output_prefix', data_type='string')
 
         return c_dict
