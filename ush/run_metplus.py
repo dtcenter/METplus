@@ -26,9 +26,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
 
 import produtil.setup
 
-from metplus.util import metplus_check
 from metplus.util import pre_run_setup, run_metplus, post_run_cleanup
-from metplus import __version__ as metplus_version
 
 '''!@namespace run_metplus
 Main script the processes all the tasks in the PROCESS_LIST
@@ -42,6 +40,8 @@ def main():
 
     config_inputs = get_config_inputs_from_command_line()
     config = pre_run_setup(config_inputs)
+    if not config:
+        return False
 
     # warn if calling master_metplus.py
     script_name = os.path.basename(__file__)
@@ -53,6 +53,7 @@ def main():
     total_errors = run_metplus(config)
 
     post_run_cleanup(config, 'METplus', total_errors)
+    return True
 
 
 def usage():
@@ -121,7 +122,8 @@ def get_config_inputs_from_command_line():
 if __name__ == "__main__":
     try:
         produtil.setup.setup(send_dbn=False, jobname='run-METplus')
-        main()
+        if not main():
+            sys.exit(1)
     except Exception as exc:
         print(traceback.format_exc())
         print('ERROR: run_metplus  failed: %s' % exc)

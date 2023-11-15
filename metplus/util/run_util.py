@@ -163,11 +163,11 @@ def pre_run_setup(config_inputs):
 
         logger.error("Correct configuration variables and rerun. Exiting.")
         logger.info(f"Check the log file for more information: {log_file}")
-        sys.exit(1)
+        return None
 
     if not config.getdir('MET_INSTALL_DIR', must_exist=True):
         logger.error('MET_INSTALL_DIR must be set correctly to run METplus')
-        sys.exit(1)
+        return None
 
     # handle dir to write temporary files
     handle_tmp_dir(config)
