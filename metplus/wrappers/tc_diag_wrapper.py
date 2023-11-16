@@ -67,6 +67,11 @@ class TCDiagWrapper(RuntimeFreqWrapper):
         'METPLUS_ONE_TIME_PER_FILE_FLAG',
     ]
 
+    # deprecated env vars that are no longer supported in the wrapped MET conf
+    DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
+        'OUTPUT_PREFIX',
+    ]
+
     def __init__(self, config, instance=None):
         self.app_name = "tc_diag"
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR'),

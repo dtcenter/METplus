@@ -63,6 +63,7 @@ class PointStatWrapper(CompareGriddedWrapper):
         'POINT_STAT_GRID',
         'POINT_STAT_STATION_ID',
         'POINT_STAT_MESSAGE_TYPE',
+        'OUTPUT_PREFIX',
         'METPLUS_MASK_GRID',  # deprecated in v5.1.0
         'METPLUS_MASK_POLY',  # deprecated in v5.1.0
         'METPLUS_MASK_SID',  # deprecated in v5.1.0
