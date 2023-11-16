@@ -52,8 +52,7 @@ def main():
 
     total_errors = run_metplus(config)
 
-    post_run_cleanup(config, 'METplus', total_errors)
-    return True
+    return post_run_cleanup(config, 'METplus', total_errors)
 
 
 def usage():

@@ -436,7 +436,7 @@ def test_post_run_cleanup_no_errors(post_run_config):
         with mock.patch.object(ru, 'get_logfile_info', return_value='/log/file.log'):
             actual = ru.post_run_cleanup(post_run_config, 'fake_app', 0)
 
-    assert actual == None
+    assert actual is True
     for msg in expected_msgs:
         _check_log_info(post_run_config, [msg])
 
@@ -454,11 +454,9 @@ def test_post_run_cleanup_errors(post_run_config):
         ru, 'get_user_info', return_value='Allan H. Murphy'
     ) as mock_user:
         with mock.patch.object(ru, 'get_logfile_info', return_value='/log/file.log'):
-            with mock.patch.object(ru.sys, 'exit') as mock_sys:
-                actual = ru.post_run_cleanup(post_run_config, 'fake_app', 5)
+            actual = ru.post_run_cleanup(post_run_config, 'fake_app', 5)
 
-    mock_sys.assert_called_once_with(1)
-    assert actual == None
+    assert actual is False
     _check_log_info(
         post_run_config, ['Check the log file for more information: /log/file.log']
     )

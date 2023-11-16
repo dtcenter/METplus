@@ -335,7 +335,7 @@ def post_run_cleanup(config, app_name, total_errors):
         # print success log message if terminal does not include INFO
         if not log_terminal_includes_info(config):
             print(success_log)
-        return
+        return True
 
     error_msg = (f'{app_name} has finished running{user_string} '
                  f'but had {total_errors} error')
@@ -344,4 +344,4 @@ def post_run_cleanup(config, app_name, total_errors):
     error_msg += '.'
     logger.error(error_msg)
     logger.info(log_message)
-    sys.exit(1)
+    return False
