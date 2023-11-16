@@ -11129,18 +11129,8 @@ METplus Configuration Glossary
 
      | *Used by:* GridStat
 
-   WAVELET_STAT_MODEL
-     Specify the value for 'model' in the MET configuration file for WaveletStat.
-
-     | *Used by:* WaveletStat
-
    WAVELET_STAT_DESC
      Specify the value for 'desc' in the MET configuration file for WaveletStat.
-
-     | *Used by:* WaveletStat
-
-   WAVELET_STAT_OBTYPE
-     Specify the value for 'obtype' in the MET configuration file for WaveletStat.
 
      | *Used by:* WaveletStat
 
@@ -11502,5 +11492,20 @@ METplus Configuration Glossary
      List of initialization times to include for WaveletStat only.
      If set, values set in :term:`INC_INIT_TIMES` are ignored for WaveletStat.
      See :term:`SKIP_VALID_TIMES` for formatting information.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_REGRID_CONVERT
+     Specify the value for 'regrid.convert' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_REGRID_CENSOR_THRESH
+     Specify the value for 'regrid.censor_thresh' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_REGRID_CENSOR_VAL
+     Specify the value for 'regrid.censor_val' in the MET configuration file for WaveletStat.
 
      | *Used by:* WaveletStat

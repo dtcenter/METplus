@@ -10968,14 +10968,17 @@ METplus Configuration
 | :term:`WAVELET_STAT_INC_VALID_TIMES`
 | :term:`WAVELET_STAT_SKIP_INIT_TIMES`
 | :term:`WAVELET_STAT_INC_INIT_TIMES`
-| :term:`WAVELET_STAT_MODEL`
+| :term:`MODEL`
 | :term:`WAVELET_STAT_DESC`
-| :term:`WAVELET_STAT_OBTYPE`
+| :term:`OBTYPE`
 | :term:`WAVELET_STAT_REGRID_TO_GRID`
 | :term:`WAVELET_STAT_REGRID_METHOD`
 | :term:`WAVELET_STAT_REGRID_WIDTH`
 | :term:`WAVELET_STAT_REGRID_VLD_THRESH`
 | :term:`WAVELET_STAT_REGRID_SHAPE`
+| :term:`WAVELET_STAT_REGRID_CONVERT`
+| :term:`WAVELET_STAT_REGRID_CENSOR_THRESH`
+| :term:`WAVELET_STAT_REGRID_CENSOR_VAL`
 | :term:`WAVELET_STAT_CENSOR_THRESH`
 | :term:`WAVELET_STAT_CENSOR_VAL`
 | :term:`WAVELET_STAT_MASK_MISSING_FLAG`
@@ -11034,7 +11037,7 @@ ${METPLUS_MODEL}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`WAVELET_STAT_MODEL`
+   * - :term:`MODEL`
      - model
 
 ${METPLUS_DESC}
@@ -11058,7 +11061,7 @@ ${METPLUS_OBTYPE}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`WAVELET_STAT_OBTYPE`
+   * - :term:`OBTYPE`
      - obtype
 
 ${METPLUS_REGRID_DICT}
