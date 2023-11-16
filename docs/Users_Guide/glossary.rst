@@ -5449,10 +5449,10 @@ METplus Configuration Glossary
           .. warning:: **DEPRECATED:** Please use :term:`GEN_ENS_PROD_NMEP_SMOOTH_SHAPE` in :ref:`gen_ens_prod_wrapper` instead.
 
    ENSEMBLE_STAT_NMEP_SMOOTH_METHOD
-          .. warning:: **DEPRECATED:** Please use :term:`GEN_ENS_PROD_NMEP_SMOOTH_METHOD` in :ref:`gen_ens_prod_wrapper` instead.
+          .. warning:: **DEPRECATED:** Please use :term:`GEN_ENS_PROD_NMEP_SMOOTH_TYPE_METHOD` in :ref:`gen_ens_prod_wrapper` instead.
 
    ENSEMBLE_STAT_NMEP_SMOOTH_WIDTH
-          .. warning:: **DEPRECATED:** Please use :term:`GEN_ENS_PROD_NMEP_SMOOTH_WIDTH` in :ref:`gen_ens_prod_wrapper` instead.
+          .. warning:: **DEPRECATED:** Please use :term:`GEN_ENS_PROD_NMEP_SMOOTH_TYPE_WIDTH` in :ref:`gen_ens_prod_wrapper` instead.
 
    ENSEMBLE_STAT_CENSOR_THRESH
      Specify the value for 'censor_thresh' in the MET configuration file for EnsembleStat.
@@ -8271,12 +8271,12 @@ METplus Configuration Glossary
 
      | *Used by:*  GenEnsProd
 
-   GEN_ENS_PROD_NMEP_SMOOTH_METHOD
+   GEN_ENS_PROD_NMEP_SMOOTH_TYPE_METHOD
      Specify the value for 'nmep_smooth.type.method' in the MET configuration file for GenEnsProd.
 
      | *Used by:*  GenEnsProd
 
-   GEN_ENS_PROD_NMEP_SMOOTH_WIDTH
+   GEN_ENS_PROD_NMEP_SMOOTH_TYPE_WIDTH
      Specify the value for 'nmep_smooth.type.width' in the MET configuration file for GenEnsProd.
 
      | *Used by:*  GenEnsProd
@@ -11285,7 +11285,7 @@ METplus Configuration Glossary
      | *Used by:*  WaveletStat
 
    FCST_WAVELET_STAT_INPUT_DATATYPE
-     Specify the data type of the input directory for forecast files used with the MET WAVELET_STAT tool. Currently valid options are NETCDF, GRIB, and GEMPAK. If set to GEMPAK, data will automatically be converted to NetCDF via GempakToCF. A corresponding variable exists for observation data called :term:`OBS_WAVELET_STAT_INPUT_DATATYPE`.
+     Specify the data type of the input directory for forecast files used with the MET wavelet_stat tool. Currently valid options are NETCDF, GRIB, and GEMPAK. If set to GEMPAK, data will automatically be converted to NetCDF via GempakToCF. A corresponding variable exists for observation data called :term:`OBS_WAVELET_STAT_INPUT_DATATYPE`.
 
      | *Used by:*  WaveletStat
 
