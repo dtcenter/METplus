@@ -43,6 +43,7 @@ LOWER_TO_WRAPPER_NAME = {
     'tcstat': 'TCStat',
     'usage': 'Usage',
     'userscript': 'UserScript',
+    'waveletstat': 'WaveletStat',
 }
 
 # supported file extensions that will automatically be uncompressed

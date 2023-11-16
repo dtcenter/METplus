@@ -9,18 +9,21 @@
 //
 // Output model name to be written
 //
-model = "WRF";
+//model =
+${METPLUS_MODEL}
 
 //
 // Output description to be written
 // May be set separately in each "obs.field" entry
 //
-desc = "NA";
+//desc =
+${METPLUS_DESC}
 
 //
 // Output observation type to be written
 //
-obtype = "ANALYS";
+//obtype =
+${METPLUS_OBTYPE}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -28,87 +31,74 @@ obtype = "ANALYS";
 // Verification grid
 // May be set separately in each "field" entry
 //
-regrid = {
-   to_grid    = NONE;
-   method     = NEAREST;
-   width      = 1;
-   vld_thresh = 0.5;
-   shape      = SQUARE;
-}
+//regrid = {
+${METPLUS_REGRID_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 //
 // May be set separately in each "field" entry
 //
-censor_thresh = [];
-censor_val    = [];
+//censor_thresh =
+${METPLUS_CENSOR_THRESH}
+//censor_val =
+${METPLUS_CENSOR_VAL}
 
 //
 // Forecast and observation fields to be verified
 //
 fcst = {
-   field = [
-      {
-        name       = "APCP";
-        level      = [ "A03" ];
-        cat_thresh = [ >0.0, >=5.0 ];
-      }
-   ];
+  ${METPLUS_FCST_FILE_TYPE}
+  ${METPLUS_FCST_FIELD}
 }
-obs = fcst;
+obs = {
+  ${METPLUS_OBS_FILE_TYPE}
+  ${METPLUS_OBS_FIELD}
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 //
 // Handle missing data
 //
-mask_missing_flag = NONE;
+//mask_missing_flag =
+${METPLUS_MASK_MISSING_FLAG}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 //
 // Decompose the field into dyadic tiles
 //
-grid_decomp_flag = AUTO;
+//grid_decomp_flag =
+${METPLUS_GRID_DECOMP_FLAG}
 
-tile = {
-   width = 0;
-   location = [
-      {
-         x_ll = 0;
-         y_ll = 0;
-      }
-   ];
-}
+//title = {
+${METPLUS_TITLE_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 //
 // Wavelet to be used for the decomposition
 //
-wavelet = {
-   type   = HAAR;
-   member = 2;
-}
+//wavelet = {
+${METPLUS_WAVELET_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 //
 // Statistical output types
 //
-output_flag = {
-   isc = NONE;
-}
+//output_flag = {
+${METPLUS_OUTPUT_FLAG_DICT}
 
 //
 // NetCDF matched pairs and PostScript output files
 //
-nc_pairs_flag   = {
-   raw    = TRUE;
-   diff   = TRUE;
-}
-ps_plot_flag  = TRUE;
+//nc_pairs_flag = {
+${METPLUS_NC_PAIRS_FLAG_DICT}
+
+//ps_plot_flag =
+${METPLUS_PS_PLOT_FLAG}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -117,27 +107,22 @@ ps_plot_flag  = TRUE;
 //
 met_data_dir = "MET_BASE";
 
-fcst_raw_plot = {
-   color_table = "MET_BASE/colortables/met_default.ctable";
-   plot_min = 0.0;
-   plot_max = 0.0;
-}
+//fcst_raw_plot = {
+${METPLUS_FCST_RAW_PLOT_DICT}
 
-obs_raw_plot = {
-   color_table = "MET_BASE/colortables/met_default.ctable";
-   plot_min = 0.0;
-   plot_max = 0.0;
-}
+//obs_raw_plot = {
+${METPLUS_OBS_RAW_PLOT_DICT}
 
-wvlt_plot = {
-   color_table = "MET_BASE/colortables/NCL_colortables/BlWhRe.ctable";
-   plot_min = 0.0;
-   plot_max = 0.0;
-}
+//wvlt_plot = {
+${METPLUS_WVLT_PLOT_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
-output_prefix = "";
-version = "V11.1.0";
+//output_prefix =
+${METPLUS_OUTPUT_PREFIX}
+
+//version = "V11.1.0";
 
 ////////////////////////////////////////////////////////////////////////////////
+
+${METPLUS_MET_CONFIG_OVERRIDES}

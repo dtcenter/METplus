@@ -10914,3 +10914,357 @@ METplus Configuration
 | :term:`USER_SCRIPT_SKIP_INIT_TIMES`
 | :term:`USER_SCRIPT_INC_INIT_TIMES`
 |
+
+.. _wavelet_stat_wrapper:
+
+WaveletStat
+===========
+
+Description
+-----------
+
+Used to configure the MET tool wavelet_stat.
+
+METplus Configuration
+---------------------
+
+| :term:`FCST_WAVELET_STAT_INPUT_DIR`
+| :term:`OBS_WAVELET_STAT_INPUT_DIR`
+| :term:`WAVELET_STAT_OUTPUT_DIR`
+| :term:`FCST_WAVELET_STAT_INPUT_TEMPLATE`
+| :term:`OBS_WAVELET_STAT_INPUT_TEMPLATE`
+| :term:`WAVELET_STAT_OUTPUT_TEMPLATE`
+| :term:`LOG_WAVELET_STAT_VERBOSITY`
+| :term:`WAVELET_STAT_CONFIG_FILE`
+| :term:`FCST_WAVELET_STAT_INPUT_DATATYPE`
+| :term:`OBS_WAVELET_STAT_INPUT_DATATYPE`
+| :term:`WAVELET_STAT_ONCE_PER_FIELD`
+| :term:`WAVELET_STAT_CUSTOM_LOOP_LIST`
+| :term:`WAVELET_STAT_SKIP_IF_OUTPUT_EXISTS`
+| :term:`FCST_WAVELET_STAT_FILE_TYPE`
+| :term:`OBS_WAVELET_STAT_FILE_TYPE`
+| :term:`FCST_WAVELET_STAT_IS_PROB`
+| :term:`FCST_WAVELET_STAT_PROB_IN_GRIB_PDS`
+| :term:`WAVELET_STAT_MET_CONFIG_OVERRIDES`
+| :term:`FCST_WAVELET_STAT_PROB_THRESH`
+| :term:`OBS_WAVELET_STAT_PROB_THRESH`
+| :term:`FCST_WAVELET_STAT_WINDOW_BEGIN`
+| :term:`FCST_WAVELET_STAT_WINDOW_END`
+| :term:`OBS_WAVELET_STAT_WINDOW_BEGIN`
+| :term:`OBS_WAVELET_STAT_WINDOW_END`
+| :term:`FCST_WAVELET_STAT_FILE_WINDOW_BEGIN`
+| :term:`FCST_WAVELET_STAT_FILE_WINDOW_END`
+| :term:`OBS_WAVELET_STAT_FILE_WINDOW_BEGIN`
+| :term:`OBS_WAVELET_STAT_FILE_WINDOW_END`
+| :term:`FCST_WAVELET_STAT_VAR<n>_NAME`
+| :term:`FCST_WAVELET_STAT_VAR<n>_LEVELS`
+| :term:`FCST_WAVELET_STAT_VAR<n>_THRESH`
+| :term:`FCST_WAVELET_STAT_VAR<n>_OPTIONS`
+| :term:`OBS_WAVELET_STAT_VAR<n>_NAME`
+| :term:`OBS_WAVELET_STAT_VAR<n>_LEVELS`
+| :term:`OBS_WAVELET_STAT_VAR<n>_THRESH`
+| :term:`OBS_WAVELET_STAT_VAR<n>_OPTIONS`
+| :term:`WAVELET_STAT_SKIP_VALID_TIMES`
+| :term:`WAVELET_STAT_INC_VALID_TIMES`
+| :term:`WAVELET_STAT_SKIP_INIT_TIMES`
+| :term:`WAVELET_STAT_INC_INIT_TIMES`
+| :term:`WAVELET_STAT_MODEL`
+| :term:`WAVELET_STAT_DESC`
+| :term:`WAVELET_STAT_OBTYPE`
+| :term:`WAVELET_STAT_REGRID_TO_GRID`
+| :term:`WAVELET_STAT_REGRID_METHOD`
+| :term:`WAVELET_STAT_REGRID_WIDTH`
+| :term:`WAVELET_STAT_REGRID_VLD_THRESH`
+| :term:`WAVELET_STAT_REGRID_SHAPE`
+| :term:`WAVELET_STAT_CENSOR_THRESH`
+| :term:`WAVELET_STAT_CENSOR_VAL`
+| :term:`WAVELET_STAT_MASK_MISSING_FLAG`
+| :term:`WAVELET_STAT_GRID_DECOMP_FLAG`
+| :term:`WAVELET_STAT_TITLE_WIDTH`
+| :term:`WAVELET_STAT_TITLE_LOCATION<N>_X_LL`
+| :term:`WAVELET_STAT_TITLE_LOCATION<N>_Y_LL`
+| :term:`WAVELET_STAT_WAVELET_TYPE`
+| :term:`WAVELET_STAT_WAVELET_MEMBER`
+| :term:`WAVELET_STAT_OUTPUT_FLAG_ISC`
+| :term:`WAVELET_STAT_NC_PAIRS_FLAG_RAW`
+| :term:`WAVELET_STAT_NC_PAIRS_FLAG_DIFF`
+| :term:`WAVELET_STAT_PS_PLOT_FLAG`
+| :term:`WAVELET_STAT_FCST_RAW_PLOT_COLOR_TABLE`
+| :term:`WAVELET_STAT_FCST_RAW_PLOT_PLOT_MIN`
+| :term:`WAVELET_STAT_FCST_RAW_PLOT_PLOT_MAX`
+| :term:`WAVELET_STAT_OBS_RAW_PLOT_COLOR_TABLE`
+| :term:`WAVELET_STAT_OBS_RAW_PLOT_PLOT_MIN`
+| :term:`WAVELET_STAT_OBS_RAW_PLOT_PLOT_MAX`
+| :term:`WAVELET_STAT_WVLT_PLOT_COLOR_TABLE`
+| :term:`WAVELET_STAT_WVLT_PLOT_PLOT_MIN`
+| :term:`WAVELET_STAT_WVLT_PLOT_PLOT_MAX`
+| :term:`WAVELET_STAT_OUTPUT_PREFIX`
+
+.. _wavelet-stat-met-conf:
+
+MET Configuration
+-----------------
+
+Below is the wrapped MET configuration file used for this wrapper.
+Environment variables are used to control entries in this configuration file.
+The default value for each environment variable is obtained from
+(except where noted below):
+
+`MET_INSTALL_DIR/share/met/config/WaveletStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/WaveletStatConfig_default>`_
+
+Below the file contents are descriptions of each environment variable
+referenced in this file and the corresponding METplus configuration item used
+to set the value of the environment variable. For detailed examples showing
+how METplus sets the values of these environment variables,
+see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+
+.. dropdown:: Click to view parm/met_config/WaveletStatConfig_wrapped
+
+   .. literalinclude:: ../../parm/met_config/WaveletStatConfig_wrapped
+
+Environment variables in wrapped MET config
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+${METPLUS_MODEL}
+^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`WAVELET_STAT_MODEL`
+     - model
+
+${METPLUS_DESC}
+^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`WAVELET_STAT_DESC`
+     - desc
+
+${METPLUS_OBTYPE}
+^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`WAVELET_STAT_OBTYPE`
+     - obtype
+
+${METPLUS_REGRID_DICT}
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`WAVELET_STAT_REGRID_TO_GRID`
+     - regrid.to_grid
+   * - :term:`WAVELET_STAT_REGRID_METHOD`
+     - regrid.method
+   * - :term:`WAVELET_STAT_REGRID_WIDTH`
+     - regrid.width
+   * - :term:`WAVELET_STAT_REGRID_VLD_THRESH`
+     - regrid.vld_thresh
+   * - :term:`WAVELET_STAT_REGRID_SHAPE`
+     - regrid.shape
+
+${METPLUS_CENSOR_THRESH}
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`WAVELET_STAT_CENSOR_THRESH`
+     - censor_thresh
+
+${METPLUS_CENSOR_VAL}
+^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`WAVELET_STAT_CENSOR_VAL`
+     - censor_val
+
+${METPLUS_MASK_MISSING_FLAG}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`WAVELET_STAT_MASK_MISSING_FLAG`
+     - mask_missing_flag
+
+${METPLUS_GRID_DECOMP_FLAG}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`WAVELET_STAT_GRID_DECOMP_FLAG`
+     - grid_decomp_flag
+
+${METPLUS_TITLE_DICT}
+^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`WAVELET_STAT_TITLE_WIDTH`
+     - title.width
+   * - :term:`WAVELET_STAT_TITLE_LOCATION<N>_X_LL`
+     - title.location.x_ll
+   * - :term:`WAVELET_STAT_TITLE_LOCATION<N>_Y_LL`
+     - title.location.y_ll
+
+${METPLUS_WAVELET_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`WAVELET_STAT_WAVELET_TYPE`
+     - wavelet.type
+   * - :term:`WAVELET_STAT_WAVELET_MEMBER`
+     - wavelet.member
+
+${METPLUS_OUTPUT_FLAG_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`WAVELET_STAT_OUTPUT_FLAG_ISC`
+     - output_flag.isc
+
+${METPLUS_NC_PAIRS_FLAG_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`WAVELET_STAT_NC_PAIRS_FLAG_RAW`
+     - nc_pairs_flag.raw
+   * - :term:`WAVELET_STAT_NC_PAIRS_FLAG_DIFF`
+     - nc_pairs_flag.diff
+
+${METPLUS_PS_PLOT_FLAG}
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`WAVELET_STAT_PS_PLOT_FLAG`
+     - ps_plot_flag
+
+${METPLUS_FCST_RAW_PLOT_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`WAVELET_STAT_FCST_RAW_PLOT_COLOR_TABLE`
+     - fcst_raw_plot.color_table
+   * - :term:`WAVELET_STAT_FCST_RAW_PLOT_PLOT_MIN`
+     - fcst_raw_plot.plot_min
+   * - :term:`WAVELET_STAT_FCST_RAW_PLOT_PLOT_MAX`
+     - fcst_raw_plot.plot_max
+
+${METPLUS_OBS_RAW_PLOT_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`WAVELET_STAT_OBS_RAW_PLOT_COLOR_TABLE`
+     - obs_raw_plot.color_table
+   * - :term:`WAVELET_STAT_OBS_RAW_PLOT_PLOT_MIN`
+     - obs_raw_plot.plot_min
+   * - :term:`WAVELET_STAT_OBS_RAW_PLOT_PLOT_MAX`
+     - obs_raw_plot.plot_max
+
+${METPLUS_WVLT_PLOT_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`WAVELET_STAT_WVLT_PLOT_COLOR_TABLE`
+     - wvlt_plot.color_table
+   * - :term:`WAVELET_STAT_WVLT_PLOT_PLOT_MIN`
+     - wvlt_plot.plot_min
+   * - :term:`WAVELET_STAT_WVLT_PLOT_PLOT_MAX`
+     - wvlt_plot.plot_max
+
+${METPLUS_OUTPUT_PREFIX}
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`WAVELET_STAT_OUTPUT_PREFIX`
+     - output_prefix
+
+${METPLUS_MET_CONFIG_OVERRIDES}
+"""""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`WAVELET_STAT_MET_CONFIG_OVERRIDES`
+     - n/a

@@ -2057,7 +2057,7 @@ METplus Configuration Glossary
      | *Used by:*  GridStat
 
    GRID_STAT_OUTPUT_TEMPLATE
-     Sets the subdirectories below :term:`GRID_STAT_OUTPUT_DIR` using a template to allow run time information. If LOOP_BY = VALID, default value is valid time YYYYMMDDHHMM/grid_stat. If LOOP_BY = INIT, default value is init time YYYYMMDDHHMM/grid_stat.
+     Sets the subdirectories below :term:`GRID_STAT_OUTPUT_DIR` using a template to allow run time information.
 
      | *Used by:*  GridStat
 
@@ -11128,3 +11128,379 @@ METplus Configuration Glossary
      Specify the value for 'cat_thresh' in the MET configuration file for GridStat.
 
      | *Used by:* GridStat
+
+   WAVELET_STAT_MODEL
+     Specify the value for 'model' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_DESC
+     Specify the value for 'desc' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_OBTYPE
+     Specify the value for 'obtype' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_REGRID_TO_GRID
+     Specify the value for 'regrid.to_grid' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_REGRID_METHOD
+     Specify the value for 'regrid.method' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_REGRID_WIDTH
+     Specify the value for 'regrid.width' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_REGRID_VLD_THRESH
+     Specify the value for 'regrid.vld_thresh' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_REGRID_SHAPE
+     Specify the value for 'regrid.shape' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_CENSOR_THRESH
+     Specify the value for 'censor_thresh' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_CENSOR_VAL
+     Specify the value for 'censor_val' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_MASK_MISSING_FLAG
+     Specify the value for 'mask_missing_flag' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_GRID_DECOMP_FLAG
+     Specify the value for 'grid_decomp_flag' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_TITLE_WIDTH
+     Specify the value for 'title.width' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_TITLE_LOCATION<N>_X_LL
+     Specify the value for the nth 'title.location.x_ll' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_TITLE_LOCATION<N>_Y_LL
+     Specify the value for the nth 'title.location.y_ll' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_WAVELET_TYPE
+     Specify the value for 'wavelet.type' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_WAVELET_MEMBER
+     Specify the value for 'wavelet.member' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_OUTPUT_FLAG_ISC
+     Specify the value for 'output_flag.isc' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_NC_PAIRS_FLAG_RAW
+     Specify the value for 'nc_pairs_flag.raw' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_NC_PAIRS_FLAG_DIFF
+     Specify the value for 'nc_pairs_flag.diff' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_PS_PLOT_FLAG
+     Specify the value for 'ps_plot_flag' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_FCST_RAW_PLOT_COLOR_TABLE
+     Specify the value for 'fcst_raw_plot.color_table' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_FCST_RAW_PLOT_PLOT_MIN
+     Specify the value for 'fcst_raw_plot.plot_min' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_FCST_RAW_PLOT_PLOT_MAX
+     Specify the value for 'fcst_raw_plot.plot_max' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_OBS_RAW_PLOT_COLOR_TABLE
+     Specify the value for 'obs_raw_plot.color_table' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_OBS_RAW_PLOT_PLOT_MIN
+     Specify the value for 'obs_raw_plot.plot_min' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_OBS_RAW_PLOT_PLOT_MAX
+     Specify the value for 'obs_raw_plot.plot_max' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_WVLT_PLOT_COLOR_TABLE
+     Specify the value for 'wvlt_plot.color_table' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_WVLT_PLOT_PLOT_MIN
+     Specify the value for 'wvlt_plot.plot_min' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_WVLT_PLOT_PLOT_MAX
+     Specify the value for 'wvlt_plot.plot_max' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_OUTPUT_PREFIX
+     Specify the value for 'output_prefix' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   FCST_WAVELET_STAT_FILE_WINDOW_BEGIN
+     See :term:`OBS_WAVELET_STAT_FILE_WINDOW_BEGIN`
+
+     | *Used by:*  WaveletStat
+
+   FCST_WAVELET_STAT_FILE_WINDOW_END
+     See :term:`OBS_WAVELET_STAT_FILE_WINDOW_END`
+
+     | *Used by:*  WaveletStat
+
+   FCST_WAVELET_STAT_INPUT_DATATYPE
+     Specify the data type of the input directory for forecast files used with the MET WAVELET_STAT tool. Currently valid options are NETCDF, GRIB, and GEMPAK. If set to GEMPAK, data will automatically be converted to NetCDF via GempakToCF. A corresponding variable exists for observation data called :term:`OBS_WAVELET_STAT_INPUT_DATATYPE`.
+
+     | *Used by:*  WaveletStat
+
+   FCST_WAVELET_STAT_INPUT_DIR
+     Input directory for forecast files to use with the MET tool wavelet_stat. A corresponding variable exists for observation data called :term:`OBS_WAVELET_STAT_INPUT_DIR`.
+
+     | *Used by:*  WaveletStat
+
+   FCST_WAVELET_STAT_INPUT_TEMPLATE
+     Template used to specify forecast input filenames for the MET tool wavelet_stat. A corresponding variable exists for observation data called :term:`OBS_WAVELET_STAT_INPUT_TEMPLATE`. To utilize Python Embedding as input to the MET tools, set this value to PYTHON_NUMPY or PYTHON_XARRAY.
+
+     | *Used by:*  WaveletStat
+
+   FCST_WAVELET_STAT_PROB_THRESH
+     Threshold values to be used for probabilistic data in wavelet_stat. The value can be a single item or a comma separated list of items that must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le). A corresponding variable exists for observation data called :term:`OBS_WAVELET_STAT_PROB_THRESH`.
+
+     | *Used by:*  WaveletStat
+
+   OBS_WAVELET_STAT_FILE_WINDOW_BEGIN
+     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing by WaveletStat. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds. If :term:`OBS_WAVELET_STAT_FILE_WINDOW_BEGIN` is not set in the config file, the value of :term:`OBS_FILE_WINDOW_BEGIN` will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
+
+     | *Used by:*  WaveletStat
+
+   OBS_WAVELET_STAT_FILE_WINDOW_END
+     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing by WaveletStat. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds. If :term:`OBS_WAVELET_STAT_FILE_WINDOW_END` is not set in the config file, the value of :term:`OBS_FILE_WINDOW_END` will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
+
+     | *Used by:*  WaveletStat
+
+   OBS_WAVELET_STAT_INPUT_DATATYPE
+     See :term:`FCST_WAVELET_STAT_INPUT_DATATYPE`
+
+     | *Used by:*  WaveletStat
+
+   OBS_WAVELET_STAT_INPUT_DIR
+     See :term:`FCST_WAVELET_STAT_INPUT_DIR`
+
+     | *Used by:*  WaveletStat
+
+   OBS_WAVELET_STAT_INPUT_TEMPLATE
+     See :term:`FCST_WAVELET_STAT_INPUT_TEMPLATE`
+
+     | *Used by:*  WaveletStat
+
+   OBS_WAVELET_STAT_PROB_THRESH
+     See :term:`FCST_WAVELET_STAT_PROB_THRESH`
+
+     | *Used by:*  WaveletStat
+
+   WAVELET_STAT_OUTPUT_DIR
+     Specify the output directory where files from the MET wavelet_stat tool are written.
+
+     | *Used by:*  WaveletStat
+
+   WAVELET_STAT_OUTPUT_TEMPLATE
+     Sets the subdirectories below :term:`WAVELET_STAT_OUTPUT_DIR` using a template to allow run time information.
+
+     | *Used by:*  WaveletStat
+
+   LOG_WAVELET_STAT_VERBOSITY
+     Overrides the log verbosity for WaveletStat only.
+     If not set, the verbosity level is controlled by :term:`LOG_MET_VERBOSITY`.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_CONFIG_FILE
+     Path to configuration file read by wavelet_stat.
+     If unset, parm/met_config/WaveletStatConfig_wrapped will be used.
+
+     | *Used by:*  WaveletStat
+
+   WAVELET_STAT_ONCE_PER_FIELD
+     True/False. If True, wavelet_stat will run once to process all name/level/threshold combinations specified.
+     If False, it will run once for each name/level. Some cases require this to be set to False,
+     for example processing probablistic forecasts or precipitation accumulations.
+
+     | *Used by:*  WaveletStat
+
+   WAVELET_STAT_CUSTOM_LOOP_LIST
+    Sets custom string loop list for a specific wrapper. See :term:`CUSTOM_LOOP_LIST`.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_SKIP_IF_OUTPUT_EXISTS
+     If True, do not run app if output file already exists. Set to False to overwrite files.
+
+     | *Used by:*  WaveletStat
+
+   FCST_WAVELET_STAT_FILE_TYPE
+     Specify the value for 'fcst.file_type' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   OBS_WAVELET_STAT_FILE_TYPE
+     Specify the value for 'obs.file_type' in the MET configuration file for WaveletStat.
+
+     | *Used by:* WaveletStat
+
+   FCST_WAVELET_STAT_IS_PROB
+      Wrapper-specific version of :term:`FCST_IS_PROB`.
+
+     | *Used by:*  WaveletStat
+
+   FCST_WAVELET_STAT_PROB_IN_GRIB_PDS
+      Wrapper-specific version of :term:`FCST_PROB_IN_GRIB_PDS`.
+
+     | *Used by:*  WaveletStat
+
+   WAVELET_STAT_MET_CONFIG_OVERRIDES
+     Override any variables in the MET configuration file that are not
+     supported by the wrapper. This should be set to the full variable name
+     and value that you want to override, including the equal sign and the
+     ending semi-colon. The value is directly appended to the end of the
+     wrapped MET config file.
+
+     Example:
+     WAVELET_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
+
+     | *Used by:* WaveletStat
+
+   FCST_WAVELET_STAT_WINDOW_BEGIN
+     Passed to the WaveletStat MET config file to determine the range of data within a file that should be used for processing. Units are seconds. If the variable is not set, WaveletStat will use :term:`FCST_WINDOW_BEGIN`.
+
+     | *Used by:*  WaveletStat
+
+   FCST_WAVELET_STAT_WINDOW_END
+     Passed to the WaveletStat MET config file to determine the range of data within a file that should be used for processing. Units are seconds. If the variable is not set, WaveletStat will use :term:`FCST_WINDOW_END`.
+
+     | *Used by:*  WaveletStat
+
+   OBS_WAVELET_STAT_WINDOW_BEGIN
+     Passed to the WaveletStat MET config file to determine the range of data within a file that should be used for processing. Units are seconds. If the variable is not set, WaveletStat will use :term:`OBS_WINDOW_BEGIN`.
+
+     | *Used by:*  WaveletStat
+
+   OBS_WAVELET_STAT_WINDOW_END
+     Passed to the WaveletStat MET config file to determine the range of data within a file that should be used for processing. Units are seconds. If the variable is not set, WaveletStat will use :term:`OBS_WINDOW_END`.
+
+     | *Used by:*  WaveletStat
+
+   FCST_WAVELET_STAT_VAR<n>_NAME
+     Wrapper specific field info variable. See :term:`FCST_VAR<n>_NAME`.
+
+     | *Used by:*  WaveletStat
+
+   FCST_WAVELET_STAT_VAR<n>_LEVELS
+     Wrapper specific field info variable. See :term:`FCST_VAR<n>_LEVELS`.
+
+     | *Used by:*  WaveletStat
+
+   FCST_WAVELET_STAT_VAR<n>_THRESH
+     Wrapper specific field info variable. See :term:`FCST_VAR<n>_THRESH`.
+
+     | *Used by:*  WaveletStat
+
+   FCST_WAVELET_STAT_VAR<n>_OPTIONS
+     Wrapper specific field info variable. See :term:`FCST_VAR<n>_OPTIONS`.
+
+     | *Used by:*  WaveletStat
+
+   OBS_WAVELET_STAT_VAR<n>_NAME
+     Wrapper specific field info variable. See :term:`OBS_VAR<n>_NAME`.
+
+     | *Used by:*  WaveletStat
+
+   OBS_WAVELET_STAT_VAR<n>_LEVELS
+     Wrapper specific field info variable. See :term:`OBS_VAR<n>_LEVELS`.
+
+     | *Used by:*  WaveletStat
+
+   OBS_WAVELET_STAT_VAR<n>_THRESH
+     Wrapper specific field info variable. See :term:`OBS_VAR<n>_THRESH`.
+
+     | *Used by:*  WaveletStat
+
+   OBS_WAVELET_STAT_VAR<n>_OPTIONS
+     Wrapper specific field info variable. See :term:`OBS_VAR<n>_OPTIONS`.
+
+     | *Used by:*  WaveletStat
+
+   WAVELET_STAT_SKIP_VALID_TIMES
+     List of valid times to skip for WaveletStat only.
+     If set, values set in :term:`SKIP_VALID_TIMES` are ignored for WaveletStat.
+     See :term:`SKIP_VALID_TIMES` for formatting information.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_INC_VALID_TIMES
+     List of valid times to include for WaveletStat only.
+     If set, values set in :term:`INC_VALID_TIMES` are ignored for WaveletStat.
+     See :term:`SKIP_VALID_TIMES` for formatting information.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_SKIP_INIT_TIMES
+     List of initialization times to skip for WaveletStat only.
+     If set, values set in :term:`SKIP_INIT_TIMES` are ignored for WaveletStat.
+     See :term:`SKIP_VALID_TIMES` for formatting information.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_INC_INIT_TIMES
+     List of initialization times to include for WaveletStat only.
+     If set, values set in :term:`INC_INIT_TIMES` are ignored for WaveletStat.
+     See :term:`SKIP_VALID_TIMES` for formatting information.
+
+     | *Used by:* WaveletStat
