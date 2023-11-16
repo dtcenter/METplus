@@ -142,17 +142,17 @@ class WaveletStatWrapper(CompareGriddedWrapper):
 
         self.add_met_config(name='file_type', data_type='string',
                             env_var_name='FCST_FILE_TYPE',
-                            metplus_configs=['{app}_FCST_FILE_TYPE',
-                                             'FCST_{app}_FILE_TYPE',
-                                             '{app}_FILE_TYPE'],
+                            metplus_configs=[f'{app}_FCST_FILE_TYPE',
+                                             f'FCST_{app}_FILE_TYPE',
+                                             f'{app}_FILE_TYPE'],
                             extra_args={'remove_quotes': True,
                                         'uppercase': True})
 
         self.add_met_config(name='file_type', data_type='string',
                             env_var_name='OBS_FILE_TYPE',
-                            metplus_configs=['{app}_OBS_FILE_TYPE',
-                                             'OBS_{app}_FILE_TYPE',
-                                             '{app}_FILE_TYPE'],
+                            metplus_configs=[f'{app}_OBS_FILE_TYPE',
+                                             f'OBS_{app}_FILE_TYPE',
+                                             f'{app}_FILE_TYPE'],
                             extra_args={'remove_quotes': True,
                                         'uppercase': True})
 
