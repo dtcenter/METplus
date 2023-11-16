@@ -90,7 +90,6 @@ def get_config_inputs_from_command_line():
     for help_arg in help_args:
         if help_arg in sys.argv:
             usage()
-            sys.exit(0)
 
     # pull out command line arguments
     config_inputs = []
