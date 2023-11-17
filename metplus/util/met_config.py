@@ -325,19 +325,9 @@ def get_met_config_dict_list(config, app_name, dict_name, dict_items):
                                              id_index=2)
 
     all_met_config_items = {}
-    for index, items in indices.items():
+    for index, _ in indices.items():
         # read all variables for each index
         met_config_items = []
-
-        # check if any variable found doesn't match valid variables
-        not_in_dict = [item for item in items
-                       if item.lower() not in dict_items]
-        if any(not_in_dict):
-            for item in not_in_dict:
-                config.logger.error("Invalid variable: "
-                                    f"{search_string}{index}_{item}")
-            return None
-
         for name, item_info in dict_items.items():
             data_type, extra, kids, nicknames = _parse_item_info(item_info)
             metplus_configs = [f'{search_string}{index}_{name.upper()}']
