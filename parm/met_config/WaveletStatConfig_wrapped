@@ -1,0 +1,128 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Wavelet-Stat configuration file.
+//
+// For additional information, please see the MET Users Guide.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Output model name to be written
+//
+//model =
+${METPLUS_MODEL}
+
+//
+// Output description to be written
+// May be set separately in each "obs.field" entry
+//
+//desc =
+${METPLUS_DESC}
+
+//
+// Output observation type to be written
+//
+//obtype =
+${METPLUS_OBTYPE}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Verification grid
+// May be set separately in each "field" entry
+//
+//regrid = {
+${METPLUS_REGRID_DICT}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// May be set separately in each "field" entry
+//
+//censor_thresh =
+${METPLUS_CENSOR_THRESH}
+//censor_val =
+${METPLUS_CENSOR_VAL}
+
+//
+// Forecast and observation fields to be verified
+//
+fcst = {
+  ${METPLUS_FCST_FILE_TYPE}
+  ${METPLUS_FCST_FIELD}
+}
+obs = {
+  ${METPLUS_OBS_FILE_TYPE}
+  ${METPLUS_OBS_FIELD}
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Handle missing data
+//
+//mask_missing_flag =
+${METPLUS_MASK_MISSING_FLAG}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Decompose the field into dyadic tiles
+//
+//grid_decomp_flag =
+${METPLUS_GRID_DECOMP_FLAG}
+
+//tile = {
+${METPLUS_TILE_DICT}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Wavelet to be used for the decomposition
+//
+//wavelet = {
+${METPLUS_WAVELET_DICT}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Statistical output types
+//
+//output_flag = {
+${METPLUS_OUTPUT_FLAG_DICT}
+
+//
+// NetCDF matched pairs and PostScript output files
+//
+//nc_pairs_flag = {
+${METPLUS_NC_PAIRS_FLAG_DICT}
+
+//ps_plot_flag =
+${METPLUS_PS_PLOT_FLAG}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Plotting information
+//
+met_data_dir = "MET_BASE";
+
+//fcst_raw_plot = {
+${METPLUS_FCST_RAW_PLOT_DICT}
+
+//obs_raw_plot = {
+${METPLUS_OBS_RAW_PLOT_DICT}
+
+//wvlt_plot = {
+${METPLUS_WVLT_PLOT_DICT}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//output_prefix =
+${METPLUS_OUTPUT_PREFIX}
+
+//version = "V11.1.0";
+
+////////////////////////////////////////////////////////////////////////////////
+
+${METPLUS_MET_CONFIG_OVERRIDES}

@@ -58,9 +58,12 @@ def time_generator(config):
     # if list is not provided, use _BEG, _END, and _INCREMENT
     start_string = config.getraw('config', f'{prefix}_BEG')
     end_string = config.getraw('config', f'{prefix}_END', start_string)
-    time_interval = get_relativedelta(
-        config.getstr('config', f'{prefix}_INCREMENT', '60')
-    )
+
+    time_interval = config.getstr('config', f'{prefix}_INCREMENT', '60')
+    # if [INIT/VALID]_INCREMENT is an empty string, set it to prevent crash
+    if not time_interval:
+        time_interval = '60'
+    time_interval = get_relativedelta(time_interval)
 
     start_dt = _get_current_dt(start_string,
                                time_format,

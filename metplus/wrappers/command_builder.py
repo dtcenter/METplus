@@ -1399,9 +1399,6 @@ class CommandBuilder:
                 output_prefix_fmt = f'output_prefix = "{output_prefix}";'
                 self.env_var_dict['METPLUS_OUTPUT_PREFIX'] = output_prefix_fmt
 
-            # set old method of setting OUTPUT_PREFIX
-            self.add_env_var('OUTPUT_PREFIX', output_prefix)
-
         return output_prefix
 
     def handle_climo_dict(self):
