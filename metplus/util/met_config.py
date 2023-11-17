@@ -13,6 +13,7 @@ from .string_manip import find_indices_in_config_section
 from .config_metplus import parse_var_list
 from .field_util import format_all_field_info
 
+
 class METConfig:
     """! Stores information for a member of a MET config variables that
       can be used to set the value, the data type of the item,
@@ -195,6 +196,11 @@ def add_met_config_dict(config, app_name, output_dict, dict_name, items):
                 for nickname in nicknames:
                     metplus_configs.append(nickname)
 
+        # if list of dictionaries (dictlist)
+        elif 'list' in data_type:
+            children = get_met_config_dict_list(config, app_name, name, kids, parent=dict_name)
+            if not children:
+                continue
         # if dictionary, read get children from MET config
         else:
             children = []
@@ -263,15 +269,22 @@ def add_met_config_item(config, item, output_dict, depth=0):
     # handle dictionary or dictionary list item
     if 'dict' in item.data_type:
         tmp_dict = {}
-        for child in item.children:
-            if not add_met_config_item(config, child, tmp_dict,
-                                       depth=depth+1):
+        # handle list of dictionaries (dictlist)
+        if isinstance(item.children, dict):
+            dict_string = format_met_config_dict_list(config, item.name, item.children)
+            if dict_string is None:
                 return False
+        # handle dictionary with list of children
+        else:
+            for child in item.children:
+                if not add_met_config_item(config, child, tmp_dict,
+                                           depth=depth+1):
+                    return False
 
-        dict_string = format_met_config(item.data_type,
-                                        tmp_dict,
-                                        item.name,
-                                        keys=None)
+            dict_string = format_met_config(item.data_type,
+                                            tmp_dict,
+                                            item.name,
+                                            keys=None)
 
         # if handling dict MET config that is not nested inside another
         if not depth and item.data_type == 'dict':
@@ -293,8 +306,7 @@ def add_met_config_item(config, item, output_dict, depth=0):
                           **item.extra_args)
 
 
-def add_met_config_dict_list(config, app_name, output_dict, dict_name,
-                             dict_items):
+def get_met_config_dict_list(config, app_name, dict_name, dict_items, parent=None):
     """! Read METplusConfig and format MET config variables that are a list of
     dictionaries. Sets value in output dict with key starting with METPLUS_.
 
@@ -305,29 +317,34 @@ def add_met_config_dict_list(config, app_name, output_dict, dict_name,
     @param dict_items dictionary where the key is name of variable inside MET
      dictionary and the value is info about the item (see parse_item_info
      function for more information)
+    @param parent optional name of dictionary that contains the item (nested
+     dictionaries)
     """
-    search_string = f'{app_name}_{dict_name}'.upper()
-    regex = r'^' + search_string + r'(\d+)_(\w+)$'
-    indices = find_indices_in_config_section(regex, config,
-                                             index_index=1,
-                                             id_index=2)
+    regex_end = r'(\d*)_(\w+)$'
+    if not parent:
+        search_string = f'{app_name}_{dict_name}'.upper()
+        regex = r'^' + search_string + regex_end
+        indices = find_indices_in_config_section(regex, config,
+                                                 index_index=1,
+                                                 id_index=2)
+    else:
+        search_string = f'{app_name}_{parent}_{dict_name}'.upper()
+        regex = r'^' + search_string + regex_end
+        indices = find_indices_in_config_section(regex, config,
+                                                 index_index=1,
+                                                 id_index=2)
+        # if no indices were found, try again excluding sub dict name
+        if not indices:
+            search_string = f'{app_name}_{parent}'.upper()
+            regex = r'^' + search_string + regex_end
+            indices = find_indices_in_config_section(regex, config,
+                                                     index_index=1,
+                                                     id_index=2)
 
     all_met_config_items = {}
-    is_ok = True
-    for index, items in indices.items():
+    for index, _ in indices.items():
         # read all variables for each index
-        met_config_items = {}
-
-        # check if any variable found doesn't match valid variables
-        not_in_dict = [item for item in items
-                       if item.lower() not in dict_items]
-        if any(not_in_dict):
-            for item in not_in_dict:
-                config.logger.error("Invalid variable: "
-                                    f"{search_string}{index}_{item}")
-            is_ok = False
-            continue
-
+        met_config_items = []
         for name, item_info in dict_items.items():
             data_type, extra, kids, nicknames = _parse_item_info(item_info)
             metplus_configs = [f'{search_string}{index}_{name.upper()}']
@@ -338,20 +355,41 @@ def add_met_config_dict_list(config, app_name, output_dict, dict_name,
                              extra_args=extra_args,
                              )
 
-            if not add_met_config_item(config, item, met_config_items):
-                is_ok = False
+            met_config_items.append(item)
 
-        dict_string = format_met_config('dict',
-                                        met_config_items,
-                                        name='')
+        all_met_config_items[index] = met_config_items
+
+    return all_met_config_items
+
+
+def add_met_config_dict_list(config, app_name, output_dict, dict_name,
+                             dict_items):
+    is_ok = True
+    all_met_configs = get_met_config_dict_list(config, app_name, dict_name, dict_items)
+    if all_met_configs is None:
+        return False
+    output_string = format_met_config_dict_list(config, dict_name, all_met_configs)
+    if output_string is None:
+        is_ok = False
+
+    output_dict[f'METPLUS_{dict_name.upper()}_LIST'] = output_string
+    return is_ok
+
+
+def format_met_config_dict_list(config, dict_name, all_met_configs):
+    all_met_config_items = {}
+    for index, met_configs in all_met_configs.items():
+        met_config_items = {}
+        for met_config in met_configs:
+            if not add_met_config_item(config, met_config, met_config_items):
+                return None
+
+        dict_string = format_met_config('dict', met_config_items, name='')
         all_met_config_items[index] = dict_string
 
     # format list of dictionaries
-    output_string = format_met_config('list',
-                                      all_met_config_items,
-                                      dict_name)
-    output_dict[f'METPLUS_{dict_name.upper()}_LIST'] = output_string
-    return is_ok
+    output_string = format_met_config('list', all_met_config_items, dict_name)
+    return output_string
 
 
 def format_met_config(data_type, c_dict, name, keys=None):

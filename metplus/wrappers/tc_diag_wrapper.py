@@ -14,7 +14,7 @@ import os
 
 from ..util import time_util
 from . import RuntimeFreqWrapper
-from ..util import do_string_sub, skip_time, get_lead_sequence
+from ..util import do_string_sub, get_lead_sequence
 from ..util import parse_var_list, sub_var_list, getlist
 from ..util import find_indices_in_config_section
 from ..util.met_config import add_met_config_dict_list
@@ -65,6 +65,11 @@ class TCDiagWrapper(RuntimeFreqWrapper):
         'METPLUS_CIRA_DIAG_FLAG',
         'METPLUS_OUTPUT_PREFIX',
         'METPLUS_ONE_TIME_PER_FILE_FLAG',
+    ]
+
+    # deprecated env vars that are no longer supported in the wrapped MET conf
+    DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
+        'OUTPUT_PREFIX',
     ]
 
     def __init__(self, config, instance=None):

@@ -340,13 +340,21 @@ def handle_input_dir(config):
         ({'GEN_ENS_PROD_NMEP_SMOOTH_GAUSSIAN_RADIUS': '120', },
          {
              'METPLUS_NMEP_SMOOTH_DICT': 'nmep_smooth = {gaussian_radius = 120;}'}),
-        # 59
-        ({'GEN_ENS_PROD_NMEP_SMOOTH_TYPE_METHOD': 'GAUSSIAN', },
-         {'METPLUS_NMEP_SMOOTH_DICT': 'nmep_smooth = {type = [{method = GAUSSIAN;}];}'}),
         # 60
         ({'GEN_ENS_PROD_NMEP_SMOOTH_TYPE_WIDTH': '1', },
          {'METPLUS_NMEP_SMOOTH_DICT': 'nmep_smooth = {type = [{width = 1;}];}'}),
         # 61
+        ({'GEN_ENS_PROD_NMEP_SMOOTH_TYPE_METHOD': 'GAUSSIAN', },
+         {'METPLUS_NMEP_SMOOTH_DICT': 'nmep_smooth = {type = [{method = GAUSSIAN;}];}'}),
+        # 62 old name without sub directory name
+        ({'GEN_ENS_PROD_NMEP_SMOOTH_METHOD': 'GAUSSIAN', },
+         {'METPLUS_NMEP_SMOOTH_DICT': 'nmep_smooth = {type = [{method = GAUSSIAN;}];}'}),
+        # 63 both old and new name - should use value from new name
+        ({'GEN_ENS_PROD_NMEP_SMOOTH_METHOD': 'GAUSSIAN',
+          'GEN_ENS_PROD_NMEP_SMOOTH_TYPE_METHOD': 'NEAREST'
+        },
+         {'METPLUS_NMEP_SMOOTH_DICT': 'nmep_smooth = {type = [{method = NEAREST;}];}'}),
+        # 64
         ({
              'GEN_ENS_PROD_NMEP_SMOOTH_VLD_THRESH': '0.0',
              'GEN_ENS_PROD_NMEP_SMOOTH_SHAPE': 'circle',
@@ -362,13 +370,26 @@ def handle_input_dir(config):
                      'type = [{method = GAUSSIAN;width = 1;}];}'
              )
          }),
-        # 62
+        # 65 test from WOFS use case
+        ({
+             'GEN_ENS_PROD_NMEP_SMOOTH_VLD_THRESH': '1.0',
+             'GEN_ENS_PROD_NMEP_SMOOTH_SHAPE': 'SQUARE',
+             'GEN_ENS_PROD_NMEP_SMOOTH_METHOD': 'NEAREST',
+             'GEN_ENS_PROD_NMEP_SMOOTH_WIDTH': '1',
+         },
+         {
+             'METPLUS_NMEP_SMOOTH_DICT': (
+                     'nmep_smooth = {vld_thresh = 1.0;shape = SQUARE;'
+                     'type = [{method = NEAREST;width = 1;}];}'
+             )
+         }),
+        # 66
         ({'GEN_ENS_PROD_ENS_MEMBER_IDS': '1,2,3,4', },
          {'METPLUS_ENS_MEMBER_IDS': 'ens_member_ids = ["1", "2", "3", "4"];'}),
-        # 63
+        # 67
         ({'GEN_ENS_PROD_CONTROL_ID': '0', },
          {'METPLUS_CONTROL_ID': 'control_id = "0";'}),
-        # 64
+        # 68
         ({'GEN_ENS_PROD_NORMALIZE': 'CLIMO_STD_ANOM', },
          {'METPLUS_NORMALIZE': 'normalize = CLIMO_STD_ANOM;'}),
 

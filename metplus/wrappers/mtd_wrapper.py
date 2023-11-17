@@ -55,6 +55,7 @@ class MTDWrapper(CompareGriddedWrapper):
         'MIN_VOLUME',
         'FCST_FILE_TYPE',
         'OBS_FILE_TYPE',
+        'OUTPUT_PREFIX',
     ]
 
     def __init__(self, config, instance=None):
