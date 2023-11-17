@@ -53,7 +53,9 @@ METplus Version 6.0.0 Beta 2 Release Notes (2023-11-14)
 
   .. dropdown:: New Wrappers
 
-     NONE
+     * WaveletStat
+       (`#2252 <https://github.com/dtcenter/METplus/issues/2252>`_)
+
 
   .. dropdown:: New Use Cases
 
