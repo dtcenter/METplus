@@ -198,7 +198,7 @@ def add_met_config_dict(config, app_name, output_dict, dict_name, items):
 
         # if list of dictionaries (dictlist)
         elif 'list' in data_type:
-            children = get_met_config_dict_list(config, app_name, f'{dict_name}_{name}', kids)
+            children = get_met_config_dict_list(config, app_name, name, kids, parent=dict_name)
             if not children:
                 continue
         # if dictionary, read get children from MET config
@@ -306,7 +306,7 @@ def add_met_config_item(config, item, output_dict, depth=0):
                           **item.extra_args)
 
 
-def get_met_config_dict_list(config, app_name, dict_name, dict_items):
+def get_met_config_dict_list(config, app_name, dict_name, dict_items, parent=None):
     """! Read METplusConfig and format MET config variables that are a list of
     dictionaries. Sets value in output dict with key starting with METPLUS_.
 
@@ -317,12 +317,29 @@ def get_met_config_dict_list(config, app_name, dict_name, dict_items):
     @param dict_items dictionary where the key is name of variable inside MET
      dictionary and the value is info about the item (see parse_item_info
      function for more information)
+    @param parent optional name of dictionary that contains the item (nested
+     dictionaries)
     """
-    search_string = f'{app_name}_{dict_name}'.upper()
-    regex = r'^' + search_string + r'(\d*)_(\w+)$'
-    indices = find_indices_in_config_section(regex, config,
-                                             index_index=1,
-                                             id_index=2)
+    regex_end = r'(\d*)_(\w+)$'
+    if not parent:
+        search_string = f'{app_name}_{dict_name}'.upper()
+        regex = r'^' + search_string + regex_end
+        indices = find_indices_in_config_section(regex, config,
+                                                 index_index=1,
+                                                 id_index=2)
+    else:
+        search_string = f'{app_name}_{parent}_{dict_name}'.upper()
+        regex = r'^' + search_string + regex_end
+        indices = find_indices_in_config_section(regex, config,
+                                                 index_index=1,
+                                                 id_index=2)
+        # if no indices were found, try again excluding sub dict name
+        if not indices:
+            search_string = f'{app_name}_{parent}'.upper()
+            regex = r'^' + search_string + regex_end
+            indices = find_indices_in_config_section(regex, config,
+                                                     index_index=1,
+                                                     id_index=2)
 
     all_met_config_items = {}
     for index, _ in indices.items():
