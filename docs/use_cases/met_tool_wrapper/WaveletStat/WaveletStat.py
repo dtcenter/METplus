@@ -17,7 +17,7 @@ met_tool_wrapper/WaveletStat/WaveletStat.conf
 # --------
 #
 # | **Forecast:** WRF 3 hour precipitation accumulation
-# | **Observation:** MU 3 hour precipitation accumulation
+# | **Observation:** NCEP Stage 2 National Precipitation Analysis - NPA (multi-sensor) 3 hour precipitation accumulation
 #
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here for the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See the `Running METplus`_ section for more information.
