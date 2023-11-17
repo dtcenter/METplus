@@ -10983,9 +10983,9 @@ METplus Configuration
 | :term:`WAVELET_STAT_CENSOR_VAL`
 | :term:`WAVELET_STAT_MASK_MISSING_FLAG`
 | :term:`WAVELET_STAT_GRID_DECOMP_FLAG`
-| :term:`WAVELET_STAT_TITLE_WIDTH`
-| :term:`WAVELET_STAT_TITLE_LOCATION<N>_X_LL`
-| :term:`WAVELET_STAT_TITLE_LOCATION<N>_Y_LL`
+| :term:`WAVELET_STAT_TILE_WIDTH`
+| :term:`WAVELET_STAT_TILE_LOCATION<N>_X_LL`
+| :term:`WAVELET_STAT_TILE_LOCATION<N>_Y_LL`
 | :term:`WAVELET_STAT_WAVELET_TYPE`
 | :term:`WAVELET_STAT_WAVELET_MEMBER`
 | :term:`WAVELET_STAT_OUTPUT_FLAG_ISC`
@@ -11132,8 +11132,8 @@ ${METPLUS_GRID_DECOMP_FLAG}
    * - :term:`WAVELET_STAT_GRID_DECOMP_FLAG`
      - grid_decomp_flag
 
-${METPLUS_TITLE_DICT}
-^^^^^^^^^^^^^^^^^^^^^
+${METPLUS_TILE_DICT}
+^^^^^^^^^^^^^^^^^^^^
 
 .. list-table::
    :widths: 5 5
@@ -11141,12 +11141,12 @@ ${METPLUS_TITLE_DICT}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`WAVELET_STAT_TITLE_WIDTH`
-     - title.width
-   * - :term:`WAVELET_STAT_TITLE_LOCATION<N>_X_LL`
-     - title.location.x_ll
-   * - :term:`WAVELET_STAT_TITLE_LOCATION<N>_Y_LL`
-     - title.location.y_ll
+   * - :term:`WAVELET_STAT_TILE_WIDTH`
+     - tile.width
+   * - :term:`WAVELET_STAT_TILE_LOCATION<N>_X_LL`
+     - tile.location.x_ll
+   * - :term:`WAVELET_STAT_TILE_LOCATION<N>_Y_LL`
+     - tile.location.y_ll
 
 ${METPLUS_WAVELET_DICT}
 ^^^^^^^^^^^^^^^^^^^^^^^

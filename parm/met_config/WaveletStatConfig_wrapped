@@ -72,8 +72,8 @@ ${METPLUS_MASK_MISSING_FLAG}
 //grid_decomp_flag =
 ${METPLUS_GRID_DECOMP_FLAG}
 
-//title = {
-${METPLUS_TITLE_DICT}
+//tile = {
+${METPLUS_TILE_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 

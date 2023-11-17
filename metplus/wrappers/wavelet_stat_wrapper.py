@@ -40,7 +40,7 @@ class WaveletStatWrapper(CompareGriddedWrapper):
         'METPLUS_CENSOR_VAL',
         'METPLUS_MASK_MISSING_FLAG',
         'METPLUS_GRID_DECOMP_FLAG',
-        'METPLUS_TITLE_DICT',
+        'METPLUS_TILE_DICT',
         'METPLUS_WAVELET_DICT',
         'METPLUS_OUTPUT_FLAG_DICT',
         'METPLUS_NC_PAIRS_FLAG_DICT',
@@ -156,7 +156,7 @@ class WaveletStatWrapper(CompareGriddedWrapper):
                             extra_args={'remove_quotes': True,
                                         'uppercase': True})
 
-        self.add_met_config_dict('title', {
+        self.add_met_config_dict('tile', {
             'width': 'int',
             'location': ('dictlist', '', {'x_ll': 'int', 'y_ll': 'int'})
         })

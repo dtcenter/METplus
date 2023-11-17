@@ -167,23 +167,23 @@ def test_wavelet_stat_is_prob(metplus_config, config_overrides, expected_values)
         ({'WAVELET_STAT_GRID_DECOMP_FLAG': 'AUTO', },
          {'METPLUS_GRID_DECOMP_FLAG': 'grid_decomp_flag = AUTO;'}),
 
-        ({'WAVELET_STAT_TITLE_WIDTH': '0', },
-         {'METPLUS_TITLE_DICT': 'title = {width = 0;}'}),
+        ({'WAVELET_STAT_TILE_WIDTH': '0', },
+         {'METPLUS_TILE_DICT': 'tile = {width = 0;}'}),
 
-        ({'WAVELET_STAT_TITLE_LOCATION_X_LL': '1', },
-         {'METPLUS_TITLE_DICT': 'title = {location = [{x_ll = 1;}];}'}),
+        ({'WAVELET_STAT_TILE_LOCATION_X_LL': '1', },
+         {'METPLUS_TILE_DICT': 'tile = {location = [{x_ll = 1;}];}'}),
 
-        ({'WAVELET_STAT_TITLE_LOCATION_Y_LL': '1', },
-         {'METPLUS_TITLE_DICT': 'title = {location = [{y_ll = 1;}];}'}),
+        ({'WAVELET_STAT_TILE_LOCATION_Y_LL': '1', },
+         {'METPLUS_TILE_DICT': 'tile = {location = [{y_ll = 1;}];}'}),
 
         ({
-             'WAVELET_STAT_TITLE_WIDTH': '1',
-             'WAVELET_STAT_TITLE_LOCATION1_X_LL': '1',
-             'WAVELET_STAT_TITLE_LOCATION1_Y_LL': '2',
-             'WAVELET_STAT_TITLE_LOCATION2_X_LL': '3',
-             'WAVELET_STAT_TITLE_LOCATION2_Y_LL': '4',
+             'WAVELET_STAT_TILE_WIDTH': '1',
+             'WAVELET_STAT_TILE_LOCATION1_X_LL': '1',
+             'WAVELET_STAT_TILE_LOCATION1_Y_LL': '2',
+             'WAVELET_STAT_TILE_LOCATION2_X_LL': '3',
+             'WAVELET_STAT_TILE_LOCATION2_Y_LL': '4',
          },
-         {'METPLUS_TITLE_DICT': 'title = {width = 1;location = [{x_ll = 1;y_ll = 2;},{x_ll = 3;y_ll = 4;}];}'}),
+         {'METPLUS_TILE_DICT': 'tile = {width = 1;location = [{x_ll = 1;y_ll = 2;},{x_ll = 3;y_ll = 4;}];}'}),
 
         ({'WAVELET_STAT_WAVELET_TYPE': 'HAAR', },
          {'METPLUS_WAVELET_DICT': 'wavelet = {type = HAAR;}'}),

@@ -11179,18 +11179,18 @@ METplus Configuration Glossary
 
      | *Used by:* WaveletStat
 
-   WAVELET_STAT_TITLE_WIDTH
-     Specify the value for 'title.width' in the MET configuration file for WaveletStat.
+   WAVELET_STAT_TILE_WIDTH
+     Specify the value for 'tile.width' in the MET configuration file for WaveletStat.
 
      | *Used by:* WaveletStat
 
-   WAVELET_STAT_TITLE_LOCATION<N>_X_LL
-     Specify the value for the nth 'title.location.x_ll' in the MET configuration file for WaveletStat.
+   WAVELET_STAT_TILE_LOCATION<N>_X_LL
+     Specify the value for the nth 'tile.location.x_ll' in the MET configuration file for WaveletStat.
 
      | *Used by:* WaveletStat
 
-   WAVELET_STAT_TITLE_LOCATION<N>_Y_LL
-     Specify the value for the nth 'title.location.y_ll' in the MET configuration file for WaveletStat.
+   WAVELET_STAT_TILE_LOCATION<N>_Y_LL
+     Specify the value for the nth 'tile.location.y_ll' in the MET configuration file for WaveletStat.
 
      | *Used by:* WaveletStat
 
