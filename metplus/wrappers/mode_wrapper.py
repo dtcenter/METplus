@@ -89,6 +89,7 @@ class MODEWrapper(CompareGriddedWrapper):
         'OBS_MERGE_THRESH',
         'FCST_MERGE_FLAG',
         'OBS_MERGE_FLAG',
+        'OUTPUT_PREFIX',
     ]
 
     WEIGHTS = {

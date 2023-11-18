@@ -163,11 +163,11 @@ def pre_run_setup(config_inputs):
 
         logger.error("Correct configuration variables and rerun. Exiting.")
         logger.info(f"Check the log file for more information: {log_file}")
-        sys.exit(1)
+        return None
 
     if not config.getdir('MET_INSTALL_DIR', must_exist=True):
         logger.error('MET_INSTALL_DIR must be set correctly to run METplus')
-        sys.exit(1)
+        return None
 
     # handle dir to write temporary files
     handle_tmp_dir(config)
@@ -335,7 +335,7 @@ def post_run_cleanup(config, app_name, total_errors):
         # print success log message if terminal does not include INFO
         if not log_terminal_includes_info(config):
             print(success_log)
-        return
+        return True
 
     error_msg = (f'{app_name} has finished running{user_string} '
                  f'but had {total_errors} error')
@@ -344,4 +344,4 @@ def post_run_cleanup(config, app_name, total_errors):
     error_msg += '.'
     logger.error(error_msg)
     logger.info(log_message)
-    sys.exit(1)
+    return False

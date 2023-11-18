@@ -73,6 +73,7 @@ class GridStatWrapper(CompareGriddedWrapper):
         'NEIGHBORHOOD_WIDTH',
         'NEIGHBORHOOD_SHAPE',
         'NEIGHBORHOOD_COV_THRESH',
+        'OUTPUT_PREFIX',
     ]
 
     OUTPUT_FLAGS = [

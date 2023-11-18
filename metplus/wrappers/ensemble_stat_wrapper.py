@@ -78,6 +78,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'MODEL',
         'OBTYPE',
         'REGRID_TO_GRID',
+        'OUTPUT_PREFIX',
     ]
 
     OUTPUT_FLAGS = [

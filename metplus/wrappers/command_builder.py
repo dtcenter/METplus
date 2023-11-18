@@ -757,7 +757,7 @@ class CommandBuilder:
                                             "%Y%m%d%H%M%S").strftime("%s"))
 
         # step through all files under input directory in sorted order
-        for dirpath, _, all_files in os.walk(data_dir):
+        for dirpath, _, all_files in os.walk(data_dir, followlinks=True):
             for filename in sorted(all_files):
                 fullpath = os.path.join(dirpath, filename)
 
@@ -1398,9 +1398,6 @@ class CommandBuilder:
             if output_prefix:
                 output_prefix_fmt = f'output_prefix = "{output_prefix}";'
                 self.env_var_dict['METPLUS_OUTPUT_PREFIX'] = output_prefix_fmt
-
-            # set old method of setting OUTPUT_PREFIX
-            self.add_env_var('OUTPUT_PREFIX', output_prefix)
 
         return output_prefix
 

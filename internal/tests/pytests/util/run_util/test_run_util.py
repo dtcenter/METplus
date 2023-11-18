@@ -2,6 +2,7 @@ import pytest
 from unittest import mock
 
 import os
+import re
 
 import produtil
 import metplus.util.run_util as ru
@@ -141,23 +142,27 @@ def test_pre_run_setup_env_vars():
 
 @pytest.mark.util
 def test_pre_run_setup_sed_file(capfd):
-    with mock.patch.object(ru.sys, 'exit') as mock_sys:
-        with mock.patch.object(
-            ru,
-            'validate_config_variables',
-            return_value=(False, ['sed command 1', 'sed command 2']),
-        ):
-            actual = get_config_from_file('sed_run_util.conf')
-            mock_sys.assert_called_with(1)
+    with mock.patch.object(
+        ru,
+        'validate_config_variables',
+        return_value=(False, ['sed command 1', 'sed command 2']),
+    ):
+        actual = get_config_from_file('sed_run_util.conf')
+        assert actual is None
 
     # check sed file is written correctly
-    sed_file = os.path.join(actual.getdir('OUTPUT_BASE'), 'sed_commands.txt')
+    out, err = capfd.readouterr()
+    sed_err_regex = r'.*Find/Replace commands have been generated in (.*)\n'
+    sed_file = None
+    match = re.match(sed_err_regex, err)
+    if match:
+        sed_file = match.group(1)
+
     assert os.path.exists(sed_file)
     with open(sed_file, 'r') as f:
         assert f.read() == 'sed command 1\nsed command 2\n'
 
     # check correct errors logged
-    out, err = capfd.readouterr()
     expected_error_msgs = [
         f'Find/Replace commands have been generated in {sed_file}',
         'ERROR: Correct configuration variables and rerun. Exiting.',
@@ -168,9 +173,8 @@ def test_pre_run_setup_sed_file(capfd):
 
 @pytest.mark.util
 def test_pre_run_setup_deprecated(capfd):
-    with mock.patch.object(ru.sys, 'exit') as mock_sys:
-        actual = get_config_from_file('sed_run_util.conf')
-        mock_sys.assert_called_with(1)
+    actual = get_config_from_file('sed_run_util.conf')
+    assert actual is None
 
     out, err = capfd.readouterr()
 
@@ -185,9 +189,8 @@ def test_pre_run_setup_deprecated(capfd):
 
 @pytest.mark.util
 def test_pre_run_setup_no_install(capfd):
-    with mock.patch.object(ru.sys, 'exit') as mock_sys:
-        actual = get_config_from_file('no_install_run_util.conf')
-    mock_sys.assert_called_with(1)
+    actual = get_config_from_file('no_install_run_util.conf')
+    assert actual is None
 
     out, err = capfd.readouterr()
     assert 'MET_INSTALL_DIR must be set correctly to run METplus' in err
@@ -433,7 +436,7 @@ def test_post_run_cleanup_no_errors(post_run_config):
         with mock.patch.object(ru, 'get_logfile_info', return_value='/log/file.log'):
             actual = ru.post_run_cleanup(post_run_config, 'fake_app', 0)
 
-    assert actual == None
+    assert actual is True
     for msg in expected_msgs:
         _check_log_info(post_run_config, [msg])
 
@@ -451,11 +454,9 @@ def test_post_run_cleanup_errors(post_run_config):
         ru, 'get_user_info', return_value='Allan H. Murphy'
     ) as mock_user:
         with mock.patch.object(ru, 'get_logfile_info', return_value='/log/file.log'):
-            with mock.patch.object(ru.sys, 'exit') as mock_sys:
-                actual = ru.post_run_cleanup(post_run_config, 'fake_app', 5)
+            actual = ru.post_run_cleanup(post_run_config, 'fake_app', 5)
 
-    mock_sys.assert_called_once_with(1)
-    assert actual == None
+    assert actual is False
     _check_log_info(
         post_run_config, ['Check the log file for more information: /log/file.log']
     )
