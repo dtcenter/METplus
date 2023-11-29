@@ -182,8 +182,8 @@ ${METPLUS_CIRA_DIAG_FLAG}
 
 tmp_dir = "${MET_TMP_DIR}";
 
-//output_prefix =
-${METPLUS_OUTPUT_PREFIX}
+//output_base_format =
+${METPLUS_OUTPUT_BASE_FORMAT}
 
 //version       = "V11.1.0";
 

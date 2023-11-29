@@ -63,13 +63,14 @@ class TCDiagWrapper(RuntimeFreqWrapper):
         'METPLUS_NC_DIAG_FLAG',
         'METPLUS_NC_CYL_GRID_FLAG',
         'METPLUS_CIRA_DIAG_FLAG',
-        'METPLUS_OUTPUT_PREFIX',
+        'METPLUS_OUTPUT_BASE_FORMAT',
         'METPLUS_ONE_TIME_PER_FILE_FLAG',
     ]
 
     # deprecated env vars that are no longer supported in the wrapped MET conf
     DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
         'OUTPUT_PREFIX',
+        'METPLUS_OUTPUT_PREFIX',
     ]
 
     def __init__(self, config, instance=None):
@@ -232,7 +233,7 @@ class TCDiagWrapper(RuntimeFreqWrapper):
         self.add_met_config(name='nc_diag_flag', data_type='bool')
         self.add_met_config(name='cira_diag_flag', data_type='bool')
 
-        self.add_met_config(name='output_prefix', data_type='string')
+        self.add_met_config(name='output_base_format', data_type='string')
 
         return c_dict
 

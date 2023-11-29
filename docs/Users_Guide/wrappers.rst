@@ -8250,7 +8250,7 @@ METplus Configuration
 | :term:`TC_DIAG_NC_CYL_GRID_FLAG`
 | :term:`TC_DIAG_NC_DIAG_FLAG`
 | :term:`TC_DIAG_CIRA_DIAG_FLAG`
-| :term:`TC_DIAG_OUTPUT_PREFIX`
+| :term:`TC_DIAG_OUTPUT_BASE_FORMAT`
 | :term:`TC_DIAG_SKIP_IF_OUTPUT_EXISTS`
 | :term:`TC_DIAG_MET_CONFIG_OVERRIDES`
 | :term:`TC_DIAG_SKIP_VALID_TIMES`
@@ -8715,8 +8715,8 @@ ${METPLUS_OUTPUT_PREFIX}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_DIAG_OUTPUT_PREFIX`
-     - output_prefix
+   * - :term:`TC_DIAG_OUTPUT_BASE_FORMAT`
+     - output_base_format
 
 ${METPLUS_MET_CONFIG_OVERRIDES}
 """""""""""""""""""""""""""""""

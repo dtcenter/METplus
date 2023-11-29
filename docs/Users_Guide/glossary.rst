@@ -10423,7 +10423,10 @@ METplus Configuration Glossary
      | *Used by:* TCDiag
 
    TC_DIAG_OUTPUT_PREFIX
-     Specify the value for 'output_prefix' in the MET configuration file for TCDiag.
+     .. warning:: **DEPRECATED:** Please use :term:`TC_DIAG_OUTPUT_BASE_FORMAT` instead.
+
+   TC_DIAG_OUTPUT_BASE_FORMAT
+     Specify the value for 'output_base_format' in the MET configuration file for TCDiag.
 
      | *Used by:* TCDiag
 
