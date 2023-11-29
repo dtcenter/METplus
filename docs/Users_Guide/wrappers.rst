@@ -8225,6 +8225,7 @@ METplus Configuration
 | :term:`TC_DIAG_DOMAIN_INFO<n>_N_AZIMUTH`
 | :term:`TC_DIAG_DOMAIN_INFO<n>_DELTA_RANGE_KM`
 | :term:`TC_DIAG_DOMAIN_INFO<n>_DIAG_SCRIPT`
+| :term:`TC_DIAG_DOMAIN_INFO<n>_OVERRIDE_DIAGS`
 | :term:`TC_DIAG_INPUT_DATATYPE`
 | :term:`TC_DIAG_DATA_DOMAIN`
 | :term:`TC_DIAG_DATA_LEVEL`
@@ -8444,6 +8445,8 @@ ${METPLUS_DOMAIN_INFO_LIST}
      - domain_info.delta_range_km
    * - :term:`TC_DIAG_DOMAIN_INFO<n>_DIAG_SCRIPT`
      - domain_info.diag_script
+   * - :term:`TC_DIAG_DOMAIN_INFO<n>_OVERRIDE_DIAGS`
+     - domain_info.override_diags
 
 ${METPLUS_DATA_FILE_TYPE}
 """""""""""""""""""""""""

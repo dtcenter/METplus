@@ -169,6 +169,7 @@ class TCDiagWrapper(RuntimeFreqWrapper):
             'n_azimuth': 'int',
             'delta_range_km': 'float',
             'diag_script': 'list',
+            'override_diags': 'list',
         }
         if not add_met_config_dict_list(config=self.config,
                                         app_name=self.app_name,

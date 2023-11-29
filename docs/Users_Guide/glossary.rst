@@ -10302,6 +10302,11 @@ METplus Configuration Glossary
 
      | *Used by:* TCDiag
 
+   TC_DIAG_DOMAIN_INFO<n>_OVERRIDE_DIAGS
+     Specify the value for the nth 'domain_info.override_diags' in the MET configuration file for TCDiag.
+
+     | *Used by:* TCDiag
+
    TC_DIAG_CENSOR_THRESH
      .. warning:: **DEPRECATED:** Please use :term:`BOTH_VAR<n>_OPTIONS` instead.
 
