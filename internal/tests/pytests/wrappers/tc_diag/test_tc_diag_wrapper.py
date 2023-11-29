@@ -197,7 +197,7 @@ def set_minimum_config_settings(config):
 
         ({'TC_DIAG_VORTEX_REMOVAL': 'False', }, {'METPLUS_VORTEX_REMOVAL': 'vortex_removal = FALSE;'}),
 
-        ({'TC_DIAG_NC_RNG_AZI_FLAG': 'true', }, {'METPLUS_NC_RNG_AZI_FLAG': 'nc_rng_azi_flag = TRUE;'}),
+        ({'TC_DIAG_NC_CYL_GRID_FLAG': 'true', }, {'METPLUS_NC_CYL_GRID_FLAG': 'nc_cyl_grid_flag = TRUE;'}),
 
         ({'TC_DIAG_NC_DIAG_FLAG': 'true', }, {'METPLUS_NC_DIAG_FLAG': 'nc_diag_flag = TRUE;'}),
 

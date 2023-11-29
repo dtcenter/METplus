@@ -168,8 +168,8 @@ ${METPLUS_ONE_TIME_PER_FILE_FLAG}
 //
 // Flags to control output files
 //
-//nc_rng_azi_flag =
-${METPLUS_NC_RNG_AZI_FLAG}
+//nc_cyl_grid_flag =
+${METPLUS_NC_CYL_GRID_FLAG}
 
 //nc_diag_flag =
 ${METPLUS_NC_DIAG_FLAG}

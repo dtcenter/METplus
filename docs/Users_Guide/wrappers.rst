@@ -8247,7 +8247,7 @@ METplus Configuration
 | :term:`TC_DIAG_RADIAL_VELOCITY_LONG_FIELD_NAME`
 | :term:`TC_DIAG_VORTEX_REMOVAL`
 | :term:`TC_DIAG_ONE_TIME_PER_FILE_FLAG`
-| :term:`TC_DIAG_NC_RNG_AZI_FLAG`
+| :term:`TC_DIAG_NC_CYL_GRID_FLAG`
 | :term:`TC_DIAG_NC_DIAG_FLAG`
 | :term:`TC_DIAG_CIRA_DIAG_FLAG`
 | :term:`TC_DIAG_OUTPUT_PREFIX`
@@ -8670,8 +8670,8 @@ ${METPLUS_ONE_TIME_PER_FILE_FLAG}
    * - :term:`TC_DIAG_ONE_TIME_PER_FILE_FLAG`
      - one_time_per_file_flag
 
-${METPLUS_NC_RNG_AZI_FLAG}
-""""""""""""""""""""""""""
+${METPLUS_NC_CYL_GRID_FLAG}
+"""""""""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -8679,8 +8679,8 @@ ${METPLUS_NC_RNG_AZI_FLAG}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_DIAG_NC_RNG_AZI_FLAG`
-     - nc_rng_azi_flag
+   * - :term:`TC_DIAG_NC_CYL_GRID_FLAG`
+     - nc_cyl_grid_flag
 
 ${METPLUS_NC_DIAG_FLAG}
 """""""""""""""""""""""

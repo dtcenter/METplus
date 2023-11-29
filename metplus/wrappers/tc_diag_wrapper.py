@@ -61,7 +61,7 @@ class TCDiagWrapper(RuntimeFreqWrapper):
         'METPLUS_VORTEX_REMOVAL',
         'METPLUS_VORTEX_REMOVAL',
         'METPLUS_NC_DIAG_FLAG',
-        'METPLUS_NC_RNG_AZI_FLAG',
+        'METPLUS_NC_CYL_GRID_FLAG',
         'METPLUS_CIRA_DIAG_FLAG',
         'METPLUS_OUTPUT_PREFIX',
         'METPLUS_ONE_TIME_PER_FILE_FLAG',
@@ -228,7 +228,7 @@ class TCDiagWrapper(RuntimeFreqWrapper):
 
         self.add_met_config(name='one_time_per_file_flag', data_type='bool')
 
-        self.add_met_config(name='nc_rng_azi_flag', data_type='bool')
+        self.add_met_config(name='nc_cyl_grid_flag', data_type='bool')
         self.add_met_config(name='nc_diag_flag', data_type='bool')
         self.add_met_config(name='cira_diag_flag', data_type='bool')
 
