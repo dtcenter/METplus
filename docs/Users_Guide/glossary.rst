@@ -7397,6 +7397,16 @@ METplus Configuration Glossary
 
      | *Used by:* TCPairs
 
+   TC_PAIRS_CONSENSUS<n>_DIAG_REQUIRED
+     Specify the value for the nth 'consensus.diag_required' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
+
+   TC_PAIRS_CONSENSUS<n>_DIAG_MIN_REQ
+     Specify the value for the nth 'consensus.diag_min_req' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
+
    TC_PAIRS_CONSENSUS<n>_WRITE_MEMBERS
      Specify the value for the nth 'consensus.write_members' in the MET configuration file for TCPairs.
 
