@@ -177,14 +177,15 @@ ${METPLUS_NC_DIAG_FLAG}
 //cira_diag_flag =
 ${METPLUS_CIRA_DIAG_FLAG}
 
+//
+// Output base file naming convention
+//
+//output_base_format =
+${METPLUS_OUTPUT_BASE_FORMAT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 tmp_dir = "${MET_TMP_DIR}";
-
-//output_base_format =
-${METPLUS_OUTPUT_BASE_FORMAT}
-
 //version       = "V11.1.0";
 
 ////////////////////////////////////////////////////////////////////////////////
