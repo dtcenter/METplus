@@ -88,21 +88,17 @@ ${METPLUS_DOMAIN_INFO_LIST}
 ////////////////////////////////////////////////////////////////////////////////
 
 //
-// Data censoring and conversion
+// Cylindrical coordinate transformation regridding options
 // May be set separately in each diag_data "field" entry
 //
-// censor_thresh = [];
-${METPLUS_CENSOR_THRESH}
-
-// censor_val    = [];
-${METPLUS_CENSOR_VAL}
-
-// convert(x)    = x;
-${METPLUS_CONVERT}
+//regrid = {
+${METPLUS_REGRID_DICT}
 
 
 //
 // Data fields
+// censor_thresh, censor_val, and convert(x) may be set separately
+// in each data "field" array entry
 //
 data = {
 
@@ -121,12 +117,6 @@ data = {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
-//
-// Regridding options
-//
-//regrid = {
-${METPLUS_REGRID_DICT}
 
 //
 // Optionally convert u/v winds to tangential/radial winds

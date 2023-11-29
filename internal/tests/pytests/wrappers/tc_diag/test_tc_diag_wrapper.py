@@ -122,15 +122,6 @@ def set_minimum_config_settings(config):
          },
          {'METPLUS_DOMAIN_INFO_LIST': 'domain_info = [{domain = "parent";n_range = 150;n_azimuth = 8;delta_range_km = 10.0;diag_script = ["MET_BASE/python/tc_diag/compute_all_diagnostics.py", "MET_BASE/python/tc_diag/compute_custom_diagnostics.py"];},{domain = "nest";n_range = 100;n_azimuth = 7;delta_range_km = 12.0;diag_script = ["MET_BASE/python/tc_diag/compute_sst_diagnostics.py"];}];'}),
 
-        ({'TC_DIAG_CENSOR_THRESH': '>12000,<5000', },
-         {'METPLUS_CENSOR_THRESH': 'censor_thresh = [>12000, <5000];'}),
-
-        ({'TC_DIAG_CENSOR_VAL': '12000,5000', },
-         {'METPLUS_CENSOR_VAL': 'censor_val = [12000, 5000];'}),
-
-        ({'TC_DIAG_CONVERT': '2*x', },
-         {'METPLUS_CONVERT': 'convert(x) = 2*x;'}),
-
         ({'TC_DIAG_DATA_DOMAIN': 'parent,nest', },
          {'METPLUS_DATA_DOMAIN': 'domain = ["parent", "nest"];'}),
 

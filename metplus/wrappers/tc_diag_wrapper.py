@@ -43,9 +43,6 @@ class TCDiagWrapper(RuntimeFreqWrapper):
         'METPLUS_LEAD_LIST',
         'METPLUS_DIAG_SCRIPT',
         'METPLUS_DOMAIN_INFO_LIST',
-        'METPLUS_CENSOR_THRESH',
-        'METPLUS_CENSOR_VAL',
-        'METPLUS_CONVERT',
         'METPLUS_DATA_FILE_TYPE',
         'METPLUS_DATA_DOMAIN',
         'METPLUS_DATA_LEVEL',
@@ -71,6 +68,9 @@ class TCDiagWrapper(RuntimeFreqWrapper):
     DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
         'OUTPUT_PREFIX',
         'METPLUS_OUTPUT_PREFIX',
+        'METPLUS_CENSOR_THRESH',
+        'METPLUS_CENSOR_VAL',
+        'METPLUS_CONVERT',
     ]
 
     def __init__(self, config, instance=None):
@@ -176,19 +176,6 @@ class TCDiagWrapper(RuntimeFreqWrapper):
                                         dict_name='domain_info',
                                         dict_items=dict_items):
             self.isOK = False
-
-        self.add_met_config(name='censor_thresh',
-                            data_type='list',
-                            extra_args={'remove_quotes': True})
-
-        self.add_met_config(name='censor_val',
-                            data_type='list',
-                            extra_args={'remove_quotes': True})
-
-        self.add_met_config(name='convert',
-                            data_type='string',
-                            extra_args={'remove_quotes': True,
-                                        'add_x': True})
 
         # handle data dictionary, including field, domain, level, and file_type
         c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,

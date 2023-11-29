@@ -8225,9 +8225,6 @@ METplus Configuration
 | :term:`TC_DIAG_DOMAIN_INFO<n>_N_AZIMUTH`
 | :term:`TC_DIAG_DOMAIN_INFO<n>_DELTA_RANGE_KM`
 | :term:`TC_DIAG_DOMAIN_INFO<n>_DIAG_SCRIPT`
-| :term:`TC_DIAG_CENSOR_THRESH`
-| :term:`TC_DIAG_CENSOR_VAL`
-| :term:`TC_DIAG_CONVERT`
 | :term:`TC_DIAG_INPUT_DATATYPE`
 | :term:`TC_DIAG_DATA_DOMAIN`
 | :term:`TC_DIAG_DATA_LEVEL`
@@ -8447,42 +8444,6 @@ ${METPLUS_DOMAIN_INFO_LIST}
      - domain_info.delta_range_km
    * - :term:`TC_DIAG_DOMAIN_INFO<n>_DIAG_SCRIPT`
      - domain_info.diag_script
-
-${METPLUS_CENSOR_THRESH}
-""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`TC_DIAG_CENSOR_THRESH`
-     - censor_thresh
-
-${METPLUS_CENSOR_VAL}
-"""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`TC_DIAG_CENSOR_VAL`
-     - censor_val
-
-${METPLUS_CONVERT}
-""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`TC_DIAG_CONVERT`
-     - convert
 
 ${METPLUS_DATA_FILE_TYPE}
 """""""""""""""""""""""""

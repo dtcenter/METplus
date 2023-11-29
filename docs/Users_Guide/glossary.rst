@@ -10303,19 +10303,13 @@ METplus Configuration Glossary
      | *Used by:* TCDiag
 
    TC_DIAG_CENSOR_THRESH
-     Specify the value for 'censor_thresh' in the MET configuration file for TCDiag.
-
-     | *Used by:* TCDiag
+     .. warning:: **DEPRECATED:** Please use :term:`BOTH_VAR<n>_OPTIONS` instead.
 
    TC_DIAG_CENSOR_VAL
-     Specify the value for 'censor_val' in the MET configuration file for TCDiag.
-
-     | *Used by:* TCDiag
+     .. warning:: **DEPRECATED:** Please use :term:`BOTH_VAR<n>_OPTIONS` instead.
 
    TC_DIAG_CONVERT
-     Specify the value for 'convert' in the MET configuration file for TCDiag.
-
-     | *Used by:* TCDiag
+     .. warning:: **DEPRECATED:** Please use :term:`BOTH_VAR<n>_OPTIONS` instead.
 
    TC_DIAG_DATA_DOMAIN
      Specify the value for 'data.domain' in the MET configuration file for TCDiag.
