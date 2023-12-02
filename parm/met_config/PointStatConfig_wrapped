@@ -150,6 +150,12 @@ ${METPLUS_INTERP_DICT}
 ${METPLUS_HIRA_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
+// Threshold for SEEPS p1 (Probability of being dry)
+
+//seeps_p1_thresh =
+${METPLUS_SEEPS_P1_THRESH}
+
+////////////////////////////////////////////////////////////////////////////////
 
 //
 // Statistical output types
@@ -158,10 +164,15 @@ ${METPLUS_HIRA_DICT}
 ${METPLUS_OUTPUT_FLAG_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
-// Threshold for SEEPS p1 (Probability of being dry)
 
-//seeps_p1_thresh =
-${METPLUS_SEEPS_P1_THRESH}
+//ugrid_dataset =
+${METPLUS_UGRID_DATASET}
+
+//ugrid_max_distance_km =
+${METPLUS_UGRID_MAX_DISTANCE_KM}
+
+//ugrid_coordinates_file =
+${METPLUS_UGRID_COORDINATES_FILE}
 
 ////////////////////////////////////////////////////////////////////////////////
 

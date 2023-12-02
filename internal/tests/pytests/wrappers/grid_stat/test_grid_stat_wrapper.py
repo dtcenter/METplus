@@ -659,6 +659,12 @@ def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
          {'METPLUS_SEEPS_P1_THRESH': 'seeps_p1_thresh = ge0.1&&le0.85;'}),
         ({'GRID_STAT_CAT_THRESH': 'NA', },
          {'METPLUS_CAT_THRESH': 'cat_thresh = [NA];'}),
+        ({'GRID_STAT_UGRID_DATASET': 'mpas', },
+         {'METPLUS_UGRID_DATASET': 'ugrid_dataset = "mpas";'}),
+        ({'GRID_STAT_UGRID_MAX_DISTANCE_KM': '30', },
+         {'METPLUS_UGRID_MAX_DISTANCE_KM': 'ugrid_max_distance_km = 30;'}),
+        ({'GRID_STAT_UGRID_COORDINATES_FILE': '/met/test/input/ugrid_data/mpas/static.40962_reduced.nc', },
+         {'METPLUS_UGRID_COORDINATES_FILE': 'ugrid_coordinates_file = "/met/test/input/ugrid_data/mpas/static.40962_reduced.nc";'}),
 
     ]
 )

@@ -544,6 +544,12 @@ def test_met_dictionary_in_var_options(metplus_config):
                  'sid = ["one", "two"];'
                  'llpnt = [{ name = "LAT30TO40"; lat_thresh = >=30&&<=40; lon_thresh = NA; }, { name = "BOX"; lat_thresh = >=20&&<=40; lon_thresh = >=-110&&<=-90; }];}'
          )}),
+        ({'POINT_STAT_UGRID_DATASET': 'mpas', },
+         {'METPLUS_UGRID_DATASET': 'ugrid_dataset = "mpas";'}),
+        ({'POINT_STAT_UGRID_MAX_DISTANCE_KM': '30', },
+         {'METPLUS_UGRID_MAX_DISTANCE_KM': 'ugrid_max_distance_km = 30;'}),
+        ({'POINT_STAT_UGRID_COORDINATES_FILE': '/met/test/input/ugrid_data/mpas/static.40962_reduced.nc', },
+         {'METPLUS_UGRID_COORDINATES_FILE': 'ugrid_coordinates_file = "/met/test/input/ugrid_data/mpas/static.40962_reduced.nc";'}),
 
     ]
 )

@@ -11509,3 +11509,33 @@ METplus Configuration Glossary
      Specify the value for 'regrid.censor_val' in the MET configuration file for WaveletStat.
 
      | *Used by:* WaveletStat
+
+   GRID_STAT_UGRID_DATASET
+     Specify the value for 'ugrid_dataset' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_UGRID_MAX_DISTANCE_KM
+     Specify the value for 'ugrid_max_distance_km' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_UGRID_COORDINATES_FILE
+     Specify the value for 'ugrid_coordinates_file' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   POINT_STAT_UGRID_DATASET
+     Specify the value for 'ugrid_dataset' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_UGRID_MAX_DISTANCE_KM
+     Specify the value for 'ugrid_max_distance_km' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_UGRID_COORDINATES_FILE
+     Specify the value for 'ugrid_coordinates_file' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
