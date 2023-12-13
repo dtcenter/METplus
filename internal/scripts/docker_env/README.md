@@ -416,9 +416,6 @@ docker push dtcenter/metplus-envs:geovista.${METPLUS_ENV_VERSION}
 ```
 export METPLUS_ENV_VERSION=v6.0
 ./scripts/geovista_env.sh ${METPLUS_ENV_VERSION}
-
-cd /home/met_test/geovista
-/home/met_test/.conda/envs/geovista.${METPLUS_ENV_VERSION}/bin/pip3 install --no-deps --editable .
 ```
 
 ## pandac.v6.0 (from metplotpy.v6.0)
