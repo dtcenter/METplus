@@ -24,8 +24,7 @@ ENV_NAME=diff.${METPLUS_VERSION}
 BASE_ENV=netcdf4.${METPLUS_VERSION}
 
 mamba create -y --clone ${BASE_ENV} --name ${ENV_NAME}
-mamba install -y --name ${ENV_NAME} -c conda-forge pandas==2.0.2
-mamba install -y --name ${ENV_NAME} -c conda-forge pillow==9.2.0
+mamba install -y --name ${ENV_NAME} -c conda-forge pandas==2.0.2 pillow==9.2.0
 
 apt-get update
 apt-get install -y poppler-utils
