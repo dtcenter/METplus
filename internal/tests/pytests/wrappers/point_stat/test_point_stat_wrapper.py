@@ -544,6 +544,57 @@ def test_met_dictionary_in_var_options(metplus_config):
                  'sid = ["one", "two"];'
                  'llpnt = [{ name = "LAT30TO40"; lat_thresh = >=30&&<=40; lon_thresh = NA; }, { name = "BOX"; lat_thresh = >=20&&<=40; lon_thresh = >=-110&&<=-90; }];}'
          )}),
+        # land_mask dictionary
+        ({'POINT_STAT_LAND_MASK_FLAG': 'false', },
+         {'METPLUS_LAND_MASK_DICT': 'land_mask = {flag = FALSE;}'}),
+        ({'POINT_STAT_LAND_MASK_FILE_NAME': '/some/file/path.nc', },
+         {'METPLUS_LAND_MASK_DICT': 'land_mask = {file_name = ["/some/file/path.nc"];}'}),
+        ({'POINT_STAT_LAND_MASK_FIELD_NAME': 'LAND',
+          'POINT_STAT_LAND_MASK_FIELD_LEVEL': 'L0'},
+         {'METPLUS_LAND_MASK_DICT': 'land_mask = {field = {name = "LAND";level = "L0";}}'}),
+        ({'POINT_STAT_LAND_MASK_REGRID_METHOD': 'NEAREST',
+          'POINT_STAT_LAND_MASK_REGRID_WIDTH': '1'},
+         {'METPLUS_LAND_MASK_DICT': 'land_mask = {regrid = {method = NEAREST;width = 1;}}'}),
+        ({'POINT_STAT_LAND_MASK_THRESH': 'eq1', },
+         {'METPLUS_LAND_MASK_DICT': 'land_mask = {thresh = eq1;}'}),
+        ({'POINT_STAT_LAND_MASK_FLAG': 'false',
+          'POINT_STAT_LAND_MASK_FILE_NAME': '/some/file/path.nc',
+          'POINT_STAT_LAND_MASK_FIELD_NAME': 'LAND',
+          'POINT_STAT_LAND_MASK_FIELD_LEVEL': 'L0',
+          'POINT_STAT_LAND_MASK_REGRID_METHOD': 'NEAREST',
+          'POINT_STAT_LAND_MASK_REGRID_WIDTH': '1',
+          'POINT_STAT_LAND_MASK_THRESH': 'eq1',
+         },
+         {'METPLUS_LAND_MASK_DICT': ('land_mask = {flag = FALSE;file_name = ["/some/file/path.nc"];'
+                                     'field = {name = "LAND";level = "L0";}'
+                                     'regrid = {method = NEAREST;width = 1;}thresh = eq1;}')}),
+        # topo_mask dictionary
+        ({'POINT_STAT_TOPO_MASK_FLAG': 'false', },
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {flag = FALSE;}'}),
+        ({'POINT_STAT_TOPO_MASK_FILE_NAME': '/some/file/path.nc', },
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {file_name = ["/some/file/path.nc"];}'}),
+        ({'POINT_STAT_TOPO_MASK_FIELD_NAME': 'TOPO',
+          'POINT_STAT_TOPO_MASK_FIELD_LEVEL': 'L0'},
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {field = {name = "TOPO";level = "L0";}}'}),
+        ({'POINT_STAT_TOPO_MASK_REGRID_METHOD': 'NEAREST',
+          'POINT_STAT_TOPO_MASK_REGRID_WIDTH': '1'},
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {regrid = {method = NEAREST;width = 1;}}'}),
+        ({'POINT_STAT_TOPO_MASK_USE_OBS_THRESH': 'ge-100&&le100', },
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {use_obs_thresh = ge-100&&le100;}'}),
+        ({'POINT_STAT_TOPO_MASK_INTERP_FCST_THRESH': 'ge-50&&le50', },
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {interp_fcst_thresh = ge-50&&le50;}'}),
+        ({'POINT_STAT_TOPO_MASK_FLAG': 'false',
+          'POINT_STAT_TOPO_MASK_FILE_NAME': '/some/file/path.nc',
+          'POINT_STAT_TOPO_MASK_FIELD_NAME': 'TOPO',
+          'POINT_STAT_TOPO_MASK_FIELD_LEVEL': 'L0',
+          'POINT_STAT_TOPO_MASK_REGRID_METHOD': 'NEAREST',
+          'POINT_STAT_TOPO_MASK_REGRID_WIDTH': '1',
+          'POINT_STAT_TOPO_MASK_USE_OBS_THRESH': 'ge-100&&le100',
+          'POINT_STAT_TOPO_MASK_INTERP_FCST_THRESH': 'ge-50&&le50'
+         },
+         {'METPLUS_TOPO_MASK_DICT': ('topo_mask = {flag = FALSE;file_name = ["/some/file/path.nc"];'
+                                     'field = {name = "TOPO";level = "L0";}regrid = {method = NEAREST;width = 1;}'
+                                     'use_obs_thresh = ge-100&&le100;interp_fcst_thresh = ge-50&&le50;}')}),
 
     ]
 )

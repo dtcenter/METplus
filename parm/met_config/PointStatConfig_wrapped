@@ -105,6 +105,29 @@ ${METPLUS_CLIMO_CDF_DICT}
 ////////////////////////////////////////////////////////////////////////////////
 
 //
+// Land/Sea mask
+// For LANDSF message types, only use forecast grid points where land = TRUE.
+// For WATERSF message types, only use forecast grid points where land = FALSE.
+// land_mask.flag may be set separately in each "obs.field" entry.
+//
+//land_mask = {
+${METPLUS_LAND_MASK_DICT}
+
+//
+// Topography
+// For SURFACE message types, only use observations where the topo - station
+// elevation difference meets the use_obs_thresh threshold.
+// For the observations kept, when interpolating forecast data to the
+// observation location, only use forecast grid points where the topo - station
+// difference meets the interp_fcst_thresh threshold.
+// topo_mask.flag may be set separately in each "obs.field" entry.
+//
+//topo_mask = {
+${METPLUS_TOPO_MASK_DICT}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
 // Point observation time window
 //
 // obs_window = {

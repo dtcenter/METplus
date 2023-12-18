@@ -30,6 +30,8 @@ class PointStatWrapper(CompareGriddedWrapper):
         'METPLUS_FCST_FIELD',
         'METPLUS_OBS_FIELD',
         'METPLUS_MESSAGE_TYPE',
+        'METPLUS_LAND_MASK_DICT',
+        'METPLUS_TOPO_MASK_DICT',
         'METPLUS_OBS_WINDOW_DICT',
         'METPLUS_MASK_DICT',
         'METPLUS_OUTPUT_PREFIX',
@@ -188,6 +190,35 @@ class PointStatWrapper(CompareGriddedWrapper):
                                         'uppercase': True})
 
         self.handle_climo_cdf_dict()
+
+        self.add_met_config_dict('land_mask', {
+            'flag': 'bool',
+            'file_name': 'list',
+            'field': ('dict', None, {
+                'name': 'string',
+                'level': 'string',
+            }),
+            'regrid': ('dict', None, {
+                'method': ('string', 'remove_quotes'),
+                'width': 'int',
+            }),
+            'thresh': 'thresh',
+        })
+
+        self.add_met_config_dict('topo_mask', {
+            'flag': 'bool',
+            'file_name': 'list',
+            'field': ('dict', None, {
+                'name': 'string',
+                'level': 'string',
+            }),
+            'regrid': ('dict', None, {
+                'method': ('string', 'remove_quotes'),
+                'width': 'int',
+            }),
+            'use_obs_thresh': 'thresh',
+            'interp_fcst_thresh': 'thresh',
+        })
 
         c_dict['OBS_VALID_BEG'] = (
             self.config.getraw('config', 'POINT_STAT_OBS_VALID_BEG', '')
