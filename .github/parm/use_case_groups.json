@@ -125,6 +125,11 @@
     "run": false
   },
   {
+    "category": "medium_range",
+    "index_list": "10",
+    "run": true
+  },
+  {
     "category": "pbl",
     "index_list": "0",
     "run": false
