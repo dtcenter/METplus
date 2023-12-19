@@ -38,6 +38,9 @@ class PointStatWrapper(CompareGriddedWrapper):
         'METPLUS_CLIMO_CDF_DICT',
         'METPLUS_OBS_QUALITY_INC',
         'METPLUS_OBS_QUALITY_EXC',
+        'METPLUS_DUPLICATE_FLAG',
+        'METPLUS_OBS_SUMMARY',
+        'METPLUS_OBS_PERC_VALUE',
         'METPLUS_OUTPUT_FLAG_DICT',
         'METPLUS_INTERP_DICT',
         'METPLUS_CLIMO_MEAN_DICT',
@@ -251,6 +254,13 @@ class PointStatWrapper(CompareGriddedWrapper):
                             data_type='list',
                             metplus_configs=['POINT_STAT_OBS_QUALITY_EXC',
                                              'POINT_STAT_OBS_QUALITY_EXCLUDE'])
+
+        self.add_met_config(name='duplicate_flag', data_type='string',
+                            extra_args={'remove_quotes': True, 'uppercase': True})
+        self.add_met_config(name='obs_summary', data_type='string',
+                            extra_args={'remove_quotes': True, 'uppercase': True})
+
+        self.add_met_config(name='obs_perc_value', data_type='int')
 
         self.handle_flags('output')
 

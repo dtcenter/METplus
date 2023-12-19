@@ -11584,3 +11584,18 @@ METplus Configuration Glossary
      Specify the value for 'topo_mask.interp_fcst_thresh' in the MET configuration file for PointStat.
 
      | *Used by:* PointStat
+
+   POINT_STAT_DUPLICATE_FLAG
+     Specify the value for 'duplicate_flag' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_SUMMARY
+     Specify the value for 'obs_summary' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_PERC_VALUE
+     Specify the value for 'obs_perc_value' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat

@@ -6303,6 +6303,9 @@ Configuration
 | :term:`POINT_STAT_TOPO_MASK_INTERP_FCST_THRESH`
 | :term:`POINT_STAT_OBS_QUALITY_INC`
 | :term:`POINT_STAT_OBS_QUALITY_EXC`
+| :term:`POINT_STAT_DUPLICATE_FLAG`
+| :term:`POINT_STAT_OBS_SUMMARY`
+| :term:`POINT_STAT_OBS_PERC_VALUE`
 | :term:`POINT_STAT_OUTPUT_FLAG_FHO`
 | :term:`POINT_STAT_OUTPUT_FLAG_CTC`
 | :term:`POINT_STAT_OUTPUT_FLAG_CTS`
@@ -6603,6 +6606,42 @@ ${METPLUS_OBS_QUALITY_EXC}
      - MET Config File
    * - :term:`POINT_STAT_OBS_QUALITY_EXC`
      - obs_quality_exc
+
+${METPLUS_DUPLICATE_FLAG}
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_DUPLICATE_FLAG`
+     - duplicate_flag
+
+${METPLUS_OBS_SUMMARY}
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_OBS_SUMMARY`
+     - obs_summary
+
+${METPLUS_OBS_PERC_VALUE}
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_OBS_PERC_VALUE`
+     - obs_perc_value
 
 ${METPLUS_MESSAGE_TYPE_GROUP_MAP}
 """""""""""""""""""""""""""""""""

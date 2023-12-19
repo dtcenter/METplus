@@ -595,6 +595,12 @@ def test_met_dictionary_in_var_options(metplus_config):
          {'METPLUS_TOPO_MASK_DICT': ('topo_mask = {flag = FALSE;file_name = ["/some/file/path.nc"];'
                                      'field = {name = "TOPO";level = "L0";}regrid = {method = NEAREST;width = 1;}'
                                      'use_obs_thresh = ge-100&&le100;interp_fcst_thresh = ge-50&&le50;}')}),
+        ({'POINT_STAT_DUPLICATE_FLAG': 'NONE', },
+         {'METPLUS_DUPLICATE_FLAG': 'duplicate_flag = NONE;'}),
+        ({'POINT_STAT_OBS_SUMMARY': 'NONE', },
+         {'METPLUS_OBS_SUMMARY': 'obs_summary = NONE;'}),
+        ({'POINT_STAT_OBS_PERC_VALUE': '50', },
+         {'METPLUS_OBS_PERC_VALUE': 'obs_perc_value = 50;'}),
 
     ]
 )

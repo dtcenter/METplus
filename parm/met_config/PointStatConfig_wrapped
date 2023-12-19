@@ -74,9 +74,14 @@ ${METPLUS_OBS_QUALITY_INC}
 //obs_quality_exc =
 ${METPLUS_OBS_QUALITY_EXC}
 
-duplicate_flag = NONE;
-obs_summary    = NONE;
-obs_perc_value = 50;
+//duplicate_flag =
+${METPLUS_DUPLICATE_FLAG}
+
+//obs_summary =
+${METPLUS_OBS_SUMMARY}
+
+//obs_perc_value =
+${METPLUS_OBS_PERC_VALUE}
 
 //
 // Mapping of message type group name to comma-separated list of values.
