@@ -116,26 +116,19 @@ class PointStatWrapper(CompareGriddedWrapper):
         """
         c_dict = super().create_c_dict()
         c_dict['VERBOSITY'] = (
-            self.config.getstr('config',
-                               'LOG_POINT_STAT_VERBOSITY',
-                                c_dict['VERBOSITY'])
+            self.config.getstr('config', 'LOG_POINT_STAT_VERBOSITY',
+                               c_dict['VERBOSITY'])
         )
         c_dict['ALLOW_MULTIPLE_FILES'] = True
         c_dict['OFFSETS'] = getlistint(
-            self.config.getstr('config',
-                               'POINT_STAT_OFFSETS',
-                               '0')
+            self.config.getstr('config', 'POINT_STAT_OFFSETS', '0')
         )
         c_dict['FCST_INPUT_TEMPLATE'] = (
-            self.config.getraw('filename_templates',
-                               'FCST_POINT_STAT_INPUT_TEMPLATE',
-                               '')
+            self.config.getraw('config', 'FCST_POINT_STAT_INPUT_TEMPLATE', '')
         )
 
         c_dict['OBS_INPUT_TEMPLATE'] = (
-            self.config.getraw('filename_templates',
-                               'OBS_POINT_STAT_INPUT_TEMPLATE',
-                               '')
+            self.config.getraw('config', 'OBS_POINT_STAT_INPUT_TEMPLATE', '')
         )
 
         c_dict['FCST_INPUT_DATATYPE'] = (
@@ -146,11 +139,11 @@ class PointStatWrapper(CompareGriddedWrapper):
         )
 
         c_dict['FCST_INPUT_DIR'] = (
-            self.config.getdir('FCST_POINT_STAT_INPUT_DIR','')
+            self.config.getdir('FCST_POINT_STAT_INPUT_DIR', '')
         )
 
         c_dict['OBS_INPUT_DIR'] = (
-            self.config.getdir('OBS_POINT_STAT_INPUT_DIR','')
+            self.config.getdir('OBS_POINT_STAT_INPUT_DIR', '')
         )
 
         c_dict['OUTPUT_DIR'] = (
@@ -158,8 +151,7 @@ class PointStatWrapper(CompareGriddedWrapper):
         )
 
         c_dict['OUTPUT_TEMPLATE'] = (
-            self.config.getraw('config',
-                               'POINT_STAT_OUTPUT_TEMPLATE')
+            self.config.getraw('config', 'POINT_STAT_OUTPUT_TEMPLATE')
         )
 
         # get climatology config variables
@@ -174,8 +166,7 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         self.add_met_config(name='message_type', data_type='list')
 
-        self.add_met_config(name='file_type',
-                            data_type='string',
+        self.add_met_config(name='file_type', data_type='string',
                             env_var_name='FCST_FILE_TYPE',
                             metplus_configs=['POINT_STAT_FCST_FILE_TYPE',
                                              'FCST_POINT_STAT_FILE_TYPE',
@@ -183,8 +174,7 @@ class PointStatWrapper(CompareGriddedWrapper):
                             extra_args={'remove_quotes': True,
                                         'uppercase': True})
 
-        self.add_met_config(name='file_type',
-                            data_type='string',
+        self.add_met_config(name='file_type', data_type='string',
                             env_var_name='OBS_FILE_TYPE',
                             metplus_configs=['POINT_STAT_OBS_FILE_TYPE',
                                              'OBS_POINT_STAT_FILE_TYPE',
@@ -231,27 +221,21 @@ class PointStatWrapper(CompareGriddedWrapper):
         )
 
         c_dict['FCST_PROB_THRESH'] = (
-            self.config.getstr('config',
-                               'FCST_POINT_STAT_PROB_THRESH', '==0.1')
+            self.config.getstr('config', 'FCST_POINT_STAT_PROB_THRESH', '==0.1')
         )
         c_dict['OBS_PROB_THRESH'] = (
-            self.config.getstr('config',
-                               'OBS_POINT_STAT_PROB_THRESH', '==0.1')
+            self.config.getstr('config', 'OBS_POINT_STAT_PROB_THRESH', '==0.1')
         )
 
         c_dict['ONCE_PER_FIELD'] = (
-            self.config.getbool('config',
-                                'POINT_STAT_ONCE_PER_FIELD',
-                                False)
+            self.config.getbool('config', 'POINT_STAT_ONCE_PER_FIELD', False)
         )
 
-        self.add_met_config(name='obs_quality_inc',
-                            data_type='list',
+        self.add_met_config(name='obs_quality_inc', data_type='list',
                             metplus_configs=['POINT_STAT_OBS_QUALITY_INC',
                                              'POINT_STAT_OBS_QUALITY_INCLUDE',
                                              'POINT_STAT_OBS_QUALITY'])
-        self.add_met_config(name='obs_quality_exc',
-                            data_type='list',
+        self.add_met_config(name='obs_quality_exc', data_type='list',
                             metplus_configs=['POINT_STAT_OBS_QUALITY_EXC',
                                              'POINT_STAT_OBS_QUALITY_EXCLUDE'])
 
@@ -267,26 +251,19 @@ class PointStatWrapper(CompareGriddedWrapper):
         self.handle_interp_dict()
 
         self.add_met_config(
-            name='time_interp_method',
-            data_type='string',
+            name='time_interp_method', data_type='string',
             env_var_name='CLIMO_MEAN_TIME_INTERP_METHOD',
             metplus_configs=['POINT_STAT_CLIMO_MEAN_TIME_INTERP_METHOD'],
-            extra_args={'remove_quotes': True,
-                        'uppercase': True,
-                        },
+            extra_args={'remove_quotes': True, 'uppercase': True},
         )
         self.add_met_config(
-            name='time_interp_method',
-            data_type='string',
+            name='time_interp_method', data_type='string',
             env_var_name='CLIMO_STDEV_TIME_INTERP_METHOD',
             metplus_configs=['POINT_STAT_CLIMO_STDEV_TIME_INTERP_METHOD'],
-            extra_args={'remove_quotes': True,
-                        'uppercase': True,
-                        },
+            extra_args={'remove_quotes': True, 'uppercase': True},
         )
 
-        self.add_met_config(name='hss_ec_value',
-                            data_type='float',
+        self.add_met_config(name='hss_ec_value', data_type='float',
                             metplus_configs=['POINT_STAT_HSS_EC_VALUE'])
 
         self.add_met_config_dict('hira', {
@@ -298,12 +275,10 @@ class PointStatWrapper(CompareGriddedWrapper):
             'prob_cat_thresh': ('list', 'remove_quotes'),
         })
 
-        self.add_met_config(name='message_type_group_map',
-                            data_type='list',
+        self.add_met_config(name='message_type_group_map', data_type='list',
                             extra_args={'remove_quotes': True})
 
-        self.add_met_config(name='seeps_p1_thresh',
-                            data_type='string',
+        self.add_met_config(name='seeps_p1_thresh', data_type='string',
                             extra_args={'remove_quotes': True})
 
         if not c_dict['FCST_INPUT_TEMPLATE']:
