@@ -101,7 +101,7 @@
   },
   {
     "category": "medium_range",
-    "index_list": "3-5",
+      "index_list": "3-5,10",
     "run": false
   },
   {
@@ -122,11 +122,6 @@
   {
     "category": "medium_range",
     "index_list": "9",
-    "run": false
-  },
-  {
-    "category": "medium_range",
-    "index_list": "10",
     "run": false
   },
   {
