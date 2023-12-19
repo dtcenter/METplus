@@ -23,7 +23,4 @@ ENV_NAME=icecover.${METPLUS_VERSION}
 BASE_ENV=py_embed_base.${METPLUS_VERSION}
 
 mamba create -y --clone ${BASE_ENV} --name ${ENV_NAME}
-mamba install -y --name ${ENV_NAME} -c conda-forge xarray==2023.5.0
-mamba install -y --name ${ENV_NAME} -c conda-forge pyresample==1.27.1
-mamba install -y --name ${ENV_NAME} -c conda-forge scikit-learn==1.3.0
-mamba install -y --name ${ENV_NAME} -c conda-forge pyproj==3.6.0
+mamba install -y --name ${ENV_NAME} -c conda-forge xarray==2023.5.0 pyresample==1.27.1 scikit-learn==1.3.0 pyproj==3.6.0

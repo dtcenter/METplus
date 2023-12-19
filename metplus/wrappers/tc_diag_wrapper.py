@@ -43,9 +43,6 @@ class TCDiagWrapper(RuntimeFreqWrapper):
         'METPLUS_LEAD_LIST',
         'METPLUS_DIAG_SCRIPT',
         'METPLUS_DOMAIN_INFO_LIST',
-        'METPLUS_CENSOR_THRESH',
-        'METPLUS_CENSOR_VAL',
-        'METPLUS_CONVERT',
         'METPLUS_DATA_FILE_TYPE',
         'METPLUS_DATA_DOMAIN',
         'METPLUS_DATA_LEVEL',
@@ -61,15 +58,19 @@ class TCDiagWrapper(RuntimeFreqWrapper):
         'METPLUS_VORTEX_REMOVAL',
         'METPLUS_VORTEX_REMOVAL',
         'METPLUS_NC_DIAG_FLAG',
-        'METPLUS_NC_RNG_AZI_FLAG',
+        'METPLUS_NC_CYL_GRID_FLAG',
         'METPLUS_CIRA_DIAG_FLAG',
-        'METPLUS_OUTPUT_PREFIX',
+        'METPLUS_OUTPUT_BASE_FORMAT',
         'METPLUS_ONE_TIME_PER_FILE_FLAG',
     ]
 
     # deprecated env vars that are no longer supported in the wrapped MET conf
     DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
         'OUTPUT_PREFIX',
+        'METPLUS_OUTPUT_PREFIX',
+        'METPLUS_CENSOR_THRESH',
+        'METPLUS_CENSOR_VAL',
+        'METPLUS_CONVERT',
     ]
 
     def __init__(self, config, instance=None):
@@ -168,6 +169,7 @@ class TCDiagWrapper(RuntimeFreqWrapper):
             'n_azimuth': 'int',
             'delta_range_km': 'float',
             'diag_script': 'list',
+            'override_diags': ('list', 'allow_empty'),
         }
         if not add_met_config_dict_list(config=self.config,
                                         app_name=self.app_name,
@@ -175,19 +177,6 @@ class TCDiagWrapper(RuntimeFreqWrapper):
                                         dict_name='domain_info',
                                         dict_items=dict_items):
             self.isOK = False
-
-        self.add_met_config(name='censor_thresh',
-                            data_type='list',
-                            extra_args={'remove_quotes': True})
-
-        self.add_met_config(name='censor_val',
-                            data_type='list',
-                            extra_args={'remove_quotes': True})
-
-        self.add_met_config(name='convert',
-                            data_type='string',
-                            extra_args={'remove_quotes': True,
-                                        'add_x': True})
 
         # handle data dictionary, including field, domain, level, and file_type
         c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
@@ -228,11 +217,11 @@ class TCDiagWrapper(RuntimeFreqWrapper):
 
         self.add_met_config(name='one_time_per_file_flag', data_type='bool')
 
-        self.add_met_config(name='nc_rng_azi_flag', data_type='bool')
+        self.add_met_config(name='nc_cyl_grid_flag', data_type='bool')
         self.add_met_config(name='nc_diag_flag', data_type='bool')
         self.add_met_config(name='cira_diag_flag', data_type='bool')
 
-        self.add_met_config(name='output_prefix', data_type='string')
+        self.add_met_config(name='output_base_format', data_type='string')
 
         return c_dict
 

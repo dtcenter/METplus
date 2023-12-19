@@ -197,6 +197,13 @@ the use case will not run until the METplus configuration file has been updated.
 How to upgrade
 ^^^^^^^^^^^^^^
 
+This video provides a demonstration of the process to upgrade a use case.
+
+.. raw:: html
+
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/QCBlCsxmBDo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
 Removing **<WRAPPER_NAME>_CONFIG_FILE**, e.g. :term:`GRID_STAT_CONFIG_FILE`,
 from the METplus config file will prevent the errors and
 allow the use case to run.
