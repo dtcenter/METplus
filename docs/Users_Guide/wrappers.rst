@@ -6286,8 +6286,26 @@ Configuration
 | :term:`POINT_STAT_CLIMO_CDF_CENTER_BINS`
 | :term:`POINT_STAT_CLIMO_CDF_WRITE_BINS`
 | :term:`POINT_STAT_CLIMO_CDF_DIRECT_PROB`
+| :term:`POINT_STAT_LAND_MASK_FLAG`
+| :term:`POINT_STAT_LAND_MASK_FILE_NAME`
+| :term:`POINT_STAT_LAND_MASK_FIELD_NAME`
+| :term:`POINT_STAT_LAND_MASK_FIELD_LEVEL`
+| :term:`POINT_STAT_LAND_MASK_REGRID_METHOD`
+| :term:`POINT_STAT_LAND_MASK_REGRID_WIDTH`
+| :term:`POINT_STAT_LAND_MASK_THRESH`
+| :term:`POINT_STAT_TOPO_MASK_FLAG`
+| :term:`POINT_STAT_TOPO_MASK_FILE_NAME`
+| :term:`POINT_STAT_TOPO_MASK_FIELD_NAME`
+| :term:`POINT_STAT_TOPO_MASK_FIELD_LEVEL`
+| :term:`POINT_STAT_TOPO_MASK_REGRID_METHOD`
+| :term:`POINT_STAT_TOPO_MASK_REGRID_WIDTH`
+| :term:`POINT_STAT_TOPO_MASK_USE_OBS_THRESH`
+| :term:`POINT_STAT_TOPO_MASK_INTERP_FCST_THRESH`
 | :term:`POINT_STAT_OBS_QUALITY_INC`
 | :term:`POINT_STAT_OBS_QUALITY_EXC`
+| :term:`POINT_STAT_DUPLICATE_FLAG`
+| :term:`POINT_STAT_OBS_SUMMARY`
+| :term:`POINT_STAT_OBS_PERC_VALUE`
 | :term:`POINT_STAT_OUTPUT_FLAG_FHO`
 | :term:`POINT_STAT_OUTPUT_FLAG_CTC`
 | :term:`POINT_STAT_OUTPUT_FLAG_CTS`
@@ -6589,6 +6607,42 @@ ${METPLUS_OBS_QUALITY_EXC}
    * - :term:`POINT_STAT_OBS_QUALITY_EXC`
      - obs_quality_exc
 
+${METPLUS_DUPLICATE_FLAG}
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_DUPLICATE_FLAG`
+     - duplicate_flag
+
+${METPLUS_OBS_SUMMARY}
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_OBS_SUMMARY`
+     - obs_summary
+
+${METPLUS_OBS_PERC_VALUE}
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_OBS_PERC_VALUE`
+     - obs_perc_value
+
 ${METPLUS_MESSAGE_TYPE_GROUP_MAP}
 """""""""""""""""""""""""""""""""
 
@@ -6678,6 +6732,56 @@ ${METPLUS_CLIMO_CDF_DICT}
      - climo_cdf.write_bins
    * - :term:`POINT_STAT_CLIMO_CDF_DIRECT_PROB`
      - climo_cdf.direct_prob
+
+${METPLUS_LAND_MASK_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_LAND_MASK_FLAG`
+     - land_mask.flag
+   * - :term:`POINT_STAT_LAND_MASK_FILE_NAME`
+     - land_mask.file_name
+   * - :term:`POINT_STAT_LAND_MASK_FIELD_NAME`
+     - land_mask.field.name
+   * - :term:`POINT_STAT_LAND_MASK_FIELD_LEVEL`
+     - land_mask.field.level
+   * - :term:`POINT_STAT_LAND_MASK_REGRID_METHOD`
+     - land_mask.regrid.method
+   * - :term:`POINT_STAT_LAND_MASK_REGRID_WIDTH`
+     - land_mask.regrid.width
+   * - :term:`POINT_STAT_LAND_MASK_THRESH`
+     - land_mask.thresh
+
+${METPLUS_TOPO_MASK_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_TOPO_MASK_FLAG`
+     - topo_mask.flag
+   * - :term:`POINT_STAT_TOPO_MASK_FILE_NAME`
+     - topo_mask.file_name
+   * - :term:`POINT_STAT_TOPO_MASK_FIELD_NAME`
+     - topo_mask.field.name
+   * - :term:`POINT_STAT_TOPO_MASK_FIELD_LEVEL`
+     - topo_mask.field.level
+   * - :term:`POINT_STAT_TOPO_MASK_REGRID_METHOD`
+     - topo_mask.regrid.method
+   * - :term:`POINT_STAT_TOPO_MASK_REGRID_WIDTH`
+     - topo_mask.regrid.width
+   * - :term:`POINT_STAT_TOPO_MASK_USE_OBS_THRESH`
+     - topo_mask.use_obs_thresh
+   * - :term:`POINT_STAT_TOPO_MASK_INTERP_FCST_THRESH`
+     - topo_mask.interp_fcst_thresh
 
 ${METPLUS_OBS_WINDOW_DICT}
 """"""""""""""""""""""""""

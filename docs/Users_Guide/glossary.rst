@@ -11511,3 +11511,93 @@ METplus Configuration Glossary
      Specify the value for 'regrid.censor_val' in the MET configuration file for WaveletStat.
 
      | *Used by:* WaveletStat
+
+   POINT_STAT_LAND_MASK_FLAG
+     Specify the value for 'land_mask.flag' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_LAND_MASK_FILE_NAME
+     Specify the value for 'land_mask.file_name' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_LAND_MASK_FIELD_NAME
+     Specify the value for 'land_mask.field.name' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_LAND_MASK_FIELD_LEVEL
+     Specify the value for 'land_mask.field.level' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_LAND_MASK_REGRID_METHOD
+     Specify the value for 'land_mask.regrid.method' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_LAND_MASK_REGRID_WIDTH
+     Specify the value for 'land_mask.regrid.width' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_LAND_MASK_THRESH
+     Specify the value for 'land_mask.thresh' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_TOPO_MASK_FLAG
+     Specify the value for 'topo_mask.flag' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_TOPO_MASK_FILE_NAME
+     Specify the value for 'topo_mask.file_name' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_TOPO_MASK_FIELD_NAME
+     Specify the value for 'topo_mask.field.name' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_TOPO_MASK_FIELD_LEVEL
+     Specify the value for 'topo_mask.field.level' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_TOPO_MASK_REGRID_METHOD
+     Specify the value for 'topo_mask.regrid.method' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_TOPO_MASK_REGRID_WIDTH
+     Specify the value for 'topo_mask.regrid.width' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_TOPO_MASK_USE_OBS_THRESH
+     Specify the value for 'topo_mask.use_obs_thresh' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_TOPO_MASK_INTERP_FCST_THRESH
+     Specify the value for 'topo_mask.interp_fcst_thresh' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_DUPLICATE_FLAG
+     Specify the value for 'duplicate_flag' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_SUMMARY
+     Specify the value for 'obs_summary' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_PERC_VALUE
+     Specify the value for 'obs_perc_value' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
