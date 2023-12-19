@@ -127,7 +127,7 @@
   {
     "category": "medium_range",
     "index_list": "10",
-    "run": true
+    "run": false
   },
   {
     "category": "pbl",
