@@ -8225,9 +8225,7 @@ METplus Configuration
 | :term:`TC_DIAG_DOMAIN_INFO<n>_N_AZIMUTH`
 | :term:`TC_DIAG_DOMAIN_INFO<n>_DELTA_RANGE_KM`
 | :term:`TC_DIAG_DOMAIN_INFO<n>_DIAG_SCRIPT`
-| :term:`TC_DIAG_CENSOR_THRESH`
-| :term:`TC_DIAG_CENSOR_VAL`
-| :term:`TC_DIAG_CONVERT`
+| :term:`TC_DIAG_DOMAIN_INFO<n>_OVERRIDE_DIAGS`
 | :term:`TC_DIAG_INPUT_DATATYPE`
 | :term:`TC_DIAG_DATA_DOMAIN`
 | :term:`TC_DIAG_DATA_LEVEL`
@@ -8247,10 +8245,10 @@ METplus Configuration
 | :term:`TC_DIAG_RADIAL_VELOCITY_LONG_FIELD_NAME`
 | :term:`TC_DIAG_VORTEX_REMOVAL`
 | :term:`TC_DIAG_ONE_TIME_PER_FILE_FLAG`
-| :term:`TC_DIAG_NC_RNG_AZI_FLAG`
+| :term:`TC_DIAG_NC_CYL_GRID_FLAG`
 | :term:`TC_DIAG_NC_DIAG_FLAG`
 | :term:`TC_DIAG_CIRA_DIAG_FLAG`
-| :term:`TC_DIAG_OUTPUT_PREFIX`
+| :term:`TC_DIAG_OUTPUT_BASE_FORMAT`
 | :term:`TC_DIAG_SKIP_IF_OUTPUT_EXISTS`
 | :term:`TC_DIAG_MET_CONFIG_OVERRIDES`
 | :term:`TC_DIAG_SKIP_VALID_TIMES`
@@ -8447,42 +8445,8 @@ ${METPLUS_DOMAIN_INFO_LIST}
      - domain_info.delta_range_km
    * - :term:`TC_DIAG_DOMAIN_INFO<n>_DIAG_SCRIPT`
      - domain_info.diag_script
-
-${METPLUS_CENSOR_THRESH}
-""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`TC_DIAG_CENSOR_THRESH`
-     - censor_thresh
-
-${METPLUS_CENSOR_VAL}
-"""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`TC_DIAG_CENSOR_VAL`
-     - censor_val
-
-${METPLUS_CONVERT}
-""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`TC_DIAG_CONVERT`
-     - convert
+   * - :term:`TC_DIAG_DOMAIN_INFO<n>_OVERRIDE_DIAGS`
+     - domain_info.override_diags
 
 ${METPLUS_DATA_FILE_TYPE}
 """""""""""""""""""""""""
@@ -8670,8 +8634,8 @@ ${METPLUS_ONE_TIME_PER_FILE_FLAG}
    * - :term:`TC_DIAG_ONE_TIME_PER_FILE_FLAG`
      - one_time_per_file_flag
 
-${METPLUS_NC_RNG_AZI_FLAG}
-""""""""""""""""""""""""""
+${METPLUS_NC_CYL_GRID_FLAG}
+"""""""""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -8679,8 +8643,8 @@ ${METPLUS_NC_RNG_AZI_FLAG}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_DIAG_NC_RNG_AZI_FLAG`
-     - nc_rng_azi_flag
+   * - :term:`TC_DIAG_NC_CYL_GRID_FLAG`
+     - nc_cyl_grid_flag
 
 ${METPLUS_NC_DIAG_FLAG}
 """""""""""""""""""""""
@@ -8715,8 +8679,8 @@ ${METPLUS_OUTPUT_PREFIX}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_DIAG_OUTPUT_PREFIX`
-     - output_prefix
+   * - :term:`TC_DIAG_OUTPUT_BASE_FORMAT`
+     - output_base_format
 
 ${METPLUS_MET_CONFIG_OVERRIDES}
 """""""""""""""""""""""""""""""

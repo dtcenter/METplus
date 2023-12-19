@@ -10302,20 +10302,19 @@ METplus Configuration Glossary
 
      | *Used by:* TCDiag
 
-   TC_DIAG_CENSOR_THRESH
-     Specify the value for 'censor_thresh' in the MET configuration file for TCDiag.
+   TC_DIAG_DOMAIN_INFO<n>_OVERRIDE_DIAGS
+     Specify the value for the nth 'domain_info.override_diags' in the MET configuration file for TCDiag.
 
      | *Used by:* TCDiag
+
+   TC_DIAG_CENSOR_THRESH
+     .. warning:: **DEPRECATED:** Please use :term:`BOTH_VAR<n>_OPTIONS` instead.
 
    TC_DIAG_CENSOR_VAL
-     Specify the value for 'censor_val' in the MET configuration file for TCDiag.
-
-     | *Used by:* TCDiag
+     .. warning:: **DEPRECATED:** Please use :term:`BOTH_VAR<n>_OPTIONS` instead.
 
    TC_DIAG_CONVERT
-     Specify the value for 'convert' in the MET configuration file for TCDiag.
-
-     | *Used by:* TCDiag
+     .. warning:: **DEPRECATED:** Please use :term:`BOTH_VAR<n>_OPTIONS` instead.
 
    TC_DIAG_DATA_DOMAIN
      Specify the value for 'data.domain' in the MET configuration file for TCDiag.
@@ -10407,8 +10406,8 @@ METplus Configuration Glossary
 
      | *Used by:* TCDiag
 
-   TC_DIAG_NC_RNG_AZI_FLAG
-     Specify the value for 'nc_rng_azi_flag' in the MET configuration file for TCDiag.
+   TC_DIAG_NC_CYL_GRID_FLAG
+     Specify the value for 'nc_cyl_grid_flag' in the MET configuration file for TCDiag.
 
      | *Used by:* TCDiag
 
@@ -10423,7 +10422,10 @@ METplus Configuration Glossary
      | *Used by:* TCDiag
 
    TC_DIAG_OUTPUT_PREFIX
-     Specify the value for 'output_prefix' in the MET configuration file for TCDiag.
+     .. warning:: **DEPRECATED:** Please use :term:`TC_DIAG_OUTPUT_BASE_FORMAT` instead.
+
+   TC_DIAG_OUTPUT_BASE_FORMAT
+     Specify the value for 'output_base_format' in the MET configuration file for TCDiag.
 
      | *Used by:* TCDiag
 
