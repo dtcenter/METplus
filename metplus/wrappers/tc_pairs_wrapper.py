@@ -411,6 +411,8 @@ class TCPairsWrapper(RuntimeFreqWrapper):
             'members': 'list',
             'required': ('list', 'remove_quotes'),
             'min_req': 'int',
+            'diag_required': ('list', 'remove_quotes'),
+            'diag_min_req': 'int',
             'write_members': 'bool',
         }
         return_code = add_met_config_dict_list(config=self.config,

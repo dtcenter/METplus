@@ -9529,6 +9529,8 @@ METplus Configuration
 | :term:`TC_PAIRS_CONSENSUS<n>_MEMBERS`
 | :term:`TC_PAIRS_CONSENSUS<n>_REQUIRED`
 | :term:`TC_PAIRS_CONSENSUS<n>_MIN_REQ`
+| :term:`TC_PAIRS_CONSENSUS<n>_DIAG_REQUIRED`
+| :term:`TC_PAIRS_CONSENSUS<n>_DIAG_MIN_REQ`
 | :term:`TC_PAIRS_CONSENSUS<n>_WRITE_MEMBERS`
 | :term:`TC_PAIRS_SKIP_LEAD_SEQ`
 | :term:`TC_PAIRS_RUN_ONCE`
@@ -9821,6 +9823,10 @@ ${METPLUS_CONSENSUS_LIST}
      - consensus.required
    * - :term:`TC_PAIRS_CONSENSUS<n>_MIN_REQ`
      - consensus.min_req
+   * - :term:`TC_PAIRS_CONSENSUS<n>_DIAG_REQUIRED`
+     - consensus.diag_required
+   * - :term:`TC_PAIRS_CONSENSUS<n>_DIAG_MIN_REQ`
+     - consensus.diag_min_req
    * - :term:`TC_PAIRS_CONSENSUS<n>_WRITE_MEMBERS`
      - consensus.write_members
 
