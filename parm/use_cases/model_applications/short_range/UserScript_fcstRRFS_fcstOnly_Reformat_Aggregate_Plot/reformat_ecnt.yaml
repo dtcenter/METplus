@@ -1,0 +1,8 @@
+output_dir: !ENV '${OUTPUT_DIR}'
+output_filename: !ENV '${OUTPUT_FILENAME}'
+line_type: !ENV '${LINE_TYPE}'
+input_data_dir: !ENV '${INPUT_DATA_DIR}'
+# Set to log_filename to STDOUT if no log file is to be saved
+log_directory: !ENV '${LOG_DIRECTORY}'
+log_filename: !ENV '${LOG_FILENAME}'
+log_level: !ENV '${LOG_LEVEL}'
