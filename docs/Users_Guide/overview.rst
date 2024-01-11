@@ -487,17 +487,17 @@ METplus Components Python Requirements
       Cloud Fractions with Neighborhood
       and Probabilities
       (pygrib)
-      <../generated/model_applications/clouds/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac.html>`_  :raw-html:`<br />`
+      <../generated/model_applications/clouds/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac.html>`__  :raw-html:`<br />`
       `GridStat:
       Cloud Fractions with Neighborhood
       and Probabilities
       (pygrib)
-      <../generated/model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.html>`_  :raw-html:`<br />`
+      <../generated/model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.html>`__  :raw-html:`<br />`
       `GridStat:
       Cloud Fractions with Neighborhood
       and Probabilities
       (pygrib)
-      <../generated/model_applications/clouds/GridStat_fcstMPAS_obsMERRA2_lowAndTotalCloudFrac.html>`_
+      <../generated/model_applications/clouds/GridStat_fcstMPAS_obsMERRA2_lowAndTotalCloudFrac.html>`__
   * - pylab
     - 
     - METplus wrappers
