@@ -85,6 +85,46 @@ METplus Wrappers configuration files. Some Python wrappers do not
 correspond to a particular MET tool, but wrap utilities to extend
 METplus functionality.
 
+.. dropdown:: Python 3.10.4+
+
+  METplus Component:
+      METplus wrappers,
+      METcalcpy,
+      METplotpy, 
+      METdataio
+
+.. dropdown::  cartopy
+
+  Version: >=0.21.1
+
+  METplus Component: 
+      METplus wrappers,
+      METcalcpy,
+      METplotpy
+
+  Source:
+    https://scitools.org.uk/cartopy/docs/latest/
+
+  Description:
+    Designed for 
+    geospatial data 
+    processing in 
+    order to produce 
+    maps and other 
+    geospatial data 
+    analyses
+
+  Use Cases:
+
+    `TCGen: Genesis Density Function (GDF)
+      and Track Density Function (TDF)
+      (cartopy)
+      <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_ 
+      `CyclonePlotter: Extra-TC Tracker
+      and Plotting Capabilities
+      (cartopy)
+      <../generated/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC.html>`_
+
 .. _python_requirements_table:
 
 METplus Components Python Requirements
