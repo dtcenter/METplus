@@ -115,7 +115,6 @@ METplus functionality.
     analyses
 
   Use Cases:
-
     `TCGen: Genesis Density Function (GDF)
       and Track Density Function (TDF)
       (cartopy)
