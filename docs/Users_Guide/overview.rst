@@ -117,11 +117,9 @@ METplus functionality.
   Use Cases:
     `TCGen: Genesis Density Function (GDF)
       and Track Density Function (TDF)
-      (cartopy)
       <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_ 
       `CyclonePlotter: Extra-TC Tracker
       and Plotting Capabilities
-      (cartopy)
       <../generated/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC.html>`_
 
 .. _python_requirements_table:
