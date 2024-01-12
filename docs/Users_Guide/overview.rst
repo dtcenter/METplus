@@ -100,10 +100,7 @@ METplus Components Python Requirements
       METplotpy, 
       METdataio
 
-.. dropdown::  cartopy
-
-  Version: 
-    >=0.21.1
+.. dropdown::  cartopy >=0.21.1
 
   METplus Component: 
       METplus wrappers,
@@ -122,9 +119,6 @@ METplus Components Python Requirements
 
 .. dropdown:: cfgrib
 
-  Version:
-    No version specific version specified
-
   METplus Component:
     METplus wrappers
 
@@ -139,9 +133,6 @@ METplus Components Python Requirements
     <../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html>`_
 
 .. dropdown:: cmocean
-
-  Version:
-    No version specific version specified
   
   METplus Component:
     METcalcpy, 
