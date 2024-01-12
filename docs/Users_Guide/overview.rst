@@ -85,6 +85,11 @@ METplus Wrappers configuration files. Some Python wrappers do not
 correspond to a particular MET tool, but wrap utilities to extend
 METplus functionality.
 
+.. _python_requirements_table:
+
+METplus Components Python Requirements
+======================================
+
 **Testing dropdown menus:**
 
 .. dropdown:: Python 3.10.4+
@@ -117,6 +122,9 @@ METplus functionality.
 
 .. dropdown:: cfgrib
 
+  Version:
+    No version specific version specified
+
   METplus Component:
     METplus wrappers
 
@@ -132,6 +140,9 @@ METplus functionality.
 
 .. dropdown:: cmocean
 
+  Version:
+    No version specific version specified
+  
   METplus Component:
     METcalcpy, 
     METplotpy
@@ -139,14 +150,9 @@ METplus functionality.
   Source:
     https://pypi.org/project/cmocean/
 
-  Use Cases:
+  Description:
     contains colormaps for commonly-used oceanographic variables
 
-
-.. _python_requirements_table:
-
-METplus Components Python Requirements
-======================================
 
 .. Number of characters per line:
    Name - no more that 13 characters
