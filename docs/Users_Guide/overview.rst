@@ -109,17 +109,11 @@ METplus functionality.
     https://scitools.org.uk/cartopy/docs/latest/
 
   Description:
-    Designed for 
-    geospatial data 
-    processing in 
-    order to produce 
-    maps and other 
-    geospatial data 
-    analyses
+    Designed for geospatial data processing in order to produce maps and other geospatial data analyses
 
   Use Cases:
     `TCGen: Genesis Density Function (GDF) and Track Density Function (TDF) <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_ 
-      `CyclonePlotter: Extra-TC Tracker and Plotting Capabilities <../generated/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC.html>`_
+    `CyclonePlotter: Extra-TC Tracker and Plotting Capabilities <../generated/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC.html>`_
 
 .. dropdown:: cfgrib
 
