@@ -127,7 +127,8 @@ METplus functionality.
      map GRIB files to the NetCDF Common Data Model following the CF Convention using ecCodes
 
   Use Cases:
-    `Multi_Tool: Feature Relative by Lead using Multiple User-Defined Fields (cfgrib) <../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html>`_
+    `Multi_Tool: Feature Relative by Lead using Multiple User-Defined Fields (cfgrib)
+    <../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html>`_
 
 .. dropdown:: cmocean
 
