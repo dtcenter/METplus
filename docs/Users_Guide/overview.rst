@@ -85,6 +85,8 @@ METplus Wrappers configuration files. Some Python wrappers do not
 correspond to a particular MET tool, but wrap utilities to extend
 METplus functionality.
 
+**Testing dropdown menus:**
+
 .. dropdown:: Python 3.10.4+
 
   METplus Component:
@@ -95,7 +97,8 @@ METplus functionality.
 
 .. dropdown::  cartopy
 
-  Version: >=0.21.1
+  Version: 
+    >=0.21.1
 
   METplus Component: 
       METplus wrappers,
@@ -115,8 +118,36 @@ METplus functionality.
     analyses
 
   Use Cases:
-    `TCGen: Genesis Density Function (GDF) and Track Density Function (TDF <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_ 
+    `TCGen: Genesis Density Function (GDF) and Track Density Function (TDF) <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_ 
       `CyclonePlotter: Extra-TC Tracker and Plotting Capabilities <../generated/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC.html>`_
+
+.. dropdown:: cfgrib
+
+  METplus Component:
+    METplus wrappers
+
+  Source:
+    https://pypi.org/project/cfgrib/
+
+  Description:
+     map GRIB files to the NetCDF Common Data Model following the CF Convention using ecCodes
+
+  Use Cases:
+    `Multi_Tool: Feature Relative by Lead using Multiple User-Defined Fields (cfgrib)<../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html>`_
+
+
+.. dropdown:: cmocean
+
+  METplus Component:
+    METcalcpy, 
+    METplotpy
+
+  Source:
+    https://pypi.org/project/cmocean/
+
+  Use Cases:
+    contains colormaps for commonly-used oceanographic variables
+
 
 .. _python_requirements_table:
 
