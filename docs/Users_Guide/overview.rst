@@ -436,8 +436,8 @@ METplus Components Python Requirements
       (pygrib)
       <../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html>`_  :raw-html:`<br />`
       `GridStat:
-      Cloud Fractions with Neighborhood 
-      and Probabilities
+      Cloud Fractions Using GFS 
+      and ERA5 Data
       (pygrib)
       <../generated/model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac.html>`_  :raw-html:`<br />`
       `GridStat:
@@ -451,18 +451,18 @@ METplus Components Python Requirements
       (pygrib)
       <../generated/model_applications/clouds/GridStat_fcstGFS_obsSATCORPS_cloudTopPressAndTemp.html>`_  :raw-html:`<br />`
       `GridStat:
-      Cloud Fractions with Neighborhood
-      and Probabilities
+      Cloud Fractions Using GFS
+      and MERRA2 Data
       (pygrib)
       <../generated/model_applications/clouds/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac.html>`_  :raw-html:`<br />`
       `GridStat:
-      Cloud Fractions with Neighborhood
-      and Probabilities
+      Cloud Fractions Using MPAS
+      and SatCORPS Data
       (pygrib)
       <../generated/model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.html>`_  :raw-html:`<br />`
       `GridStat:
-      Cloud Fractions with Neighborhood
-      and Probabilities
+      Cloud Fractions Using MPAS
+      and MERRA2 Data
       (pygrib)
       <../generated/model_applications/clouds/GridStat_fcstMPAS_obsMERRA2_lowAndTotalCloudFrac.html>`_
   * - pylab

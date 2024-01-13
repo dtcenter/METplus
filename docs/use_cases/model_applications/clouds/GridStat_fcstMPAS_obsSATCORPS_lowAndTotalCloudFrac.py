@@ -1,6 +1,6 @@
 """
-GridStat: Cloud Fractions with Neighborhood and Probabilities
-=============================================================
+GridStat: Cloud Fractions Using MPAS and SatCORPS Data
+======================================================
 
 model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.conf
 
