@@ -114,8 +114,8 @@ METplus Components Python Requirements
     Designed for geospatial data processing in order to produce maps and other geospatial data analyses
 
   Use Cases:
-    `TCGen: Genesis Density Function (GDF) and Track Density Function (TDF) <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_ 
-    `CyclonePlotter: Extra-TC Tracker and Plotting Capabilities <../generated/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC.html>`_
+    | `TCGen: Genesis Density Function (GDF) and Track Density Function (TDF) <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_ 
+    | `CyclonePlotter: Extra-TC Tracker and Plotting Capabilities <../generated/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC.html>`_
 
 .. dropdown:: cfgrib
 
@@ -129,7 +129,7 @@ METplus Components Python Requirements
      map GRIB files to the NetCDF Common Data Model following the CF Convention using ecCodes
 
   Use Cases:
-    `Multi_Tool: Feature Relative by Lead using Multiple User-Defined Fields (cfgrib)
+    `Multi_Tool: Feature Relative by Lead using Multiple User-Defined Fields
     <../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html>`_
 
 .. dropdown:: cmocean
@@ -174,18 +174,8 @@ NEW SECTION
     empirical orthogonal functions analysis of spatial-temporal data
     
   Use Cases: 
-    | `WeatherRegime Calculation:
-      RegridDataPlane,
-      PcpCombine,
-      and WeatherRegime python code
-      (eofs)
-      <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime.html>`_ :raw-html:`<br />`
-    | `WeatherRegime Calculation:
-      GFS and ERA RegridDataPlane,
-      PcpCombine, and
-      WeatherRegime python code
-      (eofs)
-      <../generated/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.html>`_
+    | `WeatherRegime Calculation: RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime.html>`_ :raw-html:`<br />`
+    | `WeatherRegime Calculation: GFS and ERA RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.html>`_
 
 .. dropdown:: h5py
 
@@ -199,10 +189,7 @@ NEW SECTION
     Pythonic interface to the HDF5 binary data format
 
   Use Case:
-     `PCPCombine:
-      Python Embedding Use Case
-      (h5py)
-      <../generated/met_tool_wrapper/PCPCombine/PCPCombine_python_embedding.html>`_
+     `PCPCombine: Python Embedding Use Case <../generated/met_tool_wrapper/PCPCombine/PCPCombine_python_embedding.html>`_
 
 END NEW SECTION
 
