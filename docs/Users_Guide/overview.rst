@@ -144,6 +144,66 @@ METplus Components Python Requirements
   Description:
     contains colormaps for commonly-used oceanographic variables
 
+NEW SECTION
+
+.. dropdown:: dateutil >=2.8.2
+  METplus Component:
+    METplus wrappers
+
+  Source:
+    https://github.com/dateutil/dateutil/releases
+
+  Description:
+    provides powerful extensions to the standard datetime module
+    
+  Use Cases:
+    Most  
+
+.. dropdown:: eofs
+    
+  METplus Component: 
+    | METplus wrappers, 
+    | METcalcpy, 
+    | METplotpy
+
+  Source:
+    https://pypi.org/project/eofs/
+
+  Description:
+    empirical orthogonal functions analysis of spatial-temporal data
+    
+  Use Cases: 
+    | `WeatherRegime Calculation:
+      RegridDataPlane,
+      PcpCombine,
+      and WeatherRegime python code
+      (eofs)
+      <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime.html>`_ :raw-html:`<br />`
+     | `WeatherRegime Calculation:
+      GFS and ERA RegridDataPlane,
+      PcpCombine, and
+      WeatherRegime python code
+      (eofs)
+      <../generated/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.html>`_
+
+.. dropdown:: h5py
+
+  METplus Component: 
+    METplus wrappers
+
+  Source:
+    https://github.com/h5py/h5py
+
+  Description:
+    Pythonic interface to the HDF5 binary data format
+
+Use Case:
+     `PCPCombine:
+      Python Embedding Use Case
+      (h5py)
+      <../generated/met_tool_wrapper/PCPCombine/PCPCombine_python_embedding.html>`_
+
+END NEW SECTION
 
 .. Number of characters per line:
    Name - no more that 13 characters
