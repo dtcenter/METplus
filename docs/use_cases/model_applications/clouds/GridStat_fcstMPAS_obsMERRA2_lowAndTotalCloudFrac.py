@@ -1,6 +1,6 @@
 """
-GridStat: Cloud Fractions with Neighborhood and Probabilities
-=============================================================
+GridStat: Cloud Fractions Using MPAS and MERRA2 Data
+====================================================
 
 model_applications/clouds/GridStat_fcstMPAS_obsMERRA2_lowAndTotalCloudFrac.conf
 
