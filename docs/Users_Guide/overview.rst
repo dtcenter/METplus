@@ -95,17 +95,17 @@ METplus Components Python Requirements
 .. dropdown:: Python 3.10.4+
 
   METplus Component:
-      METplus wrappers,
-      METcalcpy,
-      METplotpy, 
-      METdataio
+      | METplus wrappers,
+      | METcalcpy,
+      | METplotpy, 
+      | METdataio
 
 .. dropdown::  cartopy >=0.21.1
 
   METplus Component: 
-      METplus wrappers,
-      METcalcpy,
-      METplotpy
+      | METplus wrappers,
+      | METcalcpy,
+      | METplotpy
 
   Source:
     https://scitools.org.uk/cartopy/docs/latest/
@@ -135,8 +135,8 @@ METplus Components Python Requirements
 .. dropdown:: cmocean
   
   METplus Component:
-    METcalcpy, 
-    METplotpy
+    | METcalcpy, 
+    | METplotpy
 
   Source:
     https://pypi.org/project/cmocean/
