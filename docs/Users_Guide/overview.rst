@@ -147,6 +147,7 @@ METplus Components Python Requirements
 NEW SECTION
 
 .. dropdown:: dateutil >=2.8.2
+
   METplus Component:
     METplus wrappers
 
@@ -179,7 +180,7 @@ NEW SECTION
       and WeatherRegime python code
       (eofs)
       <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime.html>`_ :raw-html:`<br />`
-     | `WeatherRegime Calculation:
+    | `WeatherRegime Calculation:
       GFS and ERA RegridDataPlane,
       PcpCombine, and
       WeatherRegime python code
@@ -197,7 +198,7 @@ NEW SECTION
   Description:
     Pythonic interface to the HDF5 binary data format
 
-Use Case:
+  Use Case:
      `PCPCombine:
       Python Embedding Use Case
       (h5py)
