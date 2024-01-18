@@ -539,8 +539,6 @@ METplus Components Python Requirements
     | `GridStat: Python Embedding for sea surface salinity using level 3, 1 day composite obs <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMOS_climWOA_sss.html>`_ 
     | `GridStat: Python Embedding for sea surface salinity using level 3, 8 day mean obs <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.html>`_
 
-NEW SECTION
-
 .. dropdown:: scipy >=1.9.3
 
   METplus Component:
@@ -607,7 +605,7 @@ NEW SECTION
     https://github.com/dtcenter/METplus/issues/1314
 
   Description:
-    |For regridding
+    For regridding
 
   Use Case:
     `PlotDataPlane: Python Embedding of tripolar coordinate file <../generated/model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar.html>`_
@@ -624,8 +622,6 @@ NEW SECTION
 
   Description:
     To load, read, and write YAML files with PyYAML
-
-END NEW SECTION
 
 .. Number of characters per line:
    Name - no more that 13 characters
