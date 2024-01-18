@@ -426,8 +426,6 @@ METplus Components Python Requirements
     | `WeatherRegime Calculation: RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.html>`__  
     | `WeatherRegime Calculation: GFS and ERA RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.html>`__
 
-NEW SECTION
-
 .. dropdown:: pymysql >=1.0.2
 
   METplus Component:
@@ -541,147 +539,91 @@ NEW SECTION
     | `GridStat: Python Embedding for sea surface salinity using level 3, 1 day composite obs <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMOS_climWOA_sss.html>`_ 
     | `GridStat: Python Embedding for sea surface salinity using level 3, 8 day mean obs <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.html>`_
 
-.. dropdown:: 
+NEW SECTION
 
-  METplus Component: 
+.. dropdown:: scipy >=1.9.3
 
-  Source:
-
-  Description:
-
-  Use Case:
-
-.. dropdown:: 
-
-  METplus Component: 
+  METplus Component:
+    | METplus wrappers, 
+    | METcalcpy, 
+    | METplotpy
 
   Source:
+    https://www.scipy.org/
 
   Description:
+    Wraps highly-optimized implementations written  in low-level languages like Fortran, C, and C++
 
   Use Case:
+    | `Blocking Calculation: ERA RegridDataPlane, PcpCombine, and Blocking python code <../generated/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_Blocking.html>`_ 
+    | `WeatherRegime Calculation: RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.html>`__ 
+    | `UserScript: Make OMI plot from calculated MJO indices with ERA obs only <../generated/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_OMI.html>`__ 
+    | `WeatherRegime Calculation: GFS and ERA RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.html>`__ 
+    | `Blocking Calculation: GFS and ERA RegridDataPlane, PcpCombine, and Blocking python code <../generated/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.html>`_ 
+    | `UserScript: Make a Phase Diagram plot from input RMM or OMI <../generated/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_PhaseDiagram.html>`__ 
+    | `UserScript: Make OMI plot from calculated MJO indices with ERA obs and GFS fcst <../generated/model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.html>`__ 
+    | `UserScript: Make RMM plots from calculated MJO indices <../generated/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.html>`__
 
-.. dropdown:: 
+.. dropdown:: sklearn
 
-  METplus Component: 
+  METplus Component:
+    METplus wrappers
 
   Source:
+    https://www.kite.com/python/docs/sklearn
 
   Description:
+    Simple and efficient tools for predictive data analysis
 
-  Use Case:
+  Description:
+    | `WeatherRegime Calculation: RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.html>`__ 
+    | `WeatherRegime Calculation: GFS and ERA RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.html>`__
 
-.. dropdown:: 
 
-  METplus Component: 
+.. dropdown:: xarray >=2023.1.0
+
+  METplus Component:
+    | METplus wrappers, 
+    | METcalcpy, 
+    | METplotpy
 
   Source:
+    https://xarray.pydata.org/en/v0.17.0/
 
   Description:
+    Makes working with labelled multi-dimensional arrays simple, efficient, and fun
 
   Use Case:
+    For using MET Python embedding functionality in use cases
 
-.. dropdown:: 
+.. dropdown:: xesmf
 
-  METplus Component: 
+  METplus Component:
+    METplus wrappers
 
   Source:
+    NOTE: The xesmf package will not be installed on WCOSS2 and there is an open GitHub issue to 
+    replace the package in the use case that uses it: 
+    https://github.com/dtcenter/METplus/issues/1314
 
   Description:
+    |For regridding
 
   Use Case:
+    `PlotDataPlane: Python Embedding of tripolar coordinate file <../generated/model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar.html>`_
 
-.. dropdown:: 
 
-  METplus Component: 
+.. dropdown:: yaml
+
+  METplus Component:
+    | METcalcpy, 
+    | METplotpy
 
   Source:
+    https://pypi.org/project/PyYAML/
 
   Description:
-
-  Use Case:
-
-.. dropdown:: 
-
-  METplus Component: 
-
-  Source:
-
-  Description:
-
-  Use Case:
-
-.. dropdown:: 
-
-  METplus Component: 
-
-  Source:
-
-  Description:
-
-  Use Case:
-
-.. dropdown:: 
-
-  METplus Component: 
-
-  Source:
-
-  Description:
-
-  Use Case:
-
-.. dropdown:: 
-
-  METplus Component: 
-
-  Source:
-
-  Description:
-
-  Use Case:
-
-.. dropdown:: 
-
-  METplus Component: 
-
-  Source:
-
-  Description:
-
-  Use Case:
-
-.. dropdown:: 
-
-  METplus Component: 
-
-  Source:
-
-  Description:
-
-  Use Case:
-
-.. dropdown:: 
-
-  METplus Component: 
-
-  Source:
-
-  Description:
-
-  Use Case:
-
-.. dropdown:: 
-
-  METplus Component: 
-
-  Source:
-
-  Description:
-
-  Use Case:
-
-
+    To load, read, and write YAML files with PyYAML
 
 END NEW SECTION
 
