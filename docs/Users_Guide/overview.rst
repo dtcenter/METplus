@@ -383,7 +383,7 @@ NEW SECTION
 
   METplus Component: 
     | METcalcpy, 
-    |METplotpy
+    | METplotpy
 
   Source:
     https://github.com/plotly/plotly.py
@@ -422,7 +422,7 @@ NEW SECTION
 
   Description:
     A convenience module that bulk imports matplotlib.pyplot (for plotting) and NumPy (for 
-Mathematics and working with arrays) in a single name space
+    Mathematics and working with arrays) in a single name space
 
   Use Case:
     | `WeatherRegime Calculation: RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.html>`__  
