@@ -301,7 +301,7 @@ METplus Components Python Requirements
   Use Case:
     `Multi_Tool: Feature Relative by Lead using Multiple User-Defined Fields <../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html>`_
 
-.. dropdown:: nc-time-axis -1.4
+.. dropdown:: nc-time-axis 1.4
 
   METplus Component:
     | METplotpy
