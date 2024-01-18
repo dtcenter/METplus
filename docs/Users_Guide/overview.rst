@@ -126,7 +126,7 @@ METplus Components Python Requirements
     https://pypi.org/project/cfgrib/
 
   Description:
-     map GRIB files to the NetCDF Common Data Model following the CF Convention using ecCodes
+     Map GRIB files to the NetCDF Common Data Model following the CF Convention using ecCodes
 
   Use Cases:
     `Multi_Tool: Feature Relative by Lead using Multiple User-Defined Fields
@@ -142,9 +142,7 @@ METplus Components Python Requirements
     https://pypi.org/project/cmocean/
 
   Description:
-    contains colormaps for commonly-used oceanographic variables
-
-NEW SECTION
+    Contains colormaps for commonly-used oceanographic variables
 
 .. dropdown:: dateutil >=2.8.2
 
@@ -155,7 +153,7 @@ NEW SECTION
     https://github.com/dateutil/dateutil/releases
 
   Description:
-    provides powerful extensions to the standard datetime module
+    Provides powerful extensions to the standard datetime module
     
   Use Cases:
     Most  
@@ -171,7 +169,7 @@ NEW SECTION
     https://pypi.org/project/eofs/
 
   Description:
-    empirical orthogonal functions analysis of spatial-temporal data
+    Empirical orthogonal functions analysis of spatial-temporal data
     
   Use Cases: 
     | `WeatherRegime Calculation: RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime.html>`_ :raw-html:`<br />`
@@ -202,35 +200,54 @@ NEW SECTION
   Description:
     A series of convenience functions to make basic image processing functions such as translation, rotation, resizing, skeletonization, displaying Matplotlib images, sorting contours, detecting edges, and much more easier
 
-.. dropdown:: 
+NEW SECTION
+
+.. dropdown:: imageio
 
   METplus Component: 
+    | METcalcpy,
+    | METplotpy
 
   Source:
+    https://pypi.org/project/imageio/
 
   Description:
+    Provides an easy interface to read and write a wide range of image data, including animated
+    images, volumetric data, and scientific formats
 
-  Use Case:
-
-.. dropdown:: 
+.. dropdown:: lxml >=4.9.1
 
   METplus Component: 
+    | METcalcpy,
+    | METplotpy,
+    | METdataio
 
   Source:
+    https://pypi.org/project/lxml/
 
   Description:
+    A Pythonic binding for the C libraries libxml2 and libxslt
 
-  Use Case:
-
-.. dropdown:: 
+.. dropdown:: matplotlib >=3.6.3
 
   METplus Component: 
+    | METplus wrappers,
+    | METcalcpy,
+    | METplotpy
 
-  Source:
+  Source: 
+    https://matplotlib.org/stable/users/installing/index.html
 
   Description:
+    A comprehensive library for creating static, animated, and interactive visualizations
 
   Use Case:
+    | `UserScript: Make OMI plot from calculated MJO indices  <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_OMI.html>`_ 
+    | `TCGen: Genesis Density Function and Track Density Function  <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_ 
+    | `UserScript: Make a Phase Diagram plot from input RMM or OMI <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_PhaseDiagram.html>`_  
+    |  `UserScript: Make OMI plot from calculated MJO indices <../generated/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI.html>`_ 
+    | `UserScript: Make RMM plots from calculated MJO indices <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_RMM.html>`_ 
+    | `CyclonePlotter: Extra-TC Tracker and Plotting Capabilities <../generated/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC.html>`_ 
 
 .. dropdown:: 
 
