@@ -247,8 +247,6 @@ METplus Components Python Requirements
     | `UserScript: Make RMM plots from calculated MJO indices <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_RMM.html>`_ 
     | `CyclonePlotter: Extra-TC Tracker and Plotting Capabilities <../generated/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC.html>`_ 
 
-NEW SECTION
-
 .. dropdown:: metcalcpy
 
   METplus Component: 
@@ -298,7 +296,7 @@ NEW SECTION
 
   Description:
     A collection of tools in Python for reading, visualizing, and performing calculations 
-with weather data
+    with weather data
 
   Use Case:
     `Multi_Tool: Feature Relative by Lead using Multiple User-Defined Fields <../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html>`_
@@ -315,6 +313,7 @@ with weather data
   Description:
     Extension to cftime \**REQUIRES Python 3.7
 
+NEW SECTION
 
 .. dropdown:: 
 
