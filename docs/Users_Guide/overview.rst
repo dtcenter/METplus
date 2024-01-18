@@ -200,8 +200,6 @@ METplus Components Python Requirements
   Description:
     A series of convenience functions to make basic image processing functions such as translation, rotation, resizing, skeletonization, displaying Matplotlib images, sorting contours, detecting edges, and much more easier
 
-NEW SECTION
-
 .. dropdown:: imageio
 
   METplus Component: 
@@ -245,29 +243,78 @@ NEW SECTION
     | `UserScript: Make OMI plot from calculated MJO indices  <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_OMI.html>`_ 
     | `TCGen: Genesis Density Function and Track Density Function  <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_ 
     | `UserScript: Make a Phase Diagram plot from input RMM or OMI <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_PhaseDiagram.html>`_  
-    |  `UserScript: Make OMI plot from calculated MJO indices <../generated/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI.html>`_ 
+    | `UserScript: Make OMI plot from calculated MJO indices <../generated/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI.html>`_ 
     | `UserScript: Make RMM plots from calculated MJO indices <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_RMM.html>`_ 
     | `CyclonePlotter: Extra-TC Tracker and Plotting Capabilities <../generated/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC.html>`_ 
 
-.. dropdown:: 
+NEW SECTION
+
+.. dropdown:: metcalcpy
 
   METplus Component: 
+    | METplus wrappers,
+    | METcalcpy,
+    | METplotpy
 
   Source:
+    https://github.com/dtcenter/METcalcpy/releases
 
   Description:
+    A Python version of the statistics calculation functionality of METviewer, METexpress,
+    plotting packages in METplotpy and is a stand-alone package for any other application
 
   Use Case:
+    | `UserScript: Make a Hovmoeller plot  <../generated/model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.html>`_
+    | `UserScript: Make a Cross Spectra plot <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_ 
+    | `Grid-Stat: Verification of TC forecasts against merged TDR data <../generated/model_applications/s2s/UserScript_obsPrecip_obsOnly_CrossSpectraPlot.html>`_ 
+    | `UserScript: Calculate the Difficulty Index <../generated/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.html>`_
+    | `UserScript: Make zonal and meridonial means <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_Stratosphere.html>`_
 
-.. dropdown:: 
+.. dropdown:: metplotpy
 
   METplus Component: 
+    METplus wrappers
 
   Source:
+    https://github.com/dtcenter/METplotpy/releases
 
   Description:
+    Contains packages for plotting in METplus as stand-alone, or part of METplus use case,
+    METplus wrappers, METexpress, or METviewer
 
   Use Case:
+    | `UserScript: Make a Hovmoeller plot  <../generated/model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.html>`_  
+    | `UserScript: Make a Cross Spectra plot <../generated/model_applications/s2s/UserScript_obsPrecip_obsOnly_CrossSpectraPlot.html>`_  
+    | `UserScript: Calculate the Difficulty Index <../generated/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.html>`_ 
+    | `TCGen: Genesis Density Function (GDF) and Track Density Function (TDF) <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_
+
+.. dropdown:: metpy >=1.4.0
+
+  METplus Component:
+    METplus wrappers
+
+  Source:
+    https://www.unidata.ucar.edu/software/metpy/
+
+  Description:
+    A collection of tools in Python for reading, visualizing, and performing calculations 
+with weather data
+
+  Use Case:
+    `Multi_Tool: Feature Relative by Lead using Multiple User-Defined Fields <../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html>`_
+
+.. dropdown:: nc-time-axis -1.4
+
+  METplus Component:
+    | METplotpy
+    | stratosphere_diagnostics
+
+ Source:
+    | https://github.com/SciTools/nc-time-axis
+
+  Description:
+    Extension to cftime \**REQUIRES Python 3.7
+
 
 .. dropdown:: 
 
