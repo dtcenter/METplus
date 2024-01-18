@@ -313,8 +313,6 @@ METplus Components Python Requirements
   Description:
     Extension to cftime - **REQUIRES Python 3.7**
 
-NEW SECTION
-
 .. dropdown:: netCDF4 >=1.6.2
 
   METplus Component:
@@ -428,6 +426,120 @@ NEW SECTION
     | `WeatherRegime Calculation: RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.html>`__  
     | `WeatherRegime Calculation: GFS and ERA RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.html>`__
 
+NEW SECTION
+
+.. dropdown:: pymysql >=1.0.2
+
+  METplus Component:
+    | METcalcpy, 
+    | METplotpy, 
+    | METdataio
+
+  Source:
+    https://pypi.org/project/psutil/
+
+  Description:
+    A pure-Python MySQL client library, based on PEP 249
+
+.. dropdown:: pyproj >=2.3.1
+
+  METplus Component:
+    METplus wrappers
+
+  Source:
+    https://github.com/pyproj4/pyproj/archive/v2.3.1rel.tar.gz
+
+  Description:
+    Python interface to PROJ (cartographic projections and  coordinate transformations library)
+
+  Use Case:
+    | `GridStat: Python Embedding to read and process ice cover <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsOSTIA_iceCover.html>`_
+
+.. dropdown:: pyresample
+
+  METplus Component:
+    METplus wrappers
+
+  METplus Component:
+    https://github.com/pytroll/pyresample
+
+  Description:
+    For resampling geospatial image data
+
+  Use Case:
+    | `GridStat: Python Embedding to read and process SST <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.html>`_ 
+    | `GridStat: Python Embedding to read and process ice cover <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsOSTIA_iceCover.html>`_ 
+    | `GridStat: Python Embedding for sea surface salinity using level 3, 1 day composite obs <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMOS_climWOA_sss.html>`_ 
+    | `GridStat: Python Embedding for sea surface salinity using level 3, 8 day mean obs <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.html>`_
+
+.. dropdown:: pytest >=7.2.1
+
+  METplus Component:
+    | METcalcpy, 
+    | METplotpy, 
+    | METdataio
+
+  Source:
+    https://github.com/pytest-dev/pytest/archive/5.2.1.tar.gz
+
+  Description:
+    A mature full-featured Python testing tool that helps to write better programs
+
+.. dropdown:: python-kaleido >=0.2.1
+
+  METplus Component:
+    | METcalcpy, 
+    | METplotpy
+
+  Source:
+    https://pypi.org/project/kaleido/
+
+  Description:
+    Provides a low-level Python API that is designed to be used by high-level plotting libraries like Plotly
+
+.. dropdown:: pyyaml >=6.0
+
+  METplus Component:
+    | METcalcpy, 
+   | METplotpy, 
+    | METdataio
+
+  Source:
+    https://github.com/yaml/pyyaml
+
+  Description:
+    A full-featured YAML framework for the Python programming language
+
+.. dropdown:: scikit-image >=0.19.3
+
+  METplus Component:
+    | METcalcpy, 
+    | METplotpy
+
+  Source:
+    https://scikit-image.org
+
+  Description:
+    A collection of algorithms for image processing
+
+.. dropdown:: scikit-learn >=1.2.2
+
+  METplus Component:
+    | METplus wrappers,  
+    | METcalcpy, 
+    | METplotpy
+
+  Source:
+    https://github.com/scikit-learn/scikit-learn/releases
+
+  Description:
+    Open Source library for Machine Learning in Python
+
+  Use Case:
+    | `GridStat: Python Embedding to read and process SST <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.html>`_ 
+    | `GridStat: Python Embedding to read and process ice cover <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsOSTIA_iceCover.html>`_ 
+    | `GridStat: Python Embedding for sea surface salinity using level 3, 1 day composite obs <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMOS_climWOA_sss.html>`_ 
+    | `GridStat: Python Embedding for sea surface salinity using level 3, 8 day mean obs <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.html>`_
 
 .. dropdown:: 
 
