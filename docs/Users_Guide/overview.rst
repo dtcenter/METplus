@@ -501,7 +501,7 @@ NEW SECTION
 
   METplus Component:
     | METcalcpy, 
-   | METplotpy, 
+    | METplotpy, 
     | METdataio
 
   Source:
