@@ -315,6 +315,120 @@ METplus Components Python Requirements
 
 NEW SECTION
 
+.. dropdown:: netCDF4 >=1.6.2
+
+  METplus Component:
+    | METplus wrappers,
+    | METcalcpy,
+    | METplotpy
+
+  Source:
+    https://unidata.github.io/netcdf4-python/
+
+  Description:
+
+    A Python interface to the netCDF C library
+
+  Use Case:
+    For using MET Python embedding functionality in use cases
+
+.. dropdown:: numpy >=1.24.2
+
+  METplus Component:
+    | METplus wrappers,
+    | METcalcpy, 
+    | METplotpy, 
+    | METdataio
+
+  Source:
+    https://numpy.org/
+
+  Description:
+    NumPy offers comprehensive mathematical functions, random number generators, 
+    linear algebra routines, Fourier transforms, and more.
+
+  Use Case:
+    For using MET Python embedding functionality in use cases
+
+.. dropdown:: pandas >=1.5.2
+
+  METplus Component:
+    | METplus wrappers, 
+    | METcalcpy, 
+    | METplotpy, 
+    | METdataio
+
+  Source:
+    https://pypi.org/project/pandas
+
+  Description:
+    A fast, powerful, flexible and easy to use open source data analysis 
+    and manipulation tool, built on top of the Python programming language
+
+  Use Case:
+    For using MET Python embedding functionality in use cases
+
+.. dropdown:: pint >=0.20.1
+
+  METplus Component:
+    METcalcpy
+
+  Source:
+    https://github.com/hgrecco/pint
+
+  Description:
+    Python package to define, operate and manipulate physical quantities
+
+.. dropdown:: plotly >=5.13.0
+
+  METplus Component: 
+    | METcalcpy, 
+    |METplotpy
+
+  Source:
+    https://github.com/plotly/plotly.py
+
+  Description:
+    Makes interactive, publication-quality graphs
+
+.. dropdown:: pygrib
+
+  METplus Component:
+    METplus  wrappers
+
+  Source:
+    https://github.com/jswhit/pygrib
+
+  Description:
+    For reading/writing GRIB files
+
+  Use Case:
+    | `Multi_Tool: Feature Relative by Lead using Multiple User-Defined Fields <../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html>`_  
+    | `GridStat: Cloud Fractions Using GFS and ERA5 Data <../generated/model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac.html>`_  
+    | `GridStat: Cloud Height with Neighborhood and Probabilities <../generated/model_applications/clouds/GridStat_fcstMPAS_obsERA5_cloudBaseHgt.html>`_  
+    | `GridStat: Cloud Pressure and Temperature Heights <../generated/model_applications/clouds/GridStat_fcstGFS_obsSATCORPS_cloudTopPressAndTemp.html>`_  
+    | `GridStat: Cloud Fractions Using GFS and MERRA2 Data <../generated/model_applications/clouds/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac.html>`_  
+    | `GridStat: Cloud Fractions Using MPAS and SatCORPS Data <../generated/model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.html>`_  
+    | `GridStat: Cloud Fractions Using MPAS and MERRA2 Data <../generated/model_applications/clouds/GridStat_fcstMPAS_obsMERRA2_lowAndTotalCloudFrac.html>`_
+
+
+.. dropdown:: pylab
+
+  METplus Component:
+    METplus wrappers
+
+  Source:
+    https://pypi.org/project/matplotlib/
+
+  Description:
+    A convenience module that bulk imports matplotlib.pyplot (for plotting) and NumPy (for 
+Mathematics and working with arrays) in a single name space
+
+  Use Case:
+    | `WeatherRegime Calculation: RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.html>`__  
+    | `WeatherRegime Calculation: GFS and ERA RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.html>`__
+
+
 .. dropdown:: 
 
   METplus Component: 
