@@ -172,8 +172,8 @@ METplus Components Python Requirements
     Empirical orthogonal functions analysis of spatial-temporal data
     
   Use Cases: 
-    | `WeatherRegime Calculation: RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime.html>`_ :raw-html:`<br />`
-    | `WeatherRegime Calculation: GFS and ERA RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.html>`_
+    | `WeatherRegime Calculation: RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.html>`__ :raw-html:`<br />`
+    | `WeatherRegime Calculation: GFS and ERA RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.html>`__
 
 .. dropdown:: h5py
 
@@ -240,11 +240,11 @@ METplus Components Python Requirements
     A comprehensive library for creating static, animated, and interactive visualizations
 
   Use Case:
-    | `UserScript: Make OMI plot from calculated MJO indices  <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_OMI.html>`_ 
+    | `UserScript: Make OMI plot from calculated MJO indices with ERA obs only <../generated/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.html>`__ 
     | `TCGen: Genesis Density Function and Track Density Function  <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_ 
-    | `UserScript: Make a Phase Diagram plot from input RMM or OMI <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_PhaseDiagram.html>`_  
-    | `UserScript: Make OMI plot from calculated MJO indices <../generated/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI.html>`_ 
-    | `UserScript: Make RMM plots from calculated MJO indices <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_RMM.html>`_ 
+    | `UserScript: Make a Phase Diagram plot from input RMM or OMI <../generated/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_PhaseDiagram.html>`_  
+    | `UserScript: Make OMI plot from calculated MJO indices with ERA obs and GFS fcst <../generated/model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.html>`__ 
+    | `UserScript: Make RMM plots from calculated MJO indices <../generated/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.html>`__ 
     | `CyclonePlotter: Extra-TC Tracker and Plotting Capabilities <../generated/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC.html>`_ 
 
 .. dropdown:: metcalcpy
@@ -263,8 +263,8 @@ METplus Components Python Requirements
 
   Use Case:
     | `UserScript: Make a Hovmoeller plot  <../generated/model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.html>`_
-    | `UserScript: Make a Cross Spectra plot <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_ 
-    | `Grid-Stat: Verification of TC forecasts against merged TDR data <../generated/model_applications/s2s/UserScript_obsPrecip_obsOnly_CrossSpectraPlot.html>`_ 
+    | `UserScript: Compute Cross Spectra and Make a Plot <../generated/model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra.html>`__ 
+    | `Grid-Stat: Verification of TC forecasts against merged TDR data <../generated/model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.html>`_ 
     | `UserScript: Calculate the Difficulty Index <../generated/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.html>`_
     | `UserScript: Make zonal and meridonial means <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_Stratosphere.html>`_
 
@@ -282,7 +282,7 @@ METplus Components Python Requirements
 
   Use Case:
     | `UserScript: Make a Hovmoeller plot  <../generated/model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.html>`_  
-    | `UserScript: Make a Cross Spectra plot <../generated/model_applications/s2s/UserScript_obsPrecip_obsOnly_CrossSpectraPlot.html>`_  
+    | `UserScript: Compute Cross Spectra and Make a Plot <../generated/model_applications/s2s/UserScript_obsPrecip_obsOnly_CrossSpectraPlot.html>`__  
     | `UserScript: Calculate the Difficulty Index <../generated/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.html>`_ 
     | `TCGen: Genesis Density Function (GDF) and Track Density Function (TDF) <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_
 
@@ -558,13 +558,13 @@ END NEW SECTION
       PcpCombine,
       and WeatherRegime python code
       (eofs)
-      <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime.html>`_ :raw-html:`<br />`
+      <../generated/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.html>`__ :raw-html:`<br />`
       `WeatherRegime Calculation:
       GFS and ERA RegridDataPlane,
       PcpCombine, and
       WeatherRegime python code
       (eofs)
-      <../generated/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.html>`_
+      <../generated/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.html>`__
   * - h5py
     -
     - METplus wrappers
@@ -626,9 +626,9 @@ END NEW SECTION
       interactive visualizations
     - `UserScript:
       Make OMI plot from
-      calculated MJO indices (obs only)
+      calculated MJO indices with ERA obs only 
       (matplotlib)
-      <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_OMI.html>`_  :raw-html:`<br />`
+      <../generated/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.html>`__  :raw-html:`<br />`
       `TCGen:
       Genesis Density Function (GDF)
       and Track Density Function (TDF)
@@ -638,17 +638,17 @@ END NEW SECTION
       Make a Phase Diagram plot
       from input RMM or OMI
       (matplotlib)
-      <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_PhaseDiagram.html>`_  :raw-html:`<br />`
+      <../generated/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_PhaseDiagram.html>`_  :raw-html:`<br />`
       `UserScript:
       Make OMI plot from
-      calculated MJO indices
+      calculated MJO indices with ERA obs and GFS fcst
       (matplotlib)
-      <../generated/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI.html>`_ :raw-html:`<br />`
+      <../generated/model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.html>`__ :raw-html:`<br />`
       `UserScript:
       Make RMM plots from
       calculated MJO indices
       (matplotlib)
-      <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_RMM.html>`_ :raw-html:`<br />`
+      <../generated/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.html>`__ :raw-html:`<br />`
       `CyclonePlotter:
       Extra-TC Tracker and
       Plotting Capabilities
@@ -673,14 +673,14 @@ END NEW SECTION
       (metcalcpy)
       <../generated/model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.html>`_ :raw-html:`<br />`
       `UserScript:
-      Make a Cross Spectra plot
+      Compute Cross Spectra and Make a Plot
       (metcalcpy)
-      <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_ :raw-html:`<br />`
+      <../generated/model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra.html>`__ :raw-html:`<br />`
       `Grid-Stat:
       Verification of TC forecasts
       against merged TDR data
       (metcalcpy)
-      <../generated/model_applications/s2s/UserScript_obsPrecip_obsOnly_CrossSpectraPlot.html>`_  :raw-html:`<br />`
+      <../generated/model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.html>`_  :raw-html:`<br />`
       `UserScript:
       Calculate the Difficulty Index
       (metcalcpy)
@@ -705,9 +705,9 @@ END NEW SECTION
       (metplotpy)
       <../generated/model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.html>`_  :raw-html:`<br />`
       `UserScript:
-      Make a Cross Spectra plot
+      Compute Cross Spectra and Make a Plot
       (metplotpy)
-      <../generated/model_applications/s2s/UserScript_obsPrecip_obsOnly_CrossSpectraPlot.html>`_  :raw-html:`<br />`
+      <../generated/model_applications/s2s/UserScript_obsPrecip_obsOnly_CrossSpectraPlot.html>`__  :raw-html:`<br />`
       `UserScript:
       Calculate the Difficulty Index
       (metplotpy)
@@ -849,13 +849,13 @@ END NEW SECTION
       RegridDataPlane, PcpCombine,
       and WeatherRegime python code
       (pylab)
-      <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime.html>`_  :raw-html:`<br />`
+      <../generated/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.html>`__  :raw-html:`<br />`
       `WeatherRegime Calculation:
       GFS and ERA RegridDataPlane,
       PcpCombine, and WeatherRegime
       python code
       (pylab)
-      <../generated/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.html>`_
+      <../generated/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.html>`__
   * - pymysql
     - >=1.0.2
     - METcalcpy, :raw-html:`<br />`
@@ -985,39 +985,39 @@ END NEW SECTION
       PcpCombine, and
       Blocking python code
       (scipy)
-      <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_Blocking.html>`_ :raw-html:`<br />`
+      <../generated/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_Blocking.html>`_ :raw-html:`<br />`
       `WeatherRegime Calculation:
       RegridDataPlane, PcpCombine, and WeatherRegime python code
       (scipy)
-      <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime.html>`_ :raw-html:`<br />`
+      <../generated/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.html>`__ :raw-html:`<br />`
       `UserScript:
-      Make OMI plot from calculated MJO indices
+      Make OMI plot from calculated MJO indices with ERA obs only
       (obs only) (scipy)
-      <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_OMI.html>`_ :raw-html:`<br />`
+      <../generated/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_OMI.html>`__ :raw-html:`<br />`
       `WeatherRegime Calculation:
       GFS and ERA RegridDataPlane,
       PcpCombine, and
       WeatherRegime python code
       (scipy)
-      <../generated/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.html>`_ :raw-html:`<br />`
+      <../generated/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.html>`__ :raw-html:`<br />`
       `Blocking Calculation:
       GFS and ERA RegridDataPlane,
       PcpCombine, and
       Blocking python code
       (scipy)
-      <../generated/model_applications/s2s/UserScript_fcstGFS_obsERA_Blocking.html>`_ :raw-html:`<br />`
+      <../generated/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.html>`_ :raw-html:`<br />`
       `UserScript:
       Make a Phase Diagram plot from input RMM or OMI
       (scipy)
-      <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_PhaseDiagram.html>`_ :raw-html:`<br />`
+      <../generated/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_PhaseDiagram.html>`__ :raw-html:`<br />`
       `UserScript:
-      Make OMI plot from calculated MJO indices
+      Make OMI plot from calculated MJO indices with ERA obs and GFS fcst
       (scipy)
-      <../generated/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI.html>`_ :raw-html:`<br />`
+      <../generated/model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.html>`__ :raw-html:`<br />`
       `UserScript:
       Make RMM plots from calculated MJO indices
       (scipy)
-      <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_RMM.html>`_
+      <../generated/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.html>`__
   * - sklearn
     - 
     - METplus wrappers
@@ -1028,11 +1028,11 @@ END NEW SECTION
     - `WeatherRegime Calculation:
       RegridDataPlane, PcpCombine, and WeatherRegime python code
       (sklearn)
-      <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime.html>`_ :raw-html:`<br />`
+      <../generated/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.html>`__ :raw-html:`<br />`
       `WeatherRegime Calculation:
       GFS and ERA RegridDataPlane, PcpCombine, and WeatherRegime python code
       (sklearn)
-      <../generated/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.html>`_
+      <../generated/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.html>`__
   * - xarray
     - >=2023.1.0
     - METplus wrappers, :raw-html:`<br />`
