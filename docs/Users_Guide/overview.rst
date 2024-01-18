@@ -311,7 +311,7 @@ METplus Components Python Requirements
     | https://github.com/SciTools/nc-time-axis
 
   Description:
-    Extension to cftime \**REQUIRES Python 3.7
+    Extension to cftime - **REQUIRES Python 3.7**
 
 NEW SECTION
 
