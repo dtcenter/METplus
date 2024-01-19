@@ -1,6 +1,6 @@
 """
-GridStat: Cloud Fractions with Neighborhood and Probabilities
-=============================================================
+GridStat: Cloud Fractions Using GFS and ERA5 Data
+=================================================
 
 model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac.conf
 
