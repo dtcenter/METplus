@@ -32,7 +32,9 @@ derived_series_1:
   # The first line is the top portion (left side) of the ratio, the second is the bottom (right side), and the
   # third line indicates the type of derived line (i.e. RATIO or DIFF).  This is a list of lists, so remember
   # to have two '-' at the start of the first line ( - - 'model var stat')
-  # RRFS_GEFS_GF.SPP.SPPT model.
+  #
+  # RRFS_GEFS_GF.SPP.SPPT model for temperature and the SPREAD_PLUS_OERR and RMSE statistics.
+  #
 - - RRFS_GEFS_GF.SPP.SPPT TMP SPREAD_PLUS_OERR
   - RRFS_GEFS_GF.SPP.SPPT TMP RMSE
   - RATIO
@@ -44,8 +46,8 @@ dump_points_2: 'False'
 event_equal: 'False'
 fcst_var_val_1:
   # Specify the variable name and the statistic(s) of interest.
-  # This will generate one line of the spread_plus_oerr values for TMP and a
-  # line of rmse values for TMP.
+  # This will generate the line for the spread_plus_oerr values for TMP and a
+  # line for rmse values for TMP.
   TMP:
       -  SPREAD_PLUS_OERR
       -  RMSE
