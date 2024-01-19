@@ -1,12 +1,15 @@
-output_dir: !ENV '${METPLUS_OUTPUT}/output'
+# The REFORMAT_OUTPUT_BASE and REFORMAT_INPUT_BASE are defined in the
+# UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot.conf file
+#
+output_dir: !ENV '${REFORMAT_OUTPUT_BASE}'
 output_filename: ensemble_stat_ecnt.data
 line_type: ECNT
-input_data_dir: !ENV '${METPLUS_DATA}/ECNT'
+input_data_dir: !ENV '${REFORMAT_INPUT_BASE}'
 
-# Do not modify the settings for the log_directory and log_filename.
+# !!! DO NOT modify the settings for the log_directory and log_filename.!!!
 # The METdataio METreformat code is expecting values for these settings even though the log
 # messages are in the METplus logfile.
-log_directory: !ENV '${METPLUS_OUTPUT}/output'
+log_directory: !ENV '${REFORMAT_OUTPUT_BASE}'
 log_filename: 'ecnt_reformat.log'
 
 # Log levels are: INFO, DEBUG, WARNING, ERROR.

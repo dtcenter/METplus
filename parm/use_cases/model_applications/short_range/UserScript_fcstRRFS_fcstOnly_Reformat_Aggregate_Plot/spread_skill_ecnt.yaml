@@ -215,7 +215,7 @@ plot_disp:
 - 'True'
 
 
-plot_filename:  !ENV '${METPLUS_OUTPUT}/output/spread_skill_ecnt.png'
+plot_filename:  !ENV '${PLOT_INPUT_BASE}/spread_skill_ecnt.png'
 plot_height: 8.5
 plot_res: 72
 plot_stat: median
@@ -278,7 +278,7 @@ show_signif:
 - 'False'
 
 
-stat_input: !ENV '${METPLUS_OUTPUT}/output/ensemble_stat_ecnt.data'
+stat_input: !ENV '${PLOT_INPUT_BASE}/ensemble_stat_ecnt.data'
 sync_yaxes: 'False'
 title: Ensemble spread skill line plots ECNT data (reformatted MET data)
 title_align: 0.5
@@ -341,7 +341,7 @@ show_legend:
 
 # Default logging is ERROR and to stdout.  Omit the log_filename and log_level setting name and value if
 # to use default settings.
-log_filename: !ENV '${METPLUS_OUTPUT}/output/spread_skill_ecnt.log'
+log_filename: !ENV '${PLOT_INPUT_BASE}/spread_skill_ecnt.log'
 log_level: INFO
 
 # 0-value on the x-axis is to the far left.
