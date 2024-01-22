@@ -755,16 +755,20 @@ text readable.  To create a line break use :code:`:raw-html:`<br />``. See
 Column Number 37-38 in the first column of 
 `Table 13.8 Format information for SSVAR <https://met.readthedocs.io/en/latest/Users_Guide/ensemble-stat.html#id8>`_ 
 as an example. View the `raw RST <https://raw.githubusercontent.com/dtcenter/MET/main_v11.1/docs/Users_Guide/ensemble-stat.rst>`__,
-searching for "FBAR_NCL", which shows :code:`FBAR_NCL, `:raw-html:`<br />`` FBAR_NCU`.
+searching for "FBAR_NCL", which shows
+
+.. code-block:: none
+
+  FBAR_NCL, :raw-html:`<br />` FBAR_NCU
 
 Using CSV Files to Create Tables
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 It can be easier to create a table in a spreadsheet than through RST syntax.
-A CSV file (comma-separated values) file can be referenced in the RST file
+A CSV (comma-separated values) file can be referenced in the RST file
 using the "csv-table" directive.
 
-For more information see
+For more information, see
 `CSV Files <https://sublime-and-sphinx-guide.readthedocs.io/en/latest/tables.html#csv-files>`_
 and
 `CSV Table <https://docutils.sourceforge.io/docs/ref/rst/directives.html#csv-table-1>`_.
