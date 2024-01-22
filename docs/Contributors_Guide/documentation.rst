@@ -750,21 +750,27 @@ The table will be displayed in the following way:
    * - Row 2, column 1
      - Row 2, column 2
 
-Creating a Line Break in a List Table
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-In some instances, the text in the tables needs to be broken into a couple lines to
-keep the text readable.  To create a line break use :code:`:raw-html:`<br />`` See 
+In some instances, the text in a column of a table needs to wrap to keep the
+text readable.  To create a line break use :code:`:raw-html:`<br />``. See
+Column Number 37-38 in the first column of 
 `Table 13.8 Format information for SSVAR <https://met.readthedocs.io/en/latest/Users_Guide/ensemble-stat.html#id8>`_ 
-line 37-38 as an example. Here is an example in the `raw sphinx <https://raw.githubusercontent.com/dtcenter/MET/main_v11.1/docs/Users_Guide/ensemble-stat.rst>`_. 
+as an example. View the `raw RST <https://raw.githubusercontent.com/dtcenter/MET/main_v11.1/docs/Users_Guide/ensemble-stat.rst>`__,
+searching for "FBAR_NCL", which shows :code:`FBAR_NCL, `:raw-html:`<br />`` FBAR_NCU`.
 
 Using CSV Files to Create Tables
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-As of 2023, using CSV files to create tables hasn't been used in the documentation but
-it could be a useful option for future tables.  See
+It can be easier to create a table in a spreadsheet than through RST syntax.
+A CSV file (comma-separated values) file can be referenced in the RST file
+using the "csv-table" directive.
+
+For more information see
 `CSV Files <https://sublime-and-sphinx-guide.readthedocs.io/en/latest/tables.html#csv-files>`_
-for more information.
+and
+`CSV Table <https://docutils.sourceforge.io/docs/ref/rst/directives.html#csv-table-1>`_.
+
+As of 2023, using CSV files to create tables hasn't been used in the METplus
+documentation.
 
 Converting an Existing Table into a List Table
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -905,17 +911,28 @@ Below is the resulting displayed table:
      - Hayashi
      - 19
 
-Grid Table
-^^^^^^^^^^
+Grid Tables
+^^^^^^^^^^^
 
-Here is an example of a grid table under 
+Grid tables are created by "drawing" the table structure with various symbols,
+via grid-like "ASCII art". Creating grid tables can be cumbersome to create.
+
+This
+`Grid Tables <https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#grid-tables>`_
+documentation indicates that the
+`Emacs table mode <https://table.sourceforge.net/>`_ allows for easier editing
+of grid tables.
+
+An example of the use of a grid table is in the MET Installation Guide under the
+dropdown title **IF THE USER ALREADY HAS THE LIBRARY DEPENDENCIES INSTALLED** in
+the section 
 `External Library Handling in compile_MET_all.sh <https://met.readthedocs.io/en/latest/Users_Guide/installation.html#external-library-handling-in-compile-met-all-sh>`_
-of the MET installation guide, IF THE USER ALREADY HAS THE LIBRARY DEPENDENCIES INSTALLED table.
-This was a difficult table to line up correctly. Please note that one way to force a
-table to use a line break inside of a cell is by inserting an empty line between them. 
-This works in a gridded table. Here is a link to the 
-`raw text <https://raw.githubusercontent.com/dtcenter/MET/main_v11.1/docs/Users_Guide/installation.rst>`_.
-If these items weren't separated by an empty line, they wouldn't be on separate lines.
+
+To force a grid table to use a line break inside of a cell so that the text will
+wrap, insert an empty line between the text to be wrapped.  View the
+`raw RST <https://raw.githubusercontent.com/dtcenter/MET/latest/docs/Users_Guide/installation.rst>`_,
+searching for "IF THE USER ALREADY HAS THE LIBRARY DEPENDENCIES INSTALLED".
+
 
 PrettyTable
 ^^^^^^^^^^^
@@ -1060,10 +1077,36 @@ Testing RST Formatting in an Online Editor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 It can be time consuming to wait for ReadTheDocs to build. To quickly test how
-the text will display, use the 
+the RST will be displayed, use the 
 `Online Sphinx Editor <https://www.tutorialspoint.com/online_restructure_editor.php>`_.
-Click on 'Execute' to view the output of the documentation
-in the 'Result' window.
+Click on 'Execute' to view the rendered documentation in the 'Result' window.
+
+WARNING: Duplicate explicit target name
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+It may be necessary or desirable to have two links with the same name,
+for example, when referring to a METplus Use Case. However, using links
+with the same name can result in the "WARNING: Duplicate explicit target name".
+
+To resolve this warning, first, determine if it is possible and makes sense
+to distinguish the name of the link, and change the name of the link. If it
+is best to use the same link name,
+`anonymous hyperlinks <https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#anonymous-hyperlinks>`__
+can be used. Anonymous hyperlink references are specified with two underscores
+instead of one.  For example, instead of the typical link syntax
+
+.. code-block:: none
+
+  `Link text <link_URL>`_
+
+use two underscores at the end of the formatting, like this:
+
+.. code-block:: none
+
+  `Link text <link_URL>`__
+
+See `anonymous hyperlinks <https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#anonymous-hyperlinks>`__
+for more information. 
 
 Escape Characters
 ^^^^^^^^^^^^^^^^^
