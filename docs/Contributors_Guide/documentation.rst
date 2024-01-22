@@ -756,7 +756,7 @@ Creating a Line Break in a List Table
 In some instances, the text in the tables needs to be broken into a couple lines to
 keep the text readable.  To create a line break use :code:`:raw-html:`<br />`` See 
 `Table 13.8 Format information for SSVAR <https://met.readthedocs.io/en/latest/Users_Guide/ensemble-stat.html#id8>`_ 
-line 37-38 as an example. Here is an example in the `raw sphinx <https://raw.githubusercontent.com/dtcenter/MET/latest/docs/Users_Guide/ensemble-stat.rst>`_. 
+line 37-38 as an example. Here is an example in the `raw sphinx <https://raw.githubusercontent.com/dtcenter/MET/main_v11.1/docs/Users_Guide/ensemble-stat.rst>`_. 
 
 Using csv Files to Create Tables
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -914,7 +914,7 @@ of the MET installation guide, IF THE USER ALREADY HAS THE LIBRARY DEPENDENCIES 
 This was a difficult table to line up correctly. Please note that that one way to force 
 table to use line break inside a cell is inserting an empty line between them. 
 This works in a gridded table. Here is a link to the 
-`raw text <https://github.com/dtcenter/MET/blob/latest/docs/Users_Guide/installation.rst>`_.
+`raw text <https://raw.githubusercontent.com/dtcenter/MET/main_v11.1/docs/Users_Guide/installation.rst>`_.
 
 PrettyTable
 ^^^^^^^^^^^
