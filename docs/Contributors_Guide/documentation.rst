@@ -755,15 +755,15 @@ Creating a Line Break in a List Table
 
 In some instances, the text in the tables needs to be broken into a couple lines to
 keep the text readable.  To create a line break use :code:`:raw-html:`<br />`` See 
-`Table 13.8 Format information for SSVAR <https://met.readthedocs.io/en/latest/Users_Guide/ensemble-stat.html#id8>_` 
-line 37-38 as an example. Here is an example in the `raw sphinx <https://raw.githubusercontent.com/dtcenter/MET/latest/docs/Users_Guide/ensemble-stat.rst>_`. 
+`Table 13.8 Format information for SSVAR <https://met.readthedocs.io/en/latest/Users_Guide/ensemble-stat.html#id8>`_ 
+line 37-38 as an example. Here is an example in the `raw sphinx <https://raw.githubusercontent.com/dtcenter/MET/latest/docs/Users_Guide/ensemble-stat.rst>`_. 
 
 Using csv Files to Create Tables
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 As of 2023, using csv files to create tables hasn't been used in the documentation but
-it could be a useful option for future tables.  See 
-`CSV Files <https://sublime-and-sphinx-guide.readthedocs.io/en/latest/tables.html#csv-files>_`
+it could be a useful option for future tables.  See
+`CSV Files <https://sublime-and-sphinx-guide.readthedocs.io/en/latest/tables.html#csv-files>`_
 for more information.
 
 Converting an Existing Table into a List Table
@@ -905,6 +905,16 @@ Below is the resulting displayed table:
      - Hayashi
      - 19
 
+Grid Table
+^^^^^^^^^^
+
+Here is an example of a grid table under 
+`External Library Handling in compile_MET_all.sh <https://met.readthedocs.io/en/latest/Users_Guide/installation.html#external-library-handling-in-compile-met-all-sh>`_
+of the MET installation guide, IF THE USER ALREADY HAS THE LIBRARY DEPENDENCIES INSTALLED table.
+This was a difficult table to line up correctly. Please note that that one way to force 
+table to use line break inside a cell is inserting an empty line between them. 
+This works in a gridded table. Here is a link to the 
+`raw text <https://github.com/dtcenter/MET/blob/latest/docs/Users_Guide/installation.rst>`_.
 
 PrettyTable
 ^^^^^^^^^^^
