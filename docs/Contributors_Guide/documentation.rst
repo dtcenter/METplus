@@ -926,7 +926,7 @@ of grid tables.
 An example of the use of a grid table is in the MET Installation Guide under the
 dropdown title **IF THE USER ALREADY HAS THE LIBRARY DEPENDENCIES INSTALLED** in
 the section 
-`External Library Handling in compile_MET_all.sh <https://met.readthedocs.io/en/latest/Users_Guide/installation.html#external-library-handling-in-compile-met-all-sh>`_
+`External Library Handling in compile_MET_all.sh <https://met.readthedocs.io/en/latest/Users_Guide/installation.html#external-library-handling-in-compile-met-all-sh>`_.
 
 To force a grid table to use a line break inside of a cell so that the text will
 wrap, insert an empty line between the text to be wrapped.  View the
