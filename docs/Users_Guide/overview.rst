@@ -175,7 +175,7 @@ METplus Components Python Requirements
     Empirical orthogonal functions analysis of spatial-temporal data
     
   Use Cases: 
-    | `WeatherRegime Calculation: RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.html>`__ :raw-html:`<br />`
+    | `WeatherRegime Calculation: RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.html>`__
     | `WeatherRegime Calculation: GFS and ERA RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.html>`__
 
 .. dropdown:: h5py
