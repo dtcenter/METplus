@@ -559,8 +559,8 @@ See
 for more information.
 
 
-Linking to METplus Use Case
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Linking to METplus Use Cases
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Linking to METplus Use Cases must be done with an external web link. Since the
 HTML file is generated from a Python script, the `:ref:` role can’t be used. 
@@ -750,11 +750,15 @@ The table will be displayed in the following way:
    * - Row 2, column 1
      - Row 2, column 2
 
+Line Breaks in List Tables
+""""""""""""""""""""""""""
+
 In some instances, the text in a column of a table needs to wrap to keep the
 text readable.  To create a line break use :code:`:raw-html:`<br />``. See
 Column Number 37-38 in the first column of 
 `Table 13.8 Format information for SSVAR <https://met.readthedocs.io/en/latest/Users_Guide/ensemble-stat.html#id8>`_ 
-as an example. View the `raw RST <https://raw.githubusercontent.com/dtcenter/MET/main_v11.1/docs/Users_Guide/ensemble-stat.rst>`__,
+as an example. View the 
+`raw RST <https://raw.githubusercontent.com/dtcenter/MET/main_v11.1/docs/Users_Guide/ensemble-stat.rst>`__,
 searching for "FBAR_NCL", which shows
 
 .. code-block:: none
