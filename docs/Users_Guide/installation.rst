@@ -61,6 +61,8 @@ The following software is required to run METplus Wrappers:
     - convert (ImageMagick) utility - 
       if generating images from the Postscript output
 
+.. _python_package_requirements:
+      
 Python Package Requirements
 ---------------------------
 
