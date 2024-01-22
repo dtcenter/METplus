@@ -758,10 +758,10 @@ keep the text readable.  To create a line break use :code:`:raw-html:`<br />`` S
 `Table 13.8 Format information for SSVAR <https://met.readthedocs.io/en/latest/Users_Guide/ensemble-stat.html#id8>`_ 
 line 37-38 as an example. Here is an example in the `raw sphinx <https://raw.githubusercontent.com/dtcenter/MET/main_v11.1/docs/Users_Guide/ensemble-stat.rst>`_. 
 
-Using csv Files to Create Tables
+Using CSV Files to Create Tables
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-As of 2023, using csv files to create tables hasn't been used in the documentation but
+As of 2023, using CSV files to create tables hasn't been used in the documentation but
 it could be a useful option for future tables.  See
 `CSV Files <https://sublime-and-sphinx-guide.readthedocs.io/en/latest/tables.html#csv-files>`_
 for more information.
@@ -911,10 +911,11 @@ Grid Table
 Here is an example of a grid table under 
 `External Library Handling in compile_MET_all.sh <https://met.readthedocs.io/en/latest/Users_Guide/installation.html#external-library-handling-in-compile-met-all-sh>`_
 of the MET installation guide, IF THE USER ALREADY HAS THE LIBRARY DEPENDENCIES INSTALLED table.
-This was a difficult table to line up correctly. Please note that that one way to force 
-table to use line break inside a cell is inserting an empty line between them. 
+This was a difficult table to line up correctly. Please note that one way to force a
+table to use a line break inside of a cell is by inserting an empty line between them. 
 This works in a gridded table. Here is a link to the 
 `raw text <https://raw.githubusercontent.com/dtcenter/MET/main_v11.1/docs/Users_Guide/installation.rst>`_.
+If these items weren't separated by an empty line, they wouldn't be on separate lines.
 
 PrettyTable
 ^^^^^^^^^^^
@@ -1060,8 +1061,8 @@ Testing RST Formatting in an Online Editor
 
 It can be time consuming to wait for ReadTheDocs to build. To quickly test how
 the text will display, use the 
-`Online Sphinx Editor <https://www.tutorialspoint.com/online_restructure_editor.php>`_
-can be used.  Click on 'Execute' to view the output of the documentation
+`Online Sphinx Editor <https://www.tutorialspoint.com/online_restructure_editor.php>`_.
+Click on 'Execute' to view the output of the documentation
 in the 'Result' window.
 
 Escape Characters
