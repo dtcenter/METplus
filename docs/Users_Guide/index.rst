@@ -88,7 +88,7 @@ is sponsored by NSF.
    glossary
    references
    statistics_list
-
+   appendixA
 ..
    Indices and tables
    ==================
