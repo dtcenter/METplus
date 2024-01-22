@@ -750,6 +750,21 @@ The table will be displayed in the following way:
    * - Row 2, column 1
      - Row 2, column 2
 
+Creating a Line Break in a List Table
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In some instances, the text in the tables needs to be broken into a couple lines to
+keep the text readable.  To create a line break use :code:`:raw-html:`<br />`` See 
+`Table 13.8 Format information for SSVAR <https://met.readthedocs.io/en/latest/Users_Guide/ensemble-stat.html#id8>_` 
+line 37-38 as an example. Here is an example in the `raw sphinx <https://raw.githubusercontent.com/dtcenter/MET/latest/docs/Users_Guide/ensemble-stat.rst>_`. 
+
+Using csv Files to Create Tables
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+As of 2023, using csv files to create tables hasn't been used in the documentation but
+it could be a useful option for future tables.  See 
+`CSV Files <https://sublime-and-sphinx-guide.readthedocs.io/en/latest/tables.html#csv-files>_`
+for more information.
 
 Converting an Existing Table into a List Table
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1034,17 +1049,10 @@ Testing RST Formatting in an Online Editor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 It can be time consuming to wait for ReadTheDocs to build. To quickly test how
-something will display formatting, this
-`Online Sphinx Editor <http://seneca.rap.ucar.edu:5000/>`_
-can be used. Please note that in order to use this editor, users must have
-access to the machine **seneca** and the UCAR VPN.  This is not a secure
-website (note that it begins with "http" and not "https"). A user must be
-logged into the UCAR VPN to use this editor. If the editor is not displayed,
-please try using a different browser.
-
-Thank you to 
-`livesphinx <https://github.com/faust93/livesphinx>`_
-for providing our team with the code to run this Online Sphinx Editor.
+the text will display, use the 
+`Online Sphinx Editor <https://www.tutorialspoint.com/online_restructure_editor.php>`_
+can be used.  Click on 'Execute' to view the output of the documentation
+in the 'Result' window.
 
 Escape Characters
 ^^^^^^^^^^^^^^^^^
