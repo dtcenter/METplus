@@ -41,11 +41,13 @@ researchers to test their own enhancements to models and providing a
 capability for the DTC to evaluate the strengths and weaknesses of
 advances in NWP prior to operational implementation.
 
-METplus Wrappers will also be available to DTC visitors and the NOAA Unified Forecast System (UFS) and NCAR System for Integrated Modeling of the Atmosphere (SIMA) modeling communities for testing and evaluation of new model capabilities,
-applications in new environments, and so on. The METplus Wrappers
-release schedule is coincident with the MET release schedule and the
-METplus Wrappers major release number is six less than the MET major
-release number (e.g. MET 8.X is released with METplus Wrappers 2.X).
+METplus Wrappers will also be available to DTC visitors and the NOAA
+Unified Forecast System (UFS) and NCAR System for Integrated Modeling
+of the Atmosphere (SIMA) modeling communities for testing and evaluation
+of new model capabilities, applications in new environments, and so on.
+The METplus Wrappers release schedule is coincident with the MET release
+schedule and the METplus Wrappers major release number is six less than
+the MET major release number (e.g. MET 8.X is released with METplus Wrappers 2.X).
 
 METplus Wrappers goals and design philosophy
 ============================================
@@ -67,7 +69,8 @@ their verification environments. Wrappers can be run individually, or as
 a group of wrappers that represent a sequence of MET processes. New
 wrappers can readily be added to the METplus Wrappers package due to
 this modular design. Currently, METplus Wrappers can easily be applied
-by any user on their own computer platform that supports Python 3.8.  We have deprecated support to Python 2.7.
+by any user on their own computer platform that supports Python 3.10.
+We have deprecated support to Python 2.7.
 
 The METplus Wrappers code and documentation is maintained by the DTC in
 Boulder, Colorado. METplus Wrappers is freely available to the modeling,

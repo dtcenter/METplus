@@ -1,7 +1,5 @@
 .. _components_python_packages:
 
-#.. _python_requirements_table:
-
 *********************************************
 Appendix A METplus Components Python Packages
 *********************************************
@@ -13,11 +11,11 @@ The information below is intended to be an overview of the Python package
 requirements for METplus (including use cases), MET Python Embedding,
 METcalcpy, METplotpy, and METdataio.
 
-.. note:: Many of the Python packages listed below are OPTIONAL and not required. 
+.. note:: Many of the Python packages listed below are **OPTIONAL** and not required. 
 
 For information regarding the Python package requirements for each of the
-METplus components, please see the documentation for the desired METplus
-component listed below. Please note that the documentation for the METplus
+METplus components, see the documentation links below for the desired
+METplus component. Please note that the documentation for the METplus
 Use Cases lists the required Python packages in the individual Use Cases
 documentation.
 	  
