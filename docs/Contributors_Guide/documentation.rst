@@ -919,15 +919,14 @@ Grid Tables
 ^^^^^^^^^^^
 
 Grid tables are created by "drawing" the table structure with various symbols,
-via grid-like "ASCII art". Creating grid tables can be cumbersome to create.
-
-This
+via grid-like "ASCII art". Creating grid tables can be cumbersome to create,
+however the
 `Grid Tables <https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#grid-tables>`_
 documentation indicates that the
 `Emacs table mode <https://table.sourceforge.net/>`_ allows for easier editing
 of grid tables.
 
-An example of the use of a grid table is in the MET Installation Guide under the
+An example of the use of a grid table can be found in the MET Installation Guide under the
 dropdown title **IF THE USER ALREADY HAS THE LIBRARY DEPENDENCIES INSTALLED** in
 the section 
 `External Library Handling in compile_MET_all.sh <https://met.readthedocs.io/en/latest/Users_Guide/installation.html#external-library-handling-in-compile-met-all-sh>`_.
