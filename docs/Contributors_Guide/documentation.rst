@@ -953,7 +953,7 @@ the section
 
 To force a grid table to use a line break inside of a cell so that the text will
 wrap, insert an empty line between the text to be wrapped.  View the
-`raw RST <https://raw.githubusercontent.com/dtcenter/MET/main_v11.1/docs/Users_Guide/installation.rst>`_,
+`raw RST <https://raw.githubusercontent.com/dtcenter/MET/main_v12.1/docs/Users_Guide/installation.rst>`_,
 searching for "IF THE USER ALREADY HAS THE LIBRARY DEPENDENCIES INSTALLED".
 
 
