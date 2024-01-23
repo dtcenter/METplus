@@ -561,6 +561,10 @@ class RuntimeFreqWrapper(CommandBuilder):
         # loop over all inputs and write a file list file for each
         list_file_dict = {}
         for identifier, input_files in all_input_files.items():
+            if len(input_files) == 1:
+                list_file_dict[identifier] = input_files[0]
+                continue
+
             list_file_name = self.get_list_file_name(time_info, identifier)
             list_file_path = self.write_list_file(list_file_name,
                                                   input_files,

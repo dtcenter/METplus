@@ -145,25 +145,28 @@ def test_get_all_files_and_subset(metplus_config, time_info, expected_subset):
                                            filename))
 
     wrapper = GridDiagWrapper(config)
-    assert(wrapper.get_all_files())
+    assert wrapper.get_all_files()
 
     # convert list of lists into a single list to compare to expected results
 
     actual_files = [item['input0'] for item in wrapper.c_dict['ALL_FILES']]
     actual_files = [item for sub in actual_files for item in sub]
-    assert(actual_files == expected_files)
+    assert actual_files == expected_files
 
     file_list_dict = wrapper.subset_input_files(time_info)
     assert file_list_dict
-    with open(file_list_dict['input0'], 'r') as file_handle:
-        file_list = file_handle.readlines()
+    if len(expected_subset) == 1:
+        file_list = [file_list_dict['input0']]
+    else:
+        with open(file_list_dict['input0'], 'r') as file_handle:
+            file_list = file_handle.readlines()
 
-    file_list = file_list[1:]
-    assert(len(file_list) == len(expected_subset))
+        file_list = file_list[1:]
+        assert len(file_list) == len(expected_subset)
 
     for actual_file, expected_file in zip(file_list, expected_subset):
         actual_file = actual_file.strip()
-        assert(os.path.basename(actual_file) == expected_file)
+        assert os.path.basename(actual_file) == expected_file
 
 
 @pytest.mark.parametrize(

@@ -87,9 +87,9 @@ def set_minimum_config_settings(config):
     config.set('config', 'FCST_SERIES_ANALYSIS_INPUT_DIR', fcst_dir)
     config.set('config', 'OBS_SERIES_ANALYSIS_INPUT_DIR', obs_dir)
     config.set('config', 'FCST_SERIES_ANALYSIS_INPUT_TEMPLATE',
-               '{init?fmt=%Y%m%d%H}/fcst_file_F{lead?fmt=%3H}')
+               '{init?fmt=%Y%m%d%H}/fcst_file_F{lead?fmt=%3H},{init?fmt=%Y%m%d%H}/fcst_file_F{lead?fmt=%3H}')
     config.set('config', 'OBS_SERIES_ANALYSIS_INPUT_TEMPLATE',
-               '{valid?fmt=%Y%m%d%H}/obs_file')
+               '{valid?fmt=%Y%m%d%H}/obs_file,{valid?fmt=%Y%m%d%H}/obs_file')
     config.set('config', 'SERIES_ANALYSIS_OUTPUT_DIR',
                '{OUTPUT_BASE}/GridStat/output')
     config.set('config', 'SERIES_ANALYSIS_OUTPUT_TEMPLATE',
@@ -352,9 +352,9 @@ def set_minimum_config_settings(config):
              'SERIES_ANALYSIS_MASK_POLY': 'MET_BASE/poly/EAST.poly',
          },
          {'METPLUS_MASK_DICT': 'mask = {grid = "FULL";poly = "MET_BASE/poly/EAST.poly";}'}),
-        # check tags are resolved and animation config works
+        # check animation config works
         ({
-             'FCST_VAR1_LEVELS': 'A0{init?fmt=3}',
+             'FCST_VAR1_LEVELS': 'A03',
              'SERIES_ANALYSIS_GENERATE_PLOTS': 'True',
              'SERIES_ANALYSIS_GENERATE_ANIMATIONS': 'True',
              'CONVERT_EXE': 'animation_exe'
@@ -362,7 +362,7 @@ def set_minimum_config_settings(config):
          {},),
         # check 'BOTH_*' and '*INPUT_FILE_LIST' config 
         ({'SERIES_ANALYSIS_REGRID_TO_GRID': 'FCST',
-          'BOTH_SERIES_ANALYSIS_INPUT_TEMPLATE': 'True',
+          'BOTH_SERIES_ANALYSIS_INPUT_TEMPLATE': 'True,True',
           },
          {'METPLUS_REGRID_DICT': 'regrid = {to_grid = FCST;}'}),
         # TODO: Fix these tests to include file list paths

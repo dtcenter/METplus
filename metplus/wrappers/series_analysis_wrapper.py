@@ -968,8 +968,11 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             be parsed, return (None, None, None)
         """
         # read the file but skip the first line because it contains 'file_list'
-        with open(fcst_path, 'r') as file_handle:
-            files_of_interest = file_handle.readlines()
+        try:
+            with open(fcst_path, 'r') as file_handle:
+                files_of_interest = file_handle.readlines()
+        except FileNotFoundError:
+            return None, None, None
 
         if len(files_of_interest) < 2:
             self.log_error(f"No files found in file list: {fcst_path}")
@@ -1141,8 +1144,11 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         @param templates list of filename templates to use to parse time info
         out of file paths found in file_path file
         """
-        with open(file_path, 'r') as file_handle:
-            file_list = file_handle.read().splitlines()[1:]
+        try:
+            with open(file_path, 'r') as file_handle:
+                file_list = file_handle.read().splitlines()[1:]
+        except FileNotFoundError:
+            return
 
         for file_name in file_list:
             found = False
