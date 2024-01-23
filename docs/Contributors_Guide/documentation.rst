@@ -171,22 +171,21 @@ block.  Other examples of languages that can be used are, for example,
 Code in a Paragraph
 ^^^^^^^^^^^^^^^^^^^
 
-To indicate code within a paragraph, use \:code:\`command to run\`.  
+To refer to code within a paragraph (inline), use 
+`Inline code highlighting <https://www.sphinx-doc.org/en/master/usage/restructuredtext/roles.html#role-code>`_.
+
 For example:
 
-  .. code-block:: ini
+  .. code-block:: none
 
-    This is a paragraph.  Here is a command :code:`cd METplus`.
-    Here is the rest of the paragraph.
+    To compile MET with GRIB2 support, use the :code:`--enable-grib2`
+    option when configuring MET.
 
 It will look like this:
 
-This is a paragraph.  Here is a command :code:`cd METplus`.
-Here is the rest of the paragraph.
+To compile MET with GRIB2 support, use the :code:`--enable-grib2`
+option when configuring MET.
 
-See
-`Sphinx code blocks <https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-code-block>`_
-for more information.
 
 Bold
 ----
