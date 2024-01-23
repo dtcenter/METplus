@@ -773,9 +773,7 @@ In some instances, the text in a column of a table needs to wrap to keep the
 text readable.  To create a line break use :code:`:raw-html:`<br />``. See
 Column Number 37-38 in the first column of 
 `Table 13.8 Format information for SSVAR <https://met.readthedocs.io/en/latest/Users_Guide/ensemble-stat.html#id8>`_ 
-as an example. View the 
-`raw RST <https://raw.githubusercontent.com/dtcenter/MET/main_v12.0/docs/Users_Guide/ensemble-stat.rst>`__,
-searching for "FBAR_NCL", which shows
+as an example. The raw RST for that cell is:
 
 .. code-block:: none
 
@@ -952,9 +950,69 @@ the section
 `External Library Handling in compile_MET_all.sh <https://met.readthedocs.io/en/latest/Users_Guide/installation.html#external-library-handling-in-compile-met-all-sh>`_.
 
 To force a grid table to use a line break inside of a cell so that the text will
-wrap, insert an empty line between the text to be wrapped.  View the
-`raw RST <https://raw.githubusercontent.com/dtcenter/MET/main_v12.0/docs/Users_Guide/installation.rst>`_,
-searching for "IF THE USER ALREADY HAS THE LIBRARY DEPENDENCIES INSTALLED".
+wrap, insert an empty line between the text to be wrapped.  The raw RST for this table
+looks like:
+
+.. code-block:: none
+
+    +-------------------+--------------------------------+------------------------------+
+    | **Feature**       | **Configuration Option**       | **Environment Variables**    |
+    +===================+================================+==============================+
+    | *Always*          |                                | MET_BUFRLIB,                 |
+    |                   |                                |                              |
+    | *Required*        |                                | BUFRLIB_NAME,                |
+    |                   |                                |                              |
+    |                   |                                | MET_PROJ,                    |
+    |                   |                                |                              |
+    |                   |                                | MET_HDF5,                    |
+    |                   |                                |                              |
+    |                   |                                | MET_NETCDF,                  |
+    |                   |                                |                              |
+    |                   |                                | MET_GSL                      |
+    +-------------------+--------------------------------+------------------------------+
+    | *Optional*        | :code:`--enable-all` or        | MET_GRIB2CLIB,               |
+    |                   |                                |                              |
+    | GRIB2             | :code:`--enable-grib2`         | MET_GRIB2CINC,               |        
+    |                   |                                |                              |
+    | Support           |                                | GRIB2CLIB_NAME,              |
+    |                   |                                |                              |
+    |                   |                                | LIB_JASPER,                  |
+    |                   |                                |                              |
+    |                   |                                | LIB_PNG,                     |
+    |                   |                                |                              |
+    |                   |                                | LIB_Z                        |
+    +-------------------+--------------------------------+------------------------------+
+    | *Optional*        | :code:`--enable-all` or        | MET_PYTHON_BIN_EXE,          |
+    |                   |                                |                              |
+    | Python            | :code:`--enable-python`        | MET_PYTHON_CC,               |
+    |                   |                                |                              |
+    | Support           |                                | MET_PYTHON_LD                |
+    +-------------------+--------------------------------+------------------------------+
+    | *Optional*        | :code:`--enable-all` or        | MET_ATLAS,                   |
+    |                   |                                |                              |
+    | Unstructured Grid | :code:`--enable-ugrid`         | MET_ECKIT                    |
+    |                   |                                |                              |
+    | Support           |                                |                              |
+    +-------------------+--------------------------------+------------------------------+
+    | *Optional*        | :code:`--enable-all` or        | MET_HDF                      |
+    |                   |                                |                              |
+    | LIDAR2NC          | :code:`--enable-lidar2nc`      |                              |
+    |                   |                                |                              |
+    | Support           |                                |                              |
+    +-------------------+--------------------------------+------------------------------+
+    | *Optional*        | :code:`--enable-all` or        | MET_HDF,                     |
+    |                   |                                |                              |
+    | MODIS             | :code:`--enable-modis`         | MET_HDFEOS                   |
+    |                   |                                |                              |
+    | Support           |                                |                              |
+    +-------------------+--------------------------------+------------------------------+
+    | *Optional*        | :code:`--enable-all` or        | MET_CAIRO,                   |
+    |                   |                                |                              |
+    | MODE Graphics     | :code:`--enable-mode_graphics` | MET_FREETYPE                 |
+    |                   |                                |                              |
+    | Support           |                                |                              |
+    +-------------------+--------------------------------+------------------------------+
+
 
 
 PrettyTable
