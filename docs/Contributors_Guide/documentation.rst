@@ -304,7 +304,7 @@ resulting in the following displayed text:
 
 An example of the usage of footnotes in reStructured text can be seen in the
 `METplus docs/index.rst file <https://raw.githubusercontent.com/dtcenter/METplus/develop/docs/index.rst>`_
-and displayed in ReadTheDocs `here <https://metplus.readthedocs.io/en/develop/index.html>`_.
+and displayed in Read The Docs `here <https://metplus.readthedocs.io/en/develop/index.html>`_.
      
 See
 `Sphinx footnotes <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#footnotes>`_
@@ -1099,7 +1099,7 @@ Troubleshooting
 Testing RST Formatting in an Online Editor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-It can be time consuming to wait for ReadTheDocs to build. To quickly test how
+It can be time consuming to wait for Read the Docs to build. To quickly test how
 the RST will be displayed, use the 
 `Online Sphinx Editor <https://www.tutorialspoint.com/online_restructure_editor.php>`_.
 Click on 'Execute' to view the rendered documentation in the 'Result' window.
