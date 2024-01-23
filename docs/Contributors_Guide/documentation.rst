@@ -168,6 +168,18 @@ In the example above, `ini` is used as the language specified for the code
 block.  Other examples of languages that can be used are, for example,
 `yaml`, `javascript`, `html`, `shell`, `xml`, and `none`.
 
+To indicate code within a paragraph, use \`:code:`.  For instance:
+
+  .. code-block:  ini
+
+    This is a paragraph.  Here is a command `:code:cd METplus`.
+    Here is the rest of the paragraph.
+
+It will look like this:
+
+This is a paragraph.  Here is a command `:code:cd METplus`.
+Here is the rest of the paragraph.
+
 See
 `Sphinx code blocks <https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-code-block>`_
 for more information.
