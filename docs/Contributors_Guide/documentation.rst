@@ -181,7 +181,7 @@ For example:
     To compile MET with GRIB2 support, use the :code:`--enable-grib2`
     option when configuring MET.
 
-It will look like this:
+Results in the following displayed text:
 
 To compile MET with GRIB2 support, use the :code:`--enable-grib2`
 option when configuring MET.
