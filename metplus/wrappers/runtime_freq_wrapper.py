@@ -512,11 +512,17 @@ class RuntimeFreqWrapper(CommandBuilder):
 
         return all_input_files
 
-    def subset_input_files(self, time_info, output_dir=None, leads=None):
+    def subset_input_files(self, time_info, output_dir=None, leads=None,
+                           force_list=False):
         """! Obtain a subset of input files from the c_dict ALL_FILES based on
              the time information for the current run.
 
               @param time_info dictionary containing time information
+              @param output_dir (optional) directory to write file list files.
+               If no directory is provided, files are written to staging dir
+              @param leads (optional) list of forecast leads to consider
+              @param force_list (optional) boolean - if True, write a file list
+               text file even only 1 file was found. Defaults to False.
               @returns dictionary with keys of the input identifier and the
                value is the path to a ascii file containing the list of files
                or None if could not find any files
@@ -561,7 +567,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         # loop over all inputs and write a file list file for each
         list_file_dict = {}
         for identifier, input_files in all_input_files.items():
-            if len(input_files) == 1:
+            if len(input_files) == 1 and not force_list:
                 list_file_dict[identifier] = input_files[0]
                 continue
 

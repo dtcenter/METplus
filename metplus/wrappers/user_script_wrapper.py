@@ -74,7 +74,9 @@ class UserScriptWrapper(RuntimeFreqWrapper):
 
         # create file list text files for the current run time criteria
         # set c_dict to the input file dict to set as environment vars
-        self.c_dict['INPUT_LIST_DICT'] = self.subset_input_files(time_info)
+        self.c_dict['INPUT_LIST_DICT'] = (
+            self.subset_input_files(time_info, force_list=True)
+        )
 
         self.set_environment_variables(time_info)
 
