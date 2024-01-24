@@ -2,11 +2,10 @@
 
 
 import os
-import time
+from time import perf_counter
 import logging
 import yaml
 import metcalcpy.util.read_env_vars_in_config as readconfig
-# from metplotpy.plots import line as Line
 from metplotpy.plots.line import line
 
 def main():
@@ -21,12 +20,14 @@ def main():
         logging.error(exc)
 
     try:
+        start = perf_counter()
         plot = line.Line(settings)
         plot.save_to_file()
-        # plot.show_in_browser()
         plot.write_html()
         plot.write_output_file()
-        # plot.line_logger.info(f"Finished creating line plot: {datetime.now()}")
+        end = perf_counter()
+        execution_time = end - start
+        plot.line_logger.info(f"Finished creating line plot, execution time: {execution_time} seconds")
     except ValueError as val_er:
         print(val_er)
 
