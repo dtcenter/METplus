@@ -170,12 +170,14 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 #
 #   INFO: METplus has successfully finished running.
 #
+#
 # Reformat Output
 #----------------
 #
 # The reformatted ensemble-stat ECNT linetype data should exist in the location specified in the user
 # configuration file (OUTPUT_BASE)
-
+#
+#
 
 
 ##############################################################################
