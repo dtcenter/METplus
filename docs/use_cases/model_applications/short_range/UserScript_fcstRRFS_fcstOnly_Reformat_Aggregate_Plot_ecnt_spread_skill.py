@@ -29,7 +29,7 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 
 #############################################################################
 # External Dependencies
-# --------------------
+# ---------------------
 
 
 
@@ -55,6 +55,9 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 # to the location of the METcalcpy code, and the METPLOTPY_BASE is the full path to the location of the
 # METplotpy code. In addition, define the OUTPUT_BASE, INPUT_BASE, and MET_INSTALL_DIR settings in the user
 # configuration file.
+#
+
+
 ##############################################################################
 # METplus Workflow
 # ----------------
@@ -65,6 +68,7 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 # single directory.
 # The use case loops over three processes: reformatting, aggregating, and plotting.
 #
+
 
 ##############################################################################
 # METplus Configuration
