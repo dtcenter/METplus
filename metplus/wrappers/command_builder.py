@@ -1412,25 +1412,27 @@ class CommandBuilder:
                                  output_dict=self.env_var_dict):
             self.errors += 1
 
-    def get_wrapper_or_generic_config(self, generic_config_name):
+    def get_wrapper_or_generic_config(self, generic_name, var_type='str'):
         """! Check for config variable with <APP_NAME>_ prepended first. If set
         use that value. If not, check for config without prefix.
 
-        @param generic_config_name name of variable to read from config
+        @param generic_name name of variable to read from config
+        @param var_type type of variable to read, e.g. str, bool, int, or float.
+         Default is str.
         @returns value if set or empty string if not
         """
-        wrapper_config_name = f'{self.app_name.upper()}_{generic_config_name}'
-        value = self.config.getstr_nocheck('config',
-                                           wrapper_config_name,
-                                           '')
-
-        # if wrapper specific variable not set, check for generic
-        if not value:
-            value = self.config.getstr_nocheck('config',
-                                               generic_config_name,
-                                               '')
-
-        return value
+        name = self.get_mp_config_name(
+            [f'{self.app_name}_{generic_name}'.upper(), generic_name.upper()]
+        )
+        if not name:
+            return ''
+        if var_type == 'bool':
+            return self.config.getbool('config', name)
+        if var_type == 'float':
+            return self.config.getfloat('config', name)
+        if var_type == 'int':
+            return self.config.getint('config', name)
+        return self.config.getstr('config', name)
 
     def format_field(self, data_type, field_string, is_list=True):
         """! Set {data_type}_FIELD c_dict value to the formatted field string
