@@ -217,7 +217,7 @@ plot_disp:
 - 'True'
 
 
-plot_filename:  !ENV '${PLOT_INPUT_BASE}/spread_skill_ecnt.png'
+plot_filename:  !ENV '${PLOT_INPUT_BASE}/short-range_UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot.png'
 plot_height: 8.5
 plot_res: 72
 plot_stat: median
