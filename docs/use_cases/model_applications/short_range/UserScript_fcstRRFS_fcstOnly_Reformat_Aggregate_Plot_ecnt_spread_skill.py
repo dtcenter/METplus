@@ -79,7 +79,7 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 # with the -c option, i.e. -c parm/use_cases/model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot.conf
 #
 
 #############################################################################
@@ -139,6 +139,9 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 # * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
 # * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
 # * **MET_INSTALL_DIR** - Path to location where MET is installed locally
+# * **METDATAIO_BASE** - Path where METdataio source code is installed locally
+# * **METCALCPY_BASE** - Path where METcalcpy source code is installed locally
+# * **METPLOTPY_BASE** - Path where METplotpy source code is installed locally
 #
 #  and for the [exe] section, you will need to define the location of NON-MET executables.
 #  If the executable is in the user's path, METplus will find it from the name. 
@@ -147,10 +150,14 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 #
 # Example User Configuration File::
 #
-#   [dir]
+#   [config]
 #   INPUT_BASE = /path/to/sample/input/data
 #   OUTPUT_BASE = /path/to/output/dir
 #   MET_INSTALL_DIR = /path/to/met-X.Y
+#   METDATAIO_BASE = /path/to/METdataio
+#   METCALCPY_BASE = /path/to/METcalcpy
+#   METPLOTPY_BASE = /path/to/METplotpy
+#
 #
 #   [exe]
 #   RM = /path/to/rm
@@ -173,12 +180,23 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 #
 # Reformat Output
 #
-#
 # The reformatted ensemble-stat ECNT linetype data should exist in the location specified in the user
-# configuration file (OUTPUT_BASE)
+# configuration file (OUTPUT_BASE).  Verify that the ensemble_stat_ecnt.data file exists.  The file now has all
+# the statistics under the stat_name and stat_value columns, and confidence level values under the
+# following columns:  stat_ncl, stat_ncu, stat_bcl, and stat_bcu
 #
 #
-
+# Aggregation Output
+#
+#
+#
+# Plot Output
+#
+# A spread-skill plot of temperature for the RMSE, SPREAD_PLUS_OERR, and a ratio line of SPREAD_PLUS_OERR/RMSE is
+# created and found in the output location specified in the user configuration file (OUTPUT_BASE).  The plot is named
+# short-range_UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot.png
+#
+#
 
 ##############################################################################
 # Keywords
@@ -196,4 +214,4 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/short_range-UserScript_fcstRRFS_fcstOnly_spread_skill_ecnt.png'
+# sphinx_gallery_thumbnail_path = '_static/short_range-UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.png'
