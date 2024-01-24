@@ -92,7 +92,7 @@
   {
     "category": "marine_and_cryosphere",
     "index_list": "10",
-    "run": false
+    "run": true
   },
   {
     "category": "medium_range",
