@@ -12,6 +12,7 @@ import numpy as np
 import datetime as dt
 import xarray as xr
 import pandas as pd
+from met.point import convert_point_data
 
 #Users are responsible for passing the following arguements at runtime:
 ##input file
@@ -87,6 +88,7 @@ if len(sys.argv[1].split(':')) == 3:
     obs = obs.tolist()
     l_tuple = list(zip(typ,sid,vld,lat,lon,elv,var,lvl,hgt,qc,obs))
     point_data = [list(ele) for ele in l_tuple]
+    met_point_data = convert_point_data(point_data)
 
     print("Data Length:\t" + repr(len(point_data)))
     print("Data Type:\t" + repr(type(point_data)))
