@@ -214,4 +214,4 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/short_range-UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.png'
+# sphinx_gallery_thumbnail_path = '_static/short-range-UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.png'
