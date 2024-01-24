@@ -168,6 +168,10 @@ In the example above, `ini` is used as the language specified for the code
 block.  Other examples of languages that can be used are, for example,
 `yaml`, `javascript`, `html`, `shell`, `xml`, and `none`.
 
+See
+`Sphinx code blocks <https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-code-block>`_
+for more information.
+
 Code in a Paragraph
 ^^^^^^^^^^^^^^^^^^^
 
