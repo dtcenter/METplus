@@ -163,7 +163,7 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 
 ##############################################################################
 # Expected Output
-# ---------------
+# ----------------
 #
 # A successful run will output the following both to the screen and to the logfile, one for the
 # reformat, aggregate, and plot steps of the use case::
@@ -172,7 +172,7 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 #
 #
 # Reformat Output
-#----------------
+#
 #
 # The reformatted ensemble-stat ECNT linetype data should exist in the location specified in the user
 # configuration file (OUTPUT_BASE)
