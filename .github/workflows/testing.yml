@@ -36,19 +36,18 @@ on:
       
   workflow_dispatch:
     inputs:
+      force_met_image:
+        description: 'MET DockerHub repo to force run to use, e.g. met:11.1.0 or met-dev:feature_XYZ_name-PR. Leave this blank to determine repo automatically.'
       repository:
-        description: 'Repository that triggered workflow'
-        required: true
+        description: 'Repository that triggered workflow (used by external repo triggering)'
       sha:
-        description: 'Commit hash that triggered the event'
-        required: true
+        description: 'Commit hash that triggered the event (used by external repo triggering)'
       ref:
-        description: 'Branch that triggered event'
-        required: true
+        description: 'Branch that triggered event (used by external repo triggering)'
       actor:
-        description: 'User that triggered the event'
+        description: 'User that triggered the event (used by external repo triggering)'
       pusher_email:
-        description: 'Email address of user who triggered push event'
+        description: 'Email address of user who triggered push event (used by external repo triggering)'
 
 jobs:
 
@@ -99,7 +98,7 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           EXTERNAL_TRIGGER: ${{ needs.job_control.outputs.external_trigger }}
-          #SET_MET_IMAGE: met:11.0.0
+          SET_MET_IMAGE: ${{ github.event.inputs.force_met_image }}
 
   update_data_volumes:
     name: Docker Setup - Update Data Volumes
