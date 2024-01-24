@@ -9,8 +9,6 @@
 from netCDF4 import Dataset
 import sys
 import numpy as np
-from os import listdir
-from os.path import isfile, join
 import datetime as dt
 import xarray as xr
 import pandas as pd
