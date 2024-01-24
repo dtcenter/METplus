@@ -5,10 +5,11 @@ import os
 import time
 import logging
 import yaml
+
 from METdbLoad.ush.read_data_files import ReadDataFiles
-from METdbLoad.ush.read_load_xml  import XmlLoadFile
+from METdbLoad.ush.read_load_xml import XmlLoadFile
 from METreformat.write_stat_ascii import WriteStatAscii
-import metcalcpy.util.read_env_vars_in_config as readconfig
+from metcalcpy.util import read_env_vars_in_config as readconfig
 
 
 logger = logging.getLogger(__name__)
