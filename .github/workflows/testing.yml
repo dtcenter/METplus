@@ -249,7 +249,7 @@ jobs:
           fi
 
       - name: Merge Artifacts
-        if: ${{ always() && steps.check-for-error-logs.conclusion != 'success' }}
+        if: ${{ always() && steps.check-for-error-logs.conclusion == 'success' }}
         uses: actions/upload-artifact/merge@v4
         with:
           name: error_logs
