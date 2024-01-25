@@ -238,18 +238,19 @@ jobs:
     steps:
       - name: Check for error logs
         id: check-for-error-logs
-        continue-on-error: true
         run: |
           json_data=$(curl -s -H "Authorization: Bearer ${{ github.token }}" \
                  "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs")
           error_log_jobs=($(echo "$json_data" | jq -r '.jobs[] | select(.name | startswith("Use Case Tests")) | .steps[] | select(.name | startswith("Save error logs")) | select(.conclusion | startswith("success"))'))
-          # if no error logs were created, exit non-zero (fail) to skip merge
-          if [ -z "${error_log_jobs}" ]; then
-            exit 1
+          # save output variable to merge error logs if any error logs were created
+          if [ ! -z "${error_log_jobs}" ]; then
+              echo "has_error_logs=true" >> $GITHUB_OUTPUT
+          else
+              echo "has_error_logs=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Merge Artifacts
-        if: ${{ always() && steps.check-for-error-logs.conclusion == 'success' }}
+        if: ${{ steps.check-for-error-logs.outputs.has_error_logs == 'true' }}
         uses: actions/upload-artifact/merge@v4
         with:
           name: error_logs
