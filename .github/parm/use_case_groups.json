@@ -10,21 +10,6 @@
     "run": false
   },
   {
-    "category": "met_tool_wrapper",
-    "index_list": "2",
-    "run": true
-  },
-  {
-    "category": "met_tool_wrapper",
-    "index_list": "7",
-    "run": true
-  },
-  {
-    "category": "met_tool_wrapper",
-    "index_list": "18",
-    "run": true
-  },
-  {
     "category": "air_quality_and_comp",
     "index_list": "0",
     "run": false
