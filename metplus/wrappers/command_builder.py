@@ -198,12 +198,16 @@ class CommandBuilder:
 
         return c_dict
 
-    def clear(self):
+    def clear(self, clear_input_files=True):
         """!Unset class variables to prepare for next run time
+
+        @param clear_input_files If True, clear self.infiles, otherwise do not.
+         Defaults to True.
         """
         self.args = []
         self.input_dir = ""
-        self.infiles = []
+        if clear_input_files:
+            self.infiles = []
         self.outdir = ""
         self.outfile = ""
         self.param = ""

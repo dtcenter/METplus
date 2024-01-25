@@ -202,9 +202,6 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                  '')
             )
 
-            # initialize list path to None for each type
-            c_dict[f'{data_type}_LIST_PATH'] = None
-
             # read and set file type env var for FCST and OBS
             if data_type == 'BOTH':
                 continue
@@ -395,12 +392,6 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         pdp_wrapper = PlotDataPlaneWrapper(self.config,
                                            instance=instance)
         return pdp_wrapper
-
-    def clear(self):
-        """! Call parent's clear function and clear additional values """
-        super().clear()
-        for data_type in ('FCST', 'OBS', 'BOTH'):
-            self.c_dict[f'{data_type}_LIST_PATH'] = None
 
     def run_all_times(self):
         """! Process all run times defined for this wrapper """
@@ -784,10 +775,9 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         # build the command and run series_analysis for each variable
         for var_info in self.c_dict['VAR_LIST']:
             if self.c_dict['USING_BOTH']:
-                self.c_dict['BOTH_LIST_PATH'] = fcst_path
+                self.infiles.append(fcst_path)
             else:
-                self.c_dict['FCST_LIST_PATH'] = fcst_path
-                self.c_dict['OBS_LIST_PATH'] = obs_path
+                self.infiles.extend([fcst_path, obs_path])
 
             add_field_info_to_time_info(time_info, var_info)
 
@@ -837,10 +827,10 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         cmd = self.app_path
 
         if self.c_dict['USING_BOTH']:
-            cmd += f" -both {self.c_dict['BOTH_LIST_PATH']}"
+            cmd += f" -both {self.infiles[0]}"
         else:
-            cmd += f" -fcst {self.c_dict['FCST_LIST_PATH']}"
-            cmd += f" -obs {self.c_dict['OBS_LIST_PATH']}"
+            cmd += f" -fcst {self.infiles[0]}"
+            cmd += f" -obs {self.infiles[1]}"
 
         # add output path
         cmd += f' -out {self.get_output_path()}'

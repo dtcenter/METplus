@@ -63,8 +63,6 @@ class MTDWrapper(CompareGriddedWrapper):
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
         super().__init__(config, instance=instance)
-        self.fcst_file = None
-        self.obs_file = None
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -286,20 +284,15 @@ class MTDWrapper(CompareGriddedWrapper):
                                                    is_directory=True):
                 return
 
-            fcst_file = model_path
             if self.c_dict['SINGLE_RUN']:
                 if self.c_dict.get('SINGLE_DATA_SRC') == 'OBS':
-                    fcst_file = obs_path
+                    self.infiles.append(obs_path)
+                else:
+                    self.infiles.append(model_path)
             else:
-                self.obs_file = obs_path
+                self.infiles.extend([model_path, obs_path])
 
-            self.fcst_file = fcst_file
             self.build()
-
-    def clear(self):
-        super().clear()
-        self.fcst_file = None
-        self.obs_file = None
 
     def get_command(self):
         """! Builds the command to run the MET application
@@ -312,10 +305,9 @@ class MTDWrapper(CompareGriddedWrapper):
             cmd += a + " "
 
         if self.c_dict['SINGLE_RUN']:
-            cmd += '-single ' + self.fcst_file + ' '
+            cmd += f'-single {self.infiles[0]} '
         else:
-            cmd += '-fcst ' + self.fcst_file + ' '
-            cmd += '-obs ' + self.obs_file + ' '
+            cmd += f'-fcst {self.infiles[0]} -obs {self.infiles[1]} '
 
         cmd += '-config ' + self.param + ' '
 
