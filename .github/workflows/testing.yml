@@ -236,6 +236,7 @@ jobs:
     needs: use_case_tests
     if: ${{ always() && needs.use_case_tests.result == 'failure' }}
     steps:
+      - uses: actions/checkout@v4
       - name: Check for error logs
         id: check-for-error-logs
         run: .github/jobs/check_for_error_logs.sh
