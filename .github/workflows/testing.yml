@@ -233,6 +233,7 @@ jobs:
   merge:
     runs-on: ubuntu-latest
     needs: use_case_tests
+    if: ${{ always() }}
     steps:
       - name: Merge Artifacts
         uses: actions/upload-artifact/merge@v4
