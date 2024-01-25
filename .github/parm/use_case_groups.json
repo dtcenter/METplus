@@ -17,17 +17,17 @@
   {
     "category": "climate",
     "index_list": "0-1",
-    "run": false
+    "run": true
   },
   {
     "category": "clouds",
     "index_list": "0",
-    "run": false
+    "run": true
   },
   {
     "category": "clouds",
     "index_list": "1",
-    "run": false
+    "run": true
   },
   {
     "category": "clouds",
