@@ -234,10 +234,7 @@ class GenEnsProdWrapper(LoopTimesWrapper):
         if not self.find_field_info(time_info):
             return False
 
-        # do not fill file list with missing if ens_member_ids is used
-        fill_missing = not self.env_var_dict.get('METPLUS_ENS_MEMBER_IDS')
-        if not self.find_input_files_ensemble(time_info,
-                                              fill_missing=fill_missing):
+        if not self.find_input_files(time_info):
             return False
 
         if not self.find_and_check_output_file(time_info):
@@ -247,6 +244,14 @@ class GenEnsProdWrapper(LoopTimesWrapper):
         self.set_environment_variables(time_info)
 
         return self.build()
+
+    def find_input_files(self, time_info):
+        # do not fill file list with missing if ens_member_ids is used
+        fill_missing = not self.env_var_dict.get('METPLUS_ENS_MEMBER_IDS')
+        if not self.find_input_files_ensemble(time_info,
+                                              fill_missing=fill_missing):
+            return False
+        return True
 
     def find_field_info(self, time_info):
         """! parse var list for ENS fields

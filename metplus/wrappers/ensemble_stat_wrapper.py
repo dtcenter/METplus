@@ -396,43 +396,14 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                 f" {' '.join(self.infiles)} {self.param}"
                 f" {' '.join(self.args)} -outdir {self.outdir}")
 
-    def run_at_time_all_fields(self, time_info):
-        """! Runs the MET application for a given time and forecast lead combination
-              Args:
-                @param time_info dictionary containing timing information
-        """
+    def find_input_files(self, time_info):
         # get ensemble model files
         # do not fill file list with missing if ens_member_ids is used
         fill_missing = not self.env_var_dict.get('METPLUS_ENS_MEMBER_IDS')
         if not self.find_input_files_ensemble(time_info,
                                               fill_missing=fill_missing):
-            return
+            return False
 
-        if not self.set_command_line_arguments(time_info):
-            return
-
-        # parse optional var list for FCST and/or OBS fields
-        var_list = sub_var_list(self.c_dict['VAR_LIST_TEMP'], time_info)
-
-        # set field info
-        fcst_field = self.get_all_field_info(var_list, 'FCST')
-        obs_field = self.get_all_field_info(var_list, 'OBS')
-
-        if not fcst_field and not obs_field:
-            self.log_error("Could not build field info for fcst or obs")
-            return
-
-        self.format_field('FCST', fcst_field)
-        self.format_field('OBS', obs_field)
-
-        self.process_fields(time_info)
-
-    def set_command_line_arguments(self, time_info):
-        """! Set all arguments for plot_point_obs command.
-
-        @param time_info dictionary containing timing information
-        @returns False if files could not be found, True on success
-        """
         # get point observation file if requested
         if self.c_dict['OBS_POINT_INPUT_TEMPLATE']:
             point_obs_files = self.find_data(time_info, data_type='OBS_POINT',
@@ -463,35 +434,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             self.args.append(f'-ens_mean {ens_mean_path[0]}')
 
         return True
-
-    def get_all_field_info(self, var_list, data_type):
-        """!Get field info based on data type"""
-
-        field_list = []
-        for var_info in var_list:
-            type_lower = data_type.lower()
-            level = var_info[f'{type_lower}_level']
-            thresh = var_info[f'{type_lower}_thresh']
-            name = var_info[f'{type_lower}_name']
-            extra = var_info[f'{type_lower}_extra']
-
-            # check if python embedding is used and set up correctly
-            # set env var for file type if it is used
-            py_embed_ok = self.check_for_python_embedding(data_type, var_info)
-            if not py_embed_ok:
-                return ''
-
-            next_field = self.get_field_info(v_level=level,
-                                             v_thresh=thresh,
-                                             v_name=name,
-                                             v_extra=extra,
-                                             d_type=data_type)
-            if next_field is None:
-                return ''
-
-            field_list.extend(next_field)
-
-        return ','.join(field_list)
 
     def set_environment_variables(self, time_info):
         self.add_env_var("MET_OBS_ERROR_TABLE",

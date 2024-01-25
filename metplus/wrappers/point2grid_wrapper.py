@@ -179,14 +179,14 @@ class Point2GridWrapper(LoopTimesWrapper):
         # calling find_obs because we set OBS_ variables in c_dict for the input data
         input_path = self.find_obs(time_info)
         if input_path is None:
-            return None
+            return False
 
         self.infiles.append(input_path)
 
         self.c_dict['GRID'] = do_string_sub(self.c_dict['GRID_TEMPLATE'],
                                             **time_info)
 
-        return self.infiles
+        return True
 
     def set_command_line_arguments(self, time_info):
         """!Set command line arguments from c_dict

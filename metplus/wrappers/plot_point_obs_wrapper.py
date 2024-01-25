@@ -192,7 +192,7 @@ class PlotPointObsWrapper(LoopTimesWrapper):
                                      return_list=True,
                                      mandatory=True)
         if input_files is None:
-            return None
+            return False
 
         self.infiles.extend(input_files)
 
@@ -202,17 +202,17 @@ class PlotPointObsWrapper(LoopTimesWrapper):
                                        data_type='GRID',
                                        return_list=True)
             if not grid_file:
-                return None
+                return False
 
             if len(grid_file) > 1:
                 self.log_error('More than one file found from '
                                'PLOT_POINT_OBS_GRID_INPUT_TEMPLATE: '
                                f'{grid_file.split(",")}')
-                return None
+                return False
 
             self.c_dict['GRID_INPUT_PATH'] = grid_file[0]
 
-        return self.infiles
+        return True
 
     def set_command_line_arguments(self, time_info):
         """! Set all arguments for plot_point_obs command.

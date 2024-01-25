@@ -106,6 +106,8 @@ that reformat gridded data
                 self.clear()
                 self.c_dict['CURRENT_VAR_INFO'] = var_info
                 add_field_info_to_time_info(time_info, var_info)
+                if not self.find_input_files(time_info):
+                    continue
                 self.run_at_time_one_field(time_info, var_info)
         else:
             # loop over all variables and all them to the field list,
@@ -115,7 +117,48 @@ that reformat gridded data
                 add_field_info_to_time_info(time_info, var_list[0])
 
             self.clear()
+            if not self.find_input_files(time_info):
+                return
             self.run_at_time_all_fields(time_info)
+
+    def find_input_files(self, time_info):
+        # get model from first var to compare
+        model_path = self.find_model(time_info,
+                                     mandatory=True,
+                                     return_list=True)
+        if not model_path:
+            return False
+
+        # if there is more than 1 file, create file list file
+        if len(model_path) > 1:
+            list_filename = (f"{time_info['init_fmt']}_"
+                             f"{time_info['lead_hours']}_"
+                             f"{self.app_name}_fcst.txt")
+            model_path = self.write_list_file(list_filename, model_path)
+        else:
+            model_path = model_path[0]
+
+        self.infiles.append(model_path)
+
+        # get observation to from first var compare
+        obs_path, time_info = self.find_obs_offset(time_info,
+                                                   mandatory=True,
+                                                   return_list=True)
+        if obs_path is None:
+            return False
+
+        # if there is more than 1 file, create file list file
+        if len(obs_path) > 1:
+            list_filename = (f"{time_info['init_fmt']}_"
+                             f"{time_info['lead_hours']}_"
+                             f"{self.app_name}_obs.txt")
+            obs_path = self.write_list_file(list_filename, obs_path)
+        else:
+            obs_path = obs_path[0]
+
+        self.infiles.append(obs_path)
+
+        return True
 
     def run_at_time_one_field(self, time_info, var_info):
         """! Build MET command for a single field for a given
@@ -124,24 +167,6 @@ that reformat gridded data
                 @param time_info dictionary containing timing information
                 @param var_info object containing variable information
         """
-
-        # get model to compare, return None if not found
-        model_path = self.find_model(time_info,
-                                     mandatory=True,
-                                     return_list=True)
-        if model_path is None:
-            return
-
-        self.infiles.extend(model_path)
-        # get observation to compare, return None if not found
-        obs_path, time_info = self.find_obs_offset(time_info,
-                                                   mandatory=True,
-                                                   return_list=True)
-        if obs_path is None:
-            return
-
-        self.infiles.extend(obs_path)
-
         # get field info field a single field to pass to the MET config file
         fcst_field_list = self.format_field_info(var_info=var_info,
                                                  data_type='FCST')

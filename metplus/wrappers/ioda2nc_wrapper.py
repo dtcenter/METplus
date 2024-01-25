@@ -121,10 +121,10 @@ class IODA2NCWrapper(LoopTimesWrapper):
         # get list of files even if only one is found (return_list=True)
         obs_path = self.find_obs(time_info, return_list=True)
         if obs_path is None:
-            return None
+            return False
 
         self.infiles.extend(obs_path)
-        return self.infiles
+        return True
 
     def set_command_line_arguments(self, time_info):
         """! Set all arguments for ioda2nc command.
