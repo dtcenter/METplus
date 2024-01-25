@@ -3,9 +3,10 @@
     "category": "met_tool_wrapper",
     "index_list": "0-29,59-63",
     "run": false
-  },   {
+  },
+  {
     "category": "met_tool_wrapper",
-    "index_list": "7,18",
+    "index_list": "2",
     "run": true
   },
   {
@@ -16,7 +17,7 @@
   {
     "category": "air_quality_and_comp",
     "index_list": "0",
-    "run": true
+    "run": false
   },
   {
     "category": "climate",
