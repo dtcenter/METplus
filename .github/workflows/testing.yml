@@ -218,7 +218,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: ${{ always() && steps.save-errors.outputs.upload_error_logs }}
         with:
-          name: error_logs
+          name: error_logs-${{ steps.get-artifact-name.outputs.artifact_name }}
           path: artifact/error_logs
           if-no-files-found: ignore
 
@@ -229,6 +229,17 @@ jobs:
           name: diff-${{ steps.get-artifact-name.outputs.artifact_name }}
           path: artifact/diff-${{ steps.get-artifact-name.outputs.artifact_name }}
           if-no-files-found: ignore
+
+  merge:
+    runs-on: ubuntu-latest
+    needs: use_case_tests
+    steps:
+      - name: Merge Artifacts
+        uses: actions/upload-artifact/merge@v4
+        with:
+          name: error_logs
+          pattern: error_logs-*
+          delete-merged: true
 
   create_output_data_volumes:
     name: Create Output Docker Data Volumes
