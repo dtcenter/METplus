@@ -10,18 +10,8 @@
     "run": false
   },
   {
-    "category": "met_tool_wrapper",
-    "index_list": "2",
-    "run": true
-  },
-  {
-    "category": "met_tool_wrapper",
-    "index_list": "7",
-    "run": true
-  },
-  {
-    "category": "met_tool_wrapper",
-    "index_list": "18",
+    "category": "climate",
+    "index_list": "1",
     "run": true
   },
   {
