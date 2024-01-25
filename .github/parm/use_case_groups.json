@@ -10,6 +10,21 @@
     "run": false
   },
   {
+    "category": "met_tool_wrapper",
+    "index_list": "2",
+    "run": true
+  },
+  {
+    "category": "met_tool_wrapper",
+    "index_list": "7",
+    "run": true
+  },
+  {
+    "category": "met_tool_wrapper",
+    "index_list": "18",
+    "run": true
+  },
+  {
     "category": "air_quality_and_comp",
     "index_list": "0",
     "run": false
@@ -18,11 +33,6 @@
     "category": "climate",
     "index_list": "0-1",
     "run": false
-  },
-  {
-    "category": "climate",
-    "index_list": "1",
-    "run": true
   },
   {
     "category": "clouds",
