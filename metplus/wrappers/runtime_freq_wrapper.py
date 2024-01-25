@@ -38,6 +38,8 @@ class RuntimeFreqWrapper(CommandBuilder):
 
     def __init__(self, config, instance=None):
         super().__init__(config, instance=instance)
+        self.run_count = 0
+        self.missing_input_count = 0
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -58,6 +60,13 @@ class RuntimeFreqWrapper(CommandBuilder):
                                        '').upper()
         )
         self.validate_runtime_freq(c_dict)
+
+        # check if missing inputs are allowed and threshold of missing inputs
+        name = 'ALLOW_MISSING_INPUTS'
+        c_dict[name] = self.get_wrapper_or_generic_config(name, 'bool')
+        if c_dict[name]:
+            name = 'INPUT_THRESH'
+            c_dict[name] = self.get_wrapper_or_generic_config(name, 'float')
 
         return c_dict
 
@@ -195,6 +204,7 @@ class RuntimeFreqWrapper(CommandBuilder):
             return None
 
         self.clear()
+        self.run_count += 1
         return self.run_at_time_once(time_info)
 
     def run_once_per_init_or_valid(self, custom):
@@ -222,6 +232,7 @@ class RuntimeFreqWrapper(CommandBuilder):
             self.c_dict['ALL_FILES'] = self.get_all_files_from_leads(time_info)
 
             self.clear()
+            self.run_count += 1
             if not self.run_at_time_once(time_info):
                 success = False
 
@@ -253,6 +264,7 @@ class RuntimeFreqWrapper(CommandBuilder):
             self.c_dict['ALL_FILES'] = self.get_all_files_for_lead(time_info)
 
             self.clear()
+            self.run_count += 1
             if not self.run_at_time_once(time_info):
                 success = False
 
@@ -307,6 +319,7 @@ class RuntimeFreqWrapper(CommandBuilder):
 
             # Run for given init/valid time and forecast lead combination
             self.clear()
+            self.run_count += 1
             if not self.run_at_time_once(time_info):
                 success = False
 

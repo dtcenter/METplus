@@ -537,6 +537,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                                          data_type=data_src,
                                          return_list=True)
             if not input_files:
+                self.missing_input_count += 1
                 return None
 
             files_found = []
