@@ -301,8 +301,6 @@ class RuntimeFreqWrapper(CommandBuilder):
                 self.logger.debug('Skipping run time')
                 continue
 
-            # since run_all_times was not called (LOOP_BY=times) then
-            # get files for current run time
             all_files = []
             self._update_list_with_new_files(time_info, all_files)
             self.c_dict['ALL_FILES'] = all_files

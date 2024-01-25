@@ -135,8 +135,7 @@ class PyEmbedIngestWrapper(LoopTimesWrapper):
             index = ingester['index']
 
             # get grid information to project output data
-            output_grid = do_string_sub(ingester['output_grid'],
-                                        **time_info)
+            output_grid = do_string_sub(ingester['output_grid'], **time_info)
 
             rdp.clear()
             # get output file path
@@ -148,8 +147,7 @@ class PyEmbedIngestWrapper(LoopTimesWrapper):
             rdp.infiles.append(f"PYTHON_{ingester['input_type']}")
 
             for script_raw in ingester['scripts']:
-                script = do_string_sub(script_raw,
-                                       **time_info)
+                script = do_string_sub(script_raw, **time_info)
 
                 rdp.infiles.append(f'-field \'name="{script}\";\'')
 

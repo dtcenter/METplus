@@ -506,12 +506,10 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             @param obs_field field information formatted for MET config file
         """
         # set config file since command is reset after each run
-        self.param = do_string_sub(self.c_dict['CONFIG_FILE'],
-                                   **time_info)
+        self.param = do_string_sub(self.c_dict['CONFIG_FILE'], **time_info)
 
         # set up output dir with time info
-        if not self.find_and_check_output_file(time_info,
-                                               is_directory=True):
+        if not self.find_and_check_output_file(time_info, is_directory=True):
             return
 
         # set environment variables that are passed to the MET config

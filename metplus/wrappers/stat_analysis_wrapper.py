@@ -962,8 +962,7 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         @returns string of the filled directory from dir_path
         """
         stringsub_dict = self._build_stringsub_dict(config_dict)
-        dir_path_filled = do_string_sub(dir_path,
-                                        **stringsub_dict)
+        dir_path_filled = do_string_sub(dir_path, **stringsub_dict)
 
         all_paths = []
         for one_path in dir_path_filled.split(','):
@@ -1124,8 +1123,7 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
                                       output_template,
                                       stringsub_dict)
         )
-        output_file = os.path.join(self.c_dict['OUTPUT_DIR'],
-                                   output_filename)
+        output_file = os.path.join(self.c_dict['OUTPUT_DIR'], output_filename)
 
         # substitute output filename in JOBS line
         job = job.replace(f'[{job_type}_file]', output_file)

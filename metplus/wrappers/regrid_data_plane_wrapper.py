@@ -344,17 +344,16 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
          """
         input_path = self.find_data(time_info, data_type=data_type)
         if not input_path:
-            return None
+            return False
 
         self.infiles.append(input_path)
 
-        verif_grid = do_string_sub(self.c_dict['VERIFICATION_GRID'],
-                                   **time_info)
+        grid = do_string_sub(self.c_dict['VERIFICATION_GRID'], **time_info)
 
         # put quotes around verification grid in case it is a grid description
-        self.infiles.append(f'"{verif_grid}"')
+        self.infiles.append(f'"{grid}"')
 
-        return self.infiles
+        return True
 
     def set_command_line_arguments(self):
         """!Returns False if command should not be run"""

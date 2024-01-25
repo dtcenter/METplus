@@ -324,8 +324,7 @@ class ExtractTilesWrapper(LoopTimesWrapper):
         """
         input_path = os.path.join(self.c_dict[f'{input_type}_INPUT_DIR'],
                                   self.c_dict[f'{input_type}_INPUT_TEMPLATE'])
-        input_path = do_string_sub(input_path,
-                                   **time_info)
+        input_path = do_string_sub(input_path, **time_info)
 
         self.logger.debug(f"Looking for {input_type} file: {input_path}")
         if not os.path.exists(input_path):
@@ -356,8 +355,7 @@ class ExtractTilesWrapper(LoopTimesWrapper):
         self.regrid_data_plane.c_dict['VAR_LIST'] = var_list
 
         for data_type in ['FCST', 'OBS']:
-            grid = self.get_grid(data_type, track_data[data_type],
-                                 input_type)
+            grid = self.get_grid(data_type, track_data[data_type], input_type)
 
             self.regrid_data_plane.c_dict['VERIFICATION_GRID'] = grid
 
@@ -413,14 +411,12 @@ class ExtractTilesWrapper(LoopTimesWrapper):
         input_dict = {}
 
         # read forecast lead from LEAD (TC_STAT) or FCST_LEAD (MTD)
-        lead = storm_data.get('LEAD',
-                              storm_data.get('FCST_LEAD'))
+        lead = storm_data.get('LEAD', storm_data.get('FCST_LEAD'))
         if lead:
             input_dict['lead_hours'] = lead[:-4]
 
         # read valid time from VALID (TC_STAT) or FCST_VALID (MTD)
-        valid = storm_data.get('VALID',
-                               storm_data.get('FCST_VALID'))
+        valid = storm_data.get('VALID', storm_data.get('FCST_VALID'))
         if valid:
             valid_dt = datetime.strptime(valid, '%Y%m%d_%H%M%S')
             input_dict['valid'] = valid_dt

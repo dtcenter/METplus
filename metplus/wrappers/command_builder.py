@@ -1425,7 +1425,7 @@ class CommandBuilder:
          Default is str.
         @returns value if set or empty string if not
         """
-        name = self.get_mp_config_name(
+        name = self.config.get_mp_config_name(
             [f'{self.app_name}_{generic_name}'.upper(), generic_name.upper()]
         )
         if not name:
