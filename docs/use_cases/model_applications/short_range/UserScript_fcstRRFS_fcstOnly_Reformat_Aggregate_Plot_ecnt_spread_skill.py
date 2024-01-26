@@ -1,6 +1,6 @@
 """
-UserScript: Reformat MET ECNT linetype, Aggregate based on XYZ, and generate a spread skill plot
-=================================================================================================
+UserScript: Reformat MET .stat ECNT data, Aggregate based on model members and times, and generate a spread skill plot
+======================================================================================================================
 
 model_applications/
 short_range/
@@ -12,10 +12,10 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 # Scientific Objective
 # --------------------
 #
-# This use case illustrates how to use MET .stat output (using the ECNT linetype data)  to generate a
+# This use case illustrates how to use MET .stat output (using the ECNT linetype data) to generate a
 # spread skill plot using a subset of the METplus Analysis Tools (METdataio, METcalcpy,
 # and METplotpy). The METdataio METreformat module extracts the ECNT linetype data and
-# performas reformatting, the METcalcpy pre-processing module performs aggregation, and the
+# performs reformatting, the METcalcpy pre-processing module performs aggregation, and the
 # METplotpy line plot is used to generate the spread skill plot.
 #
 
@@ -26,10 +26,40 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 #  * Forecast dataset: RRFS
 #  * Observation dataset: None
 #
+#  **Input**: MET .stat files from MET ensemble-stat tool for RRFS for 20220506
+#
+#  **Location**: All the input data required for this use case can be found in the met_test sample data tarball
+#  (sample_data-short_range.tgz).
+#  Click here to see the METplus releases page and download sample data for the appropriate
+#  release: https://github.com/dtcenter/METplus/releases
+#  This tarball should be unpacked into the directory that you will set the value of INPUT_BASE.
+#  See Running METplus section for more information.
+#
+#
 
 #############################################################################
 # External Dependencies
 # ---------------------
+# You will need to use the version of Python that is required for the METplus version
+# in use.  Refer to the Installation section of the User's Guide for basic Python requirements:
+# https://metplus.readthedocs.io/en/latest/Users_Guide/installation.html
+#
+# The METplus Analysis tools: METdataio, METcalcpy, and METplotpy have the additional third-party
+# Python package requirements.  The version numbers are found in the requirements.txt file found at the
+# top-level directory of each repository.
+# * lxml
+# * pandas
+# * pyyaml
+# * numpy
+# * netcdf4
+# * xarray
+# * scipy
+# * metpy
+# * pint
+# * python-dateutil
+# * kaleido (python-kaleido)
+# * plotly
+# * matplotlib
 
 
 
@@ -38,7 +68,7 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 # ------------------
 #
 # This use case runs the UserScript wrapper tool to run a user provided script, 
-# in this case, reformat_ecnt_linetype.py, XYZ.py and plot_spread_skill.py.
+# in this case, reformat_ecnt_linetype.py, agg_stat_ecnt.py and plot_spread_skill.py.
 # It also requires the METdataio, METcalcpy and METplotpy source code to reformat the MET .stat output,
 # perform aggregation, and generate the plot. Clone the METdataio repository
 # (https://github.com/dtcenter/METdataio),
@@ -107,13 +137,13 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot/reformat_ecnt.py
 #
 
-# This use case uses a Python script (from METcalcpy) to aggregate based on XYZ
+# This use case uses a Python script (from METcalcpy) to aggregate the ECNT RMSE and SPREAD_PLUS_OERR statistics
 #
 # .. highlight:: python
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot/plot_spread_skill.py
 #
 
-# This use case uses a Python script (from METplotpy) to perform plotting
+# This use case uses a Python script (from METplotpy) to generate a spread-skill plot using the METplotypy line plot code.
 #
 # .. highlight:: python
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot/plot_spread_skill.py
@@ -178,7 +208,7 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 #   INFO: METplus has successfully finished running.
 #
 #
-# Reformat Output
+# **Reformat Output**
 #
 # The reformatted ensemble-stat ECNT linetype data should exist in the location specified in the user
 # configuration file (OUTPUT_BASE).  Verify that the ensemble_stat_ecnt.data file exists.  The file now has all
@@ -186,11 +216,12 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 # following columns:  stat_ncl, stat_ncu, stat_bcl, and stat_bcu
 #
 #
-# Aggregation Output
+# **Aggregation Output**
 #
+# The METcalcpy agg_stat module is used to calculate aggregated statistics and confidence intervals for each
+# series (line) point.
 #
-#
-# Plot Output
+# **Plot Output**
 #
 # A spread-skill plot of temperature for the RMSE, SPREAD_PLUS_OERR, and a ratio line of SPREAD_PLUS_OERR/RMSE is
 # created and found in the output location specified in the user configuration file (OUTPUT_BASE).  The plot is named
@@ -206,7 +237,7 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 #
 #   * UserScriptUseCase
 #   * ShortRangeAppUseCase
-#   * METdataioUseCas
+#   * METdataioUseCase
 #   * METcalcpyUseCase
 #   * METplotpyUseCase
 #
