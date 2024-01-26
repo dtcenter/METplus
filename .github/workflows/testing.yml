@@ -248,7 +248,6 @@ jobs:
           else
               echo "has_error_logs=false" >> $GITHUB_OUTPUT
           fi
-
       - name: Merge Artifacts
         if: ${{ always() && steps.check-for-error-logs.outputs.has_error_logs == 'true' }}
         uses: actions/upload-artifact/merge@v4
