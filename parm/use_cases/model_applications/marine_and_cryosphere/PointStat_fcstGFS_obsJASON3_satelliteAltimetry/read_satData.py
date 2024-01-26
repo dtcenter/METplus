@@ -80,7 +80,10 @@ if len(sys.argv[1].split(':')) == 3:
     else:
         hgt = np.full(len(latitude),0,dtype=int).tolist()
     qc = np.full(len(latitude),'NA').tolist()
-    
+
+    #if the data has nans, this replaces them with -9999 (default bad value in MET)
+    obs = np.nan_to_num(obs, nan=-9999)
+
     sid = sid.tolist()
     vld = new_time
     lat = latitude.tolist()
