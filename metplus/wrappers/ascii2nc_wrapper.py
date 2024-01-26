@@ -145,15 +145,15 @@ class ASCII2NCWrapper(LoopTimesWrapper):
             filename = do_string_sub(self.c_dict['OBS_INPUT_TEMPLATE'],
                                      **time_info)
             self.infiles.append(filename)
-            return self.infiles
+            return True
 
         # get list of files even if only one is found (return_list=True)
         obs_path = self.find_obs(time_info, return_list=True)
         if obs_path is None:
-            return None
+            return False
 
         self.infiles.extend(obs_path)
-        return self.infiles
+        return True
 
     def set_command_line_arguments(self, time_info):
         # add input data format if set
