@@ -15,7 +15,7 @@ from datetime import datetime
 from abc import ABCMeta
 from inspect import getframeinfo, stack
 
-from ..util.constants import PYTHON_EMBEDDING_TYPES, COMPRESSION_EXTENSIONS
+from ..util.constants import PYTHON_EMBEDDING_TYPES, COMPRESSION_EXTENSIONS, MULTIPLE_INPUT_WRAPPERS
 from ..util import getlist, preprocess_file, loop_over_times_and_call
 from ..util import do_string_sub, ti_calculate, get_seconds_from_string
 from ..util import get_time_from_file, shift_time_seconds, seconds_to_met_time
@@ -1106,35 +1106,47 @@ class CommandBuilder:
                                 field_info[name] if name in field_info else '')
 
     def check_for_python_embedding(self, input_type, var_info):
-        """!Check if field name of given input type is a python script. If it is not, return the field name.
-            If it is, check if the input datatype is a valid Python Embedding string, set the c_dict item
-            that sets the file_type in the MET config file accordingly, and set the output string to 'python_embedding.
-            Used to set up Python Embedding input for MET tools that support multiple input files, such as MTD, EnsembleStat,
-            and SeriesAnalysis.
-            Args:
-              @param input_type type of field input, i.e. FCST, OBS, ENS, POINT_OBS, GRID_OBS, or BOTH
-              @param var_info dictionary item containing field information for the current *_VAR<n>_* configs being handled
-              @returns field name if not a python script, 'python_embedding' if it is, and None if configuration is invalid"""
+        """!Check if field name of given input type is a python script.
+        If it is not, return the field name. If it is, return 'python_embedding'
+        and set file_type in the MET config to a PYTHON keyword if it is not
+        already set.
+        @param input_type type of field input, e.g. FCST, OBS, ENS, POINT_OBS,
+         GRID_OBS, or BOTH
+        @param var_info dictionary item containing field information for the
+         current *_VAR<n>_* configs being handled
+        @returns field name if not a python script, 'python_embedding' if it is
+        """
         var_input_type = input_type.lower() if input_type != 'BOTH' else 'fcst'
-        # reset file type to empty string to handle if python embedding is used for one field but not for the next
-        self.c_dict[f'{input_type}_FILE_TYPE'] = ''
-
         if not is_python_script(var_info[f"{var_input_type}_name"]):
             # if not a python script, return var name
             return var_info[f"{var_input_type}_name"]
 
-        # if it is a python script, set file extension to show that and make sure *_INPUT_DATATYPE is a valid PYTHON_* string
+        # if it is a python script, set file extension to show that and
+        # make sure *_INPUT_DATATYPE is a valid PYTHON_* string
         file_ext = 'python_embedding'
-        data_type = self.c_dict.get(f'{input_type}_INPUT_DATATYPE', '')
-        if data_type not in PYTHON_EMBEDDING_TYPES:
-            self.log_error(f"{input_type}_{self.app_name.upper()}_INPUT_DATATYPE ({data_type}) must be set to a valid Python Embedding type "
-                           f"if supplying a Python script as the {input_type}_VAR<n>_NAME. Valid options: "
-                           f"{','.join(PYTHON_EMBEDDING_TYPES)}")
-            return None
 
-        # set file type string to be set in MET config file to specify Python Embedding is being used for this dataset
+        # skip check of _INPUT_DATATYPE if _FILE_TYPE is already set
+        # or if wrapper does not support multiple inputs
+        wrapper_name = get_wrapper_name(self.app_name)
+        if (self.env_var_dict.get(f'METPLUS_{input_type}_FILE_TYPE')
+                or wrapper_name not in MULTIPLE_INPUT_WRAPPERS):
+            return file_ext
+
+        data_type = self.c_dict.get(f'{input_type}_INPUT_DATATYPE', '')
+        # error and return None if wrapper takes multiple inputs for Python
+        # Embedding but file_type has not been specified to note that
+        if data_type not in PYTHON_EMBEDDING_TYPES:
+            self.logger.warning(
+                f"{input_type}_{self.app_name.upper()}_FILE_TYPE must be set "
+                "when passing a Python Embedding script to a tool that takes "
+                "multiple inputs. Using PYTHON_NUMPY"
+            )
+            data_type = 'PYTHON_NUMPY'
+
+        # set file type string to be set in MET config file to specify
+        # Python Embedding is being used for this dataset
         file_type = f"file_type = {data_type};"
-        self.c_dict[f'{input_type}_FILE_TYPE'] = file_type
+        #self.c_dict[f'{input_type}_FILE_TYPE'] = file_type
         self.env_var_dict[f'METPLUS_{input_type}_FILE_TYPE'] = file_type
         return file_ext
 
