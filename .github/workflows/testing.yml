@@ -65,7 +65,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set job controls
         id: job_status
         run: .github/jobs/set_job_controls.sh
@@ -88,8 +88,8 @@ jobs:
     needs: job_control
     if: ${{ needs.job_control.outputs.run_get_image == 'true' }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.10'
       - name: Get METplus Image
@@ -130,7 +130,7 @@ jobs:
       matrix: ${{fromJson(needs.job_control.outputs.matrix)}}
     steps:
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Free disk space
         run: .github/jobs/free_disk_space.sh
@@ -173,27 +173,54 @@ jobs:
         run: .github/jobs/copy_output_to_artifact.sh ${{ steps.get-artifact-name.outputs.artifact_name }}
 
       - name: Upload output data artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: ${{ always() && steps.run_tests.conclusion != 'skipped'  && !startsWith(matrix.categories,'pytests') }}
         with:
           name: ${{ steps.get-artifact-name.outputs.artifact_name }}
           path: artifact/${{ steps.get-artifact-name.outputs.artifact_name }}
 
       - name: Upload error logs artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: ${{ always() && steps.save-errors.outputs.upload_error_logs }}
         with:
-          name: error_logs
+          name: error_logs-${{ steps.get-artifact-name.outputs.artifact_name }}
           path: artifact/error_logs
           if-no-files-found: ignore
 
       - name: Upload difference data artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: ${{ always() && steps.run-diff.outputs.upload_diff == 'true' }}
         with:
           name: diff-${{ steps.get-artifact-name.outputs.artifact_name }}
           path: artifact/diff-${{ steps.get-artifact-name.outputs.artifact_name }}
           if-no-files-found: ignore
+
+  merge_error_logs:
+    name: Merge Error Logs
+    runs-on: ubuntu-latest
+    needs: use_case_tests
+    if: ${{ always() && needs.use_case_tests.result == 'failure' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check for error logs
+        id: check-for-error-logs
+        run: |
+          json_data=$(curl -s -H "Authorization: Bearer ${{ github.token }}" \
+                 "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs")
+          error_log_jobs=($(echo "$json_data" | jq -r '.jobs[] | select(.name | startswith("Use Case Tests")) | .steps[] | select(.name | startswith("Save error logs")) | select(.conclusion | startswith("success"))'))
+          # save output variable to merge error logs if any error logs were created
+          if [ ! -z "${error_log_jobs}" ]; then
+              echo "has_error_logs=true" >> $GITHUB_OUTPUT
+          else
+              echo "has_error_logs=false" >> $GITHUB_OUTPUT
+          fi
+      - name: Merge Artifacts
+        if: ${{ always() && steps.check-for-error-logs.outputs.has_error_logs == 'true' }}
+        uses: actions/upload-artifact/merge@v4
+        with:
+          name: error_logs
+          pattern: error_logs-*
+          delete-merged: true
 
   create_output_data_volumes:
     name: Create Output Docker Data Volumes
@@ -201,8 +228,8 @@ jobs:
     needs: [use_case_tests]
     if: ${{ needs.job_control.outputs.run_save_truth_data == 'true' }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
       - run: .github/jobs/create_output_data_volumes.sh
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
