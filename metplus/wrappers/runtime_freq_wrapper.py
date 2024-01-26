@@ -158,6 +158,18 @@ class RuntimeFreqWrapper(CommandBuilder):
 
             self.run_all_times_custom(custom_string)
 
+        # if missing inputs are allowed, check threshold to report error
+        if self.c_dict['ALLOW_MISSING_INPUTS']:
+            success_rate = 1 - (self.missing_input_count / self.run_count)
+            allowed_rate = self.c_dict['INPUT_THRESH']
+            if success_rate < allowed_rate:
+                self.log_error(
+                    f'Too many {wrapper_instance_name} runs had missing inputs '
+                    f'({success_rate} < {allowed_rate}). '
+                    f'{self.missing_input_count} out of {self.run_count} runs '
+                    'had missing inputs.'
+                )
+
         return self.all_commands
 
     def run_all_times_custom(self, custom):
