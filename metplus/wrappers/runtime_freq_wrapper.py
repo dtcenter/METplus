@@ -204,7 +204,6 @@ class RuntimeFreqWrapper(CommandBuilder):
             return None
 
         self.clear()
-        self.run_count += 1
         return self.run_at_time_once(time_info)
 
     def run_once_per_init_or_valid(self, custom):
@@ -232,7 +231,6 @@ class RuntimeFreqWrapper(CommandBuilder):
             self.c_dict['ALL_FILES'] = self.get_all_files_from_leads(time_info)
 
             self.clear()
-            self.run_count += 1
             if not self.run_at_time_once(time_info):
                 success = False
 
@@ -264,7 +262,6 @@ class RuntimeFreqWrapper(CommandBuilder):
             self.c_dict['ALL_FILES'] = self.get_all_files_for_lead(time_info)
 
             self.clear()
-            self.run_count += 1
             if not self.run_at_time_once(time_info):
                 success = False
 
@@ -319,7 +316,6 @@ class RuntimeFreqWrapper(CommandBuilder):
 
             # Run for given init/valid time and forecast lead combination
             self.clear()
-            self.run_count += 1
             if not self.run_at_time_once(time_info):
                 success = False
 
