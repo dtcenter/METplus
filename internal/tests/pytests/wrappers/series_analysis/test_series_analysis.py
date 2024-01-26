@@ -1027,6 +1027,16 @@ def test_run_once_per_lead(metplus_config):
     assert actual is False
 
 
+@pytest.mark.wrapper_a
+def test_get_fcst_obs_not_embedding(metplus_config):
+    config = metplus_config
+    set_minimum_config_settings(config)
+    wrapper = SeriesAnalysisWrapper(config)
+    with mock.patch.object(wrapper, "_check_python_embedding", return_value=False):
+        actual = wrapper._get_fcst_and_obs_path({}, '*', None) 
+    assert actual == (None, None)
+
+
 @pytest.mark.parametrize(
     'lead_group, use_both, mock_exists, expected', [
         (('Group1', [0, 21600]), True, True, ('both_path', 'both_path')),

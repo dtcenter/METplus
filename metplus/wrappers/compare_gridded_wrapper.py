@@ -217,6 +217,12 @@ that reformat gridded data
             name = var_info[f'{type_lower}_name']
             extra = var_info[f'{type_lower}_extra']
 
+            # check if python embedding is used and set up correctly
+            # set env var for file type if it is used
+            py_embed_ok = self.check_for_python_embedding(data_type, var_info)
+            if not py_embed_ok:
+                return ''
+
             next_field = self.get_field_info(v_level=level,
                                              v_thresh=thresh,
                                              v_name=name,

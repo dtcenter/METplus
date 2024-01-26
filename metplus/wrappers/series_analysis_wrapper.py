@@ -640,6 +640,9 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
               key will match the format "NoLabel_<n>" and if no lead groups
               are defined, the dictionary should be replaced with None
         """
+        if not self._check_python_embedding():
+            return None, None
+
         time_info['storm_id'] = storm_id
 
         # get label and lead list if grouping by forecast leads
@@ -695,6 +698,24 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             return fcst_path, fcst_path
         obs_path = list_file_dict[obs_key]
         return fcst_path, obs_path
+
+    def _check_python_embedding(self):
+        """! Check if any of the field names contain a Python embedding script.
+              See CommandBuilder.check_for_python_embedding for more info.
+
+            @returns False if something is not configured correctly or True
+        """
+        for var_info in self.c_dict['VAR_LIST']:
+            if self.c_dict['USING_BOTH']:
+                if not self.check_for_python_embedding('BOTH', var_info):
+                    return False
+            else:
+                if not self.check_for_python_embedding('FCST', var_info):
+                    return False
+                if not self.check_for_python_embedding('OBS', var_info):
+                    return False
+
+        return True
 
     def get_output_dir(self, time_info, storm_id, label):
         """! Determine directory that will contain output data from the

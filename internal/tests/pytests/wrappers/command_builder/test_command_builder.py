@@ -1199,14 +1199,16 @@ def test_errors_and_defaults(metplus_config):
     assert actual == False
     assert _in_last_err('Could not generate command', cb.logger)
 
-    # test python embedding check
+    # test python embedding error
+    with mock.patch.object(cb_wrapper, 'is_python_script', return_value=True):
+        actual = cb.check_for_python_embedding('FCST',{'fcst_name':'pyEmbed'})
+    assert actual == None
+    assert _in_last_err('must be set to a valid Python Embedding type', cb.logger)
+
+    cb.c_dict['FCST_INPUT_DATATYPE'] = 'PYTHON_XARRAY'
     with mock.patch.object(cb_wrapper, 'is_python_script', return_value=True):
         actual = cb.check_for_python_embedding('FCST',{'fcst_name':'pyEmbed'})
     assert actual == 'python_embedding'
-
-    with mock.patch.object(cb_wrapper, 'is_python_script', return_value=False):
-        actual = cb.check_for_python_embedding('FCST',{'fcst_name':'pyEmbed'})
-    assert actual == 'pyEmbed'
 
     # test field_info not set
     cb.c_dict['CURRENT_VAR_INFO'] = None
