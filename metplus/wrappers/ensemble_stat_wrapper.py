@@ -132,13 +132,11 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         )
 
         c_dict['OBS_POINT_INPUT_DATATYPE'] = (
-          self.config.getraw('config',
-                             'OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE')
+          self.config.getraw('config', 'OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE')
         )
 
         c_dict['OBS_GRID_INPUT_DATATYPE'] = (
-          self.config.getraw('config',
-                             'OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE')
+          self.config.getraw('config', 'OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE')
         )
 
         # check if more than 1 obs datatype is set to python embedding,
