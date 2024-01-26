@@ -117,6 +117,7 @@ class PlotDataPlaneWrapper(LoopTimesWrapper):
 
         @param time_info dictionary containing timing information
         """
+        self.clear()
         if not super().run_at_time_once(time_info):
             return False
 
