@@ -250,7 +250,7 @@ jobs:
           fi
 
       - name: Merge Artifacts
-        if: ${{ steps.check-for-error-logs.outputs.has_error_logs == 'true' }}
+        if: ${{ always() && steps.check-for-error-logs.outputs.has_error_logs == 'true' }}
         uses: actions/upload-artifact/merge@v4
         with:
           name: error_logs
