@@ -130,5 +130,7 @@ class UserScriptWrapper(RuntimeFreqWrapper):
 
         @returns True
         """
-        super().get_all_files(custom)
-        return True
+        all_files = super().get_all_files(custom)
+        if not all_files:
+            return True
+        return all_files

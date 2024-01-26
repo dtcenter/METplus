@@ -488,6 +488,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         # loop over storm list and process for each
         # this loop will execute once if not filtering by storm ID
         for storm_id in storm_list:
+            self.run_count += 1
             # Create FCST and OBS ASCII files
             fcst_path, obs_path = (
                 self._get_fcst_and_obs_path(time_info,
@@ -495,7 +496,12 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                             lead_group)
             )
             if not fcst_path or not obs_path:
-                self.log_error('No ASCII file lists were created. Skipping.')
+                self.missing_input_count += 1
+                msg = 'No ASCII file lists were created. Skipping.'
+                if self.c_dict['ALLOW_MISSING_INPUTS']:
+                    self.logger.warning(msg)
+                else:
+                    self.log_error(msg)
                 continue
 
             # Build up the arguments to and then run the MET tool series_analysis.
@@ -661,7 +667,11 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                           **time_info)
                 self.logger.debug(f"Explicit BOTH file list file: {both_path}")
                 if not os.path.exists(both_path):
-                    self.log_error(f'Could not find file: {both_path}')
+                    msg = f'Could not find file: {both_path}'
+                    if self.c_dict['ALLOW_MISSING_INPUTS']:
+                        self.logger.warning(msg)
+                    else:
+                        self.log_error(msg)
                     return None, None
 
                 return both_path, both_path
@@ -670,14 +680,24 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                       **time_info)
             self.logger.debug(f"Explicit FCST file list file: {fcst_path}")
             if not os.path.exists(fcst_path):
-                self.log_error(f'Could not find forecast file: {fcst_path}')
+                msg = f'Could not find forecast file: {fcst_path}'
+                if self.c_dict['ALLOW_MISSING_INPUTS']:
+                    self.logger.warning(msg)
+                else:
+                    self.log_error(msg)
+
                 fcst_path = None
 
             obs_path = do_string_sub(self.c_dict['OBS_INPUT_FILE_LIST'],
                                      **time_info)
             self.logger.debug(f"Explicit OBS file list file: {obs_path}")
             if not os.path.exists(obs_path):
-                self.log_error(f'Could not find observation file: {obs_path}')
+                msg = f'Could not find observation file: {obs_path}'
+                if self.c_dict['ALLOW_MISSING_INPUTS']:
+                    self.logger.warning(msg)
+                else:
+                    self.log_error(msg)
+
                 obs_path = None
 
             return fcst_path, obs_path

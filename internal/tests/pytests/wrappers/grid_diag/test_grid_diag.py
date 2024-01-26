@@ -145,7 +145,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expected_subset):
                                            filename))
 
     wrapper = GridDiagWrapper(config)
-    assert wrapper.get_all_files()
+    wrapper.c_dict['ALL_FILES'] = wrapper.get_all_files()
 
     # convert list of lists into a single list to compare to expected results
 

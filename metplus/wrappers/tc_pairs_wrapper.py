@@ -638,9 +638,14 @@ class TCPairsWrapper(RuntimeFreqWrapper):
             if self.c_dict['GET_EDECK']:
                 edeck_list = self.find_a_or_e_deck_files('E', time_storm_info)
 
+            self.run_count += 1
             if not adeck_list and not edeck_list:
-                self.log_error('Could not find any corresponding '
-                               'ADECK or EDECK files')
+                self.missing_input_count += 1
+                msg = 'Could not find any corresponding ADECK or EDECK files'
+                if self.c_dict['ALLOW_MISSING_INPUTS']:
+                    self.logger.warning(msg)
+                else:
+                    self.log_error(msg)
                 continue
 
             # reformat extra tropical cyclone files if necessary
@@ -657,6 +662,7 @@ class TCPairsWrapper(RuntimeFreqWrapper):
 
             # find -diag file if requested
             if not self._get_diag_file(time_storm_info):
+                self.missing_input_count += 1
                 return []
 
             # change wildcard basin/cyclone to 'all' for output filename
@@ -941,7 +947,9 @@ class TCPairsWrapper(RuntimeFreqWrapper):
         time_storm_info = self._add_storm_info_to_dict(time_info)
 
         # handle -diag file if requested
+        self.run_count += 1
         if not self._get_diag_file(time_storm_info):
+            self.missing_input_count += 1
             return []
 
         if not self.find_and_check_output_file(time_info=time_storm_info,
@@ -976,7 +984,11 @@ class TCPairsWrapper(RuntimeFreqWrapper):
                     all_files.extend(filepaths)
 
             if not all_files:
-                self.log_error('Could not get -diag files')
+                msg = 'Could not get -diag files'
+                if self.c_dict['ALLOW_MISSING_INPUTS']:
+                    self.logger.warning(msg)
+                else:
+                    self.log_error(msg)
                 return False
 
             # remove duplicate files

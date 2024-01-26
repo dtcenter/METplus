@@ -319,7 +319,9 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
             return False
 
         add_field_info_to_time_info(time_info, var_list[0])
+        self.run_count += 1
         if not self.find_input_files(time_info, data_type):
+            self.missing_input_count += 1
             return False
 
         # set environment variables

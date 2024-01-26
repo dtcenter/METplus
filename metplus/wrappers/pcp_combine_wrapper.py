@@ -495,8 +495,10 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         # create list of tuples for input levels and optional field names
         self._build_input_accum_list(data_src, time_info)
 
+        self.run_count += 1
         files_found = self.get_accumulation(time_info, lookback, data_src)
         if not files_found:
+            self.missing_input_count += 1
             self.log_error(
                 f'Could not find files to build accumulation in '
                 f"{self.c_dict[f'{data_src}_INPUT_DIR']} using template "
@@ -533,6 +535,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                                                name=accum_dict['name'],
                                                level=accum_dict['level'],
                                                extra=accum_dict['extra'])
+            self.run_count += 1
             input_files = self.find_data(time_info,
                                          data_type=data_src,
                                          return_list=True)
@@ -547,11 +550,13 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                 files_found.append((input_file, field_info))
 
         else:
+            self.run_count += 1
             files_found = self.get_accumulation(time_info,
                                                 lookback,
                                                 data_src,
                                                 field_info_after_file=False)
             if not files_found:
+                self.missing_input_count += 1
                 self.log_error(
                     f'Could not find files to build accumulation in '
                     f"{self.c_dict[f'{data_src}_INPUT_DIR']} using template "

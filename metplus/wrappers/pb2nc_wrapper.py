@@ -164,7 +164,6 @@ class PB2NCWrapper(LoopTimesWrapper):
             @param input_dict dictionary containing some time information
             @returns time info if files are found, None otherwise
         """
-
         infiles, time_info = self.find_obs_offset(input_dict,
                                                   mandatory=True,
                                                   return_list=True)
@@ -195,10 +194,12 @@ class PB2NCWrapper(LoopTimesWrapper):
     def run_at_time_once(self, input_dict):
         """!Find files needed to run pb2nc and run if found"""
         # look for input files to process
+        self.run_count += 1
         time_info = self.find_input_files(input_dict)
 
         # if no files were found, don't run pb2nc
         if time_info is None:
+            self.missing_input_count += 1
             return
 
         # look for output file path and skip running pb2nc if necessary

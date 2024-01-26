@@ -609,7 +609,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
     else:
         wrapper.c_dict['RUN_ONCE_PER_STORM_ID'] = True
 
-    assert wrapper.get_all_files()
+    wrapper.c_dict['ALL_FILES'] = wrapper.get_all_files()
     print(f"ALL FILES: {wrapper.c_dict['ALL_FILES']}")
     expected_fcst = [
         'fcst/20141214_00/ML1201072014/FCST_TILE_F000_gfs_4_20141214_0000_000.nc',

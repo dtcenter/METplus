@@ -199,7 +199,11 @@ class TCRMWWrapper(RuntimeFreqWrapper):
             list_file = do_string_sub(self.c_dict['INPUT_FILE_LIST'],
                                       **time_info)
             if not os.path.exists(list_file):
-                self.log_error(f'Could not find file list: {list_file}')
+                msg = f'Could not find file list: {list_file}'
+                if self.c_dict['ALLOW_MISSING_INPUTS']:
+                    self.logger.warning(msg)
+                else:
+                    self.log_error(msg)
                 return False
         else:
             all_input_files = []

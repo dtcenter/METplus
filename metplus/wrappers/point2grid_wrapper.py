@@ -147,28 +147,6 @@ class Point2GridWrapper(LoopTimesWrapper):
         cmd += ' -v ' + self.c_dict['VERBOSITY']
         return cmd
 
-    def run_at_time_once(self, time_info):
-        """! Process runtime and try to build command to run point2grid
-             Args:
-                @param time_info dictionary containing timing information
-        """
-        # get input files
-        if self.find_input_files(time_info) is None:
-            return
-
-        # get output path
-        if not self.find_and_check_output_file(time_info):
-            return
-
-        # get other configurations for command
-        self.set_command_line_arguments(time_info)
-
-        # set environment variables if using config file
-        self.set_environment_variables(time_info)
-
-        # build command and run
-        self.build()
-
     def find_input_files(self, time_info):
         """!Find input file and mask file and add them to the list of input files.
             Args:

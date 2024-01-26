@@ -146,7 +146,9 @@ class GenVxMaskWrapper(LoopTimesWrapper):
             self.args = do_string_sub(cmd_args,
                                       **time_info)
 
+            self.run_count += 1
             if not self.find_input_files(time_info, temp_file):
+                self.missing_input_count += 1
                 return
 
             # break out of loop if this is the last iteration to

@@ -106,7 +106,9 @@ that reformat gridded data
                 self.clear()
                 self.c_dict['CURRENT_VAR_INFO'] = var_info
                 add_field_info_to_time_info(time_info, var_info)
+                self.run_count += 1
                 if not self.find_input_files(time_info):
+                    self.missing_input_count += 1
                     continue
                 self.run_at_time_one_field(time_info, var_info)
         else:
@@ -117,7 +119,9 @@ that reformat gridded data
                 add_field_info_to_time_info(time_info, var_list[0])
 
             self.clear()
+            self.run_count += 1
             if not self.find_input_files(time_info):
+                self.missing_input_count += 1
                 return
             self.run_at_time_all_fields(time_info)
 

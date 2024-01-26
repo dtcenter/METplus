@@ -143,8 +143,10 @@ class GridDiagWrapper(RuntimeFreqWrapper):
 
     def run_at_time_once(self, time_info):
         # subset input files as appropriate
+        self.run_count += 1
         input_list_dict = self.subset_input_files(time_info)
         if not input_list_dict:
+            self.missing_input_count += 1
             return
 
         for input_list_file in input_list_dict.values():

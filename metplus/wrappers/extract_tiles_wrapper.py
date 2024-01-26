@@ -209,6 +209,7 @@ class ExtractTilesWrapper(LoopTimesWrapper):
             @param input_dict dictionary containing initialization time
         """
         self.logger.debug("Begin extract tiles")
+        self.run_count += 1
         location_input = self.c_dict.get('LOCATION_INPUT')
         input_path = self.get_location_input_file(time_info, location_input)
         if not input_path:

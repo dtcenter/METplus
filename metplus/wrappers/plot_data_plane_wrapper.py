@@ -111,27 +111,13 @@ class PlotDataPlaneWrapper(LoopTimesWrapper):
         return cmd
 
     def run_at_time_once(self, time_info):
-        """! Process runtime and try to build command to run ascii2nc
-             Args:
-                @param time_info dictionary containing timing information
+        """! Process runtime and try to build command to run plot_data_plane.
+        Calls parent run_at_time_once (RuntimeFreq) then optionally converts
+        PS output to PNG if requested.
+
+        @param time_info dictionary containing timing information
         """
-        self.clear()
-
-        # get input files
-        if not self.find_input_files(time_info):
-            return False
-
-        # get output path
-        if not self.find_and_check_output_file(time_info):
-            return False
-
-        # get other configurations for command
-        self.set_command_line_arguments(time_info)
-
-        # set environment variables if using config file
-        self.set_environment_variables(time_info)
-
-        if not self.build():
+        if not super().run_at_time_once(time_info):
             return False
 
         if self.c_dict['CONVERT_TO_IMAGE']:

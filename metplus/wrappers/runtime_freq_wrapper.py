@@ -199,9 +199,9 @@ class RuntimeFreqWrapper(CommandBuilder):
 
         time_info = time_util.ti_calculate(time_input)
 
-        if not self.get_all_files(custom):
-            self.log_error("A problem occurred trying to obtain input files")
-            return None
+        self.c_dict['ALL_FILES'] = self.get_all_files(custom)
+        if not self._check_input_files():
+            return False
 
         self.clear()
         return self.run_at_time_once(time_info)
@@ -229,6 +229,8 @@ class RuntimeFreqWrapper(CommandBuilder):
             time_info = time_util.ti_calculate(time_input)
 
             self.c_dict['ALL_FILES'] = self.get_all_files_from_leads(time_info)
+            if not self._check_input_files():
+                continue
 
             self.clear()
             if not self.run_at_time_once(time_info):
@@ -260,6 +262,8 @@ class RuntimeFreqWrapper(CommandBuilder):
             time_info = time_util.ti_calculate(time_input)
 
             self.c_dict['ALL_FILES'] = self.get_all_files_for_lead(time_info)
+            if not self._check_input_files():
+                continue
 
             self.clear()
             if not self.run_at_time_once(time_info):
@@ -313,6 +317,8 @@ class RuntimeFreqWrapper(CommandBuilder):
             all_files = []
             self._update_list_with_new_files(time_info, all_files)
             self.c_dict['ALL_FILES'] = all_files
+            if not self._check_input_files():
+                continue
 
             # Run for given init/valid time and forecast lead combination
             self.clear()
@@ -332,7 +338,9 @@ class RuntimeFreqWrapper(CommandBuilder):
          False if something went wrong
         """
         # get input files
+        self.run_count += 1
         if not self.find_input_files(time_info):
+            self.missing_input_count += 1
             return False
 
         # get output path
@@ -363,7 +371,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         # loop over all init/valid times
         for time_input in time_generator(self.config):
             if time_input is None:
-                return False
+                return []
 
             add_to_time_input(time_input,
                               instance=self.instance,
@@ -372,10 +380,18 @@ class RuntimeFreqWrapper(CommandBuilder):
             lead_files = self.get_all_files_from_leads(time_input)
             all_files.extend(lead_files)
 
-        if not all_files:
-            return False
+        return all_files
 
-        self.c_dict['ALL_FILES'] = all_files
+    def _check_input_files(self):
+        self.run_count += 1
+        if not self.c_dict['ALL_FILES'] and self.app_name != 'user_script':
+            self.missing_input_count += 1
+            msg = 'A problem occurred trying to obtain input files'
+            if self.c_dict['ALLOW_MISSING_INPUTS']:
+                self.logger.warning(msg)
+            else:
+                self.log_error(msg)
+            return False
         return True
 
     def get_all_files_from_leads(self, time_input):
@@ -535,7 +551,7 @@ class RuntimeFreqWrapper(CommandBuilder):
                or None if could not find any files
         """
         all_input_files = {}
-        if not self.c_dict.get('ALL_FILES'):
+        if not self.c_dict.get('ALL_FILES') or self.c_dict.get('ALL_FILES') is True:
             return all_input_files
 
         if leads is None:

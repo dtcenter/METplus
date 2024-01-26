@@ -1146,7 +1146,6 @@ class CommandBuilder:
         # set file type string to be set in MET config file to specify
         # Python Embedding is being used for this dataset
         file_type = f"file_type = {data_type};"
-        #self.c_dict[f'{input_type}_FILE_TYPE'] = file_type
         self.env_var_dict[f'METPLUS_{input_type}_FILE_TYPE'] = file_type
         return file_ext
 

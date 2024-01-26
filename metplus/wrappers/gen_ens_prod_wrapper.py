@@ -234,7 +234,9 @@ class GenEnsProdWrapper(LoopTimesWrapper):
         if not self.find_field_info(time_info):
             return False
 
+        self.run_count += 1
         if not self.find_input_files(time_info):
+            self.missing_input_count += 1
             return False
 
         if not self.find_and_check_output_file(time_info):

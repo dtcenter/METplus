@@ -154,8 +154,15 @@ class MTDWrapper(CompareGriddedWrapper):
         # get formatted time to use to name file list files
         time_fmt = f"{first_valid_time_info['valid_fmt']}"
 
+        # if no input files were found
+        if not self.c_dict['ALL_FILES']:
+            self.run_count += 1
+            self.missing_input_count += 1
+            return
+
         # loop through the files found for each field (var_info)
         for file_dict in self.c_dict['ALL_FILES']:
+            self.run_count += 1
             var_info = file_dict['var_info']
             inputs = {}
             for data_type in ('FCST', 'OBS'):
@@ -178,12 +185,15 @@ class MTDWrapper(CompareGriddedWrapper):
                 outfile = f"{time_fmt}_mtd_{dt.lower()}_{file_ext}.txt"
                 inputs[data_type] = self.write_list_file(outfile, file_list)
 
-            if not inputs:
-                self.log_error('Input files not found')
+            if not inputs or (len(inputs) < 2 and not self.c_dict['SINGLE_RUN']):
+                self.missing_input_count += 1
+                msg = 'Could not find all required inputs files'
+                if self.c_dict['ALLOW_MISSING_INPUTS']:
+                    self.logger.warning(msg)
+                else:
+                    self.log_error(msg)
                 continue
-            if len(inputs) < 2 and not self.c_dict['SINGLE_RUN']:
-                self.log_error('Could not find all required inputs files')
-                continue
+
             arg_dict = {
                 'obs_path': inputs.get('OBS'),
                 'model_path': inputs.get('FCST'),

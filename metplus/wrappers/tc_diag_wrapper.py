@@ -311,7 +311,9 @@ class TCDiagWrapper(RuntimeFreqWrapper):
         time_info = time_util.ti_calculate(time_info)
 
         # get input files
+        self.run_count += 1
         if not self.find_input_files(time_info):
+            self.missing_input_count += 1
             return
 
         # get output path
@@ -389,7 +391,11 @@ class TCDiagWrapper(RuntimeFreqWrapper):
             self.logger.debug(f"Explicit file list file: {input_file_list}")
             list_file = do_string_sub(input_file_list, **time_info)
             if not os.path.exists(list_file):
-                self.log_error(f'Could not find file list: {list_file}')
+                msg = f'Could not find file list: {list_file}'
+                if self.c_dict['ALLOW_MISSING_INPUTS']:
+                    self.logger.warning(msg)
+                else:
+                    self.log_error(msg)
                 return False
         else:
             # set c_dict variables that are used in find_data function
