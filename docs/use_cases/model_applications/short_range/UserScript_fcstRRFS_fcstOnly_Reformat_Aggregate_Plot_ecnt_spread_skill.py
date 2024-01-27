@@ -47,19 +47,20 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 # The METplus Analysis tools: METdataio, METcalcpy, and METplotpy have the additional third-party
 # Python package requirements.  The version numbers are found in the requirements.txt file found at the
 # top-level directory of each repository.
-# * lxml
-# * pandas
-# * pyyaml
-# * numpy
-# * netcdf4
-# * xarray
-# * scipy
-# * metpy
-# * pint
-# * python-dateutil
-# * kaleido (python-kaleido)
-# * plotly
-# * matplotlib
+#
+#  * lxml
+#  * pandas
+#  * pyyaml
+#  * numpy
+#  * netcdf4
+#  * xarray
+#  * scipy
+#  * metpy
+#  * pint
+#  * python-dateutil
+#  * kaleido (python-kaleido)
+#  * plotly
+#  * matplotlib
 
 
 
