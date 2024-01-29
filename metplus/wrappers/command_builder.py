@@ -563,7 +563,9 @@ class CommandBuilder:
         if not check_file_list:
             msg = f"Could not find any {data_type}INPUT files"
             # warn instead of error if it is not mandatory to find files
-            if not mandatory or not self.c_dict.get('MANDATORY', True):
+            if (not mandatory
+                    or not self.c_dict.get('MANDATORY', True)
+                    or self.c_dict.get('ALLOW_MISSING_INPUTS', False)):
                 self.logger.warning(msg)
             else:
                 self.log_error(msg)
@@ -665,7 +667,9 @@ class CommandBuilder:
             if not processed_path:
                 msg = (f"Could not find {data_type}INPUT file {file_path} "
                        f"using template {template}")
-                if not mandatory or not self.c_dict.get('MANDATORY', True):
+                if (not mandatory
+                        or not self.c_dict.get('MANDATORY', True)
+                        or self.c_dict.get('ALLOW_MISSING_INPUTS', False)):
                     self.logger.warning(msg)
                     if self.c_dict.get(f'{data_type}FILL_MISSING'):
                         found_file_list.append(f'MISSING{file_path}')
@@ -709,7 +713,9 @@ class CommandBuilder:
         if not closest_files:
             msg = (f"Could not find {data_type}INPUT files under {data_dir} within range "
                    f"[{valid_range_lower},{valid_range_upper}] using template {template}")
-            if not mandatory:
+            if (not mandatory
+                    or not self.c_dict.get('MANDATORY', True)
+                    or self.c_dict.get('ALLOW_MISSING_INPUTS', False)):
                 self.logger.warning(msg)
             else:
                 self.log_error(msg)
@@ -838,7 +844,12 @@ class CommandBuilder:
         # get list of ensemble files to process
         input_files = self.find_model(time_info, return_list=True)
         if not input_files:
-            self.log_error("Could not find any input files")
+            msg = "Could not find any input files"
+            if (not self.c_dict.get('MANDATORY', True)
+                    or self.c_dict.get('ALLOW_MISSING_INPUTS', False)):
+                self.logger.warning(msg)
+            else:
+                self.log_error(msg)
             return False
 
         # if control file is requested, remove it from input list
