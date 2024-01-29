@@ -10,11 +10,6 @@
     "run": false
   },
   {
-    "category": "climate",
-    "index_list": "1",
-    "run": true
-  },
-  {
     "category": "air_quality_and_comp",
     "index_list": "0",
     "run": false
