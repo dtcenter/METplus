@@ -10,12 +10,10 @@ Output Files:
 Condition codes: 0 for success, 1 for failure
 """
 
-import os
-from datetime import datetime
-
 from ..util import time_util
-from . import RuntimeFreqWrapper
 from ..util import do_string_sub
+
+from . import RuntimeFreqWrapper
 
 '''!@namespace UserScriptWrapper
 @brief Parent class for wrappers that run over a grouping of times

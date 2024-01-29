@@ -207,8 +207,7 @@ class GridDiagWrapper(RuntimeFreqWrapper):
 
             @param time_info dictionary containing time information
         """
-        config_file = do_string_sub(self.c_dict['CONFIG_FILE'],
-                                    **time_info)
+        config_file = do_string_sub(self.c_dict['CONFIG_FILE'], **time_info)
         self.args.append(f"-config {config_file}")
 
     def get_files_from_time(self, time_info):

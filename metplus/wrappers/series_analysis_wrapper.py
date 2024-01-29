@@ -835,8 +835,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         # add config file - passing through do_string_sub
         # to get custom string if set
-        config_file = do_string_sub(self.c_dict['CONFIG_FILE'],
-                                    **time_info)
+        config_file = do_string_sub(self.c_dict['CONFIG_FILE'], **time_info)
         self.args.append(f" -config {config_file}")
 
     def get_command(self):

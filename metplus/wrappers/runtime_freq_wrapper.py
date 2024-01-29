@@ -192,8 +192,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         # create input dictionary and set clock time, instance, and custom
         time_input = {}
         add_to_time_input(time_input,
-                          clock_time=self.config.getstr('config',
-                                                        'CLOCK_TIME'),
+                          clock_time=self.config.getstr('config', 'CLOCK_TIME'),
                           instance=self.instance,
                           custom=custom)
 
