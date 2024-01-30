@@ -57,6 +57,52 @@ def set_minimum_config_settings(config):
 
 
 @pytest.mark.parametrize(
+    'once_per_field, missing, run, thresh, errors', [
+        (False, 6, 12, 0.5, 0),
+        (False, 6, 12, 0.6, 1),
+        (True, 12, 24, 0.5, 0),
+        (True, 12, 24, 0.6, 1),
+    ]
+)
+@pytest.mark.wrapper_b
+def test_grid_stat_missing_inputs(metplus_config, get_test_data_dir,
+                                  once_per_field, missing, run, thresh, errors):
+    config = metplus_config
+    set_minimum_config_settings(config)
+    config.set('config', 'INPUT_MUST_EXIST', True)
+    config.set('config', 'GRID_STAT_ALLOW_MISSING_INPUTS', True)
+    config.set('config', 'INPUT_THRESH', thresh)
+    config.set('config', 'INIT_BEG', '2017051001')
+    config.set('config', 'INIT_END', '2017051003')
+    config.set('config', 'INIT_INCREMENT', '2H')
+    config.set('config', 'LEAD_SEQ', '1,2,3,6,9,12')
+    config.set('config', 'FCST_GRID_STAT_INPUT_DIR', get_test_data_dir('fcst'))
+    config.set('config', 'OBS_GRID_STAT_INPUT_DIR', get_test_data_dir('obs'))
+    config.set('config', 'FCST_GRID_STAT_INPUT_TEMPLATE',
+               '{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d_i%H}_f{lead?fmt=%3H}_HRRRTLE_PHPT.grb2')
+    config.set('config', 'OBS_GRID_STAT_INPUT_TEMPLATE',
+               '{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A06.nc')
+    # add 2nd set of fields to test ONCE_PER_FIELD
+    config.set('config', 'FCST_VAR2_NAME', fcst_name)
+    config.set('config', 'FCST_VAR2_LEVELS', fcst_level)
+    config.set('config', 'OBS_VAR2_NAME', obs_name)
+    config.set('config', 'OBS_VAR2_LEVELS', obs_level)
+    config.set('config', 'GRID_STAT_ONCE_PER_FIELD', once_per_field)
+
+    wrapper = GridStatWrapper(config)
+    assert wrapper.isOK
+
+    all_cmds = wrapper.run_all_times()
+    for cmd, _ in all_cmds:
+        print(cmd)
+
+    print(f'missing: {wrapper.missing_input_count} / {wrapper.run_count}, errors: {wrapper.errors}')
+    assert wrapper.missing_input_count == missing
+    assert wrapper.run_count == run
+    assert wrapper.errors == errors
+
+
+@pytest.mark.parametrize(
     'config_overrides, expected_values', [
         # 0 generic FCST is prob
         ({'FCST_IS_PROB': True},

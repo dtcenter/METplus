@@ -48,6 +48,35 @@ def ascii2nc_wrapper(metplus_config, config_overrides=None):
 
 
 @pytest.mark.parametrize(
+    'missing, run, thresh, errors', [
+        (1, 3, 0.5, 0),
+        (1, 3, 0.8, 1),
+    ]
+)
+@pytest.mark.wrapper
+def test_ascii2nc_missing_inputs(metplus_config, get_test_data_dir,
+                                 missing, run, thresh, errors):
+    config_overrides = {
+        'INPUT_MUST_EXIST': True,
+        'ASCII2NC_ALLOW_MISSING_INPUTS': True,
+        'ASCII2NC_INPUT_THRESH': thresh,
+        'ASCII2NC_INPUT_TEMPLATE': os.path.join(get_test_data_dir('ascii'), 'precip24_{valid?fmt=%Y%m%d%H}.ascii'),
+        'VALID_END': '2010010200',
+    }
+    wrapper = ascii2nc_wrapper(metplus_config, config_overrides)
+    assert wrapper.isOK
+
+    all_cmds = wrapper.run_all_times()
+    for cmd, _ in all_cmds:
+        print(cmd)
+
+    print(f'missing: {wrapper.missing_input_count} / {wrapper.run_count}, errors: {wrapper.errors}')
+    assert wrapper.missing_input_count == missing
+    assert wrapper.run_count == run
+    assert wrapper.errors == errors
+
+
+@pytest.mark.parametrize(
     'config_overrides, env_var_values', [
         ({},
          {'METPLUS_TIME_SUMMARY_DICT':
