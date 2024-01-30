@@ -17,8 +17,8 @@ def ascii2nc_wrapper(metplus_config, config_overrides=None):
         'LOOP_BY': 'VALID',
         'VALID_TIME_FMT': '%Y%m%d%H',
         'VALID_BEG': '2010010112',
-        'VALID_END': '2010010112',
-        'VALID_INCREMENT': '1M',
+        'VALID_END': '2010010118',
+        'VALID_INCREMENT': '6H',
         'ASCII2NC_INPUT_TEMPLATE': '{INPUT_BASE}/met_test/data/sample_obs/ascii/precip24_{valid?fmt=%Y%m%d%H}.ascii',
         'ASCII2NC_OUTPUT_TEMPLATE': '{OUTPUT_BASE}/ascii2nc/precip24_{valid?fmt=%Y%m%d%H}.nc',
         'ASCII2NC_CONFIG_FILE': '{PARM_BASE}/met_config/Ascii2NcConfig_wrapped',
@@ -163,11 +163,13 @@ def test_ascii2nc_wrapper(metplus_config, config_overrides,
 
     input_path = wrapper.config.getraw('config', 'ASCII2NC_INPUT_TEMPLATE')
     input_dir = os.path.dirname(input_path)
-    input_file = 'precip24_2010010112.ascii'
+    input_file1 = 'precip24_2010010112.ascii'
+    input_file2 = 'precip24_2010010118.ascii'
 
     output_path = wrapper.config.getraw('config', 'ASCII2NC_OUTPUT_TEMPLATE')
     output_dir = os.path.dirname(output_path)
-    output_file = 'precip24_2010010112.nc'
+    output_file1 = 'precip24_2010010112.nc'
+    output_file2 = 'precip24_2010010118.nc'
 
     all_commands = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_commands}")
@@ -177,13 +179,17 @@ def test_ascii2nc_wrapper(metplus_config, config_overrides,
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
     config_file = wrapper.c_dict.get('CONFIG_FILE')
 
-    expected_cmd = (f"{app_path} "
-                    f"{input_dir}/{input_file} "
-                    f"{output_dir}/{output_file} "
-                    f"-config {config_file} "
-                    f"{verbosity}")
+    expected_cmds = [
+        (f"{app_path} {input_dir}/{input_file1} {output_dir}/{output_file1} "
+         f"-config {config_file} {verbosity}"),
+        (f"{app_path} {input_dir}/{input_file2} {output_dir}/{output_file2} "
+         f"-config {config_file} {verbosity}"),
+    ]
 
-    assert all_commands[0][0] == expected_cmd
+    assert len(all_commands) == len(expected_cmds)
+    for (cmd, _), expected_cmd in zip(all_commands, expected_cmds):
+        # ensure commands are generated as expected
+        assert cmd == expected_cmd
 
     env_vars = all_commands[0][1]
 
