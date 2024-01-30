@@ -162,9 +162,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         # allow multiple files in CommandBuilder.find_data logic
         c_dict['ALLOW_MULTIPLE_FILES'] = True
 
-        # not all input files are mandatory to be found
-        c_dict['MANDATORY'] = False
-
         # fill inputs that are not found with fake path to note it is missing
         c_dict['FCST_FILL_MISSING'] = True
 

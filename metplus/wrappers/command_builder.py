@@ -842,7 +842,7 @@ class CommandBuilder:
             return True
 
         # get list of ensemble files to process
-        input_files = self.find_model(time_info, return_list=True)
+        input_files = self.find_model(time_info, return_list=True, mandatory=False)
         if not input_files:
             msg = "Could not find any input files"
             if (not self.c_dict.get('MANDATORY', True)

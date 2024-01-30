@@ -87,9 +87,6 @@ class GenEnsProdWrapper(LoopTimesWrapper):
             self.log_error('GEN_ENS_PROD_INPUT_TEMPLATE or '
                            'GEN_ENS_PROD_INPUT_FILE_LIST must be set')
 
-        # not all input files are mandatory to be found
-        c_dict['MANDATORY'] = False
-
         # fill inputs that are not found with fake path to note it is missing
         c_dict['FCST_FILL_MISSING'] = True
 
