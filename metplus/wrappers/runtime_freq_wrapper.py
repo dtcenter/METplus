@@ -325,9 +325,7 @@ class RuntimeFreqWrapper(CommandBuilder):
                 self.logger.debug('Skipping run time')
                 continue
 
-            all_files = []
-            self._update_list_with_new_files(time_info, all_files)
-            self.c_dict['ALL_FILES'] = all_files
+            self.c_dict['ALL_FILES'] = self.get_all_files_for_each(time_info)
             if not self._check_input_files():
                 continue
 
@@ -452,6 +450,14 @@ class RuntimeFreqWrapper(CommandBuilder):
             self._update_list_with_new_files(time_info, new_files)
 
         return new_files
+
+    def get_all_files_for_each(self, time_info):
+        if not self.c_dict.get('FIND_FILES', True):
+            return True
+
+        all_files = []
+        self._update_list_with_new_files(time_info, all_files)
+        return all_files
 
     @staticmethod
     def get_files_from_time(time_info):
