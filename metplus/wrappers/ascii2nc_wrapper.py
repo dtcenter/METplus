@@ -115,15 +115,6 @@ class ASCII2NCWrapper(LoopTimesWrapper):
     def get_command(self):
         cmd = self.app_path
 
-        # don't run if no input or output files were found
-        if not self.infiles:
-            self.log_error("No input files were found")
-            return
-
-        if self.outfile == "":
-            self.log_error("No output file specified")
-            return
-
         # add input files
         for infile in self.infiles:
             cmd += ' ' + infile
