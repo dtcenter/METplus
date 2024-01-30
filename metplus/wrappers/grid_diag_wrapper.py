@@ -59,7 +59,7 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         # get the MET config file path or use default
         c_dict['CONFIG_FILE'] = self.get_config_file('GridDiagConfig_wrapped')
 
-        self.get_input_templates_multiple(c_dict)
+        self.get_input_templates_multiple(c_dict, required=True)
 
         # error if no input templates are set
         if not c_dict['TEMPLATE_DICT']:

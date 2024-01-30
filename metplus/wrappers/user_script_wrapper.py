@@ -40,7 +40,7 @@ class UserScriptWrapper(RuntimeFreqWrapper):
             self.log_error("Must supply a command to run with "
                            "USER_SCRIPT_COMMAND")
 
-        self.get_input_templates_multiple(c_dict)
+        self.get_input_templates_multiple(c_dict, required=False)
 
         c_dict['ALLOW_MULTIPLE_FILES'] = True
         c_dict['IS_MET_CMD'] = False

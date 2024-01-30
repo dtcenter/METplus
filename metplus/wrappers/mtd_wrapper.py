@@ -350,7 +350,7 @@ class MTDWrapper(CompareGriddedWrapper):
                                  for template in templates]
                 template_path = ','.join(template_list)
 
-            template_dict[in_type] = template_path
+            template_dict[in_type] = (template_path, True)
 
         c_dict['TEMPLATE_DICT'] = template_dict
 

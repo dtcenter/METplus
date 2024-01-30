@@ -112,21 +112,25 @@ class RuntimeFreqWrapper(CommandBuilder):
                     self.log_error(err_msg)
                     return
 
-    def get_input_templates(self, c_dict, input_info=[]):
+    def get_input_templates(self, c_dict, input_info=None):
         """!Read input templates from config.
         """
         template_dict = {}
+        if not input_info:
+            return
 
-        for prefix, label in input_info:
+        for label, info in input_info.items():
+            prefix = info.get('prefix')
+            required = info.get('required', True)
             input_dir = self.config.getdir(f'{prefix}_INPUT_DIR', '')
             c_dict[f'{label}_INPUT_DIR'] = input_dir
-            templates = self.config.getraw('config', f'{prefix}_INPUT_TEMPLATE')
-            c_dict[f'{label}_INPUT_TEMPLATE'] = templates
-            template_dict[label] = templates
+            template = self.config.getraw('config', f'{prefix}_INPUT_TEMPLATE')
+            c_dict[f'{label}_INPUT_TEMPLATE'] = template
+            template_dict[label] = (template, required)
 
         c_dict['TEMPLATE_DICT'] = template_dict
 
-    def get_input_templates_multiple(self, c_dict):
+    def get_input_templates_multiple(self, c_dict, required=True):
         """!Read input templates from config. Use this function when a given
         input template may have multiple items separated by comma that need to
         be handled separately. For example, GridDiag's input templates
@@ -135,6 +139,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         separately.
 
         @param c_dict config dictionary to set INPUT_TEMPLATES
+        @param required boolean to note if input data must be found or not
         """
         app_upper = self.app_name.upper()
         template_dict = {}
@@ -156,7 +161,7 @@ class RuntimeFreqWrapper(CommandBuilder):
             else:
                 label = input_template_labels[idx]
 
-            template_dict[label] = template
+            template_dict[label] = (template, required)
 
         c_dict['TEMPLATE_DICT'] = template_dict
 
@@ -541,16 +546,16 @@ class RuntimeFreqWrapper(CommandBuilder):
         if not self.c_dict.get('TEMPLATE_DICT'):
             return None
 
-        for label, input_template in self.c_dict['TEMPLATE_DICT'].items():
+        for label, (template, required) in self.c_dict['TEMPLATE_DICT'].items():
             data_type = ''
             template_key = 'INPUT_TEMPLATE'
             if label in ('FCST', 'OBS'):
                 data_type = label
                 template_key = f'{label}_{template_key}'
 
-            self.c_dict[template_key] = input_template
+            self.c_dict[template_key] = template
             # if fill missing is true, data is not mandatory to find
-            mandatory = not fill_missing
+            mandatory = required and not fill_missing
             input_files = self.find_data(time_info, data_type=data_type,
                                          return_list=True,
                                          mandatory=mandatory)
