@@ -373,9 +373,10 @@ class MTDWrapper(CompareGriddedWrapper):
         # create a dictionary for each field (var) with time_info and files
         file_dict_list = []
         for var_info in var_list:
-            file_dict = {'var_info': var_info}
             if var_info:
                 add_field_info_to_time_info(time_info, var_info)
+            file_dict = super().get_files_from_time(time_info)
+            file_dict['var_info'] = var_info
 
             input_files = self.get_input_files(time_info, fill_missing=True)
             # only add all input files if none are missing
@@ -407,6 +408,6 @@ class MTDWrapper(CompareGriddedWrapper):
         for new_file, existing_item in zip(new_files, list_to_update):
             assert new_file['var_info'] == existing_item['var_info']
             for key, value in new_file.items():
-                if key == 'var_info':
+                if key == 'var_info' or key == 'time_info':
                     continue
                 existing_item[key].extend(value)
