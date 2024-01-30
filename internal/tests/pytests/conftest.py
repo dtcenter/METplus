@@ -112,6 +112,14 @@ def metplus_config(request):
                 if len(msg.args) != 0]
         print("Tests raised the following errors:")
         print("\n".join(err_msgs))
+    if config.logger.warning.call_args_list:
+        warn_msgs = [
+                str(msg.args[0])
+                for msg
+                in config.logger.warning.call_args_list
+                if len(msg.args) != 0]
+        print("\nTests raised the following warnings:")
+        print("\n".join(warn_msgs))
     config.logger = old_logger
     # don't remove output base if test fails
     if request.node.rep_call.failed:
