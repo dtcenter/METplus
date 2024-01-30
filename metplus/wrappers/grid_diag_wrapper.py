@@ -12,9 +12,8 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import time_util
-from . import RuntimeFreqWrapper
 from ..util import do_string_sub, parse_var_list, sub_var_list
+from . import RuntimeFreqWrapper
 
 '''!@namespace GridDiagWrapper
 @brief Wraps the Grid-Diag tool

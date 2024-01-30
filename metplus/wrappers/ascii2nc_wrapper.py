@@ -154,8 +154,7 @@ class ASCII2NCWrapper(LoopTimesWrapper):
 
         # add config file - passing through do_string_sub to get custom string if set
         if self.c_dict['CONFIG_FILE']:
-            config_file = do_string_sub(self.c_dict['CONFIG_FILE'],
-                                        **time_info)
+            config_file = do_string_sub(self.c_dict['CONFIG_FILE'], **time_info)
             self.args.append(f" -config {config_file}")
 
         # add mask grid if set
