@@ -57,21 +57,24 @@ def set_minimum_config_settings(config):
 
 
 @pytest.mark.parametrize(
-    'once_per_field, missing, run, thresh, errors', [
-        (False, 6, 12, 0.5, 0),
-        (False, 6, 12, 0.6, 1),
-        (True, 12, 24, 0.5, 0),
-        (True, 12, 24, 0.6, 1),
+    'once_per_field, missing, run, thresh, errors, allow_missing', [
+        (False, 6, 12, 0.5, 0, True),
+        (False, 6, 12, 0.6, 1, True),
+        (True, 12, 24, 0.5, 0, True),
+        (True, 12, 24, 0.6, 1, True),
+        (False, 6, 12, 0.5, 6, False),
+        (True, 12, 24, 0.5, 12, False),
     ]
 )
 @pytest.mark.wrapper_b
 def test_grid_stat_missing_inputs(metplus_config, get_test_data_dir,
-                                  once_per_field, missing, run, thresh, errors):
+                                  once_per_field, missing, run, thresh, errors,
+                                  allow_missing):
     config = metplus_config
     set_minimum_config_settings(config)
     config.set('config', 'INPUT_MUST_EXIST', True)
-    config.set('config', 'GRID_STAT_ALLOW_MISSING_INPUTS', True)
-    config.set('config', 'INPUT_THRESH', thresh)
+    config.set('config', 'GRID_STAT_ALLOW_MISSING_INPUTS', allow_missing)
+    config.set('config', 'GRID_STAT_INPUT_THRESH', thresh)
     config.set('config', 'INIT_BEG', '2017051001')
     config.set('config', 'INIT_END', '2017051003')
     config.set('config', 'INIT_INCREMENT', '2H')
