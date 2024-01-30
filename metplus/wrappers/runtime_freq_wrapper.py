@@ -149,13 +149,6 @@ class RuntimeFreqWrapper(CommandBuilder):
             self.config.getraw('config', f'{app_upper}_INPUT_TEMPLATE_LABELS')
         )
 
-        # cannot have more labels than templates specified
-        if len(input_template_labels) > len(input_templates):
-            self.log_error('Cannot supply more labels than templates. '
-                           f'{app_upper}_INPUT_TEMPLATE_LABELS length must be '
-                           f'less than {app_upper}_INPUT_TEMPLATES length.')
-            return
-
         for idx, template in enumerate(input_templates):
             # if fewer labels than templates, fill in labels with input{idx}
             if len(input_template_labels) <= idx:
