@@ -392,6 +392,8 @@ class RuntimeFreqWrapper(CommandBuilder):
         return all_files
 
     def _check_input_files(self):
+        if self.c_dict['ALL_FILES'] is True:
+            return True
         self.run_count += 1
         if not self.c_dict['ALL_FILES'] and self.app_name != 'user_script':
             self.missing_input_count += 1
