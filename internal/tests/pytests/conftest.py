@@ -184,3 +184,16 @@ def make_nc(tmp_path, lon, lat, z, data, variable='Temp', file_name='fake.nc'):
         temp[0, :, :, :] = data
 
     return file_name
+
+
+@pytest.fixture(scope="function")
+def get_test_data_dir():
+    """!Get path to directory containing test data.
+    """
+    def get_test_data_path(subdir):
+        internal_tests_dir = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), os.pardir)
+        )
+        return os.path.join(internal_tests_dir, 'data', subdir)
+
+    return get_test_data_path

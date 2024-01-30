@@ -21,13 +21,6 @@ obs_fmt = (f'field = {{ name="{obs_name}"; '
            f'level="{obs_level_no_quotes}"; cat_thresh=[ gt12.7 ]; }};')
 
 
-def get_test_data_dir(subdir):
-    internal_tests_dir = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, os.pardir)
-    )
-    return os.path.join(internal_tests_dir, 'data', subdir)
-
-
 def mtd_wrapper(metplus_config, config_overrides):
     """! Returns a default MTDWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
@@ -209,7 +202,7 @@ def test_mode_single_field(metplus_config, config_overrides, env_var_values):
 
 
 @pytest.mark.wrapper
-def test_mtd_by_init_all_found(metplus_config):
+def test_mtd_by_init_all_found(metplus_config, get_test_data_dir):
     obs_data_dir = get_test_data_dir('obs')
     fcst_data_dir = get_test_data_dir('fcst')
     overrides = {
@@ -247,7 +240,7 @@ def test_mtd_by_init_all_found(metplus_config):
 
 
 @pytest.mark.wrapper
-def test_mtd_by_valid_all_found(metplus_config):
+def test_mtd_by_valid_all_found(metplus_config, get_test_data_dir):
     obs_data_dir = get_test_data_dir('obs')
     fcst_data_dir = get_test_data_dir('fcst')
     overrides = {
@@ -285,7 +278,7 @@ def test_mtd_by_valid_all_found(metplus_config):
 
 
 @pytest.mark.wrapper
-def test_mtd_by_init_miss_fcst(metplus_config):
+def test_mtd_by_init_miss_fcst(metplus_config, get_test_data_dir):
     obs_data_dir = get_test_data_dir('obs')
     fcst_data_dir = get_test_data_dir('fcst')
     overrides = {
@@ -323,7 +316,7 @@ def test_mtd_by_init_miss_fcst(metplus_config):
 
 
 @pytest.mark.wrapper
-def test_mtd_by_init_miss_both(metplus_config):
+def test_mtd_by_init_miss_both(metplus_config, get_test_data_dir):
     obs_data_dir = get_test_data_dir('obs')
     fcst_data_dir = get_test_data_dir('fcst')
     overrides = {
@@ -359,7 +352,7 @@ def test_mtd_by_init_miss_both(metplus_config):
 
 
 @pytest.mark.wrapper
-def test_mtd_single(metplus_config):
+def test_mtd_single(metplus_config, get_test_data_dir):
     fcst_data_dir = get_test_data_dir('fcst')
     overrides = {
         'LEAD_SEQ': '1, 2, 3',
