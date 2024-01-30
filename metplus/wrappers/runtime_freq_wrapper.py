@@ -117,14 +117,10 @@ class RuntimeFreqWrapper(CommandBuilder):
         template_dict = {}
 
         input_templates = getlist(
-            self.config.getraw('config',
-                               f'{app_upper}_INPUT_TEMPLATE',
-                               '')
+            self.config.getraw('config', f'{app_upper}_INPUT_TEMPLATE')
         )
         input_template_labels = getlist(
-            self.config.getraw('config',
-                               f'{app_upper}_INPUT_TEMPLATE_LABELS',
-                               '')
+            self.config.getraw('config', f'{app_upper}_INPUT_TEMPLATE_LABELS')
         )
 
         # cannot have more labels than templates specified

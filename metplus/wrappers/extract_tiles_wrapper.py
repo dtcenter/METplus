@@ -76,9 +76,7 @@ class ExtractTilesWrapper(LoopTimesWrapper):
         )
 
         c_dict['TC_STAT_INPUT_TEMPLATE'] = (
-            self.config.getraw('filename_templates',
-                               'EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE',
-                               '')
+            self.config.getraw('config', 'EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE')
         )
         # get MTD data dir/template to read
         c_dict['MTD_INPUT_DIR'] = (
@@ -86,9 +84,7 @@ class ExtractTilesWrapper(LoopTimesWrapper):
         )
 
         c_dict['MTD_INPUT_TEMPLATE'] = (
-            self.config.getraw('filename_templates',
-                               'EXTRACT_TILES_MTD_INPUT_TEMPLATE',
-                               '')
+            self.config.getraw('config', 'EXTRACT_TILES_MTD_INPUT_TEMPLATE')
         )
 
         # determine which location input to use: TCStat or MTD
@@ -133,8 +129,7 @@ class ExtractTilesWrapper(LoopTimesWrapper):
                 local_name = f'{data_type}_{put}_TEMPLATE'
                 config_name = f'{data_type}_{et_upper}_{put}_TEMPLATE'
                 c_dict[local_name] = (
-                    self.config.getraw('filename_templates',
-                                       config_name)
+                    self.config.getraw('config', config_name)
                 )
                 if not c_dict[local_name]:
                     self.log_error(f"{config_name} must be set.")
