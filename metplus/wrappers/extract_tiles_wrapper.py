@@ -154,6 +154,8 @@ class ExtractTilesWrapper(LoopTimesWrapper):
                                                  met_tool=self.app_name)
         # skip RuntimeFreq input file logic - remove once integrated
         c_dict['FIND_FILES'] = False
+        # force error if inputs are missing
+        c_dict['ALLOW_MISSING_INPUTS'] = False
         return c_dict
 
     def regrid_data_plane_init(self):
@@ -206,11 +208,9 @@ class ExtractTilesWrapper(LoopTimesWrapper):
             @param input_dict dictionary containing initialization time
         """
         self.logger.debug("Begin extract tiles")
-        self.run_count += 1
         location_input = self.c_dict.get('LOCATION_INPUT')
         input_path = self.get_location_input_file(time_info, location_input)
         if not input_path:
-            self.missing_input_count += 1
             return
 
         # get unique storm ids or object cats from the input file
