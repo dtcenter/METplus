@@ -131,22 +131,14 @@ class GridStatWrapper(CompareGriddedWrapper):
         # get the MET config file path or use default
         c_dict['CONFIG_FILE'] = self.get_config_file('GridStatConfig_wrapped')
 
-        c_dict['OBS_INPUT_DIR'] = \
-          self.config.getdir('OBS_GRID_STAT_INPUT_DIR', '')
-        c_dict['OBS_INPUT_TEMPLATE'] = \
-          self.config.getraw('filename_templates',
-                             'OBS_GRID_STAT_INPUT_TEMPLATE')
+        self.get_input_templates(c_dict, [('FCST_GRID_STAT', 'FCST'),
+                                          ('OBS_GRID_STAT', 'OBS')])
+
         if not c_dict['OBS_INPUT_TEMPLATE']:
             self.log_error("OBS_GRID_STAT_INPUT_TEMPLATE required to run")
 
         c_dict['OBS_INPUT_DATATYPE'] = \
           self.config.getstr('config', 'OBS_GRID_STAT_INPUT_DATATYPE', '')
-
-        c_dict['FCST_INPUT_DIR'] = \
-          self.config.getdir('FCST_GRID_STAT_INPUT_DIR', '')
-        c_dict['FCST_INPUT_TEMPLATE'] = \
-          self.config.getraw('filename_templates',
-                             'FCST_GRID_STAT_INPUT_TEMPLATE')
 
         if not c_dict['FCST_INPUT_TEMPLATE']:
             self.log_error("FCST_GRID_STAT_INPUT_TEMPLATE required to run")

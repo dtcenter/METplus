@@ -112,9 +112,35 @@ class RuntimeFreqWrapper(CommandBuilder):
                     self.log_error(err_msg)
                     return
 
-    def get_input_templates(self, c_dict):
+    def get_input_templates(self, c_dict, input_info=[]):
+        """!Read input templates from config.
+        """
+        template_dict = {}
+
+        for prefix, label in input_info:
+            input_dir = self.config.getdir(f'{prefix}_INPUT_DIR', '')
+            c_dict[f'{label}_INPUT_DIR'] = input_dir
+            templates = self.config.getraw('config', f'{prefix}_INPUT_TEMPLATE')
+            c_dict[f'{label}_INPUT_TEMPLATE'] = templates
+            template_dict[label] = templates
+
+        c_dict['TEMPLATE_DICT'] = template_dict
+
+    def get_input_templates_multiple(self, c_dict):
+        """!Read input templates from config. Use this function when a given
+        input template may have multiple items separated by comma that need to
+        be handled separately. For example, GridDiag's input templates
+        correspond to each field specified in the MET config file. For example,
+        UserScript may call a script that needs to read multiple groups of files
+        separately.
+
+        @param c_dict config dictionary to set INPUT_TEMPLATES
+        """
         app_upper = self.app_name.upper()
         template_dict = {}
+
+        # read and set input directory
+        c_dict['INPUT_DIR'] = self.config.getdir(f'{app_upper}_INPUT_DIR', '')
 
         input_templates = getlist(
             self.config.getraw('config', f'{app_upper}_INPUT_TEMPLATE')
