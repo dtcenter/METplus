@@ -97,7 +97,8 @@ class PlotDataPlaneWrapper(LoopTimesWrapper):
         if c_dict['CONVERT_TO_IMAGE'] and not c_dict['CONVERT_EXE']:
             self.log_error("[exe] CONVERT must be set correctly if "
                            "PLOT_DATA_PLANE_CONVERT_TO_IMAGE is True")
-
+        # skip RuntimeFreq input file logic - remove once integrated
+        c_dict['FIND_FILES'] = False
         return c_dict
 
     def get_command(self):

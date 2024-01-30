@@ -111,7 +111,8 @@ class Point2GridWrapper(LoopTimesWrapper):
         c_dict['VLD_THRESH'] = self.config.getstr('config',
                                               'POINT2GRID_VLD_THRESH',
                                               '')
-
+        # skip RuntimeFreq input file logic - remove once integrated
+        c_dict['FIND_FILES'] = False
         return c_dict
 
     def get_command(self):

@@ -157,6 +157,8 @@ class ExtractTilesWrapper(LoopTimesWrapper):
 
         c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
                                                  met_tool=self.app_name)
+        # skip RuntimeFreq input file logic - remove once integrated
+        c_dict['FIND_FILES'] = False
         return c_dict
 
     def regrid_data_plane_init(self):

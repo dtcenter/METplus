@@ -444,7 +444,8 @@ class MODEWrapper(CompareGriddedWrapper):
         self.add_met_config(name='multivar_intensity_flag', data_type='list',
                             extra_args={'remove_quotes': True,
                                         'uppercase': True})
-
+        # skip RuntimeFreq input file logic - remove once integrated
+        c_dict['FIND_FILES'] = False
         return c_dict
 
     def run_at_time_one_field(self, time_info, var_info):

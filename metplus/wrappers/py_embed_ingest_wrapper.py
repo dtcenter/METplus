@@ -112,6 +112,7 @@ class PyEmbedIngestWrapper(LoopTimesWrapper):
             RegridDataPlaneWrapper(self.config,
                                    instance=instance)
         )
+        c_dict['FIND_FILES'] = False
         return c_dict
 
     def get_ingest_items(self, item_type, index, ingest_script_addons):

@@ -284,7 +284,8 @@ class TCPairsWrapper(RuntimeFreqWrapper):
         c_dict['GET_EDECK'] = True if c_dict['EDECK_TEMPLATE'] else False
 
         self.handle_description()
-
+        # skip RuntimeFreq input file logic - remove once integrated
+        c_dict['FIND_FILES'] = False
         return c_dict
 
     def validate_runtime_freq(self, c_dict):

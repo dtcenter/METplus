@@ -228,7 +228,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                 self.log_error(f'{d_type}_PCP_COMBINE_INPUT_LEVELS list '
                                'should be either empty or the same length as '
                                f'{d_type}_PCP_COMBINE_INPUT_ACCUMS list.')
-
+        # skip RuntimeFreq input file logic - remove once integrated
+        c_dict['FIND_FILES'] = False
         return c_dict
 
     def run_at_time_once(self, time_info):

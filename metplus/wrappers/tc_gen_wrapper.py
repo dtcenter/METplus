@@ -280,7 +280,8 @@ class TCGenWrapper(RuntimeFreqWrapper):
             metplus_configs=['TC_GEN_GENESIS_MATCH_POINT_TO_TRACK']
         )
         self.add_met_config_window('genesis_match_window')
-
+        # skip RuntimeFreq input file logic - remove once integrated
+        c_dict['FIND_FILES'] = False
         return c_dict
 
     def handle_filter(self):

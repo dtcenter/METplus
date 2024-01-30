@@ -108,7 +108,8 @@ class ASCII2NCWrapper(LoopTimesWrapper):
                 )
 
             c_dict[f'OBS_FILE_WINDOW_{edge}'] = file_window
-
+        # skip RuntimeFreq input file logic - remove once integrated
+        c_dict['FIND_FILES'] = False
         return c_dict
 
     def get_command(self):

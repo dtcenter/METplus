@@ -219,7 +219,8 @@ class GenEnsProdWrapper(LoopTimesWrapper):
                             data_type='string')
 
         c_dict['ALLOW_MULTIPLE_FILES'] = True
-
+        # skip RuntimeFreq input file logic - remove once integrated
+        c_dict['FIND_FILES'] = False
         return c_dict
 
     def run_at_time_once(self, time_info):

@@ -222,7 +222,8 @@ class TCDiagWrapper(RuntimeFreqWrapper):
         self.add_met_config(name='cira_diag_flag', data_type='bool')
 
         self.add_met_config(name='output_base_format', data_type='string')
-
+        # skip RuntimeFreq input file logic - remove once integrated
+        c_dict['FIND_FILES'] = False
         return c_dict
 
     def _read_data_inputs(self, c_dict):

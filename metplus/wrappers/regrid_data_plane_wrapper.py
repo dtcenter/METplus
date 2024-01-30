@@ -160,7 +160,8 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         if 'RegridDataPlane' in get_process_list(self.config):
             if not c_dict['VERIFICATION_GRID']:
                 self.log_error("REGRID_DATA_PLANE_VERIF_GRID must be set.")
-
+        # skip RuntimeFreq input file logic - remove once integrated
+        c_dict['FIND_FILES'] = False
         return c_dict
 
     def handle_output_file(self, time_info, field_info, data_type):

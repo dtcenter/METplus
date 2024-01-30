@@ -95,7 +95,8 @@ class GenVxMaskWrapper(LoopTimesWrapper):
         # use the same file windows for input and mask files
         c_dict['MASK_FILE_WINDOW_BEGIN'] = c_dict['FILE_WINDOW_BEGIN']
         c_dict['MASK_FILE_WINDOW_END'] = c_dict['FILE_WINDOW_END']
-
+        # skip RuntimeFreq input file logic - remove once integrated
+        c_dict['FIND_FILES'] = False
         return c_dict
 
     def get_command(self):

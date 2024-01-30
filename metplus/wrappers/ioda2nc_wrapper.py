@@ -100,7 +100,8 @@ class IODA2NCWrapper(LoopTimesWrapper):
                             extra_args={'remove_quotes': True})
         self.add_met_config(name='quality_mark_thresh', data_type='int')
         self.handle_time_summary_dict()
-
+        # skip RuntimeFreq input file logic - remove once integrated
+        c_dict['FIND_FILES'] = False
         return c_dict
 
     def get_command(self):
