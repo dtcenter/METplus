@@ -230,8 +230,7 @@ def test_find_input_files(metplus_config, offsets, offset_to_find):
     ]
 )
 @pytest.mark.wrapper
-def test_pb2nc_all_fields(metplus_config, config_overrides,
-                          env_var_values):
+def test_pb2nc_all_fields(metplus_config, config_overrides, env_var_values):
     input_dir = '/some/input/dir'
     config = metplus_config
 
@@ -249,7 +248,6 @@ def test_pb2nc_all_fields(metplus_config, config_overrides,
     config.set('config', 'VALID_INCREMENT', '12H')
     config.set('config', 'LEAD_SEQ', '0')
     config.set('config', 'PB2NC_OFFSETS', '12')
-    config.set('config', 'LOOP_ORDER', 'processes')
 
     config.set('config', 'PB2NC_CONFIG_FILE',
                '{PARM_BASE}/met_config/PB2NCConfig_wrapped')
