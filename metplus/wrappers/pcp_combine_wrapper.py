@@ -500,10 +500,14 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         files_found = self.get_accumulation(time_info, lookback, data_src)
         if not files_found:
             self.missing_input_count += 1
-            self.log_error(
+            msg = (
                 f'Could not find files to build accumulation in '
                 f"{self.c_dict[f'{data_src}_INPUT_DIR']} using template "
                 f"{self.c_dict[f'{data_src}_INPUT_TEMPLATE']}")
+            if self.c_dict['ALLOW_MISSING_INPUTS']:
+                self.logger.warning(msg)
+            else:
+                self.log_error(msg)
             return False
 
         return files_found
@@ -558,10 +562,14 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                                                 field_info_after_file=False)
             if not files_found:
                 self.missing_input_count += 1
-                self.log_error(
+                msg = (
                     f'Could not find files to build accumulation in '
                     f"{self.c_dict[f'{data_src}_INPUT_DIR']} using template "
                     f"{self.c_dict[f'{data_src}_INPUT_TEMPLATE']}")
+                if self.c_dict['ALLOW_MISSING_INPUTS']:
+                    self.logger.warning(msg)
+                else:
+                    self.log_error(msg)
                 return None
 
         # set -field name and level from first file field info
