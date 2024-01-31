@@ -122,11 +122,15 @@ class RuntimeFreqWrapper(CommandBuilder):
             c_dict[f'{label}_INPUT_DIR'] = input_dir
             template = self.config.getraw('config', f'{prefix}_INPUT_TEMPLATE')
             c_dict[f'{label}_INPUT_TEMPLATE'] = template
-            template_dict[label] = (template, required)
+            if not c_dict[f'{label}_INPUT_TEMPLATE']:
+                if required:
+                    self.log_error(f'{prefix}_INPUT_TEMPLATE required to run')
+                continue
+            template_dict[label] = (template, True)
 
         c_dict['TEMPLATE_DICT'] = template_dict
 
-    def get_input_templates_multiple(self, c_dict, required=True):
+    def get_input_templates_multiple(self, c_dict):
         """!Read input templates from config. Use this function when a given
         input template may have multiple items separated by comma that need to
         be handled separately. For example, GridDiag's input templates
@@ -156,7 +160,7 @@ class RuntimeFreqWrapper(CommandBuilder):
             else:
                 label = input_template_labels[idx]
 
-            template_dict[label] = (template, required)
+            template_dict[label] = (template, False)
 
         c_dict['TEMPLATE_DICT'] = template_dict
 
