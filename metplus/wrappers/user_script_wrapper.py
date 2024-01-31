@@ -76,10 +76,8 @@ class UserScriptWrapper(RuntimeFreqWrapper):
         self.set_environment_variables(time_info)
 
         # substitute values from dictionary into command
-        self.c_dict['COMMAND'] = (
-            do_string_sub(self.c_dict['COMMAND_TEMPLATE'],
-                          **time_info)
-        )
+        self.c_dict['COMMAND'] = do_string_sub(self.c_dict['COMMAND_TEMPLATE'],
+                                               **time_info)
 
         return self.build()
 
