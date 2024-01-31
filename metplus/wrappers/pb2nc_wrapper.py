@@ -11,10 +11,8 @@ Condition codes: 0 for success, 1 for failure
 """
 
 import os
-import re
 
-from ..util import getlistint, skip_time, get_lead_sequence
-from ..util import ti_calculate
+from ..util import getlistint
 from ..util import do_string_sub
 from . import LoopTimesWrapper
 
@@ -183,14 +181,12 @@ class PB2NCWrapper(LoopTimesWrapper):
         end_template = self.c_dict['VALID_END_TEMPLATE']
 
         if begin_template:
-            self.c_dict['VALID_WINDOW_BEGIN'] = \
-                do_string_sub(begin_template,
-                              **time_info)
+            self.c_dict['VALID_WINDOW_BEGIN'] = do_string_sub(begin_template,
+                                                              **time_info)
 
         if end_template:
-            self.c_dict['VALID_WINDOW_END'] = \
-                do_string_sub(end_template,
-                              **time_info)
+            self.c_dict['VALID_WINDOW_END'] = do_string_sub(end_template,
+                                                            **time_info)
 
     def run_at_time_once(self, input_dict):
         """!Find files needed to run pb2nc and run if found"""

@@ -885,8 +885,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
             # get the output directory where the series_analysis output
             # was written. Plots will be written to the same directory
-            plot_input = do_string_sub(output_template,
-                                       **time_info)
+            plot_input = do_string_sub(output_template, **time_info)
 
             # Get the number of forecast tile files and the name of the
             # first and last in the list to be used in the -title

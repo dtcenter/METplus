@@ -12,8 +12,6 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import get_lead_sequence
-from ..util import ti_calculate
 from ..util import do_string_sub
 from ..util import remove_quotes
 from . import LoopTimesWrapper

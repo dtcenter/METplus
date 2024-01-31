@@ -136,14 +136,8 @@ class GridStatWrapper(CompareGriddedWrapper):
             'OBS': {'prefix': 'OBS_GRID_STAT', 'required': True},
         })
 
-        if not c_dict['OBS_INPUT_TEMPLATE']:
-            self.log_error("OBS_GRID_STAT_INPUT_TEMPLATE required to run")
-
         c_dict['OBS_INPUT_DATATYPE'] = \
           self.config.getstr('config', 'OBS_GRID_STAT_INPUT_DATATYPE', '')
-
-        if not c_dict['FCST_INPUT_TEMPLATE']:
-            self.log_error("FCST_GRID_STAT_INPUT_TEMPLATE required to run")
 
         c_dict['FCST_INPUT_DATATYPE'] = \
           self.config.getstr('config', 'FCST_GRID_STAT_INPUT_DATATYPE', '')

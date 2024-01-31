@@ -41,13 +41,11 @@ class GenVxMaskWrapper(LoopTimesWrapper):
         c_dict['ALLOW_MULTIPLE_FILES'] = False
 
         # input and output files
-        c_dict['INPUT_DIR'] = self.config.getdir('GEN_VX_MASK_INPUT_DIR',
-                                                 '')
+        c_dict['INPUT_DIR'] = self.config.getdir('GEN_VX_MASK_INPUT_DIR', '')
         c_dict['INPUT_TEMPLATE'] = self.config.getraw('config',
                                                       'GEN_VX_MASK_INPUT_TEMPLATE')
 
-        c_dict['OUTPUT_DIR'] = self.config.getdir('GEN_VX_MASK_OUTPUT_DIR',
-                                                  '')
+        c_dict['OUTPUT_DIR'] = self.config.getdir('GEN_VX_MASK_OUTPUT_DIR', '')
         c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('config',
                                                        'GEN_VX_MASK_OUTPUT_TEMPLATE')
 
@@ -144,8 +142,7 @@ class GenVxMaskWrapper(LoopTimesWrapper):
 
             # set mask input template and command line arguments
             self.c_dict['MASK_INPUT_TEMPLATE'] = mask_template
-            self.args = do_string_sub(cmd_args,
-                                      **time_info)
+            self.args = do_string_sub(cmd_args, **time_info)
 
             self.run_count += 1
             if not self.find_input_files(time_info, temp_file):
@@ -176,10 +173,11 @@ class GenVxMaskWrapper(LoopTimesWrapper):
 
     def find_input_files(self, time_info, temp_file):
         """!Handle setting of input file list.
-            Args:
-                @param time_info time dictionary for current runtime
-                @param temp_file path to temporary file used for previous run or empty string on first iteration
-                @returns True if successfully found all inputs, False if not
+
+        @param time_info time dictionary for current runtime
+        @param temp_file path to temporary file used for previous run or
+         empty string on first iteration
+        @returns True if successfully found all inputs, False if not
         """
 
         # clear out input file list
@@ -198,8 +196,7 @@ class GenVxMaskWrapper(LoopTimesWrapper):
             input_path = temp_file
 
         # find mask file, using MASK_INPUT_TEMPLATE
-        mask_file = self.find_data(time_info,
-                                   data_type='MASK')
+        mask_file = self.find_data(time_info, data_type='MASK')
         if not mask_file:
             return False
 

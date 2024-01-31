@@ -10,15 +10,11 @@ Output Files:
 Condition codes: 0 for success, 1 for failure
 """
 
-import os
-from datetime import datetime
-
 from ..util import time_util
-from . import CommandBuilder
-from ..util import do_string_sub
-from ..util import log_runtime_banner, get_lead_sequence, is_loop_by_init
+from ..util import log_runtime_banner, get_lead_sequence
 from ..util import skip_time, getlist, get_start_and_end_times, get_time_prefix
 from ..util import time_generator, add_to_time_input
+from . import CommandBuilder
 
 '''!@namespace RuntimeFreqWrapper
 @brief Parent class for wrappers that run over a grouping of times
@@ -139,7 +135,6 @@ class RuntimeFreqWrapper(CommandBuilder):
         separately.
 
         @param c_dict config dictionary to set INPUT_TEMPLATES
-        @param required boolean to note if input data must be found or not
         """
         app_upper = self.app_name.upper()
         template_dict = {}
