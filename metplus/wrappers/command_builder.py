@@ -439,6 +439,7 @@ class CommandBuilder:
         # errors when searching through offset list
         is_mandatory = mandatory if offsets == [0] else False
 
+        self.c_dict['SUPRESS_WARNINGS'] = True
         for offset in offsets:
             time_info['offset_hours'] = offset
             time_info = ti_calculate(time_info)
@@ -447,7 +448,10 @@ class CommandBuilder:
                                      return_list=return_list)
 
             if obs_path is not None:
+                self.c_dict['SUPRESS_WARNINGS'] = False
                 return obs_path, time_info
+
+        self.c_dict['SUPRESS_WARNINGS'] = False
 
         # if no files are found return None
         # if offsets are specified, log error with list offsets used
@@ -566,7 +570,10 @@ class CommandBuilder:
             if (not mandatory
                     or not self.c_dict.get('MANDATORY', True)
                     or self.c_dict.get('ALLOW_MISSING_INPUTS', False)):
-                self.logger.warning(msg)
+                if self.c_dict.get('SUPRESS_WARNINGS', False):
+                    self.logger.debug(msg)
+                else:
+                    self.logger.warning(msg)
             else:
                 self.log_error(msg)
 
@@ -670,7 +677,12 @@ class CommandBuilder:
                 if (not mandatory
                         or not self.c_dict.get('MANDATORY', True)
                         or self.c_dict.get('ALLOW_MISSING_INPUTS', False)):
-                    self.logger.warning(msg)
+
+                    if self.c_dict.get('SUPRESS_WARNINGS', False):
+                        self.logger.debug(msg)
+                    else:
+                        self.logger.warning(msg)
+
                     if self.c_dict.get(f'{data_type}FILL_MISSING'):
                         found_file_list.append(f'MISSING{file_path}')
                         continue
@@ -716,7 +728,12 @@ class CommandBuilder:
             if (not mandatory
                     or not self.c_dict.get('MANDATORY', True)
                     or self.c_dict.get('ALLOW_MISSING_INPUTS', False)):
-                self.logger.warning(msg)
+
+                if self.c_dict.get('SUPRESS_WARNINGS', False):
+                    self.logger.debug(msg)
+                else:
+                    self.logger.warning(msg)
+
             else:
                 self.log_error(msg)
 
