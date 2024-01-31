@@ -136,6 +136,7 @@ class GenVxMaskWrapper(LoopTimesWrapper):
         self.set_environment_variables(time_info)
 
         # loop over mask templates and command line args,
+        self.run_count += 1
         temp_file = ''
         for index, (mask_template, cmd_args) in enumerate(zip(self.c_dict['MASK_INPUT_TEMPLATES'],
                                                               self.c_dict['COMMAND_OPTIONS'])):
@@ -144,7 +145,6 @@ class GenVxMaskWrapper(LoopTimesWrapper):
             self.c_dict['MASK_INPUT_TEMPLATE'] = mask_template
             self.args = do_string_sub(cmd_args, **time_info)
 
-            self.run_count += 1
             if not self.find_input_files(time_info, temp_file):
                 self.missing_input_count += 1
                 return
