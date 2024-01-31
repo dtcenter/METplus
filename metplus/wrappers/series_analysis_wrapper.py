@@ -451,6 +451,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             self.c_dict['ALL_FILES'] = (
                 self.get_all_files_for_leads(input_dict, lead_group[1])
             )
+            if not self._check_input_files():
+                continue
 
             # if only 1 forecast lead is being processed, set it in time dict
             if len(lead_group[1]) == 1:
@@ -488,7 +490,6 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         # loop over storm list and process for each
         # this loop will execute once if not filtering by storm ID
         for storm_id in storm_list:
-            self.run_count += 1
             # Create FCST and OBS ASCII files
             fcst_path, obs_path = (
                 self._get_fcst_and_obs_path(time_info,
@@ -496,7 +497,6 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                             lead_group)
             )
             if not fcst_path or not obs_path:
-                self.missing_input_count += 1
                 msg = 'No ASCII file lists were created. Skipping.'
                 if self.c_dict['ALLOW_MISSING_INPUTS']:
                     self.logger.warning(msg)
@@ -706,7 +706,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         list_file_dict = self.subset_input_files(time_info,
                                                  output_dir=output_dir,
-                                                 leads=leads)
+                                                 leads=leads,
+                                                 force_list=True)
         if not list_file_dict:
             return None, None
 
