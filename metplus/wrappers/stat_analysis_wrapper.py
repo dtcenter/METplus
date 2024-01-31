@@ -203,6 +203,9 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
                             data_type='float',
                             metplus_configs=['STAT_ANALYSIS_HSS_EC_VALUE'])
 
+        # force error if inputs are missing
+        c_dict['ALLOW_MISSING_INPUTS'] = False
+
         return self._c_dict_error_check(c_dict, all_field_lists_empty)
 
     def validate_runtime_freq(self, c_dict):
