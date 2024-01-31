@@ -230,6 +230,8 @@ class GFDLTrackerWrapper(RuntimeFreqWrapper):
             self.log_error('GFDL_TRACKER_OUTPUT_DIR must be set')
         # skip RuntimeFreq input file logic - remove once integrated
         c_dict['FIND_FILES'] = False
+        # force error if inputs are missing
+        c_dict['ALLOW_MISSING_INPUTS'] = False
         return c_dict
 
     def _read_gfdl_config_variables(self, c_dict):
