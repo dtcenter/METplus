@@ -93,15 +93,13 @@ class TCDiagWrapper(RuntimeFreqWrapper):
         c_dict['DECK_INPUT_DIR'] = self.config.getdir('TC_DIAG_DECK_INPUT_DIR',
                                                       '')
         c_dict['DECK_INPUT_TEMPLATE'] = (
-            self.config.getraw('config',
-                               'TC_DIAG_DECK_TEMPLATE')
+            self.config.getraw('config', 'TC_DIAG_DECK_INPUT_TEMPLATE')
         )
 
         # get output dir/template
         c_dict['OUTPUT_DIR'] = self.config.getdir('TC_DIAG_OUTPUT_DIR', '')
         c_dict['OUTPUT_TEMPLATE'] = (
-            self.config.getraw('config',
-                               'TC_DIAG_OUTPUT_TEMPLATE')
+            self.config.getraw('config', 'TC_DIAG_OUTPUT_TEMPLATE')
         )
 
         # get the MET config file path or use default

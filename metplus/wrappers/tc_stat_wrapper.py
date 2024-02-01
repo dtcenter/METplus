@@ -181,8 +181,10 @@ class TCStatWrapper(RuntimeFreqWrapper):
         c_dict['CONFIG_FILE'] = self.get_config_file('TCStatConfig_wrapped')
 
         self.set_met_config_for_environment_variables()
-        # skip RuntimeFreq input file logic - remove once integrated
+        # skip RuntimeFreq input file logic
         c_dict['FIND_FILES'] = False
+        # force error if inputs are missing
+        c_dict['ALLOW_MISSING_INPUTS'] = False
         return c_dict
 
     def set_met_config_for_environment_variables(self):

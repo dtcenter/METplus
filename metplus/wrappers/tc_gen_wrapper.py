@@ -106,8 +106,7 @@ class TCGenWrapper(RuntimeFreqWrapper):
 
         app_name_upper = self.app_name.upper()
         c_dict['VERBOSITY'] = (
-            self.config.getstr('config',
-                               f'LOG_{app_name_upper}_VERBOSITY',
+            self.config.getstr('config', f'LOG_{app_name_upper}_VERBOSITY',
                                c_dict['VERBOSITY'])
         )
         c_dict['ALLOW_MULTIPLE_FILES'] = True
