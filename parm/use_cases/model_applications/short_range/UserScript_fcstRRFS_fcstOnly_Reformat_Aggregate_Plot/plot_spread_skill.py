@@ -13,7 +13,7 @@ def main():
     # Read in the YAML configuration file.  Environment variables in
     # the configuration file are supported.
     try:
-        input_config_file = os.getenv("PLOTTING_YAML_CONFIG_NAME", "spread_skill_ecnt.yaml")
+        input_config_file = os.getenv("PLOTTING_YAML_CONFIG_NAME", "plot_spread_skill.yaml")
         settings = readconfig.parse_config(input_config_file)
         logging.info(settings)
     except yaml.YAMLError as exc:
