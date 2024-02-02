@@ -1,5 +1,5 @@
 """
-UserScript: Reformat MET .stat ECNT data, Aggregate based on model members and times, and generate a spread skill plot
+UserScript: Reformat MET .stat ECNT data, calculate aggregation statistics, and generate a spread skill plot
 ======================================================================================================================
 
 model_applications/
@@ -15,7 +15,7 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 # This use case illustrates how to use MET .stat output (using the ECNT linetype data) to generate a
 # spread skill plot using a subset of the METplus Analysis Tools (METdataio, METcalcpy,
 # and METplotpy). The METdataio METreformat module extracts the ECNT linetype data and
-# performs reformatting, the METcalcpy pre-processing module performs aggregation, and the
+# performs reformatting, the METcalcpy agg-stat module performs aggregation, and the
 # METplotpy line plot is used to generate the spread skill plot.
 #
 
@@ -29,12 +29,17 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 #  **Input**: MET .stat files from MET ensemble-stat tool for RRFS for 20220506
 #
 #  **Location**: All the input data required for this use case can be found in the met_test sample data tarball
-#  (**sample_data-short_range.tgz**). The
+#  (**sample_data-short_range.tgz**).
+#
 #  Click here to see the METplus releases page and download sample data for the appropriate
 #  release: https://github.com/dtcenter/METplus/releases
-#  This tarball should be unpacked into the directory that you will set the value of INPUT_BASE.
-#  See Running METplus section for more information.
 #
+#  See `Running METplus <https://metplus.readthedocs.io/en/develop/Users_Guide/getting_started.html#running-metplus>`_
+#  section for more information.
+#
+#  **This tarball should be unpacked into the directory corresponding to the value of INPUT_BASE** in the
+#  `User Configuration File <https://metplus.readthedocs.io/en/develop/Users_Guide/systemconfiguration.html#user-configuration-file>`_
+#  section.
 #
 
 #############################################################################
@@ -85,7 +90,8 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 # The METDATAIO_BASE is the full path to where the METdataio code was cloned, the METCALCPY_BASE is the full path
 # to the location of the METcalcpy code, and the METPLOTPY_BASE is the full path to the location of the
 # METplotpy code. In addition, define the OUTPUT_BASE, INPUT_BASE, and MET_INSTALL_DIR settings in the user
-# configuration file.
+# configuration file. For instructions on how to set up the user configuration file, refer to the `User ConfigurationFile
+# <https://metplus.readthedocs.io/en/develop/Users_Guide/systemconfiguration.html#user-configuration-file>`_ section.
 #
 
 
