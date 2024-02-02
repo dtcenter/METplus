@@ -29,7 +29,7 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 #  **Input**: MET .stat files from MET ensemble-stat tool for RRFS for 20220506
 #
 #  **Location**: All the input data required for this use case can be found in the met_test sample data tarball
-#  (sample_data-short_range.tgz).
+#  (**sample_data-short_range.tgz**). The
 #  Click here to see the METplus releases page and download sample data for the appropriate
 #  release: https://github.com/dtcenter/METplus/releases
 #  This tarball should be unpacked into the directory that you will set the value of INPUT_BASE.
@@ -131,20 +131,21 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 ##############################################################################
 # Python Scripts
 # ----------------
+# This use case uses Python scripts to invoke the METdataio reformatter, the METcalcpy aggregator, and the METplotpy
+# line plot.
 #
-# This use case uses the following Python script (from METdataio) to reformat the MET .stat ECNT linetype data
-# into a format that can be used by the plotting scripts.
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot/reformat_ecnt.py
-#
-
-# This use case uses a Python script (from METcalcpy) to aggregate the ECNT RMSE and SPREAD_PLUS_OERR statistics
+# The following Python script (from METdataio) is used to reformat the MET .stat ECNT linetype data
+# into a format that can be used by the aggregating script.
 #
 # .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot/plot_spread_skill.py
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot/reformat_ecnt_linetype.py
 #
-
-# This use case uses a Python script (from METplotpy) to generate a spread-skill plot using the METplotypy line plot code.
+# This Python script (from METcalcpy) is used to calculate aggregation statistics for the ECNT linetype.
+#
+# .. highlight:: python
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot/aggregate_ecnt.py
+#
+# Finally,this Python script (from METplotpy) is used to generate a spread-skill plot using the METplotypy line plot code.
 #
 # .. highlight:: python
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot/plot_spread_skill.py
@@ -213,8 +214,9 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 #
 # The reformatted ensemble-stat ECNT linetype data should exist in the location specified in the user
 # configuration file (OUTPUT_BASE).  Verify that the ensemble_stat_ecnt.data file exists.  The file now has all
-# the statistics under the stat_name and stat_value columns, and confidence level values under the
-# following columns:  stat_ncl, stat_ncu, stat_bcl, and stat_bcu
+# the statistics under the stat_name and stat_value columns, all ECNT statistic columns labelled with their
+# corresponding names (e.g. crps, crpss, rmse, etc.) and confidence level values under the
+# following columns:  stat_btcl and stat_btcu
 #
 #
 # **Aggregation Output**
@@ -246,4 +248,4 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/short-range-UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.png'
+# sphinx_gallery_thumbnail_path = '_static/short-range_UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot.png'
