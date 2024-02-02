@@ -23,7 +23,7 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 # Datasets
 # --------
 #
-#  * Forecast dataset: RRFS
+#  * Forecast dataset: RRFS GEFS (Rapid Refresh Forecast System Global Ensemble Forecast System)
 #  * Observation dataset: None
 #
 #  **Input**: MET .stat files from MET ensemble-stat tool for RRFS for 20220506
