@@ -113,7 +113,7 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 #
 # METplus first loads all the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/s2s/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot.conf
