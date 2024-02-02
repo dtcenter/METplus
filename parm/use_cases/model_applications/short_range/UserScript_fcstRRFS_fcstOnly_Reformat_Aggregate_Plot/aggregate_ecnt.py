@@ -33,7 +33,12 @@ def main():
 
     # Calculate the aggregation statistics using METcalcpy agg_stat
     agg_begin = time.time()
-    os.mkdir(os.getenv("AGGREGATE_OUTPUT_BASE"))
+    try:
+       os.mkdir(os.getenv("AGGREGATE_OUTPUT_BASE"))
+    except OSError:
+        # Directory already exists, ignore error.
+        pass
+
     AGG_STAT = AggStat(settings)
     AGG_STAT.calculate_stats_and_ci()
     agg_finish = time.time()
