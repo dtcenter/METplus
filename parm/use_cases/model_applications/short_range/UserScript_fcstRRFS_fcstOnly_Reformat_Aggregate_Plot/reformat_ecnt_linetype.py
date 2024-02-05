@@ -4,7 +4,6 @@
 import os
 import time
 import logging
-import yaml
 
 from METdbLoad.ush.read_data_files import ReadDataFiles
 from METdbLoad.ush.read_load_xml import XmlLoadFile
@@ -18,12 +17,9 @@ def main():
 
     # Read in the YAML configuration file.  Environment variables in
     # the configuration file are supported.
-    try:
-        input_config_file = os.getenv("REFORMAT_YAML_CONFIG_NAME", "reformat_ecnt.yaml")
-        settings = readconfig.parse_config(input_config_file)
-        logging.info(settings)
-    except yaml.YAMLError as exc:
-        logging.error(exc)
+    input_config_file = os.getenv("REFORMAT_YAML_CONFIG_NAME", "reformat_ecnt.yaml")
+    settings = readconfig.parse_config(input_config_file)
+    logging.info(settings)
 
 
     # Replacing the need for an XML specification file, pass in the XMLLoadFile and
