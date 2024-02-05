@@ -84,12 +84,16 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 # same base directory (i.e. if the METPLUS_BASE directory is /home/username/working/METplus,
 # then clone the METdataio, METcalcpy and METplotpy source code into the /home/username/working directory)
 #
-# Define the METDATAIO_BASE, METCALCPY_BASE, and METPLOTPY_BASE environment variables in the user configurations
-# file. Refer to this documentation  https://metplus.readthedocs.io/en/latest/Users_Guide/systemconfiguration.html#user-configuration-file
-# for additional information about the user configuration file.
-# The METDATAIO_BASE is the full path to where the METdataio code was cloned, the METCALCPY_BASE is the full path
-# to the location of the METcalcpy code, and the METPLOTPY_BASE is the full path to the location of the
-# METplotpy code. In addition, define the OUTPUT_BASE, INPUT_BASE, and MET_INSTALL_DIR settings in the user
+# Clone the METdataio, METcalcpy, and METplotpy source code from their repositories under a base directory. The
+# repositories are located:
+#
+#   *  https://github.com/dtcenter/METdataio
+#   *  https://github.com/dtcenter/METcalcpy
+#   *  https://github.com/dtcenter/METplotpy
+#
+#
+#
+# Define the OUTPUT_BASE, INPUT_BASE, and MET_INSTALL_DIR settings in the user
 # configuration file. For instructions on how to set up the user configuration file, refer to the `User ConfigurationFile
 # <https://metplus.readthedocs.io/en/develop/Users_Guide/systemconfiguration.html#user-configuration-file>`_ section.
 #
@@ -177,9 +181,6 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 # * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
 # * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
 # * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-# * **METDATAIO_BASE** - Path where METdataio source code is installed locally
-# * **METCALCPY_BASE** - Path where METcalcpy source code is installed locally
-# * **METPLOTPY_BASE** - Path where METplotpy source code is installed locally
 #
 #  and for the [exe] section, you will need to define the location of NON-MET executables.
 #  If the executable is in the user's path, METplus will find it from the name. 
@@ -192,9 +193,6 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 #   INPUT_BASE = /path/to/sample/input/data
 #   OUTPUT_BASE = /path/to/output/dir
 #   MET_INSTALL_DIR = /path/to/met-X.Y
-#   METDATAIO_BASE = /path/to/METdataio
-#   METCALCPY_BASE = /path/to/METcalcpy
-#   METPLOTPY_BASE = /path/to/METplotpy
 #
 #
 #   [exe]
