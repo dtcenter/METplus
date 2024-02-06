@@ -461,8 +461,10 @@ class CommandBuilder:
                            f"{','.join([str(offset) for offset in offsets])}")
 
         # if mandatory, report error, otherwise report warning
-        if mandatory:
-            self.log_error(log_message)
+        if mandatory and not self.c_dict.get('ALLOW_MISSING_INPUTS', False):
+            # don't call log_error to increment error count because
+            # error should already be reported
+            self.logger.error(log_message)
         else:
             self.logger.warning(log_message)
 
