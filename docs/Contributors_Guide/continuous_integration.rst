@@ -892,6 +892,12 @@ environments use this environment as a base.
 * All packages in metplotpy_env
 * pygrib 2.1.4
 
+**mp_analysis_env**
+
+* All packages in metplotpy_env
+* lxml 4.9.1
+* pymysql 1.0.2
+
 **pygrib_env**
 
 * All packages in py_embed_base_env
