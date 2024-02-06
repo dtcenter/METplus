@@ -89,6 +89,12 @@ def main():
         # print list of existing docker images
         commands.append('docker images')
 
+        # remove docker image after creating run env
+        commands.append(f'docker image rm dtcenter/metplus-dev:{branch_name}')
+
+        # list docker images again after removal
+        commands.append('docker images')
+
         # start interactive container in the background
         commands.append(
             f"docker run -d --rm -it -e GITHUB_WORKSPACE "
