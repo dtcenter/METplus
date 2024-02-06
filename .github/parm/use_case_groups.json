@@ -225,12 +225,12 @@
     "run": false
   },
   {
-    "category": "_range",
+    "category": "short_range",
     "index_list": "0",
     "run": false
   },
   {
-    "category": "_range",
+    "category": "short_range",
     "index_list": "1",
     "run": false
   },
@@ -267,7 +267,7 @@
   {
     "category": "short_range",
     "index_list": "14",
-    "run": true
+    "run": false
   },
   {
     "category": "space_weather",
