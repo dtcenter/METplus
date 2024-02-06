@@ -283,6 +283,21 @@ jobs:
       - run: .github/jobs/build_conda_image.sh
       - run: .github/jobs/push_conda_image.sh
 
+
+  mp_analysis:
+    if: |
+      always() && (needs.check.outputs.no_skip == 'true' ||
+      contains(fromJSON(needs.check.outputs.run_list), 'mp_analysis'))
+    runs-on: ubuntu-latest
+    needs: [check,metplotpy]
+    env:
+      ENV_NAME: ${{ github.job }}
+      BASE_ENV: metplotpy
+    steps:
+      - uses: actions/checkout@v4
+      - run: .github/jobs/build_conda_image.sh
+      - run: .github/jobs/push_conda_image.sh
+
   diff:
     if: |
       always() && (needs.check.outputs.no_skip == 'true' ||
