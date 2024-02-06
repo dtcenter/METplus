@@ -30,6 +30,7 @@ PLOTCALC_KEYWORDS = [
     'metcalcpy',
     'spacetime',
     'weatherregime',
+    'mp_analysis',
 ]
 
 # Docker envs that do not use Python so they do not need print conda list
