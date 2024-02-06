@@ -1031,8 +1031,7 @@ class CommandBuilder:
             prefix = self.get_output_prefix(time_info, set_env_vars=False)
             prefix = f'{self.app_name}_{prefix}' if prefix else self.app_name
             search_string = f'{prefix}_{lead}L_{valid}V*'
-            search_path = os.path.join(output_path,
-                                       search_string)
+            search_path = os.path.join(output_path, search_string)
             if skip_if_output_exists:
                 self.logger.debug("Looking for existing data that matches: "
                                   f"{search_path}")

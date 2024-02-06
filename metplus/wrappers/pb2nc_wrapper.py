@@ -115,8 +115,7 @@ class PB2NCWrapper(LoopTimesWrapper):
 
         self.handle_mask(single_value=True)
 
-        self.add_met_config(name='obs_bufr_var',
-                            data_type='list',
+        self.add_met_config(name='obs_bufr_var', data_type='list',
                             metplus_configs=['PB2NC_OBS_BUFR_VAR_LIST',
                                              'PB2NC_OBS_BUFR_VAR'],
                             extra_args={'allow_empty': True})
@@ -125,11 +124,10 @@ class PB2NCWrapper(LoopTimesWrapper):
 
         self.handle_file_window_variables(c_dict, data_types=['OBS'])
 
-        c_dict['VALID_BEGIN_TEMPLATE'] = \
-          self.config.getraw('config', 'PB2NC_VALID_BEGIN', '')
-
-        c_dict['VALID_END_TEMPLATE'] = \
-          self.config.getraw('config', 'PB2NC_VALID_END', '')
+        c_dict['VALID_BEGIN_TEMPLATE'] = self.config.getraw('config',
+                                                            'PB2NC_VALID_BEGIN')
+        c_dict['VALID_END_TEMPLATE'] = self.config.getraw('config',
+                                                          'PB2NC_VALID_END')
 
         c_dict['ALLOW_MULTIPLE_FILES'] = True
 
@@ -225,12 +223,6 @@ class PB2NCWrapper(LoopTimesWrapper):
         for arg in self.args:
             cmd += f' {arg}'
 
-        # if multiple input files, add first now, then add rest with
-        # -pbfile argument
-        if not self.infiles:
-            self.log_error("No input files found")
-            return None
-
         cmd += f" {self.infiles[0]}"
 
         out_path = self.get_output_path()
@@ -238,6 +230,7 @@ class PB2NCWrapper(LoopTimesWrapper):
 
         cmd += f" {self.c_dict['CONFIG_FILE']}"
 
+        # add additional input files with -pbfile argument
         if len(self.infiles) > 1:
             for infile in self.infiles[1:]:
                 cmd += f" -pbfile {infile}"
