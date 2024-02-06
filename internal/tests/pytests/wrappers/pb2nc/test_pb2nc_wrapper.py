@@ -10,6 +10,9 @@ from metplus.wrappers.pb2nc_wrapper import PB2NCWrapper
 from metplus.util import time_util
 from metplus.util import do_string_sub
 
+valid_beg = '20141031_18'
+valid_end = '20141031_23'
+
 
 def pb2nc_wrapper(metplus_config):
     """! Returns a default PB2NCWrapper with /path/to entries in the
@@ -23,6 +26,55 @@ def pb2nc_wrapper(metplus_config):
     return PB2NCWrapper(config)
 
 
+@pytest.mark.parametrize(
+    'missing, run, thresh, errors, allow_missing, runtime_freq', [
+        (16, 24, 0.3, 0, True, 'RUN_ONCE_FOR_EACH'),
+        (16, 24, 0.7, 1, True, 'RUN_ONCE_FOR_EACH'),
+        (16, 24, 0.3, 16, False, 'RUN_ONCE_FOR_EACH'),
+        (2, 4, 0.4, 0, True, 'RUN_ONCE_PER_INIT_OR_VALID'),
+        (2, 4, 0.6, 1, True, 'RUN_ONCE_PER_INIT_OR_VALID'),
+        (2, 4, 0.6, 2, False, 'RUN_ONCE_PER_INIT_OR_VALID'),
+        (2, 5, 0.4, 0, True, 'RUN_ONCE_PER_LEAD'),
+        (2, 5, 0.7, 1, True, 'RUN_ONCE_PER_LEAD'),
+        (2, 5, 0.4, 2, False, 'RUN_ONCE_PER_LEAD'),
+        (0, 1, 0.4, 0, True, 'RUN_ONCE'),
+        (0, 1, 0.4, 0, False, 'RUN_ONCE'),
+    ]
+)
+@pytest.mark.wrapper
+def test_pb2nc_missing_inputs(metplus_config, get_test_data_dir, missing,
+                              run, thresh, errors, allow_missing, runtime_freq):
+    config = metplus_config
+    config.set('config', 'DO_NOT_RUN_EXE', True)
+    config.set('config', 'INPUT_MUST_EXIST', True)
+    config.set('config', 'PB2NC_ALLOW_MISSING_INPUTS', allow_missing)
+    config.set('config', 'PB2NC_INPUT_THRESH', thresh)
+    config.set('config', 'PB2NC_RUNTIME_FREQ', runtime_freq)
+    config.set('config', 'LOOP_BY', 'INIT')
+    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H')
+    config.set('config', 'INIT_LIST', '2017051001, 2017051003, 2017051201, 2017051203')
+    if runtime_freq == 'RUN_ONCE_PER_LEAD':
+        config.set('config', 'LEAD_SEQ', '6,9,12,15,18')
+    else:
+        config.set('config', 'LEAD_SEQ', '1,2,3,6,9,12')
+    config.set('config', 'PB2NC_INPUT_DIR', get_test_data_dir('obs'))
+    config.set('config', 'PB2NC_INPUT_TEMPLATE',
+               '{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A06.nc')
+    config.set('config', 'PB2NC_OUTPUT_TEMPLATE', '{OUTPUT_BASE}/PB2NC/output/test.nc')
+
+    wrapper = PB2NCWrapper(config)
+    assert wrapper.isOK
+
+    all_cmds = wrapper.run_all_times()
+    for cmd, _ in all_cmds:
+        print(cmd)
+
+    print(f'missing: {wrapper.missing_input_count} / {wrapper.run_count}, errors: {wrapper.errors}')
+    assert wrapper.missing_input_count == missing
+    assert wrapper.run_count == run
+    assert wrapper.errors == errors
+
+
 # ---------------------
 # test_get_command
 # test that command is generated correctly
@@ -30,7 +82,6 @@ def pb2nc_wrapper(metplus_config):
 @pytest.mark.parametrize(
     # list of input files
     'infiles', [
-        [],
         ['file1'],
         ['file1', 'file2'],
         ['file1', 'file2', 'file3'],
@@ -92,15 +143,16 @@ def test_find_input_files(metplus_config, offsets, offset_to_find):
         create_fullpath = os.path.join(fake_input_dir, create_file)
         open(create_fullpath, 'a').close()
 
-
     # unset offset in time dictionary so it will be computed
     del input_dict['offset']
 
     # set offset list
     pb.c_dict['OFFSETS'] = offsets
 
+    pb.c_dict['ALL_FILES'] = pb.get_all_files_for_each(input_dict)
+
     # look for input files based on offset list
-    result = pb.find_input_files(input_dict)
+    result = pb.find_input_files()
 
     # check if correct offset file was found, if None expected, check against None
     if offset_to_find is None:
@@ -226,6 +278,9 @@ def test_find_input_files(metplus_config, offsets, offset_to_find):
                                            'vld_thresh = 0.1;}')}),
         ({'PB2NC_OBS_BUFR_MAP': '{key="POB"; val="PRES"; },{key="QOB"; val="SPFH";}', },
          {'METPLUS_OBS_BUFR_MAP': 'obs_bufr_map = [{key="POB"; val="PRES"; }, {key="QOB"; val="SPFH";}];'}),
+        ({'PB2NC_VALID_BEGIN': valid_beg}, {}),
+        ({'PB2NC_VALID_END': valid_end}, {}),
+        ({'PB2NC_VALID_BEGIN': valid_beg, 'PB2NC_VALID_END': valid_end}, {}),
 
     ]
 )
@@ -269,14 +324,21 @@ def test_pb2nc_all_fields(metplus_config, config_overrides, env_var_values):
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
     config_file = wrapper.c_dict.get('CONFIG_FILE')
     out_dir = wrapper.c_dict.get('OUTPUT_DIR')
+
+    valid_args = ''
+    if 'PB2NC_VALID_BEGIN' in config_overrides:
+        valid_args += f' -valid_beg {valid_beg}'
+    if 'PB2NC_VALID_END' in config_overrides:
+        valid_args += f' -valid_end {valid_end}'
+
     expected_cmds = [(f"{app_path} {verbosity} "
                       f"{input_dir}/ndas.t00z.prepbufr.tm12.20070401.nr "
                       f"{out_dir}/2007033112.nc "
-                      f"{config_file}"),
+                      f"{config_file}{valid_args}"),
                      (f"{app_path} {verbosity} "
                       f"{input_dir}/ndas.t12z.prepbufr.tm12.20070401.nr "
                       f"{out_dir}/2007040100.nc "
-                      f"{config_file}"),
+                      f"{config_file}{valid_args}"),
                      ]
 
     all_cmds = wrapper.run_all_times()
