@@ -112,7 +112,7 @@ def run_commands(commands):
         start_time = time.time()
         try:
             process = subprocess.Popen(shlex.split(command),
-                                       shell=True,
+                                       shell=False,
                                        encoding='utf-8',
                                        stdout=subprocess.PIPE,
                                        stderr=subprocess.STDOUT)
