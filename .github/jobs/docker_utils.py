@@ -111,9 +111,8 @@ def run_commands(commands):
         print(f"::group::RUNNING {command}")
         start_time = time.time()
         try:
-            shell = any([x in command for x in ('|', '&', '<', '>')])
             process = subprocess.Popen(shlex.split(command),
-                                       shell=shell,
+                                       shell=True,
                                        encoding='utf-8',
                                        stdout=subprocess.PIPE,
                                        stderr=subprocess.STDOUT)

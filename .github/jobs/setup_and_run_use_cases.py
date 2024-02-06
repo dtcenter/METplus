@@ -90,7 +90,11 @@ def main():
         commands.append('docker images')
 
         # remove docker image after creating run env or prune untagged images
-        commands.append(f'docker image rm dtcenter/metplus-dev:{branch_name} -f || docker image prune -f')
+        commands.append(f'docker image rm dtcenter/metplus-dev:{branch_name} -f')
+        commands.append('docker image prune -f')
+        run_commands(commands)
+
+        commands = []
 
         # list docker images again after removal
         commands.append('docker images')
