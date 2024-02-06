@@ -218,10 +218,11 @@ class GridDiagWrapper(RuntimeFreqWrapper):
              files with a key representing a description of that file
         """
         file_dict = super().get_files_from_time(time_info)
-        input_files = self.get_input_files(time_info)
+        input_files, offset_time_info = self.get_input_files(time_info)
         if input_files is None:
             return None
 
+        file_dict['time_info'] = offset_time_info
         for key, value in input_files.items():
             file_dict[key] = value
 

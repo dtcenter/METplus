@@ -543,8 +543,9 @@ class RuntimeFreqWrapper(CommandBuilder):
         """
         all_input_files = {}
         if not self.c_dict.get('TEMPLATE_DICT'):
-            return None
+            return None, time_info
 
+        offset_time_info = time_info
         for label, (template, required) in self.c_dict['TEMPLATE_DICT'].items():
             data_type = ''
             template_key = 'INPUT_TEMPLATE'
@@ -555,9 +556,16 @@ class RuntimeFreqWrapper(CommandBuilder):
             self.c_dict[template_key] = template
             # if fill missing is true, data is not mandatory to find
             mandatory = required and not fill_missing
-            input_files = self.find_data(time_info, data_type=data_type,
-                                         return_list=True,
-                                         mandatory=mandatory)
+            if label == 'OBS':
+                input_files, offset_time_info = (
+                    self.find_obs_offset(time_info, mandatory=mandatory,
+                                         return_list=True)
+                )
+            else:
+                input_files = self.find_data(time_info, data_type=data_type,
+                                             return_list=True,
+                                             mandatory=mandatory)
+
             if not input_files:
                 if not fill_missing:
                     continue
@@ -569,9 +577,9 @@ class RuntimeFreqWrapper(CommandBuilder):
 
         # return None if no matching input files were found
         if not all_input_files:
-            return None
+            return None, None
 
-        return all_input_files
+        return all_input_files, offset_time_info
 
     def subset_input_files(self, time_info, output_dir=None, leads=None,
                            force_list=False):

@@ -14,6 +14,7 @@ import os
 
 from ..util import getlistint
 from ..util import do_string_sub
+from ..util import add_field_info_to_time_info
 from . import LoopTimesWrapper
 
 
@@ -80,28 +81,18 @@ class PB2NCWrapper(LoopTimesWrapper):
                                                           'PB2NC_OFFSETS',
                                                           '0'))
 
-        # Directories
-        # these are optional because users can specify full file path
-        # in template instead
-        c_dict['OBS_INPUT_DIR'] = self.config.getdir('PB2NC_INPUT_DIR', '')
+        self.get_input_templates(c_dict, {
+            'OBS': {'prefix': 'PB2NC', 'required': True},
+        })
+
         c_dict['OUTPUT_DIR'] = self.config.getdir('PB2NC_OUTPUT_DIR', '')
-
-        # filename templates, exit if not set
-        c_dict['OBS_INPUT_TEMPLATE'] = (
-            self.config.getraw('filename_templates',
-                               'PB2NC_INPUT_TEMPLATE')
-        )
-        if not c_dict['OBS_INPUT_TEMPLATE']:
-            self.log_error('Must set PB2NC_INPUT_TEMPLATE in config file')
-
-        c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
+        c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('config',
                                                        'PB2NC_OUTPUT_TEMPLATE')
         if not c_dict['OUTPUT_TEMPLATE']:
             self.log_error('Must set PB2NC_OUTPUT_TEMPLATE in config file')
 
         c_dict['OBS_INPUT_DATATYPE'] = (
-            self.config.getstr('config',
-                               'PB2NC_INPUT_DATATYPE', '')
+            self.config.getraw('config', 'PB2NC_INPUT_DATATYPE', '')
         )
 
         # get the MET config file path or use default
@@ -139,40 +130,33 @@ class PB2NCWrapper(LoopTimesWrapper):
         # get level_range beg and end
         self.add_met_config_window('level_range')
 
-        self.add_met_config(name='level_category',
-                            data_type='list',
+        self.add_met_config(name='level_category', data_type='list',
                             metplus_configs=['PB2NC_LEVEL_CATEGORY'],
                             extra_args={'remove_quotes': True})
 
-        self.add_met_config(name='quality_mark_thresh',
-                            data_type='int',
+        self.add_met_config(name='quality_mark_thresh', data_type='int',
                             metplus_configs=['PB2NC_QUALITY_MARK_THRESH'])
 
-        self.add_met_config(name='obs_bufr_map',
-                            data_type='list',
+        self.add_met_config(name='obs_bufr_map', data_type='list',
                             extra_args={'remove_quotes': True})
-        # skip RuntimeFreq input file logic - remove once integrated
-        c_dict['FIND_FILES'] = False
+
         return c_dict
 
-    def find_input_files(self, input_dict):
+    def find_input_files(self):
         """!Find prepbufr data to convert.
 
-            @param input_dict dictionary containing some time information
-            @returns time info if files are found, None otherwise
+         @returns time info if files are found, None otherwise
         """
-        infiles, time_info = self.find_obs_offset(input_dict,
-                                                  mandatory=True,
-                                                  return_list=True)
-
-        # if file is found, return timing info dict so
-        # output template can use offset value
-        if infiles is None:
+        if not self.c_dict.get('ALL_FILES'):
             return None
 
-        self.logger.debug(f"Adding input: {' and '.join(infiles)}")
-        self.infiles.extend(infiles)
-        return time_info
+        input_files = self.c_dict['ALL_FILES'][0].get('OBS', [])
+        if not input_files:
+            return None
+
+        self.logger.debug(f"Adding input: {' and '.join(input_files)}")
+        self.infiles.extend(input_files)
+        return self.c_dict['ALL_FILES'][0].get('time_info')
 
     def set_valid_window_variables(self, time_info):
         begin_template = self.c_dict['VALID_BEGIN_TEMPLATE']
@@ -189,12 +173,10 @@ class PB2NCWrapper(LoopTimesWrapper):
     def run_at_time_once(self, input_dict):
         """!Find files needed to run pb2nc and run if found"""
         # look for input files to process
-        self.run_count += 1
-        time_info = self.find_input_files(input_dict)
+        time_info = self.find_input_files()
 
         # if no files were found, don't run pb2nc
         if time_info is None:
-            self.missing_input_count += 1
             return
 
         # look for output file path and skip running pb2nc if necessary
@@ -242,3 +224,62 @@ class PB2NCWrapper(LoopTimesWrapper):
             cmd += f" -valid_end {self.c_dict['VALID_WINDOW_END']}"
 
         return cmd
+
+    def get_files_from_time(self, time_info):
+        """! Create dictionary containing time information (key time_info) and
+             any relevant files for that runtime. The parent implementation of
+             this function creates a dictionary and adds the time_info to it.
+             This wrapper gets all files for the current runtime and adds it to
+             the dictionary with keys 'FCST' and 'OBS'
+
+             @param time_info dictionary containing time information
+             @returns dictionary containing time_info dict and any relevant
+             files with a key representing a description of that file
+        """
+        var_list = [None]
+
+        # create a dictionary for each field (var) with time_info and files
+        file_dict_list = []
+        for var_info in var_list:
+            if var_info:
+                add_field_info_to_time_info(time_info, var_info)
+            file_dict = super().get_files_from_time(time_info)
+            file_dict['var_info'] = var_info
+
+            input_files, offset_time_info = (
+                self.get_input_files(time_info, fill_missing=True)
+            )
+            file_dict['time_info'] = offset_time_info
+
+            # only add all input files if none are missing
+            no_missing = True
+            if input_files:
+                for key, value in input_files.items():
+                    if 'missing' in value:
+                        no_missing = False
+                    file_dict[key] = value
+            if no_missing:
+                file_dict_list.append(file_dict)
+
+        return file_dict_list
+
+    def _update_list_with_new_files(self, time_info, list_to_update):
+        new_files = self.get_files_from_time(time_info)
+        if not new_files:
+            return
+
+        # if list to update is empty, copy new items into list
+        if not list_to_update:
+            for new_file in new_files:
+                list_to_update.append(new_file.copy())
+            return
+
+        # if list to update is not empty, add new files to each file list,
+        # make sure new files correspond to the correct field (var)
+        assert len(list_to_update) == len(new_files)
+        for new_file, existing_item in zip(new_files, list_to_update):
+            assert new_file['var_info'] == existing_item['var_info']
+            for key, value in new_file.items():
+                if key == 'var_info' or key == 'time_info':
+                    continue
+                existing_item[key].extend(value)

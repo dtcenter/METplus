@@ -378,7 +378,10 @@ class MTDWrapper(CompareGriddedWrapper):
             file_dict = super().get_files_from_time(time_info)
             file_dict['var_info'] = var_info
 
-            input_files = self.get_input_files(time_info, fill_missing=True)
+            input_files, offset_time_info = (
+                self.get_input_files(time_info, fill_missing=True)
+            )
+            file_dict['time_info'] = offset_time_info
             # only add all input files if none are missing
             no_missing = True
             if input_files:
