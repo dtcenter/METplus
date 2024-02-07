@@ -113,7 +113,7 @@ class IODA2NCWrapper(LoopTimesWrapper):
     def find_input_files(self, time_info):
         """! Get all input files for ioda2nc. Sets self.infiles list.
 
-        @param time_info dictionary containing timing information - not used
+        @param time_info dictionary containing timing information
         @returns List of files that were found or None if no files were found
         """
         if not self.c_dict.get('ALL_FILES'):

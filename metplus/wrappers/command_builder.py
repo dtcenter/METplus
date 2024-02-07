@@ -1156,9 +1156,8 @@ class CommandBuilder:
 
         # skip check of _INPUT_DATATYPE if _FILE_TYPE is already set
         # or if wrapper does not support multiple inputs
-        wrapper_name = get_wrapper_name(self.app_name)
         if (self.env_var_dict.get(f'METPLUS_{input_type}_FILE_TYPE')
-                or wrapper_name not in MULTIPLE_INPUT_WRAPPERS):
+                or get_wrapper_name(self.app_name) not in MULTIPLE_INPUT_WRAPPERS):
             return file_ext
 
         data_type = self.c_dict.get(f'{input_type}_INPUT_DATATYPE', '')
