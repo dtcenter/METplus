@@ -10,6 +10,8 @@ Output Files:
 Condition codes: 0 for success, 1 for failure
 """
 
+import os
+
 from ..util import time_util
 from ..util import log_runtime_banner, get_lead_sequence
 from ..util import skip_time, getlist, get_start_and_end_times, get_time_prefix
@@ -119,14 +121,25 @@ class RuntimeFreqWrapper(CommandBuilder):
         for label, info in input_info.items():
             prefix = info.get('prefix')
             required = info.get('required', True)
-            input_dir = self.config.getdir(f'{prefix}_INPUT_DIR', '')
-            c_dict[f'{label}_INPUT_DIR'] = input_dir
-            template = self.config.getraw('config', f'{prefix}_INPUT_TEMPLATE')
-            c_dict[f'{label}_INPUT_TEMPLATE'] = template
-            if not c_dict[f'{label}_INPUT_TEMPLATE']:
-                if required:
-                    self.log_error(f'{prefix}_INPUT_TEMPLATE required to run')
-                continue
+
+            template = self.config.getraw('config', f'{prefix}_INPUT_FILE_LIST')
+            if template:
+                c_dict['EXPLICIT_FILE_LIST'] = True
+            else:
+                input_dir = self.config.getdir(f'{prefix}_INPUT_DIR', '')
+                c_dict[f'{label}_INPUT_DIR'] = input_dir
+                templates = getlist(
+                    self.config.getraw('config', f'{prefix}_INPUT_TEMPLATE')
+                )
+                template_list = [os.path.join(input_dir, template)
+                                 for template in templates]
+                template = ','.join(template_list)
+                c_dict[f'{label}_INPUT_TEMPLATE'] = template
+                if not c_dict[f'{label}_INPUT_TEMPLATE']:
+                    if required:
+                        self.log_error(f'{prefix}_INPUT_TEMPLATE required to run')
+                    continue
+
             template_dict[label] = (template, True)
 
         c_dict['TEMPLATE_DICT'] = template_dict

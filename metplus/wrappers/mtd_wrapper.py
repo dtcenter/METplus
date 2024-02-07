@@ -12,10 +12,7 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import get_lead_sequence, sub_var_list
-from ..util import ti_calculate, getlist
-from ..util import do_string_sub, skip_time
-from ..util import parse_var_list, add_field_info_to_time_info
+from ..util import get_lead_sequence, ti_calculate, do_string_sub, parse_var_list
 from . import CompareGriddedWrapper
 
 
@@ -88,18 +85,31 @@ class MTDWrapper(CompareGriddedWrapper):
         # new method of reading/setting MET config values
         self.add_met_config(name='min_volume', data_type='int')
 
+        input_info = {
+            'FCST': {'prefix': 'FCST_MTD', 'required': True},
+            'OBS': {'prefix': 'OBS_MTD', 'required': True},
+        }
+
         c_dict['SINGLE_RUN'] = (
             self.config.getbool('config', 'MTD_SINGLE_RUN', False)
         )
         if c_dict['SINGLE_RUN']:
-            c_dict['SINGLE_DATA_SRC'] = (
-                self.config.getstr('config', 'MTD_SINGLE_DATA_SRC', '')
-            )
-            if not c_dict['SINGLE_DATA_SRC']:
+            single_src = self.config.getraw('config', 'MTD_SINGLE_DATA_SRC')
+            c_dict['SINGLE_DATA_SRC'] = single_src
+            if not single_src:
                 self.log_error('Must set MTD_SINGLE_DATA_SRC if '
                                'MTD_SINGLE_RUN is True')
+            elif single_src not in ('FCST', 'OBS'):
+                self.log_error('MTD_SINGLE_DATA_SRC must be FCST or OBS.'
+                               f' It is set to {single_src}')
 
-        self.get_input_templates(c_dict)
+            # do not read input templates for other data source if single mode
+            if single_src == 'FCST':
+                del input_info['OBS']
+            else:
+                del input_info['FCST']
+
+        self.get_input_templates(c_dict, input_info)
 
         # if single run for OBS, read OBS values into FCST keys
         read_type = 'FCST'
@@ -154,15 +164,8 @@ class MTDWrapper(CompareGriddedWrapper):
         # get formatted time to use to name file list files
         time_fmt = f"{first_valid_time_info['valid_fmt']}"
 
-        # if no input files were found
-        if not self.c_dict['ALL_FILES']:
-            self.run_count += 1
-            self.missing_input_count += 1
-            return
-
         # loop through the files found for each field (var_info)
         for file_dict in self.c_dict['ALL_FILES']:
-            self.run_count += 1
             var_info = file_dict['var_info']
             inputs = {}
             for data_type in ('FCST', 'OBS'):
@@ -325,31 +328,3 @@ class MTDWrapper(CompareGriddedWrapper):
             cmd += '-outdir {}'.format(self.outdir)
 
         return cmd
-
-    def get_input_templates(self, c_dict):
-        input_types = ['FCST', 'OBS']
-        if c_dict.get('SINGLE_RUN', False):
-            input_types = [c_dict['SINGLE_DATA_SRC']]
-
-        app = self.app_name.upper()
-        template_dict = {}
-        for in_type in input_types:
-            template_path = (
-                self.config.getraw('config',
-                                   f'{in_type}_{app}_INPUT_FILE_LIST')
-            )
-            if template_path:
-                c_dict['EXPLICIT_FILE_LIST'] = True
-            else:
-                in_dir = self.config.getdir(f'{in_type}_{app}_INPUT_DIR', '')
-                templates = getlist(
-                    self.config.getraw('config',
-                                       f'{in_type}_{app}_INPUT_TEMPLATE')
-                )
-                template_list = [os.path.join(in_dir, template)
-                                 for template in templates]
-                template_path = ','.join(template_list)
-
-            template_dict[in_type] = (template_path, True)
-
-        c_dict['TEMPLATE_DICT'] = template_dict
