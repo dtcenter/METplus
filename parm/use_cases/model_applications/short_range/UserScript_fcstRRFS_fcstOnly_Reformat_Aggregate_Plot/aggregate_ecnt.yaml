@@ -1,0 +1,41 @@
+agg_stat_input: !ENV '${AGGREGATE_INPUT_BASE}/ensemble_stat_ecnt.data'
+agg_stat_output: !ENV '${AGGREGATE_OUTPUT_BASE}/ecnt_aggregated.data'
+alpha: 0.05
+append_to_file: null
+circular_block_bootstrap: True
+derived_series_1: []
+derived_series_2: []
+event_equal: False
+fcst_var_val_1:
+  TMP:
+  - ECNT_RMSE
+  - ECNT_SPREAD_PLUS_OERR
+fcst_var_val_2: {}
+indy_vals:
+- '30000'
+- '40000'
+- '60000'
+- '90000'
+- '120000'
+- '150000'
+- '160000'
+- '170000'
+- '180000'
+- '200000'
+- '240000'
+- '270000'
+
+indy_var: fcst_lead
+line_type: ecnt
+list_stat_1:
+ - ECNT_RMSE
+ - ECNT_SPREAD_PLUS_OERR
+list_stat_2: []
+method: perc
+num_iterations: 1
+num_threads: -1
+random_seed: null
+series_val_1:
+  model:
+  - RRFS_GEFS_GF.SPP.SPPT
+series_val_2: {}
