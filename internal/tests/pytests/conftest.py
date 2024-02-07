@@ -82,8 +82,9 @@ def metplus_config(request):
     function arguments and set a variable called config to metplus_config, e.g.
     config = metplus_config.
 
-    This fixture also replaces config.logger with a MagicMock object. This
-    allows tests to assert the logger was called with a specific message.
+    This fixture wraps config.logger with a MagicMock object, allowing tests to
+    assert the logger was called with a specific message. Logged output is still
+    written to ${METPLUS_TEST_OUTPUT_BASE}/test_output/{RUN_ID}/logs/metplus.log 
 
     e.g.
     def test_example(metplus_config):
@@ -100,7 +101,7 @@ def metplus_config(request):
 
     # Set mock logger
     old_logger = config.logger
-    config.logger = mock.MagicMock()
+    config.logger = mock.MagicMock(wraps=old_logger)
 
     yield config
     
