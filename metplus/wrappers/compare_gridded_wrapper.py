@@ -43,12 +43,10 @@ that reformat gridded data
             which config variables are used in the wrapper"""
         c_dict = super().create_c_dict()
 
-        self.add_met_config(name='model',
-                            data_type='string',
+        self.add_met_config(name='model', data_type='string',
                             metplus_configs=['MODEL'])
 
-        self.add_met_config(name='obtype',
-                            data_type='string',
+        self.add_met_config(name='obtype', data_type='string',
                             metplus_configs=['OBTYPE'])
 
         # read probabilistic variables for FCST and OBS fields

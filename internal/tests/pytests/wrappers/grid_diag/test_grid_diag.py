@@ -184,8 +184,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expected_subset):
                               ('20141101093015', '20141101093015', '000'),
                               ('20141101093015', '20141102093015', '024')]:
         filename = f'init_{init}_valid_{valid}_lead_{lead}.nc'
-        expected_files.append(os.path.join(input_dir,
-                                           filename))
+        expected_files.append(os.path.join(input_dir, filename))
 
     wrapper = GridDiagWrapper(config)
     wrapper.c_dict['ALL_FILES'] = wrapper.get_all_files()

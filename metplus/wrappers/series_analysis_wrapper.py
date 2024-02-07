@@ -572,7 +572,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         for storm_id in storm_list:
             time_info['storm_id'] = storm_id
-            file_dict = super().get_files_from_time(time_info)
+            file_dict = {'time_info': time_info.copy()}
             if self.c_dict['USING_BOTH']:
                 fcst_files = self.find_input_files(time_info, 'BOTH')
                 obs_files = fcst_files
@@ -1169,3 +1169,12 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             if not found:
                 continue
             yield file_time_info
+
+    def _update_list_with_new_files(self, time_info, list_to_update):
+        new_files = self.get_files_from_time(time_info)
+        if not new_files:
+            return
+        if isinstance(new_files, list):
+            list_to_update.extend(new_files)
+        else:
+            list_to_update.append(new_files)

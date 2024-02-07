@@ -92,7 +92,7 @@ class UserScriptWrapper(RuntimeFreqWrapper):
              @returns dictionary containing time_info dict and any relevant
              files with a key representing a description of that file
         """
-        file_dict = super().get_files_from_time(time_info)
+        file_dict = {'time_info': time_info.copy()}
 
         input_files, _ = self.get_input_files(time_info, fill_missing=True)
         if input_files is None:

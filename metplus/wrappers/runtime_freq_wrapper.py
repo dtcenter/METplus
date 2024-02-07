@@ -14,6 +14,7 @@ from ..util import time_util
 from ..util import log_runtime_banner, get_lead_sequence
 from ..util import skip_time, getlist, get_start_and_end_times, get_time_prefix
 from ..util import time_generator, add_to_time_input
+from ..util import sub_var_list, add_field_info_to_time_info
 from . import CommandBuilder
 
 '''!@namespace RuntimeFreqWrapper
@@ -366,9 +367,11 @@ class RuntimeFreqWrapper(CommandBuilder):
          False if something went wrong
         """
         # get input files
-        self.run_count += 1
+        if not self.c_dict.get('TEMPLATE_DICT'):
+            self.run_count += 1
         if not self.find_input_files(time_info):
-            self.missing_input_count += 1
+            if not self.c_dict.get('TEMPLATE_DICT'):
+                self.missing_input_count += 1
             return False
 
         # get output path
@@ -480,24 +483,68 @@ class RuntimeFreqWrapper(CommandBuilder):
         self._update_list_with_new_files(time_info, all_files)
         return all_files
 
-    @staticmethod
-    def get_files_from_time(time_info):
+    def get_files_from_time(self, time_info):
         """! Create dictionary containing time information (key time_info) and
-             any relevant files for that runtime.
+             any relevant files for that runtime. The parent implementation of
+             this function creates a dictionary and adds the time_info to it.
+             This wrapper gets all files for the current runtime and adds it to
+             the dictionary with keys 'FCST' and 'OBS'
+
              @param time_info dictionary containing time information
-             @returns list of dict containing time_info dict and any relevant
+             @returns dictionary containing time_info dict and any relevant
              files with a key representing a description of that file
         """
-        return {'time_info': time_info.copy()}
+        if self.c_dict.get('ONCE_PER_FIELD', False):
+            var_list = sub_var_list(self.c_dict.get('VAR_LIST_TEMP'), time_info)
+        else:
+            var_list = [None]
+
+        # create a dictionary for each field (var) with time_info and files
+        file_dict_list = []
+        for var_info in var_list:
+            file_dict = {'var_info': var_info}
+            if var_info:
+                add_field_info_to_time_info(time_info, var_info)
+
+            input_files, offset_time_info = (
+                self.get_input_files(time_info, fill_missing=True)
+            )
+            file_dict['time_info'] = offset_time_info.copy()
+            # only add all input files if none are missing
+            no_missing = True
+            if input_files:
+                for key, value in input_files.items():
+                    if 'missing' in value:
+                        no_missing = False
+                    file_dict[key] = value
+            if no_missing:
+                file_dict_list.append(file_dict)
+
+        return file_dict_list
 
     def _update_list_with_new_files(self, time_info, list_to_update):
         new_files = self.get_files_from_time(time_info)
         if not new_files:
             return
-        if isinstance(new_files, list):
-            list_to_update.extend(new_files)
-        else:
-            list_to_update.append(new_files)
+
+        if not isinstance(new_files, list):
+            new_files = [new_files]
+
+        # if list to update is empty, copy new items into list
+        if not list_to_update:
+            for new_file in new_files:
+                list_to_update.append(new_file.copy())
+            return
+
+        # if list to update is not empty, add new files to each file list,
+        # make sure new files correspond to the correct field (var)
+        assert len(list_to_update) == len(new_files)
+        for new_file, existing_item in zip(new_files, list_to_update):
+            assert new_file.get('var_info') == existing_item.get('var_info')
+            for key, value in new_file.items():
+                if key == 'var_info' or key == 'time_info':
+                    continue
+                existing_item[key].extend(value)
 
     @staticmethod
     def compare_time_info(runtime, filetime):

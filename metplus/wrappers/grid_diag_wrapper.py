@@ -217,13 +217,21 @@ class GridDiagWrapper(RuntimeFreqWrapper):
              @returns dictionary containing time_info dict and any relevant
              files with a key representing a description of that file
         """
-        file_dict = super().get_files_from_time(time_info)
         input_files, offset_time_info = self.get_input_files(time_info)
         if input_files is None:
             return None
 
-        file_dict['time_info'] = offset_time_info
+        file_dict = {'time_info': time_info.copy()}
         for key, value in input_files.items():
             file_dict[key] = value
 
         return file_dict
+
+    def _update_list_with_new_files(self, time_info, list_to_update):
+        new_files = self.get_files_from_time(time_info)
+        if not new_files:
+            return
+        if isinstance(new_files, list):
+            list_to_update.extend(new_files)
+        else:
+            list_to_update.append(new_files)

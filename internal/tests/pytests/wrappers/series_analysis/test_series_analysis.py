@@ -641,10 +641,8 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
     wrapper.c_dict['TC_STAT_INPUT_DIR'] = stat_input_dir
     wrapper.c_dict['TC_STAT_INPUT_TEMPLATE'] = stat_input_template
 
-    fcst_input_dir = os.path.join(tile_input_dir,
-                                  'fcst')
-    obs_input_dir = os.path.join(tile_input_dir,
-                                 'obs')
+    fcst_input_dir = os.path.join(tile_input_dir, 'fcst')
+    obs_input_dir = os.path.join(tile_input_dir, 'obs')
 
     wrapper.c_dict['FCST_INPUT_DIR'] = fcst_input_dir
     wrapper.c_dict['OBS_INPUT_DIR'] = obs_input_dir
