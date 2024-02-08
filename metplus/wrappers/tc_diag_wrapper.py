@@ -86,9 +86,6 @@ class TCDiagWrapper(RuntimeFreqWrapper):
                                                  c_dict['VERBOSITY'])
         c_dict['ALLOW_MULTIPLE_FILES'] = True
 
-        # skip RuntimeFreq wrapper logic to find files
-        c_dict['FIND_FILES'] = False
-
         # get command line arguments domain and tech id list for -data
         self._read_data_inputs(c_dict)
 
@@ -96,15 +93,13 @@ class TCDiagWrapper(RuntimeFreqWrapper):
         c_dict['DECK_INPUT_DIR'] = self.config.getdir('TC_DIAG_DECK_INPUT_DIR',
                                                       '')
         c_dict['DECK_INPUT_TEMPLATE'] = (
-            self.config.getraw('config',
-                               'TC_DIAG_DECK_TEMPLATE')
+            self.config.getraw('config', 'TC_DIAG_DECK_INPUT_TEMPLATE')
         )
 
         # get output dir/template
         c_dict['OUTPUT_DIR'] = self.config.getdir('TC_DIAG_OUTPUT_DIR', '')
         c_dict['OUTPUT_TEMPLATE'] = (
-            self.config.getraw('config',
-                               'TC_DIAG_OUTPUT_TEMPLATE')
+            self.config.getraw('config', 'TC_DIAG_OUTPUT_TEMPLATE')
         )
 
         # get the MET config file path or use default
@@ -223,6 +218,9 @@ class TCDiagWrapper(RuntimeFreqWrapper):
 
         self.add_met_config(name='output_base_format', data_type='string')
 
+        # skip RuntimeFreq input file logic - remove once integrated
+        c_dict['FIND_FILES'] = False
+
         return c_dict
 
     def _read_data_inputs(self, c_dict):
@@ -311,7 +309,9 @@ class TCDiagWrapper(RuntimeFreqWrapper):
         time_info = time_util.ti_calculate(time_info)
 
         # get input files
+        self.run_count += 1
         if not self.find_input_files(time_info):
+            self.missing_input_count += 1
             return
 
         # get output path
@@ -389,7 +389,11 @@ class TCDiagWrapper(RuntimeFreqWrapper):
             self.logger.debug(f"Explicit file list file: {input_file_list}")
             list_file = do_string_sub(input_file_list, **time_info)
             if not os.path.exists(list_file):
-                self.log_error(f'Could not find file list: {list_file}')
+                msg = f'Could not find file list: {list_file}'
+                if self.c_dict['ALLOW_MISSING_INPUTS']:
+                    self.logger.warning(msg)
+                else:
+                    self.log_error(msg)
                 return False
         else:
             # set c_dict variables that are used in find_data function

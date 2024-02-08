@@ -10,12 +10,10 @@ Output Files:
 Condition codes: 0 for success, 1 for failure
 """
 
-import os
-from datetime import datetime
-
 from ..util import time_util
-from . import RuntimeFreqWrapper
 from ..util import do_string_sub
+
+from . import RuntimeFreqWrapper
 
 '''!@namespace UserScriptWrapper
 @brief Parent class for wrappers that run over a grouping of times
@@ -42,10 +40,7 @@ class UserScriptWrapper(RuntimeFreqWrapper):
             self.log_error("Must supply a command to run with "
                            "USER_SCRIPT_COMMAND")
 
-        c_dict['INPUT_DIR'] = self.config.getraw('config',
-                                                 'USER_SCRIPT_INPUT_DIR',
-                                                 '')
-        self.get_input_templates(c_dict)
+        self.get_input_templates_multiple(c_dict)
 
         c_dict['ALLOW_MULTIPLE_FILES'] = True
         c_dict['IS_MET_CMD'] = False
@@ -74,15 +69,15 @@ class UserScriptWrapper(RuntimeFreqWrapper):
 
         # create file list text files for the current run time criteria
         # set c_dict to the input file dict to set as environment vars
-        self.c_dict['INPUT_LIST_DICT'] = self.subset_input_files(time_info)
+        self.c_dict['INPUT_LIST_DICT'] = (
+            self.subset_input_files(time_info, force_list=True)
+        )
 
         self.set_environment_variables(time_info)
 
         # substitute values from dictionary into command
-        self.c_dict['COMMAND'] = (
-            do_string_sub(self.c_dict['COMMAND_TEMPLATE'],
-                          **time_info)
-        )
+        self.c_dict['COMMAND'] = do_string_sub(self.c_dict['COMMAND_TEMPLATE'],
+                                               **time_info)
 
         return self.build()
 
@@ -97,9 +92,9 @@ class UserScriptWrapper(RuntimeFreqWrapper):
              @returns dictionary containing time_info dict and any relevant
              files with a key representing a description of that file
         """
-        file_dict = super().get_files_from_time(time_info)
+        file_dict = {'time_info': time_info.copy()}
 
-        input_files = self.get_input_files(time_info, fill_missing=True)
+        input_files, _ = self.get_input_files(time_info, fill_missing=True)
         if input_files is None:
             return file_dict
 
@@ -128,5 +123,7 @@ class UserScriptWrapper(RuntimeFreqWrapper):
 
         @returns True
         """
-        super().get_all_files(custom)
-        return True
+        all_files = super().get_all_files(custom)
+        if not all_files:
+            return True
+        return all_files

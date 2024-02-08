@@ -106,8 +106,7 @@ class TCGenWrapper(RuntimeFreqWrapper):
 
         app_name_upper = self.app_name.upper()
         c_dict['VERBOSITY'] = (
-            self.config.getstr('config',
-                               f'LOG_{app_name_upper}_VERBOSITY',
+            self.config.getstr('config', f'LOG_{app_name_upper}_VERBOSITY',
                                c_dict['VERBOSITY'])
         )
         c_dict['ALLOW_MULTIPLE_FILES'] = True
@@ -280,7 +279,8 @@ class TCGenWrapper(RuntimeFreqWrapper):
             metplus_configs=['TC_GEN_GENESIS_MATCH_POINT_TO_TRACK']
         )
         self.add_met_config_window('genesis_match_window')
-
+        # skip RuntimeFreq input file logic - remove once integrated
+        c_dict['FIND_FILES'] = False
         return c_dict
 
     def handle_filter(self):
@@ -322,28 +322,6 @@ class TCGenWrapper(RuntimeFreqWrapper):
         cmd += ' -out ' + out_path
 
         return cmd
-
-    def run_at_time_once(self, time_info):
-        """! Process runtime and try to build command to run ascii2nc
-             Args:
-                @param time_info dictionary containing timing information
-        """
-        # get input files
-        if not self.find_input_files(time_info):
-            return
-
-        # get output path
-        if not self.find_and_check_output_file(time_info):
-            return
-
-        # get other configurations for command
-        self.set_command_line_arguments(time_info)
-
-        # set environment variables if using config file
-        self.set_environment_variables(time_info)
-
-        # build command and run
-        self.build()
 
     def find_input_files(self, time_info):
         """!Get track and genesis files and set c_dict items. Also format

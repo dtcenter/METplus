@@ -18,11 +18,6 @@ time_fmt = '%Y%m%d%H'
 run_times = ['2014121318']
 
 
-def get_data_dir(config):
-    return os.path.join(config.getdir('METPLUS_BASE'),
-                        'internal', 'tests', 'data', 'tc_pairs')
-
-
 def set_minimum_config_settings(config, loop_by='INIT'):
     # set config variables to prevent command from running and bypass check
     # if input files actually exist
@@ -136,7 +131,7 @@ def test_parse_storm_id(metplus_config, storm_id, basin, cyclone):
     ]
 )
 @pytest.mark.wrapper
-def test_get_bdeck(metplus_config, basin, cyclone, expected_files,
+def test_get_bdeck(metplus_config, get_test_data_dir, basin, cyclone, expected_files,
                    expected_wildcard):
     """! Checks that the correct list of empty test files are found and the
     correct boolean to signify if wildcards were used for different
@@ -147,7 +142,7 @@ def test_get_bdeck(metplus_config, basin, cyclone, expected_files,
 
     set_minimum_config_settings(config)
 
-    test_data_dir = get_data_dir(config)
+    test_data_dir = get_test_data_dir('tc_pairs')
     bdeck_dir = os.path.join(test_data_dir, 'bdeck')
     config.set('config', 'TC_PAIRS_BDECK_INPUT_DIR', bdeck_dir)
 
@@ -268,7 +263,7 @@ def test_get_basin_cyclone_from_bdeck_error(metplus_config):
     ]
 )
 @pytest.mark.wrapper
-def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
+def test_tc_pairs_storm_id_lists(metplus_config, get_test_data_dir, config_overrides,
                                  storm_type, values_to_check, reformat):
     config = metplus_config
 
@@ -279,7 +274,7 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
     config.set('config', 'INIT_BEG', '2019')
     config.set('config', 'INIT_END', '2019')
 
-    test_data_dir = get_data_dir(config)
+    test_data_dir = get_test_data_dir('tc_pairs')
     bdeck_dir = os.path.join(test_data_dir, 'bdeck')
     edeck_dir = os.path.join(test_data_dir, 'edeck')
 
@@ -614,14 +609,14 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
     ]
 )
 @pytest.mark.wrapper
-def test_tc_pairs_run(metplus_config, loop_by, config_overrides,
+def test_tc_pairs_run(metplus_config, get_test_data_dir, loop_by, config_overrides,
                       env_var_values):
     config = metplus_config
     remove_beg = remove_end = remove_match_points = False
 
     set_minimum_config_settings(config, loop_by)
 
-    test_data_dir = get_data_dir(config)
+    test_data_dir = get_test_data_dir('tc_pairs')
     bdeck_dir = os.path.join(test_data_dir, 'bdeck')
     adeck_dir = os.path.join(test_data_dir, 'adeck')
 
@@ -738,13 +733,13 @@ def test_tc_pairs_run(metplus_config, loop_by, config_overrides,
     ]
 )
 @pytest.mark.wrapper
-def test_tc_pairs_read_all_files(metplus_config, loop_by, config_overrides,
+def test_tc_pairs_read_all_files(metplus_config, get_test_data_dir, loop_by, config_overrides,
                                  env_var_values):
     config = metplus_config
 
     set_minimum_config_settings(config, loop_by)
 
-    test_data_dir = get_data_dir(config)
+    test_data_dir = get_test_data_dir('tc_pairs')
     bdeck_dir = os.path.join(test_data_dir, 'bdeck')
     adeck_dir = os.path.join(test_data_dir, 'adeck')
 
