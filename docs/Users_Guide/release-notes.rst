@@ -30,12 +30,12 @@ When applicable, release notes are followed by the
 `GitHub issue <https://github.com/dtcenter/METplus/issues>`__ number which
 describes the bugfix, enhancement, or new feature.
 
-METplus Version 6.0.0 Beta 3 Release Notes (2024-02-07)
+METplus Version 6.0.0 Beta 3 Release Notes (2024-02-08)
 -------------------------------------------------------
 
   .. dropdown:: Enhancements
 
-     * Add suport for MET land-mask settings in Point-Stat
+     * Add support for MET land-mask settings in Point-Stat
        (`#2334 <https://github.com/dtcenter/METplus/issues/2334>`_)
      * Enhance the TC-Pairs wrapper to support the new diag_required and diag_min_req configuration options
        (`#2430 <https://github.com/dtcenter/METplus/issues/2430>`_)
@@ -50,8 +50,7 @@ METplus Version 6.0.0 Beta 3 Release Notes (2024-02-07)
 
   .. dropdown:: New Wrappers
 
-     * WaveletStat
-       (`#2252 <https://github.com/dtcenter/METplus/issues/2252>`_)
+     NONE
 
   .. dropdown:: New Use Cases
 
