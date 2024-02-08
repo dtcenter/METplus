@@ -12,8 +12,6 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import get_lead_sequence
-from ..util import ti_calculate
 from ..util import do_string_sub
 from ..util import remove_quotes
 from . import LoopTimesWrapper
@@ -111,7 +109,8 @@ class Point2GridWrapper(LoopTimesWrapper):
         c_dict['VLD_THRESH'] = self.config.getstr('config',
                                               'POINT2GRID_VLD_THRESH',
                                               '')
-
+        # skip RuntimeFreq input file logic - remove once integrated
+        c_dict['FIND_FILES'] = False
         return c_dict
 
     def get_command(self):
@@ -147,28 +146,6 @@ class Point2GridWrapper(LoopTimesWrapper):
         cmd += ' -v ' + self.c_dict['VERBOSITY']
         return cmd
 
-    def run_at_time_once(self, time_info):
-        """! Process runtime and try to build command to run point2grid
-             Args:
-                @param time_info dictionary containing timing information
-        """
-        # get input files
-        if self.find_input_files(time_info) is None:
-            return
-
-        # get output path
-        if not self.find_and_check_output_file(time_info):
-            return
-
-        # get other configurations for command
-        self.set_command_line_arguments(time_info)
-
-        # set environment variables if using config file
-        self.set_environment_variables(time_info)
-
-        # build command and run
-        self.build()
-
     def find_input_files(self, time_info):
         """!Find input file and mask file and add them to the list of input files.
             Args:
@@ -179,14 +156,14 @@ class Point2GridWrapper(LoopTimesWrapper):
         # calling find_obs because we set OBS_ variables in c_dict for the input data
         input_path = self.find_obs(time_info)
         if input_path is None:
-            return None
+            return False
 
         self.infiles.append(input_path)
 
         self.c_dict['GRID'] = do_string_sub(self.c_dict['GRID_TEMPLATE'],
                                             **time_info)
 
-        return self.infiles
+        return True
 
     def set_command_line_arguments(self, time_info):
         """!Set command line arguments from c_dict

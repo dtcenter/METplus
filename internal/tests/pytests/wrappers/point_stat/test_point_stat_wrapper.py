@@ -10,6 +10,11 @@ from metplus.wrappers.point_stat_wrapper import PointStatWrapper
 fcst_dir = '/some/path/fcst'
 obs_dir = '/some/path/obs'
 
+fcst_name = 'APCP'
+fcst_level = 'A03'
+obs_name = 'APCP_03'
+obs_level = '"(*,*)"'
+
 inits = ['2005080700', '2005080712']
 time_fmt = '%Y%m%d%H'
 lead_hour = 12
@@ -47,6 +52,59 @@ def set_minimum_config_settings(config):
     config.set('config', 'POINT_STAT_OUTPUT_DIR',
                '{OUTPUT_BASE}/GridStat/output')
     config.set('config', 'POINT_STAT_OUTPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}')
+
+
+@pytest.mark.parametrize(
+    'once_per_field, missing, run, thresh, errors, allow_missing', [
+        (False, 6, 12, 0.5, 0, True),
+        (False, 6, 12, 0.6, 1, True),
+        (True, 12, 24, 0.5, 0, True),
+        (True, 12, 24, 0.6, 1, True),
+        (False, 6, 12, 0.5, 6, False),
+        (True, 12, 24, 0.5, 12, False),
+    ]
+)
+@pytest.mark.wrapper_a
+def test_point_stat_missing_inputs(metplus_config, get_test_data_dir,
+                                   once_per_field, missing, run, thresh, errors,
+                                   allow_missing):
+    config = metplus_config
+    set_minimum_config_settings(config)
+    config.set('config', 'INPUT_MUST_EXIST', True)
+    config.set('config', 'POINT_STAT_ALLOW_MISSING_INPUTS', allow_missing)
+    config.set('config', 'POINT_STAT_INPUT_THRESH', thresh)
+    config.set('config', 'INIT_BEG', '2017051001')
+    config.set('config', 'INIT_END', '2017051003')
+    config.set('config', 'INIT_INCREMENT', '2H')
+    config.set('config', 'LEAD_SEQ', '1,2,3,6,9,12')
+    config.set('config', 'FCST_POINT_STAT_INPUT_DIR', get_test_data_dir('fcst'))
+    config.set('config', 'OBS_POINT_STAT_INPUT_DIR', get_test_data_dir('obs'))
+    config.set('config', 'FCST_POINT_STAT_INPUT_TEMPLATE',
+               '{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d_i%H}_f{lead?fmt=%3H}_HRRRTLE_PHPT.grb2')
+    config.set('config', 'OBS_POINT_STAT_INPUT_TEMPLATE',
+               '{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A06.nc')
+    # add 2 sets of fields to test ONCE_PER_FIELD
+    config.set('config', 'FCST_VAR1_NAME', fcst_name)
+    config.set('config', 'FCST_VAR1_LEVELS', fcst_level)
+    config.set('config', 'OBS_VAR1_NAME', obs_name)
+    config.set('config', 'OBS_VAR1_LEVELS', obs_level)
+    config.set('config', 'FCST_VAR2_NAME', fcst_name)
+    config.set('config', 'FCST_VAR2_LEVELS', fcst_level)
+    config.set('config', 'OBS_VAR2_NAME', obs_name)
+    config.set('config', 'OBS_VAR2_LEVELS', obs_level)
+    config.set('config', 'POINT_STAT_ONCE_PER_FIELD', once_per_field)
+
+    wrapper = PointStatWrapper(config)
+    assert wrapper.isOK
+
+    all_cmds = wrapper.run_all_times()
+    for cmd, _ in all_cmds:
+        print(cmd)
+
+    print(f'missing: {wrapper.missing_input_count} / {wrapper.run_count}, errors: {wrapper.errors}')
+    assert wrapper.missing_input_count == missing
+    assert wrapper.run_count == run
+    assert wrapper.errors == errors
 
 
 @pytest.mark.wrapper_a

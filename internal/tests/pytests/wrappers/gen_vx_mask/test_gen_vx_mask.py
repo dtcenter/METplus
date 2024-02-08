@@ -21,6 +21,50 @@ def gen_vx_mask_wrapper(metplus_config):
     return GenVxMaskWrapper(config)
 
 
+@pytest.mark.parametrize(
+    'missing, run, thresh, errors, allow_missing', [
+        (6, 12, 0.5, 0, True),
+        (6, 12, 0.6, 1, True),
+        (6, 12, 0.5, 6, False),
+    ]
+)
+@pytest.mark.wrapper
+def test_gen_vx_mask_missing_inputs(metplus_config, get_test_data_dir, missing,
+                                    run, thresh, errors, allow_missing):
+    config = metplus_config
+    config.set('config', 'DO_NOT_RUN_EXE', True)
+    config.set('config', 'INPUT_MUST_EXIST', True)
+    config.set('config', 'GEN_VX_MASK_ALLOW_MISSING_INPUTS', allow_missing)
+    config.set('config', 'GEN_VX_MASK_INPUT_THRESH', thresh)
+    config.set('config', 'LOOP_BY', 'INIT')
+    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H')
+    config.set('config', 'INIT_BEG', '2017051001')
+    config.set('config', 'INIT_END', '2017051003')
+    config.set('config', 'INIT_INCREMENT', '2H')
+    config.set('config', 'LEAD_SEQ', '1,2,3,6,9,12')
+    config.set('config', 'GEN_VX_MASK_OPTIONS', "-type lat -thresh 'ge30&&le50', -type lon -thresh 'le-70&&ge-130' -intersection -name lat_lon_mask")
+    config.set('config', 'GEN_VX_MASK_INPUT_DIR', get_test_data_dir('fcst'))
+    config.set('config', 'GEN_VX_MASK_INPUT_TEMPLATE',
+               '{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d_i%H}_f{lead?fmt=%3H}_HRRRTLE_PHPT.grb2')
+
+    config.set('config', 'GEN_VX_MASK_INPUT_MASK_DIR', get_test_data_dir('obs'))
+    config.set('config', 'GEN_VX_MASK_INPUT_MASK_TEMPLATE',
+               '{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A06.nc,{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A06.nc')
+    config.set('config', 'GEN_VX_MASK_OUTPUT_TEMPLATE', '{OUTPUT_BASE}/GenVxMask/test.nc')
+
+    wrapper = GenVxMaskWrapper(config)
+    assert wrapper.isOK
+
+    all_cmds = wrapper.run_all_times()
+    for cmd, _ in all_cmds:
+        print(cmd)
+
+    print(f'missing: {wrapper.missing_input_count} / {wrapper.run_count}, errors: {wrapper.errors}')
+    assert wrapper.missing_input_count == missing
+    assert wrapper.run_count == run
+    assert wrapper.errors == errors
+
+
 @pytest.mark.wrapper
 def test_run_gen_vx_mask_once(metplus_config):
     input_dict = {'valid': datetime.datetime.strptime("201802010000",'%Y%m%d%H%M'),

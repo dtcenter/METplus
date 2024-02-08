@@ -142,7 +142,7 @@ def pre_run_setup(config_inputs):
     logger.info(f"Log file: {log_file}")
     logger.info(f"METplus Base: {config.getdir('METPLUS_BASE')}")
     logger.info(f"Final Conf: {config.getstr('config', 'METPLUS_CONF')}")
-    config_list = config.getstr('config', 'CONFIG_INPUT').split(',')
+    config_list = config.getraw('config', 'CONFIG_INPUT').split(',')
     for config_item in config_list:
         logger.info(f"Config Input: {config_item}")
 

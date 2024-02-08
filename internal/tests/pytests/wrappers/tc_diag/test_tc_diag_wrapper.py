@@ -3,7 +3,6 @@
 import pytest
 
 import os
-from datetime import datetime
 
 from metplus.wrappers.tc_diag_wrapper import TCDiagWrapper
 
@@ -48,7 +47,7 @@ def set_minimum_config_settings(config):
     config.set('config', 'INIT_INCREMENT', '6H')
     config.set('config', 'TC_DIAG_CONFIG_FILE',
                '{PARM_BASE}/met_config/TCDiagConfig_wrapped')
-    config.set('config', 'TC_DIAG_DECK_TEMPLATE', deck_template)
+    config.set('config', 'TC_DIAG_DECK_INPUT_TEMPLATE', deck_template)
     config.set('config', 'TC_DIAG_INPUT1_TEMPLATE', input_template)
     config.set('config', 'TC_DIAG_INPUT1_DOMAIN', input_domain)
     config.set('config', 'TC_DIAG_INPUT1_TECH_ID_LIST', input_tech_id_list)
@@ -60,6 +59,44 @@ def set_minimum_config_settings(config):
     config.set('config', 'BOTH_VAR1_LEVELS', 'L0')
     config.set('config', 'BOTH_VAR2_NAME', 'TMP')
     config.set('config', 'BOTH_VAR2_LEVELS', 'P1000, P900, P800, P700, P500, P100')
+
+
+
+@pytest.mark.parametrize(
+    'missing, run, thresh, errors, allow_missing', [
+        (1, 3, 0.5, 0, True),
+        (1, 3, 0.7, 1, True),
+        (1, 3, 0.5, 7, False),
+    ]
+)
+@pytest.mark.wrapper
+def test_tc_diag_missing_inputs(metplus_config, get_test_data_dir,
+                                missing, run, thresh, errors, allow_missing):
+    config = metplus_config
+    set_minimum_config_settings(config)
+    config.set('config', 'INPUT_MUST_EXIST', True)
+    config.set('config', 'TC_DIAG_ALLOW_MISSING_INPUTS', allow_missing)
+    config.set('config', 'TC_DIAG_INPUT_THRESH', thresh)
+    config.set('config', 'INIT_BEG', '2017051001')
+    config.set('config', 'INIT_END', '2017051005')
+    config.set('config', 'INIT_INCREMENT', '2H')
+    config.set('config', 'LEAD_SEQ', '1,2,3,6,9,12')
+    config.set('config', 'TC_DIAG_DECK_INPUT_DIR', get_test_data_dir('obs'))
+    config.set('config', 'TC_DIAG_DECK_INPUT_TEMPLATE', '{init?fmt=%Y%m%d}/qpe_{init?fmt=%Y%m%d%H?shift=3H}_A06.nc')
+    config.set('config', 'TC_DIAG_INPUT1_DIR', get_test_data_dir('fcst'))
+    config.set('config', 'TC_DIAG_INPUT1_TEMPLATE', '{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d_i%H}_f{lead?fmt=%3H}_HRRRTLE_PHPT.grb2')
+
+    wrapper = TCDiagWrapper(config)
+    assert wrapper.isOK
+
+    all_cmds = wrapper.run_all_times()
+    for cmd, _ in all_cmds:
+        print(cmd)
+
+    print(f'missing: {wrapper.missing_input_count} / {wrapper.run_count}, errors: {wrapper.errors}')
+    assert wrapper.missing_input_count == missing
+    assert wrapper.run_count == run
+    assert wrapper.errors == errors
 
 
 @pytest.mark.parametrize(

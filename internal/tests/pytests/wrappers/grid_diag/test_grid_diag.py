@@ -59,6 +59,49 @@ def set_minimum_config_settings(config):
 
 
 @pytest.mark.parametrize(
+    'missing, run, thresh, errors, allow_missing, runtime_freq', [
+        (0, 1, 0.5, 0, True, 'RUN_ONCE'),
+        (0, 1, 0.5, 0, False, 'RUN_ONCE'),
+        (0, 2, 0.5, 0, True, 'RUN_ONCE_PER_INIT_OR_VALID'),
+        (0, 2, 0.5, 0, False, 'RUN_ONCE_PER_INIT_OR_VALID'),
+        (2, 7, 1.0, 1, True, 'RUN_ONCE_PER_LEAD'),
+        (2, 7, 1.0, 2, False, 'RUN_ONCE_PER_LEAD'),
+        (8, 14, 1.0, 1, True, 'RUN_ONCE_FOR_EACH'),
+        (8, 14, 1.0, 8, False, 'RUN_ONCE_FOR_EACH'),
+    ]
+)
+@pytest.mark.wrapper
+def test_grid_diag_missing_inputs(metplus_config, get_test_data_dir,
+                                  missing, run, thresh, errors, allow_missing,
+                                  runtime_freq):
+    config = metplus_config
+    set_minimum_config_settings(config)
+    config.set('config', 'INPUT_MUST_EXIST', True)
+    config.set('config', 'GRID_DIAG_ALLOW_MISSING_INPUTS', allow_missing)
+    config.set('config', 'GRID_DIAG_INPUT_THRESH', thresh)
+    config.set('config', 'GRID_DIAG_RUNTIME_FREQ', runtime_freq)
+    config.set('config', 'INIT_BEG', '2017051001')
+    config.set('config', 'INIT_END', '2017051003')
+    config.set('config', 'INIT_INCREMENT', '2H')
+    config.set('config', 'LEAD_SEQ', '1,2,3,6,9,12,15')
+    config.set('config', 'GRID_DIAG_INPUT_DIR', get_test_data_dir('fcst'))
+    config.set('config', 'GRID_DIAG_INPUT_TEMPLATE',
+               '{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d_i%H}_f{lead?fmt=%3H}_HRRRTLE_PHPT.grb2')
+
+    wrapper = GridDiagWrapper(config)
+    assert wrapper.isOK
+
+    all_cmds = wrapper.run_all_times()
+    for cmd, _ in all_cmds:
+        print(cmd)
+
+    print(f'missing: {wrapper.missing_input_count} / {wrapper.run_count}, errors: {wrapper.errors}')
+    assert wrapper.missing_input_count == missing
+    assert wrapper.run_count == run
+    assert wrapper.errors == errors
+
+
+@pytest.mark.parametrize(
     'time_info, expected_subset', [
         # all files
         ({'init': '*', 'valid': '*', 'lead': '*'},
@@ -141,29 +184,31 @@ def test_get_all_files_and_subset(metplus_config, time_info, expected_subset):
                               ('20141101093015', '20141101093015', '000'),
                               ('20141101093015', '20141102093015', '024')]:
         filename = f'init_{init}_valid_{valid}_lead_{lead}.nc'
-        expected_files.append(os.path.join(input_dir,
-                                           filename))
+        expected_files.append(os.path.join(input_dir, filename))
 
     wrapper = GridDiagWrapper(config)
-    assert(wrapper.get_all_files())
+    wrapper.c_dict['ALL_FILES'] = wrapper.get_all_files()
 
     # convert list of lists into a single list to compare to expected results
 
     actual_files = [item['input0'] for item in wrapper.c_dict['ALL_FILES']]
     actual_files = [item for sub in actual_files for item in sub]
-    assert(actual_files == expected_files)
+    assert actual_files == expected_files
 
     file_list_dict = wrapper.subset_input_files(time_info)
     assert file_list_dict
-    with open(file_list_dict['input0'], 'r') as file_handle:
-        file_list = file_handle.readlines()
+    if len(expected_subset) == 1:
+        file_list = [file_list_dict['input0']]
+    else:
+        with open(file_list_dict['input0'], 'r') as file_handle:
+            file_list = file_handle.readlines()
 
-    file_list = file_list[1:]
-    assert(len(file_list) == len(expected_subset))
+        file_list = file_list[1:]
+        assert len(file_list) == len(expected_subset)
 
     for actual_file, expected_file in zip(file_list, expected_subset):
         actual_file = actual_file.strip()
-        assert(os.path.basename(actual_file) == expected_file)
+        assert os.path.basename(actual_file) == expected_file
 
 
 @pytest.mark.parametrize(

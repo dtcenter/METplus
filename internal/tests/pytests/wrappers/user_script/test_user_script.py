@@ -5,7 +5,6 @@ import pytest
 import re
 from datetime import datetime
 
-
 from metplus.wrappers.user_script_wrapper import UserScriptWrapper
 
 

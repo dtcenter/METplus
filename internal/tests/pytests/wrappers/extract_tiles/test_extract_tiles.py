@@ -7,6 +7,7 @@ import datetime
 
 from metplus.wrappers.extract_tiles_wrapper import ExtractTilesWrapper
 
+
 def extract_tiles_wrapper(metplus_config):
     config = metplus_config
     config.set('config', 'PROCESS_LIST', 'ExtractTiles')
@@ -22,10 +23,6 @@ def extract_tiles_wrapper(metplus_config):
     config.set('config', 'EXTRACT_TILES_LAT_ADJ', '15')
     config.set('config', 'EXTRACT_TILES_LON_ADJ', '15')
     config.set('config', 'EXTRACT_TILES_FILTER_OPTS', '-basin ML')
-    config.set('config', 'FCST_EXTRACT_TILES_INPUT_TEMPLATE',
-               'gfs_4_{init?fmt=%Y%m%d}_{init?fmt=%H}00_{lead?fmt=%HHH}.grb2')
-    config.set('config', 'OBS_EXTRACT_TILES_INPUT_TEMPLATE',
-               'gfs_4_{valid?fmt=%Y%m%d}_{valid?fmt=%H}00_000.grb2')
     config.set('config', 'EXTRACT_TILES_GRID_INPUT_DIR',
                '{INPUT_BASE}/cyclone_track_feature/reduced_model_data')
     config.set('config', 'EXTRACT_TILES_PAIRS_INPUT_DIR',

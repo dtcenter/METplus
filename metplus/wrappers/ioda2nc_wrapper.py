@@ -58,12 +58,10 @@ class IODA2NCWrapper(LoopTimesWrapper):
 
         # file I/O
         c_dict['ALLOW_MULTIPLE_FILES'] = True
-        c_dict['OBS_INPUT_DIR'] = self.config.getdir('IODA2NC_INPUT_DIR', '')
-        c_dict['OBS_INPUT_TEMPLATE'] = (
-            self.config.getraw('config', 'IODA2NC_INPUT_TEMPLATE')
-        )
-        if not c_dict['OBS_INPUT_TEMPLATE']:
-            self.log_error("IODA2NC_INPUT_TEMPLATE required to run")
+
+        self.get_input_templates(c_dict, {
+            'OBS': {'prefix': 'IODA2NC', 'required': True},
+        })
 
         # handle input file window variables
         self.handle_file_window_variables(c_dict, data_types=['OBS'])
@@ -118,13 +116,16 @@ class IODA2NCWrapper(LoopTimesWrapper):
         @param time_info dictionary containing timing information
         @returns List of files that were found or None if no files were found
         """
-        # get list of files even if only one is found (return_list=True)
-        obs_path = self.find_obs(time_info, return_list=True)
-        if obs_path is None:
+        if not self.c_dict.get('ALL_FILES'):
             return None
 
-        self.infiles.extend(obs_path)
-        return self.infiles
+        input_files = self.c_dict['ALL_FILES'][0].get('OBS', [])
+        if not input_files:
+            return None
+
+        self.logger.debug(f"Adding input: {' and '.join(input_files)}")
+        self.infiles.extend(input_files)
+        return self.c_dict['ALL_FILES'][0].get('time_info')
 
     def set_command_line_arguments(self, time_info):
         """! Set all arguments for ioda2nc command.

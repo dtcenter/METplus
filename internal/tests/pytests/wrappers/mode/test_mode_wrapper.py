@@ -59,6 +59,45 @@ def set_minimum_config_settings(config):
 
 
 @pytest.mark.parametrize(
+    'missing, run, thresh, errors, allow_missing', [
+        (6, 12, 0.5, 0, True),
+        (6, 12, 0.6, 1, True),
+        (6, 12, 0.5, 6, False),
+    ]
+)
+@pytest.mark.wrapper_a
+def test_mode_missing_inputs(metplus_config, get_test_data_dir,
+                             missing, run, thresh, errors, allow_missing):
+    config = metplus_config
+    set_minimum_config_settings(config)
+    config.set('config', 'INPUT_MUST_EXIST', True)
+    config.set('config', 'MODE_ALLOW_MISSING_INPUTS', allow_missing)
+    config.set('config', 'MODE_INPUT_THRESH', thresh)
+    config.set('config', 'INIT_BEG', '2017051001')
+    config.set('config', 'INIT_END', '2017051003')
+    config.set('config', 'INIT_INCREMENT', '2H')
+    config.set('config', 'LEAD_SEQ', '1,2,3,6,9,12')
+    config.set('config', 'FCST_MODE_INPUT_DIR', get_test_data_dir('fcst'))
+    config.set('config', 'OBS_MODE_INPUT_DIR', get_test_data_dir('obs'))
+    config.set('config', 'FCST_MODE_INPUT_TEMPLATE',
+               '{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d_i%H}_f{lead?fmt=%3H}_HRRRTLE_PHPT.grb2')
+    config.set('config', 'OBS_MODE_INPUT_TEMPLATE',
+               '{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A06.nc')
+
+    wrapper = MODEWrapper(config)
+    assert wrapper.isOK
+
+    all_cmds = wrapper.run_all_times()
+    for cmd, _ in all_cmds:
+        print(cmd)
+
+    print(f'missing: {wrapper.missing_input_count} / {wrapper.run_count}, errors: {wrapper.errors}')
+    assert wrapper.missing_input_count == missing
+    assert wrapper.run_count == run
+    assert wrapper.errors == errors
+
+
+@pytest.mark.parametrize(
     'config_overrides, env_var_values', [
         ({'MODEL': 'my_model'},
          {'METPLUS_MODEL': 'model = "my_model";'}),

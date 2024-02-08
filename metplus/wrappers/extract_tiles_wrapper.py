@@ -76,9 +76,7 @@ class ExtractTilesWrapper(LoopTimesWrapper):
         )
 
         c_dict['TC_STAT_INPUT_TEMPLATE'] = (
-            self.config.getraw('filename_templates',
-                               'EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE',
-                               '')
+            self.config.getraw('config', 'EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE')
         )
         # get MTD data dir/template to read
         c_dict['MTD_INPUT_DIR'] = (
@@ -86,9 +84,7 @@ class ExtractTilesWrapper(LoopTimesWrapper):
         )
 
         c_dict['MTD_INPUT_TEMPLATE'] = (
-            self.config.getraw('filename_templates',
-                               'EXTRACT_TILES_MTD_INPUT_TEMPLATE',
-                               '')
+            self.config.getraw('config', 'EXTRACT_TILES_MTD_INPUT_TEMPLATE')
         )
 
         # determine which location input to use: TCStat or MTD
@@ -133,8 +129,7 @@ class ExtractTilesWrapper(LoopTimesWrapper):
                 local_name = f'{data_type}_{put}_TEMPLATE'
                 config_name = f'{data_type}_{et_upper}_{put}_TEMPLATE'
                 c_dict[local_name] = (
-                    self.config.getraw('filename_templates',
-                                       config_name)
+                    self.config.getraw('config', config_name)
                 )
                 if not c_dict[local_name]:
                     self.log_error(f"{config_name} must be set.")
@@ -157,6 +152,10 @@ class ExtractTilesWrapper(LoopTimesWrapper):
 
         c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
                                                  met_tool=self.app_name)
+        # skip RuntimeFreq input file logic - remove once integrated
+        c_dict['FIND_FILES'] = False
+        # force error if inputs are missing
+        c_dict['ALLOW_MISSING_INPUTS'] = False
         return c_dict
 
     def regrid_data_plane_init(self):
@@ -324,8 +323,7 @@ class ExtractTilesWrapper(LoopTimesWrapper):
         """
         input_path = os.path.join(self.c_dict[f'{input_type}_INPUT_DIR'],
                                   self.c_dict[f'{input_type}_INPUT_TEMPLATE'])
-        input_path = do_string_sub(input_path,
-                                   **time_info)
+        input_path = do_string_sub(input_path, **time_info)
 
         self.logger.debug(f"Looking for {input_type} file: {input_path}")
         if not os.path.exists(input_path):
@@ -356,8 +354,7 @@ class ExtractTilesWrapper(LoopTimesWrapper):
         self.regrid_data_plane.c_dict['VAR_LIST'] = var_list
 
         for data_type in ['FCST', 'OBS']:
-            grid = self.get_grid(data_type, track_data[data_type],
-                                 input_type)
+            grid = self.get_grid(data_type, track_data[data_type], input_type)
 
             self.regrid_data_plane.c_dict['VERIFICATION_GRID'] = grid
 
@@ -413,14 +410,12 @@ class ExtractTilesWrapper(LoopTimesWrapper):
         input_dict = {}
 
         # read forecast lead from LEAD (TC_STAT) or FCST_LEAD (MTD)
-        lead = storm_data.get('LEAD',
-                              storm_data.get('FCST_LEAD'))
+        lead = storm_data.get('LEAD', storm_data.get('FCST_LEAD'))
         if lead:
             input_dict['lead_hours'] = lead[:-4]
 
         # read valid time from VALID (TC_STAT) or FCST_VALID (MTD)
-        valid = storm_data.get('VALID',
-                               storm_data.get('FCST_VALID'))
+        valid = storm_data.get('VALID', storm_data.get('FCST_VALID'))
         if valid:
             valid_dt = datetime.strptime(valid, '%Y%m%d_%H%M%S')
             input_dict['valid'] = valid_dt
