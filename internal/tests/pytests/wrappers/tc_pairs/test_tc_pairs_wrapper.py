@@ -369,29 +369,41 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
           'TC_PAIRS_CONSENSUS1_MEMBERS': 'member1a, member1b',
           'TC_PAIRS_CONSENSUS1_REQUIRED': 'true, false',
           'TC_PAIRS_CONSENSUS1_MIN_REQ': '1',
+          'TC_PAIRS_CONSENSUS1_DIAG_REQUIRED': 'false, true',
+          'TC_PAIRS_CONSENSUS1_DIAG_MIN_REQ': '2',
           'TC_PAIRS_CONSENSUS1_WRITE_MEMBERS': 'false',},
          {'METPLUS_CONSENSUS_LIST': (
         'consensus = [{name = "name1";members = ["member1a", "member1b"];'
-        'required = [true, false];min_req = 1;write_members = FALSE;}];'
+        'required = [true, false];min_req = 1;'
+        'diag_required = [false, true];diag_min_req = 2;'
+        'write_members = FALSE;}];'
          )}),
         # 14: consensus 2 dictionaries
         ('INIT', {'TC_PAIRS_CONSENSUS1_NAME': 'name1',
           'TC_PAIRS_CONSENSUS1_MEMBERS': 'member1a, member1b',
           'TC_PAIRS_CONSENSUS1_REQUIRED': 'true, false',
           'TC_PAIRS_CONSENSUS1_MIN_REQ': '1',
+          'TC_PAIRS_CONSENSUS1_DIAG_REQUIRED': 'false, true',
+          'TC_PAIRS_CONSENSUS1_DIAG_MIN_REQ': '2',
           'TC_PAIRS_CONSENSUS1_WRITE_MEMBERS': 'false',
           'TC_PAIRS_CONSENSUS2_NAME': 'name2',
           'TC_PAIRS_CONSENSUS2_MEMBERS': 'member2a, member2b',
           'TC_PAIRS_CONSENSUS2_REQUIRED': 'false, true',
           'TC_PAIRS_CONSENSUS2_MIN_REQ': '2',
+          'TC_PAIRS_CONSENSUS2_DIAG_REQUIRED': 'true, false',
+          'TC_PAIRS_CONSENSUS2_DIAG_MIN_REQ': '3',
           'TC_PAIRS_CONSENSUS2_WRITE_MEMBERS': 'true',
           },
          {'METPLUS_CONSENSUS_LIST': (
                  'consensus = ['
                  '{name = "name1";members = ["member1a", "member1b"];'
-                 'required = [true, false];min_req = 1;write_members = FALSE;},'
+                 'required = [true, false];min_req = 1;'
+                 'diag_required = [false, true];diag_min_req = 2;'
+                 'write_members = FALSE;},'
                  '{name = "name2";members = ["member2a", "member2b"];'
-                 'required = [false, true];min_req = 2;write_members = TRUE;}];'
+                 'required = [false, true];min_req = 2;'
+                 'diag_required = [true, false];diag_min_req = 3;'
+                 'write_members = TRUE;}];'
          )}),
         # 15: valid_exc
         ('INIT', {'TC_PAIRS_VALID_EXCLUDE': '20141031_14'},
@@ -455,29 +467,41 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
           'TC_PAIRS_CONSENSUS1_MEMBERS': 'member1a, member1b',
           'TC_PAIRS_CONSENSUS1_REQUIRED': 'true, false',
           'TC_PAIRS_CONSENSUS1_MIN_REQ': '1',
+          'TC_PAIRS_CONSENSUS1_DIAG_REQUIRED': 'false, true',
+          'TC_PAIRS_CONSENSUS1_DIAG_MIN_REQ': '2',
           'TC_PAIRS_CONSENSUS1_WRITE_MEMBERS': 'false',},
          {'METPLUS_CONSENSUS_LIST': (
                  'consensus = [{name = "name1";members = ["member1a", "member1b"];'
-                 'required = [true, false];min_req = 1;write_members = FALSE;}];'
+                 'required = [true, false];min_req = 1;'
+                 'diag_required = [false, true];diag_min_req = 2;'
+                 'write_members = FALSE;}];'
          )}),
         # 35: consensus 2 dictionaries
         ('VALID', {'TC_PAIRS_CONSENSUS1_NAME': 'name1',
           'TC_PAIRS_CONSENSUS1_MEMBERS': 'member1a, member1b',
           'TC_PAIRS_CONSENSUS1_REQUIRED': 'true, false',
           'TC_PAIRS_CONSENSUS1_MIN_REQ': '1',
+          'TC_PAIRS_CONSENSUS1_DIAG_REQUIRED': 'false, true',
+          'TC_PAIRS_CONSENSUS1_DIAG_MIN_REQ': '2',
           'TC_PAIRS_CONSENSUS1_WRITE_MEMBERS': 'false',
           'TC_PAIRS_CONSENSUS2_NAME': 'name2',
           'TC_PAIRS_CONSENSUS2_MEMBERS': 'member2a, member2b',
           'TC_PAIRS_CONSENSUS2_REQUIRED': 'false, true',
           'TC_PAIRS_CONSENSUS2_MIN_REQ': '2',
+          'TC_PAIRS_CONSENSUS2_DIAG_REQUIRED': 'true, false',
+          'TC_PAIRS_CONSENSUS2_DIAG_MIN_REQ': '3',
           'TC_PAIRS_CONSENSUS2_WRITE_MEMBERS': 'true',
           },
          {'METPLUS_CONSENSUS_LIST': (
                  'consensus = ['
                  '{name = "name1";members = ["member1a", "member1b"];'
-                 'required = [true, false];min_req = 1;write_members = FALSE;},'
+                 'required = [true, false];min_req = 1;'
+                 'diag_required = [false, true];diag_min_req = 2;'
+                 'write_members = FALSE;},'
                  '{name = "name2";members = ["member2a", "member2b"];'
-                 'required = [false, true];min_req = 2;write_members = TRUE;}];'
+                 'required = [false, true];min_req = 2;'
+                 'diag_required = [true, false];diag_min_req = 3;'
+                 'write_members = TRUE;}];'
          )}),
         # 36: valid_exc
         ('VALID', {'TC_PAIRS_VALID_EXCLUDE': '20141031_14'},

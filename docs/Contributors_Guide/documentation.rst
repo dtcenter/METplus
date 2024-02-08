@@ -172,6 +172,25 @@ See
 `Sphinx code blocks <https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-code-block>`_
 for more information.
 
+Code in a Paragraph
+^^^^^^^^^^^^^^^^^^^
+
+To refer to code within a paragraph (inline), use 
+`Inline code highlighting <https://www.sphinx-doc.org/en/master/usage/restructuredtext/roles.html#role-code>`_.
+
+For example:
+
+  .. code-block:: none
+
+    To compile MET with GRIB2 support, use the :code:`--enable-grib2`
+    option when configuring MET.
+
+Results in the following displayed text:
+
+To compile MET with GRIB2 support, use the :code:`--enable-grib2`
+option when configuring MET.
+
+
 Bold
 ----
 
@@ -288,7 +307,7 @@ resulting in the following displayed text:
 
 An example of the usage of footnotes in reStructured text can be seen in the
 `METplus docs/index.rst file <https://raw.githubusercontent.com/dtcenter/METplus/develop/docs/index.rst>`_
-and displayed in ReadTheDocs `here <https://metplus.readthedocs.io/en/develop/index.html>`_.
+and displayed in Read The Docs `here <https://metplus.readthedocs.io/en/develop/index.html>`_.
      
 See
 `Sphinx footnotes <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#footnotes>`_
@@ -559,8 +578,8 @@ See
 for more information.
 
 
-Linking to METplus Use Case
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Linking to METplus Use Cases
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Linking to METplus Use Cases must be done with an external web link. Since the
 HTML file is generated from a Python script, the `:ref:` role can’t be used. 
@@ -750,6 +769,33 @@ The table will be displayed in the following way:
    * - Row 2, column 1
      - Row 2, column 2
 
+Line Breaks in List Tables
+""""""""""""""""""""""""""
+
+In some instances, the text in a column of a table needs to wrap to keep the
+text readable.  To create a line break use :code:`:raw-html:`<br />``. See
+Column Number 37-38 in the first column of 
+`Table 13.8 Format information for SSVAR <https://met.readthedocs.io/en/latest/Users_Guide/ensemble-stat.html#id8>`_ 
+as an example. The raw RST for that cell is:
+
+.. code-block:: none
+
+  FBAR_NCL, :raw-html:`<br />` FBAR_NCU
+
+Using CSV Files to Create Tables
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+It can be easier to create a table in a spreadsheet than through RST syntax.
+A CSV (comma-separated values) file can be referenced in the RST file
+using the "csv-table" directive.
+
+For more information, see
+`CSV Files <https://sublime-and-sphinx-guide.readthedocs.io/en/latest/tables.html#csv-files>`_
+and
+`CSV Table <https://docutils.sourceforge.io/docs/ref/rst/directives.html#csv-table-1>`_.
+
+As of 2023, using CSV files to create tables hasn't been used in the METplus
+documentation.
 
 Converting an Existing Table into a List Table
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -889,6 +935,87 @@ Below is the resulting displayed table:
    * - History
      - Hayashi
      - 19
+
+Grid Tables
+^^^^^^^^^^^
+
+Grid tables are created by "drawing" the table structure with various symbols,
+via grid-like "ASCII art". Creating grid tables can be cumbersome to create,
+however the
+`Grid Tables <https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#grid-tables>`_
+documentation indicates that the
+`Emacs table mode <https://table.sourceforge.net/>`_ allows for easier editing
+of grid tables.
+
+An example of the use of a grid table can be found in the MET Installation Guide under the
+dropdown title **IF THE USER ALREADY HAS THE LIBRARY DEPENDENCIES INSTALLED** in
+the section 
+`External Library Handling in compile_MET_all.sh <https://met.readthedocs.io/en/latest/Users_Guide/installation.html#external-library-handling-in-compile-met-all-sh>`_.
+
+To force a grid table to use a line break inside of a cell so that the text will
+wrap, insert an empty line between the text to be wrapped.  The raw RST for this table
+looks like:
+
+.. code-block:: none
+
+    +-------------------+--------------------------------+------------------------------+
+    | **Feature**       | **Configuration Option**       | **Environment Variables**    |
+    +===================+================================+==============================+
+    | *Always*          |                                | MET_BUFRLIB,                 |
+    |                   |                                |                              |
+    | *Required*        |                                | BUFRLIB_NAME,                |
+    |                   |                                |                              |
+    |                   |                                | MET_PROJ,                    |
+    |                   |                                |                              |
+    |                   |                                | MET_HDF5,                    |
+    |                   |                                |                              |
+    |                   |                                | MET_NETCDF,                  |
+    |                   |                                |                              |
+    |                   |                                | MET_GSL                      |
+    +-------------------+--------------------------------+------------------------------+
+    | *Optional*        | :code:`--enable-all` or        | MET_GRIB2CLIB,               |
+    |                   |                                |                              |
+    | GRIB2             | :code:`--enable-grib2`         | MET_GRIB2CINC,               |        
+    |                   |                                |                              |
+    | Support           |                                | GRIB2CLIB_NAME,              |
+    |                   |                                |                              |
+    |                   |                                | LIB_JASPER,                  |
+    |                   |                                |                              |
+    |                   |                                | LIB_PNG,                     |
+    |                   |                                |                              |
+    |                   |                                | LIB_Z                        |
+    +-------------------+--------------------------------+------------------------------+
+    | *Optional*        | :code:`--enable-all` or        | MET_PYTHON_BIN_EXE,          |
+    |                   |                                |                              |
+    | Python            | :code:`--enable-python`        | MET_PYTHON_CC,               |
+    |                   |                                |                              |
+    | Support           |                                | MET_PYTHON_LD                |
+    +-------------------+--------------------------------+------------------------------+
+    | *Optional*        | :code:`--enable-all` or        | MET_ATLAS,                   |
+    |                   |                                |                              |
+    | Unstructured Grid | :code:`--enable-ugrid`         | MET_ECKIT                    |
+    |                   |                                |                              |
+    | Support           |                                |                              |
+    +-------------------+--------------------------------+------------------------------+
+    | *Optional*        | :code:`--enable-all` or        | MET_HDF                      |
+    |                   |                                |                              |
+    | LIDAR2NC          | :code:`--enable-lidar2nc`      |                              |
+    |                   |                                |                              |
+    | Support           |                                |                              |
+    +-------------------+--------------------------------+------------------------------+
+    | *Optional*        | :code:`--enable-all` or        | MET_HDF,                     |
+    |                   |                                |                              |
+    | MODIS             | :code:`--enable-modis`         | MET_HDFEOS                   |
+    |                   |                                |                              |
+    | Support           |                                |                              |
+    +-------------------+--------------------------------+------------------------------+
+    | *Optional*        | :code:`--enable-all` or        | MET_CAIRO,                   |
+    |                   |                                |                              |
+    | MODE Graphics     | :code:`--enable-mode_graphics` | MET_FREETYPE                 |
+    |                   |                                |                              |
+    | Support           |                                |                              |
+    +-------------------+--------------------------------+------------------------------+
+
 
 
 PrettyTable
@@ -1033,18 +1160,37 @@ Troubleshooting
 Testing RST Formatting in an Online Editor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-It can be time consuming to wait for ReadTheDocs to build. To quickly test how
-something will display formatting, this
-`Online Sphinx Editor <http://seneca.rap.ucar.edu:5000/>`_
-can be used. Please note that in order to use this editor, users must have
-access to the machine **seneca** and the UCAR VPN.  This is not a secure
-website (note that it begins with "http" and not "https"). A user must be
-logged into the UCAR VPN to use this editor. If the editor is not displayed,
-please try using a different browser.
+It can be time consuming to wait for Read the Docs to build. To quickly test how
+the RST will be displayed, use the 
+`Online Sphinx Editor <https://www.tutorialspoint.com/online_restructure_editor.php>`_.
+Click on 'Execute' to view the rendered documentation in the 'Result' window.
 
-Thank you to 
-`livesphinx <https://github.com/faust93/livesphinx>`_
-for providing our team with the code to run this Online Sphinx Editor.
+WARNING: Duplicate explicit target name
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+It may be necessary or desirable to have two links with the same name,
+for example, when referring to a METplus Use Case. However, using links
+with the same name can result in the "WARNING: Duplicate explicit target name".
+
+To resolve this warning, first, determine if it is possible and makes sense
+to distinguish the name of the link, and change the name of the link. If it
+is best to use the same link name,
+`anonymous hyperlinks <https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#anonymous-hyperlinks>`__
+can be used. Anonymous hyperlink references are specified with two underscores
+instead of one.  For example, instead of the typical link syntax
+
+.. code-block:: none
+
+  `Link text <link_URL>`_
+
+use two underscores at the end of the formatting, like this:
+
+.. code-block:: none
+
+  `Link text <link_URL>`__
+
+See `anonymous hyperlinks <https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#anonymous-hyperlinks>`__
+for more information. 
 
 Escape Characters
 ^^^^^^^^^^^^^^^^^

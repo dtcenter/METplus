@@ -434,7 +434,37 @@ METplus Components Python Requirements
       Feature Relative by Lead
       using Multiple User-Defined Fields
       (pygrib)
-      <../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html>`_
+      <../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html>`_  :raw-html:`<br />`
+      `GridStat:
+      Cloud Fractions Using GFS 
+      and ERA5 Data
+      (pygrib)
+      <../generated/model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac.html>`_  :raw-html:`<br />`
+      `GridStat:
+      Cloud Height with Neighborhood
+      and Probabilities
+      (pygrib)
+      <../generated/model_applications/clouds/GridStat_fcstMPAS_obsERA5_cloudBaseHgt.html>`_  :raw-html:`<br />`
+      `GridStat:
+      Cloud Pressure and 
+      Temperature Heights
+      (pygrib)
+      <../generated/model_applications/clouds/GridStat_fcstGFS_obsSATCORPS_cloudTopPressAndTemp.html>`_  :raw-html:`<br />`
+      `GridStat:
+      Cloud Fractions Using GFS
+      and MERRA2 Data
+      (pygrib)
+      <../generated/model_applications/clouds/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac.html>`_  :raw-html:`<br />`
+      `GridStat:
+      Cloud Fractions Using MPAS
+      and SatCORPS Data
+      (pygrib)
+      <../generated/model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.html>`_  :raw-html:`<br />`
+      `GridStat:
+      Cloud Fractions Using MPAS
+      and MERRA2 Data
+      (pygrib)
+      <../generated/model_applications/clouds/GridStat_fcstMPAS_obsMERRA2_lowAndTotalCloudFrac.html>`_
   * - pylab
     - 
     - METplus wrappers
