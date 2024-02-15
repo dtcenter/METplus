@@ -45,10 +45,14 @@ jobs:
           git config --global user.email "97135045+metplus-bot@users.noreply.github.com"
           echo git checkout ${branch_name}
           git checkout ${branch_name}
+          echo git checkout -d update_truth_for_${branch_name} (delete local if exists)
+          git checkout -d update_truth_for_${branch_name}
+          echo git checkout -b update_truth_for_${branch_name} (create from ${branch_name})
+          git checkout -b update_truth_for_${branch_name}
           echo git merge -s ours origin/${branch_name}-ref
           git merge -s ours origin/${branch_name}-ref
-          echo git push origin ${branch_name}
-          git push origin ${branch_name}
+          echo git push origin update_truth_for_${branch_name}
+          git push origin update_truth_for_${branch_name}
 
       - name: Create Pull Request
         run: gh pr create --base $BASE --body "$BODY" --title "$TITLE"
