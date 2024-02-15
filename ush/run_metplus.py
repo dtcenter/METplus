@@ -16,13 +16,14 @@ Developer Note: Please do not use f-strings in this file so that the
   f-string instead of the useful error message.
 """
 
-import os
+from os.path import abspath, join, dirname, realpath, basename
+from os import pardir
 import sys
 import traceback
 
+################################################################################
 # add metplus directory to path so the wrappers and utilities can be found
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                                os.pardir)))
+sys.path.insert(0, abspath(join(dirname(realpath(__file__)), pardir)))
 
 import produtil.setup
 
@@ -44,8 +45,7 @@ def main():
         return False
 
     # warn if calling master_metplus.py
-    script_name = os.path.basename(__file__)
-    if script_name == 'master_metplus.py':
+    if basename(__file__) == 'master_metplus.py':
         msg = ("master_metplus.py has been renamed to run_metplus.py. "
                "This script name will be removed in a future version.")
         config.logger.warning(msg)
@@ -56,11 +56,7 @@ def main():
 
 
 def usage():
-    """! How to call this script.
-    """
-
-    filename = os.path.basename(__file__)
-
+    """!How to call this script."""
     print ('''
 Usage: %s arg1 arg2 arg3
     -h|--help               Display this usage statement
@@ -69,7 +65,7 @@ Arguments:
 /path/to/parmfile.conf -- Specify custom configuration file to use
 section.option=value -- override conf options on the command line
 
-'''%(filename))
+'''%(basename(__file__)))
     sys.exit(2)
 
 
