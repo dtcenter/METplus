@@ -45,8 +45,8 @@ jobs:
           git config --global user.email "97135045+metplus-bot@users.noreply.github.com"
           echo git checkout ${branch_name}
           git checkout ${branch_name}
-          echo "git checkout -d update_truth_for_${branch_name} (delete local if exists)"
-          git checkout -d update_truth_for_${branch_name}
+          echo "git branch -d update_truth_for_${branch_name} (delete local if exists)"
+          git branch -d update_truth_for_${branch_name}
           echo "git checkout -b update_truth_for_${branch_name} (create from ${branch_name})"
           git checkout -b update_truth_for_${branch_name}
           echo git merge -s ours origin/${branch_name}-ref
