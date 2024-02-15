@@ -97,7 +97,8 @@ class PlotDataPlaneWrapper(LoopTimesWrapper):
         if c_dict['CONVERT_TO_IMAGE'] and not c_dict['CONVERT_EXE']:
             self.log_error("[exe] CONVERT must be set correctly if "
                            "PLOT_DATA_PLANE_CONVERT_TO_IMAGE is True")
-
+        # skip RuntimeFreq input file logic - remove once integrated
+        c_dict['FIND_FILES'] = False
         return c_dict
 
     def get_command(self):
@@ -111,27 +112,14 @@ class PlotDataPlaneWrapper(LoopTimesWrapper):
         return cmd
 
     def run_at_time_once(self, time_info):
-        """! Process runtime and try to build command to run ascii2nc
-             Args:
-                @param time_info dictionary containing timing information
+        """! Process runtime and try to build command to run plot_data_plane.
+        Calls parent run_at_time_once (RuntimeFreq) then optionally converts
+        PS output to PNG if requested.
+
+        @param time_info dictionary containing timing information
         """
         self.clear()
-
-        # get input files
-        if not self.find_input_files(time_info):
-            return False
-
-        # get output path
-        if not self.find_and_check_output_file(time_info):
-            return False
-
-        # get other configurations for command
-        self.set_command_line_arguments(time_info)
-
-        # set environment variables if using config file
-        self.set_environment_variables(time_info)
-
-        if not self.build():
+        if not super().run_at_time_once(time_info):
             return False
 
         if self.c_dict['CONVERT_TO_IMAGE']:
@@ -144,14 +132,14 @@ class PlotDataPlaneWrapper(LoopTimesWrapper):
         # just pass value to input file list
         if 'PYTHON' in self.c_dict['INPUT_TEMPLATE']:
             self.infiles.append(self.c_dict['INPUT_TEMPLATE'])
-            return self.infiles
+            return True
 
         file_path = self.find_data(time_info, return_list=False)
         if not file_path:
-            return None
+            return False
 
         self.infiles.append(file_path)
-        return self.infiles
+        return True
 
     def set_command_line_arguments(self, time_info):
         field_name = do_string_sub(self.c_dict['FIELD_NAME'],

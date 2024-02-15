@@ -4,9 +4,6 @@ import pytest
 
 import os
 
-from datetime import datetime
-
-
 from metplus.wrappers.ensemble_stat_wrapper import EnsembleStatWrapper
 
 fcst_dir = '/some/path/fcst'
@@ -27,7 +24,7 @@ time_fmt = '%Y%m%d%H'
 run_times = ['2005080700', '2005080712']
 
 
-def set_minimum_config_settings(config, set_fields=True):
+def set_minimum_config_settings(config, set_fields=True, set_obs=True):
     # set config variables to prevent command from running and bypass check
     # if input files actually exist
     config.set('config', 'DO_NOT_RUN_EXE', True)
@@ -46,11 +43,12 @@ def set_minimum_config_settings(config, set_fields=True):
     config.set('config', 'ENSEMBLE_STAT_CONFIG_FILE',
                '{PARM_BASE}/met_config/EnsembleStatConfig_wrapped')
     config.set('config', 'FCST_ENSEMBLE_STAT_INPUT_DIR', fcst_dir)
-    config.set('config', 'OBS_ENSEMBLE_STAT_GRID_INPUT_DIR', obs_dir)
     config.set('config', 'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE',
                '{init?fmt=%Y%m%d%H}/fcst_file_F{lead?fmt=%3H}')
-    config.set('config', 'OBS_ENSEMBLE_STAT_GRID_INPUT_TEMPLATE',
-               '{valid?fmt=%Y%m%d%H}/obs_file')
+    if set_obs:
+        config.set('config', 'OBS_ENSEMBLE_STAT_GRID_INPUT_DIR', obs_dir)
+        config.set('config', 'OBS_ENSEMBLE_STAT_GRID_INPUT_TEMPLATE',
+                   '{valid?fmt=%Y%m%d%H}/obs_file')
     config.set('config', 'ENSEMBLE_STAT_OUTPUT_DIR',
                '{OUTPUT_BASE}/EnsembleStat/output')
     config.set('config', 'ENSEMBLE_STAT_OUTPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}')
@@ -60,6 +58,74 @@ def set_minimum_config_settings(config, set_fields=True):
         config.set('config', 'FCST_VAR1_LEVELS', fcst_level)
         config.set('config', 'OBS_VAR1_NAME', obs_name)
         config.set('config', 'OBS_VAR1_LEVELS', obs_level)
+
+
+@pytest.mark.parametrize(
+    'allow_missing, optional_input, missing, run, thresh, errors', [
+        (True, None, 3, 8, 0.4, 0),
+        (True, None, 3, 8, 0.7, 1),
+        (False, None, 3, 8, 0.7, 3),
+        (True, 'obs_grid', 4, 8, 0.4, 0),
+        (True, 'obs_grid', 4, 8, 0.7, 1),
+        (False, 'obs_grid', 4, 8, 0.7, 4),
+        (True, 'point_grid', 4, 8, 0.4, 0),
+        (True, 'point_grid', 4, 8, 0.7, 1),
+        (False, 'point_grid', 4, 8, 0.7, 4),
+        (True, 'ens_mean', 4, 8, 0.4, 0),
+        (True, 'ens_mean', 4, 8, 0.7, 1),
+        (False, 'ens_mean', 4, 8, 0.7, 4),
+        (True, 'ctrl', 4, 8, 0.4, 0),
+        (True, 'ctrl', 4, 8, 0.7, 1),
+        (False, 'ctrl', 4, 8, 0.7, 4),
+        # still errors if more members than n_members found
+        (True, 'low_n_member', 8, 8, 0.7, 6),
+        (False, 'low_n_member', 8, 8, 0.7, 8),
+    ]
+)
+@pytest.mark.wrapper_b
+def test_ensemble_stat_missing_inputs(metplus_config, get_test_data_dir, allow_missing,
+                                      optional_input, missing, run, thresh, errors):
+    config = metplus_config
+    set_minimum_config_settings(config, set_obs=False)
+    config.set('config', 'INPUT_MUST_EXIST', True)
+    config.set('config', 'ENSEMBLE_STAT_ALLOW_MISSING_INPUTS', allow_missing)
+    config.set('config', 'ENSEMBLE_STAT_INPUT_THRESH', thresh)
+    n_members = 4 if optional_input == 'low_n_member' else 6
+    config.set('config', 'ENSEMBLE_STAT_N_MEMBERS', n_members)
+    config.set('config', 'INIT_BEG', '2009123106')
+    config.set('config', 'INIT_END', '2010010100')
+    config.set('config', 'INIT_INCREMENT', '6H')
+    config.set('config', 'LEAD_SEQ', '24H, 48H')
+    config.set('config', 'FCST_ENSEMBLE_STAT_INPUT_DIR', get_test_data_dir('ens'))
+    config.set('config', 'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE',
+               '{init?fmt=%Y%m%d%H}/arw-*-gep?/d01_{init?fmt=%Y%m%d%H}_{lead?fmt=%3H}00.grib')
+
+    if optional_input == 'obs_grid':
+        prefix = 'OBS_ENSEMBLE_STAT_GRID'
+    elif optional_input == 'point_grid':
+        prefix = 'OBS_ENSEMBLE_STAT_POINT'
+    elif optional_input == 'ens_mean':
+        prefix = 'ENSEMBLE_STAT_ENS_MEAN'
+    elif optional_input == 'ctrl':
+        prefix = 'ENSEMBLE_STAT_CTRL'
+    else:
+        prefix = None
+
+    if prefix:
+        config.set('config', f'{prefix}_INPUT_DIR', get_test_data_dir('obs'))
+        config.set('config', f'{prefix}_INPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}_obs_file')
+
+    wrapper = EnsembleStatWrapper(config)
+    assert wrapper.isOK
+
+    all_cmds = wrapper.run_all_times()
+    for cmd, _ in all_cmds:
+        print(cmd)
+
+    print(f'missing: {wrapper.missing_input_count} / {wrapper.run_count}, errors: {wrapper.errors}')
+    assert wrapper.missing_input_count == missing
+    assert wrapper.run_count == run
+    assert wrapper.errors == errors
 
 
 @pytest.mark.parametrize(

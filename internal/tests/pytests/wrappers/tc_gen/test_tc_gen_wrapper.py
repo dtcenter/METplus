@@ -8,6 +8,62 @@ from metplus.wrappers.tc_gen_wrapper import TCGenWrapper
 
 
 @pytest.mark.parametrize(
+    'allow_missing, optional_input, missing, run, thresh, errors', [
+        (True, None,       [0, 0, 1], [1, 1, 1], 0.0, [0, 0, 0]),
+        (False, None,      [0, 0, 1], [1, 1, 1], 0.0, [0, 0, 1]),
+        (True, 'genesis',  [0, 1, 1], [1, 1, 1], 0.0, [0, 0, 0]),
+        (False, 'genesis', [0, 1, 1], [1, 1, 1], 0.0, [0, 1, 1]),
+        (True, 'edeck',    [0, 1, 1], [1, 1, 1], 0.0, [0, 0, 0]),
+        (False, 'edeck',   [0, 1, 1], [1, 1, 1], 0.0, [0, 1, 1]),
+        (True, 'shape',    [0, 1, 1], [1, 1, 1], 0.0, [0, 0, 0]),
+        (False, 'shape',   [0, 1, 1], [1, 1, 1], 0.0, [0, 1, 1]),
+    ]
+)
+@pytest.mark.wrapper_a
+def test_tc_gen_missing_inputs(metplus_config, get_test_data_dir, allow_missing,
+                               optional_input, missing, run, thresh, errors):
+    init_times = ('2016', '2018', '2020')
+    for index, init_time in enumerate(init_times):
+        config = metplus_config
+        config.set('config', 'DO_NOT_RUN_EXE', True)
+        config.set('config', 'INPUT_MUST_EXIST', True)
+        config.set('config', 'TC_GEN_ALLOW_MISSING_INPUTS', allow_missing)
+        config.set('config', 'TC_GEN_INPUT_THRESH', thresh)
+        config.set('config', 'LOOP_BY', 'INIT')
+        config.set('config', 'INIT_TIME_FMT', '%Y')
+        config.set('config', 'INIT_BEG', init_time)
+        config.set('config', 'INIT_END', init_time)
+        config.set('config', 'TC_GEN_TRACK_INPUT_DIR', get_test_data_dir('tc_gen/track'))
+        config.set('config', 'TC_GEN_TRACK_INPUT_TEMPLATE', 'track_fake_{init?fmt=%Y}*')
+        config.set('config', 'TC_GEN_OUTPUT_TEMPLATE', '{OUTPUT_BASE}/output.nc')
+
+        if optional_input == 'genesis':
+            prefix = 'TC_GEN_GENESIS'
+        elif optional_input == 'edeck':
+            prefix = 'TC_GEN_EDECK'
+        elif optional_input == 'shape':
+            prefix = 'TC_GEN_SHAPE'
+        else:
+            prefix = None
+
+        if prefix:
+            config.set('config', f'{prefix}_INPUT_DIR', get_test_data_dir(f'tc_gen/{optional_input}'))
+            config.set('config', f'{prefix}_INPUT_TEMPLATE', optional_input + '_fake_{init?fmt=%Y}*')
+
+        wrapper = TCGenWrapper(config)
+        assert wrapper.isOK
+
+        all_cmds = wrapper.run_all_times()
+        for cmd, _ in all_cmds:
+            print(cmd)
+
+        print(f'missing: {wrapper.missing_input_count} / {wrapper.run_count}, errors: {wrapper.errors}')
+        assert wrapper.missing_input_count == missing[index]
+        assert wrapper.run_count == run[index]
+        assert wrapper.errors == errors[index]
+
+
+@pytest.mark.parametrize(
     'config_overrides, env_var_values', [
 
         ({'TC_GEN_INIT_FREQUENCY': '8'},
@@ -286,7 +342,7 @@ from metplus.wrappers.tc_gen_wrapper import TCGenWrapper
     ]
 )
 @pytest.mark.wrapper_a
-def test_tc_gen(metplus_config, config_overrides, env_var_values):
+def test_tc_gen(metplus_config, get_test_data_dir, config_overrides, env_var_values):
     # expected number of 2016 files (including file_list line)
     expected_genesis_count = 7
     expected_track_count = expected_genesis_count
@@ -295,10 +351,7 @@ def test_tc_gen(metplus_config, config_overrides, env_var_values):
 
     config = metplus_config
 
-    test_data_dir = os.path.join(config.getdir('METPLUS_BASE'),
-                                 'internal', 'tests',
-                                 'data',
-                                 'tc_gen')
+    test_data_dir = get_test_data_dir('tc_gen')
     track_dir = os.path.join(test_data_dir, 'track')
     genesis_dir = os.path.join(test_data_dir, 'genesis')
     edeck_dir = os.path.join(test_data_dir, 'edeck')

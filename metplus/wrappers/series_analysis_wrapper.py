@@ -202,9 +202,6 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                  '')
             )
 
-            # initialize list path to None for each type
-            c_dict[f'{data_type}_LIST_PATH'] = None
-
             # read and set file type env var for FCST and OBS
             if data_type == 'BOTH':
                 continue
@@ -396,12 +393,6 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                            instance=instance)
         return pdp_wrapper
 
-    def clear(self):
-        """! Call parent's clear function and clear additional values """
-        super().clear()
-        for data_type in ('FCST', 'OBS', 'BOTH'):
-            self.c_dict[f'{data_type}_LIST_PATH'] = None
-
     def run_all_times(self):
         """! Process all run times defined for this wrapper """
         super().run_all_times()
@@ -460,6 +451,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             self.c_dict['ALL_FILES'] = (
                 self.get_all_files_for_leads(input_dict, lead_group[1])
             )
+            if not self._check_input_files():
+                continue
 
             # if only 1 forecast lead is being processed, set it in time dict
             if len(lead_group[1]) == 1:
@@ -504,7 +497,11 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                             lead_group)
             )
             if not fcst_path or not obs_path:
-                self.log_error('No ASCII file lists were created. Skipping.')
+                msg = 'No ASCII file lists were created. Skipping.'
+                if self.c_dict['ALLOW_MISSING_INPUTS']:
+                    self.logger.warning(msg)
+                else:
+                    self.log_error(msg)
                 continue
 
             # Build up the arguments to and then run the MET tool series_analysis.
@@ -575,7 +572,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         for storm_id in storm_list:
             time_info['storm_id'] = storm_id
-            file_dict = super().get_files_from_time(time_info)
+            file_dict = {'time_info': time_info.copy()}
             if self.c_dict['USING_BOTH']:
                 fcst_files = self.find_input_files(time_info, 'BOTH')
                 obs_files = fcst_files
@@ -670,7 +667,11 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                           **time_info)
                 self.logger.debug(f"Explicit BOTH file list file: {both_path}")
                 if not os.path.exists(both_path):
-                    self.log_error(f'Could not find file: {both_path}')
+                    msg = f'Could not find file: {both_path}'
+                    if self.c_dict['ALLOW_MISSING_INPUTS']:
+                        self.logger.warning(msg)
+                    else:
+                        self.log_error(msg)
                     return None, None
 
                 return both_path, both_path
@@ -679,14 +680,24 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                       **time_info)
             self.logger.debug(f"Explicit FCST file list file: {fcst_path}")
             if not os.path.exists(fcst_path):
-                self.log_error(f'Could not find forecast file: {fcst_path}')
+                msg = f'Could not find forecast file: {fcst_path}'
+                if self.c_dict['ALLOW_MISSING_INPUTS']:
+                    self.logger.warning(msg)
+                else:
+                    self.log_error(msg)
+
                 fcst_path = None
 
             obs_path = do_string_sub(self.c_dict['OBS_INPUT_FILE_LIST'],
                                      **time_info)
             self.logger.debug(f"Explicit OBS file list file: {obs_path}")
             if not os.path.exists(obs_path):
-                self.log_error(f'Could not find observation file: {obs_path}')
+                msg = f'Could not find observation file: {obs_path}'
+                if self.c_dict['ALLOW_MISSING_INPUTS']:
+                    self.logger.warning(msg)
+                else:
+                    self.log_error(msg)
+
                 obs_path = None
 
             return fcst_path, obs_path
@@ -695,7 +706,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         list_file_dict = self.subset_input_files(time_info,
                                                  output_dir=output_dir,
-                                                 leads=leads)
+                                                 leads=leads,
+                                                 force_list=True)
         if not list_file_dict:
             return None, None
 
@@ -784,10 +796,9 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         # build the command and run series_analysis for each variable
         for var_info in self.c_dict['VAR_LIST']:
             if self.c_dict['USING_BOTH']:
-                self.c_dict['BOTH_LIST_PATH'] = fcst_path
+                self.infiles.append(fcst_path)
             else:
-                self.c_dict['FCST_LIST_PATH'] = fcst_path
-                self.c_dict['OBS_LIST_PATH'] = obs_path
+                self.infiles.extend([fcst_path, obs_path])
 
             add_field_info_to_time_info(time_info, var_info)
 
@@ -825,8 +836,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         # add config file - passing through do_string_sub
         # to get custom string if set
-        config_file = do_string_sub(self.c_dict['CONFIG_FILE'],
-                                    **time_info)
+        config_file = do_string_sub(self.c_dict['CONFIG_FILE'], **time_info)
         self.args.append(f" -config {config_file}")
 
     def get_command(self):
@@ -837,10 +847,10 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         cmd = self.app_path
 
         if self.c_dict['USING_BOTH']:
-            cmd += f" -both {self.c_dict['BOTH_LIST_PATH']}"
+            cmd += f" -both {self.infiles[0]}"
         else:
-            cmd += f" -fcst {self.c_dict['FCST_LIST_PATH']}"
-            cmd += f" -obs {self.c_dict['OBS_LIST_PATH']}"
+            cmd += f" -fcst {self.infiles[0]}"
+            cmd += f" -obs {self.infiles[1]}"
 
         # add output path
         cmd += f' -out {self.get_output_path()}'
@@ -876,8 +886,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
             # get the output directory where the series_analysis output
             # was written. Plots will be written to the same directory
-            plot_input = do_string_sub(output_template,
-                                       **time_info)
+            plot_input = do_string_sub(output_template, **time_info)
 
             # Get the number of forecast tile files and the name of the
             # first and last in the list to be used in the -title
@@ -968,8 +977,11 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             be parsed, return (None, None, None)
         """
         # read the file but skip the first line because it contains 'file_list'
-        with open(fcst_path, 'r') as file_handle:
-            files_of_interest = file_handle.readlines()
+        try:
+            with open(fcst_path, 'r') as file_handle:
+                files_of_interest = file_handle.readlines()
+        except FileNotFoundError:
+            return None, None, None
 
         if len(files_of_interest) < 2:
             self.log_error(f"No files found in file list: {fcst_path}")
@@ -1141,8 +1153,11 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         @param templates list of filename templates to use to parse time info
         out of file paths found in file_path file
         """
-        with open(file_path, 'r') as file_handle:
-            file_list = file_handle.read().splitlines()[1:]
+        try:
+            with open(file_path, 'r') as file_handle:
+                file_list = file_handle.read().splitlines()[1:]
+        except FileNotFoundError:
+            return
 
         for file_name in file_list:
             found = False
@@ -1154,3 +1169,12 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             if not found:
                 continue
             yield file_time_info
+
+    def _update_list_with_new_files(self, time_info, list_to_update):
+        new_files = self.get_files_from_time(time_info)
+        if not new_files:
+            return
+        if isinstance(new_files, list):
+            list_to_update.extend(new_files)
+        else:
+            list_to_update.append(new_files)

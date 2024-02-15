@@ -108,20 +108,12 @@ class ASCII2NCWrapper(LoopTimesWrapper):
                 )
 
             c_dict[f'OBS_FILE_WINDOW_{edge}'] = file_window
-
+        # skip RuntimeFreq input file logic - remove once integrated
+        c_dict['FIND_FILES'] = False
         return c_dict
 
     def get_command(self):
         cmd = self.app_path
-
-        # don't run if no input or output files were found
-        if not self.infiles:
-            self.log_error("No input files were found")
-            return
-
-        if self.outfile == "":
-            self.log_error("No output file specified")
-            return
 
         # add input files
         for infile in self.infiles:
@@ -145,15 +137,15 @@ class ASCII2NCWrapper(LoopTimesWrapper):
             filename = do_string_sub(self.c_dict['OBS_INPUT_TEMPLATE'],
                                      **time_info)
             self.infiles.append(filename)
-            return self.infiles
+            return True
 
         # get list of files even if only one is found (return_list=True)
         obs_path = self.find_obs(time_info, return_list=True)
         if obs_path is None:
-            return None
+            return False
 
         self.infiles.extend(obs_path)
-        return self.infiles
+        return True
 
     def set_command_line_arguments(self, time_info):
         # add input data format if set
@@ -162,8 +154,7 @@ class ASCII2NCWrapper(LoopTimesWrapper):
 
         # add config file - passing through do_string_sub to get custom string if set
         if self.c_dict['CONFIG_FILE']:
-            config_file = do_string_sub(self.c_dict['CONFIG_FILE'],
-                                        **time_info)
+            config_file = do_string_sub(self.c_dict['CONFIG_FILE'], **time_info)
             self.args.append(f" -config {config_file}")
 
         # add mask grid if set
