@@ -1,10 +1,10 @@
 """
-UserScript: Make zonal and meridonial means 
-========================================================================
+Bias Plot on Zonal Mean Wind and Temperature: UserScript, Series-Analysis
+==========================================================================
 
 model_applications/
 s2s/
-UserScript_obsERA_obsOnly_Stratosphere.py
+UserScript_fcstGFS_obsERA_StratosphereBias.py
 
 """
 
@@ -13,21 +13,25 @@ UserScript_obsERA_obsOnly_Stratosphere.py
 # --------------------
 #
 # This use case calls functions in METcalcpy to create zonal and meridonial 
-# means 
+# means on U and T.  It then runs Series-Analysis on the output zonal means 
+# and creates a contour plot of bias in latitude and pressure level.
 #
 
 ##############################################################################
 # Datasets
 # --------
 #
-# SSWC_v1.0_varFull_ERAi_d20130106_s20121107_e20130307_c20160701.nc
+# GFS_2018_02_24h.nc
+# ERA_2018_02.nc
+#
 
 ##############################################################################
 # METplus Components
 # ------------------
 #
 # This use case runs the UserScript wrapper tool to run a user provided script,
-# in this case, meridonial.py.
+# in this case, zonal_mean_driver.py, runs Series-Analysis to compute the bias,
+# and then runs another UserScript, bias_plot_driver.py, to create the bias plots.
 #
 
 ##############################################################################
@@ -36,9 +40,9 @@ UserScript_obsERA_obsOnly_Stratosphere.py
 #
 # This use case does not loop but plots the entire time period of data
 # 
-# UserScript
-# This uses data from 20130106,20121107,20130307,20160701 
-#
+# UserScript: Computes zonal and meridional means
+# Series-Analysis: Computes the bias on zonal mean wind and temperature
+# UserScript: Creates bias plots
 #
 
 ##############################################################################
@@ -47,24 +51,40 @@ UserScript_obsERA_obsOnly_Stratosphere.py
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_Stratosphere.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_StratosphereBias.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_Stratosphere.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_StratosphereBias.conf
 #
 
 #############################################################################
 # MET Configuration
 # ---------------------
 #
-# There are no MET tools used in this use case.
+# METplus sets environment variables based on user settings in the METplus configuration file. 
+# See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details. 
+#
+# **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!**
+#
+# If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
+# :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
+#
+# **SeriesAnalysisConfig_wrapped**
+#
+# .. note:: See the :ref:`Series-Analysis MET Configuration<series-analysis-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+#
+# .. highlight:: bash
+# .. literalinclude:: ../../../../parm/met_config/SeriesAnalysisConfig_wrapped
 #
 
 ##############################################################################
 # Python Embedding
 # ----------------
 #
-# There is no python embedding in this use case
+# This use case uses a Python embedding script to read in the zonal mean data to Series-Analysis
+#
+# .. highlight:: bash
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_StratosphereBias/read_met_axis_mean.py
 #
 
 ##############################################################################
@@ -73,14 +93,14 @@ UserScript_obsERA_obsOnly_Stratosphere.py
 #
 # This use case can be run two ways:
 #
-# 1) Passing in meridonial_means.conf, 
+# 1) Passing in UserScript_fcstGFS_obsERA_StratosphereBias.conf, 
 # then a user-specific system configuration file::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_Stratosphere.conf -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_StratosphereBias.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in meridonial.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_fcstGFS_obsERA_StratosphereBias.conf:
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_Stratosphere.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_StratosphereBias.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -89,9 +109,7 @@ UserScript_obsERA_obsOnly_Stratosphere.py
 # * **MET_INSTALL_DIR** - Path to location where MET is installed locally
 #
 #  and for the [exe] section, you will need to define the location of NON-MET executables.
-#  If the executable is in the user's path, METplus will find it from the name. 
-#  If the executable is not in the path, specify the full path to the executable here (i.e. RM = /bin/rm)  
-#  The following executables are required for performing series analysis use cases:
+#  No executables are required for performing this use case.
 #
 # Example User Configuration File::
 #
@@ -100,13 +118,6 @@ UserScript_obsERA_obsOnly_Stratosphere.py
 #   OUTPUT_BASE = /path/to/output/dir
 #   MET_INSTALL_DIR = /path/to/met-X.Y
 #
-#   [exe]
-#   RM = /path/to/rm
-#   CUT = /path/to/cut
-#   TR = /path/to/tr
-#   NCAP2 = /path/to/ncap2
-#   CONVERT = /path/to/convert
-#   NCDUMP = /path/to/ncdump
 #
 
 ##############################################################################
@@ -126,10 +137,12 @@ UserScript_obsERA_obsOnly_Stratosphere.py
 #
 #   * UserScriptUseCase
 #   * S2SAppUseCase
+#   * SeriesAnalysisUseCase
 #   * METcalcpyUseCase
+#   * METplotpyUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/s2s-zonal_means.png'
+# sphinx_gallery_thumbnail_path = '_static/s2s-UserScript_fcstGFS_obsERA_StratosphereBias.png'

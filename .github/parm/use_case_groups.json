@@ -200,6 +200,11 @@
     "run": false
   },
   {
+    "category": "s2s",
+    "index_list": "7",
+    "run": true
+  },
+  {
     "category": "s2s_mid_lat",
     "index_list": "0-2",
     "run": false

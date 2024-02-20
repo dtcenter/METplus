@@ -1,2 +1,0 @@
-input_filename:
-- !ENV '${INPUT_FILE_NAME}'
