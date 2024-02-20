@@ -1,6 +1,6 @@
 """
-Bias Plot on Zonal Mean Wind and Temperature: UserScript, Stat-Analysis
-========================================================================
+Bias Plot on Polar Cap Temperature and Polar Vortex U: UserScript, Stat-Analysis
+================================================================================
 
 model_applications/
 s2s/
