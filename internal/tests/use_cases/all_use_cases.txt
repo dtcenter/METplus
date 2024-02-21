@@ -141,7 +141,7 @@ Category: s2s
 4:: UserScript_obsERA_obsOnly_Stratosphere:: model_applications/s2s/UserScript_obsERA_obsOnly_Stratosphere.conf:: metplotpy_env,metdataio
 5::SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_MultiStatisticTool:: model_applications/s2s/SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_MultiStatisticTool.conf:: netcdf4_env
 6::GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile:: model_applications/s2s/GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile.conf:: netcdf4_env
-7::UserScript_fcstGFS_obsERA_StratosphereBias:: model_applications/s2s/UserScript_fcstGFS_obsERA_StratosphereBias.conf:: metplotpy_env,cartopy,metdataio
+7::UserScript_fcstGFS_obsERA_StratosphereBias:: model_applications/s2s/UserScript_fcstGFS_obsERA_StratosphereBias.conf:: weatherregime_env,cartopy,metdataio
 #X::UserScript_fcstGFS_obsERA_StratospherePolar:: model_applications/s2s/UserScript_fcstGFS_obsERA_StratospherePolar.conf:: spacetime_env, metdataio
 
 
