@@ -161,6 +161,7 @@ cleared by reviewers of any other issues and can be used by METplus users in
 the same manner as all other use cases.
 
 - *model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst*
+- *model_applications/s2s/UserScript_fcstGFS_obsERA_StratospherePolar*
 
 .. _use_case_documentation:
   
