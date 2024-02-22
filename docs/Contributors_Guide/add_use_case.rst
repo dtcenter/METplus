@@ -152,15 +152,20 @@ Use Case Rules
 
 .. _memory-intense-use-cases:
 
-Use Cases That Exceed Github Actions Memory Limit
--------------------------------------------------
+Use Cases That Cannot be Run in Github Actions
+----------------------------------------------
 
 Below is a list of use cases in the repository that cannot be run in Github
-Actions  due to their excessive memory usage. They have been tested and
-cleared by reviewers of any other issues and can be used by METplus users in
-the same manner as all other use cases.
+Actions  due to either excessive memory or excessive disk space usage. They have 
+been tested and cleared by reviewers of any other issues and can be used by METplus 
+users in the same manner as all other use cases.
 
+Use Cases that Exceed GitHub Actions Memory Limit
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 - *model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst*
+
+Use Cases that Exceed GitHub Actions Disk Space
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 - *model_applications/s2s/UserScript_fcstGFS_obsERA_StratospherePolar*
 
 .. _use_case_documentation:
