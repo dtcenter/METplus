@@ -30,6 +30,48 @@ When applicable, release notes are followed by the
 `GitHub issue <https://github.com/dtcenter/METplus/issues>`__ number which
 describes the bugfix, enhancement, or new feature.
 
+METplus Version 6.0.0 Beta 3 Release Notes (2024-02-08)
+-------------------------------------------------------
+
+  .. dropdown:: Enhancements
+
+     * Add support for MET land-mask settings in Point-Stat
+       (`#2334 <https://github.com/dtcenter/METplus/issues/2334>`_)
+     * Enhance the TC-Pairs wrapper to support the new diag_required and diag_min_req configuration options
+       (`#2430 <https://github.com/dtcenter/METplus/issues/2430>`_)
+     * Enhance the TC-Diag wrapper to support new configuration options added in MET-12.0.0-beta2
+       (`#2432 <https://github.com/dtcenter/METplus/issues/2432>`_)
+     * Prevent error if some input files are missing
+       (`#2460 <https://github.com/dtcenter/METplus/issues/2460>`_)
+
+  .. dropdown:: Bugfix
+
+     NONE
+
+  .. dropdown:: New Wrappers
+
+     NONE
+
+  .. dropdown:: New Use Cases
+
+     * Verify Total Column Ozone against NASA's OMI dataset
+       (`#1989 <https://github.com/dtcenter/METplus/issues/1989>`_)
+     * RRFS reformatting, aggregating, and plotting use case
+       (`#2406 <https://github.com/dtcenter/METplus/issues/2406>`_)
+     * Satellite Altimetry data
+       (`#2383 <https://github.com/dtcenter/METplus/issues/2383>`_)
+
+  .. dropdown:: Documentation
+
+     * Create video to demonstrate how to update use cases that use deprecated environment variables
+       (`#2371 <https://github.com/dtcenter/METplus/issues/2371>`_)
+
+  .. dropdown:: Internal
+
+     * Update Documentation Overview and Conventions
+       (`#2454 <https://github.com/dtcenter/METplus/issues/2454>`_)
+
+
 METplus Version 6.0.0 Beta 2 Release Notes (2023-11-14)
 -------------------------------------------------------
 

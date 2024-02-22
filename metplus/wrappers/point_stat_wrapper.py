@@ -291,7 +291,8 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         if not c_dict['OUTPUT_DIR']:
             self.log_error('Must set POINT_STAT_OUTPUT_DIR in config file')
-
+        # skip RuntimeFreq input file logic - remove once integrated
+        c_dict['FIND_FILES'] = False
         return c_dict
 
     def set_command_line_arguments(self, time_info):

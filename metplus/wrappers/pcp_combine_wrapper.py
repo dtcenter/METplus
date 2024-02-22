@@ -228,7 +228,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                 self.log_error(f'{d_type}_PCP_COMBINE_INPUT_LEVELS list '
                                'should be either empty or the same length as '
                                f'{d_type}_PCP_COMBINE_INPUT_ACCUMS list.')
-
+        # skip RuntimeFreq input file logic - remove once integrated
+        c_dict['FIND_FILES'] = False
         return c_dict
 
     def run_at_time_once(self, time_info):
@@ -495,12 +496,18 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         # create list of tuples for input levels and optional field names
         self._build_input_accum_list(data_src, time_info)
 
+        self.run_count += 1
         files_found = self.get_accumulation(time_info, lookback, data_src)
         if not files_found:
-            self.log_error(
+            self.missing_input_count += 1
+            msg = (
                 f'Could not find files to build accumulation in '
                 f"{self.c_dict[f'{data_src}_INPUT_DIR']} using template "
                 f"{self.c_dict[f'{data_src}_INPUT_TEMPLATE']}")
+            if self.c_dict['ALLOW_MISSING_INPUTS']:
+                self.logger.warning(msg)
+            else:
+                self.log_error(msg)
             return False
 
         return files_found
@@ -533,10 +540,12 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                                                name=accum_dict['name'],
                                                level=accum_dict['level'],
                                                extra=accum_dict['extra'])
+            self.run_count += 1
             input_files = self.find_data(time_info,
                                          data_type=data_src,
                                          return_list=True)
             if not input_files:
+                self.missing_input_count += 1
                 return None
 
             files_found = []
@@ -546,15 +555,21 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                 files_found.append((input_file, field_info))
 
         else:
+            self.run_count += 1
             files_found = self.get_accumulation(time_info,
                                                 lookback,
                                                 data_src,
                                                 field_info_after_file=False)
             if not files_found:
-                self.log_error(
+                self.missing_input_count += 1
+                msg = (
                     f'Could not find files to build accumulation in '
                     f"{self.c_dict[f'{data_src}_INPUT_DIR']} using template "
                     f"{self.c_dict[f'{data_src}_INPUT_TEMPLATE']}")
+                if self.c_dict['ALLOW_MISSING_INPUTS']:
+                    self.logger.warning(msg)
+                else:
+                    self.log_error(msg)
                 return None
 
         # set -field name and level from first file field info

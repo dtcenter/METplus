@@ -84,6 +84,15 @@ NO_COMMAND_WRAPPERS = (
     'CyclonePlotter',
 )
 
+# wrappers that takes multiple inputs via Python Embedding
+# used to check if file_type is set properly to note Python Embedding is used
+MULTIPLE_INPUT_WRAPPERS = (
+    'EnsembleStat',
+    'MTD',
+    'SeriesAnalysis',
+    'GenEnsProd',
+)
+
 # configuration variables that are specific to a given run
 # these are copied from [config] to [runtime] at the
 # end of the run so they will not be read if the final

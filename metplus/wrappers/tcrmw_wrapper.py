@@ -143,7 +143,8 @@ class TCRMWWrapper(RuntimeFreqWrapper):
                                                  met_tool=self.app_name)
         if not c_dict['VAR_LIST_TEMP']:
             self.log_error("Could not get field information from config.")
-
+        # skip RuntimeFreq input file logic - remove once integrated
+        c_dict['FIND_FILES'] = False
         return c_dict
 
     def get_command(self):
@@ -186,7 +187,7 @@ class TCRMWWrapper(RuntimeFreqWrapper):
         # get deck file
         deck_file = self.find_data(time_info, data_type='DECK')
         if not deck_file:
-            return None
+            return False
 
         self.c_dict['DECK_FILE'] = deck_file
 
@@ -199,8 +200,12 @@ class TCRMWWrapper(RuntimeFreqWrapper):
             list_file = do_string_sub(self.c_dict['INPUT_FILE_LIST'],
                                       **time_info)
             if not os.path.exists(list_file):
-                self.log_error(f'Could not find file list: {list_file}')
-                return None
+                msg = f'Could not find file list: {list_file}'
+                if self.c_dict['ALLOW_MISSING_INPUTS']:
+                    self.logger.warning(msg)
+                else:
+                    self.log_error(msg)
+                return False
         else:
             all_input_files = []
 
@@ -219,7 +224,7 @@ class TCRMWWrapper(RuntimeFreqWrapper):
                 all_input_files.extend(input_files)
 
             if not all_input_files:
-                return None
+                return False
 
             # create an ascii file with a list of the input files
             list_file = f"{os.path.basename(deck_file)}_data_files.txt"
@@ -228,11 +233,11 @@ class TCRMWWrapper(RuntimeFreqWrapper):
         self.infiles.append(list_file)
 
         if not self._set_data_field(time_info):
-            return None
+            return False
 
         self._set_lead_list(time_info, lead_seq)
 
-        return self.infiles
+        return True
 
     def _set_data_field(self, time_info):
         """!Get list of fields from config to process. Build list of field info

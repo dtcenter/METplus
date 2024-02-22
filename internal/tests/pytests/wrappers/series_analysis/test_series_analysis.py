@@ -79,7 +79,6 @@ def set_minimum_config_settings(config):
     config.set('config', 'INIT_END', run_times[-1])
     config.set('config', 'INIT_INCREMENT', '12H')
     config.set('config', 'LEAD_SEQ', '12H')
-    config.set('config', 'LOOP_ORDER', 'processes')
     config.set('config', 'SERIES_ANALYSIS_RUNTIME_FREQ',
                'RUN_ONCE_PER_INIT_OR_VALID')
     config.set('config', 'SERIES_ANALYSIS_CONFIG_FILE',
@@ -87,11 +86,11 @@ def set_minimum_config_settings(config):
     config.set('config', 'FCST_SERIES_ANALYSIS_INPUT_DIR', fcst_dir)
     config.set('config', 'OBS_SERIES_ANALYSIS_INPUT_DIR', obs_dir)
     config.set('config', 'FCST_SERIES_ANALYSIS_INPUT_TEMPLATE',
-               '{init?fmt=%Y%m%d%H}/fcst_file_F{lead?fmt=%3H}')
+               '{init?fmt=%Y%m%d%H}/fcst_file_F{lead?fmt=%3H},{init?fmt=%Y%m%d%H}/fcst_file_F{lead?fmt=%3H}')
     config.set('config', 'OBS_SERIES_ANALYSIS_INPUT_TEMPLATE',
-               '{valid?fmt=%Y%m%d%H}/obs_file')
+               '{valid?fmt=%Y%m%d%H}/obs_file,{valid?fmt=%Y%m%d%H}/obs_file')
     config.set('config', 'SERIES_ANALYSIS_OUTPUT_DIR',
-               '{OUTPUT_BASE}/GridStat/output')
+               '{OUTPUT_BASE}/SeriesAnalysis/output')
     config.set('config', 'SERIES_ANALYSIS_OUTPUT_TEMPLATE',
                '{init?fmt=%Y%m%d%H}')
 
@@ -101,6 +100,52 @@ def set_minimum_config_settings(config):
     config.set('config', 'OBS_VAR1_LEVELS', obs_level)
 
     config.set('config', 'SERIES_ANALYSIS_STAT_LIST', stat_list)
+
+
+@pytest.mark.parametrize(
+    'missing, run, thresh, errors, allow_missing, runtime_freq', [
+        (0, 1, 0.5, 0, True, 'RUN_ONCE'),
+        (0, 1, 0.5, 0, False, 'RUN_ONCE'),
+        (0, 2, 0.5, 0, True, 'RUN_ONCE_PER_INIT_OR_VALID'),
+        (0, 2, 0.5, 0, False, 'RUN_ONCE_PER_INIT_OR_VALID'),
+        (2, 7, 1.0, 1, True, 'RUN_ONCE_PER_LEAD'),
+        (2, 7, 1.0, 2, False, 'RUN_ONCE_PER_LEAD'),
+        (8, 14, 1.0, 1, True, 'RUN_ONCE_FOR_EACH'),
+        (8, 14, 1.0, 8, False, 'RUN_ONCE_FOR_EACH'),
+    ]
+)
+@pytest.mark.wrapper_a
+def test_series_analysis_missing_inputs(metplus_config, get_test_data_dir,
+                                        missing, run, thresh, errors, allow_missing,
+                                        runtime_freq):
+    config = metplus_config
+    set_minimum_config_settings(config)
+    config.set('config', 'INPUT_MUST_EXIST', True)
+    config.set('config', 'SERIES_ANALYSIS_ALLOW_MISSING_INPUTS', allow_missing)
+    config.set('config', 'SERIES_ANALYSIS_INPUT_THRESH', thresh)
+    config.set('config', 'SERIES_ANALYSIS_RUNTIME_FREQ', runtime_freq)
+    config.set('config', 'INIT_BEG', '2017051001')
+    config.set('config', 'INIT_END', '2017051003')
+    config.set('config', 'INIT_INCREMENT', '2H')
+    config.set('config', 'LEAD_SEQ', '1,2,3,6,9,12,15')
+    config.set('config', 'FCST_SERIES_ANALYSIS_INPUT_DIR', get_test_data_dir('fcst'))
+    config.set('config', 'FCST_SERIES_ANALYSIS_INPUT_TEMPLATE',
+               '{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d_i%H}_f{lead?fmt=%3H}_HRRRTLE_PHPT.grb2')
+    config.set('config', 'OBS_SERIES_ANALYSIS_INPUT_DIR', get_test_data_dir('obs'))
+    config.set('config', 'OBS_SERIES_ANALYSIS_INPUT_TEMPLATE',
+               '{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A06.nc')
+
+    wrapper = SeriesAnalysisWrapper(config)
+    assert wrapper.isOK
+
+    all_cmds = wrapper.run_all_times()
+    for cmd, _ in all_cmds:
+        print(cmd)
+
+    print(f'missing: {wrapper.missing_input_count} / {wrapper.run_count}, errors: {wrapper.errors}')
+    assert wrapper.missing_input_count == missing
+    assert wrapper.run_count == run
+    assert wrapper.errors == errors
 
 
 @pytest.mark.parametrize(
@@ -352,9 +397,9 @@ def set_minimum_config_settings(config):
              'SERIES_ANALYSIS_MASK_POLY': 'MET_BASE/poly/EAST.poly',
          },
          {'METPLUS_MASK_DICT': 'mask = {grid = "FULL";poly = "MET_BASE/poly/EAST.poly";}'}),
-        # check tags are resolved and animation config works
+        # check animation config works
         ({
-             'FCST_VAR1_LEVELS': 'A0{init?fmt=3}',
+             'FCST_VAR1_LEVELS': 'A03',
              'SERIES_ANALYSIS_GENERATE_PLOTS': 'True',
              'SERIES_ANALYSIS_GENERATE_ANIMATIONS': 'True',
              'CONVERT_EXE': 'animation_exe'
@@ -362,7 +407,7 @@ def set_minimum_config_settings(config):
          {},),
         # check 'BOTH_*' and '*INPUT_FILE_LIST' config 
         ({'SERIES_ANALYSIS_REGRID_TO_GRID': 'FCST',
-          'BOTH_SERIES_ANALYSIS_INPUT_TEMPLATE': 'True',
+          'BOTH_SERIES_ANALYSIS_INPUT_TEMPLATE': 'True,True',
           },
          {'METPLUS_REGRID_DICT': 'regrid = {to_grid = FCST;}'}),
         # TODO: Fix these tests to include file list paths
@@ -596,10 +641,8 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
     wrapper.c_dict['TC_STAT_INPUT_DIR'] = stat_input_dir
     wrapper.c_dict['TC_STAT_INPUT_TEMPLATE'] = stat_input_template
 
-    fcst_input_dir = os.path.join(tile_input_dir,
-                                  'fcst')
-    obs_input_dir = os.path.join(tile_input_dir,
-                                 'obs')
+    fcst_input_dir = os.path.join(tile_input_dir, 'fcst')
+    obs_input_dir = os.path.join(tile_input_dir, 'obs')
 
     wrapper.c_dict['FCST_INPUT_DIR'] = fcst_input_dir
     wrapper.c_dict['OBS_INPUT_DIR'] = obs_input_dir
@@ -609,7 +652,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
     else:
         wrapper.c_dict['RUN_ONCE_PER_STORM_ID'] = True
 
-    assert wrapper.get_all_files()
+    wrapper.c_dict['ALL_FILES'] = wrapper.get_all_files()
     print(f"ALL FILES: {wrapper.c_dict['ALL_FILES']}")
     expected_fcst = [
         'fcst/20141214_00/ML1201072014/FCST_TILE_F000_gfs_4_20141214_0000_000.nc',

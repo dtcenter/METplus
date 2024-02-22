@@ -14,7 +14,7 @@ time_fmt = '%Y%m%d%H'
 run_times = ['2009123112', '2009123118']
 
 
-def set_minimum_config_settings(config):
+def set_minimum_config_settings(config, set_ctrl=True):
     # set config variables to prevent command from running and bypass check
     # if input files actually exist
     config.set('config', 'DO_NOT_RUN_EXE', True)
@@ -34,8 +34,9 @@ def set_minimum_config_settings(config):
 
     config.set('config', 'GEN_ENS_PROD_INPUT_TEMPLATE',
                '{init?fmt=%Y%m%d%H}/*gep*/d01_{init?fmt=%Y%m%d%H}_{lead?fmt=%3H}00.grib')
-    config.set('config', 'GEN_ENS_PROD_CTRL_INPUT_TEMPLATE',
-               '{init?fmt=%Y%m%d%H}/arw-tom-gep3/d01_{init?fmt=%Y%m%d%H}_{lead?fmt=%3H}00.grib')
+    if set_ctrl:
+        config.set('config', 'GEN_ENS_PROD_CTRL_INPUT_TEMPLATE',
+                   '{init?fmt=%Y%m%d%H}/arw-tom-gep3/d01_{init?fmt=%Y%m%d%H}_{lead?fmt=%3H}00.grib')
     config.set('config', 'GEN_ENS_PROD_OUTPUT_DIR',
                '{OUTPUT_BASE}/GenEnsProd/output')
     config.set('config', 'GEN_ENS_PROD_OUTPUT_TEMPLATE',
@@ -53,6 +54,59 @@ def handle_input_dir(config):
     config.set('config', 'GEN_ENS_PROD_INPUT_DIR', input_dir)
     config.set('config', 'GEN_ENS_PROD_CTRL_INPUT_DIR', input_dir)
     return input_dir
+
+
+@pytest.mark.parametrize(
+    'allow_missing, optional_input, missing, run, thresh, errors', [
+        (True, None, 3, 8, 0.4, 0),
+        (True, None, 3, 8, 0.7, 1),
+        (False, None, 3, 8, 0.7, 3),
+        (True, 'ctrl', 4, 8, 0.4, 0),
+        (True, 'ctrl', 4, 8, 0.7, 1),
+        (False, 'ctrl', 4, 8, 0.7, 4),
+        # still errors if more members than n_members found
+        (True, 'low_n_member', 8, 8, 0.7, 6),
+        (False, 'low_n_member', 8, 8, 0.7, 8),
+    ]
+)
+@pytest.mark.wrapper
+def test_gen_ens_prod_missing_inputs(metplus_config, get_test_data_dir, allow_missing,
+                                     optional_input, missing, run, thresh, errors):
+    config = metplus_config
+    set_minimum_config_settings(config, set_ctrl=False)
+    config.set('config', 'INPUT_MUST_EXIST', True)
+    config.set('config', 'GEN_ENS_PROD_ALLOW_MISSING_INPUTS', allow_missing)
+    config.set('config', 'GEN_ENS_PROD_INPUT_THRESH', thresh)
+    n_members = 4 if optional_input == 'low_n_member' else 6
+    config.set('config', 'GEN_ENS_PROD_N_MEMBERS', n_members)
+    config.set('config', 'INIT_BEG', '2009123106')
+    config.set('config', 'INIT_END', '2010010100')
+    config.set('config', 'INIT_INCREMENT', '6H')
+    config.set('config', 'LEAD_SEQ', '24H, 48H')
+    config.set('config', 'GEN_ENS_PROD_INPUT_DIR', get_test_data_dir('ens'))
+    config.set('config', 'GEN_ENS_PROD_INPUT_TEMPLATE',
+               '{init?fmt=%Y%m%d%H}/arw-*-gep?/d01_{init?fmt=%Y%m%d%H}_{lead?fmt=%3H}00.grib')
+
+    if optional_input == 'ctrl':
+        prefix = 'GEN_ENS_PROD_CTRL'
+    else:
+        prefix = None
+
+    if prefix:
+        config.set('config', f'{prefix}_INPUT_DIR', get_test_data_dir('obs'))
+        config.set('config', f'{prefix}_INPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}_obs_file')
+
+    wrapper = GenEnsProdWrapper(config)
+    assert wrapper.isOK
+
+    all_cmds = wrapper.run_all_times()
+    for cmd, _ in all_cmds:
+        print(cmd)
+
+    print(f'missing: {wrapper.missing_input_count} / {wrapper.run_count}, errors: {wrapper.errors}')
+    assert wrapper.missing_input_count == missing
+    assert wrapper.run_count == run
+    assert wrapper.errors == errors
 
 
 @pytest.mark.parametrize(

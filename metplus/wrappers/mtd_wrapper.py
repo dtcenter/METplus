@@ -12,10 +12,7 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import get_lead_sequence, sub_var_list
-from ..util import ti_calculate, getlist
-from ..util import do_string_sub, skip_time
-from ..util import parse_var_list, add_field_info_to_time_info
+from ..util import get_lead_sequence, ti_calculate, do_string_sub, parse_var_list
 from . import CompareGriddedWrapper
 
 
@@ -63,8 +60,6 @@ class MTDWrapper(CompareGriddedWrapper):
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
         super().__init__(config, instance=instance)
-        self.fcst_file = None
-        self.obs_file = None
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -90,18 +85,31 @@ class MTDWrapper(CompareGriddedWrapper):
         # new method of reading/setting MET config values
         self.add_met_config(name='min_volume', data_type='int')
 
+        input_info = {
+            'FCST': {'prefix': 'FCST_MTD', 'required': True},
+            'OBS': {'prefix': 'OBS_MTD', 'required': True},
+        }
+
         c_dict['SINGLE_RUN'] = (
             self.config.getbool('config', 'MTD_SINGLE_RUN', False)
         )
         if c_dict['SINGLE_RUN']:
-            c_dict['SINGLE_DATA_SRC'] = (
-                self.config.getstr('config', 'MTD_SINGLE_DATA_SRC', '')
-            )
-            if not c_dict['SINGLE_DATA_SRC']:
+            single_src = self.config.getraw('config', 'MTD_SINGLE_DATA_SRC')
+            c_dict['SINGLE_DATA_SRC'] = single_src
+            if not single_src:
                 self.log_error('Must set MTD_SINGLE_DATA_SRC if '
                                'MTD_SINGLE_RUN is True')
+            elif single_src not in ('FCST', 'OBS'):
+                self.log_error('MTD_SINGLE_DATA_SRC must be FCST or OBS.'
+                               f' It is set to {single_src}')
 
-        self.get_input_templates(c_dict)
+            # do not read input templates for other data source if single mode
+            if single_src == 'FCST':
+                del input_info['OBS']
+            else:
+                del input_info['FCST']
+
+        self.get_input_templates(c_dict, input_info)
 
         # if single run for OBS, read OBS values into FCST keys
         read_type = 'FCST'
@@ -180,12 +188,15 @@ class MTDWrapper(CompareGriddedWrapper):
                 outfile = f"{time_fmt}_mtd_{dt.lower()}_{file_ext}.txt"
                 inputs[data_type] = self.write_list_file(outfile, file_list)
 
-            if not inputs:
-                self.log_error('Input files not found')
+            if not inputs or (len(inputs) < 2 and not self.c_dict['SINGLE_RUN']):
+                self.missing_input_count += 1
+                msg = 'Could not find all required inputs files'
+                if self.c_dict['ALLOW_MISSING_INPUTS']:
+                    self.logger.warning(msg)
+                else:
+                    self.log_error(msg)
                 continue
-            if len(inputs) < 2 and not self.c_dict['SINGLE_RUN']:
-                self.log_error('Could not find all required inputs files')
-                continue
+
             arg_dict = {
                 'obs_path': inputs.get('OBS'),
                 'model_path': inputs.get('FCST'),
@@ -286,20 +297,15 @@ class MTDWrapper(CompareGriddedWrapper):
                                                    is_directory=True):
                 return
 
-            fcst_file = model_path
             if self.c_dict['SINGLE_RUN']:
                 if self.c_dict.get('SINGLE_DATA_SRC') == 'OBS':
-                    fcst_file = obs_path
+                    self.infiles.append(obs_path)
+                else:
+                    self.infiles.append(model_path)
             else:
-                self.obs_file = obs_path
+                self.infiles.extend([model_path, obs_path])
 
-            self.fcst_file = fcst_file
             self.build()
-
-    def clear(self):
-        super().clear()
-        self.fcst_file = None
-        self.obs_file = None
 
     def get_command(self):
         """! Builds the command to run the MET application
@@ -312,10 +318,9 @@ class MTDWrapper(CompareGriddedWrapper):
             cmd += a + " "
 
         if self.c_dict['SINGLE_RUN']:
-            cmd += '-single ' + self.fcst_file + ' '
+            cmd += f'-single {self.infiles[0]} '
         else:
-            cmd += '-fcst ' + self.fcst_file + ' '
-            cmd += '-obs ' + self.obs_file + ' '
+            cmd += f'-fcst {self.infiles[0]} -obs {self.infiles[1]} '
 
         cmd += '-config ' + self.param + ' '
 
@@ -323,88 +328,3 @@ class MTDWrapper(CompareGriddedWrapper):
             cmd += '-outdir {}'.format(self.outdir)
 
         return cmd
-
-    def get_input_templates(self, c_dict):
-        input_types = ['FCST', 'OBS']
-        if c_dict.get('SINGLE_RUN', False):
-            input_types = [c_dict['SINGLE_DATA_SRC']]
-
-        app = self.app_name.upper()
-        template_dict = {}
-        for in_type in input_types:
-            template_path = (
-                self.config.getraw('config',
-                                   f'{in_type}_{app}_INPUT_FILE_LIST')
-            )
-            if template_path:
-                c_dict['EXPLICIT_FILE_LIST'] = True
-            else:
-                in_dir = self.config.getdir(f'{in_type}_{app}_INPUT_DIR', '')
-                templates = getlist(
-                    self.config.getraw('config',
-                                       f'{in_type}_{app}_INPUT_TEMPLATE')
-                )
-                template_list = [os.path.join(in_dir, template)
-                                 for template in templates]
-                template_path = ','.join(template_list)
-
-            template_dict[in_type] = template_path
-
-        c_dict['TEMPLATE_DICT'] = template_dict
-
-    def get_files_from_time(self, time_info):
-        """! Create dictionary containing time information (key time_info) and
-             any relevant files for that runtime. The parent implementation of
-             this function creates a dictionary and adds the time_info to it.
-             This wrapper gets all files for the current runtime and adds it to
-             the dictionary with keys 'FCST' and 'OBS'
-
-             @param time_info dictionary containing time information
-             @returns dictionary containing time_info dict and any relevant
-             files with a key representing a description of that file
-        """
-        if self.c_dict.get('ONCE_PER_FIELD', False):
-            var_list = sub_var_list(self.c_dict.get('VAR_LIST_TEMP'), time_info)
-        else:
-            var_list = [None]
-
-        # create a dictionary for each field (var) with time_info and files
-        file_dict_list = []
-        for var_info in var_list:
-            file_dict = {'var_info': var_info}
-            if var_info:
-                add_field_info_to_time_info(time_info, var_info)
-
-            input_files = self.get_input_files(time_info, fill_missing=True)
-            # only add all input files if none are missing
-            no_missing = True
-            if input_files:
-                for key, value in input_files.items():
-                    if 'missing' in value:
-                        no_missing = False
-                    file_dict[key] = value
-            if no_missing:
-                file_dict_list.append(file_dict)
-
-        return file_dict_list
-
-    def _update_list_with_new_files(self, time_info, list_to_update):
-        new_files = self.get_files_from_time(time_info)
-        if not new_files:
-            return
-
-        # if list to update is empty, copy new items into list
-        if not list_to_update:
-            for new_file in new_files:
-                list_to_update.append(new_file.copy())
-            return
-
-        # if list to update is not empty, add new files to each file list,
-        # make sure new files correspond to the correct field (var)
-        assert len(list_to_update) == len(new_files)
-        for new_file, existing_item in zip(new_files, list_to_update):
-            assert new_file['var_info'] == existing_item['var_info']
-            for key, value in new_file.items():
-                if key == 'var_info':
-                    continue
-                existing_item[key].extend(value)
