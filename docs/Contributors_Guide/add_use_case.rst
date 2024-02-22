@@ -150,7 +150,7 @@ Use Case Rules
 - The use case should be run by someone other than the author to ensure that it
   runs smoothly outside of the development environment set up by the author.
 
-.. _memory-intense-use-cases:
+.. _actions-failure-use-cases:
 
 Use Cases That Cannot be Run in Github Actions
 ----------------------------------------------
@@ -797,6 +797,8 @@ environment, potential reasons include:
   environment
 - Memory usage of the use case exceeds the available memory in the
   Github Actions environment
+- Disk space usage of the use casee exceeds the available space in the
+  Github Actions environment
 
 Github Actions has
 `limited memory <https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources>`_
@@ -808,8 +810,14 @@ memory profiler to check the
 Python script's memory usage. If the use case exceeds the limit, try to pare 
 down the data held in memory and use less memory intensive Python routines.
 
+Additionally, Github Actions has limited disk space available.  The use case will
+fail if the data files exceed the available disk space.  If this is the case, consider
+removing any unneeded variables from the data files, reducing the time steps run, or
+creating a new use case category to keep file sizes down for each group.
+
 If memory mitigation cannot move the use case’s memory usage below the
-Github Actions limit, 
+Github Actions limit or data cannot be reduced further to fit inside
+the available disk space
 see :ref:`exceeded-Github-Actions` for next steps.
 
 Verify that the use case ran in a reasonable amount of time
@@ -867,17 +875,20 @@ processed in the automated tests. In **ci_overrides.conf**, set::
 
 .. _exceeded-Github-Actions:
 
-Use Cases That Exceed Memory Allocations of Github Actions
-----------------------------------------------------------
+Use Cases That Cannot be Run in Github Actions
+----------------------------------------------
 
 If a use case utilizing Python embedding does not run successfully in 
 Github Actions due to exceeding the memory limit and memory mitigation 
-steps were unsuccessful in lowering memory usage, please take the following steps.
+steps were unsuccessful in lowering memory usage.  Or if a use case does 
+run successfullyt in GitHub Actions due to exceeding available disk space 
+and the data cannot be further pared down, please take the following steps.
 
 - Document the Github Actions failure in the Github use case issue. 
   Utilize a Python memory profiler to identify as specifically as possible 
-  where the script exceeds the memory limit.
-- Add the use case to the :ref:`memory-intense-use-cases` list.
+  where the script exceeds the memory limit (if the failure is due to exceeding 
+  the memory limit).
+- Add the use case to the :ref:`actions-failure-use-cases` list.
 - In the *internal/tests/use_cases/all_use_cases.txt* file, ensure that the 
   use case is listed as the lowest-listed use case in its respective category. 
   Change the number in front of the new use case to an 'X', preceded 
