@@ -24,6 +24,10 @@ from metplus import __version__, __release_date__
 
 project = 'METplus'
 
+python_version = '3.10.4'
+
+MET_version = '12.0.0'
+
 author = 'UCAR/NCAR, NOAA, CSU/CIRA, and CU/CIRES'
 
 # list of contributing authors currently involved with the project
