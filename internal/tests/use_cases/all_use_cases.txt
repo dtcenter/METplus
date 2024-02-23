@@ -159,7 +159,7 @@ Category: s2s_mjo
 
 Category: s2s_stratosphere
 0:: UserScript_fcstGFS_obsERA_StratosphereBias:: model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias.conf:: weatherregime_env,cartopy,metdataio
-#X::UserScript_fcstGFS_obsERA_StratospherePolar:: model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.conf:: spacetime_env, metdataio
+#X::UserScript_fcstGFS_obsERA_StratospherePolar:: model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.conf:: weatherregime_env,cartopy,metdataio
 
 
 Category: short_range

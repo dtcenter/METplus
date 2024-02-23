@@ -167,32 +167,32 @@
   {
     "category": "s2s",
     "index_list": "0",
-    "run": false
+    "run": true
   },
   {
     "category": "s2s",
     "index_list": "1",
-    "run": false
+    "run": true
   },
   {
     "category": "s2s",
     "index_list": "2",
-    "run": false
+    "run": true
   },
   {
     "category": "s2s",
     "index_list": "3",
-    "run": false
+    "run": true
   },
   {
     "category": "s2s",
     "index_list": "4",
-    "run": false
+    "run": true
   },
   {
     "category": "s2s",
     "index_list": "5",
-    "run": false
+    "run": true
   },
   {
     "category": "s2s_mid_lat",
