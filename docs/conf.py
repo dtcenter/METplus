@@ -26,7 +26,7 @@ project = 'METplus'
 
 python_version = '3.10.4'
 
-MET_version = '12.0.0'
+met_version = '12.0.0'
 
 author = 'UCAR/NCAR, NOAA, CSU/CIRA, and CU/CIRES'
 
