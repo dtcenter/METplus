@@ -3,7 +3,7 @@ Bias Plot on Zonal Mean Wind and Temperature: UserScript, Series-Analysis
 ==========================================================================
 
 model_applications/
-s2s/
+s2s_stratosphere/
 UserScript_fcstGFS_obsERA_StratosphereBias.py
 
 """
@@ -21,8 +21,8 @@ UserScript_fcstGFS_obsERA_StratosphereBias.py
 # Datasets
 # --------
 #
-# GFS_2018_02_24h.nc
-# ERA_2018_02.nc
+# GFS 24 hour forecasts: GFS_2018_02_24h.nc
+# ERA: ERA_2018_02.nc
 #
 
 ##############################################################################
@@ -51,10 +51,10 @@ UserScript_fcstGFS_obsERA_StratosphereBias.py
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_StratosphereBias.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_StratosphereBias.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias.conf
 #
 
 #############################################################################
@@ -84,7 +84,7 @@ UserScript_fcstGFS_obsERA_StratosphereBias.py
 # This use case uses a Python embedding script to read in the zonal mean data to Series-Analysis
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_StratosphereBias/read_met_axis_mean.py
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias/read_met_axis_mean.py
 #
 
 ##############################################################################
@@ -96,11 +96,11 @@ UserScript_fcstGFS_obsERA_StratosphereBias.py
 # 1) Passing in UserScript_fcstGFS_obsERA_StratosphereBias.conf, 
 # then a user-specific system configuration file::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_StratosphereBias.conf -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias.conf -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_fcstGFS_obsERA_StratosphereBias.conf:
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_StratosphereBias.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -137,6 +137,7 @@ UserScript_fcstGFS_obsERA_StratosphereBias.py
 #
 #   * UserScriptUseCase
 #   * S2SAppUseCase
+#   * S2SStratosphereAppUseCase
 #   * SeriesAnalysisUseCase
 #   * METcalcpyUseCase
 #   * METplotpyUseCase
@@ -145,4 +146,4 @@ UserScript_fcstGFS_obsERA_StratosphereBias.py
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/s2s-UserScript_fcstGFS_obsERA_StratosphereBias.png'
+# sphinx_gallery_thumbnail_path = '_static/s2s_stratosphere-UserScript_fcstGFS_obsERA_StratosphereBias.png'

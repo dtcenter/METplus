@@ -3,7 +3,7 @@ Bias Plot on Polar Cap Temperature and Polar Vortex U: UserScript, Stat-Analysis
 ================================================================================
 
 model_applications/
-s2s/
+s2s_stratosphere/
 UserScript_fcstGFS_obsERA_StratospherePolar.py
 
 """
@@ -53,10 +53,10 @@ UserScript_fcstGFS_obsERA_StratospherePolar.py
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_StratospherePolar.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_StratospherePolar.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.conf
 #
 
 #############################################################################
@@ -95,11 +95,11 @@ UserScript_fcstGFS_obsERA_StratospherePolar.py
 # 1) Passing in UserScript_fcstGFS_obsERA_StratospherePolar.conf, 
 # then a user-specific system configuration file::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_StratospherePolar.conf -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.conf -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_fcstGFS_obsERA_StratospherePolar.conf:
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_StratospherePolar.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -136,6 +136,7 @@ UserScript_fcstGFS_obsERA_StratospherePolar.py
 #
 #   * UserScriptUseCase
 #   * S2SAppUseCase
+#   * S2SStratosphereAppUseCase
 #   * StatAnalysisUseCase
 #   * METcalcpyUseCase
 #   * METplotpyUseCase
@@ -144,4 +145,4 @@ UserScript_fcstGFS_obsERA_StratospherePolar.py
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/s2s-UserScript_fcstGFS_obsERA_StratospherePolar.png'
+# sphinx_gallery_thumbnail_path = '_static/s2s_stratosphere-UserScript_fcstGFS_obsERA_StratospherePolar.png'
