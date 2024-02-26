@@ -227,6 +227,6 @@ rst_epilog = f"""
 .. |release_date| replace:: {release_date}
 .. |release_year| replace:: {release_year}
 .. |release_info| replace:: {release_info}
-.. |python_version| replace: {python_version}
+.. |python_version| replace:: {python_version}
 .. |met_version| replace:: {met_version}
 """
