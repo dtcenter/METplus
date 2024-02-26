@@ -88,13 +88,6 @@ METplus Wrappers configuration files. Some Python wrappers do not
 correspond to a particular MET tool, but wrap utilities to extend
 METplus functionality.
 
-.. _python_requirements_table:
-
-METplus Components Python Requirements
-======================================
-
-See :ref:`metplus_components_python_packages`.
-
     
 Future development plans
 ========================
