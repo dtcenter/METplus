@@ -103,7 +103,7 @@ Category: marine_and_cryosphere
 #X::GridStat_fcstRTOFS_obsGHRSST_climWOA_sst::model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf:: icecover_env, py_embed
 8::PointStat_fcstRTOFS_obsARGO_climoWOA23_temp::model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_temp.conf:: py_embed
 9::PointStat_fcstGFS_obsASCAT_satelliteWinds::model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds.conf:: icecover_env, py_embed
-10::GridStat_fcstGFS_obsOMI_TotalColumnOzone:: model_applications/medium_range/GridStat_fcstGFS_obsOMI_TotalColumnOzone.conf:: py_embed
+10::PointStat_fcstGFS_obsJASON3_satelliteAltimetry::model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAltimetry.conf:: py_embed_base_env, py_embed
 
 
 Category: medium_range
