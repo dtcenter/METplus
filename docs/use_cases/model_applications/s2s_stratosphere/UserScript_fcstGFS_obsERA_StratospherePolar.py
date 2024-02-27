@@ -24,6 +24,9 @@ UserScript_fcstGFS_obsERA_StratospherePolar.py
 #  * Forecast dataset: GFS Forecast U and T at multiple pressure levels
 #  * Observation dataset: ERA Reanlaysis U and T at multiple pressure levels
 #
+#  Data for this use case is not contained in the sample data tar files due to
+#  its size.  Rather, it is stored as additional data in a separate tar file.
+#
 
 ##############################################################################
 # METplus Components
