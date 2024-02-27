@@ -19,12 +19,11 @@ sys.path.append(os.path.abspath("./_ext"))
 print(sys.path)
 
 from metplus import __version__, __release_date__
+from metplus import __python_version__ as python_version
 
 # -- Project information -----------------------------------------------------
 
 project = 'METplus'
-
-python_version = '3.10.4'
 
 met_version = '12.0.0'
 
@@ -221,6 +220,7 @@ sphinx_gallery_conf = {
 # -- Intersphinx control ---------------------------------------------------------------
 intersphinx_mapping = {'numpy':("https://docs.scipy.org/doc/numpy/", None)}
 
+# -- Replace values in docs ------------------------------------------------------------
 rst_epilog = f"""
 .. |copyright|    replace:: {copyright}
 .. |author_list|  replace:: {author_list}
