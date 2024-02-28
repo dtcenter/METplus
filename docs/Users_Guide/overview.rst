@@ -69,8 +69,9 @@ their verification environments. Wrappers can be run individually, or as
 a group of wrappers that represent a sequence of MET processes. New
 wrappers can readily be added to the METplus Wrappers package due to
 this modular design. Currently, METplus Wrappers can easily be applied
-by any user on their own computer platform that supports Python 3.10.
-We have deprecated support to Python 2.7.
+by any user on their own computer platform that supports
+Python |python_version|.
+
 
 The METplus Wrappers code and documentation is maintained by the DTC in
 Boulder, Colorado. METplus Wrappers is freely available to the modeling,
