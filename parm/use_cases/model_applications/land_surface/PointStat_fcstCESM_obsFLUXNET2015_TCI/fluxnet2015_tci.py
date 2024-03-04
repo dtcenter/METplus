@@ -4,17 +4,11 @@ and passed to point_data. User need to pass on the season.
 User can change the verifying variable 
 """
 
-
-import numpy
 import sys
 import os
-import glob
 import numpy as np 
 import xarray as xr
-import datetime
-from datetime import date, timedelta
 import pandas as pd 
-
 
 if len(sys.argv) < 2:
     print("Must specify the following elements: FLUXNET2015_file season")
