@@ -66,12 +66,8 @@ print(ds)
 # Group the dataset by season and subset to the season the user requested
 szn = ds.groupby('time.season')[season]
 
-# Compute the covariance of the surface flux and soil variables
-covarTerm = ((szn[soil_varname]-szn[soil_varname].mean(dim='time')) * \
-             (szn[sfc_flux_varname]-szn[sfc_flux_varname].mean(dim='time'))).sum(dim='time') / szn[soil_varname].count(dim='time')
-
-# Compute the coupling index
-couplingIndex = covarTerm/szn[soil_varname].std(dim='time')
+# Use the shared coupling index function to compute the index
+couplingIndex = calc_tci(szn[soil_varname],szn[sfc_flux_varname])
 
 # Prepare for MET
 # 1. Replace missing data with the MET missing data values
