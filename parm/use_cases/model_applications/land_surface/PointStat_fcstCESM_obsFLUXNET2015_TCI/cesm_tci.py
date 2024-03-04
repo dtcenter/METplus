@@ -16,7 +16,7 @@ import sys
 import xarray as xr
 from tci_func import calc_tci
 
-# The script expects three arguments:
+# The script expects five arguments:
 # sfc_flux_file = Latent Heat Flux file (from CAM, CESM "community atmosphere model")
 # sfc_flux_varname = Field name in sfc_flux_file to use when computing TCI
 # soil_file = Soil Temperature file (from CLM, CESM "community land model")
