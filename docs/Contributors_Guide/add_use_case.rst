@@ -56,6 +56,7 @@ one of the following:
 * s2s (Subseasonal to Seasonal)
 * s2s_mid_lat (Subseasonal to Seasonal: Mid-Latitude)
 * s2s_mjo (Subseasonal to Seasonal: Madden-Julian Oscillation)
+* s2s_stratosphere (Subseasonal to Seasonal: Stratosphere)
 * short_range (formerly convection_allowing_models)
 * space_weather
 * tc_and_extra_tc (Tropical Cyclone and Extratropical Cyclone)
@@ -150,17 +151,23 @@ Use Case Rules
 - The use case should be run by someone other than the author to ensure that it
   runs smoothly outside of the development environment set up by the author.
 
-.. _memory-intense-use-cases:
+.. _actions-failure-use-cases:
 
-Use Cases That Exceed Github Actions Memory Limit
--------------------------------------------------
+Use Cases That Cannot be Run in GitHub Actions
+----------------------------------------------
 
-Below is a list of use cases in the repository that cannot be run in Github
-Actions  due to their excessive memory usage. They have been tested and
-cleared by reviewers of any other issues and can be used by METplus users in
-the same manner as all other use cases.
+Below is a list of use cases in the repository that cannot be run in GitHub
+Actions  due to either excessive memory or excessive disk space usage. They have 
+been tested and cleared by reviewers of any other issues and can be used by METplus 
+users in the same manner as all other use cases.
 
+Use Cases that Exceed GitHub Actions Memory Limit
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 - *model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst*
+
+Use Cases that Exceed GitHub Actions Disk Space
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+- *model_applications/s2s/UserScript_fcstGFS_obsERA_StratospherePolar*
 
 .. _use_case_documentation:
   
@@ -790,9 +797,11 @@ environment, potential reasons include:
 - Referencing variables set in the user's configuration file or local
   environment
 - Memory usage of the use case exceeds the available memory in the
-  Github Actions environment
+  GitHub Actions environment
+- Disk space usage of the use casee exceeds the available space in the
+  GitHub Actions environment
 
-Github Actions has
+GitHub Actions has
 `limited memory <https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources>`_
 available and will cause the use case to fail when exceeded. A failure
 caused by exceeding the memory allocation in a Python Embedding script
@@ -802,9 +811,15 @@ memory profiler to check the
 Python script's memory usage. If the use case exceeds the limit, try to pare 
 down the data held in memory and use less memory intensive Python routines.
 
+Additionally, GitHub Actions has limited disk space available.  The use case will
+fail if the data files exceed the available disk space.  If this is the case, consider
+removing any unneeded variables from the data files, reducing the time steps run, or
+creating a new use case category to keep file sizes down for each group.
+
 If memory mitigation cannot move the use case’s memory usage below the
-Github Actions limit, 
-see :ref:`exceeded-Github-Actions` for next steps.
+GitHub Actions limit or data cannot be reduced further to fit inside
+the available disk space
+see :ref:`exceeded-GitHub-Actions` for next steps.
 
 Verify that the use case ran in a reasonable amount of time
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -859,19 +874,22 @@ processed in the automated tests. In **ci_overrides.conf**, set::
     OBS_VAR1_THRESH = gt0, lt10.0
 
 
-.. _exceeded-Github-Actions:
+.. _exceeded-GitHub-Actions:
 
-Use Cases That Exceed Memory Allocations of Github Actions
-----------------------------------------------------------
+Use Cases That Cannot be Run in GitHub Actions
+----------------------------------------------
 
 If a use case utilizing Python embedding does not run successfully in 
-Github Actions due to exceeding the memory limit and memory mitigation 
-steps were unsuccessful in lowering memory usage, please take the following steps.
+GitHub Actions due to exceeding the memory limit and memory mitigation 
+steps were unsuccessful in lowering memory usage, or if a use case does 
+run successfully in GitHub Actions due to exceeding available disk space 
+and the data cannot be further pared down, please take the following steps.
 
-- Document the Github Actions failure in the Github use case issue. 
+- Document the GitHub Actions failure in the GitHub use case issue. 
   Utilize a Python memory profiler to identify as specifically as possible 
-  where the script exceeds the memory limit.
-- Add the use case to the :ref:`memory-intense-use-cases` list.
+  where the script exceeds the memory limit (if the failure is due to exceeding 
+  the memory limit).
+- Add the use case to the :ref:`actions-failure-use-cases` list.
 - In the *internal/tests/use_cases/all_use_cases.txt* file, ensure that the 
   use case is listed as the lowest-listed use case in its respective category. 
   Change the number in front of the new use case to an 'X', preceded 
@@ -882,13 +900,13 @@ steps were unsuccessful in lowering memory usage, please take the following step
 - In the *.github/parm/use_case_groups.json* file, remove the entry that 
   was added during the :ref:`add_new_category_to_test_runs` 
   for the new use case. This will stop the use case from running on a pull request. 
-- Push these two updated files to the working branch in Github and
+- Push these two updated files to the working branch in GitHub and
   confirm that it now compiles successfully.
 - During the :ref:`create-a-pull-request` creation, inform the reviewer of 
-  the Github Actions failure. The reviewer should confirm the use case is 
+  the GitHub Actions failure. The reviewer should confirm the use case is 
   successful when run manually, that the memory profiler output confirms that 
-  the Python embedding script exceeds the Github Actions limit, and that 
-  there are no other Github Actions compiling errors.
+  the Python embedding script exceeds the GitHub Actions limit, and that 
+  there are no other GitHub Actions compiling errors.
 
 .. _create-a-pull-request:
 
