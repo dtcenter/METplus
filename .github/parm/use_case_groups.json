@@ -192,12 +192,7 @@
   {
     "category": "s2s",
     "index_list": "5",
-    "run": true
-  },
-  {
-    "category": "s2s",
-    "index_list": "6",
-    "run": true
+    "run": false
   },
   {
     "category": "s2s_mid_lat",
@@ -227,7 +222,7 @@
   {
     "category": "s2s_stratosphere",
     "index_list": "0",
-    "run": true
+    "run": false
   },
   {
     "category": "short_range",

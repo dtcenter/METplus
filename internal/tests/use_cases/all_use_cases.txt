@@ -142,8 +142,7 @@ Category: s2s
 2::UserScript_obsPrecip_obsOnly_Hovmoeller:: model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.conf:: metplotpy_env,cartopy
 3:: UserScript_fcstS2S_obsERAI_CrossSpectra:: model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra.conf:: spacetime_env
 4::SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_MultiStatisticTool:: model_applications/s2s/SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_MultiStatisticTool.conf:: netcdf4_env
-5::SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_MultiStatisticTool:: model_applications/s2s/SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_MultiStatisticTool.conf:: netcdf4_env
-6::GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile:: model_applications/s2s/GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile.conf:: netcdf4_env
+5::GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile:: model_applications/s2s/GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile.conf:: netcdf4_env
 
 
 Category: s2s_mid_lat
