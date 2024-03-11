@@ -997,7 +997,9 @@ Paths may need to be adjusted.
 
     to_directory=${METPLUS_DATA_TARFILE_DIR}/v${METPLUS_VERSION}/model_applications/${METPLUS_USE_CASE_CATEGORY}
     echo $to_directory
-    ls $to_directory
+    ls $to_directory || echo CREATING $to_directory && mkdir -p $to_directory
+
+Note: If the use case is being added to a new use case category, the above command will create the directory for the new category if it does not already exist.
 
 **OR**
 
@@ -1014,6 +1016,13 @@ Paths may need to be adjusted.
 After verifying the directories are correct, copy the files::
 
     cp -r $from_directory $to_directory/
+
+Remove old data (if applicable)
+"""""""""""""""""""""""""""""""
+
+If the pull request notes mention an old directory path that should be removed,
+please remove that directory from the next release version directory (vX.Y).
+Be careful not to remove any files that are still needed.
 
 Handle existing tarfile in vX.Y
 """""""""""""""""""""""""""""""
@@ -1043,13 +1052,6 @@ version**, then simply remove the tarfile link::
 
 **CONDITION 3: IF the sample data tarfile for the category does not exist**
 (because it is a new use case category), continue to the next step.
-
-Remove old data (if applicable)
-"""""""""""""""""""""""""""""""
-
-If the pull request notes mention an old directory path that should be removed,
-please remove that directory. Be careful not to remove any files that are
-still needed.
 
 Create the new sample data tarfile
 """"""""""""""""""""""""""""""""""
