@@ -223,11 +223,11 @@ use case OR category directory for a model_applications use case
     * Update the description of the input data in the Datasets section.
 
     * Update the list of External Dependencies (if applicable) to include any
-      required Python packages.  Update the :ref:`python_requirements_table`
-      table.  If the package is already listed in the spreadsheet, add
-      a link to the documentation page for this new use case, following the
-      format in the table.  If the package is not already listed, update
-      the table to include the name of the required package, the version,
+      required Python packages.  Update the :ref:`components_python_packages`
+      section.  If the package is already listed, add a link to the documentation
+      page for this new use case in the dropdown menu for that package, following the
+      format in the dropdown menu.  If the package is not already listed, update
+      the dropdown menus to include the name of the required package, the version,
       the METplus component (e.g. METplus wrappers, METcalcpy, METplotpy), the
       source, a brief description of the package, and a link to this new use
       case that uses this new Python package.
