@@ -7397,6 +7397,16 @@ METplus Configuration Glossary
 
      | *Used by:* TCPairs
 
+   TC_PAIRS_CONSENSUS<n>_DIAG_REQUIRED
+     Specify the value for the nth 'consensus.diag_required' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
+
+   TC_PAIRS_CONSENSUS<n>_DIAG_MIN_REQ
+     Specify the value for the nth 'consensus.diag_min_req' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
+
    TC_PAIRS_CONSENSUS<n>_WRITE_MEMBERS
      Specify the value for the nth 'consensus.write_members' in the MET configuration file for TCPairs.
 
@@ -10302,20 +10312,19 @@ METplus Configuration Glossary
 
      | *Used by:* TCDiag
 
-   TC_DIAG_CENSOR_THRESH
-     Specify the value for 'censor_thresh' in the MET configuration file for TCDiag.
+   TC_DIAG_DOMAIN_INFO<n>_OVERRIDE_DIAGS
+     Specify the value for the nth 'domain_info.override_diags' in the MET configuration file for TCDiag.
 
      | *Used by:* TCDiag
+
+   TC_DIAG_CENSOR_THRESH
+     .. warning:: **DEPRECATED:** Please use :term:`BOTH_VAR<n>_OPTIONS` instead.
 
    TC_DIAG_CENSOR_VAL
-     Specify the value for 'censor_val' in the MET configuration file for TCDiag.
-
-     | *Used by:* TCDiag
+     .. warning:: **DEPRECATED:** Please use :term:`BOTH_VAR<n>_OPTIONS` instead.
 
    TC_DIAG_CONVERT
-     Specify the value for 'convert' in the MET configuration file for TCDiag.
-
-     | *Used by:* TCDiag
+     .. warning:: **DEPRECATED:** Please use :term:`BOTH_VAR<n>_OPTIONS` instead.
 
    TC_DIAG_DATA_DOMAIN
      Specify the value for 'data.domain' in the MET configuration file for TCDiag.
@@ -10407,8 +10416,8 @@ METplus Configuration Glossary
 
      | *Used by:* TCDiag
 
-   TC_DIAG_NC_RNG_AZI_FLAG
-     Specify the value for 'nc_rng_azi_flag' in the MET configuration file for TCDiag.
+   TC_DIAG_NC_CYL_GRID_FLAG
+     Specify the value for 'nc_cyl_grid_flag' in the MET configuration file for TCDiag.
 
      | *Used by:* TCDiag
 
@@ -10423,7 +10432,10 @@ METplus Configuration Glossary
      | *Used by:* TCDiag
 
    TC_DIAG_OUTPUT_PREFIX
-     Specify the value for 'output_prefix' in the MET configuration file for TCDiag.
+     .. warning:: **DEPRECATED:** Please use :term:`TC_DIAG_OUTPUT_BASE_FORMAT` instead.
+
+   TC_DIAG_OUTPUT_BASE_FORMAT
+     Specify the value for 'output_base_format' in the MET configuration file for TCDiag.
 
      | *Used by:* TCDiag
 
@@ -11537,5 +11549,95 @@ METplus Configuration Glossary
 
    POINT_STAT_UGRID_COORDINATES_FILE
      Specify the value for 'ugrid_coordinates_file' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_LAND_MASK_FLAG
+     Specify the value for 'land_mask.flag' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_LAND_MASK_FILE_NAME
+     Specify the value for 'land_mask.file_name' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_LAND_MASK_FIELD_NAME
+     Specify the value for 'land_mask.field.name' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_LAND_MASK_FIELD_LEVEL
+     Specify the value for 'land_mask.field.level' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_LAND_MASK_REGRID_METHOD
+     Specify the value for 'land_mask.regrid.method' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_LAND_MASK_REGRID_WIDTH
+     Specify the value for 'land_mask.regrid.width' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_LAND_MASK_THRESH
+     Specify the value for 'land_mask.thresh' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_TOPO_MASK_FLAG
+     Specify the value for 'topo_mask.flag' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_TOPO_MASK_FILE_NAME
+     Specify the value for 'topo_mask.file_name' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_TOPO_MASK_FIELD_NAME
+     Specify the value for 'topo_mask.field.name' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_TOPO_MASK_FIELD_LEVEL
+     Specify the value for 'topo_mask.field.level' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_TOPO_MASK_REGRID_METHOD
+     Specify the value for 'topo_mask.regrid.method' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_TOPO_MASK_REGRID_WIDTH
+     Specify the value for 'topo_mask.regrid.width' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_TOPO_MASK_USE_OBS_THRESH
+     Specify the value for 'topo_mask.use_obs_thresh' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_TOPO_MASK_INTERP_FCST_THRESH
+     Specify the value for 'topo_mask.interp_fcst_thresh' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_DUPLICATE_FLAG
+     Specify the value for 'duplicate_flag' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_SUMMARY
+     Specify the value for 'obs_summary' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_PERC_VALUE
+     Specify the value for 'obs_perc_value' in the MET configuration file for PointStat.
 
      | *Used by:* PointStat

@@ -11,11 +11,10 @@ Condition codes: 0 for success, 1 for failure
 """
 
 import os
-import re
 
-from ..util import getlistint, skip_time, get_lead_sequence
-from ..util import ti_calculate
+from ..util import getlistint
 from ..util import do_string_sub
+from ..util import add_field_info_to_time_info
 from . import LoopTimesWrapper
 
 
@@ -82,28 +81,18 @@ class PB2NCWrapper(LoopTimesWrapper):
                                                           'PB2NC_OFFSETS',
                                                           '0'))
 
-        # Directories
-        # these are optional because users can specify full file path
-        # in template instead
-        c_dict['OBS_INPUT_DIR'] = self.config.getdir('PB2NC_INPUT_DIR', '')
+        self.get_input_templates(c_dict, {
+            'OBS': {'prefix': 'PB2NC', 'required': True},
+        })
+
         c_dict['OUTPUT_DIR'] = self.config.getdir('PB2NC_OUTPUT_DIR', '')
-
-        # filename templates, exit if not set
-        c_dict['OBS_INPUT_TEMPLATE'] = (
-            self.config.getraw('filename_templates',
-                               'PB2NC_INPUT_TEMPLATE')
-        )
-        if not c_dict['OBS_INPUT_TEMPLATE']:
-            self.log_error('Must set PB2NC_INPUT_TEMPLATE in config file')
-
-        c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
+        c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('config',
                                                        'PB2NC_OUTPUT_TEMPLATE')
         if not c_dict['OUTPUT_TEMPLATE']:
             self.log_error('Must set PB2NC_OUTPUT_TEMPLATE in config file')
 
         c_dict['OBS_INPUT_DATATYPE'] = (
-            self.config.getstr('config',
-                               'PB2NC_INPUT_DATATYPE', '')
+            self.config.getraw('config', 'PB2NC_INPUT_DATATYPE', '')
         )
 
         # get the MET config file path or use default
@@ -117,8 +106,7 @@ class PB2NCWrapper(LoopTimesWrapper):
 
         self.handle_mask(single_value=True)
 
-        self.add_met_config(name='obs_bufr_var',
-                            data_type='list',
+        self.add_met_config(name='obs_bufr_var', data_type='list',
                             metplus_configs=['PB2NC_OBS_BUFR_VAR_LIST',
                                              'PB2NC_OBS_BUFR_VAR'],
                             extra_args={'allow_empty': True})
@@ -127,11 +115,10 @@ class PB2NCWrapper(LoopTimesWrapper):
 
         self.handle_file_window_variables(c_dict, data_types=['OBS'])
 
-        c_dict['VALID_BEGIN_TEMPLATE'] = \
-          self.config.getraw('config', 'PB2NC_VALID_BEGIN', '')
-
-        c_dict['VALID_END_TEMPLATE'] = \
-          self.config.getraw('config', 'PB2NC_VALID_END', '')
+        c_dict['VALID_BEGIN_TEMPLATE'] = self.config.getraw('config',
+                                                            'PB2NC_VALID_BEGIN')
+        c_dict['VALID_END_TEMPLATE'] = self.config.getraw('config',
+                                                          'PB2NC_VALID_END')
 
         c_dict['ALLOW_MULTIPLE_FILES'] = True
 
@@ -143,59 +130,50 @@ class PB2NCWrapper(LoopTimesWrapper):
         # get level_range beg and end
         self.add_met_config_window('level_range')
 
-        self.add_met_config(name='level_category',
-                            data_type='list',
+        self.add_met_config(name='level_category', data_type='list',
                             metplus_configs=['PB2NC_LEVEL_CATEGORY'],
                             extra_args={'remove_quotes': True})
 
-        self.add_met_config(name='quality_mark_thresh',
-                            data_type='int',
+        self.add_met_config(name='quality_mark_thresh', data_type='int',
                             metplus_configs=['PB2NC_QUALITY_MARK_THRESH'])
 
-        self.add_met_config(name='obs_bufr_map',
-                            data_type='list',
+        self.add_met_config(name='obs_bufr_map', data_type='list',
                             extra_args={'remove_quotes': True})
 
         return c_dict
 
-    def find_input_files(self, input_dict):
+    def find_input_files(self):
         """!Find prepbufr data to convert.
 
-            @param input_dict dictionary containing some time information
-            @returns time info if files are found, None otherwise
+         @returns time info if files are found, None otherwise
         """
-
-        infiles, time_info = self.find_obs_offset(input_dict,
-                                                  mandatory=True,
-                                                  return_list=True)
-
-        # if file is found, return timing info dict so
-        # output template can use offset value
-        if infiles is None:
+        if not self.c_dict.get('ALL_FILES'):
             return None
 
-        self.logger.debug(f"Adding input: {' and '.join(infiles)}")
-        self.infiles.extend(infiles)
-        return time_info
+        input_files = self.c_dict['ALL_FILES'][0].get('OBS', [])
+        if not input_files:
+            return None
+
+        self.logger.debug(f"Adding input: {' and '.join(input_files)}")
+        self.infiles.extend(input_files)
+        return self.c_dict['ALL_FILES'][0].get('time_info')
 
     def set_valid_window_variables(self, time_info):
         begin_template = self.c_dict['VALID_BEGIN_TEMPLATE']
         end_template = self.c_dict['VALID_END_TEMPLATE']
 
         if begin_template:
-            self.c_dict['VALID_WINDOW_BEGIN'] = \
-                do_string_sub(begin_template,
-                              **time_info)
+            self.c_dict['VALID_WINDOW_BEGIN'] = do_string_sub(begin_template,
+                                                              **time_info)
 
         if end_template:
-            self.c_dict['VALID_WINDOW_END'] = \
-                do_string_sub(end_template,
-                              **time_info)
+            self.c_dict['VALID_WINDOW_END'] = do_string_sub(end_template,
+                                                            **time_info)
 
     def run_at_time_once(self, input_dict):
         """!Find files needed to run pb2nc and run if found"""
         # look for input files to process
-        time_info = self.find_input_files(input_dict)
+        time_info = self.find_input_files()
 
         # if no files were found, don't run pb2nc
         if time_info is None:
@@ -227,12 +205,6 @@ class PB2NCWrapper(LoopTimesWrapper):
         for arg in self.args:
             cmd += f' {arg}'
 
-        # if multiple input files, add first now, then add rest with
-        # -pbfile argument
-        if not self.infiles:
-            self.log_error("No input files found")
-            return None
-
         cmd += f" {self.infiles[0]}"
 
         out_path = self.get_output_path()
@@ -240,6 +212,7 @@ class PB2NCWrapper(LoopTimesWrapper):
 
         cmd += f" {self.c_dict['CONFIG_FILE']}"
 
+        # add additional input files with -pbfile argument
         if len(self.infiles) > 1:
             for infile in self.infiles[1:]:
                 cmd += f" -pbfile {infile}"

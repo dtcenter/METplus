@@ -6325,8 +6325,26 @@ Configuration
 | :term:`POINT_STAT_CLIMO_CDF_CENTER_BINS`
 | :term:`POINT_STAT_CLIMO_CDF_WRITE_BINS`
 | :term:`POINT_STAT_CLIMO_CDF_DIRECT_PROB`
+| :term:`POINT_STAT_LAND_MASK_FLAG`
+| :term:`POINT_STAT_LAND_MASK_FILE_NAME`
+| :term:`POINT_STAT_LAND_MASK_FIELD_NAME`
+| :term:`POINT_STAT_LAND_MASK_FIELD_LEVEL`
+| :term:`POINT_STAT_LAND_MASK_REGRID_METHOD`
+| :term:`POINT_STAT_LAND_MASK_REGRID_WIDTH`
+| :term:`POINT_STAT_LAND_MASK_THRESH`
+| :term:`POINT_STAT_TOPO_MASK_FLAG`
+| :term:`POINT_STAT_TOPO_MASK_FILE_NAME`
+| :term:`POINT_STAT_TOPO_MASK_FIELD_NAME`
+| :term:`POINT_STAT_TOPO_MASK_FIELD_LEVEL`
+| :term:`POINT_STAT_TOPO_MASK_REGRID_METHOD`
+| :term:`POINT_STAT_TOPO_MASK_REGRID_WIDTH`
+| :term:`POINT_STAT_TOPO_MASK_USE_OBS_THRESH`
+| :term:`POINT_STAT_TOPO_MASK_INTERP_FCST_THRESH`
 | :term:`POINT_STAT_OBS_QUALITY_INC`
 | :term:`POINT_STAT_OBS_QUALITY_EXC`
+| :term:`POINT_STAT_DUPLICATE_FLAG`
+| :term:`POINT_STAT_OBS_SUMMARY`
+| :term:`POINT_STAT_OBS_PERC_VALUE`
 | :term:`POINT_STAT_OUTPUT_FLAG_FHO`
 | :term:`POINT_STAT_OUTPUT_FLAG_CTC`
 | :term:`POINT_STAT_OUTPUT_FLAG_CTS`
@@ -6631,6 +6649,42 @@ ${METPLUS_OBS_QUALITY_EXC}
    * - :term:`POINT_STAT_OBS_QUALITY_EXC`
      - obs_quality_exc
 
+${METPLUS_DUPLICATE_FLAG}
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_DUPLICATE_FLAG`
+     - duplicate_flag
+
+${METPLUS_OBS_SUMMARY}
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_OBS_SUMMARY`
+     - obs_summary
+
+${METPLUS_OBS_PERC_VALUE}
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_OBS_PERC_VALUE`
+     - obs_perc_value
+
 ${METPLUS_MESSAGE_TYPE_GROUP_MAP}
 """""""""""""""""""""""""""""""""
 
@@ -6720,6 +6774,56 @@ ${METPLUS_CLIMO_CDF_DICT}
      - climo_cdf.write_bins
    * - :term:`POINT_STAT_CLIMO_CDF_DIRECT_PROB`
      - climo_cdf.direct_prob
+
+${METPLUS_LAND_MASK_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_LAND_MASK_FLAG`
+     - land_mask.flag
+   * - :term:`POINT_STAT_LAND_MASK_FILE_NAME`
+     - land_mask.file_name
+   * - :term:`POINT_STAT_LAND_MASK_FIELD_NAME`
+     - land_mask.field.name
+   * - :term:`POINT_STAT_LAND_MASK_FIELD_LEVEL`
+     - land_mask.field.level
+   * - :term:`POINT_STAT_LAND_MASK_REGRID_METHOD`
+     - land_mask.regrid.method
+   * - :term:`POINT_STAT_LAND_MASK_REGRID_WIDTH`
+     - land_mask.regrid.width
+   * - :term:`POINT_STAT_LAND_MASK_THRESH`
+     - land_mask.thresh
+
+${METPLUS_TOPO_MASK_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_TOPO_MASK_FLAG`
+     - topo_mask.flag
+   * - :term:`POINT_STAT_TOPO_MASK_FILE_NAME`
+     - topo_mask.file_name
+   * - :term:`POINT_STAT_TOPO_MASK_FIELD_NAME`
+     - topo_mask.field.name
+   * - :term:`POINT_STAT_TOPO_MASK_FIELD_LEVEL`
+     - topo_mask.field.level
+   * - :term:`POINT_STAT_TOPO_MASK_REGRID_METHOD`
+     - topo_mask.regrid.method
+   * - :term:`POINT_STAT_TOPO_MASK_REGRID_WIDTH`
+     - topo_mask.regrid.width
+   * - :term:`POINT_STAT_TOPO_MASK_USE_OBS_THRESH`
+     - topo_mask.use_obs_thresh
+   * - :term:`POINT_STAT_TOPO_MASK_INTERP_FCST_THRESH`
+     - topo_mask.interp_fcst_thresh
 
 ${METPLUS_OBS_WINDOW_DICT}
 """"""""""""""""""""""""""
@@ -8303,9 +8407,7 @@ METplus Configuration
 | :term:`TC_DIAG_DOMAIN_INFO<n>_N_AZIMUTH`
 | :term:`TC_DIAG_DOMAIN_INFO<n>_DELTA_RANGE_KM`
 | :term:`TC_DIAG_DOMAIN_INFO<n>_DIAG_SCRIPT`
-| :term:`TC_DIAG_CENSOR_THRESH`
-| :term:`TC_DIAG_CENSOR_VAL`
-| :term:`TC_DIAG_CONVERT`
+| :term:`TC_DIAG_DOMAIN_INFO<n>_OVERRIDE_DIAGS`
 | :term:`TC_DIAG_INPUT_DATATYPE`
 | :term:`TC_DIAG_DATA_DOMAIN`
 | :term:`TC_DIAG_DATA_LEVEL`
@@ -8325,10 +8427,10 @@ METplus Configuration
 | :term:`TC_DIAG_RADIAL_VELOCITY_LONG_FIELD_NAME`
 | :term:`TC_DIAG_VORTEX_REMOVAL`
 | :term:`TC_DIAG_ONE_TIME_PER_FILE_FLAG`
-| :term:`TC_DIAG_NC_RNG_AZI_FLAG`
+| :term:`TC_DIAG_NC_CYL_GRID_FLAG`
 | :term:`TC_DIAG_NC_DIAG_FLAG`
 | :term:`TC_DIAG_CIRA_DIAG_FLAG`
-| :term:`TC_DIAG_OUTPUT_PREFIX`
+| :term:`TC_DIAG_OUTPUT_BASE_FORMAT`
 | :term:`TC_DIAG_SKIP_IF_OUTPUT_EXISTS`
 | :term:`TC_DIAG_MET_CONFIG_OVERRIDES`
 | :term:`TC_DIAG_SKIP_VALID_TIMES`
@@ -8525,42 +8627,8 @@ ${METPLUS_DOMAIN_INFO_LIST}
      - domain_info.delta_range_km
    * - :term:`TC_DIAG_DOMAIN_INFO<n>_DIAG_SCRIPT`
      - domain_info.diag_script
-
-${METPLUS_CENSOR_THRESH}
-""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`TC_DIAG_CENSOR_THRESH`
-     - censor_thresh
-
-${METPLUS_CENSOR_VAL}
-"""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`TC_DIAG_CENSOR_VAL`
-     - censor_val
-
-${METPLUS_CONVERT}
-""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`TC_DIAG_CONVERT`
-     - convert
+   * - :term:`TC_DIAG_DOMAIN_INFO<n>_OVERRIDE_DIAGS`
+     - domain_info.override_diags
 
 ${METPLUS_DATA_FILE_TYPE}
 """""""""""""""""""""""""
@@ -8748,8 +8816,8 @@ ${METPLUS_ONE_TIME_PER_FILE_FLAG}
    * - :term:`TC_DIAG_ONE_TIME_PER_FILE_FLAG`
      - one_time_per_file_flag
 
-${METPLUS_NC_RNG_AZI_FLAG}
-""""""""""""""""""""""""""
+${METPLUS_NC_CYL_GRID_FLAG}
+"""""""""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -8757,8 +8825,8 @@ ${METPLUS_NC_RNG_AZI_FLAG}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_DIAG_NC_RNG_AZI_FLAG`
-     - nc_rng_azi_flag
+   * - :term:`TC_DIAG_NC_CYL_GRID_FLAG`
+     - nc_cyl_grid_flag
 
 ${METPLUS_NC_DIAG_FLAG}
 """""""""""""""""""""""
@@ -8793,8 +8861,8 @@ ${METPLUS_OUTPUT_PREFIX}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_DIAG_OUTPUT_PREFIX`
-     - output_prefix
+   * - :term:`TC_DIAG_OUTPUT_BASE_FORMAT`
+     - output_base_format
 
 ${METPLUS_MET_CONFIG_OVERRIDES}
 """""""""""""""""""""""""""""""
@@ -9539,6 +9607,8 @@ METplus Configuration
 | :term:`TC_PAIRS_CONSENSUS<n>_MEMBERS`
 | :term:`TC_PAIRS_CONSENSUS<n>_REQUIRED`
 | :term:`TC_PAIRS_CONSENSUS<n>_MIN_REQ`
+| :term:`TC_PAIRS_CONSENSUS<n>_DIAG_REQUIRED`
+| :term:`TC_PAIRS_CONSENSUS<n>_DIAG_MIN_REQ`
 | :term:`TC_PAIRS_CONSENSUS<n>_WRITE_MEMBERS`
 | :term:`TC_PAIRS_SKIP_LEAD_SEQ`
 | :term:`TC_PAIRS_RUN_ONCE`
@@ -9831,6 +9901,10 @@ ${METPLUS_CONSENSUS_LIST}
      - consensus.required
    * - :term:`TC_PAIRS_CONSENSUS<n>_MIN_REQ`
      - consensus.min_req
+   * - :term:`TC_PAIRS_CONSENSUS<n>_DIAG_REQUIRED`
+     - consensus.diag_required
+   * - :term:`TC_PAIRS_CONSENSUS<n>_DIAG_MIN_REQ`
+     - consensus.diag_min_req
    * - :term:`TC_PAIRS_CONSENSUS<n>_WRITE_MEMBERS`
      - consensus.write_members
 

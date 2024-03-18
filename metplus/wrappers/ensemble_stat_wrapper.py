@@ -132,13 +132,11 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         )
 
         c_dict['OBS_POINT_INPUT_DATATYPE'] = (
-          self.config.getraw('config',
-                             'OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE')
+          self.config.getraw('config', 'OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE')
         )
 
         c_dict['OBS_GRID_INPUT_DATATYPE'] = (
-          self.config.getraw('config',
-                             'OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE')
+          self.config.getraw('config', 'OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE')
         )
 
         # check if more than 1 obs datatype is set to python embedding,
@@ -163,9 +161,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         # allow multiple files in CommandBuilder.find_data logic
         c_dict['ALLOW_MULTIPLE_FILES'] = True
-
-        # not all input files are mandatory to be found
-        c_dict['MANDATORY'] = False
 
         # fill inputs that are not found with fake path to note it is missing
         c_dict['FCST_FILL_MISSING'] = True
@@ -384,7 +379,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             self.config,
             met_tool=self.app_name
         )
-
+        # skip RuntimeFreq input file logic - remove once integrated
+        c_dict['FIND_FILES'] = False
         return c_dict
 
     def get_command(self):
@@ -396,43 +392,14 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                 f" {' '.join(self.infiles)} {self.param}"
                 f" {' '.join(self.args)} -outdir {self.outdir}")
 
-    def run_at_time_all_fields(self, time_info):
-        """! Runs the MET application for a given time and forecast lead combination
-              Args:
-                @param time_info dictionary containing timing information
-        """
+    def find_input_files(self, time_info):
         # get ensemble model files
         # do not fill file list with missing if ens_member_ids is used
         fill_missing = not self.env_var_dict.get('METPLUS_ENS_MEMBER_IDS')
         if not self.find_input_files_ensemble(time_info,
                                               fill_missing=fill_missing):
-            return
+            return False
 
-        if not self.set_command_line_arguments(time_info):
-            return
-
-        # parse optional var list for FCST and/or OBS fields
-        var_list = sub_var_list(self.c_dict['VAR_LIST_TEMP'], time_info)
-
-        # set field info
-        fcst_field = self.get_all_field_info(var_list, 'FCST')
-        obs_field = self.get_all_field_info(var_list, 'OBS')
-
-        if not fcst_field and not obs_field:
-            self.log_error("Could not build field info for fcst or obs")
-            return
-
-        self.format_field('FCST', fcst_field)
-        self.format_field('OBS', obs_field)
-
-        self.process_fields(time_info)
-
-    def set_command_line_arguments(self, time_info):
-        """! Set all arguments for plot_point_obs command.
-
-        @param time_info dictionary containing timing information
-        @returns False if files could not be found, True on success
-        """
         # get point observation file if requested
         if self.c_dict['OBS_POINT_INPUT_TEMPLATE']:
             point_obs_files = self.find_data(time_info, data_type='OBS_POINT',
@@ -464,35 +431,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         return True
 
-    def get_all_field_info(self, var_list, data_type):
-        """!Get field info based on data type"""
-
-        field_list = []
-        for var_info in var_list:
-            type_lower = data_type.lower()
-            level = var_info[f'{type_lower}_level']
-            thresh = var_info[f'{type_lower}_thresh']
-            name = var_info[f'{type_lower}_name']
-            extra = var_info[f'{type_lower}_extra']
-
-            # check if python embedding is used and set up correctly
-            # set env var for file type if it is used
-            py_embed_ok = self.check_for_python_embedding(data_type, var_info)
-            if not py_embed_ok:
-                return ''
-
-            next_field = self.get_field_info(v_level=level,
-                                             v_thresh=thresh,
-                                             v_name=name,
-                                             v_extra=extra,
-                                             d_type=data_type)
-            if next_field is None:
-                return ''
-
-            field_list.extend(next_field)
-
-        return ','.join(field_list)
-
     def set_environment_variables(self, time_info):
         self.add_env_var("MET_OBS_ERROR_TABLE",
                          self.c_dict.get('MET_OBS_ERR_TABLE', ''))
@@ -506,12 +444,10 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             @param obs_field field information formatted for MET config file
         """
         # set config file since command is reset after each run
-        self.param = do_string_sub(self.c_dict['CONFIG_FILE'],
-                                   **time_info)
+        self.param = do_string_sub(self.c_dict['CONFIG_FILE'], **time_info)
 
         # set up output dir with time info
-        if not self.find_and_check_output_file(time_info,
-                                               is_directory=True):
+        if not self.find_and_check_output_file(time_info, is_directory=True):
             return
 
         # set environment variables that are passed to the MET config

@@ -10,6 +10,11 @@ from metplus.wrappers.point_stat_wrapper import PointStatWrapper
 fcst_dir = '/some/path/fcst'
 obs_dir = '/some/path/obs'
 
+fcst_name = 'APCP'
+fcst_level = 'A03'
+obs_name = 'APCP_03'
+obs_level = '"(*,*)"'
+
 inits = ['2005080700', '2005080712']
 time_fmt = '%Y%m%d%H'
 lead_hour = 12
@@ -47,6 +52,59 @@ def set_minimum_config_settings(config):
     config.set('config', 'POINT_STAT_OUTPUT_DIR',
                '{OUTPUT_BASE}/GridStat/output')
     config.set('config', 'POINT_STAT_OUTPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}')
+
+
+@pytest.mark.parametrize(
+    'once_per_field, missing, run, thresh, errors, allow_missing', [
+        (False, 6, 12, 0.5, 0, True),
+        (False, 6, 12, 0.6, 1, True),
+        (True, 12, 24, 0.5, 0, True),
+        (True, 12, 24, 0.6, 1, True),
+        (False, 6, 12, 0.5, 6, False),
+        (True, 12, 24, 0.5, 12, False),
+    ]
+)
+@pytest.mark.wrapper_a
+def test_point_stat_missing_inputs(metplus_config, get_test_data_dir,
+                                   once_per_field, missing, run, thresh, errors,
+                                   allow_missing):
+    config = metplus_config
+    set_minimum_config_settings(config)
+    config.set('config', 'INPUT_MUST_EXIST', True)
+    config.set('config', 'POINT_STAT_ALLOW_MISSING_INPUTS', allow_missing)
+    config.set('config', 'POINT_STAT_INPUT_THRESH', thresh)
+    config.set('config', 'INIT_BEG', '2017051001')
+    config.set('config', 'INIT_END', '2017051003')
+    config.set('config', 'INIT_INCREMENT', '2H')
+    config.set('config', 'LEAD_SEQ', '1,2,3,6,9,12')
+    config.set('config', 'FCST_POINT_STAT_INPUT_DIR', get_test_data_dir('fcst'))
+    config.set('config', 'OBS_POINT_STAT_INPUT_DIR', get_test_data_dir('obs'))
+    config.set('config', 'FCST_POINT_STAT_INPUT_TEMPLATE',
+               '{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d_i%H}_f{lead?fmt=%3H}_HRRRTLE_PHPT.grb2')
+    config.set('config', 'OBS_POINT_STAT_INPUT_TEMPLATE',
+               '{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A06.nc')
+    # add 2 sets of fields to test ONCE_PER_FIELD
+    config.set('config', 'FCST_VAR1_NAME', fcst_name)
+    config.set('config', 'FCST_VAR1_LEVELS', fcst_level)
+    config.set('config', 'OBS_VAR1_NAME', obs_name)
+    config.set('config', 'OBS_VAR1_LEVELS', obs_level)
+    config.set('config', 'FCST_VAR2_NAME', fcst_name)
+    config.set('config', 'FCST_VAR2_LEVELS', fcst_level)
+    config.set('config', 'OBS_VAR2_NAME', obs_name)
+    config.set('config', 'OBS_VAR2_LEVELS', obs_level)
+    config.set('config', 'POINT_STAT_ONCE_PER_FIELD', once_per_field)
+
+    wrapper = PointStatWrapper(config)
+    assert wrapper.isOK
+
+    all_cmds = wrapper.run_all_times()
+    for cmd, _ in all_cmds:
+        print(cmd)
+
+    print(f'missing: {wrapper.missing_input_count} / {wrapper.run_count}, errors: {wrapper.errors}')
+    assert wrapper.missing_input_count == missing
+    assert wrapper.run_count == run
+    assert wrapper.errors == errors
 
 
 @pytest.mark.wrapper_a
@@ -550,6 +608,63 @@ def test_met_dictionary_in_var_options(metplus_config):
          {'METPLUS_UGRID_MAX_DISTANCE_KM': 'ugrid_max_distance_km = 30;'}),
         ({'POINT_STAT_UGRID_COORDINATES_FILE': '/met/test/input/ugrid_data/mpas/static.40962_reduced.nc', },
          {'METPLUS_UGRID_COORDINATES_FILE': 'ugrid_coordinates_file = "/met/test/input/ugrid_data/mpas/static.40962_reduced.nc";'}),
+        # land_mask dictionary
+        ({'POINT_STAT_LAND_MASK_FLAG': 'false', },
+         {'METPLUS_LAND_MASK_DICT': 'land_mask = {flag = FALSE;}'}),
+        ({'POINT_STAT_LAND_MASK_FILE_NAME': '/some/file/path.nc', },
+         {'METPLUS_LAND_MASK_DICT': 'land_mask = {file_name = ["/some/file/path.nc"];}'}),
+        ({'POINT_STAT_LAND_MASK_FIELD_NAME': 'LAND',
+          'POINT_STAT_LAND_MASK_FIELD_LEVEL': 'L0'},
+         {'METPLUS_LAND_MASK_DICT': 'land_mask = {field = {name = "LAND";level = "L0";}}'}),
+        ({'POINT_STAT_LAND_MASK_REGRID_METHOD': 'NEAREST',
+          'POINT_STAT_LAND_MASK_REGRID_WIDTH': '1'},
+         {'METPLUS_LAND_MASK_DICT': 'land_mask = {regrid = {method = NEAREST;width = 1;}}'}),
+        ({'POINT_STAT_LAND_MASK_THRESH': 'eq1', },
+         {'METPLUS_LAND_MASK_DICT': 'land_mask = {thresh = eq1;}'}),
+        ({'POINT_STAT_LAND_MASK_FLAG': 'false',
+          'POINT_STAT_LAND_MASK_FILE_NAME': '/some/file/path.nc',
+          'POINT_STAT_LAND_MASK_FIELD_NAME': 'LAND',
+          'POINT_STAT_LAND_MASK_FIELD_LEVEL': 'L0',
+          'POINT_STAT_LAND_MASK_REGRID_METHOD': 'NEAREST',
+          'POINT_STAT_LAND_MASK_REGRID_WIDTH': '1',
+          'POINT_STAT_LAND_MASK_THRESH': 'eq1',
+         },
+         {'METPLUS_LAND_MASK_DICT': ('land_mask = {flag = FALSE;file_name = ["/some/file/path.nc"];'
+                                     'field = {name = "LAND";level = "L0";}'
+                                     'regrid = {method = NEAREST;width = 1;}thresh = eq1;}')}),
+        # topo_mask dictionary
+        ({'POINT_STAT_TOPO_MASK_FLAG': 'false', },
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {flag = FALSE;}'}),
+        ({'POINT_STAT_TOPO_MASK_FILE_NAME': '/some/file/path.nc', },
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {file_name = ["/some/file/path.nc"];}'}),
+        ({'POINT_STAT_TOPO_MASK_FIELD_NAME': 'TOPO',
+          'POINT_STAT_TOPO_MASK_FIELD_LEVEL': 'L0'},
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {field = {name = "TOPO";level = "L0";}}'}),
+        ({'POINT_STAT_TOPO_MASK_REGRID_METHOD': 'NEAREST',
+          'POINT_STAT_TOPO_MASK_REGRID_WIDTH': '1'},
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {regrid = {method = NEAREST;width = 1;}}'}),
+        ({'POINT_STAT_TOPO_MASK_USE_OBS_THRESH': 'ge-100&&le100', },
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {use_obs_thresh = ge-100&&le100;}'}),
+        ({'POINT_STAT_TOPO_MASK_INTERP_FCST_THRESH': 'ge-50&&le50', },
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {interp_fcst_thresh = ge-50&&le50;}'}),
+        ({'POINT_STAT_TOPO_MASK_FLAG': 'false',
+          'POINT_STAT_TOPO_MASK_FILE_NAME': '/some/file/path.nc',
+          'POINT_STAT_TOPO_MASK_FIELD_NAME': 'TOPO',
+          'POINT_STAT_TOPO_MASK_FIELD_LEVEL': 'L0',
+          'POINT_STAT_TOPO_MASK_REGRID_METHOD': 'NEAREST',
+          'POINT_STAT_TOPO_MASK_REGRID_WIDTH': '1',
+          'POINT_STAT_TOPO_MASK_USE_OBS_THRESH': 'ge-100&&le100',
+          'POINT_STAT_TOPO_MASK_INTERP_FCST_THRESH': 'ge-50&&le50'
+         },
+         {'METPLUS_TOPO_MASK_DICT': ('topo_mask = {flag = FALSE;file_name = ["/some/file/path.nc"];'
+                                     'field = {name = "TOPO";level = "L0";}regrid = {method = NEAREST;width = 1;}'
+                                     'use_obs_thresh = ge-100&&le100;interp_fcst_thresh = ge-50&&le50;}')}),
+        ({'POINT_STAT_DUPLICATE_FLAG': 'NONE', },
+         {'METPLUS_DUPLICATE_FLAG': 'duplicate_flag = NONE;'}),
+        ({'POINT_STAT_OBS_SUMMARY': 'NONE', },
+         {'METPLUS_OBS_SUMMARY': 'obs_summary = NONE;'}),
+        ({'POINT_STAT_OBS_PERC_VALUE': '50', },
+         {'METPLUS_OBS_PERC_VALUE': 'obs_perc_value = 50;'}),
 
     ]
 )

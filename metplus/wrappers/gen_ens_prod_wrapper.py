@@ -87,9 +87,6 @@ class GenEnsProdWrapper(LoopTimesWrapper):
             self.log_error('GEN_ENS_PROD_INPUT_TEMPLATE or '
                            'GEN_ENS_PROD_INPUT_FILE_LIST must be set')
 
-        # not all input files are mandatory to be found
-        c_dict['MANDATORY'] = False
-
         # fill inputs that are not found with fake path to note it is missing
         c_dict['FCST_FILL_MISSING'] = True
 
@@ -219,7 +216,8 @@ class GenEnsProdWrapper(LoopTimesWrapper):
                             data_type='string')
 
         c_dict['ALLOW_MULTIPLE_FILES'] = True
-
+        # skip RuntimeFreq input file logic - remove once integrated
+        c_dict['FIND_FILES'] = False
         return c_dict
 
     def run_at_time_once(self, time_info):
@@ -234,10 +232,9 @@ class GenEnsProdWrapper(LoopTimesWrapper):
         if not self.find_field_info(time_info):
             return False
 
-        # do not fill file list with missing if ens_member_ids is used
-        fill_missing = not self.env_var_dict.get('METPLUS_ENS_MEMBER_IDS')
-        if not self.find_input_files_ensemble(time_info,
-                                              fill_missing=fill_missing):
+        self.run_count += 1
+        if not self.find_input_files(time_info):
+            self.missing_input_count += 1
             return False
 
         if not self.find_and_check_output_file(time_info):
@@ -247,6 +244,14 @@ class GenEnsProdWrapper(LoopTimesWrapper):
         self.set_environment_variables(time_info)
 
         return self.build()
+
+    def find_input_files(self, time_info):
+        # do not fill file list with missing if ens_member_ids is used
+        fill_missing = not self.env_var_dict.get('METPLUS_ENS_MEMBER_IDS')
+        if not self.find_input_files_ensemble(time_info,
+                                              fill_missing=fill_missing):
+            return False
+        return True
 
     def find_field_info(self, time_info):
         """! parse var list for ENS fields

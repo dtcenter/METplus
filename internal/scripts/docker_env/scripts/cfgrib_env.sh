@@ -21,7 +21,4 @@ METPLUS_VERSION=$1
 ENV_NAME=cfgrib.${METPLUS_VERSION}
 
 mamba create -y --name ${ENV_NAME} -c conda-forge python=3.10.4
-mamba install -y --name ${ENV_NAME} -c conda-forge metpy==1.4.0
-mamba install -y --name ${ENV_NAME} -c conda-forge netcdf4==1.6.2
-mamba install -y --name ${ENV_NAME} -c conda-forge cfgrib==0.9.10.1
-mamba install -y --name ${ENV_NAME} -c conda-forge pygrib==2.1.4
+mamba install -y --name ${ENV_NAME} -c conda-forge metpy==1.4.0 netcdf4==1.6.2 cfgrib==0.9.10.1 pygrib==2.1.4
