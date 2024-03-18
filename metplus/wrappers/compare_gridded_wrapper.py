@@ -267,7 +267,11 @@ that reformat gridded data
 
         @param time_info dictionary with time information
         """
-        return None
+        # add ugrid config file if requested
+        if self.c_dict.get('UGRID_CONFIG_FILE'):
+            ugrid_config = self.c_dict['UGRID_CONFIG_FILE']
+            ugrid_config = do_string_sub(ugrid_config, **time_info)
+            self.args.append(f'-config {ugrid_config}')
 
     def get_command(self):
         """! Builds the command to run the MET application
@@ -279,8 +283,6 @@ that reformat gridded data
             return None
 
         cmd = '{} -v {} '.format(self.app_path, self.c_dict['VERBOSITY'])
-        for arg in self.args:
-            cmd += arg + " "
 
         if len(self.infiles) == 0:
             self.log_error("No input filenames specified")
@@ -303,6 +305,9 @@ that reformat gridded data
             return None
 
         cmd += self.param + ' '
+
+        for arg in self.args:
+            cmd += arg + " "
 
         if self.outdir == "":
             self.log_error("No output directory specified")

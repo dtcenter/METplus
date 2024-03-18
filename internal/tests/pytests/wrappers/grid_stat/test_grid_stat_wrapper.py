@@ -21,6 +21,8 @@ obs_fmt = (f'field = [{{ name="{obs_name}"; '
 time_fmt = '%Y%m%d%H'
 run_times = ['2005080700', '2005080712']
 
+ugrid_config_file = '/some/path/UgridConfig_fake'
+
 
 def set_minimum_config_settings(config):
     # set config variables to prevent command from running and bypass check
@@ -714,6 +716,7 @@ def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
          {'METPLUS_UGRID_MAX_DISTANCE_KM': 'ugrid_max_distance_km = 30;'}),
         ({'GRID_STAT_UGRID_COORDINATES_FILE': '/met/test/input/ugrid_data/mpas/static.40962_reduced.nc', },
          {'METPLUS_UGRID_COORDINATES_FILE': 'ugrid_coordinates_file = "/met/test/input/ugrid_data/mpas/static.40962_reduced.nc";'}),
+        ({'GRID_STAT_UGRID_CONFIG_FILE': ugrid_config_file, }, {}),
 
     ]
 )
@@ -732,6 +735,14 @@ def test_grid_stat_single_field(metplus_config, config_overrides,
     wrapper = GridStatWrapper(config)
     assert wrapper.isOK
 
+    # add extra command line arguments
+    extra_args = [' '] * len(run_times)
+
+    if 'GRID_STAT_UGRID_CONFIG_FILE' in config_overrides:
+        for index in range(0, len(run_times)):
+            extra_args[index] += f'-config {ugrid_config_file} '
+
+
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
     config_file = wrapper.c_dict.get('CONFIG_FILE')
@@ -739,11 +750,11 @@ def test_grid_stat_single_field(metplus_config, config_overrides,
     expected_cmds = [(f"{app_path} {verbosity} "
                       f"{fcst_dir}/2005080700/fcst_file_F012 "
                       f"{obs_dir}/2005080712/obs_file "
-                      f"{config_file} -outdir {out_dir}/2005080712"),
+                      f"{config_file}{extra_args[0]}-outdir {out_dir}/2005080712"),
                      (f"{app_path} {verbosity} "
                       f"{fcst_dir}/2005080712/fcst_file_F012 "
                       f"{obs_dir}/2005080800/obs_file "
-                      f"{config_file} -outdir {out_dir}/2005080800"),
+                      f"{config_file}{extra_args[1]}-outdir {out_dir}/2005080800"),
                      ]
 
     all_cmds = wrapper.run_all_times()

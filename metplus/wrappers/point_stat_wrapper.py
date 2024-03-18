@@ -163,6 +163,11 @@ class PointStatWrapper(CompareGriddedWrapper):
         # get the MET config file path or use default
         c_dict['CONFIG_FILE'] = self.get_config_file('PointStatConfig_wrapped')
 
+        # get optional ugrid config file if requested
+        c_dict['UGRID_CONFIG_FILE'] = (
+            self.config.getraw('config', 'POINT_STAT_UGRID_CONFIG_FILE')
+        )
+
         self.add_met_config_window('obs_window')
 
         self.handle_mask(get_point=True)
@@ -308,6 +313,9 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         @param time_info dictionary with time information
         """
+        # call CompareGridded function
+        super().set_command_line_arguments(time_info)
+
         # set optional obs_valid_beg and obs_valid_end arguments
         for ext in ['BEG', 'END']:
             if self.c_dict[f'OBS_VALID_{ext}']:

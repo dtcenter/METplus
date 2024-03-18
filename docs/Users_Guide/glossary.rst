@@ -11537,6 +11537,12 @@ METplus Configuration Glossary
 
      | *Used by:* GridStat
 
+   GRID_STAT_UGRID_CONFIG_FILE
+     Specify the path to the optional ugrid configuration file for GridStat.
+     This is added to the command using the -config argument.
+
+     | *Used by:* GridStat
+
    POINT_STAT_UGRID_DATASET
      Specify the value for 'ugrid_dataset' in the MET configuration file for PointStat.
 
@@ -11549,6 +11555,12 @@ METplus Configuration Glossary
 
    POINT_STAT_UGRID_COORDINATES_FILE
      Specify the value for 'ugrid_coordinates_file' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_UGRID_CONFIG_FILE
+     Specify the path to the optional ugrid configuration file for PointStat.
+     This is added to the command using the -config argument.
 
      | *Used by:* PointStat
 

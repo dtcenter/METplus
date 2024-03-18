@@ -134,6 +134,11 @@ class GridStatWrapper(CompareGriddedWrapper):
         # get the MET config file path or use default
         c_dict['CONFIG_FILE'] = self.get_config_file('GridStatConfig_wrapped')
 
+        # get optional ugrid config file if requested
+        c_dict['UGRID_CONFIG_FILE'] = (
+            self.config.getraw('config', 'GRID_STAT_UGRID_CONFIG_FILE')
+        )
+
         self.get_input_templates(c_dict, {
             'FCST': {'prefix': 'FCST_GRID_STAT', 'required': True},
             'OBS': {'prefix': 'OBS_GRID_STAT', 'required': True},
