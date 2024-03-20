@@ -25,8 +25,6 @@ from metplus import __python_version__ as python_version
 
 project = 'METplus'
 
-met_version = '12.0.0'
-
 author = 'UCAR/NCAR, NOAA, CSU/CIRA, and CU/CIRES'
 
 # list of contributing authors currently involved with the project
@@ -86,6 +84,10 @@ else:
     version = release
 
 verinfo = version
+
+# compute MET version as X+6.Y.0 of METplus version
+x, y, _ = __version__.split('.')
+met_version = f'{int(x)+6}.{y}.0'
 
 release_date = __release_date__
 
