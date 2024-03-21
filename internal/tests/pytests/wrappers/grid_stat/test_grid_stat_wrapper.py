@@ -740,7 +740,7 @@ def test_grid_stat_single_field(metplus_config, config_overrides,
 
     if 'GRID_STAT_UGRID_CONFIG_FILE' in config_overrides:
         for index in range(0, len(run_times)):
-            extra_args[index] += f'-config {ugrid_config_file} '
+            extra_args[index] += f'-ugrid_config {ugrid_config_file} '
 
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)

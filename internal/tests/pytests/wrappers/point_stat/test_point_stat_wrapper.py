@@ -747,7 +747,7 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
 
     if 'POINT_STAT_UGRID_CONFIG_FILE' in config_overrides:
         for index in range(0, len(inits)):
-            extra_args[index] += f'-config {ugrid_config_file} '
+            extra_args[index] += f'-ugrid_config {ugrid_config_file} '
 
     for beg_end in ('BEG', 'END'):
         if f'POINT_STAT_OBS_VALID_{beg_end}' in config_overrides:
