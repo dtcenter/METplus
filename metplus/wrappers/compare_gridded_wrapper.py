@@ -271,7 +271,7 @@ that reformat gridded data
         if self.c_dict.get('UGRID_CONFIG_FILE'):
             ugrid_config = self.c_dict['UGRID_CONFIG_FILE']
             ugrid_config = do_string_sub(ugrid_config, **time_info)
-            self.args.append(f'-config {ugrid_config}')
+            self.args.append(f'-ugrid_config {ugrid_config}')
 
     def get_command(self):
         """! Builds the command to run the MET application
