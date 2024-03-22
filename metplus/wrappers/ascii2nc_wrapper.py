@@ -92,22 +92,9 @@ class ASCII2NCWrapper(LoopTimesWrapper):
 
         # MET config variables
         self.handle_time_summary_dict()
-
         # handle file window variables
-        for edge in ['BEGIN', 'END']:
-            file_window = (
-                self.config.getseconds('config',
-                                       f'ASCII2NC_FILE_WINDOW_{edge}',
-                                       '')
-            )
-            if file_window == '':
-                file_window = (
-                    self.config.getseconds('config',
-                                           f'OBS_FILE_WINDOW_{edge}',
-                                           0)
-                )
+        self.handle_file_window_variables(c_dict, data_types=['OBS'])
 
-            c_dict[f'OBS_FILE_WINDOW_{edge}'] = file_window
         # skip RuntimeFreq input file logic - remove once integrated
         c_dict['FIND_FILES'] = False
         return c_dict
