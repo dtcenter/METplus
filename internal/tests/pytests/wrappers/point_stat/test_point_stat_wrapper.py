@@ -25,6 +25,7 @@ for init in inits:
     valid = valid.strftime(time_fmt)
     valids.append(valid)
 
+ugrid_config_file = '/some/path/UgridConfig_fake'
 
 def set_minimum_config_settings(config):
     # set config variables to prevent command from running and bypass check
@@ -602,6 +603,12 @@ def test_met_dictionary_in_var_options(metplus_config):
                  'sid = ["one", "two"];'
                  'llpnt = [{ name = "LAT30TO40"; lat_thresh = >=30&&<=40; lon_thresh = NA; }, { name = "BOX"; lat_thresh = >=20&&<=40; lon_thresh = >=-110&&<=-90; }];}'
          )}),
+        ({'POINT_STAT_UGRID_DATASET': 'mpas', },
+         {'METPLUS_UGRID_DATASET': 'ugrid_dataset = "mpas";'}),
+        ({'POINT_STAT_UGRID_MAX_DISTANCE_KM': '30', },
+         {'METPLUS_UGRID_MAX_DISTANCE_KM': 'ugrid_max_distance_km = 30;'}),
+        ({'POINT_STAT_UGRID_COORDINATES_FILE': '/met/test/input/ugrid_data/mpas/static.40962_reduced.nc', },
+         {'METPLUS_UGRID_COORDINATES_FILE': 'ugrid_coordinates_file = "/met/test/input/ugrid_data/mpas/static.40962_reduced.nc";'}),
         # land_mask dictionary
         ({'POINT_STAT_LAND_MASK_FLAG': 'false', },
          {'METPLUS_LAND_MASK_DICT': 'land_mask = {flag = FALSE;}'}),
@@ -659,6 +666,7 @@ def test_met_dictionary_in_var_options(metplus_config):
          {'METPLUS_OBS_SUMMARY': 'obs_summary = NONE;'}),
         ({'POINT_STAT_OBS_PERC_VALUE': '50', },
          {'METPLUS_OBS_PERC_VALUE': 'obs_perc_value = 50;'}),
+        ({'POINT_STAT_UGRID_CONFIG_FILE': ugrid_config_file, }, {}),
 
     ]
 )
@@ -733,7 +741,14 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
     config_file = wrapper.c_dict.get('CONFIG_FILE')
     out_dir = wrapper.c_dict.get('OUTPUT_DIR')
+
+    # add extra command line arguments
     extra_args = [' '] * len(inits)
+
+    if 'POINT_STAT_UGRID_CONFIG_FILE' in config_overrides:
+        for index in range(0, len(inits)):
+            extra_args[index] += f'-ugrid_config {ugrid_config_file} '
+
     for beg_end in ('BEG', 'END'):
         if f'POINT_STAT_OBS_VALID_{beg_end}' in config_overrides:
             for index in range(0, len(inits)):
@@ -748,10 +763,10 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
     expected_cmds = []
     for index in range(0, len(inits)):
         expected_cmds.append(
-            f"{app_path} {verbosity}{extra_args[index]}"
+            f"{app_path} {verbosity} "
             f"{fcst_dir}/{inits[index]}/fcst_file_F{lead_hour_str} "
             f"{obs_dir}/{valids[index]}/obs_file "
-            f"{config_file} -outdir {out_dir}/{valids[index]}"
+            f"{config_file}{extra_args[index]}-outdir {out_dir}/{valids[index]}"
         )
 
     all_cmds = wrapper.run_all_times()
