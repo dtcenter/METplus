@@ -55,6 +55,6 @@ assignees: ''
     be updated.
 - [ ] Update the truth data.
       This should be handled by a METplus wrappers engineer.
-      See the (instructions to update the truth data)[https://metplus.readthedocs.io/en/develop/Contributors_Guide/continuous_integration.html#update-truth-data-update-truth-data-yml]
+      See the [instructions to update the truth data](https://metplus.readthedocs.io/en/develop/Contributors_Guide/continuous_integration.html#update-truth-data-update-truth-data-yml)
       for more info.
 - [ ] Close this issue.
