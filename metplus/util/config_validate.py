@@ -6,7 +6,7 @@ from .string_manip import find_indices_in_config_section, getlist
 from .string_manip import is_python_script, get_wrapper_name
 from .string_template_substitution import do_string_sub
 from .config_util import get_process_list, get_custom_string_list
-from .wrapper_init import get_wrapper_instance
+from .wrapper_init import get_wrapper_class
 
 
 def validate_config_variables(config):
@@ -216,7 +216,7 @@ def _get_deprecated_met_list(config, met_tool):
     if not wrapper_name:
         return None
 
-    wrapper = get_wrapper_instance(config, wrapper_name)
+    wrapper = get_wrapper_class(config, wrapper_name)
     if not hasattr(wrapper, 'DEPRECATED_WRAPPER_ENV_VAR_KEYS'):
         return None
 

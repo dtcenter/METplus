@@ -11,12 +11,13 @@ assignees: ''
 
 *Write a short summary of the differences that will likely be found in the GitHub Actions testing workflow that was triggered by the pull request that warranted this issue*
 
+- [ ] Link to relevant issue(s):
+- [ ] Link to relevant pull request(s): 
+
 ## Define the Metadata ##
 
 ### Title ###
-- [ ] Add a link to the pull request that warranted this issue to the issue title using format dtcenter/{REPO}#{PR_NUMBER}.
-
-**Example:** Update Truth: For dtcenter/MET#2655
+- [ ] Define the **Title** of this issue as **Update Truth: For dtcenter/{REPO}#{PR_NUMBER}** to indicate the repository and pull request that warranted this issue.
 
 ### Assignee ###
 
@@ -55,6 +56,6 @@ assignees: ''
     be updated.
 - [ ] Update the truth data.
       This should be handled by a METplus wrappers engineer.
-      See the (instructions to update the truth data)[https://metplus.readthedocs.io/en/develop/Contributors_Guide/continuous_integration.html#update-truth-data-update-truth-data-yml]
+      See the [instructions to update the truth data](https://metplus.readthedocs.io/en/develop/Contributors_Guide/continuous_integration.html#update-truth-data-update-truth-data-yml)
       for more info.
 - [ ] Close this issue.
