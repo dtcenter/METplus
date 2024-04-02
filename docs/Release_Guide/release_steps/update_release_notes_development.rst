@@ -32,7 +32,7 @@ release. Open the following URL in a browser:
 
 * For the METplus repository, update the **development timeline**.
 
-  * If your are creating a beta1 release, add development timeline
+  * If you are creating a beta1 release, add development timeline
     information with approximate dates for planned development cycles.
 
   * For other development releaes, edit the actual release dates and planned
