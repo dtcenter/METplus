@@ -4,9 +4,9 @@
 SONAR_PROPERTIES_DIR=internal/scripts/sonarqube
 SONAR_PROPERTIES=sonar-project.properties
 
-# Check that this is being run from the top-level METdataio directory
+# Check that this is being run from the top-level METplus directory
 if [ ! -e $SONAR_PROPERTIES_DIR/$SONAR_PROPERTIES ]; then
-  echo "ERROR: ${0} -> must be run from the top-level METdataio directory"
+  echo "ERROR: ${0} -> must be run from the top-level METplus directory"
   exit 1
 fi
 
@@ -47,8 +47,8 @@ fi
 
 # Configure the sonar-project.properties
 [ -e $SONAR_PROPERTIES ] && rm $SONAR_PROPERTIES
-sed -e "s|SONAR_PROJECT_KEY|METdataio-GHA|" \
-    -e "s|SONAR_PROJECT_NAME|METdataio GHA|" \
+sed -e "s|SONAR_PROJECT_KEY|METplus-GHA|" \
+    -e "s|SONAR_PROJECT_NAME|METplus GHA|" \
     -e "s|SONAR_PROJECT_VERSION|$SONAR_PROJECT_VERSION|" \
     -e "s|SONAR_HOST_URL|$SONAR_HOST_URL|" \
     -e "s|SONAR_TOKEN|$SONAR_TOKEN|" \
