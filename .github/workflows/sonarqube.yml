@@ -1,0 +1,82 @@
+name: SonarQube Scan
+
+# Run SonarQube for Pull Requests and changes to the develop and main_vX.Y branches
+
+on:
+
+  # Trigger analysis for pushes to develop and main_vX.Y branches
+  push:
+    branches:
+      - develop
+      - 'main_v**'
+    paths-ignore:
+      - 'docs/**'
+      - '.github/pull_request_template.md'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/labels/**'
+      - 'build_components/**'
+      - 'manage_externals/**'
+      - '**/README.md'
+      - '**/LICENSE.md'
+
+  # Trigger analysis for pull requests to develop and main_vX.Y branches
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - develop
+      - 'main_v**'
+    paths-ignore:
+      - 'docs/**'
+      - '.github/pull_request_template.md'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/labels/**'
+      - 'build_components/**'
+      - 'manage_externals/**'
+      - '**/README.md'
+      - '**/LICENSE.md'
+
+  workflow_dispatch:
+    inputs:
+      reference_branch:
+        description: 'Reference Branch'
+        default: develop
+        type: string
+
+jobs:
+  sonarqube:
+    name: SonarQube Scan
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - uses: actions/checkout@v4
+      with:
+        # Disable shallow clones for better analysis
+        fetch-depth: 0
+
+    - name: Get branch name
+      id: get_branch_name
+      run: echo branch_name=${GITHUB_REF#refs/heads/} >> $GITHUB_OUTPUT
+
+    - name: Configure SonarQube
+      run: .github/jobs/configure_sonarqube.sh
+      env:
+        SOURCE_BRANCH: ${{ steps.get_branch_name.outputs.branch_name }}
+        WD_REFERENCE_BRANCH: ${{ github.event.inputs.reference_branch }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+    - name: SonarQube Scan
+      uses: sonarsource/sonarqube-scan-action@master
+      env:
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+    - name: SonarQube Quality Gate check
+      id: sonarqube-quality-gate-check
+      uses: sonarsource/sonarqube-quality-gate-action@master
+      # Force to fail step after specific time.
+      timeout-minutes: 5
+      env:
+       SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
