@@ -55,7 +55,7 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 # The PyEmbedIngest tool reads 2 CESM files containing Soil Moisture (CLM file) and Sensible Heat Flux (CAM file), each composed of daily forecasts from
 # 1979 to 1983 and calculates TCI and generates a NETCDF file of the TCI. Raw CSV files containing FLUXNET station observations of latent heat flux (LE_F_MDS)
 # and soil water content at the shallowest level (SWC_F_MDS_1) are read using Python embedding, and TCI is computed.
-#
+# 
 # | **Valid Beg:** 1979-01-01 at 00z
 # | **Valid End:** 1979-01-01 at 00z
 # 
