@@ -9,12 +9,11 @@ User can change the variables to compute TCI
 
 Modified Nov 2023
 """
-
+import metcalcpy.diagnostics.land_surface as land_sfc
 import os
 import pandas as pd
 import sys
 import xarray as xr
-from tci_func import calc_tci
 
 # The script expects five arguments:
 # sfc_flux_file = Latent Heat Flux file (from CAM, CESM "community atmosphere model")
@@ -42,7 +41,6 @@ if season not in ['DJF','MAM','JJA','SON']:
   sys.exit(1) 
 
 print("Starting Terrestrial Coupling Index Calculation for: "+season)
-
 dsCLM = xr.open_dataset(fileCLM, decode_times=False)
 dsCAM = xr.open_dataset(fileCAM, decode_times=False)
 
@@ -51,7 +49,6 @@ dsCAM = xr.open_dataset(fileCAM, decode_times=False)
 # Thus, we extract the values from one Xarray object and attach it to the other.
 dsCAM[soil_varname] = xr.DataArray(dsCLM[soil_varname].values,dims=['time','lat','lon'],coords=dsCAM.coords)
 ds = dsCAM
-
 print("Finished reading CAM and CLM files with Xarray.")
 
 # Add a Pandas date range to subset by season
@@ -61,13 +58,12 @@ if not time_units.strip() in ['D','days','Days','DAYS']:
   sys.exit(1)
 else:
   ds['time'] = pd.date_range(start=reference_date, periods=ds.sizes['time'], freq='D')
-print(ds)
 
 # Group the dataset by season and subset to the season the user requested
 szn = ds.groupby('time.season')[season]
 
 # Use the shared coupling index function to compute the index
-couplingIndex = calc_tci(szn[soil_varname],szn[sfc_flux_varname])
+couplingIndex = land_sfc.calc_tci(szn[soil_varname],szn[sfc_flux_varname])
 
 # Prepare for MET
 # 1. Replace missing data with the MET missing data values
@@ -117,4 +113,4 @@ attrs = {'valid': time_var,
          'level': '10cm_soil_depth',
          'units': 'W/m2',
          'grid': grid_attrs}
-        
+
