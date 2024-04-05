@@ -27,6 +27,7 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 #
 # | **Data Source:** CESM - NSF NCAR Climate & Global Dynamics (CGD); FLUXNET2015 "SUBSET" Data Product: https://fluxnet.org/data/fluxnet2015-dataset/subset-data-product/
+#
 
 ##############################################################################
 # Python Dependencies
@@ -34,9 +35,9 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #
 # This use case requires the following Python dependencies::
 #
-# Xarray
-# Pandas
-# METcalcpy 3.0.0+
+# * Xarray
+# * Pandas
+# * METcalcpy 3.0.0+
 #
 
 ##############################################################################
@@ -47,6 +48,7 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 # The METplus PointStat processes the output of PyEmbedIngest and FLUXNET2015 dataset (using Python embedding), and outputs the requested line types.
 # Then the METplus PlotPointObs tool reads the output of PyEmbedIngest and FLUXNET2015 dataset and produce plots of TCI from CESM and point observations.
 # A custom loop runs through all the pre-defined seasons (DJF, MAM, JJA, SON) and runs PyEmbedIngest, PointStat, and PlotPointObs.
+#
 
 ##############################################################################
 # METplus Workflow
@@ -58,7 +60,7 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 # 
 # | **Valid Beg:** 1979-01-01 at 00z
 # | **Valid End:** 1979-01-01 at 00z
-# 
+#
 # PointStat is used to compare the two new fields (TCI calculated from CESM dataset and FLUXNET2015).
 # Finally, PlotPointObs is run to plot the CESM TCI overlaying the FLUXNET2015 point observations.
 #
