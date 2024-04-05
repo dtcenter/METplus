@@ -64,11 +64,11 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #
 # .. note::
 # 
-#   The CESM forecasts of TCI cover a time period prior to the availability of FLUXNET observations. Thus,
-#   this use case should be a demonstration of the capability to read CESM forecast data, raw FLUXNET observation data,
-#   and compute TCI rather than be used for scientific purposes. The use case is designed to enforce seasonal alignment,
-#   but it is not designed to enforce date/time alignment. In this casee, the CESM data cover 1979-1983, whereas the sample 
-#   FLUXNET observations cover varying time ranges depending on the site.
+#   The CESM forecasts cover a time period prior to the availability of FLUXNET observations. Thus,
+#   this use case should be considered a demonstration of the capability to read CESM forecast data, 
+#   raw FLUXNET observation data, and compute TCI, rather than a bonafide scientific application.
+#   The use case is designed to enforce seasonal alignment, but it is not designed to enforce date/time alignment. 
+#   In this case, the CESM data cover 1979-1983, whereas the sample FLUXNET observations cover varying time ranges depending on the site.
 #
 
 ##############################################################################
