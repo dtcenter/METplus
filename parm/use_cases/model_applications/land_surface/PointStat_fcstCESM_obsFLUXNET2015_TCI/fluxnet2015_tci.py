@@ -13,11 +13,20 @@ import os
 import sys
 import xarray as xr
 
+# Climate model data typically doesn't include leap days, so it is excluded from observations by default
+SKIP_LEAP=True
+
 # For the finer resolution data, what percentage at the finer resoultion should pass for the daily data?
 DAILY_QC_THRESH=0.8
-# TODO: This needs to be evaluated PER season, not on all days in all DJF's, for example
+
+# TODO: This needs to be evaluated PER season (i.e. DJF for 2018, DJF for 2019 ...) not on all days in all DJF's, for example
 MIN_DAYS_SEASON=80
+
+# For all seasons in the analysis period, how many total days per site?
 MIN_DAYS_SITE=450
+
+# Pattern to use for searching for fluxnet files
+FILENAME_PATTERN='AMF_*_DD_*.csv'
 
 def get_season_start_end(s,refdate):
   
@@ -77,10 +86,14 @@ if not os.path.exists(fndir):
   print("ERROR: FLUXNET INPUT DIRECTORY DOES NOT EXIST.")
   sys.exit(1)
 else:
-  fn_file_list = glob.glob(os.path.join(fndir,'FLX_*_DD_*.csv'))
+  fn_file_list = glob.glob(os.path.join(fndir,FILENAME_PATTERN))
   fn_stations = [os.path.basename(x).split('_')[1] for x in fn_file_list]
-  print("FOUND FLUXNET FILES FOR STATIONS:")
-  [print(x) for x in fn_stations]
+  if fn_stations == []:
+    print("ERROR! NO FLUXNET DATA FOUND MATCHING FILE PATTERN "+FILENAME_PATTERN)
+    sys.exit(1)
+  else:
+    print("FOUND FLUXNET FILES FOR STATIONS:")
+    [print(x) for x in fn_stations]
 
 # Loop over all stations we have data for and ensure we have the required metadata
 keep_stations = []
@@ -103,19 +116,22 @@ metdf['hgt'] = [0]*len(metdf)
 metdf['lat'] = [sd[sd['station']==s]['lat'].values[0] for s in fn_stations]
 metdf['lon'] = [sd[sd['station']==s]['lon'].values[0] for s in fn_stations]
 
+# Check and see what the length of metdf is here. If it is empty/zero, no FLUXNET data were found.
+if len(metdf)==0:
+  print("ERROR! FOUND NO FLUXNET DATA FOR FILENAME_PATTERN AND METADATA PROVIDED. "+\
+         "PLEASE RECONFIGURE AND TRY AGAIN.")
+  sys.exit(1)
+
 # TODO: DEBUG
 print(metdf)
 
-# Open each of the fluxnet files as a pandas dataframe
-# HH files have different time columns than DD files
-#dflist = [pd.read_csv(x,header=0,usecols=['TIMESTAMP_START','TIMESTAMP_END',sfc_flux_varname,soil_varname]) for x in fn_file_list]
+# Open each of the fluxnet files as a pandas dataframe. This will only read the TIMESTAMP and data variable columns.
+# This assumes "DD" files (daily) are used.
 dflist = [pd.read_csv(x,usecols=['TIMESTAMP',sfc_flux_varname,sfc_qc,soil_varname,soil_qc]) for x in fn_file_list]
 
 # Because the time record for each station is not the same, the dataframes cannot be merged.
 # Given the goal is a single value for each site for all dates that fall in a season,
 # the dataframes can remain separate.
-
-sample_df = []
 
 for df,stn in tuple(zip(dflist,fn_stations)):
 
@@ -143,6 +159,10 @@ for df,stn in tuple(zip(dflist,fn_stations)):
 
   # Subset by the requested season
   df = df[df['season']==season]
+
+  # If the season is DJF, remove leap days from February if requested
+  if season=='DJF' and SKIP_LEAP:
+    df = df[~((df.datetime.dt.month == 2) & (df.datetime.dt.day == 29))]
 
   # Get the start and end of the season of the first year
   start, end = get_season_start_end(season,df['datetime'].iloc[0])
@@ -184,16 +204,10 @@ for df,stn in tuple(zip(dflist,fn_stations)):
   # value for each day in the season, how do we get the seasonal value? Or should we average before
   # computingTCI?
   #df['tci'] = calc_tci(df[soil_varname],df[sfc_flux_varname])
-  sample_df.append(df)
   metdf.loc[metdf['sid']==stn,'obs'] = land_sfc.calc_tci(df[soil_varname],df[sfc_flux_varname])
 
   # Set the valid time as the first time in the record for this site
   metdf.loc[metdf['sid']==stn,'vld'] = pd.to_datetime(df['TIMESTAMP'].iloc[0],format='%Y%m%d').strftime('%Y%m%d_%H%M%S')
-
-print(sample_df)
-print(pd.concat(sample_df))
-pd.concat(sample_df).reset_index().to_csv('calc_tci_jja_pandas_input.csv',index=False)
-exit()
 
 # At this point, 'qc' should be '-9999' anywhere we discarded a site due to insufficient data above. 
 # Remove these here.
@@ -201,13 +215,6 @@ metdf = metdf[metdf['qc']=='NA']
 
 print(metdf)
 exit()
-
-# Add a 
-print(dflist)
-
-[print(pd.to_datetime(df['TIMESTAMP']).dt.season) for df in dflist]
-[print(df[soil_varname].max()) for df in dflist]
-exit()  
 
 # TODO:
 # 1. Glob input directory for FLUXNET2015 CSV files (one file per site)
