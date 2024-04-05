@@ -34,9 +34,9 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #
 # This use case requires the following Python dependencies::
 #
-# * Xarray
-# * Pandas
-# * METcalcpy
+# Xarray
+# Pandas
+# METcalcpy 3.0.0+
 #
 
 ##############################################################################
