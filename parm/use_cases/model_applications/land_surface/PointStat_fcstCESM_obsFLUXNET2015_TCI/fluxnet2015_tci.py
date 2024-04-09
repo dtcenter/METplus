@@ -16,17 +16,18 @@ import xarray as xr
 # Climate model data typically doesn't include leap days, so it is excluded from observations by default
 SKIP_LEAP=True
 
-# For the finer resolution data, what percentage at the finer resoultion should pass for the daily data?
+# For the finer resolution data, what fraction at the finer resoultion should pass QC to use the daily value?
 DAILY_QC_THRESH=0.8
 
-# TODO: This needs to be evaluated PER season (i.e. DJF for 2018, DJF for 2019 ...) not on all days in all DJF's, for example
-MIN_DAYS_SEASON=80
+# Number of days in an individual season to require
+MIN_DAYS_SEASON=1
 
-# For all seasons in the analysis period, how many total days per site?
-MIN_DAYS_SITE=450
+# For all seasons (i.e. DJF 2000 + DJF 2001 ... DJF XXXX) in the analysis period, how many total days per site?
+MIN_DAYS_SITE=10
 
 # Pattern to use for searching for fluxnet files
-FILENAME_PATTERN='AMF_*_DD_*.csv'
+#FILENAME_PATTERN='AMF_*_DD_*.csv'
+FILENAME_PATTERN='FLX_*_DD_*.csv'
 
 def get_season_start_end(s,refdate):
   
@@ -49,7 +50,7 @@ def get_season_start_end(s,refdate):
 
   return start, end
 
-# The script expects four arguments:
+# The script expects five arguments:
 # raw_fluxnet_dir = Full path to the directory where the raw FLUXNET files are stored
 # sfc_flux_varname = Field name in the raw_fluxnet_file to use when computing TCI
 # soil_varname = Field name in the raw_fluxnet_file to use when computing TCI
@@ -60,6 +61,7 @@ if len(sys.argv) < 5:
   print("sfc_flux_varname")
   print("soil_varname")
   print("season (DJF, MAM, JJA, or SON)")
+  print("fluxnet_station_metadata_file")
   sys.exit(1)
 
 # Store command line arguments
@@ -69,6 +71,7 @@ sfc_qc = sfc_flux_varname+'_QC'
 soil_varname = varCLM = sys.argv[3]
 soil_qc = soil_varname+'_QC'
 season = sys.argv[4]
+fluxnetmeta = sys.argv[5]
 if season not in ['DJF','MAM','JJA','SON']:
   print("ERROR: UNRECOGNIZED SEASON IN tci_from_cesm.py")
   sys.exit(1)
@@ -78,7 +81,11 @@ smap = {'DJF':[12,1,2],'MAM':[3,4,5],'JJA':[6,7,8],'SON':[9,10,11]}
 
 # Read station information from static file, because the raw FLUXNET data does not contain
 # required metadata like station latitude/longitude that is required by MET.
-sd = pd.read_csv('fluxnetstations.csv')
+if not os.path.exists(fluxnetmeta):
+  print("ERROR! FLUXNET METADATA FILE NOT PRESENT.")
+  sys.exit(1)
+else:
+  sd = pd.read_csv(fluxnetmeta)
 
 print("Starting Terrestrial Coupling Index Calculation for: "+season)
 # Locate files at the input directory
@@ -139,10 +146,10 @@ for df,stn in tuple(zip(dflist,fn_stations)):
 
   # Length of all data
   alldays = len(df)
+  print("NUMBER OF DAYS AT THIS SITE: %04d" % (alldays))
 
   # Only save data with quality above the threshold and reset the index
   df = df[(df[sfc_qc].astype('float')>=DAILY_QC_THRESH)&(df[soil_qc].astype('float')>=DAILY_QC_THRESH)].reset_index()
-
   print("INFO: DISCARDED %04d DAYS OF LOW QUALITY DATA FOR ALL SEASONS AT %s" % (int(alldays)-int(len(df)),stn))
  
   # Add datetime column
@@ -190,20 +197,16 @@ for df,stn in tuple(zip(dflist,fn_stations)):
     print("REMOVING "+season+" ENDING %s" % (year))
     df = df[(df['datetime']<start)|(df['datetime']>(end-datetime.timedelta(days=1)))]
 
-  # TODO: Double check each season has at least 80 days?
-  print("INFO: USING %04d DAYS OF DATA AT %s FOR %s" % (int(len(df)),stn,season))
-
   # Double check there are sufficient days at this site for all seasons
   if len(df)<MIN_DAYS_SITE:
     print("ERROR! INSUFFICIENT DATA FOR COMPUTING TCI AT "+stn+" FOR "+season)
     print("NDAYS = %04d" % (int(len(df))))
     metdf.loc[metdf['sid']==stn,'qc'] = -9999
     continue
+  else:
+    print("INFO: USING %04d DAYS OF DATA AT %s FOR %s" % (int(len(df)),stn,season))
 
-  # Compute TCI. We need to figure out how to aggregate TCI, since we will get a single TCI
-  # value for each day in the season, how do we get the seasonal value? Or should we average before
-  # computingTCI?
-  #df['tci'] = calc_tci(df[soil_varname],df[sfc_flux_varname])
+  # Compute TCI
   metdf.loc[metdf['sid']==stn,'obs'] = land_sfc.calc_tci(df[soil_varname],df[sfc_flux_varname])
 
   # Set the valid time as the first time in the record for this site
@@ -212,71 +215,8 @@ for df,stn in tuple(zip(dflist,fn_stations)):
 # At this point, 'qc' should be '-9999' anywhere we discarded a site due to insufficient data above. 
 # Remove these here.
 metdf = metdf[metdf['qc']=='NA']
-
 print(metdf)
-exit()
 
-# TODO:
-# 1. Glob input directory for FLUXNET2015 CSV files (one file per site)
-# 2. Determine site name from filename- what other metadata is in the file?
-# 3. Read fluxnet file with pandas
-# 4. Subset by vars/season in pandas
-# 5. Sanitize data in pandas (missing, dtypes)
-# 6. Call function to compute TCI
-# 7. Prepare data for MET
-
-obsfile = os.path.expandvars(sys.argv[1])
-season = sys.argv[2]
-
-f2015data         = xr.open_dataset(obsfile, decode_times=False)
-
-if season=="DJF":
-    ss = 0
-elif season=="MAM":
-    ss = 1
-elif season=="JJA":
-    ss = 2
-elif season=="SON":
-    ss = 3
-else:
-    print('Unrecognized season, please use DJF, MAM, JJA, SON')
-    exit()
-
-start_year=f2015data['Start year'].values.tolist()
-end_year=f2015data['End year'].values.tolist()
-vld=pd.to_datetime(start_year,format='%Y')
-vld=vld.strftime("%Y%m%d")
-vld=vld+ '_000000'
-
-sid=f2015data['Station'].values.tolist()
-print("Length :",len(sid))
-print("SID :",sid)
-
-lat=f2015data['Latitude'].values.tolist()
-lon=f2015data['Longitude'].values.tolist()
-# User can change the name of the variable below
-obs=f2015data['CI Sfc_SM Latent_Heat'].values.tolist()
-obs=np.array(obs)
-obs=obs[:,ss]
-
-
-#create dummy lists for the message type, elevation, variable name, level, height, and qc string
-#numpy is more efficient at creating the lists, but need to convert to Pythonic lists
-typ = np.full(len(sid),'ADPSFC').tolist()
-elv = np.full(len(sid),10).tolist()
-var = np.full(len(sid),'TCI').tolist()
-lvl = np.full(len(sid),10).tolist()
-hgt = np.zeros(len(sid),dtype=int).tolist()
-qc = np.full(len(sid),'NA').tolist()
-obs = np.where(np.isnan(obs), -9999, obs)
-obs = np.full(len(sid),obs).tolist()
-vld = np.full(len(sid),vld).tolist()
-
-l_tuple = list(zip(typ,sid,vld,lat,lon,elv,var,lvl,hgt,qc,obs))
-point_data = [list(ele) for ele in l_tuple]
-
-#print("Data Length:\t" + repr(len(point_data)))
-#print("Data Type:\t" + repr(type(point_data)))
-
-#print(" Point Data Shape: ",np.shape(point_data))
-print(" Point Data: ",point_data)
+# Convert to the object MET needs
+point_data = metdf.values.tolist()
+print(point_data)
