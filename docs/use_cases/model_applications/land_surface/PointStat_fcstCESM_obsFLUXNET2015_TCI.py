@@ -108,8 +108,9 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/cesm_tci.py
 #
 # The user can control all arguments to this script via the METplus use case configuration file using the following config entries
+#
 # .. list-table:: CESM Python Embedding Command Line Arguments
-#    :rwidths: 25 25 50
+#    :widths: 25 25 50
 #    :header-rows: 1
 #
 #    * - Name
@@ -136,8 +137,9 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/fluxnet2015_tci.py
 #
 # The user can control all command line arguments to this script via METplus config entries
+#
 # .. list-table:: FLUXNET Python Embedding Command Line Arguments
-#    :rwidths: 25 75
+#    :widths: 25 25 50
 #    :header-rows: 1
 #
 #    * - Name
@@ -157,8 +159,9 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #      - The absolute path to the fluxnetstations.csv metadata file included with the use case
 #
 # and for data filtering options via METplus config entries
+#
 # .. list-table:: FLUXNET Python Embedding Data Filtering Options
-#    :rwidths: 25 25 50
+#    :widths: 25 25 50
 #    :header-rows: 1
 #
 #    * - Name
