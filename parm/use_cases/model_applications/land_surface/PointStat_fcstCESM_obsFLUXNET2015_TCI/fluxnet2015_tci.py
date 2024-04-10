@@ -13,7 +13,9 @@ import os
 import sys
 import xarray as xr
 
-DEBUG=False
+# Extra debugging
+DEBUG = os.getenv('FLUXNET_DEBUG',False)
+DEBUG = bool(DEBUG)
 
 # Climate model data typically doesn't include leap days, so it is excluded from observations by default
 SKIP_LEAP = os.getenv('FLUXNET_SKIP_LEAP_DAYS',True)
