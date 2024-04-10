@@ -13,21 +13,28 @@ import os
 import sys
 import xarray as xr
 
+DEBUG=False
+
 # Climate model data typically doesn't include leap days, so it is excluded from observations by default
-SKIP_LEAP=True
+SKIP_LEAP = os.getenv('FLUXNET_SKIP_LEAP_DAYS',True)
+SKIP_LEAP = bool(SKIP_LEAP)
 
 # For the finer resolution data, what fraction at the finer resoultion should pass QC to use the daily value?
-DAILY_QC_THRESH=0.8
+DAILY_QC_THRESH = os.getenv('FLUXNET_HIGHRES_QC_THRESH',0.8)
+DAILY_QC_THRESH = float(DAILY_QC_THRESH)
 
 # Number of days in an individual season to require
-MIN_DAYS_SEASON=1
+MIN_DAYS_SEASON = os.getenv('FLUXNET_MIN_DAYS_PER_SEASON',1)
+MIN_DAYS_SEASON = int(MIN_DAYS_SEASON)
 
 # For all seasons (i.e. DJF 2000 + DJF 2001 ... DJF XXXX) in the analysis period, how many total days per site?
-MIN_DAYS_SITE=10
+MIN_DAYS_SITE = os.getenv('FLUXNET_MIN_DAYS_PER_SITE_ALL_SEASONS',10)
+MIN_DAYS_SITE = int(MIN_DAYS_SITE)
 
 # Pattern to use for searching for fluxnet files
-#FILENAME_PATTERN='AMF_*_DD_*.csv'
-FILENAME_PATTERN='FLX_*_DD_*.csv'
+#FILENAME_PATTERN = os.getenv('FLUXNET_RAW_FILENAME_PATTERN','AMF_*_DD_*.csv')
+FILENAME_PATTERN = os.getenv('FLUXNET_RAW_FILENAME_PATTERN','FLX_*_DD_*.csv')
+FILENAME_PATTERN = str(FILENAME_PATTERN)
 
 def get_season_start_end(s,refdate):
   
@@ -73,7 +80,7 @@ soil_qc = soil_varname+'_QC'
 season = sys.argv[4]
 fluxnetmeta = sys.argv[5]
 if season not in ['DJF','MAM','JJA','SON']:
-  print("ERROR: UNRECOGNIZED SEASON IN tci_from_cesm.py")
+  print("ERROR: UNRECOGNIZED SEASON IN fluxnet2015_tci.py")
   sys.exit(1)
 
 # Dictionary mapping of which months go with which seasons
@@ -99,29 +106,51 @@ else:
     print("ERROR! NO FLUXNET DATA FOUND MATCHING FILE PATTERN "+FILENAME_PATTERN)
     sys.exit(1)
   else:
-    print("FOUND FLUXNET FILES FOR STATIONS:")
-    [print(x) for x in fn_stations]
+    if DEBUG:
+      print("FOUND FLUXNET FILES FOR STATIONS:")
+      print(fn_stations)
+    else:
+      print("fluxnet2015_tci.py INFO: FOUND DATA FOR %04d FLUXNET SITES." % (int(len(fn_stations))))
+  
+  # Let's try using a dictionary where the key is the site name and the value is the site file
+  # in an effort to keep the site ID's and filenames aligned for now
+  file_info = {station:file for station,file in tuple(zip(fn_stations,fn_file_list))}
 
 # Loop over all stations we have data for and ensure we have the required metadata
-keep_stations = []
-for s in fn_stations:
-  if not sd['station'].astype('str').str.contains(s).any():
-    print("WARNING! EXCLUDING SITE %s, NO METADATA FOUND IN fluxnetstations.csv" % (s))
+# and required variables in the data file.
+# If we don't have the metadata or required variables,
+# remove the station and file from the analysis
+dflist = []
+discard = []
+allfiles = len(file_info)
+for station,stationfile in file_info.items():
+  if not sd['station'].astype('str').str.contains(station).any():
+    if DEBUG:
+      print("WARNING! EXCLUDING SITE %s, NO METADATA FOUND IN fluxnetstations.csv" % (station))
+    discard.append(station)
+  df = pd.read_csv(stationfile)
+  if (sfc_flux_varname in df.columns and soil_varname in df.columns and soil_qc in df.columns):
+    dflist.append(df)
   else:
-    keep_stations.append(s)
-fn_stations = keep_stations
+    if DEBUG:
+      print("WARNING! EXCLUDING SITE %s, MISSING ONE OR MORE REQUIRED VARIABLES." % (station))
+    discard.append(station)
+
+# Reset the file info
+final_files = {station:stationfile for station,stationfile in file_info.items() if station not in discard}
+print("fluxnet2015_tci.py INFO: DISCARDED %04d SITES DUE TO MISSING METADATA OR VARIABLES." % (int(allfiles-len(final_files))))
 
 # Create a MET dataframe
 metdf = pd.DataFrame(columns=['typ','sid','vld','lat','lon','elv','var','lvl','hgt','qc','obs'])
-metdf['sid'] = fn_stations
+metdf['sid'] = final_files.keys()
 metdf['typ'] = ['ADPSFC']*len(metdf)
 metdf['elv'] = [10]*len(metdf)
 metdf['lvl'] = [10]*len(metdf)
 metdf['var'] = ['TCI']*len(metdf)
 metdf['qc'] = ['NA']*len(metdf)
 metdf['hgt'] = [0]*len(metdf)
-metdf['lat'] = [sd[sd['station']==s]['lat'].values[0] for s in fn_stations]
-metdf['lon'] = [sd[sd['station']==s]['lon'].values[0] for s in fn_stations]
+metdf['lat'] = [sd[sd['station']==s]['lat'].values[0] for s in final_files.keys()]
+metdf['lon'] = [sd[sd['station']==s]['lon'].values[0] for s in final_files.keys()]
 
 # Check and see what the length of metdf is here. If it is empty/zero, no FLUXNET data were found.
 if len(metdf)==0:
@@ -129,28 +158,30 @@ if len(metdf)==0:
          "PLEASE RECONFIGURE AND TRY AGAIN.")
   sys.exit(1)
 
-# TODO: DEBUG
-print(metdf)
-
-# Open each of the fluxnet files as a pandas dataframe. This will only read the TIMESTAMP and data variable columns.
-# This assumes "DD" files (daily) are used.
-dflist = [pd.read_csv(x,usecols=['TIMESTAMP',sfc_flux_varname,sfc_qc,soil_varname,soil_qc]) for x in fn_file_list]
-
 # Because the time record for each station is not the same, the dataframes cannot be merged.
-# Given the goal is a single value for each site for all dates that fall in a season,
+# Since the goal is a single value for each site for all dates that fall in a season, 
 # the dataframes can remain separate.
+for df,stn in tuple(zip(dflist,final_files.keys())):
 
-for df,stn in tuple(zip(dflist,fn_stations)):
-
-  print("PROCESSING STATION: %s" % (stn))
+  if DEBUG:
+    print("PROCESSING STATION: %s" % (stn))
 
   # Length of all data
   alldays = len(df)
-  print("NUMBER OF DAYS AT THIS SITE: %04d" % (alldays))
+  if DEBUG:
+    print("NUMBER OF DAYS AT THIS SITE: %04d" % (alldays))
 
   # Only save data with quality above the threshold and reset the index
   df = df[(df[sfc_qc].astype('float')>=DAILY_QC_THRESH)&(df[soil_qc].astype('float')>=DAILY_QC_THRESH)].reset_index()
-  print("INFO: DISCARDED %04d DAYS OF LOW QUALITY DATA FOR ALL SEASONS AT %s" % (int(alldays)-int(len(df)),stn))
+  if DEBUG:
+    print("DISCARDED %04d DAYS OF LOW QUALITY DATA FOR ALL SEASONS AT %s" % (int(alldays)-int(len(df)),stn))
+
+  # Double check there's any valid data here
+  if not len(df) > 0:
+    if DEBUG:
+      print("WARNING! NO DATA LEFT AFTER QC FILTERING.")
+    metdf.loc[metdf['sid']==stn,'qc'] = '-9999'
+    continue
  
   # Add datetime column
   df['datetime'] = pd.to_datetime(df['TIMESTAMP'],format='%Y%m%d')
@@ -166,6 +197,13 @@ for df,stn in tuple(zip(dflist,fn_stations)):
 
   # Subset by the requested season
   df = df[df['season']==season]
+  
+  # Double check there's any valid data here
+  if not len(df) > 0:
+    if DEBUG:
+      print("WARNING! NO DATA FOR REQUESTED SEASON.")
+    metdf.loc[metdf['sid']==stn,'qc'] = '-9999'
+    continue
 
   # If the season is DJF, remove leap days from February if requested
   if season=='DJF' and SKIP_LEAP:
@@ -181,7 +219,8 @@ for df,stn in tuple(zip(dflist,fn_stations)):
   while start <= limit:
     year = end.strftime('%Y')
     ndays = len(df[(df['datetime']>=start) & (df['datetime']<=(end-datetime.timedelta(days=1)))])
-    print("FOR "+season+" ENDING %s FOUND %04d DAYS." % (year,ndays))
+    if DEBUG:
+      print("FOR "+season+" ENDING %s FOUND %04d DAYS." % (year,ndays))
    
     # Store the season ending years where there are not enough days 
     if ndays < MIN_DAYS_SEASON:
@@ -194,17 +233,20 @@ for df,stn in tuple(zip(dflist,fn_stations)):
   # Now actually remove the data we don't want to use
   for year in badyrs:
     start, end = get_season_start_end(season,datetime.datetime(int(year),1,1,0,0,0))
-    print("REMOVING "+season+" ENDING %s" % (year))
+    if DEBUG:
+      print("REMOVING "+season+" ENDING %s" % (year))
     df = df[(df['datetime']<start)|(df['datetime']>(end-datetime.timedelta(days=1)))]
 
   # Double check there are sufficient days at this site for all seasons
   if len(df)<MIN_DAYS_SITE:
-    print("ERROR! INSUFFICIENT DATA FOR COMPUTING TCI AT "+stn+" FOR "+season)
-    print("NDAYS = %04d" % (int(len(df))))
-    metdf.loc[metdf['sid']==stn,'qc'] = -9999
+    if DEBUG:
+      print("ERROR! INSUFFICIENT DATA FOR COMPUTING TCI AT "+stn+" FOR "+season)
+      print("NDAYS = %04d" % (int(len(df))))
+    metdf.loc[metdf['sid']==stn,'qc'] = '-9999'
     continue
   else:
-    print("INFO: USING %04d DAYS OF DATA AT %s FOR %s" % (int(len(df)),stn,season))
+    if DEBUG:
+      print("USING %04d DAYS OF DATA AT %s FOR %s" % (int(len(df)),stn,season))
 
   # Compute TCI
   metdf.loc[metdf['sid']==stn,'obs'] = land_sfc.calc_tci(df[soil_varname],df[sfc_flux_varname])
@@ -214,9 +256,10 @@ for df,stn in tuple(zip(dflist,fn_stations)):
 
 # At this point, 'qc' should be '-9999' anywhere we discarded a site due to insufficient data above. 
 # Remove these here.
+print("fluxnet2015_tci.py INFO: REMOVING %04d SITES DUE TO LACK OF DATA." % (int(len(metdf[metdf['qc']=='-9999']))))
 metdf = metdf[metdf['qc']=='NA']
-print(metdf)
+#print(metdf)
 
 # Convert to the object MET needs
 point_data = metdf.values.tolist()
-print(point_data)
+#print(point_data)
