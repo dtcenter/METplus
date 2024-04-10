@@ -17,7 +17,12 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 # This use case ingests two CESM (CAM and CLM) files and raw FLUXNET2015 data.
 # The use case calculates the Terrestrial Coupling Index (TCI) from the CESM forecasts and FLUXNET observations.
 # Utilizing Python embedding, this use case taps into a new vital observation dataset and compares it to CESM forecasts of TCI. 
-# Finally, it will generate plots of model forecast TCI overlaid with TCI observations at FLUXNET sites..
+# Finally, it will generate plots of model forecast TCI overlaid with TCI observations at FLUXNET sites.
+#
+# The reference for the Terrestrial Coupling Index calculation is as follows:
+#
+# Dirmeyer, P. A., 2011: The terrestrial segment of soil moisture-climate coupling. *Geophys. Res. Lett.*, **38**, L16702, doi: 10.1029/2011GL048268.
+#
 
 ##############################################################################
 # Datasets
@@ -106,94 +111,105 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 # ----------------
 #
 # This use case uses a Python embedding script to read both the forecast and observation data, in order to compute TCI,
-# which is the diagnostic that is being verified by MET using PointStat. The CESM forecast data is read using
+# which is the diagnostic that is being verified by MET using PointStat. The CESM forecast data is read using:
 #
 # parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/cesm_tci.py
 #
 # .. highlight:: python
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/cesm_tci.py
 #
-# The user can control all arguments to this script via the METplus use case configuration file using the following config entries
+# The user can control all arguments to this script via the METplus use case configuration file using the following config entries:
 #
-# .. list-table:: CESM Python Embedding Command Line Arguments
-#    :widths: 25 25 50
-#    :header-rows: 1
+# .. glossary::
+# 
+#    CESM_CAM_VAR
+#      The CESM Community Atmosphere Model variable to use for computing TCI
 #
-#    * - Name
-#      - Default
-#      - Description
-#    * - CESM_CAM_VAR
-#      - LHFLX
-#      - The Community Atmosphere Model variable to use
-#    * - CESM_CLM_VAR
-#      - SOILWATER_10CM
-#      - The Community Land Model variable to use
-#    * - CESM_CAM_FILE_PATH
-#      - 
-#      - The absolute path to the Community Atmosphere Model netcdf file
-#    * - CESM_CLM_FILE_PATH
-#      - 
-#      - The absolute path to the Community Land Model netcdf file
+#      | *Default:* LHFLX
 #
-# The raw FLUXNET2015 SUBSET data are read using
+#    CESM_CLM_VAR
+#      The CESM Community Land Model variable to use for computing TCI
+#
+#      | *Default:* SOILWATER_10CM
+#
+#    CESM_CAM_FILE_PATH
+#      The absolute path to the CESM Community Atmosphere Model netcdf file
+#
+#      | *Default:*
+#
+#    CESM_CLM_FILE_PATH
+#      The absolute path to the CESM Community Land Model netcdf file
+#
+#      | *Default:*
+#
+# The raw FLUXNET2015 SUBSET data are read using:
 #
 # parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/fluxnet2015_tci.py
 #
 # .. highlight:: python
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/fluxnet2015_tci.py
 #
-# The user can control all command line arguments to this script via METplus config entries
+# The user can control all command line arguments to this script via METplus config entries:
 #
-# .. list-table:: FLUXNET Python Embedding Command Line Arguments
-#    :widths: 25 25 50
-#    :header-rows: 1
+# .. glossary::
 #
-#    * - Name
-#      - Default
-#      - Description
-#    * - FLUXNET_DATA_DIR
-#      -
-#      - The directory containing raw FLUXNET CSV files
-#    * - FLUXNET_LAT_HEAT_VAR
-#      - LE_F_MDS
-#      - The latent heat variable to use from FLUXNET to compute TCI
-#    * - FLUXNET_SOIL_MOIST_VAR
-#      - SWC_F_MDS_1
-#      - The soil moisture variable to use from FLUXNET to compute TCI
-#    * - FLUXNET_OBS_METADATA_FILE
-#      -
-#      - The absolute path to the fluxnetstations.csv metadata file included with the use case
+#    FLUXNET_DATA_DIR
+#      The directory containing raw FLUXNET CSV files
 #
-# and for data filtering options via METplus config entries
+#      | *Default:*
 #
-# .. list-table:: FLUXNET Python Embedding Data Filtering Options
-#    :widths: 25 25 50
-#    :header-rows: 1
+#    FLUXNET_LAT_HEAT_VAR
+#      The FLUXNET surface latent heat flux variable name to use for computing TCI
 #
-#    * - Name
-#      - Default
-#      - Description
-#    * - FLUXNET_SKIP_LEAP_DAYS
-#      - True
-#      - Skip 29 February days FLUXNET observations
-#    * - FLUXNET_HIGHRES_QC_THRESH
-#      - 0.8
-#      - Fraction of higher-resolution data that passed quality control to include this day
-#    * - FLUXNET_MIN_DAYS_PER_SEASON
-#      - 1
-#      - Minimum number of days to include in individual seasons at each site
-#    * - FLUXNET_MIN_DAYS_PER_SITE
-#      - 10
-#      - Minimum number of days for all seasons at each site
-#    * - FLUXNET_RAW_FILENAME_PATTERN
-#      - FLX_*_DD_*.csv
-#      - A filename pattern matching the filename template of the raw FLUXNET CSV files
-#    * - FLUXNET_DEBUG
-#      - False
-#      - Turn on debugging print statements
+#      | *Default:* LE_F_MDS
 #
-# Both of the above Python embedding scripts compute TCI using the `calc_tci()` function in METcalcpy. See the METcalcpy 
-# documentation for more information
+#    FLUXNET_SOIL_MOIST_VAR
+#      The FLUXNET soil moisture variable name to use for computing TCI
+#
+#      | *Default:* SWC_F_MDS_1
+#
+#    FLUXNET_OBS_METADATA_FILE
+#      The absolute path to the fluxnetstations.csv metadata file included with the use case
+#
+#      | *Default:*
+#
+# and for data filtering options, via METplus config entries:
+#
+# .. glossary::
+#
+#    FLUXNET_SKIP_LEAP_DAYS
+#      Skip FLUXNET observations from 29 February days
+#
+#      | *Default:* True
+#
+#    FLUXNET_HIGHRES_QC_THRESH
+#      The fraction of higher temporal resolution FLUXNET data required to have
+#      passed quality control in order to use the daily data.
+#
+#      | *Default:* 0.8
+#
+#    FLUXNET_MIN_DAYS_PER_SEASON
+#      The minimum number of days to include in individual seasons at each site
+#
+#      | *Default:* 1
+#
+#    FLUXNET_MIN_DAYS_PER_SITE
+#      The minimum number of days for all seasons at each site
+#
+#      | *Default:* 10
+#
+#    FLUXNET_RAW_FILENAME_PATTERN
+#      A filename pattern matching the template of the raw FLUXNET CSV files
+#
+#      | *Default:* FLX_*_DD_*.csv
+#
+#    FLUXNET_DEBUG
+#      Turn on additional print statements from the Python embedding script
+#
+#      | *Default:* False
+#
+# Both of the above Python embedding scripts compute TCI using the ``calc_tci()`` function in METcalcpy. See the METcalcpy 
+# documentation for more information: https://metcalcpy.readthedocs.io/en/latest/index.html.
 #
 
 ##############################################################################
@@ -206,6 +222,7 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #    run_metplus.py /path/to/METplus/parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
+#
 
 ##############################################################################
 # Expected Output
