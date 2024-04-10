@@ -6,6 +6,12 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 
 """
 ##############################################################################
+# .. contents::
+#    :depth: 1
+#    :local:
+#    :backlinks: none
+
+##############################################################################
 # Scientific Objective
 # --------------------
 # This use case ingests two CESM (CAM and CLM) files and raw FLUXNET2015 data.
