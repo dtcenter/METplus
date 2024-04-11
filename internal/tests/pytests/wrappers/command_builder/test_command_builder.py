@@ -7,6 +7,7 @@ import os
 import datetime
 import metplus.wrappers.command_builder as cb_wrapper
 from metplus.wrappers.command_builder import CommandBuilder
+import metplus.util.run_util
 from metplus.util import ti_calculate, add_field_info_to_time_info
 
 
@@ -145,7 +146,7 @@ def test_find_obs_offset(metplus_config, offsets, expected_file, offset_seconds)
 
     pcw.c_dict['OFFSETS'] = offsets
     pcw.c_dict['OBS_INPUT_DIR'] = get_data_dir(pcw.config)
-    pcw.c_dict['OBS_INPUT_TEMPLATE'] = "{da_init?fmt=%2H}z.prepbufr.tm{offset?fmt=%2H}.{da_init?fmt=%Y%m%d}"
+    pcw.c_dict['OBS_INPUT_TEMPLATE'] = "{da_init?fmt=%H}z.prepbufr.tm{offset?fmt=%2H}.{da_init?fmt=%Y%m%d}"
     add_field_info_to_time_info(time_info, var_info)
     obs_file, time_info = pcw.find_obs_offset(time_info)
 
@@ -1097,7 +1098,7 @@ def test_run_command_error(metplus_config, log_metplus):
         config.set('config', 'LOG_METPLUS', '') 
 
     cb = CommandBuilder(metplus_config)
-    with mock.patch.object(cb.cmdrunner, 'run_cmd', return_value=('ERR',None)): 
+    with mock.patch.object(cb, 'run_cmd', return_value=-1):
         actual = cb.run_command('foo')
     assert not actual 
     assert _in_last_err('Command returned a non-zero return code: foo', cb.logger)
@@ -1198,16 +1199,19 @@ def test_errors_and_defaults(metplus_config):
     assert actual == False
     assert _in_last_err('Could not generate command', cb.logger)
 
-    # test python embedding error
-    with mock.patch.object(cb_wrapper, 'is_python_script', return_value=True):
-        actual = cb.check_for_python_embedding('FCST',{'fcst_name':'pyEmbed'})
-    assert actual == None
-    assert _in_last_err('must be set to a valid Python Embedding type', cb.logger)
-
-    cb.c_dict['FCST_INPUT_DATATYPE'] = 'PYTHON_XARRAY'
+    # test python embedding check
     with mock.patch.object(cb_wrapper, 'is_python_script', return_value=True):
         actual = cb.check_for_python_embedding('FCST',{'fcst_name':'pyEmbed'})
     assert actual == 'python_embedding'
+
+    cb.env_var_dict['METPLUS_FCST_FILE_TYPE'] = "PYTHON_NUMPY"
+    with mock.patch.object(cb_wrapper, 'is_python_script', return_value=True):
+        actual = cb.check_for_python_embedding('FCST',{'fcst_name':'pyEmbed'})
+    assert actual == 'python_embedding'
+
+    with mock.patch.object(cb_wrapper, 'is_python_script', return_value=False):
+        actual = cb.check_for_python_embedding('FCST',{'fcst_name':'pyEmbed'})
+    assert actual == 'pyEmbed'
 
     # test field_info not set
     cb.c_dict['CURRENT_VAR_INFO'] = None

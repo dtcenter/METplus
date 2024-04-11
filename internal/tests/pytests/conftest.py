@@ -82,8 +82,9 @@ def metplus_config(request):
     function arguments and set a variable called config to metplus_config, e.g.
     config = metplus_config.
 
-    This fixture also replaces config.logger with a MagicMock object. This
-    allows tests to assert the logger was called with a specific message.
+    This fixture wraps config.logger with a MagicMock object, allowing tests to
+    assert the logger was called with a specific message. Logged output is still
+    written to ${METPLUS_TEST_OUTPUT_BASE}/test_output/{RUN_ID}/logs/metplus.log 
 
     e.g.
     def test_example(metplus_config):
@@ -100,7 +101,7 @@ def metplus_config(request):
 
     # Set mock logger
     old_logger = config.logger
-    config.logger = mock.MagicMock()
+    config.logger = mock.MagicMock(wraps=old_logger)
 
     yield config
     
@@ -112,6 +113,14 @@ def metplus_config(request):
                 if len(msg.args) != 0]
         print("Tests raised the following errors:")
         print("\n".join(err_msgs))
+    if config.logger.warning.call_args_list:
+        warn_msgs = [
+                str(msg.args[0])
+                for msg
+                in config.logger.warning.call_args_list
+                if len(msg.args) != 0]
+        print("\nTests raised the following warnings:")
+        print("\n".join(warn_msgs))
     config.logger = old_logger
     # don't remove output base if test fails
     if request.node.rep_call.failed:
@@ -136,7 +145,7 @@ def metplus_config_files():
         script_dir = os.path.dirname(__file__)
         minimum_conf = os.path.join(script_dir, "minimum_pytest.conf")
         args = extra_configs.copy()
-        args.append(minimum_conf)
+        args.insert(0, minimum_conf)
         config = config_metplus.setup(args)
         return config
 
@@ -184,3 +193,16 @@ def make_nc(tmp_path, lon, lat, z, data, variable='Temp', file_name='fake.nc'):
         temp[0, :, :, :] = data
 
     return file_name
+
+
+@pytest.fixture(scope="function")
+def get_test_data_dir():
+    """!Get path to directory containing test data.
+    """
+    def get_test_data_path(subdir):
+        internal_tests_dir = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), os.pardir)
+        )
+        return os.path.join(internal_tests_dir, 'data', subdir)
+
+    return get_test_data_path

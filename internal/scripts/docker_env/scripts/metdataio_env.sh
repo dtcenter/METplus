@@ -21,8 +21,6 @@ ENV_NAME=metdataio.${METPLUS_VERSION}
 # Conda environment to use as base for new environment
 BASE_ENV=metplus_base.${METPLUS_VERSION}
 
-conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
+mamba create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 
-conda install -y --name ${ENV_NAME} -c conda-forge lxml==4.9.1
-conda install -y --name ${ENV_NAME} -c conda-forge pymysql==1.0.2
-conda install -y --name ${ENV_NAME} -c conda-forge pandas==1.5.1
+mamba install -y --name ${ENV_NAME} -c conda-forge lxml==4.9.1 pymysql==1.0.2 pandas==1.5.1

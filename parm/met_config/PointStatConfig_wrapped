@@ -49,11 +49,13 @@ rank_corr_flag = FALSE;
 //
 fcst = {
   ${METPLUS_FCST_FILE_TYPE}
+  //field = [
   ${METPLUS_FCST_FIELD}
 }
 
 obs = {
   ${METPLUS_OBS_FILE_TYPE}
+  //field = [
   ${METPLUS_OBS_FIELD}
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -72,9 +74,14 @@ ${METPLUS_OBS_QUALITY_INC}
 //obs_quality_exc =
 ${METPLUS_OBS_QUALITY_EXC}
 
-duplicate_flag = NONE;
-obs_summary    = NONE;
-obs_perc_value = 50;
+//duplicate_flag =
+${METPLUS_DUPLICATE_FLAG}
+
+//obs_summary =
+${METPLUS_OBS_SUMMARY}
+
+//obs_perc_value =
+${METPLUS_OBS_PERC_VALUE}
 
 //
 // Mapping of message type group name to comma-separated list of values.
@@ -99,6 +106,29 @@ ${METPLUS_CLIMO_STDEV_DICT}
 //
 //climo_cdf = {
 ${METPLUS_CLIMO_CDF_DICT}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Land/Sea mask
+// For LANDSF message types, only use forecast grid points where land = TRUE.
+// For WATERSF message types, only use forecast grid points where land = FALSE.
+// land_mask.flag may be set separately in each "obs.field" entry.
+//
+//land_mask = {
+${METPLUS_LAND_MASK_DICT}
+
+//
+// Topography
+// For SURFACE message types, only use observations where the topo - station
+// elevation difference meets the use_obs_thresh threshold.
+// For the observations kept, when interpolating forecast data to the
+// observation location, only use forecast grid points where the topo - station
+// difference meets the interp_fcst_thresh threshold.
+// topo_mask.flag may be set separately in each "obs.field" entry.
+//
+//topo_mask = {
+${METPLUS_TOPO_MASK_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 

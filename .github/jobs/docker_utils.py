@@ -39,7 +39,7 @@ def get_dockerhub_url(branch_name):
 def docker_get_volumes_last_updated(current_branch):
     import requests
     dockerhub_url = get_dockerhub_url(current_branch)
-    dockerhub_request = requests.get(dockerhub_url)
+    dockerhub_request = requests.get(dockerhub_url, timeout=60)
     if dockerhub_request.status_code != 200:
         print(f"Could not find DockerHub URL: {dockerhub_url}")
         return None
@@ -61,7 +61,7 @@ def docker_get_volumes_last_updated(current_branch):
                 volumes_last_updated[repo_name] = repo['last_updated']
         if not page['next']:
             break
-        page = requests.get(page['next']).json()
+        page = requests.get(page['next'], timeout=60).json()
         attempts += 1
 
     return volumes_last_updated

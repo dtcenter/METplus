@@ -17,8 +17,8 @@ def ascii2nc_wrapper(metplus_config, config_overrides=None):
         'LOOP_BY': 'VALID',
         'VALID_TIME_FMT': '%Y%m%d%H',
         'VALID_BEG': '2010010112',
-        'VALID_END': '2010010112',
-        'VALID_INCREMENT': '1M',
+        'VALID_END': '2010010118',
+        'VALID_INCREMENT': '6H',
         'ASCII2NC_INPUT_TEMPLATE': '{INPUT_BASE}/met_test/data/sample_obs/ascii/precip24_{valid?fmt=%Y%m%d%H}.ascii',
         'ASCII2NC_OUTPUT_TEMPLATE': '{OUTPUT_BASE}/ascii2nc/precip24_{valid?fmt=%Y%m%d%H}.nc',
         'ASCII2NC_CONFIG_FILE': '{PARM_BASE}/met_config/Ascii2NcConfig_wrapped',
@@ -45,6 +45,36 @@ def ascii2nc_wrapper(metplus_config, config_overrides=None):
         config.set(instance, key, value)
 
     return ASCII2NCWrapper(config, instance=instance)
+
+
+@pytest.mark.parametrize(
+    'missing, run, thresh, errors, allow_missing', [
+        (1, 3, 0.5, 0, True),
+        (1, 3, 0.8, 1, True),
+        (1, 3, 0.5, 1, False),
+    ]
+)
+@pytest.mark.wrapper
+def test_ascii2nc_missing_inputs(metplus_config, get_test_data_dir,
+                                 missing, run, thresh, errors, allow_missing):
+    config_overrides = {
+        'INPUT_MUST_EXIST': True,
+        'ASCII2NC_ALLOW_MISSING_INPUTS': allow_missing,
+        'ASCII2NC_INPUT_THRESH': thresh,
+        'ASCII2NC_INPUT_TEMPLATE': os.path.join(get_test_data_dir('ascii'), 'precip24_{valid?fmt=%Y%m%d%H}.ascii'),
+        'VALID_END': '2010010200',
+    }
+    wrapper = ascii2nc_wrapper(metplus_config, config_overrides)
+    assert wrapper.isOK
+
+    all_cmds = wrapper.run_all_times()
+    for cmd, _ in all_cmds:
+        print(cmd)
+
+    print(f'missing: {wrapper.missing_input_count} / {wrapper.run_count}, errors: {wrapper.errors}')
+    assert wrapper.missing_input_count == missing
+    assert wrapper.run_count == run
+    assert wrapper.errors == errors
 
 
 @pytest.mark.parametrize(
@@ -163,11 +193,13 @@ def test_ascii2nc_wrapper(metplus_config, config_overrides,
 
     input_path = wrapper.config.getraw('config', 'ASCII2NC_INPUT_TEMPLATE')
     input_dir = os.path.dirname(input_path)
-    input_file = 'precip24_2010010112.ascii'
+    input_file1 = 'precip24_2010010112.ascii'
+    input_file2 = 'precip24_2010010118.ascii'
 
     output_path = wrapper.config.getraw('config', 'ASCII2NC_OUTPUT_TEMPLATE')
     output_dir = os.path.dirname(output_path)
-    output_file = 'precip24_2010010112.nc'
+    output_file1 = 'precip24_2010010112.nc'
+    output_file2 = 'precip24_2010010118.nc'
 
     all_commands = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_commands}")
@@ -177,13 +209,17 @@ def test_ascii2nc_wrapper(metplus_config, config_overrides,
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
     config_file = wrapper.c_dict.get('CONFIG_FILE')
 
-    expected_cmd = (f"{app_path} "
-                    f"{input_dir}/{input_file} "
-                    f"{output_dir}/{output_file} "
-                    f"-config {config_file} "
-                    f"{verbosity}")
+    expected_cmds = [
+        (f"{app_path} {input_dir}/{input_file1} {output_dir}/{output_file1} "
+         f"-config {config_file} {verbosity}"),
+        (f"{app_path} {input_dir}/{input_file2} {output_dir}/{output_file2} "
+         f"-config {config_file} {verbosity}"),
+    ]
 
-    assert all_commands[0][0] == expected_cmd
+    assert len(all_commands) == len(expected_cmds)
+    for (cmd, _), expected_cmd in zip(all_commands, expected_cmds):
+        # ensure commands are generated as expected
+        assert cmd == expected_cmd
 
     env_vars = all_commands[0][1]
 

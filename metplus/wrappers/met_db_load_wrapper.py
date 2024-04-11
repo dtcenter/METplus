@@ -146,7 +146,7 @@ class METDbLoadWrapper(RuntimeFreqWrapper):
         """! Traverse through files under input path and find all directories
         that contain .stat, .tcst, mode*.txt, and mtd*.txt files.
 
-        @param input_path top level directory to search
+        @param input_paths top level directory to search
         @returns list of unique directories that contain stat files
         """
         stat_dirs = set()

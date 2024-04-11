@@ -89,6 +89,7 @@ class MODEWrapper(CompareGriddedWrapper):
         'OBS_MERGE_THRESH',
         'FCST_MERGE_FLAG',
         'OBS_MERGE_FLAG',
+        'OUTPUT_PREFIX',
     ]
 
     WEIGHTS = {
@@ -133,9 +134,9 @@ class MODEWrapper(CompareGriddedWrapper):
                                      self.app_name)
         super().__init__(config, instance=instance)
 
-    def add_merge_config_file(self, time_info):
+    def set_command_line_arguments(self, time_info):
         """!If merge config file is defined, add it to the command"""
-        if self.c_dict['MERGE_CONFIG_FILE'] != '':
+        if self.c_dict['MERGE_CONFIG_FILE']:
             merge_config_file = do_string_sub(self.c_dict['MERGE_CONFIG_FILE'],
                                               **time_info)
             self.args.append('-config_merge {}'.format(merge_config_file))
@@ -443,39 +444,16 @@ class MODEWrapper(CompareGriddedWrapper):
         self.add_met_config(name='multivar_intensity_flag', data_type='list',
                             extra_args={'remove_quotes': True,
                                         'uppercase': True})
-
+        # skip RuntimeFreq input file logic - remove once integrated
+        c_dict['FIND_FILES'] = False
         return c_dict
 
     def run_at_time_one_field(self, time_info, var_info):
-        """! Runs mode instances for a given time and forecast lead combination
-              Overrides run_at_time_one_field function in compare_gridded_wrapper.py
-              Args:
-                @param time_info dictionary containing timing information
-                @param var_info object containing variable information
-        """
-        # get model to compare
-        model_path = self.find_model(time_info)
-        if model_path is None:
-            return
-
-        # get observation to compare
-        obs_path = self.find_obs(time_info)
-        if obs_path is None:
-            return
-
-        # loop over all variables and levels (and probability thresholds) and
-        # call the app for each
-        self.process_fields_one_thresh(time_info, var_info, model_path,
-                                       obs_path)
-
-    def process_fields_one_thresh(self, time_info, var_info, model_path,
-                                  obs_path):
-        """! For each threshold, set up environment variables and run mode
+        """! Runs mode once for each fcst/obs threshold.
+         Overrides run_at_time_one_field function in compare_gridded_wrapper.py
 
             @param time_info dictionary containing timing information
             @param var_info object containing variable information
-            @param model_path forecast file
-            @param obs_path observation file
         """
         # if no thresholds are specified, run once
         fcst_thresh_list = []
@@ -505,20 +483,11 @@ class MODEWrapper(CompareGriddedWrapper):
 
         # loop through fields and call MODE
         for fcst_field, obs_field in zip(fcst_field_list, obs_field_list):
-            self.clear()
-            self.format_field('FCST',
-                              fcst_field,
-                              is_list=False)
-            self.format_field('OBS',
-                              obs_field,
-                              is_list=False)
-
-            self.param = do_string_sub(self.c_dict['CONFIG_FILE'],
-                                       **time_info)
-
-            self.infiles.append(model_path)
-            self.infiles.append(obs_path)
-            self.add_merge_config_file(time_info)
+            self.clear(clear_input_files=False)
+            self.format_field('FCST', fcst_field, is_list=False)
+            self.format_field('OBS', obs_field, is_list=False)
+            self.param = do_string_sub(self.c_dict['CONFIG_FILE'], **time_info)
+            self.set_command_line_arguments(time_info)
             self.set_current_field_config(var_info)
             self.set_environment_variables(time_info)
             if not self.find_and_check_output_file(time_info,

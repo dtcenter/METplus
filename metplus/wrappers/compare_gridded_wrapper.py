@@ -43,12 +43,10 @@ that reformat gridded data
             which config variables are used in the wrapper"""
         c_dict = super().create_c_dict()
 
-        self.add_met_config(name='model',
-                            data_type='string',
+        self.add_met_config(name='model', data_type='string',
                             metplus_configs=['MODEL'])
 
-        self.add_met_config(name='obtype',
-                            data_type='string',
+        self.add_met_config(name='obtype', data_type='string',
                             metplus_configs=['OBTYPE'])
 
         # read probabilistic variables for FCST and OBS fields
@@ -94,11 +92,10 @@ that reformat gridded data
             @param time_info dictionary containing timing information
         """
         var_list = sub_var_list(self.c_dict['VAR_LIST_TEMP'], time_info)
-
         if not var_list and not self.c_dict.get('VAR_LIST_OPTIONAL', False):
-            self.log_error('No input fields were specified. You must set '
-                           f'[FCST/OBS]_VAR<n>_[NAME/LEVELS].')
-            return None
+            self.log_error('No input fields were specified.'
+                           ' [FCST/OBS]_VAR<n>_NAME must be set.')
+            return
 
         if self.c_dict.get('ONCE_PER_FIELD', False):
             # loop over all fields and levels (and probability thresholds) and
@@ -107,6 +104,10 @@ that reformat gridded data
                 self.clear()
                 self.c_dict['CURRENT_VAR_INFO'] = var_info
                 add_field_info_to_time_info(time_info, var_info)
+                self.run_count += 1
+                if not self.find_input_files(time_info):
+                    self.missing_input_count += 1
+                    continue
                 self.run_at_time_one_field(time_info, var_info)
         else:
             # loop over all variables and all them to the field list,
@@ -116,7 +117,50 @@ that reformat gridded data
                 add_field_info_to_time_info(time_info, var_list[0])
 
             self.clear()
+            self.run_count += 1
+            if not self.find_input_files(time_info):
+                self.missing_input_count += 1
+                return
             self.run_at_time_all_fields(time_info)
+
+    def find_input_files(self, time_info):
+        # get model from first var to compare
+        model_path = self.find_model(time_info,
+                                     mandatory=True,
+                                     return_list=True)
+        if not model_path:
+            return False
+
+        # if there is more than 1 file, create file list file
+        if len(model_path) > 1:
+            list_filename = (f"{time_info['init_fmt']}_"
+                             f"{time_info['lead_hours']}_"
+                             f"{self.app_name}_fcst.txt")
+            model_path = self.write_list_file(list_filename, model_path)
+        else:
+            model_path = model_path[0]
+
+        self.infiles.append(model_path)
+
+        # get observation to from first var compare
+        obs_path, time_info = self.find_obs_offset(time_info,
+                                                   mandatory=True,
+                                                   return_list=True)
+        if obs_path is None:
+            return False
+
+        # if there is more than 1 file, create file list file
+        if len(obs_path) > 1:
+            list_filename = (f"{time_info['init_fmt']}_"
+                             f"{time_info['lead_hours']}_"
+                             f"{self.app_name}_obs.txt")
+            obs_path = self.write_list_file(list_filename, obs_path)
+        else:
+            obs_path = obs_path[0]
+
+        self.infiles.append(obs_path)
+
+        return True
 
     def run_at_time_one_field(self, time_info, var_info):
         """! Build MET command for a single field for a given
@@ -125,24 +169,6 @@ that reformat gridded data
                 @param time_info dictionary containing timing information
                 @param var_info object containing variable information
         """
-
-        # get model to compare, return None if not found
-        model_path = self.find_model(time_info,
-                                     mandatory=True,
-                                     return_list=True)
-        if model_path is None:
-            return
-
-        self.infiles.extend(model_path)
-        # get observation to compare, return None if not found
-        obs_path, time_info = self.find_obs_offset(time_info,
-                                                   mandatory=True,
-                                                   return_list=True)
-        if obs_path is None:
-            return
-
-        self.infiles.extend(obs_path)
-
         # get field info field a single field to pass to the MET config file
         fcst_field_list = self.format_field_info(var_info=var_info,
                                                  data_type='FCST')
@@ -169,70 +195,47 @@ that reformat gridded data
         """
         var_list = sub_var_list(self.c_dict['VAR_LIST_TEMP'], time_info)
 
-        # get model from first var to compare
-        model_path = self.find_model(time_info,
-                                     mandatory=True,
-                                     return_list=True)
-        if not model_path:
+        # set field info
+        fcst_field = self.get_all_field_info(var_list, 'FCST')
+        obs_field = self.get_all_field_info(var_list, 'OBS')
+
+        if not fcst_field or not obs_field:
+            self.log_error("Could not build field info for fcst or obs")
             return
-
-        # if there is more than 1 file, create file list file
-        if len(model_path) > 1:
-            list_filename = (f"{time_info['init_fmt']}_"
-                             f"{time_info['lead_hours']}_"
-                             f"{self.app_name}_fcst.txt")
-            model_path = self.write_list_file(list_filename, model_path)
-        else:
-            model_path = model_path[0]
-
-        self.infiles.append(model_path)
-
-        # get observation to from first var compare
-        obs_path, time_info = self.find_obs_offset(time_info,
-                                                   mandatory=True,
-                                                   return_list=True)
-        if obs_path is None:
-            return
-
-        # if there is more than 1 file, create file list file
-        if len(obs_path) > 1:
-            list_filename = (f"{time_info['init_fmt']}_"
-                             f"{time_info['lead_hours']}_"
-                             f"{self.app_name}_obs.txt")
-            obs_path = self.write_list_file(list_filename, obs_path)
-        else:
-            obs_path = obs_path[0]
-
-        self.infiles.append(obs_path)
-
-        fcst_field_list = []
-        obs_field_list = []
-        for var_info in var_list:
-            next_fcst = self.get_field_info(v_level=var_info['fcst_level'],
-                                            v_thresh=var_info['fcst_thresh'],
-                                            v_name=var_info['fcst_name'],
-                                            v_extra=var_info['fcst_extra'],
-                                            d_type='FCST')
-
-            next_obs = self.get_field_info(v_level=var_info['obs_level'],
-                                           v_thresh=var_info['obs_thresh'],
-                                           v_name=var_info['obs_name'],
-                                           v_extra=var_info['obs_extra'],
-                                           d_type='OBS')
-
-            if next_fcst is None or next_obs is None:
-                return
-
-            fcst_field_list.extend(next_fcst)
-            obs_field_list.extend(next_obs)
-
-        fcst_field = ','.join(fcst_field_list)
-        obs_field = ','.join(obs_field_list)
 
         self.format_field('FCST', fcst_field)
         self.format_field('OBS', obs_field)
 
         self.process_fields(time_info)
+
+    def get_all_field_info(self, var_list, data_type):
+        """!Get field info based on data type"""
+
+        field_list = []
+        for var_info in var_list:
+            type_lower = data_type.lower()
+            level = var_info[f'{type_lower}_level']
+            thresh = var_info[f'{type_lower}_thresh']
+            name = var_info[f'{type_lower}_name']
+            extra = var_info[f'{type_lower}_extra']
+
+            # check if python embedding is used and set up correctly
+            # set env var for file type if it is used
+            py_embed_ok = self.check_for_python_embedding(data_type, var_info)
+            if not py_embed_ok:
+                return ''
+
+            next_field = self.get_field_info(v_level=level,
+                                             v_thresh=thresh,
+                                             v_name=name,
+                                             v_extra=extra,
+                                             d_type=data_type)
+            if next_field is None:
+                return ''
+
+            field_list.extend(next_field)
+
+        return ','.join(field_list)
 
     def process_fields(self, time_info):
         """! Set and print environment variables, then build/run MET command
@@ -240,14 +243,12 @@ that reformat gridded data
              @param time_info dictionary with time information
         """
         # set config file since command is reset after each run
-        self.param = do_string_sub(self.c_dict['CONFIG_FILE'],
-                                   **time_info)
+        self.param = do_string_sub(self.c_dict['CONFIG_FILE'], **time_info)
 
         self.set_current_field_config()
 
         # set up output dir with time info
-        if not self.find_and_check_output_file(time_info,
-                                               is_directory=True):
+        if not self.find_and_check_output_file(time_info, is_directory=True):
             return
 
         # set command line arguments
@@ -274,8 +275,7 @@ that reformat gridded data
            @return Returns a MET command with arguments that you can run
         """
         if self.app_path is None:
-            self.log_error('No app path specified. '
-                              'You must use a subclass')
+            self.log_error('No app path specified. You must use a subclass')
             return None
 
         cmd = '{} -v {} '.format(self.app_path, self.c_dict['VERBOSITY'])

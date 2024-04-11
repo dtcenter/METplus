@@ -1,6 +1,10 @@
-import os
 import pytest
 from unittest import mock
+
+import os
+import re
+
+import produtil
 import metplus.util.run_util as ru
 import metplus.util.wrapper_init as wi
 from metplus.wrappers.ensemble_stat_wrapper import EnsembleStatWrapper
@@ -40,9 +44,12 @@ EXPECTED_CONFIG_KEYS = [
     'CONFIG_INPUT',
     'RUN_ID',
     'LOG_TIMESTAMP',
+    'LOG_TO_TERMINAL_ONLY',
     'METPLUS_BASE',
     'PARM_BASE',
     'METPLUS_VERSION',
+    'ALLOW_MISSING_INPUTS',
+    'INPUT_THRESH',
 ]
 
 
@@ -61,6 +68,57 @@ def get_config_from_file(conf_file='run_util.conf'):
     conf_inputs = get_run_util_configs(conf_file)
     return ru.pre_run_setup(conf_inputs)
 
+@pytest.mark.parametrize(
+    "log_met_to_metplus,copyable_env",
+    [
+        (False, 'some text'),
+        (False, ''),
+        (True, 'some text'),
+        (True, ''),
+    ],
+)
+@pytest.mark.util
+def test_log_header_info(tmp_path_factory, log_met_to_metplus, copyable_env):
+    fake_log = tmp_path_factory.mktemp("data") / 'fake.log'
+    cmd = '/my/cmd'
+    ru._log_header_info(fake_log, copyable_env=copyable_env, cmd=cmd, log_met_to_metplus=log_met_to_metplus)
+    with open(fake_log, 'r') as file_handle:
+        file_content = file_handle.read()
+
+    assert 'OUTPUT:' in file_content
+    if not log_met_to_metplus:
+        assert "COMMAND" in file_content
+        assert cmd in file_content
+        if copyable_env:
+            assert copyable_env in file_content
+
+
+@pytest.mark.parametrize(
+    "cmd,skip_run,use_log_path,expected_to_fail",
+    [
+        (None, False, True, False),  # no command
+        ('/my/cmd some args', True, True, False),  # skip run
+        ('echo hello', False, True, False),  # simple command with log
+        ('echo hello', False, False, False),  # simple command no log
+        ('echo hello; echo hi', False, True, False),  # complex 2 commands with log
+        ('echo hello; echo hi', False, False, False),  # complex 2 commands no log
+        ('ls *', False, False, False),  # complex command with wildcard *
+        ('ls fake_dir', False, False, True),  # failed command
+    ],
+)
+@pytest.mark.util
+def test_run_cmd(tmp_path_factory, cmd, skip_run, use_log_path, expected_to_fail):
+    log_path = str(tmp_path_factory.mktemp("data") / 'fake_run_cmd.log') if use_log_path else None
+    run_arguments = ru.RunArgs(
+        logger=None,
+        log_path=log_path,
+        skip_run=skip_run,
+        log_met_to_metplus=True,
+        env=os.environ,
+        copyable_env='some text',
+    )
+    actual = ru.run_cmd(cmd, run_arguments)
+    assert bool(actual) == expected_to_fail
 
 @pytest.mark.util
 def test_pre_run_setup():
@@ -86,23 +144,27 @@ def test_pre_run_setup_env_vars():
 
 @pytest.mark.util
 def test_pre_run_setup_sed_file(capfd):
-    with mock.patch.object(ru.sys, 'exit') as mock_sys:
-        with mock.patch.object(
-            ru,
-            'validate_config_variables',
-            return_value=(False, ['sed command 1', 'sed command 2']),
-        ):
-            actual = get_config_from_file('sed_run_util.conf')
-            mock_sys.assert_called_with(1)
+    with mock.patch.object(
+        ru,
+        'validate_config_variables',
+        return_value=(False, ['sed command 1', 'sed command 2']),
+    ):
+        actual = get_config_from_file('sed_run_util.conf')
+        assert actual is None
 
     # check sed file is written correctly
-    sed_file = os.path.join(actual.getdir('OUTPUT_BASE'), 'sed_commands.txt')
+    out, err = capfd.readouterr()
+    sed_err_regex = r'.*Find/Replace commands have been generated in (.*)\n'
+    sed_file = None
+    match = re.match(sed_err_regex, err)
+    if match:
+        sed_file = match.group(1)
+
     assert os.path.exists(sed_file)
     with open(sed_file, 'r') as f:
         assert f.read() == 'sed command 1\nsed command 2\n'
 
     # check correct errors logged
-    out, err = capfd.readouterr()
     expected_error_msgs = [
         f'Find/Replace commands have been generated in {sed_file}',
         'ERROR: Correct configuration variables and rerun. Exiting.',
@@ -113,9 +175,8 @@ def test_pre_run_setup_sed_file(capfd):
 
 @pytest.mark.util
 def test_pre_run_setup_deprecated(capfd):
-    with mock.patch.object(ru.sys, 'exit') as mock_sys:
-        actual = get_config_from_file('sed_run_util.conf')
-        mock_sys.assert_called_with(1)
+    actual = get_config_from_file('sed_run_util.conf')
+    assert actual is None
 
     out, err = capfd.readouterr()
 
@@ -130,9 +191,8 @@ def test_pre_run_setup_deprecated(capfd):
 
 @pytest.mark.util
 def test_pre_run_setup_no_install(capfd):
-    with mock.patch.object(ru.sys, 'exit') as mock_sys:
-        actual = get_config_from_file('no_install_run_util.conf')
-    mock_sys.assert_called_with(1)
+    actual = get_config_from_file('no_install_run_util.conf')
+    assert actual is None
 
     out, err = capfd.readouterr()
     assert 'MET_INSTALL_DIR must be set correctly to run METplus' in err
@@ -378,7 +438,7 @@ def test_post_run_cleanup_no_errors(post_run_config):
         with mock.patch.object(ru, 'get_logfile_info', return_value='/log/file.log'):
             actual = ru.post_run_cleanup(post_run_config, 'fake_app', 0)
 
-    assert actual == None
+    assert actual is True
     for msg in expected_msgs:
         _check_log_info(post_run_config, [msg])
 
@@ -396,11 +456,9 @@ def test_post_run_cleanup_errors(post_run_config):
         ru, 'get_user_info', return_value='Allan H. Murphy'
     ) as mock_user:
         with mock.patch.object(ru, 'get_logfile_info', return_value='/log/file.log'):
-            with mock.patch.object(ru.sys, 'exit') as mock_sys:
-                actual = ru.post_run_cleanup(post_run_config, 'fake_app', 5)
+            actual = ru.post_run_cleanup(post_run_config, 'fake_app', 5)
 
-    mock_sys.assert_called_once_with(1)
-    assert actual == None
+    assert actual is False
     _check_log_info(
         post_run_config, ['Check the log file for more information: /log/file.log']
     )

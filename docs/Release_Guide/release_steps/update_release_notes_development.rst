@@ -26,8 +26,16 @@ release. Open the following URL in a browser:
 * If you are creating a beta1 release, remove the previous version's release
   notes, i.e. for 3.0.0-beta1, remove all 2.Y.Z notes and start a 3.0.0
   section with the format "Version X.Y.Z release notes (YYYYMMDD)".
-    
+
 * If you are creating a betaX release, add a new betaX section above the betaX-1
   release.
+
+* For the METplus repository, update the **development timeline**.
+
+  * If you are creating a beta1 release, add development timeline
+    information with approximate dates for planned development cycles.
+
+  * For other development releaes, edit the actual release dates and planned
+    release dates for future development cycles, as needed.
 
 * Commit changes and push to GitHub.

@@ -10,15 +10,12 @@ Output Files: N/A
 """
 
 import os
-import sys
 import glob
 from datetime import datetime
 from abc import ABCMeta
 from inspect import getframeinfo, stack
 
-from .command_runner import CommandRunner
-
-from ..util.constants import PYTHON_EMBEDDING_TYPES, COMPRESSION_EXTENSIONS
+from ..util.constants import PYTHON_EMBEDDING_TYPES, COMPRESSION_EXTENSIONS, MULTIPLE_INPUT_WRAPPERS
 from ..util import getlist, preprocess_file, loop_over_times_and_call
 from ..util import do_string_sub, ti_calculate, get_seconds_from_string
 from ..util import get_time_from_file, shift_time_seconds, seconds_to_met_time
@@ -32,6 +29,8 @@ from ..util import get_field_info, format_field_info
 from ..util import get_wrapper_name, is_python_script
 from ..util.met_config import add_met_config_dict, handle_climo_dict
 from ..util import mkdir_p, get_skip_times
+from ..util import get_log_path, RunArgs, run_cmd
+
 
 # pylint:disable=pointless-string-statement
 '''!@namespace CommandBuilder
@@ -119,12 +118,6 @@ class CommandBuilder:
 
         self.check_for_externals()
 
-        self.cmdrunner = CommandRunner(
-            self.config, logger=self.logger,
-            verbose=self.c_dict['VERBOSITY'],
-            skip_run=self.c_dict.get('DO_NOT_RUN_EXE', False),
-        )
-
         # set log name to app name by default
         # any wrappers with a name different than the primary app that is run
         # should override this value in their init function after the call
@@ -205,12 +198,16 @@ class CommandBuilder:
 
         return c_dict
 
-    def clear(self):
+    def clear(self, clear_input_files=True):
         """!Unset class variables to prepare for next run time
+
+        @param clear_input_files If True, clear self.infiles, otherwise do not.
+         Defaults to True.
         """
         self.args = []
         self.input_dir = ""
-        self.infiles = []
+        if clear_input_files:
+            self.infiles = []
         self.outdir = ""
         self.outfile = ""
         self.param = ""
@@ -442,6 +439,7 @@ class CommandBuilder:
         # errors when searching through offset list
         is_mandatory = mandatory if offsets == [0] else False
 
+        self.c_dict['SUPRESS_WARNINGS'] = True
         for offset in offsets:
             time_info['offset_hours'] = offset
             time_info = ti_calculate(time_info)
@@ -450,7 +448,10 @@ class CommandBuilder:
                                      return_list=return_list)
 
             if obs_path is not None:
+                self.c_dict['SUPRESS_WARNINGS'] = False
                 return obs_path, time_info
+
+        self.c_dict['SUPRESS_WARNINGS'] = False
 
         # if no files are found return None
         # if offsets are specified, log error with list offsets used
@@ -460,8 +461,10 @@ class CommandBuilder:
                            f"{','.join([str(offset) for offset in offsets])}")
 
         # if mandatory, report error, otherwise report warning
-        if mandatory:
-            self.log_error(log_message)
+        if mandatory and not self.c_dict.get('ALLOW_MISSING_INPUTS', False):
+            # don't call log_error to increment error count because
+            # error should already be reported
+            self.logger.error(log_message)
         else:
             self.logger.warning(log_message)
 
@@ -566,8 +569,13 @@ class CommandBuilder:
         if not check_file_list:
             msg = f"Could not find any {data_type}INPUT files"
             # warn instead of error if it is not mandatory to find files
-            if not mandatory or not self.c_dict.get('MANDATORY', True):
-                self.logger.warning(msg)
+            if (not mandatory
+                    or not self.c_dict.get('MANDATORY', True)
+                    or self.c_dict.get('ALLOW_MISSING_INPUTS', False)):
+                if self.c_dict.get('SUPRESS_WARNINGS', False):
+                    self.logger.debug(msg)
+                else:
+                    self.logger.warning(msg)
             else:
                 self.log_error(msg)
 
@@ -668,8 +676,15 @@ class CommandBuilder:
             if not processed_path:
                 msg = (f"Could not find {data_type}INPUT file {file_path} "
                        f"using template {template}")
-                if not mandatory or not self.c_dict.get('MANDATORY', True):
-                    self.logger.warning(msg)
+                if (not mandatory
+                        or not self.c_dict.get('MANDATORY', True)
+                        or self.c_dict.get('ALLOW_MISSING_INPUTS', False)):
+
+                    if self.c_dict.get('SUPRESS_WARNINGS', False):
+                        self.logger.debug(msg)
+                    else:
+                        self.logger.warning(msg)
+
                     if self.c_dict.get(f'{data_type}FILL_MISSING'):
                         found_file_list.append(f'MISSING{file_path}')
                         continue
@@ -712,8 +727,15 @@ class CommandBuilder:
         if not closest_files:
             msg = (f"Could not find {data_type}INPUT files under {data_dir} within range "
                    f"[{valid_range_lower},{valid_range_upper}] using template {template}")
-            if not mandatory:
-                self.logger.warning(msg)
+            if (not mandatory
+                    or not self.c_dict.get('MANDATORY', True)
+                    or self.c_dict.get('ALLOW_MISSING_INPUTS', False)):
+
+                if self.c_dict.get('SUPRESS_WARNINGS', False):
+                    self.logger.debug(msg)
+                else:
+                    self.logger.warning(msg)
+
             else:
                 self.log_error(msg)
 
@@ -764,7 +786,7 @@ class CommandBuilder:
                                             "%Y%m%d%H%M%S").strftime("%s"))
 
         # step through all files under input directory in sorted order
-        for dirpath, _, all_files in os.walk(data_dir):
+        for dirpath, _, all_files in os.walk(data_dir, followlinks=True):
             for filename in sorted(all_files):
                 fullpath = os.path.join(dirpath, filename)
 
@@ -839,9 +861,14 @@ class CommandBuilder:
             return True
 
         # get list of ensemble files to process
-        input_files = self.find_model(time_info, return_list=True)
+        input_files = self.find_model(time_info, return_list=True, mandatory=False)
         if not input_files:
-            self.log_error("Could not find any input files")
+            msg = "Could not find any input files"
+            if (not self.c_dict.get('MANDATORY', True)
+                    or self.c_dict.get('ALLOW_MISSING_INPUTS', False)):
+                self.logger.warning(msg)
+            else:
+                self.log_error(msg)
             return False
 
         # if control file is requested, remove it from input list
@@ -1004,8 +1031,7 @@ class CommandBuilder:
             prefix = self.get_output_prefix(time_info, set_env_vars=False)
             prefix = f'{self.app_name}_{prefix}' if prefix else self.app_name
             search_string = f'{prefix}_{lead}L_{valid}V*'
-            search_path = os.path.join(output_path,
-                                       search_string)
+            search_path = os.path.join(output_path, search_string)
             if skip_if_output_exists:
                 self.logger.debug("Looking for existing data that matches: "
                                   f"{search_path}")
@@ -1109,35 +1135,45 @@ class CommandBuilder:
                                 field_info[name] if name in field_info else '')
 
     def check_for_python_embedding(self, input_type, var_info):
-        """!Check if field name of given input type is a python script. If it is not, return the field name.
-            If it is, check if the input datatype is a valid Python Embedding string, set the c_dict item
-            that sets the file_type in the MET config file accordingly, and set the output string to 'python_embedding.
-            Used to set up Python Embedding input for MET tools that support multiple input files, such as MTD, EnsembleStat,
-            and SeriesAnalysis.
-            Args:
-              @param input_type type of field input, i.e. FCST, OBS, ENS, POINT_OBS, GRID_OBS, or BOTH
-              @param var_info dictionary item containing field information for the current *_VAR<n>_* configs being handled
-              @returns field name if not a python script, 'python_embedding' if it is, and None if configuration is invalid"""
+        """!Check if field name of given input type is a python script.
+        If it is not, return the field name. If it is, return 'python_embedding'
+        and set file_type in the MET config to a PYTHON keyword if it is not
+        already set.
+        @param input_type type of field input, e.g. FCST, OBS, ENS, POINT_OBS,
+         GRID_OBS, or BOTH
+        @param var_info dictionary item containing field information for the
+         current *_VAR<n>_* configs being handled
+        @returns field name if not a python script, 'python_embedding' if it is
+        """
         var_input_type = input_type.lower() if input_type != 'BOTH' else 'fcst'
-        # reset file type to empty string to handle if python embedding is used for one field but not for the next
-        self.c_dict[f'{input_type}_FILE_TYPE'] = ''
-
         if not is_python_script(var_info[f"{var_input_type}_name"]):
             # if not a python script, return var name
             return var_info[f"{var_input_type}_name"]
 
-        # if it is a python script, set file extension to show that and make sure *_INPUT_DATATYPE is a valid PYTHON_* string
+        # if it is a python script, set file extension to show that and
+        # make sure *_INPUT_DATATYPE is a valid PYTHON_* string
         file_ext = 'python_embedding'
-        data_type = self.c_dict.get(f'{input_type}_INPUT_DATATYPE', '')
-        if data_type not in PYTHON_EMBEDDING_TYPES:
-            self.log_error(f"{input_type}_{self.app_name.upper()}_INPUT_DATATYPE ({data_type}) must be set to a valid Python Embedding type "
-                           f"if supplying a Python script as the {input_type}_VAR<n>_NAME. Valid options: "
-                           f"{','.join(PYTHON_EMBEDDING_TYPES)}")
-            return None
 
-        # set file type string to be set in MET config file to specify Python Embedding is being used for this dataset
+        # skip check of _INPUT_DATATYPE if _FILE_TYPE is already set
+        # or if wrapper does not support multiple inputs
+        if (self.env_var_dict.get(f'METPLUS_{input_type}_FILE_TYPE')
+                or get_wrapper_name(self.app_name) not in MULTIPLE_INPUT_WRAPPERS):
+            return file_ext
+
+        data_type = self.c_dict.get(f'{input_type}_INPUT_DATATYPE', '')
+        # error and return None if wrapper takes multiple inputs for Python
+        # Embedding but file_type has not been specified to note that
+        if data_type not in PYTHON_EMBEDDING_TYPES:
+            self.logger.warning(
+                f"{input_type}_{self.app_name.upper()}_FILE_TYPE must be set "
+                "when passing a Python Embedding script to a tool that takes "
+                "multiple inputs. Using PYTHON_NUMPY"
+            )
+            data_type = 'PYTHON_NUMPY'
+
+        # set file type string to be set in MET config file to specify
+        # Python Embedding is being used for this dataset
         file_type = f"file_type = {data_type};"
-        self.c_dict[f'{input_type}_FILE_TYPE'] = file_type
         self.env_var_dict[f'METPLUS_{input_type}_FILE_TYPE'] = file_type
         return file_ext
 
@@ -1275,26 +1311,34 @@ class CommandBuilder:
         if self.instance:
             log_name = f"{log_name}.{self.instance}"
 
-        ret, out_cmd = self.cmdrunner.run_cmd(cmd,
-                                              env=self.env,
-                                              log_name=log_name,
-                                              copyable_env=self.get_env_copy())
+        log_name = log_name if log_name else os.path.basename(cmd.split()[0])
+
+        # Determine where to send the output from the MET command.
+        log_path = get_log_path(self.config, logfile=log_name+'.log')
+
+        run_arguments = RunArgs(
+            logger=self.logger,
+            log_path=log_path,
+            skip_run=self.c_dict.get('DO_NOT_RUN_EXE', False),
+            log_met_to_metplus=self.config.getbool('config', 'LOG_MET_OUTPUT_TO_METPLUS'),
+            env=self.env,
+            copyable_env=self.get_env_copy(),
+        )
+        ret = self.run_cmd(cmd, run_arguments)
         if not ret:
             return True
 
         self.log_error(f"Command returned a non-zero return code: {cmd}")
 
-        logfile_path = self.config.getstr('config', 'LOG_METPLUS')
-        if not logfile_path:
+        if log_path is None:
             return False
 
-        # if MET output is written to its own logfile, get that filename
-        if not self.config.getbool('config', 'LOG_MET_OUTPUT_TO_METPLUS'):
-            logfile_path = logfile_path.replace('run_metplus', log_name)
-
         self.logger.info("Check the logfile for more information on why "
-                         f"it failed: {logfile_path}")
+                         f"it failed: {log_path}")
         return False
+
+    def run_cmd(self, cmd, run_args):
+        return run_cmd(cmd, run_args)
 
     def run_all_times(self, custom=None):
         """! Loop over time range specified in conf file and
@@ -1398,9 +1442,6 @@ class CommandBuilder:
                 output_prefix_fmt = f'output_prefix = "{output_prefix}";'
                 self.env_var_dict['METPLUS_OUTPUT_PREFIX'] = output_prefix_fmt
 
-            # set old method of setting OUTPUT_PREFIX
-            self.add_env_var('OUTPUT_PREFIX', output_prefix)
-
         return output_prefix
 
     def handle_climo_dict(self):
@@ -1414,25 +1455,27 @@ class CommandBuilder:
                                  output_dict=self.env_var_dict):
             self.errors += 1
 
-    def get_wrapper_or_generic_config(self, generic_config_name):
+    def get_wrapper_or_generic_config(self, generic_name, var_type='str'):
         """! Check for config variable with <APP_NAME>_ prepended first. If set
         use that value. If not, check for config without prefix.
 
-        @param generic_config_name name of variable to read from config
+        @param generic_name name of variable to read from config
+        @param var_type type of variable to read, e.g. str, bool, int, or float.
+         Default is str.
         @returns value if set or empty string if not
         """
-        wrapper_config_name = f'{self.app_name.upper()}_{generic_config_name}'
-        value = self.config.getstr_nocheck('config',
-                                           wrapper_config_name,
-                                           '')
-
-        # if wrapper specific variable not set, check for generic
-        if not value:
-            value = self.config.getstr_nocheck('config',
-                                               generic_config_name,
-                                               '')
-
-        return value
+        name = self.config.get_mp_config_name(
+            [f'{self.app_name}_{generic_name}'.upper(), generic_name.upper()]
+        )
+        if not name:
+            return ''
+        if var_type == 'bool':
+            return self.config.getbool('config', name)
+        if var_type == 'float':
+            return self.config.getfloat('config', name)
+        if var_type == 'int':
+            return self.config.getint('config', name)
+        return self.config.getstr('config', name)
 
     def format_field(self, data_type, field_string, is_list=True):
         """! Set {data_type}_FIELD c_dict value to the formatted field string

@@ -1,13 +1,26 @@
+.. _release-notes:
+
 ***************************
 METplus Release Information
 ***************************
 
-.. _release-notes:
+Users can view the :ref:`releaseTypes` section of the Release Guide
+for descriptions of the development releases (including beta releases
+and release candidates), official releases, and bugfix releases for
+the METplus Components.
 
-Users can view the :ref:`releaseTypes` section of
-the Release Guide for descriptions of the development releases (including
-beta releases and release candidates), official releases, and bugfix
-releases for the METplus Components.
+.. _development_timeline:
+
+The **development timeline** for the METplus 6.0.0 Coordinated Release
+is broken down into the following development cycles for each component:
+
+1. **Beta1** releases for the METplus components occurred around 2023-09-15.
+2. **Beta2** releases for the METplus components occurred around 2023-11-14.
+3. **Beta3** releases for the METplus components occurred around 2024-02-08.
+4. **Beta4** releases are tentatively scheduled for 2024-04-17.
+5. **Beta5** releases are tentatively scheduled for 2024-06-26.
+6. **Release Candidate 1** releases have not yet been scheduled.
+7. **Official Release** releases have not yet been scheduled.
 
 .. _components-release-notes:
 
@@ -29,6 +42,99 @@ METplus Wrappers Release Notes
 When applicable, release notes are followed by the
 `GitHub issue <https://github.com/dtcenter/METplus/issues>`__ number which
 describes the bugfix, enhancement, or new feature.
+
+METplus Version 6.0.0 Beta 3 Release Notes (2024-02-08)
+-------------------------------------------------------
+
+  .. dropdown:: Enhancements
+
+     * Add support for MET land-mask settings in Point-Stat
+       (`#2334 <https://github.com/dtcenter/METplus/issues/2334>`_)
+     * Enhance the TC-Pairs wrapper to support the new diag_required and diag_min_req configuration options
+       (`#2430 <https://github.com/dtcenter/METplus/issues/2430>`_)
+     * Enhance the TC-Diag wrapper to support new configuration options added in MET-12.0.0-beta2
+       (`#2432 <https://github.com/dtcenter/METplus/issues/2432>`_)
+     * Prevent error if some input files are missing
+       (`#2460 <https://github.com/dtcenter/METplus/issues/2460>`_)
+
+  .. dropdown:: Bugfix
+
+     NONE
+
+  .. dropdown:: New Wrappers
+
+     NONE
+
+  .. dropdown:: New Use Cases
+
+     * Verify Total Column Ozone against NASA's OMI dataset
+       (`#1989 <https://github.com/dtcenter/METplus/issues/1989>`_)
+     * RRFS reformatting, aggregating, and plotting use case
+       (`#2406 <https://github.com/dtcenter/METplus/issues/2406>`_)
+     * Satellite Altimetry data
+       (`#2383 <https://github.com/dtcenter/METplus/issues/2383>`_)
+
+  .. dropdown:: Documentation
+
+     * Create video to demonstrate how to update use cases that use deprecated environment variables
+       (`#2371 <https://github.com/dtcenter/METplus/issues/2371>`_)
+
+  .. dropdown:: Internal
+
+     * Update Documentation Overview and Conventions
+       (`#2454 <https://github.com/dtcenter/METplus/issues/2454>`_)
+
+
+METplus Version 6.0.0 Beta 2 Release Notes (2023-11-14)
+-------------------------------------------------------
+
+  .. dropdown:: Enhancements
+
+     * Improve SeriesAnalysis ingest of multiple input files
+       (`#2219 <https://github.com/dtcenter/METplus/issues/2219>`_)
+     * Update the TC-Diag wrapper to support updates for MET version 12.0.0
+       (`#2340 <https://github.com/dtcenter/METplus/issues/2340>`_)
+     * Add config option to write MET log output to terminal
+       (`#2377 <https://github.com/dtcenter/METplus/issues/2377>`_)
+     * GenVxMask - support specification strings to define output grid
+       (`#2412 <https://github.com/dtcenter/METplus/issues/2412>`_)
+     * Follow symbolic links when searching for files within a time window
+       (`#2423 <https://github.com/dtcenter/METplus/issues/2423>`_)
+
+  .. dropdown:: Bugfix
+
+     * Prevent crash when empty string set for INIT_INCREMENT or VALID_INCREMENT
+       (`#2420 <https://github.com/dtcenter/METplus/issues/2420>`_)
+
+  .. dropdown:: New Wrappers
+
+     * WaveletStat
+       (`#2252 <https://github.com/dtcenter/METplus/issues/2252>`_)
+
+
+  .. dropdown:: New Use Cases
+
+     NONE
+
+  .. dropdown:: Documentation
+
+     * **Add upgrade instructions for removing user wrapped MET config files**
+       (`#2349 <https://github.com/dtcenter/METplus/issues/2349>`_)
+     * Reorder Python Wrappers - MET Configuration tables to match order in wrapped MET config file
+       (`#2405 <https://github.com/dtcenter/METplus/issues/2405>`_)
+     * Enhancement to Difficulty Index use-case documentation
+       (`#2123 <https://github.com/dtcenter/METplus/issues/2123>`_)
+     * Modify the Documentation Overview section in the Contributor's Guide to add Conventions
+       (`#1667 <https://github.com/dtcenter/METplus/issues/1667>`_)
+     * Specify available tags on DockerHub
+       (`#2329 <https://github.com/dtcenter/METplus/issues/2329>`_)
+
+  .. dropdown:: Internal
+
+     * Improve METplus test coverage
+       (`#2253 <https://github.com/dtcenter/METplus/issues/2253>`_)
+     * Documentation: Make Headers Consistent in METplus components User's Guides
+       (`#898 <https://github.com/dtcenter/METplus/issues/898>`_)
 
 METplus Version 6.0.0 Beta 1 Release Notes (2023-09-15)
 -------------------------------------------------------
@@ -107,6 +213,20 @@ See :ref:`met-config-overrides` for more information.
 How to tell if upgrade is needed
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+If the wrapped MET config file used by a use case is the version provided
+with the METplus wrappers, then no changes to the use case are needed.
+The wrapped MET config files provided with the wrappers are found in the
+parm/met_config directory.
+
+Search for variables that end with **_CONFIG_FILE** in the use case
+configuration file.
+
+If the value looks like this::
+
+    GRID_STAT_CONFIG_FILE = {PARM_BASE}/met_config/GridStatConfig_wrapped
+
+or the variable it not found, then no changes are needed.
+
 Prior to v6.0.0, a use case that uses a wrapped MET config file that is
 out-of-date from the version provided with the METplus wrappers will report a
 warning in the log output alerting the user that an expected environment
@@ -131,6 +251,13 @@ the use case will not run until the METplus configuration file has been updated.
 
 How to upgrade
 ^^^^^^^^^^^^^^
+
+This video provides a demonstration of the process to upgrade a use case.
+
+.. raw:: html
+
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/QCBlCsxmBDo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 
 Removing **<WRAPPER_NAME>_CONFIG_FILE**, e.g. :term:`GRID_STAT_CONFIG_FILE`,
 from the METplus config file will prevent the errors and

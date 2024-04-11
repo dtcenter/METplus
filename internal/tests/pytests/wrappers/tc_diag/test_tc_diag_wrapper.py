@@ -3,7 +3,6 @@
 import pytest
 
 import os
-from datetime import datetime
 
 from metplus.wrappers.tc_diag_wrapper import TCDiagWrapper
 
@@ -48,7 +47,7 @@ def set_minimum_config_settings(config):
     config.set('config', 'INIT_INCREMENT', '6H')
     config.set('config', 'TC_DIAG_CONFIG_FILE',
                '{PARM_BASE}/met_config/TCDiagConfig_wrapped')
-    config.set('config', 'TC_DIAG_DECK_TEMPLATE', deck_template)
+    config.set('config', 'TC_DIAG_DECK_INPUT_TEMPLATE', deck_template)
     config.set('config', 'TC_DIAG_INPUT1_TEMPLATE', input_template)
     config.set('config', 'TC_DIAG_INPUT1_DOMAIN', input_domain)
     config.set('config', 'TC_DIAG_INPUT1_TECH_ID_LIST', input_tech_id_list)
@@ -60,6 +59,44 @@ def set_minimum_config_settings(config):
     config.set('config', 'BOTH_VAR1_LEVELS', 'L0')
     config.set('config', 'BOTH_VAR2_NAME', 'TMP')
     config.set('config', 'BOTH_VAR2_LEVELS', 'P1000, P900, P800, P700, P500, P100')
+
+
+
+@pytest.mark.parametrize(
+    'missing, run, thresh, errors, allow_missing', [
+        (1, 3, 0.5, 0, True),
+        (1, 3, 0.7, 1, True),
+        (1, 3, 0.5, 7, False),
+    ]
+)
+@pytest.mark.wrapper
+def test_tc_diag_missing_inputs(metplus_config, get_test_data_dir,
+                                missing, run, thresh, errors, allow_missing):
+    config = metplus_config
+    set_minimum_config_settings(config)
+    config.set('config', 'INPUT_MUST_EXIST', True)
+    config.set('config', 'TC_DIAG_ALLOW_MISSING_INPUTS', allow_missing)
+    config.set('config', 'TC_DIAG_INPUT_THRESH', thresh)
+    config.set('config', 'INIT_BEG', '2017051001')
+    config.set('config', 'INIT_END', '2017051005')
+    config.set('config', 'INIT_INCREMENT', '2H')
+    config.set('config', 'LEAD_SEQ', '1,2,3,6,9,12')
+    config.set('config', 'TC_DIAG_DECK_INPUT_DIR', get_test_data_dir('obs'))
+    config.set('config', 'TC_DIAG_DECK_INPUT_TEMPLATE', '{init?fmt=%Y%m%d}/qpe_{init?fmt=%Y%m%d%H?shift=3H}_A06.nc')
+    config.set('config', 'TC_DIAG_INPUT1_DIR', get_test_data_dir('fcst'))
+    config.set('config', 'TC_DIAG_INPUT1_TEMPLATE', '{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d_i%H}_f{lead?fmt=%3H}_HRRRTLE_PHPT.grb2')
+
+    wrapper = TCDiagWrapper(config)
+    assert wrapper.isOK
+
+    all_cmds = wrapper.run_all_times()
+    for cmd, _ in all_cmds:
+        print(cmd)
+
+    print(f'missing: {wrapper.missing_input_count} / {wrapper.run_count}, errors: {wrapper.errors}')
+    assert wrapper.missing_input_count == missing
+    assert wrapper.run_count == run
+    assert wrapper.errors == errors
 
 
 @pytest.mark.parametrize(
@@ -101,35 +138,31 @@ def set_minimum_config_settings(config):
          {'METPLUS_DOMAIN_INFO_LIST': 'domain_info = [{delta_range_km = 10.0;}];'}),
         ({'TC_DIAG_DOMAIN_INFO1_DIAG_SCRIPT': 'MET_BASE/python/tc_diag/compute_all_diagnostics.py,MET_BASE/python/tc_diag/compute_custom_diagnostics.py', },
          {'METPLUS_DOMAIN_INFO_LIST': 'domain_info = [{diag_script = ["MET_BASE/python/tc_diag/compute_all_diagnostics.py", "MET_BASE/python/tc_diag/compute_custom_diagnostics.py"];}];'}),
+        ({'TC_DIAG_DOMAIN_INFO1_OVERRIDE_DIAGS': 'RMW,SST', },
+         {'METPLUS_DOMAIN_INFO_LIST': 'domain_info = [{override_diags = ["RMW", "SST"];}];'}),
         ({'TC_DIAG_DOMAIN_INFO1_DOMAIN': 'parent',
           'TC_DIAG_DOMAIN_INFO1_N_RANGE': '150',
           'TC_DIAG_DOMAIN_INFO1_N_AZIMUTH': '8',
           'TC_DIAG_DOMAIN_INFO1_DELTA_RANGE_KM': '10.0',
           'TC_DIAG_DOMAIN_INFO1_DIAG_SCRIPT': 'MET_BASE/python/tc_diag/compute_all_diagnostics.py,MET_BASE/python/tc_diag/compute_custom_diagnostics.py',
+          'TC_DIAG_DOMAIN_INFO1_OVERRIDE_DIAGS': 'RMW,SST',
          },
-         {'METPLUS_DOMAIN_INFO_LIST': 'domain_info = [{domain = "parent";n_range = 150;n_azimuth = 8;delta_range_km = 10.0;diag_script = ["MET_BASE/python/tc_diag/compute_all_diagnostics.py", "MET_BASE/python/tc_diag/compute_custom_diagnostics.py"];}];'}),
+         {'METPLUS_DOMAIN_INFO_LIST': 'domain_info = [{domain = "parent";n_range = 150;n_azimuth = 8;delta_range_km = 10.0;diag_script = ["MET_BASE/python/tc_diag/compute_all_diagnostics.py", "MET_BASE/python/tc_diag/compute_custom_diagnostics.py"];override_diags = ["RMW", "SST"];}];'}),
         # domain_info 2 dictionaries in list
         ({'TC_DIAG_DOMAIN_INFO1_DOMAIN': 'parent',
           'TC_DIAG_DOMAIN_INFO1_N_RANGE': '150',
           'TC_DIAG_DOMAIN_INFO1_N_AZIMUTH': '8',
           'TC_DIAG_DOMAIN_INFO1_DELTA_RANGE_KM': '10.0',
           'TC_DIAG_DOMAIN_INFO1_DIAG_SCRIPT': 'MET_BASE/python/tc_diag/compute_all_diagnostics.py,MET_BASE/python/tc_diag/compute_custom_diagnostics.py',
+          'TC_DIAG_DOMAIN_INFO1_OVERRIDE_DIAGS': 'RMW,SST',
           'TC_DIAG_DOMAIN_INFO2_DOMAIN': 'nest',
           'TC_DIAG_DOMAIN_INFO2_N_RANGE': '100',
           'TC_DIAG_DOMAIN_INFO2_N_AZIMUTH': '7',
           'TC_DIAG_DOMAIN_INFO2_DELTA_RANGE_KM': '12.0',
           'TC_DIAG_DOMAIN_INFO2_DIAG_SCRIPT': 'MET_BASE/python/tc_diag/compute_sst_diagnostics.py',
+          'TC_DIAG_DOMAIN_INFO2_OVERRIDE_DIAGS': 'SST',
          },
-         {'METPLUS_DOMAIN_INFO_LIST': 'domain_info = [{domain = "parent";n_range = 150;n_azimuth = 8;delta_range_km = 10.0;diag_script = ["MET_BASE/python/tc_diag/compute_all_diagnostics.py", "MET_BASE/python/tc_diag/compute_custom_diagnostics.py"];},{domain = "nest";n_range = 100;n_azimuth = 7;delta_range_km = 12.0;diag_script = ["MET_BASE/python/tc_diag/compute_sst_diagnostics.py"];}];'}),
-
-        ({'TC_DIAG_CENSOR_THRESH': '>12000,<5000', },
-         {'METPLUS_CENSOR_THRESH': 'censor_thresh = [>12000, <5000];'}),
-
-        ({'TC_DIAG_CENSOR_VAL': '12000,5000', },
-         {'METPLUS_CENSOR_VAL': 'censor_val = [12000, 5000];'}),
-
-        ({'TC_DIAG_CONVERT': '2*x', },
-         {'METPLUS_CONVERT': 'convert(x) = 2*x;'}),
+         {'METPLUS_DOMAIN_INFO_LIST': 'domain_info = [{domain = "parent";n_range = 150;n_azimuth = 8;delta_range_km = 10.0;diag_script = ["MET_BASE/python/tc_diag/compute_all_diagnostics.py", "MET_BASE/python/tc_diag/compute_custom_diagnostics.py"];override_diags = ["RMW", "SST"];},{domain = "nest";n_range = 100;n_azimuth = 7;delta_range_km = 12.0;diag_script = ["MET_BASE/python/tc_diag/compute_sst_diagnostics.py"];override_diags = ["SST"];}];'}),
 
         ({'TC_DIAG_DATA_DOMAIN': 'parent,nest', },
          {'METPLUS_DATA_DOMAIN': 'domain = ["parent", "nest"];'}),
@@ -197,13 +230,13 @@ def set_minimum_config_settings(config):
 
         ({'TC_DIAG_VORTEX_REMOVAL': 'False', }, {'METPLUS_VORTEX_REMOVAL': 'vortex_removal = FALSE;'}),
 
-        ({'TC_DIAG_NC_RNG_AZI_FLAG': 'true', }, {'METPLUS_NC_RNG_AZI_FLAG': 'nc_rng_azi_flag = TRUE;'}),
+        ({'TC_DIAG_NC_CYL_GRID_FLAG': 'true', }, {'METPLUS_NC_CYL_GRID_FLAG': 'nc_cyl_grid_flag = TRUE;'}),
 
         ({'TC_DIAG_NC_DIAG_FLAG': 'true', }, {'METPLUS_NC_DIAG_FLAG': 'nc_diag_flag = TRUE;'}),
 
         ({'TC_DIAG_CIRA_DIAG_FLAG': 'True', }, {'METPLUS_CIRA_DIAG_FLAG': 'cira_diag_flag = TRUE;'}),
 
-        ({'TC_DIAG_OUTPUT_PREFIX': 'my_prefix', }, {'METPLUS_OUTPUT_PREFIX': 'output_prefix = "my_prefix";'}),
+        ({'TC_DIAG_OUTPUT_BASE_FORMAT': 's{storm_id}_{technique}_doper_{init_ymdh}', }, {'METPLUS_OUTPUT_BASE_FORMAT': 'output_base_format = "s{storm_id}_{technique}_doper_{init_ymdh}";'}),
         ({'TC_DIAG_ONE_TIME_PER_FILE_FLAG': 'false', },
          {'METPLUS_ONE_TIME_PER_FILE_FLAG': 'one_time_per_file_flag = FALSE;'}),
     ]

@@ -49,6 +49,10 @@ def main():
     )
     # get input data volumes
     volumes_from = get_data_volumes.main(categories_list)
+    if volumes_from is None:
+        print('ERROR: Could not get input data to run use cases')
+        sys.exit(1)
+
     print(f"Input Volumes: {volumes_from}")
 
     # build Docker image with conda environment and METplus branch image
@@ -83,6 +87,16 @@ def main():
         commands = []
 
         # print list of existing docker images
+        commands.append('docker images')
+
+        # remove docker image after creating run env or prune untagged images
+        commands.append(f'docker image rm dtcenter/metplus-dev:{branch_name} -f')
+        commands.append('docker image prune -f')
+        run_commands(commands)
+
+        commands = []
+
+        # list docker images again after removal
         commands.append('docker images')
 
         # start interactive container in the background

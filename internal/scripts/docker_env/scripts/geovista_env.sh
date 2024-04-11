@@ -24,7 +24,5 @@ ENV_NAME=geovista.${METPLUS_VERSION}
 apt install -y libgl1-mesa-glx
 apt install -y libegl1
 
-conda create -y --name ${ENV_NAME} -c conda-forge python=3.10.4
-conda install -y --name ${ENV_NAME} -c conda-forge geovista==0.3.0
-conda install -y --name ${ENV_NAME} -c conda-forge xarray==2023.8.0
-conda install -y --name ${ENV_NAME} -c conda-forge iris==3.7.0
+mamba create -y --name ${ENV_NAME} -c conda-forge python=3.10.4
+mamba install -y --name ${ENV_NAME} -c conda-forge geovista==0.3.0 xarray==2023.8.0 iris==3.7.0

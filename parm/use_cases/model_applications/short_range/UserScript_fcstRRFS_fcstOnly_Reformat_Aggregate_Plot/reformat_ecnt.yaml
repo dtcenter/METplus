@@ -1,0 +1,23 @@
+# The REFORMAT_OUTPUT_BASE and REFORMAT_INPUT_BASE are defined in the
+# UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot.conf file
+#
+
+# Indicates whether the .stat file input contains aggregated statistics (i.e. output from MET stat-analysis
+# has been applied to MET .stat output from point-stat, grid-stat, or ensemble-stat, or previously aggregated
+# via METcalcpy agg_stat). In this example, the input data is not aggregated.
+# Set this to False, ensuring the appropriate format for METcalcpy agg_stat.
+input_stats_aggregated: False
+output_dir: !ENV '${REFORMAT_OUTPUT_BASE}'
+output_filename: ensemble_stat_ecnt.data
+line_type: ECNT
+input_data_dir: !ENV '${REFORMAT_INPUT_BASE}'
+
+# !!! DO NOT modify the settings for the log_directory and log_filename.!!!
+# The METdataio METreformat code is expecting values for these settings even though the log
+# messages are in the METplus logfile.
+log_directory: !ENV '${REFORMAT_OUTPUT_BASE}'
+log_filename: 'ecnt_reformat.log'
+
+# Log levels are: INFO, DEBUG, WARNING, ERROR.
+# Set to INFO for most verbose, ERROR for least verbose.
+log_level: DEBUG

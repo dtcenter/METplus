@@ -49,6 +49,7 @@ SKIP_KEYWORDS = [
     'plots/fcst_elbow.png',
     'CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC/cyclone/20201007',
     'plots/MAKE_MAKI_timeseries',
+    'UserScript_fcstGFS_obsERA_WeatherRegime',
 ]
 
 

@@ -127,7 +127,7 @@ def format_hms(fmt, obj):
     # i.e. 90 minutes %M => 90, but %H%M => 0130
     days = obj // 86400
     hours = obj // 3600
-    minutes = obj  // 60
+    minutes = obj // 60
     seconds = obj
 
     # if days are specified, change hours, minutes, and seconds to relative

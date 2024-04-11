@@ -11,6 +11,9 @@
 - [ ] Will this PR result in changes to the test suite? **[Yes or No]**</br>
 If **yes**, describe the new output and/or changes to the existing output:</br>
 
+- [ ] Do these changes introduce new SonarQube findings? **[Yes or No]**</br>
+If **yes**, please describe:
+
 - [ ] Please complete this pull request review by **[Fill in date]**.</br>
 
 ## Pull Request Checklist ##

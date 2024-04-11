@@ -88,21 +88,17 @@ ${METPLUS_DOMAIN_INFO_LIST}
 ////////////////////////////////////////////////////////////////////////////////
 
 //
-// Data censoring and conversion
+// Cylindrical coordinate transformation regridding options
 // May be set separately in each diag_data "field" entry
 //
-// censor_thresh = [];
-${METPLUS_CENSOR_THRESH}
-
-// censor_val    = [];
-${METPLUS_CENSOR_VAL}
-
-// convert(x)    = x;
-${METPLUS_CONVERT}
+//regrid = {
+${METPLUS_REGRID_DICT}
 
 
 //
 // Data fields
+// censor_thresh, censor_val, and convert(x) may be set separately
+// in each data "field" array entry
 //
 data = {
 
@@ -121,12 +117,6 @@ data = {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
-//
-// Regridding options
-//
-//regrid = {
-${METPLUS_REGRID_DICT}
 
 //
 // Optionally convert u/v winds to tangential/radial winds
@@ -168,8 +158,8 @@ ${METPLUS_ONE_TIME_PER_FILE_FLAG}
 //
 // Flags to control output files
 //
-//nc_rng_azi_flag =
-${METPLUS_NC_RNG_AZI_FLAG}
+//nc_cyl_grid_flag =
+${METPLUS_NC_CYL_GRID_FLAG}
 
 //nc_diag_flag =
 ${METPLUS_NC_DIAG_FLAG}
@@ -177,14 +167,15 @@ ${METPLUS_NC_DIAG_FLAG}
 //cira_diag_flag =
 ${METPLUS_CIRA_DIAG_FLAG}
 
+//
+// Output base file naming convention
+//
+//output_base_format =
+${METPLUS_OUTPUT_BASE_FORMAT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 tmp_dir = "${MET_TMP_DIR}";
-
-//output_prefix =
-${METPLUS_OUTPUT_PREFIX}
-
 //version       = "V11.1.0";
 
 ////////////////////////////////////////////////////////////////////////////////
