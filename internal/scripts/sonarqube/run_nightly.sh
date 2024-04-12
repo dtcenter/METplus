@@ -20,8 +20,7 @@
 #=======================================================================
 
 # Constants
-#EMAIL_LIST="johnhg@ucar.edu hsoh@ucar.edu jpresto@ucar.edu linden@ucar.edu mccabe@ucar.edu"
-EMAIL_LIST="johnhg@ucar.edu hsoh@ucar.edu mccabe@ucar.edu"
+EMAIL_LIST="johnhg@ucar.edu hsoh@ucar.edu jpresto@ucar.edu mccabe@ucar.edu"
 KEEP_DAYS=5
 
 function usage {
@@ -39,7 +38,7 @@ SCRIPT_DIR=`dirname $0`
 if [[ ${0:0:1} != "/" ]]; then SCRIPT_DIR=$(pwd)/${SCRIPT_DIR}; fi 
 
 # Define the development environment
-ENV_FILE=${SCRIPT_DIR}/environment/development.`hostname`
+ENV_FILE=${SCRIPT_DIR}/development.`hostname`
 if [[ ! -e ${ENV_FILE} ]]; then
   echo "$0: ERROR -> Development environment file missing: ${ENV_FILE}"
   exit 1
@@ -70,7 +69,5 @@ if [[ $? -ne 0 ]]; then
   cat ${LOGFILE} | mail -s "METplus SonarQube scan Failed for ${1} in `basename ${RUN_DIR}` (autogen msg)" ${EMAIL_LIST}
   exit 1
 fi
-
-# Convert SonarQube report from pdf to html
 
 exit 0
