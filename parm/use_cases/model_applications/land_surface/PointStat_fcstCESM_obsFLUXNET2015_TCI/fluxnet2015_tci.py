@@ -166,6 +166,7 @@ if len(metdf)==0:
 for df,stn in tuple(zip(dflist,final_files.keys())):
 
   if DEBUG:
+    print("==============================")
     print("PROCESSING STATION: %s" % (stn))
 
   # Length of all data
@@ -176,17 +177,22 @@ for df,stn in tuple(zip(dflist,final_files.keys())):
   # Do some checking for missing data. FLUXNET says that -9999 is usecd for missing data.
   # Both the soil and surface variable must be present to compute TCI, so we only want
   # to retain days where both are not missing.
-  withmiss = len(df)
   df = df[(df[sfc_flux_varname]!=-9999.) & (df[soil_varname]!=-9999.)]
-#  if DEBUG:
-  print("DISCARDED %04d DAYS WITH MISSING DATA." % (int(withmiss)-int(len(df))))
-  missdiff = int(withmiss)-int(len(df))
-  print("%3.2f" % ((float(missdiff)/float(withmiss))*100.0))
+  if DEBUG:
+    missdiff = int(alldays)-int(len(df))
+    print("DISCARDED %04d DAYS WITH MISSING DATA (%3.2f %%)." % (int(alldays)-int(len(df)),((float(missdiff)/float(alldays))*100.0)))
+
+  # Reset length of good data
+  alldays = len(df)
 
   # Only save data with quality above the threshold and reset the index
   df = df[(df[sfc_qc].astype('float')>=DAILY_QC_THRESH)&(df[soil_qc].astype('float')>=DAILY_QC_THRESH)].reset_index()
   if DEBUG:
     print("DISCARDED %04d DAYS OF LOW QUALITY DATA FOR ALL SEASONS AT %s" % (int(alldays)-int(len(df)),stn))
+
+  # Print the number of days remaining after filtering
+  if DEBUG:
+    print("NUMBER OF DAYS AFTER FILTERING AT THIS SITE: %04d" % (alldays))
 
   # Double check there's any valid data here
   if not len(df) > 0:
@@ -209,6 +215,8 @@ for df,stn in tuple(zip(dflist,final_files.keys())):
 
   # Subset by the requested season
   df = df[df['season']==season]
+  if DEBUG:
+    print("TOTAL DAYS FOR %s AT THIS SITE: %04d" % (season,len(df)))
   
   # Double check there's any valid data here
   if not len(df) > 0:
@@ -219,7 +227,10 @@ for df,stn in tuple(zip(dflist,final_files.keys())):
 
   # If the season is DJF, remove leap days from February if requested
   if season=='DJF' and SKIP_LEAP:
+    withleap = len(df)
     df = df[~((df.datetime.dt.month == 2) & (df.datetime.dt.day == 29))]
+    if DEBUG:
+      print("REMOVED %03d LEAP DAYS." % (int(withleap)-int(len(df))))
 
   # Get the start and end of the season of the first year
   start, end = get_season_start_end(season,df['datetime'].iloc[0])
