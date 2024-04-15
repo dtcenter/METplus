@@ -53,7 +53,7 @@ print("Finished reading CAM and CLM files with Xarray.")
 
 # Add a Pandas date range to subset by season
 time_units, reference_date = ds.time.attrs['units'].split('since')
-if not time_units.strip() in ['D','days','Days','DAYS']:
+if time_units.strip() not in ['D','days','Days','DAYS']:
   print("ERROR: TIME UNITS EXPECTED TO BE DAYS IN tci_from_cesm.py")
   sys.exit(1)
 else:

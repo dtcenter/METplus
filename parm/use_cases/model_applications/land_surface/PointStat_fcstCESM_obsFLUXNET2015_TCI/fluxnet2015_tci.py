@@ -195,7 +195,7 @@ for df,stn in tuple(zip(dflist,final_files.keys())):
     print("NUMBER OF DAYS AFTER FILTERING AT THIS SITE: %04d" % (alldays))
 
   # Double check there's any valid data here
-  if not len(df) > 0:
+  if len(df) <= 0:
     if DEBUG:
       print("WARNING! NO DATA LEFT AFTER QC FILTERING.")
     metdf.loc[metdf['sid']==stn,'qc'] = '-9999'
@@ -219,7 +219,7 @@ for df,stn in tuple(zip(dflist,final_files.keys())):
     print("TOTAL DAYS FOR %s AT THIS SITE: %04d" % (season,len(df)))
   
   # Double check there's any valid data here
-  if not len(df) > 0:
+  if len(df) <= 0:
     if DEBUG:
       print("WARNING! NO DATA FOR REQUESTED SEASON.")
     metdf.loc[metdf['sid']==stn,'qc'] = '-9999'
