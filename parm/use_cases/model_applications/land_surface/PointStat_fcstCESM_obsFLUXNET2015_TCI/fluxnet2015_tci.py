@@ -131,7 +131,7 @@ for station,stationfile in file_info.items():
       print("WARNING! EXCLUDING SITE %s, NO METADATA FOUND IN fluxnetstations.csv" % (station))
     discard.append(station)
   df = pd.read_csv(stationfile)
-  if (sfc_flux_varname in df.columns and soil_varname in df.columns and soil_qc in df.columns):
+  if (sfc_flux_varname in df.columns and soil_varname in df.columns and soil_qc in df.columns and sfc_qc in df.columns):
     dflist.append(df)
   else:
     if DEBUG:
@@ -172,6 +172,16 @@ for df,stn in tuple(zip(dflist,final_files.keys())):
   alldays = len(df)
   if DEBUG:
     print("NUMBER OF DAYS AT THIS SITE: %04d" % (alldays))
+
+  # Do some checking for missing data. FLUXNET says that -9999 is usecd for missing data.
+  # Both the soil and surface variable must be present to compute TCI, so we only want
+  # to retain days where both are not missing.
+  withmiss = len(df)
+  df = df[(df[sfc_flux_varname]!=-9999.) & (df[soil_varname]!=-9999.)]
+#  if DEBUG:
+  print("DISCARDED %04d DAYS WITH MISSING DATA." % (int(withmiss)-int(len(df))))
+  missdiff = int(withmiss)-int(len(df))
+  print("%3.2f" % ((float(missdiff)/float(withmiss))*100.0))
 
   # Only save data with quality above the threshold and reset the index
   df = df[(df[sfc_qc].astype('float')>=DAILY_QC_THRESH)&(df[soil_qc].astype('float')>=DAILY_QC_THRESH)].reset_index()
