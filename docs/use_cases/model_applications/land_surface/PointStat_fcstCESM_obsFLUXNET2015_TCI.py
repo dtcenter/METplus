@@ -34,7 +34,7 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #
 # | **Observations:** Raw FLUXNET2015 observations
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
+# | **Location:** All of the input data required for this use case can be found in the land_surface sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 #
 # | **Data Source:** CESM - NSF NCAR Climate & Global Dynamics (CGD); FLUXNET2015 "SUBSET" Data Product: https://fluxnet.org/data/fluxnet2015-dataset/subset-data-product/
