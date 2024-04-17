@@ -43,6 +43,43 @@ When applicable, release notes are followed by the
 `GitHub issue <https://github.com/dtcenter/METplus/issues>`__ number which
 describes the bugfix, enhancement, or new feature.
 
+
+METplus Version 6.0.0 Beta 4 Release Notes (2024-04-17)
+-------------------------------------------------------
+
+  .. dropdown:: Enhancements
+
+     NONE
+
+  .. dropdown:: Bugfix
+
+     * ASCII2NC file window bad default value and redundant initialization of wrappers
+       (`#2520 <https://github.com/dtcenter/METplus/issues/2520>`_)
+
+  .. dropdown:: New Wrappers
+
+     NONE
+
+  .. dropdown:: New Use Cases
+
+     NONE
+
+  .. dropdown:: Documentation
+
+     * Create pull-down menus within User's Guide for configuration files
+       (`#2372 <https://github.com/dtcenter/METplus/issues/2372>`_)
+
+     * Modify the format of the METplus Components Python Requirements Table
+       (`#2463 <https://github.com/dtcenter/METplus/issues/2463>`_)
+
+  .. dropdown:: Internal
+
+     * Automate the MET version number update
+       (`#2509 <https://github.com/dtcenter/METplus/issues/2509>`_)
+     * Add GitHub action to run SonarQube for METplus pull requests and feature branches
+       (`#2537 <https://github.com/dtcenter/METplus/issues/2537>`_)
+
+
 METplus Version 6.0.0 Beta 3 Release Notes (2024-02-08)
 -------------------------------------------------------
 
