@@ -6,49 +6,83 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 
 """
 ##############################################################################
+# .. contents::
+#    :depth: 1
+#    :local:
+#    :backlinks: none
+
+##############################################################################
 # Scientific Objective
 # --------------------
-# This use case ingests two CESM (CAM and CLM) files and a new FLUX2015 dataset (NETCDF) that Paul Dirmeyer, GMU prepared from FLUXNET2015 ASCII dataset.
-# The use case will calculate Terrestrial Coupling Index (TCI) from CESM datasets.
-# Utilizing Python embedding, this use case taps into a new vital observation dataset and compares it to CESM simulations TCI forecast. 
-# Finally, it will generate plots of model TCI and observed TCI.
+# This use case ingests two CESM (CAM and CLM) files and raw FLUXNET2015 data.
+# The use case calculates the Terrestrial Coupling Index (TCI) from the CESM forecasts and FLUXNET observations.
+# Utilizing Python embedding, this use case taps into a new vital observation dataset and compares it to CESM forecasts of TCI. 
+# Finally, it will generate plots of model forecast TCI overlaid with TCI observations at FLUXNET sites.
+#
+# The reference for the Terrestrial Coupling Index calculation is as follows:
+#
+# Dirmeyer, P. A., 2011: The terrestrial segment of soil moisture-climate coupling. *Geophys. Res. Lett.*, **38**, L16702, doi: 10.1029/2011GL048268.
+#
 
 ##############################################################################
 # Datasets
 # ---------------------
 #
-# | **Forecast:** CESM 1979-1983 Simulations a. Community Land Model (CLM) and b. Community Atmosphere Model (CAM) 
+# | **Forecast:** CESM 1979-1983 Simulations 
+# | * Community Land Model (CLM) file
+# | * Community Atmosphere Model (CAM) file
 #
-# | **Observations:** FLUXNET2015 post processed and converted to NETCDF. This data includes data collected from multiple regional flux towers.
+# | **Observations:** Raw FLUXNET2015 observations
 #
-#
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
+# | **Location:** All of the input data required for this use case can be found in the land_surface sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 #
-# | **Data Source:** CESM - CGD; FLUXNET2015 - Paul Dirmeyer
+# | **Data Source:** CESM - NSF NCAR Climate & Global Dynamics (CGD); FLUXNET2015 "SUBSET" Data Product: https://fluxnet.org/data/fluxnet2015-dataset/subset-data-product/
+#
+
+##############################################################################
+# Python Dependencies
+# ---------------------
+#
+# This use case requires the following Python dependencies::
+#
+# * Xarray
+# * Pandas
+# * METcalcpy 3.0.0+
+#
 
 ##############################################################################
 # METplus Components
 # ------------------
 #
 # This use case utilizes the METplus PyEmbedIngest to read the CESM files and calculate TCI using python embedding and a NETCDF file of the TCI is generated. 
-# The METplus PointStat processes the output of PyEmbedIngest and FLUXNET2015 dataset (using python embedding), and outputs the requested line types.
-# Then METplus PlotPointObs tool reads the output of PyEmbedIngest and FLUXNET2015 dataset and produce plots of TCI from CESM and point observations. 
+# The METplus PointStat processes the output of PyEmbedIngest and FLUXNET2015 dataset (using Python embedding), and outputs the requested line types.
+# Then the METplus PlotPointObs tool reads the output of PyEmbedIngest and FLUXNET2015 dataset and produce plots of TCI from CESM and point observations.
 # A custom loop runs through all the pre-defined seasons (DJF, MAM, JJA, SON) and runs PyEmbedIngest, PointStat, and PlotPointObs.
+#
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
-# The PyEmbedIngest tool reads 2 CESM files containing Soil Moisture and Sensible Heat Flux, each composed of daily forecasts from
-# 1979 to 1983 and calculates TCI and generates a NETCDF file of the TCI. One FLUXNET2015 NETCDF file containing station observations 
-# of several variables including Coupling Index of Soil Moisture and Sensible Heat Flux is read by Python Embedding.
-#
+# The PyEmbedIngest tool reads 2 CESM files containing Soil Moisture (CLM file) and Sensible Heat Flux (CAM file), each composed of daily forecasts from
+# 1979 to 1983 and calculates TCI and generates a NETCDF file of the TCI. Raw CSV files containing FLUXNET station observations of latent heat flux (LE_F_MDS)
+# and soil water content at the shallowest level (SWC_F_MDS_1) are read using Python embedding, and TCI is computed.
+# 
 # | **Valid Beg:** 1979-01-01 at 00z
 # | **Valid End:** 1979-01-01 at 00z
-# 
+#
 # PointStat is used to compare the two new fields (TCI calculated from CESM dataset and FLUXNET2015).
-# Finally, PlotPointObs is run to plot the CESM TCI overlaying the FLUXNET2015 point observations. 
+# Finally, PlotPointObs is run to plot the CESM TCI overlaying the FLUXNET2015 point observations.
+#
+# .. note::
+# 
+#   The CESM forecasts cover a time period prior to the availability of FLUXNET observations. Thus,
+#   this use case should be considered a demonstration of the capability to read CESM forecast data, 
+#   raw FLUXNET observation data, and compute TCI, rather than a bonafide scientific application.
+#   The use case is designed to enforce seasonal alignment, but it is not designed to enforce date/time alignment. 
+#   In this case, the CESM data cover 1979-1983, whereas the sample FLUXNET observations cover varying time ranges depending on the site.
+#
 
 ##############################################################################
 # METplus Configuration
@@ -76,17 +110,106 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 # Python Embedding
 # ----------------
 #
-# This use case uses a Python embedding script to read input data
+# This use case uses a Python embedding script to read both the forecast and observation data, in order to compute TCI,
+# which is the diagnostic that is being verified by MET using PointStat. The CESM forecast data is read using:
 #
 # parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/cesm_tci.py
 #
 # .. highlight:: python
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/cesm_tci.py
 #
+# The user can control all arguments to this script via the METplus use case configuration file using the following config entries:
+#
+# .. glossary::
+# 
+#    CESM_CAM_VAR
+#      The CESM Community Atmosphere Model variable to use for computing TCI
+#
+#      | *Default:* LHFLX
+#
+#    CESM_CLM_VAR
+#      The CESM Community Land Model variable to use for computing TCI
+#
+#      | *Default:* SOILWATER_10CM
+#
+#    CESM_CAM_FILE_PATH
+#      The absolute path to the CESM Community Atmosphere Model netcdf file
+#
+#      | *Default:*
+#
+#    CESM_CLM_FILE_PATH
+#      The absolute path to the CESM Community Land Model netcdf file
+#
+#      | *Default:*
+#
+# The raw FLUXNET2015 SUBSET data are read using:
+#
 # parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/fluxnet2015_tci.py
 #
 # .. highlight:: python
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/fluxnet2015_tci.py
+#
+# The user can control all command line arguments to this script via METplus config entries:
+#
+# .. glossary::
+#
+#    FLUXNET_DATA_DIR
+#      The directory containing raw FLUXNET CSV files
+#
+#      | *Default:*
+#
+#    FLUXNET_LAT_HEAT_VAR
+#      The FLUXNET surface latent heat flux variable name to use for computing TCI
+#
+#      | *Default:* LE_F_MDS
+#
+#    FLUXNET_SOIL_MOIST_VAR
+#      The FLUXNET soil moisture variable name to use for computing TCI
+#
+#      | *Default:* SWC_F_MDS_1
+#
+#    FLUXNET_OBS_METADATA_FILE
+#      The absolute path to the fluxnetstations.csv metadata file included with the use case
+#
+#      | *Default:*
+#
+# and for data filtering options, via METplus config entries:
+#
+# .. glossary::
+#
+#    FLUXNET_SKIP_LEAP_DAYS
+#      Skip FLUXNET observations from 29 February days
+#
+#      | *Default:* True
+#
+#    FLUXNET_HIGHRES_QC_THRESH
+#      The fraction of higher temporal resolution FLUXNET data required to have
+#      passed quality control in order to use the daily data.
+#
+#      | *Default:* 0.8
+#
+#    FLUXNET_MIN_DAYS_PER_SEASON
+#      The minimum number of days to include in individual seasons at each site
+#
+#      | *Default:* 1
+#
+#    FLUXNET_MIN_DAYS_PER_SITE
+#      The minimum number of days for all seasons at each site
+#
+#      | *Default:* 10
+#
+#    FLUXNET_RAW_FILENAME_PATTERN
+#      A filename pattern matching the template of the raw FLUXNET CSV files
+#
+#      | *Default:* FLX_*_DD_*.csv
+#
+#    FLUXNET_DEBUG
+#      Turn on additional print statements from the Python embedding script
+#
+#      | *Default:* False
+#
+# Both of the above Python embedding scripts compute TCI using the ``calc_tci()`` function in METcalcpy. See the METcalcpy 
+# documentation for more information: https://metcalcpy.readthedocs.io/en/latest/index.html.
 #
 
 ##############################################################################
@@ -99,6 +222,7 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #    run_metplus.py /path/to/METplus/parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
+#
 
 ##############################################################################
 # Expected Output

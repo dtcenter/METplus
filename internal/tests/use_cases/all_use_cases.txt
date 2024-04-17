@@ -88,7 +88,7 @@ Category: data_assimilation
 
 
 Category: land_surface
-0::PointStat_fcstCESM_obsFLUXNET2015_TCI:: model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf:: py_embed
+0::PointStat_fcstCESM_obsFLUXNET2015_TCI:: model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf:: metplotpy_env, py_embed
 
 
 Category: marine_and_cryosphere

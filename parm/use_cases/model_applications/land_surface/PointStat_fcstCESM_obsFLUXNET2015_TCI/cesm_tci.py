@@ -6,114 +6,111 @@ Designed to read Latent Heat Flux (from CAM) and Soil Temp (from CLM)
 from two CESM files 
 User needs to provide the season (DJF, MAM, JJA, or SON) in the METplus conf file
 User can change the variables to compute TCI
+
+Modified Nov 2023
 """
-
-
-import numpy as np 
-import xarray as xr 
-import pandas as pd
-import datetime
-import time
-import sys
+import metcalcpy.diagnostics.land_surface as land_sfc
 import os
-import netCDF4 as nc
+import pandas as pd
+import sys
+import xarray as xr
 
-if len(sys.argv) < 4:
-    print("Must specify the following elements: sfc_flux_file soil_file season (DJF, MAM, JJA, or SON)")
-    sys.exit(1)
+# The script expects five arguments:
+# sfc_flux_file = Latent Heat Flux file (from CAM, CESM "community atmosphere model")
+# sfc_flux_varname = Field name in sfc_flux_file to use when computing TCI
+# soil_file = Soil Temperature file (from CLM, CESM "community land model")
+# soil_varname = Field name in soil_file to use when computing TCI
+# season = "DJF", "MAM", "JJA", or "SON"
+if len(sys.argv) < 6:
+  print("Must specify the following elements: ")
+  print("sfc_flux_file")
+  print("sfc_flux_varname")
+  print("soil_file")
+  print("soil_varname")
+  print("season (DJF, MAM, JJA, or SON)")
+  sys.exit(1)
 
-fileCLM = os.path.expandvars(sys.argv[1]) 
-fileCAM = os.path.expandvars(sys.argv[2]) 
-season = sys.argv[3] 
-var_y = sys.argv[4]
+# Store command line arguments
+fileCAM = os.path.expandvars(sys.argv[1])
+sfc_flux_varname = varCAM = sys.argv[2]
+fileCLM = os.path.expandvars(sys.argv[3])
+soil_varname = varCLM = sys.argv[4]
+season = sys.argv[5]
+if season not in ['DJF','MAM','JJA','SON']:
+  print("ERROR: UNRECOGNIZED SEASON IN tci_from_cesm.py")
+  sys.exit(1) 
 
-print('Starting Terrestrial Coupling Index Calculation for: ',season)
+print("Starting Terrestrial Coupling Index Calculation for: "+season)
+dsCLM = xr.open_dataset(fileCLM, decode_times=False)
+dsCAM = xr.open_dataset(fileCAM, decode_times=False)
 
-camDS_CLM45         = xr.open_dataset(fileCAM, decode_times=False)
-print('Finished reading in CAM file')
-clmDS_CLM45         = xr.open_dataset(fileCLM, decode_times=False)
-print('Finished reading in CLM file')
+# The same shape (dimensions/coordinates) are assumed between the CLM and CAM files
+# However, some metadata differences prevent using Xarray functions to combine the fields.
+# Thus, we extract the values from one Xarray object and attach it to the other.
+dsCAM[soil_varname] = xr.DataArray(dsCLM[soil_varname].values,dims=['time','lat','lon'],coords=dsCAM.coords)
+ds = dsCAM
+print("Finished reading CAM and CLM files with Xarray.")
 
-if season=="DJF":
-    ss = 0
-elif season=="MAM":
-    ss = 1
-elif season=="JJA":
-    ss = 2
-elif season=="SON":
-    ss = 3
-else: 
-    sys.exit('ERROR  : URECOGNIZED SEASON, PLEASE USE DJF, MAM, JJA, OR SON')
+# Add a Pandas date range to subset by season
+time_units, reference_date = ds.time.attrs['units'].split('since')
+if time_units.strip() not in ['D','days','Days','DAYS']:
+  print("ERROR: TIME UNITS EXPECTED TO BE DAYS IN tci_from_cesm.py")
+  sys.exit(1)
+else:
+  ds['time'] = pd.date_range(start=reference_date, periods=ds.sizes['time'], freq='D')
 
-units, reference_date = camDS_CLM45.time.attrs['units'].split('since')
-camDS_CLM45['time'] = pd.date_range(start=reference_date, periods=camDS_CLM45.sizes['time'], freq='D')
-camDS_time=camDS_CLM45.time[0]
-dt_object = datetime.datetime.utcfromtimestamp(camDS_time.values.tolist()/1e9)
-vDate=dt_object.strftime("%Y%m%d")
+# Group the dataset by season and subset to the season the user requested
+szn = ds.groupby('time.season')[season]
 
+# Use the shared coupling index function to compute the index
+couplingIndex = land_sfc.calc_tci(szn[soil_varname],szn[sfc_flux_varname])
 
-units, reference_date = clmDS_CLM45.time.attrs['units'].split('since')
-clmDS_CLM45['time'] = pd.date_range(start=reference_date, periods=clmDS_CLM45.sizes['time'], freq='D')
+# Prepare for MET
+# 1. Replace missing data with the MET missing data values
+couplingIndex = xr.where(couplingIndex.isnull(),-9999.,couplingIndex)
 
-ds = camDS_CLM45
-ds['SOILWATER_10CM'] = (('time','lat','lon'), clmDS_CLM45.SOILWATER_10CM.values)
+# 2. Pull out the values into a NumPy object
+met_data = couplingIndex.values
 
-xname = 'SOILWATER_10CM'    # Controlling variable
-#yname = 'LHFLX'             # Responding variable
-yname=str(var_y)
+# 3. Reverse the ordering of met_data (flip the grid along the equator)
+met_data = met_data[::-1]
 
-xday = ds[xname].groupby('time.season')
-yday = ds[yname].groupby('time.season')
+# 4. Create a time variable formatted the way MET expects
+time_var = ds.time.dt.strftime('%Y%m%d_%H%M%S').values[0]
 
-# Get the covariance of the two (numerator in coupling index)
-covarTerm = ((xday - xday.mean()) * (yday - yday.mean())).groupby('time.season').sum() / xday.count()
+# 5. Create  grid information. The CESM is on a lat/lon projection.
+# lower left corner latitude
+lat_ll = ds.lat.min().values
+# lower left corner longitude
+lon_ll = ds.lon.min().values
+# number of latitude
+n_lat = ds.sizes['lat']
+# number of longitude
+n_lon = ds.sizes['lon']
+# latitude grid spacing
+delta_lat = (ds.lat.max().values-lat_ll)/n_lat
+# longitude grid spacing
+delta_lon = (ds.lon.max().values-lon_ll)/n_lon
 
-# Now compute the coupling index
-couplingIndex = covarTerm/xday.std()
-ci_season=couplingIndex[ss,:,:]
+# 6. Create a dictionary for the LatLon grid and required attributes
+grid_attrs = {'type': 'LatLon',
+              'name': 'CESM Grid',
+              'lat_ll': float(lat_ll),
+              'lon_ll': float(lon_ll),
+              'delta_lat': float(delta_lat),
+              'delta_lon': float(delta_lon),
+              'Nlat': int(n_lat),
+              'Nlon': int(n_lon)}
 
-ci = np.where(np.isnan(ci_season), -9999, ci_season)
-
-met_data = ci[:,:]
-met_data = met_data[::-1].copy()
-
-#trim the lat/lon grids so they match the data fields
-lat_met = camDS_CLM45.lat
-lon_met = camDS_CLM45.lon
-print(" Model Data shape: "+repr(met_data.shape))
-v_str = vDate
-v_str = v_str + '_000000'
-#print(" Valid date: "+v_str)
-lat_ll = float(lat_met.min())
-lon_ll = float(lon_met.min())
-n_lat = lat_met.shape[0]
-n_lon = lon_met.shape[0]
-delta_lat = (float(lat_met.max()) - float(lat_met.min()))/float(n_lat)
-delta_lon = (float(lon_met.max()) - float(lon_met.min()))/float(n_lon)
-
-print(f"variables:"
-        f"lat_ll: {lat_ll} lon_ll: {lon_ll} n_lat: {n_lat} n_lon: {n_lon} delta_lat: {delta_lat} delta_lon: {delta_lon}")
-
-attrs = {
-        'valid': v_str,
-        'init': v_str,
-        'lead': "000000",
-        'accum': "000000",
-        'name': 'TCI',
-        'standard_name': 'terrestrial_coupling_index',
-        'long_name': 'terrestrial_coupling_index',
-        'level': "10cm_soil_depth",
-        'units': "W/m2",
-
-        'grid': {
-            'type': "LatLon",
-            'name': "CESM Grid",
-            'lat_ll': lat_ll,
-            'lon_ll': lon_ll,
-            'delta_lat': delta_lat,
-            'delta_lon': delta_lon,
-            'Nlat': n_lat,
-            'Nlon': n_lon,
-            }
-        }
+# 7. Populate the attributes dictionary for MET
+attrs = {'valid': time_var,
+         'init': time_var,
+         'lead': "000000",
+         'accum': "000000",
+         'name': 'TCI',
+         'standard_name': 'terrestrial_coupling_index',
+         'long_name': 'terrestrial_coupling_index',
+         'level': '10cm_soil_depth',
+         'units': 'W/m2',
+         'grid': grid_attrs}
 
