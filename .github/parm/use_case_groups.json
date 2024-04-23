@@ -7,7 +7,7 @@
   {
     "category": "met_tool_wrapper",
     "index_list": "30-58",
-    "run": false
+    "run": true
   },
   {
     "category": "air_quality_and_comp",
@@ -242,7 +242,7 @@
   {
     "category": "short_range",
     "index_list": "9",
-    "run": false
+    "run": true
   },
   {
     "category": "short_range",
