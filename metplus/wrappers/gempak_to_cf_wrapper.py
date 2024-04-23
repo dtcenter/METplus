@@ -43,14 +43,14 @@ class GempakToCFWrapper(LoopTimesWrapper):
         c_dict['INPUT_DATATYPE'] = 'GEMPAK'
         c_dict['INPUT_DIR'] = self.config.getdir('GEMPAKTOCF_INPUT_DIR', '')
         c_dict['INPUT_TEMPLATE'] = (
-            self.config.getraw('filename_templates',
-                               'GEMPAKTOCF_INPUT_TEMPLATE')
+            self.config.getraw('config', 'GEMPAKTOCF_INPUT_TEMPLATE')
         )
         c_dict['OUTPUT_DIR'] = self.config.getdir('GEMPAKTOCF_OUTPUT_DIR', '')
         c_dict['OUTPUT_TEMPLATE'] = (
-            self.config.getraw('filename_templates',
-                               'GEMPAKTOCF_OUTPUT_TEMPLATE')
+            self.config.getraw('config', 'GEMPAKTOCF_OUTPUT_TEMPLATE')
         )
+        # skip RuntimeFreq input file logic - remove once integrated
+        c_dict['FIND_FILES'] = False
         return c_dict
 
     def get_command(self):
@@ -72,16 +72,13 @@ class GempakToCFWrapper(LoopTimesWrapper):
 
     def run_at_time_once(self, time_info):
         """! Runs the MET application for a given time and forecast lead combination
-             Args:
-                @param time_info dictionary containing timing information
+
+            @param time_info dictionary containing timing information
         """
-        infile = do_string_sub(self.c_dict['INPUT_TEMPLATE'],
-                               **time_info)
-        infile = os.path.join(self.c_dict.get('INPUT_DIR', ''),
-                              infile)
+        infile = do_string_sub(self.c_dict['INPUT_TEMPLATE'], **time_info)
+        infile = os.path.join(self.c_dict.get('INPUT_DIR', ''), infile)
         self.infiles.append(infile)
 
-        # set environment variables
         self.set_environment_variables(time_info)
 
         if not self.find_and_check_output_file(time_info):

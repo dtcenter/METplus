@@ -1,5 +1,5 @@
 """
-UserScript: Compue Cross Spectra and make a plot 
+UserScript: Compute Cross Spectra and Make a Plot 
 ========================================================================
 
 model_applications/

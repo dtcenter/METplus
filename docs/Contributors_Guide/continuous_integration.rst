@@ -1191,6 +1191,31 @@ to run. Example::
 The above example will run data_assimilation 0, 1, 2, and 4 in one
 job, then data_assimilation 3 in another job.
 
+.. _cg-ci-disable_use_case:
+
+Disabling Use Cases
+"""""""""""""""""""
+
+Sometimes use cases should not run in the automated test suite.
+For example, changes to another repository may break a use case and prevent it
+from running successfully until a fix can be applied.
+In the meantime, to prevent the use case(s) from failing in the automated tests,
+a use case group can be disabled by adding *"disabled": true* in
+**use_case_groups.json**::
+
+      {
+        "category": "short_range",
+        "index_list": "14",
+        "disabled": true,
+        "run": true
+      },
+
+It is recommended to add this key/value pair before the *run* key/value to avoid
+having to add a comma to the end of the *run* value.
+
+If the *disabled* value is set to *true*, then the use case group will not run
+even if the *run* attribute is set to *true*.
+
 Run Use Cases
 ^^^^^^^^^^^^^
 

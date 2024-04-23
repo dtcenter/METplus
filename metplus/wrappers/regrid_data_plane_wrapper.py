@@ -160,7 +160,8 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         if 'RegridDataPlane' in get_process_list(self.config):
             if not c_dict['VERIFICATION_GRID']:
                 self.log_error("REGRID_DATA_PLANE_VERIF_GRID must be set.")
-
+        # skip RuntimeFreq input file logic - remove once integrated
+        c_dict['FIND_FILES'] = False
         return c_dict
 
     def handle_output_file(self, time_info, field_info, data_type):
@@ -319,7 +320,9 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
             return False
 
         add_field_info_to_time_info(time_info, var_list[0])
+        self.run_count += 1
         if not self.find_input_files(time_info, data_type):
+            self.missing_input_count += 1
             return False
 
         # set environment variables
@@ -344,17 +347,16 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
          """
         input_path = self.find_data(time_info, data_type=data_type)
         if not input_path:
-            return None
+            return False
 
         self.infiles.append(input_path)
 
-        verif_grid = do_string_sub(self.c_dict['VERIFICATION_GRID'],
-                                   **time_info)
+        grid = do_string_sub(self.c_dict['VERIFICATION_GRID'], **time_info)
 
         # put quotes around verification grid in case it is a grid description
-        self.infiles.append(f'"{verif_grid}"')
+        self.infiles.append(f'"{grid}"')
 
-        return self.infiles
+        return True
 
     def set_command_line_arguments(self):
         """!Returns False if command should not be run"""

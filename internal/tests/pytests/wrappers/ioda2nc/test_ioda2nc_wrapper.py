@@ -31,6 +31,55 @@ def set_minimum_config_settings(config):
 
 
 @pytest.mark.parametrize(
+    'missing, run, thresh, errors, allow_missing, runtime_freq', [
+        (16, 24, 0.3, 0, True, 'RUN_ONCE_FOR_EACH'),
+        (16, 24, 0.7, 1, True, 'RUN_ONCE_FOR_EACH'),
+        (16, 24, 0.3, 16, False, 'RUN_ONCE_FOR_EACH'),
+        (2, 4, 0.4, 0, True, 'RUN_ONCE_PER_INIT_OR_VALID'),
+        (2, 4, 0.6, 1, True, 'RUN_ONCE_PER_INIT_OR_VALID'),
+        (2, 4, 0.6, 2, False, 'RUN_ONCE_PER_INIT_OR_VALID'),
+        (2, 5, 0.4, 0, True, 'RUN_ONCE_PER_LEAD'),
+        (2, 5, 0.7, 1, True, 'RUN_ONCE_PER_LEAD'),
+        (2, 5, 0.4, 2, False, 'RUN_ONCE_PER_LEAD'),
+        (0, 1, 0.4, 0, True, 'RUN_ONCE'),
+        (0, 1, 0.4, 0, False, 'RUN_ONCE'),
+    ]
+)
+@pytest.mark.wrapper
+def test_ioda2nc_missing_inputs(metplus_config, get_test_data_dir, missing,
+                                run, thresh, errors, allow_missing, runtime_freq):
+    config = metplus_config
+    config.set('config', 'DO_NOT_RUN_EXE', True)
+    config.set('config', 'INPUT_MUST_EXIST', True)
+    config.set('config', 'IODA2NC_ALLOW_MISSING_INPUTS', allow_missing)
+    config.set('config', 'IODA2NC_INPUT_THRESH', thresh)
+    config.set('config', 'IODA2NC_RUNTIME_FREQ', runtime_freq)
+    config.set('config', 'LOOP_BY', 'INIT')
+    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H')
+    config.set('config', 'INIT_LIST', '2017051001, 2017051003, 2017051201, 2017051203')
+    if runtime_freq == 'RUN_ONCE_PER_LEAD':
+        config.set('config', 'LEAD_SEQ', '6,9,12,15,18')
+    else:
+        config.set('config', 'LEAD_SEQ', '1,2,3,6,9,12')
+    config.set('config', 'IODA2NC_INPUT_DIR', get_test_data_dir('obs'))
+    config.set('config', 'IODA2NC_INPUT_TEMPLATE',
+               '{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A06.nc')
+    config.set('config', 'IODA2NC_OUTPUT_TEMPLATE', '{OUTPUT_BASE}/IODA2NC/output/test.nc')
+
+    wrapper = IODA2NCWrapper(config)
+    assert wrapper.isOK
+
+    all_cmds = wrapper.run_all_times()
+    for cmd, _ in all_cmds:
+        print(cmd)
+
+    print(f'missing: {wrapper.missing_input_count} / {wrapper.run_count}, errors: {wrapper.errors}')
+    assert wrapper.missing_input_count == missing
+    assert wrapper.run_count == run
+    assert wrapper.errors == errors
+
+
+@pytest.mark.parametrize(
     'config_overrides, env_var_values, extra_args', [
         # 0
         ({'IODA2NC_MESSAGE_TYPE': 'ADPUPA, ADPSFC', },

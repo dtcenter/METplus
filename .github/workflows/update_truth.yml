@@ -26,7 +26,7 @@ jobs:
           fi
           echo ERROR: Branch is $branch_name - must be develop or match main_vX.Y
           exit 1
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         name: Checkout repository
         with:
           fetch-depth: 0

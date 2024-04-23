@@ -11,14 +11,13 @@ Condition codes: 0 for success, 1 for failure
 """
 
 import os
-from datetime import datetime
 
 from ..util import time_util
-from . import CommandBuilder
-from ..util import do_string_sub
-from ..util import log_runtime_banner, get_lead_sequence, is_loop_by_init
+from ..util import log_runtime_banner, get_lead_sequence
 from ..util import skip_time, getlist, get_start_and_end_times, get_time_prefix
 from ..util import time_generator, add_to_time_input
+from ..util import sub_var_list, add_field_info_to_time_info
+from . import CommandBuilder
 
 '''!@namespace RuntimeFreqWrapper
 @brief Parent class for wrappers that run over a grouping of times
@@ -38,6 +37,8 @@ class RuntimeFreqWrapper(CommandBuilder):
 
     def __init__(self, config, instance=None):
         super().__init__(config, instance=instance)
+        self.run_count = 0
+        self.missing_input_count = 0
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -58,6 +59,13 @@ class RuntimeFreqWrapper(CommandBuilder):
                                        '').upper()
         )
         self.validate_runtime_freq(c_dict)
+
+        # check if missing inputs are allowed and threshold of missing inputs
+        name = 'ALLOW_MISSING_INPUTS'
+        c_dict[name] = self.get_wrapper_or_generic_config(name, 'bool')
+        if c_dict[name]:
+            name = 'INPUT_THRESH'
+            c_dict[name] = self.get_wrapper_or_generic_config(name, 'float')
 
         return c_dict
 
@@ -103,27 +111,61 @@ class RuntimeFreqWrapper(CommandBuilder):
                     self.log_error(err_msg)
                     return
 
-    def get_input_templates(self, c_dict):
+    def get_input_templates(self, c_dict, input_info=None):
+        """!Read input templates from config.
+        """
+        template_dict = {}
+        if not input_info:
+            return
+
+        for label, info in input_info.items():
+            prefix = info.get('prefix')
+            required = info.get('required', True)
+
+            template = self.config.getraw('config', f'{prefix}_INPUT_FILE_LIST')
+            if template:
+                c_dict['EXPLICIT_FILE_LIST'] = True
+            else:
+                input_dir = self.config.getdir(f'{prefix}_INPUT_DIR', '')
+                c_dict[f'{label}_INPUT_DIR'] = input_dir
+                templates = getlist(
+                    self.config.getraw('config', f'{prefix}_INPUT_TEMPLATE')
+                )
+                template_list = [os.path.join(input_dir, template)
+                                 for template in templates]
+                template = ','.join(template_list)
+                c_dict[f'{label}_INPUT_TEMPLATE'] = template
+                if not c_dict[f'{label}_INPUT_TEMPLATE']:
+                    if required:
+                        self.log_error(f'{prefix}_INPUT_TEMPLATE required to run')
+                    continue
+
+            template_dict[label] = (template, True)
+
+        c_dict['TEMPLATE_DICT'] = template_dict
+
+    def get_input_templates_multiple(self, c_dict):
+        """!Read input templates from config. Use this function when a given
+        input template may have multiple items separated by comma that need to
+        be handled separately. For example, GridDiag's input templates
+        correspond to each field specified in the MET config file. For example,
+        UserScript may call a script that needs to read multiple groups of files
+        separately.
+
+        @param c_dict config dictionary to set INPUT_TEMPLATES
+        """
         app_upper = self.app_name.upper()
         template_dict = {}
 
+        # read and set input directory
+        c_dict['INPUT_DIR'] = self.config.getdir(f'{app_upper}_INPUT_DIR', '')
+
         input_templates = getlist(
-            self.config.getraw('config',
-                               f'{app_upper}_INPUT_TEMPLATE',
-                               '')
+            self.config.getraw('config', f'{app_upper}_INPUT_TEMPLATE')
         )
         input_template_labels = getlist(
-            self.config.getraw('config',
-                               f'{app_upper}_INPUT_TEMPLATE_LABELS',
-                               '')
+            self.config.getraw('config', f'{app_upper}_INPUT_TEMPLATE_LABELS')
         )
-
-        # cannot have more labels than templates specified
-        if len(input_template_labels) > len(input_templates):
-            self.log_error('Cannot supply more labels than templates. '
-                           f'{app_upper}_INPUT_TEMPLATE_LABELS length must be '
-                           f'less than {app_upper}_INPUT_TEMPLATES length.')
-            return
 
         for idx, template in enumerate(input_templates):
             # if fewer labels than templates, fill in labels with input{idx}
@@ -132,7 +174,7 @@ class RuntimeFreqWrapper(CommandBuilder):
             else:
                 label = input_template_labels[idx]
 
-            template_dict[label] = template
+            template_dict[label] = (template, False)
 
         c_dict['TEMPLATE_DICT'] = template_dict
 
@@ -148,6 +190,18 @@ class RuntimeFreqWrapper(CommandBuilder):
                 )
 
             self.run_all_times_custom(custom_string)
+
+        # if missing inputs are allowed, check threshold to report error
+        if self.c_dict['ALLOW_MISSING_INPUTS']:
+            success_rate = (1 - (self.missing_input_count / self.run_count)) * 100
+            allowed_rate = self.c_dict['INPUT_THRESH'] * 100
+            if success_rate < allowed_rate:
+                self.log_error(
+                    f'{success_rate}% of {wrapper_instance_name} runs had all '
+                    f'required inputs. Must have {allowed_rate}% to prevent error. '
+                    f'{self.missing_input_count} out of {self.run_count} runs '
+                    'had missing inputs.'
+                )
 
         return self.all_commands
 
@@ -171,8 +225,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         # create input dictionary and set clock time, instance, and custom
         time_input = {}
         add_to_time_input(time_input,
-                          clock_time=self.config.getstr('config',
-                                                        'CLOCK_TIME'),
+                          clock_time=self.config.getstr('config', 'CLOCK_TIME'),
                           instance=self.instance,
                           custom=custom)
 
@@ -190,9 +243,9 @@ class RuntimeFreqWrapper(CommandBuilder):
 
         time_info = time_util.ti_calculate(time_input)
 
-        if not self.get_all_files(custom):
-            self.log_error("A problem occurred trying to obtain input files")
-            return None
+        self.c_dict['ALL_FILES'] = self.get_all_files(custom)
+        if not self._check_input_files():
+            return False
 
         self.clear()
         return self.run_at_time_once(time_info)
@@ -220,6 +273,8 @@ class RuntimeFreqWrapper(CommandBuilder):
             time_info = time_util.ti_calculate(time_input)
 
             self.c_dict['ALL_FILES'] = self.get_all_files_from_leads(time_info)
+            if not self._check_input_files():
+                continue
 
             self.clear()
             if not self.run_at_time_once(time_info):
@@ -251,6 +306,8 @@ class RuntimeFreqWrapper(CommandBuilder):
             time_info = time_util.ti_calculate(time_input)
 
             self.c_dict['ALL_FILES'] = self.get_all_files_for_lead(time_info)
+            if not self._check_input_files():
+                continue
 
             self.clear()
             if not self.run_at_time_once(time_info):
@@ -301,11 +358,9 @@ class RuntimeFreqWrapper(CommandBuilder):
                 self.logger.debug('Skipping run time')
                 continue
 
-            # since run_all_times was not called (LOOP_BY=times) then
-            # get files for current run time
-            all_files = []
-            self._update_list_with_new_files(time_info, all_files)
-            self.c_dict['ALL_FILES'] = all_files
+            self.c_dict['ALL_FILES'] = self.get_all_files_for_each(time_info)
+            if not self._check_input_files():
+                continue
 
             # Run for given init/valid time and forecast lead combination
             self.clear()
@@ -325,7 +380,11 @@ class RuntimeFreqWrapper(CommandBuilder):
          False if something went wrong
         """
         # get input files
+        if not self.c_dict.get('TEMPLATE_DICT'):
+            self.run_count += 1
         if not self.find_input_files(time_info):
+            if not self.c_dict.get('TEMPLATE_DICT'):
+                self.missing_input_count += 1
             return False
 
         # get output path
@@ -356,7 +415,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         # loop over all init/valid times
         for time_input in time_generator(self.config):
             if time_input is None:
-                return False
+                return []
 
             add_to_time_input(time_input,
                               instance=self.instance,
@@ -365,10 +424,20 @@ class RuntimeFreqWrapper(CommandBuilder):
             lead_files = self.get_all_files_from_leads(time_input)
             all_files.extend(lead_files)
 
-        if not all_files:
-            return False
+        return all_files
 
-        self.c_dict['ALL_FILES'] = all_files
+    def _check_input_files(self):
+        if self.c_dict['ALL_FILES'] is True:
+            return True
+        self.run_count += 1
+        if not self.c_dict['ALL_FILES'] and self.app_name != 'user_script':
+            self.missing_input_count += 1
+            msg = 'A problem occurred trying to obtain input files'
+            if self.c_dict['ALLOW_MISSING_INPUTS']:
+                self.logger.warning(msg)
+            else:
+                self.log_error(msg)
+            return False
         return True
 
     def get_all_files_from_leads(self, time_input):
@@ -419,24 +488,76 @@ class RuntimeFreqWrapper(CommandBuilder):
 
         return new_files
 
-    @staticmethod
-    def get_files_from_time(time_info):
+    def get_all_files_for_each(self, time_info):
+        if not self.c_dict.get('FIND_FILES', True):
+            return True
+
+        all_files = []
+        self._update_list_with_new_files(time_info, all_files)
+        return all_files
+
+    def get_files_from_time(self, time_info):
         """! Create dictionary containing time information (key time_info) and
-             any relevant files for that runtime.
+             any relevant files for that runtime. The parent implementation of
+             this function creates a dictionary and adds the time_info to it.
+             This wrapper gets all files for the current runtime and adds it to
+             the dictionary with keys 'FCST' and 'OBS'
+
              @param time_info dictionary containing time information
-             @returns list of dict containing time_info dict and any relevant
+             @returns dictionary containing time_info dict and any relevant
              files with a key representing a description of that file
         """
-        return {'time_info': time_info.copy()}
+        if self.c_dict.get('ONCE_PER_FIELD', False):
+            var_list = sub_var_list(self.c_dict.get('VAR_LIST_TEMP'), time_info)
+        else:
+            var_list = [None]
+
+        # create a dictionary for each field (var) with time_info and files
+        file_dict_list = []
+        for var_info in var_list:
+            file_dict = {'var_info': var_info}
+            if var_info:
+                add_field_info_to_time_info(time_info, var_info)
+
+            input_files, offset_time_info = (
+                self.get_input_files(time_info, fill_missing=True)
+            )
+            file_dict['time_info'] = offset_time_info.copy()
+            # only add all input files if none are missing
+            no_missing = True
+            if input_files:
+                for key, value in input_files.items():
+                    if 'missing' in value:
+                        no_missing = False
+                    file_dict[key] = value
+            if no_missing:
+                file_dict_list.append(file_dict)
+
+        return file_dict_list
 
     def _update_list_with_new_files(self, time_info, list_to_update):
         new_files = self.get_files_from_time(time_info)
         if not new_files:
             return
-        if isinstance(new_files, list):
-            list_to_update.extend(new_files)
-        else:
-            list_to_update.append(new_files)
+
+        if not isinstance(new_files, list):
+            new_files = [new_files]
+
+        # if list to update is empty, copy new items into list
+        if not list_to_update:
+            for new_file in new_files:
+                list_to_update.append(new_file.copy())
+            return
+
+        # if list to update is not empty, add new files to each file list,
+        # make sure new files correspond to the correct field (var)
+        assert len(list_to_update) == len(new_files)
+        for new_file, existing_item in zip(new_files, list_to_update):
+            assert new_file.get('var_info') == existing_item.get('var_info')
+            for key, value in new_file.items():
+                if key == 'var_info' or key == 'time_info':
+                    continue
+                existing_item[key].extend(value)
 
     @staticmethod
     def compare_time_info(runtime, filetime):
@@ -482,21 +603,29 @@ class RuntimeFreqWrapper(CommandBuilder):
         """
         all_input_files = {}
         if not self.c_dict.get('TEMPLATE_DICT'):
-            return None
+            return None, time_info
 
-        for label, input_template in self.c_dict['TEMPLATE_DICT'].items():
+        offset_time_info = time_info
+        for label, (template, required) in self.c_dict['TEMPLATE_DICT'].items():
             data_type = ''
             template_key = 'INPUT_TEMPLATE'
             if label in ('FCST', 'OBS'):
                 data_type = label
                 template_key = f'{label}_{template_key}'
 
-            self.c_dict[template_key] = input_template
+            self.c_dict[template_key] = template
             # if fill missing is true, data is not mandatory to find
-            mandatory = not fill_missing
-            input_files = self.find_data(time_info, data_type=data_type,
-                                         return_list=True,
-                                         mandatory=mandatory)
+            mandatory = required and not fill_missing
+            if label == 'OBS':
+                input_files, offset_time_info = (
+                    self.find_obs_offset(time_info, mandatory=mandatory,
+                                         return_list=True)
+                )
+            else:
+                input_files = self.find_data(time_info, data_type=data_type,
+                                             return_list=True,
+                                             mandatory=mandatory)
+
             if not input_files:
                 if not fill_missing:
                     continue
@@ -508,21 +637,27 @@ class RuntimeFreqWrapper(CommandBuilder):
 
         # return None if no matching input files were found
         if not all_input_files:
-            return None
+            return None, None
 
-        return all_input_files
+        return all_input_files, offset_time_info
 
-    def subset_input_files(self, time_info, output_dir=None, leads=None):
+    def subset_input_files(self, time_info, output_dir=None, leads=None,
+                           force_list=False):
         """! Obtain a subset of input files from the c_dict ALL_FILES based on
              the time information for the current run.
 
               @param time_info dictionary containing time information
+              @param output_dir (optional) directory to write file list files.
+               If no directory is provided, files are written to staging dir
+              @param leads (optional) list of forecast leads to consider
+              @param force_list (optional) boolean - if True, write a file list
+               text file even only 1 file was found. Defaults to False.
               @returns dictionary with keys of the input identifier and the
                value is the path to a ascii file containing the list of files
                or None if could not find any files
         """
         all_input_files = {}
-        if not self.c_dict.get('ALL_FILES'):
+        if not self.c_dict.get('ALL_FILES') or self.c_dict.get('ALL_FILES') is True:
             return all_input_files
 
         if leads is None:
@@ -561,6 +696,10 @@ class RuntimeFreqWrapper(CommandBuilder):
         # loop over all inputs and write a file list file for each
         list_file_dict = {}
         for identifier, input_files in all_input_files.items():
+            if len(input_files) == 1 and not force_list:
+                list_file_dict[identifier] = input_files[0]
+                continue
+
             list_file_name = self.get_list_file_name(time_info, identifier)
             list_file_path = self.write_list_file(list_file_name,
                                                   input_files,

@@ -26,10 +26,9 @@ from ..util import getlist, get_storms, mkdir_p
 from ..util import do_string_sub, parse_template, get_tags
 from ..util import get_lead_sequence, get_lead_sequence_groups
 from ..util import ti_get_hours_from_lead, ti_get_seconds_from_lead
-from ..util import ti_get_lead_string, ti_calculate
-from ..util import ti_get_seconds_from_relativedelta
+from ..util import ti_get_lead_string
 from ..util import parse_var_list
-from ..util import add_to_time_input
+from ..util import add_to_time_input, is_single_run_time
 from ..util import field_read_prob_info, add_field_info_to_time_info
 from .plot_data_plane_wrapper import PlotDataPlaneWrapper
 from . import RuntimeFreqWrapper
@@ -202,9 +201,6 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                  f'{data_type}_SERIES_ANALYSIS_INPUT_DATATYPE',
                                  '')
             )
-
-            # initialize list path to None for each type
-            c_dict[f'{data_type}_LIST_PATH'] = None
 
             # read and set file type env var for FCST and OBS
             if data_type == 'BOTH':
@@ -397,12 +393,6 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                            instance=instance)
         return pdp_wrapper
 
-    def clear(self):
-        """! Call parent's clear function and clear additional values """
-        super().clear()
-        for data_type in ('FCST', 'OBS', 'BOTH'):
-            self.c_dict[f'{data_type}_LIST_PATH'] = None
-
     def run_all_times(self):
         """! Process all run times defined for this wrapper """
         super().run_all_times()
@@ -461,6 +451,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             self.c_dict['ALL_FILES'] = (
                 self.get_all_files_for_leads(input_dict, lead_group[1])
             )
+            if not self._check_input_files():
+                continue
 
             # if only 1 forecast lead is being processed, set it in time dict
             if len(lead_group[1]) == 1:
@@ -505,7 +497,11 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                             lead_group)
             )
             if not fcst_path or not obs_path:
-                self.log_error('No ASCII file lists were created. Skipping.')
+                msg = 'No ASCII file lists were created. Skipping.'
+                if self.c_dict['ALLOW_MISSING_INPUTS']:
+                    self.logger.warning(msg)
+                else:
+                    self.log_error(msg)
                 continue
 
             # Build up the arguments to and then run the MET tool series_analysis.
@@ -576,7 +572,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         for storm_id in storm_list:
             time_info['storm_id'] = storm_id
-            file_dict = super().get_files_from_time(time_info)
+            file_dict = {'time_info': time_info.copy()}
             if self.c_dict['USING_BOTH']:
                 fcst_files = self.find_input_files(time_info, 'BOTH')
                 obs_files = fcst_files
@@ -671,7 +667,11 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                           **time_info)
                 self.logger.debug(f"Explicit BOTH file list file: {both_path}")
                 if not os.path.exists(both_path):
-                    self.log_error(f'Could not find file: {both_path}')
+                    msg = f'Could not find file: {both_path}'
+                    if self.c_dict['ALLOW_MISSING_INPUTS']:
+                        self.logger.warning(msg)
+                    else:
+                        self.log_error(msg)
                     return None, None
 
                 return both_path, both_path
@@ -680,14 +680,24 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                       **time_info)
             self.logger.debug(f"Explicit FCST file list file: {fcst_path}")
             if not os.path.exists(fcst_path):
-                self.log_error(f'Could not find forecast file: {fcst_path}')
+                msg = f'Could not find forecast file: {fcst_path}'
+                if self.c_dict['ALLOW_MISSING_INPUTS']:
+                    self.logger.warning(msg)
+                else:
+                    self.log_error(msg)
+
                 fcst_path = None
 
             obs_path = do_string_sub(self.c_dict['OBS_INPUT_FILE_LIST'],
                                      **time_info)
             self.logger.debug(f"Explicit OBS file list file: {obs_path}")
             if not os.path.exists(obs_path):
-                self.log_error(f'Could not find observation file: {obs_path}')
+                msg = f'Could not find observation file: {obs_path}'
+                if self.c_dict['ALLOW_MISSING_INPUTS']:
+                    self.logger.warning(msg)
+                else:
+                    self.log_error(msg)
+
                 obs_path = None
 
             return fcst_path, obs_path
@@ -696,7 +706,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         list_file_dict = self.subset_input_files(time_info,
                                                  output_dir=output_dir,
-                                                 leads=leads)
+                                                 leads=leads,
+                                                 force_list=True)
         if not list_file_dict:
             return None, None
 
@@ -785,17 +796,18 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         # build the command and run series_analysis for each variable
         for var_info in self.c_dict['VAR_LIST']:
             if self.c_dict['USING_BOTH']:
-                self.c_dict['BOTH_LIST_PATH'] = fcst_path
+                self.infiles.append(fcst_path)
             else:
-                self.c_dict['FCST_LIST_PATH'] = fcst_path
-                self.c_dict['OBS_LIST_PATH'] = obs_path
+                self.infiles.extend([fcst_path, obs_path])
 
             add_field_info_to_time_info(time_info, var_info)
 
             # get formatted field dictionary to pass into the MET config file
-            fcst_field, obs_field = self.get_formatted_fields(var_info,
-                                                              fcst_path,
-                                                              obs_path)
+            fcst_field, obs_field = (
+                self.get_formatted_fields(var_info, time_info, fcst_path, obs_path)
+            )
+            if fcst_field is None:
+                continue
 
             self.format_field('FCST', fcst_field)
             self.format_field('OBS', obs_field)
@@ -824,8 +836,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         # add config file - passing through do_string_sub
         # to get custom string if set
-        config_file = do_string_sub(self.c_dict['CONFIG_FILE'],
-                                    **time_info)
+        config_file = do_string_sub(self.c_dict['CONFIG_FILE'], **time_info)
         self.args.append(f" -config {config_file}")
 
     def get_command(self):
@@ -836,10 +847,10 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         cmd = self.app_path
 
         if self.c_dict['USING_BOTH']:
-            cmd += f" -both {self.c_dict['BOTH_LIST_PATH']}"
+            cmd += f" -both {self.infiles[0]}"
         else:
-            cmd += f" -fcst {self.c_dict['FCST_LIST_PATH']}"
-            cmd += f" -obs {self.c_dict['OBS_LIST_PATH']}"
+            cmd += f" -fcst {self.infiles[0]}"
+            cmd += f" -obs {self.infiles[1]}"
 
         # add output path
         cmd += f' -out {self.get_output_path()}'
@@ -875,8 +886,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
             # get the output directory where the series_analysis output
             # was written. Plots will be written to the same directory
-            plot_input = do_string_sub(output_template,
-                                       **time_info)
+            plot_input = do_string_sub(output_template, **time_info)
 
             # Get the number of forecast tile files and the name of the
             # first and last in the list to be used in the -title
@@ -967,8 +977,11 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             be parsed, return (None, None, None)
         """
         # read the file but skip the first line because it contains 'file_list'
-        with open(fcst_path, 'r') as file_handle:
-            files_of_interest = file_handle.readlines()
+        try:
+            with open(fcst_path, 'r') as file_handle:
+                files_of_interest = file_handle.readlines()
+        except FileNotFoundError:
+            return None, None, None
 
         if len(files_of_interest) < 2:
             self.log_error(f"No files found in file list: {fcst_path}")
@@ -978,8 +991,11 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         num = str(len(files_of_interest))
 
         data_type = 'BOTH' if self.c_dict['USING_BOTH'] else 'FCST'
-        template = os.path.join(self.c_dict[f'{data_type}_INPUT_DIR'],
-                                self.c_dict[f'{data_type}_INPUT_TEMPLATE'])
+
+        # handle multiple templates
+        templates = []
+        for template in self.c_dict[f'{data_type}_INPUT_TEMPLATE'].split(','):
+            templates.append(os.path.join(self.c_dict[f'{data_type}_INPUT_DIR'], template.strip()))
 
         smallest_fcst = 99999999
         largest_fcst = -99999999
@@ -987,11 +1003,16 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         end = None
         for filepath in files_of_interest:
             filepath = filepath.strip()
-            file_time_info = parse_template(template,
-                                            filepath,
-                                            self.logger)
-            if not file_time_info:
+            found = False
+            for template in templates:
+                file_time_info = parse_template(template, filepath, self.logger)
+                if file_time_info:
+                    found = True
+                    break
+
+            if not found:
                 continue
+
             lead = ti_get_seconds_from_lead(file_time_info.get('lead'),
                                             file_time_info.get('valid'))
             if lead < smallest_fcst:
@@ -1024,18 +1045,26 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         except (FileNotFoundError, KeyError):
             return None, None
 
-    def get_formatted_fields(self, var_info, fcst_path, obs_path):
+    def get_formatted_fields(self, var_info, time_info, fcst_path, obs_path):
         """! Get forecast and observation field information for var_info and
             format it so it can be passed into the MET config file
 
             @param var_info dictionary containing info to format
+            @param time_info dictionary containing time information
+            @param fcst_path path to file list file for forecast data
+            @param obs_path path to file list file for observation data
             @returns tuple containing strings of the formatted forecast and
-            observation information or None, None if something went wrong
+            observation information or (None, None) if something went wrong
         """
-        fcst_field_list = self._get_field_list('fcst', var_info, obs_path)
-        obs_field_list = self._get_field_list('obs', var_info, fcst_path)
+        fcst_field_list = (
+            self._get_field_list('fcst', var_info, time_info, obs_path)
+        )
+        obs_field_list = (
+            self._get_field_list('obs', var_info, time_info, fcst_path)
+        )
 
         if not fcst_field_list or not obs_field_list:
+            self.log_error('Could not build formatted fcst and obs field lists')
             return None, None
 
         fcst_fields = ','.join(fcst_field_list)
@@ -1043,52 +1072,109 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         return fcst_fields, obs_fields
 
-    def _get_field_list(self, data_type, var_info, file_list_path):
+    def _get_field_list(self, data_type, var_info, time_info, file_list_path):
+        """!Get formatted field information in a list.
+        If no time (init/valid/lead) filename template tags were found in the
+        level value or if the time info contains all init/valid/lead values
+        (none are wildcards), then return a single formatted field item.
+        Otherwise, loop through the file list files and use the input template
+        to extract time information to use for each field entry.
+        The latter is done when processing one data type that has individual
+        files for each time and one data type has a single file with all times.
+
+        @param data_type type of data to process, e.g. fcst or obs
+        @param var_info dictionary containing info to format
+        @param time_info dictionary containing time information
+        @param file_list_path path to file list file to parse
+        @returns list containing formatted field info to pass to MET config
+        """
         other = 'OBS' if data_type == 'fcst' else 'FCST'
-        # check if time filename template tags are used in field level
-        if not self._has_time_tag(var_info[f'{data_type}_level']):
-            # get field info for a single field to pass to the MET config file
-            return self.get_field_info(
-                v_level=var_info[f'{data_type}_level'],
-                v_thresh=var_info[f'{data_type}_thresh'],
-                v_name=var_info[f'{data_type}_name'],
-                v_extra=var_info[f'{data_type}_extra'],
-                d_type=data_type.upper()
-            )
+        # if there are no time tags (init/valid/lead) in the field level
+        # or if init, valid, and lead have values in time_info,
+        # get field info for a single field to pass to the MET config file
+        if (not self._has_time_tag(var_info[f'{data_type}_level']) or
+                is_single_run_time(time_info)):
+            return self._get_field_sub_level(data_type, var_info, time_info)
 
         field_list = []
-        # loop through fcst and obs files to extract time info
-        template = os.path.join(self.c_dict[f'{other}_INPUT_DIR'],
-                                self.c_dict[f'{other}_INPUT_TEMPLATE'])
+
+        # handle multiple templates
+        templates = []
+        for template in self.c_dict[f'{other}_INPUT_TEMPLATE'].split(','):
+            templates.append(os.path.join(self.c_dict[f'{other}_INPUT_DIR'], template.strip()))
+
+        # loop through fcst/obs files to extract time info
         # for each file apply time info to field info and add to list
         for file_time_info in self._get_times_from_file_list(file_list_path,
-                                                             template):
-            level = do_string_sub(var_info[f'{data_type}_level'],
-                                  **file_time_info)
-            field = self.get_field_info(
-                v_level=level,
-                v_thresh=var_info[f'{data_type}_thresh'],
-                v_name=var_info[f'{data_type}_name'],
-                v_extra=var_info[f'{data_type}_extra'],
-                d_type=data_type.upper()
-            )
+                                                             templates):
+            field = self._get_field_sub_level(data_type, var_info, file_time_info)
             if field:
                 field_list.extend(field)
 
         return field_list
 
     @staticmethod
-    def _has_time_tag(level):
+    def _has_time_tag(string_to_parse):
+        """!Get all filename template tags from raw string and check if any of
+        the time info tags (init/valid/lead) were found.
+
+        @param string_to_parse string to search for filename template tags
+        @returns True if init, valid, or lead tags, e.g. {lead?fmt=%H},
+         were found in string. False if none of them were found.
+        """
         return any(item in ['init', 'valid', 'lead']
-                   for item in get_tags(level))
+                   for item in get_tags(string_to_parse))
+
+    def _get_field_sub_level(self, data_type, var_info, time_dict):
+        """!Get formatted field information for data type, substituting time
+        information into level value.
+
+        @param data_type type of data to find, e.g. fcst or obs
+        @param var_info dictionary containing info to format
+        @param time_dict dictionary containing time information
+        @returns string with formatted field info or None
+        """
+        level = do_string_sub(var_info[f'{data_type}_level'], **time_dict)
+        return self.get_field_info(
+            v_level=level,
+            v_thresh=var_info[f'{data_type}_thresh'],
+            v_name=var_info[f'{data_type}_name'],
+            v_extra=var_info[f'{data_type}_extra'],
+            d_type=data_type.upper()
+        )
 
     @staticmethod
-    def _get_times_from_file_list(file_path, template):
-        with open(file_path, 'r') as file_handle:
-            file_list = file_handle.read().splitlines()[1:]
+    def _get_times_from_file_list(file_path, templates):
+        """!Generator that yields time info dictionaries.
+        Loops through file paths found in text file and use list of filename
+        templates to parse time information from each file.
+
+        @param file_path path to file list file to parse
+        @param templates list of filename templates to use to parse time info
+        out of file paths found in file_path file
+        """
+        try:
+            with open(file_path, 'r') as file_handle:
+                file_list = file_handle.read().splitlines()[1:]
+        except FileNotFoundError:
+            return
 
         for file_name in file_list:
-            file_time_info = parse_template(template, file_name)
-            if not file_time_info:
+            found = False
+            for template in templates:
+                file_time_info = parse_template(template, file_name)
+                if file_time_info:
+                    found = True
+                    break
+            if not found:
                 continue
             yield file_time_info
+
+    def _update_list_with_new_files(self, time_info, list_to_update):
+        new_files = self.get_files_from_time(time_info)
+        if not new_files:
+            return
+        if isinstance(new_files, list):
+            list_to_update.extend(new_files)
+        else:
+            list_to_update.append(new_files)

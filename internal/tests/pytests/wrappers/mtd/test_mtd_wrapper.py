@@ -21,13 +21,6 @@ obs_fmt = (f'field = {{ name="{obs_name}"; '
            f'level="{obs_level_no_quotes}"; cat_thresh=[ gt12.7 ]; }};')
 
 
-def get_test_data_dir(subdir):
-    internal_tests_dir = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, os.pardir)
-    )
-    return os.path.join(internal_tests_dir, 'data', subdir)
-
-
 def mtd_wrapper(metplus_config, config_overrides):
     """! Returns a default MTDWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
@@ -47,7 +40,7 @@ def mtd_wrapper(metplus_config, config_overrides):
     return MTDWrapper(config)
 
 
-def set_minimum_config_settings(config):
+def set_minimum_config_settings(config, set_inputs=True):
     # set config variables to prevent command from running and bypass check
     # if input files actually exist
     config.set('config', 'DO_NOT_RUN_EXE', True)
@@ -63,12 +56,13 @@ def set_minimum_config_settings(config):
     config.set('config', 'LEAD_SEQ', '6H, 9H, 12H')
     config.set('config', 'MTD_CONFIG_FILE',
                '{PARM_BASE}/met_config/MTDConfig_wrapped')
-    config.set('config', 'FCST_MTD_INPUT_DIR', fcst_dir)
-    config.set('config', 'OBS_MTD_INPUT_DIR', obs_dir)
-    config.set('config', 'FCST_MTD_INPUT_TEMPLATE',
-               '{init?fmt=%Y%m%d%H}/fcst_file_F{lead?fmt=%3H}')
-    config.set('config', 'OBS_MTD_INPUT_TEMPLATE',
-               '{valid?fmt=%Y%m%d%H}/obs_file')
+    if set_inputs:
+        config.set('config', 'FCST_MTD_INPUT_DIR', fcst_dir)
+        config.set('config', 'OBS_MTD_INPUT_DIR', obs_dir)
+        config.set('config', 'FCST_MTD_INPUT_TEMPLATE',
+                   '{init?fmt=%Y%m%d%H}/fcst_file_F{lead?fmt=%3H}')
+        config.set('config', 'OBS_MTD_INPUT_TEMPLATE',
+                   '{valid?fmt=%Y%m%d%H}/obs_file')
     config.set('config', 'MTD_OUTPUT_DIR',
                '{OUTPUT_BASE}/MTD/output')
     config.set('config', 'MTD_OUTPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}')
@@ -79,6 +73,59 @@ def set_minimum_config_settings(config):
     config.set('config', 'OBS_VAR1_NAME', obs_name)
     config.set('config', 'OBS_VAR1_LEVELS', obs_level)
     config.set('config', 'OBS_VAR1_THRESH', obs_thresh)
+
+
+@pytest.mark.parametrize(
+    'missing, run, thresh, errors, allow_missing, inputs', [
+        (1, 3, 0.3, 0, True, 'CHOCOLATE'),
+        (1, 3, 0.3, 0, True, 'BOTH'),
+        (1, 3, 0.8, 1, True, 'BOTH'),
+        (1, 3, 0.8, 1, False, 'BOTH'),
+        (1, 3, 0.3, 0, True, 'FCST'),
+        (1, 3, 0.8, 1, True, 'FCST'),
+        (1, 3, 0.8, 1, False, 'FCST'),
+        (1, 3, 0.3, 0, True, 'OBS'),
+        (1, 3, 0.8, 1, True, 'OBS'),
+        (1, 3, 0.8, 1, False, 'OBS'),
+    ]
+)
+@pytest.mark.wrapper_a
+def test_mtd_missing_inputs(metplus_config, get_test_data_dir,
+                            missing, run, thresh, errors, allow_missing, inputs):
+    config = metplus_config
+    set_minimum_config_settings(config, set_inputs=False)
+    config.set('config', 'INPUT_MUST_EXIST', True)
+    config.set('config', 'MTD_ALLOW_MISSING_INPUTS', allow_missing)
+    config.set('config', 'MTD_INPUT_THRESH', thresh)
+    config.set('config', 'INIT_LIST', '2017051001, 2017051003, 2017051303')
+    config.set('config', 'LEAD_SEQ', '1,2,3,6,9,12')
+    if inputs in ('BOTH', 'FCST'):
+        config.set('config', 'FCST_MTD_INPUT_DIR', get_test_data_dir('fcst'))
+        config.set('config', 'FCST_MTD_INPUT_TEMPLATE',
+                   '{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d_i%H}_f{lead?fmt=%3H}_HRRRTLE_PHPT.grb2')
+    if inputs in ('BOTH', 'OBS'):
+        config.set('config', 'OBS_MTD_INPUT_DIR', get_test_data_dir('obs'))
+        config.set('config', 'OBS_MTD_INPUT_TEMPLATE',
+                   '{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A06.nc')
+    if inputs != 'BOTH':
+        config.set('config', 'MTD_SINGLE_RUN', True)
+        config.set('config', 'MTD_SINGLE_DATA_SRC', inputs)
+
+    wrapper = MTDWrapper(config)
+    if inputs == 'CHOCOLATE':
+        assert not wrapper.isOK
+        return
+
+    assert wrapper.isOK
+
+    all_cmds = wrapper.run_all_times()
+    for cmd, _ in all_cmds:
+        print(cmd)
+
+    print(f'missing: {wrapper.missing_input_count} / {wrapper.run_count}, errors: {wrapper.errors}')
+    assert wrapper.missing_input_count == missing
+    assert wrapper.run_count == run
+    assert wrapper.errors == errors
 
 
 @pytest.mark.parametrize(
@@ -209,7 +256,7 @@ def test_mode_single_field(metplus_config, config_overrides, env_var_values):
 
 
 @pytest.mark.wrapper
-def test_mtd_by_init_all_found(metplus_config):
+def test_mtd_by_init_all_found(metplus_config, get_test_data_dir):
     obs_data_dir = get_test_data_dir('obs')
     fcst_data_dir = get_test_data_dir('fcst')
     overrides = {
@@ -247,7 +294,7 @@ def test_mtd_by_init_all_found(metplus_config):
 
 
 @pytest.mark.wrapper
-def test_mtd_by_valid_all_found(metplus_config):
+def test_mtd_by_valid_all_found(metplus_config, get_test_data_dir):
     obs_data_dir = get_test_data_dir('obs')
     fcst_data_dir = get_test_data_dir('fcst')
     overrides = {
@@ -285,7 +332,7 @@ def test_mtd_by_valid_all_found(metplus_config):
 
 
 @pytest.mark.wrapper
-def test_mtd_by_init_miss_fcst(metplus_config):
+def test_mtd_by_init_miss_fcst(metplus_config, get_test_data_dir):
     obs_data_dir = get_test_data_dir('obs')
     fcst_data_dir = get_test_data_dir('fcst')
     overrides = {
@@ -323,7 +370,7 @@ def test_mtd_by_init_miss_fcst(metplus_config):
 
 
 @pytest.mark.wrapper
-def test_mtd_by_init_miss_both(metplus_config):
+def test_mtd_by_init_miss_both(metplus_config, get_test_data_dir):
     obs_data_dir = get_test_data_dir('obs')
     fcst_data_dir = get_test_data_dir('fcst')
     overrides = {
@@ -359,7 +406,7 @@ def test_mtd_by_init_miss_both(metplus_config):
 
 
 @pytest.mark.wrapper
-def test_mtd_single(metplus_config):
+def test_mtd_single(metplus_config, get_test_data_dir):
     fcst_data_dir = get_test_data_dir('fcst')
     overrides = {
         'LEAD_SEQ': '1, 2, 3',

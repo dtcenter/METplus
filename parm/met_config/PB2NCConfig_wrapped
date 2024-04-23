@@ -9,6 +9,7 @@
 //
 // PrepBufr message type
 //
+//message_type = [
 ${METPLUS_MESSAGE_TYPE}
 
 //
@@ -30,6 +31,7 @@ message_type_map = [];
 //
 // PrepBufr station ID
 //
+//station_id = [
 ${METPLUS_STATION_ID}
 
 
@@ -38,6 +40,7 @@ ${METPLUS_STATION_ID}
 //
 // Observation time window
 //
+//obs_window = {
 ${METPLUS_OBS_WINDOW_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -45,6 +48,7 @@ ${METPLUS_OBS_WINDOW_DICT}
 //
 // Observation retention regions
 //
+//mask = {
 ${METPLUS_MASK_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -86,6 +90,7 @@ ${METPLUS_LEVEL_CATEGORY}
 // BUFR variable names to retain or derive.
 // If emtpy, process all available variables.
 //
+//obs_bufr_var = [
 ${METPLUS_OBS_BUFR_VAR}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -113,6 +118,7 @@ event_stack_flag    = TOP;
 //
 // Time periods for the summarization
 //
+//time_summary = {
 ${METPLUS_TIME_SUMMARY_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -11,11 +11,14 @@
 - [ ] Will this PR result in changes to the test suite? **[Yes or No]**</br>
 If **yes**, describe the new output and/or changes to the existing output:</br>
 
+- [ ] Do these changes introduce new SonarQube findings? **[Yes or No]**</br>
+If **yes**, please describe:
+
 - [ ] Please complete this pull request review by **[Fill in date]**.</br>
 
 ## Pull Request Checklist ##
 See the [METplus Workflow](https://metplus.readthedocs.io/en/latest/Contributors_Guide/github_workflow.html) for details.
-- [ ] Add any new Python packages to the [METplus Components Python Requirements](https://metplus.readthedocs.io/en/develop/Users_Guide/overview.html#metplus-components-python-requirements) table.
+- [ ] Add any new Python packages to the [METplus Components Python Requirements](https://metplus.readthedocs.io/en/develop/Users_Guide/appendixA.html) table.
 - [ ] Review the source issue metadata (required labels, projects, and milestone).
 - [ ] Complete the PR definition above.
 - [ ] Ensure the PR title matches the feature or bugfix branch name.

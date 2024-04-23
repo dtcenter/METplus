@@ -24,9 +24,10 @@
 {"name": "reporting: DTC NOAA R2O","color": "fbca04","description": "NOAA Research to Operations DTC Project"}
 {"name": "reporting: HSUP 1-3a","color": "fbca04","description": "Hurricane Supplemental Project 1-3a"}
 {"name": "reporting: HSUP 4-1b","color": "fbca04","description": "Hurricane Supplemental Project 4-1b"}
-{"name": "requestor: USAF","color": "3101c1","description": "United States Air Force"}
 {"name": "requestor: Army/ARL","color": "3101c1","description": "United States Army Research Laboratory"}
+{"name": "requestor: Australian BOM","color": "3101c1","description": "Australian Bureau of Meteorology"}
 {"name": "requestor: Community","color": "3101c1","description": "General Community"}
+{"name": "requestor: CSU/CIRA","color": "3101c1","description": "Colorado State University, Cooperative Institute for Research in the Atmosphere"}
 {"name": "requestor: DTC/T&E","color": "3101c1","description": "General DTC Testing and Evaluation work"}
 {"name": "requestor: DTC/MRW","color": "3101c1","description": "DTC Medium Range Weather T&E"}
 {"name": "requestor: DTC/SRW","color": "3101c1","description": "DTC Short Range Weather T&E"}
@@ -45,6 +46,7 @@
 {"name": "requestor: NOAA/GSL","color": "3101c1","description": "NOAA Global Systems Laboratory"}
 {"name": "requestor: NOAA/HFIP","color": "3101c1","description": "NOAA Hurricane Forecast Improvement Project"}
 {"name": "requestor: NOAA/MDL","color": "3101c1","description": "NOAA Meteorological Development Laboratory"}
+{"name": "requestor: NOAA/NHC","color": "3101c1","description": "NOAA National Hurricane Center"}
 {"name": "requestor: NOAA/NSSL","color": "3101c1","description": "NOAA National Severe Storms Laboratory"}
 {"name": "requestor: NOAA/OPC","color": "3101c1","description": "NOAA Ocean Prediction Center"}
 {"name": "requestor: NOAA/other","color": "3101c1","description": "NOAA Laboratory, not otherwise specified"}
@@ -58,6 +60,7 @@
 {"name": "requestor: University/other","color": "3101c1","description": "University Collaborator, not otherwise specified"}
 {"name": "requestor: University/SBU","color": "3101c1","description": "Stony Brook University"}
 {"name": "requestor: University/UIUC","color": "3101c1","description": "University of Illinois, Urbana-Champaign"}
+{"name": "requestor: USAF","color": "3101c1","description": "United States Air Force"}
 {"name": "required: FOR DEVELOPMENT RELEASE", "color": "e400f5", "description": "Required to be completed in the development release for the assigned project"}
 {"name": "required: FOR OFFICIAL RELEASE", "color": "e400f5", "description": "Required to be completed in the official release for the assigned milestone"}
 {"name": "type: bug","color": "e5bf7e","description": "Fix something that is not working"}

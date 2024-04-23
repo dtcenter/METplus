@@ -43,6 +43,7 @@ LOWER_TO_WRAPPER_NAME = {
     'tcstat': 'TCStat',
     'usage': 'Usage',
     'userscript': 'UserScript',
+    'waveletstat': 'WaveletStat',
 }
 
 # supported file extensions that will automatically be uncompressed
@@ -81,6 +82,15 @@ VALID_COMPARISONS = {
 NO_COMMAND_WRAPPERS = (
     'Example',
     'CyclonePlotter',
+)
+
+# wrappers that takes multiple inputs via Python Embedding
+# used to check if file_type is set properly to note Python Embedding is used
+MULTIPLE_INPUT_WRAPPERS = (
+    'EnsembleStat',
+    'MTD',
+    'SeriesAnalysis',
+    'GenEnsProd',
 )
 
 # configuration variables that are specific to a given run

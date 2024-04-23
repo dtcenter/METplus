@@ -213,3 +213,18 @@ def test_ti_calculate(input_dict, expected_time_info):
 @pytest.mark.util
 def test_ti_get_seconds_from_relativedelta(lead, valid_time, expected_val):
     assert time_util.ti_get_seconds_from_relativedelta(lead, valid_time) == expected_val
+
+@pytest.mark.parametrize(
+    'time_info, expected_result', [
+        ({}, False),
+        ({'init': datetime(2023, 1, 1), 'valid': datetime(2023, 1, 2), 'lead': relativedelta(days=1)}, True),
+        ({'init': '*', 'valid': datetime(2023, 1, 2), 'lead': relativedelta(days=1)}, False),
+        ({'init': datetime(2023, 1, 1), 'valid': '*', 'lead': relativedelta(days=1)}, False),
+        ({'init': datetime(2023, 1, 1), 'valid': datetime(2023, 1, 2), 'lead': '*'}, False),
+        ({'init': datetime(2023, 1, 1), 'lead': relativedelta(days=1)}, False),
+        ({'init': datetime(2023, 1, 1)}, False),
+    ]
+)
+@pytest.mark.util
+def test_is_single_run_time(time_info, expected_result):
+    assert time_util.is_single_run_time(time_info) == expected_result

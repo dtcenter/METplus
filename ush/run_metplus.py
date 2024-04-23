@@ -16,19 +16,18 @@ Developer Note: Please do not use f-strings in this file so that the
   f-string instead of the useful error message.
 """
 
-import os
+from os.path import abspath, join, dirname, realpath, basename
+from os import pardir
 import sys
 import traceback
 
+################################################################################
 # add metplus directory to path so the wrappers and utilities can be found
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                                os.pardir)))
+sys.path.insert(0, abspath(join(dirname(realpath(__file__)), pardir)))
 
 import produtil.setup
 
-from metplus.util import metplus_check
 from metplus.util import pre_run_setup, run_metplus, post_run_cleanup
-from metplus import __version__ as metplus_version
 
 '''!@namespace run_metplus
 Main script the processes all the tasks in the PROCESS_LIST
@@ -42,25 +41,22 @@ def main():
 
     config_inputs = get_config_inputs_from_command_line()
     config = pre_run_setup(config_inputs)
+    if not config:
+        return False
 
     # warn if calling master_metplus.py
-    script_name = os.path.basename(__file__)
-    if script_name == 'master_metplus.py':
+    if basename(__file__) == 'master_metplus.py':
         msg = ("master_metplus.py has been renamed to run_metplus.py. "
                "This script name will be removed in a future version.")
         config.logger.warning(msg)
 
     total_errors = run_metplus(config)
 
-    post_run_cleanup(config, 'METplus', total_errors)
+    return post_run_cleanup(config, 'METplus', total_errors)
 
 
 def usage():
-    """! How to call this script.
-    """
-
-    filename = os.path.basename(__file__)
-
+    """!How to call this script."""
     print ('''
 Usage: %s arg1 arg2 arg3
     -h|--help               Display this usage statement
@@ -69,7 +65,7 @@ Arguments:
 /path/to/parmfile.conf -- Specify custom configuration file to use
 section.option=value -- override conf options on the command line
 
-'''%(filename))
+'''%(basename(__file__)))
     sys.exit(2)
 
 
@@ -90,7 +86,6 @@ def get_config_inputs_from_command_line():
     for help_arg in help_args:
         if help_arg in sys.argv:
             usage()
-            sys.exit(0)
 
     # pull out command line arguments
     config_inputs = []
@@ -121,7 +116,8 @@ def get_config_inputs_from_command_line():
 if __name__ == "__main__":
     try:
         produtil.setup.setup(send_dbn=False, jobname='run-METplus')
-        main()
+        if not main():
+            sys.exit(1)
     except Exception as exc:
         print(traceback.format_exc())
         print('ERROR: run_metplus  failed: %s' % exc)

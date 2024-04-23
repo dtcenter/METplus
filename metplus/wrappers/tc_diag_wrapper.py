@@ -14,7 +14,7 @@ import os
 
 from ..util import time_util
 from . import RuntimeFreqWrapper
-from ..util import do_string_sub, skip_time, get_lead_sequence
+from ..util import do_string_sub, get_lead_sequence
 from ..util import parse_var_list, sub_var_list, getlist
 from ..util import find_indices_in_config_section
 from ..util.met_config import add_met_config_dict_list
@@ -43,9 +43,6 @@ class TCDiagWrapper(RuntimeFreqWrapper):
         'METPLUS_LEAD_LIST',
         'METPLUS_DIAG_SCRIPT',
         'METPLUS_DOMAIN_INFO_LIST',
-        'METPLUS_CENSOR_THRESH',
-        'METPLUS_CENSOR_VAL',
-        'METPLUS_CONVERT',
         'METPLUS_DATA_FILE_TYPE',
         'METPLUS_DATA_DOMAIN',
         'METPLUS_DATA_LEVEL',
@@ -61,10 +58,19 @@ class TCDiagWrapper(RuntimeFreqWrapper):
         'METPLUS_VORTEX_REMOVAL',
         'METPLUS_VORTEX_REMOVAL',
         'METPLUS_NC_DIAG_FLAG',
-        'METPLUS_NC_RNG_AZI_FLAG',
+        'METPLUS_NC_CYL_GRID_FLAG',
         'METPLUS_CIRA_DIAG_FLAG',
-        'METPLUS_OUTPUT_PREFIX',
+        'METPLUS_OUTPUT_BASE_FORMAT',
         'METPLUS_ONE_TIME_PER_FILE_FLAG',
+    ]
+
+    # deprecated env vars that are no longer supported in the wrapped MET conf
+    DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
+        'OUTPUT_PREFIX',
+        'METPLUS_OUTPUT_PREFIX',
+        'METPLUS_CENSOR_THRESH',
+        'METPLUS_CENSOR_VAL',
+        'METPLUS_CONVERT',
     ]
 
     def __init__(self, config, instance=None):
@@ -80,9 +86,6 @@ class TCDiagWrapper(RuntimeFreqWrapper):
                                                  c_dict['VERBOSITY'])
         c_dict['ALLOW_MULTIPLE_FILES'] = True
 
-        # skip RuntimeFreq wrapper logic to find files
-        c_dict['FIND_FILES'] = False
-
         # get command line arguments domain and tech id list for -data
         self._read_data_inputs(c_dict)
 
@@ -90,15 +93,13 @@ class TCDiagWrapper(RuntimeFreqWrapper):
         c_dict['DECK_INPUT_DIR'] = self.config.getdir('TC_DIAG_DECK_INPUT_DIR',
                                                       '')
         c_dict['DECK_INPUT_TEMPLATE'] = (
-            self.config.getraw('config',
-                               'TC_DIAG_DECK_TEMPLATE')
+            self.config.getraw('config', 'TC_DIAG_DECK_INPUT_TEMPLATE')
         )
 
         # get output dir/template
         c_dict['OUTPUT_DIR'] = self.config.getdir('TC_DIAG_OUTPUT_DIR', '')
         c_dict['OUTPUT_TEMPLATE'] = (
-            self.config.getraw('config',
-                               'TC_DIAG_OUTPUT_TEMPLATE')
+            self.config.getraw('config', 'TC_DIAG_OUTPUT_TEMPLATE')
         )
 
         # get the MET config file path or use default
@@ -163,6 +164,7 @@ class TCDiagWrapper(RuntimeFreqWrapper):
             'n_azimuth': 'int',
             'delta_range_km': 'float',
             'diag_script': 'list',
+            'override_diags': ('list', 'allow_empty'),
         }
         if not add_met_config_dict_list(config=self.config,
                                         app_name=self.app_name,
@@ -170,19 +172,6 @@ class TCDiagWrapper(RuntimeFreqWrapper):
                                         dict_name='domain_info',
                                         dict_items=dict_items):
             self.isOK = False
-
-        self.add_met_config(name='censor_thresh',
-                            data_type='list',
-                            extra_args={'remove_quotes': True})
-
-        self.add_met_config(name='censor_val',
-                            data_type='list',
-                            extra_args={'remove_quotes': True})
-
-        self.add_met_config(name='convert',
-                            data_type='string',
-                            extra_args={'remove_quotes': True,
-                                        'add_x': True})
 
         # handle data dictionary, including field, domain, level, and file_type
         c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
@@ -223,11 +212,14 @@ class TCDiagWrapper(RuntimeFreqWrapper):
 
         self.add_met_config(name='one_time_per_file_flag', data_type='bool')
 
-        self.add_met_config(name='nc_rng_azi_flag', data_type='bool')
+        self.add_met_config(name='nc_cyl_grid_flag', data_type='bool')
         self.add_met_config(name='nc_diag_flag', data_type='bool')
         self.add_met_config(name='cira_diag_flag', data_type='bool')
 
-        self.add_met_config(name='output_prefix', data_type='string')
+        self.add_met_config(name='output_base_format', data_type='string')
+
+        # skip RuntimeFreq input file logic - remove once integrated
+        c_dict['FIND_FILES'] = False
 
         return c_dict
 
@@ -317,7 +309,9 @@ class TCDiagWrapper(RuntimeFreqWrapper):
         time_info = time_util.ti_calculate(time_info)
 
         # get input files
+        self.run_count += 1
         if not self.find_input_files(time_info):
+            self.missing_input_count += 1
             return
 
         # get output path
@@ -395,7 +389,11 @@ class TCDiagWrapper(RuntimeFreqWrapper):
             self.logger.debug(f"Explicit file list file: {input_file_list}")
             list_file = do_string_sub(input_file_list, **time_info)
             if not os.path.exists(list_file):
-                self.log_error(f'Could not find file list: {list_file}')
+                msg = f'Could not find file list: {list_file}'
+                if self.c_dict['ALLOW_MISSING_INPUTS']:
+                    self.logger.warning(msg)
+                else:
+                    self.log_error(msg)
                 return False
         else:
             # set c_dict variables that are used in find_data function

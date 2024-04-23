@@ -18,11 +18,6 @@ time_fmt = '%Y%m%d%H'
 run_times = ['2014121318']
 
 
-def get_data_dir(config):
-    return os.path.join(config.getdir('METPLUS_BASE'),
-                        'internal', 'tests', 'data', 'tc_pairs')
-
-
 def set_minimum_config_settings(config, loop_by='INIT'):
     # set config variables to prevent command from running and bypass check
     # if input files actually exist
@@ -136,7 +131,7 @@ def test_parse_storm_id(metplus_config, storm_id, basin, cyclone):
     ]
 )
 @pytest.mark.wrapper
-def test_get_bdeck(metplus_config, basin, cyclone, expected_files,
+def test_get_bdeck(metplus_config, get_test_data_dir, basin, cyclone, expected_files,
                    expected_wildcard):
     """! Checks that the correct list of empty test files are found and the
     correct boolean to signify if wildcards were used for different
@@ -147,7 +142,7 @@ def test_get_bdeck(metplus_config, basin, cyclone, expected_files,
 
     set_minimum_config_settings(config)
 
-    test_data_dir = get_data_dir(config)
+    test_data_dir = get_test_data_dir('tc_pairs')
     bdeck_dir = os.path.join(test_data_dir, 'bdeck')
     config.set('config', 'TC_PAIRS_BDECK_INPUT_DIR', bdeck_dir)
 
@@ -268,7 +263,7 @@ def test_get_basin_cyclone_from_bdeck_error(metplus_config):
     ]
 )
 @pytest.mark.wrapper
-def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
+def test_tc_pairs_storm_id_lists(metplus_config, get_test_data_dir, config_overrides,
                                  storm_type, values_to_check, reformat):
     config = metplus_config
 
@@ -279,7 +274,7 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
     config.set('config', 'INIT_BEG', '2019')
     config.set('config', 'INIT_END', '2019')
 
-    test_data_dir = get_data_dir(config)
+    test_data_dir = get_test_data_dir('tc_pairs')
     bdeck_dir = os.path.join(test_data_dir, 'bdeck')
     edeck_dir = os.path.join(test_data_dir, 'edeck')
 
@@ -369,29 +364,41 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
           'TC_PAIRS_CONSENSUS1_MEMBERS': 'member1a, member1b',
           'TC_PAIRS_CONSENSUS1_REQUIRED': 'true, false',
           'TC_PAIRS_CONSENSUS1_MIN_REQ': '1',
+          'TC_PAIRS_CONSENSUS1_DIAG_REQUIRED': 'false, true',
+          'TC_PAIRS_CONSENSUS1_DIAG_MIN_REQ': '2',
           'TC_PAIRS_CONSENSUS1_WRITE_MEMBERS': 'false',},
          {'METPLUS_CONSENSUS_LIST': (
         'consensus = [{name = "name1";members = ["member1a", "member1b"];'
-        'required = [true, false];min_req = 1;write_members = FALSE;}];'
+        'required = [true, false];min_req = 1;'
+        'diag_required = [false, true];diag_min_req = 2;'
+        'write_members = FALSE;}];'
          )}),
         # 14: consensus 2 dictionaries
         ('INIT', {'TC_PAIRS_CONSENSUS1_NAME': 'name1',
           'TC_PAIRS_CONSENSUS1_MEMBERS': 'member1a, member1b',
           'TC_PAIRS_CONSENSUS1_REQUIRED': 'true, false',
           'TC_PAIRS_CONSENSUS1_MIN_REQ': '1',
+          'TC_PAIRS_CONSENSUS1_DIAG_REQUIRED': 'false, true',
+          'TC_PAIRS_CONSENSUS1_DIAG_MIN_REQ': '2',
           'TC_PAIRS_CONSENSUS1_WRITE_MEMBERS': 'false',
           'TC_PAIRS_CONSENSUS2_NAME': 'name2',
           'TC_PAIRS_CONSENSUS2_MEMBERS': 'member2a, member2b',
           'TC_PAIRS_CONSENSUS2_REQUIRED': 'false, true',
           'TC_PAIRS_CONSENSUS2_MIN_REQ': '2',
+          'TC_PAIRS_CONSENSUS2_DIAG_REQUIRED': 'true, false',
+          'TC_PAIRS_CONSENSUS2_DIAG_MIN_REQ': '3',
           'TC_PAIRS_CONSENSUS2_WRITE_MEMBERS': 'true',
           },
          {'METPLUS_CONSENSUS_LIST': (
                  'consensus = ['
                  '{name = "name1";members = ["member1a", "member1b"];'
-                 'required = [true, false];min_req = 1;write_members = FALSE;},'
+                 'required = [true, false];min_req = 1;'
+                 'diag_required = [false, true];diag_min_req = 2;'
+                 'write_members = FALSE;},'
                  '{name = "name2";members = ["member2a", "member2b"];'
-                 'required = [false, true];min_req = 2;write_members = TRUE;}];'
+                 'required = [false, true];min_req = 2;'
+                 'diag_required = [true, false];diag_min_req = 3;'
+                 'write_members = TRUE;}];'
          )}),
         # 15: valid_exc
         ('INIT', {'TC_PAIRS_VALID_EXCLUDE': '20141031_14'},
@@ -455,29 +462,41 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
           'TC_PAIRS_CONSENSUS1_MEMBERS': 'member1a, member1b',
           'TC_PAIRS_CONSENSUS1_REQUIRED': 'true, false',
           'TC_PAIRS_CONSENSUS1_MIN_REQ': '1',
+          'TC_PAIRS_CONSENSUS1_DIAG_REQUIRED': 'false, true',
+          'TC_PAIRS_CONSENSUS1_DIAG_MIN_REQ': '2',
           'TC_PAIRS_CONSENSUS1_WRITE_MEMBERS': 'false',},
          {'METPLUS_CONSENSUS_LIST': (
                  'consensus = [{name = "name1";members = ["member1a", "member1b"];'
-                 'required = [true, false];min_req = 1;write_members = FALSE;}];'
+                 'required = [true, false];min_req = 1;'
+                 'diag_required = [false, true];diag_min_req = 2;'
+                 'write_members = FALSE;}];'
          )}),
         # 35: consensus 2 dictionaries
         ('VALID', {'TC_PAIRS_CONSENSUS1_NAME': 'name1',
           'TC_PAIRS_CONSENSUS1_MEMBERS': 'member1a, member1b',
           'TC_PAIRS_CONSENSUS1_REQUIRED': 'true, false',
           'TC_PAIRS_CONSENSUS1_MIN_REQ': '1',
+          'TC_PAIRS_CONSENSUS1_DIAG_REQUIRED': 'false, true',
+          'TC_PAIRS_CONSENSUS1_DIAG_MIN_REQ': '2',
           'TC_PAIRS_CONSENSUS1_WRITE_MEMBERS': 'false',
           'TC_PAIRS_CONSENSUS2_NAME': 'name2',
           'TC_PAIRS_CONSENSUS2_MEMBERS': 'member2a, member2b',
           'TC_PAIRS_CONSENSUS2_REQUIRED': 'false, true',
           'TC_PAIRS_CONSENSUS2_MIN_REQ': '2',
+          'TC_PAIRS_CONSENSUS2_DIAG_REQUIRED': 'true, false',
+          'TC_PAIRS_CONSENSUS2_DIAG_MIN_REQ': '3',
           'TC_PAIRS_CONSENSUS2_WRITE_MEMBERS': 'true',
           },
          {'METPLUS_CONSENSUS_LIST': (
                  'consensus = ['
                  '{name = "name1";members = ["member1a", "member1b"];'
-                 'required = [true, false];min_req = 1;write_members = FALSE;},'
+                 'required = [true, false];min_req = 1;'
+                 'diag_required = [false, true];diag_min_req = 2;'
+                 'write_members = FALSE;},'
                  '{name = "name2";members = ["member2a", "member2b"];'
-                 'required = [false, true];min_req = 2;write_members = TRUE;}];'
+                 'required = [false, true];min_req = 2;'
+                 'diag_required = [true, false];diag_min_req = 3;'
+                 'write_members = TRUE;}];'
          )}),
         # 36: valid_exc
         ('VALID', {'TC_PAIRS_VALID_EXCLUDE': '20141031_14'},
@@ -590,14 +609,14 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
     ]
 )
 @pytest.mark.wrapper
-def test_tc_pairs_run(metplus_config, loop_by, config_overrides,
+def test_tc_pairs_run(metplus_config, get_test_data_dir, loop_by, config_overrides,
                       env_var_values):
     config = metplus_config
     remove_beg = remove_end = remove_match_points = False
 
     set_minimum_config_settings(config, loop_by)
 
-    test_data_dir = get_data_dir(config)
+    test_data_dir = get_test_data_dir('tc_pairs')
     bdeck_dir = os.path.join(test_data_dir, 'bdeck')
     adeck_dir = os.path.join(test_data_dir, 'adeck')
 
@@ -714,13 +733,13 @@ def test_tc_pairs_run(metplus_config, loop_by, config_overrides,
     ]
 )
 @pytest.mark.wrapper
-def test_tc_pairs_read_all_files(metplus_config, loop_by, config_overrides,
+def test_tc_pairs_read_all_files(metplus_config, get_test_data_dir, loop_by, config_overrides,
                                  env_var_values):
     config = metplus_config
 
     set_minimum_config_settings(config, loop_by)
 
-    test_data_dir = get_data_dir(config)
+    test_data_dir = get_test_data_dir('tc_pairs')
     bdeck_dir = os.path.join(test_data_dir, 'bdeck')
     adeck_dir = os.path.join(test_data_dir, 'adeck')
 

@@ -619,7 +619,7 @@ def log_terminal_includes_info(config):
     @returns True if log level is set to include INFO messages. False if not.
     """
     log_terminal_level = logging.getLevelName(
-        config.getstr('config', 'LOG_LEVEL_TERMINAL',
-                      config.getstr('runtime', 'LOG_LEVEL_TERMINAL'))
+        config.getstr_nocheck('config', 'LOG_LEVEL_TERMINAL',
+                              config.getstr('runtime', 'LOG_LEVEL_TERMINAL'))
     )
     return log_terminal_level <= logging.INFO

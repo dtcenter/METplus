@@ -1,0 +1,281 @@
+alpha: 0.05
+box_avg: 'False'
+box_boxwex: 0.2
+box_notch: 'False'
+box_outline: 'True'
+box_pts: 'False'
+caption_align: 0.0
+caption_col: '#333333'
+caption_offset: 3.0
+caption_size: 0.8
+caption_weight: 1
+cex: 1
+
+colors:
+# Colors for each line that will be generated.
+# Accessible colors https://davidmathlogic.com/colorblind/#%23D81B60-%231E88E5-%23FFC107-%23004D40
+- '#D41159' # reddish
+- '#4B0092' # purple-ish
+- '#1Aff1A' # lime green-ish
+
+
+con_series:
+- 1
+- 1
+- 1
+
+create_html: 'False'
+
+# Two derived series (lines) are supported (i.e. difference or ratio lines: DIFF or RATIO).
+derived_series_1:
+  # Generate the ratio line of the ECNT spread_plus_oerr/rmse for temperature and the
+  # The first line is the top portion (left side) of the ratio, the second is the bottom (right side), and the
+  # third line indicates the type of derived line (i.e. RATIO or DIFF).  This is a list of lists, so remember
+  # to have two '-' at the start of the first line ( - - 'model var stat')
+  #
+  # RRFS_GEFS_GF.SPP.SPPT model for temperature and the SPREAD_PLUS_OERR and RMSE statistics.
+  #
+- - RRFS_GEFS_GF.SPP.SPPT TMP ECNT_SPREAD_PLUS_OERR
+  - RRFS_GEFS_GF.SPP.SPPT TMP ECNT_RMSE
+  - RATIO
+
+derived_series_2: []
+
+dump_points_1: 'False'
+dump_points_2: 'False'
+event_equal: 'False'
+fcst_var_val_1:
+  # Specify the variable name and the statistic(s) of interest.
+  # This will generate the line for the spread_plus_oerr values for TMP and a
+  # line for rmse values for TMP.
+  TMP:
+      -  ECNT_SPREAD_PLUS_OERR
+      -  ECNT_RMSE
+
+fcst_var_val_2: {}
+
+fixed_vars_vals_input: {}
+grid_col: '#cccccc'
+grid_lty: 3
+grid_lwd: 1
+grid_on: 'True'
+grid_x: listX
+
+# Labels for the x-axis
+indy_label:
+- '3'
+- '4'
+- '6'
+- '9'
+- '12'
+- '15'
+- '16'
+- '17'
+- '18'
+- '20'
+- '24'
+- '27'
+- '30'
+- '32'
+- '33'
+- '34'
+- '36'
+
+# Stagger the points so overlapping points don't obscure one another
+indy_stagger_1: 'True'
+indy_stagger_2: 'True'
+
+# Values for the x-axis
+indy_vals:
+- '30000'
+- '40000'
+- '60000'
+- '90000'
+- '120000'
+- '150000'
+- '160000'
+- '170000'
+- '180000'
+- '200000'
+- '240000'
+- '270000'
+- '300000'
+- '320000'
+- '330000'
+- '340000'
+- '360000'
+
+# Specify the variable corresponding to the x-axis
+indy_var: fcst_lead
+
+legend_box: o
+legend_inset:
+  x: 0.0
+  y: -0.25
+legend_ncol: -1
+legend_size: 0.8
+line_type: None
+
+# Explicitly set only the statistics for the derived series line
+# (without the accompanying variable name)
+list_stat_1:
+  - ECNT_SPREAD_PLUS_OERR
+  - ECNT_RMSE
+list_stat_2: []
+
+mar:
+- 8
+- 4
+- 5
+- 4
+method: bca
+mgp:
+- 1
+- 1
+- 0
+num_iterations: 1
+num_threads: -1
+plot_caption: Caption
+plot_ci:
+- std
+- std
+- std
+
+# Turn on/off displaying the lines
+plot_disp:
+- 'True'
+- 'True'
+- 'True'
+
+
+plot_filename:  !ENV '${PLOT_OUTPUT_BASE}/short-range_UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot.png'
+plot_height: 8.5
+plot_res: 72
+plot_stat: median
+plot_type: png16m
+plot_units: in
+plot_width: 11.0
+
+# Optional, uncomment and set to directory to store the .points1 file
+# that is used by METviewer (created when dump_points_1 is set to True)
+# if dump_points_1 is True and this is uncommented, the points1 file
+# will be saved in the default location (i.e. where the input data file is stored).
+#points_path: /path/to
+
+random_seed: null
+
+# Define the style of the line
+series_line_style:
+- '-'  # solid
+- '--' # dashes
+- ':'  # dots
+
+
+
+series_line_width:
+- 1
+- 1
+- 1
+
+series_order:
+# The order in which to apply settings for line width, line style, colors, symbols, etc.
+# A convenience for experimenting with which color/line style/symbol combination works best for
+# a particular line.
+- 1
+- 2
+- 3
+
+
+series_symbols:
+- .  # circle
+- "s"  # square
+- ^    # triangle up
+
+
+series_type:
+# b=lines + markers, l=lines only p=markers only
+- b
+- b
+- b
+
+series_val_1:
+  # value of interest, in this case, the model, RRFS_GEFS_GF.SPP.SPPT
+  model:
+  - 'RRFS_GEFS_GF.SPP.SPPT'
+series_val_2: {}
+
+show_nstats: 'False'
+show_signif:
+- 'False'
+- 'False'
+- 'False'
+
+
+stat_input: !ENV '${PLOT_INPUT_BASE}/ecnt_aggregated.data'
+sync_yaxes: 'False'
+title: Spread skill plot with ratio line from MET ensemble-stat data (aggregation statistics)
+title_align: 0.5
+title_offset: -2
+title_size: 1.4
+title_weight: 2.0
+# Use empty list to use automatically generated legend labels
+user_legend: []
+# comment above and uncomment below to use  user-specified legend labels
+#user_legend: ['ECNT SPREAD_PLUS_OERR for RRFS_GEFS_GF.SPP.SPPT TMP ', 'ECNT RMSE for for RRFS_GEFS_GF.SPP.SPPT TMP', 'RATIO(RRFS_GEFS_GF.SPP.SPPT TMP SPREAD_PLUS_OERR/RMSE)']
+variance_inflation_factor: 'False'
+vert_plot: 'False'
+x2lab_align: 0.5
+x2lab_offset: -0.5
+x2lab_size: 0.8
+x2lab_weight: 1
+x2tlab_horiz: 0.5
+x2tlab_orient: 1
+x2tlab_perp: 1
+x2tlab_size: 0.8
+xaxis: fcst lead (hr)
+xaxis_reverse: 'False'
+xlab_align: 0.5
+xlab_offset: 2
+xlab_size: 1
+xlab_weight: 1
+xlim: []
+xtlab_decim: 0
+xtlab_horiz: 0.5
+xtlab_orient: 1
+xtlab_perp: -0.75
+xtlab_size: 1
+y2lab_align: 0.5
+y2lab_offset: 1
+y2lab_size: 1
+y2lab_weight: 1
+y2lim: []
+y2tlab_horiz: 0.5
+y2tlab_orient: 1
+y2tlab_perp: 1
+y2tlab_size: 1.0
+yaxis_1: Statistic value (or ratio of statistic values)
+yaxis_2: ''
+ylab_align: 0.5
+ylab_offset: -2
+ylab_size: 1
+ylab_weight: 1
+ylim: []
+ytlab_horiz: 0.5
+ytlab_orient: 1
+ytlab_perp: 0.5
+ytlab_size: 1
+
+show_legend:
+# 0 for don't show, 1 to show
+  - 1
+  - 1
+  - 1
+
+
+# Default logging is ERROR and to stdout.  Omit the log_filename and log_level setting name and value if
+# to use default settings.
+log_filename: !ENV '${PLOT_OUTPUT_BASE}/spread_skill_ecnt.log'
+log_level: INFO
+
+# 0-value on the x-axis is to the far left.
+start_from_zero: False

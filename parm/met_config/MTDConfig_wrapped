@@ -10,18 +10,21 @@
    // Output model name to be written
    //
 
+//model =
 ${METPLUS_MODEL}
 
    //
    // Output description to be written
    //
 
+//desc =
 ${METPLUS_DESC}
 
    //
    // Output observation type to be written
    //
 
+//obtype =
 ${METPLUS_OBTYPE}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -30,6 +33,8 @@ ${METPLUS_OBTYPE}
    //  Verification grid
    //  May be set separately in each "field" entry
    //
+
+//regrid = {
 ${METPLUS_REGRID_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -50,12 +55,15 @@ fcst = {
 
    ${METPLUS_FCST_FILE_TYPE}
 
+   //field = {
    ${METPLUS_FCST_FIELD}
 
    censor_thresh     = [];
    censor_val        = [];
    conv_time_window  = { beg = -1; end = 1; };
+   //conv_radius       =
    ${METPLUS_FCST_CONV_RADIUS}
+   //conv_thresh       =
    ${METPLUS_FCST_CONV_THRESH}
 
 }
@@ -64,12 +72,15 @@ obs = {
 
    ${METPLUS_OBS_FILE_TYPE}
 
+   //field = {
    ${METPLUS_OBS_FIELD}
 
    censor_thresh     = [];
    censor_val        = [];
    conv_time_window  = { beg = -1; end = 1; };
+   //conv_radius       =
    ${METPLUS_OBS_CONV_RADIUS}
+   //conv_thresh       =
    ${METPLUS_OBS_CONV_THRESH}
 }
 
@@ -86,6 +97,8 @@ inten_perc_value = 99;
    //
    //  Throw away 3D objects with volumes smaller than this
    //
+
+//min_volume =
 ${METPLUS_MIN_VOLUME}
 
 
@@ -236,6 +249,7 @@ txt_output = {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+//output_prefix =
 ${METPLUS_OUTPUT_PREFIX}
 //version        = "V9.0";
 

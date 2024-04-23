@@ -25,11 +25,6 @@ data_fmt = (
 )
 
 
-def get_data_dir(config):
-    return os.path.join(config.getdir('METPLUS_BASE'),
-                        'internal', 'tests', 'data', 'tc_pairs')
-
-
 def set_minimum_config_settings(config):
     # set config variables to prevent command from running and bypass check
     # if input files actually exist
@@ -47,8 +42,7 @@ def set_minimum_config_settings(config):
                '{PARM_BASE}/met_config/TCRMWConfig_wrapped')
     config.set('config', 'TC_RMW_DECK_TEMPLATE', deck_template)
     config.set('config', 'TC_RMW_INPUT_TEMPLATE', input_template)
-    config.set('config', 'TC_RMW_OUTPUT_DIR',
-               '{OUTPUT_BASE}/TCRMW/output')
+    config.set('config', 'TC_RMW_OUTPUT_DIR', '{OUTPUT_BASE}/TCRMW/output')
     config.set('config', 'TC_RMW_OUTPUT_TEMPLATE', output_template)
 
     config.set('config', 'BOTH_VAR1_NAME', 'PRMSL')
@@ -134,13 +128,13 @@ def set_minimum_config_settings(config):
     ]
 )
 @pytest.mark.wrapper
-def test_tc_rmw_run(metplus_config, config_overrides,
+def test_tc_rmw_run(metplus_config, get_test_data_dir, config_overrides,
                      env_var_values):
     config = metplus_config
 
     set_minimum_config_settings(config)
 
-    test_data_dir = get_data_dir(config)
+    test_data_dir = get_test_data_dir('tc_pairs')
     deck_dir = os.path.join(test_data_dir, 'bdeck')
 
     config.set('config', 'TC_RMW_DECK_INPUT_DIR', deck_dir)
