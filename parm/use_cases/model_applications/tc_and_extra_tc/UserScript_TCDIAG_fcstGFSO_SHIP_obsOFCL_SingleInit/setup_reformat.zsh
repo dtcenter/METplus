@@ -1,9 +1,0 @@
-#!/usr/bin/zsh
-
-export INPUT_BASE=$METPLUS_BASE/parm/use_case
-export REFORMAT_INPUT_BASE=$INPUT_BASE/model_applications/tc_and_extra_tc/UserScript_TCDIAG_fcstGFSO_SHIP_obsOFCL_SingleInit/
-export REFORMAT_OUTPUT_BASE=$METPLUS_BASE/
-export PLOT_TIME_SERIES_INPUT_BASE=$REFORMAT_OUTPUT_BASE
-export PLOT_TIME_SERIES_OUTPUT_BASE=$METPLUS_BASE/
-
-
