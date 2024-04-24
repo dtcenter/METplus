@@ -126,13 +126,13 @@ event_equal: 'True'
 skill_ref:
 #  - HFSA
 
-plot_dir: !ENV '${TIME_SERIES_PLOT_OUTPUT_BASE}/'
+plot_dir: !ENV '${TIME_SERIES_PLOT_OUTPUT_BASE}/time_series'
 prefix: ''
 subtitle:
 log_level: INFO
 log_filename: !ENV '${PLOT_TIME_SERIES_OUTPUT_BASE}/tcmpr_log.out'
 baseline_file: !ENV '${METPLOTPY_BASE}/metplotpy/plots/tcmpr_plots/hfip_baseline.dat'
-column_info_file:   !ENV '${METPLOTPY_BASE}/metplotpy/plots/tcmpr_plots/plot_tcmpr_hdr.dat'
+column_info_file: !ENV '${METPLOTPY_BASE}/metplotpy/plots/tcmpr_plots/plot_tcmpr_hdr.dat'
 hfip_bsln: 'no'
 
 
