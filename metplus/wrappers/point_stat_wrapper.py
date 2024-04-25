@@ -51,6 +51,9 @@ class PointStatWrapper(CompareGriddedWrapper):
         'METPLUS_FCST_FILE_TYPE',
         'METPLUS_OBS_FILE_TYPE',
         'METPLUS_SEEPS_P1_THRESH',
+        'METPLUS_UGRID_DATASET',
+        'METPLUS_UGRID_MAX_DISTANCE_KM',
+        'METPLUS_UGRID_COORDINATES_FILE',
     ]
 
     # deprecated env vars that are no longer supported in the wrapped MET conf
@@ -159,6 +162,11 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         # get the MET config file path or use default
         c_dict['CONFIG_FILE'] = self.get_config_file('PointStatConfig_wrapped')
+
+        # get optional ugrid config file if requested
+        c_dict['UGRID_CONFIG_FILE'] = (
+            self.config.getraw('config', 'POINT_STAT_UGRID_CONFIG_FILE')
+        )
 
         self.add_met_config_window('obs_window')
 
@@ -281,6 +289,10 @@ class PointStatWrapper(CompareGriddedWrapper):
         self.add_met_config(name='seeps_p1_thresh', data_type='string',
                             extra_args={'remove_quotes': True})
 
+        self.add_met_config(name='ugrid_dataset', data_type='string')
+        self.add_met_config(name='ugrid_max_distance_km', data_type='int')
+        self.add_met_config(name='ugrid_coordinates_file', data_type='string')
+
         if not c_dict['FCST_INPUT_TEMPLATE']:
             self.log_error('Must set FCST_POINT_STAT_INPUT_TEMPLATE '
                            'in config file')
@@ -301,6 +313,9 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         @param time_info dictionary with time information
         """
+        # call CompareGridded function
+        super().set_command_line_arguments(time_info)
+
         # set optional obs_valid_beg and obs_valid_end arguments
         for ext in ['BEG', 'END']:
             if self.c_dict[f'OBS_VALID_{ext}']:
