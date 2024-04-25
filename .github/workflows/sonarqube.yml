@@ -69,8 +69,12 @@ jobs:
       env:
         METPLUS_TEST_OUTPUT_BASE: ${{ runner.workspace }}/pytest_output
 
-    - name: Generate coverage report
+    - name: Output coverage report
       run: coverage report -m
+      if: always()
+
+    - name: Generate XML coverage report
+      run: coverage xml
       if: always()
 
     - name: Get branch name
