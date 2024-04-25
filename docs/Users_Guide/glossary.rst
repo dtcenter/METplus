@@ -1331,12 +1331,12 @@ METplus Configuration Glossary
    FCST_MTD_CONV_RADIUS
      A single integer to specify the convolution radius used by mode-TD for forecast files. A corresponding variable exists for observation data called :term:`OBS_MTD_CONV_RADIUS`.
 
-     | *Used by:*
+     | *Used by:* MTD
 
    FCST_MTD_CONV_THRESH
      A single number to specify the convolution threshold used by mode-TD for forecast files. A corresponding variable exists for observation data called :term:`OBS_MTD_CONV_THRESH`.
 
-     | *Used by:*
+     | *Used by:* MTD
 
    FCST_MTD_FILE_WINDOW_BEGIN
      See :term:`OBS_MTD_FILE_WINDOW_BEGIN`
