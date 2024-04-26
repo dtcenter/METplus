@@ -1329,14 +1329,14 @@ METplus Configuration Glossary
      | *Used by:*  MODE
 
    FCST_MTD_CONV_RADIUS
-     Comma separated list of convolution radius values used by mode-TD for forecast files. A corresponding variable exists for observation data called :term:`OBS_MTD_CONV_RADIUS`.
+     A single integer to specify the convolution radius used by mode-TD for forecast files. A corresponding variable exists for observation data called :term:`OBS_MTD_CONV_RADIUS`.
 
-     | *Used by:*
+     | *Used by:* MTD
 
    FCST_MTD_CONV_THRESH
-     Comma separated list of convolution threshold values used by mode-TD for forecast files. A corresponding variable exists for observation data called :term:`OBS_MTD_CONV_THRESH`.
+     A single convolution threshold used by mode-TD for forecast files. A corresponding variable exists for observation data called :term:`OBS_MTD_CONV_THRESH`.
 
-     | *Used by:*
+     | *Used by:* MTD
 
    FCST_MTD_FILE_WINDOW_BEGIN
      See :term:`OBS_MTD_FILE_WINDOW_BEGIN`
@@ -2587,17 +2587,12 @@ METplus Configuration Glossary
      | *Used by:* MTD
 
    MTD_CONV_RADIUS
-     Comma separated list of convolution radius values used by mode-TD for both forecast and observation files. Has the same behavior as setting :term:`FCST_MTD_CONV_RADIUS` and :term:`OBS_MTD_CONV_RADIUS` to the same value.
+     A single integer to specify the convolution radius used by mode-TD for both forecast and observation files. Has the same behavior as setting :term:`FCST_MTD_CONV_RADIUS` and :term:`OBS_MTD_CONV_RADIUS` to the same value.
 
      | *Used by:* MTD
 
    MTD_CONV_THRESH
-     Comma separated list of convolution threshold values used by mode-TD for both forecast and observation files. Has the same behavior as setting :term:`FCST_MTD_CONV_THRESH` and :term:`OBS_MTD_CONV_THRESH` to the same value.
-
-     | *Used by:* MTD
-
-   MTD_FCST_CONV_RADIUS
-     Comma separated list of convolution radius values used by mode-TD for forecast files.
+     A single convolution threshold used by mode-TD for both forecast and observation files. Has the same behavior as setting :term:`FCST_MTD_CONV_THRESH` and :term:`OBS_MTD_CONV_THRESH` to the same value.
 
      | *Used by:* MTD
 
@@ -2616,21 +2611,6 @@ METplus Configuration Glossary
 
    MTD_SINGLE_DATA_SRC
      Used only if MTD_SINGLE_RUN is set to True. Valid options are 'FCST' or 'OBS'.
-
-     | *Used by:* MTD
-
-   MTD_FCST_CONV_THRESH
-     Comma separated list of convolution threshold values used by mode-TD for forecast files.
-
-     | *Used by:* MTD
-
-   MTD_OBS_CONV_RADIUS
-     Comma separated list of convolution radius values used by mode-TD for observation files.
-
-     | *Used by:* MTD
-
-   MTD_OBS_CONV_THRESH
-     Comma separated list of convolution threshold values used by mode-TD for observation files.
 
      | *Used by:* MTD
 
