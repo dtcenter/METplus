@@ -2592,7 +2592,7 @@ METplus Configuration Glossary
      | *Used by:* MTD
 
    MTD_CONV_THRESH
-     A single number to specify the convolution threshold used by mode-TD for both forecast and observation files. Has the same behavior as setting :term:`FCST_MTD_CONV_THRESH` and :term:`OBS_MTD_CONV_THRESH` to the same value.
+     A single convolution threshold used by mode-TD for both forecast and observation files. Has the same behavior as setting :term:`FCST_MTD_CONV_THRESH` and :term:`OBS_MTD_CONV_THRESH` to the same value.
 
      | *Used by:* MTD
 
