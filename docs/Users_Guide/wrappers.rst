@@ -3158,6 +3158,10 @@ METplus Configuration
 | :term:`GRID_STAT_INC_VALID_TIMES`
 | :term:`GRID_STAT_SKIP_INIT_TIMES`
 | :term:`GRID_STAT_INC_INIT_TIMES`
+| :term:`GRID_STAT_UGRID_DATASET`
+| :term:`GRID_STAT_UGRID_MAX_DISTANCE_KM`
+| :term:`GRID_STAT_UGRID_COORDINATES_FILE`
+| :term:`GRID_STAT_UGRID_CONFIG_FILE`
 |
 
 .. warning:: **DEPRECATED**
@@ -3571,6 +3575,18 @@ ${METPLUS_DISTANCE_MAP_DICT}
    * - :term:`GRID_STAT_DISTANCE_MAP_BETA_VALUE_N`
      - distance_map.beta_value(n)
 
+${METPLUS_SEEPS_P1_THRESH}
+""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_SEEPS_P1_THRESH`
+     - seeps_p1_thresh
+
 ${METPLUS_OUTPUT_FLAG_DICT}
 """""""""""""""""""""""""""
 
@@ -3659,8 +3675,8 @@ ${METPLUS_NC_PAIRS_FLAG_DICT}
    * - :term:`GRID_STAT_NC_PAIRS_FLAG_SEEPS`
      - nc_pairs_flag.seeps
 
-${METPLUS_SEEPS_P1_THRESH}
-""""""""""""""""""""""""""
+${METPLUS_UGRID_DATASET}
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. list-table::
    :widths: 5 5
@@ -3668,8 +3684,32 @@ ${METPLUS_SEEPS_P1_THRESH}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`GRID_STAT_SEEPS_P1_THRESH`
-     - seeps_p1_thresh
+   * - :term:`GRID_STAT_UGRID_DATASET`
+     - ugrid_dataset
+
+${METPLUS_UGRID_MAX_DISTANCE_KM}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_UGRID_MAX_DISTANCE_KM`
+     - ugrid_max_distance_km
+
+${METPLUS_UGRID_COORDINATES_FILE}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_UGRID_COORDINATES_FILE`
+     - ugrid_coordinates_file
 
 ${METPLUS_GRID_WEIGHT_FLAG}
 """""""""""""""""""""""""""
@@ -5064,6 +5104,8 @@ METplus Configuration
 | :term:`FCST_MTD_CONV_THRESH`
 | :term:`OBS_MTD_CONV_RADIUS`
 | :term:`OBS_MTD_CONV_THRESH`
+| :term:`MTD_CONV_RADIUS`
+| :term:`MTD_CONV_THRESH`
 | :term:`MTD_CUSTOM_LOOP_LIST`
 | :term:`MTD_SKIP_IF_OUTPUT_EXISTS`
 | :term:`MTD_DESC`
@@ -5227,7 +5269,7 @@ ${METPLUS_FCST_CONV_RADIUS}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`MTD_FCST_CONV_RADIUS`
+   * - :term:`FCST_MTD_CONV_RADIUS`
      - fcst.conv_radius
 
 ${METPLUS_FCST_CONV_THRESH}
@@ -5239,7 +5281,7 @@ ${METPLUS_FCST_CONV_THRESH}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`MTD_FCST_CONV_THRESH`
+   * - :term:`FCST_MTD_CONV_THRESH`
      - fcst.conv_thresh
 
 ${METPLUS_OBS_FILE_TYPE}
@@ -5283,7 +5325,7 @@ ${METPLUS_OBS_CONV_RADIUS}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`MTD_OBS_CONV_RADIUS`
+   * - :term:`OBS_MTD_CONV_RADIUS`
      - obs.conv_radius
 
 ${METPLUS_OBS_CONV_THRESH}
@@ -5295,7 +5337,7 @@ ${METPLUS_OBS_CONV_THRESH}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`MTD_OBS_CONV_THRESH`
+   * - :term:`OBS_MTD_CONV_THRESH`
      - obs.conv_thresh
 
 ${METPLUS_MIN_VOLUME}
@@ -6393,6 +6435,10 @@ Configuration
 | :term:`POINT_STAT_INC_VALID_TIMES`
 | :term:`POINT_STAT_SKIP_INIT_TIMES`
 | :term:`POINT_STAT_INC_INIT_TIMES`
+| :term:`POINT_STAT_UGRID_DATASET`
+| :term:`POINT_STAT_UGRID_MAX_DISTANCE_KM`
+| :term:`POINT_STAT_UGRID_COORDINATES_FILE`
+| :term:`POINT_STAT_UGRID_CONFIG_FILE`
 |
 
 .. warning:: **DEPRECATED:**
@@ -6855,6 +6901,18 @@ ${METPLUS_HIRA_DICT}
    * - :term:`POINT_STAT_HIRA_PROB_CAT_THRESH`
      - hira.prob_cat_thresh
 
+${METPLUS_SEEPS_P1_THRESH}
+""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_SEEPS_P1_THRESH`
+     - seeps_p1_thresh
+
 ${METPLUS_OUTPUT_FLAG_DICT}
 """""""""""""""""""""""""""
 
@@ -6909,8 +6967,8 @@ ${METPLUS_OUTPUT_FLAG_DICT}
    * - :term:`POINT_STAT_OUTPUT_FLAG_SEEPS_MPR`
      - output_flag.seeps_mpr
 
-${METPLUS_SEEPS_P1_THRESH}
-""""""""""""""""""""""""""
+${METPLUS_UGRID_DATASET}
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. list-table::
    :widths: 5 5
@@ -6918,9 +6976,33 @@ ${METPLUS_SEEPS_P1_THRESH}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`POINT_STAT_SEEPS_P1_THRESH`
-     - seeps_p1_thresh
-       
+   * - :term:`POINT_STAT_UGRID_DATASET`
+     - ugrid_dataset
+
+${METPLUS_UGRID_MAX_DISTANCE_KM}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_UGRID_MAX_DISTANCE_KM`
+     - ugrid_max_distance_km
+
+${METPLUS_UGRID_COORDINATES_FILE}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_UGRID_COORDINATES_FILE`
+     - ugrid_coordinates_file
+
 ${METPLUS_OUTPUT_PREFIX}
 """"""""""""""""""""""""
 
