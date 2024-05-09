@@ -14,6 +14,8 @@ import os
 
 from ..util import do_string_sub
 from ..util import remove_quotes
+from ..util.met_config import add_met_config_dict_list
+
 from . import LoopTimesWrapper
 
 '''!@namespace Point2GridWrapper
@@ -25,6 +27,16 @@ from . import LoopTimesWrapper
 class Point2GridWrapper(LoopTimesWrapper):
     RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
     RUNTIME_FREQ_SUPPORTED = ['RUN_ONCE_FOR_EACH']
+
+    WRAPPER_ENV_VAR_KEYS = [
+        'METPLUS_VALID_TIME',
+        'METPLUS_OBS_WINDOW_DICT',
+        'METPLUS_MESSAGE_TYPE',
+        'METPLUS_VAR_NAME_MAP_LIST',
+        'METPLUS_QUALITY_MARK_THRESH',
+        'METPLUS_OBS_QUALITY_INC',
+        'METPLUS_OBS_QUALITY_EXC',
+    ]
 
     def __init__(self, config, instance=None):
         self.app_name = "point2grid"
@@ -86,8 +98,6 @@ class Point2GridWrapper(LoopTimesWrapper):
                                                    'POINT2GRID_INPUT_LEVEL',
                                                    '')
 
-        c_dict['QC_FLAGS'] = self.config.getraw('config',
-                                                'POINT2GRID_QC_FLAGS')
         c_dict['ADP'] = self.config.getraw('config', 'POINT2GRID_ADP')
 
         c_dict['REGRID_METHOD'] = self.config.getstr('config',
@@ -109,6 +119,32 @@ class Point2GridWrapper(LoopTimesWrapper):
         c_dict['VLD_THRESH'] = self.config.getstr('config',
                                               'POINT2GRID_VLD_THRESH',
                                               '')
+
+        # get the MET config file path or use default
+        c_dict['CONFIG_FILE'] = self.get_config_file('Point2GridConfig_wrapped')
+
+        # read config file variables
+        self.add_met_config(name='valid_time', data_type='string')
+        self.add_met_config_window('obs_window')
+        self.add_met_config(name='message_type', data_type='list')
+        if not add_met_config_dict_list(config=self.config,
+                                        app_name=self.app_name,
+                                        output_dict=self.env_var_dict,
+                                        dict_name='var_name_map',
+                                        dict_items={'key': 'string',
+                                                    'val': 'string'}):
+            self.isOK = False
+
+        self.add_met_config(name='quality_mark_thresh', data_type='int')
+        self.add_met_config(name='obs_quality_inc', data_type='list',
+                            metplus_configs=['POINT2GRID_OBS_QUALITY_INC',
+                                             'POINT2GRID_OBS_QUALITY_INCLUDE',
+                                             'POINT2GRID_OBS_QUALITY',
+                                             'POINT2GRID_QC_FLAGS'])
+        self.add_met_config(name='obs_quality_exc', data_type='list',
+                            metplus_configs=['POINT2GRID_OBS_QUALITY_EXC',
+                                             'POINT2GRID_OBS_QUALITY_EXCLUDE'])
+
         # skip RuntimeFreq input file logic - remove once integrated
         c_dict['FIND_FILES'] = False
         return c_dict
@@ -181,8 +217,8 @@ class Point2GridWrapper(LoopTimesWrapper):
         #Add either the specified level above or the defauilt blank one
         self.args.append(f"-field 'name=\"{input_field}\"; level=\"{input_level}\";'")
 
-        if self.c_dict['QC_FLAGS'] != '':
-            self.args.append(f"-qc {self.c_dict['QC_FLAGS']}")
+        config_file = do_string_sub(self.c_dict['CONFIG_FILE'], **time_info)
+        self.args.append(f'-config {config_file}')
 
         if self.c_dict['ADP']:
             self.args.append(f"-adp {self.c_dict['ADP']}")

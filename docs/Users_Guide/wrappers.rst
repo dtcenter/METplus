@@ -6261,7 +6261,6 @@ METplus Configuration
 | :term:`POINT2GRID_REGRID_TO_GRID`
 | :term:`POINT2GRID_INPUT_FIELD`
 | :term:`POINT2GRID_INPUT_LEVEL`
-| :term:`POINT2GRID_QC_FLAGS`
 | :term:`POINT2GRID_ADP`
 | :term:`POINT2GRID_REGRID_METHOD`
 | :term:`POINT2GRID_GAUSSIAN_DX`
@@ -6274,7 +6273,134 @@ METplus Configuration
 | :term:`POINT2GRID_INC_VALID_TIMES`
 | :term:`POINT2GRID_SKIP_INIT_TIMES`
 | :term:`POINT2GRID_INC_INIT_TIMES`
+| :term:`POINT2GRID_VALID_TIME`
+| :term:`POINT2GRID_OBS_WINDOW_BEG`
+| :term:`POINT2GRID_OBS_WINDOW_END`
+| :term:`POINT2GRID_MESSAGE_TYPE`
+| :term:`POINT2GRID_VAR_NAME_MAP<n>_KEY`
+| :term:`POINT2GRID_VAR_NAME_MAP<n>_VAL`
+| :term:`POINT2GRID_QUALITY_MARK_THRESH`
+| :term:`POINT2GRID_OBS_QUALITY_INC`
+| :term:`POINT2GRID_OBS_QUALITY_EXC`
 |
+
+.. warning:: **DEPRECATED:**
+
+   | :term:`POINT2GRID_QC_FLAGS`
+
+.. _point2grid-met-conf:
+
+MET Configuration
+-----------------
+
+Below is the wrapped MET configuration file used for this wrapper.
+Environment variables are used to control entries in this configuration file.
+The default value for each environment variable is obtained from
+(except where noted below):
+
+`MET_INSTALL_DIR/share/met/config/Point2GridConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/Point2GridConfig_default>`_
+
+Below the file contents are descriptions of each environment variable
+referenced in this file and the corresponding METplus configuration item used
+to set the value of the environment variable. For detailed examples showing
+how METplus sets the values of these environment variables,
+see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+
+.. dropdown:: Click to view parm/met_config/Point2GridConfig_wrapped
+
+   .. literalinclude:: ../../parm/met_config/Point2GridConfig_wrapped
+
+Environment variables in wrapped MET config
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+${METPLUS_VALID_TIME}
+^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT2GRID_VALID_TIME`
+     - valid_time
+
+${METPLUS_OBS_WINDOW_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT2GRID_OBS_WINDOW_BEG`
+     - obs_window.beg
+   * - :term:`POINT2GRID_OBS_WINDOW_END`
+     - obs_window.end
+
+${METPLUS_MESSAGE_TYPE}
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT2GRID_MESSAGE_TYPE`
+     - message_type
+
+${METPLUS_VAR_NAME_MAP_LIST}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT2GRID_VAR_NAME_MAP<n>_KEY`
+     - var_name_map.key
+   * - :term:`POINT2GRID_VAR_NAME_MAP<n>_VAL`
+     - var_name_map.val
+
+${METPLUS_QUALITY_MARK_THRESH}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT2GRID_QUALITY_MARK_THRESH`
+     - quality_mark_thresh
+
+${METPLUS_OBS_QUALITY_INC}
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT2GRID_OBS_QUALITY_INC`
+     - obs_quality_inc
+
+${METPLUS_OBS_QUALITY_EXC}
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT2GRID_OBS_QUALITY_EXC`
+     - obs_quality_exc
+
 
 .. _point_stat_wrapper:
 

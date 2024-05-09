@@ -290,7 +290,7 @@ METplus Configuration Glossary
      | *Used by:* Point2Grid
 
    POINT2GRID_QC_FLAGS
-     Specify the qc flags name that is read by Point2Grid.
+     .. warning:: **DEPRECATED:** Please use :term:`POINT2GRID_OBS_QUALITY_INC`.
 
      | *Used by:* Point2Grid
 
@@ -11633,3 +11633,48 @@ METplus Configuration Glossary
      Specify the value for 'obs_perc_value' in the MET configuration file for PointStat.
 
      | *Used by:* PointStat
+
+   POINT2GRID_VALID_TIME
+     Specify the value for 'valid_time' in the MET configuration file for Point2Grid.
+
+     | *Used by:* Point2Grid
+
+   POINT2GRID_OBS_WINDOW_BEG
+     Specify the value for 'obs_window.beg' in the MET configuration file for Point2Grid.
+
+     | *Used by:* Point2Grid
+
+   POINT2GRID_OBS_WINDOW_END
+     Specify the value for 'obs_window.end' in the MET configuration file for Point2Grid.
+
+     | *Used by:* Point2Grid
+
+   POINT2GRID_MESSAGE_TYPE
+     Specify the value for 'message_type' in the MET configuration file for Point2Grid.
+
+     | *Used by:* Point2Grid
+
+   POINT2GRID_VAR_NAME_MAP<n>_KEY
+     Specify the value for the nth 'var_name_map.key' in the MET configuration file for Point2Grid.
+
+     | *Used by:* Point2Grid
+
+   POINT2GRID_VAR_NAME_MAP<n>_VAL
+     Specify the value for the nth 'var_name_map.val' in the MET configuration file for Point2Grid.
+
+     | *Used by:* Point2Grid
+
+   POINT2GRID_QUALITY_MARK_THRESH
+     Specify the value for 'quality_mark_thresh' in the MET configuration file for Point2Grid.
+
+     | *Used by:* Point2Grid
+
+   POINT2GRID_OBS_QUALITY_INC
+     Specify the value for 'obs_quality_inc' in the MET configuration file for Point2Grid.
+
+     | *Used by:* Point2Grid
+
+   POINT2GRID_OBS_QUALITY_EXC
+     Specify the value for 'obs_quality_exc' in the MET configuration file for Point2Grid.
+
+     | *Used by:* Point2Grid
