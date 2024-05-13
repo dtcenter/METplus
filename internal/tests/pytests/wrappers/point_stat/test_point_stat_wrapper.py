@@ -667,6 +667,8 @@ def test_met_dictionary_in_var_options(metplus_config):
         ({'POINT_STAT_OBS_PERC_VALUE': '50', },
          {'METPLUS_OBS_PERC_VALUE': 'obs_perc_value = 50;'}),
         ({'POINT_STAT_UGRID_CONFIG_FILE': ugrid_config_file, }, {}),
+        ({'OBS_POINT_STAT_INPUT_TEMPLATE': '{valid?fmt=%Y%m%d%H}/obs_file,{valid?fmt=%Y%m%d%H}/obs_file2', }, {}),
+        ({'OBS_POINT_STAT_INPUT_TEMPLATE': '{valid?fmt=%Y%m%d%H}/obs_file,{valid?fmt=%Y%m%d%H}/obs_file2,{valid?fmt=%Y%m%d%H}/obs_file3', }, {}),
 
     ]
 )
@@ -744,6 +746,13 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
 
     # add extra command line arguments
     extra_args = [' '] * len(inits)
+
+    if 'OBS_POINT_STAT_INPUT_TEMPLATE' in config_overrides:
+        for index in range(0, len(inits)):
+            extra_args[index] += f'-point_obs {obs_dir}/{valids[index]}/obs_file2 '
+            # if obs_file3 is set, an additional point observation file is added
+            if 'obs_file3' in config_overrides['OBS_POINT_STAT_INPUT_TEMPLATE']:
+                extra_args[index] += f'-point_obs {obs_dir}/{valids[index]}/obs_file3 '
 
     if 'POINT_STAT_UGRID_CONFIG_FILE' in config_overrides:
         for index in range(0, len(inits)):
