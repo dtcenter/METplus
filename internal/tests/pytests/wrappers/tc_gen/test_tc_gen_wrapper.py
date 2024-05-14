@@ -339,6 +339,12 @@ def test_tc_gen_missing_inputs(metplus_config, get_test_data_dir, allow_missing,
          },
          {'METPLUS_OPS_HIT_WINDOW_DICT': 'ops_hit_window = {beg = 1;end = 47;}'}),
 
+        ({'TC_GEN_TIME_OFFSET_WARNING': 3},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 3;'}),
+        ({'TIME_OFFSET_WARNING': 2},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 2;'}),
+        ({'TIME_OFFSET_WARNING': 2, 'TC_GEN_TIME_OFFSET_WARNING': 4},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 4;'}),
     ]
 )
 @pytest.mark.wrapper_a

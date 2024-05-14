@@ -103,6 +103,16 @@ class CommandBuilder:
             # add key to list of env vars to set
             self.env_var_keys.append(self.MET_OVERRIDES_KEY)
 
+            # add time_offset_warning env var
+            self.env_var_keys.append('METPLUS_TIME_OFFSET_WARNING')
+            time_offset_warning = self.get_wrapper_or_generic_config(
+                'TIME_OFFSET_WARNING', var_type='int'
+            )
+            if time_offset_warning != '':
+                self.env_var_dict['METPLUS_TIME_OFFSET_WARNING'] = (
+                    f'time_offset_warning = {time_offset_warning};'
+                )
+
             # warn if any environment variables set by the wrapper are not
             # being utilized in the user's config file
             self.check_for_unused_env_vars()

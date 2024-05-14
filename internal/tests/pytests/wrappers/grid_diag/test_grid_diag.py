@@ -344,6 +344,13 @@ def test_get_config_file(metplus_config):
                                   'censor_thresh = [>12000, <5000];'
                                   'censor_val = [12000, 5000];}'
                                   )}),
+
+        ({'GRID_DIAG_TIME_OFFSET_WARNING': 3},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 3;'}),
+        ({'TIME_OFFSET_WARNING': 2},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 2;'}),
+        ({'TIME_OFFSET_WARNING': 2, 'GRID_DIAG_TIME_OFFSET_WARNING': 4},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 4;'}),
     ]
 )
 @pytest.mark.wrapper
