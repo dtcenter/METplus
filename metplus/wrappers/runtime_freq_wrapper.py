@@ -131,10 +131,7 @@ class RuntimeFreqWrapper(CommandBuilder):
                 templates = getlist(
                     self.config.getraw('config', f'{prefix}_INPUT_TEMPLATE')
                 )
-                template_list = [os.path.join(input_dir, template)
-                                 for template in templates]
-                template = ','.join(template_list)
-                c_dict[f'{label}_INPUT_TEMPLATE'] = template
+                c_dict[f'{label}_INPUT_TEMPLATE'] = ','.join(templates)
                 if not c_dict[f'{label}_INPUT_TEMPLATE']:
                     if required:
                         self.log_error(f'{prefix}_INPUT_TEMPLATE required to run')
