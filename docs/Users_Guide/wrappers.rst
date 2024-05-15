@@ -4042,6 +4042,125 @@ ${METPLUS_MET_CONFIG_OVERRIDES}
      - n/a
 
 
+.. _madis2nc_wrapper:
+
+MADIS2NC
+========
+
+Description
+-----------
+
+Used to configure the MET tool madis2nc
+
+METplus Configuration
+---------------------
+
+| :term:`MADIS2NC_INPUT_DIR`
+| :term:`MADIS2NC_OUTPUT_DIR`
+| :term:`MADIS2NC_INPUT_TEMPLATE`
+| :term:`MADIS2NC_OUTPUT_TEMPLATE`
+| :term:`LOG_MADIS2NC_VERBOSITY`
+| :term:`MADIS2NC_SKIP_IF_OUTPUT_EXISTS`
+| :term:`MADIS2NC_CONFIG_FILE`
+| :term:`MADIS2NC_FILE_WINDOW_BEGIN`
+| :term:`MADIS2NC_FILE_WINDOW_END`
+| :term:`MADIS2NC_TYPE`
+| :term:`MADIS2NC_QC_DD`
+| :term:`MADIS2NC_LVL_DIM`
+| :term:`MADIS2NC_REC_BEG`
+| :term:`MADIS2NC_REC_END`
+| :term:`MADIS2NC_MASK_GRID`
+| :term:`MADIS2NC_MASK_POLY`
+| :term:`MADIS2NC_MASK_SID`
+| :term:`MADIS2NC_TIME_SUMMARY_FLAG`
+| :term:`MADIS2NC_TIME_SUMMARY_RAW_DATA`
+| :term:`MADIS2NC_TIME_SUMMARY_BEG`
+| :term:`MADIS2NC_TIME_SUMMARY_END`
+| :term:`MADIS2NC_TIME_SUMMARY_STEP`
+| :term:`MADIS2NC_TIME_SUMMARY_WIDTH`
+| :term:`MADIS2NC_TIME_SUMMARY_GRIB_CODE`
+| :term:`MADIS2NC_TIME_SUMMARY_OBS_VAR`
+| :term:`MADIS2NC_TIME_SUMMARY_TYPE`
+| :term:`MADIS2NC_TIME_SUMMARY_VLD_FREQ`
+| :term:`MADIS2NC_TIME_SUMMARY_VLD_THRESH`
+| :term:`MADIS2NC_CUSTOM_LOOP_LIST`
+| :term:`MADIS2NC_MET_CONFIG_OVERRIDES`
+| :term:`MADIS2NC_SKIP_VALID_TIMES`
+| :term:`MADIS2NC_INC_VALID_TIMES`
+| :term:`MADIS2NC_SKIP_INIT_TIMES`
+| :term:`MADIS2NC_INC_INIT_TIMES`
+|
+
+.. _madis2nc-met-conf:
+
+MET Configuration
+-----------------
+
+Below is the wrapped MET configuration file used for this wrapper.
+Environment variables are used to control entries in this configuration file.
+The default value for each environment variable is obtained from
+(except where noted below):
+
+`MET_INSTALL_DIR/share/met/config/Madis2NcConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/Madis2NcConfig_default>`_
+
+Below the file contents are descriptions of each environment variable
+referenced in this file and the corresponding METplus configuration item used
+to set the value of the environment variable. For detailed examples showing
+how METplus sets the values of these environment variables,
+see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+
+.. dropdown:: Click to view parm/met_config/Madis2NcConfig_wrapped
+
+   .. literalinclude:: ../../parm/met_config/Madis2NcConfig_wrapped
+
+Environment variables in wrapped MET config
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+${METPLUS_TIME_SUMMARY_DICT}
+""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MADIS2NC_TIME_SUMMARY_FLAG`
+     - time_summary.flag
+   * - :term:`MADIS2NC_TIME_SUMMARY_RAW_DATA`
+     - time_summary.raw_data
+   * - :term:`MADIS2NC_TIME_SUMMARY_BEG`
+     - time_summary.beg
+   * - :term:`MADIS2NC_TIME_SUMMARY_END`
+     - time_summary.end
+   * - :term:`MADIS2NC_TIME_SUMMARY_STEP`
+     - time_summary.step
+   * - :term:`MADIS2NC_TIME_SUMMARY_WIDTH`
+     - time_summary.width
+   * - :term:`MADIS2NC_TIME_SUMMARY_GRIB_CODE`
+     - time_summary.grib_code
+   * - :term:`MADIS2NC_TIME_SUMMARY_OBS_VAR`
+     - time_summary.obs_var
+   * - :term:`MADIS2NC_TIME_SUMMARY_TYPE`
+     - time_summary.type
+   * - :term:`MADIS2NC_TIME_SUMMARY_VLD_FREQ`
+     - time_summary.vld_freq
+   * - :term:`MADIS2NC_TIME_SUMMARY_VLD_THRESH`
+     - time_summary.vld_thresh
+
+${METPLUS_MET_CONFIG_OVERRIDES}
+"""""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MADIS2NC_MET_CONFIG_OVERRIDES`
+     - n/a
+
+
 .. _met_db_load_wrapper:
 
 METdbLoad

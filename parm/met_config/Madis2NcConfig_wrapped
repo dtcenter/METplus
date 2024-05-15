@@ -1,0 +1,30 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// MADIS2NC configuration file.
+//
+// For additional information, please see the MET Users Guide.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// The parameters listed below are used to summarize the MADIS data read in
+//
+
+//
+// Time periods for the summarization
+// obs_var (string array) is added and works like grib_code (int array)
+// when the obs name is given instead of grib_code
+//
+
+//time_summary = {
+${METPLUS_TIME_SUMMARY_DICT}
+
+//
+// Indicate a version number for the contents of this configuration file.
+// The value should generally not be modified.
+//
+//version = "V12.0.0";
+
+//${METPLUS_TIME_OFFSET_WARNING}
+
+${METPLUS_MET_CONFIG_OVERRIDES}

@@ -22,6 +22,7 @@ Use Cases by MET Tool:
    | `GridStat <../search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_
    | `GridDiag <../search.html?q=GridDiagToolUseCase&check_keywords=yes&area=default>`_
    | `IODA2NC <../search.html?q=IODA2NCToolUseCase&check_keywords=yes&area=default>`_
+   | `MADIS2NC <../search.html?q=MADIS2NCToolUseCase&check_keywords=yes&area=default>`_
    | `MODE <../search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_
    | `MTD <../search.html?q=MTDToolUseCase&check_keywords=yes&area=default>`_
    | `PB2NC <../search.html?q=PB2NCToolUseCase&check_keywords=yes&area=default>`_
@@ -49,6 +50,7 @@ Use Cases by MET Tool:
    | **GridStat**: *GridStatToolUseCase*
    | **GridDiag**: *GridDiagToolUseCase*
    | **IODA2NC**: *IODA2NCToolUseCase*
+   | **MADIS2NC**: *MADIS2NCToolUseCase*
    | **MODE**: *MODEToolUseCase*
    | **MTD**: *MTDToolUseCase*
    | **PB2NC**: *PB2NCToolUseCase*
