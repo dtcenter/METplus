@@ -26,9 +26,9 @@ assignees: ''
 - [ ] Select **engineer(s)** or **no engineer** required
 - [ ] Select **scientist(s)** or **no scientist** required
 
-### Projects and Milestone ###
-- [ ] Select **Repository** and/or **Organization** level **Project(s)** or add **alert: NEED CYCLE ASSIGNMENT** label
-- [ ] Select **Milestone** as the next official version or **Future Versions**
+### Milestone and Projects ###
+- [ ] Select **Milestone** as the next official version or **Backlog of Development Ideas**
+- [ ] For the next official version, select the **METplus-Wrappers-X.Y.Z Development** project
 
 ## Update Truth Checklist ###
 - [ ] Review the GitHub Actions workflow that was triggered by the PR merge
