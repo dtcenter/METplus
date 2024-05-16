@@ -313,6 +313,12 @@ def test_wavelet_stat_is_prob(metplus_config, config_overrides, expected_values)
         ({'OBS_WAVELET_STAT_FILE_TYPE': 'NETCDF_NCCF', },
          {'METPLUS_OBS_FILE_TYPE': 'file_type = NETCDF_NCCF;'}),
 
+        ({'WAVELET_STAT_TIME_OFFSET_WARNING': 3},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 3;'}),
+        ({'TIME_OFFSET_WARNING': 2},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 2;'}),
+        ({'TIME_OFFSET_WARNING': 2, 'WAVELET_STAT_TIME_OFFSET_WARNING': 4},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 4;'}),
     ]
 )
 @pytest.mark.wrapper_b

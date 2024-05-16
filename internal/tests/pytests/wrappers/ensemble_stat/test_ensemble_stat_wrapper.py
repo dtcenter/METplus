@@ -637,6 +637,13 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
           'OBS_ENSEMBLE_STAT_POINT_INPUT_TEMPLATE': obs_point_template},
          {}),
 
+        ({'ENSEMBLE_STAT_TIME_OFFSET_WARNING': 3},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 3;'}),
+        ({'TIME_OFFSET_WARNING': 2},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 2;'}),
+        ({'TIME_OFFSET_WARNING': 2, 'ENSEMBLE_STAT_TIME_OFFSET_WARNING': 4},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 4;'}),
+
     ]
 )
 @pytest.mark.wrapper_c

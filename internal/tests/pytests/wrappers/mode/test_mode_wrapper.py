@@ -381,6 +381,12 @@ def test_mode_missing_inputs(metplus_config, get_test_data_dir,
         ({'MODE_OBS_MULTIVAR_LEVEL': 'Z10', },
          {'METPLUS_OBS_MULTIVAR_LEVEL': 'multivar_level = "Z10";'}),
 
+        ({'MODE_TIME_OFFSET_WARNING': 3},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 3;'}),
+        ({'TIME_OFFSET_WARNING': 2},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 2;'}),
+        ({'TIME_OFFSET_WARNING': 2, 'MODE_TIME_OFFSET_WARNING': 4},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 4;'}),
     ]
 )
 @pytest.mark.wrapper_a
