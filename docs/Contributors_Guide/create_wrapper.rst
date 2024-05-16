@@ -84,8 +84,8 @@ Copy the appropriate default configuration file found in the
 directory of the MET repository into the parm/met_config directory of the
 METplus repository and rename it to end with *_wrapped* instead of *_default*.
 For example, if creating the GridStat wrapper,
-copy MET/data/config/GridStatConfig_**default** to
-METplus/parm/met_config/GridStatConfig_**wrapped**.
+copy MET/data/config/GridStatConfig\_**default** to
+METplus/parm/met_config/GridStatConfig\_**wrapped**.
 
 **MAKE SURE TO COPY THE DEFAULT CONFIG FILE FROM THE DEVELOP BRANCH TO GET
 THE LATEST UPDATES**
@@ -372,11 +372,10 @@ Basic Use Case Example
 The new wrapper should include a basic use case under the
 *parm/use_cases/met_tool_wrapper* directory to demonstrate how to configure it.
 
-Following the instructions in :ref`adding-use-cases` and refer to an existing
+Following the instructions in :ref:`adding-use-cases` and refer to an existing
 use case for a similar wrapper.
 
-
-Refer to the :ref:`basic_components_of_wrappers` section of the Contributor's
+Refer to the :ref:`basic_components_of_wrappers` chapter of the Contributor's
 Guide for more information on what should be added.
 
 Unit Tests
