@@ -11773,3 +11773,22 @@ METplus Configuration Glossary
      Specify the value for 'time_offset_warning' in the MET configuration file for WaveletStat.
 
      | *Used by:* WaveletStat
+
+   POINT2GRID_TIME_OFFSET_WARNING
+     Specify the value for 'time_offset_warning' in the MET configuration file for Point2Grid.
+
+     | *Used by:* Point2Grid
+
+   POINT2GRID_MET_CONFIG_OVERRIDES
+     Override any variables in the MET configuration file that are not
+     supported by the wrapper. This should be set to the full variable name
+     and value that you want to override, including the equal sign and the
+     ending semi-colon. The value is directly appended to the end of the
+     wrapped MET config file.
+
+     Example:
+     POINT2GRID_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
+
+     | *Used by:*  Point2Grid

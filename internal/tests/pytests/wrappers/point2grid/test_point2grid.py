@@ -124,6 +124,8 @@ def test_point2grid_missing_inputs(metplus_config, get_test_data_dir,
          {'METPLUS_OBS_QUALITY_EXC': 'obs_quality_exc = ["3", "4", "5"];'}, []),
 
         ({'POINT2GRID_QC_FLAGS': '0,1'}, {'METPLUS_OBS_QUALITY_INC': 'obs_quality_inc = ["0", "1"];'}, []),
+        ({'POINT2GRID_TIME_OFFSET_WARNING': '5', },
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 5;'}, []),
 
     ]
 )

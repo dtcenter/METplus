@@ -6412,6 +6412,8 @@ METplus Configuration
 | :term:`POINT2GRID_QUALITY_MARK_THRESH`
 | :term:`POINT2GRID_OBS_QUALITY_INC`
 | :term:`POINT2GRID_OBS_QUALITY_EXC`
+| :term:`POINT2GRID_TIME_OFFSET_WARNING`
+| :term:`POINT2GRID_MET_CONFIG_OVERRIDES`
 |
 
 .. warning:: **DEPRECATED:**
@@ -6531,6 +6533,29 @@ ${METPLUS_OBS_QUALITY_EXC}
    * - :term:`POINT2GRID_OBS_QUALITY_EXC`
      - obs_quality_exc
 
+${METPLUS_TIME_OFFSET_WARNING}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT2GRID_TIME_OFFSET_WARNING`
+     - time_offset_warning
+
+${METPLUS_MET_CONFIG_OVERRIDES}
+"""""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT2GRID_MET_CONFIG_OVERRIDES`
+     - n/a
 
 .. _point_stat_wrapper:
 
