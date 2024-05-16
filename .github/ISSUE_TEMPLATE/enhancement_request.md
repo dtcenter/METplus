@@ -39,7 +39,7 @@ Consider breaking the enhancement down into sub-issues.
 - [ ] Select **requestor(s)**
 
 ### Milestone and Projects ###
-- [ ] Select **Milestone** as the next official version or **Backlog of Development Ideas**
+- [ ] Select **Milestone** as the next official version, **Consider for Next Release**, or **Backlog of Development Ideas**
 - [ ] For the next official version, select the **METplus-Wrappers-X.Y.Z Development** project
 
 ## Define Related Issue(s) ##

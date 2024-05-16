@@ -68,7 +68,6 @@ Branch name: `bugfix_<Issue Number>_main_<Version>_<Description>`
 - [ ] Add/update unit tests.
 - [ ] Add/update documentation.
 - [ ] Add any new Python packages to the [METplus Components Python Requirements](https://metplus.readthedocs.io/en/develop/Users_Guide/appendixA.html#metplus-components-python-packages) table.
-- [ ] For any new datasets, an entry to the [METplus Verification Datasets Guide](https://metplus.readthedocs.io/en/latest/Verification_Datasets/index.html).
 - [ ] Push local changes to GitHub.
 - [ ] Submit a pull request to merge into **main_\<Version>**.
 Pull request: `bugfix <Issue Number> main_<Version> <Description>`
