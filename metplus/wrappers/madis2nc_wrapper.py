@@ -52,6 +52,8 @@ class MADIS2NCWrapper(RuntimeFreqWrapper):
         c_dict['OUTPUT_TEMPLATE'] = (
             self.config.getraw('config', 'MADIS2NC_OUTPUT_TEMPLATE')
         )
+        if not c_dict['OUTPUT_TEMPLATE']:
+            self.log_error('MADIS2NC_OUTPUT_TEMPLATE must be set')
 
         # config file settings
         c_dict['CONFIG_FILE'] = self.get_config_file('Madis2NcConfig_wrapped')
