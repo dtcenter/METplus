@@ -180,26 +180,6 @@ def test_madis2nc_wrapper(metplus_config, config_overrides,
     ]
 
     compare_command_and_env_vars(all_commands, expected_cmds, env_var_values, wrapper)
-    # assert len(all_commands) == len(expected_cmds)
-    # for (cmd, _), expected_cmd in zip(all_commands, expected_cmds):
-    #     # ensure commands are generated as expected
-    #     assert cmd == expected_cmd
-    #
-    # env_vars = all_commands[0][1]
-    #
-    # missing_env = [item for item in env_var_values
-    #                if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
-    # env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
-    #
-    # # check that environment variables were set properly
-    # # including deprecated env vars (not in wrapper env var keys)
-    # for env_var_key in env_var_keys:
-    #     match = next((item for item in env_vars if
-    #                   item.startswith(env_var_key)), None)
-    #     assert match is not None
-    #     value = match.split('=', 1)[1]
-    #
-    #     assert env_var_values.get(env_var_key, '') == value
 
 
 @pytest.mark.wrapper
