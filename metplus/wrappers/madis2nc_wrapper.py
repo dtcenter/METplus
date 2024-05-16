@@ -12,7 +12,7 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import do_string_sub
+from ..util import do_string_sub, MISSING_DATA_VALUE
 from . import RuntimeFreqWrapper
 
 '''!@namespace MADIS2NCWrapper
@@ -66,8 +66,12 @@ class MADIS2NCWrapper(RuntimeFreqWrapper):
 
         c_dict['QC_DD'] = self.config.getraw('config', 'MADIS2NC_QC_DD')
         c_dict['LVL_DIM'] = self.config.getraw('config', 'MADIS2NC_LVL_DIM')
-        c_dict['REC_BEG'] = self.config.getint('config', 'MADIS2NC_REC_BEG', '')
-        c_dict['REC_END'] = self.config.getint('config', 'MADIS2NC_REC_END', '')
+        c_dict['REC_BEG'] = self.config.getint('config', 'MADIS2NC_REC_BEG')
+        if c_dict['REC_BEG'] == MISSING_DATA_VALUE:
+            c_dict['REC_BEG'] = ''
+        c_dict['REC_END'] = self.config.getint('config', 'MADIS2NC_REC_END')
+        if c_dict['REC_END'] == MISSING_DATA_VALUE:
+            c_dict['REC_END'] = ''
         c_dict['MASK_GRID'] = self.config.getraw('config', 'MADIS2NC_MASK_GRID')
         c_dict['MASK_POLY'] = self.config.getraw('config', 'MADIS2NC_MASK_POLY')
         c_dict['MASK_SID'] = self.config.getraw('config', 'MADIS2NC_MASK_SID')
