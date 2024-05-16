@@ -4168,6 +4168,7 @@ METplus Configuration
 | :term:`MADIS2NC_INC_VALID_TIMES`
 | :term:`MADIS2NC_SKIP_INIT_TIMES`
 | :term:`MADIS2NC_INC_INIT_TIMES`
+| :term:`MADIS2NC_TIME_OFFSET_WARNING`
 |
 
 .. _madis2nc-met-conf:
@@ -4226,6 +4227,18 @@ ${METPLUS_TIME_SUMMARY_DICT}
      - time_summary.vld_freq
    * - :term:`MADIS2NC_TIME_SUMMARY_VLD_THRESH`
      - time_summary.vld_thresh
+
+${METPLUS_TIME_OFFSET_WARNING}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MADIS2NC_TIME_OFFSET_WARNING`
+     - time_offset_warning
 
 ${METPLUS_MET_CONFIG_OVERRIDES}
 """""""""""""""""""""""""""""""

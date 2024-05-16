@@ -11822,6 +11822,11 @@ METplus Configuration Glossary
 
      | *Used by:* MADIS2NC
 
+   MADIS2NC_TIME_OFFSET_WARNING
+     Specify the value for 'time_offset_warning' in the MET configuration file for MADIS2NC.
+
+     | *Used by:* MADIS2NC
+
    ASCII2NC_TIME_OFFSET_WARNING
      Specify the value for 'time_offset_warning' in the MET configuration file for ASCII2NC.
 
