@@ -27,6 +27,7 @@ for init in inits:
 
 ugrid_config_file = '/some/path/UgridConfig_fake'
 
+
 def set_minimum_config_settings(config):
     # set config variables to prevent command from running and bypass check
     # if input files actually exist
@@ -678,7 +679,7 @@ def test_met_dictionary_in_var_options(metplus_config):
 )
 @pytest.mark.wrapper_a
 def test_point_stat_all_fields(metplus_config, config_overrides,
-                               env_var_values):
+                               env_var_values, compare_command_and_env_vars):
     level_no_quotes = '(*,*)'
     level_with_quotes = f'"{level_no_quotes}"'
 
@@ -775,35 +776,16 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
             f"{config_file}{extra_args[index]}-outdir {out_dir}/{valids[index]}"
         )
 
-    all_cmds = wrapper.run_all_times()
-    print(f"ALL COMMANDS: {all_cmds}")
-
     fcst_fmt = f"field = [{','.join(fcst_fmts)}];"
     obs_fmt = f"field = [{','.join(obs_fmts)}];"
 
-    missing_env = [item for item in env_var_values
-                   if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
-    env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
-
-    assert len(all_cmds) == len(expected_cmds)
-    for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
-        # ensure commands are generated as expected
-        assert cmd == expected_cmd
-
-        # check that environment variables were set properly
-        # including deprecated env vars (not in wrapper env var keys)
-        for env_var_key in env_var_keys:
-            print(f"ENV VAR: {env_var_key}")
-            match = next((item for item in env_vars if
-                          item.startswith(env_var_key)), None)
-            assert match is not None
-            value = match.split('=', 1)[1]
-            if env_var_key == 'METPLUS_FCST_FIELD':
-                assert value == fcst_fmt
-            elif env_var_key == 'METPLUS_OBS_FIELD':
-                assert value == obs_fmt
-            else:
-                assert env_var_values.get(env_var_key, '') == value
+    all_cmds = wrapper.run_all_times()
+    special_values = {
+        'METPLUS_FCST_FIELD': fcst_fmt,
+        'METPLUS_OBS_FIELD': obs_fmt,
+    }
+    compare_command_and_env_vars(all_cmds, expected_cmds, env_var_values,
+                                 wrapper, special_values)
 
 
 @pytest.mark.wrapper_a

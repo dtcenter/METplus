@@ -16,12 +16,12 @@ def madis2nc_wrapper(metplus_config, config_overrides=None):
         'PROCESS_LIST': 'MADIS2NC',
         'LOOP_BY': 'VALID',
         'VALID_TIME_FMT': '%Y%m%d%H',
-        'VALID_BEG': '2010010112',
-        'VALID_END': '2010010118',
+        'VALID_BEG': '2019040912',
+        'VALID_END': '2019040918',
         'VALID_INCREMENT': '6H',
-        'MADIS2NC_INPUT_TEMPLATE': '{INPUT_BASE}/met_test/data/sample_obs/ascii/precip24_{valid?fmt=%Y%m%d%H}.ascii',
-        'MADIS2NC_OUTPUT_TEMPLATE': '{OUTPUT_BASE}/madis2nc/precip24_{valid?fmt=%Y%m%d%H}.nc',
-        'MADIS2NC_CONFIG_FILE': '{PARM_BASE}/met_config/Ascii2NcConfig_wrapped',
+        'MADIS2NC_INPUT_TEMPLATE': '{INPUT_BASE}/met_test/data/sample_obs/madis/metar_{valid?fmt=%Y%m%d%H}_F000.nc',
+        'MADIS2NC_OUTPUT_TEMPLATE': '{OUTPUT_BASE}/madis2nc/metar_{valid?fmt=%Y%m%d%H}.nc',
+        'MADIS2NC_CONFIG_FILE': '{PARM_BASE}/met_config/Madis2NcConfig_wrapped',
         'MADIS2NC_TYPE': 'metar',
     }
     if config_overrides:
@@ -51,8 +51,8 @@ def test_madis2nc_missing_inputs(metplus_config, get_test_data_dir,
         'INPUT_MUST_EXIST': True,
         'MADIS2NC_ALLOW_MISSING_INPUTS': allow_missing,
         'MADIS2NC_INPUT_THRESH': thresh,
-        'MADIS2NC_INPUT_TEMPLATE': os.path.join(get_test_data_dir('ascii'), 'precip24_{valid?fmt=%Y%m%d%H}.ascii'),
-        'VALID_END': '2010010200',
+        'MADIS2NC_INPUT_TEMPLATE': os.path.join(get_test_data_dir('madis'), 'metar_{valid?fmt=%Y%m%d%H}_F000.nc'),
+        'VALID_END': '2019041000',
     }
     wrapper = madis2nc_wrapper(metplus_config, config_overrides)
     assert wrapper.isOK
@@ -146,19 +146,17 @@ def test_madis2nc_missing_inputs(metplus_config, get_test_data_dir,
 )
 @pytest.mark.wrapper
 def test_madis2nc_wrapper(metplus_config, config_overrides,
-                          env_var_values):
+                          env_var_values, compare_command_and_env_vars):
     wrapper = madis2nc_wrapper(metplus_config, config_overrides)
     assert wrapper.isOK
 
-    input_path = wrapper.config.getraw('config', 'MADIS2NC_INPUT_TEMPLATE')
-    input_dir = os.path.dirname(input_path)
-    input_file1 = 'precip24_2010010112.ascii'
-    input_file2 = 'precip24_2010010118.ascii'
+    input_dir = os.path.dirname(wrapper.config.getraw('config', 'MADIS2NC_INPUT_TEMPLATE'))
+    input_file1 = 'metar_2019040912_F000.nc'
+    input_file2 = 'metar_2019040918_F000.nc'
 
-    output_path = wrapper.config.getraw('config', 'MADIS2NC_OUTPUT_TEMPLATE')
-    output_dir = os.path.dirname(output_path)
-    output_file1 = 'precip24_2010010112.nc'
-    output_file2 = 'precip24_2010010118.nc'
+    output_dir = os.path.dirname(wrapper.config.getraw('config', 'MADIS2NC_OUTPUT_TEMPLATE'))
+    output_file1 = 'metar_2019040912.nc'
+    output_file2 = 'metar_2019040918.nc'
 
     all_commands = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_commands}")
@@ -181,30 +179,27 @@ def test_madis2nc_wrapper(metplus_config, config_overrides,
          f"-type {in_type} -config {config_file}{extra_args}"),
     ]
 
-    assert len(all_commands) == len(expected_cmds)
-    for (cmd, _), expected_cmd in zip(all_commands, expected_cmds):
-        # ensure commands are generated as expected
-        assert cmd == expected_cmd
-
-    env_vars = all_commands[0][1]
-
-    missing_env = [item for item in env_var_values
-                   if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
-    env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
-
-    # check that environment variables were set properly
-    # including deprecated env vars (not in wrapper env var keys)
-    for env_var_key in env_var_keys:
-        match = next((item for item in env_vars if
-                      item.startswith(env_var_key)), None)
-        assert match is not None
-        value = match.split('=', 1)[1]
-
-        assert env_var_values.get(env_var_key, '') == value
-
-    output_base = wrapper.config.getdir('OUTPUT_BASE')
-    if output_base:
-        shutil.rmtree(output_base)
+    compare_command_and_env_vars(all_commands, expected_cmds, env_var_values, wrapper)
+    # assert len(all_commands) == len(expected_cmds)
+    # for (cmd, _), expected_cmd in zip(all_commands, expected_cmds):
+    #     # ensure commands are generated as expected
+    #     assert cmd == expected_cmd
+    #
+    # env_vars = all_commands[0][1]
+    #
+    # missing_env = [item for item in env_var_values
+    #                if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
+    # env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
+    #
+    # # check that environment variables were set properly
+    # # including deprecated env vars (not in wrapper env var keys)
+    # for env_var_key in env_var_keys:
+    #     match = next((item for item in env_vars if
+    #                   item.startswith(env_var_key)), None)
+    #     assert match is not None
+    #     value = match.split('=', 1)[1]
+    #
+    #     assert env_var_values.get(env_var_key, '') == value
 
 
 @pytest.mark.wrapper
