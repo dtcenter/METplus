@@ -282,6 +282,12 @@ def test_find_input_files(metplus_config, offsets, offset_to_find):
         ({'PB2NC_VALID_END': valid_end}, {}),
         ({'PB2NC_VALID_BEGIN': valid_beg, 'PB2NC_VALID_END': valid_end}, {}),
 
+        ({'PB2NC_TIME_OFFSET_WARNING': 3},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 3;'}),
+        ({'TIME_OFFSET_WARNING': 2},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 2;'}),
+        ({'TIME_OFFSET_WARNING': 2, 'PB2NC_TIME_OFFSET_WARNING': 4},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 4;'}),
     ]
 )
 @pytest.mark.wrapper
