@@ -27,8 +27,9 @@ assignees: ''
 - [ ] Select **scientist(s)** or **no scientist** required
 
 ### Milestone and Projects ###
-- [ ] Select **Milestone** as the next official version or **Backlog of Development Ideas**
-- [ ] For the next official version, select the **METplus-Wrappers-X.Y.Z Development** project
+- [ ] Select **Milestone** as the next official version if updating truth data for the `develop` branch **OR** select next **METplus-Wrappers-X.Y.Z bugfix** version if updating truth data for a `main_vX.Y` branch.
+- [ ] If updating truth data for the `develop` branch, select the **METplus-Wrappers-X.Y.Z Development** project **OR** if updating truth for a `main_vX.Y` branch, select the **Coordinated METplus-X.Y Support** project
+
 
 ## Update Truth Checklist ###
 - [ ] Review the GitHub Actions workflow that was triggered by the PR merge
