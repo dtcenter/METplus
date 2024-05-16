@@ -123,6 +123,22 @@ to::
 
    tmp_dir = "${MET_TMP_DIR}";
 
+
+Remove Version
+^^^^^^^^^^^^^^
+
+The **version** variable should not be set, as it will conflict with newer
+versions of MET. However, it can be nice to keep the variable commented-out
+in the wrapped file to easily see roughly when the new wrapper was added.
+
+Change::
+
+   version          = "V12.0.0";
+
+to::
+
+   //version          = "V12.0.0";
+
 Common Environment Variables
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -135,6 +151,7 @@ Add the following to the very end of the wrapped MET config file::
    ${METPLUS_MET_CONFIG_OVERRIDES}
 
 If these variables are not added, these values will not be read by the MET tool.
+
 
 Wrapper Components
 ==================
