@@ -668,6 +668,12 @@ def test_met_dictionary_in_var_options(metplus_config):
          {'METPLUS_OBS_PERC_VALUE': 'obs_perc_value = 50;'}),
         ({'POINT_STAT_UGRID_CONFIG_FILE': ugrid_config_file, }, {}),
 
+        ({'POINT_STAT_TIME_OFFSET_WARNING': 3},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 3;'}),
+        ({'TIME_OFFSET_WARNING': 2},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 2;'}),
+        ({'TIME_OFFSET_WARNING': 2, 'POINT_STAT_TIME_OFFSET_WARNING': 4},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 4;'}),
     ]
 )
 @pytest.mark.wrapper_a

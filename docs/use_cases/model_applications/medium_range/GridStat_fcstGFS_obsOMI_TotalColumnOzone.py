@@ -127,6 +127,7 @@ _TotalColumnOzone.conf
 #   * PythonEmbeddingFileUseCase
 #   * RegriddingInToolUseCase
 #   * NOAAEMCOrgUseCase
+#   * VxDataOMIAURATOMSLEV3
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
