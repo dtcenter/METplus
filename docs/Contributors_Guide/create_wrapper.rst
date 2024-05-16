@@ -67,8 +67,9 @@ If the new wrapper corresponds to a MET tool that supports a configuration file,
 then a wrapped version of the MET configuration file should be created.
 If unsure if the MET tool supports a configuration file, check the
 MET User's Guide section for the tool. Alternatively, look for a
-file ending with *\_default\* that corresponds to the MET tool in the
-MET/`data/config<https://github.com/dtcenter/MET/tree/develop/data/config>`_.
+file ending with *\_default* that corresponds to the MET tool in the
+`data/config <https://github.com/dtcenter/MET/tree/develop/data/config>`_
+directory of the MET repository.
 If this file exists, then the tool supports a configuration file.
 
 If the new wrapper is for a MET tool that does not support a configuration file
@@ -79,9 +80,9 @@ Copy Default Config File
 ------------------------
 
 Copy the appropriate default configuration file found in the
-`data/config<https://github.com/dtcenter/MET/tree/develop/data/config>`_
-of the MET repository into the parm/met_config directory of the METplus
-repository and rename it to end with *_wrapped* instead of *_default*.
+`data/config <https://github.com/dtcenter/MET/tree/develop/data/config>`_
+directory of the MET repository into the parm/met_config directory of the
+METplus repository and rename it to end with *_wrapped* instead of *_default*.
 For example, if creating the GridStat wrapper,
 copy MET/data/config/GridStatConfig_**default** to
 METplus/parm/met_config/GridStatConfig_**wrapped**.
