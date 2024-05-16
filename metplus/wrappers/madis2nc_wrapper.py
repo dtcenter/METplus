@@ -106,7 +106,8 @@ class MADIS2NCWrapper(RuntimeFreqWrapper):
         @param time_info dictionary containing time information
         """
         # set required command line arguments
-        self.args.append(f"-type {self.c_dict['TYPE']}")
+        val = do_string_sub(self.c_dict['TYPE'], **time_info)
+        self.args.append(f"-type {val}")
 
         config_file = do_string_sub(self.c_dict['CONFIG_FILE'], **time_info)
         self.args.append(f"-config {config_file}")
@@ -116,4 +117,7 @@ class MADIS2NCWrapper(RuntimeFreqWrapper):
                          'mask_poly', 'mask_sid')
         for arg in optional_args:
             if self.c_dict[arg.upper()]:
-                self.args.append(f"-{arg} {self.c_dict[arg.upper()]}")
+                val = self.c_dict[arg.upper()]
+                if isinstance(val, str):
+                    val = do_string_sub(val, **time_info)
+                self.args.append(f"-{arg} {val}")
