@@ -103,6 +103,16 @@ class CommandBuilder:
             # add key to list of env vars to set
             self.env_var_keys.append(self.MET_OVERRIDES_KEY)
 
+            # add time_offset_warning env var
+            self.env_var_keys.append('METPLUS_TIME_OFFSET_WARNING')
+            time_offset_warning = self.get_wrapper_or_generic_config(
+                'TIME_OFFSET_WARNING', var_type='int'
+            )
+            if time_offset_warning != '':
+                self.env_var_dict['METPLUS_TIME_OFFSET_WARNING'] = (
+                    f'time_offset_warning = {time_offset_warning};'
+                )
+
             # warn if any environment variables set by the wrapper are not
             # being utilized in the user's config file
             self.check_for_unused_env_vars()
@@ -1566,15 +1576,20 @@ class CommandBuilder:
             'step': 'int',
             'width': ('string', 'remove_quotes'),
             'grib_code': ('list', 'remove_quotes,allow_empty', None,
-                          [f'{app_upper}_TIME_SUMMARY_GRIB_CODES']),
+                          [f'{app_upper}_TIME_SUMMARY_GRIB_CODE',
+                           f'{app_upper}_TIME_SUMMARY_GRIB_CODES']),
             'obs_var': ('list', 'allow_empty', None,
-                        [f'{app_upper}_TIME_SUMMARY_VAR_NAMES']),
+                        [f'{app_upper}_TIME_SUMMARY_OBS_VAR',
+                         f'{app_upper}_TIME_SUMMARY_VAR_NAMES']),
             'type': ('list', 'allow_empty', None,
-                     [f'{app_upper}_TIME_SUMMARY_TYPES']),
+                     [f'{app_upper}_TIME_SUMMARY_TYPE',
+                      f'{app_upper}_TIME_SUMMARY_TYPES']),
             'vld_freq': ('int', None, None,
-                         [f'{app_upper}_TIME_SUMMARY_VALID_FREQ']),
+                         [f'{app_upper}_TIME_SUMMARY_VLD_FREQ',
+                          f'{app_upper}_TIME_SUMMARY_VALID_FREQ']),
             'vld_thresh': ('float', None, None,
-                           [f'{app_upper}_TIME_SUMMARY_VALID_THRESH']),
+                           [f'{app_upper}_TIME_SUMMARY_VLD_THRESH',
+                            f'{app_upper}_TIME_SUMMARY_VALID_THRESH']),
         })
 
     def handle_mask(self, single_value=False, get_flags=False, get_point=False):

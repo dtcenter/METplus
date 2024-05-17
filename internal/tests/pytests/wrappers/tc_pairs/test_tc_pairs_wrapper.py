@@ -606,11 +606,18 @@ def test_tc_pairs_storm_id_lists(metplus_config, get_test_data_dir, config_overr
             'TC_PAIRS_DIAG_SOURCE1': 'TCDIAG',
         },
          {'DIAG_ARG': '-diag TCDIAG <BDECK_DIR>/bmlq2014123118.gfso.0104',}),
+
+        ('VALID', {'TC_PAIRS_TIME_OFFSET_WARNING': 3},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 3;'}),
+        ('VALID', {'TIME_OFFSET_WARNING': 2},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 2;'}),
+        ('VALID', {'TIME_OFFSET_WARNING': 2, 'TC_PAIRS_TIME_OFFSET_WARNING': 4},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 4;'}),
     ]
 )
 @pytest.mark.wrapper
 def test_tc_pairs_run(metplus_config, get_test_data_dir, loop_by, config_overrides,
-                      env_var_values):
+                      env_var_values, compare_command_and_env_vars):
     config = metplus_config
     remove_beg = remove_end = remove_match_points = False
 
@@ -677,26 +684,7 @@ def test_tc_pairs_run(metplus_config, get_test_data_dir, loop_by, config_overrid
         )
 
     all_cmds = wrapper.run_all_times()
-    print(f"ALL COMMANDS: {all_cmds}")
-    assert len(all_cmds) == len(expected_cmds)
-
-    missing_env = [item for item in env_var_values
-                   if item not in wrapper.WRAPPER_ENV_VAR_KEYS
-                   and item != 'DIAG_ARG']
-    env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
-
-    for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
-        # ensure commands are generated as expected
-        assert cmd == expected_cmd
-
-        # check that environment variables were set properly
-        for env_var_key in env_var_keys:
-            match = next((item for item in env_vars if
-                          item.startswith(env_var_key)), None)
-            assert match is not None
-            print(f'Checking env var: {env_var_key}')
-            actual_value = match.split('=', 1)[1]
-            assert env_var_values.get(env_var_key, '') == actual_value
+    compare_command_and_env_vars(all_cmds, expected_cmds, env_var_values, wrapper)
 
     if remove_beg:
         del env_var_values[f'METPLUS_{loop_by}_BEG']

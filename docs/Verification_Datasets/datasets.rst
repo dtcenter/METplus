@@ -16,6 +16,7 @@ Datasets
    datasets/mrms_composite_reflectivity
    datasets/nexrad_level_2
    datasets/nexrad_level_3
+   datasets/omi_aura_toms_level_3.rst
    datasets/opera_eumetnet
    datasets/gdas_ice
    datasets/ims_ice

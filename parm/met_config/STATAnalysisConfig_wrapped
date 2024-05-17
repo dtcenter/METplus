@@ -164,4 +164,5 @@ tmp_dir = "${MET_TMP_DIR}";
 
 //version        = "V10.0";
 
+${METPLUS_TIME_OFFSET_WARNING}
 ${METPLUS_MET_CONFIG_OVERRIDES}
