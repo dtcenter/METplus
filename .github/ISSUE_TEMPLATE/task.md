@@ -39,8 +39,8 @@ Consider breaking the task down into sub-issues.
 - [ ] Select **requestor(s)**
 
 ### Milestone and Projects ###
-- [ ] Select **Milestone** as the next official version, **Consider for Next Release**, or **Backlog of Development Ideas**
-- [ ] For the next official version, select the **METplus-Wrappers-X.Y.Z Development** project
+- [ ] Select **Milestone** as a **METplus-Wrappers-X.Y.Z** version, **Consider for Next Release**, or **Backlog of Development Ideas**
+- [ ] For a **METplus-Wrappers-X.Y.Z** version, select the **METplus-Wrappers-X.Y.Z Development** project
 
 ## Define Related Issue(s) ##
 Consider the impact to the other METplus components.
