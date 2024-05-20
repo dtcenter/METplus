@@ -20,7 +20,7 @@ LOWER_TO_WRAPPER_NAME = {
     'griddiag': 'GridDiag',
     'gridstat': 'GridStat',
     'ioda2nc': 'IODA2NC',
-    'makeplots': 'MakePlots',
+    'madis2nc': 'MADIS2NC',
     'metdbload': 'METDbLoad',
     'mode': 'MODE',
     'mtd': 'MTD',

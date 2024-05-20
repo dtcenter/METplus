@@ -38,4 +38,5 @@ message_type_map = [
 
 tmp_dir = "${MET_TMP_DIR}";
 
+${METPLUS_TIME_OFFSET_WARNING}
 ${METPLUS_MET_CONFIG_OVERRIDES}

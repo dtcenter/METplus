@@ -11,7 +11,8 @@ File Name
 Create the new wrapper in the *metplus/wrappers* directory and
 name it to reflect the wrapper's function, e.g.: new_tool_wrapper.py is
 a wrapper around an application named "new_tool."
-Copy the **example_wrapper.py** to start the process.
+Identify an existing wrapper that is similar to the new wrapper and
+copy it to start the process.
 
 Class Name
 ----------
@@ -57,16 +58,119 @@ MTD or accidentally write PointToGrid instead of Point2Grid::
 More than one entry is rarely needed, but
 they will not hurt anything as long as they do not cause any conflicts.
 
+.. _cw_wrapped_met_config:
+
+Wrapped MET Config File
+=======================
+
+If the new wrapper corresponds to a MET tool that supports a configuration file,
+then a wrapped version of the MET configuration file should be created.
+If unsure if the MET tool supports a configuration file, check the
+MET User's Guide section for the tool. Alternatively, look for a
+file ending with *\_default* that corresponds to the MET tool in the
+`data/config <https://github.com/dtcenter/MET/tree/develop/data/config>`_
+directory of the MET repository.
+If this file exists, then the tool supports a configuration file.
+
+If the new wrapper is for a MET tool that does not support a configuration file
+or the wrapper does not correspond to a MET tool at all, then this section can
+be skipped.
+
+Copy Default Config File
+------------------------
+
+Copy the appropriate default configuration file found in the
+`data/config <https://github.com/dtcenter/MET/tree/develop/data/config>`_
+directory of the MET repository into the parm/met_config directory of the
+METplus repository and rename it to end with *_wrapped* instead of *_default*.
+For example, if creating the GridStat wrapper,
+copy MET/data/config/GridStatConfig\_**default** to
+METplus/parm/met_config/GridStatConfig\_**wrapped**.
+
+**MAKE SURE TO COPY THE DEFAULT CONFIG FILE FROM THE DEVELOP BRANCH TO GET
+THE LATEST UPDATES**
+
+Remove Apostrophe
+-----------------
+
+**REMOVE THE \' CHARACTER FROM THE HEADER COMMENTS TO PREVENT ERRORS RENDERING
+THE DOCUMENTATION THAT INCLUDES THE WRAPPED CONFIG FILE**
+
+Change this line (typically the 5th line)::
+
+   // For additional information, please see the MET User's Guide.
+
+to::
+
+   // For additional information, please see the MET Users Guide.
+
+Changes for All Wrappers
+------------------------
+
+There are a few changes to make to the wrapped MET config file for all tools.
+These changes are found at the very end of the config file.
+
+tmp_dir
+^^^^^^^
+
+Set the value of *tmp_dir* to the ${MET_TMP_DIR} environment variable.
+
+Change::
+
+   tmp_dir          = "/tmp";
+
+to::
+
+   tmp_dir = "${MET_TMP_DIR}";
+
+
+Remove Version
+^^^^^^^^^^^^^^
+
+The **version** variable should not be set, as it will conflict with newer
+versions of MET. However, it can be nice to keep the variable commented-out
+in the wrapped file to easily see roughly when the new wrapper was added.
+
+Change::
+
+   version          = "V12.0.0";
+
+to::
+
+   //version          = "V12.0.0";
+
+Common Environment Variables
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+All wrappers automatically support setting *time_offset_warning* and
+:ref:`met-config-overrides`.
+
+Add the following to the very end of the wrapped MET config file::
+
+   ${METPLUS_TIME_OFFSET_WARNING}
+   ${METPLUS_MET_CONFIG_OVERRIDES}
+
+If these variables are not added, these values will not be read by the MET tool.
+
+
 Wrapper Components
 ==================
 
 Open the wrapper file for editing the new class.
 
-Naming
-------
+Naming/Parent Class
+-------------------
 
 Rename the class to match the wrapper's class from the above sections.
-Most wrappers should be a subclass of the RuntimeFreqWrapper::
+If the new tool falls under one of the existing tool categories,
+then make the tool a subclass of one of the existing classes.
+This should only be done if the functions in the parent class are needed
+by the new wrapper. When in doubt, use the **RuntimeFreqWrapper**.
+
+See :ref:`bc_class_hierarchy` for more information on existing classes to
+determine which class to use as the parent class.
+
+Example::
 
     class NewToolWrapper(RuntimeFreqWrapper)
 
@@ -80,24 +184,18 @@ To create EnsembleStat wrapper from GridStat, replace
 **grid_stat** with **ensemble_stat** and
 **GridStat** with **EnsembleStat**.
 
-Parent Class
-------------
 
-If the new tool falls under one of the existing tool categories,
-then make the tool a subclass of one of the existing classes.
-This should only be done if the functions in the parent class are needed
-by the new wrapper. When in doubt, use the **RuntimeFreqWrapper**.
-
-See :ref:`bc_class_hierarchy` for more information on existing classes to
-determine which class to use as the parent class.
-
-Class Variables for Runtime Frequency
--------------------------------------
+Class Variables
+---------------
 
 **RUNTIME_FREQ_DEFAULT** and **RUNTIME_FREQ_SUPPORTED** should be set for all
-wrappers that inherit from **RuntimeFreqWrapper**.
+wrappers that inherit from **RuntimeFreqWrapper** or one of its sub-classes.
 
-See :ref:`bc_class_vars` for more information.
+If the tool can read a config file, then **WRAPPER_ENV_VAR_KEYS** should be
+defined to include a list of the environment variables that will be read
+by the wrapped config file.
+
+See :ref:`bc_class_vars` for more information on how to set these variables.
 
 Init Function
 -------------
@@ -132,11 +230,6 @@ The function should also always return the c_dict variable::
 
     return c_dict
 
-File Input/Output
-^^^^^^^^^^^^^^^^^
-
-METplus configuration variables that end with _DIR and _TEMPLATE are used
-to define the criteria to search for input files.
 
 Allow Multiple Files
 ^^^^^^^^^^^^^^^^^^^^
@@ -151,94 +244,165 @@ If it is set to False and a list of files are found for an input
 (using wildcards or a list of files in the METplus config template variable)
 then the wrapper will produce an error and not build the command.
 
-Run Functions
--------------
+Input Files
+^^^^^^^^^^^
 
-* The **run_at_time_once** function or some the functions that it calls will
-  need to be overridden in the wrapper.
-  See :ref:`bc_run_at_time_once` for more information.
+METplus configuration variables that end with **\_INPUT_DIR** and
+**\_INPUT_TEMPLATE** are used to search for input files.
 
-* It is recommended to divide up the logic into small functions to make
-  the code more readable and easier to test.
+The **get_input_templates** function can be used to easily set up the wrapper
+to read the appropriate METplus config variables for inputs.
+The first argument is the c_dict variable, which will be modified by the
+function.
+The 2nd argument is a dictionary that defines the inputs. The key is the name
+of the input type, e.g. *FCST* or *OBS*. The value is a dictionary that must
+include at least the *prefix* key which defines the prefix of the METplus
+configuration variables to read,
+e.g. **{prefix}_INPUT_DIR** and **{prefix}_INPUT_TEMPLATE**.
 
-* The function self.set_environment_variables should be called by all
-  wrappers even if the MET tool does not have a config file.
-  This function is typically called from the run_at_time_once function.
-  This is done to set environment variables that MET expects to be set when
-  running, such as MET_TMP_DIR and MET_PYTHON_EXE.
-  If no environment variables need to be set specific to the wrapper, then no
-  implementation of the function in the wrapper needs to be written. Call the
-  implementation of the function from CommandBuilder, which sets the
-  environment variables defined in the [user_env_vars] section of the
-  configuration file and outputs DEBUG logs for each environment variable
-  that has been set in the wrapper. MET_TMP_DIR is automatically set for
-  each wrapper.
+The *required* key can be set to specify if the input must be defined in the
+METplus config file or not.
+If set to True, an error is reported if the *{prefix}_INPUT_TEMPLATE* variable
+is not set. If the *required* key is not defined, the default value is True.
 
-* Once all the necessary information has been provided to create the MET
-  command, call self.build(). This calls self.get_command()
-  to assemble the command and verify that the command wrapper generated
-  contains all of the required arguments. The get_command() in the wrapper
-  may need to be overridden if the MET application is different from
-  the example.
-  For instance, some MET tools require flags such as -f to
-  precede the input filename. The get_command function in the wrapper can be
-  overwritten to prepend the required flag to the filename in the
-  constructed MET command.
+Example 1 (single observation input)::
 
-* Call self.clear() at the beginning of each loop iteration that tries to
-  build/run a MET command to prevent inadvertently reusing/re-running
-  commands that were previously created. This is called in the RuntimeFreq
-  wrapper before each call to run_at_time_once, but an additional call may be
-  needed if multiple commands are built and run in this function.
+        self.get_input_templates(c_dict, {
+            'OBS': {'prefix': 'MADIS2NC', 'required': True},
+        })
 
-* To allow the use case to use the specific wrapper, assign the wrapper name to
-  PROCESS_LIST::
+This will read the METplus config variables **MADIS2NC_INPUT_DIR** and
+**MADIS2NC_INPUT_TEMPLATE** and set the c_dict items **OBS_INPUT_DIR** and
+**OBS_INPUT_TEMPLATE**.
+An error will be reported if **MADIS2NC_INPUT_TEMPLATE** is not set.
 
-    [config]
-    PROCESS_LIST = NewExample
+Example 2 (forecast and obs input)::
 
-.. note::
+        self.get_input_templates(c_dict, {
+            'FCST': {'prefix': 'FCST_GRID_STAT', 'required': True},
+            'OBS': {'prefix': 'OBS_GRID_STAT', 'required': True},
+        })
 
-    Do not include the text "Wrapper" at the end of the wrapper name.
+This will read the METplus config variables **FCST_GRID_STAT_INPUT_DIR**,
+**FCST_GRID_STAT_INPUT_TEMPLATE**, **OBS_GRID_STAT_INPUT_DIR**, and
+**OBS_GRID_STAT_INPUT_TEMPLATE** and set the c_dict items **FCST_INPUT_DIR**,
+**FCST_INPUT_TEMPLATE**, **OBS_INPUT_DIR**, and **OBS_INPUT_TEMPLATE**.
+An error will be reported if **FCST_GRID_STAT_INPUT_TEMPLATE** or
+**OBS_GRID_STAT_INPUT_TEMPLATE** is not set.
 
-    Each value must match an existing wrapper name without the ‘Wrapper'
-    suffix. The PROCESS_LIST :numref:`Process_list`  is located under the
-    [config] section header in the
-    use case and/or example configuration file.
+Output Files
+^^^^^^^^^^^^
 
-* Add a section to the Python Wrappers page of the documentation with
-  information about the new tool including a list of all METplus
-  configuration variables that can be used.
+METplus configuration variables that end with **\_OUTPUT_DIR** and
+**\_OUTPUT_TEMPLATE** are used to write output files.
 
-* Add an entry for each METplus configuration variable added to the wrapper
-  to the METplus Configuration Glossary. Each configuration variable should
-  be the MET tool name in all caps i.e. GRID_STAT followed by the variable
-  name. MET tool names generally have underscores between words unless there
-  is a number in the name. Examples below::
+Add the following and change **APP_NAME** to the name of the new wrapper::
 
-    GRID_STAT_PROB_THRESH
-    REGRID_DATA_PLANE_METHOD
-    POINT2GRID_QC_FLAGS
+        c_dict['OUTPUT_DIR'] = self.config.getdir('APP_NAME_OUTPUT_DIR', '')
+        c_dict['OUTPUT_TEMPLATE'] = (
+            self.config.getraw('config', 'APP_NAME_OUTPUT_TEMPLATE')
+        )
 
-* Create a directory named after the new wrapper to hold the use case
-  configuration files in the met_tool_wrapper directory that users can run
-  to try out the new wrapper. In the corresponding directory under
-  docs/use_cases, be sure to include a .py file that contains the
-  documentation for that use case and a README file to create a header for
-  the documentation page.
+The *OUTPUT_DIR* and *OUTPUT_TEMPLATE* will be concatenated to form the path
+to write output.
 
-This new use case/example configuration file is located in a directory structure
-like the following::
+Some MET tools write a single output file and some write multiple output files
+into a directory.
 
-    parm/use_cases/met_tool_wrapper/NewTool/NewTool.conf
-    docs/use_cases/met_tool_wrapper/NewTool/NewTool.py
-    docs/use_cases/met_tool_wrapper/NewTool/README.rst
+If the tool writes multiple output files, then the
+*OUTPUT_TEMPLATE* is optional, but can be used to create sub-directories that
+include information specific to a given run, like timestamps.
 
-Note the documentation file is in METplus/docs while the use case conf file
-is in METplus/parm.
+If the tool writes a single output file, the *OUTPUT_TEMPLATE* is required.
+In this case, add a check to report an error if the value is unset::
 
-Refer to the :ref:`basic_components_of_wrappers` section of the Contributor's
+        if not c_dict['OUTPUT_TEMPLATE']:
+            self.log_error('APP_NAME_OUTPUT_TEMPLATE must be set')
+
+Config File
+^^^^^^^^^^^
+
+If the wrapper corresponds to a MET tool that supports a MET configuration file,
+then add a call to the **get_config_file** function to handle the METplus
+configuration settings. Pass the name of the wrapped MET config file that you
+have added to *parm/met_config* to the function
+
+Example for MADIS2NC wrapper::
+
+   c_dict['CONFIG_FILE'] = self.get_config_file('Madis2NcConfig_wrapped')
+
+See :ref:`cw_wrapped_met_config` for more information.
+
+Add calls to **self.add_met_config** or **self.add_met_config_dict** functions
+to handle the reading of METplus configuration variables to set wrapped MET
+config file variables. See :ref:`bc_add_met_config` for examples and
+instructions to use a helper script to determine what to set to add support
+for setting a MET config variable through METplus.
+If a MET config variable is already supported in another wrapper, refer to
+the *create_c_dict* function for that wrapper, copying and modifying function
+calls as appropriate.
+
+Command Line Arguments
+^^^^^^^^^^^^^^^^^^^^^^
+
+Add calls to *self.config.get* functions to read values from the METplus
+config to set *c_dict* items that can be used to set command line arguments.
+The METplus configuration variables should match the format
+{APP_NAME}_{ARG_NAME} where {APP_NAME} is the name of the wrapper and {ARG_NAME}
+is the name of the command line argument. Use the appropriate get function that
+corresponds to the argument data type, e.g. *getraw* for strings and
+*getint* for integers.
+
+Example::
+
+   c_dict['TYPE'] = self.config.getraw('config', 'MADIS2NC_TYPE')
+
+If the command line argument is required to run, then add a check to report an
+error if the value is unset::
+
+   if not c_dict['TYPE']:
+       self.log_error('Must set MADIS2NC_TYPE')
+
+Make sure to remember to add logic to read the c_dict item and add the value
+to the command to generate. This can be done in the *set_command_line_arguments*
+class function.
+
+Implement Class Functions
+-------------------------
+
+The following functions should be implemented in the new wrapper:
+
+* find_input_files
+* set_command_line_arguments
+
+Some wrappers will also need to implement:
+
+* set_environment_variables
+* get_command
+
+See the :ref:`basic_components_of_wrappers` chapter for more information on
+how to define these functions.
+
+Basic Use Case Example
+======================
+
+The new wrapper should include a basic use case under the
+*parm/use_cases/met_tool_wrapper* directory to demonstrate how to configure it.
+
+Following the instructions in :ref:`adding-use-cases` and refer to an existing
+use case for a similar wrapper.
+
+Refer to the :ref:`basic_components_of_wrappers` chapter of the Contributor's
 Guide for more information on what should be added.
+
+Unit Tests
+==========
+
+Unit tests for each wrapper should be defined under
+*internal/tests/pytests/wrappers*.
+Create a new directory for the new wrapper.
+Copy an existing test script for a similar wrapper and modify as needed to
+match the new wrapper.
 
 Documentation
 =============
