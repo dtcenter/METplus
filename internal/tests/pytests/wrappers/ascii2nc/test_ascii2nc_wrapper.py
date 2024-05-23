@@ -229,10 +229,10 @@ def test_ascii2nc_wrapper(metplus_config, config_overrides, env_var_values,
     config_file = wrapper.c_dict.get('CONFIG_FILE')
 
     expected_cmds = [
-        (f"{app_path} {input_dir}/{input_file1} {output_dir}/{output_file1} "
-         f"-config {config_file} {verbosity}"),
-        (f"{app_path} {input_dir}/{input_file2} {output_dir}/{output_file2} "
-         f"-config {config_file} {verbosity}"),
+        (f"{app_path} {verbosity} {input_dir}/{input_file1} {output_dir}/{output_file1} "
+         f"-config {config_file}"),
+        (f"{app_path} {verbosity} {input_dir}/{input_file2} {output_dir}/{output_file2} "
+         f"-config {config_file}"),
     ]
 
     compare_command_and_env_vars(all_commands, expected_cmds, env_var_values, wrapper)
