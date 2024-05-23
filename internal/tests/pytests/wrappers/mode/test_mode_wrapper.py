@@ -366,8 +366,11 @@ def test_mode_missing_inputs(metplus_config, get_test_data_dir,
         ({'MODE_MASK_MISSING_FLAG': 'BOTH', },
          {'METPLUS_MASK_MISSING_FLAG': 'mask_missing_flag = BOTH;'}),
 
-        ({'MODE_MULTIVAR_INTENSITY_FLAG': 'false, true,true', },
-         {'METPLUS_MULTIVAR_INTENSITY_FLAG': 'multivar_intensity_flag = [FALSE, TRUE, TRUE];'}),
+        ({'MODE_MULTIVAR_INTENSITY_COMPARE_FCST': '2, 3', },
+         {'METPLUS_MULTIVAR_INTENSITY_COMPARE_FCST': 'multivar_intensity_compare_fcst = [2, 3];'}),
+
+        ({'MODE_MULTIVAR_INTENSITY_COMPARE_OBS': '1,3', },
+         {'METPLUS_MULTIVAR_INTENSITY_COMPARE_OBS': 'multivar_intensity_compare_obs = [1, 3];'}),
 
         ({'MODE_FCST_MULTIVAR_NAME': 'Snow', },
          {'METPLUS_FCST_MULTIVAR_NAME': 'multivar_name = "Snow";'}),
