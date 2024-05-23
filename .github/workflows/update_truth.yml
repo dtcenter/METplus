@@ -60,9 +60,15 @@ jobs:
           echo git merge -s ours origin/${branch_name}-ref
           git merge -s ours origin/${branch_name}-ref
 
+          change_log_path=.github/update_truth_change_log.txt
+
+          # get truth change log from *-ref branch
+          cmd="git checkout origin/${branch_name}-ref -- ${change_log_path}"
+          echo $cmd
+          $cmd
+
           # create or append to file to track truth data changes
           # and ensure that PR merge into *-ref branch triggered testing workflow
-          change_log_path=.github/update_truth_change_log.txt
           change_entry="[$(date +%Y%m%d_%H:%M:%S) ${branch_name}] ${{ github.event.inputs.pull_requests }} - ${{ github.event.inputs.change_summary }}"
           echo "${change_entry}" >> ${change_log_path}
 
