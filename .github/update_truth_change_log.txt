@@ -1,1 +1,1 @@
-[20240523_15:48:19 develop] dtcenter/MET#2892 and dtcenter/MET#2899 - dtcenter/MET#2892 adds the TOTAL_DIR column to the vector line types. dtcenter/MET#2899 fixes a bug reading point observations using Python Embedding in PointStat and EnsembleStat
+[20240523_17:36:49 develop] No PR - Testing that the truth data will update even if there are no changes to the METplus repository since the last update
