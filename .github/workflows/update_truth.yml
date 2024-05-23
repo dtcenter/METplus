@@ -69,8 +69,17 @@ jobs:
           change_log_path=.github/update_truth_change_log.txt
           change_entry="[$(date +%Y%m%d_%H:%M:%S) ${branch_name}] ${{ github.event.inputs.pull_requests }} - ${{ github.event.inputs.change_summary }}"
           echo "${change_entry}" >> ${change_log_path}
+
+          # add file if it does not already exist
+          cmd="git add ${change_log_path}"
+          echo $cmd
+          $cmd
+
+          # commit changes to change log file
           echo git commit ${change_log_path}
           git commit -m "added entry to update truth change log: ${branch_name} ${{ github.event.inputs.pull_requests }}" ${change_log_path}
+
+          # push changes to update branch on GitHub
           cmd="git push origin ${update_branch}"
           echo $cmd
           $cmd
