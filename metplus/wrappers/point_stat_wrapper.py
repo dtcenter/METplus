@@ -318,7 +318,7 @@ class PointStatWrapper(CompareGriddedWrapper):
                                      mandatory=True,
                                      return_list=True)
         if not model_path:
-            return False
+            return None
 
         # if there is more than 1 file, create file list file
         if len(model_path) > 1:
@@ -332,12 +332,12 @@ class PointStatWrapper(CompareGriddedWrapper):
                                                    mandatory=True,
                                                    return_list=True)
         if obs_path is None:
-            return False
+            return None
 
         # add observation files found individually to use -point_obs argument
         self.infiles.extend(obs_path)
 
-        return True
+        return time_info
 
     def get_command(self):
         """! Builds the command to run point_stat

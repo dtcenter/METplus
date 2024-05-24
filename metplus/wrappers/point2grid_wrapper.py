@@ -148,20 +148,20 @@ class Point2GridWrapper(LoopTimesWrapper):
         """!Find input file and mask file and add them to the list of input files.
             Args:
                 @param time_info time dictionary for current run time
-                @returns List of input files found or None if either file was not found
+                @returns time_info if all files were found, None otherwise
         """
         # get input file
         # calling find_obs because we set OBS_ variables in c_dict for the input data
         input_path = self.find_obs(time_info)
         if input_path is None:
-            return False
+            return None
 
         self.infiles.append(input_path)
 
         self.c_dict['GRID'] = do_string_sub(self.c_dict['GRID_TEMPLATE'],
                                             **time_info)
 
-        return True
+        return time_info
 
     def set_command_line_arguments(self, time_info):
         """!Set command line arguments from c_dict

@@ -187,7 +187,7 @@ class TCRMWWrapper(RuntimeFreqWrapper):
         # get deck file
         deck_file = self.find_data(time_info, data_type='DECK')
         if not deck_file:
-            return False
+            return None
 
         self.c_dict['DECK_FILE'] = deck_file
 
@@ -205,7 +205,7 @@ class TCRMWWrapper(RuntimeFreqWrapper):
                     self.logger.warning(msg)
                 else:
                     self.log_error(msg)
-                return False
+                return None
         else:
             all_input_files = []
 
@@ -224,7 +224,7 @@ class TCRMWWrapper(RuntimeFreqWrapper):
                 all_input_files.extend(input_files)
 
             if not all_input_files:
-                return False
+                return None
 
             # create an ascii file with a list of the input files
             list_file = f"{os.path.basename(deck_file)}_data_files.txt"
@@ -233,11 +233,11 @@ class TCRMWWrapper(RuntimeFreqWrapper):
         self.infiles.append(list_file)
 
         if not self._set_data_field(time_info):
-            return False
+            return None
 
         self._set_lead_list(time_info, lead_seq)
 
-        return True
+        return time_info
 
     def _set_data_field(self, time_info):
         """!Get list of fields from config to process. Build list of field info

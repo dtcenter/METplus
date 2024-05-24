@@ -129,7 +129,7 @@ that reformat gridded data
                                      mandatory=True,
                                      return_list=True)
         if not model_path:
-            return False
+            return None
 
         # if there is more than 1 file, create file list file
         if len(model_path) > 1:
@@ -143,16 +143,16 @@ that reformat gridded data
         self.infiles.append(model_path)
 
         # get observation to from first var compare
-        obs_path, time_info = self.find_obs_offset(time_info,
-                                                   mandatory=True,
-                                                   return_list=True)
+        obs_path, offset_time_info = self.find_obs_offset(time_info,
+                                                          mandatory=True,
+                                                          return_list=True)
         if obs_path is None:
-            return False
+            return None
 
         # if there is more than 1 file, create file list file
         if len(obs_path) > 1:
-            list_filename = (f"{time_info['init_fmt']}_"
-                             f"{time_info['lead_hours']}_"
+            list_filename = (f"{offset_time_info['init_fmt']}_"
+                             f"{offset_time_info['lead_hours']}_"
                              f"{self.app_name}_obs.txt")
             obs_path = self.write_list_file(list_filename, obs_path)
         else:
@@ -160,7 +160,7 @@ that reformat gridded data
 
         self.infiles.append(obs_path)
 
-        return True
+        return offset_time_info
 
     def run_at_time_one_field(self, time_info, var_info):
         """! Build MET command for a single field for a given
