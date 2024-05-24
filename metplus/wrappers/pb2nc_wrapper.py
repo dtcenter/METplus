@@ -14,11 +14,10 @@ import os
 
 from ..util import getlistint
 from ..util import do_string_sub
-from ..util import add_field_info_to_time_info
-from . import LoopTimesWrapper
+from . import ReformatPointWrapper
 
 
-class PB2NCWrapper(LoopTimesWrapper):
+class PB2NCWrapper(ReformatPointWrapper):
     """! Wrapper to the MET tool pb2nc which converts prepbufr files
          to NetCDF for MET's point_stat tool can recognize.
     """
@@ -81,16 +80,6 @@ class PB2NCWrapper(LoopTimesWrapper):
                                                           'PB2NC_OFFSETS',
                                                           '0'))
 
-        self.get_input_templates(c_dict, {
-            'OBS': {'prefix': 'PB2NC', 'required': True},
-        })
-
-        c_dict['OUTPUT_DIR'] = self.config.getdir('PB2NC_OUTPUT_DIR', '')
-        c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('config',
-                                                       'PB2NC_OUTPUT_TEMPLATE')
-        if not c_dict['OUTPUT_TEMPLATE']:
-            self.log_error('Must set PB2NC_OUTPUT_TEMPLATE in config file')
-
         c_dict['OBS_INPUT_DATATYPE'] = (
             self.config.getraw('config', 'PB2NC_INPUT_DATATYPE', '')
         )
@@ -142,22 +131,6 @@ class PB2NCWrapper(LoopTimesWrapper):
 
         return c_dict
 
-    def find_input_files(self):
-        """!Find prepbufr data to convert.
-
-         @returns time info if files are found, None otherwise
-        """
-        if not self.c_dict.get('ALL_FILES'):
-            return None
-
-        input_files = self.c_dict['ALL_FILES'][0].get('OBS', [])
-        if not input_files:
-            return None
-
-        self.logger.debug(f"Adding input: {' and '.join(input_files)}")
-        self.infiles.extend(input_files)
-        return self.c_dict['ALL_FILES'][0].get('time_info')
-
     def set_valid_window_variables(self, time_info):
         begin_template = self.c_dict['VALID_BEGIN_TEMPLATE']
         end_template = self.c_dict['VALID_END_TEMPLATE']
@@ -170,27 +143,25 @@ class PB2NCWrapper(LoopTimesWrapper):
             self.c_dict['VALID_WINDOW_END'] = do_string_sub(end_template,
                                                             **time_info)
 
-    def run_at_time_once(self, input_dict):
+    def run_at_time_once(self, time_info):
         """!Find files needed to run pb2nc and run if found"""
         # look for input files to process
-        time_info = self.find_input_files()
-
-        # if no files were found, don't run pb2nc
-        if time_info is None:
+        offset_time_info = self.find_input_files(time_info)
+        if not offset_time_info:
             return
 
         # look for output file path and skip running pb2nc if necessary
-        if not self.find_and_check_output_file(time_info):
+        if not self.find_and_check_output_file(offset_time_info):
             return
 
         # set environment variables to be passed to MET config file
-        self.set_environment_variables(time_info)
+        self.set_environment_variables(offset_time_info)
 
-        self.set_valid_window_variables(time_info)
+        self.set_valid_window_variables(offset_time_info)
 
         # handle config file substitution
         self.c_dict['CONFIG_FILE'] = do_string_sub(self.c_dict['CONFIG_FILE'],
-                                                   **time_info)
+                                                   **offset_time_info)
 
         # build and run command
         self.build()

@@ -12,9 +12,8 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import time_util
-from . import LoopTimesWrapper
-from ..util import do_string_sub, skip_time, get_lead_sequence
+from . import ReformatPointWrapper
+from ..util import do_string_sub
 
 '''!@namespace ASCII2NCWrapper
 @brief Wraps the ASCII2NC tool to reformat ascii format to NetCDF
@@ -22,7 +21,7 @@ from ..util import do_string_sub, skip_time, get_lead_sequence
 '''
 
 
-class ASCII2NCWrapper(LoopTimesWrapper):
+class ASCII2NCWrapper(ReformatPointWrapper):
 
     RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
     RUNTIME_FREQ_SUPPORTED = 'ALL'
@@ -72,39 +71,12 @@ class ASCII2NCWrapper(LoopTimesWrapper):
         c_dict['VALID_BEG'] = self.config.getraw('config', 'ASCII2NC_VALID_BEG')
         c_dict['VALID_END'] = self.config.getraw('config', 'ASCII2NC_VALID_END')
 
-        self.get_input_templates(c_dict, {
-            'OBS': {'prefix': 'ASCII2NC', 'required': True},
-        })
-
-        c_dict['OUTPUT_DIR'] = self.config.getdir('ASCII2NC_OUTPUT_DIR', '')
-        c_dict['OUTPUT_TEMPLATE'] = (
-            self.config.getraw('config', 'ASCII2NC_OUTPUT_TEMPLATE')
-        )
-
         # MET config variables
         self.handle_time_summary_dict()
         # handle file window variables
         self.handle_file_window_variables(c_dict, data_types=['OBS'])
 
         return c_dict
-
-    def get_command(self):
-        return (f"{self.app_path} -v {self.c_dict['VERBOSITY']}"
-                f" {' '.join(self.infiles)} {self.get_output_path()}"
-                f" {' '.join(self.args)}".rstrip())
-
-    def find_input_files(self, time_info):
-        if not self.c_dict.get('ALL_FILES'):
-            return False
-
-        input_files = self.c_dict['ALL_FILES'][0].get('OBS', [])
-        if not input_files:
-            return False
-
-        self.logger.debug(f"Adding input: {' and '.join(input_files)}")
-        self.infiles.extend(input_files)
-
-        return True
 
     def set_command_line_arguments(self, time_info):
         # add all arguments if set

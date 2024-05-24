@@ -146,13 +146,16 @@ def test_find_input_files(metplus_config, offsets, offset_to_find):
     # unset offset in time dictionary so it will be computed
     del input_dict['offset']
 
+    # recompute time_info to pass to find file functions
+    time_info = time_util.ti_calculate(input_dict)
+
     # set offset list
     pb.c_dict['OFFSETS'] = offsets
 
-    pb.c_dict['ALL_FILES'] = pb.get_all_files_for_each(input_dict)
+    pb.c_dict['ALL_FILES'] = pb.get_all_files_for_each(time_info)
 
     # look for input files based on offset list
-    result = pb.find_input_files()
+    result = pb.find_input_files(time_info)
 
     # check if correct offset file was found, if None expected, check against None
     if offset_to_find is None:
