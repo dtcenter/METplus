@@ -127,8 +127,6 @@ class Point2GridWrapper(LoopTimesWrapper):
 
         # add input files
         for infile in self.infiles:
-            if infile.startswith('PYTHON'):
-                infile = f"'{infile}'"
             cmd += ' ' + infile
 
         # add grid name
