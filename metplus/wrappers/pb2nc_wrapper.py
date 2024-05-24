@@ -18,7 +18,7 @@ from . import ReformatPointWrapper
 
 
 class PB2NCWrapper(ReformatPointWrapper):
-    """! Wrapper to the MET tool pb2nc which converts prepbufr files
+    """!Wrapper to the MET tool pb2nc which converts prepbufr files
          to NetCDF for MET's point_stat tool can recognize.
     """
     RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
@@ -64,11 +64,7 @@ class PB2NCWrapper(ReformatPointWrapper):
         """! Create a data structure (dictionary) that contains all the
         values set in the configuration files
 
-             Args:
-
-             Returns:
-                c_dict  - a dictionary containing the settings in the
-                configuration files
+        @returns dictionary containing the settings from the configuration files
         """
         c_dict = super().create_c_dict()
 
@@ -104,10 +100,8 @@ class PB2NCWrapper(ReformatPointWrapper):
 
         self.handle_file_window_variables(c_dict, data_types=['OBS'])
 
-        c_dict['VALID_BEGIN_TEMPLATE'] = self.config.getraw('config',
-                                                            'PB2NC_VALID_BEGIN')
-        c_dict['VALID_END_TEMPLATE'] = self.config.getraw('config',
-                                                          'PB2NC_VALID_END')
+        c_dict['VALID_BEG'] = self.config.getraw('config', 'PB2NC_VALID_BEGIN')
+        c_dict['VALID_END'] = self.config.getraw('config', 'PB2NC_VALID_END')
 
         c_dict['ALLOW_MULTIPLE_FILES'] = True
 
@@ -131,67 +125,22 @@ class PB2NCWrapper(ReformatPointWrapper):
 
         return c_dict
 
-    def set_valid_window_variables(self, time_info):
-        begin_template = self.c_dict['VALID_BEGIN_TEMPLATE']
-        end_template = self.c_dict['VALID_END_TEMPLATE']
-
-        if begin_template:
-            self.c_dict['VALID_WINDOW_BEGIN'] = do_string_sub(begin_template,
-                                                              **time_info)
-
-        if end_template:
-            self.c_dict['VALID_WINDOW_END'] = do_string_sub(end_template,
-                                                            **time_info)
-
-    def run_at_time_once(self, time_info):
-        """!Find files needed to run pb2nc and run if found"""
-        # look for input files to process
-        offset_time_info = self.find_input_files(time_info)
-        if not offset_time_info:
-            return
-
-        # look for output file path and skip running pb2nc if necessary
-        if not self.find_and_check_output_file(offset_time_info):
-            return
-
-        # set environment variables to be passed to MET config file
-        self.set_environment_variables(offset_time_info)
-
-        self.set_valid_window_variables(offset_time_info)
-
+    def set_command_line_arguments(self, time_info):
         # handle config file substitution
-        self.c_dict['CONFIG_FILE'] = do_string_sub(self.c_dict['CONFIG_FILE'],
-                                                   **offset_time_info)
+        config_file = do_string_sub(self.c_dict['CONFIG_FILE'], **time_info)
+        self.args.append(config_file)
 
-        # build and run command
-        self.build()
-
-    def get_command(self):
-        """! Builds the command to run the MET application
-           @rtype string
-           @return Returns a MET command with arguments that you can run
-        """
-        cmd = f"{self.app_path} -v {self.c_dict['VERBOSITY']}"
-
-        for arg in self.args:
-            cmd += f' {arg}'
-
-        cmd += f" {self.infiles[0]}"
-
-        out_path = self.get_output_path()
-        cmd += f" {out_path}"
-
-        cmd += f" {self.c_dict['CONFIG_FILE']}"
-
-        # add additional input files with -pbfile argument
+        # if more than 2 input files are provided, add them with -pbfile
         if len(self.infiles) > 1:
             for infile in self.infiles[1:]:
-                cmd += f" -pbfile {infile}"
+                self.args.append(f"-pbfile {infile}")
 
-        if self.c_dict.get('VALID_WINDOW_BEGIN'):
-            cmd += f" -valid_beg {self.c_dict['VALID_WINDOW_BEGIN']}"
+            # reset infiles to only include first file
+            self.infiles = [self.infiles[0]]
 
-        if self.c_dict.get('VALID_WINDOW_END'):
-            cmd += f" -valid_end {self.c_dict['VALID_WINDOW_END']}"
-
-        return cmd
+        for beg_end in ('VALID_BEG', 'VALID_END'):
+            template = self.c_dict[beg_end]
+            if not template:
+                continue
+            template = do_string_sub(template, **time_info)
+            self.args.append(f"-{beg_end.lower()} {template}")

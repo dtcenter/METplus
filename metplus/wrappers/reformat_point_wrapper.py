@@ -23,10 +23,13 @@ class ReformatPointWrapper(RuntimeFreqWrapper):
     def create_c_dict(self):
         c_dict = super().create_c_dict()
         app_upper = self.app_name.upper()
+
+        # populate OBS input templates using app name
         self.get_input_templates(c_dict, {
             'OBS': {'prefix': app_upper, 'required': True},
         })
 
+        # set output templates using app name
         c_dict['OUTPUT_DIR'] = self.config.getdir(f'{app_upper}_OUTPUT_DIR', '')
         c_dict['OUTPUT_TEMPLATE'] = (
             self.config.getraw('config', f'{app_upper}_OUTPUT_TEMPLATE')
@@ -45,9 +48,6 @@ class ReformatPointWrapper(RuntimeFreqWrapper):
                 f" {self.get_output_path()}"
                 f"{' ' + ' '.join(self.args) if self.args else ''}"
                 f" -v {self.c_dict['VERBOSITY']}")
-        # return (f"{self.app_path} -v {self.c_dict['VERBOSITY']}"
-        #         f" {' '.join(self.infiles)} {self.get_output_path()}"
-        #         f" {' '.join(self.args)}".rstrip())
 
     def _get_offset_time_info(self, time_info):
         """!Get offset value that was used to find input data so the output
