@@ -102,9 +102,7 @@ class ASCII2NCWrapper(LoopTimesWrapper):
             return False
 
         self.logger.debug(f"Adding input: {' and '.join(input_files)}")
-        for item in input_files:
-            input_file = f'"{item}"' if len(item.split()) > 1 else item
-            self.infiles.append(input_file)
+        self.infiles.extend(input_files)
 
         return True
 

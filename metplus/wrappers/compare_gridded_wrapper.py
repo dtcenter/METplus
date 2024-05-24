@@ -278,42 +278,11 @@ that reformat gridded data
            @rtype string
            @return Returns a MET command with arguments that you can run
         """
-        if self.app_path is None:
-            self.log_error('No app path specified. You must use a subclass')
-            return None
-
-        cmd = '{} -v {} '.format(self.app_path, self.c_dict['VERBOSITY'])
-
-        if len(self.infiles) == 0:
-            self.log_error("No input filenames specified")
-            return None
-
-        # add forecast file
-        fcst_file = self.infiles[0]
-        if fcst_file.startswith('PYTHON'):
-            fcst_file = f"'{fcst_file}'"
-        cmd += f'{fcst_file} '
-
-        # add observation file
-        obs_file = self.infiles[1]
-        if obs_file.startswith('PYTHON'):
-            obs_file = f"'{obs_file}'"
-        cmd += f'{obs_file} '
-
-        if self.param == '':
-            self.log_error('Must specify config file to run MET tool')
-            return None
-
-        cmd += self.param + ' '
-
-        for arg in self.args:
-            cmd += arg + " "
-
-        if self.outdir == "":
-            self.log_error("No output directory specified")
-            return None
-
-        cmd += '-outdir {}'.format(self.outdir)
+        cmd = (f"{self.app_path} -v {self.c_dict['VERBOSITY']}"
+               f" {self.infiles[0]} {self.infiles[1]} {self.param}")
+        if self.args:
+            cmd += f" {' '.join(self.args)}"
+        cmd += f" -outdir {self.outdir}"
         return cmd
 
     def handle_interp_dict(self, uses_field=False):

@@ -345,13 +345,7 @@ class PointStatWrapper(CompareGriddedWrapper):
            @return Returns a point_stat command with arguments that you can run
         """
         fcst_file, *obs_files = self.infiles
-        if fcst_file.startswith('PYTHON'):
-            fcst_file = f"'{fcst_file}'"
-
         obs_file = obs_files[0]
-        if obs_file.startswith('PYTHON'):
-            obs_file = f"'{obs_file}'"
-
         cmd = (f"{self.app_path} -v {self.c_dict['VERBOSITY']} "
                f"{fcst_file} {obs_file} {self.param}")
 
