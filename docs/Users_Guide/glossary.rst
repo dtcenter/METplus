@@ -10420,7 +10420,15 @@ METplus Configuration Glossary
      | *Used by:* TCDiag
 
    MODE_MULTIVAR_INTENSITY_FLAG
-     Specify the value for 'multivar_intensity_flag' in the MET configuration file for MODE.
+     .. warning:: **DEPRECATED:** Please use :term:`MODE_MULTIVAR_INTENSITY_COMPARE_FCST` and :term:`MODE_MULTIVAR_INTENSITY_COMPARE_OBS` instead.
+
+   MODE_MULTIVAR_INTENSITY_COMPARE_FCST
+     Specify the value for 'multivar_intensity_compare_fcst' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_MULTIVAR_INTENSITY_COMPARE_OBS
+     Specify the value for 'multivar_intensity_compare_obs' in the MET configuration file for MODE.
 
      | *Used by:* MODE
 
