@@ -173,10 +173,10 @@ def test_madis2nc_wrapper(metplus_config, config_overrides,
             extra_args += f" -{optional_arg} {config_overrides[f'MADIS2NC_{optional_arg.upper()}']}"
 
     expected_cmds = [
-        (f"{app_path} {verbosity} {input_dir}/{input_file1} {output_dir}/{output_file1} "
-         f"-type {in_type} -config {config_file}{extra_args}"),
-        (f"{app_path} {verbosity} {input_dir}/{input_file2} {output_dir}/{output_file2} "
-         f"-type {in_type} -config {config_file}{extra_args}"),
+        (f"{app_path} {input_dir}/{input_file1} {output_dir}/{output_file1} "
+         f"-type {in_type} -config {config_file}{extra_args} {verbosity}"),
+        (f"{app_path} {input_dir}/{input_file2} {output_dir}/{output_file2} "
+         f"-type {in_type} -config {config_file}{extra_args} {verbosity}"),
     ]
 
     compare_command_and_env_vars(all_commands, expected_cmds, env_var_values, wrapper)

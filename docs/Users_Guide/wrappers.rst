@@ -10369,7 +10369,6 @@ METplus Configuration
 | :term:`TC_RMW_REGRID_CENSOR_VAL`
 | :term:`TC_RMW_N_RANGE`
 | :term:`TC_RMW_N_AZIMUTH`
-| :term:`TC_RMW_MAX_RANGE_KM`
 | :term:`TC_RMW_DELTA_RANGE_KM`
 | :term:`TC_RMW_SCALE`
 | :term:`TC_RMW_STORM_ID`
@@ -10628,18 +10627,6 @@ ${METPLUS_N_AZIMUTH}
      - MET Config File
    * - :term:`TC_RMW_N_AZIMUTH`
      - n_azimuth
-
-${METPLUS_MAX_RANGE_KM}
-"""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`TC_RMW_MAX_RANGE_KM`
-     - max_range_km
 
 ${METPLUS_DELTA_RANGE_KM}
 """""""""""""""""""""""""

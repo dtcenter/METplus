@@ -116,9 +116,6 @@ def set_minimum_config_settings(config):
         ({'TC_RMW_N_AZIMUTH': '12', },
          {'METPLUS_N_AZIMUTH': 'n_azimuth = 12;'}),
 
-        ({'TC_RMW_MAX_RANGE_KM': '13', },
-         {'METPLUS_MAX_RANGE_KM': 'max_range_km = 13.0;'}),
-
         ({'TC_RMW_DELTA_RANGE_KM': '14', },
          {'METPLUS_DELTA_RANGE_KM': 'delta_range_km = 14.0;'}),
 

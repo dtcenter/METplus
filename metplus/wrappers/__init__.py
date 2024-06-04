@@ -16,6 +16,7 @@ parent_classes = {
     'runtime_freq_wrapper': 'RuntimeFreqWrapper',
     'loop_times_wrapper': 'LoopTimesWrapper',
     'reformat_gridded_wrapper': 'ReformatGriddedWrapper',
+    'reformat_point_wrapper': 'ReformatPointWrapper',
     'compare_gridded_wrapper': 'CompareGriddedWrapper',
     'regrid_data_plane_wrapper': 'RegridDataPlaneWrapper',
 }
