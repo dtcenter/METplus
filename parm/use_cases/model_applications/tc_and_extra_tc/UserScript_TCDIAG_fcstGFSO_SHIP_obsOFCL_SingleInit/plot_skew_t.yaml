@@ -6,7 +6,6 @@
 # Input and output file information
 input_directory:  !ENV '${SKEW_T_PLOT_INPUT_BASE}'
 input_file_extension: '.dat'
-#output_directory:   !ENV '${OUTPUT_BASE}/plots'
 output_directory:   !ENV '${SKEW_T_PLOT_OUTPUT_BASE}/skew_t'
 log_level: "INFO"
 log_directory:  !ENV '${METPLUS_BASE}'
