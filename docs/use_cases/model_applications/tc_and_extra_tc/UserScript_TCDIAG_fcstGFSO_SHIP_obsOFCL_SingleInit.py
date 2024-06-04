@@ -1,23 +1,20 @@
 """
-
-UserScript: Performs multiple tasks:  Reformats the TCDiag linetype produced by the MET tc-pairs tool;  generates a
-time-series plot using the reformatted data;  and generates a
-skew-T log-P (hereafter referred to as skew-T) using ASCII sounding files.
-======================================================================================================================
+TCDiag : Plotting Capabilities
+==========================================================
 
 model_applications/
 tc_and_extra_tc/
 UserScript_TCDIAG_fcstGFSO_SHIP_obsOFCL_SingleInit.py
 
-"""
 
+"""
 #################################################################################
 # Scientific Objective
 # --------------------
 #
 # This use case illustrates how to plot TCDiag and TCMPR linetype data produced by the MET tc-pairs tool
 # (containing the TCMPR linetype with its corresponding TCDiag linetype).
-# The TC-Pairs output from the MET tool requires reformatting in order to use this as input to the METplotpy
+# The TC-Pairs output from this MET tool requires reformatting prior to using the METplotpy
 # TCMPR plotting module to create a time-series plot.
 #
 # Additionally, the use case illustrates generating skew-T log P diagrams using ASCII sounding data.
@@ -80,13 +77,16 @@ UserScript_TCDIAG_fcstGFSO_SHIP_obsOFCL_SingleInit.py
 # ------------------
 #
 # This use case runs the UserScript wrapper tool to run a user-provided script.
-# This script invokes the following scripts: reformat_tcdiag.py, agg_stat_ecnt.py, and plot_time_series.py.
-# It also requires METdataio code to reformat the MET .tcst output,
-# and METcalcpy and METplotpy code to generate the time-series plot. Clone the METdataio repository
+# This script invokes the following scripts: reformat_tcdiag.py and plot_time_series.py to generate
+# a time series plot using MET tc-pairs output. The plot_skew_t.py script is used to generate a skew-T log P plot
+# of sounding data.
+# The METdataio code is used to reformat the MET .tcst output.
+# METcalcpy and METplotpy code is usedto generate the time-series plot and the skew-T log P plots.
+# Clone the METdataio repository:
 # (https://github.com/dtcenter/METdataio),
-# METcalcpy repository (https://github.com/dtcenter/METcalcpy, and the METplotpy
+# the METcalcpy repository (https://github.com/dtcenter/METcalcpy, and the METplotpy
 # repository (https://github.com/dtcenter/METplotpy) under the same base directory as the
-# METPLUS_BASE directory so that the METdataio, METcalcpy, and METplotpy directories are under the
+# METPLUS_BASE directory. This ensures that the METdataio, METcalcpy, and METplotpy directories are under the
 # same base directory (i.e. if the METPLUS_BASE directory is /home/username/working/METplus,
 # then clone the METdataio, METcalcpy and METplotpy source code into the /home/username/working directory)
 #
@@ -113,7 +113,7 @@ UserScript_TCDIAG_fcstGFSO_SHIP_obsOFCL_SingleInit.py
 # If .tcst files are spread among multiple directories, these must be consolidated under a
 # single directory.
 # The use case loops over two processes: reformatting and plotting for generating the time series plot, and
-# only one process for generating the skew-T log P plot.
+# one process for generating the skew-T log P plot.
 #
 
 
@@ -150,22 +150,32 @@ UserScript_TCDIAG_fcstGFSO_SHIP_obsOFCL_SingleInit.py
 # Python Scripts
 # ----------------
 # This use case uses Python scripts to invoke the METdataio reformatter and the METplotpy
-# TCMPR plotting modules to create the time-series plot.
+# TCMPR plotting modules to create the time-series plot. The METcalcpy code provides utility functions
+# used by METplotpy.
 #
 # The following Python script (from METdataio) is used to reformat the MET .tcst TCMPR and TCDIAG linetype data
 # into a format that can be read into the METplotpy TCMPR plotting modules.
 #
 # .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/UserScript_/reformat_tcdiag.py
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/UserScript_TCDIAG_fcstGFSO_SHIP_obsOFCL_SingleInit/reformat_tcdiag.py
 #
 # 
 #
-# This Python script (from METplotpy) is used to generate a time-series plot using the METplotypy TCMPR plot code. The
+# This Python script is used to generate a time-series plot using the METplotypy TCMPR plot code. The
 # plot is for a single storm and initialization time.
 #
 # .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/UserScript_TCDIAG_fcstGFSO_SHIP_obsOFCL/plot_time_series.py
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/UserScript_TCDIAG_fcstGFSO_SHIP_obsOFCL_SingleInit/plot_time_series.py
 #
+#
+# This Python script is used to generate the skew-T log P plot using sounding data. This
+# will produce numerous plots, one plot for each date and sounding time.
+#
+# .. highlight:: python
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/UserScript_TCDIAG_fcstGFSO_SHIP_obsOFCL_SingleInit/plot_skew_t.py
+#
+#
+
 
 ##############################################################################
 # Running METplus
@@ -176,11 +186,11 @@ UserScript_TCDIAG_fcstGFSO_SHIP_obsOFCL_SingleInit.py
 # 1) Passing in UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot.conf,
 # then a user-specific system configuration file::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/tc_and_extra_tc/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot.conf -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/tc_and_extra_tc/UserScript_TCDIAG_fcstGFSO_SHIP_obsOFCL_SingleInit.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_TCDIAG_fcstGFSO_SHIP_obsOFCL_SingleInit.conf::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/tc_and_extra_tc/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/tc_and_extra_tc/UserScript_TCDIAG_fcstGFSO_SHIP_obsOFCL_SingleInit.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -215,26 +225,31 @@ UserScript_TCDIAG_fcstGFSO_SHIP_obsOFCL_SingleInit.py
 # ----------------
 #
 # A successful run will output the following both to the screen and to the logfile, one for the
-# reformat, aggregate, and plot steps of the use case::
+# reformat and plot steps of the use case::
 #
 #   INFO: METplus has successfully finished running.
 #
 #
 # **Reformat Output**
 #
-# The reformatted ensemble-stat ECNT linetype data should exist in the location specified in the user
-# configuration file (OUTPUT_BASE).  Verify that the ensemble_stat_ecnt.data file exists.  The file now has all
-# the statistics under the stat_name and stat_value columns, all ECNT statistic columns labelled with their
-# corresponding names (e.g. crps, crpss, rmse, etc.) and confidence level values under the
-# following columns:  stat_btcl and stat_btcu
+# The reformatted TCMPR/TCDIAG linetype data should exist in the location specified in the user
+# configuration file (OUTPUT_BASE).  Verify that the tc_pairs.tcst file exists.  The file now has each
+# TCMPR and its corresponding TCDIAG rows consolidated into a single row with all columns labelled with their
+# corresponding names (e.g. alat_alon, tk_err, diag_source, track_source, etc.).  Refer to the MET User's Guide,
+# Table 24.1, 24.2, and 24.3 for the all the column names/headers.
 #
 #
-
+#
 # **Plot Output**
 #
-# A spread-skill plot of temperature for the RMSE, SPREAD_PLUS_OERR, and a ratio line of SPREAD_PLUS_OERR/RMSE is
-# created and found in the output location specified in the user configuration file (OUTPUT_BASE).  The plot is named
-# short-range_UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot.png
+# A time series plot of the SHEAR MAGNITUDE for a single storm (Ian), a single initialization time,
+# and all lead times for the AL basin and numerous storm levels (e.g. TS, EX, HU) is located in the
+# directory specified in the TIME_SERIES_PLOT_OUTPUT_BASE value in the configuration file. The plot is named
+# SHEAR_MAGNITUDE_pointplot.png.
+#
+# A skew-T log P plot for each date and time for each sounding is located in the directory
+# specified in the SKEW_T_PLOT_OUTPUT_BASE setting of the config file.
+#
 #
 #
 
@@ -245,11 +260,15 @@ UserScript_TCDIAG_fcstGFSO_SHIP_obsOFCL_SingleInit.py
 # .. note::
 #
 #   * UserScriptUseCase
-#   * TropicalCycloneUseCase
+#   * TCandExtraTCUseCase
+#   * TCDIAGUseCase
+#   * METdataioUseCase
+#   * METcalcpyUseCase
+#   * METplotpyUseCase
 #
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/short-range_UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot.png'
+# sphinx_gallery_thumbnail_path = '_static/tc_and_extra_tc_UserScript_TCDIAG_fcstGFSO_SHIP_obsOFCL_SingleInit.png'
