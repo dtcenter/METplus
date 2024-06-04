@@ -11921,3 +11921,13 @@ METplus Configuration Glossary
      Specify the value for 'time_offset_warning' in the MET configuration file for WaveletStat.
 
      | *Used by:* WaveletStat
+
+   ASCII2NC_VALID_BEG
+     Specify the value for the command line argument '-valid_beg' for ASCII2NC.
+
+     | *Used by:* ASCII2NC
+
+   ASCII2NC_VALID_END
+     Specify the value for the command line argument '-valid_end' for ASCII2NC.
+
+     | *Used by:* ASCII2NC
