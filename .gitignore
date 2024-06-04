@@ -107,7 +107,3 @@ docs/_build
 docs/doxygen/run/Doxyfile
 docs/doxygen/run/doxygenloc
 docs/doxygen/run/doxylog
-
-# Other METplus repositories that may be obtained via manage_externals
-METcalcpy
-METplotpy

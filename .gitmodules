@@ -1,0 +1,15 @@
+[submodule "components/MET"]
+	path = components/MET
+	url = ../MET
+[submodule "components/METplotpy"]
+	path = components/METplotpy
+	url = ../METplotpy
+[submodule "components/METcalcpy"]
+	path = components/METcalcpy
+	url = ../METplotpy
+[submodule "components/METdataio"]
+	path = components/METdataio
+	url = ../METdataio
+[submodule "components/METviewer"]
+	path = components/METviewer
+	url = ../METviewer
