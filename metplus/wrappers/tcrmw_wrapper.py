@@ -44,7 +44,6 @@ class TCRMWWrapper(RuntimeFreqWrapper):
         'METPLUS_REGRID_DICT',
         'METPLUS_N_RANGE',
         'METPLUS_N_AZIMUTH',
-        'METPLUS_MAX_RANGE_KM',
         'METPLUS_DELTA_RANGE_KM',
         'METPLUS_RMW_SCALE',
     ]
@@ -97,7 +96,6 @@ class TCRMWWrapper(RuntimeFreqWrapper):
 
         self.add_met_config(name='n_range', data_type='int')
         self.add_met_config(name='n_azimuth', data_type='int')
-        self.add_met_config(name='max_range_km', data_type='float')
         self.add_met_config(name='delta_range_km', data_type='float')
         self.add_met_config(name='rmw_scale', data_type='float')
         self.add_met_config(name='storm_id', data_type='string')

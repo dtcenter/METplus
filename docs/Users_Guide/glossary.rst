@@ -4408,11 +4408,6 @@ METplus Configuration Glossary
 
      | *Used by:*  TCRMW
 
-   TC_RMW_MAX_RANGE_KM
-     Specify the value for 'max_range_km' in the MET configuration file for TCRMW.
-
-     | *Used by:*  TCRMW
-
    TC_RMW_DELTA_RANGE_KM
      Specify the value for 'delta_range_km' in the MET configuration file for TCRMW.
 
