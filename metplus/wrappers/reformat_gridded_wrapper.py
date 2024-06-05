@@ -41,7 +41,7 @@ class ReformatGriddedWrapper(LoopTimesWrapper):
             )
 
         if not c_dict['FCST_RUN'] and not c_dict['OBS_RUN']:
-            self.log_error(f'Must set FCST_{app}_RUN or OBS_{app}_RUN')
+            self.log_error(f'Must set either FCST_{app}_RUN or OBS_{app}_RUN')
             return c_dict
 
         return c_dict
