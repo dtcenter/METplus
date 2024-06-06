@@ -17,12 +17,7 @@ def get_test_data_dir(config, subdir=None):
     return top_dir
 
 
-def pcp_combine_wrapper(metplus_config, d_type):
-    """! Returns a default PCPCombineWrapper with /path/to entries in the
-         metplus_system.conf and metplus_runtime.conf configuration
-         files.  Subsequent tests can customize the final METplus configuration
-         to over-ride these /path/to values."""
-    config = metplus_config
+def set_minimum_config_settings(config, d_type):
     config.set('config', 'FCST_PCP_COMBINE_INPUT_ACCUMS', '6')
     config.set('config', 'FCST_PCP_COMBINE_INPUT_NAMES', 'P06M_NONE')
     config.set('config', 'FCST_PCP_COMBINE_INPUT_LEVELS', '"(*,*)"')
@@ -56,6 +51,13 @@ def pcp_combine_wrapper(metplus_config, d_type):
     elif d_type == "OBS":
         config.set('config', 'OBS_PCP_COMBINE_RUN', True)
 
+def pcp_combine_wrapper(metplus_config, d_type):
+    """! Returns a default PCPCombineWrapper with /path/to entries in the
+         metplus_system.conf and metplus_runtime.conf configuration
+         files.  Subsequent tests can customize the final METplus configuration
+         to over-ride these /path/to values."""
+    config = metplus_config
+    set_minimum_config_settings(config, d_type)
     return PCPCombineWrapper(config)
 
 
@@ -861,3 +863,45 @@ def test_subtract_method_zero_accum(metplus_config):
         for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
             # ensure commands are generated as expected
             assert cmd == expected_cmd
+
+
+@pytest.mark.parametrize(
+    'thresh, success', [
+        (None, False),
+        (0.6, True),
+        (1.0, False),
+    ]
+)
+@pytest.mark.wrapper
+def test_add_method_missing_input(metplus_config, thresh, success):
+    data_src = "OBS"
+    lookback = 6 * 3600
+    task_info = {
+        'valid': datetime.strptime("2016090415", '%Y%m%d%H')
+    }
+    time_info = ti_calculate(task_info)
+
+    config = metplus_config
+    set_minimum_config_settings(config, data_src)
+    if thresh is not None:
+        config.set('config', f'{data_src}_PCP_COMBINE_INPUT_THRESH', thresh)
+    wrapper = PCPCombineWrapper(config)
+
+    input_dir = get_test_data_dir(wrapper.config, subdir='accum')
+    files_found = wrapper.setup_add_method(time_info, lookback, data_src)
+    if not success:
+        assert not files_found
+        return
+
+    assert files_found
+
+    in_files = [item[0] for item in files_found]
+    print(f"Input files: {in_files}")
+    assert (len(in_files) == 6 and
+            f"{input_dir}/20160904/file.2016090415.01h" in in_files and
+            f"{input_dir}/20160904/file.2016090414.01h" in in_files and
+            f"{input_dir}/20160904/file.2016090413.01h" in in_files and
+            f"{input_dir}/20160904/file.2016090412.01h" in in_files and
+            f"MISSING{input_dir}/20160904/file.2016090411.01h" in in_files and
+            f"MISSING{input_dir}/20160904/file.2016090410.01h" in in_files
+            )

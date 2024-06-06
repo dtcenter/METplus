@@ -171,15 +171,37 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             met_tool=self.app_name
         )
 
-        c_dict[f'{d_type}_INPUT_THRESH'] = (
-            self.config.getfloat('config', f'{d_type}_INPUT_THRESH')
-        )
-
+        self._set_input_thresh(c_dict, d_type)
         self._error_check_config(c_dict, d_type)
 
         # skip RuntimeFreq input file logic - remove once integrated
         c_dict['FIND_FILES'] = False
         return c_dict
+
+    def _set_input_thresh(self, c_dict, d_type):
+        """!Read input_thresh value from METplusConfig and set c_dict. Report
+        an error if value is not between 0 and 1. Set {d_type}_FILL_MISSING to
+        True if input_thresh is less than 1, meaning missing input is allowed.
+
+        @param c_dict dictionary to set values
+        @param d_type data type, either 'FCST' or 'OBS'
+        """
+        input_thresh = (
+            self.config.getfloat('config', f'{d_type}_PCP_COMBINE_INPUT_THRESH')
+        )
+        if input_thresh == float(MISSING_DATA_VALUE):
+            return
+
+        if input_thresh < 0 or input_thresh > 1:
+            self.log_error(f'{d_type}_PCP_COMBINE_INPUT_THRESH must be 0-1')
+            return
+
+        c_dict[f'{d_type}_INPUT_THRESH'] = input_thresh
+
+        # if missing input is allowed, add MISSING to path if file is not found
+        # subtract method does not support missing inputs
+        if input_thresh < 1 and c_dict[f'{d_type}_RUN_METHOD'] != "SUBTRACT":
+            c_dict[f'{d_type}_FILL_MISSING'] = True
 
     def _error_check_config(self, c_dict, d_type):
         """!Check c_dict values and log errors if anything is not set properly.
@@ -932,8 +954,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         self.args.append(name_format)
 
     def _handle_input_thresh_argument(self, data_src):
-        input_thresh = self.c_dict[f'{data_src}_INPUT_THRESH']
-        if input_thresh == float(MISSING_DATA_VALUE):
+        input_thresh = self.c_dict.get(f'{data_src}_INPUT_THRESH')
+        if not input_thresh:
             return
 
         self.args.append(f'-input_thresh {input_thresh}')
