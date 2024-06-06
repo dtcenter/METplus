@@ -7,7 +7,7 @@ Abstract: Builds commands to run MET tool pcp_combine
 import os
 from datetime import timedelta
 
-from ..util import do_string_sub, getlist, preprocess_file
+from ..util import do_string_sub, getlist
 from ..util import get_seconds_from_string, ti_get_lead_string, ti_calculate
 from ..util import get_relativedelta, ti_get_seconds_from_relativedelta
 from ..util import time_string_to_met_time, seconds_to_met_time
@@ -49,7 +49,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         c_dict['VERBOSITY'] = self.config.getstr('config',
                                                  'LOG_PCP_COMBINE_VERBOSITY',
                                                  c_dict['VERBOSITY'])
-        c_dict['ALLOW_MULTIPLE_FILES'] = True
 
         if c_dict['FCST_RUN']:
             c_dict = self._set_fcst_or_obs_dict_items('FCST', c_dict)
@@ -82,6 +81,13 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             return c_dict
 
         c_dict[f'{d_type}_RUN_METHOD'] = run_method
+
+        # if derive method, allow multiple files and read stat list
+        if c_dict[f'{d_type}_RUN_METHOD'] == "DERIVE":
+            c_dict[f'{d_type}_STAT_LIST'] = getlist(
+                self.config.getraw('config', f'{d_type}_PCP_COMBINE_STAT_LIST')
+            )
+            c_dict['ALLOW_MULTIPLE_FILES'] = True
 
         # handle I/O directories and templates
         c_dict[f'{d_type}_INPUT_DIR'] = self.config.getdir(
@@ -129,11 +135,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         c_dict[f'{d_type}_OUTPUT_NAME'] = self.config.getstr(
             'config', f'{d_type}_PCP_COMBINE_OUTPUT_NAME', ''
         )
-
-        if c_dict[f'{d_type}_RUN_METHOD'] == "DERIVE":
-            c_dict[f'{d_type}_STAT_LIST'] = getlist(
-                self.config.getraw('config', f'{d_type}_PCP_COMBINE_STAT_LIST')
-            )
 
         c_dict[f'{d_type}_BUCKET_INTERVAL'] = self.config.getseconds(
             'config', f'{d_type}_PCP_COMBINE_BUCKET_INTERVAL', 0
@@ -331,18 +332,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         files_found = []
 
-        full_template = os.path.join(self.c_dict[f'{data_src}_INPUT_DIR'],
-                                     self.c_dict[f'{data_src}_INPUT_TEMPLATE'])
-
-        # get first file
-        filepath1 = do_string_sub(full_template, **time_info)
-        file1 = preprocess_file(filepath1,
-                                self.c_dict[data_src+'_INPUT_DATATYPE'],
-                                self.config)
-
-        if file1 is None:
-            self.log_error(f'Could not find {data_src} file {filepath1} '
-                           f'using template {full_template}')
+        file1 = self.find_data(time_info, data_type=data_src)
+        if not file1:
             return None
 
         # handle field information
@@ -385,21 +376,10 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         time_info2['level'] = accum
         time_info2['custom'] = time_info.get('custom', '')
 
-        filepath2 = do_string_sub(full_template, **time_info2)
-        file2 = preprocess_file(filepath2,
-                                self.c_dict[data_src+'_INPUT_DATATYPE'],
-                                self.config)
-
-        if file2 is None:
-            self.log_error(f'Could not find {data_src} file {filepath2} '
-                           f'using template {full_template}')
+        file2 = self.find_data(time_info2, data_type=data_src)
+        if not file2:
             return None
 
-        field_info1 = self.get_field_string(
-            time_info=time_info,
-            search_accum=seconds_to_met_time(lead),
-            **field_args
-        )
         field_info2 = self.get_field_string(
             time_info=time_info2,
             search_accum=seconds_to_met_time(lead2),
@@ -519,8 +499,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                                                level=accum_dict['level'],
                                                extra=accum_dict['extra'])
             self.run_count += 1
-            input_files = self.find_data(time_info,
-                                         data_type=data_src,
+            input_files = self.find_data(time_info, data_type=data_src,
                                          return_list=True)
             if not input_files:
                 self.missing_input_count += 1
@@ -816,18 +795,10 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             }
             time_info = ti_calculate(input_dict)
             time_info['custom'] = custom
-            search_file = os.path.join(self.c_dict[f'{data_src}_INPUT_DIR'],
-                                       self.c_dict[data_src+'_INPUT_TEMPLATE'])
-            search_file = do_string_sub(search_file, **time_info)
-            self.logger.debug(f"Looking for {search_file}")
-
-            search_file = preprocess_file(
-                search_file,
-                self.c_dict[data_src+'_INPUT_DATATYPE'],
-                self.config)
-
-            if search_file is not None:
-                return search_file, forecast_lead
+            search_file = self.find_data(time_info, data_type=data_src,
+                                         return_list=True)
+            if search_file:
+                return search_file[0], forecast_lead
             forecast_lead += smallest_input_accum
 
         return None, 0
@@ -853,7 +824,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
     def find_input_file(self, init_time, valid_time, search_accum, data_src,
                         custom):
         lead = 0
-
         in_template = self.c_dict[data_src+'_INPUT_TEMPLATE']
 
         if ('{lead?' in in_template or
@@ -874,13 +844,12 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         time_info = ti_calculate(input_dict)
         time_info['custom'] = custom
         time_info['level'] = int(search_accum)
-        input_path = os.path.join(self.c_dict[f'{data_src}_INPUT_DIR'],
-                                  in_template)
-        input_path = do_string_sub(input_path, **time_info)
+        input_path = self.find_data(time_info, data_type=data_src,
+                                    return_list=True)
+        if input_path:
+            input_path = input_path[0]
 
-        return preprocess_file(input_path,
-                               self.c_dict[f'{data_src}_INPUT_DATATYPE'],
-                               self.config), lead
+        return input_path, lead
 
     def get_template_accum(self, accum_dict, search_time, lead, data_src,
                            custom):
