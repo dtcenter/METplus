@@ -62,7 +62,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         """! Set c_dict values specific to either forecast (FCST) or
         observation (OBS) data.
 
-            @param d_type data type, either FCST or OBS
+            @param d_type data type, either 'FCST' or 'OBS'
             @param c_dict config dictionary to populate
             @returns c_dict with values for given data type set
         """
@@ -302,7 +302,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         """! Setup pcp_combine to call user defined command
 
           @param time_info dictionary containing timing information
-          @param data_src data type, either FCST or OBS
+          @param data_src data type, either 'FCST' or 'OBS'
           @rtype bool
           @return True always
         """
@@ -317,7 +317,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
           @param time_info object containing timing information
           @param accum accumulation amount to compute in seconds
-          @param data_src data type, either FCST or OBS
+          @param data_src data type, either 'FCST' or 'OBS'
           @rtype string
           @return path to output file
         """
@@ -402,7 +402,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
           @param time_info object containing timing information
           @param lookback accumulation amount to compute in seconds
-          @param data_src data type, either FCST or OBS
+          @param data_src data type, either 'FCST' or 'OBS'
           @rtype bool
           @return True always
         """
@@ -611,7 +611,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
           @param time_info dictionary containing time information
           @param accum desired accumulation to build in seconds
-          @param data_src type of data, either FCST or OBS
+          @param data_src type of data, either 'FCST' or 'OBS'
           @param field_info_after_file if True, add field information after each
           file in the arguments (defaults to True)
           @rtype list
