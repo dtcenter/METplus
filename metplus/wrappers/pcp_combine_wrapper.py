@@ -711,6 +711,11 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         return files_found
 
     def _log_search_accum_list(self, total_accum):
+        """!Format and log information about the desired accumulation to build
+        and the configurations that define the search accumulations.
+
+        @param total_accum desired accumulation to build
+        """
         search_accum_list = []
         for lev in self.c_dict['ACCUM_DICT_LIST']:
             if lev['template'] is not None:
@@ -726,6 +731,13 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
     def _add_file_and_field_info_to_args(self, search_file, field_info,
                                          field_info_after_file):
+        """!Helper function to add arguments to reduce cognitive complexity
+        of get_accumulation function. Adds to self.args list.
+
+        @param search_file file path
+        @param field_info formatted field information associate with file path
+        @param field_info_after_file boolean if True add field info after file
+        """
         self.args.append(search_file)
         if field_info_after_file:
             self.args.append(field_info)
