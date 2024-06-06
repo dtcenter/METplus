@@ -60,7 +60,6 @@ UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
 #  * pandas
 #  * shapely
 #  * xarray
-#
 
 
 
@@ -69,11 +68,7 @@ UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
 # ------------------
 #
 # This use case runs the METplotpy planview_fv3.py script to generate the
-# plan views. This code can be cloned from the following Github repository:
-# https://github.com/dtcenter/METplotpy
-# Clone this source code under the same directory as the METPLUS_BASE directory
-# (i.e. if the METPLUS_BASE directory is /home/username/working/METplus,
-# then clone the METplotpy source code into the /home/username/working directory).
+# plan views. 
 
 ##############################################################################
 # METplus Workflow
