@@ -496,22 +496,6 @@ class CommandBuilder:
         if data_type and not data_type.endswith('_'):
             data_type_fmt += '_'
 
-        # set generic 'level' to level that corresponds to data_type if set
-        level = time_info.get(f'{data_type_fmt.lower()}level', '0')
-
-        # strip off prefix letter if it exists
-        level = split_level(level)[1]
-
-        # set level to 0 character if it is not a number, e.g. NetCDF level
-        if not level.isdigit():
-            level = '0'
-
-        # if level is a range, use the first value, i.e. if 250-500 use 250
-        level = level.split('-')[0]
-
-        # if level is in hours, convert to seconds
-        level = get_seconds_from_string(level, 'H')
-
         # arguments for find helper functions
         arg_dict = {'data_type': data_type_fmt,
                     'mandatory': mandatory,
@@ -522,13 +506,12 @@ class CommandBuilder:
         if (self.c_dict.get(data_type_fmt + 'FILE_WINDOW_BEGIN', 0) == 0 and
                 self.c_dict.get(data_type_fmt + 'FILE_WINDOW_END', 0) == 0):
 
-            return self._find_exact_file(**arg_dict, allow_dir=allow_dir,
-                                         level=level)
+            return self._find_exact_file(**arg_dict, allow_dir=allow_dir)
 
         # if looking for a file within a time window:
         return self._find_file_in_window(**arg_dict)
 
-    def _find_exact_file(self, level, data_type, time_info, mandatory=True,
+    def _find_exact_file(self, data_type, time_info, mandatory=True,
                          return_list=False, allow_dir=False):
         input_template = self.c_dict.get(f'{data_type}INPUT_TEMPLATE', '')
         data_dir = self.c_dict.get(f'{data_type}INPUT_DIR', '')
@@ -550,19 +533,37 @@ class CommandBuilder:
                            "does not allow multiple files to be provided.")
             return None
 
-        # pop level from time_info to avoid conflict with explicit level
-        # then add it back after the string sub call
-        saved_level = time_info.pop('level', None)
+        # If level is not already set in time_info, set it and remove it later.
+        # Check if {data_type}level is set, e.g. fcst_level,
+        # otherwise use 0 to prevent error when level is requested in template.
+        has_level = True if time_info.get('level') else False
+        if not has_level:
+            # set generic 'level' to level that corresponds to data_type if set
+            level = time_info.get(f'{data_type.lower()}level', '0')
+
+            # strip off prefix letter if it exists
+            level = split_level(level)[1]
+
+            # set level to 0 character if it is not a number, e.g. NetCDF level
+            if not level.isdigit():
+                level = '0'
+
+            # if level is a range, use the first value, i.e. if 250-500 use 250
+            level = level.split('-')[0]
+
+            # if level is in hours, convert to seconds
+            level = get_seconds_from_string(level, 'H')
+            time_info['level'] = level
 
         input_must_exist = self._get_input_must_exist(template_list, data_dir)
 
-        check_file_list = self._get_files_to_check(template_list, level,
+        check_file_list = self._get_files_to_check(template_list,
                                                    time_info, data_dir,
                                                    data_type)
 
-        # if it was set, add level back to time_info
-        if saved_level is not None:
-            time_info['level'] = saved_level
+        # if it was not set, remove it from time_info
+        if not has_level:
+            time_info.pop('level', None)
 
         # if multiple files are not supported by the wrapper and multiple
         # files are found, error and exit
@@ -629,7 +630,7 @@ class CommandBuilder:
             return False
         return True
 
-    def _get_files_to_check(self, template_list, level, time_info, data_dir,
+    def _get_files_to_check(self, template_list, time_info, data_dir,
                             data_type):
         """!Get list of files to check if they exist.
         @returns list of tuples containing file path and template used to build
@@ -641,7 +642,7 @@ class CommandBuilder:
             full_template = os.path.join(data_dir, template)
 
             # perform string substitution on full path
-            full_path = do_string_sub(full_template, **time_info, level=level)
+            full_path = do_string_sub(full_template, **time_info)
 
             if os.path.sep not in full_path:
                 self.logger.debug(f"{full_path} is not a file path. "
