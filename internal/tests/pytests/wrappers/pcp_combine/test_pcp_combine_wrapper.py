@@ -720,7 +720,6 @@ def test_get_extra_fields(metplus_config, names, levels, expected_args):
 
 @pytest.mark.wrapper
 def test_add_method_single_file(metplus_config):
-    data_src = 'FCST'
     config = metplus_config
     config.set('config', 'DO_NOT_RUN_EXE', True)
     config.set('config', 'INPUT_MUST_EXIST', False)
