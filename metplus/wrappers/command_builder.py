@@ -579,17 +579,7 @@ class CommandBuilder:
         # return None if no files were found
         if not check_file_list:
             msg = f"Could not find any {data_type}INPUT files"
-            # warn instead of error if it is not mandatory to find files
-            if (not mandatory
-                    or not self.c_dict.get('MANDATORY', True)
-                    or self.c_dict.get('ALLOW_MISSING_INPUTS', False)):
-                if self.c_dict.get('SUPRESS_WARNINGS', False):
-                    self.logger.debug(msg)
-                else:
-                    self.logger.warning(msg)
-            else:
-                self.log_error(msg)
-
+            self._log_message_dynamic_level(msg, mandatory)
             return None
 
         found_files = self._check_that_files_exist(check_file_list, data_type,
@@ -603,6 +593,28 @@ class CommandBuilder:
             return found_files[0]
 
         return found_files
+
+    def _is_optional_input(self, mandatory):
+        return (not mandatory
+                or not self.c_dict.get('MANDATORY', True)
+                or self.c_dict.get('ALLOW_MISSING_INPUTS', False))
+
+    def _log_message_dynamic_level(self, msg, mandatory):
+        """!Log message based on rules. If mandatory input and missing inputs
+        are not allowed, log an error. Otherwise, log a warning unless warnings
+        are suppressed, in which case log debug.
+
+        @param msg message to be logged
+        @param mandatory boolean indicating if input data is mandatory
+        """
+        # warn instead of error if it is not mandatory to find files
+        if self._is_optional_input(mandatory):
+            if self.c_dict.get('SUPRESS_WARNINGS', False):
+                self.logger.debug(msg)
+            else:
+                self.logger.warning(msg)
+        else:
+            self.log_error(msg)
 
     def _get_input_must_exist(self, template_list, data_dir):
         """!Check if input must exist. The config dict setting INPUT_MUST_EXIST
@@ -687,20 +699,11 @@ class CommandBuilder:
             if not processed_path:
                 msg = (f"Could not find {data_type}INPUT file {file_path} "
                        f"using template {template}")
-                if (not mandatory
-                        or not self.c_dict.get('MANDATORY', True)
-                        or self.c_dict.get('ALLOW_MISSING_INPUTS', False)):
-
-                    if self.c_dict.get('SUPRESS_WARNINGS', False):
-                        self.logger.debug(msg)
-                    else:
-                        self.logger.warning(msg)
-
-                    if self.c_dict.get(f'{data_type}FILL_MISSING'):
-                        found_file_list.append(f'MISSING{file_path}')
-                        continue
-                else:
-                    self.log_error(msg)
+                self._log_message_dynamic_level(msg, mandatory)
+                if (self._is_optional_input(mandatory) and
+                        self.c_dict.get(f'{data_type}FILL_MISSING')):
+                    found_file_list.append(f'MISSING{file_path}')
+                    continue
 
                 return None
 
