@@ -449,7 +449,7 @@ class CommandBuilder:
         # errors when searching through offset list
         is_mandatory = mandatory if offsets == [0] else False
 
-        self.c_dict['SUPRESS_WARNINGS'] = True
+        self.c_dict['SUPPRESS_WARNINGS'] = True
         for offset in offsets:
             time_info['offset_hours'] = offset
             time_info = ti_calculate(time_info)
@@ -458,10 +458,10 @@ class CommandBuilder:
                                      return_list=return_list)
 
             if obs_path is not None:
-                self.c_dict['SUPRESS_WARNINGS'] = False
+                self.c_dict['SUPPRESS_WARNINGS'] = False
                 return obs_path, time_info
 
-        self.c_dict['SUPRESS_WARNINGS'] = False
+        self.c_dict['SUPPRESS_WARNINGS'] = False
 
         # if no files are found return None
         # if offsets are specified, log error with list offsets used
@@ -609,7 +609,7 @@ class CommandBuilder:
         """
         # warn instead of error if it is not mandatory to find files
         if self._is_optional_input(mandatory):
-            if self.c_dict.get('SUPRESS_WARNINGS', False):
+            if self.c_dict.get('SUPPRESS_WARNINGS', False):
                 self.logger.debug(msg)
             else:
                 self.logger.warning(msg)
@@ -745,7 +745,7 @@ class CommandBuilder:
                     or not self.c_dict.get('MANDATORY', True)
                     or self.c_dict.get('ALLOW_MISSING_INPUTS', False)):
 
-                if self.c_dict.get('SUPRESS_WARNINGS', False):
+                if self.c_dict.get('SUPPRESS_WARNINGS', False):
                     self.logger.debug(msg)
                 else:
                     self.logger.warning(msg)
