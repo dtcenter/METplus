@@ -714,12 +714,13 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                 accum_dict['template'] is None):
             return None, None, None
 
+        self.c_dict['SUPPRESS_WARNINGS'] = True
         search_file, lead = self.find_input_file(time_info['init'],
                                                  search_time,
                                                  accum_dict['amount'],
                                                  data_src,
                                                  custom)
-
+        self.c_dict['SUPPRESS_WARNINGS'] = False
         if not search_file:
             return None, None, None
 
@@ -796,7 +797,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             time_info = ti_calculate(input_dict)
             time_info['custom'] = custom
             search_file = self.find_data(time_info, data_type=data_src,
-                                         return_list=True)
+                                         return_list=True, mandatory=False)
             if search_file:
                 return search_file[0], forecast_lead
             forecast_lead += smallest_input_accum
@@ -845,7 +846,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         time_info['custom'] = custom
         time_info['level'] = int(search_accum)
         input_path = self.find_data(time_info, data_type=data_src,
-                                    return_list=True)
+                                    return_list=True, mandatory=False)
         if input_path:
             input_path = input_path[0]
 
