@@ -171,14 +171,14 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             met_tool=self.app_name
         )
 
-        self._set_input_thresh(c_dict, d_type)
+        self._set_thresholds(c_dict, d_type)
         self._error_check_config(c_dict, d_type)
 
         # skip RuntimeFreq input file logic - remove once integrated
         c_dict['FIND_FILES'] = False
         return c_dict
 
-    def _set_input_thresh(self, c_dict, d_type):
+    def _set_thresholds(self, c_dict, d_type):
         """!Read input_thresh value from METplusConfig and set c_dict. Report
         an error if value is not between 0 and 1. Set {d_type}_FILL_MISSING to
         True if input_thresh is less than 1, meaning missing input is allowed.
@@ -186,21 +186,23 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         @param c_dict dictionary to set values
         @param d_type data type, either 'FCST' or 'OBS'
         """
-        input_thresh = (
-            self.config.getfloat('config', f'{d_type}_PCP_COMBINE_INPUT_THRESH')
-        )
-        if input_thresh == float(MISSING_DATA_VALUE):
-            return
+        for t_type in ('VLD_THRESH', 'INPUT_THRESH'):
+            thresh = (
+                self.config.getfloat('config', f'{d_type}_PCP_COMBINE_{t_type}')
+            )
+            if thresh == float(MISSING_DATA_VALUE):
+                continue
 
-        if input_thresh < 0 or input_thresh > 1:
-            self.log_error(f'{d_type}_PCP_COMBINE_INPUT_THRESH must be 0-1')
-            return
+            if thresh < 0 or thresh > 1:
+                self.log_error(f'{d_type}_PCP_COMBINE_{t_type} must be 0-1')
+                continue
 
-        c_dict[f'{d_type}_INPUT_THRESH'] = input_thresh
+            c_dict[f'{d_type}_{t_type}'] = thresh
 
         # if missing input is allowed, add MISSING to path if file is not found
         # subtract method does not support missing inputs
-        if input_thresh < 1 and c_dict[f'{d_type}_RUN_METHOD'] != "SUBTRACT":
+        if (c_dict.get(f'{d_type}_INPUT_THRESH', 1) < 1 and
+                c_dict[f'{d_type}_RUN_METHOD'] != "SUBTRACT"):
             c_dict[f'{d_type}_FILL_MISSING'] = True
 
     def _error_check_config(self, c_dict, d_type):
@@ -297,7 +299,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         # set time info level back to lookback seconds
         time_info['level'] = lookback_seconds
 
-        self._handle_extra_field_arguments(data_src, time_info)
+        self.set_command_line_arguments(data_src, time_info)
 
         # add -name argument
         output_name = self.c_dict.get(f'{data_src}_OUTPUT_NAME')
@@ -919,18 +921,26 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                f"{' '.join(self.args)} {self.get_output_path()}")
         return cmd
 
-    def _handle_extra_field_arguments(self, data_src, time_info=None):
-        extra_names = self.c_dict.get(data_src + '_EXTRA_NAMES')
-        if not extra_names:
-            return
+    def set_command_line_arguments(self, data_src, time_info=None):
+        """!Handle extra field arguments and vld_thresh argument.
 
-        extra_levels = self.c_dict.get(data_src + '_EXTRA_LEVELS')
-        for name, level in zip(extra_names, extra_levels):
-            field_string = self.get_field_string(time_info=time_info,
-                                                 name=name,
-                                                 level=level)
-            field_format = f"-field {field_string}"
-            self.args.append(field_format)
+        @param data_src type of data, either 'FCST' or 'OBS'
+        @param time_info dictionary containing time information or None
+         (defaults to None)
+        """
+        extra_names = self.c_dict.get(data_src + '_EXTRA_NAMES')
+        if extra_names:
+            extra_levels = self.c_dict.get(data_src + '_EXTRA_LEVELS')
+            for name, level in zip(extra_names, extra_levels):
+                field_string = self.get_field_string(time_info=time_info,
+                                                     name=name,
+                                                     level=level)
+                field_format = f"-field {field_string}"
+                self.args.append(field_format)
+
+        vld_thresh = self.c_dict.get(f'{data_src}_VLD_THRESH')
+        if vld_thresh:
+            self.args.append(f'-vld_thresh {vld_thresh}')
 
     def _handle_field_argument(self, data_src, time_info):
         if not self.c_dict[f'{data_src}_NAMES']:
