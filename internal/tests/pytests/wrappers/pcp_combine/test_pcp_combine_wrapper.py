@@ -706,7 +706,7 @@ def test_get_extra_fields(metplus_config, names, levels, expected_args):
 
     wrapper = PCPCombineWrapper(config)
 
-    wrapper._handle_extra_field_arguments(data_src)
+    wrapper.set_command_line_arguments(data_src)
     wrapper._handle_name_argument('', data_src)
     for index, expected_arg in enumerate(expected_args):
         assert wrapper.args[index] == expected_arg
@@ -858,42 +858,66 @@ def test_subtract_method_zero_accum(metplus_config):
 
 
 @pytest.mark.parametrize(
-    'thresh, success', [
-        (None, False),
-        (0.6, True),
-        (1.0, False),
+    'input_thresh, vld_thresh, success', [
+        (None, None, False),
+        (0.6, None, True),
+        (1.0, None, False),
+        (None, 0.2, False),
+        (0.6, 0.2, True),
+        (1.0, 0.2, False),
     ]
 )
 @pytest.mark.wrapper
-def test_add_method_missing_input(metplus_config, thresh, success):
+def test_add_method_missing_input(metplus_config, get_test_data_dir, input_thresh, vld_thresh, success):
     data_src = "OBS"
-    lookback = 6 * 3600
-    task_info = {
-        'valid': datetime.strptime("2016090415", '%Y%m%d%H')
-    }
-    time_info = ti_calculate(task_info)
+    input_dir = get_test_data_dir('accum')
 
     config = metplus_config
     set_minimum_config_settings(config, data_src)
-    if thresh is not None:
-        config.set('config', f'{data_src}_PCP_COMBINE_INPUT_THRESH', thresh)
+    config.set('config', 'LOOP_BY', "VALID")
+    config.set('config', 'VALID_TIME_FMT', "%Y%m%d%H")
+    config.set('config', 'VALID_BEG', "2016090415")
+    config.set('config', 'VALID_END', "2016090415")
+    config.set('config', 'VALID_INCREMENT', "1d")
+    config.set('config', f'{data_src}_PCP_COMBINE_INPUT_DIR', input_dir)
+    config.set('config', f'{data_src}_PCP_COMBINE_OUTPUT_ACCUM', '6H')
+    config.set('config', f'{data_src}_PCP_COMBINE_INPUT_ACCUMS', '1H')
+    if input_thresh is not None:
+        config.set('config', f'{data_src}_PCP_COMBINE_INPUT_THRESH', input_thresh)
+    if vld_thresh is not None:
+        config.set('config', f'{data_src}_PCP_COMBINE_VLD_THRESH', vld_thresh)
     wrapper = PCPCombineWrapper(config)
 
-    input_dir = get_test_data_dir(wrapper.config, subdir='accum')
-    files_found = wrapper.setup_add_method(time_info, lookback, data_src)
+    assert wrapper.isOK
+
+    all_cmds = wrapper.run_all_times()
     if not success:
-        assert not files_found
+        assert len(all_cmds) == 0
         return
 
-    assert files_found
+    field_name = wrapper.config.get('config', f'{data_src}_PCP_COMBINE_INPUT_NAMES')
+    field_info = f"'name=\"{field_name}\";'"
 
-    in_files = [item[0] for item in files_found]
-    print(f"Input files: {in_files}")
-    assert (len(in_files) == 6 and
-            f"{input_dir}/20160904/file.2016090415.01h" in in_files and
-            f"{input_dir}/20160904/file.2016090414.01h" in in_files and
-            f"{input_dir}/20160904/file.2016090413.01h" in in_files and
-            f"{input_dir}/20160904/file.2016090412.01h" in in_files and
-            f"MISSING{input_dir}/20160904/file.2016090411.01h" in in_files and
-            f"MISSING{input_dir}/20160904/file.2016090410.01h" in in_files
-            )
+    app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
+    verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
+    out_dir = wrapper.c_dict.get(f'{data_src}_OUTPUT_DIR')
+    extra_args = ''
+    if input_thresh:
+        extra_args += f' -input_thresh {input_thresh}'
+    if vld_thresh:
+        extra_args += f' -vld_thresh {vld_thresh}'
+    expected_cmds = [
+        f"{app_path} {verbosity} -add"
+        f" {input_dir}/20160904/file.2016090415.01h {field_info}"
+        f" {input_dir}/20160904/file.2016090414.01h {field_info}"
+        f" {input_dir}/20160904/file.2016090413.01h {field_info}"
+        f" {input_dir}/20160904/file.2016090412.01h {field_info}"
+        f" MISSING{input_dir}/20160904/file.2016090411.01h {field_info}"
+        f" MISSING{input_dir}/20160904/file.2016090410.01h {field_info}"
+        f"{extra_args} {out_dir}/20160904/outfile.2016090415_A06h"
+    ]
+    assert len(all_cmds) == len(expected_cmds)
+
+    for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
+        # ensure commands are generated as expected
+        assert cmd == expected_cmd

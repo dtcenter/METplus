@@ -11979,3 +11979,29 @@ METplus Configuration Glossary
      There is no default, so a value must be specified. All runtime frequencies are supported.
 
      | *Used by:*  UserScript
+
+   FCST_PCP_COMBINE_INPUT_THRESH
+     Specify the value for the command line argument '-input_thresh' for the
+     forecast run of PCPCombine, e.g. :term:`FCST_PCP_COMBINE_RUN` is True.
+     Not used when :term:`FCST_PCP_COMBINE_METHOD` is SUBTRACT or USER_DEFINED.
+
+     | *Used by:* PCPCombine
+
+   OBS_PCP_COMBINE_INPUT_THRESH
+     Specify the value for the command line argument '-input_thresh' for the
+     observation run of PCPCombine, e.g. :term:`OBS_PCP_COMBINE_RUN` is True.
+     Not used when :term:`OBS_PCP_COMBINE_METHOD` is SUBTRACT or USER_DEFINED.
+
+     | *Used by:* PCPCombine
+
+   FCST_PCP_COMBINE_VLD_THRESH
+     Specify the value for the command line argument '-vld_thresh' for the
+     forecast run of PCPCombine, e.g. :term:`FCST_PCP_COMBINE_RUN` is True.
+
+     | *Used by:* PCPCombine
+
+   OBS_PCP_COMBINE_VLD_THRESH
+     Specify the value for the command line argument '-vld_thresh' for the
+     observation run of PCPCombine, e.g. :term:`OBS_PCP_COMBINE_RUN` is True.
+
+     | *Used by:* PCPCombine
