@@ -121,26 +121,19 @@ def prune_empty(output_dir, logger):
     """
 
     # Check for empty files.
-    for root, dirs, files in os.walk(output_dir):
-        # Create a full file path by joining the path
-        # and filename.
-        for a_file in files:
-            a_file = os.path.join(root, a_file)
-            if os.stat(a_file).st_size == 0:
-                logger.debug("Empty file: " + a_file +
-                             "...removing")
-                os.remove(a_file)
+    for a_file in traverse_dir(output_dir):
+        if os.stat(a_file).st_size == 0:
+            logger.debug("Empty file: " + a_file +
+                         "...removing")
+            os.remove(a_file)
 
     # Now check for any empty directories, some
     # may have been created when removing
     # empty files.
-    for root, dirs, files in os.walk(output_dir):
-        for direc in dirs:
-            full_dir = os.path.join(root, direc)
-            if not os.listdir(full_dir):
-                logger.debug("Empty directory: " + full_dir +
-                             "...removing")
-                os.rmdir(full_dir)
+    for full_dir in traverse_dir(output_dir, get_dirs=True):
+        if not os.listdir(full_dir):
+            logger.debug("Empty directory: " + full_dir + "...removing")
+            os.rmdir(full_dir)
 
 
 def get_files(filedir, filename_regex):
@@ -353,3 +346,21 @@ def preprocess_file(filename, data_type, config, allow_dir=False):
         return filename
 
     return None
+
+
+def traverse_dir(data_dir, get_dirs=False):
+    """!Generator used to navigate through and yield full path to all files or
+    directories under data_dir.
+
+    @param data_dir directory to traverse
+    @param get_dirs If True, get all directories under data_dir. If False, get
+    all files under data_dir. Defaults to False (files).
+    """
+    for dir_path, dirs, all_files in os.walk(data_dir, followlinks=True):
+        if get_dirs:
+            items = sorted(dirs)
+        else:
+            items = sorted(all_files)
+
+        for dir_name in items:
+            yield os.path.join(dir_path, dir_name)

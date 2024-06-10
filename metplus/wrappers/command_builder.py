@@ -29,7 +29,7 @@ from ..util import get_field_info, format_field_info
 from ..util import get_wrapper_name, is_python_script
 from ..util.met_config import add_met_config_dict, handle_climo_dict
 from ..util import mkdir_p, get_skip_times
-from ..util import get_log_path, RunArgs, run_cmd
+from ..util import get_log_path, RunArgs, run_cmd, traverse_dir
 
 
 # pylint:disable=pointless-string-statement
@@ -595,9 +595,9 @@ class CommandBuilder:
         return found_files
 
     def _is_optional_input(self, mandatory):
-        return (not mandatory
-                or not self.c_dict.get('MANDATORY', True)
-                or self.c_dict.get('ALLOW_MISSING_INPUTS', False))
+        return (not self.c_dict.get('MANDATORY', True)
+                or self.c_dict.get('ALLOW_MISSING_INPUTS', False)
+                or not mandatory)
 
     def _log_message_dynamic_level(self, msg, mandatory):
         """!Log message based on rules. If mandatory input and missing inputs
@@ -741,18 +741,7 @@ class CommandBuilder:
         if not closest_files:
             msg = (f"Could not find {data_type}INPUT files under {data_dir} within range "
                    f"[{valid_range_lower},{valid_range_upper}] using template {template}")
-            if (not mandatory
-                    or not self.c_dict.get('MANDATORY', True)
-                    or self.c_dict.get('ALLOW_MISSING_INPUTS', False)):
-
-                if self.c_dict.get('SUPPRESS_WARNINGS', False):
-                    self.logger.debug(msg)
-                else:
-                    self.logger.warning(msg)
-
-            else:
-                self.log_error(msg)
-
+            self._log_message_dynamic_level(msg, mandatory)
             return None
 
         # remove any files that are the same as another but zipped
@@ -800,41 +789,38 @@ class CommandBuilder:
                                             "%Y%m%d%H%M%S").strftime("%s"))
 
         # step through all files under input directory in sorted order
-        for dirpath, _, all_files in os.walk(data_dir, followlinks=True):
-            for filename in sorted(all_files):
-                fullpath = os.path.join(dirpath, filename)
+        for fullpath in traverse_dir(data_dir):
+            # remove input data directory to get relative path
+            rel_path = fullpath.replace(f'{data_dir}/', "")
+            # extract time information from relative path using template
+            file_time_info = get_time_from_file(rel_path, template,
+                                                self.logger)
+            if file_time_info is None:
+                continue
 
-                # remove input data directory to get relative path
-                rel_path = fullpath.replace(f'{data_dir}/', "")
-                # extract time information from relative path using template
-                file_time_info = get_time_from_file(rel_path, template,
-                                                    self.logger)
-                if file_time_info is None:
-                    continue
+            # get valid time and check if it is within the time range
+            file_valid_time = file_time_info['valid'].strftime("%Y%m%d%H%M%S")
+            # skip if could not extract valid time
+            if not file_valid_time:
+                continue
+            file_valid_dt = datetime.strptime(file_valid_time, "%Y%m%d%H%M%S")
+            file_valid_seconds = int(file_valid_dt.strftime("%s"))
+            # skip if outside time range
+            if file_valid_seconds < lower_limit or file_valid_seconds > upper_limit:
+                continue
 
-                # get valid time and check if it is within the time range
-                file_valid_time = file_time_info['valid'].strftime("%Y%m%d%H%M%S")
-                # skip if could not extract valid time
-                if not file_valid_time:
-                    continue
-                file_valid_dt = datetime.strptime(file_valid_time, "%Y%m%d%H%M%S")
-                file_valid_seconds = int(file_valid_dt.strftime("%s"))
-                # skip if outside time range
-                if file_valid_seconds < lower_limit or file_valid_seconds > upper_limit:
-                    continue
+            # if multiple files are allowed, get all files within range
+            if self.c_dict.get('ALLOW_MULTIPLE_FILES', False):
+                closest_files.append(fullpath)
+                continue
 
-                # if multiple files are allowed, get all files within range
-                if self.c_dict.get('ALLOW_MULTIPLE_FILES', False):
-                    closest_files.append(fullpath)
-                    continue
-
-                # if only 1 file is allowed, check if file is
-                # closer to desired valid time than previous match
-                diff = abs(valid_seconds - file_valid_seconds)
-                if diff < closest_time:
-                    closest_time = diff
-                    del closest_files[:]
-                    closest_files.append(fullpath)
+            # if only 1 file is allowed, check if file is
+            # closer to desired valid time than previous match
+            diff = abs(valid_seconds - file_valid_seconds)
+            if diff < closest_time:
+                closest_time = diff
+                del closest_files[:]
+                closest_files.append(fullpath)
 
         return closest_files
 
@@ -878,11 +864,7 @@ class CommandBuilder:
         input_files = self.find_model(time_info, return_list=True, mandatory=False)
         if not input_files:
             msg = "Could not find any input files"
-            if (not self.c_dict.get('MANDATORY', True)
-                    or self.c_dict.get('ALLOW_MISSING_INPUTS', False)):
-                self.logger.warning(msg)
-            else:
-                self.log_error(msg)
+            self._log_message_dynamic_level(msg, True)
             return False
 
         # if control file is requested, remove it from input list
@@ -1033,15 +1015,7 @@ class CommandBuilder:
         # get directory that the output file will exist
         if is_directory:
             parent_dir = output_path
-            valid = '*'
-            lead = '*'
-            if time_info:
-                if time_info['valid'] != '*':
-                    valid = time_info['valid'].strftime('%Y%m%d_%H%M%S')
-                if time_info['lead'] != '*':
-                    lead = seconds_to_met_time(time_info['lead_seconds'],
-                                               force_hms=True)
-
+            valid, lead = self._get_valid_and_lead_from_time_info(time_info)
             prefix = self.get_output_prefix(time_info, set_env_vars=False)
             prefix = f'{self.app_name}_{prefix}' if prefix else self.app_name
             search_string = f'{prefix}_{lead}L_{valid}V*'
@@ -1080,6 +1054,19 @@ class CommandBuilder:
                           f'{self.app_name.upper()}_SKIP_IF_OUTPUT_EXISTS to False '
                           'to process')
         return False
+
+    @staticmethod
+    def _get_valid_and_lead_from_time_info(time_info):
+        valid = '*'
+        lead = '*'
+        if not time_info:
+            return valid, lead
+
+        if time_info['valid'] != '*':
+            valid = time_info['valid'].strftime('%Y%m%d_%H%M%S')
+        if time_info['lead'] != '*':
+            lead = seconds_to_met_time(time_info['lead_seconds'], force_hms=True)
+        return valid, lead
 
     def check_for_externals(self):
         self.check_for_gempak()
