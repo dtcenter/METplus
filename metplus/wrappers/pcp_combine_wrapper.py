@@ -917,8 +917,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
     def get_command(self):
 
-        cmd = (f"{self.app_path} -v {self.c_dict['VERBOSITY']} "
-               f"{' '.join(self.args)} {self.get_output_path()}")
+        cmd = (f"{self.app_path} {' '.join(self.args)}"
+               f" {self.get_output_path()} -v {self.c_dict['VERBOSITY']}")
         return cmd
 
     def set_command_line_arguments(self, data_src, time_info=None):

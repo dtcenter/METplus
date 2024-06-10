@@ -279,16 +279,12 @@ def test_pcp_combine_add_subhourly(metplus_config, get_test_data_dir):
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
     out_dir = wrapper.c_dict.get('FCST_OUTPUT_DIR')
-    expected_cmds = [(f"{app_path} {verbosity} "
-                      "-add "
-                      f"{fcst_input_dir}/20190802_i1800_m0_f1815.nc "
-                      f"{fcst_fmt} "
-                      f"{fcst_input_dir}/20190802_i1800_m0_f1810.nc "
-                      f"{fcst_fmt} "
-                      f"{fcst_input_dir}/20190802_i1800_m0_f1805.nc "
-                      f"{fcst_fmt} "
+    expected_cmds = [(f"{app_path} -add "
+                      f"{fcst_input_dir}/20190802_i1800_m0_f1815.nc {fcst_fmt} "
+                      f"{fcst_input_dir}/20190802_i1800_m0_f1810.nc {fcst_fmt} "
+                      f"{fcst_input_dir}/20190802_i1800_m0_f1805.nc {fcst_fmt} "
                       f'-name "{fcst_output_name}" '
-                      f"{out_dir}/5min_mem00_lag00.nc"),
+                      f"{out_dir}/5min_mem00_lag00.nc {verbosity}"),
                      ]
 
     all_cmds = wrapper.run_all_times()
@@ -343,8 +339,7 @@ def test_pcp_combine_bucket(metplus_config, get_test_data_dir):
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
     out_dir = wrapper.c_dict.get('FCST_OUTPUT_DIR')
-    expected_cmds = [(f"{app_path} {verbosity} "
-                      "-add "
+    expected_cmds = [(f"{app_path} -add "
                       f"{fcst_input_dir}/2012040900_F015.grib "
                       "'name=\"APCP\"; level=\"A03\";' "
                       f"{fcst_input_dir}/2012040900_F012.grib "
@@ -352,7 +347,7 @@ def test_pcp_combine_bucket(metplus_config, get_test_data_dir):
                       f"{fcst_input_dir}/2012040900_F006.grib "
                       "'name=\"APCP\"; level=\"A06\";' "
                       f'-name "{fcst_output_name}" '
-                      f"{out_dir}/2012040915_A015.nc"),
+                      f"{out_dir}/2012040915_A015.nc {verbosity}"),
                      ]
 
     all_cmds = wrapper.run_all_times()
@@ -431,8 +426,7 @@ def test_pcp_combine_derive(metplus_config, get_test_data_dir, config_overrides,
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
     out_dir = wrapper.c_dict.get('FCST_OUTPUT_DIR')
-    expected_cmds = [(f"{app_path} {verbosity} "
-                      f"-derive {stat_list} "
+    expected_cmds = [(f"{app_path} -derive {stat_list} "
                       f"{fcst_input_dir}/2005080700/24.tm00_G212 "
                       f"{fcst_input_dir}/2005080700/21.tm00_G212 "
                       f"{fcst_input_dir}/2005080700/18.tm00_G212 "
@@ -440,7 +434,7 @@ def test_pcp_combine_derive(metplus_config, get_test_data_dir, config_overrides,
                       f"{fcst_input_dir}/2005080700/12.tm00_G212 "
                       f"{fcst_input_dir}/2005080700/09.tm00_G212 "
                       f"{fcst_fmt} {extra_fields}"
-                      f"{out_dir}/2005080700_f24_A18.nc"),
+                      f"{out_dir}/2005080700_f24_A18.nc {verbosity}"),
                      ]
 
     all_cmds = wrapper.run_all_times()
@@ -499,12 +493,11 @@ def test_pcp_combine_loop_custom(metplus_config, get_test_data_dir):
     out_dir = wrapper.c_dict.get('FCST_OUTPUT_DIR')
     expected_cmds = []
     for ens in ens_list:
-        cmd = (f"{app_path} {verbosity} "
-               f"-add "
+        cmd = (f"{app_path} -add "
                f"{fcst_input_dir}/{ens}/2009123112_02400.grib "
                "'name=\"APCP\"; level=\"A24\";' "
                f'-name "{fcst_name}" '
-               f"{out_dir}/{ens}/2009123112_02400.nc")
+               f"{out_dir}/{ens}/2009123112_02400.nc {verbosity}")
         expected_cmds.append(cmd)
 
     all_cmds = wrapper.run_all_times()
@@ -556,14 +549,13 @@ def test_pcp_combine_subtract(metplus_config, get_test_data_dir):
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
     out_dir = wrapper.c_dict.get('FCST_OUTPUT_DIR')
-    expected_cmds = [(f"{app_path} {verbosity} "
-                      f"-subtract "
+    expected_cmds = [(f"{app_path} -subtract "
                       f"{fcst_input_dir}/2005080700/18.tm00_G212 "
                       "'name=\"APCP\"; level=\"A18\";' "
                       f"{fcst_input_dir}/2005080700/15.tm00_G212 "
                       "'name=\"APCP\"; level=\"A15\";' "
                       '-name "APCP" '
-                      f"{out_dir}/2005080718_A003.nc"),
+                      f"{out_dir}/2005080718_A003.nc {verbosity}"),
                      ]
 
     all_cmds = wrapper.run_all_times()
@@ -622,15 +614,14 @@ def test_pcp_combine_sum_subhourly(metplus_config, get_test_data_dir):
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
     out_dir = wrapper.c_dict.get('FCST_OUTPUT_DIR')
-    expected_cmds = [(f"{app_path} {verbosity} "
-                      "-sum "
+    expected_cmds = [(f"{app_path} -sum "
                       "20190802_180000 000500 "
                       "20190802_181500 001500 "
                       f"-pcpdir {fcst_input_dir} "
                       f"-pcprx 20190802_i1800_m0_f* "
                       f"{fcst_fmt} "
                       f"-name \"{fcst_output_name}\" "
-                      f"{out_dir}/5min_mem00_lag00.nc"),
+                      f"{out_dir}/5min_mem00_lag00.nc {verbosity}"),
                      ]
 
     all_cmds = wrapper.run_all_times()
@@ -754,21 +745,21 @@ def test_add_method_single_file(metplus_config):
     in_file = (f"{wrapper.c_dict.get('FCST_INPUT_DIR')}/"
                "20191002_prec_1hracc_75hrfcst_e00.nc")
     expected_cmds = [
-        (f"{app_path} {verbosity} -add "
+        (f"{app_path} -add "
          f"{in_file} 'name=\"rf\"; level=\"(20191003_00,*,*)\";' "
          f"{in_file} 'name=\"rf\"; level=\"(20191002_23,*,*)\";' "
          f"{in_file} 'name=\"rf\"; level=\"(20191002_22,*,*)\";' "
-         f"{out_dir}/2019100300_prec_03hracc_e00.nc"),
-        (f"{app_path} {verbosity} -add "
+         f"{out_dir}/2019100300_prec_03hracc_e00.nc {verbosity}"),
+        (f"{app_path} -add "
          f"{in_file} 'name=\"rf\"; level=\"(20191003_03,*,*)\";' "
          f"{in_file} 'name=\"rf\"; level=\"(20191003_02,*,*)\";' "
          f"{in_file} 'name=\"rf\"; level=\"(20191003_01,*,*)\";' "
-         f"{out_dir}/2019100303_prec_03hracc_e00.nc"),
-        (f"{app_path} {verbosity} -add "
+         f"{out_dir}/2019100303_prec_03hracc_e00.nc {verbosity}"),
+        (f"{app_path} -add "
          f"{in_file} 'name=\"rf\"; level=\"(20191003_06,*,*)\";' "
          f"{in_file} 'name=\"rf\"; level=\"(20191003_05,*,*)\";' "
          f"{in_file} 'name=\"rf\"; level=\"(20191003_04,*,*)\";' "
-         f"{out_dir}/2019100306_prec_03hracc_e00.nc"),
+         f"{out_dir}/2019100306_prec_03hracc_e00.nc {verbosity}"),
     ]
 
     assert len(all_cmds) == len(expected_cmds)
@@ -810,7 +801,6 @@ def test_subtract_method_zero_accum(metplus_config):
     config.set('config', 'FCST_PCP_COMBINE_OUTPUT_ACCUM', '1H')
     config.set('config', 'FCST_PCP_COMBINE_OUTPUT_NAME', input_name)
 
-
     # NETCDF example should use zero accum, GRIB example should not (use -add)
     expected_cmds_dict = {}
     expected_cmds_dict['NETCDF'] = [
@@ -848,7 +838,7 @@ def test_subtract_method_zero_accum(metplus_config):
 
         app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
         verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
-        expected_cmds = [f"{app_path} {verbosity} {item}"
+        expected_cmds = [f"{app_path} {item} {verbosity}"
                          for item in expected_cmds_dict[data_type]]
         assert len(all_cmds) == len(expected_cmds)
 
@@ -907,14 +897,14 @@ def test_add_method_missing_input(metplus_config, get_test_data_dir, input_thres
     if vld_thresh:
         extra_args += f' -vld_thresh {vld_thresh}'
     expected_cmds = [
-        f"{app_path} {verbosity} -add"
+        f"{app_path} -add"
         f" {input_dir}/20160904/file.2016090415.01h {field_info}"
         f" {input_dir}/20160904/file.2016090414.01h {field_info}"
         f" {input_dir}/20160904/file.2016090413.01h {field_info}"
         f" {input_dir}/20160904/file.2016090412.01h {field_info}"
         f" MISSING{input_dir}/20160904/file.2016090411.01h {field_info}"
         f" MISSING{input_dir}/20160904/file.2016090410.01h {field_info}"
-        f"{extra_args} {out_dir}/20160904/outfile.2016090415_A06h"
+        f"{extra_args} {out_dir}/20160904/outfile.2016090415_A06h {verbosity}"
     ]
     assert len(all_cmds) == len(expected_cmds)
 
