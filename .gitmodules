@@ -1,15 +1,20 @@
 [submodule "components/MET"]
 	path = components/MET
 	url = ../MET
+	branch = develop
 [submodule "components/METplotpy"]
 	path = components/METplotpy
 	url = ../METplotpy
+	branch = develop
 [submodule "components/METcalcpy"]
 	path = components/METcalcpy
 	url = ../METplotpy
+	branch = develop
 [submodule "components/METdataio"]
 	path = components/METdataio
 	url = ../METdataio
+	branch = develop
 [submodule "components/METviewer"]
 	path = components/METviewer
 	url = ../METviewer
+	branch = develop
