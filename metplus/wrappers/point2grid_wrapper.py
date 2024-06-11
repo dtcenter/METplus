@@ -14,7 +14,7 @@ import os
 
 from ..util import do_string_sub
 from ..util import remove_quotes
-from . import LoopTimesWrapper
+from . import ReformatPointWrapper
 
 '''!@namespace Point2GridWrapper
 @brief Wraps the Point2Grid tool to reformat ascii format to NetCDF
@@ -22,7 +22,7 @@ from . import LoopTimesWrapper
 '''
 
 
-class Point2GridWrapper(LoopTimesWrapper):
+class Point2GridWrapper(ReformatPointWrapper):
     RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
     RUNTIME_FREQ_SUPPORTED = ['RUN_ONCE_FOR_EACH']
 
@@ -39,22 +39,6 @@ class Point2GridWrapper(LoopTimesWrapper):
                                                  c_dict['VERBOSITY'])
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False
-
-        # input and output files
-        c_dict['OBS_INPUT_DIR'] = self.config.getdir('POINT2GRID_INPUT_DIR',
-                                                     '')
-
-        c_dict['OBS_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
-                                                          'POINT2GRID_INPUT_TEMPLATE')
-
-        if not c_dict['OBS_INPUT_TEMPLATE']:
-            self.log_error("POINT2GRID_INPUT_TEMPLATE required to run")
-
-        c_dict['OUTPUT_DIR'] = self.config.getdir('POINT2GRID_OUTPUT_DIR',
-                                                  '')
-
-        c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
-                                                       'POINT2GRID_OUTPUT_TEMPLATE')
 
         # handle window variables [POINT2GRID_]FILE_WINDOW_[BEGIN/END]
         c_dict['OBS_FILE_WINDOW_BEGIN'] = \
@@ -109,61 +93,27 @@ class Point2GridWrapper(LoopTimesWrapper):
         c_dict['VLD_THRESH'] = self.config.getstr('config',
                                               'POINT2GRID_VLD_THRESH',
                                               '')
-        # skip RuntimeFreq input file logic - remove once integrated
-        c_dict['FIND_FILES'] = False
+
         return c_dict
-
-    def get_command(self):
-        cmd = self.app_path
-
-        # don't run if no input or output files were found
-        if not self.infiles:
-            self.log_error("No input files were found")
-            return
-
-        if not self.outfile:
-            self.log_error("No output file specified")
-            return
-
-        # add input files
-        for infile in self.infiles:
-            if infile.startswith('PYTHON'):
-                infile = f"'{infile}'"
-            cmd += ' ' + infile
-
-        # add grid name
-        grid = remove_quotes(self.c_dict['GRID'])
-        cmd += f' "{grid}"'
-
-        # add output path
-        out_path = self.get_output_path()
-        cmd += ' ' + out_path
-
-        # add arguments
-        cmd += ' ' + ' '.join(self.args)
-
-        # add verbosity
-        cmd += ' -v ' + self.c_dict['VERBOSITY']
-        return cmd
 
     def find_input_files(self, time_info):
         """!Find input file and mask file and add them to the list of input files.
             Args:
                 @param time_info time dictionary for current run time
-                @returns List of input files found or None if either file was not found
+                @returns time_info if all files were found, None otherwise
         """
-        # get input file
-        # calling find_obs because we set OBS_ variables in c_dict for the input data
-        input_path = self.find_obs(time_info)
-        if input_path is None:
-            return False
+        offset_time_info = super().find_input_files(time_info)
+        if not offset_time_info:
+            return None
 
-        self.infiles.append(input_path)
+        # get grid from template and add quotes if needed
+        grid = do_string_sub(self.c_dict['GRID_TEMPLATE'], **offset_time_info)
+        grid = remove_quotes(grid)
+        if len(grid.split()) > 1:
+            grid = f'"{grid}"'
+        self.infiles.append(grid)
 
-        self.c_dict['GRID'] = do_string_sub(self.c_dict['GRID_TEMPLATE'],
-                                            **time_info)
-
-        return True
+        return offset_time_info
 
     def set_command_line_arguments(self, time_info):
         """!Set command line arguments from c_dict

@@ -4587,7 +4587,8 @@ METplus Configuration
 | :term:`FCST_MODE_IS_PROB`
 | :term:`FCST_MODE_PROB_IN_GRIB_PDS`
 | :term:`MODE_MULTIVAR_LOGIC`
-| :term:`MODE_MULTIVAR_INTENSITY_FLAG`
+| :term:`MODE_MULTIVAR_INTENSITY_COMPARE_FCST`
+| :term:`MODE_MULTIVAR_INTENSITY_COMPARE_OBS`
 | :term:`FCST_MODE_VAR<n>_NAME`
 | :term:`FCST_MODE_VAR<n>_LEVELS`
 | :term:`FCST_MODE_VAR<n>_THRESH`
@@ -4738,8 +4739,8 @@ ${METPLUS_MULTIVAR_LOGIC}
    * - :term:`MODE_MULTIVAR_LOGIC`
      - multivar_logic
 
-${METPLUS_MULTIVAR_INTENSITY_FLAG}
-""""""""""""""""""""""""""""""""""
+${METPLUS_MULTIVAR_INTENSITY_COMPARE_FCST}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. list-table::
    :widths: 5 5
@@ -4747,8 +4748,20 @@ ${METPLUS_MULTIVAR_INTENSITY_FLAG}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`MODE_MULTIVAR_INTENSITY_FLAG`
-     - multivar_intensity_flag
+   * - :term:`MODE_MULTIVAR_INTENSITY_COMPARE_FCST`
+     - multivar_intensity_compare_fcst
+
+${METPLUS_MULTIVAR_INTENSITY_COMPARE_OBS}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_MULTIVAR_INTENSITY_COMPARE_OBS`
+     - multivar_intensity_compare_obs
 
 ${METPLUS_FCST_FIELD}
 """""""""""""""""""""
@@ -10356,7 +10369,6 @@ METplus Configuration
 | :term:`TC_RMW_REGRID_CENSOR_VAL`
 | :term:`TC_RMW_N_RANGE`
 | :term:`TC_RMW_N_AZIMUTH`
-| :term:`TC_RMW_MAX_RANGE_KM`
 | :term:`TC_RMW_DELTA_RANGE_KM`
 | :term:`TC_RMW_SCALE`
 | :term:`TC_RMW_STORM_ID`
@@ -10615,18 +10627,6 @@ ${METPLUS_N_AZIMUTH}
      - MET Config File
    * - :term:`TC_RMW_N_AZIMUTH`
      - n_azimuth
-
-${METPLUS_MAX_RANGE_KM}
-"""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`TC_RMW_MAX_RANGE_KM`
-     - max_range_km
 
 ${METPLUS_DELTA_RANGE_KM}
 """""""""""""""""""""""""

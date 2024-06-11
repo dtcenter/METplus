@@ -13,7 +13,7 @@ Condition codes: 0 for success, 1 for failure
 import os
 
 from ..util import do_string_sub, MISSING_DATA_VALUE
-from . import RuntimeFreqWrapper
+from . import ReformatPointWrapper
 
 '''!@namespace MADIS2NCWrapper
 @brief Wraps the madis2nc tool to reformat MADIS format to NetCDF
@@ -21,7 +21,7 @@ from . import RuntimeFreqWrapper
 '''
 
 
-class MADIS2NCWrapper(RuntimeFreqWrapper):
+class MADIS2NCWrapper(ReformatPointWrapper):
 
     RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
     RUNTIME_FREQ_SUPPORTED = 'ALL'
@@ -44,16 +44,6 @@ class MADIS2NCWrapper(RuntimeFreqWrapper):
 
         # file I/O
         c_dict['ALLOW_MULTIPLE_FILES'] = True
-        self.get_input_templates(c_dict, {
-            'OBS': {'prefix': 'MADIS2NC', 'required': True},
-        })
-
-        c_dict['OUTPUT_DIR'] = self.config.getdir('MADIS2NC_OUTPUT_DIR', '')
-        c_dict['OUTPUT_TEMPLATE'] = (
-            self.config.getraw('config', 'MADIS2NC_OUTPUT_TEMPLATE')
-        )
-        if not c_dict['OUTPUT_TEMPLATE']:
-            self.log_error('MADIS2NC_OUTPUT_TEMPLATE must be set')
 
         # config file settings
         c_dict['CONFIG_FILE'] = self.get_config_file('Madis2NcConfig_wrapped')
@@ -77,32 +67,6 @@ class MADIS2NCWrapper(RuntimeFreqWrapper):
         c_dict['MASK_SID'] = self.config.getraw('config', 'MADIS2NC_MASK_SID')
 
         return c_dict
-
-    def get_command(self):
-        """!Build command to run madis2nc
-
-        @returns str: madis2nc command
-        """
-        return (f"{self.app_path} -v {self.c_dict['VERBOSITY']}"
-                f" {' '.join(self.infiles)} {self.get_output_path()}"
-                f" {' '.join(self.args)}")
-
-    def find_input_files(self, time_info):
-        """!Get list of input files to pass to command. Sets self.infiles.
-
-        @param time_info dictionary containing time information
-        @returns bool: True if files were found, False otherwise
-        """
-        if not self.c_dict.get('ALL_FILES'):
-            return False
-
-        input_files = self.c_dict['ALL_FILES'][0].get('OBS', [])
-        if not input_files:
-            return False
-
-        self.logger.debug(f"Adding input: {' and '.join(input_files)}")
-        self.infiles.extend(input_files)
-        return True
 
     def set_command_line_arguments(self, time_info):
         """!Read self.c_dict and set command line arguments in self.args.

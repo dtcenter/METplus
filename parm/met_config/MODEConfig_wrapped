@@ -54,8 +54,11 @@ ${METPLUS_QUILT}
 //multivar_logic =
 ${METPLUS_MULTIVAR_LOGIC}
 
-//multivar_intensity_flag =
-${METPLUS_MULTIVAR_INTENSITY_FLAG}
+//multivar_intensity_compare_fcst =
+${METPLUS_MULTIVAR_INTENSITY_COMPARE_FCST}
+
+//multivar_intensity_compare_obs =
+${METPLUS_MULTIVAR_INTENSITY_COMPARE_OBS}
 
 //
 // Forecast and observation fields to be verified
