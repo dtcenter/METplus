@@ -82,12 +82,6 @@ for name,group in groups:
     print("FOUND %04d TMP OBS" % (ntmp))
     print("FOUND %04d DEW OBS" % (ndew))
     hi = np.append(hi,-9999.)
-#  elif np.max(prsarr.m) < 950.0:
-#    print(np.max(prsarr.m))
-#    print("")
-#    print("WARNING! LOWEST PRESSURE IS ABOVE 950 hPa!")
-#    print("UNABLE TO COMPUTE HI FOR SID: %s" % (name))
-#    hi = np.append(hi,-9999.)
   else:
     # Append the HI value
     thishi = land_surface.calc_humidity_index(prsarr,tmparr,dewarr,interp=False)
