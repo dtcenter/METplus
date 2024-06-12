@@ -13,7 +13,7 @@ Condition codes: 0 for success, 1 for failure
 import os
 
 from ..util import time_util
-from ..util import log_runtime_banner, get_lead_sequence
+from ..util import log_runtime_banner, get_lead_sequence, get_lead_sequence_groups
 from ..util import skip_time, getlist, get_start_and_end_times, get_time_prefix
 from ..util import time_generator, add_to_time_input
 from ..util import sub_var_list, add_field_info_to_time_info
@@ -272,15 +272,31 @@ class RuntimeFreqWrapper(CommandBuilder):
             time_input['lead'] = '*'
             time_info = time_util.ti_calculate(time_input)
 
-            self.c_dict['ALL_FILES'] = self.get_all_files_from_leads(time_info)
-            if not self._check_input_files():
-                continue
+            lead_groups = self._get_leads_as_group(time_info)
+            for label, lead_seq in lead_groups.items():
+                time_info['label'] = label
+                self.c_dict['ALL_FILES'] = (
+                    self.get_all_files_from_leads(time_info, lead_seq)
+                )
+                if not self._check_input_files():
+                    continue
 
-            self.clear()
-            if not self.run_at_time_once(time_info):
-                success = False
+                self.clear()
+                if not self.run_at_time_once(time_info):
+                    success = False
 
         return success
+
+    def _get_leads_as_group(self, time_input):
+        """!"""
+        lead_groups = get_lead_sequence_groups(self.config)
+        if lead_groups:
+            return lead_groups
+
+        use_wildcard = self.c_dict.get('WILDCARD_LEAD_IF_EMPTY')
+        lead_seq = get_lead_sequence(self.config, time_input,
+                                     wildcard_if_empty=use_wildcard)
+        return {'': lead_seq}
 
     def run_once_per_lead(self, custom):
         self.logger.debug("Running once for forecast lead time")
@@ -421,7 +437,11 @@ class RuntimeFreqWrapper(CommandBuilder):
                               instance=self.instance,
                               custom=custom)
 
-            lead_files = self.get_all_files_from_leads(time_input)
+            use_wildcard = self.c_dict.get('WILDCARD_LEAD_IF_EMPTY')
+            lead_seq = get_lead_sequence(self.config,
+                                         time_input,
+                                         wildcard_if_empty=use_wildcard)
+            lead_files = self.get_all_files_from_leads(time_input, lead_seq)
             all_files.extend(lead_files)
 
         return all_files
@@ -440,16 +460,12 @@ class RuntimeFreqWrapper(CommandBuilder):
             return False
         return True
 
-    def get_all_files_from_leads(self, time_input):
+    def get_all_files_from_leads(self, time_input, lead_seq):
         if not self.c_dict.get('FIND_FILES', True):
             return True
 
         lead_files = []
         # loop over all forecast leads
-        wildcard_if_empty = self.c_dict.get('WILDCARD_LEAD_IF_EMPTY', False)
-        lead_seq = get_lead_sequence(self.config,
-                                     time_input,
-                                     wildcard_if_empty=wildcard_if_empty)
         for lead in lead_seq:
             current_time_input = time_input.copy()
             current_time_input['lead'] = lead
