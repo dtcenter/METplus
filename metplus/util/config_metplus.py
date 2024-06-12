@@ -415,7 +415,7 @@ def replace_config_from_section(config, section, required=True):
         # if not required, return input config object
         return config
 
-    new_config = METplusConfig()
+    new_config = METplusConfig(run_id=config.run_id)
 
     # copy over all key/values from sections
     for section_to_copy in ['config', 'user_env_vars']:
@@ -449,9 +449,11 @@ class METplusConfig(ProdConfig):
         'regex_pattern',
     )
 
-    def __init__(self, conf=None):
+    def __init__(self, conf=None, run_id=None):
         """!Creates a new METplusConfig
         @param conf The configuration file
+        @param run_id 8 character identifier for the run or None if ID should
+        be created. Defaults to None.
         """
         # set interpolation to None so you can supply filename template
         # that contain % to config.set
@@ -460,7 +462,7 @@ class METplusConfig(ProdConfig):
                             interpolation=None) if (conf is None) else conf
         super().__init__(conf)
         self._cycle = None
-        self.run_id = str(uuid.uuid4())[0:8]
+        self.run_id = run_id if run_id else str(uuid.uuid4())[0:8]
         self._logger = logging.getLogger(f'metplus.{self.run_id}')
         # config.logger is called in wrappers, so set this name
         # so the code doesn't break
