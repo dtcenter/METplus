@@ -32,12 +32,13 @@ ctp = np.array([])
 # Each site will have the MET 11-column data.
 for name,group in groups:
 
-  print("PROCESSING FOR SITE: %s" % (name))
+  print("")
+  print("PROCESSING SITE: %s" % (name))
   
   # First, make sure there is only one valid time
   timegrp = group.groupby('vld')
   if timegrp.ngroups>1:
-    print("WARNING! FOUND MULTIPLE SOUNDINGS FOR THIS SITE.")
+    print("INFO: FOUND MULTIPLE SOUNDINGS FOR THIS SITE.")
     print("USING THE FIRST")
     timegrp_name = [sg_name for sg_name,sg_df in timegrp]
     prof = timegrp.get_group(timegrp_name[0])
@@ -54,7 +55,8 @@ for name,group in groups:
 
   # Ensure the temperature subset has data
   if len(sub)==0:
-    print("NO DATA!")
+    print("ERROR! NO TMP DATA.")
+    print("UNABLE TO COMPUTE CTP FOR SID: %s" % (name))
     ctp = np.append(ctp,-9999.)
     continue
 
@@ -66,8 +68,7 @@ for name,group in groups:
 
   # The pressures must exceed 300 hPa above the lowest in the sounding
   if max(prssub.m)<= min(prssub.m+300.0):
-    print("")
-    print("WARNING! SOUNDING TOP PRESSURE DOES NOT EXCEED 300 hPa ABOVE THE LOWEST PRESSURE.")
+    print("ERROR! SOUNDING TOP PRESSURE DOES NOT EXCEED 300 hPa ABOVE THE LOWEST PRESSURE.")
     print("UNABLE TO COMPUTE CTP FOR SID: %s" % (name))
     ctp = np.append(ctp,-9999.)
   else:
