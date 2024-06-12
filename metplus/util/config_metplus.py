@@ -98,12 +98,16 @@ def setup(args, base_confs=None):
     if base_confs is None:
         base_confs = _get_default_config_list()
 
+    if base_confs is None:
+        return None
+
     override_list = _parse_launch_args(args)
+    if override_list is None:
+        return None
 
     # add default config files to override list
     override_list = base_confs + override_list
     config = launch(override_list)
-
     return config
 
 
@@ -132,7 +136,7 @@ def _get_default_config_list(parm_base=None):
 
     if not default_config_list:
         print(f"FATAL: No default config files found in {conf_dir}")
-        sys.exit(1)
+        return None
 
     return default_config_list
 
@@ -195,9 +199,9 @@ def _parse_launch_args(args):
         # add file path to override list
         override_list.append(filepath)
 
-    # exit if anything went wrong reading config arguments
+    # return None if anything went wrong reading config arguments
     if bad:
-        sys.exit(2)
+        return None
 
     return override_list
 
@@ -249,7 +253,8 @@ def launch(config_list):
     mkdir_p(config.getdir('OUTPUT_BASE'))
 
     # set and log variables to the config object
-    get_logger(config)
+    if not get_logger(config):
+        return None
 
     final_conf = config.getstr('config', 'METPLUS_CONF')
 
@@ -337,14 +342,14 @@ def get_logger(config):
         log_level_val = logging.getLevelName(log_level)
     except ValueError:
         print(f'ERROR: Invalid value set for LOG_LEVEL: {log_level}')
-        sys.exit(1)
+        return None
 
     try:
         log_level_terminal_val = logging.getLevelName(log_level_terminal)
     except ValueError:
         print('ERROR: Invalid value set for LOG_LEVEL_TERMINAL:'
               f' {log_level_terminal}')
-        sys.exit(1)
+        return None
 
     # create log formatter from config settings
     formatter = METplusLogFormatter(config)
