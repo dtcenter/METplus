@@ -8,8 +8,6 @@ A Python class that generates plots of extra tropical cyclone forecast data,
 import os
 import time
 import datetime
-import re
-import sys
 from collections import namedtuple
 
 
