@@ -4408,11 +4408,6 @@ METplus Configuration Glossary
 
      | *Used by:*  TCRMW
 
-   TC_RMW_MAX_RANGE_KM
-     Specify the value for 'max_range_km' in the MET configuration file for TCRMW.
-
-     | *Used by:*  TCRMW
-
    TC_RMW_DELTA_RANGE_KM
      Specify the value for 'delta_range_km' in the MET configuration file for TCRMW.
 
@@ -5188,11 +5183,6 @@ METplus Configuration Glossary
 
      | *Used by:*  TCStat
 
-   USER_SCRIPT_RUNTIME_FREQ
-     Frequency to run the user-defined script. See :ref:`Runtime_Freq` for more information.
-
-     | *Used by:*  UserScript
-
    USER_SCRIPT_COMMAND
      User-defined command to run. Filename template tags can be used to modify
      the command for each execution. See :term:`USER_SCRIPT_RUNTIME_FREQ` for
@@ -5207,17 +5197,6 @@ METplus Configuration Glossary
 
    USER_SCRIPT_SKIP_TIMES
      .. warning:: **DEPRECATED:** Please use :term:`USER_SCRIPT_SKIP_VALID_TIMES`.
-
-   GRID_DIAG_RUNTIME_FREQ
-     Frequency to run Grid-Diag. See :ref:`Runtime_Freq` for more information.
-
-     | *Used by:*  GridDiag
-
-   SERIES_ANALYSIS_RUNTIME_FREQ
-     Frequency to run SeriesAnalysis. See :ref:`Runtime_Freq` for more information.
-
-     | *Used by:*  SeriesAnalysis
-
 
    SERIES_ANALYSIS_RUN_ONCE_PER_STORM_ID
      If True, run SeriesAnalysis once for each storm ID found in the .tcst (TCStat output) file specified with :term:`SERIES_ANALYSIS_TC_STAT_INPUT_DIR` and :term:`SERIES_ANALYSIS_TC_STAT_INPUT_TEMPLATE`.
@@ -6117,11 +6096,6 @@ METplus Configuration Glossary
      Set the file_type entry of the obs dictionary in the MET config file for SeriesAnalysis.
 
      | *Used by:*  SeriesAnalysis
-
-   MET_DB_LOAD_RUNTIME_FREQ
-     Frequency to run Grid-Diag. See :ref:`Runtime_Freq` for more information.
-
-     | *Used by:*  GridDiag
 
    MET_DATA_DB_DIR
      Set this the location of the dtcenter/METdataio repository.
@@ -9692,11 +9666,6 @@ METplus Configuration Glossary
 
      | *Used by:*  PlotPointObs
 
-   PLOT_POINT_OBS_RUNTIME_FREQ
-     Frequency to run PlotPointObs. See :ref:`Runtime_Freq` for more information.
-
-     | *Used by:*  PlotPointObs
-
    PLOT_POINT_OBS_MET_CONFIG_OVERRIDES
      Override any variables in the MET configuration file that are not
      supported by the wrapper. This should be set to the full variable name
@@ -10420,7 +10389,15 @@ METplus Configuration Glossary
      | *Used by:* TCDiag
 
    MODE_MULTIVAR_INTENSITY_FLAG
-     Specify the value for 'multivar_intensity_flag' in the MET configuration file for MODE.
+     .. warning:: **DEPRECATED:** Please use :term:`MODE_MULTIVAR_INTENSITY_COMPARE_FCST` and :term:`MODE_MULTIVAR_INTENSITY_COMPARE_OBS` instead.
+
+   MODE_MULTIVAR_INTENSITY_COMPARE_FCST
+     Specify the value for 'multivar_intensity_compare_fcst' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_MULTIVAR_INTENSITY_COMPARE_OBS
+     Specify the value for 'multivar_intensity_compare_obs' in the MET configuration file for MODE.
 
      | *Used by:* MODE
 
@@ -11921,3 +11898,84 @@ METplus Configuration Glossary
      Specify the value for 'time_offset_warning' in the MET configuration file for WaveletStat.
 
      | *Used by:* WaveletStat
+
+   ASCII2NC_VALID_BEG
+     Specify the value for the command line argument '-valid_beg' for ASCII2NC.
+
+     | *Used by:* ASCII2NC
+
+   ASCII2NC_VALID_END
+     Specify the value for the command line argument '-valid_end' for ASCII2NC.
+
+     | *Used by:* ASCII2NC
+
+   ASCII2NC_RUNTIME_FREQ
+     Frequency to run ASCII2NC. See :ref:`Runtime_Freq` for more information.
+     Defaults to RUN_ONCE_FOR_EACH. All runtime frequencies are supported.
+
+     | *Used by:*  ASCII2NC
+
+   GRID_DIAG_RUNTIME_FREQ
+     Frequency to run Grid-Diag. See :ref:`Runtime_Freq` for more information.
+
+     | *Used by:*  GridDiag
+
+   IODA2NC_RUNTIME_FREQ
+     Frequency to run IODA2NC. See :ref:`Runtime_Freq` for more information.
+     Defaults to RUN_ONCE_FOR_EACH. All runtime frequencies are supported.
+
+     | *Used by:*  IODA2NC
+
+   MADIS2NC_RUNTIME_FREQ
+     Frequency to run MADIS2NC. See :ref:`Runtime_Freq` for more information.
+     Defaults to RUN_ONCE_FOR_EACH. All runtime frequencies are supported.
+
+     | *Used by:*  MADIS2NC
+
+   MET_DB_LOAD_RUNTIME_FREQ
+     Frequency to run Grid-Diag. See :ref:`Runtime_Freq` for more information.
+     Defaults to RUN_ONCE. All runtime frequencies are supported.
+
+     | *Used by:*  GridDiag
+
+   MTD_RUNTIME_FREQ
+     Frequency to run MTD. See :ref:`Runtime_Freq` for more information.
+     Defaults to RUN_ONCE_PER_INIT_OR_VALID. All runtime frequencies are supported.
+
+     | *Used by:*  MTD
+
+   PB2NC_RUNTIME_FREQ
+     Frequency to run PB2NC. See :ref:`Runtime_Freq` for more information.
+     Defaults to RUN_ONCE_FOR_EACH. All runtime frequencies are supported.
+
+     | *Used by:*  PB2NC
+
+   PLOT_POINT_OBS_RUNTIME_FREQ
+     Frequency to run PlotPointObs. See :ref:`Runtime_Freq` for more information.
+     Defaults to RUN_ONCE_FOR_EACH. All runtime frequencies are supported.
+
+     | *Used by:*  PlotPointObs
+
+   SERIES_ANALYSIS_RUNTIME_FREQ
+     Frequency to run SeriesAnalysis. See :ref:`Runtime_Freq` for more information.
+     Defaults to RUN_ONCE_PER_INIT_OR_VALID. All runtime frequencies are supported.
+
+     | *Used by:*  SeriesAnalysis
+
+   STAT_ANALYSIS_RUNTIME_FREQ
+     Frequency to run STATAnalysis. See :ref:`Runtime_Freq` for more information.
+     Defaults to RUN_ONCE. All runtime frequencies are supported.
+
+     | *Used by:*  STATAnalysis
+
+   TC_PAIRS_RUNTIME_FREQ
+     Frequency to run TCPairs. See :ref:`Runtime_Freq` for more information.
+     Defaults to RUN_ONCE. All runtime frequencies are supported.
+
+     | *Used by:*  TCPairs
+
+   USER_SCRIPT_RUNTIME_FREQ
+     Frequency to run the user-defined script. See :ref:`Runtime_Freq` for more information.
+     There is no default, so a value must be specified. All runtime frequencies are supported.
+
+     | *Used by:*  UserScript
