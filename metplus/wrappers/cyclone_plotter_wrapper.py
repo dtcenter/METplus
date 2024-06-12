@@ -607,7 +607,7 @@ class CyclonePlotterWrapper(CommandBuilder):
         masked = sanitized_by_region_df[sanitized_by_region_df['INSIDE'] == True]
         masked.reset_index(drop=True,inplace=True)
 
-        if not masked:
+        if len(masked) == 0:
             self.log_error("No data in region specified, please check your lon and lat values in the config file.")
             return None
 
