@@ -28,7 +28,8 @@ point_data = point_data.drop(['site_digit'],axis=1)
 # Array to hold the CTP values for each station
 ctp = np.array([])
 
-# Each group should have temperature, dewpoint, and geopotential height. Pressure is a separate column already.
+# Process each group, which is defined as a single site
+# Each site will have the MET 11-column data.
 for name,group in groups:
 
   print("PROCESSING FOR SITE: %s" % (name))
@@ -47,50 +48,21 @@ for name,group in groups:
   if name not in point_data['sid'].values.tolist():
     continue
 
-  # We need to build in some sanity checking here. The 11-column data cannot
-  # be gaurunteed to have each var at each pressure level. So we need only the
-  # levels where the variables we are interested in occur.
-  # But really CTP just needs temperature, which the 11-column data should have.
-
   # In each group here, there are rows for each variable at each pressure level.
-  # Thus, we can subset based on TMP and just use the pressure for TMP.
+  # Thus, we can subset based on TMP and just use the pressure data for TMP.
   sub = prof[prof['var']=='TMP']
 
-  # Filter the data where hgt is not -9999.
-  #sub = sub[sub['hgt']!=-9999.]
+  # Ensure the temperature subset has data
   if len(sub)==0:
     print("NO DATA!")
     ctp = np.append(ctp,-9999.)
     continue
-
-  # TODO: REMOVE DEBUG
-  print("")
-  print("11 COLUMN INFO TEMPERATURE ONLY")
-  print("")
-  print(sub[['sid','lvl','hgt','obs','vld']])
 
   # Subset out the data for this site into individual arrays
   # and add units using MetPy
   tmpsub = sub['obs'].astype('float').values*units('degK')
   prssub = sub['lvl'].astype('float').values*units('hPa')
   qcsub = sub['qc'].astype('int').values
-
-  # Do some QC of the data here. We should probably check the min/max pressure?
-  # Maybe the number of obs?
-  ##print("NUMBER TEMPERATURE: %04d" % (len(tmpsub)))
-  ##print("NUMBER PRESSURE: %04d" % (len(prssub)))
-  ##print("MIN PRESSURE: %4.1f" % (min(prssub.m)))
-  ##print("MAX PRESSURE: %4.1f" % (max(prssub.m)))
-  # For now, let's just eliminate any sites with any "-9999." values in either:
-  # 1. hgt, 2. lvl, or 3. obs
-  #hgtmiss = sub[sub['hgt'].astype('float')==-9999.]
-  #prsmiss = sub[sub['lvl'].astype('float')==-9999.]
-  #obsmiss = sub[sub['obs'].astype('float')==-9999.]
-  #if any(hgtmiss+prsmiss+obsmiss):
-  #  ctp = np.append(ctp,-9999.)
-  #else:
-  # # Append the CTP value
-  #  ctp = np.append(ctp,land_surface.calc_ctp(prssub,tmpsub).m)
 
   # The pressures must exceed 300 hPa above the lowest in the sounding
   if max(prssub.m)<= min(prssub.m+300.0):
