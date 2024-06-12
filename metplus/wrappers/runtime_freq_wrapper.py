@@ -95,21 +95,20 @@ class RuntimeFreqWrapper(CommandBuilder):
 
         # if list of supported frequencies are set by wrapper,
         # warn and use default if frequency is not supported
-        if hasattr(self, 'RUNTIME_FREQ_SUPPORTED'):
-            if self.RUNTIME_FREQ_SUPPORTED == 'ALL':
-                return
+        if (not hasattr(self, 'RUNTIME_FREQ_SUPPORTED') or
+                self.RUNTIME_FREQ_SUPPORTED == 'ALL'):
+            return
 
-            if c_dict['RUNTIME_FREQ'] not in self.RUNTIME_FREQ_SUPPORTED:
-                err_msg = (f"{self.app_name.upper()}_RUNTIME_FREQ="
-                           f"{c_dict['RUNTIME_FREQ']} not supported.")
-                if hasattr(self, 'RUNTIME_FREQ_DEFAULT'):
-                    self.logger.warning(
-                        f"{err_msg} Using {self.RUNTIME_FREQ_DEFAULT}"
-                    )
-                    c_dict['RUNTIME_FREQ'] = self.RUNTIME_FREQ_DEFAULT
-                else:
-                    self.log_error(err_msg)
-                    return
+        if c_dict['RUNTIME_FREQ'] not in self.RUNTIME_FREQ_SUPPORTED:
+            err_msg = (f"{self.app_name.upper()}_RUNTIME_FREQ="
+                       f"{c_dict['RUNTIME_FREQ']} not supported.")
+            if hasattr(self, 'RUNTIME_FREQ_DEFAULT'):
+                self.logger.warning(
+                    f"{err_msg} Using {self.RUNTIME_FREQ_DEFAULT}"
+                )
+                c_dict['RUNTIME_FREQ'] = self.RUNTIME_FREQ_DEFAULT
+            else:
+                self.log_error(err_msg)
 
     def get_input_templates(self, c_dict, input_info=None):
         """!Read input templates from config.
@@ -252,7 +251,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         return self.run_at_time_once(time_info)
 
     def run_once_per_init_or_valid(self, custom):
-        self.logger.debug(f"Running once for each init/valid time")
+        self.logger.debug("Running once for each init/valid time")
 
         success = True
         for time_input in time_generator(self.config):
@@ -317,7 +316,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         return success
 
     def run_once_for_each(self, custom):
-        self.logger.debug(f"Running once for each init/valid and lead time")
+        self.logger.debug("Running once for each init/valid and lead time")
 
         success = True
         for time_input in time_generator(self.config):
@@ -508,10 +507,9 @@ class RuntimeFreqWrapper(CommandBuilder):
              @returns dictionary containing time_info dict and any relevant
              files with a key representing a description of that file
         """
+        var_list = [None]
         if self.c_dict.get('ONCE_PER_FIELD', False):
             var_list = sub_var_list(self.c_dict.get('VAR_LIST_TEMP'), time_info)
-        else:
-            var_list = [None]
 
         # create a dictionary for each field (var) with time_info and files
         file_dict_list = []
@@ -661,11 +659,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         if not self.c_dict.get('ALL_FILES') or self.c_dict.get('ALL_FILES') is True:
             return all_input_files
 
-        if leads is None:
-            lead_loop = [None]
-        else:
-            lead_loop = leads
-
+        lead_loop = [None] if leads is None else leads
         for file_dict in self.c_dict['ALL_FILES']:
             for lead in lead_loop:
                 if lead is not None:
