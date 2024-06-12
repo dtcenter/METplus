@@ -12,7 +12,7 @@ from .config_util import log_runtime_banner
 def time_generator(config):
     """! Generator used to read METplusConfig variables for time looping
 
-    @param METplusConfig object to read
+    @param config METplusConfig object to read
     @returns None if not enough information is available on config.
      Yields the next run time dictionary or None if something went wrong
     """
@@ -414,16 +414,16 @@ def get_lead_sequence(config, input_dict=None, wildcard_if_empty=False):
             return lead_seq
 
         out_leads = _handle_lead_seq(config,
-                                    lead_seq,
-                                    lead_min,
-                                    lead_max)
+                                     lead_seq,
+                                     lead_min,
+                                     lead_max)
 
     # use INIT_SEQ to build lead list based on the valid time
     elif init_seq:
         out_leads = _handle_init_seq(init_seq,
-                                    input_dict,
-                                    lead_min,
-                                    lead_max)
+                                     input_dict,
+                                     lead_min,
+                                     lead_max)
     elif lead_groups:
         out_leads = _handle_lead_groups(lead_groups)
 
@@ -434,6 +434,7 @@ def get_lead_sequence(config, input_dict=None, wildcard_if_empty=False):
         return [0]
 
     return out_leads
+
 
 def _are_lead_configs_ok(lead_seq, init_seq, lead_groups,
                          config, input_dict, no_max):
@@ -476,8 +477,9 @@ def _are_lead_configs_ok(lead_seq, init_seq, lead_groups,
 
     return True
 
+
 def _get_lead_min_max(config):
-    # remove any items that are outside of the range specified
+    # remove any items that are outside the range specified
     #  by LEAD_SEQ_MIN and LEAD_SEQ_MAX
     # convert min and max to relativedelta objects, then use current time
     # to compare them to each forecast lead
@@ -490,6 +492,7 @@ def _get_lead_min_max(config):
     lead_min = get_relativedelta(lead_min_str, 'H')
     lead_max = get_relativedelta(lead_max_str, 'H')
     return lead_min, lead_max, no_max
+
 
 def _handle_lead_seq(config, lead_strings, lead_min=None, lead_max=None):
     out_leads = []
@@ -511,10 +514,11 @@ def _handle_lead_seq(config, lead_strings, lead_min=None, lead_max=None):
     lead_max_approx = now_time + lead_max
     for lead in leads:
         lead_approx = now_time + lead
-        if lead_approx >= lead_min_approx and lead_approx <= lead_max_approx:
+        if lead_min_approx <= lead_approx <= lead_max_approx:
             out_leads.append(lead)
 
     return out_leads
+
 
 def _handle_init_seq(init_seq, input_dict, lead_min, lead_max):
     out_leads = []
@@ -533,14 +537,14 @@ def _handle_init_seq(init_seq, input_dict, lead_min, lead_max):
                 out_leads.append(get_relativedelta(current_lead, default_unit='H'))
             current_lead += 24
 
-    out_leads = sorted(out_leads, key=lambda
-        rd: ti_get_seconds_from_relativedelta(rd, input_dict['valid']))
+    out_leads = sorted(out_leads, key=lambda rd: ti_get_seconds_from_relativedelta(rd, input_dict['valid']))
     return out_leads
+
 
 def _handle_lead_groups(lead_groups):
     """! Read groups of forecast leads and create a list with all unique items
 
-         @param lead_group dictionary where the values are lists of forecast
+         @param lead_groups dictionary where the values are lists of forecast
          leads stored as relativedelta objects
          @returns list of forecast leads stored as relativedelta objects
     """
@@ -551,6 +555,7 @@ def _handle_lead_groups(lead_groups):
                 out_leads.append(lead)
 
     return out_leads
+
 
 def get_lead_sequence_groups(config):
     # output will be a dictionary where the key will be the
