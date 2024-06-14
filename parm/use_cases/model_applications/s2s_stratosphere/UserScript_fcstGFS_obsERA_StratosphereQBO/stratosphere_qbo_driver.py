@@ -19,6 +19,7 @@ from matplotlib import pyplot as plt
 import metcalcpy.pre_processing.directional_means as directional_means
 import METreadnc.util.read_netcdf as read_netcdf
 from metplotpy.contributed.stratosphere_diagnostics.stratosphere_plots import plot_qbo_phase_circuits,plot_qbo_phase_space
+from metcalcpy.util.write_mpr import write_mpr_file
 
 
 def process_single_file(infile,latvar,lonvar,lat_min,lat_max,pres_min,pres_max):
@@ -151,7 +152,7 @@ def main():
     """
     # Take Daily averages
     dsE_daily = dsE.resample(time='1D').mean()
-    rean_trop_u = dsE[obs_uvar]
+    rean_trop_u = dsE_daily[obs_uvar]
 
     # Take monthly averages
     trop_u_monthly = rean_trop_u.resample(time='1MS').mean()
@@ -203,18 +204,20 @@ def main():
     # project daily rfcst zonal winds
     rfcst_qbo_pcs = solver.projectField(utrop_fcst_anoms, eofscaling=1, neofs=2)
 
-    # Save output EOFs if desired? ******
+    # Write out matched pair files for 30mb and 50mb wind
+
 
 
     # Create Circuits plot
     # If plot start dates not provided, use the minimum date and create one plot
     # if not plot_inits:
     #    plot_inits = 
-    plot_inits = pd.DatetimeIndex(input_plot_inits)
+    plot_inits = pd.DatetimeIndex([input_plot_inits])
     plot_qbo_phase_circuits(plot_inits,plot_period,rean_qbo_pcs,rfcst_qbo_pcs,plot_circuits_outname)
 
     # Create Phase Space plot
     plot_qbo_phase_space(rean_qbo_pcs,eofs,plot_phasespace_title,plot_phasespace_outname)
+
 
 
 if __name__ == '__main__':

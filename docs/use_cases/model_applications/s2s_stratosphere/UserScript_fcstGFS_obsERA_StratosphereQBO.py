@@ -74,7 +74,7 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 # .. note:: See the :ref:`Stat-Analysis MET Configuration<series-analysis-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/StatAnalysisConfig_wrapped
+# .. literalinclude:: ../../../../parm/met_config/STATAnalysisConfig_wrapped
 #
 
 ##############################################################################
