@@ -22,34 +22,33 @@ from metplotpy.contributed.stratosphere_diagnostics.stratosphere_plots import pl
 from metcalcpy.util.write_mpr import write_mpr_file
 
 
-def process_single_file(infile,latvar,lonvar,lat_min,lat_max,pres_min,pres_max):
+def process_single_file(infile,latvar,latdim,londim,lat_min,lat_max,pres_min,pres_max):
 
     file_reader = read_netcdf.ReadNetCDF()
     ds = file_reader.read_into_xarray(infile)[0]
-    ds = ds.assign_coords(lat=('lat',ds.latitude.values))
-    ds = ds.assign_coords(lon=('lon',ds.longitude.values))
-    #****Need to fix these lines somehow to account for different lat/lon variable names
+    ds = ds.assign_coords({latdim:ds[latvar].values})
+    #ds = ds.assign_coords({londim:ds[lonvar].values})
 
     # Compute zonal mean
-    Uzm = directional_means.zonal_mean(ds,dimvar=lonvar)
+    Uzm = directional_means.zonal_mean(ds,dimvar=londim)
 
     # Limit the data to 100 - 10 hPa
     Uzm = Uzm.sel(pres=slice(pres_min,pres_max))
 
     #Compute Meridional Mean
-    U_1010 = directional_means.meridional_mean(Uzm, lat_min, lat_max, dimvar=latvar)
+    U_1010 = directional_means.meridional_mean(Uzm, lat_min, lat_max, dimvar=latdim)
 
     return U_1010
 
 
-def get_qbo_data(input_files,latvar,lonvar,timevar,lat_min,lat_max,pres_min,pres_max):
+def get_qbo_data(input_files,latvar,latdim,londim,timevar,lat_min,lat_max,pres_min,pres_max):
 
     # Read the first file
-    ds = process_single_file(input_files[0],latvar,lonvar,lat_min,lat_max,pres_min,pres_max)
+    ds = process_single_file(input_files[0],latvar,latdim,londim,lat_min,lat_max,pres_min,pres_max)
     # Read the rest of the files and concatenate
     for f in input_files[1:]:
         # Read in the data file
-        ds2 = process_single_file(f,latvar,lonvar,lat_min,lat_max,pres_min,pres_max)
+        ds2 = process_single_file(f,latvar,latdim,londim,lat_min,lat_max,pres_min,pres_max)
         # Save to array
         ds = xr.concat([ds,ds2],dim=timevar)
 
@@ -63,12 +62,16 @@ def main():
     """
     # Read the variable names for lat, lon, and time
     obs_latvar = os.environ.get('OBS_LAT_VAR','latitude')
-    obs_lonvar = os.environ.get('OBS_LON_VAR','longitude')
+    #obs_lonvar = os.environ.get('OBS_LON_VAR','longitude')
+    obs_latdim = os.environ.get('OBS_LAT_DIM','lat')
+    obs_londim = os.environ.get('OBS_LON_DIM','lon')
     obs_timevar = os.environ.get('OBS_TIME_VAR','time')
     obs_uvar = os.environ.get('OBS_U_VAR','u')
 
     fcst_latvar = os.environ.get('FCST_LAT_VAR','latitude')
-    fcst_lonvar = os.environ.get('FCST_LON_VAR','longitude')
+    #fcst_lonvar = os.environ.get('FCST_LON_VAR','longitude')
+    fcst_latdim = os.environ.get('FCST_LAT_DIM','lat')
+    fcst_londim = os.environ.get('FCST_LON_DIM','lon')
     fcst_timevar = os.environ.get('FCST_TIME_VAR','time')
     fcst_uvar = os.environ.get('FCST_U_VAR','u')
 
@@ -103,7 +106,7 @@ def main():
         if (obs_input_files_eofs[0] == 'file_list'):
             obs_input_files_eofs = obs_input_files_eofs[1:]
         # Get the data
-        dsE = get_qbo_data(obs_input_files_eofs,obs_latvar,obs_lonvar,obs_timevar,lat_min,lat_max,pres_min,pres_max)
+        dsE = get_qbo_data(obs_input_files_eofs,obs_latvar,obs_latdim,obs_londim,obs_timevar,lat_min,lat_max,pres_min,pres_max)
     else:
         # Read in the name of the output data file
         eof_data_file_name = os.environ['EOF_DATA_FILE_NAME']
@@ -117,8 +120,11 @@ def main():
     """
     Save the Data to be loaded in the calculation of QBO  ****FIX ME
     """
-    # Save xarray for now for later use
-    #dsE.to_netcdf('/glade/derecho/scratch/kalb/Stratosphere_QBO/erai_zonal_mean_u.nc')
+    save_zmm = os.environ.get('SAVE_EOF_ZONAL_MERIDIONAL_MEAN','False')
+    if save_zmm.lower() == 'true':
+        savefile = os.environ['ZONAL_MERIDIONAL_MEAN_EOF_FILE_NAME']
+        print(savefile)
+    #    dsE.to_netcdf(savefile)
 
 
     """
@@ -131,7 +137,7 @@ def main():
     if (obs_input_files[0] == 'file_list'):
         obs_input_files = obs_input_files[1:]
     # Get obs
-    dsO = get_qbo_data(obs_input_files,obs_latvar,obs_lonvar,obs_timevar,lat_min,lat_max,pres_min,pres_max)
+    dsO = get_qbo_data(obs_input_files,obs_latvar,obs_latdim,obs_londim,obs_timevar,lat_min,lat_max,pres_min,pres_max)
     if obs_timevar != 'time':
         dsO.rename({obs_timevar:'time'})
 
@@ -142,7 +148,7 @@ def main():
     if (fcst_input_files[0] == 'file_list'):
         fcst_input_files = fcst_input_files[1:]
     # Forecast
-    dsF = get_qbo_data(fcst_input_files,fcst_latvar,fcst_lonvar,fcst_timevar,lat_min,lat_max,pres_min,pres_max)
+    dsF = get_qbo_data(fcst_input_files,fcst_latvar,fcst_latdim,fcst_londim,fcst_timevar,lat_min,lat_max,pres_min,pres_max)
     if fcst_timevar != 'time':
         dsF.rename({fcst_timevar:'time'})
 
@@ -205,7 +211,27 @@ def main():
     rfcst_qbo_pcs = solver.projectField(utrop_fcst_anoms, eofscaling=1, neofs=2)
 
     # Write out matched pair files for 30mb and 50mb wind
-
+    dlength1 = len(dsO_daily.time)
+    print(dsO_daily.time)
+    print(dsO_daily)
+    print(dsO_daily.sel(pres=[30,50]))
+    exit()
+    dlength = dlength1*2
+    modname = os.environ.get('MODEL_NAME','GFS')
+    datetimeindex = dsO.indexes[time].to_datetimeindex()
+    #obs_u50 = 
+    #obs_u30 = 
+    #fcst_
+    #for i in range(len(datetimeindex)):
+    #    valid_str = datetimeindex[i].strftime('%Y%m%d_%H%M%S')
+    #    leadstr = str(int(leadvar)).zfill(2)+'0000'
+    #    outobs = np.concatenate((TO_6090[i,:].values,UO_6090[i,:].values))
+    #    outfcst = np.concatenate((TF_6090[i,:].values,UF_6090[i,:].values))
+    #    outlevs = 
+    #    write_mpr_file(outfcst,outobs,[0.0]*dlength,[0.0]*dlength,[leadstr]*dlength,[valid_str]*dlength,
+    #        ['000000']*dlength,[valid_str]*dlength,modname,'NA',['QBO_index']*dlength,['m/s']*dlength,
+    #        fcst_lvls*2,['QBO_index']*dlength,
+    #        ['m/s']*dlength,obs_lvls*2,maskname,obs_lvls2*2,full_output_dir,'zonal_wind_index_stat_'+modname)
 
 
     # Create Circuits plot

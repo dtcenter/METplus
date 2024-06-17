@@ -41,16 +41,33 @@ def main():
     full_output_dir = os.path.join(output_dir,'mpr')
 
     """
+    Read variable/dimension names
+    """
+    obs_tvar = os.environ.get('OBS_T_VAR','T')
+    obs_uvar = os.environ.get('OBS_U_VAR','u')
+    obs_latdim = os.environ.get('OBS_LAT_DIM','lat')
+    obs_londim = os.environ.get('OBS_LON_DIM','lon')
+    obs_presdim = os.environ.get('OBS_PRES_DIM','pres')
+
+    fcst_tvar = os.environ.get('FCST_T_VAR','T')
+    fcst_uvar = os.environ.get('FCST_U_VAR','u')
+    fcst_latdim = os.environ.get('FCST_LAT_DIM','lat')
+    fcst_londim = os.environ.get('FCST_LON_DIM','lon')
+    fcst_presdim = os.environ.get('FCST_PRES_DIM','pres')
+
+    """
     Read dataset
     """
     file_reader = read_netcdf.ReadNetCDF()
     dsO = file_reader.read_into_xarray(obs_infiles)[0]
-    dsO = dsO.rename({'lat':'latitude',
-                    'lon':'longitude'})
+    dsO = dsO.rename({obs_latdim:'latitude',
+                    obs_londim:'longitude',
+                    obs_presdim:'pres'})
     file_reader2 = read_netcdf.ReadNetCDF()
     dsF = file_reader2.read_into_xarray(fcst_infiles)[0]
-    dsF = dsF.rename({'lat':'latitude',
-                    'lon':'longitude'})
+    dsF = dsF.rename({fcst_latdim:'latitude',
+                    fcst_londim:'longitude',
+                    fcst_presdim:'pres'})
 
     """
     Limit Dataset to 100 - 1 hPa
@@ -62,21 +79,21 @@ def main():
     """
     Create Polar Cap Temparatures for Forecast and Obs
     """
-    TzmO = directional_means.zonal_mean(dsO.T)
-    TzmO.assign_coords(lat=("latitude",dsO.latitude.values[:,0]))
+    TzmO = directional_means.zonal_mean(dsO[obs_tvar])
+    TzmO = TzmO.assign_coords({'latitude':dsO['latitude'].values[:,0]})
     TO_6090 = directional_means.meridional_mean(TzmO, 60, 90)
-    TzmF = directional_means.zonal_mean(dsF.T)
-    TzmF.assign_coords(lat=("latitude",dsF.latitude.values[:,0]))
+    TzmF = directional_means.zonal_mean(dsF[fcst_tvar])
+    TzmF = TzmF.assign_coords({'latitude':dsF['latitude'].values[:,0]})
     TF_6090 = directional_means.meridional_mean(TzmF, 60, 90)
 
     """
     Create Polar Vortex Winds
     """
-    UzmO = directional_means.zonal_mean(dsO.u)
-    UzmO.assign_coords(lat=("latitude",dsO.latitude.values[:,0]))
+    UzmO = directional_means.zonal_mean(dsO[obs_uvar])
+    UzmO = UzmO.assign_coords({'latitude':dsO['latitude'].values[:,0]})
     UO_6090 = directional_means.meridional_mean(UzmO, 50, 80)
-    UzmF = directional_means.zonal_mean(dsF.u)
-    UzmF.assign_coords(lat=("latitude",dsF.latitude.values[:,0]))
+    UzmF = directional_means.zonal_mean(dsF[fcst_uvar])
+    UzmF = UzmF.assign_coords({'latitude':dsF['latitude'].values[:,0]})
     UF_6090 = directional_means.meridional_mean(UzmF, 50, 80)
 
 
