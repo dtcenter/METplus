@@ -197,12 +197,12 @@
   {
     "category": "s2s_mid_lat",
     "index_list": "0-2",
-    "run": false
+    "run": true
   },
   {
     "category": "s2s_mid_lat",
     "index_list": "3",
-    "run": false
+    "run": true
   },
   {
     "category": "s2s_mjo",

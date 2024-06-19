@@ -12,19 +12,22 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 # Scientific Objective
 # --------------------
 #
-# This use case calls functions in METcalcpy to create zonal and meridonial 
-# means on U from -10 S to 10N latitude between 100 and 10 hpa.  It then runs 
-# creates 2 phase plots, phase circuits which gives one plot for each start date
-# listed in the configuration file for model and observations, and another phase plot 
-# for the whole time period 
+# This use case performs several differenc calculations to evaluate QBO.  They 
+# include and EOF analysis and two Phase diagrams of QBO.  The two phase diagrams are
+# phase circuits which gives one plot for each start date listed in the configuration 
+# file for model and observations, and another phase plot for the whole time period.
+# Additioinally, the zonal and meridonial means on U from -10 S to 10N latitude are 
+# computed, and the bias (ME) on these  30 and 50mb time U time series are output.
+# Finally, the Zonal U at 30mb and 50mb is plotted as time series to compare the 
+# model and observations.
 #
 
 ##############################################################################
 # Datasets
 # --------
 #
-# GFS 0-24 hour forecasts for TIME PERIOD
-# ERA for TIME PERIOD
+# GFS 0-24 hour forecasts for 10/2017 - 2/2018
+# ERA: 30 year climatology for EOFs and 10/2017 - 2/2018  
 #
 
 ##############################################################################
@@ -33,17 +36,18 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 #
 # This use case runs the UserScript wrapper tool to run a user provided script,
 # in this case, stratosphere_qbo_driver.py to compute the zonal and meridional
-# mean, compute anomalies and create phase plots.
+# mean, compute anomalies, create EOFs, create Phase diagrams, output U at 30 and
+# 50mb, and create time series of 30 and 50mb winds.  StatAnalysis is run on the
+# 30 and 50mb winds to compute the bias (ME).
 #
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
-# This use case does not loop but plots the entire time period of data
+# This use case does not loop but plots the entire time period of data.  The 
+# following tools are run once: UserScript, StatAnalysis
 # 
-# UserScript: Computes zonal and meridional means, anomalies, EOFs and creates phase plots
-#
 
 ##############################################################################
 # METplus Configuration
@@ -125,9 +129,13 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 #
 #   INFO: METplus has successfully finished running.
 #
-# There should be 2 graphics output, ERA_GFS_QBO_circuits.png and ERA5_QBO_PhaseSpace.png
-# These graphics will be output to the path specified in PLOT_PHASE_CIRCUITS_OUTPUT_NAME
-# and PLOT_PHASE_SPACE_OUTPUT_NAME in the [user_env_vars] section. 
+# There should be 4 graphics output, ERA_GFS_QBO_circuits.png, ERA5_QBO_PhaseSpace.png,
+# ERA_GFS_timeseries_30mb_u_201710_201802.png, and ERA_GFS_timeseries_30mb_u_201710_201802.png.
+# These graphics will be output to the path specified as OUTPUT_DIR/plots, using 
+# PLOT_PHASE_CIRCUITS_OUTPUT_NAME, PLOT_PHASE_SPACE_OUTPUT_NAME, PLOT_TIME_SERIES_OUTPUT_NAME_30,
+# and PLOT_TIME_SERIES_OUTPUT_NAME_50 in the [user_env_vars] section.  Additionally matched pair
+# .stat files will be output to OUTPUT_DIR/mpr, and the computed bias will be output to 
+# OUTPUT_DIR/StatAnalysis.
 #
 
 ##############################################################################

@@ -118,7 +118,7 @@ def main():
         outobs = np.concatenate((TO_6090[i,:].values,UO_6090[i,:].values))
         outfcst = np.concatenate((TF_6090[i,:].values,UF_6090[i,:].values))
         write_mpr_file(outfcst,outobs,[0.0]*dlength,[0.0]*dlength,[leadstr]*dlength,[valid_str]*dlength,
-            ['000000']*dlength,[valid_str]*dlength,modname,'NA',['PolarCapT']*dlength1+['PolarVortexU']*dlength1,
+            ['000000']*dlength,[valid_str]*dlength,modname,['NA']*dlength,['PolarCapT']*dlength1+['PolarVortexU']*dlength1,
             ['K']*dlength1+['m/s']*dlength1,fcst_lvls*2,['PolarCapT']*dlength1+['PolarVortexU']*dlength1,
             ['K']*dlength1+['m/s']*dlength1,obs_lvls*2,maskname,obs_lvls2*2,full_output_dir,'polar_cap_T_stat_'+modname)
 
