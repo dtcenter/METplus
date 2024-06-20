@@ -12,14 +12,14 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 # Scientific Objective
 # --------------------
 #
-# This use case performs several differenc calculations to evaluate QBO.  They 
-# include and EOF analysis and two Phase diagrams of QBO.  The two phase diagrams are
-# phase circuits which gives one plot for each start date listed in the configuration 
-# file for model and observations, and another phase plot for the whole time period.
-# Additioinally, the zonal and meridonial means on U from -10 S to 10N latitude are 
-# computed, and the bias (ME) on these  30 and 50mb time U time series are output.
-# Finally, the Zonal U at 30mb and 50mb is plotted as time series to compare the 
-# model and observations.
+# This use case performs several differenc calculations and creates multiple plots
+# to evaluate QBO.  First, the zonal and meridional means on U from -10 S to 10N 
+# latitude are computed.  Then, an EOF analysis is performed on the zonal and meridional
+# mean data and and two Phase diagrams of QBO are created.  The two phase diagrams are 
+# phase circuits which gives one plot for each start date listed in the configuration file 
+# for model and observations, and another phase plot for the whole time period.  Additionally
+# the zonal and meridional mean at 30 and 50mb are output as time series, and the bias (ME) 
+# is computed.  The 30 and 50mb U time series are also plotted.
 #
 
 ##############################################################################
@@ -37,8 +37,8 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 # This use case runs the UserScript wrapper tool to run a user provided script,
 # in this case, stratosphere_qbo_driver.py to compute the zonal and meridional
 # mean, compute anomalies, create EOFs, create Phase diagrams, output U at 30 and
-# 50mb, and create time series of 30 and 50mb winds.  StatAnalysis is run on the
-# 30 and 50mb winds to compute the bias (ME).
+# 50mb, and create time series of 30 and 50mb winds.  StatAnalysis is then run on 
+# the 30 and 50mb winds to compute the bias (ME).
 #
 
 ##############################################################################
