@@ -17,8 +17,7 @@ def main():
     """
     Read arguments
     """
-    timevar = sys.argv[1]
-    leadvar = sys.argv[2]
+    leadvar = sys.argv[1]
 
     """
     Read METplus filename lists
@@ -45,12 +44,16 @@ def main():
     """
     obs_tvar = os.environ.get('OBS_T_VAR','T')
     obs_uvar = os.environ.get('OBS_U_VAR','u')
+    obs_latvar = os.environ.get('OBS_LAT_VAR','latitude')
+    obs_timevar = os.environ.get('OBS_TIME_VAR','time')
     obs_latdim = os.environ.get('OBS_LAT_DIM','lat')
     obs_londim = os.environ.get('OBS_LON_DIM','lon')
     obs_presdim = os.environ.get('OBS_PRES_DIM','pres')
 
     fcst_tvar = os.environ.get('FCST_T_VAR','T')
     fcst_uvar = os.environ.get('FCST_U_VAR','u')
+    fcst_latvar = os.environ.get('FCST_LAT_VAR','latitude')
+    fcst_timevar = os.environ.get('FCST_TIME_VAR','time')
     fcst_latdim = os.environ.get('FCST_LAT_DIM','lat')
     fcst_londim = os.environ.get('FCST_LON_DIM','lon')
     fcst_presdim = os.environ.get('FCST_PRES_DIM','pres')
@@ -75,34 +78,37 @@ def main():
     dsO = dsO.sel(pres=slice(1,100))
     dsF = dsF.sel(pres=slice(1,100))
 
+    """
+    Assign Latitude Coordinate since it doesn't work
+    """
+    #dsO = dsO.assign_coords({obs_latvar:dsO[obs_latvar].values[:,0]})
+    #dsF = dsF.assign_coords({fcst_latvar:dsF[fcst_latvar].values[:,0]})
+    dsO = dsO.assign_coords({obs_latvar:dsO[obs_latvar].values})
+    dsF = dsF.assign_coords({fcst_latvar:dsF[fcst_latvar].values})
 
     """
     Create Polar Cap Temparatures for Forecast and Obs
     """
+    dsO = dsO.assign_coords({obs_latvar:dsO[obs_latvar].values})
     TzmO = directional_means.zonal_mean(dsO[obs_tvar])
-    TzmO = TzmO.assign_coords({'latitude':dsO['latitude'].values[:,0]})
     TO_6090 = directional_means.meridional_mean(TzmO, 60, 90)
     TzmF = directional_means.zonal_mean(dsF[fcst_tvar])
-    TzmF = TzmF.assign_coords({'latitude':dsF['latitude'].values[:,0]})
     TF_6090 = directional_means.meridional_mean(TzmF, 60, 90)
 
     """
     Create Polar Vortex Winds
     """
     UzmO = directional_means.zonal_mean(dsO[obs_uvar])
-    UzmO = UzmO.assign_coords({'latitude':dsO['latitude'].values[:,0]})
     UO_6090 = directional_means.meridional_mean(UzmO, 50, 80)
     UzmF = directional_means.zonal_mean(dsF[fcst_uvar])
-    UzmF = UzmF.assign_coords({'latitude':dsF['latitude'].values[:,0]})
     UF_6090 = directional_means.meridional_mean(UzmF, 50, 80)
-
 
     """
     Add P to the levels since they are pressure levels
     """
-    obs_lvls = ['P'+str(int(op)) for op in dsO.pres.values]
-    obs_lvls2 = [str(int(op)) for op in dsO.pres.values]
-    fcst_lvls = ['P'+str(int(fp)) for fp in dsF.pres.values]
+    obs_lvls = ['P'+str(int(op)) for op in dsO['pres'].values]
+    obs_lvls2 = [str(int(op)) for op in dsO['pres'].values]
+    fcst_lvls = ['P'+str(int(fp)) for fp in dsF['pres'].values]
 
     """
     Write output MPR files
@@ -111,7 +117,8 @@ def main():
     dlength = dlength1*2 
     modname = os.environ.get('MODEL_NAME','GFS')
     maskname = os.environ.get('MASK_NAME','FULL')
-    datetimeindex = dsF.indexes[timevar].to_datetimeindex()
+    #datetimeindex = dsF.indexes[fcst_timevar].to_datetimeindex()
+    datetimeindex = dsF.indexes[fcst_timevar]
     for i in range(len(datetimeindex)):
         valid_str = datetimeindex[i].strftime('%Y%m%d_%H%M%S')
         leadstr = str(int(leadvar)).zfill(2)+'0000'
