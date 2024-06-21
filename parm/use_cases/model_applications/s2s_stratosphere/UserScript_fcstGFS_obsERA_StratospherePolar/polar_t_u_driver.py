@@ -81,8 +81,6 @@ def main():
     """
     Assign Latitude Coordinate since it doesn't work
     """
-    #dsO = dsO.assign_coords({obs_latvar:dsO[obs_latvar].values[:,0]})
-    #dsF = dsF.assign_coords({fcst_latvar:dsF[fcst_latvar].values[:,0]})
     dsO = dsO.assign_coords({obs_latvar:dsO[obs_latvar].values})
     dsF = dsF.assign_coords({fcst_latvar:dsF[fcst_latvar].values})
 
@@ -117,7 +115,6 @@ def main():
     dlength = dlength1*2 
     modname = os.environ.get('MODEL_NAME','GFS')
     maskname = os.environ.get('MASK_NAME','FULL')
-    #datetimeindex = dsF.indexes[fcst_timevar].to_datetimeindex()
     datetimeindex = dsF.indexes[fcst_timevar]
     for i in range(len(datetimeindex)):
         valid_str = datetimeindex[i].strftime('%Y%m%d_%H%M%S')

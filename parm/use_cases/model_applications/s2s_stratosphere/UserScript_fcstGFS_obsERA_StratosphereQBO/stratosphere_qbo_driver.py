@@ -42,6 +42,8 @@ def process_single_file(infile,latvar,latdim,londim,lat_min,lat_max,pres_min,pre
 
 def get_qbo_data(input_files,latvar,latdim,londim,timevar,lat_min,lat_max,pres_min,pres_max):
 
+    # **** This could be edited to read all files at the same time, and it would run faster.  
+    # However I did not have enough memory to run it this way.
     # Read the first file
     ds = process_single_file(input_files[0],latvar,latdim,londim,lat_min,lat_max,pres_min,pres_max)
     # Read the rest of the files and concatenate
