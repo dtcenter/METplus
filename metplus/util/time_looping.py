@@ -575,10 +575,7 @@ def get_lead_sequence_groups(config):
         if config.has_option('config', f"LEAD_SEQ_{index}_LABEL"):
             label = config.getstr('config', f"LEAD_SEQ_{index}_LABEL")
         else:
-            log_msg = (f'Need to set LEAD_SEQ_{index}_LABEL to describe '
-                       f'LEAD_SEQ_{index}')
-            config.logger.error(log_msg)
-            return None
+            label = f"Group{index}"
 
         # get forecast list for n
         lead_string_list = getlist(config.getstr('config', f'LEAD_SEQ_{index}'))

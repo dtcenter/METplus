@@ -15,7 +15,7 @@ import os
 from ..util import time_util
 from ..util import log_runtime_banner, get_lead_sequence, get_lead_sequence_groups
 from ..util import skip_time, getlist, get_start_and_end_times, get_time_prefix
-from ..util import time_generator, add_to_time_input
+from ..util import time_generator, add_to_time_input, format_lead_seq
 from ..util import sub_var_list, add_field_info_to_time_info
 from . import CommandBuilder
 
@@ -274,6 +274,11 @@ class RuntimeFreqWrapper(CommandBuilder):
 
             lead_groups = self._get_leads_as_group(time_info)
             for label, lead_seq in lead_groups.items():
+                if label:
+                    self.logger.info(
+                        f"Processing lead group {label}:"
+                        f" {format_lead_seq(lead_seq, plural=False)}"
+                    )
                 time_info['label'] = label
                 self.c_dict['ALL_FILES'] = (
                     self.get_all_files_from_leads(time_info, lead_seq)
@@ -740,7 +745,7 @@ class RuntimeFreqWrapper(CommandBuilder):
             valid = time_info['valid'].strftime('%Y%m%d%H%M%S')
 
         if time_info.get('lead', '*') == '*':
-            lead = 'ALL'
+            lead = time_info.get('label') if time_info.get('label') else 'ALL'
         else:
             lead = time_util.ti_get_seconds_from_lead(time_info['lead'],
                                                       time_info['valid'])

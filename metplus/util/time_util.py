@@ -276,6 +276,14 @@ def ti_get_lead_string(lead, plural=True, letter_only=False):
     return f"{negative}{output}"
 
 
+def format_lead_seq(lead_seq, plural=True, letter_only=False):
+    leads = []
+    for lead in lead_seq:
+        lead_fmt = ti_get_lead_string(lead, plural=plural, letter_only=letter_only)
+        leads.append(lead_fmt)
+    return ', '.join(leads)
+
+
 def get_met_time_list(string_value, sort_list=True):
     """! Convert a string into a list of strings in MET time format HHMMSS.
 
