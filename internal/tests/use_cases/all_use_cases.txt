@@ -63,6 +63,7 @@ Category: met_tool_wrapper
 61::PlotPointObs:: met_tool_wrapper/PlotPointObs/PlotPointObs.conf
 62::TCDiag:: met_tool_wrapper/TCDiag/TCDiag.conf
 63::WaveletStat:: met_tool_wrapper/WaveletStat/WaveletStat.conf
+64::MADIS2NC:: met_tool_wrapper/MADIS2NC/MADIS2NC.conf
 
 Category: air_quality_and_comp
 0::EnsembleStat_fcstICAP_obsMODIS_aod::model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod.conf

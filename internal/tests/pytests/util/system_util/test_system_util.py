@@ -145,6 +145,10 @@ def test_preprocess_file_stage(metplus_config, filename, ext):
         ('/some/path/PYTHON_NUMPY', None, False, 'PYTHON_NUMPY'),
         ('/some/path/PYTHON_XARRAY', None, False, 'PYTHON_XARRAY'),
         ('/some/path/PYTHON_PANDAS', None, False, 'PYTHON_PANDAS'),
+        # python embedding command
+        ('/some/path/pyscript.py /some/path/input_file', 'PYTHON', False, '"/some/path/pyscript.py /some/path/input_file"'),
+        ('/some/path/pyscript.py /some/path/input_file', None, False, '"/some/path/pyscript.py /some/path/input_file"'),
+        ('PYTHON_NUMPY=scripts/python/examples/read_ascii_point.py data/sample_obs/ascii/sample_ascii_obs.txt', None, False, '"PYTHON_NUMPY=scripts/python/examples/read_ascii_point.py data/sample_obs/ascii/sample_ascii_obs.txt"'),
     ]
 )
 @pytest.mark.util

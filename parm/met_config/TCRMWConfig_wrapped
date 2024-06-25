@@ -76,8 +76,6 @@ ${METPLUS_REGRID_DICT}
 ${METPLUS_N_RANGE}
 //n_azimuth      =
 ${METPLUS_N_AZIMUTH}
-//max_range_km   =
-${METPLUS_MAX_RANGE_KM}
 //delta_range_km =
 ${METPLUS_DELTA_RANGE_KM}
 //rmw_scale      =
@@ -91,4 +89,5 @@ ${METPLUS_RMW_SCALE}
 
 tmp_dir = "${MET_TMP_DIR}";
 
+${METPLUS_TIME_OFFSET_WARNING}
 ${METPLUS_MET_CONFIG_OVERRIDES}

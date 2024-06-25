@@ -19,8 +19,9 @@ is broken down into the following development cycles for each component:
 3. **Beta3** releases for the METplus components occurred around 2024-02-08.
 4. **Beta4** releases for the METplus components occurred around 2024-04-17.
 5. **Beta5** releases are tentatively scheduled for 2024-06-26.
-6. **Release Candidate 1** releases have not yet been scheduled.
-7. **Official Release** releases have not yet been scheduled.
+6. **Beta6** releases are tentatively scheduled for 2024-09-04.
+7. **Release Candidate 1** releases are tentatively scheduled for 2024-11-13.
+8. **Official Release** releases have not yet been scheduled.
 
 .. _components-release-notes:
 

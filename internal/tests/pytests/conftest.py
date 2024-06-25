@@ -199,10 +199,44 @@ def make_nc(tmp_path, lon, lat, z, data, variable='Temp', file_name='fake.nc'):
 def get_test_data_dir():
     """!Get path to directory containing test data.
     """
-    def get_test_data_path(subdir):
+    def get_test_data_path(subdir=None):
         internal_tests_dir = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), os.pardir)
+            os.path.join(os.path.dirname(__file__), os.pardir, 'data')
         )
-        return os.path.join(internal_tests_dir, 'data', subdir)
+        if subdir:
+            internal_tests_dir = os.path.join(internal_tests_dir, subdir)
+        return internal_tests_dir
 
     return get_test_data_path
+
+
+@pytest.fixture(scope="function")
+def compare_command_and_env_vars():
+    def do_comparison(all_commands, expected_cmds, env_var_values, wrapper,
+                      special_values=None):
+        print(f"ALL COMMANDS: {all_commands}")
+        assert len(all_commands) == len(expected_cmds)
+
+        missing_env = [item for item in env_var_values
+                       if item not in wrapper.WRAPPER_ENV_VAR_KEYS
+                       and item != 'DIAG_ARG']
+        env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
+
+        for (cmd, env_vars), expected_cmd in zip(all_commands, expected_cmds):
+            # ensure commands are generated as expected
+            assert cmd == expected_cmd
+
+            # check that environment variables were set properly
+            # including deprecated env vars (not in wrapper env var keys)
+            for env_var_key in env_var_keys:
+                print(f"ENV VAR: {env_var_key}")
+                match = next((item for item in env_vars if
+                              item.startswith(env_var_key)), None)
+                assert match is not None
+                value = match.split('=', 1)[1]
+                if special_values is not None and env_var_key in special_values:
+                    assert value == special_values[env_var_key]
+                else:
+                    assert env_var_values.get(env_var_key, '') == value
+
+    return do_comparison

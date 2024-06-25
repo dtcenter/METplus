@@ -126,27 +126,16 @@ class PointStatWrapper(CompareGriddedWrapper):
         c_dict['OFFSETS'] = getlistint(
             self.config.getstr('config', 'POINT_STAT_OFFSETS', '0')
         )
-        c_dict['FCST_INPUT_TEMPLATE'] = (
-            self.config.getraw('config', 'FCST_POINT_STAT_INPUT_TEMPLATE', '')
-        )
-
-        c_dict['OBS_INPUT_TEMPLATE'] = (
-            self.config.getraw('config', 'OBS_POINT_STAT_INPUT_TEMPLATE', '')
-        )
+        self.get_input_templates(c_dict, {
+            'FCST': {'prefix': 'FCST_POINT_STAT', 'required': True},
+            'OBS': {'prefix': 'OBS_POINT_STAT', 'required': True},
+        })
 
         c_dict['FCST_INPUT_DATATYPE'] = (
             self.config.getstr('config', 'FCST_POINT_STAT_INPUT_DATATYPE', '')
         )
         c_dict['OBS_INPUT_DATATYPE'] = (
             self.config.getstr('config', 'OBS_POINT_STAT_INPUT_DATATYPE', '')
-        )
-
-        c_dict['FCST_INPUT_DIR'] = (
-            self.config.getdir('FCST_POINT_STAT_INPUT_DIR', '')
-        )
-
-        c_dict['OBS_INPUT_DIR'] = (
-            self.config.getdir('OBS_POINT_STAT_INPUT_DIR', '')
         )
 
         c_dict['OUTPUT_DIR'] = (
@@ -322,3 +311,49 @@ class PointStatWrapper(CompareGriddedWrapper):
                 obs_valid = do_string_sub(self.c_dict[f'OBS_VALID_{ext}'],
                                           **time_info)
                 self.args.append(f"-obs_valid_{ext.lower()} {obs_valid}")
+
+    def find_input_files(self, time_info):
+        # get model from first var to compare
+        model_path = self.find_model(time_info,
+                                     mandatory=True,
+                                     return_list=True)
+        if not model_path:
+            return None
+
+        # if there is more than 1 file, create file list file
+        if len(model_path) > 1:
+            self.logger.warning('Multiple forecast files found.'
+                                'Using the first one')
+
+        self.infiles.append(model_path[0])
+
+        # get observation to from first var compare
+        obs_path, time_info = self.find_obs_offset(time_info,
+                                                   mandatory=True,
+                                                   return_list=True)
+        if obs_path is None:
+            return None
+
+        # add observation files found individually to use -point_obs argument
+        self.infiles.extend(obs_path)
+
+        return time_info
+
+    def get_command(self):
+        """! Builds the command to run point_stat
+           @rtype string
+           @return Returns a point_stat command with arguments that you can run
+        """
+        fcst_file, *obs_files = self.infiles
+        obs_file = obs_files[0]
+        cmd = (f"{self.app_path} -v {self.c_dict['VERBOSITY']} "
+               f"{fcst_file} {obs_file} {self.param}")
+
+        if len(obs_files) > 1:
+            cmd += ' -point_obs ' + ' -point_obs '.join(obs_files[1:])
+
+        for arg in self.args:
+            cmd += f' {arg}'
+
+        cmd += f' -outdir {self.outdir}'
+        return cmd

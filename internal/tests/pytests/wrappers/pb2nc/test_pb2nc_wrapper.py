@@ -76,38 +76,6 @@ def test_pb2nc_missing_inputs(metplus_config, get_test_data_dir, missing,
 
 
 # ---------------------
-# test_get_command
-# test that command is generated correctly
-# ---------------------
-@pytest.mark.parametrize(
-    # list of input files
-    'infiles', [
-        ['file1'],
-        ['file1', 'file2'],
-        ['file1', 'file2', 'file3'],
-    ]
-)
-@pytest.mark.wrapper
-def test_get_command(metplus_config, infiles):
-    pb = pb2nc_wrapper(metplus_config)
-    pb.outfile = 'outfilename.txt'
-    pb.outdir = pb.config.getdir('OUTPUT_BASE')
-    outpath = os.path.join(pb.outdir, pb.outfile)
-    pb.infiles = infiles
-    config_file = pb.c_dict['CONFIG_FILE']
-    cmd = pb.get_command()
-    if not infiles:
-        expected_cmd = None
-    else:
-        expected_cmd = pb.app_path + ' -v 2 ' + infiles[0] + ' ' + outpath + ' ' + config_file
-        if len(infiles) > 1:
-            for infile in infiles[1:]:
-                expected_cmd += ' -pbfile ' + infile
-
-    assert cmd == expected_cmd
-
-
-# ---------------------
 # test_find_input_files
 # test files can be found with find_input_files with varying offset lists
 # ---------------------
@@ -146,13 +114,16 @@ def test_find_input_files(metplus_config, offsets, offset_to_find):
     # unset offset in time dictionary so it will be computed
     del input_dict['offset']
 
+    # recompute time_info to pass to find file functions
+    time_info = time_util.ti_calculate(input_dict)
+
     # set offset list
     pb.c_dict['OFFSETS'] = offsets
 
-    pb.c_dict['ALL_FILES'] = pb.get_all_files_for_each(input_dict)
+    pb.c_dict['ALL_FILES'] = pb.get_all_files_for_each(time_info)
 
     # look for input files based on offset list
-    result = pb.find_input_files()
+    result = pb.find_input_files(time_info)
 
     # check if correct offset file was found, if None expected, check against None
     if offset_to_find is None:
@@ -282,10 +253,25 @@ def test_find_input_files(metplus_config, offsets, offset_to_find):
         ({'PB2NC_VALID_END': valid_end}, {}),
         ({'PB2NC_VALID_BEGIN': valid_beg, 'PB2NC_VALID_END': valid_end}, {}),
 
+        ({'PB2NC_TIME_OFFSET_WARNING': 3},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 3;'}),
+        ({'TIME_OFFSET_WARNING': 2},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 2;'}),
+        ({'TIME_OFFSET_WARNING': 2, 'PB2NC_TIME_OFFSET_WARNING': 4},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 4;'}),
+        # 1 extra file
+        ({'PB2NC_INPUT_TEMPLATE': ('ndas.t{da_init?fmt=%H}z.prepbufr.tm{offset?fmt=%2H}.{da_init?fmt=%Y%m%d}.nr,'
+                                   'another_file.nr')}, {}),
+        # 2 extra files
+        ({'PB2NC_INPUT_TEMPLATE': ('ndas.t{da_init?fmt=%H}z.prepbufr.tm{offset?fmt=%2H}.{da_init?fmt=%Y%m%d}.nr,'
+                                   'another_file.nr,yet_another_file.nr')},
+         {}),
+
     ]
 )
 @pytest.mark.wrapper
-def test_pb2nc_all_fields(metplus_config, config_overrides, env_var_values):
+def test_pb2nc_all_fields(metplus_config, config_overrides, env_var_values,
+                          compare_command_and_env_vars):
     input_dir = '/some/input/dir'
     config = metplus_config
 
@@ -325,41 +311,30 @@ def test_pb2nc_all_fields(metplus_config, config_overrides, env_var_values):
     config_file = wrapper.c_dict.get('CONFIG_FILE')
     out_dir = wrapper.c_dict.get('OUTPUT_DIR')
 
+    extra_file_args = ''
+    if 'PB2NC_INPUT_TEMPLATE' in config_overrides:
+        extra_files = config_overrides['PB2NC_INPUT_TEMPLATE'].split(',')[1:]
+        for extra_file in extra_files:
+            extra_file_args += f' -pbfile {input_dir}/{extra_file}'
+
     valid_args = ''
     if 'PB2NC_VALID_BEGIN' in config_overrides:
         valid_args += f' -valid_beg {valid_beg}'
     if 'PB2NC_VALID_END' in config_overrides:
         valid_args += f' -valid_end {valid_end}'
 
-    expected_cmds = [(f"{app_path} {verbosity} "
+    expected_cmds = [(f"{app_path} "
                       f"{input_dir}/ndas.t00z.prepbufr.tm12.20070401.nr "
                       f"{out_dir}/2007033112.nc "
-                      f"{config_file}{valid_args}"),
-                     (f"{app_path} {verbosity} "
+                      f"{config_file}{extra_file_args}{valid_args} {verbosity}"),
+                     (f"{app_path} "
                       f"{input_dir}/ndas.t12z.prepbufr.tm12.20070401.nr "
                       f"{out_dir}/2007040100.nc "
-                      f"{config_file}{valid_args}"),
+                      f"{config_file}{extra_file_args}{valid_args} {verbosity}"),
                      ]
 
     all_cmds = wrapper.run_all_times()
-    print(f"ALL COMMANDS: {all_cmds}")
-
-    missing_env = [item for item in env_var_values
-                   if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
-    env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
-
-    for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
-        # ensure commands are generated as expected
-        assert cmd == expected_cmd
-
-        # check that environment variables were set properly
-        # including deprecated env vars (not in wrapper env var keys)
-        for env_var_key in env_var_keys:
-            match = next((item for item in env_vars if
-                          item.startswith(env_var_key)), None)
-            assert match is not None
-            value = match.split('=', 1)[1]
-            assert env_var_values.get(env_var_key, '') == value
+    compare_command_and_env_vars(all_cmds, expected_cmds, env_var_values, wrapper)
 
 
 @pytest.mark.wrapper

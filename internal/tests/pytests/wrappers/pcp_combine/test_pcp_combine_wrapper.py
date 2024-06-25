@@ -9,20 +9,7 @@ from metplus.wrappers.pcp_combine_wrapper import PCPCombineWrapper
 from metplus.util import ti_calculate
 
 
-def get_test_data_dir(config, subdir=None):
-    top_dir = os.path.join(config.getdir('METPLUS_BASE'),
-                           'internal', 'tests', 'data')
-    if subdir:
-        top_dir = os.path.join(top_dir, subdir)
-    return top_dir
-
-
-def pcp_combine_wrapper(metplus_config, d_type):
-    """! Returns a default PCPCombineWrapper with /path/to entries in the
-         metplus_system.conf and metplus_runtime.conf configuration
-         files.  Subsequent tests can customize the final METplus configuration
-         to over-ride these /path/to values."""
-    config = metplus_config
+def set_minimum_config_settings(config, d_type):
     config.set('config', 'FCST_PCP_COMBINE_INPUT_ACCUMS', '6')
     config.set('config', 'FCST_PCP_COMBINE_INPUT_NAMES', 'P06M_NONE')
     config.set('config', 'FCST_PCP_COMBINE_INPUT_LEVELS', '"(*,*)"')
@@ -56,14 +43,21 @@ def pcp_combine_wrapper(metplus_config, d_type):
     elif d_type == "OBS":
         config.set('config', 'OBS_PCP_COMBINE_RUN', True)
 
+def pcp_combine_wrapper(metplus_config, d_type):
+    """! Returns a default PCPCombineWrapper with /path/to entries in the
+         metplus_system.conf and metplus_runtime.conf configuration
+         files.  Subsequent tests can customize the final METplus configuration
+         to over-ride these /path/to values."""
+    config = metplus_config
+    set_minimum_config_settings(config, d_type)
     return PCPCombineWrapper(config)
 
 
 @pytest.mark.wrapper
-def test_get_accumulation_1_to_6(metplus_config):
+def test_get_accumulation_1_to_6(metplus_config, get_test_data_dir):
     data_src = "OBS"
     pcw = pcp_combine_wrapper(metplus_config, data_src)
-    input_dir = get_test_data_dir(pcw.config, subdir='accum')
+    input_dir = get_test_data_dir('accum')
     task_info = {}
     task_info['valid'] = datetime.strptime("2016090418", '%Y%m%d%H')
     time_info = ti_calculate(task_info)
@@ -85,10 +79,10 @@ def test_get_accumulation_1_to_6(metplus_config):
 
 
 @pytest.mark.wrapper
-def test_get_accumulation_6_to_6(metplus_config):
+def test_get_accumulation_6_to_6(metplus_config, get_test_data_dir):
     data_src = "FCST"
     pcw = pcp_combine_wrapper(metplus_config, data_src)
-    input_dir = get_test_data_dir(pcw.config, subdir='accum')
+    input_dir = get_test_data_dir('accum')
     task_info = {}
     task_info['valid'] = datetime.strptime("2016090418", '%Y%m%d%H')
     time_info = ti_calculate(task_info)
@@ -107,10 +101,10 @@ def test_get_accumulation_6_to_6(metplus_config):
 
 
 @pytest.mark.wrapper
-def test_get_lowest_forecast_file_dated_subdir(metplus_config):
+def test_get_lowest_forecast_file_dated_subdir(metplus_config, get_test_data_dir):
     data_src = "FCST"
     pcw = pcp_combine_wrapper(metplus_config, data_src)
-    input_dir = get_test_data_dir(pcw.config, subdir='fcst')
+    input_dir = get_test_data_dir('fcst')
     valid_time = datetime.strptime("201802012100", '%Y%m%d%H%M')
     pcw.c_dict[f'{data_src}_INPUT_DIR'] = input_dir
     pcw._build_input_accum_list(data_src, {'valid': valid_time})
@@ -120,11 +114,11 @@ def test_get_lowest_forecast_file_dated_subdir(metplus_config):
 
 
 @pytest.mark.wrapper
-def test_forecast_constant_init(metplus_config):
+def test_forecast_constant_init(metplus_config, get_test_data_dir):
     data_src = "FCST"
     pcw = pcp_combine_wrapper(metplus_config, data_src)
     pcw.c_dict['FCST_CONSTANT_INIT'] = True
-    input_dir = get_test_data_dir(pcw.config, subdir='fcst')
+    input_dir = get_test_data_dir('fcst')
     init_time = datetime.strptime("2018020112", '%Y%m%d%H')
     valid_time = datetime.strptime("2018020121", '%Y%m%d%H')
     pcw.c_dict[f'{data_src}_INPUT_DIR'] = input_dir
@@ -134,11 +128,11 @@ def test_forecast_constant_init(metplus_config):
 
 
 @pytest.mark.wrapper
-def test_forecast_not_constant_init(metplus_config):
+def test_forecast_not_constant_init(metplus_config, get_test_data_dir):
     data_src = "FCST"
     pcw = pcp_combine_wrapper(metplus_config, data_src)
     pcw.c_dict['FCST_CONSTANT_INIT'] = False
-    input_dir = get_test_data_dir(pcw.config, subdir='fcst')
+    input_dir = get_test_data_dir('fcst')
     init_time = datetime.strptime("2018020112", '%Y%m%d%H')
     valid_time = datetime.strptime("2018020121", '%Y%m%d%H')
     pcw.c_dict[f'{data_src}_INPUT_DIR'] = input_dir
@@ -149,10 +143,10 @@ def test_forecast_not_constant_init(metplus_config):
 
 
 @pytest.mark.wrapper
-def test_get_lowest_forecast_file_no_subdir(metplus_config):
+def test_get_lowest_forecast_file_no_subdir(metplus_config, get_test_data_dir):
     data_src = "FCST"
     pcw = pcp_combine_wrapper(metplus_config, data_src)
-    input_dir = get_test_data_dir(pcw.config, subdir='fcst')
+    input_dir = get_test_data_dir('fcst')
     valid_time = datetime.strptime("201802012100", '%Y%m%d%H%M')
     template = "file.{init?fmt=%Y%m%d%H}f{lead?fmt=%HHH}.nc"
     pcw.c_dict[f'{data_src}_INPUT_TEMPLATE'] = template
@@ -163,10 +157,10 @@ def test_get_lowest_forecast_file_no_subdir(metplus_config):
 
 
 @pytest.mark.wrapper
-def test_get_lowest_forecast_file_yesterday(metplus_config):
+def test_get_lowest_forecast_file_yesterday(metplus_config, get_test_data_dir):
     data_src = "FCST"
     pcw = pcp_combine_wrapper(metplus_config, data_src)
-    input_dir = get_test_data_dir(pcw.config, subdir='fcst')
+    input_dir = get_test_data_dir('fcst')
     valid_time = datetime.strptime("201802010600", '%Y%m%d%H%M')
     template = "file.{init?fmt=%Y%m%d%H}f{lead?fmt=%HHH}.nc"
     pcw.c_dict[f'{data_src}_INPUT_TEMPLATE'] = template
@@ -177,14 +171,14 @@ def test_get_lowest_forecast_file_yesterday(metplus_config):
 
 
 @pytest.mark.wrapper
-def test_setup_add_method(metplus_config):
+def test_setup_add_method(metplus_config, get_test_data_dir):
     data_src = "OBS"
     pcw = pcp_combine_wrapper(metplus_config, data_src)
     task_info = {}
     task_info['valid'] = datetime.strptime("2016090418", '%Y%m%d%H')
     time_info = ti_calculate(task_info)
 
-    input_dir = get_test_data_dir(pcw.config, subdir='accum')
+    input_dir = get_test_data_dir('accum')
     lookback = 6 * 3600
     files_found = pcw.setup_add_method(time_info, lookback, data_src)
     assert files_found
@@ -239,14 +233,14 @@ def test_setup_subtract_method(metplus_config, custom):
 
 
 @pytest.mark.wrapper
-def test_pcp_combine_add_subhourly(metplus_config):
+def test_pcp_combine_add_subhourly(metplus_config, get_test_data_dir):
     fcst_name = 'A000500'
     fcst_level = 'Surface'
     fcst_output_name = 'A001500'
     fcst_fmt = f'\'name="{fcst_name}"; level="{fcst_level}";\''
     config = metplus_config
 
-    test_data_dir = get_test_data_dir(config)
+    test_data_dir = get_test_data_dir()
     fcst_input_dir = os.path.join(test_data_dir,
                                   'pcp_in',
                                   'add')
@@ -285,16 +279,12 @@ def test_pcp_combine_add_subhourly(metplus_config):
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
     out_dir = wrapper.c_dict.get('FCST_OUTPUT_DIR')
-    expected_cmds = [(f"{app_path} {verbosity} "
-                      "-add "
-                      f"{fcst_input_dir}/20190802_i1800_m0_f1815.nc "
-                      f"{fcst_fmt} "
-                      f"{fcst_input_dir}/20190802_i1800_m0_f1810.nc "
-                      f"{fcst_fmt} "
-                      f"{fcst_input_dir}/20190802_i1800_m0_f1805.nc "
-                      f"{fcst_fmt} "
+    expected_cmds = [(f"{app_path} -add "
+                      f"{fcst_input_dir}/20190802_i1800_m0_f1815.nc {fcst_fmt} "
+                      f"{fcst_input_dir}/20190802_i1800_m0_f1810.nc {fcst_fmt} "
+                      f"{fcst_input_dir}/20190802_i1800_m0_f1805.nc {fcst_fmt} "
                       f'-name "{fcst_output_name}" '
-                      f"{out_dir}/5min_mem00_lag00.nc"),
+                      f"{out_dir}/5min_mem00_lag00.nc {verbosity}"),
                      ]
 
     all_cmds = wrapper.run_all_times()
@@ -307,11 +297,11 @@ def test_pcp_combine_add_subhourly(metplus_config):
 
 
 @pytest.mark.wrapper
-def test_pcp_combine_bucket(metplus_config):
+def test_pcp_combine_bucket(metplus_config, get_test_data_dir):
     fcst_output_name = 'APCP'
     config = metplus_config
 
-    test_data_dir = get_test_data_dir(config)
+    test_data_dir = get_test_data_dir()
     fcst_input_dir = os.path.join(test_data_dir,
                                   'pcp_in',
                                   'bucket')
@@ -349,8 +339,7 @@ def test_pcp_combine_bucket(metplus_config):
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
     out_dir = wrapper.c_dict.get('FCST_OUTPUT_DIR')
-    expected_cmds = [(f"{app_path} {verbosity} "
-                      "-add "
+    expected_cmds = [(f"{app_path} -add "
                       f"{fcst_input_dir}/2012040900_F015.grib "
                       "'name=\"APCP\"; level=\"A03\";' "
                       f"{fcst_input_dir}/2012040900_F012.grib "
@@ -358,7 +347,7 @@ def test_pcp_combine_bucket(metplus_config):
                       f"{fcst_input_dir}/2012040900_F006.grib "
                       "'name=\"APCP\"; level=\"A06\";' "
                       f'-name "{fcst_output_name}" '
-                      f"{out_dir}/2012040915_A015.nc"),
+                      f"{out_dir}/2012040915_A015.nc {verbosity}"),
                      ]
 
     all_cmds = wrapper.run_all_times()
@@ -384,14 +373,14 @@ def test_pcp_combine_bucket(metplus_config):
     ]
 )
 @pytest.mark.wrapper
-def test_pcp_combine_derive(metplus_config, config_overrides, extra_fields):
+def test_pcp_combine_derive(metplus_config, get_test_data_dir, config_overrides, extra_fields):
     stat_list = 'sum,min,max,range,mean,stdev,vld_count'
     fcst_name = 'APCP'
     fcst_level = 'A03'
     fcst_fmt = f'-field \'name="{fcst_name}"; level="{fcst_level}";\''
     config = metplus_config
 
-    test_data_dir = get_test_data_dir(config)
+    test_data_dir = get_test_data_dir()
     fcst_input_dir = os.path.join(test_data_dir,
                                   'pcp_in',
                                   'derive')
@@ -437,8 +426,7 @@ def test_pcp_combine_derive(metplus_config, config_overrides, extra_fields):
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
     out_dir = wrapper.c_dict.get('FCST_OUTPUT_DIR')
-    expected_cmds = [(f"{app_path} {verbosity} "
-                      f"-derive {stat_list} "
+    expected_cmds = [(f"{app_path} -derive {stat_list} "
                       f"{fcst_input_dir}/2005080700/24.tm00_G212 "
                       f"{fcst_input_dir}/2005080700/21.tm00_G212 "
                       f"{fcst_input_dir}/2005080700/18.tm00_G212 "
@@ -446,7 +434,7 @@ def test_pcp_combine_derive(metplus_config, config_overrides, extra_fields):
                       f"{fcst_input_dir}/2005080700/12.tm00_G212 "
                       f"{fcst_input_dir}/2005080700/09.tm00_G212 "
                       f"{fcst_fmt} {extra_fields}"
-                      f"{out_dir}/2005080700_f24_A18.nc"),
+                      f"{out_dir}/2005080700_f24_A18.nc {verbosity}"),
                      ]
 
     all_cmds = wrapper.run_all_times()
@@ -459,12 +447,12 @@ def test_pcp_combine_derive(metplus_config, config_overrides, extra_fields):
 
 
 @pytest.mark.wrapper
-def test_pcp_combine_loop_custom(metplus_config):
+def test_pcp_combine_loop_custom(metplus_config, get_test_data_dir):
     fcst_name = 'APCP'
     ens_list = ['ens1', 'ens2', 'ens3', 'ens4', 'ens5', 'ens6']
     config = metplus_config
 
-    test_data_dir = get_test_data_dir(config)
+    test_data_dir = get_test_data_dir()
     fcst_input_dir = os.path.join(test_data_dir,
                                   'pcp_in',
                                   'loop_custom')
@@ -505,12 +493,11 @@ def test_pcp_combine_loop_custom(metplus_config):
     out_dir = wrapper.c_dict.get('FCST_OUTPUT_DIR')
     expected_cmds = []
     for ens in ens_list:
-        cmd = (f"{app_path} {verbosity} "
-               f"-add "
+        cmd = (f"{app_path} -add "
                f"{fcst_input_dir}/{ens}/2009123112_02400.grib "
                "'name=\"APCP\"; level=\"A24\";' "
                f'-name "{fcst_name}" '
-               f"{out_dir}/{ens}/2009123112_02400.nc")
+               f"{out_dir}/{ens}/2009123112_02400.nc {verbosity}")
         expected_cmds.append(cmd)
 
     all_cmds = wrapper.run_all_times()
@@ -523,10 +510,10 @@ def test_pcp_combine_loop_custom(metplus_config):
 
 
 @pytest.mark.wrapper
-def test_pcp_combine_subtract(metplus_config):
+def test_pcp_combine_subtract(metplus_config, get_test_data_dir):
     config = metplus_config
 
-    test_data_dir = get_test_data_dir(config)
+    test_data_dir = get_test_data_dir()
     fcst_input_dir = os.path.join(test_data_dir,
                                   'pcp_in',
                                   'derive')
@@ -562,14 +549,13 @@ def test_pcp_combine_subtract(metplus_config):
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
     out_dir = wrapper.c_dict.get('FCST_OUTPUT_DIR')
-    expected_cmds = [(f"{app_path} {verbosity} "
-                      f"-subtract "
+    expected_cmds = [(f"{app_path} -subtract "
                       f"{fcst_input_dir}/2005080700/18.tm00_G212 "
                       "'name=\"APCP\"; level=\"A18\";' "
                       f"{fcst_input_dir}/2005080700/15.tm00_G212 "
                       "'name=\"APCP\"; level=\"A15\";' "
                       '-name "APCP" '
-                      f"{out_dir}/2005080718_A003.nc"),
+                      f"{out_dir}/2005080718_A003.nc {verbosity}"),
                      ]
 
     all_cmds = wrapper.run_all_times()
@@ -582,14 +568,14 @@ def test_pcp_combine_subtract(metplus_config):
 
 
 @pytest.mark.wrapper
-def test_pcp_combine_sum_subhourly(metplus_config):
+def test_pcp_combine_sum_subhourly(metplus_config, get_test_data_dir):
     fcst_name = 'A000500'
     fcst_level = 'Surface'
     fcst_output_name = 'A001500'
     fcst_fmt = f'-field \'name="{fcst_name}"; level="{fcst_level}";\''
     config = metplus_config
 
-    test_data_dir = get_test_data_dir(config)
+    test_data_dir = get_test_data_dir()
     fcst_input_dir = os.path.join(test_data_dir,
                                   'pcp_in',
                                   'add')
@@ -628,15 +614,14 @@ def test_pcp_combine_sum_subhourly(metplus_config):
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
     out_dir = wrapper.c_dict.get('FCST_OUTPUT_DIR')
-    expected_cmds = [(f"{app_path} {verbosity} "
-                      "-sum "
+    expected_cmds = [(f"{app_path} -sum "
                       "20190802_180000 000500 "
                       "20190802_181500 001500 "
                       f"-pcpdir {fcst_input_dir} "
                       f"-pcprx 20190802_i1800_m0_f* "
                       f"{fcst_fmt} "
                       f"-name \"{fcst_output_name}\" "
-                      f"{out_dir}/5min_mem00_lag00.nc"),
+                      f"{out_dir}/5min_mem00_lag00.nc {verbosity}"),
                      ]
 
     all_cmds = wrapper.run_all_times()
@@ -712,7 +697,7 @@ def test_get_extra_fields(metplus_config, names, levels, expected_args):
 
     wrapper = PCPCombineWrapper(config)
 
-    wrapper._handle_extra_field_arguments(data_src)
+    wrapper.set_command_line_arguments(data_src)
     wrapper._handle_name_argument('', data_src)
     for index, expected_arg in enumerate(expected_args):
         assert wrapper.args[index] == expected_arg
@@ -720,7 +705,6 @@ def test_get_extra_fields(metplus_config, names, levels, expected_args):
 
 @pytest.mark.wrapper
 def test_add_method_single_file(metplus_config):
-    data_src = 'FCST'
     config = metplus_config
     config.set('config', 'DO_NOT_RUN_EXE', True)
     config.set('config', 'INPUT_MUST_EXIST', False)
@@ -761,21 +745,21 @@ def test_add_method_single_file(metplus_config):
     in_file = (f"{wrapper.c_dict.get('FCST_INPUT_DIR')}/"
                "20191002_prec_1hracc_75hrfcst_e00.nc")
     expected_cmds = [
-        (f"{app_path} {verbosity} -add "
+        (f"{app_path} -add "
          f"{in_file} 'name=\"rf\"; level=\"(20191003_00,*,*)\";' "
          f"{in_file} 'name=\"rf\"; level=\"(20191002_23,*,*)\";' "
          f"{in_file} 'name=\"rf\"; level=\"(20191002_22,*,*)\";' "
-         f"{out_dir}/2019100300_prec_03hracc_e00.nc"),
-        (f"{app_path} {verbosity} -add "
+         f"{out_dir}/2019100300_prec_03hracc_e00.nc {verbosity}"),
+        (f"{app_path} -add "
          f"{in_file} 'name=\"rf\"; level=\"(20191003_03,*,*)\";' "
          f"{in_file} 'name=\"rf\"; level=\"(20191003_02,*,*)\";' "
          f"{in_file} 'name=\"rf\"; level=\"(20191003_01,*,*)\";' "
-         f"{out_dir}/2019100303_prec_03hracc_e00.nc"),
-        (f"{app_path} {verbosity} -add "
+         f"{out_dir}/2019100303_prec_03hracc_e00.nc {verbosity}"),
+        (f"{app_path} -add "
          f"{in_file} 'name=\"rf\"; level=\"(20191003_06,*,*)\";' "
          f"{in_file} 'name=\"rf\"; level=\"(20191003_05,*,*)\";' "
          f"{in_file} 'name=\"rf\"; level=\"(20191003_04,*,*)\";' "
-         f"{out_dir}/2019100306_prec_03hracc_e00.nc"),
+         f"{out_dir}/2019100306_prec_03hracc_e00.nc {verbosity}"),
     ]
 
     assert len(all_cmds) == len(expected_cmds)
@@ -817,7 +801,6 @@ def test_subtract_method_zero_accum(metplus_config):
     config.set('config', 'FCST_PCP_COMBINE_OUTPUT_ACCUM', '1H')
     config.set('config', 'FCST_PCP_COMBINE_OUTPUT_NAME', input_name)
 
-
     # NETCDF example should use zero accum, GRIB example should not (use -add)
     expected_cmds_dict = {}
     expected_cmds_dict['NETCDF'] = [
@@ -855,10 +838,76 @@ def test_subtract_method_zero_accum(metplus_config):
 
         app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
         verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
-        expected_cmds = [f"{app_path} {verbosity} {item}"
+        expected_cmds = [f"{app_path} {item} {verbosity}"
                          for item in expected_cmds_dict[data_type]]
         assert len(all_cmds) == len(expected_cmds)
 
         for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
             # ensure commands are generated as expected
             assert cmd == expected_cmd
+
+
+@pytest.mark.parametrize(
+    'input_thresh, vld_thresh, success', [
+        (None, None, False),
+        (0.6, None, True),
+        (1.0, None, False),
+        (None, 0.2, False),
+        (0.6, 0.2, True),
+        (1.0, 0.2, False),
+    ]
+)
+@pytest.mark.wrapper
+def test_add_method_missing_input(metplus_config, get_test_data_dir, input_thresh, vld_thresh, success):
+    data_src = "OBS"
+    input_dir = get_test_data_dir('accum')
+
+    config = metplus_config
+    set_minimum_config_settings(config, data_src)
+    config.set('config', 'LOOP_BY', "VALID")
+    config.set('config', 'VALID_TIME_FMT', "%Y%m%d%H")
+    config.set('config', 'VALID_BEG', "2016090415")
+    config.set('config', 'VALID_END', "2016090415")
+    config.set('config', 'VALID_INCREMENT', "1d")
+    config.set('config', f'{data_src}_PCP_COMBINE_INPUT_DIR', input_dir)
+    config.set('config', f'{data_src}_PCP_COMBINE_OUTPUT_ACCUM', '6H')
+    config.set('config', f'{data_src}_PCP_COMBINE_INPUT_ACCUMS', '1H')
+    if input_thresh is not None:
+        config.set('config', f'{data_src}_PCP_COMBINE_INPUT_THRESH', input_thresh)
+    if vld_thresh is not None:
+        config.set('config', f'{data_src}_PCP_COMBINE_VLD_THRESH', vld_thresh)
+    wrapper = PCPCombineWrapper(config)
+
+    assert wrapper.isOK
+
+    all_cmds = wrapper.run_all_times()
+    if not success:
+        assert len(all_cmds) == 0
+        return
+
+    field_name = wrapper.config.get('config', f'{data_src}_PCP_COMBINE_INPUT_NAMES')
+    field_info = f"'name=\"{field_name}\";'"
+
+    app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
+    verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
+    out_dir = wrapper.c_dict.get(f'{data_src}_OUTPUT_DIR')
+    extra_args = ''
+    if input_thresh:
+        extra_args += f' -input_thresh {input_thresh}'
+    if vld_thresh:
+        extra_args += f' -vld_thresh {vld_thresh}'
+    expected_cmds = [
+        f"{app_path} -add"
+        f" {input_dir}/20160904/file.2016090415.01h {field_info}"
+        f" {input_dir}/20160904/file.2016090414.01h {field_info}"
+        f" {input_dir}/20160904/file.2016090413.01h {field_info}"
+        f" {input_dir}/20160904/file.2016090412.01h {field_info}"
+        f" MISSING{input_dir}/20160904/file.2016090411.01h {field_info}"
+        f" MISSING{input_dir}/20160904/file.2016090410.01h {field_info}"
+        f"{extra_args} {out_dir}/20160904/outfile.2016090415_A06h {verbosity}"
+    ]
+    assert len(all_cmds) == len(expected_cmds)
+
+    for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
+        # ensure commands are generated as expected
+        assert cmd == expected_cmd
