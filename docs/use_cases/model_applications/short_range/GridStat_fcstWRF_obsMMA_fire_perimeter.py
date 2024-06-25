@@ -112,8 +112,6 @@ model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 # Python Scripting
 # ----------------
 #
-# **REVIEW THIS!**
-#
 # This use case calls a Python script to read MMA fire perimeter .kml files
 # and convert them into a poly line file that can be read by GenVxMask:
 #
@@ -128,8 +126,6 @@ model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 ##############################################################################
 # Python Embedding
 # ----------------
-#
-# **REVIEW THIS!**
 #
 # This use case uses a Python embedding script to read the WRF fire forecast into GridStat.
 #
@@ -157,8 +153,6 @@ model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 ##############################################################################
 # Expected Output
 # ---------------
-#
-# **REVIEW AND REPLACE THIS!**
 #
 # A successful run will output the following both to the screen and to the logfile::
 #
