@@ -15,7 +15,7 @@ model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 # Scientific Objective
 # --------------------
 #
-# REPLACE THIS!
+# **REPLACE THIS!**
 #
 # This use case ingests two CESM (CAM and CLM) files and raw FLUXNET2015 data.
 # The use case calculates the Terrestrial Coupling Index (TCI) from the CESM forecasts and FLUXNET observations.
@@ -31,7 +31,7 @@ model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 # Datasets
 # ---------------------
 #
-# REVIEW AND REPLACE THIS!
+# **REVIEW AND REPLACE THIS!**
 #
 # | **Forecast:** WRF Fire
 #
@@ -56,7 +56,7 @@ model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 # METplus Components
 # ------------------
 #
-# REVIEW AND REPLACE THIS!
+# **REVIEW AND REPLACE THIS!**
 #
 # This use case uses the UserScript wrapper to run a Python script to that
 # converts KML fire perimeter files to the poly line format that can be read by
@@ -69,7 +69,7 @@ model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 # METplus Workflow
 # ----------------
 #
-# REVIEW AND REPLACE THIS!
+# **REVIEW AND REPLACE THIS!**
 #
 # | **Init Beg:** 2018-06-01 at 16Z
 # | **Init End:** 2018-06-01 at 16Z
@@ -114,7 +114,7 @@ model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 # Python Scripting
 # ----------------
 #
-# REVIEW THIS!
+# **REVIEW THIS!**
 #
 # This use case calls a Python script to read MMA fire perimeter .kml files
 # and convert them into a poly line file that can be read by GenVxMask:
@@ -122,6 +122,7 @@ model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 # .. dropdown:: Click to view find_and_read_fire_perim_poly.py
 #
 #    parm/use_cases/model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter/find_and_read_fire_perim_poly.py
+#
 #    .. highlight:: python
 #    .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter/find_and_read_fire_perim_poly.py
 #
@@ -130,13 +131,13 @@ model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 # Python Embedding
 # ----------------
 #
-# REVIEW THIS!
+# **REVIEW THIS!**
 #
 # This use case uses a Python embedding script to read the WRF fire forecast into GridStat:
 #
+# parm/use_cases/model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter/read_wrfout_fire.py
 # .. dropdown:: Click to view read_wrfout_fire.py
 #
-#    parm/use_cases/model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter/read_wrfout_fire.py
 #    .. highlight:: python
 #    .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter/read_wrfout_fire.py
 #
@@ -158,7 +159,7 @@ model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 # Expected Output
 # ---------------
 #
-# REVIEW AND REPLACE THIS!
+# **REVIEW AND REPLACE THIS!**
 #
 # A successful run will output the following both to the screen and to the logfile::
 #
