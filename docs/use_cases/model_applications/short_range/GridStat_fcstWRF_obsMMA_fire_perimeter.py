@@ -38,9 +38,10 @@ model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 # | **Observations:** MMA
 #
 # | **Location:** All of the input data required for this use case can be found in the short_range sample data tarball.
-# | Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
+# | Click here to the METplus releases page and download sample data for the appropriate release:
+# | https://github.com/dtcenter/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE.
-# | See `Running METplus`_ section for more information.
+# | See :ref:`obtain_sample_input_data` for more information.
 #
 
 ##############################################################################
@@ -48,15 +49,13 @@ model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 # ---------------------
 #
 # This use case utilizes MET Python Embedding.
-# See the `MET User's Guide <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html>`_
+# See the `MET User's Guide Appendix F <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html>`_
 # for more information about Python requirements.
 #
 
 ##############################################################################
 # METplus Components
 # ------------------
-#
-# **REVIEW AND REPLACE THIS!**
 #
 # This use case uses the UserScript wrapper to run a Python script to that
 # converts KML fire perimeter files to the poly line format that can be read by
@@ -68,8 +67,6 @@ model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 ##############################################################################
 # METplus Workflow
 # ----------------
-#
-# **REVIEW AND REPLACE THIS!**
 #
 # | **Init Beg:** 2018-06-01 at 16Z
 # | **Init End:** 2018-06-01 at 16Z
@@ -101,7 +98,8 @@ model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 # THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!**
 # If there is a setting in the MET configuration file that is not controlled by an environment variable,
 # you can add additional environment variables to be set only within the METplus environment using the
-# [user_env_vars] section of the METplus configuration files. # See the ‘User Defined Config’ section on the
+# [user_env_vars] section of the METplus configuration files.
+# See the ‘User Defined Config’ section on the
 # ‘System Configuration’ page of the METplus User’s Guide for more information.
 #
 # .. dropdown:: Click to view parm/met_config/GridStatConfig_wrapped
@@ -133,11 +131,11 @@ model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 #
 # **REVIEW THIS!**
 #
-# This use case uses a Python embedding script to read the WRF fire forecast into GridStat:
-#
-# parm/use_cases/model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter/read_wrfout_fire.py
+# This use case uses a Python embedding script to read the WRF fire forecast into GridStat.
 #
 # .. dropdown:: Click to view read_wrfout_fire.py
+#
+#    parm/use_cases/model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter/read_wrfout_fire.py
 #
 #    .. highlight:: python
 #    .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter/read_wrfout_fire.py
