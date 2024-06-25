@@ -5,15 +5,11 @@ Create QBO
 
 """
 import os
-#import sys
 import datetime
 import numpy as np
 import xarray as xr
 import pandas as pd
-#import matplotlib as mpl
-#import matplotlib.patheffects as PathEffects
 from eofs.xarray import Eof
-#from matplotlib import pyplot as plt
 
 import metcalcpy.pre_processing.directional_means as directional_means
 import METreadnc.util.read_netcdf as read_netcdf
@@ -195,7 +191,6 @@ def main():
     solver = Eof(trop_u_anom)
     pcs = solver.pcs(npcs=2, pcscaling=1)
     eofs = solver.eofs(neofs=2)
-
 
     # Daily means from entire dataset
     mmdd = rean_trop_u.time.dt.strftime("%m-%d")
