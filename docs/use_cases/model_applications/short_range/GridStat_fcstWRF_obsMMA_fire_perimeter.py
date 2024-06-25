@@ -136,6 +136,7 @@ model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 # This use case uses a Python embedding script to read the WRF fire forecast into GridStat:
 #
 # parm/use_cases/model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter/read_wrfout_fire.py
+#
 # .. dropdown:: Click to view read_wrfout_fire.py
 #
 #    .. highlight:: python
