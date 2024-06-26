@@ -863,15 +863,6 @@ def handle_climo_dict(config, app_name, output_dict):
                                              output_dict):
             is_ok = False
 
-        # handle deprecated env vars CLIMO_MEAN_FILE and CLIMO_STDEV_FILE
-        # that are used by pre v4.0.0 wrapped MET config files
-        env_var_name = f'METPLUS_{dict_name.upper()}_DICT'
-        dict_value = output_dict.get(env_var_name, '')
-        match = re.match(r'.*file_name = \[([^\[\]]*)\];.*', dict_value)
-        if match:
-            file_name = match.group(1)
-            output_dict[f'{dict_name.upper()}_FILE'] = file_name
-
     return is_ok
 
 
