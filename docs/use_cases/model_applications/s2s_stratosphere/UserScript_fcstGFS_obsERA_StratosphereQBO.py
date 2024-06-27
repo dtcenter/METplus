@@ -104,7 +104,7 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 #
 #        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereQBO.conf /path/to/user_system.conf
 #
-# See Running METplus for more information.
+# See :ref:`running-metplus` for more information.
 #
 
 ##############################################################################
