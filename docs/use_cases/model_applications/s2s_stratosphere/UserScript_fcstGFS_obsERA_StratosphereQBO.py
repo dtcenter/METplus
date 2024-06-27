@@ -31,7 +31,8 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 # METplus Components
 # ------------------
 #
-# This use case runs the UserScript wrapper tool to run a user provided script,
+# This use case requires METcalcpy 3.0.0, METplotpy 3.0.0, and METdataio 2.1.
+# Specifically, the case runs the UserScript wrapper tool to run a user provided script,
 # stratosphere_qbo_driver.py.  The driver first computes zonal and meridional means
 # using directional_means.py in METcalcpy on U from -10 S to 10N latitude.  Then, 
 # an EOF analysis is performed on this zonal and meridional mean data, and two phase 
