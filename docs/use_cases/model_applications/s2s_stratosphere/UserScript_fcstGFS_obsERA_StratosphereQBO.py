@@ -12,8 +12,11 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 # Scientific Objective
 # --------------------
 #
-# This use case performs several different calculations and creates multiple plots
-# to evaluate QBO.
+# Stratpheric evaluation is important because many common modes of variability in
+# the troposphere have stratospheric teloconnection pathways.  This use case performs
+# evaluation of the Quasi-biennial Oscillation (QBO) using several different calculations 
+# and plots.  Specifically, phase diagrams can be used to compare the phase progression 
+# between the model and observations.
 #
 
 ##############################################################################
