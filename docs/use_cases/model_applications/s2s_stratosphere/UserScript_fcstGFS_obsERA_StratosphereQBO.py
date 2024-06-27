@@ -12,14 +12,8 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 # Scientific Objective
 # --------------------
 #
-# This use case performs several differenc calculations and creates multiple plots
-# to evaluate QBO.  First, the zonal and meridional means on U from -10 S to 10N 
-# latitude are computed.  Then, an EOF analysis is performed on the zonal and meridional
-# mean data and and two Phase diagrams of QBO are created.  The two phase diagrams are 
-# phase circuits which gives one plot for each start date listed in the configuration file 
-# for model and observations, and another phase plot for the whole time period.  Additionally
-# the zonal and meridional mean at 30 and 50mb are output as time series, and the bias (ME) 
-# is computed.  The 30 and 50mb U time series are also plotted.
+# This use case performs several different calculations and creates multiple plots
+# to evaluate QBO.
 #
 
 ##############################################################################
@@ -35,10 +29,15 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 # ------------------
 #
 # This use case runs the UserScript wrapper tool to run a user provided script,
-# in this case, stratosphere_qbo_driver.py to compute the zonal and meridional
-# mean, compute anomalies, create EOFs, create Phase diagrams, output U at 30 and
-# 50mb, and create time series of 30 and 50mb winds.  StatAnalysis is then run on 
-# the 30 and 50mb winds to compute the bias (ME).
+# stratosphere_qbo_driver.py.  The driver first computes zonal and meridional means
+# using directional_means.py in METcalcpy on U from -10 S to 10N latitude.  Then, 
+# an EOF analysis is performed on this zonal and meridional mean data, and two phase 
+# diagrams of QBO are created using the plot_qbo_phase_circuits and plot_qbo_phase_space
+# functions from stratosphere_plots.py in METplotpy.  Additionally the zonal and meridional 
+# mean at 30 and 50mb are output as time series to matched pair (MPR) files using write_mpr.py 
+# in METcalcpy and are also plotted as timeseries using the plot_u_timeseries function from 
+# stratosphere_plots.py in METplotpy.  Finally StatAnalysis is run on the 30 and 50mb U mpr 
+# files to compute the bias (ME).
 #
 
 ##############################################################################
@@ -89,6 +88,14 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 #
 
 ##############################################################################
+# Python Scripting
+# ----------------
+#
+# This use case runs the stratospher_qbo_driver.py python script.  The calculations
+# performed in the script are detailed in the METplus Components section.
+#
+
+##############################################################################
 # Running METplus
 # ---------------
 #
@@ -97,11 +104,11 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 # 1) Passing in UserScript_fcstGFS_obsERA_StratosphereQBO.conf, 
 # then a user-specific system configuration file::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereQBO.conf -c /path/to/user_system.conf
+#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereQBO.conf /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_fcstGFS_obsERA_StratosphereQBO.conf:
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereQBO.conf
+#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereQBO.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
