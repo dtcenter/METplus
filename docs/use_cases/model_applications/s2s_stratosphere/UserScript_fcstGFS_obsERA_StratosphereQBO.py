@@ -23,7 +23,7 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 # Datasets
 # --------
 #
-#  * GFS 0-24 hour forecasts for 10/2017 - 2/2018
+#  * GFS: 0-24 hour forecasts for 10/2017 - 2/2018
 #  * ERA: 30 year climatology for EOFs and 10/2017 - 2/2018  
 #
 

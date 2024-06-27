@@ -132,7 +132,7 @@ def main():
     
 
     """
-    Save the Data to be loaded in the calculation of QBO
+    Save the Data for the EOF calculation for future use, if desired
     """
     save_zmm = os.environ.get('SAVE_EOF_ZONAL_MERIDIONAL_MEAN','False')
     if save_zmm.lower() == 'true':
