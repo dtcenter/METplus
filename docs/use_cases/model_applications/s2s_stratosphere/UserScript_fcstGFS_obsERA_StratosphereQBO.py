@@ -120,7 +120,7 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 #   INFO: METplus has successfully finished running.
 #
 # There should be 4 graphics output, ERA_GFS_QBO_circuits.png, ERA5_QBO_PhaseSpace.png,
-# ERA_GFS_timeseries_30mb_u_201710_201802.png, and ERA_GFS_timeseries_30mb_u_201710_201802.png.
+# ERA_GFS_timeseries_30mb_u_201710_201802.png, and ERA_GFS_timeseries_50mb_u_201710_201802.png.
 # These graphics will be output to the path specified as OUTPUT_DIR/plots, using 
 # PLOT_PHASE_CIRCUITS_OUTPUT_NAME, PLOT_PHASE_SPACE_OUTPUT_NAME, PLOT_TIME_SERIES_OUTPUT_NAME_30,
 # and PLOT_TIME_SERIES_OUTPUT_NAME_50 in the [user_env_vars] section.  Additionally matched pair
