@@ -199,11 +199,13 @@ def make_nc(tmp_path, lon, lat, z, data, variable='Temp', file_name='fake.nc'):
 def get_test_data_dir():
     """!Get path to directory containing test data.
     """
-    def get_test_data_path(subdir):
+    def get_test_data_path(subdir=None):
         internal_tests_dir = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), os.pardir)
+            os.path.join(os.path.dirname(__file__), os.pardir, 'data')
         )
-        return os.path.join(internal_tests_dir, 'data', subdir)
+        if subdir:
+            internal_tests_dir = os.path.join(internal_tests_dir, subdir)
+        return internal_tests_dir
 
     return get_test_data_path
 
