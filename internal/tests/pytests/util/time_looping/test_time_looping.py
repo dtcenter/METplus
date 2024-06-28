@@ -46,29 +46,29 @@ from metplus.util.time_util import ti_calculate, ti_get_hours_from_relativedelta
                        relativedelta(hours=+6)],
               'Day1': [relativedelta(), relativedelta(hours=+1), relativedelta(hours=+2), relativedelta(hours=+3)]}),
         # divisions without labels
-        ({'LEAD_SEQ': "begin_end_incr(0,36,12)", 'LEAD_SEQ_DIVISIONS': "1d"},
+        ({'LEAD_SEQ': "begin_end_incr(0,36,12)", 'LEAD_SEQ_GROUP_SIZE': "1d"},
          {'Group1': [relativedelta(), relativedelta(hours=+12)],
           'Group2': [relativedelta(days=+1), relativedelta(days=+1, hours=+12)]}),
         # divisions with divisions label
-        ({'LEAD_SEQ': "begin_end_incr(0,36,12)", 'LEAD_SEQ_DIVISIONS': "1d", 'LEAD_SEQ_DIVISIONS_LABEL': 'Day'},
+        ({'LEAD_SEQ': "begin_end_incr(0,36,12)", 'LEAD_SEQ_GROUP_SIZE': "1d", 'LEAD_SEQ_GROUP_LABEL': 'Day'},
          {'Day1': [relativedelta(), relativedelta(hours=+12)],
           'Day2': [relativedelta(days=+1), relativedelta(days=+1, hours=+12)]}),
         # divisions with explicit labels
-        ({'LEAD_SEQ': "begin_end_incr(0,36,12)", 'LEAD_SEQ_DIVISIONS': "1d",
+        ({'LEAD_SEQ': "begin_end_incr(0,36,12)", 'LEAD_SEQ_GROUP_SIZE': "1d",
           'LEAD_SEQ_1_LABEL': 'One', 'LEAD_SEQ_2_LABEL': 'Two'},
          {'One': [relativedelta(), relativedelta(hours=+12)],
           'Two': [relativedelta(days=+1), relativedelta(days=+1, hours=+12)]}),
         # divisions with one explicit label, one no label
-        ({'LEAD_SEQ': "begin_end_incr(0,36,12)", 'LEAD_SEQ_DIVISIONS': "1d", 'LEAD_SEQ_1_LABEL': 'One'},
+        ({'LEAD_SEQ': "begin_end_incr(0,36,12)", 'LEAD_SEQ_GROUP_SIZE': "1d", 'LEAD_SEQ_1_LABEL': 'One'},
          {'One': [relativedelta(), relativedelta(hours=+12)],
           'Group2': [relativedelta(days=+1), relativedelta(days=+1, hours=+12)]}),
         # divisions with one explicit label, one division label
-        ({'LEAD_SEQ': "begin_end_incr(0,36,12)", 'LEAD_SEQ_DIVISIONS': "1d",
-          'LEAD_SEQ_1_LABEL': 'One', 'LEAD_SEQ_DIVISIONS_LABEL': 'Day'},
+        ({'LEAD_SEQ': "begin_end_incr(0,36,12)", 'LEAD_SEQ_GROUP_SIZE': "1d",
+          'LEAD_SEQ_1_LABEL': 'One', 'LEAD_SEQ_GROUP_LABEL': 'Day'},
          {'One': [relativedelta(), relativedelta(hours=+12)],
           'Day2': [relativedelta(days=+1), relativedelta(days=+1, hours=+12)]}),
         # divisions with skipped index
-        ({'LEAD_SEQ': "0, 12, 48, 60", 'LEAD_SEQ_DIVISIONS': "1d", 'LEAD_SEQ_DIVISIONS_LABEL': 'Day'},
+        ({'LEAD_SEQ': "0, 12, 48, 60", 'LEAD_SEQ_GROUP_SIZE': "1d", 'LEAD_SEQ_GROUP_LABEL': 'Day'},
          {'Day1': [relativedelta(), relativedelta(hours=+12)],
           'Day3': [relativedelta(days=+2), relativedelta(days=+2, hours=+12)]}),
     ]

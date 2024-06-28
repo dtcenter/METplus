@@ -595,11 +595,11 @@ def _get_lead_groups_from_indices(config):
 
 
 def _get_lead_groups_from_divisions(config):
-    if not config.has_option('config', 'LEAD_SEQ_DIVISIONS'):
+    if not config.has_option('config', 'LEAD_SEQ_GROUP_SIZE'):
         return {}
 
     lead_list = getlist(config.getstr('config', 'LEAD_SEQ', ''))
-    divisions = config.getstr('config', 'LEAD_SEQ_DIVISIONS')
+    divisions = config.getstr('config', 'LEAD_SEQ_GROUP_SIZE')
     divisions = get_relativedelta(divisions, default_unit='H')
     lead_min = get_relativedelta('0')
     lead_max = divisions - get_relativedelta('1S')
@@ -625,7 +625,7 @@ def _get_lead_groups_from_divisions(config):
         lead_max += divisions
 
     if num_leads < len(lead_list):
-        config.logger.warning('Could not split LEAD_SEQ using LEAD_SEQ_DIVISIONS')
+        config.logger.warning('Could not split LEAD_SEQ using LEAD_SEQ_GROUP_SIZE')
         return None
 
     return lead_groups
@@ -634,6 +634,6 @@ def _get_lead_groups_from_divisions(config):
 def _get_label_from_index(config, index):
     if config.has_option('config', f"LEAD_SEQ_{index}_LABEL"):
         return config.getstr('config', f"LEAD_SEQ_{index}_LABEL")
-    if config.has_option('config', "LEAD_SEQ_DIVISIONS_LABEL"):
-        return f"{config.getstr('config', 'LEAD_SEQ_DIVISIONS_LABEL')}{index}"
+    if config.has_option('config', "LEAD_SEQ_GROUP_LABEL"):
+        return f"{config.getstr('config', 'LEAD_SEQ_GROUP_LABEL')}{index}"
     return f"Group{index}"
