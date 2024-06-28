@@ -18,7 +18,7 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 # and plots.  Specifically, phase diagrams can be used to compare the QBO phase progression 
 # between the model and observations.  Additionally, timeseries of U at 30 and 50 mb are also 
 # plotted to compare the speed of propagation of the model versus the observations.  Continuous 
-# statistics (bias, RMSE, etc) are calculatec for U at 30 and 50mb, and are also computed
+# statistics (bias, RMSE, etc) are calculated for U at 30 and 50mb, and are also computed
 # separately to evaluate QBO in the easterly phase (U < 0) versus the westerly phase (U > 0).
 #
 
@@ -34,25 +34,28 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 # METplus Components
 # ------------------
 #
-# This use case requires METcalcpy 3.0.0, METplotpy 3.0.0, and METdataio 2.1.
-# Specifically, the case runs the UserScript wrapper tool to run a user provided script,
-# stratosphere_qbo_driver.py.  The driver first computes zonal and meridional means
-# using directional_means.py in METcalcpy on U from -10 S to 10N latitude.  Then, 
-# an EOF analysis is performed on this zonal and meridional mean data, and two phase 
-# diagrams of QBO are created using the plot_qbo_phase_circuits and plot_qbo_phase_space
-# functions from stratosphere_plots.py in METplotpy.  Additionally the zonal and meridional 
-# mean at 30 and 50mb are output as time series to matched pair (MPR) files using write_mpr.py 
-# in METcalcpy and are also plotted as timeseries using the plot_u_timeseries function from 
-# stratosphere_plots.py in METplotpy.  Finally StatAnalysis is run on the 30 and 50mb U mpr 
-# files to compute the bias (ME).
+# This use case calls UserScript and StatAnalysis.  The UserScript accesses calculations
+# as part of METcalcpy, METplotpy, and METdataio.  For it to run, the following versions 
+# of those repositories are needed:
+# * METcalcpy 3.0.0
+# * METplotpy 3.0.0
+# * METdataio 2.1
 #
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
-# This use case does not loop but plots the entire time period of data.  The 
-# following tools are run once: UserScript, StatAnalysis
+# This use case does not loop but UserScript and StatAnalysis are each run once. 
+# The UserScript call runs the driver script stratosphere_qbo_driver.py which first 
+# computes zonal and meridional means using directional_means.py in METcalcpy on U from 
+# -10 S to 10N latitude.  Then, an EOF analysis is performed on this zonal and meridional 
+# mean data, and two phase diagrams of QBO are created using the plot_qbo_phase_circuits and 
+# plot_qbo_phase_space functions from stratosphere_plots.py in METplotpy.  Additionally the 
+# zonal and meridional mean at 30 and 50mb are output as time series to matched pair (MPR) 
+# files using write_mpr.py in METcalcpy and are also plotted as timeseries using the 
+# plot_u_timeseries function from stratosphere_plots.py in METplotpy.  Finally StatAnalysis is 
+# run on the 30 and 50mb U mpr files to compute the bias (ME).
 # 
 
 ##############################################################################
@@ -98,8 +101,8 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 # Python Scripting
 # ----------------
 #
-# This use case runs the stratospher_qbo_driver.py python script.  The calculations
-# performed in the script are detailed in the METplus Components section.
+# This use case runs the stratospher_qbo_driver.py python script.  The processing
+# performed by the script are detailed in the METplus Workflow section.
 #
 
 ##############################################################################
