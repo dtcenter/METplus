@@ -2244,12 +2244,12 @@ METplus Configuration Glossary
    LEAD_SEQ_<n>
      Specify the sequence of forecast lead times to include in the analysis. Comma separated list format, e.g.:0, 6, 12. <n> corresponds to the bin in which the user wishes to aggregate series by lead results.
 
-     | *Used by:*  SeriesAnalysis
+     | *Used by:*  All
 
    LEAD_SEQ_<n>_LABEL
-     Specify the label for the :term:`LEAD_SEQ_<n>` group of forecast leads.
+     Specify the label for the :term:`LEAD_SEQ_\<n>` group of forecast leads.
 
-     | *Used by:*  SeriesAnalysis
+     | *Used by:*  All
 
    LEAD_SEQ_GROUP_SIZE
      Defines the size of forecast lead groups to create from :term:`LEAD_SEQ`.
