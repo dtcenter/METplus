@@ -7,8 +7,6 @@
 
 import sys
 import os
-import subprocess
-import shlex
 
 from docker_utils import docker_get_volumes_last_updated, get_branch_name
 from docker_utils import get_data_repo, DOCKERHUB_METPLUS_DATA_DEV
@@ -83,7 +81,7 @@ def main(args):
             volume_name = f'{prefix}-{model_app_name}'
 
             # add output- to model app name
-            model_app_name=f'output-{model_app_name}'
+            model_app_name = f'output-{model_app_name}'
 
             # set DockerHub repo to dev version because all output data
             # should be in dev repository
@@ -113,11 +111,11 @@ def main(args):
 
 if __name__ == "__main__":
     # split up command line args that have commas before passing into main
-    args = []
+    arg_list = []
 
     for arg in sys.argv[1:]:
-        args.extend(arg.split(','))
-    out = main(args)
+        arg_list.extend(arg.split(','))
+    out = main(arg_list)
     if out is None:
         print("ERROR: Something went wrong")
         sys.exit(1)
