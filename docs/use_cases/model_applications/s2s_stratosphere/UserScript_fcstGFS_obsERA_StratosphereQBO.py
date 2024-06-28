@@ -36,10 +36,7 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 #
 # This use case calls UserScript and StatAnalysis.  The UserScript accesses calculations
 # as part of METcalcpy, METplotpy, and METdataio.  For it to run, the following versions 
-# of those repositories are needed:
-#  * METcalcpy 3.0.0
-#  * METplotpy 3.0.0
-#  * METdataio 2.1
+# of those repositories are needed, METcalcpy 3.0.0, METplotpy 3.0.0, and METdataio 2.1.
 #
 
 ##############################################################################
@@ -102,7 +99,7 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 # ----------------
 #
 # This use case runs the stratospher_qbo_driver.py python script.  The processing
-# performed by the script are detailed in the :ref: `metplus-workflow` section.
+# performed by the script are detailed in the :ref:`metplus-workflow` section.
 #
 
 ##############################################################################
