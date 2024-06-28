@@ -560,30 +560,80 @@ def _handle_lead_groups(lead_groups):
 def get_lead_sequence_groups(config):
     # output will be a dictionary where the key will be the
     #  label specified and the value will be the list of forecast leads
-    lead_seq_dict = {}
-    # used in plotting
+    lead_seq_dict = _get_lead_groups_from_indices(config)
+    if lead_seq_dict is not None:
+        return lead_seq_dict
+
+    # if no indices were found, check if divisions are requested
+    return _get_lead_groups_from_divisions(config)
+
+
+def _get_lead_groups_from_indices(config):
     all_conf = config.keys('config')
     indices = []
-    regex = re.compile(r"LEAD_SEQ_(\d+)")
+    regex = re.compile(r"LEAD_SEQ_(\d+)$")
     for conf in all_conf:
         result = regex.match(conf)
         if result is not None:
             indices.append(result.group(1))
 
+    if not indices:
+        return None
+
+    lead_seq_dict = {}
     # loop over all possible variables and add them to list
     for index in indices:
-        if config.has_option('config', f"LEAD_SEQ_{index}_LABEL"):
-            label = config.getstr('config', f"LEAD_SEQ_{index}_LABEL")
-        else:
-            label = f"Group{index}"
-
+        label = _get_label_from_index(config, index)
         # get forecast list for n
         lead_string_list = getlist(config.getstr('config', f'LEAD_SEQ_{index}'))
-        lead_seq = _handle_lead_seq(config,
-                                    lead_string_list,
-                                    lead_min=None,
-                                    lead_max=None)
+        lead_seq = _handle_lead_seq(config, lead_string_list,
+                                    lead_min=None, lead_max=None)
         # add to output dictionary
         lead_seq_dict[label] = lead_seq
 
     return lead_seq_dict
+
+
+def _get_lead_groups_from_divisions(config):
+    if not config.has_option('config', 'LEAD_SEQ_DIVISIONS'):
+        return {}
+
+    lead_list = getlist(config.getstr('config', 'LEAD_SEQ', ''))
+    divisions = config.getstr('config', 'LEAD_SEQ_DIVISIONS')
+    divisions = get_relativedelta(divisions, default_unit='H')
+    lead_min = get_relativedelta('0')
+    lead_max = divisions - get_relativedelta('1S')
+    index = 1
+    now = datetime.now()
+    # maximum 1000 divisions can be created to prevent infinite loop
+    num_leads = 0
+    lead_groups = {}
+    while now + lead_max < now + (divisions * 1000):
+        lead_seq = _handle_lead_seq(config, lead_list,
+                                    lead_min=lead_min, lead_max=lead_max)
+        if lead_seq:
+            label = _get_label_from_index(config, index)
+            lead_groups[label] = lead_seq
+            num_leads += len(lead_seq)
+
+        # if all forecast leads have been handled, break out of while loop
+        if num_leads >= len(lead_list):
+            break
+
+        index += 1
+        lead_min += divisions
+        lead_max += divisions
+
+    if num_leads < len(lead_list):
+        config.logger.warning('Could not split LEAD_SEQ using LEAD_SEQ_DIVISIONS')
+        return None
+
+    return lead_groups
+
+
+def _get_label_from_index(config, index):
+    if config.has_option('config', f"LEAD_SEQ_{index}_LABEL"):
+        return config.getstr('config', f"LEAD_SEQ_{index}_LABEL")
+    if config.has_option('config', "LEAD_SEQ_DIVISIONS_LABEL"):
+        return f"{config.getstr('config', 'LEAD_SEQ_DIVISIONS_LABEL')}{index}"
+    return f"Group{index}"
