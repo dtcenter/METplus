@@ -683,27 +683,8 @@ class RuntimeFreqWrapper(CommandBuilder):
         lead_loop = [None] if leads is None else leads
         for file_dict in self.c_dict['ALL_FILES']:
             for lead in lead_loop:
-                if lead is not None:
-                    current_time_info = time_info.copy()
-                    current_time_info['lead'] = lead
-                else:
-                    current_time_info = time_info
-
-                # compare time information for each input file
-                # add file to list of files to use if it matches
-                if not self.compare_time_info(current_time_info,
-                                              file_dict['time_info']):
-                    continue
-
-                for input_key in file_dict:
-                    # skip time info key
-                    if input_key == 'time_info':
-                        continue
-
-                    if input_key not in all_input_files:
-                        all_input_files[input_key] = []
-
-                    all_input_files[input_key].extend(file_dict[input_key])
+                self._add_files_that_match_time(all_input_files, time_info,
+                                                file_dict, lead)
 
         # return None if no matching input files were found
         if not all_input_files:
@@ -723,6 +704,36 @@ class RuntimeFreqWrapper(CommandBuilder):
             list_file_dict[identifier] = list_file_path
 
         return list_file_dict
+
+    def _add_files_that_match_time(self, all_input_files, time_info, file_dict, lead):
+        """!Check if time info of input files matches current time info. If it
+        is a match, add the file info to the all_input_files dictionary.
+
+        @param all_input_files dictionary to add file info if there is a time match
+        @param time_info dictionary of time info to compare to file times
+        @param file_dict dictionary containing file information including file times
+        @param lead forecast lead to check
+        """
+        current_time_info = time_info
+        if lead is not None:
+            current_time_info = time_info.copy()
+            current_time_info['lead'] = lead
+
+        # compare time information for each input file
+        # add file to list of files to use if it matches
+        if not self.compare_time_info(current_time_info,
+                                      file_dict['time_info']):
+            return
+
+        for input_key in file_dict:
+            # skip time info key
+            if input_key == 'time_info':
+                continue
+
+            if input_key not in all_input_files:
+                all_input_files[input_key] = []
+
+            all_input_files[input_key].extend(file_dict[input_key])
 
     def get_list_file_name(self, time_info, identifier):
         """! Build name of ascii file that contains a list of files to process.

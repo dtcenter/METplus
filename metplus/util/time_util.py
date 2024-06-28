@@ -13,15 +13,8 @@ import datetime
 from dateutil.relativedelta import relativedelta
 import re
 
-from .string_manip import split_level, format_thresh
+from .string_manip import format_thresh
 
-'''!@namespace TimeInfo
-@brief Utility to handle timing in METplus wrappers
-@code{.sh}
-Cannot be called directly. These are helper functions
-to be used in other METplus wrappers
-@endcode
-'''
 
 # dictionary where key is letter of time unit, i.e. Y and value is
 # the string representation of it, i.e. year
@@ -60,48 +53,52 @@ def get_relativedelta(value, default_unit='S'):
     mult = 1
     reg = r'(-*)(\d+)([a-zA-Z]*)'
     match = re.match(reg, value)
-    if match:
-        if match.group(1) == '-':
-            mult = -1
-        time_value = int(match.group(2)) * mult
-        unit_value = match.group(3)
-
-        # create relativedelta (dateutil) object for unit
-        # if no units specified, use seconds unless default_unit is specified
-        if unit_value == '':
-            if default_unit == 'S':
-                return relativedelta(seconds=time_value)
-            else:
-                unit_value = default_unit
-
-        if unit_value == 'H':
-            return relativedelta(hours=time_value)
-
-        if unit_value == 'M':
-            return relativedelta(minutes=time_value)
-
-        if unit_value == 'S':
-            return relativedelta(seconds=time_value)
-
-        if unit_value == 'd':
-            return relativedelta(days=time_value)
-
-        if unit_value == 'm':
-            return relativedelta(months=time_value)
-
-        if unit_value == 'Y':
-            return relativedelta(years=time_value)
-
-        # unsupported time unit specified, return None
+    if not match:
         return None
+
+    if match.group(1) == '-':
+        mult = -1
+    time_value = int(match.group(2)) * mult
+    unit_value = match.group(3)
+
+    # create relativedelta (dateutil) object for unit
+    # if no units specified, use seconds unless default_unit is specified
+    if unit_value == '':
+        if default_unit == 'S':
+            return relativedelta(seconds=time_value)
+        else:
+            unit_value = default_unit
+
+    if unit_value == 'H':
+        return relativedelta(hours=time_value)
+
+    if unit_value == 'M':
+        return relativedelta(minutes=time_value)
+
+    if unit_value == 'S':
+        return relativedelta(seconds=time_value)
+
+    if unit_value == 'd':
+        return relativedelta(days=time_value)
+
+    if unit_value == 'm':
+        return relativedelta(months=time_value)
+
+    if unit_value == 'Y':
+        return relativedelta(years=time_value)
+
+    # unsupported time unit specified, return None
+    return None
 
 
 def get_seconds_from_string(value, default_unit='S', valid_time=None):
-    """!Convert string of time (optionally ending with time letter, i.e. HMSyMD to seconds
-        Args:
-          @param value string to convert, i.e. 3M, 4H, 17
-          @param default_unit units to apply if not specified at end of string
-          @returns time in seconds if successfully parsed, None if not"""
+    """!Convert string of time, optionally ending with time letter, e.g. HMSyMD to seconds
+
+      @param value string to convert, i.e. 3M, 4H, 17
+      @param default_unit units to apply if not specified at end of string
+      @param valid_time optional valid time to compute seconds if units to
+      convert are months or years
+      @returns time in seconds if successfully parsed, None if not"""
     rd_obj = get_relativedelta(value, default_unit)
     return ti_get_seconds_from_relativedelta(rd_obj, valid_time)
 
@@ -135,7 +132,7 @@ def ti_get_hours_from_relativedelta(lead, valid_time=None):
          @param lead relativedelta object to convert
          @param valid_time (optional) valid time required to convert values
           that contain months or years
-         @returns integer value of hours or None if cannot compute
+         @returns integer value of hours or None if it cannot be computed
     """
     lead_seconds = ti_get_seconds_from_relativedelta(lead, valid_time)
     if lead_seconds is None:
@@ -514,7 +511,7 @@ def add_to_time_input(time_input, clock_time=None, instance=None, custom=None):
     time_input['instance'] = instance if instance else ''
 
     # if custom is specified, set it
-    # otherwise leave it unset so it can be set within the wrapper
+    # otherwise leave it unset, so it can be set within the wrapper
     if custom:
         time_input['custom'] = custom
 
