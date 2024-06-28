@@ -8,6 +8,81 @@ from metplus.util.time_util import ti_calculate, ti_get_hours_from_relativedelta
 
 
 @pytest.mark.parametrize(
+    'config_dict, expected_output', [
+        # 1 group
+        ({'LEAD_SEQ_1': "0, 1, 2, 3",
+          'LEAD_SEQ_1_LABEL': 'Day1',
+          },  {'Day1': [relativedelta(), relativedelta(hours=+1), relativedelta(hours=+2), relativedelta(hours=+3)]}),
+        # 2 groups, no overlap
+        ({'LEAD_SEQ_1': "0, 1, 2, 3",
+          'LEAD_SEQ_1_LABEL': 'Day1',
+          'LEAD_SEQ_2': "8, 9, 10, 11",
+          'LEAD_SEQ_2_LABEL': 'Day2',
+          },  {'Day1': [relativedelta(), relativedelta(hours=+1), relativedelta(hours=+2), relativedelta(hours=+3)],
+               'Day2': [relativedelta(hours=+8), relativedelta(hours=+9), relativedelta(hours=+10),
+                        relativedelta(hours=+11)]}),
+        # 2 groups, overlap
+        ({'LEAD_SEQ_1': "0, 1, 2, 3",
+          'LEAD_SEQ_1_LABEL': 'Day1',
+          'LEAD_SEQ_2': "3, 4, 5, 6",
+          'LEAD_SEQ_2_LABEL': 'Day2',
+          }, {'Day1': [relativedelta(), relativedelta(hours=+1), relativedelta(hours=+2), relativedelta(hours=+3)],
+              'Day2': [relativedelta(hours=+3), relativedelta(hours=+4), relativedelta(hours=+5),
+                       relativedelta(hours=+6)]}),
+        # 2 groups, no overlap, out of order
+        ({'LEAD_SEQ_1': "8, 9, 10, 11",
+          'LEAD_SEQ_1_LABEL': 'Day2',
+          'LEAD_SEQ_2': "0, 1, 2, 3",
+          'LEAD_SEQ_2_LABEL': 'Day1',
+          },  {'Day2': [relativedelta(hours=+8), relativedelta(hours=+9), relativedelta(hours=+10),
+                        relativedelta(hours=+11)],
+               'Day1': [relativedelta(), relativedelta(hours=+1), relativedelta(hours=+2), relativedelta(hours=+3)]}),
+        # 2 groups, overlap, out of order
+        ({'LEAD_SEQ_1': "3, 4, 5, 6",
+          'LEAD_SEQ_1_LABEL': 'Day2',
+          'LEAD_SEQ_2': "0, 1, 2, 3",
+          'LEAD_SEQ_2_LABEL': 'Day1',
+          }, {'Day2': [relativedelta(hours=+3), relativedelta(hours=+4), relativedelta(hours=+5),
+                       relativedelta(hours=+6)],
+              'Day1': [relativedelta(), relativedelta(hours=+1), relativedelta(hours=+2), relativedelta(hours=+3)]}),
+        # divisions without labels
+        ({'LEAD_SEQ': "begin_end_incr(0,36,12)", 'LEAD_SEQ_DIVISIONS': "1d"},
+         {'Group1': [relativedelta(), relativedelta(hours=+12)],
+          'Group2': [relativedelta(days=+1), relativedelta(days=+1, hours=+12)]}),
+        # divisions with divisions label
+        ({'LEAD_SEQ': "begin_end_incr(0,36,12)", 'LEAD_SEQ_DIVISIONS': "1d", 'LEAD_SEQ_DIVISIONS_LABEL': 'Day'},
+         {'Day1': [relativedelta(), relativedelta(hours=+12)],
+          'Day2': [relativedelta(days=+1), relativedelta(days=+1, hours=+12)]}),
+        # divisions with explicit labels
+        ({'LEAD_SEQ': "begin_end_incr(0,36,12)", 'LEAD_SEQ_DIVISIONS': "1d",
+          'LEAD_SEQ_1_LABEL': 'One', 'LEAD_SEQ_2_LABEL': 'Two'},
+         {'One': [relativedelta(), relativedelta(hours=+12)],
+          'Two': [relativedelta(days=+1), relativedelta(days=+1, hours=+12)]}),
+        # divisions with one explicit label, one no label
+        ({'LEAD_SEQ': "begin_end_incr(0,36,12)", 'LEAD_SEQ_DIVISIONS': "1d", 'LEAD_SEQ_1_LABEL': 'One'},
+         {'One': [relativedelta(), relativedelta(hours=+12)],
+          'Group2': [relativedelta(days=+1), relativedelta(days=+1, hours=+12)]}),
+        # divisions with one explicit label, one division label
+        ({'LEAD_SEQ': "begin_end_incr(0,36,12)", 'LEAD_SEQ_DIVISIONS': "1d",
+          'LEAD_SEQ_1_LABEL': 'One', 'LEAD_SEQ_DIVISIONS_LABEL': 'Day'},
+         {'One': [relativedelta(), relativedelta(hours=+12)],
+          'Day2': [relativedelta(days=+1), relativedelta(days=+1, hours=+12)]}),
+        # divisions with skipped index
+        ({'LEAD_SEQ': "0, 12, 48, 60", 'LEAD_SEQ_DIVISIONS': "1d", 'LEAD_SEQ_DIVISIONS_LABEL': 'Day'},
+         {'Day1': [relativedelta(), relativedelta(hours=+12)],
+          'Day3': [relativedelta(days=+2), relativedelta(days=+2, hours=+12)]}),
+    ]
+)
+@pytest.mark.util
+def test_get_lead_sequence_groups(metplus_config, config_dict, expected_output):
+    config = metplus_config
+    for key, value in config_dict.items():
+        config.set('config', key, value)
+
+    assert tl.get_lead_sequence_groups(config) == expected_output
+
+
+@pytest.mark.parametrize(
     'run_time, skip_times, inc_times, expected_result', [
         (datetime(2019, 12, 30), {'%d': ['30', '31']}, None, True),
         (datetime(2019, 12, 30), {'%d': ['29', '31']}, None, False),
