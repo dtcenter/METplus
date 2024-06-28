@@ -329,7 +329,7 @@ class CyclonePlotterWrapper(CommandBuilder):
             if not self.is_global_extent:
                 self.logger.debug(f"Subset the data based on the region of interest.")
                 subset_by_region_df = self.subset_by_region(sanitized_df)
-                if not subset_by_region_df:
+                if subset_by_region_df.empty:
                     return None
                 final_df = subset_by_region_df.copy(deep=True)
             else:
