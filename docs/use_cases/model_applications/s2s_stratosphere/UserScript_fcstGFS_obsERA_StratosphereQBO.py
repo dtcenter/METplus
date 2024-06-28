@@ -18,7 +18,7 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 # and plots.  Specifically, phase diagrams can be used to compare the QBO phase progression 
 # between the model and observations.  Additionally, timeseries of U at 30 and 50 mb are also 
 # plotted to compare the speed of propagation of the model versus the observations.  Continuous 
-# statistics (bias, RMSE, etc) are calculated for U at 30 and 50mb, and are also computed
+# statistics (ME, RMSE, etc.) are calculated for U at 30 and 50mb, and are also computed
 # separately to evaluate QBO in the easterly phase (U < 0) versus the westerly phase (U > 0).
 #
 
