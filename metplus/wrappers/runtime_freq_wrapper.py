@@ -10,8 +10,6 @@ Output Files:
 Condition codes: 0 for success, 1 for failure
 """
 
-import os
-
 from ..util import time_util
 from ..util import log_runtime_banner, get_lead_sequence, get_lead_sequence_groups
 from ..util import skip_time, getlist, get_start_and_end_times, get_time_prefix
@@ -274,11 +272,7 @@ class RuntimeFreqWrapper(CommandBuilder):
 
             lead_groups = self._get_leads_as_group(time_info)
             for label, lead_seq in lead_groups.items():
-                if label:
-                    self.logger.info(
-                        f"Processing lead group {label}:"
-                        f" {format_lead_seq(lead_seq, plural=False)}"
-                    )
+                self._log_lead_group(label, lead_seq)
                 time_info['label'] = label
                 self.c_dict['ALL_FILES'] = (
                     self.get_all_files_from_leads(time_info, lead_seq)
@@ -302,6 +296,12 @@ class RuntimeFreqWrapper(CommandBuilder):
         lead_seq = get_lead_sequence(self.config, time_input,
                                      wildcard_if_empty=use_wildcard)
         return {'': lead_seq}
+
+    def _log_lead_group(self, label, lead_seq):
+        if not label:
+            return
+        self.logger.info(f"Processing lead group {label}:"
+                         f" {format_lead_seq(lead_seq, plural=False)}")
 
     def run_once_per_lead(self, custom):
         self.logger.debug("Running once for forecast lead time")
