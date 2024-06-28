@@ -2247,9 +2247,22 @@ METplus Configuration Glossary
      | *Used by:*  SeriesAnalysis
 
    LEAD_SEQ_<n>_LABEL
-     Required when SERIES_BY_LEAD_GROUP_FCSTS=True. Specify the label of the corresponding bin of series by lead results.
+     Specify the label for the :term:`LEAD_SEQ_<n>` group of forecast leads.
 
      | *Used by:*  SeriesAnalysis
+
+   LEAD_SEQ_GROUP_SIZE
+     Defines the size of forecast lead groups to create from :term:`LEAD_SEQ`.
+     See :ref:`grouping_forecast_leads` for more information.
+
+     | *Used by:*  All
+
+   LEAD_SEQ_GROUP_LABEL
+     Defines the label to apply for each forecast lead group that are created
+     using :term:`LEAD_SEQ` and :term:`LEAD_SEQ_GROUP_SIZE`.
+     See :ref:`grouping_forecast_leads` for more information.
+
+     | *Used by:*  All
 
    LINE_TYPE
      .. warning:: **DEPRECATED:** Please use :term:`LINE_TYPE_LIST` instead.
@@ -3545,7 +3558,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`LEAD_SEQ_\<n>` and :term:`SERIES_ANALYSIS_RUNTIME_FREQ` instead.
 
    SERIES_BY_LEAD_GROUP_FCSTS
-     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_GROUP_FCSTS` instead.
+     .. warning:: **DEPRECATED:** Please use :term:`LEAD_SEQ_\<n>` and :term:`SERIES_ANALYSIS_RUNTIME_FREQ` instead.
 
    SERIES_INIT_FILTERED_OUT_DIR
      .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_FILTERED_OUTPUT_DIR` instead.
