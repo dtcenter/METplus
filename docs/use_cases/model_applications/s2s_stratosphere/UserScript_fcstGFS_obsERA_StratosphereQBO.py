@@ -104,7 +104,7 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 # ----------------
 #
 # This use case runs the stratospher_qbo_driver.py python script.  The processing
-# performed by the script are detailed in the METplus Workflow section.
+# performed by the script are detailed in the METplus Workflow section above.
 #
 
 ##############################################################################
