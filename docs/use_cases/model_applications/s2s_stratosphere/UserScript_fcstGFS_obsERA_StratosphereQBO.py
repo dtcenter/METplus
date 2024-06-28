@@ -12,11 +12,14 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 # Scientific Objective
 # --------------------
 #
-# Stratpheric evaluation is important because many common modes of variability in
-# the troposphere have stratospheric teloconnection pathways.  This use case performs
-# evaluation of the Quasi-biennial Oscillation (QBO) using several different calculations 
-# and plots.  Specifically, phase diagrams can be used to compare the phase progression 
-# between the model and observations.
+# Many common modes of variability in the troposphere have stratospheric teloconnection 
+# pathways.  This use case performs evaluation of the Quasi-biennial Oscillation (QBO), 
+# one of the key players of stratosphic variability, using several different calculations 
+# and plots.  Specifically, phase diagrams can be used to compare the QBO phase progression 
+# between the model and observations.  Additionally, timeseries of U at 30 and 50 mb are also 
+# plotted to compare the speed of propagation of the model versus the observations.  Continuous 
+# statistics (bias, RMSE, etc) are calculatec for U at 30 and 50mb, and are also computed
+# separately to evaluate QBO in the easterly phase (U < 0) versus the westerly phase (U > 0).
 #
 
 ##############################################################################
@@ -119,13 +122,18 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 #
 #   INFO: METplus has successfully finished running.
 #
-# There should be 4 graphics output, ERA_GFS_QBO_circuits.png, ERA5_QBO_PhaseSpace.png,
-# ERA_GFS_timeseries_30mb_u_201710_201802.png, and ERA_GFS_timeseries_50mb_u_201710_201802.png.
-# These graphics will be output to the path specified as OUTPUT_DIR/plots, using 
-# PLOT_PHASE_CIRCUITS_OUTPUT_NAME, PLOT_PHASE_SPACE_OUTPUT_NAME, PLOT_TIME_SERIES_OUTPUT_NAME_30,
-# and PLOT_TIME_SERIES_OUTPUT_NAME_50 in the [user_env_vars] section.  Additionally matched pair
-# .stat files will be output to OUTPUT_DIR/mpr, and the computed bias will be output to 
-# OUTPUT_DIR/StatAnalysis.
+# There should be 4 graphics output to the plot directory in the location set as OUTPUT_DIR
+# in the [user_env_vars] section of the configuration file:
+# * ERA_GFS_QBO_circuits.png
+# * ERA5_QBO_PhaseSpace.png
+# * ERA_GFS_timeseries_30mb_u_201710_201802.png
+# * ERA_GFS_timeseries_50mb_u_201710_201802.png.
+# The name of the output graphics can be changed using PLOT_PHASE_CIRCUITS_OUTPUT_NAME, 
+# PLOT_PHASE_SPACE_OUTPUT_NAME, PLOT_TIME_SERIES_OUTPUT_NAME_30, and PLOT_TIME_SERIES_OUTPUT_NAME_50 
+# also in the [user_env_vars] section.  Additionally many matched pair .stat files will be output to 
+# OUTPUT_DIR/mpr, and tow computed continuous statistics will be output to OUTPUT_DIR/StatAnalysis:
+# * GFS_ERA_20171001_20180228_210000L_zonal_wind_byphase_CNT.stat
+# * GFS_ERA_20171001_20180228_210000L_zonal_wind_CNT.stat
 #
 
 ##############################################################################
