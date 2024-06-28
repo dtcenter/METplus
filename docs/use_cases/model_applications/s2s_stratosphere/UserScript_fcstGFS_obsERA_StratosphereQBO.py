@@ -12,7 +12,7 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 # Scientific Objective
 # --------------------
 #
-# MAny common modes of variability in the troposphere have stratospheric teloconnection
+# Many common modes of variability in the troposphere have stratospheric teloconnection
 # pathways.  This use case performs evaluation of the Quasi-biennial Oscillation (QBO),
 # one of the key players of stratosphereic varability, using several different calculations
 # and plots.  Specifically, phase diagrams can be used to compare the QBO plhase progression
@@ -129,12 +129,12 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 #
 # There should be 4 graphics output to the plot directory in the location set as OUTPUT_DIR
 # in the [user_env_vars] section of the configuration file:
-
+#
 #  * ERA_GFS_QBO_circuits.png
 #  * ERA5_QBO_PhaseSpace.png
 #  * ERA_GFS_timeseries_30mb_u_201710_201802.png
 #  * ERA_GFS_timeseries_50mb_u_201710_201802.png
-
+#
 # The name of the output graphics can be changed using PLOT_PHASE_CIRCUITS_OUTPUT_NAME,
 # PLOT_PHASE_SPACE_OUTPUT_NAME, PLOT_TIME_SERIES_OUTPUT_NAME_30, and PLOT_TIME_SERIES_OUTPUT_NAME_50
 # also in the [user_env_vars] section.  Additionally many matched pair .stat files will be output to
