@@ -37,9 +37,9 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 # This use case calls UserScript and StatAnalysis.  The UserScript accesses calculations
 # as part of METcalcpy, METplotpy, and METdataio.  For it to run, the following versions 
 # of those repositories are needed:
-# * METcalcpy 3.0.0
-# * METplotpy 3.0.0
-# * METdataio 2.1
+#  * METcalcpy 3.0.0
+#  * METplotpy 3.0.0
+#  * METdataio 2.1
 #
 
 ##############################################################################
@@ -127,16 +127,16 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 #
 # There should be 4 graphics output to the plot directory in the location set as OUTPUT_DIR
 # in the [user_env_vars] section of the configuration file:
-# * ERA_GFS_QBO_circuits.png
-# * ERA5_QBO_PhaseSpace.png
-# * ERA_GFS_timeseries_30mb_u_201710_201802.png
-# * ERA_GFS_timeseries_50mb_u_201710_201802.png.
+#  * ERA_GFS_QBO_circuits.png
+#  * ERA5_QBO_PhaseSpace.png
+#  * ERA_GFS_timeseries_30mb_u_201710_201802.png
+#  * ERA_GFS_timeseries_50mb_u_201710_201802.png
 # The name of the output graphics can be changed using PLOT_PHASE_CIRCUITS_OUTPUT_NAME, 
 # PLOT_PHASE_SPACE_OUTPUT_NAME, PLOT_TIME_SERIES_OUTPUT_NAME_30, and PLOT_TIME_SERIES_OUTPUT_NAME_50 
 # also in the [user_env_vars] section.  Additionally many matched pair .stat files will be output to 
 # OUTPUT_DIR/mpr, and tow computed continuous statistics will be output to OUTPUT_DIR/StatAnalysis:
-# * GFS_ERA_20171001_20180228_210000L_zonal_wind_byphase_CNT.stat
-# * GFS_ERA_20171001_20180228_210000L_zonal_wind_CNT.stat
+#  * GFS_ERA_20171001_20180228_210000L_zonal_wind_byphase_CNT.stat
+#  * GFS_ERA_20171001_20180228_210000L_zonal_wind_CNT.stat
 #
 
 ##############################################################################
