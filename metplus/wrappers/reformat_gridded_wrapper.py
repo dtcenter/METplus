@@ -30,6 +30,22 @@ class ReformatGriddedWrapper(LoopTimesWrapper):
     def __init__(self, config, instance=None):
         super().__init__(config, instance=instance)
 
+    def create_c_dict(self):
+        c_dict = super().create_c_dict()
+
+        # check if FCST or OBS should be run
+        app = self.app_name.upper()
+        for fcst_or_obs in ('FCST', 'OBS'):
+            c_dict[f'{fcst_or_obs}_RUN'] = (
+                self.config.getbool('config', f'{fcst_or_obs}_{app}_RUN', False)
+            )
+
+        if not c_dict['FCST_RUN'] and not c_dict['OBS_RUN']:
+            self.log_error(f'Must set either FCST_{app}_RUN or OBS_{app}_RUN')
+            return c_dict
+
+        return c_dict
+
     def run_at_time(self, input_dict):
         """! Runs the MET application for a given run time. Processing forecast
              or observation data is determined by conf variables.
@@ -38,21 +54,11 @@ class ReformatGriddedWrapper(LoopTimesWrapper):
 
             @param input_dict dictionary containing init or valid time info
         """
-        app_name_caps = self.app_name.upper()
         run_list = []
-        if self.config.getbool('config', 'FCST_'+app_name_caps+'_RUN', False):
+        if self.c_dict['FCST_RUN']:
             run_list.append("FCST")
-        if self.config.getbool('config', 'OBS_'+app_name_caps+'_RUN', False):
+        if self.c_dict['OBS_RUN']:
             run_list.append("OBS")
-
-        if not run_list:
-            class_name = self.__class__.__name__[0: -7]
-            self.log_error(f"{class_name} specified in process_list, but "
-                           f"FCST_{app_name_caps}_RUN and "
-                           f"OBS_{app_name_caps}_RUN  are both False. "
-                           f"Set one or both to true or remove {class_name} "
-                           "from the process_list")
-            return
 
         for to_run in run_list:
             self.logger.info("Processing {} data".format(to_run))

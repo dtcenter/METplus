@@ -80,8 +80,6 @@ def main():
     """
     Create plots
     """
-    print(plot_bias_levels)
-    print(plot_rmse_levels)
     plot_polar_bias(pleads,plevels,pme,plot_bias_output_file,plot_bias_title,plot_bias_levels)
     plot_polar_rmse(pleads,plevels,prmse,plot_rmse_output_file,plot_rmse_title,plot_rmse_levels)
 

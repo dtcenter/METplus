@@ -319,3 +319,21 @@ def preprocess_file(filename, data_type, config, allow_dir=False):
         return filename
 
     return None
+
+
+def traverse_dir(data_dir, get_dirs=False):
+    """!Generator used to navigate through and yield full path to all files or
+    directories under data_dir.
+
+    @param data_dir directory to traverse
+    @param get_dirs If True, get all directories under data_dir. If False, get
+    all files under data_dir. Defaults to False (files).
+    """
+    for dir_path, dirs, all_files in os.walk(data_dir, followlinks=True):
+        if get_dirs:
+            items = sorted(dirs)
+        else:
+            items = sorted(all_files)
+
+        for dir_name in items:
+            yield os.path.join(dir_path, dir_name)
