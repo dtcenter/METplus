@@ -65,9 +65,8 @@ UserScript_obsERA_obsOnly_Blocking.py
 # to save time and disk space.  These include RegridDataPlane to regrid the observations to 
 # degree.  Then, there are 3 calls to PcpCombine.  These compute daily average 500 mb height,  
 # a 5 day running mean and daily anomalies.  These omitted steps can be turned back on by using 
-# the PROCESS_LIST that is commented out.
-#
-# PROCESS_LIST = RegridDataPlane(regrid_obs), PcpCombine(daily_mean_obs), PcpCombine(running_mean_obs), PcpCombine(anomaly_obs), UserScript(script_blocking)
+# the PROCESS_LIST that is commented out:
+# | PROCESS_LIST = RegridDataPlane(regrid_obs), PcpCombine(daily_mean_obs), PcpCombine(running_mean_obs), PcpCombine(anomaly_obs), UserScript(script_blocking)
 #
 # Settings for the optional pre-processing steps can be found in the respective sections of 
 # the configuration, regrid_obs, daily_mean_obs, running_mean_obs, and anomaly_obs.  Data is not 

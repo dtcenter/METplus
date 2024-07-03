@@ -72,6 +72,7 @@ UserScript_fcstGFS_obsERA_Blocking.py
 # compute a 5 day running mean and daily anomalies on the observations, which are used to 
 # compute the storm track climatology.  These omitted steps can be turned back on by using the 
 # PROCESS_LIST that is commented out.
+#
 # PROCESS_LIST = RegridDataPlane(regrid_fcst), RegridDataPlane(regrid_obs), PcpCombine(daily_mean_fcst), PcpCombine(daily_mean_obs), PcpCombine(running_mean_obs), PcpCombine(anomaly_obs), UserScript(create_cbl_filelist), UserScript(script_blocking), StatAnalysis(sanal_ibls), StatAnalysis(sanal_blocks)
 #
 # Settings for the optional pre-processing steps can be found in the respective sections of 
