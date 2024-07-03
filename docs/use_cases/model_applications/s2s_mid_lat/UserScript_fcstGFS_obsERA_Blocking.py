@@ -31,12 +31,9 @@ UserScript_fcstGFS_obsERA_Blocking.py
 # 
 #  * Miller, D. E., and Z. Wang, 2022: Northern Hemisphere Winter Blocking: Differing Onset Mechanisms across regions. J. Atmos. Sci., 79, 1291-1309, https://doi.org/10.1175/JAS-D-21-0104.1.
 #
-# Masato, G., B. J. Hoskins, and T. J. Woollings, 2013: Winter and summer Northern Hemisphere blocking 
-# in CMIP5 models. J. Climate, 26, 7044–7059, https://doi.org/10.1175/JCLI-D-12-00466.1.
+#  * Masato, G., B. J. Hoskins, and T. J. Woollings, 2013: Winter and summer Northern Hemisphere blocking in CMIP5 models. J. Climate, 26, 7044–7059, https://doi.org/10.1175/JCLI-D-12-00466.1.
 #
-# Kitano, Y., and T. J. Yamada, 2016: Relationship between atmospheric blocking and cold day extremes in 
-# current and RCP8.5 future climate conditions over Japan and the surrounding area. Atmos. Sci. Lett., 
-# 17, 616–622, https://doi.org/10.1002/asl.711.
+#  * Kitano, Y., and T. J. Yamada, 2016: Relationship between atmospheric blocking and cold day extremes in current and RCP8.5 future climate conditions over Japan and the surrounding area. Atmos. Sci. Lett., 17, 616–622, https://doi.org/10.1002/asl.711.
 #
 
 ##############################################################################
@@ -176,8 +173,9 @@ UserScript_fcstGFS_obsERA_Blocking.py
 #
 # See :ref:`running-metplus` for more information.
 #
+#
 
-# ##############################################################################
+##############################################################################
 # Expected Output
 # ---------------
 #
