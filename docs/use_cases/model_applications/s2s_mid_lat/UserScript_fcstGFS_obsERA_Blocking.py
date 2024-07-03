@@ -28,11 +28,8 @@ UserScript_fcstGFS_obsERA_Blocking.py
 # identifying IBLs and blocks.
 #
 #  * Miller, D. E., and Z. Wang, 2019a: Skillful seasonal prediction of Eurasian winter blocking and extreme temperature frequency. Geophys. Res. Lett., 46, 11 530–11 538, https://doi.org/10.1029/2019GL085035.
-# 
 #  * Miller, D. E., and Z. Wang, 2022: Northern Hemisphere Winter Blocking: Differing Onset Mechanisms across regions. J. Atmos. Sci., 79, 1291-1309, https://doi.org/10.1175/JAS-D-21-0104.1.
-#
 #  * Masato, G., B. J. Hoskins, and T. J. Woollings, 2013: Winter and summer Northern Hemisphere blocking in CMIP5 models. J. Climate, 26, 7044–7059, https://doi.org/10.1175/JCLI-D-12-00466.1.
-#
 #  * Kitano, Y., and T. J. Yamada, 2016: Relationship between atmospheric blocking and cold day extremes in current and RCP8.5 future climate conditions over Japan and the surrounding area. Atmos. Sci. Lett., 17, 616–622, https://doi.org/10.1002/asl.711.
 #
 
@@ -98,8 +95,10 @@ UserScript_fcstGFS_obsERA_Blocking.py
 # plotting the blocking frequency (PLOTBLOCKS).  This use case runs all steps although not all of 
 # them are required to be run.  They must be run in the above order and control over which steps 
 # to run is controlled in the [user_env_vars] section of the configuration and are formatted as 
-# follows: |br|
-# FCST_STEPS = CBL+IBL+PLOTIBL+GILB+CALCBLOCKS+PLOTBLOCKS |br|
+# follows:
+# 
+# FCST_STEPS = CBL+IBL+PLOTIBL+GILB+CALCBLOCKS+PLOTBLOCKS
+#
 # OBS_STEPS = CBL+PLOTCBL+IBL+PLOTIBL+GILB+CALCBLOCKS+PLOTBLOCKS
 #
 # The metcalcpy scripts accessed include the following:
