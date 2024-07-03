@@ -96,6 +96,7 @@ UserScript_fcstGFS_obsERA_Blocking.py
 # them are required to be run.  They must be run in the above order and control over which steps 
 # to run is controlled in the [user_env_vars] section of the configuration and are formatted as 
 # follows:
+#
 # 
 # FCST_STEPS = CBL+IBL+PLOTIBL+GILB+CALCBLOCKS+PLOTBLOCKS
 #
