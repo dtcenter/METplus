@@ -173,7 +173,6 @@ UserScript_fcstGFS_obsERA_Blocking.py
 #
 # See :ref:`running-metplus` for more information.
 #
-#
 
 ##############################################################################
 # Expected Output
