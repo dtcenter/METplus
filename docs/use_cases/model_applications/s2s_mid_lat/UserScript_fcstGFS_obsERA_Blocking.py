@@ -12,11 +12,11 @@ UserScript_fcstGFS_obsERA_Blocking.py
 # Scientific Objective
 # --------------------
 #
-# Atmospheric blocking is associated with extreme weather events.  This use case evaluates 
+# Atmospheric blocking is associated with extreme weather events.  This use case computes
 # atmospheric blocking events using the methodology in Miller & Wang (2019, 2022), which
-# identifies blocsk from 500 mb height.  Various studies (Masato et al. 2013; Kitano and 
-# Yamada 2016) have suggested that using 500 mb height produces a similar climatology as when 
-# blocks are identified using potential temperature on a 2-PVU surface.
+# identifies blocks from 500 mb height.  Various studies (Masato et al. 2013; Kitano and 
+# Yamada 2016) have suggested that 500 mb height produces a similar blocking climatology as 
+# using potential temperature on a 2-PVU surface.
 #
 # The methodology in Miller & Wang (2019, 2022) first computes the Central Blocking Latitude 
 # (CBL) or storm track.  Allowing for an offset north and south of the storm track, reversals 
@@ -98,10 +98,8 @@ UserScript_fcstGFS_obsERA_Blocking.py
 # to run is controlled in the [user_env_vars] section of the configuration and are formatted as 
 # follows:
 #
-# 
-# FCST_STEPS = CBL+IBL+PLOTIBL+GILB+CALCBLOCKS+PLOTBLOCKS
-#
-# OBS_STEPS = CBL+PLOTCBL+IBL+PLOTIBL+GILB+CALCBLOCKS+PLOTBLOCKS
+#  | FCST_STEPS = CBL+IBL+PLOTIBL+GILB+CALCBLOCKS+PLOTBLOCKS
+#  | OBS_STEPS = CBL+PLOTCBL+IBL+PLOTIBL+GILB+CALCBLOCKS+PLOTBLOCKS
 #
 # The metcalcpy scripts accessed include the following:
 # metcalcpy/contributed/blocking_weather_regime/Blocking.py, which runs the calculation steps, CBL, IBL, GIBL, and CALcBLOCKS.  See the METcalcpy `Blocking Calculation Script <https://github.com/dtcenter/METcalcpy/blob/develop/metcalcpy/contributed/blocking_weather_regime/Blocking.py>`_ for more information.
