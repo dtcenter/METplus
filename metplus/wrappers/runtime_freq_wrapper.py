@@ -271,18 +271,8 @@ class RuntimeFreqWrapper(CommandBuilder):
             time_info = time_util.ti_calculate(time_input)
 
             lead_groups = self._get_leads_as_group(time_info)
-            for label, lead_seq in lead_groups.items():
-                self._log_lead_group(label, lead_seq)
-                time_info['label'] = label
-                self.c_dict['ALL_FILES'] = (
-                    self.get_all_files_from_leads(time_info, lead_seq)
-                )
-                if not self._check_input_files():
-                    continue
-
-                self.clear()
-                if not self.run_at_time_once(time_info):
-                    success = False
+            if not self.run_once_per_lead_group(lead_groups, time_info):
+                success = False
 
         return success
 
@@ -303,27 +293,51 @@ class RuntimeFreqWrapper(CommandBuilder):
         self.logger.info(f"Processing lead group {label}:"
                          f" {format_lead_seq(lead_seq, plural=False)}")
 
+    def run_once_per_lead_group(self, lead_groups, time_input):
+        success = True
+        for label, lead_seq in lead_groups.items():
+            self._log_lead_group(label, lead_seq)
+            time_input['label'] = label
+            self.c_dict['ALL_FILES'] = (
+                self.get_all_files_from_leads(time_input, lead_seq)
+            )
+            if not self._check_input_files():
+                continue
+
+            self.clear()
+            if not self.run_at_time_once(time_input):
+                success = False
+
+        return success
+
     def run_once_per_lead(self, custom):
-        self.logger.debug("Running once for forecast lead time")
+        # create input dict and only set 'now' item
+        time_input = {
+            'init': '*',
+            'valid': '*',
+        }
+        add_to_time_input(time_input,
+                          clock_time=self.config.getstr('config', 'CLOCK_TIME'),
+                          instance=self.instance, custom=custom)
+
+        # check if forecast lead groups are specified and
+        # run once per group of leads if they are
+        lead_groups = get_lead_sequence_groups(self.config)
+        if lead_groups:
+            self.logger.debug("Running once per forecast lead group")
+            time_input['lead'] = '*'
+            return self.run_once_per_lead_group(lead_groups, time_input)
+
+        self.logger.debug("Running once per forecast lead time")
         success = True
 
         lead_seq = get_lead_sequence(self.config, input_dict=None)
         for lead in lead_seq:
-            # create input dict and only set 'now' item
+            # add forecast lead to time input
+            time_input['lead'] = lead
+
             # create a new dictionary each iteration in case the function
             # that it is passed into modifies it
-            time_input = {}
-            add_to_time_input(time_input,
-                              clock_time=self.config.getstr('config',
-                                                            'CLOCK_TIME'),
-                              instance=self.instance,
-                              custom=custom)
-
-            # add forecast lead
-            time_input['lead'] = lead
-            time_input['init'] = '*'
-            time_input['valid'] = '*'
-
             time_info = time_util.ti_calculate(time_input)
 
             self.c_dict['ALL_FILES'] = self.get_all_files_for_lead(time_info)

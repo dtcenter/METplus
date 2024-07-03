@@ -464,7 +464,7 @@ def _are_lead_configs_ok(lead_seq, init_seq, lead_groups,
             return False
 
         # if looping by init, fail and exit
-        if 'valid' not in input_dict.keys():
+        if 'valid' not in input_dict.keys() or input_dict['valid'] == '*':
             log_msg = ('INIT_SEQ specified while looping by init time.'
                        ' Use LEAD_SEQ or change to loop by valid time')
             config.logger.error(log_msg)
