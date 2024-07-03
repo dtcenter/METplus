@@ -14,9 +14,9 @@ UserScript_obsERA_obsOnly_Blocking.py
 #
 # Atmospheric blocking is associated with extreme weather events.  This use case computes
 # atmospheric blocking events using the methodology in Miller & Wang (2019, 2022), which
-# identifies blocsk from 500 mb height.  Various studies (Masato et al. 2013; Kitano and 
-# Yamada 2016) have suggested that using 500 mb height produces a similar climatology as when 
-# blocks are identified using potential temperature on a 2-PVU surface.
+# identifies blocks from 500 mb height.  Various studies (Masato et al. 2013; Kitano and 
+# Yamada 2016) have suggested that 500 mb height produces a similar blocking climatology as 
+# using potential temperature on a 2-PVU surface.
 #
 # The methodology in Miller & Wang (2019, 2022) first computes the Central Blocking Latitude 
 # (CBL) or storm track.  Allowing for an offset north and south of the storm track, reversals 
@@ -27,7 +27,8 @@ UserScript_obsERA_obsOnly_Blocking.py
 #
 # This use case is a simplified version of the UserScript_fcstGFS_obs_ERA_Blocking use case.  While 
 # that use case evaluates a model versus observation, this case shows how to run the blocking
-# calculation on observations only, for simplicity.
+# calculation on observations only.  The setup is simpler and requires fewer steps than the 
+# UserScript_fcstGFS_obs_ERA_Blocking use case.
 #
 #  * Miller, D. E., and Z. Wang, 2019a: Skillful seasonal prediction of Eurasian winter blocking and extreme temperature frequency. Geophys. Res. Lett., 46, 11 530–11 538, https://doi.org/10.1029/2019GL085035.
 #  * Miller, D. E., and Z. Wang, 2022: Northern Hemisphere Winter Blocking: Differing Onset Mechanisms across regions. J. Atmos. Sci., 79, 1291-1309, https://doi.org/10.1175/JAS-D-21-0104.1.
@@ -60,18 +61,18 @@ UserScript_obsERA_obsOnly_Blocking.py
 # METplus Components
 # ------------------
 #
-# This use case calls UserScript once to run the driver which performs the blocking 
+# This use case calls UserScript once to run the driver which controls the blocking 
 # calculation.  There are 4 optional pre-processing steps that are not run in the example 
-# to save time and disk space.  These include RegridDataPlane to regrid the observations to 
-# degree.  Then, there are 3 calls to PcpCombine.  These compute daily average 500 mb height,  
-# a 5 day running mean and daily anomalies.  These omitted steps can be turned back on by using 
-# the PROCESS_LIST that is commented out:
+# to save time and disk space.  The first is RegridDataPlane to regrid the observations to 
+# 1 degree.  Then, there are 3 calls to PcpCombine.  These compute daily average 500 mb height,  
+# a 5 day running mean 500 mb height, and daily anomalies.  These omitted steps can be turned 
+# on by using the PROCESS_LIST that is commented out:
 # | PROCESS_LIST = RegridDataPlane(regrid_obs), PcpCombine(daily_mean_obs), PcpCombine(running_mean_obs), PcpCombine(anomaly_obs), UserScript(script_blocking)
 #
 # Settings for the optional pre-processing steps can be found in the respective sections of 
 # the configuration, regrid_obs, daily_mean_obs, running_mean_obs, and anomaly_obs.  Data is not 
-# provided in the tarball to run these steps, but the configurations are provided for reference 
-# on how to set up these steps.
+# provided in the tarball to run these steps, but the configurations are provided and an example 
+# of how to set up these steps.
 #
 
 ##############################################################################
@@ -87,8 +88,8 @@ UserScript_obsERA_obsOnly_Blocking.py
 # (IBL), plotting IBL frequency (PLOTIBL), computing GIBLs (GIBL), computing blocks (CALCBLOCKS), 
 # plotting the blocking frequency (PLOTBLOCKS).  This use case runs all steps although not all of 
 # them are required to be run.  They must be run in the above order and control over which steps 
-# to run is controlled in the [user_env_vars] section of the configuration and are formatted as 
-# follows:
+# to run is handled in the [user_env_vars] section of the configuration file in the following
+# variable:
 # 
 # OBS_STEPS = CBL+PLOTCBL+IBL+PLOTIBL+GILB+CALCBLOCKS+PLOTBLOCKS
 #
@@ -131,7 +132,7 @@ UserScript_obsERA_obsOnly_Blocking.py
 # Python Scripting
 # ----------------
 #
-# This use case runs the blocking_driver.py python script located in the UserScript_obsERA_obsOnly_Blocking directory.  The steps this driver script runs are described in the METplus workflow section above.  There are many input variables to the driver script, which can be modified in the [user_env_vars] section of the UserScript_obsERA_obsOnly_Blocking.conf file.  A description of each of these variables is also provided with each variable in the .conf file.
+# This use case runs the blocking_driver.py python script located in the UserScript_obsERA_obsOnly_Blocking directory.  The steps this driver script runs are described in the METplus workflow section above.  There are many input variables to the driver script, which can be modified in the [user_env_vars] section of the UserScript_obsERA_obsOnly_Blocking.conf file.  A description of each of these variables is provided in the .conf file.
 #
 # .. highlight:: python
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_Blocking/Blocking_driver.py
