@@ -15,6 +15,7 @@ import os
 from ..util import do_string_sub
 from . import CompareGriddedWrapper
 
+
 class MODEWrapper(CompareGriddedWrapper):
     """!Wrapper for the mode MET tool"""
 
