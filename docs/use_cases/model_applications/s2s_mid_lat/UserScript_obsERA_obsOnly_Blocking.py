@@ -72,7 +72,7 @@ UserScript_obsERA_obsOnly_Blocking.py
 #
 # Settings for the optional pre-processing steps can be found in the respective sections of 
 # the configuration, regrid_obs, daily_mean_obs, running_mean_obs, and anomaly_obs.  Data is not 
-# provided in the tarball to run these steps, but the configurations are provided and an example 
+# provided in the tarball to run these steps, but the configurations are provided as an example 
 # of how to set up these steps.
 #
 
@@ -92,7 +92,7 @@ UserScript_obsERA_obsOnly_Blocking.py
 # to run is handled in the [user_env_vars] section of the configuration file in the following
 # variable:
 # 
-# OBS_STEPS = CBL+PLOTCBL+IBL+PLOTIBL+GILB+CALCBLOCKS+PLOTBLOCKS
+#  | OBS_STEPS = CBL+PLOTCBL+IBL+PLOTIBL+GILB+CALCBLOCKS+PLOTBLOCKS
 #
 # The metcalcpy scripts accessed include the following:
 # metcalcpy/contributed/blocking_weather_regime/Blocking.py, which runs the calculation steps, CBL, IBL, GIBL, and CALcBLOCKS.  See the METcalcpy `Blocking Calculation Script <https://github.com/dtcenter/METcalcpy/blob/develop/metcalcpy/contributed/blocking_weather_regime/Blocking.py>`_ for more information.
@@ -133,7 +133,7 @@ UserScript_obsERA_obsOnly_Blocking.py
 # Python Scripting
 # ----------------
 #
-# This use case runs the blocking_driver.py python script located in the UserScript_obsERA_obsOnly_Blocking directory.  The steps this driver script runs are described in the METplus workflow section above.  There are many input variables to the driver script, which can be modified in the [user_env_vars] section of the UserScript_obsERA_obsOnly_Blocking.conf file.  A description of each of these variables is provided in the .conf file.
+# This use case runs the blocking_driver.py python script located in the UserScript_obsERA_obsOnly_Blocking directory.  The steps this driver script runs are described in the METplus workflow section above.  There are many input variables to the driver script, which can be modified in the [user_env_vars] section of the UserScript_obsERA_obsOnly_Blocking.conf file.  A description of each of these variables is also provided in the .conf file.
 #
 # .. highlight:: python
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_Blocking/Blocking_driver.py
@@ -159,12 +159,10 @@ UserScript_obsERA_obsOnly_Blocking.py
 #
 #   INFO: METplus has successfully finished running.
 #
-# Warnings of missing files will also be output to the log file.  In this case, the warnings are a result of
-# the 5 day running mean calculation, and should be present for 12/01, 12/02, 02/27, and 02/28 for each year
-# the calculation runs.  Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
-# Output for this use case will be found in model_applications/s2s_mid_lat/Blocking (relative to **OUTPUT_BASE**).  
-# There should be 3 different graphics output to the plot directory in the above location, but each will have png 
-# and pdf versions to make for 6 output plots:
+# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use 
+# case will be found in model_applications/s2s_mid_lat/Blocking (relative to **OUTPUT_BASE**).  There should be 
+# 3 different graphics output to the plot directory in the above location, but each will have png and pdf 
+# versions to make for 6 output plots:
 #
 #  * ERA_CBL_avg.png
 #  * ERA_CBL_avg.pdf

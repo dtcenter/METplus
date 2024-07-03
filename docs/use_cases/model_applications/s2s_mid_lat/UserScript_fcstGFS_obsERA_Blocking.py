@@ -155,7 +155,7 @@ UserScript_fcstGFS_obsERA_Blocking.py
 # Python Scripting
 # ----------------
 #
-# This use case runs the blocking_driver.py python script located in the UserScript_fcstGFS_obsERA_Blocking directory.  The steps this driver script runs are described in the METplus workflow section above.  There are many input variables to the driver script, which can be modified in the [user_env_vars] section of the UserScript_fcstGFS_obsERA_Blocking.conf file.  A description of each of these variables is also provided with each variable in the .conf file.
+# This use case runs the blocking_driver.py python script located in the UserScript_fcstGFS_obsERA_Blocking directory.  The steps this driver script runs are described in the METplus workflow section above.  There are many input variables to the driver script, which can be modified in the [user_env_vars] section of the UserScript_fcstGFS_obsERA_Blocking.conf file.  A description of each of these variables is also provided in the .conf file.
 #
 # .. highlight:: python
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking/Blocking_driver.py
