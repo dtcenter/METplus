@@ -18,7 +18,7 @@ is broken down into the following development cycles for each component:
 2. **Beta2** releases for the METplus components occurred around 2023-11-14.
 3. **Beta3** releases for the METplus components occurred around 2024-02-08.
 4. **Beta4** releases for the METplus components occurred around 2024-04-17.
-5. **Beta5** releases are tentatively scheduled for 2024-06-26.
+5. **Beta5** releases for the METplus components occurred around 2024-07-10.
 6. **Beta6** releases are tentatively scheduled for 2024-09-04.
 7. **Release Candidate 1** releases are tentatively scheduled for 2024-11-13.
 8. **Official Release** releases have not yet been scheduled.
@@ -43,6 +43,61 @@ METplus Wrappers Release Notes
 When applicable, release notes are followed by the
 `GitHub issue <https://github.com/dtcenter/METplus/issues>`__ number which
 describes the bugfix, enhancement, or new feature.
+
+METplus Version 6.0.0 Beta 5 Release Notes (2024-07-10)
+-------------------------------------------------------
+
+  .. dropdown:: Enhancements
+
+     * Improve PBL use case to generate reproducible results
+       (`#2246 <https://github.com/dtcenter/METplus/issues/2246>`_)
+     * MvMode config format changes
+       (`#2429 <https://github.com/dtcenter/METplus/issues/2429>`_)
+     * Point-Stat and Grid-Stat wrappers UGRID updates
+       (`#2433 <https://github.com/dtcenter/METplus/issues/2433>`_)
+     * Make new time_offset_warning MET option configurable via METplus
+       (`#2479 <https://github.com/dtcenter/METplus/issues/2479>`_)
+     * Add updated data to the short-range FV3 Physics Tendency use cases
+       (`#2494 <https://github.com/dtcenter/METplus/issues/2494>`_)
+     * Add new UGRID config from MET to METplus Wrappers
+       (`#2501 <https://github.com/dtcenter/METplus/issues/2501>`_)
+     * Remove the TC_RMW_MAX_RANGE_KM configuration option
+       (`#2513 <https://github.com/dtcenter/METplus/issues/2513>`_)
+     * Enhance the ASCII2NC wrapper to support setting the -valid_beg and -valid_end command line options
+       (`#2547 <https://github.com/dtcenter/METplus/issues/2547>`_)
+     * PCPCombine wrapper - allow missing inputs
+       (`#2578 <https://github.com/dtcenter/METplus/issues/2578>`_)
+     * Enhance Terrestrial Coupling Index (TCI) Use Case
+       (`#2388 <https://github.com/dtcenter/METplus/issues/2388>`_)
+
+  .. dropdown:: Bugfix
+
+     * PointStat support multiple observations files
+       (`#2567 <https://github.com/dtcenter/METplus/issues/2567>`_)
+
+  .. dropdown:: New Wrappers
+
+     * Madis2Nc
+       (`#1514 <https://github.com/dtcenter/METplus/issues/1514>`_)
+
+  .. dropdown:: New Use Cases
+
+     * Stratosphere QBO
+       (`#2557 <https://github.com/dtcenter/METplus/issues/2557>`_)
+
+  .. dropdown:: Documentation
+
+     * Add all _RUNTIME_FREQ variables to glossary
+       (`#2470 <https://github.com/dtcenter/METplus/issues/2470>`_)
+     * Modify Requirements section of the Contributor's Guide
+       (`#379 <https://github.com/dtcenter/METplus/issues/379>`_)
+     * Add the METplus development timeline for the next official release to the User's Guide
+       (`#2530 <https://github.com/dtcenter/METplus/issues/2530>`_)
+
+  .. dropdown:: Internal
+
+     * Update GitHub issue and pull request templates to reflect the current development workflow details
+       (`#2346 <https://github.com/dtcenter/METplus/issues/2346>`_)
 
 
 METplus Version 6.0.0 Beta 4 Release Notes (2024-04-17)
