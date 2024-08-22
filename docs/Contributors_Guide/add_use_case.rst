@@ -209,56 +209,147 @@ Add Sphinx Documentation File
 In the corresponding documentation MET tool name directory
 (**docs**/*use_cases/met_tool_wrapper/<MET TOOL NAME>*) for a met_tool_wrappers
 use case OR category directory for a model_applications use case
-(**docs**/*use_cases/model_applications/<CATEGORY>*), add:
+(**docs**/*use_cases/model_applications/<CATEGORY>*), users will need to a add 
+Python Sphinx Documentation (.py) file with the same name as the METplus configuration file.
 
-* A Python Sphinx Documentation (.py) file with the same name as the METplus
-  configuration file
+The following use case template has been provided and is expected to be completed by all users
+submitting new use cases. The template applies to both met_tool_wrappers and model_applications use cases.
+When completing the template, users should read through each section and its description 
+and example before filling in the section, as some section may not apply 
+to the use case being documented. For reference, users are encouraged to review
+existing `Model Applications <https://metplus.readthedocs.io/en/latest/generated/model_applications/index.html>`_
+use case documentation.
 
-    * Users are encouraged to copy an existing documentation file and modify it
-      to describe the new use case.
+* Use Case Template::
 
-    * Update any references to the .conf file to use the correct name.
+    Header and Path to Use Case Configuration File
+    
+    This section begins with {PrimaryStatAnalysisToolName}: Brief (12 words or less) and unique 
+    description of use case, followed on the next line by ‘=’ characters equal in length to 
+    the header (spaces included). Follow this with one line of no characters, then the path 
+    to the use case configuration file. This should be written in the format of 
+    model_applications/{use_case_category}/{use_case_configuration_file}. This section is 
+    preceded and followed by three ‘“‘ characters.
 
-    * Update the Scientific Objective section to describe the use case.
+    Example: 
 
-    * Update the description of the input data in the Datasets section.
+    “””
+    PointStat: Use Python embedding to calculate temperature terciles
+    =================================================================
 
-    * Update the list of External Dependencies (if applicable) to include any
-      required Python packages.  Update the :ref:`components_python_packages`
-      section.  If the package is already listed, add a link to the documentation
-      page for this new use case in the dropdown menu for that package, following the
-      format in the dropdown menu.  If the package is not already listed, update
-      the dropdown menus to include the name of the required package, the version,
-      the METplus component (e.g. METplus wrappers, METcalcpy, METplotpy), the
-      source, a brief description of the package, and a link to this new use
-      case that uses this new Python package.
-      
-    * Update the list of tools used in the METplus Components section.
+    model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds.conf
 
-    * Update the list of run times in the METplus Workflow section.
+    “””
 
-    * Update the list of keywords, referring to :ref:`quick-search` for
-      a list of possible keywords to use (Note: The link text for the
-      keywords must match the actual keyword exactly or it will not
-      show up in the search, i.e. **ASCII2NCToolUseCase** must match
-      https://metplus.readthedocs.io/en/latest/search.html?q=**ASCII2NCToolUseCase**.
 
-    * Add an image to use as the thumbnail (if desired). Images can be added
-      to the *docs/_static* directory and should be named
-      <category>-<conf>.png
-      where <category> is the use case category and <conf> is the name of the
-      configuration file, i.e.
-      **air_quality_and_comp-EnsembleStat_fcstICAP_obsMODIS_aod.png.**
-      The image can be referenced in the documentation file with this syntax:
+    Internal Table of Contents
+    
+    This section consists of set language using Read The Docs notation, generating a 
+    table of contents within the use case documentation. This should be copied with 
+    no alterations.
 
-::
+    Example:
 
-    # sphinx_gallery_thumbnail_path = '_static/air_quality_and_comp-EnsembleStat_fcstICAP_obsMODIS_aod.png'
+    ##############################################################################
+    # .. contents::
+    #	:depth: 1
+    #	:local:
+    #	:backlinks: none
+
+
+    Scientific Objective
+
+    This section should answer why this use case was created and included in the repository. 
+    What is a user gaining by using this use case? If the details do not add to 
+    the why this use case exists, those details do not belong in this section.
+
+    Example:
+    
+    Scientific Objective
+    
+    To provide statistical information on the forecast hail size compared to 
+    the observed hail size from MRMS MESH data. Using objects to verify hail size 
+    avoids the “unfair penalty” issue, where a CAM must first generate convection 
+    to have any chance of accurately predicting the hail size. In addition, studies 
+    have shown that MRMS MESH observed hail sizes do not correlate one-to-one with 
+    observed sizes but can only be used to group storms into general categories. 
+    Running MODE allows a user to do this.
+
+
+    Version Added
+
+    This represents the METplus version number that this use case was added to 
+    the METplus repository. It also represents the minimum or lowest METplus version 
+    this use case has been tested against. It should not include betas (ex. Version 5.1 beta 3), 
+    but should include the two-digit version number.
+
+    Example:
+
+    Version Added
+
+    METplus version 5.1
+
+
+    Datasets
+
+    This section should include a brief description of each model dataset 
+    and variable field (10 m wind speed, 2 m temperature, etc.) being used 
+    in the use case, as well as which field (forecast, observation, climatology, masking, etc.) 
+    is using which dataset. Acronyms should be spelled out (i.e not GFS, but Global Forecast System). 
+    This section also includes a Location description consisting of 
+    set language of how users can access the use case data for themselves.
+
+    Example:
+
+
+    Datasets
+
+    Forecast: Global Forecast System (GFS) 25km resolution, 2m temperature
+
+    Observation: ECMWF Reanalysis v5 (ERA5) 5 degree resolution, 2m temperature
+
+    Climatology: None
+
+    Location: All of the input data required for this use case can be 
+    found in a sample data tarball. Each use case category will have 
+    one or more sample data tarballs. It is only necessary to download 
+    the tarball with the use case’s dataset and not the entire collection 
+    of sample data. Click here to access the METplus releases page and download sample data 
+    for the appropriate release: https://github.com/dtcenter/METplus/releases
+    This tarball should be unpacked into the directory that you will 
+    set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 
 .. note::
     Text that ends with an underscore (_) may be interpreted as a reference, so
     avoid ending a line with this character to avoid generating warnings in the
     documentation.
+   
+In addition to completing the above template, users should complete all of the (applicable)
+following documentation steps:
+
+* Update the list of External Dependencies (if applicable) to include any
+  required Python packages.  Update the :ref:`components_python_packages`
+  section.  If the package is already listed, add a link to the documentation
+  page for this new use case in the dropdown menu for that package, following the
+  format in the dropdown menu.  If the package is not already listed, update
+  the dropdown menus to include the name of the required package, the version,
+  the METplus component (e.g. METplus wrappers, METcalcpy, METplotpy), the
+  source, a brief description of the package, and a link to this new use
+  case that uses this new Python package.
+      
+
+* Add an image to use as the thumbnail (if desired). Images can be added
+  to the *docs/_static* directory and should be named
+  <category>-<conf>.png
+  where <category> is the use case category and <conf> is the name of the
+  configuration file, i.e.
+  **air_quality_and_comp-EnsembleStat_fcstICAP_obsMODIS_aod.png.**
+  The image can be referenced in the documentation file with this syntax:
+
+::
+
+    # sphinx_gallery_thumbnail_path = '_static/air_quality_and_comp-EnsembleStat_fcstICAP_obsMODIS_aod.png'
+
 
 Accessing the Documentation
 ---------------------------
