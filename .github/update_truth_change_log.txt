@@ -2,3 +2,4 @@
 [20240612_13:45:41 develop] #2610 - #2610 changed the input data for 3 short range use cases (10-12).
 [20240627_18:08:16 develop] dtcenter/MET#2921 - Re-defines azimuths definitions and corrects the logic for deriving radial and tangential winds.
 [20240801_02:56:51 develop] dtcenter/MET#2939 - Changes CDP to OCDP, for observation climo distribution percentiles.
+[20240822_16:27:31 develop] #2657 - Update 3 Python embedding scripts for 3 additional MPR data columns in Stat-Analysis
