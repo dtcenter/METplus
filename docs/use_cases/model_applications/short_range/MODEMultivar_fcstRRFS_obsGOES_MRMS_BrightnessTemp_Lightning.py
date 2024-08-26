@@ -1,86 +1,103 @@
 """
-MODE: Multivariate  
-=========================================================================
+MODEMultivar: Create objects of brightness temps and radar reflectivity  
+=======================================================================
 
 model_applications/
 short_range/
 MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning.conf
 
 """
+
+##############################################################################
+# .. contents::
+#	:depth: 1
+#	:local:
+#	:backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
 #
-# This use case demonstrates how to run Multivariate MODE to identify complex
-# objects from two or more fields defined by a logical expression. This use
-# case identifies blizzard-like objects defined by the intersection of : 1) the
-# presence of snow precipitation type, 2) 10-m winds > 20 mph, and  3) visibility
-# < 1/2 mile. The use of multivariate MODE is well-suited to assess the structure and
-# placement of complex high-impact events such as blizzard conditions and heavy
-# snow bands. Output from this use-case consists of the MODE ASCII, NetCDF, and
-# PostScript files for the MODE forecast and observation super objects.
+# This use case identifies convective objects, which are defined by
+# the intersection of: 1) satellite infrared brightness temperature < 235 K and 
+# 2) radar reflectivity > 40 dBZ.
+# Satellite brightness temperatures are used in conjunction with radar reflectivity 
+# to capture both the cloud top (satellite) and in-cloud (radar) characteristics. 
+# Convective objects are also defined as lightning thresholds exceeding the 10th percentile. 
+# A percentile threshold is used for lightning data as RRFS lightning has units 
+# which are “non-dimensional” and therefore cannot be directly compared to the
+# Geostationary Lightning Mapper. 
+
+##############################################################################
+# Version Added
+# -------------
 #
-# In this case, MODE super object intensity statistics were ouput for both 10-m
-# wind and visibility. Using the the MODE_MULTIVAR_INTENSITY_FLAG, the user can
-# control for which variables super object intensity statistics will be output.
-# If all are set to False, then no intensity information will be output and only
-# statistics relative to the super-object geometry will be available. In the case
-# no requested intesities, the parameters MODE_FCST/OBS_MULTIVAR_NAME and/or
-# MODE_FCST/OBS_MULTIVAR_LEVEL may be used as identifiers for the super-object.
+# METplus Version 6.0
 
 ##############################################################################
 # Datasets
 # --------
 #
-# **Forecast dataset:** 1-hour HRRR in grib2
+# **Forecast:** Rapid Refresh Forecast System (RRFS) 3km resolution, 
+# channel 13 brightness temperature,
+# composite reflectivity, and lightning strike density
 #
-# **Observation dataset:** MRMS and HRRR analysis in grib2
+# **Observation:** Geostationary Operational Environmental Satellites (GOES) 3km resolution, 
+# channel 13 brightness temperature; 
+# Multi-radar Multi-sensor (MRMS) 3km resolution, composite reflectivity; 
+# GOES Global Lightning Mapper (GLM) 3km resolution, flash_extent_density
 # 
-# The forecast and observation fields are only a subset of the full domain in
-# order for a faster run-time of Multivariate MODE. An example command using
-# wgrib2 to create the HRRR subdomain is::
+# **Climatology:** None
 #
-#   wgrib2 infile.grib2 -new_grid_winds earth -new_grid lambert:262.5:38.5:38.5:38.5 -83.0:400:3000 37.0:400:3000 outfile.grib2 
-#
-# **Location:** All of the input data required for this use case can be found
-# in the *short_range* sample data tarball.
-# Navigate to `METplus Releases <https://github.com/dtcenter/METplus/releases>`_
-# and download sample data for the appropriate release.
-#
-# This tarball should be unpacked into the directory that you will set the
-# value of INPUT_BASE. See :ref:`running-metplus` for more information.
+# **Location:** All of the input data required for this use case can be found in a sample data 
+# tarball. Each use case category will have one or more sample data tarballs. It is only 
+# necessary to download the tarball with the use case’s dataset and not the entire 
+# collection of sample data. Click here to access the METplus releases page and download 
+# sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will set the value of 
+# INPUT_BASE. See :ref: `running-metplus` for more information.
 
 ##############################################################################
 # METplus Components
 # ------------------
 #
-# This use case utilizes the METplus MODE wrapper, ingesting multiple variables
-# to output complex super objects based on a user-defined logical expression. 
+# The only tool this use case calls is MODE, which will identify super-objects
+# by intersection of the multiple variable fields.
 # 
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
-# MODE is the only tool called and ingests multiple fields to create a complex
-# super object.
+# | **Beginning Time (INIT_BEG):** 2024-01-09 05:00 UTC
+# | **End Time (INIT_END):** 2024-01-09 05:00 UTC
+# | **Increment between beginning and end times (VALID_INCREMENT):** 1 Hour
+# | **Sequence of forecast leads to process (LEAD_SEQ):** 9,10
 #
-# This example runs a single forecast hour.
-#
-# | **Initialization:** 2021020100
-# | **Forecast lead:** 21
-#
+# This use case runs twice, once for each forecast lead time provided. It 
+# creates objects valid at 14UTC and 15UTC from 09 January 2024 are compared to 
+# the 9h and 10h forecasts initialized at 05UTC on 9 January 2024.
+# Convective objects are identified with thresholds of
+# satellite brightness temperature < 235 K and radar reflectivity > 40 dBZ, 
+# or lightning > 10th percentile.
+# In this use case, MODE super-object intensity statistics are output for both 
+# radar reflectivity and lightning. Using the MODE_MULTIVAR_INTENSITY_FLAG, 
+# users can control for which variables super object intensity statistics will be output. 
+# If all are set to False, then no intensity information will be output
+# and only statistics relative to the super-object geometry will be available.
+
+
 
 ##############################################################################
 # METplus Configuration
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line:
-# parm/use_cases/model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
+# then it loads any configuration files passed to METplus via the command line, i.e.
+# parm/use_cases/model_applications/short_range/MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning.conf
 
 ##############################################################################
 # MET Configuration
@@ -94,10 +111,20 @@ MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning.conf
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. note:: See the :ref:`MODE MET Configuration<mode-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
-#
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/met_config/MODEConfig_wrapped
+
+##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case does not use any Python Embedding.
+
+##############################################################################
+# Python Scripting
+# ----------------
+#
+# This use case does not use any Python Scripting.
 
 ##############################################################################
 # Running METplus
@@ -106,7 +133,7 @@ MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning.conf
 # Pass the use case configuration file to the run_metplus.py script
 # along with any user-specific system configuration files if desired::
 #
-#    run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf /path/to/user_system.conf
+#    run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
 
@@ -119,17 +146,27 @@ MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in OUTPUT_BASE and will contain the following
-# files in the directory mode/2021020100/f21:
-#
-#  * mode_Fcst_VIS_L0_Obs_VIS_L0_HRRR_vs_ANALYSIS_210000L_20210201_210000V_000000A_cts.txt
-#  * mode_Fcst_VIS_L0_Obs_VIS_L0_HRRR_vs_ANALYSIS_210000L_20210201_210000V_000000A_obj.nc
-#  * mode_Fcst_VIS_L0_Obs_VIS_L0_HRRR_vs_ANALYSIS_210000L_20210201_210000V_000000A_obj.txt
-#  * mode_Fcst_VIS_L0_Obs_VIS_L0_HRRR_vs_ANALYSIS_210000L_20210201_210000V_000000A.ps
-#  * mode_Fcst_WIND_Z10_Obs_WIND_Z10_HRRR_vs_ANALYSIS_210000L_20210201_210000V_000000A_cts.txt
-#  * mode_Fcst_WIND_Z10_Obs_WIND_Z10_HRRR_vs_ANALYSIS_210000L_20210201_210000V_000000A_obj.nc
-#  * mode_Fcst_WIND_Z10_Obs_WIND_Z10_HRRR_vs_ANALYSIS_210000L_20210201_210000V_000000A_obj.txt
-#  * mode_Fcst_WIND_Z10_Obs_WIND_Z10_HRRR_vs_ANALYSIS_210000L_20210201_210000V_000000A.ps
+# Output for this use case will be found in 
+# {OUTPUT_BASE}/model_applications/short_range/MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning/f??,
+# where the '??' characters will reflect the two forecast leads (09 and 10).
+# Each of these directories will contain the following files with their appropriate
+# verification times:
+#  * mode_Fcst_LTNG_entireatmosphere_all_all_Obs_flash_extent_density_all_all_RRFS_or_ANALYSIS
+# _090000L_20240109_140000V_000000A_cts.txt
+#  * mode_Fcst_LTNG_entireatmosphere_all_all_Obs_flash_extent_density_all_all_RRFS_or_ANALYSIS
+# _090000L_20240109_140000V_000000A_obj.nc
+#  * mode_Fcst_LTNG_entireatmosphere_all_all_Obs_flash_extent_density_all_all_RRFS_or_ANALYSIS
+# _090000L_20240109_140000V_000000A_obj.txt
+#  * mode_Fcst_LTNG_entireatmosphere_all_all_Obs_flash_extent_density_all_all_RRFS_or_ANALYSIS
+# _090000L_20240109_140000V_000000A.ps
+#  * mode_Fcst_REFC_entireatmosphere_consideredasinglelayer_all_all_Obs_MergedReflectivityQCComp
+# osite_all_all_RRFS_or_ANALYSIS_090000L_20240109_140000V_000000A_cts.txt
+#  * mode_Fcst_REFC_entireatmosphere_consideredasinglelayer_all_all_Obs_MergedReflectivityQCComp
+# osite_all_all_RRFS_or_ANALYSIS_090000L_20240109_140000V_000000A_obj.nc
+#  * mode_Fcst_REFC_entireatmosphere_consideredasinglelayer_all_all_Obs_MergedReflectivityQCComp
+# osite_all_all_RRFS_or_ANALYSIS_090000L_20240109_140000V_000000A_obj.txt
+#  * mode_Fcst_REFC_entireatmosphere_consideredasinglelayer_all_all_Obs_MergedReflectivityQCComp
+#osite_all_all_RRFS_or_ANALYSIS_090000L_20240109_140000V_000000A.ps
 
 ##############################################################################
 # Keywords
@@ -139,11 +176,7 @@ MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning.conf
 #
 #   * MODEToolUseCase 
 #   * ShortRangeAppUseCase
-#   * GRIB2FileUseCase 
-#   * RegriddingInToolUseCase 
-#   * NOAAWPCOrgUseCase
-#   * NCAROrgUseCase 
-#   * DiagnosticsUseCase
+#   * NetCDFFileUseCase 
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
