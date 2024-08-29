@@ -514,6 +514,7 @@ the text content.
     The only change between use cases is the path entered in the run command, which is use case specific.
 
     Example:
+    
     ##############################################################################
     # Running METplus
     # ---------------
@@ -525,6 +526,76 @@ the text content.
     #
     # See :ref:`running-metplus` for more information.
 
+
+    Expected Output
+
+    This section begins with set language that shows what message a 
+    successful METplus run concludes with. Then, it should direct users to the 
+    proper folder (folders, if multiple outputs are made) and directory structure 
+    where the final output is. If the use case creates intermediate output, it should 
+    be mentioned here as well. A list of the files and folders that are created should be provided.
+    If a netCDF is the output, it should be listed how many and what variable fields 
+    are inside the file. If there are a large number of variable fields within the file, a summary is sufficient.
+    If an image is created, it should be used as the use case image and referenced in this section as output.
+    If no output is created, this section should explain why and what the user accomplished by running the use case.
+
+    Example:
+
+    ##############################################################################
+    # Expected Output
+    # ---------------
+    #
+    # A successful run will output the following both to the screen and to the logfile::
+    #   INFO: METplus has successfully finished running.
+    #
+    # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
+    # Output for this use case will be found in 
+    # {OUPUT_BASE}/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds 
+    # and will contain the following files:
+    #
+    # * grid_stat_198201_000000L_19700101_000000V_pairs.nc
+    # * grid_stat_198201_000000L_19700101_000000V_pstd.txt
+    # * grid_stat_198201_000000L_19700101_000000V.stat
+    #
+    # Each file should contain corresponding statistics for the line type(s) requested.
+    # For the netCDF file, five variable fields are present (not including the lat/lon fields). Those variables are:
+    #
+    # * FCST_fcst_ENS_FREQ_lt-0.43_0_0_all_all_FULL(lat, lon)
+    # * OBS_tmp2m_20100101_000000_all_all_FULL(lat, lon)
+    # * CLIMO_MEAN_tmp2m_20100101_000000_all_all_FULL(lat, lon)
+    # * CLIMO_STDEV_tmp2m_20100101_000000_all_all_FULL(lat, lon)
+    # * CLIMO_CDF_tmp2m_20100101_000000_all_all_FULL(lat, lon)
+
+
+    Keywords
+
+    All keywords relevant to the use case should be added to this section 
+    as a bulleted list, as well as keeping the set language at the end of the list. 
+    If an important identifier for this use case is not currently set as a 
+    keyword in the :ref:`quick-search`, be sure to add it to the list of keywords 
+    before using it in the use case documentation.
+    Users should also use the end of this section to reference an image that 
+    will serve as a thumbnail for the use case. If no image is provided, 
+    a default image will be used; this is the same image used for all met_tool_wrapper use cases.
+
+    Example:
+
+    ##############################################################################
+    # Keywords
+    # --------
+    #
+    # .. note::
+    #
+    #   * PointStatToolUseCase
+    #   * PythonEmbeddingFileUseCase
+    #   * GRIB2FileUseCase
+    #   * MarineAndCryosphereAppUseCase
+    #
+    #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+    #
+    #
+    #
+    # sphinx_gallery_thumbnail_path = ‘_static/short-range-MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning.png’
 
 .. note::
     Text that ends with an underscore (_) may be interpreted as a reference, so
@@ -545,13 +616,13 @@ following documentation steps:
   case that uses this new Python package.
       
 
-* Add an image to use as the thumbnail (if desired). Images can be added
+* Add an image to use as the thumbnail. Images can be added
   to the *docs/_static* directory and should be named
   <category>-<conf>.png
   where <category> is the use case category and <conf> is the name of the
   configuration file, i.e.
   **air_quality_and_comp-EnsembleStat_fcstICAP_obsMODIS_aod.png.**
-  The image can be referenced in the documentation file with this syntax:
+  This is the same image that is referenced in the documentation file with this syntax:
 
 ::
 
