@@ -77,7 +77,7 @@ Review the `unanswered discussions <https://github.com/dtcenter/METplus/discussi
 Review Answered Discussions that are Unlocked
 ---------------------------------------------
 
-Review `anwered discussions that are unlocked <https://github.com/dtcenter/METplus/discussions?discussions_q=is%3Aanswered+is%3Aunlocked>`_.
+Review `answered discussions that are unlocked <https://github.com/dtcenter/METplus/discussions?discussions_q=is%3Aanswered+is%3Aunlocked>`_.
 
 If there is any recent activity on an **answered** question that indicates the
 questioner is satisified with the response, click on the button to **lock** the
@@ -112,6 +112,9 @@ Actions for Handling New Discussions
     send that data, pointing them to the
     `How to Send Us Data <https://github.com/dtcenter/METplus/discussions/954>`_
     discussions post and asking them to let you know once they have uploaded it.
+
+  * If the question is due to unclear or insufficient documentation, please fix
+    the documentation and point the user to the updated documentation.
 
 .. _lock_discussions:
 
