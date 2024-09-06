@@ -67,7 +67,7 @@ Review the `unanswered discussions <https://github.com/dtcenter/METplus/discussi
 
     * If the user has not responded in 7 or more days, consider following up to
       see if the user's issue is resolved or if they need more assistance. If
-      the user has not responded in two week, close the discussion with a comment
+      the user has not responded in two weeks, close the discussion with a comment
       indicating that is our policy to close discussions after two weeks of
       inactivity.
 
@@ -98,6 +98,9 @@ Actions for Handling New Discussions
 
   * If you can answer it yourself, do so.
 
+  * If the question is due to unclear or insufficient documentation, please fix
+    the documentation and point the user to the updated version.
+
   * If you can answer it with help from someone, post to the User Support Slack
     channel of dtc-metplus.slack.com, asking for advice.
 
@@ -112,9 +115,6 @@ Actions for Handling New Discussions
     send that data, pointing them to the
     `How to Send Us Data <https://github.com/dtcenter/METplus/discussions/954>`_
     discussions post and asking them to let you know once they have uploaded it.
-
-  * If the question is due to unclear or insufficient documentation, please fix
-    the documentation and point the user to the updated documentation.
 
 .. _lock_discussions:
 
