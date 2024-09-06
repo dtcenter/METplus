@@ -157,7 +157,7 @@ If following up on discussions where the user hasn't responded back in two
 weeks, consider posting something like the following before locking and closing
 the discussion, filling in the MONTH and DAY below:
 
-* We were able to provide some guidance for you on <MONTH DAY>, regarding the
+*We were able to provide some guidance for you on <MONTH DAY>, regarding the
 initial discussion you submitted, but we haven't heard back if the suggested
 actions helped. It is our
 `policy <https://github.com/dtcenter/METplus/discussions/939>`_ to lock and
