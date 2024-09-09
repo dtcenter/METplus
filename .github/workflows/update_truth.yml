@@ -65,7 +65,7 @@ jobs:
           # get truth change log from *-ref branch
           cmd="git checkout origin/${branch_name}-ref -- ${change_log_path}"
           echo $cmd
-          $cmd
+          $cmd | true
 
           # create or append to file to track truth data changes
           # and ensure that PR merge into *-ref branch triggered testing workflow
