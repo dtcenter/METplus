@@ -12,7 +12,7 @@ on:
 
 jobs:
   update_truth:
-    name: "Update or create truth reference branch"
+    name: "Update truth reference branch"
     runs-on: ubuntu-latest
     steps:
       - name: Check if branch is develop or main_vX.Y
@@ -26,12 +26,13 @@ jobs:
           fi
           echo ERROR: Branch is $branch_name - must be develop or match main_vX.Y
           exit 1
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         name: Checkout repository
         with:
           fetch-depth: 0
           token: ${{ secrets.METPLUS_BOT_TOKEN }}
       - name: Resolve conflicts between branch and branch-ref
+        id: resolve_conflicts
         run: |
           branch_name=${{ env.branch_name }}
           cd ${GITHUB_WORKSPACE}
@@ -43,17 +44,54 @@ jobs:
           echo ${branch_name}-ref does exist -- update it
           git config --global user.name "metplus-bot"
           git config --global user.email "97135045+metplus-bot@users.noreply.github.com"
+          # checkout branch (develop or main_vX.Y)
           echo git checkout ${branch_name}
           git checkout ${branch_name}
+
+          # create unique branch name to update *-ref branch
+          update_branch=update_${branch_name}_$(uuidgen | cut -d "-" -f1)
+          echo "update_branch=${update_branch}" >> $GITHUB_OUTPUT
+
+          # create update branch from branch (develop or main_vX.Y)
+          echo git checkout -b ${update_branch}
+          git checkout -b ${update_branch}
+
+          # merge -ref branch into update branch (favoring branch changes)
           echo git merge -s ours origin/${branch_name}-ref
           git merge -s ours origin/${branch_name}-ref
-          echo git push origin ${branch_name}
-          git push origin ${branch_name}
 
+          change_log_path=.github/update_truth_change_log.txt
+
+          # get truth change log from *-ref branch
+          cmd="git checkout origin/${branch_name}-ref -- ${change_log_path}"
+          echo $cmd
+          $cmd | true
+
+          # create or append to file to track truth data changes
+          # and ensure that PR merge into *-ref branch triggered testing workflow
+          change_entry="[$(date +%Y%m%d_%H:%M:%S) ${branch_name}] ${{ github.event.inputs.pull_requests }} - ${{ github.event.inputs.change_summary }}"
+          echo "${change_entry}" >> ${change_log_path}
+
+          # add file if it does not already exist
+          cmd="git add ${change_log_path}"
+          echo $cmd
+          $cmd
+
+          # commit changes to change log file
+          echo git commit ${change_log_path}
+          git commit -m "added entry to update truth change log: ${branch_name} ${{ github.event.inputs.pull_requests }}" ${change_log_path}
+
+          # push changes to update branch on GitHub
+          cmd="git push origin ${update_branch}"
+          echo $cmd
+          $cmd
+
+      # create pull request from $HEAD into $BASE
       - name: Create Pull Request
-        run: gh pr create --base $BASE --body "$BODY" --title "$TITLE"
+        run: gh pr create --head $HEAD --base $BASE --body "$BODY" --title "$TITLE"
         env:
           GH_TOKEN: ${{ github.token }}
+          HEAD: ${{ steps.resolve_conflicts.outputs.update_branch }}
           BASE: ${{ env.branch_name }}-ref
           BODY: ${{ github.event.inputs.change_summary }}<br/>Created by @${{ github.actor}}
           TITLE: Update ${{ env.branch_name }}-ref after ${{ github.event.inputs.pull_requests }}

@@ -1,0 +1,15 @@
+#%Module######################################################################
+##
+##      METplus
+##
+proc ModulesHelp { } {
+  puts stderr "Sets up the paths and environment variables to use the METplus-5.1.0
+     *** For help see the official MET webpage at http://www.dtcenter.org/met/users ***"
+}
+
+module use /glade/work/dtcrt/METplus/casper/components/MET/installations/modulefiles
+module load met/11.1.0
+module load nco
+
+setenv METPLUS_PATH /glade/work/dtcrt/METplus/casper/components/METplus/installations/METplus-5.1.0
+prepend-path PATH /glade/work/dtcrt/METplus/casper/components/METplus/installations/METplus-5.1.0/ush:/glade/work/dtcrt/METplus/casper/miniconda/miniconda3/envs/metplus_v5.1_py3.10/bin
