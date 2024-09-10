@@ -5,3 +5,4 @@
 [20240822_16:27:31 develop] #2657 - Update 3 Python embedding scripts for 3 additional MPR data columns in Stat-Analysis
 [20240830_21:30:39 develop] dtcenter/MET#2951 - Modifies Series-Analysis output variable names for PSTD statistics by including the observation threshold string, as is done for PCT and PRC outputs.
 [20240905_16:45:56 develop] dtcenter/MET#2959 - Correct bugs in SEDI and BAGSS contingency table statistics found in the CTS line type
+[20240910_19:03:38 develop] dtcenter/MET#2967 - Fixes integer overflow bug in the computation of the CTS and NBRCTS ORSS, ORSS_NCL, and ORSS_NCU columns.
