@@ -366,12 +366,12 @@ class TCDiagWrapper(RuntimeFreqWrapper):
         """!Get DECK file and list of input data files and set c_dict items.
             Args:
                 @param time_info time dictionary to use for string substitution
-                @returns Input file list if all files were found, None if not.
+                @returns time_info if all files were found, None if not.
         """
         # get deck file
         deck_file = self.find_data(time_info, data_type='DECK')
         if not deck_file:
-            return False
+            return None
         self.c_dict['DECK_FILE'] = deck_file
 
         # get files and values for -data arguments
@@ -379,8 +379,9 @@ class TCDiagWrapper(RuntimeFreqWrapper):
         for data_dict in self.c_dict['DATA_INPUTS']:
             if not self._find_data_inputs(data_dict, lead_seq, time_info,
                                           deck_file):
-                return False
-        return True
+                return None
+
+        return time_info
 
     def _find_data_inputs(self, data_dict, lead_seq, time_info, deck_file):
         # check if file list file is set and use that instead of template/dir

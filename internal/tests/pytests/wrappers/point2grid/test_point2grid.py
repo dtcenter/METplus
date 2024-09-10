@@ -92,6 +92,7 @@ def test_point2grid_missing_inputs(metplus_config, get_test_data_dir,
         ({'POINT2GRID_QC_FLAGS': '0,1'}, ['-qc 0,1']),
         ({'POINT2GRID_ADP': '{valid?fmt=%Y%m}.nc'}, ['-adp 201706.nc']),
         ({'POINT2GRID_REGRID_TO_GRID': 'G212'}, []),
+        ({'POINT2GRID_REGRID_TO_GRID': 'lambert 614 428 12.190 -133.459 -95.0 12.19058 6367.47 25.0 N'}, []),
         ({'POINT2GRID_INPUT_LEVEL': '(*,*)'}, []),
     ]
 )
@@ -127,6 +128,9 @@ def test_point2grid_run(metplus_config, config_overrides, optional_args):
             config_overrides['POINT2GRID_REGRID_TO_GRID'],
             config_overrides['POINT2GRID_REGRID_TO_GRID']
         )
+        # add quotation marks around grid if it is include spaces
+        if len(config_overrides['POINT2GRID_REGRID_TO_GRID'].split()) > 1:
+            grids = [f'"{grid}"' for grid in grids]
     else:
         grids = (
             os.path.join(grid_dir, '20170601.nc'),
@@ -143,7 +147,7 @@ def test_point2grid_run(metplus_config, config_overrides, optional_args):
     expected_cmds = []
     for idx in range(0, 3):
         expected_cmds.append(
-            f'{app_path} {input_files[idx]} "{grids[idx]}" {output_files[idx]}'
+            f'{app_path} {input_files[idx]} {grids[idx]} {output_files[idx]}'
             f' -field \'name="{input_name}"; level="{level}";\''
             f' {extra_args}{verbosity}'
         )

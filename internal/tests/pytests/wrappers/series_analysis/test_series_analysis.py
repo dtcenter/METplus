@@ -424,7 +424,7 @@ def test_series_analysis_missing_inputs(metplus_config, get_test_data_dir,
 )
 @pytest.mark.wrapper_a
 def test_series_analysis_single_field(metplus_config, config_overrides,
-                                      env_var_values):
+                                      env_var_values, compare_command_and_env_vars):
 
     config = metplus_config
 
@@ -464,7 +464,6 @@ def test_series_analysis_single_field(metplus_config, config_overrides,
                      ]
 
     all_cmds = wrapper.run_all_times()
-    print(f"ALL COMMANDS: {all_cmds}")
 
     expected_len = len(expected_cmds)
     if 'SERIES_ANALYSIS_GENERATE_PLOTS' in config_overrides:
@@ -473,29 +472,15 @@ def test_series_analysis_single_field(metplus_config, config_overrides,
             expected_len += 4
     assert len(all_cmds) == expected_len
 
-    missing_env = [item for item in env_var_values
-                   if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
-    env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
-
-    for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
-        # ensure commands are generated as expected
-        assert cmd == expected_cmd
-
-        # check that environment variables were set properly
-        for env_var_key in env_var_keys:
-            print(f"ENV VAR: {env_var_key}")
-            match = next((item for item in env_vars if
-                          item.startswith(env_var_key)), None)
-            assert match is not None
-            actual_value = match.split('=', 1)[1]
-            if env_var_key == 'METPLUS_FCST_FIELD':
-                assert actual_value == fcst_fmt
-            elif env_var_key == 'METPLUS_OBS_FIELD':
-                assert actual_value == obs_fmt
-            elif env_var_key == 'METPLUS_OUTPUT_STATS_DICT' and 'METPLUS_OUTPUT_STATS_DICT' not in env_var_values:
-                assert actual_value == stat_list_fmt
-            else:
-                assert env_var_values.get(env_var_key, '') == actual_value
+    special_values = {
+        'METPLUS_FCST_FIELD': fcst_fmt,
+        'METPLUS_OBS_FIELD': obs_fmt,
+    }
+    if 'METPLUS_OUTPUT_STATS_DICT' not in env_var_values:
+        special_values['METPLUS_OUTPUT_STATS_DICT'] = stat_list_fmt
+    # only compare first command since the rest are not series_analysis
+    compare_command_and_env_vars(all_cmds[0:1], expected_cmds, env_var_values,
+                                 wrapper, special_values)
 
 
 @pytest.mark.wrapper_a

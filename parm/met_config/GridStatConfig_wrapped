@@ -160,6 +160,13 @@ gradient = {
 //distance_map = {
 ${METPLUS_DISTANCE_MAP_DICT}
 
+
+////////////////////////////////////////////////////////////////////////////////
+// Threshold for SEEPS p1 (Probability of being dry)
+
+//seeps_p1_thresh =
+${METPLUS_SEEPS_P1_THRESH}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 //
@@ -176,10 +183,15 @@ ${METPLUS_OUTPUT_FLAG_DICT}
 ${METPLUS_NC_PAIRS_FLAG_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
-// Threshold for SEEPS p1 (Probability of being dry)
 
-//seeps_p1_thresh =
-${METPLUS_SEEPS_P1_THRESH}
+//ugrid_dataset =
+${METPLUS_UGRID_DATASET}
+
+//ugrid_max_distance_km =
+${METPLUS_UGRID_MAX_DISTANCE_KM}
+
+//ugrid_coordinates_file =
+${METPLUS_UGRID_COORDINATES_FILE}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -193,4 +205,5 @@ ${METPLUS_OUTPUT_PREFIX}
 
 ////////////////////////////////////////////////////////////////////////////////
 
+${METPLUS_TIME_OFFSET_WARNING}
 ${METPLUS_MET_CONFIG_OVERRIDES}

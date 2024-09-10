@@ -7,12 +7,12 @@ Abstract: Builds commands to run MET tool pcp_combine
 import os
 from datetime import timedelta
 
-from ..util import do_string_sub, getlist, preprocess_file
+from ..util import do_string_sub, getlist
 from ..util import get_seconds_from_string, ti_get_lead_string, ti_calculate
 from ..util import get_relativedelta, ti_get_seconds_from_relativedelta
 from ..util import time_string_to_met_time, seconds_to_met_time
 from ..util import parse_var_list, template_to_regex, split_level
-from ..util import add_field_info_to_time_info, sub_var_list
+from ..util import add_field_info_to_time_info, sub_var_list, MISSING_DATA_VALUE
 from . import ReformatGriddedWrapper
 
 '''!@namespace PCPCombineWrapper
@@ -29,7 +29,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
     RUNTIME_FREQ_SUPPORTED = ['RUN_ONCE_FOR_EACH']
 
     # valid values for [FCST/OBS]_PCP_COMBINE_METHOD
-    valid_run_methods = ['ADD', 'SUM', 'SUBTRACT', 'DERIVE', 'USER_DEFINED']
+    VALID_RUN_METHODS = ['ADD', 'SUM', 'SUBTRACT', 'DERIVE', 'USER_DEFINED']
 
     def __init__(self, config, instance=None):
         self.app_name = 'pcp_combine'
@@ -49,154 +49,169 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         c_dict['VERBOSITY'] = self.config.getstr('config',
                                                  'LOG_PCP_COMBINE_VERBOSITY',
                                                  c_dict['VERBOSITY'])
-        c_dict['ALLOW_MULTIPLE_FILES'] = True
-        fcst_run = self.config.getbool('config', 'FCST_PCP_COMBINE_RUN', False)
-        obs_run = self.config.getbool('config', 'OBS_PCP_COMBINE_RUN', False)
 
-        if not fcst_run and not obs_run:
-            self.log_error("Must set either FCST_PCP_COMBINE_RUN or "
-                           "OBS_PCP_COMBINE_RUN")
-            return c_dict
+        if c_dict['FCST_RUN']:
+            c_dict = self._set_fcst_or_obs_dict_items('FCST', c_dict)
 
-        if fcst_run:
-            c_dict = self.set_fcst_or_obs_dict_items('FCST', c_dict)
-            c_dict['VAR_LIST_FCST'] = parse_var_list(
-                self.config,
-                data_type='FCST',
-                met_tool=self.app_name
-            )
-        if obs_run:
-            c_dict = self.set_fcst_or_obs_dict_items('OBS', c_dict)
-            c_dict['VAR_LIST_OBS'] = parse_var_list(
-                self.config,
-                data_type='OBS',
-                met_tool=self.app_name
-            )
+        if c_dict['OBS_RUN']:
+            c_dict = self._set_fcst_or_obs_dict_items('OBS', c_dict)
 
         return c_dict
 
-    def set_fcst_or_obs_dict_items(self, d_type, c_dict):
+    def _set_fcst_or_obs_dict_items(self, d_type, c_dict):
         """! Set c_dict values specific to either forecast (FCST) or
         observation (OBS) data.
 
-            @param d_type data type, either FCST or OBS
+            @param d_type data type, either 'FCST' or 'OBS'
             @param c_dict config dictionary to populate
             @returns c_dict with values for given data type set
         """
         # handle run method
-        run_method = self.config.getstr(
-            'config',
-            f'{d_type}_PCP_COMBINE_METHOD', ''
+        run_method = self.config.getraw(
+            'config', f'{d_type}_PCP_COMBINE_METHOD'
         ).upper()
 
         # change CUSTOM (deprecated) to USER_DEFINED
-        if run_method == 'CUSTOM':
-            run_method = 'USER_DEFINED'
+        run_method = 'USER_DEFINED' if run_method == 'CUSTOM' else run_method
 
-        if run_method not in self.valid_run_methods:
+        if run_method not in self.VALID_RUN_METHODS:
             self.log_error(f"Invalid value for {d_type}_PCP_COMBINE_METHOD: "
                            f"{run_method}. Valid options are "
-                           f"{','.join(self.valid_run_methods)}.")
+                           f"{','.join(self.VALID_RUN_METHODS)}.")
             return c_dict
 
         c_dict[f'{d_type}_RUN_METHOD'] = run_method
 
-        # get lookback from _LOOKBACK or _OUTPUT_ACCUM or _DERIVE_LOOKBACK
-        c_dict[f'{d_type}_LOOKBACK'] = self._handle_lookback(c_dict, d_type)
+        # if derive method, allow multiple files and read stat list
+        if c_dict[f'{d_type}_RUN_METHOD'] == "DERIVE":
+            c_dict[f'{d_type}_STAT_LIST'] = getlist(
+                self.config.getraw('config', f'{d_type}_PCP_COMBINE_STAT_LIST')
+            )
+            c_dict['ALLOW_MULTIPLE_FILES'] = True
 
-        c_dict[f'{d_type}_MIN_FORECAST'] = self.config.getstr(
-            'config',
-            f'{d_type}_PCP_COMBINE_MIN_FORECAST', '0'
-        )
-        c_dict[f'{d_type}_MAX_FORECAST'] = self.config.getstr(
-            'config',
-            f'{d_type}_PCP_COMBINE_MAX_FORECAST', '256H'
-        )
-
-        c_dict[f'{d_type}_INPUT_DATATYPE'] = self.config.getstr(
-            'config',
-            f'{d_type}_PCP_COMBINE_INPUT_DATATYPE', ''
-        )
-
-        c_dict[f'{d_type}_ACCUMS'] = getlist(
-            self.config.getraw('config',
-                               f'{d_type}_PCP_COMBINE_INPUT_ACCUMS', '')
-        )
-
-        c_dict[f'{d_type}_NAMES'] = getlist(
-            self.config.getraw('config',
-                               f'{d_type}_PCP_COMBINE_INPUT_NAMES', '')
-        )
-        c_dict[f'{d_type}_LEVELS'] = getlist(
-            self.config.getraw('config',
-                               f'{d_type}_PCP_COMBINE_INPUT_LEVELS', '')
-        )
-        c_dict[f'{d_type}_OPTIONS'] = getlist(
-            self.config.getraw('config',
-                               f'{d_type}_PCP_COMBINE_INPUT_OPTIONS', '')
-        )
-
-        c_dict[f'{d_type}_OUTPUT_NAME'] = self.config.getstr(
-            'config',
-            f'{d_type}_PCP_COMBINE_OUTPUT_NAME', ''
-        )
+        # handle I/O directories and templates
         c_dict[f'{d_type}_INPUT_DIR'] = self.config.getdir(
             f'{d_type}_PCP_COMBINE_INPUT_DIR', ''
         )
         c_dict[f'{d_type}_INPUT_TEMPLATE'] = self.config.getraw(
-            'config',
-            f'{d_type}_PCP_COMBINE_INPUT_TEMPLATE'
+            'config', f'{d_type}_PCP_COMBINE_INPUT_TEMPLATE'
         )
 
         c_dict[f'{d_type}_OUTPUT_DIR'] = self.config.getdir(
             f'{d_type}_PCP_COMBINE_OUTPUT_DIR', ''
         )
         c_dict[f'{d_type}_OUTPUT_TEMPLATE'] = self.config.getraw(
-            'config',
-            f'{d_type}_PCP_COMBINE_OUTPUT_TEMPLATE'
+            'config', f'{d_type}_PCP_COMBINE_OUTPUT_TEMPLATE'
         )
 
-        c_dict[f'{d_type}_STAT_LIST'] = getlist(
-            self.config.getstr('config',
-                               f'{d_type}_PCP_COMBINE_STAT_LIST', '')
+        # get lookback from _LOOKBACK or _OUTPUT_ACCUM or _DERIVE_LOOKBACK
+        c_dict[f'{d_type}_LOOKBACK'] = self._handle_lookback(c_dict, d_type)
+
+        c_dict[f'{d_type}_MIN_FORECAST'] = self.config.getstr(
+            'config', f'{d_type}_PCP_COMBINE_MIN_FORECAST', '0'
+        )
+        c_dict[f'{d_type}_MAX_FORECAST'] = self.config.getstr(
+            'config', f'{d_type}_PCP_COMBINE_MAX_FORECAST', '256H'
+        )
+
+        c_dict[f'{d_type}_INPUT_DATATYPE'] = self.config.getstr(
+            'config', f'{d_type}_PCP_COMBINE_INPUT_DATATYPE', ''
+        )
+
+        c_dict[f'{d_type}_ACCUMS'] = getlist(
+            self.config.getraw('config', f'{d_type}_PCP_COMBINE_INPUT_ACCUMS')
+        )
+
+        c_dict[f'{d_type}_NAMES'] = getlist(
+            self.config.getraw('config', f'{d_type}_PCP_COMBINE_INPUT_NAMES')
+        )
+        c_dict[f'{d_type}_LEVELS'] = getlist(
+            self.config.getraw('config', f'{d_type}_PCP_COMBINE_INPUT_LEVELS')
+        )
+        c_dict[f'{d_type}_OPTIONS'] = getlist(
+            self.config.getraw('config', f'{d_type}_PCP_COMBINE_INPUT_OPTIONS')
+        )
+
+        c_dict[f'{d_type}_OUTPUT_NAME'] = self.config.getstr(
+            'config', f'{d_type}_PCP_COMBINE_OUTPUT_NAME', ''
         )
 
         c_dict[f'{d_type}_BUCKET_INTERVAL'] = self.config.getseconds(
-            'config',
-            f'{d_type}_PCP_COMBINE_BUCKET_INTERVAL', 0
+            'config', f'{d_type}_PCP_COMBINE_BUCKET_INTERVAL', 0
         )
 
         c_dict[f'{d_type}_CONSTANT_INIT'] = self.config.getbool(
-            'config',
-            f'{d_type}_PCP_COMBINE_CONSTANT_INIT', False
+            'config', f'{d_type}_PCP_COMBINE_CONSTANT_INIT', False
         )
 
         # read any additional names/levels to add to command
         c_dict[f'{d_type}_EXTRA_NAMES'] = getlist(
-            self.config.getraw('config',
-                               f'{d_type}_PCP_COMBINE_EXTRA_NAMES', '')
+            self.config.getraw('config', f'{d_type}_PCP_COMBINE_EXTRA_NAMES')
         )
         c_dict[f'{d_type}_EXTRA_LEVELS'] = getlist(
-            self.config.getraw('config',
-                               f'{d_type}_PCP_COMBINE_EXTRA_LEVELS', '')
+            self.config.getraw('config', f'{d_type}_PCP_COMBINE_EXTRA_LEVELS')
         )
         # fill in missing extra level values with None
         fill_num = (len(c_dict[f'{d_type}_EXTRA_NAMES']) -
                     len(c_dict[f'{d_type}_EXTRA_LEVELS']))
-        if fill_num > 0:
-            for _ in range(fill_num):
-                c_dict[f'{d_type}_EXTRA_LEVELS'].append(None)
+        for _ in range(fill_num):
+            c_dict[f'{d_type}_EXTRA_LEVELS'].append(None)
 
         c_dict[f'{d_type}_EXTRA_OUTPUT_NAMES'] = getlist(
-            self.config.getraw('config',
-                               f'{d_type}_PCP_COMBINE_EXTRA_OUTPUT_NAMES', '')
+            self.config.getraw('config', f'{d_type}_PCP_COMBINE_EXTRA_OUTPUT_NAMES')
         )
 
         c_dict[f'{d_type}_USE_ZERO_ACCUM'] = self.config.getbool(
-            'config',
-            f'{d_type}_PCP_COMBINE_USE_ZERO_ACCUM', False
+            'config', f'{d_type}_PCP_COMBINE_USE_ZERO_ACCUM', False
         )
 
+        c_dict[f'VAR_LIST_{d_type}'] = parse_var_list(
+            self.config,
+            data_type=d_type,
+            met_tool=self.app_name
+        )
+
+        self._set_thresholds(c_dict, d_type)
+        self._error_check_config(c_dict, d_type)
+
+        # skip RuntimeFreq input file logic - remove once integrated
+        c_dict['FIND_FILES'] = False
+        return c_dict
+
+    def _set_thresholds(self, c_dict, d_type):
+        """!Read input_thresh value from METplusConfig and set c_dict. Report
+        an error if value is not between 0 and 1. Set {d_type}_FILL_MISSING to
+        True if input_thresh is less than 1, meaning missing input is allowed.
+
+        @param c_dict dictionary to set values
+        @param d_type data type, either 'FCST' or 'OBS'
+        """
+        for t_type in ('VLD_THRESH', 'INPUT_THRESH'):
+            thresh = (
+                self.config.getfloat('config', f'{d_type}_PCP_COMBINE_{t_type}')
+            )
+            if thresh == float(MISSING_DATA_VALUE):
+                continue
+
+            if thresh < 0 or thresh > 1:
+                self.log_error(f'{d_type}_PCP_COMBINE_{t_type} must be 0-1')
+                continue
+
+            c_dict[f'{d_type}_{t_type}'] = thresh
+
+        # if missing input is allowed, add MISSING to path if file is not found
+        # subtract method does not support missing inputs
+        if (c_dict.get(f'{d_type}_INPUT_THRESH', 1) < 1 and
+                c_dict[f'{d_type}_RUN_METHOD'] != "SUBTRACT"):
+            c_dict[f'{d_type}_FILL_MISSING'] = True
+
+    def _error_check_config(self, c_dict, d_type):
+        """!Check c_dict values and log errors if anything is not set properly.
+
+        @param c_dict dictionary containing values read from config
+        @param d_type type of input, either 'FCST' or 'OBS'
+        """
+        run_method = c_dict[f'{d_type}_RUN_METHOD']
         if run_method == 'DERIVE' and not c_dict[f'{d_type}_STAT_LIST']:
             self.log_error('Statistic list is empty. Must set '
                            f'{d_type}_PCP_COMBINE_STAT_LIST if running '
@@ -228,16 +243,12 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                 self.log_error(f'{d_type}_PCP_COMBINE_INPUT_LEVELS list '
                                'should be either empty or the same length as '
                                f'{d_type}_PCP_COMBINE_INPUT_ACCUMS list.')
-        # skip RuntimeFreq input file logic - remove once integrated
-        c_dict['FIND_FILES'] = False
-        return c_dict
 
     def run_at_time_once(self, time_info):
         var_list = sub_var_list(self.c_dict['VAR_LIST'], time_info)
         data_src = self.c_dict['DATA_SRC']
 
-        if not var_list:
-            var_list = [None]
+        var_list = [None] if not var_list else var_list
 
         for var_info in var_list:
             self.run_at_time_one_field(time_info, var_info, data_src)
@@ -263,24 +274,23 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         time_info['level'] = lookback_seconds
         add_field_info_to_time_info(time_info, var_info)
 
-        # if method is not USER_DEFINED or DERIVE,
-        # check that field information is set
+        can_run = False
         if method == "USER_DEFINED":
             can_run = self.setup_user_method(time_info, data_src)
-        elif method == "DERIVE":
-            can_run = self.setup_derive_method(time_info, lookback_seconds,
-                                               data_src)
-        elif method == "ADD":
-            can_run = self.setup_add_method(time_info, lookback_seconds,
-                                            data_src)
-        elif method == "SUM":
-            can_run = self.setup_sum_method(time_info, lookback_seconds,
-                                            data_src)
-        elif method == "SUBTRACT":
-            can_run = self.setup_subtract_method(time_info, lookback_seconds,
-                                                 data_src)
         else:
-            can_run = None
+            self.args.append(f'-{method.lower()}')
+            if method == "DERIVE":
+                can_run = self.setup_derive_method(time_info, lookback_seconds,
+                                                   data_src)
+            elif method == "ADD":
+                can_run = self.setup_add_method(time_info, lookback_seconds,
+                                                data_src)
+            elif method == "SUM":
+                can_run = self.setup_sum_method(time_info, lookback_seconds,
+                                                data_src)
+            elif method == "SUBTRACT":
+                can_run = self.setup_subtract_method(time_info, lookback_seconds,
+                                                     data_src)
 
         if not can_run:
             self.log_error("pcp_combine could not generate command")
@@ -289,7 +299,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         # set time info level back to lookback seconds
         time_info['level'] = lookback_seconds
 
-        self._handle_extra_field_arguments(data_src, time_info)
+        self.set_command_line_arguments(data_src, time_info)
 
         # add -name argument
         output_name = self.c_dict.get(f'{data_src}_OUTPUT_NAME')
@@ -316,15 +326,12 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         """! Setup pcp_combine to call user defined command
 
           @param time_info dictionary containing timing information
-          @params data_src data type (FCST or OBS)
-          @rtype string
-          @return path to output file
+          @param data_src data type, either 'FCST' or 'OBS'
+          @rtype bool
+          @return True always
         """
-        command_template = self.config.getraw(
-            'config',
-            f'{data_src}_PCP_COMBINE_COMMAND'
-        )
-        user_command = do_string_sub(command_template, **time_info)
+        temp = self.config.getraw('config', f'{data_src}_PCP_COMBINE_COMMAND')
+        user_command = do_string_sub(temp, **time_info)
         self.args.extend(user_command.split())
 
         return True
@@ -334,12 +341,10 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
           @param time_info object containing timing information
           @param accum accumulation amount to compute in seconds
-          @params data_src data type (FCST or OBS)
+          @param data_src data type, either 'FCST' or 'OBS'
           @rtype string
           @return path to output file
         """
-        self.args.append('-subtract')
-
         lead = time_info['lead_seconds']
         lead2 = lead - accum
 
@@ -351,18 +356,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         files_found = []
 
-        full_template = os.path.join(self.c_dict[f'{data_src}_INPUT_DIR'],
-                                     self.c_dict[f'{data_src}_INPUT_TEMPLATE'])
-
-        # get first file
-        filepath1 = do_string_sub(full_template, **time_info)
-        file1 = preprocess_file(filepath1,
-                                self.c_dict[data_src+'_INPUT_DATATYPE'],
-                                self.config)
-
-        if file1 is None:
-            self.log_error(f'Could not find {data_src} file {filepath1} '
-                           f'using template {full_template}')
+        file1 = self.find_data(time_info, data_type=data_src)
+        if not file1:
             return None
 
         # handle field information
@@ -376,6 +371,12 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         if self.c_dict.get(f"{data_src}_OPTIONS"):
             field_args['extra'] = self.c_dict[f"{data_src}_OPTIONS"][0]
 
+        field_info1 = self.get_field_string(
+            time_info=time_info,
+            search_accum=seconds_to_met_time(lead),
+            **field_args
+        )
+
         # if data is GRIB and second lead is 0, then
         # run PCPCombine in -add mode with just the first file
         if lead2 == 0 and not self.c_dict[f'{data_src}_USE_ZERO_ACCUM']:
@@ -385,14 +386,9 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                              f"{data_src}_PCP_COMBINE_USE_ZERO_ACCUM = True")
             self.args.clear()
             self.args.append('-add')
-            field_info = self.get_field_string(
-                time_info=time_info,
-                search_accum=seconds_to_met_time(lead),
-                **field_args
-            )
             self.args.append(file1)
-            self.args.append(field_info)
-            files_found.append((file1, field_info))
+            self.args.append(field_info1)
+            files_found.append((file1, field_info1))
             return files_found
 
         # else continue building -subtract command
@@ -404,21 +400,10 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         time_info2['level'] = accum
         time_info2['custom'] = time_info.get('custom', '')
 
-        filepath2 = do_string_sub(full_template, **time_info2)
-        file2 = preprocess_file(filepath2,
-                                self.c_dict[data_src+'_INPUT_DATATYPE'],
-                                self.config)
-
-        if file2 is None:
-            self.log_error(f'Could not find {data_src} file {filepath2} '
-                           f'using template {full_template}')
+        file2 = self.find_data(time_info2, data_type=data_src)
+        if not file2:
             return None
 
-        field_info1 = self.get_field_string(
-            time_info=time_info,
-            search_accum=seconds_to_met_time(lead),
-            **field_args
-        )
         field_info2 = self.get_field_string(
             time_info=time_info2,
             search_accum=seconds_to_met_time(lead2),
@@ -441,16 +426,13 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
           @param time_info object containing timing information
           @param lookback accumulation amount to compute in seconds
-          @params data_src data type (FCST or OBS)
-          @rtype string
-          @return path to output file
+          @param data_src data type, either 'FCST' or 'OBS'
+          @rtype bool
+          @return True always
         """
-        self.args.append('-sum')
-
+        in_accum = 0
         if self.c_dict[f"{data_src}_ACCUMS"]:
             in_accum = self.c_dict[data_src+'_ACCUMS'][0]
-        else:
-            in_accum = 0
 
         in_accum = time_string_to_met_time(in_accum, 'H')
         out_accum = time_string_to_met_time(lookback, 'S')
@@ -480,6 +462,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         # set -field name and level if set in config
         self._handle_field_argument(data_src, time_info)
 
+        self._handle_input_thresh_argument(data_src)
+
         return True
 
     def setup_add_method(self, time_info, lookback, data_src):
@@ -491,8 +475,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
           @rtype string
           @return path to output file
         """
-        self.args.append('-add')
-
         # create list of tuples for input levels and optional field names
         self._build_input_accum_list(data_src, time_info)
 
@@ -510,6 +492,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                 self.log_error(msg)
             return False
 
+        self._handle_input_thresh_argument(data_src)
+
         return files_found
 
     def setup_derive_method(self, time_info, lookback, data_src):
@@ -521,8 +505,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
           @rtype string
           @return path to output file
         """
-        self.args.append('-derive')
-
         # add list of statistics
         self.args.append(','.join(self.c_dict[f"{data_src}_STAT_LIST"]))
 
@@ -541,8 +523,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                                                level=accum_dict['level'],
                                                extra=accum_dict['extra'])
             self.run_count += 1
-            input_files = self.find_data(time_info,
-                                         data_type=data_src,
+            input_files = self.find_data(time_info, data_type=data_src,
                                          return_list=True)
             if not input_files:
                 self.missing_input_count += 1
@@ -574,6 +555,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         # set -field name and level from first file field info
         self.args.append(f'-field {files_found[0][1]}')
+
+        self._handle_input_thresh_argument(data_src)
 
         return files_found
 
@@ -652,9 +635,11 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
           @param time_info dictionary containing time information
           @param accum desired accumulation to build in seconds
-          @param data_src type of data (FCST or OBS)
-          @rtype bool
-          @return True if full set of files to build accumulation is found
+          @param data_src type of data, either 'FCST' or 'OBS'
+          @param field_info_after_file if True, add field information after each
+          file in the arguments (defaults to True)
+          @rtype list
+          @return list of files to build accumulation or None
         """
         search_time = time_info['valid']
         custom = time_info.get('custom', '')
@@ -679,18 +664,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                                                         time_info['valid'])
 
         # log the input and output accumulation information
-        search_accum_list = []
-        for lev in self.c_dict['ACCUM_DICT_LIST']:
-            if lev['template'] is not None:
-                search_accum_list.append(lev['template'])
-            else:
-                search_accum_list.append(ti_get_lead_string(lev['amount'],
-                                                            plural=False))
-
-        self.logger.debug("Trying to build a "
-                          f"{ti_get_lead_string(total_accum, plural=False)} "
-                          "accumulation using "
-                          f"{' or '.join(search_accum_list)} input data")
+        self._log_search_accum_list(total_accum)
 
         files_found = []
 
@@ -703,50 +677,17 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
             # look for biggest accum that fits search
             for accum_dict in self.c_dict['ACCUM_DICT_LIST']:
-                if (accum_dict['amount'] > total_accum and
-                        accum_dict['template'] is None):
-                    continue
-
-                search_file, lead = self.find_input_file(time_info['init'],
-                                                         search_time,
-                                                         accum_dict['amount'],
-                                                         data_src,
-                                                         custom)
-
-                if not search_file:
-                    continue
-
-                # if found a file, add it to input list with info
-                # if template is used in accum, find value and
-                # apply bucket interval is set
-                if accum_dict['template'] is not None:
-                    accum_amount = self.get_template_accum(accum_dict,
-                                                           search_time,
-                                                           lead,
-                                                           data_src,
-                                                           custom)
-                    if accum_amount > total_accum:
-                        self.logger.debug("Accumulation amount is bigger "
-                                          "than remaining accumulation.")
-                        continue
-                else:
-                    accum_amount = accum_dict['amount']
-
-                search_time_info = {
-                    'valid': search_time,
-                    'lead': lead,
-                }
-                field_info = self.get_field_string(
-                    time_info=search_time_info,
-                    search_accum=time_string_to_met_time(accum_amount),
-                    name=accum_dict['name'],
-                    level=accum_dict['level'],
-                    extra=accum_dict['extra']
+                search_file, field_info, accum_amount = (
+                    self._find_file_for_accum(accum_dict, total_accum,
+                                              time_info, search_time,
+                                              data_src, custom)
                 )
+                if search_file is None:
+                    continue
+
                 # add file to input list and step back to find more data
-                self.args.append(search_file)
-                if field_info_after_file:
-                    self.args.append(field_info)
+                self._add_file_and_field_info_to_args(search_file, field_info,
+                                                      field_info_after_file)
 
                 files_found.append((search_file, field_info))
                 self.logger.debug(f"Adding input file: {search_file} "
@@ -770,6 +711,84 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             return None
 
         return files_found
+
+    def _log_search_accum_list(self, total_accum):
+        """!Format and log information about the desired accumulation to build
+        and the configurations that define the search accumulations.
+
+        @param total_accum desired accumulation to build
+        """
+        search_accum_list = []
+        for lev in self.c_dict['ACCUM_DICT_LIST']:
+            if lev['template'] is not None:
+                search_accum_list.append(lev['template'])
+            else:
+                search_accum_list.append(ti_get_lead_string(lev['amount'],
+                                                            plural=False))
+
+        self.logger.debug("Trying to build a "
+                          f"{ti_get_lead_string(total_accum, plural=False)} "
+                          "accumulation using "
+                          f"{' or '.join(search_accum_list)} input data")
+
+    def _add_file_and_field_info_to_args(self, search_file, field_info,
+                                         field_info_after_file):
+        """!Helper function to add arguments to reduce cognitive complexity
+        of get_accumulation function. Adds to self.args list.
+
+        @param search_file file path
+        @param field_info formatted field information associate with file path
+        @param field_info_after_file boolean if True add field info after file
+        """
+        self.args.append(search_file)
+        if field_info_after_file:
+            self.args.append(field_info)
+
+    def _find_file_for_accum(self, accum_dict, total_accum, time_info,
+                             search_time, data_src, custom):
+        if (accum_dict['amount'] > total_accum and
+                accum_dict['template'] is None):
+            return None, None, None
+
+        self.c_dict['SUPPRESS_WARNINGS'] = True
+        search_file, lead = self.find_input_file(time_info['init'],
+                                                 search_time,
+                                                 accum_dict['amount'],
+                                                 data_src,
+                                                 custom)
+        self.c_dict['SUPPRESS_WARNINGS'] = False
+        if not search_file:
+            return None, None, None
+
+        # if found a file, add it to input list with info
+        # if template is used in accum, find value and
+        # apply bucket interval is set
+        if accum_dict['template'] is not None:
+            accum_amount = self.get_template_accum(accum_dict,
+                                                   search_time,
+                                                   lead,
+                                                   data_src,
+                                                   custom)
+            if accum_amount > total_accum:
+                self.logger.debug("Accumulation amount is bigger "
+                                  "than remaining accumulation.")
+                return None, None, None
+        else:
+            accum_amount = accum_dict['amount']
+
+        search_time_info = {
+            'valid': search_time,
+            'lead': lead,
+        }
+        field_info = self.get_field_string(
+            time_info=search_time_info,
+            search_accum=time_string_to_met_time(accum_amount),
+            name=accum_dict['name'],
+            level=accum_dict['level'],
+            extra=accum_dict['extra']
+        )
+
+        return search_file, field_info, accum_amount
 
     def get_lowest_fcst_file(self, valid_time, data_src, custom):
         """! Find the lowest forecast hour that corresponds to the valid time
@@ -813,18 +832,10 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             }
             time_info = ti_calculate(input_dict)
             time_info['custom'] = custom
-            search_file = os.path.join(self.c_dict[f'{data_src}_INPUT_DIR'],
-                                       self.c_dict[data_src+'_INPUT_TEMPLATE'])
-            search_file = do_string_sub(search_file, **time_info)
-            self.logger.debug(f"Looking for {search_file}")
-
-            search_file = preprocess_file(
-                search_file,
-                self.c_dict[data_src+'_INPUT_DATATYPE'],
-                self.config)
-
-            if search_file is not None:
-                return search_file, forecast_lead
+            search_file = self.find_data(time_info, data_type=data_src,
+                                         return_list=True, mandatory=False)
+            if search_file:
+                return search_file[0], forecast_lead
             forecast_lead += smallest_input_accum
 
         return None, 0
@@ -850,7 +861,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
     def find_input_file(self, init_time, valid_time, search_accum, data_src,
                         custom):
         lead = 0
-
         in_template = self.c_dict[data_src+'_INPUT_TEMPLATE']
 
         if ('{lead?' in in_template or
@@ -871,13 +881,12 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         time_info = ti_calculate(input_dict)
         time_info['custom'] = custom
         time_info['level'] = int(search_accum)
-        input_path = os.path.join(self.c_dict[f'{data_src}_INPUT_DIR'],
-                                  in_template)
-        input_path = do_string_sub(input_path, **time_info)
+        input_path = self.find_data(time_info, data_type=data_src,
+                                    return_list=True, mandatory=False)
+        if input_path:
+            input_path = input_path[0]
 
-        return preprocess_file(input_path,
-                               self.c_dict[f'{data_src}_INPUT_DATATYPE'],
-                               self.config), lead
+        return input_path, lead
 
     def get_template_accum(self, accum_dict, search_time, lead, data_src,
                            custom):
@@ -908,22 +917,30 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
     def get_command(self):
 
-        cmd = (f"{self.app_path} -v {self.c_dict['VERBOSITY']} "
-               f"{' '.join(self.args)} {self.get_output_path()}")
+        cmd = (f"{self.app_path} {' '.join(self.args)}"
+               f" {self.get_output_path()} -v {self.c_dict['VERBOSITY']}")
         return cmd
 
-    def _handle_extra_field_arguments(self, data_src, time_info=None):
-        extra_names = self.c_dict.get(data_src + '_EXTRA_NAMES')
-        if not extra_names:
-            return
+    def set_command_line_arguments(self, data_src, time_info=None):
+        """!Handle extra field arguments and vld_thresh argument.
 
-        extra_levels = self.c_dict.get(data_src + '_EXTRA_LEVELS')
-        for name, level in zip(extra_names, extra_levels):
-            field_string = self.get_field_string(time_info=time_info,
-                                                 name=name,
-                                                 level=level)
-            field_format = f"-field {field_string}"
-            self.args.append(field_format)
+        @param data_src type of data, either 'FCST' or 'OBS'
+        @param time_info dictionary containing time information or None
+         (defaults to None)
+        """
+        extra_names = self.c_dict.get(data_src + '_EXTRA_NAMES')
+        if extra_names:
+            extra_levels = self.c_dict.get(data_src + '_EXTRA_LEVELS')
+            for name, level in zip(extra_names, extra_levels):
+                field_string = self.get_field_string(time_info=time_info,
+                                                     name=name,
+                                                     level=level)
+                field_format = f"-field {field_string}"
+                self.args.append(field_format)
+
+        vld_thresh = self.c_dict.get(f'{data_src}_VLD_THRESH')
+        if vld_thresh:
+            self.args.append(f'-vld_thresh {vld_thresh}')
 
     def _handle_field_argument(self, data_src, time_info):
         if not self.c_dict[f'{data_src}_NAMES']:
@@ -957,6 +974,13 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         name_format = '","'.join(output_names)
         name_format = f'-name "{name_format}"'
         self.args.append(name_format)
+
+    def _handle_input_thresh_argument(self, data_src):
+        input_thresh = self.c_dict.get(f'{data_src}_INPUT_THRESH')
+        if not input_thresh:
+            return
+
+        self.args.append(f'-input_thresh {input_thresh}')
 
     def _build_input_accum_list(self, data_src, time_info):
         accum_list = self.c_dict[data_src + '_ACCUMS']

@@ -54,6 +54,29 @@ jobs:
         # Disable shallow clones for better analysis
         fetch-depth: 0
 
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+        cache: 'pip'
+
+    - name: Install Python Test Dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        python3 -m pip install -r internal/tests/pytests/requirements.txt
+
+    - name: Run Pytests
+      run: coverage run -m pytest internal/tests/pytests
+      env:
+        METPLUS_TEST_OUTPUT_BASE: ${{ runner.workspace }}/pytest_output
+
+    - name: Output coverage report
+      run: coverage report -m
+      if: always()
+
+    - name: Generate XML coverage report
+      run: coverage xml
+      if: always()
+
     - name: Get branch name
       id: get_branch_name
       run: echo branch_name=${GITHUB_REF#refs/heads/} >> $GITHUB_OUTPUT

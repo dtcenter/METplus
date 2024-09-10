@@ -47,95 +47,39 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                                                        f'{app}_ONCE_PER_FIELD',
                                                        True)
 
-        c_dict['FCST_INPUT_TEMPLATE'] = \
-            self.config.getraw('filename_templates',
-                               f'FCST_{app}_INPUT_TEMPLATE',
-                               '')
-
-        if not c_dict['FCST_INPUT_TEMPLATE']:
-            c_dict['FCST_INPUT_TEMPLATE'] = \
-                self.config.getraw('filename_templates',
-                                   f'FCST_{app}_TEMPLATE',
-                                   '')
-
-        c_dict['OBS_INPUT_TEMPLATE'] = \
-            self.config.getraw('filename_templates',
-                               'OBS_REGRID_DATA_PLANE_INPUT_TEMPLATE',
-                               '')
-
-        if not c_dict['OBS_INPUT_TEMPLATE']:
-            c_dict['OBS_INPUT_TEMPLATE'] = \
-                self.config.getraw('filename_templates',
-                                   'OBS_REGRID_DATA_PLANE_TEMPLATE',
-                                   '')
-
-        c_dict['FCST_OUTPUT_TEMPLATE'] = \
-            self.config.getraw('filename_templates',
-                               'FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE',
-                               '')
-
-        if not c_dict['FCST_OUTPUT_TEMPLATE']:
-            c_dict['FCST_OUTPUT_TEMPLATE'] = \
-                self.config.getraw('filename_templates',
-                                   'FCST_REGRID_DATA_PLANE_TEMPLATE',
-                                   '')
-
-        c_dict['OBS_OUTPUT_TEMPLATE'] = \
-            self.config.getraw('filename_templates',
-                               'OBS_REGRID_DATA_PLANE_OUTPUT_TEMPLATE',
-                               '')
-
-        if not c_dict['OBS_OUTPUT_TEMPLATE']:
-            c_dict['OBS_OUTPUT_TEMPLATE'] = \
-                self.config.getraw('filename_templates',
-                                   'OBS_REGRID_DATA_PLANE_TEMPLATE',
-                                   '')
-
         window_types = []
-        if self.config.getbool('config', 'FCST_REGRID_DATA_PLANE_RUN', False):
-            window_types.append('FCST')
-            c_dict['FCST_INPUT_DIR'] = \
-                self.config.getdir('FCST_REGRID_DATA_PLANE_INPUT_DIR', '')
+        for fcst_or_obs in ('FCST', 'OBS'):
+            if not c_dict[f'{fcst_or_obs}_RUN']:
+                continue
 
-            c_dict['FCST_OUTPUT_DIR'] = \
-                self.config.getdir('FCST_REGRID_DATA_PLANE_OUTPUT_DIR', '')
+            window_types.append(fcst_or_obs)
 
-            if not c_dict['FCST_INPUT_TEMPLATE']:
-                self.log_error("FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE must be set if "
-                               "FCST_REGRID_DATA_PLANE_RUN is True")
+            for in_or_out in ('INPUT', 'OUTPUT'):
+                # read FCST/OBS_INPUT/OUTPUT_DIR
+                c_dict[f'{fcst_or_obs}_{in_or_out}_DIR'] = (
+                    self.config.getdir(f'{fcst_or_obs}_{app}_{in_or_out}_DIR')
+                )
 
+                # read FCST/OBS_INPUT/OUTPUT_TEMPLATE
+                name = self.config.get_mp_config_name(
+                    [f'{fcst_or_obs}_{app}_{in_or_out}_TEMPLATE',
+                     f'{fcst_or_obs}_{app}_TEMPLATE']
+                )
+                if not name:
+                    self.log_error(f"{fcst_or_obs}_{app}_{in_or_out}_TEMPLATE "
+                                   f"must be set if {fcst_or_obs}_{app}_RUN")
+                    continue
 
-            if not c_dict['FCST_OUTPUT_TEMPLATE']:
-                self.log_error("FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE must be set if "
-                               "FCST_REGRID_DATA_PLANE_RUN is True")
+                c_dict[f'{fcst_or_obs}_{in_or_out}_TEMPLATE'] = (
+                    self.config.getraw('config', name)
+                )
 
-            c_dict['VAR_LIST_FCST'] = parse_var_list(
-                self.config,
-                data_type='FCST',
-                met_tool=self.app_name
-            )
-
-        if self.config.getbool('config', 'OBS_REGRID_DATA_PLANE_RUN', False):
-            window_types.append('OBS')
-            c_dict['OBS_INPUT_DIR'] = \
-                self.config.getdir('OBS_REGRID_DATA_PLANE_INPUT_DIR', '')
-
-            c_dict['OBS_OUTPUT_DIR'] = \
-                self.config.getdir('OBS_REGRID_DATA_PLANE_OUTPUT_DIR', '')
-
-            if not c_dict['OBS_INPUT_TEMPLATE']:
-                self.log_error("OBS_REGRID_DATA_PLANE_INPUT_TEMPLATE must be set if "
-                               "OBS_REGRID_DATA_PLANE_RUN is True")
-
-            if not c_dict['OBS_OUTPUT_TEMPLATE']:
-                self.log_error("OBS_REGRID_DATA_PLANE_OUTPUT_TEMPLATE must be set if "
-                               "OBS_REGRID_DATA_PLANE_RUN is True")
-
-            c_dict['VAR_LIST_OBS'] = parse_var_list(
-                self.config,
-                data_type='OBS',
-                met_tool=self.app_name
-            )
+                # set list of variables (fields)
+                c_dict[f'VAR_LIST_{fcst_or_obs}'] = parse_var_list(
+                    self.config,
+                    data_type=fcst_or_obs,
+                    met_tool=self.app_name
+                )
 
         self.handle_file_window_variables(c_dict, data_types=window_types)
 
@@ -347,7 +291,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
          """
         input_path = self.find_data(time_info, data_type=data_type)
         if not input_path:
-            return False
+            return None
 
         self.infiles.append(input_path)
 
@@ -356,7 +300,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         # put quotes around verification grid in case it is a grid description
         self.infiles.append(f'"{grid}"')
 
-        return True
+        return time_info
 
     def set_command_line_arguments(self):
         """!Returns False if command should not be run"""

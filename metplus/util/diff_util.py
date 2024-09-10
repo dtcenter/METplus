@@ -41,9 +41,7 @@ UNSUPPORTED_EXTENSIONS = [
 ]
 
 # keywords to search and skip diff tests if found in file path
-# PBL use case can be removed after dtcenter/METplus#2246 is completed
 SKIP_KEYWORDS = [
-    'PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed',
     'CyclonePlotter/cyclone/20150301.png',
     'plots/obs_elbow.png',
     'plots/fcst_elbow.png',

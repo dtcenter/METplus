@@ -1,7 +1,7 @@
 [
    {
     "category": "met_tool_wrapper",
-    "index_list": "0-29,59-63",
+    "index_list": "0-29,59-64",
     "run": false
   },
   {
@@ -57,6 +57,7 @@
   {
     "category": "land_surface",
     "index_list": "0",
+    "disabled": true,
     "run": false
   },
   {
@@ -197,12 +198,12 @@
   {
     "category": "s2s_mid_lat",
     "index_list": "0-2",
-    "run": false
+    "run": true
   },
   {
     "category": "s2s_mid_lat",
     "index_list": "3",
-    "run": false
+    "run": true
   },
   {
     "category": "s2s_mjo",

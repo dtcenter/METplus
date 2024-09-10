@@ -29,7 +29,7 @@ from ..util import get_field_info, format_field_info
 from ..util import get_wrapper_name, is_python_script
 from ..util.met_config import add_met_config_dict, handle_climo_dict
 from ..util import mkdir_p, get_skip_times
-from ..util import get_log_path, RunArgs, run_cmd
+from ..util import get_log_path, RunArgs, run_cmd, traverse_dir
 
 
 # pylint:disable=pointless-string-statement
@@ -102,6 +102,16 @@ class CommandBuilder:
 
             # add key to list of env vars to set
             self.env_var_keys.append(self.MET_OVERRIDES_KEY)
+
+            # add time_offset_warning env var
+            self.env_var_keys.append('METPLUS_TIME_OFFSET_WARNING')
+            time_offset_warning = self.get_wrapper_or_generic_config(
+                'TIME_OFFSET_WARNING', var_type='int'
+            )
+            if time_offset_warning != '':
+                self.env_var_dict['METPLUS_TIME_OFFSET_WARNING'] = (
+                    f'time_offset_warning = {time_offset_warning};'
+                )
 
             # warn if any environment variables set by the wrapper are not
             # being utilized in the user's config file
@@ -439,7 +449,7 @@ class CommandBuilder:
         # errors when searching through offset list
         is_mandatory = mandatory if offsets == [0] else False
 
-        self.c_dict['SUPRESS_WARNINGS'] = True
+        self.c_dict['SUPPRESS_WARNINGS'] = True
         for offset in offsets:
             time_info['offset_hours'] = offset
             time_info = ti_calculate(time_info)
@@ -448,10 +458,10 @@ class CommandBuilder:
                                      return_list=return_list)
 
             if obs_path is not None:
-                self.c_dict['SUPRESS_WARNINGS'] = False
+                self.c_dict['SUPPRESS_WARNINGS'] = False
                 return obs_path, time_info
 
-        self.c_dict['SUPRESS_WARNINGS'] = False
+        self.c_dict['SUPPRESS_WARNINGS'] = False
 
         # if no files are found return None
         # if offsets are specified, log error with list offsets used
@@ -486,22 +496,6 @@ class CommandBuilder:
         if data_type and not data_type.endswith('_'):
             data_type_fmt += '_'
 
-        # set generic 'level' to level that corresponds to data_type if set
-        level = time_info.get(f'{data_type_fmt.lower()}level', '0')
-
-        # strip off prefix letter if it exists
-        level = split_level(level)[1]
-
-        # set level to 0 character if it is not a number, e.g. NetCDF level
-        if not level.isdigit():
-            level = '0'
-
-        # if level is a range, use the first value, i.e. if 250-500 use 250
-        level = level.split('-')[0]
-
-        # if level is in hours, convert to seconds
-        level = get_seconds_from_string(level, 'H')
-
         # arguments for find helper functions
         arg_dict = {'data_type': data_type_fmt,
                     'mandatory': mandatory,
@@ -512,13 +506,12 @@ class CommandBuilder:
         if (self.c_dict.get(data_type_fmt + 'FILE_WINDOW_BEGIN', 0) == 0 and
                 self.c_dict.get(data_type_fmt + 'FILE_WINDOW_END', 0) == 0):
 
-            return self._find_exact_file(**arg_dict, allow_dir=allow_dir,
-                                         level=level)
+            return self._find_exact_file(**arg_dict, allow_dir=allow_dir)
 
         # if looking for a file within a time window:
         return self._find_file_in_window(**arg_dict)
 
-    def _find_exact_file(self, level, data_type, time_info, mandatory=True,
+    def _find_exact_file(self, data_type, time_info, mandatory=True,
                          return_list=False, allow_dir=False):
         input_template = self.c_dict.get(f'{data_type}INPUT_TEMPLATE', '')
         data_dir = self.c_dict.get(f'{data_type}INPUT_DIR', '')
@@ -540,19 +533,37 @@ class CommandBuilder:
                            "does not allow multiple files to be provided.")
             return None
 
-        # pop level from time_info to avoid conflict with explicit level
-        # then add it back after the string sub call
-        saved_level = time_info.pop('level', None)
+        # If level is not already set in time_info, set it and remove it later.
+        # Check if {data_type}level is set, e.g. fcst_level,
+        # otherwise use 0 to prevent error when level is requested in template.
+        has_level = True if time_info.get('level') else False
+        if not has_level:
+            # set generic 'level' to level that corresponds to data_type if set
+            level = time_info.get(f'{data_type.lower()}level', '0')
+
+            # strip off prefix letter if it exists
+            level = split_level(level)[1]
+
+            # set level to 0 character if it is not a number, e.g. NetCDF level
+            if not level.isdigit():
+                level = '0'
+
+            # if level is a range, use the first value, i.e. if 250-500 use 250
+            level = level.split('-')[0]
+
+            # if level is in hours, convert to seconds
+            level = get_seconds_from_string(level, 'H')
+            time_info['level'] = level
 
         input_must_exist = self._get_input_must_exist(template_list, data_dir)
 
-        check_file_list = self._get_files_to_check(template_list, level,
+        check_file_list = self._get_files_to_check(template_list,
                                                    time_info, data_dir,
                                                    data_type)
 
-        # if it was set, add level back to time_info
-        if saved_level is not None:
-            time_info['level'] = saved_level
+        # if it was not set, remove it from time_info
+        if not has_level:
+            time_info.pop('level', None)
 
         # if multiple files are not supported by the wrapper and multiple
         # files are found, error and exit
@@ -568,17 +579,7 @@ class CommandBuilder:
         # return None if no files were found
         if not check_file_list:
             msg = f"Could not find any {data_type}INPUT files"
-            # warn instead of error if it is not mandatory to find files
-            if (not mandatory
-                    or not self.c_dict.get('MANDATORY', True)
-                    or self.c_dict.get('ALLOW_MISSING_INPUTS', False)):
-                if self.c_dict.get('SUPRESS_WARNINGS', False):
-                    self.logger.debug(msg)
-                else:
-                    self.logger.warning(msg)
-            else:
-                self.log_error(msg)
-
+            self._log_message_dynamic_level(msg, mandatory)
             return None
 
         found_files = self._check_that_files_exist(check_file_list, data_type,
@@ -592,6 +593,28 @@ class CommandBuilder:
             return found_files[0]
 
         return found_files
+
+    def _is_optional_input(self, mandatory):
+        return (not self.c_dict.get('MANDATORY', True)
+                or self.c_dict.get('ALLOW_MISSING_INPUTS', False)
+                or not mandatory)
+
+    def _log_message_dynamic_level(self, msg, mandatory):
+        """!Log message based on rules. If mandatory input and missing inputs
+        are not allowed, log an error. Otherwise, log a warning unless warnings
+        are suppressed, in which case log debug.
+
+        @param msg message to be logged
+        @param mandatory boolean indicating if input data is mandatory
+        """
+        # warn instead of error if it is not mandatory to find files
+        if self._is_optional_input(mandatory):
+            if self.c_dict.get('SUPPRESS_WARNINGS', False):
+                self.logger.debug(msg)
+            else:
+                self.logger.warning(msg)
+        else:
+            self.log_error(msg)
 
     def _get_input_must_exist(self, template_list, data_dir):
         """!Check if input must exist. The config dict setting INPUT_MUST_EXIST
@@ -619,7 +642,7 @@ class CommandBuilder:
             return False
         return True
 
-    def _get_files_to_check(self, template_list, level, time_info, data_dir,
+    def _get_files_to_check(self, template_list, time_info, data_dir,
                             data_type):
         """!Get list of files to check if they exist.
         @returns list of tuples containing file path and template used to build
@@ -631,7 +654,7 @@ class CommandBuilder:
             full_template = os.path.join(data_dir, template)
 
             # perform string substitution on full path
-            full_path = do_string_sub(full_template, **time_info, level=level)
+            full_path = do_string_sub(full_template, **time_info)
 
             if os.path.sep not in full_path:
                 self.logger.debug(f"{full_path} is not a file path. "
@@ -676,20 +699,11 @@ class CommandBuilder:
             if not processed_path:
                 msg = (f"Could not find {data_type}INPUT file {file_path} "
                        f"using template {template}")
-                if (not mandatory
-                        or not self.c_dict.get('MANDATORY', True)
-                        or self.c_dict.get('ALLOW_MISSING_INPUTS', False)):
-
-                    if self.c_dict.get('SUPRESS_WARNINGS', False):
-                        self.logger.debug(msg)
-                    else:
-                        self.logger.warning(msg)
-
-                    if self.c_dict.get(f'{data_type}FILL_MISSING'):
-                        found_file_list.append(f'MISSING{file_path}')
-                        continue
-                else:
-                    self.log_error(msg)
+                self._log_message_dynamic_level(msg, mandatory)
+                if (self._is_optional_input(mandatory) and
+                        self.c_dict.get(f'{data_type}FILL_MISSING')):
+                    found_file_list.append(f'MISSING{file_path}')
+                    continue
 
                 return None
 
@@ -727,18 +741,7 @@ class CommandBuilder:
         if not closest_files:
             msg = (f"Could not find {data_type}INPUT files under {data_dir} within range "
                    f"[{valid_range_lower},{valid_range_upper}] using template {template}")
-            if (not mandatory
-                    or not self.c_dict.get('MANDATORY', True)
-                    or self.c_dict.get('ALLOW_MISSING_INPUTS', False)):
-
-                if self.c_dict.get('SUPRESS_WARNINGS', False):
-                    self.logger.debug(msg)
-                else:
-                    self.logger.warning(msg)
-
-            else:
-                self.log_error(msg)
-
+            self._log_message_dynamic_level(msg, mandatory)
             return None
 
         # remove any files that are the same as another but zipped
@@ -786,41 +789,38 @@ class CommandBuilder:
                                             "%Y%m%d%H%M%S").strftime("%s"))
 
         # step through all files under input directory in sorted order
-        for dirpath, _, all_files in os.walk(data_dir, followlinks=True):
-            for filename in sorted(all_files):
-                fullpath = os.path.join(dirpath, filename)
+        for fullpath in traverse_dir(data_dir):
+            # remove input data directory to get relative path
+            rel_path = fullpath.replace(f'{data_dir}/', "")
+            # extract time information from relative path using template
+            file_time_info = get_time_from_file(rel_path, template,
+                                                self.logger)
+            if file_time_info is None:
+                continue
 
-                # remove input data directory to get relative path
-                rel_path = fullpath.replace(f'{data_dir}/', "")
-                # extract time information from relative path using template
-                file_time_info = get_time_from_file(rel_path, template,
-                                                    self.logger)
-                if file_time_info is None:
-                    continue
+            # get valid time and check if it is within the time range
+            file_valid_time = file_time_info['valid'].strftime("%Y%m%d%H%M%S")
+            # skip if could not extract valid time
+            if not file_valid_time:
+                continue
+            file_valid_dt = datetime.strptime(file_valid_time, "%Y%m%d%H%M%S")
+            file_valid_seconds = int(file_valid_dt.strftime("%s"))
+            # skip if outside time range
+            if file_valid_seconds < lower_limit or file_valid_seconds > upper_limit:
+                continue
 
-                # get valid time and check if it is within the time range
-                file_valid_time = file_time_info['valid'].strftime("%Y%m%d%H%M%S")
-                # skip if could not extract valid time
-                if not file_valid_time:
-                    continue
-                file_valid_dt = datetime.strptime(file_valid_time, "%Y%m%d%H%M%S")
-                file_valid_seconds = int(file_valid_dt.strftime("%s"))
-                # skip if outside time range
-                if file_valid_seconds < lower_limit or file_valid_seconds > upper_limit:
-                    continue
+            # if multiple files are allowed, get all files within range
+            if self.c_dict.get('ALLOW_MULTIPLE_FILES', False):
+                closest_files.append(fullpath)
+                continue
 
-                # if multiple files are allowed, get all files within range
-                if self.c_dict.get('ALLOW_MULTIPLE_FILES', False):
-                    closest_files.append(fullpath)
-                    continue
-
-                # if only 1 file is allowed, check if file is
-                # closer to desired valid time than previous match
-                diff = abs(valid_seconds - file_valid_seconds)
-                if diff < closest_time:
-                    closest_time = diff
-                    del closest_files[:]
-                    closest_files.append(fullpath)
+            # if only 1 file is allowed, check if file is
+            # closer to desired valid time than previous match
+            diff = abs(valid_seconds - file_valid_seconds)
+            if diff < closest_time:
+                closest_time = diff
+                del closest_files[:]
+                closest_files.append(fullpath)
 
         return closest_files
 
@@ -864,11 +864,7 @@ class CommandBuilder:
         input_files = self.find_model(time_info, return_list=True, mandatory=False)
         if not input_files:
             msg = "Could not find any input files"
-            if (not self.c_dict.get('MANDATORY', True)
-                    or self.c_dict.get('ALLOW_MISSING_INPUTS', False)):
-                self.logger.warning(msg)
-            else:
-                self.log_error(msg)
+            self._log_message_dynamic_level(msg, True)
             return False
 
         # if control file is requested, remove it from input list
@@ -1019,15 +1015,7 @@ class CommandBuilder:
         # get directory that the output file will exist
         if is_directory:
             parent_dir = output_path
-            valid = '*'
-            lead = '*'
-            if time_info:
-                if time_info['valid'] != '*':
-                    valid = time_info['valid'].strftime('%Y%m%d_%H%M%S')
-                if time_info['lead'] != '*':
-                    lead = seconds_to_met_time(time_info['lead_seconds'],
-                                               force_hms=True)
-
+            valid, lead = self._get_valid_and_lead_from_time_info(time_info)
             prefix = self.get_output_prefix(time_info, set_env_vars=False)
             prefix = f'{self.app_name}_{prefix}' if prefix else self.app_name
             search_string = f'{prefix}_{lead}L_{valid}V*'
@@ -1066,6 +1054,19 @@ class CommandBuilder:
                           f'{self.app_name.upper()}_SKIP_IF_OUTPUT_EXISTS to False '
                           'to process')
         return False
+
+    @staticmethod
+    def _get_valid_and_lead_from_time_info(time_info):
+        valid = '*'
+        lead = '*'
+        if not time_info:
+            return valid, lead
+
+        if time_info['valid'] != '*':
+            valid = time_info['valid'].strftime('%Y%m%d_%H%M%S')
+        if time_info['lead'] != '*':
+            lead = seconds_to_met_time(time_info['lead_seconds'], force_hms=True)
+        return valid, lead
 
     def check_for_externals(self):
         self.check_for_gempak()
@@ -1566,15 +1567,20 @@ class CommandBuilder:
             'step': 'int',
             'width': ('string', 'remove_quotes'),
             'grib_code': ('list', 'remove_quotes,allow_empty', None,
-                          [f'{app_upper}_TIME_SUMMARY_GRIB_CODES']),
+                          [f'{app_upper}_TIME_SUMMARY_GRIB_CODE',
+                           f'{app_upper}_TIME_SUMMARY_GRIB_CODES']),
             'obs_var': ('list', 'allow_empty', None,
-                        [f'{app_upper}_TIME_SUMMARY_VAR_NAMES']),
+                        [f'{app_upper}_TIME_SUMMARY_OBS_VAR',
+                         f'{app_upper}_TIME_SUMMARY_VAR_NAMES']),
             'type': ('list', 'allow_empty', None,
-                     [f'{app_upper}_TIME_SUMMARY_TYPES']),
+                     [f'{app_upper}_TIME_SUMMARY_TYPE',
+                      f'{app_upper}_TIME_SUMMARY_TYPES']),
             'vld_freq': ('int', None, None,
-                         [f'{app_upper}_TIME_SUMMARY_VALID_FREQ']),
+                         [f'{app_upper}_TIME_SUMMARY_VLD_FREQ',
+                          f'{app_upper}_TIME_SUMMARY_VALID_FREQ']),
             'vld_thresh': ('float', None, None,
-                           [f'{app_upper}_TIME_SUMMARY_VALID_THRESH']),
+                           [f'{app_upper}_TIME_SUMMARY_VLD_THRESH',
+                            f'{app_upper}_TIME_SUMMARY_VALID_THRESH']),
         })
 
     def handle_mask(self, single_value=False, get_flags=False, get_point=False):

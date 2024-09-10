@@ -250,8 +250,8 @@ class GenEnsProdWrapper(LoopTimesWrapper):
         fill_missing = not self.env_var_dict.get('METPLUS_ENS_MEMBER_IDS')
         if not self.find_input_files_ensemble(time_info,
                                               fill_missing=fill_missing):
-            return False
-        return True
+            return None
+        return time_info
 
     def find_field_info(self, time_info):
         """! parse var list for ENS fields

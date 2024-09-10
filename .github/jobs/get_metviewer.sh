@@ -10,7 +10,7 @@ export METVIEWER_DOCKER_IMAGE=dtcenter/metviewer:develop
 apk add docker-cli-compose
 
 # download docker-compose.yml file from METviewer develop branch
-wget https://raw.githubusercontent.com/dtcenter/METviewer/develop/docker/docker-compose.yml
+wget https://raw.githubusercontent.com/dtcenter/METviewer/develop/internal/scripts/docker/docker-compose.yml
 
 # Run docker-compose to create the containers
 docker compose up -d

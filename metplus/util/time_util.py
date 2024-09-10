@@ -13,7 +13,7 @@ import datetime
 from dateutil.relativedelta import relativedelta
 import re
 
-from .string_manip import split_level, format_thresh
+from .string_manip import format_thresh
 
 '''!@namespace TimeInfo
 @brief Utility to handle timing in METplus wrappers

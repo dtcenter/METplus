@@ -11,6 +11,8 @@ Description
 
   Note: GDAS prepbufr data is also available via other sources (e.g., NOMADS, NOAA HPSS, and NCAR/Research Data Archive); however, NOAA/NCEI does not require an account and provides a long archive period.
 
+  .. note:: Surface winds are by default encoded with a quality mark of 9, to avoid being used in data assimilation. To use surface winds from GDAS prepbufr, be sure to include quality mark values of 9 when running PB2NC, which can be controlled via the PB2NC configuration file.
+
 Recommended use
   GDAS prepbufr data are commonly used for verification of standard meteorological variables, such as temperatures, dew point temperature, wind speed, visibility, and precipitation, and precipitation type.
 

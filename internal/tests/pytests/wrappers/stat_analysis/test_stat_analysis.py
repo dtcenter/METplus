@@ -18,6 +18,7 @@ pp = pprint.PrettyPrinter()
 
 JOB_ARGS = '-job filter'
 
+
 def stat_analysis_wrapper(metplus_config):
     """! Returns a default StatAnalysisWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
@@ -172,6 +173,15 @@ def set_minimum_config_settings(config):
           'MODEL1': '{custom}',
           'MODEL_LIST': '{custom}'},
          {'METPLUS_MODEL': 'model = ["CUSTOM_MODEL"];'}),
+        # 17 time_offset_warning app
+        ({'STAT_ANALYSIS_TIME_OFFSET_WARNING': 3},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 3;'}),
+        # 18 time_offset_warning generic
+        ({'TIME_OFFSET_WARNING': 2},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 2;'}),
+        # 19 time_offset_warning both
+        ({'TIME_OFFSET_WARNING': 2, 'STAT_ANALYSIS_TIME_OFFSET_WARNING': 4},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 4;'}),
     ]
 )
 @pytest.mark.wrapper_d

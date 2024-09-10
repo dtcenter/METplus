@@ -446,12 +446,20 @@ def test_gen_ens_prod_missing_inputs(metplus_config, get_test_data_dir, allow_mi
         # 68
         ({'GEN_ENS_PROD_NORMALIZE': 'CLIMO_STD_ANOM', },
          {'METPLUS_NORMALIZE': 'normalize = CLIMO_STD_ANOM;'}),
-
+        # 69
+        ({'GEN_ENS_PROD_TIME_OFFSET_WARNING': 3},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 3;'}),
+        # 70
+        ({'TIME_OFFSET_WARNING': 2},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 2;'}),
+        # 71
+        ({'TIME_OFFSET_WARNING': 2, 'GEN_ENS_PROD_TIME_OFFSET_WARNING': 4},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 4;'}),
     ]
 )
 @pytest.mark.wrapper
 def test_gen_ens_prod_single_field(metplus_config, config_overrides,
-                                   env_var_values):
+                                   env_var_values, compare_command_and_env_vars):
 
     config = metplus_config
 
@@ -500,28 +508,11 @@ def test_gen_ens_prod_single_field(metplus_config, config_overrides,
     ]
 
     all_cmds = wrapper.run_all_times()
-    print(f"ALL COMMANDS: {all_cmds}")
-    assert len(all_cmds) == len(expected_cmds)
-
-    missing_env = [item for item in env_var_values
-                   if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
-    env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
-
-    for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
-        # ensure commands are generated as expected
-        assert(cmd == expected_cmd)
-
-        # check that environment variables were set properly
-        # including deprecated env vars (not in wrapper env var keys)
-        for env_var_key in env_var_keys:
-            match = next((item for item in env_vars if
-                          item.startswith(env_var_key)), None)
-            assert(match is not None)
-            actual_value = match.split('=', 1)[1]
-            if env_var_key == 'METPLUS_ENS_FIELD':
-                assert (actual_value == ens_fmt)
-            else:
-                assert(env_var_values.get(env_var_key, '') == actual_value)
+    special_values = {
+        'METPLUS_ENS_FIELD': ens_fmt,
+    }
+    compare_command_and_env_vars(all_cmds, expected_cmds, env_var_values,
+                                 wrapper, special_values)
 
 
 @pytest.mark.parametrize(

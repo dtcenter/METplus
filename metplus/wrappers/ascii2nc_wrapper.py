@@ -12,9 +12,8 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import time_util
-from . import LoopTimesWrapper
-from ..util import do_string_sub, skip_time, get_lead_sequence
+from . import ReformatPointWrapper
+from ..util import do_string_sub
 
 '''!@namespace ASCII2NCWrapper
 @brief Wraps the ASCII2NC tool to reformat ascii format to NetCDF
@@ -22,10 +21,10 @@ from ..util import do_string_sub, skip_time, get_lead_sequence
 '''
 
 
-class ASCII2NCWrapper(LoopTimesWrapper):
+class ASCII2NCWrapper(ReformatPointWrapper):
 
     RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
-    RUNTIME_FREQ_SUPPORTED = ['RUN_ONCE_FOR_EACH']
+    RUNTIME_FREQ_SUPPORTED = 'ALL'
 
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_TIME_SUMMARY_DICT',
@@ -63,95 +62,27 @@ class ASCII2NCWrapper(LoopTimesWrapper):
         # don't provide wrapped config file name as default value
         c_dict['CONFIG_FILE'] = self.get_config_file()
 
-        c_dict['ASCII_FORMAT'] = self.config.getstr('config',
-                                                    'ASCII2NC_INPUT_FORMAT',
-                                                    '')
-        c_dict['MASK_GRID'] = self.config.getstr('config',
-                                                 'ASCII2NC_MASK_GRID',
-                                                 '')
-        c_dict['MASK_POLY'] = self.config.getstr('config',
-                                                 'ASCII2NC_MASK_POLY',
-                                                 '')
-        c_dict['MASK_SID'] = self.config.getstr('config',
-                                                'ASCII2NC_MASK_SID',
-                                                '')
-        c_dict['OBS_INPUT_DIR'] = self.config.getdir('ASCII2NC_INPUT_DIR',
-                                                     '')
-        c_dict['OBS_INPUT_TEMPLATE'] = (
-            self.config.getraw('filename_templates',
-                               'ASCII2NC_INPUT_TEMPLATE')
-        )
-        if not c_dict['OBS_INPUT_TEMPLATE']:
-            self.log_error("ASCII2NC_INPUT_TEMPLATE required to run")
-
-        c_dict['OUTPUT_DIR'] = self.config.getdir('ASCII2NC_OUTPUT_DIR', '')
-        c_dict['OUTPUT_TEMPLATE'] = (
-            self.config.getraw('filename_templates',
-                               'ASCII2NC_OUTPUT_TEMPLATE')
-        )
+        c_dict['FORMAT'] = self.config.getraw('config', 'ASCII2NC_INPUT_FORMAT')
+        if c_dict['FORMAT'] == 'python':
+            c_dict['OBS_INPUT_DATATYPE'] = 'PYTHON'
+        c_dict['MASK_GRID'] = self.config.getraw('config', 'ASCII2NC_MASK_GRID')
+        c_dict['MASK_POLY'] = self.config.getraw('config', 'ASCII2NC_MASK_POLY')
+        c_dict['MASK_SID'] = self.config.getraw('config', 'ASCII2NC_MASK_SID')
+        c_dict['VALID_BEG'] = self.config.getraw('config', 'ASCII2NC_VALID_BEG')
+        c_dict['VALID_END'] = self.config.getraw('config', 'ASCII2NC_VALID_END')
 
         # MET config variables
         self.handle_time_summary_dict()
         # handle file window variables
         self.handle_file_window_variables(c_dict, data_types=['OBS'])
 
-        # skip RuntimeFreq input file logic - remove once integrated
-        c_dict['FIND_FILES'] = False
         return c_dict
 
-    def get_command(self):
-        cmd = self.app_path
-
-        # add input files
-        for infile in self.infiles:
-            cmd += ' ' + infile
-
-        # add output path
-        out_path = self.get_output_path()
-        cmd += ' ' + out_path
-
-        # add arguments
-        cmd += ''.join(self.args)
-
-        # add verbosity
-        cmd += ' -v ' + self.c_dict['VERBOSITY']
-        return cmd
-
-    def find_input_files(self, time_info):
-        # if using python embedding input, don't check if file exists,
-        # just substitute time info and add to input file list
-        if self.c_dict['ASCII_FORMAT'] == 'python':
-            filename = do_string_sub(self.c_dict['OBS_INPUT_TEMPLATE'],
-                                     **time_info)
-            self.infiles.append(filename)
-            return True
-
-        # get list of files even if only one is found (return_list=True)
-        obs_path = self.find_obs(time_info, return_list=True)
-        if obs_path is None:
-            return False
-
-        self.infiles.extend(obs_path)
-        return True
-
     def set_command_line_arguments(self, time_info):
-        # add input data format if set
-        if self.c_dict['ASCII_FORMAT']:
-            self.args.append(" -format {}".format(self.c_dict['ASCII_FORMAT']))
-
-        # add config file - passing through do_string_sub to get custom string if set
-        if self.c_dict['CONFIG_FILE']:
-            config_file = do_string_sub(self.c_dict['CONFIG_FILE'], **time_info)
-            self.args.append(f" -config {config_file}")
-
-        # add mask grid if set
-        if self.c_dict['MASK_GRID']:
-            self.args.append(" -mask_grid {}".format(self.c_dict['MASK_GRID']))
-
-        # add mask poly if set
-        if self.c_dict['MASK_POLY']:
-            self.args.append(" -mask_poly {}".format(self.c_dict['MASK_POLY']))
-
-        # add mask SID if set
-        if self.c_dict['MASK_SID']:
-            self.args.append(" -mask_sid {}".format(self.c_dict['MASK_SID']))
+        # add all arguments if set
+        for arg in ('FORMAT', 'CONFIG_FILE', 'VALID_BEG', 'VALID_END',
+                    'MASK_GRID', 'MASK_POLY', 'MASK_SID'):
+            if self.c_dict[arg]:
+                val = do_string_sub(self.c_dict[arg], **time_info)
+                arg_name = 'config' if arg == 'CONFIG_FILE' else arg.lower()
+                self.args.append(f"-{arg_name} {val}")
