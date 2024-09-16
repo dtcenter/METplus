@@ -8,6 +8,8 @@ Update Version Number
   * If necessary, update the *met_version* variable in *src/basic/vx_util/util_constants.h* which defines the version number written to the MET output files.
 
   * In *docs/conf.py*, update the *version*, *release_year*, and *release_date* variables for the documentation.
+
+  * In *docs/Users_Guide/installation.rst*, search for the X.Y version, replacing the current X.Y version with the official X.Y version, if necessary. Pay particular attention to the "Note" about the C++ standard and modify if necessary.  The X.Y version number in the "Note" box should NOT change unless the default C++ standard changes.
    
   * If necessary, update the version number listed in the MET configuration files:
 
