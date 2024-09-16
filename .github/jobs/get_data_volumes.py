@@ -54,7 +54,12 @@ def main(args):
         branch_name = branch_name[5:]
 
     # get all docker data volumes associated with current branch
-    available_volumes = docker_get_volumes_last_updated(branch_name).keys()
+    try:
+        available_volumes = docker_get_volumes_last_updated(branch_name).keys()
+    except AttributeError:
+        print('ERROR: Could not get Docker data volumes from DockerHub. '
+              'Please try rerunning the failed jobs.')
+        return None
 
     # loop through arguments and get data volume for each category
     for model_app_name in args:
