@@ -289,6 +289,42 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_CLIMO_STDEV_HOUR_INTERVAL`
 | :term:`ENSEMBLE_STAT_CLIMO_STDEV_USE_FCST`
 | :term:`ENSEMBLE_STAT_CLIMO_STDEV_USE_OBS`
+| :term:`ENSEMBLE_STAT_FCST_CLIMO_MEAN_FILE_NAME`
+| :term:`ENSEMBLE_STAT_FCST_CLIMO_MEAN_FIELD`
+| :term:`ENSEMBLE_STAT_FCST_CLIMO_MEAN_REGRID_METHOD`
+| :term:`ENSEMBLE_STAT_FCST_CLIMO_MEAN_REGRID_WIDTH`
+| :term:`ENSEMBLE_STAT_FCST_CLIMO_MEAN_REGRID_VLD_THRESH`
+| :term:`ENSEMBLE_STAT_FCST_CLIMO_MEAN_REGRID_SHAPE`
+| :term:`ENSEMBLE_STAT_FCST_CLIMO_MEAN_TIME_INTERP_METHOD`
+| :term:`ENSEMBLE_STAT_FCST_CLIMO_MEAN_DAY_INTERVAL`
+| :term:`ENSEMBLE_STAT_FCST_CLIMO_MEAN_HOUR_INTERVAL`
+| :term:`ENSEMBLE_STAT_FCST_CLIMO_STDEV_FILE_NAME`
+| :term:`ENSEMBLE_STAT_FCST_CLIMO_STDEV_FIELD`
+| :term:`ENSEMBLE_STAT_FCST_CLIMO_STDEV_REGRID_METHOD`
+| :term:`ENSEMBLE_STAT_FCST_CLIMO_STDEV_REGRID_WIDTH`
+| :term:`ENSEMBLE_STAT_FCST_CLIMO_STDEV_REGRID_VLD_THRESH`
+| :term:`ENSEMBLE_STAT_FCST_CLIMO_STDEV_REGRID_SHAPE`
+| :term:`ENSEMBLE_STAT_FCST_CLIMO_STDEV_TIME_INTERP_METHOD`
+| :term:`ENSEMBLE_STAT_FCST_CLIMO_STDEV_DAY_INTERVAL`
+| :term:`ENSEMBLE_STAT_FCST_CLIMO_STDEV_HOUR_INTERVAL`
+| :term:`ENSEMBLE_STAT_OBS_CLIMO_MEAN_FILE_NAME`
+| :term:`ENSEMBLE_STAT_OBS_CLIMO_MEAN_FIELD`
+| :term:`ENSEMBLE_STAT_OBS_CLIMO_MEAN_REGRID_METHOD`
+| :term:`ENSEMBLE_STAT_OBS_CLIMO_MEAN_REGRID_WIDTH`
+| :term:`ENSEMBLE_STAT_OBS_CLIMO_MEAN_REGRID_VLD_THRESH`
+| :term:`ENSEMBLE_STAT_OBS_CLIMO_MEAN_REGRID_SHAPE`
+| :term:`ENSEMBLE_STAT_OBS_CLIMO_MEAN_TIME_INTERP_METHOD`
+| :term:`ENSEMBLE_STAT_OBS_CLIMO_MEAN_DAY_INTERVAL`
+| :term:`ENSEMBLE_STAT_OBS_CLIMO_MEAN_HOUR_INTERVAL`
+| :term:`ENSEMBLE_STAT_OBS_CLIMO_STDEV_FILE_NAME`
+| :term:`ENSEMBLE_STAT_OBS_CLIMO_STDEV_FIELD`
+| :term:`ENSEMBLE_STAT_OBS_CLIMO_STDEV_REGRID_METHOD`
+| :term:`ENSEMBLE_STAT_OBS_CLIMO_STDEV_REGRID_WIDTH`
+| :term:`ENSEMBLE_STAT_OBS_CLIMO_STDEV_REGRID_VLD_THRESH`
+| :term:`ENSEMBLE_STAT_OBS_CLIMO_STDEV_REGRID_SHAPE`
+| :term:`ENSEMBLE_STAT_OBS_CLIMO_STDEV_TIME_INTERP_METHOD`
+| :term:`ENSEMBLE_STAT_OBS_CLIMO_STDEV_DAY_INTERVAL`
+| :term:`ENSEMBLE_STAT_OBS_CLIMO_STDEV_HOUR_INTERVAL`
 | :term:`ENSEMBLE_STAT_MASK_GRID`
 | :term:`ENSEMBLE_STAT_CI_ALPHA`
 | :term:`ENSEMBLE_STAT_INTERP_FIELD`
@@ -584,6 +620,63 @@ ${METPLUS_FCST_FIELD}
 
 .. note:: For more information on controlling the forecast field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
 
+${METPLUS_FCST_CLIMO_MEAN_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_FCST_CLIMO_MEAN_FILE_NAME`
+     - fcst.climo_mean.file_name
+   * - :term:`ENSEMBLE_STAT_FCST_CLIMO_MEAN_FIELD`
+     - fcst.climo_mean.field
+   * - :term:`ENSEMBLE_STAT_FCST_CLIMO_MEAN_REGRID_METHOD`
+     - fcst.climo_mean.regrid.method
+   * - :term:`ENSEMBLE_STAT_FCST_CLIMO_MEAN_REGRID_WIDTH`
+     - fcst.climo_mean.regrid.width
+   * - :term:`ENSEMBLE_STAT_FCST_CLIMO_MEAN_REGRID_VLD_THRESH`
+     - fcst.climo_mean.regrid.vld_thresh
+   * - :term:`ENSEMBLE_STAT_FCST_CLIMO_MEAN_REGRID_SHAPE`
+     - fcst.climo_mean.regrid.shape
+   * - :term:`ENSEMBLE_STAT_FCST_CLIMO_MEAN_TIME_INTERP_METHOD`
+     - fcst.climo_mean.time_interp_method
+   * - :term:`ENSEMBLE_STAT_FCST_CLIMO_MEAN_DAY_INTERVAL`
+     - fcst.climo_mean.day_interval
+   * - :term:`ENSEMBLE_STAT_FCST_CLIMO_MEAN_HOUR_INTERVAL`
+     - fcst.climo_mean.hour_interval
+
+${METPLUS_FCST_CLIMO_STDEV_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_FCST_CLIMO_STDEV_FILE_NAME`
+     - fcst.climo_stdev.file_name
+   * - :term:`ENSEMBLE_STAT_FCST_CLIMO_STDEV_FIELD`
+     - fcst.climo_stdev.field
+   * - :term:`ENSEMBLE_STAT_FCST_CLIMO_STDEV_REGRID_METHOD`
+     - fcst.climo_stdev.regrid.method
+   * - :term:`ENSEMBLE_STAT_FCST_CLIMO_STDEV_REGRID_WIDTH`
+     - fcst.climo_stdev.regrid.width
+   * - :term:`ENSEMBLE_STAT_FCST_CLIMO_STDEV_REGRID_VLD_THRESH`
+     - fcst.climo_stdev.regrid.vld_thresh
+   * - :term:`ENSEMBLE_STAT_FCST_CLIMO_STDEV_REGRID_SHAPE`
+     - fcst.climo_stdev.regrid.shape
+   * - :term:`ENSEMBLE_STAT_FCST_CLIMO_STDEV_TIME_INTERP_METHOD`
+     - fcst.climo_stdev.time_interp_method
+   * - :term:`ENSEMBLE_STAT_FCST_CLIMO_STDEV_DAY_INTERVAL`
+     - fcst.climo_stdev.day_interval
+   * - :term:`ENSEMBLE_STAT_FCST_CLIMO_STDEV_HOUR_INTERVAL`
+     - fcst.climo_stdev.hour_interval
+
+
 ${METPLUS_OBS_FILE_TYPE}
 """"""""""""""""""""""""
 
@@ -616,7 +709,63 @@ ${METPLUS_OBS_FIELD}
 
 .. note:: For more information on controlling the observation field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
 
-	  
+
+${METPLUS_OBS_CLIMO_MEAN_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_OBS_CLIMO_MEAN_FILE_NAME`
+     - obs.climo_mean.file_name
+   * - :term:`ENSEMBLE_STAT_OBS_CLIMO_MEAN_FIELD`
+     - obs.climo_mean.field
+   * - :term:`ENSEMBLE_STAT_OBS_CLIMO_MEAN_REGRID_METHOD`
+     - obs.climo_mean.regrid.method
+   * - :term:`ENSEMBLE_STAT_OBS_CLIMO_MEAN_REGRID_WIDTH`
+     - obs.climo_mean.regrid.width
+   * - :term:`ENSEMBLE_STAT_OBS_CLIMO_MEAN_REGRID_VLD_THRESH`
+     - obs.climo_mean.regrid.vld_thresh
+   * - :term:`ENSEMBLE_STAT_OBS_CLIMO_MEAN_REGRID_SHAPE`
+     - obs.climo_mean.regrid.shape
+   * - :term:`ENSEMBLE_STAT_OBS_CLIMO_MEAN_TIME_INTERP_METHOD`
+     - obs.climo_mean.time_interp_method
+   * - :term:`ENSEMBLE_STAT_OBS_CLIMO_MEAN_DAY_INTERVAL`
+     - obs.climo_mean.day_interval
+   * - :term:`ENSEMBLE_STAT_OBS_CLIMO_MEAN_HOUR_INTERVAL`
+     - obs.climo_mean.hour_interval
+
+${METPLUS_OBS_CLIMO_STDEV_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_OBS_CLIMO_STDEV_FILE_NAME`
+     - obs.climo_stdev.file_name
+   * - :term:`ENSEMBLE_STAT_OBS_CLIMO_STDEV_FIELD`
+     - obs.climo_stdev.field
+   * - :term:`ENSEMBLE_STAT_OBS_CLIMO_STDEV_REGRID_METHOD`
+     - obs.climo_stdev.regrid.method
+   * - :term:`ENSEMBLE_STAT_OBS_CLIMO_STDEV_REGRID_WIDTH`
+     - obs.climo_stdev.regrid.width
+   * - :term:`ENSEMBLE_STAT_OBS_CLIMO_STDEV_REGRID_VLD_THRESH`
+     - obs.climo_stdev.regrid.vld_thresh
+   * - :term:`ENSEMBLE_STAT_OBS_CLIMO_STDEV_REGRID_SHAPE`
+     - obs.climo_stdev.regrid.shape
+   * - :term:`ENSEMBLE_STAT_OBS_CLIMO_STDEV_TIME_INTERP_METHOD`
+     - obs.climo_stdev.time_interp_method
+   * - :term:`ENSEMBLE_STAT_OBS_CLIMO_STDEV_DAY_INTERVAL`
+     - obs.climo_stdev.day_interval
+   * - :term:`ENSEMBLE_STAT_OBS_CLIMO_STDEV_HOUR_INTERVAL`
+     - obs.climo_stdev.hour_interval
+
 ${METPLUS_MESSAGE_TYPE}
 """""""""""""""""""""""
 
@@ -3169,6 +3318,42 @@ METplus Configuration
 | :term:`GRID_STAT_CLIMO_STDEV_HOUR_INTERVAL`
 | :term:`GRID_STAT_CLIMO_STDEV_USE_FCST`
 | :term:`GRID_STAT_CLIMO_STDEV_USE_OBS`
+| :term:`GRID_STAT_FCST_CLIMO_MEAN_FILE_NAME`
+| :term:`GRID_STAT_FCST_CLIMO_MEAN_FIELD`
+| :term:`GRID_STAT_FCST_CLIMO_MEAN_REGRID_METHOD`
+| :term:`GRID_STAT_FCST_CLIMO_MEAN_REGRID_WIDTH`
+| :term:`GRID_STAT_FCST_CLIMO_MEAN_REGRID_VLD_THRESH`
+| :term:`GRID_STAT_FCST_CLIMO_MEAN_REGRID_SHAPE`
+| :term:`GRID_STAT_FCST_CLIMO_MEAN_TIME_INTERP_METHOD`
+| :term:`GRID_STAT_FCST_CLIMO_MEAN_DAY_INTERVAL`
+| :term:`GRID_STAT_FCST_CLIMO_MEAN_HOUR_INTERVAL`
+| :term:`GRID_STAT_FCST_CLIMO_STDEV_FILE_NAME`
+| :term:`GRID_STAT_FCST_CLIMO_STDEV_FIELD`
+| :term:`GRID_STAT_FCST_CLIMO_STDEV_REGRID_METHOD`
+| :term:`GRID_STAT_FCST_CLIMO_STDEV_REGRID_WIDTH`
+| :term:`GRID_STAT_FCST_CLIMO_STDEV_REGRID_VLD_THRESH`
+| :term:`GRID_STAT_FCST_CLIMO_STDEV_REGRID_SHAPE`
+| :term:`GRID_STAT_FCST_CLIMO_STDEV_TIME_INTERP_METHOD`
+| :term:`GRID_STAT_FCST_CLIMO_STDEV_DAY_INTERVAL`
+| :term:`GRID_STAT_FCST_CLIMO_STDEV_HOUR_INTERVAL`
+| :term:`GRID_STAT_OBS_CLIMO_MEAN_FILE_NAME`
+| :term:`GRID_STAT_OBS_CLIMO_MEAN_FIELD`
+| :term:`GRID_STAT_OBS_CLIMO_MEAN_REGRID_METHOD`
+| :term:`GRID_STAT_OBS_CLIMO_MEAN_REGRID_WIDTH`
+| :term:`GRID_STAT_OBS_CLIMO_MEAN_REGRID_VLD_THRESH`
+| :term:`GRID_STAT_OBS_CLIMO_MEAN_REGRID_SHAPE`
+| :term:`GRID_STAT_OBS_CLIMO_MEAN_TIME_INTERP_METHOD`
+| :term:`GRID_STAT_OBS_CLIMO_MEAN_DAY_INTERVAL`
+| :term:`GRID_STAT_OBS_CLIMO_MEAN_HOUR_INTERVAL`
+| :term:`GRID_STAT_OBS_CLIMO_STDEV_FILE_NAME`
+| :term:`GRID_STAT_OBS_CLIMO_STDEV_FIELD`
+| :term:`GRID_STAT_OBS_CLIMO_STDEV_REGRID_METHOD`
+| :term:`GRID_STAT_OBS_CLIMO_STDEV_REGRID_WIDTH`
+| :term:`GRID_STAT_OBS_CLIMO_STDEV_REGRID_VLD_THRESH`
+| :term:`GRID_STAT_OBS_CLIMO_STDEV_REGRID_SHAPE`
+| :term:`GRID_STAT_OBS_CLIMO_STDEV_TIME_INTERP_METHOD`
+| :term:`GRID_STAT_OBS_CLIMO_STDEV_DAY_INTERVAL`
+| :term:`GRID_STAT_OBS_CLIMO_STDEV_HOUR_INTERVAL`
 | :term:`GRID_STAT_HSS_EC_VALUE`
 | :term:`GRID_STAT_DISTANCE_MAP_BADDELEY_P`
 | :term:`GRID_STAT_DISTANCE_MAP_BADDELEY_MAX_DIST`
@@ -3411,6 +3596,63 @@ ${METPLUS_FCST_FIELD}
 
 .. note:: For more information on controlling the forecast field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
 
+
+${METPLUS_FCST_CLIMO_MEAN_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_FCST_CLIMO_MEAN_FILE_NAME`
+     - fcst.climo_mean.file_name
+   * - :term:`GRID_STAT_FCST_CLIMO_MEAN_FIELD`
+     - fcst.climo_mean.field
+   * - :term:`GRID_STAT_FCST_CLIMO_MEAN_REGRID_METHOD`
+     - fcst.climo_mean.regrid.method
+   * - :term:`GRID_STAT_FCST_CLIMO_MEAN_REGRID_WIDTH`
+     - fcst.climo_mean.regrid.width
+   * - :term:`GRID_STAT_FCST_CLIMO_MEAN_REGRID_VLD_THRESH`
+     - fcst.climo_mean.regrid.vld_thresh
+   * - :term:`GRID_STAT_FCST_CLIMO_MEAN_REGRID_SHAPE`
+     - fcst.climo_mean.regrid.shape
+   * - :term:`GRID_STAT_FCST_CLIMO_MEAN_TIME_INTERP_METHOD`
+     - fcst.climo_mean.time_interp_method
+   * - :term:`GRID_STAT_FCST_CLIMO_MEAN_DAY_INTERVAL`
+     - fcst.climo_mean.day_interval
+   * - :term:`GRID_STAT_FCST_CLIMO_MEAN_HOUR_INTERVAL`
+     - fcst.climo_mean.hour_interval
+
+${METPLUS_FCST_CLIMO_STDEV_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_FCST_CLIMO_STDEV_FILE_NAME`
+     - fcst.climo_stdev.file_name
+   * - :term:`GRID_STAT_FCST_CLIMO_STDEV_FIELD`
+     - fcst.climo_stdev.field
+   * - :term:`GRID_STAT_FCST_CLIMO_STDEV_REGRID_METHOD`
+     - fcst.climo_stdev.regrid.method
+   * - :term:`GRID_STAT_FCST_CLIMO_STDEV_REGRID_WIDTH`
+     - fcst.climo_stdev.regrid.width
+   * - :term:`GRID_STAT_FCST_CLIMO_STDEV_REGRID_VLD_THRESH`
+     - fcst.climo_stdev.regrid.vld_thresh
+   * - :term:`GRID_STAT_FCST_CLIMO_STDEV_REGRID_SHAPE`
+     - fcst.climo_stdev.regrid.shape
+   * - :term:`GRID_STAT_FCST_CLIMO_STDEV_TIME_INTERP_METHOD`
+     - fcst.climo_stdev.time_interp_method
+   * - :term:`GRID_STAT_FCST_CLIMO_STDEV_DAY_INTERVAL`
+     - fcst.climo_stdev.day_interval
+   * - :term:`GRID_STAT_FCST_CLIMO_STDEV_HOUR_INTERVAL`
+     - fcst.climo_stdev.hour_interval
+
 ${METPLUS_OBS_FILE_TYPE}
 """"""""""""""""""""""""
 
@@ -3442,6 +3684,62 @@ ${METPLUS_OBS_FIELD}
      - n/a
 
 .. note:: For more information on controlling the observation field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
+
+${METPLUS_OBS_CLIMO_MEAN_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_OBS_CLIMO_MEAN_FILE_NAME`
+     - obs.climo_mean.file_name
+   * - :term:`GRID_STAT_OBS_CLIMO_MEAN_FIELD`
+     - obs.climo_mean.field
+   * - :term:`GRID_STAT_OBS_CLIMO_MEAN_REGRID_METHOD`
+     - obs.climo_mean.regrid.method
+   * - :term:`GRID_STAT_OBS_CLIMO_MEAN_REGRID_WIDTH`
+     - obs.climo_mean.regrid.width
+   * - :term:`GRID_STAT_OBS_CLIMO_MEAN_REGRID_VLD_THRESH`
+     - obs.climo_mean.regrid.vld_thresh
+   * - :term:`GRID_STAT_OBS_CLIMO_MEAN_REGRID_SHAPE`
+     - obs.climo_mean.regrid.shape
+   * - :term:`GRID_STAT_OBS_CLIMO_MEAN_TIME_INTERP_METHOD`
+     - obs.climo_mean.time_interp_method
+   * - :term:`GRID_STAT_OBS_CLIMO_MEAN_DAY_INTERVAL`
+     - obs.climo_mean.day_interval
+   * - :term:`GRID_STAT_OBS_CLIMO_MEAN_HOUR_INTERVAL`
+     - obs.climo_mean.hour_interval
+
+${METPLUS_OBS_CLIMO_STDEV_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_OBS_CLIMO_STDEV_FILE_NAME`
+     - obs.climo_stdev.file_name
+   * - :term:`GRID_STAT_OBS_CLIMO_STDEV_FIELD`
+     - obs.climo_stdev.field
+   * - :term:`GRID_STAT_OBS_CLIMO_STDEV_REGRID_METHOD`
+     - obs.climo_stdev.regrid.method
+   * - :term:`GRID_STAT_OBS_CLIMO_STDEV_REGRID_WIDTH`
+     - obs.climo_stdev.regrid.width
+   * - :term:`GRID_STAT_OBS_CLIMO_STDEV_REGRID_VLD_THRESH`
+     - obs.climo_stdev.regrid.vld_thresh
+   * - :term:`GRID_STAT_OBS_CLIMO_STDEV_REGRID_SHAPE`
+     - obs.climo_stdev.regrid.shape
+   * - :term:`GRID_STAT_OBS_CLIMO_STDEV_TIME_INTERP_METHOD`
+     - obs.climo_stdev.time_interp_method
+   * - :term:`GRID_STAT_OBS_CLIMO_STDEV_DAY_INTERVAL`
+     - obs.climo_stdev.day_interval
+   * - :term:`GRID_STAT_OBS_CLIMO_STDEV_HOUR_INTERVAL`
+     - obs.climo_stdev.hour_interval
 
 ${METPLUS_CLIMO_MEAN_DICT}
 """"""""""""""""""""""""""
@@ -6683,6 +6981,42 @@ Configuration
 | :term:`POINT_STAT_CLIMO_STDEV_HOUR_INTERVAL`
 | :term:`POINT_STAT_CLIMO_STDEV_USE_FCST`
 | :term:`POINT_STAT_CLIMO_STDEV_USE_OBS`
+| :term:`POINT_STAT_FCST_CLIMO_MEAN_FILE_NAME`
+| :term:`POINT_STAT_FCST_CLIMO_MEAN_FIELD`
+| :term:`POINT_STAT_FCST_CLIMO_MEAN_REGRID_METHOD`
+| :term:`POINT_STAT_FCST_CLIMO_MEAN_REGRID_WIDTH`
+| :term:`POINT_STAT_FCST_CLIMO_MEAN_REGRID_VLD_THRESH`
+| :term:`POINT_STAT_FCST_CLIMO_MEAN_REGRID_SHAPE`
+| :term:`POINT_STAT_FCST_CLIMO_MEAN_TIME_INTERP_METHOD`
+| :term:`POINT_STAT_FCST_CLIMO_MEAN_DAY_INTERVAL`
+| :term:`POINT_STAT_FCST_CLIMO_MEAN_HOUR_INTERVAL`
+| :term:`POINT_STAT_FCST_CLIMO_STDEV_FILE_NAME`
+| :term:`POINT_STAT_FCST_CLIMO_STDEV_FIELD`
+| :term:`POINT_STAT_FCST_CLIMO_STDEV_REGRID_METHOD`
+| :term:`POINT_STAT_FCST_CLIMO_STDEV_REGRID_WIDTH`
+| :term:`POINT_STAT_FCST_CLIMO_STDEV_REGRID_VLD_THRESH`
+| :term:`POINT_STAT_FCST_CLIMO_STDEV_REGRID_SHAPE`
+| :term:`POINT_STAT_FCST_CLIMO_STDEV_TIME_INTERP_METHOD`
+| :term:`POINT_STAT_FCST_CLIMO_STDEV_DAY_INTERVAL`
+| :term:`POINT_STAT_FCST_CLIMO_STDEV_HOUR_INTERVAL`
+| :term:`POINT_STAT_OBS_CLIMO_MEAN_FILE_NAME`
+| :term:`POINT_STAT_OBS_CLIMO_MEAN_FIELD`
+| :term:`POINT_STAT_OBS_CLIMO_MEAN_REGRID_METHOD`
+| :term:`POINT_STAT_OBS_CLIMO_MEAN_REGRID_WIDTH`
+| :term:`POINT_STAT_OBS_CLIMO_MEAN_REGRID_VLD_THRESH`
+| :term:`POINT_STAT_OBS_CLIMO_MEAN_REGRID_SHAPE`
+| :term:`POINT_STAT_OBS_CLIMO_MEAN_TIME_INTERP_METHOD`
+| :term:`POINT_STAT_OBS_CLIMO_MEAN_DAY_INTERVAL`
+| :term:`POINT_STAT_OBS_CLIMO_MEAN_HOUR_INTERVAL`
+| :term:`POINT_STAT_OBS_CLIMO_STDEV_FILE_NAME`
+| :term:`POINT_STAT_OBS_CLIMO_STDEV_FIELD`
+| :term:`POINT_STAT_OBS_CLIMO_STDEV_REGRID_METHOD`
+| :term:`POINT_STAT_OBS_CLIMO_STDEV_REGRID_WIDTH`
+| :term:`POINT_STAT_OBS_CLIMO_STDEV_REGRID_VLD_THRESH`
+| :term:`POINT_STAT_OBS_CLIMO_STDEV_REGRID_SHAPE`
+| :term:`POINT_STAT_OBS_CLIMO_STDEV_TIME_INTERP_METHOD`
+| :term:`POINT_STAT_OBS_CLIMO_STDEV_DAY_INTERVAL`
+| :term:`POINT_STAT_OBS_CLIMO_STDEV_HOUR_INTERVAL`
 | :term:`POINT_STAT_HSS_EC_VALUE`
 | :term:`POINT_STAT_HIRA_FLAG`
 | :term:`POINT_STAT_HIRA_WIDTH`
@@ -6865,6 +7199,63 @@ ${METPLUS_FCST_FIELD}
 
 .. note:: For more information on controlling the forecast field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
 
+
+${METPLUS_FCST_CLIMO_MEAN_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_FCST_CLIMO_MEAN_FILE_NAME`
+     - fcst.climo_mean.file_name
+   * - :term:`POINT_STAT_FCST_CLIMO_MEAN_FIELD`
+     - fcst.climo_mean.field
+   * - :term:`POINT_STAT_FCST_CLIMO_MEAN_REGRID_METHOD`
+     - fcst.climo_mean.regrid.method
+   * - :term:`POINT_STAT_FCST_CLIMO_MEAN_REGRID_WIDTH`
+     - fcst.climo_mean.regrid.width
+   * - :term:`POINT_STAT_FCST_CLIMO_MEAN_REGRID_VLD_THRESH`
+     - fcst.climo_mean.regrid.vld_thresh
+   * - :term:`POINT_STAT_FCST_CLIMO_MEAN_REGRID_SHAPE`
+     - fcst.climo_mean.regrid.shape
+   * - :term:`POINT_STAT_FCST_CLIMO_MEAN_TIME_INTERP_METHOD`
+     - fcst.climo_mean.time_interp_method
+   * - :term:`POINT_STAT_FCST_CLIMO_MEAN_DAY_INTERVAL`
+     - fcst.climo_mean.day_interval
+   * - :term:`POINT_STAT_FCST_CLIMO_MEAN_HOUR_INTERVAL`
+     - fcst.climo_mean.hour_interval
+
+${METPLUS_FCST_CLIMO_STDEV_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_FCST_CLIMO_STDEV_FILE_NAME`
+     - fcst.climo_stdev.file_name
+   * - :term:`POINT_STAT_FCST_CLIMO_STDEV_FIELD`
+     - fcst.climo_stdev.field
+   * - :term:`POINT_STAT_FCST_CLIMO_STDEV_REGRID_METHOD`
+     - fcst.climo_stdev.regrid.method
+   * - :term:`POINT_STAT_FCST_CLIMO_STDEV_REGRID_WIDTH`
+     - fcst.climo_stdev.regrid.width
+   * - :term:`POINT_STAT_FCST_CLIMO_STDEV_REGRID_VLD_THRESH`
+     - fcst.climo_stdev.regrid.vld_thresh
+   * - :term:`POINT_STAT_FCST_CLIMO_STDEV_REGRID_SHAPE`
+     - fcst.climo_stdev.regrid.shape
+   * - :term:`POINT_STAT_FCST_CLIMO_STDEV_TIME_INTERP_METHOD`
+     - fcst.climo_stdev.time_interp_method
+   * - :term:`POINT_STAT_FCST_CLIMO_STDEV_DAY_INTERVAL`
+     - fcst.climo_stdev.day_interval
+   * - :term:`POINT_STAT_FCST_CLIMO_STDEV_HOUR_INTERVAL`
+     - fcst.climo_stdev.hour_interval
+
 ${METPLUS_OBS_FILE_TYPE}
 """"""""""""""""""""""""
 
@@ -6896,6 +7287,63 @@ ${METPLUS_OBS_FIELD}
      - n/a
 
 .. note:: For more information on controlling the observation field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
+
+
+${METPLUS_OBS_CLIMO_MEAN_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_OBS_CLIMO_MEAN_FILE_NAME`
+     - obs.climo_mean.file_name
+   * - :term:`POINT_STAT_OBS_CLIMO_MEAN_FIELD`
+     - obs.climo_mean.field
+   * - :term:`POINT_STAT_OBS_CLIMO_MEAN_REGRID_METHOD`
+     - obs.climo_mean.regrid.method
+   * - :term:`POINT_STAT_OBS_CLIMO_MEAN_REGRID_WIDTH`
+     - obs.climo_mean.regrid.width
+   * - :term:`POINT_STAT_OBS_CLIMO_MEAN_REGRID_VLD_THRESH`
+     - obs.climo_mean.regrid.vld_thresh
+   * - :term:`POINT_STAT_OBS_CLIMO_MEAN_REGRID_SHAPE`
+     - obs.climo_mean.regrid.shape
+   * - :term:`POINT_STAT_OBS_CLIMO_MEAN_TIME_INTERP_METHOD`
+     - obs.climo_mean.time_interp_method
+   * - :term:`POINT_STAT_OBS_CLIMO_MEAN_DAY_INTERVAL`
+     - obs.climo_mean.day_interval
+   * - :term:`POINT_STAT_OBS_CLIMO_MEAN_HOUR_INTERVAL`
+     - obs.climo_mean.hour_interval
+
+${METPLUS_OBS_CLIMO_STDEV_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_OBS_CLIMO_STDEV_FILE_NAME`
+     - obs.climo_stdev.file_name
+   * - :term:`POINT_STAT_OBS_CLIMO_STDEV_FIELD`
+     - obs.climo_stdev.field
+   * - :term:`POINT_STAT_OBS_CLIMO_STDEV_REGRID_METHOD`
+     - obs.climo_stdev.regrid.method
+   * - :term:`POINT_STAT_OBS_CLIMO_STDEV_REGRID_WIDTH`
+     - obs.climo_stdev.regrid.width
+   * - :term:`POINT_STAT_OBS_CLIMO_STDEV_REGRID_VLD_THRESH`
+     - obs.climo_stdev.regrid.vld_thresh
+   * - :term:`POINT_STAT_OBS_CLIMO_STDEV_REGRID_SHAPE`
+     - obs.climo_stdev.regrid.shape
+   * - :term:`POINT_STAT_OBS_CLIMO_STDEV_TIME_INTERP_METHOD`
+     - obs.climo_stdev.time_interp_method
+   * - :term:`POINT_STAT_OBS_CLIMO_STDEV_DAY_INTERVAL`
+     - obs.climo_stdev.day_interval
+   * - :term:`POINT_STAT_OBS_CLIMO_STDEV_HOUR_INTERVAL`
+     - obs.climo_stdev.hour_interval
 
 ${METPLUS_MESSAGE_TYPE}
 """""""""""""""""""""""
@@ -7501,6 +7949,42 @@ METplus Configuration
 | :term:`SERIES_ANALYSIS_CLIMO_CDF_BINS`
 | :term:`SERIES_ANALYSIS_CLIMO_CDF_CENTER_BINS`
 | :term:`SERIES_ANALYSIS_CLIMO_CDF_DIRECT_PROB`
+| :term:`SERIES_ANALYSIS_FCST_CLIMO_MEAN_FILE_NAME`
+| :term:`SERIES_ANALYSIS_FCST_CLIMO_MEAN_FIELD`
+| :term:`SERIES_ANALYSIS_FCST_CLIMO_MEAN_REGRID_METHOD`
+| :term:`SERIES_ANALYSIS_FCST_CLIMO_MEAN_REGRID_WIDTH`
+| :term:`SERIES_ANALYSIS_FCST_CLIMO_MEAN_REGRID_VLD_THRESH`
+| :term:`SERIES_ANALYSIS_FCST_CLIMO_MEAN_REGRID_SHAPE`
+| :term:`SERIES_ANALYSIS_FCST_CLIMO_MEAN_TIME_INTERP_METHOD`
+| :term:`SERIES_ANALYSIS_FCST_CLIMO_MEAN_DAY_INTERVAL`
+| :term:`SERIES_ANALYSIS_FCST_CLIMO_MEAN_HOUR_INTERVAL`
+| :term:`SERIES_ANALYSIS_FCST_CLIMO_STDEV_FILE_NAME`
+| :term:`SERIES_ANALYSIS_FCST_CLIMO_STDEV_FIELD`
+| :term:`SERIES_ANALYSIS_FCST_CLIMO_STDEV_REGRID_METHOD`
+| :term:`SERIES_ANALYSIS_FCST_CLIMO_STDEV_REGRID_WIDTH`
+| :term:`SERIES_ANALYSIS_FCST_CLIMO_STDEV_REGRID_VLD_THRESH`
+| :term:`SERIES_ANALYSIS_FCST_CLIMO_STDEV_REGRID_SHAPE`
+| :term:`SERIES_ANALYSIS_FCST_CLIMO_STDEV_TIME_INTERP_METHOD`
+| :term:`SERIES_ANALYSIS_FCST_CLIMO_STDEV_DAY_INTERVAL`
+| :term:`SERIES_ANALYSIS_FCST_CLIMO_STDEV_HOUR_INTERVAL`
+| :term:`SERIES_ANALYSIS_OBS_CLIMO_MEAN_FILE_NAME`
+| :term:`SERIES_ANALYSIS_OBS_CLIMO_MEAN_FIELD`
+| :term:`SERIES_ANALYSIS_OBS_CLIMO_MEAN_REGRID_METHOD`
+| :term:`SERIES_ANALYSIS_OBS_CLIMO_MEAN_REGRID_WIDTH`
+| :term:`SERIES_ANALYSIS_OBS_CLIMO_MEAN_REGRID_VLD_THRESH`
+| :term:`SERIES_ANALYSIS_OBS_CLIMO_MEAN_REGRID_SHAPE`
+| :term:`SERIES_ANALYSIS_OBS_CLIMO_MEAN_TIME_INTERP_METHOD`
+| :term:`SERIES_ANALYSIS_OBS_CLIMO_MEAN_DAY_INTERVAL`
+| :term:`SERIES_ANALYSIS_OBS_CLIMO_MEAN_HOUR_INTERVAL`
+| :term:`SERIES_ANALYSIS_OBS_CLIMO_STDEV_FILE_NAME`
+| :term:`SERIES_ANALYSIS_OBS_CLIMO_STDEV_FIELD`
+| :term:`SERIES_ANALYSIS_OBS_CLIMO_STDEV_REGRID_METHOD`
+| :term:`SERIES_ANALYSIS_OBS_CLIMO_STDEV_REGRID_WIDTH`
+| :term:`SERIES_ANALYSIS_OBS_CLIMO_STDEV_REGRID_VLD_THRESH`
+| :term:`SERIES_ANALYSIS_OBS_CLIMO_STDEV_REGRID_SHAPE`
+| :term:`SERIES_ANALYSIS_OBS_CLIMO_STDEV_TIME_INTERP_METHOD`
+| :term:`SERIES_ANALYSIS_OBS_CLIMO_STDEV_DAY_INTERVAL`
+| :term:`SERIES_ANALYSIS_OBS_CLIMO_STDEV_HOUR_INTERVAL`
 | :term:`SERIES_ANALYSIS_HSS_EC_VALUE`
 | :term:`SERIES_ANALYSIS_OUTPUT_STATS_FHO`
 | :term:`SERIES_ANALYSIS_OUTPUT_STATS_CTC`
@@ -7679,6 +8163,63 @@ ${METPLUS_FCST_FIELD}
 
 .. note:: For more information on controlling the forecast field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
 
+
+${METPLUS_FCST_CLIMO_MEAN_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`SERIES_ANALYSIS_FCST_CLIMO_MEAN_FILE_NAME`
+     - fcst.climo_mean.file_name
+   * - :term:`SERIES_ANALYSIS_FCST_CLIMO_MEAN_FIELD`
+     - fcst.climo_mean.field
+   * - :term:`SERIES_ANALYSIS_FCST_CLIMO_MEAN_REGRID_METHOD`
+     - fcst.climo_mean.regrid.method
+   * - :term:`SERIES_ANALYSIS_FCST_CLIMO_MEAN_REGRID_WIDTH`
+     - fcst.climo_mean.regrid.width
+   * - :term:`SERIES_ANALYSIS_FCST_CLIMO_MEAN_REGRID_VLD_THRESH`
+     - fcst.climo_mean.regrid.vld_thresh
+   * - :term:`SERIES_ANALYSIS_FCST_CLIMO_MEAN_REGRID_SHAPE`
+     - fcst.climo_mean.regrid.shape
+   * - :term:`SERIES_ANALYSIS_FCST_CLIMO_MEAN_TIME_INTERP_METHOD`
+     - fcst.climo_mean.time_interp_method
+   * - :term:`SERIES_ANALYSIS_FCST_CLIMO_MEAN_DAY_INTERVAL`
+     - fcst.climo_mean.day_interval
+   * - :term:`SERIES_ANALYSIS_FCST_CLIMO_MEAN_HOUR_INTERVAL`
+     - fcst.climo_mean.hour_interval
+
+${METPLUS_FCST_CLIMO_STDEV_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`SERIES_ANALYSIS_FCST_CLIMO_STDEV_FILE_NAME`
+     - fcst.climo_stdev.file_name
+   * - :term:`SERIES_ANALYSIS_FCST_CLIMO_STDEV_FIELD`
+     - fcst.climo_stdev.field
+   * - :term:`SERIES_ANALYSIS_FCST_CLIMO_STDEV_REGRID_METHOD`
+     - fcst.climo_stdev.regrid.method
+   * - :term:`SERIES_ANALYSIS_FCST_CLIMO_STDEV_REGRID_WIDTH`
+     - fcst.climo_stdev.regrid.width
+   * - :term:`SERIES_ANALYSIS_FCST_CLIMO_STDEV_REGRID_VLD_THRESH`
+     - fcst.climo_stdev.regrid.vld_thresh
+   * - :term:`SERIES_ANALYSIS_FCST_CLIMO_STDEV_REGRID_SHAPE`
+     - fcst.climo_stdev.regrid.shape
+   * - :term:`SERIES_ANALYSIS_FCST_CLIMO_STDEV_TIME_INTERP_METHOD`
+     - fcst.climo_stdev.time_interp_method
+   * - :term:`SERIES_ANALYSIS_FCST_CLIMO_STDEV_DAY_INTERVAL`
+     - fcst.climo_stdev.day_interval
+   * - :term:`SERIES_ANALYSIS_FCST_CLIMO_STDEV_HOUR_INTERVAL`
+     - fcst.climo_stdev.hour_interval
+
 ${METPLUS_OBS_FILE_TYPE}
 """"""""""""""""""""""""
 
@@ -7722,6 +8263,63 @@ ${METPLUS_OBS_FIELD}
      - n/a
 
 .. note:: For more information on controlling the observation field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
+
+
+${METPLUS_OBS_CLIMO_MEAN_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`SERIES_ANALYSIS_OBS_CLIMO_MEAN_FILE_NAME`
+     - obs.climo_mean.file_name
+   * - :term:`SERIES_ANALYSIS_OBS_CLIMO_MEAN_FIELD`
+     - obs.climo_mean.field
+   * - :term:`SERIES_ANALYSIS_OBS_CLIMO_MEAN_REGRID_METHOD`
+     - obs.climo_mean.regrid.method
+   * - :term:`SERIES_ANALYSIS_OBS_CLIMO_MEAN_REGRID_WIDTH`
+     - obs.climo_mean.regrid.width
+   * - :term:`SERIES_ANALYSIS_OBS_CLIMO_MEAN_REGRID_VLD_THRESH`
+     - obs.climo_mean.regrid.vld_thresh
+   * - :term:`SERIES_ANALYSIS_OBS_CLIMO_MEAN_REGRID_SHAPE`
+     - obs.climo_mean.regrid.shape
+   * - :term:`SERIES_ANALYSIS_OBS_CLIMO_MEAN_TIME_INTERP_METHOD`
+     - obs.climo_mean.time_interp_method
+   * - :term:`SERIES_ANALYSIS_OBS_CLIMO_MEAN_DAY_INTERVAL`
+     - obs.climo_mean.day_interval
+   * - :term:`SERIES_ANALYSIS_OBS_CLIMO_MEAN_HOUR_INTERVAL`
+     - obs.climo_mean.hour_interval
+
+${METPLUS_OBS_CLIMO_STDEV_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`SERIES_ANALYSIS_OBS_CLIMO_STDEV_FILE_NAME`
+     - obs.climo_stdev.file_name
+   * - :term:`SERIES_ANALYSIS_OBS_CLIMO_STDEV_FIELD`
+     - obs.climo_stdev.field
+   * - :term:`SERIES_ANALYSIS_OBS_CLIMO_STDEV_REGRID_METHOD`
+     - obs.climo_stdev.regrid.method
+   * - :term:`SERIES_ANALYSIS_OBS_CLIMO_STDEV_REGRID_WIDTH`
+     - obs.climo_stdev.regrid.width
+   * - :term:`SERIES_ANALYSIS_OBS_CLIMO_STDEV_REGRID_VLD_THRESH`
+     - obs.climo_stdev.regrid.vld_thresh
+   * - :term:`SERIES_ANALYSIS_OBS_CLIMO_STDEV_REGRID_SHAPE`
+     - obs.climo_stdev.regrid.shape
+   * - :term:`SERIES_ANALYSIS_OBS_CLIMO_STDEV_TIME_INTERP_METHOD`
+     - obs.climo_stdev.time_interp_method
+   * - :term:`SERIES_ANALYSIS_OBS_CLIMO_STDEV_DAY_INTERVAL`
+     - obs.climo_stdev.day_interval
+   * - :term:`SERIES_ANALYSIS_OBS_CLIMO_STDEV_HOUR_INTERVAL`
+     - obs.climo_stdev.hour_interval
 
 ${METPLUS_CLIMO_MEAN_DICT}
 """"""""""""""""""""""""""

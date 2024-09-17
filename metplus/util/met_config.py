@@ -819,7 +819,7 @@ def _parse_extra_args(extra):
     return extra_args
 
 
-def handle_climo_dict(config, app_name, output_dict):
+def handle_climo_dict(config, app_name, output_dict, sub_groups):
     """! Read climo mean/stdev variables with and set env_var_dict
      appropriately. Handle previous environment variables that are used
      by wrapped MET configs pre 4.0 (CLIMO_MEAN_FILE and CLIMO_STDEV_FILE)
@@ -827,6 +827,8 @@ def handle_climo_dict(config, app_name, output_dict):
     @param config METplusConfig object to read
     @param app_name name of application to find wrapper-specific variables
     @param output_dict dictionary to save formatted output
+    @param sub_groups tuple of dictionaries that can contain climo dicts, e.g.
+     ('fcst', 'obs'). If None, do not look for climo dicts in other dicts.
     @returns False if config settings are invalid, otherwise True
     """
     items = {
@@ -845,29 +847,56 @@ def handle_climo_dict(config, app_name, output_dict):
         'file_type': ('string', 'remove_quotes'),
     }
     is_ok = True
+
+    # get MET dictionaries that may contain climo dictionaries
+    sub_group_prefixes = [None]
+    if isinstance(sub_groups, str):
+        sub_group_prefixes += [sub_groups]
+    elif isinstance(sub_groups, tuple):
+        sub_group_prefixes += list(sub_groups)
+
     for climo_type in CLIMO_TYPES:
-        dict_name = f'climo_{climo_type.lower()}'
+        for sub_group_prefix in sub_group_prefixes:
+            # make sure _FILE_NAME is set from INPUT_TEMPLATE/DIR if used
+            _read_climo_file_name(climo_type, config, app_name, sub_group_prefix)
+            _read_climo_field(climo_type, config, app_name, sub_group_prefix)
 
-        # make sure _FILE_NAME is set from INPUT_TEMPLATE/DIR if used
-        _read_climo_file_name(climo_type, config, app_name)
-
-        # make sure _FIELD is set from VAR<n> vars if used
-        _read_climo_field(climo_type, config, app_name)
-
-        add_met_config_dict(config=config, app_name=app_name,
-                            output_dict=output_dict,
-                            dict_name=dict_name, items=items)
-
-        # handle use_fcst or use_obs options for setting field list
-        if not _climo_use_fcst_or_obs_fields(dict_name, config, app_name,
-                                             output_dict):
-            is_ok = False
+            dict_name = f'climo_{climo_type.lower()}'
+            if sub_group_prefix:
+                dict_name = f'{sub_group_prefix}_{dict_name}'
+            add_met_config_dict(config=config, app_name=app_name,
+                                output_dict=output_dict,
+                                dict_name=dict_name, items=items)
+            # remove fcst_ or obs_ prefix from dictionary name
+            if sub_group_prefix:
+                value = output_dict[f'METPLUS_{dict_name.upper()}_DICT']
+                output_dict[f'METPLUS_{dict_name.upper()}_DICT'] = value.removeprefix(f'{sub_group_prefix}_')
+            # handle use_fcst or use_obs options for setting field list
+            elif not _climo_use_fcst_or_obs_fields(dict_name, config, app_name,
+                                                   output_dict):
+                is_ok = False
 
     return is_ok
 
+def _get_climo_prefix(climo_type, app_name, fo_prefix):
+    """!Build prefix string for climatology config variables.
+    If fo_prefix is set, return uppercase {app_name}_{fo_prefix}_{climo_type},
+    otherwise return uppercase {app_name}_{climo_type}
 
-def _read_climo_file_name(climo_type, config, app_name):
-    """! Check values for {APP}_CLIMO_{climo_type}_ variables FILE_NAME,
+    @param climo_type type of climo field (mean or stdev)
+    @param app_name name of application to find wrapper-specific variables
+    @param fo_prefix forecast or obs prefix, e.g. 'fcst' or 'obs' or None if
+     no prefix should be used.
+    """
+    # prefix i.e. GRID_STAT_CLIMO_MEAN_ or GRID_STAT_FCST_CLIMO_MEAN_
+    prefix = f'CLIMO_{climo_type}_'
+    if fo_prefix:
+        prefix = f'{fo_prefix}_{prefix}'
+    return f'{app_name}_{prefix}'.upper()
+
+def _read_climo_file_name(climo_type, config, app_name, fo_prefix=None):
+    """!Used to support pre v4.0 variables.
+    Check values for {APP}_CLIMO_{climo_type}_ variables FILE_NAME,
     INPUT_TEMPLATE, and INPUT_DIR. If FILE_NAME is set, use it and warn
     if the INPUT_TEMPLATE/DIR variables are also set. If FILE_NAME is not
     set, read template and dir variables and format the values to set
@@ -876,14 +905,15 @@ def _read_climo_file_name(climo_type, config, app_name):
       GRID_STAT_CLIMO_MEAN_INPUT_DIR = /some/dir
     will set:
       GRID_STAT_CLIMO_MEAN_FILE_NAME = /some/dir/a, some/dir/b
-    Used to support pre v4.0 variables.
+    If fo_prefix is not None, add capitalized value in front of climo type.
 
     @param climo_type type of climo field (mean or stdev)
     @param config METplusConfig object to read
     @param app_name name of application to find wrapper-specific variables
+    @param fo_prefix forecast or obs prefix, e.g. 'fcst' or 'obs' or None if
+     no prefix should be used.
     """
-    # prefix i.e. GRID_STAT_CLIMO_MEAN_
-    prefix = f'{app_name.upper()}_CLIMO_{climo_type.upper()}_'
+    prefix = _get_climo_prefix(climo_type, app_name, fo_prefix)
 
     input_dir = config.getdir_nocheck(f'{prefix}INPUT_DIR', '')
     input_template = config.getraw('config', f'{prefix}INPUT_TEMPLATE', '')
@@ -917,8 +947,8 @@ def _read_climo_file_name(climo_type, config, app_name):
     config.set('config', f'{prefix}FILE_NAME', template_list_string)
 
 
-def _read_climo_field(climo_type, config, app_name):
-    """! Check values for {APP}_CLIMO_{climo_type}_ variable FIELD and
+def _read_climo_field(climo_type, config, app_name, fo_prefix=None):
+    """!Check values for {APP}_CLIMO_{climo_type}_ variable FIELD and
     VAR<n>_[NAME/LEVELS/OPTIONS]. If VAR<n> variables are set, format those
     values and set the FIELD variable in the METplusConfig.
     If FIELD is also set warn that it the value will be replaced. If only
@@ -934,9 +964,11 @@ def _read_climo_field(climo_type, config, app_name):
     @param climo_type type of climo field (mean or stdev)
     @param config METplusConfig object to read
     @param app_name name of application to find wrapper-specific variables
+    @param fo_prefix forecast or obs prefix, e.g. 'fcst' or 'obs' or None if
+     no prefix should be used.
     """
-    # prefix i.e. GRID_STAT_CLIMO_MEAN
-    prefix = f'{app_name.upper()}_CLIMO_{climo_type.upper()}'
+    # prefix i.e. GRID_STAT_CLIMO_MEAN or GRID_STAT_FCST_CLIMO_MEAN
+    prefix = _get_climo_prefix(climo_type, app_name, fo_prefix).rstrip('_')
 
     field = config.getraw('config', f'{prefix}_FIELD', '')
     var_list = parse_var_list(config, data_type=prefix)
@@ -994,4 +1026,10 @@ def _climo_use_fcst_or_obs_fields(dict_name, config, app_name, output_dict):
     rvalue = 'fcst' if use_fcst else 'obs'
 
     output_dict[env_var_name] += f'{dict_name} = {rvalue};'
+    # rvalue = '${METPLUS_FCST_FIELD}' if use_fcst else '${METPLUS_OBS_FIELD}'
+    # for fcst_obs in ('FCST', 'OBS'):
+    #     if output_dict[f'METPLUS_{fcst_obs}_{dict_name.upper()}_DICT'].endswith('}'):
+    #         output_dict[f'METPLUS_{fcst_obs}_{dict_name.upper()}_DICT'] = f"{output_dict[f'METPLUS_{fcst_obs}_{dict_name.upper()}_DICT'][0:-1]}{rvalue}}}"
+    #     else:
+    #         output_dict[f'METPLUS_{fcst_obs}_{dict_name.upper()}_DICT'] = f'{dict_name} = {{{rvalue}}}'
     return True
