@@ -207,15 +207,15 @@ Add Sphinx Documentation File
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In the corresponding documentation MET tool name directory
-(**docs**/*use_cases/met_tool_wrapper/<MET TOOL NAME>*) for a met_tool_wrappers
+(*docs*/*use_cases/met_tool_wrapper/<MET TOOL NAME>*) for a met_tool_wrappers
 use case OR category directory for a model_applications use case
-(**docs**/*use_cases/model_applications/<CATEGORY>*), users will need to a add 
+(*docs*/*use_cases/model_applications/<CATEGORY>*), users will need to a add 
 Python Sphinx Documentation (.py) file with the same name as the METplus configuration file.
 
 The following use case template has been provided and is expected to be completed by all users
 submitting new use cases. The template applies to both met_tool_wrappers and model_applications use cases.
 When completing the template, users should read through each section and its description 
-and example before filling in the section, as some section may not apply 
+and example before filling in the section, as some sections may not apply 
 to the use case being documented. For reference, users are encouraged to review
 existing `Model Applications <https://metplus.readthedocs.io/en/latest/generated/model_applications/index.html>`_
 use case documentation. Except for the Header and Path to Use Case Configuration File section,
@@ -226,12 +226,13 @@ the text content.
 
     Header and Path to Use Case Configuration File
     
-    This section begins with {PrimaryStatAnalysisToolName}: Brief (12 words or less) and a unique 
-    description of use case, followed on the next line by ‘=’ characters equal in length to 
-    the header (spaces included). Follow this with one line of no characters, then the path 
-    to the use case configuration file. This should be written in the format of 
-    model_applications/{use_case_category}/{use_case_configuration_file}. This section is 
-    preceded and followed by three ‘“‘ characters.
+    This section begins with {PrimaryStatAnalysisToolName}: Brief (12 words or less) 
+    and a unique description of use case, followed on the next line by ‘=’ characters 
+    equal in length to the header (spaces included). Follow this with one line of 
+    no characters, then the path to the use case configuration file. This should be 
+    written in the format of 
+    model_applications/{use_case_category}/{use_case_configuration_file}. 
+    This section is preceded and followed by three ‘“‘ characters.
 
     Example: 
 
@@ -284,8 +285,8 @@ the text content.
 
     This represents the METplus version number that this use case was added to 
     the METplus repository. It also represents the minimum or lowest METplus version 
-    this use case has been tested against. It should not include betas (ex. Version 5.1 beta 3), 
-    but should include the two-digit version number.
+    this use case has been tested against. It should not include 
+    betas (ex. Version 5.1 beta 3), but should include the two-digit version number.
 
     Example:
 
@@ -301,9 +302,10 @@ the text content.
     This section should include a brief description of each model dataset 
     and variable field (10 m wind speed, 2 m temperature, etc.) being used 
     in the use case, as well as which field (forecast, observation, climatology, masking, etc.) 
-    is using which dataset. At a minimum, users should list the Forecast, Observation, and Climatology
-    fields. If they are not being used, "None" can be listed. Acronyms should 
-    be spelled out (i.e not GFS, but Global Forecast System). 
+    is using which dataset. At a minimum, users should list the 
+    Forecast, Observation, and Climatology fields. If they are not being used, 
+    "None" can be listed. 
+    Acronyms should be spelled out (i.e not GFS, but Global Forecast System). 
     This section also includes a Location description consisting of 
     set language of how users can access the use case data for themselves.
 
@@ -332,8 +334,9 @@ the text content.
 
     This section lists the tools that will be used during the use case. 
     If there are multiple tools, a brief overview should be provided of what each tool 
-    is responsible for (i.e. GenVxMask for creating masks that are used in the verification step, 
-    which is completed by GridStat). If Python embedding is used, it can be mentioned here as well.
+    is responsible for (i.e. GenVxMask for creating masks that are used in 
+    the verification step, which is completed by GridStat). If Python embedding 
+    is used, it can be mentioned here as well.
     It’s important to note that this section should NOT give detailed 
     descriptions into why each tool is used, detailed information on how each tool 
     is being used and interacting with other tools (if any), etc. If there is a desire 
@@ -427,9 +430,11 @@ the text content.
     # METplus sets environment variables based on user settings in the METplus 
     # configuration file. See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details.
     #
-    # **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!**
+    # **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF!** 
+    # **THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!**
     #
-    # If there is a setting in the MET configuration file that is currently not supported by METplus you’d like to control, please refer to:
+    # If there is a setting in the MET configuration file that is currently 
+    # not supported by METplus you’d like to control, please refer to:
     # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
     #
     # .. highlight:: bash
@@ -438,14 +443,18 @@ the text content.
 
     Python Embedding
     
-    This section should provide a description of any Python embedding that’s used in the use case. 
-    For a common definition, Python embedding is used to ingest a dataset not natively available for METplus intake, 
-    and results in a dataset being returned to METplus for analysis and verification purposes.
-    This section should discuss what is passed to the script from METplus, what is being done by the script, 
-    and what data structure is passed back to METplus for evaluation. The end of this section is set language 
-    directing users to review the Python requirements in the MET User’s Guide, as well as an 
-    embedded link (and image) of all Python scripts used in Python Embedding. The links to these scripts 
-    will need to be updated by the user.
+    This section should provide a description of any Python embedding that’s used 
+    in the use case. 
+    For a common definition, Python embedding is used to ingest a dataset not 
+    natively available for METplus intake, and results in a dataset being 
+    returned to METplus for analysis and verification purposes.
+    This section should discuss what is passed to the script from METplus, 
+    what is being done by the script, and what data structure is passed back 
+    to METplus for evaluation. The end of this section is set language 
+    directing users to review the Python requirements in the MET User’s Guide, 
+    as well as an embedded link (and image) of all Python scripts used in 
+    Python Embedding. The links to these scripts will need to be updated by 
+    the user.
     If no Python embedding is used, that should be noted here.
 
     Example:
@@ -456,15 +465,17 @@ the text content.
     #
     # This use case calls the read_ASCAT_data.py script to read and pass to PointStat 
     # the user-requested variable. The script needs 5 inputs in the following order: 
-    # a path to a directory that contains only ASCAT data of the “ascat_YYYYMMDDHHMMSS_*” string, 
-    # a start time in YYYYMMDDHHMMSS, an end time in the same format, a message type to code 
-    # the variables as, and a variable name to read in. Currently the script puts the 
-    # same station ID to each observation, but there is space in the code describing 
-    # an alternate method that may be improved upon to allow different sattellites to have 
-    # their own station IDs. This code currently ingests all files it finds in the directory, 
-    # pulls out the requested variable, and arranges the data in a list of lists 
-    # following the 11-column format for point data. This list of lists is passed back 
-    # to PointStat for evaluation and the requested statistical output. The location of the code is 
+    # a path to a directory that contains only ASCAT data of the “ascat_YYYYMMDDHHMMSS_*” 
+    # string, a start time in YYYYMMDDHHMMSS, an end time in the same format, 
+    # a message type to code the variables as, and a variable name to read in. 
+    # Currently the script puts the same station ID to each observation, but there is 
+    # space in the code describing an alternate method that may be improved upon to 
+    # allow different satellites to have their own station IDs. 
+    # This code currently ingests all files it finds in the directory, pulls out the 
+    # requested variable, and arranges the data in a list of lists following the 
+    # 11-column format for point data. This list of lists is passed back 
+    # to PointStat for evaluation and the requested statistical output. The location 
+    # of the code is 
     # parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds/read_ASCAT_data.py
     #
     # For more information on the basic requirements to utilize Python Embedding in METplus, 
@@ -478,13 +489,13 @@ the text content.
     This section should provide a description of any Python scripting that’s used 
     in the use case. For a common definition, Python scripting is any condition where 
     the evaluation/verification/output processes are being completed inside the Python script, 
-    outside of METplus. Essentially, if a Python script is called and a METplus-readable dataset 
-    is not passed back to METplus, it is a Python Scripting usage. The METplus wrapper usage only exists 
-    to call the Python script.
-    This section should discuss what is being done by the script and why the decision was made 
-    to use Python scripting rather than Python embedding. The end of this section is an embedded link (and image) 
-    of all Python scripts used in Python Scripting. The links to these scripts will need 
-    to be updated by the user.
+    outside of METplus. Essentially, if a Python script is called and a 
+    METplus-readable dataset is not passed back to METplus, it is a Python Scripting usage. 
+    The METplus wrapper usage only exists to call the Python script.
+    This section should discuss what is being done by the script and why the decision was 
+    made to use Python scripting rather than Python embedding. The end of this section is 
+    an embedded link (and image) of all Python scripts used in Python Scripting. The links 
+    to these scripts will need to be updated by the user.
     If no Python scripting is used, that should be noted here.
 
     Example:
@@ -511,7 +522,8 @@ the text content.
     Running METplus
 
     Similar to “MET Configuration”, this section has set language that should not be altered. 
-    The only change between use cases is the path entered in the run command, which is use case specific.
+    The only change between use cases is the path entered in the run command, 
+    which is use case specific.
 
     Example:
     
@@ -533,11 +545,15 @@ the text content.
     successful METplus run concludes with. Then, it should direct users to the 
     proper folder (folders, if multiple outputs are made) and directory structure 
     where the final output is. If the use case creates intermediate output, it should 
-    be mentioned here as well. A list of the files and folders that are created should be provided.
+    be mentioned here as well. A list of the files and folders that are created 
+    should be provided.
     If a netCDF is the output, it should be listed how many and what variable fields 
-    are inside the file. If there are a large number of variable fields within the file, a summary is sufficient.
-    If an image is created, it should be used as the use case image and referenced in this section as output.
-    If no output is created, this section should explain why and what the user accomplished by running the use case.
+    are inside the file. If there are a large number of variable fields within the file, 
+    a summary is sufficient.
+    If an image is created, it should be used as the use case image and referenced in 
+    this section as output.
+    If no output is created, this section should explain why and what the user accomplished 
+    by running the use case.
 
     Example:
 
@@ -558,7 +574,8 @@ the text content.
     # * grid_stat_198201_000000L_19700101_000000V.stat
     #
     # Each file should contain corresponding statistics for the line type(s) requested.
-    # For the netCDF file, five variable fields are present (not including the lat/lon fields). Those variables are:
+    # For the netCDF file, five variable fields are present (not including the lat/lon fields). 
+    # Those variables are:
     #
     # * FCST_fcst_ENS_FREQ_lt-0.43_0_0_all_all_FULL(lat, lon)
     # * OBS_tmp2m_20100101_000000_all_all_FULL(lat, lon)
@@ -576,7 +593,8 @@ the text content.
     before using it in the use case documentation.
     Users should also use the end of this section to reference an image that 
     will serve as a thumbnail for the use case. If no image is provided, 
-    a default image will be used; this is the same image used for all met_tool_wrapper use cases.
+    a default image will be used; this is the same image used for all met_tool_wrapper 
+    use cases.
 
     Example:
 
