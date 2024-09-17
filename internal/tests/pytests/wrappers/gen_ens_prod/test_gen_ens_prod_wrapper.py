@@ -541,6 +541,17 @@ def test_gen_ens_prod_missing_inputs(metplus_config, get_test_data_dir, allow_mi
                                             'time_interp_method = NEAREST;'
                                             'match_month = TRUE;day_interval = 30;'
                                             'hour_interval = 12;}')}),
+
+        ({'GEN_ENS_PROD_CLIMO_MEAN_VAR1_NAME': 'UGRD', 'GEN_ENS_PROD_CLIMO_MEAN_VAR1_LEVELS': 'P850,P500,P250', },
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {field = [{ name="UGRD"; level="P850"; }, { name="UGRD"; level="P500"; }, { name="UGRD"; level="P250"; }];}'}),
+        ({'GEN_ENS_PROD_CLIMO_MEAN_VAR1_NAME': 'UGRD', 'GEN_ENS_PROD_CLIMO_MEAN_VAR1_LEVELS': 'P850',
+          'GEN_ENS_PROD_CLIMO_MEAN_VAR2_NAME': 'VGRD', 'GEN_ENS_PROD_CLIMO_MEAN_VAR2_LEVELS': 'P500', },
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {field = [{ name="UGRD"; level="P850"; }, { name="VGRD"; level="P500"; }];}'}),
+        ({'GEN_ENS_PROD_CLIMO_STDEV_VAR1_NAME': 'UGRD', 'GEN_ENS_PROD_CLIMO_STDEV_VAR1_LEVELS': 'P850,P500,P250', },
+         {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {field = [{ name="UGRD"; level="P850"; }, { name="UGRD"; level="P500"; }, { name="UGRD"; level="P250"; }];}'}),
+        ({'GEN_ENS_PROD_CLIMO_STDEV_VAR1_NAME': 'UGRD', 'GEN_ENS_PROD_CLIMO_STDEV_VAR1_LEVELS': 'P850',
+          'GEN_ENS_PROD_CLIMO_STDEV_VAR2_NAME': 'VGRD', 'GEN_ENS_PROD_CLIMO_STDEV_VAR2_LEVELS': 'P500', },
+         {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {field = [{ name="UGRD"; level="P850"; }, { name="VGRD"; level="P500"; }];}'}),
     ]
 )
 @pytest.mark.wrapper
