@@ -1026,10 +1026,4 @@ def _climo_use_fcst_or_obs_fields(dict_name, config, app_name, output_dict):
     rvalue = 'fcst' if use_fcst else 'obs'
 
     output_dict[env_var_name] += f'{dict_name} = {rvalue};'
-    # rvalue = '${METPLUS_FCST_FIELD}' if use_fcst else '${METPLUS_OBS_FIELD}'
-    # for fcst_obs in ('FCST', 'OBS'):
-    #     if output_dict[f'METPLUS_{fcst_obs}_{dict_name.upper()}_DICT'].endswith('}'):
-    #         output_dict[f'METPLUS_{fcst_obs}_{dict_name.upper()}_DICT'] = f"{output_dict[f'METPLUS_{fcst_obs}_{dict_name.upper()}_DICT'][0:-1]}{rvalue}}}"
-    #     else:
-    #         output_dict[f'METPLUS_{fcst_obs}_{dict_name.upper()}_DICT'] = f'{dict_name} = {{{rvalue}}}'
     return True
