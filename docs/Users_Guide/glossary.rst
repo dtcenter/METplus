@@ -12725,3 +12725,243 @@ METplus Configuration Glossary
      Specify the value for 'obs.climo_stdev.hour_interval' in the MET configuration file for SeriesAnalysis.
 
      | *Used by:* SeriesAnalysis
+
+   ENSEMBLE_STAT_FCST_CLIMO_MEAN_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_NAME`
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_FCST_CLIMO_MEAN_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_LEVELS`
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_FCST_CLIMO_MEAN_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_OPTIONS`
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_FCST_CLIMO_STDEV_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_NAME`
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_FCST_CLIMO_STDEV_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_LEVELS`
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_FCST_CLIMO_STDEV_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_OPTIONS`
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_CLIMO_MEAN_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_NAME`
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_CLIMO_MEAN_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_LEVELS`
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_CLIMO_MEAN_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_OPTIONS`
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_CLIMO_STDEV_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_NAME`
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_CLIMO_STDEV_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_LEVELS`
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_CLIMO_STDEV_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_OPTIONS`
+
+     | *Used by:* EnsembleStat
+
+   POINT_STAT_FCST_CLIMO_MEAN_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_NAME`
+
+     | *Used by:* PointStat
+
+   POINT_STAT_FCST_CLIMO_MEAN_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_LEVELS`
+
+     | *Used by:* PointStat
+
+   POINT_STAT_FCST_CLIMO_MEAN_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_OPTIONS`
+
+     | *Used by:* PointStat
+
+   POINT_STAT_FCST_CLIMO_STDEV_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_NAME`
+
+     | *Used by:* PointStat
+
+   POINT_STAT_FCST_CLIMO_STDEV_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_LEVELS`
+
+     | *Used by:* PointStat
+
+   POINT_STAT_FCST_CLIMO_STDEV_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_OPTIONS`
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_CLIMO_MEAN_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_NAME`
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_CLIMO_MEAN_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_LEVELS`
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_CLIMO_MEAN_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_OPTIONS`
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_CLIMO_STDEV_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_NAME`
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_CLIMO_STDEV_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_LEVELS`
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_CLIMO_STDEV_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_OPTIONS`
+
+     | *Used by:* PointStat
+
+   GRID_STAT_FCST_CLIMO_MEAN_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_NAME`
+
+     | *Used by:* GridStat
+
+   GRID_STAT_FCST_CLIMO_MEAN_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_LEVELS`
+
+     | *Used by:* GridStat
+
+   GRID_STAT_FCST_CLIMO_MEAN_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_OPTIONS`
+
+     | *Used by:* GridStat
+
+   GRID_STAT_FCST_CLIMO_STDEV_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_NAME`
+
+     | *Used by:* GridStat
+
+   GRID_STAT_FCST_CLIMO_STDEV_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_LEVELS`
+
+     | *Used by:* GridStat
+
+   GRID_STAT_FCST_CLIMO_STDEV_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_OPTIONS`
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OBS_CLIMO_MEAN_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_NAME`
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OBS_CLIMO_MEAN_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_LEVELS`
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OBS_CLIMO_MEAN_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_OPTIONS`
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OBS_CLIMO_STDEV_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_NAME`
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OBS_CLIMO_STDEV_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_LEVELS`
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OBS_CLIMO_STDEV_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_OPTIONS`
+
+     | *Used by:* GridStat
+
+   SERIES_ANALYSIS_FCST_CLIMO_MEAN_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_NAME`
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_FCST_CLIMO_MEAN_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_LEVELS`
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_FCST_CLIMO_MEAN_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_OPTIONS`
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_FCST_CLIMO_STDEV_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_NAME`
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_FCST_CLIMO_STDEV_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_LEVELS`
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_FCST_CLIMO_STDEV_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_OPTIONS`
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_CLIMO_MEAN_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_NAME`
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_CLIMO_MEAN_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_LEVELS`
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_CLIMO_MEAN_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_OPTIONS`
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_CLIMO_STDEV_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_NAME`
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_CLIMO_STDEV_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_LEVELS`
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_CLIMO_STDEV_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_OPTIONS`
+
+     | *Used by:* SeriesAnalysis
