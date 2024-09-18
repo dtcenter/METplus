@@ -212,21 +212,23 @@ use case OR category directory for a model_applications use case
 (*docs*/*use_cases/model_applications/<CATEGORY>*), users will need to a add 
 Python Sphinx Documentation (.py) file with the same name as the METplus configuration file.
 
-The following use case template has been provided and is expected to be completed by all users
-submitting new use cases. The template applies to both met_tool_wrappers and model_applications use cases.
+The following is a discussion of the use case template and all of its sections.
+A link to an example template is available within the `METplus repository. <https://github.com/dtcenter/METplus>`_
+The example template should be used by users as a starting point, but will need to be completely 
+updated with the use case's information. The template applies to both met_tool_wrappers and model_applications use cases.
 When completing the template, users should read through each section and its description 
-and example before filling in the section, as some sections may not apply 
-to the use case being documented. For reference, users are encouraged to review
+below before filling in a section, as some sections may not apply 
+to the use case being documented. For real examples, users are encouraged to review
 existing `Model Applications <https://metplus.readthedocs.io/en/latest/generated/model_applications/index.html>`_
 use case documentation. Except for the Header and Path to Use Case Configuration File section,
 all lines should begin with the '#' character to signify text, followed by at least one space before
-the text content.
+the text content. These are already provided in the example template.
 
-* Use Case Template::
+* Use Case Template Description:
 
-    Header and Path to Use Case Configuration File
-    
-    This section begins with {PrimaryStatAnalysisToolName}: Brief (12 words or less) 
+  * Header and Path to Use Case Configuration File
+
+    * This section begins with {PrimaryStatAnalysisToolName}: Brief (12 words or less) 
     and a unique description of use case, followed on the next line by ‘=’ characters 
     equal in length to the header (spaces included). Follow this with one line of 
     no characters, then the path to the use case configuration file. This should be 
@@ -234,72 +236,28 @@ the text content.
     model_applications/{use_case_category}/{use_case_configuration_file}. 
     This section is preceded and followed by three ‘“‘ characters.
 
-    Example: 
+  * Internal Table of Contents
 
-    “””
-    PointStat: Use Python embedding to calculate temperature terciles
-    =================================================================
-
-    model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds.conf
-
-    “””
-
-
-    Internal Table of Contents
-    
-    This section consists of set language using Read The Docs notation, generating a 
+    * This section consists of set language using Read The Docs notation, generating a 
     table of contents within the use case documentation. This should be copied with 
     no alterations.
 
-    Example:
+  * Scientific Objective
 
-    ##############################################################################
-    # .. contents::
-    #	:depth: 1
-    #	:local:
-    #	:backlinks: none
-
-
-    Scientific Objective
-
-    This section should answer why this use case was created and included in the repository. 
+    * This section should answer why this use case was created and included in the repository. 
     What is a user gaining by using this use case? If the details do not add to 
     the why this use case exists, those details do not belong in this section.
 
-    Example:
-    
-    ##############################################################################
-    # Scientific Objective
-    # --------------------
-    #
-    # To provide statistical information on the forecast hail size compared to 
-    # the observed hail size from MRMS MESH data. Using objects to verify hail size 
-    # avoids the “unfair penalty” issue, where a CAM must first generate convection 
-    # to have any chance of accurately predicting the hail size. In addition, studies 
-    # have shown that MRMS MESH observed hail sizes do not correlate one-to-one with 
-    # observed sizes but can only be used to group storms into general categories. 
-    # Running MODE allows a user to do this.
+  * Version Added
 
-
-    Version Added
-
-    This represents the METplus version number that this use case was added to 
+    * This represents the METplus version number that this use case was added to 
     the METplus repository. It also represents the minimum or lowest METplus version 
     this use case has been tested against. It should not include 
     betas (ex. Version 5.1 beta 3), but should include the two-digit version number.
 
-    Example:
+  * Datasets
 
-    ##############################################################################
-    # Version Added
-    # -------------
-    #
-    # METplus version 5.1
-
-
-    Datasets
-
-    This section should include a brief description of each model dataset 
+    * This section should include a brief description of each model dataset 
     and variable field (10 m wind speed, 2 m temperature, etc.) being used 
     in the use case, as well as which field (forecast, observation, climatology, masking, etc.) 
     is using which dataset. At a minimum, users should list the 
@@ -309,30 +267,9 @@ the text content.
     This section also includes a Location description consisting of 
     set language of how users can access the use case data for themselves.
 
-    Example:
+  * METplus Components
 
-    ##############################################################################
-    # Datasets
-    # --------
-    # **Forecast:** Global Forecast System (GFS) 25km resolution, 2m temperature
-    #
-    # **Observation:** ECMWF Reanalysis v5 (ERA5) 5 degree resolution, 2m temperature
-    #
-    # **Climatology:** None
-    #
-    # **Location:** All of the input data required for this use case can be 
-    # found in a sample data tarball. Each use case category will have 
-    # one or more sample data tarballs. It is only necessary to download 
-    # the tarball with the use case’s dataset and not the entire collection 
-    # of sample data. Click here to access the METplus releases page and download sample data 
-    # for the appropriate release: https://github.com/dtcenter/METplus/releases
-    # This tarball should be unpacked into the directory that you will 
-    # set the value of INPUT_BASE. See `Running METplus`_ section for more information.
-
-
-    METplus Components
-
-    This section lists the tools that will be used during the use case. 
+    * This section lists the tools that will be used during the use case. 
     If there are multiple tools, a brief overview should be provided of what each tool 
     is responsible for (i.e. GenVxMask for creating masks that are used in 
     the verification step, which is completed by GridStat). If Python embedding 
@@ -343,20 +280,9 @@ the text content.
     to explain more about each tool’s role in the use case, the information can be 
     presented in the “METplus Workflow” section.
 
-    Example:
+  * METplus Workflow
 
-    ##############################################################################
-    # METplus Components
-    # ------------------
-    #
-    # The only tool this use case calls is GridStat. Within GridStat a Python 
-    # script is used for ingesting forecast data, once for each year of data of 
-    # the CFSv2 ensemble.
-
-
-    METplus Workflow
-
-    This section should begin with the init or valid times (both beginning and end), 
+    * This section should begin with the init or valid times (both beginning and end), 
     time increment, as well as any lead times being used. This should be followed 
     by descriptions of the number of times the use case will run 
     (which could also be inferred from the init/valid times), what each tool is doing 
@@ -366,84 +292,27 @@ the text content.
     should be saved for the “Python Embedding” section. A mention of the input to 
     the Python script and its returned dataset is sufficient for this section.
 
-    Example:
+  * METplus Configuration
 
-    ##############################################################################
-    # METplus Workflow
-    # ----------------
-    #
-    # **Beginning time (INIT_BEG):** 1982-01-01
-    # **End time (INIT_END):** 2010-01-02
-    # **Increment between beginning and end times (INIT_INCREMENT):** 1 year
-    # **Sequence of forecast leads to process (LEAD_SEQ):** None
-    #
-    # With an increment of 1 year, all January 1st’s from 1982 to 2010 are processed 
-    # for a total of 29 years, with 24 members in each ensemble forecast. This use case 
-    # initially runs SeriesAnalysis 24 times, once for each member of the CFSv2 ensemble 
-    # across the 29 years of data. The resulting 24 outputs are read in by GenEnsProd 
-    # which uses the normalize option to normalize each of the ensemble members 
-    # relative to its climatology (FBAR) and standard deviation (FSTDEV). The output from 
-    # GenEnsProd are 29 files containing the uncalibrated probability forecasts for 
-    # the lower tercile of January for each year. The final probability verification 
-    # is done across the temporal scale in SeriesAnalysis, and the spatial scale in GridStat.
-
-
-    METplus Configuration
-
-    This section has set language that describes how all of the configuration files 
+    * This section has set language that describes how all of the configuration files 
     are loaded into METplus, followed by what’s passed in by the user at runtime, 
     and used to produce the final configuration file that controls the METplus run. 
     It concludes with an embedded link (and image) of the user’s configuration file 
     the use case will run. The only two pieces that will change are the path to the 
     use case’s configuration file, and the embedded configuration file for the use case.
 
-    Example:
-
-    ##############################################################################
-    # METplus Configuration
-    # ---------------------
-    #
-    # METplus first loads all of the configuration files found in parm/metplus_config, 
-    # then it loads any configuration files passed to METplus via the command line, 
-    # i.e. parm/use_cases/model_applications/s2s/SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_MultiStatisticTool.conf
-    #
-    # .. highlight:: bash
-    # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_MultiStatisticTool.conf
-    #
-
-
-    MET Configuration
+  * MET Configuration
     
-    This section has set language that describes how settings in the MET configuration file 
+    * This section has set language that describes how settings in the MET configuration file 
     will ultimately be used to run METplus, along with any changes made from the default 
     by the user’s configuration file. It concludes with an embedded link (and image) of 
     the default configuration file(s) for all MET tool(s) used. The only change that needs 
     to occur for this section is which MET configuration file is embedded.
     If no MET tool(s) are used, that should be noted here and replace the default language.
 
-    Example:
-
-    ##############################################################################
-    # MET Configuration
-    # -----------------
-    #
-    # METplus sets environment variables based on user settings in the METplus 
-    # configuration file. See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details.
-    #
-    # **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF!** 
-    # **THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!**
-    #
-    # If there is a setting in the MET configuration file that is currently 
-    # not supported by METplus you’d like to control, please refer to:
-    # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
-    #
-    # .. highlight:: bash
-    # .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
-
-
-    Python Embedding
+  * Python Embedding
     
-    This section should provide a description of any Python embedding that’s used 
+    * This section should provide a description of any Python embedding that’s used 
     in the use case. 
     For a common definition, Python embedding is used to ingest a dataset not 
     natively available for METplus intake, and results in a dataset being 
@@ -457,36 +326,9 @@ the text content.
     the user.
     If no Python embedding is used, that should be noted here.
 
-    Example:
-
-    ##############################################################################
-    # Python Embedding
-    # ----------------
-    #
-    # This use case calls the read_ASCAT_data.py script to read and pass to PointStat 
-    # the user-requested variable. The script needs 5 inputs in the following order: 
-    # a path to a directory that contains only ASCAT data of the “ascat_YYYYMMDDHHMMSS_*” 
-    # string, a start time in YYYYMMDDHHMMSS, an end time in the same format, 
-    # a message type to code the variables as, and a variable name to read in. 
-    # Currently the script puts the same station ID to each observation, but there is 
-    # space in the code describing an alternate method that may be improved upon to 
-    # allow different satellites to have their own station IDs. 
-    # This code currently ingests all files it finds in the directory, pulls out the 
-    # requested variable, and arranges the data in a list of lists following the 
-    # 11-column format for point data. This list of lists is passed back 
-    # to PointStat for evaluation and the requested statistical output. The location 
-    # of the code is 
-    # parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds/read_ASCAT_data.py
-    #
-    # For more information on the basic requirements to utilize Python Embedding in METplus, 
-    # please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_ 
-    #
-    # .. highlight:: python
-    # .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds/read_ASCAT_data.py
-
-
-    Python Scripting
-    This section should provide a description of any Python scripting that’s used 
+  * Python Scripting
+    
+    * This section should provide a description of any Python scripting that’s used 
     in the use case. For a common definition, Python scripting is any condition where 
     the evaluation/verification/output processes are being completed inside the Python script, 
     outside of METplus. Essentially, if a Python script is called and a 
@@ -498,50 +340,15 @@ the text content.
     to these scripts will need to be updated by the user.
     If no Python scripting is used, that should be noted here.
 
-    Example:
+  * Running METplus
 
-    ##############################################################################
-    # Python Scripting
-    # ----------------
-    #
-    # This use case uses a Python script to perform plotting, which at the time of 
-    # this use case creation was not an ability METplus had. Additionally some of 
-    # the plotting features used in this script are not currently slated for METplus 
-    # analysis suite development.
-    # In order to create the plots, the script reads in a yaml file and sets up 
-    # the correct environment. Plot parameters (which are hard coded in the script) are set, 
-    # and the datasets are read in from the input file. The desired variable fields 
-    # are placed into arrays, which are then treated for bad data and squeezed to the 
-    # appropriate dimensions. Additional basic math is completed on the resulting arrays 
-    # to create the cross spectra values with the results being graphed.
-    #
-    # .. highlight:: python
-    # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra/cross_spectra_plot.py
-
-
-    Running METplus
-
-    Similar to “MET Configuration”, this section has set language that should not be altered. 
+    * Similar to “MET Configuration”, this section has set language that should not be altered. 
     The only change between use cases is the path entered in the run command, 
     which is use case specific.
 
-    Example:
-    
-    ##############################################################################
-    # Running METplus
-    # ---------------
-    #
-    # Pass the use case configuration file to the run_metplus.py script along 
-    # with any user-specific system configuration files if desired:
-    #
-    # run_metplus.py /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds.conf /path/to/user_system.conf
-    #
-    # See :ref:`running-metplus` for more information.
+  * Expected Output
 
-
-    Expected Output
-
-    This section begins with set language that shows what message a 
+    * This section begins with set language that shows what message a 
     successful METplus run concludes with. Then, it should direct users to the 
     proper folder (folders, if multiple outputs are made) and directory structure 
     where the final output is. If the use case creates intermediate output, it should 
@@ -555,38 +362,9 @@ the text content.
     If no output is created, this section should explain why and what the user accomplished 
     by running the use case.
 
-    Example:
+  * Keywords
 
-    ##############################################################################
-    # Expected Output
-    # ---------------
-    #
-    # A successful run will output the following both to the screen and to the logfile::
-    #   INFO: METplus has successfully finished running.
-    #
-    # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
-    # Output for this use case will be found in 
-    # {OUPUT_BASE}/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds 
-    # and will contain the following files:
-    #
-    # * grid_stat_198201_000000L_19700101_000000V_pairs.nc
-    # * grid_stat_198201_000000L_19700101_000000V_pstd.txt
-    # * grid_stat_198201_000000L_19700101_000000V.stat
-    #
-    # Each file should contain corresponding statistics for the line type(s) requested.
-    # For the netCDF file, five variable fields are present (not including the lat/lon fields). 
-    # Those variables are:
-    #
-    # * FCST_fcst_ENS_FREQ_lt-0.43_0_0_all_all_FULL(lat, lon)
-    # * OBS_tmp2m_20100101_000000_all_all_FULL(lat, lon)
-    # * CLIMO_MEAN_tmp2m_20100101_000000_all_all_FULL(lat, lon)
-    # * CLIMO_STDEV_tmp2m_20100101_000000_all_all_FULL(lat, lon)
-    # * CLIMO_CDF_tmp2m_20100101_000000_all_all_FULL(lat, lon)
-
-
-    Keywords
-
-    All keywords relevant to the use case should be added to this section 
+    * All keywords relevant to the use case should be added to this section 
     as a bulleted list, as well as keeping the set language at the end of the list. 
     If an important identifier for this use case is not currently set as a 
     keyword in the :ref:`quick-search`, be sure to add it to the list of keywords 
@@ -595,25 +373,6 @@ the text content.
     will serve as a thumbnail for the use case. If no image is provided, 
     a default image will be used; this is the same image used for all met_tool_wrapper 
     use cases.
-
-    Example:
-
-    ##############################################################################
-    # Keywords
-    # --------
-    #
-    # .. note::
-    #
-    #   * PointStatToolUseCase
-    #   * PythonEmbeddingFileUseCase
-    #   * GRIB2FileUseCase
-    #   * MarineAndCryosphereAppUseCase
-    #
-    #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
-    #
-    #
-    #
-    # sphinx_gallery_thumbnail_path = ‘_static/short-range-MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning.png’
 
 .. note::
     Text that ends with an underscore (_) may be interpreted as a reference, so
