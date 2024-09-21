@@ -1,7 +1,8 @@
 import os
 
 def get_metplus_version():
-    return get_metplus_info('VERSION')
+    from ._version import __version__
+    return __version__
 
 def get_metplus_release_date():
     return get_metplus_info('RELEASE_DATE')
@@ -19,9 +20,10 @@ def get_metplus_info(info_rel_path):
         info = file_handle.read().strip()
         return info
 
-__version__ = get_metplus_version()
 __release_date__ = get_metplus_release_date()
 __python_version__ = get_python_version()
+
+from ._version import __version__
 
 # import util and wrappers
 from .util import *

@@ -4,3 +4,41 @@ requires = [
     "wheel"
 ]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "metplus"
+dynamic = [
+    "version",
+    "dependencies",
+    ]
+description = "METplus Wrappers"
+authors = [
+    {name = "METplus"},
+]
+#requires-python = ">=3.10.4"
+readme = "README.md"
+license = {text = "MIT"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/dtcenter/METplus"
+
+[project.scripts]
+run_metplus = "ush.run_metplus:cli_main"
+
+[tool.setuptools]
+packages = ["metplus", "ush", "parm", "produtil"]
+
+[tool.setuptools.package-data]
+metplus = ["parm/**"]
+
+#[tool.setuptools.exclude-package-data]
+#metplus = ["README", "__pycache__","*~"]
+
+[tool.setuptools.dynamic]
+version = { attr = "metplus._version.__version__" }
+dependencies = {file = ["requirements.txt"]}

@@ -110,7 +110,7 @@ def get_config_inputs_from_command_line():
     return config_inputs
 
 
-if __name__ == "__main__":
+def cli_main():
     try:
         produtil.setup.setup(send_dbn=False, jobname='run-METplus')
         if not main():
@@ -119,3 +119,6 @@ if __name__ == "__main__":
         print(traceback.format_exc())
         print('ERROR: run_metplus  failed: %s' % exc)
         sys.exit(2)
+
+if __name__ == "__main__":
+    cli_main()
