@@ -36,8 +36,8 @@ packages = ["metplus", "ush", "parm", "produtil"]
 [tool.setuptools.package-data]
 metplus = ["parm/**"]
 
-#[tool.setuptools.exclude-package-data]
-#metplus = ["README", "__pycache__","*~"]
+[tool.setuptools.exclude-package-data]
+metplus = ["README", "__pycache__","*~"]
 
 [tool.setuptools.dynamic]
 version = { attr = "metplus._version.__version__" }
