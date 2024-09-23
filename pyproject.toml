@@ -1,21 +1,19 @@
 [build-system]
 requires = [
-    "setuptools>=42",
+    "setuptools",
     "wheel"
 ]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "metplus"
-dynamic = [
-    "version",
-    "dependencies",
-    ]
+version = "6.0.0-beta5"
+dynamic = ["dependencies"]
 description = "METplus Wrappers"
 authors = [
     {name = "METplus"},
 ]
-#requires-python = ">=3.10.4"
+requires-python = ">=3.10.4"
 readme = "README.md"
 license = {text = "MIT"}
 classifiers = [
@@ -31,7 +29,7 @@ Homepage = "https://github.com/dtcenter/METplus"
 run_metplus = "ush.run_metplus:cli_main"
 
 [tool.setuptools]
-packages = ["metplus", "ush", "parm", "produtil"]
+packages = ["ush", "metplus", "produtil"]
 
 [tool.setuptools.package-data]
 metplus = ["parm/**"]
@@ -40,5 +38,4 @@ metplus = ["parm/**"]
 metplus = ["README", "__pycache__","*~"]
 
 [tool.setuptools.dynamic]
-version = { attr = "metplus._version.__version__" }
 dependencies = {file = ["requirements.txt"]}
