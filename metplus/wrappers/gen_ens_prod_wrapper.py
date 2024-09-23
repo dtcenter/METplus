@@ -5,9 +5,7 @@ Contact(s): George McCabe
 
 import os
 
-from ..util import do_string_sub, ti_calculate, get_lead_sequence
-from ..util import skip_time, parse_var_list, sub_var_list
-
+from ..util import do_string_sub, parse_var_list, sub_var_list
 from . import LoopTimesWrapper
 
 

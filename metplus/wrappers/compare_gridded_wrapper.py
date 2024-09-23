@@ -76,7 +76,7 @@ that reformat gridded data
 
         return c_dict
 
-    def set_environment_variables(self, time_info):
+    def set_environment_variables(self, time_info=None):
         """! Set environment variables that will be set when running this tool.
             Wrappers can override this function to set wrapper-specific values,
             then call this (super) version to handle user configs and printing

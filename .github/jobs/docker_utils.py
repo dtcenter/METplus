@@ -39,7 +39,7 @@ def get_dockerhub_url(branch_name):
 def docker_get_volumes_last_updated(current_branch):
     import requests
     dockerhub_url = get_dockerhub_url(current_branch)
-    dockerhub_request = requests.get(dockerhub_url, timeout=60)
+    dockerhub_request = requests.get(dockerhub_url, timeout=90)
     if dockerhub_request.status_code != 200:
         print(f"Could not find DockerHub URL: {dockerhub_url}")
         return None
