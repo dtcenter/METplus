@@ -8,6 +8,8 @@ Adding Use Cases
 .. |metplus_staging_dir| replace:: /d2/projects/METplus/METplus_Data_Staging
 .. |dtc_web_server| replace:: mohawk.rap.ucar.edu
 
+.. _work_in_a_feature_branch:
+
 Work in a Feature Branch
 ========================
 
