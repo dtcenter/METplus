@@ -7,13 +7,6 @@ short_range/
 MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning.conf
 
 """
-
-##############################################################################
-# .. contents::
-#	:depth: 1
-#	:local:
-#	:backlinks: none
-
 ##############################################################################
 # Scientific Objective
 # --------------------
