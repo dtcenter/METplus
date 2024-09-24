@@ -121,6 +121,8 @@ def pre_run_setup(config_inputs):
 
     # Read config inputs and return a config instance
     config = setup(config_inputs)
+    if not config:
+        return None
 
     logger = config.logger
 
