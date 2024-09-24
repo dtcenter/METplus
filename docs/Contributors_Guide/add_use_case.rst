@@ -153,9 +153,7 @@ Use Case Rules
 - The use case should be run by someone other than the author to ensure that it
   runs smoothly outside of the development environment set up by the author.
 
-.. _actions-failure-use-cases:
-
-Use Cases That Include Changes in METcalcpy/METplotpy/METdataio
+Use Cases That Include Changes to METcalcpy/METplotpy/METdataio
 ---------------------------------------------------------------
 
 Some use cases call scripts that are located in METcalcpy, METplotpy, and/or METdataio.
@@ -196,6 +194,8 @@ and examples.
 - *model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereQBO*
 - *model_applications/s2s_mjo/UserScript_obsCFSR_obsOnly_MJO_ENSO*
 - *model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra*
+
+.. _actions-failure-use-cases:
 
 Use Cases That Cannot be Run in GitHub Actions
 ----------------------------------------------
