@@ -92,7 +92,7 @@ MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line, i.e.
-# parm/use_cases/model_applications/short_range/MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning.conf
+# | parm/use_cases/model_applications/short_range/MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning.conf
