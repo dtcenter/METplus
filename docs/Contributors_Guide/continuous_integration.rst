@@ -780,6 +780,8 @@ Example::
     met_tool_wrapper/GridStat/GridStat.conf,met_tool_wrapper/GridStat/GridStat_forecast.conf,met_tool_wrapper/GridStat/GridStat_observation.conf
 
 
+.. _cg-ci-dependencies:
+
 dependencies
 """"""""""""
 
@@ -798,6 +800,8 @@ Example::
 
 Use Case Dependencies
 ^^^^^^^^^^^^^^^^^^^^^
+
+.. _cg-ci-conda-environments:
 
 Conda Environments
 """"""""""""""""""
