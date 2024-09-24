@@ -5,9 +5,7 @@ Contact(s): George McCabe
 
 import os
 
-from ..util import do_string_sub, ti_calculate, get_lead_sequence
-from ..util import skip_time, parse_var_list, sub_var_list
-
+from ..util import do_string_sub, parse_var_list, sub_var_list
 from . import LoopTimesWrapper
 
 
@@ -33,6 +31,8 @@ class GenEnsProdWrapper(LoopTimesWrapper):
         'METPLUS_NMEP_SMOOTH_DICT',
         'METPLUS_CLIMO_MEAN_DICT',
         'METPLUS_CLIMO_STDEV_DICT',
+        'METPLUS_ENS_CLIMO_MEAN_DICT',
+        'METPLUS_ENS_CLIMO_STDEV_DICT',
         'METPLUS_ENSEMBLE_FLAG_DICT',
         'METPLUS_ENS_MEMBER_IDS',
         'METPLUS_CONTROL_ID',
@@ -205,7 +205,7 @@ class GenEnsProdWrapper(LoopTimesWrapper):
         })
 
         # get climatology config variables
-        self.handle_climo_dict()
+        self.handle_climo_dict(sub_groups='ens')
 
         self.handle_flags('ENSEMBLE')
 

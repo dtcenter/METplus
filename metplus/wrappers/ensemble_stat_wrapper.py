@@ -11,9 +11,7 @@ Condition codes: 0 for success, 1 for failure
 '''
 
 import os
-import glob
 
-from ..util import sub_var_list
 from ..util import do_string_sub, parse_var_list, PYTHON_EMBEDDING_TYPES
 from . import CompareGriddedWrapper
 
@@ -41,8 +39,12 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'METPLUS_VLD_THRESH',
         'METPLUS_FCST_FILE_TYPE',
         'METPLUS_FCST_FIELD',
+        'METPLUS_FCST_CLIMO_MEAN_DICT',
+        'METPLUS_FCST_CLIMO_STDEV_DICT',
         'METPLUS_OBS_FILE_TYPE',
         'METPLUS_OBS_FIELD',
+        'METPLUS_OBS_CLIMO_MEAN_DICT',
+        'METPLUS_OBS_CLIMO_STDEV_DICT',
         'METPLUS_MESSAGE_TYPE',
         'METPLUS_OBS_THRESH',
         'METPLUS_DUPLICATE_FLAG',
