@@ -25,7 +25,7 @@ import traceback
 # add metplus directory to path so the wrappers and utilities can be found
 sys.path.insert(0, abspath(join(dirname(realpath(__file__)), pardir)))
 
-import produtil.setup
+from produtil.setup import setup as produtil_setup
 
 from metplus.util import pre_run_setup, run_metplus, post_run_cleanup
 from metplus import __version__ as metplus_version
@@ -112,7 +112,7 @@ def get_config_inputs_from_command_line():
 
 def cli_main():
     try:
-        produtil.setup.setup(send_dbn=False, jobname='run-METplus')
+        produtil_setup(send_dbn=False, jobname='run-METplus')
         if not main():
             sys.exit(1)
     except Exception as exc:
