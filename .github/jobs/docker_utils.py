@@ -41,8 +41,11 @@ def docker_get_volumes_last_updated(current_branch):
     dockerhub_url = get_dockerhub_url(current_branch)
     dockerhub_request = requests.get(dockerhub_url, timeout=90)
     if dockerhub_request.status_code != 200:
-        print(f"Could not find DockerHub URL: {dockerhub_url}")
-        return None
+        print(f"Retrying DockerHub request: {dockerhub_url}")
+        dockerhub_request = requests.get(dockerhub_url, timeout=60)
+        if dockerhub_request.status_code != 200:
+            print(f"Could not query DockerHub URL: {dockerhub_url}")
+            return None
 
     # get version number to search for if main_vX.Y branch
     if current_branch.startswith('main_v'):

@@ -1445,15 +1445,18 @@ class CommandBuilder:
 
         return output_prefix
 
-    def handle_climo_dict(self):
+    def handle_climo_dict(self, sub_groups=('fcst', 'obs')):
         """! Read climo mean/stdev variables with and set env_var_dict
          appropriately. Handle previous environment variables that are used
          by wrapped MET configs pre 4.0 (CLIMO_MEAN_FILE and CLIMO_STDEV_FILE)
 
+        @param sub_groups str or tuple of strings of MET dictionaries to search
+        for climo dictionaries. Defaults to 'fcst' and 'obs'
         """
         if not handle_climo_dict(config=self.config,
                                  app_name=self.app_name,
-                                 output_dict=self.env_var_dict):
+                                 output_dict=self.env_var_dict,
+                                 sub_groups=sub_groups):
             self.errors += 1
 
     def get_wrapper_or_generic_config(self, generic_name, var_type='str'):

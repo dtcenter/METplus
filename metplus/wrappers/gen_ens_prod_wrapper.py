@@ -31,6 +31,8 @@ class GenEnsProdWrapper(LoopTimesWrapper):
         'METPLUS_NMEP_SMOOTH_DICT',
         'METPLUS_CLIMO_MEAN_DICT',
         'METPLUS_CLIMO_STDEV_DICT',
+        'METPLUS_ENS_CLIMO_MEAN_DICT',
+        'METPLUS_ENS_CLIMO_STDEV_DICT',
         'METPLUS_ENSEMBLE_FLAG_DICT',
         'METPLUS_ENS_MEMBER_IDS',
         'METPLUS_CONTROL_ID',
@@ -203,7 +205,7 @@ class GenEnsProdWrapper(LoopTimesWrapper):
         })
 
         # get climatology config variables
-        self.handle_climo_dict()
+        self.handle_climo_dict(sub_groups='ens')
 
         self.handle_flags('ENSEMBLE')
 
