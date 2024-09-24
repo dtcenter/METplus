@@ -28,14 +28,16 @@ Homepage = "https://github.com/dtcenter/METplus"
 #[project.scripts]
 #run_metplus = "ush.run_metplus:cli_main"
 
-[tool.setuptools]
-packages = ["ush", "metplus", "produtil"]
+[tool.setuptools.packages]
+find = {include = ["metplus*"]}
 
 [tool.setuptools.package-data]
-metplus = ["parm/**"]
+metplus = [
+  "VERSION", "RELEASE_DATE", "PYTHON_VERSION", "PYTHON_VERSION_MIN",
+]
 
 [tool.setuptools.exclude-package-data]
-metplus = ["README", "__pycache__","*~"]
+metplus = ["README", "__pycache__", "*~"]
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
