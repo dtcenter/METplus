@@ -25,8 +25,8 @@ classifiers = [
 [project.urls]
 Homepage = "https://github.com/dtcenter/METplus"
 
-[project.scripts]
-run_metplus = "ush.run_metplus:cli_main"
+#[project.scripts]
+#run_metplus = "ush.run_metplus:cli_main"
 
 [tool.setuptools]
 packages = ["ush", "metplus", "produtil"]
