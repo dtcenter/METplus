@@ -29,7 +29,7 @@ Homepage = "https://github.com/dtcenter/METplus"
 #run_metplus = "ush.run_metplus:cli_main"
 
 [tool.setuptools.packages]
-find = {include = ["metplus*"]}
+find = {include = ["metplus*", "produtil*"]}
 
 [tool.setuptools.package-data]
 metplus = [
