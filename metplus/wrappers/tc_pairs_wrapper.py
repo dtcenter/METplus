@@ -432,7 +432,7 @@ class TCPairsWrapper(RuntimeFreqWrapper):
             'track_source': 'string',
             'field_source': 'string',
             'match_to_track': 'list',
-            'diag_name': 'list',
+            'diag_name': ('list', 'allow_empty'),
         }
         return_code = add_met_config_dict_list(config=self.config,
                                                app_name=self.app_name,
