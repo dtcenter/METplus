@@ -55,7 +55,7 @@ MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning.conf
 # collection of sample data. Click here to access the METplus releases page and download 
 # sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # This tarball should be unpacked into the directory that you will set the value of 
-# INPUT_BASE. See :ref: `running-metplus` for more information.
+# INPUT_BASE. See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # METplus Components
@@ -111,8 +111,9 @@ MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning.conf
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/MODEConfig_wrapped
+# .. dropdown:: MODEConfig_wrapped
+#
+#  .. literalinclude:: ../../../../parm/met_config/MODEConfig_wrapped
 
 ##############################################################################
 # Python Embedding
@@ -150,7 +151,8 @@ MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning.conf
 # {OUTPUT_BASE}/model_applications/short_range/MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning/f??,
 # where the '??' characters will reflect the two forecast leads (09 and 10).
 # Each of these directories will contain the following files with their appropriate
-# verification times:
+# verification times::
+#
 #  * mode_Fcst_LTNG_entireatmosphere_all_all_Obs_flash_extent_density_all_all_RRFS_or_ANALYSIS_090000L_20240109_140000V_000000A_cts.txt
 #  * mode_Fcst_LTNG_entireatmosphere_all_all_Obs_flash_extent_density_all_all_RRFS_or_ANALYSIS_090000L_20240109_140000V_000000A_obj.nc
 #  * mode_Fcst_LTNG_entireatmosphere_all_all_Obs_flash_extent_density_all_all_RRFS_or_ANALYSIS_090000L_20240109_140000V_000000A_obj.txt

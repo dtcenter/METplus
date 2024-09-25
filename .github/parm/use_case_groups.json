@@ -272,6 +272,11 @@
     "run": false
   },
   {
+    "category": "short_range",
+    "index_list": "15",
+    "run":false
+  },
+  {
     "category": "space_weather",
     "index_list": "0-1",
     "run": false
