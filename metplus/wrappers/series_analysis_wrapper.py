@@ -358,7 +358,6 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                        'without OBS_SERIES_ANALYSIS_INPUT_FILE_LIST '
                        'and vice versa')
 
-
     def _plot_data_plane_init(self):
         """! Set values to allow successful initialization of
               PlotDataPlane wrapper
