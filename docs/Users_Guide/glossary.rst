@@ -12978,3 +12978,16 @@ METplus Configuration Glossary
      See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_OPTIONS`
 
      | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_AGGR_INPUT_TEMPLATE
+     Template used to specify the file path to pass to SeriesAnalysis using the
+     -aggr command line argument. This file is the output NetCDF file from a
+     previous SeriesAnalysis run.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_AGGR_INPUT_DIR
+     Directory containing SeriesAnalysis output to be read by SeriesAnalysis
+     using the -aggr command line argument.
+
+     | *Used by:* SeriesAnalysis

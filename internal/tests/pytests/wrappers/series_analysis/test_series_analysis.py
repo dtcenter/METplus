@@ -18,11 +18,14 @@ fcst_fmt = f'field = [{{ name="{fcst_name}"; level="{fcst_level}"; }}];'
 obs_fmt = (f'field = [{{ name="{obs_name}"; '
            f'level="{obs_level_no_quotes}"; }}];')
 time_fmt = '%Y%m%d%H'
-#run_times = ['2005080700', '2005080712']
-run_times = ['2005080700',]
+run_times = ['2005080700', '2005080712']
 stat_list = 'TOTAL,RMSE,FBAR,OBAR'
 stat_list_quotes = '", "'.join(stat_list.split(','))
 stat_list_fmt = f'output_stats = {{cnt = ["{stat_list_quotes}"];}}'
+aggr_dir = '/some/fake/path/for'
+aggr_rel = 'aggr_file_<INIT_TIME>.nc'
+aggr_template = 'aggr_file_{init?fmt=%Y%m%d%H}.nc'
+both_file_list = '/some/fake/path/for/both/file_list.txt'
 
 
 def get_input_dirs(config):
@@ -613,6 +616,10 @@ def test_series_analysis_missing_inputs(metplus_config, get_test_data_dir,
                                            'time_interp_method = NEAREST;'
                                            'match_month = TRUE;day_interval = 30;'
                                            'hour_interval = 12;}')}),
+        ({'SERIES_ANALYSIS_AGGR_INPUT_TEMPLATE': os.path.join(aggr_dir, aggr_template), },
+         {}),
+        ({'SERIES_ANALYSIS_AGGR_INPUT_DIR': aggr_dir, 'SERIES_ANALYSIS_AGGR_INPUT_TEMPLATE': aggr_template,},
+         {}),
     ]
 )
 @pytest.mark.wrapper_a
@@ -638,31 +645,34 @@ def test_series_analysis_single_field(metplus_config, config_overrides,
     config_file = wrapper.c_dict.get('CONFIG_FILE')
     out_dir = wrapper.c_dict.get('OUTPUT_DIR')
     prefix = 'series_analysis_files_'
-    suffix = '_init_20050807000000_valid_ALL_lead_ALL.txt'
+    suffix = '_init_<INIT_TIME>0000_valid_ALL_lead_ALL.txt'
     fcst_file = f'{prefix}fcst{suffix}'
     obs_file = f'{prefix}obs{suffix}'
-    
+
+    extra_args = ' '
+    if 'SERIES_ANALYSIS_AGGR_INPUT_TEMPLATE' in config_overrides:
+        extra_args += f'-aggr {os.path.join(aggr_dir, aggr_rel)} '
+
     if is_both:
-        expected_cmds = [(f"{app_path} "
-                      f"-both {out_dir}/{fcst_file} "
-                      f"-out {out_dir}/2005080700 "
-                      f"-config {config_file} {verbosity}"),
-                     ]
+        file_args = f"-both {out_dir}/{fcst_file}"
     else:
-        expected_cmds = [(f"{app_path} "
-                      f"-fcst {out_dir}/{fcst_file} "
-                      f"-obs {out_dir}/{obs_file} "
-                      f"-out {out_dir}/2005080700 "
-                      f"-config {config_file} {verbosity}"),
-                     ]
+        file_args = f"-fcst {out_dir}/{fcst_file} -obs {out_dir}/{obs_file}"
+
+    expected_cmds = []
+    for run_time in run_times:
+        cmd = (f"{app_path} {file_args} -out {out_dir}/<INIT_TIME>{extra_args}"
+               f"-config {config_file} {verbosity}")
+        expected_cmds.append(cmd.replace('<INIT_TIME>', run_time))
 
     all_cmds = wrapper.run_all_times()
-
     expected_len = len(expected_cmds)
+    compare_cmds = all_cmds
     if 'SERIES_ANALYSIS_GENERATE_PLOTS' in config_overrides:
-        expected_len += 8
+        expected_len += 8 * len(expected_cmds)
+        compare_cmds = all_cmds[0::9][0:len(expected_cmds)]
         if 'SERIES_ANALYSIS_GENERATE_ANIMATIONS' in config_overrides:
             expected_len += 4
+
     assert len(all_cmds) == expected_len
 
     special_values = {
@@ -672,7 +682,7 @@ def test_series_analysis_single_field(metplus_config, config_overrides,
     if 'METPLUS_OUTPUT_STATS_DICT' not in env_var_values:
         special_values['METPLUS_OUTPUT_STATS_DICT'] = stat_list_fmt
     # only compare first command since the rest are not series_analysis
-    compare_command_and_env_vars(all_cmds[0:1], expected_cmds, env_var_values,
+    compare_command_and_env_vars(compare_cmds, expected_cmds, env_var_values,
                                  wrapper, special_values)
 
 
@@ -1204,9 +1214,9 @@ def test_get_netcdf_min_max(tmp_path_factory,
      
     wrapper = series_analysis_wrapper(metplus_config)
 
-    min, max = wrapper._get_netcdf_min_max(filepath, variable_name)
-    assert min == expected_min
-    assert max == expected_max
+    min_val, max_val = wrapper._get_netcdf_min_max(filepath, variable_name)
+    assert min_val == expected_min
+    assert max_val == expected_max
 
 
 @pytest.mark.wrapper_a
@@ -1237,7 +1247,7 @@ def test_run_once_per_lead(metplus_config):
     assert wrapper.isOK
     assert actual is True
 
-    # lead_hours = None
+    # lead_hours None
     with mock.patch.object(saw, 'ti_get_hours_from_lead', return_value=None):
         actual = wrapper.run_once_per_lead(None)
     assert actual is True
