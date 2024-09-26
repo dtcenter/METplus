@@ -98,12 +98,16 @@ def setup(args, base_confs=None):
     if base_confs is None:
         base_confs = _get_default_config_list()
 
+    if base_confs is None:
+        return None
+
     override_list = _parse_launch_args(args)
+    if override_list is None:
+        return None
 
     # add default config files to override list
     override_list = base_confs + override_list
     config = launch(override_list)
-
     return config
 
 
@@ -132,7 +136,7 @@ def _get_default_config_list(parm_base=None):
 
     if not default_config_list:
         print(f"FATAL: No default config files found in {conf_dir}")
-        sys.exit(1)
+        return None
 
     return default_config_list
 
@@ -195,9 +199,9 @@ def _parse_launch_args(args):
         # add file path to override list
         override_list.append(filepath)
 
-    # exit if anything went wrong reading config arguments
+    # return None if anything went wrong reading config arguments
     if bad:
-        sys.exit(2)
+        return None
 
     return override_list
 
@@ -249,7 +253,8 @@ def launch(config_list):
     mkdir_p(config.getdir('OUTPUT_BASE'))
 
     # set and log variables to the config object
-    get_logger(config)
+    if not get_logger(config):
+        return None
 
     final_conf = config.getstr('config', 'METPLUS_CONF')
 
@@ -337,14 +342,14 @@ def get_logger(config):
         log_level_val = logging.getLevelName(log_level)
     except ValueError:
         print(f'ERROR: Invalid value set for LOG_LEVEL: {log_level}')
-        sys.exit(1)
+        return None
 
     try:
         log_level_terminal_val = logging.getLevelName(log_level_terminal)
     except ValueError:
         print('ERROR: Invalid value set for LOG_LEVEL_TERMINAL:'
               f' {log_level_terminal}')
-        sys.exit(1)
+        return None
 
     # create log formatter from config settings
     formatter = METplusLogFormatter(config)
@@ -410,7 +415,7 @@ def replace_config_from_section(config, section, required=True):
         # if not required, return input config object
         return config
 
-    new_config = METplusConfig()
+    new_config = METplusConfig(run_id=config.run_id)
 
     # copy over all key/values from sections
     for section_to_copy in ['config', 'user_env_vars']:
@@ -444,9 +449,11 @@ class METplusConfig(ProdConfig):
         'regex_pattern',
     )
 
-    def __init__(self, conf=None):
+    def __init__(self, conf=None, run_id=None):
         """!Creates a new METplusConfig
         @param conf The configuration file
+        @param run_id 8 character identifier for the run or None if ID should
+        be created. Defaults to None.
         """
         # set interpolation to None so you can supply filename template
         # that contain % to config.set
@@ -455,7 +462,7 @@ class METplusConfig(ProdConfig):
                             interpolation=None) if (conf is None) else conf
         super().__init__(conf)
         self._cycle = None
-        self.run_id = str(uuid.uuid4())[0:8]
+        self.run_id = run_id if run_id else str(uuid.uuid4())[0:8]
         self._logger = logging.getLogger(f'metplus.{self.run_id}')
         # config.logger is called in wrappers, so set this name
         # so the code doesn't break

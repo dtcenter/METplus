@@ -2244,12 +2244,25 @@ METplus Configuration Glossary
    LEAD_SEQ_<n>
      Specify the sequence of forecast lead times to include in the analysis. Comma separated list format, e.g.:0, 6, 12. <n> corresponds to the bin in which the user wishes to aggregate series by lead results.
 
-     | *Used by:*  SeriesAnalysis
+     | *Used by:*  All
 
    LEAD_SEQ_<n>_LABEL
-     Required when SERIES_BY_LEAD_GROUP_FCSTS=True. Specify the label of the corresponding bin of series by lead results.
+     Specify the label for the :term:`LEAD_SEQ_\<n>` group of forecast leads.
 
-     | *Used by:*  SeriesAnalysis
+     | *Used by:*  All
+
+   LEAD_SEQ_GROUP_SIZE
+     Defines the size of forecast lead groups to create from :term:`LEAD_SEQ`.
+     See :ref:`grouping_forecast_leads` for more information.
+
+     | *Used by:*  All
+
+   LEAD_SEQ_GROUP_LABEL
+     Defines the label to apply for each forecast lead group that are created
+     using :term:`LEAD_SEQ` and :term:`LEAD_SEQ_GROUP_SIZE`.
+     See :ref:`grouping_forecast_leads` for more information.
+
+     | *Used by:*  All
 
    LINE_TYPE
      .. warning:: **DEPRECATED:** Please use :term:`LINE_TYPE_LIST` instead.
@@ -3545,7 +3558,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`LEAD_SEQ_\<n>` and :term:`SERIES_ANALYSIS_RUNTIME_FREQ` instead.
 
    SERIES_BY_LEAD_GROUP_FCSTS
-     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_GROUP_FCSTS` instead.
+     .. warning:: **DEPRECATED:** Please use :term:`LEAD_SEQ_\<n>` and :term:`SERIES_ANALYSIS_RUNTIME_FREQ` instead.
 
    SERIES_INIT_FILTERED_OUT_DIR
      .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_FILTERED_OUTPUT_DIR` instead.
@@ -12005,3 +12018,976 @@ METplus Configuration Glossary
      observation run of PCPCombine, e.g. :term:`OBS_PCP_COMBINE_RUN` is True.
 
      | *Used by:* PCPCombine
+
+   GRID_STAT_FCST_CLIMO_MEAN_FILE_NAME
+     Specify the value for 'fcst.climo_mean.file_name' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_FCST_CLIMO_MEAN_FIELD
+     Specify the value for 'fcst.climo_mean.field' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_FCST_CLIMO_MEAN_REGRID_METHOD
+     Specify the value for 'fcst.climo_mean.regrid.method' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_FCST_CLIMO_MEAN_REGRID_WIDTH
+     Specify the value for 'fcst.climo_mean.regrid.width' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_FCST_CLIMO_MEAN_REGRID_VLD_THRESH
+     Specify the value for 'fcst.climo_mean.regrid.vld_thresh' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_FCST_CLIMO_MEAN_REGRID_SHAPE
+     Specify the value for 'fcst.climo_mean.regrid.shape' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_FCST_CLIMO_MEAN_TIME_INTERP_METHOD
+     Specify the value for 'fcst.climo_mean.time_interp_method' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_FCST_CLIMO_MEAN_DAY_INTERVAL
+     Specify the value for 'fcst.climo_mean.day_interval' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_FCST_CLIMO_MEAN_HOUR_INTERVAL
+     Specify the value for 'fcst.climo_mean.hour_interval' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_FCST_CLIMO_STDEV_FILE_NAME
+     Specify the value for 'fcst.climo_stdev.file_name' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_FCST_CLIMO_STDEV_FIELD
+     Specify the value for 'fcst.climo_stdev.field' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_FCST_CLIMO_STDEV_REGRID_METHOD
+     Specify the value for 'fcst.climo_stdev.regrid.method' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_FCST_CLIMO_STDEV_REGRID_WIDTH
+     Specify the value for 'fcst.climo_stdev.regrid.width' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_FCST_CLIMO_STDEV_REGRID_VLD_THRESH
+     Specify the value for 'fcst.climo_stdev.regrid.vld_thresh' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_FCST_CLIMO_STDEV_REGRID_SHAPE
+     Specify the value for 'fcst.climo_stdev.regrid.shape' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_FCST_CLIMO_STDEV_TIME_INTERP_METHOD
+     Specify the value for 'fcst.climo_stdev.time_interp_method' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_FCST_CLIMO_STDEV_DAY_INTERVAL
+     Specify the value for 'fcst.climo_stdev.day_interval' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_FCST_CLIMO_STDEV_HOUR_INTERVAL
+     Specify the value for 'fcst.climo_stdev.hour_interval' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OBS_CLIMO_MEAN_FILE_NAME
+     Specify the value for 'obs.climo_mean.file_name' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OBS_CLIMO_MEAN_FIELD
+     Specify the value for 'obs.climo_mean.field' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OBS_CLIMO_MEAN_REGRID_METHOD
+     Specify the value for 'obs.climo_mean.regrid.method' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OBS_CLIMO_MEAN_REGRID_WIDTH
+     Specify the value for 'obs.climo_mean.regrid.width' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OBS_CLIMO_MEAN_REGRID_VLD_THRESH
+     Specify the value for 'obs.climo_mean.regrid.vld_thresh' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OBS_CLIMO_MEAN_REGRID_SHAPE
+     Specify the value for 'obs.climo_mean.regrid.shape' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OBS_CLIMO_MEAN_TIME_INTERP_METHOD
+     Specify the value for 'obs.climo_mean.time_interp_method' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OBS_CLIMO_MEAN_DAY_INTERVAL
+     Specify the value for 'obs.climo_mean.day_interval' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OBS_CLIMO_MEAN_HOUR_INTERVAL
+     Specify the value for 'obs.climo_mean.hour_interval' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OBS_CLIMO_STDEV_FILE_NAME
+     Specify the value for 'obs.climo_stdev.file_name' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OBS_CLIMO_STDEV_FIELD
+     Specify the value for 'obs.climo_stdev.field' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OBS_CLIMO_STDEV_REGRID_METHOD
+     Specify the value for 'obs.climo_stdev.regrid.method' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OBS_CLIMO_STDEV_REGRID_WIDTH
+     Specify the value for 'obs.climo_stdev.regrid.width' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OBS_CLIMO_STDEV_REGRID_VLD_THRESH
+     Specify the value for 'obs.climo_stdev.regrid.vld_thresh' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OBS_CLIMO_STDEV_REGRID_SHAPE
+     Specify the value for 'obs.climo_stdev.regrid.shape' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OBS_CLIMO_STDEV_TIME_INTERP_METHOD
+     Specify the value for 'obs.climo_stdev.time_interp_method' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OBS_CLIMO_STDEV_DAY_INTERVAL
+     Specify the value for 'obs.climo_stdev.day_interval' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OBS_CLIMO_STDEV_HOUR_INTERVAL
+     Specify the value for 'obs.climo_stdev.hour_interval' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   ENSEMBLE_STAT_FCST_CLIMO_MEAN_FILE_NAME
+     Specify the value for 'fcst.climo_mean.file_name' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_FCST_CLIMO_MEAN_FIELD
+     Specify the value for 'fcst.climo_mean.field' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_FCST_CLIMO_MEAN_REGRID_METHOD
+     Specify the value for 'fcst.climo_mean.regrid.method' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_FCST_CLIMO_MEAN_REGRID_WIDTH
+     Specify the value for 'fcst.climo_mean.regrid.width' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_FCST_CLIMO_MEAN_REGRID_VLD_THRESH
+     Specify the value for 'fcst.climo_mean.regrid.vld_thresh' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_FCST_CLIMO_MEAN_REGRID_SHAPE
+     Specify the value for 'fcst.climo_mean.regrid.shape' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_FCST_CLIMO_MEAN_TIME_INTERP_METHOD
+     Specify the value for 'fcst.climo_mean.time_interp_method' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_FCST_CLIMO_MEAN_DAY_INTERVAL
+     Specify the value for 'fcst.climo_mean.day_interval' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_FCST_CLIMO_MEAN_HOUR_INTERVAL
+     Specify the value for 'fcst.climo_mean.hour_interval' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_FCST_CLIMO_STDEV_FILE_NAME
+     Specify the value for 'fcst.climo_stdev.file_name' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_FCST_CLIMO_STDEV_FIELD
+     Specify the value for 'fcst.climo_stdev.field' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_FCST_CLIMO_STDEV_REGRID_METHOD
+     Specify the value for 'fcst.climo_stdev.regrid.method' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_FCST_CLIMO_STDEV_REGRID_WIDTH
+     Specify the value for 'fcst.climo_stdev.regrid.width' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_FCST_CLIMO_STDEV_REGRID_VLD_THRESH
+     Specify the value for 'fcst.climo_stdev.regrid.vld_thresh' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_FCST_CLIMO_STDEV_REGRID_SHAPE
+     Specify the value for 'fcst.climo_stdev.regrid.shape' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_FCST_CLIMO_STDEV_TIME_INTERP_METHOD
+     Specify the value for 'fcst.climo_stdev.time_interp_method' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_FCST_CLIMO_STDEV_DAY_INTERVAL
+     Specify the value for 'fcst.climo_stdev.day_interval' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_FCST_CLIMO_STDEV_HOUR_INTERVAL
+     Specify the value for 'fcst.climo_stdev.hour_interval' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_CLIMO_MEAN_FILE_NAME
+     Specify the value for 'obs.climo_mean.file_name' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_CLIMO_MEAN_FIELD
+     Specify the value for 'obs.climo_mean.field' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_CLIMO_MEAN_REGRID_METHOD
+     Specify the value for 'obs.climo_mean.regrid.method' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_CLIMO_MEAN_REGRID_WIDTH
+     Specify the value for 'obs.climo_mean.regrid.width' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_CLIMO_MEAN_REGRID_VLD_THRESH
+     Specify the value for 'obs.climo_mean.regrid.vld_thresh' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_CLIMO_MEAN_REGRID_SHAPE
+     Specify the value for 'obs.climo_mean.regrid.shape' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_CLIMO_MEAN_TIME_INTERP_METHOD
+     Specify the value for 'obs.climo_mean.time_interp_method' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_CLIMO_MEAN_DAY_INTERVAL
+     Specify the value for 'obs.climo_mean.day_interval' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_CLIMO_MEAN_HOUR_INTERVAL
+     Specify the value for 'obs.climo_mean.hour_interval' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_CLIMO_STDEV_FILE_NAME
+     Specify the value for 'obs.climo_stdev.file_name' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_CLIMO_STDEV_FIELD
+     Specify the value for 'obs.climo_stdev.field' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_CLIMO_STDEV_REGRID_METHOD
+     Specify the value for 'obs.climo_stdev.regrid.method' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_CLIMO_STDEV_REGRID_WIDTH
+     Specify the value for 'obs.climo_stdev.regrid.width' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_CLIMO_STDEV_REGRID_VLD_THRESH
+     Specify the value for 'obs.climo_stdev.regrid.vld_thresh' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_CLIMO_STDEV_REGRID_SHAPE
+     Specify the value for 'obs.climo_stdev.regrid.shape' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_CLIMO_STDEV_TIME_INTERP_METHOD
+     Specify the value for 'obs.climo_stdev.time_interp_method' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_CLIMO_STDEV_DAY_INTERVAL
+     Specify the value for 'obs.climo_stdev.day_interval' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_CLIMO_STDEV_HOUR_INTERVAL
+     Specify the value for 'obs.climo_stdev.hour_interval' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   POINT_STAT_FCST_CLIMO_MEAN_FILE_NAME
+     Specify the value for 'fcst.climo_mean.file_name' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_FCST_CLIMO_MEAN_FIELD
+     Specify the value for 'fcst.climo_mean.field' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_FCST_CLIMO_MEAN_REGRID_METHOD
+     Specify the value for 'fcst.climo_mean.regrid.method' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_FCST_CLIMO_MEAN_REGRID_WIDTH
+     Specify the value for 'fcst.climo_mean.regrid.width' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_FCST_CLIMO_MEAN_REGRID_VLD_THRESH
+     Specify the value for 'fcst.climo_mean.regrid.vld_thresh' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_FCST_CLIMO_MEAN_REGRID_SHAPE
+     Specify the value for 'fcst.climo_mean.regrid.shape' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_FCST_CLIMO_MEAN_TIME_INTERP_METHOD
+     Specify the value for 'fcst.climo_mean.time_interp_method' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_FCST_CLIMO_MEAN_DAY_INTERVAL
+     Specify the value for 'fcst.climo_mean.day_interval' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_FCST_CLIMO_MEAN_HOUR_INTERVAL
+     Specify the value for 'fcst.climo_mean.hour_interval' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_FCST_CLIMO_STDEV_FILE_NAME
+     Specify the value for 'fcst.climo_stdev.file_name' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_FCST_CLIMO_STDEV_FIELD
+     Specify the value for 'fcst.climo_stdev.field' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_FCST_CLIMO_STDEV_REGRID_METHOD
+     Specify the value for 'fcst.climo_stdev.regrid.method' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_FCST_CLIMO_STDEV_REGRID_WIDTH
+     Specify the value for 'fcst.climo_stdev.regrid.width' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_FCST_CLIMO_STDEV_REGRID_VLD_THRESH
+     Specify the value for 'fcst.climo_stdev.regrid.vld_thresh' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_FCST_CLIMO_STDEV_REGRID_SHAPE
+     Specify the value for 'fcst.climo_stdev.regrid.shape' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_FCST_CLIMO_STDEV_TIME_INTERP_METHOD
+     Specify the value for 'fcst.climo_stdev.time_interp_method' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_FCST_CLIMO_STDEV_DAY_INTERVAL
+     Specify the value for 'fcst.climo_stdev.day_interval' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_FCST_CLIMO_STDEV_HOUR_INTERVAL
+     Specify the value for 'fcst.climo_stdev.hour_interval' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_CLIMO_MEAN_FILE_NAME
+     Specify the value for 'obs.climo_mean.file_name' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_CLIMO_MEAN_FIELD
+     Specify the value for 'obs.climo_mean.field' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_CLIMO_MEAN_REGRID_METHOD
+     Specify the value for 'obs.climo_mean.regrid.method' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_CLIMO_MEAN_REGRID_WIDTH
+     Specify the value for 'obs.climo_mean.regrid.width' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_CLIMO_MEAN_REGRID_VLD_THRESH
+     Specify the value for 'obs.climo_mean.regrid.vld_thresh' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_CLIMO_MEAN_REGRID_SHAPE
+     Specify the value for 'obs.climo_mean.regrid.shape' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_CLIMO_MEAN_TIME_INTERP_METHOD
+     Specify the value for 'obs.climo_mean.time_interp_method' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_CLIMO_MEAN_DAY_INTERVAL
+     Specify the value for 'obs.climo_mean.day_interval' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_CLIMO_MEAN_HOUR_INTERVAL
+     Specify the value for 'obs.climo_mean.hour_interval' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_CLIMO_STDEV_FILE_NAME
+     Specify the value for 'obs.climo_stdev.file_name' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_CLIMO_STDEV_FIELD
+     Specify the value for 'obs.climo_stdev.field' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_CLIMO_STDEV_REGRID_METHOD
+     Specify the value for 'obs.climo_stdev.regrid.method' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_CLIMO_STDEV_REGRID_WIDTH
+     Specify the value for 'obs.climo_stdev.regrid.width' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_CLIMO_STDEV_REGRID_VLD_THRESH
+     Specify the value for 'obs.climo_stdev.regrid.vld_thresh' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_CLIMO_STDEV_REGRID_SHAPE
+     Specify the value for 'obs.climo_stdev.regrid.shape' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_CLIMO_STDEV_TIME_INTERP_METHOD
+     Specify the value for 'obs.climo_stdev.time_interp_method' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_CLIMO_STDEV_DAY_INTERVAL
+     Specify the value for 'obs.climo_stdev.day_interval' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_CLIMO_STDEV_HOUR_INTERVAL
+     Specify the value for 'obs.climo_stdev.hour_interval' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   SERIES_ANALYSIS_FCST_CLIMO_MEAN_FILE_NAME
+     Specify the value for 'fcst.climo_mean.file_name' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_FCST_CLIMO_MEAN_FIELD
+     Specify the value for 'fcst.climo_mean.field' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_FCST_CLIMO_MEAN_REGRID_METHOD
+     Specify the value for 'fcst.climo_mean.regrid.method' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_FCST_CLIMO_MEAN_REGRID_WIDTH
+     Specify the value for 'fcst.climo_mean.regrid.width' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_FCST_CLIMO_MEAN_REGRID_VLD_THRESH
+     Specify the value for 'fcst.climo_mean.regrid.vld_thresh' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_FCST_CLIMO_MEAN_REGRID_SHAPE
+     Specify the value for 'fcst.climo_mean.regrid.shape' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_FCST_CLIMO_MEAN_TIME_INTERP_METHOD
+     Specify the value for 'fcst.climo_mean.time_interp_method' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_FCST_CLIMO_MEAN_DAY_INTERVAL
+     Specify the value for 'fcst.climo_mean.day_interval' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_FCST_CLIMO_MEAN_HOUR_INTERVAL
+     Specify the value for 'fcst.climo_mean.hour_interval' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_FCST_CLIMO_STDEV_FILE_NAME
+     Specify the value for 'fcst.climo_stdev.file_name' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_FCST_CLIMO_STDEV_FIELD
+     Specify the value for 'fcst.climo_stdev.field' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_FCST_CLIMO_STDEV_REGRID_METHOD
+     Specify the value for 'fcst.climo_stdev.regrid.method' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_FCST_CLIMO_STDEV_REGRID_WIDTH
+     Specify the value for 'fcst.climo_stdev.regrid.width' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_FCST_CLIMO_STDEV_REGRID_VLD_THRESH
+     Specify the value for 'fcst.climo_stdev.regrid.vld_thresh' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_FCST_CLIMO_STDEV_REGRID_SHAPE
+     Specify the value for 'fcst.climo_stdev.regrid.shape' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_FCST_CLIMO_STDEV_TIME_INTERP_METHOD
+     Specify the value for 'fcst.climo_stdev.time_interp_method' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_FCST_CLIMO_STDEV_DAY_INTERVAL
+     Specify the value for 'fcst.climo_stdev.day_interval' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_FCST_CLIMO_STDEV_HOUR_INTERVAL
+     Specify the value for 'fcst.climo_stdev.hour_interval' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_CLIMO_MEAN_FILE_NAME
+     Specify the value for 'obs.climo_mean.file_name' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_CLIMO_MEAN_FIELD
+     Specify the value for 'obs.climo_mean.field' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_CLIMO_MEAN_REGRID_METHOD
+     Specify the value for 'obs.climo_mean.regrid.method' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_CLIMO_MEAN_REGRID_WIDTH
+     Specify the value for 'obs.climo_mean.regrid.width' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_CLIMO_MEAN_REGRID_VLD_THRESH
+     Specify the value for 'obs.climo_mean.regrid.vld_thresh' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_CLIMO_MEAN_REGRID_SHAPE
+     Specify the value for 'obs.climo_mean.regrid.shape' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_CLIMO_MEAN_TIME_INTERP_METHOD
+     Specify the value for 'obs.climo_mean.time_interp_method' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_CLIMO_MEAN_DAY_INTERVAL
+     Specify the value for 'obs.climo_mean.day_interval' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_CLIMO_MEAN_HOUR_INTERVAL
+     Specify the value for 'obs.climo_mean.hour_interval' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_CLIMO_STDEV_FILE_NAME
+     Specify the value for 'obs.climo_stdev.file_name' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_CLIMO_STDEV_FIELD
+     Specify the value for 'obs.climo_stdev.field' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_CLIMO_STDEV_REGRID_METHOD
+     Specify the value for 'obs.climo_stdev.regrid.method' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_CLIMO_STDEV_REGRID_WIDTH
+     Specify the value for 'obs.climo_stdev.regrid.width' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_CLIMO_STDEV_REGRID_VLD_THRESH
+     Specify the value for 'obs.climo_stdev.regrid.vld_thresh' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_CLIMO_STDEV_REGRID_SHAPE
+     Specify the value for 'obs.climo_stdev.regrid.shape' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_CLIMO_STDEV_TIME_INTERP_METHOD
+     Specify the value for 'obs.climo_stdev.time_interp_method' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_CLIMO_STDEV_DAY_INTERVAL
+     Specify the value for 'obs.climo_stdev.day_interval' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_CLIMO_STDEV_HOUR_INTERVAL
+     Specify the value for 'obs.climo_stdev.hour_interval' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   ENSEMBLE_STAT_FCST_CLIMO_MEAN_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_NAME`
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_FCST_CLIMO_MEAN_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_LEVELS`
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_FCST_CLIMO_MEAN_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_OPTIONS`
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_FCST_CLIMO_STDEV_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_NAME`
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_FCST_CLIMO_STDEV_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_LEVELS`
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_FCST_CLIMO_STDEV_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_OPTIONS`
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_CLIMO_MEAN_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_NAME`
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_CLIMO_MEAN_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_LEVELS`
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_CLIMO_MEAN_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_OPTIONS`
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_CLIMO_STDEV_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_NAME`
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_CLIMO_STDEV_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_LEVELS`
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_CLIMO_STDEV_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_OPTIONS`
+
+     | *Used by:* EnsembleStat
+
+   POINT_STAT_FCST_CLIMO_MEAN_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_NAME`
+
+     | *Used by:* PointStat
+
+   POINT_STAT_FCST_CLIMO_MEAN_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_LEVELS`
+
+     | *Used by:* PointStat
+
+   POINT_STAT_FCST_CLIMO_MEAN_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_OPTIONS`
+
+     | *Used by:* PointStat
+
+   POINT_STAT_FCST_CLIMO_STDEV_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_NAME`
+
+     | *Used by:* PointStat
+
+   POINT_STAT_FCST_CLIMO_STDEV_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_LEVELS`
+
+     | *Used by:* PointStat
+
+   POINT_STAT_FCST_CLIMO_STDEV_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_OPTIONS`
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_CLIMO_MEAN_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_NAME`
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_CLIMO_MEAN_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_LEVELS`
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_CLIMO_MEAN_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_OPTIONS`
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_CLIMO_STDEV_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_NAME`
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_CLIMO_STDEV_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_LEVELS`
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_CLIMO_STDEV_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_OPTIONS`
+
+     | *Used by:* PointStat
+
+   GRID_STAT_FCST_CLIMO_MEAN_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_NAME`
+
+     | *Used by:* GridStat
+
+   GRID_STAT_FCST_CLIMO_MEAN_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_LEVELS`
+
+     | *Used by:* GridStat
+
+   GRID_STAT_FCST_CLIMO_MEAN_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_OPTIONS`
+
+     | *Used by:* GridStat
+
+   GRID_STAT_FCST_CLIMO_STDEV_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_NAME`
+
+     | *Used by:* GridStat
+
+   GRID_STAT_FCST_CLIMO_STDEV_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_LEVELS`
+
+     | *Used by:* GridStat
+
+   GRID_STAT_FCST_CLIMO_STDEV_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_OPTIONS`
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OBS_CLIMO_MEAN_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_NAME`
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OBS_CLIMO_MEAN_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_LEVELS`
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OBS_CLIMO_MEAN_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_OPTIONS`
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OBS_CLIMO_STDEV_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_NAME`
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OBS_CLIMO_STDEV_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_LEVELS`
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OBS_CLIMO_STDEV_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_OPTIONS`
+
+     | *Used by:* GridStat
+
+   SERIES_ANALYSIS_FCST_CLIMO_MEAN_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_NAME`
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_FCST_CLIMO_MEAN_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_LEVELS`
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_FCST_CLIMO_MEAN_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_OPTIONS`
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_FCST_CLIMO_STDEV_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_NAME`
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_FCST_CLIMO_STDEV_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_LEVELS`
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_FCST_CLIMO_STDEV_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_OPTIONS`
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_CLIMO_MEAN_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_NAME`
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_CLIMO_MEAN_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_LEVELS`
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_CLIMO_MEAN_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_OPTIONS`
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_CLIMO_STDEV_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_NAME`
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_CLIMO_STDEV_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_LEVELS`
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_CLIMO_STDEV_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_OPTIONS`
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_AGGR_INPUT_TEMPLATE
+     Template used to specify the file path to pass to SeriesAnalysis using the
+     -aggr command line argument. This file is the output NetCDF file from a
+     previous SeriesAnalysis run.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_AGGR_INPUT_DIR
+     Directory containing SeriesAnalysis output to be read by SeriesAnalysis
+     using the -aggr command line argument.
+
+     | *Used by:* SeriesAnalysis
