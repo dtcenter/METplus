@@ -45,7 +45,7 @@
 # of sample data. Click here to access the METplus releases page and download sample data 
 # for the appropriate release: https://github.com/dtcenter/METplus/releases
 # This tarball should be unpacked into the directory that you will 
-# set the value of INPUT_BASE. See `Running METplus`_ section for more information.
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -93,15 +93,15 @@
 # METplus sets environment variables based on user settings in the METplus
 # configuration file. See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details.
 #
-# **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF!**
-# **THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!**
+# **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!**
 #
 # If there is a setting in the MET configuration file that is currently
 # not supported by METplus you’d like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
+# .. dropdown:: GridStatConfig_wrapped
+#
+#   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 
 ##############################################################################
 # Python Embedding
@@ -167,21 +167,21 @@
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
 # Output for this use case will be found in 
 # {OUPUT_BASE}/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds 
-# and will contain the following files:
+# and will contain the following files::
 #
-# * grid_stat_198201_000000L_19700101_000000V_pairs.nc
-# * grid_stat_198201_000000L_19700101_000000V_pstd.txt
-# * grid_stat_198201_000000L_19700101_000000V.stat
+#  * grid_stat_198201_000000L_19700101_000000V_pairs.nc
+#  * grid_stat_198201_000000L_19700101_000000V_pstd.txt
+#  * grid_stat_198201_000000L_19700101_000000V.stat
 #
 # Each file should contain corresponding statistics for the line type(s) requested.
 # For the netCDF file, five variable fields are present (not including the lat/lon fields). 
-# Those variables are:
+# Those variables are::
 #
-# * FCST_fcst_ENS_FREQ_lt-0.43_0_0_all_all_FULL(lat, lon)
-# * OBS_tmp2m_20100101_000000_all_all_FULL(lat, lon)
-# * CLIMO_MEAN_tmp2m_20100101_000000_all_all_FULL(lat, lon)
-# * CLIMO_STDEV_tmp2m_20100101_000000_all_all_FULL(lat, lon)
-# * CLIMO_CDF_tmp2m_20100101_000000_all_all_FULL(lat, lon)
+#  * FCST_fcst_ENS_FREQ_lt-0.43_0_0_all_all_FULL(lat, lon)
+#  * OBS_tmp2m_20100101_000000_all_all_FULL(lat, lon)
+#  * CLIMO_MEAN_tmp2m_20100101_000000_all_all_FULL(lat, lon)
+#  * CLIMO_STDEV_tmp2m_20100101_000000_all_all_FULL(lat, lon)
+#  * CLIMO_CDF_tmp2m_20100101_000000_all_all_FULL(lat, lon)
 
 ##############################################################################
 # Keywords

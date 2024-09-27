@@ -228,19 +228,13 @@ the text content. These are already provided in the example template.
 
   * Header and Path to Use Case Configuration File
 
-    * This section begins with {PrimaryStatAnalysisToolName}: Brief (12 words or less) 
-    and a unique description of use case, followed on the next line by ‘=’ characters 
-    equal in length to the header (spaces included). Follow this with one line of 
-    no characters, then the path to the use case configuration file. This should be 
-    written in the format of 
-    model_applications/{use_case_category}/{use_case_configuration_file}. 
-    This section is preceded and followed by three ‘“‘ characters.
+    * This section begins with {PrimaryStatAnalysisToolName}: Brief (12 words or less) and a unique description of use case, followed on the next line by ‘=’ characters equal in length to the header (spaces included). Follow this with one line of no characters, then the path to the use case configuration file. This should be written in the format of model_applications/{use_case_category}/{use_case_configuration_file}. This section is preceded and followed by three ‘“‘ characters.
 
   * Internal Table of Contents
 
     * This section consists of set language using Read The Docs notation, generating a 
-    table of contents within the use case documentation. This should be copied with 
-    no alterations.
+      table of contents within the use case documentation. This should be copied with 
+      no alterations.
 
   * Scientific Objective
 
@@ -306,8 +300,10 @@ the text content. These are already provided in the example template.
     * This section has set language that describes how settings in the MET configuration file 
     will ultimately be used to run METplus, along with any changes made from the default 
     by the user’s configuration file. It concludes with an embedded link (and image) of 
-    the default configuration file(s) for all MET tool(s) used. The only change that needs 
-    to occur for this section is which MET configuration file is embedded.
+    the default configuration file(s) for all MET tool(s) used. Any configuration file(s)
+    listed will be hidden be default using a dropdown option. The only changes that need 
+    to occur for this section is which MET configuration file(s) is(are) embedded and the name of 
+    the dropdown.
     If no MET tool(s) are used, that should be noted here and replace the default language.
 
   * Python Embedding
@@ -353,7 +349,10 @@ the text content. These are already provided in the example template.
     proper folder (folders, if multiple outputs are made) and directory structure 
     where the final output is. If the use case creates intermediate output, it should 
     be mentioned here as well. A list of the files and folders that are created 
-    should be provided.
+    should be provided. Currently the documentation notation used to list all output
+    is a copyable block which is created from the use of spacing and two ":" characters.
+    This is done so that a browser's rendering of the Expected Output list will not
+    run off the page.  
     If a netCDF is the output, it should be listed how many and what variable fields 
     are inside the file. If there are a large number of variable fields within the file, 
     a summary is sufficient.
@@ -368,7 +367,8 @@ the text content. These are already provided in the example template.
     as a bulleted list, as well as keeping the set language at the end of the list. 
     If an important identifier for this use case is not currently set as a 
     keyword in the :ref:`quick-search`, be sure to add it to the list of keywords 
-    before using it in the use case documentation.
+    before using it in the use case documentation. Instructions for doing so can
+    be found in the :ref:`create-quick-search-keyword` section.
     Users should also use the end of this section to reference an image that 
     will serve as a thumbnail for the use case. If no image is provided, 
     a default image will be used; this is the same image used for all met_tool_wrapper 
@@ -405,6 +405,33 @@ following documentation steps:
 
     # sphinx_gallery_thumbnail_path = '_static/air_quality_and_comp-EnsembleStat_fcstICAP_obsMODIS_aod.png'
 
+
+.. _create-quick-search-keyword:
+
+Create New Quick Search Keyword
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If a review of the keywords in the :ref:`quick-search` reveals that a new
+keyword would be beneficial, users can add a keyword using the following steps.
+Note that a keyword should be applicable to more than one existing use case, or
+seen as beneficial to upcoming use cases.
+
+* Open the quicksearch.rst file
+* Determine a name for the keyword following the format of the existing keywords in the appropriate section.
+
+  * All keywords should be one word with the first letter of each word capitalized.
+  * All keywords should end with "UseCase"
+  * Keywords in the "Use Cases by MET Tool" section should end with "ToolUseCase"
+  * Keywords in the "Use Cases by Application" section should end with "AppUseCase"
+  * Keywords in the "Use Cases by Organization" section should end with "OrgUseCase"
+  * Keywords in the "Use Cases by File Format" section should end with "FileUseCase"
+
+* Add new entries in alphabetical order under both html and latex sub-sections.
+
+  * Under html, use the format | \`<DESCRIPTOR> <../search.html?q=<KEYWORD>&check_keywords=yes&area=default>`_ where <DESCRIPTOR> is a human-readable description of the keyword and <KEYWORD> is the keyword.
+  * Under latex, use the format | **<DESCRIPTOR>**: *<KEYWORD>* where <DESCRIPTOR> is a human-readable description of the keyword and <KEYWORD> is the keyword.
+
+* Add the keyword to the end of each use case documentation file under docs/use_cases that corresponds to the keyword.
 
 Accessing the Documentation
 ---------------------------
