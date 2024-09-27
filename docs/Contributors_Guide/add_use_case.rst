@@ -228,7 +228,11 @@ the text content. These are already provided in the example template.
 
   * Header and Path to Use Case Configuration File
 
-    * This section begins with {PrimaryStatAnalysisToolName}: Brief (12 words or less) and a unique description of use case, followed on the next line by ‘=’ characters equal in length to the header (spaces included). Follow this with one line of no characters, then the path to the use case configuration file. This should be written in the format of model_applications/{use_case_category}/{use_case_configuration_file}. This section is preceded and followed by three ‘“‘ characters.
+    * This section begins with {PrimaryStatAnalysisToolName}: Brief (12 words or less) 
+      and a unique description of use case, followed on the next line by ‘=’ characters 
+      equal in length to the header (spaces included). Follow this with one line of no characters, 
+      then the path to the use case configuration file. This should be written in the format of 
+      model_applications/{use_case_category}/{use_case_configuration_file}. This section is preceded and followed by three ‘“‘ characters.
 
   * Internal Table of Contents
 
@@ -239,140 +243,140 @@ the text content. These are already provided in the example template.
   * Scientific Objective
 
     * This section should answer why this use case was created and included in the repository. 
-    What is a user gaining by using this use case? If the details do not add to 
-    the why this use case exists, those details do not belong in this section.
+      What is a user gaining by using this use case? If the details do not add to 
+      the why this use case exists, those details do not belong in this section.
 
   * Version Added
 
     * This represents the METplus version number that this use case was added to 
-    the METplus repository. It also represents the minimum or lowest METplus version 
-    this use case has been tested against. It should not include 
-    betas (ex. Version 5.1 beta 3), but should include the two-digit version number.
+      the METplus repository. It also represents the minimum or lowest METplus version 
+      this use case has been tested against. It should not include 
+      betas (ex. Version 5.1 beta 3), but should include the two-digit version number.
 
   * Datasets
 
     * This section should include a brief description of each model dataset 
-    and variable field (10 m wind speed, 2 m temperature, etc.) being used 
-    in the use case, as well as which field (forecast, observation, climatology, masking, etc.) 
-    is using which dataset. At a minimum, users should list the 
-    Forecast, Observation, and Climatology fields. If they are not being used, 
-    "None" can be listed. 
-    Acronyms should be spelled out (i.e not GFS, but Global Forecast System). 
-    This section also includes a Location description consisting of 
-    set language of how users can access the use case data for themselves.
+      and variable field (10 m wind speed, 2 m temperature, etc.) being used 
+      in the use case, as well as which field (forecast, observation, climatology, masking, etc.) 
+      is using which dataset. At a minimum, users should list the 
+      Forecast, Observation, and Climatology fields. If they are not being used, 
+      "None" can be listed. 
+      Acronyms should be spelled out (i.e not GFS, but Global Forecast System). 
+      This section also includes a Location description consisting of 
+      set language of how users can access the use case data for themselves.
 
   * METplus Components
 
     * This section lists the tools that will be used during the use case. 
-    If there are multiple tools, a brief overview should be provided of what each tool 
-    is responsible for (i.e. GenVxMask for creating masks that are used in 
-    the verification step, which is completed by GridStat). If Python embedding 
-    is used, it can be mentioned here as well.
-    It’s important to note that this section should NOT give detailed 
-    descriptions into why each tool is used, detailed information on how each tool 
-    is being used and interacting with other tools (if any), etc. If there is a desire 
-    to explain more about each tool’s role in the use case, the information can be 
-    presented in the “METplus Workflow” section.
+      If there are multiple tools, a brief overview should be provided of what each tool 
+      is responsible for (i.e. GenVxMask for creating masks that are used in 
+      the verification step, which is completed by GridStat). If Python embedding 
+      is used, it can be mentioned here as well.
+      It’s important to note that this section should NOT give detailed 
+      descriptions into why each tool is used, detailed information on how each tool 
+      is being used and interacting with other tools (if any), etc. If there is a desire 
+      to explain more about each tool’s role in the use case, the information can be 
+      presented in the “METplus Workflow” section.
 
   * METplus Workflow
 
     * This section should begin with the init or valid times (both beginning and end), 
-    time increment, as well as any lead times being used. This should be followed 
-    by descriptions of the number of times the use case will run 
-    (which could also be inferred from the init/valid times), what each tool is doing 
-    to a level of detail sufficient for users to understand the use case workflow, 
-    and any other special notes that users should be aware of.
-    Note that if there is Python embedding, descriptions of what it accomplishes 
-    should be saved for the “Python Embedding” section. A mention of the input to 
-    the Python script and its returned dataset is sufficient for this section.
+      time increment, as well as any lead times being used. This should be followed 
+      by descriptions of the number of times the use case will run 
+      (which could also be inferred from the init/valid times), what each tool is doing 
+      to a level of detail sufficient for users to understand the use case workflow, 
+      and any other special notes that users should be aware of.
+      Note that if there is Python embedding, descriptions of what it accomplishes 
+      should be saved for the “Python Embedding” section. A mention of the input to 
+      the Python script and its returned dataset is sufficient for this section.
 
   * METplus Configuration
 
     * This section has set language that describes how all of the configuration files 
-    are loaded into METplus, followed by what’s passed in by the user at runtime, 
-    and used to produce the final configuration file that controls the METplus run. 
-    It concludes with an embedded link (and image) of the user’s configuration file 
-    the use case will run. The only two pieces that will change are the path to the 
-    use case’s configuration file, and the embedded configuration file for the use case.
+      are loaded into METplus, followed by what’s passed in by the user at runtime, 
+      and used to produce the final configuration file that controls the METplus run. 
+      It concludes with an embedded link (and image) of the user’s configuration file 
+      the use case will run. The only two pieces that will change are the path to the 
+      use case’s configuration file, and the embedded configuration file for the use case.
 
   * MET Configuration
     
     * This section has set language that describes how settings in the MET configuration file 
-    will ultimately be used to run METplus, along with any changes made from the default 
-    by the user’s configuration file. It concludes with an embedded link (and image) of 
-    the default configuration file(s) for all MET tool(s) used. Any configuration file(s)
-    listed will be hidden be default using a dropdown option. The only changes that need 
-    to occur for this section is which MET configuration file(s) is(are) embedded and the name of 
-    the dropdown.
-    If no MET tool(s) are used, that should be noted here and replace the default language.
+      will ultimately be used to run METplus, along with any changes made from the default 
+      by the user’s configuration file. It concludes with an embedded link (and image) of 
+      the default configuration file(s) for all MET tool(s) used. Any configuration file(s)
+      listed will be hidden be default using a dropdown option. The only changes that need 
+      to occur for this section is which MET configuration file(s) is(are) embedded and the name of 
+      the dropdown.
+      If no MET tool(s) are used, that should be noted here and replace the default language.
 
   * Python Embedding
     
     * This section should provide a description of any Python embedding that’s used 
-    in the use case. 
-    For a common definition, Python embedding is used to ingest a dataset not 
-    natively available for METplus intake, and results in a dataset being 
-    returned to METplus for analysis and verification purposes.
-    This section should discuss what is passed to the script from METplus, 
-    what is being done by the script, and what data structure is passed back 
-    to METplus for evaluation. The end of this section is set language 
-    directing users to review the Python requirements in the MET User’s Guide, 
-    as well as an embedded link (and image) of all Python scripts used in 
-    Python Embedding. The links to these scripts will need to be updated by 
-    the user.
-    If no Python embedding is used, that should be noted here.
+      in the use case. 
+      For a common definition, Python embedding is used to ingest a dataset not 
+      natively available for METplus intake, and results in a dataset being 
+      returned to METplus for analysis and verification purposes.
+      This section should discuss what is passed to the script from METplus, 
+      what is being done by the script, and what data structure is passed back 
+      to METplus for evaluation. The end of this section is set language 
+      directing users to review the Python requirements in the MET User’s Guide, 
+      as well as an embedded link (and image) of all Python scripts used in 
+      Python Embedding. The links to these scripts will need to be updated by 
+      the user.
+      If no Python embedding is used, that should be noted here.
 
   * Python Scripting
     
     * This section should provide a description of any Python scripting that’s used 
-    in the use case. For a common definition, Python scripting is any condition where 
-    the evaluation/verification/output processes are being completed inside the Python script, 
-    outside of METplus. Essentially, if a Python script is called and a 
-    METplus-readable dataset is not passed back to METplus, it is a Python Scripting usage. 
-    The METplus wrapper usage only exists to call the Python script.
-    This section should discuss what is being done by the script and why the decision was 
-    made to use Python scripting rather than Python embedding. The end of this section is 
-    an embedded link (and image) of all Python scripts used in Python Scripting. The links 
-    to these scripts will need to be updated by the user.
-    If no Python scripting is used, that should be noted here.
+      in the use case. For a common definition, Python scripting is any condition where 
+      the evaluation/verification/output processes are being completed inside the Python script, 
+      outside of METplus. Essentially, if a Python script is called and a 
+      METplus-readable dataset is not passed back to METplus, it is a Python Scripting usage. 
+      The METplus wrapper usage only exists to call the Python script.
+      This section should discuss what is being done by the script and why the decision was 
+      made to use Python scripting rather than Python embedding. The end of this section is 
+      an embedded link (and image) of all Python scripts used in Python Scripting. The links 
+      to these scripts will need to be updated by the user.
+      If no Python scripting is used, that should be noted here.
 
   * Running METplus
 
     * Similar to “MET Configuration”, this section has set language that should not be altered. 
-    The only change between use cases is the path entered in the run command, 
-    which is use case specific.
+      The only change between use cases is the path entered in the run command, 
+      which is use case specific.
 
   * Expected Output
 
     * This section begins with set language that shows what message a 
-    successful METplus run concludes with. Then, it should direct users to the 
-    proper folder (folders, if multiple outputs are made) and directory structure 
-    where the final output is. If the use case creates intermediate output, it should 
-    be mentioned here as well. A list of the files and folders that are created 
-    should be provided. Currently the documentation notation used to list all output
-    is a copyable block which is created from the use of spacing and two ":" characters.
-    This is done so that a browser's rendering of the Expected Output list will not
-    run off the page.  
-    If a netCDF is the output, it should be listed how many and what variable fields 
-    are inside the file. If there are a large number of variable fields within the file, 
-    a summary is sufficient.
-    If an image is created, it should be used as the use case image and referenced in 
-    this section as output.
-    If no output is created, this section should explain why and what the user accomplished 
-    by running the use case.
+      successful METplus run concludes with. Then, it should direct users to the 
+      proper folder (folders, if multiple outputs are made) and directory structure 
+      where the final output is. If the use case creates intermediate output, it should 
+      be mentioned here as well. A list of the files and folders that are created 
+      should be provided. Currently the documentation notation used to list all output 
+      is a copyable block which is created from the use of spacing and two ":" characters.
+      This is done so that a browser's rendering of the Expected Output list will not 
+      run off the page.  
+      If a netCDF is the output, it should be listed how many and what variable fields 
+      are inside the file. If there are a large number of variable fields within the file, 
+      a summary is sufficient.
+      If an image is created, it should be used as the use case image and referenced in 
+      this section as output.
+      If no output is created, this section should explain why and what the user accomplished 
+      by running the use case.
 
   * Keywords
 
     * All keywords relevant to the use case should be added to this section 
-    as a bulleted list, as well as keeping the set language at the end of the list. 
-    If an important identifier for this use case is not currently set as a 
-    keyword in the :ref:`quick-search`, be sure to add it to the list of keywords 
-    before using it in the use case documentation. Instructions for doing so can
-    be found in the :ref:`create-quick-search-keyword` section.
-    Users should also use the end of this section to reference an image that 
-    will serve as a thumbnail for the use case. If no image is provided, 
-    a default image will be used; this is the same image used for all met_tool_wrapper 
-    use cases.
+      as a bulleted list, as well as keeping the set language at the end of the list. 
+      If an important identifier for this use case is not currently set as a 
+      keyword in the :ref:`quick-search`, be sure to add it to the list of keywords 
+      before using it in the use case documentation. Instructions for doing so can
+      be found in the :ref:`create-quick-search-keyword` section.
+      Users should also use the end of this section to reference an image that 
+      will serve as a thumbnail for the use case. If no image is provided, 
+      a default image will be used; this is the same image used for all met_tool_wrapper 
+      use cases.
 
 .. note::
     Text that ends with an underscore (_) may be interpreted as a reference, so
