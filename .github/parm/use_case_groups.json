@@ -274,7 +274,6 @@
   {
     "category": "short_range",
     "index_list": "15",
-    "disabled": true,
     "run":false
   },
   {
