@@ -784,9 +784,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             add_field_info_to_time_info(time_info, var_info)
 
             # get formatted field dictionary to pass into the MET config file
-            fcst_field, obs_field = (
-                self.get_formatted_fields(var_info, time_info, fcst_path, obs_path)
-            )
+            fcst_field, obs_field = self.get_formatted_fields(var_info, time_info)
             if fcst_field is None:
                 continue
 
@@ -1035,14 +1033,12 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         except (FileNotFoundError, KeyError):
             return None, None
 
-    def get_formatted_fields(self, var_info, time_info, fcst_path, obs_path):
+    def get_formatted_fields(self, var_info, time_info):
         """! Get forecast and observation field information for var_info and
             format it so it can be passed into the MET config file
 
             @param var_info dictionary containing info to format
             @param time_info dictionary containing time information
-            @param fcst_path path to file list file for forecast data
-            @param obs_path path to file list file for observation data
             @returns tuple containing strings of the formatted forecast and
             observation information or (None, None) if something went wrong
         """
@@ -1077,7 +1073,6 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         @param time_info dictionary containing time information
         @returns list containing formatted field info to pass to MET config
         """
-        other = 'OBS' if data_type == 'fcst' else 'FCST'
         # if there are no time tags (init/valid/lead) in the field level
         # or if init, valid, and lead have values in time_info,
         # get field info for a single field to pass to the MET config file
@@ -1087,12 +1082,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         field_list = []
 
-        # handle multiple templates
-        templates = []
-        for template in self.c_dict[f'{other}_INPUT_TEMPLATE'].split(','):
-            templates.append(os.path.join(self.c_dict[f'{other}_INPUT_DIR'], template.strip()))
-
-        # loop through fcst/obs files to extract time info
+        # loop through fcst/obs files to read time info
         # for each file apply time info to field info and add to list
         for file_dict in self.c_dict['ALL_FILES']:
             file_time_info = file_dict['time_info']
