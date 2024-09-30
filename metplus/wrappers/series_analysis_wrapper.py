@@ -1047,10 +1047,10 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             observation information or (None, None) if something went wrong
         """
         fcst_field_list = (
-            self._get_field_list('fcst', var_info, time_info, obs_path)
+            self._get_field_list('fcst', var_info, time_info)
         )
         obs_field_list = (
-            self._get_field_list('obs', var_info, time_info, fcst_path)
+            self._get_field_list('obs', var_info, time_info)
         )
 
         if not fcst_field_list or not obs_field_list:
@@ -1062,7 +1062,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         return fcst_fields, obs_fields
 
-    def _get_field_list(self, data_type, var_info, time_info, file_list_path):
+    def _get_field_list(self, data_type, var_info, time_info):
         """!Get formatted field information in a list.
         If no time (init/valid/lead) filename template tags were found in the
         level value or if the time info contains all init/valid/lead values
@@ -1075,7 +1075,6 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         @param data_type type of data to process, e.g. fcst or obs
         @param var_info dictionary containing info to format
         @param time_info dictionary containing time information
-        @param file_list_path path to file list file to parse
         @returns list containing formatted field info to pass to MET config
         """
         other = 'OBS' if data_type == 'fcst' else 'FCST'
@@ -1095,8 +1094,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         # loop through fcst/obs files to extract time info
         # for each file apply time info to field info and add to list
-        for file_time_info in self._get_times_from_file_list(file_list_path,
-                                                             templates):
+        for file_dict in self.c_dict['ALL_FILES']:
+            file_time_info = file_dict['time_info']
             field = self._get_field_sub_level(data_type, var_info, file_time_info)
             if field:
                 field_list.extend(field)
