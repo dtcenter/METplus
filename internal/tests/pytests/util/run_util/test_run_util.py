@@ -4,7 +4,6 @@ from unittest import mock
 import os
 import re
 
-import produtil
 import metplus.util.run_util as ru
 import metplus.util.wrapper_init as wi
 from metplus.wrappers.ensemble_stat_wrapper import EnsembleStatWrapper
