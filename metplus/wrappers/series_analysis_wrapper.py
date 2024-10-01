@@ -144,29 +144,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                             extra_args={'remove_quotes': True})
 
         # handle all output_stats dictionary values
-        output_stats_dict = {}
-        for key in self.OUTPUT_STATS:
-            nicknames = [
-                f'SERIES_ANALYSIS_OUTPUT_STATS_{key.upper()}',
-                f'SERIES_ANALYSIS_{key.upper()}_LIST',
-                f'SERIES_ANALYSIS_{key.upper()}'
-            ]
-            # add legacy support for STAT_LIST for cnt
-            if key == 'cnt':
-                nicknames.append('SERIES_ANALYSIS_STAT_LIST')
-                # read cnt stat list to get stats to loop over for plotting
-                self.add_met_config(name='cnt',
-                                    data_type='list',
-                                    env_var_name='STAT_LIST',
-                                    metplus_configs=nicknames)
-                c_dict['STAT_LIST'] = getlist(
-                    self.get_env_var_value('METPLUS_STAT_LIST')
-                )
-
-            value = ('list', None, None, nicknames)
-            output_stats_dict[key] = value
-
-        self.add_met_config_dict('output_stats', output_stats_dict)
+        self._handle_output_stats_dict(c_dict)
 
         self.handle_mask(single_value=True)
 
@@ -180,128 +158,19 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                              data_types=('FCST', 'OBS'),
                              app_name=self.app_name)
 
-        # get input dir, template, and datatype for FCST, OBS, and BOTH
-        for data_type in ('FCST', 'OBS', 'BOTH'):
+        self.get_input_templates(c_dict, {
+            'FCST': {'prefix': 'FCST_SERIES_ANALYSIS', 'required': False},
+            'OBS': {'prefix': 'OBS_SERIES_ANALYSIS', 'required': False},
+            'BOTH': {'prefix': 'BOTH_SERIES_ANALYSIS', 'required': False},
+            'TC_STAT': {'prefix': 'SERIES_ANALYSIS_TC_STAT', 'required': False},
+            'AGGR': {'prefix': 'SERIES_ANALYSIS_AGGR', 'required': False},
+        })
 
-            # check if {data_type}_{app}_FILE_LIST is set
-            c_dict[f'{data_type}_INPUT_FILE_LIST'] = (
-                self.config.getraw(
-                    'config',
-                    f'{data_type}_SERIES_ANALYSIS_INPUT_FILE_LIST'
-                )
-            )
+        self._handle_fcst_obs_or_both_c_dict(c_dict)
 
-            c_dict[f'{data_type}_INPUT_DIR'] = (
-              self.config.getdir(f'{data_type}_SERIES_ANALYSIS_INPUT_DIR', '')
-            )
-            c_dict[f'{data_type}_INPUT_TEMPLATE'] = (
-              self.config.getraw('config',
-                                 f'{data_type}_SERIES_ANALYSIS_INPUT_TEMPLATE',
-                                 '')
-            )
-
-            c_dict[f'{data_type}_INPUT_DATATYPE'] = (
-              self.config.getstr('config',
-                                 f'{data_type}_SERIES_ANALYSIS_INPUT_DATATYPE',
-                                 '')
-            )
-
-            # read and set file type env var for FCST and OBS
-            if data_type == 'BOTH':
-                continue
-
-            self.add_met_config(
-                name='file_type',
-                data_type='string',
-                env_var_name=f'{data_type}_FILE_TYPE',
-                metplus_configs=[f'{data_type}_SERIES_ANALYSIS_FILE_TYPE',
-                                 f'SERIES_ANALYSIS_{data_type}_FILE_TYPE',
-                                 f'{data_type}_FILE_TYPE',
-                                 f'{data_type}_SERIES_ANALYSIS_INPUT_DATATYPE',
-                                 'SERIES_ANALYSIS_FILE_TYPE'],
-                extra_args={'remove_quotes': True,
-                            'uppercase': True})
-
-            self.add_met_config(
-                name='cat_thresh',
-                data_type='list',
-                env_var_name=f'METPLUS_{data_type}_CAT_THRESH',
-                metplus_configs=[f'{data_type}_SERIES_ANALYSIS_CAT_THRESH',
-                                 f'SERIES_ANALYSIS_{data_type}_CAT_THRESH',
-                                 f'{data_type}_CAT_THRESH'],
-                extra_args={'remove_quotes': True}
-            )
-
-        c_dict['USING_BOTH'] = (c_dict['BOTH_INPUT_TEMPLATE'] or
-                                c_dict['BOTH_INPUT_FILE_LIST'])
-
-        if c_dict['USING_BOTH']:
-
-            # check if using explicit file list for BOTH
-            if c_dict['BOTH_INPUT_FILE_LIST']:
-                c_dict['EXPLICIT_FILE_LIST'] = True
-            else:
-                # set *_WINDOW_* variables for BOTH
-                # used in CommandBuilder.find_data function)
-                self.handle_file_window_variables(c_dict, data_types=['BOTH'])
-
-            prob_thresh = self.config.getraw(
-                'config',
-                'BOTH_SERIES_ANALYSIS_PROB_THRESH'
-            )
-            c_dict['FCST_PROB_THRESH'] = prob_thresh
-            c_dict['OBS_PROB_THRESH'] = prob_thresh
-
-        # if BOTH is not set, both FCST or OBS must be set
-        else:
-            fcst_input_list = c_dict['FCST_INPUT_FILE_LIST']
-            obs_input_list = c_dict['OBS_INPUT_FILE_LIST']
-            if fcst_input_list and obs_input_list:
-                c_dict['EXPLICIT_FILE_LIST'] = True
-            elif not fcst_input_list and not obs_input_list:
-                if (not c_dict['FCST_INPUT_TEMPLATE'] or
-                        not c_dict['OBS_INPUT_TEMPLATE']):
-                    self.log_error(
-                        "Must either set "
-                        "BOTH_SERIES_ANALYSIS_INPUT_TEMPLATE or both "
-                        "FCST_SERIES_ANALYSIS_INPUT_TEMPLATE and "
-                        "OBS_SERIES_ANALYSIS_INPUT_TEMPLATE to run "
-                        "SeriesAnalysis wrapper."
-                    )
-
-                # set *_WINDOW_* variables for FCST and OBS
-                self.handle_file_window_variables(c_dict)
-            # if fcst input list or obs input list are not set
-            else:
-                self.log_error('Cannot set '
-                               'FCST_SERIES_ANALYSIS_INPUT_FILE_LIST '
-                               'without OBS_SERIES_ANALYSIS_INPUT_FILE_LIST '
-                               'and vice versa')
-
-            c_dict['FCST_PROB_THRESH'] = (
-                    self.config.getraw('config',
-                                       'FCST_SERIES_ANALYSIS_PROB_THRESH')
-            )
-
-            c_dict['OBS_PROB_THRESH'] = (
-                    self.config.getraw('config',
-                                       'OBS_SERIES_ANALYSIS_PROB_THRESH')
-            )
-
-        c_dict['TC_STAT_INPUT_DIR'] = (
-            self.config.getdir('SERIES_ANALYSIS_TC_STAT_INPUT_DIR', '')
-        )
-
-        c_dict['TC_STAT_INPUT_TEMPLATE'] = (
-            self.config.getraw('config',
-                               'SERIES_ANALYSIS_TC_STAT_INPUT_TEMPLATE')
-        )
-
-        c_dict['OUTPUT_DIR'] = self.config.getdir('SERIES_ANALYSIS_OUTPUT_DIR',
-                                                  '')
+        c_dict['OUTPUT_DIR'] = self.config.getdir('SERIES_ANALYSIS_OUTPUT_DIR', '')
         c_dict['OUTPUT_TEMPLATE'] = (
-            self.config.getraw('config',
-                               'SERIES_ANALYSIS_OUTPUT_TEMPLATE')
+            self.config.getraw('config', 'SERIES_ANALYSIS_OUTPUT_TEMPLATE')
         )
         if not c_dict['OUTPUT_DIR']:
             self.log_error("Must set SERIES_ANALYSIS_OUTPUT_DIR to run.")
@@ -370,6 +239,125 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         return c_dict
 
+    def _handle_output_stats_dict(self, c_dict):
+        output_stats_dict = {}
+        for key in self.OUTPUT_STATS:
+            nicknames = [
+                f'SERIES_ANALYSIS_OUTPUT_STATS_{key.upper()}',
+                f'SERIES_ANALYSIS_{key.upper()}_LIST',
+                f'SERIES_ANALYSIS_{key.upper()}'
+            ]
+            # add legacy support for STAT_LIST for cnt
+            if key == 'cnt':
+                nicknames.append('SERIES_ANALYSIS_STAT_LIST')
+                # read cnt stat list to get stats to loop over for plotting
+                self.add_met_config(name='cnt',
+                                    data_type='list',
+                                    env_var_name='STAT_LIST',
+                                    metplus_configs=nicknames)
+                c_dict['STAT_LIST'] = getlist(
+                    self.get_env_var_value('METPLUS_STAT_LIST')
+                )
+
+            value = ('list', None, None, nicknames)
+            output_stats_dict[key] = value
+
+        self.add_met_config_dict('output_stats', output_stats_dict)
+
+    def _handle_fcst_obs_or_both_c_dict(self, c_dict):
+        # get input dir, template, and datatype for FCST, OBS, and BOTH
+        for data_type in ('FCST', 'OBS', 'BOTH'):
+            c_dict[f'{data_type}_INPUT_DATATYPE'] = (
+              self.config.getstr('config',
+                                 f'{data_type}_SERIES_ANALYSIS_INPUT_DATATYPE',
+                                 '')
+            )
+
+            # read and set file type env var for FCST and OBS
+            if data_type == 'BOTH':
+                continue
+
+            self.add_met_config(
+                name='file_type',
+                data_type='string',
+                env_var_name=f'{data_type}_FILE_TYPE',
+                metplus_configs=[f'{data_type}_SERIES_ANALYSIS_FILE_TYPE',
+                                 f'SERIES_ANALYSIS_{data_type}_FILE_TYPE',
+                                 f'{data_type}_FILE_TYPE',
+                                 f'{data_type}_SERIES_ANALYSIS_INPUT_DATATYPE',
+                                 'SERIES_ANALYSIS_FILE_TYPE'],
+                extra_args={'remove_quotes': True,
+                            'uppercase': True})
+
+            self.add_met_config(
+                name='cat_thresh',
+                data_type='list',
+                env_var_name=f'METPLUS_{data_type}_CAT_THRESH',
+                metplus_configs=[f'{data_type}_SERIES_ANALYSIS_CAT_THRESH',
+                                 f'SERIES_ANALYSIS_{data_type}_CAT_THRESH',
+                                 f'{data_type}_CAT_THRESH'],
+                extra_args={'remove_quotes': True}
+            )
+
+        c_dict['USING_BOTH'] = (c_dict['BOTH_INPUT_TEMPLATE'] or
+                                c_dict.get('BOTH_INPUT_FILE_LIST'))
+
+        if c_dict['USING_BOTH']:
+
+            # check if using explicit file list for BOTH
+            if c_dict.get('BOTH_INPUT_FILE_LIST'):
+                c_dict['EXPLICIT_FILE_LIST'] = True
+            else:
+                # set *_WINDOW_* variables for BOTH
+                # used in CommandBuilder.find_data function
+                self.handle_file_window_variables(c_dict, data_types=['BOTH'])
+
+            prob_thresh = self.config.getraw(
+                'config',
+                'BOTH_SERIES_ANALYSIS_PROB_THRESH'
+            )
+            c_dict['FCST_PROB_THRESH'] = prob_thresh
+            c_dict['OBS_PROB_THRESH'] = prob_thresh
+            return
+
+        c_dict['FCST_PROB_THRESH'] = (
+                self.config.getraw('config',
+                                   'FCST_SERIES_ANALYSIS_PROB_THRESH')
+        )
+
+        c_dict['OBS_PROB_THRESH'] = (
+                self.config.getraw('config',
+                                   'OBS_SERIES_ANALYSIS_PROB_THRESH')
+        )
+
+        # if BOTH is not set, both FCST or OBS must be set
+        fcst_input_list = c_dict.get('FCST_INPUT_FILE_LIST', '')
+        obs_input_list = c_dict.get('OBS_INPUT_FILE_LIST', '')
+        if fcst_input_list and obs_input_list:
+            c_dict['EXPLICIT_FILE_LIST'] = True
+            return
+
+        if not fcst_input_list and not obs_input_list:
+            if (not c_dict['FCST_INPUT_TEMPLATE'] or
+                    not c_dict['OBS_INPUT_TEMPLATE']):
+                self.log_error(
+                    "Must either set "
+                    "BOTH_SERIES_ANALYSIS_INPUT_TEMPLATE or both "
+                    "FCST_SERIES_ANALYSIS_INPUT_TEMPLATE and "
+                    "OBS_SERIES_ANALYSIS_INPUT_TEMPLATE to run "
+                    "SeriesAnalysis wrapper."
+                )
+
+            # set *_WINDOW_* variables for FCST and OBS
+            self.handle_file_window_variables(c_dict)
+            return
+
+        # if fcst input list or obs input list are not set
+        self.log_error('Cannot set '
+                       'FCST_SERIES_ANALYSIS_INPUT_FILE_LIST '
+                       'without OBS_SERIES_ANALYSIS_INPUT_FILE_LIST '
+                       'and vice versa')
+
     def _plot_data_plane_init(self):
         """! Set values to allow successful initialization of
               PlotDataPlane wrapper
@@ -409,7 +397,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
     def run_once_per_lead(self, custom):
         """! Run once per forecast lead
 
-             @param value of current CUSTOM_LOOP_LIST iteration
+             @param custom value of current CUSTOM_LOOP_LIST iteration
              @returns True if all runs were successful, False otherwise
         """
         self.logger.debug("Running once for forecast lead time")
@@ -501,11 +489,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                             lead_group)
             )
             if not fcst_path or not obs_path:
-                msg = 'No ASCII file lists were created. Skipping.'
-                if self.c_dict['ALLOW_MISSING_INPUTS']:
-                    self.logger.warning(msg)
-                else:
-                    self.log_error(msg)
+                self._log_allow_missing('No ASCII file lists were created. Skipping.')
                 continue
 
             # Build up the arguments to and then run the MET tool series_analysis.
@@ -662,52 +646,9 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         # if file list are explicitly specified,
         # return the file list file paths
         if self.c_dict.get('EXPLICIT_FILE_LIST', False):
-            # set forecast lead to last lead in list to set in output filename
-            if leads:
-                time_info['lead'] = leads[-1]
-
-            if self.c_dict['USING_BOTH']:
-                both_path = do_string_sub(self.c_dict['BOTH_INPUT_FILE_LIST'],
-                                          **time_info)
-                self.logger.debug(f"Explicit BOTH file list file: {both_path}")
-                if not os.path.exists(both_path):
-                    msg = f'Could not find file: {both_path}'
-                    if self.c_dict['ALLOW_MISSING_INPUTS']:
-                        self.logger.warning(msg)
-                    else:
-                        self.log_error(msg)
-                    return None, None
-
-                return both_path, both_path
-
-            fcst_path = do_string_sub(self.c_dict['FCST_INPUT_FILE_LIST'],
-                                      **time_info)
-            self.logger.debug(f"Explicit FCST file list file: {fcst_path}")
-            if not os.path.exists(fcst_path):
-                msg = f'Could not find forecast file: {fcst_path}'
-                if self.c_dict['ALLOW_MISSING_INPUTS']:
-                    self.logger.warning(msg)
-                else:
-                    self.log_error(msg)
-
-                fcst_path = None
-
-            obs_path = do_string_sub(self.c_dict['OBS_INPUT_FILE_LIST'],
-                                     **time_info)
-            self.logger.debug(f"Explicit OBS file list file: {obs_path}")
-            if not os.path.exists(obs_path):
-                msg = f'Could not find observation file: {obs_path}'
-                if self.c_dict['ALLOW_MISSING_INPUTS']:
-                    self.logger.warning(msg)
-                else:
-                    self.log_error(msg)
-
-                obs_path = None
-
-            return fcst_path, obs_path
+            return self._handle_explicit_file_list(leads, time_info)
 
         output_dir = self.get_output_dir(time_info, storm_id, label)
-
         list_file_dict = self.subset_input_files(time_info,
                                                  output_dir=output_dir,
                                                  leads=leads,
@@ -723,6 +664,43 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             return fcst_path, fcst_path
         obs_path = list_file_dict[obs_key]
         return fcst_path, obs_path
+
+    def _handle_explicit_file_list(self, leads, time_info):
+        # set forecast lead to last lead in list to set in output filename
+        if leads:
+            time_info['lead'] = leads[-1]
+
+        if self.c_dict['USING_BOTH']:
+            both_path = do_string_sub(self.c_dict.get('BOTH_INPUT_FILE_LIST', ''),
+                                      **time_info)
+            self.logger.debug(f"Explicit BOTH file list file: {both_path}")
+            if not os.path.exists(both_path):
+                self._log_allow_missing(f'Could not find file: {both_path}')
+                return None, None
+
+            return both_path, both_path
+
+        fcst_path = do_string_sub(self.c_dict.get('FCST_INPUT_FILE_LIST', ''),
+                                  **time_info)
+        self.logger.debug(f"Explicit FCST file list file: {fcst_path}")
+        if not os.path.exists(fcst_path):
+            self._log_allow_missing(f'Could not find forecast file: {fcst_path}')
+            fcst_path = None
+
+        obs_path = do_string_sub(self.c_dict.get('OBS_INPUT_FILE_LIST', ''),
+                                 **time_info)
+        self.logger.debug(f"Explicit OBS file list file: {obs_path}")
+        if not os.path.exists(obs_path):
+            self._log_allow_missing(f'Could not find observation file: {obs_path}')
+            obs_path = None
+
+        return fcst_path, obs_path
+
+    def _log_allow_missing(self, msg):
+        if self.c_dict['ALLOW_MISSING_INPUTS']:
+            self.logger.warning(msg)
+        else:
+            self.log_error(msg)
 
     def _check_python_embedding(self):
         """! Check if any of the field names contain a Python embedding script.
@@ -750,8 +728,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
              @param time_info dictionary containing time information for
              current run
              @param storm_id storm ID to process
-             @param label label defined for forecast lead groups to identify
-              them
+             @param label defined for forecast lead groups to identify them
              @returns path to output directory with filename templates
               substituted with the information for the current run
         """
@@ -780,11 +757,11 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         """! Build up the -obs, -fcst, -out necessary for running the
              series_analysis MET tool, then invoke series_analysis.
 
-             @param time_info dictionary containing time information for
-             current run
-             @param storm_id storm ID to process
-             @returns True if all runs succeeded, False if there was a problem
-             with any of the runs
+         @param time_info dictionary containing time information for current run
+         @param fcst_path path to forecast file
+         @param obs_path path to observation file
+         @returns True if all runs succeeded, False if there was a problem
+         with any of the runs
         """
         success = True
 
@@ -836,12 +813,19 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         """
         # add input data format if set
         if self.c_dict['PAIRED']:
-            self.args.append(" -paired")
+            self.args.append("-paired")
+
+        # add -aggr argument if set
+        if self.c_dict.get('AGGR_INPUT_TEMPLATE'):
+            template = os.path.join(self.c_dict['AGGR_INPUT_DIR'],
+                                    self.c_dict['AGGR_INPUT_TEMPLATE'])
+            filepath = do_string_sub(template, **time_info)
+            self.args.append(f"-aggr {filepath}")
 
         # add config file - passing through do_string_sub
         # to get custom string if set
         config_file = do_string_sub(self.c_dict['CONFIG_FILE'], **time_info)
-        self.args.append(f" -config {config_file}")
+        self.args.append(f"-config {config_file}")
 
     def get_command(self):
         """! Build command to run
@@ -860,7 +844,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         cmd += f' -out {self.get_output_path()}'
 
         # add arguments
-        cmd += ''.join(self.args)
+        if self.args:
+            cmd += ' ' + ' '.join(self.args)
 
         # add verbosity
         cmd += ' -v ' + self.c_dict['VERBOSITY']
@@ -1006,15 +991,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         beg = None
         end = None
         for filepath in files_of_interest:
-            filepath = filepath.strip()
-            found = False
-            for template in templates:
-                file_time_info = parse_template(template, filepath, self.logger)
-                if file_time_info:
-                    found = True
-                    break
-
-            if not found:
+            file_time_info = self._get_time_from_templates(templates, filepath)
+            if file_time_info is None:
                 continue
 
             lead = ti_get_seconds_from_lead(file_time_info.get('lead'),
@@ -1030,6 +1008,14 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             return None, None, None
 
         return num, beg, end
+
+    def _get_time_from_templates(self, templates, filepath):
+        filepath = filepath.strip()
+        for template in templates:
+            file_time_info = parse_template(template, filepath, self.logger)
+            if file_time_info:
+                return file_time_info
+        return None
 
     @staticmethod
     def _get_netcdf_min_max(filepath, variable_name):
@@ -1165,6 +1151,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         for file_name in file_list:
             found = False
+            file_time_info = None
             for template in templates:
                 file_time_info = parse_template(template, file_name)
                 if file_time_info:
