@@ -126,6 +126,7 @@
 
 import logging
 import metplus.produtil.fileop
+import metplus.produtil.prog
 
 ##@var __all__
 # An empty list that indicates no symbols are exported by "from
@@ -315,7 +316,7 @@ def get_mpi(mpi_name=NO_NAME,force=False,logger=None,**kwargs):
     @raise NotImplementedError if the MPI implementation is unknown,
     or if the implementation is unavailble on this machine, and
     force=False"""
-
+    import metplus.produtil.mpi_impl.no_mpi as no_mpi
     if logger is None:
         logger=logging.getLogger('mpi_impl')
 
@@ -351,8 +352,8 @@ def get_mpi(mpi_name=NO_NAME,force=False,logger=None,**kwargs):
             result=detect(
                 force=force,logger=logger,**kwargs)
         except (Exception,
-                produtil.fileop.FileOpError,
-                produtil.prog.ExitStatusException):
+                metplus.produtil.fileop.FileOpError,
+                metplus.produtil.prog.ExitStatusException):
             # Ignore exceptions related to an inability to detect the
             # MPI implementation.  We assume the issue has already
             # been logged, and we move on to the next implementation's
