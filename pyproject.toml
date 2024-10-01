@@ -25,15 +25,15 @@ classifiers = [
 [project.urls]
 Homepage = "https://github.com/dtcenter/METplus"
 
-#[project.scripts]
-#run_metplus = "ush.run_metplus:cli_main"
+[project.scripts]
+run_metplus = "metplus.scripts.run_metplus:cli_main"
 
 [tool.setuptools.packages]
-find = {include = ["metplus*"]}
+find = {include = ["metplus*"], exclude = ["parm"]}
 
 [tool.setuptools.package-data]
 metplus = [
-  "VERSION", "RELEASE_DATE", "PYTHON_VERSION", "PYTHON_VERSION_MIN",
+  "VERSION", "RELEASE_DATE", "PYTHON_VERSION", "PYTHON_VERSION_MIN", "parm/**"
 ]
 
 [tool.setuptools.exclude-package-data]

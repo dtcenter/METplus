@@ -62,7 +62,7 @@ PARM_DIR = 'parm'
 
 # set parm base to METPLUS_BASE/parm unless METPLUS_PARM_BASE env var is set
 PARM_BASE = os.environ.get('METPLUS_PARM_BASE',
-                           os.path.join(METPLUS_BASE, PARM_DIR))
+                           os.path.join(METPLUS_BASE, 'metplus', PARM_DIR))
 
 # name of directory under PARM_DIR that contains defaults
 METPLUS_CONFIG_DIR = 'metplus_config'
