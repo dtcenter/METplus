@@ -11,7 +11,6 @@ Output Files: N/A
 
 import os
 import re
-import sys
 import logging
 from datetime import datetime, timezone
 import time
@@ -20,7 +19,7 @@ from configparser import ConfigParser, NoOptionError
 from pathlib import Path
 import uuid
 
-from produtil.config import ProdConfig
+from metplus.produtil.config import ProdConfig
 
 from .constants import RUNTIME_CONFS, MISSING_DATA_VALUE
 from .string_template_substitution import do_string_sub

@@ -6,9 +6,8 @@
 # produtil.run.mpiserial functions, providing the implementation
 # needed to run when MPI is unavailable.
 
-import os, logging
-import produtil.prog,produtil.pipeline
-from .mpi_impl_base import MPIDisabled,ImplementationBase
+import logging
+from .mpi_impl_base import ImplementationBase
 module_logger=logging.getLogger('lsf_cray_intel')
 
 class Implementation(ImplementationBase):

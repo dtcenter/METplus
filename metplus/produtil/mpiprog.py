@@ -44,12 +44,9 @@ See the produtil.run module for full documentation."""
 # Ensure nothing is loaded by "from produtil.mpiprog import *"
 __all__=[]
 
-import sys
-
 import io
 import logging
-import produtil.prog
-from produtil.prog import ProgSyntaxError, shbackslash
+from metplus.produtil.prog import ProgSyntaxError, shbackslash, Runner, ImmutableRunner
 
 class MPIProgSyntaxError(ProgSyntaxError): 
     """!Base class of syntax errors in MPI program specifications"""
@@ -831,7 +828,7 @@ class MPIRank(MPIRanksBase):
             self._localopts=list(arg._localopts)
             self._turbomode=arg.turbomode
             self._ranks_per_node=arg.ranks_per_node
-        elif isinstance(arg,produtil.prog.Runner):
+        elif isinstance(arg,Runner):
             if arg.isplainexe():
                 self._args=[x for x in arg.args()]
             else:
@@ -871,7 +868,7 @@ class MPIRank(MPIRanksBase):
     def to_shell(self):
         """!Return a POSIX sh representation of this MPI rank, if
         possible."""
-        return ' '.join([produtil.prog.shbackslash(x) for x in self._args])
+        return ' '.join([shbackslash(x) for x in self._args])
     def __getitem__(self,args):
         """!Adds arguments to this MPI rank's program."""
         c=self.copy()
@@ -995,8 +992,8 @@ class MPISerial(MPIRank):
         self._ranks_per_node=0
     def make_runners_immutable(self):
         """!Creates a version of self with a produtil.prog.ImmutableRunner child."""
-        if not isinstance(self._runner,produtil.prog.ImmutableRunner):
-            return MPISerial(produtil.prog.ImmutableRunner(self._runner),self._logger)
+        if not isinstance(self._runner,ImmutableRunner):
+            return MPISerial(ImmutableRunner(self._runner),self._logger)
         else:
             return self
     def copy(self):

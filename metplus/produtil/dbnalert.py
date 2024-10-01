@@ -6,10 +6,9 @@ if run with dbn alerts disabled."""
 __all__=["DBNAlert"]
 
 import logging, os
-import produtil.run
 
-from produtil.prog import Runner
-from produtil.run import checkrun, batchexe, alias, run
+from metplus.produtil.prog import Runner
+from metplus.produtil.run import batchexe, alias, run
 
 # Globals:
 

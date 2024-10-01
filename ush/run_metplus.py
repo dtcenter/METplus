@@ -25,7 +25,7 @@ import traceback
 # add metplus directory to path so the wrappers and utilities can be found
 sys.path.insert(0, abspath(join(dirname(realpath(__file__)), pardir)))
 
-from produtil.setup import setup as produtil_setup
+from metplus.produtil.setup import setup as produtil_setup
 
 from metplus.util import pre_run_setup, run_metplus, post_run_cleanup
 from metplus import __version__ as metplus_version
