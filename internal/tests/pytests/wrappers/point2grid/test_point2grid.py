@@ -115,9 +115,6 @@ def test_point2grid_missing_inputs(metplus_config, get_test_data_dir,
           },
          {'METPLUS_VAR_NAME_MAP_LIST': 'var_name_map = [{key = "13";val = "LUCKY";},{key = "3";val = "MAGIC";}];'}, []),
 
-        ({'POINT2GRID_QUALITY_MARK_THRESH': '3', },
-         {'METPLUS_QUALITY_MARK_THRESH': 'quality_mark_thresh = 3;'}, []),
-
         ({'POINT2GRID_OBS_QUALITY_INC': '0, 1, 2', },
          {'METPLUS_OBS_QUALITY_INC': 'obs_quality_inc = ["0", "1", "2"];'}, []),
 

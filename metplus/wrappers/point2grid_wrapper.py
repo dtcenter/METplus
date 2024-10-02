@@ -33,7 +33,6 @@ class Point2GridWrapper(ReformatPointWrapper):
         'METPLUS_OBS_WINDOW_DICT',
         'METPLUS_MESSAGE_TYPE',
         'METPLUS_VAR_NAME_MAP_LIST',
-        'METPLUS_QUALITY_MARK_THRESH',
         'METPLUS_OBS_QUALITY_INC',
         'METPLUS_OBS_QUALITY_EXC',
     ]
@@ -125,7 +124,6 @@ class Point2GridWrapper(ReformatPointWrapper):
                                                     'val': 'string'}):
             self.isOK = False
 
-        self.add_met_config(name='quality_mark_thresh', data_type='int')
         self.add_met_config(name='obs_quality_inc', data_type='list',
                             metplus_configs=['POINT2GRID_OBS_QUALITY_INC',
                                              'POINT2GRID_OBS_QUALITY_INCLUDE',

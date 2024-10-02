@@ -6881,7 +6881,6 @@ METplus Configuration
 | :term:`POINT2GRID_MESSAGE_TYPE`
 | :term:`POINT2GRID_VAR_NAME_MAP<n>_KEY`
 | :term:`POINT2GRID_VAR_NAME_MAP<n>_VAL`
-| :term:`POINT2GRID_QUALITY_MARK_THRESH`
 | :term:`POINT2GRID_OBS_QUALITY_INC`
 | :term:`POINT2GRID_OBS_QUALITY_EXC`
 | :term:`POINT2GRID_TIME_OFFSET_WARNING`
@@ -6968,18 +6967,6 @@ ${METPLUS_VAR_NAME_MAP_LIST}
      - var_name_map.key
    * - :term:`POINT2GRID_VAR_NAME_MAP<n>_VAL`
      - var_name_map.val
-
-${METPLUS_QUALITY_MARK_THRESH}
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`POINT2GRID_QUALITY_MARK_THRESH`
-     - quality_mark_thresh
 
 ${METPLUS_OBS_QUALITY_INC}
 ^^^^^^^^^^^^^^^^^^^^^^^^^^

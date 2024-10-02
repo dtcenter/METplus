@@ -11659,11 +11659,6 @@ METplus Configuration Glossary
 
      | *Used by:* Point2Grid
 
-   POINT2GRID_QUALITY_MARK_THRESH
-     Specify the value for 'quality_mark_thresh' in the MET configuration file for Point2Grid.
-
-     | *Used by:* Point2Grid
-
    POINT2GRID_OBS_QUALITY_INC
      Specify the value for 'obs_quality_inc' in the MET configuration file for Point2Grid.
 
