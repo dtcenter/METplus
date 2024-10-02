@@ -290,7 +290,12 @@ METplus Configuration Glossary
      | *Used by:* Point2Grid
 
    POINT2GRID_QC_FLAGS
-     .. warning:: **DEPRECATED:** Please use :term:`POINT2GRID_OBS_QUALITY_INC`.
+     .. warning:: **DEPRECATED:** Please use :term:`POINT2GRID_GOES_QC_FLAGS`.
+
+     | *Used by:* Point2Grid
+
+   POINT2GRID_GOES_QC_FLAGS
+     Sets the value for the -goes_qc command line argument for Point2Grid.
 
      | *Used by:* Point2Grid
 
