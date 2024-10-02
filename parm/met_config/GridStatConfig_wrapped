@@ -60,10 +60,14 @@ rank_corr_flag   = FALSE;
 fcst = {
   ${METPLUS_FCST_FILE_TYPE}
   ${METPLUS_FCST_FIELD}
+  ${METPLUS_FCST_CLIMO_MEAN_DICT}
+  ${METPLUS_FCST_CLIMO_STDEV_DICT}
 }
 obs = {
   ${METPLUS_OBS_FILE_TYPE}
   ${METPLUS_OBS_FIELD}
+  ${METPLUS_OBS_CLIMO_MEAN_DICT}
+  ${METPLUS_OBS_CLIMO_STDEV_DICT}
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -366,8 +366,11 @@ def test_mode_missing_inputs(metplus_config, get_test_data_dir,
         ({'MODE_MASK_MISSING_FLAG': 'BOTH', },
          {'METPLUS_MASK_MISSING_FLAG': 'mask_missing_flag = BOTH;'}),
 
-        ({'MODE_MULTIVAR_INTENSITY_FLAG': 'false, true,true', },
-         {'METPLUS_MULTIVAR_INTENSITY_FLAG': 'multivar_intensity_flag = [FALSE, TRUE, TRUE];'}),
+        ({'MODE_MULTIVAR_INTENSITY_COMPARE_FCST': '2, 3', },
+         {'METPLUS_MULTIVAR_INTENSITY_COMPARE_FCST': 'multivar_intensity_compare_fcst = [2, 3];'}),
+
+        ({'MODE_MULTIVAR_INTENSITY_COMPARE_OBS': '1,3', },
+         {'METPLUS_MULTIVAR_INTENSITY_COMPARE_OBS': 'multivar_intensity_compare_obs = [1, 3];'}),
 
         ({'MODE_FCST_MULTIVAR_NAME': 'Snow', },
          {'METPLUS_FCST_MULTIVAR_NAME': 'multivar_name = "Snow";'}),
@@ -390,7 +393,8 @@ def test_mode_missing_inputs(metplus_config, get_test_data_dir,
     ]
 )
 @pytest.mark.wrapper_a
-def test_mode_single_field(metplus_config, config_overrides, env_var_values):
+def test_mode_single_field(metplus_config, config_overrides, env_var_values,
+                           compare_command_and_env_vars):
     config = metplus_config
 
     # set config variables needed to run
@@ -418,7 +422,6 @@ def test_mode_single_field(metplus_config, config_overrides, env_var_values):
                      ]
 
     all_cmds = wrapper.run_all_times()
-    print(f"ALL COMMANDS: {all_cmds}")
 
     # set default values in expected output list
     # only if they are not set and if MODE_GRID_RES is set
@@ -442,28 +445,12 @@ def test_mode_single_field(metplus_config, config_overrides, env_var_values):
                     f'{met_name} = {default_val};'
                 )
 
-    missing_env = [item for item in env_var_values
-                   if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
-    env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
-
-    for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
-        # ensure commands are generated as expected
-        assert cmd == expected_cmd
-
-        # check that environment variables were set properly
-        # including deprecated env vars (not in wrapper env var keys)
-        for env_var_key in env_var_keys:
-            print(f"ENV VAR: {env_var_key}")
-            match = next((item for item in env_vars if
-                          item.startswith(env_var_key)), None)
-            assert match is not None
-            value = match.split('=', 1)[1]
-            if env_var_key == 'METPLUS_FCST_FIELD':
-                assert value == fcst_fmt
-            elif env_var_key == 'METPLUS_OBS_FIELD':
-                assert value == obs_fmt
-            else:
-                assert env_var_values.get(env_var_key, '') == value
+    special_values = {
+        'METPLUS_FCST_FIELD': fcst_fmt,
+        'METPLUS_OBS_FIELD': obs_fmt,
+    }
+    compare_command_and_env_vars(all_cmds, expected_cmds, env_var_values,
+                                 wrapper, special_values)
 
 
 @pytest.mark.parametrize(

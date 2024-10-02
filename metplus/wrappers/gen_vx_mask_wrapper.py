@@ -12,9 +12,9 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import getlist, get_lead_sequence, skip_time, ti_calculate, mkdir_p
-from . import LoopTimesWrapper
+from ..util import getlist
 from ..util import do_string_sub, remove_quotes
+from . import LoopTimesWrapper
 
 '''!@namespace GenVxMaskWrapper
 @brief Wraps the GenVxMask tool to reformat ascii format to NetCDF
@@ -189,7 +189,7 @@ class GenVxMaskWrapper(LoopTimesWrapper):
 
             # return if file was not found
             if not input_path:
-                return False
+                return None
 
         # if temp file is set, use that as input
         else:
@@ -198,10 +198,10 @@ class GenVxMaskWrapper(LoopTimesWrapper):
         # find mask file, using MASK_INPUT_TEMPLATE
         mask_file = self.find_data(time_info, data_type='MASK')
         if not mask_file:
-            return False
+            return None
 
         # add input and mask file to input file list
         self.infiles.append(f'"{remove_quotes(input_path)}"')
         self.infiles.append(mask_file)
 
-        return True
+        return time_info

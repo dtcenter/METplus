@@ -145,6 +145,10 @@ def test_preprocess_file_stage(metplus_config, filename, ext):
         ('/some/path/PYTHON_NUMPY', None, False, 'PYTHON_NUMPY'),
         ('/some/path/PYTHON_XARRAY', None, False, 'PYTHON_XARRAY'),
         ('/some/path/PYTHON_PANDAS', None, False, 'PYTHON_PANDAS'),
+        # python embedding command
+        ('/some/path/pyscript.py /some/path/input_file', 'PYTHON', False, '"/some/path/pyscript.py /some/path/input_file"'),
+        ('/some/path/pyscript.py /some/path/input_file', None, False, '"/some/path/pyscript.py /some/path/input_file"'),
+        ('PYTHON_NUMPY=scripts/python/examples/read_ascii_point.py data/sample_obs/ascii/sample_ascii_obs.txt', None, False, '"PYTHON_NUMPY=scripts/python/examples/read_ascii_point.py data/sample_obs/ascii/sample_ascii_obs.txt"'),
     ]
 )
 @pytest.mark.util
@@ -222,29 +226,6 @@ def test_write_list_to_file(tmp_path_factory):
         actual = f.read()
         
     assert actual == '\n'.join(output_list) + '\n'
-
-
-@pytest.mark.util
-def test_prune_empty(tmp_path_factory):
-    prune_dir = tmp_path_factory.mktemp('prune')
-   
-    dir1 = prune_dir / 'empty_file_dir'
-    dir2 = prune_dir / 'not_empty_file_dir'
-    dir3 = prune_dir / 'empty_dir'
-    for d in [dir1, dir2, dir3]:
-        os.makedirs(d)
-    
-    # make two files, one empty one not.
-    open(os.path.join(dir1, 'empty.txt'), 'a').close()
-    file_with_content = os.path.join(dir2, 'not_empty.txt')
-    with open(file_with_content, 'w') as f:
-        f.write('Fee fi fo fum.')
-    
-    su.prune_empty(prune_dir, mock.Mock())
-    
-    assert not os.path.exists(dir1)
-    assert os.path.exists(file_with_content)
-    assert not os.path.exists(dir3)
 
 
 @pytest.mark.parametrize(

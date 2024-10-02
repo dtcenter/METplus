@@ -27,6 +27,7 @@ for init in inits:
 
 ugrid_config_file = '/some/path/UgridConfig_fake'
 
+
 def set_minimum_config_settings(config):
     # set config variables to prevent command from running and bypass check
     # if input files actually exist
@@ -667,6 +668,8 @@ def test_met_dictionary_in_var_options(metplus_config):
         ({'POINT_STAT_OBS_PERC_VALUE': '50', },
          {'METPLUS_OBS_PERC_VALUE': 'obs_perc_value = 50;'}),
         ({'POINT_STAT_UGRID_CONFIG_FILE': ugrid_config_file, }, {}),
+        ({'OBS_POINT_STAT_INPUT_TEMPLATE': '{valid?fmt=%Y%m%d%H}/obs_file,{valid?fmt=%Y%m%d%H}/obs_file2', }, {}),
+        ({'OBS_POINT_STAT_INPUT_TEMPLATE': '{valid?fmt=%Y%m%d%H}/obs_file,{valid?fmt=%Y%m%d%H}/obs_file2,{valid?fmt=%Y%m%d%H}/obs_file3', }, {}),
 
         ({'POINT_STAT_TIME_OFFSET_WARNING': 3},
          {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 3;'}),
@@ -674,11 +677,204 @@ def test_met_dictionary_in_var_options(metplus_config):
          {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 2;'}),
         ({'TIME_OFFSET_WARNING': 2, 'POINT_STAT_TIME_OFFSET_WARNING': 4},
          {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 4;'}),
+
+        # fcst climo_mean
+        ({'POINT_STAT_FCST_CLIMO_MEAN_FILE_NAME': '/some/climo_mean/file.txt', },
+         {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {file_name = ["/some/climo_mean/file.txt"];}'}),
+        ({'POINT_STAT_FCST_CLIMO_MEAN_FIELD': '{name="UGRD"; level=["P850","P500","P250"];}', },
+         {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {field = [{name="UGRD"; level=["P850","P500","P250"];}];}'}),
+        ({'POINT_STAT_FCST_CLIMO_MEAN_VAR1_NAME': 'UGRD', 'POINT_STAT_FCST_CLIMO_MEAN_VAR1_LEVELS':'P850,P500,P250', },
+         {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {field = [{ name="UGRD"; level="P850"; }, { name="UGRD"; level="P500"; }, { name="UGRD"; level="P250"; }];}'}),
+        ({'POINT_STAT_FCST_CLIMO_MEAN_VAR1_NAME': 'UGRD', 'POINT_STAT_FCST_CLIMO_MEAN_VAR1_LEVELS': 'P850',
+          'POINT_STAT_FCST_CLIMO_MEAN_VAR2_NAME': 'VGRD', 'POINT_STAT_FCST_CLIMO_MEAN_VAR2_LEVELS': 'P500',},
+         {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {field = [{ name="UGRD"; level="P850"; }, { name="VGRD"; level="P500"; }];}'}),
+        ({'POINT_STAT_FCST_CLIMO_MEAN_REGRID_METHOD': 'NEAREST', },
+         {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {method = NEAREST;}}'}),
+        ({'POINT_STAT_FCST_CLIMO_MEAN_REGRID_WIDTH': '1', },
+         {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {width = 1;}}'}),
+        ({'POINT_STAT_FCST_CLIMO_MEAN_REGRID_VLD_THRESH': '0.5', },
+         {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {vld_thresh = 0.5;}}'}),
+        ({'POINT_STAT_FCST_CLIMO_MEAN_REGRID_SHAPE': 'SQUARE', },
+         {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {shape = SQUARE;}}'}),
+        ({'POINT_STAT_FCST_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST', },
+         {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {time_interp_method = NEAREST;}'}),
+        ({'POINT_STAT_FCST_CLIMO_MEAN_MATCH_MONTH': 'True', },
+         {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {match_month = TRUE;}'}),
+        ({'POINT_STAT_FCST_CLIMO_MEAN_DAY_INTERVAL': '30', },
+         {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {day_interval = 30;}'}),
+        ({'POINT_STAT_FCST_CLIMO_MEAN_DAY_INTERVAL': 'NA', },
+         {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {day_interval = NA;}'}),
+        ({'POINT_STAT_FCST_CLIMO_MEAN_HOUR_INTERVAL': '12', },
+         {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {hour_interval = 12;}'}),
+        ({'POINT_STAT_FCST_CLIMO_MEAN_HOUR_INTERVAL': 'NA', },
+         {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {hour_interval = NA;}'}),
+        ({'POINT_STAT_FCST_CLIMO_MEAN_FILE_NAME': '/some/climo_mean/file.txt',
+          'POINT_STAT_FCST_CLIMO_MEAN_FIELD': '{name="CLM_NAME"; level="(0,0,*,*)";}',
+          'POINT_STAT_FCST_CLIMO_MEAN_REGRID_METHOD': 'NEAREST',
+          'POINT_STAT_FCST_CLIMO_MEAN_REGRID_WIDTH': '1',
+          'POINT_STAT_FCST_CLIMO_MEAN_REGRID_VLD_THRESH': '0.5',
+          'POINT_STAT_FCST_CLIMO_MEAN_REGRID_SHAPE': 'SQUARE',
+          'POINT_STAT_FCST_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST',
+          'POINT_STAT_FCST_CLIMO_MEAN_MATCH_MONTH': 'True',
+          'POINT_STAT_FCST_CLIMO_MEAN_DAY_INTERVAL': '30',
+          'POINT_STAT_FCST_CLIMO_MEAN_HOUR_INTERVAL': '12', },
+         {'METPLUS_FCST_CLIMO_MEAN_DICT': ('climo_mean = {file_name = '
+                                           '["/some/climo_mean/file.txt"];'
+                                           'field = [{name="CLM_NAME"; level="(0,0,*,*)";}];'
+                                           'regrid = {method = NEAREST;width = 1;'
+                                           'vld_thresh = 0.5;shape = SQUARE;}'
+                                           'time_interp_method = NEAREST;'
+                                           'match_month = TRUE;day_interval = 30;'
+                                           'hour_interval = 12;}')}),
+        # fcst climo_stdev
+        ({'POINT_STAT_FCST_CLIMO_STDEV_FILE_NAME': '/some/climo_stdev/file.txt', },
+         {'METPLUS_FCST_CLIMO_STDEV_DICT': 'climo_stdev = {file_name = ["/some/climo_stdev/file.txt"];}'}),
+        ({'POINT_STAT_FCST_CLIMO_STDEV_FIELD': '{name="UGRD"; level=["P850","P500","P250"];}', },
+         {'METPLUS_FCST_CLIMO_STDEV_DICT': 'climo_stdev = {field = [{name="UGRD"; level=["P850","P500","P250"];}];}'}),
+        ({'POINT_STAT_FCST_CLIMO_STDEV_VAR1_NAME': 'UGRD', 'POINT_STAT_FCST_CLIMO_STDEV_VAR1_LEVELS':'P850,P500,P250', },
+         {'METPLUS_FCST_CLIMO_STDEV_DICT': 'climo_stdev = {field = [{ name="UGRD"; level="P850"; }, { name="UGRD"; level="P500"; }, { name="UGRD"; level="P250"; }];}'}),
+        ({'POINT_STAT_FCST_CLIMO_STDEV_VAR1_NAME': 'UGRD', 'POINT_STAT_FCST_CLIMO_STDEV_VAR1_LEVELS': 'P850',
+          'POINT_STAT_FCST_CLIMO_STDEV_VAR2_NAME': 'VGRD', 'POINT_STAT_FCST_CLIMO_STDEV_VAR2_LEVELS': 'P500',},
+         {'METPLUS_FCST_CLIMO_STDEV_DICT': 'climo_stdev = {field = [{ name="UGRD"; level="P850"; }, { name="VGRD"; level="P500"; }];}'}),
+        ({'POINT_STAT_FCST_CLIMO_STDEV_REGRID_METHOD': 'NEAREST', },
+         {'METPLUS_FCST_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {method = NEAREST;}}'}),
+        ({'POINT_STAT_FCST_CLIMO_STDEV_REGRID_WIDTH': '1', },
+         {'METPLUS_FCST_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {width = 1;}}'}),
+        ({'POINT_STAT_FCST_CLIMO_STDEV_REGRID_VLD_THRESH': '0.5', },
+         {'METPLUS_FCST_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {vld_thresh = 0.5;}}'}),
+        ({'POINT_STAT_FCST_CLIMO_STDEV_REGRID_SHAPE': 'SQUARE', },
+         {'METPLUS_FCST_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {shape = SQUARE;}}'}),
+        ({'POINT_STAT_FCST_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST', },
+         {'METPLUS_FCST_CLIMO_STDEV_DICT': 'climo_stdev = {time_interp_method = NEAREST;}'}),
+        ({'POINT_STAT_FCST_CLIMO_STDEV_MATCH_MONTH': 'True', },
+         {'METPLUS_FCST_CLIMO_STDEV_DICT': 'climo_stdev = {match_month = TRUE;}'}),
+        ({'POINT_STAT_FCST_CLIMO_STDEV_DAY_INTERVAL': '30', },
+         {'METPLUS_FCST_CLIMO_STDEV_DICT': 'climo_stdev = {day_interval = 30;}'}),
+        ({'POINT_STAT_FCST_CLIMO_STDEV_DAY_INTERVAL': 'NA', },
+         {'METPLUS_FCST_CLIMO_STDEV_DICT': 'climo_stdev = {day_interval = NA;}'}),
+        ({'POINT_STAT_FCST_CLIMO_STDEV_HOUR_INTERVAL': '12', },
+         {'METPLUS_FCST_CLIMO_STDEV_DICT': 'climo_stdev = {hour_interval = 12;}'}),
+        ({'POINT_STAT_FCST_CLIMO_STDEV_HOUR_INTERVAL': 'NA', },
+         {'METPLUS_FCST_CLIMO_STDEV_DICT': 'climo_stdev = {hour_interval = NA;}'}),
+        ({'POINT_STAT_FCST_CLIMO_STDEV_FILE_NAME': '/some/climo_stdev/file.txt',
+          'POINT_STAT_FCST_CLIMO_STDEV_FIELD': '{name="CLM_NAME"; level="(0,0,*,*)";}',
+          'POINT_STAT_FCST_CLIMO_STDEV_REGRID_METHOD': 'NEAREST',
+          'POINT_STAT_FCST_CLIMO_STDEV_REGRID_WIDTH': '1',
+          'POINT_STAT_FCST_CLIMO_STDEV_REGRID_VLD_THRESH': '0.5',
+          'POINT_STAT_FCST_CLIMO_STDEV_REGRID_SHAPE': 'SQUARE',
+          'POINT_STAT_FCST_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST',
+          'POINT_STAT_FCST_CLIMO_STDEV_MATCH_MONTH': 'True',
+          'POINT_STAT_FCST_CLIMO_STDEV_DAY_INTERVAL': '30',
+          'POINT_STAT_FCST_CLIMO_STDEV_HOUR_INTERVAL': '12', },
+         {'METPLUS_FCST_CLIMO_STDEV_DICT': ('climo_stdev = {file_name = '
+                                            '["/some/climo_stdev/file.txt"];'
+                                            'field = [{name="CLM_NAME"; level="(0,0,*,*)";}];'
+                                            'regrid = {method = NEAREST;width = 1;'
+                                            'vld_thresh = 0.5;shape = SQUARE;}'
+                                            'time_interp_method = NEAREST;'
+                                            'match_month = TRUE;day_interval = 30;'
+                                            'hour_interval = 12;}')}),
+        # obs climo_mean
+        ({'POINT_STAT_OBS_CLIMO_MEAN_FILE_NAME': '/some/climo_mean/file.txt', },
+         {'METPLUS_OBS_CLIMO_MEAN_DICT': 'climo_mean = {file_name = ["/some/climo_mean/file.txt"];}'}),
+        ({'POINT_STAT_OBS_CLIMO_MEAN_FIELD': '{name="UGRD"; level=["P850","P500","P250"];}', },
+         {'METPLUS_OBS_CLIMO_MEAN_DICT': 'climo_mean = {field = [{name="UGRD"; level=["P850","P500","P250"];}];}'}),
+        ({'POINT_STAT_OBS_CLIMO_MEAN_VAR1_NAME': 'UGRD', 'POINT_STAT_OBS_CLIMO_MEAN_VAR1_LEVELS':'P850,P500,P250', },
+         {'METPLUS_OBS_CLIMO_MEAN_DICT': 'climo_mean = {field = [{ name="UGRD"; level="P850"; }, { name="UGRD"; level="P500"; }, { name="UGRD"; level="P250"; }];}'}),
+        ({'POINT_STAT_OBS_CLIMO_MEAN_VAR1_NAME': 'UGRD', 'POINT_STAT_OBS_CLIMO_MEAN_VAR1_LEVELS': 'P850',
+          'POINT_STAT_OBS_CLIMO_MEAN_VAR2_NAME': 'VGRD', 'POINT_STAT_OBS_CLIMO_MEAN_VAR2_LEVELS': 'P500',},
+         {'METPLUS_OBS_CLIMO_MEAN_DICT': 'climo_mean = {field = [{ name="UGRD"; level="P850"; }, { name="VGRD"; level="P500"; }];}'}),
+        ({'POINT_STAT_OBS_CLIMO_MEAN_REGRID_METHOD': 'NEAREST', },
+         {'METPLUS_OBS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {method = NEAREST;}}'}),
+        ({'POINT_STAT_OBS_CLIMO_MEAN_REGRID_WIDTH': '1', },
+         {'METPLUS_OBS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {width = 1;}}'}),
+        ({'POINT_STAT_OBS_CLIMO_MEAN_REGRID_VLD_THRESH': '0.5', },
+         {'METPLUS_OBS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {vld_thresh = 0.5;}}'}),
+        ({'POINT_STAT_OBS_CLIMO_MEAN_REGRID_SHAPE': 'SQUARE', },
+         {'METPLUS_OBS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {shape = SQUARE;}}'}),
+        ({'POINT_STAT_OBS_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST', },
+         {'METPLUS_OBS_CLIMO_MEAN_DICT': 'climo_mean = {time_interp_method = NEAREST;}'}),
+        ({'POINT_STAT_OBS_CLIMO_MEAN_MATCH_MONTH': 'True', },
+         {'METPLUS_OBS_CLIMO_MEAN_DICT': 'climo_mean = {match_month = TRUE;}'}),
+        ({'POINT_STAT_OBS_CLIMO_MEAN_DAY_INTERVAL': '30', },
+         {'METPLUS_OBS_CLIMO_MEAN_DICT': 'climo_mean = {day_interval = 30;}'}),
+        ({'POINT_STAT_OBS_CLIMO_MEAN_DAY_INTERVAL': 'NA', },
+         {'METPLUS_OBS_CLIMO_MEAN_DICT': 'climo_mean = {day_interval = NA;}'}),
+        ({'POINT_STAT_OBS_CLIMO_MEAN_HOUR_INTERVAL': '12', },
+         {'METPLUS_OBS_CLIMO_MEAN_DICT': 'climo_mean = {hour_interval = 12;}'}),
+        ({'POINT_STAT_OBS_CLIMO_MEAN_HOUR_INTERVAL': 'NA', },
+         {'METPLUS_OBS_CLIMO_MEAN_DICT': 'climo_mean = {hour_interval = NA;}'}),
+        ({'POINT_STAT_OBS_CLIMO_MEAN_FILE_NAME': '/some/climo_mean/file.txt',
+          'POINT_STAT_OBS_CLIMO_MEAN_FIELD': '{name="CLM_NAME"; level="(0,0,*,*)";}',
+          'POINT_STAT_OBS_CLIMO_MEAN_REGRID_METHOD': 'NEAREST',
+          'POINT_STAT_OBS_CLIMO_MEAN_REGRID_WIDTH': '1',
+          'POINT_STAT_OBS_CLIMO_MEAN_REGRID_VLD_THRESH': '0.5',
+          'POINT_STAT_OBS_CLIMO_MEAN_REGRID_SHAPE': 'SQUARE',
+          'POINT_STAT_OBS_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST',
+          'POINT_STAT_OBS_CLIMO_MEAN_MATCH_MONTH': 'True',
+          'POINT_STAT_OBS_CLIMO_MEAN_DAY_INTERVAL': '30',
+          'POINT_STAT_OBS_CLIMO_MEAN_HOUR_INTERVAL': '12', },
+         {'METPLUS_OBS_CLIMO_MEAN_DICT': ('climo_mean = {file_name = '
+                                          '["/some/climo_mean/file.txt"];'
+                                          'field = [{name="CLM_NAME"; level="(0,0,*,*)";}];'
+                                          'regrid = {method = NEAREST;width = 1;'
+                                          'vld_thresh = 0.5;shape = SQUARE;}'
+                                          'time_interp_method = NEAREST;'
+                                          'match_month = TRUE;day_interval = 30;'
+                                          'hour_interval = 12;}')}),
+        # obs climo_stdev
+        ({'POINT_STAT_OBS_CLIMO_STDEV_FILE_NAME': '/some/climo_stdev/file.txt', },
+         {'METPLUS_OBS_CLIMO_STDEV_DICT': 'climo_stdev = {file_name = ["/some/climo_stdev/file.txt"];}'}),
+        ({'POINT_STAT_OBS_CLIMO_STDEV_FIELD': '{name="UGRD"; level=["P850","P500","P250"];}', },
+         {'METPLUS_OBS_CLIMO_STDEV_DICT': 'climo_stdev = {field = [{name="UGRD"; level=["P850","P500","P250"];}];}'}),
+        ({'POINT_STAT_OBS_CLIMO_STDEV_VAR1_NAME': 'UGRD', 'POINT_STAT_OBS_CLIMO_STDEV_VAR1_LEVELS':'P850,P500,P250', },
+         {'METPLUS_OBS_CLIMO_STDEV_DICT': 'climo_stdev = {field = [{ name="UGRD"; level="P850"; }, { name="UGRD"; level="P500"; }, { name="UGRD"; level="P250"; }];}'}),
+        ({'POINT_STAT_OBS_CLIMO_STDEV_VAR1_NAME': 'UGRD', 'POINT_STAT_OBS_CLIMO_STDEV_VAR1_LEVELS': 'P850',
+          'POINT_STAT_OBS_CLIMO_STDEV_VAR2_NAME': 'VGRD', 'POINT_STAT_OBS_CLIMO_STDEV_VAR2_LEVELS': 'P500',},
+         {'METPLUS_OBS_CLIMO_STDEV_DICT': 'climo_stdev = {field = [{ name="UGRD"; level="P850"; }, { name="VGRD"; level="P500"; }];}'}),
+        ({'POINT_STAT_OBS_CLIMO_STDEV_REGRID_METHOD': 'NEAREST', },
+         {'METPLUS_OBS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {method = NEAREST;}}'}),
+        ({'POINT_STAT_OBS_CLIMO_STDEV_REGRID_WIDTH': '1', },
+         {'METPLUS_OBS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {width = 1;}}'}),
+        ({'POINT_STAT_OBS_CLIMO_STDEV_REGRID_VLD_THRESH': '0.5', },
+         {'METPLUS_OBS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {vld_thresh = 0.5;}}'}),
+        ({'POINT_STAT_OBS_CLIMO_STDEV_REGRID_SHAPE': 'SQUARE', },
+         {'METPLUS_OBS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {shape = SQUARE;}}'}),
+        ({'POINT_STAT_OBS_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST', },
+         {'METPLUS_OBS_CLIMO_STDEV_DICT': 'climo_stdev = {time_interp_method = NEAREST;}'}),
+        ({'POINT_STAT_OBS_CLIMO_STDEV_MATCH_MONTH': 'True', },
+         {'METPLUS_OBS_CLIMO_STDEV_DICT': 'climo_stdev = {match_month = TRUE;}'}),
+        ({'POINT_STAT_OBS_CLIMO_STDEV_DAY_INTERVAL': '30', },
+         {'METPLUS_OBS_CLIMO_STDEV_DICT': 'climo_stdev = {day_interval = 30;}'}),
+        ({'POINT_STAT_OBS_CLIMO_STDEV_DAY_INTERVAL': 'NA', },
+         {'METPLUS_OBS_CLIMO_STDEV_DICT': 'climo_stdev = {day_interval = NA;}'}),
+        ({'POINT_STAT_OBS_CLIMO_STDEV_HOUR_INTERVAL': '12', },
+         {'METPLUS_OBS_CLIMO_STDEV_DICT': 'climo_stdev = {hour_interval = 12;}'}),
+        ({'POINT_STAT_OBS_CLIMO_STDEV_HOUR_INTERVAL': 'NA', },
+         {'METPLUS_OBS_CLIMO_STDEV_DICT': 'climo_stdev = {hour_interval = NA;}'}),
+        ({'POINT_STAT_OBS_CLIMO_STDEV_FILE_NAME': '/some/climo_stdev/file.txt',
+          'POINT_STAT_OBS_CLIMO_STDEV_FIELD': '{name="CLM_NAME"; level="(0,0,*,*)";}',
+          'POINT_STAT_OBS_CLIMO_STDEV_REGRID_METHOD': 'NEAREST',
+          'POINT_STAT_OBS_CLIMO_STDEV_REGRID_WIDTH': '1',
+          'POINT_STAT_OBS_CLIMO_STDEV_REGRID_VLD_THRESH': '0.5',
+          'POINT_STAT_OBS_CLIMO_STDEV_REGRID_SHAPE': 'SQUARE',
+          'POINT_STAT_OBS_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST',
+          'POINT_STAT_OBS_CLIMO_STDEV_MATCH_MONTH': 'True',
+          'POINT_STAT_OBS_CLIMO_STDEV_DAY_INTERVAL': '30',
+          'POINT_STAT_OBS_CLIMO_STDEV_HOUR_INTERVAL': '12', },
+         {'METPLUS_OBS_CLIMO_STDEV_DICT': ('climo_stdev = {file_name = '
+                                           '["/some/climo_stdev/file.txt"];'
+                                           'field = [{name="CLM_NAME"; level="(0,0,*,*)";}];'
+                                           'regrid = {method = NEAREST;width = 1;'
+                                           'vld_thresh = 0.5;shape = SQUARE;}'
+                                           'time_interp_method = NEAREST;'
+                                           'match_month = TRUE;day_interval = 30;'
+                                           'hour_interval = 12;}')}),
     ]
 )
 @pytest.mark.wrapper_a
 def test_point_stat_all_fields(metplus_config, config_overrides,
-                               env_var_values):
+                               env_var_values, compare_command_and_env_vars):
     level_no_quotes = '(*,*)'
     level_with_quotes = f'"{level_no_quotes}"'
 
@@ -751,6 +947,13 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
     # add extra command line arguments
     extra_args = [' '] * len(inits)
 
+    if 'OBS_POINT_STAT_INPUT_TEMPLATE' in config_overrides:
+        for index in range(0, len(inits)):
+            extra_args[index] += f'-point_obs {obs_dir}/{valids[index]}/obs_file2 '
+            # if obs_file3 is set, an additional point observation file is added
+            if 'obs_file3' in config_overrides['OBS_POINT_STAT_INPUT_TEMPLATE']:
+                extra_args[index] += f'-point_obs {obs_dir}/{valids[index]}/obs_file3 '
+
     if 'POINT_STAT_UGRID_CONFIG_FILE' in config_overrides:
         for index in range(0, len(inits)):
             extra_args[index] += f'-ugrid_config {ugrid_config_file} '
@@ -775,35 +978,16 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
             f"{config_file}{extra_args[index]}-outdir {out_dir}/{valids[index]}"
         )
 
-    all_cmds = wrapper.run_all_times()
-    print(f"ALL COMMANDS: {all_cmds}")
-
     fcst_fmt = f"field = [{','.join(fcst_fmts)}];"
     obs_fmt = f"field = [{','.join(obs_fmts)}];"
 
-    missing_env = [item for item in env_var_values
-                   if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
-    env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
-
-    assert len(all_cmds) == len(expected_cmds)
-    for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
-        # ensure commands are generated as expected
-        assert cmd == expected_cmd
-
-        # check that environment variables were set properly
-        # including deprecated env vars (not in wrapper env var keys)
-        for env_var_key in env_var_keys:
-            print(f"ENV VAR: {env_var_key}")
-            match = next((item for item in env_vars if
-                          item.startswith(env_var_key)), None)
-            assert match is not None
-            value = match.split('=', 1)[1]
-            if env_var_key == 'METPLUS_FCST_FIELD':
-                assert value == fcst_fmt
-            elif env_var_key == 'METPLUS_OBS_FIELD':
-                assert value == obs_fmt
-            else:
-                assert env_var_values.get(env_var_key, '') == value
+    all_cmds = wrapper.run_all_times()
+    special_values = {
+        'METPLUS_FCST_FIELD': fcst_fmt,
+        'METPLUS_OBS_FIELD': obs_fmt,
+    }
+    compare_command_and_env_vars(all_cmds, expected_cmds, env_var_values,
+                                 wrapper, special_values)
 
 
 @pytest.mark.wrapper_a

@@ -168,14 +168,8 @@ def set_run_type_info(config, run_type):
                   'echo init_{init?fmt=%Y%m%d%H%M%S}_'
                   'valid_{valid?fmt=%Y%m%d%H%M%S}_lead_{lead?fmt=%3H}.nc')},
          ['LEAD_GROUPS'],
-         ['echo init_*_valid_*_lead_000.nc',
-          'echo init_*_valid_*_lead_024.nc',
-          'echo init_*_valid_*_lead_048.nc',
-          'echo init_*_valid_*_lead_072.nc',
-          'echo init_*_valid_*_lead_096.nc',
-          'echo init_*_valid_*_lead_120.nc',
-          'echo init_*_valid_*_lead_144.nc',
-          'echo init_*_valid_*_lead_168.nc',
+         ['echo init_*_valid_*_lead_*.nc',
+          'echo init_*_valid_*_lead_*.nc',
           ]),
         # run all init/lead sequence - simple
         ({'USER_SCRIPT_RUNTIME_FREQ': 'RUN_ONCE_FOR_EACH',
