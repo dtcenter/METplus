@@ -305,7 +305,7 @@ the text content. These are already provided in the example template.
       will ultimately be used to run METplus, along with any changes made from the default 
       by the user’s configuration file. It concludes with an embedded link (and image) of 
       the default configuration file(s) for all MET tool(s) used. Any configuration file(s)
-      listed will be hidden be default using a dropdown option. The only changes that need 
+      listed will be hidden by default using a dropdown option. The only changes that need 
       to occur for this section is which MET configuration file(s) is(are) embedded and the name of 
       the dropdown.
       If no MET tool(s) are used, that should be noted here and replace the default language.
