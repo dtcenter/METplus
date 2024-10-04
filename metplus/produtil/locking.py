@@ -14,9 +14,9 @@ with produtil.locking.LockFile("some.lockfile"):
 ...  the file is now unlocked ...
 @endcode"""
 
-import fcntl, time, errno, os.path
-import produtil.retry as retry
-import produtil.fileop
+import fcntl, errno, os.path
+import metplus.produtil.retry as retry
+import metplus.produtil.fileop as fileop
 
 ##@var __all__
 # Symbols exported by "from produtil.locking import *"
@@ -110,7 +110,7 @@ class LockFile(object):
                                   'the process was exiting.')
         thedir=os.path.dirname(self._filename)
         if thedir:
-            produtil.fileop.makedirs(thedir)
+            fileop.makedirs(thedir)
         if self._fd is None:
             self._fd=open(self._filename,'wb')
         try:
