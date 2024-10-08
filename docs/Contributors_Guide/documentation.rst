@@ -1413,8 +1413,7 @@ Read the Docs supports multiple versions for each repository. For the METplus
 components, the "latest" version will point to the latest official (stable)
 release. The "develop" or "development" version will point to the most up to
 date development code. There may also be other previous versions of the
-software available in the version selector menu, which is accessible by
-clicking in the bottom left corner of the documentation pages.
+software available in the version selector menu.
 
 Automation rules allow project maintainers to automate actions on new branches
 and tags on repositories.  For the METplus components, documentation is
