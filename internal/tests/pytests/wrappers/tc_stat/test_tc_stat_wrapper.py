@@ -242,12 +242,6 @@ def test_tc_stat_handle_jobs(metplus_config, config_overrides, expected_dirs,
         ({'TC_STAT_OUTPUT_TEMPLATE': 'tc_stat.out.nc', },
          {}),
 
-        ({'TC_STAT_TIME_OFFSET_WARNING': 3},
-         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 3;'}),
-        ({'TIME_OFFSET_WARNING': 2},
-         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 2;'}),
-        ({'TIME_OFFSET_WARNING': 2, 'TC_STAT_TIME_OFFSET_WARNING': 4},
-         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 4;'}),
     ]
 )
 @pytest.mark.wrapper

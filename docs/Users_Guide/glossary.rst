@@ -11857,110 +11857,25 @@ METplus Configuration Glossary
 
      | *Used by:* MADIS2NC
 
-   MADIS2NC_TIME_OFFSET_WARNING
-     Specify the value for 'time_offset_warning' in the MET configuration file for MADIS2NC.
-
-     | *Used by:* MADIS2NC
-
-   ASCII2NC_TIME_OFFSET_WARNING
-     Specify the value for 'time_offset_warning' in the MET configuration file for ASCII2NC.
-
-     | *Used by:* ASCII2NC
-
-   ENSEMBLE_STAT_TIME_OFFSET_WARNING
-     Specify the value for 'time_offset_warning' in the MET configuration file for EnsembleStat.
-
-     | *Used by:* EnsembleStat
-
-   GEN_ENS_PROD_TIME_OFFSET_WARNING
-     Specify the value for 'time_offset_warning' in the MET configuration file for GenEnsProd.
-
-     | *Used by:* GenEnsProd
-
-   GRID_DIAG_TIME_OFFSET_WARNING
-     Specify the value for 'time_offset_warning' in the MET configuration file for GridDiag.
-
-     | *Used by:* GridDiag
-
    GRID_STAT_TIME_OFFSET_WARNING
      Specify the value for 'time_offset_warning' in the MET configuration file for GridStat.
 
      | *Used by:* GridStat
-
-   IODA2NC_TIME_OFFSET_WARNING
-     Specify the value for 'time_offset_warning' in the MET configuration file for IODA2NC.
-
-     | *Used by:* IODA2NC
 
    MODE_TIME_OFFSET_WARNING
      Specify the value for 'time_offset_warning' in the MET configuration file for MODE.
 
      | *Used by:* MODE
 
-   MTD_TIME_OFFSET_WARNING
-     Specify the value for 'time_offset_warning' in the MET configuration file for MTD.
-
-     | *Used by:* MTD
-
-   PB2NC_TIME_OFFSET_WARNING
-     Specify the value for 'time_offset_warning' in the MET configuration file for PB2NC.
-
-     | *Used by:* PB2NC
-
-   PLOT_POINT_OBS_TIME_OFFSET_WARNING
-     Specify the value for 'time_offset_warning' in the MET configuration file for PlotPointObs.
-
-     | *Used by:* PlotPointObs
-
-   POINT_STAT_TIME_OFFSET_WARNING
-     Specify the value for 'time_offset_warning' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   STAT_ANALYSIS_TIME_OFFSET_WARNING
-     Specify the value for 'time_offset_warning' in the MET configuration file for StatAnalysis.
-
-     | *Used by:* StatAnalysis
-
    SERIES_ANALYSIS_TIME_OFFSET_WARNING
      Specify the value for 'time_offset_warning' in the MET configuration file for SeriesAnalysis.
 
      | *Used by:* SeriesAnalysis
 
-   TC_DIAG_TIME_OFFSET_WARNING
-     Specify the value for 'time_offset_warning' in the MET configuration file for TCDiag.
-
-     | *Used by:* TCDiag
-
-   TC_GEN_TIME_OFFSET_WARNING
-     Specify the value for 'time_offset_warning' in the MET configuration file for TCGen.
-
-     | *Used by:* TCGen
-
-   TC_PAIRS_TIME_OFFSET_WARNING
-     Specify the value for 'time_offset_warning' in the MET configuration file for TCPairs.
-
-     | *Used by:* TCPairs
-
-   TC_RMW_TIME_OFFSET_WARNING
-     Specify the value for 'time_offset_warning' in the MET configuration file for TCRMW.
-
-     | *Used by:* TCRMW
-
-   TC_STAT_TIME_OFFSET_WARNING
-     Specify the value for 'time_offset_warning' in the MET configuration file for TCStat.
-
-     | *Used by:* TCStat
-
    WAVELET_STAT_TIME_OFFSET_WARNING
      Specify the value for 'time_offset_warning' in the MET configuration file for WaveletStat.
 
      | *Used by:* WaveletStat
-
-   POINT2GRID_TIME_OFFSET_WARNING
-     Specify the value for 'time_offset_warning' in the MET configuration file for Point2Grid.
-
-     | *Used by:* Point2Grid
 
    POINT2GRID_MET_CONFIG_OVERRIDES
      Override any variables in the MET configuration file that are not

@@ -123,8 +123,6 @@ def test_point2grid_missing_inputs(metplus_config, get_test_data_dir,
         ({'POINT2GRID_GOES_QC_FLAGS': '0,1'}, {}, ['-goes_qc 0,1']),
         ({'POINT2GRID_QC_FLAGS': '0,1'}, {}, ['-goes_qc 0,1']),
         ({'POINT2GRID_GOES_QC_FLAGS': '0,1', 'POINT2GRID_QC_FLAGS': '2,3'}, {}, ['-goes_qc 0,1']),
-        ({'POINT2GRID_TIME_OFFSET_WARNING': '5', },
-         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 5;'}, []),
 
     ]
 )
