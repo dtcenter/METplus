@@ -439,6 +439,54 @@ and
 `literal blocks <https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#literal-blocks>`_
 for more information.
 
+Substitution References
+-----------------------
+
+Substitution references are replacements in the text as defined in the :code:`rst_epilog` 
+in the **docs/conf.py** file.  For example, instead of hard coding the MET version in 
+the METplus documentation, a variable :code:`met_version` can be set to a value 
+e.g. 12.0.0) in the **docs/conf.py** file in the following way:
+
+.. code-block:: ini
+
+  met_version = 12.0.0
+
+Then, this variable is used in the :code:`rst_epilog` to set up the substitution, 
+along with other variables.  For example, in the **docs/conf.py** 
+file the following is defined:
+
+.. code-block:: ini
+
+  rst_epilog = f"""
+  .. |copyright|    replace:: {copyright}
+  .. |author_list|  replace:: {author_list}
+  .. |release_date| replace:: {release_date}
+  .. |release_year| replace:: {release_year}
+  .. |release_info| replace:: {release_info}
+  .. |python_version| replace:: {python_version}
+  .. |met_version| replace:: {met_version}
+  """
+
+The value 12.0.0 would then be replaced in the documentation wherever 
+:code:`|met_version|` is used in .rst files.  For example:
+
+.. code-block:: ini
+
+  MET version |met_version| or above 
+
+There are some 
+`reserved substitution variables <https://www.sphinx-doc.org/en/master/usage/restructuredtext/roles.html#substitutions>`_ 
+in Sphinx.  These variables are 
+code:`|release|`, :code`|version|`, :code`|today|`, and 
+code:`|translation progress|`. Reserved substitution variables do not 
+need to be added to rst_epilog, but other variables do.
+
+See 
+`Substitutions <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#substitutions>`_ 
+and 
+ `rst_epilog <https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-rst_epilog>`_ 
+for more information.
+
 Line Blocks
 -----------
 
