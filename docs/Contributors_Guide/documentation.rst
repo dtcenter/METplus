@@ -218,7 +218,7 @@ for more information.
 
 **What to bold:**
 
-  * Variables (e.g. **MET_INSTALL_DIR, INPUT_BASE, METCALCPY_HOME**, etc.)
+  * Environment Variables (e.g. **MET_INSTALL_DIR, INPUT_BASE, METCALCPY_HOME**, etc.)
   * Filenames (**line_defaults.yaml, contour_defaults.yaml, defaults.conf**, etc.)
 
 Italics
