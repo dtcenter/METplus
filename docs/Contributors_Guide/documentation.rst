@@ -395,6 +395,20 @@ resulting in the following displayed text:
 
 See `Overleaf's Guide - Matrices <https://www.overleaf.com/learn/latex/Matrices>`_ for more information.
 
+Literal Include
+---------------
+
+This feature is used often in the Release Guide.  But there are other places it can also be used.
+Using a literal include ensures only having to update the documentation in one place.
+It is also important to use a relative path (e.g. "../../") to get to the correct 
+directory of the file being referenced in the literal include.  This will keep the 
+file linking to the correct version and branch.  
+
+As an example, refer to the METplus User's Guide.  See this 
+`line <https://github.com/dtcenter/METplus/blob/46f705fc2c1b861e3aa6314d030eb9b4c382d0b3/docs/use_cases/met_tool_wrapper/PointStat/PointStat.py#L55>`_ 
+in the **PointStat.py** which uses RST's :code:`.. literalinclude::` 
+and renders on the web in what appears to be a code block in this 
+`section <https://metplus.readthedocs.io/en/develop/generated/met_tool_wrapper/PointStat/PointStat.html#metplus-configuration>`_.
 
 Literal Blocks
 --------------
