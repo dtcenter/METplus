@@ -484,7 +484,7 @@ need to be added to rst_epilog, but other variables do.
 See 
 `Substitutions <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#substitutions>`_ 
 and 
- `rst_epilog <https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-rst_epilog>`_ 
+`rst_epilog <https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-rst_epilog>`_ 
 for more information.
 
 Line Blocks
