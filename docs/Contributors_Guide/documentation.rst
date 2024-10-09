@@ -477,7 +477,7 @@ The value 12.0.0 would then be replaced in the documentation wherever
 There are some 
 `reserved substitution variables <https://www.sphinx-doc.org/en/master/usage/restructuredtext/roles.html#substitutions>`_ 
 in Sphinx.  These variables are 
-:code:`|release|`, :code`|version|`, :code:`|today|`, and 
+:code:`|release|`, :code:`|version|`, :code:`|today|`, and 
 :code:`|translation progress|`. Reserved substitution variables do not 
 need to be added to :code:`rst_epilog`, but other variables do.
 
