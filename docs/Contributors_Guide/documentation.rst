@@ -398,7 +398,7 @@ See `Overleaf's Guide - Matrices <https://www.overleaf.com/learn/latex/Matrices>
 Literal Include
 ---------------
 
-This feature is used often in the Release Guide.  But there are other places it can also be used.
+This feature is used often in the Release Guide, but there are other places it could be useful.
 Using a literal include ensures only having to update the documentation in one place.
 It is also important to use a relative path (e.g. "../../") to get to the correct 
 directory of the file being referenced in the literal include.  This will keep the 
