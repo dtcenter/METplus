@@ -147,7 +147,7 @@ Use Case Rules
   be used so that users can locate other use cases that exhibit common
   *functionality/data sources/tools/etc*. If a new keyword is used, it should
   be added to the Quick Search Guide (*docs/Users_Guide/quicksearch.rst*). More
-  information can be found :ref:`here <use_case_documentation>`.
+  information can be found :ref:`here <add_sphinx_documentation_file>`.
 - The use case should be run by someone other than the author to ensure that it
   runs smoothly outside of the development environment set up by the author.
 
@@ -203,17 +203,19 @@ category in the User's Guide > METplus Use Cases >
 `Model Applications <https://metplus.readthedocs.io/en/latest/generated/model_applications/index.html>`_
 page.
 
+.. _add_sphinx_documentation_file:
+
 Add Sphinx Documentation File
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In the corresponding documentation MET tool name directory
 (*docs*/*use_cases/met_tool_wrapper/<MET TOOL NAME>*) for a met_tool_wrappers
 use case OR category directory for a model_applications use case
-(*docs*/*use_cases/model_applications/<CATEGORY>*), users will need to a add 
+(*docs*/*use_cases/model_applications/<CATEGORY>*), users will need to add a
 Python Sphinx Documentation (.py) file with the same name as the METplus configuration file.
 
-The following is a discussion of the use case template and all of its sections.
-A link to an example template is available within the `METplus repository. <https://github.com/dtcenter/METplus>`_
+The following is a discussion of the use case documentation template and all of its sections.
+A link to an example template is available within the `METplus repository. <https://github.com/dtcenter/METplus/blob/feature_918_add_use_case_template/docs/use_cases/use_case_documentation_template.py>`_
 The example template should be used by users as a starting point, but will need to be completely 
 updated with the use case's information. The template applies to both met_tool_wrappers and model_applications use cases.
 When completing the template, users should read through each section and its description 
@@ -231,8 +233,9 @@ the text content. These are already provided in the example template.
     * This section begins with {PrimaryStatAnalysisToolName}: Brief (12 words or less) 
       and a unique description of use case, followed on the next line by ‘=’ characters 
       equal in length to the header (spaces included). Follow this with one line of no characters, 
-      then the path to the use case configuration file. This should be written in the format of 
-      model_applications/{use_case_category}/{use_case_configuration_file}. This section is preceded and followed by three ‘“‘ characters.
+      then the path to the use case configuration file. This should be written in the format of
+      model_applications/{use_case_category}/{use_case_configuration_file}. 
+      This section is preceded and followed by three ‘“‘ characters (i.e. `PEP 257 Docstring convention. <https://peps.python.org/pep-0257>`_
 
   * Internal Table of Contents
 
@@ -308,7 +311,7 @@ the text content. These are already provided in the example template.
       listed will be hidden by default using a dropdown option. The only changes that need 
       to occur for this section is which MET configuration file(s) is(are) embedded and the name of 
       the dropdown.
-      If no MET tool(s) are used, that should be noted here and replace the default language.
+      If no MET tool(s) are used, that should be noted here along with replacing the default language.
 
   * Python Embedding
     
@@ -357,9 +360,9 @@ the text content. These are already provided in the example template.
       is a copyable block which is created from the use of spacing and two ":" characters.
       This is done so that a browser's rendering of the Expected Output list will not 
       run off the page.  
-      If a netCDF is the output, it should be listed how many and what variable fields 
-      are inside the file. If there are a large number of variable fields within the file, 
-      a summary is sufficient.
+      If a netCDF is the output, the total number and name of each variable field 
+      inside the file should be listed. If there are a large number of variable fields 
+      within the file, a summary is sufficient.
       If an image is created, it should be used as the use case image and referenced in 
       this section as output.
       If no output is created, this section should explain why and what the user accomplished 
@@ -423,7 +426,7 @@ seen as beneficial to upcoming use cases.
 * Open the quicksearch.rst file
 * Determine a name for the keyword following the format of the existing keywords in the appropriate section.
 
-  * All keywords should be one word with the first letter of each word capitalized.
+  * All keywords should be one word with the first letter of each word capitalized (i.e. CamelCase).
   * All keywords should end with "UseCase"
   * Keywords in the "Use Cases by MET Tool" section should end with "ToolUseCase"
   * Keywords in the "Use Cases by Application" section should end with "AppUseCase"
