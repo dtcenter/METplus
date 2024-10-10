@@ -445,7 +445,7 @@ Substitution References
 Substitution references are replacements in the text as defined in the :code:`rst_epilog` 
 in the **docs/conf.py** file.  For example, instead of hard coding the MET version in 
 the METplus documentation, a variable :code:`met_version` can be set to a value 
-e.g. 12.0.0) in the **docs/conf.py** file in the following way:
+(e.g. 12.0.0) in the **docs/conf.py** file in the following way:
 
 .. code-block:: ini
 
