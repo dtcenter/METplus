@@ -200,12 +200,6 @@ def test_mtd_missing_inputs(metplus_config, get_test_data_dir,
         ({'MTD_OUTPUT_PREFIX': 'my_output_prefix'},
          {'METPLUS_OUTPUT_PREFIX': 'output_prefix = "my_output_prefix";'}),
 
-        ({'MTD_TIME_OFFSET_WARNING': 3},
-         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 3;'}),
-        ({'TIME_OFFSET_WARNING': 2},
-         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 2;'}),
-        ({'TIME_OFFSET_WARNING': 2, 'MTD_TIME_OFFSET_WARNING': 4},
-         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 4;'}),
     ]
 )
 @pytest.mark.wrapper
