@@ -400,7 +400,7 @@ Literal Include
 
 This feature is used often in the Release Guide, but there are other places it could be useful.
 Using a literal include ensures only having to update the documentation in one place.
-It is also important to use a relative path (e.g. "../../") to get to the correct 
+It is important to use a relative path (i.e. "../../") to get to the correct 
 directory of the file being referenced in the literal include.  This will keep the 
 file linking to the correct version and branch.  
 
