@@ -406,7 +406,7 @@ file linking to the correct version and branch.
 
 As an example, refer to the METplus User's Guide.  See this 
 `line <https://github.com/dtcenter/METplus/blob/46f705fc2c1b861e3aa6314d030eb9b4c382d0b3/docs/use_cases/met_tool_wrapper/PointStat/PointStat.py#L55>`_ 
-in the **PointStat.py** which uses RST's :code:`.. literalinclude::` 
+in the PointStat Wrapper Use Case documentation, which uses RST's :code:`.. literalinclude::` 
 and renders on the web in what appears to be a code block in this 
 `section <https://metplus.readthedocs.io/en/develop/generated/met_tool_wrapper/PointStat/PointStat.html#metplus-configuration>`_.
 
