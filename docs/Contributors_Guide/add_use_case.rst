@@ -230,7 +230,7 @@ the text content. These are already provided in the example template.
 
   * Header and Path to Use Case Configuration File
 
-    * This section begins with {PrimaryStatAnalysisToolName}: Brief (12 words or less) 
+    * This section begins with {PrimaryAnalysisToolName}: Brief (12 words or less) 
       and a unique description of use case, followed on the next line by ‘=’ characters 
       equal in length to the header (spaces included). Follow this with one line of no characters, 
       then the path to the use case configuration file. This should be written in the format of
