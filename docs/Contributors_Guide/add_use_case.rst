@@ -361,7 +361,7 @@ the text content. These are already provided in the example template.
       This is done so that a browser's rendering of the Expected Output list will not 
       run off the page.  
       If a netCDF is the output, the total number and name of each variable field 
-      inside the file should be listed. If there are a large number of variable fields 
+      inside the file should be listed. If there are numerous variable fields 
       within the file, a summary is sufficient.
       If an image is created, it should be used as the use case image and referenced in 
       this section as output.
