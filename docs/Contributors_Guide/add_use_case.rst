@@ -153,7 +153,7 @@ Use Case Rules
 - The use case should be run by someone other than the author to ensure that it
   runs smoothly outside of the development environment set up by the author.
 
-Use Cases That Include Changes to METcalcpy/METplotpy/METdataio
+Use Cases That Involve METcalcpy/METplotpy/METdataio Changes
 ---------------------------------------------------------------
 
 Some use cases call scripts that are located in METcalcpy, METplotpy, and/or METdataio.
@@ -163,6 +163,8 @@ These use cases typically run with a driver script that is called from METplus w
 the UserScript option.  A driver script calls specific programs in METcalcpy, METplotpy,
 and/or METdataio and passes data from one program to the other.
 
+Steps for Adding these Use Cases
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Additional steps are needed when adding these types of use cases.  First, a feature branch
 should be created for each repository where changes are needed.  More information on creating
 a branch can be found in the :ref:`Work in a Feature Branch <work_in_a_feature_branch>` section.
@@ -184,8 +186,8 @@ Environmenst and the packages they contain can also be found in the :ref:`Conda 
 Conda Environments, please create a post on the `METplus GitHub Discussions Forum 
 <https://github.com/dtcenter/METplus/discussions>`_ for assistance.
 
-Use Cases that involve METcalcpy/METplotpy/METdataio
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Existing Examples that involve METcalcpy/METplotpy/METdataio
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Below is a list of some (not all) of the use cases which use driver scripts and involve
 calculations in METcalcpy, METplotpy, and/or METdataio.  This list is provided for reference
 and examples.
