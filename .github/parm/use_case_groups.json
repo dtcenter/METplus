@@ -10,6 +10,11 @@
     "run": false
   },
   {
+    "category": "met_tool_wrapper",
+    "index_list": "65",
+    "run": false
+  },
+  {
     "category": "air_quality_and_comp",
     "index_list": "0",
     "run": false
@@ -270,6 +275,12 @@
     "index_list": "14",
     "disabled": true,
     "run": false
+  },
+  {
+    "category": "short_range",
+    "index_list": "15",
+    "disabled": true,
+    "run":false
   },
   {
     "category": "space_weather",

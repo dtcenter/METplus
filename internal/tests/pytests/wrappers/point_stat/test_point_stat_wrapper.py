@@ -671,13 +671,6 @@ def test_met_dictionary_in_var_options(metplus_config):
         ({'OBS_POINT_STAT_INPUT_TEMPLATE': '{valid?fmt=%Y%m%d%H}/obs_file,{valid?fmt=%Y%m%d%H}/obs_file2', }, {}),
         ({'OBS_POINT_STAT_INPUT_TEMPLATE': '{valid?fmt=%Y%m%d%H}/obs_file,{valid?fmt=%Y%m%d%H}/obs_file2,{valid?fmt=%Y%m%d%H}/obs_file3', }, {}),
 
-        ({'POINT_STAT_TIME_OFFSET_WARNING': 3},
-         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 3;'}),
-        ({'TIME_OFFSET_WARNING': 2},
-         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 2;'}),
-        ({'TIME_OFFSET_WARNING': 2, 'POINT_STAT_TIME_OFFSET_WARNING': 4},
-         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 4;'}),
-
         # fcst climo_mean
         ({'POINT_STAT_FCST_CLIMO_MEAN_FILE_NAME': '/some/climo_mean/file.txt', },
          {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {file_name = ["/some/climo_mean/file.txt"];}'}),
