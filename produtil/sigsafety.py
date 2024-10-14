@@ -40,8 +40,7 @@ raises HangupSignal.
 One can call install_handlers directly, though it is recommended to
 call produtil.setup.setup instead."""
 
-from metplus.produtil.locking import disable_locking
-from metplus.produtil.pipeline import kill_all
+import produtil.locking, produtil.pipeline
 import signal
 
 ##@var defaultsigs
@@ -136,7 +135,7 @@ def hup_handler(signum,frame):
     caught_signal=signum
     caught_class=HangupSignal
 
-    disable_locking()
+    produtil.locking.disable_locking()
     raise HangupSignal(signum)
 
 def term_handler(signum,frame): 
@@ -146,8 +145,8 @@ def term_handler(signum,frame):
     caught_signal=signum
     caught_class=FatalSignal
 
-    disable_locking() # forbid file locks
-    kill_all() # kill all subprocesses
+    produtil.locking.disable_locking() # forbid file locks
+    produtil.pipeline.kill_all() # kill all subprocesses
     uninstall_handlers()
     raise FatalSignal(signum)
 

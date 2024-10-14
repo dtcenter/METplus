@@ -248,6 +248,12 @@ def test_plot_point_obs_missing_inputs(metplus_config, get_test_data_dir,
         ({'PLOT_POINT_OBS_POINT_DATA': point_data_input, },
          {'METPLUS_POINT_DATA': f'point_data = {point_data_format}'}),
 
+        ({'PLOT_POINT_OBS_TIME_OFFSET_WARNING': 3},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 3;'}),
+        ({'TIME_OFFSET_WARNING': 2},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 2;'}),
+        ({'TIME_OFFSET_WARNING': 2, 'PLOT_POINT_OBS_TIME_OFFSET_WARNING': 4},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 4;'}),
     ]
 )
 @pytest.mark.wrapper_c
