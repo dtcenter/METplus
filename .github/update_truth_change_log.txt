@@ -7,3 +7,4 @@
 [20240905_16:45:56 develop] dtcenter/MET#2959 - Correct bugs in SEDI and BAGSS contingency table statistics found in the CTS line type
 [20240910_19:03:38 develop] dtcenter/MET#2967 - Fixes integer overflow bug in the computation of the CTS and NBRCTS ORSS, ORSS_NCL, and ORSS_NCU columns.
 [20240926_16:50:38 develop] #2701 - #2701 added a new use case (SeriesAnalysis_aggr) that produces new output
+[20241014_19:42:56 develop] dtcenter/MET#2988 - dtcenter/MET#2988 -- see issue #2719 for details -- retry because there was an issue with convert not being available in the ubuntu image that runs the unit tests
