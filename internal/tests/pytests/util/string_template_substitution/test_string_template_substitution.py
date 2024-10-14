@@ -354,7 +354,7 @@ def test_filename_does_not_match_template():
     template = "{init?fmt=%Y%m%d%H}_dog_A{lead?fmt=%HH}h"
     filepath = "1987020103_cat_A03h"
     out = parse_template(template, filepath)
-    assert out is None
+    assert out == None
 
 
 @pytest.mark.util
@@ -362,7 +362,7 @@ def test_filename_does_not_match_template_end():
     template = "{init?fmt=%Y%m%d%H}_dog_A{lead?fmt=%HH}h"
     filepath = "1987020103_dog_A03d"
     out = parse_template(template, filepath)
-    assert out is None
+    assert out == None
 
 
 @pytest.mark.util
@@ -379,7 +379,7 @@ def test_get_tags():
 # value is the formatted output string, like 01
 # ttype is the unit to check, i.e. 'H', 'M', 'S', 'd', 's'
 @pytest.mark.parametrize(
-    'fmt, key, value, ttype', [
+    'format, key, value, ttype', [
         ('H', 1, '01', 'H'),
         ('1H', 1, '1', 'H'),
         ('2H', 1, '01', 'H'),
@@ -418,15 +418,15 @@ def test_get_tags():
     ]
 )
 @pytest.mark.util
-def test_format_one_time_item(fmt, key ,value, ttype):
-    assert format_one_time_item(fmt, key, ttype) == value
+def test_format_one_time_item(format, key ,value, ttype):
+    assert format_one_time_item(format, key, ttype) == value
 
 
 # format is the time format to use, like, %M or %H%M
 # seconds is the integer number of seconds of the offset to use, i.e. 3601
 # value is the formatted output string, like 010001
 @pytest.mark.parametrize(
-    'fmt, seconds, value', [
+    'format, seconds, value', [
         ('%H', 1, '00'),
         ('%M', 1, '00'),
         ('%S', 1, '01'),
@@ -448,9 +448,9 @@ def test_format_one_time_item(fmt, key ,value, ttype):
     ]
 )
 @pytest.mark.util
-def test_format_hms(fmt, seconds, value):
+def test_format_hms(format, seconds, value):
     # format should be something like %M or %H%M
-    assert format_hms(fmt, seconds == value)
+    assert format_hms(format, seconds == value)
 
 
 @pytest.mark.util
@@ -539,6 +539,7 @@ def test_populate_match_dict(template, filepath, expected_match_dict, expected_v
         elif match_dict is None:
             # if expected is not None, fail if actual is None
             assert False
+            return
 
         num_keys = len(match_dict.keys())
         expected_num_keys = len(expected_match_dict.keys())
@@ -560,6 +561,8 @@ def test_populate_match_dict(template, filepath, expected_match_dict, expected_v
         if valid_shift != expected_valid_shift:
             print(f"Incorrect valid shift. Actual {valid_shift}, Expected: {expected_valid_shift}")
             assert False
+
+        assert True
 
     except TypeError:
         assert expected_match_dict is None and expected_valid_shift is None
@@ -587,6 +590,8 @@ def test_get_fmt_info(fmt, filepath, identifier, expected_fmt_len, expected_matc
         print(f"Match Dictionary: {match_dict}")
         print(f"Expected Dictionary: {expected_match_dict}")
         assert False
+
+    assert True
 
 
 @pytest.mark.parametrize(

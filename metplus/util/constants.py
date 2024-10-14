@@ -93,14 +93,6 @@ MULTIPLE_INPUT_WRAPPERS = (
     'GenEnsProd',
 )
 
-# wrappers that support the time_offset_warning global MET config variable
-TIME_OFFSET_WARNING_WRAPPERS = (
-    'GridStat',
-    'MODE',
-    'SeriesAnalysis',
-    'WaveletStat',
-)
-
 # configuration variables that are specific to a given run
 # these are copied from [config] to [runtime] at the
 # end of the run so they will not be read if the final

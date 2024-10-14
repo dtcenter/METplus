@@ -37,9 +37,11 @@ interface in produtil.run.  Hence, nobody would ever load this module
 directly, except for type checking (ie.: to see if your argument is a
 Runner before passing it to produtil.run.checkrun).."""
 
-import re, os
+import produtil.sigsafety
+import io,select,io,re,time,fcntl,os,logging,signal
 
-from metplus.produtil.pipeline import ERR2OUT
+import produtil.mpi_impl
+from produtil.pipeline import launch, manage, PIPE, ERR2OUT
 
 ERR2OUT_FCT_STR = '.err2out()'
 

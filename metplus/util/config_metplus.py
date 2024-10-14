@@ -11,6 +11,7 @@ Output Files: N/A
 
 import os
 import re
+import sys
 import logging
 from datetime import datetime, timezone
 import time
@@ -19,7 +20,7 @@ from configparser import ConfigParser, NoOptionError
 from pathlib import Path
 import uuid
 
-from metplus.produtil.config import ProdConfig
+from produtil.config import ProdConfig
 
 from .constants import RUNTIME_CONFS, MISSING_DATA_VALUE
 from .string_template_substitution import do_string_sub
@@ -62,7 +63,7 @@ PARM_DIR = 'parm'
 
 # set parm base to METPLUS_BASE/parm unless METPLUS_PARM_BASE env var is set
 PARM_BASE = os.environ.get('METPLUS_PARM_BASE',
-                           os.path.join(METPLUS_BASE, 'metplus', PARM_DIR))
+                           os.path.join(METPLUS_BASE, PARM_DIR))
 
 # name of directory under PARM_DIR that contains defaults
 METPLUS_CONFIG_DIR = 'metplus_config'

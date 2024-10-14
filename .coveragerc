@@ -3,4 +3,3 @@ relative_files = True
 source = metplus
 omit =
   metplus/wrappers/cyclone_plotter_wrapper.py
-  metplus/produtil/**
