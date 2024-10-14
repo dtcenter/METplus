@@ -20,7 +20,7 @@ LOWER_TO_WRAPPER_NAME = {
     'griddiag': 'GridDiag',
     'gridstat': 'GridStat',
     'ioda2nc': 'IODA2NC',
-    'makeplots': 'MakePlots',
+    'madis2nc': 'MADIS2NC',
     'metdbload': 'METDbLoad',
     'mode': 'MODE',
     'mtd': 'MTD',
@@ -91,6 +91,14 @@ MULTIPLE_INPUT_WRAPPERS = (
     'MTD',
     'SeriesAnalysis',
     'GenEnsProd',
+)
+
+# wrappers that support the time_offset_warning global MET config variable
+TIME_OFFSET_WARNING_WRAPPERS = (
+    'GridStat',
+    'MODE',
+    'SeriesAnalysis',
+    'WaveletStat',
 )
 
 # configuration variables that are specific to a given run

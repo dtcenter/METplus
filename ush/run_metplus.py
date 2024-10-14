@@ -25,9 +25,10 @@ import traceback
 # add metplus directory to path so the wrappers and utilities can be found
 sys.path.insert(0, abspath(join(dirname(realpath(__file__)), pardir)))
 
-import produtil.setup
+from metplus.produtil.setup import setup as produtil_setup
 
 from metplus.util import pre_run_setup, run_metplus, post_run_cleanup
+from metplus import __version__ as metplus_version
 
 '''!@namespace run_metplus
 Main script the processes all the tasks in the PROCESS_LIST
@@ -57,15 +58,12 @@ def main():
 
 def usage():
     """!How to call this script."""
-    print ('''
-Usage: %s arg1 arg2 arg3
-    -h|--help               Display this usage statement
-
-Arguments:
-/path/to/parmfile.conf -- Specify custom configuration file to use
-section.option=value -- override conf options on the command line
-
-'''%(basename(__file__)))
+    print(f"Running METplus v{metplus_version}\n"
+          f"Usage: {basename(__file__)} arg1 arg2 arg3\n"
+          "    -h|--help               Display this usage statement\n\n"
+          "Arguments:\n"
+          "/path/to/parmfile.conf -- Specify custom configuration file to use\n"
+          "section.option=value -- override conf options on the command line")
     sys.exit(2)
 
 
@@ -83,9 +81,8 @@ def get_config_inputs_from_command_line():
 
     # print usage statement and exit if help arg is found
     help_args = ('-h', '--help', '-help')
-    for help_arg in help_args:
-        if help_arg in sys.argv:
-            usage()
+    if any(arg in sys.argv for arg in help_args):
+        usage()
 
     # pull out command line arguments
     config_inputs = []
@@ -113,12 +110,15 @@ def get_config_inputs_from_command_line():
     return config_inputs
 
 
-if __name__ == "__main__":
+def cli_main():
     try:
-        produtil.setup.setup(send_dbn=False, jobname='run-METplus')
+        produtil_setup(send_dbn=False, jobname='run-METplus')
         if not main():
             sys.exit(1)
     except Exception as exc:
         print(traceback.format_exc())
         print('ERROR: run_metplus  failed: %s' % exc)
         sys.exit(2)
+
+if __name__ == "__main__":
+    cli_main()

@@ -167,7 +167,9 @@ Use Cases that Exceed GitHub Actions Memory Limit
 
 Use Cases that Exceed GitHub Actions Disk Space
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-- *model_applications/s2s/UserScript_fcstGFS_obsERA_StratospherePolar*
+- *model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar*
+- *model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereQBO*
+- *model_applications/short_range/MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning*
 
 .. _use_case_documentation:
   

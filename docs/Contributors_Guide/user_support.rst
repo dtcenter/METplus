@@ -13,12 +13,12 @@ discussions and begin conversations in the right place.
 Support Responsibilities
 ========================
 
-Five staff members take turns monitoring Discussions each day of the week.
+Staff members take turns monitoring Discussions throughout the week.
 
-Each day, all support members should follow up on existing Discussions in
+All support members should follow up on existing Discussions in
 which they are assigned (i.e. tagged).
 
-The responsibilities for each daily assignee are described below.
+The responsibilities for each assignee are described below.
 
 
 Review the Tips/Tricks Page
@@ -62,11 +62,14 @@ Review the `unanswered discussions <https://github.com/dtcenter/METplus/discussi
     required.
 
     * If an obvious answer exists, consider marking it as the answer and
-      locking the discussion to prevent future posts. See
+      locking the discussion to prevent future posts, and then close it. See
       :ref:`lock_discussions`.
 
     * If the user has not responded in 7 or more days, consider following up to
-      see if the user's issue is resolved or if they need more assistance.
+      see if the user's issue is resolved or if they need more assistance. If
+      the user has not responded in two weeks, close the discussion with a comment
+      indicating that is our policy to close discussions after two weeks of
+      inactivity.
 
     * If unsure how to proceed, post in the User Support Slack channel of
       dtc-metplus.slack.com tagging the person who has been assisting the user.
@@ -74,7 +77,7 @@ Review the `unanswered discussions <https://github.com/dtcenter/METplus/discussi
 Review Answered Discussions that are Unlocked
 ---------------------------------------------
 
-Review `anwered discussions that are unlocked <https://github.com/dtcenter/METplus/discussions?discussions_q=is%3Aanswered+is%3Aunlocked>`_.
+Review `answered discussions that are unlocked <https://github.com/dtcenter/METplus/discussions?discussions_q=is%3Aanswered+is%3Aunlocked>`_.
 
 If there is any recent activity on an **answered** question that indicates the
 questioner is satisified with the response, click on the button to **lock** the
@@ -94,6 +97,9 @@ Actions for Handling New Discussions
 * Ensure the discussion is answered:
 
   * If you can answer it yourself, do so.
+
+  * If the question is due to unclear or insufficient documentation, please fix
+    the documentation and point the user to the updated version.
 
   * If you can answer it with help from someone, post to the User Support Slack
     channel of dtc-metplus.slack.com, asking for advice.
@@ -120,23 +126,49 @@ If an obvious answer exists and it is apparent the questioner is satisified
 with the response, consider posting something like the following before locking
 the discussion:
 
-*At this point I'm going to LOCK this conversation to prevent future posts. Our team has decided that once discussions have been answered, and the answer has been confirmed, we'll lock them. We want to encourage users to ask new questions in new discussions rather than posting to old ones. Hopefully that'll make the questions/answers easier for other users to follow. So if/when more issues/questions arise, please feel free to start a new discussion.*
+*I'm going to lock and close this conversation to prevent future posts. Our
+team has decided that once discussions have been answered, we'll lock them to
+encourage users to ask new questions in new discussions rather than posting
+to old ones. Hopefully that'll make the questions/answers easier for other
+users to follow. So if/when more issues/questions arise, please feel free
+to start a new discussion.*
 
 If there is no answer selected and no indication that the questioner is
 satisified with the response, follow up, requesting that the user mark
-the best answer so we can lock the discussion. The following text may need
-to be modified to match a specific situation, but this is a good starting
-point as an example:
+the best answer so we can lock and close the discussion. The following
+text may need to be modified to match a specific situation, but this is
+a good starting point as an example:
 
-*I'd like to mark this discussion as being answered and "lock it" to prevent future posts. That's how we encourage users to create new discussions for new questions. But I wanted to give you an opportunity to comment on it before doing so. Please feel free to select one of the responses as being the best answer to your original question. That'll help future users with similar questions find answers.*
+*I'd like to mark this discussion as being answered, and lock and close it,
+to prevent future posts. That's how we encourage users to create new
+discussions for new questions. But I wanted to give you an opportunity to
+comment on it before doing so. Please feel free to select one of the
+responses as being the best answer to your original question. That'll help
+future users with similar questions find answers.*
 
-If following up on discussions where the user hasn't responded back in a while,
-consider posting something like the following before locking the discussion,
-filling in the MONTH and DAY below:
+or
 
-*I wanted to check in with you about the initial discussion you submitted. We were able to provide some guidance for you on <MONTH DAY>, but haven't heard back if the suggested actions helped. If it did, or if you found a different way of accomplishing your goal, we'd appreciate hearing from you. If you have additional questions on this, we can try to find a solution; otherwise we'll choose an answer and lock this discussion due to inactivity.*
+*I wanted to check in with you about the initial discussion you submitted.
+We were able to provide some guidance for you on <MONTH DAY>, but haven't
+heard back if the suggested actions helped. If it did, or if you found a
+different way of accomplishing your goal, we'd appreciate hearing from you.
+If you have additional questions on this, we can try to find a solution;
+otherwise we'll choose an answer, and lock and close this discussion due
+to inactivity.*
+
+If following up on discussions where the user hasn't responded back in two
+weeks, consider posting something like the following before locking and closing
+the discussion, filling in the MONTH and DAY below:
+
+*We were able to provide some guidance for you on <MONTH DAY>, regarding the
+initial discussion you submitted, but we haven't heard back if the suggested
+actions helped. It is our
+`policy <https://github.com/dtcenter/METplus/discussions/939>`_ to lock and
+close discussions after two weeks of inactivity.*
 
 GitHub users with sufficient permissions in the METplus repository should see a
-"Lock conversation" link on the right side navigation of each Discussions page.
+"Lock conversation" link on the right side navigation of each Discussions page
+and a "Close discussion" button at the bottom of the page under the comment
+box.
   
   

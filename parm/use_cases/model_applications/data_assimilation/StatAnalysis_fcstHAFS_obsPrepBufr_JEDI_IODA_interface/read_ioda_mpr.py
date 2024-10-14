@@ -83,7 +83,7 @@ if len(sys.argv) == 2:
                     var_name+'@ObsType','na','na','lead','na','na','na','na','MPR',
                     'nobs','index','station_id@MetaData','latitude@MetaData','longitude@MetaData',
                     'air_pressure@MetaData','na',var_name+'@hofx',var_name+'@ObsValue',
-                    var_name+'@PreQC','na','na']
+                    var_name+'@PreQC','na','na','na','na','na']
             
             ioda_df_var = ioda_df_var[cols]
 

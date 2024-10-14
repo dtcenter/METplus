@@ -33,7 +33,11 @@ class GridStatWrapper(CompareGriddedWrapper):
         'METPLUS_OBTYPE',
         'METPLUS_REGRID_DICT',
         'METPLUS_FCST_FIELD',
+        'METPLUS_FCST_CLIMO_MEAN_DICT',
+        'METPLUS_FCST_CLIMO_STDEV_DICT',
         'METPLUS_OBS_FIELD',
+        'METPLUS_OBS_CLIMO_MEAN_DICT',
+        'METPLUS_OBS_CLIMO_STDEV_DICT',
         'METPLUS_CLIMO_MEAN_DICT',
         'METPLUS_CLIMO_STDEV_DICT',
         'METPLUS_MASK_DICT',
@@ -56,6 +60,9 @@ class GridStatWrapper(CompareGriddedWrapper):
         'METPLUS_CENSOR_VAL',
         'METPLUS_SEEPS_P1_THRESH',
         'METPLUS_CAT_THRESH',
+        'METPLUS_UGRID_DATASET',
+        'METPLUS_UGRID_MAX_DISTANCE_KM',
+        'METPLUS_UGRID_COORDINATES_FILE',
     ]
 
     # deprecated env vars that are no longer supported in the wrapped MET conf
@@ -130,6 +137,11 @@ class GridStatWrapper(CompareGriddedWrapper):
 
         # get the MET config file path or use default
         c_dict['CONFIG_FILE'] = self.get_config_file('GridStatConfig_wrapped')
+
+        # get optional ugrid config file if requested
+        c_dict['UGRID_CONFIG_FILE'] = (
+            self.config.getraw('config', 'GRID_STAT_UGRID_CONFIG_FILE')
+        )
 
         self.get_input_templates(c_dict, {
             'FCST': {'prefix': 'FCST_GRID_STAT', 'required': True},
@@ -211,6 +223,10 @@ class GridStatWrapper(CompareGriddedWrapper):
 
         self.add_met_config(name='nc_pairs_var_name', data_type='string',
                             metplus_configs=['GRID_STAT_NC_PAIRS_VAR_NAME'])
+
+        self.add_met_config(name='ugrid_dataset', data_type='string')
+        self.add_met_config(name='ugrid_max_distance_km', data_type='int')
+        self.add_met_config(name='ugrid_coordinates_file', data_type='string')
 
         self.add_met_config(name='grid_weight_flag', data_type='string',
                             metplus_configs=['GRID_STAT_GRID_WEIGHT_FLAG'],

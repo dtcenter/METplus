@@ -18,6 +18,7 @@ pp = pprint.PrettyPrinter()
 
 JOB_ARGS = '-job filter'
 
+
 def stat_analysis_wrapper(metplus_config):
     """! Returns a default StatAnalysisWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
@@ -172,6 +173,7 @@ def set_minimum_config_settings(config):
           'MODEL1': '{custom}',
           'MODEL_LIST': '{custom}'},
          {'METPLUS_MODEL': 'model = ["CUSTOM_MODEL"];'}),
+
     ]
 )
 @pytest.mark.wrapper_d

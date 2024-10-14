@@ -51,12 +51,16 @@ fcst = {
   ${METPLUS_FCST_FILE_TYPE}
   //field = [
   ${METPLUS_FCST_FIELD}
+  ${METPLUS_FCST_CLIMO_MEAN_DICT}
+  ${METPLUS_FCST_CLIMO_STDEV_DICT}
 }
 
 obs = {
   ${METPLUS_OBS_FILE_TYPE}
   //field = [
   ${METPLUS_OBS_FIELD}
+  ${METPLUS_OBS_CLIMO_MEAN_DICT}
+  ${METPLUS_OBS_CLIMO_STDEV_DICT}
 }
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -178,6 +182,12 @@ ${METPLUS_INTERP_DICT}
 ${METPLUS_HIRA_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
+// Threshold for SEEPS p1 (Probability of being dry)
+
+//seeps_p1_thresh =
+${METPLUS_SEEPS_P1_THRESH}
+
+////////////////////////////////////////////////////////////////////////////////
 
 //
 // Statistical output types
@@ -186,10 +196,15 @@ ${METPLUS_HIRA_DICT}
 ${METPLUS_OUTPUT_FLAG_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
-// Threshold for SEEPS p1 (Probability of being dry)
 
-//seeps_p1_thresh =
-${METPLUS_SEEPS_P1_THRESH}
+//ugrid_dataset =
+${METPLUS_UGRID_DATASET}
+
+//ugrid_max_distance_km =
+${METPLUS_UGRID_MAX_DISTANCE_KM}
+
+//ugrid_coordinates_file =
+${METPLUS_UGRID_COORDINATES_FILE}
 
 ////////////////////////////////////////////////////////////////////////////////
 

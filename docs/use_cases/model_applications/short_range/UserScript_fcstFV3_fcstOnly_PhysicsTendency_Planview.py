@@ -37,8 +37,8 @@ UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
 #  * Forecast dataset: FV3 3-D history file with physics and dynamics tendencies
 #  * Grid specification: FV3 2-D grid specification file with latitude and longitude of each grid point
 #
-#  **Location:** All of the input data required for this use case can be
-#  found in the met_test sample data tarball. Click here to the METplus
+#  **Location:** All the input data required for this use case can be
+#  found in the met_test sample data tarball. Click here to access the METplus
 #  releases page and download sample data for the appropriate release:
 #  https://github.com/dtcenter/METplus/releases
 #  The tarball should be unpacked into the directory that you will set
@@ -49,7 +49,8 @@ UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
 ##############################################################################
 # External Dependencies 
 # ---------------------
-# You will need to use a versio of Python 3.86 that has the following packages
+# You will need to use a compatible version of Python (for this METplus
+# version) that has the following packages
 # installed:
 #
 #  * cartopy (0.20.3 only)
@@ -59,7 +60,6 @@ UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
 #  * pandas
 #  * shapely
 #  * xarray
-#
 
 
 
@@ -75,7 +75,7 @@ UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
 # ----------------
 # 
 # This use case does not loop but plots physics tendency data that has been
-# subsetted to one date: 2019-05-04.
+# subsetted to one date: 2019-06-15.
 
 ###################################################################################################
 # METplus Configuration
