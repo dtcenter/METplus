@@ -6,9 +6,10 @@ created by some Task.  Both Product and Task classes derive from
 Datum, which is the base class of anything that can be stored in the
 Datastore."""
 
-import sqlite3, threading, collections, re, contextlib, time, random,\
-    traceback, datetime, logging, os, time
-import produtil.fileop, produtil.locking, produtil.sigsafety, produtil.log
+import sqlite3, threading, collections, re, contextlib, datetime, logging, os, time
+import metplus.produtil.fileop as fileop
+from metplus.produtil.locking import LockFile
+from metplus.produtil.log import jlogger
 
 ##@var __all__
 # Symbols exported by "from produtil.datastore import *"
@@ -175,7 +176,7 @@ class Datastore(object):
         lockfile=filename+'.lock'
         if logger is not None:
             logger.debug('Lockfile is %s for database %s'%(lockfile,filename))
-        self._file_lock=produtil.locking.LockFile(
+        self._file_lock=LockFile(
             lockfile,logger=logger,max_tries=300,sleep_time=0.1,first_warn=50)
         self._transtack=collections.defaultdict(list)
         with self.transaction():
@@ -884,7 +885,7 @@ class FileProduct(Product):
         @param logger a logging.Logger for log messages"""
         loc=self.location
         if loc and delete:
-            produtil.fileop.remove_file(filename=loc,logger=logger,info=True)
+            fileop.remove_file(filename=loc,logger=logger,info=True)
         self.available=False
     def deliver(self,location=None,frominfo=None,keep=True,logger=None,
                 copier=None):
@@ -917,7 +918,7 @@ class FileProduct(Product):
             raise UnknownLocation(
                 '%s: no location known when delivering product.  Specify a '
                 'location to deliver().'%(self.did))
-        produtil.fileop.deliver_file(frominfo,loc,keep=keep,logger=logger,
+        fileop.deliver_file(frominfo,loc,keep=keep,logger=logger,
                                      copier=copier)
         if setloc:
             self.set_loc_avail(loc,True)
@@ -966,7 +967,7 @@ class UpstreamFile(Product):
             minsize=int(self.get('minsize',0))
         if minage is None:
             minage=int(self.get('minage',20))
-        if not produtil.fileop.check_file(loc,min_size=minsize,
+        if not fileop.check_file(loc,min_size=minsize,
                 min_mtime_age=minage):
             if self.available:
                 self.available=False
@@ -1093,7 +1094,7 @@ class Task(Datum):
         intended to receive only major errors, and per-job start and
         completion information.  This is equivalent to simply
         accessing produtil.log.jlogger."""
-        return produtil.log.jlogger
+        return jlogger
 
     def postmsg(self,message,*args,**kwargs):
         """!same as produtil.log.jlogger.info()
@@ -1103,7 +1104,7 @@ class Task(Datum):
         @param message the message
         @param args positional arguments for string replacement
         @param kwargs keyword arguments for string replacement."""
-        produtil.log.jlogger.info(message,*args,**kwargs)
+        jlogger.info(message,*args,**kwargs)
 
     def setstate(self,val):
         """!Sets the state of this job.
