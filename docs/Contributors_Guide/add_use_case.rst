@@ -153,8 +153,8 @@ Use Case Rules
 - The use case should be run by someone other than the author to ensure that it
   runs smoothly outside of the development environment set up by the author.
 
-Use Cases That Involve METcalcpy/METplotpy/METdataio Changes
----------------------------------------------------------------
+Use Cases That Involve METcalcpy/METplotpy/METdataio
+----------------------------------------------------
 
 Some use cases call scripts that are located in METcalcpy, METplotpy, and/or METdataio.
 This could include the calculation of an index or pre-processing steps in METcalcpy,
@@ -163,34 +163,28 @@ These use cases typically run with a driver script that is called from METplus w
 the UserScript option.  A driver script calls specific programs in METcalcpy, METplotpy,
 and/or METdataio and passes data from one program to the other.
 
-Steps for Adding these Use Cases
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Additional steps are needed when adding these types of use cases.  First, a feature branch
-should be created for each repository where changes are needed.  More information on creating
-a branch can be found in the :ref:`Work in a Feature Branch <work_in_a_feature_branch>` section.
-Separate pull requests will be needed for each repository where changes were made.  More
-information on making pull requests can be found in the :ref:`Create a Pull Request 
-<create-a-pull-request>` section.
+Any changes to METcalcpy, METplotpy, and/or METdataio must be merged into the
+develop branch of those repositories so they will be available in the use case tests.
+This means that any pull requests in METcalcpy, METplotpy, and METdataio must
+be completed before use case testing can proceed in GitHub Actions.
+Please confirm that the use case can run successfully before creating a pull request.
 
-To run tests in GitHub actions, the changes from METcalcpy, METplotpy, and METdataio need to be
-merged into the develop branch of METcalcpy, METplotpy, and METdataio otherwise actions will not
-see these changes.  This means that the pull requests in METcalcpy, METplotpy, and METdataio must
-be completed first, and then testing can proceed in GitHub actions, followed by the METplus
-pull request last.
-
-For running in GitHub actions, the environment specified in all_use_cases.txt must contain
-all required dependencies.  More information on this can be found in the continuous
-integration section on :ref:`dependencies <cg-ci-dependencies>`.  A list of the existing Conda
-Environmenst and the packages they contain can also be found in the :ref:`Conda Environments
-<cg-ci-conda-environments>` section.  If the package requirements aren’t met by one of the existing
+To run in GitHub Actions, the environment specified in all_use_cases.txt must contain
+all required dependencies. This includes a Conda environment that contains the
+required Python packages needed to run the METplus Analysis Python tools, e.g.
+metplotpy_env.
+A list of the existing Conda Environments and the packages they contain can also be
+found in the :ref:`Conda Environments <cg-ci-conda-environments>` section.
+If the package requirements aren’t met by one of the existing
 Conda Environments, please create a post on the `METplus GitHub Discussions Forum 
 <https://github.com/dtcenter/METplus/discussions>`_ for assistance.
 
-Existing Examples that involve METcalcpy/METplotpy/METdataio
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Existing Use Case Examples
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 Below is a list of some (not all) of the use cases which use driver scripts and involve
-calculations in METcalcpy, METplotpy, and/or METdataio.  This list is provided for reference
-and examples.
+calculations in METcalcpy, METplotpy, and/or METdataio.
+This list is provided for reference and examples.
 
 - *model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime*
 - *model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereQBO*
