@@ -446,6 +446,15 @@ def test_gen_ens_prod_missing_inputs(metplus_config, get_test_data_dir, allow_mi
         # 68
         ({'GEN_ENS_PROD_NORMALIZE': 'CLIMO_STD_ANOM', },
          {'METPLUS_NORMALIZE': 'normalize = CLIMO_STD_ANOM;'}),
+        # 69
+        ({'GEN_ENS_PROD_TIME_OFFSET_WARNING': 3},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 3;'}),
+        # 70
+        ({'TIME_OFFSET_WARNING': 2},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 2;'}),
+        # 71
+        ({'TIME_OFFSET_WARNING': 2, 'GEN_ENS_PROD_TIME_OFFSET_WARNING': 4},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 4;'}),
         # ens climo_mean (quietly supported)
         ({'GEN_ENS_PROD_ENS_CLIMO_MEAN_FILE_NAME': '/some/climo_mean/file.txt', },
          {'METPLUS_ENS_CLIMO_MEAN_DICT': 'climo_mean = {file_name = ["/some/climo_mean/file.txt"];}'}),

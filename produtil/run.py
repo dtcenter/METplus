@@ -155,14 +155,15 @@ operations that change stdin).
 """
 
 import time, logging
-import metplus.produtil.mpi_impl as mpi_impl
-import metplus.produtil.prog as prog
-import metplus.produtil.mpiprog as mpiprog
-import metplus.produtil.pipeline as pipeline
+import produtil.mpi_impl
+import produtil.sigsafety
+import produtil.prog as prog
+import produtil.mpiprog as mpiprog
+import produtil.pipeline as pipeline
 
 # These two were moved to produtil.prog to avoid a cyclic import.
 # They still need to be available from produtil.run:
-from metplus.produtil.prog import InvalidRunArgument,ExitStatusException
+from produtil.prog import InvalidRunArgument,ExitStatusException
 
 ##@var __all__
 # List of symbols exported by "from produtil.run import *"
@@ -179,7 +180,7 @@ module_logger=logging.getLogger('produtil.run')
 # The cached return value from detect_mpi()
 _detected_mpi=None
 
-def make_mpi(mpi_name=mpi_impl.NO_NAME,**kwargs):
+def make_mpi(mpi_name=produtil.mpi_impl.NO_NAME,**kwargs):
     """!Creates an MPI implementation object for the specified MPI
     implementation. 
 
@@ -207,7 +208,7 @@ def make_mpi(mpi_name=mpi_impl.NO_NAME,**kwargs):
     # situation does not need any initialization of the produtil.run
     # module:
     if mpi_name is None:
-        return mpi_impl.get_mpi(None,**kwargs)
+        return produtil.mpi_impl.get_mpi(None,**kwargs)
 
     # For anything other than "None," we have to ensure the
     # produtil.run is initialized to something before running
@@ -215,7 +216,7 @@ def make_mpi(mpi_name=mpi_impl.NO_NAME,**kwargs):
     detect_mpi()
 
     # Next, return the requested implementation:
-    return mpi_impl.get_mpi(mpi_name,**kwargs)
+    return produtil.mpi_impl.get_mpi(mpi_name,**kwargs)
 
 def detect_mpi():
     """!Called by functions inside produtil.run to automatically
@@ -252,10 +253,10 @@ def detect_mpi():
     # First, set the implementation to None so that the mpi_impl
     # subclasses can use produtil.run.  This will only allow serial,
     # non-OpenMP programs:
-    _detected_mpi=mpi_impl.get_mpi(None)
+    _detected_mpi=produtil.mpi_impl.get_mpi(None)
 
-    # Next, ask mpi_impl to detect the MPI implementation:
-    detected=mpi_impl.get_mpi()
+    # Next, ask produtil.mpi_impl to detect the MPI implementation:
+    detected=produtil.mpi_impl.get_mpi()
 
     # If detection succeeds, override the selected MPI implementation:
     if detected:

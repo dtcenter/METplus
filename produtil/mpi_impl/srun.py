@@ -6,14 +6,12 @@
 # commands.
 
 import os, logging, re
-from metplus.produtil.fileop import find_exe
-from metplus.produtil.prog import Runner, ImmutableRunner
-import metplus.produtil.mpiprog as mpiprog
-import metplus.produtil.pipeline as pipeline
+import produtil.fileop,produtil.prog,produtil.mpiprog,produtil.pipeline
 
 from .mpi_impl_base import MPIMixed,CMDFGen,ImplementationBase, \
                            MPIThreadsMixed,MPILocalOptsMixed,MPITooManyRanks
-from metplus.produtil.mpiprog import MIXED_VALUES
+from produtil.pipeline import NoMoreProcesses
+from produtil.mpiprog import MIXED_VALUES
 
 class Implementation(ImplementationBase):
     """Adds SLURM srun support to produtil.run
@@ -39,12 +37,12 @@ class Implementation(ImplementationBase):
             if force:
                 srun_path='srun'
             else:
-                srun_path=find_exe('srun',raise_missing=True)
+                srun_path=produtil.fileop.find_exe('srun',raise_missing=True)
         if scontrol_path is None:
             if force:
                 scontrol_path='scontrol'
             else:
-                scontrol_path=find_exe('scontrol',raise_missing=True)
+                scontrol_path=produtil.fileop.find_exe('scontrol',raise_missing=True)
         if 'SLURM_NODELIST' not in os.environ and not force:
             return None
         return Implementation(srun_path,scontrol_path,mpiserial_path,logger,silent,force)
@@ -60,8 +58,8 @@ class Implementation(ImplementationBase):
     def runsync(self,logger=None):
         """!Runs the "sync" command as an exe()."""
         if logger is None: logger=self.logger
-        sync=Runner(['/bin/sync'])
-        pipeline.Pipeline(sync,capture=True,logger=logger)
+        sync=produtil.prog.Runner(['/bin/sync'])
+        produtil.pipeline.Pipeline(sync,capture=True,logger=logger)
 
     def openmp(self,arg,threads):
         """!Adds OpenMP support to the provided object
@@ -88,7 +86,7 @@ class Implementation(ImplementationBase):
         @returns an empty list
         @param exe The executable to run on compute nodes.
         @param kwargs Ignored."""
-        return ImmutableRunner([str(exe)],**kwargs)
+        return produtil.prog.ImmutableRunner([str(exe)],**kwargs)
     
     def mpirunner(self,arg,allranks=False,**kwargs):
         """!Turns a produtil.mpiprog.MPIRanksBase tree into a produtil.prog.Runner
@@ -106,10 +104,10 @@ class Implementation(ImplementationBase):
     def _get_available_nodes(self):
         available_nodes=list()
         nodeset=set()
-        scontrol=Runner([
+        scontrol=produtil.prog.Runner([
             self.scontrol_path,'show','hostnames',
             os.environ['SLURM_NODELIST']])
-        p=pipeline.Pipeline(
+        p=produtil.pipeline.Pipeline(
             scontrol,capture=True,logger=self.logger)
         nodelist=p.to_string()
         for line in nodelist.splitlines():
@@ -123,7 +121,7 @@ class Implementation(ImplementationBase):
     def mpirunner_impl(self,arg,allranks=False,rewrite_nodefile=True,label_io=False,**kwargs):
         """!This is the underlying implementation of mpirunner and should
         not be called directly."""
-        assert(isinstance(arg,mpiprog.MPIRanksBase))
+        assert(isinstance(arg,produtil.mpiprog.MPIRanksBase))
         (serial,parallel)=arg.check_serial()
         if serial and parallel:
             raise MPIMixed('Cannot mix serial and parallel MPI ranks in the '
@@ -145,7 +143,7 @@ class Implementation(ImplementationBase):
             srun_args.append('--distribution=block:block')
             arglist=[ str(a) for a in arg.to_arglist(
                     pre=srun_args,before=[],between=[])]
-            return Runner(arglist)
+            return produtil.prog.Runner(arglist)
         elif allranks:
             raise MPIAllRanksError(
                 "When using allranks=True, you must provide an mpi program "
@@ -153,9 +151,9 @@ class Implementation(ImplementationBase):
                 "all ranks).")
         elif serial:
             srun_args.append('--distribution=block:block')
-            arg=mpiprog.collapse(arg)
+            arg=produtil.mpiprog.collapse(arg)
             lines=[str(a) for a in arg.to_arglist(to_shell=True,expand=True)]
-            return Runner(
+            return produtil.prog.Runner(
                 [self.srun_path,'--ntasks','%s'%(arg.nranks()),self.mpiserial_path],
                 prerun=CMDFGen('serialcmdf',lines,silent=self.silent,**kwargs))
         else:
@@ -206,4 +204,4 @@ class Implementation(ImplementationBase):
                     silent=self.silent,filename_option='--nodelist',
                     next_prerun=prerun,**kwargs)
 
-            return Runner(srun_args,prerun=prerun)
+            return produtil.prog.Runner(srun_args,prerun=prerun)
