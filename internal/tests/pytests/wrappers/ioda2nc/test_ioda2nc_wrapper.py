@@ -230,7 +230,15 @@ def test_ioda2nc_missing_inputs(metplus_config, get_test_data_dir, missing,
           'IODA2NC_NMSG': '10',
           },
          {}, ' -iodafile *INPUT_DIR*/other/file.nc -valid_beg 20200309_12 -valid_end 20200310_12 -nmsg 10'),
-
+        # 40
+        ({'IODA2NC_TIME_OFFSET_WARNING': 3},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 3;'}, ''),
+        # 41
+        ({'TIME_OFFSET_WARNING': 2},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 2;'}, ''),
+        # 42
+        ({'TIME_OFFSET_WARNING': 2, 'IODA2NC_TIME_OFFSET_WARNING': 4},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 4;'}, ''),
     ]
 )
 @pytest.mark.wrapper

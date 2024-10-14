@@ -784,7 +784,9 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             add_field_info_to_time_info(time_info, var_info)
 
             # get formatted field dictionary to pass into the MET config file
-            fcst_field, obs_field = self.get_formatted_fields(var_info, time_info)
+            fcst_field, obs_field = (
+                self.get_formatted_fields(var_info, time_info, fcst_path, obs_path)
+            )
             if fcst_field is None:
                 continue
 
@@ -1033,20 +1035,22 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         except (FileNotFoundError, KeyError):
             return None, None
 
-    def get_formatted_fields(self, var_info, time_info):
+    def get_formatted_fields(self, var_info, time_info, fcst_path, obs_path):
         """! Get forecast and observation field information for var_info and
             format it so it can be passed into the MET config file
 
             @param var_info dictionary containing info to format
             @param time_info dictionary containing time information
+            @param fcst_path path to file list file for forecast data
+            @param obs_path path to file list file for observation data
             @returns tuple containing strings of the formatted forecast and
             observation information or (None, None) if something went wrong
         """
         fcst_field_list = (
-            self._get_field_list('fcst', var_info, time_info)
+            self._get_field_list('fcst', var_info, time_info, obs_path)
         )
         obs_field_list = (
-            self._get_field_list('obs', var_info, time_info)
+            self._get_field_list('obs', var_info, time_info, fcst_path)
         )
 
         if not fcst_field_list or not obs_field_list:
@@ -1058,7 +1062,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         return fcst_fields, obs_fields
 
-    def _get_field_list(self, data_type, var_info, time_info):
+    def _get_field_list(self, data_type, var_info, time_info, file_list_path):
         """!Get formatted field information in a list.
         If no time (init/valid/lead) filename template tags were found in the
         level value or if the time info contains all init/valid/lead values
@@ -1071,8 +1075,10 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         @param data_type type of data to process, e.g. fcst or obs
         @param var_info dictionary containing info to format
         @param time_info dictionary containing time information
+        @param file_list_path path to file list file to parse
         @returns list containing formatted field info to pass to MET config
         """
+        other = 'OBS' if data_type == 'fcst' else 'FCST'
         # if there are no time tags (init/valid/lead) in the field level
         # or if init, valid, and lead have values in time_info,
         # get field info for a single field to pass to the MET config file
@@ -1082,10 +1088,15 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         field_list = []
 
-        # loop through fcst/obs files to read time info
+        # handle multiple templates
+        templates = []
+        for template in self.c_dict[f'{other}_INPUT_TEMPLATE'].split(','):
+            templates.append(os.path.join(self.c_dict[f'{other}_INPUT_DIR'], template.strip()))
+
+        # loop through fcst/obs files to extract time info
         # for each file apply time info to field info and add to list
-        for file_dict in self.c_dict['ALL_FILES']:
-            file_time_info = file_dict['time_info']
+        for file_time_info in self._get_times_from_file_list(file_list_path,
+                                                             templates):
             field = self._get_field_sub_level(data_type, var_info, file_time_info)
             if field:
                 field_list.extend(field)

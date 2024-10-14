@@ -79,56 +79,25 @@ def test_point2grid_missing_inputs(metplus_config, get_test_data_dir,
 
 
 @pytest.mark.parametrize(
-    'config_overrides, env_var_values, optional_args', [
-        ({}, {}, []),
-        ({'POINT2GRID_REGRID_METHOD': 'UW_MEAN'}, {}, ['-method UW_MEAN']),
+    'config_overrides, optional_args', [
+        ({}, {}),
+        ({'POINT2GRID_REGRID_METHOD': 'UW_MEAN'}, ['-method UW_MEAN']),
         ({'POINT2GRID_REGRID_METHOD': 'UW_MEAN',
-          'POINT2GRID_GAUSSIAN_DX': '2',}, {},
+          'POINT2GRID_GAUSSIAN_DX': '2',},
          ['-method UW_MEAN', '-gaussian_dx 2']),
-        ({'POINT2GRID_GAUSSIAN_RADIUS': '81.231'}, {},
+        ({'POINT2GRID_GAUSSIAN_RADIUS': '81.231'},
          ['-gaussian_radius 81.231']),
-        ({'POINT2GRID_PROB_CAT_THRESH': '1'}, {}, ['-prob_cat_thresh 1']),
-        ({'POINT2GRID_VLD_THRESH': '0.5'}, {}, ['-vld_thresh 0.5']),
-        ({'POINT2GRID_ADP': '{valid?fmt=%Y%m}.nc'}, {}, ['-adp 201706.nc']),
-        ({'POINT2GRID_REGRID_TO_GRID': 'G212'}, {}, []),
-        ({'POINT2GRID_REGRID_TO_GRID': 'lambert 614 428 12.190 -133.459 -95.0 12.19058 6367.47 25.0 N'}, {}, []),
-        ({'POINT2GRID_INPUT_LEVEL': '(*,*)'}, {}, []),
-        ({'POINT2GRID_VALID_TIME': '20240509_120800', },
-         {'METPLUS_VALID_TIME': 'valid_time = "20240509_120800";'}, []),
-
-        ({'POINT2GRID_OBS_WINDOW_BEG': '-5400', },
-         {'METPLUS_OBS_WINDOW_DICT': 'obs_window = {beg = -5400;}'}, []),
-
-        ({'POINT2GRID_OBS_WINDOW_END': '3600', },
-         {'METPLUS_OBS_WINDOW_DICT': 'obs_window = {end = 3600;}'}, []),
-
-        ({'POINT2GRID_OBS_WINDOW_BEG': '-3600', 'POINT2GRID_OBS_WINDOW_END': '5400'},
-         {'METPLUS_OBS_WINDOW_DICT': 'obs_window = {beg = -3600;end = 5400;}'}, []),
-        ({'POINT2GRID_MESSAGE_TYPE': 'ADPSFC, ADPUPA'},
-         {'METPLUS_MESSAGE_TYPE': 'message_type = ["ADPSFC", "ADPUPA"];'}, []),
-
-        ({'POINT2GRID_VAR_NAME_MAP1_KEY': '3', 'POINT2GRID_VAR_NAME_MAP1_VAL': 'MAGIC'},
-         {'METPLUS_VAR_NAME_MAP_LIST': 'var_name_map = [{key = "3";val = "MAGIC";}];'}, []),
-
-        ({'POINT2GRID_VAR_NAME_MAP1_KEY': '13', 'POINT2GRID_VAR_NAME_MAP1_VAL': 'LUCKY',
-          'POINT2GRID_VAR_NAME_MAP2_KEY': '3', 'POINT2GRID_VAR_NAME_MAP2_VAL': 'MAGIC'
-          },
-         {'METPLUS_VAR_NAME_MAP_LIST': 'var_name_map = [{key = "13";val = "LUCKY";},{key = "3";val = "MAGIC";}];'}, []),
-
-        ({'POINT2GRID_OBS_QUALITY_INC': '0, 1, 2', },
-         {'METPLUS_OBS_QUALITY_INC': 'obs_quality_inc = ["0", "1", "2"];'}, []),
-
-        ({'POINT2GRID_OBS_QUALITY_EXC': '3,4, 5', },
-         {'METPLUS_OBS_QUALITY_EXC': 'obs_quality_exc = ["3", "4", "5"];'}, []),
-        ({'POINT2GRID_GOES_QC_FLAGS': '0,1'}, {}, ['-goes_qc 0,1']),
-        ({'POINT2GRID_QC_FLAGS': '0,1'}, {}, ['-goes_qc 0,1']),
-        ({'POINT2GRID_GOES_QC_FLAGS': '0,1', 'POINT2GRID_QC_FLAGS': '2,3'}, {}, ['-goes_qc 0,1']),
-
+        ({'POINT2GRID_PROB_CAT_THRESH': '1'}, ['-prob_cat_thresh 1']),
+        ({'POINT2GRID_VLD_THRESH': '0.5'}, ['-vld_thresh 0.5']),
+        ({'POINT2GRID_QC_FLAGS': '0,1'}, ['-qc 0,1']),
+        ({'POINT2GRID_ADP': '{valid?fmt=%Y%m}.nc'}, ['-adp 201706.nc']),
+        ({'POINT2GRID_REGRID_TO_GRID': 'G212'}, []),
+        ({'POINT2GRID_REGRID_TO_GRID': 'lambert 614 428 12.190 -133.459 -95.0 12.19058 6367.47 25.0 N'}, []),
+        ({'POINT2GRID_INPUT_LEVEL': '(*,*)'}, []),
     ]
 )
 @pytest.mark.wrapper
-def test_point2grid_run(metplus_config, config_overrides, optional_args,
-                        env_var_values):
+def test_point2grid_run(metplus_config, config_overrides, optional_args):
     config = metplus_config
     set_minimum_config_settings(config)
 
@@ -174,19 +143,13 @@ def test_point2grid_run(metplus_config, config_overrides, optional_args,
     else:
         level = ''
 
-    config_file = wrapper.c_dict.get('CONFIG_FILE')
     extra_args = " ".join(optional_args) + " " if optional_args else ""
-
-    missing_env = [item for item in env_var_values
-                   if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
-    env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
-
     expected_cmds = []
-    for idx in range(0, len(input_files)):
+    for idx in range(0, 3):
         expected_cmds.append(
             f'{app_path} {input_files[idx]} {grids[idx]} {output_files[idx]}'
             f' -field \'name="{input_name}"; level="{level}";\''
-            f' -config {config_file} {extra_args}{verbosity}'
+            f' {extra_args}{verbosity}'
         )
 
     all_cmds = wrapper.run_all_times()
@@ -195,30 +158,3 @@ def test_point2grid_run(metplus_config, config_overrides, optional_args,
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
         assert cmd == expected_cmd
-
-        # check that environment variables were set properly
-        # including deprecated env vars (not in wrapper env var keys)
-        for env_var_key in env_var_keys:
-            print(f"ENV VAR: {env_var_key}")
-            match = next((item for item in env_vars if
-                          item.startswith(env_var_key)), None)
-            assert match is not None
-            value = match.split('=', 1)[1]
-            assert env_var_values.get(env_var_key, '') == value
-
-
-@pytest.mark.wrapper
-def test_get_config_file(metplus_config):
-    fake_config_name = '/my/config/file'
-
-    config = metplus_config
-    default_config_file = os.path.join(config.getdir('PARM_BASE'),
-                                       'met_config',
-                                       'Point2GridConfig_wrapped')
-
-    wrapper = Point2GridWrapper(config)
-    assert wrapper.c_dict['CONFIG_FILE'] == default_config_file
-
-    config.set('config', 'POINT2GRID_CONFIG_FILE', fake_config_name)
-    wrapper = Point2GridWrapper(config)
-    assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name

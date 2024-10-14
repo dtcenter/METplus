@@ -239,6 +239,12 @@ def test_tc_diag_missing_inputs(metplus_config, get_test_data_dir,
         ({'TC_DIAG_ONE_TIME_PER_FILE_FLAG': 'false', },
          {'METPLUS_ONE_TIME_PER_FILE_FLAG': 'one_time_per_file_flag = FALSE;'}),
 
+        ({'TC_DIAG_TIME_OFFSET_WARNING': 3},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 3;'}),
+        ({'TIME_OFFSET_WARNING': 2},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 2;'}),
+        ({'TIME_OFFSET_WARNING': 2, 'TC_DIAG_TIME_OFFSET_WARNING': 4},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 4;'}),
     ]
 )
 @pytest.mark.wrapper

@@ -12,8 +12,9 @@
 
 import tempfile,stat,os, logging, io, re
 
-from metplus.produtil.pipeline import Pipeline
-from metplus.produtil.prog import shbackslash, Runner, ImmutableRunner
+import produtil.prog
+import produtil.pipeline
+from produtil.prog import shbackslash
 
 module_logger=logging.getLogger('produtil.mpi_impl')
 
@@ -138,8 +139,8 @@ class ImplementationBase(object):
     def runsync(self,logger=None):
         """!Runs the "sync" command as an exe()."""
         if logger is None: logger=self.logger
-        sync=Runner(['/bin/sync'])
-        Pipeline(sync,capture=True,logger=logger)
+        sync=produtil.prog.Runner(['/bin/sync'])
+        produtil.pipeline.Pipeline(sync,capture=True,logger=logger)
     def openmp(self,arg,threads):
         """!Does nothing.  This implementation does not support OpenMP.
     
@@ -167,7 +168,7 @@ class ImplementationBase(object):
         @returns an empty list
         @param exe The executable to run on compute nodes.
         @param kwargs Ignored."""
-        return ImmutableRunner([str(exe)],**kwargs)
+        return produtil.prog.ImmutableRunner([str(exe)],**kwargs)
     
     
 class CMDFGen(object):

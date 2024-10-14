@@ -6,7 +6,7 @@ from typing import NamedTuple, Union
 from logging import Logger
 import shlex
 
-from metplus.produtil.run import exe, run
+from produtil.run import exe, run
 
 from .string_manip import get_logfile_info, log_terminal_includes_info
 from .system_util import get_user_info, write_list_to_file

@@ -125,8 +125,7 @@
 # __init__.py on how to modify it to achieve these steps.
 
 import logging
-import metplus.produtil.fileop
-import metplus.produtil.prog
+import produtil.fileop
 
 ##@var __all__
 # An empty list that indicates no symbols are exported by "from
@@ -221,8 +220,8 @@ def register_implementations(logger=None):
     # no_implementation=None is used to detect if
     # register_implementations was called.
     global no_implementation
-    from metplus.produtil.mpi_impl.no_mpi import Implementation
-    no_implementation=Implementation.detect()
+    import produtil.mpi_impl.no_mpi
+    no_implementation=produtil.mpi_impl.no_mpi.Implementation.detect()
 
     # Now add each implementation.  We need to wrap each around a
     # try...except so that NCEP Central Operations can delete the
@@ -231,64 +230,64 @@ def register_implementations(logger=None):
 
     try:
         # If we have srun, and we're in a pack group...
-        import metplus.produtil.mpi_impl.srun_pack_groups
-        add_implementation(metplus.produtil.mpi_impl.srun_pack_groups.Implementation)
+        import produtil.mpi_impl.srun_pack_groups
+        add_implementation(produtil.mpi_impl.srun_pack_groups.Implementation)
     except ImportError:
         pass
 
     try:
         # This must be after the pack group case.
         # If we have srun and SLURM resources...
-        import metplus.produtil.mpi_impl.srun
-        add_implementation(metplus.produtil.mpi_impl.srun.Implementation)
+        import produtil.mpi_impl.srun
+        add_implementation(produtil.mpi_impl.srun.Implementation)
     except ImportError:
         pass
 
     try:
-        import metplus.produtil.mpi_impl.inside_aprun
-        add_implementation(metplus.produtil.mpi_impl.inside_aprun.Implementation)
+        import produtil.mpi_impl.inside_aprun
+        add_implementation(produtil.mpi_impl.inside_aprun.Implementation)
     except ImportError:
         pass
 
     try:
-        import metplus.produtil.mpi_impl.pbs_cray_intel
-        add_implementation(metplus.produtil.mpi_impl.pbs_cray_intel.Implementation)
+        import produtil.mpi_impl.pbs_cray_intel
+        add_implementation(produtil.mpi_impl.pbs_cray_intel.Implementation)
     except ImportError:
         pass
 
     try:
-        import metplus.produtil.mpi_impl.lsf_cray_intel
-        add_implementation(metplus.produtil.mpi_impl.lsf_cray_intel.Implementation)
+        import produtil.mpi_impl.lsf_cray_intel
+        add_implementation(produtil.mpi_impl.lsf_cray_intel.Implementation)
     except ImportError:
         pass
 
     try:
-        import metplus.produtil.mpi_impl.impi
-        add_implementation(metplus.produtil.mpi_impl.impi.Implementation)
+        import produtil.mpi_impl.impi
+        add_implementation(produtil.mpi_impl.impi.Implementation)
     except ImportError:
         pass
 
     try:
-        import metplus.produtil.mpi_impl.mpirun_lsf
-        add_implementation(metplus.produtil.mpi_impl.mpirun_lsf.Implementation)
+        import produtil.mpi_impl.mpirun_lsf
+        add_implementation(produtil.mpi_impl.mpirun_lsf.Implementation)
     except ImportError:
         pass
 
     try:
-        import metplus.produtil.mpi_impl.mpiexec_mpt
-        add_implementation(metplus.produtil.mpi_impl.mpiexec_mpt.Implementation)
+        import produtil.mpi_impl.mpiexec_mpt
+        add_implementation(produtil.mpi_impl.mpiexec_mpt.Implementation)
     except ImportError:
         pass
 
     try:
-        import metplus.produtil.mpi_impl.mpiexec
-        add_implementation(metplus.produtil.mpi_impl.mpiexec.Implementation)
+        import produtil.mpi_impl.mpiexec
+        add_implementation(produtil.mpi_impl.mpiexec.Implementation)
     except ImportError:
         pass
 
     try:
-        import metplus.produtil.mpi_impl.srun_shell
-        add_implementation(metplus.produtil.mpi_impl.srun_shell.Implementation)
+        import produtil.mpi_impl.srun_shell
+        add_implementation(produtil.mpi_impl.srun_shell.Implementation)
     except ImportError:
         pass
 
@@ -316,7 +315,7 @@ def get_mpi(mpi_name=NO_NAME,force=False,logger=None,**kwargs):
     @raise NotImplementedError if the MPI implementation is unknown,
     or if the implementation is unavailble on this machine, and
     force=False"""
-    import metplus.produtil.mpi_impl.no_mpi as no_mpi
+
     if logger is None:
         logger=logging.getLogger('mpi_impl')
 
@@ -352,8 +351,8 @@ def get_mpi(mpi_name=NO_NAME,force=False,logger=None,**kwargs):
             result=detect(
                 force=force,logger=logger,**kwargs)
         except (Exception,
-                metplus.produtil.fileop.FileOpError,
-                metplus.produtil.prog.ExitStatusException):
+                produtil.fileop.FileOpError,
+                produtil.prog.ExitStatusException):
             # Ignore exceptions related to an inability to detect the
             # MPI implementation.  We assume the issue has already
             # been logged, and we move on to the next implementation's

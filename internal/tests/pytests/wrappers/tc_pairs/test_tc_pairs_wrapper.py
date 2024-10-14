@@ -607,6 +607,12 @@ def test_tc_pairs_storm_id_lists(metplus_config, get_test_data_dir, config_overr
         },
          {'DIAG_ARG': '-diag TCDIAG <BDECK_DIR>/bmlq2014123118.gfso.0104',}),
 
+        ('VALID', {'TC_PAIRS_TIME_OFFSET_WARNING': 3},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 3;'}),
+        ('VALID', {'TIME_OFFSET_WARNING': 2},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 2;'}),
+        ('VALID', {'TIME_OFFSET_WARNING': 2, 'TC_PAIRS_TIME_OFFSET_WARNING': 4},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 4;'}),
     ]
 )
 @pytest.mark.wrapper

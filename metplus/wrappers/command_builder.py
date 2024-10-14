@@ -15,8 +15,7 @@ from datetime import datetime
 from abc import ABCMeta
 from inspect import getframeinfo, stack
 
-from ..util.constants import PYTHON_EMBEDDING_TYPES, COMPRESSION_EXTENSIONS
-from ..util.constants import MULTIPLE_INPUT_WRAPPERS, TIME_OFFSET_WARNING_WRAPPERS
+from ..util.constants import PYTHON_EMBEDDING_TYPES, COMPRESSION_EXTENSIONS, MULTIPLE_INPUT_WRAPPERS
 from ..util import getlist, preprocess_file, loop_over_times_and_call
 from ..util import do_string_sub, ti_calculate, get_seconds_from_string
 from ..util import get_time_from_file, shift_time_seconds, seconds_to_met_time
@@ -104,16 +103,15 @@ class CommandBuilder:
             # add key to list of env vars to set
             self.env_var_keys.append(self.MET_OVERRIDES_KEY)
 
-            if get_wrapper_name(self.app_name) in TIME_OFFSET_WARNING_WRAPPERS:
-                # add time_offset_warning env var
-                self.env_var_keys.append('METPLUS_TIME_OFFSET_WARNING')
-                time_offset_warning = self.get_wrapper_or_generic_config(
-                    'TIME_OFFSET_WARNING', var_type='int'
+            # add time_offset_warning env var
+            self.env_var_keys.append('METPLUS_TIME_OFFSET_WARNING')
+            time_offset_warning = self.get_wrapper_or_generic_config(
+                'TIME_OFFSET_WARNING', var_type='int'
+            )
+            if time_offset_warning != '':
+                self.env_var_dict['METPLUS_TIME_OFFSET_WARNING'] = (
+                    f'time_offset_warning = {time_offset_warning};'
                 )
-                if time_offset_warning != '':
-                    self.env_var_dict['METPLUS_TIME_OFFSET_WARNING'] = (
-                        f'time_offset_warning = {time_offset_warning};'
-                    )
 
             # warn if any environment variables set by the wrapper are not
             # being utilized in the user's config file

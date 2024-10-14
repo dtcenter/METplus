@@ -183,6 +183,25 @@ def test_ascii2nc_missing_inputs(metplus_config, get_test_data_dir,
            'type = ["min", "max", "range", "mean", "stdev", "median", "p80"];'
            'vld_freq = 0;vld_thresh = 0.5;}')}),
 
+        ({'TIME_OFFSET_WARNING': '3'},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 3;',
+          'METPLUS_TIME_SUMMARY_DICT':
+              ('time_summary = {flag = FALSE;raw_data = FALSE;beg = "000000";'
+               'end = "235959";step = 300;width = 600;'
+               'grib_code = [11, 204, 211];obs_var = [];'
+               'type = ["min", "max", "range", "mean", "stdev", "median", "p80"];'
+               'vld_freq = 0;vld_thresh = 0.0;}')
+          }),
+
+        ({'TIME_OFFSET_WARNING': '3', 'ASCII2NC_TIME_OFFSET_WARNING': '4'},
+         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 4;',
+          'METPLUS_TIME_SUMMARY_DICT':
+              ('time_summary = {flag = FALSE;raw_data = FALSE;beg = "000000";'
+               'end = "235959";step = 300;width = 600;'
+               'grib_code = [11, 204, 211];obs_var = [];'
+               'type = ["min", "max", "range", "mean", "stdev", "median", "p80"];'
+               'vld_freq = 0;vld_thresh = 0.0;}')
+          }),
     ]
 )
 @pytest.mark.wrapper
