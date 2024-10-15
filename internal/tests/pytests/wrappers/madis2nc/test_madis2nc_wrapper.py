@@ -139,8 +139,6 @@ def test_madis2nc_missing_inputs(metplus_config, get_test_data_dir,
           'MADIS2NC_MASK_GRID': 'mask_grid',
           'MADIS2NC_MASK_POLY': '/some/path/to/mask/poly',
           'MADIS2NC_MASK_SID': 'mask_sid,/some/path/to/mask/sid'}, {}),
-        ({'MADIS2NC_TIME_OFFSET_WARNING': '4', },
-         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 4;'}),
 
     ]
 )

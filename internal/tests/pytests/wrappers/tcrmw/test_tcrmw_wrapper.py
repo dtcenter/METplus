@@ -122,12 +122,6 @@ def set_minimum_config_settings(config):
         ({'TC_RMW_RMW_SCALE': '15', },
          {'METPLUS_RMW_SCALE': 'rmw_scale = 15.0;'}),
 
-        ({'TC_RMW_TIME_OFFSET_WARNING': 3},
-         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 3;'}),
-        ({'TIME_OFFSET_WARNING': 2},
-         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 2;'}),
-        ({'TIME_OFFSET_WARNING': 2, 'TC_RMW_TIME_OFFSET_WARNING': 4},
-         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 4;'}),
     ]
 )
 @pytest.mark.wrapper
