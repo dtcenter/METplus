@@ -220,7 +220,13 @@ The example template should be used by users as a starting point, but will need 
 updated with the use case's information. The template applies to both met_tool_wrappers and model_applications use cases.
 When completing the template, users should read through each section and its description 
 below before filling in a section, as some sections may not apply 
-to the use case being documented. For real examples, users are encouraged to review
+to the use case being documented. To assist reviewers and contributors, a special string::
+
+# [UPDATE_SECTION_CONTENT]
+
+has been added to each section described below. As you review the template and adapt it for your use case,
+please remove this line when you've decided the existing content is sufficient or after you've added
+content specific to your use case. For real examples, users are encouraged to review
 existing `Model Applications <https://metplus.readthedocs.io/en/latest/generated/model_applications/index.html>`_
 use case documentation. Except for the Header and Path to Use Case Configuration File section,
 all lines should begin with the '#' character to signify text, followed by at least one space before

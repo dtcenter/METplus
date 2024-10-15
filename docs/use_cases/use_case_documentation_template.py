@@ -14,6 +14,7 @@
 ##############################################################################
 # Scientific Objective
 # --------------------
+# [UPDATE_SECTION_CONTENT]
 #
 # To provide statistical information on the forecast hail size compared to
 # the observed hail size from MRMS MESH data. Using objects to verify hail size
@@ -26,12 +27,14 @@
 ##############################################################################
 # Version Added
 # -------------
+# [UPDATE_SECTION_CONTENT]
 #
 # METplus version 6.0
 
 ##############################################################################
 # Datasets
 # --------
+# [UPDATE_SECTION_CONTENT]
 # **Forecast:** Global Forecast System (GFS) 25km resolution, 2m temperature
 #
 # **Observation:** ECMWF Reanalysis v5 (ERA5) 5 degree resolution, 2m temperature
@@ -50,6 +53,7 @@
 ##############################################################################
 # METplus Components
 # ------------------
+# [UPDATE_SECTION_CONTENT]
 #
 # The only tool this use case calls is GridStat. Within GridStat a Python 
 # script is used for ingesting forecast data, once for each year of data of 
@@ -58,6 +62,7 @@
 ##############################################################################
 # METplus Workflow
 # ----------------
+# [UPDATE_SECTION_CONTENT]
 #
 # **Beginning time (INIT_BEG):** 1982-01-01
 # **End time (INIT_END):** 2010-01-02
@@ -77,6 +82,7 @@
 ##############################################################################
 # METplus Configuration
 # ---------------------
+# [UPDATE_SECTION_CONTENT]
 #
 # METplus first loads all of the configuration files found in parm/metplus_config, 
 # then it loads any configuration files passed to METplus via the command line, 
@@ -89,6 +95,7 @@
 ##############################################################################
 # MET Configuration
 # -----------------
+# [UPDATE_SECTION_CONTENT]
 #
 # METplus sets environment variables based on user settings in the METplus
 # configuration file. See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details.
@@ -106,6 +113,7 @@
 ##############################################################################
 # Python Embedding
 # ----------------
+# [UPDATE_SECTION_CONTENT]
 #
 # This use case calls the read_ASCAT_data.py script to read and pass to PointStat 
 # the user-requested variable. The script needs 5 inputs in the following order: 
@@ -131,6 +139,7 @@
 ##############################################################################
 # Python Scripting
 # ----------------
+# [UPDATE_SECTION_CONTENT]
 #
 # This use case uses a Python script to perform plotting, which at the time of 
 # this use case creation was not an ability METplus had. Additionally some of 
@@ -149,6 +158,7 @@
 ##############################################################################
 # Running METplus
 # ---------------
+# [UPDATE_SECTION_CONTENT]
 #
 # Pass the use case configuration file to the run_metplus.py script along 
 # with any user-specific system configuration files if desired:
@@ -160,6 +170,7 @@
 ##############################################################################
 # Expected Output
 # ---------------
+# [UPDATE_SECTION_CONTENT]
 #
 # A successful run will output the following both to the screen and to the logfile::
 #   INFO: METplus has successfully finished running.
@@ -186,6 +197,7 @@
 ##############################################################################
 # Keywords
 # --------
+# [UPDATE_SECTION_CONTENT]
 #
 # .. note::
 #
