@@ -1,0 +1,11 @@
+[20240523_17:36:49 develop] No PR - Testing that the truth data will update even if there are no changes to the METplus repository since the last update
+[20240612_13:45:41 develop] #2610 - #2610 changed the input data for 3 short range use cases (10-12).
+[20240627_18:08:16 develop] dtcenter/MET#2921 - Re-defines azimuths definitions and corrects the logic for deriving radial and tangential winds.
+[20240801_02:56:51 develop] dtcenter/MET#2939 - Changes CDP to OCDP, for observation climo distribution percentiles.
+[20240822_16:27:31 develop] #2657 - Update 3 Python embedding scripts for 3 additional MPR data columns in Stat-Analysis
+[20240830_21:30:39 develop] dtcenter/MET#2951 - Modifies Series-Analysis output variable names for PSTD statistics by including the observation threshold string, as is done for PCT and PRC outputs.
+[20240905_16:45:56 develop] dtcenter/MET#2959 - Correct bugs in SEDI and BAGSS contingency table statistics found in the CTS line type
+[20240910_19:03:38 develop] dtcenter/MET#2967 - Fixes integer overflow bug in the computation of the CTS and NBRCTS ORSS, ORSS_NCL, and ORSS_NCU columns.
+[20240926_16:50:38 develop] #2701 - #2701 added a new use case (SeriesAnalysis_aggr) that produces new output
+[20241014_19:42:56 develop] dtcenter/MET#2988 - dtcenter/MET#2988 -- see issue #2719 for details -- retry because there was an issue with convert not being available in the ubuntu image that runs the unit tests
+[20241015_17:11:29 develop] dtcenter/MET#2988 - dtcenter/MET#2988 -- see issue #2719 for details -- retry (again) because there was an issue with convert not being available in the ubuntu image that runs the unit tests and METdbLoad use cases were broken
