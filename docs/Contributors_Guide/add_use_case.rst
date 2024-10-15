@@ -215,7 +215,7 @@ use case OR category directory for a model_applications use case
 Python Sphinx Documentation (.py) file with the same name as the METplus configuration file.
 
 The following is a discussion of the use case documentation template and all of its sections.
-The `example template<https://github.com/dtcenter/METplus/blob/develop/docs/use_cases/use_case_documentation_template.py>`_ is available within the METplus repository. 
+The `example template <https://github.com/dtcenter/METplus/blob/develop/docs/use_cases/use_case_documentation_template.py>`_ is available within the METplus repository. 
 The example template should be used by users as a starting point, but will need to be completely 
 updated with the use case's information. The template applies to both met_tool_wrappers and model_applications use cases.
 When completing the template, users should read through each section and its description 
