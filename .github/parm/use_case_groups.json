@@ -238,49 +238,49 @@
   {
     "category": "short_range",
     "index_list": "1",
-    "run": true
+    "run": false
   },
   {
     "category": "short_range",
     "index_list": "2-6",
-    "run": true
+    "run": false
   },
   {
     "category": "short_range",
     "index_list": "7",
-    "run": true
+    "run": false
   },
   {
     "category": "short_range",
     "index_list": "8",
-    "run": true
+    "run": false
   },
   {
     "category": "short_range",
     "index_list": "9",
-    "run": true
+    "run": false
   },
   {
     "category": "short_range",
     "index_list": "10-12",
-    "run": true
+    "run": false
   },
   {
     "category": "short_range",
     "index_list": "13",
-    "run": true
+    "run": false
   },
   {
     "category": "short_range",
     "index_list": "14",
     "disabled": true,
-    "run": true
+    "run": false
   },
   {
     "category": "short_range",
     "index_list": "15",
     "disabled": true,
-    "run":true
+    "run":false
   },
   {
     "category": "space_weather",
