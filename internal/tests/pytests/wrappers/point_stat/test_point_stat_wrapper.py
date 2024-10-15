@@ -863,6 +863,8 @@ def test_met_dictionary_in_var_options(metplus_config):
                                            'time_interp_method = NEAREST;'
                                            'match_month = TRUE;day_interval = 30;'
                                            'hour_interval = 12;}')}),
+        ({'POINT_STAT_POINT_WEIGHT_FLAG': 'SID', },
+         {'METPLUS_POINT_WEIGHT_FLAG': 'point_weight_flag = SID;'}),
     ]
 )
 @pytest.mark.wrapper_a

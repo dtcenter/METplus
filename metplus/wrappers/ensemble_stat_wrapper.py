@@ -68,6 +68,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'METPLUS_ENS_MEMBER_IDS',
         'METPLUS_CONTROL_ID',
         'METPLUS_GRID_WEIGHT_FLAG',
+        'METPLUS_POINT_WEIGHT_FLAG',
         'METPLUS_PROB_CAT_THRESH',
         'METPLUS_PROB_PCT_THRESH',
         'METPLUS_ECLV_POINTS',
@@ -350,6 +351,11 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                             data_type='string')
 
         self.add_met_config(name='grid_weight_flag',
+                            data_type='string',
+                            extra_args={'remove_quotes': True,
+                                        'uppercase': True})
+
+        self.add_met_config(name='point_weight_flag',
                             data_type='string',
                             extra_args={'remove_quotes': True,
                                         'uppercase': True})

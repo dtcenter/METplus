@@ -208,6 +208,9 @@ ${METPLUS_UGRID_COORDINATES_FILE}
 
 ////////////////////////////////////////////////////////////////////////////////
 
+//point_weight_flag =
+${METPLUS_POINT_WEIGHT_FLAG}
+
 tmp_dir = "${MET_TMP_DIR}";
 
 // output_prefix =

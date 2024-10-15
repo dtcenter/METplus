@@ -234,6 +234,8 @@ rng = {
 
 //grid_weight_flag =
 ${METPLUS_GRID_WEIGHT_FLAG}
+//point_weight_flag =
+${METPLUS_POINT_WEIGHT_FLAG}
 //output_prefix =
 ${METPLUS_OUTPUT_PREFIX}
 //version          = "V9.0";

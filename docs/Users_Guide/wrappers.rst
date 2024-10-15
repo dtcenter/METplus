@@ -356,6 +356,7 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_ENS_MEMBER_IDS`
 | :term:`ENSEMBLE_STAT_CONTROL_ID`
 | :term:`ENSEMBLE_STAT_GRID_WEIGHT_FLAG`
+| :term:`ENSEMBLE_STAT_POINT_WEIGHT_FLAG`
 | :term:`ENSEMBLE_STAT_PROB_CAT_THRESH`
 | :term:`ENSEMBLE_STAT_PROB_PCT_THRESH`
 | :term:`ENSEMBLE_STAT_ECLV_POINTS`
@@ -1090,6 +1091,18 @@ ${METPLUS_GRID_WEIGHT_FLAG}
      - MET Config File
    * - :term:`ENSEMBLE_STAT_GRID_WEIGHT_FLAG`
      - grid_weight_flag
+
+${METPLUS_POINT_WEIGHT_FLAG}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_POINT_WEIGHT_FLAG`
+     - point_weight_flag
 
 ${METPLUS_OUTPUT_PREFIX}
 """"""""""""""""""""""""
@@ -7097,6 +7110,7 @@ Configuration
 | :term:`POINT_STAT_UGRID_MAX_DISTANCE_KM`
 | :term:`POINT_STAT_UGRID_COORDINATES_FILE`
 | :term:`POINT_STAT_UGRID_CONFIG_FILE`
+| :term:`POINT_STAT_POINT_WEIGHT_FLAG`
 |
 
 .. warning:: **DEPRECATED:**
@@ -7786,6 +7800,18 @@ ${METPLUS_OUTPUT_PREFIX}
      - MET Config File
    * - :term:`POINT_STAT_OUTPUT_PREFIX`
      - output_prefix
+
+${METPLUS_POINT_WEIGHT_FLAG}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_POINT_WEIGHT_FLAG`
+     - point_weight_flag
 
 ${METPLUS_MET_CONFIG_OVERRIDES}
 """""""""""""""""""""""""""""""
