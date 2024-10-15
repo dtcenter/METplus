@@ -52,6 +52,7 @@ class PointStatWrapper(CompareGriddedWrapper):
         'METPLUS_HSS_EC_VALUE',
         'METPLUS_HIRA_DICT',
         'METPLUS_MESSAGE_TYPE_GROUP_MAP',
+        'METPLUS_OBTYPE_AS_GROUP_VAL_FLAG',
         'METPLUS_FCST_FILE_TYPE',
         'METPLUS_OBS_FILE_TYPE',
         'METPLUS_SEEPS_P1_THRESH',
@@ -279,6 +280,8 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         self.add_met_config(name='message_type_group_map', data_type='list',
                             extra_args={'remove_quotes': True})
+
+        self.add_met_config(name='obtype_as_group_val_flag', data_type='bool')
 
         self.add_met_config(name='seeps_p1_thresh', data_type='string',
                             extra_args={'remove_quotes': True})

@@ -233,6 +233,7 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_CUSTOM_LOOP_LIST`
 | :term:`ENSEMBLE_STAT_SKIP_IF_OUTPUT_EXISTS`
 | :term:`ENSEMBLE_STAT_DESC`
+| :term:`ENSEMBLE_STAT_OBTYPE_AS_GROUP_VAL_FLAG`
 | :term:`ENSEMBLE_STAT_ENS_SSVAR_BIN_SIZE`
 | :term:`ENSEMBLE_STAT_ENS_PHIST_BIN_SIZE`
 | :term:`ENSEMBLE_STAT_CLIMO_CDF_BINS`
@@ -849,6 +850,18 @@ ${METPLUS_OBS_ERROR_FLAG}
      - MET Config File
    * - :term:`ENSEMBLE_STAT_OBS_ERROR_FLAG`
      - obs_error.flag
+
+${METPLUS_OBTYPE_AS_GROUP_VAL_FLAG}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_OBTYPE_AS_GROUP_VAL_FLAG`
+     - obtype_as_group_val_flag
 
 ${METPLUS_ENS_SSVAR_BIN_SIZE}
 """""""""""""""""""""""""""""
@@ -7083,6 +7096,7 @@ Configuration
 | :term:`POINT_STAT_HIRA_SHAPE`
 | :term:`POINT_STAT_HIRA_PROB_CAT_THRESH`
 | :term:`POINT_STAT_MESSAGE_TYPE_GROUP_MAP`
+| :term:`POINT_STAT_OBTYPE_AS_GROUP_VAL_FLAG`
 | :term:`FCST_POINT_STAT_IS_PROB`
 | :term:`FCST_POINT_STAT_PROB_IN_GRIB_PDS`
 | :term:`FCST_POINT_STAT_WINDOW_BEGIN`
@@ -7486,7 +7500,19 @@ ${METPLUS_MESSAGE_TYPE_GROUP_MAP}
      - MET Config File
    * - :term:`POINT_STAT_MESSAGE_TYPE_GROUP_MAP`
      - message_type_group_map
-       
+
+${METPLUS_OBTYPE_AS_GROUP_VAL_FLAG}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_OBTYPE_AS_GROUP_VAL_FLAG`
+     - obtype_as_group_val_flag
+
 ${METPLUS_CLIMO_MEAN_DICT}
 """"""""""""""""""""""""""
 

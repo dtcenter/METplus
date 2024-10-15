@@ -865,6 +865,8 @@ def test_met_dictionary_in_var_options(metplus_config):
                                            'hour_interval = 12;}')}),
         ({'POINT_STAT_POINT_WEIGHT_FLAG': 'SID', },
          {'METPLUS_POINT_WEIGHT_FLAG': 'point_weight_flag = SID;'}),
+        ({'POINT_STAT_OBTYPE_AS_GROUP_VAL_FLAG': 'FALSE', },
+         {'METPLUS_OBTYPE_AS_GROUP_VAL_FLAG': 'obtype_as_group_val_flag = FALSE;'}),
     ]
 )
 @pytest.mark.wrapper_a
