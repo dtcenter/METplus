@@ -7,12 +7,9 @@ by every Python process started, immediately after Python starts."""
 # Lists symbols exported by "from produtil.setup import *"
 __all__=['setup']
 
-import threading
-from metplus.produtil.sigsafety import install_handlers
-from metplus.produtil.log import configureLogging
-from metplus.produtil.dbnalert import init_module
-from metplus.produtil.cluster import set_cluster, where
-from metplus.produtil.batchsystem import set_default_name
+import logging, threading
+import produtil.sigsafety, produtil.log, produtil.dbnalert, produtil.cluster
+import produtil.batchsystem
 
 def setup(ignore_hup=False,dbnalert_logger=None,jobname=None,cluster=None,
           send_dbn=None,thread_logger=False,thread_stack=2**24,**kwargs):
@@ -64,19 +61,19 @@ def setup(ignore_hup=False,dbnalert_logger=None,jobname=None,cluster=None,
     # Set the default jobname.  This is usually used for manually-run
     # scripts to ensure they have a "jobname" in the logging system:
     if jobname is not None:
-        set_default_name(jobname)
+        produtil.batchsystem.set_default_name(jobname)
 
     # Configure logging next so that the install_handlers will be able
     # to log.
-    configureLogging(thread_logger=thread_logger,**kwargs)
+    produtil.log.configureLogging(thread_logger=thread_logger,**kwargs)
     # Install signal handlers, and let the caller configure SIGHUP settings:
-    install_handlers(ignore_hup=ignore_hup)
+    produtil.sigsafety.install_handlers(ignore_hup=ignore_hup)
     # Set up dbnalert:
-    init_module(logger=dbnalert_logger,jobname=jobname,
+    produtil.dbnalert.init_module(logger=dbnalert_logger,jobname=jobname,
                                   send_dbn=send_dbn)
 
     # Set up cluster:
     if cluster is not None:
-        set_cluster(cluster)
+        produtil.cluster.set_cluster(cluster)
     else:
-        where() # guess cluster
+        produtil.cluster.where() # guess cluster

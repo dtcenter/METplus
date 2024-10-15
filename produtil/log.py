@@ -12,7 +12,7 @@ __all__ = [ 'configureLogging','jlogger','jlogdomain','postmsg',
             'MasterLogHandler','JLogHandler','set_jlogfile' ]
 
 import logging, os, sys, traceback, threading
-import metplus.produtil.batchsystem as batchsystem
+import produtil.batchsystem
 
 ##@var logthread
 # string for log messages to indicate thread number/name 
@@ -379,7 +379,7 @@ def configureLogging(jlogfile=None,
     # Configure log formatting:
     jobstr=os.environ.get('job',None)
     if jobstr is None:
-        jobstr=batchsystem.jobname()
+        jobstr=produtil.batchsystem.jobname()
     jobstr=str(jobstr).replace('(','_').replace(')','_').replace('%','_')
     # Format for jlogfile domain logging to jlogfile:
     jformat=JLogFormatter(

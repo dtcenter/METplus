@@ -1,47 +1,6 @@
 [build-system]
 requires = [
-    "setuptools",
-    "wheel",
-    "setuptools-git-versioning>=2.0,<3",
+    "setuptools>=42",
+    "wheel"
 ]
 build-backend = "setuptools.build_meta"
-
-[project]
-name = "metplus"
-dynamic = ["version", "dependencies"]
-description = "METplus Wrappers"
-authors = [
-    {name = "METplus"},
-]
-requires-python = ">=3.10.4"
-readme = "README.md"
-license = {text = "MIT"}
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-]
-
-[project.urls]
-Homepage = "https://github.com/dtcenter/METplus"
-
-[project.scripts]
-run_metplus = "metplus.scripts.run_metplus:cli_main"
-
-[tool.setuptools.packages]
-find = {include = ["metplus*"], exclude = ["parm"]}
-
-[tool.setuptools.package-data]
-metplus = [
-  "VERSION", "RELEASE_DATE", "PYTHON_VERSION", "PYTHON_VERSION_MIN", "parm/**"
-]
-
-[tool.setuptools.exclude-package-data]
-metplus = ["README", "__pycache__", "*~"]
-
-[tool.setuptools.dynamic]
-dependencies = {file = ["requirements.txt"]}
-
-[tool.setuptools-git-versioning]
-enabled = true
-version_file = "metplus/VERSION"
