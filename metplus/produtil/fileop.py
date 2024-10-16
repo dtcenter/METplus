@@ -18,7 +18,7 @@ __all__=['FileOpError','FileOpErrors','CannotLinkMulti',
          'netcdfver','touch']
 
 import os,tempfile,filecmp,stat,shutil,errno,random,time,fcntl,math,logging
-import produtil.cluster, produtil.pipeline
+import metplus.produtil.cluster as cluster
 
 module_logger=logging.getLogger('produtil.fileop')
 
@@ -403,9 +403,9 @@ def deliver_file(infile,outfile,keep=True,verify=False,blocksize=1048576,
       the temp_file_object is an object that can be used to write to 
       the file.  The copier should NOT close the temp_file_object. """
     if preserve_group is None:
-        preserve_group = not produtil.cluster.group_quotas()
+        preserve_group = not cluster.group_quotas()
     if copy_acl is None:
-        copy_acl = produtil.cluster.use_acl_for_rstdata()
+        copy_acl = cluster.use_acl_for_rstdata()
     if copier is not None:
         # Cannot simply do a "move" if we are using an external
         # function to copy.

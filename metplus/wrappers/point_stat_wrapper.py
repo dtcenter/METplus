@@ -28,7 +28,11 @@ class PointStatWrapper(CompareGriddedWrapper):
         'METPLUS_DESC',
         'METPLUS_REGRID_DICT',
         'METPLUS_FCST_FIELD',
+        'METPLUS_FCST_CLIMO_MEAN_DICT',
+        'METPLUS_FCST_CLIMO_STDEV_DICT',
         'METPLUS_OBS_FIELD',
+        'METPLUS_OBS_CLIMO_MEAN_DICT',
+        'METPLUS_OBS_CLIMO_STDEV_DICT',
         'METPLUS_MESSAGE_TYPE',
         'METPLUS_LAND_MASK_DICT',
         'METPLUS_TOPO_MASK_DICT',
@@ -48,12 +52,14 @@ class PointStatWrapper(CompareGriddedWrapper):
         'METPLUS_HSS_EC_VALUE',
         'METPLUS_HIRA_DICT',
         'METPLUS_MESSAGE_TYPE_GROUP_MAP',
+        'METPLUS_OBTYPE_AS_GROUP_VAL_FLAG',
         'METPLUS_FCST_FILE_TYPE',
         'METPLUS_OBS_FILE_TYPE',
         'METPLUS_SEEPS_P1_THRESH',
         'METPLUS_UGRID_DATASET',
         'METPLUS_UGRID_MAX_DISTANCE_KM',
         'METPLUS_UGRID_COORDINATES_FILE',
+        'METPLUS_POINT_WEIGHT_FLAG',
     ]
 
     # deprecated env vars that are no longer supported in the wrapped MET conf
@@ -275,12 +281,19 @@ class PointStatWrapper(CompareGriddedWrapper):
         self.add_met_config(name='message_type_group_map', data_type='list',
                             extra_args={'remove_quotes': True})
 
+        self.add_met_config(name='obtype_as_group_val_flag', data_type='bool')
+
         self.add_met_config(name='seeps_p1_thresh', data_type='string',
                             extra_args={'remove_quotes': True})
 
         self.add_met_config(name='ugrid_dataset', data_type='string')
         self.add_met_config(name='ugrid_max_distance_km', data_type='int')
         self.add_met_config(name='ugrid_coordinates_file', data_type='string')
+
+        self.add_met_config(name='point_weight_flag',
+                            data_type='string',
+                            extra_args={'remove_quotes': True,
+                                        'uppercase': True})
 
         if not c_dict['FCST_INPUT_TEMPLATE']:
             self.log_error('Must set FCST_POINT_STAT_INPUT_TEMPLATE '

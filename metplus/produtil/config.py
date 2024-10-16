@@ -11,19 +11,18 @@ ways of automatically accessing configuration options."""
 # decides what symbols are imported by "from produtil.config import *"
 __all__=['from_file','confwalker','ProdConfig','ENVIRONMENT','ProdTask']
 
-import collections,re,string,os,logging,threading
+import collections,re,os,logging,threading
 import os.path,sys
 import datetime
-import produtil.fileop, produtil.datastore
-import produtil.numerics, produtil.log
+import metplus.produtil.fileop as fileop
 
 import configparser
 from configparser import ConfigParser
 from io import StringIO
 
-from produtil.datastore import Datastore,Task
+from metplus.produtil.datastore import Datastore,Task
 
-from produtil.numerics import to_datetime
+from metplus.produtil.numerics import to_datetime, to_datetime_rel, fcst_hr_min
 from string import Formatter
 from configparser import NoOptionError,NoSectionError
 
@@ -379,7 +378,7 @@ class ConfTimeFormatter(ConfFormatter):
                 v=ap6.strftime(ANL_P6_KEYS[key])
             elif '__ftime' in kwargs and '__atime' in kwargs and \
                     key in TIME_DIFF_KEYS:
-                (ihours,iminutes)=produtil.numerics.fcst_hr_min(
+                (ihours,iminutes)=fcst_hr_min(
                     kwargs['__ftime'],kwargs['__atime'])
                 if key=='fahr':
                     v=int(ihours)
@@ -702,7 +701,7 @@ class ProdConfig(object):
             elif not os.path.isfile(path):
                 logger.error(path+': conf file is not a regular file.')
                 sys.exit(2)
-            elif not produtil.fileop.isnonempty(path) and verbose:
+            elif not fileop.isnonempty(path) and verbose:
                 logger.warning(
                     path+': conf file is empty.  Will continue anyway.')
             if verbose: logger.info('Conf input: '+repr(path))
@@ -823,7 +822,7 @@ class ProdConfig(object):
         with self:
             if self._datastore is None:
                 dsfile=self.getstr('config','datastore')
-                self._datastore=produtil.datastore.Datastore(dsfile,
+                self._datastore=Datastore(dsfile,
                     logger=self.log('datastore'))
             return self._datastore
 
@@ -1001,7 +1000,7 @@ class ProdConfig(object):
         with self:
             dirs=[self.getstr('dir',arg) for arg in args]
         for makeme in dirs:
-            produtil.fileop.makedirs(makeme)
+            fileop.makedirs(makeme)
     def keys(self,sec):
         """!get options in a section
 
@@ -1107,13 +1106,13 @@ class ProdConfig(object):
         @param atime the analysis time or None
         @param kwargs more variables for string expansion"""
         if atime is not None:
-            atime=produtil.numerics.to_datetime(atime)
+            atime=to_datetime(atime)
         else:
             atime=self.cycle
         if ftime is None:
             ftime=atime
         else:
-            ftime=produtil.numerics.to_datetime_rel(ftime,atime)
+            ftime=to_datetime_rel(ftime,atime)
         with self:
             return self._time_formatter.format(string,__section=sec,
                 __key='__string__',__depth=0,__conf=self._conf,ENV=ENVIRONMENT,
@@ -1343,7 +1342,7 @@ class ProdConfig(object):
 
 ########################################################################
 
-class ProdTask(produtil.datastore.Task):
+class ProdTask(Task):
     """!A subclass of produtil.datastore.Task that provides a variety
     of convenience functions related to unix conf files and
     logging."""

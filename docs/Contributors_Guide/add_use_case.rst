@@ -8,6 +8,8 @@ Adding Use Cases
 .. |metplus_staging_dir| replace:: /d2/projects/METplus/METplus_Data_Staging
 .. |dtc_web_server| replace:: mohawk.rap.ucar.edu
 
+.. _work_in_a_feature_branch:
+
 Work in a Feature Branch
 ========================
 
@@ -147,9 +149,47 @@ Use Case Rules
   be used so that users can locate other use cases that exhibit common
   *functionality/data sources/tools/etc*. If a new keyword is used, it should
   be added to the Quick Search Guide (*docs/Users_Guide/quicksearch.rst*). More
-  information can be found :ref:`here <use_case_documentation>`.
+  information can be found :ref:`here <add_sphinx_documentation_file>`.
 - The use case should be run by someone other than the author to ensure that it
   runs smoothly outside of the development environment set up by the author.
+
+Use Cases That Involve METcalcpy/METplotpy/METdataio
+----------------------------------------------------
+
+Some use cases call scripts that are located in METcalcpy, METplotpy, and/or METdataio.
+This could include the calculation of an index or pre-processing steps in METcalcpy,
+plotting in METplotpy, reading data using METdataio, or a combination of all three.
+These use cases typically run with a driver script that is called from METplus with
+the UserScript option.  A driver script calls specific programs in METcalcpy, METplotpy,
+and/or METdataio and passes data from one program to the other.
+
+Any changes to METcalcpy, METplotpy, and/or METdataio must be merged into the
+develop branch of those repositories so they will be available in the use case tests.
+This means that any pull requests in METcalcpy, METplotpy, and METdataio must
+be completed before use case testing can proceed in GitHub Actions.
+Please confirm that the use case can run successfully before creating a pull request.
+
+To run in GitHub Actions, the environment specified in all_use_cases.txt must contain
+all required dependencies. This includes a Conda environment that contains the
+required Python packages needed to run the METplus Analysis Python tools, e.g.
+metplotpy_env.
+A list of the existing Conda Environments and the packages they contain can also be
+found in the :ref:`Conda Environments <cg-ci-conda-environments>` section.
+If the package requirements aren’t met by one of the existing
+Conda Environments, please create a post on the `METplus GitHub Discussions Forum 
+<https://github.com/dtcenter/METplus/discussions>`_ for assistance.
+
+Existing Use Case Examples
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Below is a list of some (not all) of the use cases which use driver scripts and involve
+calculations in METcalcpy, METplotpy, and/or METdataio.
+This list is provided for reference and examples.
+
+- *model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime*
+- *model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereQBO*
+- *model_applications/s2s_mjo/UserScript_obsCFSR_obsOnly_MJO_ENSO*
+- *model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra*
 
 .. _actions-failure-use-cases:
 
@@ -167,7 +207,9 @@ Use Cases that Exceed GitHub Actions Memory Limit
 
 Use Cases that Exceed GitHub Actions Disk Space
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-- *model_applications/s2s/UserScript_fcstGFS_obsERA_StratospherePolar*
+- *model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar*
+- *model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereQBO*
+- *model_applications/short_range/MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning*
 
 .. _use_case_documentation:
   
@@ -202,62 +244,248 @@ category in the User's Guide > METplus Use Cases >
 `Model Applications <https://metplus.readthedocs.io/en/latest/generated/model_applications/index.html>`_
 page.
 
+.. _add_sphinx_documentation_file:
+
 Add Sphinx Documentation File
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In the corresponding documentation MET tool name directory
-(**docs**/*use_cases/met_tool_wrapper/<MET TOOL NAME>*) for a met_tool_wrappers
+(*docs*/*use_cases/met_tool_wrapper/<MET TOOL NAME>*) for a met_tool_wrappers
 use case OR category directory for a model_applications use case
-(**docs**/*use_cases/model_applications/<CATEGORY>*), add:
+(*docs*/*use_cases/model_applications/<CATEGORY>*), users will need to add a
+Python Sphinx Documentation (.py) file with the same name as the METplus configuration file.
 
-* A Python Sphinx Documentation (.py) file with the same name as the METplus
-  configuration file
+The following is a discussion of the use case documentation template and all of its sections.
+The `example template <https://github.com/dtcenter/METplus/blob/develop/docs/use_cases/use_case_documentation_template.py>`_ is available within the METplus repository. 
+The example template should be used by users as a starting point, but will need to be completely 
+updated with the use case's information. The template applies to both met_tool_wrappers and model_applications use cases.
+When completing the template, users should read through each section and its description 
+below before filling in a section, as some sections may not apply 
+to the use case being documented. To assist reviewers and contributors, a special string::
 
-    * Users are encouraged to copy an existing documentation file and modify it
-      to describe the new use case.
+# [UPDATE_SECTION_CONTENT]
 
-    * Update any references to the .conf file to use the correct name.
+has been added to each section described below. As you review the template and adapt it for your use case,
+please remove this line when you've decided the existing content is sufficient or after you've added
+content specific to your use case. For real examples, users are encouraged to review
+existing `Model Applications <https://metplus.readthedocs.io/en/latest/generated/model_applications/index.html>`_
+use case documentation. Except for the Header and Path to Use Case Configuration File section,
+all lines should begin with the '#' character to signify text, followed by at least one space before
+the text content. These are already provided in the example template.
 
-    * Update the Scientific Objective section to describe the use case.
+* Use Case Template Description:
 
-    * Update the description of the input data in the Datasets section.
+  * Header and Path to Use Case Configuration File
 
-    * Update the list of External Dependencies (if applicable) to include any
-      required Python packages.  Update the :ref:`components_python_packages`
-      section.  If the package is already listed, add a link to the documentation
-      page for this new use case in the dropdown menu for that package, following the
-      format in the dropdown menu.  If the package is not already listed, update
-      the dropdown menus to include the name of the required package, the version,
-      the METplus component (e.g. METplus wrappers, METcalcpy, METplotpy), the
-      source, a brief description of the package, and a link to this new use
-      case that uses this new Python package.
-      
-    * Update the list of tools used in the METplus Components section.
+    * This section begins with {PrimaryAnalysisToolName}: Brief (12 words or less) 
+      and a unique description of use case, followed on the next line by ‘=’ characters 
+      equal in length to the header (spaces included). Follow this with one line of no characters, 
+      then the path to the use case configuration file. This should be written in the format of
+      model_applications/{use_case_category}/{use_case_configuration_file}. 
+      This section is preceded and followed by three ‘“‘ characters (i.e. `PEP 257 Docstring convention. <https://peps.python.org/pep-0257>`_
 
-    * Update the list of run times in the METplus Workflow section.
+  * Internal Table of Contents
 
-    * Update the list of keywords, referring to :ref:`quick-search` for
-      a list of possible keywords to use (Note: The link text for the
-      keywords must match the actual keyword exactly or it will not
-      show up in the search, i.e. **ASCII2NCToolUseCase** must match
-      https://metplus.readthedocs.io/en/latest/search.html?q=**ASCII2NCToolUseCase**.
+    * This section consists of set language using Read The Docs notation, generating a 
+      table of contents within the use case documentation. This should be copied with 
+      no alterations.
 
-    * Add an image to use as the thumbnail (if desired). Images can be added
-      to the *docs/_static* directory and should be named
-      <category>-<conf>.png
-      where <category> is the use case category and <conf> is the name of the
-      configuration file, i.e.
-      **air_quality_and_comp-EnsembleStat_fcstICAP_obsMODIS_aod.png.**
-      The image can be referenced in the documentation file with this syntax:
+  * Scientific Objective
 
-::
+    * This section should answer why this use case was created and included in the repository. 
+      What is a user gaining by using this use case? If the details do not add to 
+      the why this use case exists, those details do not belong in this section.
 
-    # sphinx_gallery_thumbnail_path = '_static/air_quality_and_comp-EnsembleStat_fcstICAP_obsMODIS_aod.png'
+  * Version Added
+
+    * This represents the METplus version number that this use case was added to 
+      the METplus repository. It also represents the minimum or lowest METplus version 
+      this use case has been tested against. It should not include 
+      betas (ex. Version 5.1 beta 3), but should include the two-digit version number.
+
+  * Datasets
+
+    * This section should include a brief description of each model dataset 
+      and variable field (10 m wind speed, 2 m temperature, etc.) being used 
+      in the use case, as well as which field (forecast, observation, climatology, masking, etc.) 
+      is using which dataset. At a minimum, users should list the 
+      Forecast, Observation, and Climatology fields. If they are not being used, 
+      "None" can be listed. 
+      Acronyms should be spelled out (i.e not GFS, but Global Forecast System). 
+      This section also includes a Location description consisting of 
+      set language of how users can access the use case data for themselves.
+
+  * METplus Components
+
+    * This section lists the tools that will be used during the use case. 
+      If there are multiple tools, a brief overview should be provided of what each tool 
+      is responsible for (i.e. GenVxMask for creating masks that are used in 
+      the verification step, which is completed by GridStat). If Python embedding 
+      is used, it can be mentioned here as well.
+      It’s important to note that this section should NOT give detailed 
+      descriptions into why each tool is used, detailed information on how each tool 
+      is being used and interacting with other tools (if any), etc. If there is a desire 
+      to explain more about each tool’s role in the use case, the information can be 
+      presented in the “METplus Workflow” section.
+
+  * METplus Workflow
+
+    * This section should begin with the init or valid times (both beginning and end), 
+      time increment, as well as any lead times being used. This should be followed 
+      by descriptions of the number of times the use case will run 
+      (which could also be inferred from the init/valid times), what each tool is doing 
+      to a level of detail sufficient for users to understand the use case workflow, 
+      and any other special notes that users should be aware of.
+      Note that if there is Python embedding, descriptions of what it accomplishes 
+      should be saved for the “Python Embedding” section. A mention of the input to 
+      the Python script and its returned dataset is sufficient for this section.
+
+  * METplus Configuration
+
+    * This section has set language that describes how all of the configuration files 
+      are loaded into METplus, followed by what’s passed in by the user at runtime, 
+      and used to produce the final configuration file that controls the METplus run. 
+      It concludes with an embedded link (and image) of the user’s configuration file 
+      the use case will run. The only two pieces that will change are the path to the 
+      use case’s configuration file, and the embedded configuration file for the use case.
+
+  * MET Configuration
+    
+    * This section has set language that describes how settings in the MET configuration file 
+      will ultimately be used to run METplus, along with any changes made from the default 
+      by the user’s configuration file. It concludes with an embedded link (and image) of 
+      the default configuration file(s) for all MET tool(s) used. Any configuration file(s)
+      listed will be hidden by default using a dropdown option. The only changes that need 
+      to occur for this section is which MET configuration file(s) is(are) embedded and the name of 
+      the dropdown.
+      If no MET tool(s) are used, that should be noted here along with replacing the default language.
+
+  * Python Embedding
+    
+    * This section should provide a description of any Python embedding that’s used 
+      in the use case. 
+      For a common definition, Python embedding is used to ingest a dataset not 
+      natively available for METplus intake, and results in a dataset being 
+      returned to METplus for analysis and verification purposes.
+      This section should discuss what is passed to the script from METplus, 
+      what is being done by the script, and what data structure is passed back 
+      to METplus for evaluation. The end of this section is set language 
+      directing users to review the Python requirements in the MET User’s Guide, 
+      as well as an embedded link (and image) of all Python scripts used in 
+      Python Embedding. The links to these scripts will need to be updated by 
+      the user.
+      If no Python embedding is used, that should be noted here.
+
+  * User Scripting
+    
+    * This section should provide a description of any Python scripting that’s used 
+      in the use case. For a common definition, User scripting is any condition where 
+      the evaluation/verification/output processes are being completed inside the Python script, 
+      outside of METplus. Essentially, if a Python script is called and a 
+      METplus-readable dataset is not passed back to METplus, it is User Scripting. 
+      The METplus wrapper usage only exists to call the Python script.
+      This section should discuss what is being done by the script and why the decision was 
+      made to use User scripting rather than Python embedding. The end of this section is 
+      an embedded link (and image) of all Python scripts used in User Scripting. The links 
+      to these scripts will need to be updated by the user.
+      If no User scripting is used, that should be noted here.
+
+  * Running METplus
+
+    * Similar to “MET Configuration”, this section has set language that should not be altered. 
+      The only change between use cases is the path entered in the run command, 
+      which is use case specific.
+
+  * Expected Output
+
+    * This section begins with set language that shows what message a 
+      successful METplus run concludes with. Then, it should direct users to the 
+      proper folder (folders, if multiple outputs are made) and directory structure 
+      where the final output is. If the use case creates intermediate output, it should 
+      be mentioned here as well. A list of the files and folders that are created 
+      should be provided. Currently the documentation notation used to list all output 
+      is a copyable block which is created from the use of spacing and two ":" characters.
+      This is done so that a browser's rendering of the Expected Output list will not 
+      run off the page.  
+      If a netCDF is the output, the total number and name of each variable field 
+      inside the file should be listed. If there are numerous variable fields 
+      within the file, a summary is sufficient.
+      If an image is created, it should be used as the use case image and referenced in 
+      this section as output.
+      If no output is created, this section should explain why and what the user accomplished 
+      by running the use case.
+
+  * Keywords
+
+    * All keywords relevant to the use case should be added to this section 
+      as a bulleted list, as well as keeping the set language at the end of the list. 
+      If an important identifier for this use case is not currently set as a 
+      keyword in the :ref:`quick-search`, be sure to add it to the list of keywords 
+      before using it in the use case documentation. Instructions for doing so can
+      be found in the :ref:`create-quick-search-keyword` section.
+      Users should also use the end of this section to reference an image that 
+      will serve as a thumbnail for the use case. If no image is provided, 
+      a default image will be used; this is the same image used for all met_tool_wrapper 
+      use cases.
 
 .. note::
     Text that ends with an underscore (_) may be interpreted as a reference, so
     avoid ending a line with this character to avoid generating warnings in the
     documentation.
+   
+In addition to completing the above template, users should complete all of the (applicable)
+following documentation steps:
+
+* Update the list of External Dependencies (if applicable) to include any
+  required Python packages.  Update the :ref:`components_python_packages`
+  section.  If the package is already listed, add a link to the documentation
+  page for this new use case in the dropdown menu for that package, following the
+  format in the dropdown menu.  If the package is not already listed, update
+  the dropdown menus to include the name of the required package, the version,
+  the METplus component (e.g. METplus wrappers, METcalcpy, METplotpy), the
+  source, a brief description of the package, and a link to this new use
+  case that uses this new Python package.
+      
+
+* Add an image to use as the thumbnail. Images can be added
+  to the *docs/_static* directory and should be named
+  <category>-<conf>.png
+  where <category> is the use case category and <conf> is the name of the
+  configuration file, i.e.
+  **air_quality_and_comp-EnsembleStat_fcstICAP_obsMODIS_aod.png.**
+  This is the same image that is referenced in the documentation file with this syntax:
+
+::
+
+    # sphinx_gallery_thumbnail_path = '_static/air_quality_and_comp-EnsembleStat_fcstICAP_obsMODIS_aod.png'
+
+
+.. _create-quick-search-keyword:
+
+Create New Quick Search Keyword
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If a review of the keywords in the :ref:`quick-search` reveals that a new
+keyword would be beneficial, users can add a keyword using the following steps.
+Note that a keyword should be applicable to more than one existing use case, or
+seen as beneficial to upcoming use cases.
+
+* Open the quicksearch.rst file
+* Determine a name for the keyword following the format of the existing keywords in the appropriate section.
+
+  * All keywords should be one word with the first letter of each word capitalized (i.e. CamelCase).
+  * All keywords should end with "UseCase"
+  * Keywords in the "Use Cases by MET Tool" section should end with "ToolUseCase"
+  * Keywords in the "Use Cases by Application" section should end with "AppUseCase"
+  * Keywords in the "Use Cases by Organization" section should end with "OrgUseCase"
+  * Keywords in the "Use Cases by File Format" section should end with "FileUseCase"
+
+* Add new entries in alphabetical order under both html and latex sub-sections.
+
+  * Under html, use the format | \`<DESCRIPTOR> <../search.html?q=<KEYWORD>&check_keywords=yes&area=default>`_ where <DESCRIPTOR> is a human-readable description of the keyword and <KEYWORD> is the keyword.
+  * Under latex, use the format | **<DESCRIPTOR>**: *<KEYWORD>* where <DESCRIPTOR> is a human-readable description of the keyword and <KEYWORD> is the keyword.
+
+* Add the keyword to the end of each use case documentation file under docs/use_cases that corresponds to the keyword.
 
 Accessing the Documentation
 ---------------------------

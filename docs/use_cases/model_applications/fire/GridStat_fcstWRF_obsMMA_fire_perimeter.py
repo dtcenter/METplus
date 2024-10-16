@@ -2,7 +2,7 @@
 GridStat: WRF and MMA Fire Perimeter
 ====================================
 
-model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
+model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 
 """
 ##############################################################################
@@ -15,29 +15,23 @@ model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 # Scientific Objective
 # --------------------
 #
-# **REPLACE THIS!**
-#
-# This use case ingests two CESM (CAM and CLM) files and raw FLUXNET2015 data.
-# The use case calculates the Terrestrial Coupling Index (TCI) from the CESM forecasts and FLUXNET observations.
-# Utilizing Python embedding, this use case taps into a new vital observation dataset and compares it to CESM forecasts of TCI. 
-# Finally, it will generate plots of model forecast TCI overlaid with TCI observations at FLUXNET sites.
-#
-# The reference for the Terrestrial Coupling Index calculation is as follows:
-#
-# Dirmeyer, P. A., 2011: The terrestrial segment of soil moisture-climate coupling. *Geophys. Res. Lett.*, **38**, L16702, doi: 10.1029/2011GL048268.
-#
+# This use case demonstrates the use of GridStat to evaluate the performance of the fire spread forecast from the
+# WRF-Fire model for the 416 fire in Colorado in 2018.
+# There are four fire perimeter observations available from the Multimission Aircraft (MMA).
+# The use case uses Python embedding to ingest the WRF-Fire forecast files and convert the MMA observations from
+# kml format into a netCDF file METplus can ingest via GenVxMask.
+# The output provides contingency statistics of the forecast performance relative to the observed fire.
 
 ##############################################################################
 # Datasets
-# ---------------------
+# --------
 #
-# **REVIEW AND REPLACE THIS!**
 #
 # | **Forecast:** WRF Fire
 #
-# | **Observations:** MMA
+# | **Observations:** Multimission Aircraft (MMA)
 #
-# | **Location:** All of the input data required for this use case can be found in the short_range sample data tarball.
+# | **Location:** All of the input data required for this use case can be found in the fire sample data tarball.
 # | Click here to the METplus releases page and download sample data for the appropriate release:
 # | https://github.com/dtcenter/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE.
@@ -46,7 +40,7 @@ model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 
 ##############################################################################
 # Python Dependencies
-# ---------------------
+# -------------------
 #
 # This use case utilizes MET Python Embedding.
 # See the `MET User's Guide Appendix F <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html>`_
@@ -82,10 +76,10 @@ model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 #
 # METplus first loads the default configuration file,
 # then it loads any configuration files passed to METplus via the command line
-# e.g. parm/use_cases/model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
+# e.g. parm/use_cases/model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 #
 
 ##############################################################################
@@ -109,18 +103,18 @@ model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 #
 
 ##############################################################################
-# Python Scripting
-# ----------------
+# User Scripting
+# --------------
 #
 # This use case calls a Python script to read MMA fire perimeter .kml files
 # and convert them into a poly line file that can be read by GenVxMask:
 #
 # .. dropdown:: Click to view find_and_read_fire_perim_poly.py
 #
-#    parm/use_cases/model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter/find_and_read_fire_perim_poly.py
+#    parm/use_cases/model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter/find_and_read_fire_perim_poly.py
 #
 #    .. highlight:: python
-#    .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter/find_and_read_fire_perim_poly.py
+#    .. literalinclude:: ../../../../parm/use_cases/model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter/find_and_read_fire_perim_poly.py
 #
 
 ##############################################################################
@@ -131,10 +125,10 @@ model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 #
 # .. dropdown:: Click to view read_wrfout_fire.py
 #
-#    parm/use_cases/model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter/read_wrfout_fire.py
+#    parm/use_cases/model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter/read_wrfout_fire.py
 #
 #    .. highlight:: python
-#    .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter/read_wrfout_fire.py
+#    .. literalinclude:: ../../../../parm/use_cases/model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter/read_wrfout_fire.py
 #
 
 
@@ -145,7 +139,7 @@ model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 # Pass the use case configuration file to the run_metplus.py script
 # along with any user-specific system configuration files if desired::
 #
-#    run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter.conf /path/to/user_system.conf
+#    run_metplus.py /path/to/METplus/parm/use_cases/model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
 #
@@ -185,10 +179,10 @@ model_applications/short_range/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 #   * GridStatToolUseCase
 #   * PythonEmbeddingFileUseCase
 #   * GRIB2FileUseCase
-#   * ShortRangeAppUseCase
+#   * FireAppUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/short_range-GridStat_fcstWRF_obsMMA_fire_perimeter.png'
+# sphinx_gallery_thumbnail_path = '_static/fire-GridStat_fcstWRF_obsMMA_fire_perimeter.png'

@@ -222,9 +222,9 @@ def compare_command_and_env_vars():
                        and item != 'DIAG_ARG']
         env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
 
-        for (cmd, env_vars), expected_cmd in zip(all_commands, expected_cmds):
+        for (actual_cmd, env_vars), expected_cmd in zip(all_commands, expected_cmds):
             # ensure commands are generated as expected
-            assert cmd == expected_cmd
+            assert expected_cmd == actual_cmd
 
             # check that environment variables were set properly
             # including deprecated env vars (not in wrapper env var keys)
@@ -235,8 +235,8 @@ def compare_command_and_env_vars():
                 assert match is not None
                 value = match.split('=', 1)[1]
                 if special_values is not None and env_var_key in special_values:
-                    assert value == special_values[env_var_key]
+                    assert special_values[env_var_key] == value
                 else:
-                    assert env_var_values.get(env_var_key, '') == value
+                    assert value == env_var_values.get(env_var_key, '')
 
     return do_comparison

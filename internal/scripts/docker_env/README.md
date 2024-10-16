@@ -225,7 +225,7 @@ export METPLUS_ENV_VERSION=v6.0
 docker build -t dtcenter/metplus-envs:metplotpy.${METPLUS_ENV_VERSION} \
     --build-arg METPLUS_ENV_VERSION \
     --build-arg ENV_NAME=metplotpy \
-    -f Dockerfile.cartopy .
+    -f Dockerfile.cartopy.
 docker push dtcenter/metplus-envs:metplotpy.${METPLUS_ENV_VERSION}
 ```
 
@@ -234,9 +234,7 @@ docker push dtcenter/metplus-envs:metplotpy.${METPLUS_ENV_VERSION}
 ```
 export METPLUS_ENV_VERSION=v6.0
 ./scripts/metplotpy_env.sh ${METPLUS_ENV_VERSION}
-wget https://raw.githubusercontent.com/SciTools/cartopy/master/tools/cartopy_feature_download.py
-/home/met_test/.conda/envs/metplotpy.${METPLUS_ENV_VERSION}/bin/python3 cartopy_feature_download.py cultural physical
-rm cartopy_feature_download.py
+/home/met_test/.conda/envs/metplotpy.${METPLUS_ENV_VERSION}/bin/cartopy_feature_download.py cultural physical
 ```
 
 #### To install METplotpy and METcalcpy packages in environment
@@ -283,9 +281,7 @@ docker push dtcenter/metplus-envs:weatherregime.${METPLUS_ENV_VERSION}
 ```
 export METPLUS_ENV_VERSION=v6.0
 ./scripts/weatherregime_env.sh ${METPLUS_ENV_VERSION}
-wget https://raw.githubusercontent.com/SciTools/cartopy/master/tools/cartopy_feature_download.py
-/home/met_test/.conda/envs/weatherregime.${METPLUS_ENV_VERSION}/bin/python3 cartopy_feature_download.py cultural physical
-rm cartopy_feature_download.py
+/home/met_test/.conda/envs/weatherregime.${METPLUS_ENV_VERSION}/bin/cartopy_feature_download.py cultural physical
 ```
 
 #### To install METplotpy and METcalcpy packages in environment
@@ -331,9 +327,7 @@ docker push dtcenter/metplus-envs:cycloneplotter.${METPLUS_ENV_VERSION}
 ```
 export METPLUS_ENV_VERSION=v6.0
 ./scripts/cycloneplotter_env.sh ${METPLUS_ENV_VERSION}
-wget https://raw.githubusercontent.com/SciTools/cartopy/master/tools/cartopy_feature_download.py
-/home/met_test/.conda/envs/cycloneplotter.${METPLUS_ENV_VERSION}/bin/python3 cartopy_feature_download.py cultural physical
-rm cartopy_feature_download.py
+/home/met_test/.conda/envs/cycloneplotter.${METPLUS_ENV_VERSION}/bin/cartopy_feature_download.py cultural physical
 ```
 
 

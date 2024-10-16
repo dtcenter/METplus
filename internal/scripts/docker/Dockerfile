@@ -58,5 +58,5 @@ RUN if [ ${OBTAIN_SOURCE_CODE} != "none" ]; then \
   sed -i 's|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = /usr/local|g' parm/metplus_config/*.conf; \
   sed -i 's|OUTPUT_BASE = /path/to|OUTPUT_BASE = /data/output|g' parm/metplus_config/*.conf; \
   sed -i 's|INPUT_BASE = /path/to|INPUT_BASE = /data/input/METplus_Data|g' parm/metplus_config/*.conf; \
-  python3 setup.py install; \
+  pip install .; \
 fi

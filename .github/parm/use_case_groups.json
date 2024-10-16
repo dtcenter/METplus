@@ -10,6 +10,11 @@
     "run": false
   },
   {
+    "category": "met_tool_wrapper",
+    "index_list": "65",
+    "run": false
+  },
+  {
     "category": "air_quality_and_comp",
     "index_list": "0",
     "run": false
@@ -53,6 +58,11 @@
     "category": "data_assimilation",
     "index_list": "0-1",
     "run": false
+  },
+  {
+    "category": "fire",
+    "index_list": "0",
+    "run": true
   },
   {
     "category": "land_surface",
@@ -274,7 +284,8 @@
   {
     "category": "short_range",
     "index_list": "15",
-    "run": false
+    "disabled": true,
+    "run":false
   },
   {
     "category": "space_weather",
