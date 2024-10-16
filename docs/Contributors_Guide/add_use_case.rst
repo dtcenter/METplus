@@ -335,19 +335,19 @@ the text content. These are already provided in the example template.
       the user.
       If no Python embedding is used, that should be noted here.
 
-  * Python Scripting
+  * User Scripting
     
     * This section should provide a description of any Python scripting that’s used 
-      in the use case. For a common definition, Python scripting is any condition where 
+      in the use case. For a common definition, User scripting is any condition where 
       the evaluation/verification/output processes are being completed inside the Python script, 
       outside of METplus. Essentially, if a Python script is called and a 
-      METplus-readable dataset is not passed back to METplus, it is a Python Scripting usage. 
+      METplus-readable dataset is not passed back to METplus, it is User Scripting. 
       The METplus wrapper usage only exists to call the Python script.
       This section should discuss what is being done by the script and why the decision was 
-      made to use Python scripting rather than Python embedding. The end of this section is 
-      an embedded link (and image) of all Python scripts used in Python Scripting. The links 
+      made to use User scripting rather than Python embedding. The end of this section is 
+      an embedded link (and image) of all Python scripts used in User Scripting. The links 
       to these scripts will need to be updated by the user.
-      If no Python scripting is used, that should be noted here.
+      If no User scripting is used, that should be noted here.
 
   * Running METplus
 

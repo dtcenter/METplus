@@ -137,8 +137,8 @@
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds/read_ASCAT_data.py
 
 ##############################################################################
-# Python Scripting
-# ----------------
+# User Scripting
+# --------------
 # [UPDATE_SECTION_CONTENT]
 #
 # This use case uses a Python script to perform plotting, which at the time of 
