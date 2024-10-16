@@ -93,6 +93,9 @@ ${METPLUS_OBS_PERC_VALUE}
 //message_type_group_map =
 ${METPLUS_MESSAGE_TYPE_GROUP_MAP}
 
+//obtype_as_group_val_flag =
+${METPLUS_OBTYPE_AS_GROUP_VAL_FLAG}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 //
@@ -207,6 +210,9 @@ ${METPLUS_UGRID_MAX_DISTANCE_KM}
 ${METPLUS_UGRID_COORDINATES_FILE}
 
 ////////////////////////////////////////////////////////////////////////////////
+
+//point_weight_flag =
+${METPLUS_POINT_WEIGHT_FLAG}
 
 tmp_dir = "${MET_TMP_DIR}";
 

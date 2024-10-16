@@ -9,3 +9,4 @@
 [20240926_16:50:38 develop] #2701 - #2701 added a new use case (SeriesAnalysis_aggr) that produces new output
 [20241014_19:42:56 develop] dtcenter/MET#2988 - dtcenter/MET#2988 -- see issue #2719 for details -- retry because there was an issue with convert not being available in the ubuntu image that runs the unit tests
 [20241015_17:11:29 develop] dtcenter/MET#2988 - dtcenter/MET#2988 -- see issue #2719 for details -- retry (again) because there was an issue with convert not being available in the ubuntu image that runs the unit tests and METdbLoad use cases were broken
+[20241016_20:39:30 develop] #2710 - #2710 fixed a bug in a use case

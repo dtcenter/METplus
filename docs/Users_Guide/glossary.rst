@@ -12970,3 +12970,23 @@ METplus Configuration Glossary
      using the -aggr command line argument.
 
      | *Used by:* SeriesAnalysis
+
+   POINT_STAT_POINT_WEIGHT_FLAG
+     Specify the value for 'point_weight_flag' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   ENSEMBLE_STAT_POINT_WEIGHT_FLAG
+     Specify the value for 'point_weight_flag' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   POINT_STAT_OBTYPE_AS_GROUP_VAL_FLAG
+     Specify the value for 'obtype_as_group_val_flag' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   ENSEMBLE_STAT_OBTYPE_AS_GROUP_VAL_FLAG
+     Specify the value for 'obtype_as_group_val_flag' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
