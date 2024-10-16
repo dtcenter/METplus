@@ -48,6 +48,7 @@ one of the following:
 * climate
 * clouds
 * data_assimilation
+* fire
 * extremes
 * land_surface
 * marine_and_cryosphere
