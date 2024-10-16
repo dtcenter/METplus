@@ -12,7 +12,9 @@ import numpy as np
 import datetime as dt
 import xarray as xr
 import pandas as pd
-#from met.point import convert_point_data
+
+DATA_GROUP = "/data_01"
+DATA_KU_GROUP = "/data_01/ku"
 
 #Users are responsible for passing the following arguements at runtime:
 ##input file
@@ -29,12 +31,12 @@ if len(sys.argv[1].split(':')) == 3:
     if file_type == 'JASON' or file_type == 'SENTINEL':
         #need to check if the variable is in the data_01 group or data_01/ku group
         try:
-            ds = xr.open_dataset(input_file, group="/data_01/ku")
-            du = xr.open_dataset(input_file, group="/data_01")
+            ds = xr.open_dataset(input_file, group=DATA_KU_GROUP)
+            du = xr.open_dataset(input_file, group=DATA_GROUP)
             obs_hold = ds[field_name]
         except KeyError:
-            ds = xr.open_dataset(input_file, group="/data_01")
-            du = xr.open_dataset(input_file, group="/data_01")
+            ds = xr.open_dataset(input_file, group=DATA_GROUP)
+            du = xr.open_dataset(input_file, group=DATA_GROUP)
             obs_hold = ds[field_name]
         obs = obs_hold.values
         latitude = np.array(du.latitude.values)
@@ -76,7 +78,7 @@ if len(sys.argv[1].split(':')) == 3:
     #adding additional check; if 'wind' appears in the variable name, it's assumed
     #to be a wind speed and gets a height of 10m; otherwise its a height of 0
     if field_name.rfind('wind') != -1:
-        hgt = np.full(len(latitude),0,dtype=int).tolist()
+        hgt = np.full(len(latitude),10,dtype=int).tolist()
     else:
         hgt = np.full(len(latitude),0,dtype=int).tolist()
     qc = np.full(len(latitude),'NA').tolist()
@@ -91,7 +93,6 @@ if len(sys.argv[1].split(':')) == 3:
     obs = obs.tolist()
     l_tuple = list(zip(typ,sid,vld,lat,lon,elv,var,lvl,hgt,qc,obs))
     point_data = [list(ele) for ele in l_tuple]
-    #met_point_data = convert_point_data(point_data)
 
     print("Data Length:\t" + repr(len(point_data)))
     print("Data Type:\t" + repr(type(point_data)))
