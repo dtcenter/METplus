@@ -164,8 +164,6 @@ try:
                 alt_gap = alt_d[pblh_ind]-alt_d[pblh_ind-1]
   
                 if alt_gap < (gap_max + alt_d[pblh_ind]/20.):
-                  pblh[i] = alt_d[pblh_ind]
-       
                   # linear interpolate PBLH between this data point and the one below it
                   pblh[i] = np.interp((pt_min[i]+pt_delta), pt_d[pblh_ind-1:pblh_ind+1], alt_d[pblh_ind-1:pblh_ind+1]) 
   

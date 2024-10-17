@@ -829,6 +829,11 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
                                            'time_interp_method = NEAREST;'
                                            'match_month = TRUE;day_interval = 30;'
                                            'hour_interval = 12;}')}),
+        ({'ENSEMBLE_STAT_POINT_WEIGHT_FLAG': 'SID', },
+         {'METPLUS_POINT_WEIGHT_FLAG': 'point_weight_flag = SID;'}),
+        ({'ENSEMBLE_STAT_OBTYPE_AS_GROUP_VAL_FLAG': 'FALSE', },
+         {'METPLUS_OBTYPE_AS_GROUP_VAL_FLAG': 'obtype_as_group_val_flag = FALSE;'}),
+
     ]
 )
 @pytest.mark.wrapper_c
