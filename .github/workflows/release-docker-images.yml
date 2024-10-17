@@ -21,6 +21,7 @@ jobs:
           fi
           echo SOURCE_BRANCH=${SOURCE_BRANCH} >> $GITHUB_OUTPUT
       - name: Build metplus and metplus-analysis images
+        id: build_images
         run: .github/jobs/docker_build_metplus_images.sh
         env:
           SOURCE_BRANCH: ${{ steps.get_tag_name.outputs.SOURCE_BRANCH }}
@@ -28,5 +29,6 @@ jobs:
         run: .github/jobs/docker_push_metplus_images.sh
         env:
           SOURCE_BRANCH: ${{ steps.get_tag_name.outputs.SOURCE_BRANCH }}
+          LATEST_TAG: ${{ steps.build_images.outputs.LATEST_TAG }}
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}

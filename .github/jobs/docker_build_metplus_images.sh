@@ -55,8 +55,8 @@ fi
 
 # if official release, create X.Y-latest tag as well
 if [ "${is_official}" == 0 ]; then
-    latest_tag=$(echo "$metplus_version" | cut -f1,2 -d'.')-latest
-    docker tag "${METPLUS_IMAGE_NAME}" "${dockerhub_repo}:${latest_tag}"
-    docker tag "${METPLUS_A_IMAGE_NAME}" "${dockerhub_repo_analysis}:${latest_tag}"
-    echo latest_tag="${latest_tag}" >> "$GITHUB_OUTPUT"
+    LATEST_TAG=$(echo "$metplus_version" | cut -f1,2 -d'.')-latest
+    docker tag "${METPLUS_IMAGE_NAME}" "${dockerhub_repo}:${LATEST_TAG}"
+    docker tag "${METPLUS_A_IMAGE_NAME}" "${dockerhub_repo_analysis}:${LATEST_TAG}"
+    echo LATEST_TAG="${LATEST_TAG}" >> "$GITHUB_OUTPUT"
 fi

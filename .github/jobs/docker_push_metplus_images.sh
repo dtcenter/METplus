@@ -36,11 +36,11 @@ fi
 
 # only push X.Y-latest tag if official or bugfix release
 # shellcheck disable=SC2154
-if [ "${latest_tag}" != "" ]; then
-    if ! time_command docker push "${dockerhub_repo}:${latest_tag}"; then
+if [ "${LATEST_TAG}" != "" ]; then
+    if ! time_command docker push "${dockerhub_repo}:${LATEST_TAG}"; then
       exit 1
     fi
-    if ! time_command docker push "${dockerhub_repo_analysis}:${latest_tag}"; then
+    if ! time_command docker push "${dockerhub_repo_analysis}:${LATEST_TAG}"; then
       exit 1
     fi
 fi
