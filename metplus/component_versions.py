@@ -97,7 +97,7 @@ def main():
     parser.add_argument('-v', '--input_version',
                         default=next(iter(VERSION_LOOKUP)),
                         help='version of input_component to search')
-    parser.add_argument('-o', '--output_component',
+    parser.add_argument('-o', '--output_component', required=True,
                         help='name of METplus component to obtain version')
     parser.add_argument('-f', '--output_format',
                         default=DEFAULT_OUTPUT_FORMAT,
@@ -107,8 +107,12 @@ def main():
                              'replaced with development version if found in the'
                              'input version, e.g. "-beta3" or "-rc1"')
     args = parser.parse_args()
-    version = get_component_version(args.input_component, args.input_version,
-                                    args.output_component, args.output_format)
+    return get_component_version(args.input_component, args.input_version,
+                                 args.output_component, args.output_format)
+
+
+if __name__ == "__main__":
+    version = main()
     if not version:
         sys.exit(1)
 
