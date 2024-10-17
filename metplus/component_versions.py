@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # Dictionary to track version numbers for each METplus component
 # The key of each entry is the coordinated release version, e.g. 6.0
 # The value is another dictionary where the key is the METplus component name
