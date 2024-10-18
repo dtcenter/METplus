@@ -1,8 +1,8 @@
 ---
-name: Task
-about: Describe something that needs to be done
-title: 'Internal: '
-labels: 'alert: NEED ACCOUNT KEY, alert: NEED MORE DEFINITION, alert: NEED CYCLE ASSIGNMENT, type: task'
+name: Documentation
+about: Update the documentation
+title: 'Documentation: '
+labels: 'alert: NEED ACCOUNT KEY, alert: NEED MORE DEFINITION, alert: NEED CYCLE ASSIGNMENT, type: documentation'
 assignees: ''
 
 ---
