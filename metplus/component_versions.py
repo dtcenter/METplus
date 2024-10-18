@@ -37,7 +37,7 @@ VERSION_LOOKUP = {
 DEFAULT_OUTPUT_FORMAT = "v{X}.{Y}.{Z}{N}"
 
 def get_component_version(input_component, input_version, output_component,
-                          output_format=DEFAULT_OUTPUT_FORMAT):
+                          output_format=DEFAULT_OUTPUT_FORMAT, get_dev=True):
     """!Get the version of a requested METplus component given another METplus
     component and its version. Parses out X.Y version numbers of input version
     to find desired version. Optionally specific format of output content.
@@ -51,10 +51,13 @@ def get_component_version(input_component, input_version, output_component,
      {X}, {Y}, and {Z} will be replaced with x, y, and z version numbers from
      X.Y.Z. {N} will be replaced with development version if found in the
      input version, e.g. "-beta3" or "-rc1"
+     @param get_dev (optional) if True, get corresponding -beta or -rc version.
+     If False, return "develop" if input is beta or rc.
      @returns string of requested version number, or "develop" if input version
      ends with "-dev", or None if version number could not be determined.
     """
-    if input_version.endswith('-dev'):
+    if ('-dev' in input_version or
+            (not get_dev and any(ext in input_version for ext in ['-beta', '-rc']))):
         return 'develop'
     coord_version = get_coordinated_version(input_component, input_version)
     versions = VERSION_LOOKUP.get(coord_version)
@@ -93,10 +96,12 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--input_component',
                         default='metplus',
-                        help='Name of METplus component to use to find version')
+                        help='Name of METplus component to use to find version,'
+                        ' default is METplus.')
     parser.add_argument('-v', '--input_version',
                         default=next(iter(VERSION_LOOKUP)),
-                        help='version of input_component to search')
+                        help='version of input_component to search,'
+                             ' default is upcoming version')
     parser.add_argument('-o', '--output_component', required=True,
                         help='name of METplus component to obtain version')
     parser.add_argument('-f', '--output_format',
@@ -106,9 +111,14 @@ def main():
                              ' z version numbers from X.Y.Z. {N} will be '
                              'replaced with development version if found in the'
                              'input version, e.g. "-beta3" or "-rc1"')
+    parser.add_argument('--get_dev_version', action=argparse.BooleanOptionalAction,
+                        default=True,
+                        help='If True, get corresponding -beta or -rc version. '
+                             'If False, return develop if development version.')
     args = parser.parse_args()
     return get_component_version(args.input_component, args.input_version,
-                                 args.output_component, args.output_format)
+                                 args.output_component, args.output_format,
+                                 args.get_dev_version)
 
 
 if __name__ == "__main__":

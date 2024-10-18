@@ -43,6 +43,63 @@ METplus Wrappers Release Notes
 When applicable, release notes are followed by the
 `GitHub issue <https://github.com/dtcenter/METplus/issues>`__ number which
 describes the bugfix, enhancement, or new feature.
+Important issues are listed **in bold** for emphasis.
+
+METplus Version 6.0.0 beta6 Release Notes (2024-10-18)
+------------------------------------------------------
+
+  .. dropdown:: Enhancement
+
+     * Support for setting Point2Grid MET config variables
+       (`#2540 <https://github.com/dtcenter/METplus/issues/2540>`_)
+     * Support processing groups of forecast leads
+       (`#2612 <https://github.com/dtcenter/METplus/issues/2612>`_)
+     * Support separate climatology datasets for both the forecast and observation inputs
+       (`#2622 <https://github.com/dtcenter/METplus/issues/2622>`_)
+     * Support the new `-aggr` command line option in SeriesAnalysis wrapper
+       (`#2651 <https://github.com/dtcenter/METplus/issues/2651>`_)
+     * **Deprecate master_metplus.py**
+       (`#2714 <https://github.com/dtcenter/METplus/issues/2714>`_)
+     * Support for setting point_weight_flag and obtype_as_group_val_flag in PointStat and EnsembleStat
+       (`#2727 <https://github.com/dtcenter/METplus/issues/2727>`_)
+
+  .. dropdown:: Bugfix
+
+     * ASCII2NC file window bad default value and redundant initialization of wrappers
+       (`#2520 <https://github.com/dtcenter/METplus/issues/2520>`_)
+     * Inconsistent RUN_ID values when using instances
+       (`#2596 <https://github.com/dtcenter/METplus/issues/2596>`_)
+     * Fix GridStat_SeriesAnalysis _fcstNMME_obsCPC _seasonal_forecast use cases with poorly configured climatology settings
+       (`#2695 <https://github.com/dtcenter/METplus/issues/2695>`_)
+     * Improve SeriesAnalysis field info generation with regards to time
+       (`#2705 <https://github.com/dtcenter/METplus/issues/2705>`_)
+     * Clean up existing use cases wrt SonarQube
+       (`#2710 <https://github.com/dtcenter/METplus/issues/2710>`_)
+
+  .. dropdown:: New Wrapper
+
+     NONE
+
+  .. dropdown:: New Use Case
+
+     * Multivariate MODE for RRFS
+       (`#2647 <https://github.com/dtcenter/METplus/issues/2647>`_)
+
+  .. dropdown:: Documentation
+
+     * Add information to Contributor's Guide for adding new use cases that utilize METplotpy/METcalcpy/METdataio
+       (`#1882 <https://github.com/dtcenter/METplus/issues/1882>`_)
+     * Update Release Guide for MET releases to update version numbers in the installation.rst in the MET User's Guide
+       (`#2452 <https://github.com/dtcenter/METplus/issues/2452>`_)
+     * Update Documentation Overview and Conventions
+       (`#2489 <https://github.com/dtcenter/METplus/issues/2489>`_)
+     * Update the User Support section in the Contributor's Guide
+       (`#2679 <https://github.com/dtcenter/METplus/issues/2679>`_)
+
+  .. dropdown:: Internal
+
+     NONE
+
 
 METplus Version 6.0.0 Beta 5 Release Notes (2024-07-10)
 -------------------------------------------------------

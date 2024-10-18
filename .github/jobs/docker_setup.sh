@@ -32,7 +32,7 @@ echo "TIMING: docker pull ${DOCKERHUB_TAG} took `printf '%02d' $(($duration / 60
 export DOCKERFILE_PATH=${GITHUB_WORKSPACE}/internal/scripts/docker/Dockerfile
 
 metplus_version=$(head -n 1 "${GITHUB_WORKSPACE}/metplus/VERSION")
-MET_TAG=$("${GITHUB_WORKSPACE}"/metplus/component_versions.py -v "${metplus_version}" -o MET -f "{X}.{Y}-latest")
+MET_TAG=$("${GITHUB_WORKSPACE}"/metplus/component_versions.py -v "${metplus_version}" -o MET -f "{X}.{Y}-latest" --no-get_dev_version)
 
 MET_DOCKER_REPO=met-dev
 if [ "${MET_TAG}" != "develop" ]; then
