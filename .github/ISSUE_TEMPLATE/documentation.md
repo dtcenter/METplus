@@ -1,23 +1,23 @@
 ---
-name: Enhancement request
-about: Improve something that it's currently doing
-title: 'Enhancement: '
-labels: 'alert: NEED ACCOUNT KEY, alert: NEED MORE DEFINITION, alert: NEED CYCLE ASSIGNMENT, type: enhancement'
+name: Documentation
+about: Update the documentation
+title: 'Documentation: '
+labels: 'alert: NEED ACCOUNT KEY, alert: NEED MORE DEFINITION, alert: NEED CYCLE ASSIGNMENT, type: documentation'
 assignees: ''
 
 ---
 
 *Replace italics below with details for this issue.*
 
-## Describe the Enhancement ##
-*Provide a description of the enhancement request here.*
+## Describe the Task ##
+*Provide a description of the task here.*
 
 ### Time Estimate ###
 *Estimate the amount of work required here.*
 *Issues should represent approximately 1 to 3 days of work.*
 
 ### Sub-Issues ###
-Consider breaking the enhancement down into sub-issues.
+Consider breaking the task down into sub-issues.
 - [ ] *Add a checkbox for each sub-issue here.*
 
 ### Relevant Deadlines ###
@@ -29,8 +29,7 @@ Consider breaking the enhancement down into sub-issues.
 ## Define the Metadata ##
 
 ### Assignee ###
-- [ ] Select **engineer(s)** or **no engineer** required
-- [ ] Select **scientist(s)** or **no scientist** required
+- [ ] Select appropriate **assignee** for this issue
 
 ### Labels ###
 - [ ] Review default **alert** labels
@@ -46,7 +45,7 @@ Consider breaking the enhancement down into sub-issues.
 Consider the impact to the other METplus components.
 - [ ] [METplus](https://github.com/dtcenter/METplus/issues/new/choose), [MET](https://github.com/dtcenter/MET/issues/new/choose), [METdataio](https://github.com/dtcenter/METdataio/issues/new/choose), [METviewer](https://github.com/dtcenter/METviewer/issues/new/choose), [METexpress](https://github.com/dtcenter/METexpress/issues/new/choose), [METcalcpy](https://github.com/dtcenter/METcalcpy/issues/new/choose), [METplotpy](https://github.com/dtcenter/METplotpy/issues/new/choose)
 
-## Enhancement Checklist ##
+## Task Checklist ##
 See the [METplus Workflow](https://metplus.readthedocs.io/en/latest/Contributors_Guide/github_workflow.html) for details.
 - [ ] Complete the issue definition above, including the **Time Estimate** and **Funding Source**.
 - [ ] Fork this repository or create a branch of **develop**.
