@@ -58,7 +58,7 @@ METplus Version 6.0.0 beta6 Release Notes (2024-10-18)
        (`#2622 <https://github.com/dtcenter/METplus/issues/2622>`_)
      * Support the new `-aggr` command line option in SeriesAnalysis wrapper
        (`#2651 <https://github.com/dtcenter/METplus/issues/2651>`_)
-     * Deprecate master_metplus.py
+     * **Deprecate master_metplus.py**
        (`#2714 <https://github.com/dtcenter/METplus/issues/2714>`_)
      * Support for setting point_weight_flag and obtype_as_group_val_flag in PointStat and EnsembleStat
        (`#2727 <https://github.com/dtcenter/METplus/issues/2727>`_)
