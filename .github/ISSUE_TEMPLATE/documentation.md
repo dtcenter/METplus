@@ -29,8 +29,7 @@ Consider breaking the task down into sub-issues.
 ## Define the Metadata ##
 
 ### Assignee ###
-- [ ] Select **engineer(s)** or **no engineer** required
-- [ ] Select **scientist(s)** or **no scientist** required
+- [ ] Select appropriate **assignee** for this issue
 
 ### Labels ###
 - [ ] Review default **alert** labels

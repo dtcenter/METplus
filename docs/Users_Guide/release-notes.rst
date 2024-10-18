@@ -43,6 +43,7 @@ METplus Wrappers Release Notes
 When applicable, release notes are followed by the
 `GitHub issue <https://github.com/dtcenter/METplus/issues>`__ number which
 describes the bugfix, enhancement, or new feature.
+Important issues are listed **in bold** for emphasis.
 
 METplus Version 6.0.0 beta6 Release Notes (2024-10-18)
 ------------------------------------------------------
