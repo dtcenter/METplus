@@ -17,7 +17,7 @@ fi
 metplus_version=${SOURCE_BRANCH:1}
 
 # Get MET tag and adjust MET Docker repo if develop
-met_tag=$("${GITHUB_WORKSPACE}"/metplus/component_versions.py -v "${metplus_version}" -o MET -f "{X}.{Y}-latest")
+met_tag=$("${GITHUB_WORKSPACE}"/metplus/component_versions.py -v "${metplus_version}" -o MET -f "{X}.{Y}-latest" --no-get_dev_version)
 echo "$met_tag"
 
 MET_DOCKER_REPO=met
