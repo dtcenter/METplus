@@ -6,6 +6,8 @@ import os
 from github import Github
 from datetime import datetime, timezone
 
+GITHUB_ORG = 'dtcenter'
+
 CATEGORIES = (
     'Enhancement',
     'Bugfix',
@@ -22,11 +24,12 @@ def main(dev_name, dev_start_date, dev_end_date=datetime.today(), repo_name='MET
       print("ERROR: Must set GITHUB_TOKEN environment variable")
       sys.exit(1)
 
+    all_issues = get_all_issues_since_dev_start(token, repo_name, dev_start_date)
+    issues_by_category = get_issues_by_category(all_issues)
+
     print_banner('ADD THIS TO docs/Users_Guide/release-notes.rst')
 
     print_header(repo_name, dev_name, dev_end_date)
-    all_issues = get_all_issues_since_dev_start(token, repo_name, dev_start_date)
-    issues_by_category = get_issues_by_category(all_issues)
     print_issues_by_category(repo_name, issues_by_category)
 
     print_banner('ADD THIS TO METplus Coordinated Release Acceptance Testing')
@@ -35,13 +38,15 @@ def main(dev_name, dev_start_date, dev_end_date=datetime.today(), repo_name='MET
 
 
 def get_all_issues_since_dev_start(token, repo_name, dev_start_date):
+    print(f"Finding issues in {GITHUB_ORG}/{repo_name} that were closed after {dev_start_date.strftime('%Y-%m-%d')}...")
     github_obj = Github(token)
-    org = github_obj.get_organization('dtcenter')
+    org = github_obj.get_organization(GITHUB_ORG)
     repo = org.get_repo(repo_name)
 
     all_issues = repo.get_issues(state='closed', since=dev_start_date)
     all_issues = [issue for issue in all_issues if issue.pull_request is None]
     all_issues = [issue for issue in all_issues if not issue.title.startswith('Update Truth')]
+    all_issues.sort(key=lambda x: x.number)
     return all_issues
 
 
@@ -50,7 +55,8 @@ def print_banner(msg):
 
 
 def print_header(repo_name, dev_name, dev_end_date):
-    header = f"{repo_name} Version {dev_name.replace('-', ' ')} Release Notes ({dev_end_date.strftime('%Y-%m-%d')})"
+    dev_fmt = dev_name.replace('-', '').replace('beta', 'Beta ').replace('rc', 'RC ')
+    header = f"{repo_name} Version {dev_fmt} Release Notes ({dev_end_date.strftime('%Y-%m-%d')})"
     print(header)
     print('-' * len(header))
 
@@ -69,7 +75,7 @@ def print_issues_by_category(repo_name, issues_by_category):
             title = issue.title.removeprefix(category).lstrip(' :')
             num = issue.number
             print(f"     * {title}")
-            print(f"       (`#{num} <https://github.com/dtcenter/{repo_name}/issues/{num}>`_)")
+            print(f"       (`#{num} <https://github.com/{GITHUB_ORG}/{repo_name}/issues/{num}>`_)")
 
 
 def get_issues_by_category(all_issues):
@@ -95,7 +101,7 @@ def print_release_testing(repo_name, dev_name, all_issues):
     dev_info = dev_name.split('-')[1]
     for issue in all_issues:
         num = issue.number
-        print(f"| **OPEN** || [#{num}](https://github.com/dtcenter/{repo_name}/issues/{num}) | {dev_info} |||")
+        print(f"| **OPEN** || [#{num}](https://github.com/{GITHUB_ORG}/{repo_name}/issues/{num}) | {dev_info} |||")
 
 
 if __name__ == '__main__':
