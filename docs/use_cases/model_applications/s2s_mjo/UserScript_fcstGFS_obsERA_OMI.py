@@ -132,7 +132,7 @@ UserScript_fcstGFS_obsERA_OMI.py
 # A successful run will output the following both to the screen and to the logfile::
 #
 #   INFO: METplus has successfully finished running.
-#
+# 
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use 
 # case will be found in model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI/plots (relative to **OUTPUT_BASE**).  
 # The output may include the regridded data and daily averaged files if those steps are turned on.  Phase diagram 
