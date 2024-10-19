@@ -31,7 +31,7 @@ UserScript_obsERA_obsOnly_RMM.py
 #
 #  * Forecast dataset:  None
 #  * Observation dataset: ERA Reanlaysis Outgoing Longwave Radiation, 850 hPa wind and 200 hPa wind, 2000 - 2002.
-#  * EOFs:
+#  * EOFs: NEED TO FILL IN
 #
 
 ##############################################################################
@@ -62,11 +62,9 @@ UserScript_obsERA_obsOnly_RMM.py
 # METplus Workflow
 # ----------------
 #
-# The creation of anomalies using harmonic analysis and the calculation of RMM do not loop.  Rather, the
-# UserScripts are run once.  These scripts do have the ability to loop over lead time, although only one
-# lead time is provided here.  The optional pre-processing steps to create the mean daily annual cycle
-# and daily mean data loop by valid time with different timing settings needed used for the different 
-# steps. 
+# This use case does not loop, but the UserScript to create and EOF filelist is run once and the OMI driver script is 
+# run once.  The OMI script has the ability to loop over lead time, although only one lead time is provided here.  The 
+# optional pre-processing step loops by valid time.  
 #
 
 ##############################################################################
@@ -75,13 +73,13 @@ UserScript_obsERA_obsOnly_RMM.py
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# i.e. parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.conf.
-# The file UserScript_obsERA_obsOnly_RMM/RMM_driver.py runs the python program and  
-# UserScript_obsERA_obsOnly_RMM.conf sets the variables for all steps of the RMM use case.
+# i.e. parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.conf.
+# The file UserScript_obsERA_obsOnly_OMI/OMI_driver.py runs the python program and the
+# variables for the OMI calculation are set in the [user_env_vars] section of the .conf 
+# file. 
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.conf
-#
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.conf
 
 ##############################################################################
 # MET Configuration
@@ -101,26 +99,31 @@ UserScript_obsERA_obsOnly_RMM.py
 # Python Scripting
 # ----------------
 #
-#RMM is computed using OLR, U850, and U200 data between 15N and 15S.  Anomalies of OLR, U850, and U200 are created using a harmonic analysis, 120 day day mean removed, and the data are normalized by normalization factors (generally the square root of the average variance)  The anomalies are projected onto Empirical Orthogonal Function (EOF) data.  The OLR is then filtered for 20 - 96 days, and regressed onto the daily EOFs.  Finally, it's normalized and these normalized components are plotted on a phase diagram and timeseries plot
-# The RMM driver script orchestrates the calculation of the MJO indices and 
-# the generation of three RMM plots:
-# parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM/RMM_driver.py:
-# The harmonic anomalies script creates anomalies of input data using a harmonic analysis:
-# parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM/compute_harmonic_anomalies.py
+# This use case runs the OMI driver which computes OMI and creates a phase diagram. Inputs to the 
+# OMI driver include netCDF files formatted in MET's netCDF version.  In addition, a txt file containing 
+# the listing of these input netCDF files is required, as well as text file listings of the EOF1 and 
+# EOF2 files.  These text files can be generated using the USER_SCRIPT_INPUT_TEMPLATES in the 
+# [create_eof_filelist] and [script_omi] sections.  Some optional pre-processing steps include using 
+# regrid_data_plane to either regrid your data or cut the domain to 20N - 20S.
+#
+# For the OMI calculation, the OLR data are then projected onto Empirical Orthogonal Function (EOF) 
+# data that is computed for each day of the year, latitude, and longitude.  The OLR is then filtered 
+# for 20 - 96 days, and regressed onto the daily EOFs.  Finally, it's normalized and these normalized 
+# components are plotted on a phase diagram.  The OMI driver script orchestrates the calculation of the 
+# MJO indices and the generation of a phase diagram OMI plot.
 #
 # .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM/RMM_driver.py
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM/compute_harmonic_anomalies.py
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI/OMI_driver.py
 #
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# # Pass the use case configuration file to the run_metplus.py script along with any
+# Pass the use case configuration file to the run_metplus.py script along with any
 # user-specific system configuration files if desired:
 #
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s_stratosphere/UserScript_obsERA_obsOnly_RMM.conf /path/to/user_system.conf
+#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s_stratosphere/UserScript_obsERA_obsOnly_OMI.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
 #
@@ -134,13 +137,11 @@ UserScript_obsERA_obsOnly_RMM.py
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use 
-# case will be found in model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM/plots (relative to **OUTPUT_BASE**).
-# The output may include the regridded data and daily averaged files if those steps are turned on.  Three output
-# plots will be generated, a phase diagram, time series, and EOF plot:
+# case will be found in model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI/plots (relative to **OUTPUT_BASE**).  
+# The output may include the regridded data and daily averaged files if those steps are turned on.  A Phase diagram 
+# plots will be generated:
 #
-#  * plot1.png
-#  * plot2.png
-#  * plot3.png
+#  * obs_OMI_comp_phase.png
 #
 
 ##############################################################################
@@ -151,13 +152,10 @@ UserScript_obsERA_obsOnly_RMM.py
 #
 #   * S2SAppUseCase
 #   * S2SMJOAppUseCase
-#   * NetCDFFileUseCase
 #   * RegridDataPlaneUseCase
 #   * PCPCombineUseCase
-#   * METcalcpyUseCase
-#   * METplotpyUseCase
 #
 #   Navigate to :ref:`quick-search` to discover other similar use cases.
 #
-# sphinx_gallery_thumbnail_path = '_static/s2s_mjo-UserScript_obsERA_obsOnly_RMM.png'
+# sphinx_gallery_thumbnail_path = '_static/s2s_mjo-UserScript_obsERA_obsOnly_OMI.png'
 #
