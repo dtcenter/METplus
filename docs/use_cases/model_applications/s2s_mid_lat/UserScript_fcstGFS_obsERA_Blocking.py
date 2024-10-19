@@ -42,19 +42,6 @@ UserScript_fcstGFS_obsERA_Blocking.py
 #
 
 ##############################################################################
-# External Dependencies
-# ---------------------
-#
-# You will need to use a version of Python 3.6+ that has the following packages installed::
-#
-# * numpy
-# * netCDF4
-# * datetime
-# * bisect
-# * scipy
-#
-
-##############################################################################
 # METplus Components
 # ------------------
 #
