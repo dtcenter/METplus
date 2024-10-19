@@ -62,9 +62,11 @@ UserScript_obsERA_obsOnly_RMM.py
 # METplus Workflow
 # ----------------
 #
-# This use case does not loop, but the UserScript to create and EOF filelist is run once and the OMI driver script is 
-# run once.  The OMI script has the ability to loop over lead time, although only one lead time is provided here.  The 
-# optional pre-processing step loops by valid time.  
+# The creation of anomalies using harmonic analysis and the calculation of RMM do not loop.  Rather, the
+# UserScripts are run once.  These scripts do have the ability to loop over lead time, although only one
+# lead time is provided here.  The optional pre-processing steps to create the mean daily annual cycle
+# and daily mean data loop by valid time with different timing settings needed used for the different 
+# steps.
 #
 
 ##############################################################################
@@ -73,13 +75,13 @@ UserScript_obsERA_obsOnly_RMM.py
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# i.e. parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.conf.
-# The file UserScript_obsERA_obsOnly_OMI/OMI_driver.py runs the python program and the
-# variables for the OMI calculation are set in the [user_env_vars] section of the .conf 
-# file. 
+# i.e. parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.conf.
+# The file UserScript_obsERA_obsOnly_RMM/RMM_driver.py runs the python program and  
+# UserScript_obsERA_obsOnly_RMM.conf sets the variables for all steps of the RMM use case.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.conf
+#
 
 ##############################################################################
 # MET Configuration
@@ -99,6 +101,8 @@ UserScript_obsERA_obsOnly_RMM.py
 # Python Scripting
 # ----------------
 #
+
+
 # This use case runs the OMI driver which computes OMI and creates a phase diagram. Inputs to the 
 # OMI driver include netCDF files formatted in MET's netCDF version.  In addition, a txt file containing 
 # the listing of these input netCDF files is required, as well as text file listings of the EOF1 and 
@@ -152,10 +156,13 @@ UserScript_obsERA_obsOnly_RMM.py
 #
 #   * S2SAppUseCase
 #   * S2SMJOAppUseCase
+#   * NetCDFFileUseCase
 #   * RegridDataPlaneUseCase
 #   * PCPCombineUseCase
+#   * METcalcpyUseCase
+#   * METplotpyUseCase
 #
 #   Navigate to :ref:`quick-search` to discover other similar use cases.
 #
-# sphinx_gallery_thumbnail_path = '_static/s2s_mjo-UserScript_obsERA_obsOnly_OMI.png'
+# sphinx_gallery_thumbnail_path = '_static/s2s_mjo-UserScript_obsERA_obsOnly_RMM.png'
 #
