@@ -117,3 +117,15 @@ UserScript_obsERA_obsOnly_RMM.py
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM/RMM_driver.py
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM/compute_harmonic_anomalies.py
 #
+
+##############################################################################
+# Running METplus
+# ---------------
+#
+# Pass the use case configuration file to the run_metplus.py script along with any
+# user-specific system configuration files if desired:
+#
+#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s_stratosphere/UserScript_obsERA_obsOnly_RMM.conf /path/to/user_system.conf
+#
+# See :ref:`running-metplus` for more information.
+#
