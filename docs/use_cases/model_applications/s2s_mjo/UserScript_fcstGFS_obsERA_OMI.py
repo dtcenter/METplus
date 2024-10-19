@@ -117,7 +117,7 @@ UserScript_fcstGFS_obsERA_OMI.py
 # Running METplus
 # ---------------
 #
-#Pass the use case configuration file to the run_metplus.py script along with any
+# Pass the use case configuration file to the run_metplus.py script along with any
 # user-specific system configuration files if desired:
 #
 #        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_OMI.conf /path/to/user_system.conf
