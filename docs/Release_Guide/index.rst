@@ -110,7 +110,21 @@ in the
 
 .. dropdown:: NCAR machines
 
-   Add more dropdown menus here
+    .. dropdown:: CASPER
+
+       Add text here
+
+    .. dropdown:: DERECHO
+
+       Add text here
+
+    .. dropdown:: NCAR/RAL Common Installation
+
+       Add text here
+
+    .. dropdown:: NCAR/RAL Internal Development
+
+       Add  text here
 
 .. dropdown:: NOAA machines
 
