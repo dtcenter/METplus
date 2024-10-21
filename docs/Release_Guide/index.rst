@@ -112,8 +112,8 @@ in the
 
     .. dropdown:: CASPER
 
-       | **NCAR MACHINE CASPER** 
-       (see `Casper Information <https://ncar-hpc-docs.readthedocs.io/en/latest/compute-systems/casper/>`_)
+       | **NCAR MACHINE CASPER** (see 
+          `Casper Information <https://ncar-hpc-docs.readthedocs.io/en/latest/compute-systems/casper/>`_)
        | Last Updated: July 23, 2024
 
        * METplus-6.0.0-beta5
