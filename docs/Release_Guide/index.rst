@@ -96,15 +96,17 @@ drop down menu is only updated after official releases.  No developmental releas
 are installed in a common space on RAL machines.
 
 Please submit a new discussion in the 
-`METplus Components Discussion<https://github.com/dtcenter/METplus/discussions>`_
+`METplus Components Discussion <https://github.com/dtcenter/METplus/discussions>`_
 forum if no instructions exist for the current release on a supported 
 platform and the release is needed on that platform.
 
 Select from the list below for instructions on using existing builds of 
 the METplus components' software packages. Please note that the commands to 
 load the METplus components assume the user is using bash. If an installation 
-is needed on a machine not listed here, please follow the installation
-instructions in the MET User’s Guide.
+is needed on a machine not listed here, please follow the 
+`installation instructions <https://metplus.readthedocs.io/projects/met/en/latest/Users_Guide/installation.html#software-installation-getting-started>`_ 
+in the 
+`MET User’s Guide <https://metplus.readthedocs.io/projects/met/en/latest/Users_Guide/>`_.
 
 ********************
 Instructions Summary
