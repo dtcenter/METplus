@@ -112,7 +112,71 @@ in the
 
     .. dropdown:: CASPER
 
-       Add text here
+       **NCAR MACHINE CASPER** 
+       **(see `Casper Information <https://ncar-hpc-docs.readthedocs.io/en/latest/compute-systems/casper/>`_)**
+       | Last Updated: July 23, 2024
+
+       * METplus-6.0.0-beta5
+
+          * METplus-6.0.0-beta5 Installation: 
+            * /glade/work/dtcrt/METplus/casper/components/METplus/installation
+
+       * METplus-6.0 Sample Data:
+
+          * /glade/work/dtcrt/METplus/data/components/METplus/METplus-6.0_sample_data
+
+       * Create your own file like 
+         /glade/work/dtcrt/METplus/casper/components/METplus/installations/casper.dtcrt.conf 
+         where you will set your own INPUT_BASE and OUTPUT_BASE.
+       * To set up the environment run:Add text here
+
+       .. code-block:: ini
+
+          export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
+          module use $TOP_DIR/METplus/installations/modulefiles
+          module load metplus/6.0.0-beta5
+
+       * MET-12.0.0-beta5
+
+         * MODULES:
+
+     .. code-block:: ini
+
+          export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
+          module use $TOP_DIR/MET/installations/modulefiles
+          module load met/12.0.0-beta5
+
+       * METdataio-3.0.0-beta5
+
+         * MODULES:
+
+       .. code-block:: ini
+
+          export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
+          module use $TOP_DIR/METdataio/installations/modulefiles
+          module load metdataio/3.0.0-beta5
+          METcalcpy-3.0.0-beta5
+          MODULES:
+
+       * METcalcpy-3.0.0-beta5
+      
+         * MODULES:
+
+      .. code-block:: ini
+
+          export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
+          module use $TOP_DIR/METcalcpy/installations/modulefiles
+          module load metcalcpy/3.0.0-beta5
+
+       * METplotpy-3.0.0-beta5
+
+         * MODULES:
+
+       .. code-block:: ini
+
+          export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
+          module use $TOP_DIR/METplotpy/installations/modulefiles
+          module load metplotpy/3.0.0-beta5
 
     .. dropdown:: DERECHO
 
