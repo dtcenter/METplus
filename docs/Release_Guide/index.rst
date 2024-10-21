@@ -112,13 +112,14 @@ in the
 
     .. dropdown:: CASPER
 
-       **NCAR MACHINE CASPER** 
-       **(see `Casper Information <https://ncar-hpc-docs.readthedocs.io/en/latest/compute-systems/casper/>`_)**
+       | **NCAR MACHINE CASPER** 
+       (see `Casper Information <https://ncar-hpc-docs.readthedocs.io/en/latest/compute-systems/casper/>`_)
        | Last Updated: July 23, 2024
 
        * METplus-6.0.0-beta5
 
           * METplus-6.0.0-beta5 Installation: 
+
             * /glade/work/dtcrt/METplus/casper/components/METplus/installation
 
        * METplus-6.0 Sample Data:
@@ -128,7 +129,7 @@ in the
        * Create your own file like 
          /glade/work/dtcrt/METplus/casper/components/METplus/installations/casper.dtcrt.conf 
          where you will set your own INPUT_BASE and OUTPUT_BASE.
-       * To set up the environment run:Add text here
+       * To set up the environment run:
 
        .. code-block:: ini
 
@@ -140,7 +141,7 @@ in the
 
          * MODULES:
 
-     .. code-block:: ini
+       .. code-block:: ini
 
           export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
           module use $TOP_DIR/MET/installations/modulefiles
@@ -162,7 +163,7 @@ in the
       
          * MODULES:
 
-      .. code-block:: ini
+       .. code-block:: ini
 
           export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
           module use $TOP_DIR/METcalcpy/installations/modulefiles
