@@ -9,7 +9,7 @@ dockerhub_repo_analysis=dtcenter/metplus-analysis
 
 # check if tag is official or bugfix release -- no -betaN or -rcN suffix
 is_official=1
-if [[ ! "${SOURCE_BRANCH}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+if [[ "${SOURCE_BRANCH}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   is_official=0
 fi
 
