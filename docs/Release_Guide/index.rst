@@ -108,6 +108,27 @@ is needed on a machine not listed here, please follow the
 in the 
 `MET User’s Guide <https://metplus.readthedocs.io/projects/met/en/latest/Users_Guide/>`_.
 
+.. dropdown:: NCAR machines
+
+   Add more dropdown menus here
+
+.. dropdown:: NOAA machines
+
+    Add more dropdown menus here
+
+.. dropdown:: Community machines
+
+   Add more dropdown menus here
+
+.. dropdown:: Docker Hub
+
+   Add more dropdown menus here
+
+.. dropdown:: AWS
+
+   Add more dropdown menus here
+
+
 ********************
 Instructions Summary
 ********************
