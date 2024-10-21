@@ -7,8 +7,7 @@
 #   - label file
 
 if [[ $# -ne 4 ]]; then
-  echo "ERROR: `basename $0` ... must specify the GitHub username, authorization key, repository name, and label file."
-  echo "ERROR:   repo names: metplus, met, metdataio, metcalcpy, metplotpy, metviewer, metexpress, metplus-training, metplus-internal, metbaseimage"
+  echo "ERROR: `basename $0` ... must specify the GitHub username, authorization key, METplus repository name, and label file."
   exit 1
 else
   user=$1
