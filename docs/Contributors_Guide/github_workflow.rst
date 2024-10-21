@@ -297,6 +297,108 @@ required to perform the following steps.
 
    - Click the **Link a project** button and find/select this newly created support project.
 
+.. _wo-github-labels:
+
+GitHub Labels to Organize Issues
+================================
+
+The METplus system consists of several software components, each with its own GitHub
+repository.  Each issue in the METplus component repositories is assigned multiple
+labels to keep the work well-organized.  Each label begins with a prefix to indicate
+its category and, generally, all labels of the same category share a common color.
+Over 70 labels common to all METplus component repositories fall into the following
+categories:
+
+
+  - **alert** labels are colored yellow, are added to each new issue by default, but
+    are intended to be addressed and removed by the time work for the issue begins.
+
+  - **component** labels are colored blue and roughly categorize the work by topic.
+    Additional repository-specific **component** labels are encouraged.
+
+  - **priority** labels are colored green, yellow, or red to indicate priority level.
+
+  - **reporting** labels are colored light orange and are generally assigned by
+    project managers to indicate where progress on this work will be reported.
+
+  - **requestor** labels are colored purple and indicate which organization(s) have
+    requested the work.
+
+  - **required** labels are colored pink and indicate whether the work is actually
+    required for the development cycle and/or official release to which is has been
+    assigned.
+
+  - **type** labels are colored tan and differentiate between, for example, bugfixes,
+    new features, enhancements, and miscellaneous tasks. Generally, each type label
+    corresponds to a GitHub issue template.  Additional repository-specific **type**
+    labels are supported.
+
+
+In general, new **alert**, **priority**, **reporting**, and **requestor** labels
+should be added to this common location and defined consistently across all
+METplus repositories.  Each repository should define a relevant set of **component**
+labels since they will vary widely depending on the code base.  New **type** labels
+should only be added to a repository when a corresponding GitHub issue template is
+also added to its :code:`.github/ISSUE_TEMPLATE` directory.
+
+
+Scripts to manage these common labels are provided in the :code:`.github/labels`
+directory of the METplus repository:
+
+
+  - :code:`common_labels.txt` defines the name, color, and description for each of the
+    labels common to all METplus repositories.
+
+  - :code:`process_labels.sh` has two required arguments: the GitHub user name and
+    authorization token for command line actions. It loops through the METplus
+    component repositories and runs the following scripts for each.
+
+  - :code:`post_patch_labels.sh` is called by :code:`process_labels.sh` for each
+    METplus repository. It retrieves the list of existing labels for the specified
+    repository, compares it to :code:`common_labels.txt` and generates commands to
+    *add* new labels (i.e. :code:`curl POST`) or *update* existing labels (i.e.
+    :code:`curl PATCH`). For example, if the label description is modified, the update
+    command will make that change.
+
+  - :code:`delete_labels.sh` is called by :code:`process_labels.sh` for each
+    METplus repository. It retrieves the list of existing labels for the specified
+    repository, compares it to :code:`common_labels.txt`, and generates commands
+    to *delete* (i.e. :code:`curl DELETE`) any labels that should be removed.
+
+  - :code:`get_labels.sh` retrieves the current set of the labels from the
+    specified METplus repository.
+
+
+Note that the scripts **DO NOT** actually add, modify, or delete any labels
+directly.  Instead, they generate the *curl* commands for those actions and
+write them to shell scripts in the **commands** sub-directory.  After generating
+these commands, the user should carefully review them to decide before executing
+them:
+
+
+  - :code:`commands/post_labels_*_cmd.sh` scripts contain :code:`curl POST` commands
+    for adding new common labels. Run these after adding a new common label.
+
+  - :code:`commands/delete_labels_*_cmd.sh` scripts contain :code:`curl DELETE`
+    commands to remove labels which should not exist. Run these after deleting
+    existing common labels. Proceed with caution since deletions cannot be undone,
+    and all occurrences of these labels will be removed.
+
+  - :code:`commands/patch_labels_*_cmd.sh` scripts contain :code:`curl PATCH` commands for
+    updating all existing labels. Run these after modifying the description or color
+    of existing common labels.
+
+
+The process of adding a new label, for example, consists of the following steps:
+
+  1. Add a new line in :code:`common_labels.txt` to define it.
+
+  2. Run :code:`process_labels.sh` to generate commands, supplying your GitHub user name
+     and access token as arguments.
+
+  3. Review the actions in the :code:`commands/post_labels_*_cmd.sh` scripts and run them.
+
+
 Sequence of Events - Contributing Code
 ======================================
 

@@ -17,7 +17,7 @@ SCRIPT_DIR=`dirname $0`
 
 # List of METplus repositories
 REPO_LIST="metplus met metplotpy metcalcpy metdataio metviewer \
-           metexpress metplus-training";
+           metexpress metbaseimage metplus-internal metplus-training";
 
 # Process each repository
 for REPO in ${REPO_LIST}; do

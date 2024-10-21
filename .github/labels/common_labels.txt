@@ -24,6 +24,7 @@
 {"name": "reporting: DTC NOAA R2O","color": "fbca04","description": "NOAA Research to Operations DTC Project"}
 {"name": "reporting: HSUP 1-3a","color": "fbca04","description": "Hurricane Supplemental Project 1-3a"}
 {"name": "reporting: HSUP 4-1b","color": "fbca04","description": "Hurricane Supplemental Project 4-1b"}
+{"name": "reporting: NRL METplus","color": "fbca04","description": "Naval Research Laboratory METplus Project"}
 {"name": "requestor: Army/ARL","color": "3101c1","description": "United States Army Research Laboratory"}
 {"name": "requestor: Australian BOM","color": "3101c1","description": "Australian Bureau of Meteorology"}
 {"name": "requestor: Community","color": "3101c1","description": "General Community"}
