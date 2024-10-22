@@ -247,7 +247,21 @@ in the
 
     .. dropdown:: NCAR/RAL Internal Development
 
-       Add  text here
+       | **NCAR RAL MACHINES SENECA**
+       | **METv12.0.0-beta1**
+
+         * MET BUILD: 
+
+       | **NCAR RAL MACHINES KIOWA**
+       | **METv12.0.0-beta1**
+
+         * MET BUILD: 
+
+       | **NCAR RAL MACHINES MOHAWK**
+       | **METviewer v6.0.0-beta1**
+
+         * LOCATION: 
+         * URL: 
 
 .. dropdown:: NOAA machines
 
