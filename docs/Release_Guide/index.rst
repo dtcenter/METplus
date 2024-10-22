@@ -193,7 +193,7 @@ in the
        **NCAR MACHINE DERECHO** 
        See `Derecho Information <https://ncar-hpc-docs.readthedocs.io/en/latest/compute-systems/derecho/>`_
 
-       * METv12.0.0-beta3
+       * **METv12.0.0-beta3**
 
          * MODULES:
 
@@ -201,7 +201,7 @@ in the
              /glade/work/dtcrt/METplus/derecho/components/MET/installations/modulefiles
            * **Installation coming soon**
 
-       * METplus-6.0.0-beta3
+       * **METplus-6.0.0-beta3**
 
          * METplus-6.0.0-beta3 Installation:
 
