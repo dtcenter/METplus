@@ -143,9 +143,9 @@ UserScript_obsERA_obsOnly_RMM.py
 # The output may include the regridded data and daily averaged files if those steps are turned on.  Three output
 # plots will be generated, a phase diagram, time series, and EOF plot:
 #
-#  * plot1.png
-#  * plot2.png
-#  * plot3.png
+#  * obs_RMM_comp_phase.png
+#  * obs_RMM_time_series.png
+#  * RMM_EOFs.png
 #
 
 ##############################################################################
