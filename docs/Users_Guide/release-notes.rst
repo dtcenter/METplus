@@ -87,6 +87,8 @@ METplus Version 6.0.0 beta6 Release Notes (2024-10-18)
 
   .. dropdown:: Documentation
 
+     * Develop an RST template for use cases
+       (`#918 <https://github.com/dtcenter/METplus/issues/918>`_)
      * Add information to Contributor's Guide for adding new use cases that utilize METplotpy/METcalcpy/METdataio
        (`#1882 <https://github.com/dtcenter/METplus/issues/1882>`_)
      * Update Release Guide for MET releases to update version numbers in the installation.rst in the MET User's Guide
