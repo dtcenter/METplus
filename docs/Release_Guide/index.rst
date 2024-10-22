@@ -126,9 +126,10 @@ in the
 
           * /glade/work/dtcrt/METplus/data/components/METplus/METplus-6.0_sample_data
 
-       * Create your own file like 
-         /glade/work/dtcrt/METplus/casper/components/METplus/installations/casper.dtcrt.conf 
-         where you will set your own INPUT_BASE and OUTPUT_BASE.
+       * Users should create a file like 
+          /glade/work/dtcrt/METplus/casper/components/METplus/installations/casper.dtcrt.conf 
+          to set a personalized INPUT_BASE and OUTPUT_BASE.
+
        * To set up the environment run:
 
        .. code-block:: ini
@@ -185,7 +186,54 @@ in the
          Users are encouraged to **run METplus on Casper** or submit to 
          the **develop queue on Derecho**. Submitting serial METplus jobs 
          to the main queue on Derecho may incur **up to 128 times** more charges 
-         than necessary. Please see this Derecho Job-submission queues and charges summary.
+         than necessary. Please see this 
+         `Derecho Job-submission queues and charges 
+          <https://ncar-hpc-docs.readthedocs.io/en/latest/pbs/charging/#job-submission-queues-and-charges>`_ 
+          summary.
+
+          **NCAR MACHINE DERECHO** 
+          See `Derecho Information <https://ncar-hpc-docs.readthedocs.io/en/latest/compute-systems/derecho/>`_
+
+            * METv12.0.0-beta3
+
+              * MODULES:
+
+                * module use 
+                  /glade/work/dtcrt/METplus/derecho/components/MET/installations/modulefiles
+                * **Installation coming soon**
+
+            * METplus-6.0.0-beta3
+
+              * METplus-6.0.0-beta3 Installation:
+
+                * /glade/work/dtcrt/METplus/derecho/components/METplus/installations/METplus-6.0.0-beta3
+
+              * METplus-6.0 Sample Data:
+
+                * /glade/work/dtcrt/METplus/data/components/METplus/METplus-6.0_sample_data
+
+              * To set up the environment run:Create a file like                               
+                /glade/work/dtcrt/METplus/derecho/components/METplus/installations/derecho.dtcrt.conf 
+                the user will set the INPUT_BASE and OUTPUT_BASE.
+
+                * module use /glade/work/dtcrt/METplus/derecho/components/METplus/installations/modulefiles
+                * **Installation coming soon**
+
+            * **METcalcpy-3.0.0-beta3 / METplotpy-3.0.0-beta3**
+
+              * MODULES:
+
+                * module use  
+                  /glade/work/dtcrt/METplus/derecho/components/METcalcpy/installations/modulefiles
+                * module load metcalcpy/3.0.0-beta3
+                * module use /glade/work/dtcrt/METplus/derecho/components/METplotpy/installations/modulefiles
+                * module load metplotpy/3.0.0-beta3
+
+            * *METdataio-3.0.0-beta3**
+
+              * MODULES:
+                * module use /glade/work/dtcrt/METplus/derecho/components/METdataio/installations/modulefiles
+                * module load metdataio/3.0.0-beta3
 
     .. dropdown:: NCAR/RAL Common Installation
 
