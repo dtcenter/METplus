@@ -114,7 +114,7 @@ in the
 
        | **NCAR MACHINE CASPER** (see 
           `Casper Information <https://ncar-hpc-docs.readthedocs.io/en/latest/compute-systems/casper/>`_)
-       | Last Updated: July 23, 2024
+       | *Last Updated: July 23, 2024*
 
        * METplus-6.0.0-beta5
 
@@ -181,7 +181,11 @@ in the
 
     .. dropdown:: DERECHO
 
-       Add text here
+       .. warning::
+         Users are encouraged to **run METplus on Casper** or submit to 
+         the **develop queue on Derecho**. Submitting serial METplus jobs 
+         to the main queue on Derecho may incur **up to 128 times** more charges 
+         than necessary. Please see this Derecho Job-submission queues and charges summary.
 
     .. dropdown:: NCAR/RAL Common Installation
 
