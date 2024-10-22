@@ -187,8 +187,7 @@ in the
          the **develop queue on Derecho**. Submitting serial METplus jobs 
          to the main queue on Derecho may incur **up to 128 times** more charges 
          than necessary. Please see this 
-         `Derecho Job-submission queues and charges <https://ncar-hpc-docs.readthedocs.io/en/latest/pbs/charging/#job-submission-queues-and-charges>`_ 
-          summary.
+         `Derecho Job-submission queues and charges <https://ncar-hpc-docs.readthedocs.io/en/latest/pbs/charging/#job-submission-queues-and-charges>`_ summary.
 
        **NCAR MACHINE DERECHO** 
        See `Derecho Information <https://ncar-hpc-docs.readthedocs.io/en/latest/compute-systems/derecho/>`_
@@ -236,7 +235,15 @@ in the
 
     .. dropdown:: NCAR/RAL Common Installation
 
-       Add text here
+       **NCAR RAL MACHINES (STANDARD LOCATION)**
+
+       * **METv12.0.0**
+
+         * MET BUILD: 
+
+       * **METplus-12.0.0**
+
+         * METplus INSTALLATION: Add text here
 
     .. dropdown:: NCAR/RAL Internal Development
 
