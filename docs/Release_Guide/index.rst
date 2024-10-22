@@ -265,19 +265,45 @@ in the
 
 .. dropdown:: NOAA machines
 
-    Add more dropdown menus here
+     .. dropdown:: WCOSS2
+
+        Add text here
+
+     .. dropdown:: HERA
+
+        Add text here
+
+     .. dropdown:: HERCULES
+
+        Add text here
+
+     .. dropdown:: ORION
+
+        Add text here
+
+     .. dropdown:: JET
+
+        Add text here
+
+     .. dropdown:: GAEA
+
+        Add text here
 
 .. dropdown:: Community machines
+
+     .. dropdown:: FRONTERA
+
+        Add text here
 
    Add more dropdown menus here
 
 .. dropdown:: Docker Hub
 
-   Add more dropdown menus here
+   Add text here
 
 .. dropdown:: AWS
 
-   Add more dropdown menus here
+   Add text here
 
 
 ********************
