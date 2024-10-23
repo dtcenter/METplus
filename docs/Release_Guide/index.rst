@@ -387,6 +387,7 @@ in the
               * module load metplotpy/3.0.0-beta3
 
             * PIP INSTALL:
+
               * python -m pip install --user tornado
               * python -m pip install --user plotly
               * python -m pip install --user kaleido
