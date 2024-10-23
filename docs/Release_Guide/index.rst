@@ -301,7 +301,7 @@ in the
 
           * **METplus-6.0.0-beta6**
 
-            * **METplus-6.0.0-beta6 Installation**
+            * METplus-6.0.0-beta6 Installation
 
               * /contrib/METplus/METplus-6.0.0-beta6
 
