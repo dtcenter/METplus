@@ -545,7 +545,7 @@ in the
 
               * /ncrc/proj/nggps_psd/user_name/projects/METplus/sample_data/METplus-6.0_sample_data
 
-            * To use METplus run: Create alike 
+            * To use METplus run: Create a file like 
               /gpfs/f5/esrl/proj-shared/user_name/projects/METplus/gaea.metplus.conf 
               and set the INPUT_BASE and OUTPUT_BASE.
 
