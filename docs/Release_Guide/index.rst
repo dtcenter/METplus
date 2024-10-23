@@ -351,7 +351,57 @@ in the
 
      .. dropdown:: HERCULES
 
-        Add text here
+        | **NOAA MACHINE HERCULES (MANAGED BY MSU)**
+        | *Last updated:*
+
+          * **METv12.0.0-beta3**
+
+            * MODULES:
+
+              * module load contrib
+              * module load intel-oneapi-compilers/2022.2.1
+              * module load met/12.0.0-beta3
+
+          * **METplus-6.0.0-beta3**
+
+            * METplus-6.0.0-beta3 Installation
+            * METplus-6.0 Sample Data
+
+              * /work/noaa/ovp/jprestop/METplus/METplus-6.0_sample_data
+
+            * To use METplus run:
+
+              * module load contrib
+              * module load metplus/6.0.0-beta3
+              * Create a file like 
+                /work/noaa/ovp/user_name/METplus/hercules.user_name.conf 
+                and set the INPUT_BASE and OUTPUT_BASE.
+
+          * **METcalcpy-3.0.0-beta3 / METplotpy-3.0.0-beta3**
+
+            * MODULES:
+
+              * module load contrib
+              * module load intel-oneapi-compilers/2022.2.1
+              * module load metcalcpy/3.0.0-beta3
+              * module load metplotpy/3.0.0-beta3
+
+            * PIP INSTALL:
+              * python -m pip install --user tornado
+              * python -m pip install --user plotly
+              * python -m pip install --user kaleido
+              * python -m pip install --user xarray
+              * python -m pip install --user netcdf4
+              * python -m pip install --user h5netcdf
+
+          * **METdataio-3.0.0-beta3**
+
+            * MODULES:
+
+              * module load contrib
+              * module load intel-oneapi-compilers/2022.2.1
+              * module load metdataio/3.0.0-beta3
+
 
      .. dropdown:: ORION
 
