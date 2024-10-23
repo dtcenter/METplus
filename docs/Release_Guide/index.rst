@@ -267,7 +267,29 @@ in the
 
      .. dropdown:: WCOSS2
 
-        Add text here
+        **NOAA machines Dogwood and Cactus (WCOSS2 - Cray)**
+
+        *Last updated: September 19, 2024*
+
+          * **MET v12.0.0-beta5 / METplus v6.0.0-beta5 / METplus Analysis Tools v3.0.0-beta5**
+
+            * MODULES:
+
+              .. code-block:: ini
+
+                module reset
+                module use /apps/dev/modulefiles/
+                module load ve/evs/2.0
+                module use /apps/ops/para/libs/modulefiles/compiler/intel/19.1.3.304
+                export HPC_OPT=/apps/ops/para/libs
+                module load gsl/2.7
+                module load netcdf/4.7.4
+                module load met/12.0.0-beta5
+                module load metplus/6.0.0-beta5
+                module load METplotpy/3.0.0-beta5
+                module load METdataio/3.0.0-beta5
+                module load METcalcpy/3.0.0-beta5
+ 
 
      .. dropdown:: HERA
 
