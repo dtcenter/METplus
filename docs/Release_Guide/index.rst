@@ -532,7 +532,65 @@ in the
 
      .. dropdown:: GAEA
 
-        Add text here
+        | **NOAA MACHINE GAEA**
+        | *Last Updated: July 16, 2024*
+
+          * **METplus-6.0.0-beta5**
+
+            * METplus-6.0.0-beta5 Installation
+
+              * /usw/met/METplus/METplus-6.0.0-beta5
+
+            * METplus-6.0 Sample Data
+
+              * /ncrc/proj/nggps_psd/user_name/projects/METplus/sample_data/METplus-6.0_sample_data
+
+            * To use METplus run: Create alike 
+              /gpfs/f5/esrl/proj-shared/user_name/projects/METplus/gaea.metplus.conf 
+              and set the INPUT_BASE and OUTPUT_BASE.
+
+              .. code-block:: ini
+
+                 module unload cray-libsci/23.02.1.1
+                 module load intel-oneapi/2022.0.2
+                 module use /usw/met/METplus/modulefiles
+                 module load metplus/6.0.0-beta5
+
+          * **METv12.0.0-beta5**
+
+            * MODULES:
+
+              .. code-block:: ini
+
+                 module unload cray-libsci/23.02.1.1
+                 module load intel-oneapi/2022.0.2
+                 module use -a /usw/met/modulefiles/
+                 module load met/12.0.0-beta5 
+
+
+          * **METcalcpy-3.0.0-beta5 / METplotpy-3.0.0-beta5**
+
+            * MODULES:
+
+              .. code-block:: ini
+
+                module unload cray-libsci/23.02.1.1
+                module load intel-oneapi/2022.0.2
+                module use /usw/met/METcalcpy/modulefiles
+                module load metcalcpy/3.0.0-beta5
+                module use /usw/met/METplotpy/modulefiles
+                module load metplotpy/3.0.0-beta5
+
+          * **METdataio-3.0.0-beta5**
+
+            * MODULES:
+
+              .. code-block:: ini
+
+                 module unload cray-libsci/23.02.1.1
+                 module load intel-oneapi/2022.0.2
+                 module use /usw/met/METdataio/modulefiles
+                 module load metdataio/3.0.0-beta5
 
 .. dropdown:: Community machines
 
