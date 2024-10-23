@@ -406,7 +406,66 @@ in the
 
      .. dropdown:: ORION
 
-        Add text here
+        | **NOAA MACHINE ORION (MANAGED BY MSU)**
+        | *Last updated: July 16, 2024*
+
+          * **METplus-6.0.0-beta5**
+
+            * METplus-6.0 Sample Data
+
+              * /work/noaa/ovp/jprestop/METplus/METplus-6.0_sample_data
+
+            * To use METplus run: Create a file like /work/noaa/ovp/user_name/METplus/orion.role-ovp.conf 
+              and set the INPUT_BASE and OUTPUT_BASE.
+
+              .. code-block:: ini
+
+                 module load contrib
+                 module load metplus/6.0.0-beta5
+
+          * **METv12.0.0-beta5**
+
+            * MODULES:
+
+              .. code-block:: ini
+
+                 module load contrib
+                 module load intel-oneapi-compilers/2022.2.1
+                 module load met/12.0.0-beta5
+
+          * **METcalcpy-3.0.0-beta5 / METplotpy-3.0.0-beta5**
+
+            * MODULES:
+
+              .. code-block:: ini
+
+                 module load contrib
+                 module load intel-oneapi-compilers/2022.2.1
+                 module use /apps/contrib/modulefiles
+                 module load metcalcpy/3.0.0-beta5
+                 module load metplotpy/3.0.0-beta5
+
+          * PIP INSTALL
+
+              .. code-block:: ini
+
+                 python -m pip install --user tornado
+                 python -m pip install --user plotly
+                 python -m pip install --user kaleido
+                 python -m pip install --user xarray
+                 python -m pip install --user netcdf4
+                 python -m pip install --user h5netcdf
+
+          * **METdataio-3.0.0-beta5**
+
+            * MODULES:
+
+              .. code-block:: ini
+
+                 module load contrib
+                 module load intel-oneapi-compilers/2022.2.1
+                 module use /apps/contrib/modulefiles
+                 module load metdataio/3.0.0-beta5
 
      .. dropdown:: JET
 
