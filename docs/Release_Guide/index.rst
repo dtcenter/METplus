@@ -189,8 +189,8 @@ in the
          than necessary. Please see this 
          `Derecho Job-submission queues and charges <https://ncar-hpc-docs.readthedocs.io/en/latest/pbs/charging/#job-submission-queues-and-charges>`_ summary.
 
-       **NCAR MACHINE DERECHO** 
-       See `Derecho Information <https://ncar-hpc-docs.readthedocs.io/en/latest/compute-systems/derecho/>`_
+       | **NCAR MACHINE DERECHO** See `Derecho Information <https://ncar-hpc-docs.readthedocs.io/en/latest/compute-systems/derecho/>`_
+       | *Last Updated:*
 
        * **METv12.0.0-beta3**
 
@@ -235,7 +235,8 @@ in the
 
     .. dropdown:: NCAR/RAL Common Installation
 
-       **NCAR RAL MACHINES (STANDARD LOCATION)**
+       | **NCAR RAL MACHINES (STANDARD LOCATION)**
+       | *Last Updated:*
 
        * **METv12.0.0**
 
@@ -249,16 +250,19 @@ in the
 
        | **NCAR RAL MACHINES SENECA**
        | **METv12.0.0-beta1**
+       | *Last Updated:*
 
          * MET BUILD: 
 
        | **NCAR RAL MACHINES KIOWA**
        | **METv12.0.0-beta1**
+       | *Last Updated:*
 
          * MET BUILD: 
 
        | **NCAR RAL MACHINES MOHAWK**
        | **METviewer v6.0.0-beta1**
+       | *Last Updated:*
 
          * LOCATION: 
          * URL: 
@@ -613,25 +617,28 @@ in the
 
 .. dropdown:: Docker Hub
 
-   **MET**
+   | **MET**
+   | *Last Updated:*
 
       .. code-block:: ini
 
           docker pull dtcenter/met:12.0.0-beta1
 
-     https://hub.docker.com/r/dtcenter/met
+     `dtcenter/met Docker Hub <https://hub.docker.com/r/dtcenter/met>`_
 
-   **METplus**
+   | **METplus**
+   | *Last Updated:*
 
       .. code-block:: ini
 
           docker pull dtcenter/metplus:6.0.0-beta1
 
-     https://hub.docker.com/r/dtcenter/metplus
+     `dtcenter/metplus Docker Hub <https://hub.docker.com/r/dtcenter/metplus>`_
 
 .. dropdown:: AWS
 
-   **METviewer v6.0.0-beta1**
+   | **METviewer v6.0.0-beta1**
+   | *Last Updated:*
 
      * LOCATION: 
      * URL: 
