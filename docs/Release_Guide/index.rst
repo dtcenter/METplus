@@ -212,7 +212,7 @@ in the
 
          * To set up the environment run: Users should create a file like                               
            /glade/work/dtcrt/METplus/derecho/components/METplus/installations/derecho.dtcrt.conf 
-           the user will set the INPUT_BASE and OUTPUT_BASE.
+           to set a personalized INPUT_BASE and OUTPUT_BASE.
 
            * module use /glade/work/dtcrt/METplus/derecho/components/METplus/installations/modulefiles
            *  **Installation coming soon**
@@ -375,7 +375,7 @@ in the
               * module load metplus/6.0.0-beta3
               * Users should create a file like 
                 /work/noaa/ovp/user_name/METplus/hercules.user_name.conf 
-                and set the INPUT_BASE and OUTPUT_BASE.
+                to set a personalized INPUT_BASE and OUTPUT_BASE.
 
           * **METcalcpy-3.0.0-beta3 / METplotpy-3.0.0-beta3**
 
@@ -416,7 +416,7 @@ in the
               * /work/noaa/ovp/jprestop/METplus/METplus-6.0_sample_data
 
             * To use METplus run: Users should create a file like /work/noaa/ovp/user_name/METplus/orion.role-ovp.conf 
-              and set the INPUT_BASE and OUTPUT_BASE.
+              to set a personalized INPUT_BASE and OUTPUT_BASE.
 
               .. code-block:: ini
 
@@ -483,7 +483,7 @@ in the
               * /lfs5/HFIP/dtc-hurr/METplus/sample_data/METplus-6.0_sample_data
 
             * To use METplus run: Create a like /lfs4/HFIP/dtc-hurr/METplus/jet.role-metplus.conf 
-              and set the INPUT_BASE and OUTPUT_BASE.
+              to set a personalized INPUT_BASE and OUTPUT_BASE.
 
               .. code-block:: ini
 
@@ -547,7 +547,7 @@ in the
 
             * To use METplus run: Users should create a file like 
               /gpfs/f5/esrl/proj-shared/user_name/projects/METplus/gaea.metplus.conf 
-              and set the INPUT_BASE and OUTPUT_BASE.
+              to set a personalized INPUT_BASE and OUTPUT_BASE.
 
               .. code-block:: ini
 
@@ -609,7 +609,7 @@ in the
             * METplus-6.0 Sample Data
             * To set up the environment run:
             * Users should create a file like /work2/06612/tg859120/frontera/METplus/frontera.user_name.conf
-              and add the INPUT_BASE and OUTPUT_BASE.
+              to set a personalized INPUT_BASE and OUTPUT_BASE.
 
 .. dropdown:: Docker Hub
 
