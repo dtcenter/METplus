@@ -627,7 +627,7 @@ in the
 
           docker pull dtcenter/metplus:6.0.0-beta1
 
-https://hub.docker.com/r/dtcenter/metplus
+     https://hub.docker.com/r/dtcenter/metplus
 
 .. dropdown:: AWS
 
