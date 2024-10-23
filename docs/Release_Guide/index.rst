@@ -293,7 +293,62 @@ in the
 
      .. dropdown:: HERA
 
-        Add text here
+        **NOAA MACHINE HERA**
+        *Last updated: October 21, 2024*
+
+          * **METplus-6.0.0-beta6**
+
+            * **METplus-6.0.0-beta6 Installation**
+
+              * /contrib/METplus/METplus-6.0.0-beta6
+
+            * METplus-6.0 Sample Data
+
+              * /scratch1/BMC/dtc/METplus/METplus-6.0_sample_data
+
+            * Users should create a file like 
+              /scratch1/BMC/dtc/METplus/hera.role-metplus.conf 
+              to set a personalized INPUT_BASE and OUTPUT_BASE.
+
+            * To use METplus run:
+
+              .. code-block:: ini
+
+                 module load intel/2022.1.2
+                 module use /contrib/METplus/modulefiles
+                 module load metplus/6.0.0-beta6
+
+          * **METv12.0.0-beta6**
+
+            * MODULES:
+
+              .. code-block:: ini
+
+                  module load intel/2022.1.2
+                  module use -a /contrib/met/modulefiles/
+                  module load met/12.0.0-beta6
+
+          * **METcalcpy-3.0.0-beta6 / METplotpy-3.0.0-beta6**
+
+            * MODULES:
+
+              .. code-block:: ini
+
+                  module load intel/2022.1.2
+                  module use /contrib/METcalcpy/modulefiles
+                  module load metcalcpy/3.0.0-beta6
+                  module use /contrib/METplotpy/modulefiles
+                  module load metplotpy/3.0.0-beta6
+
+          * **METdataio-3.0.0-beta6**
+
+            * MODULES:
+
+              .. code-block:: ini
+
+                  module load intel/2022.1.2
+                  module use /contrib/METdataio/modulefiles
+                  module load metdataio/3.0.0-beta6
 
      .. dropdown:: HERCULES
 
