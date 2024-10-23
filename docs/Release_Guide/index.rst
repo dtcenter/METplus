@@ -192,7 +192,7 @@ in the
        | **NCAR MACHINE DERECHO** See `Derecho Information <https://ncar-hpc-docs.readthedocs.io/en/latest/compute-systems/derecho/>`_
        | *Last Updated:*
 
-       * **METv12.0.0-beta3**
+       * **MET-12.0.0-beta3**
 
          * MODULES:
 
@@ -249,19 +249,19 @@ in the
     .. dropdown:: NCAR/RAL Internal Development
 
        | **NCAR RAL MACHINES SENECA**
-       | **METv12.0.0-beta1**
+       | **MET-12.0.0-beta1**
        | *Last Updated:*
 
          * MET BUILD: 
 
        | **NCAR RAL MACHINES KIOWA**
-       | **METv12.0.0-beta1**
+       | **MET-12.0.0-beta1**
        | *Last Updated:*
 
          * MET BUILD: 
 
        | **NCAR RAL MACHINES MOHAWK**
-       | **METviewer v6.0.0-beta1**
+       | **METviewer-6.0.0-beta1**
        | *Last Updated:*
 
          * LOCATION: 
@@ -321,7 +321,7 @@ in the
                  module use /contrib/METplus/modulefiles
                  module load metplus/6.0.0-beta6
 
-          * **METv12.0.0-beta6**
+          * **MET-12.0.0-beta6**
 
             * MODULES:
 
@@ -358,7 +358,7 @@ in the
         | **NOAA MACHINE HERCULES (MANAGED BY MSU)**
         | *Last updated:*
 
-          * **METv12.0.0-beta3**
+          * **MET-12.0.0-beta3**
 
             * MODULES:
 
@@ -427,7 +427,7 @@ in the
                  module load contrib
                  module load metplus/6.0.0-beta5
 
-          * **METv12.0.0-beta5**
+          * **MET-12.0.0-beta5**
 
             * MODULES:
 
@@ -474,19 +474,19 @@ in the
      .. dropdown:: JET
 
         | **NOAA MACHINE JET**
-        | *Last updated: September 5, 2024*
+        | *Last updated: October 23, 2024*
 
-          * **METplus-6.0.0-beta5**
+          * **METplus-6.0.0-beta6**
 
-            * METplus-6.0.0-beta5 Installation
+            * METplus-6.0.0-beta6 Installation
 
-              * /contrib/met/METplus/METplus-6.0.0-beta3=5
+              * /contrib/met/METplus/METplus-6.0.0-beta6
 
             * METplus-6.0 Sample Data
 
               * /lfs5/HFIP/dtc-hurr/METplus/sample_data/METplus-6.0_sample_data
 
-            * To use METplus run: Create a like /lfs4/HFIP/dtc-hurr/METplus/jet.role-metplus.conf 
+            * To use METplus run: Create a like /lfs5/HFIP/dtc-hurr/METplus/jet.role-metplus.conf 
               to set a personalized INPUT_BASE and OUTPUT_BASE.
 
               .. code-block:: ini
@@ -497,11 +497,11 @@ in the
                  module load wgrib2/3.1.2_wmo
                  module load R/4.0.2
                  module use /contrib/met/modulefiles
-                 module load met/12.0.0-beta5
+                 module load met/12.0.0-beta6
                  module use /contrib/met/METplus/modulefiles
-                 module load metplus/6.0.0-beta5
+                 module load metplus/6.0.0-beta6
 
-          * **METv12.0.0-beta5**
+          * **METv12.0.0-beta6**
 
             * MODULES:
 
@@ -510,9 +510,9 @@ in the
                  module load intel/2022.1.2
                  module load contrib
                  module use /contrib/met/modulefiles
-                 module load met/12.0.0-beta5
+                 module load met/12.0.0-beta6
 
-          * **METcalcpy-3.0.0-beta5 / METplotpy-3.0.0-beta5**
+          * **METcalcpy-3.0.0-beta6 / METplotpy-3.0.0-beta6**
 
             * MODULES:
 
@@ -520,11 +520,11 @@ in the
 
                  module load intel/2022.1.2
                  module use /contrib/met/METcalcpy/modulefiles
-                 module load metcalcpy/3.0.0-beta5
+                 module load metcalcpy/3.0.0-beta6
                  module use /contrib/met/METplotpy/modulefiles
-                 module load metplotpy/3.0.0-beta5
+                 module load metplotpy/3.0.0-beta6
 
-          * **METdataio-3.0.0-beta5**
+          * **METdataio-3.0.0-beta6**
 
             * MODULES:
 
@@ -532,7 +532,7 @@ in the
 
                  module load intel/2022.1.2
                  module use /contrib/met/METdataio/modulefiles
-                 module load metdataio/3.0.0-beta5
+                 module load metdataio/3.0.0-beta6
 
      .. dropdown:: GAEA
 
@@ -560,7 +560,7 @@ in the
                  module use /usw/met/METplus/modulefiles
                  module load metplus/6.0.0-beta5
 
-          * **METv12.0.0-beta5**
+          * **MET-12.0.0-beta5**
 
             * MODULES:
 
@@ -603,7 +603,7 @@ in the
         | **TEXAS ADVANCED COMPUTING CENTER (TACC) FRONTERA**
         | *Last Updated:*
 
-          * **METv12.0.0-beta1**
+          * **MET-12.0.0-beta1**
 
             * MODULES: 
 
