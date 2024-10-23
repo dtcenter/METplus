@@ -469,7 +469,66 @@ in the
 
      .. dropdown:: JET
 
-        Add text here
+        | **NOAA MACHINE JET**
+        | *Last updated: September 5, 2024*
+
+          * **METplus-6.0.0-beta5**
+
+            * METplus-6.0.0-beta5 Installation
+
+              * /contrib/met/METplus/METplus-6.0.0-beta3=5
+
+            * METplus-6.0 Sample Data
+
+              * /lfs5/HFIP/dtc-hurr/METplus/sample_data/METplus-6.0_sample_data
+
+            * To use METplus run: Create a like /lfs4/HFIP/dtc-hurr/METplus/jet.role-metplus.conf 
+              and set the INPUT_BASE and OUTPUT_BASE.
+
+              .. code-block:: ini
+
+                 module load intel/2022.1.2
+                 module load nco/4.9.1
+                 module load wgrib/1.8.1.0b
+                 module load wgrib2/3.1.2_wmo
+                 module load R/4.0.2
+                 module use /contrib/met/modulefiles
+                 module load met/12.0.0-beta5
+                 module use /contrib/met/METplus/modulefiles
+                 module load metplus/6.0.0-beta5
+
+          * **METv12.0.0-beta5**
+
+            * MODULES:
+
+              .. code-block:: ini
+
+                 module load intel/2022.1.2
+                 module load contrib
+                 module use /contrib/met/modulefiles
+                 module load met/12.0.0-beta5
+
+          * **METcalcpy-3.0.0-beta5 / METplotpy-3.0.0-beta5**
+
+            * MODULES:
+
+              .. code-block:: ini
+
+                 module load intel/2022.1.2
+                 module use /contrib/met/METcalcpy/modulefiles
+                 module load metcalcpy/3.0.0-beta5
+                 module use /contrib/met/METplotpy/modulefiles
+                 module load metplotpy/3.0.0-beta5
+
+          * **METdataio-3.0.0-beta5**
+
+            * MODULES:
+
+              .. code-block:: ini
+
+                 module load intel/2022.1.2
+                 module use /contrib/met/METdataio/modulefiles
+                 module load metdataio/3.0.0-beta5
 
      .. dropdown:: GAEA
 
