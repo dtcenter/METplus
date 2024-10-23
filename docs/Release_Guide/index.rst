@@ -267,9 +267,8 @@ in the
 
      .. dropdown:: WCOSS2
 
-        **NOAA machines Dogwood and Cactus (WCOSS2 - Cray)**
-
-        *Last updated: September 19, 2024*
+        | **NOAA machines Dogwood and Cactus (WCOSS2 - Cray)**
+        | *Last updated: September 19, 2024*
 
           * **MET v12.0.0-beta5 / METplus v6.0.0-beta5 / METplus Analysis Tools v3.0.0-beta5**
 
@@ -293,8 +292,8 @@ in the
 
      .. dropdown:: HERA
 
-        **NOAA MACHINE HERA**
-        *Last updated: October 21, 2024*
+        | **NOAA MACHINE HERA**
+        | *Last updated: October 21, 2024*
 
           * **METplus-6.0.0-beta6**
 
