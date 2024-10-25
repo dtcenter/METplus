@@ -22,7 +22,7 @@ load the METplus components assume the user is using bash. If an installation
 is needed on a machine not listed here, please follow the 
 `installation instructions <https://metplus.readthedocs.io/projects/met/en/latest/Users_Guide/installation.html#software-installation-getting-started>`_ 
 in the 
-`MET User’s Guide <https://metplus.readthedocs.io/projects/met/en/latest/Users_Guide/>`_.
+`MET User’s Guide <https://met.readthedocs.io/en/latest>`_.
 
 .. dropdown:: NCAR machines
 
