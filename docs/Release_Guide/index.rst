@@ -82,8 +82,6 @@ software team and the respective funding institutions. For further inquiries or
 to report any bugs, please contact our dedicated support team in the
 `METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_.
 
-.. include:: ../Users_Guide/existing_builds.rst
-
 ********************
 Instructions Summary
 ********************
