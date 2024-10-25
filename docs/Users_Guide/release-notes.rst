@@ -23,6 +23,8 @@ is broken down into the following development cycles for each component:
 7. **Release Candidate 1** releases are tentatively scheduled for 2024-11-13.
 8. **Official Release** releases are tentatively scheduled for 2024-12-11.
 
+.. include:: existing_builds.rst
+
 .. _components-release-notes:
 
 METplus Components Release Note Links
