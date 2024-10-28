@@ -1,9 +1,12 @@
 Create Release Reference Branch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* These instructions only apply when creating the **first release candidate**
+.. note::
+  
+  These instructions only apply when creating the **first release candidate**
   (rc1) development release. Skip this section for earlier beta (betaN) or later 
   release candidate (rc2+) development releases.
+
 
 * Create a branch from the develop branch for the reference branch for the
   new official release and push it to GitHub. The branch name should match

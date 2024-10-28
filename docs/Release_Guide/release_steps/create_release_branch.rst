@@ -1,9 +1,12 @@
 Create Release Branch
 ^^^^^^^^^^^^^^^^^^^^^
 
-* These instructions only apply when creating the **first release candidate**
+.. note::
+
+  These instructions only apply when creating the **first release candidate**
   (rc1) development release. Skip this section for earlier beta (betaN) or later 
   release candidate (rc2+) development releases.
+
 
 * Create a new 'main_vX.Y' branch from the develop branch for the upcoming
   official release and push it to GitHub. All remaining development for the

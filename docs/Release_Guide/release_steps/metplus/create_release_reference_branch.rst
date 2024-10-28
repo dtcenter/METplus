@@ -1,9 +1,12 @@
 Create Release Reference Branch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* These instructions only apply when creating the **first release candidate**
+.. note::
+
+  These instructions only apply when creating the **first release candidate**
   (rc1) development release. Skip this section for earlier beta (betaN) or later 
   release candidate (rc2+) development releases.
+
 
 * For METplus, the corresponding MET release must be created before starting
   this step. Specifically, a DockerHub tag on dtcenter/met that is named
