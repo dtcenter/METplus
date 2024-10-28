@@ -1,6 +1,10 @@
 Create Release Reference Branch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+* These instructions only apply when creating the **first release candidate**
+  (rc1) development release. Skip this section for earlier beta (betaN) or later 
+  release candidate (rc2+) development releases.
+
 * For METplus, the corresponding MET release must be created before starting
   this step. Specifically, a DockerHub tag on dtcenter/met that is named
   (X+6).Y-latest must already exist. For example, for METplus 4.1.0, the MET
@@ -66,8 +70,9 @@ Navigate to https://github.com/dtcenter/METplus/actions and verify that a
 Create main branch and push to GitHub
 """""""""""""""""""""""""""""""""""""
 
-* After the truth data volumes have been generated, create the main_vX.Y
-  branch off of the -ref branch.
+* After the truth data volumes have been generated, create the 'main_vX.Y'
+  branch from 'main_vX.Y-ref' branch. All remaining development for the upcoming
+  official release occurs on this new 'main_vX.Y' branch.
 
 ::
 

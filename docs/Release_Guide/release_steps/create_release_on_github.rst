@@ -5,7 +5,7 @@ Create Release on GitHub
 
 * Set the tag based on the version, starting with 'v', i.e. vX.Y.Z-betaN, vX.Y.Z-rcN, or vX.Y.Z
 
-* Set the branch value to 'develop' for a development release or 'main_vX.Y' for a bugfix or official release
+* Set the branch value to 'develop' for a beta development release or 'main_vX.Y' for a release candidate, bugfix, or official release
 
 * Choose a release name (i.e. |projectRepo|-X.Y.Z-betaN, |projectRepo|-X.Y.Z-rcN, or |projectRepo|-X.Y.Z)
 
