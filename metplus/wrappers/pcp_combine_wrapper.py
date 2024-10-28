@@ -779,6 +779,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         search_time_info = {
             'valid': search_time,
             'lead': lead,
+            'custom': custom,
         }
         field_info = self.get_field_string(
             time_info=search_time_info,
