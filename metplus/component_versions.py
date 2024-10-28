@@ -34,6 +34,10 @@ VERSION_LOOKUP = {
     },
 }
 
+# assumes the 2nd highest version in the table is the latest
+# the highest version in the table is in development
+LATEST_OFFICIAL_RELEASE = sorted(VERSION_LOOKUP.keys(), reverse=True)[1]
+
 DEFAULT_OUTPUT_FORMAT = "v{X}.{Y}.{Z}{N}"
 
 def get_component_version(input_component, input_version, output_component,
@@ -99,9 +103,9 @@ def main():
                         help='Name of METplus component to use to find version,'
                         ' default is METplus.')
     parser.add_argument('-v', '--input_version',
-                        default=next(iter(VERSION_LOOKUP)),
+                        default=LATEST_OFFICIAL_RELEASE,
                         help='version of input_component to search,'
-                             ' default is upcoming version')
+                             ' default is latest official release')
     parser.add_argument('-o', '--output_component', required=True,
                         help='name of METplus component to obtain version')
     parser.add_argument('-f', '--output_format',
