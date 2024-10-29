@@ -32,14 +32,17 @@ Update the version number
 Update the content that should go into the release version but remain unchanged
 in the develop branch.
 
-Remove **-dev** from the version number:
+Note that this step is mandatory because pushing a new main_vX.Y-ref branch
+without any new commits will **not** trigger the GitHub Actions workflow to
+create the output Docker data volumes.
+
+Remove **-dev** from the -rc1 version number:
 
 * As of METplus 4.0.0, we are naming releases with X.Y.Z format even if Z is 0.
 * As of METplus v4.0.0, the file containing the version number is located at
-  **metplus/VERSION** (in earlier releases, the file was located at
-  docs/version or doc/version).
-* In the develop branch, the version should match the upcoming release
-  with -dev added to the end like X.Y.Z-rc1-dev, i.e. 4.0.0-rc1-dev
+  **metplus/VERSION**.
+* The version should match the upcoming release with the -rc1 suffix,
+  like X.Y.Z-rc1
 * Remove **-dev** from the version number so that it matches the release
   you are creating.
 
