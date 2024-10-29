@@ -39,7 +39,7 @@ Remove **-dev** from the version number:
   **metplus/VERSION** (in earlier releases, the file was located at
   docs/version or doc/version).
 * In the develop branch, the version should match the upcoming release
-  with -dev added to the end like X.Y.Z-betaN-dev, i.e. 4.0.0-beta1-dev
+  with -dev added to the end like X.Y.Z-rc1-dev, i.e. 4.0.0-rc1-dev
 * Remove **-dev** from the version number so that it matches the release
   you are creating.
 
