@@ -531,8 +531,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
             files_found = []
             for input_file in input_files:
-                # exclude field info and set it with -field
                 self.args.append(input_file)
+                self.args.append(field_info)
                 files_found.append((input_file, field_info))
 
         else:
@@ -540,7 +540,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             files_found = self.get_accumulation(time_info,
                                                 lookback,
                                                 data_src,
-                                                field_info_after_file=False)
+                                                field_info_after_file=True)
             if not files_found:
                 self.missing_input_count += 1
                 msg = (
@@ -552,9 +552,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                 else:
                     self.log_error(msg)
                 return None
-
-        # set -field name and level from first file field info
-        self.args.append(f'-field {files_found[0][1]}')
 
         self._handle_input_thresh_argument(data_src)
 
