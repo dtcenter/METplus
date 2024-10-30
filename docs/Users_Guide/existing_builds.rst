@@ -32,9 +32,9 @@ in the
           `Casper Information <https://ncar-hpc-docs.readthedocs.io/en/latest/compute-systems/casper/>`_)
        | *Last Updated: July 23, 2024*
 
-       * METplus-6.0.0-beta5
+       * METplus-6.0.0-beta6
 
-          * METplus-6.0.0-beta5 Installation: 
+          * METplus-6.0.0-beta6 Installation: 
 
             * /glade/work/dtcrt/METplus/casper/components/METplus/installation
 
@@ -52,9 +52,9 @@ in the
 
           export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
           module use $TOP_DIR/METplus/installations/modulefiles
-          module load metplus/6.0.0-beta5
+          module load metplus/6.0.0-beta6
 
-       * MET-12.0.0-beta5
+       * MET-12.0.0-beta6
 
          * MODULES:
 
@@ -62,9 +62,9 @@ in the
 
           export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
           module use $TOP_DIR/MET/installations/modulefiles
-          module load met/12.0.0-beta5
+          module load met/12.0.0-beta6
 
-       * METdataio-3.0.0-beta5
+       * METdataio-3.0.0-beta6
 
          * MODULES:
 
@@ -72,11 +72,11 @@ in the
 
           export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
           module use $TOP_DIR/METdataio/installations/modulefiles
-          module load metdataio/3.0.0-beta5
-          METcalcpy-3.0.0-beta5
+          module load metdataio/3.0.0-beta6
+          METcalcpy-3.0.0-beta6
           MODULES:
 
-       * METcalcpy-3.0.0-beta5
+       * METcalcpy-3.0.0-beta6
       
          * MODULES:
 
@@ -84,9 +84,9 @@ in the
 
           export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
           module use $TOP_DIR/METcalcpy/installations/modulefiles
-          module load metcalcpy/3.0.0-beta5
+          module load metcalcpy/3.0.0-beta6
 
-       * METplotpy-3.0.0-beta5
+       * METplotpy-3.0.0-beta6
 
          * MODULES:
 
@@ -94,7 +94,7 @@ in the
 
           export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
           module use $TOP_DIR/METplotpy/installations/modulefiles
-          module load metplotpy/3.0.0-beta5
+          module load metplotpy/3.0.0-beta6
 
     .. dropdown:: DERECHO
 
