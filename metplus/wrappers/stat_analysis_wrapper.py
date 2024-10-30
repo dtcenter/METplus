@@ -332,7 +332,8 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
                 value = f'"{value}"'
             else:
                 value = f'[{value}]'
-            value = f'{item.lower()} = {value};'
+            item = item.lower().replace('_level', '_lev')
+            value = f'{item} = {value};'
             self.env_var_dict[key] = value
 
         # send environment variables to logger

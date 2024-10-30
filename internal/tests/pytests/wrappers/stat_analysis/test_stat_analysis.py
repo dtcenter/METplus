@@ -172,6 +172,12 @@ def set_minimum_config_settings(config):
           'MODEL1': '{custom}',
           'MODEL_LIST': '{custom}'},
          {'METPLUS_MODEL': 'model = ["CUSTOM_MODEL"];'}),
+        # 17 - fcst_lev
+        ({'FCST_LEVEL_LIST': 'R5'},
+         {'METPLUS_FCST_LEVEL': 'fcst_lev = ["R5"];'}),
+        # 17 - obs_lev
+        ({'OBS_LEVEL_LIST': 'R7'},
+         {'METPLUS_OBS_LEVEL': 'obs_lev = ["R7"];'}),
     ]
 )
 @pytest.mark.wrapper_d
