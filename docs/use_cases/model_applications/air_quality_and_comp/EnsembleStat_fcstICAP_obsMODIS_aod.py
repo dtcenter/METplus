@@ -3,7 +3,7 @@
    EnsembleStat: Using Python Embedding for Aerosol Optical Depth
    ==============================================================
 
-   model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS\_aod.conf
+   model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod.conf
 
 """
 ##############################################################################
