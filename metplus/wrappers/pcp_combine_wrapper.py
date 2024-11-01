@@ -649,7 +649,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         accum_relative = get_relativedelta(accum, 'S')
         # using 1 hour for now
         smallest_input_accum = min(
-            [ti_get_seconds_from_relativedelta(lev['amount'], search_time)
+            [ti_get_seconds_from_relativedelta(lev['amount'], search_time - accum_relative)
              for lev in self.c_dict['ACCUM_DICT_LIST']]
         )
         if smallest_input_accum == 9999999:
