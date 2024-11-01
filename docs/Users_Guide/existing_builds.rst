@@ -30,7 +30,7 @@ in the
 
        | **NCAR MACHINE CASPER** (see 
           `Casper Information <https://ncar-hpc-docs.readthedocs.io/en/latest/compute-systems/casper/>`_)
-       | *Last Updated: July 23, 2024*
+       | *Last Updated: October 30, 2024*
 
        * METplus-6.0.0-beta6
 
@@ -327,9 +327,9 @@ in the
      .. dropdown:: ORION
 
         | **NOAA MACHINE ORION (MANAGED BY MSU)**
-        | *Last updated: July 16, 2024*
+        | *Last updated: October 30, 2024*
 
-          * **METplus-6.0.0-beta5**
+          * **METplus-6.0.0-beta6**
 
             * METplus-6.0 Sample Data
 
@@ -341,9 +341,9 @@ in the
               .. code-block:: ini
 
                  module load contrib
-                 module load metplus/6.0.0-beta5
+                 module load metplus/6.0.0-beta6
 
-          * **MET-12.0.0-beta5**
+          * **MET-12.0.0-beta6**
 
             * MODULES:
 
@@ -351,9 +351,9 @@ in the
 
                  module load contrib
                  module load intel-oneapi-compilers/2022.2.1
-                 module load met/12.0.0-beta5
+                 module load met/12.0.0-beta6
 
-          * **METcalcpy-3.0.0-beta5 / METplotpy-3.0.0-beta5**
+          * **METcalcpy-3.0.0-beta6 / METplotpy-3.0.0-beta6**
 
             * MODULES:
 
@@ -362,8 +362,8 @@ in the
                  module load contrib
                  module load intel-oneapi-compilers/2022.2.1
                  module use /apps/contrib/modulefiles
-                 module load metcalcpy/3.0.0-beta5
-                 module load metplotpy/3.0.0-beta5
+                 module load metcalcpy/3.0.0-beta6
+                 module load metplotpy/3.0.0-beta6
 
           * PIP INSTALL
 
@@ -376,7 +376,7 @@ in the
                  python -m pip install --user netcdf4
                  python -m pip install --user h5netcdf
 
-          * **METdataio-3.0.0-beta5**
+          * **METdataio-3.0.0-beta6**
 
             * MODULES:
 
@@ -385,7 +385,7 @@ in the
                  module load contrib
                  module load intel-oneapi-compilers/2022.2.1
                  module use /apps/contrib/modulefiles
-                 module load metdataio/3.0.0-beta5
+                 module load metdataio/3.0.0-beta6
 
      .. dropdown:: JET
 
