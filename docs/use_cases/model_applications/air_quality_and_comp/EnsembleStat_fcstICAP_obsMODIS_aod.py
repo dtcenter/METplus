@@ -61,8 +61,17 @@ model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod.conf
 # **Increment between beginning and end times (INIT_INCREMENT):** 06H
 # **Sequence of forecast leads to process (LEAD_SEQ):** 12H
 #
-# EnsembleStat is the only tool called in this example. It processes a single run time with seven ensemble members.
-# Three of the members do not have data for the AOD field, so EnsembleStat will only process four of the members for statistics.
+# EnsembleStat is the only tool called in this example. It processes a single run time with seven ensemble members,
+# with each ensemble member receiving its own verification.
+# Preprocessing of the ensemble forecast data is completed with Python Embedding, which takes 4 inputs:
+# the full path to the forecast file, variable name, valid time of verification, and ensemble member number. The script passes 
+# back the variable field requested to EnsembleStat for verification. A similar process is completed
+# for the observation data, which is preprocessed by a separate Python Embedding script which takes 3 inputs:
+# the full path to the observation file, group name that contains the variable field, and variable name.
+# The script passes back the requested variable field and begins the verification process.
+# Three of the ensemble members do not have data for the AOD field, so EnsembleStat 
+# will only process four of the members for statistics.
+# After a successful run, EnsembleStat will create the requested output and its corresponding files.
 
 ##############################################################################
 # METplus Configuration
@@ -97,7 +106,26 @@ model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod.conf
 # Python Embedding
 # ----------------
 #
-# This use case uses two Python embedding scripts to read input data.
+# This use case uses two Python embedding scripts to read input data: one for
+# the forecast ensemble data, and one for the observation data. The script processing
+# the ensemble data receives four input arguments: the full path to the forecast file, 
+# variable name, valid time of verification, and ensemble member number. Since seven ensemble
+# members are being verified, this script will run seven times. The processing is very simple,
+# with the script grabbing the initialization time from the file name, calculating the lead
+# by finding the difference between the valid time argument and the initialization time, grabbing
+# the variable name and index corresponding to the ensemble member input value, and then masking bad data
+# (anything less than -800) to the expected METplus bad data value of -9999. The latitude and longitude
+# variables are also extracted, and all of the information is returned to METplus for
+# verification via array and accompanying attribute dictionary.
+#
+# The second script for observational data behaves very similarly to the ensemble data
+# script. The script receives three inputs at runtime: 
+# the full path to the observation file, group name that contains the variable field, and variable name.
+# The requested variable field is extracted from the group name provided at runtime, bad data is
+# deemed to be any value less than -800 and reset to METplus' bad value of -9999, and the data
+# array is inverted to properly align with METplus' expected orientation. The latitude and longitude
+# variables are also extracted, and all of the information is returned to METplus for
+# verification via array and accompanying attribute dictionary.
 #
 # For more information on the basic requirements to utilize Python Embedding in METplus, 
 # please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_ 
@@ -116,7 +144,7 @@ model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod.conf
 ##############################################################################
 # User Scripting
 # --------------
-# [UPDATE_SECTION_CONTENT]
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
