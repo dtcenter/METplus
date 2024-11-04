@@ -113,32 +113,32 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 # This use case uses a Python embedding script to read both the forecast and observation data, in order to compute TCI,
 # which is the diagnostic that is being verified by MET using PointStat. The CESM forecast data is read using:
 #
-# parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/cesm_tci.py
+# parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/tci_fcst.py
 #
 # .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/cesm_tci.py
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/tci_fcst.py
 #
 # The user can control all arguments to this script via the METplus use case configuration file using the following config entries:
 #
 # .. glossary::
 # 
-#    CESM_CAM_VAR
-#      The CESM Community Atmosphere Model variable to use for computing TCI
+#    TCI_FCST_LHFLUX_VAR
+#      The flux model variable to use for computing TCI
 #
 #      | *Default:* LHFLX
 #
-#    CESM_CLM_VAR
-#      The CESM Community Land Model variable to use for computing TCI
+#    TCI_FCST_SOILM_VAR
+#      The soil moisture model variable to use for computing TCI
 #
 #      | *Default:* SOILWATER_10CM
 #
-#    CESM_CAM_FILE_PATH
-#      The absolute path to the CESM Community Atmosphere Model netcdf file
+#    TCI_FCST_LHFLUX_FILE_PATH
+#      The path to the model netcdf file that contains the flux field
 #
 #      | *Default:*
 #
-#    CESM_CLM_FILE_PATH
-#      The absolute path to the CESM Community Land Model netcdf file
+#    TCI_FCST_SOILM_FILE_PATH
+#      The path to the model netcdf file that contains the soil moisture field
 #
 #      | *Default:*
 #
