@@ -51,28 +51,28 @@ model_applications/climate/MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.conf
 #
 #
 # **Beginning time (INIT_BEG):** 2014060100
+#
 # **End time (INIT_END):** 2014060200
+#
 # **Increment between beginning and end times (INIT_INCREMENT):** 86400
+#
 # **Sequence of forecast leads to process (LEAD_SEQ):** None
 #
 # The mode tool is run for each time. This example loops by model 
 # initialization time.  It processes 4 valid times, listed below.
 #
-# | **Valid:** 2014-08-02
-# | **Forecast lead:** 24
-# |
+# **Valid:** 2014-08-02
+# **Forecast lead:** 24
 #
-# | **Init:** 2014-08-03
-# | **Forecast lead:** 48
-# |
+# **Init:** 2014-08-03
+# **Forecast lead:** 48
 #
-# | **Init:** 2014-08-03
-# | **Forecast lead:** 24
-# |
+# **Init:** 2014-08-03
+# **Forecast lead:** 24
 #
-# | **Init:** 2014-08-04
-# | **Forecast lead:** 48
-# |
+# **Init:** 2014-08-04
+# **Forecast lead:** 48
+
 
 ##############################################################################
 # METplus Configuration
@@ -122,7 +122,7 @@ model_applications/climate/MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.conf
 # Pass the use case configuration file to the run_metplus.py script along 
 # with any user-specific system configuration files if desired::
 #
-# run_metplus.py /path/to/METplus/parm/use_cases/model_applications/climate/MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.conf /path/to/user_system.conf
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/climate/MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
 
