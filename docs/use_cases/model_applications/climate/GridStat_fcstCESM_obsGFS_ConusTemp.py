@@ -51,24 +51,27 @@ model_applications/climate/GridStat_fcstCESM_obsGFS_ConusTemp.conf
 # ----------------
 #
 # **Beginning time (INIT_BEG):** 2014080100
+#
 # **End time (INIT_END):** 2014080200
+#
 # **Increment between beginning and end times (INIT_INCREMENT):** 86400
+#
 # **Sequence of forecast leads to process (LEAD_SEQ):** 6, 12
 #
-#  The grid_stat tool is run for each time. This example loops by initialization
-#  time.  It processes 4 valid times, listed below.
+# The grid_stat tool is run for each time. This example loops by initialization
+# time.  It processes 4 valid times, listed below.
 #
-#  **Valid:** 2014-08-01_06Z
-#  **Forecast lead:** 06
+# **Valid:** 2014-08-01_06Z
+# **Forecast lead:** 06
 # 
-#  **Init:** 2014-08-01_12Z
-#  **Forecast lead:** 12
+# **Init:** 2014-08-01_12Z
+# **Forecast lead:** 12
 # 
-#  **Init:** 2014-08-02_06Z
-#  **Forecast lead:** 06
+# **Init:** 2014-08-02_06Z
+# **Forecast lead:** 06
 # 
-#  **Init:** 2014-08-02_12Z
-#  **Forecast lead:** 12
+# **Init:** 2014-08-02_12Z
+# **Forecast lead:** 12
 
 ##############################################################################
 # METplus Configuration
