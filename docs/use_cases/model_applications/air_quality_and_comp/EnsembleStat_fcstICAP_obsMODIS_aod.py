@@ -99,8 +99,8 @@ model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod.conf
 #
 # .. dropdown:: EnsembleStatConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/EnsembleStatConfig_wrapped
+#   .. highlight:: bash
+#   .. literalinclude:: ../../../../parm/met_config/EnsembleStatConfig_wrapped
 
 ##############################################################################
 # Python Embedding
@@ -153,7 +153,7 @@ model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod.conf
 # Pass the use case configuration file to the run_metplus.py script along 
 # with any user-specific system configuration files if desired::
 #
-# run_metplus.py /path/to/METplus/parm/use_cases/model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod.conf -c /path/to/user_system.conf
+# run_metplus.py /path/to/METplus/parm/use_cases/model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
 
