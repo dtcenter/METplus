@@ -57,8 +57,11 @@ model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod.conf
 # ----------------
 #
 # **Beginning time (INIT_BEG):** 201608150000 
+#
 # **End time (INIT_END):** 201608150000
+#
 # **Increment between beginning and end times (INIT_INCREMENT):** 06H
+#
 # **Sequence of forecast leads to process (LEAD_SEQ):** 12H
 #
 # EnsembleStat is the only tool called in this example. It processes a single run time with seven ensemble members,
@@ -153,7 +156,7 @@ model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod.conf
 # Pass the use case configuration file to the run_metplus.py script along 
 # with any user-specific system configuration files if desired::
 #
-# run_metplus.py /path/to/METplus/parm/use_cases/model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod.conf /path/to/user_system.conf
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
 
@@ -162,6 +165,7 @@ model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod.conf
 # ---------------
 #
 # A successful run will output the following both to the screen and to the logfile::
+#
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
