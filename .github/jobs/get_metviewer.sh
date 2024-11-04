@@ -4,7 +4,7 @@
 export METVIEWER_DATA=$RUNNER_WORKSPACE
 export MYSQL_DIR=$RUNNER_WORKSPACE/mysql
 export METVIEWER_DIR=$RUNNER_WORKSPACE/output/metviewer
-export METVIEWER_DOCKER_IMAGE=dtcenter/metviewer:develop
+export METVIEWER_DOCKER_IMAGE=dtcenter/metviewer:main_v5.1
 
 # install docker-compose
 apk add docker-cli-compose

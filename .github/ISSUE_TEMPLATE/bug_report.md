@@ -43,18 +43,20 @@ Describe the steps to reproduce the behavior:
 - [ ] Select **scientist(s)** or **no scientist** required
 
 ### Labels ###
+- [ ] Review default **alert** labels
 - [ ] Select **component(s)**
 - [ ] Select **priority**
 - [ ] Select **requestor(s)**
 
-### Projects and Milestone ###
-- [ ] Select **Organization** level **Project** for support of the current coordinated release
-- [ ] Select **Repository** level **Project** for development toward the next official release or add **alert: NEED CYCLE ASSIGNMENT** label
+### Milestone and Projects ###
 - [ ] Select **Milestone** as the next bugfix version
+- [ ] Select **Coordinated METplus-X.Y Support** project for support of the current coordinated release
+- [ ] Select **METplus-Wrappers-X.Y.Z Development** project for development toward the next official release
 
 ## Define Related Issue(s) ##
 Consider the impact to the other METplus components.
 - [ ] [METplus](https://github.com/dtcenter/METplus/issues/new/choose), [MET](https://github.com/dtcenter/MET/issues/new/choose), [METdataio](https://github.com/dtcenter/METdataio/issues/new/choose), [METviewer](https://github.com/dtcenter/METviewer/issues/new/choose), [METexpress](https://github.com/dtcenter/METexpress/issues/new/choose), [METcalcpy](https://github.com/dtcenter/METcalcpy/issues/new/choose), [METplotpy](https://github.com/dtcenter/METplotpy/issues/new/choose)
+
 
 ## Bugfix Checklist ##
 See the [METplus Workflow](https://metplus.readthedocs.io/en/latest/Contributors_Guide/github_workflow.html) for details.
@@ -65,20 +67,21 @@ Branch name: `bugfix_<Issue Number>_main_<Version>_<Description>`
 - [ ] Add/update log messages for easier debugging.
 - [ ] Add/update unit tests.
 - [ ] Add/update documentation.
-- [ ] Add any new Python packages to the [METplus Components Python Requirements](https://metplus.readthedocs.io/en/develop/Users_Guide/overview.html#metplus-components-python-requirements) table.
+- [ ] Add any new Python packages to the [METplus Components Python Requirements](https://metplus.readthedocs.io/en/develop/Users_Guide/appendixA.html#metplus-components-python-packages) table.
 - [ ] Push local changes to GitHub.
 - [ ] Submit a pull request to merge into **main_\<Version>**.
 Pull request: `bugfix <Issue Number> main_<Version> <Description>`
 - [ ] Define the pull request metadata, as permissions allow.
-Select: **Reviewer(s)** and **Development** issues
-Select: **Organization** level software support **Project** for the current coordinated release
+Select: **Reviewer(s)** and **Development** issue
 Select: **Milestone** as the next bugfix version
+Select: Coordinated METplus-X.Y Support project for support of the current coordinated release
 - [ ] Iterate until the reviewer(s) accept and merge your changes.
 - [ ] Delete your fork or branch.
 - [ ] Complete the steps above to fix the bug on the **develop** branch.
 Branch name:  `bugfix_<Issue Number>_develop_<Description>`
 Pull request: `bugfix <Issue Number> develop <Description>`
-Select: **Reviewer(s)** and **Development** issues
-Select: **Repository** level development cycle **Project** for the next official release
+Select: **Reviewer(s)** and **Development** issue
 Select: **Milestone** as the next official version
+Select: **METplus-Wrappers-X.Y.Z Development** project for development toward the next official release
+
 - [ ] Close this issue.
