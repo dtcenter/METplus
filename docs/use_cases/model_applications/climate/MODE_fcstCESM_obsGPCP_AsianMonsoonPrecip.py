@@ -1,10 +1,15 @@
 """
 MODE: CESM and GPCP Asian Monsoon Precipitation 
 ============================================================================
-model_applications/climate/\
-MODE_fcstCESM_obsGPCP_\
-AsianMonsoonPrecip.conf
+
+model_applications/climate/MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.conf
+
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
 
 ##############################################################################
 # Scientific Objective
@@ -16,12 +21,22 @@ AsianMonsoonPrecip.conf
 # Integrated Modeling of the Atmosphere (SIMA) project. 
 
 ##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 3.1
+
+##############################################################################
 # Datasets
 # --------
 #
-#  * Forecast dataset: CESM Daily Precipitation
-#  * Observation dataset: GPCP Daily Precipitation
+# **Forecast**: CESM Daily Precipitation
 #
+# **Observation**: GPCP Daily Precipitation
+#
+# **Climatology:** None
+#
+# **Location:** [UPDATE_SECTION_CONTENT]
 
 ##############################################################################
 # METplus Components
@@ -33,6 +48,13 @@ AsianMonsoonPrecip.conf
 ##############################################################################
 # METplus Workflow
 # ----------------
+#
+# [UPDATE_DESCRIPTION]
+#
+# **Beginning time (INIT_BEG):** 2014060100
+# **End time (INIT_END):** 2014060200
+# **Increment between beginning and end times (INIT_INCREMENT):** 86400
+# **Sequence of forecast leads to process (LEAD_SEQ):** None
 #
 # The mode tool is run for each time. This example loops by model 
 # initialization time.  It processes 4 valid times, listed below.
@@ -58,8 +80,8 @@ AsianMonsoonPrecip.conf
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/climate/MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.conf
+# then it loads any configuration files passed to METplus via the command line,
+# parm/use_cases/model_applications/climate/MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/climate/MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.conf
@@ -78,8 +100,21 @@ AsianMonsoonPrecip.conf
 #
 # .. note:: See the :ref:`MODE MET Configuration<mode-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
 #
+# .. dropdown:: MODEConfig_wrapped
+#
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/met_config/MODEConfig_wrapped
+
+##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
+# [UPDATE_SECTION_CONTENT]
 
 ##############################################################################
 # Running METplus
@@ -89,13 +124,9 @@ AsianMonsoonPrecip.conf
 #
 # 1) Passing in MODE_fcstCESM_obsGPCP_ConusPrecip.conf then a user-specific system configuration file::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/climate/MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.conf -c /path/to/user_system.conf
+#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/climate/MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.conf /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.conf::
-#
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/climate/MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
+# The following variables must be set correctly:
 #
 # * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
 # * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
@@ -109,6 +140,8 @@ AsianMonsoonPrecip.conf
 #   MET_INSTALL_DIR = /path/to/met-X.Y 
 #
 # **NOTE:** All of these items must be found under the [dir] section.
+#
+# # See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output
@@ -119,41 +152,42 @@ AsianMonsoonPrecip.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in model_applications/climate/CESM_MODE (relative to **OUTPUT_BASE**)
-# and will contain the following files:
+# Output for this use case will be found in 
+# {OUTPUT_BASE}/model_applications/climate/CESM_MODE
+# and will contain the following files::
 #
-# 2014_06_01_000000/mode_000000L_20140602_000000V_000000A_R1_T1_cts.txt
-# 2014_06_01_000000/mode_000000L_20140602_000000V_000000A_R1_T1_obj.nc
-# 2014_06_01_000000/mode_000000L_20140602_000000V_000000A_R1_T1_obj.txt
-# 2014_06_01_000000/mode_000000L_20140602_000000V_000000A_R1_T1.ps
-# 2014_06_01_000000/mode_000000L_20140602_000000V_000000A_R1_T2_cts.txt
-# 2014_06_01_000000/mode_000000L_20140602_000000V_000000A_R1_T2_obj.nc
-# 2014_06_01_000000/mode_000000L_20140602_000000V_000000A_R1_T2_obj.txt
-# 2014_06_01_000000/mode_000000L_20140602_000000V_000000A_R1_T2.ps
-# 2014_06_01_000000/mode_000000L_20140603_000000V_000000A_R1_T1_cts.txt
-# 2014_06_01_000000/mode_000000L_20140603_000000V_000000A_R1_T1_obj.nc
-# 2014_06_01_000000/mode_000000L_20140603_000000V_000000A_R1_T1_obj.txt
-# 2014_06_01_000000/mode_000000L_20140603_000000V_000000A_R1_T1.ps
-# 2014_06_01_000000/mode_000000L_20140603_000000V_000000A_R1_T2_cts.txt
-# 2014_06_01_000000/mode_000000L_20140603_000000V_000000A_R1_T2_obj.nc
-# 2014_06_01_000000/mode_000000L_20140603_000000V_000000A_R1_T2_obj.txt
-# 2014_06_01_000000/mode_000000L_20140603_000000V_000000A_R1_T2.ps
-# 2014_06_02_000000/mode_000000L_20140603_000000V_000000A_R1_T1_cts.txt
-# 2014_06_02_000000/mode_000000L_20140603_000000V_000000A_R1_T1_obj.nc
-# 2014_06_02_000000/mode_000000L_20140603_000000V_000000A_R1_T1_obj.txt
-# 2014_06_02_000000/mode_000000L_20140603_000000V_000000A_R1_T1.ps
-# 2014_06_02_000000/mode_000000L_20140603_000000V_000000A_R1_T2_cts.txt
-# 2014_06_02_000000/mode_000000L_20140603_000000V_000000A_R1_T2_obj.nc
-# 2014_06_02_000000/mode_000000L_20140603_000000V_000000A_R1_T2_obj.txt
-# 2014_06_02_000000/mode_000000L_20140603_000000V_000000A_R1_T2.ps
-# 2014_06_02_000000/mode_000000L_20140604_000000V_000000A_R1_T1_cts.txt
-# 2014_06_02_000000/mode_000000L_20140604_000000V_000000A_R1_T1_obj.nc
-# 2014_06_02_000000/mode_000000L_20140604_000000V_000000A_R1_T1_obj.txt
-# 2014_06_02_000000/mode_000000L_20140604_000000V_000000A_R1_T1.ps
-# 2014_06_02_000000/mode_000000L_20140604_000000V_000000A_R1_T2_cts.txt
-# 2014_06_02_000000/mode_000000L_20140604_000000V_000000A_R1_T2_obj.nc
-# 2014_06_02_000000/mode_000000L_20140604_000000V_000000A_R1_T2_obj.txt
-# 2014_06_02_000000/mode_000000L_20140604_000000V_000000A_R1_T2.ps
+# * 2014_06_01_000000/mode_000000L_20140602_000000V_000000A_R1_T1_cts.txt
+# * 2014_06_01_000000/mode_000000L_20140602_000000V_000000A_R1_T1_obj.nc
+# * 2014_06_01_000000/mode_000000L_20140602_000000V_000000A_R1_T1_obj.txt
+# * 2014_06_01_000000/mode_000000L_20140602_000000V_000000A_R1_T1.ps
+# * 2014_06_01_000000/mode_000000L_20140602_000000V_000000A_R1_T2_cts.txt
+# * 2014_06_01_000000/mode_000000L_20140602_000000V_000000A_R1_T2_obj.nc
+# * 2014_06_01_000000/mode_000000L_20140602_000000V_000000A_R1_T2_obj.txt
+# * 2014_06_01_000000/mode_000000L_20140602_000000V_000000A_R1_T2.ps
+# * 2014_06_01_000000/mode_000000L_20140603_000000V_000000A_R1_T1_cts.txt
+# * 2014_06_01_000000/mode_000000L_20140603_000000V_000000A_R1_T1_obj.nc
+# * 2014_06_01_000000/mode_000000L_20140603_000000V_000000A_R1_T1_obj.txt
+# * 2014_06_01_000000/mode_000000L_20140603_000000V_000000A_R1_T1.ps
+# * 2014_06_01_000000/mode_000000L_20140603_000000V_000000A_R1_T2_cts.txt
+# * 2014_06_01_000000/mode_000000L_20140603_000000V_000000A_R1_T2_obj.nc
+# * 2014_06_01_000000/mode_000000L_20140603_000000V_000000A_R1_T2_obj.txt
+# * 2014_06_01_000000/mode_000000L_20140603_000000V_000000A_R1_T2.ps
+# * 2014_06_02_000000/mode_000000L_20140603_000000V_000000A_R1_T1_cts.txt
+# * 2014_06_02_000000/mode_000000L_20140603_000000V_000000A_R1_T1_obj.nc
+# * 2014_06_02_000000/mode_000000L_20140603_000000V_000000A_R1_T1_obj.txt
+# * 2014_06_02_000000/mode_000000L_20140603_000000V_000000A_R1_T1.ps
+# * 2014_06_02_000000/mode_000000L_20140603_000000V_000000A_R1_T2_cts.txt
+# * 2014_06_02_000000/mode_000000L_20140603_000000V_000000A_R1_T2_obj.nc
+# * 2014_06_02_000000/mode_000000L_20140603_000000V_000000A_R1_T2_obj.txt
+# * 2014_06_02_000000/mode_000000L_20140603_000000V_000000A_R1_T2.ps
+# * 2014_06_02_000000/mode_000000L_20140604_000000V_000000A_R1_T1_cts.txt
+# * 2014_06_02_000000/mode_000000L_20140604_000000V_000000A_R1_T1_obj.nc
+# * 2014_06_02_000000/mode_000000L_20140604_000000V_000000A_R1_T1_obj.txt
+# * 2014_06_02_000000/mode_000000L_20140604_000000V_000000A_R1_T1.ps
+# * 2014_06_02_000000/mode_000000L_20140604_000000V_000000A_R1_T2_cts.txt
+# * 2014_06_02_000000/mode_000000L_20140604_000000V_000000A_R1_T2_obj.nc
+# * 2014_06_02_000000/mode_000000L_20140604_000000V_000000A_R1_T2_obj.txt
+# * 2014_06_02_000000/mode_000000L_20140604_000000V_000000A_R1_T2.ps
 
 ##############################################################################
 # Keywords
@@ -171,4 +205,4 @@ AsianMonsoonPrecip.conf
 # 
 #
 # sphinx_gallery_thumbnail_path = '_static/climate-MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.png'
-#
+
