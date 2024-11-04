@@ -531,8 +531,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
             files_found = []
             for input_file in input_files:
-                # exclude field info and set it with -field
                 self.args.append(input_file)
+                self.args.append(field_info)
                 files_found.append((input_file, field_info))
 
         else:
@@ -540,7 +540,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             files_found = self.get_accumulation(time_info,
                                                 lookback,
                                                 data_src,
-                                                field_info_after_file=False)
+                                                field_info_after_file=True)
             if not files_found:
                 self.missing_input_count += 1
                 msg = (
@@ -552,9 +552,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                 else:
                     self.log_error(msg)
                 return None
-
-        # set -field name and level from first file field info
-        self.args.append(f'-field {files_found[0][1]}')
 
         self._handle_input_thresh_argument(data_src)
 
@@ -652,7 +649,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         accum_relative = get_relativedelta(accum, 'S')
         # using 1 hour for now
         smallest_input_accum = min(
-            [lev['amount'] for lev in self.c_dict['ACCUM_DICT_LIST']]
+            [ti_get_seconds_from_relativedelta(lev['amount'], search_time - accum_relative)
+             for lev in self.c_dict['ACCUM_DICT_LIST']]
         )
         if smallest_input_accum == 9999999:
             smallest_input_accum = 3600
@@ -746,8 +744,9 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
     def _find_file_for_accum(self, accum_dict, total_accum, time_info,
                              search_time, data_src, custom):
-        if (accum_dict['amount'] > total_accum and
-                accum_dict['template'] is None):
+        # get number of seconds from relativedelta accum amount using search time
+        accum_seconds = ti_get_seconds_from_relativedelta(accum_dict['amount'], search_time)
+        if accum_seconds > total_accum and accum_dict['template'] is None:
             return None, None, None
 
         self.c_dict['SUPPRESS_WARNINGS'] = True
@@ -774,7 +773,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                                   "than remaining accumulation.")
                 return None, None, None
         else:
-            accum_amount = accum_dict['amount']
+            accum_amount = accum_seconds
 
         search_time_info = {
             'valid': search_time,
@@ -809,7 +808,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             self.c_dict[data_src+'_MAX_FORECAST'], 'H'
         )
         smallest_input_accum = min(
-            [lev['amount'] for lev in self.c_dict['ACCUM_DICT_LIST']]
+            [ti_get_seconds_from_relativedelta(lev['amount'], valid_time)
+             for lev in self.c_dict['ACCUM_DICT_LIST']]
         )
 
         # if smallest input accumulation is greater than an hour, search hourly
@@ -863,6 +863,9 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                         custom):
         lead = 0
         in_template = self.c_dict[data_src+'_INPUT_TEMPLATE']
+        # use rel_time as offset to compute seconds from
+        # relativedelta search_accum for time_info level -- can be init or valid
+        rel_time = valid_time
 
         if ('{lead?' in in_template or
                 ('{init?' in in_template and '{valid?' in in_template)):
@@ -873,15 +876,17 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             # ti_calculate cannot currently handle both init and valid
             lead = (valid_time - init_time).total_seconds()
             input_dict = {'init': init_time, 'lead': lead}
+            rel_time = init_time
         else:
             if self.c_dict[f'{data_src}_CONSTANT_INIT']:
                 input_dict = {'init': init_time}
+                rel_time = init_time
             else:
                 input_dict = {'valid': valid_time}
 
         time_info = ti_calculate(input_dict)
         time_info['custom'] = custom
-        time_info['level'] = int(search_accum)
+        time_info['level'] = ti_get_seconds_from_relativedelta(search_accum, rel_time)
         input_path = self.find_data(time_info, data_type=data_src,
                                     return_list=True, mandatory=False)
         if input_path:
@@ -1006,8 +1011,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                 template = accum
                 accum = '9999999S'
 
-            # convert accum amount to seconds from time string
-            amount = get_seconds_from_string(accum, 'H', time_info['valid'])
+            # convert accum amount to relativedelta from time string
+            amount = get_relativedelta(accum, default_unit='H')
 
             accum_dict_list.append({'amount': amount,
                                     'name': name,
