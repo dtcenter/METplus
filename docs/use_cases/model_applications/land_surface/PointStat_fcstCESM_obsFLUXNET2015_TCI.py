@@ -1,6 +1,6 @@
 """
 PointStat: CESM and FLUXNET2015 Terrestrial Coupling Index (TCI) 
-======================================================================
+================================================================
 
 model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 
@@ -15,9 +15,12 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 # Scientific Objective
 # --------------------
 # This use case ingests two CESM (CAM and CLM) files and raw FLUXNET2015 data.
-# The use case calculates the Terrestrial Coupling Index (TCI) from the CESM forecasts and FLUXNET observations.
-# Utilizing Python embedding, this use case taps into a new vital observation dataset and compares it to CESM forecasts of TCI. 
-# Finally, it will generate plots of model forecast TCI overlaid with TCI observations at FLUXNET sites.
+# The use case calculates the Terrestrial Coupling Index (TCI) from the
+# CESM forecasts and FLUXNET observations.
+# Utilizing Python embedding, this use case taps into a new vital observation
+# dataset and compares it to CESM forecasts of TCI.
+# Finally, it will generate plots of model forecast TCI overlaid with
+# TCI observations at FLUXNET sites.
 #
 # The reference for the Terrestrial Coupling Index calculation is as follows:
 #
@@ -26,7 +29,7 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 
 ##############################################################################
 # Datasets
-# ---------------------
+# --------
 #
 # | **Forecast:** CESM 1979-1983 Simulations 
 # | * Community Land Model (CLM) file
@@ -42,7 +45,7 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 
 ##############################################################################
 # Python Dependencies
-# ---------------------
+# -------------------
 #
 # This use case requires the following Python dependencies::
 #
