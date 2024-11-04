@@ -22,6 +22,7 @@ Use Cases by MET Tool:
    | `GridStat <../search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_
    | `GridDiag <../search.html?q=GridDiagToolUseCase&check_keywords=yes&area=default>`_
    | `IODA2NC <../search.html?q=IODA2NCToolUseCase&check_keywords=yes&area=default>`_
+   | `MADIS2NC <../search.html?q=MADIS2NCToolUseCase&check_keywords=yes&area=default>`_
    | `MODE <../search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_
    | `MTD <../search.html?q=MTDToolUseCase&check_keywords=yes&area=default>`_
    | `PB2NC <../search.html?q=PB2NCToolUseCase&check_keywords=yes&area=default>`_
@@ -49,6 +50,7 @@ Use Cases by MET Tool:
    | **GridStat**: *GridStatToolUseCase*
    | **GridDiag**: *GridDiagToolUseCase*
    | **IODA2NC**: *IODA2NCToolUseCase*
+   | **MADIS2NC**: *MADIS2NCToolUseCase*
    | **MODE**: *MODEToolUseCase*
    | **MTD**: *MTDToolUseCase*
    | **PB2NC**: *PB2NCToolUseCase*
@@ -154,6 +156,7 @@ Use Cases by METplus Feature:
    | `METplotpy <../search.html?q=METplotpyUseCase&check_keywords=yes&area=default>`_
    | `MET_PYTHON_EXE Environment Variable  <../search.html?q=MET_PYTHON_EXEUseCase&check_keywords=yes&area=default>`_
    | `Multiple Conf File Use <../search.html?q=MultiConfUseCase&check_keywords=yes&area=default>`_
+   | `MultivariateMODE <../search.html?q=MvMODEUseCase&check_keywords=yes&area=default>`_
    | `Observation Time Summary <../search.html?q=ObsTimeSummaryUseCase&check_keywords=yes&area=default>`_
    | `Observation Uncertainty <../search.html?q=ObsUncertaintyUseCase&check_keywords=yes&area=default>`_
    | `Python Embedding Ingest <../search.html?q=PyEmbedIngestToolUseCase&check_keywords=yes&area=default>`_
@@ -185,6 +188,7 @@ Use Cases by METplus Feature:
    | **METplotpy**: *METplotpyUseCase*
    | **MET_PYTHON_EXE Environment Variable**: *MET_PYTHON_EXEUseCase*
    | **Multiple Conf File Use**: *MultiConfUseCase*
+   | **MultivariateMODE**: *MvMODEUseCase*
    | **Observation Time Summary**: *ObsTimeSummaryUseCase*
    | **Observation Uncertainty**: *ObsUncertaintyUseCase*
    | **Python Embedding Ingest**: *PyEmbedIngestToolUseCase*

@@ -63,6 +63,8 @@ Category: met_tool_wrapper
 61::PlotPointObs:: met_tool_wrapper/PlotPointObs/PlotPointObs.conf
 62::TCDiag:: met_tool_wrapper/TCDiag/TCDiag.conf
 63::WaveletStat:: met_tool_wrapper/WaveletStat/WaveletStat.conf
+64::MADIS2NC:: met_tool_wrapper/MADIS2NC/MADIS2NC.conf
+65::SeriesAnalysis_aggr:: met_tool_wrapper/SeriesAnalysis/SeriesAnalysis_aggr.conf::netcdf4_env
 
 Category: air_quality_and_comp
 0::EnsembleStat_fcstICAP_obsMODIS_aod::model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod.conf
@@ -163,6 +165,7 @@ Category: s2s_mjo
 Category: s2s_stratosphere
 0:: UserScript_fcstGFS_obsERA_StratosphereBias:: model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias.conf:: weatherregime_env,cartopy,metdataio
 #X::UserScript_fcstGFS_obsERA_StratospherePolar:: model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.conf:: weatherregime_env,cartopy,metdataio
+#X::UserScript_fcstGFS_obsERA_StratosphereQBO:: model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereQBO.conf:: weatherregime_env,cartopy,metdataio
 
 
 Category: short_range
@@ -181,7 +184,7 @@ Category: short_range
 12::UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalCrossSection::model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalCrossSection.conf:: metplotpy_env
 13::MODEMultivar_fcstHRRR_obsMRMS_HRRRanl::model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 14::UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot::model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot.conf:: metdataio, metcalcpy, metplotpy,mp_analysis_env
-
+15::MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning::model_applications/short_range/MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning.conf
 
 Category: space_weather
 0::GridStat_fcstGloTEC_obsGloTEC_vx7:: model_applications/space_weather/GridStat_fcstGloTEC_obsGloTEC_vx7.conf

@@ -86,10 +86,15 @@ WRAPPER_ENV_VAR_KEYS
 This class variable lists all of the environment variables that are set by
 the wrapper. These variables are typically referenced in the wrapped MET
 config file for the tool and are named with a *METPLUS\_* prefix.
-All of the variables that are referenced in the wrapped MET config file must
-be listed here so that they will always be set to prevent an error when MET
-reads the config file. An empty string will be set if they are not set to
-another value by the wrapper.
+An empty string will be set if they are not set to another value by the wrapper.
+Almost all of the variables that are referenced in the wrapped MET config file
+must be listed here so that they will always be set to prevent an error when MET
+reads the config file. The exceptions are **METPLUS_MET_CONFIG_OVERRIDES** and
+**METPLUS_TIME_OFFSET_WARNING** which are automatically set and included in the
+CommandBuilder initialization step.
+
+See :ref:`bc_add_met_config` for more information on how to determine the
+values to add to this list.
 
 DEPRECATED_WRAPPER_ENV_VAR_KEYS
 --------------------------------
@@ -217,13 +222,78 @@ it is not necessary to set *self.isOK = False* if this function is called.
     if something_else_goes_wrong:
         self.isOK = False
 
+.. _bc_find_input_files:
+
+find_input_files function
+=========================
+
+The **find_input_files** class function should be implemented to handle the
+reading of input files that were found for a given run. This function should
+add files to the **self.infiles** instance variable. It should return False
+if any required input files were not able to be set. It should return True
+if everything was read properly.
+
+.. _bc_set_command_line_arguments:
+
+set_command_line_arguments function
+-----------------------------------
+
+The **set_command_line_arguments** class function should be implemented to
+set any arguments to pass to the command. This function should add to the
+**self.args** instance variable for each command line argument.
+The *time_info* dictionary containing values to substitute into filename
+template tags is passed to this function. Call the **do_string_sub** function
+to substitute any values. Note: Eventually the wrappers will be refactored
+to handle filename template tag substitution uniformly so substitution in
+this function will no longer be necessary.
+
+.. _bc_set_environment_variables:
+
+set_environment_variables function
+==================================
+
+The setting of environment variables to be read into the wrapped MET config
+file is now handled automatically if using the *add_met_config* functions.
+See :ref:`bc_add_met_config`.
+
+However, if additional environment variables need to be set for a specific
+wrapper, the **set_environment_variables** function can be overridden.
+**If it is overridden, make sure to call the parent class's implementation of
+the function!** Include the following in the function::
+
+   super().set_environment_variables(time_info)
+
+Uses add_env_var function (CommandBuilder) to set any shell environment
+variables that MET or other METplus wrappers
+need to be set.
+
+.. _bc_get_command:
+
+get_command function
+====================
+
+**get_command** assembles the command that will be run.
+
+Some wrappers will need to define the **get_command** function to format the
+command and its arguments. This function reads instance variables and returns
+a string of the command to run. Note: Eventually the wrappers will be refactored
+to handle this uniformly, so it will not be necessary to override this function
+for each wrapper.
 
 .. _bc_run_at_time_once:
 
 run_at_time_once function
 =========================
 
-**run_at_time_once** runs a process for one specific time. The time depends
+**run_at_time_once** runs a process for one specific time.
+
+Previously a **run_at_time_once** function needed to be implemented for each
+wrapper. Now this logic is handled in the **RuntimeFreqWrapper**.
+It is typically not necessary to override this function in a new wrapper
+unless the wrapper requires special logic that isn't covered in the generic
+version of the function in *RuntimeFreqWrapper*.
+
+The time depends
 on the value of {APP_NAME}_RUNTIME_FREQ. Most wrappers run once per each
 init or valid and forecast lead time. This function is often defined in each
 wrapper to handle command setup specific to the wrapper. There is a generic
@@ -269,25 +339,6 @@ run_all_times function
 If a wrapper is not inheriting from RuntimeFreqWrapper or one of its child
 classes, then the **run_all_times** function can be implemented in the wrapper.
 This function is called when the wrapper is called.
-
-get_command function
-====================
-
-**get_command** assembles the command that will be run.
-It is defined in CommandBuilder but is overridden in most wrappers because
-the command line arguments differ for each MET tool.
-
-set_environment_variables function
-==================================
-
-Uses add_env_var function (CommandBuilder) to set any shell environment
-variables that MET or other METplus wrappers
-need to be set. This allows a wrapper to pass information into a MET
-configuration file. The MET config file refers to the environment variables.
-This is currently only set in wrappers that use MET config files, but the
-other wrappers will also need to set environment variables
-that are needed to be set in the environment when running, such as
-MET_TMP_DIR and MET_PYTHON_EXE.
 
 find_data/find_model/find_obs functions (in CommandBuilder)
 ===========================================================
@@ -361,6 +412,8 @@ lead, lead_seconds, lead_minutes, lead_hours, offset, offset_hours, da_init
 
 pcp_combine uses a variety of time_util functions like ti_calculate and
 ti_get_lead_string
+
+.. _bc_add_met_config:
 
 Adding Support for MET Configuration Variables
 ==============================================

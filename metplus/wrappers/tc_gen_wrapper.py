@@ -329,7 +329,7 @@ class TCGenWrapper(RuntimeFreqWrapper):
            set c_dict.
 
             @param time_info time dictionary to use for string substitution
-            @returns True if all inputs were found, False if not.
+            @returns time_info if all inputs were found, None if not.
         """
         # get track file(s) or directory
         track_files = self.find_data(time_info,
@@ -337,7 +337,7 @@ class TCGenWrapper(RuntimeFreqWrapper):
                                      return_list=True,
                                      allow_dir=True)
         if not track_files:
-            return False
+            return None
 
         list_filename = time_info['init_fmt'] + '_tc_gen_track.txt'
         self.c_dict['TRACK_FILE'] = self.write_list_file(list_filename,
@@ -357,7 +357,7 @@ class TCGenWrapper(RuntimeFreqWrapper):
 
             # if template was provided but no files were found, skip run
             if not file_list:
-                return False
+                return None
 
             list_filename = f"{time_info['init_fmt']}_tc_gen_{file_type}.txt"
             self.c_dict[f'{file_type.upper()}_FILE'] = (
@@ -381,7 +381,7 @@ class TCGenWrapper(RuntimeFreqWrapper):
                 f"lead = [{', '.join(lead_list)}];"
             )
 
-        return True
+        return time_info
 
     def set_command_line_arguments(self, time_info):
 

@@ -133,6 +133,7 @@ def test_read_climo_field(metplus_config, config_overrides, expected_value):
 @pytest.mark.util
 def test_handle_climo_dict(metplus_config, config_overrides, expected_value):
     app_name = 'app'
+    sub_groups = ('fcst', 'obs')
     for climo_type in ('MEAN', 'STDEV'):
         expected_var = f'METPLUS_CLIMO_{climo_type}_DICT'
         config = metplus_config
@@ -144,7 +145,7 @@ def test_handle_climo_dict(metplus_config, config_overrides, expected_value):
             value_sub = value.replace('<type>', climo_type.lower())
             config.set('config', key_sub, value_sub)
 
-        handle_climo_dict(config, app_name, output_dict)
+        handle_climo_dict(config, app_name, output_dict, sub_groups=sub_groups)
         print(output_dict)
         expected_sub = expected_value.replace('<type>', climo_type.lower())
         assert output_dict[expected_var] == expected_sub

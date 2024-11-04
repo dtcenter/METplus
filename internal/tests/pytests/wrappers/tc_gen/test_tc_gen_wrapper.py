@@ -342,7 +342,8 @@ def test_tc_gen_missing_inputs(metplus_config, get_test_data_dir, allow_missing,
     ]
 )
 @pytest.mark.wrapper_a
-def test_tc_gen(metplus_config, get_test_data_dir, config_overrides, env_var_values):
+def test_tc_gen(metplus_config, get_test_data_dir, config_overrides,
+                env_var_values, compare_command_and_env_vars):
     # expected number of 2016 files (including file_list line)
     expected_genesis_count = 7
     expected_track_count = expected_genesis_count
@@ -434,25 +435,7 @@ def test_tc_gen(metplus_config, get_test_data_dir, config_overrides, env_var_val
     ]
 
     all_cmds = wrapper.run_all_times()
-    print(f"ALL COMMANDS: {all_cmds}")
-    assert len(all_cmds) == len(expected_cmds)
-
-    missing_env = [item for item in env_var_values
-                   if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
-    env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
-
-    for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
-        # ensure commands are generated as expected
-        assert cmd == expected_cmd
-
-        # check that environment variables were set properly
-        # including deprecated env vars (not in wrapper env var keys)
-        for env_var_key in env_var_keys:
-            match = next((item for item in env_vars if
-                          item.startswith(env_var_key)), None)
-            assert match is not None
-            value = match.split('=', 1)[1]
-            assert env_var_values.get(env_var_key, '') == value
+    compare_command_and_env_vars(all_cmds, expected_cmds, env_var_values, wrapper)
 
     # verify file count of genesis, edeck, shape, and track file list files
     with open(genesis_path, 'r') as file_handle:

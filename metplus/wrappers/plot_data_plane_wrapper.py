@@ -12,8 +12,7 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import time_util
-from ..util import do_string_sub, remove_quotes, skip_time, get_lead_sequence
+from ..util import do_string_sub, remove_quotes
 from . import LoopTimesWrapper
 
 '''!@namespace PlotDataPlaneWrapper
@@ -132,14 +131,14 @@ class PlotDataPlaneWrapper(LoopTimesWrapper):
         # just pass value to input file list
         if 'PYTHON' in self.c_dict['INPUT_TEMPLATE']:
             self.infiles.append(self.c_dict['INPUT_TEMPLATE'])
-            return True
+            return time_info
 
         file_path = self.find_data(time_info, return_list=False)
         if not file_path:
-            return False
+            return None
 
         self.infiles.append(file_path)
-        return True
+        return time_info
 
     def set_command_line_arguments(self, time_info):
         field_name = do_string_sub(self.c_dict['FIELD_NAME'],

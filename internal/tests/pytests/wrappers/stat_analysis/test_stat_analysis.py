@@ -18,6 +18,7 @@ pp = pprint.PrettyPrinter()
 
 JOB_ARGS = '-job filter'
 
+
 def stat_analysis_wrapper(metplus_config):
     """! Returns a default StatAnalysisWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
@@ -178,6 +179,7 @@ def set_minimum_config_settings(config):
         # 17 - obs_lev
         ({'OBS_LEVEL_LIST': 'R7'},
          {'METPLUS_OBS_LEVEL': 'obs_lev = ["R7"];'}),
+
     ]
 )
 @pytest.mark.wrapper_d

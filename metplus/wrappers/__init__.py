@@ -5,25 +5,21 @@ from pathlib import Path
 from importlib import import_module
 from ..util.metplus_check import plot_wrappers_are_enabled
 
+# import parent classes to other wrappers
+from .command_builder import CommandBuilder
+from .runtime_freq_wrapper import RuntimeFreqWrapper
+from .loop_times_wrapper import LoopTimesWrapper
+from .reformat_gridded_wrapper import ReformatGriddedWrapper
+from .reformat_point_wrapper import ReformatPointWrapper
+from .compare_gridded_wrapper import CompareGriddedWrapper
+
+# import RegridDataPlane wrapper because it is used by other wrappers
+from .regrid_data_plane_wrapper import RegridDataPlaneWrapper
+
 # these wrappers should not be imported if plotting is disabled
 plotting_wrappers = [
     'cyclone_plotter_wrapper',
 ]
-
-# import classes that other wrappers import
-parent_classes = {
-    'command_builder': 'CommandBuilder',
-    'runtime_freq_wrapper': 'RuntimeFreqWrapper',
-    'loop_times_wrapper': 'LoopTimesWrapper',
-    'reformat_gridded_wrapper': 'ReformatGriddedWrapper',
-    'compare_gridded_wrapper': 'CompareGriddedWrapper',
-    'regrid_data_plane_wrapper': 'RegridDataPlaneWrapper',
-}
-
-for module_name, attribute_name in parent_classes.items():
-    module = import_module(f"{__name__}.{module_name}")
-    attribute = getattr(module, attribute_name)
-    globals()[attribute_name] = attribute
 
 # iterate through the modules in the current package
 package_dir = str(Path(__file__).resolve().parent)
