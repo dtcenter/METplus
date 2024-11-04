@@ -138,21 +138,21 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 # Python Embedding
 # ----------------
 #
+# This use case requires the following Python dependencies:
+#
+# * Xarray
+# * Pandas
+# * METcalcpy 3.0.0+
+#
 # This use case uses a Python embedding script to read both the forecast and
 # observation data, in order to compute TCI,
 # which is the diagnostic that is being verified by MET using PointStat.
 # The CESM forecast data is read using:
 #
-# parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/tci_fcst.py
+# .. dropdown:: parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/tci_fcst.py
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/tci_fcst.py
-#
-# This use case requires the following Python dependencies::
-#
-# * Xarray
-# * Pandas
-# * METcalcpy 3.0.0+
+#    .. highlight:: python
+#    .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/tci_fcst.py
 #
 # The user can control all arguments to this script via the METplus use case configuration file using the following config entries:
 #
@@ -171,19 +171,15 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #    TCI_FCST_LHFLUX_FILE_PATH
 #      The path to the model netcdf file that contains the flux field
 #
-#      | *Default:*
-#
 #    TCI_FCST_SOILM_FILE_PATH
 #      The path to the model netcdf file that contains the soil moisture field
 #
-#      | *Default:*
-#
 # The raw FLUXNET2015 SUBSET data are read using:
 #
-# parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/fluxnet2015_tci.py
+# .. dropdown:: parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/fluxnet2015_tci.py
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/fluxnet2015_tci.py
+#    .. highlight:: python
+#    .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/fluxnet2015_tci.py
 #
 # The user can control all command line arguments to this script via METplus config entries:
 #
@@ -191,8 +187,6 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #
 #    FLUXNET_DATA_DIR
 #      The directory containing raw FLUXNET CSV files
-#
-#      | *Default:*
 #
 #    FLUXNET_LAT_HEAT_VAR
 #      The FLUXNET surface latent heat flux variable name to use for computing TCI
@@ -206,8 +200,6 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #
 #    FLUXNET_OBS_METADATA_FILE
 #      The absolute path to the fluxnetstations.csv metadata file included with the use case
-#
-#      | *Default:*
 #
 # and for data filtering options, via METplus config entries:
 #
@@ -244,8 +236,8 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #
 #      | *Default:* False
 #
-# Both of the above Python embedding scripts compute TCI using the ``calc_tci()`` function in METcalcpy. See the METcalcpy 
-# documentation for more information: https://metcalcpy.readthedocs.io/en/latest/index.html.
+# Both of the above Python embedding scripts compute TCI using the ``calc_tci()`` function in METcalcpy.
+# See the METcalcpy documentation for more information: https://metcalcpy.readthedocs.io/en/latest/index.html.
 #
 
 ##############################################################################
@@ -253,9 +245,9 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 # ---------------
 #
 # Pass the use case configuration file to the run_metplus.py script
-# along with any user-specific system configuration files if desired:
+# along with any user-specific system configuration files if desired::
 #
-# run_metplus.py /path/to/METplus/parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf /path/to/user_system.conf
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
 #
@@ -265,6 +257,7 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 # ---------------
 #
 # A successful run will output the following both to the screen and to the logfile::
+#
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
