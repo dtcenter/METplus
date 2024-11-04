@@ -65,8 +65,11 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWin
 # [UPDATE_SECTION_CONTENT]
 #
 # **Beginning time (INIT_BEG):** 1982-01-01
+#
 # **End time (INIT_END):** 2010-01-02
+#
 # **Increment between beginning and end times (INIT_INCREMENT):** 1 year
+#
 # **Sequence of forecast leads to process (LEAD_SEQ):** None
 #
 # With an increment of 1 year, all January 1st’s from 1982 to 2010 are processed 
