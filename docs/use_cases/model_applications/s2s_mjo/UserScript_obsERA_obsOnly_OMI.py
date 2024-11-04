@@ -19,11 +19,18 @@ UserScript_obsERA_obsOnly_OMI.py
 # development, and sudden stratospheric warming events, and has teloconnections to mid latitude weather
 # systems.  
 # 
-# This use case uses outgoing longwave radiation (OLR) to compute the OLR based MJO Index (OMI).  In 
-# contrast to RMM, the OMI is a convective index of the MJO.  OMI is computed for the ERA observations 
-# and then displayed on a phase diagram to evaluate the model reprentation of this important oscillation.
-# The code for computing OMI comes from Maria Gehne at PSL.
+# This use case uses outgoing longwave radiation (OLR) to compute the OLR based MJO Index (OMI), which is
+# a convective index of the MJO.  OMI is computed for the ERA observations and then displayed on a phase 
+# diagram to evaluate the model reprentation of this important oscillation.  The code for computing OMI 
+# came from Maria Gehne at PSL.
 # 
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 4.1.0
+#
 
 ##############################################################################
 # Datasets
@@ -50,7 +57,7 @@ UserScript_obsERA_obsOnly_OMI.py
 # PROCESS_LIST = RegridDataPlane(regrid_obs_olr), UserScript(create_eof_filelist), UserScript(script_omi) 
 #
 # Settings for the optional pre-processing step can be found in the regrid_obs_olr section of the configuration. 
-# Data is not provided in the tarball to run these steps, but the configurations is provided for reference on 
+# Data is not provided in the tarball to run this steps, but the configurations is provided for reference on 
 # how to set up this step.
 #
 
@@ -60,7 +67,16 @@ UserScript_obsERA_obsOnly_OMI.py
 #
 # This use case does not loop, but the UserScript to create and EOF filelist is run once and the OMI driver script is 
 # run once.  The OMI script has the ability to loop over lead time, although only one lead time is provided here.  The 
-# optional pre-processing step loops by valid time.  
+# optional pre-processing step loops by valid time. 
+#
+# This use case requires METcalcpy, METplotpy, and METdataio to run. The metcalcpy scripts accessed include the following:
+# * metcalcpy/contributed/rmm_omi/compute_mjo_indices.py
+#
+# The METplotpy scripts accessed include the following:
+# * metplotpy/contributed/mjo_rmm_omi/plot_mjo_indioces.py 
+#
+# The METdataio scripts accessed include the following:
+# * METreadnc/util/read_netcdf.py
 #
 
 ##############################################################################

@@ -34,6 +34,13 @@ UserScript_fcstGFS_obsERA_Blocking.py
 #
 
 ##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 4.0.0
+#
+
+##############################################################################
 # Datasets
 # --------
 #
@@ -88,10 +95,14 @@ UserScript_fcstGFS_obsERA_Blocking.py
 #  | FCST_STEPS = CBL+IBL+PLOTIBL+GILB+CALCBLOCKS+PLOTBLOCKS
 #  | OBS_STEPS = CBL+PLOTCBL+IBL+PLOTIBL+GILB+CALCBLOCKS+PLOTBLOCKS
 #
-# The metcalcpy scripts accessed include the following:
-# metcalcpy/contributed/blocking_weather_regime/Blocking.py, which runs the calculation steps, CBL, IBL, GIBL, and CALcBLOCKS.  See the METcalcpy `Blocking Calculation Script <https://github.com/dtcenter/METcalcpy/blob/develop/metcalcpy/contributed/blocking_weather_regime/Blocking.py>`_ for more information.
+# This use case reuqires METcalcpy and METplotpy to run.  The METcalcpy scripts accessed include the following:
+# * metcalcpy/contributed/blocking_weather_regime/Blocking.py
+# * metcalcpy/contributed/blocking_weather_regime/Blocking_WeatherRegime_util.py
+# * metcalcpy/util/write_mpr.py
 #
-# metcalcpy/contributed/blocking_weather_regime/Blocking_WeatherRegime_util.py, which contains functions used by both the blocking anwd weather regime analysis, including the code for determining which steps the user wants to run, and reading the input files in the format required for the calculation.  See the METcalcpy `Utility script <https://github.com/dtcenter/METcalcpy/blob/develop/metcalcpy/contributed/blocking_weather_regime/Blocking_WeatherRegime_util.py>`_ for more information.
+# The METplotpy scripts accessed include the following:
+# * metplotpy/contributed/blocking_s2s/CBL_plot.py
+# * metplotpy/contributed/blocking_s2s/plot_blocking.py
 #
 
 ##############################################################################
@@ -155,7 +166,7 @@ UserScript_fcstGFS_obsERA_Blocking.py
 # Pass the use case configuration file to the run_metplus.py script along with any
 # user-specific system configuration files if desired:
 #
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_Blocking.conf /path/to/user_system.conf
+#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
 #

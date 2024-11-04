@@ -21,9 +21,16 @@ UserScript_obsERA_obsOnly_RMM.py
 # 
 # This use case uses anomalies of outgoing longwave radiation (OLR), 850 hPa wind (U850), and 200 hPa 
 # wind (U200) to compute the Real-time Multivariate MJO Index (RMM).  In contrast to OMI, which is a 
-# convective index of MJO, RMM is a dynamical index.  The code for computing RMM comes from Maria
+# convective index of MJO, RMM is a dynamical index.  The code for computing RMM came from Maria
 # Gehne at PSL.
 # 
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 4.1.0
+#
 
 ##############################################################################
 # Datasets
@@ -31,7 +38,7 @@ UserScript_obsERA_obsOnly_RMM.py
 #
 #  * Forecast dataset:  None
 #  * Observation dataset: ERA Reanlaysis Outgoing Longwave Radiation, 850 hPa wind and 200 hPa wind, 2000 - 2002.
-#  * EOFs: NEED TO FILL IN
+#  * EOFs: EOF patterns for OLR, U850, and U200 from Matthew Wheeler
 #
 
 ##############################################################################
@@ -62,11 +69,20 @@ UserScript_obsERA_obsOnly_RMM.py
 # METplus Workflow
 # ----------------
 #
-# The creation of anomalies using harmonic analysis and the calculation of RMM do not loop.  Rather, the
+# The creation of anomalies using harmonic analysis and the calculation of RMM do not loop; the
 # UserScripts are run once.  These scripts do have the ability to loop over lead time, although only one
 # lead time is provided here.  The optional pre-processing steps to create the mean daily annual cycle
 # and daily mean data loop by valid time with different timing settings needed used for the different 
 # steps.
+#
+# This use case requires METcalcpy, METplotpy, and METdataio to run. The metcalcpy scripts accessed include the following:
+# * metcalcpy/contributed/rmm_omi/compute_mjo_indices.py
+#
+# The METplotpy scripts accessed include the following:
+# * metplotpy/contributed/mjo_rmm_omi/plot_mjo_indioces.py
+#
+# The METdataio scripts accessed include the following:
+# * METreadnc/util/read_netcdf.py
 #
 
 ##############################################################################

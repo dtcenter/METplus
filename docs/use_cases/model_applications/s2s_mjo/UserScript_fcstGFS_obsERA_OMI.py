@@ -22,8 +22,15 @@ UserScript_fcstGFS_obsERA_OMI.py
 # This use case uses outgoing longwave radiation (OLR) to compute the OLR based MJO Index (OMI), which is
 # a convective index of the MJO.  OMI is computed separately for the model and observations and then displayed
 # on phase diagrams to evaluate the model reprentation of this important oscillation.  The code for computing OMI
-# comes from Maria Gehne at PSL.
+# came from Maria Gehne at PSL.
 # 
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 4.1.0
+#
 
 ##############################################################################
 # Datasets
@@ -60,7 +67,16 @@ UserScript_fcstGFS_obsERA_OMI.py
 #
 # This use case does not loop, but the UserScript to create and EOF filelist is run once and the OMI driver script is 
 # run once for both the model and observations.  The OMI script has the ability to loop over lead time, although only 
-# one lead time is provided here. The 3 optional pre-processing steps loop by valid time.  
+# one lead time is provided here. The 3 optional pre-processing steps loop by valid time. 
+#
+# This use case requires METcalcpy, METplotpy, and METdataio to run. The metcalcpy scripts accessed include the following:
+# * metcalcpy/contributed/rmm_omi/compute_mjo_indices.py
+#
+# The METplotpy scripts accessed include the following:
+# * metplotpy/contributed/mjo_rmm_omi/plot_mjo_indioces.py
+#
+# The METdataio scripts accessed include the following:
+# * METreadnc/util/read_netcdf.py
 #
 
 ##############################################################################
@@ -99,10 +115,9 @@ UserScript_fcstGFS_obsERA_OMI.py
 # OMI driver include netCDF files formatted in MET's netCDF version.  In addition, a txt file containing 
 # the listing of these input netCDF files is required, as well as text file listings of the EOF1 and 
 # EOF2 files.  These text files can be generated using the USER_SCRIPT_INPUT_TEMPLATES in the 
-# [create_eof_filelist] and [script_omi] sections.  Some optional pre-processing steps include using 
-# regrid_data_plane to either regrid your data or cut the domain to 20N - 20S.
+# [create_eof_filelist] and [script_omi] sections.
 #
-# For the OMI calculation, the OLR data are then projected onto Empirical Orthogonal Function (EOF) 
+# For the OMI calculation, the OLR data are projected onto Empirical Orthogonal Function (EOF) 
 # data that is computed for each day of the year, latitude, and longitude.  The OLR is then filtered 
 # for 20 - 96 days, and regressed onto the daily EOFs.  Finally, it's normalized and these normalized 
 # components are plotted on a phase diagram.  The OMI driver script orchestrates the calculation of the 

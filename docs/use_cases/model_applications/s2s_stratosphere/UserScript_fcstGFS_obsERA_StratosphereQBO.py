@@ -23,6 +23,13 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 #
 
 ##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 6.0
+#
+
+##############################################################################
 # Datasets
 # --------
 #
@@ -58,6 +65,8 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 # files using write_mpr.py in METcalcpy and are also plotted as timeseries using the 
 # plot_u_timeseries function from stratosphere_plots.py in METplotpy.  Finally StatAnalysis is 
 # run on the 30 and 50mb U mpr files to compute the bias (ME).
+#
+# METcalcpy, METplotpy and METdataio are needed for this use case to run.
 #
 
 ##############################################################################
