@@ -23,7 +23,6 @@ model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod.conf
 ##############################################################################
 # Version Added
 # -------------
-# [UPDATE_SECTION_CONTENT]
 #
 # METplus version 4.0
 

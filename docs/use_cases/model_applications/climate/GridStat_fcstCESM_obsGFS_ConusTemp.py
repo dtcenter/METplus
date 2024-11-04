@@ -61,17 +61,17 @@ model_applications/climate/GridStat_fcstCESM_obsGFS_ConusTemp.conf
 # The grid_stat tool is run for each time. This example loops by initialization
 # time.  It processes 4 valid times, listed below.
 #
-# **Valid:** 2014-08-01_06Z
-# **Forecast lead:** 06
+# | **Valid:** 2014-08-01_06Z
+# | **Forecast lead:** 06
 # 
-# **Init:** 2014-08-01_12Z
-# **Forecast lead:** 12
+# | **Init:** 2014-08-01_12Z
+# | **Forecast lead:** 12
 # 
-# **Init:** 2014-08-02_06Z
-# **Forecast lead:** 06
+# | **Init:** 2014-08-02_06Z
+# | **Forecast lead:** 06
 # 
-# **Init:** 2014-08-02_12Z
-# **Forecast lead:** 12
+# | **Init:** 2014-08-02_12Z
+# | **Forecast lead:** 12
 
 ##############################################################################
 # METplus Configuration

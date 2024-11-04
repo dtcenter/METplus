@@ -61,17 +61,17 @@ model_applications/climate/MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.conf
 # The mode tool is run for each time. This example loops by model 
 # initialization time.  It processes 4 valid times, listed below.
 #
-# **Valid:** 2014-08-02
-# **Forecast lead:** 24
+# | **Valid:** 2014-08-02
+# | **Forecast lead:** 24
 #
-# **Init:** 2014-08-03
-# **Forecast lead:** 48
+# | **Init:** 2014-08-03
+# | **Forecast lead:** 48
 #
-# **Init:** 2014-08-03
-# **Forecast lead:** 24
+# | **Init:** 2014-08-03
+# | **Forecast lead:** 24
 #
-# **Init:** 2014-08-04
-# **Forecast lead:** 48
+# | **Init:** 2014-08-04
+# | **Forecast lead:** 48
 
 
 ##############################################################################
