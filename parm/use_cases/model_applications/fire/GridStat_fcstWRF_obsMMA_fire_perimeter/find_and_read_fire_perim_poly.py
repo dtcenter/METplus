@@ -49,12 +49,12 @@ if not found_files:
     # if multiple files are found for previous hour, use last file
     if len(found_files) > 1:
         print(f"WARNING: Found multiple files: {found_files}")
-        print(f"Processing the LAST file")
+        print("Processing the LAST file")
         input_file = found_files[-1]
 
 elif len(found_files) > 1:
     print(f"WARNING: Found multiple files: {found_files}")
-    print(f"Processing the FIRST file")
+    print("Processing the FIRST file")
 
 if not input_file:
     input_file = found_files[0]
@@ -65,12 +65,12 @@ tree = ET.parse(input_file)
 root = tree.getroot()
 
 search_path = './/kml:Document/kml:Placemark/kml:Polygon/kml:outerBoundaryIs/kml:LinearRing/kml:coordinates'
-namespaces = {'kml': 'http://www.opengis.net/kml/2.2'}
+namespaces = {'kml': 'https://www.opengis.net/kml/2.2'}
 
 coordinates = root.find(search_path, namespaces).text.split()
 
 with open(output_path, 'w') as file_handle:
-    file_handle.write(f'FIRE_PERIM\n')
+    file_handle.write('FIRE_PERIM\n')
     for coord in coordinates:
         lon, lat, elev = coord.split(',')
         file_handle.write(f'{lat} {lon}\n')

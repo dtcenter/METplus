@@ -4,7 +4,6 @@ from glob import glob
 from datetime import datetime
 
 import xarray as xr
-#import xwrf
 
 VAR_NAME = 'FIRE_AREA'
 LONG_NAME = 'Fire Area'
@@ -37,7 +36,6 @@ if not found_files:
 
 input_path = found_files[0]
 
-#ds = xr.open_dataset(input_path, decode_times=False).xwrf.postprocess()
 ds = xr.open_dataset(input_path, decode_times=False)
 
 valid_dt = datetime.strptime(ds['Times'][0].values.tobytes().decode(),
