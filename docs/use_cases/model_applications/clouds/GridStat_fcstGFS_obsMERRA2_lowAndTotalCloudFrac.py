@@ -6,17 +6,22 @@ model_applications/clouds/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac.conf
 
 """
 ##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
+##############################################################################
 # Scientific Objective
 # --------------------
 #
 # This use case captures various statistical measures of two model comparisons
 # for low and total cloud fraction with different neighborhood and probability
-# settings for internal model metrics and to aid in future model updates
+# settings for internal model metrics and to aid in future model updates.
 
 ##############################################################################
 # Version Added
 # -------------
-# [UPDATE_SECTION_CONTENT]
 #
 # METplus version 5.1
 
@@ -32,11 +37,14 @@ model_applications/clouds/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac.conf
 #
 # **Climatology:** None
 #
-# **Location:** All of the input data required for this use case can be found in the met_test 
-# sample data tarball. Click here to the METplus releases page and download sample data for the appropriate 
-# release: https://github.com/dtcenter/METplus/releases
-# This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. 
-# See 'Running METplus' section for more information.
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -55,12 +63,19 @@ model_applications/clouds/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac.conf
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (INIT_BEG):** 2021070312
+#
+# **End time (INIT_END):** 2021070312
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 12H
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 36
+#
 # GridStat is the only MET tool called in this example.
 # It processes the following run time:
 #
-# **Init:** 2021-07-03 12Z
-#
-# **Forecast lead:** 36 hour
+# | **Init:** 2021-07-03 12Z
+# | **Forecast lead:** 36 hour
 # 
 # Because instance names are used, GridStat will run 3 times for this 1 initalization time.
 
@@ -108,6 +123,7 @@ model_applications/clouds/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac.conf
 # User Scripting
 # --------------
 # 
+# [UPDATE_SECTION_CONTENT]
 
 ##############################################################################
 # Running METplus
@@ -130,7 +146,7 @@ model_applications/clouds/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac.conf
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
 # Output for this use case will be found in {OUTPUT_BASE}/model_applications/clouds/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac
-# and will contain the following files:
+# and will contain the following files::
 #
 #  * grid_stat_GFS_TO_MERRA2_F36_CloudFracs_360000L_20210705_000000V_pairs.nc
 #  * grid_stat_GFS_to_MERRA2_F36_CloudFracs_360000L_20210705_000000V.stat
