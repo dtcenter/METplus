@@ -64,10 +64,8 @@ print(f"Parsing file: {input_file}")
 tree = ET.parse(input_file)
 root = tree.getroot()
 
-search_path = './/kml:Document/kml:Placemark/kml:Polygon/kml:outerBoundaryIs/kml:LinearRing/kml:coordinates'
-namespaces = {'kml': 'https://schemas.opengis.net/kml/2.2.0/ogckml22.xsd'}
-
-coordinates = root.find(search_path, namespaces).text.split()
+search_path = './/{*}coordinates'
+coordinates = root.find(search_path).text.split()
 
 with open(output_path, 'w') as file_handle:
     file_handle.write('FIRE_PERIM\n')
