@@ -12,19 +12,31 @@ model_applications/clouds/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac.conf
 # This use case captures various statistical measures of two model comparisons
 # for low and total cloud fraction with different neighborhood and probability
 # settings for internal model metrics and to aid in future model updates
-# 
+
+##############################################################################
+# Version Added
+# -------------
+# [UPDATE_SECTION_CONTENT]
+#
+# METplus version 5.1
 
 ##############################################################################
 # Datasets
 # --------
 #
-# | **Forecast:** Global Forecast System (GFS)
-# | **Observations:** Modern-Era Retrospective analysis for Research and Applications, Version 2 (MERRA2)
-# | **Grid:** GPP 17km masking region
+# **Forecast:** Global Forecast System (GFS)
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
+# **Observations:** Modern-Era Retrospective analysis for Research and Applications, Version 2 (MERRA2)
 #
+# **Grid:** GPP 17km masking region
+#
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be found in the met_test 
+# sample data tarball. Click here to the METplus releases page and download sample data for the appropriate 
+# release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. 
+# See 'Running METplus' section for more information.
 
 ##############################################################################
 # METplus Components
@@ -46,8 +58,9 @@ model_applications/clouds/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac.conf
 # GridStat is the only MET tool called in this example.
 # It processes the following run time:
 #
-# | **Init:** 2021-07-03 12Z
-# | **Forecast lead:** 36 hour
+# **Init:** 2021-07-03 12Z
+#
+# **Forecast lead:** 36 hour
 # 
 # Because instance names are used, GridStat will run 3 times for this 1 initalization time.
 
@@ -56,8 +69,8 @@ model_applications/clouds/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac.conf
 # ---------------------
 #
 # METplus first loads the default configuration file found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line:
-# parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac.conf
@@ -74,10 +87,10 @@ model_applications/clouds/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac.conf
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. note:: See the :ref:`GridStat MET Configuration<grid-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# .. dropdown:: GridStatConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
+#   .. highlight:: bash
+#   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 
 ##############################################################################
 # Python Embedding
@@ -85,10 +98,16 @@ model_applications/clouds/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac.conf
 #
 # This use case utilizes 1 Python script to read and process both forecast and
 # observation fields.
-# parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac/read_input_data.py
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac/read_input_data.py
+# .. dropdown:: parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac/read_input_data.py
+#
+#   .. highlight:: bash
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac/read_input_data.py
+
+##############################################################################
+# User Scripting
+# --------------
+# 
 
 ##############################################################################
 # Running METplus
@@ -110,16 +129,15 @@ model_applications/clouds/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in model_applications/clouds/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac
-# (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in {OUTPUT_BASE}/model_applications/clouds/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac
 # and will contain the following files:
 #
-# * grid_stat_GFS_TO_MERRA2_F36_CloudFracs_360000L_20210705_000000V_pairs.nc
-# * grid_stat_GFS_to_MERRA2_F36_CloudFracs_360000L_20210705_000000V.stat
-# * grid_stat_GFS_to_MERRA2_F36_CloudFracs_NBR_360000L_20210705_000000V_pairs.nc
-# * grid_stat_GFS_to_MERRA2_F36_CloudFracs_NBR_360000L_20210705_000000V.stat
-# * grid_stat_GFS_to_MERRA2_F36_CloudFracs_PROB_360000L_20210705_000000V_pairs.nc
-# * grid_stat_GFS_to_MERRA2_F36_CloudFracs_PROB_360000L_20210705_000000V.stat
+#  * grid_stat_GFS_TO_MERRA2_F36_CloudFracs_360000L_20210705_000000V_pairs.nc
+#  * grid_stat_GFS_to_MERRA2_F36_CloudFracs_360000L_20210705_000000V.stat
+#  * grid_stat_GFS_to_MERRA2_F36_CloudFracs_NBR_360000L_20210705_000000V_pairs.nc
+#  * grid_stat_GFS_to_MERRA2_F36_CloudFracs_NBR_360000L_20210705_000000V.stat
+#  * grid_stat_GFS_to_MERRA2_F36_CloudFracs_PROB_360000L_20210705_000000V_pairs.nc
+#  * grid_stat_GFS_to_MERRA2_F36_CloudFracs_PROB_360000L_20210705_000000V.stat
 
 ##############################################################################
 # Keywords
@@ -135,4 +153,3 @@ model_applications/clouds/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac.conf
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 # sphinx_gallery_thumbnail_path = '_static/clouds-GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac.png'
-#
