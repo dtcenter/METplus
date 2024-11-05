@@ -40,7 +40,7 @@ NOT_PYTHON_ENVS = [
 ]
 
 
-def handle_automation_env(host_name, reqs, work_dir):
+def handle_automation_env(host_name, reqs):
     # if no env is specified, use metplus base environment
     conda_env = METPLUS_BASE_ENV
 
@@ -117,7 +117,7 @@ def handle_automation_env(host_name, reqs, work_dir):
         setup_env.extend((
             f'echo Using environment: dtcenter/metplus-envs:{conda_env_w_ext}',
             f'echo cat /usr/local/conda/envs/{conda_env_w_ext}/environments.yml',
-            f'echo ----------------------------------------',
+            'echo ----------------------------------------',
             f'cat /usr/local/conda/envs/{conda_env_w_ext}/environments.yml',
             'echo ----------------------------------------',
         ))
@@ -153,8 +153,7 @@ def main(categories, subset_list, work_dir=None,
         for use_case_by_requirement in use_cases_by_req:
             reqs = use_case_by_requirement.requirements
 
-            setup_env, py_embed_arg = handle_automation_env(host_name, reqs,
-                                                            work_dir)
+            setup_env, py_embed_arg = handle_automation_env(host_name, reqs)
 
             # use status variable to track if any use cases failed
             use_case_cmds = []
