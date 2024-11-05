@@ -83,9 +83,14 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 # Raw CSV files containing FLUXNET station observations of latent heat flux
 # (LE_F_MDS) and soil water content at the shallowest level (SWC_F_MDS_1)
 # are read using Python embedding, and TCI is computed.
-# 
-# | **Valid Beg:** 1979-01-01 at 00z
-# | **Valid End:** 1979-01-01 at 00z
+#
+# **Beginning time (VALID_BEG):** 1979-01-01 at 00z
+#
+# **End time (VALID_END):** 1979-01-01 at 00z
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** None
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 0
 #
 # PointStat is used to compare the two new fields
 # (TCI calculated from CESM dataset and FLUXNET2015).
@@ -154,25 +159,25 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #    .. highlight:: python
 #    .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/tci_fcst.py
 #
-# The user can control all arguments to this script via the METplus use case configuration file using the following config entries:
+#    The user can control all arguments to this script via the METplus use case configuration file using the following config entries:
 #
-# .. glossary::
+#    .. glossary::
 # 
-#    TCI_FCST_LHFLUX_VAR
-#      The flux model variable to use for computing TCI
+#       TCI_FCST_LHFLUX_VAR
+#         The flux model variable to use for computing TCI
 #
-#      | *Default:* LHFLX
+#         | *Default:* LHFLX
 #
-#    TCI_FCST_SOILM_VAR
-#      The soil moisture model variable to use for computing TCI
+#       TCI_FCST_SOILM_VAR
+#         The soil moisture model variable to use for computing TCI
 #
-#      | *Default:* SOILWATER_10CM
+#         | *Default:* SOILWATER_10CM
 #
-#    TCI_FCST_LHFLUX_FILE_PATH
-#      The path to the model netcdf file that contains the flux field
+#       TCI_FCST_LHFLUX_FILE_PATH
+#         The path to the model netcdf file that contains the flux field
 #
-#    TCI_FCST_SOILM_FILE_PATH
-#      The path to the model netcdf file that contains the soil moisture field
+#       TCI_FCST_SOILM_FILE_PATH
+#         The path to the model netcdf file that contains the soil moisture field
 #
 # The raw FLUXNET2015 SUBSET data are read using:
 #
@@ -181,60 +186,60 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #    .. highlight:: python
 #    .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/fluxnet2015_tci.py
 #
-# The user can control all command line arguments to this script via METplus config entries:
+#    The user can control all command line arguments to this script via METplus config entries:
 #
-# .. glossary::
+#    .. glossary::
 #
-#    FLUXNET_DATA_DIR
-#      The directory containing raw FLUXNET CSV files
+#       FLUXNET_DATA_DIR
+#         The directory containing raw FLUXNET CSV files
 #
-#    FLUXNET_LAT_HEAT_VAR
-#      The FLUXNET surface latent heat flux variable name to use for computing TCI
+#       FLUXNET_LAT_HEAT_VAR
+#         The FLUXNET surface latent heat flux variable name to use for computing TCI
 #
-#      | *Default:* LE_F_MDS
+#         | *Default:* LE_F_MDS
 #
-#    FLUXNET_SOIL_MOIST_VAR
-#      The FLUXNET soil moisture variable name to use for computing TCI
+#       FLUXNET_SOIL_MOIST_VAR
+#         The FLUXNET soil moisture variable name to use for computing TCI
 #
-#      | *Default:* SWC_F_MDS_1
+#         | *Default:* SWC_F_MDS_1
 #
-#    FLUXNET_OBS_METADATA_FILE
-#      The absolute path to the fluxnetstations.csv metadata file included with the use case
+#       FLUXNET_OBS_METADATA_FILE
+#         The absolute path to the fluxnetstations.csv metadata file included with the use case
 #
-# and for data filtering options, via METplus config entries:
+#    and for data filtering options, via METplus config entries:
 #
-# .. glossary::
+#    .. glossary::
 #
-#    FLUXNET_SKIP_LEAP_DAYS
-#      Skip FLUXNET observations from 29 February days
+#       FLUXNET_SKIP_LEAP_DAYS
+#         Skip FLUXNET observations from 29 February days
 #
-#      | *Default:* True
+#         | *Default:* True
 #
-#    FLUXNET_HIGHRES_QC_THRESH
-#      The fraction of higher temporal resolution FLUXNET data required to have
-#      passed quality control in order to use the daily data.
+#       FLUXNET_HIGHRES_QC_THRESH
+#         The fraction of higher temporal resolution FLUXNET data required to have
+#         passed quality control in order to use the daily data.
 #
-#      | *Default:* 0.8
+#         | *Default:* 0.8
 #
-#    FLUXNET_MIN_DAYS_PER_SEASON
-#      The minimum number of days to include in individual seasons at each site
+#       FLUXNET_MIN_DAYS_PER_SEASON
+#         The minimum number of days to include in individual seasons at each site
 #
-#      | *Default:* 1
+#         | *Default:* 1
 #
-#    FLUXNET_MIN_DAYS_PER_SITE
-#      The minimum number of days for all seasons at each site
+#       FLUXNET_MIN_DAYS_PER_SITE
+#         The minimum number of days for all seasons at each site
 #
-#      | *Default:* 10
+#         | *Default:* 10
 #
-#    FLUXNET_RAW_FILENAME_PATTERN
-#      A filename pattern matching the template of the raw FLUXNET CSV files
+#       FLUXNET_RAW_FILENAME_PATTERN
+#         A filename pattern matching the template of the raw FLUXNET CSV files
 #
-#      | *Default:* FLX_*_DD_*.csv
+#         | *Default:* FLX_*_DD_*.csv
 #
-#    FLUXNET_DEBUG
-#      Turn on additional print statements from the Python embedding script
+#       FLUXNET_DEBUG
+#         Turn on additional print statements from the Python embedding script
 #
-#      | *Default:* False
+#         | *Default:* False
 #
 # Both of the above Python embedding scripts compute TCI using the ``calc_tci()`` function in METcalcpy.
 # See the METcalcpy documentation for more information: https://metcalcpy.readthedocs.io/en/latest/index.html.
