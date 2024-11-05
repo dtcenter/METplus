@@ -100,7 +100,7 @@ model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 # not supported by METplus you’d like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. dropdown:: Click to view parm/met_config/GridStatConfig_wrapped
+# .. dropdown:: GridStatConfig_wrapped
 #
 #    .. highlight:: bash
 #    .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
@@ -112,9 +112,7 @@ model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 #
 # This use case uses a Python embedding script to read the WRF fire forecast into GridStat.
 #
-# .. dropdown:: Click to view read_wrfout_fire.py
-#
-#    parm/use_cases/model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter/read_wrfout_fire.py
+# .. dropdown:: parm/use_cases/model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter/read_wrfout_fire.py
 #
 #    .. highlight:: python
 #    .. literalinclude:: ../../../../parm/use_cases/model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter/read_wrfout_fire.py
@@ -127,9 +125,7 @@ model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 # This use case calls a Python script to read MMA fire perimeter .kml files
 # and convert them into a poly line file that can be read by GenVxMask:
 #
-# .. dropdown:: Click to view find_and_read_fire_perim_poly.py
-#
-#    parm/use_cases/model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter/find_and_read_fire_perim_poly.py
+# .. dropdown:: parm/use_cases/model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter/find_and_read_fire_perim_poly.py
 #
 #    .. highlight:: python
 #    .. literalinclude:: ../../../../parm/use_cases/model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter/find_and_read_fire_perim_poly.py
