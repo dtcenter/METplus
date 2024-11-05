@@ -17,6 +17,7 @@ from internal.tests.use_cases.metplus_use_case_suite import METplusUseCaseSuite
 from metplus.util.string_manip import expand_int_string_to_list
 from docker_utils import VERSION_EXT
 from metplus import get_metplus_version
+from metplus.component_versions import get_component_version
 
 # path to METplus install location in Docker
 METPLUS_DOCKER_LOC = '/metplus/METplus'
@@ -76,35 +77,33 @@ def handle_automation_env(host_name, reqs, work_dir):
     else:
         py_embed_arg = ''
 
-    # get METplus version to determine Externals file to use
-    # to get METplotpy/METcalcpy/METdataio
+    # get METplus version to determine which version of
+    # METplotpy/METcalcpy/METdataio to use
     # If stable release, get main branch, otherwise get develop
-    is_stable_release = len(get_metplus_version().split('-')) == 1
-    externals_ext = '_stable.cfg' if is_stable_release else '.cfg'
+    metplus_version = get_metplus_version()
 
     # if any metplotpy/metcalcpy keywords are in requirements list,
     # add command to obtain and install METplotpy and METcalcpy
+    components = []
     if any([item for item in PLOTCALC_KEYWORDS if item in str(reqs).lower()]):
-        ce_file = os.path.join(work_dir, '.github', 'parm',
-                               f'Externals_metplotcalcpy{externals_ext}')
-        setup_env.extend((
-            f'cd {METPLUS_DOCKER_LOC}',
-            f'{work_dir}/manage_externals/checkout_externals -e {ce_file}',
-            f'{python_path} -m pip install {METPLUS_DOCKER_LOC}/../METplotpy',
-            f'{python_path} -m pip install {METPLUS_DOCKER_LOC}/../METcalcpy',
-            'cd -',
-        ))
+        components.extend(('METplotpy', 'METcalcpy'))
 
     # if metdataio is in requirements list, add command to obtain METdataio
     if 'metdataio' in str(reqs).lower():
-        ce_file = os.path.join(work_dir, '.github', 'parm',
-                               f'Externals_metdataio{externals_ext}')
+        components.append('METdataio')
+
+    setup_env.append(f'cd {METPLUS_DOCKER_LOC}')
+    for component in components:
+        version = get_component_version(input_component='METplus',
+                                        input_version=metplus_version,
+                                        output_component=component,
+                                        output_format='main_v{X}.{Y}',
+                                        get_dev=False)
         setup_env.extend((
-            f'cd {METPLUS_DOCKER_LOC}',
-            f'{work_dir}/manage_externals/checkout_externals -e {ce_file}',
-            f'{python_path} -m pip install {METPLUS_DOCKER_LOC}/../METdataio',
-            'cd -',
+            f'git clone https://github.com/dtcenter/{component} --branch {version}',
+            f'{python_path} -m pip install {component}',
         ))
+    setup_env.append('cd -')
 
     # if metplus is in requirements list,
     # add top of METplus repo to PYTHONPATH so metplus can be imported
