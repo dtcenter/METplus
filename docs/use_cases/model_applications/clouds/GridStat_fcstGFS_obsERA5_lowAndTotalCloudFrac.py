@@ -63,12 +63,19 @@ model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac.conf
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (INIT_BEG):** 2022070312
+#
+# **End time (INIT_END):** 2022070312
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 12H
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 36
+#
 # GridStat is the only MET tool called in this example.
 # It processes the following run time:
 #
-# **Init:** 2022-07-03 12Z
-#
-# **Forecast lead:** 36 hour
+# | **Init:** 2022-07-03 12Z
+# | **Forecast lead:** 36 hour
 #
 # Because instance names are used, GridStat will run 3 times for this 1 initalization time.
 
