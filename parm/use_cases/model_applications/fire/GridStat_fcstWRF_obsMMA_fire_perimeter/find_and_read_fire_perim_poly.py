@@ -65,7 +65,7 @@ tree = ET.parse(input_file)
 root = tree.getroot()
 
 search_path = './/kml:Document/kml:Placemark/kml:Polygon/kml:outerBoundaryIs/kml:LinearRing/kml:coordinates'
-namespaces = {'kml': 'https://www.opengis.net/kml/2.2'}
+namespaces = {'kml': 'https://schemas.opengis.net/kml/2.2.0/ogckml22.xsd'}
 
 coordinates = root.find(search_path, namespaces).text.split()
 
