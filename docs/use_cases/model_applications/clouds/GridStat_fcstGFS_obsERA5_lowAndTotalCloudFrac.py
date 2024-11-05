@@ -97,7 +97,9 @@ model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac.conf
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
+#.. dropdown:: GridStatConfig_wrapped
+#
+#   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 
 ##############################################################################
 # Python Embedding
@@ -108,8 +110,8 @@ model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac.conf
 # 
 # .. dropdown:: parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac/read_input_data.py
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac/read_input_data.py
+#   .. highlight:: bash
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac/read_input_data.py
 #
 # For more information on the basic requirements to utilize Python Embedding in METplus, 
 # please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_ 
