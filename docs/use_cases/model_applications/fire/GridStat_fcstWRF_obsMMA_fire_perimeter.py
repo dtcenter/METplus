@@ -7,9 +7,9 @@ model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 """
 ##############################################################################
 # .. contents::
-#    :depth: 1
-#    :local:
-#    :backlinks: none
+#   :depth: 1
+#   :local:
+#   :backlinks: none
 
 ##############################################################################
 # Scientific Objective
@@ -23,29 +23,30 @@ model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 # The output provides contingency statistics of the forecast performance relative to the observed fire.
 
 ##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 6.0
+
+##############################################################################
 # Datasets
 # --------
 #
 #
-# | **Forecast:** WRF Fire
+# **Forecast:** WRF Fire
 #
-# | **Observations:** Multimission Aircraft (MMA)
+# **Observations:** Multimission Aircraft (MMA)
 #
-# | **Location:** All of the input data required for this use case can be found in the fire sample data tarball.
-# | Click here to the METplus releases page and download sample data for the appropriate release:
-# | https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE.
-# | See :ref:`obtain_sample_input_data` for more information.
+# **Location:** All of the input data required for this use case can be
+# found in a sample data tarball. Each use case category will have
+# one or more sample data tarballs. It is only necessary to download
+# the tarball with the use case’s dataset and not the entire collection
+# of sample data. Click here to access the METplus releases page and download sample data
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 #
 
-##############################################################################
-# Python Dependencies
-# -------------------
-#
-# This use case utilizes MET Python Embedding.
-# See the `MET User's Guide Appendix F <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html>`_
-# for more information about Python requirements.
-#
 
 ##############################################################################
 # METplus Components
@@ -62,9 +63,13 @@ model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 # METplus Workflow
 # ----------------
 #
-# | **Init Beg:** 2018-06-01 at 16Z
-# | **Init End:** 2018-06-01 at 16Z
-# | **Forecast Leads:** 4 hour, 23 hour, 32 hour
+# **Beginning time (INIT_BEG):** 2018-06-01 at 16Z
+#
+# **End time (INIT_END):** 2018-06-01 at 16Z
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** None
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 4 hour, 23 hour, 32 hour
 #
 # This use case processes 3 forecast leads initialized at 16Z on June 1, 2018.
 #
@@ -86,20 +91,33 @@ model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 # MET Configuration
 # -----------------
 #
-# METplus sets environment variables based on the values in the METplus configuration file.
-# These variables are referenced in the MET configuration file.
-# **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF!
-# THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!**
-# If there is a setting in the MET configuration file that is not controlled by an environment variable,
-# you can add additional environment variables to be set only within the METplus environment using the
-# [user_env_vars] section of the METplus configuration files.
-# See the ‘User Defined Config’ section on the
-# ‘System Configuration’ page of the METplus User’s Guide for more information.
+# METplus sets environment variables based on user settings in the METplus
+# configuration file. See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details.
+#
+# **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!**
+#
+# If there is a setting in the MET configuration file that is currently
+# not supported by METplus you’d like to control, please refer to:
+# :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
 # .. dropdown:: Click to view parm/met_config/GridStatConfig_wrapped
 #
 #    .. highlight:: bash
 #    .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
+#
+
+##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case uses a Python embedding script to read the WRF fire forecast into GridStat.
+#
+# .. dropdown:: Click to view read_wrfout_fire.py
+#
+#    parm/use_cases/model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter/read_wrfout_fire.py
+#
+#    .. highlight:: python
+#    .. literalinclude:: ../../../../parm/use_cases/model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter/read_wrfout_fire.py
 #
 
 ##############################################################################
@@ -117,19 +135,6 @@ model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 #    .. literalinclude:: ../../../../parm/use_cases/model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter/find_and_read_fire_perim_poly.py
 #
 
-##############################################################################
-# Python Embedding
-# ----------------
-#
-# This use case uses a Python embedding script to read the WRF fire forecast into GridStat.
-#
-# .. dropdown:: Click to view read_wrfout_fire.py
-#
-#    parm/use_cases/model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter/read_wrfout_fire.py
-#
-#    .. highlight:: python
-#    .. literalinclude:: ../../../../parm/use_cases/model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter/read_wrfout_fire.py
-#
 
 
 ##############################################################################
