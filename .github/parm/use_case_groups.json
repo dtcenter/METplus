@@ -7,7 +7,7 @@
   {
     "category": "met_tool_wrapper",
     "index_list": "30-58",
-    "run": false
+    "run": true
   },
   {
     "category": "met_tool_wrapper",
@@ -112,8 +112,8 @@
   },
   {
     "category": "medium_range",
-      "index_list": "3-5,10",
-    "run": false
+    "index_list": "3-5,10",
+    "run": true
   },
   {
     "category": "medium_range",
