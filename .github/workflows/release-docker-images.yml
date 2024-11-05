@@ -1,0 +1,34 @@
+name: Create Docker images for release
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  build_and_push:
+    name: Build and Push Images
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get and check tag name
+        id: get_tag_name
+        run: |
+          SOURCE_BRANCH=${GITHUB_REF#refs/tags/}
+          if [[ ! "${SOURCE_BRANCH}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+            echo "ERROR: Tag name (${SOURCE_BRANCH}) does not start with vX.Y.Z format"
+            exit 1
+          fi
+          echo SOURCE_BRANCH=${SOURCE_BRANCH} >> $GITHUB_OUTPUT
+      - name: Build metplus and metplus-analysis images
+        id: build_images
+        run: .github/jobs/docker_build_metplus_images.sh
+        env:
+          SOURCE_BRANCH: ${{ steps.get_tag_name.outputs.SOURCE_BRANCH }}
+      - name: Push metplus and metplus-analysis images
+        run: .github/jobs/docker_push_metplus_images.sh
+        env:
+          SOURCE_BRANCH: ${{ steps.get_tag_name.outputs.SOURCE_BRANCH }}
+          LATEST_TAG: ${{ steps.build_images.outputs.LATEST_TAG }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}

@@ -45,12 +45,6 @@ def main():
     if not config:
         return False
 
-    # warn if calling master_metplus.py
-    if basename(__file__) == 'master_metplus.py':
-        msg = ("master_metplus.py has been renamed to run_metplus.py. "
-               "This script name will be removed in a future version.")
-        config.logger.warning(msg)
-
     total_errors = run_metplus(config)
 
     return post_run_cleanup(config, 'METplus', total_errors)
