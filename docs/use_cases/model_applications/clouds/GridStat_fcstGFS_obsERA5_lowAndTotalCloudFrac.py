@@ -78,7 +78,7 @@ model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac.conf
 #
 # METplus first loads the default configuration file found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-#  i.e. parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac.conf
+# i.e. parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac.conf
@@ -95,7 +95,7 @@ model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac.conf
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-#.. dropdown:: GridStatConfig_wrapped
+# .. dropdown:: GridStatConfig_wrapped
 #
 #   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 
@@ -104,8 +104,8 @@ model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac.conf
 # ----------------
 #
 # This use case utilizes 1 Python script to read and process the observation fields.
-# parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac/read_input_data.py
-# 
+# The location of the code is
+#
 # .. dropdown:: parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac/read_input_data.py
 #
 #   .. highlight:: bash
