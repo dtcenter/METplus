@@ -102,7 +102,7 @@ def handle_automation_env(host_name, reqs):
         setup_env.extend((
             'git --version',
             f'git clone --single-branch --branch {version} https://github.com/dtcenter/{component}',
-            f'{python_path} -m pip install {component}',
+            f'{python_path} -m pip install --no-deps {component}',
         ))
     setup_env.append('cd -')
 
