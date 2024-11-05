@@ -19,8 +19,6 @@ model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac.conf
 # for low and total cloud fractions with different neighborhood
 # settings for internal model metrics and to aid in future model updates
 
-
-
 ##############################################################################
 # Version Added
 # -------------
@@ -151,7 +149,6 @@ model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac.conf
 # * grid_stat_GFS_to_ERA5_F36_CloudFracs_NBR_360000L_20220705_000000V.stat
 # * grid_stat_GFS_to_ERA5_F36_CloudFracs_PROB_360000L_20220705_000000V_pairs.nc
 # * grid_stat_GFS_to_ERA5_F36_CloudFracs_PRB_360000L_20220705_000000V.stat
-
 
 ##############################################################################
 # Keywords
