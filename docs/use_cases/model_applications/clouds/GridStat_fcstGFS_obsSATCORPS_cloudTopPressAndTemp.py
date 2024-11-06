@@ -121,6 +121,7 @@ model_applications/clouds/GridStat_fcstGFS_obsSATCORPS_cloudTopPressAndTemp.conf
 # --------------
 # [UPDATE_SECTION_CONTENT]
 #
+
 ##############################################################################
 # Running METplus
 # ---------------
