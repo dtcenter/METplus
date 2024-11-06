@@ -88,9 +88,11 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.py
 # ----------------
 #
 # **Beginning time calculation (VALID_BEG):** 19790101
+#
 # **Beginning time plot (PHASE_PLOT_TIME_BEG):** 20121001
 #
 # **End time calculation (VALID_END):** 20121230
+#
 # **End time plot (PHASE_PLOT_TIME_END):** 20120330
 #
 # **Increment between beginning and end times (VALID_INCREMENT):** 1 day
