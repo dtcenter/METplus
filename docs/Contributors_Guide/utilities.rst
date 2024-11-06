@@ -54,55 +54,87 @@ Examples
 
 These examples do not include the full path to the script.
 
-**Get MET vX.Y.Z version from coordinated release**::
+Get MET vX.Y.Z version from METplus release
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+::
 
-    component_versions.py -v 5.1 -o MET
+    $ component_versions.py -v 5.1.0 -o MET
+    v11.1.1
 
-v11.1.1
+If the input component is not specified, it will use the METplus version.
+The default output format is v{X}.{Y}.{Z}{N}.
 
-**Get MET vX.Y.Z version from METplus release**::
+Get MET vX.Y.Z version from coordinated release
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+::
 
-    component_versions.py -v 5.1.0 -o MET
+    $ component_versions.py -v 5.1 -o MET
+    v11.1.1
 
-v11.1.1
+The coordinated release version matches the METplus X.Y version,
+so the coordinated release version can also be used as the input version.
 
-**Get MET vX.Y.Z development version from beta release**::
+Get MET vX.Y.Z development version from beta release
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+::
 
-    component_versions.py -v 6.0.0-beta3 -o MET
+    $ component_versions.py -v 6.0.0-beta3 -o MET
+    v12.0.0-beta3
 
-v12.0.0-beta3
+If a beta release version is provided as the input, the output will include
+the same beta version.
 
-**Get MET vX.Y.Z development version from -dev version (always returns develop)**::
+Get MET vX.Y.Z development version from -dev version
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+::
 
-    component_versions.py -v 6.0.0-beta3-dev -o MET
+    $ component_versions.py -v 6.0.0-beta3-dev -o MET
+    develop
 
-develop
+If the input version includes -dev, the result will always be *develop*.
 
-**Get MET vX.Y.Z development version from beta version (returns develop because 'get dev version' is set to False)**::
+Get MET vX.Y.Z development version from beta version
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-    component_versions.py -v 6.0.0-beta3 -o MET --no-get_dev_version
+    $ component_versions.py -v 6.0.0-beta3 -o MET --no-get_dev_version
+    develop
 
-develop
+If the *--no-get_dev_version* argument is provided,
+an input version that includes -betaN or -rcN will return *develop*
 
-**Get MET main_vX.Y version from METplus release (format specified)**::
+Get MET main_vX.Y version from METplus release
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+::
 
-    component_versions.py -v 5.1.0 -o MET -f main_v{X}.{Y}
+    $ component_versions.py -v 5.1.0 -o MET -f main_v{X}.{Y}
+    main_v11.1
 
-main_v11.1
+The output format can be specified using the *-f* argument.
+{X}, {Y}, {Z}, and {N} will be substituted with values based on the input.
 
-**Get METplotpy main_vX.Y version from METviewer release**::
+Get METplotpy main_vX.Y version from METviewer release
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+::
 
-    component_versions.py -i METviewer -v 5.1.0 -o METplotpy -f main_v{X}.{Y}
+    $ component_versions.py -i METviewer -v 5.1.0 -o METplotpy -f main_v{X}.{Y}
+    main_v2.1
 
-main_v2.1
+The *-i* argument can be used to specify the input component that corresponds
+to the input version number.
 
-**Get METplotpy main_vX.Y version from METviewer main_vX.Y branch**::
+Get METplotpy main_vX.Y version from METviewer main_vX.Y branch
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+::
 
-    component_versions.py -i METviewer -v main_v5.1 -o METplotpy -f main_v{X}.{Y}
+    $ component_versions.py -i METviewer -v main_v5.1 -o METplotpy -f main_v{X}.{Y}
+    main_v2.1
 
-main_v2.1
+The input version number can be provided in different formats,
+including **main_vX.Y** and **vX.Y.Z**.
 
-**Using Python Function**::
+Using Python Function
+^^^^^^^^^^^^^^^^^^^^^
+::
 
     >>> from metplus.component_versions import get_component_version
     >>> version = get_component_version(input_component='METplus',
@@ -111,8 +143,8 @@ main_v2.1
                                         output_format='main_v{X}.{Y}',
                                         get_dev=False)
     >>> print(version)
+    main_v12.0
 
-main_v12.0
 
 METplus Utils
 =============
