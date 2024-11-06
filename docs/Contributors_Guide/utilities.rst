@@ -95,6 +95,7 @@ If the input version includes -dev, the result will always be *develop*.
 
 Get MET vX.Y.Z development version from beta version
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+::
 
     $ component_versions.py -v 6.0.0-beta3 -o MET --no-get_dev_version
     develop
