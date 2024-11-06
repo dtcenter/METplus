@@ -35,9 +35,9 @@ correct version.
   * Create a branch off of develop to update.
     Include the name of the repository and version in the name.
 
-    .. parsed-literal::
+  .. parsed-literal::
 
-        git checkout -b update_version_|projectRepo|_vX.Y.Z
+      git checkout -b update_version_vX.Y.Z_repo
 
   * Open **metplus/component_versions.py** and increment the version for the
     appropriate |projectRepo| entry.
