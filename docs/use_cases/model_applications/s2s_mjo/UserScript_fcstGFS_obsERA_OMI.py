@@ -2,9 +2,7 @@
 UserScript: Make GFS and ERA OMI plot from calculated MJO indices
 =================================================================
 
-model_applications/
-s2s_mjo/
-UserScript_fcstGFS_obsERA_OMI.py
+model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.py
 
 """
 
@@ -41,9 +39,9 @@ UserScript_fcstGFS_obsERA_OMI.py
 # --------
 #
 #  **Forecast:** GFS Model Outgoing Longwave Radiation, 2017 - 2018.
-
+#
 #  **Observation:** ERA Reanlaysis Outgoing Longwave Radiation, 2017 - 2018.
-
+#
 #  **EOFs:** Observed OMI EOF1 and EOF2 patterns from the PSL Website (https://psl.noaa.gov/mjo/mjoindex/)
 #
 # **Location:** All of the input data required for this use case can be 
@@ -110,11 +108,8 @@ UserScript_fcstGFS_obsERA_OMI.py
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
+# then it loads any configuration files passed to METplus via the command line,
 # i.e. parm/use_cases/model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.conf.
-# The file UserScript_fcstGFS_obsERA_OMI/OMI_driver.py runs the python program and the
-# variables for the OMI calculation are set in the [user_env_vars] section of the .conf 
-# file. 
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.conf
@@ -139,7 +134,8 @@ UserScript_fcstGFS_obsERA_OMI.py
 # OMI driver include netCDF files formatted in MET's netCDF version.  In addition, a txt file containing 
 # the listing of these input netCDF files is required, as well as text file listings of the EOF1 and 
 # EOF2 files.  These text files can be generated using the USER_SCRIPT_INPUT_TEMPLATES in the 
-# [create_eof_filelist] and [script_omi] sections.
+# [create_eof_filelist] and [script_omi] sections.  Variables for the OMI calculation are set in the 
+# [user_env_vars] section of the .conf file. 
 #
 # For the OMI calculation, the OLR data are projected onto Empirical Orthogonal Function (EOF) 
 # data that is computed for each day of the year, latitude, and longitude.  The OLR is then filtered 
@@ -149,9 +145,9 @@ UserScript_fcstGFS_obsERA_OMI.py
 # the model and observations.
 #
 # .. dropdown:: parm/use_cases/model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI/OMI_driver.py
-# 
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI/OMI_driver.py
+#
+#   .. highlight:: python 
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI/OMI_driver.py
 
 ##############################################################################
 # Running METplus
@@ -174,11 +170,12 @@ UserScript_fcstGFS_obsERA_OMI.py
 # 
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use 
 # case will be found in model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI/plots (relative to **OUTPUT_BASE**).  
-# The output may include the regridded data and daily averaged files if those steps are turned on.  Phase diagram 
-# plots will be generated and will include 2 files::
+# Phase diagram plots will be generated and will include 2 files::
 #
 #  * fcst_OMI_comp_phase.png
 #  * obs_OMI_comp_phase.png
+#
+# If the pre-processing steps are turned on, the output will include the regridded data and daily averaged files.
 
 ##############################################################################
 # Keywords
