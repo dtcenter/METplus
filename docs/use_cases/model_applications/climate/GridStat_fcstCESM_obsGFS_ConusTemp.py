@@ -54,7 +54,7 @@ model_applications/climate/GridStat_fcstCESM_obsGFS_ConusTemp.conf
 #
 # **End time (INIT_END):** 2014080200
 #
-# **Increment between beginning and end times (INIT_INCREMENT):** 86400
+# **Increment between beginning and end times (INIT_INCREMENT):** 1 day (86400 seconds)
 #
 # **Sequence of forecast leads to process (LEAD_SEQ):** 6, 12
 #
@@ -64,13 +64,13 @@ model_applications/climate/GridStat_fcstCESM_obsGFS_ConusTemp.conf
 # | **Valid:** 2014-08-01_06Z
 # | **Forecast lead:** 06
 # 
-# | **Init:** 2014-08-01_12Z
+# | **Valid:** 2014-08-01_12Z
 # | **Forecast lead:** 12
 # 
-# | **Init:** 2014-08-02_06Z
+# | **Valid:** 2014-08-02_06Z
 # | **Forecast lead:** 06
 # 
-# | **Init:** 2014-08-02_12Z
+# | **Valid:** 2014-08-02_12Z
 # | **Forecast lead:** 12
 
 ##############################################################################
@@ -110,7 +110,7 @@ model_applications/climate/GridStat_fcstCESM_obsGFS_ConusTemp.conf
 ##############################################################################
 # User Scripting
 # --------------
-# [UPDATE_SECTION_CONTENT]
+# This use case does not use additional scripts.
 
 
 ##############################################################################
