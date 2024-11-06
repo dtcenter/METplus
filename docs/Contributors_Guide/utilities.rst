@@ -101,7 +101,7 @@ Get MET vX.Y.Z development version from beta version
     develop
 
 If the *--no-get_dev_version* argument is provided,
-an input version that includes -betaN or -rcN will return *develop*
+an input version that includes -betaN or -rcN will return *develop*.
 
 Get MET main_vX.Y version from METplus release
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
