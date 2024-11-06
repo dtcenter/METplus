@@ -92,7 +92,7 @@ def handle_automation_env(host_name, reqs):
     if 'metdataio' in str(reqs).lower():
         components.append('METdataio')
 
-    setup_env.append(f'cd {METPLUS_DOCKER_LOC}')
+    setup_env.append(f'cd {METPLUS_DOCKER_LOC}/..')
     for component in components:
         version = get_component_version(input_component='METplus',
                                         input_version=metplus_version,
@@ -102,7 +102,7 @@ def handle_automation_env(host_name, reqs):
         setup_env.extend((
             'git --version',
             f'git clone --single-branch --branch {version} https://github.com/dtcenter/{component}',
-            f'{python_path} -m pip install --no-deps {METPLUS_DOCKER_LOC}/{component}',
+            f'{python_path} -m pip install --no-deps {METPLUS_DOCKER_LOC}/../{component}',
         ))
     setup_env.append('cd -')
 
