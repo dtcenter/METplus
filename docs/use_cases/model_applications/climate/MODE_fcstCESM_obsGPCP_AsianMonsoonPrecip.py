@@ -49,28 +49,28 @@ model_applications/climate/MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.conf
 # METplus Workflow
 # ----------------
 #
-#
 # **Beginning time (INIT_BEG):** 2014060100
 #
 # **End time (INIT_END):** 2014060200
 #
-# **Increment between beginning and end times (INIT_INCREMENT):** 86400
+# **Increment between beginning and end times (INIT_INCREMENT):** 1 day
 #
-# **Sequence of forecast leads to process (LEAD_SEQ):** None
+# **Sequence of forecast leads to process (LEAD_SEQ):** 24, 48
 #
 # The mode tool is run for each time. This example loops by model 
-# initialization time.  It processes 4 valid times, listed below.
+# initialization time.  It processes two initialization times and two lead times
+# for each for a total of 4 valid times, listed below.
 #
-# | **Valid:** 2014-08-02
+# | **Valid:** 2014-06-02_0Z
 # | **Forecast lead:** 24
 #
-# | **Init:** 2014-08-03
+# | **Valid:** 2014-06-03_0Z
 # | **Forecast lead:** 48
 #
-# | **Init:** 2014-08-03
+# | **Init:** 2014-06-03_0Z
 # | **Forecast lead:** 24
 #
-# | **Init:** 2014-08-04
+# | **Init:** 2014-06-04_0Z
 # | **Forecast lead:** 48
 
 
@@ -113,7 +113,9 @@ model_applications/climate/MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.conf
 ##############################################################################
 # User Scripting
 # --------------
-# [UPDATE_SECTION_CONTENT]
+# This use case does not use additional scripts.  However, a sample NCL script to plot
+# the output is available on the `Sample Analysis Scripts <https://dtcenter.org/community-code/model-evaluation-tools-met/sample-analysis-scripts>`_
+# page.
 
 ##############################################################################
 # Running METplus
@@ -171,6 +173,29 @@ model_applications/climate/MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.conf
 # * 2014_06_02_000000/mode_000000L_20140604_000000V_000000A_R1_T2_obj.nc
 # * 2014_06_02_000000/mode_000000L_20140604_000000V_000000A_R1_T2_obj.txt
 # * 2014_06_02_000000/mode_000000L_20140604_000000V_000000A_R1_T2.ps
+#
+# For the netCDF file, 18 variable fields are present (not including the lat/lon fields). 
+# Those variables are::
+#
+# * fcst_raw(lat, lon)
+# * fcst_obj_raw(lat, lon)
+# * fcst_obj_id(lat, lon)
+# * fcst_clus_id(lat, lon)
+# * obs_raw(lat, lon)
+# * obs_obj_raw(lat, lon)
+# * obs_obj_id(lat, lon)
+# * obs_clus_id(lat, lon)
+# * fcst_conv_radius
+# * obs_conv_radius
+# * fcst_conv_threshold(fcst_thresh_length)
+# * obs_conv_threshold(obs_thresh_length)
+# * fcst_variable(fcst_variable_length)
+# * obs_variable(obs_variable_length)
+# * fcst_level(fcst_level_length)
+# * obs_level(obs_level_length)
+# * fcst_units(fcst_units_length)
+# * obs_units(obs_units_length)
+#
 
 ##############################################################################
 # Keywords
