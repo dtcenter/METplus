@@ -61,8 +61,9 @@ def handle_automation_env(host_name, reqs):
     conda_env_w_ext = f'{conda_env}{VERSION_EXT}'
 
     # start building commands to run before run_metplus.py in Docker
-    setup_env = []
-    setup_env.append(_add_to_bashrc('# BELOW WAS ADDED BY TEST SCRIPT'))
+    setup_env = [
+        _add_to_bashrc('# BELOW WAS ADDED BY TEST SCRIPT')
+    ]
 
     # add conda bin to beginning of PATH
     python_dir = os.path.join('/usr', 'local', 'conda', 'envs',
@@ -245,9 +246,9 @@ def handle_command_line_args():
 
 
 if __name__ == '__main__':
-    categories, subset_list, _ = handle_command_line_args()
-    all_commands = main(categories, subset_list)
-    for setup_commands, use_case_commands, requirements in all_commands:
+    input_categories, input_subset_list, _ = handle_command_line_args()
+    commands = main(input_categories, input_subset_list)
+    for setup_commands, use_case_commands, requirements in commands:
         print(f"REQUIREMENTS: {','.join(requirements)}")
         if setup_commands:
             command_format = ';\\\n'.join(setup_commands.split(';'))
