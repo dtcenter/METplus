@@ -144,12 +144,12 @@ model_applications/clouds/GridStat_fcstGFS_obsSATCORPS_cloudTopPressAndTemp.conf
 # Output for this use case will be found in {OUTPUT_BASE}/model_applications/clouds/GridStat_fcstGFS_obsSATCORPS_cloudTopPressAndTemp
 # and will contain the following files::
 #
-# * grid_stat_GFS_to_SATCORPS_F36_CloudHgts_360000L_20220705_000000V_pairs.nc
-# * grid_stat_GFS_to_SATCORPS_F36_CloudHgts_360000L_20220705_000000V_ctc.txt
-# * grid_stat_GFS_to_SATCORPS_F36_CloudHgts_360000L_20220705_000000V_cts.txt
-# * grid_stat_GFS_to_SATCORPS_F36_CloudHgts_360000L_20220705_000000V.stat
-# * grid_stat_GFS_to_SATCORPS_F36_CloudHgts_NBR_360000L_20220705_000000V_pairs.nc
-# * grid_stat_GFS_to_SATCORPS_F36_CloudHgts_NBR_360000L_20220705_000000V.stat
+#  * grid_stat_GFS_to_SATCORPS_F36_CloudHgts_360000L_20220705_000000V_pairs.nc
+#  * grid_stat_GFS_to_SATCORPS_F36_CloudHgts_360000L_20220705_000000V_ctc.txt
+#  * grid_stat_GFS_to_SATCORPS_F36_CloudHgts_360000L_20220705_000000V_cts.txt
+#  * grid_stat_GFS_to_SATCORPS_F36_CloudHgts_360000L_20220705_000000V.stat
+#  * grid_stat_GFS_to_SATCORPS_F36_CloudHgts_NBR_360000L_20220705_000000V_pairs.nc
+#  * grid_stat_GFS_to_SATCORPS_F36_CloudHgts_NBR_360000L_20220705_000000V.stat
 
 ##############################################################################
 # Keywords
