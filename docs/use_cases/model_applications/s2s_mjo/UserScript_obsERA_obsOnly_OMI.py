@@ -37,11 +37,11 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.py
 # Datasets
 # --------
 #
-#  **Forecast:** None
+# **Forecast:** None
 #
-#  **Observation:** ERA Reanlaysis Outgoing Longwave Radiation, 1979 - 2012.
+# **Observation:** ERA Reanlaysis Outgoing Longwave Radiation, 1979 - 2012.
 #
-#  **EOFs:** Observed OMI EOF1 and EOF2 patterns from the PSL Website (https://psl.noaa.gov/mjo/mjoindex/)
+# **EOFs:** Observed OMI EOF1 and EOF2 patterns from the PSL Website (https://psl.noaa.gov/mjo/mjoindex/)
 #
 # **Location:** All of the input data required for this use case can be 
 # found in a sample data tarball. Each use case category will have 
@@ -89,18 +89,15 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.py
 #
 # **Beginning time calculation (VALID_BEG):** 19790101
 #
-# **Beginning time plot (PHASE_PLOT_TIME_BEG):** 20121001
-#
 # **End time calculation (VALID_END):** 20121230
-#
-# **End time plot (PHASE_PLOT_TIME_END):** 20120330
 #
 # **Increment between beginning and end times (VALID_INCREMENT):** 1 day
 #
 # **Sequence of forecast leads to process (LEAD_SEQ):** 0
 #
 # This use case does not loop, but the UserScript to create and EOF filelist is run once and the OMI driver script is 
-# run once.  The optional pre-processing step loops by valid time. 
+# run once.  The optional pre-processing step loops by valid time.  The Phase diagram plot is created over a different time 
+# frame than the calculation, 10-01-2012 to 03-30-2012. 
 
 ##############################################################################
 # METplus Configuration

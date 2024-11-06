@@ -38,11 +38,11 @@ model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.py
 # Datasets
 # --------
 #
-#  **Forecast:** GFS Model Outgoing Longwave Radiation, 2017 - 2018.
+# **Forecast:** GFS Model Outgoing Longwave Radiation, 2017 - 2018.
 #
-#  **Observation:** ERA Reanlaysis Outgoing Longwave Radiation, 2017 - 2018.
+# **Observation:** ERA Reanlaysis Outgoing Longwave Radiation, 2017 - 2018.
 #
-#  **EOFs:** Observed OMI EOF1 and EOF2 patterns from the PSL Website (https://psl.noaa.gov/mjo/mjoindex/)
+# **EOFs:** Observed OMI EOF1 and EOF2 patterns from the PSL Website (https://psl.noaa.gov/mjo/mjoindex/)
 #
 # **Location:** All of the input data required for this use case can be 
 # found in a sample data tarball. Each use case category will have 
@@ -91,11 +91,7 @@ model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.py
 #
 # **Beginning time calculation (VALID_BEG):** 20170101
 #
-# **Beginning time plot (PHASE_PLOT_TIME_BEG):** 20170101
-#
 # **End time calculation (VALID_END):** 20181231
-#
-# **End time plot (PHASE_PLOT_TIME_END):** 20170331
 #
 # **Increment between beginning and end times (VALID_INCREMENT):** 1 day
 #
@@ -103,7 +99,8 @@ model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.py
 #
 # This use case does not loop, but the UserScript to create and EOF filelist is run once and the OMI driver script is 
 # run once for both the model and observations across the entire time period.  The 3 optional pre-processing steps 
-# loop by valid time. 
+# loop by valid time. The Phase diagram plots are created over a different time frame than the calculation, 01-01-2017
+# to 03-31-2017 for both plots.
 
 ##############################################################################
 # METplus Configuration
