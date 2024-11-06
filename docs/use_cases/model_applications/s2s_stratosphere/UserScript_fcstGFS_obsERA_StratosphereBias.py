@@ -67,7 +67,7 @@ UserScript_fcstGFS_obsERA_StratosphereBias.py
 #
 # METcalcpy, METplotpy, and METdataio are needed for this use case to run.  The metcalcpy 
 # scripts accessed include the following:
-# * metcalcpy/contributed/zonal_meridional/recipes.py 
+# * metcalcpy/pre_processing/directional_means.py
 #
 # The METplotpy scripts accessed include the following:
 # * metplotpy/stratosphere_diagnostics/stratosphere_plots.py
@@ -132,10 +132,26 @@ UserScript_fcstGFS_obsERA_StratosphereBias.py
 #   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias/read_met_axis_mean.py
 
 ##############################################################################
-# Python Scripting
-# ----------------
+# User Scripting
+# --------------
 #
-
+# This use case runs both zonal_mean_driver.py and bias_plot_driver.py.  The zonal mean driver takes an input netCDF 
+# file and time variable string and creates zonal and meridional means for u and T from directional_means.py in 
+# METcalcpy.  Then, it writes and output netCDF file.
+#
+# The bias plot driver reads the output netCDF files from Series-Analysis and creates plots of the bias over 
+# latitude and pressure level.  Inputs to both of the python scripts can be found in the [user_env_vars]
+# section of the UserScript_fcstGFS_obsERA_StratosphereBias.conf file
+#
+# .. dropdown:: parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias/zonal_mean_driver.py
+# 
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias/zonal_mean_driver.py
+#
+# .. dropdown:: parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias/bias_plot_driver.py
+# 
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias/bias_plot_driver.py
 
 ##############################################################################
 # Running METplus
@@ -159,27 +175,45 @@ UserScript_fcstGFS_obsERA_StratosphereBias.py
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use 
 # case will be found in model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias (relative 
 # to **OUTPUT_BASE**).  The output includes the zonal mean files for the forecast and observations, the
-# output from Series-Analysis, and bias plots.  The zonal mean output includes 28 files for the forecast
+# output from Series-Analysis, and bias plots.  There are two bias plots output::
+#
+# * plots/GFS_ERA_ME_2018_02_zonal_mean_T.png
+# * plots/GFS_ERA_ME_2018_02_zonal_mean_U.png
+#
+# The statistics output from Series-Analysis output is two netCDF files, one for temperature and one for wind::
+#
+# * SeriesAnalysis/zonal_mean_T_stats_2018_02.nc
+# * SeriesAnalysis/zonal_mean_U_stats_2018_02.nc
+#
+# There are 7 variable fields present in the Series-Analysis output netCDF files (not 
+# including the lat/lon fields).  Those variables are::
+#
+# * level(level)
+# * n_series
+# * series_cnt_TOTAL(lat, level)
+# * series_cnt_ME(lat, level)
+# * series_cnt_RMSE(lat, level)
+# * series_cnt_FBAR(lat, level)
+# * series_cnt_OBAR(lat, level)
+#
+# Text files with a listing of the files input to Series-Analysis are also output::
+#
+# * SeriesAnalysis/series_analysis_files_fcst_init_ALL_valid_ALL_lead_ALL.txt
+# * SeriesAnalysis/series_analysis_files_obs_init_ALL_valid_ALL_lead_ALL.txt
+#
+# The zonal mean output includes 28 files for the forecast
 # and observations, one for each day.  The file format for February 1 is:
 #
 # * FCST/FCST_zonal_mean_U_T_20180201_000000.nc
 # * OBS/OBS_zonal_mean_U_T_20180201_000000.nc
 #
-# The Series Analysis stats output:
+# There are # variable fields present in the zonal mean netCDF file (not including the
+# latitude and pressure fields). Those variables are::
 #
-# * SeriesAnalysis/zonal_mean_T_stats_2018_02.nc
-# * SeriesAnalysis/zonal_mean_U_stats_2018_02.nc
-# 
-# Series Analysis File List output:
-#
-# * SeriesAnalysis/series_analysis_files_fcst_init_ALL_valid_ALL_lead_ALL.txt
-# * SeriesAnalysis/series_analysis_files_obs_init_ALL_valid_ALL_lead_ALL.txt 
-#
-# Bias Plot Output
-#
-# * plots/GFS_ERA_ME_2018_02_zonal_mean_T.png
-# * plots/GFS_ERA_ME_2018_02_zonal_mean_U.png
-#
+# * time
+# * u(pres, latitude)
+# * T(pres, latitude)
+# * lead_time
 
 ##############################################################################
 # Keywords
