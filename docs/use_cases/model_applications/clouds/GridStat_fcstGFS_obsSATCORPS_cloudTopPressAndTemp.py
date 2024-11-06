@@ -6,25 +6,39 @@ model_applications/clouds/GridStat_fcstGFS_obsSATCORPS_cloudTopPressAndTemp.conf
 
 """
 ##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
+##############################################################################
 # Scientific Objective
 # --------------------
 #
 # This use case captures various statistical measures of two model comparisons
 # for cloud top pressures and temperatures with different neighborhood
-# settings for internal model metrics and to aid in future model updates
-# 
+# settings for internal model metrics and to aid in future model updates.
+
+##############################################################################
+# Version Added
+# -------------
+# [UPDATE_SECTION_CONTENT]
+#
+# METplus version 5.1
 
 ##############################################################################
 # Datasets
 # --------
 #
-# | **Forecast:** Global Forecast System (GFS)
-# | **Observations:** Satellite ClOud and Radiation Property retrieval System (SatCORPS)
-# | **Grid:** GPP 17km masking region
+# **Forecast:** Global Forecast System (GFS)
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
+# **Observations:** Satellite ClOud and Radiation Property retrieval System (SatCORPS)
 #
+# **Grid:** GPP 17km masking region
+#
+# **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. 
+# Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 
 ##############################################################################
 # METplus Components
@@ -43,6 +57,14 @@ model_applications/clouds/GridStat_fcstGFS_obsSATCORPS_cloudTopPressAndTemp.conf
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (INIT_BEG):** 2022070312
+#
+# **End time (INIT_END):** 2022070312
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 12H
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 36
+#
 # GridStat is the only MET tool called in this example.
 # It processes the following run time:
 #
@@ -56,8 +78,8 @@ model_applications/clouds/GridStat_fcstGFS_obsSATCORPS_cloudTopPressAndTemp.conf
 # ---------------------
 #
 # METplus first loads the default configuration file found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line:
-# parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsSATCORPS_cloudTopPressAndTemp.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsSATCORPS_cloudTopPressAndTemp.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsSATCORPS_cloudTopPressAndTemp.conf
@@ -74,10 +96,10 @@ model_applications/clouds/GridStat_fcstGFS_obsSATCORPS_cloudTopPressAndTemp.conf
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. note:: See the :ref:`GridStat MET Configuration<grid-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# .. dropdown:: GridStatConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
+#   .. highlight:: bash
+#   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 
 ##############################################################################
 # Python Embedding
@@ -86,9 +108,19 @@ model_applications/clouds/GridStat_fcstGFS_obsSATCORPS_cloudTopPressAndTemp.conf
 # This use case utilizes 1 Python script to read and process the observation fields.
 # parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsSATCORPS_cloudTopPressAndTemp/read_input_data.py
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsSATCORPS_cloudTopPressAndTemp/read_input_data.py
+# .. dropdown:: ../../../../parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsSATCORPS_cloudTopPressAndTemp/read_input_data.py
+#
+#   .. highlight:: bash
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsSATCORPS_cloudTopPressAndTemp/read_input_data.py
+#
+# For more information on the basic requirements to utilize Python Embedding in METplus, 
+# please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_ 
 
+##############################################################################
+# User Scripting
+# --------------
+# [UPDATE_SECTION_CONTENT]
+#
 ##############################################################################
 # Running METplus
 # ---------------
@@ -109,9 +141,8 @@ model_applications/clouds/GridStat_fcstGFS_obsSATCORPS_cloudTopPressAndTemp.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in model_applications/clouds/GridStat_fcstGFS_obsSATCORPS_cloudTopPressAndTemp
-# (relative to **OUTPUT_BASE**)
-# and will contain the following files:
+# Output for this use case will be found in {OUTPUT_BASE}/model_applications/clouds/GridStat_fcstGFS_obsSATCORPS_cloudTopPressAndTemp
+# and will contain the following files::
 #
 # * grid_stat_GFS_to_SATCORPS_F36_CloudHgts_360000L_20220705_000000V_pairs.nc
 # * grid_stat_GFS_to_SATCORPS_F36_CloudHgts_360000L_20220705_000000V_ctc.txt
@@ -134,4 +165,3 @@ model_applications/clouds/GridStat_fcstGFS_obsSATCORPS_cloudTopPressAndTemp.conf
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 # sphinx_gallery_thumbnail_path = '_static/clouds-GridStat_fcstGFS_obsSATCORPS_cloudTopPressAndTemp.png'
-#
