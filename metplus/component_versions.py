@@ -100,12 +100,12 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--input_component',
                         default='metplus',
-                        help='Name of METplus component to use to find version,'
-                        ' default is METplus.')
+                        help='Name of METplus component to use to find version.'
+                        ' Default is METplus.')
     parser.add_argument('-v', '--input_version',
                         default=LATEST_OFFICIAL_RELEASE,
-                        help='version of input_component to search,'
-                             ' default is latest official release')
+                        help='version of input_component to search.'
+                             ' Default is latest official release')
     parser.add_argument('-o', '--output_component', required=True,
                         help='name of METplus component to obtain version')
     parser.add_argument('-f', '--output_format',
@@ -114,7 +114,8 @@ def main():
                              '{X}, {Y}, and {Z} will be replaced with x, y, and'
                              ' z version numbers from X.Y.Z. {N} will be '
                              'replaced with development version if found in the'
-                             'input version, e.g. "-beta3" or "-rc1"')
+                             ' input version, e.g. "-beta3" or "-rc1".'
+                             ' Default is v{X}.{Y}.{Z}{N}')
     parser.add_argument('--get_dev_version', action=argparse.BooleanOptionalAction,
                         default=True,
                         help='If True, get corresponding -beta or -rc version. '
