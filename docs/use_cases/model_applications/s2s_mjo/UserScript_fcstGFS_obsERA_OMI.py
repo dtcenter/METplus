@@ -9,6 +9,12 @@ UserScript_fcstGFS_obsERA_OMI.py
 """
 
 ##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
+##############################################################################
 # Scientific Objective
 # --------------------
 #
@@ -23,22 +29,31 @@ UserScript_fcstGFS_obsERA_OMI.py
 # a convective index of the MJO.  OMI is computed separately for the model and observations and then displayed
 # on phase diagrams to evaluate the model reprentation of this important oscillation.  The code for computing OMI
 # came from Maria Gehne at PSL.
-# 
 
 ##############################################################################
 # Version Added
 # -------------
 #
 # METplus version 4.1.0
-#
 
 ##############################################################################
 # Datasets
 # --------
 #
-#  * Forecast dataset: GFS Model Outgoing Longwave Radiation, 2017 - 2018.
-#  * Observation dataset: ERA Reanlaysis Outgoing Longwave Radiation, 2017 - 2018.
-#  * EOFs: Observed OMI EOF1 and EOF2 patterns from the PSL Website (https://psl.noaa.gov/mjo/mjoindex/)
+#  **Forecast:** GFS Model Outgoing Longwave Radiation, 2017 - 2018.
+
+#  **Observation:** ERA Reanlaysis Outgoing Longwave Radiation, 2017 - 2018.
+
+#  **EOFs:** Observed OMI EOF1 and EOF2 patterns from the PSL Website (https://psl.noaa.gov/mjo/mjoindex/)
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -60,24 +75,35 @@ UserScript_fcstGFS_obsERA_OMI.py
 # daily_mean_fcst, regrid_obs_olr, and regrid_fcst_olr.  Data is not provided in the tarball to run these steps, 
 # but the configurations are provided for reference on how to set up these calculations.
 #
+# This use case requires METcalcpy, METplotpy, and METdataio to run. The metcalcpy scripts accessed include the following:
+# 
+# * metcalcpy/contributed/rmm_omi/compute_mjo_indices.py
+#
+# The METplotpy scripts accessed include the following:
+# 
+# * metplotpy/contributed/mjo_rmm_omi/plot_mjo_indioces.py
+#
+# The METdataio scripts accessed include the following:
+#
+# * METreadnc/util/read_netcdf.py
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
+# **Beginning time calculation (VALID_BEG):** 20170101
+# **Beginning time plot (PHASE_PLOT_TIME_BEG):** 20170101
+#
+# **End time calculation (VALID_END):** 20181231
+# **End time plot (PHASE_PLOT_TIME_END):** 20170331
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 1 day
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 0
+#
 # This use case does not loop, but the UserScript to create and EOF filelist is run once and the OMI driver script is 
-# run once for both the model and observations.  The OMI script has the ability to loop over lead time, although only 
-# one lead time is provided here. The 3 optional pre-processing steps loop by valid time. 
-#
-# This use case requires METcalcpy, METplotpy, and METdataio to run. The metcalcpy scripts accessed include the following:
-# * metcalcpy/contributed/rmm_omi/compute_mjo_indices.py
-#
-# The METplotpy scripts accessed include the following:
-# * metplotpy/contributed/mjo_rmm_omi/plot_mjo_indioces.py
-#
-# The METdataio scripts accessed include the following:
-# * METreadnc/util/read_netcdf.py
-#
+# run once for both the model and observations across the entire time period.  The 3 optional pre-processing steps 
+# loop by valid time. 
 
 ##############################################################################
 # METplus Configuration
@@ -98,14 +124,12 @@ UserScript_fcstGFS_obsERA_OMI.py
 # ---------------------
 #
 # There are no MET configuration files used in this use case.
-#
 
 ##############################################################################
 # Python Embedding
 # ----------------
 #
-# This use case does not use python embedding
-#
+# This use case does not use python embedding.
 
 ##############################################################################
 # Python Scripting
@@ -124,21 +148,21 @@ UserScript_fcstGFS_obsERA_OMI.py
 # MJO indices and the generation of a phase diagram OMI plot.  Separate phase diagrams are created for 
 # the model and observations.
 #
+# .. dropdown:: parm/use_cases/model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI/OMI_driver.py
+# 
 # .. highlight:: python
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI/OMI_driver.py
-#
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
 # Pass the use case configuration file to the run_metplus.py script along with any
-# user-specific system configuration files if desired:
+# user-specific system configuration files if desired::
 #
 #        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_OMI.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
-#
 
 ##############################################################################
 # Expected Output
@@ -151,11 +175,10 @@ UserScript_fcstGFS_obsERA_OMI.py
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use 
 # case will be found in model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI/plots (relative to **OUTPUT_BASE**).  
 # The output may include the regridded data and daily averaged files if those steps are turned on.  Phase diagram 
-# plots will be generated and will include 2 files:
+# plots will be generated and will include 2 files::
 #
 #  * fcst_OMI_comp_phase.png
 #  * obs_OMI_comp_phase.png
-#
 
 ##############################################################################
 # Keywords
@@ -173,4 +196,3 @@ UserScript_fcstGFS_obsERA_OMI.py
 #   Navigate to :ref:`quick-search` to discover other similar use cases.
 #
 # sphinx_gallery_thumbnail_path = '_static/s2s_mjo-UserScript_fcstGFS_obsERA_OMI.png'
-#
