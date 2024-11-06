@@ -22,7 +22,6 @@ model_applications/clouds/GridStat_fcstGFS_obsSATCORPS_cloudTopPressAndTemp.conf
 ##############################################################################
 # Version Added
 # -------------
-# [UPDATE_SECTION_CONTENT]
 #
 # METplus version 5.1
 
