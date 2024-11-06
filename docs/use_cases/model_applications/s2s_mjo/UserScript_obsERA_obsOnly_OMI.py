@@ -87,9 +87,9 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.py
 # METplus Workflow
 # ----------------
 #
-# **Beginning time calculation (VALID_BEG):** 19790101
+# **Beginning time calculation (VALID_BEG):** 01-01-1979
 #
-# **End time calculation (VALID_END):** 20121230
+# **End time calculation (VALID_END):** 12-30-2012
 #
 # **Increment between beginning and end times (VALID_INCREMENT):** 1 day
 #

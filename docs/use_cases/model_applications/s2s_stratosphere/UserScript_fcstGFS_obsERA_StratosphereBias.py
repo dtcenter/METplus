@@ -9,6 +9,12 @@ UserScript_fcstGFS_obsERA_StratosphereBias.py
 """
 
 ##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
+##############################################################################
 # Scientific Objective
 # --------------------
 #
@@ -22,44 +28,45 @@ UserScript_fcstGFS_obsERA_StratosphereBias.py
 # In addition this use case also demonstrates how to read semi-structured grids into
 # MET.  Specifically zonal mean data is read into Series-Analysis in the second step
 # of this use case.
-#
 
 ##############################################################################
 # Version Added
 # -------------
 #
 # METplus version 6.0
-#
 
 ##############################################################################
 # Datasets
 # --------
 #
-# Forecast dataset: GFS 24 hour forecasts for February 2018
-# Observation dataset: ERA reanalysis for February 2018
+# **Forecast:** GFS 24 hour forecasts for February 2018
 #
+# **Observation:** ERA reanalysis for February 2018
+#
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
 # ------------------
 #
-# This use case calls UserScript first, then Series-Analysis, and then UserScript
+# This use case calls UserScript first, Series-Analysis, and then UserScript
 # a second time.  The first call to UserScript runs zonal_mean_driver.py.  This script
 # computes zonal and meridional mean data from the directional_means program in 
 # METplotpy.  Then, Series-Analysis is run on the zonal mean output to compute
 # continuous statistics.  Finally, the second call to UserScript runs bias_plot_driver.py
 # which creates bias plots for temperature and wind.
 #
-
-##############################################################################
-# METplus Workflow
-# ----------------
-#
-# This use case does not loop.  The two calls to UserScript are run once.  Series-
-# Analysis is also run once.
-#
-# METcalcpy version 3.0, METplotpy version 3.0, and METdataio version 2.1 are needed 
-# for this use case to run.  The metcalcpy scripts accessed include the following:
+# METcalcpy, METplotpy, and METdataio are needed for this use case to run.  The metcalcpy 
+# scripts accessed include the following:
 # * metcalcpy/contributed/zonal_meridional/recipes.py 
 #
 # The METplotpy scripts accessed include the following:
@@ -67,22 +74,32 @@ UserScript_fcstGFS_obsERA_StratosphereBias.py
 #
 # The METdataio scripts accessed include the following:
 # * METreadnc/util/read_netcdf.py
+
+##############################################################################
+# METplus Workflow
+# ----------------
 #
+# **Beginning time (INIT_BEG):** 02-01-2018
+#
+# **End time (INIT_END):** 02-28-2018
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 30 days
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 24
+#
+# This use case does not loop.  The two calls to UserScript are run once.  Series-
+# Analysis is also run once.
 
 ##############################################################################
 # METplus Configuration
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
+# then it loads any configuration files passed to METplus via the command line,
 # i.e. parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias.conf.
-# The files UserScript_fcstGFS_obsERA_StratosphereBias/HELP_driver.py and 
-# UserScript_fcstGFS_obsERA_StratosphereBias/HELP_driver.py run the python programs and the
-# variables for both are set in the [user_env_vars] section of the .conf file. 
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias.conf
-#
 
 #############################################################################
 # MET Configuration
@@ -96,13 +113,10 @@ UserScript_fcstGFS_obsERA_StratosphereBias.py
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# **SeriesAnalysisConfig_wrapped**
+# .. dropdown:: SeriesAnalysisConfig_wrapped
 #
-# .. note:: See the :ref:`Series-Analysis MET Configuration<series-analysis-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
-#
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/SeriesAnalysisConfig_wrapped
-#
+#   .. highlight:: bash
+#   .. literalinclude:: ../../../../parm/met_config/SeriesAnalysisConfig_wrapped
 
 ##############################################################################
 # Python Embedding
@@ -112,9 +126,10 @@ UserScript_fcstGFS_obsERA_StratosphereBias.py
 # this script include the filename to be read in, variable name, and the axis over which the mean is taken.  The script 
 # returns a numpy array containing the zonal mean data (semi structured grid).
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias/read_met_axis_mean.py
+# .. dropdown:: read_met_axis_mean.py
 #
+#   .. highlight:: bash
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias/read_met_axis_mean.py
 
 ##############################################################################
 # Python Scripting
@@ -132,7 +147,6 @@ UserScript_fcstGFS_obsERA_StratosphereBias.py
 #        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
-#
 
 ##############################################################################
 # Expected Output

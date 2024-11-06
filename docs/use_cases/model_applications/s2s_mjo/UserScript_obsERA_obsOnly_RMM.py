@@ -60,11 +60,11 @@ UserScript_obsERA_obsOnly_RMM.py
 #
 # This use case calls UserScript 5 times and Regrid-Data-Plane multiple times.  These UserScript calls do 
 # not loop.  The first call creates a list of the mean daily annual data files for OLR, U850, and U200. It 
-# is done separately since the mean daily annual files are span across all years whereas the RMM calculation 
+# is done separately since the mean daily annual files span across all years whereas the RMM calculation 
 # can proceed on a different time frame.  The second, third, and fourth calls to UserScript run the pre-processing 
-# on OLR, U850, and U200 using a harmonic analysis program in python.  Then, RegridDataPlane is run for all valid 
-# times for the 3 variables.  This step cuts the grid to only include -15 to 15 latitude.  The last (fifth) call 
-# to UserScript runs the RMM calculation once on the observations.
+# to compute anomalies OLR, U850, and U200 using a harmonic analysis program in python.  Then, RegridDataPlane is 
+# run for all valid times for the 3 variables.  This step cuts the grid to only include -15 to 15 latitude.  Finally, 
+# the last (fifth) call to UserScript runs the RMM calculation once on the observations.
 #
 # There are four optional pre-processing steps.  These steps are turned off due to data size and processing
 # time.  Two of the steps are calls to PcP-Combine to compute the mean daily annual data for OLR, wind 
@@ -94,9 +94,9 @@ UserScript_obsERA_obsOnly_RMM.py
 # METplus Workflow
 # ----------------
 #
-# **Beginning time (VALID_BEG):** 2000010100
+# **Beginning time (VALID_BEG):** 01-01-2000
 #
-# **End time (VALID_END):** 2002123000
+# **End time (VALID_END):** 12-30-2002
 #
 # **Increment between beginning and end times (INIT_INCREMENT):** 1 day
 #

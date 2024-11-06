@@ -89,9 +89,9 @@ model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.py
 # METplus Workflow
 # ----------------
 #
-# **Beginning time (VALID_BEG):** 20170101
+# **Beginning time (VALID_BEG):** 01-01-2017
 #
-# **End time (VALID_END):** 20181231
+# **End time (VALID_END):** 12-31-2018
 #
 # **Increment between beginning and end times (VALID_INCREMENT):** 1 day
 #
@@ -99,8 +99,8 @@ model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.py
 #
 # This use case does not loop, but the UserScript to create and EOF filelist is run once and the OMI driver script is 
 # run once for both the model and observations across the entire time period.  The 3 optional pre-processing steps 
-# loop by valid time. The Phase diagram plots are created over a different time frame than the calculation, 01-01-2017
-# to 03-31-2017 for both plots.
+# loop by valid time when they are turned on. The Phase diagram plots are created over a different time frame than the 
+# calculation, 01-01-2017 to 03-31-2017 for both plots.
 
 ##############################################################################
 # METplus Configuration
