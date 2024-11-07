@@ -57,8 +57,8 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.py
 # ------------------
 #
 # This use case calls UserScript twice, first to create a list of EOF files and then to run
-# the OMI calculation.  In addition, there are three optional pre-processing steps, PCP-Combine
-# and two calls to Regrid-Data-Plane. 
+# the OMI calculation.  In addition, there is one optional pre-processing steps, using
+# Regrid-Data-Plane. 
 #
 # This use case requires METcalcpy, METplotpy, and METdataio to run. The metcalcpy scripts accessed include the following:
 # 
@@ -88,21 +88,21 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.py
 # run once.  The EOF filelist is done separately since the EOF files are needed for each day of the year while the OMI 
 # calculation is on a separate time frame.The optional pre-processing step loops by valid time.  The optional 
 # pre-processing step uses Regrid-Data-Plane to cut the observation grid to only include -20 to 20 latitude.  This 
-# omitted step can be turned back on by using the PROCESS_LIST that is commented out:
+# omitted step can be turned back on by using the PROCESS_LIST that is commented out::
 #
 # PROCESS_LIST = RegridDataPlane(regrid_obs_olr), UserScript(create_eof_filelist), UserScript(script_omi) 
 #
 # Settings for the optional pre-processing step can be found in the regrid_obs_olr section of the configuration. 
 # Data is not provided in the tarball to run this steps, but the configurations is provided for reference on 
 # how to set up this step.
-
+#
 # The Phase diagram plot is created over a different time frame than the calculation, 10-01-2012 to 03-30-2012. 
 
 ##############################################################################
 # METplus Configuration
 # ---------------------
 #
-# # METplus first loads all of the configuration files found in parm/metplus_config, 
+# METplus first loads all of the configuration files found in parm/metplus_config, 
 # then it loads any configuration files passed to METplus via the command line,
 # i.e. parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.conf.
 #
@@ -129,8 +129,7 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.py
 # OMI driver include netCDF files formatted in MET's netCDF version.  In addition, a txt file containing 
 # the listing of these input netCDF files is required, as well as text file listings of the EOF1 and 
 # EOF2 files.  These text files can be generated using the USER_SCRIPT_INPUT_TEMPLATES in the 
-# [create_eof_filelist] and [script_omi] sections.  Some optional pre-processing steps include using 
-# regrid_data_plane to either regrid your data or cut the domain to 20N - 20S.
+# [create_eof_filelist] and [script_omi] sections.
 #
 # For the OMI calculation, the OLR data are then projected onto Empirical Orthogonal Function (EOF) 
 # data that is computed for each day of the year, latitude, and longitude.  The OLR is then filtered 

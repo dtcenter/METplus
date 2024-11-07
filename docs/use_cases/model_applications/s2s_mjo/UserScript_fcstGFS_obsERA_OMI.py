@@ -85,14 +85,14 @@ model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.py
 #
 # **Sequence of forecast leads to process (LEAD_SEQ):** 0
 #
-# This use case does not loop, but the UserScript to create and EOF filelist is run once and the OMI driver script is 
-# run once for both the model and observations across the entire time period.  The EOF filelist is created separately
-# since the EOF files are needed for each day of the year while the OMI calculation is on a separate time frame.  
-
+# This use case does not loop, but the UserScript to create and EOF filelist is run once and the UserScript which
+# runs the OMI driver script is also run once for both the model and observations across the entire time period.  
+# The EOF filelist is created separately since the EOF files are needed for each day of the year while the OMI 
+# calculation is on a separate time frame.  
+#
 # The 3 optional pre-processing steps loop by valid time when they are turned on. The steps include using PcpCombine to
-# compute daily averages for the forecast, and using RegridDataPlane for both the model and observations
-# to cut the grid to only include -20 to 20 latitude.  These omitted steps can be turned back on by using the 
-# PROCESS_LIST that is commented out:
+# compute daily averages for the model, and using RegridDataPlane for both the model and observations to cut the grid down 
+# to -20 to 20 latitude.  These omitted steps can be turned back on by using the PROCESS_LIST that is commented out::
 #
 # PROCESS_LIST = PcpCombine(daily_mean_fcst), RegridDataPlane(regrid_obs_olr), RegridDataPlane(regrid_fcst_olr), UserScript(create_eof_filelist), UserScript(script_omi) 
 #
@@ -169,8 +169,8 @@ model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.py
 #   INFO: METplus has successfully finished running.
 # 
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use 
-# case will be found in model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI/plots (relative to **OUTPUT_BASE**).  
-# Phase diagram plots will be generated and will include 2 files::
+# case will be found in {OUTPUT_BASE}/model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI/plots.  Phase 
+# diagram plots will be generated and will include 2 files::
 #
 #  * fcst_OMI_comp_phase.png
 #  * obs_OMI_comp_phase.png

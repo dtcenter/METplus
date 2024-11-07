@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Driver Script to Compute RMM index from input U850, U200 and OLR data. Data is averaged from 20S-20N
+Driver Script to Compute OMI from input OLR data. Data is averaged from 20S-20N
 """
 
 import numpy as np
