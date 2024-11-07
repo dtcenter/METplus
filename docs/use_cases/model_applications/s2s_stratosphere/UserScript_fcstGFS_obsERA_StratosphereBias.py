@@ -59,21 +59,19 @@ UserScript_fcstGFS_obsERA_StratosphereBias.py
 # ------------------
 #
 # This use case calls UserScript first, Series-Analysis, and then UserScript
-# a second time.  The first call to UserScript runs zonal_mean_driver.py.  This script
-# computes zonal and meridional mean data from the directional_means program in 
-# METplotpy.  Then, Series-Analysis is run on the zonal mean output to compute
-# continuous statistics.  Finally, the second call to UserScript runs bias_plot_driver.py
-# which creates bias plots for temperature and wind.
+# a second time.  METcalcpy, METplotpy, and METdataio are needed for this use case to run.
+# The metcalcpy scripts accessed include the following:
 #
-# METcalcpy, METplotpy, and METdataio are needed for this use case to run.  The metcalcpy 
-# scripts accessed include the following:
 # * metcalcpy/pre_processing/directional_means.py
 #
 # The METplotpy scripts accessed include the following:
+#
 # * metplotpy/stratosphere_diagnostics/stratosphere_plots.py
 #
 # The METdataio scripts accessed include the following:
+#
 # * METreadnc/util/read_netcdf.py
+
 
 ##############################################################################
 # METplus Workflow
@@ -88,7 +86,14 @@ UserScript_fcstGFS_obsERA_StratosphereBias.py
 # **Sequence of forecast leads to process (LEAD_SEQ):** 24
 #
 # This use case does not loop.  The two calls to UserScript are run once.  Series-
-# Analysis is also run once.
+# Analysis is also run once.  The first call to UserScript runs zonal_mean_driver.py.  
+# This script computes zonal and meridional mean data from the directional_means program in 
+# METplotpy.  Then, Series-Analysis is run on the zonal mean output to compute
+# continuous statistics.  Finally, the second call to UserScript runs bias_plot_driver.py
+# which creates bias plots for temperature and wind.
+#
+# METcalcpy 3.0.0 or higher, METplotpy 3.0.0 or higher, and METdataio 2.1 or higher are needed 
+# for this use case.
 
 ##############################################################################
 # METplus Configuration
@@ -115,7 +120,6 @@ UserScript_fcstGFS_obsERA_StratosphereBias.py
 #
 # .. dropdown:: SeriesAnalysisConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/SeriesAnalysisConfig_wrapped
 
 ##############################################################################
@@ -158,7 +162,7 @@ UserScript_fcstGFS_obsERA_StratosphereBias.py
 # ---------------
 #
 # Pass the use case configuration file to the run_metplus.py script along with any
-# user-specific system configuration files if desired:
+# user-specific system configuration files if desired::
 #
 #        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias.conf /path/to/user_system.conf
 #
@@ -172,10 +176,11 @@ UserScript_fcstGFS_obsERA_StratosphereBias.py
 #
 #   INFO: METplus has successfully finished running.
 #
-# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use 
-# case will be found in model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias (relative 
-# to **OUTPUT_BASE**).  The output includes the zonal mean files for the forecast and observations, the
-# output from Series-Analysis, and bias plots.  There are two bias plots output::
+# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
+# Output for this use case will be found in 
+# {OUTPUT_BASE}/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar
+# The output includes the netCDF zonal mean files for the forecast and observations, netCDF output 
+# from Series-Analysis, and bias plots.  There are two bias plots output::
 #
 # * plots/GFS_ERA_ME_2018_02_zonal_mean_T.png
 # * plots/GFS_ERA_ME_2018_02_zonal_mean_U.png
@@ -202,7 +207,7 @@ UserScript_fcstGFS_obsERA_StratosphereBias.py
 # * SeriesAnalysis/series_analysis_files_obs_init_ALL_valid_ALL_lead_ALL.txt
 #
 # The zonal mean output includes 28 files for the forecast
-# and observations, one for each day.  The file format for February 1 is:
+# and observations, one for each day.  The file format for February 1 is::
 #
 # * FCST/FCST_zonal_mean_U_T_20180201_000000.nc
 # * OBS/OBS_zonal_mean_U_T_20180201_000000.nc

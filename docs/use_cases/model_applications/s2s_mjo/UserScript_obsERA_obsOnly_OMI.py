@@ -56,31 +56,20 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.py
 # METplus Components
 # ------------------
 #
-# This use case calls UserScript twice.  The first UserScript creates a list of the EOF files 
-# needed for the calculation.  It is done separately since the EOF files are needed for each day
-# of the year while the OMI calculation is on a separate time frame.  The second UserScript runs the
-# OMI calculation.
-#
-# There is one optional pre-processing steps for the OMI calculation, using RegridDataPlane which cuts 
-# the observation grid to only include -20 to 20 latitude.  This omitted step can be turned back on by 
-# using the PROCESS_LIST that is commented out:
-#
-# PROCESS_LIST = RegridDataPlane(regrid_obs_olr), UserScript(create_eof_filelist), UserScript(script_omi) 
-#
-# Settings for the optional pre-processing step can be found in the regrid_obs_olr section of the configuration. 
-# Data is not provided in the tarball to run this steps, but the configurations is provided for reference on 
-# how to set up this step.
+# This use case calls UserScript twice, first to create a list of EOF files and then to run
+# the OMI calculation.  In addition, there are three optional pre-processing steps, PCP-Combine
+# and two calls to Regrid-Data-Plane. 
 #
 # This use case requires METcalcpy, METplotpy, and METdataio to run. The metcalcpy scripts accessed include the following:
-
+# 
 # * metcalcpy/contributed/rmm_omi/compute_mjo_indices.py
 #
 # The METplotpy scripts accessed include the following:
-
-# * metplotpy/contributed/mjo_rmm_omi/plot_mjo_indioces.py 
+# 
+# * metplotpy/contributed/mjo_rmm_omi/plot_mjo_indioces.py
 #
 # The METdataio scripts accessed include the following:
-
+#
 # * METreadnc/util/read_netcdf.py
 
 ##############################################################################
@@ -96,8 +85,18 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.py
 # **Sequence of forecast leads to process (LEAD_SEQ):** 0
 #
 # This use case does not loop, but the UserScript to create and EOF filelist is run once and the OMI driver script is 
-# run once.  The optional pre-processing step loops by valid time.  The Phase diagram plot is created over a different time 
-# frame than the calculation, 10-01-2012 to 03-30-2012. 
+# run once.  The EOF filelist is done separately since the EOF files are needed for each day of the year while the OMI 
+# calculation is on a separate time frame.The optional pre-processing step loops by valid time.  The optional 
+# pre-processing step uses Regrid-Data-Plane to cut the observation grid to only include -20 to 20 latitude.  This 
+# omitted step can be turned back on by using the PROCESS_LIST that is commented out:
+#
+# PROCESS_LIST = RegridDataPlane(regrid_obs_olr), UserScript(create_eof_filelist), UserScript(script_omi) 
+#
+# Settings for the optional pre-processing step can be found in the regrid_obs_olr section of the configuration. 
+# Data is not provided in the tarball to run this steps, but the configurations is provided for reference on 
+# how to set up this step.
+
+# The Phase diagram plot is created over a different time frame than the calculation, 10-01-2012 to 03-30-2012. 
 
 ##############################################################################
 # METplus Configuration

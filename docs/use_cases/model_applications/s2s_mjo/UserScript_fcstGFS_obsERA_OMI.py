@@ -57,21 +57,9 @@ model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.py
 # METplus Components
 # ------------------
 #
-# This use case calls UserScript twice.  The first UserScript creates a list of the EOF files 
-# needed for the calculation.  It is done separately since the EOF files are needed for each day
-# of the year while the OMI calculation is on a separate time frame.  The second UserScript runs the
-# OMI calculation.
-#
-# There are three optional pre-processing steps for the OMI calculation.  These include using PcpCombine to
-# compute daily averages for the forecast, and using RegridDataPlane for both the model and observations
-# to cut the grid to only include -20 to 20 latitude.  These omitted steps can be turned back on by using the 
-# PROCESS_LIST that is commented out:
-#
-# PROCESS_LIST = PcpCombine(daily_mean_fcst), RegridDataPlane(regrid_obs_olr), RegridDataPlane(regrid_fcst_olr), UserScript(create_eof_filelist), UserScript(script_omi) 
-#
-# Settings for the optional pre-processing steps can be found in the respective sections of the configuration, 
-# daily_mean_fcst, regrid_obs_olr, and regrid_fcst_olr.  Data is not provided in the tarball to run these steps, 
-# but the configurations are provided for reference on how to set up these calculations.
+# This use case calls UserScript twice, first to create a list of EOF files and then to run
+# the OMI calculation.  In addition, there are three optional pre-processing steps, PCP-Combine
+# and two calls to Regrid-Data-Plane. 
 #
 # This use case requires METcalcpy, METplotpy, and METdataio to run. The metcalcpy scripts accessed include the following:
 # 
@@ -98,8 +86,21 @@ model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.py
 # **Sequence of forecast leads to process (LEAD_SEQ):** 0
 #
 # This use case does not loop, but the UserScript to create and EOF filelist is run once and the OMI driver script is 
-# run once for both the model and observations across the entire time period.  The 3 optional pre-processing steps 
-# loop by valid time when they are turned on. The Phase diagram plots are created over a different time frame than the 
+# run once for both the model and observations across the entire time period.  The EOF filelist is created separately
+# since the EOF files are needed for each day of the year while the OMI calculation is on a separate time frame.  
+
+# The 3 optional pre-processing steps loop by valid time when they are turned on. The steps include using PcpCombine to
+# compute daily averages for the forecast, and using RegridDataPlane for both the model and observations
+# to cut the grid to only include -20 to 20 latitude.  These omitted steps can be turned back on by using the 
+# PROCESS_LIST that is commented out:
+#
+# PROCESS_LIST = PcpCombine(daily_mean_fcst), RegridDataPlane(regrid_obs_olr), RegridDataPlane(regrid_fcst_olr), UserScript(create_eof_filelist), UserScript(script_omi) 
+#
+# Settings for the optional pre-processing steps can be found in the respective sections of the configuration, 
+# daily_mean_fcst, regrid_obs_olr, and regrid_fcst_olr.  Data is not provided in the tarball to run these steps, 
+# but the configurations are provided for reference on how to set up these calculations.
+#
+# The Phase diagram plots are created over a different time frame than the 
 # calculation, 01-01-2017 to 03-31-2017 for both plots.
 
 ##############################################################################
