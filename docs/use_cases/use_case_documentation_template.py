@@ -94,7 +94,6 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWin
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_MultiStatisticTool.conf
 
-
 ##############################################################################
 # MET Configuration
 # -----------------
@@ -139,8 +138,6 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWin
 # 
 # For more information on the basic requirements to utilize Python Embedding in METplus, 
 # please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_ 
-#
-# 
 
 ##############################################################################
 # User Scripting
