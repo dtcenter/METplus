@@ -86,29 +86,28 @@ UserScript_obsERA_obsOnly_RMM.py
 #
 # **Sequence of forecast leads to process (LEAD_SEQ):** 0
 #
-# # These UserScript calls do 
-# not loop.  The first call creates a list of the mean daily annual data files for OLR, U850, and U200. It 
-# is done separately since the mean daily annual files span across all years whereas the RMM calculation 
-# can proceed on a different time frame.  The second, third, and fourth calls to UserScript run the pre-processing 
-# to compute anomalies OLR, U850, and U200 using a harmonic analysis program in python.  Then, RegridDataPlane is 
-# run for all valid times for the 3 variables.  This step cuts the grid to only include -15 to 15 latitude.  Finally, 
-# the last (fifth) call to UserScript runs the RMM calculation once on the observations.
+# # The UserScript calls do not loop, but are each run once.  The first call creates a list of 
+# the mean daily annual data files for OLR, U850, and U200. It is done separately since the mean 
+# daily annual files span across all years whereas the RMM calculation can proceed on a different 
+# time frame.  The second, third, and fourth calls to UserScript run the pre-processing to compute
+# anomalies OLR, U850, and U200 using a harmonic analysis program in python.  Then, RegridDataPlane is 
+# run for all valid times for the 3 variables.  This step cuts the grid to only include -15 to 15 latitude.  
+# Finally, the last (fifth) call to UserScript runs the RMM calculation once on the observations.
 #
-# There are four optional pre-processing steps.  These steps are turned off due to data size and processing
-# time.  Two of the steps are calls to PcP-Combine to compute the mean daily annual data for OLR, wind 
-# (U850 and U200).  The other two steps also call Pcp-Combine but these compute daily means for OLR and wind.  
-# These omitted steps can be turned back on by using the PROCESS_LIST that is commented out::
+# There are four optional pre-processing steps loop by valid time with different timing settings needed for 
+# the different steps.  These steps are turned off due to data size and processing time.  Two of the steps are 
+# calls to PcP-Combine to compute the mean daily annual data for OLR, wind (U850 and U200).  The other two steps 
+# also call Pcp-Combine but these compute daily means for OLR and wind.  These omitted steps can be turned back 
+# on by using the PROCESS_LIST that is commented out::
 #
-# PROCESS_LIST = PROCESS_LIST = PcpCombine(mean_daily_annual_cycle_obs_wind), PcpCombine(mean_daily_annual_cycle_obs_olr), PcpCombine(daily_mean_obs_wind), PcpCombine(daily_mean_obs_olr), UserScript(create_mda_filelist), UserScript(harmonic_anomalies_olr), UserScript(harmonic_anomalies_u850), UserScript(harmonic_anomalies_u200), RegridDataPlane(regrid_obs_olr), RegridDataPlane(regrid_obs_u850), RegridDataPlane(regrid_obs_u200), UserScript(script_rmm)
+#   PROCESS_LIST = PROCESS_LIST = PcpCombine(mean_daily_annual_cycle_obs_wind), PcpCombine(mean_daily_annual_cycle_obs_olr), PcpCombine(daily_mean_obs_wind), PcpCombine(daily_mean_obs_olr), UserScript(create_mda_filelist), UserScript(harmonic_anomalies_olr), UserScript(harmonic_anomalies_u850), UserScript(harmonic_anomalies_u200), RegridDataPlane(regrid_obs_olr), RegridDataPlane(regrid_obs_u850), RegridDataPlane(regrid_obs_u200), UserScript(script_rmm)
 #
 # Settings for the optional pre-processing steps can be found in the respective sections of the configuration, 
 # mean_daily_annual_cycle_obs_wind, mean_daily_annual_cycle_obs_olr, daily_mean_obs_wind, and daily_mean_obs_olr.  
 # Data is not provided in the tarball to run these steps, but the configurations is provided for reference on how 
 # to set up these calculations.
-# The creation of anomalies using harmonic analysis and the calculation of RMM do not loop; the
-# UserScripts are run once.  The optional pre-processing steps to create the mean daily annual cycle
-# and daily mean data loop by valid time with different timing settings needed used for the different 
-# steps.  The Phase diagram and timeseries plots are created over a different time frame, 01-01-2002 
+#
+# The Phase diagram and timeseries plots are created over a different time frame, 01-01-2002 
 # to 12-30-2002 for both plots.
 
 ##############################################################################
