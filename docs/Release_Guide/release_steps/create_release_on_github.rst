@@ -2,7 +2,7 @@ Create Release on GitHub
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 * Ensure that any and all dependent releases for |projectRepo|
-  have been created according to:ref:`releaseDependencies`.
+  have been created according to :ref:`releaseDependencies`.
 
 * Go to Releases on GitHub and click 'Draft a new release'
 
