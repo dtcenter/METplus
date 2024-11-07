@@ -6,25 +6,40 @@ model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.con
 
 """
 ##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
+##############################################################################
 # Scientific Objective
 # --------------------
 #
 # This use case captures various statistical measures of two model comparisons
 # for low and total cloud fraction with different neighborhood and probability
-# settings for internal model metrics and to aid in future model updates
-# 
+# settings for internal model metrics and to aid in future model updates.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 6.0
 
 ##############################################################################
 # Datasets
 # --------
 #
-# | **Forecast:** Model for Prediction Across Scales (MPAS)
-# | **Observations:** Satellite ClOud and Radiation Property retrieval System (SatCORPS)
-# | **Grid:** GPP 17km masking region
+# **Forecast:** Model for Prediction Across Scales (MPAS)
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
+# **Observations:** Satellite ClOud and Radiation Property retrieval System (SatCORPS)
 #
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. 
+# Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
+#
+# **Grid:** GPP 17km masking region
 
 ##############################################################################
 # METplus Components
@@ -42,6 +57,14 @@ model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.con
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (INIT_BEG):** 2020072300
+#
+# **End time (INIT_END):** 2020072300
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 12H
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 36
+#
 # GridStat is the only MET tool called in this example.
 # It processes the following run time:
 #
@@ -55,8 +78,8 @@ model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.con
 # ---------------------
 #
 # METplus first loads the default configuration file found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line:
-# parm/use_cases/model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.conf
@@ -73,10 +96,10 @@ model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.con
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. note:: See the :ref:`GridStat MET Configuration<grid-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# .. dropdown:: GridStatConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
+#   .. highlight:: bash
+#   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 
 ##############################################################################
 # Python Embedding
@@ -86,8 +109,16 @@ model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.con
 # observation fields.
 # parm/use_cases/model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac/read_input_data.py
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac/read_input_data.py
+.. dropdown:: parm/use_cases/model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac/read_input_data.py
+#
+#   .. highlight:: bash
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac/read_input_data.py
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# [UPDATE_SECTION_CONTENT]
 
 ##############################################################################
 # Running METplus
@@ -109,9 +140,8 @@ model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.con
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac
-# (relative to **OUTPUT_BASE**)
-# and will contain the following files:
+# Output for this use case will be found in {OUTPUT_BASE}/model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac
+# and will contain the following files::
 #
 # * grid_stat_MPAS_F36_CloudFracs_360000L_20200724_120000V_pairs.nc
 # * grid_stat_MPAS_F36_CloudFracs_360000L_20200724_120000V.stat
@@ -134,4 +164,3 @@ model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.con
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 # sphinx_gallery_thumbnail_path = '_static/clouds-GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.png'
-#
