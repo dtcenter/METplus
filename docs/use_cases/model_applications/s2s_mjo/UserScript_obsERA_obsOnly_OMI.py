@@ -88,7 +88,7 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.py
 # run once.  The EOF filelist is done separately since the EOF files are needed for each day of the year while the OMI 
 # calculation is on a separate time frame.The optional pre-processing step loops by valid time.  The optional 
 # pre-processing step uses Regrid-Data-Plane to cut the observation grid to only include -20 to 20 latitude.  This 
-# omitted step can be turned back on by using the PROCESS_LIST that is commented out::
+# omitted step can be turned back on by using the PROCESS_LIST that is commented out:
 #
 # PROCESS_LIST = RegridDataPlane(regrid_obs_olr), UserScript(create_eof_filelist), UserScript(script_omi) 
 #
@@ -111,7 +111,7 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.py
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # There are no MET configuration files used in this use case.
 
