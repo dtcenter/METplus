@@ -43,8 +43,8 @@ UserScript_fcstGFS_obsERA_StratospherePolar.py
 #
 # **Location:** Data for this use case is not contained in the sample data tar files due to 
 # its size. Rather, it is stored as additional data in a separate tar file, named 
-# additional_data_UserScript_fcstGFS_obsERA_StratosphereQBO.tar.gz at 
-# https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v6.0/.
+# additional_data_UserScript_fcstGFS_obsERA_StratosphereQBO.tar.gz and can be
+# downloaded at https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v6.0/.
 
 ##############################################################################
 # METplus Components

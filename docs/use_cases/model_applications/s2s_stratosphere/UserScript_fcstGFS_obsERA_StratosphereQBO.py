@@ -45,8 +45,8 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 #
 # **Location:** Data for this use case is not contained in the sample data tar files 
 # due to its size.  Rather, it is stored as additional data in a separate tar file,
-# named additional_data_UserScript_fcstGFS_obsERA_StratosphereQBO.tar.gz at
-# https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v6.0/.
+# named additional_data_UserScript_fcstGFS_obsERA_StratosphereQBO.tar.gz and can be
+# downloaded at https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v6.0/.
 
 ##############################################################################
 # METplus Components
@@ -81,8 +81,9 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 # **Sequence of forecast leads to process (LEAD_SEQ):** 0, 3, 6, 9, 12, 15, 18, 21 hours
 #
 # This use case does not loop but UserScript and StatAnalysis are each run once using data
-# from the entire time period.  he UserScript call runs stratosphere_qbo_driver.py to compute 
-# a QBO index.  The output QBO index is run through Stat-Analysis to compute the bias.
+# from the entire time period.  The UserScript call runs stratosphere_qbo_driver.py to compute 
+# a QBO index.  The output QBO index is run through Stat-Analysis to compute the continuous
+# statistics.
 #
 # There is an optional step to calculate EOFs rather than providing an input file.  This 
 # calculation is performed inside qbo_driver.py, but requires building a list of input 
@@ -141,8 +142,8 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 # -10 S to 10N latitude.  Then, an EOF analysis is performed on this zonal and meridional 
 # mean data, and two phase diagrams of QBO are created using the plot_qbo_phase_circuits and 
 # plot_qbo_phase_space functions from stratosphere_plots.py in METplotpy.  Additionally the 
-# zonal and meridional mean at 30 and 50mb are output as time series to matched pair (MPR) 
-# files using write_mpr.py in METcalcpy and are also plotted as timeseries using the 
+# zonal and meridional mean at 30 and 50mb are output as time series in MET's matched pair
+# (MPR) format using write_mpr.py in METcalcpy.  They are also plotted as timeseries using the 
 # plot_u_timeseries function from stratosphere_plots.py in METplotpy.  Finally StatAnalysis is 
 # run on the 30 and 50mb U mpr files to compute the bias (ME).
 #
@@ -151,7 +152,7 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 # the COMPUTE_EOF_ZONAL_MERIDIONAL_MEAN variable should be set to true, and an input file list
 # provided by turning on the UserScipt call for [create_eof_filelist].
 #
-# # .. dropdown:: parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereQBO/stratosphere_qbo_driver.py
+# .. dropdown:: parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereQBO/stratosphere_qbo_driver.py
 # 
 #   .. highlight:: python
 #   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereQBO/stratosphere_qbo_driver.py
