@@ -17,7 +17,7 @@ model_applications/clouds/GridStat_fcstMPAS_obsERA5_cloudBaseHgt.conf
 #
 # This use case captures various statistical measures of two model comparisons
 # for cloud base height with different neighborhood settings for internal 
-# model metrics and to aid in future model updates
+# model metrics and to aid in future model updates.
 # 
 
 ##############################################################################
