@@ -1,5 +1,5 @@
-Update Version Number for Release
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Update Version Number
+^^^^^^^^^^^^^^^^^^^^^
 
 .. note::
    
@@ -9,4 +9,5 @@ Update Version Number for Release
 * If the official release version has already been updated (e.g. beta2+ and rc1+), do the following:
   
   * In 'docs/conf.py', update the 'version', 'release_year', and 'release_date' variables for the documentation.
+
   * In 'docs/version', update '__version__'. This value is used by setup.py.
