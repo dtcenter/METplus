@@ -20,7 +20,6 @@ UserScript_fcstGFS_obsERA_StratospherePolar.py
 #
 # Many common modes of variability in the troposphere have stratospheric teloconnection 
 # pathways. Thus, the stratosphere can be a source of predictability for surface weather.
-#
 # This use case calls functions in METcalcpy to create polar cap temperature 
 # and polar vortex wind.  It then runs Stat-Analysis on the output zonal means 
 # and creates a contour plot of bias in lead time and pressure level.

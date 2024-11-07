@@ -26,8 +26,8 @@ UserScript_fcstGFS_obsERA_StratosphereBias.py
 # period based on latitude and pressure between 100 and 1 hPa.
 #
 # In addition this use case also demonstrates how to read semi-structured grids into
-# MET.  Specifically zonal mean data is read into Series-Analysis in the second step
-# of this use case.
+# MET.  Specifically zonal mean data (on a grid of latitude and pressure) is read into 
+# Series-Analysis in the second step of this use case.
 
 ##############################################################################
 # Version Added
@@ -140,10 +140,10 @@ UserScript_fcstGFS_obsERA_StratosphereBias.py
 # --------------
 #
 # This use case runs both zonal_mean_driver.py and bias_plot_driver.py.  The zonal mean driver takes an input netCDF 
-# file and time variable string and creates zonal and meridional means for u and T from directional_means.py in 
-# METcalcpy.  Then, it writes and output netCDF file.
+# file and the time variable.  Then it computes zonal and meridional means for u and T from directional_means.py in 
+# METcalcpy.  It writes the zonal mean data to output netCDF files.
 #
-# The bias plot driver reads the output netCDF files from Series-Analysis and creates plots of the bias over 
+# The bias plot driver reads output netCDF files from Series-Analysis and creates plots of the bias over 
 # latitude and pressure level.  Inputs to both of the python scripts can be found in the [user_env_vars]
 # section of the UserScript_fcstGFS_obsERA_StratosphereBias.conf file
 #
@@ -212,7 +212,7 @@ UserScript_fcstGFS_obsERA_StratosphereBias.py
 # * FCST/FCST_zonal_mean_U_T_20180201_000000.nc
 # * OBS/OBS_zonal_mean_U_T_20180201_000000.nc
 #
-# There are # variable fields present in the zonal mean netCDF file (not including the
+# There are 4 variable fields present in the zonal mean netCDF file (not including the
 # latitude and pressure fields). Those variables are::
 #
 # * time
