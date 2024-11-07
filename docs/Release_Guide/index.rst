@@ -82,6 +82,22 @@ software team and the respective funding institutions. For further inquiries or
 to report any bugs, please contact our dedicated support team in the
 `METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_.
 
+
+.. _releaseDependencies:
+
+********************
+Release Dependencies
+********************
+
+Software dependencies exist for the METplus components. The METviewer and
+METplus wrappers components have dependencies on other METplus components.
+
+Before METviewer is released, METdataio, METcalcpy, and METplotpy need
+to have been released.
+
+Before METplus wrappers is released, MET, METdataio, METcalcpy, METplotpy, and 
+METviewer all need to have been released.
+
 ********************
 Instructions Summary
 ********************
