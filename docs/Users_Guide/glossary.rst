@@ -12990,3 +12990,280 @@ METplus Configuration Glossary
      Specify the value for 'obtype_as_group_val_flag' in the MET configuration file for EnsembleStat.
 
      | *Used by:* EnsembleStat
+
+   ALLOW_MISSING_INPUTS
+     If True, report a warning instead of an error if a wrapper cannot find all
+     of its required input files. Only report an error if the number of runs
+     that successfully found input files does not meet the threshold defined
+     with :ref:`INPUT_THRESH`.
+     Wrapper-specific versions of this variable are supported for many of the
+     wrappers. Defaults to False.
+
+     | *Used by:* Many
+
+   INPUT_THRESH
+     A decimal number between 0 and 1 that defines the threshold of successful
+     run times where all of the required input files were found.
+     If INPUT_THRESH is set to 0.5 and 3 out of the 4 run times (75% or 0.75)
+     successfully found the required input files, no errors will be reported.
+     However, if INPUT_THRESH is set to 0.5 and only 1 out of 4 run times
+     (25% or 0.25) found the required input files, an error will be reported
+     at the end of the run. The threshold is inclusive, so 2 out of 4 successful
+     run times (50% or 0.5) will not report an error.
+     This is only used if :ref:`ALLOW_MISSING_INPUTS` is True.
+     Wrapper-specific versions of this variable are supported for many of the
+     wrappers.
+
+     | *Used by:* Many
+
+   ASCII2NC_ALLOW_MISSING_INPUTS
+     Activates allow missing inputs logic for ASCII2NC only.
+     See :ref:`ALLOWING_MISSING_INPUTS` for details.
+
+     | *Used by:* ASCII2NC
+
+   ASCII2NC_INPUT_THRESH
+     Defines input threshold for ASCII2NC only.
+     See :ref:`INPUT_THRESH` for details.
+
+     | *Used by:* ASCII2NC
+
+   ENSEMBLE_STAT_ALLOW_MISSING_INPUTS
+     Activates allow missing inputs logic for EnsembleStat only.
+     See :ref:`ALLOWING_MISSING_INPUTS` for details.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_INPUT_THRESH
+     Defines input threshold for EnsembleStat only.
+     See :ref:`INPUT_THRESH` for details.
+
+     | *Used by:* EnsembleStat
+
+   GEN_ENS_PROD_ALLOW_MISSING_INPUTS
+     Activates allow missing inputs logic for GenEnsProd only.
+     See :ref:`ALLOWING_MISSING_INPUTS` for details.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_INPUT_THRESH
+     Defines input threshold for GenEnsProd only.
+     See :ref:`INPUT_THRESH` for details.
+
+     | *Used by:* GenEnsProd
+
+   GEN_VX_MASK_ALLOW_MISSING_INPUTS
+     Activates allow missing inputs logic for GenVxMask only.
+     See :ref:`ALLOWING_MISSING_INPUTS` for details.
+
+     | *Used by:* GenVxMask
+
+   GEN_VX_MASK_INPUT_THRESH
+     Defines input threshold for GenVxMask only.
+     See :ref:`INPUT_THRESH` for details.
+
+     | *Used by:* GenVxMask
+
+   GRID_DIAG_ALLOW_MISSING_INPUTS
+     Activates allow missing inputs logic for GridDiag only.
+     See :ref:`ALLOWING_MISSING_INPUTS` for details.
+
+     | *Used by:* GridDiag
+
+   GRID_DIAG_INPUT_THRESH
+     Defines input threshold for GridDiag only.
+     See :ref:`INPUT_THRESH` for details.
+
+     | *Used by:* GridDiag
+
+   GRID_STAT_ALLOW_MISSING_INPUTS
+     Activates allow missing inputs logic for GridStat only.
+     See :ref:`ALLOWING_MISSING_INPUTS` for details.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_INPUT_THRESH
+     Defines input threshold for GridStat only.
+     See :ref:`INPUT_THRESH` for details.
+
+     | *Used by:* GridStat
+
+   IODA2NC_ALLOW_MISSING_INPUTS
+     Activates allow missing inputs logic for IODA2NC only.
+     See :ref:`ALLOWING_MISSING_INPUTS` for details.
+
+     | *Used by:* IODA2NC
+
+   IODA2NC_INPUT_THRESH
+     Defines input threshold for IODA2NC only.
+     See :ref:`INPUT_THRESH` for details.
+
+     | *Used by:* IODA2NC
+
+   MADIS2NC_ALLOW_MISSING_INPUTS
+     Activates allow missing inputs logic for MADIS2NC only.
+     See :ref:`ALLOWING_MISSING_INPUTS` for details.
+
+     | *Used by:* MADIS2NC
+
+   MADIS2NC_INPUT_THRESH
+     Defines input threshold for MADIS2NC only.
+     See :ref:`INPUT_THRESH` for details.
+
+     | *Used by:* MADIS2NC
+
+   MODE_ALLOW_MISSING_INPUTS
+     Activates allow missing inputs logic for MODE only.
+     See :ref:`ALLOWING_MISSING_INPUTS` for details.
+
+     | *Used by:* MODE
+
+   MODE_INPUT_THRESH
+     Defines input threshold for MODE only.
+     See :ref:`INPUT_THRESH` for details.
+
+     | *Used by:* MODE
+
+   MTD_ALLOW_MISSING_INPUTS
+     Activates allow missing inputs logic for MTD only.
+     See :ref:`ALLOWING_MISSING_INPUTS` for details.
+
+     | *Used by:* MTD
+
+   MTD_INPUT_THRESH
+     Defines input threshold for MTD only.
+     See :ref:`INPUT_THRESH` for details.
+
+     | *Used by:* MTD
+
+   PB2NC_ALLOW_MISSING_INPUTS
+     Activates allow missing inputs logic for PB2NC only.
+     See :ref:`ALLOWING_MISSING_INPUTS` for details.
+
+     | *Used by:* PB2NC
+
+   PB2NC_INPUT_THRESH
+     Defines input threshold for PB2NC only.
+     See :ref:`INPUT_THRESH` for details.
+
+     | *Used by:* PB2NC
+
+   PCP_COMBINE_ALLOW_MISSING_INPUTS
+     Activates allow missing inputs logic for PCPCombine only.
+     See :ref:`ALLOWING_MISSING_INPUTS` for details.
+
+     | *Used by:* PCPCombine
+
+   PCP_COMBINE_INPUT_THRESH
+     Defines input threshold for PCPCombine only.
+     See :ref:`INPUT_THRESH` for details.
+
+     | *Used by:* PCPCombine
+
+   PLOT_DATA_PLANE_ALLOW_MISSING_INPUTS
+     Activates allow missing inputs logic for PlotDataPlane only.
+     See :ref:`ALLOWING_MISSING_INPUTS` for details.
+
+     | *Used by:* PlotDataPlane
+
+   PLOT_DATA_PLANE_INPUT_THRESH
+     Defines input threshold for PlotDataPlane only.
+     See :ref:`INPUT_THRESH` for details.
+
+     | *Used by:* PlotDataPlane
+
+   PLOT_POINT_OBS_ALLOW_MISSING_INPUTS
+     Activates allow missing inputs logic for PlotPointObs only.
+     See :ref:`ALLOWING_MISSING_INPUTS` for details.
+
+     | *Used by:* PlotPointObs
+
+   PLOT_POINT_OBS_INPUT_THRESH
+     Defines input threshold for PlotPointObs only.
+     See :ref:`INPUT_THRESH` for details.
+
+     | *Used by:* PlotPointObs
+
+   POINT2GRID_ALLOW_MISSING_INPUTS
+     Activates allow missing inputs logic for Point2Grid only.
+     See :ref:`ALLOWING_MISSING_INPUTS` for details.
+
+     | *Used by:* Point2Grid
+
+   POINT2GRID_INPUT_THRESH
+     Defines input threshold for Point2Grid only.
+     See :ref:`INPUT_THRESH` for details.
+
+     | *Used by:* Point2Grid
+
+   POINT_STAT_ALLOW_MISSING_INPUTS
+     Activates allow missing inputs logic for PointStat only.
+     See :ref:`ALLOWING_MISSING_INPUTS` for details.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_INPUT_THRESH
+     Defines input threshold for PointStat only.
+     See :ref:`INPUT_THRESH` for details.
+
+     | *Used by:* PointStat
+
+   REGRID_DATA_PLANE_ALLOW_MISSING_INPUTS
+     Activates allow missing inputs logic for RegridDataPlane only.
+     See :ref:`ALLOWING_MISSING_INPUTS` for details.
+
+     | *Used by:* RegridDataPlane
+
+   REGRID_DATA_PLANE_INPUT_THRESH
+     Defines input threshold for RegridDataPlane only.
+     See :ref:`INPUT_THRESH` for details.
+
+     | *Used by:* RegridDataPlane
+
+   SERIES_ANALYSIS_ALLOW_MISSING_INPUTS
+     Activates allow missing inputs logic for SeriesAnalysis only.
+     See :ref:`ALLOWING_MISSING_INPUTS` for details.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_INPUT_THRESH
+     Defines input threshold for SeriesAnalysis only.
+     See :ref:`INPUT_THRESH` for details.
+
+     | *Used by:* SeriesAnalysis
+
+   TC_DIAG_ALLOW_MISSING_INPUTS
+     Activates allow missing inputs logic for TCDiag only.
+     See :ref:`ALLOWING_MISSING_INPUTS` for details.
+
+     | *Used by:* TCDiag
+
+   TC_DIAG_INPUT_THRESH
+     Defines input threshold for TCDiag only.
+     See :ref:`INPUT_THRESH` for details.
+
+     | *Used by:* TCDiag
+
+   TC_GEN_ALLOW_MISSING_INPUTS
+     Activates allow missing inputs logic for TCGen only.
+     See :ref:`ALLOWING_MISSING_INPUTS` for details.
+
+     | *Used by:* TCGen
+
+   TC_GEN_INPUT_THRESH
+     Defines input threshold for TCGen only.
+     See :ref:`INPUT_THRESH` for details.
+
+     | *Used by:* TCGen
+
+   WAVELET_STAT_ALLOW_MISSING_INPUTS
+     Activates allow missing inputs logic for WaveletStat only.
+     See :ref:`ALLOWING_MISSING_INPUTS` for details.
+
+     | *Used by:* WaveletStat
+
+   WAVELET_STAT_INPUT_THRESH
+     Defines input threshold for WaveletStat only.
+     See :ref:`INPUT_THRESH` for details.
+
+     | *Used by:* WaveletStat
