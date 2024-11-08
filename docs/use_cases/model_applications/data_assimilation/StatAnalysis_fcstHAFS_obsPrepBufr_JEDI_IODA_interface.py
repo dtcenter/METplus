@@ -42,7 +42,6 @@ model_applications/data_assimilation/StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA
 ##############################################################################
 # Version Added
 # -------------
-
 #
 # METplus version 4.0
 
