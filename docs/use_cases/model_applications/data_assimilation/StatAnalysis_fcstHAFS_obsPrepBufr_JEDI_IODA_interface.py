@@ -112,7 +112,7 @@ model_applications/data_assimilation/StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-#.. dropdown:: STATAnalysisConfig_wrapped
+# .. dropdown:: STATAnalysisConfig_wrapped
 #
 #   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/STATAnalysisConfig_wrapped
@@ -171,7 +171,7 @@ model_applications/data_assimilation/StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA
 # Output for this use case will be found in {OUTPUT_BASE}/model_applications/data_assimilation/StatAnalysis_HofX 
 # and will contain the following file::
 #
-#   * dump.out
+#  * dump.out
 
 ##############################################################################
 # Keywords
