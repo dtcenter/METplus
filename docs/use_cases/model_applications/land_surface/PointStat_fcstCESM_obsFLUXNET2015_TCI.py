@@ -23,7 +23,6 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #
 # Dirmeyer, P. A., 2011: The terrestrial segment of soil moisture-climate coupling. 
 # *Geophys. Res. Lett.*, **38**, L16702, `doi: 10.1029/2011GL048268 <https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2011GL048268>`_.
-#
 
 ##############################################################################
 # Version Added
@@ -47,16 +46,17 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 # This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 #
 # **Data Source:** CESM - NSF NCAR Climate & Global Dynamics (CGD); FLUXNET2015 "SUBSET" Data Product: https://fluxnet.org/data/fluxnet2015-dataset/subset-data-product/
-
-##############################################################################
+#
+#
+#
 # Python Dependencies
-# -------------------
+# 
 #
 # This use case requires the following Python dependencies::
 #
-# * Xarray
-# * Pandas
-# * METcalcpy 3.0.0+
+#  * Xarray
+#  * Pandas
+#  * METcalcpy 3.0.0+
 
 ##############################################################################
 # METplus Components
