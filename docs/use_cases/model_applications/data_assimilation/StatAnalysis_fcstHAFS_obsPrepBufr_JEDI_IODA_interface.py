@@ -132,6 +132,7 @@ model_applications/data_assimilation/StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA
 ##############################################################################
 # User Scripting
 # --------------
+#
 # [UPDATE_SECTION_CONTENT]
 #
 
