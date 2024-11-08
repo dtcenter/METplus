@@ -270,7 +270,7 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #
 # * PyEmbedIngest
 #
-# The **OUTPUT_BASE** folder contains all of the TCI output calculated using CESM files in NETCDF format:
+# The **OUTPUT_BASE** folder contains all of the TCI output calculated using CESM files in NETCDF format::
 #
 # * regrid_data_plane_DJF.nc
 # * regrid_data_plane_JJA.nc
@@ -279,7 +279,7 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #
 # * PointStat
 #
-# The final folder, PointStat, contains all of the following output from the PointStat call:
+# The final folder, PointStat, contains all of the following output from the PointStat call::
 #
 # * point_stat_DJF_000000L_19790101_000000V_cnt.txt
 # * point_stat_DJF_000000L_19790101_000000V_ctc.txt
@@ -300,7 +300,7 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #
 # * PlotPointObs
 #
-# The final folder plot_point_obs, contains all of the plots from the PlotPointObs call:
+# The final folder plot_point_obs, contains all of the plots from the PlotPointObs call::
 #
 # * cesm_fluxnet2015_DJF.ps
 # * cesm_fluxnet2015_JJA.ps
