@@ -140,8 +140,6 @@ model_applications/data_assimilation/StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA
 # Running METplus
 # ---------------
 #
-# It is recommended to run this use case by:
-#
 # Pass the use case configuration file to the run_metplus.py script along 
 # with any user-specific system configuration files if desired::
 #
