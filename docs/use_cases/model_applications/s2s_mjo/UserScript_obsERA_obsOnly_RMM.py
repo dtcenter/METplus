@@ -98,9 +98,9 @@ UserScript_obsERA_obsOnly_RMM.py
 # the different steps.  These steps are turned off due to data size and processing time.  Two of the steps are 
 # calls to PcP-Combine to compute the mean daily annual data for OLR, wind (U850 and U200).  The other two steps 
 # also call Pcp-Combine but these compute daily means for OLR and wind.  These omitted steps can be turned back 
-# on by using the PROCESS_LIST that is commented out::
+# on by using the PROCESS_LIST that is commented out in the file:
 #
-#   PROCESS_LIST = PROCESS_LIST = PcpCombine(mean_daily_annual_cycle_obs_wind), PcpCombine(mean_daily_annual_cycle_obs_olr), PcpCombine(daily_mean_obs_wind), PcpCombine(daily_mean_obs_olr), UserScript(create_mda_filelist), UserScript(harmonic_anomalies_olr), UserScript(harmonic_anomalies_u850), UserScript(harmonic_anomalies_u200), RegridDataPlane(regrid_obs_olr), RegridDataPlane(regrid_obs_u850), RegridDataPlane(regrid_obs_u200), UserScript(script_rmm)
+# PROCESS_LIST = PcpCombine(mean_daily_annual_cycle_obs_wind), PcpCombine(mean_daily_annual_cycle_obs_olr), PcpCombine(daily_mean_obs_wind), PcpCombine(daily_mean_obs_olr), UserScript(create_mda_filelist), UserScript(harmonic_anomalies_olr), UserScript(harmonic_anomalies_u850), UserScript(harmonic_anomalies_u200), RegridDataPlane(regrid_obs_olr), RegridDataPlane(regrid_obs_u850), RegridDataPlane(regrid_obs_u200), UserScript(script_rmm)
 #
 # Settings for the optional pre-processing steps can be found in the respective sections of the configuration, 
 # mean_daily_annual_cycle_obs_wind, mean_daily_annual_cycle_obs_olr, daily_mean_obs_wind, and daily_mean_obs_olr.  
@@ -137,12 +137,13 @@ UserScript_obsERA_obsOnly_RMM.py
 # User Scripting
 # --------------
 #
-# The RMM driver script (RMM_driver.py) orchestrates the calculation of the MJO indices and the generation of three 
-# RMM plots.  The calculation proceeds using OLR, U850, and U200 data between 15N and 15S.  The 120
-# day mean is first removed and the data are normalized by normalization factors (generally the square
-# root of the average variance).  The anomalies are projected onto Empirical Orthogonal Function (EOF)
-# data.  The OLR is then filtered for 20 - 96 days, and regressed onto the daily EOFs.  Finally, it's 
-# normalized and these normalized components are plotted on a phase diagram and timeseries plot.
+# There are two python scripts used in this use case.  The RMM driver script (RMM_driver.py) 
+# orchestrates the calculation of the MJO indices and the generation of three RMM plots.  The 
+# calculation proceeds using OLR, U850, and U200 data between 15N and 15S.  The 120 day mean is first 
+# removed and the data are normalized by normalization factors (generally the square root of the 
+# average variance).  The anomalies are projected onto Empirical Orthogonal Function (EOF) data.  The 
+# OLR is then filtered for 20 - 96 days, and regressed onto the daily EOFs.  Finally, it's normalized 
+# and these normalized components are plotted on a phase diagram and timeseries plot.
 #
 # The anomalies are created using a harmonic analysis for OLR, U850, and U200 with the python script
 # compute_harmonic_anomalies.py.  Input to the harmonic analysis script include a text file containing the
@@ -182,8 +183,8 @@ UserScript_obsERA_obsOnly_RMM.py
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use 
-# case will be found in model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM/plots (relative to **OUTPUT_BASE**).
-# The output may include the regridded data and daily averaged files if those steps are turned on.  Three output
+# case will be found in {OUTPUT_BASE}/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM/plots.  The
+# output may include the regridded data and daily averaged files if those steps are turned on.  Three output
 # plots will be generated, a phase diagram, time series, and EOF plot::
 #
 #  * obs_RMM_comp_phase.png
@@ -209,7 +210,8 @@ UserScript_obsERA_obsOnly_RMM.py
 # * ERA_U200_YYYYMMDD.nc
 # * ERA_U850_YYYYMMDD.nc
 #
-# One variabe is output in each of the above files (not including the lat/lon fields). Those variables are::
+# One variabe is output in each of the regriddwed files (not including the lat/lon fields). Those variables 
+# are::
 #
 # * OLR_anom(lat, lon)
 # * U_P200_anom(lat, lon)
