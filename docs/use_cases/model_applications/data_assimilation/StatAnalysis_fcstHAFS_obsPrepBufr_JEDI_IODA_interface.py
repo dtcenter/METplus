@@ -57,11 +57,14 @@ model_applications/data_assimilation/StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA
 #
 # **Data source:** JEDI HofX output files in IODA format
 #
-# **Location:** All of the input data required for this use case can be found in the 
-# met_test sample data tarball. Click here to the METplus releases page and download 
-# sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# The tarball should be unpacked into the directory that you will set the value of INPUT_BASE. 
-# See `Running METplus`_ section for more information.
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -144,20 +147,7 @@ model_applications/data_assimilation/StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA
 #
 #   run_metplus.py /path/to/StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA_interface.conf /path/to/user_system.conf
 #
-# The following METplus configuration variables must be set correctly to run this example.:
-#
-# | * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs).
-# | * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# | * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
-#
-# **NOTE:** All of these items must be found under the [dir] section.
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output
@@ -168,7 +158,7 @@ model_applications/data_assimilation/StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in {OUTPUT_BASE}/model_applications/data_assimilation/StatAnalysis_HofX 
+# Output for this use case will be found in {OUTPUT_BASE}/StatAnalysis_HofX 
 # and will contain the following file::
 #
 #  * dump.out
