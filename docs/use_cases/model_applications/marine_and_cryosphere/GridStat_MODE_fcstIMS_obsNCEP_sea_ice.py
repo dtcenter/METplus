@@ -34,29 +34,28 @@ model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.c
 # of MET, IMS is referred to as "forecast" and NCEP is referred to as "observation".
 #
 # | **Forecast:** IMS Sea Ice Concentration
-# |     - Variable of interest: ICEC; ICEC is a binary field where "1" means a sea ice concentration of >=0.40 and "0" means a sea ice concentration of <0.40.
-# |     - Level: Z0 (surface)
-# |     - Dates: 20190201 - 20190228
-# |     - Valid time: 22 UTC
-# |     - Format: Grib2
-# |     - Projection: 4-km Polar Stereographic
+# |     * Variable of interest: ICEC; ICEC is a binary field where "1" means a sea ice concentration of >=0.40 and "0" means a sea ice concentration of <0.40.
+# |     * Level: Z0 (surface)
+# |     * Dates: 20190201 - 20190228
+# |     * Valid time: 22 UTC
+# |     * Format: Grib2
+# |     * Projection: 4-km Polar Stereographic
 #
-#  | **Observation:** NCEP Sea Ice Concentration
-#  |    - Variable of interest: ICEC; ICEC is the sea ice concentration with values from 
-#        0.0 - 1.0. Values >1.0 && <=1.28 indicate flagged data to be included and should be set to ==1.0 when running MET. 
-#        Values >1.28 should be ignored as that indicates an invalid observation.
-#  |    - Level: Z0 (surface)
-#  |    - Dates: 20190201 - 20190228
-#  |    - Valid time: 00 UTC
-#  |    - Format: Grib2
-#  |    - Projection: 12.7-km Polar Stereographic
+# | **Observation:** NCEP Sea Ice Concentration
+# |    * Variable of interest: ICEC; ICEC is the sea ice concentration with values from 
+# |      0.0 - 1.0. Values >1.0 && <=1.28 indicate flagged data to be included and should be set to ==1.0 when running MET. 
+# |      Values >1.28 should be ignored as that indicates an invalid observation.
+# |    * Level: Z0 (surface)
+# |    * Dates: 20190201 - 20190228
+# |    * Valid time: 00 UTC
+# |    * Format: Grib2
+# |    * Projection: 12.7-km Polar Stereographic
 #
 # **Climatology:** None
 #    
-#  **Data source:** Received from Robert Grumbine at EMC. IMS data is originally from the NIC. NCEP data is originally from NCEP.
+# **Data source:** Received from Robert Grumbine at EMC. IMS data is originally from the
+#  `NIC <https://usicecenter.gov/Products/ImsData>`_. NCEP data is originally from NCEP.
 #  
-#  **Location:** IMS: https://www.natice.noaa.gov/ims/index.html; IMS - (https://polar.ncep.noaa.gov/seaice/Analyses.shtml)
-# 
 # **Location:** All of the input data required for this use case can be 
 # found in a sample data tarball. Each use case category will have 
 # one or more sample data tarballs. It is only necessary to download 
@@ -99,6 +98,7 @@ model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.c
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf
+#
 
 ##################################################################################
 # MET Configuration
@@ -133,12 +133,11 @@ model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.c
 # --------------
 #
 # None
+#
 
 ################################################################################
 # Running METplus
 # ---------------
-#
-# This use case can be run two ways:
 #
 # Pass the use case configuration file to the run_metplus.py script along 
 # with any user-specific system configuration files if desired::
@@ -157,8 +156,10 @@ model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.c
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
 # Output for this use case will be found in two locations:
-# GridStat output will be in {OUTPUT_BASE}/model_applications/marine_and_cryosphere/sea_ice/GridStat.
-# MODE output will be in {OUTPUT_BASE}/model_applications/marine_and_cryosphere/sea_ice/MODE.
+#
+#  * GridStat output will be in {OUTPUT_BASE}/model_applications/marine_and_cryosphere/sea_ice/GridStat.
+#  * MODE output will be in {OUTPUT_BASE}/model_applications/marine_and_cryosphere/sea_ice/MODE.
+#
 # Using the output for 20190201 as an example:
 #
 # **GridStat output**::
