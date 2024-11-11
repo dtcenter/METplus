@@ -11,7 +11,7 @@ model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.c
 #   :local:
 #   :backlinks: none
 
-####################################################################################################
+################################################################################
 # Scientific Objective
 # --------------------
 #
@@ -26,7 +26,7 @@ model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.c
 #
 # METplus version 3.0
 
-####################################################################################################
+#################################################################################
 # Datasets
 # --------
 #
@@ -66,13 +66,13 @@ model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.c
 # This tarball should be unpacked into the directory that you will 
 # set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
-###################################################################################################
+###################################################################################
 # METplus Components
 # ------------------
 #
 # This use case runs the MET GridStat and MODE tools.
 
-###################################################################################################
+###################################################################################
 # METplus Workflow
 # ----------------
 # 
@@ -89,7 +89,7 @@ model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.c
 # tool. It processes analysis times from 2019-02-01 to 2019-02-05. The valid times for each analysis
 # are different from one another (please see `Datasets`_ section for more information).
 
-###################################################################################################
+##################################################################################
 # METplus Configuration
 # ---------------------
 # 
@@ -101,7 +101,7 @@ model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.c
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf
 #
 
-###################################################################################################
+##################################################################################
 # MET Configuration
 # -----------------
 #
@@ -158,8 +158,8 @@ model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.c
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
 # Output for this use case will be found in two locations:
-# GridStat output will be in OUTPUT_BASE/model_applications/marine_and_cryosphere/sea_ice/GridStat.
-# MODE output will be in OUTPUT_BASE/model_applications/marine_and_cryosphere/sea_ice/MODE.
+# GridStat output will be in {OUTPUT_BASE}/model_applications/marine_and_cryosphere/sea_ice/GridStat.
+# MODE output will be in {OUTPUT_BASE}/model_applications/marine_and_cryosphere/sea_ice/MODE.
 # Using the output for 20190201 as an example:
 #
 # **GridStat output**::
