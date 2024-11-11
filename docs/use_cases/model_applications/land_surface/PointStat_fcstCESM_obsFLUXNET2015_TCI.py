@@ -38,7 +38,7 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 # | * Community Land Model (CLM) file
 # | * Community Atmosphere Model (CAM) file
 #
-# **Observations:** Raw FLUXNET2015 observations
+# **Observation:** Raw FLUXNET2015 observations
 #
 # **Climatology:** None
 #
@@ -52,17 +52,6 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 # set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 #
 # **Data Source:** CESM - NSF NCAR Climate & Global Dynamics (CGD); FLUXNET2015 "SUBSET" Data Product: https://fluxnet.org/data/fluxnet2015-dataset/subset-data-product/
-#
-#
-#
-# Python Dependencies
-# 
-#
-# This use case requires the following Python dependencies::
-#
-#  * Xarray
-#  * Pandas
-#  * METcalcpy 3.0.0+
 
 ##############################################################################
 # METplus Components
@@ -128,10 +117,6 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 # not supported by METplus you’d like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# If there is a setting in the MET configuration file that is not controlled by an environment variable, 
-# you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section 
-# of the METplus configuration files. See the ‘User Defined Config’ section on the ‘System Configuration’ page of the METplus User’s Guide for more information.
-#
 # .. dropdown:: PointStatConfig_wrapped
 #
 #   .. highlight:: bash
@@ -140,6 +125,12 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 ##############################################################################
 # Python Embedding
 # ----------------
+#
+# This use case requires the following Python dependencies:
+#
+# * Xarray
+# * Pandas
+# * METcalcpy 3.0.0+
 #
 # This use case uses a Python embedding script to read both the forecast and observation data, in order to compute TCI,
 # which is the diagnostic that is being verified by MET using PointStat. The CESM forecast data is read using:
@@ -175,10 +166,10 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #
 # The raw FLUXNET2015 SUBSET data are read using:
 #
-# parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/fluxnet2015_tci.py
-#
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/fluxnet2015_tci.py
+# .. dropdown:: parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/fluxnet2015_tci.py
+# 
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/fluxnet2015_tci.py
 #
 # The user can control all command line arguments to this script via METplus config entries:
 #
@@ -271,21 +262,21 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for the use case will be found in 3 folders(relative to **OUTPUT_BASE**).
+# Output for the use case will be found in 3 folders (relative to **OUTPUT_BASE**).
 # Those folders are::
 #
 #   * PyEmbedIngest
+#   * PointStat
+#   * PlotPointObs
 #
-# The **OUTPUT_BASE** folder contains all of the TCI output calculated using CESM files in NETCDF format::
+# The PyEmbedIngest folder contains all of the TCI output calculated using CESM files in NETCDF format::
 #
 #   * regrid_data_plane_DJF.nc
 #   * regrid_data_plane_JJA.nc
 #   * regrid_data_plane_MAM.nc
 #   * regrid_data_plane_SON.nc
 #
-#   * PointStat
-#
-# The final folder, PointStat, contains all of the following output from the PointStat call::
+# The PointStat folder contains all of the following output from the PointStat call::
 #
 #   * point_stat_DJF_000000L_19790101_000000V_cnt.txt
 #   * point_stat_DJF_000000L_19790101_000000V_ctc.txt
@@ -304,9 +295,7 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #   * point_stat_SON_000000L_19790101_000000V_mpr.txt
 #   * point_stat_SON_000000L_19790101_000000V.stat
 #
-#   * PlotPointObs
-#
-# The final folder plot_point_obs, contains all of the plots from the PlotPointObs call::
+# The PlotPointObs folder contains all of the plots from the PlotPointObs call::
 #
 #   * cesm_fluxnet2015_DJF.ps
 #   * cesm_fluxnet2015_JJA.ps
