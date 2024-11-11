@@ -63,6 +63,7 @@
     "category": "land_surface",
     "index_list": "0",
     "disabled": true,
+    "disabled_reason": "need to check reason",
     "run": false
   },
   {
@@ -98,6 +99,13 @@
   {
     "category": "marine_and_cryosphere",
     "index_list": "10",
+    "run": false
+  },
+  {
+    "category": "marine_and_cryosphere",
+    "index_list": "11",
+    "disabled": true,
+    "disabled_reason": "exceeds GitHub Actions environment limits",
     "run": false
   },
   {
@@ -231,6 +239,20 @@
     "run": false
   },
   {
+    "category": "s2s_stratosphere",
+    "index_list": "1",
+    "disabled": true,
+    "disabled_reason": "exceeds GitHub Actions environment limits",
+    "run": false
+  },
+  {
+    "category": "s2s_stratosphere",
+    "index_list": "2",
+    "disabled": true,
+    "disabled_reason": "exceeds GitHub Actions environment limits",
+    "run": false
+  },
+  {
     "category": "short_range",
     "index_list": "0",
     "run": false
@@ -274,12 +296,14 @@
     "category": "short_range",
     "index_list": "14",
     "disabled": true,
+    "disabled_reason": "need new RRFS data with new line types",
     "run": false
   },
   {
     "category": "short_range",
     "index_list": "15",
     "disabled": true,
+    "disabled_reason": "exceeds GitHub Actions environment limits",
     "run":false
   },
   {

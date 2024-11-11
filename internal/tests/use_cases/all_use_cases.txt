@@ -102,10 +102,10 @@ Category: marine_and_cryosphere
 5::GridStat_fcstRTOFS_obsAVISO_climHYCOM_ssh::model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsAVISO_climHYCOM_ssh.conf:: icecover_env, py_embed
 6::UserScript_fcstRTOFS_obsAOML_calcTransport::model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransport.conf:: icecover_env, py_embed
 7::PointStat_fcstGFS_obsNDBC_WaveHeight::model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsNDBC_WaveHeight.conf
-#X::GridStat_fcstRTOFS_obsGHRSST_climWOA_sst::model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf:: icecover_env, py_embed
 8::PointStat_fcstRTOFS_obsARGO_climoWOA23_temp::model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_temp.conf:: py_embed
 9::PointStat_fcstGFS_obsASCAT_satelliteWinds::model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds.conf:: icecover_env, py_embed
 10::PointStat_fcstGFS_obsJASON3_satelliteAltimetry::model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAltimetry.conf:: py_embed_base_env, py_embed
+11::GridStat_fcstRTOFS_obsGHRSST_climWOA_sst::model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf:: icecover_env, py_embed
 
 
 Category: medium_range
@@ -164,8 +164,8 @@ Category: s2s_mjo
 
 Category: s2s_stratosphere
 0:: UserScript_fcstGFS_obsERA_StratosphereBias:: model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias.conf:: weatherregime_env,cartopy,metdataio
-#X::UserScript_fcstGFS_obsERA_StratospherePolar:: model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.conf:: weatherregime_env,cartopy,metdataio
-#X::UserScript_fcstGFS_obsERA_StratosphereQBO:: model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereQBO.conf:: weatherregime_env,cartopy,metdataio
+1::UserScript_fcstGFS_obsERA_StratospherePolar:: model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.conf:: weatherregime_env,cartopy,metdataio
+2::UserScript_fcstGFS_obsERA_StratosphereQBO:: model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereQBO.conf:: weatherregime_env,cartopy,metdataio
 
 
 Category: short_range
