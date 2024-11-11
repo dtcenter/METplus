@@ -34,9 +34,10 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 # Datasets
 # --------
 #
-# | **Forecast:** CESM 1979-1983 Simulations 
-# | * Community Land Model (CLM) file
-# | * Community Atmosphere Model (CAM) file
+# | **Forecast:** CESM 1979-1983 Simulations
+# |
+# |               * Community Land Model (CLM) file
+# |               * Community Atmosphere Model (CAM) file
 #
 # **Observation:** Raw FLUXNET2015 observations
 #
@@ -242,6 +243,7 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #
 # [UPDATE_SECTION_CONTENT]
 #
+
 ##############################################################################
 # Running METplus
 # ---------------
@@ -265,42 +267,42 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 # Output for the use case will be found in 3 folders (relative to **OUTPUT_BASE**).
 # Those folders are::
 #
-#   * PyEmbedIngest
-#   * PointStat
-#   * PlotPointObs
+#  * PyEmbedIngest
+#  * PointStat
+#  * PlotPointObs
 #
 # The PyEmbedIngest folder contains all of the TCI output calculated using CESM files in NETCDF format::
 #
-#   * regrid_data_plane_DJF.nc
-#   * regrid_data_plane_JJA.nc
-#   * regrid_data_plane_MAM.nc
-#   * regrid_data_plane_SON.nc
+#  * regrid_data_plane_DJF.nc
+#  * regrid_data_plane_JJA.nc
+#  * regrid_data_plane_MAM.nc
+#  * regrid_data_plane_SON.nc
 #
 # The PointStat folder contains all of the following output from the PointStat call::
 #
-#   * point_stat_DJF_000000L_19790101_000000V_cnt.txt
-#   * point_stat_DJF_000000L_19790101_000000V_ctc.txt
-#   * point_stat_DJF_000000L_19790101_000000V_mpr.txt
-#   * point_stat_DJF_000000L_19790101_000000V.stat
-#   * point_stat_JJA_000000L_19790101_000000V_cnt.txt
-#   * point_stat_JJA_000000L_19790101_000000V_ctc.txt
-#   * point_stat_JJA_000000L_19790101_000000V_mpr.txt
-#   * point_stat_JJA_000000L_19790101_000000V.stat
-#   * point_stat_MAM_000000L_19790101_000000V_cnt.txt
-#   * point_stat_MAM_000000L_19790101_000000V_ctc.txt
-#   * point_stat_MAM_000000L_19790101_000000V_mpr.txt
-#   * point_stat_MAM_000000L_19790101_000000V.stat
-#   * point_stat_SON_000000L_19790101_000000V_cnt.txt
-#   * point_stat_SON_000000L_19790101_000000V_ctc.txt
-#   * point_stat_SON_000000L_19790101_000000V_mpr.txt
-#   * point_stat_SON_000000L_19790101_000000V.stat
+#  * point_stat_DJF_000000L_19790101_000000V_cnt.txt
+#  * point_stat_DJF_000000L_19790101_000000V_ctc.txt
+#  * point_stat_DJF_000000L_19790101_000000V_mpr.txt
+#  * point_stat_DJF_000000L_19790101_000000V.stat
+#  * point_stat_JJA_000000L_19790101_000000V_cnt.txt
+#  * point_stat_JJA_000000L_19790101_000000V_ctc.txt
+#  * point_stat_JJA_000000L_19790101_000000V_mpr.txt
+#  * point_stat_JJA_000000L_19790101_000000V.stat
+#  * point_stat_MAM_000000L_19790101_000000V_cnt.txt
+#  * point_stat_MAM_000000L_19790101_000000V_ctc.txt
+#  * point_stat_MAM_000000L_19790101_000000V_mpr.txt
+#  * point_stat_MAM_000000L_19790101_000000V.stat
+#  * point_stat_SON_000000L_19790101_000000V_cnt.txt
+#  * point_stat_SON_000000L_19790101_000000V_ctc.txt
+#  * point_stat_SON_000000L_19790101_000000V_mpr.txt
+#  * point_stat_SON_000000L_19790101_000000V.stat
 #
 # The PlotPointObs folder contains all of the plots from the PlotPointObs call::
 #
-#   * cesm_fluxnet2015_DJF.ps
-#   * cesm_fluxnet2015_JJA.ps
-#   * cesm_fluxnet2015_MAM.ps
-#   * cesm_fluxnet2015_SON.ps
+#  * cesm_fluxnet2015_DJF.ps
+#  * cesm_fluxnet2015_JJA.ps
+#  * cesm_fluxnet2015_MAM.ps
+#  * cesm_fluxnet2015_SON.ps
 
 ##############################################################################
 # Keywords
