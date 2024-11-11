@@ -99,7 +99,6 @@ model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.c
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf
-#
 
 ##################################################################################
 # MET Configuration
@@ -134,7 +133,7 @@ model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.c
 # --------------
 #
 # None
-#
+
 ################################################################################
 # Running METplus
 # ---------------
