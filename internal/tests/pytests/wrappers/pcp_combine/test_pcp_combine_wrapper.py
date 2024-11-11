@@ -377,7 +377,7 @@ def test_pcp_combine_derive(metplus_config, get_test_data_dir, config_overrides,
     stat_list = 'sum,min,max,range,mean,stdev,vld_count'
     fcst_name = 'APCP'
     fcst_level = 'A03'
-    fcst_fmt = f'-field \'name="{fcst_name}"; level="{fcst_level}";\''
+    fcst_fmt = f'\'name="{fcst_name}"; level="{fcst_level}";\''
     config = metplus_config
 
     test_data_dir = get_test_data_dir()
@@ -427,13 +427,13 @@ def test_pcp_combine_derive(metplus_config, get_test_data_dir, config_overrides,
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
     out_dir = wrapper.c_dict.get('FCST_OUTPUT_DIR')
     expected_cmds = [(f"{app_path} -derive {stat_list} "
-                      f"{fcst_input_dir}/2005080700/24.tm00_G212 "
-                      f"{fcst_input_dir}/2005080700/21.tm00_G212 "
-                      f"{fcst_input_dir}/2005080700/18.tm00_G212 "
-                      f"{fcst_input_dir}/2005080700/15.tm00_G212 "
-                      f"{fcst_input_dir}/2005080700/12.tm00_G212 "
-                      f"{fcst_input_dir}/2005080700/09.tm00_G212 "
-                      f"{fcst_fmt} {extra_fields}"
+                      f"{fcst_input_dir}/2005080700/24.tm00_G212 {fcst_fmt} "
+                      f"{fcst_input_dir}/2005080700/21.tm00_G212 {fcst_fmt} "
+                      f"{fcst_input_dir}/2005080700/18.tm00_G212 {fcst_fmt} "
+                      f"{fcst_input_dir}/2005080700/15.tm00_G212 {fcst_fmt} "
+                      f"{fcst_input_dir}/2005080700/12.tm00_G212 {fcst_fmt} "
+                      f"{fcst_input_dir}/2005080700/09.tm00_G212 {fcst_fmt} "
+                      f"{extra_fields}"
                       f"{out_dir}/2005080700_f24_A18.nc {verbosity}"),
                      ]
 

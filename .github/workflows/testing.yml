@@ -141,6 +141,8 @@ jobs:
         run: |
           python3 -m pip install --upgrade pip
           python3 -m pip install -r internal/tests/pytests/requirements.txt
+      - name: Install ImageMagick convert
+        run: sudo apt install imagemagick
       - name: Run Pytests
         run: coverage run -m pytest internal/tests/pytests
         env:

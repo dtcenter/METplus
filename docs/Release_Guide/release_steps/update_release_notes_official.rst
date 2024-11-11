@@ -26,7 +26,8 @@ release. Open the following URL in a browser:
 * When creating the official release, combine the beta release sections
   into one section (i.e. "Version X.Y.Z release notes (YYYYMMDD)").
 
-* For the METplus repository, remove the **development timeline** information
-  prior to creating the official release.
+* For the METplus repository, remove the **development timeline** information under the 
+  `METplus Release Information <https://metplus.readthedocs.io/en/develop/Users_Guide/release-notes.html#metplus-release-information>`_
+  section prior to creating the official release.
 
 * Commit changes and push to GitHub.

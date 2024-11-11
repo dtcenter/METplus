@@ -233,6 +233,7 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_CUSTOM_LOOP_LIST`
 | :term:`ENSEMBLE_STAT_SKIP_IF_OUTPUT_EXISTS`
 | :term:`ENSEMBLE_STAT_DESC`
+| :term:`ENSEMBLE_STAT_OBTYPE_AS_GROUP_VAL_FLAG`
 | :term:`ENSEMBLE_STAT_ENS_SSVAR_BIN_SIZE`
 | :term:`ENSEMBLE_STAT_ENS_PHIST_BIN_SIZE`
 | :term:`ENSEMBLE_STAT_CLIMO_CDF_BINS`
@@ -356,6 +357,7 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_ENS_MEMBER_IDS`
 | :term:`ENSEMBLE_STAT_CONTROL_ID`
 | :term:`ENSEMBLE_STAT_GRID_WEIGHT_FLAG`
+| :term:`ENSEMBLE_STAT_POINT_WEIGHT_FLAG`
 | :term:`ENSEMBLE_STAT_PROB_CAT_THRESH`
 | :term:`ENSEMBLE_STAT_PROB_PCT_THRESH`
 | :term:`ENSEMBLE_STAT_ECLV_POINTS`
@@ -849,6 +851,18 @@ ${METPLUS_OBS_ERROR_FLAG}
    * - :term:`ENSEMBLE_STAT_OBS_ERROR_FLAG`
      - obs_error.flag
 
+${METPLUS_OBTYPE_AS_GROUP_VAL_FLAG}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_OBTYPE_AS_GROUP_VAL_FLAG`
+     - obtype_as_group_val_flag
+
 ${METPLUS_ENS_SSVAR_BIN_SIZE}
 """""""""""""""""""""""""""""
 
@@ -1090,6 +1104,18 @@ ${METPLUS_GRID_WEIGHT_FLAG}
      - MET Config File
    * - :term:`ENSEMBLE_STAT_GRID_WEIGHT_FLAG`
      - grid_weight_flag
+
+${METPLUS_POINT_WEIGHT_FLAG}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_POINT_WEIGHT_FLAG`
+     - point_weight_flag
 
 ${METPLUS_OUTPUT_PREFIX}
 """"""""""""""""""""""""
@@ -7070,6 +7096,7 @@ Configuration
 | :term:`POINT_STAT_HIRA_SHAPE`
 | :term:`POINT_STAT_HIRA_PROB_CAT_THRESH`
 | :term:`POINT_STAT_MESSAGE_TYPE_GROUP_MAP`
+| :term:`POINT_STAT_OBTYPE_AS_GROUP_VAL_FLAG`
 | :term:`FCST_POINT_STAT_IS_PROB`
 | :term:`FCST_POINT_STAT_PROB_IN_GRIB_PDS`
 | :term:`FCST_POINT_STAT_WINDOW_BEGIN`
@@ -7097,6 +7124,7 @@ Configuration
 | :term:`POINT_STAT_UGRID_MAX_DISTANCE_KM`
 | :term:`POINT_STAT_UGRID_COORDINATES_FILE`
 | :term:`POINT_STAT_UGRID_CONFIG_FILE`
+| :term:`POINT_STAT_POINT_WEIGHT_FLAG`
 |
 
 .. warning:: **DEPRECATED:**
@@ -7472,7 +7500,19 @@ ${METPLUS_MESSAGE_TYPE_GROUP_MAP}
      - MET Config File
    * - :term:`POINT_STAT_MESSAGE_TYPE_GROUP_MAP`
      - message_type_group_map
-       
+
+${METPLUS_OBTYPE_AS_GROUP_VAL_FLAG}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_OBTYPE_AS_GROUP_VAL_FLAG`
+     - obtype_as_group_val_flag
+
 ${METPLUS_CLIMO_MEAN_DICT}
 """"""""""""""""""""""""""
 
@@ -7786,6 +7826,18 @@ ${METPLUS_OUTPUT_PREFIX}
      - MET Config File
    * - :term:`POINT_STAT_OUTPUT_PREFIX`
      - output_prefix
+
+${METPLUS_POINT_WEIGHT_FLAG}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_POINT_WEIGHT_FLAG`
+     - point_weight_flag
 
 ${METPLUS_MET_CONFIG_OVERRIDES}
 """""""""""""""""""""""""""""""

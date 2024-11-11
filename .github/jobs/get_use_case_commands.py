@@ -17,6 +17,7 @@ from internal.tests.use_cases.metplus_use_case_suite import METplusUseCaseSuite
 from metplus.util.string_manip import expand_int_string_to_list
 from docker_utils import VERSION_EXT
 from metplus import get_metplus_version
+from metplus.component_versions import get_component_version
 
 # path to METplus install location in Docker
 METPLUS_DOCKER_LOC = '/metplus/METplus'
@@ -39,7 +40,7 @@ NOT_PYTHON_ENVS = [
 ]
 
 
-def handle_automation_env(host_name, reqs, work_dir):
+def handle_automation_env(host_name, reqs):
     # if no env is specified, use metplus base environment
     conda_env = METPLUS_BASE_ENV
 
@@ -60,8 +61,9 @@ def handle_automation_env(host_name, reqs, work_dir):
     conda_env_w_ext = f'{conda_env}{VERSION_EXT}'
 
     # start building commands to run before run_metplus.py in Docker
-    setup_env = []
-    setup_env.append(_add_to_bashrc('# BELOW WAS ADDED BY TEST SCRIPT'))
+    setup_env = [
+        _add_to_bashrc('# BELOW WAS ADDED BY TEST SCRIPT')
+    ]
 
     # add conda bin to beginning of PATH
     python_dir = os.path.join('/usr', 'local', 'conda', 'envs',
@@ -76,35 +78,34 @@ def handle_automation_env(host_name, reqs, work_dir):
     else:
         py_embed_arg = ''
 
-    # get METplus version to determine Externals file to use
-    # to get METplotpy/METcalcpy/METdataio
+    # get METplus version to determine which version of
+    # METplotpy/METcalcpy/METdataio to use
     # If stable release, get main branch, otherwise get develop
-    is_stable_release = len(get_metplus_version().split('-')) == 1
-    externals_ext = '_stable.cfg' if is_stable_release else '.cfg'
+    metplus_version = get_metplus_version()
 
     # if any metplotpy/metcalcpy keywords are in requirements list,
     # add command to obtain and install METplotpy and METcalcpy
+    components = []
     if any([item for item in PLOTCALC_KEYWORDS if item in str(reqs).lower()]):
-        ce_file = os.path.join(work_dir, '.github', 'parm',
-                               f'Externals_metplotcalcpy{externals_ext}')
-        setup_env.extend((
-            f'cd {METPLUS_DOCKER_LOC}',
-            f'{work_dir}/manage_externals/checkout_externals -e {ce_file}',
-            f'{python_path} -m pip install {METPLUS_DOCKER_LOC}/../METplotpy',
-            f'{python_path} -m pip install {METPLUS_DOCKER_LOC}/../METcalcpy',
-            'cd -',
-        ))
+        components.extend(('METplotpy', 'METcalcpy'))
 
     # if metdataio is in requirements list, add command to obtain METdataio
     if 'metdataio' in str(reqs).lower():
-        ce_file = os.path.join(work_dir, '.github', 'parm',
-                               f'Externals_metdataio{externals_ext}')
+        components.append('METdataio')
+
+    setup_env.append(f'cd {METPLUS_DOCKER_LOC}/..')
+    for component in components:
+        version = get_component_version(input_component='METplus',
+                                        input_version=metplus_version,
+                                        output_component=component,
+                                        output_format='main_v{X}.{Y}',
+                                        get_dev=False)
         setup_env.extend((
-            f'cd {METPLUS_DOCKER_LOC}',
-            f'{work_dir}/manage_externals/checkout_externals -e {ce_file}',
-            f'{python_path} -m pip install {METPLUS_DOCKER_LOC}/../METdataio',
-            'cd -',
+            'git --version',
+            f'git clone --single-branch --branch {version} https://github.com/dtcenter/{component}',
+            f'{python_path} -m pip install --no-deps {METPLUS_DOCKER_LOC}/../{component}',
         ))
+    setup_env.append('cd -')
 
     # if metplus is in requirements list,
     # add top of METplus repo to PYTHONPATH so metplus can be imported
@@ -118,7 +119,7 @@ def handle_automation_env(host_name, reqs, work_dir):
         setup_env.extend((
             f'echo Using environment: dtcenter/metplus-envs:{conda_env_w_ext}',
             f'echo cat /usr/local/conda/envs/{conda_env_w_ext}/environments.yml',
-            f'echo ----------------------------------------',
+            'echo ----------------------------------------',
             f'cat /usr/local/conda/envs/{conda_env_w_ext}/environments.yml',
             'echo ----------------------------------------',
         ))
@@ -140,6 +141,24 @@ def main(categories, subset_list, work_dir=None,
     test_suite = METplusUseCaseSuite()
     test_suite.add_use_case_groups(categories, subset_list)
 
+    for group_name, use_cases_by_req in test_suite.category_groups.items():
+        for use_case_by_requirement in use_cases_by_req:
+            reqs = use_case_by_requirement.requirements
+
+            setup_env, py_embed_arg = handle_automation_env(host_name, reqs)
+
+            use_case_cmds = _get_use_case_cmds(host_name, use_case_by_requirement, work_dir, group_name, py_embed_arg)
+
+            # add commands to set up environment before use case commands
+            all_commands.append((setup_env, use_case_cmds, reqs))
+
+    return all_commands
+
+
+def _get_use_case_cmds(host_name, use_case_by_requirement, work_dir, group_name, py_embed_arg):
+    # use status variable to track if any use cases failed
+    use_case_cmds = []
+
     output_top_dir = os.environ.get('METPLUS_TEST_OUTPUT_BASE', '/data/output')
 
     # use METPLUS_TEST_SETTINGS_CONF if set
@@ -150,58 +169,53 @@ def main(categories, subset_list, work_dir=None,
                                           'parm',
                                           'test_settings.conf')
 
-    for group_name, use_cases_by_req in test_suite.category_groups.items():
-        for use_case_by_requirement in use_cases_by_req:
-            reqs = use_case_by_requirement.requirements
+    if host_name != 'docker':
+        use_case_cmds.append('status=0')
+    for use_case in use_case_by_requirement.use_cases:
+        # add parm/use_cases path to config args if they are conf files
+        config_args = _get_config_args(use_case.config_args, work_dir, host_name)
 
-            setup_env, py_embed_arg = handle_automation_env(host_name, reqs,
-                                                            work_dir)
+        output_base = os.path.join(output_top_dir,
+                                   group_name.split('-')[0],
+                                   use_case.name)
+        use_case_cmd = (f"run_metplus.py"
+                        f" {' '.join(config_args)}"
+                        f" {py_embed_arg}{test_settings_conf}"
+                        f" config.OUTPUT_BASE={output_base}")
+        use_case_cmds.append(use_case_cmd)
+        # check exit code from use case command and
+        # set status to non-zero value on error
+        if host_name != 'docker':
+            use_case_cmds.append("if [ $? != 0 ]; then status=1; fi")
 
-            # use status variable to track if any use cases failed
-            use_case_cmds = []
-            if host_name != 'docker':
-                use_case_cmds.append('status=0')
-            for use_case in use_case_by_requirement.use_cases:
-                # add parm/use_cases path to config args if they are conf files
-                config_args = []
-                ci_overrides = None
-                for config_arg in use_case.config_args:
-                    if config_arg.endswith('.conf'):
-                        config_arg = os.path.join(work_dir, 'parm',
-                                                  'use_cases', config_arg)
+    # if any use cases failed, force non-zero exit code with false
+    if host_name != 'docker':
+        use_case_cmds.append("if [ $status != 0 ]; then false; fi")
 
-                        # look for CI overrides conf file
-                        override_path = os.path.join(config_arg[0:-5],
-                                                     'ci_overrides.conf')
-                        if os.path.exists(override_path):
-                            ci_overrides = override_path
+    return use_case_cmds
 
-                    config_args.append(config_arg)
 
-                # add CI overrides config file if running in docker
-                if ci_overrides and host_name == 'docker':
-                    config_args.append(ci_overrides)
+def _get_config_args(input_config_args, work_dir, host_name):
+    config_args = []
+    ci_overrides = None
+    for config_arg in input_config_args:
+        if config_arg.endswith('.conf'):
+            config_arg = os.path.join(work_dir, 'parm',
+                                      'use_cases', config_arg)
 
-                output_base = os.path.join(output_top_dir,
-                                           group_name.split('-')[0],
-                                           use_case.name)
-                use_case_cmd = (f"run_metplus.py"
-                                f" {' '.join(config_args)}"
-                                f" {py_embed_arg}{test_settings_conf}"
-                                f" config.OUTPUT_BASE={output_base}")
-                use_case_cmds.append(use_case_cmd)
-                # check exit code from use case command and
-                # set status to non-zero value on error
-                if host_name != 'docker':
-                    use_case_cmds.append("if [ $? != 0 ]; then status=1; fi")
+            # look for CI overrides conf file
+            override_path = os.path.join(config_arg[0:-5],
+                                         'ci_overrides.conf')
+            if os.path.exists(override_path):
+                ci_overrides = override_path
 
-            # if any use cases failed, force non-zero exit code with false
-            if host_name != 'docker':
-                use_case_cmds.append("if [ $status != 0 ]; then false; fi")
-            # add commands to set up environment before use case commands
-            all_commands.append((setup_env, use_case_cmds, reqs))
+        config_args.append(config_arg)
 
-    return all_commands
+    # add CI overrides config file if running in docker
+    if ci_overrides and host_name == 'docker':
+        config_args.append(ci_overrides)
+
+    return config_args
 
 
 def handle_command_line_args():
@@ -232,9 +246,9 @@ def handle_command_line_args():
 
 
 if __name__ == '__main__':
-    categories, subset_list, _ = handle_command_line_args()
-    all_commands = main(categories, subset_list)
-    for setup_commands, use_case_commands, requirements in all_commands:
+    input_categories, input_subset_list, _ = handle_command_line_args()
+    commands = main(input_categories, input_subset_list)
+    for setup_commands, use_case_commands, requirements in commands:
         print(f"REQUIREMENTS: {','.join(requirements)}")
         if setup_commands:
             command_format = ';\\\n'.join(setup_commands.split(';'))

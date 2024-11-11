@@ -68,9 +68,11 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'METPLUS_ENS_MEMBER_IDS',
         'METPLUS_CONTROL_ID',
         'METPLUS_GRID_WEIGHT_FLAG',
+        'METPLUS_POINT_WEIGHT_FLAG',
         'METPLUS_PROB_CAT_THRESH',
         'METPLUS_PROB_PCT_THRESH',
         'METPLUS_ECLV_POINTS',
+        'METPLUS_OBTYPE_AS_GROUP_VAL_FLAG',
     ]
 
     # deprecated env vars that are no longer supported in the wrapped MET conf
@@ -267,6 +269,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                             extra_args={'remove_quotes': True,
                                         'allow_empty': True})
 
+        self.add_met_config(name='obtype_as_group_val_flag', data_type='bool')
+
         self.add_met_config(name='ens_ssvar_bin_size', data_type='float')
 
         self.add_met_config(name='ens_phist_bin_size', data_type='float')
@@ -350,6 +354,11 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                             data_type='string')
 
         self.add_met_config(name='grid_weight_flag',
+                            data_type='string',
+                            extra_args={'remove_quotes': True,
+                                        'uppercase': True})
+
+        self.add_met_config(name='point_weight_flag',
                             data_type='string',
                             extra_args={'remove_quotes': True,
                                         'uppercase': True})
