@@ -30,7 +30,9 @@ release. Open the following URL in a browser:
 * If you are creating a betaX release, add a new betaX section above the betaX-1
   release.
 
-* For the METplus repository, update the **development timeline**.
+* For the METplus repository, update the **development timeline** under the
+  `METplus Release Information <https://metplus.readthedocs.io/en/develop/Users_Guide/release-notes.html#metplus-release-information>`_
+  section.
 
   * If you are creating a beta1 release, add development timeline
     information with approximate dates for planned development cycles.
