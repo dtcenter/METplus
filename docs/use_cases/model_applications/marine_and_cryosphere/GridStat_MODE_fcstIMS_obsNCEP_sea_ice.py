@@ -132,7 +132,7 @@ model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.c
 # User Scripting
 # --------------
 #
-# None
+# This use case does not use additional scripts.
 #
 
 ################################################################################
