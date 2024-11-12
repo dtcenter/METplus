@@ -137,7 +137,7 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsAVISO_climHYCOM_s
 # User Scripting
 # --------------
 # 
-# None
+# This use case does not use additional scripts.
 
 ###############################################################################
 # Running METplus
