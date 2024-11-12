@@ -36,7 +36,6 @@ Many useful actions are provided by GitHub and external collaborators.
 Developers can also write their own custom actions to perform complex tasks
 to simplify a workflow.
 
-
 Testing (testing.yml)
 ---------------------
 
@@ -77,6 +76,87 @@ at the bottom of the workflow summary page when the workflow has completed.
 .. figure:: figure/ci-doc-artifacts.png
 
 .. _cg-ci-update-truth-data:
+
+SonarQube (sonarqube.yml)
+-------------------------
+
+SonarQube is a static code analysis tool used to enhance software code quality
+and security. The METplus team acknowledges the generous funding from the
+United States Air Force to support our ongoing use of this important utility.
+
+The **sonarqube.yml** workflow is defined in all of the METplus component
+repositories. This workflow is triggered by a **pull_request** or **push**
+to the **develop** or **main_vX.Y** branch and also by the manual
+**workflow_dispatch** event. However non-code changes to only documentation or
+other specific infrastructure directories do not trigger this workflow.
+
+A **sonar-project.properties** file within each METplus component repository
+defines the configuration of the SonarQube scans for that code base. The
+SonarQube scans for the Python-based METplus components are very similar while
+the logic for the repositories with compiled code differ.
+
+The SonarQube workflows for METplus, METplotpy, METcalcpy, and METdataio
+run jobs to check out the code, set up a Python environment, run Pytests to
+generate a code coverage report, configure the SonarQube properties based on
+the triggering event, and then call jobs provided by SonarSource
+to run the SonarQube scan and push the scan output, including code coverage
+information, to a [SonarQube server](https://needham.rap.ucar.edu/) hosted by
+the METplus team. All memebers of the DTCenter GitHub organization can log on to this SonarQube server using their GitHub credentials to see scan results.
+
+The SonarQube scans for MET and METviewer require that the code be built,
+which is done inside a Docker container. However the results of those Docker-
+based scans are also pushed to the same SonarQube server.
+
+The SonarQube server defines a configurable set of **Quality Gate** acceptance
+criteria. For each scan, a reference source is defined and changes are tracked
+relative to that reference. For example, a new scan of the **develop** branch
+is compared to the previous scan of **develop**, while each pull request scan
+is compared to the latest scan of the destination branch, typically
+**develop**.
+
+SonarQube scans report on the following (listed in approximate priority
+order):
+
+  - **Vulnerabilities** for security findings 
+
+  - **Bugs** for reliability findings 
+
+  - **Security Hotspots** for security findings to be reviewed
+
+  - **Code Smells** for maintainability findings 
+
+  - Test code **Coverage** percentage (if provided to the scan)
+
+  - Code **Duplication** percentage
+
+For each finding, the SonarQube server categorizes it by type, provides
+detailed information about its location, reason for the issue, suggestions
+for how to fix it, and links to additional information.
+
+SonarQube differentiates between **New Code** and **Overall Code** where the
+former shows findings flagged only in new files and lines modified in existing
+files and the latter shows all findings. Generally speaking, the configurable
+**Quality Gate** settings define acceptance criteria based only on findings
+in the **New Code**.
+
+The **Quality Gate** check in the SonarQube workflow returns a good status
+(green checkmark) if the **New Code** acceptance criteria is met or bad status
+(red X) if not. Ideally, each change to the code base would result in fewer
+SonarQube findings, a higher test coverage percentage, and a lower code
+duplication percentage. Pull requests should never introduce new
+**Vulnerabilities** or **Bugs**, and the submitter should fix them before
+their pull request is approved and merged. Introducing new **Code Smells** is 
+acceptable in certain circumstances. However, developers are strongly
+encouraged to make additional changes that reduce the total number of
+**Code Smells** in the **Overall Code**. While a pull request can introduce
+new **Code Smells** that are not easily fixed, the overall number should be
+reduced.
+
+Developers are encouaraged to manually run the SonarQube workflow through the
+GitHub **workflow_dispatch** option and check the results to confirm the
+quality of their code before submitting a pull request for review. Developers
+are encouraged to describe the SonarQube status in the body of each pull
+request.
 
 Update Truth Data (update_truth.yml)
 ------------------------------------
@@ -175,7 +255,6 @@ branch name text box blank and select the branch name from the pull-down menu.
 
 Verify that the workflow ran successfully and properly obtained the new data
 by reviewing the log output from the workflow run.
-
 
 Release Published (release_published.yml) - DEPRECATED
 ------------------------------------------------------
