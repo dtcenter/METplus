@@ -5,6 +5,13 @@ PointStat: read in satellite data and verify wind speeds or wave heights
 model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAltimetry.conf
 
 """
+
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -14,6 +21,12 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAl
 # dataset can be used as observations to verify against a model forecast. While the use case is set
 # up to verify using JASON-3 data, the Python script called on via Python Embedding is capabile
 # of processing SARAL and Sentinel-6a datasets as well.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 6.0
 
 ##############################################################################
 # Datasets

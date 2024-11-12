@@ -6,12 +6,24 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMOS_climWOA_sss.
 
 """
 ##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
+##############################################################################
 # Scientific Objective
 # --------------------
 #
 # This use case utilizes Python embedding to extract several statistics from the sea surface salinity data over the globe, 
 # which was already being done in a closed system. By producing the same output via METplus, this use case
 # provides standardization and reproducible results.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 6.0
 
 ##############################################################################
 # Datasets

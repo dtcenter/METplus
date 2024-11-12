@@ -1,13 +1,16 @@
 """
 Multi_Tool (MTD): Feature Relative by Lead (with lead groupings) 
-==================================================================================================
+================================================================
 
-model_applicaitons/medium_range/
-MTD_SeriesAnalysis_fcstGFS
-_obsGFS_FeatureRelative
-_SeriesByLead.conf
+model_applicaitons/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf
 
 """
+
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
 
 ##############################################################################
 # Scientific Objective
@@ -16,6 +19,12 @@ _SeriesByLead.conf
 # Demonstrate the capability in the Feature Relative use case but using output
 # from the MET MODE Time Domain (MTD) tool.
 #
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 4.1
 
 ##############################################################################
 # Datasets

@@ -6,6 +6,12 @@ model_applications/medium_range/GridStat_fcstGEFS_obsCADB_BinaryObsPOE.conf
 
 """
 ##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
+##############################################################################
 # Scientific Objective
 # --------------------
 # Evaluation of a Probability of Exceedence (POE) field presents several difficulties. Some of these include a fitting verification statistic to report on,
@@ -15,6 +21,12 @@ model_applications/medium_range/GridStat_fcstGEFS_obsCADB_BinaryObsPOE.conf
 # Those observations are compared to the chosen forecast percentile and the HSS_EC becomes the main statistical focus, as the new hss_ec_value feature
 # allowed the use case to more closely replicate in-house verificaiton that already existed.
 # A final note that because the POE forecast file is a non-standard netCDF, Python Embedding was used to extract the desired field
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 5.1
 
 ##############################################################################
 # Datasets

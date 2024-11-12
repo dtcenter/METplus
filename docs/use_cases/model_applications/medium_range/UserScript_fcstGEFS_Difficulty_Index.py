@@ -1,12 +1,16 @@
 """
 UserScript: Calculate the Difficulty Index
-========================================================================
+==========================================
 
-model_applications/medium_range/
-UserScript_fcstGEFS
-_Difficulty_Index.conf
+model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf
 
 """
+
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
 
 ##############################################################################
 # Scientific Objective
@@ -36,6 +40,12 @@ _Difficulty_Index.conf
 # documentation <https://metcalcpy.readthedocs.io/en/latest/Users_Guide/difficulty_index.html>`_ 
 # and more information on plotting difficulty index can be found in the `METplotpy documentation
 # <https://metplotpy.readthedocs.io/en/latest/Users_Guide/difficulty_index.html>`_.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 4.1
 
 ##############################################################################
 # Datasets
