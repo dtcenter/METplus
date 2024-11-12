@@ -241,8 +241,8 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 # User Scripting
 # --------------
 #
-# [UPDATE_SECTION_CONTENT]
-#
+# This use case does not use additional scripts.
+
 
 ##############################################################################
 # Running METplus
