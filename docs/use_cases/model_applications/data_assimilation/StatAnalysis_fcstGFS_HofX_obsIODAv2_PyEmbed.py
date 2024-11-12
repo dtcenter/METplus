@@ -129,7 +129,7 @@ model_applications/data_assimilation/StatAnalysis_fcstGFS_HofX_obsIODAv2_PyEmbed
 # User Scripting
 # --------------
 #
-# [UPDATE_SECTION_CONTENT]
+# This use case does not use additional scripts.
 
 ###############################################################################
 # Running METplus
