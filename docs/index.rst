@@ -8,7 +8,7 @@ Boulder, CO
 
 In Memoriam
 -----------
-METplus Coordinated Release v6.0.0 is dedicated to three remarkable team members 
+This Coordinated Release is dedicated to three remarkable team members 
 we lost in 2024 whose contributions have left an indelible mark on our work. 
 
 To Tara Jensen, for her vision and leadership in creating METplus as well as her 
