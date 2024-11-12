@@ -135,7 +135,7 @@ model_applications/data_assimilation/StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA
 # User Scripting
 # --------------
 #
-# [UPDATE_SECTION_CONTENT]
+# This use case does not use additional scripts.
 #
 
 ##############################################################################
