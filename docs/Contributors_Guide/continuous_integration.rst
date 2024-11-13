@@ -43,6 +43,8 @@ This workflow performs a variety of tasks to ensure that changes do not break
 any existing functionality.
 See the :ref:`cg-ci-testing-workflow` for more information.
 
+.. _cg-ci-documentation:
+
 Documentation (documentation.yml)
 ---------------------------------
 
@@ -75,7 +77,7 @@ at the bottom of the workflow summary page when the workflow has completed.
 
 .. figure:: figure/ci-doc-artifacts.png
 
-.. _cg-ci-update-truth-data:
+.. _cg-ci-sonarqube:
 
 SonarQube (sonarqube.yml)
 -------------------------
@@ -90,20 +92,20 @@ code repositories. This workflow is triggered by a **pull_request** or
 **workflow_dispatch** events. However changes only to documentation or other
 specific infrastructure directories do not trigger this workflow.
 
-A **sonar-project.properties** file within each METplus component repository
-defines the configuration of the SonarQube scans for that code base. The
-scans for all of the Python-based METplus components are very similar while
+A **sonar-project.properties** file within each repository defines the
+configuration of the SonarQube scans for that code base. The SonarQube
+workflows for the Python-based METplus components are all very similar while
 the logic for the repositories with compiled code differ.
 
-The SonarQube workflows for METplus, METplotpy, METcalcpy, and METdataio
-run jobs to:
+The SonarQube workflows for the Python-based components (METplus, METplotpy,
+METcalcpy, and METdataio) run jobs to:
 
-  - Check out the source code
-  - Set up a Python environment
-  - Run Pytests and create a test code coverage report
-  - Configure the SonarQube properties based on the triggering event
-  - Run a SonarQube scan job provided by SonarSource
-  - Run a SonarQube quality gate check job provided by SonarSource
+* Check out the source code
+* Set up a Python environment
+* Run Pytests and create a test code coverage report
+* Configure the SonarQube properties based on the triggering event
+* Run a SonarQube scan job provided by SonarSource
+* Run a SonarQube quality gate check job provided by SonarSource
  
 The quality gate check job pushes the scan results, including code coverage,
 to a [SonarQube server](https://needham.rap.ucar.edu/) hosted by the METplus
@@ -124,19 +126,20 @@ is compared to the previous scan of **develop**, while each pull request scan
 is compared to the latest scan of the destination branch, typically
 **develop**.
 
-SonarQube scans report on the following (listed in approximate priority
-order):
+SonarQube scans report on the following (listed in approximate order of
+concern from a security perspective):
 
-  - **Vulnerabilities** for security findings 
-  - **Bugs** for reliability findings 
-  - **Security Hotspots** for security findings to be reviewed
-  - **Code Smells** for maintainability findings 
-  - Test code **Coverage** percentage (if provided to the scan)
-  - Code **Duplication** percentage
+* **Vulnerabilities** for security findings
+* **Bugs** for reliability findings
+* **Security Hotspots** for security findings to be reviewed
+* **Code Smells** for maintainability findings
+* Test code **Coverage** percentage (if provided to the scan)
+* Code **Duplication** percentage
 
-For each finding, the SonarQube server categorizes it by type, provides
-detailed information about its location, reason for the issue, suggestions
-for how to fix it, and links to additional information.
+For each finding, the SonarQube scan categorizes it by type, shows its
+location in the code, and provides detailed information about the reason
+for the issue, suggestions on how to fix it, and links to additional
+information.
 
 SonarQube differentiates between **New Code** and **Overall Code** where the
 former shows findings flagged only in new files and lines modified in existing
@@ -163,6 +166,8 @@ are encouraged to describe the SonarQube status of their proposed code changes
 in the body of each pull request. Reviewers should not approve pull requests
 that introduce new **Vulnerabilities** or **Bugs** or increase the number of
 **Code Smells** in the **Overall Code**.
+
+.. _cg-ci-update-truth-data:
 
 Update Truth Data (update_truth.yml)
 ------------------------------------
