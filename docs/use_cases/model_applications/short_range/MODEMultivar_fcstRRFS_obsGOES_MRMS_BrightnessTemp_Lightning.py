@@ -2,9 +2,7 @@
 MODEMultivar: Create objects of brightness temps and radar reflectivity  
 =======================================================================
 
-model_applications/
-short_range/
-MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning.conf
+model_applications/short_range/MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning.conf
 
 """
 ############################################################################## 

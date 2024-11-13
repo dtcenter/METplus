@@ -1,12 +1,16 @@
 """
 Grid-Stat: Brightness Temperature Distance Maps
-=========================================================================
+===============================================
 
-model_applications/
-short_range/
-GridStat_fcstFV3_obsGOES_BrightnessTempDmap.conf
+model_applications/short_range/GridStat_fcstFV3_obsGOES_BrightnessTempDmap.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -14,6 +18,12 @@ GridStat_fcstFV3_obsGOES_BrightnessTempDmap.conf
 # To provide statistical inforation on regions of low brightness temperatures,
 # defined by creating distance maps on the FV3 ensemble members compared to GOES
 # channel 13 brightness temperature satellite data.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 4.0
 
 ##############################################################################
 # Datasets

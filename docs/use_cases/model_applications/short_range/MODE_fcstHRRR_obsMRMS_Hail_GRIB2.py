@@ -1,12 +1,16 @@
 """
 MODE: Hail Verification  
-=========================================================================
+=======================
 
-model_applications/
-short_range/
-MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf
+model_applications/short_range/MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -18,6 +22,12 @@ MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf
 # studies have shown that MRMS MESH observed hail sizes do not correlate one-
 # to-one with observed sizes but can only be used to group storms into general
 # categories.  Running MODE allows a user to do this.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 3.0
 
 ##############################################################################
 # Datasets
