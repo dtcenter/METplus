@@ -1,10 +1,10 @@
-“””
-    PointStat: Use Python embedding to calculate temperature terciles
-    =================================================================
+"""
+PointStat: Use Python embedding to calculate temperature terciles
+=================================================================
 
-    model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds.conf
+model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds.conf
 
-“””
+"""
 ##############################################################################
 # .. contents::
 #   :depth: 1
@@ -65,8 +65,11 @@
 # [UPDATE_SECTION_CONTENT]
 #
 # **Beginning time (INIT_BEG):** 1982-01-01
+#
 # **End time (INIT_END):** 2010-01-02
+#
 # **Increment between beginning and end times (INIT_INCREMENT):** 1 year
+#
 # **Sequence of forecast leads to process (LEAD_SEQ):** None
 #
 # With an increment of 1 year, all January 1st’s from 1982 to 2010 are processed 
@@ -90,7 +93,6 @@
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_MultiStatisticTool.conf
-#
 
 ##############################################################################
 # MET Configuration
@@ -128,13 +130,14 @@
 # 11-column format for point data. This list of lists is passed back 
 # to PointStat for evaluation and the requested statistical output. The location 
 # of the code is 
-# parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds/read_ASCAT_data.py
+# 
+# .. dropdown:: parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds/read_ASCAT_data.py
 #
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds/read_ASCAT_data.py
+# 
 # For more information on the basic requirements to utilize Python Embedding in METplus, 
 # please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_ 
-#
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds/read_ASCAT_data.py
 
 ##############################################################################
 # User Scripting
@@ -152,8 +155,10 @@
 # appropriate dimensions. Additional basic math is completed on the resulting arrays 
 # to create the cross spectra values with the results being graphed.
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra/cross_spectra_plot.py
+# .. dropdown:: parm/use_cases/model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra/cross_spectra_plot.py
+# 
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra/cross_spectra_plot.py
 
 ##############################################################################
 # Running METplus
@@ -161,9 +166,9 @@
 # [UPDATE_SECTION_CONTENT]
 #
 # Pass the use case configuration file to the run_metplus.py script along 
-# with any user-specific system configuration files if desired:
+# with any user-specific system configuration files if desired::
 #
-# run_metplus.py /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds.conf /path/to/user_system.conf
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
 
@@ -173,11 +178,12 @@
 # [UPDATE_SECTION_CONTENT]
 #
 # A successful run will output the following both to the screen and to the logfile::
+#
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
 # Output for this use case will be found in 
-# {OUPUT_BASE}/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds 
+# {OUTPUT_BASE}/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds 
 # and will contain the following files::
 #
 #  * grid_stat_198201_000000L_19700101_000000V_pairs.nc

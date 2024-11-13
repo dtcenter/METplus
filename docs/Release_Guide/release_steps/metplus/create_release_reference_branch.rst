@@ -1,6 +1,13 @@
 Create Release Reference Branch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+.. note::
+
+  These instructions only apply when creating the **first release candidate**
+  (rc1) development release. Skip this section for earlier beta (betaN) or later 
+  release candidate (rc2+) development releases.
+
+
 * For METplus, the corresponding MET release must be created before starting
   this step. Specifically, a DockerHub tag on dtcenter/met that is named
   (X+6).Y-latest must already exist. For example, for METplus 4.1.0, the MET
@@ -25,14 +32,17 @@ Update the version number
 Update the content that should go into the release version but remain unchanged
 in the develop branch.
 
-Remove **-dev** from the version number:
+Note that this step is mandatory because pushing a new main_vX.Y-ref branch
+without any new commits will **not** trigger the GitHub Actions workflow to
+create the output Docker data volumes.
+
+Remove **-dev** from the -rc1 version number:
 
 * As of METplus 4.0.0, we are naming releases with X.Y.Z format even if Z is 0.
 * As of METplus v4.0.0, the file containing the version number is located at
-  **metplus/VERSION** (in earlier releases, the file was located at
-  docs/version or doc/version).
-* In the develop branch, the version should match the upcoming release
-  with -dev added to the end like X.Y.Z-betaN-dev, i.e. 4.0.0-beta1-dev
+  **metplus/VERSION**.
+* The version should match the upcoming release with the -rc1 suffix,
+  like X.Y.Z-rc1
 * Remove **-dev** from the version number so that it matches the release
   you are creating.
 
@@ -66,8 +76,9 @@ Navigate to https://github.com/dtcenter/METplus/actions and verify that a
 Create main branch and push to GitHub
 """""""""""""""""""""""""""""""""""""
 
-* After the truth data volumes have been generated, create the main_vX.Y
-  branch off of the -ref branch.
+* After the truth data volumes have been generated, create the 'main_vX.Y'
+  branch from 'main_vX.Y-ref' branch. All remaining development for the upcoming
+  official release occurs on this new 'main_vX.Y' branch.
 
 ::
 

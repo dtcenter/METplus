@@ -48,6 +48,7 @@ one of the following:
 * climate
 * clouds
 * data_assimilation
+* fire
 * extremes
 * land_surface
 * marine_and_cryosphere
@@ -374,12 +375,13 @@ the text content. These are already provided in the example template.
       as well as an embedded link (and image) of all Python scripts used in 
       Python Embedding. The links to these scripts will need to be updated by 
       the user.
-      If no Python embedding is used, that should be noted here.
+    * If no Python embedding is used, that should be noted here by stating 
+      "This use case does not use Python embedding."
 
   * User Scripting
     
     * This section should provide a description of any Python scripting that’s used 
-      in the use case. For a common definition, User scripting is any condition where 
+      in the use case. For a common definition, User Scripting is any condition where 
       the evaluation/verification/output processes are being completed inside the Python script, 
       outside of METplus. Essentially, if a Python script is called and a 
       METplus-readable dataset is not passed back to METplus, it is User Scripting. 
@@ -388,7 +390,8 @@ the text content. These are already provided in the example template.
       made to use User scripting rather than Python embedding. The end of this section is 
       an embedded link (and image) of all Python scripts used in User Scripting. The links 
       to these scripts will need to be updated by the user.
-      If no User scripting is used, that should be noted here.
+    * If no User Scripting is used, that should be noted here by stating
+      "This use case does not use additional scripts."
 
   * Running METplus
 
