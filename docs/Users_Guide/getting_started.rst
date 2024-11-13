@@ -463,6 +463,10 @@ METplus in Apptainer
 Apptainer (formerly Singularity) can also be used to run METplus.
 Images can be pulled from DockerHub using Apptainer commands.
 
+If running on the NCAR Casper cluster, be sure to first load the Apptainer module via::
+
+    module load apptainer
+
 Navigate to a working directory and pull an image from DockerHub, e.g.::
 
     apptainer pull docker://dtcenter/metplus:5.1-latest
@@ -477,16 +481,16 @@ See :ref:`metplus-docker` for information about available images on DockerHub.
 Sample Input Data
 ^^^^^^^^^^^^^^^^^
 
-The sample input data Docker data volumes that are provided on DockerHub are
-not compatible with Apptainer. Sample input data are also provided on the web.
+The Docker data volumes that contain sample input data provided on DockerHub are
+not compatible with Apptainer. Therefore, sample input data must be obtained from from the METplus Data website.
 Navigate to the `METplus Data <https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data>`_
-page. Next, navigate to the directory that corresponds to the vX.Y version that
+website. Next, navigate to the directory that corresponds to the vX.Y version that
 will be run, e.g. `v5.1 <https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v5.1>`_
 The names of sample data tar files include the corresponding use case category.
 
 Download one or more of the sample data tar files and uncompress them into
 a local directory. The directory that contains the uncompressed sample data
-will be mounted to the container to make the data available inside it.
+will need to be mounted to the container to make the data available inside it.
 
 The **APPTAINER_BIND** environment variable can be used to mount directories to
 the container. The local directory and the container directory will be separated
@@ -522,5 +526,5 @@ file that was created by the **apptainer pull** command and the call to the
 
     apptainer exec metplus_5.1-latest.sif /metplus/METplus/ush/run_metplus.py /metplus/METplus/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
 
-Note that the full path to the run_metplus.py script must be provided.
+Note that the full path to the run_metplus.py script and the configuration file for the use case you are running must be provided.
 
