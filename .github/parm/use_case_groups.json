@@ -60,10 +60,13 @@
     "run": false
   },
   {
+    "category": "fire",
+    "index_list": "0",
+    "run": false
+  },
+  {
     "category": "land_surface",
     "index_list": "0",
-    "disabled": true,
-    "disabled_reason": "need to check reason",
     "run": false
   },
   {

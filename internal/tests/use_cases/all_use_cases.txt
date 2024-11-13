@@ -88,6 +88,9 @@ Category: data_assimilation
 0::StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA_interface::model_applications/data_assimilation/StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA_interface.conf
 1::StatAnalysis_fcstGFS_HofX_obsIODAv2_PyEmbed::model_applications/data_assimilation/StatAnalysis_fcstGFS_HofX_obsIODAv2_PyEmbed.conf:: py_embed
 
+Category: fire
+0::GridStat_fcstWRF_obsMMA_fire_perimeter::model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf::py_embed
+
 
 Category: land_surface
 0::PointStat_fcstCESM_obsFLUXNET2015_TCI:: model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf:: metplotpy_env, py_embed
