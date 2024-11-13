@@ -15,12 +15,11 @@ model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 # Scientific Objective
 # --------------------
 #
-# This use case demonstrates the use of GridStat to evaluate the performance of the fire spread forecast from the
-# WRF-Fire model for the 416 fire in Colorado in 2018.
-# There are four fire perimeter observations available from the Multimission Aircraft (MMA).
-# The use case uses Python embedding to ingest the WRF-Fire forecast files and convert the MMA observations from
-# kml format into a netCDF file METplus can ingest via GenVxMask.
-# The output provides contingency statistics of the forecast performance relative to the observed fire.
+# This use case demonstrates the use of GridStat to evaluate the performance of the 
+# fire spread forecast from the WRF-Fire model for the 416 fire in Colorado in 2018. 
+# Using available fire perimeter observations and WRF-Fire forecasts, 
+# contingency statistics are produced to evaluate the forecast performance 
+# relative to the observed fire.
 
 ##############################################################################
 # Version Added
@@ -71,9 +70,13 @@ model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 #
 # **Sequence of forecast leads to process (LEAD_SEQ):** 4 hour, 23 hour, 32 hour
 #
-# This use case processes 3 forecast leads initialized at 16Z on June 1, 2018.
-#
-
+# This use case processes 3 forecast leads initialized at 16Z on June 1, 2018, running 3 times. 
+# First, the UserScript tool is called. This tool calls a Python script to convert the 
+# kml shapefiles to polylines. Then, GenVxMask is run to convert the shapefile 
+# produced by UserScript to a netCDF mask, providing the observation input for GridStat. 
+# Finally, GridStat is called to compare the WRF-Fire forecast of fire area to the 
+# observation mask created using the GenVxMask tool. The GridStat call uses Python Embedding 
+# in order to read the WRF-Fire subgrid into GridStat.
 
 ##############################################################################
 # METplus Configuration
@@ -110,20 +113,35 @@ model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 # Python Embedding
 # ----------------
 #
-# This use case uses a Python embedding script to read the WRF fire forecast into GridStat.
+# This use case uses a Python embedding script to read the WRF-Fire forecast into GridStat. 
+# The script hard codes settings directly from WRF-Fire for the WRF-Fire netCDF variable name (FIRE_AREA) 
+# as well as the format of the WRF-Fire forecast file template. The input directory and valid time 
+# are read from the METplus script. Once the file(s) are found, the script sets attributes for 
+# initiation and valid times, variable name, level, and units in MET format and defines a grid 
+# based on the input WRF-Fire netCDF file's subgrid. The data from the FIRE_AREA variable and MET attributes 
+# are then printed to be read in by GridStat.
 #
 # .. dropdown:: parm/use_cases/model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter/read_wrfout_fire.py
 #
 #    .. highlight:: python
 #    .. literalinclude:: ../../../../parm/use_cases/model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter/read_wrfout_fire.py
-#
+# 
+# For more information on the basic requirements to utilize Python Embedding in METplus, 
+# please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_
 
 ##############################################################################
 # User Scripting
 # --------------
 #
-# This use case calls a Python script to read MMA fire perimeter .kml files
-# and convert them into a poly line file that can be read by GenVxMask:
+# This use case calls a Python script to read MMA fire perimeter .kml files and convert them 
+# into a poly line file that can be read by GenVxMask. The script hard codes the filename template 
+# for the .kml files and a valid time format. This valid time format is provided by the METplus configuration file. 
+# The script the sets up a variable for the previous valid time and an output file path. 
+# If a .kml file is not found for the current valid time, the script searches for a .kml file 
+# from the previous hours. Once a file is found, the Python script parses the input file to find 
+# the set of coordinates that define the fire perimeter. These coordinates are then written to 
+# a text file (.poly file) in the order longitude, latitude, elevation for each point. 
+# This .poly file is then ready to be read in by the GenVxMask tool.
 #
 # .. dropdown:: parm/use_cases/model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter/find_and_read_fire_perim_poly.py
 #
@@ -154,13 +172,24 @@ model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
+# There are three groups of outputs. First, three polyline files resulting from the UserScript tool
 #
 # * poly/fire_perim_20180601_20.poly
 # * poly/fire_perim_20180602_15.poly
 # * poly/fire_perim_20180603_00.poly
+#
+# Second, three netCDF files resulting from the GenVxMask tool containing fire perimeter observations
+#
 # * mask/fire_perim_20180601_20_mask.nc
 # * mask/fire_perim_20180602_15_mask.nc
 # * mask/fire_perim_20180603_00_mask.nc
+#
+# Finally, six files from the GridStat tool run with Python Embedding. The .stat files contain the 
+# CTC and CTS line types for the FIRE_AREA variable at the given lead time (two lines total per stat file). 
+# The netCDF files contain the following five fields: lat (latitude), lon (longitude), 
+# FCST_FIRE_AREA_Z0_FULL (fire spread area from the WRF-Fire forecast), OBS_FIRE_PERIM_all_all_FULL (fire spread area from the .kml observations), 
+# and DIFF_FIRE_AREA_Z0_FIRE_PERIM_all_all_FULL (both the forecast and observed fire spread areas, including overlaps and differences).
+#
 # * grid_stat/2018060120/grid_stat_040000L_20180601_200000V.stat
 # * grid_stat/2018060120/grid_stat_040000L_20180601_200000V_pairs.nc
 # * grid_stat/2018060215/grid_stat_230000L_20180602_150000V.stat
