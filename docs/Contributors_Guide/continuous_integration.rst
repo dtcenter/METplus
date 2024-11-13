@@ -89,7 +89,7 @@ United States Air Force to support our ongoing use of this important utility.
 The **sonarqube.yml** workflow is defined in all of the METplus component
 code repositories. This workflow is triggered by a **pull_request** or
 **push** to the **develop** or **main_vX.Y** branch and also by manual
-**workflow_dispatch** events. However changes only to documentation or other
+**workflow_dispatch** events. However, changes to documentation only or other
 specific infrastructure directories do not trigger this workflow.
 
 A **sonar-project.properties** file within each repository defines the
@@ -113,7 +113,7 @@ team. All memebers of the DTCenter GitHub organization can access this server
 by logging in with their GitHub credentials.
 
 The SonarQube scans for MET and METviewer require that the code be built,
-which is done inside a Docker container. However the results of those
+which is done inside a Docker container. However, the results of those
 Docker-based scans are also pushed to the same SonarQube server.
 
 The scan results for each repository are stored on the server in a project
