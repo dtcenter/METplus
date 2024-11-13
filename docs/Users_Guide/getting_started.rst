@@ -377,11 +377,13 @@ the path to the METplus log file that was generated.
 * Review the :ref:`metplus_final.conf<metplus_final_conf>` file to see all
   of the settings that were used in the use case.
 
+Containers
+==========
 
 .. _metplus-docker:
 
 METplus in Docker
-=================
+-----------------
 
 METplus is available on DockerHub. The METplus Docker image includes all of
 the MET executables from the corresponding METplus Coordinated Release and
@@ -400,7 +402,7 @@ on DockerHub.
 .. _docker-sample-input:
 
 Sample Input Data
------------------
+^^^^^^^^^^^^^^^^^
 
 Sample input data for all of the use cases provided with the METplus wrappers
 are also available on DockerHub. These data are found in the
@@ -426,7 +428,7 @@ The input data will be available inside the container under
 /data/input/METplus_Data.
 
 Running METplus in Docker
--------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The run_metplus.py script is in the user's path inside the container.
 The use case configuration files can be found under
@@ -451,3 +453,78 @@ the corresponding category can be run::
 Please note that use cases that have additional Python package dependencies
 may not run successfully unless those packages are installed inside the
 container or obtained elsewhere.
+
+
+.. _metplus-apptainer:
+
+METplus in Apptainer
+--------------------
+
+Apptainer (formerly Singularity) can also be used to run METplus.
+Images can be pulled from DockerHub using Apptainer commands.
+
+If running on the NCAR Casper cluster, be sure to first load the Apptainer module via::
+
+    module load apptainer
+
+Navigate to a working directory and pull an image from DockerHub, e.g.::
+
+    apptainer pull docker://dtcenter/metplus:5.1-latest
+
+This will create a *.sif* file in the current directory,
+e.g. **metplus_5.1-latest.sif**.
+
+See :ref:`metplus-docker` for information about available images on DockerHub.
+
+.. _apptainer-sample-input:
+
+Sample Input Data
+^^^^^^^^^^^^^^^^^
+
+The Docker data volumes that contain sample input data provided on DockerHub are
+not compatible with Apptainer. Therefore, sample input data must be obtained from from the METplus Data website.
+Navigate to the `METplus Data <https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data>`_
+website. Next, navigate to the directory that corresponds to the vX.Y version that
+will be run, e.g. `v5.1 <https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v5.1>`_
+The names of sample data tar files include the corresponding use case category.
+
+Download one or more of the sample data tar files and uncompress them into
+a local directory. The directory that contains the uncompressed sample data
+will need to be mounted to the container to make the data available inside it.
+
+The **APPTAINER_BIND** environment variable can be used to mount directories to
+the container. The local directory and the container directory will be separated
+by a colon (:).
+
+Mount the local directory (./input_data in this example) to the
+/data/input/METplus_Data directory inside the container::
+
+    export APPTAINER_BIND="./input_data:/data/input/METplus_Data"
+
+
+Running METplus in Apptainer
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The METplus wrappers inside the container come pre-configured so that
+:ref:`sys_conf_input_base` is set to /data/input/METplus_Data.
+Mounting the local data directory to this path will allow the use cases
+to be run without the need to modify the default configuration.
+
+The :ref:`sys_conf_output_base` value is set to /data/output by default.
+This directory can also be mounted to a local directory so the output from
+a use case run can be accessed locally. Multiple directory mounts can be specified
+by separating them by comma::
+
+    export APPTAINER_BIND="./input_data:/data/input/METplus_Data,./output_data:/data/output"
+
+In this example, the directory **./output_data** will be populated with the
+output from the use case.
+
+To run a use case, run the **apptainer exec** command with the **.sif**
+file that was created by the **apptainer pull** command and the call to the
+**run_metplus.py** script as arguments::
+
+    apptainer exec metplus_5.1-latest.sif /metplus/METplus/ush/run_metplus.py /metplus/METplus/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
+
+Note that the full path to the run_metplus.py script and the configuration file for the use case you are running must be provided.
+
