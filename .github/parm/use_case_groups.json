@@ -246,6 +246,7 @@
     "index_list": "1",
     "disabled": true,
     "disabled_reason": "exceeds GitHub Actions environment limits",
+    "data_location": "v6.0/additional_data_UserScript_fcstGFS_obsERA_StratospherePolar.tgz",
     "run": false
   },
   {
@@ -253,6 +254,7 @@
     "index_list": "2",
     "disabled": true,
     "disabled_reason": "exceeds GitHub Actions environment limits",
+    "data_location": "v6.0/additional_data_UserScript_fcstGFS_obsERA_StratosphereQBO.tgz",
     "run": false
   },
   {
