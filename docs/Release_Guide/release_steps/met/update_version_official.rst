@@ -11,6 +11,14 @@ Update Version Number
 
   * In 'docs/Users_Guide/installation.rst', search for the X.Y version, replacing the current X.Y version with the official X.Y version, if necessary. Pay particular attention to the "Note" about the C++ standard and modify if necessary.  The X.Y version number in the "Note" box should NOT change unless the default C++ standard changes.
    
+  * If necessary, update the MET flowchart:
+
+    * In 'docs/Flowchart', update 'MET_flowchart.pptx' to add a new version for this release.
+
+    * Save and commit a PNG version of the flowchart named 'MET_flowchart_vX.Y.Z.png'.
+
+    * Copy the new flowchart version into 'docs/Users_Guide/figure/overview-figure.png'. 
+
   * If necessary, update the version number listed in the MET configuration files:
 
     * Default configuration files in 'data/config'.
