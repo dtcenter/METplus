@@ -49,7 +49,7 @@ def main():
         os.remove(existing_output_file)
 
     # Write stat file in ASCII format
-    stat_lines_obj: WriteStatAscii = WriteStatAscii(settings)
+    stat_lines_obj: WriteStatAscii = WriteStatAscii(settings, logger)
     # stat_lines_obj.write_stat_ascii(file_df, parms, logger)
     stat_lines_obj.write_stat_ascii(file_df, settings)
 
