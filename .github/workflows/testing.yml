@@ -14,8 +14,6 @@ on:
       - '.github/pull_request_template.md'
       - '.github/ISSUE_TEMPLATE/**'
       - '.github/labels/**'
-      - 'build_components/**'
-      - 'manage_externals/**'
       - '**/README.md'
       - '**/LICENSE.md'
       
@@ -29,8 +27,6 @@ on:
       - '.github/pull_request_template.md'
       - '.github/ISSUE_TEMPLATE/**'
       - '.github/labels/**'
-      - 'build_components/**'
-      - 'manage_externals/**'
       - '**/README.md'
       - '**/LICENSE.md'
       
