@@ -1,11 +1,16 @@
 """
 Grid-Stat: 6hr QPF in NetCDF format
-==============================================================================
+===================================
 
-model_applications/precipitation/GridStat_fcstHREFmean
-_obsStgIV_Netcdf.conf
+model_applications/precipitation/GridStat_fcstHREFmean_obsStgIV_Netcdf.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -13,7 +18,12 @@ _obsStgIV_Netcdf.conf
 # Evaluate the skill of a high resolution multi-model ensemble mean
 # at predicting 6 hour precipitation accumulation using the NCEP Stage IV
 # gauge corrected analysis.
+
+##############################################################################
+# Version Added
+# -------------
 #
+# METplus version 3.0
 
 ##############################################################################
 # Datasets

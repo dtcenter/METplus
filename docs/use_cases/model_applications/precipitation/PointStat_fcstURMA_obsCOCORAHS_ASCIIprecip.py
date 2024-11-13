@@ -6,12 +6,24 @@ model_applications/precipitation/PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip.conf
 
 """
 ##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
+##############################################################################
 # Scientific Objective
 # --------------------
 # This use case ingests a CoCoRaHS csv file, a new dataset that utilizes community reporting of precipitation amounts.
 # Numerous studies have shown that a community approach to weather observations not only covers areas that lack traditional verification datasets,
 # but is also remarkably quality controlled. 
 # Utilizing Python embedding, this use case taps into a new vital observation dataset and compares it to a 24 hour precipitation accumulation forecast. 
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 5.0
 
 ##############################################################################
 # Datasets

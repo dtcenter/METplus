@@ -1,11 +1,16 @@
 """
 MTD: Build Revision Series to Evaluate Forecast Consistency 
-===========================================================================
+===========================================================
 
-model_applications/precipitation/MTD_fcstHRRR-TLE_FcstOnly
-_RevisionSeries_GRIB.conf
+model_applications/precipitation/MTD_fcstHRRR-TLE_FcstOnly_RevisionSeries_GRIB.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -17,6 +22,12 @@ _RevisionSeries_GRIB.conf
 # be loaded into METviewer to compute the revision series and assess the
 # consistency either of one case or many.  See other HRRR-TLE use cases
 # for a description of the Time Lagged Ensemble (TLE) field.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 3.0
 
 ##############################################################################
 # Datasets

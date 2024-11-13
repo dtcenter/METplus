@@ -1,11 +1,16 @@
 """
 Grid-Stat: 6hr QPF in GEMPAK format
-===============================================================================
+===================================
 
-model_applications/precipitation/GridStat_fcstHREFmean
-_obsStgIV_Gempak.conf
+model_applications/precipitation/GridStat_fcstHREFmean_obsStgIV_Gempak.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -13,7 +18,12 @@ _obsStgIV_Gempak.conf
 # Evaluate the skill of a high resolution multi-model ensemble mean
 # at predicting 6 hour precipitation accumulation using the NCEP Stage IV
 # gauge corrected analysis.
+
+##############################################################################
+# Version Added
+# -------------
 #
+# METplus version 3.0
 
 ##############################################################################
 # Datasets

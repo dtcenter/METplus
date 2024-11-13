@@ -1,11 +1,16 @@
 """
 MTD: 6hr QPF Use Case
-==================================
+=====================
 
-model_applications/precipitation/MTD_fcstHRRR-TLE
-_obsMRMS.conf
+model_applications/precipitation/MTD_fcstHRRR-TLE_obsMRMS.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -15,6 +20,12 @@ _obsMRMS.conf
 # (HRRR-TLE). MTD is used to provide useful object attributes and diagnostics on
 # aggregated over a time series. This non-traditional
 # approach provides alternative information and diagnostics to inform model development.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 3.0
 
 ##############################################################################
 # Datasets
