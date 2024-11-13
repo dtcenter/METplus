@@ -1,12 +1,16 @@
 """
 UserScript: Make a Hovmoeller plot 
-========================================================================
+==================================
 
-model_applications/
-s2s/
-UserScript_obsPrecip_obsOnly_Hovmoeller.py
+model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.py
 
 """
+
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
 
 ##############################################################################
 # Scientific Objective
@@ -17,6 +21,12 @@ UserScript_obsPrecip_obsOnly_Hovmoeller.py
 #
 # The Hovmoeller plot and hovmoeller calculations where created by Maria Gehne at the 
 # Physical Sciences Labratory in NOAA 
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 4.1
 
 ##############################################################################
 # Datasets

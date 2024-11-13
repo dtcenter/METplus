@@ -6,6 +6,12 @@ model_applications/s2s/GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile.conf
 
 """
 ##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
+##############################################################################
 # Scientific Objective
 # --------------------
 # This use case ingests a CFSv2 Ensemble forecast, with all ensemble members in a single file for a given year. 
@@ -16,8 +22,14 @@ model_applications/s2s/GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile.conf
 # preset the expected values rather than relying on categorical values.
 
 ##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 5.0
+
+##############################################################################
 # Datasets
-# ---------------------
+# --------
 #
 # | **Forecast:** 29 CFSv2 Ensemble files, 2m temperature fields
 #
@@ -64,7 +76,7 @@ model_applications/s2s/GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile.conf
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # METplus sets environment variables based on the values in the METplus configuration file. These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the ‘User Defined Config’ section on the ‘System Configuration’ page of the METplus User’s Guide for more information.
 #
