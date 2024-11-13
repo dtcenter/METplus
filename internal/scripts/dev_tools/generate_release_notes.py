@@ -55,7 +55,7 @@ def print_banner(msg):
 
 
 def print_header(repo_name, dev_name, dev_end_date):
-    dev_fmt = dev_name.replace('-', '').replace('beta', 'Beta ').replace('rc', 'RC ')
+    dev_fmt = dev_name.replace('-', ' ').replace('beta', 'Beta ').replace('rc', 'RC ')
     header = f"{repo_name} Version {dev_fmt} Release Notes ({dev_end_date.strftime('%Y-%m-%d')})"
     print(header)
     print('-' * len(header))
@@ -66,8 +66,9 @@ def print_issues_by_category(repo_name, issues_by_category):
         print()
         if category != 'none':
             print(f"  .. dropdown:: {category}\n")
-        else:
+        elif issues:
             print('COULD NOT PARSE CATEGORY FROM THESE:\n')
+
         if issues is None:
             print('     NONE')
             continue
