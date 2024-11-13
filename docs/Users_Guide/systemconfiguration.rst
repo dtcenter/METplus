@@ -2138,6 +2138,96 @@ can be simplified as::
     INPUT_TEMPLATE = ensbegin_end_incr(1,8,1,2).nc
 
 
+.. _allow-missing-inputs:
+
+Allow Missing Inputs
+--------------------
+
+When any of the required input files for a given METplus run time are not found,
+an error is reported. In result, the entire METplus run fails.
+In some cases, users may expect a certain number of inputs to be unavailable
+and do not want the entire run to fail when this happens.
+
+The :term:`ALLOW_MISSING_INPUTS` config variable can be set to **True** to
+report a warning when required inputs are not found for a given run time.
+An error at the end of the METplus run will only be reported if the number
+of successful runs does not meet the value defined by :term:`INPUT_THRESH`.
+The value of :term:`INPUT_THRESH` should be a decimal number between 0 and 1.
+The default value is 0.0, so any missing input files in a run will still report
+an error unless this value is changed.
+
+The threshold is compared to the results of each item in the
+:ref:`Process_List`, so each wrapper listed in the **PROCESS_LIST** must meet
+the threshold to prevent an error.
+
+There are wrapper-specific versions of both :term:`ALLOW_MISSING_INPUTS` and
+:term:`INPUT_THRESH` for most of the wrappers,
+e.g. :term:`GRID_STAT_ALLOW_MISSING_INPUTS` and :term:`GRID_STAT_INPUT_THRESH`.
+Refer to the :ref:`python_wrappers` chapter or the :ref:`METplus_glossary`
+to see which variables are supported.
+
+**Example 1**::
+
+    [config]
+    PROCESS_LIST = RegridDataPlane, GridStat
+    VALID_TIME_FMT = %Y%m%d%H
+    VALID_BEG = 2024020301
+    VALID_BEG = 2024020310
+    VALID_INCREMENT = 1H
+    LEAD_SEQ = 0
+
+    ALLOW_MISSING_INPUTS = True
+    INPUT_THRESH = 0.6
+
+In this example, 10 valid times will be run, so there will be 10 calls to
+RegridDataPlane and 10 calls to GridStat. The input threshold is set
+to 60%, so if 6 or more of the RegridDataPlane runs *and*
+6 or more of the GridStat runs successfully find all of the required files,
+an error will not be reported. If 5 or fewer runs for either wrapper succeed,
+then an error will be reported.
+
+**Example 2**::
+
+
+    [config]
+    PROCESS_LIST = RegridDataPlane, GridStat
+    VALID_TIME_FMT = %Y%m%d%H
+    VALID_BEG = 2024020301
+    VALID_BEG = 2024020310
+    VALID_INCREMENT = 1H
+    LEAD_SEQ = 0
+
+    GRID_STAT_ALLOW_MISSING_INPUTS = True
+    INPUT_THRESH = 0.6
+
+In this case, only GridStat wrapper will allow missing inputs.
+At least 60% of the GridStat runs
+must successfully find the required input files to prevent an error.
+Any missing inputs for RegridDataPlane will result in an error.
+
+**Example 3**::
+
+
+    [config]
+    PROCESS_LIST = RegridDataPlane, GridStat
+    VALID_TIME_FMT = %Y%m%d%H
+    VALID_BEG = 2024020301
+    VALID_BEG = 2024020310
+    VALID_INCREMENT = 1H
+    LEAD_SEQ = 0
+
+    ALLOW_MISSING_INPUTS = True
+    REGRID_DATA_PLANE_INPUT_THRESH = 0.9
+    GRID_STAT_INPUT_THRESH = 0.6
+
+In this case, both GridStat and RegridDataPlane wrappers allow missing inputs,
+but the threshold to prevent an error differs between wrappers.
+At least 90% of the RegridDataPlane runs
+must successfully find the required input files to prevent an error.
+At least 60% of the GridStat runs
+must successfully find the required input files to prevent an error.
+Any missing inputs for RegridDataPlane will result in an error.
+
 .. _metplus-control-met:
 
 How METplus controls MET configuration variables

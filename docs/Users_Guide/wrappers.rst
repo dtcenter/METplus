@@ -64,6 +64,9 @@ METplus Configuration
 | :term:`ASCII2NC_INC_VALID_TIMES`
 | :term:`ASCII2NC_SKIP_INIT_TIMES`
 | :term:`ASCII2NC_INC_INIT_TIMES`
+| :term:`ASCII2NC_ALLOW_MISSING_INPUTS`
+| :term:`ASCII2NC_INPUT_THRESH`
+
 |
 
 .. _ascii2nc-met-conf:
@@ -380,6 +383,8 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_INC_VALID_TIMES`
 | :term:`ENSEMBLE_STAT_SKIP_INIT_TIMES`
 | :term:`ENSEMBLE_STAT_INC_INIT_TIMES`
+| :term:`ENSEMBLE_STAT_ALLOW_MISSING_INPUTS`
+| :term:`ENSEMBLE_STAT_INPUT_THRESH`
 |
 
 .. warning:: **DEPRECATED:**
@@ -1352,6 +1357,8 @@ METplus Configuration
 | :term:`GEN_ENS_PROD_INC_VALID_TIMES`
 | :term:`GEN_ENS_PROD_SKIP_INIT_TIMES`
 | :term:`GEN_ENS_PROD_INC_INIT_TIMES`
+| :term:`GEN_ENS_PROD_ALLOW_MISSING_INPUTS`
+| :term:`GEN_ENS_PROD_INPUT_THRESH`
 
 
 .. _gen-ens-prod-met-conf:
@@ -1746,6 +1753,8 @@ Configuration
 | :term:`GEN_VX_MASK_INC_VALID_TIMES`
 | :term:`GEN_VX_MASK_SKIP_INIT_TIMES`
 | :term:`GEN_VX_MASK_INC_INIT_TIMES`
+| :term:`GEN_VX_MASK_ALLOW_MISSING_INPUTS`
+| :term:`GEN_VX_MASK_INPUT_THRESH`
 |
 
 .. _gfdl_tracker_wrapper:
@@ -3054,6 +3063,8 @@ METplus Configuration
 | :term:`GRID_DIAG_INC_VALID_TIMES`
 | :term:`GRID_DIAG_SKIP_INIT_TIMES`
 | :term:`GRID_DIAG_INC_INIT_TIMES`
+| :term:`GRID_DIAG_ALLOW_MISSING_INPUTS`
+| :term:`GRID_DIAG_INPUT_THRESH`
 |
 
 .. _grid-diag-met-conf:
@@ -3399,6 +3410,8 @@ METplus Configuration
 | :term:`GRID_STAT_UGRID_COORDINATES_FILE`
 | :term:`GRID_STAT_UGRID_CONFIG_FILE`
 | :term:`GRID_STAT_TIME_OFFSET_WARNING`
+| :term:`GRID_STAT_ALLOW_MISSING_INPUTS`
+| :term:`GRID_STAT_INPUT_THRESH`
 |
 
 .. warning:: **DEPRECATED**
@@ -4169,6 +4182,8 @@ METplus Configuration
 | :term:`IODA2NC_INC_VALID_TIMES`
 | :term:`IODA2NC_SKIP_INIT_TIMES`
 | :term:`IODA2NC_INC_INIT_TIMES`
+| :term:`IODA2NC_ALLOW_MISSING_INPUTS`
+| :term:`IODA2NC_INPUT_THRESH`
 
 .. _ioda2nc-met-conf:
 
@@ -4451,6 +4466,8 @@ METplus Configuration
 | :term:`MADIS2NC_INC_VALID_TIMES`
 | :term:`MADIS2NC_SKIP_INIT_TIMES`
 | :term:`MADIS2NC_INC_INIT_TIMES`
+| :term:`MADIS2NC_ALLOW_MISSING_INPUTS`
+| :term:`MADIS2NC_INPUT_THRESH`
 |
 
 .. _madis2nc-met-conf:
@@ -4878,6 +4895,8 @@ METplus Configuration
 | :term:`MODE_SKIP_INIT_TIMES`
 | :term:`MODE_INC_INIT_TIMES`
 | :term:`MODE_TIME_OFFSET_WARNING`
+| :term:`MODE_ALLOW_MISSING_INPUTS`
+| :term:`MODE_INPUT_THRESH`
 |
 
 .. warning:: **DEPRECATED:**
@@ -5638,6 +5657,8 @@ METplus Configuration
 | :term:`MTD_INC_VALID_TIMES`
 | :term:`MTD_SKIP_INIT_TIMES`
 | :term:`MTD_INC_INIT_TIMES`
+| :term:`MTD_ALLOW_MISSING_INPUTS`
+| :term:`MTD_INPUT_THRESH`
 |
 
 .. warning:: **DEPRECATED:**
@@ -5930,6 +5951,8 @@ METplus Configuration
 | :term:`PB2NC_INC_VALID_TIMES`
 | :term:`PB2NC_SKIP_INIT_TIMES`
 | :term:`PB2NC_INC_INIT_TIMES`
+| :term:`PB2NC_ALLOW_MISSING_INPUTS`
+| :term:`PB2NC_INPUT_THRESH`
 
 .. warning:: **DEPRECATED:**
 
@@ -6275,6 +6298,8 @@ METplus Configuration
 | :term:`FCST_PCP_COMBINE_VLD_THRESH`
 | :term:`OBS_PCP_COMBINE_INPUT_THRESH`
 | :term:`OBS_PCP_COMBINE_VLD_THRESH`
+| :term:`PCP_COMBINE_ALLOW_MISSING_INPUTS`
+| :term:`PCP_COMBINE_INPUT_THRESH`
 |
 
 .. warning:: **DEPRECATED:**
@@ -6339,6 +6364,8 @@ Configuration
 | :term:`PLOT_DATA_PLANE_INC_VALID_TIMES`
 | :term:`PLOT_DATA_PLANE_SKIP_INIT_TIMES`
 | :term:`PLOT_DATA_PLANE_INC_INIT_TIMES`
+| :term:`PLOT_DATA_PLANE_ALLOW_MISSING_INPUTS`
+| :term:`PLOT_DATA_PLANE_INPUT_THRESH`
 
 .. _plot_point_obs_wrapper:
 
@@ -6406,6 +6433,8 @@ Configuration
 | :term:`PLOT_POINT_OBS_INC_VALID_TIMES`
 | :term:`PLOT_POINT_OBS_SKIP_INIT_TIMES`
 | :term:`PLOT_POINT_OBS_INC_INIT_TIMES`
+| :term:`PLOT_POINT_OBS_ALLOW_MISSING_INPUTS`
+| :term:`PLOT_POINT_OBS_INPUT_THRESH`
 
 
 .. _plot-point-obs-met-conf:
@@ -6793,6 +6822,8 @@ METplus Configuration
 | :term:`POINT2GRID_OBS_QUALITY_INC`
 | :term:`POINT2GRID_OBS_QUALITY_EXC`
 | :term:`POINT2GRID_MET_CONFIG_OVERRIDES`
+| :term:`POINT2GRID_ALLOW_MISSING_INPUTS`
+| :term:`POINT2GRID_INPUT_THRESH`
 |
 
 .. warning:: **DEPRECATED:**
@@ -7125,6 +7156,8 @@ Configuration
 | :term:`POINT_STAT_UGRID_COORDINATES_FILE`
 | :term:`POINT_STAT_UGRID_CONFIG_FILE`
 | :term:`POINT_STAT_POINT_WEIGHT_FLAG`
+| :term:`POINT_STAT_ALLOW_MISSING_INPUTS`
+| :term:`POINT_STAT_INPUT_THRESH`
 |
 
 .. warning:: **DEPRECATED:**
@@ -7926,6 +7959,8 @@ METplus Configuration
 | :term:`REGRID_DATA_PLANE_INC_VALID_TIMES`
 | :term:`REGRID_DATA_PLANE_SKIP_INIT_TIMES`
 | :term:`REGRID_DATA_PLANE_INC_INIT_TIMES`
+| :term:`REGRID_DATA_PLANE_ALLOW_MISSING_INPUTS`
+| :term:`REGRID_DATA_PLANE_INPUT_THRESH`
 |
 
 .. warning:: **DEPRECATED:**
@@ -8107,6 +8142,8 @@ METplus Configuration
 | :term:`SERIES_ANALYSIS_SKIP_INIT_TIMES`
 | :term:`SERIES_ANALYSIS_INC_INIT_TIMES`
 | :term:`SERIES_ANALYSIS_TIME_OFFSET_WARNING`
+| :term:`SERIES_ANALYSIS_ALLOW_MISSING_INPUTS`
+| :term:`SERIES_ANALYSIS_INPUT_THRESH`
 |
 
 .. warning:: **DEPRECATED:**
@@ -9442,6 +9479,8 @@ METplus Configuration
 | :term:`TC_DIAG_INC_VALID_TIMES`
 | :term:`TC_DIAG_SKIP_INIT_TIMES`
 | :term:`TC_DIAG_INC_INIT_TIMES`
+| :term:`TC_DIAG_ALLOW_MISSING_INPUTS`
+| :term:`TC_DIAG_INPUT_THRESH`
 |
 
 .. _tc-diag-met-conf:
@@ -9974,6 +10013,8 @@ METplus Configuration
 | :term:`TC_GEN_DLAND_FILE`
 | :term:`TC_GEN_BASIN_FILE`
 | :term:`TC_GEN_NC_PAIRS_GRID`
+| :term:`TC_GEN_ALLOW_MISSING_INPUTS`
+| :term:`TC_GEN_INPUT_THRESH`
 
 .. warning:: **DEPRECATED:**
 
@@ -12147,6 +12188,8 @@ METplus Configuration
 | :term:`WAVELET_STAT_WVLT_PLOT_PLOT_MAX`
 | :term:`WAVELET_STAT_OUTPUT_PREFIX`
 | :term:`WAVELET_STAT_TIME_OFFSET_WARNING`
+| :term:`WAVELET_STAT_ALLOW_MISSING_INPUTS`
+| :term:`WAVELET_STAT_INPUT_THRESH`
 
 .. _wavelet-stat-met-conf:
 
