@@ -1,6 +1,9 @@
 Create Release on GitHub
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
+* Ensure that any and all dependent releases for |projectRepo|
+  have been created according to :ref:`releaseDependencies`.
+
 * Go to Releases on GitHub and click 'Draft a new release'
 
 * For 'Choose a tag', create a new tag based on the version, starting with 'v'
