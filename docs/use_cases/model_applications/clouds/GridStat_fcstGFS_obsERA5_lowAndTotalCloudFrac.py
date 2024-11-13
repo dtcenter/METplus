@@ -50,6 +50,7 @@ model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac.conf
 # METplus Components
 # ------------------
 #
+# GridStat is the only MET tool called in this use case.
 # This use case utilizes Python Embedding, which is called using the PYTHON_NUMPY keyword 
 # in the observation input template settings. The Python script is passed an input file,
 # model name, variable field name being analyzed, the initialization and valid times, 
@@ -67,12 +68,6 @@ model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac.conf
 # **Increment between beginning and end times (INIT_INCREMENT):** 12H
 #
 # **Sequence of forecast leads to process (LEAD_SEQ):** 36
-#
-# GridStat is the only MET tool called in this example.
-# It processes the following run time:
-#
-# | **Init:** 2022-07-03 12Z
-# | **Forecast lead:** 36 hour
 #
 # Because instance names are used, GridStat will run 3 times for this 1 initalization time. Each of the 
 # instance names correspond to different regridding, neighborhood evaluations, thresholding, output line types, and output
@@ -133,8 +128,6 @@ model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac.conf
 # griddedDatasets dictionary) helps the script create the grid's corresponding latitude and longitude arrays.
 # Finally, the valid and initialization times that were passed at runtime are used to finalize the attrs dictionary
 # and the dataset is passed back to METplus for evaluation.
-
-# The location of the code is
 #
 # .. dropdown:: parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac/read_input_data.py
 #
@@ -147,6 +140,7 @@ model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac.conf
 ##############################################################################
 # User Scripting
 # --------------
+#
 # User Scripting is not used in this use case.
 
 ##############################################################################
