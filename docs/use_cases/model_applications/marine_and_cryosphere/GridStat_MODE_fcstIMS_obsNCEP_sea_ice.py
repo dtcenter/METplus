@@ -1,6 +1,6 @@
 """
 Grid-Stat and MODE: Sea Ice Validation   
-====================================================================================================
+======================================
 
 model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS
 _obsNCEP_sea_ice.conf
@@ -99,31 +99,12 @@ _obsNCEP_sea_ice.conf
 # Running METplus
 # ---------------
 #
-# This use case can be run two ways:
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
+# 
+#    run_metplus.py /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf /path/to/user_system.conf
 #
-# 1) Passing in GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf then a user-specific system configuration file::
-#       
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf -c /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf::
-#
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs).
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - PAth to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y
-#
-# **NOTE** All of these items must be found under the [dir] section.
-#
+# See :ref:`running-metplus` for more information.
 
 ####################################################################################################
 # Expected Output

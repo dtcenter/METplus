@@ -63,8 +63,8 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAl
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAltimetry.conf
+# then it loads any configuration files passed to METplus via the command line,
+#  i.e. parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAltimetry.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAltimetry.conf
@@ -109,7 +109,6 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAl
 #    run_metplus.py /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAltimetry.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
-#
 
 ##############################################################################
 # Expected Output
