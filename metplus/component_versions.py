@@ -91,6 +91,7 @@ def _is_development(input_version, get_dev, rc_is_dev):
 
     if not get_dev and any(ext in input_version for ext in check_exts):
         return True
+
     return False
 
 def get_coordinated_version(component, version):
