@@ -5,6 +5,12 @@ CycloneVerification: TC Verification Compare ADECK vs BDECK
 model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ###########################################
 # Scientific Objective
 # --------------------
@@ -13,6 +19,12 @@ model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicE
 # output and an observation dataset. TC-Pairs produces matched pairs for position 
 # errors, as well as wind, sea level pressure, and distance to land values for 
 # each input dataset. Then TC-stat will filter TC-pairs output based on user criteria.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 4.1
 
 ##############################################################################
 # Datasets

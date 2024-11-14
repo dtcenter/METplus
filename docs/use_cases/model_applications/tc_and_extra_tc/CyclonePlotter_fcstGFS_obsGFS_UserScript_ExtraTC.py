@@ -5,6 +5,12 @@ CyclonePlotter: Extra-TC Tracker and Plotting Capabilities
 model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ###########################################
 # Scientific Objective
 # --------------------
@@ -13,6 +19,12 @@ model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_Extr
 # for the valid date of interest (YYYYMMDDHH) will have been created, 
 # paired up by TCPairs, and global storm tracks 
 # for the valid date of interest will be plotted by CyclonePlotter (PlateCaree projection)
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 5.1
 
 ##############################################################################
 # Datasets

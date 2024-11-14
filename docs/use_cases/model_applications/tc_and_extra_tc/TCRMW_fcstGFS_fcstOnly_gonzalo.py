@@ -2,15 +2,26 @@
 TCRMW: Hurricane Gonzalo
 ========================
 
-model_applications/tc_and_extra_tc/TCRMW_fcstGFS_fcstOnly
-_gonzolo.conf
+model_applications/tc_and_extra_tc/TCRMW_fcstGFS_fcstOnly_gonzalo.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
 #
 # The TC-RMW tool regrids tropical cyclone model data onto a moving range-azimuth grid centered on points along the storm track. This capability replicates the NOAA Hurricane Research Division DIA-Post module.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 3.1
 
 ##############################################################################
 # Datasets

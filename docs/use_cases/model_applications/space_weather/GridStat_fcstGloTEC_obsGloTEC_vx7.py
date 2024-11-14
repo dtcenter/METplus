@@ -1,11 +1,16 @@
 """
 Grid-Stat: Analysis validation 
-==============================================================================
+==============================
 
-GridStat_fcstGloTEC
-_obsGloTEC_vx7.conf
+GridStat_fcstGloTEC_obsGloTEC_vx7.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Overview
 # --------
@@ -26,6 +31,12 @@ _obsGloTEC_vx7.conf
 # * Example of how to run with NetCDF input data which do not strictly conform to the Climate Forecasts (CF) conventions
 # * Example of using masks covering latitudinal bands of interest to the space weather community: equatorial region, mid-latitude region, and polar region
 # * Example of masking using the values of a quality flag which vary at each time step and grid point
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 3.0
 
 ##############################################################################
 # Scientific Objective
