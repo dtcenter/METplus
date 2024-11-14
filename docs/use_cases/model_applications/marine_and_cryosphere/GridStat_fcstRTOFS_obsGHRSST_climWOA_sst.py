@@ -22,7 +22,6 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_ss
 ##############################################################################
 # Version Added
 # -------------
-# [UPDATE_SECTION_CONTENT]
 #
 # METplus version 6.0
 
