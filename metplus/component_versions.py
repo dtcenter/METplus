@@ -41,7 +41,8 @@ LATEST_OFFICIAL_RELEASE = sorted(VERSION_LOOKUP.keys(), reverse=True)[1]
 DEFAULT_OUTPUT_FORMAT = "v{X}.{Y}.{Z}{N}"
 
 def get_component_version(input_component, input_version, output_component,
-                          output_format=DEFAULT_OUTPUT_FORMAT, get_dev=True):
+                          output_format=DEFAULT_OUTPUT_FORMAT, get_dev=True,
+                          rc_is_dev=False):
     """!Get the version of a requested METplus component given another METplus
     component and its version. Parses out X.Y version numbers of input version
     to find desired version. Optionally specific format of output content.
@@ -55,14 +56,19 @@ def get_component_version(input_component, input_version, output_component,
      {X}, {Y}, and {Z} will be replaced with x, y, and z version numbers from
      X.Y.Z. {N} will be replaced with development version if found in the
      input version, e.g. "-beta3" or "-rc1"
-     @param get_dev (optional) if True, get corresponding -beta or -rc version.
-     If False, return "develop" if input is beta or rc.
+     @param get_dev (optional) if True, get corresponding -beta version.
+     If False, return "develop" if input is beta. Also include -rc version if
+     rc_is_dev is True.
      @returns string of requested version number, or "develop" if input version
      ends with "-dev", or None if version number could not be determined.
+     @param rc_is_dev (optional) if True, an -rcN version will be considered a
+     development version, otherwise it will not. Defaults to False because we
+     create a main_vX.Y branch for the rc1 release, so we do not want to use
+     the develop branch for rc versions.
     """
-    if ('-dev' in input_version or
-            (not get_dev and any(ext in input_version for ext in ['-beta', '-rc']))):
+    if _is_development(input_version, get_dev, rc_is_dev):
         return 'develop'
+
     coord_version = get_coordinated_version(input_component, input_version)
     versions = VERSION_LOOKUP.get(coord_version)
     if versions is None:
@@ -75,6 +81,17 @@ def get_component_version(input_component, input_version, output_component,
     dev_version = '' if not dev_version else f"-{dev_version[0]}"
     return output_format.format(X=x, Y=y, Z=z, N=dev_version)
 
+def _is_development(input_version, get_dev, rc_is_dev):
+    if '-dev' in input_version:
+        return True
+
+    check_exts = ['-beta']
+    if rc_is_dev:
+        check_exts.append('-rc')
+
+    if not get_dev and any(ext in input_version for ext in check_exts):
+        return True
+    return False
 
 def get_coordinated_version(component, version):
     """!Get coordinated release version number based on the X.Y version number
@@ -120,10 +137,17 @@ def main():
                         default=True,
                         help='If True, get corresponding -beta or -rc version. '
                              'If False, return develop if development version.')
+    parser.add_argument('--rc_is_dev', action=argparse.BooleanOptionalAction,
+                        default=False,
+                        help='If True, an -rcN version will be considered a '
+                             'development version, otherwise it will not. '
+                             'Defaults to False because we create a main_vX.Y '
+                             'branch for the rc1 release, so we do not want to '
+                             'use the develop branch for rc versions')
     args = parser.parse_args()
     return get_component_version(args.input_component, args.input_version,
                                  args.output_component, args.output_format,
-                                 args.get_dev_version)
+                                 args.get_dev_version, args.rc_is_dev)
 
 
 if __name__ == "__main__":
