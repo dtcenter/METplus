@@ -52,15 +52,17 @@ def test_get_component_version(input_component, input_version, output_component,
 
 
 @pytest.mark.parametrize(
-    'input_version, get_dev, expected_result', [
-        ('5.1.0', True, 'v5.1.0'),
-        ('5.1.0', False, 'v5.1.0'),
-        ('5.1.0-beta3', True, 'v5.1.0-beta3'),
-        ('5.1.0-beta3', False, 'develop'),
-        ('5.1.0-rc1', True, 'v5.1.0-rc1'),
-        ('5.1.0-rc1', False, 'develop'),
+    'input_version, get_dev, rc_is_dev, expected_result', [
+        ('5.1.0', True, False, 'v5.1.0'),
+        ('5.1.0', False, False, 'v5.1.0'),
+        ('5.1.0-beta3', True, False, 'v5.1.0-beta3'),
+        ('5.1.0-beta3', False, False, 'develop'),
+        ('5.1.0-rc1', True, False, 'v5.1.0-rc1'),
+        ('5.1.0-rc1', False, False, 'v5.1.0-rc1'),
+        ('5.1.0-rc1', True, True, 'v5.1.0-rc1'),
+        ('5.1.0-rc1', False, True, 'develop'),
     ]
 )
 @pytest.mark.util
-def test_get_component_version_get_dev(input_version, get_dev, expected_result):
-    assert component_versions.get_component_version('METplus', input_version, 'METplus', get_dev=get_dev) == expected_result
+def test_get_component_version_get_dev(input_version, get_dev, rc_is_dev, expected_result):
+    assert component_versions.get_component_version('METplus', input_version, 'METplus', get_dev=get_dev, rc_is_dev=rc_is_dev) == expected_result
