@@ -5,6 +5,13 @@ UserScript: Python Script to compute cable transport
 model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransport.conf
 
 """
+
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -17,6 +24,12 @@ model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransp
 # Scatter Index. The operational code utilizes 21 days of data and computes 7 day statistics. 
 # For the use case 3 days of data are utilized. The valid date is passed though an argument. The valid date 
 # is the last processed day i.e. the code grabs 3 previous days of data.    
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 5.1
 
 ##############################################################################
 # Datasets

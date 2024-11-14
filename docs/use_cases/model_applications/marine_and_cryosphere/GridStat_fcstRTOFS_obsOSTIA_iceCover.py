@@ -6,12 +6,24 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsOSTIA_iceCover.co
 
 """
 ##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
+##############################################################################
 # Scientific Objective
 # --------------------
 #
 # This use case utilizes Python embedding to extract several statistics from the ice cover data over both pole regions, 
 # which was already being done in a closed system. By producing the same output via METplus, this use case
 # provides standardization and reproducible results.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 4.1
 
 ##############################################################################
 # Datasets

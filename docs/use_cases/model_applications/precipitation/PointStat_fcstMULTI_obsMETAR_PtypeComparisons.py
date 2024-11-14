@@ -6,6 +6,12 @@ model_application/precipitation/PointStat_fcstMULTI_obsMETAR_PtypeComparisons.co
 
 """
 ##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
+##############################################################################
 # Scientific Objective
 # --------------------
 #
@@ -15,7 +21,12 @@ model_application/precipitation/PointStat_fcstMULTI_obsMETAR_PtypeComparisons.co
 # to compare three separate model outputs for a multi-precipitation type storm
 # across several valid times and create statistical output that can help modelers
 # fine-tune curent numerical models to perform better in this forecast situation.
+
+##############################################################################
+# Version Added
+# -------------
 #
+# METplus version 4.1
 
 ##############################################################################
 # Datasets

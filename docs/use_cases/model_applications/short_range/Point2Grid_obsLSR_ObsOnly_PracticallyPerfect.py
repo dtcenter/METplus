@@ -1,19 +1,28 @@
 """
 Point2Grid: Calculate Practically Perfect Probabilities
-============================================================
+=======================================================
 
-model_applications/
-short_range/
-Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
+model_applications/short_range/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
 #
 # To use storm reports as observations to calculate 
 # Practically Perfect probabilities.
+
+##############################################################################
+# Version Added
+# -------------
 #
+# METplus version 3.1
 
 ##############################################################################
 # Datasets

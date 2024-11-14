@@ -1,12 +1,16 @@
 """
 Point-Stat: Standard Verification of Global Upper Air  
-=============================================================================
+=====================================================
 
-model_applications/medium_range/PointStat_fcstGFS_obsGDAS
-_UpperAir_MultiField
-_PrepBufr.conf
+model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -16,6 +20,12 @@ _PrepBufr.conf
 # the skill of the prediction.  Statistics are stored as partial sums to save
 # space and Stat-Analysis must be used to compute the Continuous Statistics.
 
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 3.0
 
 ##############################################################################
 # Datasets

@@ -5,6 +5,11 @@ StatAnalysis: Met Office LFRic UGRID
 model_applications/unstructured_grids/StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEmbed.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
 
 ###########################################
 # Scientific Objective
@@ -31,7 +36,12 @@ model_applications/unstructured_grids/StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEm
 # for this use case thins the observation data in order to reduce the run time.
 # It is also noted that the observations for this use case were fabricated and
 # correlated observation-forecast pairs are not expected.
+
+##############################################################################
+# Version Added
+# -------------
 #
+# METplus version 5.0
 
 ##############################################################################
 # Datasets

@@ -1,10 +1,16 @@
 """
 TCGen: Genesis Density Function (GDF) and Track Density Function (TDF) 
-=============================================================================
+======================================================================
 
 model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -50,6 +56,12 @@ model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
 # (in this example, just one), and the total number of model forecasts valid at the time of an observed genesis event. The latter
 # can also be thought of as the total number of chances that the model had to forecast a genesis event.
 #
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 4.1
 
 ##############################################################################
 # Datasets

@@ -1,12 +1,16 @@
 """
 MODE/Grid-Stat: Brightness Temperature Verification and Distance Maps
-=========================================================================
+=====================================================================
 
-model_applications/
-short_range/
-MODE_fcstFV3_obsGOES_BrightnessTempObjs.conf
+model_applications/short_range/MODE_fcstFV3_obsGOES_BrightnessTempObjs.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -15,6 +19,12 @@ MODE_fcstFV3_obsGOES_BrightnessTempObjs.conf
 # defined by creating objects, in the FV3 ensemble members compared to GOES satellite. 
 # In addition, distance map information is computed for both the model and observation
 # using object based brightness temperatures
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 4.0
 
 ##############################################################################
 # Datasets

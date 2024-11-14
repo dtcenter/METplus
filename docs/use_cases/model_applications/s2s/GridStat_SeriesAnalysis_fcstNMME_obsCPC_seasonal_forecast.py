@@ -1,12 +1,16 @@
 """
 Grid-Stat and Series-Analysis: BMKG APIK Seasonal Forecast 
-=============================================================================
+==========================================================
 
-model_applications/s2s/GridStat_SeriesAnalysis
-_fcstNMME_obsCPC
-_seasonal_forecast.conf
+model_applications/s2s/GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -96,6 +100,12 @@ _seasonal_forecast.conf
 #  of the forecasts over a wide range of lead-times. The skill might be dependent on
 #  location, on the timing within the seasonal cycle, or even on the evolving state of the
 #  coupled system.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 3.0
 
 ##############################################################################
 # Datasets

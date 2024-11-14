@@ -1,12 +1,16 @@
 """
 MODE: Multivariate  
-=========================================================================
+==================
 
-model_applications/
-short_range/
-MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
+model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -27,6 +31,12 @@ MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 # statistics relative to the super-object geometry will be available. In the case
 # no requested intesities, the parameters MODE_FCST/OBS_MULTIVAR_NAME and/or
 # MODE_FCST/OBS_MULTIVAR_LEVEL may be used as identifiers for the super-object.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 5.1
 
 ##############################################################################
 # Datasets

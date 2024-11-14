@@ -1,11 +1,16 @@
 """
 Grid-Stat: Standard Verification of Surface Fields
-================================================================================
+==================================================
 
-model_applications/medium_range/GridStat_fcstGFS_obsGFS
-_Sfc_MultiField.conf
+model_applications/medium_range/GridStat_fcstGFS_obsGFS_Sfc_MultiField.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -13,6 +18,12 @@ _Sfc_MultiField.conf
 # data in gridded format to a gridded forecast. These values can be used to assess 
 # the skill of the prediction.  Statistics stored only as partial sums to save space.
 # Stat-Analysis must be used to compute Continuous Statistics.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 3.0
 
 ##############################################################################
 # Datasets

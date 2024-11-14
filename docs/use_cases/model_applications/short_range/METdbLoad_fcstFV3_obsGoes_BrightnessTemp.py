@@ -2,11 +2,15 @@
 METdbLoad: Brightness Temperature
 =================================
 
-model_applications/
-short_range/
-METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
+model_applications/short_range/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -14,6 +18,12 @@ METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 # Load MET data into a database using the met_db_load.py script found in 
 # dtcenter/METdataio.  Specifically, this use case loads distance map output
 # from grid_stat and mode output into a database.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 6.0
 
 ##############################################################################
 # Datasets

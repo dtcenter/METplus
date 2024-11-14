@@ -6,11 +6,23 @@ model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar.co
 
 """
 ##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
+##############################################################################
 # Scientific Objective
 # --------------------
 #
 # By producing a postscript image from a file that utilizes a tripolar coordinate system, this use case shows METplus can utilize
 # python embedding to ingest and utilize file structures on the same coordinate system.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 4.0
 
 ##############################################################################
 # Datasets

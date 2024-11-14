@@ -1,12 +1,15 @@
 """
 Multi_Tool: Feature Relative by Init 
-===================================================================================
+====================================
 
-model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS
-_obsGFS_FeatureRelative
-_SeriesByInit.conf
+model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByInit.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
 
 ##############################################################################
 # Scientific Objective
@@ -20,6 +23,12 @@ _SeriesByInit.conf
 # features around and within the cyclone. This is in contrast to the traditional
 # method of regional averaging cyclone observations in a fixed grid, which "smooths out"
 # system features and limits the meaningful metrics that can be gathered.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 3.0
 
 ##############################################################################
 # Datasets

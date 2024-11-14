@@ -1,11 +1,16 @@
 """
 Grid-Stat: 6hr PQPF Probability Verification
-==========================================================================
+============================================
 
-model_applications/precipitation/GridStat_fcstHRRR-TLE
-_obsStgIV_GRIB.conf
+model_applications/precipitation/GridStat_fcstHRRR-TLE_obsStgIV_GRIB.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -23,7 +28,12 @@ _obsStgIV_GRIB.conf
 # the input files, so a set of six 1 hour accumulation fields are combined to
 # create a 6 hour accumulation field. The result is compared to the 6 hour
 # forecast data.
+
+##############################################################################
+# Version Added
+# -------------
 #
+# METplus version 3.0
 
 ##############################################################################
 # Datasets

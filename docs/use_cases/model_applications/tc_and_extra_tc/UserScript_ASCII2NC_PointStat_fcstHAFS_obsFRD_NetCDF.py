@@ -1,11 +1,16 @@
 """
 Point-Stat: Standard Verification for CONUS Surface 
-==============================================================================
+===================================================
 
-model_applications/tc_and_extra_tc/UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD
-_NetCDF.conf
+model_applications/tc_and_extra_tc/UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD_NetCDF.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -13,6 +18,12 @@ _NetCDF.conf
 # in point format to a gridded forecast. These values can be used to assess the skill 
 # of the prediction. Statistics are store as partial sums to save space and Stat-Analysis
 # must be used to compute Continuous statistics.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 4.0
 
 ##############################################################################
 # Datasets
