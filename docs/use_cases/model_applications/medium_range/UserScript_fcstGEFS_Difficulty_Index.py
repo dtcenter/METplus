@@ -136,32 +136,6 @@ model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf
 #
 #   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf /path/to/user_system.conf
 #
-# Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-#  and for the [exe] section, you will need to define the location of NON-MET executables.
-#  If the executable is in the user's path, METplus will find it from the name. 
-#  If the executable is not in the path, specify the full path to the executable here (i.e. RM = /bin/rm)  
-#  The following executables are required for performing series analysis use cases:
-#
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y
-#
-#   [exe]
-#   RM = /path/to/rm
-#   CUT = /path/to/cut
-#   TR = /path/to/tr
-#   NCAP2 = /path/to/ncap2
-#   CONVERT = /path/to/convert
-#   NCDUMP = /path/to/ncdump
-#
 # See :ref:`running-metplus` for more information.
 
 ##############################################################################
