@@ -1,17 +1,28 @@
 """
 Grid-Stat: Compute Anomaly Correlation using Climatology  
-============================================================================
+========================================================
 
-model_applications/medium_range/GridStat_fcstGFS_obsGFS
-_climoNCEP_MultiField.conf
+model_applications/medium_range/GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
 # To provide useful statistical information on the relationship between observation
 # data in gridded format to a gridded forecast. These values can be used to help
 # correct model deviations from observed values. 
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 3.0
 
 ##############################################################################
 # Datasets

@@ -1,12 +1,16 @@
 """
 MODE: Brightness Temperature Verification  
-=========================================================================
+=========================================
 
-model_applications/
-short_range/
-MODE_fcstFV3_obsGOES_BrightnessTemp.conf
+model_applications/short_range/MODE_fcstFV3_obsGOES_BrightnessTemp.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -20,7 +24,12 @@ MODE_fcstFV3_obsGOES_BrightnessTemp.conf
 #
 #  * Forecast dataset: FV3 Model member data
 #  * Observation dataset: GOES Brightness Temperature
+
+##############################################################################
+# Version Added
+# -------------
 #
+# METplus version 4.0
 
 ##############################################################################
 # METplus Components

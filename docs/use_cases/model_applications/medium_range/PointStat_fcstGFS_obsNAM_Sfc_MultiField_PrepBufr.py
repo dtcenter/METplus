@@ -1,11 +1,16 @@
 """
 Point-Stat: Standard Verification for CONUS Surface 
-==============================================================================
+===================================================
 
-model_applications/medium_range/PointStat_fcstGFS_obsNAM_Sfc
-_MultiField_PrepBufr.conf
+model_applications/medium_range/PointStat_fcstGFS_obsNAM_Sfc_MultiField_PrepBufr.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -13,6 +18,12 @@ _MultiField_PrepBufr.conf
 # in point format to a gridded forecast. These values can be used to assess the skill 
 # of the prediction. Statistics are store as partial sums to save space and Stat-Analysis
 # must be used to compute Continuous statistics.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 3.0
 
 ##############################################################################
 # Datasets

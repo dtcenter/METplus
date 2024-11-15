@@ -1,12 +1,15 @@
 """
 UserScript: Compute Cross Spectra and Make a Plot 
-========================================================================
+=================================================
 
-model_applications/
-s2s/
-UserScript_fcstS2S_obsERAI_CrossSpectra.py
+model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra.py
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
 
 #################################################################################
 # Scientific Objective
@@ -18,6 +21,12 @@ UserScript_fcstS2S_obsERAI_CrossSpectra.py
 #
 # The space time plot and cross spectra calculations were created by Maria Gehne 
 # at the Physical Sciences Labratory in NOAA. 
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 5.1
 
 #################################################################################
 # Datasets

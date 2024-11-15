@@ -1,11 +1,16 @@
 """
 Grid-Stat: Verification of TC forecasts against merged TDR data 
-==============================================================================
+===============================================================
 
-model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR
-_NetCDF.conf
+model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -14,6 +19,12 @@ _NetCDF.conf
 # values can be used to assess the skill of the prediction. The TDR data is 
 # available every 0.5 km AGL. So, the TC forecasts need to be in height coordinates
 # to compare with the TDR data. 
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 4.0
 
 ##############################################################################
 # Datasets

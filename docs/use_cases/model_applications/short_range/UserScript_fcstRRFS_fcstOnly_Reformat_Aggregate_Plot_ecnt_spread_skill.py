@@ -1,12 +1,15 @@
-"""
+ """
 UserScript: Reformat MET .stat ECNT data, calculate aggregation statistics, and generate a spread skill plot
-======================================================================================================================
+============================================================================================================
 
-model_applications/
-short_range/
-UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
+model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
 
 #################################################################################
 # Scientific Objective
@@ -17,7 +20,12 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 # and METplotpy). The METdataio METreformat module extracts the ECNT linetype data and
 # performs reformatting, the METcalcpy agg-stat module performs aggregation, and the
 # METplotpy line plot is used to generate the spread skill plot.
+
+##############################################################################
+# Version Added
+# -------------
 #
+# METplus version 6.0
 
 #################################################################################
 # Datasets
@@ -40,7 +48,6 @@ UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
 #  **This tarball should be unpacked into the directory corresponding to the value of INPUT_BASE** in the
 #  `User Configuration File <https://metplus.readthedocs.io/en/develop/Users_Guide/systemconfiguration.html#user-configuration-file>`_
 #  section.
-#
 
 #############################################################################
 # External Dependencies

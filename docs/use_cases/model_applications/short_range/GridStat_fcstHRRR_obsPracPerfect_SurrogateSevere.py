@@ -2,12 +2,14 @@
 Grid-Stat: Surrogate Severe and Practically Perfect Evaluation
 ==============================================================
 
-model_applications/
-short_range/
-GridStat_fcstHRRR_obsPracPerfect
-_SurrogateSevere.conf
+model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
 
 ##############################################################################
 # Scientific Objective
@@ -15,6 +17,12 @@ _SurrogateSevere.conf
 #
 # To evaluate the surrogate severe forecasts at predicting Severe weather
 # using the (12Z - 12Z) practically perfect storm reports.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 6.0
 
 ##############################################################################
 # Datasets

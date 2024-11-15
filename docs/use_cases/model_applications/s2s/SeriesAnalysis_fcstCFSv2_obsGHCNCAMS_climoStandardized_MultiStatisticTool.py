@@ -6,6 +6,12 @@ model_applications/s2s/SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_Mu
 
 """
 ##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
+##############################################################################
 # Scientific Objective
 # --------------------
 # This use case ingests a CFSv2 Ensemble forecast, with all ensemble members in a single file for a given year. 
@@ -17,8 +23,14 @@ model_applications/s2s/SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_Mu
 # and calculating probabilistic verfication on s2s data, which is a frequent request from climatological centers.
 
 ##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 5.0
+
+##############################################################################
 # Datasets
-# ---------------------
+# --------
 #
 # | **Forecast:** 29 CFSv2 Ensemble files, 2m temperature fields
 #

@@ -1,16 +1,28 @@
 """
 Cyclone Plotter: From TC-Pairs Output 
-===========================================================================
+=====================================
 
-model_applications/tc_and_extra_tc/Plotter_fcstGFS
-_obsGFS_ExtraTC.conf
+model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_ExtraTC.conf
+
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
 # Provide visualization of storm tracks using output from the MET TC-Pairs tool.
 # The date and hour associated with each storm track indicates the first time
 # the storm was tracked in the model.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 3.0
 
 ##############################################################################
 # Datasets

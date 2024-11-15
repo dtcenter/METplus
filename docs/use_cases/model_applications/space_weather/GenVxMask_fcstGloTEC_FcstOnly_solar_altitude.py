@@ -2,10 +2,15 @@
 GenVxMask: Solar Altitude
 =========================
 
-model_applications/space_weather/GenVxMask_fcstGloTEC_solar
-_altitude.conf
+model_applications/space_weather/GenVxMask_fcstGloTEC_solar_altitude.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Overview
 # --------
@@ -33,7 +38,6 @@ _altitude.conf
 # maximum of 90 degrees (directly overhead) at noon at latitudes near the equator.
 # [Source: https://sciencing.com/solar-altitude-23364.html]
 
-
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -42,6 +46,11 @@ _altitude.conf
 # This use case applies a solar altitude mask (solar altitude restriction) to the
 # input grid, creating a separate masked output file for each time level of the input file.
 
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 3.1
 
 ##############################################################################
 # Datasets

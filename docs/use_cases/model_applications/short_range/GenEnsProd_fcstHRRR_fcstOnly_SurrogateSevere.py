@@ -2,12 +2,15 @@
 Surrogate Severe Calculation: PCPCombine, GenEnsProd, and RegridDataPlane
 =========================================================================
 
-model_applications/
-short_range/
-GenEnsProd_fcstHRRR_fcstOnly
-_SurrogateSevere.conf
+model_applications/short_range/GenEnsProd_fcstHRRR_fcstOnly_SurrogateSevere.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ###################################################################################################
 # Scientific Objective
 # --------------------
@@ -25,7 +28,13 @@ _SurrogateSevere.conf
 # 
 # For more information, please reference Sobash et al. 2011 (https://journals.ametsoc.org/doi/full/10.1175/WAF-D-10-05046.1).
 
-###################################################################################################
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 3.1
+
+###############################################################################
 # Datasets
 # --------
 #

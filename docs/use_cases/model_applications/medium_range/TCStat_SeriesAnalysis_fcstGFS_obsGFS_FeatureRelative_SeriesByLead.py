@@ -1,13 +1,15 @@
 """
 Multi_Tool: Feature Relative by Lead (with lead groupings) 
-==================================================================================================
+==========================================================
 
-model_applicaitons/medium_range/
-TCStat_SeriesAnalysis_fcstGFS
-_obsGFS_FeatureRelative
-_SeriesByLead.conf
+model_applicaitons/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
 
 ##############################################################################
 # Scientific Objective
@@ -23,6 +25,12 @@ _SeriesByLead.conf
 # "smooths out" system features and limits the meaningful metrics that can be gathered.
 # Specifically, this use case creates bins of forecast lead times as specified by the
 # given ranges which provides additional insight directly into forecast lead time accuracy.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 3.0
 
 ##############################################################################
 # Datasets

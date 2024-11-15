@@ -2,11 +2,14 @@
 UserScript: Physics Tendency Planview Plot
 ==========================================
 
-model_applications/
-short_range/
-UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
+model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
 
 ##############################################################################
 # Scientific Objective
@@ -29,6 +32,12 @@ UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
 # METplotpy directories are under the same base directory (i.e. if the METPLUS_BASE directory is
 # /home/username/working/METplus, then clone the METplotpy source
 # code into the /home/username/working directory).  
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 5.0
 
 ##############################################################################
 # Datasets

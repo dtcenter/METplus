@@ -2,11 +2,15 @@
 Ensemble-Stat: Ensemble Statistics using Obs Uncertainty 
 ========================================================
 
-model_applications/
-short_range/
-EnsembleStat_fcstHRRRE_obsHRRRE_Sfc_MultiField.conf
+model_applications/short_range/EnsembleStat_fcstHRRRE_obsHRRRE_Sfc_MultiField.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -15,6 +19,12 @@ EnsembleStat_fcstHRRRE_obsHRRRE_Sfc_MultiField.conf
 # such as how dispersive it is and the relationship between spread and skill.
 # This example also shows how to compute simple probability fields called
 # ensemble relative frequency.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 3.0
 
 ##############################################################################
 # Datasets

@@ -2,10 +2,15 @@
 Gen-Ens-Prod: Basic Post-Processing only
 ========================================
 
-model_application/precipitation/GenEnsProd_fcstHRRRE
-_FcstOnly_NetCDF.conf
+model_application/precipitation/GenEnsProd_fcstHRRRE_FcstOnly_NetCDF.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -13,6 +18,12 @@ _FcstOnly_NetCDF.conf
 # Post-process ensemble members to derive simple (non-bias-corrected) mean,
 # standard deviation (spread), minimum, maximum, and range fields for use in
 # other MET tools.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 3.0
 
 ##############################################################################
 # Datasets

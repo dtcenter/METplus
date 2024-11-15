@@ -1,10 +1,16 @@
 """
 Ensemble-Stat: WoFS
-================================================================
+===================
 
 model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -13,6 +19,12 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 # variable field to understand its forecasting abilities. Specifically focusing on
 # accumulated precipitation at different neighborhood distances and accumulation
 # thresholds to provide meaningful analysis output that can provide direction to future WoFS improvement.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 4.1
 
 ##############################################################################
 # Datasets

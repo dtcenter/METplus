@@ -26,10 +26,12 @@ Push Reference Branch to GitHub
 
     git push -u origin main_vX.Y-ref
 
-Pushing this branch to GitHub should trigger the GitHub Actions automation
-that runs all of the use cases and creates Docker data volumes with the output
+Pushing this branch to GitHub may trigger the GitHub Actions testing workflow
+to run all of the use cases and create a Docker data volumes with the output
 data. These data will be used to verify that any bugfixes applied to the
-'main_vX.Y' branch does not break any of existing logic.
+'main_vX.Y' branch does not break any of existing logic. If the workflow was
+not automatically triggered, use the GitHub workflow dispatch option to manually
+run the **Testing** workflow for the 'main_vX.Y-ref' branch.
 
 Monitor GitHub Actions Workflow
 """""""""""""""""""""""""""""""

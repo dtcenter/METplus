@@ -1,13 +1,15 @@
 """
 Multi_Tool: Feature Relative by Lead using Multiple User-Defined Fields 
-========================================================================
+=======================================================================
 
-model_applications/medium_range/
-TCStat_SeriesAnalysis_fcstGFS
-_obsGFS_FeatureRelative
-_SeriesByLead_PyEmbed_Multiple_Diagnostics.conf
+model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
 
 ##############################################################################
 # Scientific Objective
@@ -34,6 +36,12 @@ _SeriesByLead_PyEmbed_Multiple_Diagnostics.conf
 #
 # Additionally, the ability to calculate model statistical errors based on user provided diagnostics
 # allows the user to customize the feature relative analysis to suit their needs.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 3.1
 
 ##############################################################################
 # Datasets

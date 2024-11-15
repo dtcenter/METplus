@@ -1,10 +1,15 @@
 """
 UserScript: Physics Tendency Vertical Cross Section plot
-=========================================================================
+========================================================
 
 model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalCrossSection.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
 
 ##############################################################################
 # Scientific Objective
@@ -27,6 +32,11 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 # /home/username/working/METplus, then clone the METplotpy source
 # code into the /home/username/working directory).
 
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 5.0
 
 ##############################################################################
 # Datasets
