@@ -5,7 +5,6 @@ PointStat: read in satellite data and verify wind speeds or wave heights
 model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAltimetry.conf
 
 """
-
 ##############################################################################
 # .. contents::
 #   :depth: 1
@@ -56,7 +55,6 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAl
 # The use case processes the following run time:
 #
 # | **Valid:** 2024-01-02 12Z 12hr lead
-# |
 
 ##############################################################################
 # METplus Configuration
