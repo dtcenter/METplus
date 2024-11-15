@@ -62,8 +62,6 @@ METplus Version 6.0.0 RC 1 Release Notes (2024-11-13)
 
   .. dropdown:: Bugfix
 
-     * Check the return status of the "make clean html" command in build_documentation.
-       (`#2034 <https://github.com/dtcenter/METplus/issues/2034>`_)
      * Fix StatAnalysis to set `fcst_lev` config variable instead of `fcst_level`
        (`#2742 <https://github.com/dtcenter/METplus/issues/2742>`_)
      * Fix PCPCombine derive mode to properly set field info wrt valid time
