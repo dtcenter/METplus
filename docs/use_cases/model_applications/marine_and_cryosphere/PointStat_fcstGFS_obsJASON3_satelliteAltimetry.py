@@ -36,7 +36,8 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAl
 #
 # | **Observations:** JASON-3 satellite data
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
+# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball.
+# | Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 
 ##############################################################################
@@ -44,7 +45,6 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAl
 # ------------------
 #
 # This use case calls Python Embedding during PointStat, which is the only tool used. 
-#
 
 ##############################################################################
 # METplus Workflow
@@ -98,7 +98,6 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAl
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAltimetry/read_satData.py
 
-
 ##############################################################################
 # Running METplus
 # ---------------
@@ -120,10 +119,10 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAl
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
 # Output for this use case will be found in model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAltimetry (relative to **OUTPUT_BASE**)
-# and will contain the following files:
+# and will contain the following files::
 #
-# * point_stat_swh_120000L_20240102_120000V.stat
-# * point_stat_wind_120000L_20240102_120000V.stat
+#   * point_stat_swh_120000L_20240102_120000V.stat
+#   * point_stat_wind_120000L_20240102_120000V.stat
 
 ##############################################################################
 # Keywords
@@ -141,4 +140,3 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAl
 #
 #
 # sphinx_gallery_thumbnail_path = '_static/marine_and_cryosphere-PointStat_fcstGFS_obsJASON3_satelliteAltimetry.png'
-
