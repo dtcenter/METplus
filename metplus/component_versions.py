@@ -108,8 +108,11 @@ def get_coordinated_version(component, version):
     search_version = '.'.join(search_version.split('.')[:2])
     # look for component version that begins with search version
     for coord_version, versions in VERSION_LOOKUP.items():
-        if versions.get(component.lower()).startswith(search_version):
-            return coord_version
+        try:
+            if versions.get(component.lower()).startswith(search_version):
+                return coord_version
+        except AttributeError:
+            pass
     return None
 
 def main():
@@ -151,8 +154,8 @@ def main():
 
 
 if __name__ == "__main__":
-    version = main()
-    if not version:
+    out_version = main()
+    if not out_version:
         sys.exit(1)
 
-    print(version)
+    print(out_version)
