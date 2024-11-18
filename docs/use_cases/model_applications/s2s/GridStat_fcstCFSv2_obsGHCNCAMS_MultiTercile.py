@@ -67,8 +67,8 @@ model_applications/s2s/GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile.conf
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# i.e. -c parm/use_cases/model_applications/s2s/GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/s2s/GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile.conf
@@ -88,30 +88,12 @@ model_applications/s2s/GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile.conf
 # Running METplus
 # ---------------
 #
-# This use case can be run two ways:
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# 1) Passing in GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile.conf then a user-specific system configuration file::
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s/GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile /path/to/user_system.conf
 #
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s/GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile::
-#
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s/GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [config]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
-#
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output
