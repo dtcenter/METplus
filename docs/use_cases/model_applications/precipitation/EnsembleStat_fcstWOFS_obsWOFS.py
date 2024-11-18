@@ -102,8 +102,7 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 # Pass the use case configuration file to the run_metplus.py script along 
 # with any user-specific system configuration files if desired::
 #
-#
-#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf /path/to/user_system.conf
+#  run_metplus.py /path/to/METplus/parm/use_cases/model_applications/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
 ##############################################################################
