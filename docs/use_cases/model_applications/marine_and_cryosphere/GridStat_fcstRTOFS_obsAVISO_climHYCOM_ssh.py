@@ -6,6 +6,12 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsAVISO_climHYCOM_s
 
 """
 ##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
+##############################################################################
 # Scientific Objective
 # --------------------
 #
@@ -14,57 +20,58 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsAVISO_climHYCOM_s
 # provides standardization and reproducible results.
 
 ##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 4.1
+
+##############################################################################
 # Datasets
 # --------
 #
-# | **Forecast:** RTOFS ssh file via Python Embedding script/file
+# **Forecast:** RTOFS ssh file via Python Embedding script/file
 #
-# | **Observations:** AVISO ssh file via Python Embedding script/file
+# **Observations:** AVISO ssh file via Python Embedding script/file
 #
-# | **Sea Ice Masking:** RTOFS ice cover file via Python Embedding script/file
+# **Sea Ice Masking:** RTOFS ice cover file via Python Embedding script/file
 #
-# | **Climatology:** HYCOM ssh file via Python Embedding script/file
+# **Climatology:** HYCOM ssh file via Python Embedding script/file
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 #
-# | **Data Source:** COPERNICUS GLOBAL OCEAN SSH NRT (LEVEL 4), HYCOM + NCODA Global 1/12 deg Reanalysis
-# |
-
-##############################################################################
-# External Dependencies
-# ---------------------
-#
-# You will need to use a version of Python 3.6+ that has the following packages installed:
-#
-# * scikit-learn
-# * pyresample
-#
-# If the version of Python used to compile MET did not have these libraries at the time of compilation, you will need to add these packages or create a new Python environment with these packages.
-#
-# If this is the case, you will need to set the MET_PYTHON_EXE environment variable to the path of the version of Python you want to use. If you want this version of Python to only apply to this use case, set it in the [user_env_vars] section of a METplus configuration file.:
-#
-#    [user_env_vars]
-#    MET_PYTHON_EXE = /path/to/python/with/required/packages/bin/python
+# **Data Source:** COPERNICUS GLOBAL OCEAN SSH NRT (LEVEL 4), HYCOM + NCODA Global 1/12 deg Reanalysis
 
 ##############################################################################
 # METplus Components
 # ------------------
 #
-# This use case utilizes the METplus GridStat wrapper to generate a
-# command to run the MET tool GridStat with Python Embedding for the specified user hemispheres
+# This use case only runs the Grid-Stat tool. It utilizes Python Embedding for the forecast, observation,
+# and climatology datasets to be METplus-friendly. 
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
-# GridStat is the only tool called in this example. This use case will pass in both the observation, forecast, 
-# and climatology gridded data being pulled from the files via Python Embedding. All of the desired statistics 
-# reside in the CNT line type, so that is the only output requested.
-# It processes the following run time:
+# **Beginning time (VALID_BEG):** 20210811
 #
-# | **Valid:** 2021-05-11 0Z
-# |
+# **End time (VALID_END):** 20210811
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 1M
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 24
+#
+# This use case will run 1 time to process the provided input files. In order to properly ingest the forecast, 
+# observation, and climatology datasets, Python Embedding is used. The configuration file passes the input forecast file,
+# input observation file, ice cover masking file, directory path containing the climatology file, valid date string of %Y%m%d,
+# and a file flag indicating which data dictionary should be passed back to METplus (forecast, observation, or climatology). 
+# All of the desired statistics reside in the CNT and SAL1L2 line types, so those are the only output requested.
 
 ##############################################################################
 # METplus Configuration
@@ -89,24 +96,64 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsAVISO_climHYCOM_s
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. note:: See the :ref:`GridStat MET Configuration<grid-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# .. dropdown:: GridStatConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
+#   .. highlight:: bash
+#   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 
 ##############################################################################
 # Python Embedding
 # ----------------
 #
-# This use case uses one Python script to read forecast and observation data
+# This use case uses one Python script to read forecast, observation, and climatology data.
+# At runtime, the Python script is passed the input forecast file, input observation file, 
+# ice cover masking file, directory path containing the climatology file, valid date string of %Y%m%d,
+# and a file flag indicating which data dictionary should be passed back to METplus (forecast, observation, or climatology). 
+# The reasoning for needing all three files each time the script is run is due to the kd-tree calculations and masking
+# which are all interrelated and cannot be currently performed within METplus. If any of the files are missing, an appropriate error
+# message will be provided and the script will exit. If all files are present, then the script proceeds to pull out the requested
+# forecast and observation fields, adjusting coordinate systems as necessary (not all of the inputs have the same
+# coordinate system). For the climatology data, the script's action is dependant on the valid date: if it's prior to or after the 15th,
+# the offset is calculated and used to extract a second climatology file's data that extends over the date in use.
+# If the valid date is exactly the 15th, then a single file can be used. After that, the script processes the ice mask data, creates 
+# weights for the model data via kd-tree interpolation, creates a new interpolated model grid that matches the 
+# observation dataset (this is also done for the climatology data field), masks the various fields with the ice mask,
+# and removes the bad data below a given latitude. Finally, the file flag is used to determine which of the three modified grids
+# (forecast, observation, or climatology) needs to be returned to METplus. Note that these flags correspond to the 
+# respective configuration file field in METplus.
 #
-# parm/use_cases/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsAVISO_climHYCOM_ssh/read_rtofs_aviso_hycom.py
+# .. dropdown:: parm/use_cases/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsAVISO_climHYCOM_ssh/read_rtofs_aviso_hycom.py
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsAVISO_climHYCOM_ssh/read_rtofs_aviso_hycom.py
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsAVISO_climHYCOM_ssh/read_rtofs_aviso_hycom.py
 #
+# For more information on the basic requirements to utilize Python Embedding in METplus, 
+# please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_ 
+#
+# **External Dependencies**
+#
+# You will need to use a version of Python 3.6+ that has the following packages installed:
+#
+# * scikit-learn
+# * pyresample
+#
+# If the version of Python used to compile MET did not have these libraries at the time of compilation, 
+# you will need to add these packages or create a new Python environment with these packages.
+#
+# If this is the case, you will need to set the MET_PYTHON_EXE environment variable to the path of the version of Python 
+# you want to use. If you want this version of Python to only apply to this use case, set it in the [user_env_vars] 
+# section of a METplus configuration file.:
+#
+#    [user_env_vars]
+#    MET_PYTHON_EXE = /path/to/python/with/required/packages/bin/python
 
 ##############################################################################
+# User Scripting
+# --------------
+# 
+# This use case does not use additional scripts.
+
+###############################################################################
 # Running METplus
 # ---------------
 #
@@ -126,13 +173,20 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsAVISO_climHYCOM_s
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for thisIce use case will be found in 20210503 (relative to **OUTPUT_BASE**)
-# and will contain the following files:
+# Output for this use case will be found in 
+# {OUTPUT_BASE}/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsAVISO_climHYCOM_ssh
+# Output for this ice use case will be found in 20210503.
+# and will contain the following files::
 #
 # * grid_stat_SSH_000000L_20210811_000000V.stat 
 # * grid_stat_SSH_000000L_20210811_000000V_sal1l2.txt
 # * grid_stat_SSH_000000L_20210811_000000V_cnt.txt 
 # * grid_stat_SSH_000000L_20210811_000000V_pairs.nc 
+#
+# The SAL1L2 and CNT line types were requested output with the BOTH configuration,
+# so the .stat file will contain both line type outputs as well as each line type
+# having its own text file. The netCDF file will only contain the raw fields as 
+# no NC_PAIRS_FLAG settings were utilized.
 
 ##############################################################################
 # Keywords

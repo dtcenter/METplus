@@ -2,11 +2,16 @@
 Grid-Stat and MODE: Sea Ice Validation   
 ======================================
 
-model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS
-_obsNCEP_sea_ice.conf
+model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf
 
 """
-####################################################################################################
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
+################################################################################
 # Scientific Objective
 # --------------------
 #
@@ -14,62 +19,88 @@ _obsNCEP_sea_ice.conf
 # and Ice Mapping System (IMS) and the National Centers for Environmental Prediction (NCEP)
 # sea ice analysis.  This is a validation and diagnostics use case because it is limited to a
 # comparison between IMS analysis to NCEP analysis.
-# Written by Lindsay Blank, NCAR. January 2020
 
-####################################################################################################
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 3.0
+
+#################################################################################
 # Datasets
 # --------
 #
 # Both IMS and NCEP sea ice analyses are observation datasets. For the purposes
 # of MET, IMS is referred to as "forecast" and NCEP is referred to as "observation".
 #
-#  * Forecast dataset: IMS Sea Ice Concentration
-#      - Variable of interest: ICEC; ICEC is a binary field where "1" means a sea ice concentration of >=0.40 and "0" means a sea ice concentration of <0.40.
-#      - Level: Z0 (surface)
-#      - Dates: 20190201 - 20190228
-#      - Valid time: 22 UTC
-#      - Format: Grib2
-#      - Projection: 4-km Polar Stereographic
+# | **Forecast:** IMS Sea Ice Concentration
+# |     * Variable of interest: ICEC; ICEC is a binary field where "1" means a sea ice concentration of >=0.40 and "0" means a sea ice concentration of <0.40.
+# |     * Level: Z0 (surface)
+# |     * Dates: 20190201 - 20190228
+# |     * Valid time: 22 UTC
+# |     * Format: Grib2
+# |     * Projection: 4-km Polar Stereographic
 #
-#  * Observation dataset: NCEP Sea Ice Concentration
-#      - Variable of interest: ICEC; ICEC is the sea ice concentration with values from 0.0 - 1.0. Values >1.0 && <=1.28 indicate flagged data to be included and should be set to ==1.0 when running MET. Values >1.28 should be ignored as that indicates an invalid observation.
-#      - Level: Z0 (surface)
-#      - Dates: 20190201 - 20190228
-#      - Valid time: 00 UTC
-#      - Format: Grib2
-#      - Projection: 12.7-km Polar Stereographic
+# | **Observation:** NCEP Sea Ice Concentration
+# |    * Variable of interest: ICEC; ICEC is the sea ice concentration with values from 
+# |      0.0 - 1.0. Values >1.0 && <=1.28 indicate flagged data to be included and should be set to ==1.0 when running MET. 
+# |      Values >1.28 should be ignored as that indicates an invalid observation.
+# |    * Level: Z0 (surface)
+# |    * Dates: 20190201 - 20190228
+# |    * Valid time: 00 UTC
+# |    * Format: Grib2
+# |    * Projection: 12.7-km Polar Stereographic
+#
+# **Climatology:** None
 #    
-#  * Data source: Received from Robert Grumbine at EMC. IMS data is originally from the NIC. NCEP data is originally from NCEP.
+# **Data source:** Received from Robert Grumbine at EMC. IMS data is originally from the
+#  `NIC <https://usicecenter.gov/Products/ImsData>`_. NCEP data is originally from NCEP.
 #  
-#  * Location: IMS: https://www.natice.noaa.gov/ims/index.html; IMS - (https://polar.ncep.noaa.gov/seaice/Analyses.shtml) 
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
-###################################################################################################
+###################################################################################
 # METplus Components
 # ------------------
 #
 # This use case runs the MET GridStat and MODE tools.
 
-###################################################################################################
+###################################################################################
 # METplus Workflow
 # ----------------
 # 
+# **Beginning time (VALID_BEG):** 20190201
+#
+# **End time (VALID_END):** 20190201
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 86400
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** None
+#
 # The workflow processes the data by valid time, meaning that each tool will be run for each time 
 # before moving onto the next valid time. The GridStat tool is called first followed by the MODE
 # tool. It processes analysis times from 2019-02-01 to 2019-02-05. The valid times for each analysis
 # are different from one another (please see `Datasets`_ section for more information).
 
-###################################################################################################
+##################################################################################
 # METplus Configuration
 # ---------------------
 # 
-# METplus first loads all of the configuration files found in parm/metplus_config. Then, it loads
-# any configuration files passed to METplus by the command line with the -c option.
+# METplus first loads all of the configuration files found in parm/metplus_config, 
+# then it loads any configuration files passed to METplus via the command line, 
+# i.e. parm/use_cases/model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf
 #
 
-###################################################################################################
+##################################################################################
 # MET Configuration
 # -----------------
 #
@@ -81,28 +112,37 @@ _obsNCEP_sea_ice.conf
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# **GridStatConfig_wrapped**
+# .. dropdown:: GridStatConfig_wrapped
 #
-# .. note:: See the :ref:`GridStat MET Configuration<grid-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+#   .. highlight:: bash
+#   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
+# .. dropdown:: MODEConfig_wrapped
 #
-# **MODEConfig_wrapped**
-#
-# .. note:: See the :ref:`MODE MET Configuration<mode-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
-#
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/MODEConfig_wrapped
+#   .. highlight:: bash
+#   .. literalinclude:: ../../../../parm/met_config/MODEConfig_wrapped
 
-###################################################################################################
+##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# This use case does not use additional scripts.
+#
+
+################################################################################
 # Running METplus
 # ---------------
 #
 # Pass the use case configuration file to the run_metplus.py script along 
 # with any user-specific system configuration files if desired::
-# 
-#    run_metplus.py /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf /path/to/user_system.conf
+#       
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
 
@@ -114,19 +154,20 @@ _obsNCEP_sea_ice.conf
 #  
 #    INFO: METplus has successfully finished running.
 #
-# A successful run will have the following output files in the location defined by {OUTPUT_BASE}, which
-# is located in the metplus_system.conf configuration file located in /path/to/METplus/parm/metplus_config.
-# This list of files should be found for every time run through METplus. 
-# GridStat output will be in model_applications/marine_and_cryosphere/sea_ice/GridStat relative to the {OUTPUT_BASE}.
-# MODE output will be in model_applications/marine_and_cryosphere/sea_ice/MODE relative to the {OUTPUT_BASE}.
+# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
+# Output for this use case will be found in two locations:
+#
+#  * GridStat output will be in {OUTPUT_BASE}/model_applications/marine_and_cryosphere/sea_ice/GridStat.
+#  * MODE output will be in {OUTPUT_BASE}/model_applications/marine_and_cryosphere/sea_ice/MODE.
+#
 # Using the output for 20190201 as an example:
 #
-# **GridStat output**:
+# **GridStat output**::
 #
 # * grid_stat_IMS_ICEC_vs_NCEP_ICEC_Z0_000000L_20190201_220000V_pairs.nc
 # * grid_stat_IMS_ICEC_vs_NCEP_ICEC_Z0_000000L_20190201_220000V.stat
 #
-# **MODE output**:
+# **MODE output**::
 #
 # * mode_IMS_ICEC_vs_NCEP_ICEC_000000L_20190201_220000V_000000A_R1_T1_cts.txt
 # * mode_IMS_ICEC_vs_NCEP_ICEC_000000L_20190201_220000V_000000A_R1_T1_obj.nc
@@ -148,12 +189,10 @@ _obsNCEP_sea_ice.conf
 # * mode_IMS_ICEC_vs_NCEP_ICEC_000000L_20190201_220000V_000000A_R5_T1_obj.nc
 # * mode_IMS_ICEC_vs_NCEP_ICEC_000000L_20190201_220000V_000000A_R5_T1_obj.txt
 # * mode_IMS_ICEC_vs_NCEP_ICEC_000000L_20190201_220000V_000000A_R5_T1.ps 
-#
 
 ###################################################################################################
 # Keywords
 # --------
-#
 #
 # .. note::
 #
