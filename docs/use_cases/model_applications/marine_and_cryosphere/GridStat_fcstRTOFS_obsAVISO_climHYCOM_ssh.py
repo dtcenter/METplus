@@ -52,8 +52,8 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsAVISO_climHYCOM_s
 # METplus Components
 # ------------------
 #
-# This use case utilizes the METplus GridStat wrapper to generate a
-# command to run the MET tool GridStat with Python Embedding for the specified user hemispheres.
+# This use case only runs the Grid-Stat tool. It utilizes Python Embedding for the forecast, observation,
+# and climatology datasets to be METplus-friendly. 
 
 ##############################################################################
 # METplus Workflow
@@ -67,12 +67,11 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsAVISO_climHYCOM_s
 #
 # **Sequence of forecast leads to process (LEAD_SEQ):** 24
 #
-# GridStat is the only tool called in this example. This use case will pass in both the observation, forecast, 
-# and climatology gridded data being pulled from the files via Python Embedding. All of the desired statistics 
-# reside in the CNT line type, so that is the only output requested.
-# It processes the following run time:
-#
-# **Valid:** 2021-05-11 0Z
+# This use case will run 1 time to process the provided input files. In order to properly ingest the forecast, 
+# observation, and climatology datasets, Python Embedding is used. The configuration file passes the input forecast file,
+# input observation file, ice cover masking file, directory path containing the climatology file, valid date string of %Y%m%d,
+# and a file flag indicating which data dictionary should be passed back to METplus (forecast, observation, or climatology). 
+# All of the desired statistics reside in the CNT and SAL1L2 line types, so those are the only output requested.
 
 ##############################################################################
 # METplus Configuration
@@ -106,7 +105,22 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsAVISO_climHYCOM_s
 # Python Embedding
 # ----------------
 #
-# This use case uses one Python script to read forecast and observation data.
+# This use case uses one Python script to read forecast, observation, and climatology data.
+# At runtime, the Python script is passed the input forecast file, input observation file, 
+# ice cover masking file, directory path containing the climatology file, valid date string of %Y%m%d,
+# and a file flag indicating which data dictionary should be passed back to METplus (forecast, observation, or climatology). 
+# The reasoning for needing all three files each time the script is run is due to the kd-tree calculations and masking
+# which are all interrelated and cannot be currently performed within METplus. If any of the files are missing, an appropriate error
+# message will be provided and the script will exit. If all files are present, then the script proceeds to pull out the requested
+# forecast and observation fields, adjusting coordinate systems as necessary (not all of the inputs have the same
+# coordinate system). For the climatology data, the script's action is dependant on the valid date: if it's prior to or after the 15th,
+# the offset is calculated and used to extract a second climatology file's data that extends over the date in use.
+# If the valid date is exactly the 15th, then a single file can be used. After that, the script processes the ice mask data, creates 
+# weights for the model data via kd-tree interpolation, creates a new interpolated model grid that matches the 
+# observation dataset (this is also done for the climatology data field), masks the various fields with the ice mask,
+# and removes the bad data below a given latitude. Finally, the file flag is used to determine which of the three modified grids
+# (forecast, observation, or climatology) needs to be returned to METplus. Note that these flags correspond to the 
+# respective configuration file field in METplus.
 #
 # .. dropdown:: parm/use_cases/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsAVISO_climHYCOM_ssh/read_rtofs_aviso_hycom.py
 #
@@ -168,6 +182,11 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsAVISO_climHYCOM_s
 # * grid_stat_SSH_000000L_20210811_000000V_sal1l2.txt
 # * grid_stat_SSH_000000L_20210811_000000V_cnt.txt 
 # * grid_stat_SSH_000000L_20210811_000000V_pairs.nc 
+#
+# The SAL1L2 and CNT line types were requested output with the BOTH configuration,
+# so the .stat file will contain both line type outputs as well as each line type
+# having its own text file. The netCDF file will only contain the raw fields as 
+# no NC_PAIRS_FLAG settings were utilized.
 
 ##############################################################################
 # Keywords
