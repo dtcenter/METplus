@@ -37,7 +37,7 @@ release. Open the following URL in a browser:
   * If you are creating a beta1 release, add development timeline
     information with approximate dates for planned development cycles.
 
-  * For other development releaes, edit the actual release dates and planned
+  * For other development release, edit the actual release dates and planned
     release dates for future development cycles, as needed.
 
 * Commit changes and push to GitHub.
