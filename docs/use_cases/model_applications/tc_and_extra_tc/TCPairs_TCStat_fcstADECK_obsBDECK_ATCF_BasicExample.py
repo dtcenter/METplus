@@ -117,7 +117,7 @@ model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicE
 # Pass the use case configuration file to the run_metplus.py script along 
 # with any user-specific system configuration files if desired::
 #
-#   run_metplus.py /path/to/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample.conf -c /path/to/user_system.conf
+#   run_metplus.py /path/to/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
 
