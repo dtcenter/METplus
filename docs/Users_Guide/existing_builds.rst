@@ -214,7 +214,7 @@ in the
 
         | **NOAA MACHINE HERA**
         | *Last updated: November 20, 2024*
-        | *Compiler and version: Intel oneAPI 2022.1.2*
+        | *Compiler and version: Intel oneAPI 2022.0.2*
 
           * **METplus-6.0.0-rc1**
 
@@ -391,13 +391,14 @@ in the
      .. dropdown:: JET
 
         | **NOAA MACHINE JET**
-        | *Last updated: October 23, 2024*
+        | *Last updated: November 20, 2024*
+        | *Compiler and version: Intel oneAPI 2022.0.2*
 
-          * **METplus-6.0.0-beta6**
+          * **METplus-6.0.0-rc1**
 
-            * METplus-6.0.0-beta6 Installation
+            * METplus-6.0.0-rc1 Installation
 
-              * /contrib/met/METplus/METplus-6.0.0-beta6
+              * /contrib/met/METplus/METplus-6.0.0-rc1
 
             * METplus-6.0 Sample Data
 
@@ -414,11 +415,11 @@ in the
                  module load wgrib2/3.1.2_wmo
                  module load R/4.0.2
                  module use /contrib/met/modulefiles
-                 module load met/12.0.0-beta6
+                 module load met/12.0.0-rc1
                  module use /contrib/met/METplus/modulefiles
-                 module load metplus/6.0.0-beta6
+                 module load metplus/6.0.0-rc1
 
-          * **METv12.0.0-beta6**
+          * **METv12.0.0-rc1**
 
             * MODULES:
 
@@ -427,14 +428,29 @@ in the
                  module load intel/2022.1.2
                  module load contrib
                  module use /contrib/met/modulefiles
-                 module load met/12.0.0-beta6
+                 module load met/12.0.0-rc1
 
-          * **METcalcpy-3.0.0-beta6 / METplotpy-3.0.0-beta6**
+          * **METcalcpy-3.0.0-rc1 / METplotpy-3.0.0-rc1**
 
             * MODULES:
 
               .. code-block:: ini
 
+                 module load intel/2022.1.2
+                 module use /contrib/met/METcalcpy/modulefiles
+                 module load metcalcpy/3.0.0-rc1
+                 module use /contrib/met/METplotpy/modulefiles
+                 module load metplotpy/3.0.0-rc1
+
+          * **METdataio-3.0.0-rc1**
+
+            * MODULES:
+
+              .. code-block:: ini
+
+                 module load intel/2022.1.2
+                 module use /contrib/met/METdataio/modulefiles
+                 module load metdataio/3.0.0-rc1
                  module load intel/2022.1.2
                  module use /contrib/met/METcalcpy/modulefiles
                  module load metcalcpy/3.0.0-beta6
