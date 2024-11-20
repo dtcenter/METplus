@@ -78,7 +78,8 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 #
 # **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!**
 #
-# If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
+# If there is a setting in the MET configuration file that is currently
+# not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
 # .. dropdown:: EnsembleStatConfig_wrapped
@@ -127,7 +128,7 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
 # Output for this use case will be found in WOFS/grid_stat (relative to **OUTPUT_BASE**)
-# The following folder/file combination will be created:
+# The following folder/file combination will be created::
 #
 # * 20200615/1700/grid_stat_WOFS_PCP_1700_A1_000000L_20200615_180000V_pairs.nc
 # * 20200615/1700/grid_stat_WOFS_PCP_1700_A1_000000L_20200615_180000V.stat
