@@ -30,7 +30,7 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 # Datasets
 # --------
 #
-#  * Forecast dataset: WoFS Ensemble
+# * Forecast dataset: WoFS Ensemble
 #
 
 ###############################################################################
@@ -39,7 +39,7 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 #
 # This use case runs PCP-Combine on each ensemble member, then runs
 # Ensemble-Stat on the output. Finally, it runs Grid-Stat on the output from
-# Ensemble-Stat
+# Ensemble-Stat.
 
 ###############################################################################
 # METplus Workflow
@@ -95,6 +95,7 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 # For more information on the basic requirements to utilize Python Embedding in METplus, 
 # please refer to the MET User’s Guide section on
 # `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_ 
+
 ##############################################################################
 # Python Embedding
 # ----------------
@@ -132,7 +133,6 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 #
 # * 20200615/1700/grid_stat_WOFS_PCP_1700_A1_000000L_20200615_180000V_pairs.nc
 # * 20200615/1700/grid_stat_WOFS_PCP_1700_A1_000000L_20200615_180000V.stat
-
 
 ##############################################################################
 # Keywords
