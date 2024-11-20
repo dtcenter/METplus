@@ -30,7 +30,7 @@ model_applications/medium_range/GridStat_fcstGEFS_obsCADB_BinaryObsPOE.conf
 
 ##############################################################################
 # Datasets
-# ---------------------
+# --------
 #
 # | **Forecast:** 85th percentile of Temperature maximum, from GEFS
 #
@@ -75,7 +75,7 @@ model_applications/medium_range/GridStat_fcstGEFS_obsCADB_BinaryObsPOE.conf
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # METplus sets environment variables based on user settings in the METplus
 # configuration file. See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details.
@@ -111,7 +111,7 @@ model_applications/medium_range/GridStat_fcstGEFS_obsCADB_BinaryObsPOE.conf
 # --------------
 #
 # User Scripting is not used in this use case.
-#
+
 ##############################################################################
 # Running METplus
 # ---------------
