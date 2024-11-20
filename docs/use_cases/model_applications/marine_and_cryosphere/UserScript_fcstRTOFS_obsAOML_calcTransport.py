@@ -95,18 +95,17 @@ model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransp
 # MET Configuration
 # -----------------
 #
-# None. All of the processing is completed in the UserScript
-#
+# None. All of the processing is completed in the UserScript.
 
 ##############################################################################
 # Python Embedding
 # ----------------
 #
-#This use case does not use Python embedding.
+# This use case does not use Python embedding.
 
 ##############################################################################
-# User Script
-# ----------------
+# User Scripting
+# --------------
 #
 # This use case uses one Python script to read forecast and observation data
 # as well as processing the desired statistics.

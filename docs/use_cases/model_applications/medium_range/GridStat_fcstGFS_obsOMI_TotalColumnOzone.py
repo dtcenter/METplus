@@ -80,22 +80,30 @@ model_applications/medium_range/GridStat_fcstGFS_obsOMI_TotalColumnOzone.conf
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. note:: See the :ref:`GridStat MET Configuration<grid-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# .. dropdown:: GridStatConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
+#   .. highlight:: bash
+#   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 
 ##############################################################################
 # Python Embedding
 # ----------------
 #
-# This use case uses one Python embedding script with GridStat to read the input observation data
+# This use case uses one Python embedding script with GridStat to read the input observation data.
 #
-# parm/use_cases/model_applications/medium_range/GridStat_fcstGFS_obsOMI_TotalColumnOzone/read_omi-aura_l3-omto3e.py
+# .. dropdown:: parm/use_cases/model_applications/medium_range/GridStat_fcstGFS_obsOMI_TotalColumnOzone/read_omi-aura_l3-omto3e.py
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/GridStat_fcstGFS_obsOMI_TotalColumnOzone/read_omi-aura_l3-omto3e.py
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/GridStat_fcstGFS_obsOMI_TotalColumnOzone/read_omi-aura_l3-omto3e.py
+#
+# For more information on the basic requirements to utilize Python Embedding in METplus, 
+# please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_ 
 
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus

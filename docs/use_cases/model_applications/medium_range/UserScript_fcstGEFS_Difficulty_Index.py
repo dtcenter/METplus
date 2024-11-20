@@ -121,11 +121,20 @@ model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf
 #
 # This use case uses a Python embedding script to read input data
 #
-# parm/use_cases/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index/wind_difficulty_index.py
+# .. dropdown:: parm/use_cases/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index/wind_difficulty_index.py
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index/wind_difficulty_index.py
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index/wind_difficulty_index.py
 #
+# For more information on the basic requirements to utilize Python Embedding in METplus, 
+# please refer to the MET User’s Guide section on
+# `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_ 
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
