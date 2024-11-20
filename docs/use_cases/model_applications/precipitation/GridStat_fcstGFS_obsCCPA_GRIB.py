@@ -68,7 +68,7 @@ model_applications/precipitation/GridStat_fcstGFS_obsCCPA_Grib.conf
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
+# then it loads any configuration files passed to METplus via the command line,
 # i.e. parm/use_cases/model_applications/precipitation/GridStat_fcstGFS_obsCCPA_GRIB.conf
 #
 # .. highlight:: bash
