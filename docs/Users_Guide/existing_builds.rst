@@ -213,13 +213,14 @@ in the
      .. dropdown:: HERA
 
         | **NOAA MACHINE HERA**
-        | *Last updated: October 21, 2024*
+        | *Last updated: November 20, 2024*
+        | *Compiler and version: Intel oneAPI 2022.1.2
 
-          * **METplus-6.0.0-beta6**
+          * **METplus-6.0.0-rc1**
 
-            * METplus-6.0.0-beta6 Installation
+            * METplus-6.0.0-rc1 Installation
 
-              * /contrib/METplus/METplus-6.0.0-beta6
+              * /contrib/METplus/METplus-6.0.0-rc1
 
             * METplus-6.0 Sample Data
 
@@ -235,9 +236,9 @@ in the
 
                  module load intel/2022.1.2
                  module use /contrib/METplus/modulefiles
-                 module load metplus/6.0.0-beta6
+                 module load metplus/6.0.0-rc1
 
-          * **MET-12.0.0-beta6**
+          * **MET-12.0.0-rc1**
 
             * MODULES:
 
@@ -245,9 +246,9 @@ in the
 
                   module load intel/2022.1.2
                   module use -a /contrib/met/modulefiles/
-                  module load met/12.0.0-beta6
+                  module load met/12.0.0-rc1
 
-          * **METcalcpy-3.0.0-beta6 / METplotpy-3.0.0-beta6**
+          * **METcalcpy-3.0.0-rc1 / METplotpy-3.0.0-rc1**
 
             * MODULES:
 
@@ -255,11 +256,11 @@ in the
 
                   module load intel/2022.1.2
                   module use /contrib/METcalcpy/modulefiles
-                  module load metcalcpy/3.0.0-beta6
+                  module load metcalcpy/3.0.0-rc1
                   module use /contrib/METplotpy/modulefiles
-                  module load metplotpy/3.0.0-beta6
+                  module load metplotpy/3.0.0-rc1
 
-          * **METdataio-3.0.0-beta6**
+          * **METdataio-3.0.0-rc1**
 
             * MODULES:
 
@@ -267,7 +268,7 @@ in the
 
                   module load intel/2022.1.2
                   module use /contrib/METdataio/modulefiles
-                  module load metdataio/3.0.0-beta6
+                  module load metdataio/3.0.0-rc1
 
      .. dropdown:: HERCULES
 
