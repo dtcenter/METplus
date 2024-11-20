@@ -108,7 +108,8 @@ model_application/precipitation/GenEnsProd_fcstHRRRE_FcstOnly_NetCDF.conf
 # Running METplus
 # ---------------
 #
-# The command to run this use case is::# Pass the use case configuration file to the run_metplus.py script along 
+# The command to run this use case is::
+# Pass the use case configuration file to the run_metplus.py script along 
 # with any user-specific system configuration files if desired::
 #
 #   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/precipitation/GenEnsProd_fcstHRRRE_FcstOnly_NetCDF.conf
