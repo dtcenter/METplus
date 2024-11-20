@@ -69,8 +69,9 @@ model_applications/short_range/GenEnsProd_fcstHRRR_fcstOnly_SurrogateSevere.conf
 # METplus Configuration
 # ---------------------
 #
-# METplus first loads all of the configurations found in parm/metplus_config.
-# Then it loads any configuration files passed to METplus by the command line.
+# METplus first loads all of the configuration files found in parm/metplus_config, 
+# then it loads any configuration files passed to METplus via the command line, 
+# i.e. parm/use_cases/model_applications/short_range/GenEnsProd_fcstHRRR_fcstOnly_SurrogateSevere.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/GenEnsProd_fcstHRRR_fcstOnly_SurrogateSevere.conf
@@ -96,9 +97,12 @@ model_applications/short_range/GenEnsProd_fcstHRRR_fcstOnly_SurrogateSevere.conf
 # Running METplus
 # ---------------
 #
-# The command to run this use case is::
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-#    run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/GenEnsProd_fcstHRRR_fcstOnly_SurrogateSevere.conf
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/GenEnsProd_fcstHRRR_fcstOnly_SurrogateSevere.conf
+#
+# See :ref:`running-metplus` for more information.
 
 ###################################################################################################
 # Expected Output
