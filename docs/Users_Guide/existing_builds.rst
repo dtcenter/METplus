@@ -214,7 +214,7 @@ in the
 
         | **NOAA MACHINE HERA**
         | *Last updated: November 20, 2024*
-        | *Compiler and version: Intel oneAPI 2022.1.2
+        | *Compiler and version: Intel oneAPI 2022.1.2*
 
           * **METplus-6.0.0-rc1**
 
