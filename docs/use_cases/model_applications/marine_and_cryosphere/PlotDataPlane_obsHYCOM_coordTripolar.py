@@ -87,7 +87,7 @@ model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar.co
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # This tool does not use a MET configuration file.
 #
@@ -98,11 +98,20 @@ model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar.co
 #
 # This use case uses one Python script to read input data, passed through two times
 #
-# parm/use_cases/model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar/read_tripolar_grid.py
+# .. dropdown:: parm/use_cases/model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar/read_tripolar_grid.py
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar/read_tripolar_grid.py
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar/read_tripolar_grid.py
 #
+# For more information on the basic requirements to utilize Python Embedding in METplus, 
+# please refer to the MET User’s Guide section on
+# `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_ 
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
@@ -111,7 +120,7 @@ model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar.co
 # Pass the use case configuration file to the run_metplus.py script along 
 # with any user-specific system configuration files if desired::
 #
-#    run_metplus.py  /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar.conf /path/to/user_system.conf
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
 

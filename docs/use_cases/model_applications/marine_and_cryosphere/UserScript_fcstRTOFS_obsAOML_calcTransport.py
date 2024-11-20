@@ -93,10 +93,16 @@ model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransp
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # None. All of the processing is completed in the UserScript
 #
+
+##############################################################################
+# Python Embedding
+# ----------------
+#
+#This use case does not use Python embedding.
 
 ##############################################################################
 # User Script
@@ -105,11 +111,10 @@ model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransp
 # This use case uses one Python script to read forecast and observation data
 # as well as processing the desired statistics.
 #
-# parm/use_cases/model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransport/read_aomlcable_rtofs_transport.py
+# .. dropdown:: parm/use_cases/model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransport/read_aomlcable_rtofs_transport.py
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransport/read_aomlcable_rtofs_transport.py
-#
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransport/read_aomlcable_rtofs_transport.py
 
 ##############################################################################
 # Running METplus

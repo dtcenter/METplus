@@ -92,6 +92,10 @@ model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
+# .. dropdown:: Ascii2NcConfig_wrapped
+#
+# .. dropdown:: PointStatConfig_wrapped
+#
 # .. note:: See the :ref:`PointStat MET Configuration<point-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
 #
 # .. highlight:: bash
@@ -106,10 +110,20 @@ model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_
 #
 # This use case uses one Python script to read observation data.
 #
-# parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_temp/read_argo_metplus.py
+# .. dropdown:: parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_temp/read_argo_metplus.py
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_temp/read_argo_metplus.py
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_temp/read_argo_metplus.py
+# 
+# For more information on the basic requirements to utilize Python Embedding in METplus, 
+# please refer to the MET User’s Guide section on
+# `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_ 
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
