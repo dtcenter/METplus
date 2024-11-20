@@ -32,6 +32,14 @@ model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.py
 # Datasets
 # --------
 #
+# **Forecast:** [UPDATE_SECTION_CONTENT]
+#
+# **Observation:** [UPDATE_SECTION_CONTENT]
+#
+# **Climatology:** [UPDATE_SECTION_CONTENT]
+#
+# **Location:** [UPDATE_SECTION_CONTENT] 
+
 
 ##############################################################################
 # METplus Components
