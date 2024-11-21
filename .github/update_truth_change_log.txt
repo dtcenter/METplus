@@ -1,0 +1,1 @@
+[20241121_00:35:58 main_v6.0] dtcenter/METplotpy#477 - dtcenter/METplotpy#477 appears to have caused differences in an output image that is not noticeable upon visual review
