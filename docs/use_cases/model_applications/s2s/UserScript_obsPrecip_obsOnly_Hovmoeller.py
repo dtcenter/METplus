@@ -79,21 +79,24 @@ model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.py
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.conf
-#
 
 #############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # There are no MET tools used in this use case.
-#
 
 ##############################################################################
 # Python Embedding
 # ----------------
 #
 # There is no python embedding in this use case
+
+##############################################################################
+# User Scripting
+# --------------
 #
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
