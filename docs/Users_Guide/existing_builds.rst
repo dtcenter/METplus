@@ -24,9 +24,9 @@ is needed on a machine not listed here, please follow the
 in the 
 `MET User’s Guide <https://met.readthedocs.io/en/latest>`_.
 
-.. dropdown:: NCAR machines
+.. dropdown:: NCAR machines - Coming Soon!
 
-    .. dropdown:: CASPER
+    .. dropdown:: CASPER  - Coming Soon!
 
        | **NCAR MACHINE CASPER** (see 
           `Casper Information <https://ncar-hpc-docs.readthedocs.io/en/latest/compute-systems/casper/>`_)
@@ -96,7 +96,7 @@ in the
           module use $TOP_DIR/METplotpy/installations/modulefiles
           module load metplotpy/3.1.0-beta1
 
-    .. dropdown:: DERECHO
+    .. dropdown:: DERECHO - Only if necessary - See warning below
 
        .. warning::
          Users are encouraged to **run METplus on Casper** or submit to 
@@ -149,20 +149,20 @@ in the
            * module use /glade/work/dtcrt/METplus/derecho/components/METdataio/installations/modulefiles
            * module load metdataio/3.1.0-beta1
 
-    .. dropdown:: NCAR/RAL Common Installation
+    .. dropdown:: NCAR/RAL Common Installation - Coming Soon!
 
        | **NCAR RAL MACHINES (STANDARD LOCATION)**
        | *Last Updated:*
 
-       * **METv12.0.0**
+       * **METv12.1.0-beta1**
 
          * MET BUILD: 
 
-       * **METplus-12.0.0**
+       * **METplus-12.1.0-beta1**
 
          * METplus INSTALLATION: Add text here
 
-    .. dropdown:: NCAR/RAL Internal Development
+    .. dropdown:: NCAR/RAL Internal Development - Coming Soon!
 
        | **NCAR RAL MACHINES SENECA**
        | **MET-12.1.0-beta1**
@@ -183,9 +183,9 @@ in the
          * LOCATION: 
          * URL: 
 
-.. dropdown:: NOAA machines
+.. dropdown:: NOAA machines - Coming Soon!
 
-     .. dropdown:: WCOSS2
+     .. dropdown:: WCOSS2 - Coming Soon!
 
         | **NOAA machines Dogwood and Cactus (WCOSS2 - Cray)**
         | *Last updated: September 19, 2024*
@@ -210,7 +210,7 @@ in the
                 module load METcalcpy/3.1.0-beta1
  
 
-     .. dropdown:: HERA
+     .. dropdown:: HERA - Coming Soon!
 
         | **NOAA MACHINE HERA**
         | *Last updated: November 20, 2024*
@@ -270,7 +270,7 @@ in the
                   module use /contrib/METdataio/modulefiles
                   module load metdataio/3.1.0-beta1
 
-     .. dropdown:: HERCULES
+     .. dropdown:: HERCULES - Coming Soon!
 
         | **NOAA MACHINE HERCULES (MANAGED BY MSU)**
         | *Last updated:*
@@ -325,7 +325,7 @@ in the
               * module load metdataio/3.1.0-beta1
 
 
-     .. dropdown:: ORION
+     .. dropdown:: ORION - Coming Soon!
 
         | **NOAA MACHINE ORION (MANAGED BY MSU)**
         | *Last updated: October 30, 2024*
@@ -388,7 +388,7 @@ in the
                  module use /apps/contrib/modulefiles
                  module load metdataio/3.1.0-beta1
 
-     .. dropdown:: JET
+     .. dropdown:: JET - Coming Soon!
 
         | **NOAA MACHINE JET**
         | *Last updated: November 20, 2024*
@@ -467,7 +467,7 @@ in the
                  module use /contrib/met/METdataio/modulefiles
                  module load metdataio/3.1.0-beta1
 
-     .. dropdown:: GAEA
+     .. dropdown:: GAEA - Coming Soon!
 
         | **NOAA MACHINE GAEA**
         | *Last Updated:*
@@ -529,9 +529,9 @@ in the
                  module use /usw/met/METdataio/modulefiles
                  module load metdataio/3.1.0-beta1
 
-.. dropdown:: Community machines
+.. dropdown:: Community machines - Coming Soon!
 
-     .. dropdown:: FRONTERA
+     .. dropdown:: FRONTERA - Coming Soon!
 
         | **TEXAS ADVANCED COMPUTING CENTER (TACC) FRONTERA**
         | *Last Updated:*
@@ -548,7 +548,7 @@ in the
             * Users should create a file like /work2/06612/tg859120/frontera/METplus/frontera.user_name.conf
               to set a personalized INPUT_BASE and OUTPUT_BASE.
 
-.. dropdown:: Docker Hub
+.. dropdown:: Docker Hub - Coming Soon!
 
    | **MET**
    | *Last Updated:*
@@ -577,7 +577,7 @@ in the
 
      `dtcenter/metplus-analysis Docker Hub <https://hub.docker.com/r/dtcenter/metplus-analysis>`_
 
-.. dropdown:: AWS
+.. dropdown:: AWS - Coming Soon!
 
    | **METviewer v6.1.0-beta1**
    | *Last Updated:*
