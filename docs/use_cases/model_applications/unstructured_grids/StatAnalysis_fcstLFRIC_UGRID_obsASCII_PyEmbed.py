@@ -5,6 +5,11 @@ StatAnalysis: Met Office LFRic UGRID
 model_applications/unstructured_grids/StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEmbed.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
 
 ###########################################
 # Scientific Objective
@@ -31,7 +36,12 @@ model_applications/unstructured_grids/StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEm
 # for this use case thins the observation data in order to reduce the run time.
 # It is also noted that the observations for this use case were fabricated and
 # correlated observation-forecast pairs are not expected.
+
+##############################################################################
+# Version Added
+# -------------
 #
+# METplus version 5.0
 
 ##############################################################################
 # Datasets
@@ -68,8 +78,8 @@ model_applications/unstructured_grids/StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEm
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/unstructured_grids/StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEmbed.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/unstructured_grids/StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEmbed.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/unstructured_grids/StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEmbed.conf
@@ -107,28 +117,12 @@ model_applications/unstructured_grids/StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEm
 # Running METplus
 # ---------------
 #
-# It is recommended to run this use case by:
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# Passing in StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEmbed.conf then a user-specific system configuration file::
+#   run_metplus.py /path/to/StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEmbed.conf /path/to/user_system.conf
 #
-#   run_metplus.py -c /path/to/StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEmbed.conf -c /path/to/user_system.conf
-#
-# The following METplus configuration variables must be set correctly to run this example.:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs).
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
-#
-# **NOTE:** All of these items must be found under the [dir] section.
-#
-
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output

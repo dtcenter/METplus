@@ -6,12 +6,24 @@ model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_
 
 """
 ##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
+##############################################################################
 # Scientific Objective
 # --------------------
 #
 # This use case utilizes the ASCII2NC tool with python embedding to natively read in Argo
 # netCDF files, a common source of ocean profile data for operational entities. These
 # values are then used by the PointStat tool to verify RTOFS ocean temperature forecast at 50 m depth.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 5.1
 
 ##############################################################################
 # Datasets
@@ -63,7 +75,7 @@ model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_
 # METplus Configuration
 # ---------------------
 #
-# METplus first loads all of the default configuration files found in parm/metplus_config, then it loads any configuration files passed to METplus via the command line with the -c option, i.e. -c parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_temp.conf
+# METplus first loads all of the default configuration files found in parm/metplus_config, then it loads any configuration files passed to METplus via the command line, i.e. parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_temp.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_temp.conf

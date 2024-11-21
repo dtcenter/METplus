@@ -2,10 +2,15 @@
 Gen-Ens-Prod: Basic Post-Processing only
 ========================================
 
-model_application/precipitation/GenEnsProd_fcstHRRRE
-_FcstOnly_NetCDF.conf
+model_application/precipitation/GenEnsProd_fcstHRRRE_FcstOnly_NetCDF.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -13,6 +18,12 @@ _FcstOnly_NetCDF.conf
 # Post-process ensemble members to derive simple (non-bias-corrected) mean,
 # standard deviation (spread), minimum, maximum, and range fields for use in
 # other MET tools.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 3.0
 
 ##############################################################################
 # Datasets
@@ -98,10 +109,12 @@ _FcstOnly_NetCDF.conf
 # ---------------
 #
 # The command to run this use case is::
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-#    run_metplus.py /path/to/METplus/parm/use_cases/model_applications/precipitation/GenEnsProd_fcstHRRRE_FcstOnly_NetCDF.conf
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/precipitation/GenEnsProd_fcstHRRRE_FcstOnly_NetCDF.conf /path/to/user_system.conf
 #
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output

@@ -6,57 +6,87 @@ model_applications/clouds/GridStat_fcstMPAS_obsERA5_cloudBaseHgt.conf
 
 """
 ##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
+##############################################################################
 # Scientific Objective
 # --------------------
 #
 # This use case captures various statistical measures of two model comparisons
 # for cloud base height with different neighborhood settings for internal 
-# model metrics and to aid in future model updates
+# model metrics and to aid in future model updates.
 # 
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 5.1
 
 ##############################################################################
 # Datasets
 # --------
 #
-# | **Forecast:** Model for Prediction Across Scales (MPAS)
-# | **Observations:** ECMWF Reanalysis, Version 5 (ERA5)
-# | **Grid:** GPP 17km masking region
+# **Forecast:** Model for Prediction Across Scales (MPAS)
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
+# **Observation:** ECMWF Reanalysis, Version 5 (ERA5)
 #
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
+#
+# **Grid:** GPP 17km masking region
 
 ##############################################################################
 # METplus Components
 # ------------------
 #
+# GridStat is the only MET tool called in this use case.
 # This use case utilizes Python Embedding, which is called using the PYTHON_NUMPY keyword 
-# in the forecast and observation input template settings. The same Python script processes both forecast and
-# observation datasets. The forecast field is verified against the respective observation field,
-# with the Python script being passed the input file, the model name, the variable name being analyzed,
-# the initialization and valid times, and a flag to indicate if the field passed is observation or forecast.
-# This process is repeated with 2 instance names to GridStat, each with a different setting for regridding,
-# neighborhood evaluation, thresholding, output line types, and output prefix names.
+# in the observation and forecast input template settings. The Python script is passed an input file,
+# model name, variable field name being analyzed, the initialization and valid times, 
+# and a flag to indicate if the field passed is observation or forecast.
+# After a successful call, a MET-readable gridded dataset is passed back to GridStat for evaluation.
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
-# GridStat is the only MET tool called in this example.
-# It processes the following run time:
+# **Beginning time (INIT_BEG):** 2020072300
 #
-# | **Init:** 2020-07-23 00Z
-# | **Forecast lead:** 36 hour
+# **End time (INIT_END):** 2020072300
 #
-# Because instance names are used, GridStat will run 2 times for this 1 initalization time.
+# **Increment between beginning and end times (INIT_INCREMENT):** 12H
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 36
+#
+# Because instance names are used, GridStat will run 2 times for this 1 initalization time. Each of the
+# instance names correspond to different regridding, neighborhood evaluations, thresholding, output line types, and output
+# prefix names. For the first GridStat instance, cloud base height is verified at 10 separate thresholds.
+# The observation and forecast datasets are provided via Python Embedding. Various output line types are requested
+# and placed in stat files, with a unique output prefix indicating which output are from which GridStat instance.
+# All of the evaluation takes place within the masked region, read in via a poly line file.
+# For the nbr GridStat instance, the same variable is verified, but the thresholds are expanded to include forecast
+# and observation percentiles, ranging from 20 to 80. This instance also creates 4 neighborhoods of varying width using
+# a circle definition. The related neighborhood line types are requested as output and a new ouput prefix is used.
 
 ##############################################################################
 # METplus Configuration
 # ---------------------
 #
 # METplus first loads the default configuration file found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line:
-# parm/use_cases/model_applications/clouds/GridStat_fcstMPAS_obsERA5_cloudBaseHgt.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/clouds/GridStat_fcstMPAS_obsERA5_cloudBaseHgt.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/clouds/GridStat_fcstMPAS_obsERA5_cloudBaseHgt.conf
@@ -70,24 +100,46 @@ model_applications/clouds/GridStat_fcstMPAS_obsERA5_cloudBaseHgt.conf
 #
 # **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!**
 #
-# If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
+# If there is a setting in the MET configuration file that is currently 
+# not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. note:: See the :ref:`GridStat MET Configuration<grid-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# .. dropdown:: GridStatConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
+#   .. highlight:: bash
+#   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 
 ##############################################################################
 # Python Embedding
 # ----------------
 #
-# This use case utilizes 1 Python script to read and process both forecast and
-# observation fields.
-# parm/use_cases/model_applications/clouds/GridStat_fcstMPAS_obsERA5_cloudBaseHgt/read_input_data.py
+# This use case utilizes one Python script to read and process the observation and forecast fields to become 
+# METplus usable. From the configuration file it collects an input file, model name, 
+# variable field name being analyzed, the initialization and valid times, 
+# and a flag to indicate if the field passed is observation or forecast. Once the script runs,
+# it uses the model name to extract the correct grid definition from the griddedDatasets dictionary,
+# and the variable field name is used to extract the correct observation file variable field name (in combination
+# with the name of the model) from the verifVariables dictionary and the correct forecast
+# file variable name from the verifVariablesModel dictionary. This information is combined into a dictionary 
+# filled with values and keys used by the rest of the code, specifically set for the model and field
+# being used. The grid type associated with each model (determined by the griddedDatasets dictionary) 
+# helps the script create the grid's corresponding latitude and longitude arrays.
+# Finally, the valid and initialization times that were passed at runtime are used to finalize the attrs dictionary
+# and the dataset is passed back to METplus for evaluation.
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/clouds/GridStat_fcstMPAS_obsERA5_cloudBaseHgt/read_input_data.py
+# .. dropdown:: parm/use_cases/model_applications/clouds/GridStat_fcstMPAS_obsERA5_cloudBaseHgt/read_input_data.py
+#
+#   .. highlight:: bash
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/clouds/GridStat_fcstMPAS_obsERA5_cloudBaseHgt/read_input_data.py
+#
+# For more information on the basic requirements to utilize Python Embedding in METplus, 
+# please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_ 
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
@@ -109,14 +161,22 @@ model_applications/clouds/GridStat_fcstMPAS_obsERA5_cloudBaseHgt.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in model_applications/clouds/GridStat_fcstMPAS_obsERA5_cloudBaseHgt
-# (relative to **OUTPUT_BASE**)
-# and will contain the following files:
+# Output for this use case will be found in {OUTPUT_BASE}/model_applications/clouds/GridStat_fcstMPAS_obsERA5_cloudBaseHgt
+# and will contain the following files::
 #
 # * grid_stat_MPAS_to_ERA5_F36_CloudBaseHgt_360000L_20200724_120000V_pairs.nc
 # * grid_stat_MPAS_to_ERA5_F36_CloudBaseHgt_360000L_20200724_120000V.stat
 # * grid_stat_MPAS_to_ERA5_F36_CloudBaseHgt_NBR_360000L_20200724_120000V_pairs.nc
 # * grid_stat_MPAS_to_ERA5_F36_CloudBaseHgt_NBR_360000L_20200724_120000V.stat
+#
+# The netCDF files from the first GridStat instance will contain 
+# the raw fields, difference fields, and gradient fields using the supplied masking area.
+# For the nbr instance, there will be additional file variables for the fractional coverage 
+# fields. Each of the instance's output can be identified by an additional tag in the file
+# name (NBR for nbr and none for the first GridStat instance). For the
+# accompanying stat files, the first GridStat instance contains FHO, CTC, CTS, CNT, SL1L2, and 
+# GRAD line types. The nbr instance will contain only the neighborhood-related line types
+# (NBRCTC, NBRCTS, and NBRCNT).
 
 ##############################################################################
 # Keywords
@@ -132,4 +192,3 @@ model_applications/clouds/GridStat_fcstMPAS_obsERA5_cloudBaseHgt.conf
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 # sphinx_gallery_thumbnail_path = '_static/clouds-GridStat_fcstMPAS_obsERA5_cloudBaseHgt.png'
-#
