@@ -98,7 +98,7 @@ model_applications/short_range/MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # METplus sets environment variables based on user settings in the METplus configuration file. 
 # See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details. 
@@ -119,10 +119,10 @@ model_applications/short_range/MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp
 # This use case does not use any Python Embedding.
 
 ##############################################################################
-# Python Scripting
-# ----------------
+# User Scripting
+# --------------
 #
-# This use case does not use any Python Scripting.
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus

@@ -132,41 +132,45 @@ model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_P
 
 #############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # There are no MET tools used in this use case. The use case uses MET .stat
 # output as input for the reformatting step.
-#
 
 ##############################################################################
 # Python Embedding
 # ----------------
 #
-# There is no python embedding in this use case
-#
+# This use case does not use Python embedding.
 
 ##############################################################################
-# Python Scripts
-# ----------------
-# This use case uses Python scripts to invoke the METdataio reformatter, the METcalcpy aggregator, and the METplotpy
-# line plot.
+# User Scripting
+# --------------
+
+# This use case uses Python scripts to invoke the METdataio reformatter, the METcalcpy aggregator,
+# and the METplotpy line plot.
 #
 # The following Python script (from METdataio) is used to reformat the MET .stat ECNT linetype data
 # into a format that can be used by the aggregating script.
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot/reformat_ecnt_linetype.py
+# .. dropdown:: parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot/reformat_ecnt_linetype.py
+#
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot/reformat_ecnt_linetype.py
 #
 # This Python script (from METcalcpy) is used to calculate aggregation statistics for the ECNT linetype.
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot/aggregate_ecnt.py
+# .. dropdown:: parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot/aggregate_ecnt.py
+#
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot/aggregate_ecnt.py
 #
 # Finally,this Python script (from METplotpy) is used to generate a spread-skill plot using the METplotypy line plot code.
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot/plot_spread_skill.py
+# .. dropdown::,parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot/plot_spread_skill.py
 #
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot/plot_spread_skill.py
 
 ##############################################################################
 # Running METplus
