@@ -536,22 +536,31 @@ in the
 .. dropdown:: Docker Hub
 
    | **MET**
-   | *Last Updated:*
+   | *Last Updated: November 14, 2024*
 
       .. code-block:: ini
 
-          docker pull dtcenter/met:12.0.0-beta1
+          docker pull dtcenter/met:12.0.0-rc1
 
      `dtcenter/met Docker Hub <https://hub.docker.com/r/dtcenter/met>`_
 
    | **METplus**
-   | *Last Updated:*
+   | *Last Updated: November 14, 2024*
 
       .. code-block:: ini
 
-          docker pull dtcenter/metplus:6.0.0-beta1
+          docker pull dtcenter/metplus:6.0.0-rc1
 
      `dtcenter/metplus Docker Hub <https://hub.docker.com/r/dtcenter/metplus>`_
+
+   | **METplus Analysis**
+   | *Last Updated: November 14, 2024*
+
+      .. code-block:: ini
+
+          docker pull dtcenter/metplus-analysis:6.0.0-rc1
+
+     `dtcenter/metplus-analysis Docker Hub <https://hub.docker.com/r/dtcenter/metplus-analysis>`_
 
 .. dropdown:: AWS
 
