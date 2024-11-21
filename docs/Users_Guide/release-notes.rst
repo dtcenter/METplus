@@ -20,7 +20,7 @@ is broken down into the following development cycles for each component:
 4. **Beta4** releases for the METplus components occurred around 2024-04-17.
 5. **Beta5** releases for the METplus components occurred around 2024-07-10.
 6. **Beta6** releases for the METplus components occurred around 2024-10-18.
-7. **Release Candidate 1** releases are tentatively scheduled for 2024-11-13.
+7. **Release Candidate 1** for the METplus components occurred around 2024-11-14.
 8. **Official Release** releases are tentatively scheduled for 2024-12-11.
 
 .. include:: existing_builds.rst
@@ -62,8 +62,6 @@ METplus Version 6.0.0 RC 1 Release Notes (2024-11-13)
 
   .. dropdown:: Bugfix
 
-     * Check the return status of the "make clean html" command in build_documentation.
-       (`#2034 <https://github.com/dtcenter/METplus/issues/2034>`_)
      * Fix StatAnalysis to set `fcst_lev` config variable instead of `fcst_level`
        (`#2742 <https://github.com/dtcenter/METplus/issues/2742>`_)
      * Fix PCPCombine derive mode to properly set field info wrt valid time
