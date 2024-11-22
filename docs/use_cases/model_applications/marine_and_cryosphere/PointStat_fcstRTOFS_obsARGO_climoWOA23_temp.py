@@ -29,19 +29,22 @@ model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_
 # Datasets
 # --------
 #
-# | **Forecast:** RTOFSv2.3 forecast data pre-processed into 0.1 degree lat-lon grid
+# **Forecast:** RTOFSv2.3 forecast data pre-processed into 0.1 degree lat-lon grid
 #
-# | **Observations:** three netCDF files from Argo
+# **Observations:** three netCDF files from Argo
 #
-# | **Climatology:** two monthly climatology files from WOA23
+# **Climatology:** two monthly climatology files from WOA23
 #
-# | **Sea Ice Mask:** a mask file to exclude forecast grid points with sea ice concentration > 15%
+# **Sea Ice Mask:** a mask file to exclude forecast grid points with sea ice concentration > 15%
 #
-# | **Location:** All of the input data required for this use case can be found in the
-#   marine_and_cryosphere sample data tarball. Click here to the METplus releases page and download sample
-#   data for the appropriate release: https://github.com/dtcenter/METplus/releases
-#   This tarball should be unpacked into the directory that you will set the value of
-#   INPUT_BASE. See `Running METplus`_ section for more information.
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -53,6 +56,14 @@ model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_
 ##############################################################################
 # METplus Workflow
 # ----------------
+#
+# **Beginning time (VALID_BEG):** 20230318
+#
+# **End time (VALID_END):** 20230318
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 24H
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 024
 #
 # ASCII2NC is the first tool called. It pulls in three Argo files for the Atlantic,
 # Pacific, and Indian Oceans, respectively using a Python script. These observations are converted into a netCDF
@@ -66,10 +77,9 @@ model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_
 # SAL1L2 line types are requested.
 # It processes the following run time:
 #
-# | **Valid:** 2023-03-18 00Z
+# **Valid:** 2023-03-18 00Z
 #
-# | **Forecast lead:** 24 hour
-#
+# **Forecast lead:** 24 hour
 
 ##############################################################################
 # METplus Configuration

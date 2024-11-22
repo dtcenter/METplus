@@ -28,12 +28,20 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsNDBC_WaveHeight.co
 # Datasets
 # --------
 #
-# | **Forecast:** GFSv16 forecast data from WAVE file category 
+# **Forecast:** GFSv16 forecast data from WAVE file category 
 #
-# | **Observations:** ASCII buoy files from NDBC
+# **Observations:** ASCII buoy files from NDBC
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -46,6 +54,14 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsNDBC_WaveHeight.co
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (VALID_BEG):** 2022101609
+#
+# **End time (VALID_END):** 2022101609
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 1M
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 0
+#
 # ASCII2NC is the first tool called. It pulls in all files with a .txt type, which is 
 # the ASCII buoy data saved format. These observations are converted into a netCDF, which is then called by PointStat
 # as the observation dataset. PointStat also pulls in a 3 hour forecast from the GFS for wave heights, which is included
@@ -53,8 +69,7 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsNDBC_WaveHeight.co
 # Thresholds are set that correspond to operational usage, and the CTC and CTS line types are requested.
 # It processes the following run time:
 #
-# | **Valid:** 2022-10-16 09Z
-# |
+# **Valid:** 2022-10-16 09Z
 
 ##############################################################################
 # METplus Configuration

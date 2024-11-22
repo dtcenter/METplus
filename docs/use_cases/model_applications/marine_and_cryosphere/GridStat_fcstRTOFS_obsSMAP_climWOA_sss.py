@@ -29,19 +29,24 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.
 # Datasets
 # --------
 #
-# | **Forecast:** RTOFS sss file via Python Embedding script/file
+# **Forecast:** RTOFS sss file via Python Embedding script/file
 #
-# | **Observations:** SMAP sss file via Python Embedding script/file
+# **Observations:** SMAP sss file via Python Embedding script/file
 #
-# | **Sea Ice Masking:** RTOFS ice cover file via Python Embedding script/file
+# **Sea Ice Masking:** RTOFS ice cover file via Python Embedding script/file
 #
-# | **Climatology:** WOA sss file via Python Embedding script/file
+# **Climatology:** WOA sss file via Python Embedding script/file
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 #
-# | **Data Source:** JPL's PODAAC and NCEP's FTPPRD data servers
-# |
+# **Data Source:** JPL's PODAAC and NCEP's FTPPRD data servers
 
 ##############################################################################
 # External Dependencies
@@ -70,13 +75,20 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (VALID_BEG):** 20210502
+#
+# **End time (VALID_END):** 20210502
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 20210502
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 24
+#
 # GridStat is the only tool called in this example. This use case will pass in both the observation, forecast, 
 # and climatology gridded data being pulled from the files via Python Embedding. All of the desired statistics 
 # reside in the CNT line type, so that is the only output requested.
 # It processes the following run time:
 #
-# | **Valid:** 2021-05-02 0Z
-# |
+# **Valid:** 2021-05-02 0Z
 
 ##############################################################################
 # METplus Configuration
