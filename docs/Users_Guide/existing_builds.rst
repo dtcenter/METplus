@@ -533,7 +533,7 @@ in the
             * Users should create a file like /work2/06612/tg859120/frontera/METplus/frontera.user_name.conf
               to set a personalized INPUT_BASE and OUTPUT_BASE.
 
-.. dropdown:: Docker Hub
+.. dropdown:: DockerHub
 
    | **MET**
    | *Last Updated: November 14, 2024*
@@ -542,7 +542,7 @@ in the
 
           docker pull dtcenter/met:12.0.0-rc1
 
-     `dtcenter/met Docker Hub <https://hub.docker.com/r/dtcenter/met>`_
+     `dtcenter/met DockerHub <https://hub.docker.com/r/dtcenter/met>`_
 
    | **METplus**
    | *Last Updated: November 14, 2024*
@@ -551,7 +551,7 @@ in the
 
           docker pull dtcenter/metplus:6.0.0-rc1
 
-     `dtcenter/metplus Docker Hub <https://hub.docker.com/r/dtcenter/metplus>`_
+     `dtcenter/metplus DockerHub <https://hub.docker.com/r/dtcenter/metplus>`_
 
    | **METplus Analysis**
    | *Last Updated: November 14, 2024*
@@ -560,7 +560,7 @@ in the
 
           docker pull dtcenter/metplus-analysis:6.0.0-rc1
 
-     `dtcenter/metplus-analysis Docker Hub <https://hub.docker.com/r/dtcenter/metplus-analysis>`_
+     `dtcenter/metplus-analysis DockerHub <https://hub.docker.com/r/dtcenter/metplus-analysis>`_
 
 .. dropdown:: AWS
 
