@@ -15,6 +15,7 @@ Create a new vX.Y.Z official release from the develop branch.
 .. include:: release_steps/update_upgrade_instructions.rst
 .. include:: release_steps/metplus/update_development_timeline.rst
 .. include:: release_steps/rotate_authorship.rst
+.. include:: release_steps/metplus/update_existing_builds_docker.rst
 .. include:: release_steps/merge_release_issue.rst
 .. include:: release_steps/create_release_on_github.rst
 .. include:: release_steps/metplus/create_release_extra.rst
