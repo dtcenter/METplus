@@ -154,11 +154,11 @@ in the
        | **NCAR RAL MACHINES (STANDARD LOCATION)**
        | *Last Updated:*
 
-       * **METv12.1.0-beta1**
+       * **METv12.1.0**
 
          * MET BUILD: 
 
-       * **METplus-12.1.0-beta1**
+       * **METplus-12.1.0**
 
          * METplus INSTALLATION: Add text here
 
