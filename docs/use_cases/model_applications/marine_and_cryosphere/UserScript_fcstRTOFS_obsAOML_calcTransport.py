@@ -33,17 +33,24 @@ model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransp
 
 ##############################################################################
 # Datasets
-# ---------------------
+# --------
 #
-# | **Forecast:** RTOFS u(3zuio) amd ,v(3zvio) files via Python Embedding script/file
+# **Forecast:** RTOFS u(3zuio) amd ,v(3zvio) files via Python Embedding script/file
 #
-# | **Observations:** AOML Florida Current data via Python Embedding script/file
+# **Observations:** AOML Florida Current data via Python Embedding script/file
 #
+# **Climatology:** None
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 #
-# | **Data Source:** NOMADS RTOFS Global + Daily mean transport (https://www.aoml.noaa.gov/phod/floridacurrent/data_access.php)+ Eightmilecable (static, provided with the use case)
+# **Data Source:** NOMADS RTOFS Global + Daily mean transport (https://www.aoml.noaa.gov/phod/floridacurrent/data_access.php)+ Eightmilecable (static, provided with the use case)
 
 ##############################################################################
 # External Dependencies
@@ -76,7 +83,13 @@ model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransp
 # All of the desired statistics are in the log file.
 # It processes the following run time:
 #
-# | **Valid:** 2021-10-28
+# **Beginning time (VALID_BEG):** 20211028
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 24H
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** None
+# 
+# **Valid:** 2021-10-28
 # 
 # The code grabs the 20211028, 20211027, and 20211026 24 hour RTOFS files. 
 
