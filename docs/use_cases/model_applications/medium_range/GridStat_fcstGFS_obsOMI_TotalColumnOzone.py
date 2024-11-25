@@ -29,10 +29,20 @@ model_applications/medium_range/GridStat_fcstGFS_obsOMI_TotalColumnOzone.conf
 # Datasets
 # --------
 #
-# | **Forecast:** GFS (1 degree Lat/Lon grid)
-# | **Observation:** NASA's Level-3 Aura/OMI Global Total Ozone Mapping Spectrometer-Like (TOMS-Like) Total Column Ozone gridded product OMTO3e (0.25deg Lat/Lon grid)
-# | **Location:** Click here for the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
+# **Forecast:** GFS (1 degree Lat/Lon grid)
+#
+# **Observation:** NASA's Level-3 Aura/OMI Global Total Ozone Mapping Spectrometer-Like (TOMS-Like) Total Column Ozone gridded product OMTO3e (0.25deg Lat/Lon grid)
+#
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -46,6 +56,14 @@ model_applications/medium_range/GridStat_fcstGFS_obsOMI_TotalColumnOzone.conf
 ##############################################################################
 # METplus Workflow
 # ----------------
+#
+# **Beginning time (VALID_BEG):** 2023120506
+#
+# **End time (VALID_END):** 2023120506
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 21600
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 48
 #
 # The following tools are used for each run time:
 #
@@ -145,4 +163,3 @@ model_applications/medium_range/GridStat_fcstGFS_obsOMI_TotalColumnOzone.conf
 #
 #
 # sphinx_gallery_thumbnail_path = '_static/medium_range-GridStat_fcstGFS_obsOMI_TotalColumnOzone.png'
-#

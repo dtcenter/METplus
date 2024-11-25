@@ -40,7 +40,6 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 #  * Series-Analysis Forecast dataset: GFS
 #  * TC-Pairs/TC-Stat Observation dataset: BDeck modified-ATCF tropical cyclone data
 #  * Series-Analysis Observation dataset: GFS Analysis
-#
 
 ##############################################################################
 # External Dependencies
@@ -49,7 +48,6 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 # You will need to use a version of Python 3.6+ that has the following packages installed::
 #
 # * netCDF4
-#
 
 ##############################################################################
 # METplus Components
@@ -68,6 +66,14 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (INIT_BEG):** 20141214
+#
+# **End time (INIT_END):** 20141214
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 21600
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** None
+#
 # The following tools are used for each run time:
 # TCPairs > RegridDataPlane, TCStat > SeriesAnalysis
 #
@@ -80,31 +86,23 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 # | **Init:** 20141214_0Z
 # | **Forecast lead:** 6
 # |
-#
 # | **Init:** 20141214_0Z
 # | **Forecast lead:** 12
 # |
-#
 # | **Init:** 20141214_0Z
 # | **Forecast lead:** 18
 # |
-#
 # | **Init:** 20141214_0Z
 # | **Forecast lead:** 24
 # |
-#
 # | **Init:** 20141214_0Z
 # | **Forecast lead:** 30
 # |
-#
 # | **Init:** 20141214_0Z
 # | **Forecast lead:** 36
 # |
-#
 # | **Init:** 20141214_0Z
 # | **Forecast lead:** 42
-# |
-#
 
 ##############################################################################
 # METplus Configuration

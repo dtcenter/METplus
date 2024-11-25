@@ -67,7 +67,6 @@ model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf
 #    - Lead times: 60
 #    - Format: Grib2
 #    - Resolution: 0.5 degree
-#
 
 ##############################################################################
 # METplus Components
@@ -75,11 +74,18 @@ model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf
 #
 # This use case runs the UserScript wrapper tool to run a user provided script,
 # in this case, wind_difficulty_index.py.
-#
 
 ##############################################################################
 # METplus Workflow
 # ----------------
+#
+# **Beginning time (INIT_BEG):** 2020120812
+#
+# **End time (INIT_END):** 2020120812
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 12H
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** None
 #
 # This use case loops by process which means that each tool is run for all times before moving to the
 # next tool. The tool order is as follows:
@@ -91,10 +97,9 @@ model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf
 #
 # 1 initialization time will be run over 1 lead time:
 #
-# | **Init:** 20201208_12Z
-# | **Forecast lead:** 60
-# |
+# **Init:** 20201208_12Z
 #
+# **Forecast lead:** 60
 
 ##############################################################################
 # METplus Configuration

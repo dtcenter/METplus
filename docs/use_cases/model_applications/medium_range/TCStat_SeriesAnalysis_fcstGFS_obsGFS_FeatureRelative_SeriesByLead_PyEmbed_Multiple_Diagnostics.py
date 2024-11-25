@@ -85,7 +85,6 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 #    Hurricane track data can be found at the following website: http://hurricanes.ral.ucar.edu/repository/data/
 #    - ADeck Track File: aal052019.dat
 #    - BDeck Track File: bal052019.dat
-#
 
 ##############################################################################
 # External Dependencies
@@ -127,6 +126,14 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (INIT_BEG):** 2019083000
+#
+# **End time (INIT_END):** 2019083023
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 21600
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 90, 96, 102, 108, 114
+#
 # This use case loops by process which means that each tool is run for all times before moving to the
 # next tool. The tool order is as follows:
 # 
@@ -140,19 +147,14 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 # | **Init:** 20190830_00Z
 # | **Forecast lead:** 90, 96, 102, 108, 114
 # |
-#
 # | **Init:** 20190830_06Z
 # | **Forecast lead:** 90, 96, 102, 108, 114
 # |
-#
 # | **Init:** 20190830_12Z
 # | **Forecast lead:** 90, 96, 102, 108, 114
 # |
-#
 # | **Init:** 20190830_18Z
 # | **Forecast lead:** 90, 96, 102, 108, 114
-# |
-#
 
 ##############################################################################
 # METplus Configuration
@@ -168,7 +170,7 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 
 #############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # METplus sets environment variables based on user settings in the METplus configuration file. 
 # See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details. 
@@ -320,4 +322,3 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 #
 #
 # sphinx_gallery_thumbnail_path = '_static/medium_range-TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multivariate_Diagnostics.png'
-#

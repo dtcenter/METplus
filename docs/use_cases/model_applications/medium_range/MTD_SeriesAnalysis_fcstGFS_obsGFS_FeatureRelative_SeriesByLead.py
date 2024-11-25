@@ -35,7 +35,6 @@ model_applicaitons/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelativ
 #  * Series-Analysis Forecast dataset: GFS
 #  * MODE Time Domain Observation dataset: GFS Analysis
 #  * Series-Analysis Observation dataset: GFS Analysis
-#
 
 ##############################################################################
 # METplus Components
@@ -50,11 +49,18 @@ model_applicaitons/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelativ
 # are aggregated into forecast hour groupings as specified by the start and end
 # increment in the METplus configuration file, as well as labels to identify each
 # forecast hour grouping.
-#
 
 ##############################################################################
 # METplus Workflow
 # ----------------
+#
+# **Beginning time (INIT_BEG):** 021071200
+#
+# **End time (INIT_END):** 021071212
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 6H
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** begin_end_incr(0,30,6)
 #
 # The following tools are used for each run time:
 #
@@ -67,15 +73,11 @@ model_applicaitons/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelativ
 # | **Init:** 20210712_00Z
 # | **Forecast lead:** 6, 12, 18, 24, 30
 # |
-#
 # | **Init:** 20210712_06Z
 # | **Forecast lead:** 6, 12, 18, 24, 30
 # |
-#
 # | **Init:** 20210712_12Z
 # | **Forecast lead:** 6, 12, 18, 24, 30
-# |
-#
 
 ##############################################################################
 # METplus Configuration
