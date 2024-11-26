@@ -39,11 +39,20 @@ model_applications/precipitation/GridStat_fcstHRRR-TLE_obsStgIV_GRIB.conf
 # Datasets
 # --------
 #
-# Relevant information about the datasets that would be beneficial include:
-# 
-#  * Forecast dataset: HRRR-TLE probabilistic forecasts in GRIB2
-#  * Observation dataset: Stage IV GRIB 1 and 6 hour precipitation accumulation
+# **Forecast:** HRRR-TLE probabilistic forecasts in GRIB2
 #
+# **Observation:** Stage IV GRIB 1 and 6 hour precipitation accumulation
+#
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -57,6 +66,14 @@ model_applications/precipitation/GridStat_fcstHRRR-TLE_obsStgIV_GRIB.conf
 ##############################################################################
 # METplus Workflow
 # ----------------
+#
+# **Beginning time (INIT_BEG):** 2016090412
+#
+# **End time (INIT_END):** 2016090412
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 60
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 6, 7
 #
 # The following tools are used for each run time:
 #
@@ -73,8 +90,6 @@ model_applications/precipitation/GridStat_fcstHRRR-TLE_obsStgIV_GRIB.conf
 # |
 # | **Init:** 2016-09-04_12Z
 # | **Forecast lead:** 7
-# |
-#
 
 ##############################################################################
 # METplus Configuration

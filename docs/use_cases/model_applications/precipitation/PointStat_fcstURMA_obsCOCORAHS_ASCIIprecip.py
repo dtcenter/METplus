@@ -27,17 +27,24 @@ model_applications/precipitation/PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip.conf
 
 ##############################################################################
 # Datasets
-# ---------------------
+# --------
 #
-# | **Forecast:** 24 URMA 1 hour precipitation accumulation files
+# **Forecast:** 24 URMA 1 hour precipitation accumulation files
 #
-# | **Observations:** CoCoRaHS, the Community Collaborative Rain, Hail, and Snow Network
+# **Observations:** CoCoRaHS, the Community Collaborative Rain, Hail, and Snow Network
 #
+# **Climatology:** None
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 #
-# | **Data Source:** EMC
+# **Data Source:** EMC
 
 ##############################################################################
 # METplus Components
@@ -51,6 +58,14 @@ model_applications/precipitation/PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip.conf
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (VALID_BEG):** 2022091423
+#
+# **End time (VALID_END):** 2022091423
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 1M
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 24H
+#
 # 1 csv file of multiple valid observation times is passed to ASCII2NC via Python embedding, resulting in a netCDF output.
 # 24 forecast files, each composed of 1 hour precipitation accumulation forecasts, is summarized via PCPCombine.
 # The following boundary times are used for the forecast summation times:
@@ -62,7 +77,6 @@ model_applications/precipitation/PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip.conf
 # Finally, PointStat is used to compare the two new fields (point data in netCDF and precipitation accumulation over 24 hours).
 # Because the Valid Time used in configuration file is set to one time (2022-09-14 at 23z) and the precipitation accumulation valid time is set to this same time, 
 # the observation window spans across the entire 2022-09-14 24 hour timeframe.
-#
 
 ##############################################################################
 # METplus Configuration

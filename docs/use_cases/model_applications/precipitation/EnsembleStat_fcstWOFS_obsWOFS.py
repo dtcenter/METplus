@@ -30,8 +30,20 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 # Datasets
 # --------
 #
-#  * Forecast dataset: WoFS Ensemble
+# **Forecast:** WoFS Ensemble
 #
+# **Observation:** 
+#
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ###############################################################################
 # METplus Components
@@ -45,6 +57,14 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (INIT_BEG):** 202006151700
+#
+# **End time (INIT_END):** 202006151700
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 3600
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 1
+#
 # The following tools are used for each run time:
 # PCPCombine, EnsembleStat, GridStat
 #
@@ -55,8 +75,6 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 #
 # | **Init:** 2020-06-15_17Z
 # | **Forecast lead:** 1 hour
-# |
-#
 
 ##############################################################################
 # METplus Configuration

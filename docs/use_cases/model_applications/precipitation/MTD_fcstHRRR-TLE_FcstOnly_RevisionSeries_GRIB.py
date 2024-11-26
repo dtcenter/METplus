@@ -33,8 +33,20 @@ model_applications/precipitation/MTD_fcstHRRR-TLE_FcstOnly_RevisionSeries_GRIB.c
 # Datasets
 # --------
 #
-#  * Forecast dataset: HRRR-TLE forecasts in GRIB2
+# **Forecast:** HRRR-TLE forecasts in GRIB2
 #
+# **Observation:** 
+#
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -45,6 +57,14 @@ model_applications/precipitation/MTD_fcstHRRR-TLE_FcstOnly_RevisionSeries_GRIB.c
 ##############################################################################
 # METplus Workflow
 # ----------------
+#
+# **Beginning time (VALID_BEG):** 2018031300
+#
+# **End time (VALID_END):** 2018031300
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 86400
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** begin_end_incr(12, 0, -1)
 #
 # The following tools are used for each run time:
 #
@@ -58,7 +78,6 @@ model_applications/precipitation/MTD_fcstHRRR-TLE_FcstOnly_RevisionSeries_GRIB.c
 #
 # | **Valid:** 2018-03-13_0Z
 # | **Forecast leads:** 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0
-# |
 
 ##############################################################################
 # METplus Configuration

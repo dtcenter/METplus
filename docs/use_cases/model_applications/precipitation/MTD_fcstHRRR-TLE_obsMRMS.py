@@ -31,9 +31,20 @@ model_applications/precipitation/MTD_fcstHRRR-TLE_obsMRMS.conf
 # Datasets
 # --------
 #
-#  * Forecast dataset: HRRR-TLE forecasts in GRIB2
-#  * Observation dataset: Multi Radar Multi Sensor (MRMS)
+# **Forecast:** HRRR-TLE forecasts in GRIB2
 #
+# **Observation**: Multi Radar Multi Sensor (MRMS)
+#
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -45,6 +56,14 @@ model_applications/precipitation/MTD_fcstHRRR-TLE_obsMRMS.conf
 ##############################################################################
 # METplus Workflow
 # ----------------
+#
+# **Beginning time (INIT_BEG):** 2017051003
+#
+# **End time (INIT_END):** 2017051003
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 43200
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 1,2,3
 #
 # The following tools are used for each run time:
 #
@@ -58,7 +77,6 @@ model_applications/precipitation/MTD_fcstHRRR-TLE_obsMRMS.conf
 #
 # | **Valid:** 2017-05-10_03Z
 # | **Forecast leads:** 1, 2, 3
-# |
 
 ##############################################################################
 # METplus Configuration

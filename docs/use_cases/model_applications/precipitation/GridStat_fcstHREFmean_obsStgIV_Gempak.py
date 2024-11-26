@@ -29,12 +29,22 @@ model_applications/precipitation/GridStat_fcstHREFmean_obsStgIV_Gempak.conf
 # Datasets
 # --------
 #
-# Relevant information about the datasets that would be beneficial include:
-# 
-#  * Forecast dataset: HREF mean forecasts in Gempak
-#  * Observation dataset: Stage IV GRIB 6 hour precipitation accumulation
-#  * Sources of data (links, contacts, etc...)
+# **Forecast:** HREF mean forecasts in Gempak
 #
+# **Observation:** Stage IV GRIB 6 hour precipitation accumulation
+#
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
+
+# Sources of data (links, contacts, etc...)
 
 ##############################################################################
 #External Dependencies
@@ -68,6 +78,14 @@ model_applications/precipitation/GridStat_fcstHREFmean_obsStgIV_Gempak.conf
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (INIT_BEG):** 2017050912
+#
+# **End time (INIT_END):** 2017050912
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 43200
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 18
+#
 # The following tools are used for each run time:
 #
 # PCPCombine (observation) > RegridDataPlane (observation) > GridStat
@@ -79,8 +97,6 @@ model_applications/precipitation/GridStat_fcstHREFmean_obsStgIV_Gempak.conf
 #
 # | **Init:** 2017-05-09_12Z
 # | **Forecast lead:** 18
-# |
-#
 
 ##############################################################################
 # METplus Configuration
