@@ -31,15 +31,22 @@ model_applications/s2s/GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile.conf
 # Datasets
 # --------
 #
-# | **Forecast:** 29 CFSv2 Ensemble files, 2m temperature fields
+# **Forecast:** 29 CFSv2 Ensemble files, 2m temperature fields
 #
-# | **Observations:** GHCNCAMS, 2m temperature field
+# **Observations:** GHCNCAMS, 2m temperature field
 #
+# **Climatology:** None
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 #
-# | **Data Source:** CPC
+# **Data Source:** CPC
 
 ##############################################################################
 # METplus Components
@@ -53,6 +60,14 @@ model_applications/s2s/GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile.conf
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (INIT_BEG):** 1982010100
+#
+# **End time (INIT_END):** 2010020100
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 1Y
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** None
+#
 # This use case utilizes 29 years of forecast data, with 24 members in each ensemble forecast.
 # The following boundary times are used for the entire script:
 #
@@ -60,7 +75,6 @@ model_applications/s2s/GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile.conf
 # | **Init End:** 2010-01-02
 # 
 # Because the increment is 1 year, all January 1st from 1982 to 2010 are processed for a total of 29 years.
-# 
 
 ##############################################################################
 # METplus Configuration

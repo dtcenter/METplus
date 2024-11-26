@@ -29,8 +29,20 @@ model_applications/s2s_mjo/UserScript_obsCFSR_obsOnly_MJO_ENSO.py
 # Datasets
 # --------
 #
-#  * Forecast dataset:  None
-#  * Observation dataset: CFSR Reanalysis 
+# **Forecast:**  None
+#
+# ***Observation:** CFSR Reanalysis
+#
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # External Dependencies
@@ -58,13 +70,20 @@ model_applications/s2s_mjo/UserScript_obsCFSR_obsOnly_MJO_ENSO.py
 # ------------------
 #
 # This use case runs the MJO-ENSO driver, which first computes the MJO components of taux and tauy, then the MJO wind power, the MJO-ENSO indices, their plot. Inputs to the MJO-ENSO driver include netCDF files that are in MET's netCDF version.  In addition, a text file containing the listing of these input netCDF files for taux, tauy, u, v, and SST is required.  Some optional pre-processing steps include RegridDataPlane for regridding  the data. 
-#
 
 ##############################################################################
 # METplus Workflow
 # ----------------
-# The MJO-ENSO driver script python code is run for each lead time on the forecast and observations data. This example loops by valid time for the model pre-processing, and valid time for the other steps.  This version is set to only process the regridding, and MaKE and MaKI calculation, omitting the caluclation of the mean daily annucal cycle and daily anomalies pre-processing steps.  However, the configurations for pre-processing are available for user reference.
 #
+# **Beginning time (VALID_BEG):** 19900101
+#
+# **End time (VALID_END):** 20211231
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 86400
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 0
+#
+# The MJO-ENSO driver script python code is run for each lead time on the forecast and observations data. This example loops by valid time for the model pre-processing, and valid time for the other steps.  This version is set to only process the regridding, and MaKE and MaKI calculation, omitting the caluclation of the mean daily annucal cycle and daily anomalies pre-processing steps.  However, the configurations for pre-processing are available for user reference.
 
 ##############################################################################
 # METplus Configuration
