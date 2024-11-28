@@ -1,6 +1,6 @@
 """
-Blocking Calculation: ERA Blocking Python Code and possibly RegridDataPlane and PcpCombine
-==========================================================================================
+UserScript: Calculate Blocking for the ERA and possibly RegridDataPlane and PcpCombine
+======================================================================================
 
 model_applications/
 s2s_mid_lat/
@@ -54,7 +54,7 @@ UserScript_obsERA_obsOnly_Blocking.py
 #
 # **Forecast dataset:** None.
 #
-# **Observation dataset:** ERA Reanlaysis 500 mb height for DJF 2000 - 2017=
+# **Observation dataset:** ERA Reanlaysis 500 mb height for DJF 2000 - 2017
 #
 # **Climatology:** None.
 #
@@ -175,7 +175,7 @@ UserScript_obsERA_obsOnly_Blocking.py
 # ---------------
 #
 # Pass the use case configuration file to the run_metplus.py script along with any
-# user-specific system configuration files if desired:
+# user-specific system configuration files if desired::
 #
 #        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_Blocking.conf /path/to/user_system.conf
 #

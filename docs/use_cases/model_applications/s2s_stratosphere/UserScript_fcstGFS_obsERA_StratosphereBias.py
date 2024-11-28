@@ -1,6 +1,6 @@
 """
-Bias Plot on Zonal Mean Wind and Temperature: UserScript, Series-Analysis
-==========================================================================
+UserScript and SeriesAnalysis: Compute Zonal mean Bias and create Plots for Temperature and Wind
+================================================================================================
 
 model_applications/
 s2s_stratosphere/

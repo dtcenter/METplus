@@ -1,6 +1,6 @@
 """
-WeatherRegime Calculation: ERA RegridDataPlane, PcpCombine, and WeatherRegime python code
-==========================================================================================
+UserScript: Calculate Weather Regimes for ERA and possibly RegridDataPlane and PcpCombine
+=========================================================================================
 
 model_applications/
 s2s_mid_lat/
@@ -130,7 +130,7 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 # section of the UserScript .conf file.  All steps are run for this use case, as specified 
 # in the following format:
 #
-# OBS_STEPS = ELBOW+PLOTELBOW+EOF+PLOTEOF+KMEANS+PLOTKMEANS+TIMEFREQ+PLOTFREQ
+#  | OBS_STEPS = ELBOW+PLOTELBOW+EOF+PLOTEOF+KMEANS+PLOTKMEANS+TIMEFREQ+PLOTFREQ
 #
 # The possible steps are computing the elbow or optimal number of clusters (ELBOW), plotting the elbow 
 # (PLOTELBOW), computing EOFs (EOF), plotting EOFs (PLOTEOF), computing the weather regimes using
@@ -181,7 +181,7 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 # * obs_kmeans.png
 # * obs_freq.png
 #
-# The output also includes a daily classification of weather regimes as a text file:
+# The output also includes a daily classification of weather regimes as a text file::
 #
 # * obs_weather_regime_class.txt
 #

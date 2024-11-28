@@ -1,6 +1,6 @@
 """
-Bias Plot on Polar Cap Temperature and Polar Vortex U: UserScript, Stat-Analysis
-================================================================================
+UserScript and StatAnalysis: Compute Polar Cap Temperature and Polar Vortex U and create Plots
+==============================================================================================
 
 model_applications/
 s2s_stratosphere/

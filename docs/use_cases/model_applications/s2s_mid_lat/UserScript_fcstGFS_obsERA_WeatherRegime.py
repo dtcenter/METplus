@@ -1,6 +1,6 @@
 """
-WeatherRegime Calculation: GFS and ERA RegridDataPlane, PcpCombine, and WeatherRegime python code
-==================================================================================================
+UserScript and StatAnalysis: Calculate and evaluate Weather Regimes for GFS and ERA
+===================================================================================
 
 model_applications/
 s2s_mid_lat/
@@ -148,8 +148,8 @@ UserScript_fcstGFS_obsERA_WeatherRegime.py
 # [user_env_vars] section of the UserScript .conf file.  All steps are run for this use
 # case, as specified in the following format:
 #
-# OBS_STEPS = ELBOW+PLOTELBOW+EOF+PLOTEOF+KMEANS+PLOTKMEANS+TIMEFREQ+PLOTFREQ
-# FCST_STEPS = ELBOW+PLOTELBOW+EOF+PLOTEOF+KMEANS+PLOTKMEANS+TIMEFREQ+PLOTFREQ
+#  | OBS_STEPS = ELBOW+PLOTELBOW+EOF+PLOTEOF+KMEANS+PLOTKMEANS+TIMEFREQ+PLOTFREQ
+#  | FCST_STEPS = ELBOW+PLOTELBOW+EOF+PLOTEOF+KMEANS+PLOTKMEANS+TIMEFREQ+PLOTFREQ
 #
 # The possible steps are computing the elbow or optimal number of clusters (ELBOW), plotting the elbow 
 # (PLOTELBOW), computing EOFs (EOF), plotting EOFs (PLOTEOF), computing the weather regimes using
@@ -204,7 +204,8 @@ UserScript_fcstGFS_obsERA_WeatherRegime.py
 # * fcst_freq.png
 # * obs_freq.png
 #
-# Output weather regime text files:
+# The output also includes a daily classification of weather regimes as text files for both
+# the forecast and observation::
 #
 # * fcst_weather_regime_class.txt
 # * obs_weather_regime_class.txt

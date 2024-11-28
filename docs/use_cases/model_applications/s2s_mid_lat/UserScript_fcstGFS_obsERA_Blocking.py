@@ -1,6 +1,6 @@
 """
-Blocking Calculation: GFS and ERA Blocking Python Code and possibly RegridDataPlane and PcpCombine
-==================================================================================================
+UserScript and StatAnalysis: Calculate and evaluate Blocking for the GFS and ERA
+================================================================================
 
 model_applications/
 s2s_mid_lat/
@@ -105,7 +105,7 @@ UserScript_fcstGFS_obsERA_Blocking.py
 # The blocking calculation is divided up into steps, which the user can select by setting STEPS_OBS 
 # and STEPS_FCST in the [user_env_vars] section of the configuration.  More information on the 
 # steps and how the calculation proceeds is given in the User Scripting section below.
-
+#
 # The 6 optional pre-processing steps loop by loop by valid time with different timing settings 
 # needed used for the different steps.  These include 2 runs of RegridDataPlane to regrid both
 # the model and observations to a 1 degree grid.  Then, there are 2 calls to PcpCombine.  These 
@@ -190,7 +190,7 @@ UserScript_fcstGFS_obsERA_Blocking.py
 # ---------------
 #
 # Pass the use case configuration file to the run_metplus.py script along with any
-# user-specific system configuration files if desired:
+# user-specific system configuration files if desired::
 #
 #        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.conf /path/to/user_system.conf
 #
