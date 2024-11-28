@@ -9,6 +9,12 @@ UserScript_fcstGFS_obsERA_Blocking.py
 """
 
 ##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
+##############################################################################
 # Scientific Objective
 # --------------------
 #
@@ -25,47 +31,88 @@ UserScript_fcstGFS_obsERA_Blocking.py
 # by applying thresholds to ensure the large-scale, quasi-stationary characteristics of blocking 
 # anticyclones are met.  The IBLs, GIBLs, and blocks are computed separately for the model and 
 # observations, and contingency table statistics are computed to compare model performance at 
-# identifying IBLs and blocks.
+# identifying IBLs and blocks.  The original code for computing blocking came from Douglas Miller.
 #
 #  * Miller, D. E., and Z. Wang, 2019a: Skillful seasonal prediction of Eurasian winter blocking and extreme temperature frequency. Geophys. Res. Lett., 46, 11 530–11 538, https://doi.org/10.1029/2019GL085035.
 #  * Miller, D. E., and Z. Wang, 2022: Northern Hemisphere Winter Blocking: Differing Onset Mechanisms across regions. J. Atmos. Sci., 79, 1291-1309, https://doi.org/10.1175/JAS-D-21-0104.1.
 #  * Masato, G., B. J. Hoskins, and T. J. Woollings, 2013: Winter and summer Northern Hemisphere blocking in CMIP5 models. J. Climate, 26, 7044–7059, https://doi.org/10.1175/JCLI-D-12-00466.1.
 #  * Kitano, Y., and T. J. Yamada, 2016: Relationship between atmospheric blocking and cold day extremes in current and RCP8.5 future climate conditions over Japan and the surrounding area. Atmos. Sci. Lett., 17, 616–622, https://doi.org/10.1002/asl.711.
-#
 
 ##############################################################################
 # Version Added
 # -------------
 #
 # METplus version 4.0.0
-#
 
 ##############################################################################
 # Datasets
 # --------
 #
-#  * Forecast dataset: GFS Forecast 500 mb height for DJF 2000 - 2017 
-#  * Observation dataset: ERA Reanlaysis 500 mb height for DJF 2000 - 2017 for the blocking evaluation and 1979 - 2018 for the CBL calculation
+# **Forecast dataset:** GFS Forecast 500 mb height for DJF 2000 - 2017 
 #
+# **Observation dataset:** ERA Reanlaysis 500 mb height for DJF 2000 - 2017 for the blocking evaluation and 1979 - 2018 for the CBL calculation
+#
+# **Climatology:** None.
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
 # ------------------
 #
-# This use case calls UserScript twice and StatAnalysis twice.  The first UserScript
-# process creates a file with the observed ERA data to use for the storm track climatology.
-# This is done separately because it's a different (longer) time frame from the data
-# that is verified.  The second UserScript runs the code to compute the blocking 
-# calculation.  For StatAnalysis, the first run computes contingency table statistics on 
-# the IBLs, while the second computes contintency tables on the computed blocks.
+# This use case calls UserScript twice and StatAnalysis twice.  The first StatAnalysis
+# run computes contingency table statistics on the IBLs, while the second computes contintency 
+# table statistics on the computed blocks.There are 6 optional pre-processing steps, 2 calls to 
+# RegridDataPlane and 4 calls to PCP-Combine.  Additionally, METcalcpy and METplotpy are 
+# required to run this use case.  The METcalcpy scripts accessed include the following:
 #
-# There are 6 optional pre-processing steps that are not run in the example to save time
-# and disk space.  These include 2 runs of RegridDataPlane to regrid both the model and 
-# observations to a 1 degree grid.  Then, there are 2 calls to PcpCombine.  These compute 
-# daily average 500 mb height for the model and observations.  The next two calls to PcpCombine 
-# compute a 5 day running mean and daily anomalies on the observations, which are used to 
-# compute the storm track climatology.  These omitted steps can be turned back on by using the 
-# PROCESS_LIST that is commented out.
+# * metcalcpy/contributed/blocking_weather_regime/Blocking.py
+#
+# * metcalcpy/contributed/blocking_weather_regime/Blocking_WeatherRegime_util.py
+#
+# * metcalcpy/util/write_mpr.py
+#
+# The METplopty scrips accessed include the following:
+#
+# * metplotpy/contributed/blocking_s2s/CBL_plot.py
+#
+# * metplotpy/contributed/blocking_s2s/plot_blocking.py
+
+##############################################################################
+# METplus Workflow
+# ----------------
+#
+# **Beginning time (VALID_BEG):** 12-01-1979
+#
+# **End time (VALID_END):** 02-28-2017
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 1 day
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 0
+#
+# This use case does not loop, but 2 UserScripts and 2 calls to StatAnalysis are run once for 
+# all valid times of the forecast and observations.  The first UserScript to create a file list
+# with the observed ERA data to use for the storm track climatology.  This is done separately 
+# because it's a different (longer) time frame from the data that is verified.  The second 
+# UserScript runs the blocking driver which calls the code to perform the blocking calculation.  
+# The blocking calculation is divided up into steps, which the user can select by setting STEPS_OBS 
+# and STEPS_FCST in the [user_env_vars] section of the configuration.  More information on the 
+# steps and how the calculation proceeds is given in the User Scripting section below.
+
+# The 6 optional pre-processing steps loop by loop by valid time with different timing settings 
+# needed used for the different steps.  These include 2 runs of RegridDataPlane to regrid both
+# the model and observations to a 1 degree grid.  Then, there are 2 calls to PcpCombine.  These 
+# compute daily average 500 mb height for the model and observations.  The next two calls to 
+# PcpCombine compute a 5 day running mean and daily anomalies on the observations, which are used 
+# to compute the storm track climatology.  These omitted steps can be turned back on by using the 
+# PROCESS_LIST that is commented out:
 #
 # PROCESS_LIST = RegridDataPlane(regrid_fcst), RegridDataPlane(regrid_obs), PcpCombine(daily_mean_fcst), PcpCombine(daily_mean_obs), PcpCombine(running_mean_obs), PcpCombine(anomaly_obs), UserScript(create_cbl_filelist), UserScript(script_blocking), StatAnalysis(sanal_ibls), StatAnalysis(sanal_blocks)
 #
@@ -73,91 +120,70 @@ UserScript_fcstGFS_obsERA_Blocking.py
 # the configuration, regrid_fcst, regrid_obs, daily_mean_fcst, etc.  Data is not provided in the 
 # tarball to run these steps, but the configurations are provided for reference on how to set
 # up these calculations.
-#
-
-##############################################################################
-# METplus Workflow
-# ----------------
-#
-# This use case does not loop, but the UserScript to create a file list, the UserScript
-# for the blocking calculation and the 2 calls to StatAnalysis are run for all valid times 
-# of the forecast and observations.  The optional pre-processing steps do loop by valid time 
-# with different timing settings needed used for the different steps.
-# 
-# The UserScript runs the blocking calculation which performs multiple steps from METcalcpy
-# or METplotpy.  These include computing CBLs (CBL), plotting CBLs (PLOTCBL), computing IBLs 
-# (IBL), plotting IBL frequency (PLOTIBL), computing GIBLs (GIBL), computing blocks (CALCBLOCKS), 
-# plotting the blocking frequency (PLOTBLOCKS).  This use case runs all steps although not all of 
-# them are required to be run.  They must be run in the above order and control over which steps 
-# to run is controlled in the [user_env_vars] section of the configuration and are formatted as 
-# follows:
-#
-#  | FCST_STEPS = CBL+IBL+PLOTIBL+GILB+CALCBLOCKS+PLOTBLOCKS
-#  | OBS_STEPS = CBL+PLOTCBL+IBL+PLOTIBL+GILB+CALCBLOCKS+PLOTBLOCKS
-#
-# This use case reuqires METcalcpy and METplotpy to run.  The METcalcpy scripts accessed include the following:
-# * metcalcpy/contributed/blocking_weather_regime/Blocking.py
-# * metcalcpy/contributed/blocking_weather_regime/Blocking_WeatherRegime_util.py
-# * metcalcpy/util/write_mpr.py
-#
-# The METplotpy scripts accessed include the following:
-# * metplotpy/contributed/blocking_s2s/CBL_plot.py
-# * metplotpy/contributed/blocking_s2s/plot_blocking.py
-#
 
 ##############################################################################
 # METplus Configuration
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# i.e. parm/use_cases/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.py.
-# The file UserScript_fcstGFS_obsERA_Blocking.conf runs the python program, and the
-# variables for all steps of the Blocking calculation are given in the [user_env_vars]
-# section of the .conf file.
+# then it loads any configuration files passed to METplus via the command line, i.e
+# parm/use_cases/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.conf
-#
 
 #############################################################################
 # MET Configuration
 # ---------------------
 #
-# METplus sets environment variables based on user settings in the METplus configuration file.
-# See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details.
+# METplus sets environment variables based on user settings in the METplus
+# configuration file. See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details.
 #
 # **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!**
 #
-# If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
+# If there is a setting in the MET configuration file that is currently
+# not supported by METplus you’d like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# **StatAnalysisConfig_wrapped**
+# .. dropdown:: StatAnalysisConfig_wrapped
 #
-# .. note:: See the :ref:`Stat-Analysis MET Configuration<series-analysis-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
-#
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/STATAnalysisConfig_wrapped
-#
-# The optional pre-processing steps RegridDataPlane and PcpCombine do not use MET configuration files
-#
+#   .. literalinclude:: ../../../../parm/met_config/STATAnalysisConfig_wrapped
 
 ##############################################################################
 # Python Embedding
 # ----------------
 #
 # This use case does not use python embedding
-#
 
 ##############################################################################
-# Python Scripting
-# ----------------
+# User Scripting
+# --------------
 #
-# This use case runs the blocking_driver.py python script located in the UserScript_fcstGFS_obsERA_Blocking directory.  The steps this driver script runs are described in the METplus workflow section above.  There are many input variables to the driver script, which can be modified in the [user_env_vars] section of the UserScript_fcstGFS_obsERA_Blocking.conf file.  A description of each of these variables is also provided in the .conf file.
+# This use case runs the blocking driver.  The blocking driver runs the user selected steps
+# of the blocking calculation for both the forecast and observation.  These steps are specified 
+# in FCST_STEPS and OBS_STEPS in the [user_env_vars] section fo the configuration file in the 
+# following format:
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking/Blocking_driver.py
+#  | FCST_STEPS = CBL+IBL+PLOTIBL+GILB+CALCBLOCKS+PLOTBLOCKS
+#  | OBS_STEPS = CBL+PLOTCBL+IBL+PLOTIBL+GILB+CALCBLOCKS+PLOTBLOCKS
 #
+# The possible steps are computing the CBLs or central blocking latitude (CBL), plotting CBLs 
+# (PLOTCBL), computing instantaneously blocked longitudes (IBL), plotting IBL frequency (PLOTIBL), 
+# computing group instantaneously blocked longitudes (GIBL), computing blocks (CALCBLOCKS), and
+# plotting the blocking frequency (PLOTBLOCKS).  This use case runs all steps although not all of 
+# them are required to be run.  The CBL, IBL, GIBL, and CALCBLOCKS steps must be run in order as the
+# IBS step requires previously computed CBLs, and GIBLs requires previously computed IBLs.  However, 
+# observations can be used in place of the forecast CBLs if needed.  Plotting also requires the 
+# associated step to be run (PLOTCBL requires CBL to be run first.  The methodology used in these 
+# calculations is described in Miller & Wang (2019, 2022) listed in the Scientific Objective section.
+#
+# There are many input variables that can be changed for the driver script and blocking calculation.  
+# These can be changed and are described in the [user_env_vars] section of the configuration file.
+#
+# .. dropdown:: parm/use_cases/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking/Blocking_driver.py
+#
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking/Blocking_driver.py
 
 ##############################################################################
 # Running METplus
@@ -169,7 +195,6 @@ UserScript_fcstGFS_obsERA_Blocking.py
 #        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
-#
 
 ##############################################################################
 # Expected Output
@@ -180,11 +205,13 @@ UserScript_fcstGFS_obsERA_Blocking.py
 #   INFO: METplus has successfully finished running.
 #
 # Warnings of missing files will also be output to the log file.  In this case, the warnings are a result of
-# the 5 day running mean calculation, and should be present for 12/01, 12/02, 02/27, and 02/28 for each year
-# the calculation runs.  Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
-# Output for this use case will be found in model_applications/s2s_mid_lat/Blocking (relative to **OUTPUT_BASE**).  
-# There should be 4 different graphics output to the plot directory in the above location, but each will have png 
-# and pdf versions to make for 8 output plots:
+# the 5 day running mean calculation.  They should alert the user about missing data fir 12/01, 12/02, 02/27,
+# and 02/28 of each year the calculation runs.
+#
+# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use 
+# case will be found in {OUTPUT_BASE}/model_applications/s2s_mid_lat/Blocking.  There should be 4 different 
+# graphics output to the plot directory in the location above, but each will have png and pdf version to make 
+# for 8 output plots:: 
 #
 #  * ERA_CBL_avg.png
 #  * ERA_CBL_avg.pdf
@@ -195,10 +222,18 @@ UserScript_fcstGFS_obsERA_Blocking.py
 #  * fcst_Block_Freq.png
 #  * fcst_Block_Freq.pdf
 # 
-# Additionally many matched pair .stat files will be output for both IBLs and blocks to the mpr directory.  The 
-# location the matched pair output can be changed using BLOCKING_MPR_OUTPUT_DIR.  Output contingency table
-# statistics for IBLs and Blocks in the ### directory.  This directory can be changed usinvg 
-# STAT_ANALYSIS_OUTPUT_DIR.  The output contingency table statistics files are:
+# There are numerous matched pair files output in two subdirectories of the mpr directory.  These contain
+# output computed IBLs and blocks.  For the IBLs, one file is written for each day to the IBL subdirectory
+# in the format below for 12-02-2000::
+#
+# * IBL_stat_GFS_240000L_20001202_000000V.stat
+#
+# For the blocks .stat files, one file is also written for each day to the Blocks subdirectory in the format
+# below for 12-02-2000::
+#
+# * blocking_stat_GFS_240000L_20001202_000000V.stat
+#
+# There are also 2 files output from the StatAnalysis runs containing contingency table statistics:: 
 #
 #  * GFS_ERA_IBLS_240000L_CTS_CNT.stat
 #  * GFS_ERA_Blocks_240000L_CTS.stat
@@ -206,7 +241,6 @@ UserScript_fcstGFS_obsERA_Blocking.py
 # If the pre-processing steps are turned on, regridded data, daily averaged files, running mean files, 
 # and anomaly files will also be output to Regrid, Daily,Rmean5d, and Anomaly in the ERA directory and 
 # Regrid and Daily in the GFS directory. 
-#
 
 ##############################################################################
 # Keywords

@@ -61,7 +61,7 @@ model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.py
 # the OMI calculation.  In addition, there are three optional pre-processing steps, PCP-Combine
 # and two calls to Regrid-Data-Plane. 
 #
-# This use case requires METcalcpy, METplotpy, and METdataio to run. The metcalcpy scripts accessed include the following:
+# This use case requires METcalcpy, METplotpy, and METdataio to run. The METcalcpy scripts accessed include the following:
 # 
 # * metcalcpy/contributed/rmm_omi/compute_mjo_indices.py
 #

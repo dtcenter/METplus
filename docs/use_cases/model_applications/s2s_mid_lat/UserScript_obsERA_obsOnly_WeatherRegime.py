@@ -9,163 +9,183 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 """
 
 ##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
+##############################################################################
 # Scientific Objective
 # --------------------
 #
-# To perform a weather regime analysis using 500 mb height data.  There are 2 pre-
-# processing steps, RegridDataPlane and PcpCombine, and 4 steps in the weather regime 
-# analysis, elbow, EOFs, K means, and the Time frequency.  The elbow and K means steps 
-# begin with K means clustering.  Elbow then computes the sum of squared distances for 
-# clusters 1 - 14 and draws a straight line from the sum of squared distance for the 
-# clusters.  This helps determine the optimal cluster number by examining the largest 
-# difference between the curve and the straight line.  The EOFs step is optional.  It 
-# computes an empirical orthogonal function analysis.  The K means step uses clustering 
-# to compute the frequency of occurrence and anomalies for each cluster to give the most 
-# common weather regimes.  Then, the time frequency computes the frequency of each weather
-# regime over a user specified time frame.  Finally, stat_analysis can be run to compute
-# an categorical analysis of the weather regime classification or an anomaly correlation of
-# the time frequency data.
+# Weather regimes are defined as atmospheric patterns with high likelihoods of recurrence.
+# They can modulate many atmospheric phenomena including tornado and severe weather 
+# occurrence.  This use case computes the top 6 most frequent weather regimes using K-means 
+# clustering for the ERA observations.  It also computes the frequency of occurrence of each
+# weather regime over a 7 day period.  The code for computing weather regimes comes from Douglas Miller.
 #
+# * Miller, D. E., Wang, Z., Trapp, R. J., &Harnos, D. S., 2020: Hybrid prediction of weekly tornado activity out to Week 3: Utilizing weather regimes. Geophysical Research Letters, 47, https://doi.org/10.1029/2020GL087253. 
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 4.0.0 
 
 ##############################################################################
 # Datasets
 # --------
 #
-#  * Forecast dataset: None.
-#  * Observation dataset: ERA Reanlaysis 500 mb height.
+# **Forecast dataset:** None. 
+#
+# **Observation dataset:** ERA Reanlaysis 500 mb height.
+#
+# **Climatology:** None.
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
 # ------------------
 #
-# This use case runs the weather regime driver script which runs the steps the user
-# lists in STEPS_OBS.  The possible steps are regridding, time averaging, creating a list of input
-# files for the weather regime calculation, computing the elbow (ELBOW), plotting the elbow 
-# (PLOTELBOW), computing EOFs (EOF), plotting EOFs (PLOTEOF), computing K means (KMEANS), plotting 
-# the K means (PLOTKMEANS), computing a time frequency of weather regimes (TIMEFREQ) and plotting 
-# the time frequency (PLOTFREQ).  All variables are set up in the UserScript .conf file.  The pre-
-# processing steps and stat_analysis are listed in the process list, and are formatted as follows:
-# 
-# PROCESS_LIST = RegridDataPlane(regrid_obs), PcpCombine(daily_mean_obs), UserScript(script_wr)
+# This use case calles UserScript once and Stat-Analysis twice.  There are two optional
+# pre-processing steps, Regrid-Data-Plane and PCP-Combine.  Additionally, METcalcpy
+# and METplotpy are required to run this use case.  The METcalcpy scripts accessed include
+# the following:
 #
-# The other steps are listed in the [user_env_vars] section of the UserScript .conf file
-# in the following format:
-# OBS_STEPS = ELBOW+PLOTELBOW+EOF+PLOTEOF+KMEANS+PLOTKMEANS+TIMEFREQ+PLOTFREQ
+# * metcalcpy/contributed/blocking_weather_regime/WeatherRegime.py
 #
+# * metcalcpy/contributed/blocking_weather_regime/Blocking_WeatherRegime_util.py
+#
+# The METplopty scrips accessed include the following:
+#
+# * metplotpy/contributed/weather_regime/plot_weather_regime.py
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
-# The weather regime python code is run for each time for the forecast and observations 
-# data. This example loops by valid time.  This version is set to only process the weather 
-# regime steps (ELBOW, PLOTELBOW, EOF, PLOTEOF, KMEANS, PLOTKMEANS, TIMEFREQ, PLOTFREQ) and 
-# stat_analysis, omitting the regridding, time averaging, and creating the file list pre-processing 
-# steps.  However, the configurations for pre-processing are available for user reference.
+# **Beginning time (VALID_BEG):** 12-01-2000
 #
+# **End time (VALID_END):** 02-28-2017
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 1 day
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 24
+#
+# This use case does not loop, but the UserScript that runs the weather regime driver script
+# is run once over the entire time period.  The weather regime driver script performs the weather 
+# regime calculation for the observations.  This calculation is divided up into steps, which the 
+# user can select by setting STEPS_OBS in the [user_env_vars] section of the configuration.  More 
+# information on the steps and how the calculation proceeds is given in the User Scripting section below.
+#
+# The two optional pre-processing steps loop by valid time when they are turned on, with different timing
+# settings needed for the different steps.  These steps are turned off due to data size and processing 
+# time.  The first optional step calls Regrid-Data-Plane to regrid the data to a 1 degree latitude/longitude
+# grid.  The second calls PCP-Combine to compute daily means.  These omitted steps can be turned back on by 
+# using the PROCESS_LIST that is commented out:
+#
+# PROCESS_LIST = RegridDataPlane(regrid_obs), PcpCombine(daily_mean_obs), UserScript(script_wr)
+#
+# Settings for the optional pre-processing steps can be found in the respective sections of the configuration,
+# regrid_obs and daily_mean_obs.  Data is not provided in the tarball to run these steps, but the 
+# configurations are provided for reference on how to set up these calculations.
 
 ##############################################################################
 # METplus Configuration
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# i.e. parm/use_cases/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.py.
-# The file UserScript_obsERA_obsOnly_WeatherRegime.conf runs the python program and
-# sets the variables for all steps of the Weather Regime use case including data paths.
+# then it loads any configuration files passed to METplus via the command line, i.e
+# parm/use_cases/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherREgime.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.conf
-#
 
 ##############################################################################
 # MET Configuration
 # ---------------------
 #
-# METplus sets environment variables based on the values in the METplus configuration file.
-# These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
-#
-# See the following files for more information about the environment variables set in this configuration file.
-#
-# parm/use_cases/met_tool_wrapper/RegridDataPlane/RegridDataPlane.py
-# parm/use_cases/met_tool_wrapper/PCPCombine/PCPCOmbine_derive.py
-# parm/use_cases/met_tool_wrapper/StatAnalysis/StatAnalysis.py
-#
+# This case does not use MET configuration files.
 
 ##############################################################################
 # Python Embedding
 # ----------------
 #
 # This use case does not use python embedding
-#
 
 ##############################################################################
-# Python Scripting
-# ----------------
+# User Scripting
+# --------------
 #
-# This use case uses Python scripts to perform the blocking calculation
+# This use case runs WeatherRegime_driver.py.  This driver script runs the selected steps
+# of the weather regime calculation that are specified in OBS_STEPS in the [user_env_vars] 
+# section of the UserScript .conf file.  All steps are run for this use case, as specified 
+# in the following format:
 #
-# parm/use_cases/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime/WeatherRegime_driver.py:
-# This script calls the requested steps in the blocking analysis for a forecast, observation, or both.  The possible
-# steps are computing the elbow, computing EOFs, and computing weather regimes using k means clustering.
+# OBS_STEPS = ELBOW+PLOTELBOW+EOF+PLOTEOF+KMEANS+PLOTKMEANS+TIMEFREQ+PLOTFREQ
 #
-# metcalcpy/contributed/blocking_weather_regime/WeatherRegime.py:
-# This script runs the requested steps, containing the code for computing the bend in the elbow, computing EOFs, and
-# computing weather regimes using k means clustering.  See the METcalcpy `Weather Regime Calculation Script <https://github.com/dtcenter/METcalcpy/blob/develop/metcalcpy/contributed/blocking_weather_regime/WeatherRegime.py>`_ for more information.
+# The possible steps are computing the elbow or optimal number of clusters (ELBOW), plotting the elbow 
+# (PLOTELBOW), computing EOFs (EOF), plotting EOFs (PLOTEOF), computing the weather regimes using
+# K means clustering (KMEANS), plotting the weather regimes (PLOTKMEANS), computing a user specified
+# time frequency of weather regimes (TIMEFREQ) and plotting the time frequency (PLOTFREQ).  The 
+# TIMEFREQ and PLOTFREQ steps require that the KMEANS step be run first, while all other steps 
+# can be run individally. Input variables to the WeatherRegime driver are both set and described
+# in the [user_env_vars] section of the configuration file. 
 #
-# metcalcpy/contributed/blocking_weather_regime//Blocking_WeatherRegime_util.py:
-# This script contains functions used by both the blocking anwd weather regime analysis, including the code for
-# determining which steps the user wants to run, and finding and reading the input files in the format from the output
-# pre-processing steps.  See the METcalcpy  `Utility script <https://github.com/dtcenter/METcalcpy/blob/develop/metcalcpy/contributed/blocking_weather_regime/Blocking_WeatherRegime_util.py>`_ for more information.
+# Elbow computes the optimal number of clusters using the sum of squared distances for 
+# clusters 1 - 14 and draws a straight line from the sum of squared distance for the 
+# clusters.  This helps determine the optimal cluster number by examining the largest 
+# difference between the curve and the straight line.  The EOFs step computes empirical orthogonal 
+# functions.  The K means step uses clustering to compute the frequency of occurrence and anomalies 
+# for each cluster to give the most common weather regimes.  Then, the time frequency computes the 
+# frequency of each weather regime over a user specified time frame.
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime/WeatherRegime_driver.py
+# .. dropdown:: parm/use_cases/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime/WeatherRegime_driver.py
 #
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime/WeatherRegime_driver.py
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# This use case is run in the following ways:
+# Pass the use case configuration file to the run_metplus.py script along with any
+# user-specific system configuration files if desired::
 #
-# 1) Passing in UserScript_obsERA_obsOnly_WeatherRegime.py then a user-specific system configuration file::
+#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.conf /path/to/user_system.conf
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.py -c /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_obsERA_obsOnly_WeatherRegime.py::
-#
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.py
-#
-# The following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output
 # ---------------
 #
-# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use 
-# case will be found in model_applications/s2s_mid_lat/WeatherRegime (relative to **OUTPUT_BASE**) and will contain output
-# for the steps requested.  This may include the regridded data, daily averaged files, a text file containing the 
-# list of input files, and text files for the weather regime classification and time frequency (if KMEANS and 
-# TIMEFREQ are run for both the forecast and observation data). In addition, output elbow, EOF, and Kmeans weather 
-# regime plots can be generated.  The location of these output plots can be specified as WR_OUTPUT_DIR.  If it is 
-# not specified, plots will be sent to {OUTPUT_BASE}/plots.  The output location for the matched pair files can be 
-# specified as WR_MPR_OUTPUT_DIR.  If it is not specified, it will be sent to {OUTPUT_BASE}/mpr.  The output weather 
-# regime text or netCDF file location is set in WR_OUTPUT_FILE_DIR.  If this is not specified, the output text/netCDF 
-# file will be sent to {OUTPUT_BASE}.  The stat_analysis contingency table statistics and anomaly correlation files
-# will be sent to the locations given in STAT_ANALYSIS_OUTPUT_DIR for their respective configuration sections. 
+# A successful run will output the following both to the screen and to the logfile::
 #
+#   INFO: METplus has successfully finished running.
+#
+# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output 
+# for this use case will be found in {OUTPUT_BASE}/model_applications/s2s_mid_lat/WeatherRegime
+# and will contain output for the steps requested.  The output includes 4 plots in the plots directory::
+#
+# * obs_elbow.png
+# * obs_eof.png
+# * obs_kmeans.png
+# * obs_freq.png
+#
+# The output also includes a daily classification of weather regimes as a text file:
+#
+# * obs_weather_regime_class.txt
+#
+# If the pre-processing steps are turned on, the output will include the regridded data and daily averaged files. 
 
 ##############################################################################
 # Keywords
@@ -175,12 +195,11 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 #
 #   * RegridDataPlaneToolUseCase
 #   * PCPCombineToolUseCase
+#   * StatAnalysisToolUseCase
 #   * S2SAppUseCase
 #   * S2SMidLatAppUseCase
 #   * NetCDFFileUseCase
 #   * GRIB2FileUseCase
-#   * METcalcpyUseCase
-#   * METplotpyUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
