@@ -50,7 +50,7 @@ UserScript_fcstGFS_obsERA_Blocking.py
 #
 # **Forecast dataset:** GFS Forecast 500 mb height for DJF 2000 - 2017 
 #
-# **Observation dataset:** ERA Reanlaysis 500 mb height for DJF 2000 - 2017 for the blocking evaluation and 1979 - 2018 for the CBL calculation
+# **Observation dataset:** ERA Reanlaysis 500 mb height for DJF 2000 - 2017 for the blocking evaluation and 1979 - 2017 for the CBL calculation
 #
 # **Climatology:** None.
 #
@@ -89,13 +89,13 @@ UserScript_fcstGFS_obsERA_Blocking.py
 # METplus Workflow
 # ----------------
 #
-# **Beginning time (VALID_BEG):** 12-01-1979
+# **Beginning time (VALID_BEG):** 12-01-2000
 #
 # **End time (VALID_END):** 02-28-2017
 #
 # **Increment between beginning and end times (VALID_INCREMENT):** 1 day
 #
-# **Sequence of forecast leads to process (LEAD_SEQ):** 0
+# **Sequence of forecast leads to process (LEAD_SEQ):** 24H
 #
 # This use case does not loop, but 2 UserScripts and 2 calls to StatAnalysis are run once for 
 # all valid times of the forecast and observations.  The first UserScript to create a file list

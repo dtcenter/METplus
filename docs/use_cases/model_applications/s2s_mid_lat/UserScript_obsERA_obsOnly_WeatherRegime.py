@@ -38,7 +38,7 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 #
 # **Forecast dataset:** None. 
 #
-# **Observation dataset:** ERA Reanlaysis 500 mb height.
+# **Observation dataset:** ERA Reanlaysis 500 mb height for DJF 1979 - 2017.
 #
 # **Climatology:** None.
 #

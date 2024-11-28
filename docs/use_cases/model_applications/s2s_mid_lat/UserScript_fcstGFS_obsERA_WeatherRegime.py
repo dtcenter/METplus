@@ -84,7 +84,7 @@ UserScript_fcstGFS_obsERA_WeatherRegime.py
 #
 # **Increment between beginning and end times (VALID_INCREMENT):** 1 day
 #
-# **Sequence of forecast leads to process (LEAD_SEQ):** 24
+# **Sequence of forecast leads to process (LEAD_SEQ):** 24H
 #
 # This use case does not loop, but the UserScript and both calls to Stat-Analysis are
 # each run once.  The UserScript runs the weather regime driver script.  The weather regime
