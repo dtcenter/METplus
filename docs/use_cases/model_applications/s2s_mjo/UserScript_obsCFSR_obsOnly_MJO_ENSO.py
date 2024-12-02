@@ -83,19 +83,8 @@ model_applications/s2s_mjo/UserScript_obsCFSR_obsOnly_MJO_ENSO.py
 # MET Configuration
 # -----------------
 #
-# METplus sets environment variables based on user settings in the METplus
-# configuration file. See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details.
-#
-# **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!**
-#
-# If there is a setting in the MET configuration file that is currently
-# not supported by METplus you’d like to control, please refer to:
-# :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
-#
-# .. dropdown:: mjo_enso_driver
-#
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mjo/UserScript_obsCFSR_obsOnly_MJO_ENSO/mjo_enso_driver.py
-
+# There are no MET tools used in this use case.
+  
 ##############################################################################
 # Python Scripts
 # --------------
