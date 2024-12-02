@@ -104,7 +104,7 @@ model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.conf
 #   .. highlight:: python
 #   .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF/read_tdr.py
 #
-# The above script imports another script called tdr_utils.py in the same directory:
+# The read_tdr.py script above imports another script called tdr_utils.py in the same directory:
 #
 # .. dropdown:: parm/use_cases/model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF/tdr_utils.py
 #
@@ -113,7 +113,7 @@ model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.conf
 # 
 # For more information on the basic requirements to utilize Python Embedding in METplus, 
 # please refer to the MET User’s Guide section on
-# `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_ 
+# `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_.
 
 ##############################################################################
 # Python Embedding

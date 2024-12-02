@@ -75,7 +75,7 @@ model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra.py
 # Python Embedding
 # ----------------
 #
-# There is no python embedding in this use case.
+# There is no Python embedding in this use case.
 
 ##############################################################################
 # User Scripting

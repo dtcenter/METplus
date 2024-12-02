@@ -91,12 +91,10 @@ model_applications/precipitation/PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip.conf
 #
 # .. dropdown: Ascii2NcConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/Ascii2NcConfig_wrapped
 #
-# .. dropdown:
+# .. dropdown: PointStatConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/PointStatConfig_wrapped 
 
 ##############################################################################

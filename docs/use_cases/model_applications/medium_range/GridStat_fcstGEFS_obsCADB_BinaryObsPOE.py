@@ -95,7 +95,7 @@ model_applications/medium_range/GridStat_fcstGEFS_obsCADB_BinaryObsPOE.conf
 # ----------------
 #
 # This use case calls a Python script to parse the user-requested percentile from the forecast dataset.
-# This is controlled in the forecast VAR1 variable setting and is provided in the below file.
+# This is controlled in the forecast VAR1 variable setting and is provided in:
 #
 # .. dropdown:: parm/use_cases/model_applications/medium_range/GridStat_fcstGEFS_obsCADB_BinaryObsPOE/Tmax_fcst_embedded.py
 #
@@ -103,7 +103,7 @@ model_applications/medium_range/GridStat_fcstGEFS_obsCADB_BinaryObsPOE.conf
 #   .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/GridStat_fcstGEFS_obsCADB_BinaryObsPOE/Tmax_fcst_embedded.py
 #
 # For more information on the basic requirements to utilize Python Embedding in METplus, 
-# please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_ 
+# please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_.
 
 ##############################################################################
 # User Scripting
