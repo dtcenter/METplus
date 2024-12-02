@@ -106,15 +106,12 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAl
 # please refer to the MET User’s Guide section on
 # `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_ 
 
-<<<<<<< HEAD
 ##############################################################################
 # User Scripting
 # --------------
 #
 # User Scripting is not used in this use case.
 
-=======
->>>>>>> 2b546121d8fc91ab72e92307c6cd4a2b53e8e1ad
 ##############################################################################
 # Running METplus
 # ---------------
