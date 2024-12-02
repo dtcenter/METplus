@@ -90,7 +90,6 @@ model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar.co
 # -----------------
 #
 # This tool does not use a MET configuration file.
-#
 
 ##############################################################################
 # Python Embedding

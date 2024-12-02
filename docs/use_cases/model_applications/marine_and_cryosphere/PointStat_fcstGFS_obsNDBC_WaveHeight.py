@@ -81,12 +81,10 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsNDBC_WaveHeight.co
 #
 # .. dropdown:: GridStatConfig_wrappedAscii2NcConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/Ascii2NcConfig_wrapped
 #
 # .. dropdown:: PointStatConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/PointStatConfig_wrapped
 
 ##############################################################################

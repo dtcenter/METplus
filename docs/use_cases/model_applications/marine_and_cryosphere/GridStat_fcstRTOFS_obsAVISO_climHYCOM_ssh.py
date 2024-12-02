@@ -98,7 +98,6 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsAVISO_climHYCOM_s
 #
 # .. dropdown:: GridStatConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 
 ##############################################################################

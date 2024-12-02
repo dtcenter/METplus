@@ -81,10 +81,7 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWin
 #
 # .. dropdown:: PointStatConfig_wrapped
 #
-# .. note:: See the :ref:`GridStat MET Configuration<grid-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
-#
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/PointStatConfig_wrapped
+#   .. literalinclude:: ../../../../parm/met_config/PointStatConfig_wrapped
 
 ##############################################################################
 # Python Embedding
