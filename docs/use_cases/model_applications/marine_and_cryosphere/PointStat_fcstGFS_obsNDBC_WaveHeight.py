@@ -79,7 +79,7 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsNDBC_WaveHeight.co
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. dropdown:: GridStatConfig_wrappedAscii2NcConfig_wrapped
+# .. dropdown:: Ascii2NcConfig_wrapped
 #
 #   .. literalinclude:: ../../../../parm/met_config/Ascii2NcConfig_wrapped
 #
