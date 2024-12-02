@@ -86,13 +86,7 @@ model_applications/short_range/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
 #
 # .. dropdown:: Ascii2NcConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/Ascii2NcConfig_wrapped
-#
-# See the following files for more information about the environment variables set in this configuration file.
-#
-# parm/use_cases/met_tool_wrapper/Point2Grid/Point2Grid.py
-# parm/use_cases/met_tool_wrapper/RegridDataPlane/RegridDataPlane.py
 
 ##############################################################################
 # Python Embedding

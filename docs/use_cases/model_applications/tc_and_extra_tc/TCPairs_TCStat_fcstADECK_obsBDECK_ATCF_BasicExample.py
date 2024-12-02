@@ -106,12 +106,10 @@ model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicE
 #
 # .. dropdown:: TCPairsConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/TCPairsConfig_wrapped
 #
 # .. dropdown:: TCStatConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/TCStatConfig_wrapped
 
 ##############################################################################

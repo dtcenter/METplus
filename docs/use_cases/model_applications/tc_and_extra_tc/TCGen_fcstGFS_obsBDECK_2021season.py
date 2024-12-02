@@ -84,7 +84,6 @@ model_applications/tc_and_extra_tc/TCGen_fcstGFS_obsBDECK_2021season.conf
 #
 # .. dropdown:: TCGenConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/TCGenConfig_wrapped
 
 ##############################################################################

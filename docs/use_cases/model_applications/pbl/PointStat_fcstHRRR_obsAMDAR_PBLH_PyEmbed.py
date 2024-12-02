@@ -90,7 +90,6 @@ model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed.conf
 #
 # .. dropdown:: met_config/PointStatConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/PointStatConfig_wrapped
 
 ##############################################################################

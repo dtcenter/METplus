@@ -104,11 +104,6 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planv
 # -----------------
 #
 # No MET tools are used in this use case.
-#
-# METplus sets environment variables based on user settings in the METplus
-# configuration file. 
-# See :ref:`How METplus controls MET config file settings<metplus-control-met>`
-# for more details. 
 
 ##############################################################################
 # Python Embedding

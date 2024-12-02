@@ -78,7 +78,6 @@ model_applications/short_range/MODE_fcstFV3_obsGOES_BrightnessTemp.conf
 #
 # .. dropdown:: MODEConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/MODEConfig_wrapped
 
 ##############################################################################

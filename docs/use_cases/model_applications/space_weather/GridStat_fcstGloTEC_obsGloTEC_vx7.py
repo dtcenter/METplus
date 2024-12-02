@@ -116,7 +116,6 @@ GridStat_fcstGloTEC_obsGloTEC_vx7.conf
 #
 # .. dropdown:: GridStatConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 
 ##############################################################################

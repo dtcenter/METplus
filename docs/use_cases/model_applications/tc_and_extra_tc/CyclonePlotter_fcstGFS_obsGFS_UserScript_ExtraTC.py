@@ -100,7 +100,6 @@ model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_Extr
 #
 # .. dropdown:: TCPairsConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/TCPairsConfig_wrapped
 
 ##############################################################################

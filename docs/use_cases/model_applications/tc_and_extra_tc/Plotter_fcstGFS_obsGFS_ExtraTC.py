@@ -78,7 +78,6 @@ model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_ExtraTC.conf
 #
 # .. dropdown:: TCPairsConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/TCPairsConfig_wrapped
 
 ##############################################################################

@@ -90,7 +90,6 @@ model_applications/short_range/GenEnsProd_fcstHRRR_fcstOnly_SurrogateSevere.conf
 #
 # .. dropdown:: GenEnsProdConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/GenEnsProdConfig_wrapped
 
 ##############################################################################

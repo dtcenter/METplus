@@ -79,7 +79,6 @@ model_applications/short_range/GridStat_fcstFV3_obsGOES_BrightnessTempDmap.conf
 #
 # .. dropdown:: GridStatConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 
 ##############################################################################

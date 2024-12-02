@@ -91,7 +91,6 @@ model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.conf
 #
 # .. dropdown:: GridStatConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 
 ##############################################################################

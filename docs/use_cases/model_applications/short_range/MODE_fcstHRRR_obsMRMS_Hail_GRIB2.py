@@ -84,7 +84,6 @@ model_applications/short_range/MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf
 #
 # .. dropdown:: MODEConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/MODEConfig_wrapped
 
 ##############################################################################

@@ -88,7 +88,6 @@ model_applications/precipitation/GridStat_fcstGFS_obsCCPA_Grib.conf
 #
 # .. dropdown:: GridStatConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 
 ##############################################################################

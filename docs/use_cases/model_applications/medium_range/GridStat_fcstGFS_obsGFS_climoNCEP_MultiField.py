@@ -91,7 +91,6 @@ model_applications/medium_range/GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.con
 #
 # .. dropdown:: GridStatConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 #
 # .. dropdown:: StatAnalysisConfig_wrapped

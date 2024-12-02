@@ -101,7 +101,6 @@ model_application/precipitation/GenEnsProd_fcstHRRRE_FcstOnly_NetCDF.conf
 #
 # .. dropdown:: met_config/GenEnsProdConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/GenEnsProdConfig_wrapped
 
 ##############################################################################

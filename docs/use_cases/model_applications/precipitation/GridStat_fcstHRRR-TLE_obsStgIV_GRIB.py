@@ -101,7 +101,6 @@ model_applications/precipitation/GridStat_fcstHRRR-TLE_obsStgIV_GRIB.conf
 #
 # .. dropdown:: GridStatConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 
 ##############################################################################

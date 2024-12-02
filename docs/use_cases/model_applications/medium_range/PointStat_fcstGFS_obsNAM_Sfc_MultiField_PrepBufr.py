@@ -86,7 +86,6 @@ model_applications/medium_range/PointStat_fcstGFS_obsNAM_Sfc_MultiField_PrepBufr
 #
 # .. dropdown:: PB2NCConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/PB2NCConfig_wrapped
 #
 # .. dropdown:: PointStatConfig_wrapped

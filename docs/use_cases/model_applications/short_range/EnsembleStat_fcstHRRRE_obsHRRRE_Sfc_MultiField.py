@@ -93,7 +93,6 @@ model_applications/short_range/EnsembleStat_fcstHRRRE_obsHRRRE_Sfc_MultiField.co
 #
 # .. dropdown:: EnsembleStatConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/EnsembleStatConfig_wrapped
 
 ##############################################################################

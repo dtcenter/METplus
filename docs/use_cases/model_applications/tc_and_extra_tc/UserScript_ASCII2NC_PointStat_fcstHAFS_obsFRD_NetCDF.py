@@ -89,7 +89,6 @@ model_applications/tc_and_extra_tc/UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD
 #
 # .. dropdown:: Ascii2NcConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/Ascii2NcConfig_wrapped
 #
 # .. dropdown:: PointStatConfig_wrapped

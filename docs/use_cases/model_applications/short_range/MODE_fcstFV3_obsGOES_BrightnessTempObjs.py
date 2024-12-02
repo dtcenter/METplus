@@ -81,12 +81,10 @@ model_applications/short_range/MODE_fcstFV3_obsGOES_BrightnessTempObjs.conf
 #
 # .. dropdown:: MODEConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/MODEConfig_wrapped
 #
 # .. dropdown:: GridStatConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 
 ##############################################################################

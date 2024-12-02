@@ -106,7 +106,6 @@ model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 #
 # .. dropdown:: MODEConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/MODEConfig_wrapped
 
 ##############################################################################

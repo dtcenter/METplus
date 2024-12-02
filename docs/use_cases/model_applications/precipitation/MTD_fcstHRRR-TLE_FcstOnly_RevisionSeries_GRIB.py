@@ -85,7 +85,6 @@ model_applications/precipitation/MTD_fcstHRRR-TLE_FcstOnly_RevisionSeries_GRIB.c
 #
 # .. dropdown:: MTDConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/MTDConfig_wrapped
 
 ##############################################################################

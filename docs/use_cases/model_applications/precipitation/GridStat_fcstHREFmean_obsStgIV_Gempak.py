@@ -108,7 +108,6 @@ model_applications/precipitation/GridStat_fcstHREFmean_obsStgIV_Gempak.conf
 #
 # .. dropdown:: GridStatConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 
 ##############################################################################

@@ -84,7 +84,6 @@ model_applications/medium_range/GridStat_fcstGFS_obsGFS_Sfc_MultiField.conf
 #
 # .. dropdown:: GridStatConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 
 ##############################################################################

@@ -78,7 +78,6 @@ model_applications/tc_and_extra_tc/TCRMW_fcstGFS_fcstOnly_gonzalo.conf
 #
 # .. dropdown:: TCRMWConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/TCRMWConfig_wrapped
 
 ##############################################################################

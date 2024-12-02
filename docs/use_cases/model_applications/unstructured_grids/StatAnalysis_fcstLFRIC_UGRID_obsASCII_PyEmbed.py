@@ -98,7 +98,6 @@ model_applications/unstructured_grids/StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEm
 #
 # .. dropdown:: STATAnalysisConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/STATAnalysisConfig_wrapped
 
 ##############################################################################

@@ -82,7 +82,6 @@ model_applications/medium_range/GridStat_fcstGFS_obsOMI_TotalColumnOzone.conf
 #
 # .. dropdown:: GridStatConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 
 ##############################################################################

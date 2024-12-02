@@ -101,12 +101,10 @@ model_applicaitons/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelativ
 #
 #  .. dropdown:: MTDConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/MTDConfig_wrapped
 #
 #  .. dropdown:: SeriesAnalysisConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/SeriesAnalysisConfig_wrapped
 
 ##############################################################################

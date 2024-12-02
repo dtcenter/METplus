@@ -75,7 +75,6 @@ model_applications/short_range/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 ##############################################################################
 # MET Configuration
 # -----------------
-# [UPDATE_SECTION_CONTENT]
 #
 # METplus sets environment variables based on user settings in the METplus
 # configuration file. See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details.

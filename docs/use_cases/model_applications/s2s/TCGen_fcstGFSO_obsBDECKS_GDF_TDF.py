@@ -150,7 +150,6 @@ model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
 #
 # .. dropdown:: TCGenConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/TCGenConfig_wrapped
 
 ##############################################################################

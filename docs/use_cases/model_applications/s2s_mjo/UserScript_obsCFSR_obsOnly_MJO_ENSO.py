@@ -81,7 +81,7 @@ model_applications/s2s_mjo/UserScript_obsCFSR_obsOnly_MJO_ENSO.py
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # METplus sets environment variables based on user settings in the METplus
 # configuration file. See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details.
@@ -98,7 +98,7 @@ model_applications/s2s_mjo/UserScript_obsCFSR_obsOnly_MJO_ENSO.py
 
 ##############################################################################
 # Python Scripts
-# ----------------
+# --------------
 #
 # The MJO-ENSO driver script orchestrates the calculation of the MaKE and MaKI indices and 
 # the generation of a text file and a plot for the indices:

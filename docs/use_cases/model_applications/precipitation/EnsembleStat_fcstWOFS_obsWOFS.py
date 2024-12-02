@@ -84,17 +84,11 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 #
 # .. dropdown:: EnsembleStatConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/EnsembleStatConfig_wrapped
 #
 # .. dropdown:: GridStatConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
-#
-# For more information on the basic requirements to utilize Python Embedding in METplus, 
-# please refer to the MET User’s Guide section on
-# `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_ 
 
 ##############################################################################
 # Python Embedding

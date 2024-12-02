@@ -131,17 +131,14 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 #
 # .. dropdown:: TCPairsConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/TCPairsConfig_wrapped
 #
 # .. dropdown:: TCStatConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/TCStatConfig_wrapped
 #
 # .. dropdown:: SeriesAnalysisConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/SeriesAnalysisConfig_wrapped
 
 ##############################################################################

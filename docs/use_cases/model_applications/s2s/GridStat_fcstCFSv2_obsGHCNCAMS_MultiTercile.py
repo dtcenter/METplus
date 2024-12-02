@@ -89,7 +89,6 @@ model_applications/s2s/GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile.conf
 #
 # .. dropdown:: GridStatConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 
 ##############################################################################
