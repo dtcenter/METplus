@@ -28,8 +28,20 @@ model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.
 # Datasets
 # --------
 #
-#  * Forecast dataset: HRRR Surrogate Severe Data
-#  * Observation dataset: Practically Perfect from Local Storm Reports.
+# **Forecast:** HRRR Surrogate Severe Data
+#
+# **Observation:** Practically Perfect from Local Storm Reports.
+#
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -43,12 +55,19 @@ model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (VALID_BEG):** 2020020612
+#
+# **End time (VALID_END):** 2020020612
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 86400
+#
+# **Sequence of forecast leads to process (INIT_SEQ):** 0
+#
 # The grid_stat tool is run for each time. This example loops by valid time.  It
 # processes 1 valid time, listed below.
 #
 # | **Valid:** 2020-02-06_12Z
 # | **Forecast lead:** 36
-# |
 
 ##############################################################################
 # METplus Configuration

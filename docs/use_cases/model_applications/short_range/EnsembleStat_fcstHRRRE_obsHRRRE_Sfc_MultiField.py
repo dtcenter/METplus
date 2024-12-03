@@ -30,11 +30,20 @@ model_applications/short_range/EnsembleStat_fcstHRRRE_obsHRRRE_Sfc_MultiField.co
 # Datasets
 # --------
 #
-# Relevant information about the datasets that would be beneficial include:
-# 
-#  * Forecast dataset: HRRRE data
-#  * Observation dataset: HRRRE data
+# **Forecast:** HRRRE data
 #
+# **Observation:** HRRRE data
+#
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -46,6 +55,14 @@ model_applications/short_range/EnsembleStat_fcstHRRRE_obsHRRRE_Sfc_MultiField.co
 ##############################################################################
 # METplus Workflow
 # ----------------
+#
+# **Beginning time (INIT_BEG):** 2018070912
+#
+# **End time (INIT_END):** 2018070912
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 3600
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 0,1,2
 #
 # The following tools are used for each run time:
 #
@@ -65,8 +82,6 @@ model_applications/short_range/EnsembleStat_fcstHRRRE_obsHRRRE_Sfc_MultiField.co
 #
 # | **Init:** 2018-07-09_12Z
 # | **Forecast lead:** 2
-# |
-#
 
 ##############################################################################
 # METplus Configuration
