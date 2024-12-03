@@ -85,11 +85,11 @@ model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransp
 #
 # **Beginning time (VALID_BEG):** 20211028
 #
+# **End time (VALID_END):** None
+#
 # **Increment between beginning and end times (VALID_INCREMENT):** 24H
 #
 # **Sequence of forecast leads to process (LEAD_SEQ):** None
-# 
-# **Valid:** 2021-10-28
 # 
 # The code grabs the 20211028, 20211027, and 20211026 24 hour RTOFS files. 
 
