@@ -111,30 +111,6 @@ model_applications/s2s/GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast
 # Datasets
 # --------
 #
-# **Forecast:**
-# NMME
-#
-#  * variable of interest: pr (precipitation: cumulative monthly sum)
-#  * format of precipitation variable: time,lat,lon (here dimensions: 29,181,361)
-#    with time variable representing 29 samples of same Julian Init-Time of hindcasts over past 29 years.
-#
-# **Observational:**
-#
-# **Climatology:** None
-#
-# **Location:** All of the input data required for this use case can be 
-# found in a sample data tarball. Each use case category will have 
-# one or more sample data tarballs. It is only necessary to download 
-# the tarball with the use case’s dataset and not the entire collection 
-# of sample data. Click here to access the METplus releases page and download sample data 
-# for the appropriate release: https://github.com/dtcenter/METplus/releases
-# This tarball should be unpacked into the directory that you will 
-# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
-#
-# **Hindcast Datasets:**
-#
-# CPC precipitation reference data (same format and grid)
-
 # All datasets are traditionally in netCDF format. Grids are either regular gaussian
 # Latitude/Longitude grids or they are Lambert-conformal WRF grids.
 #
@@ -148,6 +124,16 @@ model_applications/s2s/GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast
 # is a collection of datasets formatted in equivalent format to the forecast. The
 # hindcast ensemble is identified through the year in the filename (as well as in the
 # time variable inside the netCDF file).
+#
+# **Forecast:** NMME
+#
+# * variable of interest: pr (precipitation: cumulative monthly sum)
+# * format of precipitation variable: time,lat,lon (here dimensions: 29,181,361)
+#   with time variable representing 29 samples of same Julian Init-Time of hindcasts over past 29 years.
+#
+# **Hindcast / Observation:** CPC precipitation reference data (same format and grid)
+#
+#
 
 ##############################################################################
 # METplus Components
