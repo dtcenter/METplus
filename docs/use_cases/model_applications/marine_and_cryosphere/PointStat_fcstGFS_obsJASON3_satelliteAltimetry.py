@@ -99,7 +99,7 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAl
 #
 # .. dropdown:: parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAltimetry/read_satData.py
 #
-#   .. highlight:: bash
+#   .. highlight:: python
 #   .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAltimetry/read_satData.py
 # 
 # For more information on the basic requirements to utilize Python Embedding in METplus, 

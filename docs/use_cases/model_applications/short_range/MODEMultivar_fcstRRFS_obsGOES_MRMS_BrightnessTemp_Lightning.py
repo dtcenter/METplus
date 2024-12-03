@@ -116,13 +116,13 @@ model_applications/short_range/MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp
 # Python Embedding
 # ----------------
 #
-# This use case does not use any Python Embedding.
+# This use case does not use any Python embedding.
 
 ##############################################################################
 # User Scripting
 # --------------
 #
-# User Scripting is not used in this use case.
+# This use case does not use additional scripts.
 
 ##############################################################################
 # Running METplus
