@@ -55,6 +55,9 @@ jobs:
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
+        # continue if this step fails, which can happen when the merge commit
+        # message is too long
+        continue-on-error: true
       - name: Build URL for commit that triggered workflow
         if: github.event_name == 'workflow_dispatch'
         run: echo https://github.com/${{ github.event.inputs.repository }}/commit/${{ github.event.inputs.sha }}
