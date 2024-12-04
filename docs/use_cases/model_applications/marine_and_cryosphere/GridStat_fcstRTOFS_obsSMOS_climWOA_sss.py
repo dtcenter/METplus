@@ -116,7 +116,7 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMOS_climWOA_sss.
 #   .. highlight:: python
 #   .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMOS_climWOA_sss/read_rtofs_smos_woa.py
 #
-
+#
 # For more information on the basic requirements to utilize Python Embedding in METplus, 
 # please refer to the MET User’s Guide section on
 # `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_.
