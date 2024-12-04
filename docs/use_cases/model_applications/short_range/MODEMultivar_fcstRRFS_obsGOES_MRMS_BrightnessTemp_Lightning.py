@@ -66,10 +66,13 @@ model_applications/short_range/MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp
 # METplus Workflow
 # ----------------
 #
-# | **Beginning Time (INIT_BEG):** 2024-01-09 05:00 UTC
-# | **End Time (INIT_END):** 2024-01-09 05:00 UTC
-# | **Increment between beginning and end times (VALID_INCREMENT):** 1 Hour
-# | **Sequence of forecast leads to process (LEAD_SEQ):** 9,10
+# **Beginning Time (INIT_BEG):** 2024-01-09 05:00 UTC
+#
+# **End Time (INIT_END):** 2024-01-09 05:00 UTC
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 1 Hour
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 9,10
 #
 # This use case runs twice, once for each forecast lead time provided. It 
 # creates objects valid at 14UTC and 15UTC from 09 January 2024 are compared to 
@@ -82,8 +85,6 @@ model_applications/short_range/MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp
 # users can control for which variables super object intensity statistics will be output. 
 # If all are set to False, then no intensity information will be output
 # and only statistics relative to the super-object geometry will be available.
-
-
 
 ##############################################################################
 # METplus Configuration

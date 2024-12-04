@@ -29,11 +29,16 @@ model_applications/short_range/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 # Datasets
 # --------
 #
-# | **Input:** MET .stat files and MODE text files
+# **Input:** MET .stat files and MODE text files
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to see the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
-# |
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -49,17 +54,21 @@ model_applications/short_range/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 ##############################################################################
 # METplus Workflow
 # ----------------
+#
+# **Beginning time (VALID_BEG):** 2019052100
+#
+# **End time (VALID_END):** 2019052112
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 12H
+#
 # The METdbload is run once and loads data for two ensemble members, one model initialization
 # time and 2 forecast lead times, listed below.
 #
 # | **Valid:** 2019-05-21_01Z
 # | **Forecast lead:** 01
 # |
-#
 # | **Valid:** 2019-05-21_02Z
 # | **Forecast lead:** 02
-# |
-
 
 ##############################################################################
 # METplus Configuration

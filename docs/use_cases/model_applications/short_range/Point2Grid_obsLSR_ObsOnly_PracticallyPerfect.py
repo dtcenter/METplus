@@ -28,10 +28,7 @@ model_applications/short_range/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
 # Datasets
 # --------
 #
-# Relevant information about the datasets that would be beneficial include:
-# 
-# * Observation dataset: Local Storm Reports
-#
+# **Observation:** Local Storm Reports
 
 ##############################################################################
 # METplus Components
@@ -46,6 +43,14 @@ model_applications/short_range/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (INIT_BEG):** 2020020500
+#
+# **End time (INIT_END):** 2020020500
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 24H
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 24H
+#
 # The following tools are used for each run time:
 #
 # ASCII2NC > Point2Grid > RegridDataPlane 
@@ -55,9 +60,7 @@ model_applications/short_range/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
 #
 # Run times:
 #
-# | 2020-02-05
-# |
-#
+# 2020-02-05
 
 ##############################################################################
 # METplus Configuration

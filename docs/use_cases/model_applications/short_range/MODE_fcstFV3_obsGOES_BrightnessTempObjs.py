@@ -30,9 +30,9 @@ model_applications/short_range/MODE_fcstFV3_obsGOES_BrightnessTempObjs.conf
 # Datasets
 # --------
 #
-#  * Forecast dataset: FV3 Model member data
-#  * Observation dataset: GOES Brightness Temperature
+# **Forecast:** FV3 Model member data
 #
+# **Observation:** GOES Brightness Temperature
 
 ##############################################################################
 # METplus Components
@@ -45,6 +45,14 @@ model_applications/short_range/MODE_fcstFV3_obsGOES_BrightnessTempObjs.conf
 ##############################################################################
 # METplus Workflow
 # ----------------
+#
+# **Beginning time (INIT_BEG):** 2019052100
+#
+# **End time (INIT_END):** 2019052100
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 3600
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 1,2
 #
 # The MODE and grid_stat tools are run for each of 2 ensemble members and for each
 # time. This example loops by initialization time.  It processes 2 lead times, listed 

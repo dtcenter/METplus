@@ -42,9 +42,9 @@ model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 # Datasets
 # --------
 #
-# **Forecast dataset:** 1-hour HRRR in grib2
+# **Forecast:** 1-hour HRRR in grib2
 #
-# **Observation dataset:** MRMS and HRRR analysis in grib2
+# **Observation:** MRMS and HRRR analysis in grib2
 # 
 # The forecast and observation fields are only a subset of the full domain in
 # order for a faster run-time of Multivariate MODE. An example command using
@@ -52,13 +52,14 @@ model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 #
 #   wgrib2 infile.grib2 -new_grid_winds earth -new_grid lambert:262.5:38.5:38.5:38.5 -83.0:400:3000 37.0:400:3000 outfile.grib2 
 #
-# **Location:** All of the input data required for this use case can be found
-# in the *short_range* sample data tarball.
-# Navigate to `METplus Releases <https://github.com/dtcenter/METplus/releases>`_
-# and download sample data for the appropriate release.
-#
-# This tarball should be unpacked into the directory that you will set the
-# value of INPUT_BASE. See :ref:`running-metplus` for more information.
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -72,6 +73,12 @@ model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (INIT_BEG):** 2021020100
+#
+# **End time (INIT_END):** 2021020100
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 21
+#
 # MODE is the only tool called and ingests multiple fields to create a complex
 # super object.
 #
@@ -79,7 +86,6 @@ model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 #
 # | **Initialization:** 2021020100
 # | **Forecast lead:** 21
-#
 
 ##############################################################################
 # METplus Configuration

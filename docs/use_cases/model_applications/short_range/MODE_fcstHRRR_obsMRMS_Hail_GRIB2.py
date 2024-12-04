@@ -33,9 +33,9 @@ model_applications/short_range/MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf
 # Datasets
 # --------
 #
-#  * Forecast dataset: HRRRv4 data
-#  * Observation dataset: MRMS 
+# **Forecast:** HRRRv4 data
 #
+# **Observation:** MRMS 
 
 ##############################################################################
 # METplus Components
@@ -48,16 +48,25 @@ model_applications/short_range/MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (VALID_BEG):** 2019052902
+#
+# **End time (VALID_END):** 2019052903
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 3600
+#
+# | **Sequence of forecast leads to process:**
+# | INIT_SEQ = 0
+# | LEAD_SEQ_MAX = 36
+# | LEAD_SEQ_MIN = 12
+#
 # The MODE tool is run for each time. This example loops by valid time.  It
 # processes 2 valid times, listed below.
 #
 # | **Valid:** 2019-05-29_02Z
 # | **Forecast lead:** 26
-# |
 #
 # | **Valid:** 2019-05-29_03Z
 # | **Forecast lead:** 27
-# |
 
 ##############################################################################
 # METplus Configuration
