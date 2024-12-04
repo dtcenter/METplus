@@ -1,4 +1,4 @@
- """
+"""
 UserScript: Reformat MET .stat ECNT data, calculate aggregation statistics, and generate a spread skill plot
 ============================================================================================================
 
