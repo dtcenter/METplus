@@ -94,7 +94,7 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWin
 # in the code describing an alternate method that may be improved upon to allow different sattellites to have their own station IDs.
 # The location of the code is parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds/read_ASCAT_data.py
 #
-# .. dropdown::
+# .. dropdown:: parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds/read_ASCAT_data.py
 #
 #   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds/read_ASCAT_data.py
