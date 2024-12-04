@@ -107,7 +107,7 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsOSTIA_iceCover.co
 # Python Embedding
 # ----------------
 #
-# This use case uses one Python script to read forecast and observation data
+# This use case uses one Python script to read forecast and observation data.
 #
 #  .. dropdown:: parm/use_cases/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsOSTIA_iceCover/read_ice_data.py
 #
