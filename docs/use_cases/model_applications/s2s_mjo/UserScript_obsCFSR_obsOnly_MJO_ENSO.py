@@ -89,7 +89,7 @@ model_applications/s2s_mjo/UserScript_obsCFSR_obsOnly_MJO_ENSO.py
 # Python Embedding
 # ----------------
 #
-# Python Embedding  is not used in this use case.
+# Python Embedding is not used in this use case.
 
 ##############################################################################
 # User Scripting
