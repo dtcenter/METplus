@@ -86,7 +86,13 @@ model_applications/s2s_mjo/UserScript_obsCFSR_obsOnly_MJO_ENSO.py
 # There are no MET tools used in this use case.
   
 ##############################################################################
-# Python Scripts
+# Python Embedding
+# ----------------
+#
+# Python Embedding  is not used in this use case.
+
+##############################################################################
+# User Scripting
 # --------------
 #
 # The MJO-ENSO driver script orchestrates the calculation of the MaKE and MaKI indices and 
@@ -97,16 +103,6 @@ model_applications/s2s_mjo/UserScript_obsCFSR_obsOnly_MJO_ENSO.py
 #
 #   .. highlight:: python
 #   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mjo/UserScript_obsCFSR_obsOnly_MJO_ENSO/mjo_enso_driver.py
-# 
-# For more information on the basic requirements to utilize Python Embedding in METplus, 
-# please refer to the MET User’s Guide section on
-# `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_.
-
-##############################################################################
-# User Scripting
-# --------------
-#
-# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
