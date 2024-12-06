@@ -40,6 +40,7 @@ def test_run_metplus_exists():
         ([RUN_METPLUS, '-c', EXAMPLE_CONF, MINIMUM_CONF, OUTPUT_BASE_OVERRIDE], 0),
         ([RUN_METPLUS, EXAMPLE_CONF, MINIMUM_CONF, LIST_CONFIG_OVERRIDE_1], 0),
         ([RUN_METPLUS, EXAMPLE_CONF, MINIMUM_CONF, LIST_CONFIG_OVERRIDE_2], 0),
+        ([RUN_METPLUS, EXAMPLE_CONF, MINIMUM_CONF, '--fake-arg'], 1),
     ]
 )
 @pytest.mark.run_metplus
