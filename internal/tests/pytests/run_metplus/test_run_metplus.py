@@ -20,6 +20,12 @@ TEST_OUTPUT_DIR = os.path.join(os.environ['METPLUS_TEST_OUTPUT_BASE'],
 NEW_OUTPUT_BASE = os.path.join(TEST_OUTPUT_DIR, 'run_metplus')
 OUTPUT_BASE_OVERRIDE = f"config.OUTPUT_BASE={NEW_OUTPUT_BASE}"
 
+# test that a list of values specified in a command line config override
+# will no longer cause an error in the run. The list can be specified without
+# quotes if no spaces are present or with quotes if spaces are present
+LIST_CONFIG_OVERRIDE_1 = 'config.LEAD_SEQ=3H,6H'
+LIST_CONFIG_OVERRIDE_2 = 'config.LEAD_SEQ="3H, 6H"'
+
 @pytest.mark.run_metplus
 def test_run_metplus_exists():
     """! Check that run_metplus.py script exists """
@@ -31,6 +37,8 @@ def test_run_metplus_exists():
         ([RUN_METPLUS], 2),
         ([RUN_METPLUS, EXAMPLE_CONF], 2),
         ([RUN_METPLUS, EXAMPLE_CONF, MINIMUM_CONF, OUTPUT_BASE_OVERRIDE], 0),
+        ([RUN_METPLUS, EXAMPLE_CONF, MINIMUM_CONF, LIST_CONFIG_OVERRIDE_1], 0),
+        ([RUN_METPLUS, EXAMPLE_CONF, MINIMUM_CONF, LIST_CONFIG_OVERRIDE_2], 0),
     ]
 )
 @pytest.mark.run_metplus
