@@ -78,24 +78,9 @@ def get_config_inputs_from_command_line():
     if any(arg in sys.argv for arg in help_args):
         usage()
 
-    # pull out command line arguments
-    config_inputs = []
-    for arg in sys.argv[1:]:
-        if arg.startswith('-'):
-            # ignore -c and --config since they are now optional
-            if arg == '-c' or arg == '--config' or arg == '-config':
-                continue
-
-            # error/exit if an argument that is not supported was used
-            print('ERROR: Invalid argument: %s.' % arg)
-            usage()
-
-        # split up comma separated lists into individual items
-        # and add each to list of arguments
-        # NOTE: to support lists in a config variable override,
-        # this logic will have to be enhanced
-        # i.e. config.PROCESS_LIST=PCPCombine,GridStat
-        config_inputs.extend(arg.split(','))
+    # pull out command line arguments, removing deprecated config arguments
+    config_args = ('-c', '--config', '-config')
+    config_inputs = [arg for arg in sys.argv[1:] if arg not in config_args]
 
     # if no valid config_inputs were found, print usage and exit
     if not config_inputs:
