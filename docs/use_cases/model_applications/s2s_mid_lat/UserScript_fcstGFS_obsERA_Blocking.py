@@ -97,14 +97,19 @@ UserScript_fcstGFS_obsERA_Blocking.py
 #
 # **Sequence of forecast leads to process (LEAD_SEQ):** 24H
 #
-# This use case does not loop, but 2 UserScripts and 2 calls to StatAnalysis are run once for 
-# all valid times of the forecast and observations.  The first UserScript to create a file list
+# This use case does not loop, but the 2 UserScripts calls are run once for 
+# all valid times of the forecast and observations.  The first UserScript creates a file list
 # with the observed ERA data to use for the storm track climatology.  This is done separately 
-# because it's a different (longer) time frame from the data that is verified.  The second 
-# UserScript runs the blocking driver which calls the code to perform the blocking calculation.  
-# The blocking calculation is divided up into steps, which the user can select by setting STEPS_OBS 
-# and STEPS_FCST in the [user_env_vars] section of the configuration.  More information on the 
-# steps and how the calculation proceeds is given in the User Scripting section below.
+# because it's a different (longer) time frame from the data used in the other steps of the blocking
+# calculation.  The second UserScript runs the blocking driver which calls the code to perform the 
+# blocking calculation.  The blocking calculation is divided up into steps, which the user can select 
+# by setting STEPS_OBS and STEPS_FCST in the [user_env_vars] section of the configuration.  More 
+# information on the steps and how the calculation proceeds is given in the User Scripting section 
+# below.
+#
+# The two calls to StatAnalysis also don't loop but are run once for all valid times.  The first 
+# StatAnalysis run computes contingency table statistics on the IBLs, while the second computes 
+# contintency table statistics on the computed blocks.
 #
 # The 6 optional pre-processing steps loop by loop by valid time with different timing settings 
 # needed used for the different steps.  These include 2 runs of RegridDataPlane to regrid both
@@ -117,9 +122,9 @@ UserScript_fcstGFS_obsERA_Blocking.py
 # PROCESS_LIST = RegridDataPlane(regrid_fcst), RegridDataPlane(regrid_obs), PcpCombine(daily_mean_fcst), PcpCombine(daily_mean_obs), PcpCombine(running_mean_obs), PcpCombine(anomaly_obs), UserScript(create_cbl_filelist), UserScript(script_blocking), StatAnalysis(sanal_ibls), StatAnalysis(sanal_blocks)
 #
 # Settings for the optional pre-processing steps can be found in the respective sections of 
-# the configuration, regrid_fcst, regrid_obs, daily_mean_fcst, etc.  Data is not provided in the 
-# tarball to run these steps, but the configurations are provided for reference on how to set
-# up these calculations.
+# the configuration, regrid_fcst, regrid_obs, daily_mean_fcst, daily_mean_obs, running_mean_obs, 
+# and anomaly_obs.  Data is not provided in the tarball to run these steps, but the configurations 
+# are provided for reference on how to set up these calculations.
 
 ##############################################################################
 # METplus Configuration
@@ -167,7 +172,7 @@ UserScript_fcstGFS_obsERA_Blocking.py
 #  | FCST_STEPS = CBL+IBL+PLOTIBL+GILB+CALCBLOCKS+PLOTBLOCKS
 #  | OBS_STEPS = CBL+PLOTCBL+IBL+PLOTIBL+GILB+CALCBLOCKS+PLOTBLOCKS
 #
-# # The possible steps are computing the CBLs or central blocking latitude (CBL), plotting CBLs 
+# The possible steps are computing the CBLs or central blocking latitude (CBL), plotting CBLs 
 # (PLOTCBL), computing instantaneously blocked longitudes (IBL), plotting IBL frequency (PLOTIBL), 
 # computing grouped instantaneously blocked longitudes (GIBL), computing blocks (CALCBLOCKS), and
 # plotting the blocking frequency (PLOTBLOCKS).  This use case runs all steps although not all of 

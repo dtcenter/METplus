@@ -137,14 +137,16 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 # K means clustering (KMEANS), plotting the weather regimes (PLOTKMEANS), computing a user specified
 # time frequency of weather regimes (TIMEFREQ) and plotting the time frequency (PLOTFREQ).  The 
 # TIMEFREQ and PLOTFREQ steps require that the KMEANS step be run first, while all other steps 
-# can be run individally. Input variables to the WeatherRegime driver are both set and described
+# can be run individally. Input variables to the WeatherRegime driver are set and described
 # in the [user_env_vars] section of the configuration file. 
 #
 # Elbow computes the optimal number of clusters using the sum of squared distances for 
 # clusters 1 - 14 and draws a straight line from the sum of squared distance for the 
 # clusters.  This helps determine the optimal cluster number by examining the largest 
 # difference between the curve and the straight line.  The EOFs step computes empirical orthogonal 
-# functions.  The K means step uses clustering to compute the frequency of occurrence and anomalies 
+# functions.  These EOFs are used to reconstruct the height field, with this reconstructed data used 
+# in the K means calculation.  If EOFs are not compted, the original height field is used in the K means 
+# calculation.  The K means step uses clustering to compute the frequency of occurrence and anomalies 
 # for each cluster to give the most common weather regimes.  Then, the time frequency computes the 
 # frequency of each weather regime over a user specified time frame.
 #
