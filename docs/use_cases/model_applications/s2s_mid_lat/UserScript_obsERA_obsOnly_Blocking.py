@@ -22,20 +22,20 @@ UserScript_obsERA_obsOnly_Blocking.py
 # atmospheric blocking events using the methodology in Miller & Wang (2019, 2022), which
 # identifies blocks from 500 mb height.  Various studies (Masato et al. 2013; Kitano and 
 # Yamada 2016) have suggested that 500 mb height produces a similar blocking climatology as 
-# using potential temperature on a 2-PVU surface.
+# results from potential temperature on a 2-PVU surface.
 #
 # The methodology in Miller & Wang (2019, 2022) first computes the Central Blocking Latitude 
 # (CBL) or storm track.  Allowing for an offset north and south of the storm track, reversals 
-# in geopotential height are identified as Instantaneously Blocked longitudes (IBLs).  These 
+# in geopotential height are then identified as Instantaneously Blocked longitudes (IBLs).  These 
 # IBLs are grouped when consective longitudes are blocked (GIBLs) and then blocks are identified 
 # by applying thresholds to ensure the large-scale, quasi-stationary characteristics of blocking 
 # anticyclones are met.
 #
 # This use case is a simplified version of the UserScript_fcstGFS_obs_ERA_Blocking use case.  While 
-# that use case evaluates a model versus observation, this case shows how to run the blocking
-# calculation on observations only.  The setup is simpler and requires fewer steps than the 
-# UserScript_fcstGFS_obs_ERA_Blocking use case.  The original code for computing blocking came from
-# Douglas Miller.
+# that use case evaluates blocking for both the model and observations, this case shows how to run 
+# the blocking calculation on observations only.  The setup is simpler and requires fewer MET runs 
+# than the UserScript_fcstGFS_obs_ERA_Blocking use case.  The original code for computing blocking 
+# came from Douglas Miller.
 #
 #  * Miller, D. E., and Z. Wang, 2019a: Skillful seasonal prediction of Eurasian winter blocking and extreme temperature frequency. Geophys. Res. Lett., 46, 11 530–11 538, https://doi.org/10.1029/2019GL085035.
 #  * Miller, D. E., and Z. Wang, 2022: Northern Hemisphere Winter Blocking: Differing Onset Mechanisms across regions. J. Atmos. Sci., 79, 1291-1309, https://doi.org/10.1175/JAS-D-21-0104.1.
@@ -72,9 +72,9 @@ UserScript_obsERA_obsOnly_Blocking.py
 # ------------------
 #
 # This use case calls UserScript once.  There are 4 optional pre-processing steps, 
-# RegridDataPlane and 3 calls to PcpCombine that compute daily averages, a 5 day
-# running mean and daily anomalies.  Additionally, METcalcpy and METplotpy are required to 
-# run this use case.  The METcalcpy scripts accessed include the following:
+# RegridDataPlane and 3 calls to PcpCombine.  METcalcpy and METplotpy are also 
+# required to run this use case.  The METcalcpy scripts accessed include the 
+# following:
 #
 # * metcalcpy/contributed/blocking_weather_regime/Blocking.py
 #
@@ -104,12 +104,12 @@ UserScript_obsERA_obsOnly_Blocking.py
 # the [user_env_vars] section of the configuration.  More information on the steps and 
 # how the calculation proceeds is given in the User Scripting section below.
 #
-# The four option pre-processings steps loop by valid time with different timing settings 
+# The four optional pre-processings steps loop by valid time with different timing settings 
 # needed used for the different steps.  These steps are turned off due to data size and processing 
 # time.  The first optional step calls Regrid-Data-Plane to regrid the data to a 1 degree 
 # latitude/longitude grid.  The second calls PCP-Combine to compute daily means of 500 mb height. 
 # The third calls PCP-Combine to compute a 5 day running mean, while the last uses PCP-Combine
-# to compute anomalies, subtracting the 5 day running mean from the daily mean.  These omitted steps 
+# to compute anomalies by subtracting the 5 day running mean from the daily mean.  These omitted steps 
 # can be turned on by using the PROCESS_LIST that is commented out:
 #
 # PROCESS_LIST = RegridDataPlane(regrid_obs), PcpCombine(daily_mean_obs), PcpCombine(running_mean_obs), PcpCombine(anomaly_obs), UserScript(script_blocking)
@@ -154,13 +154,13 @@ UserScript_obsERA_obsOnly_Blocking.py
 #
 # The possible steps are computing the CBLs or central blocking latitude (CBL), plotting CBLs 
 # (PLOTCBL), computing instantaneously blocked longitudes (IBL), plotting IBL frequency (PLOTIBL), 
-# computing group instantaneously blocked longitudes (GIBL), computing blocks (CALCBLOCKS), and
+# computing grouped instantaneously blocked longitudes (GIBL), computing blocks (CALCBLOCKS), and
 # plotting the blocking frequency (PLOTBLOCKS).  This use case runs all steps although not all of 
 # them are required to be run.  The CBL, IBL, GIBL, and CALCBLOCKS steps must be run in order as the
-# IBS step requires previously computed CBLs, and GIBLs requires previously computed IBLs.  Plotting
-# also requires the associated step to be run (PLOTCBL requires CBL to be run first.  The methodology
-# used in these calculations is described in Miller & Wang (2019, 2022) listed in the Scientific
-# Objective section.
+# IBL step requires previously computed CBLs, and GIBLs requires previously computed IBLs.  Plotting
+# also requires the associated step to be run (e.g. PLOTCBL requires CBL to be run first).  The 
+# methodology used in these calculations is described in Miller & Wang (2019, 2022) listed in the 
+# Scientific Objective section.
 #
 # There are many input variables that can be changed for the driver script and blocking calculation.  
 # These can be changed and are described in the [user_env_vars] section of the configuration file.
@@ -190,8 +190,8 @@ UserScript_obsERA_obsOnly_Blocking.py
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use 
-# case will be found in model_applications/s2s_mid_lat/Blocking (relative to **OUTPUT_BASE**).  There should be 
-# 3 different graphics output to the plot directory in the above location, but each will have png and pdf 
+# case will be found in {OUTPUT_BASE}/model_applications/s2s_mid_lat/Blocking.  There should be 
+# 3 different graphics output to the plot directory in the above location.  Each will have png and pdf 
 # versions to make for 6 output plots::
 #
 #  * ERA_CBL_avg.png
@@ -202,7 +202,8 @@ UserScript_obsERA_obsOnly_Blocking.py
 #  * obs_Block_Freq_DJF.pdf
 # 
 # If the pre-processing steps are turned on, regridded data, daily averaged files, running mean files, 
-# and anomaly files will also be output to Regrid, Daily,Rmean5d, and Anomaly in the ERA directory.
+# and anomaly files will also be output to Regrid, Daily,Rmean5d, and Anomaly directories in the 
+# ERA directory.
 
 ##############################################################################
 # Keywords

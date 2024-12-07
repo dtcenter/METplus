@@ -22,11 +22,11 @@ UserScript_fcstGFS_obsERA_Blocking.py
 # atmospheric blocking events using the methodology in Miller & Wang (2019, 2022), which
 # identifies blocks from 500 mb height.  Various studies (Masato et al. 2013; Kitano and 
 # Yamada 2016) have suggested that 500 mb height produces a similar blocking climatology as 
-# using potential temperature on a 2-PVU surface.
+# results from potential temperature on a 2-PVU surface.
 #
 # The methodology in Miller & Wang (2019, 2022) first computes the Central Blocking Latitude 
 # (CBL) or storm track.  Allowing for an offset north and south of the storm track, reversals 
-# in geopotential height are identified as Instantaneously Blocked longitudes (IBLs).  These 
+# in geopotential height are then identified as Instantaneously Blocked longitudes (IBLs).  These 
 # IBLs are grouped when consective longitudes are blocked (GIBLs) and then blocks are identified 
 # by applying thresholds to ensure the large-scale, quasi-stationary characteristics of blocking 
 # anticyclones are met.  The IBLs, GIBLs, and blocks are computed separately for the model and 
@@ -167,15 +167,15 @@ UserScript_fcstGFS_obsERA_Blocking.py
 #  | FCST_STEPS = CBL+IBL+PLOTIBL+GILB+CALCBLOCKS+PLOTBLOCKS
 #  | OBS_STEPS = CBL+PLOTCBL+IBL+PLOTIBL+GILB+CALCBLOCKS+PLOTBLOCKS
 #
-# The possible steps are computing the CBLs or central blocking latitude (CBL), plotting CBLs 
+# # The possible steps are computing the CBLs or central blocking latitude (CBL), plotting CBLs 
 # (PLOTCBL), computing instantaneously blocked longitudes (IBL), plotting IBL frequency (PLOTIBL), 
-# computing group instantaneously blocked longitudes (GIBL), computing blocks (CALCBLOCKS), and
+# computing grouped instantaneously blocked longitudes (GIBL), computing blocks (CALCBLOCKS), and
 # plotting the blocking frequency (PLOTBLOCKS).  This use case runs all steps although not all of 
 # them are required to be run.  The CBL, IBL, GIBL, and CALCBLOCKS steps must be run in order as the
-# IBS step requires previously computed CBLs, and GIBLs requires previously computed IBLs.  However, 
-# observations can be used in place of the forecast CBLs if needed.  Plotting also requires the 
-# associated step to be run (PLOTCBL requires CBL to be run first.  The methodology used in these 
-# calculations is described in Miller & Wang (2019, 2022) listed in the Scientific Objective section.
+# IBL step requires previously computed CBLs, and GIBLs requires previously computed IBLs.  Plotting
+# also requires the associated step to be run (e.g. PLOTCBL requires CBL to be run first).  The 
+# methodology used in these calculations is described in Miller & Wang (2019, 2022) listed in the 
+# Scientific Objective section.
 #
 # There are many input variables that can be changed for the driver script and blocking calculation.  
 # These can be changed and are described in the [user_env_vars] section of the configuration file.
@@ -239,8 +239,8 @@ UserScript_fcstGFS_obsERA_Blocking.py
 #  * GFS_ERA_Blocks_240000L_CTS.stat
 #
 # If the pre-processing steps are turned on, regridded data, daily averaged files, running mean files, 
-# and anomaly files will also be output to Regrid, Daily,Rmean5d, and Anomaly in the ERA directory and 
-# Regrid and Daily in the GFS directory. 
+# and anomaly files will also be output to Regrid, Daily,Rmean5d, and Anomaly directories in the ERA 
+# directory and Regrid and Daily directories in the GFS directory. 
 
 ##############################################################################
 # Keywords
