@@ -40,7 +40,7 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsNDBC_WaveHeight.co
 # ------------------
 #
 # This use case calls ASCII2NC to read in ASCII buoy files and
-# then PointStat for verification against GFS model data
+# then PointStat for verification against GFS model data.
 
 ##############################################################################
 # METplus Workflow
