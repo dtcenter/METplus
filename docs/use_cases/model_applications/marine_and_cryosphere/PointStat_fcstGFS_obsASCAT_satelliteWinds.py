@@ -92,7 +92,6 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWin
 # an end time in the same format, a message type to code the variables as (currently set for SATWND), and
 # a variable name to read in. Currently the script puts the same station ID to each observation, but there is space
 # in the code describing an alternate method that may be improved upon to allow different sattellites to have their own station IDs.
-# The location of the code is parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds/read_ASCAT_data.py
 #
 # .. dropdown:: parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds/read_ASCAT_data.py
 #

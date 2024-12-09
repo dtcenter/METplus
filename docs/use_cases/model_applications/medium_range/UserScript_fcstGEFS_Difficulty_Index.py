@@ -134,7 +134,7 @@ model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf
 # User Scripting
 # --------------
 #
-# User Scripting is not used in this use case.
+# [UPDATE CONTENT]
 
 ##############################################################################
 # Running METplus

@@ -92,7 +92,7 @@ model_applications/short_range/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
 # Python Embedding
 # ----------------
 #
-# This use case uses a Python embedding script to read input data
+# This use case uses a Python embedding script to read input data.
 #
 #  .. dropdown:: parm/use_cases/model_applications/short_range/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect/read_ascii_storm.py
 #

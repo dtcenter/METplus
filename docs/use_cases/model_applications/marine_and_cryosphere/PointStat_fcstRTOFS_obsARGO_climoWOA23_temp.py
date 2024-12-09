@@ -113,7 +113,7 @@ model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_
 # 
 # For more information on the basic requirements to utilize Python Embedding in METplus, 
 # please refer to the MET User’s Guide section on
-# `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_ 
+# `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_.
 
 ##############################################################################
 # User Scripting

@@ -95,7 +95,6 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAl
 # This use case calls the read_satData.py script to read and pass to PointStat the user-requested variable.
 # The script needs 3 inputs in the following order: an input file, a variable field to extract,
 # and where the data came from, passed as JASON (JASON-3), SARAL, or SENTINEL (Sentinel-6a).
-# The location of the code is parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAltimetry/read_satData.py
 #
 # .. dropdown:: parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAltimetry/read_satData.py
 #

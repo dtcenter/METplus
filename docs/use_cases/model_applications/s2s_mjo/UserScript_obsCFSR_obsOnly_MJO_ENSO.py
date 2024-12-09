@@ -97,7 +97,6 @@ model_applications/s2s_mjo/UserScript_obsCFSR_obsOnly_MJO_ENSO.py
 #
 # The MJO-ENSO driver script orchestrates the calculation of the MaKE and MaKI indices and 
 # the generation of a text file and a plot for the indices:
-# parm/use_cases/model_applications/s2s_mjo/UserScript_obsCFSR_obsOnly_MJO_ENSO/mjo_enso_driver.py:
 #
 # .. dropdown:: parm/use_cases/model_applications/s2s_mjo/UserScript_obsCFSR_obsOnly_MJO_ENSO/mjo_enso_driver.py
 #

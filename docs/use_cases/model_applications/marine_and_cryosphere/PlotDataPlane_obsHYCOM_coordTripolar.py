@@ -95,7 +95,7 @@ model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar.co
 # Python Embedding
 # ----------------
 #
-# This use case uses one Python script to read input data, passed through two times
+# This use case uses one Python script to read input data, passed through two times.
 #
 # .. dropdown:: parm/use_cases/model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar/read_tripolar_grid.py
 #
