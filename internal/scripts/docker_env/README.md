@@ -432,6 +432,26 @@ export METPLUS_ENV_VERSION=v6.0
 ./scripts/pandac_env.sh ${METPLUS_ENV_VERSION}
 ```
 
+## mp_analysis.v6.0 (from metplotpy.v6.0)
+
+### Docker
+
+```
+export METPLUS_ENV_VERSION=v6.0
+docker build -t dtcenter/metplus-envs:mp_analysis.${METPLUS_ENV_VERSION} \
+    --build-arg METPLUS_ENV_VERSION \
+    --build-arg BASE_ENV=metplotpy \
+    --build-arg ENV_NAME=mp_analysis .
+docker push dtcenter/metplus-envs:mp_analysis.${METPLUS_ENV_VERSION}
+```
+
+### Local
+
+```
+export METPLUS_ENV_VERSION=v6.0
+./scripts/mp_analysis_env.sh ${METPLUS_ENV_VERSION}
+```
+
 
 ## diff.v6.0 (from netcdf4.v6.0)
 

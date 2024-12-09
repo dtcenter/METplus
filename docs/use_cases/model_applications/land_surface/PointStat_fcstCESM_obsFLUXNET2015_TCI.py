@@ -119,7 +119,6 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
-#
 
 ##############################################################################
 # MET Configuration
@@ -136,8 +135,8 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #
 # .. dropdown:: PointStatConfig_wrapped
 #
+#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/PointStatConfig_wrapped
-#
 
 ##############################################################################
 # Python Embedding
@@ -182,6 +181,11 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 # The raw FLUXNET2015 SUBSET data are read using:
 #
 # .. dropdown:: parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/fluxnet2015_tci.py
+# 
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/fluxnet2015_tci.py
+#
+# The user can control all command line arguments to this script via METplus config entries:
 #
 #    .. highlight:: python
 #    .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/fluxnet2015_tci.py
@@ -244,6 +248,15 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 # Both of the above Python embedding scripts compute TCI using the ``calc_tci()`` function in METcalcpy.
 # See the METcalcpy documentation for more information: https://metcalcpy.readthedocs.io/en/latest/index.html.
 #
+# For more information on the basic requirements to utilize Python Embedding in METplus, 
+# please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_ 
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# This use case does not use additional scripts.
+
 
 ##############################################################################
 # Running METplus
@@ -255,7 +268,6 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
-#
 
 ##############################################################################
 # Expected Output

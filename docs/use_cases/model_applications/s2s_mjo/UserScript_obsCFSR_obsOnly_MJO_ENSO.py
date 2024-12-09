@@ -2,11 +2,14 @@
 UserScript: Make MaKE-MaKI plot from calculated MaKE and MaKI indices
 =====================================================================
 
-model_applications/
-s2s_mjo/
-UserScript_obsCFSR_obsOnly_MJO_ENSO.py
+model_applications/s2s_mjo/UserScript_obsCFSR_obsOnly_MJO_ENSO.py
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
 
 ##############################################################################
 # Scientific Objective
@@ -15,6 +18,12 @@ UserScript_obsCFSR_obsOnly_MJO_ENSO.py
 # To compute the MJO-Kelvin wave-ENSO (MaKE) and MJO-Kelvin wave-Influence (MaKI) indices* using the zonal and meridional components of winds tress (TAUX,TAUY), zonal and meridional components of surface ocean currents (UCUR,VCUR), and sea surface temperature (SST). Specifically, MaKE and MaKI indices are computed using TAUX, TAUY, UCUR, VCUR and SST data between 30S and 30N and 125E and 80W. Daily anomalies of wind stress components are filtered for 30-90 days using a Convolutional Neural Network (CNN)-based filter. The weights of the filter are computed offline. The bandpass filtered wind stress components are projected onto 4 Empirical Orthogonal Functions (EOFs) data. The obtained timeseries (PCs) are standardized and combined with the EOFs to obtain the MJO component of the surface wind stress (TAUX_MJO,TAUY_MJO). UCUR and VCUR daily anomalies are multiplied by the meridional structure of Kelvin wave (UCUR_K,VCUR_K). Windpower due to the MJO component of the wind stress and oceanic Kelvin waves (W_MJO,K) is then computed as TAUX_MJO*UCUR_K+TAUY_MJO*VCUR_K. The standardized windpower and SST are projected onto the first two multivariate EOFs of W_MJO,K and SST. The resulting daily time series (PCs) are normalized and used to compute monthly values of MaKE and MaKI. Monthly values of MaKE and MaKI are saved into a text (.csv) file and plotted as time series.     
 # 
 # * Lybarger, N.D., C.-S. Shin, and C. Stan, 2020: MJO Wind energy and prediction of El Nino, Journal of Geophysical Research - Oceans, 125, e2020JC016732. doi:10.1029/2020JC016732
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 5.0
 
 ##############################################################################
 # Datasets
@@ -95,29 +104,12 @@ UserScript_obsCFSR_obsOnly_MJO_ENSO.py
 # Running METplus
 # ---------------
 #
-# This use case is run in the following ways:
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# 1) Passing in UserScript_obsCFSR_obsOnly_MJO_ENSO.conf then a user-specific system configuration file::
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s_mjo/UserScript_obsCFSR_obsOnly_MJO_ENSO.conf /path/to/user_system.conf
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s_mjo/UserScript_obsCFSR_obsOnly_MJO_ENSO.conf -c /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_obsCFSR_obsOnly_MJO_ENSO.py::
-#
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s_mjo/UserScript_obsCFSR_obsOnly_MJO_ENSO.conf
-#
-# The following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output

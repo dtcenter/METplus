@@ -16,12 +16,19 @@ fi
 # remove v prefix
 metplus_version=${SOURCE_BRANCH:1}
 
+# if rc is in version number, get main_vX.Y, otherwise get X.Y-latest or develop
+if [[ "${metplus_version}" =~ rc ]]; then
+  tag_format="main_v{X}.{Y}"
+else
+  tag_format="{X}.{Y}-latest"
+fi
+
 # Get MET tag and adjust MET Docker repo if develop
-met_tag=$("${GITHUB_WORKSPACE}"/metplus/component_versions.py -v "${metplus_version}" -o MET -f "{X}.{Y}-latest" --no-get_dev_version)
+met_tag=$("${GITHUB_WORKSPACE}"/metplus/component_versions.py -v "${metplus_version}" -o MET -f ${tag_format} --no-get_dev_version)
 echo "$met_tag"
 
 MET_DOCKER_REPO=met
-if [ "$met_tag" == "develop" ]; then
+if [ "$met_tag" == "develop" ] || [[ "${met_tag}" =~ ^main_v[0-9]+\.[0-9]+ ]]; then
     MET_DOCKER_REPO=met-dev
 fi
 

@@ -1,10 +1,16 @@
 """
 Ensemble-Stat: WoFS
-================================================================
+===================
 
 model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -13,6 +19,12 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 # variable field to understand its forecasting abilities. Specifically focusing on
 # accumulated precipitation at different neighborhood distances and accumulation
 # thresholds to provide meaningful analysis output that can provide direction to future WoFS improvement.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 4.1
 
 ##############################################################################
 # Datasets
@@ -51,8 +63,8 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
@@ -87,31 +99,12 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 # Running METplus
 # ---------------
 #
-# This use case can be run two ways:
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# 1) Passing in EnsembleStat_fcstWOFS_obsWOFS.py then a user-specific system configuration file::
+#  run_metplus.py /path/to/METplus/parm/use_cases/model_applications/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf /path/to/user_system.conf
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf -c /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in EnsembleStat_fcstWOFS_obsWOFS.conf::
-#
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
-#
-# **NOTE:** All of these items must be found under the [dir] section.
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output
