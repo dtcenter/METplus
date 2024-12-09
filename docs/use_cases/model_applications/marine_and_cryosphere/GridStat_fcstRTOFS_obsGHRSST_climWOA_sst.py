@@ -146,7 +146,7 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_ss
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
 # Output for thisIce use case will be found in directory 20210503 (relative to **OUTPUT_BASE**)
-# and will contain the following files:
+# and will contain the following files::
 #
 # * grid_stat_SST_000000L_20210503_000000V.stat 
 # * grid_stat_SST_000000L_20210503_000000V_cnt.txt 
