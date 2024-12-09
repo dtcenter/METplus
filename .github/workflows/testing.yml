@@ -1,5 +1,5 @@
 name: Testing
-
+run-name: ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.repository || 'Manual Trigger Testing') || (github.event_name == 'pull_request' && github.event.pull_request.title) || (github.event_name == 'push' && github.event.head_commit.message) || github.workflow }}
 on:
 
   push:
