@@ -119,7 +119,7 @@ model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf
 # Python Embedding
 # ----------------
 #
-# This use case uses a Python embedding script to read input data
+# This use case uses a Python embedding script to read input data.
 #
 # .. dropdown:: parm/use_cases/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index/wind_difficulty_index.py
 #

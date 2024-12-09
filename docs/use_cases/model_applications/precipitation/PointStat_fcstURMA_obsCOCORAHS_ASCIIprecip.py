@@ -89,11 +89,11 @@ model_applications/precipitation/PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip.conf
 # not supported by METplus you’d like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. dropdown: Ascii2NcConfig_wrapped
+# .. dropdown:: Ascii2NcConfig_wrapped
 #
 #   .. literalinclude:: ../../../../parm/met_config/Ascii2NcConfig_wrapped
 #
-# .. dropdown: PointStatConfig_wrapped
+# .. dropdown:: PointStatConfig_wrapped
 #
 #   .. literalinclude:: ../../../../parm/met_config/PointStatConfig_wrapped 
 

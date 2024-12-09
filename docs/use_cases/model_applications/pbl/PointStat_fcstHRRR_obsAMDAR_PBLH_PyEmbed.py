@@ -88,7 +88,7 @@ model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed.conf
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. dropdown:: met_config/PointStatConfig_wrapped
+# .. dropdown:: PointStatConfig_wrapped
 #
 #   .. literalinclude:: ../../../../parm/met_config/PointStatConfig_wrapped
 
@@ -96,7 +96,7 @@ model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed.conf
 # Python Embedding
 # ----------------
 #
-# This use case uses a Python embedding script to read input data
+# This use case uses a Python embedding script to read input data.
 #
 # .. dropdown:: parm/use_cases/model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed/calc_amdar_pblh.py
 #

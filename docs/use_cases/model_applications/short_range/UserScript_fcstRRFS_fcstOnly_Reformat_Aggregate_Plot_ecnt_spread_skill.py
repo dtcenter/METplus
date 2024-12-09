@@ -146,7 +146,7 @@ model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_P
 ##############################################################################
 # User Scripting
 # --------------
-
+#
 # This use case uses Python scripts to invoke the METdataio reformatter, the METcalcpy aggregator,
 # and the METplotpy line plot.
 #

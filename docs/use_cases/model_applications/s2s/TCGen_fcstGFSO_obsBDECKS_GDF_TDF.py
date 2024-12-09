@@ -156,7 +156,7 @@ model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
 # Python Embedding
 # ----------------
 #
-# This use case uses a Python embedding script to create output graphics
+# This use case uses a Python embedding script to create output graphics.
 #
 #  .. dropdown:: parm/use_cases/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF/UserScript_fcstGFSO_obsBDECKS_GDF_TDF.py
 #

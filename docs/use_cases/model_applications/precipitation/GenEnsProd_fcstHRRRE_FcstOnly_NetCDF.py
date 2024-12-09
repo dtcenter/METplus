@@ -99,7 +99,7 @@ model_application/precipitation/GenEnsProd_fcstHRRRE_FcstOnly_NetCDF.conf
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. dropdown:: met_config/GenEnsProdConfig_wrapped
+# .. dropdown:: GenEnsProdConfig_wrapped
 #
 #   .. literalinclude:: ../../../../parm/met_config/GenEnsProdConfig_wrapped
 

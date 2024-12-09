@@ -85,7 +85,7 @@ model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_Pr
 #
 #   .. literalinclude:: ../../../../parm/met_config/PB2NCConfig_wrapped
 #
-# .. dropdown:: PointStatConfig_wrapped**
+# .. dropdown:: PointStatConfig_wrapped
 #
 #   .. literalinclude:: ../../../../parm/met_config/PointStatConfig_wrapped
 
