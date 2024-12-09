@@ -52,7 +52,7 @@ Add or update information about software releases on the website.
 
       * Add Link: Link text should be "Existing Builds and Docker" and the URL
         should be the latest Existing Builds page, i.e.
-        https://dtcenter.org/community-code/metplus/metplus-X-Y-existing-builds
+        https://metplus.readthedocs.io/en/main_vX.Y/Users_Guide/release-notes.html#existing-builds
 
     * In the **Release Notes** text box provide direct links to the *release-notes.html*
       files on the main_vX.Y branch of the User's Guide for each component.
@@ -68,4 +68,6 @@ Add or update information about software releases on the website.
 
     * Click on **Save** at the bottom of the page.
 
-  * Create a new **Existing Builds and Docker** page for the next coordinated release.
+  * In the develop branch, update the docs/Users_Guide/existing_builds.rst file
+    by copying the template from docs/Users_Guide/existing_builds_templates.rst.
+    Replace X.Y with the appropriate version for each component.
