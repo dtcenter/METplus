@@ -31,27 +31,29 @@ model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_P
 # Datasets
 # --------
 #
-#  * Forecast dataset: RRFS GEFS (Rapid Refresh Forecast System Global Ensemble Forecast System)
-#  * Observation dataset: None
+# **Forecast:** RRFS GEFS (Rapid Refresh Forecast System Global Ensemble Forecast System)
 #
-#  **Input**: MET .stat files from MET ensemble-stat tool for RRFS for 20220506
+# **Observation:** None
 #
-#  **Location**: All the input data required for this use case can be found in the met_test sample data tarball
-#  (**sample_data-short_range.tgz**).
+# **Input**: MET .stat files from MET ensemble-stat tool for RRFS for 20220506
 #
-#  Click here to see the METplus releases page and download sample data for the appropriate
-#  release: https://github.com/dtcenter/METplus/releases
+# **Location**: All the input data required for this use case can be found in the met_test sample data tarball
+# (**sample_data-short_range.tgz**).
 #
-#  See `Running METplus <https://metplus.readthedocs.io/en/develop/Users_Guide/getting_started.html#running-metplus>`_
-#  section for more information.
+# Click here to see the METplus releases page and download sample data for the appropriate
+# release: https://github.com/dtcenter/METplus/releases
 #
-#  **This tarball should be unpacked into the directory corresponding to the value of INPUT_BASE** in the
-#  `User Configuration File <https://metplus.readthedocs.io/en/develop/Users_Guide/systemconfiguration.html#user-configuration-file>`_
-#  section.
+# See `Running METplus <https://metplus.readthedocs.io/en/develop/Users_Guide/getting_started.html#running-metplus>`_
+# section for more information.
+#
+# **This tarball should be unpacked into the directory corresponding to the value of INPUT_BASE** in the
+# `User Configuration File <https://metplus.readthedocs.io/en/develop/Users_Guide/systemconfiguration.html#user-configuration-file>`_
+# section.
 
 #############################################################################
 # External Dependencies
 # ---------------------
+#
 # You will need to use the version of Python that is required for the METplus version
 # in use.  Refer to the Installation section of the User's Guide for basic Python requirements:
 # https://metplus.readthedocs.io/en/latest/Users_Guide/installation.html
@@ -73,8 +75,6 @@ model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_P
 #  * kaleido (python-kaleido)
 #  * plotly
 #  * matplotlib
-
-
 
 ##############################################################################
 # METplus Components
@@ -103,20 +103,18 @@ model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_P
 # Define the OUTPUT_BASE, INPUT_BASE, and MET_INSTALL_DIR settings in the user
 # configuration file. For instructions on how to set up the user configuration file, refer to the `User ConfigurationFile
 # <https://metplus.readthedocs.io/en/develop/Users_Guide/systemconfiguration.html#user-configuration-file>`_ section.
-#
-
 
 ##############################################################################
 # METplus Workflow
 # ----------------
+#
+# **Beginning time (VALID_BEG):** 20220506_000000
 #
 # This use case reads in the MET .stat output that contains the ECNT linetype (from
 # the MET ensemble-stat tool).  The .stat output *MUST* reside under one directory.
 # If .stat files are spread among multiple directories, these must be consolidated under a
 # single directory.
 # The use case loops over three processes: reformatting, aggregating, and plotting.
-#
-
 
 ##############################################################################
 # METplus Configuration

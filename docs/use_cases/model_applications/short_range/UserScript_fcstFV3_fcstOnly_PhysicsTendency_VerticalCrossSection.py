@@ -42,14 +42,22 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 # Datasets
 # --------
 #
-# | Forecast dataset: FV3 3-D history file with physics and dynamics tendencies
-# | Grid specification: FV3 2-D grid specification file with latitude and longitude of each grid point
+# **Forecast:** FV3 3-D history file with physics and dynamics tendencies
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | The tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
+# **Observation:** 
 #
-
-
+# **Climatology:** 
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
+#
+# **Grid specification:** FV3 2-D grid specification file with latitude and longitude of each grid point
 
 ##############################################################################
 # External Dependencies 
@@ -64,25 +72,21 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 #  * pandas
 #  * shapely
 #  * xarray
-#
-
-
 
 ##############################################################################
 # METplus Components
 # ------------------
 #
 # This use case runs the METplotpy cross_section_vert.py script to generate the plan views.
-#
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (VALID_BEG):** 2019
+#
 # This use case does not loop but plots physics tendency data that has been
 # subsetted to one date: 2019-06-15.
-# 
-
 
 ##############################################################################
 # METplus Configuration
