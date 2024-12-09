@@ -1,5 +1,5 @@
 name: Testing
-run-name: ${{ (github.event_name == 'workflow_dispatch' && (github.event.inputs.repository || 'Manual Trigger Testing')) || (github.event_name == 'pull_request' && github.event.pull_request.title) || (github.event_name == 'push' && github.event.head_commit.message) || github.workflow }}
+run-name: ${{ (github.event_name == 'workflow_dispatch' && (github.event.inputs.title || github.event.inputs.repository || 'Manual Trigger Testing')) || (github.event_name == 'pull_request' && github.event.pull_request.title) || (github.event_name == 'push' && github.event.head_commit.message) || github.workflow }}
 on:
 
   push:
@@ -32,6 +32,8 @@ on:
       
   workflow_dispatch:
     inputs:
+      title:
+        description: 'Optional title of workflow run'
       force_met_image:
         description: 'MET DockerHub repo to force run to use, e.g. met:11.1.0 or met-dev:feature_XYZ_name-PR. Leave this blank to determine repo automatically.'
       repository:
