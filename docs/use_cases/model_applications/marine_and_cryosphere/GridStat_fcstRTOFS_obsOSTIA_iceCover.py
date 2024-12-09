@@ -61,7 +61,7 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsOSTIA_iceCover.co
 # ------------------
 #
 # This use case utilizes the METplus GridStat wrapper to generate a
-# command to run the MET tool GridStat with Python Embedding for the specified user hemispheres
+# command to run the MET tool GridStat with Python Embedding for the specified user hemispheres.
 
 ##############################################################################
 # METplus Workflow
