@@ -108,7 +108,7 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_ss
 # Python Embedding
 # ----------------
 #
-# This use case uses one Python script to read forecast, observation, and climatology data
+# This use case uses one Python script to read forecast, observation, and climatology data.
 #
 # .. dropdown:: parm/use_cases/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst/read_rtofs_ghrsst_woa.py
 #
