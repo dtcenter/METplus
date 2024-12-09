@@ -220,7 +220,7 @@ UserScript_fcstGFS_obsERA_WeatherRegime.py
 # * weather_regime_stat_GFS_240000L_20001202_000000V.stat
 #
 # for the frequency matched pair files, one file is written for each day and each weather regime (8466 files 
-# total)to the freq subdirectory in the format below for 12-02-2000, weather regime 1::
+# total) to the freq subdirectory in the format below for 12-02-2000, weather regime 1::
 #
 # * weather_regime01_freq_stat_GFS_240000L_20001202_000000V.stat
 #
