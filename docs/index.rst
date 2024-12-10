@@ -8,8 +8,8 @@ Boulder, CO
 
 In Memoriam
 -----------
-This Coordinated Release is dedicated to three remarkable team members 
-we lost in 2024 whose contributions have left an indelible mark on our work. 
+This coordinated release is dedicated to three remarkable team members 
+we lost in 2024, whose contributions have left an indelible mark on our work. 
 
 To `Tara Jensen <https://dtcenter.org/news/2024/04#3032>`_, 
 for her vision and leadership in creating METplus as well as her 
