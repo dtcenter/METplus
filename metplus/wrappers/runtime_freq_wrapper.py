@@ -10,12 +10,10 @@ Output Files:
 Condition codes: 0 for success, 1 for failure
 """
 
-import os
-
 from ..util import time_util
-from ..util import log_runtime_banner, get_lead_sequence
+from ..util import log_runtime_banner, get_lead_sequence, get_lead_sequence_groups
 from ..util import skip_time, getlist, get_start_and_end_times, get_time_prefix
-from ..util import time_generator, add_to_time_input
+from ..util import time_generator, add_to_time_input, format_lead_seq
 from ..util import sub_var_list, add_field_info_to_time_info
 from . import CommandBuilder
 
@@ -95,21 +93,20 @@ class RuntimeFreqWrapper(CommandBuilder):
 
         # if list of supported frequencies are set by wrapper,
         # warn and use default if frequency is not supported
-        if hasattr(self, 'RUNTIME_FREQ_SUPPORTED'):
-            if self.RUNTIME_FREQ_SUPPORTED == 'ALL':
-                return
+        if (not hasattr(self, 'RUNTIME_FREQ_SUPPORTED') or
+                self.RUNTIME_FREQ_SUPPORTED == 'ALL'):
+            return
 
-            if c_dict['RUNTIME_FREQ'] not in self.RUNTIME_FREQ_SUPPORTED:
-                err_msg = (f"{self.app_name.upper()}_RUNTIME_FREQ="
-                           f"{c_dict['RUNTIME_FREQ']} not supported.")
-                if hasattr(self, 'RUNTIME_FREQ_DEFAULT'):
-                    self.logger.warning(
-                        f"{err_msg} Using {self.RUNTIME_FREQ_DEFAULT}"
-                    )
-                    c_dict['RUNTIME_FREQ'] = self.RUNTIME_FREQ_DEFAULT
-                else:
-                    self.log_error(err_msg)
-                    return
+        if c_dict['RUNTIME_FREQ'] not in self.RUNTIME_FREQ_SUPPORTED:
+            err_msg = (f"{self.app_name.upper()}_RUNTIME_FREQ="
+                       f"{c_dict['RUNTIME_FREQ']} not supported.")
+            if hasattr(self, 'RUNTIME_FREQ_DEFAULT'):
+                self.logger.warning(
+                    f"{err_msg} Using {self.RUNTIME_FREQ_DEFAULT}"
+                )
+                c_dict['RUNTIME_FREQ'] = self.RUNTIME_FREQ_DEFAULT
+            else:
+                self.log_error(err_msg)
 
     def get_input_templates(self, c_dict, input_info=None):
         """!Read input templates from config.
@@ -252,7 +249,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         return self.run_at_time_once(time_info)
 
     def run_once_per_init_or_valid(self, custom):
-        self.logger.debug(f"Running once for each init/valid time")
+        self.logger.debug("Running once for each init/valid time")
 
         success = True
         for time_input in time_generator(self.config):
@@ -273,37 +270,74 @@ class RuntimeFreqWrapper(CommandBuilder):
             time_input['lead'] = '*'
             time_info = time_util.ti_calculate(time_input)
 
-            self.c_dict['ALL_FILES'] = self.get_all_files_from_leads(time_info)
+            lead_groups = self._get_leads_as_group(time_info)
+            if not self.run_once_per_lead_group(lead_groups, time_info):
+                success = False
+
+        return success
+
+    def _get_leads_as_group(self, time_input):
+        """!"""
+        lead_groups = get_lead_sequence_groups(self.config)
+        if lead_groups:
+            return lead_groups
+
+        use_wildcard = self.c_dict.get('WILDCARD_LEAD_IF_EMPTY')
+        lead_seq = get_lead_sequence(self.config, time_input,
+                                     wildcard_if_empty=use_wildcard)
+        return {'': lead_seq}
+
+    def _log_lead_group(self, label, lead_seq):
+        if not label:
+            return
+        self.logger.info(f"Processing lead group {label}:"
+                         f" {format_lead_seq(lead_seq, plural=False)}")
+
+    def run_once_per_lead_group(self, lead_groups, time_input):
+        success = True
+        for label, lead_seq in lead_groups.items():
+            self._log_lead_group(label, lead_seq)
+            time_input['label'] = label
+            self.c_dict['ALL_FILES'] = (
+                self.get_all_files_from_leads(time_input, lead_seq)
+            )
             if not self._check_input_files():
                 continue
 
             self.clear()
-            if not self.run_at_time_once(time_info):
+            if not self.run_at_time_once(time_input):
                 success = False
 
         return success
 
     def run_once_per_lead(self, custom):
-        self.logger.debug("Running once for forecast lead time")
+        # create input dict and only set 'now' item
+        time_input = {
+            'init': '*',
+            'valid': '*',
+        }
+        add_to_time_input(time_input,
+                          clock_time=self.config.getstr('config', 'CLOCK_TIME'),
+                          instance=self.instance, custom=custom)
+
+        # check if forecast lead groups are specified and
+        # run once per group of leads if they are
+        lead_groups = get_lead_sequence_groups(self.config)
+        if lead_groups:
+            self.logger.debug("Running once per forecast lead group")
+            time_input['lead'] = '*'
+            return self.run_once_per_lead_group(lead_groups, time_input)
+
+        self.logger.debug("Running once per forecast lead time")
         success = True
 
         lead_seq = get_lead_sequence(self.config, input_dict=None)
         for lead in lead_seq:
-            # create input dict and only set 'now' item
+            # add forecast lead to time input
+            time_input['lead'] = lead
+
             # create a new dictionary each iteration in case the function
             # that it is passed into modifies it
-            time_input = {}
-            add_to_time_input(time_input,
-                              clock_time=self.config.getstr('config',
-                                                            'CLOCK_TIME'),
-                              instance=self.instance,
-                              custom=custom)
-
-            # add forecast lead
-            time_input['lead'] = lead
-            time_input['init'] = '*'
-            time_input['valid'] = '*'
-
             time_info = time_util.ti_calculate(time_input)
 
             self.c_dict['ALL_FILES'] = self.get_all_files_for_lead(time_info)
@@ -317,7 +351,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         return success
 
     def run_once_for_each(self, custom):
-        self.logger.debug(f"Running once for each init/valid and lead time")
+        self.logger.debug("Running once for each init/valid and lead time")
 
         success = True
         for time_input in time_generator(self.config):
@@ -422,7 +456,11 @@ class RuntimeFreqWrapper(CommandBuilder):
                               instance=self.instance,
                               custom=custom)
 
-            lead_files = self.get_all_files_from_leads(time_input)
+            use_wildcard = self.c_dict.get('WILDCARD_LEAD_IF_EMPTY')
+            lead_seq = get_lead_sequence(self.config,
+                                         time_input,
+                                         wildcard_if_empty=use_wildcard)
+            lead_files = self.get_all_files_from_leads(time_input, lead_seq)
             all_files.extend(lead_files)
 
         return all_files
@@ -441,16 +479,12 @@ class RuntimeFreqWrapper(CommandBuilder):
             return False
         return True
 
-    def get_all_files_from_leads(self, time_input):
+    def get_all_files_from_leads(self, time_input, lead_seq):
         if not self.c_dict.get('FIND_FILES', True):
             return True
 
         lead_files = []
         # loop over all forecast leads
-        wildcard_if_empty = self.c_dict.get('WILDCARD_LEAD_IF_EMPTY', False)
-        lead_seq = get_lead_sequence(self.config,
-                                     time_input,
-                                     wildcard_if_empty=wildcard_if_empty)
         for lead in lead_seq:
             current_time_input = time_input.copy()
             current_time_input['lead'] = lead
@@ -508,10 +542,9 @@ class RuntimeFreqWrapper(CommandBuilder):
              @returns dictionary containing time_info dict and any relevant
              files with a key representing a description of that file
         """
+        var_list = [None]
         if self.c_dict.get('ONCE_PER_FIELD', False):
             var_list = sub_var_list(self.c_dict.get('VAR_LIST_TEMP'), time_info)
-        else:
-            var_list = [None]
 
         # create a dictionary for each field (var) with time_info and files
         file_dict_list = []
@@ -661,34 +694,11 @@ class RuntimeFreqWrapper(CommandBuilder):
         if not self.c_dict.get('ALL_FILES') or self.c_dict.get('ALL_FILES') is True:
             return all_input_files
 
-        if leads is None:
-            lead_loop = [None]
-        else:
-            lead_loop = leads
-
+        lead_loop = [None] if leads is None else leads
         for file_dict in self.c_dict['ALL_FILES']:
             for lead in lead_loop:
-                if lead is not None:
-                    current_time_info = time_info.copy()
-                    current_time_info['lead'] = lead
-                else:
-                    current_time_info = time_info
-
-                # compare time information for each input file
-                # add file to list of files to use if it matches
-                if not self.compare_time_info(current_time_info,
-                                              file_dict['time_info']):
-                    continue
-
-                for input_key in file_dict:
-                    # skip time info key
-                    if input_key == 'time_info':
-                        continue
-
-                    if input_key not in all_input_files:
-                        all_input_files[input_key] = []
-
-                    all_input_files[input_key].extend(file_dict[input_key])
+                self._add_files_that_match_time(all_input_files, time_info,
+                                                file_dict, lead)
 
         # return None if no matching input files were found
         if not all_input_files:
@@ -708,6 +718,36 @@ class RuntimeFreqWrapper(CommandBuilder):
             list_file_dict[identifier] = list_file_path
 
         return list_file_dict
+
+    def _add_files_that_match_time(self, all_input_files, time_info, file_dict, lead):
+        """!Check if time info of input files matches current time info. If it
+        is a match, add the file info to the all_input_files dictionary.
+
+        @param all_input_files dictionary to add file info if there is a time match
+        @param time_info dictionary of time info to compare to file times
+        @param file_dict dictionary containing file information including file times
+        @param lead forecast lead to check
+        """
+        current_time_info = time_info
+        if lead is not None:
+            current_time_info = time_info.copy()
+            current_time_info['lead'] = lead
+
+        # compare time information for each input file
+        # add file to list of files to use if it matches
+        if not self.compare_time_info(current_time_info,
+                                      file_dict['time_info']):
+            return
+
+        for input_key in file_dict:
+            # skip time info key
+            if input_key == 'time_info':
+                continue
+
+            if input_key not in all_input_files:
+                all_input_files[input_key] = []
+
+            all_input_files[input_key].extend(file_dict[input_key])
 
     def get_list_file_name(self, time_info, identifier):
         """! Build name of ascii file that contains a list of files to process.
@@ -730,7 +770,7 @@ class RuntimeFreqWrapper(CommandBuilder):
             valid = time_info['valid'].strftime('%Y%m%d%H%M%S')
 
         if time_info.get('lead', '*') == '*':
-            lead = 'ALL'
+            lead = time_info.get('label') if time_info.get('label') else 'ALL'
         else:
             lead = time_util.ti_get_seconds_from_lead(time_info['lead'],
                                                       time_info['valid'])

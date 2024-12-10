@@ -7,6 +7,7 @@ Contributor's Guide
    :numbered:
 
    coding_standards
+   utilities
    basic_components
    create_wrapper
    conda_env

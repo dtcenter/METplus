@@ -1,9 +1,16 @@
 Create Release Reference Branch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+.. note::
+  
+  These instructions only apply when creating the **first release candidate**
+  (rc1) development release. Skip this section for earlier beta (betaN) or later 
+  release candidate (rc2+) development releases.
+
+
 * Create a branch from the develop branch for the reference branch for the
   new official release and push it to GitHub. The branch name should match
-  the format main_vX.Y-ref where X.Y is the major/minor release number.
+  the format 'main_vX.Y-ref' where X.Y is the major/minor release number.
 
 .. parsed-literal::
 
@@ -19,17 +26,19 @@ Push Reference Branch to GitHub
 
     git push -u origin main_vX.Y-ref
 
-Pushing this branch to GitHub should trigger the GitHub Actions automation
-that runs all of the use cases and creates Docker data volumes with the output
+Pushing this branch to GitHub may trigger the GitHub Actions testing workflow
+to run all of the use cases and create a Docker data volumes with the output
 data. These data will be used to verify that any bugfixes applied to the
-main_vX.Y branch does not break any of existing logic.
+'main_vX.Y' branch does not break any of existing logic. If the workflow was
+not automatically triggered, use the GitHub workflow dispatch option to manually
+run the **Testing** workflow for the 'main_vX.Y-ref' branch.
 
 Monitor GitHub Actions Workflow
 """""""""""""""""""""""""""""""
 
 Navigate to https://github.com/dtcenter/MET/actions and verify that a
-*Testing* workflow was triggered on the *main_vX.Y-ref* branch.
+'Testing' workflow was triggered on the 'main_vX.Y-ref' branch.
 
 * Wait until the entire workflow has run successfully. The final job entitled
-  "Create Output Docker Data Volumes" should create Docker data volumes for
+  'Create Output Docker Data Volumes' should create Docker data volumes for
   each use case category on DockerHub (dtcenter/met-dev).

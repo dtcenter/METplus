@@ -11,12 +11,14 @@
   <mode_header_db_check>${METPLUS_MV_MODE_HEADER_DB_CHECK}</mode_header_db_check>
   <drop_indexes>${METPLUS_MV_DROP_INDEXES}</drop_indexes>
   <apply_indexes>${METPLUS_MV_APPLY_INDEXES}</apply_indexes>
-  <group>${METPLUS_MV_GROUP}</group>
+  
   <load_stat>${METPLUS_MV_LOAD_STAT}</load_stat>
   <load_mode>${METPLUS_MV_LOAD_MODE}</load_mode>
   <load_mtd>${METPLUS_MV_LOAD_MTD}</load_mtd>
   <load_mpr>${METPLUS_MV_LOAD_MPR}</load_mpr>
 
+  <group>${METPLUS_MV_GROUP}</group>
+  
   <folder_tmpl>{dirs}</folder_tmpl>
   <load_val>
     <field name="dirs">

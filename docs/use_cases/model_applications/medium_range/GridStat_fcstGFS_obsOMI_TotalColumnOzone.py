@@ -1,11 +1,16 @@
 """
 Grid-Stat: Using Python Embedding for Total Column Ozone
-================================================================================
+========================================================
 
-model_applications/medium_range/GridStat_fcstGFS_obsOMI
-_TotalColumnOzone.conf
+model_applications/medium_range/GridStat_fcstGFS_obsOMI_TotalColumnOzone.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -13,6 +18,12 @@ _TotalColumnOzone.conf
 # data in gridded format to a gridded forecast. The Ozone Monitoring Instrument (OMI)
 # data covers a 36 hour period and is compared to the average of the gridded forecast
 # files (all from the same initialization time). 
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 6.0
 
 ##############################################################################
 # Datasets

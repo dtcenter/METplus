@@ -71,9 +71,8 @@ def run_test_use_case(param, test_metplus_base):
     cmd += f" -c dir.OUTPUT_BASE={output_dir}"
     print("CMD:"+cmd)
     process = subprocess.Popen(cmd, shell=True)
-    process.communicate()[0]
-    returncode = process.returncode
-    if returncode:
+    process.communicate()
+    if process.returncode:
         failed_runs.append((cmd, out_dir))
 
 def handle_output_directories(output_base, output_base_prev):

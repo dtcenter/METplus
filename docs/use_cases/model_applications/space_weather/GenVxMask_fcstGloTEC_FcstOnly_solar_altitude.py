@@ -2,10 +2,15 @@
 GenVxMask: Solar Altitude
 =========================
 
-model_applications/space_weather/GenVxMask_fcstGloTEC_solar
-_altitude.conf
+model_applications/space_weather/GenVxMask_fcstGloTEC_solar_altitude.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Overview
 # --------
@@ -33,7 +38,6 @@ _altitude.conf
 # maximum of 90 degrees (directly overhead) at noon at latitudes near the equator.
 # [Source: https://sciencing.com/solar-altitude-23364.html]
 
-
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -42,6 +46,11 @@ _altitude.conf
 # This use case applies a solar altitude mask (solar altitude restriction) to the
 # input grid, creating a separate masked output file for each time level of the input file.
 
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 3.1
 
 ##############################################################################
 # Datasets
@@ -93,8 +102,8 @@ _altitude.conf
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/space_weather/GenVxMask_fcstGloTEC_FcstOnly_solar_altitude.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/space_weather/GenVxMask_fcstGloTEC_FcstOnly_solar_altitude.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/space_weather/GenVxMask_fcstGloTEC_FcstOnly_solar_altitude.conf
@@ -110,31 +119,12 @@ _altitude.conf
 # Running METplus
 # ---------------
 #
-# This use case can be run two ways:
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# 1) Passing in the use case config file then a user-specific system configuration file::
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/space_weather/GenVxMask_fcstGloTEC_FcstOnly_solar_altitude.conf /path/to/user_system.conf
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/space_weather/GenVxMask_fcstGloTEC_FcstOnly_solar_altitude.conf -c /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in the use case config file::
-#
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/space_weather/GenVxMask_fcstGloTEC_FcstOnly_solar_altitude.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
-#
-# **NOTE:** All of these items must be found under the [dir] section.
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output

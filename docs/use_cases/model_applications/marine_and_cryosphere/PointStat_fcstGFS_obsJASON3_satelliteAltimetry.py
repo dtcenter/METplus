@@ -6,6 +6,12 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAl
 
 """
 ##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
+##############################################################################
 # Scientific Objective
 # --------------------
 #
@@ -16,22 +22,33 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAl
 # of processing SARAL and Sentinel-6a datasets as well.
 
 ##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 6.0
+
+##############################################################################
 # Datasets
 # --------
 #
-# | **Forecast:** GFS forecast data (wind speed and sig. wave hgt)
+# **Forecast:** GFS forecast data (wind speed and sig. wave hgt)
 #
-# | **Observations:** JASON-3 satellite data
+# **Observations:** JASON-3 satellite data
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
 # ------------------
 #
 # This use case calls Python Embedding during PointStat, which is the only tool used. 
-#
 
 ##############################################################################
 # METplus Workflow
@@ -43,22 +60,21 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAl
 # The use case processes the following run time:
 #
 # | **Valid:** 2024-01-02 12Z 12hr lead
-# |
 
 ##############################################################################
 # METplus Configuration
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAltimetry.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAltimetry.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAltimetry.conf
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # METplus sets environment variables based on user settings in the METplus configuration file. 
 # See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details. 
@@ -85,7 +101,6 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAl
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAltimetry/read_satData.py
 
-
 ##############################################################################
 # Running METplus
 # ---------------
@@ -96,7 +111,6 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAl
 #    run_metplus.py /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAltimetry.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
-#
 
 ##############################################################################
 # Expected Output
@@ -108,10 +122,10 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAl
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
 # Output for this use case will be found in model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAltimetry (relative to **OUTPUT_BASE**)
-# and will contain the following files:
+# and will contain the following files::
 #
-# * point_stat_swh_120000L_20240102_120000V.stat
-# * point_stat_wind_120000L_20240102_120000V.stat
+#   * point_stat_swh_120000L_20240102_120000V.stat
+#   * point_stat_wind_120000L_20240102_120000V.stat
 
 ##############################################################################
 # Keywords
@@ -129,4 +143,3 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAl
 #
 #
 # sphinx_gallery_thumbnail_path = '_static/marine_and_cryosphere-PointStat_fcstGFS_obsJASON3_satelliteAltimetry.png'
-

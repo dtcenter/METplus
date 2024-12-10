@@ -14,8 +14,6 @@ on:
       - '.github/pull_request_template.md'
       - '.github/ISSUE_TEMPLATE/**'
       - '.github/labels/**'
-      - 'build_components/**'
-      - 'manage_externals/**'
       - '**/README.md'
       - '**/LICENSE.md'
 
@@ -30,8 +28,6 @@ on:
       - '.github/pull_request_template.md'
       - '.github/ISSUE_TEMPLATE/**'
       - '.github/labels/**'
-      - 'build_components/**'
-      - 'manage_externals/**'
       - '**/README.md'
       - '**/LICENSE.md'
 
@@ -63,6 +59,9 @@ jobs:
       run: |
         python3 -m pip install --upgrade pip
         python3 -m pip install -r internal/tests/pytests/requirements.txt
+
+    - name: Install ImageMagick convert
+      run: sudo apt install imagemagick
 
     - name: Run Pytests
       run: coverage run -m pytest internal/tests/pytests

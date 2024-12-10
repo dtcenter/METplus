@@ -107,7 +107,7 @@ class GridDiagWrapper(RuntimeFreqWrapper):
 
         return c_dict
 
-    def set_environment_variables(self, time_info):
+    def set_environment_variables(self, time_info=None):
         """!Set environment variables that will be read by the MET config file.
              Reformat as needed. Print list of variables that were set and
               their values.

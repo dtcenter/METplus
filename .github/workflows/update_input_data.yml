@@ -13,7 +13,7 @@ jobs:
       - run: |
           branch_name=$(echo ${{ github.event.inputs.branch || github.ref }} | cut -d/ -f3)
           echo "branch_name=$branch_name" >> "$GITHUB_ENV"
-      - uses: dtcenter/metplus-action-data-update@v2
+      - uses: dtcenter/metplus-action-data-update@v3
         with:
           docker_name: ${{ secrets.DOCKER_USERNAME }}
           docker_pass: ${{ secrets.DOCKER_PASSWORD }}

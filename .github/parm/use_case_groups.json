@@ -10,6 +10,11 @@
     "run": false
   },
   {
+    "category": "met_tool_wrapper",
+    "index_list": "65",
+    "run": false
+  },
+  {
     "category": "air_quality_and_comp",
     "index_list": "0",
     "run": false
@@ -55,9 +60,13 @@
     "run": false
   },
   {
+    "category": "fire",
+    "index_list": "0",
+    "run": false
+  },
+  {
     "category": "land_surface",
     "index_list": "0",
-    "disabled": true,
     "run": false
   },
   {
@@ -96,6 +105,13 @@
     "run": false
   },
   {
+    "category": "marine_and_cryosphere",
+    "index_list": "11",
+    "disabled": true,
+    "disabled_reason": "exceeds GitHub Actions environment limits",
+    "run": false
+  },
+  {
     "category": "medium_range",
     "index_list": "0",
     "run": false
@@ -107,7 +123,7 @@
   },
   {
     "category": "medium_range",
-      "index_list": "3-5,10",
+    "index_list": "3-5,10",
     "run": false
   },
   {
@@ -198,12 +214,12 @@
   {
     "category": "s2s_mid_lat",
     "index_list": "0-2",
-    "run": true
+    "run": false
   },
   {
     "category": "s2s_mid_lat",
     "index_list": "3",
-    "run": true
+    "run": false
   },
   {
     "category": "s2s_mjo",
@@ -223,6 +239,22 @@
   {
     "category": "s2s_stratosphere",
     "index_list": "0",
+    "run": false
+  },
+  {
+    "category": "s2s_stratosphere",
+    "index_list": "1",
+    "disabled": true,
+    "disabled_reason": "exceeds GitHub Actions environment limits",
+    "data_location": "v6.0/additional_data_UserScript_fcstGFS_obsERA_StratospherePolar.tgz",
+    "run": false
+  },
+  {
+    "category": "s2s_stratosphere",
+    "index_list": "2",
+    "disabled": true,
+    "disabled_reason": "exceeds GitHub Actions environment limits",
+    "data_location": "v6.0/additional_data_UserScript_fcstGFS_obsERA_StratosphereQBO.tgz",
     "run": false
   },
   {
@@ -269,7 +301,15 @@
     "category": "short_range",
     "index_list": "14",
     "disabled": true,
+    "disabled_reason": "need new RRFS data with new line types",
     "run": false
+  },
+  {
+    "category": "short_range",
+    "index_list": "15",
+    "disabled": true,
+    "disabled_reason": "exceeds GitHub Actions environment limits",
+    "run":false
   },
   {
     "category": "space_weather",

@@ -795,11 +795,16 @@ is equivalent to setting::
   [config]
   LEAD_SEQ = 0, 3, 6, 9, 12
 
+.. _grouping_forecast_leads:
+
+Grouping Forecast Leads
+"""""""""""""""""""""""
+
 Grouping forecast leads is possible as well using a special version of
-the :term:`LEAD_SEQ` variable for the
-**SeriesByLead Wrapper Only**.
-If :term:`SERIES_BY_LEAD_GROUP_FCSTS` = True, then groups of
-forecast leads can be defined to be evaluated together.
+the :term:`LEAD_SEQ` variable.
+If {APP_NAME}_RUNTIME_FREQ, e.g. SERIES_ANALYSIS_RUNTIME_FREQ, is set to
+**RUN_ONCE_PER_INIT_OR_VALID**,
+then groups of forecast leads can be defined to be evaluated together.
 Any number of these groups can be defined by setting
 configuration variables LEAD_SEQ_1, LEAD_SEQ_2, ..., :term:`LEAD_SEQ_\<n\>`.
 The value can be defined with a
@@ -807,12 +812,60 @@ comma-separated list of integers (currently only hours are supported here)
 or using :ref:`begin_end_incr`. Each :term:`LEAD_SEQ_\<n\>` must have a
 corresponding variable :term:`LEAD_SEQ_<n>_LABEL`. For example::
 
-
   [config]
   LEAD_SEQ_1 = 0, 6, 12, 18
   LEAD_SEQ_1_LABEL = Day1
   LEAD_SEQ_2 = begin_end_incr(24,42,6)
   LEAD_SEQ_2_LABEL = Day2
+
+In this example, the label **Day1** will be used for 0, 6, 12, 18 and
+the label **Day2** will be used for 24, 30, 36, 42.
+
+Forecast leads can also be grouped by defining a single list of forecast leads
+with :term:`LEAD_SEQ`, then specifying the size of each group using
+:term:`LEAD_SEQ_GROUP_SIZE`. For example::
+
+    [config]
+    LEAD_SEQ = 0, 12, 24, 36
+    LEAD_SEQ_GROUP_SIZE = 1d
+
+This configuration will create groups of forecast leads that each contain 1 day.
+This is the equivalent of setting::
+
+    [config]
+    LEAD_SEQ_1 = 0, 12
+    LEAD_SEQ_2 = 24, 36
+
+Each group will be labeled Group<INDEX> where <INDEX> is the group number.
+In this example, the label **Group1** will be used for 0, 12 and
+the label **Group2** will be used for 24, 36.
+The label can be referenced in filename templates using {label}.
+
+To change the text "Group" to something else, set :term:`LEAD_SEQ_GROUP_LABEL`.
+Setting::
+
+    LEAD_SEQ_GROUP_LABEL = Day
+
+will label the groups **Day1** and **Day2**.
+
+:term:`LEAD_SEQ_<n>_LABEL` can also be used to change the label for a specific
+group. From the previous example, setting::
+
+    LEAD_SEQ_2_LABEL = SecondDay
+
+will label the groups **Day1** and **SecondDay**.
+
+If the list of forecast leads contain a gap where there are no leads that fall
+within a given group, that group will be skipped. For example::
+
+    [config]
+    LEAD_SEQ = 0, 12, 48, 60
+    LEAD_SEQ_GROUP_SIZE = 1d
+    LEAD_SEQ_GROUP_LABEL = Day
+
+The label **Day1** will be used for 0, 12 and
+the label **Day3** will be used for 48, 60.
+Notice that a **Day2** label is not created.
 
 :term:`INIT_SEQ`
 """"""""""""""""
@@ -2084,6 +2137,96 @@ can be simplified as::
 
     INPUT_TEMPLATE = ensbegin_end_incr(1,8,1,2).nc
 
+
+.. _allow-missing-inputs:
+
+Allow Missing Inputs
+--------------------
+
+When any of the required input files for a given METplus run time are not found,
+an error is reported. In result, the entire METplus run fails.
+In some cases, users may expect a certain number of inputs to be unavailable
+and do not want the entire run to fail when this happens.
+
+The :term:`ALLOW_MISSING_INPUTS` config variable can be set to **True** to
+report a warning when required inputs are not found for a given run time.
+An error at the end of the METplus run will only be reported if the number
+of successful runs does not meet the value defined by :term:`INPUT_THRESH`.
+The value of :term:`INPUT_THRESH` should be a decimal number between 0 and 1.
+The default value is 0.0, so any missing input files in a run will still report
+an error unless this value is changed.
+
+The threshold is compared to the results of each item in the
+:ref:`Process_List`, so each wrapper listed in the **PROCESS_LIST** must meet
+the threshold to prevent an error.
+
+There are wrapper-specific versions of both :term:`ALLOW_MISSING_INPUTS` and
+:term:`INPUT_THRESH` for most of the wrappers,
+e.g. :term:`GRID_STAT_ALLOW_MISSING_INPUTS` and :term:`GRID_STAT_INPUT_THRESH`.
+Refer to the :ref:`python_wrappers` chapter or the :ref:`METplus_glossary`
+to see which variables are supported.
+
+**Example 1**::
+
+    [config]
+    PROCESS_LIST = RegridDataPlane, GridStat
+    VALID_TIME_FMT = %Y%m%d%H
+    VALID_BEG = 2024020301
+    VALID_BEG = 2024020310
+    VALID_INCREMENT = 1H
+    LEAD_SEQ = 0
+
+    ALLOW_MISSING_INPUTS = True
+    INPUT_THRESH = 0.6
+
+In this example, 10 valid times will be run, so there will be 10 calls to
+RegridDataPlane and 10 calls to GridStat. The input threshold is set
+to 60%, so if 6 or more of the RegridDataPlane runs *and*
+6 or more of the GridStat runs successfully find all of the required files,
+an error will not be reported. If 5 or fewer runs for either wrapper succeed,
+then an error will be reported.
+
+**Example 2**::
+
+
+    [config]
+    PROCESS_LIST = RegridDataPlane, GridStat
+    VALID_TIME_FMT = %Y%m%d%H
+    VALID_BEG = 2024020301
+    VALID_BEG = 2024020310
+    VALID_INCREMENT = 1H
+    LEAD_SEQ = 0
+
+    GRID_STAT_ALLOW_MISSING_INPUTS = True
+    INPUT_THRESH = 0.6
+
+In this case, only GridStat wrapper will allow missing inputs.
+At least 60% of the GridStat runs
+must successfully find the required input files to prevent an error.
+Any missing inputs for RegridDataPlane will result in an error.
+
+**Example 3**::
+
+
+    [config]
+    PROCESS_LIST = RegridDataPlane, GridStat
+    VALID_TIME_FMT = %Y%m%d%H
+    VALID_BEG = 2024020301
+    VALID_BEG = 2024020310
+    VALID_INCREMENT = 1H
+    LEAD_SEQ = 0
+
+    ALLOW_MISSING_INPUTS = True
+    REGRID_DATA_PLANE_INPUT_THRESH = 0.9
+    GRID_STAT_INPUT_THRESH = 0.6
+
+In this case, both GridStat and RegridDataPlane wrappers allow missing inputs,
+but the threshold to prevent an error differs between wrappers.
+At least 90% of the RegridDataPlane runs
+must successfully find the required input files to prevent an error.
+At least 60% of the GridStat runs
+must successfully find the required input files to prevent an error.
+Any missing inputs for RegridDataPlane will result in an error.
 
 .. _metplus-control-met:
 

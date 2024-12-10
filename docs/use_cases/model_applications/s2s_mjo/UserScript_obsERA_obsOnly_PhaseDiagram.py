@@ -2,11 +2,14 @@
 UserScript: Make a Phase Diagram plot from input RMM or OMI
 ===========================================================
 
-model_applications/
-s2s_mjo/
-UserScript_obsERA_obsOnly_PhaseDiagram.py
+model_applications/s2s_mjo/UserScript_obsERA_obsOnly_PhaseDiagram.py
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
 
 ##############################################################################
 # .. contents::
@@ -21,6 +24,12 @@ UserScript_obsERA_obsOnly_PhaseDiagram.py
 # Phase diagrams are used to Indices for MJO and QBO.  This use case produces a 
 # phase diagram using either OLR based MJO Index (OMI) or the Real-time Multivariate 
 # MJO index (RMM)
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 4.1
 
 ##############################################################################
 # Datasets

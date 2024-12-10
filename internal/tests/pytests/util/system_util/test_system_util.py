@@ -228,29 +228,6 @@ def test_write_list_to_file(tmp_path_factory):
     assert actual == '\n'.join(output_list) + '\n'
 
 
-@pytest.mark.util
-def test_prune_empty(tmp_path_factory):
-    prune_dir = tmp_path_factory.mktemp('prune')
-   
-    dir1 = prune_dir / 'empty_file_dir'
-    dir2 = prune_dir / 'not_empty_file_dir'
-    dir3 = prune_dir / 'empty_dir'
-    for d in [dir1, dir2, dir3]:
-        os.makedirs(d)
-    
-    # make two files, one empty one not.
-    open(os.path.join(dir1, 'empty.txt'), 'a').close()
-    file_with_content = os.path.join(dir2, 'not_empty.txt')
-    with open(file_with_content, 'w') as f:
-        f.write('Fee fi fo fum.')
-    
-    su.prune_empty(prune_dir, mock.Mock())
-    
-    assert not os.path.exists(dir1)
-    assert os.path.exists(file_with_content)
-    assert not os.path.exists(dir3)
-
-
 @pytest.mark.parametrize(
     'regex, expected', [
         (r'\d', ['bigfoot/123.txt', 'yeti/234.txt']),
