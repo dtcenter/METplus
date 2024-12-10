@@ -50,14 +50,22 @@ GridStat_fcstGloTEC_obsGloTEC_vx7.conf
 # Datasets
 # --------
 #
-# | **Forecast:** GloTEC Total Electron Content (TEC) model run without assimilation of any COSMIC-1 RO data
-# | **Observation:** GloTEC TEC model run that assimilates COSMIC-1 RO data
-# | **Location:** Click here for the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
-# | **Data source:** NOAA Space Weather Prediction Center (SWPC)
-# | **Data contact:** Dominic Fuller-Rowell (dominic.fuller-rowell@noaa.gov)
-# |
+# **Forecast:** GloTEC Total Electron Content (TEC) model run without assimilation of any COSMIC-1 RO data
 #
+# **Observation:** GloTEC TEC model run that assimilates COSMIC-1 RO data
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
+#
+# **Data source:** NOAA Space Weather Prediction Center (SWPC)
+#
+# **Data contact:** Dominic Fuller-Rowell (dominic.fuller-rowell@noaa.gov)
 
 ##############################################################################
 # METplus Use Case Contact
@@ -65,8 +73,6 @@ GridStat_fcstGloTEC_obsGloTEC_vx7.conf
 #
 # | **Author:** Jonathan L. Vigh (National Center for Atmospheric Research / Research Applications Laboratory / Joint Numerical Testbed)
 # | **Last modified:** 06 February 2020
-# |
-#
 
 ##############################################################################
 # METplus Components
@@ -80,6 +86,14 @@ GridStat_fcstGloTEC_obsGloTEC_vx7.conf
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (VALID_BEG):** 201503170005
+#
+# **End time (VALID_END):** 201503170015
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 600
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 0
+#
 # GridStat is the only tool called in this example. It processes the following
 # run times:
 #
@@ -88,8 +102,6 @@ GridStat_fcstGloTEC_obsGloTEC_vx7.conf
 # |
 # | **Init:** 2015-03-17 0015Z
 # | **Forecast lead:** 0
-# |
-#
 
 ##############################################################################
 # METplus Configuration

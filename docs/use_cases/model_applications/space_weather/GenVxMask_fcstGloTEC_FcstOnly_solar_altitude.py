@@ -56,17 +56,23 @@ model_applications/space_weather/GenVxMask_fcstGloTEC_solar_altitude.conf
 # Datasets
 # --------
 #
-# | **Input Grid:** GloTEC
+# **Forecast:** 
 #
-# | **Masks:** Solar altitude 
+# **Observation:** 
+#
+# **Climatology:** 
+#
+# **Input Grid:** GloTEC
+#
+# **Masks:** Solar altitude 
 #
 # | **Location:** All of the input data required for this use case can be found in the sample data tarball. 
 # | Click here to download: https://github.com/dtcenter/METplus/releases/download/v3.0/sample_data-space_weather-3.0.tgz
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 #
-# | **Data source:** NOAA Space Weather Prediction Center (SWPC)
-# | **Data contact:** Dominic Fuller-Rowell (dominic.fuller-rowell@noaa.gov)
+# **Data source:** NOAA Space Weather Prediction Center (SWPC)
 #
+# **Data contact:** Dominic Fuller-Rowell (dominic.fuller-rowell@noaa.gov)
 
 ##############################################################################
 # METplus Use Case Contact
@@ -74,7 +80,6 @@ model_applications/space_weather/GenVxMask_fcstGloTEC_solar_altitude.conf
 #
 # | **Author:** Jonathan L. Vigh (National Center for Atmospheric Research / Research Applications Laboratory / Joint Numerical Testbed)
 # | **Last modified:** 26 May 2020
-#
 
 ##############################################################################
 # METplus Components
@@ -85,6 +90,14 @@ model_applications/space_weather/GenVxMask_fcstGloTEC_solar_altitude.conf
 ##############################################################################
 # METplus Workflow
 # ----------------
+#
+# **Beginning time (VALID_BEG):** 201503170005
+#
+# **End time (VALID_END):** 201503170015
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 600
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 0
 #
 # GenVxMask is the only tool called in this example. It processes the following
 # run time:
