@@ -37,7 +37,7 @@ on:
       force_met_image:
         description: 'MET DockerHub repo to force run to use, e.g. met:11.1.0 or met-dev:feature_XYZ_name-PR. Leave this blank to determine repo automatically.'
       repository:
-        description: 'Repository that triggered workflow if triggered by external repo or title of workflow run if triggered via web interface'
+        description: 'Repository that triggered workflow (used by external repo triggering)'
       sha:
         description: 'Commit hash that triggered the event (used by external repo triggering)'
       ref:
