@@ -16,7 +16,7 @@ for her vision and leadership in creating METplus as well as her
 dedication, dogged determination, and mentorship that shaped its growth and 
 trajectory, leaving a legacy of innovation in the field of verification.
 
-To `Randy Bullock <https://dtcenter.org/news/2024/04#3032>`_, 
+To `Randy Bullock <https://dtcenter.org/news/2024/04#3031>`_, 
 whose verification libraries formed the basis of MET and 
 whose mathematical brilliance, passion for maps, grid projections, and 
 graphics enriched and inspired new capabilities.
