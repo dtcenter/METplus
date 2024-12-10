@@ -18,13 +18,13 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 # Scientific Objective
 # --------------------
 #
-# Many common modes of variability in the troposphere have stratospheric teloconnection
+# Many common modes of variability in the troposphere have stratospheric teleconnection
 # pathways.  This use case performs evaluation of the Quasi-biennial Oscillation (QBO),
-# one of the key players of stratosphereic varability, using several different calculations
-# and plots.  Specifically, phase diagrams can be used to compare the QBO plhase progression
+# one of the key players of stratospheric variability, using several different calculations
+# and plots.  Specifically, phase diagrams can be used to compare the QBO phase progression
 # between the model and observations.  Additionally, timeseries of U at 30 and 50mb are also
 # plotted to compare the speed of propagation of QBO in the model versus observations.  
-# Continuous statistics (ME, RMSE, etc.) are calculated for U at 30 and 50mb, and are also
+# Continuous statistics (ME, RMSE, etc.) are calculated for U at 30 and 50mb and are also
 # computed separately to evaluate QBO in the easterly phase versus the westerly phase.
 
 ##############################################################################
