@@ -12,12 +12,6 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_PhaseDiagram.py
 #   :backlinks: none
 
 ##############################################################################
-# .. contents::
-#   :depth: 1
-#   :local:
-#   :backlinks: none
-
-##############################################################################
 # Scientific Objective
 # --------------------
 #
