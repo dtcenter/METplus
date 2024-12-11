@@ -41,7 +41,8 @@ Single configuration variable overrides should match the format
 **<SECTION>.<VARIABLE>=<VALUE>** where:
 
 * **<SECTION>** is the section within the METplus configuration.
-  This is typically *config* unless :ref:`process_list_instance_names` are used
+  This is typically *config* unless :ref:`process_list_instance_names`
+  or :ref:`user_env_vars` are used
 * **<VARIABLE>** is the name of the configuration variable to set
 * **<VALUE>** is the value to set
 
@@ -239,7 +240,7 @@ METPLOTPY_BASE (user_env_vars)
 
 This is the path to the location where METplotpy is installed.
 The variable is found under the [user_env_vars] section heading, which
-will set it as an environment variable. See :ref:`user_defined_config`
+will set it as an environment variable. See :ref:`user_env_vars`
 for more information on the [user_env_vars] section.
 This variable is referenced in some METplotpy functions.
 It is not necessary to set this variable if METplotpy will not be used or if
@@ -2937,7 +2938,7 @@ The values must match the format of the variables in the default MET
 configuration file with a semi-colon after single values and arrays and curly
 braces around dictionaries.
 
-.. _user_defined_config:
+.. _user_env_vars:
 
 User Environment Variables
 ==========================
