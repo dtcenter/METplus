@@ -59,7 +59,7 @@ The settings of a METplus wrappers run are controlled by METplus
 configuration variables.
 
 All variables in the :ref:`default_configuration_file` are read first.
-Variables in the :ref:`default_configuration_file` can be changes from the
+Variables in the :ref:`default_configuration_file` can be changed from the
 default values to be applied to every run.
 
 Additional configuration variables are set using command line arguments to the
@@ -72,7 +72,7 @@ One or more :ref:`use_case_configuration_files` define settings for a given
 METplus run.
 Users often create a :ref:`user_configuration_file` to store settings specific
 to the system on which they are running and their personal preferences.
-It is recommended to provided a user configuration file *after* any use case
+It is recommended to provide a user configuration file *after* any use case
 specific configuration files in the command line argument list
 (see :ref:`order_matters`).
 
@@ -83,6 +83,7 @@ How to Set a Single Config
 
 Single configuration variable overrides should match the format
 **<SECTION>.<VARIABLE>=<VALUE>** where:
+
 * **<SECTION>** is the section within the METplus configuration.
   This is typically *config* unless :ref:`process_list_instance_names` are used
 * **<VARIABLE>** is the name of the configuration variable to set
@@ -90,7 +91,7 @@ Single configuration variable overrides should match the format
 
 Example::
 
-    config.OUTPUT_BASE = /my/output/dir
+    config.OUTPUT_BASE=/my/output/dir
 
 This will set the value of the variable **OUTPUT_BASE** of the **[config]**
 section to **/my/output/dir**.
@@ -106,7 +107,7 @@ will override the previous value. This means that the last value will be used.
 
 Example:
 
-If a .conf file called *my_lead.conf* contains::
+If a file named *my_lead.conf* contains::
 
     [config]
     LEAD_SEQ = 12H
@@ -115,13 +116,13 @@ and the conf file is provided before the single config override::
 
     run_metplus.py my_lead.conf config.LEAD_SEQ=6H
 
-then the value of **[config] LEAD_SEQ** will be 6H.
+then the value of **[config] LEAD_SEQ** will be **6H**.
 
 However, if the conf file is provided after the single config override::
 
     run_metplus.py config.LEAD_SEQ=6H my_lead.conf
 
-then the value of **[config] LEAD_SEQ** will be 12H.
+then the value of **[config] LEAD_SEQ** will be **12H**.
 
 .. _default_configuration_file:
 
