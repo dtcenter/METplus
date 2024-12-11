@@ -53,6 +53,20 @@ Example::
 This will set the value of the variable **OUTPUT_BASE** of the **[config]**
 section to **/my/output/dir**.
 
+Version 6.1.0 added support for setting a list value in single config overrides.
+
+Example::
+
+    config.LEAD_SEQ=6H,12H
+
+This will set the value of **[config] LEAD_SEQ** to
+a list containing **6H** and **12H**.
+
+If spaces are present in the value, then quotation marks must be used::
+
+    config.LEAD_SEQ="6H, 12H"
+
+
 .. _order_matters:
 
 Order Matters
