@@ -123,10 +123,21 @@ model_applications/space_weather/GenVxMask_fcstGloTEC_solar_altitude.conf
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # None. GenVxMask does not use configuration files.
+
+##############################################################################
+# Python Embedding
+# ----------------
 #
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus

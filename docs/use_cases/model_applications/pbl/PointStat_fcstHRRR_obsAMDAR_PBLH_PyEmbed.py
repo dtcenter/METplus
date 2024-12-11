@@ -38,7 +38,7 @@ model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed.conf
 #
 # **Forecast:** HRRR, RRFS (reads the "HPBL" grib2 field)
 #
-# ** Observation:** AMDAR hourly 1-d netcdf files
+# **Observation:** AMDAR hourly 1-d netcdf files
 #
 # **Climatology:** None
 #
@@ -53,15 +53,7 @@ model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed.conf
 
 ##############################################################################
 # METplus Components
-# --------------------
-#
-# **Beginning time (INIT_BEG):** 2022070108
-#
-# **End time (INIT_END):** 2022070108
-#
-# **Increment between beginning and end times (INIT_INCREMENT):** 1H
-#
-# **Sequence of forecast leads to process (LEAD_SEQ):** 12
+# ------------------
 # 
 # This use case utilizes GenVxMask and the METplus PointStat tool to compare PBLH 
 # from AMDAR data to model output. The python embedding script "calc_amdar_pblh.py" 
@@ -71,6 +63,15 @@ model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed.conf
 ##############################################################################
 # METplus Workflow
 # ----------------
+#
+# **Beginning time (INIT_BEG):** 2022070108
+#
+# **End time (INIT_END):** 2022070108
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 1H
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 12
+#
 # GenVxMask and PointStat are called in this example. The following run times are processed:
 #
 # | **Valid:** 2022-07-01_20Z
@@ -79,7 +80,7 @@ model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed.conf
 # GenVxMask input file is a two-row text file (met_mask_AIRPORT.txt): row 1: AIRPORT row 2: lat lon
 # GenVxMask output file is a netcdf file w/ geographic radius part of the file name (met_mask_AIRPORT_100km.nc)
 # Input file provided in this example: (met_mask_DENVER.txt): row 1: DENVER  row2: 39.856 -104.6764
-
+#
 # PointStat is run with Python embedding (calc_amdar_pblh.py).
 
 ##############################################################################
@@ -105,23 +106,30 @@ model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed.conf
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. note:: See the :ref:`PointStat MET Configuration<point-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# .. dropdown:: PointStatConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/PointStatConfig_wrapped
-#
+#   .. literalinclude:: ../../../../parm/met_config/PointStatConfig_wrapped
 
 ##############################################################################
 # Python Embedding
-# -----------------
+# ----------------
 #
-# This use case uses a Python embedding script to read input data
+# This use case uses a Python embedding script to read input data.
 #
-# parm/use_cases/model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed/calc_amdar_pblh.py
+# .. dropdown:: parm/use_cases/model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed/calc_amdar_pblh.py
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed/calc_amdar_pblh.py
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed/calc_amdar_pblh.py
 #
+# For more information on the basic requirements to utilize Python Embedding in METplus, 
+# please refer to the MET User’s Guide section on
+# `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_.
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus

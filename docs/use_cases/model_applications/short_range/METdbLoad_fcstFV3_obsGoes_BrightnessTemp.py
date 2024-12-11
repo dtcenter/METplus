@@ -82,6 +82,12 @@ model_applications/short_range/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 
 ##############################################################################
+# MET Configuration
+# -----------------
+#
+# There are no MET tools used in this use case.
+
+##############################################################################
 # XML Configuration
 # -----------------
 #
@@ -95,8 +101,22 @@ model_applications/short_range/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 #     section of the User's Guide for more information on the values
 #     substituted in the file below:
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/METdbLoad/METdbLoadConfig.xml
+# .. dropdown:: METdbLoadConfig.xml
+#
+#   .. highlight:: bash
+#   .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/METdbLoad/METdbLoadConfig.xml
+
+##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus

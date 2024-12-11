@@ -82,31 +82,29 @@ model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra.py
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra.conf
-#
 
 #############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # There are no MET tools used in this use case.
-#
 
 ##############################################################################
 # Python Embedding
 # ----------------
 #
-# There is no python embedding in this use case
-#
+# There is no Python embedding in this use case.
 
 ##############################################################################
-# Python Scripts
-# ----------------
+# User Scripting
+# --------------
 #
-# This use case uses a Python script to perform plotting
+# This use case uses a Python script to perform plotting.
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra/cross_spectra_plot.py
+# .. dropdown:: parm/use_cases/model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra/cross_spectra_plot.py
 #
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra/cross_spectra_plot.py
 
 ##############################################################################
 # Running METplus
