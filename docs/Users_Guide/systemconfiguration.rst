@@ -4,51 +4,7 @@
 Configuration
 *************
 
-This chapter is a guide on configuring METplus Wrappers.
-
-Config Best Practices / Recommendations
-=======================================
-
-* Set the log level (:ref:`log_level`) to an appropriate level. Setting the
-  value to DEBUG will generate more information in the log output. Users are
-  encouraged to run with DEBUG when getting started with METplus or when
-  investigating unexpected behavior.
-
-* Set :term:`SCRUB_STAGING_DIR` to False to preserve intermediate files to
-  help with debugging issues.
-
-* Review the log files to verify that all of the processes ran cleanly.
-  Some log output will be written to the screen, but the log files
-  contain more information, such as log output from the MET tools.
-
-* The order in which METplus config files are read by run_metplus.py matters.
-  Each subsequent config file defined on the command line will override any
-  values defined in an earlier config file. It is recommended to create a
-  :ref:`user_configuration_file` and pass it to the script last to guarantee
-  that those values are used in case any variables are accidentally defined
-  in multiple conf files.
-
-* Check the metplus_final.conf (see :ref:`metplus_final_conf`) file to
-  verify that all variables are set to the expected value,
-  as it contains all the key-values that were specified.
-
-* If configuring METplus Wrappers in a common location for multiple users:
-
-  * It is recommended that the values for **MET_INSTALL_DIR** and
-    **INPUT_BASE** are changed to valid values in the
-    :ref:`default_configuration_file`.
-
-  * It is recommended to leave **OUTPUT_BASE** set to the default value in
-    the :ref:`default_configuration_file`. This prevents multiple users from
-    accidentally writing to the same output directory.
-
-* If obtaining the METplus Wrappers with the intention of updating
-  the same local directory as new versions become available,
-  it is recommended to leave all default values in the
-  :ref:`default_configuration_file` unchanged and set them in a
-  :ref:`user_configuration_file` that is passed into every call to
-  run_metplus.py. This is done to avoid the need to change the default values
-  after every update.
+This chapter describes how to configure METplus Wrappers.
 
 .. _how_to_configure:
 
@@ -123,6 +79,52 @@ However, if the conf file is provided after the single config override::
     run_metplus.py config.LEAD_SEQ=6H my_lead.conf
 
 then the value of **[config] LEAD_SEQ** will be **12H**.
+
+
+Config Best Practices / Recommendations
+=======================================
+
+* Set the log level (:ref:`log_level`) to an appropriate level. Setting the
+  value to DEBUG will generate more information in the log output. Users are
+  encouraged to run with DEBUG when getting started with METplus or when
+  investigating unexpected behavior.
+
+* Set :term:`SCRUB_STAGING_DIR` to False to preserve intermediate files to
+  help with debugging issues.
+
+* Review the log files to verify that all of the processes ran cleanly.
+  Some log output will be written to the screen, but the log files
+  contain more information, such as log output from the MET tools.
+
+* The order in which METplus config files are read by run_metplus.py matters.
+  Each subsequent config file defined on the command line will override any
+  values defined in an earlier config file. It is recommended to create a
+  :ref:`user_configuration_file` and pass it to the script last to guarantee
+  that those values are used in case any variables are accidentally defined
+  in multiple conf files.
+
+* Check the metplus_final.conf (see :ref:`metplus_final_conf`) file to
+  verify that all variables are set to the expected value,
+  as it contains all the key-values that were specified.
+
+* If configuring METplus Wrappers in a common location for multiple users:
+
+  * It is recommended that the values for **MET_INSTALL_DIR** and
+    **INPUT_BASE** are changed to valid values in the
+    :ref:`default_configuration_file`.
+
+  * It is recommended to leave **OUTPUT_BASE** set to the default value in
+    the :ref:`default_configuration_file`. This prevents multiple users from
+    accidentally writing to the same output directory.
+
+* If obtaining the METplus Wrappers with the intention of updating
+  the same local directory as new versions become available,
+  it is recommended to leave all default values in the
+  :ref:`default_configuration_file` unchanged and set them in a
+  :ref:`user_configuration_file` that is passed into every call to
+  run_metplus.py. This is done to avoid the need to change the default values
+  after every update.
+
 
 .. _default_configuration_file:
 
