@@ -30,21 +30,28 @@ model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicE
 # Datasets
 # --------
 #
-#
 # | **Forecast:** Adeck
 # |     /path/to/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample/a{basin}{cyclone}{init?fmt=%Y}.dat
+#
 # | **Observation:** Bdeck
 # |     /path/to/{TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample/b{basin}{cyclone}{init?fmt=%Y}.dat
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | The tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 #
-# | **Data Source:** NHC ftp.noaa.gov/atcf
-# |
+# **Data Source:** NHC ftp.noaa.gov/atcf
 
 ##############################################################################
 # METplus Workflow
 # ----------------
+#
+# **Beginning time (INIT_BEG):** 202108
 #
 # The following tools are used for each run time:
 #
@@ -54,7 +61,6 @@ model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicE
 # To generate TCPairs output, this example loops by initialization time for every 6 hour period that is available
 # in the data set between 2021082500 and 2021083000. Then TCStat filters the TCPairs output based on user criteria
 # (e.g. storm characteristics in this use case).
-#
 
 ##############################################################################
 # METplus Components

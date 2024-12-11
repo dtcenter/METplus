@@ -28,10 +28,15 @@ model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_ExtraTC.conf
 # Datasets
 # --------
 #
+# [UPDATE_SECTION_CONTENT]
 #
-#  * Forecast dataset: ADeck modified-ATCF tropical cyclone data
-#  * Observation dataset: BDeck modified-ATCF "best-track" tropical cyclone data
+# **Forecast:** ADeck modified-ATCF tropical cyclone data
 #
+# **Observation:** BDeck modified-ATCF "best-track" tropical cyclone data
+#
+# **Climatology:** 
+#
+# **Location:** 
 
 ##############################################################################
 # METplus Components
@@ -45,13 +50,14 @@ model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_ExtraTC.conf
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (INIT_BEG):** 201503
+#
 # The following tools are used for each run time:
 #
 # TCPairs
 #
 # To generate TCPairs output, this example loops by initialization time for every 6 hour period that is available
 # in the data set for 20150301. The output is then used to generate the plot of all cyclone tracks.
-#
 
 ##############################################################################
 # METplus Configuration

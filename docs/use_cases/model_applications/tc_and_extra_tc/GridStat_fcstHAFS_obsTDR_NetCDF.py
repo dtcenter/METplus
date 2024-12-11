@@ -30,15 +30,18 @@ model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.conf
 # Datasets
 # --------
 #
-# | **Forecast:** HAFS zonal wind 
-# | **Observation:** HRD TDR merged_zonal_wind
+# **Forecast:** HAFS zonal wind
+#
+# **Observation:** HRD TDR merged_zonal_wind
+#
+# **Climatology:**
 #
 # | **Location of Model forecast and Dropsonde files:** All of the input data required for this use case can be found in the sample data tarball. Click `here <https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data>`_ to download.
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
 # | **TDR Data Source:** Hurricane Research Division: Contact: Paul Reasor Email: paul.reasor@noaa.gov  
 # | The data dataset used in the use case is a subset of the Merged Analysis (v2d_combined_xy_rel_merged_ships.nc).
-# | Thanks to HRD for providing us the dataset
+# | Thanks to HRD for providing us the dataset.
 
 ##############################################################################
 # METplus Components
@@ -53,6 +56,14 @@ model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.conf
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (VALID_BEG):** 2019082912
+#
+# **End time (VALID_END):** 2019082912
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 21600
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 0,6,12,18
+#
 # The use case runs the python embedding scripts (GridStat_fcstHAFS_obsTDR_NetCDF/read_tdr.py: to read the TDR data) and run Grid-Stat (compute statistics against HAFS model output, in height coordinates), called in this example.
 #
 # It processes the following run times: Valid at  2019-08-29 12Z
@@ -62,7 +73,6 @@ model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.conf
 # The mission number (e.g CUSTOM_LOOP_LIST = 190829H1)
 #
 # Height level (for TDR: OBS_VERT_LEVEL_KM = 2, HAFS: FCST_VAR1_LEVELS =  "(0,1,*,*)")
-#
 
 ##############################################################################
 # METplus Configuration

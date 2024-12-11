@@ -47,12 +47,24 @@ model_applications/unstructured_grids/StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEm
 # Datasets
 # --------
 #
+## [UPDATE_SECTION_CONTENT]
 #
-# | **Data source:** UK MET Office LFRic forecast files in UGRID NetCDF format and observations in ASCII format
+# **Forecast:** 
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | The tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
-# |
+# **Observation:** 
+#
+# **Climatology:** 
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
+#
+# **Data source:** UK MET Office LFRic forecast files in UGRID NetCDF format and observations in ASCII format
 
 ##############################################################################
 # METplus Components
@@ -66,12 +78,19 @@ model_applications/unstructured_grids/StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEm
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (VALID_BEG):** 2021050500
+#
+# **End time (VALID_END):** 2021050500
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 6H
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 0
+#
 # StatAnalysis is the only tool called in this example. It processes the following
 # run times:
 #
 # | **Valid:** 2021-05-05_00Z  
 # | **Forecast lead:** 12 hour
-# |
 
 ##############################################################################
 # METplus Configuration
