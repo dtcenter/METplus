@@ -41,16 +41,18 @@ class GenVxMaskWrapper(LoopTimesWrapper):
         c_dict['ALLOW_MULTIPLE_FILES'] = False
 
         # input and output files
-        c_dict['INPUT_DIR'] = self.config.getdir('GEN_VX_MASK_INPUT_DIR', '')
-        c_dict['INPUT_TEMPLATE'] = self.config.getraw('config',
-                                                      'GEN_VX_MASK_INPUT_TEMPLATE')
+        self.get_input_templates(c_dict, {
+            'OBS': {'prefix': 'GEN_VX_MASK', 'required': True},
+        })
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('GEN_VX_MASK_OUTPUT_DIR', '')
-        c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('config',
-                                                       'GEN_VX_MASK_OUTPUT_TEMPLATE')
+        c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('config', 'GEN_VX_MASK_OUTPUT_TEMPLATE')
 
-        c_dict['MASK_INPUT_DIR'] = self.config.getdir('GEN_VX_MASK_INPUT_MASK_DIR',
-                                                      '')
+        # Cannot use get_input_templates to set mask dir/template because
+        # config variable names do not end with INPUT_DIR and INPUT_TEMPLATE.
+        # Also, mask templates are looped over for separate calls to gen_vx_mask
+        # instead of passing all files from template to a single command.
+        c_dict['MASK_INPUT_DIR'] = self.config.getdir('GEN_VX_MASK_INPUT_MASK_DIR', '')
         c_dict['MASK_INPUT_TEMPLATES'] = getlist(
             self.config.getraw('config', 'GEN_VX_MASK_INPUT_MASK_TEMPLATE')
         )
@@ -58,7 +60,6 @@ class GenVxMaskWrapper(LoopTimesWrapper):
         if not c_dict['MASK_INPUT_TEMPLATES']:
             self.log_error("Must set GEN_VX_MASK_INPUT_MASK_TEMPLATE to run GenVxMask wrapper")
 
-        # optional arguments
         c_dict['COMMAND_OPTIONS'] = self.parse_command_options_list(
             self.config.getraw('config', 'GEN_VX_MASK_OPTIONS')
         )
@@ -74,20 +75,9 @@ class GenVxMaskWrapper(LoopTimesWrapper):
                            "be equal to the number of items in GEN_VX_MASK_OPTIONS")
 
         # handle window variables [GEN_VX_MASK_]FILE_WINDOW_[BEGIN/END]
-        c_dict['FILE_WINDOW_BEGIN'] = \
-          self.config.getseconds('config', 'GEN_VX_MASK_FILE_WINDOW_BEGIN',
-                                 self.config.getseconds('config',
-                                                        'FILE_WINDOW_BEGIN', 0))
-        c_dict['FILE_WINDOW_END'] = \
-          self.config.getseconds('config', 'GEN_VX_MASK_FILE_WINDOW_END',
-                                 self.config.getseconds('config',
-                                                        'FILE_WINDOW_END', 0))
+        # or separately for input file (OBS) or mask file (MASK)
+        self.handle_file_window_variables(c_dict, data_types=['OBS', 'MASK'])
 
-        # use the same file windows for input and mask files
-        c_dict['MASK_FILE_WINDOW_BEGIN'] = c_dict['FILE_WINDOW_BEGIN']
-        c_dict['MASK_FILE_WINDOW_END'] = c_dict['FILE_WINDOW_END']
-        # skip RuntimeFreq input file logic - remove once integrated
-        c_dict['FIND_FILES'] = False
         return c_dict
 
     def parse_command_options_list(self, options_text):
@@ -127,55 +117,33 @@ class GenVxMaskWrapper(LoopTimesWrapper):
         return fixed_options
 
     def get_command(self):
-        cmd = self.app_path
-
-        # don't run if no input or output files were found
-        if not self.infiles:
-            self.log_error("No input files were found")
-            return
-
-        if not self.outfile:
-            self.log_error("No output file specified")
-            return
-
-        # add input files
-        for infile in self.infiles:
-            cmd += ' ' + infile
-
-        # add output path
-        out_path = self.get_output_path()
-        cmd += ' ' + out_path
-
-        # add arguments
-        cmd += ' ' + self.args
-
-        # add verbosity
-        cmd += ' -v ' + self.c_dict['VERBOSITY']
-        return cmd
+        return (
+            f"{self.app_path} {' '.join(self.infiles)} {self.get_output_path()}"
+            f"{' ' + ' '.join(self.args) if self.args else ''}"
+            f" -v {self.c_dict['VERBOSITY']}"
+        )
 
     def run_at_time_once(self, time_info):
-        """!Loop over list of mask templates and call GenVxMask for each, adding the
-            corresponding command line arguments for each call
-            Args:
-                @param time_info time dictionary for current runtime
-                @returns None
+        """!Loop over list of mask templates and call GenVxMask for each,
+         adding the corresponding command line arguments for each call
+
+        @param time_info time dictionary for current runtime
+        @returns None
         """
         # set environment variables
         # there is no config file, so using CommandBuilder implementation
         self.set_environment_variables(time_info)
 
-        # loop over mask templates and command line args,
-        self.run_count += 1
+        # loop over mask templates and command line args
         temp_file = ''
         for index, (mask_template, cmd_args) in enumerate(zip(self.c_dict['MASK_INPUT_TEMPLATES'],
                                                               self.c_dict['COMMAND_OPTIONS'])):
 
             # set mask input template and command line arguments
             self.c_dict['MASK_INPUT_TEMPLATE'] = mask_template
-            self.args = do_string_sub(cmd_args, **time_info)
+            self.args = [do_string_sub(cmd_args, **time_info)]
 
             if not self.find_input_files(time_info, temp_file):
-                self.missing_input_count += 1
                 return
 
             # break out of loop if this is the last iteration to
@@ -212,17 +180,16 @@ class GenVxMaskWrapper(LoopTimesWrapper):
         # clear out input file list
         self.infiles.clear()
 
+        # if temp file is set, use that as input
+        input_path = temp_file
+
         # if temp file is not set, this is the first iteration, so read input file
         if not temp_file:
-            input_path = self.find_data(time_info)
+            input_path = self.c_dict['ALL_FILES'][0].get('OBS', [''])[0]
 
             # return if file was not found
             if not input_path:
                 return None
-
-        # if temp file is set, use that as input
-        else:
-            input_path = temp_file
 
         # find mask file, using MASK_INPUT_TEMPLATE
         mask_file = self.find_data(time_info, data_type='MASK')
