@@ -47,13 +47,11 @@ model_applications/unstructured_grids/StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEm
 # Datasets
 # --------
 #
-# [UPDATE_SECTION_CONTENT]
+# **Forecast:** [UPDATE_SECTION_CONTENT]
 #
-# **Forecast:** 
+# **Observation:** [UPDATE_SECTION_CONTENT]
 #
-# **Observation:** 
-#
-# **Climatology:** 
+# **Climatology:** [UPDATE_SECTION_CONTENT]
 #
 # **Location:** All of the input data required for this use case can be 
 # found in a sample data tarball. Each use case category will have 

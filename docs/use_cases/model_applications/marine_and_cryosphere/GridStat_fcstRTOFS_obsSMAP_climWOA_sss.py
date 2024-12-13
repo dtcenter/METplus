@@ -79,7 +79,7 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.
 #
 # **End time (VALID_END):** 20210502
 #
-# **Increment between beginning and end times (VALID_INCREMENT):** 20210502
+# **Increment between beginning and end times (VALID_INCREMENT):** 1M
 #
 # **Sequence of forecast leads to process (LEAD_SEQ):** 24
 #

@@ -28,6 +28,12 @@ model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar.co
 # Datasets
 # --------
 #
+# **Forecast:** [UPDATE_SECTION_CONTENT]
+#
+# **Observation:** [UPDATE_SECTION_CONTENT]
+#
+# **Climatology:** [UPDATE_SECTION_CONTENT]
+#
 # **Input:** Python Embedding script/file, HYCOM observation file, coordinate system weight files (optional)
 #
 # **Location:** All of the input data required for this use case can be 

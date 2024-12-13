@@ -29,6 +29,12 @@ model_applicaitons/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelativ
 # Datasets
 # --------
 #
+# **Forecast:** [UPDATE_SECTION_CONTENT]
+#
+# **Observation:** [UPDATE_SECTION_CONTENT]
+#
+# **Climatology:** [UPDATE_SECTION_CONTENT]
+#
 # Relevant information about the datasets that would be beneficial include:
 #
 #  * MODE Time Domain Forecast dataset: GFS
@@ -54,9 +60,9 @@ model_applicaitons/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelativ
 # METplus Workflow
 # ----------------
 #
-# **Beginning time (INIT_BEG):** 021071200
+# **Beginning time (INIT_BEG):** 2021071200
 #
-# **End time (INIT_END):** 021071212
+# **End time (INIT_END):** 2021071212
 #
 # **Increment between beginning and end times (INIT_INCREMENT):** 6H
 #

@@ -28,15 +28,13 @@ model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_ExtraTC.conf
 # Datasets
 # --------
 #
-# [UPDATE_SECTION_CONTENT]
-#
 # **Forecast:** ADeck modified-ATCF tropical cyclone data
 #
 # **Observation:** BDeck modified-ATCF "best-track" tropical cyclone data
 #
-# **Climatology:** 
+# **Climatology:** [UPDATE_SECTION_CONTENT]
 #
-# **Location:** 
+# **Location:** [UPDATE_SECTION_CONTENT]
 
 ##############################################################################
 # METplus Components

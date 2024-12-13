@@ -74,13 +74,13 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsOSTIA_iceCover.co
 # METplus Workflow
 # ----------------
 #
-# **Beginning time (VALID_BEG):** 20190201
+# **Beginning time (VALID_BEG):** 20210305
 #
-# **End time (VALID_END):** 20190201
+# **End time (VALID_END):** 20210305
 #
-# **Increment between beginning and end times (VALID_INCREMENT):** 86400
+# **Increment between beginning and end times (VALID_INCREMENT):** 1M
 #
-# **Sequence of forecast leads to process (LEAD_SEQ):** None
+# **Sequence of forecast leads to process (LEAD_SEQ):** 0
 #
 # GridStat is the only tool called in this example. This use case will pass in the two
 # hemispheres via a custom loop list, with both the observation and forecast gridded data
