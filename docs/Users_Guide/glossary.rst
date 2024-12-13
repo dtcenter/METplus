@@ -8887,6 +8887,11 @@ METplus Configuration Glossary
 
      | *Used by:* SeriesAnalysis
 
+   SERIES_ANALYSIS_OUTPUT_STATS_GRAD
+     Specify the value for 'output_stats.grad' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
    MODE_PS_PLOT_FLAG
      Specify the value for 'ps_plot_flag' in the MET configuration file for MODE.
 
@@ -13267,3 +13272,23 @@ METplus Configuration Glossary
      See :term:`INPUT_THRESH` for details.
 
      | *Used by:* WaveletStat
+
+   GRID_STAT_GRADIENT_DX
+     Specify the value for 'gradient.dx' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_GRADIENT_DY
+     Specify the value for 'gradient.dy' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   SERIES_ANALYSIS_GRADIENT_DX
+     Specify the value for 'gradient.dx' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_GRADIENT_DY
+     Specify the value for 'gradient.dy' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
