@@ -57,16 +57,11 @@ class GenVxMaskWrapper(LoopTimesWrapper):
 
         if not c_dict['MASK_INPUT_TEMPLATES']:
             self.log_error("Must set GEN_VX_MASK_INPUT_MASK_TEMPLATE to run GenVxMask wrapper")
-            self.isOK = False
 
         # optional arguments
-        c_dict['COMMAND_OPTIONS'] = getlist(
+        c_dict['COMMAND_OPTIONS'] = self.parse_command_options_list(
             self.config.getraw('config', 'GEN_VX_MASK_OPTIONS')
         )
-
-        # if no options were specified, set to a list with an empty string
-        if not c_dict['COMMAND_OPTIONS']:
-            c_dict['COMMAND_OPTIONS'] = ['']
 
         # error if -type is not set (previously optional)
         if not any([item for item in c_dict['COMMAND_OPTIONS'] if '-type' in item]):
@@ -77,8 +72,6 @@ class GenVxMaskWrapper(LoopTimesWrapper):
         if len(c_dict['MASK_INPUT_TEMPLATES']) != len(c_dict['COMMAND_OPTIONS']):
             self.log_error("Number of items in GEN_VX_MASK_INPUT_MASK_TEMPLATE must "
                            "be equal to the number of items in GEN_VX_MASK_OPTIONS")
-
-            self.isOK = False
 
         # handle window variables [GEN_VX_MASK_]FILE_WINDOW_[BEGIN/END]
         c_dict['FILE_WINDOW_BEGIN'] = \
@@ -96,6 +89,42 @@ class GenVxMaskWrapper(LoopTimesWrapper):
         # skip RuntimeFreq input file logic - remove once integrated
         c_dict['FIND_FILES'] = False
         return c_dict
+
+    def parse_command_options_list(self, options_text):
+        """!Split string of command line options into a list. First use getlist
+        function to preserve commas within quotation marks, e.g. NetCDF field
+        info. Option values can now support a comma-separated list of values
+        without quotation marks, so put back together list items that were
+        incorrectly split apart, e.g. "-type lat,lon"
+
+        @param options_text: String of command line options separated by comma
+        @returns list containing groups of command line options, or a list with
+        an empty string if no options were provided, or a list with the string
+        'error' if invalid options were provided, e.g. does not start with a
+        dash.
+        """
+        command_options = getlist(options_text)
+
+        # if no options were specified, set to a list with an empty string
+        if not command_options:
+            return ['']
+
+        # first value of command options must start with -, e.g. -type
+        if command_options[0][0] != '-':
+            self.log_error('Invalid GEN_VX_MASK_OPTIONS: Must start with a '
+                           'flag, e.g. -type')
+            return ['error']
+
+        # combine list items that may have been incorrectly split
+        # since -type/-thresh/etc options now support a comma-separated list
+        fixed_options = []
+        for option in command_options:
+            if option.startswith('-'):
+                fixed_options.append(option)
+            else:
+                fixed_options[-1] += f',{option}'
+
+        return fixed_options
 
     def get_command(self):
         cmd = self.app_path

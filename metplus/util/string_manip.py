@@ -178,7 +178,7 @@ def _begin_end_incr_evaluate(item):
 
 
 def _fix_list(item_list):
-    """! The logic that calls this function may have incorrectly split up
+    """!The logic that calls this function may have incorrectly split up
     a string that contains commas within quotation marks. This function
     looks through the list and finds items that appear to have been split up
     incorrectly and puts them back together properly.

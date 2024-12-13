@@ -20,6 +20,34 @@ def gen_vx_mask_wrapper(metplus_config):
     config.set('config', 'DO_NOT_RUN_EXE', True)
     return GenVxMaskWrapper(config)
 
+@pytest.mark.parametrize(
+    'input_val, expected',
+    [
+        # no input returns a list with an empty string
+        ('', [''] ),
+        # two sets of options as demonstrated in GenVxMask_multiple.conf
+        ("-type lat -thresh 'ge30&&le50', -type lon -thresh 'le-70&&ge-130' -intersection -name lat_lon_mask",
+         ["-type lat -thresh 'ge30&&le50'",
+          "-type lon -thresh 'le-70&&ge-130' -intersection -name lat_lon_mask"] ),
+        # first item in list must be a flag starting with -, e.g. -type
+        ("type lat -thresh 'ge30&&le50'",
+         ["error"] ),
+        # complex single set of options that includes multiple values for -type/-thresh/etc as recently added in dtcenter/MET#3008
+        ('-type data,data,lat,lon -mask_field \'name="LAND"; level="L0";\' -mask_field \'name="TMP"; level="L0";\' -thresh eq1,lt273,gt0,lt0 -intersection -v 5',
+         ['-type data,data,lat,lon -mask_field \'name="LAND"; level="L0";\' -mask_field \'name="TMP"; level="L0";\' -thresh eq1,lt273,gt0,lt0 -intersection -v 5'] ),
+        # two sets of options with one of them containing multiple values for -type/-thresh/etc
+        ('-type data -mask_field \'name="LAND"; level="L0";\' -thresh eq1, -type data,lat,lon -mask_field \'name="TMP"; level="L0";\' -thresh lt273,gt0,lt0 -intersection -v 5',
+         ['-type data -mask_field \'name="LAND"; level="L0";\' -thresh eq1',
+          '-type data,lat,lon -mask_field \'name="TMP"; level="L0";\' -thresh lt273,gt0,lt0 -intersection -v 5']),
+    ]
+)
+@pytest.mark.wrapper
+def test_handle_command_options(metplus_config, input_val, expected):
+    config = metplus_config
+    wrapper = GenVxMaskWrapper(config)
+    actual = wrapper.parse_command_options_list(input_val)
+    assert actual == expected
+
 
 @pytest.mark.parametrize(
     'missing, run, thresh, errors, allow_missing', [
