@@ -106,9 +106,8 @@ def test_run_gen_vx_mask_once(metplus_config):
                                              'GenVxMask_test')
     wrap.c_dict['OUTPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d%H}_ZENITH_LAT_MASK.nc'
     wrap.c_dict['COMMAND_OPTIONS'] = ["-type lat -thresh 'ge30&&le50'"]
-#    wrap.c_dict['MASK_INPUT_TEMPLATES'] = ['LAT', 'LON']
-#    wrap.c_dict['COMMAND_OPTIONS'] = ["-type lat -thresh 'ge30&&le50'", "-type lon -thresh 'le-70&&ge-130' -intersection"]
 
+    wrap.c_dict['ALL_FILES'] = wrap.get_all_files_for_each(time_info)
     wrap.run_at_time_once(time_info)
 
     expected_cmd = f"{wrap.app_path} \"2018020100_ZENITH\" LAT {wrap.config.getdir('OUTPUT_BASE')}/GenVxMask_test/2018020100_ZENITH_LAT_MASK.nc -type lat -thresh 'ge30&&le50' -v 2"
@@ -124,16 +123,22 @@ def test_run_gen_vx_mask_twice(metplus_config):
     input_dict = {'valid': datetime.datetime.strptime("201802010000",'%Y%m%d%H%M'),
                   'lead': 0}
     time_info = time_util.ti_calculate(input_dict)
+    cmd_args = [
+        "-type lat -thresh 'ge30&&le50'",
+        "-type lon -thresh 'le-70&&ge-130' -intersection -name lat_lon_mask"
+    ]
 
-    wrap = gen_vx_mask_wrapper(metplus_config)
-    wrap.c_dict['INPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d%H}_ZENITH'
-    wrap.c_dict['MASK_INPUT_TEMPLATES'] = ['LAT', 'LON']
-    wrap.c_dict['OUTPUT_DIR'] = os.path.join(wrap.config.getdir('OUTPUT_BASE'),
-                                             'GenVxMask_test')
-    wrap.c_dict['OUTPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d%H}_ZENITH_LAT_LON_MASK.nc'
-    cmd_args = ["-type lat -thresh 'ge30&&le50'", "-type lon -thresh 'le-70&&ge-130' -intersection -name lat_lon_mask"]
-    wrap.c_dict['COMMAND_OPTIONS'] = cmd_args
+    config = metplus_config
 
+    output_dir = os.path.join(config.getdir('OUTPUT_BASE'), 'GenVxMask_test')
+    config.set('config', 'GEN_VX_MASK_INPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}_ZENITH')
+    config.set('config', 'GEN_VX_MASK_INPUT_MASK_TEMPLATE', 'LAT, LON')
+    config.set('config', 'GEN_VX_MASK_OUTPUT_DIR', output_dir)
+    config.set('config', 'GEN_VX_MASK_OUTPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}_ZENITH_LAT_LON_MASK.nc')
+    config.set('config', 'GEN_VX_MASK_OPTIONS', ','.join(cmd_args))
+    wrap = gen_vx_mask_wrapper(config)
+
+    wrap.c_dict['ALL_FILES'] = wrap.get_all_files_for_each(time_info)
     wrap.run_at_time_once(time_info)
 
     expected_cmds = [f"{wrap.app_path} \"2018020100_ZENITH\" LAT {wrap.config.getdir('OUTPUT_BASE')}/stage/gen_vx_mask/temp_0.nc {cmd_args[0]} -v 2",
