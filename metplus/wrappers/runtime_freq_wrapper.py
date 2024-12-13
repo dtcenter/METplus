@@ -116,6 +116,8 @@ class RuntimeFreqWrapper(CommandBuilder):
             return
 
         for label, info in input_info.items():
+            if label:
+                label = f'{label}_'
             prefix = info.get('prefix')
             required = info.get('required', True)
 
@@ -124,18 +126,18 @@ class RuntimeFreqWrapper(CommandBuilder):
                 c_dict['EXPLICIT_FILE_LIST'] = True
             else:
                 input_dir = self.config.getdir(f'{prefix}_INPUT_DIR', '')
-                c_dict[f'{label}_INPUT_DIR'] = input_dir
+                c_dict[f'{label}INPUT_DIR'] = input_dir
                 templates = getlist(
                     self.config.getraw('config', f'{prefix}_INPUT_TEMPLATE')
                 )
                 template = ','.join(templates)
-                c_dict[f'{label}_INPUT_TEMPLATE'] = template
-                if not c_dict[f'{label}_INPUT_TEMPLATE']:
+                c_dict[f'{label}INPUT_TEMPLATE'] = template
+                if not c_dict[f'{label}INPUT_TEMPLATE']:
                     if required:
                         self.log_error(f'{prefix}_INPUT_TEMPLATE required to run')
                     continue
 
-            template_dict[label] = (template, True)
+            template_dict[label.rstrip('_')] = (template, True)
 
         c_dict['TEMPLATE_DICT'] = template_dict
 
