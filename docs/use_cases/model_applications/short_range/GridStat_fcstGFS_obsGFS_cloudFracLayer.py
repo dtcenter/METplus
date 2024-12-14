@@ -79,11 +79,14 @@ model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 #
 # **Increment between beginning and end times (INIT_INCREMENT):** 6 hours
 #
-# **Sequence of forecast leads to process (LEAD_SEQ):** 6, 12, 18
+# **Sequence of forecast leads to process (LEAD_SEQ):** 0, 6, 12, 18
 #
 # The Grid-Stat, MODE, and Stat-Analysis tools are run for each time. This example 
 # loops by model initialization time.  It processes one initialization time and three 
 # lead times for each for a total of 3 valid times, listed below.
+#
+# | **Valid:** 2024-03-07_00Z
+# | **Forecast lead:** 00
 #
 # | **Valid:** 2024-03-07_06Z
 # | **Forecast lead:** 06
@@ -103,10 +106,10 @@ model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# parm/use_cases/model_applications/short_range/GridStat_fcstGFS_obsGFS_clouds.conf
+# parm/use_cases/model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/GridStat_fcstGFS_obsGFS_clouds.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 
 ##############################################################################
 # MET Configuration
@@ -154,15 +157,15 @@ model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 # The second python script is plot_line_stats.py.  This script creates line plots for low
 # and high clouds for CSI with lead time.  **FINISH ME**
 #
-# .. dropdown:: parm/use_cases/model_applications/short_range/GridStat_fcstGFS_obsGFS_clouds/reformat_CTS_linetype.py
+# .. dropdown:: parm/use_cases/model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer/reformat_CTS_linetype.py
 #
 #   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/GridStat_fcstGFS_obsGFS_clouds/reformat_CTS_linetype.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer/reformat_CTS_linetype.py
 #
-# .. dropdown:: parm/use_cases/model_applications/short_range/GridStat_fcstGFS_obsGFS_clouds/plot_line_stats.py
+# .. dropdown:: parm/use_cases/model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer/plot_line_stats.py
 #
 #   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/GridStat_fcstGFS_obsGFS_clouds/plot_line_stats.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer/plot_line_stats.py
 
 ##############################################################################
 # Running METplus
@@ -171,7 +174,7 @@ model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 # Pass the use case configuration file to the run_metplus.py script along 
 # with any user-specific system configuration files if desired::
 #
-#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/GridStat_fcstGFS_obsGFS_clouds.conf /path/to/user_system.conf
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
 
@@ -185,7 +188,7 @@ model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
 # Output for this use case will be found in 
-# {OUTPUT_BASE}/model_applications/short_range/GridStat_fcstGFS_obsGFS_clouds.  There will 
+# {OUTPUT_BASE}/model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.  There will 
 # be 4 output directories, grid_stat, mode, stat_analysis, reformatted, and plots
 # The grid_stat directory will contain 3 .stat file sand 3 .nc files::
 #
@@ -247,8 +250,9 @@ model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 #
 # The plots directory will contain the following files::
 #
-# * Add
-# * here
+# * High_low_cloud_CSI.png
+# * High_low_cloud_FBIAS.png
+# * High_low_cloud_GSS.png
 #
 # For the Grid-Stat netCDF files, 6 variable fields are present (not including the lat/lon 
 # fields).  Those variables are::
@@ -301,4 +305,4 @@ model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/short_range-GridStat_fcstGFS_obsGFS_clouds.png'
+# sphinx_gallery_thumbnail_path = '_static/short_range-GridStat_fcstGFS_obsGFS_cloudFracLayer.png'
