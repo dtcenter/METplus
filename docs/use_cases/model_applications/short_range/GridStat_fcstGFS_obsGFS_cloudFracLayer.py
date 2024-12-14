@@ -18,7 +18,7 @@ model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 # This use case evaluates clouds classified into low, mid, and high levels.  The
 # evaluation covers multiple types of statistics including contingency table
 # statistics, neighborhood statistics, distance maps, and an object based evaluation.
-# Additionally, plots are created to demonstrate how to reformat and visualize the
+# Additionally, plots are created to demonstrate how to reformat and visualize GSS
 # CSI and frequency bias from the command line.
 
 ##############################################################################
@@ -98,7 +98,8 @@ model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 # | **Forecast lead:** 18
 #
 # Both UserScripts are each run once.  The first UserScript reformats the GridStat CTS
-# output so that it can be used to create a plot.  The second UserScript creates the plot
+# output so that it can be used to create a plot.  The second UserScript creates three
+# plots.
 
 ##############################################################################
 # METplus Configuration
@@ -155,7 +156,8 @@ model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 # configuration file.
 #
 # The second python script is plot_line_stats.py.  This script creates line plots for low
-# and high clouds for CSI with lead time.  **FINISH ME**
+# and high clouds for GSS, CSI, and Frequency bias with lead time.  Input variables to both 
+# scripts are set in the [user_env_vars] section of the .conf file.
 #
 # .. dropdown:: parm/use_cases/model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer/reformat_CTS_linetype.py
 #
@@ -189,7 +191,7 @@ model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
 # Output for this use case will be found in 
 # {OUTPUT_BASE}/model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.  There will 
-# be 4 output directories, grid_stat, mode, stat_analysis, reformatted, and plots
+# be 5 output directories, grid_stat, mode, stat_analysis, reformatted, and plots
 # The grid_stat directory will contain 3 .stat file sand 3 .nc files::
 #
 # * grid_stat_GFS_cloud_060000L_20240307_060000V_pairs.nc
