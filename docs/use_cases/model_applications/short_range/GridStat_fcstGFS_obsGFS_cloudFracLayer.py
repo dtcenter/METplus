@@ -25,7 +25,7 @@ model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 # Version Added
 # -------------
 #
-# METplus version 6.0
+# METplus version 6.1
 
 ##############################################################################
 # Datasets
