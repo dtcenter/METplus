@@ -82,6 +82,7 @@ Category: clouds
 3::GridStat_fcstMPAS_obsERA5_cloudBaseHgt::model_applications/clouds/GridStat_fcstMPAS_obsERA5_cloudBaseHgt.conf:: pandac_env, py_embed
 4::GridStat_fcstMPAS_obsMERRA2_lowAndTotalCloudFrac::model_applications/clouds/GridStat_fcstMPAS_obsMERRA2_lowAndTotalCloudFrac.conf:: pandac_env, py_embed
 5::GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac::model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.conf:: pandac_env, py_embed
+6::GridStat_fcstGFS_obsGOES_cloudTopPressAndTemp::model_applications/clouds/GridStat_fcstGFS_obsGOES_cloudTopPressAndTemp.conf
 
 
 Category: data_assimilation
