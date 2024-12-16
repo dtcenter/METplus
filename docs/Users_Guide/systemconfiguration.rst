@@ -4,7 +4,83 @@
 Configuration
 *************
 
-This chapter is a guide on configuring METplus Wrappers.
+This chapter describes how to configure METplus Wrappers.
+
+.. _how_to_configure:
+
+How to Configure
+================
+
+The settings of a METplus wrappers run are controlled by METplus
+configuration variables.
+
+All variables in the :ref:`default_configuration_file` are read first.
+Variables in the :ref:`default_configuration_file` can be changed from the
+default values to be applied to every run.
+
+Additional configuration variables are set using command line arguments to the
+**run_metplus.py** script.
+Arguments to the script can be the path to a METplus configuration file that
+defines multiple configuration variables or a key/value pair that sets a single
+configuration variable.
+
+One or more :ref:`use_case_configuration_files` define settings for a given
+METplus run.
+Users often create a :ref:`user_configuration_file` to store settings specific
+to the system on which they are running and their personal preferences.
+It is recommended to provide a user configuration file *after* any use case
+specific configuration files in the command line argument list
+(see :ref:`order_matters`).
+
+.. _single_config:
+
+How to Set a Single Config
+--------------------------
+
+Single configuration variable overrides should match the format
+**<SECTION>.<VARIABLE>=<VALUE>** where:
+
+* **<SECTION>** is the section within the METplus configuration.
+  This is typically *config* unless :ref:`process_list_instance_names`
+  or :ref:`user_env_vars` are used
+* **<VARIABLE>** is the name of the configuration variable to set
+* **<VALUE>** is the value to set
+
+Example::
+
+    config.OUTPUT_BASE=/my/output/dir
+
+This will set the value of the variable **OUTPUT_BASE** of the **[config]**
+section to **/my/output/dir**.
+
+.. _order_matters:
+
+Order Matters
+-------------
+
+The order in which the arguments are provided matters. If a configuration
+variable is defined multiple times, each subsequent instance of that variable
+will override the previous value. This means that the last value will be used.
+
+Example:
+
+If a file named *my_lead.conf* contains::
+
+    [config]
+    LEAD_SEQ = 12H
+
+and the conf file is provided before the single config override::
+
+    run_metplus.py my_lead.conf config.LEAD_SEQ=6H
+
+then the value of **[config] LEAD_SEQ** will be **6H**.
+
+However, if the conf file is provided after the single config override::
+
+    run_metplus.py config.LEAD_SEQ=6H my_lead.conf
+
+then the value of **[config] LEAD_SEQ** will be **12H**.
+
 
 Config Best Practices / Recommendations
 =======================================
@@ -49,6 +125,7 @@ Config Best Practices / Recommendations
   :ref:`user_configuration_file` that is passed into every call to
   run_metplus.py. This is done to avoid the need to change the default values
   after every update.
+
 
 .. _default_configuration_file:
 
@@ -163,7 +240,7 @@ METPLOTPY_BASE (user_env_vars)
 
 This is the path to the location where METplotpy is installed.
 The variable is found under the [user_env_vars] section heading, which
-will set it as an environment variable. See :ref:`user_defined_config`
+will set it as an environment variable. See :ref:`user_env_vars`
 for more information on the [user_env_vars] section.
 This variable is referenced in some METplotpy functions.
 It is not necessary to set this variable if METplotpy will not be used or if
@@ -2861,7 +2938,7 @@ The values must match the format of the variables in the default MET
 configuration file with a semi-colon after single values and arrays and curly
 braces around dictionaries.
 
-.. _user_defined_config:
+.. _user_env_vars:
 
 User Environment Variables
 ==========================

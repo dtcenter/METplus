@@ -12,6 +12,8 @@ Create a new vX.Y.Z-betaN or vX.Y.Z-rcN development release from the develop bra
 .. include:: release_steps/metplus/update_version.rst
 .. include:: release_steps/update_release_notes_development.rst
 .. include:: release_steps/update_upgrade_instructions.rst
+.. include:: release_steps/metplus/update_development_timeline.rst
+.. include:: release_steps/metplus/update_existing_builds_docker.rst
 .. include:: release_steps/merge_release_issue.rst
 .. include:: release_steps/metplus/create_release_reference_branch.rst
 .. include:: release_steps/create_release_on_github.rst
