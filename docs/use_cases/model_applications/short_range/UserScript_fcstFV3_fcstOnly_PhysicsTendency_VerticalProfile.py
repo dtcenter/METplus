@@ -107,15 +107,21 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # No MET tools are used in this use case.
+
+##############################################################################
+# Python Embedding
+# ----------------
 #
-# METplus sets environment variables based on user settings in the METplus configuration file. 
-# See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details. 
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
 #
-# .. note:: See the :ref:`MODE MET Configuration<mode-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
-#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus

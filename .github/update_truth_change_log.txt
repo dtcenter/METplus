@@ -13,3 +13,4 @@
 [20241113_21:34:39 develop] #2769 and #2785 - #2769 adds new use case for fire weather, #2785 turns on land_surface use case that was previously reporting differences that was resolved by bugfix dtcenter/MET#2899
 [20241120_22:40:11 develop] dtcenter/METplotpy#476 - dtcenter/METplotpy#476 appears to have caused differences in an output image that is not noticeable upon visual review
 [20241203_22:42:18 develop] dtcenter/MET#3008 - Adds new units attribute to Gen-Vx-Mask output
+[$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #2836 - #2836 modified a use case to sort files to produce consistent results for each run
