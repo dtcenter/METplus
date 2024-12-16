@@ -56,7 +56,7 @@ def docker_get_volumes_last_updated(current_branch):
     volumes_last_updated = {}
     attempts = 0
     page = dockerhub_request.json()
-    while attempts < 10:
+    while attempts < 20:
         results = page['results']
         for repo in results:
             repo_name = repo['name']
