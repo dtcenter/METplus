@@ -34,7 +34,7 @@ model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.conf
 #
 # **Observation:** HRD TDR merged_zonal_wind
 #
-# **Climatology:**
+# **Climatology:** [UPDATE_SECTION_CONTENT]
 #
 # | **Location of Model forecast and Dropsonde files:** All of the input data required for this use case can be found in the sample data tarball. Click `here <https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data>`_ to download.
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.

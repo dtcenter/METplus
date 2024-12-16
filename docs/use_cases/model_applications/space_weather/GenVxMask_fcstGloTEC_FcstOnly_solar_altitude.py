@@ -56,11 +56,11 @@ model_applications/space_weather/GenVxMask_fcstGloTEC_solar_altitude.conf
 # Datasets
 # --------
 #
-# **Forecast:** 
+# **Forecast:**  [UPDATE_SECTION_CONTENT]
 #
-# **Observation:** 
+# **Observation:**  [UPDATE_SECTION_CONTENT]
 #
-# **Climatology:** 
+# **Climatology:**  [UPDATE_SECTION_CONTENT]
 #
 # **Input Grid:** GloTEC
 #

@@ -36,6 +36,8 @@ model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_Extr
 # | **Observation:** Bdeck
 # |     /path/to/{init?fmt=%Y}/trak.gfso.atcf_gen.glbl.{init?fmt=%Y}
 #
+# **Climatology:** [UPDATE_SECTION_CONTENT]
+#
 # **Location:** All of the input data required for this use case can be 
 # found in a sample data tarball. Each use case category will have 
 # one or more sample data tarballs. It is only necessary to download 

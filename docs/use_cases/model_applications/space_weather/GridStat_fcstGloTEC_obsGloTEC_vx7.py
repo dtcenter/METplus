@@ -54,6 +54,8 @@ GridStat_fcstGloTEC_obsGloTEC_vx7.conf
 #
 # **Observation:** GloTEC TEC model run that assimilates COSMIC-1 RO data
 #
+# **Climatology:** [UPDATE_SECTION_CONTENT]
+#
 # **Location:** All of the input data required for this use case can be 
 # found in a sample data tarball. Each use case category will have 
 # one or more sample data tarballs. It is only necessary to download 
