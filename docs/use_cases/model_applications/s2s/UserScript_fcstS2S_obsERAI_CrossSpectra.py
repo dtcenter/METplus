@@ -36,16 +36,9 @@ model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra.py
 #
 # **Observation:** ERAI
 #
-# **Climatology:** None
+# **Climatology:** [UPDATE_SECTION_CONTENT]
 #
-# **Location:** All of the input data required for this use case can be 
-# found in a sample data tarball. Each use case category will have 
-# one or more sample data tarballs. It is only necessary to download 
-# the tarball with the use case’s dataset and not the entire collection 
-# of sample data. Click here to access the METplus releases page and download sample data 
-# for the appropriate release: https://github.com/dtcenter/METplus/releases
-# This tarball should be unpacked into the directory that you will 
-# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
+# **Location:** [UPDATE_SECTION_CONTENT]
 
 ##############################################################################
 # METplus Components
@@ -53,19 +46,12 @@ model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra.py
 #
 # This use case runs the UserScript wrapper tool to run a user provided script, 
 # in this case, cross_spectra.py and cross_spectra_plot.py.
-#
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
 # **Beginning time (VALID_BEG):** 2014
-#
-# **End time (VALID_END):** 
-#
-# **Increment between beginning and end times (VALID_INCREMENT):** 
-#
-# **Sequence of forecast leads to process (LEAD_SEQ):** None
 #
 # This use case computes spectra and plots for the entire time period of data. 
 # The use case loops over two processes, computing and plotting the 

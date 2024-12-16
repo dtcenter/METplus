@@ -34,6 +34,12 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 # Datasets
 # --------
 #
+# **Forecast:** [UPDATE_SECTION_CONTENT]
+#
+# **Observation:** [UPDATE_SECTION_CONTENT]
+#
+# **Climatology:** [UPDATE_SECTION_CONTENT]
+#
 # Relevant information about the datasets that would be beneficial include:
 #
 #  * TC-Pairs/TC-Stat Forecast dataset: ADeck modified-ATCF tropical cyclone data

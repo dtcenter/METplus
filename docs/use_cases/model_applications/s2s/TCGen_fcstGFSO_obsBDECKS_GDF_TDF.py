@@ -70,22 +70,16 @@ model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
 # Both forecast and observation datasets for this use case must adhere to the ATCF format.
 #
 # **Forecast:**
-# GFDL Cyclone Tracker output configured for "genesis mode" for the FV3GFS model. This configuration used an experimental GFSv15 physics package,
+# GFDL Cyclone Tracker output configured for "genesis mode" for the FV3GFS model.
+# This configuration used an experimental GFSv15 physics package,
 # and had a horizontal grid spacing of ~25 km with 64 vertical levels.
 #
 # **Observation:**
 # Global ATCF B-decks files from the National Hurricane Center (NHC) and Joint Typhoon Warning Center (JTWC)
 #
-# **Climatology:** None
+# **Climatology:** [UPDATE_SECTION_CONTENT]
 #
-# **Location:** All of the input data required for this use case can be 
-# found in a sample data tarball. Each use case category will have 
-# one or more sample data tarballs. It is only necessary to download 
-# the tarball with the use case’s dataset and not the entire collection 
-# of sample data. Click here to access the METplus releases page and download sample data 
-# for the appropriate release: https://github.com/dtcenter/METplus/releases
-# This tarball should be unpacked into the directory that you will 
-# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
+# **Location:** [UPDATE_SECTION_CONTENT]
 #
 # The MET TCGen tool requires forecast data to be provided from the GFDL cyclone tracker. More information
 # about the GFDL cyclone tracker can be found here: https://dtcenter.org/community-code/gfdl-vortex-tracker
@@ -126,10 +120,6 @@ model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
 # ----------------
 #
 # **Beginning time (INIT_BEG):** 2016
-#
-# **End time (INIT_END):** 
-#
-# **Increment between beginning and end times (INIT_INCREMENT):** 
 #
 # **Sequence of forecast leads to process (LEAD_SEQ):** None
 #

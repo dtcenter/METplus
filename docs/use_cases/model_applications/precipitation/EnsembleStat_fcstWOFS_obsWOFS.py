@@ -32,7 +32,7 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 #
 # **Forecast:** WoFS Ensemble
 #
-# **Observation:** 
+# **Observation:** [UPDATE_SECTION_CONTENT]
 #
 # **Climatology:** None
 #

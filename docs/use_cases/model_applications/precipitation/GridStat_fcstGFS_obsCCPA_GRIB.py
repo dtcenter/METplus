@@ -44,8 +44,6 @@ model_applications/precipitation/GridStat_fcstGFS_obsCCPA_Grib.conf
 # This tarball should be unpacked into the directory that you will 
 # set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
-#  Sources of data (links, contacts, etc...)
-
 ##############################################################################
 # METplus Components
 # ------------------
@@ -53,7 +51,6 @@ model_applications/precipitation/GridStat_fcstGFS_obsCCPA_Grib.conf
 # This use case first runs PCPCombine on the observation data to build a 24
 # hour precipitation accumulation file.
 # Then the observation data are compared to the forecast data using GridStat.
-
 
 ##############################################################################
 # METplus Workflow

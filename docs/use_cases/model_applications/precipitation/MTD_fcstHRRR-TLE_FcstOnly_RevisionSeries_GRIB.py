@@ -35,7 +35,7 @@ model_applications/precipitation/MTD_fcstHRRR-TLE_FcstOnly_RevisionSeries_GRIB.c
 #
 # **Forecast:** HRRR-TLE forecasts in GRIB2
 #
-# **Observation:** 
+# **Observation:** [UPDATE_SECTION_CONTENT]
 #
 # **Climatology:** None
 #

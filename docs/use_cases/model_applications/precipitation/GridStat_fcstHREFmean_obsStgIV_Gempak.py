@@ -44,8 +44,6 @@ model_applications/precipitation/GridStat_fcstHREFmean_obsStgIV_Gempak.conf
 # This tarball should be unpacked into the directory that you will 
 # set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
-# Sources of data (links, contacts, etc...)
-
 ##############################################################################
 #External Dependencies
 #---------------------

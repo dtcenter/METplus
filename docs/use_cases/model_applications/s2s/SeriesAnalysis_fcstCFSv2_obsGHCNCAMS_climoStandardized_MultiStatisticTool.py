@@ -36,7 +36,7 @@ model_applications/s2s/SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_Mu
 #
 # **Observations:** GHCNCAMS, 2m temperature field
 #
-# **Climatology:** None
+# **Climatology:** [UPDATE_SECTION_CONTENT]
 #
 # **Location:** All of the input data required for this use case can be 
 # found in a sample data tarball. Each use case category will have 

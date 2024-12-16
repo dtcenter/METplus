@@ -50,6 +50,12 @@ model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf
 # Datasets
 # --------
 #
+# **Forecast:** [UPDATE_SECTION_CONTENT]
+#
+# **Observation:** [UPDATE_SECTION_CONTENT]
+#
+# **Climatology:** [UPDATE_SECTION_CONTENT]
+#
 # This use case calculates the difficulty index for wind speed using NCEP 
 # GEFS ensemble data. The data is composed of 30 ensemble members that 
 # have been compiled and compressed into one .npz file. 

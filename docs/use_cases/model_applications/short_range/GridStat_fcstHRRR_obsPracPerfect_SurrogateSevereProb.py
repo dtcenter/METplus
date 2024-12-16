@@ -33,16 +33,9 @@ model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevereP
 #
 # **Observation:** Practically Perfect from Local Storm Reports
 #
-# **Climatology:** None
+# **Climatology:** [UPDATE_SECTION_CONTENT]
 #
-# **Location:** All of the input data required for this use case can be 
-# found in a sample data tarball. Each use case category will have 
-# one or more sample data tarballs. It is only necessary to download 
-# the tarball with the use case’s dataset and not the entire collection 
-# of sample data. Click here to access the METplus releases page and download sample data 
-# for the appropriate release: https://github.com/dtcenter/METplus/releases
-# This tarball should be unpacked into the directory that you will 
-# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
+# **Location:** [UPDATE_SECTION_CONTENT]
 
 ##############################################################################
 # METplus Components

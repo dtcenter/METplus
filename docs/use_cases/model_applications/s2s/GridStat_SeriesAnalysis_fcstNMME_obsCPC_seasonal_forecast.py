@@ -127,13 +127,13 @@ model_applications/s2s/GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast
 #
 # **Forecast:** NMME
 #
-# * variable of interest: pr (precipitation: cumulative monthly sum)
-# * format of precipitation variable: time,lat,lon (here dimensions: 29,181,361)
-#   with time variable representing 29 samples of same Julian Init-Time of hindcasts over past 29 years.
+# **Climatology:** [UPDATE_SECTION_CONTENT]#
+#
+#   * variable of interest: pr (precipitation: cumulative monthly sum)
+#   * format of precipitation variable: time,lat,lon (here dimensions: 29,181,361)
+#     with time variable representing 29 samples of same Julian Init-Time of hindcasts over past 29 years.
 #
 # **Hindcast / Observation:** CPC precipitation reference data (same format and grid)
-#
-#
 
 ##############################################################################
 # METplus Components
@@ -150,7 +150,6 @@ model_applications/s2s/GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast
 # You will need to use a version of Python 3.6+ that has the following packages installed:
 #
 # * netCDF4
-#
 
 ##############################################################################
 # METplus Workflow

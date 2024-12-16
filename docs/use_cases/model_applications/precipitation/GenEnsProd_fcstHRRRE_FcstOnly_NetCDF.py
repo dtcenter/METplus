@@ -31,7 +31,7 @@ model_application/precipitation/GenEnsProd_fcstHRRRE_FcstOnly_NetCDF.conf
 #
 # **Forecast:** HRRRE 3 member ensemble netcdf 3 hour precipitation accumulation
 #
-# **Observation:** 
+# **Observation:** [UPDATE_SECTION_CONTENT]
 #
 # **Climatology:** None
 #
