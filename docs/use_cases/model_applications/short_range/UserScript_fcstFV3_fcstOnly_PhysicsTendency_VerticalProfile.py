@@ -55,9 +55,9 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 #    * MID_CONUS.shp
 #    * MID_CONUS.shx
 #
-# **Observation:** 
+# **Observation:** [UPDATE_SECTION_CONTENT]
 #
-# **Climatology:** 
+# **Climatology:** [UPDATE_SECTION_CONTENT]
 #
 # **Location:** All of the input data required for this use case can be 
 # found in a sample data tarball. Each use case category will have 

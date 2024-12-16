@@ -37,12 +37,12 @@ model_applications/short_range/MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp
 #
 # **Forecast:** Rapid Refresh Forecast System (RRFS) 3km resolution, 
 # channel 13 brightness temperature,
-# composite reflectivity, and lightning strike density
+# composite reflectivity, and lightning strike density.
 #
 # **Observation:** Geostationary Operational Environmental Satellites (GOES) 3km resolution, 
 # channel 13 brightness temperature; 
 # Multi-radar Multi-sensor (MRMS) 3km resolution, composite reflectivity; 
-# GOES Global Lightning Mapper (GLM) 3km resolution, flash_extent_density
+# GOES Global Lightning Mapper (GLM) 3km resolution, flash_extent_density.
 # 
 # **Climatology:** None
 #
@@ -60,17 +60,16 @@ model_applications/short_range/MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp
 #
 # The only tool this use case calls is MODE, which will identify super-objects
 # by intersection of the multiple variable fields.
-# 
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
-# **Beginning Time (INIT_BEG):** 2024-01-09 05:00 UTC
+# **Beginning Time (INIT_BEG):** 2024010905
 #
-# **End Time (INIT_END):** 2024-01-09 05:00 UTC
+# **End Time (INIT_END):** 2024010905
 #
-# **Increment between beginning and end times (VALID_INCREMENT):** 1 Hour
+# **Increment between beginning and end times (VALID_INCREMENT):** 1H
 #
 # **Sequence of forecast leads to process (LEAD_SEQ):** 9,10
 #

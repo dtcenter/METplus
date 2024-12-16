@@ -29,6 +29,12 @@ model_applications/short_range/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 # Datasets
 # --------
 #
+# **Forecast:** [UPDATE_SECTION_CONTENT]
+#
+# **Observation:** [UPDATE_SECTION_CONTENT]
+#
+# **Climatology:** [UPDATE_SECTION_CONTENT]
+#
 # **Input:** MET .stat files and MODE text files
 #
 # **Location:** All of the input data required for this use case can be 

@@ -35,7 +35,11 @@ model_applications/short_range/MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf
 #
 # **Forecast:** HRRRv4 data
 #
-# **Observation:** MRMS 
+# **Observation:** MRMS
+#
+# **Climatology:** [UPDATE_SECTION_CONTENT]
+#
+# **Location:** [UPDATE_SECTION_CONTENT]
 
 ##############################################################################
 # METplus Components

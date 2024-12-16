@@ -44,9 +44,9 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 #
 # **Forecast:** FV3 3-D history file with physics and dynamics tendencies
 #
-# **Observation:** 
+# **Observation:** [UPDATE_SECTION_CONTENT]
 #
-# **Climatology:** 
+# **Climatology:** [UPDATE_SECTION_CONTENT]
 #
 # **Location:** All of the input data required for this use case can be 
 # found in a sample data tarball. Each use case category will have 
@@ -87,10 +87,6 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 #
 # This use case does not loop but plots physics tendency data that has been
 # subsetted to one date: 2019-06-15.
-<<<<<<< HEAD
-=======
-
->>>>>>> 75476cd20fb2349fe45ea790c150a5680982ca84
 
 ##############################################################################
 # METplus Configuration
@@ -144,9 +140,6 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 # The following file will be created:
 #
 # short_range-physics_tendency_vertical_cross_section.png
-#
-#
-
 
 ##############################################################################
 # Keywords
@@ -167,4 +160,3 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 #
 #
 # sphinx_gallery_thumbnail_path = '_static/short_range-UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalCrossSection.png'
-#

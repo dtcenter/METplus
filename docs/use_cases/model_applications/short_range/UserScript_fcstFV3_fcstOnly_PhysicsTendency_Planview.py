@@ -45,9 +45,9 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planv
 #
 # **Forecast:** FV3 3-D history file with physics and dynamics tendencies.
 #
-# **Observation:** 
+# **Observation:** [UPDATE_SECTION_CONTENT]
 #
-# **Climatology:**
+# **Climatology:** [UPDATE_SECTION_CONTENT]
 #
 # **Location:** All of the input data required for this use case can be 
 # found in a sample data tarball. Each use case category will have 

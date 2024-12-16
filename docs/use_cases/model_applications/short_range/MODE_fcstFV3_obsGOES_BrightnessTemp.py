@@ -25,6 +25,10 @@ model_applications/short_range/MODE_fcstFV3_obsGOES_BrightnessTemp.conf
 # **Forecast:** FV3 Model member data
 #
 # **Observation:** GOES Brightness Temperature
+#
+# **Climatology:** [UPDATE_SECTION_CONTENT]
+#
+# **Location:** [UPDATE_SECTION_CONTENT]
 
 ##############################################################################
 # Version Added

@@ -28,7 +28,13 @@ model_applications/short_range/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
 # Datasets
 # --------
 #
+# **Forecast:** [UPDATE_SECTION_CONTENT]
+#
 # **Observation:** Local Storm Reports
+#
+# **Climatology:** [UPDATE_SECTION_CONTENT]
+#
+# **Location:** [UPDATE_SECTION_CONTENT]
 
 ##############################################################################
 # METplus Components

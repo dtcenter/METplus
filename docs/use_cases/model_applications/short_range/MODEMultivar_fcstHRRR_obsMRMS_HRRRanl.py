@@ -52,6 +52,8 @@ model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 #
 #   wgrib2 infile.grib2 -new_grid_winds earth -new_grid lambert:262.5:38.5:38.5:38.5 -83.0:400:3000 37.0:400:3000 outfile.grib2 
 #
+# **Climatology:** [UPDATE_SECTION_CONTENT]
+#
 # **Location:** All of the input data required for this use case can be 
 # found in a sample data tarball. Each use case category will have 
 # one or more sample data tarballs. It is only necessary to download 
@@ -67,7 +69,6 @@ model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 #
 # This use case utilizes the METplus MODE wrapper, ingesting multiple variables
 # to output complex super objects based on a user-defined logical expression. 
-# 
 
 ##############################################################################
 # METplus Workflow
