@@ -40,7 +40,7 @@ model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.py
 #
 # **Forecast:** GFS Model Outgoing Longwave Radiation, 2017 - 2018
 #
-# **Observation:** ERA Reanlaysis Outgoing Longwave Radiation, 2017 - 2018.
+# **Observation:** ERA Reanlaysis Outgoing Longwave Radiation, 2017 - 2018
 #
 # **EOFs:** Observed OMI EOF1 and EOF2 patterns from the PSL Website (https://psl.noaa.gov/mjo/mjoindex/)
 #
