@@ -2,7 +2,7 @@
 UserScript and StatAnalysis: Calculate and Evaluate Weather Regimes for GFS and ERA
 ===================================================================================
 
-model_applications/
+model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.py
 s2s_mid_lat/
 
 """
