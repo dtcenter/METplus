@@ -26,7 +26,7 @@ model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.py
 # This use case uses outgoing longwave radiation (OLR) to compute the OLR based MJO Index (OMI), which is
 # a convective index of the MJO.  OMI is computed separately for the model and observations and then displayed
 # on phase diagrams to evaluate the model reprentation of this important oscillation.  The code for computing OMI
-# came from Maria Gehne at PSL.
+# came from Maria Gehne at the NOAA Physical Science Laboratory (PSL).
 
 ##############################################################################
 # Version Added
