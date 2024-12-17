@@ -39,7 +39,7 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.py
 #
 # **Forecast:**  None
 #
-# **Observation:** ERA Reanlaysis Outgoing Longwave Radiation, 850 hPa wind and 200 hPa wind, 2000 - 2002.
+# **Observation:** ERA Reanlaysis Outgoing Longwave Radiation, 850 hPa wind and 200 hPa wind, 2000 - 2002
 # 
 # **EOFs:** EOF patterns for OLR, U850, and U200 from Matthew Wheeler
 #
