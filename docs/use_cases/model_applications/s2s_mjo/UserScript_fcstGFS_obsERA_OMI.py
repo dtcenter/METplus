@@ -185,8 +185,10 @@ model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.py
 #
 #   * S2SAppUseCase
 #   * S2SMJOAppUseCase
+#   * UserScriptUseCase
 #   * RegridDataPlaneUseCase
 #   * PCPCombineUseCase
+#   * METdataioUseCase
 #   * METcalcpyUseCase
 #   * METplotpyUseCase
 #

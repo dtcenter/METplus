@@ -180,6 +180,10 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.py
 #   * S2SMJOAppUseCase
 #   * RegridDataPlaneUseCase
 #   * PCPCombineUseCase
+#   * UserScriptUseCase
+#   * METdataioUseCase
+#   * METcalcpyUseCase
+#   * METplotpyUseCase
 #
 #   Navigate to :ref:`quick-search` to discover other similar use cases.
 #

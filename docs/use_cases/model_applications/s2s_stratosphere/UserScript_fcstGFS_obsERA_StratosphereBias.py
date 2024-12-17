@@ -227,7 +227,9 @@ model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias.p
 #   * UserScriptUseCase
 #   * S2SAppUseCase
 #   * S2SStratosphereAppUseCase
+#   * UserScriptUseCase
 #   * SeriesAnalysisUseCase
+#   * METdataioUseCase
 #   * METcalcpyUseCase
 #   * METplotpyUseCase
 #

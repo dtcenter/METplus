@@ -200,10 +200,11 @@ model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereQBO.py
 #
 # .. note::
 #
-#   * UserScriptUseCase
 #   * S2SAppUseCase
 #   * S2SStratosphereAppUseCase
+#   * UserScriptUseCase
 #   * StatAnalysisUseCase
+#   * METdataioUseCase
 #   * METcalcpyUseCase
 #   * METplotpyUseCase
 #

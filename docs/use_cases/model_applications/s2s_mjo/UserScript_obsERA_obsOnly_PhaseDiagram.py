@@ -144,6 +144,7 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_PhaseDiagram.py
 #
 #   * S2SAppUseCase
 #   * S2SMJOAppUseCase
+#   * UserScriptUseCase
 #   * METplotpyUseCase
 #
 #   Navigate to :ref:`quick-search` to discover other similar use cases.

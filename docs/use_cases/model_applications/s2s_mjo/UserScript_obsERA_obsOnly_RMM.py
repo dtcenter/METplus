@@ -223,9 +223,11 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.py
 #
 #   * S2SAppUseCase
 #   * S2SMJOAppUseCase
+#   * UserScriptUseCase
 #   * NetCDFFileUseCase
 #   * RegridDataPlaneUseCase
 #   * PCPCombineUseCase
+#   * METdataioUseCase
 #   * METcalcpyUseCase
 #   * METplotpyUseCase
 #

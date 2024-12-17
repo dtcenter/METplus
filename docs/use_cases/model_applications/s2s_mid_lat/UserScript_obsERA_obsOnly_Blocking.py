@@ -214,8 +214,11 @@ model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_Blocking.py
 #   * StatAnalysisToolUseCase
 #   * S2SAppUseCase
 #   * S2SMidLatAppUseCase
+#   * UserScriptUseCase
 #   * NetCDFFileUseCase
 #   * GRIB2FileUseCase
+#   * METcalcpyUseCase
+#   * METplotpyUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
