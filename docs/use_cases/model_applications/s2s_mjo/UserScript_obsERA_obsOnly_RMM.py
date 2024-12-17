@@ -129,7 +129,7 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.py
 # Python Embedding
 # ----------------
 #
-# This use case does not use python embedding
+# This use case does not use Python embedding.
 
 ##############################################################################
 # User Scripting
