@@ -46,7 +46,7 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.py
 # Datasets
 # --------
 #
-# **Forecast dataset:** GFS Forecast 500 mb height for DJF 2000 - 2017 
+# **Forecast:** GFS Forecast 500 mb height for DJF 2000 - 2017 
 #
 # **Observation:** ERA Reanlaysis 500 mb height for DJF 2000 - 2017 for the blocking evaluation and 1979 - 2017 for the CBL calculation
 #
