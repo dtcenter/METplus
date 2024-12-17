@@ -16,7 +16,7 @@ model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.
 # Scientific Objective
 # --------------------
 #
-# Many common modes of variability in the troposphere have stratospheric teloconnection 
+# Many common modes of variability in the troposphere have stratospheric teleconnection 
 # pathways. Thus, the stratosphere can be a source of predictability for surface weather.
 # This use case calls functions in METcalcpy to create polar cap temperature 
 # and polar vortex wind.  It then runs Stat-Analysis on the output zonal means 
