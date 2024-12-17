@@ -127,7 +127,7 @@ model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.py
 # This use case does not use python embedding.
 
 ##############################################################################
-# Python Scripting
+# User Scripting
 # ----------------
 #
 # This use case runs the OMI driver which computes OMI and creates a phase diagram. Inputs to the 
