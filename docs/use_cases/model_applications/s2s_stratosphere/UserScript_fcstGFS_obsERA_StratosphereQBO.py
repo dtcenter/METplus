@@ -53,7 +53,7 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 # ------------------
 #
 # This use case calls UserScript once and StatAnalysis once.  Additionally, METcalcpy,
-# METplotpy, and METdataio are required to run.  The metcalcpy scripts accessed include 
+# METplotpy, and METdataio are required to run.  The METcalcpy scripts accessed include 
 # the following:
 #
 # * metcalcpy/pre_processing/directional_means.py
