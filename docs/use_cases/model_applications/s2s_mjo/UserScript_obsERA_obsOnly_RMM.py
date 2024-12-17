@@ -135,7 +135,7 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.py
 # User Scripting
 # --------------
 #
-# There are two python scripts used in this use case.  The RMM driver script (RMM_driver.py) 
+# There are two Python scripts used in this use case.  The RMM driver script (RMM_driver.py) 
 # orchestrates the calculation of the MJO indices and the generation of three RMM plots.  The 
 # calculation proceeds using OLR, U850, and U200 data between 15N and 15S.  The 120 day mean is first 
 # removed and the data are normalized by normalization factors (generally the square root of the 
