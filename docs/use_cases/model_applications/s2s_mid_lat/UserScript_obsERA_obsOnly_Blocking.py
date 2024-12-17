@@ -138,7 +138,7 @@ model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_Blocking.py
 # Python Embedding
 # ----------------
 #
-# This use case does not use python embedding
+# This use case does not use python embedding.
 
 ##############################################################################
 # User Scripting
