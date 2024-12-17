@@ -1,5 +1,5 @@
 """
-UserScript and StatAnalysis: Compute Polar Cap Temperature and Polar Vortex U and create Plots
+UserScript and StatAnalysis: Compute Polar Cap Temperature and Polar Vortex U and Create Plots
 ==============================================================================================
 
 model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.py
