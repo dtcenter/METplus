@@ -142,7 +142,7 @@ model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias.p
 # METcalcpy.  It writes the zonal mean data to output netCDF files.
 #
 # The bias plot driver reads output netCDF files from Series-Analysis and creates plots of the bias over 
-# latitude and pressure level.  Inputs to both of the python scripts can be found in the [user_env_vars]
+# latitude and pressure level.  Inputs to both of the Python scripts can be found in the [user_env_vars]
 # section of the UserScript_fcstGFS_obsERA_StratosphereBias.conf file
 #
 # .. dropdown:: parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias/zonal_mean_driver.py
