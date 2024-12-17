@@ -2,7 +2,7 @@
 UserScript: Calculate Blocking for the ERA and possibly RegridDataPlane and PcpCombine
 ======================================================================================
 
-model_applications/
+model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_Blocking.py
 s2s_mid_lat/
 UserScript_obsERA_obsOnly_Blocking.py
 
