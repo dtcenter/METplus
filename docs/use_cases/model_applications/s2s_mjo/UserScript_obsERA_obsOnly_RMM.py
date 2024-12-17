@@ -60,7 +60,7 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.py
 # the harmonic pre-processing on all three variables, create a filelist, and run the RMM calculation.
 # There are four optional pre-processing steps.
 #
-# This use case requires METcalcpy, METplotpy, and METdataio to run. The metcalcpy scripts accessed include the following:
+# This use case requires METcalcpy, METplotpy, and METdataio to run. The METcalcpy scripts accessed include the following:
 #
 # * metcalcpy/contributed/rmm_omi/compute_mjo_indices.py
 #
