@@ -94,7 +94,7 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.py
 #
 # There are four optional pre-processing steps loop by valid time with different timing settings needed for 
 # the different steps.  These steps are turned off due to data size and processing time.  Two of the steps are 
-# calls to PcP-Combine to compute the mean daily annual data for OLR, wind (U850 and U200).  The other two steps 
+# calls to Pcp-Combine to compute the mean daily annual data for OLR, wind (U850 and U200).  The other two steps 
 # also call Pcp-Combine but these compute daily means for OLR and wind.  These omitted steps can be turned back 
 # on by using the PROCESS_LIST that is commented out in the file:
 #
