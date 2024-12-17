@@ -150,7 +150,7 @@ model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_Blocking.py
 #
 #  | OBS_STEPS = CBL+PLOTCBL+IBL+PLOTIBL+GILB+CALCBLOCKS+PLOTBLOCKS
 #
-# The possible steps are computing the CBLs or central blocking latitude (CBL), plotting CBLs 
+# The possible steps are computing the CBLs or Central Blocking Latitude (CBL), plotting CBLs 
 # (PLOTCBL), computing Instantaneously Blocked Longitudes (IBL), plotting IBL frequency (PLOTIBL), 
 # computing grouped instantaneously blocked longitudes (GIBL), computing blocks (CALCBLOCKS), and
 # plotting the blocking frequency (PLOTBLOCKS).  This use case runs all steps although not all of 
