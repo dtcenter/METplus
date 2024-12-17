@@ -1,5 +1,5 @@
 """
-UserScript and StatAnalysis: Compute QBO Phase plots and QBO Index
+UserScript and StatAnalysis: Compute QBO Phase Plots and QBO Index
 ==================================================================
 
 model_applications/
