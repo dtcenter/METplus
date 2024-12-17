@@ -143,7 +143,7 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.py
 # OLR is then filtered for 20 - 96 days, and regressed onto the daily EOFs.  Finally, it's normalized 
 # and these normalized components are plotted on a phase diagram and timeseries plot.
 #
-# The anomalies are created using a harmonic analysis for OLR, U850, and U200 with the python script
+# The anomalies are created using a harmonic analysis for OLR, U850, and U200 with the Python script
 # compute_harmonic_anomalies.py.  Input to the harmonic analysis script include a text file containing the
 # list of input files, the daily mean variable name, mean daily average varable name, output directory and output file 
 # basename.  These are defined in the [harmonic_anomalies_olr], [harmonic_anomalies_u850], and harmonic_anomalies_u200] 
