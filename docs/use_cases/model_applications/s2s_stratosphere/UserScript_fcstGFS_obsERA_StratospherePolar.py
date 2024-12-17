@@ -50,7 +50,7 @@ s2s_stratosphere/
 #
 # This use case runs UserScript twice and Stat-Analysis once.  The UserScripts compute
 # polar cap temperature and polar vortex wind and create plots.  METcalcpy, METplotpy,
-# and METdataio are needed for this use case. The metcalcpy scripts accessed include 
+# and METdataio are needed for this use case. The METcalcpy scripts accessed include 
 # the following:
 #
 # * metcalcpy/pre_processing/directional_means.py
