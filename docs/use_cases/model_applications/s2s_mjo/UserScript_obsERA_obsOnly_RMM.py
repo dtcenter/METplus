@@ -25,7 +25,7 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.py
 # This use case uses anomalies of outgoing longwave radiation (OLR), 850 hPa wind (U850), and 200 hPa 
 # wind (U200) to compute the Real-time Multivariate MJO Index (RMM).  In contrast to OMI, which is a 
 # convective index of MJO, RMM is a dynamical index.  The code for computing RMM came from Maria
-# Gehne at PSL.
+# Gehne at the NOAA Physical Sciences Laboratory (PSL).
 
 ##############################################################################
 # Version Added
