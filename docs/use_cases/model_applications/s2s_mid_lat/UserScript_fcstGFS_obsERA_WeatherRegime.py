@@ -38,7 +38,7 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.py
 # Datasets
 # --------
 #
-# **Forecast dataset:** GFS Forecast 500 mb height. 
+# **Forecast:** GFS Forecast 500 mb height
 #
 # **Observation dataset:** ERA Reanlaysis 500 mb height.
 #
