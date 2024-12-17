@@ -13,7 +13,6 @@ Condition codes: 0 for success, 1 for failure
 import os
 
 from ..util import getlistint
-from ..util import time_util
 from ..util import do_string_sub
 from . import CompareGriddedWrapper
 

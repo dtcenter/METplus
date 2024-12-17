@@ -367,8 +367,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                             data_type='list',
                             extra_args={'remove_quotes': True})
 
-        self.add_met_config(name='eclv_points',
-                            data_type='float')
+        self.add_met_config(name='eclv_points', data_type='float')
 
         self.add_met_config(name='prob_cat_thresh',
                             data_type='list',
