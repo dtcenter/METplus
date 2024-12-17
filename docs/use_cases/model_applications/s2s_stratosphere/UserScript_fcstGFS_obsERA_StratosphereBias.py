@@ -1,5 +1,5 @@
 """
-UserScript and SeriesAnalysis: Compute Zonal mean Bias and create Plots for Temperature and Wind
+UserScript and SeriesAnalysis: Compute Zonal Mean Bias and Create Plots for Temperature and Wind
 ================================================================================================
 
 model_applications/
