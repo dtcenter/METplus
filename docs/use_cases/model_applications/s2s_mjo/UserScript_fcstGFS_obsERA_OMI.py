@@ -131,7 +131,7 @@ model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.py
 # ----------------
 #
 # This use case runs the OMI driver which computes OMI and creates a phase diagram. Inputs to the 
-# OMI driver include netCDF files formatted in MET's netCDF version.  In addition, a txt file containing 
+# OMI driver include netCDF files formatted in MET's netCDF version.  In addition, a text file containing 
 # the listing of these input netCDF files is required, as well as text file listings of the EOF1 and 
 # EOF2 files.  These text files can be generated using the USER_SCRIPT_INPUT_TEMPLATES in the 
 # [create_eof_filelist] and [script_omi] sections.  Variables for the OMI calculation are set in the 
