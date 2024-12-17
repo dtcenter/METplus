@@ -126,7 +126,7 @@ model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.
 # User Scripting
 # --------------
 #
-# There are two python scripts in the is use case.  The first, polar_t_u_driver.py reads in netCDF files for the
+# There are two Python scripts in the is use case.  The first, polar_t_u_driver.py reads in netCDF files for the
 # forecast and observations and computes zonal means for temperature and wind.  Then, polar cap temperature is 
 # computed by taking the meridional mean between 60 and 90 latitude, while polar vortex u is computed by taking
 # the meridional mean between 50 and 80 latitude.  This data is written to output files in MET's matched pair
