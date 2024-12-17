@@ -38,7 +38,7 @@ model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.py
 # Datasets
 # --------
 #
-# **Forecast:** GFS Model Outgoing Longwave Radiation, 2017 - 2018.
+# **Forecast:** GFS Model Outgoing Longwave Radiation, 2017 - 2018
 #
 # **Observation:** ERA Reanlaysis Outgoing Longwave Radiation, 2017 - 2018.
 #
