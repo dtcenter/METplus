@@ -91,7 +91,7 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_PhaseDiagram.py
 # This use case does not use python embedding. 
 
 ##############################################################################
-# User Scripts
+# User Scripting
 # --------------
 #
 # The first UserScript creates a listing of text file (save_inpput_file_txt).  The second, 
