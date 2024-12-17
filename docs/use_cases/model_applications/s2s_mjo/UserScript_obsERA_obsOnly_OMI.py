@@ -19,7 +19,7 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.py
 # tropics and is characterized by eastward moving regions of enhanced and suppressed rainfall.  These
 # phases are typically grouped into numbers 1 - 8 based on the geographic location of the enhanced and 
 # suppressed rainfall.  The MJO affects global weather including summer monsoons, tropical cyclone 
-# development, and sudden stratospheric warming events, and has teloconnections to mid latitude weather
+# development, and sudden stratospheric warming events, and has teleconnections to mid latitude weather
 # systems.  
 # 
 # This use case uses outgoing longwave radiation (OLR) to compute the OLR based MJO Index (OMI), which is
