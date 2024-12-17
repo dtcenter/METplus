@@ -176,7 +176,7 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 #
 #   INFO: METplus has successfully finished running.
 #
-# # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
+# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
 # Output for this use case will be found in 
 # {OUTPUT_BASE}/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereQBO
 # There should be 4 graphics output to the plot directory::
