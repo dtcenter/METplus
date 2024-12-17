@@ -39,7 +39,7 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.py
 #
 # **Forecast:** None
 #
-# **Observation:** ERA Reanlaysis Outgoing Longwave Radiation, 1979 - 2012.
+# **Observation:** ERA Reanlaysis Outgoing Longwave Radiation, 1979 - 2012
 #
 # **EOFs:** Observed OMI EOF1 and EOF2 patterns from the PSL Website (https://psl.noaa.gov/mjo/mjoindex/)
 #
