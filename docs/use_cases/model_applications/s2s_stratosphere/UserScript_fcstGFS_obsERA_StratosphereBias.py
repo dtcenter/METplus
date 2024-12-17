@@ -16,7 +16,7 @@ model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias.p
 # Scientific Objective
 # --------------------
 #
-# Many common modes of variability in the troposphere have stratospheric teloconnection
+# Many common modes of variability in the troposphere have stratospheric teleconnection
 # pathways.  Thus, the stratosphere can be a source of predictability for surface weather.
 # However, the predictive skill gained from the stratosphere can be limited by biases in 
 # the representation of these stratospheric processes.  This use case investigates 
