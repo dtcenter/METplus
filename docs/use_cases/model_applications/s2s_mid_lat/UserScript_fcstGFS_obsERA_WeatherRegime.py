@@ -42,7 +42,7 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.py
 #
 # **Observation:** ERA Reanlaysis 500 mb height
 #
-# **Climatology:** None.
+# **Climatology:** None
 #
 # **Location:** All of the input data required for this use case can be 
 # found in a sample data tarball. Each use case category will have 
