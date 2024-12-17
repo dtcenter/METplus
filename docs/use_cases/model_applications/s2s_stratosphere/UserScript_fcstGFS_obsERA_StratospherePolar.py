@@ -132,7 +132,7 @@ model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.
 # the meridional mean between 50 and 80 latitude.  This data is written to output files in MET's matched pair
 # format.
 #
-# The second python script, bias_rmse_plot_driver reads in the output of Stat-Analysis and creates plots of bias
+# The second python script, bias_rmse_plot_driver.py reads in the output of Stat-Analysis and creates plots of bias
 # and RMSE for polar cap temperature and polar vortex u.  Variables input to this script are given in the 
 # [user_env_vars] section of the configuration file. 
 #
