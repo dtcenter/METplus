@@ -2,7 +2,7 @@
 UserScript: Make ERA RMM plots from calculated MJO indices
 ==========================================================
 
-model_applications/
+model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.py
 s2s_mjo/
 UserScript_obsERA_obsOnly_RMM.py
 
