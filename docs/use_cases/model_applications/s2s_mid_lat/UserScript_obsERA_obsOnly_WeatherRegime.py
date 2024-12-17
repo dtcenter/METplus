@@ -3,7 +3,6 @@ UserScript: Calculate Weather Regimes for ERA and possibly RegridDataPlane and P
 =========================================================================================
 
 model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.py
-UserScript_obsERA_obsOnly_WeatherRegime.py
 
 """
 
