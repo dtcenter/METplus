@@ -4,7 +4,6 @@ UserScript and StatAnalysis: Compute Polar Cap Temperature and Polar Vortex U an
 
 model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.py
 s2s_stratosphere/
-UserScript_fcstGFS_obsERA_StratospherePolar.py
 
 """
 
