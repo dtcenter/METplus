@@ -144,7 +144,7 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 # plot_qbo_phase_space functions from stratosphere_plots.py in METplotpy.  Additionally the 
 # zonal and meridional mean at 30 and 50mb are output as time series in MET's matched pair
 # (MPR) format using write_mpr.py in METcalcpy.  They are also plotted as timeseries using the 
-# plot_u_timeseries function from stratosphere_plots.py in METplotpy.  Finally StatAnalysis is 
+# plot_u_timeseries function from stratosphere_plots.py in METplotpy.  Finally, StatAnalysis is 
 # run on the 30 and 50mb U mpr files to compute the bias (ME).
 #
 # Variables input to this script are given in the [user_env_vars] section of the configuration
