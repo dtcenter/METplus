@@ -86,7 +86,7 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.py
 #
 # This use case does not loop, but the UserScript to create and EOF filelist is run once and the OMI driver script is 
 # run once.  The EOF filelist is done separately since the EOF files are needed for each day of the year while the OMI 
-# calculation is on a separate time frame.The optional pre-processing step loops by valid time.  The optional 
+# calculation is on a separate time frame. The optional pre-processing step loops by valid time.  The optional 
 # pre-processing step uses Regrid-Data-Plane to cut the observation grid to only include -20 to 20 latitude.  This 
 # omitted step can be turned back on by using the PROCESS_LIST that is commented out in the file:
 #
