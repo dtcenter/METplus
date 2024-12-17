@@ -103,6 +103,7 @@ if not os.path.exists(fndir):
   sys.exit(1)
 else:
   fn_file_list = glob.glob(os.path.join(fndir,FILENAME_PATTERN))
+  fn_file_list.sort()
   fn_stations = [os.path.basename(x).split('_')[1] for x in fn_file_list]
   if fn_stations == []:
     print("ERROR! NO FLUXNET DATA FOUND MATCHING FILE PATTERN "+FILENAME_PATTERN)
