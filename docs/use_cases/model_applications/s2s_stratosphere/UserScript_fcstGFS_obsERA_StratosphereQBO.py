@@ -137,7 +137,7 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 # User Scripting
 # --------------
 #
-# This use case runs the stratosphere_qbo_driver.py python script, which first 
+# This use case runs the stratosphere_qbo_driver.py Python script, which first 
 # computes zonal and meridional means using directional_means.py in METcalcpy on U from 
 # -10 S to 10N latitude.  Then, an EOF analysis is performed on this zonal and meridional 
 # mean data, and two phase diagrams of QBO are created using the plot_qbo_phase_circuits and 
