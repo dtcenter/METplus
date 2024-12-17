@@ -1,5 +1,5 @@
 """
-UserScript and StatAnalysis: Calculate and evaluate Weather Regimes for GFS and ERA
+UserScript and StatAnalysis: Calculate and Evaluate Weather Regimes for GFS and ERA
 ===================================================================================
 
 model_applications/
