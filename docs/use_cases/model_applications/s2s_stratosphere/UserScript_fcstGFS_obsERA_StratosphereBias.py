@@ -23,7 +23,7 @@ model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias.p
 # stratospheric biases in temperature and wind.  Model biases are plotted for a month time
 # period based on latitude and pressure between 100 and 1 hPa.
 #
-# In addition this use case also demonstrates how to read semi-structured grids into
+# In addition, this use case also demonstrates how to read semi-structured grids into
 # MET.  Specifically zonal mean data (on a grid of latitude and pressure) is read into 
 # Series-Analysis in the second step of this use case.
 
