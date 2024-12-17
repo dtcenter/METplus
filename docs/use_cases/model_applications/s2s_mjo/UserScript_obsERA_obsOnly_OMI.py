@@ -93,7 +93,7 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.py
 # PROCESS_LIST = RegridDataPlane(regrid_obs_olr), UserScript(create_eof_filelist), UserScript(script_omi) 
 #
 # Settings for the optional pre-processing step can be found in the regrid_obs_olr section of the configuration. 
-# Data is not provided in the tarball to run this steps, but the configurations is provided for reference on 
+# Data is not provided in the tarball to run this steps, but the configuration is provided for reference on 
 # how to set up this step.
 #
 # The Phase diagram plot is created over a different time frame than the calculation, 10-01-2012 to 03-30-2012. 
