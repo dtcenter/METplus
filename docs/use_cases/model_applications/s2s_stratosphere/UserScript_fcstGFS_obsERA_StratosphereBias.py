@@ -2,7 +2,7 @@
 UserScript and SeriesAnalysis: Compute Zonal Mean Bias and Create Plots for Temperature and Wind
 ================================================================================================
 
-model_applications/
+model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias.py
 s2s_stratosphere/
 UserScript_fcstGFS_obsERA_StratosphereBias.py
 
