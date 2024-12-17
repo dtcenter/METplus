@@ -120,7 +120,7 @@ model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.
 # Python Embedding
 # ----------------
 #
-# This use case does not use python embedding
+# This use case does not use python embedding.
 
 ##############################################################################
 # User Scripting
