@@ -62,7 +62,7 @@ model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.py
 #
 # * metcalcpy/contributed/blocking_weather_regime/Blocking_WeatherRegime_util.py
 #
-# The METplopty scrips accessed include the following:
+# The METplopty scripts accessed include the following:
 #
 # * metplotpy/contributed/weather_regime/plot_weather_regime.py
 
