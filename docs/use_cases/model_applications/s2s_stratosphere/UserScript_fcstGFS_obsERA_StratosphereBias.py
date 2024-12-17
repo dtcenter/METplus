@@ -58,7 +58,7 @@ model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias.p
 #
 # This use case calls UserScript first, Series-Analysis, and then UserScript
 # a second time.  METcalcpy, METplotpy, and METdataio are needed for this use case to run.
-# The metcalcpy scripts accessed include the following:
+# The METcalcpy scripts accessed include the following:
 #
 # * metcalcpy/pre_processing/directional_means.py
 #
