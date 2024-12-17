@@ -67,7 +67,7 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.py
 #
 # This use case calls UserScript twice and StatAnalysis twice.  The first StatAnalysis
 # run computes contingency table statistics on the IBLs, while the second computes contintency 
-# table statistics on the computed blocks.There are 6 optional pre-processing steps, 2 calls to 
+# table statistics on the computed blocks. There are 6 optional pre-processing steps, 2 calls to 
 # RegridDataPlane and 4 calls to PCP-Combine.  Additionally, METcalcpy and METplotpy are 
 # required to run this use case.  The METcalcpy scripts accessed include the following:
 #
