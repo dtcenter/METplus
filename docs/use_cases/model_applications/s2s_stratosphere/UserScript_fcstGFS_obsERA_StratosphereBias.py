@@ -126,7 +126,7 @@ model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias.p
 #
 # This use case uses a Python embedding script to read in the semi-structured zonal mean data to Series-Analysis.  Inputs to 
 # this script include the filename to be read in, variable name, and the axis over which the mean is taken.  The script 
-# returns a numpy array containing the zonal mean data (semi structured grid).
+# returns a numpy array containing the zonal mean data (semi-structured grid).
 #
 # .. dropdown:: read_met_axis_mean.py
 #
