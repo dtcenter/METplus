@@ -24,7 +24,7 @@ model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_Blocking.py
 #
 # The methodology in Miller & Wang (2019, 2022) first computes the Central Blocking Latitude 
 # (CBL) or storm track.  Allowing for an offset north and south of the storm track, reversals 
-# in geopotential height are then identified as Instantaneously Blocked longitudes (IBLs).  These 
+# in geopotential height are then identified as Instantaneously Blocked Longitudes (IBLs).  These 
 # IBLs are grouped when consective longitudes are blocked (GIBLs) and then blocks are identified 
 # by applying thresholds to ensure the large-scale, quasi-stationary characteristics of blocking 
 # anticyclones are met.
