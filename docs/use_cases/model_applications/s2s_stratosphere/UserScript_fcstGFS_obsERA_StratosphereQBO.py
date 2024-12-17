@@ -141,7 +141,7 @@ UserScript_fcstGFS_obsERA_StratosphereQBO.py
 # computes zonal and meridional means using directional_means.py in METcalcpy on U from 
 # -10 S to 10N latitude.  Then, an EOF analysis is performed on this zonal and meridional 
 # mean data, and two phase diagrams of QBO are created using the plot_qbo_phase_circuits and 
-# plot_qbo_phase_space functions from stratosphere_plots.py in METplotpy.  Additionally the 
+# plot_qbo_phase_space functions from stratosphere_plots.py in METplotpy.  Additionally, the 
 # zonal and meridional mean at 30 and 50mb are output as time series in MET's matched pair
 # (MPR) format using write_mpr.py in METcalcpy.  They are also plotted as timeseries using the 
 # plot_u_timeseries function from stratosphere_plots.py in METplotpy.  Finally, StatAnalysis is 
