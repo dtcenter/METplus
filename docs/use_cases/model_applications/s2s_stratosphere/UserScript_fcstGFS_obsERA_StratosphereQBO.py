@@ -2,7 +2,7 @@
 UserScript and StatAnalysis: Compute QBO Phase Plots and QBO Index
 ==================================================================
 
-model_applications/
+model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereQBO.py
 s2s_stratosphere/
 
 """
