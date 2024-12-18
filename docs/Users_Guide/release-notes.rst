@@ -21,7 +21,7 @@ is broken down into the following development cycles for each component:
 5. **Beta5** releases for the METplus components occurred around 2024-07-10.
 6. **Beta6** releases for the METplus components occurred around 2024-10-18.
 7. **Release Candidate 1** for the METplus components occurred around 2024-11-14.
-8. **Official Release** occurred around 2024-12-18.
+8. **Official Release** occurred around 2024-12-19.
 
 .. include:: existing_builds.rst
 
@@ -48,7 +48,7 @@ describes the bugfix, enhancement, or new feature.
 Important issues are listed **in bold** for emphasis.
 
 
-METplus Version 6.0.0 Release Notes (2024-12-18)
+METplus Version 6.0.0 Release Notes (2024-12-19)
 ------------------------------------------------
 
   .. dropdown:: Enhancements

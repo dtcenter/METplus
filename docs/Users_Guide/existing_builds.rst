@@ -536,7 +536,7 @@ in the
 .. dropdown:: DockerHub
 
    | **MET**
-   | *Last Updated: December 18, 2024*
+   | *Last Updated: December 19, 2024*
 
       .. code-block:: ini
 
@@ -545,7 +545,7 @@ in the
      `dtcenter/met DockerHub <https://hub.docker.com/r/dtcenter/met>`_
 
    | **METplus**
-   | *Last Updated: December 18, 2024*
+   | *Last Updated: December 19, 2024*
 
       .. code-block:: ini
 
@@ -554,7 +554,7 @@ in the
      `dtcenter/metplus DockerHub <https://hub.docker.com/r/dtcenter/metplus>`_
 
    | **METplus Analysis**
-   | *Last Updated: December 18, 2024*
+   | *Last Updated: December 19, 2024*
 
       .. code-block:: ini
 
