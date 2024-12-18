@@ -51,6 +51,9 @@ for cat, item_list in items.items():
 for cat in issues:
     nums = sorted([int(item) for item in issues[cat].keys()])
     print(f"  .. dropdown:: {cat}\n")
+    if not nums:
+        print('     None\n')
+        continue
     for num in nums:
         print(issues[cat][str(num)])
     print()
