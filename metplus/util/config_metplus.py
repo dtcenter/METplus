@@ -462,6 +462,8 @@ class METplusConfig(ProdConfig):
         super().__init__(conf)
         self._cycle = None
         self.run_id = run_id if run_id else str(uuid.uuid4())[0:8]
+        # if run ID is specified, this is a copy of a config
+        self.is_copy = run_id is not None
         self._logger = logging.getLogger(f'metplus.{self.run_id}')
         # config.logger is called in wrappers, so set this name
         # so the code doesn't break
@@ -475,6 +477,9 @@ class METplusConfig(ProdConfig):
 
     def __del__(self):
         """!When object is deleted, close and remove all log handlers"""
+        # do not close log handlers if this is a copied config object
+        if self.is_copy:
+            return
         handlers = self.logger.handlers[:]
         for handler in handlers:
             self.logger.removeHandler(handler)
