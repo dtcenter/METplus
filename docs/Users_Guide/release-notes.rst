@@ -55,7 +55,7 @@ METplus Version 6.0.0 Release Notes (2024-12-18)
 
      * Resolve findings from SonarQube for 6.0.0
        (`#1610 <https://github.com/dtcenter/METplus/issues/1610>`_)
-     * Improve SeriesAnalysis ingest of multiple input files
+     * **Improve SeriesAnalysis ingest of multiple input files**
        (`#2219 <https://github.com/dtcenter/METplus/issues/2219>`_)
      * Improve PBL use case to generate reproducible results
        (`#2246 <https://github.com/dtcenter/METplus/issues/2246>`_)
@@ -69,7 +69,7 @@ METplus Version 6.0.0 Release Notes (2024-12-18)
        (`#2334 <https://github.com/dtcenter/METplus/issues/2334>`_)
      * Update the TC-Diag wrapper to support updates for MET version 12.0.0
        (`#2340 <https://github.com/dtcenter/METplus/issues/2340>`_)
-     * Add config option to write MET log output to terminal
+     * **Add config option to write MET log output to terminal**
        (`#2377 <https://github.com/dtcenter/METplus/issues/2377>`_)
      * Enhance Terrestrial Coupling Index (TCI) Use Case
        (`#2388 <https://github.com/dtcenter/METplus/issues/2388>`_)
@@ -83,31 +83,29 @@ METplus Version 6.0.0 Release Notes (2024-12-18)
        (`#2430 <https://github.com/dtcenter/METplus/issues/2430>`_)
      * Enhance the TC-Diag wrapper to support new configuration options added in MET-12.0.0-beta2
        (`#2432 <https://github.com/dtcenter/METplus/issues/2432>`_)
-     * Point-Stat and Grid-Stat wrappers UGRID updates
+     * **Point-Stat and Grid-Stat wrappers UGRID updates**
        (`#2433 <https://github.com/dtcenter/METplus/issues/2433>`_)
-     * Prevent error if some input files are missing
+     * **Prevent error if some input files are missing**
        (`#2460 <https://github.com/dtcenter/METplus/issues/2460>`_)
      * Make new time_offset_warning MET option configurable via METplus
        (`#2479 <https://github.com/dtcenter/METplus/issues/2479>`_)
      * Add updated data to the short-range FV3 Physics Tendency use cases
        (`#2494 <https://github.com/dtcenter/METplus/issues/2494>`_)
-     * Add new UGRID config from MET to METplus Wrappers
-       (`#2501 <https://github.com/dtcenter/METplus/issues/2501>`_)
      * Remove the TC_RMW_MAX_RANGE_KM configuration option
        (`#2513 <https://github.com/dtcenter/METplus/issues/2513>`_)
-     * Support for setting Point2Grid MET config variables
+     * **Support for setting Point2Grid MET config variables**
        (`#2540 <https://github.com/dtcenter/METplus/issues/2540>`_)
      * Enhance the ASCII2NC wrapper to support setting the -valid_beg and -valid_end command line options
        (`#2547 <https://github.com/dtcenter/METplus/issues/2547>`_)
-     * PCPCombine wrapper - allow missing inputs
+     * **PCPCombine wrapper - allow missing inputs**
        (`#2578 <https://github.com/dtcenter/METplus/issues/2578>`_)
      * Support processing groups of forecast leads
        (`#2612 <https://github.com/dtcenter/METplus/issues/2612>`_)
-     * Support separate climatology datasets for both the forecast and observation inputs
+     * **Support separate climatology datasets for both the forecast and observation inputs**
        (`#2622 <https://github.com/dtcenter/METplus/issues/2622>`_)
      * Support the new `-aggr` command line option in SeriesAnalysis wrapper
        (`#2651 <https://github.com/dtcenter/METplus/issues/2651>`_)
-     * Provide Docker images that contain all METplus components
+     * **Provide Docker images that contain all METplus components**
        (`#2682 <https://github.com/dtcenter/METplus/issues/2682>`_)
      * **Deprecate master_metplus.py**
        (`#2714 <https://github.com/dtcenter/METplus/issues/2714>`_)
@@ -130,7 +128,7 @@ METplus Version 6.0.0 Release Notes (2024-12-18)
        (`#2596 <https://github.com/dtcenter/METplus/issues/2596>`_)
      * Fix GridStat_SeriesAnalysis _fcstNMME_obsCPC _seasonal_forecast use cases with poorly configured climatology settings
        (`#2695 <https://github.com/dtcenter/METplus/issues/2695>`_)
-     * Improve SeriesAnalysis field info generation with regards to time
+     * **Improve SeriesAnalysis field info generation with regards to time**
        (`#2705 <https://github.com/dtcenter/METplus/issues/2705>`_)
      * Clean up existing use cases wrt SonarQube
        (`#2710 <https://github.com/dtcenter/METplus/issues/2710>`_)
@@ -219,14 +217,14 @@ METplus Version 6.0.0 Release Notes (2024-12-18)
        (`#2757 <https://github.com/dtcenter/METplus/issues/2757>`_)
      * Update the Existing Builds page
        (`#2763 <https://github.com/dtcenter/METplus/issues/2763>`_)
-     * Add instructions for running a use case using Apptainer
+     * **Add instructions for running a use case using Apptainer**
        (`#2772 <https://github.com/dtcenter/METplus/issues/2772>`_)
 
   .. dropdown:: Internal
 
      * Documentation: Make Headers Consistent in METplus components User's Guides
        (`#898 <https://github.com/dtcenter/METplus/issues/898>`_)
-     * Improve METplus test coverage
+     * **Improve METplus test coverage**
        (`#2253 <https://github.com/dtcenter/METplus/issues/2253>`_)
      * Add coordinated release checklist to the METplus Release Guide
        (`#2282 <https://github.com/dtcenter/METplus/issues/2282>`_)
