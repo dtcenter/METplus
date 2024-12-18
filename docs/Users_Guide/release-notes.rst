@@ -136,6 +136,10 @@ METplus Version 6.0.0 Release Notes (2024-12-18)
        (`#2742 <https://github.com/dtcenter/METplus/issues/2742>`_)
      * Fix PCPCombine derive mode to properly set field info wrt valid time
        (`#2762 <https://github.com/dtcenter/METplus/issues/2762>`_)
+     * Fix final log output missing when instance IDs are used in process list
+       (`#2830 <https://github.com/dtcenter/METplus/issues/2830>`_)
+     * Fix differences from TCI use case
+       (`#2834 <https://github.com/dtcenter/METplus/issues/2834>`_)
 
   .. dropdown:: New Wrappers
 
@@ -219,6 +223,10 @@ METplus Version 6.0.0 Release Notes (2024-12-18)
        (`#2763 <https://github.com/dtcenter/METplus/issues/2763>`_)
      * **Add instructions for running a use case using Apptainer**
        (`#2772 <https://github.com/dtcenter/METplus/issues/2772>`_)
+     * Add a dedication to all of the User's Guides
+       (`#2780 <https://github.com/dtcenter/METplus/issues/2780>`_)
+     * **Include information on how to use command line arguments to override single config variables**
+       (`#2814 <https://github.com/dtcenter/METplus/issues/2814>`_)
 
   .. dropdown:: Internal
 
@@ -228,6 +236,8 @@ METplus Version 6.0.0 Release Notes (2024-12-18)
        (`#2253 <https://github.com/dtcenter/METplus/issues/2253>`_)
      * Add coordinated release checklist to the METplus Release Guide
        (`#2282 <https://github.com/dtcenter/METplus/issues/2282>`_)
+     * Enhance automated testing to properly test main branches
+       (`#2336 <https://github.com/dtcenter/METplus/issues/2336>`_)
      * Recreate Docker/Conda environments after METbaseimage OS upgrade
        (`#2338 <https://github.com/dtcenter/METplus/issues/2338>`_)
      * Update GitHub issue and pull request templates to reflect the current development workflow details
