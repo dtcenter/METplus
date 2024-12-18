@@ -30,7 +30,9 @@ for line in content:
         break
     if line.lstrip().startswith('*'):
         items[category].append(line)
-    elif line.strip() == 'NONE' or line.startswith('MET') or line.startswith('---') or line.startswith('==='):
+    elif line.strip().lower() == 'none' or line.startswith('MET') or line.startswith('---') or line.startswith('==='):
+        continue
+    elif not items.get(category):
         continue
     else:
         items[category][-1] += f'\n{line}'
