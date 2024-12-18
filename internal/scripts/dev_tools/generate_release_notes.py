@@ -65,7 +65,10 @@ def print_issues_by_category(repo_name, issues_by_category):
     for category, issues in issues_by_category.items():
         print()
         if category != 'none':
-            print(f"  .. dropdown:: {category}\n")
+            header = category
+            if header in ('Enhancement', 'New Wrapper', 'New Use Case'):
+                header = f'{header}s'
+            print(f"  .. dropdown:: {header}\n")
         elif issues:
             print('COULD NOT PARSE CATEGORY FROM THESE:\n')
 
