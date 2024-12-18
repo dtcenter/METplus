@@ -102,7 +102,7 @@ model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereQBO.py
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line, i.e
+# then it loads any configuration files passed to METplus via the command line, i.e.
 # parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereQBO.conf
 #
 # .. highlight:: bash

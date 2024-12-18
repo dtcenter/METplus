@@ -93,7 +93,7 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.py
 #
 # **Increment between beginning and end times (VALID_INCREMENT):** 1 day
 #
-# **Sequence of forecast leads to process (LEAD_SEQ):** 24H
+# **Sequence of forecast leads to process (LEAD_SEQ):** 24 hours
 #
 # This use case does not loop, but the 2 UserScripts calls are run once for 
 # all valid times of the forecast and observations.  The first UserScript creates a file list
@@ -129,7 +129,7 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.py
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line, i.e
+# then it loads any configuration files passed to METplus via the command line, i.e.
 # parm/use_cases/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.conf
 #
 # .. highlight:: bash

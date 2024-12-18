@@ -81,7 +81,7 @@ model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias.p
 #
 # **Increment between beginning and end times (INIT_INCREMENT):** 30 days
 #
-# **Sequence of forecast leads to process (LEAD_SEQ):** 24
+# **Sequence of forecast leads to process (LEAD_SEQ):** 24 hours
 #
 # This use case does not loop.  The two calls to UserScript are run once.  Series-
 # Analysis is also run once.  The first call to UserScript runs zonal_mean_driver.py.  

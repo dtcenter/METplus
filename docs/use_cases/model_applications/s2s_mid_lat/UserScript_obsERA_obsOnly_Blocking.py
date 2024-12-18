@@ -1,5 +1,5 @@
 """
-UserScript: Calculate Blocking for the ERA and possibly RegridDataPlane and PcpCombine
+UserScript: Calculate Blocking for the ERA
 ======================================================================================
 
 model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_Blocking.py
@@ -94,7 +94,7 @@ model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_Blocking.py
 #
 # **Increment between beginning and end times (VALID_INCREMENT):** 1 day
 #
-# **Sequence of forecast leads to process (LEAD_SEQ):** 0
+# **Sequence of forecast leads to process (LEAD_SEQ):** 0 hour
 #
 # This use case does not loop.  It runs UserScript once over the entire time period.  The 
 # UserScript runs the blocking driver script which performs the blocking calculation.  This
@@ -122,7 +122,7 @@ model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_Blocking.py
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line, i.e
+# then it loads any configuration files passed to METplus via the command line, i.e.
 # parm/use_cases/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_Blocking.conf
 #
 # .. highlight:: bash

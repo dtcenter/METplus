@@ -75,7 +75,7 @@ model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.
 #
 # **Increment between beginning and end times (VALID_INCREMENT):** 30 days
 #
-# **Sequence of forecast leads to process (LEAD_SEQ):** 0 - 384h at 24h intervals
+# **Sequence of forecast leads to process (LEAD_SEQ):** 0 - 384 hours at 24 hour intervals
 #
 # This use case loops over lead times for the first UserScript and Stat-Analysis,
 # and the second UserScript runs once over the entire time period.  The first UserScript

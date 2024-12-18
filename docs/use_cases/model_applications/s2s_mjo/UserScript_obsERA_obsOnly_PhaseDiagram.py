@@ -61,7 +61,7 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_PhaseDiagram.py
 #
 # **Increment between beginning and end times (INIT_INCREMENT):** 1 day
 #
-# **Sequence of forecast leads to process (LEAD_SEQ):** 0
+# **Sequence of forecast leads to process (LEAD_SEQ):** 0 hour
 #
 # The UserScript that creates a filelist is run once for each valid time, while the UserScript to create
 # a phase diagram is run only once.  It creates a phase diagram plot using the input files.  Variables for 

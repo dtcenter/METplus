@@ -82,7 +82,7 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.py
 #
 # **Increment between beginning and end times (VALID_INCREMENT):** 1 day
 #
-# **Sequence of forecast leads to process (LEAD_SEQ):** 0
+# **Sequence of forecast leads to process (LEAD_SEQ):** 0 hour
 #
 # This use case does not loop, but the UserScript to create and EOF filelist is run once and the OMI driver script is 
 # run once.  The EOF filelist is done separately since the EOF files are needed for each day of the year while the OMI 

@@ -1,5 +1,5 @@
 """
-UserScript: Calculate Weather Regimes for ERA and possibly RegridDataPlane and PcpCombine
+UserScript: Calculate Weather Regimes for ERA
 =========================================================================================
 
 model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.py
@@ -76,7 +76,7 @@ model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.py
 #
 # **Increment between beginning and end times (VALID_INCREMENT):** 1 day
 #
-# **Sequence of forecast leads to process (LEAD_SEQ):** 24
+# **Sequence of forecast leads to process (LEAD_SEQ):** 0 hour
 #
 # This use case does not loop, but the UserScript that runs the weather regime driver script
 # is run once over the entire time period.  The weather regime driver script performs the weather 
@@ -101,7 +101,7 @@ model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.py
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line, i.e
+# then it loads any configuration files passed to METplus via the command line, i.e.
 # parm/use_cases/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherREgime.conf
 #
 # .. highlight:: bash
