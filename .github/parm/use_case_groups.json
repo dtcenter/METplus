@@ -55,6 +55,11 @@
     "run": false
   },
   {
+    "category": "clouds",
+    "index_list": "6",
+    "run": true
+  },
+  {
     "category": "data_assimilation",
     "index_list": "0-1",
     "run": false
@@ -310,11 +315,6 @@
     "disabled": true,
     "disabled_reason": "exceeds GitHub Actions environment limits",
     "run":false
-  },
-  { 
-    "category": "short_range",
-    "index_list": "16",
-    "run": true
   },
   {
     "category": "space_weather",
