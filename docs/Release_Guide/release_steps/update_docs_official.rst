@@ -14,16 +14,16 @@ Update the default branch for Read the Docs.
   repository will need to do the following to update the default branch:
 
     * Log into their Read the Docs account
-
+    
     * Click on the appropriate METplus component project
-
-    * Click on Admin in the top menu
-
-    * Click on Advanced Settings in the left menu
-
+    
+    * Click on Settings in the top right menu
+     
     * Select the new default branch in the dropdown menu for "Default branch"
-    (e.g. main_v4.0.0)
-
+      (e.g. main_v4.0.0) and click the Save button at the bottom of the page
+    
     * Ensure that "latest" points to the new default branch by clicking on
-      "View Docs"in the upper right corner and confirm that the version number
+      "latest" build that just started and click on "Version latest" to view the
+      build run. When it finishes running, click on "View Docs" on the right of
+      the page and confirm that the version number
       displayed in the header is the desired version for "latest".
