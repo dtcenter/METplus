@@ -3,7 +3,7 @@ Update the Documentation on the Web
 
 Update the default branch for Read the Docs.
 
-.. dropdown::Instructions
+.. dropdown:: Instructions
 
   Because Read the Docs is configured to automate the building of new "main"
   branches in the METplus components' repositories, nothing needs to be done
