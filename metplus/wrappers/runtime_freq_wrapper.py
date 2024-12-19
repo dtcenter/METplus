@@ -137,7 +137,7 @@ class RuntimeFreqWrapper(CommandBuilder):
                         self.log_error(f'{prefix}_INPUT_TEMPLATE required to run')
                     continue
 
-            template_dict[label.rstrip('_')] = (template, True)
+            template_dict[label.rstrip('_')] = (template, True, False)
 
         c_dict['TEMPLATE_DICT'] = template_dict
 
@@ -171,7 +171,7 @@ class RuntimeFreqWrapper(CommandBuilder):
             else:
                 label = input_template_labels[idx]
 
-            template_dict[label] = (template, False)
+            template_dict[label] = (template, False, True)
 
         c_dict['TEMPLATE_DICT'] = template_dict
 
@@ -642,10 +642,10 @@ class RuntimeFreqWrapper(CommandBuilder):
             return None, time_info
 
         offset_time_info = time_info
-        for label, (template, required) in self.c_dict['TEMPLATE_DICT'].items():
+        for label, (template, required, uses_custom_labels) in self.c_dict['TEMPLATE_DICT'].items():
             data_type = ''
             template_key = 'INPUT_TEMPLATE'
-            if label in ('FCST', 'OBS'):
+            if not uses_custom_labels:
                 data_type = label
                 template_key = f'{label}_{template_key}'
 
