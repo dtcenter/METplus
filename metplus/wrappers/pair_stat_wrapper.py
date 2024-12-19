@@ -260,7 +260,7 @@ class PairStatWrapper(CompareGriddedWrapper):
             self.log_error('Must set PAIR_STAT_OUTPUT_DIR in config file')
 
         # skip RuntimeFreq input file logic - remove once integrated
-        c_dict['FIND_FILES'] = False
+        #c_dict['FIND_FILES'] = False
         return c_dict
 
     def set_command_line_arguments(self, time_info):
@@ -281,9 +281,10 @@ class PairStatWrapper(CompareGriddedWrapper):
 
     def find_input_files(self, time_info):
         # get model from first var to compare
-        pairs_files = self.find_data(time_info, data_type='PAIRS',
-                                     mandatory=True,
-                                     return_list=True)
+        pairs_files = self.c_dict['ALL_FILES'][0].get('PAIRS')
+        # pairs_files = self.find_data(time_info, data_type='PAIRS',
+        #                              mandatory=True,
+        #                              return_list=True)
         if not pairs_files:
             return None
 
