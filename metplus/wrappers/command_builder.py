@@ -332,6 +332,7 @@ class CommandBuilder:
             for edge in edges:
                 input_list = [
                     f'{data_type}_{app}_FILE_WINDOW_{edge}',
+                    f'{app}_{data_type}_FILE_WINDOW_{edge}',
                     f'{app}_FILE_WINDOW_{edge}',
                     f'{data_type}_FILE_WINDOW_{edge}',
                     f'FILE_WINDOW_{edge}',
