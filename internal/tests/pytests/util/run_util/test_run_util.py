@@ -51,6 +51,10 @@ EXPECTED_CONFIG_KEYS = [
     'INPUT_THRESH',
 ]
 
+def remove_output_base(config):
+    config_output_base = config.getdir("OUTPUT_BASE")
+    if config_output_base and os.path.exists(config_output_base):
+        ru.shutil.rmtree(config_output_base)
 
 def get_run_util_configs(conf_name):
     script_dir = os.path.dirname(__file__)
@@ -130,6 +134,7 @@ def test_pre_run_setup():
     expected_stage = os.path.join(actual.get('config', 'OUTPUT_BASE'), 'stage')
     assert actual.get('config', 'STAGING_DIR') == expected_stage
     assert actual.get('user_env_vars', 'GODS_OF_WEATHER') == 'Indra_Thor_Zeus'
+    remove_output_base(actual)
 
 
 @pytest.mark.util
@@ -139,6 +144,7 @@ def test_pre_run_setup_env_vars():
         actual = ru.pre_run_setup(conf_inputs)
     assert actual.env['MY_ENV_VAR'] == '42'
     assert actual.get('config', 'OMP_NUM_THREADS') == '4'
+    remove_output_base(actual)
 
 
 @pytest.mark.util
@@ -262,6 +268,7 @@ def test_run_metplus(capfd, config_dict, expected, check_err):
     else:
         assert err == ''
 
+    remove_output_base(config)
 
 @pytest.mark.parametrize(
     "side_effect,return_value,check_err",
@@ -284,6 +291,8 @@ def test_run_metplus_errors(capfd, side_effect, return_value, check_err):
             assert "Fatal error occurred" in err
         else:
             assert err == check_err 
+
+        remove_output_base(config)
 
 
 @pytest.mark.util
@@ -308,6 +317,7 @@ def test_get_wrapper_instance_raises(capfd, side_effect, check_err):
     assert actual == None
     out, err = capfd.readouterr()
     assert check_err in err
+    remove_output_base(config)
 
 
 @pytest.mark.util
