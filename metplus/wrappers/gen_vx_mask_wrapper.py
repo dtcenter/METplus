@@ -42,7 +42,7 @@ class GenVxMaskWrapper(LoopTimesWrapper):
 
         # input and output files
         self.get_input_templates(c_dict, {
-            'OBS': {'prefix': 'GEN_VX_MASK', 'required': True},
+            'INPUT': {'prefix': 'GEN_VX_MASK', 'required': True},
         })
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('GEN_VX_MASK_OUTPUT_DIR', '')
@@ -75,8 +75,8 @@ class GenVxMaskWrapper(LoopTimesWrapper):
                            "be equal to the number of items in GEN_VX_MASK_OPTIONS")
 
         # handle window variables [GEN_VX_MASK_]FILE_WINDOW_[BEGIN/END]
-        # or separately for input file (OBS) or mask file (MASK)
-        self.handle_file_window_variables(c_dict, data_types=['OBS', 'MASK'])
+        # or separately for input file (INPUT) or mask file (MASK)
+        self.handle_file_window_variables(c_dict, data_types=['INPUT', 'MASK'])
 
         return c_dict
 
@@ -185,7 +185,7 @@ class GenVxMaskWrapper(LoopTimesWrapper):
 
         # if temp file is not set, this is the first iteration, so read input file
         if not temp_file:
-            input_path = self.c_dict['ALL_FILES'][0].get('OBS', [''])[0]
+            input_path = self.c_dict['ALL_FILES'][0].get('INPUT', [''])[0]
 
             # return if file was not found
             if not input_path:

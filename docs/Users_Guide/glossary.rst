@@ -4364,7 +4364,7 @@ METplus Configuration Glossary
    GEN_VX_MASK_FILE_WINDOW_BEGIN
      Used to control the lower bound of the window around the valid time to determine if a GenVxMask input file should
      be used for processing. Applies to both the input file and the mask file(s).
-     Set :term:`GEN_VX_MASK_OBS_FILE_WINDOW_BEGIN` or
+     Set :term:`GEN_VX_MASK_INPUT_FILE_WINDOW_BEGIN` or
      :term:`GEN_VX_MASK_MASK_FILE_WINDOW_BEGIN` to set them separately.
      Overrides :term:`FILE_WINDOW_BEGIN`.
      See 'Use Windows to Find Valid Files' section for more information.
@@ -4374,14 +4374,14 @@ METplus Configuration Glossary
    GEN_VX_MASK_FILE_WINDOW_END
      Used to control the upper bound of the window around the valid time to determine if an GenVxMask input file should
      be used for processing. Applies to both the input file and the mask file(s).
-     Set :term:`GEN_VX_MASK_OBS_FILE_WINDOW_END` or
+     Set :term:`GEN_VX_MASK_INPUT_FILE_WINDOW_END` or
      :term:`GEN_VX_MASK_MASK_FILE_WINDOW_END` to set them separately.
      Overrides :term:`FILE_WINDOW_END`.
      See 'Use Windows to Find Valid Files' section for more information.
 
      | *Used by:* GenVxMask
 
-   GEN_VX_MASK_OBS_FILE_WINDOW_BEGIN
+   GEN_VX_MASK_INPUT_FILE_WINDOW_BEGIN
      Used to control the lower bound of the window around the valid time to determine if a GenVxMask input file should
      be used for processing. Applies to the input file only (not the mask file).
      Set :term:`GEN_VX_MASK_FILE_WINDOW_BEGIN` to control both input and mask.
@@ -4390,7 +4390,7 @@ METplus Configuration Glossary
 
      | *Used by:* GenVxMask
 
-   GEN_VX_MASK_OBS_FILE_WINDOW_END
+   GEN_VX_MASK_INPUT_FILE_WINDOW_END
      Used to control the upper bound of the window around the valid time to determine if a GenVxMask input file should
      be used for processing. Applies to the input file only (not the mask file).
      Set :term:`GEN_VX_MASK_FILE_WINDOW_END` to control both input and mask.
