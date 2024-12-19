@@ -169,6 +169,8 @@ METplus Version 6.0.0 Release Notes (2024-12-19)
 
      * Modify Requirements section of the Contributor's Guide
        (`#379 <https://github.com/dtcenter/METplus/issues/379>`_)
+     * Make Headers Consistent in METplus components User's Guides
+       (`#898 <https://github.com/dtcenter/METplus/issues/898>`_)
      * Develop an RST template for use cases
        (`#918 <https://github.com/dtcenter/METplus/issues/918>`_)
      * Modify the Documentation Overview section in the Contributor's Guide to add Conventions
@@ -177,6 +179,8 @@ METplus Version 6.0.0 Release Notes (2024-12-19)
        (`#1882 <https://github.com/dtcenter/METplus/issues/1882>`_)
      * Enhancement to Difficulty Index use-case documentation
        (`#2123 <https://github.com/dtcenter/METplus/issues/2123>`_)
+     * Add coordinated release checklist to the METplus Release Guide
+       (`#2282 <https://github.com/dtcenter/METplus/issues/2282>`_)
      * Add Python package/dependent library disclaimer in Contributor's Guides
        (`#2300 <https://github.com/dtcenter/METplus/issues/2300>`_)
      * Update the Release Guide to Document the Proposed Workflow During the RC1 Cycle
@@ -200,7 +204,8 @@ METplus Version 6.0.0 Release Notes (2024-12-19)
      * Add all _RUNTIME_FREQ variables to glossary
        (`#2470 <https://github.com/dtcenter/METplus/issues/2470>`_)
      * Update Documentation Overview and Conventions
-       (`#2489 <https://github.com/dtcenter/METplus/issues/2489>`_)
+       (`#2489 <https://github.com/dtcenter/METplus/issues/2489>`_,
+       `#2454 <https://github.com/dtcenter/METplus/issues/2454>`_)
      * Add the METplus development timeline for the next official release to the User's Guide
        (`#2530 <https://github.com/dtcenter/METplus/issues/2530>`_)
      * Update links in Verification Datasets Guide
@@ -213,6 +218,8 @@ METplus Version 6.0.0 Release Notes (2024-12-19)
        (`#2716 <https://github.com/dtcenter/METplus/issues/2716>`_)
      * Update release guide instructions for METplus Analysis components
        (`#2737 <https://github.com/dtcenter/METplus/issues/2737>`_)
+     * Document the process for managing labels across METplus components
+       (`#2739 <https://github.com/dtcenter/METplus/issues/2739>`_)
      * Update Release Notes to include updating the schedule for releases
        (`#2751 <https://github.com/dtcenter/METplus/issues/2751>`_)
      * Update Release Guide to create the main_vX.Y branch for the first release candidate
@@ -228,22 +235,16 @@ METplus Version 6.0.0 Release Notes (2024-12-19)
      * **Include information on how to use command line arguments to override single config variables**
        (`#2814 <https://github.com/dtcenter/METplus/issues/2814>`_)
 
-  .. dropdown:: Internal
+  .. dropdown:: Repository, build, and test
 
-     * Documentation: Make Headers Consistent in METplus components User's Guides
-       (`#898 <https://github.com/dtcenter/METplus/issues/898>`_)
      * **Improve METplus test coverage**
        (`#2253 <https://github.com/dtcenter/METplus/issues/2253>`_)
-     * Add coordinated release checklist to the METplus Release Guide
-       (`#2282 <https://github.com/dtcenter/METplus/issues/2282>`_)
      * Enhance automated testing to properly test main branches
        (`#2336 <https://github.com/dtcenter/METplus/issues/2336>`_)
      * Recreate Docker/Conda environments after METbaseimage OS upgrade
        (`#2338 <https://github.com/dtcenter/METplus/issues/2338>`_)
      * Update GitHub issue and pull request templates to reflect the current development workflow details
        (`#2346 <https://github.com/dtcenter/METplus/issues/2346>`_)
-     * Update Documentation Overview and Conventions
-       (`#2454 <https://github.com/dtcenter/METplus/issues/2454>`_)
      * Automate the MET version number update
        (`#2509 <https://github.com/dtcenter/METplus/issues/2509>`_)
      * Add GitHub action to run SonarQube for METplus pull requests and feature branches
@@ -252,8 +253,6 @@ METplus Version 6.0.0 Release Notes (2024-12-19)
        (`#2562 <https://github.com/dtcenter/METplus/issues/2562>`_)
      * Replace manage_externals
        (`#2597 <https://github.com/dtcenter/METplus/issues/2597>`_)
-     * Document the process for managing labels across METplus components
-       (`#2739 <https://github.com/dtcenter/METplus/issues/2739>`_)
 
 
 .. _upgrade-instructions:
