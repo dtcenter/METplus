@@ -1,6 +1,6 @@
 """
-Grid-Stat, MODE, Stat-Analysis, UserScript, Gen-Vx-Mask: GFS Clouds
-============================================================================
+Grid-Stat, MODE, Stat-Analysis, UserScript, Gen-Vx-Mask: GFS Cloud Statistics by Type
+=====================================================================================
 
 model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 
