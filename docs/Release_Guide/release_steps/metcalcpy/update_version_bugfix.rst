@@ -1,7 +1,9 @@
 Update Version Number
 ^^^^^^^^^^^^^^^^^^^^^
 
-* Update the version:
+Update the software version information.
+
+.. dropdown:: Instructions
 
   * In 'docs/version', update '__version__'. This value is used by setup.py. 
 
