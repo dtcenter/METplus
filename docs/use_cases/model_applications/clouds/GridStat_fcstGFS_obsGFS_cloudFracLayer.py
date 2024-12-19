@@ -1,8 +1,8 @@
 """
-Grid-Stat, MODE, Stat-Analysis, UserScript: GFS Clouds
+Grid-Stat, MODE, Stat-Analysis, UserScript, Gen-Vx-Mask: GFS Clouds
 ============================================================================
 
-model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
+model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 
 """
 ##############################################################################
@@ -50,9 +50,9 @@ model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 # METplus Components
 # ------------------
 #
-# This use case calls GridStat, MODE three times, StatAnalysis, and UserScript
-# twice.  Additionally, METcalcpy, METplotpy, and METdataio are required to run 
-# this use case.  The METcalcpy scripts accessed include the following:
+# This use case calls GenVxMask once, GridStat once, MODE three times, StatAnalysis
+# once, and UserScript twice.  Additionally, METcalcpy, METplotpy, and METdataio are 
+# required to run this use case.  The METcalcpy scripts accessed include the following:
 #
 # * metcalcpy/util/read_env_vars_in_config.py
 #
@@ -81,9 +81,9 @@ model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 #
 # **Sequence of forecast leads to process (LEAD_SEQ):** 0, 6, 12, 18
 #
-# The Grid-Stat, MODE, and Stat-Analysis tools are run for each time. This example 
-# loops by model initialization time.  It processes one initialization time and three 
-# lead times for each for a total of 3 valid times, listed below.
+# GenVxMask is run once.  The Grid-Stat, MODE, and Stat-Analysis tools run for each time. 
+# This example loops by model initialization time.  It processes one initialization time and 
+# three lead times for each for a total of 3 valid times, listed below.
 #
 # | **Valid:** 2024-03-07_00Z
 # | **Forecast lead:** 00
@@ -107,10 +107,10 @@ model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# parm/use_cases/model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
+# i.e. parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 
 ##############################################################################
 # MET Configuration
@@ -159,15 +159,15 @@ model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 # and high clouds for GSS, CSI, and Frequency bias with lead time.  Input variables to both 
 # scripts are set in the [user_env_vars] section of the .conf file.
 #
-# .. dropdown:: parm/use_cases/model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer/reformat_CTS_linetype.py
+# .. dropdown:: parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer/reformat_CTS_linetype.py
 #
 #   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer/reformat_CTS_linetype.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer/reformat_CTS_linetype.py
 #
-# .. dropdown:: parm/use_cases/model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer/plot_line_stats.py
+# .. dropdown:: parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer/plot_line_stats.py
 #
 #   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer/plot_line_stats.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer/plot_line_stats.py
 
 ##############################################################################
 # Running METplus
@@ -176,7 +176,7 @@ model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 # Pass the use case configuration file to the run_metplus.py script along 
 # with any user-specific system configuration files if desired::
 #
-#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf /path/to/user_system.conf
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
 
@@ -190,10 +190,16 @@ model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
 # Output for this use case will be found in 
-# {OUTPUT_BASE}/model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.  There will 
-# be 5 output directories, grid_stat, mode, stat_analysis, reformatted, and plots
-# The grid_stat directory will contain 3 .stat file sand 3 .nc files::
+# {OUTPUT_BASE}/model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer.  There will 
+# be 6 directories with output data, masks, grid_stat, mode, stat_analysis, reformatted, and 
+# plots.  The mask directory will contain an input mask and the following output mask file::
 #
+# * West_Pacific.nc
+#
+# The grid_stat directory will contain 4 .stat file sand 4 .nc files::
+#
+# * grid_stat_GFS_cloud_000000L_20240307_000000V_pairs.nc
+# * grid_stat_GFS_cloud_000000L_20240307_000000V.stat
 # * grid_stat_GFS_cloud_060000L_20240307_060000V_pairs.nc
 # * grid_stat_GFS_cloud_060000L_20240307_060000V.stat
 # * grid_stat_GFS_cloud_120000L_20240307_120000V_pairs.nc
@@ -203,6 +209,10 @@ model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 #
 # The mode directory will contain the following files::
 #
+# * mode_GFS_high_cloud_000000L_20240307_000000V_000000A_cts.txt
+# * mode_GFS_high_cloud_000000L_20240307_000000V_000000A_obj.nc
+# * mode_GFS_high_cloud_000000L_20240307_000000V_000000A_obj.txt
+# * mode_GFS_high_cloud_000000L_20240307_000000V_000000A.ps
 # * mode_GFS_high_cloud_060000L_20240307_060000V_000000A_cts.txt
 # * mode_GFS_high_cloud_060000L_20240307_060000V_000000A_obj.nc
 # * mode_GFS_high_cloud_060000L_20240307_060000V_000000A_obj.txt
@@ -215,6 +225,10 @@ model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 # * mode_GFS_high_cloud_180000L_20240307_180000V_000000A_obj.nc
 # * mode_GFS_high_cloud_180000L_20240307_180000V_000000A_obj.txt
 # * mode_GFS_high_cloud_180000L_20240307_180000V_000000A.ps
+# * mode_GFS_low_cloud_000000L_20240307_000000V_000000A_cts.txt
+# * mode_GFS_low_cloud_000000L_20240307_000000V_000000A_obj.nc
+# * mode_GFS_low_cloud_000000L_20240307_000000V_000000A_obj.txt
+# * mode_GFS_low_cloud_000000L_20240307_000000V_000000A.ps
 # * mode_GFS_low_cloud_060000L_20240307_060000V_000000A_cts.txt
 # * mode_GFS_low_cloud_060000L_20240307_060000V_000000A_obj.nc
 # * mode_GFS_low_cloud_060000L_20240307_060000V_000000A_obj.txt
@@ -227,6 +241,10 @@ model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 # * mode_GFS_low_cloud_180000L_20240307_180000V_000000A_obj.nc
 # * mode_GFS_low_cloud_180000L_20240307_180000V_000000A_obj.txt
 # * mode_GFS_low_cloud_180000L_20240307_180000V_000000A.ps
+# * mode_GFS_mid_cloud_000000L_20240307_000000V_000000A_cts.txt
+# * mode_GFS_mid_cloud_000000L_20240307_000000V_000000A_obj.nc
+# * mode_GFS_mid_cloud_000000L_20240307_000000V_000000A_obj.txt
+# * mode_GFS_mid_cloud_000000L_20240307_000000V_000000A.ps
 # * mode_GFS_mid_cloud_060000L_20240307_060000V_000000A_cts.txt
 # * mode_GFS_mid_cloud_060000L_20240307_060000V_000000A_obj.nc
 # * mode_GFS_mid_cloud_060000L_20240307_060000V_000000A_obj.txt
@@ -242,9 +260,10 @@ model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 #
 # The stat_analysis directory will contain the following files::
 #
-# * stat_analysis_GFS_ANAL_060000L_CTS.stat
-# * stat_analysis_GFS_ANAL_120000L_CTS.stat
-# * stat_analysis_GFS_ANAL_180000L_CTS.stat
+# * stat_analysis_GFS_ANAL_West_Pacific_000000L_CTS.stat
+# * stat_analysis_GFS_ANAL_West_Pacific_060000L_CTS.stat
+# * stat_analysis_GFS_ANAL_West_Pacific_120000L_CTS.stat
+# * stat_analysis_GFS_ANAL_West_Pacific_180000L_CTS.stat
 #
 # The reformatted directory will contain the following files::
 #
@@ -307,4 +326,4 @@ model_applications/short_range/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/short_range-GridStat_fcstGFS_obsGFS_cloudFracLayer.png'
+# sphinx_gallery_thumbnail_path = '_static/clouds-GridStat_fcstGFS_obsGFS_cloudFracLayer.png'
