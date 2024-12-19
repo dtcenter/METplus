@@ -33,6 +33,7 @@ author = 'UCAR/NCAR, NOAA, CSU/CIRA, and CU/CIRES'
 CURRENT_AUTHORS = [
     'Tara Jensen',
     'John Halley Gotway',
+    'Michelle Harrold',
     'Jonathan Vigh',
     'Mallory Row',
     'Christina Kalb',
