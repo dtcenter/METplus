@@ -1,4 +1,4 @@
-certifi==2023.7.22
+certifi==2024.7.4
 cftime==1.6.2
 coverage==7.2.7
 exceptiongroup==1.1.2
