@@ -20,4 +20,5 @@ Create a new vX.Y.Z-betaN or vX.Y.Z-rcN development release from the develop bra
 .. include:: release_steps/metplus/update_version_on_develop.rst
 .. include:: release_steps/metplus/update_dtc_website.rst
 .. include:: release_steps/finalize_release_on_github_development.rst
+.. include:: release_steps/metplus/update_web_server_data.rst
 .. include:: release_steps/release_acceptance_testing.rst

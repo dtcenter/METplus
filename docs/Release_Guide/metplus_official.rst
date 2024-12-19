@@ -23,5 +23,4 @@ Create a new vX.Y.Z official release from the develop branch.
 .. include:: release_steps/update_docs_official.rst
 .. include:: release_steps/metplus/add_next_version_to_lookup.rst
 .. include:: release_steps/metplus/coordinated_release_announcement.rst
-.. include:: release_steps/metplus/update_web_server_data.rst
 .. include:: release_steps/set_beta_deletion_reminder_official.rst
