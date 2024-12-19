@@ -39,3 +39,7 @@ For rc1 development releases, create a new reference branch for the upcoming off
     * Wait until the entire workflow has run successfully. The final job entitled
       'Create Output Docker Data Volumes' should create Docker data volumes for
       each use case category on DockerHub (dtcenter/met-dev).
+
+.. dropdown:: If creating a betaN or rc2+ release
+
+  Continue to the next instruction.

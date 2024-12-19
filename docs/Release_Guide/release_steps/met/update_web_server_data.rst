@@ -22,3 +22,7 @@ For rc1 development releases, create a new testing input data directory for the 
       cp -r develop vX.Y
 
   * Confirm the result at https://dtcenter.ucar.edu/dfiles/code/METplus/MET/MET_unit_test.
+
+.. dropdown:: If creating a betaN or rc2+ release
+
+  Continue to the next instruction.

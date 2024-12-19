@@ -16,3 +16,7 @@ For rc1 development releases, create a new main branch for the upcoming official
       git pull
       git checkout -b main_vX.Y
       git push -u origin main_vX.Y
+
+.. dropdown:: If creating a betaN or rc2+ release
+
+  Continue to the next instruction.

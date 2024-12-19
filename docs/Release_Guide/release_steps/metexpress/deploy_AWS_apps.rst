@@ -1,26 +1,30 @@
 Deploy AWS apps
 ^^^^^^^^^^^^^^^
 
-* On metexpress.nws.noaa.gov (VPN and permissions required), go to the container_deployment directory.
+Deploy the apps on AWS.
 
-.. parsed-literal::
+.. dropdown:: Instructions
 
-  ssh metexpress.nws.noaa.gov
-  sudo -i -u metexpress
-  cd container_deployment
+  * On metexpress.nws.noaa.gov (VPN and permissions required), go to the container_deployment directory.
 
-* Add any new apps to docker_compose.yml and web/applist.json. Update the container version numbers in docker_compose.yml, and any settings files in settings/
+  .. parsed-literal::
 
-.. parsed-literal::
+    ssh metexpress.nws.noaa.gov
+    sudo -i -u metexpress
+    cd container_deployment
 
-  vi docker_compose.yml
-  vi web/applist.json
-  vi settings/appname/settings.json
+  * Add any new apps to docker_compose.yml and web/applist.json. Update the container version numbers in docker_compose.yml, and any settings files in settings/
 
-* Redeploy the apps.
+  .. parsed-literal::
 
-.. parsed-literal::
+    vi docker_compose.yml
+    vi web/applist.json
+    vi settings/appname/settings.json
 
-  bin/redeploy metexpress
+  * Redeploy the apps.
 
-* Sometimes the apps take a while to start up on AWS. Be patient.
+  .. parsed-literal::
+
+    bin/redeploy metexpress
+
+  * Sometimes the apps take a while to start up on AWS. Be patient.
