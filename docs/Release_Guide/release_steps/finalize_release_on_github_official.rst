@@ -5,6 +5,12 @@ Return to GitHub to finalize the details of this release.
 
 .. dropdown:: Instructions
 
+  * Update issues:
+
+    * Close the GitHub issue for creating this official release.
+
+    * If necessary, reassign any remaining issues for the current milestone to other milestones.
+
   * Update milestones:
 
     * Edit the milestone for the current release by updating the *Due date* with the actual release date.
@@ -14,12 +20,6 @@ Return to GitHub to finalize the details of this release.
     * Create a new milestone for the first bugfix release (e.g. first vX.Y.1 (bugfix) release).
 
     * If necessary, create a new milestone for the next official release (e.g. next vX.Y.Z release).
-
-  * Update issues:
-
-    * Close the GitHub issue for creating this official release.
-
-    * If necessary, reassign any remaining issues for the current milestone to other milestones.
 
   * Update projects:
 

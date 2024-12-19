@@ -4,7 +4,6 @@ Update DTC Web Server Data
 Create Directory for Next Release
 """""""""""""""""""""""""""""""""
 
-
 .. dropdown:: If creating an rc1 release
 
   On the DTC web server where the sample input data for use cases is hosted,
@@ -21,9 +20,9 @@ Create Directory for Next Release
       git pull
 
   Now run the script passing in the version of the next release, i.e.
-  if creating the v4.1.0 release, pass in v5.0 as the argument::
+  if creating the v6.0.0-rc1 release, pass in v6.1 as the argument::
 
-      new_version=v5.0
+      new_version=v6.1
       /home/met_test/setup_next_release_data.py ${new_version}
 
   See the comments in the script for more details.
@@ -41,7 +40,6 @@ Create Directory for Next Release
   Check if the met_test and model_applications directories now exist::
 
       ls -lh /home/met_test/METplus_Data/${new_version}
-
 
 .. dropdown:: If creating a betaN or rc2+ release
 
