@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 from metplus.wrappers.pair_stat_wrapper import PairStatWrapper
 
 pairs_dir = '/some/path/pairs'
+pair_stat_format = 'mpr'
 
 fcst_name = 'APCP'
 fcst_level = 'A03'
@@ -40,6 +41,7 @@ def set_minimum_config_settings(config):
     config.set('config', 'INIT_INCREMENT', '12H')
     config.set('config', 'LEAD_SEQ', f'{lead_hour}H')
 
+    config.set('config', 'PAIR_STAT_FORMAT', pair_stat_format)
     config.set('config', 'PAIR_STAT_CONFIG_FILE',
                '{PARM_BASE}/met_config/PairStatConfig_wrapped')
     config.set('config', 'PAIR_STAT_PAIRS_INPUT_DIR', pairs_dir)
@@ -61,9 +63,9 @@ def set_minimum_config_settings(config):
     ]
 )
 @pytest.mark.wrapper_a
-def test_point_stat_missing_inputs(metplus_config, get_test_data_dir,
-                                   once_per_field, missing, run, thresh, errors,
-                                   allow_missing):
+def test_pair_stat_missing_inputs(metplus_config, get_test_data_dir,
+                                  once_per_field, missing, run, thresh, errors,
+                                  allow_missing):
     config = metplus_config
     set_minimum_config_settings(config)
     config.set('config', 'INPUT_MUST_EXIST', True)
@@ -217,15 +219,6 @@ def test_point_stat_missing_inputs(metplus_config, get_test_data_dir,
         ({'PAIR_STAT_OUTPUT_FLAG_PRC': 'BOTH', },
          {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {prc = BOTH;}'}),
 
-        ({'PAIR_STAT_OUTPUT_FLAG_ECNT': 'BOTH', },
-         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {ecnt = BOTH;}'}),
-
-        ({'PAIR_STAT_OUTPUT_FLAG_ORANK': 'BOTH', },
-         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {orank = BOTH;}'}),
-
-        ({'PAIR_STAT_OUTPUT_FLAG_RPS': 'BOTH', },
-         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {rps = BOTH;}'}),
-
         ({'PAIR_STAT_OUTPUT_FLAG_ECLV': 'BOTH', },
          {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {eclv = BOTH;}'}),
 
@@ -254,9 +247,6 @@ def test_point_stat_missing_inputs(metplus_config, get_test_data_dir,
              'PAIR_STAT_OUTPUT_FLAG_PSTD': 'BOTH',
              'PAIR_STAT_OUTPUT_FLAG_PJC': 'BOTH',
              'PAIR_STAT_OUTPUT_FLAG_PRC': 'BOTH',
-             'PAIR_STAT_OUTPUT_FLAG_ECNT': 'BOTH',
-             'PAIR_STAT_OUTPUT_FLAG_ORANK': 'BOTH',
-             'PAIR_STAT_OUTPUT_FLAG_RPS': 'BOTH',
              'PAIR_STAT_OUTPUT_FLAG_ECLV': 'BOTH',
              'PAIR_STAT_OUTPUT_FLAG_MPR': 'BOTH',
              'PAIR_STAT_OUTPUT_FLAG_SEEPS': 'BOTH',
@@ -266,7 +256,7 @@ def test_point_stat_missing_inputs(metplus_config, get_test_data_dir,
               'output_flag = {fho = BOTH;ctc = BOTH;cts = BOTH;mctc = BOTH;'
               'mcts = BOTH;cnt = BOTH;sl1l2 = BOTH;sal1l2 = BOTH;'
               'vl1l2 = BOTH;val1l2 = BOTH;vcnt = BOTH;pct = BOTH;pstd = BOTH;'
-              'pjc = BOTH;prc = BOTH;ecnt = BOTH;orank = BOTH;rps = BOTH;'
+              'pjc = BOTH;prc = BOTH;'
               'eclv = BOTH;mpr = BOTH;seeps = BOTH;seeps_mpr = BOTH;'
               '}'
          )}),
@@ -763,9 +753,11 @@ def test_pair_stat_all_fields(metplus_config, config_overrides,
     expected_cmds = []
     for index in range(0, len(inits)):
         expected_cmds.append(
-            f"{app_path} {verbosity} "
-            f"{pairs_dir}/{inits[index]}/fcst_file_F{lead_hour_str} "
-            f"{config_file}{extra_args[index]}-outdir {out_dir}/{valids[index]}"
+            f"{app_path}"
+            f" -pairs {pairs_dir}/{inits[index]}/fcst_file_F{lead_hour_str}"
+            f" -format {pair_stat_format}"
+            f" -config {config_file}{extra_args[index]}"
+            f"-outdir {out_dir}/{valids[index]} {verbosity}"
         )
 
     fcst_fmt = f"pairs = [{','.join(fcst_fmts)}];"
@@ -776,7 +768,6 @@ def test_pair_stat_all_fields(metplus_config, config_overrides,
         'METPLUS_FCST_FIELD': fcst_fmt,
         'METPLUS_OBS_FIELD': obs_fmt,
     }
-    special_values = {}
     compare_command_and_env_vars(all_cmds, expected_cmds, env_var_values,
                                  wrapper, special_values)
 
