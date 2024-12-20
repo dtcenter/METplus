@@ -272,6 +272,12 @@ class PairStatWrapper(CompareGriddedWrapper):
         # call CompareGridded function
         super().set_command_line_arguments(time_info)
 
+        # replace field with pairs in the field info
+        for data_type in ('FCST', 'OBS'):
+            key = f'METPLUS_{data_type}_FIELD'
+            self.env_var_dict[key] = self.env_var_dict[key].replace('field =',
+                                                                    'pairs =')
+
         # set optional obs_valid_beg and obs_valid_end arguments
         for ext in ['BEG', 'END']:
             if self.c_dict[f'OBS_VALID_{ext}']:
@@ -307,4 +313,5 @@ class PairStatWrapper(CompareGriddedWrapper):
         """
         return (f"{self.app_path} -pairs {' '.join(self.infiles)}"
                 f" -format {self.c_dict['FORMAT']} -config {self.param}"
+                f"{' ' + ' '.join(self.args) if self.args else ''}"
                 f" -outdir {self.outdir} -v {self.c_dict['VERBOSITY']}")
