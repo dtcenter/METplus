@@ -1,17 +1,21 @@
 Update DockerHub Info in Existing Builds
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* In **docs/Users_Guide/existing_builds.rst**, update the information under the
-  DockerHub dropdown menu.
+Update existing build information on DockerHub.
 
-  * Review the version numbers for the
-    MET, METplus, and METplus Analysis
-    DockerHub items and update them as needed.
+.. dropdown:: Instructions
 
-  * Update the "Last Updated:" information to include the release date,
-    e.g. November 14, 2024.
+  * In **docs/Users_Guide/existing_builds.rst**, update the information under the
+    DockerHub dropdown menu.
 
-  * If you are creating a **beta1** release, remove the text that says
-    "- Coming Soon!" in the dropdown menu label.
+    * Review the version numbers for the
+      MET, METplus, and METplus Analysis
+      DockerHub items and update them as needed.
 
-* Commit changes and push to GitHub.
+    * Update the "Last Updated:" information to include the release date,
+      e.g. November 14, 2024.
+
+    * If you are creating a **beta1** release, remove the text that says
+      "- Coming Soon!" in the dropdown menu label.
+
+  * Commit changes and push to GitHub.

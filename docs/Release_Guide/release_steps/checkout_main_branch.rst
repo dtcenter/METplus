@@ -1,9 +1,11 @@
 Checkout the Main Branch
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-Checkout the main branch for the X.Y release. If you are creating
-the |projectRepo|-X.Y.Z official or bugfix release, checkout main_vX.Y.
+.. dropdown:: Instructions
 
-.. parsed-literal::
+  Checkout the main branch for the X.Y release. If you are creating
+  the |projectRepo|-X.Y.Z official or bugfix release, checkout main_vX.Y.
 
-    git checkout main_vX.Y
+  .. parsed-literal::
+
+      git checkout main_vX.Y

@@ -1,25 +1,29 @@
 Deploy Production Apps
 ^^^^^^^^^^^^^^^^^^^^^^
 
-* If the beta tester approves the apps, deploy them to the production server (mats-docker).
+Deploy the METexpress apps to the production server.
 
-* On mats-docker.gsd.esrl.noaa.gov (the production server, VPN and permissions required), go to the container_deployment directory.
+.. dropdown:: Instructions
 
-.. parsed-literal::
+  * If the beta tester approves the apps, deploy them to the production server (mats-docker).
 
-  ssh www-data@mats-docker.gsd.esrl.noaa.gov
-  cd container_deployment
+  * On mats-docker.gsd.esrl.noaa.gov (the production server, VPN and permissions required), go to the container_deployment directory.
 
-* Add any new apps to docker_compose.yml and web/applist.json. Update the container version numbers in docker_compose.yml, and any settings files in settings/
+  .. parsed-literal::
 
-.. parsed-literal::
+    ssh www-data@mats-docker.gsd.esrl.noaa.gov
+    cd container_deployment
 
-  vi docker_compose.yml
-  vi web/applist.json
-  vi settings/appname/settings.json
+  * Add any new apps to docker_compose.yml and web/applist.json. Update the container version numbers in docker_compose.yml, and any settings files in settings/
 
-* Redeploy the apps.
+  .. parsed-literal::
 
-.. parsed-literal::
+    vi docker_compose.yml
+    vi web/applist.json
+    vi settings/appname/settings.json
 
-  bin/redeploy production
+  * Redeploy the apps.
+
+  .. parsed-literal::
+
+    bin/redeploy production

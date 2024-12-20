@@ -1,86 +1,83 @@
 Create Release Reference Branch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. note::
+For rc1 development releases, create a new reference branch for the upcoming official release.
 
-  These instructions only apply when creating the **first release candidate**
-  (rc1) development release. Skip this section for earlier beta (betaN) or later 
-  release candidate (rc2+) development releases.
+.. dropdown:: If creating an rc1 release
 
+  * For METplus, the corresponding MET release must be created before starting
+    this step. Specifically, a DockerHub tag on dtcenter/met that is named
+    (X+6).Y-latest must already exist. For example, for METplus 4.1.0, the MET
+    DockerHub tag for 10.1-latest must be built.
+    See https://hub.docker.com/repository/docker/dtcenter/met/general for
+    a list of existing tags.
 
-* For METplus, the corresponding MET release must be created before starting
-  this step. Specifically, a DockerHub tag on dtcenter/met that is named
-  (X+6).Y-latest must already exist. For example, for METplus 4.1.0, the MET
-  DockerHub tag for 10.1-latest must be built.
-  See https://hub.docker.com/repository/docker/dtcenter/met/general for
-  a list of existing tags.
+  * Create a branch from the develop branch for the reference branch for the
+    new official release and push it to GitHub. The branch name should match
+    the format main_vX.Y-ref where X.Y is the major/minor release number.
 
-* Create a branch from the develop branch for the reference branch for the
-  new official release and push it to GitHub. The branch name should match
-  the format main_vX.Y-ref where X.Y is the major/minor release number.
+  .. parsed-literal::
 
-.. parsed-literal::
+      cd |projectRepo|
+      git checkout develop
+      git pull
+      git checkout -b main_vX.Y-ref
 
-    cd |projectRepo|
-    git checkout develop
-    git pull
-    git checkout -b main_vX.Y-ref
+  * Update the version number
 
-Update the version number
-"""""""""""""""""""""""""
+    Update the content that should go into the release version but remain unchanged
+    in the develop branch.
 
-Update the content that should go into the release version but remain unchanged
-in the develop branch.
+    Note that this step is mandatory because pushing a new main_vX.Y-ref branch
+    without any new commits will **not** trigger the GitHub Actions workflow to
+    create the output Docker data volumes.
 
-Note that this step is mandatory because pushing a new main_vX.Y-ref branch
-without any new commits will **not** trigger the GitHub Actions workflow to
-create the output Docker data volumes.
+    * Remove **-dev** from the -rc1 version number:
 
-Remove **-dev** from the -rc1 version number:
+      * As of METplus 4.0.0, we are naming releases with X.Y.Z format even if Z is 0.
+      * As of METplus v4.0.0, the file containing the version number is located at
+        **metplus/VERSION**.
+      * The version should match the upcoming release with the -rc1 suffix,
+        like X.Y.Z-rc1
+      * Remove **-dev** from the version number so that it matches the release
+        you are creating.
 
-* As of METplus 4.0.0, we are naming releases with X.Y.Z format even if Z is 0.
-* As of METplus v4.0.0, the file containing the version number is located at
-  **metplus/VERSION**.
-* The version should match the upcoming release with the -rc1 suffix,
-  like X.Y.Z-rc1
-* Remove **-dev** from the version number so that it matches the release
-  you are creating.
+    * Commit these changes.
 
-Commit these changes.
+  * Push Reference Branch to GitHub
 
-Push Reference Branch to GitHub
-"""""""""""""""""""""""""""""""
+    ::
 
-::
+      git push -u origin main_vX.Y-ref
 
-    git push -u origin main_vX.Y-ref
+    * Pushing this branch to GitHub should trigger the GitHub Actions automation
+      that runs all of the use cases and creates Docker data volumes with the output
+      data. These data will be used to verify that any bugfixes applied to the
+      main_vX.Y branch does not break any of existing logic.
 
-Pushing this branch to GitHub should trigger the GitHub Actions automation
-that runs all of the use cases and creates Docker data volumes with the output
-data. These data will be used to verify that any bugfixes applied to the
-main_vX.Y branch does not break any of existing logic.
+  * Monitor GitHub Actions Workflow
 
-Monitor GitHub Actions Workflow
-"""""""""""""""""""""""""""""""
+    * Navigate to https://github.com/dtcenter/METplus/actions and verify that a
+      *Testing* workflow was triggered on the *main_vX.Y-ref* branch.
 
-Navigate to https://github.com/dtcenter/METplus/actions and verify that a
-*Testing* workflow was triggered on the *main_vX.Y-ref* branch.
+    .. figure:: /Release_Guide/release_steps/metplus/metplus-automation-reference-data.png
 
-.. figure:: /Release_Guide/release_steps/metplus/metplus-automation-reference-data.png
+    * Wait until the entire workflow has run successfully. The final job entitled
+      "Create Output Docker Data Volumes" should create Docker data volumes for
+      each use case category on DockerHub (dtcenter/metplus-data-dev). The names
+      of these volumes start with *output-*.
 
-* Wait until the entire workflow has run successfully. The final job entitled
-  "Create Output Docker Data Volumes" should create Docker data volumes for
-  each use case category on DockerHub (dtcenter/metplus-data-dev). The names
-  of these volumes start with *output-*.
+  * Create main branch and push to GitHub
 
-Create main branch and push to GitHub
-"""""""""""""""""""""""""""""""""""""
+    * After the truth data volumes have been generated, create the 'main_vX.Y'
+      branch from 'main_vX.Y-ref' branch. All remaining development for the upcoming
+      official release occurs on this new 'main_vX.Y' branch.
 
-* After the truth data volumes have been generated, create the 'main_vX.Y'
-  branch from 'main_vX.Y-ref' branch. All remaining development for the upcoming
-  official release occurs on this new 'main_vX.Y' branch.
+    ::
 
-::
+      git checkout -b main_vX.Y
+      git push -u origin main_vX.Y
 
-    git checkout -b main_vX.Y
-    git push -u origin main_vX.Y
+.. dropdown:: If creating a betaN or rc2+ release
+
+  Continue to the next instruction.

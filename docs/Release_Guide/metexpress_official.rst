@@ -14,7 +14,6 @@ Create a new vX.Y.Z official release from the develop branch.
 .. include:: release_steps/metexpress/tag_app_version_and_build.rst
 .. include:: release_steps/metexpress/deploy_beta_apps.rst
 .. include:: release_steps/metexpress/deploy_production_apps.rst
-.. include:: release_steps/metexpress/deploy_AWS_apps.rst
 .. include:: release_steps/metexpress/pull_changes_and_merge_to_dev.rst
 .. include:: release_steps/update_docs_official.rst
 .. include:: release_steps/metexpress/update_dtc_website.rst

@@ -1,7 +1,9 @@
 Update Version Number
 ^^^^^^^^^^^^^^^^^^^^^
 
-* Update the version:
+Update the software version information.
+
+.. dropdown:: Instructions
 
   * In the top level file 'build.xml', update the version value for the attribute name 'Specification-Version' under the 'dist' target name.
 

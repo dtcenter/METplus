@@ -1,22 +1,22 @@
 Create Release Branch
 ^^^^^^^^^^^^^^^^^^^^^
 
-.. note::
+For rc1 development releases, create a new main branch for the upcoming official release.
 
-  These instructions only apply when creating the **first release candidate**
-  (rc1) development release. Skip this section for earlier beta (betaN) or later 
-  release candidate (rc2+) development releases.
+.. dropdown:: If creating an rc1 release
 
+  * Create a new 'main_vX.Y' branch from the develop branch for the upcoming
+    official release and push it to GitHub. All remaining development for the
+    upcoming official release occurs on this new 'main_vX.Y' branch.
 
-* Create a new 'main_vX.Y' branch from the develop branch for the upcoming
-  official release and push it to GitHub. All remaining development for the
-  upcoming official release occurs on this new 'main_vX.Y' branch.
+  .. parsed-literal::
 
-.. parsed-literal::
+      cd |projectRepo|
+      git checkout develop
+      git pull
+      git checkout -b main_vX.Y
+      git push -u origin main_vX.Y
 
-    cd |projectRepo|
-    git checkout develop
-    git pull
-    git checkout -b main_vX.Y
-    git push -u origin main_vX.Y
+.. dropdown:: If creating a betaN or rc2+ release
 
+  Continue to the next instruction.
