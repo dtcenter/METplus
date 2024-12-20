@@ -224,7 +224,7 @@ def compare_command_and_env_vars():
 
         for (actual_cmd, env_vars), expected_cmd in zip(all_commands, expected_cmds):
             # ensure commands are generated as expected
-            assert expected_cmd == actual_cmd
+            assert actual_cmd == expected_cmd
 
             # check that environment variables were set properly
             # including deprecated env vars (not in wrapper env var keys)
