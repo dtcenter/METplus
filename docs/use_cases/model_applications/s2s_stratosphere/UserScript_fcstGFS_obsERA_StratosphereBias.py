@@ -1,61 +1,108 @@
 """
-Bias Plot on Zonal Mean Wind and Temperature: UserScript, Series-Analysis
-==========================================================================
+UserScript and SeriesAnalysis: Compute Zonal Mean Bias and Create Plots for Temperature and Wind
+================================================================================================
 
-model_applications/
-s2s_stratosphere/
-UserScript_fcstGFS_obsERA_StratosphereBias.py
+model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias.py
 
 """
+
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
 
 ##############################################################################
 # Scientific Objective
 # --------------------
 #
-# This use case calls functions in METcalcpy to create zonal and meridonial 
-# means on U and T.  It then runs Series-Analysis on the output zonal means 
-# and creates a contour plot of bias in latitude and pressure level.
+# Many common modes of variability in the troposphere have stratospheric teleconnection
+# pathways.  Thus, the stratosphere can be a source of predictability for surface weather.
+# However, the predictive skill gained from the stratosphere can be limited by biases in 
+# the representation of these stratospheric processes.  This use case investigates 
+# stratospheric biases in temperature and wind.  Model biases are plotted for a month time
+# period based on latitude and pressure between 100 and 1 hPa.
 #
+# In addition, this use case also demonstrates how to read semi-structured grids into
+# MET.  Specifically zonal mean data (on a grid of latitude and pressure) is read into 
+# Series-Analysis in the second step of this use case.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 6.0
 
 ##############################################################################
 # Datasets
 # --------
 #
-# GFS 24 hour forecasts: GFS_2018_02_24h.nc
-# ERA: ERA_2018_02.nc
+# **Forecast:** GFS 24 hour forecasts for February 2018
 #
+# **Observation:** ERA reanalysis for February 2018
+#
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
 # ------------------
 #
-# This use case runs the UserScript wrapper tool to run a user provided script,
-# in this case, zonal_mean_driver.py, runs Series-Analysis to compute the bias,
-# and then runs another UserScript, bias_plot_driver.py, to create the bias plots.
+# This use case calls UserScript first, Series-Analysis, and then UserScript
+# a second time.  METcalcpy, METplotpy, and METdataio are needed for this use case to run.
+# The METcalcpy scripts accessed include the following:
 #
+# * metcalcpy/pre_processing/directional_means.py
+#
+# The METplotpy scripts accessed include the following:
+#
+# * metplotpy/stratosphere_diagnostics/stratosphere_plots.py
+#
+# The METdataio scripts accessed include the following:
+#
+# * METreadnc/util/read_netcdf.py
+
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
-# This use case does not loop but plots the entire time period of data
-# 
-# UserScript: Computes zonal and meridional means
-# Series-Analysis: Computes the bias on zonal mean wind and temperature
-# UserScript: Creates bias plots
+# **Beginning time (INIT_BEG):** 02-01-2018
 #
+# **End time (INIT_END):** 02-28-2018
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 30 days
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 24 hours
+#
+# This use case does not loop.  The two calls to UserScript are run once.  Series-
+# Analysis is also run once.  The first call to UserScript runs zonal_mean_driver.py.  
+# This script computes zonal and meridional mean data from the directional_means program in 
+# METplotpy.  Then, Series-Analysis is run on the zonal mean output to compute
+# continuous statistics.  Finally, the second call to UserScript runs bias_plot_driver.py
+# which creates bias plots for temperature and wind.
+#
+# METcalcpy 3.0.0 or higher, METplotpy 3.0.0 or higher, and METdataio 2.1 or higher are needed 
+# for this use case.
 
 ##############################################################################
 # METplus Configuration
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias.conf
-#
 
 #############################################################################
 # MET Configuration
@@ -69,56 +116,55 @@ UserScript_fcstGFS_obsERA_StratosphereBias.py
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# **SeriesAnalysisConfig_wrapped**
+# .. dropdown:: SeriesAnalysisConfig_wrapped
 #
-# .. note:: See the :ref:`Series-Analysis MET Configuration<series-analysis-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
-#
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/SeriesAnalysisConfig_wrapped
-#
+#   .. literalinclude:: ../../../../parm/met_config/SeriesAnalysisConfig_wrapped
 
 ##############################################################################
 # Python Embedding
 # ----------------
 #
-# This use case uses a Python embedding script to read in the zonal mean data to Series-Analysis
+# This use case uses a Python embedding script to read in the semi-structured zonal mean data to Series-Analysis.  Inputs to 
+# this script include the filename to be read in, variable name, and the axis over which the mean is taken.  The script 
+# returns a numpy array containing the zonal mean data (semi-structured grid).
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias/read_met_axis_mean.py
+# .. dropdown:: read_met_axis_mean.py
 #
+#   .. highlight:: bash
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias/read_met_axis_mean.py
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# This use case runs both zonal_mean_driver.py and bias_plot_driver.py.  The zonal mean driver takes an input netCDF 
+# file and the time variable.  Then it computes zonal and meridional means for u and T from directional_means.py in 
+# METcalcpy.  It writes the zonal mean data to output netCDF files.
+#
+# The bias plot driver reads output netCDF files from Series-Analysis and creates plots of the bias over 
+# latitude and pressure level.  Inputs to both of the Python scripts can be found in the [user_env_vars]
+# section of the UserScript_fcstGFS_obsERA_StratosphereBias.conf file
+#
+# .. dropdown:: parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias/zonal_mean_driver.py
+# 
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias/zonal_mean_driver.py
+#
+# .. dropdown:: parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias/bias_plot_driver.py
+# 
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias/bias_plot_driver.py
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# This use case can be run two ways:
+# Pass the use case configuration file to the run_metplus.py script along with any
+# user-specific system configuration files if desired::
 #
-# 1) Passing in UserScript_fcstGFS_obsERA_StratosphereBias.conf, 
-# then a user-specific system configuration file::
+#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias.conf /path/to/user_system.conf
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias.conf -c /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_fcstGFS_obsERA_StratosphereBias.conf:
-#
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-#  and for the [exe] section, you will need to define the location of NON-MET executables.
-#  No executables are required for performing this use case.
-#
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y
-#
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output
@@ -128,6 +174,49 @@ UserScript_fcstGFS_obsERA_StratosphereBias.py
 #
 #   INFO: METplus has successfully finished running.
 #
+# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
+# Output for this use case will be found in 
+# {OUTPUT_BASE}/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar
+# The output includes the netCDF zonal mean files for the forecast and observations, netCDF output 
+# from Series-Analysis, and bias plots.  There are two bias plots output::
+#
+# * plots/GFS_ERA_ME_2018_02_zonal_mean_T.png
+# * plots/GFS_ERA_ME_2018_02_zonal_mean_U.png
+#
+# The statistics output from Series-Analysis output is two netCDF files, one for temperature and one for wind::
+#
+# * SeriesAnalysis/zonal_mean_T_stats_2018_02.nc
+# * SeriesAnalysis/zonal_mean_U_stats_2018_02.nc
+#
+# There are 7 variable fields present in the Series-Analysis output netCDF files (not 
+# including the lat/lon fields).  Those variables are::
+#
+# * level(level)
+# * n_series
+# * series_cnt_TOTAL(lat, level)
+# * series_cnt_ME(lat, level)
+# * series_cnt_RMSE(lat, level)
+# * series_cnt_FBAR(lat, level)
+# * series_cnt_OBAR(lat, level)
+#
+# Text files with a listing of the files input to Series-Analysis are also output::
+#
+# * SeriesAnalysis/series_analysis_files_fcst_init_ALL_valid_ALL_lead_ALL.txt
+# * SeriesAnalysis/series_analysis_files_obs_init_ALL_valid_ALL_lead_ALL.txt
+#
+# The zonal mean output includes 28 files for the forecast
+# and observations, one for each day.  The file format for February 1 is::
+#
+# * FCST/FCST_zonal_mean_U_T_20180201_000000.nc
+# * OBS/OBS_zonal_mean_U_T_20180201_000000.nc
+#
+# There are 4 variable fields present in the zonal mean netCDF file (not including the
+# latitude and pressure fields). Those variables are::
+#
+# * time
+# * u(pres, latitude)
+# * T(pres, latitude)
+# * lead_time
 
 ##############################################################################
 # Keywords
@@ -138,7 +227,9 @@ UserScript_fcstGFS_obsERA_StratosphereBias.py
 #   * UserScriptUseCase
 #   * S2SAppUseCase
 #   * S2SStratosphereAppUseCase
+#   * UserScriptUseCase
 #   * SeriesAnalysisUseCase
+#   * METdataioUseCase
 #   * METcalcpyUseCase
 #   * METplotpyUseCase
 #

@@ -2,11 +2,14 @@
 UserScript: Physics Tendency Planview Plot
 ==========================================
 
-model_applications/
-short_range/
-UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
+model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
 
 ##############################################################################
 # Scientific Objective
@@ -29,6 +32,12 @@ UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
 # METplotpy directories are under the same base directory (i.e. if the METPLUS_BASE directory is
 # /home/username/working/METplus, then clone the METplotpy source
 # code into the /home/username/working directory).  
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 5.0
 
 ##############################################################################
 # Datasets
@@ -83,7 +92,7 @@ UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
 #
 # METplus first loads all of the configuration files found in
 # parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
+# then it loads any configuration files passed to METplus via the command line,
 # i.e.
 # parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
 #
@@ -95,48 +104,29 @@ UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
 # -----------------
 #
 # No MET tools are used in this use case.
-#
-# METplus sets environment variables based on user settings in the METplus
-# configuration file. 
-# See :ref:`How METplus controls MET config file settings<metplus-control-met>`
-# for more details. 
 
+##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# This use case can be run in the following way: 
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# 1) Passing in UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
-# then a user-specific system configuration file::
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf  /path/to/user_system.conf
 #
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf  /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in
-# UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf::
-#
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
-#
-# The former method is recommended. Whether you add them to a user-specific
-# configuration file or modify the metplus_config files, the following
-# variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are
-#   unpacked (See Datasets section to obtain tarballs). This is not required
-#   to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must
-#   be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
-#
-# **NOTE:** All of these items must be found under the [dir] section.
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output

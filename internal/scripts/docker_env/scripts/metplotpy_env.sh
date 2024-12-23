@@ -33,4 +33,4 @@ BASE_ENV=metplus_base.${METPLUS_VERSION}
 
 mamba create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 
-mamba install -y --name ${ENV_NAME} -c conda-forge matplotlib==3.6.3 scipy==1.9.3 plotly==5.13.0 xarray==2023.1.0 netcdf4==1.6.2 pyyaml==6.0 python-kaleido==0.2.1 imageio==2.25.0 imutils==0.5.4 scikit-image pint==0.20.1 metpy cartopy==0.21.1
+mamba install -y --name ${ENV_NAME} -c conda-forge matplotlib==3.6.3 scipy>=1.11.1 plotly==5.13.0 xarray==2023.1.0 netcdf4==1.6.2 pyyaml==6.0 python-kaleido>=0.2.1 imageio==2.25.0 imutils==0.5.4 scikit-image==0.19.3 pint==0.20.1 metpy==1.4.0 cartopy==0.21.1

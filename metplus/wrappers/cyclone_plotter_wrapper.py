@@ -8,8 +8,6 @@ A Python class that generates plots of extra tropical cyclone forecast data,
 import os
 import time
 import datetime
-import re
-import sys
 from collections import namedtuple
 
 
@@ -331,6 +329,8 @@ class CyclonePlotterWrapper(CommandBuilder):
             if not self.is_global_extent:
                 self.logger.debug(f"Subset the data based on the region of interest.")
                 subset_by_region_df = self.subset_by_region(sanitized_df)
+                if subset_by_region_df.empty:
+                    return None
                 final_df = subset_by_region_df.copy(deep=True)
             else:
                 final_df = sanitized_df.copy(deep=True)
@@ -608,7 +608,8 @@ class CyclonePlotterWrapper(CommandBuilder):
         masked.reset_index(drop=True,inplace=True)
 
         if len(masked) == 0:
-            sys.exit("No data in region specified, please check your lon and lat values in the config file.")
+            self.log_error("No data in region specified, please check your lon and lat values in the config file.")
+            return None
 
         return masked
 

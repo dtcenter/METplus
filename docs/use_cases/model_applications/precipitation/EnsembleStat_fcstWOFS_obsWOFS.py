@@ -1,10 +1,16 @@
 """
 Ensemble-Stat: WoFS
-================================================================
+===================
 
 model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -15,10 +21,16 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 # thresholds to provide meaningful analysis output that can provide direction to future WoFS improvement.
 
 ##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 4.1
+
+##############################################################################
 # Datasets
 # --------
 #
-#  * Forecast dataset: WoFS Ensemble
+# * Forecast dataset: WoFS Ensemble
 #
 
 ###############################################################################
@@ -27,7 +39,7 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 #
 # This use case runs PCP-Combine on each ensemble member, then runs
 # Ensemble-Stat on the output. Finally, it runs Grid-Stat on the output from
-# Ensemble-Stat
+# Ensemble-Stat.
 
 ###############################################################################
 # METplus Workflow
@@ -51,67 +63,55 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # METplus sets environment variables based on user settings in the METplus configuration file. 
 # See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details. 
 #
 # **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!**
 #
-# If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
+# If there is a setting in the MET configuration file that is currently
+# not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# **EnsembleStatConfig_wrapped**
+# .. dropdown:: EnsembleStatConfig_wrapped
 #
-# .. note:: See the :ref:`EnsembleStat MET Configuration<ens-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+#   .. literalinclude:: ../../../../parm/met_config/EnsembleStatConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/EnsembleStatConfig_wrapped
+# .. dropdown:: GridStatConfig_wrapped
 #
-# **GridStatConfig_wrapped**
+#   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
+
+##############################################################################
+# Python Embedding
+# ----------------
 #
-# .. note:: See the :ref:`GridStat MET Configuration<grid-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# This use case can be run two ways:
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# 1) Passing in EnsembleStat_fcstWOFS_obsWOFS.py then a user-specific system configuration file::
+#  run_metplus.py /path/to/METplus/parm/use_cases/model_applications/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf /path/to/user_system.conf
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf -c /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in EnsembleStat_fcstWOFS_obsWOFS.conf::
-#
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
-#
-# **NOTE:** All of these items must be found under the [dir] section.
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output
@@ -123,11 +123,10 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
 # Output for this use case will be found in WOFS/grid_stat (relative to **OUTPUT_BASE**)
-# The following folder/file combination will be created:
+# The following folder/file combination will be created::
 #
 # * 20200615/1700/grid_stat_WOFS_PCP_1700_A1_000000L_20200615_180000V_pairs.nc
 # * 20200615/1700/grid_stat_WOFS_PCP_1700_A1_000000L_20200615_180000V.stat
-
 
 ##############################################################################
 # Keywords

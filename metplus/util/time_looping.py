@@ -12,7 +12,7 @@ from .config_util import log_runtime_banner
 def time_generator(config):
     """! Generator used to read METplusConfig variables for time looping
 
-    @param METplusConfig object to read
+    @param config METplusConfig object to read
     @returns None if not enough information is available on config.
      Yields the next run time dictionary or None if something went wrong
     """
@@ -414,16 +414,16 @@ def get_lead_sequence(config, input_dict=None, wildcard_if_empty=False):
             return lead_seq
 
         out_leads = _handle_lead_seq(config,
-                                    lead_seq,
-                                    lead_min,
-                                    lead_max)
+                                     lead_seq,
+                                     lead_min,
+                                     lead_max)
 
     # use INIT_SEQ to build lead list based on the valid time
     elif init_seq:
         out_leads = _handle_init_seq(init_seq,
-                                    input_dict,
-                                    lead_min,
-                                    lead_max)
+                                     input_dict,
+                                     lead_min,
+                                     lead_max)
     elif lead_groups:
         out_leads = _handle_lead_groups(lead_groups)
 
@@ -434,6 +434,7 @@ def get_lead_sequence(config, input_dict=None, wildcard_if_empty=False):
         return [0]
 
     return out_leads
+
 
 def _are_lead_configs_ok(lead_seq, init_seq, lead_groups,
                          config, input_dict, no_max):
@@ -463,7 +464,7 @@ def _are_lead_configs_ok(lead_seq, init_seq, lead_groups,
             return False
 
         # if looping by init, fail and exit
-        if 'valid' not in input_dict.keys():
+        if 'valid' not in input_dict.keys() or input_dict['valid'] == '*':
             log_msg = ('INIT_SEQ specified while looping by init time.'
                        ' Use LEAD_SEQ or change to loop by valid time')
             config.logger.error(log_msg)
@@ -476,8 +477,9 @@ def _are_lead_configs_ok(lead_seq, init_seq, lead_groups,
 
     return True
 
+
 def _get_lead_min_max(config):
-    # remove any items that are outside of the range specified
+    # remove any items that are outside the range specified
     #  by LEAD_SEQ_MIN and LEAD_SEQ_MAX
     # convert min and max to relativedelta objects, then use current time
     # to compare them to each forecast lead
@@ -490,6 +492,7 @@ def _get_lead_min_max(config):
     lead_min = get_relativedelta(lead_min_str, 'H')
     lead_max = get_relativedelta(lead_max_str, 'H')
     return lead_min, lead_max, no_max
+
 
 def _handle_lead_seq(config, lead_strings, lead_min=None, lead_max=None):
     out_leads = []
@@ -511,10 +514,11 @@ def _handle_lead_seq(config, lead_strings, lead_min=None, lead_max=None):
     lead_max_approx = now_time + lead_max
     for lead in leads:
         lead_approx = now_time + lead
-        if lead_approx >= lead_min_approx and lead_approx <= lead_max_approx:
+        if lead_min_approx <= lead_approx <= lead_max_approx:
             out_leads.append(lead)
 
     return out_leads
+
 
 def _handle_init_seq(init_seq, input_dict, lead_min, lead_max):
     out_leads = []
@@ -533,14 +537,14 @@ def _handle_init_seq(init_seq, input_dict, lead_min, lead_max):
                 out_leads.append(get_relativedelta(current_lead, default_unit='H'))
             current_lead += 24
 
-    out_leads = sorted(out_leads, key=lambda
-        rd: ti_get_seconds_from_relativedelta(rd, input_dict['valid']))
+    out_leads = sorted(out_leads, key=lambda rd: ti_get_seconds_from_relativedelta(rd, input_dict['valid']))
     return out_leads
+
 
 def _handle_lead_groups(lead_groups):
     """! Read groups of forecast leads and create a list with all unique items
 
-         @param lead_group dictionary where the values are lists of forecast
+         @param lead_groups dictionary where the values are lists of forecast
          leads stored as relativedelta objects
          @returns list of forecast leads stored as relativedelta objects
     """
@@ -552,36 +556,84 @@ def _handle_lead_groups(lead_groups):
 
     return out_leads
 
+
 def get_lead_sequence_groups(config):
     # output will be a dictionary where the key will be the
     #  label specified and the value will be the list of forecast leads
-    lead_seq_dict = {}
-    # used in plotting
+    lead_seq_dict = _get_lead_groups_from_indices(config)
+    if lead_seq_dict is not None:
+        return lead_seq_dict
+
+    # if no indices were found, check if divisions are requested
+    return _get_lead_groups_from_divisions(config)
+
+
+def _get_lead_groups_from_indices(config):
     all_conf = config.keys('config')
     indices = []
-    regex = re.compile(r"LEAD_SEQ_(\d+)")
+    regex = re.compile(r"LEAD_SEQ_(\d+)$")
     for conf in all_conf:
         result = regex.match(conf)
         if result is not None:
             indices.append(result.group(1))
 
+    if not indices:
+        return None
+
+    lead_seq_dict = {}
     # loop over all possible variables and add them to list
     for index in indices:
-        if config.has_option('config', f"LEAD_SEQ_{index}_LABEL"):
-            label = config.getstr('config', f"LEAD_SEQ_{index}_LABEL")
-        else:
-            log_msg = (f'Need to set LEAD_SEQ_{index}_LABEL to describe '
-                       f'LEAD_SEQ_{index}')
-            config.logger.error(log_msg)
-            return None
-
+        label = _get_label_from_index(config, index)
         # get forecast list for n
         lead_string_list = getlist(config.getstr('config', f'LEAD_SEQ_{index}'))
-        lead_seq = _handle_lead_seq(config,
-                                    lead_string_list,
-                                    lead_min=None,
-                                    lead_max=None)
+        lead_seq = _handle_lead_seq(config, lead_string_list,
+                                    lead_min=None, lead_max=None)
         # add to output dictionary
         lead_seq_dict[label] = lead_seq
 
     return lead_seq_dict
+
+
+def _get_lead_groups_from_divisions(config):
+    if not config.has_option('config', 'LEAD_SEQ_GROUP_SIZE'):
+        return {}
+
+    lead_list = getlist(config.getstr('config', 'LEAD_SEQ', ''))
+    divisions = config.getstr('config', 'LEAD_SEQ_GROUP_SIZE')
+    divisions = get_relativedelta(divisions, default_unit='H')
+    lead_min = get_relativedelta('0')
+    lead_max = divisions - get_relativedelta('1S')
+    index = 1
+    now = datetime.now()
+    # maximum 1000 divisions can be created to prevent infinite loop
+    num_leads = 0
+    lead_groups = {}
+    while now + lead_max < now + (divisions * 1000):
+        lead_seq = _handle_lead_seq(config, lead_list,
+                                    lead_min=lead_min, lead_max=lead_max)
+        if lead_seq:
+            label = _get_label_from_index(config, index)
+            lead_groups[label] = lead_seq
+            num_leads += len(lead_seq)
+
+        # if all forecast leads have been handled, break out of while loop
+        if num_leads >= len(lead_list):
+            break
+
+        index += 1
+        lead_min += divisions
+        lead_max += divisions
+
+    if num_leads < len(lead_list):
+        config.logger.warning('Could not split LEAD_SEQ using LEAD_SEQ_GROUP_SIZE')
+        return None
+
+    return lead_groups
+
+
+def _get_label_from_index(config, index):
+    if config.has_option('config', f"LEAD_SEQ_{index}_LABEL"):
+        return config.getstr('config', f"LEAD_SEQ_{index}_LABEL")
+    if config.has_option('config', "LEAD_SEQ_GROUP_LABEL"):
+        return f"{config.getstr('config', 'LEAD_SEQ_GROUP_LABEL')}{index}"
+    return f"Group{index}"

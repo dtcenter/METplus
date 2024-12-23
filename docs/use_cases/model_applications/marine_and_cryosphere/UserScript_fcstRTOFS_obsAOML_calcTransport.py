@@ -1,10 +1,17 @@
 """
 UserScript: Python Script to compute cable transport
-=======================================================
+====================================================
 
 model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransport.conf
 
 """
+
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -17,6 +24,12 @@ model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransp
 # Scatter Index. The operational code utilizes 21 days of data and computes 7 day statistics. 
 # For the use case 3 days of data are utilized. The valid date is passed though an argument. The valid date 
 # is the last processed day i.e. the code grabs 3 previous days of data.    
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 5.1
 
 ##############################################################################
 # Datasets
@@ -72,59 +85,46 @@ model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransp
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# i.e. -c parm/use_cases/model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransport.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransport.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransport.conf
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
-# None. All of the processing is completed in the UserScript
-#
+# None. All of the processing is completed in the UserScript.
 
 ##############################################################################
-# User Script
+# Python Embedding
 # ----------------
+#
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
 #
 # This use case uses one Python script to read forecast and observation data
 # as well as processing the desired statistics.
 #
-# parm/use_cases/model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransport/read_aomlcable_rtofs_transport.py
+# .. dropdown:: parm/use_cases/model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransport/read_aomlcable_rtofs_transport.py
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransport/read_aomlcable_rtofs_transport.py
-#
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransport/read_aomlcable_rtofs_transport.py
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# This use case can be run two ways:
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# 1) Passing in UserScript_fcstRTOFS_obsAOML_calcTransport.conf then a user-specific system configuration file::
+#    run_metplus.py /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransport.conf /path/to/user_system.conf
 #
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransport.conf /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_fcstRTOFS_obsAOML_calcTransport.conf::
-#
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransport.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [config]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
-#
+# See :ref:`running-metplus` for more information.
 #
 
 ##############################################################################

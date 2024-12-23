@@ -248,12 +248,6 @@ def test_plot_point_obs_missing_inputs(metplus_config, get_test_data_dir,
         ({'PLOT_POINT_OBS_POINT_DATA': point_data_input, },
          {'METPLUS_POINT_DATA': f'point_data = {point_data_format}'}),
 
-        ({'PLOT_POINT_OBS_TIME_OFFSET_WARNING': 3},
-         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 3;'}),
-        ({'TIME_OFFSET_WARNING': 2},
-         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 2;'}),
-        ({'TIME_OFFSET_WARNING': 2, 'PLOT_POINT_OBS_TIME_OFFSET_WARNING': 4},
-         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 4;'}),
     ]
 )
 @pytest.mark.wrapper_c
@@ -277,19 +271,19 @@ def test_plot_point_obs(metplus_config, config_overrides, env_var_values):
     out_dir = wrapper.c_dict.get('OUTPUT_DIR')
     expected_cmds = [
         (f"{app_path} {verbosity} "
-         f'"{input_dir}/pb2nc/ndas.20120409.t12z.prepbufr.tm00.nc" '
+         f'{input_dir}/pb2nc/ndas.20120409.t12z.prepbufr.tm00.nc '
          f"{out_dir}/nam_and_ndas.20120409.t12z.prepbufr_CONFIG.ps"),
         (f"{app_path} {verbosity} "
-         f'"{input_dir}/pb2nc/ndas.20120410.t00z.prepbufr.tm00.nc" '
+         f'{input_dir}/pb2nc/ndas.20120410.t00z.prepbufr.tm00.nc '
          f"{out_dir}/nam_and_ndas.20120410.t00z.prepbufr_CONFIG.ps"),
     ]
 
     # add -point_obs argument if template has 2 items
     if ('PLOT_POINT_OBS_INPUT_TEMPLATE' in config_overrides and
             len(config_overrides['PLOT_POINT_OBS_INPUT_TEMPLATE'].split(',')) > 1):
-        common_str = f' -point_obs "{input_dir}/ascii2nc/trmm_'
-        expected_cmds[0] += f'{common_str}2012040912_3hr.nc"'
-        expected_cmds[1] += f'{common_str}2012041000_3hr.nc"'
+        common_str = f' -point_obs {input_dir}/ascii2nc/trmm_'
+        expected_cmds[0] += f'{common_str}2012040912_3hr.nc'
+        expected_cmds[1] += f'{common_str}2012041000_3hr.nc'
 
     # add -plot_grid argument if provided
     if 'PLOT_POINT_OBS_GRID_INPUT_TEMPLATE' in config_overrides:

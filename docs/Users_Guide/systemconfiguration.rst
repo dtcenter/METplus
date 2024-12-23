@@ -4,7 +4,97 @@
 Configuration
 *************
 
-This chapter is a guide on configuring METplus Wrappers.
+This chapter describes how to configure METplus Wrappers.
+
+.. _how_to_configure:
+
+How to Configure
+================
+
+The settings of a METplus wrappers run are controlled by METplus
+configuration variables.
+
+All variables in the :ref:`default_configuration_file` are read first.
+Variables in the :ref:`default_configuration_file` can be changed from the
+default values to be applied to every run.
+
+Additional configuration variables are set using command line arguments to the
+**run_metplus.py** script.
+Arguments to the script can be the path to a METplus configuration file that
+defines multiple configuration variables or a key/value pair that sets a single
+configuration variable.
+
+One or more :ref:`use_case_configuration_files` define settings for a given
+METplus run.
+Users often create a :ref:`user_configuration_file` to store settings specific
+to the system on which they are running and their personal preferences.
+It is recommended to provide a user configuration file *after* any use case
+specific configuration files in the command line argument list
+(see :ref:`order_matters`).
+
+.. _single_config:
+
+How to Set a Single Config
+--------------------------
+
+Single configuration variable overrides should match the format
+**<SECTION>.<VARIABLE>=<VALUE>** where:
+
+* **<SECTION>** is the section within the METplus configuration.
+  This is typically *config* unless :ref:`process_list_instance_names`
+  or :ref:`user_env_vars` are used
+* **<VARIABLE>** is the name of the configuration variable to set
+* **<VALUE>** is the value to set
+
+Example::
+
+    config.OUTPUT_BASE=/my/output/dir
+
+This will set the value of the variable **OUTPUT_BASE** of the **[config]**
+section to **/my/output/dir**.
+
+Version 6.1.0 added support for setting a list value in single config overrides.
+
+Example::
+
+    config.LEAD_SEQ=6H,12H
+
+This will set the value of **[config] LEAD_SEQ** to
+a list containing **6H** and **12H**.
+
+If spaces are present in the value, then quotation marks must be used::
+
+    config.LEAD_SEQ="6H, 12H"
+
+
+.. _order_matters:
+
+Order Matters
+-------------
+
+The order in which the arguments are provided matters. If a configuration
+variable is defined multiple times, each subsequent instance of that variable
+will override the previous value. This means that the last value will be used.
+
+Example:
+
+If a file named *my_lead.conf* contains::
+
+    [config]
+    LEAD_SEQ = 12H
+
+and the conf file is provided before the single config override::
+
+    run_metplus.py my_lead.conf config.LEAD_SEQ=6H
+
+then the value of **[config] LEAD_SEQ** will be **6H**.
+
+However, if the conf file is provided after the single config override::
+
+    run_metplus.py config.LEAD_SEQ=6H my_lead.conf
+
+then the value of **[config] LEAD_SEQ** will be **12H**.
+
 
 Config Best Practices / Recommendations
 =======================================
@@ -49,6 +139,7 @@ Config Best Practices / Recommendations
   :ref:`user_configuration_file` that is passed into every call to
   run_metplus.py. This is done to avoid the need to change the default values
   after every update.
+
 
 .. _default_configuration_file:
 
@@ -163,7 +254,7 @@ METPLOTPY_BASE (user_env_vars)
 
 This is the path to the location where METplotpy is installed.
 The variable is found under the [user_env_vars] section heading, which
-will set it as an environment variable. See :ref:`user_defined_config`
+will set it as an environment variable. See :ref:`user_env_vars`
 for more information on the [user_env_vars] section.
 This variable is referenced in some METplotpy functions.
 It is not necessary to set this variable if METplotpy will not be used or if
@@ -795,11 +886,16 @@ is equivalent to setting::
   [config]
   LEAD_SEQ = 0, 3, 6, 9, 12
 
+.. _grouping_forecast_leads:
+
+Grouping Forecast Leads
+"""""""""""""""""""""""
+
 Grouping forecast leads is possible as well using a special version of
-the :term:`LEAD_SEQ` variable for the
-**SeriesByLead Wrapper Only**.
-If :term:`SERIES_BY_LEAD_GROUP_FCSTS` = True, then groups of
-forecast leads can be defined to be evaluated together.
+the :term:`LEAD_SEQ` variable.
+If {APP_NAME}_RUNTIME_FREQ, e.g. SERIES_ANALYSIS_RUNTIME_FREQ, is set to
+**RUN_ONCE_PER_INIT_OR_VALID**,
+then groups of forecast leads can be defined to be evaluated together.
 Any number of these groups can be defined by setting
 configuration variables LEAD_SEQ_1, LEAD_SEQ_2, ..., :term:`LEAD_SEQ_\<n\>`.
 The value can be defined with a
@@ -807,12 +903,60 @@ comma-separated list of integers (currently only hours are supported here)
 or using :ref:`begin_end_incr`. Each :term:`LEAD_SEQ_\<n\>` must have a
 corresponding variable :term:`LEAD_SEQ_<n>_LABEL`. For example::
 
-
   [config]
   LEAD_SEQ_1 = 0, 6, 12, 18
   LEAD_SEQ_1_LABEL = Day1
   LEAD_SEQ_2 = begin_end_incr(24,42,6)
   LEAD_SEQ_2_LABEL = Day2
+
+In this example, the label **Day1** will be used for 0, 6, 12, 18 and
+the label **Day2** will be used for 24, 30, 36, 42.
+
+Forecast leads can also be grouped by defining a single list of forecast leads
+with :term:`LEAD_SEQ`, then specifying the size of each group using
+:term:`LEAD_SEQ_GROUP_SIZE`. For example::
+
+    [config]
+    LEAD_SEQ = 0, 12, 24, 36
+    LEAD_SEQ_GROUP_SIZE = 1d
+
+This configuration will create groups of forecast leads that each contain 1 day.
+This is the equivalent of setting::
+
+    [config]
+    LEAD_SEQ_1 = 0, 12
+    LEAD_SEQ_2 = 24, 36
+
+Each group will be labeled Group<INDEX> where <INDEX> is the group number.
+In this example, the label **Group1** will be used for 0, 12 and
+the label **Group2** will be used for 24, 36.
+The label can be referenced in filename templates using {label}.
+
+To change the text "Group" to something else, set :term:`LEAD_SEQ_GROUP_LABEL`.
+Setting::
+
+    LEAD_SEQ_GROUP_LABEL = Day
+
+will label the groups **Day1** and **Day2**.
+
+:term:`LEAD_SEQ_<n>_LABEL` can also be used to change the label for a specific
+group. From the previous example, setting::
+
+    LEAD_SEQ_2_LABEL = SecondDay
+
+will label the groups **Day1** and **SecondDay**.
+
+If the list of forecast leads contain a gap where there are no leads that fall
+within a given group, that group will be skipped. For example::
+
+    [config]
+    LEAD_SEQ = 0, 12, 48, 60
+    LEAD_SEQ_GROUP_SIZE = 1d
+    LEAD_SEQ_GROUP_LABEL = Day
+
+The label **Day1** will be used for 0, 12 and
+the label **Day3** will be used for 48, 60.
+Notice that a **Day2** label is not created.
 
 :term:`INIT_SEQ`
 """"""""""""""""
@@ -2085,6 +2229,96 @@ can be simplified as::
     INPUT_TEMPLATE = ensbegin_end_incr(1,8,1,2).nc
 
 
+.. _allow-missing-inputs:
+
+Allow Missing Inputs
+--------------------
+
+When any of the required input files for a given METplus run time are not found,
+an error is reported. In result, the entire METplus run fails.
+In some cases, users may expect a certain number of inputs to be unavailable
+and do not want the entire run to fail when this happens.
+
+The :term:`ALLOW_MISSING_INPUTS` config variable can be set to **True** to
+report a warning when required inputs are not found for a given run time.
+An error at the end of the METplus run will only be reported if the number
+of successful runs does not meet the value defined by :term:`INPUT_THRESH`.
+The value of :term:`INPUT_THRESH` should be a decimal number between 0 and 1.
+The default value is 0.0, so any missing input files in a run will still report
+an error unless this value is changed.
+
+The threshold is compared to the results of each item in the
+:ref:`Process_List`, so each wrapper listed in the **PROCESS_LIST** must meet
+the threshold to prevent an error.
+
+There are wrapper-specific versions of both :term:`ALLOW_MISSING_INPUTS` and
+:term:`INPUT_THRESH` for most of the wrappers,
+e.g. :term:`GRID_STAT_ALLOW_MISSING_INPUTS` and :term:`GRID_STAT_INPUT_THRESH`.
+Refer to the :ref:`python_wrappers` chapter or the :ref:`METplus_glossary`
+to see which variables are supported.
+
+**Example 1**::
+
+    [config]
+    PROCESS_LIST = RegridDataPlane, GridStat
+    VALID_TIME_FMT = %Y%m%d%H
+    VALID_BEG = 2024020301
+    VALID_BEG = 2024020310
+    VALID_INCREMENT = 1H
+    LEAD_SEQ = 0
+
+    ALLOW_MISSING_INPUTS = True
+    INPUT_THRESH = 0.6
+
+In this example, 10 valid times will be run, so there will be 10 calls to
+RegridDataPlane and 10 calls to GridStat. The input threshold is set
+to 60%, so if 6 or more of the RegridDataPlane runs *and*
+6 or more of the GridStat runs successfully find all of the required files,
+an error will not be reported. If 5 or fewer runs for either wrapper succeed,
+then an error will be reported.
+
+**Example 2**::
+
+
+    [config]
+    PROCESS_LIST = RegridDataPlane, GridStat
+    VALID_TIME_FMT = %Y%m%d%H
+    VALID_BEG = 2024020301
+    VALID_BEG = 2024020310
+    VALID_INCREMENT = 1H
+    LEAD_SEQ = 0
+
+    GRID_STAT_ALLOW_MISSING_INPUTS = True
+    INPUT_THRESH = 0.6
+
+In this case, only GridStat wrapper will allow missing inputs.
+At least 60% of the GridStat runs
+must successfully find the required input files to prevent an error.
+Any missing inputs for RegridDataPlane will result in an error.
+
+**Example 3**::
+
+
+    [config]
+    PROCESS_LIST = RegridDataPlane, GridStat
+    VALID_TIME_FMT = %Y%m%d%H
+    VALID_BEG = 2024020301
+    VALID_BEG = 2024020310
+    VALID_INCREMENT = 1H
+    LEAD_SEQ = 0
+
+    ALLOW_MISSING_INPUTS = True
+    REGRID_DATA_PLANE_INPUT_THRESH = 0.9
+    GRID_STAT_INPUT_THRESH = 0.6
+
+In this case, both GridStat and RegridDataPlane wrappers allow missing inputs,
+but the threshold to prevent an error differs between wrappers.
+At least 90% of the RegridDataPlane runs
+must successfully find the required input files to prevent an error.
+At least 60% of the GridStat runs
+must successfully find the required input files to prevent an error.
+Any missing inputs for RegridDataPlane will result in an error.
+
 .. _metplus-control-met:
 
 How METplus controls MET configuration variables
@@ -2718,7 +2952,7 @@ The values must match the format of the variables in the default MET
 configuration file with a semi-colon after single values and arrays and curly
 braces around dictionaries.
 
-.. _user_defined_config:
+.. _user_env_vars:
 
 User Environment Variables
 ==========================

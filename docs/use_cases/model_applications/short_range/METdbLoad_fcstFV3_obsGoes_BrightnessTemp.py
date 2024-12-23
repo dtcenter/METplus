@@ -2,11 +2,15 @@
 METdbLoad: Brightness Temperature
 =================================
 
-model_applications/
-short_range/
-METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
+model_applications/short_range/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -14,6 +18,12 @@ METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 # Load MET data into a database using the met_db_load.py script found in 
 # dtcenter/METdataio.  Specifically, this use case loads distance map output
 # from grid_stat and mode output into a database.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 6.0
 
 ##############################################################################
 # Datasets
@@ -56,10 +66,17 @@ METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
+# then it loads any configuration files passed to METplus via the command line, 
+# i.e. parm/use_cases/model_applications/short_range/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
+
+##############################################################################
+# MET Configuration
+# -----------------
+#
+# There are no MET tools used in this use case.
 
 ##############################################################################
 # XML Configuration
@@ -75,37 +92,33 @@ METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 #     section of the User's Guide for more information on the values
 #     substituted in the file below:
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/METdbLoad/METdbLoadConfig.xml
+# .. dropdown:: METdbLoadConfig.xml
+#
+#   .. highlight:: bash
+#   .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/METdbLoad/METdbLoadConfig.xml
+
+##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# This use case can be run two ways:
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# 1) Passing in METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf followed by a user-specific system configuration file::
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf /path/to/user_system.conf
 #
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config and then passing in METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf::
-#
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path to directory where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [config]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
-#
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output

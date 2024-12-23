@@ -1,17 +1,28 @@
 """
 Grid-Stat: Compute Anomaly Correlation using Climatology  
-============================================================================
+========================================================
 
-model_applications/medium_range/GridStat_fcstGFS_obsGFS
-_climoNCEP_MultiField.conf
+model_applications/medium_range/GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
 # To provide useful statistical information on the relationship between observation
 # data in gridded format to a gridded forecast. These values can be used to help
 # correct model deviations from observed values. 
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 3.0
 
 ##############################################################################
 # Datasets
@@ -60,8 +71,8 @@ _climoNCEP_MultiField.conf
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/medium_range/GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/medium_range/GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.conf
@@ -78,48 +89,36 @@ _climoNCEP_MultiField.conf
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# **GridStatConfig_wrapped**
+# .. dropdown:: GridStatConfig_wrapped
 #
-# .. note:: See the :ref:`GridStat MET Configuration<grid-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+#   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
+# .. dropdown:: StatAnalysisConfig_wrapped
 #
-# **StatAnalysisConfig_wrapped**
+#   .. literalinclude:: ../../../../parm/met_config/STATAnalysisConfig_wrapped
+
+##############################################################################
+# Python Embedding
+# ----------------
 #
-# .. note:: See the :ref:`GridStat MET Configuration<grid-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
 #
-# .. literalinclude:: ../../../../parm/met_config/STATAnalysisConfig_wrapped
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# This use case can be run two ways:
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# 1) Passing in GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.conf then a user-specific system configuration file::
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/medium_range/GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.conf /path/to/user_system.conf
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.conf -c /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.conf::
-#
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
-#
-# **NOTE:** All of these items must be found under the [dir] section.
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output
@@ -131,10 +130,10 @@ _climoNCEP_MultiField.conf
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
 # Output for this use case will be found in gather_by_date/stat_analysis/grid2grid/anom (relative to **OUTPUT_BASE**)
-# and will contain the following files:
+# and will contain the following files::
 #
-# * 00Z/GFS/GFS_20170613.stat
-# * 06Z/GFS/GFS_20170613.stat
+#   * 00Z/GFS/GFS_20170613.stat
+#   * 06Z/GFS/GFS_20170613.stat
 
 ##############################################################################
 # Keywords

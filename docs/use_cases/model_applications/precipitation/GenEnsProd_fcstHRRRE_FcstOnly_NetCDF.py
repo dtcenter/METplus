@@ -2,10 +2,15 @@
 Gen-Ens-Prod: Basic Post-Processing only
 ========================================
 
-model_application/precipitation/GenEnsProd_fcstHRRRE
-_FcstOnly_NetCDF.conf
+model_application/precipitation/GenEnsProd_fcstHRRRE_FcstOnly_NetCDF.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -13,6 +18,12 @@ _FcstOnly_NetCDF.conf
 # Post-process ensemble members to derive simple (non-bias-corrected) mean,
 # standard deviation (spread), minimum, maximum, and range fields for use in
 # other MET tools.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 3.0
 
 ##############################################################################
 # Datasets
@@ -71,14 +82,14 @@ _FcstOnly_NetCDF.conf
 # ---------------------
 #
 # METplus first loads all of the configurations found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
+# then it loads any configuration files passed to METplus via the command line.
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/GenEnsProd_fcstHRRRE_FcstOnly_NetCDF.conf
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # METplus sets environment variables based on user settings in the METplus configuration file. 
 # See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details. 
@@ -88,20 +99,33 @@ _FcstOnly_NetCDF.conf
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. note:: See the :ref:`GenEnsProd MET Configuration<gen-ens-prod-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# .. dropdown:: GenEnsProdConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/GenEnsProdConfig_wrapped
+#   .. literalinclude:: ../../../../parm/met_config/GenEnsProdConfig_wrapped
+
+##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
 # The command to run this use case is::
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-#    run_metplus.py /path/to/METplus/parm/use_cases/model_applications/precipitation/GenEnsProd_fcstHRRRE_FcstOnly_NetCDF.conf
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/precipitation/GenEnsProd_fcstHRRRE_FcstOnly_NetCDF.conf /path/to/user_system.conf
 #
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output

@@ -1,27 +1,31 @@
 Deploy Beta Apps
 ^^^^^^^^^^^^^^^^
 
-* After the apps build, which usually takes about 20 minutes, they should be installed on the dedicated beta server (mats-docker-int) for third party testing.
+Install the built apps.
 
-* On mats-docker-int.gsd.esrl.noaa.gov (the beta server, VPN and permissions required), go to the container_deployment directory.
+.. dropdown:: Instructions
 
-.. parsed-literal::
+  * After the apps build, which usually takes about 20 minutes, they should be installed on the dedicated beta server (mats-docker-int) for third party testing.
 
-    ssh www-data@mats-docker-int.gsd.esrl.noaa.gov
-    cd container_deployment
+  * On mats-docker-int.gsd.esrl.noaa.gov (the beta server, VPN and permissions required), go to the container_deployment directory.
 
-* Add any new apps to docker_compose.yml and web/applist.json. Update the container version numbers in docker_compose.yml, and any settings files in settings/
+  .. parsed-literal::
 
-.. parsed-literal::
+      ssh www-data@mats-docker-int.gsd.esrl.noaa.gov
+      cd container_deployment
 
-    vi docker_compose.yml
-    vi web/applist.json
-    vi settings/appname/settings.json
+  * Add any new apps to docker_compose.yml and web/applist.json. Update the container version numbers in docker_compose.yml, and any settings files in settings/
 
-* Redeploy the apps.
+  .. parsed-literal::
 
-.. parsed-literal::
+      vi docker_compose.yml
+      vi web/applist.json
+      vi settings/appname/settings.json
 
-    bin/redeploy production
+  * Redeploy the apps.
 
-* Contact your dedicated beta tester to ensure the apps work as expected.
+  .. parsed-literal::
+
+      bin/redeploy production
+
+  * Contact your dedicated beta tester to ensure the apps work as expected.

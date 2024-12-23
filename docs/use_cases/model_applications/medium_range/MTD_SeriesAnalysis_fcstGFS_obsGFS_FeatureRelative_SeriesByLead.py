@@ -1,13 +1,15 @@
 """
 Multi_Tool (MTD): Feature Relative by Lead (with lead groupings) 
-==================================================================================================
+================================================================
 
-model_applicaitons/medium_range/
-MTD_SeriesAnalysis_fcstGFS
-_obsGFS_FeatureRelative
-_SeriesByLead.conf
+model_applicaitons/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
 
 ##############################################################################
 # Scientific Objective
@@ -16,6 +18,12 @@ _SeriesByLead.conf
 # Demonstrate the capability in the Feature Relative use case but using output
 # from the MET MODE Time Domain (MTD) tool.
 #
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 4.1
 
 ##############################################################################
 # Datasets
@@ -91,54 +99,41 @@ _SeriesByLead.conf
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# **MTDConfig_wrapped**
+#  .. dropdown:: MTDConfig_wrapped
 #
-# .. note:: See the :ref:`MTD MET Configuration<mtd-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+#   .. literalinclude:: ../../../../parm/met_config/MTDConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/MTDConfig_wrapped
+#  .. dropdown:: SeriesAnalysisConfig_wrapped
 #
-# **SeriesAnalysisConfig_wrapped**
+#   .. literalinclude:: ../../../../parm/met_config/SeriesAnalysisConfig_wrapped
+
+##############################################################################
+# Python Embedding
+# ----------------
 #
-# .. note:: See the :ref:`SeriesAnalysis MET Configuration<series-analysis-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/SeriesAnalysisConfig_wrapped
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# This use case can be run two ways:
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# 1) Passing in MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf, then a user-specific system configuration file::
-#
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf
-#        /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf::
-#
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf /path/to/user_system.conf
+
 #  If the 'convert' executable is not in the user's path, specify the full
 #  path to the executable here
 #
 # * **CONVERT = /usr/bin/convert**
 #
-# Example User Configuration File::
-#
-#   [config]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y
-#   CONVERT = /path/to/convert
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output

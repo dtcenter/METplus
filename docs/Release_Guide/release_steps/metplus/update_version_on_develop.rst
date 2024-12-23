@@ -1,20 +1,23 @@
 Update Version on Develop Branch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Switch to the develop branch and change metplus/VERSION value to the
-next release after this one with -dev added to the end.
-Releases will loosely following these names, but are subject to change:
+Update the development version information.
 
-+-------------------+-----------------------+
-| Release Version   | New Develop Version   |
-+===================+=======================+
-|    X.Y.Z-beta1    |    X.Y.Z-beta2-dev    |
-+-------------------+-----------------------+
-|    X.Y.Z-beta2    |    X.Y.Z-beta3-dev    |
-+-------------------+-----------------------+
-|    X.Y.Z-beta3    |    X.Y.Z-rc1-dev      |
-+-------------------+-----------------------+
-|    X.Y.Z-rc1      |    X.Y.Z-dev          |
-+-------------------+-----------------------+
-|    X.Y.Z          |   (X+1).0.0-beta1-dev |
-+-------------------+-----------------------+
+.. dropdown:: Instructions
+
+  Switch to the develop branch and change metplus/VERSION value to the
+  next release after this one with -dev added to the end.
+  Releases will loosely following these names, but are subject to change:
+
+  +-------------------+----------------------------+
+  | Release Version   | New Develop Version        |
+  +===================+============================+
+  |    X.Y.Z-beta1    |    X.Y.Z-beta2-dev         |
+  +-------------------+----------------------------+
+  |    X.Y.Z-beta2    |    X.Y.Z-beta3-dev         |
+  +-------------------+----------------------------+
+  |    X.Y.Z-beta3    |    X.Y.Z-rc1-dev           |
+  +-------------------+----------------------------+
+  |    X.Y.Z-rc1      |   (X+1).0.0-beta1-dev OR   |
+  |                   |    **X.(Y+1).0-beta1-dev** |
+  +-------------------+----------------------------+

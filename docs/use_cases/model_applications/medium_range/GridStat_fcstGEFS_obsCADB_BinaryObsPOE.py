@@ -6,6 +6,12 @@ model_applications/medium_range/GridStat_fcstGEFS_obsCADB_BinaryObsPOE.conf
 
 """
 ##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
+##############################################################################
 # Scientific Objective
 # --------------------
 # Evaluation of a Probability of Exceedence (POE) field presents several difficulties. Some of these include a fitting verification statistic to report on,
@@ -17,8 +23,14 @@ model_applications/medium_range/GridStat_fcstGEFS_obsCADB_BinaryObsPOE.conf
 # A final note that because the POE forecast file is a non-standard netCDF, Python Embedding was used to extract the desired field
 
 ##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 5.1
+
+##############################################################################
 # Datasets
-# ---------------------
+# --------
 #
 # | **Forecast:** 85th percentile of Temperature maximum, from GEFS
 #
@@ -54,8 +66,8 @@ model_applications/medium_range/GridStat_fcstGEFS_obsCADB_BinaryObsPOE.conf
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# i.e. -c parm/use_cases/model_applications/medium_range/GridStat_fcstGEFS_obsCADB_BinaryObsPOE.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/medium_range/GridStat_fcstGEFS_obsCADB_BinaryObsPOE.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/GridStat_fcstGEFS_obsCADB_BinaryObsPOE.conf
@@ -63,54 +75,52 @@ model_applications/medium_range/GridStat_fcstGEFS_obsCADB_BinaryObsPOE.conf
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
-# METplus sets environment variables based on the values in the METplus configuration file. These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the ‘User Defined Config’ section on the ‘System Configuration’ page of the METplus User’s Guide for more information.
+# METplus sets environment variables based on user settings in the METplus
+# configuration file. See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details.
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
+# **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!**
 #
+# If there is a setting in the MET configuration file that is currently
+# not supported by METplus you’d like to control, please refer to:
+# :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
+#
+# .. dropdown:: GridStatConfig_wrapped
+#
+#   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 
 ##############################################################################
 # Python Embedding
 # ----------------
 #
 # This use case calls a Python script to parse the user-requested percentile from the forecast dataset.
-# This is controlled in the forecast VAR1 variable setting and is provided in
-# parm/use_cases/model_applications/medium_range/GridStat_fcstGEFS_obsCADB_BinaryObsPOE/Tmax_fcst_embedded.py
+# This is controlled in the forecast VAR1 variable setting and is provided in:
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/GridStat_fcstGEFS_obsCADB_BinaryObsPOE/Tmax_fcst_embedded.py
+# .. dropdown:: parm/use_cases/model_applications/medium_range/GridStat_fcstGEFS_obsCADB_BinaryObsPOE/Tmax_fcst_embedded.py
 #
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/GridStat_fcstGEFS_obsCADB_BinaryObsPOE/Tmax_fcst_embedded.py
+#
+# For more information on the basic requirements to utilize Python Embedding in METplus, 
+# please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_.
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# This use case can be run two ways:
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# 1) Passing in GridStat_fcstGEFS_obsCADB_BinaryObsPOE.conf then a user-specific system configuration file::
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/medium_range/GridStat_fcstGEFS_obsCADB_BinaryObsPOE.conf /path/to/user_system.conf
 #
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/medium_range/GridStat_fcstGEFS_obsCADB_BinaryObsPOE.conf /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in GridStat_fcstGEFS_obsCADB_BinaryObsPOE::
-#
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/GridStat_fcstGEFS_obsCADB_BinaryObsPOE.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [config]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
-#
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output

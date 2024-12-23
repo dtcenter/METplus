@@ -5,6 +5,12 @@ CycloneVerification: TC Verification Compare ADECK vs BDECK
 model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ###########################################
 # Scientific Objective
 # --------------------
@@ -13,6 +19,12 @@ model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicE
 # output and an observation dataset. TC-Pairs produces matched pairs for position 
 # errors, as well as wind, sea level pressure, and distance to land values for 
 # each input dataset. Then TC-stat will filter TC-pairs output based on user criteria.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 4.1
 
 ##############################################################################
 # Datasets
@@ -74,8 +86,8 @@ model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicE
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c /path/to/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. /path/to/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample.conf
@@ -92,37 +104,36 @@ model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicE
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. note:: See the :ref:`TCPairs MET Configuration<tc-pairs-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# .. dropdown:: TCPairsConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/TCPairsConfig_wrapped
-# .. literalinclude:: ../../../../parm/met_config/TCStatConfig_wrapped
+#   .. literalinclude:: ../../../../parm/met_config/TCPairsConfig_wrapped
+#
+# .. dropdown:: TCStatConfig_wrapped
+#
+#   .. literalinclude:: ../../../../parm/met_config/TCStatConfig_wrapped
+
+##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# It is recommended to run this use case by:
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# Passing in TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample.conf then a user-specific system configuration file::
+#   run_metplus.py /path/to/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample.conf /path/to/user_system.conf
 #
-#   run_metplus.py -c /path/to/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample.conf -c /path/to/user_system.conf
-#
-# The following METplus configuration variables must be set correctly to run this example.:
-#
-# * **INPUT_BASE** - Path to directory where Adeck and Bdeck ATCF format files are read (See Datasets section to obtain tarballs).
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
-#
-# **NOTE:** All of these items must be found under the [dir] section.
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output

@@ -70,13 +70,18 @@ fcst = {
    ${METPLUS_ENS_THRESH}
    ${METPLUS_VLD_THRESH}
    ${METPLUS_FCST_FIELD}
+   ${METPLUS_FCST_CLIMO_MEAN_DICT}
+   ${METPLUS_FCST_CLIMO_STDEV_DICT}
+
 }
 
 obs = {
 
    ${METPLUS_OBS_FILE_TYPE}
- 
    ${METPLUS_OBS_FIELD}
+   ${METPLUS_OBS_CLIMO_MEAN_DICT}
+   ${METPLUS_OBS_CLIMO_STDEV_DICT}
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -130,6 +135,9 @@ message_type_group_map = [
    { key = "ANYSFC";  val = "ADPSFC,SFCSHP,ADPUPA,PROFLR,MSONET"; },
    { key = "ONLYSF";  val = "ADPSFC,SFCSHP";                      }
 ];
+
+//obtype_as_group_val_flag =
+${METPLUS_OBTYPE_AS_GROUP_VAL_FLAG}
 
 //
 // Ensemble bin sizes
@@ -229,6 +237,8 @@ rng = {
 
 //grid_weight_flag =
 ${METPLUS_GRID_WEIGHT_FLAG}
+//point_weight_flag =
+${METPLUS_POINT_WEIGHT_FLAG}
 //output_prefix =
 ${METPLUS_OUTPUT_PREFIX}
 //version          = "V9.0";
@@ -237,5 +247,4 @@ ${METPLUS_OUTPUT_PREFIX}
 
 tmp_dir = "${MET_TMP_DIR}";
 
-${METPLUS_TIME_OFFSET_WARNING}
 ${METPLUS_MET_CONFIG_OVERRIDES}

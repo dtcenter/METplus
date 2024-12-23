@@ -69,64 +69,6 @@ def test_get_default_config_list():
 
 
 @pytest.mark.parametrize(
-    'regex,index,id,expected_result', [
-        # 0: No ID
-        (r'^FCST_VAR(\d+)_NAME$', 1, None,
-         {'1': [None],
-          '2': [None],
-          '4': [None]}),
-        # 1: ID and index 2
-        (r'(\w+)_VAR(\d+)_NAME', 2, 1,
-         {'1': ['FCST'],
-          '2': ['FCST'],
-          '4': ['FCST']}),
-        # 2: index 1, ID 2, multiple identifiers
-        (r'^FCST_VAR(\d+)_(\w+)$', 1, 2,
-         {'1': ['NAME', 'LEVELS'],
-          '2': ['NAME'],
-          '4': ['NAME']}),
-        # 3: command that StatAnalysis wrapper uses
-        (r'MODEL(\d+)$', 1, None,
-         {'1': [None],
-          '2': [None],}),
-        # 4: TCPairs conensus logic
-        (r'^TC_PAIRS_CONSENSUS(\d+)_(\w+)$', 1, 2,
-         {'1': ['NAME', 'MEMBERS', 'REQUIRED', 'MIN_REQ'],
-          '2': ['NAME', 'MEMBERS', 'REQUIRED', 'MIN_REQ']}),
-    ]
-)
-@pytest.mark.util
-def test_find_indices_in_config_section(metplus_config, regex, index,
-                                        id, expected_result):
-    config = metplus_config
-    config.set('config', 'FCST_VAR1_NAME', 'name1')
-    config.set('config', 'FCST_VAR1_LEVELS', 'level1')
-    config.set('config', 'FCST_VAR2_NAME', 'name2')
-    config.set('config', 'FCST_VAR4_NAME', 'name4')
-    config.set('config', 'MODEL1', 'model1')
-    config.set('config', 'MODEL2', 'model2')
-
-    config.set('config', 'TC_PAIRS_CONSENSUS1_NAME', 'name1')
-    config.set('config', 'TC_PAIRS_CONSENSUS1_MEMBERS', 'member1')
-    config.set('config', 'TC_PAIRS_CONSENSUS1_REQUIRED', 'True')
-    config.set('config', 'TC_PAIRS_CONSENSUS1_MIN_REQ', '1')
-    config.set('config', 'TC_PAIRS_CONSENSUS2_NAME', 'name2')
-    config.set('config', 'TC_PAIRS_CONSENSUS2_MEMBERS', 'member2')
-    config.set('config', 'TC_PAIRS_CONSENSUS2_REQUIRED', 'True')
-    config.set('config', 'TC_PAIRS_CONSENSUS2_MIN_REQ', '2')
-
-    indices = config_metplus.find_indices_in_config_section(regex, config,
-                                                            index_index=index,
-                                                            id_index=id)
-
-    pp = pprint.PrettyPrinter()
-    print(f'Indices:')
-    pp.pprint(indices)
-
-    assert indices == expected_result
-
-
-@pytest.mark.parametrize(
     'config_var_name, expected_indices, set_met_tool', [
         ('FCST_GRID_STAT_VAR1_NAME', [1], True),
         ('FCST_GRID_STAT_VAR2_INPUT_FIELD_NAME', [2], True),
@@ -409,14 +351,14 @@ def test_parse_var_list_both(metplus_config, data_type, list_created):
     var_list = config_metplus.parse_var_list(conf, time_info=None, data_type=data_type)
     print(f'var_list:{var_list}')
     for list_to_check in list_created.split(':'):
-        if (not var_list[0][f'{list_to_check}_name'] == "NAME1" or
-                not var_list[1][f'{list_to_check}_name'] == "NAME1" or
-                not var_list[2][f'{list_to_check}_name'] == "NAME2" or
-                not var_list[3][f'{list_to_check}_name'] == "NAME2" or
-                not var_list[0][f'{list_to_check}_level'] == "LEVELS11" or
-                not var_list[1][f'{list_to_check}_level'] == "LEVELS12" or
-                not var_list[2][f'{list_to_check}_level'] == "LEVELS21" or
-                not var_list[3][f'{list_to_check}_level'] == "LEVELS22"):
+        if (var_list[0][f'{list_to_check}_name'] != "NAME1" or
+                var_list[1][f'{list_to_check}_name'] != "NAME1" or
+                var_list[2][f'{list_to_check}_name'] != "NAME2" or
+                var_list[3][f'{list_to_check}_name'] != "NAME2" or
+                var_list[0][f'{list_to_check}_level'] != "LEVELS11" or
+                var_list[1][f'{list_to_check}_level'] != "LEVELS12" or
+                var_list[2][f'{list_to_check}_level'] != "LEVELS21" or
+                var_list[3][f'{list_to_check}_level'] != "LEVELS22"):
             assert False
 
 
@@ -516,8 +458,6 @@ def test_parse_var_list_fcst_and_obs_and_both(metplus_config, data_type, list_le
 
             if expect[f'{dt_lower}_level'] != reality[f'{dt_lower}_level']:
                 assert False
-
-        assert True
 
 
 # option defined in obs only
@@ -646,9 +586,9 @@ def test_parse_var_list_ensemble(metplus_config):
                                    met_tool='ensemble_stat')
 
     pp = pprint.PrettyPrinter()
-    print(f'ENSEMBLE_VAR_LIST:')
+    print('ENSEMBLE_VAR_LIST:')
     pp.pprint(ensemble_var_list)
-    print(f'VAR_LIST:')
+    print('VAR_LIST:')
     pp.pprint(var_list)
 
     assert(len(ensemble_var_list) == len(expected_ens_list))
@@ -715,9 +655,9 @@ def test_parse_var_list_series_by(metplus_config):
                                          met_tool='series_analysis')
 
     pp = pprint.PrettyPrinter()
-    print(f'ExtractTiles var list:')
+    print('ExtractTiles var list:')
     pp.pprint(actual_et_list)
-    print(f'SeriesAnalysis var list:')
+    print('SeriesAnalysis var list:')
     pp.pprint(actual_sa_list)
 
     assert len(actual_et_list) == len(expected_et_list)
@@ -898,7 +838,6 @@ def test_getraw_instance_with_unset_var(metplus_config):
     """! Replicates bug where CURRENT_FCST_NAME is substituted with
      an empty string when copied from an instance section
      """
-    pytest.skip()
     instance = 'my_section'
     config = metplus_config
     config.set('config', 'MODEL', 'FCST')

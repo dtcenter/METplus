@@ -12,8 +12,7 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import do_string_sub, ti_calculate, get_lead_sequence
-from ..util import skip_time
+from ..util import do_string_sub
 from . import LoopTimesWrapper
 
 
@@ -181,7 +180,7 @@ class PlotPointObsWrapper(LoopTimesWrapper):
 
     def get_command(self):
         return (f"{self.app_path} -v {self.c_dict['VERBOSITY']}"
-                f' "{self.infiles[0]}" {self.get_output_path()}'
+                f' {self.infiles[0]} {self.get_output_path()}'
                 f" {' '.join(self.args)}")
 
     def find_input_files(self, time_info):
@@ -223,7 +222,7 @@ class PlotPointObsWrapper(LoopTimesWrapper):
         """
         # if more than 1 input file was found, add them with -point_obs
         for infile in self.infiles[1:]:
-            self.args.append(f'-point_obs "{infile}"')
+            self.args.append(f'-point_obs {infile}')
 
         if self.c_dict.get('GRID_INPUT_PATH'):
             grid_file = do_string_sub(self.c_dict['GRID_INPUT_PATH'],

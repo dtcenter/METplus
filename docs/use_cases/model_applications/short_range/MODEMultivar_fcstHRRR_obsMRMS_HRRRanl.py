@@ -1,12 +1,16 @@
 """
 MODE: Multivariate  
-=========================================================================
+==================
 
-model_applications/
-short_range/
-MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
+model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -27,6 +31,12 @@ MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 # statistics relative to the super-object geometry will be available. In the case
 # no requested intesities, the parameters MODE_FCST/OBS_MULTIVAR_NAME and/or
 # MODE_FCST/OBS_MULTIVAR_LEVEL may be used as identifiers for the super-object.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 5.1
 
 ##############################################################################
 # Datasets
@@ -76,15 +86,15 @@ MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line:
-# parm/use_cases/model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # METplus sets environment variables based on user settings in the METplus configuration file. 
 # See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details. 
@@ -94,10 +104,21 @@ MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. note:: See the :ref:`MODE MET Configuration<mode-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# .. dropdown:: MODEConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/MODEConfig_wrapped
+#   .. literalinclude:: ../../../../parm/met_config/MODEConfig_wrapped
+
+##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
@@ -106,7 +127,7 @@ MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 # Pass the use case configuration file to the run_metplus.py script
 # along with any user-specific system configuration files if desired::
 #
-#    run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf /path/to/user_system.conf
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
 

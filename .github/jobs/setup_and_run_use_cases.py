@@ -63,7 +63,7 @@ def main():
     # use BuildKit to build image
     os.environ['DOCKER_BUILDKIT'] = '1'
 
-    isOK = True
+    is_ok = True
     failed_use_cases = []
     for setup_commands, use_case_commands, requirements in all_commands:
         # get environment image tag
@@ -79,45 +79,38 @@ def main():
             f"-f {DOCKERFILE_DIR}/{dockerfile_name} ."
         )
 
-        print(f'Building Docker environment/branch image...')
+        print('Building Docker environment/branch image...')
         if not run_commands(docker_build_cmd):
-            isOK = False
+            is_ok = False
             continue
 
-        commands = []
-
-        # print list of existing docker images
-        commands.append('docker images')
-
+        # print list of existing docker images,
         # remove docker image after creating run env or prune untagged images
-        commands.append(f'docker image rm dtcenter/metplus-dev:{branch_name} -f')
-        commands.append('docker image prune -f')
-        run_commands(commands)
+        run_commands([
+            'docker images',
+            f'docker image rm dtcenter/metplus-dev:{branch_name} -f',
+            'docker image prune -f',
+        ])
 
-        commands = []
-
-        # list docker images again after removal
-        commands.append('docker images')
-
-        # start interactive container in the background
-        commands.append(
-            f"docker run -d --rm -it -e GITHUB_WORKSPACE "
-            f"--name {RUN_TAG} "
-            f"{os.environ.get('NETWORK_ARG', '')} "
-            f"{' '.join(VOLUME_MOUNTS)} "
-            f"{volumes_from} --workdir {GITHUB_WORKSPACE} "
-            f'{RUN_TAG} bash'
-        )
-
-        # list running containers
-        commands.append('docker ps -a')
-
-        # execute setup commands in running docker container
-        commands.append(_format_docker_exec_command(setup_commands))
+        # list docker images again after removal,
+        # start interactive container in the background,
+        # list running containers,
+        # then execute setup commands in running docker container
+        commands = [
+            'docker images',
+            (f"docker run -d --rm -it -e GITHUB_WORKSPACE "
+             f"--name {RUN_TAG} "
+             f"{os.environ.get('NETWORK_ARG', '')} "
+             f"{' '.join(VOLUME_MOUNTS)} "
+             f"{volumes_from} --workdir {GITHUB_WORKSPACE} "
+             f'{RUN_TAG} bash'),
+            'docker ps -a',
+            _format_docker_exec_command(setup_commands),
+        ]
 
         # run docker commands and skip running cases if something went wrong
         if not run_commands(commands):
-            isOK = False
+            is_ok = False
 
             # force remove container if setup step fails
             run_commands(f'docker rm -f {RUN_TAG}')
@@ -132,7 +125,7 @@ def main():
         for use_case_command in use_case_commands:
             if not run_commands(_format_docker_exec_command(use_case_command)):
                 failed_use_cases.append(use_case_command)
-                isOK = False
+                is_ok = False
 
         # print bashrc file to see what was added by setup commands
         # then force remove container to stop and remove it
@@ -140,15 +133,20 @@ def main():
             _format_docker_exec_command('cat /root/.bashrc'),
             f'docker rm -f {RUN_TAG}',
         ]):
-            isOK = False
+            is_ok = False
 
     # print summary of use cases that failed
+    _print_failed_use_cases(failed_use_cases)
+
+    if not is_ok:
+        print("ERROR: Some commands failed.")
+
+    return is_ok
+
+
+def _print_failed_use_cases(failed_use_cases):
     for failed_use_case in failed_use_cases:
         print(f'ERROR: Use case failed: {failed_use_case}')
-
-    if not isOK:
-        print("ERROR: Some commands failed.")
-        sys.exit(1)
 
 
 def _format_docker_exec_command(command):
@@ -201,4 +199,7 @@ def _get_dockerfile_name(requirements):
 
 
 if __name__ == '__main__':
-    main()
+    ret = main()
+    # exit non-zero if anything went wrong
+    if not ret:
+        sys.exit(1)

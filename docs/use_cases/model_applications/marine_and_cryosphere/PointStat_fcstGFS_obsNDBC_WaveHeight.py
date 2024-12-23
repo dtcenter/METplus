@@ -6,11 +6,23 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsNDBC_WaveHeight.co
 
 """
 ##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
+##############################################################################
 # Scientific Objective
 # --------------------
 #
 # This use case utilizes the new ASCII2NC method to natively read in NDBC ASCII files, a common source of sea surface data
 # for operational entities. These values are then compared to GFS' new wave height output, which it incorporated from Wave Watch III.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 5.1
 
 ##############################################################################
 # Datasets
@@ -28,7 +40,7 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsNDBC_WaveHeight.co
 # ------------------
 #
 # This use case calls ASCII2NC to read in ASCII buoy files and
-# then PointStat for verification against GFS model data
+# then PointStat for verification against GFS model data.
 
 ##############################################################################
 # METplus Workflow
@@ -49,15 +61,15 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsNDBC_WaveHeight.co
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsNDBC_WaveHeight.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsNDBC_WaveHeight.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsNDBC_WaveHeight.conf
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # METplus sets environment variables based on user settings in the METplus configuration file. 
 # See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details. 
@@ -67,43 +79,36 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsNDBC_WaveHeight.co
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. note:: See the :ref:`GridStat MET Configuration<grid-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# .. dropdown:: Ascii2NcConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/Ascii2NcConfig_wrapped
+#   .. literalinclude:: ../../../../parm/met_config/Ascii2NcConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/PointStatConfig_wrapped
+# .. dropdown:: PointStatConfig_wrapped
+#
+#   .. literalinclude:: ../../../../parm/met_config/PointStatConfig_wrapped
+
+##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# This use case can be run two ways:
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# 1) Passing in PointStat_fcstGFS_obsNDBC_WaveHeight.conf then a user-specific system configuration file::
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsNDBC_WaveHeight.conf /path/to/user_system.conf
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsNDBC_WaveHeight.conf -c /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in PointStat_fcstGFS_obsNDBC_WaveHeight.conf::
-#
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsNDBC_WaveHeight.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
-#
-# **NOTE:** All of these items must be found under the [dir] section.
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output

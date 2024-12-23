@@ -1,10 +1,16 @@
 """
 TCGen: Genesis Density Function (GDF) and Track Density Function (TDF) 
-=============================================================================
+======================================================================
 
 model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -50,6 +56,12 @@ model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
 # (in this example, just one), and the total number of model forecasts valid at the time of an observed genesis event. The latter
 # can also be thought of as the total number of chances that the model had to forecast a genesis event.
 #
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 4.1
 
 ##############################################################################
 # Datasets
@@ -136,52 +148,41 @@ model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# **TCGenConfig_wrapped**
+# .. dropdown:: TCGenConfig_wrapped
 #
-# .. note:: See the :ref:`TCGen MET Configuration<tc-gen-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
-#
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/TCGenConfig_wrapped
-#
+#   .. literalinclude:: ../../../../parm/met_config/TCGenConfig_wrapped
 
 ##############################################################################
 # Python Embedding
 # ----------------
 #
-# This use case uses a Python embedding script to create output graphics
+# This use case uses a Python embedding script to create output graphics.
 #
-# parm/use_cases/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF/UserScript_fcstGFSO_obsBDECKS_GDF_TDF.py
+#  .. dropdown:: parm/use_cases/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF/UserScript_fcstGFSO_obsBDECKS_GDF_TDF.py
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF/UserScript_fcstGFSO_obsBDECKS_GDF_TDF.py
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF/UserScript_fcstGFSO_obsBDECKS_GDF_TDF.py
 #
+# For more information on the basic requirements to utilize Python Embedding in METplus, 
+# please refer to the MET User’s Guide section on
+# `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_.
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
-# This use case can be run two ways:
 #
-# 1) Passing in TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf then a user-specific system configuration file::
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf -c /path/to/user_system.conf
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf::
-#
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [config]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output

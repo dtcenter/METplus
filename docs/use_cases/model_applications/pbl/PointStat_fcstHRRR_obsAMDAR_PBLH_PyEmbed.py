@@ -6,6 +6,12 @@ model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed.conf
 
 """
 ##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
+##############################################################################
 # Scientific Objective
 # --------------------
 #
@@ -21,6 +27,12 @@ model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed.conf
 # 
 
 ##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 6.0
+
+##############################################################################
 # Datasets
 # --------------------
 #
@@ -30,7 +42,7 @@ model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed.conf
 
 ##############################################################################
 # METplus Components
-# --------------------
+# ------------------
 # 
 # This use case utilizes GenVxMask and the METplus PointStat tool to compare PBLH 
 # from AMDAR data to model output. The python embedding script "calc_amdar_pblh.py" 
@@ -40,7 +52,8 @@ model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed.conf
  
 ##############################################################################
 # METplus Workflow
-# --------------------
+# ----------------
+#
 # GenVxMask and PointStat are called in this example. The following run times are processed:
 #
 # | **Valid:** 2022-07-01_20Z
@@ -57,8 +70,8 @@ model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed.conf
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed.conf
@@ -75,49 +88,41 @@ model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed.conf
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. note:: See the :ref:`PointStat MET Configuration<point-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# .. dropdown:: PointStatConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/PointStatConfig_wrapped
-#
+#   .. literalinclude:: ../../../../parm/met_config/PointStatConfig_wrapped
 
 ##############################################################################
 # Python Embedding
-# -----------------
+# ----------------
 #
-# This use case uses a Python embedding script to read input data
+# This use case uses a Python embedding script to read input data.
 #
-# parm/use_cases/model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed/calc_amdar_pblh.py
+# .. dropdown:: parm/use_cases/model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed/calc_amdar_pblh.py
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed/calc_amdar_pblh.py
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed/calc_amdar_pblh.py
 #
+# For more information on the basic requirements to utilize Python Embedding in METplus, 
+# please refer to the MET User’s Guide section on
+# `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_.
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# It is recommended to run this use case by:
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# Passing in PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed.conf then a user-specific system configuration file::
+#   run_metplus.py /path/to/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed.conf /path/to/user_system.conf
 #
-#   run_metplus.py -c /path/to/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed.conf -c /path/to/user_system.conf
-#
-# The following METplus configuration variables must be set correctly to run this example.:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs).
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
-#
-# **NOTE:** All of these items must be found under the [dir] section.
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output

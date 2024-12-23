@@ -147,7 +147,6 @@ if __name__ == "__main__":
     # Count the number in the subdirs RTOFS dir
     path, dirs, files = next(os.walk(rtofsdir))
     dir_count = len(dirs)
-    dir_count
 
     """
     Setup logging

@@ -6,12 +6,24 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_ss
 
 """
 ##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
+##############################################################################
 # Scientific Objective
 # --------------------
 #
 # This use case utilizes Python embedding to extract several statistics from the sea surface temperature data over the globe, 
 # which was already being done in a closed system. By producing the same output via METplus, this use case
 # provides standardization and reproducible results.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 6.0
 
 ##############################################################################
 # Datasets
@@ -78,7 +90,7 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_ss
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # METplus sets environment variables based on user settings in the METplus configuration file. 
 # See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details. 
@@ -88,51 +100,41 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_ss
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. note:: See the :ref:`GridStat MET Configuration<grid-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# .. dropdown:: GridStatConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
+#   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 
 ##############################################################################
 # Python Embedding
 # ----------------
 #
-# This use case uses one Python script to read forecast, observation, and climatology data
+# This use case uses one Python script to read forecast, observation, and climatology data.
 #
-# parm/use_cases/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst/read_rtofs_ghrsst_woa.py
+# .. dropdown:: parm/use_cases/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst/read_rtofs_ghrsst_woa.py
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst/read_rtofs_ghrsst_woa.py
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst/read_rtofs_ghrsst_woa.py
+#  
+# For more information on the basic requirements to utilize Python Embedding in METplus, 
+# please refer to the MET User’s Guide section on
+# `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_.
+
+##############################################################################
+# User Scripting
+# --------------
 #
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# This use case can be run two ways:
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# 1) Passing in GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf then a user-specific system configuration file::
+#    run_metplus.py /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf /path/to/user_system.conf
 #
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf::
-#
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [config]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
-#
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output
@@ -144,7 +146,7 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_ss
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
 # Output for thisIce use case will be found in directory 20210503 (relative to **OUTPUT_BASE**)
-# and will contain the following files:
+# and will contain the following files::
 #
 # * grid_stat_SST_000000L_20210503_000000V.stat 
 # * grid_stat_SST_000000L_20210503_000000V_cnt.txt 

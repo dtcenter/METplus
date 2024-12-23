@@ -1,31 +1,34 @@
 Clone the Project Repository
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* Create and work in a new directory to ensure a fresh environment:
+Clone the repositories onto your local machine.
 
-.. parsed-literal::
+.. dropdown:: Instructions
 
-    mkdir release-X.Y.Z
-    cd release-X.Y.Z
+  * Create and work in a new directory to ensure a fresh environment:
 
-* Run the clone command to obtain the repository.
-* For someone at GSL doing this, it's easiest to just do everything with METexpress as a subrepo of MATS.
+  .. parsed-literal::
 
-Using SSH:
+      mkdir release-X.Y.Z
+      cd release-X.Y.Z
 
-.. parsed-literal::
+  * Run the clone command to obtain the repository.
+  * For someone at GSL doing this, it's easiest to just do everything with METexpress as a subrepo of MATS.
 
-    git clone --recurse-submodules --remote-submodules git@github.com:NOAA-GSL/MATS (requires git 2.23 or later)
+  Using SSH:
 
-Using HTTP:
+  .. parsed-literal::
 
-.. parsed-literal::
+      git clone --recurse-submodules --remote-submodules git@github.com:NOAA-GSL/MATS (requires git 2.23 or later)
 
-    git clone --recurse-submodules --remote-submodules https://github.com/NOAA-GSL/MATS (requires git 2.23 or later)
+  Using HTTP:
 
-* Enter the project repository directory:
+  .. parsed-literal::
 
-.. parsed-literal::
+      git clone --recurse-submodules --remote-submodules https://github.com/NOAA-GSL/MATS (requires git 2.23 or later)
 
-    cd MATS
+  * Enter the project repository directory:
 
+  .. parsed-literal::
+
+      cd MATS

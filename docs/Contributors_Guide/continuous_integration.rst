@@ -36,13 +36,14 @@ Many useful actions are provided by GitHub and external collaborators.
 Developers can also write their own custom actions to perform complex tasks
 to simplify a workflow.
 
-
 Testing (testing.yml)
 ---------------------
 
 This workflow performs a variety of tasks to ensure that changes do not break
 any existing functionality.
 See the :ref:`cg-ci-testing-workflow` for more information.
+
+.. _cg-ci-documentation:
 
 Documentation (documentation.yml)
 ---------------------------------
@@ -75,6 +76,96 @@ artifact so it can be downloaded and reviewed. Artifacts can be found
 at the bottom of the workflow summary page when the workflow has completed.
 
 .. figure:: figure/ci-doc-artifacts.png
+
+.. _cg-ci-sonarqube:
+
+SonarQube (sonarqube.yml)
+-------------------------
+
+SonarQube is a static code analysis tool used to enhance software code quality
+and security. The METplus team acknowledges the generous funding from the
+United States Air Force to support our ongoing use of this important utility.
+
+The **sonarqube.yml** workflow is defined in all of the METplus component
+code repositories. This workflow is triggered by a **pull_request** or
+**push** to the **develop** or **main_vX.Y** branch and also by manual
+**workflow_dispatch** events. However, changes to documentation only or other
+specific infrastructure directories do not trigger this workflow.
+
+A **sonar-project.properties** file within each repository defines the
+configuration of the SonarQube scans for that code base. The SonarQube
+workflows for the Python-based METplus components are all very similar while
+the logic for the repositories with compiled code differ.
+
+The SonarQube workflows for the Python-based components (METplus, METplotpy,
+METcalcpy, and METdataio) run jobs to:
+
+* Check out the source code
+* Set up a Python environment
+* Run Pytests and create a test code coverage report
+* Configure the SonarQube properties based on the triggering event
+* Run a SonarQube scan job provided by SonarSource
+* Run a SonarQube quality gate check job provided by SonarSource
+ 
+The quality gate check job pushes the scan results, including code coverage,
+to a [SonarQube server](https://needham.rap.ucar.edu/) hosted by the METplus
+team. All memebers of the DTCenter GitHub organization can access this server
+by logging in with their GitHub credentials.
+
+The SonarQube scans for MET and METviewer require that the code be built,
+which is done inside a Docker container. However, the results of those
+Docker-based scans are also pushed to the same SonarQube server.
+
+The scan results for each repository are stored on the server in a project
+whose name matches the code repository name.
+
+The SonarQube server defines a configurable set of **Quality Gate** acceptance
+criteria. For each scan, a reference source is defined and changes are tracked
+relative to that reference. For example, a new scan of the **develop** branch
+is compared to the previous scan of **develop**, while each pull request scan
+is compared to the latest scan of the destination branch, typically
+**develop**.
+
+SonarQube scans report on the following (listed in approximate order of
+concern from a security perspective):
+
+* **Vulnerabilities** for security findings
+* **Bugs** for reliability findings
+* **Security Hotspots** for security findings to be reviewed
+* **Code Smells** for maintainability findings
+* Test code **Coverage** percentage (if provided to the scan)
+* Code **Duplication** percentage
+
+For each finding, the SonarQube scan categorizes it by type, shows its
+location in the code, and provides detailed information about the reason
+for the issue, suggestions on how to fix it, and links to additional
+information.
+
+SonarQube differentiates between **New Code** and **Overall Code** where the
+former shows findings flagged only in new files and lines modified in existing
+files and the latter shows all findings. Generally speaking, the configurable
+**Quality Gate** settings define acceptance criteria based only on findings
+in **New Code**.
+
+The **Quality Gate** check in the SonarQube workflow returns a good status
+(green checkmark) if the acceptance criteria is met or bad status (red X) if
+not. Ideally, each change to the code base would result in fewer findings,
+increased test coverage, and a lower code duplication. Pull requests should
+never add new **Vulnerabilities** or **Bugs**, and the submitter should fix
+them before their pull request is approved and merged. Introducing new
+**Code Smells** is acceptable in certain circumstances. In this case,
+developers are strongly encouraged to make additional changes that reduce the 
+total number of **Code Smells** in the **Overall Code**. While a pull request
+can add new **Code Smells** that are not easily fixed, the overall number
+should be reduced.
+
+Developers are encouaraged to manually run the SonarQube workflow with the
+GitHub **workflow_dispatch** option and check the results to confirm the
+quality of their code before submitting a pull request for review. Developers
+are encouraged to describe the SonarQube status of their proposed code changes
+in the body of each pull request. Reviewers should not approve pull requests
+that introduce new **Vulnerabilities** or **Bugs** or increase the number of
+**Code Smells** in the **Overall Code**.
 
 .. _cg-ci-update-truth-data:
 
@@ -175,7 +266,6 @@ branch name text box blank and select the branch name from the pull-down menu.
 
 Verify that the workflow ran successfully and properly obtained the new data
 by reviewing the log output from the workflow run.
-
 
 Release Published (release_published.yml) - DEPRECATED
 ------------------------------------------------------
@@ -780,6 +870,8 @@ Example::
     met_tool_wrapper/GridStat/GridStat.conf,met_tool_wrapper/GridStat/GridStat_forecast.conf,met_tool_wrapper/GridStat/GridStat_observation.conf
 
 
+.. _cg-ci-dependencies:
+
 dependencies
 """"""""""""
 
@@ -798,6 +890,8 @@ Example::
 
 Use Case Dependencies
 ^^^^^^^^^^^^^^^^^^^^^
+
+.. _cg-ci-conda-environments:
 
 Conda Environments
 """"""""""""""""""

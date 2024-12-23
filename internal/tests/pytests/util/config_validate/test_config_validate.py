@@ -104,9 +104,9 @@ def test_is_var_item_valid_levels(metplus_config, item_list, configs_to_set, is_
 @pytest.mark.parametrize(
     'met_config_file, expected',
     [
-        ('GridStatConfig_good', (True, [])),
-        ('GridStatConfig_bad', (False, [])),
-        ('GridStatConfig_fake', (False, [])),
+        ('GridStatConfig_good', True),
+        ('GridStatConfig_bad', False),
+        ('GridStatConfig_fake', False),
     ]
 )
 @pytest.mark.util
