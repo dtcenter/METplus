@@ -84,7 +84,7 @@ for name,group in groups:
     hi = np.append(hi,-9999.)
   else:
     # Append the HI value
-    thishi = land_surface.calc_humidity_index(prsarr,tmparr,dewarr,interp=False)
+    thishi = land_surface.calc_humidity_index(prsarr,tmparr,dewarr,-1,interp=False)
     hi = np.append(hi,thishi.m)
 
 # After each station is processed, add in the missing 11-column data
