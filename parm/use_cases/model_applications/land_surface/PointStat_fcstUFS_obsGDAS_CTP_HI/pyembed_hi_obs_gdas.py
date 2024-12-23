@@ -117,7 +117,5 @@ point_data = point_data.astype(met_col_dtypes)
 # Reorder the columns to be correct
 point_data = point_data[['typ','sid','vld','lat','lon','elv','var','lvl','hgt','qc','obs']]
 
-print(point_data)
-
 # Convert to MET object
 point_data = point_data.values.tolist()
