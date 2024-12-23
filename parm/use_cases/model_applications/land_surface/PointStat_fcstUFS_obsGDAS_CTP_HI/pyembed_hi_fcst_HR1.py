@@ -55,11 +55,6 @@ else:
   ny = indims['grid_yt']
   nx = indims['grid_xt']
 
-# Flip the latitudes across the equator
-#ds = ds.reindex(grid_yt=ds.grid_yt[::-1])
-
-print(ds.spfh)
-
 # Open the mask file
 maskdata = xr.open_dataset(mask_file)
 
@@ -99,8 +94,6 @@ tmp3d = tmp3d.isel(pfull=slice(0,len(z0)))
 sph3d = sph3d.isel(pfull=slice(0,len(z0)))
 
 # Change the vertical coordinate and dimension for the temperature and specific humidity data to be z0
-#tmp3d = tmp3d.expand_dims(dim={'z0':z0}).assign_coords({'z0':z0}).isel(pfull=0).squeeze()
-#tmp3d = tmp3d.expand_dims(dim={'z0':z0}).assign_coords({'z0':z0}).squeeze()
 tmp3d = tmp3d.rename({'pfull':'z0'}).assign_coords({'z0':z0})
 tmp3d = tmp3d*units('degK')
 sph3d = sph3d.rename({'pfull':'z0'}).assign_coords({'z0':z0})
@@ -113,10 +106,6 @@ prs3d = (prs3d*(ds['pressfc'].squeeze()))*units('Pa').to('hPa')
 # Compute dewpoint temperature from specific humidity
 dew3d = dewpoint_from_specific_humidity(prs3d,sph3d)
 dew3d = dew3d*units('degK')
-
-print(tmp3d)
-print(prs3d)
-print(dew3d)
 
 # Get a pool of workers
 mp = multiprocessing.Pool(multiprocessing.cpu_count()-2)
@@ -142,11 +131,6 @@ result = [x.m for x in result]
 
 # Re-populate the stacked array with the values at the correct locations
 resstack[mskstack>0] = result
-
-# Put the results back into an Xarray DataArray and assign the multi-index variable from
-# stacking earlier so we can unstack the data into a 2D grid
-#met_data = xr.DataArray(result,dims=['sid'],coords={'sid':tmpstack.sid},attrs={'units':'J/kg'}).unstack().to_netcdf('test.nc')
-#met_data = xr.DataArray(result,dims=['sid'],coords={'sid':tmpstack.sid},attrs={'units':'J/kg'}).unstack()
 
 # Unstack the data from the `sid` dimension back to just grid_xt and grid_yt (2D) and obtain the NumPy N-D array
 met_data = resstack.unstack()
