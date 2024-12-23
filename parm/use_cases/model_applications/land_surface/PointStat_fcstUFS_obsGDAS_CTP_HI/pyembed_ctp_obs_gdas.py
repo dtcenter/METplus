@@ -73,7 +73,7 @@ for name,group in groups:
     ctp = np.append(ctp,-9999.)
   else:
     # Append the CTP value
-    thisctp = land_surface.calc_ctp(prssub,tmpsub)
+    thisctp = land_surface.calc_ctp(prssub,tmpsub,-1)
     ctp = np.append(ctp,thisctp.m)
 
 # After each station is processed, add in the missing 11-column data
