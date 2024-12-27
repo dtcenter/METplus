@@ -5,6 +5,20 @@ from dateutil.relativedelta import relativedelta
 
 from metplus.util import time_looping as tl
 from metplus.util.time_util import ti_calculate, ti_get_hours_from_relativedelta
+from metplus.util.time_looping import get_start_and_end_times
+
+
+@pytest.fixture
+def mock_time_generator(monkeypatch):
+    """
+    Mock the time_generator function used in get_start_and_end_times
+    to simulate various scenarios.
+    """
+
+    def mock_generator(config):
+        return config.get("mock_times", [])
+
+    monkeypatch.setattr('metplus.util.time_looping.time_generator', mock_generator)
 
 
 @pytest.mark.parametrize(
@@ -236,7 +250,8 @@ def test_get_start_and_end_times(metplus_config):
         config.set('config', f'{prefix}_TIME_FMT', time_format)
         config.set('config', f'{prefix}_BEG', start_time)
         config.set('config', f'{prefix}_END', end_time)
-        start_dt, end_dt = tl.get_start_and_end_times(config)
+        config.set('config', f'{prefix}_INCREMENT', '1Y')
+        start_dt, end_dt = get_start_and_end_times(config)
         assert start_dt.strftime(time_format) == start_time
         assert end_dt.strftime(time_format) == end_time
 
@@ -250,7 +265,7 @@ def test_get_start_and_end_times_now(metplus_config):
         config.set('config', f'{prefix}_TIME_FMT', time_format)
         config.set('config', f'{prefix}_BEG', '{now?fmt=%Y%m%d%H%M%S?shift=-1d}')
         config.set('config', f'{prefix}_END', '{now?fmt=%Y%m%d%H%M%S}')
-        start_dt, end_dt = tl.get_start_and_end_times(config)
+        start_dt, end_dt = get_start_and_end_times(config)
         expected_end_time = config.getstr('config', 'CLOCK_TIME')
         yesterday_dt = datetime.strptime(expected_end_time, time_format) - relativedelta(days=1)
         expected_start_time = yesterday_dt.strftime(time_format)
@@ -268,7 +283,7 @@ def test_get_start_and_end_times_today(metplus_config):
         config.set('config', f'{prefix}_TIME_FMT', time_format)
         config.set('config', f'{prefix}_BEG', '{today}')
         config.set('config', f'{prefix}_END', '{today}')
-        start_dt, end_dt = tl.get_start_and_end_times(config)
+        start_dt, end_dt = get_start_and_end_times(config)
         clock_time = config.getstr('config', 'CLOCK_TIME')
         clock_dt = datetime.strptime(clock_time, '%Y%m%d%H%M%S')
         expected_time = clock_dt.strftime(time_format)
@@ -568,3 +583,52 @@ def test_get_lead_sequence_init_min_10(metplus_config):
     test_seq = tl.get_lead_sequence(conf, input_dict)
     lead_seq = [12, 24]
     assert test_seq == [relativedelta(hours=lead) for lead in lead_seq]
+
+def test_get_start_and_end_times_empty_times(mock_time_generator):
+    """Test empty times list returns (None, None)"""
+    config = {"mock_times": []}
+    start, end = get_start_and_end_times(config)
+    assert start is None
+    assert end is None
+
+
+def test_get_start_and_end_times_single_entry(mock_time_generator):
+    """Test handling of a single entry in the times list"""
+    config = {"mock_times": [{"loop_by": "valid", "valid": "2023-10-15"}]}
+    start, end = get_start_and_end_times(config)
+    assert start == "2023-10-15"
+    assert end == "2023-10-15"
+
+
+def test_get_start_and_end_times_missing_loop_by_key(mock_time_generator):
+    """Test when 'loop_by' key is missing in a dictionary"""
+    config = {
+        "mock_times": [
+            {"valid": "2023-10-15"},
+            {"loop_by": "valid", "valid": "2023-10-16"}
+        ]
+    }
+    with pytest.raises(KeyError):
+        get_start_and_end_times(config)  # Should raise an error for missing key
+
+
+def test_get_start_and_end_times_invalid_config(mock_time_generator):
+    """Test when time_generator produces invalid or corrupted time data"""
+    config = {"mock_times": [None]}  # Simulate corrupted output
+    start, end = get_start_and_end_times(config)
+    assert start is None
+    assert end is None
+
+
+def test_get_start_and_end_times_multiple_entries(mock_time_generator):
+    """Test handling multiple entries in the times list"""
+    config = {
+        "mock_times": [
+            {"loop_by": "valid", "valid": "2023-10-15"},
+            {"loop_by": "valid", "valid": "2023-10-16"},
+            {"loop_by": "valid", "valid": "2023-10-17"}
+        ]
+    }
+    start, end = get_start_and_end_times(config)
+    assert start == "2023-10-15"
+    assert end == "2023-10-17"
