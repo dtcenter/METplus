@@ -235,7 +235,7 @@ def compare_command_and_env_vars():
                 assert match is not None
                 value = match.split('=', 1)[1]
                 if special_values is not None and env_var_key in special_values:
-                    assert special_values[env_var_key] == value
+                    assert value == special_values[env_var_key]
                 else:
                     assert value == env_var_values.get(env_var_key, '')
 
