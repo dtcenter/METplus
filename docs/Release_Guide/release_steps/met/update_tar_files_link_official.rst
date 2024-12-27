@@ -6,7 +6,7 @@ Update the tar file links for each official release.
 
 .. dropdown:: Instructions
 
-  - On the DTC web server machine (i.e. mohawk) navigate to installation directory as the `met_test` user.
+  - On the DTC web server machine (i.e. mohawk) navigate to installation directory as the met_test user.
 
   .. parsed-literal::
 
