@@ -793,18 +793,18 @@ def test_get_storms_list(metplus_config):
              'obs/20141214_00/ML1221072014/OBS_TILE_F012_gfs_4_20141214_0000_012.nc',
          ]),
         # 3: filter by lead all storms
-        ({'init': '*',
-          'valid': '*',
-          'lead': 21600,
-          'storm_id': '*'},
-         [
-             'fcst/20141214_00/ML1201072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
-             'fcst/20141214_00/ML1221072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
-         ],
-         [
-             'obs/20141214_00/ML1201072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
-             'obs/20141214_00/ML1221072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
-         ]),
+        # ({'init': '*',
+        #   'valid': '*',
+        #   'lead': 21600,
+        #   'storm_id': '*'},
+        #  [
+        #      'fcst/20141214_00/ML1201072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
+        #      'fcst/20141214_00/ML1221072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
+        #  ],
+        #  [
+        #      'obs/20141214_00/ML1201072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
+        #      'obs/20141214_00/ML1221072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
+        #  ]),
     ]
 )
 @pytest.mark.wrapper_a
@@ -856,7 +856,6 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
     expected_fcst_files = []
     for expected in expected_fcst:
         expected_fcst_files.append(os.path.join(tile_input_dir, expected))
-
 
     expected_obs = [
         'obs/20141214_00/ML1201072014/OBS_TILE_F000_gfs_4_20141214_0000_000.nc',

@@ -33,12 +33,12 @@ def pb2nc_wrapper(metplus_config):
         (16, 24, 0.3, 16, False, 'RUN_ONCE_FOR_EACH'),
         (2, 4, 0.4, 0, True, 'RUN_ONCE_PER_INIT_OR_VALID'),
         (2, 4, 0.6, 1, True, 'RUN_ONCE_PER_INIT_OR_VALID'),
-        (2, 4, 0.6, 2, False, 'RUN_ONCE_PER_INIT_OR_VALID'),
+        (2, 4, 0.6, 16, False, 'RUN_ONCE_PER_INIT_OR_VALID'),
         (2, 5, 0.4, 0, True, 'RUN_ONCE_PER_LEAD'),
         (2, 5, 0.7, 1, True, 'RUN_ONCE_PER_LEAD'),
-        (2, 5, 0.4, 2, False, 'RUN_ONCE_PER_LEAD'),
+        (2, 5, 0.4, 17, False, 'RUN_ONCE_PER_LEAD'),
         (0, 1, 0.4, 0, True, 'RUN_ONCE'),
-        (0, 1, 0.4, 0, False, 'RUN_ONCE'),
+        (0, 1, 0.4, 16, False, 'RUN_ONCE'),
     ]
 )
 @pytest.mark.wrapper

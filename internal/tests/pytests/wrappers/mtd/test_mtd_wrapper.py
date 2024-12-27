@@ -80,13 +80,13 @@ def set_minimum_config_settings(config, set_inputs=True):
         (1, 3, 0.3, 0, True, 'CHOCOLATE'),
         (1, 3, 0.3, 0, True, 'BOTH'),
         (1, 3, 0.8, 1, True, 'BOTH'),
-        (1, 3, 0.8, 1, False, 'BOTH'),
+        (1, 3, 0.8, 22, False, 'BOTH'),
         (1, 3, 0.3, 0, True, 'FCST'),
         (1, 3, 0.8, 1, True, 'FCST'),
-        (1, 3, 0.8, 1, False, 'FCST'),
+        (1, 3, 0.8, 12, False, 'FCST'),
         (1, 3, 0.3, 0, True, 'OBS'),
         (1, 3, 0.8, 1, True, 'OBS'),
-        (1, 3, 0.8, 1, False, 'OBS'),
+        (1, 3, 0.8, 10, False, 'OBS'),
     ]
 )
 @pytest.mark.wrapper_a

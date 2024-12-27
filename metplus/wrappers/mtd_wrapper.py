@@ -86,8 +86,8 @@ class MTDWrapper(CompareGriddedWrapper):
         self.add_met_config(name='min_volume', data_type='int')
 
         input_info = {
-            'FCST': {'prefix': 'FCST_MTD', 'required': True},
-            'OBS': {'prefix': 'OBS_MTD', 'required': True},
+            'FCST': {'prefix': 'FCST_MTD', 'required': False},
+            'OBS': {'prefix': 'OBS_MTD', 'required': False},
         }
 
         c_dict['SINGLE_RUN'] = (
@@ -166,7 +166,7 @@ class MTDWrapper(CompareGriddedWrapper):
 
         # loop through the files found for each field (var_info)
         for file_dict in self.c_dict['ALL_FILES']:
-            var_info = file_dict['var_info']
+            var_info = file_dict['var_list'][0]
             inputs = {}
             for data_type in ('FCST', 'OBS'):
                 file_list = file_dict.get(data_type)
@@ -328,3 +328,13 @@ class MTDWrapper(CompareGriddedWrapper):
             cmd += '-outdir {}'.format(self.outdir)
 
         return cmd
+
+    def get_files_from_time(self, time_info):
+        file_dict_list = super().get_files_from_time(time_info)
+        if self.c_dict['SINGLE_RUN']:
+            return file_dict_list
+        for file_dict in file_dict_list:
+            if file_dict.get('OBS') is None or file_dict.get('FCST') is None:
+                file_dict['OBS'] = None
+                file_dict['FCST'] = None
+        return file_dict_list

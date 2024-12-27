@@ -169,47 +169,13 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         # fill inputs that are not found with fake path to note it is missing
         c_dict['FCST_FILL_MISSING'] = True
 
-        c_dict['OBS_POINT_INPUT_DIR'] = (
-          self.config.getdir('OBS_ENSEMBLE_STAT_POINT_INPUT_DIR', '')
-        )
-
-        c_dict['OBS_POINT_INPUT_TEMPLATE'] = (
-          self.config.getraw('config',
-                             'OBS_ENSEMBLE_STAT_POINT_INPUT_TEMPLATE')
-        )
-
-        c_dict['OBS_GRID_INPUT_DIR'] = (
-          self.config.getdir('OBS_ENSEMBLE_STAT_GRID_INPUT_DIR', '')
-        )
-
-        c_dict['OBS_GRID_INPUT_TEMPLATE'] = (
-          self.config.getraw('config',
-                             'OBS_ENSEMBLE_STAT_GRID_INPUT_TEMPLATE')
-        )
-
-        # The ensemble forecast files input directory and filename templates
-        c_dict['FCST_INPUT_DIR'] = (
-          self.config.getdir('FCST_ENSEMBLE_STAT_INPUT_DIR', '')
-        )
-
-        c_dict['FCST_INPUT_TEMPLATE'] = (
-            self.config.getraw('config', 'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE')
-        )
-        c_dict['FCST_INPUT_FILE_LIST'] = (
-            self.config.getraw('config', 'FCST_ENSEMBLE_STAT_INPUT_FILE_LIST')
-        )
-        if (not c_dict['FCST_INPUT_TEMPLATE'] and
-                not c_dict['FCST_INPUT_FILE_LIST']):
-            self.log_error("Must set FCST_ENSEMBLE_STAT_INPUT_TEMPLATE or "
-                           "FCST_ENSEMBLE_STAT_INPUT_FILE_LIST")
-
-        # optional -ens_mean argument path
-        c_dict['ENS_MEAN_INPUT_DIR'] = (
-          self.config.getdir('ENSEMBLE_STAT_ENS_MEAN_INPUT_DIR', ''))
-
-        c_dict['ENS_MEAN_INPUT_TEMPLATE'] = (
-            self.config.getraw('config',
-                               'ENSEMBLE_STAT_ENS_MEAN_INPUT_TEMPLATE'))
+        self.get_input_templates(c_dict, {
+            'CTRL': {'prefix': 'ENSEMBLE_STAT_CTRL', 'required': False},
+            'FCST': {'prefix': 'FCST_ENSEMBLE_STAT', 'required': True},
+            'OBS_POINT': {'prefix': 'OBS_ENSEMBLE_STAT_POINT', 'required': False},
+            'OBS_GRID': {'prefix': 'OBS_ENSEMBLE_STAT_GRID', 'required': False},
+            'ENS_MEAN': {'prefix': 'ENSEMBLE_STAT_ENS_MEAN', 'required': False},
+        })
 
         c_dict['OUTPUT_DIR'] = (
             self.config.getdir('ENSEMBLE_STAT_OUTPUT_DIR', '')
@@ -221,14 +187,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['OUTPUT_TEMPLATE'] = (
             self.config.getraw('config',
                                'ENSEMBLE_STAT_OUTPUT_TEMPLATE')
-        )
-
-        # get ctrl (control) template/dir - optional
-        c_dict['CTRL_INPUT_TEMPLATE'] = (
-            self.config.getraw('config', 'ENSEMBLE_STAT_CTRL_INPUT_TEMPLATE')
-        )
-        c_dict['CTRL_INPUT_DIR'] = (
-            self.config.getdir('ENSEMBLE_STAT_CTRL_INPUT_DIR', '')
         )
 
         # get climatology config variables
@@ -373,24 +331,11 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                             data_type='list',
                             extra_args={'remove_quotes': True})
 
-        # signifies that the tool can be run without setting
-        # field information for fcst and obs
-        c_dict['VAR_LIST_OPTIONAL'] = True
-
-        # parse var list for ENS fields
-        c_dict['ENS_VAR_LIST_TEMP'] = parse_var_list(
-            self.config,
-            data_type='ENS',
-            met_tool=self.app_name
-        )
-
         # parse optional var list for FCST and/or OBS fields
         c_dict['VAR_LIST_TEMP'] = parse_var_list(
             self.config,
             met_tool=self.app_name
         )
-        # skip RuntimeFreq input file logic - remove once integrated
-        c_dict['FIND_FILES'] = False
         return c_dict
 
     def get_command(self):
@@ -400,7 +345,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         """
         return (f"{self.app_path} -v {self.c_dict['VERBOSITY']}"
                 f" {' '.join(self.infiles)} {self.param}"
-                f" {' '.join(self.args)} -outdir {self.outdir}")
+                f"{' '.join(self.args) if self.args else ''} -outdir {self.outdir}")
 
     def find_input_files(self, time_info):
         # get ensemble model files

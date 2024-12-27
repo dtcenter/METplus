@@ -461,7 +461,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         for lead in leads:
             current_input_dict['lead'] = lead
             new_files = self.get_all_files_for_lead(current_input_dict)
-            all_files.extend(new_files)
+            self._update_list_with_new_files(new_files, all_files)
+
         return all_files
 
     def run_at_time_once(self, time_info, lead_group=None):
@@ -1149,12 +1150,3 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             if not found:
                 continue
             yield file_time_info
-
-    def _update_list_with_new_files(self, time_info, list_to_update):
-        new_files = self.get_files_from_time(time_info)
-        if not new_files:
-            return
-        if isinstance(new_files, list):
-            list_to_update.extend(new_files)
-        else:
-            list_to_update.append(new_files)

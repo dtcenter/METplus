@@ -39,12 +39,12 @@ def set_minimum_config_settings(config, set_fields=True, set_obs=True):
     config.set('config', 'INIT_INCREMENT', '12H')
     config.set('config', 'LEAD_SEQ', '12H')
     config.set('config', 'LOOP_ORDER', 'times')
-    config.set('config', 'ENSEMBLE_STAT_N_MEMBERS', 1)
+    config.set('config', 'ENSEMBLE_STAT_N_MEMBERS', 2)
     config.set('config', 'ENSEMBLE_STAT_CONFIG_FILE',
                '{PARM_BASE}/met_config/EnsembleStatConfig_wrapped')
     config.set('config', 'FCST_ENSEMBLE_STAT_INPUT_DIR', fcst_dir)
     config.set('config', 'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE',
-               '{init?fmt=%Y%m%d%H}/fcst_file_F{lead?fmt=%3H}')
+               '{init?fmt=%Y%m%d%H}/fcst_file_F{lead?fmt=%3H},{init?fmt=%Y%m%d%H}/fcst_file_F{lead?fmt=%3H}')
     if set_obs:
         config.set('config', 'OBS_ENSEMBLE_STAT_GRID_INPUT_DIR', obs_dir)
         config.set('config', 'OBS_ENSEMBLE_STAT_GRID_INPUT_TEMPLATE',
@@ -67,16 +67,16 @@ def set_minimum_config_settings(config, set_fields=True, set_obs=True):
         (False, None, 3, 8, 0.7, 3),
         (True, 'obs_grid', 4, 8, 0.4, 0),
         (True, 'obs_grid', 4, 8, 0.7, 1),
-        (False, 'obs_grid', 4, 8, 0.7, 4),
+        (False, 'obs_grid', 4, 8, 0.7, 7),
         (True, 'point_grid', 4, 8, 0.4, 0),
         (True, 'point_grid', 4, 8, 0.7, 1),
-        (False, 'point_grid', 4, 8, 0.7, 4),
+        (False, 'point_grid', 4, 8, 0.7, 7),
         (True, 'ens_mean', 4, 8, 0.4, 0),
         (True, 'ens_mean', 4, 8, 0.7, 1),
-        (False, 'ens_mean', 4, 8, 0.7, 4),
+        (False, 'ens_mean', 4, 8, 0.7, 7),
         (True, 'ctrl', 4, 8, 0.4, 0),
         (True, 'ctrl', 4, 8, 0.7, 1),
-        (False, 'ctrl', 4, 8, 0.7, 4),
+        (False, 'ctrl', 4, 8, 0.7, 7),
         # still errors if more members than n_members found
         (True, 'low_n_member', 8, 8, 0.7, 6),
         (False, 'low_n_member', 8, 8, 0.7, 8),
@@ -135,11 +135,13 @@ def test_ensemble_stat_missing_inputs(metplus_config, get_test_data_dir, allow_m
           'FCST_VAR1_LEVELS': 'A06',
           'OBS_VAR1_NAME': 'obs_file',
           'OBS_VAR1_LEVELS': 'A06',
-          'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE': '{fcst_name}_A{level?fmt=%3H}',
+          'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE': '{fcst_name}_A{level?fmt=%3H},{fcst_name}_A{level?fmt=%3H}',
           },
          f'{fcst_dir}/fcst_file_A006'),
         # 1 - don't set forecast level
-        ({'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE': 'fcst_file_A{level?fmt=%3H}'},
+        ({'FCST_VAR1_NAME': 'fcst_file',
+          'OBS_VAR1_NAME': 'obs_file',
+          'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE': 'fcst_file_A{level?fmt=%3H},fcst_file_A{level?fmt=%3H}'},
          f'{fcst_dir}/fcst_file_A000'),
     ]
 )
@@ -159,16 +161,18 @@ def test_ensemble_stat_level_in_template(metplus_config, config_overrides,
     assert wrapper.isOK
 
     file_list_dir = wrapper.config.getdir('FILE_LISTS_DIR')
-    file_list_file = f"{file_list_dir}/20050807000000_12_ensemble_stat.txt"
+    file_list_file = f"{file_list_dir}/ensemble_stat_files_FCST_init_20050807000000_valid_20050807120000_lead_43200.txt"
     if os.path.exists(file_list_file):
         os.remove(file_list_file)
 
     wrapper.run_all_times()
+
     assert os.path.exists(file_list_file)
     with open(file_list_file, 'r') as file_handle:
         filenames = file_handle.read().splitlines()[1:]
-    assert len(filenames) == 1
+    assert len(filenames) == 2
     assert filenames[0] == expected_filename
+    assert filenames[1] == expected_filename
 
 
 @pytest.mark.parametrize(
@@ -860,20 +864,20 @@ def test_ensemble_stat_single_field(metplus_config, config_overrides,
     point_obs = ' '
     ens_mean = ' '
     if 'OBS_ENSEMBLE_STAT_POINT_INPUT_TEMPLATE' in config_overrides:
-        point_obs = f' -point_obs "{obs_dir}/{obs_point_template}" '
+        point_obs = f' -point_obs {obs_dir}/{obs_point_template} '
     if 'ENSEMBLE_STAT_ENS_MEAN_INPUT_TEMPLATE' in config_overrides:
         ens_mean = f' -ens_mean {ens_mean_dir}/{ens_mean_template} '
 
     expected_cmds = [(f"{app_path} {verbosity} "
-                      f"{file_list_dir}/20050807000000_12_ensemble_stat.txt "
-                      f"{config_file}{point_obs}"
-                      f'-grid_obs "{obs_dir}/2005080712/obs_file"{ens_mean}'
-                      f"-outdir {out_dir}/2005080712"),
+                      f"{file_list_dir}/ensemble_stat_files_FCST_init_20050807000000_valid_20050807120000_lead_43200.txt"
+                      f"{point_obs}"
+                      f'-grid_obs {obs_dir}/2005080712/obs_file{ens_mean}'
+                      f"{config_file} -outdir {out_dir}/2005080712"),
                      (f"{app_path} {verbosity} "
-                      f"{file_list_dir}/20050807120000_12_ensemble_stat.txt "
-                      f"{config_file}{point_obs}"
-                      f'-grid_obs "{obs_dir}/2005080800/obs_file"{ens_mean}'
-                      f"-outdir {out_dir}/2005080800"),
+                      f"{file_list_dir}/ensemble_stat_files_FCST_init_20050807120000_valid_20050808000000_lead_43200.txt"
+                      f"{point_obs}"
+                      f'-grid_obs {obs_dir}/2005080800/obs_file{ens_mean}'
+                      f"{config_file} -outdir {out_dir}/2005080800"),
                      ]
 
     all_cmds = wrapper.run_all_times()
@@ -905,7 +909,7 @@ def test_get_config_file(metplus_config):
 @pytest.mark.parametrize(
     'config_overrides, expected_num_files', [
         ({}, 4),
-        ({'ENSEMBLE_STAT_ENS_MEMBER_IDS': '1'}, 1),
+        ({'ENSEMBLE_STAT_ENS_MEMBER_IDS': '1'}, 2),
     ]
 )
 @pytest.mark.wrapper_c
@@ -926,13 +930,12 @@ def test_ensemble_stat_fill_missing(metplus_config, config_overrides,
     wrapper = EnsembleStatWrapper(config)
 
     file_list_file = os.path.join(wrapper.config.getdir('FILE_LISTS_DIR'),
-                                  '20050807000000_12_ensemble_stat.txt')
+                                  'ensemble_stat_files_FCST_init_20050807000000_valid_20050807120000_lead_43200.txt')
     if os.path.exists(file_list_file):
         os.remove(file_list_file)
 
     all_cmds = wrapper.run_all_times()
     assert len(all_cmds) == 1
-
     with open(file_list_file, 'r') as file_handle:
         actual_num_files = len(file_handle.read().splitlines()) - 1
 

@@ -61,8 +61,8 @@ def set_minimum_config_settings(config):
         (False, 6, 12, 0.6, 1, True),
         (True, 12, 24, 0.5, 0, True),
         (True, 12, 24, 0.6, 1, True),
-        (False, 6, 12, 0.5, 6, False),
-        (True, 12, 24, 0.5, 12, False),
+        (False, 6, 12, 0.5, 10, False),
+        (True, 12, 24, 0.5, 20, False),
     ]
 )
 @pytest.mark.wrapper_b

@@ -276,6 +276,4 @@ class GridStatWrapper(CompareGriddedWrapper):
 
         self.add_met_config(name='seeps_p1_thresh', data_type='string',
                             extra_args={'remove_quotes': True})
-        # skip RuntimeFreq input file logic - remove once integrated
-        c_dict['FIND_FILES'] = False
         return c_dict

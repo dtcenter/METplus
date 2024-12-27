@@ -128,6 +128,8 @@ class PointStatWrapper(CompareGriddedWrapper):
                                c_dict['VERBOSITY'])
         )
         c_dict['ALLOW_MULTIPLE_FILES'] = True
+        c_dict['SUPPORTS_FILE_LIST'] = False
+
         c_dict['OFFSETS'] = getlistint(
             self.config.getstr('config', 'POINT_STAT_OFFSETS', '0')
         )
@@ -304,8 +306,6 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         if not c_dict['OUTPUT_DIR']:
             self.log_error('Must set POINT_STAT_OUTPUT_DIR in config file')
-        # skip RuntimeFreq input file logic - remove once integrated
-        c_dict['FIND_FILES'] = False
         return c_dict
 
     def set_command_line_arguments(self, time_info):

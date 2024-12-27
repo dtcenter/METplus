@@ -62,7 +62,7 @@ def set_minimum_config_settings(config):
     'missing, run, thresh, errors, allow_missing', [
         (6, 12, 0.5, 0, True),
         (6, 12, 0.6, 1, True),
-        (6, 12, 0.5, 6, False),
+        (6, 12, 0.5, 10, False),
     ]
 )
 @pytest.mark.wrapper_a

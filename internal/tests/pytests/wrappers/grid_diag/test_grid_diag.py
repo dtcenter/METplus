@@ -3,6 +3,7 @@
 import pytest
 
 import os
+import re
 
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
@@ -102,71 +103,60 @@ def test_grid_diag_missing_inputs(metplus_config, get_test_data_dir,
 
 
 @pytest.mark.parametrize(
-    'time_info, expected_subset', [
-        # all files
-        ({'init': '*', 'valid': '*', 'lead': '*'},
-         ['init_20141031213015_valid_20141031213015_lead_000.nc',
+    'runtime_freq,init_or_valid,expected_subset', [
+        # run once
+        ('RUN_ONCE', 'INIT',
+         [['init_20141031213015_valid_20141031213015_lead_000.nc',
           'init_20141031213015_valid_20141101213015_lead_024.nc',
           'init_20141101093015_valid_20141101093015_lead_000.nc',
           'init_20141101093015_valid_20141102093015_lead_024.nc',
+          ]]),
+        # once per init
+        ('RUN_ONCE_PER_INIT_OR_VALID', 'INIT',
+         [['init_20141031213015_valid_20141031213015_lead_000.nc',
+           'init_20141031213015_valid_20141101213015_lead_024.nc', ],
+          ['init_20141101093015_valid_20141101093015_lead_000.nc',
+           'init_20141101093015_valid_20141102093015_lead_024.nc',
+           ]]),
+
+        # once per valid
+        ('RUN_ONCE_PER_INIT_OR_VALID', 'VALID',
+         [['init_20141031213015_valid_20141031213015_lead_000.nc',
+           'init_20141030213015_valid_20141031213015_lead_024.nc'],
+          ['init_20141101093015_valid_20141101093015_lead_000.nc',
+           'init_20141031093015_valid_20141101093015_lead_024.nc'],
           ]),
-        # specific init
-        ({'init': datetime(2014, 10, 31, 21, 30, 15), 'valid': '*', 'lead': '*'},
-         ['init_20141031213015_valid_20141031213015_lead_000.nc',
-          'init_20141031213015_valid_20141101213015_lead_024.nc',
-          ]),
-        # specific valid
-        ({'init': '*', 'valid': datetime(2014, 11, 1, 9, 30, 15), 'lead': '*'},
-         ['init_20141101093015_valid_20141101093015_lead_000.nc',
-          ]),
-        # specific lead integer zero
-        ({'init': '*', 'valid': '*', 'lead': 0},
-         ['init_20141031213015_valid_20141031213015_lead_000.nc',
-          'init_20141101093015_valid_20141101093015_lead_000.nc',
-          ]),
-        # specific lead relativedelta non-zero
-        ({'init': '*', 'valid': '*', 'lead': relativedelta(hours=24)},
+        # once per lead
+        ('RUN_ONCE_PER_LEAD', 'INIT',
+         [['init_20141031213015_valid_20141031213015_lead_000.nc',
+           'init_20141101093015_valid_20141101093015_lead_000.nc'],
           ['init_20141031213015_valid_20141101213015_lead_024.nc',
-          'init_20141101093015_valid_20141102093015_lead_024.nc',
-          ]),
-        # specific lead integer non-zero
-        ({'init': '*', 'valid': '*', 'lead': 86400},
-          ['init_20141031213015_valid_20141101213015_lead_024.nc',
-          'init_20141101093015_valid_20141102093015_lead_024.nc',
-          ]),
-        # specific init/valid/lead integer zero
-        ({'init': datetime(2014, 10, 31, 21, 30, 15),
-          'valid': datetime(2014, 10, 31, 21, 30, 15),
-          'lead': 0},
-         ['init_20141031213015_valid_20141031213015_lead_000.nc',
-          ]),
-        # specific init/valid/lead relativedelta non-zero
-        ({'init': datetime(2014, 10, 31, 21, 30, 15),
-          'valid': datetime(2014, 11, 1, 21, 30, 15),
-          'lead': relativedelta(hours=24)},
-         ['init_20141031213015_valid_20141101213015_lead_024.nc',
-          ]),
-        # specific init/valid/lead integer non-zero
-        ({'init': datetime(2014, 10, 31, 21, 30, 15),
-          'valid': datetime(2014, 11, 1, 21, 30, 15),
-          'lead': 86400},
-         ['init_20141031213015_valid_20141101213015_lead_024.nc',
-          ]),
+           'init_20141101093015_valid_20141102093015_lead_024.nc',
+           ]]),
+        # once for each
+        ('RUN_ONCE_FOR_EACH', 'INIT',
+         [['init_20141031213015_valid_20141031213015_lead_000.nc'],
+          ['init_20141031213015_valid_20141101213015_lead_024.nc'],
+          ['init_20141101093015_valid_20141101093015_lead_000.nc'],
+          ['init_20141101093015_valid_20141102093015_lead_024.nc'],
+         ]),
     ]
 )
 @pytest.mark.wrapper
-def test_get_all_files_and_subset(metplus_config, time_info, expected_subset):
+def test_grid_diag_runtime_freq(metplus_config, runtime_freq, init_or_valid, expected_subset):
     """! Test to ensure that get_all_files only gets the files that are
     relevant to the runtime settings and not every file in the directory
     """
     config = metplus_config
-    config.set('config', 'LOOP_BY', 'INIT')
-    config.set('config', 'GRID_DIAG_RUNTIME_FREQ', 'RUN_ONCE')
-    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H%M%S')
-    config.set('config', 'INIT_BEG', '20141031213015')
-    config.set('config', 'INIT_END', '20141101093015')
-    config.set('config', 'INIT_INCREMENT', '12H')
+    config.set('config', 'LOOP_BY', init_or_valid)
+    config.set('config', 'GRID_DIAG_RUNTIME_FREQ', runtime_freq)
+    config.set('config', f'{init_or_valid}_TIME_FMT', '%Y%m%d%H%M%S')
+    config.set('config', f'{init_or_valid}_INCREMENT', '12H')
+    config.set('config', f'{init_or_valid}_BEG', '20141031213015')
+    config.set('config', f'{init_or_valid}_END', '20141101093015')
     config.set('config', 'LEAD_SEQ', '0H, 24H')
+    config.set('config', 'FCST_VAR1_NAME', 'FCST')
+    config.set('config', 'FCST_VAR1_LEVELS', 'L0')
 
     input_dir = os.path.join(config.getdir('METPLUS_BASE'),
                              'internal', 'tests',
@@ -177,38 +167,29 @@ def test_get_all_files_and_subset(metplus_config, time_info, expected_subset):
                ('init_{init?fmt=%Y%m%d%H%M%S}_valid_{valid?fmt=%Y%m%d%H%M%S}_'
                 'lead_{lead?fmt=%3H}.nc')
                )
-
-    expected_files = []
-    for init, valid, lead in [('20141031213015', '20141031213015', '000'),
-                              ('20141031213015', '20141101213015', '024'),
-                              ('20141101093015', '20141101093015', '000'),
-                              ('20141101093015', '20141102093015', '024')]:
-        filename = f'init_{init}_valid_{valid}_lead_{lead}.nc'
-        expected_files.append(os.path.join(input_dir, filename))
+    config.set('config', 'GRID_DIAG_OUTPUT_DIR', config.getdir('OUTPUT_BASE'))
 
     wrapper = GridDiagWrapper(config)
-    wrapper.c_dict['ALL_FILES'] = wrapper.get_all_files()
+    wrapper.run_all_times()
+    assert len(wrapper.all_commands) == len(expected_subset)
+    file_list_files = []
+    print(wrapper.all_commands)
+    pattern = r'-data\s+([^\s]+)'
+    for cmd, _ in wrapper.all_commands:
+        match = re.search(pattern, cmd)
+        if match:
+            file_list_files.append(match.group(1))
 
-    # convert list of lists into a single list to compare to expected results
-
-    actual_files = [item['input0'] for item in wrapper.c_dict['ALL_FILES']]
-    actual_files = [item for sub in actual_files for item in sub]
-    assert actual_files == expected_files
-
-    file_list_dict = wrapper.subset_input_files(time_info)
-    assert file_list_dict
-    if len(expected_subset) == 1:
-        file_list = [file_list_dict['input0']]
-    else:
-        with open(file_list_dict['input0'], 'r') as file_handle:
-            file_list = file_handle.readlines()
-
-        file_list = file_list[1:]
-        assert len(file_list) == len(expected_subset)
-
-    for actual_file, expected_file in zip(file_list, expected_subset):
-        actual_file = actual_file.strip()
-        assert os.path.basename(actual_file) == expected_file
+    assert len(file_list_files) == len(expected_subset)
+    for actual_file, expected_files in zip(file_list_files, expected_subset):
+        expected_files_full = [os.path.join(input_dir, item) for item in expected_files]
+        if len(expected_files) == 1:
+            assert actual_file == expected_files_full[0]
+        else:
+            with open(actual_file, 'r') as file_handle:
+                file_list = file_handle.read().splitlines()[1:]
+            print(f'ACTUAL: {file_list}')
+            assert sorted(file_list) == sorted(expected_files_full)
 
 
 @pytest.mark.parametrize(
@@ -367,16 +348,12 @@ def test_grid_diag(metplus_config, config_overrides, env_var_values,
     out_dir = wrapper.c_dict.get('OUTPUT_DIR')
 
     expected_cmds = [
-        (f"{app_path} -data {file_list_dir}/grid_diag_files_input0"
-         "_init_20160929000000_valid_ALL_lead_ALL.txt "
-         f"-data {file_list_dir}/grid_diag_files_input1"
-         "_init_20160929000000_valid_ALL_lead_ALL.txt "
-         f"-config {config_file} -out {out_dir}/grid_diag.all.nc {verbosity}"),
-        (f"{app_path} -data {file_list_dir}/grid_diag_files_input0"
-         "_init_20160929060000_valid_ALL_lead_ALL.txt "
-         f"-data {file_list_dir}/grid_diag_files_input1"
-         "_init_20160929060000_valid_ALL_lead_ALL.txt "
-         f"-config {config_file} -out {out_dir}/grid_diag.all.nc {verbosity}"),
+        (f"{app_path} -data {file_list_dir}/grid_diag_files_input0_init_20160929000000_valid_ALL_lead_ALL.txt"
+         f" -data {file_list_dir}/grid_diag_files_input1_init_20160929000000_valid_ALL_lead_ALL.txt"
+         f" -config {config_file} -out {out_dir}/grid_diag.all.nc {verbosity}"),
+        (f"{app_path} -data {file_list_dir}/grid_diag_files_input0_init_20160929060000_valid_ALL_lead_ALL.txt"
+         f" -data {file_list_dir}/grid_diag_files_input1_init_20160929060000_valid_ALL_lead_ALL.txt"
+         f" -config {config_file} -out {out_dir}/grid_diag.all.nc {verbosity}"),
     ]
 
     all_cmds = wrapper.run_all_times()

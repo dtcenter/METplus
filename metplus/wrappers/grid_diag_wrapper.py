@@ -140,13 +140,10 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         return cmd
 
     def run_at_time_once(self, time_info):
-        # subset input files as appropriate
-        input_list_dict = self.subset_input_files(time_info)
-        if not input_list_dict:
-            return
-
-        for input_list_file in input_list_dict.values():
-            self.infiles.append(input_list_file)
+        for file_dict in self.c_dict['ALL_FILES']:
+            if file_dict is None: continue
+            self.clear()
+            self.add_to_infiles(file_dict, time_info)
 
         # get output path
         if not self.find_and_check_output_file(time_info):
@@ -205,33 +202,3 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         """
         config_file = do_string_sub(self.c_dict['CONFIG_FILE'], **time_info)
         self.args.append(f"-config {config_file}")
-
-    def get_files_from_time(self, time_info):
-        """! Create dictionary containing time information (key time_info) and
-             any relevant files for that runtime. The parent implementation of
-             this function creates a dictionary and adds the time_info to it.
-             This wrapper gets all files for the current runtime and adds it to
-             the dictionary with key 'input'
-
-             @param time_info dictionary containing time information
-             @returns dictionary containing time_info dict and any relevant
-             files with a key representing a description of that file
-        """
-        input_files, offset_time_info = self.get_input_files(time_info)
-        if input_files is None:
-            return None
-
-        file_dict = {'time_info': time_info.copy()}
-        for key, value in input_files.items():
-            file_dict[key] = value
-
-        return file_dict
-
-    def _update_list_with_new_files(self, time_info, list_to_update):
-        new_files = self.get_files_from_time(time_info)
-        if not new_files:
-            return
-        if isinstance(new_files, list):
-            list_to_update.extend(new_files)
-        else:
-            list_to_update.append(new_files)
