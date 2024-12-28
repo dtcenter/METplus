@@ -1,32 +1,55 @@
 """
-Bias Plot on Polar Cap Temperature and Polar Vortex U: UserScript, Stat-Analysis
-================================================================================
+PCP-Combine: Compute 1m Soil Moisture and 30 year Climatology
+=============================================================
 
-model_applications/
-s2s_stratosphere/
-UserScript_fcstGFS_obsERA_StratospherePolar.py
+model_applications/s2s/PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing.conf
 
 """
 
 ##############################################################################
 # Scientific Objective
 # --------------------
+# [UPDATE_SECTION_CONTENT]
 #
-# This use case calls functions in METcalcpy to create polar cap temperature 
-# and polar vortex wind.  It then runs Stat-Analysis on the output zonal means 
-# and creates a contour plot of bias in lead time and pressure level.
+# This use case computes pre-processing on Soil Moisture data to prepare it to
+# be run through Grid-Stat or another program to verify Soil Moisture.
+# To provide statistical information on the forecast hail size compared to
+# the observed hail size from MRMS MESH data. Using objects to verify hail size
+# avoids the “unfair penalty” issue, where a CAM must first generate convection
+# to have any chance of accurately predicting the hail size. In addition, studies
+# have shown that MRMS MESH observed hail sizes do not correlate one-to-one with
+# observed sizes but can only be used to group storms into general categories.
+# Running MODE allows a user to do this.
+
+##############################################################################
+# Version Added
+# -------------
 #
+# METplus version 6.1
 
 ##############################################################################
 # Datasets
 # --------
 #
-#  * Forecast dataset: GFS Forecast U and T at multiple pressure levels
-#  * Observation dataset: ERA Reanlaysis U and T at multiple pressure levels
+# **Forecast:** None
 #
-#  Data for this use case is not contained in the sample data tar files due to
-#  its size.  Rather, it is stored as additional data in a separate tar file.
+# **Observation:** ERA-5 Land Soil Moisture top 3 layers
 #
+# **Climatology:** None
+#
+# **Location:** The input data required for PCP-Combine in this use case can be
+# found in a sample data tarball. Each use case category will have
+# one or more sample data tarballs. It is only necessary to download
+# the tarball with the use case’s dataset and not the entire collection
+# of sample data. Click here to access the METplus releases page and download sample data
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
+#
+# Data for the Regrid-Data-Plane runsis not contained in the sample data tar files due
+# to its size. Rather, it is stored as additional data in a separate tar file, named
+# additional_data_PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing.tar.gz and can be
+# downloaded at https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v6.1/.
 
 ##############################################################################
 # METplus Components
