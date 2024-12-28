@@ -1,136 +1,126 @@
 """
-PCP-Combine: Compute 1m Soil Moisture and 30 year Climatology
-=============================================================
+Bias Plot on Polar Cap Temperature and Polar Vortex U: UserScript, Stat-Analysis
+================================================================================
 
-model_applications/s2s/PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing.conf
+model_applications/
+s2s_stratosphere/
+UserScript_fcstGFS_obsERA_StratospherePolar.py
 
 """
-##############################################################################
-# .. contents::
-#   :depth: 1
-#   :local:
-#   :backlinks: none
 
 ##############################################################################
 # Scientific Objective
 # --------------------
-# [UPDATE_SECTION_CONTENT]
 #
-# This use case computes pre-processing on Soil Moisture data to prepare it to
-# be run through Grid-Stat or another program to verify Soil Moisture.  
-# To provide statistical information on the forecast hail size compared to
-# the observed hail size from MRMS MESH data. Using objects to verify hail size
-# avoids the “unfair penalty” issue, where a CAM must first generate convection
-# to have any chance of accurately predicting the hail size. In addition, studies
-# have shown that MRMS MESH observed hail sizes do not correlate one-to-one with
-# observed sizes but can only be used to group storms into general categories.
-# Running MODE allows a user to do this.
-
-##############################################################################
-# Version Added
-# -------------
+# This use case calls functions in METcalcpy to create polar cap temperature 
+# and polar vortex wind.  It then runs Stat-Analysis on the output zonal means 
+# and creates a contour plot of bias in lead time and pressure level.
 #
-# METplus version 6.1
 
 ##############################################################################
 # Datasets
 # --------
 #
-# **Forecast:** None
+#  * Forecast dataset: GFS Forecast U and T at multiple pressure levels
+#  * Observation dataset: ERA Reanlaysis U and T at multiple pressure levels
 #
-# **Observation:** ERA-5 Land Soil Moisture top 3 layers
+#  Data for this use case is not contained in the sample data tar files due to
+#  its size.  Rather, it is stored as additional data in a separate tar file.
 #
-# **Climatology:** None
-#
-# **Location:** The input data required for PCP-Combine in this use case can be 
-# found in a sample data tarball. Each use case category will have 
-# one or more sample data tarballs. It is only necessary to download 
-# the tarball with the use case’s dataset and not the entire collection 
-# of sample data. Click here to access the METplus releases page and download sample data 
-# for the appropriate release: https://github.com/dtcenter/METplus/releases
-# This tarball should be unpacked into the directory that you will 
-# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
-#
-# Data for the Regrid-Data-Plane runsis not contained in the sample data tar files due 
-# to its size. Rather, it is stored as additional data in a separate tar file, named 
-# additional_data_PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing.tar.gz and can be
-# downloaded at https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v6.1/.
 
 ##############################################################################
 # METplus Components
 # ------------------
 #
-# This use case calls PCP-Combine twice.  There is an additional call to 
-# Regrid-Data-Plane that is commented out but may be turned back on by the user.
+# This use case runs the UserScript wrapper tool to run a user provided script,
+# in this case, polar_t_u_driver.py which output data into MET's matched pair format.  
+# It then runs Stat-Analysis to compute the bias and RMSE, and another UserScript, 
+# bias_rmse_plot_driver.py, to create the plots.
+#
 
 ##############################################################################
 # METplus Workflow
 # ----------------
+#
+# This use case loops over lead times for the first UserScript and Stat-Analysis,
+# and the plotting proceeds over the entire time period
 # 
-# **Beginning time (VALID_BEG):** 1991-01-01
+# UserScript: Computes polar cap temperature and polar vortex U
+# Stat-Analysis: Computes ME and RMSE on polar cap temperature and polar vortex U
+# UserScript: Creates ME and RMSE plots
 #
-# **End time (VALID_END):** 2020-12-01
-#
-# **Increment between beginning and end times (VALID_INCREMENT):** 1 month
-#
-# **Sequence of forecast leads to process (LEAD_SEQ):** 0
-#
-# The first PCP-Combine run computes the sum of soil moisture of the top three layers 
-# multiplied by the thickness of each layer.  It loops over valid time, running once for 
-# each valid time which is monthly data for 1991 through 2020.  This is a total of 360
-# PCP-Combine runs.  The second call to PCP-Combine computes a 30 year mean and standard
-# deviation.  It runs once for each month, for a total of 12 runs
-#
-# When turned on, Regrid-Data-Plane regrids the data to a 1 degree latitude/longitude grid.
-# Like the first PCP-Combine run, it loops over valid time, running once for each month
-# between 1991 and 2020, for a total of 360 runs. Regrid-Data-Plane can be turned back on 
-# by using the PROCESS_LIST that is commented out:
-#
-# PROCESS_LIST = RegridDataPlane, PcpCombine(create_1m), PcpCombine(obs_mean_stdev)
-#
-# Settings for the Regrid-Data-Plane run are provided in the configuration file.  Data is 
-# not included in the tarball, but can be downloaded from the link provided in the Datasets 
-# section above.
 
 ##############################################################################
 # METplus Configuration
 # ---------------------
 #
-# METplus first loads all of the configuration files found in parm/metplus_config, 
-# then it loads any configuration files passed to METplus via the command line, 
-# i.e. parm/use_cases/model_applications/s2s/PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing.conf
+# METplus first loads all of the configuration files found in parm/metplus_config,
+# then it loads any configuration files passed to METplus via the command line
+# with the -c option, i.e. -c parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing.conf
-
-##############################################################################
-# MET Configuration
-# -----------------
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.conf
 #
-# There are no MET configuration files in this use case.
+
+#############################################################################
+# MET Configuration
+# ---------------------
+#
+# METplus sets environment variables based on user settings in the METplus configuration file. 
+# See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details. 
+#
+# **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!**
+#
+# If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
+# :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
+#
+# **STATAnalysisConfig_wrapped**
+#
+# .. note:: See the :ref:`Series-Analysis MET Configuration<series-analysis-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+#
+# .. highlight:: bash
+# .. literalinclude:: ../../../../parm/met_config/STATAnalysisConfig_wrapped
+#
 
 ##############################################################################
 # Python Embedding
 # ----------------
 #
-# This use case does not use Python embedding.
-
-##############################################################################
-# User Scripting
-# --------------
+# This use case does not use python embedding
 #
-# There are no user scripts in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# Pass the use case configuration file to the run_metplus.py script along 
-# with any user-specific system configuration files if desired::
+# This use case can be run two ways:
 #
-#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s/PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing.conf /path/to/user_system.conf
+# 1) Passing in UserScript_fcstGFS_obsERA_StratospherePolar.conf, 
+# then a user-specific system configuration file::
 #
-# See :ref:`running-metplus` for more information.
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.conf -c /path/to/user_system.conf
+#
+# 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_fcstGFS_obsERA_StratospherePolar.conf:
+#
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.conf
+#
+# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
+#
+# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
+# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
+# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
+#
+#  and for the [exe] section, you will need to define the location of NON-MET executables.
+#  No executables are required for performing this use case.
+#
+# Example User Configuration File::
+#
+#   [dir]
+#   INPUT_BASE = /path/to/sample/input/data
+#   OUTPUT_BASE = /path/to/output/dir
+#   MET_INSTALL_DIR = /path/to/met-X.Y
+#
+#
 
 ##############################################################################
 # Expected Output
@@ -140,45 +130,6 @@ model_applications/s2s/PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing.conf
 #
 #   INFO: METplus has successfully finished running.
 #
-# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
-# Output for this use case will be found in 
-# {OUTPUT_BASE}/model_applications/s2s/PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing.
-# Output from the first netCDF run will be in the ERA5_land_soilm1m subdirectory and will 
-# contain 360 files, one for each month, with the format shown below (for January and 
-# February 1991)::
-#
-#  * ERA5_soilm1m_1x1_mon_199101.nc
-#  * ERA5_soilm1m_1x1_mon_199102.nc
-#
-# Output from the second call to PCP-Combine will be in the ERA5_land_clim subdirectory
-# and will contain 12 files::
-#
-#  * ERA5_soilm1m_1x1_30year_1991_2020_01_mean_stdev.nc 
-#  * ERA5_soilm1m_1x1_30year_1991_2020_02_mean_stdev.nc
-#  * ERA5_soilm1m_1x1_30year_1991_2020_03_mean_stdev.nc
-#  * ERA5_soilm1m_1x1_30year_1991_2020_04_mean_stdev.nc
-#  * ERA5_soilm1m_1x1_30year_1991_2020_05_mean_stdev.nc
-#  * ERA5_soilm1m_1x1_30year_1991_2020_06_mean_stdev.nc
-#  * ERA5_soilm1m_1x1_30year_1991_2020_07_mean_stdev.nc
-#  * ERA5_soilm1m_1x1_30year_1991_2020_08_mean_stdev.nc
-#  * ERA5_soilm1m_1x1_30year_1991_2020_09_mean_stdev.nc
-#  * ERA5_soilm1m_1x1_30year_1991_2020_10_mean_stdev.nc
-#  * ERA5_soilm1m_1x1_30year_1991_2020_11_mean_stdev.nc
-#  * ERA5_soilm1m_1x1_30year_1991_2020_12_mean_stdev.nc
-#
-# The netCDF output files for the first PCP-Combine run contains one variable (not 
-# including the lat/lon fields)::
-#
-#  * soilm1m(lat, lon)
-#
-# The netCDF output files for the second PCP-Combine run contains two variables (not
-# including the lat/lon fields)::
-#
-#  * soilm1m_mean(lat, lon)
-#  * soilm1m_stdev(lat, lon)
-#
-# If the Regrid-Data-Plane step is turned on 360 regridded files will be output to 
-# the ERA5_land_regrid subdirectory.
 
 ##############################################################################
 # Keywords
@@ -186,12 +137,10 @@ model_applications/s2s/PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing.conf
 #
 # .. note::
 #
-#   * PCPCombineToolUseCase
-#   * RegridDataPlaneToolUseCase
 #   * S2SAppUseCase
-#   * NetCDFFileUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 #
-# sphinx_gallery_thumbnail_path = ‘_static/s2s-PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing.png’
+#
+# sphinx_gallery_thumbnail_path = '_static/s2s-PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing.png'
