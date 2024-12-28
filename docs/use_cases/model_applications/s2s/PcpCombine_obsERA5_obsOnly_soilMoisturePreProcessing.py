@@ -55,95 +55,77 @@ model_applications/s2s/PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing.conf
 # METplus Components
 # ------------------
 #
-# This use case runs the UserScript wrapper tool to run a user provided script,
-# in this case, polar_t_u_driver.py which output data into MET's matched pair format.  
-# It then runs Stat-Analysis to compute the bias and RMSE, and another UserScript, 
-# bias_rmse_plot_driver.py, to create the plots.
-#
+# This use case calls PCP-Combine twice.  There is an additional call to
+# Regrid-Data-Plane that is commented out but may be turned back on by the user.
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
-# This use case loops over lead times for the first UserScript and Stat-Analysis,
-# and the plotting proceeds over the entire time period
-# 
-# UserScript: Computes polar cap temperature and polar vortex U
-# Stat-Analysis: Computes ME and RMSE on polar cap temperature and polar vortex U
-# UserScript: Creates ME and RMSE plots
+# **Beginning time (VALID_BEG):** 1991-01-01
 #
+# **End time (VALID_END):** 2020-12-01
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 1 month
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 0
+#
+# The first PCP-Combine run computes the sum of soil moisture of the top three layers
+# multiplied by the thickness of each layer.  It loops over valid time, running once for
+# each valid time which is monthly data for 1991 through 2020.  This is a total of 360
+# PCP-Combine runs.  The second call to PCP-Combine computes a 30 year mean and standard
+# deviation.  It runs once for each month, for a total of 12 runs
+#
+# When turned on, Regrid-Data-Plane regrids the data to a 1 degree latitude/longitude grid.
+# Like the first PCP-Combine run, it loops over valid time, running once for each month
+# between 1991 and 2020, for a total of 360 runs. Regrid-Data-Plane can be turned back on
+# by using the PROCESS_LIST that is commented out:
+#
+# PROCESS_LIST = RegridDataPlane, PcpCombine(create_1m), PcpCombine(obs_mean_stdev)
+#
+# Settings for the Regrid-Data-Plane run are provided in the configuration file.  Data is
+# not included in the tarball, but can be downloaded from the link provided in the Datasets
+# section above.
 
 ##############################################################################
 # METplus Configuration
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/s2s/PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.conf
-#
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing.conf
 
 #############################################################################
 # MET Configuration
 # ---------------------
 #
-# METplus sets environment variables based on user settings in the METplus configuration file. 
-# See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details. 
-#
-# **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!**
-#
-# If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
-# :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
-#
-# **STATAnalysisConfig_wrapped**
-#
-# .. note:: See the :ref:`Series-Analysis MET Configuration<series-analysis-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
-#
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/STATAnalysisConfig_wrapped
-#
+# There are no MET configuration files in this use case.
 
 ##############################################################################
 # Python Embedding
 # ----------------
 #
-# This use case does not use python embedding
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
 #
+# There are no user scripts in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# This use case can be run two ways:
+# Pass the use case configuration file to the run_metplus.py script along
+# with any user-specific system configuration files if desired::
 #
-# 1) Passing in UserScript_fcstGFS_obsERA_StratospherePolar.conf, 
-# then a user-specific system configuration file::
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s/PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing.conf /path/to/user_system.conf
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.conf -c /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_fcstGFS_obsERA_StratospherePolar.conf:
-#
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-#  and for the [exe] section, you will need to define the location of NON-MET executables.
-#  No executables are required for performing this use case.
-#
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y
-#
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output
@@ -161,9 +143,11 @@ model_applications/s2s/PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing.conf
 # .. note::
 #
 #   * S2SAppUseCase
+#   * PCPCombineToolUseCase
+#   * RegridDataPlaneToolUseCase
+#   * NetCDFFileUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
-#
 #
 #
 # sphinx_gallery_thumbnail_path = '_static/s2s-PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing.png'
