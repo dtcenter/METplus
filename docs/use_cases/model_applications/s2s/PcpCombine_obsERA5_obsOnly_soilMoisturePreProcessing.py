@@ -135,6 +135,45 @@ model_applications/s2s/PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing.conf
 #
 #   INFO: METplus has successfully finished running.
 #
+# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
+# Output for this use case will be found in
+# {OUTPUT_BASE}/model_applications/s2s/PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing.
+# Output from the first netCDF run will be in the ERA5_land_soilm1m subdirectory and will
+# contain 360 files, one for each month, with the format shown below (for January and
+# February 1991)::
+#
+#  * ERA5_soilm1m_1x1_mon_199101.nc
+#  * ERA5_soilm1m_1x1_mon_199102.nc
+#
+# Output from the second call to PCP-Combine will be in the ERA5_land_clim subdirectory
+# and will contain 12 files::
+#
+#  * ERA5_soilm1m_1x1_30year_1991_2020_01_mean_stdev.nc
+#  * ERA5_soilm1m_1x1_30year_1991_2020_02_mean_stdev.nc
+#  * ERA5_soilm1m_1x1_30year_1991_2020_03_mean_stdev.nc
+#  * ERA5_soilm1m_1x1_30year_1991_2020_04_mean_stdev.nc
+#  * ERA5_soilm1m_1x1_30year_1991_2020_05_mean_stdev.nc
+#  * ERA5_soilm1m_1x1_30year_1991_2020_06_mean_stdev.nc
+#  * ERA5_soilm1m_1x1_30year_1991_2020_07_mean_stdev.nc
+#  * ERA5_soilm1m_1x1_30year_1991_2020_08_mean_stdev.nc
+#  * ERA5_soilm1m_1x1_30year_1991_2020_09_mean_stdev.nc
+#  * ERA5_soilm1m_1x1_30year_1991_2020_10_mean_stdev.nc
+#  * ERA5_soilm1m_1x1_30year_1991_2020_11_mean_stdev.nc
+#  * ERA5_soilm1m_1x1_30year_1991_2020_12_mean_stdev.nc
+#
+# The netCDF output files for the first PCP-Combine run contains one variable (not
+# including the lat/lon fields)::
+#
+#  * soilm1m(lat, lon)
+#
+# The netCDF output files for the second PCP-Combine run contains two variables (not
+# including the lat/lon fields)::
+#
+#  * soilm1m_mean(lat, lon)
+#  * soilm1m_stdev(lat, lon)
+#
+# If the Regrid-Data-Plane step is turned on 360 regridded files will be output to
+# the ERA5_land_regrid subdirectory.
 
 ##############################################################################
 # Keywords
