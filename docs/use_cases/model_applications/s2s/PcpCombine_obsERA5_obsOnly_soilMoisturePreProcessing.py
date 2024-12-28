@@ -16,6 +16,8 @@ model_applications/s2s/PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing.conf
 # --------------------
 # [UPDATE_SECTION_CONTENT]
 #
+# This use case computes pre-processing on Soil Moisture data to prepare it to
+# be run through Grid-Stat or another program to verify Soil Moisture.  
 # To provide statistical information on the forecast hail size compared to
 # the observed hail size from MRMS MESH data. Using objects to verify hail size
 # avoids the “unfair penalty” issue, where a CAM must first generate convection
@@ -190,7 +192,6 @@ model_applications/s2s/PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing.conf
 #   * NetCDFFileUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
-#
 #
 #
 # sphinx_gallery_thumbnail_path = ‘_static/s2s-PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing.png’
