@@ -184,7 +184,7 @@
   {
     "category": "s2s",
     "index_list": "0",
-    "run": true
+    "run": false
   },
   {
     "category": "s2s",
@@ -204,7 +204,7 @@
   {
     "category": "s2s",
     "index_list": "4",
-    "run": true
+    "run": false
   },
   {
     "category": "s2s",
@@ -295,7 +295,7 @@
   {
     "category": "short_range",
     "index_list": "13",
-    "run": false
+    "run": true
   },
   {
     "category": "short_range",
