@@ -3419,7 +3419,7 @@ METplus Configuration Glossary
      | *Used by:*  PointStat
 
    POINT_STAT_OUTPUT_TEMPLATE
-     Sets the subdirectories below :term:`POINT_STAT_OUTPUT_DIR` using a template to allow run time information. If LOOP_BY = VALID, default value is valid time YYYYMMDDHHMM/point_stat. If LOOP_BY = INIT, default value is init time YYYYMMDDHHMM/point_stat.
+     Sets the subdirectories below :term:`POINT_STAT_OUTPUT_DIR` using a template to allow run time information.
 
      | *Used by:*  PointStat
 
@@ -5542,11 +5542,6 @@ METplus Configuration Glossary
 
      | *Used by:* EnsembleStat
 
-   ENSEMBLE_STAT_CLIMO_MEAN_MATCH_MONTH
-     Specify the value for 'climo_mean.match_month' in the MET configuration file for EnsembleStat.
-
-     | *Used by:* EnsembleStat
-
    ENSEMBLE_STAT_CLIMO_MEAN_DAY_INTERVAL
      Specify the value for 'climo_mean.day_interval' in the MET configuration file for EnsembleStat.
 
@@ -5624,11 +5619,6 @@ METplus Configuration Glossary
 
    ENSEMBLE_STAT_CLIMO_STDEV_TIME_INTERP_METHOD
      Specify the value for 'climo_stdev.time_interp_method' in the MET configuration file for EnsembleStat.
-
-     | *Used by:* EnsembleStat
-
-   ENSEMBLE_STAT_CLIMO_STDEV_MATCH_MONTH
-     Specify the value for 'climo_stdev.match_month' in the MET configuration file for EnsembleStat.
 
      | *Used by:* EnsembleStat
 
@@ -6924,11 +6914,6 @@ METplus Configuration Glossary
 
      | *Used by:* PointStat
 
-   POINT_STAT_CLIMO_MEAN_MATCH_MONTH
-     Specify the value for 'climo_mean.match_month' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
    POINT_STAT_CLIMO_MEAN_DAY_INTERVAL
      Specify the value for 'climo_mean.day_interval' in the MET configuration file for PointStat.
 
@@ -7006,11 +6991,6 @@ METplus Configuration Glossary
 
    POINT_STAT_CLIMO_STDEV_TIME_INTERP_METHOD
      Specify the value for 'climo_stdev.time_interp_method' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_CLIMO_STDEV_MATCH_MONTH
-     Specify the value for 'climo_stdev.match_month' in the MET configuration file for PointStat.
 
      | *Used by:* PointStat
 
@@ -7104,11 +7084,6 @@ METplus Configuration Glossary
 
      | *Used by:* GridStat
 
-   GRID_STAT_CLIMO_MEAN_MATCH_MONTH
-     Specify the value for 'climo_mean.match_month' in the MET configuration file for GridStat.
-
-     | *Used by:* GridStat
-
    GRID_STAT_CLIMO_MEAN_DAY_INTERVAL
      Specify the value for 'climo_mean.day_interval' in the MET configuration file for GridStat.
 
@@ -7189,11 +7164,6 @@ METplus Configuration Glossary
 
      | *Used by:* GridStat
 
-   GRID_STAT_CLIMO_STDEV_MATCH_MONTH
-     Specify the value for 'climo_stdev.match_month' in the MET configuration file for GridStat.
-
-     | *Used by:* GridStat
-
    GRID_STAT_CLIMO_STDEV_DAY_INTERVAL
      Specify the value for 'climo_stdev.day_interval' in the MET configuration file for GridStat.
 
@@ -7267,11 +7237,6 @@ METplus Configuration Glossary
 
    SERIES_ANALYSIS_CLIMO_MEAN_TIME_INTERP_METHOD
      Specify the value for 'climo_mean.time_interp_method' in the MET configuration file for SeriesAnalysis.
-
-     | *Used by:* SeriesAnalysis
-
-   SERIES_ANALYSIS_CLIMO_MEAN_MATCH_MONTH
-     Specify the value for 'climo_mean.match_month' in the MET configuration file for SeriesAnalysis.
 
      | *Used by:* SeriesAnalysis
 
@@ -7352,11 +7317,6 @@ METplus Configuration Glossary
 
    SERIES_ANALYSIS_CLIMO_STDEV_TIME_INTERP_METHOD
      Specify the value for 'climo_stdev.time_interp_method' in the MET configuration file for SeriesAnalysis.
-
-     | *Used by:* SeriesAnalysis
-
-   SERIES_ANALYSIS_CLIMO_STDEV_MATCH_MONTH
-     Specify the value for 'climo_stdev.match_month' in the MET configuration file for SeriesAnalysis.
 
      | *Used by:* SeriesAnalysis
 
@@ -8357,11 +8317,6 @@ METplus Configuration Glossary
 
      | *Used by:* GenEnsProd
 
-   GEN_ENS_PROD_CLIMO_MEAN_MATCH_MONTH
-     Specify the value for 'climo_mean.match_month' in the MET configuration file for GenEnsProd.
-
-     | *Used by:* GenEnsProd
-
    GEN_ENS_PROD_CLIMO_MEAN_DAY_INTERVAL
      Specify the value for 'climo_mean.day_interval' in the MET configuration file for GenEnsProd.
 
@@ -8437,11 +8392,6 @@ METplus Configuration Glossary
 
    GEN_ENS_PROD_CLIMO_STDEV_TIME_INTERP_METHOD
      Specify the value for 'climo_stdev.time_interp_method' in the MET configuration file for GenEnsProd.
-
-     | *Used by:* GenEnsProd
-
-   GEN_ENS_PROD_CLIMO_STDEV_MATCH_MONTH
-     Specify the value for 'climo_stdev.match_month' in the MET configuration file for GenEnsProd.
 
      | *Used by:* GenEnsProd
 
