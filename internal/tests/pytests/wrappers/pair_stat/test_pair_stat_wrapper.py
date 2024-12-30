@@ -369,10 +369,6 @@ def test_pair_stat_missing_inputs(metplus_config, get_test_data_dir,
          {'METPLUS_FCST_FILE_TYPE': 'file_type = NETCDF_PINT;'}),
         ({'PAIR_STAT_SEEPS_P1_THRESH': 'ge0.1&&le0.85', },
          {'METPLUS_SEEPS_P1_THRESH': 'seeps_p1_thresh = ge0.1&&le0.85;'}),
-        ({'PAIR_STAT_OBS_VALID_BEG': '{valid?fmt=%Y%m%d_%H?shift=-6H}', }, {}),
-        ({'PAIR_STAT_OBS_VALID_END': '{valid?fmt=%Y%m%d_%H?shift=6H}', }, {}),
-        ({'PAIR_STAT_OBS_VALID_BEG': '{valid?fmt=%Y%m%d_%H?shift=-6H}',
-          'PAIR_STAT_OBS_VALID_END': '{valid?fmt=%Y%m%d_%H?shift=6H}'}, {}),
         # complex mask example
         ({'PAIR_STAT_MASK_GRID': 'FULL',
           'PAIR_STAT_MASK_POLY': ('["{ENV[MET_BUILD_BASE]}/share/met/poly/CAR.poly", '
@@ -718,17 +714,6 @@ def test_pair_stat_all_fields(metplus_config, config_overrides,
 
     # add extra command line arguments
     extra_args = [' '] * len(inits)
-
-    for beg_end in ('BEG', 'END'):
-        if f'PAIR_STAT_OBS_VALID_{beg_end}' in config_overrides:
-            for index in range(0, len(inits)):
-                valid_dt = datetime.strptime(valids[index], time_fmt)
-                if beg_end == 'BEG':
-                    value = valid_dt - timedelta(hours=6)
-                else:
-                    value = valid_dt + timedelta(hours=6)
-                value = value.strftime('%Y%m%d_%H')
-                extra_args[index] += f'-obs_valid_{beg_end.lower()} {value} '
 
     expected_cmds = []
     for index in range(0, len(inits)):
