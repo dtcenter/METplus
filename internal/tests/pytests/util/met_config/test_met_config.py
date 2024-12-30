@@ -95,19 +95,16 @@ def test_read_climo_field(metplus_config, config_overrides, expected_value):
         # 13 time_interp_method
         ({'APP_CLIMO_<TYPE>_TIME_INTERP_METHOD': 'NEAREST', },
          'climo_<type> = {time_interp_method = NEAREST;}'),
-        # 14 match_month
-        ({'APP_CLIMO_<TYPE>_MATCH_MONTH': 'True', },
-         'climo_<type> = {match_month = TRUE;}'),
-        # 15 day_interval - int
+        # 14 day_interval - int
         ({'APP_CLIMO_<TYPE>_DAY_INTERVAL': '30', },
          'climo_<type> = {day_interval = 30;}'),
-        # 16 day_interval - NA
+        # 15 day_interval - NA
         ({'APP_CLIMO_<TYPE>_DAY_INTERVAL': 'NA', },
          'climo_<type> = {day_interval = NA;}'),
-        # 17 hour_interval
+        # 16 hour_interval
         ({'APP_CLIMO_<TYPE>_HOUR_INTERVAL': '12', },
          'climo_<type> = {hour_interval = 12;}'),
-        # 18 all
+        # 17 all
         ({
              'APP_CLIMO_<TYPE>_FILE_NAME': '/some/climo_<type>/file.txt',
              'APP_CLIMO_<TYPE>_FIELD': '{name="CLM_NAME"; level="(0,0,*,*)";}',
@@ -116,7 +113,6 @@ def test_read_climo_field(metplus_config, config_overrides, expected_value):
              'APP_CLIMO_<TYPE>_REGRID_VLD_THRESH': '0.5',
              'APP_CLIMO_<TYPE>_REGRID_SHAPE': 'SQUARE',
              'APP_CLIMO_<TYPE>_TIME_INTERP_METHOD': 'NEAREST',
-             'APP_CLIMO_<TYPE>_MATCH_MONTH': 'True',
              'APP_CLIMO_<TYPE>_DAY_INTERVAL': '30',
              'APP_CLIMO_<TYPE>_HOUR_INTERVAL': '12',
          },
@@ -126,7 +122,7 @@ def test_read_climo_field(metplus_config, config_overrides, expected_value):
           'regrid = {method = NEAREST;width = 1;'
           'vld_thresh = 0.5;shape = SQUARE;}'
           'time_interp_method = NEAREST;'
-          'match_month = TRUE;day_interval = 30;'
+          'day_interval = 30;'
           'hour_interval = 12;}')),
     ]
 )

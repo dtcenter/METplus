@@ -841,7 +841,6 @@ def handle_climo_dict(config, app_name, output_dict, sub_groups):
             'shape': ('string', 'uppercase,remove_quotes'),
         }),
         'time_interp_method': ('string', 'remove_quotes,uppercase'),
-        'match_month': ('bool', 'uppercase'),
         'day_interval': ('string', 'remove_quotes,uppercase'),
         'hour_interval': ('string', 'remove_quotes,uppercase'),
         'file_type': ('string', 'remove_quotes'),

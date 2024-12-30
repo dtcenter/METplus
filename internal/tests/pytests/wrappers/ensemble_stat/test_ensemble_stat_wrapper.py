@@ -509,9 +509,6 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
          {
              'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {time_interp_method = NEAREST;}'}),
 
-        ({'ENSEMBLE_STAT_CLIMO_MEAN_MATCH_MONTH': 'True', },
-         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {match_month = TRUE;}'}),
-
         ({'ENSEMBLE_STAT_CLIMO_MEAN_DAY_INTERVAL': '30', },
          {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {day_interval = 30;}'}),
 
@@ -526,7 +523,6 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
              'ENSEMBLE_STAT_CLIMO_MEAN_REGRID_VLD_THRESH': '0.5',
              'ENSEMBLE_STAT_CLIMO_MEAN_REGRID_SHAPE': 'SQUARE',
              'ENSEMBLE_STAT_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST',
-             'ENSEMBLE_STAT_CLIMO_MEAN_MATCH_MONTH': 'True',
              'ENSEMBLE_STAT_CLIMO_MEAN_DAY_INTERVAL': '30',
              'ENSEMBLE_STAT_CLIMO_MEAN_HOUR_INTERVAL': '12',
          },
@@ -536,7 +532,7 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
                                       'regrid = {method = NEAREST;width = 1;'
                                       'vld_thresh = 0.5;shape = SQUARE;}'
                                       'time_interp_method = NEAREST;'
-                                      'match_month = TRUE;day_interval = 30;'
+                                      'day_interval = 30;'
                                       'hour_interval = 12;}')}),
 
         # climo stdev
@@ -566,9 +562,6 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
          {
              'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {time_interp_method = NEAREST;}'}),
 
-        ({'ENSEMBLE_STAT_CLIMO_STDEV_MATCH_MONTH': 'True', },
-         {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {match_month = TRUE;}'}),
-
         ({'ENSEMBLE_STAT_CLIMO_STDEV_DAY_INTERVAL': '30', },
          {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {day_interval = 30;}'}),
 
@@ -583,7 +576,6 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
              'ENSEMBLE_STAT_CLIMO_STDEV_REGRID_VLD_THRESH': '0.5',
              'ENSEMBLE_STAT_CLIMO_STDEV_REGRID_SHAPE': 'SQUARE',
              'ENSEMBLE_STAT_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST',
-             'ENSEMBLE_STAT_CLIMO_STDEV_MATCH_MONTH': 'True',
              'ENSEMBLE_STAT_CLIMO_STDEV_DAY_INTERVAL': '30',
              'ENSEMBLE_STAT_CLIMO_STDEV_HOUR_INTERVAL': '12',
          },
@@ -593,7 +585,7 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
                                       'regrid = {method = NEAREST;width = 1;'
                                       'vld_thresh = 0.5;shape = SQUARE;}'
                                       'time_interp_method = NEAREST;'
-                                      'match_month = TRUE;day_interval = 30;'
+                                      'day_interval = 30;'
                                       'hour_interval = 12;}')}),
         ({'ENSEMBLE_STAT_OBS_QUALITY_INC': '2,3,4', },
          {'METPLUS_OBS_QUALITY_INC': 'obs_quality_inc = ["2", "3", "4"];'}),
@@ -661,8 +653,6 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
          {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {shape = SQUARE;}}'}),
         ({'ENSEMBLE_STAT_FCST_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST', },
          {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {time_interp_method = NEAREST;}'}),
-        ({'ENSEMBLE_STAT_FCST_CLIMO_MEAN_MATCH_MONTH': 'True', },
-         {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {match_month = TRUE;}'}),
         ({'ENSEMBLE_STAT_FCST_CLIMO_MEAN_DAY_INTERVAL': '30', },
          {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {day_interval = 30;}'}),
         ({'ENSEMBLE_STAT_FCST_CLIMO_MEAN_DAY_INTERVAL': 'NA', },
@@ -678,7 +668,6 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
           'ENSEMBLE_STAT_FCST_CLIMO_MEAN_REGRID_VLD_THRESH': '0.5',
           'ENSEMBLE_STAT_FCST_CLIMO_MEAN_REGRID_SHAPE': 'SQUARE',
           'ENSEMBLE_STAT_FCST_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST',
-          'ENSEMBLE_STAT_FCST_CLIMO_MEAN_MATCH_MONTH': 'True',
           'ENSEMBLE_STAT_FCST_CLIMO_MEAN_DAY_INTERVAL': '30',
           'ENSEMBLE_STAT_FCST_CLIMO_MEAN_HOUR_INTERVAL': '12', },
          {'METPLUS_FCST_CLIMO_MEAN_DICT': ('climo_mean = {file_name = '
@@ -687,7 +676,7 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
                                            'regrid = {method = NEAREST;width = 1;'
                                            'vld_thresh = 0.5;shape = SQUARE;}'
                                            'time_interp_method = NEAREST;'
-                                           'match_month = TRUE;day_interval = 30;'
+                                           'day_interval = 30;'
                                            'hour_interval = 12;}')}),
         # fcst climo_stdev
         ({'ENSEMBLE_STAT_FCST_CLIMO_STDEV_FILE_NAME': '/some/climo_stdev/file.txt', },
@@ -709,8 +698,6 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
          {'METPLUS_FCST_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {shape = SQUARE;}}'}),
         ({'ENSEMBLE_STAT_FCST_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST', },
          {'METPLUS_FCST_CLIMO_STDEV_DICT': 'climo_stdev = {time_interp_method = NEAREST;}'}),
-        ({'ENSEMBLE_STAT_FCST_CLIMO_STDEV_MATCH_MONTH': 'True', },
-         {'METPLUS_FCST_CLIMO_STDEV_DICT': 'climo_stdev = {match_month = TRUE;}'}),
         ({'ENSEMBLE_STAT_FCST_CLIMO_STDEV_DAY_INTERVAL': '30', },
          {'METPLUS_FCST_CLIMO_STDEV_DICT': 'climo_stdev = {day_interval = 30;}'}),
         ({'ENSEMBLE_STAT_FCST_CLIMO_STDEV_DAY_INTERVAL': 'NA', },
@@ -726,7 +713,6 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
           'ENSEMBLE_STAT_FCST_CLIMO_STDEV_REGRID_VLD_THRESH': '0.5',
           'ENSEMBLE_STAT_FCST_CLIMO_STDEV_REGRID_SHAPE': 'SQUARE',
           'ENSEMBLE_STAT_FCST_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST',
-          'ENSEMBLE_STAT_FCST_CLIMO_STDEV_MATCH_MONTH': 'True',
           'ENSEMBLE_STAT_FCST_CLIMO_STDEV_DAY_INTERVAL': '30',
           'ENSEMBLE_STAT_FCST_CLIMO_STDEV_HOUR_INTERVAL': '12', },
          {'METPLUS_FCST_CLIMO_STDEV_DICT': ('climo_stdev = {file_name = '
@@ -735,7 +721,7 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
                                             'regrid = {method = NEAREST;width = 1;'
                                             'vld_thresh = 0.5;shape = SQUARE;}'
                                             'time_interp_method = NEAREST;'
-                                            'match_month = TRUE;day_interval = 30;'
+                                            'day_interval = 30;'
                                             'hour_interval = 12;}')}),
         # obs climo_mean
         ({'ENSEMBLE_STAT_OBS_CLIMO_MEAN_FILE_NAME': '/some/climo_mean/file.txt', },
@@ -757,8 +743,6 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
          {'METPLUS_OBS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {shape = SQUARE;}}'}),
         ({'ENSEMBLE_STAT_OBS_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST', },
          {'METPLUS_OBS_CLIMO_MEAN_DICT': 'climo_mean = {time_interp_method = NEAREST;}'}),
-        ({'ENSEMBLE_STAT_OBS_CLIMO_MEAN_MATCH_MONTH': 'True', },
-         {'METPLUS_OBS_CLIMO_MEAN_DICT': 'climo_mean = {match_month = TRUE;}'}),
         ({'ENSEMBLE_STAT_OBS_CLIMO_MEAN_DAY_INTERVAL': '30', },
          {'METPLUS_OBS_CLIMO_MEAN_DICT': 'climo_mean = {day_interval = 30;}'}),
         ({'ENSEMBLE_STAT_OBS_CLIMO_MEAN_DAY_INTERVAL': 'NA', },
@@ -774,7 +758,6 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
           'ENSEMBLE_STAT_OBS_CLIMO_MEAN_REGRID_VLD_THRESH': '0.5',
           'ENSEMBLE_STAT_OBS_CLIMO_MEAN_REGRID_SHAPE': 'SQUARE',
           'ENSEMBLE_STAT_OBS_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST',
-          'ENSEMBLE_STAT_OBS_CLIMO_MEAN_MATCH_MONTH': 'True',
           'ENSEMBLE_STAT_OBS_CLIMO_MEAN_DAY_INTERVAL': '30',
           'ENSEMBLE_STAT_OBS_CLIMO_MEAN_HOUR_INTERVAL': '12', },
          {'METPLUS_OBS_CLIMO_MEAN_DICT': ('climo_mean = {file_name = '
@@ -783,7 +766,7 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
                                           'regrid = {method = NEAREST;width = 1;'
                                           'vld_thresh = 0.5;shape = SQUARE;}'
                                           'time_interp_method = NEAREST;'
-                                          'match_month = TRUE;day_interval = 30;'
+                                          'day_interval = 30;'
                                           'hour_interval = 12;}')}),
         # obs climo_stdev
         ({'ENSEMBLE_STAT_OBS_CLIMO_STDEV_FILE_NAME': '/some/climo_stdev/file.txt', },
@@ -805,8 +788,6 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
          {'METPLUS_OBS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {shape = SQUARE;}}'}),
         ({'ENSEMBLE_STAT_OBS_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST', },
          {'METPLUS_OBS_CLIMO_STDEV_DICT': 'climo_stdev = {time_interp_method = NEAREST;}'}),
-        ({'ENSEMBLE_STAT_OBS_CLIMO_STDEV_MATCH_MONTH': 'True', },
-         {'METPLUS_OBS_CLIMO_STDEV_DICT': 'climo_stdev = {match_month = TRUE;}'}),
         ({'ENSEMBLE_STAT_OBS_CLIMO_STDEV_DAY_INTERVAL': '30', },
          {'METPLUS_OBS_CLIMO_STDEV_DICT': 'climo_stdev = {day_interval = 30;}'}),
         ({'ENSEMBLE_STAT_OBS_CLIMO_STDEV_DAY_INTERVAL': 'NA', },
@@ -822,7 +803,6 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
           'ENSEMBLE_STAT_OBS_CLIMO_STDEV_REGRID_VLD_THRESH': '0.5',
           'ENSEMBLE_STAT_OBS_CLIMO_STDEV_REGRID_SHAPE': 'SQUARE',
           'ENSEMBLE_STAT_OBS_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST',
-          'ENSEMBLE_STAT_OBS_CLIMO_STDEV_MATCH_MONTH': 'True',
           'ENSEMBLE_STAT_OBS_CLIMO_STDEV_DAY_INTERVAL': '30',
           'ENSEMBLE_STAT_OBS_CLIMO_STDEV_HOUR_INTERVAL': '12', },
          {'METPLUS_OBS_CLIMO_STDEV_DICT': ('climo_stdev = {file_name = '
@@ -831,7 +811,7 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
                                            'regrid = {method = NEAREST;width = 1;'
                                            'vld_thresh = 0.5;shape = SQUARE;}'
                                            'time_interp_method = NEAREST;'
-                                           'match_month = TRUE;day_interval = 30;'
+                                           'day_interval = 30;'
                                            'hour_interval = 12;}')}),
         ({'ENSEMBLE_STAT_POINT_WEIGHT_FLAG': 'SID', },
          {'METPLUS_POINT_WEIGHT_FLAG': 'point_weight_flag = SID;'}),

@@ -283,9 +283,6 @@ def test_pair_stat_missing_inputs(metplus_config, get_test_data_dir,
         ({'PAIR_STAT_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST', },
          {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {time_interp_method = NEAREST;}'}),
 
-        ({'PAIR_STAT_CLIMO_MEAN_MATCH_MONTH': 'True', },
-         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {match_month = TRUE;}'}),
-
         ({'PAIR_STAT_CLIMO_MEAN_DAY_INTERVAL': '30', },
          {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {day_interval = 30;}'}),
 
@@ -300,7 +297,6 @@ def test_pair_stat_missing_inputs(metplus_config, get_test_data_dir,
              'PAIR_STAT_CLIMO_MEAN_REGRID_VLD_THRESH': '0.5',
              'PAIR_STAT_CLIMO_MEAN_REGRID_SHAPE': 'SQUARE',
              'PAIR_STAT_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST',
-             'PAIR_STAT_CLIMO_MEAN_MATCH_MONTH': 'True',
              'PAIR_STAT_CLIMO_MEAN_DAY_INTERVAL': '30',
              'PAIR_STAT_CLIMO_MEAN_HOUR_INTERVAL': '12',
          },
@@ -310,7 +306,7 @@ def test_pair_stat_missing_inputs(metplus_config, get_test_data_dir,
                                       'regrid = {method = NEAREST;width = 1;'
                                       'vld_thresh = 0.5;shape = SQUARE;}'
                                       'time_interp_method = NEAREST;'
-                                      'match_month = TRUE;day_interval = 30;'
+                                      'day_interval = 30;'
                                       'hour_interval = 12;}')}),
 
         # climo stdev
@@ -336,9 +332,6 @@ def test_pair_stat_missing_inputs(metplus_config, get_test_data_dir,
         ({'PAIR_STAT_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST', },
          {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {time_interp_method = NEAREST;}'}),
 
-        ({'PAIR_STAT_CLIMO_STDEV_MATCH_MONTH': 'True', },
-         {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {match_month = TRUE;}'}),
-
         ({'PAIR_STAT_CLIMO_STDEV_DAY_INTERVAL': '30', },
          {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {day_interval = 30;}'}),
 
@@ -353,7 +346,6 @@ def test_pair_stat_missing_inputs(metplus_config, get_test_data_dir,
              'PAIR_STAT_CLIMO_STDEV_REGRID_VLD_THRESH': '0.5',
              'PAIR_STAT_CLIMO_STDEV_REGRID_SHAPE': 'SQUARE',
              'PAIR_STAT_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST',
-             'PAIR_STAT_CLIMO_STDEV_MATCH_MONTH': 'True',
              'PAIR_STAT_CLIMO_STDEV_DAY_INTERVAL': '30',
              'PAIR_STAT_CLIMO_STDEV_HOUR_INTERVAL': '12',
          },
@@ -363,7 +355,7 @@ def test_pair_stat_missing_inputs(metplus_config, get_test_data_dir,
                                        'regrid = {method = NEAREST;width = 1;'
                                        'vld_thresh = 0.5;shape = SQUARE;}'
                                        'time_interp_method = NEAREST;'
-                                       'match_month = TRUE;day_interval = 30;'
+                                       'day_interval = 30;'
                                        'hour_interval = 12;}')}),
         ({'PAIR_STAT_HSS_EC_VALUE': '0.5', },
          {'METPLUS_HSS_EC_VALUE': 'hss_ec_value = 0.5;'}),
@@ -493,8 +485,6 @@ def test_pair_stat_missing_inputs(metplus_config, get_test_data_dir,
          {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {shape = SQUARE;}}'}),
         ({'PAIR_STAT_FCST_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST', },
          {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {time_interp_method = NEAREST;}'}),
-        ({'PAIR_STAT_FCST_CLIMO_MEAN_MATCH_MONTH': 'True', },
-         {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {match_month = TRUE;}'}),
         ({'PAIR_STAT_FCST_CLIMO_MEAN_DAY_INTERVAL': '30', },
          {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {day_interval = 30;}'}),
         ({'PAIR_STAT_FCST_CLIMO_MEAN_DAY_INTERVAL': 'NA', },
@@ -510,7 +500,6 @@ def test_pair_stat_missing_inputs(metplus_config, get_test_data_dir,
           'PAIR_STAT_FCST_CLIMO_MEAN_REGRID_VLD_THRESH': '0.5',
           'PAIR_STAT_FCST_CLIMO_MEAN_REGRID_SHAPE': 'SQUARE',
           'PAIR_STAT_FCST_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST',
-          'PAIR_STAT_FCST_CLIMO_MEAN_MATCH_MONTH': 'True',
           'PAIR_STAT_FCST_CLIMO_MEAN_DAY_INTERVAL': '30',
           'PAIR_STAT_FCST_CLIMO_MEAN_HOUR_INTERVAL': '12', },
          {'METPLUS_FCST_CLIMO_MEAN_DICT': ('climo_mean = {file_name = '
@@ -519,7 +508,7 @@ def test_pair_stat_missing_inputs(metplus_config, get_test_data_dir,
                                            'regrid = {method = NEAREST;width = 1;'
                                            'vld_thresh = 0.5;shape = SQUARE;}'
                                            'time_interp_method = NEAREST;'
-                                           'match_month = TRUE;day_interval = 30;'
+                                           'day_interval = 30;'
                                            'hour_interval = 12;}')}),
         # fcst climo_stdev
         ({'PAIR_STAT_FCST_CLIMO_STDEV_FILE_NAME': '/some/climo_stdev/file.txt', },
@@ -541,8 +530,6 @@ def test_pair_stat_missing_inputs(metplus_config, get_test_data_dir,
          {'METPLUS_FCST_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {shape = SQUARE;}}'}),
         ({'PAIR_STAT_FCST_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST', },
          {'METPLUS_FCST_CLIMO_STDEV_DICT': 'climo_stdev = {time_interp_method = NEAREST;}'}),
-        ({'PAIR_STAT_FCST_CLIMO_STDEV_MATCH_MONTH': 'True', },
-         {'METPLUS_FCST_CLIMO_STDEV_DICT': 'climo_stdev = {match_month = TRUE;}'}),
         ({'PAIR_STAT_FCST_CLIMO_STDEV_DAY_INTERVAL': '30', },
          {'METPLUS_FCST_CLIMO_STDEV_DICT': 'climo_stdev = {day_interval = 30;}'}),
         ({'PAIR_STAT_FCST_CLIMO_STDEV_DAY_INTERVAL': 'NA', },
@@ -558,7 +545,6 @@ def test_pair_stat_missing_inputs(metplus_config, get_test_data_dir,
           'PAIR_STAT_FCST_CLIMO_STDEV_REGRID_VLD_THRESH': '0.5',
           'PAIR_STAT_FCST_CLIMO_STDEV_REGRID_SHAPE': 'SQUARE',
           'PAIR_STAT_FCST_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST',
-          'PAIR_STAT_FCST_CLIMO_STDEV_MATCH_MONTH': 'True',
           'PAIR_STAT_FCST_CLIMO_STDEV_DAY_INTERVAL': '30',
           'PAIR_STAT_FCST_CLIMO_STDEV_HOUR_INTERVAL': '12', },
          {'METPLUS_FCST_CLIMO_STDEV_DICT': ('climo_stdev = {file_name = '
@@ -567,7 +553,7 @@ def test_pair_stat_missing_inputs(metplus_config, get_test_data_dir,
                                             'regrid = {method = NEAREST;width = 1;'
                                             'vld_thresh = 0.5;shape = SQUARE;}'
                                             'time_interp_method = NEAREST;'
-                                            'match_month = TRUE;day_interval = 30;'
+                                            'day_interval = 30;'
                                             'hour_interval = 12;}')}),
         # obs climo_mean
         ({'PAIR_STAT_OBS_CLIMO_MEAN_FILE_NAME': '/some/climo_mean/file.txt', },
@@ -589,8 +575,6 @@ def test_pair_stat_missing_inputs(metplus_config, get_test_data_dir,
          {'METPLUS_OBS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {shape = SQUARE;}}'}),
         ({'PAIR_STAT_OBS_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST', },
          {'METPLUS_OBS_CLIMO_MEAN_DICT': 'climo_mean = {time_interp_method = NEAREST;}'}),
-        ({'PAIR_STAT_OBS_CLIMO_MEAN_MATCH_MONTH': 'True', },
-         {'METPLUS_OBS_CLIMO_MEAN_DICT': 'climo_mean = {match_month = TRUE;}'}),
         ({'PAIR_STAT_OBS_CLIMO_MEAN_DAY_INTERVAL': '30', },
          {'METPLUS_OBS_CLIMO_MEAN_DICT': 'climo_mean = {day_interval = 30;}'}),
         ({'PAIR_STAT_OBS_CLIMO_MEAN_DAY_INTERVAL': 'NA', },
@@ -606,7 +590,6 @@ def test_pair_stat_missing_inputs(metplus_config, get_test_data_dir,
           'PAIR_STAT_OBS_CLIMO_MEAN_REGRID_VLD_THRESH': '0.5',
           'PAIR_STAT_OBS_CLIMO_MEAN_REGRID_SHAPE': 'SQUARE',
           'PAIR_STAT_OBS_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST',
-          'PAIR_STAT_OBS_CLIMO_MEAN_MATCH_MONTH': 'True',
           'PAIR_STAT_OBS_CLIMO_MEAN_DAY_INTERVAL': '30',
           'PAIR_STAT_OBS_CLIMO_MEAN_HOUR_INTERVAL': '12', },
          {'METPLUS_OBS_CLIMO_MEAN_DICT': ('climo_mean = {file_name = '
@@ -615,7 +598,7 @@ def test_pair_stat_missing_inputs(metplus_config, get_test_data_dir,
                                           'regrid = {method = NEAREST;width = 1;'
                                           'vld_thresh = 0.5;shape = SQUARE;}'
                                           'time_interp_method = NEAREST;'
-                                          'match_month = TRUE;day_interval = 30;'
+                                          'day_interval = 30;'
                                           'hour_interval = 12;}')}),
         # obs climo_stdev
         ({'PAIR_STAT_OBS_CLIMO_STDEV_FILE_NAME': '/some/climo_stdev/file.txt', },
@@ -637,8 +620,6 @@ def test_pair_stat_missing_inputs(metplus_config, get_test_data_dir,
          {'METPLUS_OBS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {shape = SQUARE;}}'}),
         ({'PAIR_STAT_OBS_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST', },
          {'METPLUS_OBS_CLIMO_STDEV_DICT': 'climo_stdev = {time_interp_method = NEAREST;}'}),
-        ({'PAIR_STAT_OBS_CLIMO_STDEV_MATCH_MONTH': 'True', },
-         {'METPLUS_OBS_CLIMO_STDEV_DICT': 'climo_stdev = {match_month = TRUE;}'}),
         ({'PAIR_STAT_OBS_CLIMO_STDEV_DAY_INTERVAL': '30', },
          {'METPLUS_OBS_CLIMO_STDEV_DICT': 'climo_stdev = {day_interval = 30;}'}),
         ({'PAIR_STAT_OBS_CLIMO_STDEV_DAY_INTERVAL': 'NA', },
@@ -654,7 +635,6 @@ def test_pair_stat_missing_inputs(metplus_config, get_test_data_dir,
           'PAIR_STAT_OBS_CLIMO_STDEV_REGRID_VLD_THRESH': '0.5',
           'PAIR_STAT_OBS_CLIMO_STDEV_REGRID_SHAPE': 'SQUARE',
           'PAIR_STAT_OBS_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST',
-          'PAIR_STAT_OBS_CLIMO_STDEV_MATCH_MONTH': 'True',
           'PAIR_STAT_OBS_CLIMO_STDEV_DAY_INTERVAL': '30',
           'PAIR_STAT_OBS_CLIMO_STDEV_HOUR_INTERVAL': '12', },
          {'METPLUS_OBS_CLIMO_STDEV_DICT': ('climo_stdev = {file_name = '
@@ -663,7 +643,7 @@ def test_pair_stat_missing_inputs(metplus_config, get_test_data_dir,
                                            'regrid = {method = NEAREST;width = 1;'
                                            'vld_thresh = 0.5;shape = SQUARE;}'
                                            'time_interp_method = NEAREST;'
-                                           'match_month = TRUE;day_interval = 30;'
+                                           'day_interval = 30;'
                                            'hour_interval = 12;}')}),
         ({'PAIR_STAT_POINT_WEIGHT_FLAG': 'SID', },
          {'METPLUS_POINT_WEIGHT_FLAG': 'point_weight_flag = SID;'}),
