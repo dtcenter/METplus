@@ -442,6 +442,9 @@ class MODEWrapper(CompareGriddedWrapper):
             @param time_info dictionary containing timing information
             @param var_list list of objects containing variable information
         """
+        if len(var_list) > 1:
+            return super().run_at_time_all_fields(time_info, var_list)
+
         var_info = var_list[0]
         # if no thresholds are specified, run once
         fcst_thresh_list = []
