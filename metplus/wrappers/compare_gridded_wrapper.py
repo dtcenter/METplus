@@ -71,7 +71,6 @@ that reformat gridded data
 
         self.add_met_config(name='output_prefix', data_type='string')
 
-        c_dict['VAR_LIST_OPTIONAL'] = False
         c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
                                                  met_tool=self.app_name)
 
