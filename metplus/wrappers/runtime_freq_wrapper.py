@@ -438,7 +438,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         return self.build()
 
     def get_all_files(self, custom=None):
-        """! Get all files that can be processed with the app.
+        """!Get all files that can be processed with the app.
         @returns A dictionary where the key is the type of data that was found,
         i.e. fcst or obs, and the value is a list of files that fit in that
         category
@@ -592,11 +592,11 @@ class RuntimeFreqWrapper(CommandBuilder):
         return [var_list]
 
     def get_files_from_time(self, time_info):
-        """! Create dictionary containing time information (key time_info) and
-             any relevant files for that runtime. The parent implementation of
-             this function creates a dictionary and adds the time_info to it.
-             This wrapper gets all files for the current runtime and adds it to
-             the dictionary with keys 'FCST' and 'OBS'
+        """!Create dictionary containing time information (key time_info) and
+            any relevant files for that runtime. The parent implementation of
+            this function creates a dictionary and adds the time_info to it.
+            This wrapper gets all files for the current runtime and adds it to
+            the dictionary with keys 'FCST' and 'OBS'
 
              @param time_info dictionary containing time information
              @returns dictionary containing time_info dict and any relevant
@@ -653,15 +653,15 @@ class RuntimeFreqWrapper(CommandBuilder):
 
     @staticmethod
     def compare_time_info(runtime, filetime):
-        """! Compare current runtime dictionary to current file time dictionary
-             If runtime value for init, valid, or lead is not a wildcard and
-             it doesn't match the file's time value, return False. Otherwise
-             return True.
+        """!Compare current runtime dictionary to current file time dictionary
+            If runtime value for init, valid, or lead is not a wildcard and
+            it doesn't match the file's time value, return False. Otherwise
+            return True.
 
-             @param runtime dictionary containing time info for current runtime
-             @param filetime dictionary containing time info for current file
-             @returns True if file's info matches the requirements for current
-             runtime or False if not.
+            @param runtime dictionary containing time info for current runtime
+            @param filetime dictionary containing time info for current file
+            @returns True if file's info matches the requirements for current
+            runtime or False if not.
         """
         # False if init/valid is not wildcard and the file time doesn't match
         for time_val in ['init', 'valid']:
@@ -685,13 +685,13 @@ class RuntimeFreqWrapper(CommandBuilder):
         return runtime_lead == filetime_lead
 
     def get_input_files(self, time_info, fill_missing=False):
-        """! Loop over list of input templates and find files for each
+        """!Loop over list of input templates and find files for each
 
-             @param time_info time dictionary to use for string substitution
-             @param fill_missing if True, add a placeholder if a file is not
-              found. Defaults to False.
-             @returns Dictionary of key input number and value is list of
-              input file list if all files were found, None if not.
+            @param time_info time dictionary to use for string substitution
+            @param fill_missing if True, add a placeholder if a file is not
+             found. Defaults to False.
+            @returns Dictionary of key input number and value is list of
+             input file list if all files were found, None if not.
         """
         all_input_files = {}
         if not self.c_dict.get('TEMPLATE_DICT'):
@@ -752,18 +752,18 @@ class RuntimeFreqWrapper(CommandBuilder):
 
     def subset_input_files(self, time_info, output_dir=None, leads=None,
                            force_list=False):
-        """! Obtain a subset of input files from the c_dict ALL_FILES based on
-             the time information for the current run.
+        """!Obtain a subset of input files from the c_dict ALL_FILES based on
+            the time information for the current run.
 
-              @param time_info dictionary containing time information
-              @param output_dir (optional) directory to write file list files.
-               If no directory is provided, files are written to staging dir
-              @param leads (optional) list of forecast leads to consider
-              @param force_list (optional) boolean - if True, write a file list
-               text file even only 1 file was found. Defaults to False.
-              @returns dictionary with keys of the input identifier and the
-               value is the path to a ascii file containing the list of files
-               or None if could not find any files
+            @param time_info dictionary containing time information
+            @param output_dir (optional) directory to write file list files.
+             If no directory is provided, files are written to staging dir
+            @param leads (optional) list of forecast leads to consider
+            @param force_list (optional) boolean - if True, write a file list
+             text file even only 1 file was found. Defaults to False.
+            @returns dictionary with keys of the input identifier and the
+             value is the path to a ascii file containing the list of files
+             or None if could not find any files
         """
         all_input_files = {}
         if not self.c_dict.get('ALL_FILES') or self.c_dict.get('ALL_FILES') is True:
@@ -825,30 +825,23 @@ class RuntimeFreqWrapper(CommandBuilder):
             all_input_files[input_key].extend(file_dict[input_key])
 
     def get_list_file_name(self, time_info, identifier):
-        """! Build name of ascii file that contains a list of files to process.
-             If wildcard is set for init, valid, or lead then use the text ALL
-             in the filename.
+        """!Build name of ascii file that contains a list of files to process.
+            If wildcard is set for init, valid, or lead then use the text ALL
+            in the filename.
 
         @param time_info dictionary containing time information
         @param identifier string to identify which input is used
         @returns filename i.e.
         {app_name}_files_{identifier}_init_{init}_valid_{valid}_lead_{lead}.txt
         """
-        if time_info['init'] == '*':
-            init = 'ALL'
-        else:
-            init = time_info['init'].strftime('%Y%m%d%H%M%S')
-
-        if time_info['valid'] == '*':
-            valid = 'ALL'
-        else:
-            valid = time_info['valid'].strftime('%Y%m%d%H%M%S')
+        init = 'ALL' if time_info['init'] == '*' else time_info['init'].strftime('%Y%m%d%H%M%S')
+        valid = 'ALL' if time_info['valid'] == '*' else time_info['valid'].strftime('%Y%m%d%H%M%S')
 
         if time_info.get('lead', '*') == '*':
             lead = time_info.get('label') if time_info.get('label') else 'ALL'
         else:
-            lead = time_util.ti_get_seconds_from_lead(time_info['lead'],
-                                                      time_info['valid'])
+            lead = time_util.ti_get_seconds_from_lead(time_info['lead'], time_info['valid'])
+
         # use lead with letter if seconds cannot be computed e.g. 3m
         if lead is None:
             lead = time_util.ti_get_lead_string(time_info['lead'],
@@ -859,38 +852,50 @@ class RuntimeFreqWrapper(CommandBuilder):
                 f"init_{init}_valid_{valid}_lead_{lead}.txt")
 
     def add_to_infiles(self, file_dict, time_info):
+        """!Add relevant files from the file dictionary to the input files list.
+
+        This function updates the input files list (`self.infiles`) with file paths
+        obtained from the file dictionary (`file_dict`) for the current run. It processes
+        files grouped by their data type (e.g., observation files, ensemble mean files).
+
+        @param file_dict dictionary of files categorized by data type (e.g., FCST, OBS).
+                         Each key contains lists of file paths or other file-related info.
+        @param time_info dictionary containing time information for string substitution
+                         and file identification.
+        """
         for data_type in [item for item in file_dict.keys() if item not in ('var_list', 'time_info')]:
             self._add_file(file_dict, time_info, data_type)
 
 
     def _add_file(self, file_dict, time_info, data_type):
+        """!Add files of a specific data type from the file dictionary to the input list.
+
+        This function identifies files of a specific data type (e.g., OBS_GRID, CTRL) from the
+        file dictionary and processes them for inclusion in the input files list. It supports
+        directly appending files, handling grouped commands for special data types, and creating
+        file list files if multiple files are provided.
+
+        @param file_dict dictionary containing categorized file paths.
+                        The keys represent data types (e.g., CTRL, FCST, OBS_GRID).
+        @param time_info dictionary containing time-related details for file name generation.
+        @param data_type string representing the category of files to process (e.g., CTRL, ENS_MEAN).
+        """
         file_list = file_dict.get(data_type)
         if not file_list:
             return
 
-        if data_type == 'CTRL':
-            ctrl_file = file_list[0]
-            self.infiles.append(f'-ctrl {ctrl_file}')
-            return
+        # Dictionary to map data types to their corresponding commands
+        data_type_handlers = {
+            'CTRL': lambda files: self.infiles.append(f'-ctrl {files[0]}'),
+            'OBS_GRID': lambda files: self.infiles.extend(f'-grid_obs {file}' for file in files),
+            'OBS_POINT': lambda files: self.infiles.extend(f'-point_obs {file}' for file in files),
+            'ENS_MEAN': lambda files: self.infiles.extend(f'-ens_mean {file}' for file in files),
+            'PAIRS': lambda files: self.infiles.extend(f'-pairs {file}' for file in files),
+        }
 
-        if data_type == 'OBS_GRID':
-            for input_file in file_list:
-                self.infiles.append(f'-grid_obs {input_file}')
-            return
-
-        if data_type == 'OBS_POINT':
-            for input_file in file_list:
-                self.infiles.append(f'-point_obs {input_file}')
-            return
-
-        if data_type == 'ENS_MEAN':
-            for input_file in file_list:
-                self.infiles.append(f'-ens_mean {input_file}')
-            return
-
-        if data_type == 'PAIRS':
-            for input_file in file_list:
-                self.infiles.append(f'-pairs {input_file}')
+        # Handle data types using the mapping
+        if data_type in data_type_handlers:
+            data_type_handlers[data_type](file_list)
             return
 
         # if there is more than 1 file, create file list file

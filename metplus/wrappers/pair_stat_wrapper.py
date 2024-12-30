@@ -290,7 +290,7 @@ class PairStatWrapper(CompareGriddedWrapper):
            @rtype string
            @return Returns a pair_stat command with arguments that you can run
         """
-        return (f"{self.app_path} -pairs {' '.join(self.infiles)}"
+        return (f"{self.app_path} {' '.join(self.infiles)}"
                 f" -format {self.c_dict['FORMAT']} -config {self.param}"
                 f"{' ' + ' '.join(self.args) if self.args else ''}"
                 f" -outdir {self.outdir} -v {self.c_dict['VERBOSITY']}")
