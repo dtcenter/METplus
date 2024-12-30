@@ -94,14 +94,17 @@ class PairStatWrapper(CompareGriddedWrapper):
         """!Create a dictionary that holds all the values set in the
              METplus config file for the PairStat wrapper.
 
-             Returns:
-                 c_dict   - A dictionary containing the key-value pairs set
-                             in the METplus configuration file.
+        @returns c_dict - A dictionary containing the key-value pairs set
+        in the METplus configuration file.
         """
         c_dict = super().create_c_dict()
         c_dict['VERBOSITY'] = (
             self.config.getstr('config', 'LOG_PAIR_STAT_VERBOSITY',
                                c_dict['VERBOSITY'])
+        )
+
+        c_dict['OFFSETS'] = getlistint(
+            self.config.getstr('config', 'PAIR_STAT_OFFSETS', '0')
         )
 
         self.get_input_templates(c_dict, {
@@ -117,6 +120,8 @@ class PairStatWrapper(CompareGriddedWrapper):
         c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('config', 'PAIR_STAT_OUTPUT_TEMPLATE')
 
         c_dict['FORMAT'] = self.config.getraw('config', 'PAIR_STAT_FORMAT')
+        if not c_dict['FORMAT']:
+            self.log_error('Must set PAIR_STAT_FORMAT')
 
         # get the MET config file path or use default
         c_dict['CONFIG_FILE'] = self.get_config_file('PairStatConfig_wrapped')
@@ -166,34 +171,8 @@ class PairStatWrapper(CompareGriddedWrapper):
         self.add_met_config(name='message_type_group_map', data_type='list',
                             extra_args={'remove_quotes': True})
 
-        self.add_met_config_dict('land_mask', {
-            'flag': 'bool',
-            'file_name': 'list',
-            'field': ('dict', None, {
-                'name': 'string',
-                'level': 'string',
-            }),
-            'regrid': ('dict', None, {
-                'method': ('string', 'remove_quotes'),
-                'width': 'int',
-            }),
-            'thresh': 'thresh',
-        })
-
-        self.add_met_config_dict('topo_mask', {
-            'flag': 'bool',
-            'file_name': 'list',
-            'field': ('dict', None, {
-                'name': 'string',
-                'level': 'string',
-            }),
-            'regrid': ('dict', None, {
-                'method': ('string', 'remove_quotes'),
-                'width': 'int',
-            }),
-            'use_obs_thresh': 'thresh',
-            'interp_fcst_thresh': 'thresh',
-        })
+        self.handle_land_mask()
+        self.handle_topo_mask()
 
         self.add_met_config_window('obs_window')
         self.handle_mask(get_point=True)
@@ -229,13 +208,6 @@ class PairStatWrapper(CompareGriddedWrapper):
                             extra_args={'remove_quotes': True,
                                         'uppercase': True})
 
-        c_dict['OBS_VALID_BEG'] = (
-            self.config.getraw('config', 'PAIR_STAT_OBS_VALID_BEG', '')
-        )
-        c_dict['OBS_VALID_END'] = (
-            self.config.getraw('config', 'PAIR_STAT_OBS_VALID_END', '')
-        )
-
         c_dict['FCST_PROB_THRESH'] = (
             self.config.getstr('config', 'FCST_PAIR_STAT_PROB_THRESH', '==0.1')
         )
@@ -259,8 +231,6 @@ class PairStatWrapper(CompareGriddedWrapper):
         if not c_dict['OUTPUT_DIR']:
             self.log_error('Must set PAIR_STAT_OUTPUT_DIR in config file')
 
-        # skip RuntimeFreq input file logic - remove once integrated
-        #c_dict['FIND_FILES'] = False
         return c_dict
 
     def set_command_line_arguments(self, time_info):
@@ -277,13 +247,6 @@ class PairStatWrapper(CompareGriddedWrapper):
             key = f'METPLUS_{data_type}_FIELD'
             self.env_var_dict[key] = self.env_var_dict[key].replace('field =',
                                                                     'pairs =')
-
-        # set optional obs_valid_beg and obs_valid_end arguments
-        for ext in ['BEG', 'END']:
-            if self.c_dict[f'OBS_VALID_{ext}']:
-                obs_valid = do_string_sub(self.c_dict[f'OBS_VALID_{ext}'],
-                                          **time_info)
-                self.args.append(f"-obs_valid_{ext.lower()} {obs_valid}")
 
     def get_command(self):
         """!Builds the command to run pair_stat

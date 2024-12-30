@@ -1510,7 +1510,7 @@ METplus Configuration Glossary
    FCST_POINT_STAT_INPUT_TEMPLATE
      Template used to specify forecast input filenames for the MET tool point_stat. A corresponding variable exists for observation data called :term:`OBS_POINT_STAT_INPUT_TEMPLATE`. To utilize Python Embedding as input to the MET tools, set this value to PYTHON_NUMPY or PYTHON_XARRAY.
 
-     | *Used by:*  GriPointStat
+     | *Used by:*  PointStat
 
    FCST_REGRID_DATA_PLANE_RUN
      If True, process forecast data with RegridDataPlane.
@@ -13313,3 +13313,869 @@ METplus Configuration Glossary
      See :term:`INPUT_THRESH` for details.
 
      | *Used by:* WaveletStat
+
+   PAIR_STAT_PAIRS_INPUT_DIR
+     Input directory for pairs files to use with the MET tool pair_stat.
+
+     | *Used by:*  PairStat
+
+   PAIR_STAT_PAIRS_INPUT_TEMPLATE
+     Template used to specify pairs input filenames for the MET tool pair_stat.
+
+     | *Used by:*  PairStat
+
+   PAIR_STAT_OUTPUT_DIR
+     Specify the directory where output files from the MET pair_stat tool are written.
+
+     | *Used by:*  PairStat
+
+   PAIR_STAT_OUTPUT_TEMPLATE
+     Sets the subdirectories below :term:`PAIR_STAT_OUTPUT_DIR` using a template to allow run time information.
+
+     | *Used by:*  PairStat
+
+   PAIR_STAT_FORMAT
+     Format of input to PairStat.
+     Sets the value for the -format command line argument to pair_stat.
+
+     | *Used by:*  PairStat
+
+   PAIR_STAT_OFFSETS
+     A list of potential offsets (in hours) that can be found in the
+     :term:`PAIR_STAT_PAIRS_INPUT_TEMPLATE`.
+     METplus will check if a file with a given offset exists in the order
+     specified in this list, to be sure to put favored offset values first.
+
+     | *Used by:*  PairStat
+
+   PAIR_STAT_CONFIG_FILE
+     Path to configuration file read by pair_stat.
+     If unset, parm/met_config/PairStatConfig_wrapped will be used.
+
+     | *Used by:*  PairStat
+
+   PAIR_STAT_DESC
+     Specify the value for 'desc' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_CENSOR_THRESH
+     Specify the value for 'censor_thresh' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_CENSOR_VAL
+     Specify the value for 'censor_val' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_CAT_THRESH
+     Specify the value for 'cat_thresh' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_CNT_THRESH
+     Specify the value for 'cnt_thresh' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_CNT_LOGIC
+     Specify the value for 'cnt_logic' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_WIND_THRESH
+     Specify the value for 'wind_thresh' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_WIND_LOGIC
+     Specify the value for 'wind_logic' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_MPR_COLUMN
+     Specify the value for 'mpr_column' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_MPR_THRESH
+     Specify the value for 'mpr_thresh' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_MPR_STR_INC
+     Specify the value for 'mpr_str_inc' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_MPR_STR_EXC
+     Specify the value for 'mpr_str_exc' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_MPR_SUMMARY
+     Specify the value for 'mpr_summary' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_ECLV_POINTS
+     Specify the value for 'eclv_points' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_HSS_EC_VALUE
+     Specify the value for 'hss_ec_value' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_RANK_CORR_FLAG
+     Specify the value for 'rank_corr_flag' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_CLIMO_MEAN_FILE_NAME
+     Specify the value for 'climo_mean.file_name' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_CLIMO_MEAN_FIELD
+     Specify the value for 'climo_mean.field' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_CLIMO_MEAN_TIME_INTERP_METHOD
+     Specify the value for 'climo_mean.time_interp_method' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_CLIMO_MEAN_DAY_INTERVAL
+     Specify the value for 'climo_mean.day_interval' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_CLIMO_MEAN_HOUR_INTERVAL
+     Specify the value for 'climo_mean.hour_interval' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_CLIMO_MEAN_REGRID_METHOD
+     Specify the value for 'climo_mean.regrid.method' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_CLIMO_MEAN_REGRID_WIDTH
+     Specify the value for 'climo_mean.regrid.width' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_CLIMO_MEAN_REGRID_VLD_THRESH
+     Specify the value for 'climo_mean.regrid.vld_thresh' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_CLIMO_MEAN_REGRID_SHAPE
+     Specify the value for 'climo_mean.regrid.shape' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_CLIMO_STDEV_FILE_NAME
+     Specify the value for 'climo_stdev.file_name' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_CLIMO_STDEV_FIELD
+     Specify the value for 'climo_stdev.field' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_CLIMO_STDEV_TIME_INTERP_METHOD
+     Specify the value for 'climo_stdev.time_interp_method' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_CLIMO_STDEV_DAY_INTERVAL
+     Specify the value for 'climo_stdev.day_interval' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_CLIMO_STDEV_HOUR_INTERVAL
+     Specify the value for 'climo_stdev.hour_interval' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_CLIMO_STDEV_REGRID_METHOD
+     Specify the value for 'climo_stdev.regrid.method' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_CLIMO_STDEV_REGRID_WIDTH
+     Specify the value for 'climo_stdev.regrid.width' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_CLIMO_STDEV_REGRID_VLD_THRESH
+     Specify the value for 'climo_stdev.regrid.vld_thresh' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_CLIMO_STDEV_REGRID_SHAPE
+     Specify the value for 'climo_stdev.regrid.shape' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_CLIMO_CDF_CDF_BINS
+     See :term:`PAIR_STAT_CLIMO_CDF_BINS`
+
+   PAIR_STAT_CLIMO_CDF_BINS
+     Specify the value for 'climo_cdf.cdf_bins' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_CLIMO_CDF_CENTER_BINS
+     Specify the value for 'climo_cdf.center_bins' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_CLIMO_CDF_WRITE_BINS
+     Specify the value for 'climo_cdf.write_bins' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_CLIMO_CDF_DIRECT_PROB
+     Specify the value for 'climo_cdf.direct_prob' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_LAND_MASK_FIELD
+     Specify the value for 'land_mask.field' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_LAND_MASK_REGRID
+     Specify the value for 'land_mask.regrid' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_TOPO_MASK_FIELD
+     Specify the value for 'topo_mask.field' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_TOPO_MASK_REGRID
+     Specify the value for 'topo_mask.regrid' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_WINDOW_BEG
+     Specify the value for 'obs_window.beg' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_WINDOW_END
+     Specify the value for 'obs_window.end' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_MASK_GRID
+     Specify the value for 'mask.grid' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_MASK_POLY
+     Specify the value for 'mask.poly' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_MASK_SID
+     Specify the value for 'mask.sid' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_MASK_LLPNT
+     Specify the value for 'mask.llpnt' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_CI_ALPHA
+     Specify the value for 'ci_alpha' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_BOOT_INTERVAL
+     Specify the value for 'boot.interval' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_BOOT_REP_PROP
+     Specify the value for 'boot.rep_prop' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_BOOT_N_REP
+     Specify the value for 'boot.n_rep' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_BOOT_RNG
+     Specify the value for 'boot.rng' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_BOOT_SEED
+     Specify the value for 'boot.seed' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_SEEPS_P1_THRESH
+     Specify the value for 'seeps_p1_thresh' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OUTPUT_FLAG_FHO
+     Specify the value for 'output_flag.fho' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OUTPUT_FLAG_CTC
+     Specify the value for 'output_flag.ctc' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OUTPUT_FLAG_CTS
+     Specify the value for 'output_flag.cts' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OUTPUT_FLAG_MCTC
+     Specify the value for 'output_flag.mctc' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OUTPUT_FLAG_MCTS
+     Specify the value for 'output_flag.mcts' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OUTPUT_FLAG_CNT
+     Specify the value for 'output_flag.cnt' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OUTPUT_FLAG_SL1L2
+     Specify the value for 'output_flag.sl1l2' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OUTPUT_FLAG_SAL1L2
+     Specify the value for 'output_flag.sal1l2' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OUTPUT_FLAG_VL1L2
+     Specify the value for 'output_flag.vl1l2' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OUTPUT_FLAG_VAL1L2
+     Specify the value for 'output_flag.val1l2' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OUTPUT_FLAG_VCNT
+     Specify the value for 'output_flag.vcnt' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OUTPUT_FLAG_PCT
+     Specify the value for 'output_flag.pct' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OUTPUT_FLAG_PSTD
+     Specify the value for 'output_flag.pstd' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OUTPUT_FLAG_PJC
+     Specify the value for 'output_flag.pjc' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OUTPUT_FLAG_PRC
+     Specify the value for 'output_flag.prc' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OUTPUT_FLAG_ECLV
+     Specify the value for 'output_flag.eclv' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OUTPUT_FLAG_MPR
+     Specify the value for 'output_flag.mpr' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OUTPUT_FLAG_SEEPS
+     Specify the value for 'output_flag.seeps' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OUTPUT_FLAG_SEEPS_MPR
+     Specify the value for 'output_flag.seeps_mpr' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_POINT_WEIGHT_FLAG
+     Specify the value for 'point_weight_flag' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OUTPUT_PREFIX
+     Specify the value for 'output_prefix' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   FCST_PAIR_STAT_VAR<n>_NAME
+     Wrapper specific field info variable. See :term:`FCST_VAR<n>_NAME`.
+
+     | *Used by:*  PairStat
+
+   FCST_PAIR_STAT_VAR<n>_LEVELS
+     Wrapper specific field info variable. See :term:`FCST_VAR<n>_LEVELS`.
+
+     | *Used by:*  PairStat
+
+   FCST_PAIR_STAT_VAR<n>_THRESH
+     Wrapper specific field info variable. See :term:`FCST_VAR<n>_THRESH`.
+
+     | *Used by:*  PairStat
+
+   FCST_PAIR_STAT_VAR<n>_OPTIONS
+     Wrapper specific field info variable. See :term:`FCST_VAR<n>_OPTIONS`.
+
+     | *Used by:*  PairStat
+
+   OBS_PAIR_STAT_VAR<n>_NAME
+     Wrapper specific field info variable. See :term:`OBS_VAR<n>_NAME`.
+
+     | *Used by:*  PairStat
+
+   OBS_PAIR_STAT_VAR<n>_LEVELS
+     Wrapper specific field info variable. See :term:`OBS_VAR<n>_LEVELS`.
+
+     | *Used by:*  PairStat
+
+   OBS_PAIR_STAT_VAR<n>_THRESH
+     Wrapper specific field info variable. See :term:`OBS_VAR<n>_THRESH`.
+
+     | *Used by:*  PairStat
+
+   OBS_PAIR_STAT_VAR<n>_OPTIONS
+     Wrapper specific field info variable. See :term:`OBS_VAR<n>_OPTIONS`.
+
+     | *Used by:*  PairStat
+
+   PAIR_STAT_SKIP_VALID_TIMES
+     List of valid times to skip for PairStat only.
+     If set, values set in :term:`SKIP_VALID_TIMES` are ignored for PairStat.
+     See :term:`SKIP_VALID_TIMES` for formatting information.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_INC_VALID_TIMES
+     List of valid times to include for PairStat only.
+     If set, values set in :term:`INC_VALID_TIMES` are ignored for PairStat.
+     See :term:`SKIP_VALID_TIMES` for formatting information.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_SKIP_INIT_TIMES
+     List of initialization times to skip for PairStat only.
+     If set, values set in :term:`SKIP_INIT_TIMES` are ignored for PairStat.
+     See :term:`SKIP_VALID_TIMES` for formatting information.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_INC_INIT_TIMES
+     List of initialization times to include for PairStat only.
+     If set, values set in :term:`INC_INIT_TIMES` are ignored for PairStat.
+     See :term:`SKIP_VALID_TIMES` for formatting information.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_ALLOW_MISSING_INPUTS
+     Activates allow missing inputs logic for PairStat only.
+     See :term:`ALLOW_MISSING_INPUTS` for details.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_INPUT_THRESH
+     Defines input threshold for PairStat only.
+     See :term:`INPUT_THRESH` for details.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_MET_CONFIG_OVERRIDES
+     Override any variables in the MET configuration file that are not
+     supported by the wrapper. This should be set to the full variable name
+     and value that you want to override, including the equal sign and the
+     ending semi-colon. The value is directly appended to the end of the
+     wrapped MET config file.
+
+     Example:
+     PAIR_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_SKIP_IF_OUTPUT_EXISTS
+     If True, do not run app if output file already exists.
+     Set to False to overwrite files.
+
+     | *Used by:*  PairStat
+
+   PAIR_STAT_CUSTOM_LOOP_LIST
+    Sets custom string loop list for a specific wrapper.
+    See :term:`CUSTOM_LOOP_LIST`.
+
+     | *Used by:* PairStat
+
+   LOG_PAIR_STAT_VERBOSITY
+     Overrides the log verbosity for PairStat only.
+     If not set, the verbosity level is controlled by :term:`LOG_MET_VERBOSITY`.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_PAIRS_INPUT_DATATYPE
+     Specify the data type of the input directory for pairs files used with the
+     MET pair_stat tool. Currently valid options are NETCDF, GRIB, and GEMPAK.
+
+     | *Used by:*  PairStat
+
+   PAIR_STAT_FCST_FILE_TYPE
+     Specify the value for 'fcst.file_type' in the MET configuration file for PairStat.
+
+     | *Used by:*  PairStat
+
+   PAIR_STAT_OBS_FILE_TYPE
+     Specify the value for 'obs.file_type' in the MET configuration file for PairStat.
+
+     | *Used by:*  PairStat
+
+   PAIR_STAT_FCST_CLIMO_MEAN_FILE_NAME
+     Specify the value for 'fcst.climo_mean.file_name' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_CLIMO_MEAN_FIELD
+     Specify the value for 'fcst.climo_mean.field' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_CLIMO_MEAN_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_NAME`
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_CLIMO_MEAN_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_LEVELS`
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_CLIMO_MEAN_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_OPTIONS`
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_CLIMO_MEAN_REGRID_METHOD
+     Specify the value for 'fcst.climo_mean.regrid.method' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_CLIMO_MEAN_REGRID_WIDTH
+     Specify the value for 'fcst.climo_mean.regrid.width' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_CLIMO_MEAN_REGRID_VLD_THRESH
+     Specify the value for 'fcst.climo_mean.regrid.vld_thresh' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_CLIMO_MEAN_REGRID_SHAPE
+     Specify the value for 'fcst.climo_mean.regrid.shape' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_CLIMO_MEAN_TIME_INTERP_METHOD
+     Specify the value for 'fcst.climo_mean.time_interp_method' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_CLIMO_MEAN_DAY_INTERVAL
+     Specify the value for 'fcst.climo_mean.day_interval' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_CLIMO_MEAN_HOUR_INTERVAL
+     Specify the value for 'fcst.climo_mean.hour_interval' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_CLIMO_STDEV_FILE_NAME
+     Specify the value for 'fcst.climo_stdev.file_name' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_CLIMO_STDEV_FIELD
+     Specify the value for 'fcst.climo_stdev.field' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_CLIMO_STDEV_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_NAME`
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_CLIMO_STDEV_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_LEVELS`
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_CLIMO_STDEV_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_OPTIONS`
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_CLIMO_STDEV_REGRID_METHOD
+     Specify the value for 'fcst.climo_stdev.regrid.method' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_CLIMO_STDEV_REGRID_WIDTH
+     Specify the value for 'fcst.climo_stdev.regrid.width' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_CLIMO_STDEV_REGRID_VLD_THRESH
+     Specify the value for 'fcst.climo_stdev.regrid.vld_thresh' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_CLIMO_STDEV_REGRID_SHAPE
+     Specify the value for 'fcst.climo_stdev.regrid.shape' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_CLIMO_STDEV_TIME_INTERP_METHOD
+     Specify the value for 'fcst.climo_stdev.time_interp_method' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_CLIMO_STDEV_DAY_INTERVAL
+     Specify the value for 'fcst.climo_stdev.day_interval' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_CLIMO_STDEV_HOUR_INTERVAL
+     Specify the value for 'fcst.climo_stdev.hour_interval' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_CLIMO_MEAN_FILE_NAME
+     Specify the value for 'obs.climo_mean.file_name' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_CLIMO_MEAN_FIELD
+     Specify the value for 'obs.climo_mean.field' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_CLIMO_MEAN_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_NAME`
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_CLIMO_MEAN_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_LEVELS`
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_CLIMO_MEAN_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_OPTIONS`
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_CLIMO_MEAN_REGRID_METHOD
+     Specify the value for 'obs.climo_mean.regrid.method' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_CLIMO_MEAN_REGRID_WIDTH
+     Specify the value for 'obs.climo_mean.regrid.width' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_CLIMO_MEAN_REGRID_VLD_THRESH
+     Specify the value for 'obs.climo_mean.regrid.vld_thresh' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_CLIMO_MEAN_REGRID_SHAPE
+     Specify the value for 'obs.climo_mean.regrid.shape' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_CLIMO_MEAN_TIME_INTERP_METHOD
+     Specify the value for 'obs.climo_mean.time_interp_method' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_CLIMO_MEAN_DAY_INTERVAL
+     Specify the value for 'obs.climo_mean.day_interval' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_CLIMO_MEAN_HOUR_INTERVAL
+     Specify the value for 'obs.climo_mean.hour_interval' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_CLIMO_STDEV_FILE_NAME
+     Specify the value for 'obs.climo_stdev.file_name' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_CLIMO_STDEV_FIELD
+     Specify the value for 'obs.climo_stdev.field' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_CLIMO_STDEV_VAR<n>_NAME
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_NAME`
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_CLIMO_STDEV_VAR<n>_LEVELS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_LEVELS`
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_CLIMO_STDEV_VAR<n>_OPTIONS
+     See: :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_OPTIONS`
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_CLIMO_STDEV_REGRID_METHOD
+     Specify the value for 'obs.climo_stdev.regrid.method' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_CLIMO_STDEV_REGRID_WIDTH
+     Specify the value for 'obs.climo_stdev.regrid.width' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_CLIMO_STDEV_REGRID_VLD_THRESH
+     Specify the value for 'obs.climo_stdev.regrid.vld_thresh' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_CLIMO_STDEV_REGRID_SHAPE
+     Specify the value for 'obs.climo_stdev.regrid.shape' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_CLIMO_STDEV_TIME_INTERP_METHOD
+     Specify the value for 'obs.climo_stdev.time_interp_method' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_CLIMO_STDEV_DAY_INTERVAL
+     Specify the value for 'obs.climo_stdev.day_interval' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_CLIMO_STDEV_HOUR_INTERVAL
+     Specify the value for 'obs.climo_stdev.hour_interval' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_LAND_MASK_FLAG
+     Specify the value for 'land_mask.flag' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_LAND_MASK_FILE_NAME
+     Specify the value for 'land_mask.file_name' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_LAND_MASK_FIELD_NAME
+     Specify the value for 'land_mask.field.name' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_LAND_MASK_FIELD_LEVEL
+     Specify the value for 'land_mask.field.level' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_LAND_MASK_REGRID_METHOD
+     Specify the value for 'land_mask.regrid.method' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_LAND_MASK_REGRID_WIDTH
+     Specify the value for 'land_mask.regrid.width' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_LAND_MASK_THRESH
+     Specify the value for 'land_mask.thresh' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_TOPO_MASK_FLAG
+     Specify the value for 'topo_mask.flag' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_TOPO_MASK_FILE_NAME
+     Specify the value for 'topo_mask.file_name' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_TOPO_MASK_FIELD_NAME
+     Specify the value for 'topo_mask.field.name' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_TOPO_MASK_FIELD_LEVEL
+     Specify the value for 'topo_mask.field.level' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_TOPO_MASK_REGRID_METHOD
+     Specify the value for 'topo_mask.regrid.method' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_TOPO_MASK_REGRID_WIDTH
+     Specify the value for 'topo_mask.regrid.width' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_TOPO_MASK_USE_OBS_THRESH
+     Specify the value for 'topo_mask.use_obs_thresh' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_TOPO_MASK_INTERP_FCST_THRESH
+     Specify the value for 'topo_mask.interp_fcst_thresh' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat

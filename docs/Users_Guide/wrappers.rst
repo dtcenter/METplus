@@ -5907,6 +5907,864 @@ ${METPLUS_MET_CONFIG_OVERRIDES}
    * - :term:`MTD_MET_CONFIG_OVERRIDES`
      - n/a
 
+
+.. _pair_stat_wrapper:
+
+PairStat
+=========
+
+Description
+-----------
+
+The PairStat wrapper is a Python script that encapsulates the MET
+pair_stat tool.
+
+Configuration
+-------------
+
+| :term:`LOG_PAIR_STAT_VERBOSITY`
+| :term:`PAIR_STAT_PAIRS_INPUT_TEMPLATE`
+| :term:`PAIR_STAT_PAIRS_INPUT_DIR`
+| :term:`PAIR_STAT_PAIRS_INPUT_DATATYPE`
+| :term:`PAIR_STAT_OUTPUT_TEMPLATE`
+| :term:`PAIR_STAT_OUTPUT_DIR`
+| :term:`PAIR_STAT_FORMAT`
+| :term:`PAIR_STAT_OFFSETS`
+| :term:`PAIR_STAT_CONFIG_FILE`
+| :term:`MODEL`
+| :term:`PAIR_STAT_DESC`
+| :term:`PAIR_STAT_CENSOR_THRESH`
+| :term:`PAIR_STAT_CENSOR_VAL`
+| :term:`PAIR_STAT_CAT_THRESH`
+| :term:`PAIR_STAT_CNT_THRESH`
+| :term:`PAIR_STAT_CNT_LOGIC`
+| :term:`PAIR_STAT_WIND_THRESH`
+| :term:`PAIR_STAT_WIND_LOGIC`
+| :term:`PAIR_STAT_MPR_COLUMN`
+| :term:`PAIR_STAT_MPR_THRESH`
+| :term:`PAIR_STAT_MPR_STR_INC`
+| :term:`PAIR_STAT_MPR_STR_EXC`
+| :term:`PAIR_STAT_MPR_SUMMARY`
+| :term:`PAIR_STAT_ECLV_POINTS`
+| :term:`PAIR_STAT_HSS_EC_VALUE`
+| :term:`PAIR_STAT_RANK_CORR_FLAG`
+| :term:`PAIR_STAT_CLIMO_MEAN_FILE_NAME`
+| :term:`PAIR_STAT_CLIMO_MEAN_FIELD`
+| :term:`PAIR_STAT_CLIMO_MEAN_TIME_INTERP_METHOD`
+| :term:`PAIR_STAT_CLIMO_MEAN_DAY_INTERVAL`
+| :term:`PAIR_STAT_CLIMO_MEAN_HOUR_INTERVAL`
+| :term:`PAIR_STAT_CLIMO_STDEV_FILE_NAME`
+| :term:`PAIR_STAT_CLIMO_STDEV_FIELD`
+| :term:`PAIR_STAT_CLIMO_STDEV_TIME_INTERP_METHOD`
+| :term:`PAIR_STAT_CLIMO_STDEV_DAY_INTERVAL`
+| :term:`PAIR_STAT_CLIMO_STDEV_HOUR_INTERVAL`
+| :term:`PAIR_STAT_FCST_CLIMO_MEAN_FILE_NAME`
+| :term:`PAIR_STAT_FCST_CLIMO_MEAN_VAR<n>_NAME`
+| :term:`PAIR_STAT_FCST_CLIMO_MEAN_VAR<n>_LEVELS`
+| :term:`PAIR_STAT_FCST_CLIMO_MEAN_VAR<n>_OPTIONS`
+| :term:`PAIR_STAT_FCST_CLIMO_MEAN_FIELD`
+| :term:`PAIR_STAT_FCST_CLIMO_MEAN_REGRID_METHOD`
+| :term:`PAIR_STAT_FCST_CLIMO_MEAN_REGRID_WIDTH`
+| :term:`PAIR_STAT_FCST_CLIMO_MEAN_REGRID_VLD_THRESH`
+| :term:`PAIR_STAT_FCST_CLIMO_MEAN_REGRID_SHAPE`
+| :term:`PAIR_STAT_FCST_CLIMO_MEAN_TIME_INTERP_METHOD`
+| :term:`PAIR_STAT_FCST_CLIMO_MEAN_DAY_INTERVAL`
+| :term:`PAIR_STAT_FCST_CLIMO_MEAN_HOUR_INTERVAL`
+| :term:`PAIR_STAT_FCST_CLIMO_STDEV_FILE_NAME`
+| :term:`PAIR_STAT_FCST_CLIMO_STDEV_VAR<n>_NAME`
+| :term:`PAIR_STAT_FCST_CLIMO_STDEV_VAR<n>_LEVELS`
+| :term:`PAIR_STAT_FCST_CLIMO_STDEV_VAR<n>_OPTIONS`
+| :term:`PAIR_STAT_FCST_CLIMO_STDEV_FIELD`
+| :term:`PAIR_STAT_FCST_CLIMO_STDEV_REGRID_METHOD`
+| :term:`PAIR_STAT_FCST_CLIMO_STDEV_REGRID_WIDTH`
+| :term:`PAIR_STAT_FCST_CLIMO_STDEV_REGRID_VLD_THRESH`
+| :term:`PAIR_STAT_FCST_CLIMO_STDEV_REGRID_SHAPE`
+| :term:`PAIR_STAT_FCST_CLIMO_STDEV_TIME_INTERP_METHOD`
+| :term:`PAIR_STAT_FCST_CLIMO_STDEV_DAY_INTERVAL`
+| :term:`PAIR_STAT_FCST_CLIMO_STDEV_HOUR_INTERVAL`
+| :term:`PAIR_STAT_OBS_CLIMO_MEAN_FILE_NAME`
+| :term:`PAIR_STAT_OBS_CLIMO_MEAN_VAR<n>_NAME`
+| :term:`PAIR_STAT_OBS_CLIMO_MEAN_VAR<n>_LEVELS`
+| :term:`PAIR_STAT_OBS_CLIMO_MEAN_VAR<n>_OPTIONS`
+| :term:`PAIR_STAT_OBS_CLIMO_MEAN_FIELD`
+| :term:`PAIR_STAT_OBS_CLIMO_MEAN_REGRID_METHOD`
+| :term:`PAIR_STAT_OBS_CLIMO_MEAN_REGRID_WIDTH`
+| :term:`PAIR_STAT_OBS_CLIMO_MEAN_REGRID_VLD_THRESH`
+| :term:`PAIR_STAT_OBS_CLIMO_MEAN_REGRID_SHAPE`
+| :term:`PAIR_STAT_OBS_CLIMO_MEAN_TIME_INTERP_METHOD`
+| :term:`PAIR_STAT_OBS_CLIMO_MEAN_DAY_INTERVAL`
+| :term:`PAIR_STAT_OBS_CLIMO_MEAN_HOUR_INTERVAL`
+| :term:`PAIR_STAT_OBS_CLIMO_STDEV_FILE_NAME`
+| :term:`PAIR_STAT_OBS_CLIMO_STDEV_VAR<n>_NAME`
+| :term:`PAIR_STAT_OBS_CLIMO_STDEV_VAR<n>_LEVELS`
+| :term:`PAIR_STAT_OBS_CLIMO_STDEV_VAR<n>_OPTIONS`
+| :term:`PAIR_STAT_OBS_CLIMO_STDEV_FIELD`
+| :term:`PAIR_STAT_OBS_CLIMO_STDEV_REGRID_METHOD`
+| :term:`PAIR_STAT_OBS_CLIMO_STDEV_REGRID_WIDTH`
+| :term:`PAIR_STAT_OBS_CLIMO_STDEV_REGRID_VLD_THRESH`
+| :term:`PAIR_STAT_OBS_CLIMO_STDEV_REGRID_SHAPE`
+| :term:`PAIR_STAT_OBS_CLIMO_STDEV_TIME_INTERP_METHOD`
+| :term:`PAIR_STAT_OBS_CLIMO_STDEV_DAY_INTERVAL`
+| :term:`PAIR_STAT_OBS_CLIMO_STDEV_HOUR_INTERVAL`
+| :term:`PAIR_STAT_CLIMO_CDF_CDF_BINS`
+| :term:`PAIR_STAT_CLIMO_CDF_CENTER_BINS`
+| :term:`PAIR_STAT_CLIMO_CDF_WRITE_BINS`
+| :term:`PAIR_STAT_CLIMO_CDF_DIRECT_PROB`
+| :term:`PAIR_STAT_LAND_MASK_FLAG`
+| :term:`PAIR_STAT_LAND_MASK_FILE_NAME`
+| :term:`PAIR_STAT_LAND_MASK_FIELD`
+| :term:`PAIR_STAT_LAND_MASK_REGRID`
+| :term:`PAIR_STAT_LAND_MASK_THRESH`
+| :term:`PAIR_STAT_TOPO_MASK_FLAG`
+| :term:`PAIR_STAT_TOPO_MASK_FILE_NAME`
+| :term:`PAIR_STAT_TOPO_MASK_FIELD`
+| :term:`PAIR_STAT_TOPO_MASK_REGRID`
+| :term:`PAIR_STAT_TOPO_MASK_USE_OBS_THRESH`
+| :term:`PAIR_STAT_TOPO_MASK_INTERP_FCST_THRESH`
+| :term:`PAIR_STAT_OBS_WINDOW_BEG`
+| :term:`PAIR_STAT_OBS_WINDOW_END`
+| :term:`PAIR_STAT_MASK_GRID`
+| :term:`PAIR_STAT_MASK_POLY`
+| :term:`PAIR_STAT_MASK_SID`
+| :term:`PAIR_STAT_MASK_LLPNT`
+| :term:`PAIR_STAT_CI_ALPHA`
+| :term:`PAIR_STAT_BOOT_INTERVAL`
+| :term:`PAIR_STAT_BOOT_REP_PROP`
+| :term:`PAIR_STAT_BOOT_N_REP`
+| :term:`PAIR_STAT_BOOT_RNG`
+| :term:`PAIR_STAT_BOOT_SEED`
+| :term:`PAIR_STAT_SEEPS_P1_THRESH`
+| :term:`PAIR_STAT_OUTPUT_FLAG_FHO`
+| :term:`PAIR_STAT_OUTPUT_FLAG_CTC`
+| :term:`PAIR_STAT_OUTPUT_FLAG_CTS`
+| :term:`PAIR_STAT_OUTPUT_FLAG_MCTC`
+| :term:`PAIR_STAT_OUTPUT_FLAG_MCTS`
+| :term:`PAIR_STAT_OUTPUT_FLAG_CNT`
+| :term:`PAIR_STAT_OUTPUT_FLAG_SL1L2`
+| :term:`PAIR_STAT_OUTPUT_FLAG_SAL1L2`
+| :term:`PAIR_STAT_OUTPUT_FLAG_VL1L2`
+| :term:`PAIR_STAT_OUTPUT_FLAG_VAL1L2`
+| :term:`PAIR_STAT_OUTPUT_FLAG_VCNT`
+| :term:`PAIR_STAT_OUTPUT_FLAG_PCT`
+| :term:`PAIR_STAT_OUTPUT_FLAG_PSTD`
+| :term:`PAIR_STAT_OUTPUT_FLAG_PJC`
+| :term:`PAIR_STAT_OUTPUT_FLAG_PRC`
+| :term:`PAIR_STAT_OUTPUT_FLAG_ECLV`
+| :term:`PAIR_STAT_OUTPUT_FLAG_MPR`
+| :term:`PAIR_STAT_OUTPUT_FLAG_SEEPS`
+| :term:`PAIR_STAT_OUTPUT_FLAG_SEEPS_MPR`
+| :term:`PAIR_STAT_POINT_WEIGHT_FLAG`
+| :term:`PAIR_STAT_OUTPUT_PREFIX`
+| :term:`PAIR_STAT_CUSTOM_LOOP_LIST`
+| :term:`PAIR_STAT_SKIP_IF_OUTPUT_EXISTS`
+| :term:`PAIR_STAT_MET_CONFIG_OVERRIDES`
+| :term:`FCST_PAIR_STAT_VAR<n>_NAME`
+| :term:`FCST_PAIR_STAT_VAR<n>_LEVELS`
+| :term:`FCST_PAIR_STAT_VAR<n>_THRESH`
+| :term:`FCST_PAIR_STAT_VAR<n>_OPTIONS`
+| :term:`OBS_PAIR_STAT_VAR<n>_NAME`
+| :term:`OBS_PAIR_STAT_VAR<n>_LEVELS`
+| :term:`OBS_PAIR_STAT_VAR<n>_THRESH`
+| :term:`OBS_PAIR_STAT_VAR<n>_OPTIONS`
+| :term:`PAIR_STAT_SKIP_VALID_TIMES`
+| :term:`PAIR_STAT_INC_VALID_TIMES`
+| :term:`PAIR_STAT_SKIP_INIT_TIMES`
+| :term:`PAIR_STAT_INC_INIT_TIMES`
+| :term:`PAIR_STAT_ALLOW_MISSING_INPUTS`
+| :term:`PAIR_STAT_INPUT_THRESH`
+
+.. _pair-stat-met-conf:
+
+MET Configuration
+-----------------
+
+Below is the wrapped MET configuration file used for this wrapper.
+Environment variables are used to control entries in this configuration file.
+The default value for each environment variable is obtained from
+(except where noted below):
+
+`MET_INSTALL_DIR/share/met/config/PairStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/PairStatConfig_default>`_
+
+Below the file contents are descriptions of each environment variable
+referenced in this file and the corresponding METplus configuration item used
+to set the value of the environment variable. For detailed examples showing
+how METplus sets the values of these environment variables,
+see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+
+.. dropdown:: Click to view parm/met_config/PairStatConfig_wrapped
+
+   .. literalinclude:: ../../parm/met_config/PairStatConfig_wrapped
+
+Environment variables in wrapped MET config
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+${METPLUS_MODEL}
+""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODEL`
+     - model
+
+${METPLUS_DESC}
+"""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`DESC` -or- :term:`PAIR_STAT_DESC`
+     - desc
+
+${METPLUS_FCST_FILE_TYPE}
+"""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_FCST_FILE_TYPE`
+     - fcst.file_type
+
+${METPLUS_FCST_FIELD}
+"""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`FCST_VAR<n>_NAME`
+     - fcst.field.name
+   * - :term:`FCST_VAR<n>_LEVELS`
+     - fcst.field.level
+   * - :term:`FCST_VAR<n>_THRESH`
+     - fcst.field.cat_thresh
+   * - :term:`FCST_VAR<n>_OPTIONS`
+     - n/a
+
+.. note:: For more information on controlling the forecast field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
+
+
+${METPLUS_FCST_CLIMO_MEAN_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_FCST_CLIMO_MEAN_FILE_NAME`
+     - fcst.climo_mean.file_name
+   * - :term:`PAIR_STAT_FCST_CLIMO_MEAN_FIELD`
+     - fcst.climo_mean.field
+   * - :term:`PAIR_STAT_FCST_CLIMO_MEAN_REGRID_METHOD`
+     - fcst.climo_mean.regrid.method
+   * - :term:`PAIR_STAT_FCST_CLIMO_MEAN_REGRID_WIDTH`
+     - fcst.climo_mean.regrid.width
+   * - :term:`PAIR_STAT_FCST_CLIMO_MEAN_REGRID_VLD_THRESH`
+     - fcst.climo_mean.regrid.vld_thresh
+   * - :term:`PAIR_STAT_FCST_CLIMO_MEAN_REGRID_SHAPE`
+     - fcst.climo_mean.regrid.shape
+   * - :term:`PAIR_STAT_FCST_CLIMO_MEAN_TIME_INTERP_METHOD`
+     - fcst.climo_mean.time_interp_method
+   * - :term:`PAIR_STAT_FCST_CLIMO_MEAN_DAY_INTERVAL`
+     - fcst.climo_mean.day_interval
+   * - :term:`PAIR_STAT_FCST_CLIMO_MEAN_HOUR_INTERVAL`
+     - fcst.climo_mean.hour_interval
+
+${METPLUS_FCST_CLIMO_STDEV_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_FCST_CLIMO_STDEV_FILE_NAME`
+     - fcst.climo_stdev.file_name
+   * - :term:`PAIR_STAT_FCST_CLIMO_STDEV_FIELD`
+     - fcst.climo_stdev.field
+   * - :term:`PAIR_STAT_FCST_CLIMO_STDEV_REGRID_METHOD`
+     - fcst.climo_stdev.regrid.method
+   * - :term:`PAIR_STAT_FCST_CLIMO_STDEV_REGRID_WIDTH`
+     - fcst.climo_stdev.regrid.width
+   * - :term:`PAIR_STAT_FCST_CLIMO_STDEV_REGRID_VLD_THRESH`
+     - fcst.climo_stdev.regrid.vld_thresh
+   * - :term:`PAIR_STAT_FCST_CLIMO_STDEV_REGRID_SHAPE`
+     - fcst.climo_stdev.regrid.shape
+   * - :term:`PAIR_STAT_FCST_CLIMO_STDEV_TIME_INTERP_METHOD`
+     - fcst.climo_stdev.time_interp_method
+   * - :term:`PAIR_STAT_FCST_CLIMO_STDEV_DAY_INTERVAL`
+     - fcst.climo_stdev.day_interval
+   * - :term:`PAIR_STAT_FCST_CLIMO_STDEV_HOUR_INTERVAL`
+     - fcst.climo_stdev.hour_interval
+
+${METPLUS_OBS_FILE_TYPE}
+""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_OBS_FILE_TYPE`
+     - obs.file_type
+
+${METPLUS_OBS_FIELD}
+""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`OBS_VAR<n>_NAME`
+     - obs.field.name
+   * - :term:`OBS_VAR<n>_LEVELS`
+     - obs.field.level
+   * - :term:`OBS_VAR<n>_THRESH`
+     - obs.field.cat_thresh
+   * - :term:`OBS_VAR<n>_OPTIONS`
+     - n/a
+
+.. note:: For more information on controlling the observation field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
+
+
+${METPLUS_OBS_CLIMO_MEAN_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_OBS_CLIMO_MEAN_FILE_NAME`
+     - obs.climo_mean.file_name
+   * - :term:`PAIR_STAT_OBS_CLIMO_MEAN_FIELD`
+     - obs.climo_mean.field
+   * - :term:`PAIR_STAT_OBS_CLIMO_MEAN_REGRID_METHOD`
+     - obs.climo_mean.regrid.method
+   * - :term:`PAIR_STAT_OBS_CLIMO_MEAN_REGRID_WIDTH`
+     - obs.climo_mean.regrid.width
+   * - :term:`PAIR_STAT_OBS_CLIMO_MEAN_REGRID_VLD_THRESH`
+     - obs.climo_mean.regrid.vld_thresh
+   * - :term:`PAIR_STAT_OBS_CLIMO_MEAN_REGRID_SHAPE`
+     - obs.climo_mean.regrid.shape
+   * - :term:`PAIR_STAT_OBS_CLIMO_MEAN_TIME_INTERP_METHOD`
+     - obs.climo_mean.time_interp_method
+   * - :term:`PAIR_STAT_OBS_CLIMO_MEAN_DAY_INTERVAL`
+     - obs.climo_mean.day_interval
+   * - :term:`PAIR_STAT_OBS_CLIMO_MEAN_HOUR_INTERVAL`
+     - obs.climo_mean.hour_interval
+
+${METPLUS_OBS_CLIMO_STDEV_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_OBS_CLIMO_STDEV_FILE_NAME`
+     - obs.climo_stdev.file_name
+   * - :term:`PAIR_STAT_OBS_CLIMO_STDEV_FIELD`
+     - obs.climo_stdev.field
+   * - :term:`PAIR_STAT_OBS_CLIMO_STDEV_REGRID_METHOD`
+     - obs.climo_stdev.regrid.method
+   * - :term:`PAIR_STAT_OBS_CLIMO_STDEV_REGRID_WIDTH`
+     - obs.climo_stdev.regrid.width
+   * - :term:`PAIR_STAT_OBS_CLIMO_STDEV_REGRID_VLD_THRESH`
+     - obs.climo_stdev.regrid.vld_thresh
+   * - :term:`PAIR_STAT_OBS_CLIMO_STDEV_REGRID_SHAPE`
+     - obs.climo_stdev.regrid.shape
+   * - :term:`PAIR_STAT_OBS_CLIMO_STDEV_TIME_INTERP_METHOD`
+     - obs.climo_stdev.time_interp_method
+   * - :term:`PAIR_STAT_OBS_CLIMO_STDEV_DAY_INTERVAL`
+     - obs.climo_stdev.day_interval
+   * - :term:`PAIR_STAT_OBS_CLIMO_STDEV_HOUR_INTERVAL`
+     - obs.climo_stdev.hour_interval
+
+${METPLUS_CENSOR_THRESH}
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_CENSOR_THRESH`
+     - censor_thresh
+
+${METPLUS_CENSOR_VAL}
+^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_CENSOR_VAL`
+     - censor_val
+
+${METPLUS_CAT_THRESH}
+^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_CAT_THRESH`
+     - cat_thresh
+
+${METPLUS_CNT_THRESH}
+^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_CNT_THRESH`
+     - cnt_thresh
+
+${METPLUS_CNT_LOGIC}
+^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_CNT_LOGIC`
+     - cnt_logic
+
+${METPLUS_WIND_THRESH}
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_WIND_THRESH`
+     - wind_thresh
+
+${METPLUS_WIND_LOGIC}
+^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_WIND_LOGIC`
+     - wind_logic
+
+${METPLUS_MPR_COLUMN}
+^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_MPR_COLUMN`
+     - mpr_column
+
+${METPLUS_MPR_THRESH}
+^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_MPR_THRESH`
+     - mpr_thresh
+
+${METPLUS_MPR_STR_INC}
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_MPR_STR_INC`
+     - mpr_str_inc
+
+${METPLUS_MPR_STR_EXC}
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_MPR_STR_EXC`
+     - mpr_str_exc
+
+${METPLUS_MPR_SUMMARY}
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_MPR_SUMMARY`
+     - mpr_summary
+
+${METPLUS_ECLV_POINTS}
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_ECLV_POINTS`
+     - eclv_points
+
+${METPLUS_HSS_EC_VALUE}
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_HSS_EC_VALUE`
+     - hss_ec_value
+
+${METPLUS_RANK_CORR_FLAG}
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_RANK_CORR_FLAG`
+     - rank_corr_flag
+
+${METPLUS_CLIMO_MEAN_DICT}
+""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_CLIMO_MEAN_FILE_NAME`
+     - climo_mean.file_name
+   * - :term:`PAIR_STAT_CLIMO_MEAN_FIELD`
+     - climo_mean.field
+   * - :term:`PAIR_STAT_CLIMO_MEAN_REGRID_METHOD`
+     - climo_mean.regrid.method
+   * - :term:`PAIR_STAT_CLIMO_MEAN_REGRID_WIDTH`
+     - climo_mean.regrid.width
+   * - :term:`PAIR_STAT_CLIMO_MEAN_REGRID_VLD_THRESH`
+     - climo_mean.regrid.vld_thresh
+   * - :term:`PAIR_STAT_CLIMO_MEAN_REGRID_SHAPE`
+     - climo_mean.regrid.shape
+   * - :term:`PAIR_STAT_CLIMO_MEAN_TIME_INTERP_METHOD`
+     - climo_mean.time_interp_method
+   * - :term:`PAIR_STAT_CLIMO_MEAN_DAY_INTERVAL`
+     - climo_mean.day_interval
+   * - :term:`PAIR_STAT_CLIMO_MEAN_HOUR_INTERVAL`
+     - climo_mean.hour_interval
+
+${METPLUS_CLIMO_STDEV_DICT}
+"""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_CLIMO_STDEV_FILE_NAME`
+     - climo_stdev.file_name
+   * - :term:`PAIR_STAT_CLIMO_STDEV_FIELD`
+     - climo_stdev.field
+   * - :term:`PAIR_STAT_CLIMO_STDEV_REGRID_METHOD`
+     - climo_stdev.regrid.method
+   * - :term:`PAIR_STAT_CLIMO_STDEV_REGRID_WIDTH`
+     - climo_stdev.regrid.width
+   * - :term:`PAIR_STAT_CLIMO_STDEV_REGRID_VLD_THRESH`
+     - climo_stdev.regrid.vld_thresh
+   * - :term:`PAIR_STAT_CLIMO_STDEV_REGRID_SHAPE`
+     - climo_stdev.regrid.shape
+   * - :term:`PAIR_STAT_CLIMO_STDEV_TIME_INTERP_METHOD`
+     - climo_stdev.time_interp_method
+   * - :term:`PAIR_STAT_CLIMO_STDEV_DAY_INTERVAL`
+     - climo_stdev.day_interval
+   * - :term:`PAIR_STAT_CLIMO_STDEV_HOUR_INTERVAL`
+     - climo_stdev.hour_interval
+
+${METPLUS_CLIMO_CDF_DICT}
+"""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_CLIMO_CDF_BINS`
+     - climo_cdf.cdf_bins
+   * - :term:`PAIR_STAT_CLIMO_CDF_CENTER_BINS`
+     - climo_cdf.center_bins
+   * - :term:`PAIR_STAT_CLIMO_CDF_WRITE_BINS`
+     - climo_cdf.write_bins
+   * - :term:`PAIR_STAT_CLIMO_CDF_DIRECT_PROB`
+     - climo_cdf.direct_prob
+
+${METPLUS_LAND_MASK_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_LAND_MASK_FLAG`
+     - land_mask.flag
+   * - :term:`PAIR_STAT_LAND_MASK_FILE_NAME`
+     - land_mask.file_name
+   * - :term:`PAIR_STAT_LAND_MASK_FIELD_NAME`
+     - land_mask.field.name
+   * - :term:`PAIR_STAT_LAND_MASK_FIELD_LEVEL`
+     - land_mask.field.level
+   * - :term:`PAIR_STAT_LAND_MASK_REGRID_METHOD`
+     - land_mask.regrid.method
+   * - :term:`PAIR_STAT_LAND_MASK_REGRID_WIDTH`
+     - land_mask.regrid.width
+   * - :term:`PAIR_STAT_LAND_MASK_THRESH`
+     - land_mask.thresh
+
+${METPLUS_TOPO_MASK_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_TOPO_MASK_FLAG`
+     - topo_mask.flag
+   * - :term:`PAIR_STAT_TOPO_MASK_FILE_NAME`
+     - topo_mask.file_name
+   * - :term:`PAIR_STAT_TOPO_MASK_FIELD_NAME`
+     - topo_mask.field.name
+   * - :term:`PAIR_STAT_TOPO_MASK_FIELD_LEVEL`
+     - topo_mask.field.level
+   * - :term:`PAIR_STAT_TOPO_MASK_REGRID_METHOD`
+     - topo_mask.regrid.method
+   * - :term:`PAIR_STAT_TOPO_MASK_REGRID_WIDTH`
+     - topo_mask.regrid.width
+   * - :term:`PAIR_STAT_TOPO_MASK_USE_OBS_THRESH`
+     - topo_mask.use_obs_thresh
+   * - :term:`PAIR_STAT_TOPO_MASK_INTERP_FCST_THRESH`
+     - topo_mask.interp_fcst_thresh
+
+${METPLUS_OBS_WINDOW_DICT}
+""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`OBS_WINDOW_BEGIN`
+     - obs_window.beg
+   * - :term:`OBS_WINDOW_END`
+     - obs_window.end
+
+${METPLUS_MASK_DICT}
+""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_MASK_GRID`
+     - mask.grid
+   * - :term:`PAIR_STAT_MASK_POLY`
+     - mask.poly
+   * - :term:`PAIR_STAT_MASK_SID`
+     - mask.sid
+   * - :term:`PAIR_STAT_MASK_LLPNT`
+     - mask.llpnt
+
+${METPLUS_CI_ALPHA}
+^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_CI_ALPHA`
+     - ci_alpha
+
+${METPLUS_BOOT_DICT}
+^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_BOOT_INTERVAL`
+     - boot.interval
+   * - :term:`PAIR_STAT_BOOT_REP_PROP`
+     - boot.rep_prop
+   * - :term:`PAIR_STAT_BOOT_N_REP`
+     - boot.n_rep
+   * - :term:`PAIR_STAT_BOOT_RNG`
+     - boot.rng
+   * - :term:`PAIR_STAT_BOOT_SEED`
+     - boot.seed
+
+${METPLUS_SEEPS_P1_THRESH}
+""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_SEEPS_P1_THRESH`
+     - seeps_p1_thresh
+
+${METPLUS_OUTPUT_FLAG_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_OUTPUT_FLAG_FHO`
+     - output_flag.fho
+   * - :term:`PAIR_STAT_OUTPUT_FLAG_CTC`
+     - output_flag.ctc
+   * - :term:`PAIR_STAT_OUTPUT_FLAG_CTS`
+     - output_flag.cts
+   * - :term:`PAIR_STAT_OUTPUT_FLAG_MCTC`
+     - output_flag.mctc
+   * - :term:`PAIR_STAT_OUTPUT_FLAG_MCTS`
+     - output_flag.mcts
+   * - :term:`PAIR_STAT_OUTPUT_FLAG_CNT`
+     - output_flag.cnt
+   * - :term:`PAIR_STAT_OUTPUT_FLAG_SL1L2`
+     - output_flag.sl1l2
+   * - :term:`PAIR_STAT_OUTPUT_FLAG_SAL1L2`
+     - output_flag.sal1l2
+   * - :term:`PAIR_STAT_OUTPUT_FLAG_VL1L2`
+     - output_flag.vl1l2
+   * - :term:`PAIR_STAT_OUTPUT_FLAG_VAL1L2`
+     - output_flag.val1l2
+   * - :term:`PAIR_STAT_OUTPUT_FLAG_VCNT`
+     - output_flag.vcnt
+   * - :term:`PAIR_STAT_OUTPUT_FLAG_PCT`
+     - output_flag.pct
+   * - :term:`PAIR_STAT_OUTPUT_FLAG_PSTD`
+     - output_flag.pstd
+   * - :term:`PAIR_STAT_OUTPUT_FLAG_PJC`
+     - output_flag.pjc
+   * - :term:`PAIR_STAT_OUTPUT_FLAG_PRC`
+     - output_flag.prc
+   * - :term:`PAIR_STAT_OUTPUT_FLAG_ECLV`
+     - output_flag.eclv
+   * - :term:`PAIR_STAT_OUTPUT_FLAG_MPR`
+     - output_flag.mpr
+   * - :term:`PAIR_STAT_OUTPUT_FLAG_SEEPS`
+     - output_flag.seeps
+   * - :term:`PAIR_STAT_OUTPUT_FLAG_SEEPS_MPR`
+     - output_flag.seeps_mpr
+
+${METPLUS_POINT_WEIGHT_FLAG}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_POINT_WEIGHT_FLAG`
+     - point_weight_flag
+
+${METPLUS_OUTPUT_PREFIX}
+""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_OUTPUT_PREFIX`
+     - output_prefix
+
+${METPLUS_MET_CONFIG_OVERRIDES}
+"""""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_MET_CONFIG_OVERRIDES`
+     - n/a
+
+
 .. _pb2nc_wrapper:
 
 PB2NC

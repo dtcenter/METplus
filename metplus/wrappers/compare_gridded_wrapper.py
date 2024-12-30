@@ -216,3 +216,44 @@ that reformat gridded data
             items['field'] = ('string', 'remove_quotes')
 
         self.add_met_config_dict('interp', items)
+
+    def handle_land_mask(self):
+        """!Handles the configuration of the 'land_mask' dictionary in the
+         MET configuration. This function defines the structure and
+         expected types of various parameters in the 'land_mask' configuration.
+         Used by PointStat and PairStat wrappers.
+        """
+        self.add_met_config_dict('land_mask', {
+            'flag': 'bool',
+            'file_name': 'list',
+            'field': ('dict', None, {
+                'name': 'string',
+                'level': 'string',
+            }),
+            'regrid': ('dict', None, {
+                'method': ('string', 'remove_quotes'),
+                'width': 'int',
+            }),
+            'thresh': 'thresh',
+        })
+
+    def handle_topo_mask(self):
+        """!Handles the configuration of the 'topo_mask' dictionary in the
+         MET configuration. This function defines the structure and
+         expected types of various parameters in the 'topo_mask' configuration.
+         Used by PointStat and PairStat wrappers.
+        """
+        self.add_met_config_dict('topo_mask', {
+            'flag': 'bool',
+            'file_name': 'list',
+            'field': ('dict', None, {
+                'name': 'string',
+                'level': 'string',
+            }),
+            'regrid': ('dict', None, {
+                'method': ('string', 'remove_quotes'),
+                'width': 'int',
+            }),
+            'use_obs_thresh': 'thresh',
+            'interp_fcst_thresh': 'thresh',
+        })
