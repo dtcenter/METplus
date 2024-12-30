@@ -99,45 +99,6 @@ that reformat gridded data
             runtime_info = file_dict.get('time_info', time_info)
             self.run_at_time_all_fields(runtime_info, var_list)
 
-    def find_input_files(self, time_info):
-        # get model from first var to compare
-        model_path = self.find_model(time_info,
-                                     mandatory=True,
-                                     return_list=True)
-        if not model_path:
-            return None
-
-        # if there is more than 1 file, create file list file
-        if len(model_path) > 1:
-            list_filename = (f"{time_info['init_fmt']}_"
-                             f"{time_info['lead_hours']}_"
-                             f"{self.app_name}_fcst.txt")
-            model_path = self.write_list_file(list_filename, model_path)
-        else:
-            model_path = model_path[0]
-
-        self.infiles.append(model_path)
-
-        # get observation to from first var compare
-        obs_path, offset_time_info = self.find_obs_offset(time_info,
-                                                          mandatory=True,
-                                                          return_list=True)
-        if obs_path is None:
-            return None
-
-        # if there is more than 1 file, create file list file
-        if len(obs_path) > 1:
-            list_filename = (f"{offset_time_info['init_fmt']}_"
-                             f"{offset_time_info['lead_hours']}_"
-                             f"{self.app_name}_obs.txt")
-            obs_path = self.write_list_file(list_filename, obs_path)
-        else:
-            obs_path = obs_path[0]
-
-        self.infiles.append(obs_path)
-
-        return offset_time_info
-
     def run_at_time_all_fields(self, time_info, var_list):
         """! Build MET command for all of the field/level combinations for a
              given init/valid time and forecast lead combination

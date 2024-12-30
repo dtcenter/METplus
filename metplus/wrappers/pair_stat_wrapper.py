@@ -285,27 +285,6 @@ class PairStatWrapper(CompareGriddedWrapper):
                                           **time_info)
                 self.args.append(f"-obs_valid_{ext.lower()} {obs_valid}")
 
-    def find_input_files(self, time_info):
-        # get model from first var to compare
-        pairs_files = self.c_dict['ALL_FILES'][0].get('PAIRS')
-        # pairs_files = self.find_data(time_info, data_type='PAIRS',
-        #                              mandatory=True,
-        #                              return_list=True)
-        if not pairs_files:
-            return None
-
-        pairs_path = pairs_files[0]
-
-        # if there is more than 1 file, create file list file
-        if len(pairs_files) > 1:
-            list_filename = (f"{time_info['init_fmt']}_"
-                             f"{time_info['lead_hours']}_"
-                             f"{self.app_name}_pairs.txt")
-            pairs_path = self.write_list_file(list_filename, pairs_files)
-
-        self.infiles.append(pairs_path)
-        return time_info
-
     def get_command(self):
         """!Builds the command to run pair_stat
            @rtype string
