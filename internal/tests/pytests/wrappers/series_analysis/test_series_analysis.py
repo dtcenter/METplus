@@ -835,10 +835,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
     wrapper.c_dict['FCST_INPUT_DIR'] = fcst_input_dir
     wrapper.c_dict['OBS_INPUT_DIR'] = obs_input_dir
 
-    if time_info['storm_id'] == '*':
-        wrapper.c_dict['RUN_ONCE_PER_STORM_ID'] = False
-    else:
-        wrapper.c_dict['RUN_ONCE_PER_STORM_ID'] = True
+    wrapper.c_dict['RUN_ONCE_PER_STORM_ID'] = time_info['storm_id'] != '*'
 
     if time_info.get('lead') != '*':
         wrapper.c_dict['ALL_FILES'] = (
