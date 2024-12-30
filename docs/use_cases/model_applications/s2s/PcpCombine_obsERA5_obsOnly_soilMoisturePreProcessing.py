@@ -9,17 +9,14 @@ model_applications/s2s/PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing.conf
 ##############################################################################
 # Scientific Objective
 # --------------------
-# [UPDATE_SECTION_CONTENT]
 #
-# This use case computes pre-processing on Soil Moisture data to prepare it to
-# be run through Grid-Stat or another program to verify Soil Moisture.
-# To provide statistical information on the forecast hail size compared to
-# the observed hail size from MRMS MESH data. Using objects to verify hail size
-# avoids the “unfair penalty” issue, where a CAM must first generate convection
-# to have any chance of accurately predicting the hail size. In addition, studies
-# have shown that MRMS MESH observed hail sizes do not correlate one-to-one with
-# observed sizes but can only be used to group storms into general categories.
-# Running MODE allows a user to do this.
+# This use case performs pre-processing on Soil Moisture data to prepare it to
+# be run through Grid-Stat or another program for verification.  As part of that
+# pre-processing, 1 m soil moisture is calculated by adding the soil moisture for
+# the top three layers (0-7cm, 7-28 cm, 28-100 cm), each multipled by the layer 
+# thickness.  After 1m soil moisture is calculated for each month, a 30 year 
+# climatology is calculated by computing the mean and standard deviation for 
+# each month between 1991 and 2020.
 
 ##############################################################################
 # Version Added
