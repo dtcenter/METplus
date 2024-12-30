@@ -158,13 +158,14 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                              data_types=('FCST', 'OBS'),
                              app_name=self.app_name)
 
-        self.get_input_templates(c_dict, {
+        input_info = {
             'FCST': {'prefix': 'FCST_SERIES_ANALYSIS', 'required': False},
             'OBS': {'prefix': 'OBS_SERIES_ANALYSIS', 'required': False},
             'BOTH': {'prefix': 'BOTH_SERIES_ANALYSIS', 'required': False},
             'TC_STAT': {'prefix': 'SERIES_ANALYSIS_TC_STAT', 'required': False},
             'AGGR': {'prefix': 'SERIES_ANALYSIS_AGGR', 'required': False},
-        })
+        }
+        self.get_input_templates(c_dict, input_info)
 
         self._handle_fcst_obs_or_both_c_dict(c_dict)
 
@@ -299,8 +300,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                 extra_args={'remove_quotes': True}
             )
 
-        c_dict['USING_BOTH'] = (c_dict['BOTH_INPUT_TEMPLATE'] or
-                                c_dict.get('BOTH_INPUT_FILE_LIST'))
+        c_dict['USING_BOTH'] = bool(c_dict['BOTH_INPUT_TEMPLATE'] or
+                                    c_dict.get('BOTH_INPUT_FILE_LIST'))
 
         if c_dict['USING_BOTH']:
 
@@ -564,7 +565,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             file_dict = {'time_info': time_info.copy()}
             if self.c_dict['USING_BOTH']:
                 fcst_files = self.find_input_files(time_info, 'BOTH')
-                obs_files = fcst_files
+                obs_files = fcst_files.copy()
             else:
                 fcst_files = self.find_input_files(time_info, 'FCST')
                 obs_files = self.find_input_files(time_info, 'OBS')
