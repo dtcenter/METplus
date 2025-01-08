@@ -10,6 +10,10 @@ from metplus.util import config_metplus
 from metplus.util.config_validate import validate_config_variables
 
 
+var1_levels = "LEVELS11, LEVELS12"
+var2_levels = "LEVELS21, LEVELS22"
+var1_options = 'ens_ssvar_bin_size = 0.1; ens_phist_bin_size = 0.05;'
+
 @pytest.mark.parametrize(
     'config_overrides,expected_logfile', [
         (['config.LOG_METPLUS={LOG_DIR}/metplus.log'], '<LOG_DIR>/metplus.log'),
@@ -267,9 +271,9 @@ def test_get_field_config_variables_synonyms(metplus_config,
 def test_parse_var_list_fcst_only(metplus_config, data_type, list_created):
     conf = metplus_config
     conf.set('config', 'FCST_VAR1_NAME', "NAME1")
-    conf.set('config', 'FCST_VAR1_LEVELS', "LEVELS11, LEVELS12")
+    conf.set('config', 'FCST_VAR1_LEVELS', var1_levels)
     conf.set('config', 'FCST_VAR2_NAME', "NAME2")
-    conf.set('config', 'FCST_VAR2_LEVELS', "LEVELS21, LEVELS22")
+    conf.set('config', 'FCST_VAR2_LEVELS', var2_levels)
 
     # this should not occur because OBS variables are missing
     assert not validate_config_variables(conf)[0]
@@ -303,9 +307,9 @@ def test_parse_var_list_fcst_only(metplus_config, data_type, list_created):
 def test_parse_var_list_obs(metplus_config, data_type, list_created):
     conf = metplus_config
     conf.set('config', 'OBS_VAR1_NAME', "NAME1")
-    conf.set('config', 'OBS_VAR1_LEVELS', "LEVELS11, LEVELS12")
+    conf.set('config', 'OBS_VAR1_LEVELS', var1_levels)
     conf.set('config', 'OBS_VAR2_NAME', "NAME2")
-    conf.set('config', 'OBS_VAR2_LEVELS', "LEVELS21, LEVELS22")
+    conf.set('config', 'OBS_VAR2_LEVELS', var2_levels)
 
     # this should not occur because FCST variables are missing
     if validate_config_variables(conf)[0]:
@@ -340,9 +344,9 @@ def test_parse_var_list_obs(metplus_config, data_type, list_created):
 def test_parse_var_list_both(metplus_config, data_type, list_created):
     conf = metplus_config
     conf.set('config', 'BOTH_VAR1_NAME', "NAME1")
-    conf.set('config', 'BOTH_VAR1_LEVELS', "LEVELS11, LEVELS12")
+    conf.set('config', 'BOTH_VAR1_LEVELS', var1_levels)
     conf.set('config', 'BOTH_VAR2_NAME', "NAME2")
-    conf.set('config', 'BOTH_VAR2_LEVELS', "LEVELS21, LEVELS22")
+    conf.set('config', 'BOTH_VAR2_LEVELS', var2_levels)
 
     # this should not occur because BOTH variables are used
     if not validate_config_variables(conf)[0]:
@@ -472,7 +476,7 @@ def test_parse_var_list_fcst_and_obs_and_both(metplus_config, data_type, list_le
 def test_parse_var_list_fcst_only_options(metplus_config, data_type, list_len):
     conf = metplus_config
     conf.set('config', 'FCST_VAR1_NAME', "NAME1")
-    conf.set('config', 'FCST_VAR1_LEVELS', "LEVELS11, LEVELS12")
+    conf.set('config', 'FCST_VAR1_LEVELS', var1_levels)
     conf.set('config', 'FCST_VAR1_THRESH', ">1, >2")
     conf.set('config', 'OBS_VAR1_OPTIONS', "OOPTIONS11")
 
@@ -533,13 +537,11 @@ def test_parse_var_list_ensemble(metplus_config):
     config.set('config', 'FCST_VAR1_NAME', 'APCP')
     config.set('config', 'FCST_VAR1_LEVELS', 'A24')
     config.set('config', 'FCST_VAR1_THRESH', '>0.01, >=10.0')
-    config.set('config', 'FCST_VAR1_OPTIONS', ('ens_ssvar_bin_size = 0.1; '
-                                               'ens_phist_bin_size = 0.05;'))
+    config.set('config', 'FCST_VAR1_OPTIONS', var1_options)
     config.set('config', 'OBS_VAR1_NAME', 'APCP')
     config.set('config', 'OBS_VAR1_LEVELS', 'A24')
     config.set('config', 'OBS_VAR1_THRESH', '>0.01, >=10.0')
-    config.set('config', 'OBS_VAR1_OPTIONS', ('ens_ssvar_bin_size = 0.1; '
-                                              'ens_phist_bin_size = 0.05;'))
+    config.set('config', 'OBS_VAR1_OPTIONS', var1_options)
     time_info = {}
 
     expected_ens_list = [{'index': 1,
@@ -567,14 +569,11 @@ def test_parse_var_list_ensemble(metplus_config):
                           'fcst_name': 'APCP',
                           'fcst_level': 'A24',
                           'fcst_thresh': ['>0.01', '>=10.0'],
-                          'fcst_extra': ('ens_ssvar_bin_size = 0.1; '
-                                         'ens_phist_bin_size = 0.05;'),
+                          'fcst_extra': var1_options,
                           'obs_name': 'APCP',
                           'obs_level': 'A24',
                           'obs_thresh': ['>0.01', '>=10.0'],
-                          'obs_extra': ('ens_ssvar_bin_size = 0.1; '
-                                        'ens_phist_bin_size = 0.05;')
-
+                          'obs_extra': var1_options
                           },
                         ]
 

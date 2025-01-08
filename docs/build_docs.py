@@ -31,7 +31,7 @@ def run_command(command, dir_to_run=None):
     log_text = f"Running {command}"
     if dir_to_run:
         log_text += f" under {dir_to_run}"
-
+    print(log_text)
     command_out = subprocess.run(shlex.split(command),
                                  cwd=dir_to_run)
     if command_out.returncode != 0:
@@ -103,8 +103,7 @@ def main():
                                'run')
 
     # run make to generate the documentation files
-    run_command(f"make clean html",
-                docs_dir)
+    run_command("make clean html", docs_dir)
 
     if not skip_doxygen:
         # build the doxygen documentation
@@ -157,13 +156,13 @@ def main():
     warning_file = os.path.join(docs_dir,
                                 '_build',
                                 'warnings.log')
-    if os.stat(warning_file).st_size == 0:
-        print(f"No warnings found, removing {warning_file}")
-        os.remove(warning_file)
-    else:
+    if os.stat(warning_file).st_size != 0:
         print('ERROR: Doc build contains warnings or errors. '
               f'Please review {warning_file}')
         sys.exit(1)
+
+    print(f"No warnings found, removing {warning_file}")
+    os.remove(warning_file)
 
     print("Documentation build completed")
 

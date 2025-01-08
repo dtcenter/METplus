@@ -3,10 +3,9 @@
 import pytest
 
 import pprint
-import os
 from datetime import datetime
 
-from metplus.util.config_util import *
+from metplus.util import config_util as cu
 from metplus.util.config_metplus import parse_var_list
 from metplus.util.time_util import ti_calculate
 
@@ -33,7 +32,7 @@ def test_get_custom_string_list(metplus_config, conf_items, met_tool, expected_r
     for conf_key, conf_value in conf_items.items():
         config.set('config', conf_key, conf_value)
 
-    assert get_custom_string_list(config, met_tool) == expected_result
+    assert cu.get_custom_string_list(config, met_tool) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -72,7 +71,7 @@ def test_get_custom_string_list(metplus_config, conf_items, met_tool, expected_r
 def test_get_process_list(metplus_config, input_list, expected_list):
     conf = metplus_config
     conf.set('config', 'PROCESS_LIST', input_list)
-    process_list = get_process_list(conf)
+    process_list = cu.get_process_list(conf)
     output_list = [item[0] for item in process_list]
     assert output_list == expected_list
 
@@ -106,7 +105,7 @@ def test_get_process_list(metplus_config, input_list, expected_list):
 def test_get_process_list_instances(metplus_config, input_list, expected_list):
     conf = metplus_config
     conf.set('config', 'PROCESS_LIST', input_list)
-    output_list = get_process_list(conf)
+    output_list = cu.get_process_list(conf)
     assert output_list == expected_list
 
 
@@ -159,11 +158,11 @@ def test_sub_var_list(metplus_config, input_dict, expected_list):
     actual_temp = parse_var_list(config)
 
     pp = pprint.PrettyPrinter()
-    print(f'Actual var list (before sub):')
+    print('Actual var list (before sub):')
     pp.pprint(actual_temp)
 
-    actual_list = sub_var_list(actual_temp, time_info)
-    print(f'Actual var list (after sub):')
+    actual_list = cu.sub_var_list(actual_temp, time_info)
+    print('Actual var list (after sub):')
     pp.pprint(actual_list)
 
     assert len(actual_list) == len(expected_list)
