@@ -59,10 +59,6 @@ cmd="docker image prune -af"
 printf "\nRunning $cmd"
 $cmd
 
-cmd=docker system prune -af
-printf "\nRunning $cmd"
-$cmd
-
 cmd="docker images"
 printf "\nAFTER CLEANUP: $cmd"
 $cmd
