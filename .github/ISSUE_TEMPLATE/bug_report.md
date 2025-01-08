@@ -28,7 +28,7 @@ Describe the steps to reproduce the behavior:
 *3. Scroll down to '....'*
 *4. See error*
 *Post relevant sample data following these instructions:*
-*https://dtcenter.org/community-code/model-evaluation-tools-met/met-help-desk#ftp*
+*https://github.com/dtcenter/METplus/discussions/954*
 
 ### Relevant Deadlines ###
 *List relevant project deadlines here or state NONE.*
