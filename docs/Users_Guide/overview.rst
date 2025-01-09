@@ -105,7 +105,7 @@ Please create a post in the
 `METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_
 with any questions.
 
-Code support
+User support
 ============
 
 Support for METplus Wrappers is provided through the
