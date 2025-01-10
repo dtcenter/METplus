@@ -84,7 +84,7 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.py
 #
 # **Sequence of forecast leads to process (LEAD_SEQ):** 0 hour
 #
-# # The UserScript calls do not loop, but are each run once.  The first call creates a list of 
+# The UserScript calls do not loop, but are each run once.  The first call creates a list of 
 # the mean daily annual data files for OLR, U850, and U200. It is done separately since the mean 
 # daily annual files span across all years whereas the RMM calculation can proceed on a different 
 # time frame.  The second, third, and fourth calls to UserScript run the pre-processing to compute
