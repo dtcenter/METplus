@@ -1,8 +1,6 @@
 {"name": "alert: NEED ACCOUNT KEY","color": "ffff33","description": "Need to assign an account key to this issue"}
 {"name": "alert: NEED MORE DEFINITION","color": "ffff33","description": "Not yet actionable, additional definition required"}
 {"name": "alert: NEED CYCLE ASSIGNMENT","color": "ffff33","description": "Need to assign to a release development cycle"}
-{"name": "alert: MODIFIES CONFIG","color": "ffff33","description": "Changes that add new or modify existing configuration options"}
-{"name": "alert: MODIFIES OUTPUT","color": "ffff33","description": "Changes that add new or modify existing output formats"}
 {"name": "component: CI/CD","color": "1d76db","description": "Continuous integration and deployment issues"}
 {"name": "component: build process","color": "1d76db","description": "Build process issue"}
 {"name": "component: code cleanup","color": "1d76db","description": "Code cleanup and maintenance issue"}
@@ -15,6 +13,8 @@
 {"name": "component: testing","color": "1d76db","description": "Software testing issue"}
 {"name": "component: training","color": "1d76db","description": "Training issue"}
 {"name": "component: user support","color": "1d76db","description": "User support issue"}
+{"name": "pull request: MODIFIES CONFIG","color": "c2e0c6","description": "Changes that add new or modify existing configuration options"}
+{"name": "pull request: MODIFIES OUTPUT","color": "c2e0c6","description": "Changes that add new or modify existing output formats"}
 {"name": "priority: blocker","color": "b60205","description": "Blocker"}
 {"name": "priority: high","color": "ed2939","description": "High Priority"}
 {"name": "priority: low","color": "cce88d","description": "Low Priority"}
@@ -22,6 +22,7 @@
 {"name": "priority: bold for release notes","color": "ededed","description": "Issue should be bolded in release notes"}
 {"name": "reporting: DTC AF METplus","color": "fbca04","description": "Air Force METplus Project"}
 {"name": "reporting: DTC NCAR Base","color": "fbca04","description": "NCAR Base DTC Project"}
+{"name": "reporting: DTC NOAA BASE","color": "fbca04","description": "NOAA Office of Atmospheric Research DTC Project"}
 {"name": "reporting: DTC NOAA OAR","color": "fbca04","description": "NOAA Office of Atmospheric Research DTC Project"}
 {"name": "reporting: DTC NOAA R2O","color": "fbca04","description": "NOAA Research to Operations DTC Project"}
 {"name": "reporting: HSUP 1-3a","color": "fbca04","description": "Hurricane Supplemental Project 1-3a"}
