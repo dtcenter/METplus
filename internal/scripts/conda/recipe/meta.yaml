@@ -1,0 +1,147 @@
+{% set version = "6.0.0" %}
+{% set met_version = "12.0.0" %}
+{% set ecbuild_version = "3.9.0" %}
+{% set eckit_version = "1.28.4" %}
+{% set atlas_version = "0.37.0" %}
+
+package:
+  name: metplus
+  version: {{ version }}
+
+source:
+  # METplus Wrappers
+  - url: https://github.com/dtcenter/METplus/archive/refs/tags/v{{ version }}.tar.gz
+    md5: a5612dfd025055707f4a45dff028e628
+    sha256: e9358aede2fd2abecd81806227de7b165d68fdf2fc9defcbba24df229461b155
+
+  # MET
+  - url: https://github.com/dtcenter/MET/archive/refs/tags/v{{ met_version }}.tar.gz
+    md5: 4f19fdafaa1befbd54747d522aa4022b
+    sha256: 9a54275cfefbad6010d4449a8fa756ad40fae03fa62a766cbbfda170c422e5e4
+    folder: MET
+
+  # GS Fonts
+  - url: https://downloads.sourceforge.net/project/gs-fonts/gs-fonts/8.11%20%28base%2035%2C%20GPL%29/ghostscript-fonts-std-8.11.tar.gz
+    md5: 6865682b095f8c4500c54b285ff05ef6
+    sha256: 0eb6f356119f2e49b2563210852e17f57f9dcc5755f350a69a46a0d641a0c401
+    folder: gs-fonts
+
+  # ecbuild 3.9.0
+  - url: https://github.com/ecmwf/ecbuild/archive/refs/tags/{{ ecbuild_version }}.tar.gz
+    md5: d2117212580160c24f62649643fa92e5
+    sha256: 8ad20169a7d917d6ac81a7ca0d1b11616e2aeb82c7782f6ae5b768603a3e000a
+    folder: ecbuild
+
+  # eckit 1.28.4
+  - url: https://github.com/ecmwf/eckit/archive/refs/tags/{{ eckit_version }}.tar.gz
+    md5: 2f5299480ad43b53fa0df8482683968f
+    sha256: c6215efc5b6f190e9dd239e7784986f9d72381e70cb83b1067538240cc9b5c41
+    folder: eckit
+
+  # atlas 0.37.0
+  - url: https://github.com/ecmwf/atlas/archive/refs/tags/{{ atlas_version }}.tar.gz
+    md5: 3d27a1b3273e06a21bbab1982278ad58
+    sha256: 26edab963e7f17bf4759924af4d3fb45582a64d1afd003d50a93ea7cf6f052a5
+    folder: atlas
+
+channels:
+  - conda-forge
+
+build:
+  missing_dso_whitelist:
+    {% if osx %}
+    - libeckit.dylib
+    - libeckit_geometry.dylib
+    - libatlas.dylib
+    - libncurses.6.dylib
+    {% else %}
+    - libeckit.so
+    - libeckit_geometry.so
+    - libatlas.so
+    {% endif %}
+
+requirements:
+  build:
+    - cairo
+    - freetype
+    - {{ compiler('c') }}     # Adds C Compiler (gcc_linux-64 on Linux)
+    - {{ compiler('fortran') }} # Adds Fortran Compiler (gfortran_linux-64 on Linux)
+    - gsl
+    - {{ compiler('cxx') }}
+    # Platform-specific dependencies
+    - gcc_linux-64=12        # GCC 12 on Linux         [linux]
+    - clang_osx-64           # Clang for macOS         [osx]
+    - clangxx_osx-64         # Clang++ for macOS       [osx]
+    - libcxx  # Provides the C++ standard library (e.g., libc++ for macOS or libstdc++ on Linux)
+    - libnetcdf
+    - netcdf-cxx4=4.3.1
+    - libopenblas
+    - python
+    - zlib
+    - nceplibs-bufr
+    - python-configuration
+    - jasper
+    - nceplibs-g2c
+    - hdf4
+    - hdfeos2
+    - proj
+    - fftw # for atlas
+    - _openmp_mutex=4.5 # [linux]
+    - llvm-openmp  # [osx]
+
+
+  host:
+    - python 3.10
+    - gsl
+    - netcdf-cxx4
+    - zlib
+    - cairo
+    - freetype
+    - nceplibs-bufr
+    - nceplibs-g2c
+    - xarray
+    - numpy
+    - pandas
+    - pyyaml
+    - netcdf4
+    - scipy
+    - fftw
+    - ncurses
+    - hdfeos2
+    - _openmp_mutex # [linux]
+    - llvm-openmp  # [osx]
+    - libcxx  # Provides the C++ standard library (e.g., libc++ for macOS or libstdc++ on Linux)
+
+  run:
+    - gsl
+    - netcdf-cxx4
+    - libopenblas
+    - python
+    - nceplibs-bufr
+    - nceplibs-g2c
+    - hdf4
+    - ncurses
+    - bzip2
+    - lz4-c
+    - snappy
+    - libaec
+    - libcurl
+    - fftw
+    - xarray
+    - numpy
+    - pandas
+    - pyyaml
+    - netcdf4
+    - scipy
+    - _openmp_mutex # [linux]
+    - llvm-openmp  # [osx]
+
+
+about:
+  home: https://dtcenter.org/community-code/model-evaluation-tools-met
+  licence: http://www.apache.org/licenses/LICENSE-2.0
+
+extra:
+  maintainers:
+    - mccabe@ucar.edu
+    - alistair.mckelvie@bom.gov.au
