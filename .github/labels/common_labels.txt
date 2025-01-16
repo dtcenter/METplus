@@ -52,6 +52,7 @@
 {"name": "requestor: NOAA/MDL","color": "3101c1","description": "NOAA Meteorological Development Laboratory"}
 {"name": "requestor: NOAA/NHC","color": "3101c1","description": "NOAA National Hurricane Center"}
 {"name": "requestor: NOAA/NSSL","color": "3101c1","description": "NOAA National Severe Storms Laboratory"}
+{"name": "requestor: NOAA/NWS","color": "3101c1","description": "NOAA National Weather Service"}
 {"name": "requestor: NOAA/OPC","color": "3101c1","description": "NOAA Ocean Prediction Center"}
 {"name": "requestor: NOAA/other","color": "3101c1","description": "NOAA Laboratory, not otherwise specified"}
 {"name": "requestor: NOAA/PSD","color": "3101c1","description": "NOAA Physical Sciences Laboratory"}
