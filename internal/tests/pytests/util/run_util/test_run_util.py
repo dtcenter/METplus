@@ -9,6 +9,7 @@ import metplus.util.wrapper_init as wi
 from metplus.wrappers.ensemble_stat_wrapper import EnsembleStatWrapper
 from metplus.wrappers.grid_stat_wrapper import GridStatWrapper
 
+some_fake_dir = '/some/fake/dir'
 
 EXPECTED_CONFIG_KEYS = [
     'CLOCK_TIME',
@@ -158,7 +159,7 @@ def test_pre_run_setup_sed_file(capfd):
         assert actual is None
 
     # check sed file is written correctly
-    out, err = capfd.readouterr()
+    _, err = capfd.readouterr()
     sed_err_regex = r'.*Find/Replace commands have been generated in (.*)\n'
     sed_file = None
     match = re.match(sed_err_regex, err)
@@ -183,7 +184,7 @@ def test_pre_run_setup_deprecated(capfd):
     actual = get_config_from_file('sed_run_util.conf')
     assert actual is None
 
-    out, err = capfd.readouterr()
+    _, err = capfd.readouterr()
 
     expected_error_msgs = [
         'ERROR: DEPRECATED CONFIG ITEMS WERE FOUND. PLEASE FOLLOW THE INSTRUCTIONS TO UPDATE THE CONFIG FILES',
@@ -199,7 +200,7 @@ def test_pre_run_setup_no_install(capfd):
     actual = get_config_from_file('no_install_run_util.conf')
     assert actual is None
 
-    out, err = capfd.readouterr()
+    _, err = capfd.readouterr()
     assert 'MET_INSTALL_DIR must be set correctly to run METplus' in err
 
 
@@ -210,7 +211,7 @@ def test_run_metplus_usage(metplus_config, capfd):
     config.set('config', 'PROCESS_LIST', 'GridStat,Usage')
     actual = ru.run_metplus(config)
     assert actual == 0
-    out, err = capfd.readouterr()
+    out, _ = capfd.readouterr()
     assert "USAGE: This text is displayed when [config] PROCESS_LIST = Usage." in out
 
 
@@ -261,7 +262,7 @@ def test_run_metplus(capfd, config_dict, expected, check_err):
     actual = ru.run_metplus(config)
     assert actual == expected
 
-    out, err = capfd.readouterr()
+    _, err = capfd.readouterr()
     if check_err:
         for msg in check_err:
             assert msg in err
@@ -286,7 +287,7 @@ def test_run_metplus_errors(capfd, side_effect, return_value, check_err):
         config.set('config', 'PROCESS_LIST', 'GridStat')
         actual = ru.run_metplus(config)
         assert actual == 1
-        out, err = capfd.readouterr()
+        _, err = capfd.readouterr()
         if check_err:
             assert "Fatal error occurred" in err
         else:
@@ -315,7 +316,7 @@ def test_get_wrapper_instance_raises(capfd, side_effect, check_err):
     with mock.patch.object(wi, 'import_module', side_effect=side_effect):
         actual = wi.get_wrapper_instance(config, 'EnsembleStat')
     assert actual == None
-    out, err = capfd.readouterr()
+    _, err = capfd.readouterr()
     assert check_err in err
     remove_output_base(config)
 
@@ -338,7 +339,7 @@ def test__load_all_wrappers(metplus_config):
 
 
 @pytest.mark.parametrize(
-    'isOK_1, isOK_2, expected, reset_error',
+    "is_ok_1, is_ok_2, expected, reset_error",
     [
         (True, True, 0, False),
         (False, True, 2, False),
@@ -350,13 +351,13 @@ def test__load_all_wrappers(metplus_config):
 )
 @pytest.mark.util
 def test__check_wrapper_init_errors(
-    metplus_config, isOK_1, isOK_2, expected, reset_error
+    metplus_config, is_ok_1, is_ok_2, expected, reset_error
 ):
     process_list = [('EnsembleStat', 1), ('GridStat', None)]
     processes = ru._load_all_wrappers(metplus_config, process_list)
 
-    processes[0].isOK = isOK_1
-    processes[1].isOK = isOK_2
+    processes[0].isOK = is_ok_1
+    processes[1].isOK = is_ok_2
 
     if reset_error:
         processes[0].errors = 0
@@ -418,15 +419,15 @@ def _check_log_info(config, args, not_in=False):
 @pytest.mark.util
 def test_post_run_cleanup_scrubs(post_run_config):
     post_run_config.set('config', 'SCRUB_STAGING_DIR', True)
-    post_run_config.set('config', 'STAGING_DIR', '/some/fake/dir')
+    post_run_config.set('config', 'STAGING_DIR', some_fake_dir)
 
     with mock.patch.object(ru.shutil, 'rmtree') as mock_rm:
         with mock.patch.object(ru.os.path, 'exists', return_value=True):
             ru.post_run_cleanup(post_run_config, 'fake_app', 0)
 
-    assert mock_rm.called_once_with('/some/fake/dir')
+    assert mock_rm.called_once_with(some_fake_dir)
 
-    _check_log_info(post_run_config, ['Scrubbing staging dir: %s', '/some/fake/dir'])
+    _check_log_info(post_run_config, ['Scrubbing staging dir: %s', some_fake_dir])
     _check_log_info(
         post_run_config,
         ['Set SCRUB_STAGING_DIR to False to preserve intermediate files.'],
@@ -443,7 +444,7 @@ def test_post_run_cleanup_no_errors(post_run_config):
 
     with mock.patch.object(
         ru, 'get_user_info', return_value='Allan H. Murphy'
-    ) as mock_user:
+    ):
         with mock.patch.object(ru, 'get_logfile_info', return_value='/log/file.log'):
             actual = ru.post_run_cleanup(post_run_config, 'fake_app', 0)
 
@@ -463,7 +464,7 @@ def test_post_run_cleanup_errors(post_run_config):
     err_msg = 'fake_app has finished running as user Allan H. Murphy but had 5 errors.'
     with mock.patch.object(
         ru, 'get_user_info', return_value='Allan H. Murphy'
-    ) as mock_user:
+    ):
         with mock.patch.object(ru, 'get_logfile_info', return_value='/log/file.log'):
             actual = ru.post_run_cleanup(post_run_config, 'fake_app', 5)
 

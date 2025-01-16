@@ -1,8 +1,10 @@
 Checkout the Development Branch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* Checkout the development branch:
+Checkout the development branch.
 
-.. parsed-literal::
+.. dropdown:: Instructions
 
-    git checkout development
+  .. parsed-literal::
+
+      git checkout development

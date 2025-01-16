@@ -185,7 +185,7 @@ def make_nc(tmp_path, lon, lat, z, data, variable='Temp', file_name='fake.nc'):
         latitude = rootgrp.createVariable("Latitude", "f4", "lat")
         levels = rootgrp.createVariable("Levels", "i4", "z")
         temp = rootgrp.createVariable(variable, "f4", ("time", "lon", "lat", "z"))
-        time = rootgrp.createVariable("Time", "i4", "time")
+        rootgrp.createVariable("Time", "i4", "time")
 
         longitude[:] = lon
         latitude[:] = lat

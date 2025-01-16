@@ -1,33 +1,37 @@
 Update Release Notes
 ^^^^^^^^^^^^^^^^^^^^
 
-You can refer to the GitHub Project board to see what has changed for this
-release. Open the following URL in a browser:
+Update the release notes for this release.
 
-.. parsed-literal::
+.. dropdown:: Instructions
 
-    https://github.com/orgs/dtcenter/projects
+  You can refer to the GitHub Project board to see what has changed for this
+  release. Open the following URL in a browser:
 
-* Click on the project that corresponds to this release, i.e.
-  |projectRepo|-X.Y.Z Development
+  .. parsed-literal::
 
-* Navigate to the "Closed Issues" tab. If this tab does not exist,
-  see :ref:`wo-development-project` to create it.
+      https://github.com/orgs/dtcenter/projects
 
-* Update the release-notes.rst file found in the User's Guide directory.
+  * Click on the project that corresponds to this release, i.e.
+    |projectRepo|-X.Y.Z Development
 
-* Consider organizing release notes into logical groups
-  (e.g. Enhancements, Bugfixes, Documentation, etc.) and modifying
-  GitHub issue titles for consistency. The release notes should match
-  the GitHub issue titles, when possible.
+  * Navigate to the "Closed Issues" tab. If this tab does not exist,
+    see :ref:`wo-development-project` to create it.
 
-* Use your best judgement to apply bold formatting for any major or important changes.
+  * Update the release-notes.rst file found in the User's Guide directory.
 
-* When creating the official release, combine the beta release sections
-  into one section (i.e. "Version X.Y.Z release notes (YYYYMMDD)").
+  * Consider organizing release notes into logical groups
+    (e.g. Enhancements, Bugfixes, Documentation, etc.) and modifying
+    GitHub issue titles for consistency. The release notes should match
+    the GitHub issue titles, when possible.
 
-* For the METplus repository, remove the **development timeline** information under the 
-  `METplus Release Information <https://metplus.readthedocs.io/en/develop/Users_Guide/release-notes.html#metplus-release-information>`_
-  section prior to creating the official release.
+  * Use your best judgement to apply bold formatting for any major or important changes.
 
-* Commit changes and push to GitHub.
+  * When creating the official release, combine the beta release sections
+    into one section (i.e. "Version X.Y.Z release notes (YYYYMMDD)").
+
+  * For the METplus repository, remove the **development timeline** information under the 
+    `METplus Release Information <https://metplus.readthedocs.io/en/develop/Users_Guide/release-notes.html#metplus-release-information>`_
+    section prior to creating the official release.
+
+  * Commit changes and push to GitHub.

@@ -1,10 +1,9 @@
 Update DTC Web Server Data
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Create Directory for Next Release
-"""""""""""""""""""""""""""""""""
+Create a directory for the next release.
 
-.. dropdown:: If creating a rc1 release
+.. dropdown:: If creating an rc1 release
 
   On the DTC web server where the sample input data for use cases is hosted,
   run the setup_next_release_data.py script for the next upcoming release

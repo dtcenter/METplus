@@ -19,7 +19,7 @@ category = None
 items = {}
 # gather issues and organize them by category
 for line in content:
-    if match := re.match(r'  .. dropdown:: (.*)', line):
+    if match := re.match(r' {2}.. dropdown:: (.*)', line):
         category = match.group(1)
         if not items.get(category):
             items[category] = []
@@ -43,7 +43,7 @@ for cat, item_list in items.items():
     if not issues.get(cat):
         issues[cat] = {}
     for issue in item_list:
-        match = re.match(r'.*\#(\d+).*', issue.replace('\n', ''))
+        match = re.match(r'.*#(\d+).*', issue.replace('\n', ''))
         if match:
             issues[cat][match.group(1)] = issue
 
