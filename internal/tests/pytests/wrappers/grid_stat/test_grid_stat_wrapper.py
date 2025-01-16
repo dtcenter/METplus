@@ -916,7 +916,16 @@ def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
                                           'time_interp_method = NEAREST;'
                                           'match_month = TRUE;day_interval = 30;'
                                           'hour_interval = 12;}')}),
+        ({'GRID_STAT_GRADIENT_DX': '2', },
+         {'METPLUS_GRADIENT_DICT': 'gradient = {dx = [2];}'}),
 
+        ({'GRID_STAT_GRADIENT_DY': '3', },
+         {'METPLUS_GRADIENT_DICT': 'gradient = {dy = [3];}'}),
+
+        ({'GRID_STAT_GRADIENT_DX': '4', 'GRID_STAT_GRADIENT_DY': '5',},
+         {'METPLUS_GRADIENT_DICT': 'gradient = {dx = [4];dy = [5];}'}),
+        ({'GRID_STAT_GRADIENT_DX': '2,3', },
+         {'METPLUS_GRADIENT_DICT': 'gradient = {dx = [2, 3];}'}),
     ]
 )
 @pytest.mark.wrapper_b

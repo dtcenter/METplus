@@ -24,10 +24,10 @@ URL="https://api.github.com/repos/dtcenter/${repo}/labels"
 
 # Output command files
 POST_CMD_FILE="`dirname $0`/commands/post_labels_${repo}_cmd.sh"
-echo "#!/bin/sh -v" > ${POST_CMD_FILE}
+echo "#!/bin/bash -v" > ${POST_CMD_FILE}
 
 PATCH_CMD_FILE="`dirname $0`/commands/patch_labels_${repo}_cmd.sh"
-echo "#!/bin/sh -v" > ${PATCH_CMD_FILE}
+echo "#!/bin/bash -v" > ${PATCH_CMD_FILE}
 
 # Initialize counts
 n_post=0

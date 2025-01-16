@@ -342,6 +342,9 @@ def test_series_analysis_missing_inputs(metplus_config, get_test_data_dir,
         ({'SERIES_ANALYSIS_OUTPUT_STATS_PRC': 'RMSE,FBAR,OBAR', },
          {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {cnt = ["TOTAL", "RMSE", "FBAR", "OBAR"];prc = ["RMSE", "FBAR", "OBAR"];}'}),
 
+        ({'SERIES_ANALYSIS_OUTPUT_STATS_GRAD': 'RMSE,FBAR,OBAR', },
+         {'METPLUS_OUTPUT_STATS_DICT': 'output_stats = {cnt = ["TOTAL", "RMSE", "FBAR", "OBAR"];grad = ["RMSE", "FBAR", "OBAR"];}'}),
+
         ({
              'SERIES_ANALYSIS_OUTPUT_STATS_FHO': 'RMSE1,FBAR,OBAR',
              'SERIES_ANALYSIS_OUTPUT_STATS_CTC': 'RMSE2,FBAR,OBAR',
@@ -355,6 +358,7 @@ def test_series_analysis_missing_inputs(metplus_config, get_test_data_dir,
              'SERIES_ANALYSIS_OUTPUT_STATS_PSTD': 'RMSE10,FBAR,OBAR',
              'SERIES_ANALYSIS_OUTPUT_STATS_PJC': 'RMSE11,FBAR,OBAR',
              'SERIES_ANALYSIS_OUTPUT_STATS_PRC': 'RMSE12,FBAR,OBAR',
+             'SERIES_ANALYSIS_OUTPUT_STATS_GRAD': 'RMSE13,FBAR,OBAR',
          },
          {'METPLUS_OUTPUT_STATS_DICT': ('output_stats = {'
                                         'fho = ["RMSE1", "FBAR", "OBAR"];'
@@ -368,7 +372,9 @@ def test_series_analysis_missing_inputs(metplus_config, get_test_data_dir,
                                         'pct = ["RMSE9", "FBAR", "OBAR"];'
                                         'pstd = ["RMSE10", "FBAR", "OBAR"];'
                                         'pjc = ["RMSE11", "FBAR", "OBAR"];'
-                                        'prc = ["RMSE12", "FBAR", "OBAR"];}')}),
+                                        'prc = ["RMSE12", "FBAR", "OBAR"];'
+                                        'grad = ["RMSE13", "FBAR", "OBAR"];'
+                                        '}')}),
         ({'SERIES_ANALYSIS_FCST_CAT_THRESH': '>=0.0, >=0.3, >=1.0', },
          {'METPLUS_FCST_CAT_THRESH': 'cat_thresh = [>=0.0, >=0.3, >=1.0];'}),
 
@@ -620,6 +626,16 @@ def test_series_analysis_missing_inputs(metplus_config, get_test_data_dir,
          {}),
         ({'SERIES_ANALYSIS_AGGR_INPUT_DIR': aggr_dir, 'SERIES_ANALYSIS_AGGR_INPUT_TEMPLATE': aggr_template,},
          {}),
+        ({'SERIES_ANALYSIS_GRADIENT_DX': '2', },
+         {'METPLUS_GRADIENT_DICT': 'gradient = {dx = [2];}'}),
+
+        ({'SERIES_ANALYSIS_GRADIENT_DY': '3', },
+         {'METPLUS_GRADIENT_DICT': 'gradient = {dy = [3];}'}),
+
+        ({'SERIES_ANALYSIS_GRADIENT_DX': '4', 'SERIES_ANALYSIS_GRADIENT_DY': '5', },
+         {'METPLUS_GRADIENT_DICT': 'gradient = {dx = [4];dy = [5];}'}),
+        ({'SERIES_ANALYSIS_GRADIENT_DX': '2,3', },
+         {'METPLUS_GRADIENT_DICT': 'gradient = {dx = [2, 3];}'}),
     ]
 )
 @pytest.mark.wrapper_a

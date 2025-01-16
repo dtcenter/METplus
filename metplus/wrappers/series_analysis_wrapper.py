@@ -64,6 +64,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         'METPLUS_OBS_CAT_THRESH',
         'METPLUS_CLIMO_CDF_DICT',
         'METPLUS_MASK_DICT',
+        'METPLUS_GRADIENT_DICT',
     ]
 
     # deprecated env vars that are no longer supported in the wrapped MET conf
@@ -96,6 +97,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         'pstd',
         'pjc',
         'prc',
+        'grad',
     ]
 
     def __init__(self, config, instance=None):
@@ -147,6 +149,11 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         self._handle_output_stats_dict(c_dict)
 
         self.handle_mask(single_value=True)
+
+        self.add_met_config_dict('gradient', {
+            'dx': ('list', 'remove_quotes'),
+            'dy': ('list', 'remove_quotes'),
+        })
 
         c_dict['PAIRED'] = self.config.getbool('config',
                                                'SERIES_ANALYSIS_IS_PAIRED',
