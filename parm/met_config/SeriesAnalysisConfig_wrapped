@@ -100,6 +100,15 @@ boot = {
 //mask = {
 ${METPLUS_MASK_DICT}
 
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Gradient statistics
+// May be set separately in each "obs.field" entry
+//
+//gradient = {
+${METPLUS_GRADIENT_DICT}
+
 //
 // Number of grid points to be processed concurrently.  Set smaller to use
 // less memory but increase the number of passes through the data.
