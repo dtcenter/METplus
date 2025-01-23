@@ -144,20 +144,14 @@ class PairStatWrapper(CompareGriddedWrapper):
         self.add_met_config(name='wind_logic', data_type='string',
                             extra_args={'remove_quotes': True})
 
-        self.add_met_config(name='mpr_column', data_type='list',
-                            extra_args={'remove_quotes': True})
+        self.add_met_config(name='mpr_column', data_type='list')
 
         self.add_met_config(name='mpr_thresh', data_type='list',
                             extra_args={'remove_quotes': True})
 
-        self.add_met_config(name='mpr_str_inc', data_type='list',
-                            extra_args={'remove_quotes': True})
+        self.add_met_config(name='mpr_str_inc', data_type='list')
 
-        self.add_met_config(name='mpr_str_exc', data_type='list',
-                            extra_args={'remove_quotes': True})
-
-        self.add_met_config(name='mpr_summary', data_type='string',
-                            extra_args={'remove_quotes': True})
+        self.add_met_config(name='mpr_str_exc', data_type='list')
 
         self.add_met_config(name='eclv_points', data_type='float')
         self.add_met_config(name='hss_ec_value', data_type='float')
@@ -178,7 +172,7 @@ class PairStatWrapper(CompareGriddedWrapper):
         self.add_met_config_dict('boot', {
             'interval': ('string', 'remove_quotes'),
             'rep_prop': 'float',
-            'nrep': 'int',
+            'n_rep': 'int',
             'rng': 'string',
             'seed': 'string',
         })
