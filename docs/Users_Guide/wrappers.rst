@@ -3402,6 +3402,8 @@ METplus Configuration
 | :term:`GRID_STAT_TIME_OFFSET_WARNING`
 | :term:`GRID_STAT_ALLOW_MISSING_INPUTS`
 | :term:`GRID_STAT_INPUT_THRESH`
+| :term:`GRID_STAT_GRADIENT_DX`
+| :term:`GRID_STAT_GRADIENT_DY`
 |
 
 .. warning:: **DEPRECATED**
@@ -3903,6 +3905,20 @@ ${METPLUS_FOURIER_DICT}
      - fourier.wave_1d_beg
    * - :term:`GRID_STAT_FOURIER_WAVE_1D_END`
      - fourier.wave_1d_end
+
+${METPLUS_GRADIENT_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_GRADIENT_DX`
+     - gradient.dx
+   * - :term:`GRID_STAT_GRADIENT_DY`
+     - gradient.dy
 
 ${METPLUS_DISTANCE_MAP_DICT}
 """"""""""""""""""""""""""""
@@ -8893,6 +8909,7 @@ METplus Configuration
 | :term:`SERIES_ANALYSIS_OUTPUT_STATS_PSTD`
 | :term:`SERIES_ANALYSIS_OUTPUT_STATS_PJC`
 | :term:`SERIES_ANALYSIS_OUTPUT_STATS_PRC`
+| :term:`SERIES_ANALYSIS_OUTPUT_STATS_GRAD`
 | :term:`FCST_SERIES_ANALYSIS_CAT_THRESH`
 | :term:`OBS_SERIES_ANALYSIS_CAT_THRESH`
 | :term:`FCST_SERIES_ANALYSIS_IS_PROB`
@@ -8906,6 +8923,8 @@ METplus Configuration
 | :term:`SERIES_ANALYSIS_TIME_OFFSET_WARNING`
 | :term:`SERIES_ANALYSIS_ALLOW_MISSING_INPUTS`
 | :term:`SERIES_ANALYSIS_INPUT_THRESH`
+| :term:`SERIES_ANALYSIS_GRADIENT_DX`
+| :term:`SERIES_ANALYSIS_GRADIENT_DY`
 |
 
 .. warning:: **DEPRECATED:**
@@ -9308,6 +9327,20 @@ ${METPLUS_MASK_DICT}
    * - :term:`SERIES_ANALYSIS_MASK_POLY`
      - mask.poly
 
+${METPLUS_GRADIENT_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`SERIES_ANALYSIS_GRADIENT_DX`
+     - gradient.dx
+   * - :term:`SERIES_ANALYSIS_GRADIENT_DY`
+     - gradient.dy
+
 ${METPLUS_BLOCK_SIZE}
 """""""""""""""""""""
 
@@ -9365,6 +9398,8 @@ ${METPLUS_OUTPUT_STATS_DICT}
      - output_stats.pjc
    * - :term:`SERIES_ANALYSIS_OUTPUT_STATS_PRC`
      - output_stats.prc
+   * - :term:`SERIES_ANALYSIS_OUTPUT_STATS_GRAD`
+     - output_stats.grad
 
 ${METPLUS_HSS_EC_VALUE}
 """""""""""""""""""""""

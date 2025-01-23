@@ -13,6 +13,8 @@
 {"name": "component: testing","color": "1d76db","description": "Software testing issue"}
 {"name": "component: training","color": "1d76db","description": "Training issue"}
 {"name": "component: user support","color": "1d76db","description": "User support issue"}
+{"name": "pull request: MODIFIES CONFIG","color": "c2e0c6","description": "Changes that add new or modify existing configuration options"}
+{"name": "pull request: MODIFIES OUTPUT","color": "c2e0c6","description": "Changes that add new or modify existing output formats"}
 {"name": "priority: blocker","color": "b60205","description": "Blocker"}
 {"name": "priority: high","color": "ed2939","description": "High Priority"}
 {"name": "priority: low","color": "cce88d","description": "Low Priority"}
@@ -20,8 +22,11 @@
 {"name": "priority: bold for release notes","color": "ededed","description": "Issue should be bolded in release notes"}
 {"name": "reporting: DTC AF METplus","color": "fbca04","description": "Air Force METplus Project"}
 {"name": "reporting: DTC NCAR Base","color": "fbca04","description": "NCAR Base DTC Project"}
+{"name": "reporting: DTC NOAA BASE","color": "fbca04","description": "NOAA Office of Atmospheric Research DTC Project"}
+{"name": "reporting: DTC NOAA Base RRFS","color": "fbca04","description": "NOAA Base RRFS DTC Project"}
 {"name": "reporting: DTC NOAA OAR","color": "fbca04","description": "NOAA Office of Atmospheric Research DTC Project"}
 {"name": "reporting: DTC NOAA R2O","color": "fbca04","description": "NOAA Research to Operations DTC Project"}
+{"name": "reporting: DTC R2O RRFS","color": "fbca04","description": "Research to Operations RRFS DTC Project"}
 {"name": "reporting: HSUP 1-3a","color": "fbca04","description": "Hurricane Supplemental Project 1-3a"}
 {"name": "reporting: HSUP 4-1b","color": "fbca04","description": "Hurricane Supplemental Project 4-1b"}
 {"name": "reporting: NRL METplus","color": "fbca04","description": "Naval Research Laboratory METplus Project"}
@@ -29,13 +34,14 @@
 {"name": "requestor: Australian BOM","color": "3101c1","description": "Australian Bureau of Meteorology"}
 {"name": "requestor: Community","color": "3101c1","description": "General Community"}
 {"name": "requestor: CSU/CIRA","color": "3101c1","description": "Colorado State University, Cooperative Institute for Research in the Atmosphere"}
-{"name": "requestor: DTC/T&E","color": "3101c1","description": "General DTC Testing and Evaluation work"}
-{"name": "requestor: DTC/MRW","color": "3101c1","description": "DTC Medium Range Weather T&E"}
-{"name": "requestor: DTC/SRW","color": "3101c1","description": "DTC Short Range Weather T&E"}
-{"name": "requestor: DTC/PAS","color": "3101c1","description": "DTC Physics Across Scales T&E"}
-{"name": "requestor: DTC/Containers","color": "3101c1","description": "DTC Containers and Cloud Computing Project"}
 {"name": "requestor: DTC/AF V&V","color": "3101c1","description": "Air Force Verification and Validation Project"}
+{"name": "requestor: DTC/Containers","color": "3101c1","description": "DTC Containers and Cloud Computing Project"}
 {"name": "requestor: DTC/Ensembles","color": "3101c1","description": "DTC Ensembles Team"}
+{"name": "requestor: DTC/MRW","color": "3101c1","description": "DTC Medium Range Weather T&E"}
+{"name": "requestor: DTC/PAS","color": "3101c1","description": "DTC Physics Across Scales T&E"}
+{"name": "requestor: DTC/RRFS T&E","color": "3101c1","description": "DTC RRFS T&E"}
+{"name": "requestor: DTC/SRW","color": "3101c1","description": "DTC Short Range Weather T&E"}
+{"name": "requestor: DTC/T&E","color": "3101c1","description": "General DTC Testing and Evaluation work"}
 {"name": "requestor: NASA/CCMC","color": "3101c1","description": "NASA Community Coordinated Modeling Center"}
 {"name": "requestor: NASA/other","color": "3101c1","description": "NASA, not otherwise specified"}
 {"name": "requestor: NCAR","color": "3101c1","description": "National Center for Atmospheric Research"}
@@ -49,6 +55,7 @@
 {"name": "requestor: NOAA/MDL","color": "3101c1","description": "NOAA Meteorological Development Laboratory"}
 {"name": "requestor: NOAA/NHC","color": "3101c1","description": "NOAA National Hurricane Center"}
 {"name": "requestor: NOAA/NSSL","color": "3101c1","description": "NOAA National Severe Storms Laboratory"}
+{"name": "requestor: NOAA/NWS","color": "3101c1","description": "NOAA National Weather Service"}
 {"name": "requestor: NOAA/OPC","color": "3101c1","description": "NOAA Ocean Prediction Center"}
 {"name": "requestor: NOAA/other","color": "3101c1","description": "NOAA Laboratory, not otherwise specified"}
 {"name": "requestor: NOAA/PSD","color": "3101c1","description": "NOAA Physical Sciences Laboratory"}

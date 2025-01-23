@@ -1,8 +1,7 @@
 Update DTC Web Server Data
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Create Directory for Next Release
-"""""""""""""""""""""""""""""""""
+Create a directory for the next release.
 
 .. dropdown:: If creating an rc1 release
 

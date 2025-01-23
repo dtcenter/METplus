@@ -63,6 +63,7 @@ class GridStatWrapper(CompareGriddedWrapper):
         'METPLUS_UGRID_DATASET',
         'METPLUS_UGRID_MAX_DISTANCE_KM',
         'METPLUS_UGRID_COORDINATES_FILE',
+        'METPLUS_GRADIENT_DICT',
     ]
 
     # deprecated env vars that are no longer supported in the wrapped MET conf
@@ -263,6 +264,11 @@ class GridStatWrapper(CompareGriddedWrapper):
         self.add_met_config_dict('fourier', {
             'wave_1d_beg': ('list', 'remove_quotes'),
             'wave_1d_end': ('list', 'remove_quotes'),
+        })
+
+        self.add_met_config_dict('gradient', {
+            'dx': ('list', 'remove_quotes'),
+            'dy': ('list', 'remove_quotes'),
         })
 
         self.add_met_config(name='censor_thresh', data_type='list',
