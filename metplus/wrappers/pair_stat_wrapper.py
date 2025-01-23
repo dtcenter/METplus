@@ -43,15 +43,12 @@ class PairStatWrapper(CompareGriddedWrapper):
         'METPLUS_MPR_THRESH',
         'METPLUS_MPR_STR_INC',
         'METPLUS_MPR_STR_EXC',
-        'METPLUS_MPR_SUMMARY',
         'METPLUS_ECLV_POINTS',
         'METPLUS_HSS_EC_VALUE',
         'METPLUS_RANK_CORR_FLAG',
         'METPLUS_CLIMO_MEAN_DICT',
         'METPLUS_CLIMO_STDEV_DICT',
         'METPLUS_CLIMO_CDF_DICT',
-        'METPLUS_LAND_MASK_DICT',
-        'METPLUS_TOPO_MASK_DICT',
         'METPLUS_OBS_WINDOW_DICT',
         'METPLUS_MASK_DICT',
         'METPLUS_CI_ALPHA',
@@ -170,9 +167,6 @@ class PairStatWrapper(CompareGriddedWrapper):
         self.handle_climo_cdf_dict()
         self.add_met_config(name='message_type_group_map', data_type='list',
                             extra_args={'remove_quotes': True})
-
-        self.handle_land_mask()
-        self.handle_topo_mask()
 
         self.add_met_config_window('obs_window')
         self.handle_mask(get_point=True)

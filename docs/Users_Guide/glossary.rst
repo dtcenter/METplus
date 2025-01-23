@@ -13364,11 +13364,6 @@ METplus Configuration Glossary
 
      | *Used by:* PairStat
 
-   PAIR_STAT_MPR_SUMMARY
-     Specify the value for 'mpr_summary' in the MET configuration file for PairStat.
-
-     | *Used by:* PairStat
-
    PAIR_STAT_ECLV_POINTS
      Specify the value for 'eclv_points' in the MET configuration file for PairStat.
 
@@ -13494,26 +13489,6 @@ METplus Configuration Glossary
 
    PAIR_STAT_CLIMO_CDF_DIRECT_PROB
      Specify the value for 'climo_cdf.direct_prob' in the MET configuration file for PairStat.
-
-     | *Used by:* PairStat
-
-   PAIR_STAT_LAND_MASK_FIELD
-     Specify the value for 'land_mask.field' in the MET configuration file for PairStat.
-
-     | *Used by:* PairStat
-
-   PAIR_STAT_LAND_MASK_REGRID
-     Specify the value for 'land_mask.regrid' in the MET configuration file for PairStat.
-
-     | *Used by:* PairStat
-
-   PAIR_STAT_TOPO_MASK_FIELD
-     Specify the value for 'topo_mask.field' in the MET configuration file for PairStat.
-
-     | *Used by:* PairStat
-
-   PAIR_STAT_TOPO_MASK_REGRID
-     Specify the value for 'topo_mask.regrid' in the MET configuration file for PairStat.
 
      | *Used by:* PairStat
 
@@ -14052,80 +14027,5 @@ METplus Configuration Glossary
 
    PAIR_STAT_OBS_CLIMO_STDEV_HOUR_INTERVAL
      Specify the value for 'obs.climo_stdev.hour_interval' in the MET configuration file for PairStat.
-
-     | *Used by:* PairStat
-
-   PAIR_STAT_LAND_MASK_FLAG
-     Specify the value for 'land_mask.flag' in the MET configuration file for PairStat.
-
-     | *Used by:* PairStat
-
-   PAIR_STAT_LAND_MASK_FILE_NAME
-     Specify the value for 'land_mask.file_name' in the MET configuration file for PairStat.
-
-     | *Used by:* PairStat
-
-   PAIR_STAT_LAND_MASK_FIELD_NAME
-     Specify the value for 'land_mask.field.name' in the MET configuration file for PairStat.
-
-     | *Used by:* PairStat
-
-   PAIR_STAT_LAND_MASK_FIELD_LEVEL
-     Specify the value for 'land_mask.field.level' in the MET configuration file for PairStat.
-
-     | *Used by:* PairStat
-
-   PAIR_STAT_LAND_MASK_REGRID_METHOD
-     Specify the value for 'land_mask.regrid.method' in the MET configuration file for PairStat.
-
-     | *Used by:* PairStat
-
-   PAIR_STAT_LAND_MASK_REGRID_WIDTH
-     Specify the value for 'land_mask.regrid.width' in the MET configuration file for PairStat.
-
-     | *Used by:* PairStat
-
-   PAIR_STAT_LAND_MASK_THRESH
-     Specify the value for 'land_mask.thresh' in the MET configuration file for PairStat.
-
-     | *Used by:* PairStat
-
-   PAIR_STAT_TOPO_MASK_FLAG
-     Specify the value for 'topo_mask.flag' in the MET configuration file for PairStat.
-
-     | *Used by:* PairStat
-
-   PAIR_STAT_TOPO_MASK_FILE_NAME
-     Specify the value for 'topo_mask.file_name' in the MET configuration file for PairStat.
-
-     | *Used by:* PairStat
-
-   PAIR_STAT_TOPO_MASK_FIELD_NAME
-     Specify the value for 'topo_mask.field.name' in the MET configuration file for PairStat.
-
-     | *Used by:* PairStat
-
-   PAIR_STAT_TOPO_MASK_FIELD_LEVEL
-     Specify the value for 'topo_mask.field.level' in the MET configuration file for PairStat.
-
-     | *Used by:* PairStat
-
-   PAIR_STAT_TOPO_MASK_REGRID_METHOD
-     Specify the value for 'topo_mask.regrid.method' in the MET configuration file for PairStat.
-
-     | *Used by:* PairStat
-
-   PAIR_STAT_TOPO_MASK_REGRID_WIDTH
-     Specify the value for 'topo_mask.regrid.width' in the MET configuration file for PairStat.
-
-     | *Used by:* PairStat
-
-   PAIR_STAT_TOPO_MASK_USE_OBS_THRESH
-     Specify the value for 'topo_mask.use_obs_thresh' in the MET configuration file for PairStat.
-
-     | *Used by:* PairStat
-
-   PAIR_STAT_TOPO_MASK_INTERP_FCST_THRESH
-     Specify the value for 'topo_mask.interp_fcst_thresh' in the MET configuration file for PairStat.
 
      | *Used by:* PairStat

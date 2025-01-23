@@ -5926,7 +5926,6 @@ Configuration
 | :term:`PAIR_STAT_MPR_THRESH`
 | :term:`PAIR_STAT_MPR_STR_INC`
 | :term:`PAIR_STAT_MPR_STR_EXC`
-| :term:`PAIR_STAT_MPR_SUMMARY`
 | :term:`PAIR_STAT_ECLV_POINTS`
 | :term:`PAIR_STAT_HSS_EC_VALUE`
 | :term:`PAIR_STAT_RANK_CORR_FLAG`
@@ -5992,17 +5991,6 @@ Configuration
 | :term:`PAIR_STAT_CLIMO_CDF_CENTER_BINS`
 | :term:`PAIR_STAT_CLIMO_CDF_WRITE_BINS`
 | :term:`PAIR_STAT_CLIMO_CDF_DIRECT_PROB`
-| :term:`PAIR_STAT_LAND_MASK_FLAG`
-| :term:`PAIR_STAT_LAND_MASK_FILE_NAME`
-| :term:`PAIR_STAT_LAND_MASK_FIELD`
-| :term:`PAIR_STAT_LAND_MASK_REGRID`
-| :term:`PAIR_STAT_LAND_MASK_THRESH`
-| :term:`PAIR_STAT_TOPO_MASK_FLAG`
-| :term:`PAIR_STAT_TOPO_MASK_FILE_NAME`
-| :term:`PAIR_STAT_TOPO_MASK_FIELD`
-| :term:`PAIR_STAT_TOPO_MASK_REGRID`
-| :term:`PAIR_STAT_TOPO_MASK_USE_OBS_THRESH`
-| :term:`PAIR_STAT_TOPO_MASK_INTERP_FCST_THRESH`
 | :term:`PAIR_STAT_OBS_WINDOW_BEG`
 | :term:`PAIR_STAT_OBS_WINDOW_END`
 | :term:`PAIR_STAT_MASK_GRID`
@@ -6414,18 +6402,6 @@ ${METPLUS_MPR_STR_EXC}
    * - :term:`PAIR_STAT_MPR_STR_EXC`
      - mpr_str_exc
 
-${METPLUS_MPR_SUMMARY}
-^^^^^^^^^^^^^^^^^^^^^^
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`PAIR_STAT_MPR_SUMMARY`
-     - mpr_summary
-
 ${METPLUS_ECLV_POINTS}
 ^^^^^^^^^^^^^^^^^^^^^^
 
@@ -6535,56 +6511,6 @@ ${METPLUS_CLIMO_CDF_DICT}
      - climo_cdf.write_bins
    * - :term:`PAIR_STAT_CLIMO_CDF_DIRECT_PROB`
      - climo_cdf.direct_prob
-
-${METPLUS_LAND_MASK_DICT}
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`PAIR_STAT_LAND_MASK_FLAG`
-     - land_mask.flag
-   * - :term:`PAIR_STAT_LAND_MASK_FILE_NAME`
-     - land_mask.file_name
-   * - :term:`PAIR_STAT_LAND_MASK_FIELD_NAME`
-     - land_mask.field.name
-   * - :term:`PAIR_STAT_LAND_MASK_FIELD_LEVEL`
-     - land_mask.field.level
-   * - :term:`PAIR_STAT_LAND_MASK_REGRID_METHOD`
-     - land_mask.regrid.method
-   * - :term:`PAIR_STAT_LAND_MASK_REGRID_WIDTH`
-     - land_mask.regrid.width
-   * - :term:`PAIR_STAT_LAND_MASK_THRESH`
-     - land_mask.thresh
-
-${METPLUS_TOPO_MASK_DICT}
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`PAIR_STAT_TOPO_MASK_FLAG`
-     - topo_mask.flag
-   * - :term:`PAIR_STAT_TOPO_MASK_FILE_NAME`
-     - topo_mask.file_name
-   * - :term:`PAIR_STAT_TOPO_MASK_FIELD_NAME`
-     - topo_mask.field.name
-   * - :term:`PAIR_STAT_TOPO_MASK_FIELD_LEVEL`
-     - topo_mask.field.level
-   * - :term:`PAIR_STAT_TOPO_MASK_REGRID_METHOD`
-     - topo_mask.regrid.method
-   * - :term:`PAIR_STAT_TOPO_MASK_REGRID_WIDTH`
-     - topo_mask.regrid.width
-   * - :term:`PAIR_STAT_TOPO_MASK_USE_OBS_THRESH`
-     - topo_mask.use_obs_thresh
-   * - :term:`PAIR_STAT_TOPO_MASK_INTERP_FCST_THRESH`
-     - topo_mask.interp_fcst_thresh
 
 ${METPLUS_OBS_WINDOW_DICT}
 """"""""""""""""""""""""""
