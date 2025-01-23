@@ -111,6 +111,71 @@ def test_pair_stat_missing_inputs(metplus_config, get_test_data_dir,
         ({'DESC': 'my_desc'},
          {'METPLUS_DESC': 'desc = "my_desc";'}),
 
+        ({'PAIR_STAT_CENSOR_THRESH': '<1, >2', },
+         {'METPLUS_CENSOR_THRESH': 'censor_thresh = [<1, >2];'}),
+
+        ({'PAIR_STAT_CENSOR_VAL': '3,4', },
+         {'METPLUS_CENSOR_VAL': 'censor_val = [3, 4];'}),
+
+        ({'PAIR_STAT_CAT_THRESH': 'gt12.7', },
+         {'METPLUS_CAT_THRESH': 'cat_thresh = [gt12.7];'}),
+
+        ({'PAIR_STAT_CNT_THRESH': 'gt12.8', },
+         {'METPLUS_CNT_THRESH': 'cnt_thresh = [gt12.8];'}),
+
+        ({'PAIR_STAT_CNT_LOGIC': 'UNION', },
+         {'METPLUS_CNT_LOGIC': 'cnt_logic = UNION;'}),
+
+        ({'PAIR_STAT_WIND_THRESH': 'gt12.9', },
+         {'METPLUS_WIND_THRESH': 'wind_thresh = [gt12.9];'}),
+
+        ({'PAIR_STAT_WIND_LOGIC': 'UNION', },
+         {'METPLUS_WIND_LOGIC': 'wind_logic = UNION;'}),
+
+        ({'PAIR_STAT_MPR_COLUMN': 'ABS(OBS-FCST), ABS(OBS-CLIMO_MEAN)', },
+         {'METPLUS_MPR_COLUMN': 'mpr_column = ["ABS(OBS-FCST)", "ABS(OBS-CLIMO_MEAN)"];'}),
+
+        ({'PAIR_STAT_MPR_THRESH': '<=10, <=10', },
+         {'METPLUS_MPR_THRESH': 'mpr_thresh = [<=10, <=10];'}),
+
+        ({'PAIR_STAT_MPR_STR_INC': 'STR1, STR2', },
+         {'METPLUS_MPR_STR_INC': 'mpr_str_inc = ["STR1", "STR2"];'}),
+
+        ({'PAIR_STAT_MPR_STR_EXC': 'STR3, STR4', },
+         {'METPLUS_MPR_STR_EXC': 'mpr_str_exc = ["STR3", "STR4"];'}),
+
+        ({'PAIR_STAT_ECLV_POINTS': '0.05', },
+         {'METPLUS_ECLV_POINTS': 'eclv_points = 0.05;'}),
+
+        ({'PAIR_STAT_RANK_CORR_FLAG': 'true', },
+         {'METPLUS_RANK_CORR_FLAG': 'rank_corr_flag = TRUE;'}),
+
+        ({'PAIR_STAT_CI_ALPHA': '0.05', },
+         {'METPLUS_CI_ALPHA': 'ci_alpha = [0.05];'}),
+
+        ({'PAIR_STAT_BOOT_INTERVAL': 'PCTILE', },
+         {'METPLUS_BOOT_DICT': 'boot = {interval = PCTILE;}'}),
+
+        ({'PAIR_STAT_BOOT_REP_PROP': '1.0', },
+         {'METPLUS_BOOT_DICT': 'boot = {rep_prop = 1.0;}'}),
+
+        ({'PAIR_STAT_BOOT_N_REP': '100', },
+         {'METPLUS_BOOT_DICT': 'boot = {n_rep = 100;}'}),
+
+        ({'PAIR_STAT_BOOT_RNG': 'mt19937', },
+         {'METPLUS_BOOT_DICT': 'boot = {rng = "mt19937";}'}),
+
+        ({'PAIR_STAT_BOOT_SEED': '2', },
+         {'METPLUS_BOOT_DICT': 'boot = {seed = "2";}'}),
+
+        ({'PAIR_STAT_BOOT_INTERVAL': 'PCTILE',
+          'PAIR_STAT_BOOT_REP_PROP': '1.0',
+          'PAIR_STAT_BOOT_N_REP': '100',
+          'PAIR_STAT_BOOT_RNG': 'mt19937',
+          'PAIR_STAT_BOOT_SEED': '2',
+         },
+         {'METPLUS_BOOT_DICT': 'boot = {interval = PCTILE;rep_prop = 1.0;n_rep = 100;rng = "mt19937";seed = "2";}'}),
+
         # mask grid and poly (old config var)
         ({'PAIR_STAT_MASK_GRID': 'FULL',
           'PAIR_STAT_VERIFICATION_MASK_TEMPLATE': 'one, two',
