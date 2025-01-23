@@ -111,6 +111,8 @@ requirements:
     - _openmp_mutex # [linux]
     - llvm-openmp  # [osx]
     - libcxx  # Provides the C++ standard library (e.g., libc++ for macOS or libstdc++ on Linux)
+    - setuptools
+    - setuptools-git-versioning >=2.0,<3
 
   run:
     - gsl
