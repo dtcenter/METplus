@@ -6,29 +6,16 @@ import os
 from datetime import datetime, timedelta
 
 from metplus.wrappers.point_stat_wrapper import PointStatWrapper
+from internal.tests.pytests.conftest import stat_runtime_freq_test_params
 
 fcst_dir = '/some/path/fcst'
 obs_dir = '/some/path/obs'
 
-fcst_name = 'APCP'
-fcst_level = 'A03'
-obs_name = 'APCP_03'
-obs_level = '"(*,*)"'
-
-inits = ['2005080700', '2005080712']
-time_fmt = '%Y%m%d%H'
-lead_hour = 12
-lead_hour_str = str(lead_hour).zfill(3)
-valids = []
-for init in inits:
-    valid = datetime.strptime(init, time_fmt) + timedelta(hours=lead_hour)
-    valid = valid.strftime(time_fmt)
-    valids.append(valid)
-
 ugrid_config_file = '/some/path/UgridConfig_fake'
 
 
-def set_minimum_config_settings(config):
+def set_minimum_config_settings(config, fcst_and_obs_data):
+    _, _, _, _, inits, _, lead_hour, time_fmt = fcst_and_obs_data
     # set config variables to prevent command from running and bypass check
     # if input files actually exist
     config.set('config', 'DO_NOT_RUN_EXE', True)
@@ -57,21 +44,15 @@ def set_minimum_config_settings(config):
 
 
 @pytest.mark.parametrize(
-    'once_per_field, missing, run, thresh, errors, allow_missing', [
-        (False, 6, 12, 0.5, 0, True),
-        (False, 6, 12, 0.6, 1, True),
-        (True, 12, 24, 0.5, 0, True),
-        (True, 12, 24, 0.6, 1, True),
-        (False, 6, 12, 0.5, 10, False),
-        (True, 12, 24, 0.5, 20, False),
-    ]
+    'once_per_field, missing, run, thresh, errors, allow_missing', stat_runtime_freq_test_params
 )
 @pytest.mark.wrapper_a
 def test_point_stat_missing_inputs(metplus_config, get_test_data_dir,
                                    once_per_field, missing, run, thresh, errors,
-                                   allow_missing):
+                                   allow_missing, fcst_and_obs_data):
+    fcst_name, fcst_level, obs_name, obs_level, _, _, _, _ = fcst_and_obs_data
     config = metplus_config
-    set_minimum_config_settings(config)
+    set_minimum_config_settings(config, fcst_and_obs_data)
     config.set('config', 'INPUT_MUST_EXIST', True)
     config.set('config', 'POINT_STAT_ALLOW_MISSING_INPUTS', allow_missing)
     config.set('config', 'POINT_STAT_INPUT_THRESH', thresh)
@@ -110,9 +91,9 @@ def test_point_stat_missing_inputs(metplus_config, get_test_data_dir,
 
 
 @pytest.mark.wrapper_a
-def test_met_dictionary_in_var_options(metplus_config):
+def test_met_dictionary_in_var_options(metplus_config, fcst_and_obs_data):
     config = metplus_config
-    set_minimum_config_settings(config)
+    set_minimum_config_settings(config, fcst_and_obs_data)
 
     config.set('config', 'BOTH_VAR1_NAME', 'name')
     config.set('config', 'BOTH_VAR1_LEVELS', 'level')
@@ -122,7 +103,7 @@ def test_met_dictionary_in_var_options(metplus_config):
     wrapper = PointStatWrapper(config)
     assert wrapper.isOK
 
-    all_cmds = wrapper.run_all_times()
+    wrapper.run_all_times()
 
 
 @pytest.mark.parametrize(
@@ -851,7 +832,10 @@ def test_met_dictionary_in_var_options(metplus_config):
 )
 @pytest.mark.wrapper_a
 def test_point_stat_all_fields(metplus_config, config_overrides,
-                               env_var_values, compare_command_and_env_vars):
+                               env_var_values, compare_command_and_env_vars,
+                               fcst_and_obs_data):
+    _, _, _, _, inits, valids, lead_hour, time_fmt = fcst_and_obs_data
+    lead_hour_str = str(lead_hour).zfill(3)
     level_no_quotes = '(*,*)'
     level_with_quotes = f'"{level_no_quotes}"'
 
@@ -861,9 +845,6 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
               {'name': 'UGRD',
                'level': 'Z10',
                'thresh': '>=5'},
-              # {'name': 'VGRD',
-              #  'level': 'Z10',
-              #  'thresh': '>=5'},
              ]
     obss = [{'name': 'TMP',
             'level': level_no_quotes,
@@ -871,9 +852,6 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
             {'name': 'UGRD',
              'level': 'Z10',
              'thresh': '>=5'},
-            # {'name': 'VGRD',
-            #  'level': 'Z10',
-            #  'thresh': '>=5'},
            ]
 
     fcst_fmts = []
@@ -894,7 +872,7 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
         obs_fmts.append(obs_fmt)
 
     config = metplus_config
-    set_minimum_config_settings(config)
+    set_minimum_config_settings(config, fcst_and_obs_data)
 
     for index, (fcst, obs) in enumerate(zip(fcsts, obss)):
         idx = index + 1
@@ -922,29 +900,7 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
     out_dir = wrapper.c_dict.get('OUTPUT_DIR')
 
     # add extra command line arguments
-    extra_args = [' '] * len(inits)
-
-    if 'OBS_POINT_STAT_INPUT_TEMPLATE' in config_overrides:
-        for index in range(0, len(inits)):
-            extra_args[index] += f'-point_obs {obs_dir}/{valids[index]}/obs_file2 '
-            # if obs_file3 is set, an additional point observation file is added
-            if 'obs_file3' in config_overrides['OBS_POINT_STAT_INPUT_TEMPLATE']:
-                extra_args[index] += f'-point_obs {obs_dir}/{valids[index]}/obs_file3 '
-
-    if 'POINT_STAT_UGRID_CONFIG_FILE' in config_overrides:
-        for index in range(0, len(inits)):
-            extra_args[index] += f'-ugrid_config {ugrid_config_file} '
-
-    for beg_end in ('BEG', 'END'):
-        if f'POINT_STAT_OBS_VALID_{beg_end}' in config_overrides:
-            for index in range(0, len(inits)):
-                valid_dt = datetime.strptime(valids[index], time_fmt)
-                if beg_end == 'BEG':
-                    value = valid_dt - timedelta(hours=6)
-                else:
-                    value = valid_dt + timedelta(hours=6)
-                value = value.strftime('%Y%m%d_%H')
-                extra_args[index] += f'-obs_valid_{beg_end.lower()} {value} '
+    extra_args = _get_extra_args(inits, valids, config_overrides, time_fmt)
 
     expected_cmds = []
     for index in range(0, len(inits)):
@@ -965,6 +921,32 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
     }
     compare_command_and_env_vars(all_cmds, expected_cmds, env_var_values,
                                  wrapper, special_values)
+
+def _get_extra_args(inits, valids, config_overrides, time_fmt):
+    extra_args = [' '] * len(inits)
+
+    if 'OBS_POINT_STAT_INPUT_TEMPLATE' in config_overrides:
+        for index in range(0, len(inits)):
+            extra_args[index] += f'-point_obs {obs_dir}/{valids[index]}/obs_file2 '
+            # if obs_file3 is set, an additional point observation file is added
+            if 'obs_file3' in config_overrides['OBS_POINT_STAT_INPUT_TEMPLATE']:
+                extra_args[index] += f'-point_obs {obs_dir}/{valids[index]}/obs_file3 '
+
+    if 'POINT_STAT_UGRID_CONFIG_FILE' in config_overrides:
+        for index in range(0, len(inits)):
+            extra_args[index] += f'-ugrid_config {ugrid_config_file} '
+
+    time_deltas = {'BEG': -6, 'END': 6}
+    for beg_end, delta in time_deltas.items():
+        if f'POINT_STAT_OBS_VALID_{beg_end}' not in config_overrides:
+            continue
+
+        for index in range(0, len(inits)):
+            valid_dt = datetime.strptime(valids[index], time_fmt)
+            value = (valid_dt + timedelta(hours=delta)).strftime('%Y%m%d_%H')
+            extra_args[index] += f'-obs_valid_{beg_end.lower()} {value} '
+
+    return extra_args
 
 
 @pytest.mark.wrapper_a

@@ -5,6 +5,7 @@ import pytest
 import os
 
 from metplus.wrappers.wavelet_stat_wrapper import WaveletStatWrapper
+from internal.tests.pytests.conftest import stat_runtime_freq_test_params
 
 fcst_dir = '/some/path/fcst'
 obs_dir = '/some/path/obs'
@@ -56,14 +57,7 @@ def set_minimum_config_settings(config):
 
 
 @pytest.mark.parametrize(
-    'once_per_field, missing, run, thresh, errors, allow_missing', [
-        (False, 6, 12, 0.5, 0, True),
-        (False, 6, 12, 0.6, 1, True),
-        (True, 12, 24, 0.5, 0, True),
-        (True, 12, 24, 0.6, 1, True),
-        (False, 6, 12, 0.5, 10, False),
-        (True, 12, 24, 0.5, 20, False),
-    ]
+    'once_per_field, missing, run, thresh, errors, allow_missing', stat_runtime_freq_test_params
 )
 @pytest.mark.wrapper_b
 def test_wavelet_stat_missing_inputs(metplus_config, get_test_data_dir,

@@ -3,30 +3,14 @@
 import pytest
 
 import os
-from datetime import datetime, timedelta
 
 from metplus.wrappers.pair_stat_wrapper import PairStatWrapper
 
 pairs_dir = '/some/path/pairs'
 pair_stat_format = 'mpr'
 
-fcst_name = 'APCP'
-fcst_level = 'A03'
-obs_name = 'APCP_03'
-obs_level = '"(*,*)"'
-
-inits = ['2005080700', '2005080712']
-time_fmt = '%Y%m%d%H'
-lead_hour = 12
-lead_hour_str = str(lead_hour).zfill(3)
-valids = []
-for init in inits:
-    valid = datetime.strptime(init, time_fmt) + timedelta(hours=lead_hour)
-    valid = valid.strftime(time_fmt)
-    valids.append(valid)
-
-
-def set_minimum_config_settings(config):
+def set_minimum_config_settings(config, fcst_and_obs_data):
+    _, _, _, _, inits, _, lead_hour, time_fmt = fcst_and_obs_data
     # set config variables to prevent command from running and bypass check
     # if input files actually exist
     config.set('config', 'DO_NOT_RUN_EXE', True)
@@ -65,9 +49,10 @@ def set_minimum_config_settings(config):
 @pytest.mark.wrapper_a
 def test_pair_stat_missing_inputs(metplus_config, get_test_data_dir,
                                   once_per_field, missing, run, thresh, errors,
-                                  allow_missing):
+                                  allow_missing, fcst_and_obs_data):
+    fcst_name, fcst_level, obs_name, obs_level, _, _, _, _ = fcst_and_obs_data
     config = metplus_config
-    set_minimum_config_settings(config)
+    set_minimum_config_settings(config, fcst_and_obs_data)
     config.set('config', 'INPUT_MUST_EXIST', True)
     config.set('config', 'PAIR_STAT_ALLOW_MISSING_INPUTS', allow_missing)
     config.set('config', 'PAIR_STAT_INPUT_THRESH', thresh)
@@ -661,9 +646,13 @@ def test_pair_stat_missing_inputs(metplus_config, get_test_data_dir,
 )
 @pytest.mark.wrapper_a
 def test_pair_stat_all_fields(metplus_config, config_overrides,
-                              env_var_values, compare_command_and_env_vars):
+                              env_var_values, compare_command_and_env_vars,
+                              fcst_and_obs_data):
+    _, _, _, _, inits, valids, lead_hour, _ = fcst_and_obs_data
+    lead_hour_str = str(lead_hour).zfill(3)
     level_no_quotes = '(*,*)'
     level_with_quotes = f'"{level_no_quotes}"'
+
 
     fcsts = [{'name': 'TMP',
               'level': 'P750-900',
@@ -698,7 +687,7 @@ def test_pair_stat_all_fields(metplus_config, config_overrides,
         obs_fmts.append(obs_fmt)
 
     config = metplus_config
-    set_minimum_config_settings(config)
+    set_minimum_config_settings(config, fcst_and_obs_data)
 
     for index, (fcst, obs) in enumerate(zip(fcsts, obss)):
         idx = index + 1

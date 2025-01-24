@@ -3,6 +3,7 @@ import pytest
 import os
 
 from metplus.wrappers.ioda2nc_wrapper import IODA2NCWrapper
+from internal.tests.pytests.conftest import obs_to_nc_runtime_freq_test_params
 
 time_fmt = '%Y%m%d%H'
 run_times = ['2020031012', '2020031100']
@@ -31,19 +32,7 @@ def set_minimum_config_settings(config):
 
 
 @pytest.mark.parametrize(
-    'missing, run, thresh, errors, allow_missing, runtime_freq', [
-        (16, 24, 0.3, 0, True, 'RUN_ONCE_FOR_EACH'),
-        (16, 24, 0.7, 1, True, 'RUN_ONCE_FOR_EACH'),
-        (16, 24, 0.3, 16, False, 'RUN_ONCE_FOR_EACH'),
-        (2, 4, 0.4, 0, True, 'RUN_ONCE_PER_INIT_OR_VALID'),
-        (2, 4, 0.6, 1, True, 'RUN_ONCE_PER_INIT_OR_VALID'),
-        (2, 4, 0.6, 16, False, 'RUN_ONCE_PER_INIT_OR_VALID'),
-        (2, 5, 0.4, 0, True, 'RUN_ONCE_PER_LEAD'),
-        (2, 5, 0.7, 1, True, 'RUN_ONCE_PER_LEAD'),
-        (2, 5, 0.4, 17, False, 'RUN_ONCE_PER_LEAD'),
-        (0, 1, 0.4, 0, True, 'RUN_ONCE'),
-        (0, 1, 0.4, 16, False, 'RUN_ONCE'),
-    ]
+    'missing, run, thresh, errors, allow_missing, runtime_freq', obs_to_nc_runtime_freq_test_params
 )
 @pytest.mark.wrapper
 def test_ioda2nc_missing_inputs(metplus_config, get_test_data_dir, missing,

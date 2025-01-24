@@ -1,10 +1,9 @@
+import pytest
+
 import sys
 import os
-import shlex
-import subprocess
-import pytest
-import getpass
 import shutil
+from datetime import datetime, timedelta
 from unittest import mock
 from pathlib import Path
 from netCDF4 import Dataset
@@ -33,6 +32,50 @@ except PermissionError:
     print(f"ERROR: Cannot write to $METPLUS_TEST_OUTPUT_BASE: {output_base}")
     sys.exit(2)
 
+# used in tests like ioda2nc and ascii2nc to test runtime frequency options
+# values correspond to missing, run, thresh, errors, allow_missing, runtime_freq
+obs_to_nc_runtime_freq_test_params = [
+        (16, 24, 0.3, 0, True, 'RUN_ONCE_FOR_EACH'),
+        (16, 24, 0.7, 1, True, 'RUN_ONCE_FOR_EACH'),
+        (16, 24, 0.3, 16, False, 'RUN_ONCE_FOR_EACH'),
+        (2, 4, 0.4, 0, True, 'RUN_ONCE_PER_INIT_OR_VALID'),
+        (2, 4, 0.6, 1, True, 'RUN_ONCE_PER_INIT_OR_VALID'),
+        (2, 4, 0.6, 16, False, 'RUN_ONCE_PER_INIT_OR_VALID'),
+        (2, 5, 0.4, 0, True, 'RUN_ONCE_PER_LEAD'),
+        (2, 5, 0.7, 1, True, 'RUN_ONCE_PER_LEAD'),
+        (2, 5, 0.4, 17, False, 'RUN_ONCE_PER_LEAD'),
+        (0, 1, 0.4, 0, True, 'RUN_ONCE'),
+        (0, 1, 0.4, 16, False, 'RUN_ONCE'),
+    ]
+
+
+# used in tests like grid_stat and wavelet_stat to test runtime frequency options
+# values correspond to once_per_field, missing, run, thresh, errors, allow_missing
+stat_runtime_freq_test_params = [
+        (False, 6, 12, 0.5, 0, True),
+        (False, 6, 12, 0.6, 1, True),
+        (True, 12, 24, 0.5, 0, True),
+        (True, 12, 24, 0.6, 1, True),
+        (False, 6, 12, 0.5, 10, False),
+        (True, 12, 24, 0.5, 20, False),
+    ]
+
+@pytest.fixture
+def fcst_and_obs_data():
+    fcst_name = 'APCP'
+    fcst_level = 'A03'
+    obs_name = 'APCP_03'
+    obs_level = '"(*,*)"'
+
+    inits = ['2005080700', '2005080712']
+    time_fmt = '%Y%m%d%H'
+    lead_hour = 12
+    valids = []
+    for init in inits:
+        valid = datetime.strptime(init, time_fmt) + timedelta(hours=lead_hour)
+        valid = valid.strftime(time_fmt)
+        valids.append(valid)
+    return fcst_name, fcst_level, obs_name, obs_level, inits, valids, lead_hour, time_fmt
 
 @pytest.fixture(scope="session", autouse=True)
 def custom_tmpdir():
