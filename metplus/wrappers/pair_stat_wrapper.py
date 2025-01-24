@@ -244,4 +244,4 @@ class PairStatWrapper(CompareGriddedWrapper):
         return (f"{self.app_path} {' '.join(self.infiles)}"
                 f" -format {self.c_dict['FORMAT']} -config {self.param}"
                 f"{' ' + ' '.join(self.args) if self.args else ''}"
-                f" -outdir {self.outdir} -v {self.c_dict['VERBOSITY']}")
+                f" -out {self.outdir} -v {self.c_dict['VERBOSITY']}")

@@ -735,7 +735,7 @@ def test_pair_stat_all_fields(metplus_config, config_overrides,
             f" -pairs {pairs_dir}/{inits[index]}/fcst_file_F{lead_hour_str}"
             f" -format {pair_stat_format}"
             f" -config {config_file}{extra_args[index]}"
-            f"-outdir {out_dir}/{valids[index]} {verbosity}"
+            f"-out {out_dir}/{valids[index]} {verbosity}"
         )
 
     fcst_fmt = f"pairs = [{','.join(fcst_fmts)}];"
