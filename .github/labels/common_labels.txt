@@ -13,8 +13,9 @@
 {"name": "component: testing","color": "1d76db","description": "Software testing issue"}
 {"name": "component: training","color": "1d76db","description": "Training issue"}
 {"name": "component: user support","color": "1d76db","description": "User support issue"}
-{"name": "pull request: MODIFIES CONFIG","color": "c2e0c6","description": "Changes that add new or modify existing configuration options"}
-{"name": "pull request: MODIFIES OUTPUT","color": "c2e0c6","description": "Changes that add new or modify existing output formats"}
+{"name": "pull request: MODIFIES CONFIG OPTIONS","color": "c2e0c6","description": "Adds new or modifies existing configuration options"}
+{"name": "pull request: MODIFIES OUTPUT DATA","color": "c2e0c6","description": "Modifies existing output data values"}
+{"name": "pull request: MODIFIES OUTPUT FORMAT","color": "c2e0c6","description": "Adds new or modifies existing output file formats"}
 {"name": "priority: blocker","color": "b60205","description": "Blocker"}
 {"name": "priority: high","color": "ed2939","description": "High Priority"}
 {"name": "priority: low","color": "cce88d","description": "Low Priority"}
