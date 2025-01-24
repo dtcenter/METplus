@@ -16,3 +16,4 @@
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #2836 - #2836 modified a use case to sort files to produce consistent results for each run
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #2817 - #2817 changed the output file name for the s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking use case
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] dtcenter/MET#3036 - dtcenter/MET#3036 adds new columns
+[$(date +%Y%m%d_%H:%M:%S) ${branch_name}] dtcenter/MET#3057 - Small change to climo-based statistics from Point-Stat after correcting the timestamps for "monthly" NetCDF climo input data.
