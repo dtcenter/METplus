@@ -2408,7 +2408,7 @@ METplus Configuration Glossary
    MODEL
      Specify the model name. This is the model name listed in the MET .stat files.
 
-     | *Used by:*  EnsembleStat, GridStat, PointStat, PCPCombine, TCPairs, GridDiag, TCRMW
+     | *Used by:*  EnsembleStat, GridStat, PointStat, PCPCombine, TCPairs, GridDiag, TCRMW, PairStat
 
    MODEL_LIST
      List of the specified the model names.
