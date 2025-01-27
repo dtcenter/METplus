@@ -13662,11 +13662,6 @@ METplus Configuration Glossary
 
      | *Used by:* PairStat
 
-   PAIR_STAT_OUTPUT_PREFIX
-     Specify the value for 'output_prefix' in the MET configuration file for PairStat.
-
-     | *Used by:* PairStat
-
    FCST_PAIR_STAT_VAR<n>_NAME
      Wrapper specific field info variable. See :term:`FCST_VAR<n>_NAME`.
 

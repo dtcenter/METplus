@@ -161,8 +161,6 @@ ${METPLUS_POINT_WEIGHT_FLAG}
 
 tmp_dir = "${MET_TMP_DIR}";
 
-//output_prefix =
-${METPLUS_OUTPUT_PREFIX}
 //version       = "V12.0.0";
 
 ////////////////////////////////////////////////////////////////////////////////

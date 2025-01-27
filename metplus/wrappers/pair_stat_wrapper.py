@@ -56,7 +56,6 @@ class PairStatWrapper(CompareGriddedWrapper):
         'METPLUS_SEEPS_P1_THRESH',
         'METPLUS_OUTPUT_FLAG_DICT',
         'METPLUS_POINT_WEIGHT_FLAG',
-        'METPLUS_OUTPUT_PREFIX',
     ]
 
     OUTPUT_FLAGS = [

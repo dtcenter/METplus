@@ -198,9 +198,6 @@ def test_pair_stat_missing_inputs(metplus_config, get_test_data_dir,
         ({'PAIR_STAT_MASK_SID': 'one, two', },
          {'METPLUS_MASK_DICT': 'mask = {sid = ["one", "two"];}'}),
 
-        ({'PAIR_STAT_OUTPUT_PREFIX': 'my_output_prefix'},
-         {'METPLUS_OUTPUT_PREFIX': 'output_prefix = "my_output_prefix";'}),
-
         ({'PAIR_STAT_OBS_WINDOW_BEGIN': '-2700',
           'PAIR_STAT_OBS_WINDOW_END': '2700',
           },
