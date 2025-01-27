@@ -584,6 +584,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
             file_dict[fcst_key] = fcst_files
             file_dict[obs_key] = obs_files
+            file_dict['input_time_info'] = [time_info.copy()]
             file_dict_list.append(file_dict)
 
         return file_dict_list
@@ -1093,8 +1094,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         # loop through fcst/obs files to read time info
         # for each file apply time info to field info and add to list
-        for file_dict in self.c_dict['ALL_FILES']:
-            file_time_info = file_dict['time_info']
+        for file_time_info in self.c_dict['ALL_FILES'][0].get('input_time_info', []):
             field = self._get_field_sub_level(data_type, var_info, file_time_info)
             if field:
                 field_list.extend(field)
@@ -1130,31 +1130,3 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             v_extra=var_info[f'{data_type}_extra'],
             d_type=data_type.upper()
         )
-
-    @staticmethod
-    def _get_times_from_file_list(file_path, templates):
-        """!Generator that yields time info dictionaries.
-        Loops through file paths found in text file and use list of filename
-        templates to parse time information from each file.
-
-        @param file_path path to file list file to parse
-        @param templates list of filename templates to use to parse time info
-        out of file paths found in file_path file
-        """
-        try:
-            with open(file_path, 'r') as file_handle:
-                file_list = file_handle.read().splitlines()[1:]
-        except FileNotFoundError:
-            return
-
-        for file_name in file_list:
-            found = False
-            file_time_info = None
-            for template in templates:
-                file_time_info = parse_template(template, file_name)
-                if file_time_info:
-                    found = True
-                    break
-            if not found:
-                continue
-            yield file_time_info

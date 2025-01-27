@@ -782,6 +782,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         # loop over all inputs and write a file list file for each
         list_file_dict = {}
         for identifier, input_files in all_input_files.items():
+            if identifier.endswith('time_info'): continue
             if len(input_files) == 1 and not force_list:
                 list_file_dict[identifier] = input_files[0]
                 continue
