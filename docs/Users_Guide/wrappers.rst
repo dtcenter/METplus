@@ -6663,18 +6663,6 @@ ${METPLUS_POINT_WEIGHT_FLAG}
    * - :term:`PAIR_STAT_POINT_WEIGHT_FLAG`
      - point_weight_flag
 
-${METPLUS_OUTPUT_PREFIX}
-""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`PAIR_STAT_OUTPUT_PREFIX`
-     - output_prefix
-
 ${METPLUS_MET_CONFIG_OVERRIDES}
 """""""""""""""""""""""""""""""
 
