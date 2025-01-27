@@ -159,7 +159,8 @@ that reformat gridded data
         self.set_current_field_config()
 
         # set up output dir with time info
-        if not self.find_and_check_output_file(time_info, is_directory=True):
+        is_dir = self.c_dict.get('OUTPUT_PATH_IS_DIR', True)
+        if not self.find_and_check_output_file(time_info, is_directory=is_dir):
             return
 
         # set command line arguments

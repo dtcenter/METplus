@@ -13285,7 +13285,8 @@ METplus Configuration Glossary
      | *Used by:*  PairStat
 
    PAIR_STAT_OUTPUT_TEMPLATE
-     Sets the subdirectories below :term:`PAIR_STAT_OUTPUT_DIR` using a template to allow run time information.
+     Sets the subdirectories and output file name base below
+     :term:`PAIR_STAT_OUTPUT_DIR` using a template to allow run time information.
 
      | *Used by:*  PairStat
 

@@ -99,6 +99,9 @@ class PairStatWrapper(CompareGriddedWrapper):
                                c_dict['VERBOSITY'])
         )
 
+        # set variable to override how output path is handled
+        c_dict['OUTPUT_PATH_IS_DIR'] = False
+
         c_dict['OFFSETS'] = getlistint(
             self.config.getstr('config', 'PAIR_STAT_OFFSETS', '0')
         )
@@ -112,7 +115,6 @@ class PairStatWrapper(CompareGriddedWrapper):
         )
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('PAIR_STAT_OUTPUT_DIR', '')
-
         c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('config', 'PAIR_STAT_OUTPUT_TEMPLATE')
 
         c_dict['FORMAT'] = self.config.getraw('config', 'PAIR_STAT_FORMAT')
@@ -243,4 +245,4 @@ class PairStatWrapper(CompareGriddedWrapper):
         return (f"{self.app_path} {' '.join(self.infiles)}"
                 f" -format {self.c_dict['FORMAT']} -config {self.param}"
                 f"{' ' + ' '.join(self.args) if self.args else ''}"
-                f" -out {self.outdir} -v {self.c_dict['VERBOSITY']}")
+                f" -out {self.get_output_path()} -v {self.c_dict['VERBOSITY']}")
