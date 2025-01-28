@@ -11,17 +11,13 @@ the METplus Components.
 
 .. _development_timeline:
 
-The **development timeline** for the METplus 6.0.0 Coordinated Release
+The **development timeline** for the METplus 6.1.0 Coordinated Release
 is broken down into the following development cycles for each component:
 
-1. **Beta1** releases for the METplus components occurred around 2023-09-15.
-2. **Beta2** releases for the METplus components occurred around 2023-11-14.
-3. **Beta3** releases for the METplus components occurred around 2024-02-08.
-4. **Beta4** releases for the METplus components occurred around 2024-04-17.
-5. **Beta5** releases for the METplus components occurred around 2024-07-10.
-6. **Beta6** releases for the METplus components occurred around 2024-10-18.
-7. **Release Candidate 1** for the METplus components occurred around 2024-11-14.
-8. **Official Release** releases are tentatively scheduled for 2024-12-18.
+1. **Beta1** releases for the METplus components occurred around 2025-01-28.
+2. **Beta2** releases for the METplus components are tentatively scheduled for 2025-03-26.
+7. **Release Candidate 1** for the METplus components are tentatively scheduled for 2025-04-09.
+8. **Official Release** releases are tentatively scheduled for 2025-05-07.
 
 .. include:: existing_builds.rst
 
