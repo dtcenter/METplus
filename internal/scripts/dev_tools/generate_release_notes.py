@@ -2,19 +2,28 @@
 
 import sys
 import os
+from enum import Enum
 
 from github import Github
 from datetime import datetime, timezone
 
 GITHUB_ORG = 'dtcenter'
 
+class Category(Enum):
+    ENHANCEMENT = "Enhancement"
+    BUGFIX = "Bugfix"
+    NEW_WRAPPER = "New Wrapper"
+    NEW_USE_CASE = "New Use Case"
+    DOCUMENTATION = "Documentation"
+    INTERNAL = "Internal"
+
 CATEGORIES = (
-    'Enhancement',
-    'Bugfix',
-    'New Wrapper',
-    'New Use Case',
-    'Documentation',
-    'Internal',
+    Category.ENHANCEMENT.value,
+    Category.BUGFIX.value,
+    Category.NEW_WRAPPER.value,
+    Category.NEW_USE_CASE.value,
+    Category.DOCUMENTATION.value,
+    Category.INTERNAL.value,
 )
 
 
@@ -34,7 +43,7 @@ def main(dev_name, dev_start_date, dev_end_date=datetime.today(), repo_name='MET
 
     print_banner('ADD THIS TO METplus Coordinated Release Acceptance Testing')
 
-    print_release_testing(repo_name, dev_name, all_issues)
+    print_release_testing(repo_name, dev_name, all_issues, issues_by_category)
 
 
 def get_all_issues_since_dev_start(token, repo_name, dev_start_date):
@@ -66,7 +75,7 @@ def print_issues_by_category(repo_name, issues_by_category):
         print()
         if category != 'none':
             header = category
-            if header in ('Enhancement', 'New Wrapper', 'New Use Case'):
+            if header in (Category.ENHANCEMENT.value, Category.NEW_WRAPPER.value, Category.NEW_USE_CASE.value):
                 header = f'{header}s'
             print(f"  .. dropdown:: {header}\n")
         elif issues:
@@ -101,11 +110,23 @@ def get_issues_by_category(all_issues):
     return issues_by_category
 
 
-def print_release_testing(repo_name, dev_name, all_issues):
+def print_release_testing(repo_name, dev_name, all_issues, issues_by_category):
     dev_info = dev_name.split('-')[1]
-    for issue in all_issues:
-        num = issue.number
-        print(f"| **OPEN** || [#{num}](https://github.com/{GITHUB_ORG}/{repo_name}/issues/{num}) | {dev_info} |||")
+    # put all new wrapper, new use case, documentation, and bugfix issues in single item with PASS status
+    pass_issues_fmt = []
+    pass_issues_nums = []
+    for category, issues in issues_by_category.items():
+        if issues is None: continue
+        if category not in (Category.NEW_WRAPPER.value, Category.NEW_USE_CASE.value, Category.DOCUMENTATION.value, Category.BUGFIX.value):
+            continue
+        for issue in issues:
+            pass_issues_nums.append(issue.number)
+            pass_issues_fmt.append(f'[#{issue.number}](https://github.com/{GITHUB_ORG}/{repo_name}/issues/{issue.number})')
+
+    print(f"| **PASS** | {', '.join(pass_issues_fmt)} | {dev_info} | | No external testing required |")
+
+    for issue in [item for item in all_issues if item.number not in pass_issues_nums]:
+        print(f"| **OPEN** | [#{issue.number}](https://github.com/{GITHUB_ORG}/{repo_name}/issues/{issue.number}) | {dev_info} | | |")
 
 
 if __name__ == '__main__':
