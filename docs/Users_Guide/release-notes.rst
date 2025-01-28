@@ -68,7 +68,8 @@ METplus Version 6.1.0 Beta 1 Release Notes (2025-01-28)
 
   .. dropdown:: New Wrappers
 
-     NONE
+     * PairStat
+       (`#2781 <https://github.com/dtcenter/METplus/issues/2781>`_)
 
   .. dropdown:: New Use Cases
 
