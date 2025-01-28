@@ -165,13 +165,14 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                              data_types=('FCST', 'OBS'),
                              app_name=self.app_name)
 
-        self.get_input_templates(c_dict, {
+        input_info = {
             'FCST': {'prefix': 'FCST_SERIES_ANALYSIS', 'required': False},
             'OBS': {'prefix': 'OBS_SERIES_ANALYSIS', 'required': False},
             'BOTH': {'prefix': 'BOTH_SERIES_ANALYSIS', 'required': False},
             'TC_STAT': {'prefix': 'SERIES_ANALYSIS_TC_STAT', 'required': False},
             'AGGR': {'prefix': 'SERIES_ANALYSIS_AGGR', 'required': False},
-        })
+        }
+        self.get_input_templates(c_dict, input_info)
 
         self._handle_fcst_obs_or_both_c_dict(c_dict)
 
@@ -306,8 +307,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                 extra_args={'remove_quotes': True}
             )
 
-        c_dict['USING_BOTH'] = (c_dict['BOTH_INPUT_TEMPLATE'] or
-                                c_dict.get('BOTH_INPUT_FILE_LIST'))
+        c_dict['USING_BOTH'] = bool(c_dict['BOTH_INPUT_TEMPLATE'] or
+                                    c_dict.get('BOTH_INPUT_FILE_LIST'))
 
         if c_dict['USING_BOTH']:
 
@@ -468,7 +469,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         for lead in leads:
             current_input_dict['lead'] = lead
             new_files = self.get_all_files_for_lead(current_input_dict)
-            all_files.extend(new_files)
+            self._update_list_with_new_files(new_files, all_files)
+
         return all_files
 
     def run_at_time_once(self, time_info, lead_group=None):
@@ -570,7 +572,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             file_dict = {'time_info': time_info.copy()}
             if self.c_dict['USING_BOTH']:
                 fcst_files = self.find_input_files(time_info, 'BOTH')
-                obs_files = fcst_files
+                obs_files = fcst_files.copy()
             else:
                 fcst_files = self.find_input_files(time_info, 'FCST')
                 obs_files = self.find_input_files(time_info, 'OBS')
@@ -582,6 +584,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
             file_dict[fcst_key] = fcst_files
             file_dict[obs_key] = obs_files
+            file_dict['input_time_info'] = [time_info.copy()]
             file_dict_list.append(file_dict)
 
         return file_dict_list
@@ -1091,8 +1094,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         # loop through fcst/obs files to read time info
         # for each file apply time info to field info and add to list
-        for file_dict in self.c_dict['ALL_FILES']:
-            file_time_info = file_dict['time_info']
+        for file_time_info in self.c_dict['ALL_FILES'][0].get('input_time_info', []):
             field = self._get_field_sub_level(data_type, var_info, file_time_info)
             if field:
                 field_list.extend(field)
@@ -1128,40 +1130,3 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             v_extra=var_info[f'{data_type}_extra'],
             d_type=data_type.upper()
         )
-
-    @staticmethod
-    def _get_times_from_file_list(file_path, templates):
-        """!Generator that yields time info dictionaries.
-        Loops through file paths found in text file and use list of filename
-        templates to parse time information from each file.
-
-        @param file_path path to file list file to parse
-        @param templates list of filename templates to use to parse time info
-        out of file paths found in file_path file
-        """
-        try:
-            with open(file_path, 'r') as file_handle:
-                file_list = file_handle.read().splitlines()[1:]
-        except FileNotFoundError:
-            return
-
-        for file_name in file_list:
-            found = False
-            file_time_info = None
-            for template in templates:
-                file_time_info = parse_template(template, file_name)
-                if file_time_info:
-                    found = True
-                    break
-            if not found:
-                continue
-            yield file_time_info
-
-    def _update_list_with_new_files(self, time_info, list_to_update):
-        new_files = self.get_files_from_time(time_info)
-        if not new_files:
-            return
-        if isinstance(new_files, list):
-            list_to_update.extend(new_files)
-        else:
-            list_to_update.append(new_files)

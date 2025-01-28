@@ -96,9 +96,6 @@ def test_read_climo_field(metplus_config, config_overrides, expected_value):
         # 13 time_interp_method
         ({f'APP_CLIMO_{type_upper}_TIME_INTERP_METHOD': 'NEAREST', },
          f'climo_{type_lower} = ' + '{time_interp_method = NEAREST;}'),
-        # 14 match_month
-        ({f'APP_CLIMO_{type_upper}_MATCH_MONTH': 'True', },
-         f'climo_{type_lower} = ' + '{match_month = TRUE;}'),
         # 15 day_interval - int
         ({f'APP_CLIMO_{type_upper}_DAY_INTERVAL': '30', },
          f'climo_{type_lower} = ' + '{day_interval = 30;}'),
@@ -117,7 +114,6 @@ def test_read_climo_field(metplus_config, config_overrides, expected_value):
              f'APP_CLIMO_{type_upper}_REGRID_VLD_THRESH': '0.5',
              f'APP_CLIMO_{type_upper}_REGRID_SHAPE': 'SQUARE',
              f'APP_CLIMO_{type_upper}_TIME_INTERP_METHOD': 'NEAREST',
-             f'APP_CLIMO_{type_upper}_MATCH_MONTH': 'True',
              f'APP_CLIMO_{type_upper}_DAY_INTERVAL': '30',
              f'APP_CLIMO_{type_upper}_HOUR_INTERVAL': '12',
          },
@@ -127,7 +123,7 @@ def test_read_climo_field(metplus_config, config_overrides, expected_value):
           'regrid = {method = NEAREST;width = 1;'
           'vld_thresh = 0.5;shape = SQUARE;}'
           'time_interp_method = NEAREST;'
-          'match_month = TRUE;day_interval = 30;'
+          'day_interval = 30;'
           'hour_interval = 12;}')),
     ]
 )

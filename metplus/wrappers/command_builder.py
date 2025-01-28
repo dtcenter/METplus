@@ -906,10 +906,10 @@ class CommandBuilder:
         files were found, fill in input_files list with MISSING to allow valid
         threshold check inside MET tool to work properly.
         """
-        num_expected = self.c_dict['N_MEMBERS']
+        num_expected = self.c_dict.get('N_MEMBERS')
 
         # if expected members count is unset, skip check
-        if num_expected == MISSING_DATA_VALUE:
+        if num_expected is None or num_expected == MISSING_DATA_VALUE:
             return True
 
         num_found = len(input_files)

@@ -274,9 +274,6 @@ def test_gen_ens_prod_missing_inputs(metplus_config, get_test_data_dir, allow_mi
         ({'GEN_ENS_PROD_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST', },
          {
              'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {time_interp_method = NEAREST;}'}),
-        # 36
-        ({'GEN_ENS_PROD_CLIMO_MEAN_MATCH_MONTH': 'True', },
-         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {match_month = TRUE;}'}),
         # 37
         ({'GEN_ENS_PROD_CLIMO_MEAN_DAY_INTERVAL': '30', },
          {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {day_interval = 30;}'}),
@@ -292,7 +289,6 @@ def test_gen_ens_prod_missing_inputs(metplus_config, get_test_data_dir, allow_mi
              'GEN_ENS_PROD_CLIMO_MEAN_REGRID_VLD_THRESH': '0.5',
              'GEN_ENS_PROD_CLIMO_MEAN_REGRID_SHAPE': 'SQUARE',
              'GEN_ENS_PROD_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST',
-             'GEN_ENS_PROD_CLIMO_MEAN_MATCH_MONTH': 'True',
              'GEN_ENS_PROD_CLIMO_MEAN_DAY_INTERVAL': '30',
              'GEN_ENS_PROD_CLIMO_MEAN_HOUR_INTERVAL': '12',
          },
@@ -302,7 +298,7 @@ def test_gen_ens_prod_missing_inputs(metplus_config, get_test_data_dir, allow_mi
                                       'regrid = {method = NEAREST;width = 1;'
                                       'vld_thresh = 0.5;shape = SQUARE;}'
                                       'time_interp_method = NEAREST;'
-                                      'match_month = TRUE;day_interval = 30;'
+                                      'day_interval = 30;'
                                       'hour_interval = 12;}')}),
         # 40 climo stdev
         ({'GEN_ENS_PROD_CLIMO_STDEV_FILE_NAME': '/some/climo_stdev/file.txt', },
@@ -330,9 +326,6 @@ def test_gen_ens_prod_missing_inputs(metplus_config, get_test_data_dir, allow_mi
         ({'GEN_ENS_PROD_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST', },
          {
              'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {time_interp_method = NEAREST;}'}),
-        # 47
-        ({'GEN_ENS_PROD_CLIMO_STDEV_MATCH_MONTH': 'True', },
-         {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {match_month = TRUE;}'}),
         # 48
         ({'GEN_ENS_PROD_CLIMO_STDEV_DAY_INTERVAL': '30', },
          {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {day_interval = 30;}'}),
@@ -348,7 +341,6 @@ def test_gen_ens_prod_missing_inputs(metplus_config, get_test_data_dir, allow_mi
              'GEN_ENS_PROD_CLIMO_STDEV_REGRID_VLD_THRESH': '0.5',
              'GEN_ENS_PROD_CLIMO_STDEV_REGRID_SHAPE': 'SQUARE',
              'GEN_ENS_PROD_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST',
-             'GEN_ENS_PROD_CLIMO_STDEV_MATCH_MONTH': 'True',
              'GEN_ENS_PROD_CLIMO_STDEV_DAY_INTERVAL': '30',
              'GEN_ENS_PROD_CLIMO_STDEV_HOUR_INTERVAL': '12',
          },
@@ -358,7 +350,7 @@ def test_gen_ens_prod_missing_inputs(metplus_config, get_test_data_dir, allow_mi
                                       'regrid = {method = NEAREST;width = 1;'
                                       'vld_thresh = 0.5;shape = SQUARE;}'
                                       'time_interp_method = NEAREST;'
-                                      'match_month = TRUE;day_interval = 30;'
+                                      'day_interval = 30;'
                                       'hour_interval = 12;}')}),
         # 51
         ({'GEN_ENS_PROD_NBRHD_PROB_WIDTH': '5', },
@@ -461,8 +453,6 @@ def test_gen_ens_prod_missing_inputs(metplus_config, get_test_data_dir, allow_mi
          {'METPLUS_ENS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {shape = SQUARE;}}'}),
         ({'GEN_ENS_PROD_ENS_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST', },
          {'METPLUS_ENS_CLIMO_MEAN_DICT': 'climo_mean = {time_interp_method = NEAREST;}'}),
-        ({'GEN_ENS_PROD_ENS_CLIMO_MEAN_MATCH_MONTH': 'True', },
-         {'METPLUS_ENS_CLIMO_MEAN_DICT': 'climo_mean = {match_month = TRUE;}'}),
         ({'GEN_ENS_PROD_ENS_CLIMO_MEAN_DAY_INTERVAL': '30', },
          {'METPLUS_ENS_CLIMO_MEAN_DICT': 'climo_mean = {day_interval = 30;}'}),
         ({'GEN_ENS_PROD_ENS_CLIMO_MEAN_DAY_INTERVAL': 'NA', },
@@ -478,7 +468,6 @@ def test_gen_ens_prod_missing_inputs(metplus_config, get_test_data_dir, allow_mi
           'GEN_ENS_PROD_ENS_CLIMO_MEAN_REGRID_VLD_THRESH': '0.5',
           'GEN_ENS_PROD_ENS_CLIMO_MEAN_REGRID_SHAPE': 'SQUARE',
           'GEN_ENS_PROD_ENS_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST',
-          'GEN_ENS_PROD_ENS_CLIMO_MEAN_MATCH_MONTH': 'True',
           'GEN_ENS_PROD_ENS_CLIMO_MEAN_DAY_INTERVAL': '30',
           'GEN_ENS_PROD_ENS_CLIMO_MEAN_HOUR_INTERVAL': '12', },
          {'METPLUS_ENS_CLIMO_MEAN_DICT': ('climo_mean = {file_name = '
@@ -487,7 +476,7 @@ def test_gen_ens_prod_missing_inputs(metplus_config, get_test_data_dir, allow_mi
                                            'regrid = {method = NEAREST;width = 1;'
                                            'vld_thresh = 0.5;shape = SQUARE;}'
                                            'time_interp_method = NEAREST;'
-                                           'match_month = TRUE;day_interval = 30;'
+                                           'day_interval = 30;'
                                            'hour_interval = 12;}')}),
         # ens climo_stdev (quietly supported)
         ({'GEN_ENS_PROD_ENS_CLIMO_STDEV_FILE_NAME': '/some/climo_stdev/file.txt', },
@@ -504,8 +493,6 @@ def test_gen_ens_prod_missing_inputs(metplus_config, get_test_data_dir, allow_mi
          {'METPLUS_ENS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {shape = SQUARE;}}'}),
         ({'GEN_ENS_PROD_ENS_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST', },
          {'METPLUS_ENS_CLIMO_STDEV_DICT': 'climo_stdev = {time_interp_method = NEAREST;}'}),
-        ({'GEN_ENS_PROD_ENS_CLIMO_STDEV_MATCH_MONTH': 'True', },
-         {'METPLUS_ENS_CLIMO_STDEV_DICT': 'climo_stdev = {match_month = TRUE;}'}),
         ({'GEN_ENS_PROD_ENS_CLIMO_STDEV_DAY_INTERVAL': '30', },
          {'METPLUS_ENS_CLIMO_STDEV_DICT': 'climo_stdev = {day_interval = 30;}'}),
         ({'GEN_ENS_PROD_ENS_CLIMO_STDEV_DAY_INTERVAL': 'NA', },
@@ -521,7 +508,6 @@ def test_gen_ens_prod_missing_inputs(metplus_config, get_test_data_dir, allow_mi
           'GEN_ENS_PROD_ENS_CLIMO_STDEV_REGRID_VLD_THRESH': '0.5',
           'GEN_ENS_PROD_ENS_CLIMO_STDEV_REGRID_SHAPE': 'SQUARE',
           'GEN_ENS_PROD_ENS_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST',
-          'GEN_ENS_PROD_ENS_CLIMO_STDEV_MATCH_MONTH': 'True',
           'GEN_ENS_PROD_ENS_CLIMO_STDEV_DAY_INTERVAL': '30',
           'GEN_ENS_PROD_ENS_CLIMO_STDEV_HOUR_INTERVAL': '12', },
          {'METPLUS_ENS_CLIMO_STDEV_DICT': ('climo_stdev = {file_name = '
@@ -530,7 +516,7 @@ def test_gen_ens_prod_missing_inputs(metplus_config, get_test_data_dir, allow_mi
                                             'regrid = {method = NEAREST;width = 1;'
                                             'vld_thresh = 0.5;shape = SQUARE;}'
                                             'time_interp_method = NEAREST;'
-                                            'match_month = TRUE;day_interval = 30;'
+                                            'day_interval = 30;'
                                             'hour_interval = 12;}')}),
 
         ({'GEN_ENS_PROD_CLIMO_MEAN_VAR1_NAME': 'UGRD', 'GEN_ENS_PROD_CLIMO_MEAN_VAR1_LEVELS': 'P850,P500,P250', },

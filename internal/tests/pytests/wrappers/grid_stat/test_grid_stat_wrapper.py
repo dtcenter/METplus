@@ -3,9 +3,9 @@
 import pytest
 
 import os
-from datetime import datetime
 
 from metplus.wrappers.grid_stat_wrapper import GridStatWrapper
+from internal.tests.pytests.conftest import stat_runtime_freq_test_params
 
 fcst_dir = '/some/path/fcst'
 obs_dir = '/some/path/obs'
@@ -59,14 +59,7 @@ def set_minimum_config_settings(config):
 
 
 @pytest.mark.parametrize(
-    'once_per_field, missing, run, thresh, errors, allow_missing', [
-        (False, 6, 12, 0.5, 0, True),
-        (False, 6, 12, 0.6, 1, True),
-        (True, 12, 24, 0.5, 0, True),
-        (True, 12, 24, 0.6, 1, True),
-        (False, 6, 12, 0.5, 6, False),
-        (True, 12, 24, 0.5, 12, False),
-    ]
+    'once_per_field, missing, run, thresh, errors, allow_missing', stat_runtime_freq_test_params
 )
 @pytest.mark.wrapper_b
 def test_grid_stat_missing_inputs(metplus_config, get_test_data_dir,
@@ -537,9 +530,6 @@ def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
          {
              'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {time_interp_method = NEAREST;}'}),
 
-        ({'GRID_STAT_CLIMO_MEAN_MATCH_MONTH': 'True', },
-         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {match_month = TRUE;}'}),
-
         ({'GRID_STAT_CLIMO_MEAN_DAY_INTERVAL': '30', },
          {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {day_interval = 30;}'}),
 
@@ -560,7 +550,6 @@ def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
              'GRID_STAT_CLIMO_MEAN_REGRID_VLD_THRESH': '0.5',
              'GRID_STAT_CLIMO_MEAN_REGRID_SHAPE': 'SQUARE',
              'GRID_STAT_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST',
-             'GRID_STAT_CLIMO_MEAN_MATCH_MONTH': 'True',
              'GRID_STAT_CLIMO_MEAN_DAY_INTERVAL': '30',
              'GRID_STAT_CLIMO_MEAN_HOUR_INTERVAL': '12',
          },
@@ -570,7 +559,7 @@ def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
                                       'regrid = {method = NEAREST;width = 1;'
                                       'vld_thresh = 0.5;shape = SQUARE;}'
                                       'time_interp_method = NEAREST;'
-                                      'match_month = TRUE;day_interval = 30;'
+                                      'day_interval = 30;'
                                       'hour_interval = 12;}')}),
 
         # climo stdev
@@ -600,9 +589,6 @@ def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
          {
              'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {time_interp_method = NEAREST;}'}),
 
-        ({'GRID_STAT_CLIMO_STDEV_MATCH_MONTH': 'True', },
-         {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {match_month = TRUE;}'}),
-
         ({'GRID_STAT_CLIMO_STDEV_DAY_INTERVAL': '30', },
          {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {day_interval = 30;}'}),
 
@@ -617,7 +603,6 @@ def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
              'GRID_STAT_CLIMO_STDEV_REGRID_VLD_THRESH': '0.5',
              'GRID_STAT_CLIMO_STDEV_REGRID_SHAPE': 'SQUARE',
              'GRID_STAT_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST',
-             'GRID_STAT_CLIMO_STDEV_MATCH_MONTH': 'True',
              'GRID_STAT_CLIMO_STDEV_DAY_INTERVAL': '30',
              'GRID_STAT_CLIMO_STDEV_HOUR_INTERVAL': '12',
          },
@@ -627,7 +612,7 @@ def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
                                       'regrid = {method = NEAREST;width = 1;'
                                       'vld_thresh = 0.5;shape = SQUARE;}'
                                       'time_interp_method = NEAREST;'
-                                      'match_month = TRUE;day_interval = 30;'
+                                      'day_interval = 30;'
                                       'hour_interval = 12;}')}),
         # ignore USE_FCST because FIELD is set
         (
@@ -744,8 +729,6 @@ def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
          {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {shape = SQUARE;}}'}),
         ({'GRID_STAT_FCST_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST', },
          {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {time_interp_method = NEAREST;}'}),
-        ({'GRID_STAT_FCST_CLIMO_MEAN_MATCH_MONTH': 'True', },
-         {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {match_month = TRUE;}'}),
         ({'GRID_STAT_FCST_CLIMO_MEAN_DAY_INTERVAL': '30', },
          {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {day_interval = 30;}'}),
         ({'GRID_STAT_FCST_CLIMO_MEAN_DAY_INTERVAL': 'NA', },
@@ -761,7 +744,6 @@ def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
           'GRID_STAT_FCST_CLIMO_MEAN_REGRID_VLD_THRESH': '0.5',
           'GRID_STAT_FCST_CLIMO_MEAN_REGRID_SHAPE': 'SQUARE',
           'GRID_STAT_FCST_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST',
-          'GRID_STAT_FCST_CLIMO_MEAN_MATCH_MONTH': 'True',
           'GRID_STAT_FCST_CLIMO_MEAN_DAY_INTERVAL': '30',
           'GRID_STAT_FCST_CLIMO_MEAN_HOUR_INTERVAL': '12', },
          {'METPLUS_FCST_CLIMO_MEAN_DICT': ('climo_mean = {file_name = '
@@ -770,7 +752,7 @@ def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
                                            'regrid = {method = NEAREST;width = 1;'
                                            'vld_thresh = 0.5;shape = SQUARE;}'
                                            'time_interp_method = NEAREST;'
-                                           'match_month = TRUE;day_interval = 30;'
+                                           'day_interval = 30;'
                                            'hour_interval = 12;}')}),
         # fcst climo_stdev
         ({'GRID_STAT_FCST_CLIMO_STDEV_FILE_NAME': '/some/climo_stdev/file.txt', },
@@ -792,8 +774,6 @@ def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
          {'METPLUS_FCST_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {shape = SQUARE;}}'}),
         ({'GRID_STAT_FCST_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST', },
          {'METPLUS_FCST_CLIMO_STDEV_DICT': 'climo_stdev = {time_interp_method = NEAREST;}'}),
-        ({'GRID_STAT_FCST_CLIMO_STDEV_MATCH_MONTH': 'True', },
-         {'METPLUS_FCST_CLIMO_STDEV_DICT': 'climo_stdev = {match_month = TRUE;}'}),
         ({'GRID_STAT_FCST_CLIMO_STDEV_DAY_INTERVAL': '30', },
          {'METPLUS_FCST_CLIMO_STDEV_DICT': 'climo_stdev = {day_interval = 30;}'}),
         ({'GRID_STAT_FCST_CLIMO_STDEV_DAY_INTERVAL': 'NA', },
@@ -809,7 +789,6 @@ def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
           'GRID_STAT_FCST_CLIMO_STDEV_REGRID_VLD_THRESH': '0.5',
           'GRID_STAT_FCST_CLIMO_STDEV_REGRID_SHAPE': 'SQUARE',
           'GRID_STAT_FCST_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST',
-          'GRID_STAT_FCST_CLIMO_STDEV_MATCH_MONTH': 'True',
           'GRID_STAT_FCST_CLIMO_STDEV_DAY_INTERVAL': '30',
           'GRID_STAT_FCST_CLIMO_STDEV_HOUR_INTERVAL': '12', },
          {'METPLUS_FCST_CLIMO_STDEV_DICT': ('climo_stdev = {file_name = '
@@ -818,7 +797,7 @@ def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
                                             'regrid = {method = NEAREST;width = 1;'
                                             'vld_thresh = 0.5;shape = SQUARE;}'
                                             'time_interp_method = NEAREST;'
-                                            'match_month = TRUE;day_interval = 30;'
+                                            'day_interval = 30;'
                                             'hour_interval = 12;}')}),
         # obs climo_mean
         ({'GRID_STAT_OBS_CLIMO_MEAN_FILE_NAME': '/some/climo_mean/file.txt', },
@@ -840,8 +819,6 @@ def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
          {'METPLUS_OBS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {shape = SQUARE;}}'}),
         ({'GRID_STAT_OBS_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST', },
          {'METPLUS_OBS_CLIMO_MEAN_DICT': 'climo_mean = {time_interp_method = NEAREST;}'}),
-        ({'GRID_STAT_OBS_CLIMO_MEAN_MATCH_MONTH': 'True', },
-         {'METPLUS_OBS_CLIMO_MEAN_DICT': 'climo_mean = {match_month = TRUE;}'}),
         ({'GRID_STAT_OBS_CLIMO_MEAN_DAY_INTERVAL': '30', },
          {'METPLUS_OBS_CLIMO_MEAN_DICT': 'climo_mean = {day_interval = 30;}'}),
         ({'GRID_STAT_OBS_CLIMO_MEAN_DAY_INTERVAL': 'NA', },
@@ -857,7 +834,6 @@ def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
           'GRID_STAT_OBS_CLIMO_MEAN_REGRID_VLD_THRESH': '0.5',
           'GRID_STAT_OBS_CLIMO_MEAN_REGRID_SHAPE': 'SQUARE',
           'GRID_STAT_OBS_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST',
-          'GRID_STAT_OBS_CLIMO_MEAN_MATCH_MONTH': 'True',
           'GRID_STAT_OBS_CLIMO_MEAN_DAY_INTERVAL': '30',
           'GRID_STAT_OBS_CLIMO_MEAN_HOUR_INTERVAL': '12', },
          {'METPLUS_OBS_CLIMO_MEAN_DICT': ('climo_mean = {file_name = '
@@ -866,7 +842,7 @@ def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
                                           'regrid = {method = NEAREST;width = 1;'
                                           'vld_thresh = 0.5;shape = SQUARE;}'
                                           'time_interp_method = NEAREST;'
-                                          'match_month = TRUE;day_interval = 30;'
+                                          'day_interval = 30;'
                                           'hour_interval = 12;}')}),
         # obs climo_stdev
         ({'GRID_STAT_OBS_CLIMO_STDEV_FILE_NAME': '/some/climo_stdev/file.txt', },
@@ -888,8 +864,6 @@ def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
          {'METPLUS_OBS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {shape = SQUARE;}}'}),
         ({'GRID_STAT_OBS_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST', },
          {'METPLUS_OBS_CLIMO_STDEV_DICT': 'climo_stdev = {time_interp_method = NEAREST;}'}),
-        ({'GRID_STAT_OBS_CLIMO_STDEV_MATCH_MONTH': 'True', },
-         {'METPLUS_OBS_CLIMO_STDEV_DICT': 'climo_stdev = {match_month = TRUE;}'}),
         ({'GRID_STAT_OBS_CLIMO_STDEV_DAY_INTERVAL': '30', },
          {'METPLUS_OBS_CLIMO_STDEV_DICT': 'climo_stdev = {day_interval = 30;}'}),
         ({'GRID_STAT_OBS_CLIMO_STDEV_DAY_INTERVAL': 'NA', },
@@ -905,7 +879,6 @@ def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
           'GRID_STAT_OBS_CLIMO_STDEV_REGRID_VLD_THRESH': '0.5',
           'GRID_STAT_OBS_CLIMO_STDEV_REGRID_SHAPE': 'SQUARE',
           'GRID_STAT_OBS_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST',
-          'GRID_STAT_OBS_CLIMO_STDEV_MATCH_MONTH': 'True',
           'GRID_STAT_OBS_CLIMO_STDEV_DAY_INTERVAL': '30',
           'GRID_STAT_OBS_CLIMO_STDEV_HOUR_INTERVAL': '12', },
          {'METPLUS_OBS_CLIMO_STDEV_DICT': ('climo_stdev = {file_name = '
@@ -914,7 +887,7 @@ def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
                                           'regrid = {method = NEAREST;width = 1;'
                                           'vld_thresh = 0.5;shape = SQUARE;}'
                                           'time_interp_method = NEAREST;'
-                                          'match_month = TRUE;day_interval = 30;'
+                                          'day_interval = 30;'
                                           'hour_interval = 12;}')}),
         ({'GRID_STAT_GRADIENT_DX': '2', },
          {'METPLUS_GRADIENT_DICT': 'gradient = {dx = [2];}'}),
