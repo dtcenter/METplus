@@ -25,6 +25,7 @@ Use Cases by MET Tool:
    | `MADIS2NC <../search.html?q=MADIS2NCToolUseCase&check_keywords=yes&area=default>`_
    | `MODE <../search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_
    | `MTD <../search.html?q=MTDToolUseCase&check_keywords=yes&area=default>`_
+   | `PairStat <../search.html?q=PairStatToolUseCase&check_keywords=yes&area=default>`_
    | `PB2NC <../search.html?q=PB2NCToolUseCase&check_keywords=yes&area=default>`_
    | `PCPCombine <../search.html?q=PCPCombineToolUseCase&check_keywords=yes&area=default>`_
    | `Point2Grid <../search.html?q=Point2GridToolUseCase&check_keywords=yes&area=default>`_
@@ -53,6 +54,7 @@ Use Cases by MET Tool:
    | **MADIS2NC**: *MADIS2NCToolUseCase*
    | **MODE**: *MODEToolUseCase*
    | **MTD**: *MTDToolUseCase*
+   | **PairStat**: *PairStatToolUseCase*
    | **PB2NC**: *PB2NCToolUseCase*
    | **PCPCombine**: *PCPCombineToolUseCase*
    | **Point2Grid**: *Point2GridToolUseCase*
