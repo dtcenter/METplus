@@ -77,6 +77,8 @@ def print_issues_by_category(repo_name, issues_by_category):
             header = category
             if header in (Category.ENHANCEMENT.value, Category.NEW_WRAPPER.value, Category.NEW_USE_CASE.value):
                 header = f'{header}s'
+            elif header == Category.INTERNAL.value:
+                header = 'Build, repository, and test'
             print(f"  .. dropdown:: {header}\n")
         elif issues:
             print('COULD NOT PARSE CATEGORY FROM THESE:\n')

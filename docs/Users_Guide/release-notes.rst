@@ -88,7 +88,7 @@ METplus Version 6.1.0 Beta 1 Release Notes (2025-01-28)
      * Enhance the Release Guide documentation by consistently adding dropdown instructions
        (`#2844 <https://github.com/dtcenter/METplus/issues/2844>`_)
 
-  .. dropdown:: Internal
+  .. dropdown:: Build, repository, and test
 
      * Confirm 6.0.0 Docker images are auto-generated for dtcenter/metplus and metplus-analysis
        (`#2756 <https://github.com/dtcenter/METplus/issues/2756>`_)
