@@ -28,7 +28,7 @@ from ..util import get_lead_sequence, get_lead_sequence_groups
 from ..util import ti_get_hours_from_lead, ti_get_seconds_from_lead
 from ..util import ti_get_lead_string
 from ..util import parse_var_list
-from ..util import add_to_time_input, is_single_run_time
+from ..util import add_to_time_input
 from ..util import field_read_prob_info, add_field_info_to_time_info
 from .plot_data_plane_wrapper import PlotDataPlaneWrapper
 from . import RuntimeFreqWrapper
@@ -1086,8 +1086,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         # if there are no time tags (init/valid/lead) in the field level
         # or if init, valid, and lead have values in time_info,
         # get field info for a single field to pass to the MET config file
-        if (not self._has_time_tag(var_info[f'{data_type}_level']) or
-                is_single_run_time(time_info)):
+        if (not self._has_time_tag(var_info[f'{data_type}_level']) and
+                not self._has_time_tag(var_info[f'{data_type}_name'])):
             return self._get_field_sub_level(data_type, var_info, time_info)
 
         field_list = []
@@ -1122,11 +1122,12 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         @param time_dict dictionary containing time information
         @returns string with formatted field info or None
         """
+        name = do_string_sub(var_info[f'{data_type}_name'], **time_dict)
         level = do_string_sub(var_info[f'{data_type}_level'], **time_dict)
         return self.get_field_info(
             v_level=level,
             v_thresh=var_info[f'{data_type}_thresh'],
-            v_name=var_info[f'{data_type}_name'],
+            v_name=name,
             v_extra=var_info[f'{data_type}_extra'],
             d_type=data_type.upper()
         )
