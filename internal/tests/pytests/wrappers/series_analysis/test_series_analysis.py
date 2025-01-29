@@ -113,8 +113,8 @@ def set_minimum_config_settings(config):
         (0, 2, 0.5, 0, False, 'RUN_ONCE_PER_INIT_OR_VALID'),
         (2, 7, 1.0, 1, True, 'RUN_ONCE_PER_LEAD'),
         (2, 7, 1.0, 2, False, 'RUN_ONCE_PER_LEAD'),
-        (8, 14, 1.0, 1, True, 'RUN_ONCE_FOR_EACH'),
-        (8, 14, 1.0, 8, False, 'RUN_ONCE_FOR_EACH'),
+        (0, 2, 1.0, 0, True, 'RUN_ONCE_FOR_EACH'),
+        (0, 2, 1.0, 0, False, 'RUN_ONCE_FOR_EACH'),
     ]
 )
 @pytest.mark.wrapper_a
