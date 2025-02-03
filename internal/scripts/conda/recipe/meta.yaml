@@ -68,10 +68,6 @@ requirements:
     - {{ compiler('fortran') }} # Adds Fortran Compiler (gfortran_linux-64 on Linux)
     - gsl
     - {{ compiler('cxx') }}
-    # Platform-specific dependencies
-    - gcc_linux-64=12        # GCC 12 on Linux         [linux]
-    - clang_osx-64           # Clang for macOS         [osx]
-    - clangxx_osx-64         # Clang++ for macOS       [osx]
     - libcxx  # Provides the C++ standard library (e.g., libc++ for macOS or libstdc++ on Linux)
     - libnetcdf
     - netcdf-cxx4=4.3.1
@@ -89,7 +85,6 @@ requirements:
     - _openmp_mutex=4.5 # [linux]
     - llvm-openmp  # [osx]
 
-
   host:
     - python 3.10
     - gsl
@@ -103,7 +98,6 @@ requirements:
     - numpy
     - pandas
     - pyyaml
-    - netcdf4
     - scipy
     - fftw
     - ncurses
