@@ -37,7 +37,6 @@ echo "export MET_FONT_DIR=${PREFIX}/gs-fonts\n" > "${PREFIX}/etc/conda/activate.
 mkdir -p "${PREFIX}/bin"
 ln -s "$(which ar)" "${PREFIX}/bin/ar"
 
-
 ###
 # Install eckit and atlas for ugrid support (requires ecbuild)
 ###
@@ -75,6 +74,9 @@ mkdir atlas/build
 # Link zlib
 # I think the package build script should take care of this, but one build step fails without this.
 export CXXFLAGS="-lz ${CXXFLAGS}"
+
+# prevent isatty conflict
+export CXXFLAGS="-DHAVE_ISATTY ${CXXFLAGS}"
 
 # Update config.sub and config.guess before running configure
 wget -O ./MET/config.sub http://git.savannah.gnu.org/cgit/config.git/plain/config.sub
