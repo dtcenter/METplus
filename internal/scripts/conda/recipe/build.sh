@@ -30,7 +30,7 @@ mv "${SRC_DIR}/gs-fonts" "${PREFIX}/gs-fonts"
 # Not sure if this is a good idea, might be better just telling the user to download
 # and set the environment variable themselves.
 mkdir -p "${PREFIX}/etc/conda/activate.d"
-echo "export MET_FONT_DIR=${PREFIX}/gs-fonts\n" > "${PREFIX}/etc/conda/activate.d/${PKG_NAME}-activate.sh"
+printf "export MET_FONT_DIR=${PREFIX}/gs-fonts\n" > "${PREFIX}/etc/conda/activate.d/${PKG_NAME}-activate.sh"
 
 # Met doesn't respect the `AR` env variable and uses system `ar`, so link conda ar
 # to somewhere it will be used.
