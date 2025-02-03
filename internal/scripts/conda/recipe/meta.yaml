@@ -1,5 +1,5 @@
 {% set version = "6.0.0" %}
-{% set met_version = "12.0.0" %}
+{% set met_version = "12.0.1" %}
 {% set ecbuild_version = "3.9.0" %}
 {% set eckit_version = "1.28.4" %}
 {% set atlas_version = "0.37.0" %}
@@ -16,8 +16,8 @@ source:
 
   # MET
   - url: https://github.com/dtcenter/MET/archive/refs/tags/v{{ met_version }}.tar.gz
-    md5: 4f19fdafaa1befbd54747d522aa4022b
-    sha256: 9a54275cfefbad6010d4449a8fa756ad40fae03fa62a766cbbfda170c422e5e4
+    md5: 36c2fe59bb2a61728d9c57a8ded3e80c
+    sha256: ef396a99ca6c2248855848cd194f9ceaf3b051fb5e8c01a0b0b2a00110b1fcfb
     folder: MET
 
   # GS Fonts
