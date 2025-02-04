@@ -74,10 +74,6 @@ mkdir atlas/build
 # Install MET executables
 ###
 
-# Link zlib
-# I think the package build script should take care of this, but one build step fails without this.
-export CXXFLAGS="-lz ${CXXFLAGS}"
-
 # prevent isatty conflict
 export CXXFLAGS="-DHAVE_ISATTY ${CXXFLAGS}"
 
