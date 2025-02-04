@@ -1,6 +1,9 @@
 #!/bin/bash
 set -ex
 
+# turn off fortran optimization to prevent issues with external code
+export FFLAGS="-O0 ${FFLAGS}"
+
 export CFLAGS="-I${PREFIX}/include $CFLAGS"
 export CPPFLAGS="-I${PREFIX}/include $CPPFLAGS"
 export LIBRARY_PATH="${PREFIX}/lib:$LIBRARY_PATH"
