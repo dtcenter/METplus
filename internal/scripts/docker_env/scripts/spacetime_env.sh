@@ -1,16 +1,16 @@
 #! /bin/sh
 
 ################################################################################
-# Environment: spacetime.v6.1
-# Last Updated: 2025-02-05 (mccabe@ucar.edu)
+# Environment: spacetime.v6.0
+# Last Updated: 2023-09-12 (mccabe@ucar.edu)
 # Notes: Adds Python packages needed to generate coherence spectra (METplotpy)
 # Python Packages:
-#   netCDF4==1.7.2
-#   xarray==2025.1.2
-#   scipy==1.15.1
-#   matplotlib==
-#   pyngl==
-#   pyyaml==6.0.2
+#   netCDF4==1.6.4
+#   xarray==2023.8.0
+#   scipy==1.11.2
+#   matplotlib==3.7.2
+#   pyngl==1.6.1
+#   pyyaml==6.0.1
 #
 # Other Content: None
 ################################################################################
@@ -21,8 +21,6 @@ METPLUS_VERSION=$1
 # Conda environment to create
 ENV_NAME=spacetime.${METPLUS_VERSION}
 
-# Conda environment to use as base for new environment
-BASE_ENV=metplus_base.${METPLUS_VERSION}
+mamba create -y --name ${ENV_NAME} -c conda-forge python=3.10.4
 
-mamba create -y --clone ${BASE_ENV} --name ${ENV_NAME}
-mamba install -y --name ${ENV_NAME} -c conda-forge netCDF4==1.7.2 xarray==2025.1.2 scipy==1.15.1 matplotlib pyngl pyyaml==6.0.2
+mamba install -y --name ${ENV_NAME} -c conda-forge netCDF4==1.6.4 xarray==2023.8.0 scipy==1.11.2 matplotlib==3.7.2 pyngl==1.6.1 pyyaml==6.0.1
