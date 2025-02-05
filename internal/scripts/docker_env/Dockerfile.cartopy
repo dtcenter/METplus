@@ -23,7 +23,7 @@ RUN conda list --name ${ENV_NAME}.${METPLUS_ENV_VERSION} > \
 ARG METPLUS_ENV_VERSION
 ARG ENV_NAME
 RUN apt update && apt -y upgrade \
-  && apt install -y curl \
+  && apt --no-install-recommends install -y curl \
   && /usr/local/conda/envs/${ENV_NAME}.${METPLUS_ENV_VERSION}/bin/cartopy_feature_download.py cultural physical
 
 # remove base environment to free up space
