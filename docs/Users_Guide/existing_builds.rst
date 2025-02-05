@@ -30,11 +30,12 @@ in the
 
        | **NCAR MACHINE CASPER** (see 
           `Casper Information <https://ncar-hpc-docs.readthedocs.io/en/latest/compute-systems/casper/>`_)
-       | *Last Updated: October 30, 2024*
+       | *Last Updated: February 5, 2024*
+       | *Compiler and version: Intel oneAPI 2023.2.1*
 
-       * METplus-6.0.0-beta6
+       * METplus-6.0.0
 
-          * METplus-6.0.0-beta6 Installation: 
+          * METplus-6.0.0 Installation: 
 
             * /glade/work/dtcrt/METplus/casper/components/METplus/installation
 
@@ -52,9 +53,9 @@ in the
 
           export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
           module use $TOP_DIR/METplus/installations/modulefiles
-          module load metplus/6.0.0-beta6
+          module load metplus/6.0.0
 
-       * MET-12.0.0-beta6
+       * MET-12.0.2
 
          * MODULES:
 
@@ -62,9 +63,9 @@ in the
 
           export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
           module use $TOP_DIR/MET/installations/modulefiles
-          module load met/12.0.0-beta6
+          module load met/12.0.2
 
-       * METdataio-3.0.0-beta6
+       * METdataio-3.0.0
 
          * MODULES:
 
@@ -72,11 +73,11 @@ in the
 
           export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
           module use $TOP_DIR/METdataio/installations/modulefiles
-          module load metdataio/3.0.0-beta6
-          METcalcpy-3.0.0-beta6
+          module load metdataio/3.0.0
+          METcalcpy-3.0.0
           MODULES:
 
-       * METcalcpy-3.0.0-beta6
+       * METcalcpy-3.0.0
       
          * MODULES:
 
@@ -84,9 +85,9 @@ in the
 
           export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
           module use $TOP_DIR/METcalcpy/installations/modulefiles
-          module load metcalcpy/3.0.0-beta6
+          module load metcalcpy/3.0.0
 
-       * METplotpy-3.0.0-beta6
+       * METplotpy-3.0.0
 
          * MODULES:
 
@@ -94,7 +95,7 @@ in the
 
           export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
           module use $TOP_DIR/METplotpy/installations/modulefiles
-          module load metplotpy/3.0.0-beta6
+          module load metplotpy/3.0.0
 
     .. dropdown:: DERECHO
 
