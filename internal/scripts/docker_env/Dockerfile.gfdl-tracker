@@ -23,7 +23,7 @@ RUN apt update && apt -y upgrade \
   && apt install -y build-essential gfortran wget unzip curl csh file m4
 
 # install jasper, png, and zlib from MET tar_files
-RUN cd / && wget --no-check-certificate https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.met-base-v3.0.tgz \
+RUN cd / && wget https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.met-base-v3.0.tgz \
   && tar -zxf tar_files.met-base-v3.0.tgz \
   && unzip tar_files/jasper-1.900.1.zip \
   && export CPPFLAGS="-I$/usr/local/include" \
@@ -78,7 +78,7 @@ RUN cd / \
  && make check install
 
 RUN cd / \
- && wget --no-check-certificate https://dtcenter.ucar.edu/dfiles/code/METplus/gfdl_patch/standalone_gfdl-vortextracker_v3.9a_gcc.tar.gz \
+ && wget https://dtcenter.ucar.edu/dfiles/code/METplus/gfdl_patch/standalone_gfdl-vortextracker_v3.9a_gcc.tar.gz \
  && tar zxf standalone_gfdl-vortextracker_v3.9a_gcc.tar.gz \
  && cd standalone_gfdl-vortextracker_v3.9a_gcc \
  && unset FC && unset CC \
