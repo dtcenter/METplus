@@ -5,6 +5,8 @@ from met.point_nc import nc_point_obs
 from metcalcpy.diagnostics import land_surface
 from metpy.units import units
 
+print("\nSTARTING pyembed_ctp_obs_gdas.py\n")
+
 pd.set_option('display.max_rows', None)
 
 # Get the input PB2NC output filename as the input to this script

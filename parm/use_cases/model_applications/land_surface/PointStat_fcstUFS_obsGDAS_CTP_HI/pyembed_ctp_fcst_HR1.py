@@ -7,6 +7,8 @@ from itertools import repeat
 from metcalcpy.diagnostics.land_surface import calc_ctp
 from metpy.units import units
 
+print("\nSTARTING pyembed_ctp_fcst_HR1.py\n")
+
 # Function for unpacking results in a single vector back to a 2D N-D array
 def unpack_results(res,nx,ny):
   ret = np.empty([ny,nx])
