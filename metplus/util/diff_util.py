@@ -9,7 +9,6 @@ from numbers import Number
 from PIL import Image, ImageChops
 from pandas import isnull
 from numpy.ma import is_masked
-from numpy.core._exceptions import UFuncTypeError
 
 IMAGE_EXTENSIONS = [
     '.jpg',
