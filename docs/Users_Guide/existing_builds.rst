@@ -214,14 +214,14 @@ in the
      .. dropdown:: HERA
 
         | **NOAA MACHINE HERA**
-        | *Last updated: November 20, 2024*
-        | *Compiler and version: Intel oneAPI 2022.0.2*
+        | *Last updated: February 6, 2025*
+        | *Compiler and version: Intel oneAPI 2024.2.1*
 
-          * **METplus-6.0.0-rc1**
+          * **METplus-6.0.0**
 
-            * METplus-6.0.0-rc1 Installation
+            * METplus-6.0.0 Installation
 
-              * /contrib/METplus/METplus-6.0.0-rc1
+              * /contrib/METplus/METplus-6.0.0
 
             * METplus-6.0 Sample Data
 
@@ -235,41 +235,41 @@ in the
 
               .. code-block:: ini
 
-                 module load intel/2022.1.2
+                 module load intel/2024.2.1
                  module use /contrib/METplus/modulefiles
-                 module load metplus/6.0.0-rc1
+                 module load metplus/6.0.0
 
-          * **MET-12.0.0-rc1**
+          * **MET-12.0.0**
 
             * MODULES:
 
               .. code-block:: ini
 
-                  module load intel/2022.1.2
+                  module load intel/2024.2.1
                   module use -a /contrib/met/modulefiles/
-                  module load met/12.0.0-rc1
+                  module load met/12.0.0
 
-          * **METcalcpy-3.0.0-rc1 / METplotpy-3.0.0-rc1**
+          * **METcalcpy-3.0.0 / METplotpy-3.0.0**
 
             * MODULES:
 
               .. code-block:: ini
 
-                  module load intel/2022.1.2
+                  module load intel/2024.2.1
                   module use /contrib/METcalcpy/modulefiles
-                  module load metcalcpy/3.0.0-rc1
+                  module load metcalcpy/3.0.0
                   module use /contrib/METplotpy/modulefiles
-                  module load metplotpy/3.0.0-rc1
+                  module load metplotpy/3.0.0
 
-          * **METdataio-3.0.0-rc1**
+          * **METdataio-3.0.0**
 
             * MODULES:
 
               .. code-block:: ini
 
-                  module load intel/2022.1.2
+                  module load intel/2024.2.1
                   module use /contrib/METdataio/modulefiles
-                  module load metdataio/3.0.0-rc1
+                  module load metdataio/3.0.0
 
      .. dropdown:: HERCULES
 
