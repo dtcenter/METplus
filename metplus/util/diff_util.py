@@ -697,7 +697,7 @@ def _nc_fields_are_equal(field, nc_a, nc_b, debug=False):
     values_b = var_b[:]
     try:
         values_diff = values_a - values_b
-    except (UFuncTypeError, TypeError):
+    except TypeError:
         # handle non-numeric fields
         if not _all_values_are_equal(var_a, var_b):
             print(f"ERROR: Field ({field}) values (non-numeric) "
