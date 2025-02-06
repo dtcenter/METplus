@@ -8,6 +8,8 @@ from metcalcpy.diagnostics.land_surface import calc_humidity_index
 from metpy.units import units
 from metpy.calc import dewpoint_from_specific_humidity
 
+print("\nSTARTING pyembed_hi_fcst_HR1.py\n")
+
 # Function for unpacking results in a single vector back to a 2D N-D array
 def unpack_results(res,nx,ny):
   ret = np.empty([ny,nx])

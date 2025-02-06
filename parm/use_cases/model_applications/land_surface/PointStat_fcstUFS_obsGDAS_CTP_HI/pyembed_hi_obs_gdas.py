@@ -5,6 +5,8 @@ from met.point_nc import nc_point_obs
 from metcalcpy.diagnostics import land_surface
 from metpy.units import units
 
+print("\nSTARTING pyembed_hi_obs_gdas.py\n")
+
 pd.set_option('display.max_rows', None)
 
 # Get the input PB2NC output filename as the input to this script
@@ -84,7 +86,7 @@ for name,group in groups:
     hi = np.append(hi,-9999.)
   else:
     # Append the HI value
-    thishi = land_surface.calc_humidity_index(prsarr,tmparr,dewarr,-1,interp=False)
+    thishi = land_surface.calc_humidity_index(prsarr,tmparr,dewarr,-1)
     hi = np.append(hi,thishi.m)
 
 # After each station is processed, add in the missing 11-column data
