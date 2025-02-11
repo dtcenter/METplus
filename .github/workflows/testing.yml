@@ -194,7 +194,7 @@ jobs:
         with:
           categories: ${{ matrix.categories }}
           metplotpy_branch: 'default'
-          metcalcpy_branch: 'default'
+          metcalcpy_branch: 'feature_py3.12_fix'
           metdataio_branch: 'default'
 
       # copy logs with errors to error_logs directory to save as artifact
