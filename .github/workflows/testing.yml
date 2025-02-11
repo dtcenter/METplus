@@ -193,6 +193,9 @@ jobs:
         id: run_tests
         with:
           categories: ${{ matrix.categories }}
+          metplotpy_branch: 'default'
+          metcalcpy_branch: 'default'
+          metdataio_branch: 'default'
 
       # copy logs with errors to error_logs directory to save as artifact
       - name: Save error logs

@@ -95,11 +95,14 @@ def handle_automation_env(host_name, reqs):
 
     setup_env.append(f'cd {METPLUS_DOCKER_LOC}/..')
     for component in components:
-        version = get_component_version(input_component='METplus',
-                                        input_version=metplus_version,
-                                        output_component=component,
-                                        output_format='main_v{X}.{Y}',
-                                        get_dev=False)
+        # get branch if defined, otherwise determine from METplus version
+        version = os.environ.get(f'INPUT_{component.upper()}_BRANCH')
+        if not version or version == 'default':
+            version = get_component_version(input_component='METplus',
+                                            input_version=metplus_version,
+                                            output_component=component,
+                                            output_format='main_v{X}.{Y}',
+                                            get_dev=False)
         setup_env.extend((
             'git --version',
             f'git clone --single-branch --branch {version} https://github.com/dtcenter/{component}',
