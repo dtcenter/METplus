@@ -276,39 +276,40 @@ in the
      .. dropdown:: HERCULES
 
         | **NOAA MACHINE HERCULES (MANAGED BY MSU)**
-        | *Last updated:*
+        | *Last updated: February 11, 2025*
+	| *Compiler and version: Intel oneAPI 2022.2.1*
 
-          * **MET-12.0.0-beta3**
+          * **MET-12.0.2**
 
             * MODULES:
 
               * module load contrib
               * module load intel-oneapi-compilers/2022.2.1
-              * module load met/12.0.0-beta3
+              * module load met/12.0.2
 
-          * **METplus-6.0.0-beta3**
+          * **METplus-6.0.0**
 
-            * METplus-6.0.0-beta3 Installation
-            * METplus-6.0 Sample Data
+            * METplus-6.0.0 Installation: /apps/contrib/MET/METplus/METplus-6.0.0
+            * METplus-6.0 Sample Data:
 
               * /work/noaa/ovp/jprestop/METplus/METplus-6.0_sample_data
 
             * To use METplus run:
 
               * module load contrib
-              * module load metplus/6.0.0-beta3
+              * module load metplus/6.0.0
               * Users should create a file like 
-                /work/noaa/ovp/user_name/METplus/hercules.user_name.conf 
+                /work/noaa/ovp/jprestop/METplus/hercules.jpresto.conf 
                 to set a personalized INPUT_BASE and OUTPUT_BASE.
 
-          * **METcalcpy-3.0.0-beta3 / METplotpy-3.0.0-beta3**
+          * **METcalcpy-3.0.0 / METplotpy-3.0.0**
 
             * MODULES:
 
               * module load contrib
               * module load intel-oneapi-compilers/2022.2.1
-              * module load metcalcpy/3.0.0-beta3
-              * module load metplotpy/3.0.0-beta3
+              * module load metcalcpy/3.0.0
+              * module load metplotpy/3.0.0
 
             * PIP INSTALL:
 
@@ -319,13 +320,13 @@ in the
               * python -m pip install --user netcdf4
               * python -m pip install --user h5netcdf
 
-          * **METdataio-3.0.0-beta3**
+          * **METdataio-3.0.0**
 
             * MODULES:
 
               * module load contrib
               * module load intel-oneapi-compilers/2022.2.1
-              * module load metdataio/3.0.0-beta3
+              * module load metdataio/3.0.0
 
 
      .. dropdown:: ORION
