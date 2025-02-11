@@ -57,7 +57,7 @@
   {
     "category": "fire",
     "index_list": "0",
-    "run": true
+    "run": false
   },
   {
     "category": "land_surface",
@@ -144,7 +144,7 @@
   {
     "category": "pbl",
     "index_list": "0",
-    "run": true
+    "run": false
   },
   {
     "category": "precipitation",
