@@ -48,6 +48,7 @@ channels:
   - conda-forge
 
 build:
+  skip: true # [win]
   missing_dso_whitelist:
     {% if osx %}
     - libeckit.dylib
