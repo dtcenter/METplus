@@ -199,9 +199,9 @@ jobs:
         id: run_tests
         with:
           categories: ${{ matrix.categories }}
-          metplotpy_branch: ${{ github.event_name != 'workflow_dispatch' && '' || github.event.inputs.metplotpy_branch }}
-          metcalcpy_branch: ${{ github.event_name != 'workflow_dispatch' && '' || github.event.inputs.metcalcpy_branch }}
-          metdataio_branch: ${{ github.event_name != 'workflow_dispatch' && '' || github.event.inputs.metdataio_branch }}
+          metplotpy_branch: ${{ github.event.inputs.metplotpy_branch }}
+          metcalcpy_branch: ${{ github.event.inputs.metcalcpy_branch }}
+          metdataio_branch: ${{ github.event.inputs.metdataio_branch }}
 
       # copy logs with errors to error_logs directory to save as artifact
       - name: Save error logs
