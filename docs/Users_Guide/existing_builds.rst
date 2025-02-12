@@ -241,7 +241,7 @@ in the
                  module use /contrib/METplus/modulefiles
                  module load metplus/6.0.0
 
-          * **MET-12.0.0**
+          * **MET-12.0.2**
 
             * MODULES:
 
@@ -249,7 +249,7 @@ in the
 
                   module load intel/2024.2.1
                   module use -a /contrib/met/modulefiles/
-                  module load met/12.0.0
+                  module load met/12.0.2
 
           * **METcalcpy-3.0.0 / METplotpy-3.0.0**
 
@@ -349,7 +349,7 @@ in the
                  module load contrib
                  module load metplus/6.0.0
 
-          * **MET-12.0.0**
+          * **MET-12.0.2**
 
             * MODULES:
 
@@ -357,7 +357,7 @@ in the
 
                  module load contrib
                  module load intel-oneapi-compilers/2022.2.1
-                 module load met/12.0.0
+                 module load met/12.0.2
 
           * **METcalcpy-3.0.0 / METplotpy-3.0.0**
 
@@ -424,7 +424,7 @@ in the
                  module use /contrib/met/METplus/modulefiles
                  module load metplus/6.0.0
 
-          * **METv12.0.0**
+          * **METv12.0.2**
 
             * MODULES:
 
@@ -433,7 +433,7 @@ in the
                  module load intel/2024.2.1
                  module load contrib
                  module use /contrib/met/modulefiles
-                 module load met/12.0.0
+                 module load met/12.0.2
 
           * **METcalcpy-3.0.0 / METplotpy-3.0.0**
 
@@ -460,64 +460,65 @@ in the
      .. dropdown:: GAEA
 
         | **NOAA MACHINE GAEA**
-        | *Last Updated: July 16, 2024*
+        | *Last Updated: February 12, 2025*
+	| *Compiler and version: Intel oneAPI 2023.2.0*
 
-          * **METplus-6.0.0-beta5**
+          * **METplus-6.0.0**
 
-            * METplus-6.0.0-beta5 Installation
+            * METplus-6.0.0 Installation
 
-              * /usw/met/METplus/METplus-6.0.0-beta5
+              * /usw/met/METplus/METplus-6.0.0
 
             * METplus-6.0 Sample Data
 
               * /ncrc/proj/nggps_psd/user_name/projects/METplus/sample_data/METplus-6.0_sample_data
 
             * To use METplus run: Users should create a file like 
-              /gpfs/f5/esrl/proj-shared/user_name/projects/METplus/gaea.metplus.conf 
+              /gpfs/f5/esrl/proj-shared/Julie.Prestopnik/projects/METplus/gaea.metplus.conf 
               to set a personalized INPUT_BASE and OUTPUT_BASE.
 
               .. code-block:: ini
 
-                 module unload cray-libsci/23.02.1.1
-                 module load intel-oneapi/2022.0.2
+                 module unload cray-libsci/24.07.0
+                 module load intel-oneapi/2023.2.0
                  module use /usw/met/METplus/modulefiles
-                 module load metplus/6.0.0-beta5
+                 module load metplus/6.0.0
 
-          * **MET-12.0.0-beta5**
+          * **MET-12.0.2**
 
             * MODULES:
 
               .. code-block:: ini
 
-                 module unload cray-libsci/23.02.1.1
-                 module load intel-oneapi/2022.0.2
+                 module unload cray-libsci/24.07.0
+                 module load intel-oneapi/2023.2.0
                  module use -a /usw/met/modulefiles/
-                 module load met/12.0.0-beta5 
+                 module load met/12.0.2 
 
 
-          * **METcalcpy-3.0.0-beta5 / METplotpy-3.0.0-beta5**
+          * **METcalcpy-3.0.0 / METplotpy-3.0.0**
 
             * MODULES:
 
               .. code-block:: ini
 
-                module unload cray-libsci/23.02.1.1
-                module load intel-oneapi/2022.0.2
+                module unload cray-libsci/24.07.0
+                module load intel-oneapi/2023.2.0
                 module use /usw/met/METcalcpy/modulefiles
-                module load metcalcpy/3.0.0-beta5
+                module load metcalcpy/3.0.0
                 module use /usw/met/METplotpy/modulefiles
-                module load metplotpy/3.0.0-beta5
+                module load metplotpy/3.0.0
 
-          * **METdataio-3.0.0-beta5**
+          * **METdataio-3.0.0**
 
             * MODULES:
 
               .. code-block:: ini
 
-                 module unload cray-libsci/23.02.1.1
-                 module load intel-oneapi/2022.0.2
+                 module unload cray-libsci/24.07.0
+                 module load intel-oneapi/2023.2.0
                  module use /usw/met/METdataio/modulefiles
-                 module load metdataio/3.0.0-beta5
+                 module load metdataio/3.0.0
 
 .. dropdown:: Community machines
 
