@@ -63,13 +63,14 @@ build:
 
 requirements:
   build:
+    - {{ compiler('c') }}
+    - {{ compiler('fortran') }}
+    - {{ compiler('cxx') }}
+    - gcc_linux-64=12  # GCC 12 on Linux (needed for Atlas)  [linux]
+    - libcxx
     - cairo
     - freetype
-    - {{ compiler('c') }}     # Adds C Compiler (gcc_linux-64 on Linux)
-    - {{ compiler('fortran') }} # Adds Fortran Compiler (gfortran_linux-64 on Linux)
     - gsl
-    - {{ compiler('cxx') }}
-    - libcxx  # Provides the C++ standard library (e.g., libc++ for macOS or libstdc++ on Linux)
     - libnetcdf
     - netcdf-cxx4=4.3.1
     - libopenblas
@@ -82,9 +83,9 @@ requirements:
     - hdf4
     - hdfeos2
     - proj
-    - fftw # for atlas
+    - fftw              # needed for atlas
     - _openmp_mutex=4.5 # [linux]
-    - llvm-openmp  # [osx]
+    - llvm-openmp       # [osx]
 
   host:
     - python 3.10
@@ -104,8 +105,8 @@ requirements:
     - ncurses
     - hdfeos2
     - _openmp_mutex # [linux]
-    - llvm-openmp  # [osx]
-    - libcxx  # Provides the C++ standard library (e.g., libc++ for macOS or libstdc++ on Linux)
+    - llvm-openmp   # [osx]
+    - libcxx
     - setuptools
     - setuptools-git-versioning >=2.0,<3
 
