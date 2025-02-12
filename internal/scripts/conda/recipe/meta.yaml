@@ -132,14 +132,13 @@ requirements:
     - netcdf4
     - scipy
     - _openmp_mutex # [linux]
-    - llvm-openmp  # [osx]
+    - llvm-openmp   # [osx]
 
 
 about:
-  home: https://dtcenter.org/community-code/model-evaluation-tools-met
+  home: https://dtcenter.org/community-code/metplus
   licence: http://www.apache.org/licenses/LICENSE-2.0
 
 extra:
   maintainers:
-    - mccabe@ucar.edu
-    - alistair.mckelvie@bom.gov.au
+    - georgemccabe
