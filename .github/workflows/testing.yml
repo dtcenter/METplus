@@ -111,7 +111,8 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           EXTERNAL_TRIGGER: ${{ needs.job_control.outputs.external_trigger }}
-          SET_MET_IMAGE: ${{ github.event.inputs.force_met_image }}
+          #SET_MET_IMAGE: ${{ github.event.inputs.force_met_image }}
+	  SET_MET_IMAGE: met-dev:feature_baseimage_30_py3.12.0
 
   update_data_volumes:
     name: Docker Setup - Update Data Volumes
@@ -200,7 +201,7 @@ jobs:
         with:
           categories: ${{ matrix.categories }}
           metplotpy_branch: ${{ github.event.inputs.metplotpy_branch }}
-          metcalcpy_branch: ${{ github.event.inputs.metcalcpy_branch }}
+          metcalcpy_branch: feature_py3.12_fix
           metdataio_branch: ${{ github.event.inputs.metdataio_branch }}
 
       # copy logs with errors to error_logs directory to save as artifact
