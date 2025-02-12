@@ -9,15 +9,15 @@ inputs:
   metplotpy_branch:
     description: 'Branch to use for METplotpy (default is determined by METplus version)'
     required: false
-    default: 'default'
+    default: ''
   metcalcpy_branch:
     description: 'Branch to use for METcalcpy (default is determined by METplus version)'
     required: false
-    default: 'default'
+    default: ''
   metdataio_branch:
     description: 'Branch to use for METdataio (default is determined by METplus version)'
     required: false
-    default: 'default'
+    default: ''
 
 runs:
   using: "docker"

@@ -97,7 +97,7 @@ def handle_automation_env(host_name, reqs):
     for component in components:
         # get branch if defined, otherwise determine from METplus version
         version = os.environ.get(f'INPUT_{component.upper()}_BRANCH')
-        if not version or version == 'default':
+        if not version:
             version = get_component_version(input_component='METplus',
                                             input_version=metplus_version,
                                             output_component=component,

@@ -36,6 +36,12 @@ on:
         description: 'Optional title of workflow run'
       force_met_image:
         description: 'MET DockerHub repo to force run to use, e.g. met:11.1.0 or met-dev:feature_XYZ_name-PR. Leave this blank to determine repo automatically.'
+      metplotpy_branch:
+        description: 'METplotpy branch to use (default is develop or main_vX.Y)'
+      metcalcpy_branch:
+        description: 'METcalcpy branch to use (default is develop or main_vX.Y)'
+      metdataio_branch:
+        description: 'METdataio branch to use (default is develop or main_vX.Y)'
       repository:
         description: 'Repository that triggered workflow (used by external repo triggering)'
       sha:
@@ -193,9 +199,9 @@ jobs:
         id: run_tests
         with:
           categories: ${{ matrix.categories }}
-          metplotpy_branch: 'default'
-          metcalcpy_branch: 'feature_py3.12_fix'
-          metdataio_branch: 'default'
+          metplotpy_branch: ${{ github.event_name != 'workflow_dispatch' && '' || github.event.inputs.metplotpy_branch }}
+          metcalcpy_branch: ${{ github.event_name != 'workflow_dispatch' && '' || github.event.inputs.metcalcpy_branch }}
+          metdataio_branch: ${{ github.event_name != 'workflow_dispatch' && '' || github.event.inputs.metdataio_branch }}
 
       # copy logs with errors to error_logs directory to save as artifact
       - name: Save error logs
