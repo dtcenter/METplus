@@ -542,11 +542,11 @@ in the
 .. dropdown:: DockerHub
 
    | **MET**
-   | *Last Updated: December 19, 2024*
+   | *Last Updated: January 31, 2025*
 
       .. code-block:: ini
 
-          docker pull dtcenter/met:12.0.0
+          docker pull dtcenter/met:12.0.1
 
      `dtcenter/met DockerHub <https://hub.docker.com/r/dtcenter/met>`_
 
@@ -570,7 +570,7 @@ in the
 
 .. dropdown:: AWS
 
-   | **METviewer v6.0.0-beta1**
+   | **METviewer v6.0.0**
    | *Last Updated:*
 
      * LOCATION: 
