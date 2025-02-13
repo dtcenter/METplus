@@ -202,15 +202,13 @@ in the
                 module reset
                 module use /apps/dev/modulefiles/
                 module load ve/evs/2.0
-                module use /apps/ops/para/libs/modulefiles/compiler/intel/19.1.3.304
-                export HPC_OPT=/apps/ops/para/libs
                 module load gsl/2.7
                 module load netcdf/4.7.4
                 module load met/12.0.1
                 module load metplus/6.0.0
-                module load METplotpy/3.0.0
-                module load METdataio/3.0.0
-                module load METcalcpy/3.0.0
+                module load metplotpy/3.0.0
+                module load metdataio/3.0.0
+                module load metcalcpy/3.0.0
  
 
      .. dropdown:: HERA
