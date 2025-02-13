@@ -474,7 +474,7 @@ in the
               * /ncrc/proj/nggps_psd/user_name/projects/METplus/sample_data/METplus-6.0_sample_data
 
             * To use METplus run: Users should create a file like 
-              /gpfs/f5/esrl/proj-shared/Julie.Prestopnik/projects/METplus/gaea.metplus.conf 
+              /ncrc/proj/nggps_psd/Julie.Prestopnik/projects/METplus/gaea.metplus.conf 
               to set a personalized INPUT_BASE and OUTPUT_BASE.
 
               .. code-block:: ini
@@ -536,7 +536,7 @@ in the
             * METplus-6.0.0-beta1 Installation
             * METplus-6.0 Sample Data
             * To set up the environment run:
-            * Users should create a file like /work2/06612/tg859120/frontera/METplus/frontera.user_name.conf
+            * Users should create a file like /work2/06612/tg859120/frontera/METplus/frontera.metplus.conf
               to set a personalized INPUT_BASE and OUTPUT_BASE.
 
 .. dropdown:: DockerHub
