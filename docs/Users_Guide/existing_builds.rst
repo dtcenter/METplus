@@ -214,7 +214,7 @@ in the
      .. dropdown:: HERA
 
         | **NOAA MACHINE HERA**
-        | *Last updated: February 6, 2025*
+        | *Last updated: February 15, 2025*
         | *Compiler and version: Intel oneAPI 2024.2.1*
 
           * **METplus-6.0.0**
@@ -274,16 +274,18 @@ in the
      .. dropdown:: HERCULES
 
         | **NOAA MACHINE HERCULES (MANAGED BY MSU)**
-        | *Last updated: February 11, 2025*
+        | *Last updated: February 15, 2025*
 	| *Compiler and version: Intel oneAPI 2022.2.1*
 
           * **MET-12.0.2**
 
             * MODULES:
 
-              * module load contrib
-              * module load intel-oneapi-compilers/2022.2.1
-              * module load met/12.0.2
+	      .. code-block:: ini
+
+                  module load contrib
+                  module load intel-oneapi-compilers/2022.2.1
+                  module load met/12.0.2
 
           * **METplus-6.0.0**
 
@@ -294,37 +296,46 @@ in the
 
             * To use METplus run:
 
-              * module load contrib
-              * module load metplus/6.0.0
-              * Users should create a file like 
-                /work/noaa/ovp/jprestop/METplus/hercules.jpresto.conf 
-                to set a personalized INPUT_BASE and OUTPUT_BASE.
+	      .. code-block:: ini
+
+                  module load contrib
+                  module load metplus/6.0.0
+		  
+            * Users should create a file like 
+              /work/noaa/ovp/jprestop/METplus/hercules.jpresto.conf 
+              to set a personalized INPUT_BASE and OUTPUT_BASE.
 
           * **METcalcpy-3.0.0 / METplotpy-3.0.0**
 
             * MODULES:
 
-              * module load contrib
-              * module load intel-oneapi-compilers/2022.2.1
-              * module load metcalcpy/3.0.0
-              * module load metplotpy/3.0.0
+	      .. code-block:: ini
+	      
+                  module load contrib
+                  module load intel-oneapi-compilers/2022.2.1
+                  module load metcalcpy/3.0.0
+                  module load metplotpy/3.0.0
 
             * PIP INSTALL:
 
-              * python -m pip install --user tornado
-              * python -m pip install --user plotly
-              * python -m pip install --user kaleido
-              * python -m pip install --user xarray
-              * python -m pip install --user netcdf4
-              * python -m pip install --user h5netcdf
+	      .. code-block:: ini
+
+                  python -m pip install --user tornado
+                  python -m pip install --user plotly
+                  python -m pip install --user kaleido
+                  python -m pip install --user xarray
+                  python -m pip install --user netcdf4
+                  python -m pip install --user h5netcdf
 
           * **METdataio-3.0.0**
 
             * MODULES:
 
-              * module load contrib
-              * module load intel-oneapi-compilers/2022.2.1
-              * module load metdataio/3.0.0
+	      .. code-block:: ini
+	      
+                  module load contrib
+                  module load intel-oneapi-compilers/2022.2.1
+                  module load metdataio/3.0.0
 
 
      .. dropdown:: ORION
@@ -523,7 +534,9 @@ in the
      .. dropdown:: FRONTERA
 
         | **TEXAS ADVANCED COMPUTING CENTER (TACC) FRONTERA**
-        | *Last Updated:*
+	| *Last updated: February 15, 2025*
+	| *Compiler and version: Intel oneAPI 2023.1.0*
+
 
           * **MET-12.0.0-beta1**
 
