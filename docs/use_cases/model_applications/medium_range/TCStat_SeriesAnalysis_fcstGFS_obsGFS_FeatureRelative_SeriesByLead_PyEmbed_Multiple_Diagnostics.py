@@ -14,7 +14,7 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 ##############################################################################
 # Scientific Objective
 # --------------------
-# This use case calls multiple tools to produce diagnostic plots of systematic erros relative to a
+# This use case calls multiple tools to produce diagnostic plots of systematic errors relative to a
 # feature (e.g. hurricane, MCS, etc...). This use case calls two user provided python scripts that
 # calculate diagnostics of interest (e.g. integrated vapor transport, potential vorticity, etc...).
 # These user diagnostics are then used to define the systematic errors. This example calculates
@@ -36,6 +36,10 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 #
 # Additionally, the ability to calculate model statistical errors based on user provided diagnostics
 # allows the user to customize the feature relative analysis to suit their needs.
+#
+# This use case compares the Global Forecast System (GFS) forecast to the GFS analysis for
+# hurricane Dorian. It is based on three user provided python scripts that calculate the diagnostic 
+# integrated vaport transport (IVT) baroclinic potential vorticity (PV), and saturation equivalent potential temperature (SEPT), respectively. 
 
 ##############################################################################
 # Version Added
@@ -47,44 +51,34 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 # Datasets
 # --------
 #
-# This use case compares the Global Forecast System (GFS) forecast to the GFS analysis for
-# hurricane Dorian. It is based on three user provided python scripts that calculate the diagnostic 
-# integrated vaport transport (IVT) baroclinic potential vorticity (PV), and saturation equivalent potential temperature (SEPT), respectively. 
-# 
-#  - Variables required to calculate IVT:
-#    Levels required: all pressure levels >= 100mb
-#    #. Temperature
-#    #. v- component of wind
-#    #. u- component of wind
-#    #. Geopotential height
-#    #. Specific humidity OR Relative Humidity
+# **Forecast:** NOAA Global Forecast System (GFS) with the required variables
+# at all levels >= 100 hPa:
 #
-#  - Variables required to calculate PV:
-#    Levels required: all pressure levels >= 100mb
-#    #. U-wind
-#    #. V-wind
-#    #. Temperature
+# #. Temperature
+# #. v- component of wind
+# #. u- component of wind
+# #. Geoopotential height
+# #. Specific Humidity OR Relative Humidity 
 #
-#  - Variables required to calculate saturation equivalent potential temperature:
-#    Levels required: all pressure levels >= 100mb
-#    #. Temperature
+# **Observation:** Automated Tropical Cyclone Forecasting System (ATCF) ADeck and BDeck data
+# and NOAA Global Forecast System (GFS) with the reaquired variables at all levels >= 100 hPa:
 #
-#  - Forecast dataset: GFS Grid 4 Forecast
-#    GFS Forecast data can be found at the following website: https://www.ncdc.noaa.gov/data-access/model-data/model-datasets/global-forcast-system-gfs
-#    - Initialization date: 20190830
-#    - Initialization hours: 00, 06, 12, 18 UTC
-#    - Lead times: 90, 96, 102, 108, 114
-#    - Format: Grib2
-#    - Resolution: 0.5 degree
-#  - Observation dataset: GFS Grid 4 Analysis
-#    GFS Analysis data can be found at the following website: https://www.ncdc.noaa.gov/data-access/model-data/model-datasets/global-forcast-system-gfs
-#    - Valid date/time range: 20190902_18 - 20190904_12 every 6 hours
-#    - Format: Grib2
-#    - Resolution: 0.5 degree
-#  - Hurricane Track Data
-#    Hurricane track data can be found at the following website: http://hurricanes.ral.ucar.edu/repository/data/
-#    - ADeck Track File: aal052019.dat
-#    - BDeck Track File: bal052019.dat
+# #. Temperature
+# #. v- component of wind
+# #. u- component of wind
+# #. Geoopotential height
+# #. Specific Humidity OR Relative Humidity 
+#
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # External Dependencies

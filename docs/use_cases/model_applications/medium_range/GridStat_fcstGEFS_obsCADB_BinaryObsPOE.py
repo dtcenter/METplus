@@ -32,10 +32,10 @@ model_applications/medium_range/GridStat_fcstGEFS_obsCADB_BinaryObsPOE.conf
 # Datasets
 # --------
 #
-# **Forecast:** 85th percentile of Temperature maximum, from GEFS
+# **Forecast:** NOAA Global Ensemble Forecast System (GEFS) 85th percentile of maximum Temperature
 #
-# **Observations:** Climate Assessment Data Base (CADB), converted into a
-# binary field relative to the 85th percentile
+# **Observations:** NOAA Climate Prediction Center Climate Assessment Data Base (CADB)
+# converted into a binary field relative to the 85th percentile
 #
 # **Climatology:** None
 #
@@ -47,8 +47,6 @@ model_applications/medium_range/GridStat_fcstGEFS_obsCADB_BinaryObsPOE.conf
 # for the appropriate release: https://github.com/dtcenter/METplus/releases
 # This tarball should be unpacked into the directory that you will 
 # set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
-#
-# **Data Source:** CPC
 
 ##############################################################################
 # METplus Components

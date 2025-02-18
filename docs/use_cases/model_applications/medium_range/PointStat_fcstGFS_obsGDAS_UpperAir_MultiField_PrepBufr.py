@@ -30,9 +30,9 @@ model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_Pr
 # Datasets
 # --------
 #
-# **Forecast:** GFS temperature, u-wind component, v-wind component, and height
+# **Forecast:** NOAA Global Forecast System (GFS) temperature, u-wind component, v-wind component, and height
 #
-# **Observation:** GDAS prepBURF data
+# **Observation:** Global Data Assimilation System (GDAS) prepBURF data
 #
 # **Climatology:** None
 #

@@ -29,9 +29,9 @@ model_applications/medium_range/GridStat_fcstGFS_obsGFS_Sfc_MultiField.conf
 # Datasets
 # --------
 #
-# **Forecast:** GFS
+# **Forecast:** NOAA Global Forecast System (GFS)
 #
-# **Observation:** GFS
+# **Observation:** NOAA Global Forecast System (GFS)
 #
 # **Climatology:** None
 #
@@ -43,8 +43,6 @@ model_applications/medium_range/GridStat_fcstGFS_obsGFS_Sfc_MultiField.conf
 # for the appropriate release: https://github.com/dtcenter/METplus/releases
 # This tarball should be unpacked into the directory that you will 
 # set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
-#
-# **Data Source:** GFS
 
 ##############################################################################
 # METplus Components

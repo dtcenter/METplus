@@ -29,7 +29,7 @@ model_applications/medium_range/GridStat_fcstGFS_obsOMI_TotalColumnOzone.conf
 # Datasets
 # --------
 #
-# **Forecast:** GFS (1 degree Lat/Lon grid)
+# **Forecast:** NOAA Global Forecast System (GFS) (1 degree Lat/Lon grid)
 #
 # **Observation:** NASA's Level-3 Aura/OMI Global Total Ozone Mapping Spectrometer-Like (TOMS-Like) Total Column Ozone gridded product OMTO3e (0.25deg Lat/Lon grid)
 #

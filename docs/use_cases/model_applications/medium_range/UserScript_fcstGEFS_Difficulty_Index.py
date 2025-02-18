@@ -50,29 +50,20 @@ model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf
 # Datasets
 # --------
 #
-# **Forecast:** [UPDATE_SECTION_CONTENT]
+# **Forecast:** NOAA Global Ensemble Forecast System (GEFS)
 #
-# **Observation:** [UPDATE_SECTION_CONTENT]
+# **Observation:** None
 #
-# **Climatology:** [UPDATE_SECTION_CONTENT]
+# **Climatology:** None
 #
-# This use case calculates the difficulty index for wind speed using NCEP 
-# GEFS ensemble data. The data is composed of 30 ensemble members that 
-# have been compiled and compressed into one .npz file. 
-# 
-#  - Variables required to calculate the difficulty index:
-#    Levels required: 10-m
-#    #. v- component of wind
-#    #. u- component of wind
-#    #. Windspeed
-#    #. Latitude
-#    #. Longitude
-#  - Forecast dataset: NCEP GEFS 30 member Ensemble
-#    - Initialization date: 20191208
-#    - Initialization hours: 12 UTC
-#    - Lead times: 60
-#    - Format: Grib2
-#    - Resolution: 0.5 degree
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components

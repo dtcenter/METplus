@@ -28,11 +28,11 @@ model_applications/medium_range/GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.con
 # Datasets
 # --------
 #
-# **Forecast:** GFS
+# **Forecast:** NOAA Global Forecast System (GFS)
 #
-# **Observation:** GFS
+# **Observation:** NOAA Global Forecast System (GFS) analysis
 #
-# **climotology:** NCEP
+# **Climotology:** NOAA National Centers for Environmental Prediction (NCEP)
 #
 # **Location:** All of the input data required for this use case can be 
 # found in a sample data tarball. Each use case category will have 
@@ -42,8 +42,6 @@ model_applications/medium_range/GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.con
 # for the appropriate release: https://github.com/dtcenter/METplus/releases
 # This tarball should be unpacked into the directory that you will 
 # set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
-#
-# **Data Source:** Unknown
 
 ##############################################################################
 # METplus Components

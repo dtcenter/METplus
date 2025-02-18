@@ -29,9 +29,9 @@ model_applications/medium_range/PointStat_fcstGFS_obsNAM_Sfc_MultiField_PrepBufr
 # Datasets
 # --------
 #
-# **Forecast:** GFS temperature, u-wind component, v-wind component, and height
+# **Forecast:** NOAA Global Forecast System (GFS) temperature, u-wind component, v-wind component, and height
 #
-# **Observation:** NAM prepBURF data
+# **Observation:** NOAA North American Mesoscale (NAM) model prepBUFR data
 #
 # **Climatology:** None
 #
@@ -43,8 +43,6 @@ model_applications/medium_range/PointStat_fcstGFS_obsNAM_Sfc_MultiField_PrepBufr
 # for the appropriate release: https://github.com/dtcenter/METplus/releases
 # This tarball should be unpacked into the directory that you will 
 # set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
-#
-# **Data Source:** Unknown
 
 ##############################################################################
 # METplus Components

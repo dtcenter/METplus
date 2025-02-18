@@ -29,18 +29,20 @@ model_applicaitons/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelativ
 # Datasets
 # --------
 #
-# **Forecast:** [UPDATE_SECTION_CONTENT]
+# **Forecast:** NOAA Global Forecast System (GFS)
 #
-# **Observation:** [UPDATE_SECTION_CONTENT]
+# **Observation:** NOAA Global Forecast System (GFS) analysis
 #
-# **Climatology:** [UPDATE_SECTION_CONTENT]
+# **Climatology:** None
 #
-# Relevant information about the datasets that would be beneficial include:
-#
-#  * MODE Time Domain Forecast dataset: GFS
-#  * Series-Analysis Forecast dataset: GFS
-#  * MODE Time Domain Observation dataset: GFS Analysis
-#  * Series-Analysis Observation dataset: GFS Analysis
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
