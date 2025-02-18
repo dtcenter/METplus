@@ -138,7 +138,9 @@ requirements:
 about:
   home: https://dtcenter.org/community-code/metplus
   summary: 'Unified NWP model verification, validation, and diagnostic tools'
-  licence: http://www.apache.org/licenses/LICENSE-2.0
+  license: Apache-2.0
+  license_family: APACHE
+  license_file: LICENSE.md
   doc_url: https://metplus.readthedocs.io
   dev_url: https://github.com/dtcenter/METplus
 
