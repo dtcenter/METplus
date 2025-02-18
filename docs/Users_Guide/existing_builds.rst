@@ -488,7 +488,7 @@ in the
               .. code-block:: ini
 
                  module unload cray-libsci/24.07.0
-                 module load intel-oneapi/2023.2.0
+                 module load intel/2023.2.0
                  module use /usw/met/METplus/modulefiles
                  module load metplus/6.0.0
 
@@ -499,7 +499,7 @@ in the
               .. code-block:: ini
 
                  module unload cray-libsci/24.07.0
-                 module load intel-oneapi/2023.2.0
+                 module load intel/2023.2.0
                  module use -a /usw/met/modulefiles/
                  module load met/12.0.2 
 
@@ -511,7 +511,7 @@ in the
               .. code-block:: ini
 
                 module unload cray-libsci/24.07.0
-                module load intel-oneapi/2023.2.0
+                module load intel/2023.2.0
                 module use /usw/met/METcalcpy/modulefiles
                 module load metcalcpy/3.0.0
                 module use /usw/met/METplotpy/modulefiles
@@ -524,7 +524,7 @@ in the
               .. code-block:: ini
 
                  module unload cray-libsci/24.07.0
-                 module load intel-oneapi/2023.2.0
+                 module load intel/2023.2.0
                  module use /usw/met/METdataio/modulefiles
                  module load metdataio/3.0.0
 
