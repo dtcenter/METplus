@@ -29,9 +29,11 @@ model_applications/tc_and_extra_tc/UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD
 # Datasets
 # --------
 #
-# **Forecast:** HAFS temperature
+# **Forecast:** Hurricane Analysis and Forecast System (HAFS) temperature
 #
-# **Observation:** HRD Dropsonde data 
+# **Observation:** Hurricane Research Division (HRD) Dropsonde data
+#
+# **Climatology:** None
 #
 # **Location:** All of the input data required for this use case can be 
 # found in a sample data tarball. Each use case category will have 
@@ -41,8 +43,6 @@ model_applications/tc_and_extra_tc/UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD
 # for the appropriate release: https://github.com/dtcenter/METplus/releases
 # This tarball should be unpacked into the directory that you will 
 # set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
-#
-# **Dropsonde Data Source:** `Hurricane Research Division Sonde Archive  <https://www.aoml.noaa.gov/hrd/data_sub/dropsonde.html>`_
 
 ##############################################################################
 # METplus Components

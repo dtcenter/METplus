@@ -32,9 +32,11 @@ model_applications/tc_and_extra_tc/TCGen_fcstGFS_obsBDECK_2021season.conf
 #
 # **Forecast:** GFS genesis file, GFS E Deck
 #
-# **Observation:** B Deck, A Deck 
+# **Observation:** Automated Tropical Cyclone Forecasting System (ATCF) B Deck, A Deck 
 #
-# **Warning Areas:** Shapefiles 
+# **Warning Areas:** Shapefiles
+#
+# **Climatology:** None
 #
 # **Location:** All of the input data required for this use case can be 
 # found in a sample data tarball. Each use case category will have 
@@ -44,10 +46,6 @@ model_applications/tc_and_extra_tc/TCGen_fcstGFS_obsBDECK_2021season.conf
 # for the appropriate release: https://github.com/dtcenter/METplus/releases
 # This tarball should be unpacked into the directory that you will 
 # set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
-# 
-# **Data Source:** NHC ftp.noaa.gov/atcf
-#
-# **Data Source:** www.nhc.noaa.gov/archive/wgtwo/
 
 ##############################################################################
 # METplus Components

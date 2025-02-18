@@ -30,10 +30,10 @@ model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicE
 # Datasets
 # --------
 #
-# | **Forecast:** Adeck
+# | **Forecast:** Automated Tropical Cyclone Forecasting System (ATCF) Adeck
 # |     /path/to/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample/a{basin}{cyclone}{init?fmt=%Y}.dat
 #
-# | **Observation:** Bdeck
+# | **Observation:** Automated Tropical Cyclone Forecasting System (ATCF) Bdeck
 # |     /path/to/{TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample/b{basin}{cyclone}{init?fmt=%Y}.dat
 #
 # **Location:** All of the input data required for this use case can be 
@@ -44,8 +44,6 @@ model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicE
 # for the appropriate release: https://github.com/dtcenter/METplus/releases
 # This tarball should be unpacked into the directory that you will 
 # set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
-#
-# **Data Source:** NHC ftp.noaa.gov/atcf
 
 ##############################################################################
 # METplus Workflow

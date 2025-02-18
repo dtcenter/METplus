@@ -30,18 +30,21 @@ model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.conf
 # Datasets
 # --------
 #
-# **Forecast:** HAFS zonal wind
+# **Forecast:** NOAA Hurricane Analysis and Forecast System (HAFS) zonal wind
 #
-# **Observation:** HRD TDR merged_zonal_wind
+# **Observation:** NOAA Hurricane Research Division (HRD) Tail Doppler Radar (TDR) merged_zonal_wind,
+# a subset of the Merged Analysis (v2d_combined_xy_rel_merged_ships.nc).
 #
-# **Climatology:** [UPDATE_SECTION_CONTENT]
+# **Climatology:** None
 #
-# | **Location of Model forecast and Dropsonde files:** All of the input data required for this use case can be found in the sample data tarball. Click `here <https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data>`_ to download.
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
-#
-# | **TDR Data Source:** Hurricane Research Division: Contact: Paul Reasor Email: paul.reasor@noaa.gov  
-# | The data dataset used in the use case is a subset of the Merged Analysis (v2d_combined_xy_rel_merged_ships.nc).
-# | Thanks to HRD for providing us the dataset.
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components

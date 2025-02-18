@@ -30,13 +30,13 @@ model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_Extr
 # Datasets
 # --------
 #
-# | **Forecast:** Adeck
+# | **Forecast:** Automated Tropical Cyclone Forecasting System (ATCF) Adeck
 # |     /path/to/{init?fmt=%Y}/trak.gfso.atcf_gen.glbl.{init?fmt=%Y}
 #
-# | **Observation:** Bdeck
+# | **Observation:** Automated Tropical Cyclone Forecasting System (Bdeck)
 # |     /path/to/{init?fmt=%Y}/trak.gfso.atcf_gen.glbl.{init?fmt=%Y}
 #
-# **Climatology:** [UPDATE_SECTION_CONTENT]
+# **Climatology:** None
 #
 # **Location:** All of the input data required for this use case can be 
 # found in a sample data tarball. Each use case category will have 
@@ -46,8 +46,6 @@ model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_Extr
 # for the appropriate release: https://github.com/dtcenter/METplus/releases
 # This tarball should be unpacked into the directory that you will 
 # set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
-#
-# **Data Source:** GFS
 
 ##############################################################################
 # External Dependencies

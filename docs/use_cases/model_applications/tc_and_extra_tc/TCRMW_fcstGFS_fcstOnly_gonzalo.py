@@ -29,7 +29,9 @@ model_applications/tc_and_extra_tc/TCRMW_fcstGFS_fcstOnly_gonzalo.conf
 #
 # **Forecast:** GFS GRIB2
 #
-# **Track:** A Deck
+# **Observation:** Automated Tropical Cyclone Forecasting System (ATCF) A Deck
+#
+# **Climatology:** None
 #
 # **Location:** All of the input data required for this use case can be 
 # found in a sample data tarball. Each use case category will have 
