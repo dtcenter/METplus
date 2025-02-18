@@ -120,6 +120,10 @@ model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
 #
 # **Beginning time (INIT_BEG):** 2016
 #
+# **End time (INIT_END):** 2016
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** None
+#
 # **Sequence of forecast leads to process (LEAD_SEQ):** None
 #
 # The following tools are used for each run time: TCGen, Python
