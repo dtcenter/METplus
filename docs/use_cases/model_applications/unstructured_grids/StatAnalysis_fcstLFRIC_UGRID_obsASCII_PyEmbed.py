@@ -47,11 +47,11 @@ model_applications/unstructured_grids/StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEm
 # Datasets
 # --------
 #
-# **Forecast:** [UPDATE_SECTION_CONTENT]
+# **Forecast:** UK MET Office LFRic forecast files in UGRID NetCDF format
 #
-# **Observation:** [UPDATE_SECTION_CONTENT]
+# **Observation:** Observations in ASCII format
 #
-# **Climatology:** [UPDATE_SECTION_CONTENT]
+# **Climatology:** None
 #
 # **Location:** All of the input data required for this use case can be 
 # found in a sample data tarball. Each use case category will have 
@@ -61,8 +61,6 @@ model_applications/unstructured_grids/StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEm
 # for the appropriate release: https://github.com/dtcenter/METplus/releases
 # This tarball should be unpacked into the directory that you will 
 # set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
-#
-# **Data source:** UK MET Office LFRic forecast files in UGRID NetCDF format and observations in ASCII format
 
 ##############################################################################
 # METplus Components
