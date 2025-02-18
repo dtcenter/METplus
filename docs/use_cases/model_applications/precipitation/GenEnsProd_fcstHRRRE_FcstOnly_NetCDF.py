@@ -29,9 +29,10 @@ model_application/precipitation/GenEnsProd_fcstHRRRE_FcstOnly_NetCDF.conf
 # Datasets
 # --------
 #
-# **Forecast:** HRRRE 3 member ensemble netcdf 3 hour precipitation accumulation
+# **Forecast:** NOAA High Resolution Rapid Refresh Ensemble (HRRRE) 
+# 3 member ensemble netcdf 3 hour precipitation accumulation
 #
-# **Observation:** [UPDATE_SECTION_CONTENT]
+# **Observation:** None
 #
 # **Climatology:** None
 #

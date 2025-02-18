@@ -31,7 +31,7 @@ model_applications/precipitation/MTD_fcstHRRR-TLE_obsMRMS.conf
 # Datasets
 # --------
 #
-# **Forecast:** HRRR-TLE forecasts in GRIB2
+# **Forecast:** NOAA High Resolution Rapid Refresh Time-Lagged Ensemble (HRRR-TLE) forecasts in GRIB2
 #
 # **Observation**: Multi Radar Multi Sensor (MRMS)
 #

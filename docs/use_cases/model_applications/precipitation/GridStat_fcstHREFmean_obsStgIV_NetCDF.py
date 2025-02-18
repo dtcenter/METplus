@@ -29,7 +29,7 @@ model_applications/precipitation/GridStat_fcstHREFmean_obsStgIV_Netcdf.conf
 # Datasets
 # --------
 #
-# **Forecast:** HREF mean forecasts in NetCDF
+# **Forecast:** NOAA High Resolution Ensemble Forecast (HREF) mean forecasts in NetCDF
 #
 # **Observation:** Stage IV GRIB 6 hour precipitation accumulation
 #

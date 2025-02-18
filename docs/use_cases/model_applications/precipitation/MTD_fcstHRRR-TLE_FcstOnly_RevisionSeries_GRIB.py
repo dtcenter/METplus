@@ -33,9 +33,9 @@ model_applications/precipitation/MTD_fcstHRRR-TLE_FcstOnly_RevisionSeries_GRIB.c
 # Datasets
 # --------
 #
-# **Forecast:** HRRR-TLE forecasts in GRIB2
+# **Forecast:** NOAA High Resolution Rapid Refresh Time-Lagged Ensemble (HRRR-TLE) forecasts in GRIB2
 #
-# **Observation:** [UPDATE_SECTION_CONTENT]
+# **Observation:** None
 #
 # **Climatology:** None
 #

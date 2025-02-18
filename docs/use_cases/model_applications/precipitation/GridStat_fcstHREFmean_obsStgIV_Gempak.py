@@ -29,7 +29,7 @@ model_applications/precipitation/GridStat_fcstHREFmean_obsStgIV_Gempak.conf
 # Datasets
 # --------
 #
-# **Forecast:** HREF mean forecasts in Gempak
+# **Forecast:** NOAA High Resolution Ensemble Forecast (HREF) mean forecasts in Gempak
 #
 # **Observation:** Stage IV GRIB 6 hour precipitation accumulation
 #

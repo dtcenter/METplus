@@ -29,7 +29,7 @@ model_applications/precipitation/PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip.conf
 # Datasets
 # --------
 #
-# **Forecast:** 24 URMA 1 hour precipitation accumulation files
+# **Forecast:** 24 UnRestricted Mesoscale Analysis (URMA) 1 hour precipitation accumulation files
 #
 # **Observations:** CoCoRaHS, the Community Collaborative Rain, Hail, and Snow Network
 #
@@ -43,8 +43,6 @@ model_applications/precipitation/PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip.conf
 # for the appropriate release: https://github.com/dtcenter/METplus/releases
 # This tarball should be unpacked into the directory that you will 
 # set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
-#
-# **Data Source:** EMC
 
 ##############################################################################
 # METplus Components

@@ -29,7 +29,7 @@ model_applications/precipitation/GridStat_fcstGFS_obsCCPA_Grib.conf
 # Datasets
 # --------
 #
-# **Forecast:** datset GFS
+# **Forecast:** NOAA Global Forecast System (GFS)
 #
 # **Observation:** Climatologically Calibrated Precipitation Analysis (CCPA)
 #
