@@ -36,7 +36,7 @@ model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed.conf
 # Datasets
 # --------
 #
-# **Forecast:** HRRR, RRFS (reads the "HPBL" grib2 field)
+# **Forecast:** NOAA High Resolution Rapid Refresh (HRRR)
 #
 # **Observation:** AMDAR hourly 1-d netcdf files
 #
