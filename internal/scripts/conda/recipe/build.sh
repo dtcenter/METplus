@@ -10,10 +10,6 @@ export LDFLAGS="${LDFLAGS} -Wl,-rpath,${PREFIX}/lib -L${PREFIX}/lib"
 export MET_PYTHON_CC=$(${PREFIX}/bin/python3-config --cflags)
 export MET_PYTHON_LD=$(${PREFIX}/bin/python3-config --ldflags --embed)
 export MET_PYTHON_BIN_EXE=${PREFIX}/bin/python3
-export MET_FREETYPELIB="${PREFIX}/lib" 
-export MET_FREETYPEINC="${PREFIX}/include/freetype2" 
-export MET_CAIROINC="${PREFIX}/include/cairo"
-export MET_CAIROLIB="${PREFIX}/lib"
 
 # Determine the number of processors
 NUM_PROCS=$(sysctl -n hw.ncpu || grep -c ^processor /proc/cpuinfo || 1)
@@ -31,11 +27,6 @@ mv "${SRC_DIR}/gs-fonts" "${PREFIX}/gs-fonts"
 # and set the environment variable themselves.
 mkdir -p "${PREFIX}/etc/conda/activate.d"
 printf "export MET_FONT_DIR=${PREFIX}/gs-fonts\n" > "${PREFIX}/etc/conda/activate.d/${PKG_NAME}-activate.sh"
-
-# Met doesn't respect the `AR` env variable and uses system `ar`, so link conda ar
-# to somewhere it will be used.
-mkdir -p "${PREFIX}/bin"
-ln -s "$(which ar)" "${PREFIX}/bin/ar"
 
 ###
 # Install eckit and atlas for ugrid support (requires ecbuild)
