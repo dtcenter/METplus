@@ -16,8 +16,8 @@ source:
 
   # MET
   - url: https://github.com/dtcenter/MET/archive/refs/tags/v{{ met_version }}.tar.gz
-    md5: 
-    sha256: 
+    md5: 4b9dba80639a74f1a3ecb15357785603
+    sha256: 613c74cbe5a0afa87422e81a4cd70984238c1a0eaf1a395503486331223ede45
     folder: MET
 
   # GS Fonts
