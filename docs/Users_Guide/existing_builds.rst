@@ -276,6 +276,14 @@ in the
         | **NOAA MACHINE HERCULES (MANAGED BY MSU)**
         | *Last updated: February 15, 2025*
 	| *Compiler and version: Intel oneAPI 2022.2.1*
+	|
+	| **Before loading any of the modules below, it is necessary to load the following modules:**
+
+	.. code-block:: ini
+
+	    module load contrib
+            module load intel-oneapi-compilers/2022.2.1
+
 
           * **MET-12.0.2**
 
@@ -283,8 +291,6 @@ in the
 
 	      .. code-block:: ini
 
-                  module load contrib
-                  module load intel-oneapi-compilers/2022.2.1
                   module load met/12.0.2
 
           * **METplus-6.0.0**
@@ -298,7 +304,6 @@ in the
 
 	      .. code-block:: ini
 
-                  module load contrib
                   module load metplus/6.0.0
 		  
             * Users should create a file like 
@@ -311,8 +316,6 @@ in the
 
 	      .. code-block:: ini
 	      
-                  module load contrib
-                  module load intel-oneapi-compilers/2022.2.1
                   module load metcalcpy/3.0.0
                   module load metplotpy/3.0.0
 
@@ -333,8 +336,6 @@ in the
 
 	      .. code-block:: ini
 	      
-                  module load contrib
-                  module load intel-oneapi-compilers/2022.2.1
                   module load metdataio/3.0.0
 
 
