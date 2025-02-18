@@ -65,6 +65,8 @@ model_applications/short_range/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 #
 # **Increment between beginning and end times (VALID_INCREMENT):** 12H
 #
+# **Sequence of forecast leads to process (LEAD_SEQ):** None
+#
 # The METdbload is run once and loads data for two ensemble members, one model initialization
 # time and 2 forecast lead times, listed below.
 #

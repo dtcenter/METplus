@@ -72,6 +72,8 @@ model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 #
 # **End time (INIT_END):** 2021020100
 #
+# **Increment between beginning and end times (INIT_INCREMENT):** None
+#
 # **Sequence of forecast leads to process (LEAD_SEQ):** 21
 #
 # MODE is the only tool called and ingests multiple fields to create a complex
