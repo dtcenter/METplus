@@ -60,6 +60,12 @@ model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra.py
 #
 # **Beginning time (VALID_BEG):** 2014
 #
+# **End time (VALID_END):** None
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** None
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** None
+#
 # This use case computes spectra and plots for the entire time period of data. 
 # The use case loops over two processes, computing and plotting the 
 # cross-spectra. The user is able to edit the process list to turn off the 

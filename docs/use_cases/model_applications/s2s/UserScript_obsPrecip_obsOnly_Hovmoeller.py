@@ -68,6 +68,12 @@ model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.py
 #
 # **Beginning time (VALID_BEG):** 2014
 #
+# **End time (VALID_END):** None
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** None
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** None
+#
 # This use case does not loop but plots the entire time period of # 
 # 
 # This uses data from 2016-01-01 to 2016-03-31
