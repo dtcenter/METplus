@@ -32,23 +32,20 @@ model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_P
 # --------
 #
 # **Forecast:** RRFS GEFS (Rapid Refresh Forecast System Global Ensemble Forecast System)
+# Ensemble-Stat output files.
 #
 # **Observation:** None
 #
-# **Input**: MET .stat files from MET ensemble-stat tool for RRFS for 20220506
+# **Climatology:** None
 #
-# **Location**: All the input data required for this use case can be found in the met_test sample data tarball
-# (**sample_data-short_range.tgz**).
-#
-# Click here to see the METplus releases page and download sample data for the appropriate
-# release: https://github.com/dtcenter/METplus/releases
-#
-# See `Running METplus <https://metplus.readthedocs.io/en/develop/Users_Guide/getting_started.html#running-metplus>`_
-# section for more information.
-#
-# **This tarball should be unpacked into the directory corresponding to the value of INPUT_BASE** in the
-# `User Configuration File <https://metplus.readthedocs.io/en/develop/Users_Guide/systemconfiguration.html#user-configuration-file>`_
-# section.
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 #############################################################################
 # External Dependencies

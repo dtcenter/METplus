@@ -45,9 +45,11 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planv
 #
 # **Forecast:** FV3 3-D history file with physics and dynamics tendencies.
 #
-# **Observation:** [UPDATE_SECTION_CONTENT]
+# **Grid specification:** FV3 2-D grid specification file with latitude and longitude of each grid point.
 #
-# **Climatology:** [UPDATE_SECTION_CONTENT]
+# **Observation:** None
+#
+# **Climatology:** None
 #
 # **Location:** All of the input data required for this use case can be 
 # found in a sample data tarball. Each use case category will have 
@@ -57,8 +59,6 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planv
 # for the appropriate release: https://github.com/dtcenter/METplus/releases
 # This tarball should be unpacked into the directory that you will 
 # set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
-#
-# **Grid specification:** FV3 2-D grid specification file with latitude and longitude of each grid point.
 
 ##############################################################################
 # External Dependencies 

@@ -38,24 +38,20 @@ model_applications/short_range/GenEnsProd_fcstHRRR_fcstOnly_SurrogateSevere.conf
 # Datasets
 # --------
 #
-# **Forecast:** [UPDATE_SECTION_CONTENT]
+# **Forecast:** NOAA High Resolution Rapid Refresh (HRRR)
 #
-# **Observation:** [UPDATE_SECTION_CONTENT]
+# **Observation:** None
 #
-# **Climatology:** [UPDATE_SECTION_CONTENT]
+# **Climatology:** None
 #
-# **Location:** [UPDATE_SECTION_CONTENT]
-#
-# **Data Source:** Originally received from Burkely Gallo at the Storm Prediction Center. 
-
-# There are two dates that can be used as input data for this use case 20190518 or 20200205.
-# 
-# * Input Data: HRRR data
-#   - There should 24 grib2 files.
-#   - Variable of interest: MXUPHL; the maximum updraft helicity
-#   - Level: Z2000-5000; from 2 - 5km
-#   - Format: grib2
-#   - Projection: Lambert Conformal
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ###################################################################################################
 # METplus Components
@@ -77,7 +73,7 @@ model_applications/short_range/GenEnsProd_fcstHRRR_fcstOnly_SurrogateSevere.conf
 #
 # This workflow loops over the data by process, meaning that each MET tool will run over all times
 # before moving onto the tool. PCPCombine is called first, followed by GenEnsProd,
-# and then, finally, RegridDataPlane.
+# and then, finally, RegridDataPlane. Data for two dates is available, either 20200205 or 20190518.
 
 ###################################################################################################
 # METplus Configuration

@@ -42,17 +42,11 @@ model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 # Datasets
 # --------
 #
-# **Forecast:** 1-hour HRRR in grib2
+# **Forecast:** Subset of NOAA High Resolution Rapid Refresh (HRRR) in grib2
 #
-# **Observation:** MRMS and HRRR analysis in grib2
+# **Observation:** Subset of Multi-Radar Multi-Sensor (MRMS) and HRRR analysis in grib2
 # 
-# The forecast and observation fields are only a subset of the full domain in
-# order for a faster run-time of Multivariate MODE. An example command using
-# wgrib2 to create the HRRR subdomain is::
-#
-#   wgrib2 infile.grib2 -new_grid_winds earth -new_grid lambert:262.5:38.5:38.5:38.5 -83.0:400:3000 37.0:400:3000 outfile.grib2 
-#
-# **Climatology:** [UPDATE_SECTION_CONTENT]
+# **Climatology:** None
 #
 # **Location:** All of the input data required for this use case can be 
 # found in a sample data tarball. Each use case category will have 

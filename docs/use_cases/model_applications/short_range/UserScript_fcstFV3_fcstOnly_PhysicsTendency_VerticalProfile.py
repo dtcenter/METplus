@@ -30,7 +30,8 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 # directory as the METPLUS_BASE directory so that the METplus and
 # METplotpy directories are under the same base directory (i.e. if the METPLUS_BASE directory is
 # /home/username/working/METplus, then clone the METplotpy source
-# code into the /home/username/working directory).  
+# code into the /home/username/working directory).
+#
 
 ##############################################################################
 # Version Added
@@ -55,9 +56,9 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 #    * MID_CONUS.shp
 #    * MID_CONUS.shx
 #
-# **Observation:** [UPDATE_SECTION_CONTENT]
+# **Observation:** None
 #
-# **Climatology:** [UPDATE_SECTION_CONTENT]
+# **Climatology:** None
 #
 # **Location:** All of the input data required for this use case can be 
 # found in a sample data tarball. Each use case category will have 
@@ -152,8 +153,6 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 # short_range-physics_tendency_vertical_profile.png
 #
 #
-
-
 
 ##############################################################################
 # Keywords
