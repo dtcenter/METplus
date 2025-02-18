@@ -56,23 +56,21 @@ model_applications/space_weather/GenVxMask_fcstGloTEC_solar_altitude.conf
 # Datasets
 # --------
 #
-# **Forecast:**  [UPDATE_SECTION_CONTENT]
+# **Forecast:**  NOAA Space Weather Prediction Center (SWPC) 
+# GloTEC Total Electron Content (TEC) model run without assimilation of any COSMIC-1 RO data
 #
-# **Observation:**  [UPDATE_SECTION_CONTENT]
+# **Observation:** None
 #
-# **Climatology:**  [UPDATE_SECTION_CONTENT]
+# **Climatology:**  None
 #
-# **Input Grid:** GloTEC
-#
-# **Masks:** Solar altitude 
-#
-# | **Location:** All of the input data required for this use case can be found in the sample data tarball. 
-# | Click here to download: https://github.com/dtcenter/METplus/releases/download/v3.0/sample_data-space_weather-3.0.tgz
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
-#
-# **Data source:** NOAA Space Weather Prediction Center (SWPC)
-#
-# **Data contact:** Dominic Fuller-Rowell (dominic.fuller-rowell@noaa.gov)
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Use Case Contact

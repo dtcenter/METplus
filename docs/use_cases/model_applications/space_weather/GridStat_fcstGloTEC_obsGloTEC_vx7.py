@@ -50,11 +50,12 @@ GridStat_fcstGloTEC_obsGloTEC_vx7.conf
 # Datasets
 # --------
 #
-# **Forecast:** GloTEC Total Electron Content (TEC) model run without assimilation of any COSMIC-1 RO data
+# **Forecast:** NOAA Space Weather Prediction Center (SWPC)
+# GloTEC Total Electron Content (TEC) model run without assimilation of any COSMIC-1 RO data
 #
 # **Observation:** GloTEC TEC model run that assimilates COSMIC-1 RO data
 #
-# **Climatology:** [UPDATE_SECTION_CONTENT]
+# **Climatology:** None
 #
 # **Location:** All of the input data required for this use case can be 
 # found in a sample data tarball. Each use case category will have 
@@ -64,10 +65,6 @@ GridStat_fcstGloTEC_obsGloTEC_vx7.conf
 # for the appropriate release: https://github.com/dtcenter/METplus/releases
 # This tarball should be unpacked into the directory that you will 
 # set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
-#
-# **Data source:** NOAA Space Weather Prediction Center (SWPC)
-#
-# **Data contact:** Dominic Fuller-Rowell (dominic.fuller-rowell@noaa.gov)
 
 ##############################################################################
 # METplus Use Case Contact
