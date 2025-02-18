@@ -66,9 +66,8 @@ model_applications/short_range/MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf
 # **Increment between beginning and end times (VALID_INCREMENT):** 3600
 #
 # | **Sequence of forecast leads to process:**
-# | INIT_SEQ = 0
-# | LEAD_SEQ_MAX = 36
 # | LEAD_SEQ_MIN = 12
+# | LEAD_SEQ_MAX = 36
 #
 # The MODE tool is run for each time. This example loops by valid time.  It
 # processes 2 valid times, listed below.
