@@ -77,17 +77,16 @@ model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
 # **Observation:**
 # Global ATCF B-decks files from the National Hurricane Center (NHC) and Joint Typhoon Warning Center (JTWC)
 #
-# **Climatology:** [UPDATE_SECTION_CONTENT]
+# **Climatology:** None
 #
-# **Location:** [UPDATE_SECTION_CONTENT]
-#
-# The MET TCGen tool requires forecast data to be provided from the GFDL cyclone tracker. More information
-# about the GFDL cyclone tracker can be found here: https://dtcenter.org/community-code/gfdl-vortex-tracker
-#
-# Archives of ATCF B-decks files can be found at these locations:
-#
-# | https://www.metoc.navy.mil/jtwc/jtwc.html?best-tracks
-# | https://www.nhc.noaa.gov/data/#hurdat
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # Software Versions

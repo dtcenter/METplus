@@ -45,8 +45,6 @@ model_applications/s2s/GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile.conf
 # for the appropriate release: https://github.com/dtcenter/METplus/releases
 # This tarball should be unpacked into the directory that you will 
 # set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
-#
-# **Data Source:** CPC
 
 ##############################################################################
 # METplus Components
