@@ -42,6 +42,8 @@ model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.py
 #
 # **Observation:** ERA Reanlaysis Outgoing Longwave Radiation, 2017 - 2018
 #
+# **Climatology:** None
+#
 # **EOFs:** Observed OMI EOF1 and EOF2 patterns from the PSL Website (https://psl.noaa.gov/mjo/mjoindex/)
 #
 # **Location:** All of the input data required for this use case can be 

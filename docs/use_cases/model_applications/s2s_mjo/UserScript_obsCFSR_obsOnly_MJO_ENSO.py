@@ -31,7 +31,7 @@ model_applications/s2s_mjo/UserScript_obsCFSR_obsOnly_MJO_ENSO.py
 #
 # **Forecast:**  None
 #
-# ***Observation:** CFSR Reanalysis
+# ***Observation:** Climate Forecast System Reanalysis (CFSR) Reanalysis
 #
 # **Climatology:** None
 #
