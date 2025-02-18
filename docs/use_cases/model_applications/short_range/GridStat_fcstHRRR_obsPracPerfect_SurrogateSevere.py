@@ -62,7 +62,6 @@ model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.
 # **Increment between beginning and end times (VALID_INCREMENT):** 86400
 #
 # | **Sequence of forecast leads to process:**
-# | INIT_SEQ = 0
 # | LEAD_SEQ_MIN = 36
 # | LEAD_SEQ_MAX = 36
 #
