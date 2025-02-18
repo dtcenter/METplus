@@ -28,13 +28,11 @@ model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar.co
 # Datasets
 # --------
 #
-# **Forecast:** [UPDATE_SECTION_CONTENT]
+# **Forecast:** HYbrid Coordinate Ocean Model (HYCOM)
 #
-# **Observation:** [UPDATE_SECTION_CONTENT]
+# **Observation:** None
 #
-# **Climatology:** [UPDATE_SECTION_CONTENT]
-#
-# **Input:** Python Embedding script/file, HYCOM observation file, coordinate system weight files (optional)
+# **Climatology:** None
 #
 # **Location:** All of the input data required for this use case can be 
 # found in a sample data tarball. Each use case category will have 
@@ -44,8 +42,6 @@ model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar.co
 # for the appropriate release: https://github.com/dtcenter/METplus/releases
 # This tarball should be unpacked into the directory that you will 
 # set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
-#
-# **Data Source:** HYCOM model
 
 ##############################################################################
 # External Dependencies

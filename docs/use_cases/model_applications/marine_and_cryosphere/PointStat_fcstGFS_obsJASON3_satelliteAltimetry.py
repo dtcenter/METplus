@@ -31,7 +31,7 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAl
 # Datasets
 # --------
 #
-# **Forecast:** GFS forecast data (wind speed and sig. wave hgt)
+# **Forecast:** NOAA Global Forecast System (GFS) forecast data (wind speed and sig. wave hgt)
 #
 # **Observations:** JASON-3 satellite data
 #

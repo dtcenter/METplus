@@ -29,11 +29,12 @@ model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_
 # Datasets
 # --------
 #
-# **Forecast:** RTOFSv2.3 forecast data pre-processed into 0.1 degree lat-lon grid
+# **Forecast:** NOAA Global Real-Time Ocean Forecast System (RTOFS) v2.3 forecast
+# data pre-processed into 0.1 degree lat-lon grid
 #
-# **Observations:** three netCDF files from Argo
+# **Observations:** Argo free drifting profiling floats
 #
-# **Climatology:** two monthly climatology files from WOA23
+# **Climatology:** World Ocean Atlas 2023 (WOA23)
 #
 # **Sea Ice Mask:** a mask file to exclude forecast grid points with sea ice concentration > 15%
 #

@@ -28,9 +28,9 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsNDBC_WaveHeight.co
 # Datasets
 # --------
 #
-# **Forecast:** GFSv16 forecast data from WAVE file category 
+# **Forecast:** NOAA Global Forecast System (GFS) v16 forecast data from WAVE file category 
 #
-# **Observations:** ASCII buoy files from NDBC
+# **Observations:** ASCII buoy files from NOAA National Data Buoy Center (NDBC)
 #
 # **Climatology:** None
 #

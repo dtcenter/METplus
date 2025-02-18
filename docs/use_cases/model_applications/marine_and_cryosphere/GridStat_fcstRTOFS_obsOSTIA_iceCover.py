@@ -29,9 +29,11 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsOSTIA_iceCover.co
 # Datasets
 # --------
 #
-# **Forecast:** RTOFS ice cover file via Python Embedding script/file
+# **Forecast:** NOAA Real-Time Ocean Forecast System (RTOFS)
+# ice cover file via Python Embedding script/file
 #
-# **Observation:** OSTIA ice cover file via Python Embedding script/file
+# **Observation:** NASA Operational Sea Surface Temperature and Sea Ice Analysis (OSTIA)
+# ice cover file via Python Embedding script/file
 #
 # **Climatology:** None
 #
@@ -43,8 +45,6 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsOSTIA_iceCover.co
 # for the appropriate release: https://github.com/dtcenter/METplus/releases
 # This tarball should be unpacked into the directory that you will 
 # set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
-#
-# **Data Source:** JPL's PODAAC and NCEP's FTPPRD data servers
 
 ##############################################################################
 # External Dependencies

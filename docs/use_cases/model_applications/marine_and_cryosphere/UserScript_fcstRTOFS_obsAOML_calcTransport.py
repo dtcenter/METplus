@@ -35,9 +35,11 @@ model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransp
 # Datasets
 # --------
 #
-# **Forecast:** RTOFS u(3zuio) amd ,v(3zvio) files via Python Embedding script/file
+# **Forecast:** NOAA Real-Time Ocean Forecast System (RTOFS) 
+# u(3zuio) and ,v(3zvio) files via Python Embedding script/file
 #
-# **Observations:** AOML Florida Current data via Python Embedding script/file
+# **Observations:** NOAA Atlantic Oceanographic and Meteorological Laboratory (AOML)
+#  Florida Current data via Python Embedding script/file
 #
 # **Climatology:** None
 #
@@ -49,8 +51,6 @@ model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransp
 # for the appropriate release: https://github.com/dtcenter/METplus/releases
 # This tarball should be unpacked into the directory that you will 
 # set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
-#
-# **Data Source:** NOMADS RTOFS Global + Daily mean transport (https://www.aoml.noaa.gov/phod/floridacurrent/data_access.php)+ Eightmilecable (static, provided with the use case)
 
 ##############################################################################
 # External Dependencies

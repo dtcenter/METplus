@@ -29,13 +29,17 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.
 # Datasets
 # --------
 #
-# **Forecast:** RTOFS sss file via Python Embedding script/file
+# **Forecast:** NOAA Real-Time Ocean Forecast System (RTOFS)
+# Sea Surface Salinity (sss) file via Python Embedding script/file
 #
-# **Observations:** SMAP sss file via Python Embedding script/file
+# **Observations:** NASA Soil Moisture Active Passive (SMAP) 
+# Sea Surface Salinity (sss) file via Python Embedding script/file
 #
-# **Sea Ice Masking:** RTOFS ice cover file via Python Embedding script/file
+# **Sea Ice Masking:** NOAA Real-Time Ocean Forecast System (RTOFS)
+# ice cover file via Python Embedding script/file
 #
-# **Climatology:** WOA sss file via Python Embedding script/file
+# **Climatology:** World Ocean Atlas (WOA) Sea Surface Salinity (sss)
+# file via Python Embedding script/file
 #
 # **Location:** All of the input data required for this use case can be 
 # found in a sample data tarball. Each use case category will have 
@@ -45,8 +49,6 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.
 # for the appropriate release: https://github.com/dtcenter/METplus/releases
 # This tarball should be unpacked into the directory that you will 
 # set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
-#
-# **Data Source:** JPL's PODAAC and NCEP's FTPPRD data servers
 
 ##############################################################################
 # External Dependencies

@@ -29,9 +29,10 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWin
 # Datasets
 # --------
 #
-# **Forecast:** GFS forecast data for 10-m winds 
+# **Forecast:** NOAA Global Forecast System (GFS) forecast data for 10-m winds 
 #
-# **Observations:** ASCAT METOP-B data provided by OPC
+# **Observations:** Advanced Scatterometer (ASCAT) from METOP-B provided by
+# NOAA Ocean Prediction Center (OPC)
 #
 # **Climatology:** None
 #
