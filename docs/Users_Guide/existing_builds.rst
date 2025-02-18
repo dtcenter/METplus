@@ -30,7 +30,7 @@ in the
 
        | **NCAR MACHINE CASPER** (see 
           `Casper Information <https://ncar-hpc-docs.readthedocs.io/en/latest/compute-systems/casper/>`_)
-       | *Last Updated: February 5, 2024*
+       | *Last Updated: February 15, 2024*
        | *Compiler and version: Intel oneAPI 2023.2.1*
 
        * METplus-6.0.0
@@ -49,53 +49,51 @@ in the
 
        * To set up the environment run:
 
-       .. code-block:: ini
+         .. code-block:: ini
 
-          export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
-          module use $TOP_DIR/METplus/installations/modulefiles
-          module load metplus/6.0.0
+             export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
+             module use $TOP_DIR/METplus/installations/modulefiles
+             module load metplus/6.0.0
 
        * MET-12.0.2
 
          * MODULES:
 
-       .. code-block:: ini
+           .. code-block:: ini
 
-          export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
-          module use $TOP_DIR/MET/installations/modulefiles
-          module load met/12.0.2
+               export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
+               module use $TOP_DIR/MET/installations/modulefiles
+               module load met/12.0.2
 
        * METdataio-3.0.0
 
          * MODULES:
 
-       .. code-block:: ini
+           .. code-block:: ini
 
-          export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
-          module use $TOP_DIR/METdataio/installations/modulefiles
-          module load metdataio/3.0.0
-          METcalcpy-3.0.0
-          MODULES:
-
+               export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
+               module use $TOP_DIR/METdataio/installations/modulefiles
+               module load metdataio/3.0.0
+	       
        * METcalcpy-3.0.0
       
          * MODULES:
 
-       .. code-block:: ini
+           .. code-block:: ini
 
-          export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
-          module use $TOP_DIR/METcalcpy/installations/modulefiles
-          module load metcalcpy/3.0.0
+               export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
+               module use $TOP_DIR/METcalcpy/installations/modulefiles
+               module load metcalcpy/3.0.0
 
        * METplotpy-3.0.0
 
          * MODULES:
 
-       .. code-block:: ini
+           .. code-block:: ini
 
-          export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
-          module use $TOP_DIR/METplotpy/installations/modulefiles
-          module load metplotpy/3.0.0
+               export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
+               module use $TOP_DIR/METplotpy/installations/modulefiles
+               module load metplotpy/3.0.0
 
     .. dropdown:: DERECHO
 
@@ -199,16 +197,16 @@ in the
 
               .. code-block:: ini
 
-                module reset
-                module use /apps/dev/modulefiles/
-                module load ve/evs/2.0
-                module load gsl/2.7
-                module load netcdf/4.7.4
-                module load met/12.0.1
-                module load metplus/6.0.0
-                module load metplotpy/3.0.0
-                module load metdataio/3.0.0
-                module load metcalcpy/3.0.0
+                  module reset
+                  module use /apps/dev/modulefiles/
+                  module load ve/evs/2.0
+                  module load gsl/2.7
+                  module load netcdf/4.7.4
+                  module load met/12.0.1
+                  module load metplus/6.0.0
+                  module load metplotpy/3.0.0
+                  module load metdataio/3.0.0
+                  module load metcalcpy/3.0.0
  
 
      .. dropdown:: HERA
@@ -235,9 +233,9 @@ in the
 
               .. code-block:: ini
 
-                 module load intel/2024.2.1
-                 module use /contrib/METplus/modulefiles
-                 module load metplus/6.0.0
+                  module load intel/2024.2.1
+                  module use /contrib/METplus/modulefiles
+                  module load metplus/6.0.0
 
           * **MET-12.0.2**
 
@@ -342,7 +340,7 @@ in the
      .. dropdown:: ORION
 
         | **NOAA MACHINE ORION (MANAGED BY MSU)**
-        | *Last updated: February 11, 2025*
+        | *Last updated: February 15, 2025*
 	| *Compiler and version: Intel oneAPI 2022.2.1*
 
           * **METplus-6.0.0**
@@ -406,7 +404,7 @@ in the
      .. dropdown:: JET
 
         | **NOAA MACHINE JET**
-        | *Last updated: February 6, 2025*
+        | *Last updated: February 15, 2025*
         | *Compiler and version: Intel oneAPI 2024.2.1*
 
           * **METplus-6.0.0**
@@ -470,8 +468,8 @@ in the
      .. dropdown:: GAEA
 
         | **NOAA MACHINE GAEA**
-        | *Last Updated: February 12, 2025*
-	| *Compiler and version: Intel oneAPI 2023.2.0*
+        | *Last Updated: February 18, 2025*
+	| *Compiler and version: Intel classic 2023.2.0*
 
           * **METplus-6.0.0**
 
@@ -535,7 +533,7 @@ in the
      .. dropdown:: FRONTERA
 
         | **TEXAS ADVANCED COMPUTING CENTER (TACC) FRONTERA**
-	| *Last updated: February 15, 2025*
+	| *Last updated: February 18, 2025*
 	| *Compiler and version: Intel oneAPI 2023.1.0*
 
 
