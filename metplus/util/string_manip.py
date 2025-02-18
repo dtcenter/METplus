@@ -7,7 +7,6 @@ Description: METplus utility to handle string manipulation
 import sys
 import os
 import re
-from csv import reader
 import random
 import string
 import logging
@@ -45,7 +44,7 @@ def remove_quotes(input_string):
 
 
 def getlist(list_str, expand_begin_end_incr=True):
-    """! Returns a list of string elements from a comma
+    """!Returns a list of string elements from a comma
          separated string of values.
          This function MUST also return an empty list [] if s is '' empty.
          This function is meant to handle these possible or similar inputs:
@@ -57,6 +56,8 @@ def getlist(list_str, expand_begin_end_incr=True):
          a conf file returns '' an empty string.
 
         @param list_str the string being converted to a list.
+        @param expand_begin_end_incr If False, do not expand begin_end_incr
+         notation into a list of items (defaults to True).
         @returns list of strings formatted properly and expanded as needed
     """
     if not list_str:
@@ -81,7 +82,7 @@ def getlist(list_str, expand_begin_end_incr=True):
 
     # use regex split to split list string by commas that are not
     # found within []s or ()s
-    item_list = re.split(r',\s*(?![^\[\]]*\]|[^()]*\))', list_str)
+    item_list = re.split(r',\s*(?![^\[\]]*]|[^()]*\))', list_str)
 
     # regex split will still split by commas that are found between
     # quotation marks, so call function to put them back together properly
@@ -177,7 +178,7 @@ def _begin_end_incr_evaluate(item):
 
 
 def _fix_list(item_list):
-    """! The logic that calls this function may have incorrectly split up
+    """!The logic that calls this function may have incorrectly split up
     a string that contains commas within quotation marks. This function
     looks through the list and finds items that appear to have been split up
     incorrectly and puts them back together properly.
@@ -196,11 +197,12 @@ def _fix_list(item_list):
             # otherwise add it to the list buffer
             else:
                 list_buffer.append(item)
-        else:
-            list_buffer.append(item)
-            if quote_count == 1:
-                fixed_list.append(','.join(list_buffer))
-                list_buffer.clear()
+            continue
+
+        list_buffer.append(item)
+        if quote_count == 1:
+            fixed_list.append(','.join(list_buffer))
+            list_buffer.clear()
 
     # if there are still items in the buffer, add them to end of list
     if list_buffer:
@@ -210,9 +212,8 @@ def _fix_list(item_list):
     out_list = []
     for item in fixed_list:
         if item[0] == '"' and item[-1] == '"':
-            out_list.append(item.strip('"'))
-        else:
-            out_list.append(item)
+            item = item.strip('"')
+        out_list.append(item)
 
     return out_list
 
@@ -334,18 +335,20 @@ def get_threshold_via_regex(thresh_string):
                 break
 
             match = re.match(r'^('+comp+r')(.*\d.*)$', thresh)
-            if match:
-                comparison = match.group(1)
-                number = match.group(2)
-                # try to convert to float if it can, but allow string
-                try:
-                    number = float(number)
-                except ValueError:
-                    pass
+            if not match:
+                continue
 
-                comparison_number_list.append((comparison, number))
-                found_match = True
-                break
+            comparison = match.group(1)
+            number = match.group(2)
+            # try to convert to float if it can, but allow string
+            try:
+                number = float(number)
+            except ValueError:
+                pass
+
+            comparison_number_list.append((comparison, number))
+            found_match = True
+            break
 
         # if no match was found for the item, return None
         if not found_match:

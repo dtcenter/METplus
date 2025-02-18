@@ -5,7 +5,8 @@ import pytest
 import pprint
 from datetime import datetime
 
-from metplus.util.string_manip import *
+from metplus.util.string_manip import get_log_path, get_logfile_info, template_to_regex, subset_list, expand_int_string_to_list, round_0p5, validate_thresholds, get_threshold_via_regex, camel_to_underscore, remove_quotes, getlist, getlistint, list_to_str, comparison_to_letter_format, format_thresh, format_level, find_indices_in_config_section
+
 
 
 @pytest.mark.parametrize(
@@ -373,7 +374,7 @@ def test_getlist_begin_end_incr(list_string, output_list):
 
 
 @pytest.mark.parametrize(
-    'input, add_quotes, expected_output', [
+    'input_list, add_quotes, expected_output', [
         (['a', 'b', 'c'], None, '"a", "b", "c"'),
         (['0', '1', '2'], None, '"0", "1", "2"'),
         (['a', 'b', 'c'], True, '"a", "b", "c"'),
@@ -385,11 +386,11 @@ def test_getlist_begin_end_incr(list_string, output_list):
     ]
 )
 @pytest.mark.util
-def test_list_to_str(input, add_quotes, expected_output):
+def test_list_to_str(input_list, add_quotes, expected_output):
     if add_quotes is None:
-        assert list_to_str(input) == expected_output
+        assert list_to_str(input_list) == expected_output
     else:
-        assert list_to_str(input, add_quotes=add_quotes) == expected_output
+        assert list_to_str(input_list, add_quotes=add_quotes) == expected_output
 
 
 @pytest.mark.parametrize(
@@ -440,7 +441,7 @@ def test_format_level(level, expected_result):
 
 
 @pytest.mark.parametrize(
-    'regex,index,id,expected_result', [
+    'regex,index,id_index,expected_result', [
         # 0: No ID
         (r'^FCST_VAR(\d+)_NAME$', 1, None,
          {'1': [None],
@@ -468,7 +469,7 @@ def test_format_level(level, expected_result):
 )
 @pytest.mark.util
 def test_find_indices_in_config_section(metplus_config, regex, index,
-                                        id, expected_result):
+                                        id_index, expected_result):
     config = metplus_config
     config.set('config', 'FCST_VAR1_NAME', 'name1')
     config.set('config', 'FCST_VAR1_LEVELS', 'level1')
@@ -487,10 +488,10 @@ def test_find_indices_in_config_section(metplus_config, regex, index,
     config.set('config', 'TC_PAIRS_CONSENSUS2_MIN_REQ', '2')
 
     indices = find_indices_in_config_section(regex, config, index_index=index,
-                                             id_index=id)
+                                             id_index=id_index)
 
     pp = pprint.PrettyPrinter()
-    print(f'Indices:')
+    print('Indices:')
     pp.pprint(indices)
 
     assert indices == expected_result

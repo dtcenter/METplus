@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Must specify 3 arguments:
 #   - username
