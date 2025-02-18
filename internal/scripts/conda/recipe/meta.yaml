@@ -73,7 +73,7 @@ requirements:
     - gsl
     - libnetcdf
     - netcdf-cxx4=4.3.1
-    - libopenblas
+    - libopenblas==0.3.28
     - python
     - zlib
     - nceplibs-bufr
