@@ -57,7 +57,7 @@
   {
     "category": "fire",
     "index_list": "0",
-    "run": false
+    "run": true
   },
   {
     "category": "land_surface",
