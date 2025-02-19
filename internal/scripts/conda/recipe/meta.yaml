@@ -134,6 +134,43 @@ requirements:
     - _openmp_mutex # [linux]
     - llvm-openmp   # [osx]
 
+test:
+  commands:
+    - test -f $PREFIX/bin/ascii2nc
+    - test -f $PREFIX/bin/ensemble_stat
+    - test -f $PREFIX/bin/gen_ens_prod
+    - test -f $PREFIX/bin/gen_vx_mask
+    - test -f $PREFIX/bin/grid_diag
+    - test -f $PREFIX/bin/grid_stat
+    - test -f $PREFIX/bin/ioda2nc
+    - test -f $PREFIX/bin/lidar2nc
+    - test -f $PREFIX/bin/madis2nc
+    - test -f $PREFIX/bin/mode
+    - test -f $PREFIX/bin/mode_analysis
+    - test -f $PREFIX/bin/mtd
+    - test -f $PREFIX/bin/pb2nc
+    - test -f $PREFIX/bin/pcp_combine
+    - test -f $PREFIX/bin/plot_data_plane
+    - test -f $PREFIX/bin/plot_point_obs
+    - test -f $PREFIX/bin/point2grid
+    - test -f $PREFIX/bin/point_stat
+    - test -f $PREFIX/bin/regrid_data_plane
+    - test -f $PREFIX/bin/series_analysis
+    - test -f $PREFIX/bin/stat_analysis
+    - test -f $PREFIX/bin/tc_diag
+    - test -f $PREFIX/bin/tc_gen
+    - test -f $PREFIX/bin/tc_pairs
+    - test -f $PREFIX/bin/tc_rmw
+    - test -f $PREFIX/bin/tc_stat
+    - test -f $PREFIX/bin/wavelet_stat
+  imports:
+    - metplus
+    - xarray
+    - numpy
+    - scipy
+    - yaml
+    - pandas
+
 
 about:
   home: https://dtcenter.org/community-code/metplus
