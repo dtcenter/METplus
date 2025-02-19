@@ -66,7 +66,7 @@ model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.py
 # METplus Workflow
 # ----------------
 #
-# **Beginning time (VALID_BEG):** 2014
+# **Beginning time (VALID_BEG):** None
 #
 # **End time (VALID_END):** None
 #
@@ -74,9 +74,8 @@ model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.py
 #
 # **Sequence of forecast leads to process (LEAD_SEQ):** None
 #
-# This use case does not loop but plots the entire time period of # 
-# 
-# This uses data from 2016-01-01 to 2016-03-31
+# This use case does not loop but plots the entire time period from
+# 2016-01-01 to 2016-03-31.
 
 ##############################################################################
 # METplus Configuration
