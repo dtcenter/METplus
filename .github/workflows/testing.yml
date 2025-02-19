@@ -201,7 +201,7 @@ jobs:
         with:
           categories: ${{ matrix.categories }}
           metplotpy_branch: ${{ github.event.inputs.metplotpy_branch }}
-          metcalcpy_branch: 'feature_py3.12_fix'
+          metcalcpy_branch: ${{ github.event.inputs.metcalcpy_branch }}
           metdataio_branch: ${{ github.event.inputs.metdataio_branch }}
 
       # copy logs with errors to error_logs directory to save as artifact
