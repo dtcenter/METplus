@@ -50,23 +50,29 @@ channels:
 build:
   skip: true # [win]
   missing_dso_whitelist:
+    # eckit/atlas libraries are installed within this recipe
     {% if osx %}
     - libeckit.dylib
     - libeckit_geometry.dylib
     - libatlas.dylib
-    - libncurses.6.dylib
     {% else %}
     - libeckit.so
     - libeckit_geometry.so
     - libatlas.so
     {% endif %}
 
+# Notes:
+# - GCC 12 on Linux and fftw are needed to install atlas
+# - libopenblas v0.3.28 is needed using 0.3.29 causes eckit to not find
+#  the library and it compiles with other libraries that are not included
+#  in this recipe.
+
 requirements:
   build:
     - {{ compiler('c') }}
     - {{ compiler('fortran') }}
     - {{ compiler('cxx') }}
-    - gcc_linux-64=12  # GCC 12 on Linux (needed for Atlas)  [linux]
+    - gcc_linux-64=12  # [linux]
     - libcxx
     - cairo
     - freetype
@@ -83,7 +89,7 @@ requirements:
     - hdf4
     - hdfeos2
     - proj
-    - fftw              # needed for atlas
+    - fftw
     - _openmp_mutex=4.5 # [linux]
     - llvm-openmp       # [osx]
 
