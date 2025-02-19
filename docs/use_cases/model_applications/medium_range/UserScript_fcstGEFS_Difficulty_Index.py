@@ -97,6 +97,9 @@ model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf
 # **Init:** 20201208_12Z
 #
 # **Forecast lead:** 60
+#
+# Since the data file used only contains a single lead time, the lead time is implied and not configured
+# anywhere in the use case configuration file.
 
 ##############################################################################
 # METplus Configuration
