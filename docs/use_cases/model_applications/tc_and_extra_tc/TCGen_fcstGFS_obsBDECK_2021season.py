@@ -60,11 +60,20 @@ model_applications/tc_and_extra_tc/TCGen_fcstGFS_obsBDECK_2021season.conf
 #
 # **Beginning time (INIT_BEG):** 2021
 #
-# TC-Gen is the only tool called in this example. It processes the following
-# run times:
+# **End time (INIT_END):** None
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** None
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** None
+#
+# This use case does not loop in time, and TC-Gen is the only tool called 
+# in this example. It processes data available with the following time information:
 #
 # | **Init:** 2021-05-07 00 UTC - 2021-11-13 12 UTC
 # | **Forecast lead:** 06 - 120 hours
+#
+# These timing control elements are set by various TC_GEN config items in the 
+# use case configuration file.
 
 ##############################################################################
 # METplus Configuration

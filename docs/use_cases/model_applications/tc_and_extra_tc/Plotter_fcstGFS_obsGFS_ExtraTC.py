@@ -57,9 +57,15 @@ model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_ExtraTC.conf
 #
 # **Beginning time (INIT_BEG):** 201503
 #
-# The following tools are used for each run time:
+# **End time (INIT_END):** None
 #
-# TCPairs
+# **Increment between beginning and end times (INIT_INCREMENT):** None
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** None
+#
+# This use case does not loop in time. TCPairs is called once using time
+# settings set by specific TC_PAIRS configuration items in the use case
+# configuration file.
 #
 # To generate TCPairs output, this example loops by initialization time for every 6 hour period that is available
 # in the data set for 20150301. The output is then used to generate the plot of all cyclone tracks.
