@@ -95,6 +95,12 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 #
 # **Beginning time (VALID_BEG):** 2019
 #
+# **End time (VALID_END):** None
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** None
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** None
+#
 # This use case does not loop but plots physics tendency data that has been
 # subsetted to one date: 2019-06-15.
 

@@ -107,6 +107,12 @@ model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_P
 #
 # **Beginning time (VALID_BEG):** 20220506_000000
 #
+# **End time (VALID_END):** None
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** None
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** None
+#
 # This use case reads in the MET .stat output that contains the ECNT linetype (from
 # the MET ensemble-stat tool).  The .stat output *MUST* reside under one directory.
 # If .stat files are spread among multiple directories, these must be consolidated under a
