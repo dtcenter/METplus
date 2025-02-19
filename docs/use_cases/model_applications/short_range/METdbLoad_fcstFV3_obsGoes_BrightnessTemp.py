@@ -68,7 +68,9 @@ model_applications/short_range/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 # **Sequence of forecast leads to process (LEAD_SEQ):** None
 #
 # The METdbload is run once and loads data for two ensemble members, one model initialization
-# time and 2 forecast lead times, listed below.
+# time and 2 forecast lead times, listed below. These forecast lead times (i.e. LEAD_SEQ) 
+# are not set in this conf file, but rather are controlled with the conf file for other 
+# use cases that generate the output used here.
 #
 # | **Valid:** 2019-05-21_01Z
 # | **Forecast lead:** 01
