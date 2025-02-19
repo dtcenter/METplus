@@ -72,6 +72,17 @@ model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicE
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (INIT_BEG):** 202108
+#
+# **End time (INIT_END):** None
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** None
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** None
+#
+# This example does not loop in time, but rather relies on ranges of times passed to
+# TCPairs and TCStat to perform relevant tasks.
+#
 # TCPairs is the first tool called in this example. It processes the following
 # run times for each storm file (e.g. aal092021.dat, aal102021.dat) against the corresponding 
 # Bdeck files (e.g. bal092021.dat, bal102021.dat):
@@ -83,7 +94,6 @@ model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicE
 # from TCPairs. In this example the TC-Stat filters the TC-Pairs output based on the 
 # characteristics of the storm (HU, SD, SS, TS, TD). The output from the TC-Stat can be used to 
 # aggregate verification statistics (e.g. Track, Intensity, MSLP, wind radii errors etc.).
-# 
 
 ##############################################################################
 # METplus Configuration
