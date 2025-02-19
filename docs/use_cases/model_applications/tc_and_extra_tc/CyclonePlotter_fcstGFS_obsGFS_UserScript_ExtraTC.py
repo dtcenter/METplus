@@ -70,20 +70,17 @@ model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_Extr
 # METplus Workflow
 # ----------------
 #
-# | LOOP_BY = INIT
-# | INIT_TIME_FMT = %Y%m%d
-# | INIT_BEG = 20201007
-# | 
-# | USER_SCRIPT_RUNTIME_FREQ = RUN_ONCE
-# | TC_PAIRS_RUNTIME_FREQ = RUN_ONCE
+# **Beginning time (INIT_BEG):** 20201007
 #
-# TCPairs is the first tool called in this example. It processes the following
-# run times for each storm file:
+# **End time (INIT_END):** None
 #
-# **Init/Valid:** 2020100700
+# **Increment between beginning and end times (INIT_INCREMENT):** None
 #
-# CyclonePlotter is the second (and final) tool called in this example. It processes the output
-# from TCPairs.
+# **Sequence of forecast leads to process (LEAD_SEQ):** None
+#
+# TCPairs is the first tool called in this example, then CyclonePlotter 
+# is the second (and final) tool called in this example. This example does not
+# loop in time, and only runs once for the time set by INIT_BEG.
 
 ##############################################################################
 # METplus Configuration
