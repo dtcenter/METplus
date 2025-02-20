@@ -71,7 +71,7 @@ requirements:
     - {{ stdlib("c") }}
     - {{ compiler('fortran') }}
     - {{ compiler('cxx') }}
-    - gcc_linux-64 =12  # [linux]
+    - gcc =12  # [linux]
     - cmake
     - libcxx
     - cairo
