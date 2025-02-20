@@ -72,6 +72,7 @@ requirements:
     - {{ compiler('fortran') }}
     - {{ compiler('cxx') }}
     - cmake
+    - make
     - libcxx
     - cairo
     - freetype
@@ -80,6 +81,7 @@ requirements:
     - netcdf-cxx4
     - libopenblas ==0.3.28
     - python =3.10
+    - pip
     - zlib
     - nceplibs-bufr
     - python-configuration
