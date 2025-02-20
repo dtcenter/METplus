@@ -182,7 +182,10 @@ about:
   summary: 'Unified NWP model verification, validation, and diagnostic tools'
   license: Apache-2.0
   license_family: APACHE
-  license_file: LICENSE.md
+  license_file:
+    - LICENSE.md
+    - eckit/LICENSE
+    - atlas/LICENSE
   doc_url: https://metplus.readthedocs.io
   dev_url: https://github.com/dtcenter/METplus
 
