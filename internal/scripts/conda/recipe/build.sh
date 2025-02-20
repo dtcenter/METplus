@@ -72,8 +72,8 @@ mkdir atlas/build
 ###
 
 # Update config.sub and config.guess before running configure
-wget -O ./MET/config.sub http://git.savannah.gnu.org/cgit/config.git/plain/config.sub
-wget -O ./MET/config.guess http://git.savannah.gnu.org/cgit/config.git/plain/config.guess
+curl -o ./MET/config.sub http://git.savannah.gnu.org/cgit/config.git/plain/config.sub
+curl -o ./MET/config.guess http://git.savannah.gnu.org/cgit/config.git/plain/config.guess
 
 (cd MET &&
      ./configure --prefix="${PREFIX}" --enable-all BUFRLIB_NAME=-lbufr_4 GRIB2CLIB_NAME=-lg2c &&
