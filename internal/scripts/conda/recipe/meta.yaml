@@ -46,7 +46,7 @@ source:
 
 build:
   number: 0
-  skip: true # [win]
+  skip: true  # [win]
   missing_dso_whitelist:
     # eckit/atlas libraries are installed within this recipe
     {% if osx %}
@@ -91,7 +91,7 @@ requirements:
     - proj
     - fftw
     - _openmp_mutex =4.5  # [linux]
-    - llvm-openmp # [osx]
+    - llvm-openmp  # [osx]
 
   host:
     - python 3.10
