@@ -45,8 +45,8 @@ source:
     folder: atlas
 
 build:
+  skip: True  # [win]
   number: 0
-  skip: true  # [win]
   missing_dso_whitelist:
     # eckit/atlas libraries are installed within this recipe
     {% if osx %}
@@ -68,7 +68,7 @@ build:
 requirements:
   build:
     - {{ compiler('c') }}
-    - {{ stdlib("c") }}  # [not (osx and arm64)]
+    - {{ stdlib("c") }}
     - {{ compiler('fortran') }}
     - {{ compiler('cxx') }}
     - cmake
@@ -81,7 +81,6 @@ requirements:
     - netcdf-cxx4
     - libopenblas ==0.3.28
     - python =3.10
-    - pip
     - zlib
     - nceplibs-bufr
     - python-configuration
@@ -95,7 +94,8 @@ requirements:
     - llvm-openmp  # [osx]
 
   host:
-    - python 3.10
+    - python =3.10
+    - pip
     - gsl
     - netcdf-cxx4
     - zlib
