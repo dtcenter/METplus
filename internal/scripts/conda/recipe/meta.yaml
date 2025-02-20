@@ -118,8 +118,7 @@ requirements:
 
   run:
     - gsl
-    - netcdf-cxx4  # [not osx-64]
-    - netcdf-c++4  # [osx-64]
+    - netcdf-cxx4
     - libopenblas
     - python
     - nceplibs-bufr
