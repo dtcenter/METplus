@@ -548,10 +548,10 @@ in the
             * Users should create a file like /work2/06612/tg859120/frontera/METplus/frontera.user_name.conf
               to set a personalized INPUT_BASE and OUTPUT_BASE.
 
-.. dropdown:: DockerHub - Coming Soon!
+.. dropdown:: DockerHub
 
    | **MET**
-   | *Last Updated:*
+   | *Last Updated:* January 24, 2025
 
       .. code-block:: ini
 
@@ -560,7 +560,7 @@ in the
      `dtcenter/met DockerHub <https://hub.docker.com/r/dtcenter/met>`_
 
    | **METplus**
-   | *Last Updated:*
+   | *Last Updated:* January 28, 2025
 
       .. code-block:: ini
 
@@ -569,7 +569,7 @@ in the
      `dtcenter/metplus DockerHub <https://hub.docker.com/r/dtcenter/metplus>`_
 
    | **METplus Analysis**
-   | *Last Updated:*
+   | *Last Updated:* January 28, 2025
 
       .. code-block:: ini
 
