@@ -31,9 +31,10 @@ NUM_PROCS=$(sysctl -n hw.ncpu || grep -c ^processor /proc/cpuinfo || 1)
 # Add GS fonts to the package
 mv "${SRC_DIR}/gs-fonts" "${PREFIX}/gs-fonts"
 
-# Create an activate script which points to GS fonts, for use by mode graphics.
-# Not sure if this is a good idea, might be better just telling the user to download
-# and set the environment variable themselves.
+# Create an activate script to set env vars:
+#  - location of GS fonts, for use by mode graphics
+#  - location of METplus parm directory to find use case config files
+
 mkdir -p "${PREFIX}/etc/conda/activate.d"
 printf "export MET_FONT_DIR=${PREFIX}/gs-fonts\n" > "${PREFIX}/etc/conda/activate.d/${PKG_NAME}-activate.sh"
 printf "export METPLUS_PARM_BASE=${PREFIX}/lib/python3.10/site-packages/metplus/parm\n" > "${PREFIX}/etc/conda/activate.d/${PKG_NAME}-activate.sh"
