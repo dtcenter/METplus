@@ -43,9 +43,8 @@ in the
 
           * /glade/work/dtcrt/METplus/data/components/METplus/METplus-6.0_sample_data
 
-       * Users should create a file like 
-          /glade/work/dtcrt/METplus/casper/components/METplus/installations/casper.dtcrt.conf 
-          to set a personalized INPUT_BASE and OUTPUT_BASE.
+       * Users should create a file like /glade/work/dtcrt/METplus/casper/components/METplus/installations/casper.dtcrt.conf 
+         to set a personalized INPUT_BASE and OUTPUT_BASE.
 
        * To set up the environment run:
 
