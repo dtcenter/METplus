@@ -37,7 +37,10 @@ mv "${SRC_DIR}/gs-fonts" "${PREFIX}/gs-fonts"
 
 mkdir -p "${PREFIX}/etc/conda/activate.d"
 printf "export MET_FONT_DIR=${PREFIX}/gs-fonts\n" > "${PREFIX}/etc/conda/activate.d/${PKG_NAME}-activate.sh"
-printf "export METPLUS_PARM_BASE=${PREFIX}/lib/python3.10/site-packages/metplus/parm\n" > "${PREFIX}/etc/conda/activate.d/${PKG_NAME}-activate.sh"
+
+PYTHON_VERSION=$(${MET_PYTHON_BIN_EXE} -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+printf "export METPLUS_PARM_BASE=${PREFIX}/lib/python${PYTHON_VERSION}/site-packages/metplus/parm\n" >> "${PREFIX}/etc/conda/activate.d/${PKG_NAME}-activate.sh"
+
 
 ###
 # Install eckit and atlas for ugrid support (requires ecbuild)
