@@ -8,6 +8,7 @@ Contributor's Guide
 
    coding_standards
    utilities
+   conda_recipe
    basic_components
    create_wrapper
    conda_env
@@ -18,7 +19,6 @@ Contributor's Guide
    continuous_integration
    documentation
    user_support
-   conda_recipe
 
 Indices and tables
 ==================
