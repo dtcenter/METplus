@@ -18,6 +18,7 @@ Contributor's Guide
    continuous_integration
    documentation
    user_support
+   conda_recipe
 
 Indices and tables
 ==================
