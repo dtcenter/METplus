@@ -23,8 +23,8 @@ e.g. Linux and OSX.
 Build Recipe Locally
 ====================
 
-To build the recipe locally, use a clean Conda environment with the conda-build
-and conda-index packages installed.
+To build the recipe locally, use a clean Conda environment with the
+*conda-build* and *conda-index* packages installed.
 
 .. note::
     Other packages/libraries in this environment can impact what is used to
@@ -43,10 +43,10 @@ and conda-index packages installed.
 
 From the top-level directory of the METplus repository,
 change directory to **internal/scripts/conda** and build the recipe.
-Be sure to specify the Conda Forge channel with `-c conda-forge` and
-set `--error-overlinking` so the build errors to alert you of linking issues.
-The `-k` option "keeps going" when running the tests instead of stopping at
-the first failed test.
+Be sure to specify the Conda Forge channel with :code:`-c conda-forge` and
+set :code:`--error-overlinking` so the build errors provide alerts for linking issues.
+The :code:`-k` option "keeps going" when running the tests instead of stopping
+at the first failed test.
 
 ::
 
@@ -112,14 +112,14 @@ Install the **metplus** package, specifying the local channel::
 Run tests
 =========
 
-Test that the install was successful by calling a MET tool and the Run METplus
-script::
+Test that the install was successful by calling a MET tool and
+the :code:`run_metplus` script::
 
     grid_stat
     run_metplus
 
-Use the *which* command to ensure that these files are being called from the
-bin directory of the active Conda environment::
+Use the :code:`which` command to ensure that these files are being called
+from the bin directory of the active Conda environment::
 
     which grid_stat
     which run_metplus
@@ -157,4 +157,4 @@ If modifications are needed to the recipe, be sure to switch back to the
 Conda environment used to build/index the recipe before running those commands.
 Remove the existing local channel and/or create a new local channel.
 Uninstall *metplus* from the environment where it was installed before
-re-installing using `conda uninstall metplus`.
+re-installing using :code:`conda uninstall metplus`.
