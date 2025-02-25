@@ -14,6 +14,12 @@ In the **recipe** directory are:
 * **conda_build_config.yaml** - defines build settings, e.g. compiler versions.
   See this `example <https://github.com/conda-forge/conda-forge-pinning-feedstock/blob/main/recipe/conda_build_config.yaml>`_.
 
+After making changes to a Conda recipe, it is recommended that developers
+build the recipe locally, install it in a fresh Conda environment, and run
+any tests that are not included in the recipe to ensure that everything works
+as expected. Ideally, testing should be performed on a variety of platforms,
+e.g. Linux and OSX.
+
 Build Recipe Locally
 ====================
 
@@ -35,7 +41,8 @@ and conda-index packages installed.
     as of the writing of these instructions, conda-verify was not supported for
     Python 3.12.
 
-Change directory to the **internal/scripts/conda** directory and build the recipe.
+From the top-level directory of the METplus repository,
+change directory to **internal/scripts/conda** and build the recipe.
 Be sure to specify the Conda Forge channel with `-c conda-forge` and
 set `--error-overlinking` so the build errors to alert you of linking issues.
 The `-k` option "keeps going" when running the tests instead of stopping at
