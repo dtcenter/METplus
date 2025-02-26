@@ -30,7 +30,7 @@ in the
 
        | **NCAR MACHINE CASPER** (see 
           `Casper Information <https://ncar-hpc-docs.readthedocs.io/en/latest/compute-systems/casper/>`_)
-       | *Last Updated: February 26, 2024*
+       | *Last Updated: February 26, 2025*
        | *Compiler and version: Intel oneAPI 2024.2.1*
 
        * METplus-6.0.0
@@ -363,7 +363,7 @@ in the
      .. dropdown:: JET
 
         | **NOAA MACHINE JET**
-        | *Last updated: February 15, 2025*
+        | *Last updated: February 26, 2025*
         | *Compiler and version: Intel oneAPI 2024.2.1*
 
           * **METplus-6.0.0**
