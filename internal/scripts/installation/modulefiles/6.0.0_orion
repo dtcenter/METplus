@@ -6,14 +6,6 @@ proc ModulesHelp { } {
   puts stderr "Sets up the paths and environment variables to use the METplus-6.0.0
      *** For help see the official MET webpage at http://www.dtcenter.org/met/users ***"
 }
-#%Module######################################################################
-##
-##      METplus
-##
-proc ModulesHelp { } {
-  puts stderr "Sets up the paths and environment variables to use the METplus-6.0.0
-     *** For help see the official MET webpage at http://www.dtcenter.org/met/users ***"
-}
 
 module load contrib
 module load intel-oneapi-compilers/2022.2.1
