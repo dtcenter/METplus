@@ -242,58 +242,58 @@ in the
             module load intel-oneapi-compilers/2022.2.1
 
 
-          * **MET-12.0.2**
+        * **MET-12.0.2**
 
-            * MODULES:
+          * MODULES:
 
-	      .. code-block:: ini
+	    .. code-block:: ini
 
-                  module load met/12.0.2
+              module load met/12.0.2
 
-          * **METplus-6.0.0**
+        * **METplus-6.0.0**
 
-            * METplus-6.0.0 Installation: /apps/contrib/MET/METplus/METplus-6.0.0
-            * METplus-6.0 Sample Data:
+          * METplus-6.0.0 Installation: /apps/contrib/MET/METplus/METplus-6.0.0
+          * METplus-6.0 Sample Data:
 
-              * /work/noaa/ovp/jprestop/METplus/METplus-6.0_sample_data
+            * /work/noaa/ovp/jprestop/METplus/METplus-6.0_sample_data
 
-            * To use METplus run:
+          * To use METplus run:
 
-	      .. code-block:: ini
+	    .. code-block:: ini
 
-                  module load metplus/6.0.0
+              module load metplus/6.0.0
 		  
-            * Users should create a file like 
+          * Users should create a file like 
               /work/noaa/ovp/jprestop/METplus/hercules.jpresto.conf 
               to set a personalized INPUT_BASE and OUTPUT_BASE.
 
-          * **METcalcpy-3.0.0 / METplotpy-3.0.0**
+        * **METcalcpy-3.0.0 / METplotpy-3.0.0**
 
-            * MODULES:
+          * MODULES:
 
-	      .. code-block:: ini
+	    .. code-block:: ini
 	      
-                  module load metcalcpy/3.0.0
-                  module load metplotpy/3.0.0
+              module load metcalcpy/3.0.0
+              module load metplotpy/3.0.0
 
-            * PIP INSTALL:
+          * PIP INSTALL:
 
-	      .. code-block:: ini
+	    .. code-block:: ini
 
-                  python -m pip install --user tornado
-                  python -m pip install --user plotly
-                  python -m pip install --user kaleido
-                  python -m pip install --user xarray
-                  python -m pip install --user netcdf4
-                  python -m pip install --user h5netcdf
+              python -m pip install --user tornado
+              python -m pip install --user plotly
+              python -m pip install --user kaleido
+              python -m pip install --user xarray
+              python -m pip install --user netcdf4
+              python -m pip install --user h5netcdf
 
-          * **METdataio-3.0.0**
+        * **METdataio-3.0.0**
 
-            * MODULES:
+          * MODULES:
 
-	      .. code-block:: ini
+	    .. code-block:: ini
 	      
-                  module load metdataio/3.0.0
+              module load metdataio/3.0.0
 
 
      .. dropdown:: ORION
