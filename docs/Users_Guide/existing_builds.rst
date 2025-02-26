@@ -30,8 +30,8 @@ in the
 
        | **NCAR MACHINE CASPER** (see 
           `Casper Information <https://ncar-hpc-docs.readthedocs.io/en/latest/compute-systems/casper/>`_)
-       | *Last Updated: February 15, 2024*
-       | *Compiler and version: Intel oneAPI 2023.2.1*
+       | *Last Updated: February 26, 2024*
+       | *Compiler and version: Intel oneAPI 2024.2.1*
 
        * METplus-6.0.0
 
@@ -492,30 +492,47 @@ in the
      .. dropdown:: FRONTERA
 
         | **TEXAS ADVANCED COMPUTING CENTER (TACC) FRONTERA**
-	| *Last updated: February 18, 2025*
+	| *Last updated: February 26, 2025*
 	| *Compiler and version: Intel oneAPI 2023.1.0*
 
 
-          * **MET-12.0.0-beta1**
-
-            * MODULES: 
-
-          * **METplus-6.0.0-beta1**
+          * **METplus-6.0.0**
 
             * METplus-6.0.0-beta1 Installation
+
+	      * /work2/06612/tg859120/frontera/METplus
+		
             * METplus-6.0 Sample Data
-            * To set up the environment run:
+
+	      * /work2/06612/tg859120/frontera/METplus/METplus-6.0_sample_data
+		
+            * To use METplus run:
+
+	      .. code-block:: ini
+
+                module use /work2/06612/tg859120/frontera/modulefiles
+		module load metplus/6.0.0
+	      
             * Users should create a file like /work2/06612/tg859120/frontera/METplus/frontera.metplus.conf
               to set a personalized INPUT_BASE and OUTPUT_BASE.
+
+	 * **MET-12.0.2**
+
+	   * MODULES:
+
+	     .. code-block:: ini
+
+	       module use /work2/06612/tg859120/frontera/modulefiles
+	       module load met/12.0.2
 
 .. dropdown:: DockerHub
 
    | **MET**
-   | *Last Updated: January 31, 2025*
+   | *Last Updated: February 14, 2025*
 
       .. code-block:: ini
 
-          docker pull dtcenter/met:12.0.1
+          docker pull dtcenter/met:12.0.2
 
      `dtcenter/met DockerHub <https://hub.docker.com/r/dtcenter/met>`_
 
