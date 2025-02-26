@@ -498,7 +498,7 @@ in the
 
           * **METplus-6.0.0**
 
-            * METplus-6.0.0-beta1 Installation
+            * METplus-6.0.0 Installation
 
 	      * /work2/06612/tg859120/frontera/METplus
 		
