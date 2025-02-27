@@ -513,8 +513,7 @@ in the
               module use /work2/06612/tg859120/frontera/modulefiles
 	      module load metplus/6.0.0
 	      
-          * Users should create a file like /work2/06612/tg859120/frontera/METplus/frontera.metplus.conf
-              to set a personalized INPUT_BASE and OUTPUT_BASE.
+          * Users should create a file like /work2/06612/tg859120/frontera/METplus/frontera.metplus.conf to set a personalized INPUT_BASE and OUTPUT_BASE.
 
        * **MET-12.0.2**
 
