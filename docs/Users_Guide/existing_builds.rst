@@ -113,13 +113,14 @@ in the
        | *Last Updated: Month DD, YYY*
        | *Compiler and version: GNU 12.2.0*
 
+       * **METplusv6.1.0** (**Coming Soon**)
+
+	 * METplus INSTALLATION: /nrit/ral/METplus-6.1.0
+	   
        * **METv12.1.0** (**Coming Soon**)
 
          * MET BUILD: /nrit/ral/met/bin
 
-       * **METplusv6.1.0** (**Coming Soon**)
-
-         * METplus INSTALLATION: /nrit/ral/METplus-6.1.0
 
     .. dropdown:: NCAR/RAL Internal Development
 
@@ -150,7 +151,7 @@ in the
         | *Last updated: Month DD, YYYY*
 	| *Compiler and version: Intel classic 19.1.3.304*
 
-          * **MET v12.1.0 / METplus v6.1.0 / METplus Analysis Tools v3.1.0** (**Coming Soon**)
+          * **METplus v6.1.0 / MET v12.1.0 / METplus Analysis Tools v3.1.0** (**Coming Soon**)
 
             * MODULES:
 
@@ -238,62 +239,59 @@ in the
 
 	.. code-block:: ini
 
-	    module load contrib
-            module load intel-oneapi-compilers/2022.2.1
+	   module load contrib
+           module load intel-oneapi-compilers/2022.2.1
 
+        * **METplus-6.1.0** (**Coming Soon**)
 
-          * **MET-12.1.0** (**Coming Soon**)
+	  * METplus-6.1.0 Installation: /apps/contrib/MET/METplus/METplus-6.1.0
+	  * METplus-6.1 Sample Data:
 
-            * MODULES:
+	    * /work/noaa/ovp/jprestop/METplus/METplus-6.1_sample_data
 
-	      .. code-block:: ini
+	  * To use METplus run:
 
-                  module load met/12.1.0
+	    .. code-block:: ini
 
-          * **METplus-6.1.0** (**Coming Soon**)
+              module load metplus/6.1.0
 
-            * METplus-6.1.0 Installation: /apps/contrib/MET/METplus/METplus-6.1.0
-            * METplus-6.1 Sample Data:
+	  * Users should create a file like /work/noaa/ovp/jprestop/METplus/hercules.jpresto.conf to set a personalized INPUT_BASE and OUTPUT_BASE.
 
-              * /work/noaa/ovp/jprestop/METplus/METplus-6.1_sample_data
+        * **MET-12.1.0** (**Coming Soon**)
 
-            * To use METplus run:
+          * MODULES:
 
-	      .. code-block:: ini
+	    .. code-block:: ini
 
-                  module load metplus/6.1.0
-		  
-            * Users should create a file like 
-              /work/noaa/ovp/jprestop/METplus/hercules.jpresto.conf 
-              to set a personalized INPUT_BASE and OUTPUT_BASE.
+              module load met/12.1.0
 
-          * **METcalcpy-3.1.0 / METplotpy-3.1.0** (**Coming Soon**)
+        * **METcalcpy-3.1.0 / METplotpy-3.1.0** (**Coming Soon**)
 
-            * MODULES:
+          * MODULES:
 
-	      .. code-block:: ini
+	    .. code-block:: ini
 	      
-                  module load metcalcpy/3.1.0
-                  module load metplotpy/3.1.0
+              module load metcalcpy/3.1.0
+              module load metplotpy/3.1.0
 
-            * PIP INSTALL:
+          * PIP INSTALL:
 
-	      .. code-block:: ini
+	    .. code-block:: ini
 
-                  python -m pip install --user tornado
-                  python -m pip install --user plotly
-                  python -m pip install --user kaleido
-                  python -m pip install --user xarray
-                  python -m pip install --user netcdf4
-                  python -m pip install --user h5netcdf
+              python -m pip install --user tornado
+              python -m pip install --user plotly
+              python -m pip install --user kaleido
+              python -m pip install --user xarray
+              python -m pip install --user netcdf4
+              python -m pip install --user h5netcdf
 
-          * **METdataio-3.1.0** (**Coming Soon**)
+        * **METdataio-3.1.0** (**Coming Soon**)
 
-            * MODULES:
+          * MODULES:
 
-	      .. code-block:: ini
+	    .. code-block:: ini
 	      
-                  module load metdataio/3.1.0
+              module load metdataio/3.1.0
 
 
      .. dropdown:: ORION
@@ -527,7 +525,7 @@ in the
 
 .. dropdown:: DockerHub
 
-   | **MET**
+   | **MET** (**Coming Soon**)
    | *Last Updated: Month DD, YYYY*
 
       .. code-block:: ini
@@ -536,7 +534,7 @@ in the
 
      `dtcenter/met DockerHub <https://hub.docker.com/r/dtcenter/met>`_
 
-   | **METplus**
+   | **METplus** (**Coming Soon**)
    | *Last Updated: Month DD, YYYY*
 
       .. code-block:: ini
@@ -545,7 +543,7 @@ in the
 
      `dtcenter/metplus DockerHub <https://hub.docker.com/r/dtcenter/metplus>`_
 
-   | **METplus Analysis**
+   | **METplus Analysis** (**Coming Soon**)
    | *Last Updated: Month DD, YYYY*
 
       .. code-block:: ini
@@ -556,7 +554,7 @@ in the
 
 .. dropdown:: AWS
 
-   | **METviewer v6.1.0**
+   | **METviewer v6.1.0** (**Coming Soon**)
    | *Last Updated:*
 
      * LOCATION: 
