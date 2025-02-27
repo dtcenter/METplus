@@ -496,34 +496,34 @@ in the
 	| *Compiler and version: Intel oneAPI 2023.1.0*
 
 
-          * **METplus-6.0.0**
+        * **METplus-6.0.0**
 
-            * METplus-6.0.0 Installation
+          * METplus-6.0.0 Installation
 
-	      * /work2/06612/tg859120/frontera/METplus
+	    * /work2/06612/tg859120/frontera/METplus
 		
-            * METplus-6.0 Sample Data
+          * METplus-6.0 Sample Data
 
-	      * /work2/06612/tg859120/frontera/METplus/METplus-6.0_sample_data
+	    * /work2/06612/tg859120/frontera/METplus/METplus-6.0_sample_data
 		
-            * To use METplus run:
+          * To use METplus run:
 
-	      .. code-block:: ini
+	    .. code-block:: ini
 
-                module use /work2/06612/tg859120/frontera/modulefiles
-		module load metplus/6.0.0
+              module use /work2/06612/tg859120/frontera/modulefiles
+	      module load metplus/6.0.0
 	      
-            * Users should create a file like /work2/06612/tg859120/frontera/METplus/frontera.metplus.conf
+          * Users should create a file like /work2/06612/tg859120/frontera/METplus/frontera.metplus.conf
               to set a personalized INPUT_BASE and OUTPUT_BASE.
 
-	 * **MET-12.0.2**
+       * **MET-12.0.2**
 
-	   * MODULES:
+	 * MODULES:
 
-	     .. code-block:: ini
+	   .. code-block:: ini
 
-	       module use /work2/06612/tg859120/frontera/modulefiles
-	       module load met/12.0.2
+	     module use /work2/06612/tg859120/frontera/modulefiles
+	     module load met/12.0.2
 
 .. dropdown:: DockerHub
 
