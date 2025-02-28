@@ -34,14 +34,14 @@ low_cloud_base_altitude = nc.variables['low_cloud_base_altitude'][:] # measureme
 nc.close()
 
 stn_id = np.empty(len(parent_index),dtype="U10")
-latitude = np.zeros(len(parent_index))
-longitude = np.zeros(len(parent_index))
-elev = np.zeros(len(parent_index))
+stn_lat = np.zeros(len(parent_index))
+stn_lon = np.zeros(len(parent_index))
+stn_elev = np.zeros(len(parent_index))
 for i in range(len(parent_index)):
   stn_id[i] = station_ids[parent_index[i]].tobytes().decode('utf-8').strip()
-  latitude[i] = latitude[parent_index[i]]
-  longitude[i] = longitude[parent_index[i]]
-  elev[i] = altitude[parent_index[i]]
+  stn_lat[i] = latitude[parent_index[i]]
+  stn_lon[i] = longitude[parent_index[i]]
+  stn_elev[i] = altitude[parent_index[i]]
 
 epoch = datetime(1970, 1, 1)
 formatted_times = [(epoch + timedelta(seconds=int(time))).strftime('%Y%m%d_%H%M%S') for time in time_observation]
@@ -51,10 +51,10 @@ var_name = [var_name]*len(parent_index)
 level = level*len(parent_index)
 height = low_cloud_base_altitude.astype(float)
 qc_string = qc_string*len(parent_index)
-obs_value = low_cloud_area_fraction.astype(float)
+obs_value = low_cloud_area_fraction.astype(float)*100.0
 
 obs_val = obs_value.filled(-9999.)
 height = height.filled(-9999.)
 
 point_data = []
-point_data = [[typ,sid,vid,lat,lon,elv,var,lvl,hgt,qc,obs] for typ,sid,vid,lat,lon,elv,var,lvl,hgt,qc,obs in tuple(zip(msg_type,stn_id,vld_time,latitude,longitude,elev,var_name,level,height,qc_string,obs_val))]
+point_data = [[typ,sid,vid,lat,lon,elv,var,lvl,hgt,qc,obs] for typ,sid,vid,lat,lon,elv,var,lvl,hgt,qc,obs in tuple(zip(msg_type,stn_id,vld_time,stn_lat,stn_lon,stn_elev,var_name,level,height,qc_string,obs_val))]
