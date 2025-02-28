@@ -28,8 +28,7 @@ station_ids = nc.variables['station_id'][:]
 
 parent_index = nc.variables['parent_index'][:]
 time_observation = nc.variables['time_observation'][:] # seconds since 1970-01-01 00 UTC 
-low_cloud_area_fraction = nc.variables[var_name][:] # 0-1 [unitless]
-low_cloud_base_altitude = nc.variables['low_cloud_base_altitude'][:] # measurement altitude [m]
+observation = nc.variables[var_name][:]
 
 nc.close()
 
@@ -47,14 +46,15 @@ epoch = datetime(1970, 1, 1)
 formatted_times = [(epoch + timedelta(seconds=int(time))).strftime('%Y%m%d_%H%M%S') for time in time_observation]
 msg_type = msg_type*len(parent_index)
 vld_time = formatted_times
-var_name = [var_name]*len(parent_index)
+var = [var_name]*len(parent_index)
 level = level*len(parent_index)
-height = low_cloud_base_altitude.astype(float)
+height = level
 qc_string = qc_string*len(parent_index)
-obs_value = low_cloud_area_fraction.astype(float)*100.0
+obs_value = observation.astype(float)
+if 'fraction' in var_name:
+  obs_value = obs_value*100.0
 
 obs_val = obs_value.filled(-9999.)
-height = height.filled(-9999.)
 
 point_data = []
-point_data = [[typ,sid,vid,lat,lon,elv,var,lvl,hgt,qc,obs] for typ,sid,vid,lat,lon,elv,var,lvl,hgt,qc,obs in tuple(zip(msg_type,stn_id,vld_time,stn_lat,stn_lon,stn_elev,var_name,level,height,qc_string,obs_val))]
+point_data = [[typ,sid,vid,lat,lon,elv,var,lvl,hgt,qc,obs] for typ,sid,vid,lat,lon,elv,var,lvl,hgt,qc,obs in tuple(zip(msg_type,stn_id,vld_time,stn_lat,stn_lon,stn_elev,var,level,height,qc_string,obs_val))]
