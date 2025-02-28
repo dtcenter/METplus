@@ -6,7 +6,7 @@ from datetime import datetime,timedelta
 
 msg_type = ['ADPSFC']
 var_name = ['low_cloud_area_fraction']
-level = [-9999]
+level = [-9999.]
 qc_string = ['NA']
 
 if len(sys.argv) < 2:
@@ -61,7 +61,15 @@ obs_val = obs_value.filled(-9999)
 hgt = height.filled(-9999)
 
 point_data = []
-point_data = [ msg_type, stn_id, vld_time, lat, lon, elev, var_name, level, hgt, qc_string, obs_val]
+#point_data = [ msg_type, stn_id, vld_time, lat, lon, elev, var_name, level, hgt, qc_string, obs_val]
+point_data = [[a,b,c,float(d),float(e),float(f),g,float(h),float(i),j,float(k)] for a,b,c,d,e,f,g,h,i,j,k in tuple(zip(msg_type,stn_id,vld_time,lat,lon,elev,var_name,level,hgt,qc_string,obs_val))]
+
+cnt = 0
+for i in point_data:
+  print(i)
+  cnt+=1
+  if cnt > 10:
+    break
 
 # 11-column observations for input
 # string: message_type = ADPSFC
