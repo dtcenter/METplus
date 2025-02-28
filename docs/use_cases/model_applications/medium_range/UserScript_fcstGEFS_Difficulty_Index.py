@@ -50,24 +50,20 @@ model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf
 # Datasets
 # --------
 #
-# This use case calculates the difficulty index for wind speed using NCEP 
-# GEFS ensemble data. The data is composed of 30 ensemble members that 
-# have been compiled and compressed into one .npz file. 
-# 
-#  - Variables required to calculate the difficulty index:
-#    Levels required: 10-m
-#    #. v- component of wind
-#    #. u- component of wind
-#    #. Windspeed
-#    #. Latitude
-#    #. Longitude
-#  - Forecast dataset: NCEP GEFS 30 member Ensemble
-#    - Initialization date: 20191208
-#    - Initialization hours: 12 UTC
-#    - Lead times: 60
-#    - Format: Grib2
-#    - Resolution: 0.5 degree
+# **Forecast:** NOAA Global Ensemble Forecast System (GEFS)
 #
+# **Observation:** None
+#
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -75,11 +71,18 @@ model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf
 #
 # This use case runs the UserScript wrapper tool to run a user provided script,
 # in this case, wind_difficulty_index.py.
-#
 
 ##############################################################################
 # METplus Workflow
 # ----------------
+#
+# **Beginning time (INIT_BEG):** 2020120812
+#
+# **End time (INIT_END):** 2020120812
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 12H
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** None
 #
 # This use case loops by process which means that each tool is run for all times before moving to the
 # next tool. The tool order is as follows:
@@ -91,10 +94,12 @@ model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf
 #
 # 1 initialization time will be run over 1 lead time:
 #
-# | **Init:** 20201208_12Z
-# | **Forecast lead:** 60
-# |
+# **Init:** 20201208_12Z
 #
+# **Forecast lead:** 60
+#
+# Since the data file used only contains a single lead time, the lead time is implied and not configured
+# anywhere in the use case configuration file.
 
 ##############################################################################
 # METplus Configuration

@@ -29,32 +29,45 @@ model_applications/tc_and_extra_tc/UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD
 # Datasets
 # --------
 #
-# | **Forecast:** HAFS temperature
-# | **Observation:** HRD Dropsonde data 
+# **Forecast:** Hurricane Analysis and Forecast System (HAFS) temperature
 #
-# | **Location of Model forecast and Dropsonde files:** All of the input data required for this use case can be found in the sample data tarball. Click `here <https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data>`_ to download.
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
+# **Observation:** Hurricane Research Division (HRD) Dropsonde data
 #
-# | **Dropsonde Data Source:** `Hurricane Research Division Sonde Archive  <https://www.aoml.noaa.gov/hrd/data_sub/dropsonde.html>`_
-# |
+# **Climatology:** None
 #
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
 # ------------------
 #
-# This use case utilizes the METplus ASCII2NC wrapper to convert full-resolution data (frd) dopsonde point observations to NetCDF format and then compare them to gridded forecast data using PointStat.
+# This use case utilizes the METplus ASCII2NC wrapper to convert full-resolution data (frd) dropsonde point observations to NetCDF format and then compare them to gridded forecast data using PointStat.
 
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
-# The use case runs the UserScript wrapper (untar the dropsonde file and extract the files to a directory), ASCII2NC (convert the ascii files to NetCDF format), and PointStat (compute statistics against HAFS model output), which are the tools called in this example. It processes the following run times:
+# **Beginning time (VALID_BEG):** 2019082912
 #
-# | **Valid:** 2019-08-29 12Z
-# |
+# **End time (VALID_END):** 2019082912
 #
+# **Increment between beginning and end times (VALID_INCREMENT):** 21600
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 0,6,12,18
+#
+# The use case runs the UserScript wrapper (untar the dropsonde file and extract the files to a directory),
+# ASCII2NC (convert the ascii files to NetCDF format), and PointStat (compute statistics against
+# HAFS model output), which are the tools called in this example. It processes the following run times:
+#
+# **Valid:** 2019-08-29 12Z
 
 ##############################################################################
 # METplus Configuration

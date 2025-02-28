@@ -34,13 +34,21 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 # Datasets
 # --------
 #
-# Relevant information about the datasets that would be beneficial include:
+# **Forecast:** NOAA Global Forecast System (GFS)
 #
-#  * TC-Pairs/TC-Stat Forecast dataset: ADeck modified-ATCF tropical cyclone data
-#  * Series-Analysis Forecast dataset: GFS
-#  * TC-Pairs/TC-Stat Observation dataset: BDeck modified-ATCF tropical cyclone data
-#  * Series-Analysis Observation dataset: GFS Analysis
+# **Observation:** NOAA Global Forecast System (GFS) Analysis and
+# Automated Tropical Cyclone Forecasting System (ATCF) ADeck and BDeck data
 #
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # External Dependencies
@@ -49,7 +57,6 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 # You will need to use a version of Python 3.6+ that has the following packages installed::
 #
 # * netCDF4
-#
 
 ##############################################################################
 # METplus Components
@@ -68,6 +75,14 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (INIT_BEG):** 20141214
+#
+# **End time (INIT_END):** 20141214
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 21600
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** None
+#
 # The following tools are used for each run time:
 # TCPairs > RegridDataPlane, TCStat > SeriesAnalysis
 #
@@ -80,31 +95,23 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 # | **Init:** 20141214_0Z
 # | **Forecast lead:** 6
 # |
-#
 # | **Init:** 20141214_0Z
 # | **Forecast lead:** 12
 # |
-#
 # | **Init:** 20141214_0Z
 # | **Forecast lead:** 18
 # |
-#
 # | **Init:** 20141214_0Z
 # | **Forecast lead:** 24
 # |
-#
 # | **Init:** 20141214_0Z
 # | **Forecast lead:** 30
 # |
-#
 # | **Init:** 20141214_0Z
 # | **Forecast lead:** 36
 # |
-#
 # | **Init:** 20141214_0Z
 # | **Forecast lead:** 42
-# |
-#
 
 ##############################################################################
 # METplus Configuration
