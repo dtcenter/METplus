@@ -30,7 +30,7 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 # Datasets
 # --------
 #
-#  * Forecast dataset: WoFS Ensemble
+# * Forecast dataset: WoFS Ensemble
 #
 
 ###############################################################################
@@ -39,7 +39,7 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 #
 # This use case runs PCP-Combine on each ensemble member, then runs
 # Ensemble-Stat on the output. Finally, it runs Grid-Stat on the output from
-# Ensemble-Stat
+# Ensemble-Stat.
 
 ###############################################################################
 # METplus Workflow
@@ -71,29 +71,36 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # METplus sets environment variables based on user settings in the METplus configuration file. 
 # See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details. 
 #
 # **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!**
 #
-# If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
+# If there is a setting in the MET configuration file that is currently
+# not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# **EnsembleStatConfig_wrapped**
+# .. dropdown:: EnsembleStatConfig_wrapped
 #
-# .. note:: See the :ref:`EnsembleStat MET Configuration<ens-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+#   .. literalinclude:: ../../../../parm/met_config/EnsembleStatConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/EnsembleStatConfig_wrapped
+# .. dropdown:: GridStatConfig_wrapped
 #
-# **GridStatConfig_wrapped**
+#   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
+
+##############################################################################
+# Python Embedding
+# ----------------
 #
-# .. note:: See the :ref:`GridStat MET Configuration<grid-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
@@ -116,11 +123,10 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
 # Output for this use case will be found in WOFS/grid_stat (relative to **OUTPUT_BASE**)
-# The following folder/file combination will be created:
+# The following folder/file combination will be created::
 #
 # * 20200615/1700/grid_stat_WOFS_PCP_1700_A1_000000L_20200615_180000V_pairs.nc
 # * 20200615/1700/grid_stat_WOFS_PCP_1700_A1_000000L_20200615_180000V.stat
-
 
 ##############################################################################
 # Keywords

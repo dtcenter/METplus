@@ -6,6 +6,26 @@ Boulder, CO
 
 .. image:: _static/METplus_banner_photo_web.png
 
+In Memoriam
+-----------
+This coordinated release is dedicated to three remarkable team members 
+we lost in 2024, whose contributions have left an indelible mark on our work. 
+
+To `Tara Jensen <https://dtcenter.org/news/2024/04#3032>`_, 
+for her vision and leadership in creating METplus as well as her 
+dedication, dogged determination, and mentorship that shaped its growth and 
+trajectory, leaving a legacy of innovation in the field of verification.
+
+To `Randy Bullock <https://dtcenter.org/news/2024/04#3031>`_, 
+whose verification libraries formed the basis of MET and 
+whose mathematical brilliance, passion for maps, grid projections, and 
+graphics enriched and inspired new capabilities.
+
+To `Venita Hagerty <https://sites.gsl.noaa.gov/authors/365>`_, 
+for her pivotal expertise, support, and attention to 
+detail that ensured the success of METdataio and METexpress.
+
+Their contributions to METplus continue to guide and inspire us each day.
 
 History
 -------

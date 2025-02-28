@@ -75,7 +75,7 @@ model_application/precipitation/PointStat_fcstMULTI_obsMETAR_PtypeComparisons.co
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # METplus sets environment variables based on user settings in the METplus configuration file. 
 # See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details. 
@@ -85,19 +85,25 @@ model_application/precipitation/PointStat_fcstMULTI_obsMETAR_PtypeComparisons.co
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# **PB2NCConfig_wrapped**
+# .. dropdown:: PB2NCConfig_wrapped
 #
-# .. note:: See the :ref:`PB2NC MET Configuration<pb2nc-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+#   .. literalinclude:: ../../../../parm/met_config/PB2NCConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/PB2NCConfig_wrapped
+# .. dropdown:: PointStatConfig_wrapped
 #
-# **PointStatConfig_wrapped**
+#   .. literalinclude:: ../../../../parm/met_config/PointStatConfig_wrapped
+
+##############################################################################
+# Python Embedding
+# ----------------
 #
-# .. note:: See the :ref:`PointStat MET Configuration<point-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/PointStatConfig_wrapped
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus

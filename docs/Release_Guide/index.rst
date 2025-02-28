@@ -6,8 +6,11 @@ This METplus Release Guide provides detailed instructions for METplus
 developers for creating software releases for the METplus component
 repositories.
 
-.. note:: This Release Guide is intended for developers creating
+.. note:: This **Release Guide** is intended for developers creating
           releases and is not intended for users of the software.
+
+.. note:: Please use the `develop <https://metplus.readthedocs.io/en/develop/Release_Guide>`_
+          branch version of this **Release Guide**.
 
 .. _releaseTypes:
 

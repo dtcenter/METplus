@@ -47,9 +47,6 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 #
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # | The tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
-#
-
-
 
 ##############################################################################
 # External Dependencies 
@@ -64,16 +61,12 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 #  * pandas
 #  * shapely
 #  * xarray
-#
-
-
 
 ##############################################################################
 # METplus Components
 # ------------------
 #
 # This use case runs the METplotpy cross_section_vert.py script to generate the plan views.
-#
 
 ##############################################################################
 # METplus Workflow
@@ -81,7 +74,6 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 #
 # This use case does not loop but plots physics tendency data that has been
 # subsetted to one date: 2019-06-15.
-# 
 
 
 ##############################################################################
@@ -94,19 +86,24 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalCrossSection.conf
-#
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # No MET tools are used in this use case.
+
+##############################################################################
+# Python Embedding
+# ----------------
 #
-# METplus sets environment variables based on user settings in the METplus configuration file. 
-# See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details. 
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
 #
-# .. note:: See the :ref:`MODE MET Configuration<mode-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
-#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
