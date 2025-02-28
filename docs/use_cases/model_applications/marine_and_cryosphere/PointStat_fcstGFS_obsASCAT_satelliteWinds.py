@@ -60,7 +60,7 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWin
 # **End time (INIT_END):** 202307060000
 #
 # **Increment between beginning and end times (INIT_INCREMENT):** 1M
-
+#
 # **Sequence of forecast leads to process (LEAD_SEQ):** 6
 #
 # PointStat kicks off a Python script execution, which reads in the entire directory passed as an arguement. 
@@ -69,7 +69,7 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWin
 # in pre-created masking regions. MCTC and MCTS line types are output, using thresholds of relevant wind speeds.
 # The use case processes the following run time:
 #
-#  **Init:** 2023-07-06 00Z 6hr lead
+# **Init:** 2023-07-06 00Z 6hr lead
 
 ##############################################################################
 # METplus Configuration

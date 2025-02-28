@@ -72,7 +72,7 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 ##############################################################################
 # External Dependencies 
 # ---------------------
-# You will need to use a versio of Python 3.86 that has the following packages
+# You will need to use a version of Python 3.8.6 that has the following packages
 # installed:
 #
 #  * cartopy (0.20.3 only)

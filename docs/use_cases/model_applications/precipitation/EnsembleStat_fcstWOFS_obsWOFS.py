@@ -69,7 +69,7 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 # PCPCombine, EnsembleStat, GridStat
 #
 # This example loops by initialization time. For each initialization time
-# it will process the 1 hour forecast lead
+# it will process the 1 hour forecast lead.
 #
 # Run times:
 #

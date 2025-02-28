@@ -32,7 +32,7 @@ model_application/precipitation/PointStat_fcstMULTI_obsMETAR_PtypeComparisons.co
 # Datasets
 # --------
 #
-# **Forecast:** operational GFS, GFSv16, NAM
+# **Forecast:** Operational GFS, GFSv16, NAM
 #
 # **Observation:** METARs (via NAM prepbufr reanalysis)
 #
@@ -72,7 +72,7 @@ model_application/precipitation/PointStat_fcstMULTI_obsMETAR_PtypeComparisons.co
 # PB2NC, PointStat
 #
 # This example loops by initialization time. For each initialization time
-# it will process the listed lead hours (12 hour steps from 12 to 84 hours)
+# it will process the listed lead hours (12 hour steps from 12 to 84 hours).
 #
 # Run times:
 #

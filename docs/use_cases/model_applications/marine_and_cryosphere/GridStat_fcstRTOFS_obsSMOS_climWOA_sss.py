@@ -36,7 +36,7 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMOS_climWOA_sss.
 # Sea Surface Salinity (sss) file via Python Embedding script/file
 #
 # **Sea Ice Masking:** NOAA Real-Time Ocean Forecast System (RTOFS)
-#  ice cover file via Python Embedding script/file
+# ice cover file via Python Embedding script/file
 #
 # **Climatology:** World Ocean Atlas (WOA) Sea Surface Salinity (sss)
 # file via Python Embedding script/file

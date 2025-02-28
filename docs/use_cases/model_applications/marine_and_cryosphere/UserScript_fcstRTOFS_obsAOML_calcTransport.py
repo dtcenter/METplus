@@ -36,10 +36,10 @@ model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransp
 # --------
 #
 # **Forecast:** NOAA Real-Time Ocean Forecast System (RTOFS) 
-# u(3zuio) and ,v(3zvio) files via Python Embedding script/file
+# u(3zuio) and v(3zvio) files via Python Embedding script/file
 #
 # **Observations:** NOAA Atlantic Oceanographic and Meteorological Laboratory (AOML)
-#  Florida Current data via Python Embedding script/file
+# Florida Current data via Python Embedding script/file
 #
 # **Climatology:** None
 #

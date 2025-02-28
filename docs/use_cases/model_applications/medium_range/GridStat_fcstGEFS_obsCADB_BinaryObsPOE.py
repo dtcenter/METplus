@@ -32,7 +32,7 @@ model_applications/medium_range/GridStat_fcstGEFS_obsCADB_BinaryObsPOE.conf
 # Datasets
 # --------
 #
-# **Forecast:** NOAA Global Ensemble Forecast System (GEFS) 85th percentile of maximum Temperature
+# **Forecast:** NOAA Global Ensemble Forecast System (GEFS) 85th percentile of maximum temperature
 #
 # **Observations:** NOAA Climate Prediction Center Climate Assessment Data Base (CADB)
 # converted into a binary field relative to the 85th percentile

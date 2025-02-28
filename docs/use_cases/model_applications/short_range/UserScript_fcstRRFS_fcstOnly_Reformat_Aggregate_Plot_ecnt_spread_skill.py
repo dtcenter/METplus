@@ -32,7 +32,7 @@ model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_P
 # --------
 #
 # **Forecast:** RRFS GEFS (Rapid Refresh Forecast System Global Ensemble Forecast System)
-# Ensemble-Stat output files.
+# Ensemble-Stat output files
 #
 # **Observation:** None
 #

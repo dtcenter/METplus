@@ -36,7 +36,7 @@ model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_
 #
 # **Climatology:** World Ocean Atlas 2023 (WOA23)
 #
-# **Sea Ice Mask:** a mask file to exclude forecast grid points with sea ice concentration > 15%
+# **Sea Ice Mask:** Mask file to exclude forecast grid points with sea ice concentration > 15%
 #
 # **Location:** All of the input data required for this use case can be 
 # found in a sample data tarball. Each use case category will have 

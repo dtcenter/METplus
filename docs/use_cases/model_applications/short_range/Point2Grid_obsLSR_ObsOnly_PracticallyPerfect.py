@@ -69,7 +69,7 @@ model_applications/short_range/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
 # ASCII2NC > Point2Grid > RegridDataPlane 
 #
 # This example runs on a single time/file at a time. Each storm report is 
-# assumed to have no more than 24 hours of data inside 
+# assumed to have no more than 24 hours of data inside. 
 #
 # Run times:
 #

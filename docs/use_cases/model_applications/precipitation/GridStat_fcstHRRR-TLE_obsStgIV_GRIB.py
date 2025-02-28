@@ -40,7 +40,7 @@ model_applications/precipitation/GridStat_fcstHRRR-TLE_obsStgIV_GRIB.conf
 # --------
 #
 # **Forecast:** NOAA High Resolution Rapid Refresh Time-Lagged Ensemble (HRRR-TLE)
-#  probabilistic forecasts in GRIB2
+# probabilistic forecasts in GRIB2
 #
 # **Observation:** Stage IV GRIB 1 and 6 hour precipitation accumulation
 #
