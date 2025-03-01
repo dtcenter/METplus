@@ -151,7 +151,8 @@ To cite this documentation in publications, please refer to the METplus User's G
 
    Users_Guide/index
    Verification_Datasets/index
-
+   MET User's Guide <https://metplus.readthedocs.io/projects/met/en/latest/>
+   
 .. toctree::
    :hidden:
    :caption: FOR CONTRIBUTORS
