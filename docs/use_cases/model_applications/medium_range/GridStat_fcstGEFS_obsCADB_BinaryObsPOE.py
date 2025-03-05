@@ -32,15 +32,21 @@ model_applications/medium_range/GridStat_fcstGEFS_obsCADB_BinaryObsPOE.conf
 # Datasets
 # --------
 #
-# | **Forecast:** 85th percentile of Temperature maximum, from GEFS
+# **Forecast:** NOAA Global Ensemble Forecast System (GEFS) 85th percentile of maximum temperature
 #
-# | **Observations:** Climate Assessment Data Base (CADB), converted into a binary field relative to the 85th percentile
+# **Observations:** NOAA Climate Prediction Center Climate Assessment Data Base (CADB)
+# converted into a binary field relative to the 85th percentile
 #
+# **Climatology:** None
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
-#
-# | **Data Source:** CPC
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -53,13 +59,20 @@ model_applications/medium_range/GridStat_fcstGEFS_obsCADB_BinaryObsPOE.conf
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (INIT_BEG):** 20220522
+#
+# **End time (INIT_END):** 20220522
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 12H
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 8d
+#
 # The following boundary time is used for the entire script:
 #
 # | **Init Beg:** 2022-05-22
 # | **Init End:** 2022-05-22
 # 
 # There is only one time processed for the use case.
-# 
 
 ##############################################################################
 # METplus Configuration

@@ -28,10 +28,20 @@ model_applications/short_range/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
 # Datasets
 # --------
 #
-# Relevant information about the datasets that would be beneficial include:
-# 
-# * Observation dataset: Local Storm Reports
+# **Forecast:** None
 #
+# **Observation:** NOAA Storm Prediction Center (SPC) Local Storm Reports
+#
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -46,18 +56,24 @@ model_applications/short_range/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (INIT_BEG):** 2020020500
+#
+# **End time (INIT_END):** 2020020500
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 24H
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 24H
+#
 # The following tools are used for each run time:
 #
 # ASCII2NC > Point2Grid > RegridDataPlane 
 #
 # This example runs on a single time/file at a time. Each storm report is 
-# assumed to have no more than 24 hours of data inside 
+# assumed to have no more than 24 hours of data inside. 
 #
 # Run times:
 #
-# | 2020-02-05
-# |
-#
+# 2020-02-05
 
 ##############################################################################
 # METplus Configuration
