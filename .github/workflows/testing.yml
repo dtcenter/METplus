@@ -117,8 +117,7 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           EXTERNAL_TRIGGER: ${{ needs.job_control.outputs.external_trigger }}
-          #SET_MET_IMAGE: ${{ github.event.inputs.force_met_image }}
-          SET_MET_IMAGE: 'met-dev:feature_baseline_30_test_py310'
+          SET_MET_IMAGE: ${{ github.event.inputs.force_met_image }}
 
   update_data_volumes:
     name: Docker Setup - Update Data Volumes
