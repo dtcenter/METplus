@@ -1,0 +1,4 @@
+.wy-menu-vertical {
+    max-height: calc(100vh - 60px) !important;
+    overflow-y: auto !important;
+}
