@@ -1,5 +1,6 @@
 /* Enable scrolling for long TOC */
-.wy-nav-side {
+.wy-menu-vertical {
+    max-height: calc(100vh - 60px); /* Adjust height dynamically */
     overflow-y: auto;
-    max-height: 100vh; /* Ensure it does not overflow the screen */
 }
+
