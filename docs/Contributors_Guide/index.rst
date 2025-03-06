@@ -1,6 +1,6 @@
-###################
-Contributor's Guide
-###################
+###########################
+METplus Contributor's Guide
+###########################
 
 .. note:: Please use the `develop <https://metplus.readthedocs.io/en/develop/Contributors_Guide>`_
           branch version of this **Contributor's Guide**.

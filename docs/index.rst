@@ -163,12 +163,14 @@ To cite this documentation in publications, please refer to the METplus User's G
    :hidden:
    :caption: COMPONENTS
 
-   MET <https://metplus.readthedocs.io/projects/met/en/latest/index.html>   
-   METcalcpy <https://metplus.readthedocs.io/projects/metcalcpy/en/latest/index.html>   
-   METplotpy <https://metplus.readthedocs.io/projects/metplotpy/en/latest/index.html>
-   METdataio <https://metplus.readthedocs.io/projects/metdataio/en/latest/index.html>
-   METviewer <https://metplus.readthedocs.io/projects/metviewer/en/latest/index.html>
+   MET <https://metplus.readthedocs.io/projects/met/en/latest/index.html>
    METexpress <https://metplus.readthedocs.io/projects/metexpress/en/latest/index.html>
+   METviewer <https://metplus.readthedocs.io/projects/metviewer/en/latest/index.html>
+   METplotpy <https://metplus.readthedocs.io/projects/metplotpy/en/latest/index.html>
+   METcalcpy <https://metplus.readthedocs.io/projects/metcalcpy/en/latest/index.html>      
+   METdataio <https://metplus.readthedocs.io/projects/metdataio/en/latest/index.html>
+
+
    
 
 Index

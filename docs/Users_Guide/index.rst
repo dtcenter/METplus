@@ -1,7 +1,7 @@
 
-############
-User's Guide
-############
+####################
+METplus User's Guide
+####################
 
 **Foreword: A note to METplus Wrappers users**
 
