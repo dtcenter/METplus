@@ -27,7 +27,6 @@ Homepage = "https://github.com/dtcenter/METplus"
 
 [project.scripts]
 run_metplus = "metplus.scripts.run_metplus:cli_main"
-run_metplus.py = "metplus.scripts.run_metplus:cli_main"
 
 [tool.setuptools.packages]
 find = {include = ["metplus*"], exclude = ["parm"]}
