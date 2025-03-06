@@ -1,0 +1,5 @@
+/* Enable scrolling for long TOC */
+.wy-nav-side {
+    overflow-y: auto;
+    max-height: 100vh; /* Ensure it does not overflow the screen */
+}
