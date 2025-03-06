@@ -1,6 +1,0 @@
-/* Enable scrolling for long TOC */
-.wy-menu-vertical {
-    max-height: calc(100vh - 60px); /* Adjust height dynamically */
-    overflow-y: auto;
-}
-
