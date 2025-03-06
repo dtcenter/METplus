@@ -2,3 +2,13 @@
     max-height: calc(100vh - 60px) !important;
     overflow-y: auto !important;
 }
+.wy-side-nav-search {
+    position: fixed;
+    width: 300px; /* Adjust width as needed */
+    z-index: 1000;
+    background: white; /* Ensure visibility */
+}
+
+.wy-side-scroll {
+    margin-top: 100px; /* Adjust if needed to prevent overlap */
+}

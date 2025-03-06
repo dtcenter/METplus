@@ -225,6 +225,10 @@ sphinx_gallery_conf = {
 # -- Intersphinx control ---------------------------------------------------------------
 intersphinx_mapping = {'numpy':("https://docs.scipy.org/doc/numpy/", None)}
 
+# -- Include the CSS -------------------------------------------------------------------
+def setup(app):
+    app.add_css_file("custom.css")
+
 # -- Replace values in docs ------------------------------------------------------------
 rst_epilog = f"""
 .. |copyright|    replace:: {copyright}
