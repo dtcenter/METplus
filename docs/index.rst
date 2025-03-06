@@ -151,7 +151,6 @@ To cite this documentation in publications, please refer to the METplus User's G
 
    Users_Guide/index
    Verification_Datasets/index
-   MET User's Guide <https://metplus.readthedocs.io/projects/met/en/latest/Users_Guide/index.html>
    
 .. toctree::
    :hidden:
@@ -159,7 +158,18 @@ To cite this documentation in publications, please refer to the METplus User's G
 
    Contributors_Guide/index
    Release_Guide/index
-   MET Contributor's Guide <https://metplus.readthedocs.io/projects/met/en/latest/Contributors_Guide/index.html>
+
+.. toctree::
+   :hidden:
+   :caption: COMPONENTS
+
+   MET <https://metplus.readthedocs.io/projects/met/en/latest/index.html>   
+   METcalcpy <https://metplus.readthedocs.io/projects/metcalcpy/en/latest/index.html>   
+   METplotpy <https://metplus.readthedocs.io/projects/metplotpy/en/latest/index.html>
+   METdataio <https://metplus.readthedocs.io/projects/metdataio/en/latest/index.html>
+   METviewer <https://metplus.readthedocs.io/projects/metviewer/en/latest/index.html>
+   METexpress <https://metplus.readthedocs.io/projects/metexpress/en/latest/index.html>
+   
 
 Index
 =====
