@@ -1,11 +1,20 @@
+/* ToC scrollbar */
 .wy-menu-vertical {
     max-height: calc(100vh - 60px) !important;
     overflow-y: auto !important;
 }
+
+/* Make the logo and search area sticky */
 .wy-side-nav-search {
     position: fixed;
     /* width: 300px; */ /* Adjust width as needed */
-    /* z-index: 1000; */ 
+    z-index: 1000;
+    
+}
+
+/* Prevent the ToC from being overlapped */
+.wy-menu {
+    margin-top: 100px; /* Adjust this value based on the logo height */
 }
 
 
