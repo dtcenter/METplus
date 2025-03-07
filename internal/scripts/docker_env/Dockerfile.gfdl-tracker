@@ -20,7 +20,7 @@ ENV NCDIR /usr/local
 
 # Install required system tools
 RUN apt update && apt -y upgrade \
-  && apt --no-install-recommends install -y build-essential gfortran wget unzip curl csh file m4
+  && apt install -y --no-install-recommends build-essential gfortran wget unzip curl csh file m4
 
 # install jasper, png, and zlib from MET tar_files
 RUN cd / && wget --max-redirect=0 https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.met-base-v3.0.tgz \
