@@ -19,7 +19,7 @@
 
 /* scroll-margin-top ensures that when an anchor is clicked, the selected element is not hidden behind the sticky header */
 .wy-menu-vertical .current {
-    scroll-margin-top: 217px; /* Adjust based on your sticky header height */
+    scroll-margin-top: 235px; /* Adjust based on your sticky header height */
 }
 
 
