@@ -64,7 +64,7 @@ model_applications/s2s_soil_moisture/PcpCombine_obsERA5_obsOnly_soilMoisturePreP
 # The call to Regrid-Data-Plane regrids the data to a 1 degree latitude/longitude grid.
 # It loops over valid time, running once for each month between 1991 and 2020, for a 
 # total of 360 runs.
-
+#
 # The first PCP-Combine run computes the sum of soil moisture of the top three layers
 # multiplied by the thickness of each layer.  Like the call to Regrid-Data-Plane, it 
 # loops over valid time, running once for each valid time which is monthly data for 1991 
