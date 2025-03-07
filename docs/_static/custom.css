@@ -9,12 +9,12 @@
     position: fixed;
     /* width: 300px; */ /* Adjust width as needed */
     z-index: 1000;
-    
+    padding-bottom: 20px; /* Add space below logo */    
 }
 
 /* Prevent the ToC from being overlapped */
 .wy-menu {
-    margin-top: 100px; /* Adjust this value based on the logo height */
+    margin-top: 350px; /* Adjust this value based on the logo height */
 }
 
 
