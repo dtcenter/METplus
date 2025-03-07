@@ -147,11 +147,19 @@ To cite this documentation in publications, please refer to the METplus User's G
 
 .. toctree::
    :hidden:
+   :caption: Training
+
+   METplus Tutorial <https://metplus-training.readthedocs.io/en/feature_metplus2771_subprojects/Tutorial/index.html>
+   Training Series <https://metplus-training.readthedocs.io/en/feature_metplus2771_subprojects/Training_Series/index.html>
+   Featured Topics <https://metplus-training.readthedocs.io/en/feature_metplus2771_subprojects/Featured_Topics/index.html>
+
+.. toctree::
+   :hidden:
    :caption: METplus
 
    Users_Guide/index
-   Verification_Datasets/index   
    Contributors_Guide/index
+   Verification_Datasets/index   
    Release_Guide/index
 
 .. toctree::
