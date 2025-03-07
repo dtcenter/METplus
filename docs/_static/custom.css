@@ -14,7 +14,7 @@
 
 /* Prevent the ToC from being overlapped */
 .wy-menu {
-    margin-top: 200px; /* Adjust this value based on the logo height */
+    margin-top: 235px; /* Adjust this value based on the logo height */
 }
 
 
