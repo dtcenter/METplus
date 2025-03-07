@@ -168,6 +168,7 @@ model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 #   * NOAAWPCOrgUseCase
 #   * NCAROrgUseCase 
 #   * DiagnosticsUseCase
+#   * MvMODEUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
