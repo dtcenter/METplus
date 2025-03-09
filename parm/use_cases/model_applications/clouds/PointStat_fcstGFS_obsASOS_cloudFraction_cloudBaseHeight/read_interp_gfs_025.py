@@ -15,6 +15,12 @@ init = valid-datetime.timedelta(hours=int(leadhours))
 
 cbz_var = xr.open_dataset(model_file,engine='cfgrib',filter_by_keys={'typeOfLevel':'lowCloudBottom'},indexpath='')
 gph_var = xr.open_dataset(model_file,engine='cfgrib',filter_by_keys={'typeOfLevel':'isobaricInhPa','shortName':'gh'},indexpath='')
+top_var = xr.open_dataset(model_file,engine='cfgrib',filter_by_keys={'typeOfLevel':'surface','shortName':'orog'},indexpath='')
+
+# The geopotential height field is in meters above mean sea level (MSL). To convert the geopotential height field 
+# from meters MSL to meters AGL, we add the orography to the geopotential height field prior to interpolating so 
+# that the result of the interpolation is meters AGL to match the observations.
+gph_var['gh'] = gph_var['gh']+top_var['orog']
 
 # Stack the cloud bottom pressure to 1D where each cell is treated like a site (site ID, sid)
 cbzstack = cbz_var['pres'].stack(sid=("latitude","longitude"))
