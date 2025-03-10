@@ -195,6 +195,4 @@ model_applications/clouds/PointStat_fcstGFS_obsASOS_cloudFraction_cloudBaseHeigh
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
-#
-#
-# sphinx_gallery_thumbnail_path = ‘_static/clouds-PointStat_fcstGFS_obsASOS_cloudFraction_cloudBaseHeight.png’
+# sphinx_gallery_thumbnail_path = '_static/clouds-PointStat_fcstGFS_obsASOS_cloudFraction_cloudBaseHeight.png'
