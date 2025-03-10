@@ -30,16 +30,22 @@ model_applications/tc_and_extra_tc/TCGen_fcstGFS_obsBDECK_2021season.conf
 # Datasets
 # --------
 #
-# | **Forecast:** GFS genesis file, GFS E Deck
-# | **Observation:** B Deck, A Deck 
-# | **Warning Areas:** Shapefiles 
+# **Forecast:** GFS genesis file, GFS E Deck
 #
-# | **Location:** All of the input data required for this use case can be found in the tc_and_extra_tc sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
-# |
-# | **Data Source:** NHC ftp.noaa.gov/atcf
-# | **Data Source:** www.nhc.noaa.gov/archive/wgtwo/
-# |
+# **Observation:** Automated Tropical Cyclone Forecasting System (ATCF) B Deck, A Deck 
+#
+# **Warning Areas:** Shapefiles
+#
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -52,12 +58,22 @@ model_applications/tc_and_extra_tc/TCGen_fcstGFS_obsBDECK_2021season.conf
 # METplus Workflow
 # ----------------
 #
-# TC-Gen is the only tool called in this example. It processes the following
-# run times:
+# **Beginning time (INIT_BEG):** 2021
+#
+# **End time (INIT_END):** None
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** None
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** None
+#
+# This use case does not loop in time, and TC-Gen is the only tool called 
+# in this example. It processes data available with the following time information:
 #
 # | **Init:** 2021-05-07 00 UTC - 2021-11-13 12 UTC
 # | **Forecast lead:** 06 - 120 hours
-# |
+#
+# These timing control elements are set by various TC_GEN config items in the 
+# use case configuration file.
 
 ##############################################################################
 # METplus Configuration

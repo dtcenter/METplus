@@ -1,11 +1,11 @@
 ################################################################################
-# Environment: mp_analysis.v6.0
-# Last Updated: 2024-02-06 (mccabe@ucar.edu)
+# Environment: mp_analysis.v6.1
+# Last Updated: 2025-02-05 (mccabe@ucar.edu)
 # Notes: Adds Python packages needed to run METplotpy and METdataio
 # Python Packages:
 #   All packages from metplotpy
-#   lxml==4.9.1
-#   pymysql==1.0.2
+#   lxml==
+#   pymysql==
 #
 # Other Content: None
 ################################################################################
@@ -20,4 +20,6 @@ ENV_NAME=mp_analysis.${METPLUS_VERSION}
 BASE_ENV=metplotpy.${METPLUS_VERSION}
 
 mamba create -y --clone ${BASE_ENV} --name ${ENV_NAME}
-mamba install -y --name ${ENV_NAME} -c conda-forge lxml==4.9.1 pymysql==1.0.2
+mamba install -y --name ${ENV_NAME} -c conda-forge \
+  lxml \
+  pymysql
