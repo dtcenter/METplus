@@ -22,5 +22,11 @@
     scroll-margin-top: 235px; /* Adjust based on your sticky header height */
 }
 
+/* Hide the sticky logo so that it behaves like the original (disappearing into the hamburger menu) */
+@media (max-width: 768px) {  /* Adjust the width as needed */
+    .wy-side-nav-search {
+        display: none;  /* Hide logo + search bar when screen is small */
+    }
+}
 
 
