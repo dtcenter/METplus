@@ -16,8 +16,8 @@ is broken down into the following development cycles for each component:
 
 1. **Beta1** releases for the METplus components occurred around 2025-01-28.
 2. **Beta2** releases for the METplus components are tentatively scheduled for 2025-03-26.
-3. **Release Candidate 1** for the METplus components are tentatively scheduled for 2025-04-09.
-4. **Official Release** releases are tentatively scheduled for 2025-05-07.
+3. **Release Candidate 1** for the METplus components are tentatively scheduled for 2025-05-21.
+4. **Official Release** releases are tentatively scheduled for 2025-07-02.
 
 .. include:: existing_builds.rst
 
