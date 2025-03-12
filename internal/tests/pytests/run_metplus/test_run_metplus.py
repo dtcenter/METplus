@@ -35,7 +35,7 @@ def test_run_metplus_exists():
 @pytest.mark.parametrize(
     'command, expected_return_code', [
         ([RUN_METPLUS], 2),
-        ([RUN_METPLUS, EXAMPLE_CONF], 2),
+        ([RUN_METPLUS, EXAMPLE_CONF, 'config.OUTPUT_BASE=/path/to'], 2),
         ([RUN_METPLUS, EXAMPLE_CONF, MINIMUM_CONF, OUTPUT_BASE_OVERRIDE], 0),
         ([RUN_METPLUS, '-c', EXAMPLE_CONF, MINIMUM_CONF, OUTPUT_BASE_OVERRIDE], 0),
         ([RUN_METPLUS, EXAMPLE_CONF, MINIMUM_CONF, LIST_CONFIG_OVERRIDE_1], 0),
