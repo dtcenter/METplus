@@ -74,11 +74,11 @@ model_applications/clouds/PointStat_fcstGFS_obsASOS_cloudFraction_cloudBaseHeigh
 #
 # **Increment between beginning and end times (INIT_INCREMENT):** None
 #
-# **Sequence of forecast leads to process (LEAD_SEQ):** 6, 12, 18
+# **Sequence of forecast leads to process (LEAD_SEQ):** 6
 #
-# Only the 6-h, 12-h, and 18-h forecasts from the 00 UTC forecast on 20240307 are verified,
-# for a total of 3 forecasts and 3 valid times. PointStat computes contingency table
-# counts (CTC), contingency table statistics (CTS), and continuous statistics (CNT)
+# Only the 6-h forecast from the 00 UTC forecast on 20240307 is verified.
+# PointStat computes contingency table counts (CTC), 
+# contingency table statistics (CTS), and continuous statistics (CNT)
 # for the data variables being verified.
 
 ##############################################################################
