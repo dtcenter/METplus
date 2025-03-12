@@ -24,7 +24,7 @@ else
 fi
 
 # Get MET tag and adjust MET Docker repo if develop
-met_tag=$("${GITHUB_WORKSPACE}"/metplus/component_versions.py -v "${metplus_version}" -o MET -f ${tag_format} --no-get_dev_version)
+met_tag=$("${GITHUB_WORKSPACE}"/develop/metplus/component_versions.py -v "${metplus_version}" -o MET -f ${tag_format} --no-get_dev_version)
 echo "$met_tag"
 
 MET_DOCKER_REPO=met
@@ -33,9 +33,9 @@ if [ "$met_tag" == "develop" ] || [[ "${met_tag}" =~ ^main_v[0-9]+\.[0-9]+ ]]; t
 fi
 
 # get METplus Analysis tool versions
-METDATAIO_VERSION=$("${GITHUB_WORKSPACE}"/metplus/component_versions.py -v "${metplus_version}" -o METdataio)
-METCALCPY_VERSION=$("${GITHUB_WORKSPACE}"/metplus/component_versions.py -v "${metplus_version}" -o METcalcpy)
-METPLOTPY_VERSION=$("${GITHUB_WORKSPACE}"/metplus/component_versions.py -v "${metplus_version}" -o METplotpy)
+METDATAIO_VERSION=$("${GITHUB_WORKSPACE}"/develop/metplus/component_versions.py -v "${metplus_version}" -o METdataio)
+METCALCPY_VERSION=$("${GITHUB_WORKSPACE}"/develop/metplus/component_versions.py -v "${metplus_version}" -o METcalcpy)
+METPLOTPY_VERSION=$("${GITHUB_WORKSPACE}"/develop/metplus/component_versions.py -v "${metplus_version}" -o METplotpy)
 
 # Build metplus image
 METPLUS_IMAGE_NAME=${dockerhub_repo}:${metplus_version}

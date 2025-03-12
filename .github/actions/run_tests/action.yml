@@ -6,9 +6,24 @@ inputs:
   categories:
     description: 'Use case category or categories to run (separate by comma)'
     required: true
+  metplotpy_branch:
+    description: 'Branch to use for METplotpy (default is determined by METplus version)'
+    required: false
+    default: ''
+  metcalcpy_branch:
+    description: 'Branch to use for METcalcpy (default is determined by METplus version)'
+    required: false
+    default: ''
+  metdataio_branch:
+    description: 'Branch to use for METdataio (default is determined by METplus version)'
+    required: false
+    default: ''
 
 runs:
   using: "docker"
   image: "Dockerfile"
   args:
     - ${{ inputs.categories }}
+    - ${{ inputs.metplotpy_branch }}
+    - ${{ inputs.metcalcpy_branch }}
+    - ${{ inputs.metdataio_branch }}

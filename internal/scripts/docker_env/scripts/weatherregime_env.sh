@@ -1,15 +1,15 @@
 #! /bin/sh
 
 ################################################################################
-# Environment: weatherregime.v5.1
-# Last Updated: 2023-01-30 (mccabe@ucar.edu)
+# Environment: weatherregime.v6.1
+# Last Updated: 2025-02-05 (mccabe@ucar.edu)
 # Notes: Adds Python packages needed to run weather regime use case
 #  METplotpy and METcalcpy
 # Python Packages:
-#   All packages from metplotpy.v5
-#   scikit-learn==1.1.1
-#   eofs==1.4.0
-#   cmocean==2.0
+#   All packages from metplotpy.v6.1
+#   scikit-learn==
+#   eofs==
+#   cmocean==
 #
 # Other Content: None
 ################################################################################
@@ -23,6 +23,8 @@ ENV_NAME=weatherregime.${METPLUS_VERSION}
 # Conda environment to use as base for new environment
 BASE_ENV=metplotpy.${METPLUS_VERSION}
 
-
 mamba create -y --clone ${BASE_ENV} --name ${ENV_NAME}
-mamba install -y --name ${ENV_NAME} -c conda-forge scikit-learn==1.1.1 eofs==1.4.0 cmocean==2.0
+mamba install -y --name ${ENV_NAME} -c conda-forge \
+  scikit-learn \
+  eofs \
+  cmocean

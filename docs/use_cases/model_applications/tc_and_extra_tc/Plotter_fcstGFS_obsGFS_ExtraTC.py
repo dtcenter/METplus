@@ -28,10 +28,20 @@ model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_ExtraTC.conf
 # Datasets
 # --------
 #
+# **Forecast:** ADeck modified-ATCF (Automated Tropical Cyclone Forecasting System) tropical cyclone data
 #
-#  * Forecast dataset: ADeck modified-ATCF tropical cyclone data
-#  * Observation dataset: BDeck modified-ATCF "best-track" tropical cyclone data
+# **Observation:** BDeck modified-ATCF (Automated Tropical Cyclone Forecasting System) "best-track" tropical cyclone data
 #
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -45,13 +55,20 @@ model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_ExtraTC.conf
 # METplus Workflow
 # ----------------
 #
-# The following tools are used for each run time:
+# **Beginning time (INIT_BEG):** 201503
 #
-# TCPairs
+# **End time (INIT_END):** None
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** None
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** None
+#
+# This use case does not loop in time. TCPairs is called once using time
+# settings set by specific TC_PAIRS configuration items in the use case
+# configuration file.
 #
 # To generate TCPairs output, this example loops by initialization time for every 6 hour period that is available
 # in the data set for 20150301. The output is then used to generate the plot of all cyclone tracks.
-#
 
 ##############################################################################
 # METplus Configuration

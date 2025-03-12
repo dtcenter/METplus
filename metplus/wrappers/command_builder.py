@@ -332,6 +332,7 @@ class CommandBuilder:
             for edge in edges:
                 input_list = [
                     f'{data_type}_{app}_FILE_WINDOW_{edge}',
+                    f'{app}_{data_type}_FILE_WINDOW_{edge}',
                     f'{app}_FILE_WINDOW_{edge}',
                     f'{data_type}_FILE_WINDOW_{edge}',
                     f'FILE_WINDOW_{edge}',
@@ -905,10 +906,10 @@ class CommandBuilder:
         files were found, fill in input_files list with MISSING to allow valid
         threshold check inside MET tool to work properly.
         """
-        num_expected = self.c_dict['N_MEMBERS']
+        num_expected = self.c_dict.get('N_MEMBERS')
 
         # if expected members count is unset, skip check
-        if num_expected == MISSING_DATA_VALUE:
+        if num_expected is None or num_expected == MISSING_DATA_VALUE:
             return True
 
         num_found = len(input_files)
