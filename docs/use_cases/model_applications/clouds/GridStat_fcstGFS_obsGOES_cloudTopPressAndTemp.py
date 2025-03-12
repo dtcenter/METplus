@@ -1,8 +1,8 @@
 """
-PointStat: Use Python embedding to calculate temperature terciles
-=================================================================
+GridStat: GFS Cloud Pressure and Temperature Heights vs GOES
+============================================================
 
-model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds.conf
+model_applications/clouds/GridStat_fcstGFS_obsGOES_cloudTopPressAndTemp.conf
 
 """
 ##############################################################################
@@ -14,30 +14,24 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWin
 ##############################################################################
 # Scientific Objective
 # --------------------
-# [UPDATE_SECTION_CONTENT]
 #
-# To provide statistical information on the forecast hail size compared to
-# the observed hail size from MRMS MESH data. Using objects to verify hail size
-# avoids the “unfair penalty” issue, where a CAM must first generate convection
-# to have any chance of accurately predicting the hail size. In addition, studies
-# have shown that MRMS MESH observed hail sizes do not correlate one-to-one with
-# observed sizes but can only be used to group storms into general categories.
-# Running MODE allows a user to do this.
+# This use case demonstrates using GOES-16 or GOES-18 level 2 cloud products 
+# to verify forecasts of cloud top information.
 
 ##############################################################################
 # Version Added
 # -------------
-# [UPDATE_SECTION_CONTENT]
 #
-# METplus version 6.0
+# METplus version 6.1
 
 ##############################################################################
 # Datasets
 # --------
-# [UPDATE_SECTION_CONTENT]
-# **Forecast:** Global Forecast System (GFS) 25km resolution, 2m temperature
+# **Forecast:** Global Forecast System (GFS) global 0.25 degree grid
+#               Cloud top temperature and cloud top pressure
 #
-# **Observation:** ECMWF Reanalysis v5 (ERA5) 5 degree resolution, 2m temperature
+# **Observation:** GOES-16 or GOES-18 level 2 cloud products 
+#                  Cloud top temperature and cloud top pressure
 #
 # **Climatology:** None
 #
@@ -53,51 +47,46 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWin
 ##############################################################################
 # METplus Components
 # ------------------
-# [UPDATE_SECTION_CONTENT]
 #
-# The only tool this use case calls is GridStat. Within GridStat a Python 
-# script is used for ingesting forecast data, once for each year of data of 
-# the CFSv2 ensemble.
+# This use case uses Point2Grid to place the point observations from GOES onto the GFS grid, 
+# then uses GridStat for evaluation.
 
 ##############################################################################
 # METplus Workflow
 # ----------------
-# [UPDATE_SECTION_CONTENT]
 #
-# **Beginning time (INIT_BEG):** 1982-01-01
+# **Beginning time (INIT_BEG):** 2024-03-07 00:00
 #
-# **End time (INIT_END):** 2010-01-02
+# **End time (INIT_END):** 2024-03-07 00:00
 #
-# **Increment between beginning and end times (INIT_INCREMENT):** 1 year
+# **Increment between beginning and end times (INIT_INCREMENT):** None
 #
-# **Sequence of forecast leads to process (LEAD_SEQ):** None
+# **Sequence of forecast leads to process (LEAD_SEQ):** 6
 #
-# With an increment of 1 year, all January 1st’s from 1982 to 2010 are processed 
-# for a total of 29 years, with 24 members in each ensemble forecast. This use case 
-# initially runs SeriesAnalysis 24 times, once for each member of the CFSv2 ensemble 
-# across the 29 years of data. The resulting 24 outputs are read in by GenEnsProd 
-# which uses the normalize option to normalize each of the ensemble members 
-# relative to its climatology (FBAR) and standard deviation (FSTDEV). The output from 
-# GenEnsProd are 29 files containing the uncalibrated probability forecasts for 
-# the lower tercile of January for each year. The final probability verification 
-# is done across the temporal scale in SeriesAnalysis, and the spatial scale in GridStat.
+# Instance names are used in this use case, so both Point2Grid and GridStat will run 
+# twice for each initialization time. Each of the instance names refers to the temperature 
+# observation variable (ACHTF) or the pressure observation variable (CTPC). 
+# This use case first runs the ACHTF Point2Grid instance to put cloud top temperature point 
+# observations on to a grid, then it runs the CTPC Point2Grid instance to put cloud top pressure 
+# point observations on a grid. Then it runs the ACHTF GridStat instance to verify 
+# cloud top temperature, and lastly, it runs the CTPC GridStat instance to verify cloud top pressure. 
+# Various output line types are requested and placed in stat files, with a unique output prefix 
+# indicating which output are from which GridStat instance.
 
 ##############################################################################
 # METplus Configuration
 # ---------------------
-# [UPDATE_SECTION_CONTENT]
 #
 # METplus first loads all of the configuration files found in parm/metplus_config, 
 # then it loads any configuration files passed to METplus via the command line, 
-# i.e. parm/use_cases/model_applications/s2s/SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_MultiStatisticTool.conf
+# i.e. parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsGOES_cloudTopPressAndTemp.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_MultiStatisticTool.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsGOES_cloudTopPressAndTemp.conf
 
 ##############################################################################
 # MET Configuration
 # -----------------
-# [UPDATE_SECTION_CONTENT]
 #
 # METplus sets environment variables based on user settings in the METplus
 # configuration file. See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details.
@@ -108,6 +97,10 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWin
 # not supported by METplus you’d like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
+# .. dropdown:: Point2GridConfig_wrapped
+#
+#   .. literalinclude:: ../../../../parm/met_config/Point2GridConfig_wrapped
+#
 # .. dropdown:: GridStatConfig_wrapped
 #
 #   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
@@ -115,67 +108,29 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWin
 ##############################################################################
 # Python Embedding
 # ----------------
-# [UPDATE_SECTION_CONTENT]
 #
-# This use case calls the read_ASCAT_data.py script to read and pass to PointStat 
-# the user-requested variable. The script needs 5 inputs in the following order: 
-# a path to a directory that contains only ASCAT data of the “ascat_YYYYMMDDHHMMSS_*” 
-# string, a start time in YYYYMMDDHHMMSS, an end time in the same format, 
-# a message type to code the variables as, and a variable name to read in. 
-# Currently the script puts the same station ID to each observation, but there is 
-# space in the code describing an alternate method that may be improved upon to 
-# allow different satellites to have their own station IDs. 
-# This code currently ingests all files it finds in the directory, pulls out the 
-# requested variable, and arranges the data in a list of lists following the 
-# 11-column format for point data. This list of lists is passed back 
-# to PointStat for evaluation and the requested statistical output. The location 
-# of the code is 
-# 
-# .. dropdown:: parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds/read_ASCAT_data.py
-#
-#   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds/read_ASCAT_data.py
-# 
-# For more information on the basic requirements to utilize Python Embedding in METplus, 
-# please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_.
+# This use case does not use Python embedding.
 
 ##############################################################################
 # User Scripting
 # --------------
-# [UPDATE_SECTION_CONTENT]
 #
-# This use case uses a Python script to perform plotting, which at the time of 
-# this use case creation was not an ability METplus had. Additionally some of 
-# the plotting features used in this script are not currently slated for METplus 
-# analysis suite development.
-# In order to create the plots, the script reads in a yaml file and sets up 
-# the correct environment. Plot parameters (which are hard coded in the script) are set, 
-# and the datasets are read in from the input file. The desired variable fields 
-# are placed into arrays, which are then treated for bad data and squeezed to the 
-# appropriate dimensions. Additional basic math is completed on the resulting arrays 
-# to create the cross spectra values with the results being graphed.
-#
-# .. dropdown:: parm/use_cases/model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra/cross_spectra_plot.py
-# 
-#   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra/cross_spectra_plot.py
+# This use case does not use additional scripts.
 
 ##############################################################################
 # Running METplus
 # ---------------
-# [UPDATE_SECTION_CONTENT]
 #
 # Pass the use case configuration file to the run_metplus.py script along 
 # with any user-specific system configuration files if desired::
 #
-#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds.conf /path/to/user_system.conf
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsGOES_cloudTopPressAndTemp.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output
 # ---------------
-# [UPDATE_SECTION_CONTENT]
 #
 # A successful run will output the following both to the screen and to the logfile::
 #
@@ -183,37 +138,30 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWin
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
 # Output for this use case will be found in 
-# {OUTPUT_BASE}/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds 
+# {OUTPUT_BASE}/model_applications/clouds/GridStat_fcstGFS_obsGOES_cloudTopPressAndTemp 
 # and will contain the following files::
 #
-#  * grid_stat_198201_000000L_19700101_000000V_pairs.nc
-#  * grid_stat_198201_000000L_19700101_000000V_pstd.txt
-#  * grid_stat_198201_000000L_19700101_000000V.stat
+#  * grid_stat_GFS_to_ACHTF_F06_CloudHgts_060000L_20240307_060000V_ctc.txt
+#  * grid_stat_GFS_to_ACHTF_F06_CloudHgts_060000L_20240307_060000V_cts.txt
+#  * grid_stat_GFS_to_ACHTF_F06_CloudHgts_060000L_20240307_060000V_pairs.nc
+#  * grid_stat_GFS_to_ACHTF_F06_CloudHgts_060000L_20240307_060000V.stat
+#  * grid_stat_GFS_to_CTPC_F06_CloudHgts_060000L_20240307_060000V_ctc.txt
+#  * grid_stat_GFS_to_CTPC_F06_CloudHgts_060000L_20240307_060000V_cts.txt
+#  * grid_stat_GFS_to_CTPC_F06_CloudHgts_060000L_20240307_060000V_pairs.nc
+#  * grid_stat_GFS_to_CTPC_F06_CloudHgts_060000L_20240307_060000V.stat
 #
 # Each file should contain corresponding statistics for the line type(s) requested.
-# For the netCDF file, five variable fields are present (not including the lat/lon fields). 
-# Those variables are::
-#
-#  * FCST_fcst_ENS_FREQ_lt-0.43_0_0_all_all_FULL(lat, lon)
-#  * OBS_tmp2m_20100101_000000_all_all_FULL(lat, lon)
-#  * CLIMO_MEAN_tmp2m_20100101_000000_all_all_FULL(lat, lon)
-#  * CLIMO_STDEV_tmp2m_20100101_000000_all_all_FULL(lat, lon)
-#  * CLIMO_CDF_tmp2m_20100101_000000_all_all_FULL(lat, lon)
 
 ##############################################################################
 # Keywords
 # --------
-# [UPDATE_SECTION_CONTENT]
 #
 # .. note::
 #
-#   * PointStatToolUseCase
-#   * PythonEmbeddingFileUseCase
-#   * GRIB2FileUseCase
-#   * MarineAndCryosphereAppUseCase
+#   * GridStatToolUseCase
+#   * Point2GridToolUseCase
+#   * CloudsAppUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
-#
-#
-# sphinx_gallery_thumbnail_path = ‘_static/short-range-MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning.png’
+# sphinx_gallery_thumbnail_path = '_static/clouds-GridStat_fcstGFS_obsGOES_cloudTopPressAndTemp.png'
