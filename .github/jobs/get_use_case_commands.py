@@ -29,6 +29,7 @@ METPLUS_BASE_ENV = 'metplus_base'
 PLOTCALC_KEYWORDS = [
     'metplotpy',
     'metcalcpy',
+    'mp_analysis',
     'spacetime',
     'weatherregime',
 ]
