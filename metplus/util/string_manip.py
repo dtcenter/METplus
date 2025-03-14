@@ -74,7 +74,7 @@ def getlist(list_str, expand_begin_end_incr=True):
     list_str = list_str.lstrip('[ ').rstrip('] ').strip()
 
     # remove space around commas
-    list_str = re.sub(r'\s*,\s*', ',', list_str)
+    list_str = ",".join(part.strip() for part in list_str.split(","))
 
     # option to not evaluate begin_end_incr
     if expand_begin_end_incr:
@@ -109,7 +109,6 @@ def _handle_begin_end_incr(list_str):
      @param list_str string that contains a comma separated list
      @returns string that has list expanded
     """
-
     matches = _begin_end_incr_findall(list_str)
 
     for match in matches:
@@ -129,7 +128,7 @@ def _begin_end_incr_findall(list_str):
     # remove space around commas (again to make sure)
     # this makes the regex slightly easier because we don't have to include
     # as many \s* instances in the regex string
-    list_str = re.sub(r'\s*,\s*', ',', list_str)
+    list_str = ",".join(part.strip() for part in list_str.split(","))
 
     # find begin_end_incr and any text before and after that are not a comma
     # [^,\s]* evaluates to any character that is not a comma or space

@@ -160,7 +160,7 @@ def test_pre_run_setup_sed_file(capfd):
 
     # check sed file is written correctly
     _, err = capfd.readouterr()
-    sed_err_regex = r'.*Find/Replace commands have been generated in (.*)\n'
+    sed_err_regex = r'\(run_util.py\) ERROR: Find/Replace commands have been generated in (.*)\n'
     sed_file = None
     match = re.match(sed_err_regex, err)
     if match:
