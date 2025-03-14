@@ -7,9 +7,9 @@
 #  METplotpy and METcalcpy
 # Python Packages:
 #   All packages from metplotpy.v6.1
-#   scikit-learn==
-#   eofs==
-#   cmocean==
+#   scikit-learn==1.6.1
+#   eofs==2.0.0
+#   cmocean==4.0.3
 #
 # Other Content: None
 ################################################################################
@@ -25,6 +25,6 @@ BASE_ENV=metplotpy.${METPLUS_VERSION}
 
 mamba create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 mamba install -y --name ${ENV_NAME} -c conda-forge \
-  scikit-learn \
-  eofs \
-  cmocean
+  scikit-learn==1.6.1 \
+  eofs==2.0.0 \
+  cmocean==4.0.3

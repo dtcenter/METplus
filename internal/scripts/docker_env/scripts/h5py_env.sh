@@ -5,7 +5,7 @@
 # Last Updated: 2025-02-05 (mccabe@ucar.edu)
 # Notes: Adds Python interface to the HDF5 binary format
 # Python Packages:
-#   h5py==
+#   h5py==3.12.1
 #
 # Other Content: None
 ################################################################################
@@ -20,4 +20,4 @@ ENV_NAME=h5py.${METPLUS_VERSION}
 BASE_ENV=py_embed_base.${METPLUS_VERSION}
 
 mamba create -y --clone ${BASE_ENV} --name ${ENV_NAME}
-mamba install -y --name ${ENV_NAME} -c conda-forge h5py
+mamba install -y --name ${ENV_NAME} -c conda-forge h5py==3.12.1

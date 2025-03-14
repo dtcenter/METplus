@@ -6,10 +6,10 @@
 # Notes: Adds Python packages needed to read GRIB data into Xarray and
 #   so it can easily be processed with MetPy
 # Python Packages:
-#   metpy==
-#   netcdf4==
-#   cfgrib==
-#   pygrib==
+#   metpy==1.6.3
+#   netcdf4==1.7.2
+#   cfgrib==0.9.15
+#   pygrib==2.1.6
 #
 # Other Content: None
 ################################################################################
@@ -23,4 +23,8 @@ ENV_NAME=cfgrib.${METPLUS_VERSION}
 BASE_ENV=metplus_base.${METPLUS_VERSION}
 
 mamba create -y --clone ${BASE_ENV} --name ${ENV_NAME}
-mamba install -y --name ${ENV_NAME} -c conda-forge metpy netcdf4 cfgrib pygrib
+mamba install -y --name ${ENV_NAME} -c conda-forge \
+  metpy==1.6.3 \
+  netcdf4==1.7.2 \
+  cfgrib==0.9.15 \
+  pygrib==2.1.6

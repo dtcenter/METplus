@@ -10,8 +10,8 @@
 # Python Packages:
 #   netcdf4==1.7.2
 #   xarray==2025.1.2
-#   xesmf==
-#   esmf==
+#   xesmf==0.8.8
+#   esmf==8.7.0
 #
 # Other Content: None
 ################################################################################
@@ -26,4 +26,8 @@ ENV_NAME=xesmf.${METPLUS_VERSION}
 BASE_ENV=metplus_base.${METPLUS_VERSION}
 
 mamba create -y --clone ${BASE_ENV} --name ${ENV_NAME}
-mamba install -y --name ${ENV_NAME} -c conda-forge netcdf4==1.7.2 xarray==2025.1.2 xesmf esmf
+mamba install -y --name ${ENV_NAME} -c conda-forge \
+  netcdf4==1.7.2 \
+  xarray==2025.1.2 \
+  xesmf==0.8.8 \
+  esmf==8.7.0

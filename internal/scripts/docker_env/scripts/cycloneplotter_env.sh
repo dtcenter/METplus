@@ -6,8 +6,8 @@
 # Notes: Adds packages needed to run CyclonePlotter wrapper
 #   Added pandas because it is used by tc_and_extra_tc use case
 # Python Packages:
-#   cartopy==
-#   matplotlib==
+#   cartopy==0.24.0
+#   matplotlib==3.10.0
 #   pandas==2.2.3
 #
 # Other Content: None
@@ -24,6 +24,6 @@ BASE_ENV=metplus_base.${METPLUS_VERSION}
 
 mamba create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 mamba install -y --name ${ENV_NAME} -c conda-forge \
-  cartopy \
-  matplotlib \
+  cartopy==0.24.0 \
+  matplotlib==3.10.0 \
   pandas==2.2.3

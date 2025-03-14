@@ -5,19 +5,19 @@
 # Last Updated: 2025-02-05 (mccabe@ucar.edu)
 # Notes: Adds Python packages needed to run METplotpy and METcalcpy
 # Python Packages:
-#   matplotlib==
+#   matplotlib==3.10.0
 #   scipy==1.15.1
-#   plotly==
+#   plotly==6.0.0
 #   xarray==2025.1.2
 #   netcdf4==1.7.2
 #   pyyaml==6.0.2
-#   statsmodels==
-#   python-kaleido==
-#   imageio==
-#   imutils==
-#   scikit-image==
-#   pint==
-#   metpy=
+#   python-kaleido==0.2.1
+#   imageio==2.37.0
+#   imutils==0.5.4
+#   scikit-image==0.25.1
+#   pint==0.24.4
+#   metpy==1.6.3
+#   cartopy==0.24.0
 #
 # Other Content: None
 ################################################################################
@@ -34,16 +34,16 @@ BASE_ENV=metplus_base.${METPLUS_VERSION}
 mamba create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 
 mamba install -y --name ${ENV_NAME} -c conda-forge \
-  matplotlib \
+  matplotlib==3.10.0 \
   scipy==1.15.1 \
-  plotly \
+  plotly==6.0.0 \
   xarray==2025.1.2 \
   netcdf4==1.7.2 \
   pyyaml==6.0.2 \
-  python-kaleido \
-  imageio \
-  imutils \
-  scikit-image \
-  pint \
-  metpy \
-  cartopy
+  python-kaleido==0.2.1 \
+  imageio==2.37.0 \
+  imutils==0.5.4 \
+  scikit-image==0.25.1 \
+  pint==0.24.4 \
+  metpy==1.6.3 \
+  cartopy==0.24.0
