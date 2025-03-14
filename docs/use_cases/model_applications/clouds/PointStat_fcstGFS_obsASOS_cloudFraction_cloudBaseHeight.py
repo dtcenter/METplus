@@ -122,7 +122,10 @@ model_applications/clouds/PointStat_fcstGFS_obsASOS_cloudFraction_cloudBaseHeigh
 # the 2D low cloud base altitude (pressure) field, and the 2D orography (surface topography)
 # field. It uses 1-D logarithmic interpolation from MetPy to interpolate the geopotential height
 # field (converted to meters AGL from meters MSL using the orography field) to the height
-# pressure altitude of the low cloud base altitude field from the model. The gridded low cloud
+# pressure altitude of the low cloud base altitude field from the model. This interpolation is done
+# by a function contained in a third Python embedding file, gfs_025_interp_funcs.py. Because the Python
+# multiprocessing module is used to parallelize the interpolation at each grid cell, this function
+# had to exist in a separate file that read_interp_gfs_025.py imports from. The gridded low cloud
 # base altitude field in meters AGL is passed back to PointStat for comparison with the obs.
 # The location of each script is
 #
@@ -170,8 +173,6 @@ model_applications/clouds/PointStat_fcstGFS_obsASOS_cloudFraction_cloudBaseHeigh
 # and will contain the following files::
 #
 #  * point_stat_060000L_20240307_060000V.stat
-#  * point_stat_120000L_20240307_120000V.stat
-#  * point_stat_180000L_20240307_180000V.stat
 #
 # organized in directories for each variable being verified::
 #
