@@ -22,7 +22,7 @@ ENV_NAME=cfgrib.${METPLUS_VERSION}
 
 BASE_ENV=metplus_base.${METPLUS_VERSION}
 
-mamba create -y --clone ${BASE_ENV} --name ${ENV_NAME}
+conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 mamba install -y --name ${ENV_NAME} -c conda-forge \
   metpy==1.6.3 \
   netcdf4==1.7.2 \

@@ -22,7 +22,7 @@ ENV_NAME=cycloneplotter.${METPLUS_VERSION}
 # Conda environment to use as base for new environment
 BASE_ENV=metplus_base.${METPLUS_VERSION}
 
-mamba create -y --clone ${BASE_ENV} --name ${ENV_NAME}
+conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 mamba install -y --name ${ENV_NAME} -c conda-forge \
   cartopy==0.24.0 \
   matplotlib==3.10.0 \

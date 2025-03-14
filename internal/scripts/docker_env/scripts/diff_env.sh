@@ -23,7 +23,7 @@ ENV_NAME=diff.${METPLUS_VERSION}
 # Conda environment to use as base for new environment
 BASE_ENV=netcdf4.${METPLUS_VERSION}
 
-mamba create -y --clone ${BASE_ENV} --name ${ENV_NAME}
+conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 mamba install -y --name ${ENV_NAME} -c conda-forge \
   pandas==2.2.3 \
   pillow==11.1.0
