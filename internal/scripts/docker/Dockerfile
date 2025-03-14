@@ -21,7 +21,12 @@ ARG MET_TAG=develop
 FROM dtcenter/${MET_DOCKER_REPO}:${MET_TAG} AS build_copy
 ONBUILD WORKDIR /metplus
 ONBUILD RUN mkdir -p METplus
-ONBUILD COPY . METplus
+ONBUILD COPY metplus METplus/metplus
+ONBUILD COPY ush METplus/ush
+ONBUILD COPY parm METplus/parm
+ONBUILD COPY pyproject.toml METplus/pyproject.toml
+ONBUILD COPY requirements.txt METplus/requirements.txt
+ONBUILD COPY internal/tests METplus/internal/tests
 ONBUILD RUN if [ ! -e "METplus/ush/run_metplus.py" ]; then \
     echo "ERROR: docker build must be run from the METplus directory"; \
     exit 1; \
