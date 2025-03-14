@@ -140,7 +140,7 @@ jobs:
     if: ${{ needs.job_control.outputs.run_unit_tests == 'true' }}
     strategy:
       matrix:
-        python_version: [3.10, 3.12]
+        python_version: ["3.10", "3.12"]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
