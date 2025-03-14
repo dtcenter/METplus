@@ -472,3 +472,35 @@ docker build -t dtcenter/metplus-envs:diff.${METPLUS_ENV_VERSION} \
     --build-arg ENV_NAME=diff .
 docker push dtcenter/metplus-envs:diff.${METPLUS_ENV_VERSION}
 ```
+
+### Local
+
+```
+export METPLUS_ENV_VERSION=v6.1
+./scripts/diff_env.sh ${METPLUS_ENV_VERSION}
+```
+
+
+## metplus_dev.v6.1 (from diff.v6.1)
+
+This environment is used for METplus wrappers development.
+It contains all the requirements for METplus wrappers,
+the difference tests, and building the documentation.
+
+### Docker
+
+```
+export METPLUS_ENV_VERSION=v6.1
+docker build -t dtcenter/metplus-envs:metplus_dev.${METPLUS_ENV_VERSION} \
+    --build-arg METPLUS_ENV_VERSION \
+    --build-arg BASE_ENV=diff \
+    --build-arg ENV_NAME=metplus_dev .
+docker push dtcenter/metplus-envs:metplus_dev.${METPLUS_ENV_VERSION}
+```
+
+### Local
+
+```
+export METPLUS_ENV_VERSION=v6.1
+./scripts/metplus_dev_env.sh ${METPLUS_ENV_VERSION}
+```
