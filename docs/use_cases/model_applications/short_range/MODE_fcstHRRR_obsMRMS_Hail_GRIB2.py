@@ -33,9 +33,20 @@ model_applications/short_range/MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf
 # Datasets
 # --------
 #
-#  * Forecast dataset: HRRRv4 data
-#  * Observation dataset: MRMS 
+# **Forecast:** HRRRv4 data
 #
+# **Observation:** MRMS
+#
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -48,16 +59,24 @@ model_applications/short_range/MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (VALID_BEG):** 2019052902
+#
+# **End time (VALID_END):** 2019052903
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 3600
+#
+# | **Sequence of forecast leads to process:**
+# | LEAD_SEQ_MIN = 12
+# | LEAD_SEQ_MAX = 36
+#
 # The MODE tool is run for each time. This example loops by valid time.  It
 # processes 2 valid times, listed below.
 #
 # | **Valid:** 2019-05-29_02Z
 # | **Forecast lead:** 26
-# |
 #
 # | **Valid:** 2019-05-29_03Z
 # | **Forecast lead:** 27
-# |
 
 ##############################################################################
 # METplus Configuration

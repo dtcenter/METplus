@@ -1,20 +1,18 @@
 #! /bin/sh
 
 ################################################################################
-# Environment: swpc_metpy.v5
-# Last Updated: 2022-12-28 (mccabe@ucar.edu)
+# Environment: swpc_metpy.v6.1
+# Last Updated: 2025-02-07 (mccabe@ucar.edu)
 # Notes: Adds MetPy version with support for geospatial_gradient
-# Python Packages:
-#   metpy==1.4
-#
-# Other Content: None
 ################################################################################
 
 # Conda environment to create
-ENV_NAME=swpc_metpy.v5
+ENV_NAME=swpc_metpy.v6.1
 
-# Conda environment to use as base for new environment
-BASE_ENV=py_embed_base.v5
-
-mamba create -y --clone ${BASE_ENV} --name ${ENV_NAME}
-mamba install -y --name ${ENV_NAME} -c conda-forge metpy==1.4
+mamba create -y --name ${ENV_NAME} -c conda-forge python=3.12.0
+mamba install -y --name ${ENV_NAME} -c conda-forge \
+  xarray==2025.1.2 \
+  netcdf4==1.7.2 \
+  pyyaml==6.0.2 \
+  scipy=1.15.1 \
+  metpy==1.6.3

@@ -111,7 +111,6 @@ model_applications/s2s/GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast
 # Datasets
 # --------
 #
-#
 # All datasets are traditionally in netCDF format. Grids are either regular gaussian
 # Latitude/Longitude grids or they are Lambert-conformal WRF grids.
 #
@@ -126,19 +125,20 @@ model_applications/s2s/GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast
 # hindcast ensemble is identified through the year in the filename (as well as in the
 # time variable inside the netCDF file).
 #
+# **Forecast:** North American Multi-Model Ensemble (NMME)
 #
-# Forecast Datasets:
-# 
-# NMME
-# * variable of interest: pr (precipitation: cumulative monthly sum)
-# * format of precipitation variable: time,lat,lon (here dimensions: 29,181,361) with time variable representing 29 samples of same Julian Init-Time of hindcasts over past 29 years.
+# **Observation:** CPC Precipitation Reference Data
 #
-# Hindcast Datasets:
+# **Climatology:** CPC Precipitation Reference Data
 #
-# Observational Dataset:
-#
-# * CPC precipitation reference data (same format and grid)
-#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -155,11 +155,18 @@ model_applications/s2s/GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast
 # You will need to use a version of Python 3.6+ that has the following packages installed:
 #
 # * netCDF4
-#
 
 ##############################################################################
 # METplus Workflow
 # ----------------
+#
+# **Beginning time (INIT_BEG):** 198207
+#
+# **End time (INIT_END):** 201007
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 1Y
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 1m, 2m, 3m, 4m, 5m, 6m
 #
 # The following tools are used for each run time: GridStat
 #
@@ -186,8 +193,6 @@ model_applications/s2s/GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast
 # |
 # | **Init:** 2010-07
 # | **Forecast leads:** 1 month, 2 months, 3 months, 4 months, 5 months
-# |
-#
 
 ##############################################################################
 # METplus Configuration

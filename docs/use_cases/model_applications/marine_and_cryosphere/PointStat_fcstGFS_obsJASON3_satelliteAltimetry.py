@@ -31,9 +31,11 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAl
 # Datasets
 # --------
 #
-# **Forecast:** GFS forecast data (wind speed and sig. wave hgt)
+# **Forecast:** NOAA Global Forecast System (GFS) forecast data (wind speed and sig. wave hgt)
 #
 # **Observations:** JASON-3 satellite data
+#
+# **Climatology:** None
 #
 # **Location:** All of the input data required for this use case can be 
 # found in a sample data tarball. Each use case category will have 
@@ -54,12 +56,20 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAl
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (VALID_BEG):** 20240102_12
+#
+# **End time (VALID_END):** 20240102_12
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 1d
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 12
+#
 # PointStat kicks off a Python script execution, which reads in the file name, variable field of interest, and type of file (JASON, SARAL, or SENTINEL). 
 # After these points are passed back to PointStat as the point observation dataset, they are compared to gridded forecast data. 
 # CTC and CTS line types are output, which can be adjusted for additional wind speeds/ wave heights.
 # The use case processes the following run time:
 #
-# | **Valid:** 2024-01-02 12Z 12hr lead
+# **Valid:** 2024-01-02 12Z 12hr lead
 
 ##############################################################################
 # METplus Configuration
