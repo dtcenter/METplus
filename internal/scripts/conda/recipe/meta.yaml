@@ -75,25 +75,10 @@ requirements:
     - {{ compiler('cxx') }}
     - cmake
     - make
-    - libcxx
-    - cairo
-    - freetype
-    - gsl
-    - libnetcdf
-    - netcdf-cxx4
-    - libopenblas 0.3.28
-    - python 3.10
-    - zlib
-    - nceplibs-bufr
-    - python-configuration
-    - jasper
-    - nceplibs-g2c
-    - hdf4
-    - hdfeos2
-    - proj
-    - fftw
-    - _openmp_mutex 4.5  # [linux]
     - llvm-openmp  # [osx]
+    - libgomp      # [linux]
+    - python 3.10
+    - python-configuration
 
   host:
     - python 3.10
@@ -105,16 +90,11 @@ requirements:
     - freetype
     - nceplibs-bufr
     - nceplibs-g2c
-    - xarray
-    - numpy
-    - pandas
-    - pyyaml
-    - scipy
+    - jasper
+    - proj
     - fftw
     - ncurses
     - hdfeos2
-    - _openmp_mutex  # [linux]
-    - llvm-openmp  # [osx]
     - libcxx
     - setuptools
     - setuptools-git-versioning >=2.0,<3
@@ -140,45 +120,38 @@ requirements:
     - pyyaml
     - netcdf4
     - scipy
-    - _openmp_mutex  # [linux]
-    - llvm-openmp  # [osx]
 
 test:
   commands:
-    - test -f $PREFIX/bin/ascii2nc
-    - test -f $PREFIX/bin/ensemble_stat
-    - test -f $PREFIX/bin/gen_ens_prod
-    - test -f $PREFIX/bin/gen_vx_mask
-    - test -f $PREFIX/bin/grid_diag
-    - test -f $PREFIX/bin/grid_stat
-    - test -f $PREFIX/bin/ioda2nc
-    - test -f $PREFIX/bin/lidar2nc
-    - test -f $PREFIX/bin/madis2nc
-    - test -f $PREFIX/bin/mode
-    - test -f $PREFIX/bin/mode_analysis
-    - test -f $PREFIX/bin/mtd
-    - test -f $PREFIX/bin/pb2nc
-    - test -f $PREFIX/bin/pcp_combine
-    - test -f $PREFIX/bin/plot_data_plane
-    - test -f $PREFIX/bin/plot_point_obs
-    - test -f $PREFIX/bin/point2grid
-    - test -f $PREFIX/bin/point_stat
-    - test -f $PREFIX/bin/regrid_data_plane
-    - test -f $PREFIX/bin/series_analysis
-    - test -f $PREFIX/bin/stat_analysis
-    - test -f $PREFIX/bin/tc_diag
-    - test -f $PREFIX/bin/tc_gen
-    - test -f $PREFIX/bin/tc_pairs
-    - test -f $PREFIX/bin/tc_rmw
-    - test -f $PREFIX/bin/tc_stat
-    - test -f $PREFIX/bin/wavelet_stat
+    - $PREFIX/bin/ascii2nc
+    - "$PREFIX/bin/ensemble_stat || [ $? == 1 ]"
+    - "$PREFIX/bin/gen_ens_prod || [ $? == 1 ]"
+    - "$PREFIX/bin/gen_vx_mask || [ $? == 1 ]"
+    - "$PREFIX/bin/grid_diag || [ $? == 1 ]"
+    - "$PREFIX/bin/grid_stat || [ $? == 1 ]"
+    - "$PREFIX/bin/ioda2nc || [ $? == 1 ]"
+    - "$PREFIX/bin/lidar2nc || [ $? == 1 ]"
+    - "$PREFIX/bin/madis2nc || [ $? == 1 ]"
+    - "$PREFIX/bin/mode || [ $? == 1 ]"
+    - "$PREFIX/bin/mode_analysis || [ $? == 1 ]"
+    - "$PREFIX/bin/mtd || [ $? == 1 ]"
+    - "$PREFIX/bin/pb2nc || [ $? == 1 ]"
+    - "$PREFIX/bin/pcp_combine || [ $? == 1 ]"
+    - "$PREFIX/bin/plot_data_plane || [ $? == 1 ]"
+    - "$PREFIX/bin/plot_point_obs || [ $? == 1 ]"
+    - "$PREFIX/bin/point2grid || [ $? == 1 ]"
+    - "$PREFIX/bin/point_stat || [ $? == 1 ]"
+    - "$PREFIX/bin/regrid_data_plane || [ $? == 1 ]"
+    - "$PREFIX/bin/series_analysis || [ $? == 1 ]"
+    - "$PREFIX/bin/stat_analysis || [ $? == 1 ]"
+    - "$PREFIX/bin/tc_diag || [ $? == 1 ]"
+    - "$PREFIX/bin/tc_gen || [ $? == 1 ]"
+    - "$PREFIX/bin/tc_pairs || [ $? == 1 ]"
+    - "$PREFIX/bin/tc_rmw || [ $? == 1 ]"
+    - "$PREFIX/bin/tc_stat || [ $? == 1 ]"
+    - "$PREFIX/bin/wavelet_stat || [ $? == 1 ]"
   imports:
     - metplus
-    - xarray
-    - numpy
-    - scipy
-    - yaml
-    - pandas
 
 
 about:
