@@ -136,19 +136,25 @@ model_applications/clouds/GridStat_fcstGFS_obsGOES_cloudTopPressAndTemp.conf
 #
 #   INFO: METplus has successfully finished running.
 #
-# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
-# Output for this use case will be found in 
-# {OUTPUT_BASE}/model_applications/clouds/GridStat_fcstGFS_obsGOES_cloudTopPressAndTemp 
-# and will contain the following files::
+# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
 #
-#  * grid_stat_GFS_to_ACHTF_F06_CloudHgts_060000L_20240307_060000V_ctc.txt
-#  * grid_stat_GFS_to_ACHTF_F06_CloudHgts_060000L_20240307_060000V_cts.txt
-#  * grid_stat_GFS_to_ACHTF_F06_CloudHgts_060000L_20240307_060000V_pairs.nc
-#  * grid_stat_GFS_to_ACHTF_F06_CloudHgts_060000L_20240307_060000V.stat
-#  * grid_stat_GFS_to_CTPC_F06_CloudHgts_060000L_20240307_060000V_ctc.txt
-#  * grid_stat_GFS_to_CTPC_F06_CloudHgts_060000L_20240307_060000V_cts.txt
-#  * grid_stat_GFS_to_CTPC_F06_CloudHgts_060000L_20240307_060000V_pairs.nc
-#  * grid_stat_GFS_to_CTPC_F06_CloudHgts_060000L_20240307_060000V.stat
+# Output from Point2Grid will be found in:
+# {OUTPUT_BASE}/model_applications/clouds/Point2Grid/goes[16/18] and will contain the following files::
+#
+#  * OR_ABI-L2-ACHTF_s2024030706.nc
+#  * OR_ABI-L2-CTPC_s2024030706.nc
+#
+# Output from GridStat will be found in:
+# {OUTPUT_BASE}/model_applications/clouds/GridStat/goes[16/18] and will contain the following files::
+#
+#  * grid_stat_GFS_vs_ACHTF_060000L_20240307_060000V_ctc.txt
+#  * grid_stat_GFS_vs_ACHTF_060000L_20240307_060000V_cts.txt
+#  * grid_stat_GFS_vs_ACHTF_060000L_20240307_060000V_pairs.nc
+#  * grid_stat_GFS_vs_ACHTF_060000L_20240307_060000V.stat
+#  * grid_stat_GFS_vs_CTPC_060000L_20240307_060000V_ctc.txt
+#  * grid_stat_GFS_vs_CTPC_060000L_20240307_060000V_cts.txt
+#  * grid_stat_GFS_vs_CTPC_060000L_20240307_060000V_pairs.nc
+#  * grid_stat_GFS_vs_CTPC_060000L_20240307_060000V.stat
 #
 # Each file should contain corresponding statistics for the line type(s) requested.
 
