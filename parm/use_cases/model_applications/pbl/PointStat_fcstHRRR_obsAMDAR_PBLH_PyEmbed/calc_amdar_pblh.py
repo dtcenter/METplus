@@ -85,13 +85,13 @@ try:
  
    # set to NaN if outside alt, lat/lon  bounds
    t = np.where((lat > lat0-rbox) & (lat < lat0+rbox) & (lon > lon0-rbox ) & (lon < lon0+rbox), t, np.nan)
- 
+
    # convert tail number array to readable character string
    tns = get_tn(tn)
 
    # set tail number array to NaN wherever temperature array is NaN
-   tns = np.where(np.isnan(t), np.nan, tns)
-   
+   tns = np.where(np.isnan(t), 'nan', tns)
+
    # get unique tail numbers within the specified lat/lon range
    tn_list = np.unique(tns)
    nflight = tn_list.size

@@ -11,6 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: 'develop'
+          path: 'develop'
+          sparse-checkout: metplus/component_versions.py
+          sparse-checkout-cone-mode: false
       - name: Get and check tag name
         id: get_tag_name
         run: |

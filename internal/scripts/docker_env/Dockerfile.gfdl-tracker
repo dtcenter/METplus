@@ -20,11 +20,11 @@ ENV NCDIR /usr/local
 
 # Install required system tools
 RUN apt update && apt -y upgrade \
-  && apt install -y build-essential gfortran wget unzip curl csh file m4
+  && apt install -y --no-install-recommends build-essential gfortran wget unzip curl csh file m4
 
 # install jasper, png, and zlib from MET tar_files
-RUN cd / && wget https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.tgz \
-  && tar -zxf tar_files.tgz \
+RUN cd / && wget --max-redirect=0 https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.met-base-v3.0.tgz \
+  && tar -zxf tar_files.met-base-v3.0.tgz \
   && unzip tar_files/jasper-1.900.1.zip \
   && export CPPFLAGS="-I$/usr/local/include" \
   && cd jasper-1.900.1 \
@@ -46,12 +46,12 @@ RUN cd / && wget https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/
 
 # Install HDF5
 ENV HDF5_VER       1_10_6
-ENV HDF5_URL       https://github.com/HDFGroup/hdf5/archive/refs/tags/hdf5-${HDF5_VER}.zip
+ENV HDF5_URL       https://codeload.github.com/HDFGroup/hdf5/zip/refs/tags/hdf5-${HDF5_VER}
 
 RUN mkdir -p /usr/local/hdf5 \
  && cd /usr/local/hdf5 \
  && echo "Downloading HDF5 from ${HDF5_URL}" \
- && wget ${HDF5_URL} \
+ && wget --max-redirect=0 ${HDF5_URL} -O hdf5-${HDF5_VER}.zip \
  && unzip hdf5-${HDF5_VER}.zip \
  && cd hdf5-hdf5-${HDF5_VER} \
  && LOG_FILE=/usr/local/hdf5/hdf5-hdf5-${HDF5_VER}_configure.log \
@@ -71,14 +71,14 @@ RUN cd / \
 
 # Install NetCDF-Fortran 4.5.3
 RUN cd / \
- && wget https://github.com/Unidata/netcdf-fortran/archive/refs/tags/v4.5.3.tar.gz \
+ && wget --max-redirect=0 https://codeload.github.com/Unidata/netcdf-fortran/tar.gz/refs/tags/v4.5.3 -O v4.5.3.tar.gz \
  && tar zxf v4.5.3.tar.gz \
  && cd netcdf-fortran-4.5.3 \
  && ./configure LDFLAGS="-L/usr/local/lib -Wl,-rpath,/usr/local/lib" CPPFLAGS=-I/usr/local/include \
  && make check install
 
 RUN cd / \
- && wget https://dtcenter.ucar.edu/dfiles/code/METplus/gfdl_patch/standalone_gfdl-vortextracker_v3.9a_gcc.tar.gz \
+ && wget --max-redirect=0 https://dtcenter.ucar.edu/dfiles/code/METplus/gfdl_patch/standalone_gfdl-vortextracker_v3.9a_gcc.tar.gz \
  && tar zxf standalone_gfdl-vortextracker_v3.9a_gcc.tar.gz \
  && cd standalone_gfdl-vortextracker_v3.9a_gcc \
  && unset FC && unset CC \

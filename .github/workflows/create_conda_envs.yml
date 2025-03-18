@@ -9,7 +9,7 @@ on:
         default: ''
 
 env:
-  METPLUS_ENV_VERSION: v6.0
+  METPLUS_ENV_VERSION: v6.1
   DOCKERFILE: Dockerfile
   BASE_ENV: metplus_base
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}

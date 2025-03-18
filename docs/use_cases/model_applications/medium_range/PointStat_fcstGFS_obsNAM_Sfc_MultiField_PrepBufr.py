@@ -29,15 +29,20 @@ model_applications/medium_range/PointStat_fcstGFS_obsNAM_Sfc_MultiField_PrepBufr
 # Datasets
 # --------
 #
-# | **Forecast:** GFS temperature, u-wind component, v-wind component, and height
-# | **Observation:** NAM prepBURF data
+# **Forecast:** NOAA Global Forecast System (GFS) temperature, u-wind component, v-wind component, and height
 #
-# | **Location:** Click here for the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
+# **Observation:** NOAA North American Mesoscale (NAM) model prepBUFR data
 #
-# | **Data Source:** Unknown
-# |
+# **Climatology:** None
 #
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -50,15 +55,21 @@ model_applications/medium_range/PointStat_fcstGFS_obsNAM_Sfc_MultiField_PrepBufr
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (VALID_BEG):** 20170601
+#
+# **End time (VALID_END):** 20170603
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 86400
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 0
+#
 # PB2NC and PointStat are the tools called in this example. It processes the following run times:
 #
-# | **Valid:** 2017-06-01 0Z
+# **Valid:** 2017-06-01 0Z
 #
-# | **Valid:** 2017-06-02 0Z
+# **Valid:** 2017-06-02 0Z
 #
-# | **Valid:** 2017-06-03 0Z
-# |
-#
+# **Valid:** 2017-06-03 0Z
 
 ##############################################################################
 # METplus Configuration
@@ -74,7 +85,7 @@ model_applications/medium_range/PointStat_fcstGFS_obsNAM_Sfc_MultiField_PrepBufr
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # METplus sets environment variables based on user settings in the METplus configuration file. 
 # See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details. 
@@ -152,4 +163,3 @@ model_applications/medium_range/PointStat_fcstGFS_obsNAM_Sfc_MultiField_PrepBufr
 #
 #
 # sphinx_gallery_thumbnail_path = '_static/medium_range-PointStat_fcstGFS_obsNAM_Sfc_MultiField_PrepBufr.png'
-#

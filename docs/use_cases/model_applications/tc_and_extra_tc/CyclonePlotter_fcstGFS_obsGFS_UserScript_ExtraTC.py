@@ -30,17 +30,22 @@ model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_Extr
 # Datasets
 # --------
 #
-#
-# | **Forecast:** Adeck
-# |     /path/to/{init?fmt=%Y}/trak.gfso.atcf_gen.glbl.{init?fmt=%Y}
-# | **Observation:** Bdeck
+# | **Forecast:** Automated Tropical Cyclone Forecasting System (ATCF) Adeck
 # |     /path/to/{init?fmt=%Y}/trak.gfso.atcf_gen.glbl.{init?fmt=%Y}
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | The tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
+# | **Observation:** Automated Tropical Cyclone Forecasting System (Bdeck)
+# |     /path/to/{init?fmt=%Y}/trak.gfso.atcf_gen.glbl.{init?fmt=%Y}
 #
-# | **Data Source:** GFS
-# |
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # External Dependencies
@@ -65,15 +70,17 @@ model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_Extr
 # METplus Workflow
 # ----------------
 #
-# TCPairs is the first tool called in this example. It processes the following
-# run times for each storm file:
+# **Beginning time (INIT_BEG):** 20201007
 #
-# | **Init/Valid:** 2020100700
-# |
+# **End time (INIT_END):** None
 #
-# CyclonePlotter is the second (and final) tool called in this example. It processes the output
-# from TCPairs.
+# **Increment between beginning and end times (INIT_INCREMENT):** None
 #
+# **Sequence of forecast leads to process (LEAD_SEQ):** None
+#
+# TCPairs is the first tool called in this example, then CyclonePlotter 
+# is the second (and final) tool called in this example. This example does not
+# loop in time, and only runs once for the time set by INIT_BEG.
 
 ##############################################################################
 # METplus Configuration
