@@ -113,6 +113,9 @@ test:
 about:
   home: https://dtcenter.org/community-code/metplus
   summary: 'Unified NWP model verification, validation, and diagnostic tools'
+  description: |
+    This module includes the MET C++ executables and the METplus Wrappers
+    Python suite.
   license: Apache-2.0
   license_family: APACHE
   license_file:
