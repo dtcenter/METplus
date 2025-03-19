@@ -5,8 +5,8 @@
 # Last Updated: 2025-02-05 (mccabe@ucar.edu)
 # Notes: Adds Python packages needed to read GRIB data
 # Python Packages:
-#   pygrib==
-#   metpy==
+#   pygrib==2.1.6
+#   metpy==1.6.3
 #
 # Other Content: None
 ################################################################################
@@ -21,6 +21,8 @@ ENV_NAME=pygrib.${METPLUS_VERSION}
 BASE_ENV=py_embed_base.${METPLUS_VERSION}
 
 
-mamba create -y --clone ${BASE_ENV} --name ${ENV_NAME}
+conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 
-mamba install -y --name ${ENV_NAME} -c conda-forge pygrib metpy
+mamba install -y --name ${ENV_NAME} -c conda-forge \
+  pygrib==2.1.6 \
+  metpy==1.6.3

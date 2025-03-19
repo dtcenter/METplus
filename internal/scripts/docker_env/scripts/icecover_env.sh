@@ -6,9 +6,9 @@
 # Notes: Adds Python packages required for ice cover use case
 # Python Packages:
 #   xarray==2025.1.2
-#   pyresample==
-#   scikit-learn==
-#   pyproj==
+#   pyresample==1.32.0
+#   scikit-learn==1.6.1
+#   pyproj==3.7.0
 #
 # Other Content: None
 ################################################################################
@@ -22,9 +22,9 @@ ENV_NAME=icecover.${METPLUS_VERSION}
 # Conda environment to use as base for new environment
 BASE_ENV=py_embed_base.${METPLUS_VERSION}
 
-mamba create -y --clone ${BASE_ENV} --name ${ENV_NAME}
+conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 mamba install -y --name ${ENV_NAME} -c conda-forge \
   xarray==2025.1.2 \
-  pyresample \
-  scikit-learn \
-  pyproj
+  pyresample==1.32.0 \
+  scikit-learn==1.6.1 \
+  pyproj==3.7.0
