@@ -11,8 +11,9 @@ valid = sys.argv[3]
 leadhours = sys.argv[4]
 varname = sys.argv[5]
 
-# Process requested level
-level = np.array(float(level)*1000.0)*units('m')
+# Process reuested level
+if level!='L0':
+  level = np.array(float(level)*1000.0)*units('m')
 
 # Process time information
 valid = datetime.datetime.strptime(valid,'%Y%m%d_%H%M%S')
@@ -34,17 +35,17 @@ if varname=='TCC':
 elif varname=='CLWC':
   gph_var = xr.open_dataset(model_file,engine='cfgrib',filter_by_keys={'typeOfLevel':'isobaricInhPa','shortName':'gh'},indexpath='')
   tmp_var = xr.open_dataset(model_file,engine='cfgrib',filter_by_keys={'typeOfLevel':'isobaricInhPa','shortName':'t'},indexpath='')
-  clw_var = xr.open_dataset(model_file,engine='cfgrib',filter_by_keys={'typeOfLevel':'isobaricInhPa','shortName':'q'},indexpath='')
+  clw_var = xr.open_dataset(model_file,engine='cfgrib',filter_by_keys={'typeOfLevel':'isobaricInhPa','shortName':'clwmr'},indexpath='')
   prs_var = clw_var.isobaricInhPa.broadcast_like(gph_var)
   prs_var.attrs['units'] = 'hPa'
   prs_var = prs_var*100.0
   prs_var.attrs['units'] = 'Pa'
   tmp_var['t'].attrs['units'] = 'degK'
-  clw_var['q'].attrs['units'] = 'kg/kg'
+  clw_var['clwmr'].attrs['units'] = 'kg/kg'
   gph_var['gh'].attrs['units'] = 'm'
 
   # Convert units from kg/kg to g/m3
-  clw_var = ((clw_var['q']*prs_var)*1000.0/(287.05*tmp_var['t']))
+  clw_var = ((clw_var['clwmr']*prs_var)*1000.0/(287.05*tmp_var['t']))
   
   clw_lev = log_interpolate_1d(level,gph_var['gh'],clw_var,axis=0)
   
@@ -57,22 +58,22 @@ elif varname=='CLWP':
 
   gph_var = xr.open_dataset(model_file,engine='cfgrib',filter_by_keys={'typeOfLevel':'isobaricInhPa','shortName':'gh'},indexpath='')
   tmp_var = xr.open_dataset(model_file,engine='cfgrib',filter_by_keys={'typeOfLevel':'isobaricInhPa','shortName':'t'},indexpath='')
-  clw_var = xr.open_dataset(model_file,filter_by_keys={'typeOfLevel':'isobaricInhPa','shortName':'q'},indexpath='')
+  clw_var = xr.open_dataset(model_file,filter_by_keys={'typeOfLevel':'isobaricInhPa','shortName':'clwmr'},indexpath='')
   prs_var = clw_var.isobaricInhPa.broadcast_like(gph_var)
   prs_var.attrs['units'] = 'hPa'
   prs_var = prs_var*100.0
   prs_var.attrs['units'] = 'Pa'
   tmp_var['t'].attrs['units'] = 'degK'
-  clw_var['q'].attrs['units'] = 'dimensionless'
+  clw_var['clwmr'].attrs['units'] = 'dimensionless'
   gph_var['gh'].attrs['units'] = 'm'
 
-  # Convert units from kg/kg to g/m3
-  clw_var = ((clw_var['q']*prs_var)*1000.0/(287.05*tmp_var['t']))
+  # Convert units from kg/kg to g/m3 to compare with obs
+  clw_var = ((clw_var['clwmr']*prs_var)*1000.0/(287.05*tmp_var['t']))
   
   met_data = clw_var.sum(dim='isobaricInhPa').squeeze().values
   long_name = "Cloud Liquid Water Path"
   units = "g/m3"
-  level = 'Z0'
+  level = level
 
 else:
   print("UNSUPPORTED varname IN SCRIPT")
