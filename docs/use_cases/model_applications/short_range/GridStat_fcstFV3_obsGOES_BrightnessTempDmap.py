@@ -29,9 +29,20 @@ model_applications/short_range/GridStat_fcstFV3_obsGOES_BrightnessTempDmap.conf
 # Datasets
 # --------
 #
-#  * Forecast dataset: FV3 Model member data
-#  * Observation dataset: GOES Brightness Temperature
+# **Forecast:** FV3 Model member data
 #
+# **Observation:** GOES Brightness Temperature
+#
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -43,6 +54,14 @@ model_applications/short_range/GridStat_fcstFV3_obsGOES_BrightnessTempDmap.conf
 ##############################################################################
 # METplus Workflow
 # ----------------
+#
+# **Beginning time (INIT_BEG):** 2019052100
+#
+# **End time (INIT_END):** 2019052100
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 3600
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 1,2
 #
 # The GridStat tool is run for each of 2 ensemble members and for each time.
 # This example loops by initialization time.  It processes 2 lead times, listed

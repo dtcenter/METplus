@@ -13,7 +13,6 @@ Condition codes: 0 for success, 1 for failure
 import os
 
 from ..util import getlistint
-from ..util import time_util
 from ..util import do_string_sub
 from . import CompareGriddedWrapper
 
@@ -129,6 +128,8 @@ class PointStatWrapper(CompareGriddedWrapper):
                                c_dict['VERBOSITY'])
         )
         c_dict['ALLOW_MULTIPLE_FILES'] = True
+        c_dict['SUPPORTS_FILE_LIST'] = False
+
         c_dict['OFFSETS'] = getlistint(
             self.config.getstr('config', 'POINT_STAT_OFFSETS', '0')
         )
@@ -187,34 +188,8 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         self.handle_climo_cdf_dict()
 
-        self.add_met_config_dict('land_mask', {
-            'flag': 'bool',
-            'file_name': 'list',
-            'field': ('dict', None, {
-                'name': 'string',
-                'level': 'string',
-            }),
-            'regrid': ('dict', None, {
-                'method': ('string', 'remove_quotes'),
-                'width': 'int',
-            }),
-            'thresh': 'thresh',
-        })
-
-        self.add_met_config_dict('topo_mask', {
-            'flag': 'bool',
-            'file_name': 'list',
-            'field': ('dict', None, {
-                'name': 'string',
-                'level': 'string',
-            }),
-            'regrid': ('dict', None, {
-                'method': ('string', 'remove_quotes'),
-                'width': 'int',
-            }),
-            'use_obs_thresh': 'thresh',
-            'interp_fcst_thresh': 'thresh',
-        })
+        self.handle_land_mask()
+        self.handle_topo_mask()
 
         c_dict['OBS_VALID_BEG'] = (
             self.config.getraw('config', 'POINT_STAT_OBS_VALID_BEG', '')
@@ -305,8 +280,6 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         if not c_dict['OUTPUT_DIR']:
             self.log_error('Must set POINT_STAT_OUTPUT_DIR in config file')
-        # skip RuntimeFreq input file logic - remove once integrated
-        c_dict['FIND_FILES'] = False
         return c_dict
 
     def set_command_line_arguments(self, time_info):

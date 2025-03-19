@@ -360,7 +360,7 @@ If a wrapper can be read in multiple files, the c_dict item
 do_string_sub function
 ======================
 
-do_string_sub is found in ush/string_template_substitution.py and is the
+do_string_sub is found in metplus/util/string_template_substitution.py and is the
 critical function for substituting the placeholder
 values in templates with the actual values needed for running a particular
 wrapper

@@ -150,10 +150,8 @@ ${METPLUS_FOURIER_DICT}
 // Gradient statistics
 // May be set separately in each "obs.field" entry
 //
-gradient = {
-   dx = [ 1 ];
-   dy = [ 1 ];
-}
+//gradient = {
+${METPLUS_GRADIENT_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 

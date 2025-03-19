@@ -76,23 +76,14 @@ class WaveletStatWrapper(CompareGriddedWrapper):
         # get the MET config file path or use default
         c_dict['CONFIG_FILE'] = self.get_config_file('WaveletStatConfig_wrapped')
 
-        c_dict['OBS_INPUT_DIR'] = self.config.getdir(f'OBS_{app}_INPUT_DIR', '')
-        c_dict['OBS_INPUT_TEMPLATE'] = (
-            self.config.getraw('config', f'OBS_{app}_INPUT_TEMPLATE')
-        )
-        if not c_dict['OBS_INPUT_TEMPLATE']:
-            self.log_error(f"OBS_{app}_INPUT_TEMPLATE required to run")
+        self.get_input_templates(c_dict, {
+            'FCST': {'prefix': 'FCST_WAVELET_STAT', 'required': True},
+            'OBS': {'prefix': 'OBS_WAVELET_STAT', 'required': True},
+        })
 
         c_dict['OBS_INPUT_DATATYPE'] = (
             self.config.getstr('config', f'OBS_{app}_INPUT_DATATYPE', '')
         )
-
-        c_dict['FCST_INPUT_DIR'] = self.config.getdir(f'FCST_{app}_INPUT_DIR', '')
-        c_dict['FCST_INPUT_TEMPLATE'] = (
-            self.config.getraw('config', f'FCST_{app}_INPUT_TEMPLATE')
-        )
-        if not c_dict['FCST_INPUT_TEMPLATE']:
-            self.log_error(f"FCST_{app}_INPUT_TEMPLATE required to run")
 
         c_dict['FCST_INPUT_DATATYPE'] = (
             self.config.getstr('config', f'FCST_{app}_INPUT_DATATYPE', '')
@@ -176,6 +167,4 @@ class WaveletStatWrapper(CompareGriddedWrapper):
             })
 
         self.add_met_config(name='output_prefix', data_type='string')
-        # skip RuntimeFreq input file logic - remove once integrated
-        c_dict['FIND_FILES'] = False
         return c_dict

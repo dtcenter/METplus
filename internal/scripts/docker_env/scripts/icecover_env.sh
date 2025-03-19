@@ -1,14 +1,14 @@
 #! /bin/sh
 
 ################################################################################
-# Environment: icecover.v6.0
-# Last Updated: 2023-09-12 (mccabe@ucar.edu)
+# Environment: icecover.v6.1
+# Last Updated: 2025-02-05 (mccabe@ucar.edu)
 # Notes: Adds Python packages required for ice cover use case
 # Python Packages:
-#   xarray==2023.5.0
-#   pyresample==1.27.1
-#   scikit-learn==1.3.0
-#   pyproj==3.6.0
+#   xarray==2025.1.2
+#   pyresample==
+#   scikit-learn==
+#   pyproj==
 #
 # Other Content: None
 ################################################################################
@@ -23,4 +23,8 @@ ENV_NAME=icecover.${METPLUS_VERSION}
 BASE_ENV=py_embed_base.${METPLUS_VERSION}
 
 mamba create -y --clone ${BASE_ENV} --name ${ENV_NAME}
-mamba install -y --name ${ENV_NAME} -c conda-forge xarray==2023.5.0 pyresample==1.27.1 scikit-learn==1.3.0 pyproj==3.6.0
+mamba install -y --name ${ENV_NAME} -c conda-forge \
+  xarray==2025.1.2 \
+  pyresample \
+  scikit-learn \
+  pyproj
