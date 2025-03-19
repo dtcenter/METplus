@@ -16,7 +16,7 @@ DOCKERHUB_METPLUS_DATA = 'dtcenter/metplus-data'
 DOCKERHUB_METPLUS_DATA_DEV = 'dtcenter/metplus-data-dev'
 
 # extension to add to conda environments
-VERSION_EXT = '.v6.0'
+VERSION_EXT = '.v6.1'
 
 
 def get_data_repo(branch_name):
@@ -56,7 +56,7 @@ def docker_get_volumes_last_updated(current_branch):
     volumes_last_updated = {}
     attempts = 0
     page = dockerhub_request.json()
-    while attempts < 10:
+    while attempts < 20:
         results = page['results']
         for repo in results:
             repo_name = repo['name']

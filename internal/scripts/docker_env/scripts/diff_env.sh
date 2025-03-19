@@ -7,8 +7,8 @@
 #   truth data.
 # Python Packages:
 #   pandas==2.2.3
-#   pillow==
-#   pdf2image==
+#   pillow==11.1.0
+#   pdf2image==1.17.0
 #
 # Other Content:
 #   poppler-utils
@@ -23,10 +23,12 @@ ENV_NAME=diff.${METPLUS_VERSION}
 # Conda environment to use as base for new environment
 BASE_ENV=netcdf4.${METPLUS_VERSION}
 
-mamba create -y --clone ${BASE_ENV} --name ${ENV_NAME}
-mamba install -y --name ${ENV_NAME} -c conda-forge pandas==2.2.3 pillow
+conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
+mamba install -y --name ${ENV_NAME} -c conda-forge \
+  pandas==2.2.3 \
+  pillow==11.1.0
 
 apt-get update
 apt-get install -y poppler-utils
 
-mamba install -y --name ${ENV_NAME} -c conda-forge pdf2image
+mamba install -y --name ${ENV_NAME} -c conda-forge pdf2image==1.17.0

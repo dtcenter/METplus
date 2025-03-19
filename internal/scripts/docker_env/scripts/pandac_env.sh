@@ -6,7 +6,7 @@
 # Notes: Adds Python packages needed for PANDA-C use cases
 # Python Packages:
 #   All packages from metplotpy.v6.1
-#   pygrib==
+#   pygrib==2.1.6
 #
 # Other Content: None
 ################################################################################
@@ -21,9 +21,5 @@ ENV_NAME=pandac.${METPLUS_VERSION}
 #BASE_ENV=py_embed_base.${METPLUS_VERSION}
 BASE_ENV=metplotpy.${METPLUS_VERSION}
 
-mamba create -y --clone ${BASE_ENV} --name ${ENV_NAME}
-mamba install -y --name ${ENV_NAME} -c conda-forge pygrib
-if [ $? != 0 ]; then
-    echo install of pygrib failed
-    exit 1
-fi
+conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
+mamba install -y --name ${ENV_NAME} -c conda-forge pygrib==2.1.6

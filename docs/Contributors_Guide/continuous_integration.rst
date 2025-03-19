@@ -907,9 +907,10 @@ with the versions of Python packages they contain are:
 
 **py_embed_base_env**
 
-* Python 3.10.4
-* xarray 2022.3.0
-* netcdf4 1.5.8
+* Python 3.12.0
+* xarray 2025.1.2
+* netcdf4 1.7.2
+* pyyaml 6.0.2
 
 Note: Adding the py_embed_base_env keyword is not necessary if the *py_embed*
 keyword is used (see Other Keywords). A Python Embedding use case that only
@@ -920,79 +921,90 @@ environments use this environment as a base.
 
 **cfgrib_env**
 
-* Python 3.10.4
-* metpy 1.4.0
-* netcdf4 1.5.8
-* cfgrib 0.9.10.1
-* pygrib 2.1.4
+* Python 3.12.0
+* metpy 1.6.3
+* netcdf4 1.7.2
+* cfgrib 0.9.15
+* pygrib 2.1.6
 
 **cycloneplotter_env**
 
-* Python 3.10.4
-* cartopy 0.20.3
-* matplotlib 3.5.2
-* pandas 1.4.3
+* Python 3.12.0
+* cartopy 0.24.0
+* matplotlib 3.10.0
+* pandas 2.2.3
 
 **geovista_env**
 
-* geovista
-* xarray 2022.11.0
-* iris 3.3.1
+* Python 3.12.0
+* geovista 0.5.3
+* xarray 2025.1.2
+* iris 3.11.1
 
 **h5py_env**
 
 * All packages in py_embed_base_env
-* h5py 3.6.0
+* h5py 3.12.1
 
 **icecover_env**
 
 * All packages in py_embed_base_env
-* xarray 2022.3.0
-* pyresample 1.24.1
-* scikit-learn 1.1.1
-* pyproj 3.3.1
+* xarray 2025.1.2
+* pyresample 1.32.0
+* scikit-learn 1.6.1
+* pyproj 3.7.0
 
 **metdataio_env**
 
-* Python 3.10.4
-* lxml 4.9.1
-* pymysql 1.0.2
-* pandas 1.5.1
+* Python 3.12.0
+* pymysql 1.1.1
+* pyyaml 6.0.2
+* xarray 2025.1.2
+* lxml 5.3.0
+* netcdf4 1.7.2
 
 **metplotpy_env**
 
-* Python 3.10.4
-* matplotlib 3.6.3
-* scipy 1.9.3
-* plotly 5.13.0
-* xarray 2023.1.0
-* netcdf4 1.6.2
-* pyyaml 6.0
+* Python 3.12.0
+* matplotlib 3.10.0
+* scipy 1.15.1
+* plotly 6.0.0
+* xarray 2025.1.2
+* netcdf4 1.7.2
+* pyyaml 6.0.2
 * python-kaleido 0.2.1
-* imageio 2.25.0
+* imageio 2.37.0
 * imutils 0.5.4
-* scikit-image
-* pint 0.20.1
-* metpy
-* cartopy 0.21.1
+* scikit-image 0.25.1
+* pint 0.24.4
+* metpy 1.6.3
+* cartopy 0.24.0
+
+**mp_analysis_env**
+
+* All packages in metplotpy_env
+* lxml 5.3.0
+* pymysql 1.1.1
 
 **netcdf4_env**
 
-* Python 3.10.4
-* netcdf4 1.5.8
+* Python 3.12.0
+* netcdf4 1.7.2
 
 **pandac_env**
 
 * All packages in metplotpy_env
-* pygrib 2.1.4
+* pygrib 2.1.6
 
 **pygrib_env**
 
 * All packages in py_embed_base_env
-* pygrib 2.1.4
-* metpy 1.3.0
+* pygrib 2.1.6
+* metpy 1.6.3
 
 **spacetime_env**
+
+**NOTE: This env is not used because pyngl is not supported in Python 3.12.**
 
 * Python 3.10.4
 * netCDF4 1.5.8
@@ -1004,30 +1016,35 @@ environments use this environment as a base.
 
 **swpc_metpy_env**
 
-* All packages in py_embed_base_env
-* metpy 1.4
+* Python 3.12.0
+* xarray 2025.1.2
+* netcdf4 1.7.2
+* pyyaml 6.0.2
+* scipy 1.15.1
+* metpy 1.6.3
 
 **weatherregime_env**
 
-* All packages in py_embed_base_env
-* scikit-learn 1.1.1
-* eofs 1.4.0
-* cmocean 2.0
+* All packages in metplotpy_env
+* scikit-learn 1.6.1
+* eofs 2.0.0
+* cmocean 4.0.3
 
 **xesmf_env**
 
-* Python 3.10.4
-* netcdf4 1.5.8
-* xarray 2022.3.0
-* xesmf 0.3.0
+* Python 3.12.0
+* netcdf4 1.7.2
+* xarray 2025.1.2
+* xesmf 0.8.8
+* esmf 8.7.0
 
 
 Example::
 
-    spacetime_env
+    mp_analysis_env
 
 The above example uses the Conda environment
-in *dtcenter/metplus-envs*:**spacetime**.vX.Y to run a user script
+in *dtcenter/metplus-envs*:**mp_analysis**.vX.Y to run a user script
 where X.Y is the version of METplus when the environment was lasted updated,
 e.g. 5.1.
 Note that only one dependency that contains the **_env** suffix can be supplied
