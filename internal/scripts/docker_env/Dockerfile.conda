@@ -4,7 +4,7 @@
 ARG DEBIAN_VERSION=12
 FROM debian:${DEBIAN_VERSION}-slim
 
-RUN apt update && apt install -y curl \
- && curl -L https://github.com/conda-forge/miniforge/releases/download/23.3.1-1/Mambaforge-23.3.1-1-$(uname)-$(uname -m).sh -o /miniforge.sh \
+RUN apt update && apt install -y --no-install-recommends curl \
+ && curl --proto "=https" -L https://github.com/conda-forge/miniforge/releases/download/23.3.1-1/Mambaforge-23.3.1-1-$(uname)-$(uname -m).sh -o /miniforge.sh \
  && bash /miniforge.sh -b -p /usr/local/conda \
  && /usr/local/conda/bin/conda update -y -n base -c conda-forge conda

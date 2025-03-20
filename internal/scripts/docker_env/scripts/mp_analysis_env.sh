@@ -4,8 +4,8 @@
 # Notes: Adds Python packages needed to run METplotpy and METdataio
 # Python Packages:
 #   All packages from metplotpy
-#   lxml==
-#   pymysql==
+#   lxml==5.3.0
+#   pymysql==1.1.1
 #
 # Other Content: None
 ################################################################################
@@ -19,7 +19,7 @@ ENV_NAME=mp_analysis.${METPLUS_VERSION}
 # Conda environment to use as base for new environment
 BASE_ENV=metplotpy.${METPLUS_VERSION}
 
-mamba create -y --clone ${BASE_ENV} --name ${ENV_NAME}
+conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 mamba install -y --name ${ENV_NAME} -c conda-forge \
-  lxml \
-  pymysql
+  lxml==5.3.0 \
+  pymysql==1.1.1

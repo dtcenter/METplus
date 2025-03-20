@@ -52,7 +52,12 @@
   {
     "category": "clouds",
     "index_list": "6",
-    "run": true
+    "run": false
+  },
+  {
+    "category": "clouds",
+    "index_list": "7",
+    "run": false
   },
   {
     "category": "data_assimilation",
@@ -199,6 +204,8 @@
   {
     "category": "s2s",
     "index_list": "3",
+    "disabled": true,
+    "disabled_reason": "python requirement pyngl not supported in python 3.12",
     "run": false
   },
   {

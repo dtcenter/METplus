@@ -5,9 +5,9 @@
 # Last Updated: 2025-02-05 (mccabe@ucar.edu)
 # Notes: Adds Python packages needed to run iris use case
 # Python Packages:
-#   geovista==
+#   geovista==0.5.3
 #   xarray==2025.1.2
-#   iris==
+#   iris==3.11.1
 #
 # Other Content: None
 ################################################################################
@@ -24,6 +24,6 @@ apt install -y libegl1
 
 mamba create -y --name ${ENV_NAME} -c conda-forge python=3.12.0
 mamba install -y --name ${ENV_NAME} -c conda-forge \
-  geovista \
+  geovista==0.5.3 \
   xarray==2025.1.2 \
-  iris
+  iris==3.11.1

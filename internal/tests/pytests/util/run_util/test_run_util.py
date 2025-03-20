@@ -160,7 +160,7 @@ def test_pre_run_setup_sed_file(capfd):
 
     # check sed file is written correctly
     _, err = capfd.readouterr()
-    sed_err_regex = r'.*Find/Replace commands have been generated in (.*)\n'
+    sed_err_regex = r'\(run_util.py\) ERROR: Find/Replace commands have been generated in (.*)\n'
     sed_file = None
     match = re.match(sed_err_regex, err)
     if match:
@@ -425,7 +425,7 @@ def test_post_run_cleanup_scrubs(post_run_config):
         with mock.patch.object(ru.os.path, 'exists', return_value=True):
             ru.post_run_cleanup(post_run_config, 'fake_app', 0)
 
-    assert mock_rm.called_once_with(some_fake_dir)
+    assert mock_rm.call_count == 1
 
     _check_log_info(post_run_config, ['Scrubbing staging dir: %s', some_fake_dir])
     _check_log_info(
