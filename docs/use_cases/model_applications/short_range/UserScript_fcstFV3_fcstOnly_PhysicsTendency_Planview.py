@@ -5,6 +5,8 @@ UserScript: Physics Tendency Planview Plot
 model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
 
 """
+from METplus_prev.parm.use_cases.model_applications.s2s_mjo.UserScript_obsERA_obsOnly_RMM.compute_harmonic_anomalies import \
+    anom_output_dir
 ##############################################################################
 # .. contents::
 #   :depth: 1
@@ -151,13 +153,21 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planv
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output
 # data was generated.
+#
+# .. note::
+#
+#   This use case **explicitly redirects the output** to the *OUTPUT_BASE* directory with the expected filename of *tmp_500hPa.png*.
+#   **By default**, the *planview_fv3.py* script (that generates the plot) creates a file
+#   based on the variable name and pressure value.  The resulting .png file is written to the directory where the
+#   *planview_fv3.py* script was invoked.
+#
 # The following file will be created:
 #
-# physics_tendency_planview.png
+# tmp_500hPa.png
 
 ##############################################################################
 # Keywords
-# --------
+#---------
 #
 #
 # .. note::
