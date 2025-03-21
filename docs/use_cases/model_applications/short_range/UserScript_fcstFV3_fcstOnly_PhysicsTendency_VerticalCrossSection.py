@@ -142,7 +142,6 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 #
 #   INFO: METplus has successfully finished running.
 #
-# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
 #
 # .. note::
 #
@@ -151,7 +150,7 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 #   based on the variable name and specified min and max coordinates.  The resulting .png file is written to the directory where the
 #   *cross_section_vert.py* script was invoked.
 #
-# The following file will be created:
+# The following file will be created in the directory from where the use command was issued:
 #
 # ugrd_28N-120E-26N-75E.png
 #

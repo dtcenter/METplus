@@ -153,16 +153,14 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 #
 #   INFO: METplus has successfully finished running.
 #
-# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
 #
 # .. note::
 #
-#   This use case **explicitly redirects the output** to the *OUTPUT_BASE* directory with the expected filename of *ugrd.vert_profile.png*.
 #   **By default**, the *vert_profile_fv3.py* script (that generates the plot) creates a file
 #   based on the variable name and plot type.  The resulting .png file is written to the directory where the
 #   *vert_profile_fv3.py* script was invoked.
 #
-# The following file will be created:
+# The following file will be created in the directory from where the use case command was issued:
 #
 # ugrd.vert_profile.png
 #
