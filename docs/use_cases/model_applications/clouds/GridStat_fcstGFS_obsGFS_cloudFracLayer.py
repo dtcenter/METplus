@@ -83,7 +83,7 @@ model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 #
 # GenVxMask is run once.  The Grid-Stat, MODE, and Stat-Analysis tools run for each time. 
 # This example loops by model initialization time.  It processes one initialization time and 
-# three lead times for each for a total of 3 valid times, listed below.
+# three lead times for a total of 3 valid times, listed below.
 #
 # | **Valid:** 2024-03-07_00Z
 # | **Forecast lead:** 00
