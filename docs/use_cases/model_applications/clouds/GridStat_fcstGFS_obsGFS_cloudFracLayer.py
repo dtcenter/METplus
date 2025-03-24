@@ -18,7 +18,7 @@ model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 # This use case evaluates clouds classified into low, mid, and high levels.  The
 # evaluation covers multiple types of statistics including contingency table
 # statistics, neighborhood statistics, distance maps, and an object based evaluation.
-# Additionally, plots are created to demonstrate how to reformat and visualize GSS
+# Additionally, plots are created to demonstrate how to reformat and visualize GSS,
 # CSI and frequency bias from the command line.
 
 ##############################################################################
