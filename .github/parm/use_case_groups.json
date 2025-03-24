@@ -52,7 +52,12 @@
   {
     "category": "clouds",
     "index_list": "6",
-    "run": true
+    "run": false
+  },
+  {
+    "category": "clouds",
+    "index_list": "7",
+    "run": false
   },
   {
     "category": "data_assimilation",
