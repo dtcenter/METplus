@@ -5,8 +5,7 @@ UserScript: Physics Tendency Planview Plot
 model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
 
 """
-from METplus_prev.parm.use_cases.model_applications.s2s_mjo.UserScript_obsERA_obsOnly_RMM.compute_harmonic_anomalies import \
-    anom_output_dir
+
 ##############################################################################
 # .. contents::
 #   :depth: 1
