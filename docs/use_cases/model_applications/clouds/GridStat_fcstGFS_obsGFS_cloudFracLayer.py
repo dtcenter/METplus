@@ -18,8 +18,8 @@ model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 # This use case evaluates clouds classified into low, mid, and high levels.  The
 # evaluation covers multiple types of statistics including contingency table
 # statistics, neighborhood statistics, distance maps, and an object based evaluation.
-# Additionally, plots are created to demonstrate how to reformat and visualize GSS
-# CSI and frequency bias from the command line.
+# Additionally, plots are created to demonstrate how to reformat and visualize GSS,
+# CSI, and frequency bias from the command line.
 
 ##############################################################################
 # Version Added
@@ -83,7 +83,7 @@ model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 #
 # GenVxMask is run once.  The Grid-Stat, MODE, and Stat-Analysis tools run for each time. 
 # This example loops by model initialization time.  It processes one initialization time and 
-# three lead times for each for a total of 3 valid times, listed below.
+# three lead times for a total of 3 valid times, listed below.
 #
 # | **Valid:** 2024-03-07_00Z
 # | **Forecast lead:** 00
